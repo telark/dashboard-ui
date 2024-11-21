@@ -1,32 +1,31 @@
 import React from 'react';
 import { Card, Typography } from 'antd';
 
-// Destructure necessary components from Ant Design
 const { Title, Text } = Typography;
 
 // Define the structure of the props that GrouperCard expects
 interface GrouperCardProps {
   title: string;
-  company: string;
-  location: string;
-  salary: string;
-  timeAgo: string;
   status: string;
+  numberOfWorkloads: number;
+  numberOfBridges: number;
+  kind: string;
+  creationTime: string;
 }
 
-const GrouperCard: React.FC<GrouperCardProps> = ({ title, company, location, salary, timeAgo, status }) => {
+const GrouperCard: React.FC<GrouperCardProps> = ({ title, status, numberOfWorkloads, numberOfBridges, kind, creationTime }) => {
   return (
     <Card style={{ width: '100%', marginBottom: '20px' }} hoverable>
       <Title level={4}>{title}</Title>
-      <Text>{company}</Text>
+      <Text>Status: {status}</Text>
       <br />
-      <Text>{location}</Text>
+      <Text>Number Of Workloads: {numberOfWorkloads}</Text>
       <br />
-      <Text strong>{salary}</Text>
+      <Text>Number Of Bridges: {numberOfBridges}</Text>
       <br />
-      <Text type="secondary">{timeAgo}</Text>
+      <Text>Kind: {kind}</Text>
       <br />
-      <Text style={{ color: status === 'Active' ? 'green' : 'red' }}>{status}</Text>
+      <Text type="secondary">Created: {creationTime}</Text>
     </Card>
   );
 };
