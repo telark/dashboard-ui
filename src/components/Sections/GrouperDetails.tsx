@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Card, Button, Tabs, Timeline, Switch, Select, Input, Modal, message } from "antd";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { Card, Button, Tabs, Timeline, Switch, message } from "antd";
 import {
   ApartmentOutlined,
   CheckCircleOutlined,
@@ -14,46 +15,42 @@ import {
   EyeOutlined,
   LoadingOutlined
 } from "@ant-design/icons";
-import { useLocation } from "react-router-dom";
-import { updateSyncSettings } from "../../clients/grouper"
-
-const { Option } = Select;
+import { updateGrouperSyncSettings } from "../../clients/grouper"
+import { HistoryRecord } from "../../interfaces/common";
+import TimeAgo from "../Time/TimeAgo";
 
 // Interface for the history data
-interface HistoryItem {
-  creationTime: string;
-  event: string;
-  status: string;
-}
 
-const Details: React.FC = () => {
+const GrouperDetails: React.FC = () => {
   const location = useLocation();
-  const { state } = location; // Retrieve the dynamic data passed via state from GrouperCard
+  const { state } = location;
 
   // Default values for state
   const {
-    title,
-    status,
-    creationTime,
-    lastUpdateTime,
-    history = [], // Default to empty array for history data if not provided
-    sync = { mode: "manual", settings: { period: 1 } }, // Default sync settings
-  } = state || {
-    title: "Loading...",
-    status: "Inactive",
-    numberOfWorkloads: 0,
-    numberOfBridges: 0,
-    creationTime: "N/A",
-    history: [], // Default empty array for history
-    sync: { mode: "manual", settings: { period: 1 } }, // Default sync
-  };
+    name = "Loading...",
+    status = "Inactive",
+    creationTime = "N/A",
+    lastUpdateTime = "N/A",
+    history = [],
+    sync = { mode: "manual" },
+  } = state || {};
 
-  // Set initial state based on sync.mode
-  const [isAutoSync, setIsAutoSync] = useState(sync.mode === "auto"); // Default to true if sync.mode is 'auto'
-  const [syncPeriod, setSyncPeriod] = useState(sync.settings.period.toString()); // Initialize from sync.settings
-  const [customSyncPeriod, setCustomSyncPeriod] = useState(0); // Custom period for sync
-  const [isModalVisible, setModalVisible] = useState(false); // Modal visibility
-  
+   // State variables
+  const [nameState, setNameState] = useState<string>(name);
+  const [statusState, setStatusState] = useState<string>(status);
+  const [syncState, setSyncState] = useState(sync);
+  const [historyState, setHistoryData] = useState<HistoryRecord[]>(history);
+  const [isAutoSync, setIsAutoSync] = useState(sync.mode === "auto");
+  const [loading, setLoading] = useState(false);
+  const [initialSyncMode, setInitialSyncMode] = useState(sync.mode);
+
+  // Determine if Save button should be enabled
+  const isSaveDisabled = !(isAutoSync !== (initialSyncMode === "auto"));
+
+  // Handle Auto Sync Toggle Change
+  const handleAutoSyncChange = (checked: boolean) => {
+    setIsAutoSync(checked);
+  };
 
   // Function to determine the color based on status for the timeline
   const getTimelineColor = (status: string) => {
@@ -63,88 +60,76 @@ const Details: React.FC = () => {
       return "#FF4D4F"; // Red for Error
     }
     return "#999"; // Default gray color for other statuses (if any)
-  };
-
-  const getStatusStyle = (status: "Active" | "Inactive") => {
-    return status === "Active"
-      ? { color: "#20C997", borderColor: "#20C997", icon: <CheckCircleOutlined style={{ marginRight: "4px" }} /> }
-      : { color: "#999", borderColor: "#999", icon: <CloseCircleOutlined style={{ marginRight: "4px" }} /> };
-  };
-
-  const statusStyle = getStatusStyle(status);
-
-  // Handle Auto Sync Toggle Change
-  const handleAutoSyncChange = (checked: boolean) => {
-    setIsAutoSync(checked);
-    if (checked) {
-      setSyncPeriod("1"); // Reset to default when Auto Sync is enabled
-    }
-  };
-
-  // Handle Custom Sync Period Input Change
-  const handleCustomSyncChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (/^\d*$/.test(value)) {
-      setCustomSyncPeriod(parseInt(value));
-    }
-  };
-
-  // Handle Sync Period Change
-  const handleSyncPeriodChange = (value: string) => {
-    if (value === "custom") {
-      setModalVisible(true);
-    } else {
-      setSyncPeriod(value);
-    }
-  };
-
-  // Handle Modal OK (Save custom sync period)
-  const handleOk = () => {
-    if (customSyncPeriod > 0) {
-      setSyncPeriod(customSyncPeriod.toString());
-      setModalVisible(false);
-    } else {
-      message.error("Please enter a valid custom period.");
-    }
-  };
-
-  // Handle Modal Cancel (Close the modal without saving)
-  const handleCancel = () => {
-    setModalVisible(false);
-  };
-
-  // Track initial values of sync mode and period
-  const [initialSyncMode, setInitialSyncMode] = useState(sync.mode);
-  const [initialSyncPeriod, setInitialSyncPeriod] = useState(sync.settings.period.toString());
-
-  // Compare current settings to initial settings to determine if Save button should be enabled
-  const isSaveDisabled = !(isAutoSync !== (initialSyncMode === "auto") || syncPeriod !== initialSyncPeriod);
-  
-
-  const [loading, setLoading] = useState(false); // Loading state for the save button
+  };  
 
   const handleSave = async () => {
     setLoading(true);
     try {
-      // Use the current state of `isAutoSync` and `syncPeriod` (user's inputs)
+      
+      // Determine the mode on the current state
       const mode = isAutoSync ? "auto" : "manual";
-      const period = syncPeriod;  // This will reflect the current user-selected period
   
-      const response = await updateSyncSettings(
-        title,
-        mode,
-        period
-      );
+      // Call the API function to update settings
+      const response = await updateGrouperSyncSettings(name, mode);
+
+      // Extract the new data from the response
+      const { item } = response;
+      const { fasid, cacid, config } = item;
+
+      const updatedData = {
+        name: fasid.source.name,
+        status: cacid.status,
+        history: config.history,
+        sync: config.sync,
+      };
+
+      // Store per grouper using its name as a unique key
+      localStorage.setItem(`grouper-${name}`, JSON.stringify(updatedData));
+
+      // Update component state
+      setNameState(updatedData.name);
+      setStatusState(updatedData.status);
+      setHistoryData(updatedData.history);
+      setSyncState(updatedData.sync);
+      setInitialSyncMode(updatedData.sync.mode); // Update initial mode
+      setIsAutoSync(updatedData.sync.mode === "auto");
   
-      message.success("Sync settings updated successfully!");
+      // Show a success message
+      message.success("Sync Settings Updated Successfully!");
+    
     } catch (error) {
+      // Handle errors
+      console.error("Error updating sync settings:", error);
       message.error("Failed to update settings");
     } finally {
       setLoading(false);
     }
   };
-  
 
+  // Check State Data from Local Storage to ensure the the data is fetched when there is updates
+  useEffect(() => {
+    const savedData = localStorage.getItem(`grouper-${name}`);
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      setNameState(parsedData.name);
+      setStatusState(parsedData.status);
+      setHistoryData(parsedData.history);
+      setSyncState(parsedData.sync);
+      setInitialSyncMode(parsedData.sync.mode);
+      setIsAutoSync(parsedData.sync.mode === "auto");
+    } else {
+      // If no localStorage data, fall back to passed state
+      setNameState(name);
+      setStatusState(status);
+      setHistoryData(history);
+      setSyncState(sync);
+      setInitialSyncMode(sync.mode);
+      setIsAutoSync(sync.mode === "auto");
+    }
+  }, [name]);
+  
+  
+  
   return (
     <div
       style={{
@@ -217,13 +202,13 @@ const Details: React.FC = () => {
                       <tbody>
                         <tr>
                           <td style={{ padding: "10px", borderBottom: "1px solid #f0f0f0" }}>
-                            {title || "Grouper Name"}
+                            {nameState || "Grouper Name"}
                           </td>
                           <td style={{ padding: "10px", borderBottom: "1px solid #f0f0f0" }}>
-                            {creationTime || "2023-10-01"}
+                          <TimeAgo date={creationTime} />
                           </td>
                           <td style={{ padding: "10px", borderBottom: "1px solid #f0f0f0" }}>
-                           {lastUpdateTime || "2023-10-01"}
+                          <TimeAgo date={lastUpdateTime} />
                           </td>
                           <td
                             style={{
@@ -237,8 +222,8 @@ const Details: React.FC = () => {
                             <Button
                               type="default"
                               style={{
-                                color: status === "Active" ? "#20C997" : "#999",
-                                borderColor: status === "Active" ? "#20C997" : "#999",
+                                color: statusState === "Active" ? "#20C997" : "#999",
+                                borderColor: statusState === "Active" ? "#20C997" : "#999",
                                 borderRadius: "25px",
                                 padding: "0 12px",
                                 fontSize: "12px",
@@ -248,12 +233,12 @@ const Details: React.FC = () => {
                                 justifyContent: "center", // Center the text inside the button
                               }}
                             >
-                              {status === "Active" ? (
+                              {statusState === "Active" ? (
                                 <CheckCircleOutlined style={{ marginRight: "4px" }} />
                               ) : (
                                 <CloseCircleOutlined style={{ marginRight: "4px" }} />
                               )}
-                              {status}
+                              {statusState}
                             </Button>
                           </td>
                         </tr>
@@ -371,8 +356,8 @@ const Details: React.FC = () => {
                       width: "100%", // Ensure full width up to the container
                       maxWidth: "800px", // Adjust max width if needed (ensure it doesn't stretch too much)
                     }}
-                    items={history.map((item: HistoryItem, index: number) => ({
-                      label: item.creationTime,
+                    items={historyState.map((item: HistoryRecord, index: number) => ({
+                      label: <TimeAgo date={item.creationTime} />,
                       color: getTimelineColor(item.status),
                       children: <strong>{item.event}</strong>,
                     }))}
@@ -405,22 +390,6 @@ const Details: React.FC = () => {
                     />
                   </div>
         
-                  <p>
-                    <strong>Sync Period (In Minutes):</strong>
-                    <Select
-                      value={syncPeriod}
-                      onChange={handleSyncPeriodChange}
-                      style={{ width: "200px", marginLeft: "10px" }}
-                      disabled={!isAutoSync}
-                    >
-                      <Option value="1">1 Minute</Option>
-                      <Option value="2">2 Minutes</Option>
-                      <Option value="5">5 Minutes</Option>
-                      <Option value="60">1 Hour</Option>
-                      <Option value="custom">Custom</Option>
-                    </Select>
-                  </p>
-        
                   {/* Save Button */}
                   <Button
                     type="primary"
@@ -432,21 +401,6 @@ const Details: React.FC = () => {
                   >
                     {loading ? "Saving..." : "Save Settings"}
                   </Button>
-        
-                  <Modal
-                    title="Custom Sync Period"
-                    visible={isModalVisible}
-                    onOk={handleOk}
-                    onCancel={handleCancel}
-                  >
-                    <Input
-                      value={customSyncPeriod}
-                      onChange={handleCustomSyncChange}
-                      placeholder="Enter custom period in minutes"
-                      type="number"
-                      min="1"
-                    />
-                  </Modal>
                 </div>
               ),
             },
@@ -457,4 +411,4 @@ const Details: React.FC = () => {
   );
 };
 
-export default Details;
+export default GrouperDetails;

@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 // Create an Axios instance with base configuration
 const apiClient: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:56367/api/v1', // Base API URL
+  baseURL: 'http://localhost:62299/api/v1', // Base API URL
   timeout: 10000, // Request timeout
   headers: {
     'Content-Type': 'application/json',
@@ -13,10 +13,10 @@ const apiClient: AxiosInstance = axios.create({
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => response, // Pass successful responses
   (error) => {
-    // Centralized error handling
-    const message =
-      error.response?.data?.message || 'An error occurred while processing your request.';
-    return Promise.reject(new Error(message));
+    // Log or process error here if needed
+    console.error("API Error:", error.response?.data?.message || error.message);
+    // Return the original error without throwing a new one
+    return Promise.reject(error);
   }
 );
 

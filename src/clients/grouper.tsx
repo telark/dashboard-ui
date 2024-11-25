@@ -6,14 +6,25 @@ export const fetchGroupers = async () => {
   return data;
 };
 
-// API to update the sync settings for a grouper
-export const updateSyncSettings = async (name: string, syncMode: string, syncPeriod: string) => {
-  const response = await Client<any>(`scopes/groupers/${name}/update`, {
-    method: 'POST',
-    data: {
-      syncMode,
-      syncPeriod
-    },
-  });
-  return response;
+// API to Update Sync Settings for a Grouper
+export const updateGrouperSyncSettings = async (
+  name: string, 
+  syncMode: string,
+) => {
+  try {
+    // API call to update the sync settings
+    const response = await Client<any>(`scopes/groupers/${name}/sync/update`, {
+      method: 'POST',
+      data: {
+        sync: {
+          mode: syncMode,
+        },
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error("Failed to update sync settings:", error);
+    throw error;
+  }
 };
+

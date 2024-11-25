@@ -1,72 +1,53 @@
-// src/components/GrouperCard/GrouperCard.tsx
-import React, { useState, useEffect } from 'react';
-import { Card, Typography, Modal, message, Popover } from 'antd';
-import { formatDistanceToNow } from 'date-fns';
-import { CheckCircleOutlined, CloseCircleOutlined, InfoCircleOutlined, EyeOutlined, SyncOutlined, DeleteOutlined } from '@ant-design/icons';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { Card, Typography, Modal, message, Popover } from 'antd';
+import { 
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  InfoCircleOutlined, 
+  EyeOutlined, 
+  SyncOutlined, 
+  DeleteOutlined 
+} from '@ant-design/icons';
+
 import StatusButton from '../Common/StatusButton';
-import Metrics from '../Common/Metrics';
+import TimeAgo from "../Time/TimeAgo";
+import Metric from '../Common/Metric';
+import { DEFAULT_COLORS } from "../../config";
+import { GrouperInterface } from "../../interfaces/grouper";
+
 
 const { Title, Text } = Typography;
 
-interface GrouperCardProps {
-  title: string;
-  status: 'Active' | 'Inactive';
-  numberOfWorkloads: number;
-  numberOfBridges: number;
-  creationTimeForTA: Date;
-  creationTime: string;
-  lastUpdateTime: string;
-  icon: JSX.Element;
-  namespace: string;
-  history: any[];
-  sync: any;
-}
 
-const GrouperCard: React.FC<GrouperCardProps> = ({
-  title,
+const GrouperCard: React.FC<GrouperInterface> = ({
+  name,
   status,
   numberOfWorkloads,
   numberOfBridges,
-  creationTimeForTA,
   creationTime,
   lastUpdateTime,
   icon,
-  namespace,
   history,
   sync,
 }) => {
   const [isModalVisible, setModalVisible] = useState(false);
-  const [formattedCreationTime, setFormattedCreationTime] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const updateTimeAgo = () => {
-      if (creationTimeForTA) {
-        setFormattedCreationTime(formatDistanceToNow(new Date(creationTimeForTA), { addSuffix: true }));
-      } else {
-        setFormattedCreationTime('Invalid Date');
-      }
-    };
-
-    updateTimeAgo();
-    const interval = setInterval(updateTimeAgo, 60000); // Update every minute
-
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, [creationTimeForTA]);
 
   const statusStyle = status === 'Active'
-    ? { color: '#20C997', borderColor: '#20C997', icon: <CheckCircleOutlined /> }
-    : { color: '#999', borderColor: '#999', icon: <CloseCircleOutlined /> };
+    ? { color: DEFAULT_COLORS.SUCCESS, borderColor: DEFAULT_COLORS.SUCCESS, icon: <CheckCircleOutlined /> }
+    : { color: DEFAULT_COLORS.DEFAULT, borderColor: DEFAULT_COLORS.DEFAULT, icon: <CloseCircleOutlined /> };
 
-  const handleSync = () => message.success('Sync action completed successfully!');
-  const handleView = () => navigate(`/groupers/${title}/details`, { state: { title, status, creationTime, lastUpdateTime, history, sync } });
+  const handleSync = () => message.success('Sync Completed Successfully!');
+  const handleView = () => navigate(`/groupers/${name}/details`, { state: { name, status, creationTime, lastUpdateTime, history, sync } });
   const handleDelete = () => setModalVisible(true);
   const handleConfirmDelete = () => {
     setModalVisible(false);
     message.warning('Grouper deleted successfully.');
   };
+
   const handleCancelDelete = () => setModalVisible(false);
 
   return (
@@ -129,12 +110,12 @@ const GrouperCard: React.FC<GrouperCardProps> = ({
             style={{
               fontSize: '16px',
               cursor: 'pointer',
-              color: '#ff4d4f',
+              color: DEFAULT_COLORS.ERROR,
               transition: 'color 0.3s',
             }}
             onClick={handleDelete}
             onMouseOver={(e) => (e.currentTarget.style.color = statusStyle.color)}
-            onMouseOut={(e) => (e.currentTarget.style.color = '#ff4d4f')}
+            onMouseOut={(e) => (e.currentTarget.style.color = DEFAULT_COLORS.ERROR)}
           />
           </Popover>,
         ]}
@@ -164,9 +145,9 @@ const GrouperCard: React.FC<GrouperCardProps> = ({
 
           <div>
             <Title level={5} style={{ margin: 0, fontSize: '16px', fontWeight: '600', lineHeight: '20px' }}>
-              {title}
+              {name}
             </Title>
-            <Text style={{ marginTop: '2px', color: '#999', fontSize: '12px' }}>{formattedCreationTime}</Text>
+            <Text style={{ marginTop: '2px', color: DEFAULT_COLORS.DEFAULT, fontSize: '12px' }}><TimeAgo date={creationTime}></TimeAgo></Text>
           </div>
         </div>
 
@@ -180,8 +161,8 @@ const GrouperCard: React.FC<GrouperCardProps> = ({
                 paddingTop: '16px',
               }}
             >
-              <Metrics label="Workloads" value={numberOfWorkloads} />
-              <Metrics label="Bridges" value={numberOfBridges} />
+              <Metric label="Workloads" value={numberOfWorkloads} />
+              <Metric label="Bridges" value={numberOfBridges} />
              </div>
       </Card>
     </>

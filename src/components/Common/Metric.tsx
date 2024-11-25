@@ -1,15 +1,11 @@
 // src/components/GrouperCard/Metrics.tsx
 import React from 'react';
 import { Typography } from 'antd';
+import { MetricInterface } from "../../interfaces/common";
 
 const { Text } = Typography;
 
-interface MetricsProps {
-  label: string;
-  value: number;
-}
-
-const Metrics: React.FC<MetricsProps> = ({ label, value }) => (
+const Metric: React.FC<MetricInterface> = ({ label, value }) => (
     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
     <Text style={{ fontSize: '20px', fontWeight: 'bold' }}>{value}</Text>
     <div>
@@ -21,4 +17,4 @@ const Metrics: React.FC<MetricsProps> = ({ label, value }) => (
     </div>
 );
 
-export default Metrics;
+export default Metric;
