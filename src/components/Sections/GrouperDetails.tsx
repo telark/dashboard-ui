@@ -13,11 +13,13 @@ import {
   FileOutlined,
   AppstoreOutlined,
   EyeOutlined,
-  LoadingOutlined
 } from "@ant-design/icons";
+import TimeAgo from "../Time/TimeAgo";
+
 import { updateGrouperSyncSettings } from "../../clients/grouper"
 import { HistoryRecord } from "../../interfaces/common";
-import TimeAgo from "../Time/TimeAgo";
+import { DEFAULT_COLORS } from "../../config";
+import PrimaryButton from "../Buttons/PrimaryButton";
 
 // Interface for the history data
 
@@ -55,11 +57,11 @@ const GrouperDetails: React.FC = () => {
   // Function to determine the color based on status for the timeline
   const getTimelineColor = (status: string) => {
     if (status === "Success") {
-      return "#20C997"; // Green for Success
+      return DEFAULT_COLORS.SUCCESS;
     } else if (status === "Error") {
-      return "#FF4D4F"; // Red for Error
+      return DEFAULT_COLORS.ERROR;
     }
-    return "#999"; // Default gray color for other statuses (if any)
+    return DEFAULT_COLORS.DEFAULT;
   };  
 
   const handleSave = async () => {
@@ -222,8 +224,8 @@ const GrouperDetails: React.FC = () => {
                             <Button
                               type="default"
                               style={{
-                                color: statusState === "Active" ? "#20C997" : "#999",
-                                borderColor: statusState === "Active" ? "#20C997" : "#999",
+                                color: statusState === "Active" ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.DEFAULT,
+                                borderColor: statusState === "Active" ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.DEFAULT,
                                 borderRadius: "25px",
                                 padding: "0 12px",
                                 fontSize: "12px",
@@ -297,8 +299,8 @@ const GrouperDetails: React.FC = () => {
                               <Button
                                 type="default"
                                 style={{
-                                  color: resource.status === "Active" ? "#20C997" : "#999",
-                                  borderColor: resource.status === "Active" ? "#20C997" : "#999",
+                                  color: resource.status === "Active" ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.DEFAULT,
+                                  borderColor: resource.status === "Active" ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.DEFAULT,
                                   borderRadius: "25px",
                                   padding: "0 12px",
                                   fontSize: "12px",
@@ -384,23 +386,21 @@ const GrouperDetails: React.FC = () => {
                       unCheckedChildren="Off"
                       style={{
                         marginLeft: "10px",
-                        backgroundColor: isAutoSync ? "#20C997" : "#d9d9d9",
-                        borderColor: isAutoSync ? "#20C997" : "#d9d9d9",
+                        backgroundColor: isAutoSync ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.SWITCH_OFF,
+                        borderColor: isAutoSync ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.SWITCH_OFF,
                       }}
                     />
                   </div>
         
                   {/* Save Button */}
-                  <Button
-                    type="primary"
-                    icon={loading ? <LoadingOutlined /> : <CheckCircleOutlined />}
-                    loading={loading}
+                  <PrimaryButton
                     onClick={handleSave}
-                    disabled={isSaveDisabled} // Disable button if no changes
-                    style={{ marginTop: "20px" }}
-                  >
-                    {loading ? "Saving..." : "Save Settings"}
-                  </Button>
+                    loading={loading}
+                    loadingLabel="saving..."
+                    action="Save Settings"
+                    icon={<CheckCircleOutlined />}
+                    disabled={isSaveDisabled}
+                  />
                 </div>
               ),
             },

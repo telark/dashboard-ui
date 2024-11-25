@@ -1,16 +1,10 @@
 import React, { useState } from "react";
 import { Menu } from "antd";
 import { useNavigate } from "react-router-dom";
+import { DEFAULT_COLORS } from "../../config";
+import { ButtonInterface } from "../../interfaces/common";
 
-interface SidebarButtonProps {
-  text: string;
-  icon: React.ReactNode;
-  active?: boolean; // Optional prop for active buttons (e.g., Dashboard)
-  hoverIcon?: React.ReactNode; // Hover icon (filled version)
-  route: string;
-}
-
-const SidebarButton: React.FC<SidebarButtonProps> = ({
+const SidebarButton: React.FC<ButtonInterface> = ({
   text,
   icon,
   active,
@@ -25,7 +19,7 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({
       icon={isHovered && hoverIcon ? hoverIcon : icon} // Ensure that hoverIcon exists before changing
       onClick={() => navigate(route)} // Handle navigation on click
       style={{
-        backgroundColor: active ? "#20C997" : isHovered ? "#20C997" : "transparent",
+        backgroundColor: active ? DEFAULT_COLORS.SUCCESS : isHovered ? DEFAULT_COLORS.SUCCESS : "transparent",
         color: active ? "white" : isHovered ? "white" : "inherit",
         padding: "12px 16px",
         borderRadius: "8px",

@@ -5,14 +5,14 @@ import {
   ProductOutlined,
   FileTextOutlined,
 } from "@ant-design/icons";
-import PrimaryButton from "../Common/PrimaryButton";
+import SidebarButton from "../Buttons/SideBarButton";
 
 const MenuItems = () => {
   return (
     <div>
       {/* Dashboard Button */}
       <Menu mode="inline" style={{ backgroundColor: "white", borderRight: "none" }}>
-        <PrimaryButton text="Dashboard" icon={<DashboardOutlined />} active route="/none" />
+        <SidebarButton text="Dashboard" icon={<DashboardOutlined />} active route="/none" />
       </Menu>
 
       {/* Divider */}
@@ -20,9 +20,9 @@ const MenuItems = () => {
 
       {/* Other Menu Buttons */}
       <Menu mode="inline" style={{ backgroundColor: "white", borderRight: "none" }}>
-        <PrimaryButton text="Groupers" icon={<ApartmentOutlined />} route="/groupers" />
-        <PrimaryButton text="Workloads" icon={<ProductOutlined />} route="/none" />
-        <PrimaryButton text="Bridges" icon={<FileTextOutlined />} route="/none" />
+        <SidebarButton text="Groupers" icon={<ApartmentOutlined />} route="/groupers" />
+        <SidebarButton text="Workloads" icon={<ProductOutlined />} route="/none" />
+        <SidebarButton text="Bridges" icon={<FileTextOutlined />} route="/none" />
       </Menu>
     </div>
   );

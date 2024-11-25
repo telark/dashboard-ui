@@ -1,6 +1,5 @@
-// src/components/Sidebar/UserBlock.tsx
-import React from "react";
 import { Avatar, Typography } from "antd";
+import { DEFAULT_COLORS } from "../../config";
 
 const { Text } = Typography;
 
@@ -9,7 +8,7 @@ const UserBlock = () => {
     <div style={{ display: "flex", alignItems: "center", marginBottom: "24px" }}>
       <Avatar
         size={48}
-        style={{ backgroundColor: "#20C997", marginRight: "12px" }}
+        style={{ backgroundColor: DEFAULT_COLORS.SUCCESS, marginRight: "12px" }}
       >
         HK
       </Avatar>

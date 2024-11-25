@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
+import { DEFAULT_COLORS } from "../../config";
 
 interface StatusButtonProps {
   status: 'Active' | 'Inactive';
@@ -8,8 +9,8 @@ interface StatusButtonProps {
 
 const StatusButton: React.FC<StatusButtonProps> = ({ status, icon }) => {
   const statusStyle = status === 'Active'
-    ? { color: '#20C997', borderColor: '#20C997' }
-    : { color: '#999', borderColor: '#999' };
+    ? { color: DEFAULT_COLORS.SUCCESS, borderColor: DEFAULT_COLORS.SUCCESS }
+    : { color: DEFAULT_COLORS.DEFAULT, borderColor: DEFAULT_COLORS.DEFAULT };
 
   return (
     <Button

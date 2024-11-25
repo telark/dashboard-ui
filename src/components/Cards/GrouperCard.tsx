@@ -11,7 +11,7 @@ import {
   DeleteOutlined 
 } from '@ant-design/icons';
 
-import StatusButton from '../Common/StatusButton';
+import StatusButton from '../Buttons/StatusButton';
 import TimeAgo from "../Time/TimeAgo";
 import Metric from '../Common/Metric';
 import { DEFAULT_COLORS } from "../../config";

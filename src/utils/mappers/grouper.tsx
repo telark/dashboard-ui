@@ -1,4 +1,5 @@
 import { ApartmentOutlined } from '@ant-design/icons';
+import { DEFAULT_COLORS } from "../../config";
 
 export const mapGroupersData = (data: any): any[] => {
   // Validate the response data
@@ -18,7 +19,7 @@ export const mapGroupersData = (data: any): any[] => {
       lastUpdateTime: item.fasid.source.lastUpdateTime,
       history: item.config?.history || [],
       sync: item.config?.sync || null,
-      icon: <ApartmentOutlined style={{ fontSize: '15px', color: '#20C997' }} />,
+      icon: <ApartmentOutlined style={{ fontSize: '15px', color: DEFAULT_COLORS.SUCCESS }} />,
     };
   });
 };

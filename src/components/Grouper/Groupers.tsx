@@ -4,10 +4,11 @@ import { Row, Col, Spin, message, Empty } from 'antd';
 import { LoadingOutlined, AppstoreOutlined } from '@ant-design/icons';
 
 import { fetchGroupers } from '../../clients/grouper';
-import { mapGroupersData } from '../../utils/mapper';
+import { mapGroupersData } from '../../utils/mappers/grouper';
 import GrouperCard from '../Cards/GrouperCard';
 
-import { DEFAULT_POLLING_INTERVAL } from "../../config";
+import { DEFAULT_POLLING_INTERVAL, DEFAULT_COLORS } from "../../config";
+
 
 const Groupers: React.FC = () => {
   const [groupers, setGroupers] = useState<any[]>([]);
@@ -78,7 +79,7 @@ const Groupers: React.FC = () => {
       {groupers.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '50px 0' }}>
           <Empty
-            image={<AppstoreOutlined style={{ fontSize: '64px', color: '#999' }} />}
+            image={<AppstoreOutlined style={{ fontSize: '64px', color: DEFAULT_COLORS.DEFAULT }} />}
             description={
               <span style={{ fontSize: '18px', color: '#555' }}>
                 No Apps Found

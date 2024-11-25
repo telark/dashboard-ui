@@ -4,5 +4,6 @@ export const DEFAULT_COLORS = {
   SUCCESS: '#20C997',
   ERROR: '#FF4D4F',
   DEFAULT: '#999',
+  SWITCH_OFF: '#d9d9d9'
 };
 export const GROUPER_LOCAL_STORAGE_KEY_PREFIX = 'grouper-';
