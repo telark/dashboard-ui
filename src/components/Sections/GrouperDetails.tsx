@@ -86,6 +86,9 @@ const GrouperDetails: React.FC = () => {
     return <div>No details available for this grouper.</div>;
   }
 
+  // Calculate total resources (workloads + bridges)
+  const totalResources = (grouperDetails.workloads?.length || 0) + (grouperDetails.bridges?.length || 0);
+
   return (
     <div
       style={{
@@ -99,7 +102,7 @@ const GrouperDetails: React.FC = () => {
       <Card
         style={{
           width: '90%',
-          marginTop: '50px',
+          marginTop: '80px',
           borderRadius: '12px',
           boxShadow: '0 1px 4px rgba(0, 0, 0, 0.1)',
           position: 'relative',
@@ -119,7 +122,10 @@ const GrouperDetails: React.FC = () => {
               children: (
                 <Collapse defaultActiveKey={['1', '2']} ghost>
                   <Collapse.Panel header="General Information" key="1">
-                    <GeneralInfo {...grouperDetails} />
+                    <GeneralInfo 
+                      {...grouperDetails}
+                      totalResources={totalResources}
+                    />
                   </Collapse.Panel>
                   <Collapse.Panel header="Resources" key="2">
                     <Resources resources={[...grouperDetails.workloads, ...grouperDetails.bridges]} />

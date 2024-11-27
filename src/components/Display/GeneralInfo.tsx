@@ -9,7 +9,11 @@ import {
 } from "@ant-design/icons";
 import { GeneralInfoInterface } from '../../interfaces/common';
 
-const GeneralInfo: React.FC<GeneralInfoInterface> = ({ name, creationTime, lastUpdateTime, status }) => (
+interface GeneralInfoExtension extends GeneralInfoInterface {
+  totalResources: number;
+}
+
+const GeneralInfo: React.FC<GeneralInfoExtension> = ({ name, creationTime, lastUpdateTime, status, totalResources }) => (
     <table
       style={{
         width: "100%",
@@ -86,7 +90,7 @@ const GeneralInfo: React.FC<GeneralInfoInterface> = ({ name, creationTime, lastU
             </Button>
           </td>
           <td style={{ padding: "10px", borderBottom: "1px solid #f0f0f0" }}>
-          <strong>TBD</strong>
+          <strong>{totalResources}</strong>
           </td>
         </tr>
       </tbody>

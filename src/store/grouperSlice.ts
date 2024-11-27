@@ -1,13 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { fetchGroupers, fetchGrouperDetails, updateGrouperSyncSettings } from '../clients/grouper';
 import { mapGroupersData, mapSingleGrouperData } from '../utils/mappers/grouper';
-
-interface GrouperState {
-  groupers: any[];
-  details: any | null; // State for a single grouper's details
-  loading: boolean;
-  error: string | null;
-}
+import { GrouperState } from '../interfaces/grouper';
 
 const initialState: GrouperState = {
   groupers: [],

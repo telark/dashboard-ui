@@ -1,3 +1,10 @@
+export interface GrouperState {
+  groupers: any[];
+  details: any | null;
+  loading: boolean;
+  error: string | null;
+}
+
 export interface GrouperInterface {
   name: string;
   status: 'Active' | 'Inactive';

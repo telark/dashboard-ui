@@ -6,4 +6,3 @@ export const DEFAULT_COLORS = {
   DEFAULT: '#999',
   SWITCH_OFF: '#d9d9d9'
 };
-export const GROUPER_LOCAL_STORAGE_KEY_PREFIX = 'grouper-';
