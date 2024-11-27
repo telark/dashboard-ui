@@ -6,6 +6,22 @@ export const fetchGroupers = async () => {
   return data;
 };
 
+// API to Fetch Grouper Details
+export const fetchGrouperDetails = async (
+  name: string,
+) => {
+  try {
+    // API call to update the sync settings
+    const response = await Client<any>(`scopes/groupers/${name}/fetch`, {
+      method: 'GET',
+    });
+    return response;
+  } catch (error) {
+    console.error("Failed to update sync settings:", error);
+    throw error;
+  }
+};
+
 // API to Update Sync Settings for a Grouper
 export const updateGrouperSyncSettings = async (
   name: string, 

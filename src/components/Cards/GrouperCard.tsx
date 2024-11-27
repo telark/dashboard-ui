@@ -16,38 +16,47 @@ import TimeAgo from "../Time/TimeAgo";
 import Metric from '../Common/Metric';
 import { DEFAULT_COLORS } from "../../config";
 import { GrouperInterface } from "../../interfaces/grouper";
+import { CapitalizeFirstLetter } from "../../utils/helpers/index";
 
 
 const { Title, Text } = Typography;
 
 
 const GrouperCard: React.FC<GrouperInterface> = ({
-  name,
-  status,
-  numberOfWorkloads,
-  numberOfBridges,
-  creationTime,
-  lastUpdateTime,
+  name = 'Unknown', // Default to 'Unknown' if name is missing
+  status = 'Inactive', // Default to 'Inactive'
+  numberOfWorkloads = 0,
+  numberOfBridges = 0,
+  creationTime = '',
+  lastUpdateTime = '',
+  history = [],
+  workloads = [],
+  bridges = [],
+  sync = null,
   icon,
-  history,
-  sync,
 }) => {
+  // Modal state for delete confirmation
   const [isModalVisible, setModalVisible] = useState(false);
   const navigate = useNavigate();
-
+  
 
   const statusStyle = status === 'Active'
     ? { color: DEFAULT_COLORS.SUCCESS, borderColor: DEFAULT_COLORS.SUCCESS, icon: <CheckCircleOutlined /> }
     : { color: DEFAULT_COLORS.DEFAULT, borderColor: DEFAULT_COLORS.DEFAULT, icon: <CloseCircleOutlined /> };
 
+
+  // Sync Action
   const handleSync = () => message.success('Sync Completed Successfully!');
-  const handleView = () => navigate(`/groupers/${name}/details`, { state: { name, status, creationTime, lastUpdateTime, history, sync } });
+  
+  // View Details Actions
+  const handleView = () => {navigate(`/groupers/${name}/details`);};
+
+  // Delete Action
   const handleDelete = () => setModalVisible(true);
   const handleConfirmDelete = () => {
     setModalVisible(false);
     message.warning('Grouper deleted successfully.');
   };
-
   const handleCancelDelete = () => setModalVisible(false);
 
   return (
@@ -74,7 +83,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
           border: '1px solid #f0f0f0',
           padding: '12px',
           position: 'relative',
-          fontFamily: 'Inter, Roboto, Open Sans, sans-serif',
+          
         }}
         styles={{ body: {paddingBottom: '18px' }}}
         actions={[
@@ -145,7 +154,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
 
           <div>
             <Title level={5} style={{ margin: 0, fontSize: '16px', fontWeight: '600', lineHeight: '20px' }}>
-              {name}
+              {CapitalizeFirstLetter(name)}
             </Title>
             <Text style={{ marginTop: '2px', color: DEFAULT_COLORS.DEFAULT, fontSize: '12px' }}><TimeAgo date={creationTime}></TimeAgo></Text>
           </div>

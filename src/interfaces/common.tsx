@@ -8,6 +8,24 @@ export interface LoadingButtonInterface {
     disabled?: boolean;
 }
 
+export interface ResourcesInterface {
+    resources: ResourceRowInterface[];
+}
+
+export interface ResourceRowInterface {
+    name: string; 
+    lastSync: string;
+    kind: string; 
+    status: 'Active' | 'Inactive'; 
+}
+
+export interface GeneralInfoInterface {
+    name: string;
+    creationTime: string;
+    lastUpdateTime: string;
+    status: string;
+}
+
 export interface ButtonInterface {
     text: string;
     icon: React.ReactNode;
@@ -21,7 +39,11 @@ export interface MetricInterface {
     value: number;
 }
 
-export interface HistoryRecord {
+export interface HistoryInterface {
+    Records: Record[];
+}
+
+export interface Record {
     event: string;
     status: string;
     creationTime: string;

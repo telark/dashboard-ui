@@ -1,0 +1,22 @@
+/* Apply globally to all components */
+body {
+    font-family: 'Dosis', sans-serif !important;
+    margin: 0;
+    padding: 0;
+}
+  
+.ant-btn,
+.ant-card,
+.ant-typography,
+.ant-input,
+.ant-select,
+.ant-menu,
+.ant-collapse,
+.ant-tabs,
+.ant-timeline,
+.ant-drawer {
+    font-family: "Roboto Condensed", sans-serif !important;
+    font-weight: 600 !important;
+    font-style: normal !important;
+}
+  
