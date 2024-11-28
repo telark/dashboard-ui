@@ -8,6 +8,13 @@ export interface LoadingButtonInterface {
     disabled?: boolean;
 }
 
+export interface NoLoadingButtonInterface {
+    action: string;
+    onClick: () => void;
+    icon: React.ReactNode;
+    color?: string;
+}
+
 export interface ResourcesInterface {
     resources: ResourceRowInterface[];
 }
