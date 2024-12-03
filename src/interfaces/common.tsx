@@ -11,11 +11,13 @@ export interface LoadingButtonInterface {
 export interface NoLoadingButtonInterface {
     action: string;
     onClick: () => void;
-    icon: React.ReactNode;
+    icon?: React.ReactNode;
     color?: string;
-}
+    disabled?: boolean; // Add this line
+  }
 
 export interface ResourcesInterface {
+    name: string; 
     resources: ResourceRowInterface[];
 }
 
@@ -23,7 +25,7 @@ export interface ResourceRowInterface {
     name: string; 
     lastSync: string;
     kind: string; 
-    status: 'Active' | 'Inactive'; 
+    status: string;
 }
 
 export interface GeneralInfoInterface {

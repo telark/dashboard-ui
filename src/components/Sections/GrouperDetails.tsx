@@ -8,8 +8,9 @@ import { Card, Tabs, Switch, message, Collapse } from 'antd';
 import {
   CheckCircleOutlined,
   InfoCircleOutlined,
-  SettingOutlined,
+  SyncOutlined,
   HistoryOutlined,
+  AppstoreOutlined,
 } from '@ant-design/icons';
 
 import { DEFAULT_COLORS } from '../../config';
@@ -22,6 +23,9 @@ const GrouperDetails: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const { name } = useParams<{ name: string }>();
   const { details: grouperDetails, loading, error } = useSelector((state: RootState) => state.grouper);
+
+  // Non-null assertion
+  const grouperName = name!;
 
   const [isAutoSync, setIsAutoSync] = useState<boolean>(false);
   const [initialSyncMode, setInitialSyncMode] = useState<string>(''); // To track the original mode
@@ -127,14 +131,28 @@ const GrouperDetails: React.FC = () => {
                       totalResources={totalResources}
                     />
                   </Collapse.Panel>
-                  <Collapse.Panel header="Resources" key="2">
-                    <Resources resources={[...grouperDetails.workloads, ...grouperDetails.bridges]} />
-                  </Collapse.Panel>
                 </Collapse>
               ),
             },
             {
               key: '2',
+              label: (
+                <span>
+                  <AppstoreOutlined style={{ marginRight: '8px' }} />
+                  {`Resources (${totalResources})`}
+                </span>
+              ),
+              children: (
+                <div style={{ padding: '5px' }}>
+                 <Resources 
+                      name={grouperName}
+                      resources={[...grouperDetails.workloads, ...grouperDetails.bridges]}
+                    />
+                </div>
+              ),
+            },
+            {
+              key: '3',
               label: (
                 <span>
                   <HistoryOutlined style={{ marginRight: '8px' }} />
@@ -144,11 +162,11 @@ const GrouperDetails: React.FC = () => {
               children: <HistoryTimeLine Records={grouperDetails.history} />,
             },
             {
-              key: '3',
+              key: '4',
               label: (
                 <span>
-                  <SettingOutlined style={{ marginRight: '8px' }} />
-                  Settings
+                  <SyncOutlined style={{ marginRight: '8px' }} />
+                  Sync Settings
                 </span>
               ),
               children: (

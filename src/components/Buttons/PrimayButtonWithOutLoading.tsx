@@ -9,16 +9,18 @@ const PrimaryButtonWithOutLoading: React.FC<NoLoadingButtonInterface> = ({
   onClick,
   icon,
   color = DEFAULT_COLORS.SUCCESS, // Default Color
+  disabled = false, // Default to false
 }) => {
   return (
     <Button
       type="primary"
       icon={icon}
       onClick={onClick}
+      disabled={disabled} // Use the disabled prop
       style={{
         marginTop: "20px",
-        backgroundColor: color,
-        borderColor: color,
+        backgroundColor: disabled ? "#d9d9d9" : color, // Change color if disabled
+        borderColor: disabled ? "#d9d9d9" : color,
       }}
     >
       {action}

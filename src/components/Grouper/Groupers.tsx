@@ -28,7 +28,7 @@ const Groupers: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: '20px', margin: "auto" }}>
+    <div style={{ padding: '20px', margin: "auto", marginTop: '80px',}}>
       {groupers.length === 0 ? (
         <Empty description="No Groupers Found" />
       ) : (
