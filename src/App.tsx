@@ -5,21 +5,24 @@ import Sidebar from './components/Sidebar/Sidebar';
 import Header from './components/Header/Header';
 import Groupers from './components/Grouper/Groupers';
 import GrouperDetails from './components/Sections/GrouperDetails';
+import ErrorBoundary from './ErrorBoundary';  // import the error boundary
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Layout style={{ minHeight: '100vh' }}>
-        <Sidebar />
-        <Layout style={{ marginLeft: 250, height: '100vh' }}>
-          <Header />
-          <Routes>
-            <Route path="/groupers" element={<Groupers />} />
-            <Route path="/groupers/:name/details" element={<GrouperDetails />} />
-          </Routes>
+    <ErrorBoundary>
+      <Router>
+        <Layout style={{ minHeight: '100vh' }}>
+          <Sidebar />
+          <Layout style={{ marginLeft: 250, height: '100vh' }}>
+            <Header />
+            <Routes>
+              <Route path="/groupers" element={<Groupers />} />
+              <Route path="/groupers/:name/details" element={<GrouperDetails />} />
+            </Routes>
+          </Layout>
         </Layout>
-      </Layout>
-    </Router>
+      </Router>
+    </ErrorBoundary>
   );
 };
 
