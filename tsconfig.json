@@ -1,26 +1,22 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx"
+    "target": "ESNext",                      // Target modern JavaScript
+    "lib": ["dom", "dom.iterable", "esnext"], // Include libraries required for React and modern features
+    "allowJs": true,                         // Allow JavaScript files in the project
+    "skipLibCheck": true,                    // Skip library checking (can improve performance)
+    "esModuleInterop": true,                 // Enable compatibility for CommonJS modules
+    "allowSyntheticDefaultImports": true,    // Allow default imports from modules without a default export
+    "strict": true,                          // Enable all strict type-checking options
+    "forceConsistentCasingInFileNames": true, // Enforce consistent file casing
+    "noFallthroughCasesInSwitch": true,      // Prevent fallthrough in switch statements
+    "module": "ESNext",                      // Use modern ES modules
+    "moduleResolution": "node",              // Resolve modules as Node.js does
+    "resolveJsonModule": true,               // Allow importing JSON files
+    "isolatedModules": true,                 // Ensure each file is treated as a separate module
+    "noEmit": true,                          // Disable emitting files, let Vite handle the building
+    "jsx": "react-jsx"                       // Use the new JSX transform for React 17+
   },
   "include": [
-    "src"
+    "src"                                    // Include the source directory
   ]
 }
