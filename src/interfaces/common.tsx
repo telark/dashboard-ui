@@ -24,7 +24,7 @@ export interface ResourcesInterface {
 export interface ResourceRowInterface {
     name: string; 
     lastSync: string;
-    kind: string; 
+    type: string; 
     status: string;
 }
 
@@ -53,7 +53,7 @@ export interface HistoryInterface {
 }
 
 export interface Record {
-    event: string;
+    name: string;
     status: string;
     creationTime: string;
 }

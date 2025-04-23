@@ -84,7 +84,7 @@ const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
           items={last5Records.map((item: Record) => ({
             label: <TimeAgo date={item.creationTime} />,
             color: getTimelineColor(item.status),
-            children: <strong>{item.event}</strong>,
+            children: <strong>{item.name}</strong>,
           }))}
         />
 
@@ -115,7 +115,7 @@ const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
               items={sortedRecords.map((item: Record) => ({
                 label: <TimeAgo date={item.creationTime} />,
                 color: getTimelineColor(item.status),
-                children: <strong>{item.event}</strong>,
+                children: <strong>{item.name}</strong>,
               }))}
             />
           </div>

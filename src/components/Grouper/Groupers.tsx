@@ -28,20 +28,20 @@ const Groupers: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: '20px', margin: "auto", marginTop: '80px',}}>
-      {groupers.length === 0 ? (
-        <Empty description="No Groupers Found" />
-      ) : (
-        <Row gutter={[16, 16]}>
-          {groupers.map((grouper, index) => (
-            <Col key={index} xs={24} sm={12} lg={8}>
-              <GrouperCard {...grouper} />
-            </Col>
-          ))}
-        </Row>
-      )}
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 0fr))',
+      gap: '16px',
+      padding: '20px',
+      marginTop: '60px',
+    }}>
+      {groupers.map((grouper, index) => (
+        <GrouperCard key={index} {...grouper} />
+      ))}
     </div>
   );
+  
+  
 };
 
 export default Groupers;

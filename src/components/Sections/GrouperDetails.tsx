@@ -4,7 +4,7 @@ import { fetchGrouperDetailsThunk, updateGrouperSyncThunk, clearDetails, enableM
 import { RootState, AppDispatch } from '../../store';
 import { useParams } from 'react-router-dom';
 
-import { Card, Tabs, Switch, message, Collapse, Alert, Modal } from 'antd';
+import { Card, Tabs, Switch, message, Collapse, Modal } from 'antd';
 import {
   CheckCircleOutlined,
   InfoCircleOutlined,
@@ -59,28 +59,43 @@ const GrouperDetails: React.FC = () => {
     setIsAutoSync(checked);
   };
 
+  useEffect(() => {
+    console.log("Message should appear now");
+    message.success('Hello World!');
+  }, []);
+  
+
 
   const handleMaintenanceMode = async () => {
-    const scopeName = name || "default"; 
-    const scopeType = grouperDetails?.kind;
+    const grouperName = `${name}-grouper`;
+    const resourceType = grouperDetails?.kind?.toLowerCase();
+    message.success('Success!', 3, () => {
+      console.log('Message has been displayed');
+    });
   
     try {
       // Dispatch the thunk with the parameters
-      const response = await dispatch(enableMaintenanceModeThunk({ scopeName, scopeType, allowUpdates })).unwrap();
-      if (response?.status === 200) {
-        message.success("Maintenance mode settings updated successfully!");
+      const response = await dispatch(enableMaintenanceModeThunk({
+        grouperName,
+        resourceType,
+        updateAction: maintenaceUpdateAction,
+        deleteAction: maintenaceDeleteAction,
+      })).unwrap();
+      console.log("Thunk response:", response);
+      if (response.status === 200) {
+        message.success(response.message || "Maintenance mode Enabled successfully!");
         setIsMaintenanceModalVisible(false);
       } else {
         throw new Error("Unexpected response status");
       }
       
     } catch (error) {
-      console.error("Failed to update maintenance mode settings:", error);
+      console.error("Failed to handle maintenance mode update", error);
     }
   };
   
 
-  const handleSave = async () => {
+  const handleGrouperSyncSave = async () => {
     if (!name) return;
     setLoadingSave(true);
   
@@ -102,7 +117,8 @@ const GrouperDetails: React.FC = () => {
   };
 
   const [isMaintenanceModalVisible, setIsMaintenanceModalVisible] = useState(false); // Modal visibility state
-  const [allowUpdates, setAllowUpdates] = useState(true);
+  const [maintenaceUpdateAction, setMaintenanceUpdateAction] = useState(true);
+  const [maintenaceDeleteAction, setMaintenanceDeleteAction] = useState(true);
 
   const handleEnableMaintenanceClick = () => {
     setIsMaintenanceModalVisible(true); // Show the modal
@@ -112,8 +128,12 @@ const GrouperDetails: React.FC = () => {
     setIsMaintenanceModalVisible(false); // Close the modal without saving
   };
 
-  const handleAllowUpdatesChange = (checked: boolean) => {
-    setAllowUpdates(checked); // Update state
+  const handleMaintenanceUpdateActionChange = (checked: boolean) => {
+    setMaintenanceUpdateAction(checked);
+  };
+
+  const handleMaintenanceDeleteActionChange = (checked: boolean) => {
+    setMaintenanceDeleteAction(checked);
   };
 
 
@@ -209,33 +229,91 @@ const GrouperDetails: React.FC = () => {
                 </span>
               ),
               children: (
-                <div style={{ padding: '5px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <strong>Auto Sync Mode:</strong>
-                    <Switch
-                      checked={isAutoSync}
-                      onChange={handleAutoSyncChange}
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    padding: '24px',
+                  }}
+                >
+                  <div
+                    style={{
+                      padding: '32px',
+                      background: '#fff',
+                      border: '1px solid #e1e4e8',
+                      borderRadius: '10px',
+                      maxWidth: '900px',
+                      width: '100%',
+                      boxShadow: '0 4px 14px rgba(0,0,0,0.04)',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                      <div
+                        style={{
+                          flexShrink: 0,
+                          marginRight: '16px',
+                          marginTop: '4px',
+                          background: '#f0f9ff',
+                          borderRadius: '6px',
+                          padding: '10px',
+                        }}
+                      >
+                        <SyncOutlined style={{ fontSize: '22px', color: '#1890ff' }} />
+                      </div>
+            
+                      <div style={{ flexGrow: 1 }}>
+                        <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 600 }}>
+                          Configure Sync Mode
+                        </h2>
+                        <p style={{ marginTop: '10px', fontSize: '14px', color: '#555', lineHeight: '1.6' }}>
+                          Manage the synchronization behavior of your resources within this namespace. When enabled, Auto Sync ensures that your system periodically fetches the latest updates, keeping everything in sync automatically. In Manual Mode, updates are only applied when you explicitly trigger them, giving you more control over when changes are made.
+                        </p>
+            
+                        <ul style={{ marginTop: '14px', paddingLeft: '20px', color: '#444', fontSize: '14px' }}>
+                          <li>
+                            <strong>Auto Sync</strong> will periodically fetch updates and automatically reconcile the state of your resources.
+                          </li>
+                          <li>
+                            <strong>Manual Mode</strong> provides more control by requiring manual intervention to synchronize resources.
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+            
+                    <div
                       style={{
-                        marginLeft: '10px',
-                        backgroundColor: isAutoSync
-                          ? DEFAULT_COLORS.SUCCESS
-                          : DEFAULT_COLORS.SWITCH_OFF,
+                        display: 'flex',
+                        alignItems: 'center', // Ensures vertical alignment of text and switch
+                        marginTop: '32px',
                       }}
-                    />
+                    >
+                      <span style={{ fontSize: '14px', fontWeight: 500, marginRight: '8px' }}>Auto Sync Mode:</span>
+                      <Switch
+                        checked={isAutoSync}
+                        onChange={handleAutoSyncChange}
+                        checkedChildren="On"
+                        unCheckedChildren="Off"
+                        style={{
+                          marginLeft: '8px', // Small gap between the text and the switch
+                          backgroundColor: isAutoSync ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.SWITCH_OFF,
+                        }}
+                      />
+                    </div>
+            
+                    <div style={{ marginTop: '28px', display: 'flex', justifyContent: 'center' }}>
+                      <PrimaryButton
+                        onClick={handleGrouperSyncSave}
+                        disabled={!hasChanges}
+                        loading={loadingSave}
+                        loadingLabel="Saving..."
+                        action={`Save Settings ${hasChanges ? `(${isAutoSync ? 'Auto Sync' : 'Manual Mode'})` : ''}`}
+                        icon={<CheckCircleOutlined />}
+                      />
+                    </div>
                   </div>
-                  <PrimaryButton
-                    onClick={handleSave}
-                    disabled={!hasChanges} // Disable button if no changes
-                    loading={loadingSave}
-                    loadingLabel="saving..."
-                    action="Save Settings"
-                    icon={<CheckCircleOutlined />}
-                  />
                 </div>
               ),
-            },
+            },            
             {
               key: '5',
               label: (
@@ -248,70 +326,131 @@ const GrouperDetails: React.FC = () => {
                 <div
                   style={{
                     display: 'flex',
-                    flexDirection: 'column',
                     justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '100%',
-                    padding: '20px',
+                    padding: '24px',
                   }}
                 >
-                  <Alert
-                    type="warning"
-                    description="Maintenance Mode enhances stability for the selected scope by restricting interactions with new resources. This allows you to focus on developing or testing the current resources without the risk of interference from new resource rollouts."
-                    showIcon
+                  <div
                     style={{
+                      padding: '32px',
+                      background: '#fff',
+                      border: '1px solid #e1e4e8',
+                      borderRadius: '10px',
+                      maxWidth: '900px',
                       width: '100%',
-                      maxWidth: '600px',
-                      marginBottom: '20px',
-                      textAlign: 'center',
+                      boxShadow: '0 4px 14px rgba(0,0,0,0.04)',
                     }}
-                  />
-                  <PrimaryButtonWithOutLoading
-                    onClick={handleEnableMaintenanceClick}
-                    action="Enable"
-                    icon={<CheckCircleOutlined />}
-                  />
-            
-                  {/* Modal Definition */}
-                  <Modal
-                    open={isMaintenanceModalVisible}
-                    onOk={handleMaintenanceMode}
-                    onCancel={handleCancelMaintenance}
-                    okText="Save"
-                    cancelText="Cancel"
-                    style={{
-                      paddingTop: '30px', // Add padding at the top of the modal
-                    }}
-                    bodyStyle={{
-                      paddingTop: '20px', // Adds more space between the top and content
-                    }}
-                    closeIcon={<span style={{ fontSize: '18px', padding: '0 20px' }}>×</span>} // Customized close icon
                   >
-                    {/* Warning Section */}
-                    <Alert
-                      type="warning"
-                      message="Maintenance Mode Settings"
-                      description="Choose whether the current resources should receive updates during maintenance mode using the switch below."
-                      showIcon
-                      style={{
-                        marginTop: '15px',
-                      }}
-                    />
-
-                    {/* Switch Section */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '15px' }}>
-                      <span style={{ fontWeight: 'bold', fontSize: '14px' }}>
-                        Allow Current Resources Updates
-                      </span>
-                      <Switch
-                        checked={allowUpdates}
-                        onChange={handleAllowUpdatesChange}
+                    <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                      <div
+                        style={{
+                          flexShrink: 0,
+                          marginRight: '16px',
+                          marginTop: '4px',
+                          background: '#fef4e5',
+                          borderRadius: '6px',
+                          padding: '10px',
+                        }}
+                      >
+                        <WarningOutlined style={{ fontSize: '22px', color: '#faad14' }} />
+                      </div>
+            
+                      <div style={{ flexGrow: 1 }}>
+                        <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 600 }}>
+                          Enable Maintenance Mode
+                        </h2>
+                        <p style={{ marginTop: '10px', fontSize: '14px', color: '#555', lineHeight: '1.6' }}>
+                          This mode helps you test and stabilize existing deployments and services within this namespace without worrying about unintended resource creation. 
+                          By temporarily disabling new additions, your testing process becomes more controlled and less prone to disruption.
+                        </p>
+            
+                        <ul style={{ marginTop: '14px', paddingLeft: '20px', color: '#444', fontSize: '14px' }}>
+                          <li>
+                            <strong>Creation of new resources</strong> is restricted by default to avoid accidental rollouts.
+                          </li>
+                          <li>
+                            <strong>Updates and deletions</strong> are allowed to give you control over existing instances during the lifecycle.
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+            
+                    <div style={{ marginTop: '32px', display: 'flex', justifyContent: 'center' }}>
+                      <PrimaryButtonWithOutLoading
+                        onClick={handleEnableMaintenanceClick}
+                        action="Enable"
+                        icon={<CheckCircleOutlined />}
                       />
                     </div>
-                  </Modal>
+            
+                    {/* Modal for settings */}
+                    <Modal
+                      open={isMaintenanceModalVisible}
+                      onOk={handleMaintenanceMode}
+                      onCancel={handleCancelMaintenance}
+                      okText="Save"
+                      cancelText="Cancel"
+                      centered
+                      closeIcon={<span style={{ fontSize: '18px', padding: '0 20px' }}>×</span>}
+                      bodyStyle={{
+                        padding: '24px',
+                      }}
+                    >
+                      <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '16px' }}>
+                        Maintenance Mode Settings
+                      </h3>
+                      <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>
+                        Choose whether the current resources should continue to receive updates during maintenance.
+                      </p>
+            
+                      {/* Allow Updates */}
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          backgroundColor: '#f5f5f5',
+                          border: '1px solid #e0e0e0',
+                          borderRadius: '6px',
+                          padding: '12px 16px',
+                          marginBottom: '12px',  // Space between the switches
+                        }}
+                      >
+                        <span style={{ fontWeight: 500, fontSize: '14px' }}>
+                          Allow Current Resources Updates
+                        </span>
+                        <Switch
+                          checked={maintenaceUpdateAction}
+                          onChange={handleMaintenanceUpdateActionChange}
+                        />
+                      </div>
+
+                      {/* Allow Deletion */}
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          backgroundColor: '#f5f5f5',
+                          border: '1px solid #e0e0e0',
+                          borderRadius: '6px',
+                          padding: '12px 16px',
+                        }}
+                      >
+                        <span style={{ fontWeight: 500, fontSize: '14px' }}>
+                          Allow Current Resources Deletion
+                        </span>
+                        <Switch
+                          checked={maintenaceDeleteAction}
+                          onChange={handleMaintenanceDeleteActionChange}
+                        />
+                      </div>
+                    </Modal>
+                  </div>
                 </div>
-              ),
-            }            
+              )
+            }
+                        
           ]}
         />
       </Card>

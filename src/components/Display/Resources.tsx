@@ -67,7 +67,7 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
               {/* Resource Name, Last Sync, Kind, Status */}
               <td>{resource.name}</td>
               <td><TimeAgo date={resource.lastSync}/></td>
-              <td>{resource.kind}</td>
+              <td>{resource.type}</td>
               <td>{resource.status}</td>
 
               {/* Action Icons (Sync, Delete, and View for each resource) */}
