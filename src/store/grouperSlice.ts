@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { fetchGroupers, fetchGrouperDetails, updateGrouperSyncSettings } from '../clients/grouper';
+import { fetchGroupers, fetchGrouperDetails, updateGrouperSyncSettings, enableMaintenanceForGrouper } from '../clients/grouper';
 import { mapGroupersData, mapSingleGrouperData } from '../utils/mappers/grouper';
 import { GrouperState } from '../interfaces/grouper';
 
@@ -31,6 +31,20 @@ export const updateGrouperSyncThunk = createAsyncThunk(
       return mapSingleGrouperData(response.item); // Ensure the data mapping is correct
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to update sync settings.');
+    }
+  }
+);
+
+// Thunk for enabling grouper MaintenanceMode
+export const enableMaintenanceModeThunk = createAsyncThunk(
+  'grouper/enableMaintenanceMode',
+  async ({ scopeName, scopeType, allowUpdates}: { scopeName: string; scopeType: string, allowUpdates: boolean }, { rejectWithValue }) => {
+    try {
+      const response = await enableMaintenanceForGrouper(scopeName, scopeType, allowUpdates);
+      console.log('API Response:', response);
+      return mapSingleGrouperData(response.item); // Ensure the data mapping is correct
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to enable maintenance mode.');
     }
   }
 );
