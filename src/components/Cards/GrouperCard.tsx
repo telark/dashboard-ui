@@ -28,11 +28,6 @@ const GrouperCard: React.FC<GrouperInterface> = ({
   numberOfWorkloads = 0,
   numberOfBridges = 0,
   creationTime = '',
-  lastUpdateTime = '',
-  history = [],
-  workloads = [],
-  bridges = [],
-  sync = null,
   icon,
 }) => {
   // Modal state for delete confirmation

@@ -44,3 +44,28 @@ export const updateGrouperSyncSettings = async (
   }
 };
 
+// API to Enable Maintenance Mode For a Grouper
+export const enableMaintenanceForGrouper = async (
+  scopeName: string, 
+  scopeType: string,
+  allowUpdates: boolean
+) => {
+  try {
+    // API call to update the sync settings
+    const response = await Client<any>(`caps/maintenance/enable`, {
+      method: 'POST',
+      data: {
+        scope: {
+          name: scopeName,
+          type: scopeType,
+          allowUpdates: allowUpdates
+        },
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error("Failed to update sync settings:", error);
+    throw error;
+  }
+};
+
