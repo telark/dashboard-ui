@@ -32,6 +32,7 @@ export const mapSingleGrouperData = (item: any): any => {
 
   return {
     name: item.fasid.source.name,
+    kind: item.fasid.source.kind,
     status: item.cacid.status,
     numberOfWorkloads: item.cacid.workloads?.length || 0,
     numberOfBridges: item.cacid.bridges?.length || 0,
