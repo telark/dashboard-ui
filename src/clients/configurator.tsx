@@ -1,7 +1,7 @@
 import { Client, configuratorApiClient } from '../api/index';
 
 // Enable Grouper Maintenance Mode API
-export const enableMaintenanceForGrouper = async (
+export const enableGrouperMaintenanceMode = async (
   grouperName: string, 
   resourceType: string,
   updateAction: boolean,

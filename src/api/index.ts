@@ -1,8 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-// Create two separate Axios instances
 const exporterApiClient: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:59342/api/v1',
+  baseURL: 'http://localhost:58588/api/v1',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -10,7 +9,7 @@ const exporterApiClient: AxiosInstance = axios.create({
 });
 
 const configuratorApiClient: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:60680/api/v1',
+  baseURL: 'http://localhost:58553/api/v1',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -35,15 +34,13 @@ configuratorApiClient.interceptors.response.use(
   }
 );
 
-// Client function to handle API requests dynamically based on the client passed
 export const Client = async <T>(
   client: AxiosInstance,   // Accept a specific Axios client
   url: string,
-  config: AxiosRequestConfig = { method: 'GET' } // Default method is GET
+  config: AxiosRequestConfig = { method: 'GET' }
 ): Promise<T> => {
-  const response = await client(url, config); // Use the passed client to make the request
+  const response = await client(url, config);
   return response.data;
 };
 
-// Export both clients if needed
 export { exporterApiClient, configuratorApiClient };

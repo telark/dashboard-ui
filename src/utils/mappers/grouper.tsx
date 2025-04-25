@@ -1,5 +1,6 @@
 import { ApartmentOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from "../../config";
+import { Maintenance } from '../../interfaces/grouper';
 
 export const mapGroupersData = (data: any): any[] => {
   if (data?.status !== 200 || !data.data?.items?.length) {
@@ -24,7 +25,7 @@ export const mapGroupersData = (data: any): any[] => {
   });
 };
 
-export const mapSingleGrouperData = (item: any): any => {
+export const mapSingleGrouperData = (item: any, maintenance: Maintenance | null): any => {
   if (!item || !item.fasid || !item.cacid || !item.config) {
     throw new Error("Missing expected data in the response.");
   }
@@ -41,6 +42,20 @@ export const mapSingleGrouperData = (item: any): any => {
     workloads: item.cacid?.workloads || [],
     bridges: item.cacid?.bridges || [],
     sync: item.config?.sync || null,
-    // REMOVE the icon here — see the next issue 👇
+    maintenance: maintenance,
+  };
+};
+
+
+export const mapGrouperMaintenanceData = (item: any): any => {
+  if (!item) {
+    throw new Error("Missing expected data in the response.");
+  }
+
+  return {
+    name: item.name,
+    status: item.status,
+    deleteAction: item.delete,
+    updateAction: item.update,
   };
 };

@@ -15,7 +15,7 @@ export const fetchGrouperDetails = async (
   try {
     const response = await Client<any>(
       exporterApiClient,
-      `resources/groupers/${name}-grouper/get`, 
+      `resources/groupers/${name}/get`, 
       {
         method: 'GET',
       });
@@ -34,7 +34,7 @@ export const updateGrouperSyncMode = async (
   try {
     const response = await Client<any>(
       exporterApiClient,
-      `resources/groupers/${name}-grouper/update/sync`, 
+      `resources/groupers/${name}/update/sync`, 
       {
         method: 'POST',
         data: {
@@ -45,7 +45,26 @@ export const updateGrouperSyncMode = async (
       });
     return response;
   } catch (error) {
-    console.error("Failed to update sync settings:", error);
+    console.error("Failed to update sync mode:", error);
+    throw error;
+  }
+};
+
+// Get Grouper Maintenance Status API
+export const checkGrouperMaintenanceMode = async (
+  name: string,
+) => {
+  try {
+    const response = await Client<any>(
+      exporterApiClient,
+      `feats/maintenance/${name}/get`,
+      {
+        method: 'GET',
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("Failed to get maintenance for grouper:", error);
     throw error;
   }
 };
