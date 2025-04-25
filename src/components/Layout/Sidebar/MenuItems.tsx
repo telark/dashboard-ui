@@ -5,7 +5,7 @@ import {
   ProductOutlined,
   FileTextOutlined,
 } from "@ant-design/icons";
-import SidebarButton from "../Buttons/SideBarButton";
+import SidebarButton from "../../Buttons/SideBarButton";
 
 const MenuItems = () => {
   return (

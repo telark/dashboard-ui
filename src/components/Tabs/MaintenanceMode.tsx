@@ -67,16 +67,20 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
               Enable Maintenance Mode
             </h2>
             <p style={{ marginTop: '10px', fontSize: '14px', color: '#555', lineHeight: '1.6' }}>
-              This mode helps you test and stabilize existing deployments and services within this namespace without worrying about unintended resource creation.
-              By temporarily disabling new additions, your testing process becomes more controlled and less prone to disruption.
+              This mode helps you test and stabilize existing deployments and services within this
+              namespace without worrying about unintended resource creation. By temporarily
+              disabling new additions, your testing process becomes more controlled and less prone
+              to disruption.
             </p>
 
             <ul style={{ marginTop: '14px', paddingLeft: '20px', color: '#444', fontSize: '14px' }}>
               <li>
-                <strong>Creation of new resources</strong> is restricted by default to avoid accidental rollouts.
+                <strong>Creation of new resources</strong> is restricted by default to avoid
+                accidental rollouts.
               </li>
               <li>
-                <strong>Updates and deletions</strong> are allowed to give you control over existing instances during the lifecycle.
+                <strong>Updates and deletions</strong> are allowed to give you control over existing
+                instances during the lifecycle.
               </li>
             </ul>
           </div>
@@ -107,7 +111,8 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
             Maintenance Mode Settings
           </h3>
           <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>
-            Choose whether the current resources should continue to receive updates during maintenance.
+            Choose whether the current resources should continue to receive updates during
+            maintenance.
           </p>
 
           {/* Allow Updates */}

@@ -1,15 +1,15 @@
-import React from "react";
-import { Button } from "antd";
+import React from 'react';
+import { Button } from 'antd';
 
-import { NoLoadingButtonInterface } from "../../interfaces/common";
-import { DEFAULT_COLORS } from "../../config";
+import { NoLoadingButtonInterface } from '../../interfaces/common';
+import { DEFAULT_COLORS } from '../../constants';
 
 const PrimaryButtonWithOutLoading: React.FC<NoLoadingButtonInterface> = ({
   action,
   onClick,
   icon,
-  color = DEFAULT_COLORS.SUCCESS, // Default Color
-  disabled = false, // Default to false
+  color = DEFAULT_COLORS.SUCCESS,
+  disabled = false,
 }) => {
   return (
     <Button
@@ -18,9 +18,9 @@ const PrimaryButtonWithOutLoading: React.FC<NoLoadingButtonInterface> = ({
       onClick={onClick}
       disabled={disabled} // Use the disabled prop
       style={{
-        marginTop: "20px",
-        backgroundColor: disabled ? "#d9d9d9" : color, // Change color if disabled
-        borderColor: disabled ? "#d9d9d9" : color,
+        marginTop: '20px',
+        backgroundColor: disabled ? '#d9d9d9' : color, // Change color if disabled
+        borderColor: disabled ? '#d9d9d9' : color,
       }}
     >
       {action}

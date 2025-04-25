@@ -1,12 +1,12 @@
 import React from 'react';
 import { Layout } from 'antd';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Sidebar from './components/Sidebar/Sidebar';
-import Header from './components/Header/Header';
-import Groupers from './Pages/Groupers';
-import GrouperDetails from './components/Sections/GrouperDetails';
-import ErrorBoundary from './ErrorBoundary';  // import the error boundary
-import 'antd/dist/reset.css'; 
+import Sidebar from './components/Layout/Sidebar/Sidebar';
+import Header from './components/Layout/Header/Header';
+import Groupers from './pages/Groupers';
+import GrouperDetails from './pages/GrouperDetails';
+import ErrorBoundary from './ErrorBoundary';
+import 'antd/dist/reset.css';
 
 const App: React.FC = () => {
   return (

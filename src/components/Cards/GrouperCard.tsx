@@ -14,7 +14,7 @@ import {
 import StatusButton from '../Buttons/StatusButton';
 import TimeAgo from '../Time/TimeAgo';
 import Metric from '../Common/Metric';
-import { DEFAULT_COLORS } from '../../config';
+import { DEFAULT_COLORS } from '../../constants';
 import { GrouperInterface } from '../../interfaces/grouper';
 import { CapitalizeFirstLetter } from '../../utils/helpers/index';
 
@@ -85,7 +85,11 @@ const GrouperCard: React.FC<GrouperInterface> = ({
           <Popover content="View Details" trigger="hover">
             <EyeOutlined
               key="view"
-              style={{ fontSize: '16px', cursor: 'pointer', transition: 'color 0.3s, transform 0.3s' }}
+              style={{
+                fontSize: '16px',
+                cursor: 'pointer',
+                transition: 'color 0.3s, transform 0.3s',
+              }}
               onClick={handleView}
               onMouseOver={(e) => {
                 e.currentTarget.style.color = statusStyle.color;
@@ -100,7 +104,11 @@ const GrouperCard: React.FC<GrouperInterface> = ({
           <Popover content="Sync Grouper" trigger="hover">
             <SyncOutlined
               key="sync"
-              style={{ fontSize: '16px', cursor: 'pointer', transition: 'color 0.3s, transform 0.3s' }}
+              style={{
+                fontSize: '16px',
+                cursor: 'pointer',
+                transition: 'color 0.3s, transform 0.3s',
+              }}
               onClick={handleSync}
               onMouseOver={(e) => {
                 e.currentTarget.style.color = statusStyle.color;

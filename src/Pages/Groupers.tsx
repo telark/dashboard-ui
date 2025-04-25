@@ -8,15 +8,12 @@ import { RootState, AppDispatch } from '../store';
 
 const Groupers: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const { groupers, loading, error } = useSelector(
-    (state: RootState) => state.grouper
-  );
-  
+  const { groupers, loading, error } = useSelector((state: RootState) => state.grouper);
+
   useEffect(() => {
     const fetchAndCheck = async () => {
       const result = await dispatch(fetchGroupersThunk());
-  
-      // Once groupers are fetched, dispatch maintenance checks
+
       if (fetchGroupersThunk.fulfilled.match(result)) {
         result.payload.forEach((grouper: any) => {
           dispatch(checkGrouperMaintenanceModeThunk(grouper.name));
@@ -25,7 +22,7 @@ const Groupers: React.FC = () => {
     };
     fetchAndCheck();
   }, [dispatch]);
-  
+
   useEffect(() => {
     if (error) {
       message.error(error);
@@ -41,18 +38,17 @@ const Groupers: React.FC = () => {
   }
 
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 0fr))',
-      gap: '16px',
-      padding: '20px',
-      marginTop: '60px',
-    }}>
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 0fr))',
+        gap: '16px',
+        padding: '20px',
+        marginTop: '60px',
+      }}
+    >
       {groupers.map((grouper, index) => (
-        <GrouperCard
-          key={index}
-          {...grouper}
-        />
+        <GrouperCard key={index} {...grouper} />
       ))}
     </div>
   );

@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppstoreOutlined, ClockCircleOutlined, FileOutlined, SyncOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import {
+  AppstoreOutlined,
+  ClockCircleOutlined,
+  FileOutlined,
+  SyncOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+} from '@ant-design/icons';
 import { Button, Pagination, Space } from 'antd';
 import { ResourcesInterface } from '../../interfaces/common';
 import TimeAgo from '../Time/TimeAgo';
@@ -12,24 +19,19 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
 
-  // Handle page change
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  // Handle Sync for each resource
   const handleSync = (resourceName: string) => {
     console.log(`Syncing resource: ${resourceName}`);
     // Implement sync functionality here
   };
 
-  // Handle Delete for each resource
   const handleDelete = (resourceName: string) => {
     console.log(`Deleting resource: ${resourceName}`);
-    // Implement delete functionality here
   };
 
-  // Handle View for each resource (navigate to details page)
   const handleView = (resourceName: string) => {
     navigate(`/groupers/${name}/details/${resourceName}`);
   };
@@ -53,11 +55,18 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
       >
         <thead>
           <tr>
-            {/* Column names are shown except for Actions */}
-            <th><AppstoreOutlined /> Resource Name</th>
-            <th><ClockCircleOutlined /> Last Sync</th>
-            <th><FileOutlined /> Kind</th>
-            <th><SyncOutlined /> Status</th>
+            <th>
+              <AppstoreOutlined /> Resource Name
+            </th>
+            <th>
+              <ClockCircleOutlined /> Last Sync
+            </th>
+            <th>
+              <FileOutlined /> Kind
+            </th>
+            <th>
+              <SyncOutlined /> Status
+            </th>
             <th> {/* Empty header for Action icons */} </th>
           </tr>
         </thead>
@@ -66,11 +75,13 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
             <tr key={index}>
               {/* Resource Name, Last Sync, Kind, Status */}
               <td>{resource.name}</td>
-              <td><TimeAgo date={resource.lastSync}/></td>
+              <td>
+                <TimeAgo date={resource.lastSync} />
+              </td>
               <td>{resource.type}</td>
               <td>{resource.status}</td>
 
-              {/* Action Icons (Sync, Delete, and View for each resource) */}
+              {/* Action Icons */}
               <td style={{ padding: '8px' }}>
                 <Space>
                   <Button

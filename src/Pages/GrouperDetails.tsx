@@ -8,12 +8,12 @@ import {
   WarningOutlined,
 } from '@ant-design/icons';
 
-import { GrouperDetailsHook } from '../../hooks/GrouperDetailsHook';
-import GeneralInfo from '../Display/GeneralInfo';
-import HistoryTimeLine from '../Display/HistoryTimeLine';
-import MaintenanceMode from '../Tabs/MaintenanceMode';
-import Resources from '../Display/Resources';
-import SyncMode from '../Tabs/SyncMode';
+import { GrouperDetailsHook } from '../hooks/GrouperDetailsHook';
+import GeneralInfo from '../components/Display/GeneralInfo';
+import HistoryTimeLine from '../components/Display/HistoryTimeLine';
+import MaintenanceMode from '../components/Tabs/MaintenanceMode';
+import Resources from '../components/Display/Resources';
+import SyncMode from '../components/Tabs/SyncMode';
 
 const GrouperDetails: React.FC = () => {
   const {

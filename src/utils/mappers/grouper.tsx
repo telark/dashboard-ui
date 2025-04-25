@@ -1,5 +1,5 @@
 import { ApartmentOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from "../../config";
+import { DEFAULT_COLORS } from '../../constants';
 import { Maintenance } from '../../interfaces/grouper';
 
 export const mapGroupersData = (data: any): any[] => {
@@ -27,7 +27,7 @@ export const mapGroupersData = (data: any): any[] => {
 
 export const mapSingleGrouperData = (item: any, maintenance: Maintenance | null): any => {
   if (!item || !item.fasid || !item.cacid || !item.config) {
-    throw new Error("Missing expected data in the response.");
+    throw new Error('Missing expected data in the response.');
   }
 
   return {
@@ -46,10 +46,9 @@ export const mapSingleGrouperData = (item: any, maintenance: Maintenance | null)
   };
 };
 
-
 export const mapGrouperMaintenanceData = (item: any): any => {
   if (!item) {
-    throw new Error("Missing expected data in the response.");
+    throw new Error('Missing expected data in the response.');
   }
 
   return {

@@ -20,7 +20,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.log("Error caught in boundary:", error, errorInfo);
+    console.log('Error caught in boundary:', error, errorInfo);
   }
 
   render() {

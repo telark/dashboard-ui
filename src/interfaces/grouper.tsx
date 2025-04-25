@@ -26,4 +26,3 @@ export interface Maintenance {
   deleteAction: string;
   updateAction: string;
 }
-  

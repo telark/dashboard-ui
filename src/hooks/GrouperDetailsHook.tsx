@@ -1,4 +1,3 @@
-// hooks/GrouperDetailsHook.ts
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -14,7 +13,11 @@ import { RootState, AppDispatch } from '../store';
 export const GrouperDetailsHook = () => {
   const dispatch: AppDispatch = useDispatch();
   const { name } = useParams<{ name: string }>();
-  const { details: grouperDetails, loading, error } = useSelector((state: RootState) => state.grouper);
+  const {
+    details: grouperDetails,
+    loading,
+    error,
+  } = useSelector((state: RootState) => state.grouper);
 
   const [isAutoSync, setIsAutoSync] = useState<boolean>(false);
   const [initialSyncMode, setInitialSyncMode] = useState<string>('');
@@ -26,7 +29,9 @@ export const GrouperDetailsHook = () => {
   const [maintenaceDeleteAction, setMaintenanceDeleteAction] = useState(true);
 
   // Ensure hasChanges is a boolean
-  const hasChanges = Boolean(initialSyncMode && (isAutoSync ? 'auto' : 'manual') !== initialSyncMode);
+  const hasChanges = Boolean(
+    initialSyncMode && (isAutoSync ? 'auto' : 'manual') !== initialSyncMode
+  );
 
   useEffect(() => {
     if (name) {
@@ -93,21 +98,23 @@ export const GrouperDetailsHook = () => {
   const handleMaintenanceMode = async () => {
     const resourceType = grouperDetails?.kind?.toLowerCase();
     try {
-      const response = await dispatch(enableGrouperMaintenanceModeThunk({
-        grouperName: name!,
-        resourceType,
-        updateAction: maintenaceUpdateAction,
-        deleteAction: maintenaceDeleteAction,
-      })).unwrap();
+      const response = await dispatch(
+        enableGrouperMaintenanceModeThunk({
+          grouperName: name!,
+          resourceType,
+          updateAction: maintenaceUpdateAction,
+          deleteAction: maintenaceDeleteAction,
+        })
+      ).unwrap();
 
       if (response.status === 200) {
-        message.success(response.message || "Maintenance mode settings updated successfully!");
+        message.success(response.message || 'Maintenance mode settings updated successfully!');
         setIsMaintenanceModalVisible(false);
       } else {
-        throw new Error("Unexpected response status");
+        throw new Error('Unexpected response status');
       }
     } catch (error) {
-      console.error("Failed to handle maintenance mode update", error);
+      console.error('Failed to handle maintenance mode update', error);
     }
   };
 

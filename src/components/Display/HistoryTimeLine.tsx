@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { Timeline, Drawer } from 'antd';
 import { HistoryInterface, Record } from '../../interfaces/common'; // Adjust path as needed
 import TimeAgo from '../Time/TimeAgo'; // Adjust path as needed
-import { DEFAULT_COLORS } from '../../config'; // Adjust path as needed
+import { DEFAULT_COLORS } from '../../constants'; // Adjust path as needed
 import PrimaryButtonWithOutLoading from '../Buttons/PrimayButtonWithOutLoading';
 import { EyeOutlined } from '@ant-design/icons';
 
 const getTimelineColor = (status: string): string => {
-  if (status === "Success") {
+  if (status === 'Success') {
     return DEFAULT_COLORS.SUCCESS;
-  } else if (status === "Error") {
+  } else if (status === 'Error') {
     return DEFAULT_COLORS.ERROR;
   }
   return DEFAULT_COLORS.DEFAULT;
@@ -38,7 +38,14 @@ const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
   };
 
   return (
-    <div style={{ padding: '5px', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+    <div
+      style={{
+        padding: '5px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+      }}
+    >
       <div style={{ width: '100%', maxWidth: '800px', position: 'relative' }}>
         {/* Top Indicator with Dot Connected to Timeline */}
         {previousRecords.length > 0 && (
@@ -62,7 +69,7 @@ const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
             {/* Long Vertical Line */}
             <div
               style={{
-                marginTop: "10px",
+                marginTop: '10px',
                 position: 'absolute',
                 top: '8px', // Just beneath the dot
                 left: '50%',
@@ -110,7 +117,6 @@ const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Timeline
               mode="left"
-
               style={{ width: '100%' }}
               items={sortedRecords.map((item: Record) => ({
                 label: <TimeAgo date={item.creationTime} />,
