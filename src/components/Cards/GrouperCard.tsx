@@ -16,7 +16,7 @@ import TimeAgo from '../time/TimeAgo';
 import Metric from '../common/Metric';
 import { DEFAULT_COLORS } from '../../constants';
 import { GrouperInterface } from '../../interfaces/grouper';
-import { CapitalizeFirstLetter } from '../../utils/helpers/index';
+import { CapitalizeFirstLetter } from '../../utils/helpers';
 
 const { Title, Text } = Typography;
 
@@ -72,12 +72,12 @@ const GrouperCard: React.FC<GrouperInterface> = ({
         style={{
           width: '100%',
           maxWidth: '600px',
-          borderRadius: '20px',
+          borderRadius: '15px',
           boxShadow: '0 10px 24px rgba(0, 0, 0, 0.08)',
           border: 'none',
           padding: '28px',
           position: 'relative',
-          background: 'linear-gradient(145deg, #ffffff, #f4f6f9)',
+          background: '#fff',
           transition: 'transform 0.2s ease-in-out',
         }}
         hoverable
@@ -126,7 +126,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
               style={{
                 fontSize: '16px',
                 cursor: 'pointer',
-                color: DEFAULT_COLORS.ERROR,
+                color: DEFAULT_COLORS.DANGER,
                 transition: 'color 0.3s, transform 0.3s',
               }}
               onClick={handleDelete}
@@ -135,7 +135,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
                 e.currentTarget.style.transform = 'scale(1.1)';
               }}
               onMouseOut={(e) => {
-                e.currentTarget.style.color = DEFAULT_COLORS.ERROR;
+                e.currentTarget.style.color = DEFAULT_COLORS.DANGER;
                 e.currentTarget.style.transform = 'scale(1)';
               }}
             />

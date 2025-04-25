@@ -8,12 +8,12 @@ import {
   WarningOutlined,
 } from '@ant-design/icons';
 
-import { GrouperDetailsHook } from '../hooks/GrouperDetailsHook';
-import GeneralInfo from '../components/display/GeneralInfo';
-import HistoryTimeLine from '../components/display/HistoryTimeLine';
-import MaintenanceMode from '../components/tabs/MaintenanceMode';
-import Resources from '../components/display/Resources';
-import SyncMode from '../components/tabs/SyncMode';
+import { GrouperDetailsHook } from '../../hooks/GrouperDetailsHook';
+import GeneralInfo from '../../components/display/GeneralInfo';
+import HistoryTimeLine from '../../components/display/HistoryTimeLine';
+import MaintenanceMode from '../../components/tabs/MaintenanceMode';
+import Resources from '../../components/display/Resources';
+import SyncMode from '../../components/tabs/SyncMode';
 
 const GrouperDetails: React.FC = () => {
   const {
@@ -22,14 +22,14 @@ const GrouperDetails: React.FC = () => {
     loading,
     error,
 
-    // Sync Data
+    // Sync Mode Data
     isAutoSync,
     loadingSave,
     hasChanges,
     handleAutoSyncChange,
     handleGrouperSyncSave,
 
-    // Maintenance Data
+    // Maintenance Mode Data
     isMaintenanceModeActive,
     isMaintenanceModalVisible,
     maintenaceUpdateAction,
@@ -39,6 +39,8 @@ const GrouperDetails: React.FC = () => {
     handleMaintenanceUpdateActionChange,
     handleMaintenanceDeleteActionChange,
     handleMaintenanceMode,
+    hasMaintenanceData,
+    handleRemoveMaintenanceMode,
   } = GrouperDetailsHook();
 
   if (loading) {
@@ -126,7 +128,7 @@ const GrouperDetails: React.FC = () => {
               label: (
                 <span>
                   <SyncOutlined style={{ marginRight: '8px' }} />
-                  Sync Settings
+                  Sync Mode
                 </span>
               ),
               children: (
@@ -144,7 +146,7 @@ const GrouperDetails: React.FC = () => {
               label: (
                 <span>
                   <WarningOutlined style={{ marginRight: '8px' }} />
-                  Maintenance
+                  Maintenance Mode
                 </span>
               ),
               children: (
@@ -158,6 +160,8 @@ const GrouperDetails: React.FC = () => {
                   handleMaintenanceUpdateActionChange={handleMaintenanceUpdateActionChange}
                   handleMaintenanceDeleteActionChange={handleMaintenanceDeleteActionChange}
                   handleMaintenanceMode={handleMaintenanceMode}
+                  hasMaintenanceData={hasMaintenanceData}
+                  handleRemoveMaintenanceMode={handleRemoveMaintenanceMode}
                 />
               ),
             },

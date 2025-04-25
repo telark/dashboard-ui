@@ -10,7 +10,7 @@ const getTimelineColor = (status: string): string => {
   if (status === 'Success') {
     return DEFAULT_COLORS.SUCCESS;
   } else if (status === 'Error') {
-    return DEFAULT_COLORS.ERROR;
+    return DEFAULT_COLORS.DANGER;
   }
   return DEFAULT_COLORS.DEFAULT;
 };

@@ -3,6 +3,7 @@ import { Switch } from 'antd';
 import { CheckCircleOutlined, SyncOutlined } from '@ant-design/icons';
 import PrimaryButton from '../buttons/PrimaryButton';
 import { DEFAULT_COLORS } from '../../constants';
+import { SYNC_MODE } from '../../constants/modes';
 
 interface SyncModeProps {
   isAutoSync: boolean;
@@ -47,36 +48,30 @@ const SyncMode: React.FC<SyncModeProps> = ({
           </div>
 
           <div style={{ flexGrow: 1 }}>
-            <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 600 }}>Configure Sync Mode</h2>
+            <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 600 }}>
+              {SYNC_MODE.title}
+            </h2>
             <p style={{ marginTop: '10px', fontSize: '14px', color: '#555', lineHeight: '1.6' }}>
-              Manage the synchronization behavior of your resources within this namespace. When
-              enabled, Auto Sync ensures that your system periodically fetches the latest updates,
-              keeping everything in sync automatically. In Manual Mode, updates are only applied
-              when you explicitly trigger them, giving you more control over when changes are made.
+              {SYNC_MODE.description}
             </p>
 
             <ul style={{ marginTop: '14px', paddingLeft: '20px', color: '#444', fontSize: '14px' }}>
-              <li>
-                <strong>Auto Sync</strong> will periodically fetch updates and automatically
-                reconcile the state of your resources.
-              </li>
-              <li>
-                <strong>Manual Mode</strong> provides more control by requiring manual intervention
-                to synchronize resources.
-              </li>
+              {SYNC_MODE.list.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
           </div>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', marginTop: '32px' }}>
           <span style={{ fontSize: '14px', fontWeight: 500, marginRight: '8px' }}>
-            Auto Sync Mode:
+            {SYNC_MODE.autoSyncLabel}
           </span>
           <Switch
             checked={isAutoSync}
             onChange={handleAutoSyncChange}
-            checkedChildren="On"
-            unCheckedChildren="Off"
+            checkedChildren={SYNC_MODE.autoSyncTextOn}
+            unCheckedChildren={SYNC_MODE.autoSyncTextOff}
             style={{
               marginLeft: '8px',
               backgroundColor: isAutoSync ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.SWITCH_OFF,
@@ -90,7 +85,7 @@ const SyncMode: React.FC<SyncModeProps> = ({
             disabled={!hasChanges}
             loading={loadingSave}
             loadingLabel="Saving..."
-            action={`Save Settings ${
+            action={`${SYNC_MODE.saveButtonLabel} ${
               hasChanges ? `(${isAutoSync ? 'Auto Sync' : 'Manual Mode'})` : ''
             }`}
             icon={<CheckCircleOutlined />}

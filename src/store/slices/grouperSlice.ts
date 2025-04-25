@@ -4,15 +4,19 @@ import {
   fetchGrouperDetails,
   updateGrouperSyncMode,
   checkGrouperMaintenanceMode,
-} from '../clients/exporter';
-import { enableGrouperMaintenanceMode } from '../clients/configurator';
+} from '../../clients/exporter';
+import { 
+  enableGrouperMaintenanceMode,
+  updateGrouperMaintenanceMode,
+  removeGrouperMaintenanceMode
+} from '../../clients/configurator';
 import {
   mapGrouperMaintenanceData,
   mapGroupersData,
   mapSingleGrouperData,
-} from '../utils/mappers/grouper';
-import { GrouperState, Maintenance } from '../interfaces/grouper';
-import { generateGrouperName, generateMaintenanceFeatureName } from '../utils/helpers';
+} from '../../utils/mappers/grouper';
+import { GrouperState, Maintenance } from '../../interfaces/grouper';
+import { generateGrouperName, generateMaintenanceFeatureName } from '../../utils/helpers';
 
 const initialState: GrouperState = {
   groupers: [],
@@ -93,6 +97,50 @@ export const enableGrouperMaintenanceModeThunk = createAsyncThunk(
       };
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to enable maintenance mode.');
+    }
+  }
+);
+
+// Thunk for updating Grouper Maintenance Mode
+export const updateGrouperMaintenanceModeThunk = createAsyncThunk(
+  'grouper/updateMaintenanceMode',
+  async (
+    {
+      grouperName,
+      updateAction,
+      deleteAction,
+    }: {
+      grouperName: string;
+      updateAction: boolean;
+      deleteAction: boolean;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await updateGrouperMaintenanceMode(
+        generateMaintenanceFeatureName(grouperName),
+        updateAction,
+        deleteAction
+      );
+      return {
+        status: response.status,
+      };
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to update maintenance mode.');
+    }
+  }
+);
+
+export const removeGrouperMaintenanceModeThunk = createAsyncThunk(
+  'grouper/removeMaintenanceMode',
+  async (grouperName: string, { rejectWithValue }) => {
+    try {
+      const response = await removeGrouperMaintenanceMode(generateMaintenanceFeatureName(grouperName));
+      return {
+        status: response.status,
+      };
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to delete maintenance mode.');
     }
   }
 );
@@ -202,7 +250,28 @@ const grouperSlice = createSlice({
             state.groupers[index].maintenance = maintenanceData;
           }
         }
-      );
+      )
+      .addCase(updateGrouperMaintenanceModeThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateGrouperMaintenanceModeThunk.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        console.log('Maintenance Mode updated:', action.payload);
+      })
+      .addCase(updateGrouperMaintenanceModeThunk.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(removeGrouperMaintenanceModeThunk.fulfilled, (state, action: PayloadAction<any>) => {
+        state.groupers = state.groupers.filter(g => g.name !== action.payload.name);
+        if (state.details?.name === action.payload.name) {
+          state.details = null;
+        }
+      })
+      .addCase(removeGrouperMaintenanceModeThunk.rejected, (state, action: PayloadAction<any>) => {
+        state.error = action.payload;
+      });
   },
 });
 

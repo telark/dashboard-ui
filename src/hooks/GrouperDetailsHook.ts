@@ -7,7 +7,9 @@ import {
   clearDetails,
   updateGrouperSyncModeThunk,
   enableGrouperMaintenanceModeThunk,
-} from '../store/grouperSlice';
+  updateGrouperMaintenanceModeThunk,
+  removeGrouperMaintenanceModeThunk,
+} from '../store/slices/grouperSlice';
 import { RootState, AppDispatch } from '../store';
 
 export const GrouperDetailsHook = () => {
@@ -28,10 +30,25 @@ export const GrouperDetailsHook = () => {
   const [maintenaceUpdateAction, setMaintenanceUpdateAction] = useState(true);
   const [maintenaceDeleteAction, setMaintenanceDeleteAction] = useState(true);
 
+  const [hasMaintenanceData, setHasMaintenanceData] = useState(false);
+
   // Ensure hasChanges is a boolean
   const hasChanges = Boolean(
     initialSyncMode && (isAutoSync ? 'auto' : 'manual') !== initialSyncMode
   );
+
+  useEffect(() => {
+    const maintenance = grouperDetails?.maintenance;
+    if (maintenance) {
+      setHasMaintenanceData(true);
+      setIsMaintenanceModeActive(maintenance.status === 'Active');
+      setMaintenanceUpdateAction(maintenance.updateAction === 'allow');
+      setMaintenanceDeleteAction(maintenance.deleteAction === 'allow');
+    } else {
+      setHasMaintenanceData(false);
+      setIsMaintenanceModeActive(false);
+    }
+  }, [grouperDetails]);
 
   useEffect(() => {
     if (name) {
@@ -98,23 +115,80 @@ export const GrouperDetailsHook = () => {
   const handleMaintenanceMode = async () => {
     const resourceType = grouperDetails?.kind?.toLowerCase();
     try {
-      const response = await dispatch(
-        enableGrouperMaintenanceModeThunk({
-          grouperName: name!,
-          resourceType,
-          updateAction: maintenaceUpdateAction,
-          deleteAction: maintenaceDeleteAction,
-        })
-      ).unwrap();
+      let response;
+      if (isMaintenanceModeActive) {
+        // Update existing maintenance mode
+        response = await dispatch(
+          updateGrouperMaintenanceModeThunk({
+            grouperName: name!,
+            updateAction: maintenaceUpdateAction,
+            deleteAction: maintenaceDeleteAction,
+          })
+        ).unwrap();
+        if (response.status === 200) {
+          message.success('Maintenance mode enabled successfully!');
+        } else {
+          throw new Error('Unexpected response status');
+        }
+      } else {
+        // Enable maintenance mode for the first time
+        response = await dispatch(
+          enableGrouperMaintenanceModeThunk({
+            grouperName: name!,
+            resourceType,
+            updateAction: maintenaceUpdateAction,
+            deleteAction: maintenaceDeleteAction,
+          })
+        ).unwrap();
+    
+        if (response.status === 200) {
+          message.success(response.message || 'Maintenance mode enabled successfully!');
+        } else {
+          throw new Error('Unexpected response status');
+        }
+      }
+  
+      // Update the maintenance state in grouperDetails after successfully enabling maintenance mode
+      const updatedGrouperDetails = { 
+        ...grouperDetails,
+        maintenance: {
+          ...grouperDetails.maintenance,
+          status: 'Active',
+          updateAction: maintenaceUpdateAction ? 'allow' : 'deny',
+          deleteAction: maintenaceDeleteAction ? 'allow' : 'deny',
+        },
+      };
+  
+      // Dispatch an action to update the Redux store with the new maintenance state
+      dispatch(fetchGrouperDetailsThunk(name!));  // Optionally re-fetch the details if needed
+      setIsMaintenanceModalVisible(false);
+    } catch (error) {
+      console.error('Failed to handle maintenance mode update', error);
+      message.error('Failed to update maintenance mode');
+    }
+  };
+  
 
+  const handleRemoveMaintenanceMode = async () => {
+    try {
+      // Dispatch the action to disable maintenance mode
+      const response = await dispatch(
+        removeGrouperMaintenanceModeThunk(name!)
+      ).unwrap();
+  
+      // Handle the response and show a success message
       if (response.status === 200) {
-        message.success(response.message || 'Maintenance mode settings updated successfully!');
-        setIsMaintenanceModalVisible(false);
+        message.success('Maintenance mode removed successfully!');
+        // Optionally update the UI state to reflect the change
+        setIsMaintenanceModeActive(false);
+        setMaintenanceUpdateAction(false);
+        setMaintenanceDeleteAction(false);
       } else {
         throw new Error('Unexpected response status');
       }
     } catch (error) {
-      console.error('Failed to handle maintenance mode update', error);
+      console.error('Failed to remove maintenance mode', error);
+      message.error('Failed to remove maintenance mode');
     }
   };
 
@@ -138,5 +212,7 @@ export const GrouperDetailsHook = () => {
     handleMaintenanceUpdateActionChange,
     handleMaintenanceDeleteActionChange,
     handleMaintenanceMode,
+    hasMaintenanceData,
+    handleRemoveMaintenanceMode,
   };
 };

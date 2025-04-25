@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import grouperReducer from './grouperSlice';
+import grouperReducer from './slices/grouperSlice';
 
 const store = configureStore({
   reducer: {

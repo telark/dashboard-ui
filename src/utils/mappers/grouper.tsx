@@ -7,7 +7,6 @@ export const mapGroupersData = (data: any): any[] => {
     throw new Error('Invalid data format from the API');
   }
 
-  // Map the groupers data
   return data.data.items.map((item: any) => {
     return {
       name: item.fasid?.sourceName || 'Unknown',

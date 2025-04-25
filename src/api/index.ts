@@ -18,16 +18,16 @@ const configuratorApiClient: AxiosInstance = axios.create({
 
 // Interceptor for handling responses on the exporterApiClient
 exporterApiClient.interceptors.response.use(
-  (response: AxiosResponse) => response, // Pass successful responses
+  (response: AxiosResponse) => response,
   (error) => {
     console.error('API Error:', error.response?.data?.message || error.message);
-    return Promise.reject(error); // Return the original error without throwing a new one
+    return Promise.reject(error); // Return original error
   }
 );
 
 // Interceptor for handling responses on the configuratorApiClient
 configuratorApiClient.interceptors.response.use(
-  (response: AxiosResponse) => response, // Pass successful responses
+  (response: AxiosResponse) => response,
   (error) => {
     console.error('API Error:', error.response?.data?.message || error.message);
     return Promise.reject(error);
@@ -35,7 +35,7 @@ configuratorApiClient.interceptors.response.use(
 );
 
 export const Client = async <T>(
-  client: AxiosInstance, // Accept a specific Axios client
+  client: AxiosInstance,
   url: string,
   config: AxiosRequestConfig = { method: 'GET' }
 ): Promise<T> => {

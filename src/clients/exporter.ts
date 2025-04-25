@@ -1,5 +1,5 @@
 import { Client, exporterApiClient } from '../api/index';
-import { Endpoints } from '../constants/index';
+import { Endpoints } from '../constants/endpoints';
 
 // Fetch all Groupers
 export const fetchGroupers = async () => {
@@ -38,7 +38,7 @@ export const updateGrouperSyncMode = async (name: string, syncMode: string) => {
 // Check Grouper Maintenance Mode
 export const checkGrouperMaintenanceMode = async (name: string) => {
   try {
-    return await Client<any>(exporterApiClient, Endpoints.MAINTENANCE.CHECK(name), {
+    return await Client<any>(exporterApiClient, Endpoints.GROUPER_MAINTENANCE.CHECK(name), {
       method: 'GET',
     });
   } catch (error) {

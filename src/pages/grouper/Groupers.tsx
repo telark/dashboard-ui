@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Spin, message } from 'antd';
 
-import { fetchAllGroupersThunk, checkGrouperMaintenanceModeThunk } from '../store/grouperSlice';
-import GrouperCard from '../components/cards/GrouperCard';
-import { RootState, AppDispatch } from '../store';
+import { fetchAllGroupersThunk, checkGrouperMaintenanceModeThunk } from '../../store/slices/grouperSlice';
+import GrouperCard from '../../components/cards/GrouperCard';
+import { RootState, AppDispatch } from '../../store';
 
 const Groupers: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -41,7 +41,7 @@ const Groupers: React.FC = () => {
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 0fr))',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 0fr))',
         gap: '16px',
         padding: '20px',
         marginTop: '60px',

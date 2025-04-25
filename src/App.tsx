@@ -3,8 +3,8 @@ import { Layout } from 'antd';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/layout/sidebar/Sidebar';
 import Header from './components/layout/header/Header';
-import Groupers from './pages/Groupers';
-import GrouperDetails from './pages/GrouperDetails';
+import Groupers from './pages/grouper/Groupers';
+import GrouperDetails from './pages/grouper/GrouperDetails';
 import ErrorBoundary from './ErrorBoundary';
 import 'antd/dist/reset.css';
 

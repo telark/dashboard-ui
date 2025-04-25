@@ -1,7 +1,15 @@
-import React from 'react';
-import { Switch, Modal } from 'antd';
-import { CheckCircleOutlined, WarningOutlined } from '@ant-design/icons';
+import React, { useState } from 'react';
+import { Switch, Modal, Button, Checkbox } from 'antd';
+import {
+  CheckCircleOutlined,
+  WarningOutlined,
+  MinusCircleOutlined,
+  DownOutlined,
+  UpOutlined,
+} from '@ant-design/icons';
 import PrimaryButtonWithOutLoading from '../buttons/PrimayButtonWithOutLoading';
+import { DEFAULT_COLORS } from '../../constants';
+import { MAINTENANCE_MODE } from '../../constants/modes';
 
 interface MaintenanceModeProps {
   isMaintenanceModeActive: boolean;
@@ -13,6 +21,8 @@ interface MaintenanceModeProps {
   handleMaintenanceUpdateActionChange: (checked: boolean) => void;
   handleMaintenanceDeleteActionChange: (checked: boolean) => void;
   handleMaintenanceMode: () => void;
+  hasMaintenanceData: boolean;
+  handleRemoveMaintenanceMode: () => void;
 }
 
 const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
@@ -25,7 +35,25 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
   handleMaintenanceUpdateActionChange,
   handleMaintenanceDeleteActionChange,
   handleMaintenanceMode,
+  hasMaintenanceData,
+  handleRemoveMaintenanceMode,
 }) => {
+  // State for toggling advanced options (Workloads / Services)
+  const [isAdvancedOptionsVisible, setAdvancedOptionsVisible] = useState(false);
+
+  // State for checkboxes in the advanced options
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+
+  // Toggle Advanced Options
+  const toggleAdvancedOptions = () => {
+    setAdvancedOptionsVisible(!isAdvancedOptionsVisible);
+  };
+
+  // Handle checkbox changes for workloads and services
+  const handleOptionChange = (checkedValues: string[]) => {
+    setSelectedOptions(checkedValues);
+  };
+
   return (
     <div
       style={{
@@ -46,7 +74,7 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
         }}
       >
         {isMaintenanceModeActive && (
-          <p style={{ color: '#faad14', fontWeight: 600 }}>Maintenance Mode is Active</p>
+          <p style={{ color: '#faad14', fontWeight: 600 }}>{MAINTENANCE_MODE.maintenanceActive}</p>
         )}
         <div style={{ display: 'flex', alignItems: 'flex-start' }}>
           <div
@@ -64,34 +92,38 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
 
           <div style={{ flexGrow: 1 }}>
             <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 600 }}>
-              Enable Maintenance Mode
+              {MAINTENANCE_MODE.title}
             </h2>
             <p style={{ marginTop: '10px', fontSize: '14px', color: '#555', lineHeight: '1.6' }}>
-              This mode helps you test and stabilize existing deployments and services within this
-              namespace without worrying about unintended resource creation. By temporarily
-              disabling new additions, your testing process becomes more controlled and less prone
-              to disruption.
+              {MAINTENANCE_MODE.description}
             </p>
 
             <ul style={{ marginTop: '14px', paddingLeft: '20px', color: '#444', fontSize: '14px' }}>
-              <li>
-                <strong>Creation of new resources</strong> is restricted by default to avoid
-                accidental rollouts.
-              </li>
-              <li>
-                <strong>Updates and deletions</strong> are allowed to give you control over existing
-                instances during the lifecycle.
-              </li>
+              {MAINTENANCE_MODE.list.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
           </div>
         </div>
 
-        <div style={{ marginTop: '32px', display: 'flex', justifyContent: 'center' }}>
+        <div style={{ marginTop: '32px', display: 'flex', justifyContent: 'space-between' }}>
           <PrimaryButtonWithOutLoading
             onClick={handleEnableMaintenanceClick}
-            action={isMaintenanceModeActive ? 'Update Settings' : 'Enable'}
+            action={
+              isMaintenanceModeActive
+                ? MAINTENANCE_MODE.updateButtonLabel
+                : MAINTENANCE_MODE.enableButtonLabel
+            }
             icon={<CheckCircleOutlined />}
           />
+          {isMaintenanceModeActive && (
+            <PrimaryButtonWithOutLoading
+              onClick={handleRemoveMaintenanceMode}
+              action={MAINTENANCE_MODE.removeButtonLabel}
+              color={DEFAULT_COLORS.DANGER}
+              icon={<MinusCircleOutlined />}
+            />
+          )}
         </div>
 
         {/* Modal for settings */}
@@ -108,11 +140,10 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
           }}
         >
           <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '16px' }}>
-            Maintenance Mode Settings
+            {MAINTENANCE_MODE.modalTitle}
           </h3>
           <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>
-            Choose whether the current resources should continue to receive updates during
-            maintenance.
+            {MAINTENANCE_MODE.modalDescription}
           </p>
 
           {/* Allow Updates */}
@@ -129,12 +160,12 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
             }}
           >
             <span style={{ fontWeight: 500, fontSize: '14px' }}>
-              Allow Current Resources Updates
+              {MAINTENANCE_MODE.updateActionLabel}
             </span>
             <Switch
               checked={maintenaceUpdateAction}
               onChange={handleMaintenanceUpdateActionChange}
-              disabled={!isMaintenanceModeActive} // Disable the switch if not in maintenance mode
+              disabled={hasMaintenanceData && !isMaintenanceModeActive}
             />
           </div>
 
@@ -151,13 +182,61 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
             }}
           >
             <span style={{ fontWeight: 500, fontSize: '14px' }}>
-              Allow Current Resources Deletion
+              {MAINTENANCE_MODE.deleteActionLabel}
             </span>
             <Switch
               checked={maintenaceDeleteAction}
               onChange={handleMaintenanceDeleteActionChange}
-              disabled={!isMaintenanceModeActive} // Disable the switch if not in maintenance mode
+              disabled={hasMaintenanceData && !isMaintenanceModeActive}
             />
+          </div>
+
+          {/* Advanced Options */}
+          <div style={{ marginTop: '16px' }}>
+            <Button
+              onClick={toggleAdvancedOptions}
+              icon={isAdvancedOptionsVisible ? <UpOutlined /> : <DownOutlined />}
+              style={{ width: '100%', textAlign: 'left', border: '0' }}
+            >
+              {MAINTENANCE_MODE.advancedOptionsLabel}
+            </Button>
+
+            {isAdvancedOptionsVisible && (
+              <div style={{ marginTop: '12px', paddingLeft: '20px' }}>
+                <div
+                  style={{
+                    marginBottom: '12px',
+                  }}
+                >
+                  <Checkbox
+                    value="workload"
+                    checked={selectedOptions.includes('workload')}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      setSelectedOptions((prev) =>
+                        checked ? [...prev, 'workload'] : prev.filter((item) => item !== 'workload')
+                      );
+                    }}
+                  >
+                    {MAINTENANCE_MODE.advancedOptionWorkloadLabel}
+                  </Checkbox>
+                </div>
+                <div>
+                  <Checkbox
+                    value="service"
+                    checked={selectedOptions.includes('service')}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      setSelectedOptions((prev) =>
+                        checked ? [...prev, 'service'] : prev.filter((item) => item !== 'service')
+                      );
+                    }}
+                  >
+                    {MAINTENANCE_MODE.advancedOptionServiceLabel}
+                  </Checkbox>
+                </div>
+              </div>
+            )}
           </div>
         </Modal>
       </div>
