@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch } from 'antd';
 import { CheckCircleOutlined, SyncOutlined } from '@ant-design/icons';
-import PrimaryButton from '../Buttons/PrimaryButton';
+import PrimaryButton from '../buttons/PrimaryButton';
 import { DEFAULT_COLORS } from '../../constants';
 
 interface SyncModeProps {

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Timeline, Drawer } from 'antd';
 import { HistoryInterface, Record } from '../../interfaces/common'; // Adjust path as needed
-import TimeAgo from '../Time/TimeAgo'; // Adjust path as needed
+import TimeAgo from '../time/TimeAgo'; // Adjust path as needed
 import { DEFAULT_COLORS } from '../../constants'; // Adjust path as needed
-import PrimaryButtonWithOutLoading from '../Buttons/PrimayButtonWithOutLoading';
+import PrimaryButtonWithOutLoading from '../buttons/PrimayButtonWithOutLoading';
 import { EyeOutlined } from '@ant-design/icons';
 
 const getTimelineColor = (status: string): string => {

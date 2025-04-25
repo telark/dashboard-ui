@@ -22,7 +22,7 @@ const initialState: GrouperState = {
 };
 
 // Thunk for fetching groupers
-export const fetchGroupersThunk = createAsyncThunk(
+export const fetchAllGroupersThunk = createAsyncThunk(
   'groupers/fetch',
   async (_, { rejectWithValue }) => {
     try {
@@ -144,15 +144,15 @@ const grouperSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // Fetch Groupers
-      .addCase(fetchGroupersThunk.pending, (state) => {
+      .addCase(fetchAllGroupersThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchGroupersThunk.fulfilled, (state, action: PayloadAction<any[]>) => {
+      .addCase(fetchAllGroupersThunk.fulfilled, (state, action: PayloadAction<any[]>) => {
         state.loading = false;
         state.groupers = action.payload;
       })
-      .addCase(fetchGroupersThunk.rejected, (state, action: PayloadAction<any>) => {
+      .addCase(fetchAllGroupersThunk.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       })

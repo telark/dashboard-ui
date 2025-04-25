@@ -1,6 +1,7 @@
-import { Client, configuratorApiClient } from '../api/index';
+import { Client, configuratorApiClient } from '../api';
+import { Endpoints } from '../constants/index';
 
-// Enable Grouper Maintenance Mode API
+// Enable Grouper Maintenance Mode
 export const enableGrouperMaintenanceMode = async (
   grouperName: string,
   resourceType: string,
@@ -8,7 +9,7 @@ export const enableGrouperMaintenanceMode = async (
   deleteAction: boolean
 ) => {
   try {
-    const response = await Client<any>(configuratorApiClient, `feats/maintenance/grouper/enable`, {
+    return await Client<any>(configuratorApiClient, Endpoints.MAINTENANCE.ENABLE, {
       method: 'POST',
       data: {
         name: grouperName,
@@ -17,9 +18,8 @@ export const enableGrouperMaintenanceMode = async (
         delete: deleteAction ? 'allow' : 'deny',
       },
     });
-    return response;
   } catch (error) {
-    console.error('Failed to enable maintenance for grouper:', error);
+    console.error(`[APIClient] Failed to enable maintenance mode for "${grouperName}":`, error);
     throw error;
   }
 };

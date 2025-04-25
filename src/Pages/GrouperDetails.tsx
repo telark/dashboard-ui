@@ -9,11 +9,11 @@ import {
 } from '@ant-design/icons';
 
 import { GrouperDetailsHook } from '../hooks/GrouperDetailsHook';
-import GeneralInfo from '../components/Display/GeneralInfo';
-import HistoryTimeLine from '../components/Display/HistoryTimeLine';
-import MaintenanceMode from '../components/Tabs/MaintenanceMode';
-import Resources from '../components/Display/Resources';
-import SyncMode from '../components/Tabs/SyncMode';
+import GeneralInfo from '../components/display/GeneralInfo';
+import HistoryTimeLine from '../components/display/HistoryTimeLine';
+import MaintenanceMode from '../components/tabs/MaintenanceMode';
+import Resources from '../components/display/Resources';
+import SyncMode from '../components/tabs/SyncMode';
 
 const GrouperDetails: React.FC = () => {
   const {

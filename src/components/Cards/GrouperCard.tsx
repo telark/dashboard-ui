@@ -11,9 +11,9 @@ import {
   DeleteOutlined,
 } from '@ant-design/icons';
 
-import StatusButton from '../Buttons/StatusButton';
-import TimeAgo from '../Time/TimeAgo';
-import Metric from '../Common/Metric';
+import StatusButton from '../buttons/StatusButton';
+import TimeAgo from '../time/TimeAgo';
+import Metric from '../common/Metric';
 import { DEFAULT_COLORS } from '../../constants';
 import { GrouperInterface } from '../../interfaces/grouper';
 import { CapitalizeFirstLetter } from '../../utils/helpers/index';

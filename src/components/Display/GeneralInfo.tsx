@@ -5,7 +5,7 @@ import {
   SyncOutlined,
   AppstoreOutlined,
 } from '@ant-design/icons';
-import TimeAgo from '../Time/TimeAgo';
+import TimeAgo from '../time/TimeAgo';
 import { DEFAULT_COLORS } from '../../constants';
 import { Button } from 'antd';
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Modal } from 'antd';
 import { CheckCircleOutlined, WarningOutlined } from '@ant-design/icons';
-import PrimaryButtonWithOutLoading from '../Buttons/PrimayButtonWithOutLoading';
+import PrimaryButtonWithOutLoading from '../buttons/PrimayButtonWithOutLoading';
 
 interface MaintenanceModeProps {
   isMaintenanceModeActive: boolean;

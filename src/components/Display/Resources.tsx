@@ -10,7 +10,7 @@ import {
 } from '@ant-design/icons';
 import { Button, Pagination, Space } from 'antd';
 import { ResourcesInterface } from '../../interfaces/common';
-import TimeAgo from '../Time/TimeAgo';
+import TimeAgo from '../time/TimeAgo';
 
 const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
   const navigate = useNavigate();

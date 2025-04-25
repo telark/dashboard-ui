@@ -1,8 +1,8 @@
 import React from 'react';
 import { Layout } from 'antd';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Sidebar from './components/Layout/Sidebar/Sidebar';
-import Header from './components/Layout/Header/Header';
+import Sidebar from './components/layout/sidebar/Sidebar';
+import Header from './components/layout/header/Header';
 import Groupers from './pages/Groupers';
 import GrouperDetails from './pages/GrouperDetails';
 import ErrorBoundary from './ErrorBoundary';

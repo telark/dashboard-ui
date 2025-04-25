@@ -6,3 +6,15 @@ export const DEFAULT_COLORS = {
   DEFAULT: '#999',
   SWITCH_OFF: '#d9d9d9',
 };
+
+export const Endpoints = {
+  GROUPERS: {
+    GET_ALL: 'resources/groupers/get',
+    GET_DETAILS: (name: string) => `resources/groupers/${name}/get`,
+    UPDATE_SYNC: (name: string) => `resources/groupers/${name}/update/sync`,
+  },
+  MAINTENANCE: {
+    CHECK: (name: string) => `feats/maintenance/${name}/get`,
+    ENABLE: 'feats/maintenance/grouper/enable',
+  },
+};

@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Spin, message } from 'antd';
 
-import { fetchGroupersThunk, checkGrouperMaintenanceModeThunk } from '../store/grouperSlice';
-import GrouperCard from '../components/Cards/GrouperCard';
+import { fetchAllGroupersThunk, checkGrouperMaintenanceModeThunk } from '../store/grouperSlice';
+import GrouperCard from '../components/cards/GrouperCard';
 import { RootState, AppDispatch } from '../store';
 
 const Groupers: React.FC = () => {
@@ -12,9 +12,9 @@ const Groupers: React.FC = () => {
 
   useEffect(() => {
     const fetchAndCheck = async () => {
-      const result = await dispatch(fetchGroupersThunk());
+      const result = await dispatch(fetchAllGroupersThunk());
 
-      if (fetchGroupersThunk.fulfilled.match(result)) {
+      if (fetchAllGroupersThunk.fulfilled.match(result)) {
         result.payload.forEach((grouper: any) => {
           dispatch(checkGrouperMaintenanceModeThunk(grouper.name));
         });
