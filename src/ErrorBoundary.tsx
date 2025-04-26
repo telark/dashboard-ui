@@ -1,4 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
 
 interface State {
   hasError: boolean;
@@ -20,13 +20,13 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.log("Error caught in boundary:", error, errorInfo);
+    console.log('Error caught in boundary:', error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
       // Render fallback UI when an error occurs
-      return <h1>Something went wrong.</h1>;
+      return <h1>Error: Something went wrong.</h1>;
     }
 
     return this.props.children;

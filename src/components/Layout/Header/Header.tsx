@@ -1,18 +1,15 @@
 import React from 'react';
 import { Button, Space } from 'antd';
 
-import {
-  SettingOutlined,
-  InfoCircleOutlined
-} from "@ant-design/icons";
+import { SettingOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 const Header: React.FC = () => {
   return (
     <div
       style={{
         width: 'calc(100% - 250px)', // Exclude sidebar width
-        backgroundColor: 'white', // Header background color
-        height: '60px', // Header height
+        backgroundColor: 'white',
+        height: '60px',
         display: 'flex',
         justifyContent: 'flex-end', // Align icons to the right
         alignItems: 'center',
@@ -35,7 +32,7 @@ const Header: React.FC = () => {
           icon={<InfoCircleOutlined />}
           shape="circle"
           size="small"
-          type="text" // Use "text" type for the ghost-like effect
+          type="text"
         />
       </Space>
     </div>

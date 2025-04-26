@@ -1,12 +1,11 @@
-// src/components/GrouperCard/Metrics.tsx
 import React from 'react';
 import { Typography } from 'antd';
-import { MetricInterface } from "../../interfaces/common";
+import { MetricInterface } from '../../interfaces/common';
 
 const { Text } = Typography;
 
 const Metric: React.FC<MetricInterface> = ({ label, value }) => (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
     <Text style={{ fontSize: '20px', fontWeight: 'bold' }}>{value}</Text>
     <div>
       <Text style={{ fontSize: '12px', fontWeight: 'bold' }}>{label}</Text>
@@ -14,7 +13,7 @@ const Metric: React.FC<MetricInterface> = ({ label, value }) => (
         From Last Sync
       </Text>
     </div>
-    </div>
+  </div>
 );
 
 export default Metric;

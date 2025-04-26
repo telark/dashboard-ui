@@ -1,52 +1,52 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import { Card, Typography, Modal, message, Popover } from 'antd';
-import { 
+import {
   CheckCircleOutlined,
+  WarningOutlined,
   CloseCircleOutlined,
-  InfoCircleOutlined, 
-  EyeOutlined, 
-  SyncOutlined, 
-  DeleteOutlined 
+  InfoCircleOutlined,
+  EyeOutlined,
+  SyncOutlined,
+  DeleteOutlined,
 } from '@ant-design/icons';
 
-import StatusButton from '../Buttons/StatusButton';
-import TimeAgo from "../Time/TimeAgo";
-import Metric from '../Common/Metric';
-import { DEFAULT_COLORS } from "../../config";
-import { GrouperInterface } from "../../interfaces/grouper";
-import { CapitalizeFirstLetter } from "../../utils/helpers/index";
-
+import StatusButton from '../buttons/StatusButton';
+import TimeAgo from '../time/TimeAgo';
+import Metric from '../common/Metric';
+import { DEFAULT_COLORS } from '../../constants';
+import { GrouperInterface } from '../../interfaces/grouper';
+import { CapitalizeFirstLetter } from '../../utils/helpers';
 
 const { Title, Text } = Typography;
 
-
 const GrouperCard: React.FC<GrouperInterface> = ({
-  name = 'Unknown', // Default to 'Unknown' if name is missing
-  status = 'Inactive', // Default to 'Inactive'
+  name = 'Unknown',
+  maintenance = null,
+  status = 'Inactive',
   numberOfWorkloads = 0,
   numberOfBridges = 0,
   creationTime = '',
   icon,
 }) => {
-  // Modal state for delete confirmation
   const [isModalVisible, setModalVisible] = useState(false);
   const navigate = useNavigate();
-  
 
-  const statusStyle = status === 'Active'
-    ? { color: DEFAULT_COLORS.SUCCESS, borderColor: DEFAULT_COLORS.SUCCESS, icon: <CheckCircleOutlined /> }
-    : { color: DEFAULT_COLORS.DEFAULT, borderColor: DEFAULT_COLORS.DEFAULT, icon: <CloseCircleOutlined /> };
+  const statusStyle =
+    status === 'Active'
+      ? {
+          color: DEFAULT_COLORS.SUCCESS,
+          borderColor: DEFAULT_COLORS.SUCCESS,
+          icon: <CheckCircleOutlined />,
+        }
+      : {
+          color: DEFAULT_COLORS.DEFAULT,
+          borderColor: DEFAULT_COLORS.DEFAULT,
+          icon: <CloseCircleOutlined />,
+        };
 
-
-  // Sync Action
   const handleSync = () => message.success('Sync Completed Successfully!');
-  
-  // View Details Actions
-  const handleView = () => {navigate(`/groupers/${name}/details`);};
-
-  // Delete Action
+  const handleView = () => navigate(`/groupers/${name}/details`);
   const handleDelete = () => setModalVisible(true);
   const handleConfirmDelete = () => {
     setModalVisible(false);
@@ -56,7 +56,6 @@ const GrouperCard: React.FC<GrouperInterface> = ({
 
   return (
     <>
-      {/* Modal for delete confirmation */}
       <Modal
         title="Delete Grouper"
         open={isModalVisible}
@@ -72,102 +71,152 @@ const GrouperCard: React.FC<GrouperInterface> = ({
       <Card
         style={{
           width: '100%',
-          marginBottom: '20px',
-          borderRadius: '12px',
-          boxShadow: '0 2px 6px rgba(0, 0, 0, 0.08)',
-          border: '1px solid #f0f0f0',
-          padding: '12px',
+          maxWidth: '600px',
+          borderRadius: '15px',
+          boxShadow: '0 10px 24px rgba(0, 0, 0, 0.08)',
+          border: 'none',
+          padding: '28px',
           position: 'relative',
-          
+          background: '#fff',
+          transition: 'transform 0.2s ease-in-out',
         }}
-        styles={{ body: {paddingBottom: '18px' }}}
+        hoverable
         actions={[
           <Popover content="View Details" trigger="hover">
-          <EyeOutlined
-            key="view"
-            style={{
-              fontSize: '16px',
-              cursor: 'pointer',
-              transition: 'color 0.3s',
-            }}
-            onClick={handleView}
-            onMouseOver={(e) => (e.currentTarget.style.color = statusStyle.color)}
-            onMouseOut={(e) => (e.currentTarget.style.color = '')}
-          />
+            <EyeOutlined
+              key="view"
+              style={{
+                fontSize: '16px',
+                cursor: 'pointer',
+                transition: 'color 0.3s, transform 0.3s',
+              }}
+              onClick={handleView}
+              onMouseOver={(e) => {
+                e.currentTarget.style.color = statusStyle.color;
+                e.currentTarget.style.transform = 'scale(1.1)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.color = '';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            />
           </Popover>,
           <Popover content="Sync Grouper" trigger="hover">
-          <SyncOutlined
-            key="sync"
-            style={{
-              fontSize: '16px',
-              cursor: 'pointer',
-              transition: 'color 0.3s',
-            }}
-            onClick={handleSync}
-            onMouseOver={(e) => (e.currentTarget.style.color = statusStyle.color)}
-            onMouseOut={(e) => (e.currentTarget.style.color = '')}
-          />
+            <SyncOutlined
+              key="sync"
+              style={{
+                fontSize: '16px',
+                cursor: 'pointer',
+                transition: 'color 0.3s, transform 0.3s',
+              }}
+              onClick={handleSync}
+              onMouseOver={(e) => {
+                e.currentTarget.style.color = statusStyle.color;
+                e.currentTarget.style.transform = 'scale(1.1)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.color = '';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            />
           </Popover>,
           <Popover content="Delete Grouper" trigger="hover">
-          <DeleteOutlined
-            key="delete"
-            style={{
-              fontSize: '16px',
-              cursor: 'pointer',
-              color: DEFAULT_COLORS.ERROR,
-              transition: 'color 0.3s',
-            }}
-            onClick={handleDelete}
-            onMouseOver={(e) => (e.currentTarget.style.color = statusStyle.color)}
-            onMouseOut={(e) => (e.currentTarget.style.color = DEFAULT_COLORS.ERROR)}
-          />
+            <DeleteOutlined
+              key="delete"
+              style={{
+                fontSize: '16px',
+                cursor: 'pointer',
+                color: DEFAULT_COLORS.DANGER,
+                transition: 'color 0.3s, transform 0.3s',
+              }}
+              onClick={handleDelete}
+              onMouseOver={(e) => {
+                e.currentTarget.style.color = statusStyle.color;
+                e.currentTarget.style.transform = 'scale(1.1)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.color = DEFAULT_COLORS.DANGER;
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            />
           </Popover>,
         ]}
       >
-        {/* Top-right Section: Status Button and Info Icon */}
-        <div style={{ position: 'absolute', top: '16px', right: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        {/* Top-right icons */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '14px',
+            zIndex: 2,
+          }}
+        >
           <StatusButton status={status} icon={statusStyle.icon} />
+          {maintenance?.status === 'Active' && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: '#fef4e5',
+                color: '#faad14',
+                padding: '6px 12px',
+                borderRadius: '50px',
+                fontSize: '12px',
+                fontWeight: '600',
+              }}
+            >
+              <WarningOutlined style={{ fontSize: '18px' }} />
+              Maintenance Mode
+            </div>
+          )}
           <Popover content="Grouper presents Namespace" trigger="hover">
             <InfoCircleOutlined style={{ fontSize: '16px', color: '#888', cursor: 'pointer' }} />
           </Popover>
         </div>
 
-        {/* Header Section */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-          <div
-            style={{
-              backgroundColor: statusStyle.color,
-              padding: '10px',
-              borderRadius: '50%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            {React.cloneElement(icon, { style: { fontSize: '18px', color: '#fff' } })}
-          </div>
-
-          <div>
-            <Title level={5} style={{ margin: 0, fontSize: '16px', fontWeight: '600', lineHeight: '20px' }}>
-              {CapitalizeFirstLetter(name)}
-            </Title>
-            <Text style={{ marginTop: '2px', color: DEFAULT_COLORS.DEFAULT, fontSize: '12px' }}><TimeAgo date={creationTime}></TimeAgo></Text>
-          </div>
-        </div>
-
-        {/* Metrics Section */}
-        <div
+        {/* Card Main Content */}
+        <div style={{ marginTop: '20px' }}>
+          {/* Header */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+            <div
               style={{
+                backgroundColor: statusStyle.color,
+                padding: '12px',
+                borderRadius: '50%',
                 display: 'flex',
-                justifyContent: 'space-between',
-                marginTop: '1px',
-                gap: '24px',
-                paddingTop: '16px',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
-              <Metric label="Workloads" value={numberOfWorkloads} />
-              <Metric label="Bridges" value={numberOfBridges} />
-             </div>
+              {React.cloneElement(icon, { style: { fontSize: '20px', color: '#fff' } })}
+            </div>
+            <div>
+              <Title level={5} style={{ margin: 0, fontSize: '17px', fontWeight: '600' }}>
+                {CapitalizeFirstLetter(name)}
+              </Title>
+              <Text style={{ color: DEFAULT_COLORS.DEFAULT, fontSize: '12px' }}>
+                <TimeAgo date={creationTime} />
+              </Text>
+            </div>
+          </div>
+
+          {/* Metrics */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              paddingTop: '18px',
+              gap: '24px',
+            }}
+          >
+            <Metric label="Workloads" value={numberOfWorkloads} />
+            <Metric label="Bridges" value={numberOfBridges} />
+          </div>
+        </div>
       </Card>
     </>
   );

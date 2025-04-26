@@ -1,5 +1,5 @@
 import { Avatar, Typography } from "antd";
-import { DEFAULT_COLORS } from "../../config";
+import { DEFAULT_COLORS } from "../../../constants";
 
 const { Text } = Typography;
 
