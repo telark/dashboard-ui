@@ -7,6 +7,7 @@ export interface GrouperState {
 
 export interface GrouperInterface {
   name: string;
+  maintenance: Maintenance | null;
   status: 'Active' | 'Inactive';
   numberOfWorkloads: number;
   numberOfBridges: number;
@@ -18,4 +19,10 @@ export interface GrouperInterface {
   sync: any | null;
   icon: JSX.Element;
 }
-  
+
+export interface Maintenance {
+  name: string;
+  status: string;
+  deleteAction: string;
+  updateAction: string;
+}
