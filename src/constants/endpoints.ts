@@ -1,13 +1,19 @@
 export const Endpoints = {
   GROUPERS: {
-    GET_ALL: 'resources/groupers/get',
-    GET_DETAILS: (name: string) => `resources/groupers/${name}/get`,
-    UPDATE_SYNC: (name: string) => `resources/groupers/${name}/update/sync`,
+    GET_ALL: { path: 'resources/groupers/get', method: 'GET' },
+    GET_DETAILS: (name: string) => ({
+      path: `resources/groupers/${name}/get`,
+      method: 'GET',
+    }),
+    UPDATE_SYNC: (name: string) => ({
+      path: `resources/groupers/${name}/update/sync`,
+      method: 'POST',
+    }),
   },
   GROUPER_MAINTENANCE: {
-    CHECK: (name: string) => `feats/maintenance/${name}/get`,
-    ENABLE: 'feats/maintenance/grouper/enable',
-    UPDATE: 'feats/maintenance/grouper/update',
-    REMOVE: 'feats/maintenance/grouper/remove',
+    CHECK: (name: string) => ({ path: `feats/maintenance/${name}/get`, method: 'GET' }),
+    ENABLE: { path: 'feats/maintenance/grouper/enable', method: 'POST' },
+    UPDATE: { path: 'feats/maintenance/grouper/update', method: 'PUT' },
+    REMOVE: { path: 'feats/maintenance/grouper/remove', method: 'DELETE' },
   },
 };

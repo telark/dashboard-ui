@@ -9,8 +9,9 @@ export const enableGrouperMaintenanceMode = async (
   deleteAction: boolean
 ) => {
   try {
-    return await Client<any>(configuratorApiClient, Endpoints.GROUPER_MAINTENANCE.ENABLE, {
-      method: 'POST',
+    const { path, method } = Endpoints.GROUPER_MAINTENANCE.ENABLE;
+    return await Client<any>(configuratorApiClient, path, {
+      method: method,
       data: {
         name: grouperName,
         type: resourceType,
@@ -31,8 +32,9 @@ export const updateGrouperMaintenanceMode = async (
   deleteAction: boolean
 ) => {
   try {
-    return await Client<any>(configuratorApiClient, Endpoints.GROUPER_MAINTENANCE.UPDATE, {
-      method: 'PUT',
+    const { path, method } = Endpoints.GROUPER_MAINTENANCE.UPDATE;
+    return await Client<any>(configuratorApiClient, path, {
+      method: method,
       data: {
         name: grouperName,
         spec: {
@@ -52,8 +54,9 @@ export const removeGrouperMaintenanceMode = async (
   grouperName: string,
 ) => {
   try {
-    return await Client<any>(configuratorApiClient, Endpoints.GROUPER_MAINTENANCE.REMOVE, {
-      method: 'DELETE',
+    const { path, method } = Endpoints.GROUPER_MAINTENANCE.REMOVE
+    return await Client<any>(configuratorApiClient, path, {
+      method: method,
       data: {
         name: grouperName,
       },

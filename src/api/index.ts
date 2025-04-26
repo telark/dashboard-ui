@@ -1,16 +1,17 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { EXPORTER_API, CONFIGURATOR_API, API_TIMEOUT } from '../constants/api';
 
 const exporterApiClient: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:58588/api/v1',
-  timeout: 10000,
+  baseURL: EXPORTER_API.BASE_URL,
+  timeout: API_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 const configuratorApiClient: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:58553/api/v1',
-  timeout: 10000,
+  baseURL: CONFIGURATOR_API.BASE_URL,
+  timeout: API_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
   },
