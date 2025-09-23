@@ -28,12 +28,7 @@ const Header: React.FC = () => {
           size="small"
           type="text" // Use "text" type for the ghost-like effect
         />
-        <Button
-          icon={<InfoCircleOutlined />}
-          shape="circle"
-          size="small"
-          type="text"
-        />
+        <Button icon={<InfoCircleOutlined />} shape="circle" size="small" type="text" />
       </Space>
     </div>
   );

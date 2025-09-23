@@ -23,7 +23,7 @@ exporterApiClient.interceptors.response.use(
   (error) => {
     console.error('API Error:', error.response?.data?.message || error.message);
     return Promise.reject(error); // Return original error
-  }
+  },
 );
 
 // Interceptor for handling responses on the configuratorApiClient
@@ -32,13 +32,13 @@ configuratorApiClient.interceptors.response.use(
   (error) => {
     console.error('API Error:', error.response?.data?.message || error.message);
     return Promise.reject(error);
-  }
+  },
 );
 
 export const Client = async <T>(
   client: AxiosInstance,
   url: string,
-  config: AxiosRequestConfig = { method: 'GET' }
+  config: AxiosRequestConfig = { method: 'GET' },
 ): Promise<T> => {
   const response = await client(url, config);
   return response.data;

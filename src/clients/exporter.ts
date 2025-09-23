@@ -23,7 +23,7 @@ export const fetchGrouperDetails = async (name: string) => {
 // Update Grouper Sync Mode
 export const updateGrouperSyncMode = async (name: string, syncMode: string) => {
   try {
-    const { path, method } = Endpoints.GROUPERS.UPDATE_SYNC(name)
+    const { path, method } = Endpoints.GROUPERS.UPDATE_SYNC(name);
     return await Client<any>(exporterApiClient, path, {
       method: method,
       data: { sync: { mode: syncMode } },

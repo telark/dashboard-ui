@@ -16,8 +16,8 @@ const SidebarButton: React.FC<ButtonInterface> = ({ text, icon, active, hoverIco
         backgroundColor: active
           ? DEFAULT_COLORS.SUCCESS
           : isHovered
-          ? DEFAULT_COLORS.SUCCESS
-          : 'transparent',
+            ? DEFAULT_COLORS.SUCCESS
+            : 'transparent',
         color: active ? 'white' : isHovered ? 'white' : 'inherit',
         padding: '12px 16px',
         borderRadius: '8px',

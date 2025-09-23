@@ -48,9 +48,7 @@ const SyncMode: React.FC<SyncModeProps> = ({
           </div>
 
           <div style={{ flexGrow: 1 }}>
-            <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 600 }}>
-              {SYNC_MODE.title}
-            </h2>
+            <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 600 }}>{SYNC_MODE.title}</h2>
             <p style={{ marginTop: '10px', fontSize: '14px', color: '#555', lineHeight: '1.6' }}>
               {SYNC_MODE.description}
             </p>
