@@ -42,8 +42,12 @@ export const GrouperDetailsHook = () => {
     if (maintenance) {
       setHasMaintenanceData(true);
       setIsMaintenanceModeActive(maintenance.status === 'Active');
-      setMaintenanceUpdateAction(maintenance.updateAction === 'allow');
-      setMaintenanceDeleteAction(maintenance.deleteAction === 'allow');
+      setMaintenanceUpdateAction(
+        maintenance.updateAction === 'allow' || maintenance.updateAction === true,
+      );
+      setMaintenanceDeleteAction(
+        maintenance.deleteAction === 'allow' || maintenance.deleteAction === true,
+      );
     } else {
       setHasMaintenanceData(false);
       setIsMaintenanceModeActive(false);
@@ -68,8 +72,14 @@ export const GrouperDetailsHook = () => {
 
     if (grouperDetails?.maintenance?.status === 'Active') {
       setIsMaintenanceModeActive(true);
-      setMaintenanceUpdateAction(grouperDetails.maintenance?.updateAction === 'allow');
-      setMaintenanceDeleteAction(grouperDetails.maintenance?.deleteAction === 'allow');
+      setMaintenanceUpdateAction(
+        grouperDetails.maintenance?.updateAction === 'allow' ||
+          (grouperDetails.maintenance?.updateAction as any) === true,
+      );
+      setMaintenanceDeleteAction(
+        grouperDetails.maintenance?.deleteAction === 'allow' ||
+          (grouperDetails.maintenance?.deleteAction as any) === true,
+      );
     } else {
       setIsMaintenanceModeActive(false);
     }
@@ -126,7 +136,7 @@ export const GrouperDetailsHook = () => {
           }),
         ).unwrap();
         if (response.status === 200) {
-          message.success('Maintenance mode enabled successfully!');
+          message.success('Maintenance mode updated successfully!');
         } else {
           throw new Error('Unexpected response status');
         }
@@ -148,19 +158,20 @@ export const GrouperDetailsHook = () => {
         }
       }
 
-      // Update the maintenance state in grouperDetails after successfully enabling maintenance mode
-      const updatedGrouperDetails = {
-        ...grouperDetails,
-        maintenance: {
-          ...grouperDetails.maintenance,
-          status: 'Active',
-          updateAction: maintenaceUpdateAction ? 'allow' : 'deny',
-          deleteAction: maintenaceDeleteAction ? 'allow' : 'deny',
-        },
-      };
-
-      // Dispatch an action to update the Redux store with the new maintenance state
-      dispatch(fetchGrouperDetailsThunk(name!)); // Optionally re-fetch the details if needed
+      // Re-fetch details and sync local switches with the latest server state
+      const refreshed = await dispatch(fetchGrouperDetailsThunk(name!)).unwrap();
+      if (refreshed?.maintenance) {
+        setHasMaintenanceData(true);
+        setIsMaintenanceModeActive(refreshed.maintenance.status === 'Active');
+        setMaintenanceUpdateAction(
+          refreshed.maintenance.updateAction === 'allow' ||
+            (refreshed.maintenance.updateAction as any) === true,
+        );
+        setMaintenanceDeleteAction(
+          refreshed.maintenance.deleteAction === 'allow' ||
+            (refreshed.maintenance.deleteAction as any) === true,
+        );
+      }
       setIsMaintenanceModalVisible(false);
     } catch (error) {
       console.error('Failed to handle maintenance mode update', error);
