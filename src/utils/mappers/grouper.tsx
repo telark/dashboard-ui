@@ -25,14 +25,18 @@ export const mapGroupersData = (data: any): any[] => {
 };
 
 export const mapSingleGrouperData = (item: any, maintenance: Maintenance | null): any => {
+  // New API shape: { facid: {...}, cacid: {...} } without config
   if (!item || !item.fasid || !item.cacid || !item.config) {
     throw new Error('Missing expected data in the response.');
   }
 
+  const workloads = item.cacid?.workloads || [];
+  const bridges = item.cacid?.bridges || [];
+
   return {
     name: item.fasid.name,
     kind: item.fasid.type,
-    status: item.cacid.status,
+    status: item.cacid.status || 'Unknown',
     numberOfWorkloads: item.cacid.workloads?.length || 0,
     numberOfBridges: item.cacid.bridges?.length || 0,
     creationTime: item.fasid.creationTime,
