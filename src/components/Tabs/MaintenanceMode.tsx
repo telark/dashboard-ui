@@ -49,10 +49,7 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
     setAdvancedOptionsVisible(!isAdvancedOptionsVisible);
   };
 
-  // Handle checkbox changes for workloads and services
-  const handleOptionChange = (checkedValues: string[]) => {
-    setSelectedOptions(checkedValues);
-  };
+  // Note: option change handler is currently inlined where needed
 
   return (
     <div

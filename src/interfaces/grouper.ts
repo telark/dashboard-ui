@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 export interface GrouperState {
   groupers: any[];
   details: any | null;
@@ -13,11 +14,11 @@ export interface GrouperInterface {
   numberOfBridges: number;
   creationTime: string;
   lastUpdateTime: string;
-  history: any[];
-  workloads: any[];
-  bridges: any[];
-  sync: any | null;
-  icon: React.ReactElement;
+  history: unknown[];
+  workloads: unknown[];
+  bridges: unknown[];
+  sync: unknown | null;
+  icon: ReactNode;
 }
 
 export interface Maintenance {

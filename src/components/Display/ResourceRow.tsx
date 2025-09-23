@@ -16,7 +16,9 @@ const ResourceRow: React.FC<ResourceRowInterface> = ({ name, lastSync, type, sta
       <Button
         icon={<EyeOutlined />}
         type="link"
-        onClick={() => console.log('View details for', name)}
+        onClick={() => {
+          // future: open details drawer
+        }}
       />
     </td>
   </tr>
