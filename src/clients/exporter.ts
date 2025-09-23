@@ -26,7 +26,7 @@ export const updateGrouperSyncMode = async (name: string, syncMode: string) => {
     const { path, method } = Endpoints.GROUPERS.UPDATE_SYNC(name);
     return await Client<any>(exporterApiClient, path, {
       method: method,
-      data: { sync: { mode: syncMode } },
+      data: { spec: { config: { sync: { mode: syncMode } } } },
     });
   } catch (error) {
     console.error(`[APIClient] Failed to update sync mode for "${name}":`, error);

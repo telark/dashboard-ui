@@ -6,8 +6,8 @@ export const Endpoints = {
       method: 'GET',
     }),
     UPDATE_SYNC: (name: string) => ({
-      path: `resources/groupers/${name}/update/sync`,
-      method: 'POST',
+      path: `resources/groupers/${name}/patch`,
+      method: 'PATCH',
     }),
   },
   GROUPER_MAINTENANCE: {
