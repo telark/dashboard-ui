@@ -1,8 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Spin, message } from 'antd';
+import { Spin, message, Empty, Result, Button, Skeleton } from 'antd';
 
-import { fetchAllGroupersThunk, checkGrouperMaintenanceModeThunk } from '../../store/slices/grouperSlice';
+import {
+  fetchAllGroupersThunk,
+  checkGrouperMaintenanceModeThunk,
+} from '../../store/slices/grouperSlice';
 import GrouperCard from '../../components/cards/GrouperCard';
 import { RootState, AppDispatch } from '../../store';
 
@@ -10,18 +13,18 @@ const Groupers: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const { groupers, loading, error } = useSelector((state: RootState) => state.grouper);
 
-  useEffect(() => {
-    const fetchAndCheck = async () => {
-      const result = await dispatch(fetchAllGroupersThunk());
-
-      if (fetchAllGroupersThunk.fulfilled.match(result)) {
-        result.payload.forEach((grouper: any) => {
-          dispatch(checkGrouperMaintenanceModeThunk(grouper.name));
-        });
-      }
-    };
-    fetchAndCheck();
+  const loadGroupers = useCallback(async () => {
+    const result = await dispatch(fetchAllGroupersThunk());
+    if (fetchAllGroupersThunk.fulfilled.match(result)) {
+      result.payload.forEach((grouper: any) => {
+        dispatch(checkGrouperMaintenanceModeThunk(grouper.name));
+      });
+    }
   }, [dispatch]);
+
+  useEffect(() => {
+    loadGroupers();
+  }, [loadGroupers]);
 
   useEffect(() => {
     if (error) {
@@ -31,8 +34,79 @@ const Groupers: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ textAlign: 'center', padding: '20px' }}>
-        <Spin size="large" />
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 0fr))',
+          gap: '16px',
+          padding: '20px',
+          marginTop: '60px',
+        }}
+      >
+        {Array.from({ length: 6 }).map((_, idx) => (
+          <div
+            key={idx}
+            style={{
+              width: '100%',
+              maxWidth: '600px',
+              borderRadius: '15px',
+              boxShadow: '0 10px 24px rgba(0, 0, 0, 0.08)',
+              border: 'none',
+              padding: '28px',
+              background: '#fff',
+            }}
+          >
+            <Skeleton active paragraph={{ rows: 3 }} title />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '60vh',
+          padding: '20px',
+        }}
+      >
+        <Result
+          status="500"
+          title="Unable to load Groupers"
+          subTitle={String(error)}
+          extra={
+            <Button type="primary" onClick={loadGroupers}>
+              Retry
+            </Button>
+          }
+        />
+      </div>
+    );
+  }
+
+  if (!loading && groupers.length === 0) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '60vh',
+          padding: '20px',
+        }}
+      >
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description="No groupers to display yet"
+        >
+          <Button type="primary" onClick={loadGroupers}>
+            Retry
+          </Button>
+        </Empty>
       </div>
     );
   }
@@ -48,7 +122,7 @@ const Groupers: React.FC = () => {
       }}
     >
       {groupers.map((grouper, index) => (
-        <GrouperCard key={index} {...grouper} />
+        <GrouperCard key={grouper?.name ?? index} {...grouper} />
       ))}
     </div>
   );

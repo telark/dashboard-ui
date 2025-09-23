@@ -6,7 +6,7 @@ export const enableGrouperMaintenanceMode = async (
   grouperName: string,
   resourceType: string,
   updateAction: boolean,
-  deleteAction: boolean
+  deleteAction: boolean,
 ) => {
   try {
     const { path, method } = Endpoints.GROUPER_MAINTENANCE.ENABLE;
@@ -29,7 +29,7 @@ export const enableGrouperMaintenanceMode = async (
 export const updateGrouperMaintenanceMode = async (
   grouperName: string,
   updateAction: boolean,
-  deleteAction: boolean
+  deleteAction: boolean,
 ) => {
   try {
     const { path, method } = Endpoints.GROUPER_MAINTENANCE.UPDATE;
@@ -50,11 +50,9 @@ export const updateGrouperMaintenanceMode = async (
 };
 
 // Remove Grouper Maintenance Mode
-export const removeGrouperMaintenanceMode = async (
-  grouperName: string,
-) => {
+export const removeGrouperMaintenanceMode = async (grouperName: string) => {
   try {
-    const { path, method } = Endpoints.GROUPER_MAINTENANCE.REMOVE
+    const { path, method } = Endpoints.GROUPER_MAINTENANCE.REMOVE;
     return await Client<any>(configuratorApiClient, path, {
       method: method,
       data: {

@@ -4,7 +4,7 @@ import { DEFAULT_COLORS } from '../../constants';
 
 interface StatusButtonProps {
   status: 'Active' | 'Inactive';
-  icon: JSX.Element;
+  icon: React.ReactElement;
 }
 
 const StatusButton: React.FC<StatusButtonProps> = ({ status, icon }) => {
@@ -26,7 +26,7 @@ const StatusButton: React.FC<StatusButtonProps> = ({ status, icon }) => {
         alignItems: 'center',
       }}
     >
-      {React.cloneElement(icon, { style: { marginRight: '4px' } })} {status}
+      <span style={{ display: 'inline-flex', marginRight: '4px' }}>{icon}</span> {status}
     </Button>
   );
 };

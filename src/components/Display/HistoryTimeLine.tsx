@@ -20,7 +20,7 @@ const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
 
   // Sort records by creationTime in ascending order (oldest first)
   const sortedRecords = [...Records].sort(
-    (a, b) => new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime()
+    (a, b) => new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime(),
   );
 
   // Get last 5 records for the main timeline

@@ -192,7 +192,9 @@ const GrouperCard: React.FC<GrouperInterface> = ({
                 alignItems: 'center',
               }}
             >
-              {React.cloneElement(icon, { style: { fontSize: '20px', color: '#fff' } })}
+              <span style={{ display: 'inline-flex', fontSize: '20px', color: '#fff' }}>
+                {icon}
+              </span>
             </div>
             <div>
               <Title level={5} style={{ margin: 0, fontSize: '17px', fontWeight: '600' }}>

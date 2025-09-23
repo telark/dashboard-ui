@@ -214,7 +214,9 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
                     onChange={(e) => {
                       const checked = e.target.checked;
                       setSelectedOptions((prev) =>
-                        checked ? [...prev, 'workload'] : prev.filter((item) => item !== 'workload')
+                        checked
+                          ? [...prev, 'workload']
+                          : prev.filter((item) => item !== 'workload'),
                       );
                     }}
                   >
@@ -228,7 +230,7 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
                     onChange={(e) => {
                       const checked = e.target.checked;
                       setSelectedOptions((prev) =>
-                        checked ? [...prev, 'service'] : prev.filter((item) => item !== 'service')
+                        checked ? [...prev, 'service'] : prev.filter((item) => item !== 'service'),
                       );
                     }}
                   >

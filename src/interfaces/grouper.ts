@@ -17,7 +17,7 @@ export interface GrouperInterface {
   workloads: any[];
   bridges: any[];
   sync: any | null;
-  icon: JSX.Element;
+  icon: React.ReactElement;
 }
 
 export interface Maintenance {

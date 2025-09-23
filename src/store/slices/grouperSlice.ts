@@ -5,10 +5,10 @@ import {
   updateGrouperSyncMode,
   checkGrouperMaintenanceMode,
 } from '../../clients/exporter';
-import { 
+import {
   enableGrouperMaintenanceMode,
   updateGrouperMaintenanceMode,
-  removeGrouperMaintenanceMode
+  removeGrouperMaintenanceMode,
 } from '../../clients/configurator';
 import {
   mapGrouperMaintenanceData,
@@ -36,7 +36,7 @@ export const fetchAllGroupersThunk = createAsyncThunk(
       console.error('Error fetching groupers:', error);
       return rejectWithValue(error.message || 'Failed to fetch groupers');
     }
-  }
+  },
 );
 
 // Thunk for updating grouper sync mode
@@ -50,7 +50,7 @@ export const updateGrouperSyncModeThunk = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to update sync settings.');
     }
-  }
+  },
 );
 
 // Thunk for checking Grouper Maintenance Mode
@@ -64,7 +64,7 @@ export const checkGrouperMaintenanceModeThunk = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch maintenance mode status.');
     }
-  }
+  },
 );
 
 // Thunk for enabling grouper MaintenanceMode
@@ -82,14 +82,14 @@ export const enableGrouperMaintenanceModeThunk = createAsyncThunk(
       updateAction: boolean;
       deleteAction: boolean;
     },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const response = await enableGrouperMaintenanceMode(
         generateGrouperName(grouperName),
         resourceType,
         updateAction,
-        deleteAction
+        deleteAction,
       );
       return {
         status: response.status,
@@ -98,7 +98,7 @@ export const enableGrouperMaintenanceModeThunk = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to enable maintenance mode.');
     }
-  }
+  },
 );
 
 // Thunk for updating Grouper Maintenance Mode
@@ -114,13 +114,13 @@ export const updateGrouperMaintenanceModeThunk = createAsyncThunk(
       updateAction: boolean;
       deleteAction: boolean;
     },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const response = await updateGrouperMaintenanceMode(
         generateMaintenanceFeatureName(grouperName),
         updateAction,
-        deleteAction
+        deleteAction,
       );
       return {
         status: response.status,
@@ -128,21 +128,23 @@ export const updateGrouperMaintenanceModeThunk = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to update maintenance mode.');
     }
-  }
+  },
 );
 
 export const removeGrouperMaintenanceModeThunk = createAsyncThunk(
   'grouper/removeMaintenanceMode',
   async (grouperName: string, { rejectWithValue }) => {
     try {
-      const response = await removeGrouperMaintenanceMode(generateMaintenanceFeatureName(grouperName));
+      const response = await removeGrouperMaintenanceMode(
+        generateMaintenanceFeatureName(grouperName),
+      );
       return {
         status: response.status,
       };
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to delete maintenance mode.');
     }
-  }
+  },
 );
 
 // Thunk to fetch grouper details
@@ -178,7 +180,7 @@ export const fetchGrouperDetailsThunk = createAsyncThunk(
       console.error('Error fetching grouper details:', error);
       return rejectWithValue('Failed to fetch grouper details');
     }
-  }
+  },
 );
 
 const grouperSlice = createSlice({
@@ -244,12 +246,12 @@ const grouperSlice = createSlice({
         (state, action: PayloadAction<Maintenance>) => {
           const maintenanceData = action.payload;
           const index = state.groupers.findIndex(
-            (grouper) => generateMaintenanceFeatureName(grouper.name) === maintenanceData.name
+            (grouper) => generateMaintenanceFeatureName(grouper.name) === maintenanceData.name,
           );
           if (index !== -1) {
             state.groupers[index].maintenance = maintenanceData;
           }
-        }
+        },
       )
       .addCase(updateGrouperMaintenanceModeThunk.pending, (state) => {
         state.loading = true;
@@ -264,7 +266,7 @@ const grouperSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(removeGrouperMaintenanceModeThunk.fulfilled, (state, action: PayloadAction<any>) => {
-        state.groupers = state.groupers.filter(g => g.name !== action.payload.name);
+        state.groupers = state.groupers.filter((g) => g.name !== action.payload.name);
         if (state.details?.name === action.payload.name) {
           state.details = null;
         }
