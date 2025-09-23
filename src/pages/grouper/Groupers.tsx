@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Spin, message, Empty, Result, Button, Skeleton } from 'antd';
+import { Spin, message, Result, Button, Skeleton } from 'antd';
+import { InboxOutlined, WarningTwoTone } from '@ant-design/icons';
 
 import {
   fetchAllGroupersThunk,
@@ -70,12 +71,15 @@ const Groupers: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: '60vh',
+          minHeight: 'calc(100vh - 60px)',
+          marginTop: '60px',
+          width: '100%',
           padding: '20px',
         }}
       >
         <Result
-          status="500"
+          status="error"
+          icon={<WarningTwoTone twoToneColor="#faad14" style={{ fontSize: '48px' }} />}
           title="Unable to load Groupers"
           subTitle={String(error)}
           extra={
@@ -95,18 +99,22 @@ const Groupers: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: '60vh',
+          minHeight: 'calc(100vh - 60px)',
+          marginTop: '60px',
+          width: '100%',
           padding: '20px',
         }}
       >
-        <Empty
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-          description="No groupers to display yet"
-        >
-          <Button type="primary" onClick={loadGroupers}>
-            Retry
-          </Button>
-        </Empty>
+        <Result
+          icon={<InboxOutlined style={{ fontSize: '48px', color: '#1677ff' }} />}
+          title="No groupers found"
+          subTitle="Connect your first cluster or try again later."
+          extra={
+            <Button type="primary" onClick={loadGroupers}>
+              Retry
+            </Button>
+          }
+        />
       </div>
     );
   }
