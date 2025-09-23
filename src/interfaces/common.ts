@@ -1,9 +1,11 @@
+import type { ReactNode } from 'react';
+
 export interface LoadingButtonInterface {
   action: string;
   loading?: boolean;
   loadingLabel: string;
   onClick: () => void;
-  icon: React.ReactNode;
+  icon: ReactNode;
   color?: string;
   disabled?: boolean;
 }
@@ -11,7 +13,7 @@ export interface LoadingButtonInterface {
 export interface NoLoadingButtonInterface {
   action: string;
   onClick: () => void;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   color?: string;
   disabled?: boolean;
 }
@@ -37,9 +39,9 @@ export interface GeneralInfoInterface {
 
 export interface ButtonInterface {
   text: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   active?: boolean;
-  hoverIcon?: React.ReactNode;
+  hoverIcon?: ReactNode;
   route: string;
 }
 

@@ -30,9 +30,6 @@ export const mapSingleGrouperData = (item: any, maintenance: Maintenance | null)
     throw new Error('Missing expected data in the response.');
   }
 
-  const workloads = item.cacid?.workloads || [];
-  const bridges = item.cacid?.bridges || [];
-
   return {
     name: item.fasid.name,
     kind: item.fasid.type,

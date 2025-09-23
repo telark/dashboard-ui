@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Spin, message, Result, Button, Skeleton } from 'antd';
+import { message, Result, Button, Skeleton } from 'antd';
 import { InboxOutlined, WarningTwoTone } from '@ant-design/icons';
 
 import {

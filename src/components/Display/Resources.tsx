@@ -24,12 +24,13 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
   };
 
   const handleSync = (resourceName: string) => {
-    console.log(`Syncing resource: ${resourceName}`);
-    // Implement sync functionality here
+    void resourceName;
+    // future: implement sync functionality
   };
 
   const handleDelete = (resourceName: string) => {
-    console.log(`Deleting resource: ${resourceName}`);
+    void resourceName;
+    // future: delete resource
   };
 
   const handleView = (resourceName: string) => {

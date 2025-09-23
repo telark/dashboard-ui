@@ -82,7 +82,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
         }}
         hoverable
         actions={[
-          <Popover content="View Details" trigger="hover">
+          <Popover key="view-pop" content="View Details" trigger="hover">
             <EyeOutlined
               key="view"
               style={{
@@ -101,7 +101,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
               }}
             />
           </Popover>,
-          <Popover content="Sync Grouper" trigger="hover">
+          <Popover key="sync-pop" content="Sync Grouper" trigger="hover">
             <SyncOutlined
               key="sync"
               style={{
@@ -120,7 +120,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
               }}
             />
           </Popover>,
-          <Popover content="Delete Grouper" trigger="hover">
+          <Popover key="delete-pop" content="Delete Grouper" trigger="hover">
             <DeleteOutlined
               key="delete"
               style={{
