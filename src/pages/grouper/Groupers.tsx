@@ -9,7 +9,7 @@ import {
   triggerGroupersSyncThunk,
   refreshAutoGroupersThunk,
 } from '../../store/slices/grouperSlice';
-import { GROUPERS_REFRESH_INTERVAL_MS } from '../../constants/sync';
+import { GROUPERS_REFRESH_INTERVAL_MS, GROUPERS_SYNC_LS_KEY, GROUPERS_SYNC_THROTTLE_MS } from '../../constants/sync';
 import GrouperCard from '../../components/cards/GrouperCard';
 import { RootState, AppDispatch } from '../../store';
 
@@ -34,8 +34,19 @@ const Groupers: React.FC = () => {
       await loadGroupers();
       if (!hasTriggeredInitialSync.current) {
         hasTriggeredInitialSync.current = true;
-        // After the first fetch, trigger sync-manager to refresh server-side state
-        dispatch(triggerGroupersSyncThunk());
+        // Throttle sync trigger to once every GROUPERS_SYNC_THROTTLE_MS using localStorage
+        try {
+          const now = Date.now();
+          const lastStr = localStorage.getItem(GROUPERS_SYNC_LS_KEY);
+          const last = lastStr ? parseInt(lastStr, 10) : 0;
+          if (!last || now - last >= GROUPERS_SYNC_THROTTLE_MS) {
+            dispatch(triggerGroupersSyncThunk());
+            localStorage.setItem(GROUPERS_SYNC_LS_KEY, String(now));
+          }
+        } catch (_) {
+          // Fallback without persistence
+          dispatch(triggerGroupersSyncThunk());
+        }
       }
     })();
   }, [loadGroupers]);
