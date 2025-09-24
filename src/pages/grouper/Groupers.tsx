@@ -22,7 +22,9 @@ const Groupers: React.FC = () => {
     const result = await dispatch(fetchAllGroupersThunk());
     if (fetchAllGroupersThunk.fulfilled.match(result)) {
       result.payload.forEach((grouper: any) => {
-        dispatch(checkGrouperMaintenanceModeThunk(grouper.name));
+        if (grouper?.hasMaintenance) {
+          dispatch(checkGrouperMaintenanceModeThunk(grouper.name));
+        }
       });
     }
   }, [dispatch]);

@@ -19,6 +19,7 @@ export const mapGroupersData = (data: any): any[] => {
       workloads: item.cacid?.workloads || [],
       bridges: item.cacid?.bridges || [],
       sync: item.config?.sync || null,
+      hasMaintenance: Boolean(item.config?.maintenance),
       icon: <ApartmentOutlined style={{ fontSize: '15px', color: DEFAULT_COLORS.SUCCESS }} />,
     };
   });
@@ -42,6 +43,7 @@ export const mapSingleGrouperData = (item: any, maintenance: Maintenance | null)
     workloads: item.cacid?.workloads || [],
     bridges: item.cacid?.bridges || [],
     sync: item.config?.sync || null,
+    hasMaintenance: Boolean(item.config?.maintenance),
     maintenance: maintenance,
   };
 };
