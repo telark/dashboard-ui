@@ -1,5 +1,3 @@
-import { ApartmentOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../constants';
 import { Maintenance } from '../../interfaces/grouper';
 
 export const mapGroupersData = (data: any): any[] => {
@@ -20,7 +18,6 @@ export const mapGroupersData = (data: any): any[] => {
       bridges: item.cacid?.bridges || [],
       sync: item.config?.sync || null,
       hasMaintenance: Boolean(item.config?.maintenance),
-      icon: <ApartmentOutlined style={{ fontSize: '15px', color: DEFAULT_COLORS.SUCCESS }} />,
     };
   });
 };

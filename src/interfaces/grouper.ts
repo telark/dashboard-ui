@@ -19,7 +19,6 @@ export interface GrouperInterface {
   bridges: unknown[];
   sync: unknown | null;
   hasMaintenance?: boolean;
-  icon: ReactNode;
 }
 
 export interface Maintenance {

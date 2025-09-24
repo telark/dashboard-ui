@@ -44,7 +44,8 @@ export const checkGrouperMaintenanceMode = async (name: string) => {
   } catch (error) {
     // If maintenance feature is not found, treat as no maintenance (null), not an error
     const axiosErr = error as any;
-    if (axiosErr?.response?.status === 404) {
+    const status = axiosErr?.response?.status ?? axiosErr?.normalized?.status;
+    if (status === 404) {
       return { data: null } as any;
     }
     console.error(`[APIClient] Failed to fetch maintenance mode for "${name}":`, error);
