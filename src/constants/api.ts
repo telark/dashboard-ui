@@ -17,3 +17,12 @@ export const EXPORTER_API = {
     return `${this.HOST}:${this.PORT}/api/${this.API_VERSION}`;
   },
 };
+
+export const SYNC_MANAGER_API = {
+  HOST: 'http://localhost',
+  PORT: 8004,
+  API_VERSION: 'v1',
+  get BASE_URL() {
+    return `${this.HOST}:${this.PORT}/api/${this.API_VERSION}`;
+  },
+};
