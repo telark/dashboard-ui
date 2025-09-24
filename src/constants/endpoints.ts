@@ -10,6 +10,9 @@ export const Endpoints = {
       method: 'PATCH',
     }),
   },
+  SYNC: {
+    GROUPERS: { path: 'resources/groupers/sync', method: 'POST' },
+  },
   GROUPER_MAINTENANCE: {
     CHECK: (name: string) => ({ path: `feats/maintenance/${name}/get`, method: 'GET' }),
     ENABLE: { path: 'feats/maintenance/grouper/enable', method: 'POST' },

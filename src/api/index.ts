@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { EXPORTER_API, CONFIGURATOR_API, API_TIMEOUT } from '../constants/api';
+import { EXPORTER_API, CONFIGURATOR_API, SYNC_MANAGER_API, API_TIMEOUT } from '../constants/api';
 
 const exporterApiClient: AxiosInstance = axios.create({
   baseURL: EXPORTER_API.BASE_URL,
@@ -17,11 +17,24 @@ const configuratorApiClient: AxiosInstance = axios.create({
   },
 });
 
+const syncManagerApiClient: AxiosInstance = axios.create({
+  baseURL: SYNC_MANAGER_API.BASE_URL,
+  timeout: API_TIMEOUT,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
 // Interceptor for handling responses on the exporterApiClient
 exporterApiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error) => {
-    console.error('API Error:', error.response?.data?.message || error.message);
+    // Suppress noisy logs for explicitly silenced 404s (e.g., missing maintenance feature)
+    const isSilent404 =
+      error?.response?.status === 404 && error?.config?.headers?.['X-Silent-404'] === 'true';
+    if (!isSilent404) {
+      console.error('API Error:', error.response?.data?.message || error.message);
+    }
     return Promise.reject(error); // Return original error
   },
 );
@@ -44,4 +57,4 @@ export const Client = async <T>(
   return response.data;
 };
 
-export { exporterApiClient, configuratorApiClient };
+export { exporterApiClient, configuratorApiClient, syncManagerApiClient };

@@ -5,6 +5,7 @@ import {
   updateGrouperSyncMode,
   checkGrouperMaintenanceMode,
 } from '../../clients/exporter';
+import { triggerGroupersSync } from '../../clients/sync-manager';
 import {
   enableGrouperMaintenanceMode,
   updateGrouperMaintenanceMode,
@@ -35,6 +36,33 @@ export const fetchAllGroupersThunk = createAsyncThunk(
     } catch (error: any) {
       console.error('Error fetching groupers:', error);
       return rejectWithValue(error.message || 'Failed to fetch groupers');
+    }
+  },
+);
+
+// Trigger sync on sync-manager
+export const triggerGroupersSyncThunk = createAsyncThunk(
+  'groupers/triggerSync',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await triggerGroupersSync();
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to trigger groupers sync');
+    }
+  },
+);
+
+// Refresh only auto-sync groupers (server already filters by auto)
+export const refreshAutoGroupersThunk = createAsyncThunk(
+  'groupers/refreshAuto',
+  async (_, { rejectWithValue }) => {
+    try {
+      const rawGroupersData = await fetchGroupers();
+      // Server filters to auto only; mapping keeps same shape
+      return mapGroupersData(rawGroupersData);
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to refresh auto groupers');
     }
   },
 );
@@ -204,6 +232,31 @@ const grouperSlice = createSlice({
       })
       .addCase(fetchAllGroupersThunk.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
+        state.error = action.payload;
+      })
+      // Trigger Sync (no state changes, but could be used for UI feedback)
+      .addCase(triggerGroupersSyncThunk.rejected, (state, action: PayloadAction<any>) => {
+        state.error = action.payload;
+      })
+      // Refresh Auto Groupers merges list; respects manual by omission
+      .addCase(refreshAutoGroupersThunk.fulfilled, (state, action: PayloadAction<any[]>) => {
+        const incoming = action.payload || [];
+        const autoIncoming = incoming.filter((g: any) => g?.sync?.mode === 'auto');
+        const manualExisting = state.groupers.filter((g: any) => g?.sync?.mode === 'manual');
+
+        // Merge by name: auto items replaced from server; manual items preserved as-is
+        const autoByName: Record<string, any> = {};
+        for (const g of autoIncoming) {
+          if (g?.name) autoByName[g.name] = g;
+        }
+
+        // Keep manual entries as-is; add any auto entries
+        state.groupers = [
+          ...Object.values(autoByName),
+          ...manualExisting,
+        ];
+      })
+      .addCase(refreshAutoGroupersThunk.rejected, (state, action: PayloadAction<any>) => {
         state.error = action.payload;
       })
       // Update Grouper Sync

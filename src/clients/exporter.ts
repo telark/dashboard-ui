@@ -37,8 +37,16 @@ export const updateGrouperSyncMode = async (name: string, syncMode: string) => {
 // Check Grouper Maintenance Mode
 export const checkGrouperMaintenanceMode = async (name: string) => {
   try {
-    return await Client<any>(exporterApiClient, Endpoints.GROUPER_MAINTENANCE.CHECK(name).path);
+    return await Client<any>(exporterApiClient, Endpoints.GROUPER_MAINTENANCE.CHECK(name).path, {
+      // Mark this request so 404 can be handled gracefully without noisy logs
+      headers: { 'X-Silent-404': 'true' },
+    });
   } catch (error) {
+    // If maintenance feature is not found, treat as no maintenance (null), not an error
+    const axiosErr = error as any;
+    if (axiosErr?.response?.status === 404) {
+      return { data: null } as any;
+    }
     console.error(`[APIClient] Failed to fetch maintenance mode for "${name}":`, error);
     throw error;
   }

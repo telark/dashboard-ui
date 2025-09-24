@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { message, Result, Button, Skeleton } from 'antd';
 import { InboxOutlined, WarningTwoTone } from '@ant-design/icons';
@@ -6,13 +6,17 @@ import { InboxOutlined, WarningTwoTone } from '@ant-design/icons';
 import {
   fetchAllGroupersThunk,
   checkGrouperMaintenanceModeThunk,
+  triggerGroupersSyncThunk,
+  refreshAutoGroupersThunk,
 } from '../../store/slices/grouperSlice';
+import { GROUPERS_REFRESH_INTERVAL_MS } from '../../constants/sync';
 import GrouperCard from '../../components/cards/GrouperCard';
 import { RootState, AppDispatch } from '../../store';
 
 const Groupers: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const { groupers, loading, error } = useSelector((state: RootState) => state.grouper);
+  const hasTriggeredInitialSync = useRef(false);
 
   const loadGroupers = useCallback(async () => {
     const result = await dispatch(fetchAllGroupersThunk());
@@ -24,8 +28,22 @@ const Groupers: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    loadGroupers();
+    (async () => {
+      await loadGroupers();
+      if (!hasTriggeredInitialSync.current) {
+        hasTriggeredInitialSync.current = true;
+        // After the first fetch, trigger sync-manager to refresh server-side state
+        dispatch(triggerGroupersSyncThunk());
+      }
+    })();
   }, [loadGroupers]);
+  // Poll only auto-sync groupers, aligned with sync-manager fetch interval
+  useEffect(() => {
+    const interval = setInterval(() => {
+      dispatch(refreshAutoGroupersThunk());
+    }, GROUPERS_REFRESH_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [dispatch]);
 
   useEffect(() => {
     if (error) {
