@@ -50,12 +50,24 @@ const Groupers: React.FC = () => {
       }
     })();
   }, [loadGroupers]);
-  // Poll only auto-sync groupers, aligned with sync-manager fetch interval
+  // Poll only auto-sync groupers, aligned to exact interval boundaries
   useEffect(() => {
-    const interval = setInterval(() => {
+    let intervalId: number | undefined;
+    const now = Date.now();
+    const remainder = now % GROUPERS_REFRESH_INTERVAL_MS;
+    const initialDelay = remainder === 0 ? GROUPERS_REFRESH_INTERVAL_MS : GROUPERS_REFRESH_INTERVAL_MS - remainder;
+
+    const timeoutId = window.setTimeout(() => {
       dispatch(refreshAutoGroupersThunk());
-    }, GROUPERS_REFRESH_INTERVAL_MS);
-    return () => clearInterval(interval);
+      intervalId = window.setInterval(() => {
+        dispatch(refreshAutoGroupersThunk());
+      }, GROUPERS_REFRESH_INTERVAL_MS);
+    }, initialDelay);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      if (intervalId) window.clearInterval(intervalId);
+    };
   }, [dispatch]);
 
   useEffect(() => {
