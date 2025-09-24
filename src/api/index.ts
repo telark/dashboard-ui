@@ -25,15 +25,32 @@ const syncManagerApiClient: AxiosInstance = axios.create({
   },
 });
 
+// Helpers to normalize error handling
+const normalizeError = (error: any) => {
+  const status = error?.response?.status ?? null;
+  const message = error?.response?.data?.message || error?.message || 'Unknown error';
+  const url = error?.config?.url ?? '';
+  const method = error?.config?.method ?? '';
+  const isNotFound = status === 404;
+  const isClient = status != null && status >= 400 && status < 500;
+  const isServer = status != null && status >= 500;
+  const isNetwork = !status && error?.code === 'ERR_NETWORK';
+  return { status, message, url, method, isNotFound, isClient, isServer, isNetwork };
+};
+
 // Interceptor for handling responses on the exporterApiClient
 exporterApiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error) => {
-    // Suppress noisy logs for explicitly silenced 404s (e.g., missing maintenance feature)
-    const isSilent404 =
-      error?.response?.status === 404 && error?.config?.headers?.['X-Silent-404'] === 'true';
-    if (!isSilent404) {
-      console.error('API Error:', error.response?.data?.message || error.message);
+    const meta = normalizeError(error);
+    (error as any).normalized = meta;
+    const isSilent404 = meta.isNotFound && error?.config?.headers?.['X-Silent-404'] === 'true';
+    if (meta.isNotFound) {
+      if (!isSilent404) console.warn('API Warning (404):', meta);
+    } else if (meta.isNetwork) {
+      console.error('API Network Error:', meta);
+    } else {
+      console.error('API Error:', meta);
     }
     return Promise.reject(error); // Return original error
   },
@@ -43,7 +60,32 @@ exporterApiClient.interceptors.response.use(
 configuratorApiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error) => {
-    console.error('API Error:', error.response?.data?.message || error.message);
+    const meta = normalizeError(error);
+    (error as any).normalized = meta;
+    if (meta.isNotFound) {
+      console.warn('API Warning (404):', meta);
+    } else if (meta.isNetwork) {
+      console.error('API Network Error:', meta);
+    } else {
+      console.error('API Error:', meta);
+    }
+    return Promise.reject(error);
+  },
+);
+
+// Interceptor for handling responses on the syncManagerApiClient
+syncManagerApiClient.interceptors.response.use(
+  (response: AxiosResponse) => response,
+  (error) => {
+    const meta = normalizeError(error);
+    (error as any).normalized = meta;
+    if (meta.isNotFound) {
+      console.warn('API Warning (404):', meta);
+    } else if (meta.isNetwork) {
+      console.error('API Network Error:', meta);
+    } else {
+      console.error('API Error:', meta);
+    }
     return Promise.reject(error);
   },
 );
