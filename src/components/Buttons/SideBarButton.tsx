@@ -8,8 +8,12 @@ const SidebarButton: React.FC<ButtonInterface> = ({ text, icon, active, hoverIco
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate(); // For navigation
 
+  const itemKey = `${route || 'route-missing'}-${text || 'text-missing'}`;
+
   return (
     <Menu.Item
+      key={itemKey}
+      eventKey={itemKey}
       icon={isHovered && hoverIcon ? hoverIcon : icon} // Ensure that hoverIcon exists before changing
       onClick={() => navigate(route)} // Handle navigation on click
       style={{
