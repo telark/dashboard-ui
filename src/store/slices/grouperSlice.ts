@@ -185,22 +185,24 @@ export const fetchGrouperDetailsThunk = createAsyncThunk(
 
       // Fetch the maintenance data separately
       let maintenance: Maintenance | null = null;
-      try {
-        const maintenanceFeatureName = generateMaintenanceFeatureName(name);
-        const maintenanceResponse = await checkGrouperMaintenanceMode(maintenanceFeatureName);
-
-        // Map maintenance data if available
-        maintenance = maintenanceResponse.data
-          ? {
-              name: maintenanceResponse.data.name,
-              status: maintenanceResponse.data.status,
-              deleteAction: maintenanceResponse.data.delete,
-              updateAction: maintenanceResponse.data.update,
-            }
-          : null; // If no maintenance data, pass null
-      } catch (maintenanceError) {
-        console.warn('Failed to fetch maintenance data:', maintenanceError);
-        maintenance = null; // Set maintenance to null if request fails
+      const hasMaintenance = Boolean(response.data?.config?.maintenance);
+      if (hasMaintenance) {
+        try {
+          const maintenanceFeatureName = generateMaintenanceFeatureName(name);
+          const maintenanceResponse = await checkGrouperMaintenanceMode(maintenanceFeatureName);
+          // Map maintenance data if available
+          maintenance = maintenanceResponse.data
+            ? {
+                name: maintenanceResponse.data.name,
+                status: maintenanceResponse.data.status,
+                deleteAction: maintenanceResponse.data.delete,
+                updateAction: maintenanceResponse.data.update,
+              }
+            : null; // If no maintenance data, pass null
+        } catch (maintenanceError) {
+          console.warn('Failed to fetch maintenance data:', maintenanceError);
+          maintenance = null; // Set maintenance to null if request fails
+        }
       }
 
       return mapSingleGrouperData(response.data, maintenance);
