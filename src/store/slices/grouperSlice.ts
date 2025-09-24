@@ -244,19 +244,20 @@ const grouperSlice = createSlice({
       .addCase(refreshAutoGroupersThunk.fulfilled, (state, action: PayloadAction<any[]>) => {
         const incoming = action.payload || [];
         const autoIncoming = incoming.filter((g: any) => g?.sync?.mode === 'auto');
-        const manualExisting = state.groupers.filter((g: any) => g?.sync?.mode === 'manual');
-
         // Merge by name: auto items replaced from server; manual items preserved as-is
         const autoByName: Record<string, any> = {};
         for (const g of autoIncoming) {
           if (g?.name) autoByName[g.name] = g;
         }
 
-        // Keep manual entries as-is; add any auto entries
-        state.groupers = [
-          ...Object.values(autoByName),
-          ...manualExisting,
-        ];
+        // Keep manual entries that aren't also present as auto with same name
+        const manualExistingFiltered = state.groupers.filter((g: any) => {
+          const isManual = g?.sync?.mode === 'manual';
+          const name = g?.name;
+          return isManual && name && !autoByName[name];
+        });
+
+        state.groupers = [...Object.values(autoByName), ...manualExistingFiltered];
       })
       .addCase(refreshAutoGroupersThunk.rejected, (state, action: PayloadAction<any>) => {
         state.error = action.payload;
