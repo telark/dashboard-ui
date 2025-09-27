@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Typography, Modal, message, Popover } from 'antd';
+import { Card, Typography, Modal, message, Popover, Spin } from 'antd';
 import {
   CheckCircleOutlined,
   WarningOutlined,
@@ -18,6 +18,7 @@ import Metric from '../common/Metric';
 import { DEFAULT_COLORS } from '../../constants';
 import { GrouperInterface } from '../../interfaces/grouper';
 import { CapitalizeFirstLetter } from '../../utils/helpers';
+import { triggerSingleGrouperSync } from '../../clients/sync-manager';
 
 const { Title, Text } = Typography;
 
@@ -30,6 +31,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
   creationTime = '',
 }) => {
   const [isModalVisible, setModalVisible] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const navigate = useNavigate();
 
   const statusStyle =
@@ -45,7 +47,22 @@ const GrouperCard: React.FC<GrouperInterface> = ({
           icon: <CloseCircleOutlined />,
         };
 
-  const handleSync = () => message.success('Sync Completed Successfully!');
+  const handleSync = async () => {
+    try {
+      setSyncing(true);
+      const res = await triggerSingleGrouperSync(name);
+      const phase = res?.data?.phase ?? 'Unknown';
+      const effect = res?.data?.syncEffect ?? 'Unknown';
+      message.success(`${phase} - ${effect}`);
+    } catch (err: any) {
+      const phase = err?.response?.data?.data?.phase;
+      const effect = err?.response?.data?.data?.syncEffect;
+      const msg = err?.response?.data?.message || err?.message || 'Sync failed';
+      message.error(`${phase || 'Failed'} - ${effect || msg}`);
+    } finally {
+      setSyncing(false);
+    }
+  };
   const handleView = () => navigate(`/groupers/${name}/details`);
   const handleDelete = () => setModalVisible(true);
   const handleConfirmDelete = () => {
@@ -97,19 +114,27 @@ const GrouperCard: React.FC<GrouperInterface> = ({
             />
           </Popover>,
           <Popover key="sync-pop" content="Sync Grouper" trigger="hover">
-            <SyncOutlined
-              key="sync"
-              style={{ fontSize: '16px', cursor: 'pointer', transition: 'color 0.3s, transform 0.3s' }}
-              onClick={handleSync}
-              onMouseOver={(e) => {
-                e.currentTarget.style.color = statusStyle.color;
-                e.currentTarget.style.transform = 'scale(1.1)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.color = '';
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
-            />
+            <span
+              onClick={syncing ? undefined : handleSync}
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 16, height: 16, cursor: syncing ? 'default' : 'pointer' }}
+            >
+              {syncing ? (
+                <Spin size="small" />
+              ) : (
+                <SyncOutlined
+                  key="sync"
+                  style={{ fontSize: '16px', transition: 'color 0.3s, transform 0.3s' }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.color = statusStyle.color;
+                    e.currentTarget.style.transform = 'scale(1.1)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.color = '';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                />
+              )}
+            </span>
           </Popover>,
           <Popover key="delete-pop" content="Delete Grouper" trigger="hover">
             <DeleteOutlined
