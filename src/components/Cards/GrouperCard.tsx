@@ -9,6 +9,7 @@ import {
   EyeOutlined,
   SyncOutlined,
   DeleteOutlined,
+  AppstoreOutlined,
 } from '@ant-design/icons';
 
 import StatusButton from '../buttons/StatusButton';
@@ -27,7 +28,6 @@ const GrouperCard: React.FC<GrouperInterface> = ({
   numberOfWorkloads = 0,
   numberOfBridges = 0,
   creationTime = '',
-  icon,
 }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const navigate = useNavigate();
@@ -71,25 +71,20 @@ const GrouperCard: React.FC<GrouperInterface> = ({
       <Card
         style={{
           width: '100%',
-          maxWidth: '600px',
-          borderRadius: '15px',
-          boxShadow: '0 10px 24px rgba(0, 0, 0, 0.08)',
+          borderRadius: '12px',
+          boxShadow: '0 8px 20px rgba(0, 0, 0, 0.06)',
           border: 'none',
-          padding: '28px',
           position: 'relative',
           background: '#fff',
           transition: 'transform 0.2s ease-in-out',
         }}
+        bodyStyle={{ padding: '22px 24px 6px' }}
         hoverable
         actions={[
           <Popover key="view-pop" content="View Details" trigger="hover">
             <EyeOutlined
               key="view"
-              style={{
-                fontSize: '16px',
-                cursor: 'pointer',
-                transition: 'color 0.3s, transform 0.3s',
-              }}
+              style={{ fontSize: '16px', cursor: 'pointer', transition: 'color 0.3s, transform 0.3s' }}
               onClick={handleView}
               onMouseOver={(e) => {
                 e.currentTarget.style.color = statusStyle.color;
@@ -104,11 +99,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
           <Popover key="sync-pop" content="Sync Grouper" trigger="hover">
             <SyncOutlined
               key="sync"
-              style={{
-                fontSize: '16px',
-                cursor: 'pointer',
-                transition: 'color 0.3s, transform 0.3s',
-              }}
+              style={{ fontSize: '16px', cursor: 'pointer', transition: 'color 0.3s, transform 0.3s' }}
               onClick={handleSync}
               onMouseOver={(e) => {
                 e.currentTarget.style.color = statusStyle.color;
@@ -123,12 +114,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
           <Popover key="delete-pop" content="Delete Grouper" trigger="hover">
             <DeleteOutlined
               key="delete"
-              style={{
-                fontSize: '16px',
-                cursor: 'pointer',
-                color: DEFAULT_COLORS.DANGER,
-                transition: 'color 0.3s, transform 0.3s',
-              }}
+              style={{ fontSize: '16px', cursor: 'pointer', color: DEFAULT_COLORS.DANGER, transition: 'color 0.3s, transform 0.3s' }}
               onClick={handleDelete}
               onMouseOver={(e) => {
                 e.currentTarget.style.color = statusStyle.color;
@@ -146,11 +132,11 @@ const GrouperCard: React.FC<GrouperInterface> = ({
         <div
           style={{
             position: 'absolute',
-            top: '20px',
+            top: '16px',
             right: '24px',
             display: 'flex',
             alignItems: 'center',
-            gap: '14px',
+            gap: '10px',
             zIndex: 2,
           }}
         >
@@ -160,16 +146,16 @@ const GrouperCard: React.FC<GrouperInterface> = ({
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
+                gap: '6px',
                 backgroundColor: '#fef4e5',
                 color: '#faad14',
-                padding: '6px 12px',
+                padding: '4px 10px',
                 borderRadius: '50px',
                 fontSize: '12px',
                 fontWeight: '600',
               }}
             >
-              <WarningOutlined style={{ fontSize: '18px' }} />
+              <WarningOutlined style={{ fontSize: '16px' }} />
               Maintenance Mode
             </div>
           )}
@@ -179,25 +165,26 @@ const GrouperCard: React.FC<GrouperInterface> = ({
         </div>
 
         {/* Card Main Content */}
-        <div style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '4px' }}>
           {/* Header */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
             <div
               style={{
-                backgroundColor: statusStyle.color,
-                padding: '12px',
+                backgroundColor: 'rgba(32, 201, 151, 0.12)',
+                padding: '10px',
                 borderRadius: '50%',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
+                boxShadow: 'inset 0 0 0 2px rgba(32,201,151,0.18)',
               }}
             >
-              <span style={{ display: 'inline-flex', fontSize: '20px', color: '#fff' }}>
-                {icon}
+              <span style={{ display: 'inline-flex', fontSize: '18px', color: DEFAULT_COLORS.SUCCESS }}>
+                <AppstoreOutlined />
               </span>
             </div>
             <div>
-              <Title level={5} style={{ margin: 0, fontSize: '17px', fontWeight: '600' }}>
+              <Title level={5} style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>
                 {CapitalizeFirstLetter(name)}
               </Title>
               <Text style={{ color: DEFAULT_COLORS.DEFAULT, fontSize: '12px' }}>
@@ -211,8 +198,8 @@ const GrouperCard: React.FC<GrouperInterface> = ({
             style={{
               display: 'flex',
               justifyContent: 'space-between',
-              paddingTop: '18px',
-              gap: '24px',
+              paddingTop: '8px',
+              gap: '20px',
             }}
           >
             <Metric label="Workloads" value={numberOfWorkloads} />
