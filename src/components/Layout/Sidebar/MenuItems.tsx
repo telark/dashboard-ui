@@ -12,7 +12,7 @@ const MenuItems = () => {
     <div>
       {/* Dashboard Button */}
       <Menu mode="inline" style={{ backgroundColor: 'white', borderRight: 'none' }}>
-        <SidebarButton text="Dashboard" icon={<DashboardOutlined />} active route="/none" />
+        <SidebarButton text="Dashboard" icon={<DashboardOutlined />} active route="/" />
       </Menu>
 
       {/* Divider */}

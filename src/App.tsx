@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/layout/sidebar/Sidebar';
 import Header from './components/layout/header/Header';
 import Groupers from './pages/grouper/Groupers';
+import Dashboard from './pages/Dashboard';
 import GrouperDetails from './pages/grouper/GrouperDetails';
 import ErrorBoundary from './ErrorBoundary';
 import 'antd/dist/reset.css';
@@ -17,6 +18,7 @@ const App: React.FC = () => {
           <Layout style={{ marginLeft: 250, height: '100vh' }}>
             <Header />
             <Routes>
+              <Route path="/" element={<Dashboard />} />
               <Route path="/groupers" element={<Groupers />} />
               <Route path="/groupers/:name/details" element={<GrouperDetails />} />
             </Routes>
