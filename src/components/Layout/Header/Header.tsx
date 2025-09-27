@@ -7,7 +7,7 @@ const Header: React.FC = () => {
   return (
     <div
       style={{
-        width: 'calc(100% - 260px)', // Exclude sidebar width
+        width: 'calc(100% - var(--sidebar-width))', // Exclude sidebar width
         backgroundColor: 'white',
         height: '60px',
         display: 'flex',
@@ -15,9 +15,10 @@ const Header: React.FC = () => {
         alignItems: 'center',
         padding: '10px',
         position: 'fixed',
-        left: '260px', // Offset from the left edge (next to the sidebar)
+        left: 'var(--sidebar-width)', // Offset from the left edge (next to the sidebar)
         top: '0',
         zIndex: 1000,
+        transition: 'left 0.3s ease, width 0.3s ease',
       }}
     >
       {/* Action Buttons */}
