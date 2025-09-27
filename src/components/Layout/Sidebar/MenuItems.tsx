@@ -3,24 +3,25 @@ import { AppstoreOutlined, DeploymentUnitOutlined, BranchesOutlined } from '@ant
 import SidebarButton from '../../buttons/SideBarButton';
 import { useLocation } from 'react-router-dom';
 
-const MenuItems = () => {
+interface MenuItemsProps {
+  isCollapsed?: boolean;
+}
+
+const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
   const location = useLocation();
   const pathname = location.pathname;
   return (
     <div>
-      {/* Dashboard Button */}
-      <Menu mode="inline" style={{ backgroundColor: 'white', borderRight: 'none', padding: 0 }}>
-        <SidebarButton text="Home" icon={<AppstoreOutlined />} active={pathname === '/'} route="/" />
-      </Menu>
-
-      {/* Divider */}
-      <Divider style={{ margin: '16px 0', borderColor: '#E0E0E0' }} />
-
-      {/* Other Menu Buttons */}
-      <Menu mode="inline" style={{ backgroundColor: 'white', borderRight: 'none', padding: 0 }}>
-        <SidebarButton text="Groupers" icon={<AppstoreOutlined />} active={pathname.startsWith('/groupers')} route="/groupers" />
-        <SidebarButton text="Workloads" icon={<DeploymentUnitOutlined />} active={pathname === '/none-workloads'} route="/none-workloads" />
-        <SidebarButton text="Bridges" icon={<BranchesOutlined />} active={pathname === '/none-bridges'} route="/none-bridges" />
+      {/* All Menu Buttons */}
+      <Menu
+        mode="inline"
+        inlineCollapsed={isCollapsed}
+        style={{ backgroundColor: 'white', borderRight: 'none', padding: 0, marginRight: -12 }}
+      >
+        <SidebarButton text={"Home"} icon={<AppstoreOutlined />} active={pathname === '/'} route="/" isCollapsed={isCollapsed} />
+        <SidebarButton text={"Groupers"} icon={<AppstoreOutlined />} active={pathname.startsWith('/groupers')} route="/groupers" isCollapsed={isCollapsed} />
+        <SidebarButton text={"Workloads"} icon={<DeploymentUnitOutlined />} active={pathname === '/none-workloads'} route="/none-workloads" isCollapsed={isCollapsed} />
+        <SidebarButton text={"Bridges"} icon={<BranchesOutlined />} active={pathname === '/none-bridges'} route="/none-bridges" isCollapsed={isCollapsed} />
       </Menu>
     </div>
   );
