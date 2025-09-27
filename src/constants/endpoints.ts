@@ -12,6 +12,7 @@ export const Endpoints = {
   },
   SYNC: {
     GROUPERS: { path: 'resources/groupers/sync', method: 'POST' },
+    GROUPER: (name: string) => ({ path: `resources/groupers/${name}/sync`, method: 'POST' }),
   },
   GROUPER_MAINTENANCE: {
     CHECK: (name: string) => ({ path: `feats/maintenance/${name}/get`, method: 'GET' }),
