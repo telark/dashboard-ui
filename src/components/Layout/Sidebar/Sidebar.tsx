@@ -1,5 +1,5 @@
 import { Layout } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import UserBlock from './UserBlock';
 import MenuItems from './MenuItems';
 
@@ -7,9 +7,17 @@ const { Sider } = Layout;
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const widthExpanded = 260;
+  const widthCollapsed = 80;
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--sidebar-width', `${isCollapsed ? widthCollapsed : widthExpanded}px`);
+  }, [isCollapsed]);
+
   return (
     <Sider
-      width={isCollapsed ? 80 : 260}
+      width={isCollapsed ? widthCollapsed : widthExpanded}
       collapsed={isCollapsed}
       style={{
         height: '100vh', // Ensure it takes up the full height of the screen
@@ -19,13 +27,13 @@ const Sidebar = () => {
         top: 0, // Align the sidebar from the top
         zIndex: 1, // Ensure it stays above the content
         paddingTop: '20px', // Add padding to the top for spacing
-        paddingLeft: isCollapsed ? '0px' : '12px', // Ensure there is space on the left of the content
+        paddingLeft: '12px', // Keep consistent padding
         paddingRight: 0, // Flush items to the right edge
         overflow: 'hidden', // prevent inner margins from creating gutters
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between', // Ensures bottom alignment
-        transition: 'all 0.3s ease',
+        transition: 'width 0.3s ease',
       }}
     >
       {/* Top Section */}
@@ -59,14 +67,12 @@ const Sidebar = () => {
             padding: '8px 0',
             position: 'fixed',
             bottom: '20px',
-            left: isCollapsed ? '30px' : '30px',
-            width: isCollapsed ? '20px' : 'auto',
-            justifyContent: isCollapsed ? 'center' : 'flex-start',
+            left: '30px',
             height: 40,
             transition: 'all 0.3s ease',
           }}
         >
-          <span style={{ fontSize: 20, transform: isCollapsed ? 'rotate(0deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }}>
+          <span style={{ fontSize: 20 }}>
             {isCollapsed ? '›' : '‹'}
           </span>
           {!isCollapsed && <span>Hide</span>}
