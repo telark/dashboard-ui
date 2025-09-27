@@ -35,3 +35,20 @@ export const SYNC_MODE = {
   autoSyncTextOff: 'Off',
   syncModeActive: 'Sync Mode is Active',
 };
+
+// Friendly toast messages for single-grouper sync
+export const SYNC_MESSAGES = {
+  loading: 'Syncing',
+  completed: 'All set. Sync completed.',
+  byEffect: {
+    Changed: 'Updated successfully.',
+    NoUpdate: 'Already up to date.',
+    NewlyCreated: 'Registered successfully.',
+    Deleted: 'Removed successfully.',
+    NotFound: 'Grouper not found.',
+  } as Record<string, string>,
+  byPhase: {
+    NotStarted: 'Nothing to sync yet.',
+    Failed: 'Sync failed. Please try again.',
+  } as Record<string, string>,
+};

@@ -20,6 +20,7 @@ import { GrouperInterface } from '../../interfaces/grouper';
 import { CapitalizeFirstLetter } from '../../utils/helpers';
 import { triggerSingleGrouperSync } from '../../clients/sync-manager';
 import FancySpinner from '../common/FancySpinner';
+import { SYNC_MESSAGES } from '../../constants/modes';
 
 const { Title, Text } = Typography;
 
@@ -56,16 +57,17 @@ const GrouperCard: React.FC<GrouperInterface> = ({
       const apiName = syncName || name;
       console.log('Triggering SyncGrouper for:', apiName);
       const key = `sync-${apiName}`;
-      message.open({ type: 'loading', content: `Syncing ${apiName}…`, key, duration: 0 });
+      message.open({ type: 'loading', content: `${SYNC_MESSAGES.loading} ${apiName}…`, key, duration: 0 });
       const res = await triggerSingleGrouperSync(apiName);
-      const phase = res?.data?.phase ?? 'Unknown';
-      const effect = res?.data?.syncEffect ?? 'Unknown';
-      message.open({ type: 'success', content: `${phase} - ${effect}`, key, duration: 2 });
+      const phase = res?.data?.phase ?? 'Completed';
+      const effect = res?.data?.syncEffect ?? 'NoUpdate';
+      const friendly = SYNC_MESSAGES.byEffect[effect] || SYNC_MESSAGES.completed;
+      message.open({ type: 'success', content: friendly, key, duration: 2 });
     } catch (err: any) {
-      const phase = err?.response?.data?.data?.phase;
-      const effect = err?.response?.data?.data?.syncEffect;
-      const msg = err?.response?.data?.message || err?.message || 'Sync failed';
-      message.open({ type: 'error', content: `${phase || 'Failed'} - ${effect || msg}`, key: 'sync-error', duration: 3 });
+      const phase = err?.response?.data?.data?.phase as string | undefined;
+      const effect = err?.response?.data?.data?.syncEffect as string | undefined;
+      const friendly = (phase && SYNC_MESSAGES.byPhase[phase]) || (effect && SYNC_MESSAGES.byEffect[effect]) || SYNC_MESSAGES.byPhase.Failed;
+      message.open({ type: 'error', content: friendly, key: 'sync-error', duration: 3 });
     } finally {
       setSyncing(false);
     }
