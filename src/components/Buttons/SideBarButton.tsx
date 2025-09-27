@@ -10,27 +10,38 @@ const SidebarButton: React.FC<ButtonInterface> = ({ text, icon, active, hoverIco
 
   const itemKey = `${route || 'route-missing'}-${text || 'text-missing'}`;
 
+  const isActiveOrHovered = Boolean(active) || isHovered;
+  const iconColor = isActiveOrHovered ? DEFAULT_COLORS.SUCCESS : '#5B6B7C';
+  const coloredIcon =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (icon && (React.isValidElement(icon) ? React.cloneElement(icon as any, { style: { color: iconColor } }) : icon)) ||
+    null;
+
   return (
     <Menu.Item
       key={itemKey}
       eventKey={itemKey}
-      icon={isHovered && hoverIcon ? hoverIcon : icon} // Ensure that hoverIcon exists before changing
-      onClick={() => navigate(route)} // Handle navigation on click
+      icon={isHovered && hoverIcon ? hoverIcon : coloredIcon}
+      onClick={() => navigate(route)}
       style={{
-        backgroundColor: active
-          ? DEFAULT_COLORS.SUCCESS
-          : isHovered
-            ? DEFAULT_COLORS.SUCCESS
-            : 'transparent',
-        color: active ? 'white' : isHovered ? 'white' : 'inherit',
-        padding: '12px 16px',
-        borderRadius: '8px',
-        marginBottom: active ? '16px' : '10px',
+        backgroundColor: 'transparent',
+        color: isActiveOrHovered ? DEFAULT_COLORS.SUCCESS : '#0B1F33',
+        padding: '12px 10px',
+        borderRadius: '10px',
+        margin: '6px -12px 6px 6px',
+        height: 46,
+        display: 'flex',
+        alignItems: 'center',
+        fontWeight: 700,
+        fontSize: 16,
         cursor: 'pointer',
-        transition: 'all 0.3s ease',
+        transition: 'all 180ms ease',
+        borderRight: `3px solid ${isActiveOrHovered ? DEFAULT_COLORS.SUCCESS : 'transparent'}`,
+        borderTopRightRadius: 0,
+        borderBottomRightRadius: 0,
       }}
-      onMouseEnter={() => setIsHovered(true)} // Show hover icon on hover
-      onMouseLeave={() => setIsHovered(false)} // Revert icon on mouse leave
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {text}
     </Menu.Item>

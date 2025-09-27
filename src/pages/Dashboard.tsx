@@ -15,7 +15,7 @@ const Dashboard: React.FC = () => {
           alignItems: 'stretch',
         }}
       >
-        <ActionCard title="See Grouper" icon={<AppstoreOutlined />} rightLabel="5 collected" footerTag="Last Sync was 5m ago" />
+        <ActionCard title="See Groupers" icon={<AppstoreOutlined />} rightLabel="5 collected" footerTag="Last Sync was 5m ago" />
         <ActionCard title="See Workloads" icon={<DeploymentUnitOutlined />} rightLabel="5 collected" footerTag="Last Sync was 5m ago" />
         <ActionCard title="See Bridges" icon={<BranchesOutlined />} rightLabel="5 collected" footerTag="Last Sync was 5m ago" />
       </div>
