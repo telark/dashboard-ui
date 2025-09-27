@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { message, Result, Button, Skeleton } from 'antd';
+import { message, Result, Button } from 'antd';
 import { InboxOutlined, WarningTwoTone } from '@ant-design/icons';
 
 import {
@@ -13,6 +13,7 @@ import { GROUPERS_REFRESH_INTERVAL_MS, GROUPERS_SYNC_LS_KEY, GROUPERS_SYNC_THROT
 import GrouperCard from '../../components/cards/GrouperCard';
 import { RootState, AppDispatch } from '../../store';
 import { DEFAULT_COLORS } from '../../constants';
+import FancySpinner from '../../components/common/FancySpinner';
 
 const Groupers: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -93,22 +94,8 @@ const Groupers: React.FC = () => {
   if (loading) {
     return (
       <div style={pageStyle}>
-        <div style={gridStyle}>
-          {Array.from({ length: 6 }).map((_, idx) => (
-            <div
-              key={idx}
-              style={{
-                width: '100%',
-                borderRadius: '12px',
-                boxShadow: '0 8px 20px rgba(0, 0, 0, 0.06)',
-                border: 'none',
-                padding: '20px',
-                background: '#fff',
-              }}
-            >
-              <Skeleton active paragraph={{ rows: 3 }} title />
-            </div>
-          ))}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
+          <FancySpinner label="Loading groupers" />
         </div>
       </div>
     );
