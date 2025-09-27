@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Typography, Modal, message, Popover, Spin } from 'antd';
+import { Card, Typography, Modal, Popover, Spin, App as AntdApp } from 'antd';
 import {
   CheckCircleOutlined,
   WarningOutlined,
@@ -19,6 +19,7 @@ import { DEFAULT_COLORS } from '../../constants';
 import { GrouperInterface } from '../../interfaces/grouper';
 import { CapitalizeFirstLetter } from '../../utils/helpers';
 import { triggerSingleGrouperSync } from '../../clients/sync-manager';
+import FancySpinner from '../common/FancySpinner';
 
 const { Title, Text } = Typography;
 
@@ -29,10 +30,12 @@ const GrouperCard: React.FC<GrouperInterface> = ({
   numberOfWorkloads = 0,
   numberOfBridges = 0,
   creationTime = '',
+  syncName,
 }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const navigate = useNavigate();
+  const { message } = AntdApp.useApp();
 
   const statusStyle =
     status === 'Active'
@@ -50,15 +53,19 @@ const GrouperCard: React.FC<GrouperInterface> = ({
   const handleSync = async () => {
     try {
       setSyncing(true);
-      const res = await triggerSingleGrouperSync(name);
+      const apiName = syncName || name;
+      console.log('Triggering SyncGrouper for:', apiName);
+      const key = `sync-${apiName}`;
+      message.open({ type: 'loading', content: `Syncing ${apiName}…`, key, duration: 0 });
+      const res = await triggerSingleGrouperSync(apiName);
       const phase = res?.data?.phase ?? 'Unknown';
       const effect = res?.data?.syncEffect ?? 'Unknown';
-      message.success(`${phase} - ${effect}`);
+      message.open({ type: 'success', content: `${phase} - ${effect}`, key, duration: 2 });
     } catch (err: any) {
       const phase = err?.response?.data?.data?.phase;
       const effect = err?.response?.data?.data?.syncEffect;
       const msg = err?.response?.data?.message || err?.message || 'Sync failed';
-      message.error(`${phase || 'Failed'} - ${effect || msg}`);
+      message.open({ type: 'error', content: `${phase || 'Failed'} - ${effect || msg}`, key: 'sync-error', duration: 3 });
     } finally {
       setSyncing(false);
     }
@@ -104,33 +111,33 @@ const GrouperCard: React.FC<GrouperInterface> = ({
               style={{ fontSize: '16px', cursor: 'pointer', transition: 'color 0.3s, transform 0.3s' }}
               onClick={handleView}
               onMouseOver={(e) => {
-                e.currentTarget.style.color = statusStyle.color;
-                e.currentTarget.style.transform = 'scale(1.1)';
+                (e.currentTarget as HTMLElement).style.color = statusStyle.color as string;
+                (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)';
               }}
               onMouseOut={(e) => {
-                e.currentTarget.style.color = '';
-                e.currentTarget.style.transform = 'scale(1)';
+                (e.currentTarget as HTMLElement).style.color = '';
+                (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
               }}
             />
           </Popover>,
           <Popover key="sync-pop" content="Sync Grouper" trigger="hover">
             <span
               onClick={syncing ? undefined : handleSync}
-              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 16, height: 16, cursor: syncing ? 'default' : 'pointer' }}
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 18, height: 18, cursor: syncing ? 'default' : 'pointer' }}
             >
               {syncing ? (
-                <Spin size="small" />
+                <FancySpinner showLabel={false} size={22} ringThickness={2} icon={<SyncOutlined />} orbit={false} />
               ) : (
                 <SyncOutlined
                   key="sync"
                   style={{ fontSize: '16px', transition: 'color 0.3s, transform 0.3s' }}
                   onMouseOver={(e) => {
-                    e.currentTarget.style.color = statusStyle.color;
-                    e.currentTarget.style.transform = 'scale(1.1)';
+                    (e.currentTarget as HTMLElement).style.color = statusStyle.color as string;
+                    (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)';
                   }}
                   onMouseOut={(e) => {
-                    e.currentTarget.style.color = '';
-                    e.currentTarget.style.transform = 'scale(1)';
+                    (e.currentTarget as HTMLElement).style.color = '';
+                    (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
                   }}
                 />
               )}
@@ -142,12 +149,12 @@ const GrouperCard: React.FC<GrouperInterface> = ({
               style={{ fontSize: '16px', cursor: 'pointer', color: DEFAULT_COLORS.DANGER, transition: 'color 0.3s, transform 0.3s' }}
               onClick={handleDelete}
               onMouseOver={(e) => {
-                e.currentTarget.style.color = statusStyle.color;
-                e.currentTarget.style.transform = 'scale(1.1)';
+                (e.currentTarget as HTMLElement).style.color = statusStyle.color as string;
+                (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)';
               }}
               onMouseOut={(e) => {
-                e.currentTarget.style.color = DEFAULT_COLORS.DANGER;
-                e.currentTarget.style.transform = 'scale(1)';
+                (e.currentTarget as HTMLElement).style.color = DEFAULT_COLORS.DANGER as string;
+                (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
               }}
             />
           </Popover>,

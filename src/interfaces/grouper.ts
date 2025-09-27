@@ -19,6 +19,7 @@ export interface GrouperInterface {
   bridges: unknown[];
   sync: unknown | null;
   hasMaintenance?: boolean;
+  syncName?: string; // API-facing name (fasid.name)
 }
 
 export interface Maintenance {

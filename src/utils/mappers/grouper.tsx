@@ -8,6 +8,7 @@ export const mapGroupersData = (data: any): any[] => {
   return data.data.items.map((item: any) => {
     return {
       name: item.fasid?.sourceName || 'Unknown',
+      syncName: item.fasid?.name || item.fasid?.sourceName || 'Unknown',
       status: item.cacid?.status || 'Unknown',
       numberOfWorkloads: item.cacid?.workloads?.length || 0,
       numberOfBridges: item.cacid?.bridges?.length || 0,
@@ -30,6 +31,7 @@ export const mapSingleGrouperData = (item: any, maintenance: Maintenance | null)
 
   return {
     name: item.fasid.name,
+    syncName: item.fasid.name,
     kind: item.fasid.type,
     status: item.cacid.status || 'Unknown',
     numberOfWorkloads: item.cacid.workloads?.length || 0,
