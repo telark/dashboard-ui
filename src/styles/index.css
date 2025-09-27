@@ -13,6 +13,16 @@
   font-style: normal !important;
 }
 
+.app-root,
+body,
+button,
+input,
+textarea {
+  font-family: 'Roboto Condensed', sans-serif !important;
+  font-weight: 500;
+  font-style: normal;
+}
+
 .custom-table .ant-table-thead > tr > th {
   background-color: transparent !important;
 }
