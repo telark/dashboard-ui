@@ -15,7 +15,7 @@ const App: React.FC = () => {
       <Router>
         <Layout style={{ minHeight: '100vh' }}>
           <Sidebar />
-          <Layout style={{ marginLeft: 250, height: '100vh' }}>
+          <Layout style={{ marginLeft: 260, height: '100vh', transition: 'margin-left 0.3s ease' }}>
             <Header />
             <Routes>
               <Route path="/" element={<Dashboard />} />
