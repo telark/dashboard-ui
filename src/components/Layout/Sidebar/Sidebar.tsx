@@ -16,8 +16,8 @@ const Sidebar = () => {
         top: 0, // Align the sidebar from the top
         zIndex: 1, // Ensure it stays above the content
         paddingTop: '20px', // Add padding to the top for spacing
-        paddingLeft: '16px', // Ensure there is space on the left of the content
-        paddingRight: '16px', // Ensure there is space on the right of the content
+        paddingLeft: '12px', // Ensure there is space on the left of the content
+        paddingRight: 0, // Flush items to the right edge
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between', // Ensures bottom alignment
