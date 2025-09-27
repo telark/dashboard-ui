@@ -12,6 +12,7 @@ import {
 import { GROUPERS_REFRESH_INTERVAL_MS, GROUPERS_SYNC_LS_KEY, GROUPERS_SYNC_THROTTLE_MS } from '../../constants/sync';
 import GrouperCard from '../../components/cards/GrouperCard';
 import { RootState, AppDispatch } from '../../store';
+import { DEFAULT_COLORS } from '../../constants';
 
 const Groupers: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -76,33 +77,39 @@ const Groupers: React.FC = () => {
     }
   }, [error]);
 
+  const pageStyle: React.CSSProperties = {
+    background: DEFAULT_COLORS.PAGE_BG,
+    minHeight: 'calc(100vh - 60px)',
+    padding: '48px 24px 24px',
+    marginTop: '60px',
+  };
+
+  const gridStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, minmax(260px, 1fr))',
+    gap: '16px',
+  };
+
   if (loading) {
     return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 0fr))',
-          gap: '16px',
-          padding: '20px',
-          marginTop: '60px',
-        }}
-      >
-        {Array.from({ length: 6 }).map((_, idx) => (
-          <div
-            key={idx}
-            style={{
-              width: '100%',
-              maxWidth: '600px',
-              borderRadius: '15px',
-              boxShadow: '0 10px 24px rgba(0, 0, 0, 0.08)',
-              border: 'none',
-              padding: '28px',
-              background: '#fff',
-            }}
-          >
-            <Skeleton active paragraph={{ rows: 3 }} title />
-          </div>
-        ))}
+      <div style={pageStyle}>
+        <div style={gridStyle}>
+          {Array.from({ length: 6 }).map((_, idx) => (
+            <div
+              key={idx}
+              style={{
+                width: '100%',
+                borderRadius: '12px',
+                boxShadow: '0 8px 20px rgba(0, 0, 0, 0.06)',
+                border: 'none',
+                padding: '20px',
+                background: '#fff',
+              }}
+            >
+              <Skeleton active paragraph={{ rows: 3 }} title />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -163,18 +170,12 @@ const Groupers: React.FC = () => {
   }
 
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 0fr))',
-        gap: '16px',
-        padding: '20px',
-        marginTop: '60px',
-      }}
-    >
-      {groupers.map((grouper, index) => (
-        <GrouperCard key={grouper?.name ?? index} {...grouper} />
-      ))}
+    <div style={pageStyle}>
+      <div style={gridStyle}>
+        {groupers.map((grouper, index) => (
+          <GrouperCard key={grouper?.name ?? index} {...grouper} />
+        ))}
+      </div>
     </div>
   );
 };

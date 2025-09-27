@@ -19,14 +19,19 @@ const StatusButton: React.FC<StatusButtonProps> = ({ status, icon }) => {
       style={{
         color: statusStyle.color,
         borderColor: statusStyle.borderColor,
-        borderRadius: '25px',
-        padding: '0 12px',
-        fontSize: '12px',
-        display: 'flex',
+        borderRadius: '18px',
+        padding: '2px 8px',
+        fontSize: '11px',
+        height: 26,
+        lineHeight: '22px',
+        display: 'inline-flex',
         alignItems: 'center',
+        justifyContent: 'center',
+        gap: 4,
       }}
     >
-      <span style={{ display: 'inline-flex', marginRight: '4px' }}>{icon}</span> {status}
+      <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 12 }}>{icon}</span>
+      <span style={{ display: 'inline-block' }}>{status}</span>
     </Button>
   );
 };
