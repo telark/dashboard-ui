@@ -241,8 +241,7 @@ const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
         width={420}
         open={showFull}
         onClose={() => setShowFull(false)}
-        bodyStyle={{ padding: 16 }}
-        headerStyle={{ borderBottom: 'none', padding: '12px 16px' }}
+        styles={{ body: { padding: 16 }, header: { borderBottom: 'none', padding: '12px 16px' } }}
       >
         {renderTimeline(items, false)}
       </Drawer>

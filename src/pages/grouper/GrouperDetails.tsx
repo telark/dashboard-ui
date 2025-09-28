@@ -203,13 +203,13 @@ const GrouperDetails: React.FC = () => {
 
       {/* Active section */}
       {activeTab === TAB_KEYS.GENERAL && (
-        <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }}> 
+        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}> 
           <GeneralInfo {...grouperDetails} totalResources={totalResources} />
         </Card>
       )}
 
       {activeTab === TAB_KEYS.RESOURCES && (
-        <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }}> 
+        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}> 
           <div style={{ padding: 4 }}>
             <Resources name={grouperDetails.name} resources={[...grouperDetails.workloads, ...grouperDetails.bridges]} />
           </div>
@@ -217,13 +217,13 @@ const GrouperDetails: React.FC = () => {
       )}
 
       {activeTab === TAB_KEYS.HISTORY && (
-        <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }}> 
+        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}> 
           <HistoryTimeLine Records={grouperDetails.history} />
         </Card>
       )}
 
       {activeTab === TAB_KEYS.SYNC && (
-        <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }}> 
+        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}> 
           <SyncMode
             isAutoSync={isAutoSync}
             loadingSave={loadingSave}
@@ -235,7 +235,7 @@ const GrouperDetails: React.FC = () => {
       )}
 
       {activeTab === TAB_KEYS.MAINTENANCE && (
-        <Card style={{ ...sectionCardStyle, marginBottom: 24 }} bodyStyle={{ padding: 16 }}> 
+        <Card style={{ ...sectionCardStyle, marginBottom: 24 }} styles={{ body: { padding: 16 } }}> 
           <MaintenanceMode
             isMaintenanceModeActive={isMaintenanceModeActive}
             maintenaceUpdateAction={maintenaceUpdateAction}
