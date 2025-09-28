@@ -24,6 +24,7 @@ import store, { AppDispatch, RootState } from '../../store';
 import { fetchAllGroupersThunk } from '../../store/slices/grouperSlice';
 import { useSelector } from 'react-redux';
 import { startSync, endSync } from '../../store/slices/grouperSlice';
+import { UI } from '../../constants/ui';
 
 const sectionCardStyle: React.CSSProperties = {
   borderRadius: 16,
@@ -224,7 +225,7 @@ const GrouperDetails: React.FC = () => {
               )}
             </div>
             <div style={{ color: '#5B6B7C', fontSize: 12, marginTop: 4 }}>
-              Last update was <TimeAgo date={grouperDetails.lastUpdateTime} />
+              {UI.HEADER.LAST_UPDATE_PREFIX} <TimeAgo date={grouperDetails.lastUpdateTime} />
             </div>
           </div>
         </div>
@@ -235,7 +236,7 @@ const GrouperDetails: React.FC = () => {
               <FancySpinner showLabel={false} size={18} ringThickness={2} icon={<SyncOutlined />} orbit={false} />
             ) : (
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <SyncOutlined /> Sync
+                <SyncOutlined /> {UI.BUTTONS.SYNC}
               </span>
             )}
           </Button>
@@ -254,11 +255,11 @@ const GrouperDetails: React.FC = () => {
           marginBottom: 16,
         }}
       >
-        <TabButton label="General" active={activeTab === TAB_KEYS.GENERAL} onClick={() => setActiveTab(TAB_KEYS.GENERAL)} />
-        <TabButton label={`Resources (${totalResources})`} active={activeTab === TAB_KEYS.RESOURCES} onClick={() => setActiveTab(TAB_KEYS.RESOURCES)} />
-        <TabButton label="History" active={activeTab === TAB_KEYS.HISTORY} onClick={() => setActiveTab(TAB_KEYS.HISTORY)} />
-        <TabButton label="Sync Mode" active={activeTab === TAB_KEYS.SYNC} onClick={() => setActiveTab(TAB_KEYS.SYNC)} />
-        <TabButton label="Maintenance Mode" active={activeTab === TAB_KEYS.MAINTENANCE} onClick={() => setActiveTab(TAB_KEYS.MAINTENANCE)} />
+        <TabButton label={UI.TABS.GENERAL} active={activeTab === TAB_KEYS.GENERAL} onClick={() => setActiveTab(TAB_KEYS.GENERAL)} />
+        <TabButton label={`${UI.TABS.RESOURCES} (${totalResources})`} active={activeTab === TAB_KEYS.RESOURCES} onClick={() => setActiveTab(TAB_KEYS.RESOURCES)} />
+        <TabButton label={UI.TABS.HISTORY} active={activeTab === TAB_KEYS.HISTORY} onClick={() => setActiveTab(TAB_KEYS.HISTORY)} />
+        <TabButton label={UI.TABS.SYNC_MODE} active={activeTab === TAB_KEYS.SYNC} onClick={() => setActiveTab(TAB_KEYS.SYNC)} />
+        <TabButton label={UI.TABS.MAINTENANCE_MODE} active={activeTab === TAB_KEYS.MAINTENANCE} onClick={() => setActiveTab(TAB_KEYS.MAINTENANCE)} />
       </div>
 
       {/* Active section */}
