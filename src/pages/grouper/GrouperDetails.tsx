@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, Button, Tag } from 'antd';
 import {
   InfoCircleOutlined,
@@ -36,6 +36,44 @@ const SectionHeader: React.FC<{ icon: React.ReactNode; title: string; caption?: 
   </div>
 );
 
+const TAB_KEYS = {
+  GENERAL: 'general',
+  RESOURCES: 'resources',
+  HISTORY: 'history',
+  SYNC: 'sync',
+  MAINTENANCE: 'maintenance',
+} as const;
+
+type TabKey = typeof TAB_KEYS[keyof typeof TAB_KEYS];
+
+const TabButton: React.FC<{ label: string; active: boolean; onClick: () => void }> = ({ label, active, onClick }) => {
+  const [hovered, setHovered] = useState(false);
+  const background = active ? '#fff' : hovered ? 'rgba(32,201,151,0.08)' : 'transparent';
+  const color = active ? '#0B1F33' : hovered ? DEFAULT_COLORS.SUCCESS : '#6b7280';
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
+      style={{
+        all: 'unset',
+        cursor: 'pointer',
+        padding: '10px 18px',
+        borderRadius: 22,
+        background,
+        color,
+        fontWeight: active ? 700 : 600,
+        boxShadow: active ? '0 6px 18px rgba(0,0,0,0.08)' : 'none',
+        transition: 'all 0.2s ease',
+      }}
+    >
+      {label}
+    </button>
+  );
+};
+
 const GrouperDetails: React.FC = () => {
   const {
     // Global Data
@@ -63,6 +101,8 @@ const GrouperDetails: React.FC = () => {
     hasMaintenanceData,
     handleRemoveMaintenanceMode,
   } = GrouperDetailsHook();
+
+  const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.GENERAL);
 
   if (loading) {
     return <div style={{ marginTop: 60, padding: 24 }}>Loading...</div>;
@@ -142,46 +182,75 @@ const GrouperDetails: React.FC = () => {
         </div>
       </div>
 
-      {/* Sections */}
-      <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }} headStyle={{ borderBottom: 'none', padding: '12px 16px' }} title={<SectionHeader icon={<InfoCircleOutlined />} title="General" />}> 
-        <GeneralInfo {...grouperDetails} totalResources={totalResources} />
-      </Card>
+      {/* Tabs header */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 18,
+          background: 'linear-gradient(180deg, rgba(239,244,250,0.6), rgba(239,244,250,0))',
+          padding: '8px 0',
+          borderRadius: 24,
+          marginBottom: 16,
+        }}
+      >
+        <TabButton label="General" active={activeTab === TAB_KEYS.GENERAL} onClick={() => setActiveTab(TAB_KEYS.GENERAL)} />
+        <TabButton label={`Resources (${totalResources})`} active={activeTab === TAB_KEYS.RESOURCES} onClick={() => setActiveTab(TAB_KEYS.RESOURCES)} />
+        <TabButton label="History" active={activeTab === TAB_KEYS.HISTORY} onClick={() => setActiveTab(TAB_KEYS.HISTORY)} />
+        <TabButton label="Sync Mode" active={activeTab === TAB_KEYS.SYNC} onClick={() => setActiveTab(TAB_KEYS.SYNC)} />
+        <TabButton label="Maintenance Mode" active={activeTab === TAB_KEYS.MAINTENANCE} onClick={() => setActiveTab(TAB_KEYS.MAINTENANCE)} />
+      </div>
 
-      <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }} headStyle={{ borderBottom: 'none', padding: '12px 16px' }} title={<SectionHeader icon={<AppstoreOutlined />} title={`Resources`} caption={`(${totalResources})`} />}> 
-        <div style={{ padding: 4 }}>
-          <Resources name={grouperDetails.name} resources={[...grouperDetails.workloads, ...grouperDetails.bridges]} />
-        </div>
-      </Card>
+      {/* Active section */}
+      {activeTab === TAB_KEYS.GENERAL && (
+        <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }}> 
+          <GeneralInfo {...grouperDetails} totalResources={totalResources} />
+        </Card>
+      )}
 
-      <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }} headStyle={{ borderBottom: 'none', padding: '12px 16px' }} title={<SectionHeader icon={<HistoryOutlined />} title="History" />}> 
-        <HistoryTimeLine Records={grouperDetails.history} />
-      </Card>
+      {activeTab === TAB_KEYS.RESOURCES && (
+        <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }}> 
+          <div style={{ padding: 4 }}>
+            <Resources name={grouperDetails.name} resources={[...grouperDetails.workloads, ...grouperDetails.bridges]} />
+          </div>
+        </Card>
+      )}
 
-      <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }} headStyle={{ borderBottom: 'none', padding: '12px 16px' }} title={<SectionHeader icon={<SyncOutlined />} title="Sync Mode" />}> 
-        <SyncMode
-          isAutoSync={isAutoSync}
-          loadingSave={loadingSave}
-          hasChanges={hasChanges}
-          handleAutoSyncChange={handleAutoSyncChange}
-          handleGrouperSyncSave={handleGrouperSyncSave}
-        />
-      </Card>
+      {activeTab === TAB_KEYS.HISTORY && (
+        <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }}> 
+          <HistoryTimeLine Records={grouperDetails.history} />
+        </Card>
+      )}
 
-      <Card style={{ ...sectionCardStyle, marginBottom: 24 }} bodyStyle={{ padding: 16 }} headStyle={{ borderBottom: 'none', padding: '12px 16px' }} title={<SectionHeader icon={<WarningOutlined />} title="Maintenance Mode" />}> 
-        <MaintenanceMode
-          isMaintenanceModeActive={isMaintenanceModeActive}
-          maintenaceUpdateAction={maintenaceUpdateAction}
-          maintenaceDeleteAction={maintenaceDeleteAction}
-          isMaintenanceModalVisible={isMaintenanceModalVisible}
-          handleEnableMaintenanceClick={handleEnableMaintenanceClick}
-          handleCancelMaintenance={handleCancelMaintenance}
-          handleMaintenanceUpdateActionChange={handleMaintenanceUpdateActionChange}
-          handleMaintenanceDeleteActionChange={handleMaintenanceDeleteActionChange}
-          handleMaintenanceMode={handleMaintenanceMode}
-          hasMaintenanceData={hasMaintenanceData}
-          handleRemoveMaintenanceMode={handleRemoveMaintenanceMode}
-        />
-      </Card>
+      {activeTab === TAB_KEYS.SYNC && (
+        <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }}> 
+          <SyncMode
+            isAutoSync={isAutoSync}
+            loadingSave={loadingSave}
+            hasChanges={hasChanges}
+            handleAutoSyncChange={handleAutoSyncChange}
+            handleGrouperSyncSave={handleGrouperSyncSave}
+          />
+        </Card>
+      )}
+
+      {activeTab === TAB_KEYS.MAINTENANCE && (
+        <Card style={{ ...sectionCardStyle, marginBottom: 24 }} bodyStyle={{ padding: 16 }}> 
+          <MaintenanceMode
+            isMaintenanceModeActive={isMaintenanceModeActive}
+            maintenaceUpdateAction={maintenaceUpdateAction}
+            maintenaceDeleteAction={maintenaceDeleteAction}
+            isMaintenanceModalVisible={isMaintenanceModalVisible}
+            handleEnableMaintenanceClick={handleEnableMaintenanceClick}
+            handleCancelMaintenance={handleCancelMaintenance}
+            handleMaintenanceUpdateActionChange={handleMaintenanceUpdateActionChange}
+            handleMaintenanceDeleteActionChange={handleMaintenanceDeleteActionChange}
+            handleMaintenanceMode={handleMaintenanceMode}
+            hasMaintenanceData={hasMaintenanceData}
+            handleRemoveMaintenanceMode={handleRemoveMaintenanceMode}
+          />
+        </Card>
+      )}
     </div>
   );
 };
