@@ -45,7 +45,7 @@ export const SYNC_MESSAGES = {
     NoUpdate: 'Already up to date.',
     NewlyCreated: 'Registered successfully.',
     Deleted: 'Removed successfully.',
-    NotFound: 'Grouper not found.',
+    NotFound: 'This grouper is being removed and will disappear shortly.',
   } as Record<string, string>,
   byPhase: {
     NotStarted: 'Nothing to sync yet.',
