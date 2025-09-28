@@ -1,11 +1,14 @@
 import { Maintenance } from '../../interfaces/grouper';
 
 export const mapGroupersData = (data: any): any[] => {
-  if (data?.status !== 200 || !data.data?.items?.length) {
+  if (data?.status !== 200 || !data?.data) {
     throw new Error('Invalid data format from the API');
   }
 
-  return data.data.items.map((item: any) => {
+  const items = Array.isArray(data.data.items) ? data.data.items : [];
+  if (items.length === 0) return [];
+
+  return items.map((item: any) => {
     return {
       name: item.fasid?.sourceName || 'Unknown',
       syncName: item.fasid?.name || item.fasid?.sourceName || 'Unknown',

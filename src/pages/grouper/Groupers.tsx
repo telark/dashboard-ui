@@ -1,7 +1,7 @@
-import React, { useEffect, useCallback, useRef } from 'react';
+import React, { useEffect, useCallback, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { message, Result, Button } from 'antd';
-import { InboxOutlined, WarningTwoTone } from '@ant-design/icons';
+import { InboxOutlined, WarningTwoTone, AppstoreOutlined, SyncOutlined, ReloadOutlined } from '@ant-design/icons';
 
 import {
   fetchAllGroupersThunk,
@@ -13,7 +13,6 @@ import { GROUPERS_REFRESH_INTERVAL_MS, GROUPERS_SYNC_LS_KEY, GROUPERS_SYNC_THROT
 import GrouperCard from '../../components/cards/GrouperCard';
 import { RootState, AppDispatch } from '../../store';
 import { DEFAULT_COLORS } from '../../constants';
-import FancySpinner from '../../components/common/FancySpinner';
 
 const Groupers: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -51,7 +50,7 @@ const Groupers: React.FC = () => {
         }
       }
     })();
-  }, [loadGroupers]);
+  }, [loadGroupers, dispatch]);
   // Poll only auto-sync groupers, aligned to exact interval boundaries
   useEffect(() => {
     let intervalId: number | undefined;
@@ -95,7 +94,9 @@ const Groupers: React.FC = () => {
     return (
       <div style={pageStyle}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
-          <FancySpinner label="Loading groupers" />
+          <Button type="text" icon={<SyncOutlined spin />} disabled>
+            Loading groupers…
+          </Button>
         </div>
       </div>
     );
@@ -130,28 +131,49 @@ const Groupers: React.FC = () => {
   }
 
   if (!loading && groupers.length === 0) {
+    const handleRefresh = async () => {
+      await loadGroupers();
+    };
+
     return (
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: 'calc(100vh - 60px)',
-          marginTop: '60px',
-          width: '100%',
-          padding: '20px',
-        }}
-      >
-        <Result
-          icon={<InboxOutlined style={{ fontSize: '48px', color: '#1677ff' }} />}
-          title="No groupers found"
-          subTitle="Connect your first cluster or try again later."
-          extra={
-            <Button type="primary" onClick={loadGroupers}>
-              Retry
+      <div style={pageStyle}>
+        <div
+          style={{
+            minHeight: '50vh',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+          }}
+        >
+          <div
+            style={{
+              width: 56,
+              height: 56,
+              borderRadius: '50%',
+              background: 'rgba(32,201,151,0.12)',
+              boxShadow: 'inset 0 0 0 2px rgba(32,201,151,0.18)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: 12,
+              color: DEFAULT_COLORS.SUCCESS,
+              fontSize: 24,
+            }}
+          >
+            <AppstoreOutlined />
+          </div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F33', marginBottom: 8 }}>No groupers yet</div>
+          <div style={{ color: '#5B6B7C', marginBottom: 20, maxWidth: 560, lineHeight: 1.6 }}>
+            When your cluster is connected, groupers represent your namespaces. Make sure you have at least one namespace (excluding any you’ve set to be ignored in Settings). Try syncing to pull the latest.
+          </div>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+            <Button type="primary" icon={<ReloadOutlined />} onClick={handleRefresh}>
+              Refresh
             </Button>
-          }
-        />
+          </div>
+        </div>
       </div>
     );
   }
