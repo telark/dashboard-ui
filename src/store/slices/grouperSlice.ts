@@ -24,6 +24,8 @@ const initialState: GrouperState = {
   details: null,
   loading: false,
   error: null,
+  // Track in-flight syncs by grouper name
+  syncing: {},
 };
 
 // Thunk for fetching groupers
@@ -220,6 +222,16 @@ const grouperSlice = createSlice({
     clearDetails(state) {
       state.details = null; // Clear previous details to avoid stale data
     },
+    startSync(state, action: PayloadAction<string>) {
+      const name = action.payload;
+      if (!state.syncing) state.syncing = {};
+      if (name) state.syncing[name] = true;
+    },
+    endSync(state, action: PayloadAction<string>) {
+      const name = action.payload;
+      if (!state.syncing) state.syncing = {};
+      if (name && state.syncing[name]) delete state.syncing[name];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -333,5 +345,5 @@ const grouperSlice = createSlice({
   },
 });
 
-export const { clearDetails } = grouperSlice.actions;
+export const { clearDetails, startSync, endSync } = grouperSlice.actions;
 export default grouperSlice.reducer;
