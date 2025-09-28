@@ -129,7 +129,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
           background: '#fff',
           transition: 'transform 0.2s ease-in-out',
         }}
-        bodyStyle={{ padding: '22px 24px 6px' }}
+        styles={{ body: { padding: '22px 24px 6px' } }}
         hoverable
         actions={[
           <Popover key="view-pop" content="View Details" trigger="hover">
