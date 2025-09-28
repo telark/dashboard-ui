@@ -1,206 +1,252 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { CheckOutlined, CloseOutlined, LoadingOutlined } from '@ant-design/icons';
+import { Drawer, Button } from 'antd';
 import { HistoryInterface, Record } from '../../interfaces/common';
 import { DEFAULT_COLORS } from '../../constants';
 import TimeAgo from '../time/TimeAgo';
 
-// Visual constants (no halo except last); user prefers thin rail
-const PADDING_LEFT = 42; // reserved space on the left for rail + marker
-const RAIL_X = 18; // rail center from wrapper's left edge
-const MARKER_SIZE = 16; // solid circle diameter
-const LINE_WIDTH = 1; // rail thickness
-const GAP_AROUND = 6; // extra space above/below marker to "cut" the rail
-const HALO_SIZE = 20; // smaller halo for the last item
+// Visual constants
+const PADDING_LEFT = 42;
+const HEADER_LEFT_PADDING = 16; // antd Drawer default left padding
+const RAIL_X = 18;
+const MARKER_SIZE = 16;
+const LINE_WIDTH = 1;
+const GAP_AROUND = 6;
+const HALO_SIZE = 20; // last item halo size
 
-const capitalizeFirst = (text: string): string =>
-  text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
+const capitalizeFirst = (text: string): string => (text ? text.charAt(0).toUpperCase() + text.slice(1) : text);
 
 const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
-  // Oldest first (top to bottom)
   const items = useMemo(() => {
+    // Oldest -> Newest
     return [...Records].sort((a, b) => new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime());
   }, [Records]);
 
-  // Marker left relative to each row (row is inside padded wrapper)
+  const hasMore = items.length > 5;
+  const displayItems = hasMore ? items.slice(-5) : items; // show last 5 (newest 5) while keeping ascending order
+
+  const [showFull, setShowFull] = useState(false);
+
   const markerLeft = -(PADDING_LEFT - RAIL_X);
-  const cutHeight = MARKER_SIZE / 2 + GAP_AROUND; // mask height above the first marker
+  const cutHeight = MARKER_SIZE / 2 + GAP_AROUND;
 
-  return (
-    <div style={{ position: 'relative', paddingLeft: PADDING_LEFT }}>
-      {/* Continuous vertical rail behind all markers */}
-      <div
-        style={{
-          position: 'absolute',
-          left: RAIL_X,
-          top: 0,
-          bottom: 0,
-          width: LINE_WIDTH,
-          background: DEFAULT_COLORS.SUCCESS,
-          transform: 'translateX(-50%)',
-          borderRadius: LINE_WIDTH / 2,
-          opacity: 0.95,
-        }}
-      />
+  const renderTimeline = (list: Record[], withRecording: boolean) => {
+    const lastIndex = list.length - 1;
+    return (
+      <div style={{ position: 'relative', paddingLeft: PADDING_LEFT }}>
+        {/* Continuous rail */}
+        <div
+          style={{
+            position: 'absolute',
+            left: RAIL_X,
+            top: 0,
+            bottom: 0,
+            width: LINE_WIDTH,
+            background: DEFAULT_COLORS.SUCCESS,
+            transform: 'translateX(-50%)',
+            borderRadius: LINE_WIDTH / 2,
+            opacity: 0.95,
+          }}
+        />
 
-      {/* Top mask so the rail doesn't appear above the first marker */}
-      <div
-        style={{
-          position: 'absolute',
-          left: RAIL_X,
-          top: 0,
-          width: LINE_WIDTH + 4,
-          height: cutHeight,
-          background: '#fff',
-          transform: 'translateX(-50%)',
-          zIndex: 1,
-        }}
-      />
+        {/* Top mask (no rail above first marker) */}
+        <div
+          style={{
+            position: 'absolute',
+            left: RAIL_X,
+            top: 0,
+            width: LINE_WIDTH + 4,
+            height: cutHeight,
+            background: '#fff',
+            transform: 'translateX(-50%)',
+            zIndex: 1,
+          }}
+        />
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {items.map((item: Record, idx: number) => {
-          const isLast = idx === items.length - 1;
-          const isOk = /success|completed|ok|available/i.test(item.status);
-          const isError = /error|failed|fail|danger/i.test(item.status);
-          const maskHeight = isLast ? HALO_SIZE + 4 : MARKER_SIZE + GAP_AROUND * 2; // ensure rail doesn't touch halo
-          const fillColor = isError ? DEFAULT_COLORS.DANGER : DEFAULT_COLORS.SUCCESS;
-          const iconNode = isError ? (
-            <CloseOutlined style={{ fontSize: 10, color: '#fff' }} />
-          ) : (
-            <CheckOutlined style={{ fontSize: 10, color: '#fff' }} />
-          );
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {list.map((item: Record, idx: number) => {
+            const isLast = idx === lastIndex;
+            const isOk = /success|completed|ok|available/i.test(item.status);
+            const isError = /error|failed|fail|danger/i.test(item.status);
+            const maskHeight = isLast ? HALO_SIZE + 4 : MARKER_SIZE + GAP_AROUND * 2;
+            const fillColor = isError ? DEFAULT_COLORS.DANGER : DEFAULT_COLORS.SUCCESS;
+            const iconNode = isError ? (
+              <CloseOutlined style={{ fontSize: 10, color: '#fff' }} />
+            ) : (
+              <CheckOutlined style={{ fontSize: 10, color: '#fff' }} />
+            );
 
-          return (
-            <div
-              key={`${item.name}-${idx}`}
-              style={{
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                minHeight: Math.max(MARKER_SIZE + GAP_AROUND * 2, HALO_SIZE + 4),
-                gap: 14,
-              }}
-            >
-              {/* Rail gap mask: hides rail behind the marker/halo with extra space */}
+            return (
               <div
+                key={`${item.name}-${idx}`}
                 style={{
-                  position: 'absolute',
-                  left: markerLeft,
-                  top: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: LINE_WIDTH + 6,
-                  height: maskHeight,
-                  background: '#fff',
-                  zIndex: 1,
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  minHeight: Math.max(MARKER_SIZE + GAP_AROUND * 2, HALO_SIZE + 4),
+                  gap: 14,
                 }}
-              />
-
-              {/* Optional halo for the last item only */}
-              {isLast && (
+              >
+                {/* Rail gap mask behind marker/halo */}
                 <div
                   style={{
                     position: 'absolute',
                     left: markerLeft,
                     top: '50%',
                     transform: 'translate(-50%, -50%)',
-                    width: HALO_SIZE,
-                    height: HALO_SIZE,
-                    borderRadius: '50%',
-                    background: 'rgba(32,201,151,0.15)',
-                    zIndex: 2,
+                    width: LINE_WIDTH + 6,
+                    height: maskHeight,
+                    background: '#fff',
+                    zIndex: 1,
                   }}
                 />
-              )}
 
-              {/* Marker aligned to the global rail */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: markerLeft,
-                  top: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: MARKER_SIZE,
-                  height: MARKER_SIZE,
-                  borderRadius: '50%',
-                  background: fillColor,
-                  color: '#fff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 3,
-                }}
-              >
-                {iconNode}
-              </div>
+                {/* Last item halo */}
+                {isLast && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: markerLeft,
+                      top: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: HALO_SIZE,
+                      height: HALO_SIZE,
+                      borderRadius: '50%',
+                      background: 'rgba(32,201,151,0.15)',
+                      zIndex: 2,
+                    }}
+                  />
+                )}
 
-              {/* Content */}
-              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: 1.25 }}>
-                <div style={{ fontWeight: 600, fontSize: 18, color: '#0B1F33' }}>{capitalizeFirst(item.name)}</div>
-                <div style={{ color: '#5B6B7C', marginTop: 4, fontSize: 13 }}>
-                  <TimeAgo date={item.creationTime} />
+                {/* Marker */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: markerLeft,
+                    top: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: MARKER_SIZE,
+                    height: MARKER_SIZE,
+                    borderRadius: '50%',
+                    background: fillColor,
+                    color: '#fff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 3,
+                  }}
+                >
+                  {iconNode}
+                </div>
+
+                {/* Content */}
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: 1.25 }}>
+                  <div style={{ fontWeight: 600, fontSize: 18, color: '#0B1F33' }}>{capitalizeFirst(item.name)}</div>
+                  <div style={{ color: '#5B6B7C', marginTop: 4, fontSize: 13 }}>
+                    <TimeAgo date={item.creationTime} />
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
 
-        {/* Pending/Recording marker at bottom */}
+          {withRecording && (
+            <>
+              {/* Extra spacer to show more rail segment between last item and recording marker */}
+              <div style={{ height: 20 }} />
+
+              <div
+                style={{ position: 'relative', display: 'flex', alignItems: 'center', minHeight: MARKER_SIZE + GAP_AROUND * 2, gap: 14 }}
+              >
+                {/* Rail gap mask for spinner marker */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: markerLeft,
+                    top: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: LINE_WIDTH + 6,
+                    height: MARKER_SIZE + GAP_AROUND * 2,
+                    background: '#fff',
+                    zIndex: 1,
+                  }}
+                />
+
+                {/* Spinner icon only */}
+                <div style={{ position: 'absolute', left: markerLeft, top: '50%', transform: 'translate(-50%, -50%)', zIndex: 3 }}>
+                  <LoadingOutlined style={{ fontSize: 14, color: DEFAULT_COLORS.SUCCESS }} spin />
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: 1.25 }}>
+                  <div style={{ fontWeight: 600, fontSize: 16, color: '#5B6B7C' }}>Recording…</div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Bottom mask so rail doesn't extend beyond the last row / spinner */}
         <div
           style={{
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            minHeight: MARKER_SIZE + GAP_AROUND * 2,
-            gap: 14,
+            position: 'absolute',
+            left: RAIL_X,
+            bottom: 0,
+            width: LINE_WIDTH + 6,
+            height: cutHeight,
+            background: '#fff',
+            transform: 'translateX(-50%)',
+            zIndex: 1,
           }}
-        >
-          {/* Rail gap mask for spinner marker */}
-          <div
-            style={{
-              position: 'absolute',
-              left: markerLeft,
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: LINE_WIDTH + 6,
-              height: MARKER_SIZE + GAP_AROUND * 2,
-              background: '#fff',
-              zIndex: 1,
-            }}
-          />
+        />
+      </div>
+    );
+  };
 
-          {/* Spinner icon only (no border/circle) */}
-          <div
+  return (
+    <>
+      {renderTimeline(displayItems, true)}
+
+      {hasMore && (
+        <div style={{ marginTop: 12 }}>
+          <Button
+            onClick={() => setShowFull(true)}
             style={{
-              position: 'absolute',
-              left: markerLeft,
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              zIndex: 3,
+              borderColor: DEFAULT_COLORS.SUCCESS,
+              color: DEFAULT_COLORS.SUCCESS,
+              borderWidth: 1,
+              borderRadius: 12,
+              height: 36,
             }}
           >
-            <LoadingOutlined style={{ fontSize: 14, color: DEFAULT_COLORS.SUCCESS }} spin />
-          </div>
-
-          {/* Text */}
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: 1.25 }}>
-            <div style={{ fontWeight: 600, fontSize: 16, color: '#5B6B7C' }}>Recording…</div>
-          </div>
+            Show Full History
+          </Button>
         </div>
-      </div>
+      )}
 
-      {/* Bottom mask so the rail doesn't appear below the pending marker */}
-      <div
-        style={{
-          position: 'absolute',
-          left: RAIL_X,
-          bottom: 0,
-          width: LINE_WIDTH + 6,
-          height: cutHeight,
-          background: '#fff',
-          transform: 'translateX(-50%)',
-          zIndex: 1,
-        }}
-      />
-    </div>
+      <Drawer
+        title={
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', paddingLeft: PADDING_LEFT - HEADER_LEFT_PADDING }}>
+            <span style={{ fontWeight: 700, color: '#0B1F33' }}>Full History</span>
+            <span
+              onClick={() => setShowFull(false)}
+              style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: '#6b7280', display: 'inline-flex' }}
+              aria-label="Close"
+            >
+              <CloseOutlined />
+            </span>
+          </div>
+        }
+        closable={false}
+        placement="right"
+        width={420}
+        open={showFull}
+        onClose={() => setShowFull(false)}
+        bodyStyle={{ padding: 16 }}
+        headerStyle={{ borderBottom: 'none', padding: '12px 16px' }}
+      >
+        {renderTimeline(items, false)}
+      </Drawer>
+    </>
   );
 };
 
