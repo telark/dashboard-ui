@@ -12,6 +12,7 @@ import { Button, Pagination, Space, Tag, Collapse } from 'antd';
 import { ResourcesInterface } from '../../interfaces/common';
 import TimeAgo from '../time/TimeAgo';
 import { DEFAULT_COLORS } from '../../constants';
+import { UI } from '../../constants/ui';
 
 const Label: React.FC<{ icon: React.ReactNode; text: string }> = ({ icon, text }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -80,12 +81,12 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
         >
           <AppstoreOutlined />
         </div>
-        <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F33', marginBottom: 6 }}>No resources yet</div>
+        <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F33', marginBottom: 6 }}>{UI.RESOURCES.EMPTY_TITLE}</div>
         <div style={{ color: '#5B6B7C', marginBottom: 16, maxWidth: 520, lineHeight: 1.6 }}>
-          This grouper currently has no workloads or bridges. Once resources exist, they’ll be listed here.
+          {UI.RESOURCES.EMPTY_DESC}
         </div>
         <Button type="primary" icon={<SyncOutlined />} onClick={handleRefresh}>
-          Refresh
+          {UI.RESOURCES.REFRESH}
         </Button>
       </div>
     );
@@ -170,9 +171,9 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
 
   const detailNode = (resource: typeof resources[number]) => (
     <div style={{ paddingTop: 4 }}>
-      <Row left={<Label icon={<ClockCircleOutlined />} text="Last Sync" />} right={renderTime(resource.lastSync)} withDivider={false} />
-      <Row left={<Label icon={<FileOutlined />} text="Kind" />} right={<span>{kindPill(resource.type)}</span>} withDivider={false} />
-      <Row left={<Label icon={<SyncOutlined />} text="Status" />} right={statusTag(resource.status)} withDivider={false} />
+      <Row left={<Label icon={<ClockCircleOutlined />} text={UI.RESOURCES.LABELS.LAST_SYNC} />} right={renderTime(resource.lastSync)} withDivider={false} />
+      <Row left={<Label icon={<FileOutlined />} text={UI.RESOURCES.LABELS.KIND} />} right={<span>{kindPill(resource.type)}</span>} withDivider={false} />
+      <Row left={<Label icon={<SyncOutlined />} text={UI.RESOURCES.LABELS.STATUS} />} right={statusTag(resource.status)} withDivider={false} />
       <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 8 }}>
         <Space>
           <Button icon={<EyeOutlined />} onClick={() => handleView(resource.name)} size="small" type="default" />

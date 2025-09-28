@@ -4,15 +4,16 @@ import { Drawer, Button } from 'antd';
 import { HistoryInterface, Record } from '../../interfaces/common';
 import { DEFAULT_COLORS } from '../../constants';
 import TimeAgo from '../time/TimeAgo';
+import { UI } from '../../constants/ui';
 
 // Visual constants
 const PADDING_LEFT = 42;
 const HEADER_LEFT_PADDING = 16; // antd Drawer default left padding
 const RAIL_X = 18;
-const MARKER_SIZE = 16;
-const LINE_WIDTH = 1;
+const MARKER_SIZE = UI.HISTORY.TIMELINE.MARKER_SIZE;
+const LINE_WIDTH = UI.HISTORY.TIMELINE.RAIL_WIDTH;
 const GAP_AROUND = 6;
-const HALO_SIZE = 20; // last item halo size
+const HALO_SIZE = UI.HISTORY.TIMELINE.HALO_SIZE_LAST; // last item halo size
 
 const capitalizeFirst = (text: string): string => (text ? text.charAt(0).toUpperCase() + text.slice(1) : text);
 
@@ -178,7 +179,7 @@ const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: 1.25 }}>
-                  <div style={{ fontWeight: 600, fontSize: 16, color: '#5B6B7C' }}>Recording…</div>
+                  <div style={{ fontWeight: 600, fontSize: 16, color: '#5B6B7C' }}>{UI.HISTORY.RECORDING}</div>
                 </div>
               </div>
             </>
@@ -226,7 +227,7 @@ const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
       <Drawer
         title={
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center', paddingLeft: PADDING_LEFT - HEADER_LEFT_PADDING }}>
-            <span style={{ fontWeight: 700, color: '#0B1F33' }}>Full History</span>
+            <span style={{ fontWeight: 700, color: '#0B1F33' }}>{UI.HISTORY.FULL_TITLE}</span>
             <span
               onClick={() => setShowFull(false)}
               style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: '#6b7280', display: 'inline-flex' }}
