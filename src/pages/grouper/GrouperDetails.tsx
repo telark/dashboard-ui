@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Button, Tag } from 'antd';
+import { Card, Button, Tag, App as AntdApp } from 'antd';
 import {
   InfoCircleOutlined,
   SyncOutlined,
@@ -17,6 +17,11 @@ import SyncMode from '../../components/tabs/SyncMode';
 import StatusButton from '../../components/buttons/StatusButton';
 import { DEFAULT_COLORS } from '../../constants';
 import TimeAgo from '../../components/time/TimeAgo';
+import FancySpinner from '../../components/common/FancySpinner';
+import { triggerSingleGrouperSync } from '../../clients/sync-manager';
+import { SYNC_MESSAGES } from '../../constants/modes';
+import store, { AppDispatch, RootState } from '../../store';
+import { fetchAllGroupersThunk } from '../../store/slices/grouperSlice';
 
 const sectionCardStyle: React.CSSProperties = {
   borderRadius: 16,
@@ -103,6 +108,50 @@ const GrouperDetails: React.FC = () => {
   } = GrouperDetailsHook();
 
   const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.GENERAL);
+  const [syncing, setSyncing] = useState(false);
+  const { message } = AntdApp.useApp();
+
+  const handleHeaderSync = async () => {
+    try {
+      setSyncing(true);
+      const apiName = (grouperDetails as any)?.syncName || grouperDetails.name;
+      console.log('Triggering SyncGrouper for:', apiName);
+      const key = `sync-${apiName}`;
+      message.open({ type: 'loading', content: `${SYNC_MESSAGES.loading} ${apiName}…`, key, duration: 0 });
+      const res = await triggerSingleGrouperSync(apiName);
+      const phase = res?.data?.phase ?? 'Completed';
+      const effect = res?.data?.syncEffect ?? 'NoUpdate';
+
+      if (effect === 'Deleted' || effect === 'NotFound') {
+        (store.dispatch as AppDispatch)(fetchAllGroupersThunk());
+        const start = Date.now();
+        const waitMs = 4000;
+        const interval = setInterval(() => {
+          const state: RootState = store.getState();
+          const stillThere = state.grouper.groupers.some((g: any) => g.name === grouperDetails.name);
+          if (!stillThere || Date.now() - start > waitMs) {
+            clearInterval(interval);
+            const friendly = SYNC_MESSAGES.byEffect[effect] || SYNC_MESSAGES.completed;
+            message.open({ type: 'success', content: friendly, key, duration: 2 });
+          }
+        }, 250);
+      } else {
+        const friendly = SYNC_MESSAGES.byEffect[effect] || SYNC_MESSAGES.completed;
+        message.open({ type: 'success', content: friendly, key, duration: 2 });
+      }
+    } catch (err: any) {
+      const meta = err?.normalized as { isTimeout?: boolean } | undefined;
+      const phase = err?.response?.data?.data?.phase as string | undefined;
+      const effect = err?.response?.data?.data?.syncEffect as string | undefined;
+      const friendlyTimeout = 'Taking a bit longer than usual. Please try again in a moment.';
+      const friendly = meta?.isTimeout
+        ? friendlyTimeout
+        : (phase && SYNC_MESSAGES.byPhase[phase]) || (effect && SYNC_MESSAGES.byEffect[effect!]) || SYNC_MESSAGES.byPhase.Failed;
+      message.open({ type: 'error', content: friendly, key: 'sync-error', duration: 3 });
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   if (loading) {
     return <div style={{ marginTop: 60, padding: 24 }}>Loading...</div>;
@@ -175,10 +224,15 @@ const GrouperDetails: React.FC = () => {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Button size="middle" icon={<SyncOutlined />} onClick={handleGrouperSyncSave} loading={loadingSave} disabled={!hasChanges && isAutoSync}>
-            Sync now
+          <Button size="middle" onClick={syncing ? undefined : handleHeaderSync} disabled={syncing}>
+            {syncing ? (
+              <FancySpinner showLabel={false} size={18} ringThickness={2} icon={<SyncOutlined />} orbit={false} />
+            ) : (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <SyncOutlined /> Sync
+              </span>
+            )}
           </Button>
-          <Button onClick={handleEnableMaintenanceClick}>Maintenance</Button>
         </div>
       </div>
 
