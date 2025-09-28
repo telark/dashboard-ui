@@ -33,7 +33,7 @@ export const mapSingleGrouperData = (item: any, maintenance: Maintenance | null)
   }
 
   return {
-    name: item.fasid.name,
+    name: item.fasid.sourceName,
     syncName: item.fasid.name,
     kind: item.fasid.type,
     status: item.cacid.status || 'Unknown',

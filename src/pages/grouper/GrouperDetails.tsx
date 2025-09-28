@@ -16,6 +16,7 @@ import Resources from '../../components/display/Resources';
 import SyncMode from '../../components/tabs/SyncMode';
 import StatusButton from '../../components/buttons/StatusButton';
 import { DEFAULT_COLORS } from '../../constants';
+import TimeAgo from '../../components/time/TimeAgo';
 
 const sectionCardStyle: React.CSSProperties = {
   borderRadius: 16,
@@ -81,9 +82,10 @@ const GrouperDetails: React.FC = () => {
     <div
       style={{
         background: DEFAULT_COLORS.PAGE_BG,
-        minHeight: 'calc(100vh - 60px)',
+        minHeight: '100vh',
         marginTop: 60,
         padding: '24px',
+        paddingBottom: 64,
       }}
     >
       {/* Header section */}
@@ -126,7 +128,9 @@ const GrouperDetails: React.FC = () => {
                 <Tag color="orange" icon={<WarningOutlined />}>Maintenance</Tag>
               )}
             </div>
-            <div style={{ color: '#5B6B7C', fontSize: 12, marginTop: 4 }}>Last update was {grouperDetails.lastUpdateTime || '-'}</div>
+            <div style={{ color: '#5B6B7C', fontSize: 12, marginTop: 4 }}>
+              Last update was <TimeAgo date={grouperDetails.lastUpdateTime} />
+            </div>
           </div>
         </div>
 
@@ -139,25 +143,21 @@ const GrouperDetails: React.FC = () => {
       </div>
 
       {/* Sections */}
-      <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }} title={<SectionHeader icon={<InfoCircleOutlined />} title="General" />}> 
+      <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }} headStyle={{ borderBottom: 'none', padding: '12px 16px' }} title={<SectionHeader icon={<InfoCircleOutlined />} title="General" />}> 
         <GeneralInfo {...grouperDetails} totalResources={totalResources} />
       </Card>
 
-      <Card
-        style={sectionCardStyle}
-        bodyStyle={{ padding: 16 }}
-        title={<SectionHeader icon={<AppstoreOutlined />} title={`Resources`} caption={`(${totalResources})`} />}
-      >
+      <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }} headStyle={{ borderBottom: 'none', padding: '12px 16px' }} title={<SectionHeader icon={<AppstoreOutlined />} title={`Resources`} caption={`(${totalResources})`} />}> 
         <div style={{ padding: 4 }}>
           <Resources name={grouperDetails.name} resources={[...grouperDetails.workloads, ...grouperDetails.bridges]} />
         </div>
       </Card>
 
-      <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }} title={<SectionHeader icon={<HistoryOutlined />} title="History" />}> 
+      <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }} headStyle={{ borderBottom: 'none', padding: '12px 16px' }} title={<SectionHeader icon={<HistoryOutlined />} title="History" />}> 
         <HistoryTimeLine Records={grouperDetails.history} />
       </Card>
 
-      <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }} title={<SectionHeader icon={<SyncOutlined />} title="Sync Mode" />}> 
+      <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }} headStyle={{ borderBottom: 'none', padding: '12px 16px' }} title={<SectionHeader icon={<SyncOutlined />} title="Sync Mode" />}> 
         <SyncMode
           isAutoSync={isAutoSync}
           loadingSave={loadingSave}
@@ -167,7 +167,7 @@ const GrouperDetails: React.FC = () => {
         />
       </Card>
 
-      <Card style={sectionCardStyle} bodyStyle={{ padding: 16 }} title={<SectionHeader icon={<WarningOutlined />} title="Maintenance Mode" />}> 
+      <Card style={{ ...sectionCardStyle, marginBottom: 24 }} bodyStyle={{ padding: 16 }} headStyle={{ borderBottom: 'none', padding: '12px 16px' }} title={<SectionHeader icon={<WarningOutlined />} title="Maintenance Mode" />}> 
         <MaintenanceMode
           isMaintenanceModeActive={isMaintenanceModeActive}
           maintenaceUpdateAction={maintenaceUpdateAction}

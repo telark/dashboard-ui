@@ -8,6 +8,7 @@ import GrouperDetails from './pages/grouper/GrouperDetails';
 import ErrorBoundary from './ErrorBoundary';
 import 'antd/dist/reset.css';
 import Dashboard from './pages/Dashboard';
+import { DEFAULT_COLORS } from './constants';
 
 // Ensure messages are shown below the fixed header and are visible above content
 message.config({ top: 72, maxCount: 3 });
@@ -19,7 +20,14 @@ const App: React.FC = () => {
         <AntdApp>
           <Layout style={{ minHeight: '100vh' }}>
             <Sidebar />
-            <Layout style={{ marginLeft: 'var(--sidebar-width)', height: '100vh', transition: 'margin-left 0.3s ease' }}>
+            <Layout
+              style={{
+                marginLeft: 'var(--sidebar-width)',
+                height: '100vh',
+                transition: 'margin-left 0.3s ease',
+                background: DEFAULT_COLORS.PAGE_BG,
+              }}
+            >
               <Header />
               <Routes>
                 <Route path="/" element={<Dashboard />} />

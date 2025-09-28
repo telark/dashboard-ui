@@ -46,7 +46,7 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
   // Note: option change handler is currently inlined where needed
 
   return (
-    <div style={{ padding: '8px 4px' }}>
+    <div style={{ padding: '8px 4px 24px' }}>
       {isMaintenanceModeActive && (
         <p style={{ color: '#faad14', fontWeight: 600, marginTop: 0 }}>{MAINTENANCE_MODE.maintenanceActive}</p>
       )}
