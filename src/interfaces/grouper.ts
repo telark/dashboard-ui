@@ -4,6 +4,7 @@ export interface GrouperState {
   details: any | null;
   loading: boolean;
   error: string | null;
+  syncing?: Record<string, boolean>;
 }
 
 export interface GrouperInterface {

@@ -23,6 +23,8 @@ import FancySpinner from '../common/FancySpinner';
 import { SYNC_MESSAGES } from '../../constants/modes';
 import store, { AppDispatch, RootState } from '../../store';
 import { fetchAllGroupersThunk } from '../../store/slices/grouperSlice';
+import { startSync, endSync } from '../../store/slices/grouperSlice';
+import { useSelector } from 'react-redux';
 
 const { Title, Text } = Typography;
 
@@ -39,6 +41,9 @@ const GrouperCard: React.FC<GrouperInterface> = ({
   const [syncing, setSyncing] = useState(false);
   const navigate = useNavigate();
   const { message } = AntdApp.useApp();
+  const globalSyncing = useSelector((s: RootState) => (s.grouper as any).syncing || {});
+  const isGloballySyncing = Boolean(globalSyncing[name]);
+  const isSyncingEffective = syncing || isGloballySyncing;
 
   const statusStyle =
     status === 'Active'
@@ -57,6 +62,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
     try {
       setSyncing(true);
       const apiName = syncName || name;
+      (store.dispatch as AppDispatch)(startSync(name));
       console.log('Triggering SyncGrouper for:', apiName);
       const key = `sync-${apiName}`;
       message.open({ type: 'loading', content: `${SYNC_MESSAGES.loading} ${apiName}…`, key, duration: 0 });
@@ -95,6 +101,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
       message.open({ type: 'error', content: friendly, key: 'sync-error', duration: 3 });
     } finally {
       setSyncing(false);
+      (store.dispatch as AppDispatch)(endSync(name));
     }
   };
   const handleView = () => navigate(`/groupers/${name}/details`);
@@ -149,10 +156,10 @@ const GrouperCard: React.FC<GrouperInterface> = ({
           </Popover>,
           <Popover key="sync-pop" content="Sync Grouper" trigger="hover">
             <span
-              onClick={syncing ? undefined : handleSync}
-              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 18, height: 18, cursor: syncing ? 'default' : 'pointer' }}
+              onClick={isSyncingEffective ? undefined : handleSync}
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 18, height: 18, cursor: isSyncingEffective ? 'default' : 'pointer' }}
             >
-              {syncing ? (
+              {isSyncingEffective ? (
                 <FancySpinner showLabel={false} size={22} ringThickness={2} icon={<SyncOutlined />} orbit={false} />
               ) : (
                 <SyncOutlined

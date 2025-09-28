@@ -22,6 +22,8 @@ import { triggerSingleGrouperSync } from '../../clients/sync-manager';
 import { SYNC_MESSAGES } from '../../constants/modes';
 import store, { AppDispatch, RootState } from '../../store';
 import { fetchAllGroupersThunk } from '../../store/slices/grouperSlice';
+import { useSelector } from 'react-redux';
+import { startSync, endSync } from '../../store/slices/grouperSlice';
 
 const sectionCardStyle: React.CSSProperties = {
   borderRadius: 16,
@@ -110,11 +112,14 @@ const GrouperDetails: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.GENERAL);
   const [syncing, setSyncing] = useState(false);
   const { message } = AntdApp.useApp();
+  const globalSyncing = useSelector((s: RootState) => (s.grouper as any).syncing || {});
+  const isGloballySyncing = Boolean(globalSyncing[(grouperDetails as any)?.name]);
 
   const handleHeaderSync = async () => {
     try {
       setSyncing(true);
       const apiName = (grouperDetails as any)?.syncName || grouperDetails.name;
+      (store.dispatch as AppDispatch)(startSync(grouperDetails.name));
       console.log('Triggering SyncGrouper for:', apiName);
       const key = `sync-${apiName}`;
       message.open({ type: 'loading', content: `${SYNC_MESSAGES.loading} ${apiName}…`, key, duration: 0 });
@@ -150,6 +155,7 @@ const GrouperDetails: React.FC = () => {
       message.open({ type: 'error', content: friendly, key: 'sync-error', duration: 3 });
     } finally {
       setSyncing(false);
+      (store.dispatch as AppDispatch)(endSync(grouperDetails.name));
     }
   };
 
@@ -224,7 +230,7 @@ const GrouperDetails: React.FC = () => {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Button size="middle" onClick={syncing ? undefined : handleHeaderSync} disabled={syncing}>
+          <Button size="middle" onClick={syncing || isGloballySyncing ? undefined : handleHeaderSync} disabled={syncing || isGloballySyncing}>
             {syncing ? (
               <FancySpinner showLabel={false} size={18} ringThickness={2} icon={<SyncOutlined />} orbit={false} />
             ) : (
