@@ -84,7 +84,7 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
         cancelText="Cancel"
         centered
         closeIcon={<span style={{ fontSize: 18, padding: '0 20px' }}>×</span>}
-        bodyStyle={{ padding: 24 }}
+        styles={{ body: { padding: 24 } }}
       >
         <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>{MAINTENANCE_MODE.modalTitle}</h3>
         <p style={{ fontSize: 14, color: '#666', marginBottom: 16 }}>{MAINTENANCE_MODE.modalDescription}</p>
