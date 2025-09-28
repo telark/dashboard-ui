@@ -1,108 +1,52 @@
 import React from 'react';
-import {
-  ApartmentOutlined,
-  ClockCircleOutlined,
-  SyncOutlined,
-  AppstoreOutlined,
-} from '@ant-design/icons';
+import { ApartmentOutlined, ClockCircleOutlined, SyncOutlined, AppstoreOutlined } from '@ant-design/icons';
 import TimeAgo from '../time/TimeAgo';
 import { DEFAULT_COLORS } from '../../constants';
-import { Button } from 'antd';
-import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { GeneralInfoInterface } from '../../interfaces/common';
+import StatusButton from '../buttons/StatusButton';
 
 interface GeneralInfoExtension extends GeneralInfoInterface {
   totalResources: number;
 }
 
-const GeneralInfo: React.FC<GeneralInfoExtension> = ({
-  name,
-  creationTime,
-  lastUpdateTime,
-  status,
-  totalResources,
-}) => (
-  <table
+const Label: React.FC<{ icon: React.ReactNode; text: string }> = ({ icon, text }) => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+    <span style={{ color: DEFAULT_COLORS.SUCCESS, fontSize: 16, display: 'inline-flex' }}>{icon}</span>
+    <span style={{ color: '#6b7280', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.4 }}>{text}</span>
+  </div>
+);
+
+const Row: React.FC<{ left: React.ReactNode; right: React.ReactNode; withDivider?: boolean }> = ({ left, right, withDivider = true }) => (
+  <div
     style={{
-      width: '100%',
-      borderCollapse: 'collapse',
-      textAlign: 'center',
-      tableLayout: 'fixed',
-      marginBottom: '-20px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '10px 0',
+      borderBottom: withDivider ? '1px solid #eef2f6' : 'none',
+      minHeight: 40,
     }}
   >
-    <thead>
-      <tr>
-        <th style={{ padding: '10px', fontWeight: 'bold' }}>
-          <ApartmentOutlined style={{ marginRight: '8px' }} />
-          Name
-        </th>
-        <th style={{ padding: '10px', fontWeight: 'bold' }}>
-          <ClockCircleOutlined style={{ marginRight: '8px' }} />
-          Creation Date
-        </th>
-        <th style={{ padding: '10px', fontWeight: 'bold' }}>
-          <ClockCircleOutlined style={{ marginRight: '8px' }} />
-          Last Modification
-        </th>
-        <th style={{ padding: '10px', fontWeight: 'bold' }}>
-          <SyncOutlined style={{ marginRight: '8px' }} />
-          Status
-        </th>
-        <th style={{ padding: '10px', fontWeight: 'bold' }}>
-          <AppstoreOutlined style={{ marginRight: '8px' }} />
-          Total Resources
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style={{ padding: '10px', borderBottom: '1px solid #f0f0f0' }}>
-          {name || 'Grouper Name'}
-        </td>
-        <td style={{ padding: '10px', borderBottom: '1px solid #f0f0f0' }}>
-          <TimeAgo date={creationTime} />
-        </td>
-        <td style={{ padding: '10px', borderBottom: '1px solid #f0f0f0' }}>
-          <TimeAgo date={lastUpdateTime} />
-        </td>
-        <td
-          style={{
-            padding: '10px',
-            borderBottom: '1px solid #f0f0f0',
-            display: 'flex',
-            justifyContent: 'center', // Center the content horizontally
-            alignItems: 'center', // Center the content vertically
-          }}
-        >
-          <Button
-            type="default"
-            style={{
-              color: status === 'Active' ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.DEFAULT,
-              borderColor: status === 'Active' ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.DEFAULT,
-              borderRadius: '25px',
-              padding: '0 12px',
-              fontSize: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              width: '80px', // Fixed width for the button
-              justifyContent: 'center', // Center the text inside the button
-            }}
-          >
-            {status === 'Active' ? (
-              <CheckCircleOutlined style={{ marginRight: '4px' }} />
-            ) : (
-              <CloseCircleOutlined style={{ marginRight: '4px' }} />
-            )}
-            {status}
-          </Button>
-        </td>
-        <td style={{ padding: '10px', borderBottom: '1px solid #f0f0f0' }}>
-          <strong>{totalResources}</strong>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <div>{left}</div>
+    <div style={{ color: '#111827', fontWeight: 600 }}>{right}</div>
+  </div>
+);
+
+const GeneralInfo: React.FC<GeneralInfoExtension> = ({ name, creationTime, lastUpdateTime, status, totalResources }) => (
+  <div style={{ padding: '6px 2px' }}>
+    <Row left={<Label icon={<ApartmentOutlined />} text="Name" />} right={<span style={{ fontWeight: 700 }}>{name || '—'}</span>} />
+
+    <Row left={<Label icon={<ClockCircleOutlined />} text="Creation Date" />} right={<TimeAgo date={creationTime} />} />
+
+    <Row left={<Label icon={<ClockCircleOutlined />} text="Last Modification" />} right={<TimeAgo date={lastUpdateTime} />} />
+
+    <Row
+      left={<Label icon={<SyncOutlined />} text="Status" />}
+      right={<StatusButton status={(status as 'Active' | 'Inactive') || 'Inactive'} icon={<SyncOutlined />} />}
+    />
+
+    <Row left={<Label icon={<AppstoreOutlined />} text="Total Resources" />} right={<span style={{ fontWeight: 700 }}>{totalResources}</span>} withDivider={false} />
+  </div>
 );
 
 export default GeneralInfo;
