@@ -21,6 +21,8 @@ import { CapitalizeFirstLetter } from '../../utils/helpers';
 import { triggerSingleGrouperSync } from '../../clients/sync-manager';
 import FancySpinner from '../common/FancySpinner';
 import { SYNC_MESSAGES } from '../../constants/modes';
+import store, { AppDispatch, RootState } from '../../store';
+import { fetchAllGroupersThunk } from '../../store/slices/grouperSlice';
 
 const { Title, Text } = Typography;
 
@@ -30,7 +32,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
   status = 'Inactive',
   numberOfWorkloads = 0,
   numberOfBridges = 0,
-  creationTime = '',
+  lastUpdateTime = '',
   syncName,
 }) => {
   const [isModalVisible, setModalVisible] = useState(false);
@@ -61,12 +63,35 @@ const GrouperCard: React.FC<GrouperInterface> = ({
       const res = await triggerSingleGrouperSync(apiName);
       const phase = res?.data?.phase ?? 'Completed';
       const effect = res?.data?.syncEffect ?? 'NoUpdate';
-      const friendly = SYNC_MESSAGES.byEffect[effect] || SYNC_MESSAGES.completed;
-      message.open({ type: 'success', content: friendly, key, duration: 2 });
+
+      // If the item should disappear, keep loading toast and poll until state updates
+      if (effect === 'Deleted' || effect === 'NotFound') {
+        // Kick a refresh immediately
+        (store.dispatch as AppDispatch)(fetchAllGroupersThunk());
+        // Poll local state briefly until this card is gone, then show success
+        const start = Date.now();
+        const waitMs = 4000;
+        const interval = setInterval(() => {
+          const state: RootState = store.getState();
+          const stillThere = state.grouper.groupers.some((g: any) => g.name === name);
+          if (!stillThere || Date.now() - start > waitMs) {
+            clearInterval(interval);
+            const friendly = SYNC_MESSAGES.byEffect[effect] || SYNC_MESSAGES.completed;
+            message.open({ type: 'success', content: friendly, key, duration: 2 });
+          }
+        }, 250);
+      } else {
+        const friendly = SYNC_MESSAGES.byEffect[effect] || SYNC_MESSAGES.completed;
+        message.open({ type: 'success', content: friendly, key, duration: 2 });
+      }
     } catch (err: any) {
+      const meta = err?.normalized as { isTimeout?: boolean } | undefined;
       const phase = err?.response?.data?.data?.phase as string | undefined;
       const effect = err?.response?.data?.data?.syncEffect as string | undefined;
-      const friendly = (phase && SYNC_MESSAGES.byPhase[phase]) || (effect && SYNC_MESSAGES.byEffect[effect]) || SYNC_MESSAGES.byPhase.Failed;
+      const friendlyTimeout = 'Taking a bit longer than usual. Please try again in a moment.';
+      const friendly = meta?.isTimeout
+        ? friendlyTimeout
+        : (phase && SYNC_MESSAGES.byPhase[phase]) || (effect && SYNC_MESSAGES.byEffect[effect!]) || SYNC_MESSAGES.byPhase.Failed;
       message.open({ type: 'error', content: friendly, key: 'sync-error', duration: 3 });
     } finally {
       setSyncing(false);
@@ -222,7 +247,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
                 {CapitalizeFirstLetter(name)}
               </Title>
               <Text style={{ color: DEFAULT_COLORS.DEFAULT, fontSize: '12px' }}>
-                <TimeAgo date={creationTime} />
+                Last update was <TimeAgo date={lastUpdateTime} />
               </Text>
             </div>
           </div>

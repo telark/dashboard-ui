@@ -35,7 +35,8 @@ const normalizeError = (error: any) => {
   const isClient = status != null && status >= 400 && status < 500;
   const isServer = status != null && status >= 500;
   const isNetwork = !status && error?.code === 'ERR_NETWORK';
-  return { status, message, url, method, isNotFound, isClient, isServer, isNetwork };
+  const isTimeout = error?.code === 'ECONNABORTED' || /timeout/i.test(String(message));
+  return { status, message, url, method, isNotFound, isClient, isServer, isNetwork, isTimeout };
 };
 
 // Interceptor for handling responses on the exporterApiClient
@@ -49,6 +50,8 @@ exporterApiClient.interceptors.response.use(
       if (!isSilent404) console.warn('API Warning (404):', meta);
     } else if (meta.isNetwork) {
       console.error('API Network Error:', meta);
+    } else if (meta.isTimeout) {
+      console.error('API Timeout:', meta);
     } else {
       console.error('API Error:', meta);
     }
@@ -66,6 +69,8 @@ configuratorApiClient.interceptors.response.use(
       console.warn('API Warning (404):', meta);
     } else if (meta.isNetwork) {
       console.error('API Network Error:', meta);
+    } else if (meta.isTimeout) {
+      console.error('API Timeout:', meta);
     } else {
       console.error('API Error:', meta);
     }
@@ -83,6 +88,8 @@ syncManagerApiClient.interceptors.response.use(
       console.warn('API Warning (404):', meta);
     } else if (meta.isNetwork) {
       console.error('API Network Error:', meta);
+    } else if (meta.isTimeout) {
+      console.error('API Timeout:', meta);
     } else {
       console.error('API Error:', meta);
     }
