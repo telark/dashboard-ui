@@ -16,6 +16,7 @@ import StatusButton from '../buttons/StatusButton';
 import TimeAgo from '../time/TimeAgo';
 import Metric from '../common/Metric';
 import { DEFAULT_COLORS } from '../../constants';
+import { UI } from '../../constants/ui';
 import { GrouperInterface } from '../../interfaces/grouper';
 import { CapitalizeFirstLetter } from '../../utils/helpers';
 import { triggerSingleGrouperSync } from '../../clients/sync-manager';
@@ -115,15 +116,15 @@ const GrouperCard: React.FC<GrouperInterface> = ({
   return (
     <>
       <Modal
-        title="Delete Grouper"
+        title={UI.CARD.DELETE_TITLE}
         open={isModalVisible}
         onOk={handleConfirmDelete}
         onCancel={handleCancelDelete}
-        okText="Confirm"
-        cancelText="Cancel"
+        okText={UI.BUTTONS.CONFIRM}
+        cancelText={UI.BUTTONS.CANCEL}
         okButtonProps={{ danger: true }}
       >
-        Are you sure you want to delete this Grouper?
+        {UI.CARD.DELETE_MESSAGE}
       </Modal>
 
       <Card
@@ -139,7 +140,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
         styles={{ body: { padding: '22px 24px 6px' } }}
         hoverable
         actions={[
-          <Popover key="view-pop" content="View Details" trigger="hover">
+          <Popover key="view-pop" content={UI.CARD.POPOVER.VIEW} trigger="hover">
             <EyeOutlined
               key="view"
               style={{ fontSize: '16px', cursor: 'pointer', transition: 'color 0.3s, transform 0.3s' }}
@@ -154,7 +155,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
               }}
             />
           </Popover>,
-          <Popover key="sync-pop" content="Sync Grouper" trigger="hover">
+          <Popover key="sync-pop" content={UI.CARD.POPOVER.SYNC} trigger="hover">
             <span
               onClick={isSyncingEffective ? undefined : handleSync}
               style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 18, height: 18, cursor: isSyncingEffective ? 'default' : 'pointer' }}
@@ -177,7 +178,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
               )}
             </span>
           </Popover>,
-          <Popover key="delete-pop" content="Delete Grouper" trigger="hover">
+          <Popover key="delete-pop" content={UI.CARD.POPOVER.DELETE} trigger="hover">
             <DeleteOutlined
               key="delete"
               style={{ fontSize: '16px', cursor: 'pointer', color: DEFAULT_COLORS.DANGER, transition: 'color 0.3s, transform 0.3s' }}
@@ -222,10 +223,10 @@ const GrouperCard: React.FC<GrouperInterface> = ({
               }}
             >
               <WarningOutlined style={{ fontSize: '16px' }} />
-              Maintenance Mode
+              {UI.CARD.MAINTENANCE_BADGE}
             </div>
           )}
-          <Popover content="Grouper presents Namespace" trigger="hover">
+          <Popover content={UI.CARD.INFO_POPOVER} trigger="hover">
             <InfoCircleOutlined style={{ fontSize: '16px', color: '#888', cursor: 'pointer' }} />
           </Popover>
         </div>
@@ -254,7 +255,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
                 {CapitalizeFirstLetter(name)}
               </Title>
               <Text style={{ color: DEFAULT_COLORS.DEFAULT, fontSize: '12px' }}>
-                Last update was <TimeAgo date={lastUpdateTime} />
+                {UI.CARD.LAST_UPDATE_PREFIX} <TimeAgo date={lastUpdateTime} />
               </Text>
             </div>
           </div>
@@ -268,8 +269,8 @@ const GrouperCard: React.FC<GrouperInterface> = ({
               gap: '20px',
             }}
           >
-            <Metric label="Workloads" value={numberOfWorkloads} />
-            <Metric label="Bridges" value={numberOfBridges} />
+            <Metric label={UI.CARD.METRICS.WORKLOADS} value={numberOfWorkloads} />
+            <Metric label={UI.CARD.METRICS.BRIDGES} value={numberOfBridges} />
           </div>
         </div>
       </Card>
