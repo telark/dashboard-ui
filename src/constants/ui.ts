@@ -23,6 +23,11 @@ export const UI = {
   HISTORY: {
     FULL_TITLE: 'Full History',
     RECORDING: 'Recording…',
+    TIMELINE: {
+      HALO_SIZE_LAST: 20,
+      MARKER_SIZE: 16,
+      RAIL_WIDTH: 1,
+    },
   },
   CARD: {
     DELETE_TITLE: 'Delete Grouper',
@@ -38,6 +43,18 @@ export const UI = {
     METRICS: {
       WORKLOADS: 'Workloads',
       BRIDGES: 'Bridges',
+    },
+  },
+  RESOURCES: {
+    EMPTY_TITLE: 'No resources yet',
+    EMPTY_DESC:
+      'This grouper currently has no workloads or bridges. Once resources exist, they’ll be listed here.',
+    REFRESH: 'Refresh',
+    LABELS: {
+      NAME: 'Resource Name',
+      LAST_SYNC: 'Last Sync',
+      KIND: 'Kind',
+      STATUS: 'Status',
     },
   },
 } as const;
