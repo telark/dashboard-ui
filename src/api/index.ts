@@ -46,8 +46,19 @@ exporterApiClient.interceptors.response.use(
     const meta = normalizeError(error);
     (error as any).normalized = meta;
     const isSilent404 = meta.isNotFound && error?.config?.headers?.['X-Silent-404'] === 'true';
+    if (isSilent404) {
+      // Treat 404 as a successful, empty response when explicitly marked silent
+      const resp: AxiosResponse = error?.response ?? {
+        data: null,
+        status: 404,
+        statusText: 'Not Found',
+        headers: {},
+        config: error?.config,
+      };
+      return Promise.resolve({ ...resp, data: null });
+    }
     if (meta.isNotFound) {
-      if (!isSilent404) console.warn('API Warning (404):', meta);
+      console.warn('API Warning (404):', meta);
     } else if (meta.isNetwork) {
       console.error('API Network Error:', meta);
     } else if (meta.isTimeout) {

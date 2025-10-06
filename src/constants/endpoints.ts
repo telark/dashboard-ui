@@ -10,6 +10,9 @@ export const Endpoints = {
       method: 'PATCH',
     }),
   },
+  INSIGHTS: {
+    CLUSTER_GET: { path: 'resources/insights/cluster/get', method: 'GET' },
+  },
   SYNC: {
     GROUPERS: { path: 'resources/groupers/sync', method: 'POST' },
     GROUPER: (name: string) => ({ path: `resources/groupers/${name}/sync`, method: 'POST' }),
