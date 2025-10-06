@@ -5,6 +5,7 @@ export interface InsightsState {
   hasClusterInsight: boolean;
   loading: boolean;
   error: string | null;
+  initialized: boolean;
 }
 
 function readPersistedInsight(): boolean {
@@ -17,10 +18,13 @@ function readPersistedInsight(): boolean {
   }
 }
 
+const persisted = readPersistedInsight();
 const initialState: InsightsState = {
-  hasClusterInsight: readPersistedInsight(),
+  hasClusterInsight: persisted,
   loading: false,
   error: null,
+  // If we already have a persisted value, treat as initialized to avoid blank placeholder
+  initialized: persisted,
 };
 
 export const checkClusterInsightsThunk = createAsyncThunk('insights/checkCluster', async (_, { rejectWithValue }) => {
@@ -58,9 +62,12 @@ const insightsSlice = createSlice({
       .addCase(checkClusterInsightsThunk.fulfilled, (state, action: PayloadAction<boolean>) => {
         state.loading = false;
         state.hasClusterInsight = action.payload;
+        state.initialized = true;
         try {
           if (action.payload) {
             window.localStorage.setItem('HAS_CLUSTER_INSIGHTS', 'true');
+          } else {
+            window.localStorage.removeItem('HAS_CLUSTER_INSIGHTS');
           }
         } catch {
           // ignore persistence errors
@@ -69,6 +76,7 @@ const insightsSlice = createSlice({
       .addCase(checkClusterInsightsThunk.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
+        state.initialized = true;
       });
   },
 });
