@@ -21,13 +21,14 @@ message.config({ top: 72, maxCount: 3 });
 const App: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const hasClusterInsight = useSelector((s: RootState) => s.insights.hasClusterInsight);
+  const initialized = useSelector((s: RootState) => s.insights.initialized);
 
   useEffect(() => {
-    // Only check if not already persisted as present
-    if (!hasClusterInsight) {
+    // Only check once on boot if not already persisted
+    if (!initialized && !hasClusterInsight) {
       dispatch(checkClusterInsightsThunk());
     }
-  }, [dispatch, hasClusterInsight]);
+  }, [dispatch, initialized, hasClusterInsight]);
 
   const handleStartAnalyze = () => {
     // Placeholder: user will define action next step
@@ -39,7 +40,10 @@ const App: React.FC = () => {
     <ErrorBoundary>
       <Router>
         <AntdApp>
-          {!hasClusterInsight ? (
+          {!initialized ? (
+            // Show Startup while first check runs so it's not a jarring blank
+            <Startup onStartAnalyze={handleStartAnalyze} />
+          ) : !hasClusterInsight ? (
             <Startup onStartAnalyze={handleStartAnalyze} />
           ) : (
             <Layout style={{ minHeight: '100vh' }}>
