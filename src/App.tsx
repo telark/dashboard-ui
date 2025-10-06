@@ -10,58 +10,54 @@ import 'antd/dist/reset.css';
 import Dashboard from './pages/Dashboard';
 import { DEFAULT_COLORS } from './constants';
 import Startup from './pages/Startup';
-import { useEffect, useState } from 'react';
-import { checkClusterInsights } from './clients/exporter';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { checkClusterInsightsThunk } from './store/slices/insightsSlice';
+import type { RootState, AppDispatch } from './store';
 
 // Ensure messages are shown below the fixed header and are visible above content
 message.config({ top: 72, maxCount: 3 });
 
 const App: React.FC = () => {
-  const [showStartup, setShowStartup] = useState<boolean>(false);
+  const dispatch: AppDispatch = useDispatch();
+  const hasClusterInsight = useSelector((s: RootState) => s.insights.hasClusterInsight);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await checkClusterInsights();
-        const hasInsights = Boolean(res?.data);
-        setShowStartup(!hasInsights);
-      } catch {
-        // On unexpected errors, do not block the app; continue normal flow
-        setShowStartup(false);
-      }
-    })();
-  }, []);
+    dispatch(checkClusterInsightsThunk());
+  }, [dispatch]);
 
   const handleStartAnalyze = () => {
-    // Placeholder for next step; currently, just keep showing the page
+    // Placeholder: user will define action next step
+    // For now, re-check insights on click
+    dispatch(checkClusterInsightsThunk());
   };
 
   return (
     <ErrorBoundary>
       <Router>
         <AntdApp>
-          <Layout style={{ minHeight: '100vh' }}>
-            <Sidebar />
-            <Layout
-              style={{
-                marginLeft: 'var(--sidebar-width)',
-                height: '100vh',
-                transition: 'margin-left 0.3s ease',
-                background: DEFAULT_COLORS.PAGE_BG,
-              }}
-            >
-              <Header />
-              {showStartup ? (
-                <Startup onStartAnalyze={handleStartAnalyze} />
-              ) : (
+          {!hasClusterInsight ? (
+            <Startup onStartAnalyze={handleStartAnalyze} />
+          ) : (
+            <Layout style={{ minHeight: '100vh' }}>
+              <Sidebar />
+              <Layout
+                style={{
+                  marginLeft: 'var(--sidebar-width)',
+                  height: '100vh',
+                  transition: 'margin-left 0.3s ease',
+                  background: DEFAULT_COLORS.PAGE_BG,
+                }}
+              >
+                <Header />
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/groupers" element={<Groupers />} />
                   <Route path="/groupers/:name/details" element={<GrouperDetails />} />
                 </Routes>
-              )}
+              </Layout>
             </Layout>
-          </Layout>
+          )}
         </AntdApp>
       </Router>
     </ErrorBoundary>
