@@ -23,8 +23,11 @@ const App: React.FC = () => {
   const hasClusterInsight = useSelector((s: RootState) => s.insights.hasClusterInsight);
 
   useEffect(() => {
-    dispatch(checkClusterInsightsThunk());
-  }, [dispatch]);
+    // Only check if not already persisted as present
+    if (!hasClusterInsight) {
+      dispatch(checkClusterInsightsThunk());
+    }
+  }, [dispatch, hasClusterInsight]);
 
   const handleStartAnalyze = () => {
     // Placeholder: user will define action next step
