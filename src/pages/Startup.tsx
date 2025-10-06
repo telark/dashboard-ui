@@ -68,29 +68,28 @@ const Startup: React.FC<StartupProps> = ({ onStartAnalyze }) => {
     };
   }, []);
 
-  const beginBackoffPolling = () => {
-    if (polling) return;
-    setPolling(true);
-    const delays = [1500, 3000, 5000, 8000, 12000];
-    let index = 0;
-    const tick = () => {
-      dispatch(checkClusterInsightsThunk());
-      if (index < delays.length) {
-        const d = delays[index++];
-        timeoutRef.current = window.setTimeout(tick, d);
-      }
-    };
-    tick();
-  };
-
   const [starting, setStarting] = useState(false);
   const handleStart = async () => {
     try {
       setStarting(true);
-      await startClusterAnalyze();
-      // Move to app immediately per requirement
-      dispatch(setHasClusterInsight(true));
-      navigate('/');
+      const result = await startClusterAnalyze();
+      let insightsReady = false;
+      if (Array.isArray(result)) {
+        const insightsEntry = result.find((r: any) => r && r.operation === 'insights');
+        insightsReady = Boolean(insightsEntry && Number(insightsEntry.status) === 202);
+      } else if (result && (result.operation === 'insights' || result.insights)) {
+        const status = result.status ?? result?.insights?.status;
+        insightsReady = Number(status) === 202;
+      }
+
+      if (insightsReady) {
+        dispatch(setHasClusterInsight(true));
+        navigate('/');
+        return;
+      }
+
+      // If insights not ready, allow user to try again (stay on screen)
+      setStarting(false);
     } catch (e) {
       setStarting(false);
     }
