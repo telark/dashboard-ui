@@ -64,3 +64,14 @@ export const removeGrouperMaintenanceMode = async (grouperName: string) => {
     throw error;
   }
 };
+
+// Start cluster analysis
+export const startClusterAnalyze = async () => {
+  try {
+    const { path, method } = Endpoints.ANALYZE.START;
+    return await Client<any>(configuratorApiClient, path, { method });
+  } catch (error) {
+    console.error('[APIClient] Failed to start cluster analysis:', error);
+    throw error;
+  }
+};

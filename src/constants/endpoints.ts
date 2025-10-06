@@ -13,6 +13,9 @@ export const Endpoints = {
   INSIGHTS: {
     CLUSTER_GET: { path: 'resources/insights/cluster/get', method: 'GET' },
   },
+  ANALYZE: {
+    START: { path: 'analyze/start', method: 'POST' },
+  },
   SYNC: {
     GROUPERS: { path: 'resources/groupers/sync', method: 'POST' },
     GROUPER: (name: string) => ({ path: `resources/groupers/${name}/sync`, method: 'POST' }),
