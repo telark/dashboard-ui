@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button } from 'antd';
 import { motion } from 'framer-motion';
 import { useDispatch } from 'react-redux';
@@ -12,12 +12,29 @@ interface StartupProps {
 
 const Startup: React.FC<StartupProps> = ({ onStartAnalyze }) => {
   const dispatch: AppDispatch = useDispatch();
+  const [polling, setPolling] = useState(false);
+  const timeoutRef = useRef<number | undefined>(undefined);
 
-  // Auto-poll every 3s to detect when analysis becomes available
   useEffect(() => {
-    const id = window.setInterval(() => dispatch(checkClusterInsightsThunk()), 3000);
-    return () => window.clearInterval(id);
-  }, [dispatch]);
+    return () => {
+      if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  const beginBackoffPolling = () => {
+    if (polling) return;
+    setPolling(true);
+    const delays = [1500, 3000, 5000, 8000, 12000];
+    let index = 0;
+    const tick = () => {
+      dispatch(checkClusterInsightsThunk());
+      if (index < delays.length) {
+        const d = delays[index++];
+        timeoutRef.current = window.setTimeout(tick, d);
+      }
+    };
+    tick();
+  };
 
   return (
     <div
@@ -64,7 +81,15 @@ const Startup: React.FC<StartupProps> = ({ onStartAnalyze }) => {
           We’ll scan your cluster to surface health, workload insights, and trends. Kick off the first analysis now
           — it’s quick, read‑only, and safe for production workloads.
         </p>
-        <Button type="primary" size="large" onClick={onStartAnalyze} style={{ background: DEFAULT_COLORS.SUCCESS, borderColor: DEFAULT_COLORS.SUCCESS }}>
+        <Button
+          type="primary"
+          size="large"
+          onClick={() => {
+            onStartAnalyze?.();
+            beginBackoffPolling();
+          }}
+          style={{ background: DEFAULT_COLORS.SUCCESS, borderColor: DEFAULT_COLORS.SUCCESS }}
+        >
           Start analyze
         </Button>
       </div>
