@@ -7,8 +7,18 @@ export interface InsightsState {
   error: string | null;
 }
 
+function readPersistedInsight(): boolean {
+  try {
+    if (typeof window === 'undefined') return false;
+    const v = window.localStorage.getItem('HAS_CLUSTER_INSIGHTS');
+    return v === 'true';
+  } catch {
+    return false;
+  }
+}
+
 const initialState: InsightsState = {
-  hasClusterInsight: false,
+  hasClusterInsight: readPersistedInsight(),
   loading: false,
   error: null,
 };
@@ -28,6 +38,15 @@ const insightsSlice = createSlice({
   reducers: {
     setHasClusterInsight(state, action: PayloadAction<boolean>) {
       state.hasClusterInsight = action.payload;
+      try {
+        if (action.payload) {
+          window.localStorage.setItem('HAS_CLUSTER_INSIGHTS', 'true');
+        } else {
+          window.localStorage.removeItem('HAS_CLUSTER_INSIGHTS');
+        }
+      } catch {
+        // ignore persistence errors
+      }
     },
   },
   extraReducers: (builder) => {
@@ -39,6 +58,13 @@ const insightsSlice = createSlice({
       .addCase(checkClusterInsightsThunk.fulfilled, (state, action: PayloadAction<boolean>) => {
         state.loading = false;
         state.hasClusterInsight = action.payload;
+        try {
+          if (action.payload) {
+            window.localStorage.setItem('HAS_CLUSTER_INSIGHTS', 'true');
+          }
+        } catch {
+          // ignore persistence errors
+        }
       })
       .addCase(checkClusterInsightsThunk.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
