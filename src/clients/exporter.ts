@@ -52,3 +52,19 @@ export const checkGrouperMaintenanceMode = async (name: string) => {
     throw error;
   }
 };
+
+// Check if cluster insights exist (used at startup). 404 should be silent.
+export const checkClusterInsights = async () => {
+  try {
+    return await Client<any>(exporterApiClient, Endpoints.INSIGHTS.CLUSTER_GET.path, {
+      headers: { 'X-Silent-404': 'true' },
+    });
+  } catch (error) {
+    const axiosErr = error as any;
+    const status = axiosErr?.response?.status ?? axiosErr?.normalized?.status;
+    if (status === 404) {
+      return { data: null } as any;
+    }
+    throw error;
+  }
+};

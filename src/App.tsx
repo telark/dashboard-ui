@@ -9,11 +9,33 @@ import ErrorBoundary from './ErrorBoundary';
 import 'antd/dist/reset.css';
 import Dashboard from './pages/Dashboard';
 import { DEFAULT_COLORS } from './constants';
+import Startup from './pages/Startup';
+import { useEffect, useState } from 'react';
+import { checkClusterInsights } from './clients/exporter';
 
 // Ensure messages are shown below the fixed header and are visible above content
 message.config({ top: 72, maxCount: 3 });
 
 const App: React.FC = () => {
+  const [showStartup, setShowStartup] = useState<boolean>(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await checkClusterInsights();
+        const hasInsights = Boolean(res?.data);
+        setShowStartup(!hasInsights);
+      } catch {
+        // On unexpected errors, do not block the app; continue normal flow
+        setShowStartup(false);
+      }
+    })();
+  }, []);
+
+  const handleStartAnalyze = () => {
+    // Placeholder for next step; currently, just keep showing the page
+  };
+
   return (
     <ErrorBoundary>
       <Router>
@@ -29,11 +51,15 @@ const App: React.FC = () => {
               }}
             >
               <Header />
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/groupers" element={<Groupers />} />
-                <Route path="/groupers/:name/details" element={<GrouperDetails />} />
-              </Routes>
+              {showStartup ? (
+                <Startup onStartAnalyze={handleStartAnalyze} />
+              ) : (
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/groupers" element={<Groupers />} />
+                  <Route path="/groupers/:name/details" element={<GrouperDetails />} />
+                </Routes>
+              )}
             </Layout>
           </Layout>
         </AntdApp>
