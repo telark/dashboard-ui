@@ -68,7 +68,7 @@ const Startup: React.FC<StartupProps> = ({ onStartAnalyze }) => {
     };
   }, []);
 
-  const [starting, setStarting] = useState(false);
+  const [starting, setStarting] = useState(true); // auto-start mode
   const handleStart = async () => {
     try {
       setStarting(true);
@@ -84,16 +84,42 @@ const Startup: React.FC<StartupProps> = ({ onStartAnalyze }) => {
 
       if (insightsReady) {
         dispatch(setHasClusterInsight(true));
+        try { window.sessionStorage.setItem('WELCOME_PENDING', '1'); } catch {}
         navigate('/');
         return;
       }
 
       // If insights not ready, allow user to try again (stay on screen)
-      setStarting(false);
+      setStarting(true); // keep spinner
     } catch (e) {
-      setStarting(false);
+      setStarting(true);
     }
   };
+
+  // Simple backoff poller after starting analyze
+  useEffect(() => {
+    if (!polling && starting) {
+      setPolling(true);
+      const delays = [1500, 3000, 5000, 8000, 12000];
+      let i = 0;
+      const poll = () => {
+        dispatch(checkClusterInsightsThunk());
+        if (i < delays.length) {
+          const d = delays[i++];
+          timeoutRef.current = window.setTimeout(poll, d);
+        }
+      };
+      // auto fire start after 5s
+      const startId = window.setTimeout(() => void handleStart(), 5000);
+      poll();
+      return () => {
+        window.clearTimeout(startId);
+        if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+      };
+    }
+    return;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div
@@ -113,18 +139,7 @@ const Startup: React.FC<StartupProps> = ({ onStartAnalyze }) => {
           We’ll scan your cluster to surface health, workload insights, and trends. Kick off the first analysis now
           — it’s quick, read‑only, and safe for production workloads.
         </p>
-        <Button
-          type="primary"
-          size="large"
-          disabled={starting}
-          onClick={() => {
-            onStartAnalyze?.();
-            void handleStart();
-          }}
-          style={{ background: DEFAULT_COLORS.SUCCESS, borderColor: DEFAULT_COLORS.SUCCESS }}
-        >
-          {starting ? 'Starting…' : 'Start analyze'}
-        </Button>
+        {/* Auto-start: button removed; spinner indicates progress */}
       </div>
     </div>
   );
