@@ -1,12 +1,12 @@
 import { Client, exporterApiClient } from '../api/index';
-import { Endpoints } from '../constants/endpoints';
+import { Endpoints, HTTP_HEADERS, HEADER_VALUES, ERROR_MESSAGES, HTTP_STATUS, ERROR_CODES, API_RESPONSES } from '../constants';
 
 // Fetch all Groupers
 export const fetchGroupers = async () => {
   try {
     return await Client<any>(exporterApiClient, Endpoints.GROUPERS.GET_ALL.path);
   } catch (error) {
-    console.error('[APIClient] Failed to fetch all groupers:', error);
+    console.error(ERROR_MESSAGES.CLIENT.FETCH_GROUPERS_FAILED, error);
     throw error;
   }
 };
@@ -15,7 +15,7 @@ export const fetchGrouperDetails = async (name: string) => {
   try {
     return await Client<any>(exporterApiClient, Endpoints.GROUPERS.GET_DETAILS(name).path);
   } catch (error) {
-    console.error(`[APIClient] Failed to fetch grouper details for "${name}":`, error);
+    console.error(`${ERROR_MESSAGES.CLIENT.FETCH_GROUPER_DETAILS_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -29,7 +29,7 @@ export const updateGrouperSyncMode = async (name: string, syncMode: string) => {
       data: { spec: { config: { sync: { mode: syncMode } } } },
     });
   } catch (error) {
-    console.error(`[APIClient] Failed to update sync mode for "${name}":`, error);
+    console.error(`${ERROR_MESSAGES.CLIENT.UPDATE_SYNC_MODE_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -39,16 +39,16 @@ export const checkGrouperMaintenanceMode = async (name: string) => {
   try {
     return await Client<any>(exporterApiClient, Endpoints.GROUPER_MAINTENANCE.CHECK(name).path, {
       // Mark this request so 404 can be handled gracefully without noisy logs
-      headers: { 'X-Silent-404': 'true' },
+      headers: { [HTTP_HEADERS.CUSTOM.SILENT_404]: HEADER_VALUES.SILENT_404 },
     });
   } catch (error) {
     // If maintenance feature is not found, treat as no maintenance (null), not an error
     const axiosErr = error as any;
     const status = axiosErr?.response?.status ?? axiosErr?.normalized?.status;
-    if (status === 404) {
+    if (status === HTTP_STATUS.NOT_FOUND) {
       return { data: null } as any;
     }
-    console.error(`[APIClient] Failed to fetch maintenance mode for "${name}":`, error);
+    console.error(`${ERROR_MESSAGES.CLIENT.FETCH_MAINTENANCE_MODE_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -59,16 +59,19 @@ export const checkClusterInsights = async () => {
     const resp = await exporterApiClient.request({
       url: Endpoints.INSIGHTS.CLUSTER_GET.path,
       method: 'GET',
-      headers: { 'X-Silent-404': 'true', 'X-Silent-Network': 'true' },
+      headers: { 
+        [HTTP_HEADERS.CUSTOM.SILENT_404]: HEADER_VALUES.SILENT_404, 
+        [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK 
+      },
       validateStatus: () => true,
     });
-    if (resp.status === 404) {
-      return { data: null, _status: 404 } as any;
+    if (resp.status === HTTP_STATUS.NOT_FOUND) {
+      return { data: null, _status: HTTP_STATUS.NOT_FOUND } as any;
     }
     return { data: resp.data, _status: resp.status } as any;
   } catch (error: any) {
-    if (error?.code === 'ERR_NETWORK') {
-      return { data: null, _status: 0, _network: true } as any;
+    if (error?.code === ERROR_CODES.NETWORK) {
+      return { ...API_RESPONSES.NETWORK_ERROR, _status: 0 } as any;
     }
     throw error;
   }
