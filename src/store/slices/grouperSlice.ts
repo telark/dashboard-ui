@@ -18,6 +18,7 @@ import {
 } from '../../utils/mappers/grouper';
 import { GrouperState, Maintenance } from '../../interfaces/grouper';
 import { generateGrouperName, generateMaintenanceFeatureName } from '../../utils/helpers';
+import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES, SYNC_MODES } from '../../constants';
 
 const initialState: GrouperState = {
   groupers: [],
@@ -30,76 +31,76 @@ const initialState: GrouperState = {
 
 // Thunk for fetching groupers
 export const fetchAllGroupersThunk = createAsyncThunk(
-  'groupers/fetch',
+  STORE_ACTIONS.GROUPERS.FETCH,
   async (_, { rejectWithValue }) => {
     try {
       const rawGroupersData = await fetchGroupers();
       return mapGroupersData(rawGroupersData);
     } catch (error: any) {
-      console.error('Error fetching groupers:', error);
-      return rejectWithValue(error.message || 'Failed to fetch groupers');
+      console.error(STORE_MESSAGES.ERROR_FETCHING_GROUPERS, error);
+      return rejectWithValue(error.message || STORE_ERRORS.FETCH_GROUPERS);
     }
   },
 );
 
 // Trigger sync on sync-manager
 export const triggerGroupersSyncThunk = createAsyncThunk(
-  'groupers/triggerSync',
+  STORE_ACTIONS.GROUPERS.TRIGGER_SYNC,
   async (_, { rejectWithValue }) => {
     try {
       const response = await triggerGroupersSync();
       return response;
     } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to trigger groupers sync');
+      return rejectWithValue(error.message || STORE_ERRORS.TRIGGER_SYNC);
     }
   },
 );
 
 // Refresh only auto-sync groupers (server already filters by auto)
 export const refreshAutoGroupersThunk = createAsyncThunk(
-  'groupers/refreshAuto',
+  STORE_ACTIONS.GROUPERS.REFRESH_AUTO,
   async (_, { rejectWithValue }) => {
     try {
       const rawGroupersData = await fetchGroupers();
       // Server filters to auto only; mapping keeps same shape
       return mapGroupersData(rawGroupersData);
     } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to refresh auto groupers');
+      return rejectWithValue(error.message || STORE_ERRORS.REFRESH_AUTO);
     }
   },
 );
 
 // Thunk for updating grouper sync mode
 export const updateGrouperSyncModeThunk = createAsyncThunk(
-  'grouper/updateGrouperSync',
+  STORE_ACTIONS.GROUPER.UPDATE_SYNC,
   async ({ name, syncMode }: { name: string; syncMode: string }, { rejectWithValue }) => {
     try {
       const grouperName = generateGrouperName(name);
       const response = await updateGrouperSyncMode(grouperName, syncMode);
       return mapSingleGrouperData(response.data, null);
     } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to update sync settings.');
+      return rejectWithValue(error.message || STORE_ERRORS.UPDATE_SYNC);
     }
   },
 );
 
 // Thunk for checking Grouper Maintenance Mode
 export const checkGrouperMaintenanceModeThunk = createAsyncThunk(
-  'grouper/checkMaintenanceMode',
+  STORE_ACTIONS.GROUPER.CHECK_MAINTENANCE,
   async (name: string, { rejectWithValue }) => {
     try {
       const maintenanceFeatureName = generateMaintenanceFeatureName(name);
       const response = await checkGrouperMaintenanceMode(maintenanceFeatureName);
       return mapGrouperMaintenanceData(response.data);
     } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to fetch maintenance mode status.');
+      return rejectWithValue(error.message || STORE_ERRORS.CHECK_MAINTENANCE);
     }
   },
 );
 
 // Thunk for enabling grouper MaintenanceMode
 export const enableGrouperMaintenanceModeThunk = createAsyncThunk(
-  'grouper/enableMaintenanceMode',
+  STORE_ACTIONS.GROUPER.ENABLE_MAINTENANCE,
   async (
     {
       grouperName,
@@ -126,14 +127,14 @@ export const enableGrouperMaintenanceModeThunk = createAsyncThunk(
         message: response.message,
       };
     } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to enable maintenance mode.');
+      return rejectWithValue(error.message || STORE_ERRORS.ENABLE_MAINTENANCE);
     }
   },
 );
 
 // Thunk for updating Grouper Maintenance Mode
 export const updateGrouperMaintenanceModeThunk = createAsyncThunk(
-  'grouper/updateMaintenanceMode',
+  STORE_ACTIONS.GROUPER.UPDATE_MAINTENANCE,
   async (
     {
       grouperName,
@@ -156,13 +157,13 @@ export const updateGrouperMaintenanceModeThunk = createAsyncThunk(
         status: response.status,
       };
     } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to update maintenance mode.');
+      return rejectWithValue(error.message || STORE_ERRORS.UPDATE_MAINTENANCE);
     }
   },
 );
 
 export const removeGrouperMaintenanceModeThunk = createAsyncThunk(
-  'grouper/removeMaintenanceMode',
+  STORE_ACTIONS.GROUPER.REMOVE_MAINTENANCE,
   async (grouperName: string, { rejectWithValue }) => {
     try {
       const response = await removeGrouperMaintenanceMode(
@@ -172,14 +173,14 @@ export const removeGrouperMaintenanceModeThunk = createAsyncThunk(
         status: response.status,
       };
     } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to delete maintenance mode.');
+      return rejectWithValue(error.message || STORE_ERRORS.REMOVE_MAINTENANCE);
     }
   },
 );
 
 // Thunk to fetch grouper details
 export const fetchGrouperDetailsThunk = createAsyncThunk(
-  'groupers/fetchDetails',
+  STORE_ACTIONS.GROUPERS.FETCH_DETAILS,
   async (name: string, { rejectWithValue }) => {
     try {
       const grouperName = generateGrouperName(name);
@@ -202,15 +203,15 @@ export const fetchGrouperDetailsThunk = createAsyncThunk(
               }
             : null; // If no maintenance data, pass null
         } catch (maintenanceError) {
-          console.warn('Failed to fetch maintenance data:', maintenanceError);
+          console.warn(STORE_MESSAGES.FETCH_MAINTENANCE_FAILED, maintenanceError);
           maintenance = null; // Set maintenance to null if request fails
         }
       }
 
       return mapSingleGrouperData(response.data, maintenance);
     } catch (error) {
-      console.error('Error fetching grouper details:', error);
-      return rejectWithValue('Failed to fetch grouper details');
+      console.error(STORE_MESSAGES.ERROR_FETCHING_GROUPER_DETAILS, error);
+      return rejectWithValue(STORE_ERRORS.FETCH_DETAILS);
     }
   },
 );
@@ -255,7 +256,7 @@ const grouperSlice = createSlice({
       // Refresh Auto Groupers merges list; respects manual by omission
       .addCase(refreshAutoGroupersThunk.fulfilled, (state, action: PayloadAction<any[]>) => {
         const incoming = action.payload || [];
-        const autoIncoming = incoming.filter((g: any) => g?.sync?.mode === 'auto');
+        const autoIncoming = incoming.filter((g: any) => g?.sync?.mode === SYNC_MODES.AUTO);
         // Merge by name: auto items replaced from server; manual items preserved as-is
         const autoByName: Record<string, any> = {};
         for (const g of autoIncoming) {
@@ -264,7 +265,7 @@ const grouperSlice = createSlice({
 
         // Keep manual entries that aren't also present as auto with same name
         const manualExistingFiltered = state.groupers.filter((g: any) => {
-          const isManual = g?.sync?.mode === 'manual';
+          const isManual = g?.sync?.mode === SYNC_MODES.MANUAL;
           const name = g?.name;
           return isManual && name && !autoByName[name];
         });
@@ -327,7 +328,7 @@ const grouperSlice = createSlice({
       })
       .addCase(updateGrouperMaintenanceModeThunk.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        console.log('Maintenance Mode updated:', action.payload);
+        console.log(STORE_MESSAGES.MAINTENANCE_UPDATED, action.payload);
       })
       .addCase(updateGrouperMaintenanceModeThunk.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;

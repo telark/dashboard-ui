@@ -9,8 +9,3 @@ export const POLLING_DELAYS = {
   SEQUENCE: [2000, 4000, 8000, 12000, 20000, 30000], // Exponential backoff delays in ms
   MAX_FAILURES: 4, // Number of consecutive failures before break
 } as const;
-
-export const STORAGE_KEYS = {
-  HAS_CLUSTER_INSIGHTS: 'HAS_CLUSTER_INSIGHTS',
-  WELCOME_PENDING: 'WELCOME_PENDING',
-} as const;

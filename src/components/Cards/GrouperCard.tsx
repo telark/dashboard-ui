@@ -15,7 +15,7 @@ import {
 import StatusButton from '../buttons/StatusButton';
 import TimeAgo from '../time/TimeAgo';
 import Metric from '../common/Metric';
-import { DEFAULT_COLORS } from '../../constants';
+import { DEFAULT_COLORS, STORE_MESSAGES } from '../../constants';
 import { UI } from '../../constants/ui';
 import { GrouperInterface } from '../../interfaces/grouper';
 import { CapitalizeFirstLetter } from '../../utils/helpers';
@@ -64,7 +64,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
       setSyncing(true);
       const apiName = syncName || name;
       (store.dispatch as AppDispatch)(startSync(name));
-      console.log('Triggering SyncGrouper for:', apiName);
+      console.log(STORE_MESSAGES.TRIGGERING_SYNC, apiName);
       const key = `sync-${apiName}`;
       message.open({ type: 'loading', content: `${SYNC_MESSAGES.loading} ${apiName}…`, key, duration: 0 });
       const res = await triggerSingleGrouperSync(apiName);

@@ -15,6 +15,7 @@ export * from './messages';
 export * from './modes';
 export * from './network';
 export * from './status';
+export * from './store';
 export * from './sync';
 export * from './timeouts';
 export * from './ui';
