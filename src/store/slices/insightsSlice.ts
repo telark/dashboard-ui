@@ -18,6 +18,9 @@ const initialState: InsightsState = {
 export const checkClusterInsightsThunk = createAsyncThunk('insights/checkCluster', async (_, { rejectWithValue }) => {
   try {
     const res = await checkClusterInsights();
+    if (res?._network) {
+      return rejectWithValue('NETWORK_UNAVAILABLE');
+    }
     return Boolean(res?.data);
   } catch (error: any) {
     return rejectWithValue(error?.message || 'Failed to check cluster insights');

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button } from 'antd';
+import { Alert } from 'antd';
 import { motion } from 'framer-motion';
 import { useDispatch } from 'react-redux';
 import { checkClusterInsightsThunk, setHasClusterInsight } from '../store/slices/insightsSlice';
@@ -61,6 +61,10 @@ const Startup: React.FC<StartupProps> = ({ onStartAnalyze }) => {
   const navigate = useNavigate();
   const [polling, setPolling] = useState(false);
   const timeoutRef = useRef<number | undefined>(undefined);
+  const [backendDown, setBackendDown] = useState(false);
+  const failureCountRef = useRef(0);
+  const analyzeScheduledRef = useRef(false);
+  const startTimerRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     return () => {
@@ -96,25 +100,60 @@ const Startup: React.FC<StartupProps> = ({ onStartAnalyze }) => {
     }
   };
 
-  // Simple backoff poller after starting analyze
+  // Simple backoff poller after starting analyze and to recheck when backend is down
   useEffect(() => {
     if (!polling && starting) {
       setPolling(true);
-      const delays = [1500, 3000, 5000, 8000, 12000];
+      const delays = [2000, 4000, 8000, 12000, 20000, 30000];
       let i = 0;
       const poll = () => {
-        dispatch(checkClusterInsightsThunk());
-        if (i < delays.length) {
-          const d = delays[i++];
-          timeoutRef.current = window.setTimeout(poll, d);
-        }
+        dispatch(checkClusterInsightsThunk())
+          .unwrap()
+          .then((ok) => {
+            // Non-network response received (ok==true means insights ready, ok==false means 404)
+            setBackendDown(false);
+            failureCountRef.current = ok ? 0 : failureCountRef.current + 1;
+            // Schedule analyze start only if backend is reachable and insights missing (404)
+            if (!ok && !analyzeScheduledRef.current) {
+              startTimerRef.current = window.setTimeout(() => {
+                analyzeScheduledRef.current = false;
+                void handleStart();
+              }, 5000);
+              analyzeScheduledRef.current = true;
+            }
+            // If insights ready, cancel any scheduled start
+            if (ok && startTimerRef.current) {
+              window.clearTimeout(startTimerRef.current);
+              startTimerRef.current = undefined;
+              analyzeScheduledRef.current = false;
+            }
+          })
+          .catch((e: any) => {
+            if (e === 'NETWORK_UNAVAILABLE') {
+              setBackendDown(true);
+              failureCountRef.current += 1;
+              // Cancel any scheduled start if backend is down
+              if (startTimerRef.current) {
+                window.clearTimeout(startTimerRef.current);
+                startTimerRef.current = undefined;
+                analyzeScheduledRef.current = false;
+              }
+            }
+          });
+        const madeFourFails = failureCountRef.current >= 4;
+        const baseDelay = i < delays.length ? delays[i++] : delays[delays.length - 1];
+        const nextDelay = madeFourFails ? Math.max(5000, baseDelay) : baseDelay;
+        timeoutRef.current = window.setTimeout(() => {
+          if (madeFourFails) {
+            failureCountRef.current = 0;
+          }
+          poll();
+        }, nextDelay);
       };
-      // auto fire start after 5s
-      const startId = window.setTimeout(() => void handleStart(), 5000);
       poll();
       return () => {
-        window.clearTimeout(startId);
         if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+        if (startTimerRef.current) window.clearTimeout(startTimerRef.current);
       };
     }
     return;
@@ -139,6 +178,16 @@ const Startup: React.FC<StartupProps> = ({ onStartAnalyze }) => {
           We’ll scan your cluster to surface health, workload insights, and trends. Kick off the first analysis now
           — it’s quick, read‑only, and safe for production workloads.
         </p>
+        {backendDown && (
+          <div style={{ maxWidth: 640, margin: '12px auto 0' }}>
+            <Alert
+              type="warning"
+              showIcon
+              message="Backend unavailable"
+              description="We can’t reach the services yet. We’ll retry with increasing intervals. Please start your backend if it’s stopped."
+            />
+          </div>
+        )}
         {/* Auto-start: button removed; spinner indicates progress */}
       </div>
     </div>

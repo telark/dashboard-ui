@@ -69,7 +69,7 @@ export const removeGrouperMaintenanceMode = async (grouperName: string) => {
 export const startClusterAnalyze = async () => {
   try {
     const { path, method } = Endpoints.ANALYZE.START;
-    return await Client<any>(configuratorApiClient, path, { method });
+    return await Client<any>(configuratorApiClient, path, { method, headers: { 'X-Silent-Network': 'true' } });
   } catch (error) {
     console.error('[APIClient] Failed to start cluster analysis:', error);
     throw error;
