@@ -1,4 +1,5 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
+import { STORE_MESSAGES } from './constants';
 
 interface State {
   hasError: boolean;
@@ -20,7 +21,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.error('Error caught in boundary:', error, errorInfo);
+    console.error(STORE_MESSAGES.ERROR_BOUNDARY, error, errorInfo);
   }
 
   render() {

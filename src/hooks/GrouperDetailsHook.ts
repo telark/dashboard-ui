@@ -11,6 +11,7 @@ import {
   removeGrouperMaintenanceModeThunk,
 } from '../store/slices/grouperSlice';
 import { RootState, AppDispatch } from '../store';
+import { STORE_MESSAGES } from '../constants';
 
 export const GrouperDetailsHook = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -99,7 +100,7 @@ export const GrouperDetailsHook = () => {
       setInitialSyncMode(response.sync.mode);
       message.success('Sync Settings Updated Successfully!');
     } catch (error) {
-      console.error('Error updating sync settings:', error);
+      console.error(STORE_MESSAGES.ERROR_UPDATING_SYNC, error);
       message.error('Failed to update settings');
     } finally {
       setLoadingSave(false);
@@ -174,7 +175,7 @@ export const GrouperDetailsHook = () => {
       }
       setIsMaintenanceModalVisible(false);
     } catch (error) {
-      console.error('Failed to handle maintenance mode update', error);
+      console.error(STORE_MESSAGES.ERROR_HANDLING_MAINTENANCE_UPDATE, error);
       message.error('Failed to update maintenance mode');
     }
   };
@@ -195,7 +196,7 @@ export const GrouperDetailsHook = () => {
         throw new Error('Unexpected response status');
       }
     } catch (error) {
-      console.error('Failed to remove maintenance mode', error);
+      console.error(STORE_MESSAGES.ERROR_REMOVING_MAINTENANCE, error);
       message.error('Failed to remove maintenance mode');
     }
   };

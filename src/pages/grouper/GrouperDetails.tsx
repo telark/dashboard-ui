@@ -13,6 +13,7 @@ import GeneralInfo from '../../components/display/GeneralInfo';
 import HistoryTimeLine from '../../components/display/HistoryTimeLine';
 import MaintenanceMode from '../../components/tabs/MaintenanceMode';
 import Resources from '../../components/display/Resources';
+import { STORE_MESSAGES } from '../../constants';
 import SyncMode from '../../components/tabs/SyncMode';
 import StatusButton from '../../components/buttons/StatusButton';
 import { DEFAULT_COLORS } from '../../constants';
@@ -121,7 +122,7 @@ const GrouperDetails: React.FC = () => {
       setSyncing(true);
       const apiName = (grouperDetails as any)?.syncName || grouperDetails.name;
       (store.dispatch as AppDispatch)(startSync(grouperDetails.name));
-      console.log('Triggering SyncGrouper for:', apiName);
+      console.log(STORE_MESSAGES.TRIGGERING_SYNC, apiName);
       const key = `sync-${apiName}`;
       message.open({ type: 'loading', content: `${SYNC_MESSAGES.loading} ${apiName}…`, key, duration: 0 });
       const res = await triggerSingleGrouperSync(apiName);
