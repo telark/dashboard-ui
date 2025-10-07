@@ -46,6 +46,7 @@ exporterApiClient.interceptors.response.use(
     const meta = normalizeError(error);
     (error as any).normalized = meta;
     const isSilent404 = meta.isNotFound && error?.config?.headers?.['X-Silent-404'] === 'true';
+    const isSilentNetwork = meta.isNetwork && error?.config?.headers?.['X-Silent-Network'] === 'true';
     if (isSilent404) {
       // Treat 404 as a successful, empty response when explicitly marked silent
       const resp: AxiosResponse = error?.response ?? {
@@ -56,6 +57,10 @@ exporterApiClient.interceptors.response.use(
         config: error?.config,
       };
       return Promise.resolve({ ...resp, data: null });
+    }
+    if (isSilentNetwork) {
+      // Suppress logging and just propagate silently
+      return Promise.reject(error);
     }
     if (meta.isNotFound) {
       console.warn('API Warning (404):', meta);
@@ -76,6 +81,10 @@ configuratorApiClient.interceptors.response.use(
   (error) => {
     const meta = normalizeError(error);
     (error as any).normalized = meta;
+    const isSilentNetwork = meta.isNetwork && error?.config?.headers?.['X-Silent-Network'] === 'true';
+    if (isSilentNetwork) {
+      return Promise.reject(error);
+    }
     if (meta.isNotFound) {
       console.warn('API Warning (404):', meta);
     } else if (meta.isNetwork) {
@@ -95,6 +104,10 @@ syncManagerApiClient.interceptors.response.use(
   (error) => {
     const meta = normalizeError(error);
     (error as any).normalized = meta;
+    const isSilentNetwork = meta.isNetwork && error?.config?.headers?.['X-Silent-Network'] === 'true';
+    if (isSilentNetwork) {
+      return Promise.reject(error);
+    }
     if (meta.isNotFound) {
       console.warn('API Warning (404):', meta);
     } else if (meta.isNetwork) {
