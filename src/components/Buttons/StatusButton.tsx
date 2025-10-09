@@ -30,7 +30,16 @@ const StatusButton: React.FC<StatusButtonProps> = ({ status, icon }) => {
         gap: BUTTON_CONFIGS.STATUS_BUTTON.GAP,
       }}
     >
-      <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: BUTTON_CONFIGS.STATUS_BUTTON.ICON_FONT_SIZE }}>{icon}</span>
+      <span
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: BUTTON_CONFIGS.STATUS_BUTTON.ICON_FONT_SIZE,
+        }}
+      >
+        {icon}
+      </span>
       <span style={{ display: 'inline-block' }}>{status}</span>
     </Button>
   );

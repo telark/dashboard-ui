@@ -16,12 +16,28 @@ import { UI } from '../../constants/ui';
 
 const Label: React.FC<{ icon: React.ReactNode; text: string }> = ({ icon, text }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-    <span style={{ color: DEFAULT_COLORS.SUCCESS, fontSize: 16, display: 'inline-flex' }}>{icon}</span>
-    <span style={{ color: '#6b7280', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.4 }}>{text}</span>
+    <span style={{ color: DEFAULT_COLORS.SUCCESS, fontSize: 16, display: 'inline-flex' }}>
+      {icon}
+    </span>
+    <span
+      style={{
+        color: '#6b7280',
+        fontWeight: 700,
+        fontSize: 12,
+        textTransform: 'uppercase',
+        letterSpacing: 0.4,
+      }}
+    >
+      {text}
+    </span>
   </div>
 );
 
-const Row: React.FC<{ left: React.ReactNode; right: React.ReactNode; withDivider?: boolean }> = ({ left, right, withDivider = true }) => (
+const Row: React.FC<{ left: React.ReactNode; right: React.ReactNode; withDivider?: boolean }> = ({
+  left,
+  right,
+  withDivider = true,
+}) => (
   <div
     style={{
       display: 'flex',
@@ -48,7 +64,8 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
 
   const handlePageChange = (page: number) => setCurrentPage(page);
 
-  const handleView = (resourceName: string) => navigate(`/groupers/${name}/details/${resourceName}`);
+  const handleView = (resourceName: string) =>
+    navigate(`/groupers/${name}/details/${resourceName}`);
   const handleSync = (resourceName: string) => void resourceName; // future
   const handleDelete = (resourceName: string) => void resourceName; // future
 
@@ -63,7 +80,16 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
 
   if (!resources || resources.length === 0) {
     return (
-      <div style={{ minHeight: 200, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+      <div
+        style={{
+          minHeight: 200,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+        }}
+      >
         <div
           style={{
             width: 56,
@@ -81,7 +107,9 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
         >
           <AppstoreOutlined />
         </div>
-        <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F33', marginBottom: 6 }}>{UI.RESOURCES.EMPTY_TITLE}</div>
+        <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F33', marginBottom: 6 }}>
+          {UI.RESOURCES.EMPTY_TITLE}
+        </div>
         <div style={{ color: '#5B6B7C', marginBottom: 16, maxWidth: 520, lineHeight: 1.6 }}>
           {UI.RESOURCES.EMPTY_DESC}
         </div>
@@ -105,23 +133,27 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
     };
     if (isOk) {
       return (
-        <Tag style={{
-          ...baseStyle,
-          border: `1px solid ${DEFAULT_COLORS.SUCCESS}`,
-          color: DEFAULT_COLORS.SUCCESS,
-          background: 'rgba(32,201,151,0.08)'
-        }}>
+        <Tag
+          style={{
+            ...baseStyle,
+            border: `1px solid ${DEFAULT_COLORS.SUCCESS}`,
+            color: DEFAULT_COLORS.SUCCESS,
+            background: 'rgba(32,201,151,0.08)',
+          }}
+        >
           {value}
         </Tag>
       );
     }
     return (
-      <Tag style={{
-        ...baseStyle,
-        border: '1px solid #e5e7eb',
-        color: '#374151',
-        background: '#F9FAFB'
-      }}>
+      <Tag
+        style={{
+          ...baseStyle,
+          border: '1px solid #e5e7eb',
+          color: '#374151',
+          background: '#F9FAFB',
+        }}
+      >
         {value}
       </Tag>
     );
@@ -142,8 +174,15 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
     </span>
   );
 
-  const headerNode = (resource: typeof resources[number]) => (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+  const headerNode = (resource: (typeof resources)[number]) => (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+      }}
+    >
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 200 }}>
         <span
           style={{
@@ -169,16 +208,43 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
     </div>
   );
 
-  const detailNode = (resource: typeof resources[number]) => (
+  const detailNode = (resource: (typeof resources)[number]) => (
     <div style={{ paddingTop: 4 }}>
-      <Row left={<Label icon={<ClockCircleOutlined />} text={UI.RESOURCES.LABELS.LAST_SYNC} />} right={renderTime(resource.lastSync)} withDivider={false} />
-      <Row left={<Label icon={<FileOutlined />} text={UI.RESOURCES.LABELS.KIND} />} right={<span>{kindPill(resource.type)}</span>} withDivider={false} />
-      <Row left={<Label icon={<SyncOutlined />} text={UI.RESOURCES.LABELS.STATUS} />} right={statusTag(resource.status)} withDivider={false} />
+      <Row
+        left={<Label icon={<ClockCircleOutlined />} text={UI.RESOURCES.LABELS.LAST_SYNC} />}
+        right={renderTime(resource.lastSync)}
+        withDivider={false}
+      />
+      <Row
+        left={<Label icon={<FileOutlined />} text={UI.RESOURCES.LABELS.KIND} />}
+        right={<span>{kindPill(resource.type)}</span>}
+        withDivider={false}
+      />
+      <Row
+        left={<Label icon={<SyncOutlined />} text={UI.RESOURCES.LABELS.STATUS} />}
+        right={statusTag(resource.status)}
+        withDivider={false}
+      />
       <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 8 }}>
         <Space>
-          <Button icon={<EyeOutlined />} onClick={() => handleView(resource.name)} size="small" type="default" />
-          <Button icon={<SyncOutlined />} onClick={() => handleSync(resource.name)} size="small" type="primary" />
-          <Button icon={<DeleteOutlined />} onClick={() => handleDelete(resource.name)} size="small" danger />
+          <Button
+            icon={<EyeOutlined />}
+            onClick={() => handleView(resource.name)}
+            size="small"
+            type="default"
+          />
+          <Button
+            icon={<SyncOutlined />}
+            onClick={() => handleSync(resource.name)}
+            size="small"
+            type="primary"
+          />
+          <Button
+            icon={<DeleteOutlined />}
+            onClick={() => handleDelete(resource.name)}
+            size="small"
+            danger
+          />
         </Space>
       </div>
     </div>
@@ -199,7 +265,12 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
 
       {showPagination && (
         <div style={{ textAlign: 'center', margin: '16px 0' }}>
-          <Pagination current={currentPage} pageSize={pageSize} total={resources.length} onChange={handlePageChange} />
+          <Pagination
+            current={currentPage}
+            pageSize={pageSize}
+            total={resources.length}
+            onChange={handlePageChange}
+          />
         </div>
       )}
     </>

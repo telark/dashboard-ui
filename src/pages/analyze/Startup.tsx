@@ -88,7 +88,9 @@ const Startup: React.FC<StartupProps> = ({ onStartAnalyze }) => {
 
       if (insightsReady) {
         dispatch(setHasClusterInsight(true));
-        try { window.sessionStorage.setItem('WELCOME_PENDING', '1'); } catch {}
+        try {
+          window.sessionStorage.setItem('WELCOME_PENDING', '1');
+        } catch {}
         navigate('/');
         return;
       }
@@ -173,10 +175,21 @@ const Startup: React.FC<StartupProps> = ({ onStartAnalyze }) => {
     >
       <div style={{ maxWidth: 820, width: '100%', textAlign: 'center' }}>
         {starting ? <ArcSpinner /> : <AnalysisIllustration />}
-        <h2 style={{ margin: 0, fontSize: 28, color: '#0B1F33' }}>Preparing your cluster analysis</h2>
-        <p style={{ color: '#5B6B7C', marginTop: 12, maxWidth: 640, marginLeft: 'auto', marginRight: 'auto', fontSize: 16 }}>
-          We’ll scan your cluster to surface health, workload insights, and trends. Kick off the first analysis now
-          — it’s quick, read‑only, and safe for production workloads.
+        <h2 style={{ margin: 0, fontSize: 28, color: '#0B1F33' }}>
+          Preparing your cluster analysis
+        </h2>
+        <p
+          style={{
+            color: '#5B6B7C',
+            marginTop: 12,
+            maxWidth: 640,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            fontSize: 16,
+          }}
+        >
+          We’ll scan your cluster to surface health, workload insights, and trends. Kick off the
+          first analysis now — it’s quick, read‑only, and safe for production workloads.
         </p>
         {backendDown && (
           <div style={{ maxWidth: 640, margin: '12px auto 0' }}>
@@ -195,5 +208,3 @@ const Startup: React.FC<StartupProps> = ({ onStartAnalyze }) => {
 };
 
 export default Startup;
-
-

@@ -11,7 +11,15 @@ import {
   removeGrouperMaintenanceModeThunk,
 } from '../store/slices/grouperSlice';
 import { RootState, AppDispatch } from '../store';
-import { STORE_MESSAGES, HOOK_MESSAGES, HOOK_VALUES, HOOK_CONFIGS, MAINTENANCE_ACTIONS, SYNC_ACTIONS, HTTP_STATUS } from '../constants';
+import {
+  STORE_MESSAGES,
+  HOOK_MESSAGES,
+  HOOK_VALUES,
+  HOOK_CONFIGS,
+  MAINTENANCE_ACTIONS,
+  SYNC_ACTIONS,
+  HTTP_STATUS,
+} from '../constants';
 
 export const GrouperDetailsHook = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -23,15 +31,27 @@ export const GrouperDetailsHook = () => {
   } = useSelector((state: RootState) => state.grouper);
 
   const [isAutoSync, setIsAutoSync] = useState<boolean>(HOOK_CONFIGS.DEFAULT_VALUES.AUTO_SYNC);
-  const [initialSyncMode, setInitialSyncMode] = useState<string>(HOOK_CONFIGS.DEFAULT_VALUES.SYNC_MODE);
+  const [initialSyncMode, setInitialSyncMode] = useState<string>(
+    HOOK_CONFIGS.DEFAULT_VALUES.SYNC_MODE,
+  );
   const [loadingSave, setLoadingSave] = useState<boolean>(HOOK_CONFIGS.DEFAULT_VALUES.LOADING_SAVE);
 
-  const [isMaintenanceModalVisible, setIsMaintenanceModalVisible] = useState(HOOK_CONFIGS.DEFAULT_VALUES.MAINTENANCE_MODAL_VISIBLE);
-  const [isMaintenanceModeActive, setIsMaintenanceModeActive] = useState<boolean>(HOOK_CONFIGS.DEFAULT_VALUES.MAINTENANCE_MODE_ACTIVE);
-  const [maintenaceUpdateAction, setMaintenanceUpdateAction] = useState(HOOK_CONFIGS.DEFAULT_VALUES.MAINTENANCE_UPDATE_ACTION);
-  const [maintenaceDeleteAction, setMaintenanceDeleteAction] = useState(HOOK_CONFIGS.DEFAULT_VALUES.MAINTENANCE_DELETE_ACTION);
+  const [isMaintenanceModalVisible, setIsMaintenanceModalVisible] = useState(
+    HOOK_CONFIGS.DEFAULT_VALUES.MAINTENANCE_MODAL_VISIBLE,
+  );
+  const [isMaintenanceModeActive, setIsMaintenanceModeActive] = useState<boolean>(
+    HOOK_CONFIGS.DEFAULT_VALUES.MAINTENANCE_MODE_ACTIVE,
+  );
+  const [maintenaceUpdateAction, setMaintenanceUpdateAction] = useState(
+    HOOK_CONFIGS.DEFAULT_VALUES.MAINTENANCE_UPDATE_ACTION,
+  );
+  const [maintenaceDeleteAction, setMaintenanceDeleteAction] = useState(
+    HOOK_CONFIGS.DEFAULT_VALUES.MAINTENANCE_DELETE_ACTION,
+  );
 
-  const [hasMaintenanceData, setHasMaintenanceData] = useState(HOOK_CONFIGS.DEFAULT_VALUES.HAS_MAINTENANCE_DATA);
+  const [hasMaintenanceData, setHasMaintenanceData] = useState(
+    HOOK_CONFIGS.DEFAULT_VALUES.HAS_MAINTENANCE_DATA,
+  );
 
   // Ensure hasChanges is a boolean
   const hasChanges = Boolean(
@@ -163,7 +183,9 @@ export const GrouperDetailsHook = () => {
       const refreshed = await dispatch(fetchGrouperDetailsThunk(name!)).unwrap();
       if (refreshed?.maintenance) {
         setHasMaintenanceData(true);
-        setIsMaintenanceModeActive(refreshed.maintenance.status === HOOK_VALUES.MAINTENANCE_STATUS.ACTIVE);
+        setIsMaintenanceModeActive(
+          refreshed.maintenance.status === HOOK_VALUES.MAINTENANCE_STATUS.ACTIVE,
+        );
         setMaintenanceUpdateAction(
           refreshed.maintenance.updateAction === MAINTENANCE_ACTIONS.ALLOW ||
             (refreshed.maintenance.updateAction as any) === true,

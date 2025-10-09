@@ -25,7 +25,14 @@ const FancySpinner: React.FC<FancySpinnerProps> = ({
   const iconFontSize = Math.max(12, Math.round(size * 0.35));
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: showLabel ? 12 : 0 }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: showLabel ? 12 : 0,
+      }}
+    >
       <div
         style={{
           position: 'relative',

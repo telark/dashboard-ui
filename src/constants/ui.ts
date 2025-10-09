@@ -60,5 +60,3 @@ export const UI = {
 } as const;
 
 export type UIConstants = typeof UI;
-
-

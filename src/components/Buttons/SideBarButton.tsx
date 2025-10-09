@@ -4,7 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_COLORS } from '../../constants';
 import { ButtonInterface } from '../../interfaces/common';
 
-const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({ text, icon, active, hoverIcon, route, isCollapsed = false }) => {
+const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({
+  text,
+  icon,
+  active,
+  hoverIcon,
+  route,
+  isCollapsed = false,
+}) => {
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate(); // For navigation
 
@@ -14,8 +21,10 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({ 
   const isActiveOrHovered = Boolean(active) || isHovered;
   const iconColor = isActiveOrHovered ? DEFAULT_COLORS.SUCCESS : BUTTON_COLORS.ICON_DEFAULT;
   const coloredIcon =
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (icon && (React.isValidElement(icon) ? React.cloneElement(icon as any, { style: { color: iconColor } }) : icon)) ||
+    (icon &&
+      (React.isValidElement(icon)
+        ? React.cloneElement(icon as any, { style: { color: iconColor } })
+        : icon)) ||
     null;
 
   return (
@@ -30,7 +39,9 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({ 
         color: isActiveOrHovered ? DEFAULT_COLORS.SUCCESS : BUTTON_COLORS.TEXT_DEFAULT,
         padding: BUTTON_CONFIGS.SIDEBAR_BUTTON.PADDING,
         borderRadius: BUTTON_CONFIGS.SIDEBAR_BUTTON.BORDER_RADIUS,
-        margin: isCollapsed ? BUTTON_CONFIGS.SIDEBAR_BUTTON.COLLAPSED_MARGIN : BUTTON_CONFIGS.SIDEBAR_BUTTON.EXPANDED_MARGIN,
+        margin: isCollapsed
+          ? BUTTON_CONFIGS.SIDEBAR_BUTTON.COLLAPSED_MARGIN
+          : BUTTON_CONFIGS.SIDEBAR_BUTTON.EXPANDED_MARGIN,
         height: BUTTON_CONFIGS.SIDEBAR_BUTTON.HEIGHT,
         display: 'flex',
         alignItems: 'center',
@@ -38,7 +49,9 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({ 
         fontSize: BUTTON_CONFIGS.SIDEBAR_BUTTON.FONT_SIZE,
         cursor: 'pointer',
         transition: BUTTON_CONFIGS.SIDEBAR_BUTTON.TRANSITION,
-        borderRight: isCollapsed ? 'none' : `${BUTTON_CONFIGS.SIDEBAR_BUTTON.BORDER_WIDTH}px solid ${isActive ? DEFAULT_COLORS.SUCCESS : 'transparent'}`,
+        borderRight: isCollapsed
+          ? 'none'
+          : `${BUTTON_CONFIGS.SIDEBAR_BUTTON.BORDER_WIDTH}px solid ${isActive ? DEFAULT_COLORS.SUCCESS : 'transparent'}`,
         borderTopRightRadius: 0,
         borderBottomRightRadius: 0,
         position: 'relative',

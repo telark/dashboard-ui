@@ -30,7 +30,9 @@ const ActionListItem: React.FC<ActionListItemProps> = ({ icon, label, active, on
           width: CARD_CONFIGS.ACTION_LIST_ITEM.ICON_SIZE,
           height: CARD_CONFIGS.ACTION_LIST_ITEM.ICON_SIZE,
           borderRadius: CARD_CONFIGS.ACTION_LIST_ITEM.ICON_BORDER_RADIUS,
-          background: active ? CARD_COLORS.ICON.BACKGROUND_ACTIVE : CARD_COLORS.ICON.BACKGROUND_INACTIVE,
+          background: active
+            ? CARD_COLORS.ICON.BACKGROUND_ACTIVE
+            : CARD_COLORS.ICON.BACKGROUND_INACTIVE,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -40,14 +42,24 @@ const ActionListItem: React.FC<ActionListItemProps> = ({ icon, label, active, on
       >
         {icon}
       </div>
-      <div style={{ flex: 1, textAlign: 'left', color: active ? CARD_COLORS.TEXT.PRIMARY : CARD_COLORS.TEXT.SECONDARY, fontWeight: 700 }}>
+      <div
+        style={{
+          flex: 1,
+          textAlign: 'left',
+          color: active ? CARD_COLORS.TEXT.PRIMARY : CARD_COLORS.TEXT.SECONDARY,
+          fontWeight: 700,
+        }}
+      >
         {label}
       </div>
-      <RightOutlined style={{ color: CARD_COLORS.TEXT.ARROW, fontSize: CARD_CONFIGS.ACTION_LIST_ITEM.ARROW_FONT_SIZE }} />
+      <RightOutlined
+        style={{
+          color: CARD_COLORS.TEXT.ARROW,
+          fontSize: CARD_CONFIGS.ACTION_LIST_ITEM.ARROW_FONT_SIZE,
+        }}
+      />
     </button>
   );
 };
 
 export default ActionListItem;
-
-

@@ -23,7 +23,9 @@ const SyncMode: React.FC<SyncModeProps> = ({
   return (
     <div style={{ padding: '8px 4px' }}>
       {/* Description only (title & icon are handled by the section header) */}
-      <p style={{ marginTop: 0, fontSize: '13px', color: '#5B6B7C', lineHeight: 1.6 }}>{SYNC_MODE.description}</p>
+      <p style={{ marginTop: 0, fontSize: '13px', color: '#5B6B7C', lineHeight: 1.6 }}>
+        {SYNC_MODE.description}
+      </p>
       <ul style={{ marginTop: '10px', paddingLeft: '18px', color: '#4a5568', fontSize: '13px' }}>
         {SYNC_MODE.list.map((item, index) => (
           <li key={index}>{item}</li>
@@ -31,13 +33,18 @@ const SyncMode: React.FC<SyncModeProps> = ({
       </ul>
 
       <div style={{ display: 'flex', alignItems: 'center', marginTop: 20 }}>
-        <span style={{ fontSize: '14px', fontWeight: 600, marginRight: 8 }}>{SYNC_MODE.autoSyncLabel}</span>
+        <span style={{ fontSize: '14px', fontWeight: 600, marginRight: 8 }}>
+          {SYNC_MODE.autoSyncLabel}
+        </span>
         <Switch
           checked={isAutoSync}
           onChange={handleAutoSyncChange}
           checkedChildren={SYNC_MODE.autoSyncTextOn}
           unCheckedChildren={SYNC_MODE.autoSyncTextOff}
-          style={{ marginLeft: 8, backgroundColor: isAutoSync ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.SWITCH_OFF }}
+          style={{
+            marginLeft: 8,
+            backgroundColor: isAutoSync ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.SWITCH_OFF,
+          }}
         />
       </div>
 

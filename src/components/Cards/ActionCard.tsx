@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { RightOutlined, ClockCircleOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, CARD_CONFIGS, CARD_COLORS, CARD_TRANSITIONS, CARD_EFFECTS } from '../../constants';
+import {
+  DEFAULT_COLORS,
+  CARD_CONFIGS,
+  CARD_COLORS,
+  CARD_TRANSITIONS,
+  CARD_EFFECTS,
+} from '../../constants';
 
 export interface ActionCardProps {
   title: string;
@@ -13,7 +19,16 @@ export interface ActionCardProps {
   footerTextColor?: string;
 }
 
-const ActionCard: React.FC<ActionCardProps> = ({ title, description, icon, onClick, rightLabel, footerTag, footerBg, footerTextColor }) => {
+const ActionCard: React.FC<ActionCardProps> = ({
+  title,
+  description,
+  icon,
+  onClick,
+  rightLabel,
+  footerTag,
+  footerBg,
+  footerTextColor,
+}) => {
   const [isHovered, setIsHovered] = useState(false);
   return (
     <button
@@ -29,18 +44,18 @@ const ActionCard: React.FC<ActionCardProps> = ({ title, description, icon, onCli
         flexDirection: 'column',
         alignItems: 'stretch',
         border: `1px solid ${CARD_COLORS.BORDER.DEFAULT}`,
-        boxShadow: isHovered
-          ? CARD_COLORS.SHADOW.HOVER
-          : CARD_COLORS.SHADOW.DEFAULT,
+        boxShadow: isHovered ? CARD_COLORS.SHADOW.HOVER : CARD_COLORS.SHADOW.DEFAULT,
         cursor: 'pointer',
         minHeight: CARD_CONFIGS.ACTION_CARD.MIN_HEIGHT,
         lineHeight: 1,
         transition: CARD_TRANSITIONS.HOVER,
-        transform: isHovered ? CARD_EFFECTS.HOVER_TRANSFORM : 'translateY(0)'
+        transform: isHovered ? CARD_EFFECTS.HOVER_TRANSFORM : 'translateY(0)',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: CARD_CONFIGS.ACTION_CARD.GAP.MAIN }}>
+        <div
+          style={{ display: 'flex', alignItems: 'center', gap: CARD_CONFIGS.ACTION_CARD.GAP.MAIN }}
+        >
           <div
             style={{
               width: CARD_CONFIGS.ACTION_CARD.ICON_SIZE,
@@ -52,23 +67,42 @@ const ActionCard: React.FC<ActionCardProps> = ({ title, description, icon, onCli
               justifyContent: 'center',
               fontSize: CARD_CONFIGS.ACTION_CARD.ICON_FONT_SIZE,
               color: DEFAULT_COLORS.SUCCESS,
-              boxShadow: CARD_COLORS.ICON.SHADOW_EXTENDED
+              boxShadow: CARD_COLORS.ICON.SHADOW_EXTENDED,
             }}
           >
             {icon}
           </div>
           <div style={{ textAlign: 'left' }}>
-            <div style={{ fontSize: CARD_CONFIGS.ACTION_CARD.TITLE_FONT_SIZE, color: CARD_COLORS.TEXT.PRIMARY, fontWeight: 700, whiteSpace: 'nowrap' }}>
+            <div
+              style={{
+                fontSize: CARD_CONFIGS.ACTION_CARD.TITLE_FONT_SIZE,
+                color: CARD_COLORS.TEXT.PRIMARY,
+                fontWeight: 700,
+                whiteSpace: 'nowrap',
+              }}
+            >
               {title}
             </div>
             {description ? (
-              <div style={{ fontSize: CARD_CONFIGS.ACTION_CARD.DESCRIPTION_FONT_SIZE, color: CARD_COLORS.TEXT.SECONDARY, marginTop: 2 }}>{description}</div>
+              <div
+                style={{
+                  fontSize: CARD_CONFIGS.ACTION_CARD.DESCRIPTION_FONT_SIZE,
+                  color: CARD_COLORS.TEXT.SECONDARY,
+                  marginTop: 2,
+                }}
+              >
+                {description}
+              </div>
             ) : null}
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: CARD_CONFIGS.ACTION_CARD.GAP.RIGHT }}>
+        <div
+          style={{ display: 'flex', alignItems: 'center', gap: CARD_CONFIGS.ACTION_CARD.GAP.RIGHT }}
+        >
           {rightLabel ? (
-            <div style={{ color: CARD_COLORS.TEXT.SECONDARY, fontSize: 13, whiteSpace: 'nowrap' }}>{rightLabel}</div>
+            <div style={{ color: CARD_COLORS.TEXT.SECONDARY, fontSize: 13, whiteSpace: 'nowrap' }}>
+              {rightLabel}
+            </div>
           ) : null}
           <div
             style={{
@@ -80,10 +114,17 @@ const ActionCard: React.FC<ActionCardProps> = ({ title, description, icon, onCli
               alignItems: 'center',
               justifyContent: 'center',
               color: isHovered ? '#FFFFFF' : CARD_COLORS.TEXT.SECONDARY,
-              transition: CARD_TRANSITIONS.HOVER
+              transition: CARD_TRANSITIONS.HOVER,
             }}
           >
-            <RightOutlined style={{ fontSize: CARD_CONFIGS.ACTION_CARD.ARROW_FONT_SIZE, transform: isHovered ? CARD_EFFECTS.ARROW_TRANSLATE : CARD_EFFECTS.ARROW_TRANSLATE_NORMAL }} />
+            <RightOutlined
+              style={{
+                fontSize: CARD_CONFIGS.ACTION_CARD.ARROW_FONT_SIZE,
+                transform: isHovered
+                  ? CARD_EFFECTS.ARROW_TRANSLATE
+                  : CARD_EFFECTS.ARROW_TRANSLATE_NORMAL,
+              }}
+            />
           </div>
         </div>
       </div>
@@ -93,7 +134,8 @@ const ActionCard: React.FC<ActionCardProps> = ({ title, description, icon, onCli
             marginTop: 8,
             alignSelf: 'flex-start',
             background:
-              footerBg || 'linear-gradient(180deg, rgba(32,201,151,0.12) 0%, rgba(32,201,151,0.18) 100%)',
+              footerBg ||
+              'linear-gradient(180deg, rgba(32,201,151,0.12) 0%, rgba(32,201,151,0.18) 100%)',
             color: footerTextColor || DEFAULT_COLORS.SUCCESS,
             padding: CARD_CONFIGS.ACTION_CARD.FOOTER_PADDING,
             borderRadius: 999,
@@ -112,5 +154,3 @@ const ActionCard: React.FC<ActionCardProps> = ({ title, description, icon, onCli
 };
 
 export default ActionCard;
-
-

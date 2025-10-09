@@ -23,7 +23,9 @@ const TimeAgo: React.FC<TimeAgoProps> = ({ date, formatString = TIME_FORMATS.DEF
   useEffect(() => {
     const update = () => {
       setTimeAgo(
-        isValidDate ? formatDistanceToNow(parsedDate, { addSuffix: true }) : TIME_TEXTS.INVALID_DATE,
+        isValidDate
+          ? formatDistanceToNow(parsedDate, { addSuffix: true })
+          : TIME_TEXTS.INVALID_DATE,
       );
     };
     update();

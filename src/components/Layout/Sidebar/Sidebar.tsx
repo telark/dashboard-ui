@@ -72,9 +72,7 @@ const Sidebar = () => {
             transition: 'all 0.3s ease',
           }}
         >
-          <span style={{ fontSize: 20 }}>
-            {isCollapsed ? '›' : '‹'}
-          </span>
+          <span style={{ fontSize: 20 }}>{isCollapsed ? '›' : '‹'}</span>
           {!isCollapsed && <span>Hide</span>}
         </button>
       </div>
