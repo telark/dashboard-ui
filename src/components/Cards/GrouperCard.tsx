@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Typography, Modal, Popover, Spin, App as AntdApp } from 'antd';
+import { Card, Typography, Modal, Popover, App as AntdApp } from 'antd';
 import {
   CheckCircleOutlined,
   WarningOutlined,
@@ -17,7 +17,6 @@ import TimeAgo from '../time/TimeAgo';
 import Metric from '../common/Metric';
 import {
   DEFAULT_COLORS,
-  STORE_MESSAGES,
   CARD_CONFIGS,
   CARD_COLORS,
   CARD_TRANSITIONS,
@@ -56,7 +55,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
   const isGloballySyncing = Boolean(globalSyncing[name]);
   const isSyncingEffective = syncing || isGloballySyncing;
 
-  const statusStyle =
+  const statusStyle = useMemo(() => 
     status === CARD_STATES.STATUS.ACTIVE
       ? {
           color: DEFAULT_COLORS.SUCCESS,
@@ -67,14 +66,13 @@ const GrouperCard: React.FC<GrouperInterface> = ({
           color: DEFAULT_COLORS.DEFAULT,
           borderColor: DEFAULT_COLORS.DEFAULT,
           icon: <CloseCircleOutlined />,
-        };
+        }, [status]);
 
-  const handleSync = async () => {
+  const handleSync = useCallback(async () => {
     try {
       setSyncing(true);
       const apiName = syncName || name;
       (store.dispatch as AppDispatch)(startSync(name));
-      console.log(STORE_MESSAGES.TRIGGERING_SYNC, apiName);
       const key = `sync-${apiName}`;
       message.open({
         type: 'loading',
@@ -83,7 +81,6 @@ const GrouperCard: React.FC<GrouperInterface> = ({
         duration: 0,
       });
       const res = await triggerSingleGrouperSync(apiName);
-      const phase = res?.data?.phase ?? 'Completed';
       const effect = res?.data?.syncEffect ?? 'NoUpdate';
 
       // If the item should disappear, keep loading toast and poll until state updates
@@ -121,14 +118,14 @@ const GrouperCard: React.FC<GrouperInterface> = ({
       setSyncing(false);
       (store.dispatch as AppDispatch)(endSync(name));
     }
-  };
-  const handleView = () => navigate(`/groupers/${name}/details`);
-  const handleDelete = () => setModalVisible(true);
-  const handleConfirmDelete = () => {
+  }, [name, syncName, message]);
+  const handleView = useCallback(() => navigate(`/groupers/${name}/details`), [navigate, name]);
+  const handleDelete = useCallback(() => setModalVisible(true), []);
+  const handleConfirmDelete = useCallback(() => {
     setModalVisible(false);
     message.warning(GROUPER_CARD_TEXTS.SYNC.SUCCESS_DELETE);
-  };
-  const handleCancelDelete = () => setModalVisible(false);
+  }, [message]);
+  const handleCancelDelete = useCallback(() => setModalVisible(false), []);
 
   return (
     <>
@@ -350,4 +347,4 @@ const GrouperCard: React.FC<GrouperInterface> = ({
   );
 };
 
-export default GrouperCard;
+export default React.memo(GrouperCard);

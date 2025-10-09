@@ -56,7 +56,7 @@ const AnalysisIllustration: React.FC = () => (
   </svg>
 );
 
-const Startup: React.FC<StartupProps> = ({ onStartAnalyze }) => {
+const Startup: React.FC<StartupProps> = ({ onStartAnalyze: _onStartAnalyze }) => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [polling, setPolling] = useState(false);
@@ -90,14 +90,16 @@ const Startup: React.FC<StartupProps> = ({ onStartAnalyze }) => {
         dispatch(setHasClusterInsight(true));
         try {
           window.sessionStorage.setItem('WELCOME_PENDING', '1');
-        } catch {}
+        } catch {
+          // Ignore storage errors
+        }
         navigate('/');
         return;
       }
 
       // If insights not ready, allow user to try again (stay on screen)
       setStarting(true); // keep spinner
-    } catch (e) {
+    } catch {
       setStarting(true);
     }
   };
