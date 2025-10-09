@@ -11,7 +11,7 @@ import {
   removeGrouperMaintenanceModeThunk,
 } from '../store/slices/grouperSlice';
 import { RootState, AppDispatch } from '../store';
-import { STORE_MESSAGES } from '../constants';
+import { STORE_MESSAGES, HOOK_MESSAGES, HOOK_VALUES, HOOK_CONFIGS, MAINTENANCE_ACTIONS, SYNC_ACTIONS, HTTP_STATUS } from '../constants';
 
 export const GrouperDetailsHook = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -22,32 +22,32 @@ export const GrouperDetailsHook = () => {
     error,
   } = useSelector((state: RootState) => state.grouper);
 
-  const [isAutoSync, setIsAutoSync] = useState<boolean>(false);
-  const [initialSyncMode, setInitialSyncMode] = useState<string>('');
-  const [loadingSave, setLoadingSave] = useState<boolean>(false);
+  const [isAutoSync, setIsAutoSync] = useState<boolean>(HOOK_CONFIGS.DEFAULT_VALUES.AUTO_SYNC);
+  const [initialSyncMode, setInitialSyncMode] = useState<string>(HOOK_CONFIGS.DEFAULT_VALUES.SYNC_MODE);
+  const [loadingSave, setLoadingSave] = useState<boolean>(HOOK_CONFIGS.DEFAULT_VALUES.LOADING_SAVE);
 
-  const [isMaintenanceModalVisible, setIsMaintenanceModalVisible] = useState(false);
-  const [isMaintenanceModeActive, setIsMaintenanceModeActive] = useState<boolean>(false);
-  const [maintenaceUpdateAction, setMaintenanceUpdateAction] = useState(true);
-  const [maintenaceDeleteAction, setMaintenanceDeleteAction] = useState(true);
+  const [isMaintenanceModalVisible, setIsMaintenanceModalVisible] = useState(HOOK_CONFIGS.DEFAULT_VALUES.MAINTENANCE_MODAL_VISIBLE);
+  const [isMaintenanceModeActive, setIsMaintenanceModeActive] = useState<boolean>(HOOK_CONFIGS.DEFAULT_VALUES.MAINTENANCE_MODE_ACTIVE);
+  const [maintenaceUpdateAction, setMaintenanceUpdateAction] = useState(HOOK_CONFIGS.DEFAULT_VALUES.MAINTENANCE_UPDATE_ACTION);
+  const [maintenaceDeleteAction, setMaintenanceDeleteAction] = useState(HOOK_CONFIGS.DEFAULT_VALUES.MAINTENANCE_DELETE_ACTION);
 
-  const [hasMaintenanceData, setHasMaintenanceData] = useState(false);
+  const [hasMaintenanceData, setHasMaintenanceData] = useState(HOOK_CONFIGS.DEFAULT_VALUES.HAS_MAINTENANCE_DATA);
 
   // Ensure hasChanges is a boolean
   const hasChanges = Boolean(
-    initialSyncMode && (isAutoSync ? 'auto' : 'manual') !== initialSyncMode,
+    initialSyncMode && (isAutoSync ? SYNC_ACTIONS.AUTO : SYNC_ACTIONS.MANUAL) !== initialSyncMode,
   );
 
   useEffect(() => {
     const maintenance = grouperDetails?.maintenance;
     if (maintenance) {
       setHasMaintenanceData(true);
-      setIsMaintenanceModeActive(maintenance.status === 'Active');
+      setIsMaintenanceModeActive(maintenance.status === HOOK_VALUES.MAINTENANCE_STATUS.ACTIVE);
       setMaintenanceUpdateAction(
-        maintenance.updateAction === 'allow' || maintenance.updateAction === true,
+        maintenance.updateAction === MAINTENANCE_ACTIONS.ALLOW || maintenance.updateAction === true,
       );
       setMaintenanceDeleteAction(
-        maintenance.deleteAction === 'allow' || maintenance.deleteAction === true,
+        maintenance.deleteAction === MAINTENANCE_ACTIONS.ALLOW || maintenance.deleteAction === true,
       );
     } else {
       setHasMaintenanceData(false);
@@ -67,18 +67,18 @@ export const GrouperDetailsHook = () => {
 
   useEffect(() => {
     if (grouperDetails?.sync) {
-      setIsAutoSync(grouperDetails.sync.mode === 'auto');
+      setIsAutoSync(grouperDetails.sync.mode === SYNC_ACTIONS.AUTO);
       setInitialSyncMode(grouperDetails.sync.mode);
     }
 
-    if (grouperDetails?.maintenance?.status === 'Active') {
+    if (grouperDetails?.maintenance?.status === HOOK_VALUES.MAINTENANCE_STATUS.ACTIVE) {
       setIsMaintenanceModeActive(true);
       setMaintenanceUpdateAction(
-        grouperDetails.maintenance?.updateAction === 'allow' ||
+        grouperDetails.maintenance?.updateAction === MAINTENANCE_ACTIONS.ALLOW ||
           (grouperDetails.maintenance?.updateAction as any) === true,
       );
       setMaintenanceDeleteAction(
-        grouperDetails.maintenance?.deleteAction === 'allow' ||
+        grouperDetails.maintenance?.deleteAction === MAINTENANCE_ACTIONS.ALLOW ||
           (grouperDetails.maintenance?.deleteAction as any) === true,
       );
     } else {
@@ -94,14 +94,14 @@ export const GrouperDetailsHook = () => {
     if (!name) return;
     setLoadingSave(true);
     try {
-      const syncMode = isAutoSync ? 'auto' : 'manual';
+      const syncMode = isAutoSync ? SYNC_ACTIONS.AUTO : SYNC_ACTIONS.MANUAL;
       const response = await dispatch(updateGrouperSyncModeThunk({ name, syncMode })).unwrap();
-      setIsAutoSync(response.sync.mode === 'auto');
+      setIsAutoSync(response.sync.mode === SYNC_ACTIONS.AUTO);
       setInitialSyncMode(response.sync.mode);
-      message.success('Sync Settings Updated Successfully!');
+      message.success(HOOK_MESSAGES.SUCCESS.SYNC_SETTINGS_UPDATED);
     } catch (error) {
       console.error(STORE_MESSAGES.ERROR_UPDATING_SYNC, error);
-      message.error('Failed to update settings');
+      message.error(HOOK_MESSAGES.ERROR.UPDATE_SETTINGS_FAILED);
     } finally {
       setLoadingSave(false);
     }
@@ -136,10 +136,10 @@ export const GrouperDetailsHook = () => {
             deleteAction: maintenaceDeleteAction,
           }),
         ).unwrap();
-        if (response.status === 200) {
-          message.success('Maintenance mode updated successfully!');
+        if (response.status === HTTP_STATUS.SUCCESS) {
+          message.success(HOOK_MESSAGES.SUCCESS.MAINTENANCE_MODE_UPDATED);
         } else {
-          throw new Error('Unexpected response status');
+          throw new Error(HOOK_MESSAGES.ERROR.UNEXPECTED_RESPONSE);
         }
       } else {
         // Enable maintenance mode for the first time
@@ -152,10 +152,10 @@ export const GrouperDetailsHook = () => {
           }),
         ).unwrap();
 
-        if (response.status === 200) {
-          message.success(response.message || 'Maintenance mode enabled successfully!');
+        if (response.status === HTTP_STATUS.SUCCESS) {
+          message.success(response.message || HOOK_MESSAGES.SUCCESS.MAINTENANCE_MODE_ENABLED);
         } else {
-          throw new Error('Unexpected response status');
+          throw new Error(HOOK_MESSAGES.ERROR.UNEXPECTED_RESPONSE);
         }
       }
 
@@ -163,20 +163,20 @@ export const GrouperDetailsHook = () => {
       const refreshed = await dispatch(fetchGrouperDetailsThunk(name!)).unwrap();
       if (refreshed?.maintenance) {
         setHasMaintenanceData(true);
-        setIsMaintenanceModeActive(refreshed.maintenance.status === 'Active');
+        setIsMaintenanceModeActive(refreshed.maintenance.status === HOOK_VALUES.MAINTENANCE_STATUS.ACTIVE);
         setMaintenanceUpdateAction(
-          refreshed.maintenance.updateAction === 'allow' ||
+          refreshed.maintenance.updateAction === MAINTENANCE_ACTIONS.ALLOW ||
             (refreshed.maintenance.updateAction as any) === true,
         );
         setMaintenanceDeleteAction(
-          refreshed.maintenance.deleteAction === 'allow' ||
+          refreshed.maintenance.deleteAction === MAINTENANCE_ACTIONS.ALLOW ||
             (refreshed.maintenance.deleteAction as any) === true,
         );
       }
       setIsMaintenanceModalVisible(false);
     } catch (error) {
       console.error(STORE_MESSAGES.ERROR_HANDLING_MAINTENANCE_UPDATE, error);
-      message.error('Failed to update maintenance mode');
+      message.error(HOOK_MESSAGES.ERROR.UPDATE_MAINTENANCE_FAILED);
     }
   };
 
@@ -186,18 +186,18 @@ export const GrouperDetailsHook = () => {
       const response = await dispatch(removeGrouperMaintenanceModeThunk(name!)).unwrap();
 
       // Handle the response and show a success message
-      if (response.status === 200) {
-        message.success('Maintenance mode removed successfully!');
+      if (response.status === HTTP_STATUS.SUCCESS) {
+        message.success(HOOK_MESSAGES.SUCCESS.MAINTENANCE_MODE_REMOVED);
         // Optionally update the UI state to reflect the change
         setIsMaintenanceModeActive(false);
         setMaintenanceUpdateAction(false);
         setMaintenanceDeleteAction(false);
       } else {
-        throw new Error('Unexpected response status');
+        throw new Error(HOOK_MESSAGES.ERROR.UNEXPECTED_RESPONSE);
       }
     } catch (error) {
       console.error(STORE_MESSAGES.ERROR_REMOVING_MAINTENANCE, error);
-      message.error('Failed to remove maintenance mode');
+      message.error(HOOK_MESSAGES.ERROR.REMOVE_MAINTENANCE_FAILED);
     }
   };
 
