@@ -6,7 +6,7 @@ export const ERROR_MESSAGES = {
     GENERIC_ERROR: 'API Error:',
     UNKNOWN_ERROR: 'Unknown error',
   },
-  
+
   CLIENT: {
     FETCH_GROUPERS_FAILED: '[APIClient] Failed to fetch all groupers:',
     FETCH_GROUPER_DETAILS_FAILED: '[APIClient] Failed to fetch grouper details for',
@@ -17,7 +17,7 @@ export const ERROR_MESSAGES = {
     REMOVE_MAINTENANCE_MODE_FAILED: '[APIClient] Failed to remove maintenance mode for',
     START_CLUSTER_ANALYSIS_FAILED: '[APIClient] Failed to start cluster analysis:',
   },
-  
+
   INSIGHTS: {
     NETWORK_UNAVAILABLE: 'NETWORK_UNAVAILABLE',
     CHECK_CLUSTER_FAILED: 'Failed to check cluster insights',
@@ -31,12 +31,14 @@ export const SUCCESS_MESSAGES = {
 
 export const WARNING_MESSAGES = {
   BACKEND_UNAVAILABLE: 'Backend unavailable',
-  BACKEND_UNAVAILABLE_DESCRIPTION: "We're unable to connect to the backend service. Retrying with increasing intervals.",
+  BACKEND_UNAVAILABLE_DESCRIPTION:
+    "We're unable to connect to the backend service. Retrying with increasing intervals.",
 } as const;
 
 export const INFO_MESSAGES = {
   STARTUP: {
     TITLE: 'Preparing your cluster analysis',
-    DESCRIPTION: "We'll scan your cluster to surface health, workload insights, and trends. Kick off the first analysis now — it's quick, read‑only, and safe for production workloads.",
+    DESCRIPTION:
+      "We'll scan your cluster to surface health, workload insights, and trends. Kick off the first analysis now — it's quick, read‑only, and safe for production workloads.",
   },
 } as const;

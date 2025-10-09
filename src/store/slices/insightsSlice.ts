@@ -16,17 +16,20 @@ const initialState: InsightsState = {
   initialized: false,
 };
 
-export const checkClusterInsightsThunk = createAsyncThunk(STORE_ACTIONS.INSIGHTS.CHECK_CLUSTER, async (_, { rejectWithValue }) => {
-  try {
-    const res = await checkClusterInsights();
-    if (res?._network) {
-      return rejectWithValue(ERROR_MESSAGES.INSIGHTS.NETWORK_UNAVAILABLE);
+export const checkClusterInsightsThunk = createAsyncThunk(
+  STORE_ACTIONS.INSIGHTS.CHECK_CLUSTER,
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await checkClusterInsights();
+      if (res?._network) {
+        return rejectWithValue(ERROR_MESSAGES.INSIGHTS.NETWORK_UNAVAILABLE);
+      }
+      return Boolean(res?.data);
+    } catch (error: any) {
+      return rejectWithValue(error?.message || STORE_ERRORS.CHECK_INSIGHTS);
     }
-    return Boolean(res?.data);
-  } catch (error: any) {
-    return rejectWithValue(error?.message || STORE_ERRORS.CHECK_INSIGHTS);
-  }
-});
+  },
+);
 
 const insightsSlice = createSlice({
   name: 'insights',
@@ -71,5 +74,3 @@ const insightsSlice = createSlice({
 
 export const { setHasClusterInsight } = insightsSlice.actions;
 export default insightsSlice.reducer;
-
-

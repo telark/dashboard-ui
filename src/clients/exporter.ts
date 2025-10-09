@@ -1,5 +1,13 @@
 import { Client, exporterApiClient } from '../api/index';
-import { Endpoints, HTTP_HEADERS, HEADER_VALUES, ERROR_MESSAGES, HTTP_STATUS, ERROR_CODES, API_RESPONSES } from '../constants';
+import {
+  Endpoints,
+  HTTP_HEADERS,
+  HEADER_VALUES,
+  ERROR_MESSAGES,
+  HTTP_STATUS,
+  ERROR_CODES,
+  API_RESPONSES,
+} from '../constants';
 
 // Fetch all Groupers
 export const fetchGroupers = async () => {
@@ -59,9 +67,9 @@ export const checkClusterInsights = async () => {
     const resp = await exporterApiClient.request({
       url: Endpoints.INSIGHTS.CLUSTER_GET.path,
       method: 'GET',
-      headers: { 
-        [HTTP_HEADERS.CUSTOM.SILENT_404]: HEADER_VALUES.SILENT_404, 
-        [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK 
+      headers: {
+        [HTTP_HEADERS.CUSTOM.SILENT_404]: HEADER_VALUES.SILENT_404,
+        [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK,
       },
       validateStatus: () => true,
     });

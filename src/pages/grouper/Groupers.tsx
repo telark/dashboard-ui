@@ -1,7 +1,13 @@
 import React, { useEffect, useCallback, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { message, Result, Button } from 'antd';
-import { InboxOutlined, WarningTwoTone, AppstoreOutlined, SyncOutlined, ReloadOutlined } from '@ant-design/icons';
+import {
+  InboxOutlined,
+  WarningTwoTone,
+  AppstoreOutlined,
+  SyncOutlined,
+  ReloadOutlined,
+} from '@ant-design/icons';
 
 import {
   fetchAllGroupersThunk,
@@ -9,7 +15,11 @@ import {
   triggerGroupersSyncThunk,
   refreshAutoGroupersThunk,
 } from '../../store/slices/grouperSlice';
-import { GROUPERS_REFRESH_INTERVAL_MS, GROUPERS_SYNC_LS_KEY, GROUPERS_SYNC_THROTTLE_MS } from '../../constants/sync';
+import {
+  GROUPERS_REFRESH_INTERVAL_MS,
+  GROUPERS_SYNC_LS_KEY,
+  GROUPERS_SYNC_THROTTLE_MS,
+} from '../../constants/sync';
 import GrouperCard from '../../components/cards/GrouperCard';
 import { RootState, AppDispatch } from '../../store';
 import { DEFAULT_COLORS } from '../../constants';
@@ -56,7 +66,8 @@ const Groupers: React.FC = () => {
     let intervalId: number | undefined;
     const now = Date.now();
     const remainder = now % GROUPERS_REFRESH_INTERVAL_MS;
-    const initialDelay = remainder === 0 ? GROUPERS_REFRESH_INTERVAL_MS : GROUPERS_REFRESH_INTERVAL_MS - remainder;
+    const initialDelay =
+      remainder === 0 ? GROUPERS_REFRESH_INTERVAL_MS : GROUPERS_REFRESH_INTERVAL_MS - remainder;
 
     const timeoutId = window.setTimeout(() => {
       dispatch(refreshAutoGroupersThunk());
@@ -93,7 +104,14 @@ const Groupers: React.FC = () => {
   if (loading) {
     return (
       <div style={pageStyle}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '50vh',
+          }}
+        >
           <Button type="text" icon={<SyncOutlined spin />} disabled>
             Loading groupers…
           </Button>
@@ -164,9 +182,13 @@ const Groupers: React.FC = () => {
           >
             <AppstoreOutlined />
           </div>
-          <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F33', marginBottom: 8 }}>No groupers yet</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F33', marginBottom: 8 }}>
+            No groupers yet
+          </div>
           <div style={{ color: '#5B6B7C', marginBottom: 20, maxWidth: 560, lineHeight: 1.6 }}>
-            When your cluster is connected, groupers represent your namespaces. Make sure you have at least one namespace (excluding any you’ve set to be ignored in Settings). Try syncing to pull the latest.
+            When your cluster is connected, groupers represent your namespaces. Make sure you have
+            at least one namespace (excluding any you’ve set to be ignored in Settings). Try syncing
+            to pull the latest.
           </div>
           <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
             <Button type="primary" icon={<ReloadOutlined />} onClick={handleRefresh}>

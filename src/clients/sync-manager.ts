@@ -21,5 +21,3 @@ export const triggerSingleGrouperSync = async (name: string) => {
   const { path, method } = Endpoints.SYNC.GROUPER(name);
   return Client<SyncGrouperResponse>(syncManagerApiClient, path, { method });
 };
-
-

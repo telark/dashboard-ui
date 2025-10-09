@@ -27,7 +27,7 @@ const Welcome: React.FC<WelcomeProps> = ({ onComplete }) => {
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
+          transition={{ delay: 0.2, duration: 0.6, ease: 'easeOut' }}
           style={{
             width: 80,
             height: 80,
@@ -43,7 +43,7 @@ const Welcome: React.FC<WelcomeProps> = ({ onComplete }) => {
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.6, duration: 0.4, ease: "easeOut" }}
+            transition={{ delay: 0.6, duration: 0.4, ease: 'easeOut' }}
             style={{
               width: 40,
               height: 40,
@@ -57,7 +57,7 @@ const Welcome: React.FC<WelcomeProps> = ({ onComplete }) => {
             <motion.div
               initial={{ rotate: -180, scale: 0 }}
               animate={{ rotate: 0, scale: 1 }}
-              transition={{ delay: 0.8, duration: 0.5, ease: "easeOut" }}
+              transition={{ delay: 0.8, duration: 0.5, ease: 'easeOut' }}
               style={{
                 width: 20,
                 height: 20,
@@ -67,31 +67,31 @@ const Welcome: React.FC<WelcomeProps> = ({ onComplete }) => {
             />
           </motion.div>
         </motion.div>
-        
+
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-          style={{ 
-            fontSize: 28, 
-            color: '#ffffff', 
+          transition={{ delay: 0.4, duration: 0.8, ease: 'easeOut' }}
+          style={{
+            fontSize: 28,
+            color: '#ffffff',
             fontWeight: 700,
             marginBottom: 8,
-            textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            textShadow: '0 2px 4px rgba(0,0,0,0.1)',
           }}
         >
           {SUCCESS_MESSAGES.WELCOME}
         </motion.div>
-        
+
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-          style={{ 
-            fontSize: 16, 
-            color: 'rgba(255,255,255,0.8)', 
+          transition={{ delay: 0.6, duration: 0.8, ease: 'easeOut' }}
+          style={{
+            fontSize: 16,
+            color: 'rgba(255,255,255,0.8)',
             fontWeight: 400,
-            textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+            textShadow: '0 1px 2px rgba(0,0,0,0.1)',
           }}
         >
           {SUCCESS_MESSAGES.WELCOME_SUBTITLE}

@@ -1,16 +1,16 @@
-import { 
-  API_PATHS, 
-  RESOURCE_PATHS, 
-  INSIGHT_PATHS, 
-  MAINTENANCE_PATHS, 
-  ANALYZE_PATHS 
+import {
+  API_PATHS,
+  RESOURCE_PATHS,
+  INSIGHT_PATHS,
+  MAINTENANCE_PATHS,
+  ANALYZE_PATHS,
 } from './paths';
 
 export const Endpoints = {
   GROUPERS: {
-    GET_ALL: { 
-      path: `${API_PATHS.RESOURCES.GROUPERS}/${RESOURCE_PATHS.GET_ALL}`, 
-      method: 'GET' 
+    GET_ALL: {
+      path: `${API_PATHS.RESOURCES.GROUPERS}/${RESOURCE_PATHS.GET_ALL}`,
+      method: 'GET',
     },
     GET_DETAILS: (name: string) => ({
       path: `${API_PATHS.RESOURCES.GROUPERS}/${RESOURCE_PATHS.GET_DETAILS(name)}`,
@@ -22,43 +22,43 @@ export const Endpoints = {
     }),
   },
   INSIGHTS: {
-    CLUSTER_GET: { 
-      path: `${API_PATHS.RESOURCES.INSIGHTS}/${INSIGHT_PATHS.CLUSTER_GET}`, 
-      method: 'GET' 
+    CLUSTER_GET: {
+      path: `${API_PATHS.RESOURCES.INSIGHTS}/${INSIGHT_PATHS.CLUSTER_GET}`,
+      method: 'GET',
     },
   },
   ANALYZE: {
-    START: { 
-      path: `${API_PATHS.ANALYZE}/${ANALYZE_PATHS.START}`, 
-      method: 'POST' 
+    START: {
+      path: `${API_PATHS.ANALYZE}/${ANALYZE_PATHS.START}`,
+      method: 'POST',
     },
   },
   SYNC: {
-    GROUPERS: { 
-      path: `${API_PATHS.RESOURCES.GROUPERS}/${RESOURCE_PATHS.SYNC}`, 
-      method: 'POST' 
+    GROUPERS: {
+      path: `${API_PATHS.RESOURCES.GROUPERS}/${RESOURCE_PATHS.SYNC}`,
+      method: 'POST',
     },
-    GROUPER: (name: string) => ({ 
-      path: `${API_PATHS.RESOURCES.GROUPERS}/${RESOURCE_PATHS.SYNC_GROUPER(name)}`, 
-      method: 'POST' 
+    GROUPER: (name: string) => ({
+      path: `${API_PATHS.RESOURCES.GROUPERS}/${RESOURCE_PATHS.SYNC_GROUPER(name)}`,
+      method: 'POST',
     }),
   },
   GROUPER_MAINTENANCE: {
-    CHECK: (name: string) => ({ 
-      path: `${API_PATHS.FEATS.MAINTENANCE}/${MAINTENANCE_PATHS.CHECK(name)}`, 
-      method: 'GET' 
+    CHECK: (name: string) => ({
+      path: `${API_PATHS.FEATS.MAINTENANCE}/${MAINTENANCE_PATHS.CHECK(name)}`,
+      method: 'GET',
     }),
-    ENABLE: { 
-      path: `${API_PATHS.FEATS.MAINTENANCE}/${MAINTENANCE_PATHS.ENABLE}`, 
-      method: 'POST' 
+    ENABLE: {
+      path: `${API_PATHS.FEATS.MAINTENANCE}/${MAINTENANCE_PATHS.ENABLE}`,
+      method: 'POST',
     },
-    UPDATE: { 
-      path: `${API_PATHS.FEATS.MAINTENANCE}/${MAINTENANCE_PATHS.UPDATE}`, 
-      method: 'PUT' 
+    UPDATE: {
+      path: `${API_PATHS.FEATS.MAINTENANCE}/${MAINTENANCE_PATHS.UPDATE}`,
+      method: 'PUT',
     },
-    REMOVE: { 
-      path: `${API_PATHS.FEATS.MAINTENANCE}/${MAINTENANCE_PATHS.REMOVE}`, 
-      method: 'DELETE' 
+    REMOVE: {
+      path: `${API_PATHS.FEATS.MAINTENANCE}/${MAINTENANCE_PATHS.REMOVE}`,
+      method: 'DELETE',
     },
   },
 };

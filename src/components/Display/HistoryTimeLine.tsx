@@ -15,12 +15,15 @@ const LINE_WIDTH = UI.HISTORY.TIMELINE.RAIL_WIDTH;
 const GAP_AROUND = 6;
 const HALO_SIZE = UI.HISTORY.TIMELINE.HALO_SIZE_LAST; // last item halo size
 
-const capitalizeFirst = (text: string): string => (text ? text.charAt(0).toUpperCase() + text.slice(1) : text);
+const capitalizeFirst = (text: string): string =>
+  text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
 
 const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
   const items = useMemo(() => {
     // Oldest -> Newest
-    return [...Records].sort((a, b) => new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime());
+    return [...Records].sort(
+      (a, b) => new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime(),
+    );
   }, [Records]);
 
   const hasMore = items.length > 5;
@@ -141,8 +144,17 @@ const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
                 </div>
 
                 {/* Content */}
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: 1.25 }}>
-                  <div style={{ fontWeight: 600, fontSize: 18, color: '#0B1F33' }}>{capitalizeFirst(item.name)}</div>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    lineHeight: 1.25,
+                  }}
+                >
+                  <div style={{ fontWeight: 600, fontSize: 18, color: '#0B1F33' }}>
+                    {capitalizeFirst(item.name)}
+                  </div>
                   <div style={{ color: '#5B6B7C', marginTop: 4, fontSize: 13 }}>
                     <TimeAgo date={item.creationTime} />
                   </div>
@@ -157,7 +169,13 @@ const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
               <div style={{ height: 20 }} />
 
               <div
-                style={{ position: 'relative', display: 'flex', alignItems: 'center', minHeight: MARKER_SIZE + GAP_AROUND * 2, gap: 14 }}
+                style={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  minHeight: MARKER_SIZE + GAP_AROUND * 2,
+                  gap: 14,
+                }}
               >
                 {/* Rail gap mask for spinner marker */}
                 <div
@@ -174,12 +192,29 @@ const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
                 />
 
                 {/* Spinner icon only */}
-                <div style={{ position: 'absolute', left: markerLeft, top: '50%', transform: 'translate(-50%, -50%)', zIndex: 3 }}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: markerLeft,
+                    top: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: 3,
+                  }}
+                >
                   <LoadingOutlined style={{ fontSize: 14, color: DEFAULT_COLORS.SUCCESS }} spin />
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: 1.25 }}>
-                  <div style={{ fontWeight: 600, fontSize: 16, color: '#5B6B7C' }}>{UI.HISTORY.RECORDING}</div>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    lineHeight: 1.25,
+                  }}
+                >
+                  <div style={{ fontWeight: 600, fontSize: 16, color: '#5B6B7C' }}>
+                    {UI.HISTORY.RECORDING}
+                  </div>
                 </div>
               </div>
             </>
@@ -226,11 +261,26 @@ const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
 
       <Drawer
         title={
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', paddingLeft: PADDING_LEFT - HEADER_LEFT_PADDING }}>
+          <div
+            style={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              paddingLeft: PADDING_LEFT - HEADER_LEFT_PADDING,
+            }}
+          >
             <span style={{ fontWeight: 700, color: '#0B1F33' }}>{UI.HISTORY.FULL_TITLE}</span>
             <span
               onClick={() => setShowFull(false)}
-              style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: '#6b7280', display: 'inline-flex' }}
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                cursor: 'pointer',
+                color: '#6b7280',
+                display: 'inline-flex',
+              }}
               aria-label="Close"
             >
               <CloseOutlined />

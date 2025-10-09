@@ -34,10 +34,17 @@ const sectionCardStyle: React.CSSProperties = {
   marginBottom: 16,
 };
 
-const SectionHeader: React.FC<{ icon: React.ReactNode; title: string; caption?: string; extra?: React.ReactNode }> = ({ icon, title, caption, extra }) => (
+const SectionHeader: React.FC<{
+  icon: React.ReactNode;
+  title: string;
+  caption?: string;
+  extra?: React.ReactNode;
+}> = ({ icon, title, caption, extra }) => (
   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-      <span style={{ color: DEFAULT_COLORS.SUCCESS, fontSize: 16, display: 'inline-flex' }}>{icon}</span>
+      <span style={{ color: DEFAULT_COLORS.SUCCESS, fontSize: 16, display: 'inline-flex' }}>
+        {icon}
+      </span>
       <span style={{ fontWeight: 700, color: '#0B1F33' }}>{title}</span>
       {caption && <span style={{ color: '#5B6B7C', fontSize: 12 }}>{caption}</span>}
     </div>
@@ -53,9 +60,13 @@ const TAB_KEYS = {
   MAINTENANCE: 'maintenance',
 } as const;
 
-type TabKey = typeof TAB_KEYS[keyof typeof TAB_KEYS];
+type TabKey = (typeof TAB_KEYS)[keyof typeof TAB_KEYS];
 
-const TabButton: React.FC<{ label: string; active: boolean; onClick: () => void }> = ({ label, active, onClick }) => {
+const TabButton: React.FC<{ label: string; active: boolean; onClick: () => void }> = ({
+  label,
+  active,
+  onClick,
+}) => {
   const [hovered, setHovered] = useState(false);
   const background = active ? '#fff' : hovered ? 'rgba(32,201,151,0.08)' : 'transparent';
   const color = active ? '#0B1F33' : hovered ? DEFAULT_COLORS.SUCCESS : '#6b7280';
@@ -124,7 +135,12 @@ const GrouperDetails: React.FC = () => {
       (store.dispatch as AppDispatch)(startSync(grouperDetails.name));
       console.log(STORE_MESSAGES.TRIGGERING_SYNC, apiName);
       const key = `sync-${apiName}`;
-      message.open({ type: 'loading', content: `${SYNC_MESSAGES.loading} ${apiName}…`, key, duration: 0 });
+      message.open({
+        type: 'loading',
+        content: `${SYNC_MESSAGES.loading} ${apiName}…`,
+        key,
+        duration: 0,
+      });
       const res = await triggerSingleGrouperSync(apiName);
       const phase = res?.data?.phase ?? 'Completed';
       const effect = res?.data?.syncEffect ?? 'NoUpdate';
@@ -135,7 +151,9 @@ const GrouperDetails: React.FC = () => {
         const waitMs = 4000;
         const interval = setInterval(() => {
           const state: RootState = store.getState();
-          const stillThere = state.grouper.groupers.some((g: any) => g.name === grouperDetails.name);
+          const stillThere = state.grouper.groupers.some(
+            (g: any) => g.name === grouperDetails.name,
+          );
           if (!stillThere || Date.now() - start > waitMs) {
             clearInterval(interval);
             const friendly = SYNC_MESSAGES.byEffect[effect] || SYNC_MESSAGES.completed;
@@ -153,7 +171,9 @@ const GrouperDetails: React.FC = () => {
       const friendlyTimeout = 'Taking a bit longer than usual. Please try again in a moment.';
       const friendly = meta?.isTimeout
         ? friendlyTimeout
-        : (phase && SYNC_MESSAGES.byPhase[phase]) || (effect && SYNC_MESSAGES.byEffect[effect!]) || SYNC_MESSAGES.byPhase.Failed;
+        : (phase && SYNC_MESSAGES.byPhase[phase]) ||
+          (effect && SYNC_MESSAGES.byEffect[effect!]) ||
+          SYNC_MESSAGES.byPhase.Failed;
       message.open({ type: 'error', content: friendly, key: 'sync-error', duration: 3 });
     } finally {
       setSyncing(false);
@@ -166,14 +186,17 @@ const GrouperDetails: React.FC = () => {
   }
 
   if (error) {
-    return <div style={{ marginTop: 60, padding: 24 }}>Error fetching grouper details: {error}</div>;
+    return (
+      <div style={{ marginTop: 60, padding: 24 }}>Error fetching grouper details: {error}</div>
+    );
   }
 
   if (!grouperDetails) {
     return <div style={{ marginTop: 60, padding: 24 }}>No details available for this grouper.</div>;
   }
 
-  const totalResources = (grouperDetails.workloads?.length || 0) + (grouperDetails.bridges?.length || 0);
+  const totalResources =
+    (grouperDetails.workloads?.length || 0) + (grouperDetails.bridges?.length || 0);
 
   return (
     <div
@@ -219,10 +242,17 @@ const GrouperDetails: React.FC = () => {
 
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F33' }}>{grouperDetails.name}</div>
-              <StatusButton status={(grouperDetails.status as 'Active' | 'Inactive') || 'Inactive'} icon={<InfoCircleOutlined />} />
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F33' }}>
+                {grouperDetails.name}
+              </div>
+              <StatusButton
+                status={(grouperDetails.status as 'Active' | 'Inactive') || 'Inactive'}
+                icon={<InfoCircleOutlined />}
+              />
               {isMaintenanceModeActive && (
-                <Tag color="orange" icon={<WarningOutlined />}>Maintenance</Tag>
+                <Tag color="orange" icon={<WarningOutlined />}>
+                  Maintenance
+                </Tag>
               )}
             </div>
             <div style={{ color: '#5B6B7C', fontSize: 12, marginTop: 4 }}>
@@ -232,9 +262,19 @@ const GrouperDetails: React.FC = () => {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Button size="middle" onClick={syncing || isGloballySyncing ? undefined : handleHeaderSync} disabled={syncing || isGloballySyncing}>
+          <Button
+            size="middle"
+            onClick={syncing || isGloballySyncing ? undefined : handleHeaderSync}
+            disabled={syncing || isGloballySyncing}
+          >
             {syncing ? (
-              <FancySpinner showLabel={false} size={18} ringThickness={2} icon={<SyncOutlined />} orbit={false} />
+              <FancySpinner
+                showLabel={false}
+                size={18}
+                ringThickness={2}
+                icon={<SyncOutlined />}
+                orbit={false}
+              />
             ) : (
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 <SyncOutlined /> {UI.BUTTONS.SYNC}
@@ -256,36 +296,59 @@ const GrouperDetails: React.FC = () => {
           marginBottom: 16,
         }}
       >
-        <TabButton label={UI.TABS.GENERAL} active={activeTab === TAB_KEYS.GENERAL} onClick={() => setActiveTab(TAB_KEYS.GENERAL)} />
-        <TabButton label={`${UI.TABS.RESOURCES} (${totalResources})`} active={activeTab === TAB_KEYS.RESOURCES} onClick={() => setActiveTab(TAB_KEYS.RESOURCES)} />
-        <TabButton label={UI.TABS.HISTORY} active={activeTab === TAB_KEYS.HISTORY} onClick={() => setActiveTab(TAB_KEYS.HISTORY)} />
-        <TabButton label={UI.TABS.SYNC_MODE} active={activeTab === TAB_KEYS.SYNC} onClick={() => setActiveTab(TAB_KEYS.SYNC)} />
-        <TabButton label={UI.TABS.MAINTENANCE_MODE} active={activeTab === TAB_KEYS.MAINTENANCE} onClick={() => setActiveTab(TAB_KEYS.MAINTENANCE)} />
+        <TabButton
+          label={UI.TABS.GENERAL}
+          active={activeTab === TAB_KEYS.GENERAL}
+          onClick={() => setActiveTab(TAB_KEYS.GENERAL)}
+        />
+        <TabButton
+          label={`${UI.TABS.RESOURCES} (${totalResources})`}
+          active={activeTab === TAB_KEYS.RESOURCES}
+          onClick={() => setActiveTab(TAB_KEYS.RESOURCES)}
+        />
+        <TabButton
+          label={UI.TABS.HISTORY}
+          active={activeTab === TAB_KEYS.HISTORY}
+          onClick={() => setActiveTab(TAB_KEYS.HISTORY)}
+        />
+        <TabButton
+          label={UI.TABS.SYNC_MODE}
+          active={activeTab === TAB_KEYS.SYNC}
+          onClick={() => setActiveTab(TAB_KEYS.SYNC)}
+        />
+        <TabButton
+          label={UI.TABS.MAINTENANCE_MODE}
+          active={activeTab === TAB_KEYS.MAINTENANCE}
+          onClick={() => setActiveTab(TAB_KEYS.MAINTENANCE)}
+        />
       </div>
 
       {/* Active section */}
       {activeTab === TAB_KEYS.GENERAL && (
-        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}> 
+        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
           <GeneralInfo {...grouperDetails} totalResources={totalResources} />
         </Card>
       )}
 
       {activeTab === TAB_KEYS.RESOURCES && (
-        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}> 
+        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
           <div style={{ padding: 4 }}>
-            <Resources name={grouperDetails.name} resources={[...grouperDetails.workloads, ...grouperDetails.bridges]} />
+            <Resources
+              name={grouperDetails.name}
+              resources={[...grouperDetails.workloads, ...grouperDetails.bridges]}
+            />
           </div>
         </Card>
       )}
 
       {activeTab === TAB_KEYS.HISTORY && (
-        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}> 
+        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
           <HistoryTimeLine Records={grouperDetails.history} />
         </Card>
       )}
 
       {activeTab === TAB_KEYS.SYNC && (
-        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}> 
+        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
           <SyncMode
             isAutoSync={isAutoSync}
             loadingSave={loadingSave}
@@ -297,7 +360,7 @@ const GrouperDetails: React.FC = () => {
       )}
 
       {activeTab === TAB_KEYS.MAINTENANCE && (
-        <Card style={{ ...sectionCardStyle, marginBottom: 24 }} styles={{ body: { padding: 16 } }}> 
+        <Card style={{ ...sectionCardStyle, marginBottom: 24 }} styles={{ body: { padding: 16 } }}>
           <MaintenanceMode
             isMaintenanceModeActive={isMaintenanceModeActive}
             maintenaceUpdateAction={maintenaceUpdateAction}

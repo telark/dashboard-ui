@@ -1,8 +1,8 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { 
-  EXPORTER_API, 
-  CONFIGURATOR_API, 
-  SYNC_MANAGER_API, 
+import {
+  EXPORTER_API,
+  CONFIGURATOR_API,
+  SYNC_MANAGER_API,
   API_TIMEOUT,
   HTTP_HEADERS,
   HEADER_VALUES,
@@ -11,7 +11,7 @@ import {
   RESPONSE_STATUS,
   ERROR_MESSAGES,
   REQUEST_CONFIG,
-  API_RESPONSES
+  API_RESPONSES,
 } from '../constants';
 
 const exporterApiClient: AxiosInstance = axios.create({
@@ -35,11 +35,15 @@ const syncManagerApiClient: AxiosInstance = axios.create({
 // Helpers to normalize error handling
 const normalizeError = (error: any) => {
   const status = error?.response?.status ?? null;
-  const message = error?.response?.data?.message || error?.message || ERROR_MESSAGES.API.UNKNOWN_ERROR;
+  const message =
+    error?.response?.data?.message || error?.message || ERROR_MESSAGES.API.UNKNOWN_ERROR;
   const url = error?.config?.url ?? '';
   const method = error?.config?.method ?? '';
   const isNotFound = status === HTTP_STATUS.NOT_FOUND;
-  const isClient = status != null && status >= HTTP_STATUS.BAD_REQUEST && status < HTTP_STATUS.INTERNAL_SERVER_ERROR;
+  const isClient =
+    status != null &&
+    status >= HTTP_STATUS.BAD_REQUEST &&
+    status < HTTP_STATUS.INTERNAL_SERVER_ERROR;
   const isServer = status != null && status >= HTTP_STATUS.INTERNAL_SERVER_ERROR;
   const isNetwork = !status && error?.code === ERROR_CODES.NETWORK;
   const isTimeout = error?.code === ERROR_CODES.TIMEOUT || /timeout/i.test(String(message));
@@ -52,9 +56,13 @@ exporterApiClient.interceptors.response.use(
   (error) => {
     const meta = normalizeError(error);
     (error as any).normalized = meta;
-    const isSilent404 = meta.isNotFound && error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_404] === HEADER_VALUES.SILENT_404;
-    const isSilentNetwork = meta.isNetwork && error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_NETWORK] === HEADER_VALUES.SILENT_NETWORK;
-    
+    const isSilent404 =
+      meta.isNotFound &&
+      error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_404] === HEADER_VALUES.SILENT_404;
+    const isSilentNetwork =
+      meta.isNetwork &&
+      error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_NETWORK] === HEADER_VALUES.SILENT_NETWORK;
+
     if (isSilent404) {
       // Treat 404 as a successful, empty response when explicitly marked silent
       const resp: AxiosResponse = error?.response ?? {
@@ -86,7 +94,9 @@ configuratorApiClient.interceptors.response.use(
   (error) => {
     const meta = normalizeError(error);
     (error as any).normalized = meta;
-    const isSilentNetwork = meta.isNetwork && error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_NETWORK] === HEADER_VALUES.SILENT_NETWORK;
+    const isSilentNetwork =
+      meta.isNetwork &&
+      error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_NETWORK] === HEADER_VALUES.SILENT_NETWORK;
     if (isSilentNetwork) {
       return Promise.reject(error);
     }
@@ -109,7 +119,9 @@ syncManagerApiClient.interceptors.response.use(
   (error) => {
     const meta = normalizeError(error);
     (error as any).normalized = meta;
-    const isSilentNetwork = meta.isNetwork && error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_NETWORK] === HEADER_VALUES.SILENT_NETWORK;
+    const isSilentNetwork =
+      meta.isNetwork &&
+      error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_NETWORK] === HEADER_VALUES.SILENT_NETWORK;
     if (isSilentNetwork) {
       return Promise.reject(error);
     }

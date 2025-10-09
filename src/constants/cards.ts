@@ -106,7 +106,8 @@ export const CARD_COLORS = {
     BACKGROUND_ACTIVE: 'rgba(32,201,151,0.12)',
     BACKGROUND_INACTIVE: 'rgba(32,201,151,0.08)',
     SHADOW: 'inset 0 0 0 2px rgba(32,201,151,0.18)',
-    SHADOW_EXTENDED: 'inset 0 0 0 2px rgba(32, 201, 151, 0.18), 0 6px 12px rgba(32, 201, 151, 0.08)',
+    SHADOW_EXTENDED:
+      'inset 0 0 0 2px rgba(32, 201, 151, 0.18), 0 6px 12px rgba(32, 201, 151, 0.08)',
   },
   SHADOW: {
     DEFAULT: '0 8px 22px rgba(0, 0, 0, 0.06)',
