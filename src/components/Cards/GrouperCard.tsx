@@ -15,7 +15,7 @@ import {
 import StatusButton from '../buttons/StatusButton';
 import TimeAgo from '../time/TimeAgo';
 import Metric from '../common/Metric';
-import { DEFAULT_COLORS, STORE_MESSAGES } from '../../constants';
+import { DEFAULT_COLORS, STORE_MESSAGES, CARD_CONFIGS, CARD_COLORS, CARD_TRANSITIONS, CARD_EFFECTS, GROUPER_CARD_TEXTS, CARD_STATES, CARD_DEFAULTS } from '../../constants';
 import { UI } from '../../constants/ui';
 import { GrouperInterface } from '../../interfaces/grouper';
 import { CapitalizeFirstLetter } from '../../utils/helpers';
@@ -30,12 +30,12 @@ import { useSelector } from 'react-redux';
 const { Title, Text } = Typography;
 
 const GrouperCard: React.FC<GrouperInterface> = ({
-  name = 'Unknown',
+  name = CARD_DEFAULTS.GROUPER.NAME,
   maintenance = null,
-  status = 'Inactive',
-  numberOfWorkloads = 0,
-  numberOfBridges = 0,
-  lastUpdateTime = '',
+  status = CARD_DEFAULTS.GROUPER.STATUS,
+  numberOfWorkloads = CARD_DEFAULTS.GROUPER.WORKLOADS,
+  numberOfBridges = CARD_DEFAULTS.GROUPER.BRIDGES,
+  lastUpdateTime = CARD_DEFAULTS.GROUPER.LAST_UPDATE,
   syncName,
 }) => {
   const [isModalVisible, setModalVisible] = useState(false);
@@ -47,7 +47,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
   const isSyncingEffective = syncing || isGloballySyncing;
 
   const statusStyle =
-    status === 'Active'
+    status === CARD_STATES.STATUS.ACTIVE
       ? {
           color: DEFAULT_COLORS.SUCCESS,
           borderColor: DEFAULT_COLORS.SUCCESS,
@@ -95,7 +95,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
       const meta = err?.normalized as { isTimeout?: boolean } | undefined;
       const phase = err?.response?.data?.data?.phase as string | undefined;
       const effect = err?.response?.data?.data?.syncEffect as string | undefined;
-      const friendlyTimeout = 'Taking a bit longer than usual. Please try again in a moment.';
+      const friendlyTimeout = GROUPER_CARD_TEXTS.SYNC.TIMEOUT_MESSAGE;
       const friendly = meta?.isTimeout
         ? friendlyTimeout
         : (phase && SYNC_MESSAGES.byPhase[phase]) || (effect && SYNC_MESSAGES.byEffect[effect!]) || SYNC_MESSAGES.byPhase.Failed;
@@ -109,7 +109,7 @@ const GrouperCard: React.FC<GrouperInterface> = ({
   const handleDelete = () => setModalVisible(true);
   const handleConfirmDelete = () => {
     setModalVisible(false);
-    message.warning('Grouper deleted successfully.');
+    message.warning(GROUPER_CARD_TEXTS.SYNC.SUCCESS_DELETE);
   };
   const handleCancelDelete = () => setModalVisible(false);
 
@@ -130,49 +130,49 @@ const GrouperCard: React.FC<GrouperInterface> = ({
       <Card
         style={{
           width: '100%',
-          borderRadius: '12px',
-          boxShadow: '0 8px 20px rgba(0, 0, 0, 0.06)',
+          borderRadius: CARD_CONFIGS.GROUPER_CARD.BORDER_RADIUS,
+          boxShadow: CARD_COLORS.SHADOW.CARD,
           border: 'none',
           position: 'relative',
-          background: '#fff',
-          transition: 'transform 0.2s ease-in-out',
+          background: CARD_COLORS.BACKGROUND.DEFAULT,
+          transition: CARD_TRANSITIONS.CARD,
         }}
-        styles={{ body: { padding: '22px 24px 6px' } }}
+        styles={{ body: { padding: CARD_CONFIGS.GROUPER_CARD.BODY_PADDING } }}
         hoverable
         actions={[
           <Popover key="view-pop" content={UI.CARD.POPOVER.VIEW} trigger="hover">
             <EyeOutlined
               key="view"
-              style={{ fontSize: '16px', cursor: 'pointer', transition: 'color 0.3s, transform 0.3s' }}
+              style={{ fontSize: CARD_CONFIGS.GROUPER_CARD.ICON_FONT_SIZE, cursor: 'pointer', transition: CARD_TRANSITIONS.ICON }}
               onClick={handleView}
               onMouseOver={(e) => {
                 (e.currentTarget as HTMLElement).style.color = statusStyle.color as string;
-                (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)';
+                (e.currentTarget as HTMLElement).style.transform = CARD_EFFECTS.ICON_SCALE;
               }}
               onMouseOut={(e) => {
                 (e.currentTarget as HTMLElement).style.color = '';
-                (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
+                (e.currentTarget as HTMLElement).style.transform = CARD_EFFECTS.ICON_SCALE_NORMAL;
               }}
             />
           </Popover>,
           <Popover key="sync-pop" content={UI.CARD.POPOVER.SYNC} trigger="hover">
             <span
               onClick={isSyncingEffective ? undefined : handleSync}
-              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 18, height: 18, cursor: isSyncingEffective ? 'default' : 'pointer' }}
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: CARD_CONFIGS.GROUPER_CARD.ICON_SIZE, height: CARD_CONFIGS.GROUPER_CARD.ICON_SIZE, cursor: isSyncingEffective ? 'default' : 'pointer' }}
             >
               {isSyncingEffective ? (
                 <FancySpinner showLabel={false} size={22} ringThickness={2} icon={<SyncOutlined />} orbit={false} />
               ) : (
                 <SyncOutlined
                   key="sync"
-                  style={{ fontSize: '16px', transition: 'color 0.3s, transform 0.3s' }}
+                  style={{ fontSize: CARD_CONFIGS.GROUPER_CARD.ICON_FONT_SIZE, transition: CARD_TRANSITIONS.ICON }}
                   onMouseOver={(e) => {
                     (e.currentTarget as HTMLElement).style.color = statusStyle.color as string;
-                    (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)';
+                    (e.currentTarget as HTMLElement).style.transform = CARD_EFFECTS.ICON_SCALE;
                   }}
                   onMouseOut={(e) => {
                     (e.currentTarget as HTMLElement).style.color = '';
-                    (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
+                    (e.currentTarget as HTMLElement).style.transform = CARD_EFFECTS.ICON_SCALE_NORMAL;
                   }}
                 />
               )}
@@ -181,15 +181,15 @@ const GrouperCard: React.FC<GrouperInterface> = ({
           <Popover key="delete-pop" content={UI.CARD.POPOVER.DELETE} trigger="hover">
             <DeleteOutlined
               key="delete"
-              style={{ fontSize: '16px', cursor: 'pointer', color: DEFAULT_COLORS.DANGER, transition: 'color 0.3s, transform 0.3s' }}
+              style={{ fontSize: CARD_CONFIGS.GROUPER_CARD.ICON_FONT_SIZE, cursor: 'pointer', color: DEFAULT_COLORS.DANGER, transition: CARD_TRANSITIONS.ICON }}
               onClick={handleDelete}
               onMouseOver={(e) => {
                 (e.currentTarget as HTMLElement).style.color = statusStyle.color as string;
-                (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)';
+                (e.currentTarget as HTMLElement).style.transform = CARD_EFFECTS.ICON_SCALE;
               }}
               onMouseOut={(e) => {
                 (e.currentTarget as HTMLElement).style.color = DEFAULT_COLORS.DANGER as string;
-                (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
+                (e.currentTarget as HTMLElement).style.transform = CARD_EFFECTS.ICON_SCALE_NORMAL;
               }}
             />
           </Popover>,
@@ -199,51 +199,51 @@ const GrouperCard: React.FC<GrouperInterface> = ({
         <div
           style={{
             position: 'absolute',
-            top: '16px',
-            right: '24px',
+            top: CARD_CONFIGS.GROUPER_CARD.POSITION.TOP,
+            right: CARD_CONFIGS.GROUPER_CARD.POSITION.RIGHT,
             display: 'flex',
             alignItems: 'center',
-            gap: '10px',
+            gap: CARD_CONFIGS.GROUPER_CARD.TOP_ICONS_GAP,
             zIndex: 2,
           }}
         >
           <StatusButton status={status} icon={statusStyle.icon} />
-          {maintenance?.status === 'Active' && (
+          {maintenance?.status === CARD_STATES.MAINTENANCE.ACTIVE && (
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
-                backgroundColor: '#fef4e5',
-                color: '#faad14',
-                padding: '4px 10px',
-                borderRadius: '50px',
-                fontSize: '12px',
-                fontWeight: '600',
+                gap: CARD_CONFIGS.GROUPER_CARD.MAINTENANCE_BADGE.GAP,
+                backgroundColor: CARD_COLORS.BACKGROUND.MAINTENANCE_BADGE,
+                color: CARD_COLORS.TEXT.MAINTENANCE,
+                padding: CARD_CONFIGS.GROUPER_CARD.MAINTENANCE_BADGE.PADDING,
+                borderRadius: CARD_CONFIGS.GROUPER_CARD.MAINTENANCE_BADGE.BORDER_RADIUS,
+                fontSize: CARD_CONFIGS.GROUPER_CARD.MAINTENANCE_BADGE.FONT_SIZE,
+                fontWeight: CARD_CONFIGS.GROUPER_CARD.MAINTENANCE_BADGE.FONT_WEIGHT,
               }}
             >
-              <WarningOutlined style={{ fontSize: '16px' }} />
+              <WarningOutlined style={{ fontSize: CARD_CONFIGS.GROUPER_CARD.MAINTENANCE_BADGE.ICON_FONT_SIZE }} />
               {UI.CARD.MAINTENANCE_BADGE}
             </div>
           )}
           <Popover content={UI.CARD.INFO_POPOVER} trigger="hover">
-            <InfoCircleOutlined style={{ fontSize: '16px', color: '#888', cursor: 'pointer' }} />
+            <InfoCircleOutlined style={{ fontSize: CARD_CONFIGS.GROUPER_CARD.ICON_FONT_SIZE, color: CARD_COLORS.TEXT.INFO, cursor: 'pointer' }} />
           </Popover>
         </div>
 
         {/* Card Main Content */}
         <div style={{ marginTop: '4px' }}>
           {/* Header */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: CARD_CONFIGS.GROUPER_CARD.HEADER_GAP, marginBottom: CARD_CONFIGS.GROUPER_CARD.HEADER_MARGIN_BOTTOM }}>
             <div
               style={{
-                backgroundColor: 'rgba(32, 201, 151, 0.12)',
+                backgroundColor: CARD_COLORS.ICON.BACKGROUND,
                 padding: '10px',
                 borderRadius: '50%',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                boxShadow: 'inset 0 0 0 2px rgba(32,201,151,0.18)',
+                boxShadow: CARD_COLORS.ICON.SHADOW,
               }}
             >
               <span style={{ display: 'inline-flex', fontSize: '18px', color: DEFAULT_COLORS.SUCCESS }}>
@@ -251,10 +251,10 @@ const GrouperCard: React.FC<GrouperInterface> = ({
               </span>
             </div>
             <div>
-              <Title level={5} style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>
+              <Title level={5} style={{ margin: 0, fontSize: CARD_CONFIGS.GROUPER_CARD.TITLE_FONT_SIZE, fontWeight: '600' }}>
                 {CapitalizeFirstLetter(name)}
               </Title>
-              <Text style={{ color: DEFAULT_COLORS.DEFAULT, fontSize: '12px' }}>
+              <Text style={{ color: DEFAULT_COLORS.DEFAULT, fontSize: CARD_CONFIGS.GROUPER_CARD.DESCRIPTION_FONT_SIZE }}>
                 {UI.CARD.LAST_UPDATE_PREFIX} <TimeAgo date={lastUpdateTime} />
               </Text>
             </div>
@@ -265,8 +265,8 @@ const GrouperCard: React.FC<GrouperInterface> = ({
             style={{
               display: 'flex',
               justifyContent: 'space-between',
-              paddingTop: '8px',
-              gap: '20px',
+              paddingTop: CARD_CONFIGS.GROUPER_CARD.METRICS_PADDING_TOP,
+              gap: CARD_CONFIGS.GROUPER_CARD.METRICS_GAP,
             }}
           >
             <Metric label={UI.CARD.METRICS.WORKLOADS} value={numberOfWorkloads} />
