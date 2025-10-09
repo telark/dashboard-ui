@@ -1,8 +1,9 @@
 import { Maintenance } from '../../interfaces/grouper';
+import { UTILS_TEXTS, HTTP_STATUS, CARD_DEFAULTS } from '../../constants';
 
 export const mapGroupersData = (data: any): any[] => {
-  if (data?.status !== 200 || !data?.data) {
-    throw new Error('Invalid data format from the API');
+  if (data?.status !== HTTP_STATUS.SUCCESS || !data?.data) {
+    throw new Error(UTILS_TEXTS.ERRORS.INVALID_DATA_FORMAT);
   }
 
   const items = Array.isArray(data.data.items) ? data.data.items : [];
@@ -10,13 +11,13 @@ export const mapGroupersData = (data: any): any[] => {
 
   return items.map((item: any) => {
     return {
-      name: item.fasid?.sourceName || 'Unknown',
-      syncName: item.fasid?.name || item.fasid?.sourceName || 'Unknown',
-      status: item.cacid?.status || 'Unknown',
-      numberOfWorkloads: item.cacid?.workloads?.length || 0,
-      numberOfBridges: item.cacid?.bridges?.length || 0,
-      creationTime: item.fasid?.creationTime || '',
-      lastUpdateTime: item.config?.sync?.lastUpdateTime || '',
+      name: item.fasid?.sourceName || CARD_DEFAULTS.GROUPER.NAME,
+      syncName: item.fasid?.name || item.fasid?.sourceName || CARD_DEFAULTS.GROUPER.NAME,
+      status: item.cacid?.status || CARD_DEFAULTS.GROUPER.STATUS,
+      numberOfWorkloads: item.cacid?.workloads?.length || UTILS_TEXTS.DEFAULTS.ZERO,
+      numberOfBridges: item.cacid?.bridges?.length || UTILS_TEXTS.DEFAULTS.ZERO,
+      creationTime: item.fasid?.creationTime || UTILS_TEXTS.DEFAULTS.EMPTY_STRING,
+      lastUpdateTime: item.config?.sync?.lastUpdateTime || UTILS_TEXTS.DEFAULTS.EMPTY_STRING,
       history: item.config?.history || [],
       workloads: item.cacid?.workloads || [],
       bridges: item.cacid?.bridges || [],
@@ -29,16 +30,16 @@ export const mapGroupersData = (data: any): any[] => {
 export const mapSingleGrouperData = (item: any, maintenance: Maintenance | null): any => {
   // New API shape: { facid: {...}, cacid: {...} } without config
   if (!item || !item.fasid || !item.cacid || !item.config) {
-    throw new Error('Missing expected data in the response.');
+    throw new Error(UTILS_TEXTS.ERRORS.MISSING_DATA);
   }
 
   return {
     name: item.fasid.sourceName,
     syncName: item.fasid.name,
     kind: item.fasid.type,
-    status: item.cacid.status || 'Unknown',
-    numberOfWorkloads: item.cacid.workloads?.length || 0,
-    numberOfBridges: item.cacid.bridges?.length || 0,
+    status: item.cacid.status || CARD_DEFAULTS.GROUPER.STATUS,
+    numberOfWorkloads: item.cacid.workloads?.length || UTILS_TEXTS.DEFAULTS.ZERO,
+    numberOfBridges: item.cacid.bridges?.length || UTILS_TEXTS.DEFAULTS.ZERO,
     creationTime: item.fasid.creationTime,
     lastUpdateTime: item.config?.sync?.lastUpdateTime || item.fasid.lastUpdateTime,
     history: item.config?.history || [],
@@ -52,7 +53,7 @@ export const mapSingleGrouperData = (item: any, maintenance: Maintenance | null)
 
 export const mapGrouperMaintenanceData = (item: any): any => {
   if (!item) {
-    throw new Error('Missing expected data in the response.');
+    throw new Error(UTILS_TEXTS.ERRORS.MISSING_DATA);
   }
 
   return {
