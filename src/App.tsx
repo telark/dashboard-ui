@@ -5,7 +5,7 @@ import Sidebar from './components/layout/sidebar/Sidebar';
 import Header from './components/layout/header/Header';
 import ErrorBoundary from './ErrorBoundary';
 import 'antd/dist/reset.css';
-import { DEFAULT_COLORS } from './constants';
+import { DEFAULT_COLORS, APP_CONFIGS, APP_ROUTES } from './constants';
 import { Dashboard, Groupers, GrouperDetails, Startup, Welcome } from './pages';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,7 +13,7 @@ import { checkClusterInsightsThunk } from './store/slices/insightsSlice';
 import type { RootState, AppDispatch } from './store';
 
 // Ensure messages are shown below the fixed header and are visible above content
-message.config({ top: 72, maxCount: 3 });
+message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
 
 const App: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -32,11 +32,11 @@ const App: React.FC = () => {
   useEffect(() => {
     if (hasClusterInsight) {
       try {
-        const pending = window.sessionStorage.getItem('WELCOME_PENDING');
-        if (pending === '1') {
+        const pending = window.sessionStorage.getItem(APP_CONFIGS.WELCOME.STORAGE_KEY);
+        if (pending === APP_CONFIGS.WELCOME.STORAGE_VALUE) {
           setShowWelcome(true);
-          window.sessionStorage.removeItem('WELCOME_PENDING');
-          window.setTimeout(() => setShowWelcome(false), 3000);
+          window.sessionStorage.removeItem(APP_CONFIGS.WELCOME.STORAGE_KEY);
+          window.setTimeout(() => setShowWelcome(false), APP_CONFIGS.WELCOME.DURATION);
         }
       } catch {
         // ignore
@@ -59,21 +59,21 @@ const App: React.FC = () => {
           ) : !hasClusterInsight ? (
             <Startup onStartAnalyze={handleStartAnalyze} />
           ) : (
-            <Layout style={{ minHeight: '100vh' }}>
+            <Layout style={{ minHeight: APP_CONFIGS.LAYOUT.MIN_HEIGHT }}>
               <Sidebar />
               <Layout
                 style={{
-                  marginLeft: 'var(--sidebar-width)',
-                  height: '100vh',
-                  transition: 'margin-left 0.3s ease',
+                  marginLeft: APP_CONFIGS.LAYOUT.MARGIN_LEFT,
+                  height: APP_CONFIGS.LAYOUT.HEIGHT,
+                  transition: APP_CONFIGS.LAYOUT.TRANSITION,
                   background: DEFAULT_COLORS.PAGE_BG,
                 }}
               >
                 <Header />
                 <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/groupers" element={<Groupers />} />
-                  <Route path="/groupers/:name/details" element={<GrouperDetails />} />
+                  <Route path={APP_ROUTES.HOME} element={<Dashboard />} />
+                  <Route path={APP_ROUTES.GROUPERS} element={<Groupers />} />
+                  <Route path={APP_ROUTES.GROUPER_DETAILS} element={<GrouperDetails />} />
                 </Routes>
               </Layout>
             </Layout>

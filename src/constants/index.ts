@@ -1,6 +1,7 @@
 // Re-export all constants for centralized access
 export * from './actions';
 export * from './api';
+export * from './app';
 export * from './buttons';
 export * from './cards';
 export * from './colors';
