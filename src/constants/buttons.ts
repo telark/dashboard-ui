@@ -1,9 +1,7 @@
+import { COMMON_VALUES } from './common';
+
 export const BUTTON_TEXTS = {
   LOADING: 'In Progress...',
-  STATUS: {
-    ACTIVE: 'Active',
-    INACTIVE: 'Inactive',
-  },
 } as const;
 
 export const BUTTON_CONFIGS = {
@@ -42,8 +40,5 @@ export const BUTTON_COLORS = {
 } as const;
 
 export const BUTTON_STATES = {
-  STATUS: {
-    ACTIVE: 'Active',
-    INACTIVE: 'Inactive',
-  },
+  STATUS: COMMON_VALUES.STATUS,
 } as const;

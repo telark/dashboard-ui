@@ -1,3 +1,5 @@
+import { COMMON_VALUES } from './common';
+
 export const GROUPER_CARD_TEXTS = {
   DELETE: {
     TITLE: 'Delete Grouper',
@@ -114,10 +116,7 @@ export const CARD_COLORS = {
 } as const;
 
 export const CARD_STATES = {
-  STATUS: {
-    ACTIVE: 'Active',
-    INACTIVE: 'Inactive',
-  },
+  STATUS: COMMON_VALUES.STATUS,
   MAINTENANCE: {
     ACTIVE: 'Active',
   },
