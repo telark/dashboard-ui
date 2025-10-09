@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Menu } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS } from '../../constants';
+import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_COLORS } from '../../constants';
 import { ButtonInterface } from '../../interfaces/common';
 
 const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({ text, icon, active, hoverIcon, route, isCollapsed = false }) => {
@@ -12,7 +12,7 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({ 
 
   const isActive = Boolean(active);
   const isActiveOrHovered = Boolean(active) || isHovered;
-  const iconColor = isActiveOrHovered ? DEFAULT_COLORS.SUCCESS : '#5B6B7C';
+  const iconColor = isActiveOrHovered ? DEFAULT_COLORS.SUCCESS : BUTTON_COLORS.ICON_DEFAULT;
   const coloredIcon =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (icon && (React.isValidElement(icon) ? React.cloneElement(icon as any, { style: { color: iconColor } }) : icon)) ||
@@ -27,18 +27,18 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({ 
       onClick={() => navigate(route)}
       style={{
         backgroundColor: 'transparent',
-        color: isActiveOrHovered ? DEFAULT_COLORS.SUCCESS : '#0B1F33',
-        padding: '12px 10px',
-        borderRadius: '10px',
-        margin: isCollapsed ? '10px -12px 10px 0' : '10px -24px 10px 9.5px',
-        height: 40,
+        color: isActiveOrHovered ? DEFAULT_COLORS.SUCCESS : BUTTON_COLORS.TEXT_DEFAULT,
+        padding: BUTTON_CONFIGS.SIDEBAR_BUTTON.PADDING,
+        borderRadius: BUTTON_CONFIGS.SIDEBAR_BUTTON.BORDER_RADIUS,
+        margin: isCollapsed ? BUTTON_CONFIGS.SIDEBAR_BUTTON.COLLAPSED_MARGIN : BUTTON_CONFIGS.SIDEBAR_BUTTON.EXPANDED_MARGIN,
+        height: BUTTON_CONFIGS.SIDEBAR_BUTTON.HEIGHT,
         display: 'flex',
         alignItems: 'center',
-        fontWeight: 500,
-        fontSize: 15,
+        fontWeight: BUTTON_CONFIGS.SIDEBAR_BUTTON.FONT_WEIGHT,
+        fontSize: BUTTON_CONFIGS.SIDEBAR_BUTTON.FONT_SIZE,
         cursor: 'pointer',
-        transition: 'all 180ms ease',
-        borderRight: isCollapsed ? 'none' : `3px solid ${isActive ? DEFAULT_COLORS.SUCCESS : 'transparent'}`,
+        transition: BUTTON_CONFIGS.SIDEBAR_BUTTON.TRANSITION,
+        borderRight: isCollapsed ? 'none' : `${BUTTON_CONFIGS.SIDEBAR_BUTTON.BORDER_WIDTH}px solid ${isActive ? DEFAULT_COLORS.SUCCESS : 'transparent'}`,
         borderTopRightRadius: 0,
         borderBottomRightRadius: 0,
         position: 'relative',
@@ -54,7 +54,7 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({ 
             right: 0,
             top: 0,
             bottom: 0,
-            width: 3,
+            width: BUTTON_CONFIGS.SIDEBAR_BUTTON.BORDER_WIDTH,
             backgroundColor: DEFAULT_COLORS.SUCCESS,
             pointerEvents: 'none',
           }}
