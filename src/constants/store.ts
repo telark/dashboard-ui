@@ -1,3 +1,5 @@
+import { COMMON_VALUES } from './common';
+
 export const STORAGE_KEYS = {
   HAS_CLUSTER_INSIGHTS: 'HAS_CLUSTER_INSIGHTS',
   WELCOME_PENDING: 'WELCOME_PENDING',
@@ -22,10 +24,7 @@ export const STORE_ACTIONS = {
   },
 } as const;
 
-export const SYNC_MODES = {
-  AUTO: 'auto',
-  MANUAL: 'manual',
-} as const;
+export const SYNC_MODES = COMMON_VALUES.SYNC_MODES;
 
 export const STORE_ERRORS = {
   FETCH_GROUPERS: 'Failed to fetch groupers',
