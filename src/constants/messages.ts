@@ -26,6 +26,7 @@ export const ERROR_MESSAGES = {
 
 export const SUCCESS_MESSAGES = {
   WELCOME: 'Welcome to our App!',
+  WELCOME_SUBTITLE: 'Your cluster analysis is ready',
 } as const;
 
 export const WARNING_MESSAGES = {
