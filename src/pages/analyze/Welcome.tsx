@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { DEFAULT_COLORS, SUCCESS_MESSAGES } from '../constants';
+import { DEFAULT_COLORS, SUCCESS_MESSAGES } from '../../constants';
 
 interface WelcomeProps {
   onComplete?: () => void;
