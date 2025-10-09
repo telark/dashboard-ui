@@ -1,28 +1,24 @@
+import { API_PORTS, buildApiUrl } from './urls';
+
 export const API_TIMEOUT = 10000; //10 seconds
 
 export const CONFIGURATOR_API = {
-  HOST: 'http://localhost',
-  PORT: 8001,
-  API_VERSION: 'v1',
+  PORT: API_PORTS.CONFIGURATOR,
   get BASE_URL() {
-    return `${this.HOST}:${this.PORT}/api/${this.API_VERSION}`;
+    return buildApiUrl(this.PORT);
   },
 };
 
 export const EXPORTER_API = {
-  HOST: 'http://localhost',
-  PORT: 8002,
-  API_VERSION: 'v1',
+  PORT: API_PORTS.EXPORTER,
   get BASE_URL() {
-    return `${this.HOST}:${this.PORT}/api/${this.API_VERSION}`;
+    return buildApiUrl(this.PORT);
   },
 };
 
 export const SYNC_MANAGER_API = {
-  HOST: 'http://localhost',
-  PORT: 8004,
-  API_VERSION: 'v1',
+  PORT: API_PORTS.SYNC_MANAGER,
   get BASE_URL() {
-    return `${this.HOST}:${this.PORT}/api/${this.API_VERSION}`;
+    return buildApiUrl(this.PORT);
   },
 };

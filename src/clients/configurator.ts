@@ -1,5 +1,5 @@
 import { Client, configuratorApiClient } from '../api';
-import { Endpoints, HTTP_HEADERS, HEADER_VALUES, ERROR_MESSAGES } from '../constants';
+import { Endpoints, HTTP_HEADERS, HEADER_VALUES, ERROR_MESSAGES, MAINTENANCE_ACTIONS } from '../constants';
 
 // Enable Grouper Maintenance Mode
 export const enableGrouperMaintenanceMode = async (
@@ -15,8 +15,8 @@ export const enableGrouperMaintenanceMode = async (
       data: {
         name: grouperName,
         type: resourceType,
-        update: updateAction ? 'allow' : 'deny',
-        delete: deleteAction ? 'allow' : 'deny',
+        update: updateAction ? MAINTENANCE_ACTIONS.ALLOW : MAINTENANCE_ACTIONS.DENY,
+        delete: deleteAction ? MAINTENANCE_ACTIONS.ALLOW : MAINTENANCE_ACTIONS.DENY,
       },
     });
   } catch (error) {
@@ -38,8 +38,8 @@ export const updateGrouperMaintenanceMode = async (
       data: {
         name: grouperName,
         spec: {
-          update: updateAction ? 'allow' : 'deny',
-          delete: deleteAction ? 'allow' : 'deny',
+          update: updateAction ? MAINTENANCE_ACTIONS.ALLOW : MAINTENANCE_ACTIONS.DENY,
+          delete: deleteAction ? MAINTENANCE_ACTIONS.ALLOW : MAINTENANCE_ACTIONS.DENY,
         },
       },
     });
