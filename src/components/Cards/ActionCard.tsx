@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { RightOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import {
   DEFAULT_COLORS,
@@ -30,27 +30,32 @@ const ActionCard: React.FC<ActionCardProps> = ({
   footerTextColor,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  
+  const handleMouseEnter = useCallback(() => setIsHovered(true), []);
+  const handleMouseLeave = useCallback(() => setIsHovered(false), []);
+  
+  const cardStyle = useMemo(() => ({
+    background: CARD_COLORS.BACKGROUND.GRADIENT,
+    border: `1px solid ${CARD_COLORS.BORDER.DEFAULT}`,
+    borderRadius: CARD_CONFIGS.ACTION_CARD.BORDER_RADIUS,
+    padding: CARD_CONFIGS.ACTION_CARD.PADDING,
+    cursor: 'pointer',
+    transition: CARD_TRANSITIONS.CARD,
+    boxShadow: isHovered ? CARD_COLORS.SHADOW.HOVER : CARD_COLORS.SHADOW.DEFAULT,
+    transform: isHovered ? CARD_EFFECTS.HOVER_TRANSFORM : 'translateY(0)',
+    width: '100%',
+    textAlign: 'left' as const,
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: CARD_CONFIGS.ACTION_CARD.GAP.MAIN,
+  }), [isHovered]);
+  
   return (
     <button
       onClick={onClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{
-        background: CARD_COLORS.BACKGROUND.GRADIENT,
-        width: '100%',
-        padding: CARD_CONFIGS.ACTION_CARD.PADDING,
-        borderRadius: CARD_CONFIGS.ACTION_CARD.BORDER_RADIUS,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'stretch',
-        border: `1px solid ${CARD_COLORS.BORDER.DEFAULT}`,
-        boxShadow: isHovered ? CARD_COLORS.SHADOW.HOVER : CARD_COLORS.SHADOW.DEFAULT,
-        cursor: 'pointer',
-        minHeight: CARD_CONFIGS.ACTION_CARD.MIN_HEIGHT,
-        lineHeight: 1,
-        transition: CARD_TRANSITIONS.HOVER,
-        transform: isHovered ? CARD_EFFECTS.HOVER_TRANSFORM : 'translateY(0)',
-      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      style={cardStyle}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div
@@ -153,4 +158,4 @@ const ActionCard: React.FC<ActionCardProps> = ({
   );
 };
 
-export default ActionCard;
+export default React.memo(ActionCard);

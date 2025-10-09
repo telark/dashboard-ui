@@ -1,4 +1,4 @@
-import { Divider, Menu } from 'antd';
+import { Menu } from 'antd';
 import { AppstoreOutlined, DeploymentUnitOutlined, BranchesOutlined } from '@ant-design/icons';
 import SidebarButton from '../../buttons/SideBarButton';
 import { useLocation } from 'react-router-dom';

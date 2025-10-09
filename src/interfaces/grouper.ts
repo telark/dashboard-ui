@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 export interface GrouperState {
   groupers: any[];
   details: any | null;

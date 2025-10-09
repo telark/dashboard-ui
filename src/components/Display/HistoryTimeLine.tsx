@@ -70,7 +70,6 @@ const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {list.map((item: Record, idx: number) => {
             const isLast = idx === lastIndex;
-            const isOk = /success|completed|ok|available/i.test(item.status);
             const isError = /error|failed|fail|danger/i.test(item.status);
             const maskHeight = isLast ? HALO_SIZE + 4 : MARKER_SIZE + GAP_AROUND * 2;
             const fillColor = isError ? DEFAULT_COLORS.DANGER : DEFAULT_COLORS.SUCCESS;

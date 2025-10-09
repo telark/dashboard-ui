@@ -59,8 +59,6 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
 
-  // Track expanded state per resource index
-  const [expanded, setExpanded] = useState<Record<number, boolean>>({});
 
   const handlePageChange = (page: number) => setCurrentPage(page);
 

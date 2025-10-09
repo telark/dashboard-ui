@@ -3,7 +3,6 @@ import { Card, Button, Tag, App as AntdApp } from 'antd';
 import {
   InfoCircleOutlined,
   SyncOutlined,
-  HistoryOutlined,
   AppstoreOutlined,
   WarningOutlined,
 } from '@ant-design/icons';
@@ -33,24 +32,6 @@ const sectionCardStyle: React.CSSProperties = {
   border: 'none',
   marginBottom: 16,
 };
-
-const SectionHeader: React.FC<{
-  icon: React.ReactNode;
-  title: string;
-  caption?: string;
-  extra?: React.ReactNode;
-}> = ({ icon, title, caption, extra }) => (
-  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-      <span style={{ color: DEFAULT_COLORS.SUCCESS, fontSize: 16, display: 'inline-flex' }}>
-        {icon}
-      </span>
-      <span style={{ fontWeight: 700, color: '#0B1F33' }}>{title}</span>
-      {caption && <span style={{ color: '#5B6B7C', fontSize: 12 }}>{caption}</span>}
-    </div>
-    {extra}
-  </div>
-);
 
 const TAB_KEYS = {
   GENERAL: 'general',
@@ -133,7 +114,6 @@ const GrouperDetails: React.FC = () => {
       setSyncing(true);
       const apiName = (grouperDetails as any)?.syncName || grouperDetails.name;
       (store.dispatch as AppDispatch)(startSync(grouperDetails.name));
-      console.log(STORE_MESSAGES.TRIGGERING_SYNC, apiName);
       const key = `sync-${apiName}`;
       message.open({
         type: 'loading',
@@ -142,7 +122,6 @@ const GrouperDetails: React.FC = () => {
         duration: 0,
       });
       const res = await triggerSingleGrouperSync(apiName);
-      const phase = res?.data?.phase ?? 'Completed';
       const effect = res?.data?.syncEffect ?? 'NoUpdate';
 
       if (effect === 'Deleted' || effect === 'NotFound') {
