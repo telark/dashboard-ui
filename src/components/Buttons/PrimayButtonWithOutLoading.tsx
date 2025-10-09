@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from 'antd';
 
 import { NoLoadingButtonInterface } from '../../interfaces/common';
-import { DEFAULT_COLORS } from '../../constants';
+import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_COLORS } from '../../constants';
 
 const PrimaryButtonWithOutLoading: React.FC<NoLoadingButtonInterface> = ({
   action,
@@ -13,14 +13,14 @@ const PrimaryButtonWithOutLoading: React.FC<NoLoadingButtonInterface> = ({
 }) => {
   return (
     <Button
-      type="primary"
+      type={BUTTON_CONFIGS.PRIMARY_BUTTON.TYPE}
       icon={icon}
       onClick={onClick}
       disabled={disabled}
       style={{
-        marginTop: '20px',
-        backgroundColor: disabled ? '#d9d9d9' : color,
-        borderColor: disabled ? '#d9d9d9' : color,
+        marginTop: BUTTON_CONFIGS.PRIMARY_BUTTON.MARGIN_TOP,
+        backgroundColor: disabled ? BUTTON_COLORS.DISABLED : color,
+        borderColor: disabled ? BUTTON_COLORS.DISABLED : color,
       }}
     >
       {action}

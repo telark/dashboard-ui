@@ -3,12 +3,12 @@ import { Button } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
 import { LoadingButtonInterface } from '../../interfaces/common';
-import { DEFAULT_COLORS } from '../../constants';
+import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_TEXTS } from '../../constants';
 
 const PrimaryButton: React.FC<LoadingButtonInterface> = ({
   action,
   loading = false,
-  loadingLabel = 'In Progress...',
+  loadingLabel = BUTTON_TEXTS.LOADING,
   onClick,
   icon,
   color = DEFAULT_COLORS.SUCCESS,
@@ -16,13 +16,13 @@ const PrimaryButton: React.FC<LoadingButtonInterface> = ({
 }) => {
   return (
     <Button
-      type="primary"
+      type={BUTTON_CONFIGS.PRIMARY_BUTTON.TYPE}
       icon={loading ? <LoadingOutlined /> : icon}
       loading={loading}
       onClick={onClick}
       disabled={disabled}
       style={{
-        marginTop: '20px',
+        marginTop: BUTTON_CONFIGS.PRIMARY_BUTTON.MARGIN_TOP,
         backgroundColor: color,
         borderColor: color,
       }}
