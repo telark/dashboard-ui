@@ -1,0 +1,108 @@
+import React from 'react';
+import {
+  ApartmentOutlined,
+  ClockCircleOutlined,
+  SyncOutlined,
+  AppstoreOutlined,
+  DatabaseOutlined,
+  DeploymentUnitOutlined,
+} from '@ant-design/icons';
+import TimeAgo from '../time/TimeAgo';
+import { DEFAULT_COLORS } from '../../constants';
+import StatusButton from '../buttons/StatusButton';
+import { Workload } from '../../interfaces/workload';
+
+interface WorkloadGeneralInfoProps {
+  workload: Workload;
+}
+
+const Label: React.FC<{ icon: React.ReactNode; text: string }> = ({ icon, text }) => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+    <span style={{ color: DEFAULT_COLORS.SUCCESS, fontSize: 16, display: 'inline-flex' }}>
+      {icon}
+    </span>
+    <span
+      style={{
+        color: '#6b7280',
+        fontWeight: 700,
+        fontSize: 12,
+        textTransform: 'uppercase',
+        letterSpacing: 0.4,
+      }}
+    >
+      {text}
+    </span>
+  </div>
+);
+
+const Row: React.FC<{ left: React.ReactNode; right: React.ReactNode; withDivider?: boolean }> = ({
+  left,
+  right,
+  withDivider = true,
+}) => (
+  <div
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '10px 0',
+      borderBottom: withDivider ? '1px solid #eef2f6' : 'none',
+      minHeight: 40,
+    }}
+  >
+    <div>{left}</div>
+    <div style={{ color: '#111827', fontWeight: 600 }}>{right}</div>
+  </div>
+);
+
+const WorkloadGeneralInfo: React.FC<WorkloadGeneralInfoProps> = ({ workload }) => (
+  <div style={{ padding: '6px 2px' }}>
+    <Row
+      left={<Label icon={<ApartmentOutlined />} text="Name" />}
+      right={<span style={{ fontWeight: 700 }}>{workload.fasid?.name || '—'}</span>}
+    />
+
+    <Row
+      left={<Label icon={<AppstoreOutlined />} text="Source Name" />}
+      right={<span style={{ fontWeight: 700 }}>{workload.fasid?.sourceName || '—'}</span>}
+    />
+
+    <Row
+      left={<Label icon={<DatabaseOutlined />} text="Grouper" />}
+      right={<span style={{ fontWeight: 700 }}>{workload.fasid?.grouper || '—'}</span>}
+    />
+
+    <Row
+      left={<Label icon={<DeploymentUnitOutlined />} text="Source Type" />}
+      right={<span style={{ fontWeight: 700 }}>{workload.fasid?.sourceType || '—'}</span>}
+    />
+
+    <Row
+      left={<Label icon={<SyncOutlined />} text="Status" />}
+      right={
+        <StatusButton
+          status={(workload.cacid?.status as 'Active' | 'Inactive') || 'Inactive'}
+          icon={<SyncOutlined />}
+        />
+      }
+    />
+
+    <Row
+      left={<Label icon={<ClockCircleOutlined />} text="Creation Date" />}
+      right={<TimeAgo date={workload.fasid?.creationTime} />}
+    />
+
+    <Row
+      left={<Label icon={<ClockCircleOutlined />} text="Registry" />}
+      right={<span style={{ fontWeight: 700 }}>{workload.cacid?.registry || '—'}</span>}
+    />
+
+    <Row
+      left={<Label icon={<AppstoreOutlined />} text="Strategy" />}
+      right={<span style={{ fontWeight: 700 }}>{workload.cacid?.strategy || '—'}</span>}
+      withDivider={false}
+    />
+  </div>
+);
+
+export default WorkloadGeneralInfo;
