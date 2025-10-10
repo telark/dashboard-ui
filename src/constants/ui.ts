@@ -141,6 +141,98 @@ export const COMPONENT_STYLES = {
       overflow: 'hidden',
       boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
     },
+    // Common text styles
+    textPrimary: {
+      fontSize: 16,
+      fontWeight: 700,
+      color: '#0B1F33',
+    },
+    textSecondary: {
+      color: '#5B6B7C',
+    },
+    textMuted: {
+      color: '#9CA3AF',
+    },
+    textLabel: {
+      fontSize: 13,
+      fontWeight: 600,
+      color: '#64748b',
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+    },
+    textValue: {
+      fontSize: 15,
+      fontWeight: 600,
+      color: '#0f172a',
+    },
+    textSmall: {
+      fontSize: 11,
+      color: '#64748b',
+    },
+    // Layout styles
+    flexCenter: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8,
+    },
+    flexCenterGap12: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
+    },
+    flexColumn: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 4,
+    },
+    flexWrap: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8,
+      flexWrap: 'wrap',
+      justifyContent: 'flex-end',
+    },
+    // Container styles
+    containerCard: {
+      border: '1px solid #eef2f6',
+      borderRadius: 12,
+      background: '#fff',
+    },
+    // Status indicators
+    statusDot: {
+      width: 8,
+      height: 8,
+      borderRadius: '50%',
+      background: '#20C997', // DEFAULT_COLORS.SUCCESS
+    },
+    // Button styles
+    toggleButton: {
+      border: '1px solid #cbd5e1',
+      borderRadius: '8px',
+      background: '#20C997', // DEFAULT_COLORS.SUCCESS
+      color: 'white',
+      fontWeight: 600,
+      padding: '8px 16px',
+      height: 'auto',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    },
+    // Badge styles
+    badge: {
+      fontSize: 11,
+      color: '#64748b',
+      background: '#f1f5f9',
+      padding: '2px 6px',
+      borderRadius: 4,
+    },
+    badgeBlue: {
+      fontSize: 10,
+      padding: '2px 6px',
+      background: '#f0f9ff',
+      borderRadius: 4,
+      color: '#0369a1',
+      fontWeight: 500,
+      border: '1px solid #bae6fd',
+    },
   },
 } as const;
 

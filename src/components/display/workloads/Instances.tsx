@@ -19,7 +19,7 @@ interface WorkloadInstancesProps {
 const STYLES = COMPONENT_STYLES.WORKLOAD_INSTANCES;
 
 const Label: React.FC<{ icon: React.ReactNode; text: string }> = React.memo(({ icon, text }) => (
-  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+  <div style={STYLES.flexCenter}>
     <span style={{ color: DEFAULT_COLORS.SUCCESS, fontSize: 16, display: 'inline-flex' }}>
       {icon}
     </span>
@@ -61,9 +61,9 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = React.memo(({ worklo
   const handlePageChange = useCallback((page: number) => setCurrentPage(page), []);
 
   const renderTime = useCallback((date?: string) => {
-    if (!date) return <span style={{ color: '#9CA3AF' }}>—</span>;
+    if (!date) return <span style={STYLES.textMuted}>—</span>;
     const parsed = new Date(date);
-    if (Number.isNaN(parsed.getTime())) return <span style={{ color: '#9CA3AF' }}>—</span>;
+    if (Number.isNaN(parsed.getTime())) return <span style={STYLES.textMuted}>—</span>;
     return <TimeAgo date={date} />;
   }, []);
 
@@ -132,10 +132,10 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = React.memo(({ worklo
         <div style={STYLES.emptyIcon}>
           <AppstoreOutlined />
         </div>
-        <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F33', marginBottom: 6 }}>
+        <div style={{ ...STYLES.textPrimary, marginBottom: 6 }}>
           No Instances Found
         </div>
-        <div style={{ color: '#5B6B7C', marginBottom: 16, maxWidth: 520, lineHeight: 1.6 }}>
+        <div style={{ ...STYLES.textSecondary, marginBottom: 16, maxWidth: 520, lineHeight: 1.6 }}>
           This workload doesn't have any instances or containers yet.
         </div>
       </div>
@@ -190,9 +190,9 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = React.memo(({ worklo
         <span style={STYLES.instanceIcon}>
           <AppstoreOutlined />
         </span>
-        <span style={{ fontWeight: 700, color: '#0B1F33' }}>{resource.name}</span>
+        <span style={STYLES.textPrimary}>{resource.name}</span>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={STYLES.flexCenterGap12}>
         {kindPill(resource.type)}
         {statusTag(resource.status)}
       </div>
@@ -222,7 +222,7 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = React.memo(({ worklo
             padding: '8px 16px',
             background: '#f8fafc'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={STYLES.flexCenterGap12}>
               <div style={{ 
                 width: 36, 
                 height: 36, 
@@ -237,43 +237,25 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = React.memo(({ worklo
                 <DashboardOutlined />
               </div>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                <div style={STYLES.textLabel}>
                   Resource Metrics
                 </div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: '#0f172a' }}>
+                <div style={STYLES.textValue}>
                   CPU & Memory Usage
                 </div>
               </div>
             </div>
             <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: 8
-              }}>
-                <div style={{ 
-                  width: 8, 
-                  height: 8, 
-                  borderRadius: '50%', 
-                  background: DEFAULT_COLORS.SUCCESS
-                }} />
+              <div style={STYLES.flexCenter}>
+                <div style={STYLES.statusDot} />
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#475569' }}>CPU:</span>
                 <span style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>
                   {resource.cpu || '0m'}
                 </span>
               </div>
               
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: 8
-              }}>
-                <div style={{ 
-                  width: 8, 
-                  height: 8, 
-                  borderRadius: '50%', 
-                  background: DEFAULT_COLORS.SUCCESS
-                }} />
+              <div style={STYLES.flexCenter}>
+                <div style={STYLES.statusDot} />
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#475569' }}>Memory:</span>
                 <span style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>
                   {resource.memory || '0Mi'}
@@ -293,7 +275,7 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = React.memo(({ worklo
             background: '#f8fafc',
             borderBottom: isContainersExpanded ? '1px solid #e2e8f0' : 'none'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={STYLES.flexCenterGap12}>
               <div style={{ 
                 width: 36, 
                 height: 36, 
@@ -308,10 +290,10 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = React.memo(({ worklo
                 <ContainerOutlined />
               </div>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                <div style={STYLES.textLabel}>
                   Containers
                 </div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: '#0f172a' }}>
+                <div style={STYLES.textValue}>
                   {resource.containers.length} container{resource.containers.length !== 1 ? 's' : ''}
                 </div>
               </div>
@@ -324,14 +306,7 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = React.memo(({ worklo
               }} />}
               onClick={() => handleContainerToggle(instanceKey)}
               style={{ 
-                border: '1px solid #cbd5e1',
-                borderRadius: '8px',
-                background: DEFAULT_COLORS.SUCCESS,
-                color: 'white',
-                fontWeight: 600,
-                padding: '8px 16px',
-                height: 'auto',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                ...STYLES.toggleButton,
                 transform: isContainersExpanded ? 'scale(1.02)' : 'scale(1)',
                 boxShadow: isContainersExpanded ? '0 4px 12px rgba(32, 201, 151, 0.3)' : '0 2px 4px rgba(32, 201, 151, 0.1)'
               }}
@@ -353,7 +328,7 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = React.memo(({ worklo
               transform: isContainersExpanded ? 'translateY(0)' : 'translateY(-10px)',
               transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
             }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <div style={STYLES.flexColumn}>
                 {resource.containers.map((container, index) => (
                   <div 
                     key={index} 
@@ -374,19 +349,14 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = React.memo(({ worklo
                     }}
                   >
                     {/* Left side - Container name with green dot */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <div style={{ 
-                        width: 8, 
-                        height: 8, 
-                        borderRadius: '50%', 
-                        background: DEFAULT_COLORS.SUCCESS
-                      }} />
+                    <div style={STYLES.flexCenter}>
+                      <div style={STYLES.statusDot} />
                       <div>
-                        <div style={{ fontSize: 15, fontWeight: 600, color: '#0f172a' }}>
+                        <div style={STYLES.textValue}>
                           {container.name}
                         </div>
                         {container.ports && container.ports.length > 0 && (
-                          <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>
+                          <div style={{ ...STYLES.textSmall, marginTop: 2 }}>
                             {container.ports.length} port{container.ports.length !== 1 ? 's' : ''}
                           </div>
                         )}
@@ -394,37 +364,17 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = React.memo(({ worklo
                     </div>
 
                     {/* Right side - Image details */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                      <span style={{ 
-                        fontSize: 11, 
-                        color: '#64748b',
-                        background: '#f1f5f9',
-                        padding: '2px 6px',
-                        borderRadius: 4
-                      }}>
+                    <div style={STYLES.flexWrap}>
+                      <span style={STYLES.badge}>
                         Image: {container.image?.name || 'No image specified'}
                       </span>
                       {container.image?.tag && (
-                        <span style={{ 
-                          fontSize: 11, 
-                          color: '#64748b',
-                          background: '#f1f5f9',
-                          padding: '2px 6px',
-                          borderRadius: 4
-                        }}>
+                        <span style={STYLES.badge}>
                           Tag: {container.image.tag}
                         </span>
                       )}
                       {container.image?.pullPolicy && (
-                        <span style={{ 
-                          fontSize: 10, 
-                          padding: '2px 6px', 
-                          background: '#f0f9ff', 
-                          borderRadius: 4, 
-                          color: '#0369a1',
-                          fontWeight: 500,
-                          border: '1px solid #bae6fd'
-                        }}>
+                        <span style={STYLES.badgeBlue}>
                           {getPullPolicyDescription(container.image.pullPolicy)}
                         </span>
                       )}
@@ -447,7 +397,7 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = React.memo(({ worklo
             key={index}
             items={[{ key: 'panel', label: headerNode(resource), children: detailNode(resource) }]}
             expandIconPosition="end"
-            style={{ border: '1px solid #eef2f6', borderRadius: 12, background: '#fff' }}
+            style={STYLES.containerCard}
           />
         ))}
       </div>
