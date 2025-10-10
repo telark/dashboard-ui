@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Empty, Spin } from 'antd';
+import { Empty, Spin } from 'antd';
 import WorkloadCard from '../cards/WorkloadCard';
 import type { WorkloadCardData } from '../../interfaces/workload';
 
@@ -27,14 +27,15 @@ const WorkloadList: React.FC<WorkloadListProps> = ({
   }
 
   return (
-    <List
-      dataSource={workloads}
-      renderItem={(workload) => (
-        <List.Item key={workload.name}>
-          <WorkloadCard workload={workload} onClick={() => onWorkloadClick?.(workload)} />
-        </List.Item>
-      )}
-    />
+    <div style={{ width: '100%' }}>
+      {workloads.map((workload) => (
+        <WorkloadCard
+          key={workload.name}
+          workload={workload}
+          onClick={() => onWorkloadClick?.(workload)}
+        />
+      ))}
+    </div>
   );
 };
 

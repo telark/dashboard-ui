@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import grouperReducer from './slices/grouperSlice';
 import insightsReducer from './slices/insightsSlice';
+import workloadReducer from './slices/workloadSlice';
 
 const store = configureStore({
   reducer: {
     grouper: grouperReducer,
     insights: insightsReducer,
+    workload: workloadReducer,
   },
 });
 

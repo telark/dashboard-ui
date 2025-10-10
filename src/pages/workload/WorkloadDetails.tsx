@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import {
   message,
   Spin,
@@ -13,45 +13,32 @@ import {
   Button,
 } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { fetchWorkloads } from '../../clients/exporter';
-import type { Workload } from '../../interfaces/workload';
+import { fetchWorkloadDetailsThunk } from '../../store/slices/workloadSlice';
 import { formatDistanceToNow } from 'date-fns';
+import type { RootState, AppDispatch } from '../../store';
 
 const { Title, Text } = Typography;
 
 const WorkloadDetails: React.FC = () => {
   const { name } = useParams<{ name: string }>();
   const navigate = useNavigate();
-  const [workload, setWorkload] = useState<Workload | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const loadWorkloadDetails = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await fetchWorkloads();
-      const foundWorkload = response.data.items.find((w: Workload) => w.fasid.name === name);
-
-      if (!foundWorkload) {
-        message.error('Workload not found');
-        navigate('/workloads');
-        return;
-      }
-
-      setWorkload(foundWorkload);
-    } catch (error: any) {
-      console.error('Failed to fetch workload details:', error);
-      message.error('Failed to load workload details');
-    } finally {
-      setLoading(false);
-    }
-  }, [name, navigate]);
+  const dispatch: AppDispatch = useDispatch();
+  const { details: workload, loading, error } = useSelector((state: RootState) => state.workload);
 
   useEffect(() => {
     if (name) {
-      loadWorkloadDetails();
+      dispatch(fetchWorkloadDetailsThunk(name));
     }
-  }, [name, loadWorkloadDetails]);
+  }, [dispatch, name]);
+
+  useEffect(() => {
+    if (error) {
+      message.error('Failed to load workload details');
+      navigate('/workloads');
+    }
+  }, [error, navigate]);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
