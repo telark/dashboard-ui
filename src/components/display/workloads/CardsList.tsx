@@ -1,7 +1,7 @@
 import React from 'react';
 import { Empty, Spin } from 'antd';
-import WorkloadCard from '../cards/WorkloadCard';
-import type { WorkloadCardData } from '../../interfaces/workload';
+import WorkloadCard from '../../cards/WorkloadCard';
+import type { WorkloadCardData } from '../../../interfaces/workload';
 
 interface WorkloadListProps {
   workloads: WorkloadCardData[];

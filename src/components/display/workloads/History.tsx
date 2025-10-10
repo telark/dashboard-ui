@@ -1,6 +1,6 @@
 import React from 'react';
-import { Workload } from '../../interfaces/workload';
-import HistoryTimeLine from './HistoryTimeLine';
+import { Workload } from '../../../interfaces/workload';
+import HistoryTimeLine from '../shared/HistoryTimeLine';
 
 interface WorkloadHistoryProps {
   workload: Workload;

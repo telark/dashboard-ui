@@ -3,30 +3,21 @@ import {
   message,
   Spin,
   Card,
-  Row,
-  Col,
-  Tag,
   Typography,
-  Descriptions,
-  Table,
-  Space,
   Button,
-  Divider,
 } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { ArrowLeftOutlined, AppstoreOutlined, SyncOutlined } from '@ant-design/icons';
 import { fetchWorkloadDetailsThunk } from '../../store/slices/workloadSlice';
-import { formatDistanceToNow } from 'date-fns';
 import type { RootState, AppDispatch } from '../../store';
 import { DEFAULT_COLORS } from '../../constants';
 import StatusButton from '../../components/buttons/StatusButton';
 import TimeAgo from '../../components/time/TimeAgo';
-import FancySpinner from '../../components/common/FancySpinner';
-import WorkloadGeneralInfo from '../../components/display/WorkloadGeneralInfo';
-import WorkloadInstances from '../../components/display/WorkloadInstances';
-import WorkloadHistory from '../../components/display/WorkloadHistory';
-import WorkloadSyncMode from '../../components/display/WorkloadSyncMode';
+import WorkloadGeneralInfo from '../../components/display/workloads/GeneralInfo';
+import WorkloadInstances from '../../components/display/workloads/Instances';
+import WorkloadHistory from '../../components/display/workloads/History';
+import WorkloadSyncMode from '../../components/display/workloads/SyncMode';
 
 const { Title, Text } = Typography;
 

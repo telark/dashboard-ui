@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Workload } from '../../interfaces/workload';
-import SyncMode from '../tabs/SyncMode';
+import { Workload } from '../../../interfaces/workload';
+import SyncMode from '../../tabs/SyncMode';
 
 interface WorkloadSyncModeProps {
   workload: Workload;

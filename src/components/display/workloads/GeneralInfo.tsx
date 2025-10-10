@@ -1,16 +1,14 @@
 import React from 'react';
 import {
-  ApartmentOutlined,
   ClockCircleOutlined,
-  SyncOutlined,
   AppstoreOutlined,
   DatabaseOutlined,
   DeploymentUnitOutlined,
 } from '@ant-design/icons';
-import TimeAgo from '../time/TimeAgo';
-import { DEFAULT_COLORS } from '../../constants';
-import StatusButton from '../buttons/StatusButton';
-import { Workload } from '../../interfaces/workload';
+import TimeAgo from '../../time/TimeAgo';
+import { DEFAULT_COLORS } from '../../../constants';
+import StatusButton from '../../buttons/StatusButton';
+import { Workload } from '../../../interfaces/workload';
 
 interface WorkloadGeneralInfoProps {
   workload: Workload;

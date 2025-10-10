@@ -8,10 +8,10 @@ import {
 } from '@ant-design/icons';
 
 import { GrouperDetailsHook } from '../../hooks/GrouperDetailsHook';
-import GeneralInfo from '../../components/display/GeneralInfo';
-import HistoryTimeLine from '../../components/display/HistoryTimeLine';
+import GrouperGeneralInfo from '../../components/display/grouper/GeneralInfo';
+import HistoryTimeLine from '../../components/display/shared/HistoryTimeLine';
 import MaintenanceMode from '../../components/tabs/MaintenanceMode';
-import Resources from '../../components/display/Resources';
+import Resources from '../../components/display/grouper/Resources';
 import SyncMode from '../../components/tabs/SyncMode';
 import StatusButton from '../../components/buttons/StatusButton';
 import { DEFAULT_COLORS } from '../../constants';
@@ -304,7 +304,7 @@ const GrouperDetails: React.FC = () => {
       {/* Active section */}
       {activeTab === TAB_KEYS.GENERAL && (
         <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
-          <GeneralInfo {...grouperDetails} totalResources={totalResources} />
+          <GrouperGeneralInfo {...grouperDetails} totalResources={totalResources} />
         </Card>
       )}
 
