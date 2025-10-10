@@ -56,7 +56,7 @@ const AnalysisIllustration: React.FC = () => (
   </svg>
 );
 
-const Startup: React.FC<StartupProps> = ({ onStartAnalyze: _onStartAnalyze }) => {
+const Startup: React.FC<StartupProps> = ({ onStartAnalyze }) => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [polling, setPolling] = useState(false);

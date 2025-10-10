@@ -61,4 +61,10 @@ export const Endpoints = {
       method: 'DELETE',
     },
   },
+  WORKLOADS: {
+    GET_ALL: {
+      path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.GET_ALL}`,
+      method: 'GET',
+    },
+  },
 };

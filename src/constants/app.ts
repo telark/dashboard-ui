@@ -20,4 +20,6 @@ export const APP_ROUTES = {
   HOME: '/',
   GROUPERS: '/groupers',
   GROUPER_DETAILS: '/groupers/:name/details',
+  WORKLOADS: '/workloads',
+  WORKLOAD_DETAILS: '/workloads/:name/details',
 } as const;

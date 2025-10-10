@@ -55,18 +55,21 @@ const GrouperCard: React.FC<GrouperInterface> = ({
   const isGloballySyncing = Boolean(globalSyncing[name]);
   const isSyncingEffective = syncing || isGloballySyncing;
 
-  const statusStyle = useMemo(() => 
-    status === CARD_STATES.STATUS.ACTIVE
-      ? {
-          color: DEFAULT_COLORS.SUCCESS,
-          borderColor: DEFAULT_COLORS.SUCCESS,
-          icon: <CheckCircleOutlined />,
-        }
-      : {
-          color: DEFAULT_COLORS.DEFAULT,
-          borderColor: DEFAULT_COLORS.DEFAULT,
-          icon: <CloseCircleOutlined />,
-        }, [status]);
+  const statusStyle = useMemo(
+    () =>
+      status === CARD_STATES.STATUS.ACTIVE
+        ? {
+            color: DEFAULT_COLORS.SUCCESS,
+            borderColor: DEFAULT_COLORS.SUCCESS,
+            icon: <CheckCircleOutlined />,
+          }
+        : {
+            color: DEFAULT_COLORS.DEFAULT,
+            borderColor: DEFAULT_COLORS.DEFAULT,
+            icon: <CloseCircleOutlined />,
+          },
+    [status],
+  );
 
   const handleSync = useCallback(async () => {
     try {

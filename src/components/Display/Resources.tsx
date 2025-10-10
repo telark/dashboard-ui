@@ -59,7 +59,6 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5;
 
-
   const handlePageChange = (page: number) => setCurrentPage(page);
 
   const handleView = (resourceName: string) =>

@@ -35,8 +35,8 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
         <SidebarButton
           text={'Workloads'}
           icon={<DeploymentUnitOutlined />}
-          active={pathname === '/none-workloads'}
-          route="/none-workloads"
+          active={pathname.startsWith('/workloads')}
+          route="/workloads"
           isCollapsed={isCollapsed}
         />
         <SidebarButton
