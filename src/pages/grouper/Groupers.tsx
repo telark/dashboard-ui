@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef } from 'react';
+import React, { useEffect, useCallback, useRef, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { message, Result, Button } from 'antd';
 import { WarningTwoTone, AppstoreOutlined, SyncOutlined, ReloadOutlined } from '@ant-design/icons';
@@ -17,8 +17,9 @@ import {
 import GrouperCard from '../../components/cards/GrouperCard';
 import { RootState, AppDispatch } from '../../store';
 import { DEFAULT_COLORS } from '../../constants';
+import { COMPONENT_STYLES } from '../../constants/ui';
 
-const Groupers: React.FC = () => {
+const Groupers: React.FC = memo(() => {
   const dispatch: AppDispatch = useDispatch();
   const { groupers, loading, error } = useSelector((state: RootState) => state.grouper);
   const hasTriggeredInitialSync = useRef(false);
@@ -82,18 +83,8 @@ const Groupers: React.FC = () => {
     }
   }, [error]);
 
-  const pageStyle: React.CSSProperties = {
-    background: DEFAULT_COLORS.PAGE_BG,
-    minHeight: 'calc(100vh - 60px)',
-    padding: '48px 24px 24px',
-    marginTop: '60px',
-  };
-
-  const gridStyle: React.CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, minmax(260px, 1fr))',
-    gap: '16px',
-  };
+  const pageStyle = COMPONENT_STYLES.PAGES.GROUPERS.pageStyle;
+  const gridStyle = COMPONENT_STYLES.PAGES.GROUPERS.gridStyle;
 
   if (loading) {
     return (
@@ -203,6 +194,6 @@ const Groupers: React.FC = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Groupers;

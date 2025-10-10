@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { Card, Button, Tag, App as AntdApp } from 'antd';
 import {
   InfoCircleOutlined,
@@ -74,7 +74,7 @@ const TabButton: React.FC<{ label: string; active: boolean; onClick: () => void 
   );
 };
 
-const GrouperDetails: React.FC = () => {
+const GrouperDetails: React.FC = memo(() => {
   const {
     // Global Data
     grouperDetails,
@@ -356,6 +356,6 @@ const GrouperDetails: React.FC = () => {
       )}
     </div>
   );
-};
+});
 
 export default GrouperDetails;

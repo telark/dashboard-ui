@@ -10,7 +10,8 @@ import {
   updateGrouperMaintenanceModeThunk,
   removeGrouperMaintenanceModeThunk,
 } from '../store/slices/grouperSlice';
-import { RootState, AppDispatch } from '../store';
+import { AppDispatch } from '../store';
+import { selectGrouperDetailsData } from '../store/selectors/grouperSelectors';
 import {
   STORE_MESSAGES,
   HOOK_MESSAGES,
@@ -28,7 +29,7 @@ export const GrouperDetailsHook = () => {
     details: grouperDetails,
     loading,
     error,
-  } = useSelector((state: RootState) => state.grouper);
+  } = useSelector(selectGrouperDetailsData);
 
   const [isAutoSync, setIsAutoSync] = useState<boolean>(HOOK_CONFIGS.DEFAULT_VALUES.AUTO_SYNC);
   const [initialSyncMode, setInitialSyncMode] = useState<string>(
