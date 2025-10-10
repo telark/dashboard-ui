@@ -332,7 +332,7 @@ const GrouperDetails: React.FC = () => {
             loadingSave={loadingSave}
             hasChanges={hasChanges}
             handleAutoSyncChange={handleAutoSyncChange}
-            handleGrouperSyncSave={handleGrouperSyncSave}
+            handleSyncSave={handleGrouperSyncSave}
           />
         </Card>
       )}

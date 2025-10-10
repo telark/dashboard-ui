@@ -66,5 +66,9 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.GET_ALL}`,
       method: 'GET',
     },
+    UPDATE_SYNC: (name: string) => ({
+      path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.UPDATE_SYNC(name)}`,
+      method: 'PATCH',
+    }),
   },
 };

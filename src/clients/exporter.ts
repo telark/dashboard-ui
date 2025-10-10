@@ -85,6 +85,20 @@ export const checkClusterInsights = async () => {
   }
 };
 
+// Update Workload Sync Mode
+export const updateWorkloadSyncMode = async (name: string, syncMode: string) => {
+  try {
+    const { path, method } = Endpoints.WORKLOADS.UPDATE_SYNC(name);
+    return await Client<any>(exporterApiClient, path, {
+      method: method,
+      data: { spec: { config: { sync: { mode: syncMode } } } },
+    });
+  } catch (error) {
+    console.error(`${ERROR_MESSAGES.CLIENT.UPDATE_SYNC_MODE_FAILED} "${name}":`, error);
+    throw error;
+  }
+};
+
 // Fetch all Workloads
 export const fetchWorkloads = async () => {
   try {
