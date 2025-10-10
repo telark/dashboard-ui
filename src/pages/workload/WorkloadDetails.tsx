@@ -172,17 +172,29 @@ const WorkloadDetails: React.FC = () => {
                 {workload.fasid.sourceName}
               </div>
               <StatusButton
-                status={(workload.cacid.status as 'Active' | 'Inactive') || 'Inactive'}
-                icon={<AppstoreOutlined />}
+                status={workload.cacid.status === 'Available' ? 'Active' : 'Inactive'}
+                icon={<SyncOutlined />}
               />
             </div>
             <div style={{ color: '#5B6B7C', fontSize: 12, marginTop: 4 }}>
-              Last updated <TimeAgo date={workload.fasid.creationTime} />
+              Last update was <TimeAgo date={workload.config?.sync?.lastUpdateTime || new Date().toISOString()} />
             </div>
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <Button
+            size="middle"
+            icon={<SyncOutlined />}
+          >
+            Sync
+          </Button>
+          <Button
+            size="middle"
+            icon={<AppstoreOutlined />}
+          >
+            View Grouper
+          </Button>
           <Button
             size="middle"
             onClick={() => navigate('/workloads')}

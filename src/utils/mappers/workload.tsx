@@ -69,7 +69,7 @@ export const mapSingleWorkloadData = (item: Workload): Workload => {
 
   return {
     fasid: {
-      creationTime: item.fasid.creationTime || 'Unknown',
+      creationTime: parseGoTimeDate(item.fasid.creationTime || 'Unknown'),
       grouper: item.fasid.grouper || 'Unknown',
       name: item.fasid.name || 'Unknown',
       sourceName: item.fasid.sourceName || 'Unknown',
