@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Typography, Popover, Dropdown, Menu } from 'antd';
+import { Card, Typography, Dropdown } from 'antd';
 import {
   CheckCircleOutlined,
   WarningOutlined,
@@ -78,19 +78,27 @@ const WorkloadCard: React.FC<WorkloadCardProps> = ({ workload, onClick }) => {
     console.log('Delete workload:', workload.name);
   };
 
-  const menu = (
-    <Menu>
-      <Menu.Item key="view" icon={<EyeOutlined />} onClick={handleView}>
-        View Details
-      </Menu.Item>
-      <Menu.Item key="sync" icon={<SyncOutlined />} onClick={handleSync}>
-        Sync Workload
-      </Menu.Item>
-      <Menu.Item key="delete" icon={<DeleteOutlined />} onClick={handleDelete} danger>
-        Delete Workload
-      </Menu.Item>
-    </Menu>
-  );
+  const menuItems = [
+    {
+      key: 'view',
+      icon: <EyeOutlined />,
+      label: 'View Details',
+      onClick: handleView,
+    },
+    {
+      key: 'sync',
+      icon: <SyncOutlined />,
+      label: 'Sync Workload',
+      onClick: handleSync,
+    },
+    {
+      key: 'delete',
+      icon: <DeleteOutlined />,
+      label: 'Delete Workload',
+      onClick: handleDelete,
+      danger: true,
+    },
+  ];
 
   return (
     <Card
@@ -216,7 +224,7 @@ const WorkloadCard: React.FC<WorkloadCardProps> = ({ workload, onClick }) => {
           <StatusButton status={workload.status === 'Available' ? 'Active' : 'Inactive'} icon={statusStyle.icon} />
 
           {/* Dropdown */}
-          <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
+          <Dropdown menu={{ items: menuItems }} trigger={['click']} placement="bottomRight">
             <MoreOutlined
               style={{
                 fontSize: CARD_CONFIGS.GROUPER_CARD.ICON_FONT_SIZE,
