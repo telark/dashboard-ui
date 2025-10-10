@@ -234,6 +234,22 @@ export const COMPONENT_STYLES = {
       border: '1px solid #bae6fd',
     },
   },
+  // Page styles
+  PAGES: {
+    GROUPERS: {
+      pageStyle: {
+        background: '#f8fafc', // DEFAULT_COLORS.PAGE_BG
+        minHeight: 'calc(100vh - 60px)',
+        padding: '48px 24px 24px',
+        marginTop: '60px',
+      },
+      gridStyle: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, minmax(260px, 1fr))',
+        gap: '16px',
+      },
+    },
+  },
 } as const;
 
 // Component-specific constants for better organization

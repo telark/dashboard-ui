@@ -7,14 +7,13 @@ import {
   clearWorkloadDetails,
   updateWorkloadSyncModeThunk,
 } from '../store/slices/workloadSlice';
-import { RootState, AppDispatch } from '../store';
+import { AppDispatch } from '../store';
+import { selectWorkloadDetailsData } from '../store/selectors/workloadSelectors';
 import {
   STORE_MESSAGES,
   HOOK_MESSAGES,
-  HOOK_VALUES,
   HOOK_CONFIGS,
   SYNC_ACTIONS,
-  HTTP_STATUS,
 } from '../constants';
 
 export const WorkloadDetailsHook = () => {
@@ -24,7 +23,7 @@ export const WorkloadDetailsHook = () => {
     details: workloadDetails,
     loading,
     error,
-  } = useSelector((state: RootState) => state.workload);
+  } = useSelector(selectWorkloadDetailsData);
 
   const [isAutoSync, setIsAutoSync] = useState<boolean>(HOOK_CONFIGS.DEFAULT_VALUES.AUTO_SYNC);
   const [initialSyncMode, setInitialSyncMode] = useState<string>(

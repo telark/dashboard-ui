@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import {
   message,
   Spin,
@@ -70,7 +70,7 @@ const TabButton: React.FC<{ label: string; active: boolean; onClick: () => void 
   );
 };
 
-const WorkloadDetails: React.FC = () => {
+const WorkloadDetails: React.FC = memo(() => {
   const { name } = useParams<{ name: string }>();
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
@@ -272,6 +272,6 @@ const WorkloadDetails: React.FC = () => {
       )}
     </div>
   );
-};
+});
 
 export default WorkloadDetails;
