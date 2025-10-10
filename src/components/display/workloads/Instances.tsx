@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import {
   AppstoreOutlined,
-  ClockCircleOutlined,
-  DatabaseOutlined,
-  SyncOutlined,
   ContainerOutlined,
   DownOutlined,
   DashboardOutlined,
 } from '@ant-design/icons';
 import { Pagination, Tag, Collapse, Button, Space } from 'antd';
-import { Workload } from '../../interfaces/workload';
-import TimeAgo from '../time/TimeAgo';
-import { DEFAULT_COLORS } from '../../constants';
+import { Workload } from '../../../interfaces/workload';
+import TimeAgo from '../../time/TimeAgo';
+import { DEFAULT_COLORS } from '../../../constants';
 
 interface WorkloadInstancesProps {
   workload: Workload;

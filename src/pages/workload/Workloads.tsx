@@ -3,7 +3,7 @@ import { Typography, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllWorkloadsThunk } from '../../store/slices/workloadSlice';
-import WorkloadList from '../../components/display/WorkloadList';
+import WorkloadList from '../../components/display/workloads/CardsList';
 import type { WorkloadCardData } from '../../interfaces/workload';
 import { APP_ROUTES } from '../../constants';
 import type { RootState, AppDispatch } from '../../store';

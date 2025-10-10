@@ -9,10 +9,10 @@ import {
   EyeOutlined,
 } from '@ant-design/icons';
 import { Button, Pagination, Space, Tag, Collapse } from 'antd';
-import { ResourcesInterface } from '../../interfaces/common';
-import TimeAgo from '../time/TimeAgo';
-import { DEFAULT_COLORS } from '../../constants';
-import { UI } from '../../constants/ui';
+import { ResourcesInterface } from '../../../interfaces/common';
+import TimeAgo from '../../time/TimeAgo';
+import { DEFAULT_COLORS } from '../../../constants';
+import { UI } from '../../../constants/ui';
 
 const Label: React.FC<{ icon: React.ReactNode; text: string }> = ({ icon, text }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

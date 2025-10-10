@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { CheckOutlined, CloseOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Drawer, Button } from 'antd';
-import { HistoryInterface, Record } from '../../interfaces/common';
-import { DEFAULT_COLORS } from '../../constants';
-import TimeAgo from '../time/TimeAgo';
-import { UI } from '../../constants/ui';
+import { HistoryInterface, Record } from '../../../interfaces/common';
+import { DEFAULT_COLORS } from '../../../constants';
+import TimeAgo from '../../time/TimeAgo';
+import { UI } from '../../../constants/ui';
 
 // Visual constants
 const PADDING_LEFT = 42;

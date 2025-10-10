@@ -5,12 +5,12 @@ import {
   SyncOutlined,
   AppstoreOutlined,
 } from '@ant-design/icons';
-import TimeAgo from '../time/TimeAgo';
-import { DEFAULT_COLORS } from '../../constants';
-import { GeneralInfoInterface } from '../../interfaces/common';
-import StatusButton from '../buttons/StatusButton';
+import TimeAgo from '../../time/TimeAgo';
+import { DEFAULT_COLORS } from '../../../constants';
+import { GeneralInfoInterface } from '../../../interfaces/common';
+import StatusButton from '../../buttons/StatusButton';
 
-interface GeneralInfoExtension extends GeneralInfoInterface {
+interface GrouperGeneralInfoExtension extends GeneralInfoInterface {
   totalResources: number;
 }
 
@@ -53,7 +53,7 @@ const Row: React.FC<{ left: React.ReactNode; right: React.ReactNode; withDivider
   </div>
 );
 
-const GeneralInfo: React.FC<GeneralInfoExtension> = ({
+const GrouperGeneralInfo: React.FC<GrouperGeneralInfoExtension> = ({
   name,
   creationTime,
   lastUpdateTime,
@@ -94,4 +94,4 @@ const GeneralInfo: React.FC<GeneralInfoExtension> = ({
   </div>
 );
 
-export default GeneralInfo;
+export default GrouperGeneralInfo;
