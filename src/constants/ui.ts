@@ -234,6 +234,40 @@ export const COMPONENT_STYLES = {
       border: '1px solid #bae6fd',
     },
   },
+  // Common shared components
+  SHARED: {
+    HISTORY_TIMELINE: {
+      rail: {
+        position: 'absolute',
+        left: 24, // RAIL_X
+        top: 0,
+        bottom: 0,
+        width: 1, // LINE_WIDTH
+        background: '#20C997', // DEFAULT_COLORS.SUCCESS
+        transform: 'translateX(-50%)',
+        borderRadius: 0.5,
+        opacity: 0.95,
+      },
+      topMask: {
+        position: 'absolute',
+        left: 24, // RAIL_X
+        top: 0,
+        width: 5, // LINE_WIDTH + 4
+        background: '#fff',
+        transform: 'translateX(-50%)',
+        zIndex: 1,
+      },
+      timelineContainer: {
+        position: 'relative',
+        paddingLeft: 32, // PADDING_LEFT
+      },
+      timelineItems: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 12,
+      },
+    },
+  },
   // Page styles
   PAGES: {
     GROUPERS: {

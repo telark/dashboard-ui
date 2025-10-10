@@ -38,7 +38,7 @@ import { useSelector } from 'react-redux';
 
 const { Title, Text } = Typography;
 
-const GrouperCard: React.FC<GrouperInterface> = ({
+const GrouperCard: React.FC<GrouperInterface> = React.memo(({
   name = CARD_DEFAULTS.GROUPER.NAME,
   maintenance = null,
   status = CARD_DEFAULTS.GROUPER.STATUS,
@@ -348,6 +348,6 @@ const GrouperCard: React.FC<GrouperInterface> = ({
       </Card>
     </>
   );
-};
+});
 
-export default React.memo(GrouperCard);
+export default GrouperCard;
