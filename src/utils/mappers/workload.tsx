@@ -45,6 +45,7 @@ export const mapWorkloadsData = (data: any): WorkloadCardData[] => {
   return items.map((item: Workload) => {
     return {
       name: item.fasid?.name || CARD_DEFAULTS.GROUPER.NAME,
+      sourceName: item.fasid?.sourceName || CARD_DEFAULTS.GROUPER.NAME,
       grouper: item.fasid?.grouper || 'Unknown',
       status: item.cacid?.status || CARD_DEFAULTS.GROUPER.STATUS,
       instances: {

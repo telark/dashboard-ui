@@ -158,7 +158,7 @@ const WorkloadCard: React.FC<WorkloadCardProps> = ({ workload, onClick }) => {
                 fontWeight: '600',
               }}
             >
-              {CapitalizeFirstLetter(workload.name)}
+              {CapitalizeFirstLetter(workload.sourceName)}
             </Title>
             <Text
               style={{
@@ -191,16 +191,40 @@ const WorkloadCard: React.FC<WorkloadCardProps> = ({ workload, onClick }) => {
             <Metric label="Attached Bridges" value={workload.bridges || 0} />
           </div>
 
+          {/* Workload Kind */}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: `${DEFAULT_COLORS.SUCCESS}15`,
+              padding: '0 8px',
+              borderRadius: '18px',
+              border: `1px solid ${DEFAULT_COLORS.SUCCESS}40`,
+              height: '26px',
+              fontSize: '11px',
+              fontWeight: '600',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              color: DEFAULT_COLORS.SUCCESS,
+              lineHeight: 1,
+            }}
+          >
+            {workload.sourceType}
+          </div>
+
           {/* Grouper */}
           <div
             style={{
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
+              justifyContent: 'center',
               gap: '4px',
               backgroundColor: '#f0f8ff',
-              padding: '4px 8px',
-              borderRadius: '12px',
+              padding: '0 8px',
+              borderRadius: '18px',
               border: '1px solid #d6e4ff',
+              height: '26px',
             }}
           >
             <AppstoreOutlined
@@ -214,6 +238,7 @@ const WorkloadCard: React.FC<WorkloadCardProps> = ({ workload, onClick }) => {
                 fontSize: '11px',
                 color: '#1890ff',
                 fontWeight: '500',
+                lineHeight: 1,
               }}
             >
               {workload.grouper}

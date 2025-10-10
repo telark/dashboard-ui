@@ -150,6 +150,7 @@ export interface WorkloadsResponse {
 // Simplified interfaces for card display
 export interface WorkloadCardData {
   name: string;
+  sourceName: string;
   grouper: string;
   status: string;
   instances: {
