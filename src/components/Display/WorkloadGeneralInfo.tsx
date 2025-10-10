@@ -58,12 +58,7 @@ const Row: React.FC<{ left: React.ReactNode; right: React.ReactNode; withDivider
 const WorkloadGeneralInfo: React.FC<WorkloadGeneralInfoProps> = ({ workload }) => (
   <div style={{ padding: '6px 2px' }}>
     <Row
-      left={<Label icon={<ApartmentOutlined />} text="Name" />}
-      right={<span style={{ fontWeight: 700 }}>{workload.fasid?.name || '—'}</span>}
-    />
-
-    <Row
-      left={<Label icon={<AppstoreOutlined />} text="Source Name" />}
+      left={<Label icon={<AppstoreOutlined />} text="Name" />}
       right={<span style={{ fontWeight: 700 }}>{workload.fasid?.sourceName || '—'}</span>}
     />
 
@@ -73,27 +68,18 @@ const WorkloadGeneralInfo: React.FC<WorkloadGeneralInfoProps> = ({ workload }) =
     />
 
     <Row
-      left={<Label icon={<DeploymentUnitOutlined />} text="Source Type" />}
+      left={<Label icon={<DeploymentUnitOutlined />} text="Type" />}
       right={<span style={{ fontWeight: 700 }}>{workload.fasid?.sourceType || '—'}</span>}
     />
 
-    <Row
-      left={<Label icon={<SyncOutlined />} text="Status" />}
-      right={
-        <StatusButton
-          status={(workload.cacid?.status as 'Active' | 'Inactive') || 'Inactive'}
-          icon={<SyncOutlined />}
-        />
-      }
-    />
 
     <Row
       left={<Label icon={<ClockCircleOutlined />} text="Creation Date" />}
-      right={<TimeAgo date={workload.fasid?.creationTime} />}
+      right={<TimeAgo date={workload.fasid?.creationTime || new Date().toISOString()} />}
     />
 
     <Row
-      left={<Label icon={<ClockCircleOutlined />} text="Registry" />}
+      left={<Label icon={<DatabaseOutlined />} text="Registry Type" />}
       right={<span style={{ fontWeight: 700 }}>{workload.cacid?.registry || '—'}</span>}
     />
 

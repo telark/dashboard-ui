@@ -58,8 +58,7 @@ const Row: React.FC<{ left: React.ReactNode; right: React.ReactNode; withDivider
 
 const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [expandedMetrics, setExpandedMetrics] = useState(false);
-  const [expandedContainers, setExpandedContainers] = useState(false);
+  const [expandedContainers, setExpandedContainers] = useState<{ [key: string]: boolean }>({});
   const pageSize = 5;
 
   const handlePageChange = (page: number) => setCurrentPage(page);
@@ -70,6 +69,18 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
     const parsed = new Date(date);
     if (Number.isNaN(parsed.getTime())) return <span style={{ color: '#9CA3AF' }}>—</span>;
     return <TimeAgo date={date} />;
+  };
+
+  const getPullPolicyDescription = (policy?: string) => {
+    if (!policy) return null;
+    
+    const policyMap: { [key: string]: string } = {
+      'Always': 'Always pull',
+      'IfNotPresent': 'Pull if needed',
+      'Never': 'Local only'
+    };
+    
+    return policyMap[policy] || policy;
   };
 
   // Create instances data from workload
@@ -240,294 +251,247 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
   );
 
   const detailNode = (resource: InstanceResource) => {
+    const instanceKey = resource.name;
+    const isContainersExpanded = expandedContainers[instanceKey] || false;
+    
     return (
-      <div style={{ paddingTop: 4 }}>
-        {/* Basic Info Row */}
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between',
-          padding: '12px 0'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ 
-              width: 32, 
-              height: 32, 
-              borderRadius: '8px', 
-              background: DEFAULT_COLORS.SUCCESS,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontSize: 14
-            }}>
-              <ClockCircleOutlined />
-            </div>
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                Last Sync
-              </div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>
-                {renderTime(resource.lastSync)}
-              </div>
-            </div>
-          </div>
-        </div>
+      <div style={{ padding: '16px 0' }}>
 
-        {/* Status Row */}
+        {/* Metrics Section */}
         <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between',
-          padding: '12px 0'
+          background: 'white',
+          borderRadius: 16,
+          border: '1px solid #e2e8f0',
+          marginBottom: 16,
+          overflow: 'hidden',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ 
-              width: 32, 
-              height: 32, 
-              borderRadius: '8px', 
-              background: DEFAULT_COLORS.SUCCESS,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontSize: 14
-            }}>
-              <SyncOutlined />
-            </div>
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                Status
-              </div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>
-                {statusTag(resource.status)}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Metrics Expandable Row */}
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between',
-          padding: '12px 0'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ 
-              width: 32, 
-              height: 32, 
-              borderRadius: '8px', 
-              background: DEFAULT_COLORS.SUCCESS,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontSize: 14
-            }}>
-              <DashboardOutlined />
-            </div>
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                Resource Metrics
-              </div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>
-                CPU & Memory Usage
-              </div>
-            </div>
-          </div>
-          <Button 
-            type="text" 
-            icon={<DownOutlined style={{ transform: expandedMetrics ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />}
-            onClick={() => setExpandedMetrics(!expandedMetrics)}
-            style={{ 
-              border: '1px solid #e5e7eb',
-              borderRadius: '6px',
-              background: DEFAULT_COLORS.SUCCESS,
-              color: 'white',
-              fontWeight: 600
-            }}
-          >
-            View Metrics
-          </Button>
-        </div>
-
-        {/* Expanded Metrics */}
-        {expandedMetrics && (
           <div style={{ 
-            marginTop: 8, 
-            padding: '12px 16px', 
-            background: '#f8f9fa', 
-            borderRadius: 8,
-            border: '1px solid #e5e7eb'
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between',
+            padding: '8px 16px',
+            background: '#f8fafc'
           }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ 
-                padding: 12,
-                background: 'white',
-                borderRadius: 6,
-                border: '1px solid #e5e7eb'
+                width: 36, 
+                height: 36, 
+                borderRadius: '10px', 
+                background: DEFAULT_COLORS.SUCCESS,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontSize: 14
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                  <div style={{ 
-                    width: 8, 
-                    height: 8, 
-                    borderRadius: '50%', 
-                    background: DEFAULT_COLORS.SUCCESS
-                  }} />
-                  <span style={{ fontSize: 12, fontWeight: 600, color: '#374151' }}>CPU Usage</span>
+                <DashboardOutlined />
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                  Resource Metrics
                 </div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: '#111827' }}>
+                <div style={{ fontSize: 15, fontWeight: 600, color: '#0f172a' }}>
+                  CPU & Memory Usage
+                </div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 8
+              }}>
+                <div style={{ 
+                  width: 8, 
+                  height: 8, 
+                  borderRadius: '50%', 
+                  background: DEFAULT_COLORS.SUCCESS
+                }} />
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#475569' }}>CPU:</span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>
                   {resource.cpu || '0m'}
-                </div>
+                </span>
               </div>
               
               <div style={{ 
-                padding: 12,
-                background: 'white',
-                borderRadius: 6,
-                border: '1px solid #e5e7eb'
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 8
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                  <div style={{ 
-                    width: 8, 
-                    height: 8, 
-                    borderRadius: '50%', 
-                    background: DEFAULT_COLORS.SUCCESS
-                  }} />
-                  <span style={{ fontSize: 12, fontWeight: 600, color: '#374151' }}>Memory Usage</span>
-                </div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: '#111827' }}>
+                <div style={{ 
+                  width: 8, 
+                  height: 8, 
+                  borderRadius: '50%', 
+                  background: DEFAULT_COLORS.SUCCESS
+                }} />
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#475569' }}>Memory:</span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>
                   {resource.memory || '0Mi'}
-                </div>
+                </span>
               </div>
             </div>
           </div>
-        )}
-
-        {/* Containers Expandable Row */}
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between',
-          padding: '12px 0'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ 
-              width: 32, 
-              height: 32, 
-              borderRadius: '8px', 
-              background: DEFAULT_COLORS.SUCCESS,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontSize: 14
-            }}>
-              <ContainerOutlined />
-            </div>
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                Containers
-              </div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>
-                {resource.containers.length} container{resource.containers.length !== 1 ? 's' : ''}
-              </div>
-            </div>
-          </div>
-          <Button 
-            type="text" 
-            icon={<DownOutlined style={{ transform: expandedContainers ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />}
-            onClick={() => setExpandedContainers(!expandedContainers)}
-            style={{ 
-              border: '1px solid #e5e7eb',
-              borderRadius: '6px',
-              background: DEFAULT_COLORS.SUCCESS,
-              color: 'white',
-              fontWeight: 600
-            }}
-          >
-            View Containers
-          </Button>
         </div>
 
-        {/* Expanded Containers */}
-        {expandedContainers && (
+        {/* Containers Section */}
+        <div style={{ 
+          background: 'white',
+          borderRadius: 16,
+          border: '1px solid #e2e8f0',
+          overflow: 'hidden',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
+        }}>
           <div style={{ 
-            marginTop: 8, 
-            padding: '12px 16px', 
-            background: '#f8f9fa', 
-            borderRadius: 8,
-            border: '1px solid #e5e7eb'
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between',
+            padding: '8px 16px',
+            background: '#f8fafc',
+            borderBottom: isContainersExpanded ? '1px solid #e2e8f0' : 'none'
           }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {resource.containers.map((container, index) => (
-                <div key={index} style={{ 
-                  padding: 12,
-                  background: 'white',
-                  borderRadius: 6,
-                  border: '1px solid #e5e7eb'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                    <div style={{ 
-                      width: 8, 
-                      height: 8, 
-                      borderRadius: '50%', 
-                      background: DEFAULT_COLORS.SUCCESS
-                    }} />
-                    <span style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>{container.name}</span>
-                  </div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 4 }}>
-                    {container.image?.name ? `${container.image.name}:${container.image.tag || 'latest'}` : 'No image specified'}
-                  </div>
-                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 4 }}>
-                    {container.order !== undefined && (
-                      <span style={{ 
-                        fontSize: 11, 
-                        padding: '2px 6px', 
-                        background: '#f3f4f6', 
-                        borderRadius: 4, 
-                        color: '#6b7280',
-                        fontWeight: 600
-                      }}>
-                        Order: {container.order}
-                      </span>
-                    )}
-                    {container.subType && (
-                      <span style={{ 
-                        fontSize: 11, 
-                        padding: '2px 6px', 
-                        background: '#f3f4f6', 
-                        borderRadius: 4, 
-                        color: '#6b7280',
-                        fontWeight: 600
-                      }}>
-                        {container.subType}
-                      </span>
-                    )}
-                    {container.image?.pullPolicy && (
-                      <span style={{ 
-                        fontSize: 11, 
-                        padding: '2px 6px', 
-                        background: '#f3f4f6', 
-                        borderRadius: 4, 
-                        color: '#6b7280',
-                        fontWeight: 600
-                      }}>
-                        {container.image.pullPolicy}
-                      </span>
-                    )}
-                  </div>
-                  {container.ports && container.ports.length > 0 && (
-                    <div style={{ fontSize: 12, color: '#6b7280' }}>
-                      {container.ports.length} port{container.ports.length !== 1 ? 's' : ''} configured
-                    </div>
-                  )}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ 
+                width: 36, 
+                height: 36, 
+                borderRadius: '10px', 
+                background: DEFAULT_COLORS.SUCCESS,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontSize: 14
+              }}>
+                <ContainerOutlined />
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                  Containers
                 </div>
-              ))}
+                <div style={{ fontSize: 15, fontWeight: 600, color: '#0f172a' }}>
+                  {resource.containers.length} container{resource.containers.length !== 1 ? 's' : ''}
+                </div>
+              </div>
+            </div>
+            <Button 
+              type="text" 
+              icon={<DownOutlined style={{ 
+                transform: isContainersExpanded ? 'rotate(180deg)' : 'rotate(0deg)', 
+                transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)' 
+              }} />}
+              onClick={() => setExpandedContainers(prev => ({ ...prev, [instanceKey]: !isContainersExpanded }))}
+              style={{ 
+                border: '1px solid #cbd5e1',
+                borderRadius: '8px',
+                background: DEFAULT_COLORS.SUCCESS,
+                color: 'white',
+                fontWeight: 600,
+                padding: '8px 16px',
+                height: 'auto',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                transform: isContainersExpanded ? 'scale(1.02)' : 'scale(1)',
+                boxShadow: isContainersExpanded ? '0 4px 12px rgba(32, 201, 151, 0.3)' : '0 2px 4px rgba(32, 201, 151, 0.1)'
+              }}
+            >
+              {isContainersExpanded ? 'Hide Containers' : 'View Containers'}
+            </Button>
+          </div>
+
+          {/* Expanded Containers */}
+          <div style={{ 
+            maxHeight: isContainersExpanded ? '500px' : '0',
+            overflow: 'hidden',
+            transition: 'max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease',
+            opacity: isContainersExpanded ? 1 : 0
+          }}>
+            <div style={{ 
+              padding: '12px',
+              background: '#f8fafc',
+              transform: isContainersExpanded ? 'translateY(0)' : 'translateY(-10px)',
+              transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+            }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                {resource.containers.map((container, index) => (
+                  <div 
+                    key={index} 
+                    style={{ 
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '6px 10px',
+                      background: 'white',
+                      borderRadius: 12,
+                      border: '1px solid #e2e8f0',
+                      transform: isContainersExpanded ? 'translateY(0)' : 'translateY(-20px)',
+                      opacity: isContainersExpanded ? 1 : 0,
+                      transition: `transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.1}s, opacity 0.3s ease ${index * 0.1}s`,
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    {/* Left side - Container name with green dot */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div style={{ 
+                        width: 8, 
+                        height: 8, 
+                        borderRadius: '50%', 
+                        background: DEFAULT_COLORS.SUCCESS
+                      }} />
+                      <div>
+                        <div style={{ fontSize: 15, fontWeight: 600, color: '#0f172a' }}>
+                          {container.name}
+                        </div>
+                        {container.ports && container.ports.length > 0 && (
+                          <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>
+                            {container.ports.length} port{container.ports.length !== 1 ? 's' : ''}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Right side - Image details */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                      <span style={{ 
+                        fontSize: 11, 
+                        color: '#64748b',
+                        background: '#f1f5f9',
+                        padding: '2px 6px',
+                        borderRadius: 4
+                      }}>
+                        Image: {container.image?.name || 'No image specified'}
+                      </span>
+                      {container.image?.tag && (
+                        <span style={{ 
+                          fontSize: 11, 
+                          color: '#64748b',
+                          background: '#f1f5f9',
+                          padding: '2px 6px',
+                          borderRadius: 4
+                        }}>
+                          Tag: {container.image.tag}
+                        </span>
+                      )}
+                      {container.image?.pullPolicy && (
+                        <span style={{ 
+                          fontSize: 10, 
+                          padding: '2px 6px', 
+                          background: '#f0f9ff', 
+                          borderRadius: 4, 
+                          color: '#0369a1',
+                          fontWeight: 500,
+                          border: '1px solid #bae6fd'
+                        }}>
+                          {getPullPolicyDescription(container.image.pullPolicy)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        )}
+        </div>
       </div>
     );
   };
