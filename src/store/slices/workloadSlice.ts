@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { fetchWorkloads } from '../../clients/exporter';
+import { fetchWorkloads, updateWorkloadSyncMode } from '../../clients/exporter';
 import { mapWorkloadsData, mapSingleWorkloadData } from '../../utils/mappers/workload';
 import type { Workload, WorkloadCardData } from '../../interfaces/workload';
 
@@ -51,6 +51,19 @@ export const fetchWorkloadDetailsThunk = createAsyncThunk(
   },
 );
 
+// Thunk for updating workload sync mode
+export const updateWorkloadSyncModeThunk = createAsyncThunk(
+  'workloads/updateSyncMode',
+  async ({ name, syncMode }: { name: string; syncMode: string }, { rejectWithValue }) => {
+    try {
+      const response = await updateWorkloadSyncMode(name, syncMode);
+      return mapSingleWorkloadData(response.data);
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to update workload sync mode');
+    }
+  },
+);
+
 const workloadSlice = createSlice({
   name: 'workloads',
   initialState,
@@ -95,6 +108,20 @@ const workloadSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchWorkloadDetailsThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      // Update Workload Sync Mode
+      .addCase(updateWorkloadSyncModeThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateWorkloadSyncModeThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.details = action.payload;
+        state.error = null;
+      })
+      .addCase(updateWorkloadSyncModeThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

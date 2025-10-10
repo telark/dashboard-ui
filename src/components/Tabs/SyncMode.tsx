@@ -10,7 +10,7 @@ interface SyncModeProps {
   loadingSave: boolean;
   hasChanges: boolean;
   handleAutoSyncChange: (checked: boolean) => void;
-  handleGrouperSyncSave: () => void;
+  handleSyncSave: () => void;
 }
 
 const SyncMode: React.FC<SyncModeProps> = ({
@@ -18,7 +18,7 @@ const SyncMode: React.FC<SyncModeProps> = ({
   loadingSave,
   hasChanges,
   handleAutoSyncChange,
-  handleGrouperSyncSave,
+  handleSyncSave,
 }) => {
   return (
     <div style={{ padding: '8px 4px' }}>
@@ -50,7 +50,7 @@ const SyncMode: React.FC<SyncModeProps> = ({
 
       <div style={{ marginTop: 18, display: 'flex', justifyContent: 'center' }}>
         <PrimaryButton
-          onClick={handleGrouperSyncSave}
+          onClick={handleSyncSave}
           disabled={!hasChanges}
           loading={loadingSave}
           loadingLabel="Saving..."
