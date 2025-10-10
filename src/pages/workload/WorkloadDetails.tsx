@@ -128,7 +128,9 @@ const WorkloadDetails: React.FC = () => {
         background: DEFAULT_COLORS.PAGE_BG,
         minHeight: '100vh',
         marginTop: 60,
-        padding: '24px',
+        paddingTop: 24,
+        paddingLeft: 24,
+        paddingRight: 24,
         paddingBottom: 64,
       }}
     >

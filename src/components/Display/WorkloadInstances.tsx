@@ -97,7 +97,7 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
     lastSync: workload.cacid?.usage?.timestamp,
     cpu: instance.totalCpu,
     memory: instance.totalMemory,
-    containers: instance.containers || [],
+    containers: containers, // Use the full containers data instead of instance.containers
   }));
 
   // If no instances, create a single instance with all containers
@@ -478,19 +478,7 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
                     <span style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>{container.name}</span>
                   </div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 4 }}>
-                    {(() => {
-                      // Try multiple ways to access the image data
-                      const imageName = container.image?.name || (container as any).image?.name;
-                      const imageTag = container.image?.tag || (container as any).image?.tag;
-                      
-                      console.log('Container in render:', container);
-                      console.log('Container image:', container.image);
-                      console.log('Container image name:', container.image?.name);
-                      console.log('Direct access image name:', (container as any).image?.name);
-                      console.log('ImageName result:', imageName);
-                      
-                      return imageName ? `${imageName}:${imageTag || 'latest'}` : 'No image specified';
-                    })()}
+                    {container.image?.name ? `${container.image.name}:${container.image.tag || 'latest'}` : 'No image specified'}
                   </div>
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 4 }}>
                     {container.order !== undefined && (
