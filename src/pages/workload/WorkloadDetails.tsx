@@ -17,7 +17,8 @@ import TimeAgo from '../../components/time/TimeAgo';
 import WorkloadGeneralInfo from '../../components/display/workloads/GeneralInfo';
 import WorkloadInstances from '../../components/display/workloads/Instances';
 import WorkloadHistory from '../../components/display/workloads/History';
-import WorkloadSyncMode from '../../components/display/workloads/SyncMode';
+import SyncMode from '../../components/tabs/SyncMode';
+import { WorkloadDetailsHook } from '../../hooks/WorkloadDetailsHook';
 
 const { Title, Text } = Typography;
 
@@ -73,14 +74,21 @@ const WorkloadDetails: React.FC = () => {
   const { name } = useParams<{ name: string }>();
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-  const { details: workload, loading, error } = useSelector((state: RootState) => state.workload);
   const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.GENERAL);
 
-  useEffect(() => {
-    if (name) {
-      dispatch(fetchWorkloadDetailsThunk(name));
-    }
-  }, [dispatch, name]);
+  // Use hook for all data management (like grouper does)
+  const {
+    workloadDetails: workload,
+    loading,
+    error,
+    isAutoSync,
+    loadingSave,
+    hasChanges,
+    handleAutoSyncChange,
+    handleWorkloadSyncSave,
+  } = WorkloadDetailsHook();
+
+  // Data fetching is handled by the hook (like grouper does)
 
   useEffect(() => {
     if (error) {
@@ -253,7 +261,13 @@ const WorkloadDetails: React.FC = () => {
 
       {activeTab === TAB_KEYS.SYNC && (
         <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
-          <WorkloadSyncMode workload={workload} />
+          <SyncMode
+            isAutoSync={isAutoSync}
+            loadingSave={loadingSave}
+            hasChanges={hasChanges}
+            handleAutoSyncChange={handleAutoSyncChange}
+            handleSyncSave={handleWorkloadSyncSave}
+          />
         </Card>
       )}
     </div>
