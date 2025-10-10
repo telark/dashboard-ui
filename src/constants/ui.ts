@@ -59,4 +59,101 @@ export const UI = {
   },
 } as const;
 
+// Component-specific styles for better performance
+export const COMPONENT_STYLES = {
+  WORKLOAD_INSTANCES: {
+    emptyState: {
+      minHeight: 200,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: 'center',
+    },
+    emptyIcon: {
+      width: 56,
+      height: 56,
+      borderRadius: '50%',
+      background: 'rgba(32,201,151,0.12)',
+      boxShadow: 'inset 0 0 0 2px rgba(32,201,151,0.18)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 12,
+      color: '#20C997', // DEFAULT_COLORS.SUCCESS
+      fontSize: 24,
+    },
+    row: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '10px 0',
+      minHeight: 40,
+    },
+    statusTag: {
+      borderRadius: 999,
+      padding: '2px 10px',
+      fontWeight: 700,
+      margin: 0,
+    },
+    kindPill: {
+      border: '1px solid #e5e7eb',
+      color: '#111827',
+      background: '#F9FAFB',
+      borderRadius: 999,
+      padding: '2px 10px',
+      fontWeight: 700,
+    },
+    headerContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      width: '100%',
+    },
+    headerLeft: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 10,
+      minWidth: 200,
+    },
+    instanceIcon: {
+      width: 28,
+      height: 28,
+      borderRadius: '50%',
+      background: 'rgba(32,201,151,0.12)',
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#20C997', // DEFAULT_COLORS.SUCCESS
+    },
+    metricsSection: {
+      background: 'white',
+      borderRadius: 16,
+      border: '1px solid #e2e8f0',
+      marginBottom: 16,
+      overflow: 'hidden',
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+    },
+    containersSection: {
+      background: 'white',
+      borderRadius: 16,
+      border: '1px solid #e2e8f0',
+      overflow: 'hidden',
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+    },
+  },
+} as const;
+
+// Component-specific constants for better organization
+export const COMPONENT_CONSTANTS = {
+  WORKLOAD_INSTANCES: {
+    PULL_POLICY_MAP: {
+      'Always': 'Always pull',
+      'IfNotPresent': 'Pull if needed',
+      'Never': 'Local only'
+    },
+    INSTANCE_TYPE: 'Instance',
+  },
+} as const;
+
 export type UIConstants = typeof UI;
