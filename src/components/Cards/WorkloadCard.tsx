@@ -1,10 +1,34 @@
-import React from 'react';
-import { Card, Tag, Space, Typography, Row, Col, Statistic } from 'antd';
-import { DeploymentUnitOutlined, DatabaseOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Card, Typography, Popover, Dropdown, Menu } from 'antd';
+import {
+  CheckCircleOutlined,
+  WarningOutlined,
+  CloseCircleOutlined,
+  DeploymentUnitOutlined,
+  EyeOutlined,
+  SyncOutlined,
+  DeleteOutlined,
+  MoreOutlined,
+  AppstoreOutlined,
+} from '@ant-design/icons';
+import StatusButton from '../buttons/StatusButton';
+import TimeAgo from '../time/TimeAgo';
+import Metric from '../common/Metric';
+import {
+  DEFAULT_COLORS,
+  CARD_CONFIGS,
+  CARD_COLORS,
+  CARD_TRANSITIONS,
+  CARD_EFFECTS,
+  CARD_STATES,
+  CARD_DEFAULTS,
+} from '../../constants';
+import { UI } from '../../constants/ui';
 import type { WorkloadCardData } from '../../interfaces/workload';
-import { formatDistanceToNow } from 'date-fns';
+import { CapitalizeFirstLetter } from '../../utils/helpers';
 
-const { Text, Title } = Typography;
+const { Title, Text } = Typography;
 
 interface WorkloadCardProps {
   workload: WorkloadCardData;
@@ -12,117 +36,208 @@ interface WorkloadCardProps {
 }
 
 const WorkloadCard: React.FC<WorkloadCardProps> = ({ workload, onClick }) => {
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'available':
-        return 'success';
-      case 'running':
-        return 'processing';
-      case 'pending':
-        return 'warning';
-      case 'failed':
-        return 'error';
-      default:
-        return 'default';
+  const navigate = useNavigate();
+
+  const statusStyle = useMemo(
+    () =>
+      workload.status === 'Available'
+        ? {
+            color: DEFAULT_COLORS.SUCCESS,
+            borderColor: DEFAULT_COLORS.SUCCESS,
+            icon: <CheckCircleOutlined />,
+          }
+        : workload.status === 'Running'
+        ? {
+            color: '#1890ff',
+            borderColor: '#1890ff',
+            icon: <WarningOutlined />,
+          }
+        : {
+            color: DEFAULT_COLORS.DEFAULT,
+            borderColor: DEFAULT_COLORS.DEFAULT,
+            icon: <CloseCircleOutlined />,
+          },
+    [workload.status],
+  );
+
+  const handleView = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      navigate(`/workloads/${workload.name}/details`);
     }
   };
 
-  const getRegistryColor = (registry: string) => {
-    switch (registry.toLowerCase()) {
-      case 'private':
-        return 'blue';
-      case 'public':
-        return 'green';
-      default:
-        return 'default';
-    }
+  const handleSync = () => {
+    // Placeholder for sync functionality
+    console.log('Sync workload:', workload.name);
   };
 
-  const formatTime = (timestamp: string) => {
-    try {
-      return formatDistanceToNow(new Date(timestamp), { addSuffix: true });
-    } catch {
-      return 'Unknown';
-    }
+  const handleDelete = () => {
+    // Placeholder for delete functionality
+    console.log('Delete workload:', workload.name);
   };
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="view" icon={<EyeOutlined />} onClick={handleView}>
+        View Details
+      </Menu.Item>
+      <Menu.Item key="sync" icon={<SyncOutlined />} onClick={handleSync}>
+        Sync Workload
+      </Menu.Item>
+      <Menu.Item key="delete" icon={<DeleteOutlined />} onClick={handleDelete} danger>
+        Delete Workload
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <Card
+      style={{
+        width: '100%',
+        borderRadius: CARD_CONFIGS.GROUPER_CARD.BORDER_RADIUS,
+        boxShadow: CARD_COLORS.SHADOW.CARD,
+        border: 'none',
+        position: 'relative',
+        background: CARD_COLORS.BACKGROUND.DEFAULT,
+        transition: CARD_TRANSITIONS.CARD,
+        marginBottom: '16px',
+      }}
+      styles={{ body: { padding: '16px 24px' } }}
       hoverable
-      onClick={onClick}
-      style={{ marginBottom: 16, cursor: onClick ? 'pointer' : 'default' }}
-      bodyStyle={{ padding: '16px' }}
     >
-      <Row gutter={[16, 16]}>
-        <Col span={24}>
-          <Space align="center" style={{ width: '100%', justifyContent: 'space-between' }}>
-            <Space align="center">
-              <DeploymentUnitOutlined style={{ fontSize: '20px', color: '#1890ff' }} />
-              <Title level={5} style={{ margin: 0 }}>
-                {workload.name}
-              </Title>
-            </Space>
-            <Tag color={getStatusColor(workload.status)}>{workload.status}</Tag>
-          </Space>
-        </Col>
+      {/* Single Row Layout */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          width: '100%',
+        }}
+      >
+        {/* Left side - Icon + Name + Grouper */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: CARD_CONFIGS.GROUPER_CARD.HEADER_GAP,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: CARD_COLORS.ICON.BACKGROUND,
+              padding: '10px',
+              borderRadius: '50%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              boxShadow: CARD_COLORS.ICON.SHADOW,
+            }}
+          >
+            <span
+              style={{ display: 'inline-flex', fontSize: '18px', color: DEFAULT_COLORS.SUCCESS }}
+            >
+              <DeploymentUnitOutlined />
+            </span>
+          </div>
+          <div>
+            <Title
+              level={5}
+              style={{
+                margin: 0,
+                fontSize: CARD_CONFIGS.GROUPER_CARD.TITLE_FONT_SIZE,
+                fontWeight: '600',
+              }}
+            >
+              {CapitalizeFirstLetter(workload.name)}
+            </Title>
+            <Text
+              style={{
+                color: DEFAULT_COLORS.DEFAULT,
+                fontSize: CARD_CONFIGS.GROUPER_CARD.DESCRIPTION_FONT_SIZE,
+              }}
+            >
+              {UI.CARD.LAST_UPDATE_PREFIX} <TimeAgo date={workload.lastUpdate} />
+            </Text>
+          </div>
+        </div>
 
-        <Col span={24}>
-          <Space direction="vertical" size="small" style={{ width: '100%' }}>
-            <Space>
-              <Text type="secondary">Grouper:</Text>
-              <Text strong>{workload.grouper}</Text>
-            </Space>
-            <Space>
-              <Text type="secondary">Source:</Text>
-              <Text>{workload.sourceType}</Text>
-            </Space>
-          </Space>
-        </Col>
+        {/* Right side - Metrics + Status + Dropdown */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '20px',
+          }}
+        >
+          {/* Metrics */}
+          <div
+            style={{
+              display: 'flex',
+              gap: CARD_CONFIGS.GROUPER_CARD.METRICS_GAP,
+            }}
+          >
+            <Metric label="Instances" value={workload.instances.available} />
+            <Metric label="Containers" value={workload.containers} />
+            <Metric label="Attached Bridges" value={workload.bridges || 0} />
+          </div>
 
-        <Col span={24}>
-          <Row gutter={16}>
-            <Col span={8}>
-              <Statistic
-                title="Instances"
-                value={workload.instances.available}
-                suffix={`/ ${workload.instances.total}`}
-                valueStyle={{ fontSize: '16px' }}
-              />
-            </Col>
-            <Col span={8}>
-              <Statistic
-                title="Containers"
-                value={workload.containers}
-                valueStyle={{ fontSize: '16px' }}
-              />
-            </Col>
-            <Col span={8}>
-              <Statistic
-                title="Strategy"
-                value={workload.strategy}
-                valueStyle={{ fontSize: '14px' }}
-              />
-            </Col>
-          </Row>
-        </Col>
+          {/* Grouper */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              backgroundColor: '#f0f8ff',
+              padding: '4px 8px',
+              borderRadius: '12px',
+              border: '1px solid #d6e4ff',
+            }}
+          >
+            <AppstoreOutlined
+              style={{
+                fontSize: '12px',
+                color: '#1890ff',
+              }}
+            />
+            <Text
+              style={{
+                fontSize: '11px',
+                color: '#1890ff',
+                fontWeight: '500',
+              }}
+            >
+              {workload.grouper}
+            </Text>
+          </div>
 
-        <Col span={24}>
-          <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-            <Space>
-              <DatabaseOutlined />
-              <Tag color={getRegistryColor(workload.registry)}>{workload.registry}</Tag>
-            </Space>
-            <Space>
-              <ClockCircleOutlined />
-              <Text type="secondary" style={{ fontSize: '12px' }}>
-                {formatTime(workload.lastUpdate)}
-              </Text>
-            </Space>
-          </Space>
-        </Col>
-      </Row>
+          {/* Status */}
+          <StatusButton status={workload.status === 'Available' ? 'Active' : 'Inactive'} icon={statusStyle.icon} />
+
+          {/* Dropdown */}
+          <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
+            <MoreOutlined
+              style={{
+                fontSize: CARD_CONFIGS.GROUPER_CARD.ICON_FONT_SIZE,
+                color: CARD_COLORS.TEXT.INFO,
+                cursor: 'pointer',
+                padding: '4px',
+                borderRadius: '4px',
+                transition: CARD_TRANSITIONS.ICON,
+              }}
+              onMouseOver={(e) => {
+                (e.currentTarget as HTMLElement).style.backgroundColor = '#f5f5f5';
+              }}
+              onMouseOut={(e) => {
+                (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+              }}
+            />
+          </Dropdown>
+        </div>
+      </div>
     </Card>
   );
 };
 
-export default WorkloadCard;
+export default React.memo(WorkloadCard);

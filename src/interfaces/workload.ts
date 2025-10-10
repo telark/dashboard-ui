@@ -157,6 +157,7 @@ export interface WorkloadCardData {
     available: number;
   };
   containers: number;
+  bridges: number;
   lastUpdate: string;
   sourceType: string;
   registry: string;

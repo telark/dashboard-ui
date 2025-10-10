@@ -1,52 +1,29 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { Typography, message, Spin } from 'antd';
+import React, { useEffect } from 'react';
+import { Typography, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { fetchWorkloads } from '../../clients/exporter';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAllWorkloadsThunk } from '../../store/slices/workloadSlice';
 import WorkloadList from '../../components/display/WorkloadList';
-import type { Workload, WorkloadCardData } from '../../interfaces/workload';
+import type { WorkloadCardData } from '../../interfaces/workload';
 import { APP_ROUTES } from '../../constants';
+import type { RootState, AppDispatch } from '../../store';
 
 const { Title, Paragraph } = Typography;
 
 const Workloads: React.FC = () => {
-  const [workloads, setWorkloads] = useState<WorkloadCardData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-
-  const transformWorkloadToCardData = (workload: Workload): WorkloadCardData => {
-    return {
-      name: workload.fasid.name,
-      grouper: workload.fasid.grouper,
-      status: workload.cacid.status,
-      instances: {
-        total: workload.cacid.instances.total,
-        available: workload.cacid.instances.available,
-      },
-      containers: workload.cacid.crates.regular.length + workload.cacid.crates.init.length,
-      lastUpdate: workload.config.sync.lastUpdateTime,
-      sourceType: workload.fasid.sourceType,
-      registry: workload.cacid.registry,
-      strategy: workload.cacid.strategy,
-    };
-  };
-
-  const loadWorkloads = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await fetchWorkloads();
-      const transformedWorkloads = response.data.items.map(transformWorkloadToCardData);
-      setWorkloads(transformedWorkloads);
-    } catch (error: any) {
-      console.error('Failed to fetch workloads:', error);
-      message.error('Failed to load workloads');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const { workloads, loading, error } = useSelector((state: RootState) => state.workload);
 
   useEffect(() => {
-    loadWorkloads();
-  }, [loadWorkloads]);
+    dispatch(fetchAllWorkloadsThunk());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      message.error('Failed to load workloads');
+    }
+  }, [error]);
 
   const handleWorkloadClick = (workload: WorkloadCardData) => {
     navigate(APP_ROUTES.WORKLOAD_DETAILS.replace(':name', workload.name));
@@ -56,16 +33,13 @@ const Workloads: React.FC = () => {
     <div style={{ padding: '24px' }}>
       <div style={{ marginBottom: '24px' }}>
         <Title level={2}>Workloads</Title>
-        <Paragraph type="secondary">Manage and monitor your application workloads</Paragraph>
       </div>
 
-      {loading ? (
-        <div style={{ textAlign: 'center', padding: '50px' }}>
-          <Spin size="large" />
-        </div>
-      ) : (
-        <WorkloadList workloads={workloads} onWorkloadClick={handleWorkloadClick} />
-      )}
+      <WorkloadList
+        workloads={workloads}
+        loading={loading}
+        onWorkloadClick={handleWorkloadClick}
+      />
     </div>
   );
 };
