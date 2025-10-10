@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   AppstoreOutlined,
   ContainerOutlined,
@@ -9,12 +9,16 @@ import { Pagination, Tag, Collapse, Button, Space } from 'antd';
 import { Workload } from '../../../interfaces/workload';
 import TimeAgo from '../../time/TimeAgo';
 import { DEFAULT_COLORS } from '../../../constants';
+import { COMPONENT_STYLES, COMPONENT_CONSTANTS } from '../../../constants/ui';
 
 interface WorkloadInstancesProps {
   workload: Workload;
 }
 
-const Label: React.FC<{ icon: React.ReactNode; text: string }> = ({ icon, text }) => (
+// Use styles from constants for better organization
+const STYLES = COMPONENT_STYLES.WORKLOAD_INSTANCES;
+
+const Label: React.FC<{ icon: React.ReactNode; text: string }> = React.memo(({ icon, text }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
     <span style={{ color: DEFAULT_COLORS.SUCCESS, fontSize: 16, display: 'inline-flex' }}>
       {icon}
@@ -31,65 +35,57 @@ const Label: React.FC<{ icon: React.ReactNode; text: string }> = ({ icon, text }
       {text}
     </span>
   </div>
-);
+));
 
-const Row: React.FC<{ left: React.ReactNode; right: React.ReactNode; withDivider?: boolean }> = ({
+const Row: React.FC<{ left: React.ReactNode; right: React.ReactNode; withDivider?: boolean }> = React.memo(({
   left,
   right,
   withDivider = true,
 }) => (
   <div
     style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '10px 0',
+      ...STYLES.row,
       borderBottom: withDivider ? '1px solid #eef2f6' : 'none',
-      minHeight: 40,
     }}
   >
     <div>{left}</div>
     <div style={{ color: '#111827', fontWeight: 600 }}>{right}</div>
   </div>
-);
+));
 
-const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
+const WorkloadInstances: React.FC<WorkloadInstancesProps> = React.memo(({ workload }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedContainers, setExpandedContainers] = useState<{ [key: string]: boolean }>({});
   const pageSize = 5;
 
-  const handlePageChange = (page: number) => setCurrentPage(page);
+  const handlePageChange = useCallback((page: number) => setCurrentPage(page), []);
 
-
-  const renderTime = (date?: string) => {
+  const renderTime = useCallback((date?: string) => {
     if (!date) return <span style={{ color: '#9CA3AF' }}>—</span>;
     const parsed = new Date(date);
     if (Number.isNaN(parsed.getTime())) return <span style={{ color: '#9CA3AF' }}>—</span>;
     return <TimeAgo date={date} />;
-  };
+  }, []);
 
-  const getPullPolicyDescription = (policy?: string) => {
+  const getPullPolicyDescription = useCallback((policy?: string) => {
     if (!policy) return null;
     
-    const policyMap: { [key: string]: string } = {
-      'Always': 'Always pull',
-      'IfNotPresent': 'Pull if needed',
-      'Never': 'Local only'
-    };
-    
-    return policyMap[policy] || policy;
-  };
+    const policyMap = COMPONENT_CONSTANTS.WORKLOAD_INSTANCES.PULL_POLICY_MAP;
+    return policyMap[policy as keyof typeof policyMap] || policy;
+  }, []);
 
-  // Create instances data from workload
-  const instances = workload.cacid?.usage?.resources?.usagePerInstance || [];
-  const containers = workload.cacid?.crates?.regular || [];
+  // Memoize expensive data processing
+  const { instances, containers } = useMemo(() => ({
+    instances: workload.cacid?.usage?.resources?.usagePerInstance || [],
+    containers: workload.cacid?.crates?.regular || [],
+  }), [workload.cacid?.usage?.resources?.usagePerInstance, workload.cacid?.crates?.regular]);
 
   // Define resource types - using any for now to avoid TypeScript issues
   type ContainerInfo = any;
 
   type InstanceResource = {
     name: string;
-    type: 'Instance';
+    type: typeof COMPONENT_CONSTANTS.WORKLOAD_INSTANCES.INSTANCE_TYPE;
     status: string;
     lastSync?: string;
     cpu?: string;
@@ -97,57 +93,43 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
     containers: ContainerInfo[];
   };
 
-  // Create instances with their containers
-  const resources: InstanceResource[] = instances.map((instance, index) => ({
-    name: instance.name || `Instance ${index + 1}`,
-    type: 'Instance',
-    status: 'Running',
-    lastSync: workload.cacid?.usage?.timestamp,
-    cpu: instance.totalCpu,
-    memory: instance.totalMemory,
-    containers: containers, // Use the full containers data instead of instance.containers
-  }));
-
-  // If no instances, create a single instance with all containers
-  if (resources.length === 0 && containers.length > 0) {
-    resources.push({
-      name: 'Main Instance',
-      type: 'Instance',
-      status: 'Running',
-      lastSync: workload.cacid?.usage?.timestamp,
-      cpu: workload.cacid?.usage?.resources?.totalCpu,
-      memory: workload.cacid?.usage?.resources?.totalMemory,
+  // Memoize resources creation
+  const resources: InstanceResource[] = useMemo(() => {
+    const timestamp = workload.cacid?.usage?.timestamp;
+    const totalCpu = workload.cacid?.usage?.resources?.totalCpu;
+    const totalMemory = workload.cacid?.usage?.resources?.totalMemory;
+    const workloadStatus = workload.cacid?.status || 'Unknown';
+    
+    const mappedResources = instances.map((instance, index) => ({
+      name: instance.name || `Instance ${index + 1}`,
+      type: COMPONENT_CONSTANTS.WORKLOAD_INSTANCES.INSTANCE_TYPE,
+      status: workloadStatus, // Use workload status since instances don't have individual status
+      lastSync: timestamp,
+      cpu: instance.totalCpu,
+      memory: instance.totalMemory,
       containers: containers,
-    });
-  }
+    }));
+
+    // If no instances, create a single instance with all containers
+    if (mappedResources.length === 0 && containers.length > 0) {
+      mappedResources.push({
+        name: 'Main Instance',
+        type: COMPONENT_CONSTANTS.WORKLOAD_INSTANCES.INSTANCE_TYPE,
+        status: workloadStatus, // Use actual workload status
+        lastSync: timestamp,
+        cpu: totalCpu,
+        memory: totalMemory,
+        containers: containers,
+      });
+    }
+
+    return mappedResources;
+  }, [instances, containers, workload.cacid?.usage?.timestamp, workload.cacid?.usage?.resources?.totalCpu, workload.cacid?.usage?.resources?.totalMemory, workload.cacid?.status]);
 
   if (!resources || resources.length === 0) {
     return (
-      <div
-        style={{
-          minHeight: 200,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          textAlign: 'center',
-        }}
-      >
-        <div
-          style={{
-            width: 56,
-            height: 56,
-            borderRadius: '50%',
-            background: 'rgba(32,201,151,0.12)',
-            boxShadow: 'inset 0 0 0 2px rgba(32,201,151,0.18)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: 12,
-            color: DEFAULT_COLORS.SUCCESS,
-            fontSize: 24,
-          }}
-        >
+      <div style={STYLES.emptyState}>
+        <div style={STYLES.emptyIcon}>
           <AppstoreOutlined />
         </div>
         <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F33', marginBottom: 6 }}>
@@ -160,22 +142,19 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
     );
   }
 
-  const paginatedResources = resources.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-  const showPagination = resources.length > pageSize;
+  // Memoize pagination calculations
+  const { paginatedResources, showPagination } = useMemo(() => ({
+    paginatedResources: resources.slice((currentPage - 1) * pageSize, currentPage * pageSize),
+    showPagination: resources.length > pageSize,
+  }), [resources, currentPage, pageSize]);
 
-  const statusTag = (value: string) => {
+  const statusTag = useCallback((value: string) => {
     const isOk = /active|ready|running|available/i.test(value);
-    const baseStyle: React.CSSProperties = {
-      borderRadius: 999,
-      padding: '2px 10px',
-      fontWeight: 700,
-      margin: 0,
-    };
     if (isOk) {
       return (
         <Tag
           style={{
-            ...baseStyle,
+            ...STYLES.statusTag,
             border: `1px solid ${DEFAULT_COLORS.SUCCESS}`,
             color: DEFAULT_COLORS.SUCCESS,
             background: 'rgba(32,201,151,0.08)',
@@ -188,7 +167,7 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
     return (
       <Tag
         style={{
-          ...baseStyle,
+          ...STYLES.statusTag,
           border: '1px solid #e5e7eb',
           color: '#374151',
           background: '#F9FAFB',
@@ -197,45 +176,18 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
         {value}
       </Tag>
     );
-  };
+  }, []);
 
-  const kindPill = (kind: string) => (
-    <span
-      style={{
-        border: '1px solid #e5e7eb',
-        color: '#111827',
-        background: '#F9FAFB',
-        borderRadius: 999,
-        padding: '2px 10px',
-        fontWeight: 700,
-      }}
-    >
+  const kindPill = useCallback((kind: string) => (
+    <span style={STYLES.kindPill}>
       {kind}
     </span>
-  );
+  ), []);
 
-  const headerNode = (resource: InstanceResource) => (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        width: '100%',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 200 }}>
-        <span
-          style={{
-            width: 28,
-            height: 28,
-            borderRadius: '50%',
-            background: 'rgba(32,201,151,0.12)',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: DEFAULT_COLORS.SUCCESS,
-          }}
-        >
+  const headerNode = useCallback((resource: InstanceResource) => (
+    <div style={STYLES.headerContainer}>
+      <div style={STYLES.headerLeft}>
+        <span style={STYLES.instanceIcon}>
           <AppstoreOutlined />
         </span>
         <span style={{ fontWeight: 700, color: '#0B1F33' }}>{resource.name}</span>
@@ -245,9 +197,16 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
         {statusTag(resource.status)}
       </div>
     </div>
-  );
+  ), [kindPill, statusTag]);
 
-  const detailNode = (resource: InstanceResource) => {
+  const handleContainerToggle = useCallback((instanceKey: string) => {
+    setExpandedContainers(prev => ({ 
+      ...prev, 
+      [instanceKey]: !prev[instanceKey] 
+    }));
+  }, []);
+
+  const detailNode = useCallback((resource: InstanceResource) => {
     const instanceKey = resource.name;
     const isContainersExpanded = expandedContainers[instanceKey] || false;
     
@@ -255,14 +214,7 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
       <div style={{ padding: '16px 0' }}>
 
         {/* Metrics Section */}
-        <div style={{ 
-          background: 'white',
-          borderRadius: 16,
-          border: '1px solid #e2e8f0',
-          marginBottom: 16,
-          overflow: 'hidden',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
-        }}>
+        <div style={STYLES.metricsSection}>
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 
@@ -332,13 +284,7 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
         </div>
 
         {/* Containers Section */}
-        <div style={{ 
-          background: 'white',
-          borderRadius: 16,
-          border: '1px solid #e2e8f0',
-          overflow: 'hidden',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
-        }}>
+        <div style={STYLES.containersSection}>
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 
@@ -376,7 +322,7 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
                 transform: isContainersExpanded ? 'rotate(180deg)' : 'rotate(0deg)', 
                 transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)' 
               }} />}
-              onClick={() => setExpandedContainers(prev => ({ ...prev, [instanceKey]: !isContainersExpanded }))}
+              onClick={() => handleContainerToggle(instanceKey)}
               style={{ 
                 border: '1px solid #cbd5e1',
                 borderRadius: '8px',
@@ -491,7 +437,7 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
         </div>
       </div>
     );
-  };
+  }, [expandedContainers, handleContainerToggle, getPullPolicyDescription]);
 
   return (
     <>
@@ -518,6 +464,6 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
       )}
     </>
   );
-};
+});
 
 export default WorkloadInstances;
