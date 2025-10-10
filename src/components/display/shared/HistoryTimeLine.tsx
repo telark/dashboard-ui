@@ -1,10 +1,11 @@
+
 import React, { useMemo, useState } from 'react';
 import { CheckOutlined, CloseOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Drawer, Button } from 'antd';
 import { HistoryInterface, Record } from '../../../interfaces/common';
 import { DEFAULT_COLORS } from '../../../constants';
 import TimeAgo from '../../time/TimeAgo';
-import { UI, COMPONENT_STYLES } from '../../../constants/ui';
+import { UI } from '../../../constants';
 
 // Visual constants
 const PADDING_LEFT = 42;
@@ -18,7 +19,7 @@ const HALO_SIZE = UI.HISTORY.TIMELINE.HALO_SIZE_LAST; // last item halo size
 const capitalizeFirst = (text: string): string =>
   text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
 
-const HistoryTimeLine: React.FC<HistoryInterface> = React.memo(({ Records }) => {
+const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
   const items = useMemo(() => {
     // Oldest -> Newest
     return [...Records].sort(
@@ -26,11 +27,8 @@ const HistoryTimeLine: React.FC<HistoryInterface> = React.memo(({ Records }) => 
     );
   }, [Records]);
 
-  const { hasMore, displayItems } = useMemo(() => {
-    const hasMore = items.length > 5;
-    const displayItems = hasMore ? items.slice(-5) : items; // show last 5 (newest 5) while keeping ascending order
-    return { hasMore, displayItems };
-  }, [items]);
+  const hasMore = items.length > 5;
+  const displayItems = hasMore ? items.slice(-5) : items; // show last 5 (newest 5) while keeping ascending order
 
   const [showFull, setShowFull] = useState(false);
 
@@ -40,19 +38,37 @@ const HistoryTimeLine: React.FC<HistoryInterface> = React.memo(({ Records }) => 
   const renderTimeline = (list: Record[], withRecording: boolean) => {
     const lastIndex = list.length - 1;
     return (
-        <div style={COMPONENT_STYLES.SHARED.HISTORY_TIMELINE.timelineContainer}>
+      <div style={{ position: 'relative', paddingLeft: PADDING_LEFT }}>
         {/* Continuous rail */}
-        <div style={COMPONENT_STYLES.SHARED.HISTORY_TIMELINE.rail} />
+        <div
+          style={{
+            position: 'absolute',
+            left: RAIL_X,
+            top: 0,
+            bottom: 0,
+            width: LINE_WIDTH,
+            background: DEFAULT_COLORS.SUCCESS,
+            transform: 'translateX(-50%)',
+            borderRadius: LINE_WIDTH / 2,
+            opacity: 0.95,
+          }}
+        />
 
         {/* Top mask (no rail above first marker) */}
         <div
           style={{
-            ...COMPONENT_STYLES.SHARED.HISTORY_TIMELINE.topMask,
+            position: 'absolute',
+            left: RAIL_X,
+            top: 0,
+            width: LINE_WIDTH + 4,
             height: cutHeight,
+            background: '#fff',
+            transform: 'translateX(-50%)',
+            zIndex: 1,
           }}
         />
 
-        <div style={COMPONENT_STYLES.SHARED.HISTORY_TIMELINE.timelineItems}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {list.map((item: Record, idx: number) => {
             const isLast = idx === lastIndex;
             const isError = /error|failed|fail|danger/i.test(item.status);
@@ -282,6 +298,6 @@ const HistoryTimeLine: React.FC<HistoryInterface> = React.memo(({ Records }) => 
       </Drawer>
     </>
   );
-});
+};
 
 export default HistoryTimeLine;
