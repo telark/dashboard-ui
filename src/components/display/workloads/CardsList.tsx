@@ -9,7 +9,7 @@ interface WorkloadListProps {
   onWorkloadClick?: (workload: WorkloadCardData) => void;
 }
 
-const WorkloadList: React.FC<WorkloadListProps> = ({
+const WorkloadList: React.FC<WorkloadListProps> = React.memo(({
   workloads,
   loading = false,
   onWorkloadClick,
@@ -37,6 +37,6 @@ const WorkloadList: React.FC<WorkloadListProps> = ({
       ))}
     </div>
   );
-};
+});
 
 export default WorkloadList;

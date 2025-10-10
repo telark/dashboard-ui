@@ -53,7 +53,7 @@ const Row: React.FC<{ left: React.ReactNode; right: React.ReactNode; withDivider
   </div>
 );
 
-const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
+const Resources: React.FC<ResourcesInterface> = React.memo(({ name, resources }) => {
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -272,6 +272,6 @@ const Resources: React.FC<ResourcesInterface> = ({ name, resources }) => {
       )}
     </>
   );
-};
+});
 
 export default Resources;
