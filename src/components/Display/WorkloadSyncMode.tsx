@@ -1,27 +1,41 @@
-import React from 'react';
-import { Descriptions } from 'antd';
+import React, { useState } from 'react';
 import { Workload } from '../../interfaces/workload';
+import SyncMode from '../tabs/SyncMode';
 
 interface WorkloadSyncModeProps {
   workload: Workload;
 }
 
 const WorkloadSyncMode: React.FC<WorkloadSyncModeProps> = ({ workload }) => {
-  const formatTime = (timestamp: string) => {
-    try {
-      return new Date(timestamp).toLocaleString();
-    } catch {
-      return 'Unknown';
-    }
+  // Use state to manage the switch value
+  const [isAutoSync, setIsAutoSync] = useState(workload.config?.sync?.mode === 'auto' || false);
+  const [loadingSave, setLoadingSave] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+  
+  const handleAutoSyncChange = (checked: boolean) => {
+    setIsAutoSync(checked);
+    setHasChanges(true); // Mark as having changes when switch is toggled
+    console.log('Auto sync changed:', checked);
+  };
+  
+  const handleGrouperSyncSave = () => {
+    setLoadingSave(true);
+    // Simulate save operation
+    setTimeout(() => {
+      setLoadingSave(false);
+      setHasChanges(false);
+      console.log('Sync save completed');
+    }, 1000);
   };
 
   return (
-    <Descriptions column={2}>
-      <Descriptions.Item label="Sync Mode">{workload.config?.sync?.mode || 'N/A'}</Descriptions.Item>
-      <Descriptions.Item label="Last Update Time">
-        {workload.config?.sync?.lastUpdateTime ? formatTime(workload.config.sync.lastUpdateTime) : 'N/A'}
-      </Descriptions.Item>
-    </Descriptions>
+    <SyncMode
+      isAutoSync={isAutoSync}
+      loadingSave={loadingSave}
+      hasChanges={hasChanges}
+      handleAutoSyncChange={handleAutoSyncChange}
+      handleGrouperSyncSave={handleGrouperSyncSave}
+    />
   );
 };
 
