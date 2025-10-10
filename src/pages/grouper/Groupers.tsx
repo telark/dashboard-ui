@@ -1,12 +1,7 @@
 import React, { useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { message, Result, Button } from 'antd';
-import {
-  WarningTwoTone,
-  AppstoreOutlined,
-  SyncOutlined,
-  ReloadOutlined,
-} from '@ant-design/icons';
+import { WarningTwoTone, AppstoreOutlined, SyncOutlined, ReloadOutlined } from '@ant-design/icons';
 
 import {
   fetchAllGroupersThunk,
@@ -53,7 +48,7 @@ const Groupers: React.FC = () => {
             dispatch(triggerGroupersSyncThunk());
             localStorage.setItem(GROUPERS_SYNC_LS_KEY, String(now));
           }
-        } catch (_) {
+        } catch {
           // Fallback without persistence
           dispatch(triggerGroupersSyncThunk());
         }

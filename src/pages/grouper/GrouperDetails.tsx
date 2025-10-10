@@ -12,7 +12,6 @@ import GeneralInfo from '../../components/display/GeneralInfo';
 import HistoryTimeLine from '../../components/display/HistoryTimeLine';
 import MaintenanceMode from '../../components/tabs/MaintenanceMode';
 import Resources from '../../components/display/Resources';
-import { STORE_MESSAGES } from '../../constants';
 import SyncMode from '../../components/tabs/SyncMode';
 import StatusButton from '../../components/buttons/StatusButton';
 import { DEFAULT_COLORS } from '../../constants';

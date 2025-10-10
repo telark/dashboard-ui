@@ -2,6 +2,7 @@ export const API_PATHS = {
   RESOURCES: {
     GROUPERS: 'resources/groupers',
     INSIGHTS: 'resources/insights',
+    WORKLOADS: 'resources/workloads',
   },
   FEATS: {
     MAINTENANCE: 'feats/maintenance',

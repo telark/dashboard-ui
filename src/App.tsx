@@ -6,7 +6,15 @@ import Header from './components/layout/header/Header';
 import ErrorBoundary from './ErrorBoundary';
 import 'antd/dist/reset.css';
 import { DEFAULT_COLORS, APP_CONFIGS, APP_ROUTES } from './constants';
-import { Dashboard, Groupers, GrouperDetails, Startup, Welcome } from './pages';
+import {
+  Dashboard,
+  Groupers,
+  GrouperDetails,
+  Workloads,
+  WorkloadDetails,
+  Startup,
+  Welcome,
+} from './pages';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkClusterInsightsThunk } from './store/slices/insightsSlice';
@@ -74,6 +82,8 @@ const App: React.FC = () => {
                   <Route path={APP_ROUTES.HOME} element={<Dashboard />} />
                   <Route path={APP_ROUTES.GROUPERS} element={<Groupers />} />
                   <Route path={APP_ROUTES.GROUPER_DETAILS} element={<GrouperDetails />} />
+                  <Route path={APP_ROUTES.WORKLOADS} element={<Workloads />} />
+                  <Route path={APP_ROUTES.WORKLOAD_DETAILS} element={<WorkloadDetails />} />
                 </Routes>
               </Layout>
             </Layout>

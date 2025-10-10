@@ -84,3 +84,13 @@ export const checkClusterInsights = async () => {
     throw error;
   }
 };
+
+// Fetch all Workloads
+export const fetchWorkloads = async () => {
+  try {
+    return await Client<any>(exporterApiClient, Endpoints.WORKLOADS.GET_ALL.path);
+  } catch (error) {
+    console.error('Failed to fetch workloads:', error);
+    throw error;
+  }
+};
