@@ -1,6 +1,6 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { CheckOutlined, CloseOutlined, LoadingOutlined } from '@ant-design/icons';
-import { Drawer, Button } from 'antd';
+import { Drawer, Button, Spin } from 'antd';
 import { HistoryInterface, Record } from '../../../interfaces/common';
 import { DEFAULT_COLORS } from '../../../constants';
 import TimeAgo from '../../time/TimeAgo';
@@ -41,6 +41,51 @@ const HistoryTimeLine: React.FC<HistoryInterface> = React.memo(({ Records }) => 
   }, [Records]);
 
   const [showFull, setShowFull] = useState(false);
+  const [visibleItems, setVisibleItems] = useState<Record[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  
+  const ITEMS_PER_PAGE = 20; // Load 20 items at a time
+
+  // Lazy load items when drawer opens
+  useEffect(() => {
+    if (showFull && items.length > 0) {
+      setIsLoading(true);
+      // Simulate async loading with a small delay
+      const timer = setTimeout(() => {
+        const initialItems = items.slice(0, ITEMS_PER_PAGE);
+        setVisibleItems(initialItems);
+        setCurrentPage(1);
+        setIsLoading(false);
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    } else if (!showFull) {
+      // Reset when drawer closes
+      setVisibleItems([]);
+      setCurrentPage(0);
+    }
+  }, [showFull, items]);
+
+  const loadMoreItems = useCallback(() => {
+    if (isLoading) return;
+    
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      const nextPage = currentPage + 1;
+      const startIndex = nextPage * ITEMS_PER_PAGE;
+      const endIndex = startIndex + ITEMS_PER_PAGE;
+      const newItems = items.slice(startIndex, endIndex);
+      
+      setVisibleItems(prev => [...prev, ...newItems]);
+      setCurrentPage(nextPage);
+      setIsLoading(false);
+    }, 150);
+    
+    return () => clearTimeout(timer);
+  }, [currentPage, items, isLoading]);
+
+  const hasMoreItems = currentPage * ITEMS_PER_PAGE < items.length;
 
   const markerLeft = -(PADDING_LEFT - RAIL_X);
   const cutHeight = MARKER_SIZE / 2 + GAP_AROUND;
@@ -304,7 +349,35 @@ const HistoryTimeLine: React.FC<HistoryInterface> = React.memo(({ Records }) => 
         onClose={() => setShowFull(false)}
         styles={{ body: { padding: 16 }, header: { borderBottom: 'none', padding: '12px 16px' } }}
       >
-        {renderTimeline(items, false)}
+        {isLoading && visibleItems.length === 0 ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+            <Spin size="large" />
+          </div>
+        ) : (
+          <>
+            {renderTimeline(visibleItems, false)}
+            {hasMoreItems && (
+              <div style={{ marginTop: 16, textAlign: 'center' }}>
+                <Button
+                  onClick={loadMoreItems}
+                  loading={isLoading}
+                  style={{
+                    borderColor: DEFAULT_COLORS.SUCCESS,
+                    color: DEFAULT_COLORS.SUCCESS,
+                    borderWidth: 1,
+                    borderRadius: 12,
+                    height: 36,
+                  }}
+                >
+                  {isLoading 
+                    ? 'Loading...' 
+                    : `Load More (${items.length - visibleItems.length} remaining)`
+                  }
+                </Button>
+              </div>
+            )}
+          </>
+        )}
       </Drawer>
     </>
   );
