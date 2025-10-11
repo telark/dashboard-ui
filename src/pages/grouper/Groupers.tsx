@@ -1,7 +1,8 @@
 import React, { useEffect, useCallback, useRef, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { message, Result, Button } from 'antd';
-import { WarningTwoTone, AppstoreOutlined, SyncOutlined, ReloadOutlined } from '@ant-design/icons';
+import { WarningTwoTone, AppstoreOutlined, ReloadOutlined } from '@ant-design/icons';
+import FancySpinner from '../../components/common/FancySpinner';
 
 import {
   fetchAllGroupersThunk,
@@ -97,9 +98,7 @@ const Groupers: React.FC = memo(() => {
             minHeight: '50vh',
           }}
         >
-          <Button type="text" icon={<SyncOutlined spin />} disabled>
-            Loading groupers…
-          </Button>
+          <FancySpinner label="Loading groupers…" showLabel={true} />
         </div>
       </div>
     );

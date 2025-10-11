@@ -1,6 +1,7 @@
 import React from 'react';
-import { Empty, Spin } from 'antd';
+import { Empty } from 'antd';
 import WorkloadCard from '../../cards/WorkloadCard';
+import FancySpinner from '../../common/FancySpinner';
 import type { WorkloadCardData } from '../../../interfaces/workload';
 
 interface WorkloadListProps {
@@ -13,8 +14,14 @@ const WorkloadList: React.FC<WorkloadListProps> = React.memo(
   ({ workloads, loading = false, onWorkloadClick }) => {
     if (loading) {
       return (
-        <div style={{ textAlign: 'center', padding: '50px' }}>
-          <Spin size="large" />
+        <div style={{ 
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '50vh',
+          width: '100%'
+        }}>
+          <FancySpinner label="Loading workloads…" showLabel={true} />
         </div>
       );
     }
