@@ -43,6 +43,20 @@ export const fetchAllGroupersThunk = createAsyncThunk(
   },
 );
 
+// Silent version for retry attempts
+export const fetchAllGroupersSilentThunk = createAsyncThunk(
+  'groupers/fetchSilent',
+  async (_, { rejectWithValue }) => {
+    try {
+      const rawGroupersData = await fetchGroupers(true); // Silent mode
+      return mapGroupersData(rawGroupersData);
+    } catch (error: any) {
+      // Don't log errors during retry attempts
+      return rejectWithValue(error.message || STORE_ERRORS.FETCH_GROUPERS);
+    }
+  },
+);
+
 // Trigger sync on sync-manager
 export const triggerGroupersSyncThunk = createAsyncThunk(
   STORE_ACTIONS.GROUPERS.TRIGGER_SYNC,
@@ -246,6 +260,19 @@ const grouperSlice = createSlice({
         state.groupers = action.payload;
       })
       .addCase(fetchAllGroupersThunk.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Silent Fetch Groupers (for retry attempts)
+      .addCase(fetchAllGroupersSilentThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllGroupersSilentThunk.fulfilled, (state, action: PayloadAction<any[]>) => {
+        state.loading = false;
+        state.groupers = action.payload;
+      })
+      .addCase(fetchAllGroupersSilentThunk.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       })

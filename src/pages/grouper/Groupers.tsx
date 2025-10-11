@@ -7,6 +7,7 @@ import FancySpinner from '../../components/common/FancySpinner';
 
 import {
   fetchAllGroupersThunk,
+  fetchAllGroupersSilentThunk,
   checkGrouperMaintenanceModeThunk,
   triggerGroupersSyncThunk,
   refreshAutoGroupersThunk,
@@ -123,8 +124,8 @@ const Groupers: React.FC = memo(() => {
       clearInterval(countdownInterval);
       
       try {
-        const result = await dispatch(fetchAllGroupersThunk());
-        if (fetchAllGroupersThunk.fulfilled.match(result)) {
+        const result = await dispatch(fetchAllGroupersSilentThunk());
+        if (fetchAllGroupersSilentThunk.fulfilled.match(result)) {
           setIsRetrying(false);
           setRetryCount(0);
           setNextRetryIn(0);

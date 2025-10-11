@@ -10,11 +10,16 @@ import {
 } from '../constants';
 
 // Fetch all Groupers
-export const fetchGroupers = async () => {
+export const fetchGroupers = async (silent = false) => {
   try {
-    return await Client<any>(exporterApiClient, Endpoints.GROUPERS.GET_ALL.path);
+    const config = silent ? {
+      headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK }
+    } : {};
+    return await Client<any>(exporterApiClient, Endpoints.GROUPERS.GET_ALL.path, config);
   } catch (error) {
-    console.error(ERROR_MESSAGES.CLIENT.FETCH_GROUPERS_FAILED, error);
+    if (!silent) {
+      console.error(ERROR_MESSAGES.CLIENT.FETCH_GROUPERS_FAILED, error);
+    }
     throw error;
   }
 };
