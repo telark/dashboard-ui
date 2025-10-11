@@ -7,10 +7,9 @@ import {
   Button,
 } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { ArrowLeftOutlined, AppstoreOutlined, SyncOutlined } from '@ant-design/icons';
-import { fetchWorkloadDetailsThunk } from '../../store/slices/workloadSlice';
-import type { RootState, AppDispatch } from '../../store';
+import { useDispatch } from 'react-redux';
+import { ArrowLeftOutlined, AppstoreOutlined, SyncOutlined, LinkOutlined } from '@ant-design/icons';
+import type { AppDispatch } from '../../store';
 import { DEFAULT_COLORS } from '../../constants';
 import StatusButton from '../../components/buttons/StatusButton';
 import TimeAgo from '../../components/time/TimeAgo';
@@ -32,6 +31,7 @@ const sectionCardStyle: React.CSSProperties = {
 const TAB_KEYS = {
   GENERAL: 'general',
   INSTANCES: 'instances',
+  BRIDGES: 'bridges',
   HISTORY: 'history',
   SYNC: 'sync',
 } as const;
@@ -204,6 +204,125 @@ const WorkloadDetails: React.FC = memo(() => {
         </div>
       </div>
 
+      {/* Resource Summary */}
+      <div
+        style={{
+          background: '#fff',
+          borderRadius: 16,
+          boxShadow: '0 8px 20px rgba(0,0,0,0.05)',
+          border: '1px solid rgba(0,0,0,0.06)',
+          padding: 8,
+          marginBottom: 16,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 24,
+          flexWrap: 'wrap',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 48, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: '8px',
+                background: 'rgba(32,201,151,0.12)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: DEFAULT_COLORS.SUCCESS,
+                fontSize: 12,
+                fontWeight: 600,
+              }}
+            >
+              CPU
+            </div>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F33' }}>
+                {workload.cacid?.usage?.resources?.totalCpu || 'N/A'}
+              </div>
+              <div style={{ fontSize: 12, color: '#5B6B7C' }}>Total CPU</div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: '8px',
+                background: 'rgba(59,130,246,0.12)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#3B82F6',
+                fontSize: 12,
+                fontWeight: 600,
+              }}
+            >
+              Mem
+            </div>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F33' }}>
+                {workload.cacid?.usage?.resources?.totalMemory || 'N/A'}
+              </div>
+              <div style={{ fontSize: 12, color: '#5B6B7C' }}>Total Memory</div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: '8px',
+                background: 'rgba(168,85,247,0.12)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#A855F7',
+                fontSize: 12,
+                fontWeight: 600,
+              }}
+            >
+              QoS
+            </div>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F33' }}>
+                {workload.cacid?.usage?.qos || 'N/A'}
+              </div>
+              <div style={{ fontSize: 12, color: '#5B6B7C' }}>Quality of Service</div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: '8px',
+                background: 'rgba(245,158,11,0.12)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#F59E0B',
+                fontSize: 12,
+                fontWeight: 600,
+              }}
+            >
+              Pods
+            </div>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F33' }}>
+                {workload.cacid?.instances?.available || 0}/{workload.cacid?.instances?.total || 0}
+              </div>
+              <div style={{ fontSize: 12, color: '#5B6B7C' }}>Available / Total</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Tabs header */}
       <div
         style={{
@@ -225,6 +344,11 @@ const WorkloadDetails: React.FC = memo(() => {
           label="Instances"
           active={activeTab === TAB_KEYS.INSTANCES}
           onClick={() => setActiveTab(TAB_KEYS.INSTANCES)}
+        />
+        <TabButton
+          label="Bridges"
+          active={activeTab === TAB_KEYS.BRIDGES}
+          onClick={() => setActiveTab(TAB_KEYS.BRIDGES)}
         />
         <TabButton
           label="History"
@@ -249,6 +373,117 @@ const WorkloadDetails: React.FC = memo(() => {
         <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
           <div style={{ padding: 4 }}>
             <WorkloadInstances workload={workload} />
+          </div>
+        </Card>
+      )}
+
+      {activeTab === TAB_KEYS.BRIDGES && (
+        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
+          <div style={{ padding: 4 }}>
+            {workload.cacid?.bridges && workload.cacid.bridges.length > 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {workload.cacid.bridges.map((bridge, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      background: '#fff',
+                      border: '1px solid rgba(0,0,0,0.06)',
+                      borderRadius: 12,
+                      padding: 12,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: '8px',
+                          background: bridge.isSameGrouper 
+                            ? 'rgba(32,201,151,0.12)' 
+                            : 'rgba(59,130,246,0.12)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: bridge.isSameGrouper 
+                            ? DEFAULT_COLORS.SUCCESS 
+                            : '#3B82F6',
+                          fontSize: 12,
+                          fontWeight: 600,
+                        }}
+                      >
+                        <LinkOutlined />
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F33' }}>
+                          {bridge.name}
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div
+                        style={{
+                          padding: '2px 8px',
+                          borderRadius: '12px',
+                          background: bridge.isSameGrouper 
+                            ? 'rgba(32,201,151,0.12)' 
+                            : 'rgba(59,130,246,0.12)',
+                          color: bridge.isSameGrouper 
+                            ? DEFAULT_COLORS.SUCCESS 
+                            : '#3B82F6',
+                          fontSize: 10,
+                          fontWeight: 600,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
+                        }}
+                      >
+                        {bridge.isSameGrouper ? 'Same Grouper' : 'External'}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: '200px',
+                  textAlign: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: '50%',
+                    background: 'rgba(32,201,151,0.12)',
+                    boxShadow: 'inset 0 0 0 2px rgba(32,201,151,0.18)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: 16,
+                    color: DEFAULT_COLORS.SUCCESS,
+                    fontSize: 18,
+                  }}
+                >
+                  <LinkOutlined />
+                </div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F33', marginBottom: 8 }}>
+                  No Bridges Attached
+                </div>
+                <div style={{ color: '#5B6B7C', marginBottom: 20, maxWidth: 480, lineHeight: 1.6 }}>
+                  This workload doesn't have any services connected yet. Services allow communication 
+                  between different workloads and components in your cluster.
+                </div>
+              </div>
+            )}
           </div>
         </Card>
       )}
