@@ -12,12 +12,12 @@ import WorkloadTabs, {
 } from '../../components/display/workloads/WorkloadTabs';
 import WorkloadBridges from '../../components/display/workloads/WorkloadBridges';
 import WorkloadGeneralInfo from '../../components/display/workloads/GeneralInfo';
-import WorkloadHistory from '../../components/display/workloads/History';
 import SyncMode from '../../components/tabs/SyncMode';
 import FancySpinner from '../../components/common/FancySpinner';
 
 // Lazy load heavy components
 const WorkloadInstances = lazy(() => import('../../components/display/workloads/Instances'));
+const WorkloadHistory = lazy(() => import('../../components/display/workloads/History'));
 
 const { Title, Text } = Typography;
 
@@ -134,7 +134,20 @@ const WorkloadDetails: React.FC = React.memo(() => {
 
       {activeTab === TAB_KEYS.HISTORY && (
         <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
-          <WorkloadHistory workload={workload} />
+          <div style={{ padding: 4 }}>
+            <Suspense fallback={
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '200px',
+              }}>
+                <FancySpinner />
+              </div>
+            }>
+              <WorkloadHistory workload={workload} />
+            </Suspense>
+          </div>
         </Card>
       )}
 
