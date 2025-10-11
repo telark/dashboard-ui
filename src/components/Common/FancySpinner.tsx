@@ -1,5 +1,4 @@
 import React from 'react';
-import { AppstoreOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../constants';
 
 interface FancySpinnerProps {
@@ -7,22 +6,16 @@ interface FancySpinnerProps {
   size?: number; // overall diameter in px
   ringThickness?: number; // border thickness in px
   color?: string; // primary color
-  icon?: React.ReactNode; // custom icon inside
   showLabel?: boolean; // show/hide label
-  orbit?: boolean; // if true, icon revolves around the ring
 }
 
 const FancySpinner: React.FC<FancySpinnerProps> = ({
   label = 'Loading…',
-  size = 64,
+  size = 32,
   ringThickness = 2,
   color = DEFAULT_COLORS.SUCCESS,
-  icon,
-  showLabel = true,
-  orbit = false,
+  showLabel = false,
 }) => {
-  const innerIcon = icon || <AppstoreOutlined />;
-  const iconFontSize = Math.max(12, Math.round(size * 0.35));
 
   return (
     <div
@@ -52,48 +45,6 @@ const FancySpinner: React.FC<FancySpinnerProps> = ({
           }}
         />
 
-        {/* Icon: either orbiting around the ring or centered, following the same direction */}
-        {orbit ? (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              animation: 'fancy-spin 0.9s linear infinite', // same direction as ring
-              transformOrigin: '50% 50%',
-            }}
-          >
-            <div
-              style={{
-                position: 'absolute',
-                left: '50%',
-                top: ringThickness, // start near the top edge
-                transform: 'translate(-50%, 0)',
-                color,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: iconFontSize,
-              }}
-            >
-              {innerIcon}
-            </div>
-          </div>
-        ) : (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color,
-              fontSize: iconFontSize,
-              animation: 'fancy-spin 1.1s linear infinite', // rotate icon in place
-            }}
-          >
-            {innerIcon}
-          </div>
-        )}
       </div>
       {showLabel && <div style={{ color: '#5B6B7C', fontSize: 13 }}>{label}</div>}
       <style>{`

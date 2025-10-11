@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { CheckOutlined, CloseOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Drawer, Button } from 'antd';
 import { HistoryInterface, Record } from '../../../interfaces/common';
@@ -18,23 +18,34 @@ const HALO_SIZE = UI.HISTORY.TIMELINE.HALO_SIZE_LAST; // last item halo size
 const capitalizeFirst = (text: string): string =>
   text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
 
-const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
-  const items = useMemo(() => {
-    // Oldest -> Newest
-    return [...Records].sort(
+const HistoryTimeLine: React.FC<HistoryInterface> = React.memo(({ Records }) => {
+  // Optimize: Only process what we need to display initially
+  const { items, hasMore, displayItems } = useMemo(() => {
+    if (!Records || Records.length === 0) {
+      return { items: [], hasMore: false, displayItems: [] };
+    }
+
+    // Sort only once and cache the result
+    const sortedItems = [...Records].sort(
       (a, b) => new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime(),
     );
-  }, [Records]);
 
-  const hasMore = items.length > 5;
-  const displayItems = hasMore ? items.slice(-5) : items; // show last 5 (newest 5) while keeping ascending order
+    const hasMoreItems = sortedItems.length > 5;
+    const displayItemsOnly = hasMoreItems ? sortedItems.slice(-5) : sortedItems;
+
+    return {
+      items: sortedItems,
+      hasMore: hasMoreItems,
+      displayItems: displayItemsOnly,
+    };
+  }, [Records]);
 
   const [showFull, setShowFull] = useState(false);
 
   const markerLeft = -(PADDING_LEFT - RAIL_X);
   const cutHeight = MARKER_SIZE / 2 + GAP_AROUND;
 
-  const renderTimeline = (list: Record[], withRecording: boolean) => {
+  const renderTimeline = useCallback((list: Record[], withRecording: boolean) => {
     const lastIndex = list.length - 1;
     return (
       <div style={{ position: 'relative', paddingLeft: PADDING_LEFT }}>
@@ -235,7 +246,7 @@ const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
         />
       </div>
     );
-  };
+  }, [markerLeft, cutHeight]);
 
   return (
     <>
@@ -297,6 +308,6 @@ const HistoryTimeLine: React.FC<HistoryInterface> = ({ Records }) => {
       </Drawer>
     </>
   );
-};
+});
 
 export default HistoryTimeLine;
