@@ -1,8 +1,9 @@
 import React, { useEffect, useCallback, useRef, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { message, Result, Button } from 'antd';
-import { WarningTwoTone, AppstoreOutlined, ReloadOutlined } from '@ant-design/icons';
+import { message, Button } from 'antd';
+import { AppstoreOutlined, ReloadOutlined } from '@ant-design/icons';
 import FancySpinner from '../../components/common/FancySpinner';
+// Remove the useRetryWithBackoff import for now
 
 import {
   fetchAllGroupersThunk,
@@ -24,6 +25,13 @@ const Groupers: React.FC = memo(() => {
   const dispatch: AppDispatch = useDispatch();
   const { groupers, loading, error } = useSelector((state: RootState) => state.grouper);
   const hasTriggeredInitialSync = useRef(false);
+  const [isRetrying, setIsRetrying] = React.useState(false);
+  const [retryCount, setRetryCount] = React.useState(0);
+  const [nextRetryIn, setNextRetryIn] = React.useState(0);
+  const [isInCooldown, setIsInCooldown] = React.useState(false);
+  const [cooldownTime, setCooldownTime] = React.useState(0);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const cooldownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const loadGroupers = useCallback(async () => {
     const result = await dispatch(fetchAllGroupersThunk());
@@ -78,11 +86,111 @@ const Groupers: React.FC = memo(() => {
     };
   }, [dispatch]);
 
+  // Manual retry function with progressive backoff and cooldown
+  const handleRetry = useCallback(async () => {
+    if (isRetrying || isInCooldown) return;
+    
+    setIsRetrying(true);
+    setRetryCount(0);
+    
+    const maxRetries = 5;
+    const baseDelay = 1000; // 1 second
+    const cooldownDuration = 60000; // 1 minute cooldown
+    
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      setRetryCount(attempt + 1);
+      
+      // Calculate delay with exponential backoff
+      const delay = Math.min(baseDelay * Math.pow(2, attempt), 30000);
+      setNextRetryIn(delay);
+      
+      // Countdown timer
+      let remainingTime = delay;
+      const countdownInterval = setInterval(() => {
+        remainingTime -= 1000;
+        setNextRetryIn(Math.max(0, remainingTime));
+        
+        if (remainingTime <= 0) {
+          clearInterval(countdownInterval);
+        }
+      }, 1000);
+      
+      // Wait for delay
+      await new Promise(resolve => {
+        timeoutRef.current = setTimeout(resolve, delay);
+      });
+      
+      clearInterval(countdownInterval);
+      
+      try {
+        const result = await dispatch(fetchAllGroupersThunk());
+        if (fetchAllGroupersThunk.fulfilled.match(result)) {
+          setIsRetrying(false);
+          setRetryCount(0);
+          setNextRetryIn(0);
+          message.success('Groupers loaded successfully!');
+          return;
+        }
+      } catch (error) {
+        // Continue to next attempt
+      }
+    }
+    
+    // All retries failed - start cooldown
+    setIsRetrying(false);
+    setRetryCount(0);
+    setNextRetryIn(0);
+    setIsInCooldown(true);
+    setCooldownTime(cooldownDuration);
+    
+    // Start cooldown countdown
+    let remainingCooldown = cooldownDuration;
+    const cooldownInterval = setInterval(() => {
+      remainingCooldown -= 1000;
+      setCooldownTime(Math.max(0, remainingCooldown));
+      
+      if (remainingCooldown <= 0) {
+        clearInterval(cooldownInterval);
+        setIsInCooldown(false);
+        setCooldownTime(0);
+        // Auto-retry after cooldown
+        setTimeout(() => handleRetry(), 1000);
+      }
+    }, 1000);
+    
+    // Store interval reference for cleanup
+    cooldownTimeoutRef.current = setTimeout(() => {
+      clearInterval(cooldownInterval);
+    }, cooldownDuration);
+    
+    message.error('Unable to connect after multiple attempts. Starting cooldown period...');
+  }, [dispatch, isRetrying, isInCooldown]);
+  
+  const cancelRetry = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    if (cooldownTimeoutRef.current) {
+      clearTimeout(cooldownTimeoutRef.current);
+      cooldownTimeoutRef.current = null;
+    }
+    setIsRetrying(false);
+    setRetryCount(0);
+    setNextRetryIn(0);
+    setIsInCooldown(false);
+    setCooldownTime(0);
+  }, []);
+
   useEffect(() => {
     if (error) {
       message.error(error);
+      // Auto-start retry when error occurs
+      if (!isRetrying) {
+        handleRetry();
+      }
     }
-  }, [error]);
+  }, [error, isRetrying, handleRetry]);
 
   const pageStyle = COMPONENT_STYLES.PAGES.GROUPERS.pageStyle;
   const gridStyle = COMPONENT_STYLES.PAGES.GROUPERS.gridStyle;
@@ -117,17 +225,62 @@ const Groupers: React.FC = memo(() => {
           padding: '20px',
         }}
       >
-        <Result
-          status="error"
-          icon={<WarningTwoTone twoToneColor="#faad14" style={{ fontSize: '48px' }} />}
-          title="Unable to load Groupers"
-          subTitle={String(error)}
-          extra={
-            <Button type="primary" onClick={loadGroupers}>
-              Retry
+        <div style={{ textAlign: 'center', maxWidth: 500 }}>
+          <div style={{ fontSize: 24, fontWeight: 600, color: '#0B1F33', marginBottom: 16 }}>
+            Connection Problem
+          </div>
+          <div style={{ fontSize: 16, color: '#5B6B7C', marginBottom: 32, lineHeight: 1.6 }}>
+            {isInCooldown 
+              ? 'Connection failed after multiple attempts. Cooling down before retry...'
+              : 'Unable to connect to the server. Retrying automatically...'
+            }
+          </div>
+          
+          <div style={{ textAlign: 'center' }}>
+            {isInCooldown ? (
+              <>
+                <div style={{ fontSize: 18, fontWeight: 600, color: '#F59E0B', marginBottom: 12 }}>
+                  Cooldown Period
+                </div>
+                <div style={{ fontSize: 14, color: '#666', marginBottom: 16 }}>
+                  Retrying in {Math.ceil(cooldownTime / 1000)} seconds...
+                </div>
+                <div style={{ 
+                  width: '100%', 
+                  height: 8, 
+                  backgroundColor: '#E5E7EB', 
+                  borderRadius: 4,
+                  overflow: 'hidden',
+                  marginBottom: 16
+                }}>
+                  <div style={{
+                    width: `${((60000 - cooldownTime) / 60000) * 100}%`,
+                    height: '100%',
+                    backgroundColor: '#F59E0B',
+                    transition: 'width 1s linear'
+                  }} />
+                </div>
+              </>
+            ) : (
+              <>
+                <FancySpinner label="Retrying connection..." showLabel={true} />
+                <div style={{ marginTop: 12, color: '#666', fontSize: 14 }}>
+                  Attempt {retryCount} of 5
+                  {nextRetryIn > 0 && (
+                    <div>Next retry in {Math.ceil(nextRetryIn / 1000)} seconds...</div>
+                  )}
+                </div>
+              </>
+            )}
+            <Button 
+              type="text" 
+              onClick={cancelRetry}
+              style={{ marginTop: 8 }}
+            >
+              Cancel
             </Button>
-          }
-        />
+          </div>
+        </div>
       </div>
     );
   }
