@@ -8,7 +8,7 @@ import type { WorkloadCardData } from '../../interfaces/workload';
 import { APP_ROUTES } from '../../constants';
 import type { RootState, AppDispatch } from '../../store';
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 
 const Workloads: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -35,11 +35,7 @@ const Workloads: React.FC = () => {
         <Title level={2}>Workloads</Title>
       </div>
 
-      <WorkloadList
-        workloads={workloads}
-        loading={loading}
-        onWorkloadClick={handleWorkloadClick}
-      />
+      <WorkloadList workloads={workloads} loading={loading} onWorkloadClick={handleWorkloadClick} />
     </div>
   );
 };

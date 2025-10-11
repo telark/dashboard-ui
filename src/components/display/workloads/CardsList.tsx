@@ -9,34 +9,32 @@ interface WorkloadListProps {
   onWorkloadClick?: (workload: WorkloadCardData) => void;
 }
 
-const WorkloadList: React.FC<WorkloadListProps> = React.memo(({
-  workloads,
-  loading = false,
-  onWorkloadClick,
-}) => {
-  if (loading) {
+const WorkloadList: React.FC<WorkloadListProps> = React.memo(
+  ({ workloads, loading = false, onWorkloadClick }) => {
+    if (loading) {
+      return (
+        <div style={{ textAlign: 'center', padding: '50px' }}>
+          <Spin size="large" />
+        </div>
+      );
+    }
+
+    if (workloads.length === 0) {
+      return <Empty description="No workloads found" image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+    }
+
     return (
-      <div style={{ textAlign: 'center', padding: '50px' }}>
-        <Spin size="large" />
+      <div style={{ width: '100%' }}>
+        {workloads.map((workload) => (
+          <WorkloadCard
+            key={workload.name}
+            workload={workload}
+            onClick={() => onWorkloadClick?.(workload)}
+          />
+        ))}
       </div>
     );
-  }
-
-  if (workloads.length === 0) {
-    return <Empty description="No workloads found" image={Empty.PRESENTED_IMAGE_SIMPLE} />;
-  }
-
-  return (
-    <div style={{ width: '100%' }}>
-      {workloads.map((workload) => (
-        <WorkloadCard
-          key={workload.name}
-          workload={workload}
-          onClick={() => onWorkloadClick?.(workload)}
-        />
-      ))}
-    </div>
-  );
-});
+  },
+);
 
 export default WorkloadList;

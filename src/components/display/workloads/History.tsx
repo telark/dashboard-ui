@@ -7,9 +7,7 @@ interface WorkloadHistoryProps {
 }
 
 const WorkloadHistory: React.FC<WorkloadHistoryProps> = ({ workload }) => {
-  return (
-    <HistoryTimeLine Records={workload.config?.history || []} />
-  );
+  return <HistoryTimeLine Records={workload.config?.history || []} />;
 };
 
 export default WorkloadHistory;

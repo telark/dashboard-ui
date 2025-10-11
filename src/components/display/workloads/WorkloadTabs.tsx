@@ -24,7 +24,7 @@ const TabButton: React.FC<{ label: string; active: boolean; onClick: () => void 
   const [hovered, setHovered] = useState(false);
   const background = active ? '#fff' : hovered ? 'rgba(32,201,151,0.08)' : 'transparent';
   const color = active ? '#0B1F33' : hovered ? DEFAULT_COLORS.SUCCESS : '#6b7280';
-  
+
   return (
     <button
       onClick={onClick}

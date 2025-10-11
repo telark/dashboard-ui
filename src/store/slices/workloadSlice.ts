@@ -37,12 +37,14 @@ export const fetchWorkloadDetailsThunk = createAsyncThunk(
   async (name: string, { rejectWithValue }) => {
     try {
       const rawWorkloadsData = await fetchWorkloads();
-      const foundWorkload = rawWorkloadsData.data.items.find((w: Workload) => w.fasid.name === name);
-      
+      const foundWorkload = rawWorkloadsData.data.items.find(
+        (w: Workload) => w.fasid.name === name,
+      );
+
       if (!foundWorkload) {
         throw new Error('Workload not found');
       }
-      
+
       return mapSingleWorkloadData(foundWorkload);
     } catch (error: any) {
       console.error('Failed to fetch workload details:', error);
@@ -114,18 +116,21 @@ const workloadSlice = createSlice({
       // Update Workload Sync Mode
       .addCase(updateWorkloadSyncModeThunk.fulfilled, (state, action) => {
         const updatedItem = action.payload;
-        
+
         // Update the workloads list with the updated sync settings
-        const index = state.workloads.findIndex((workload) => workload.name === updatedItem.fasid?.name);
+        const index = state.workloads.findIndex(
+          (workload) => workload.name === updatedItem.fasid?.name,
+        );
         if (index !== -1) {
           // Update relevant fields for the specific workload
           state.workloads[index] = {
             ...state.workloads[index],
             // Update sync-related fields if they exist in the workload card data
-            lastUpdate: updatedItem.config?.sync?.lastUpdateTime || state.workloads[index].lastUpdate,
+            lastUpdate:
+              updatedItem.config?.sync?.lastUpdateTime || state.workloads[index].lastUpdate,
           };
         }
-        
+
         // Update the details to reflect the most recent data
         state.details = updatedItem;
       })
