@@ -19,6 +19,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkClusterInsightsThunk } from './store/slices/insightsSlice';
 import type { RootState, AppDispatch } from './store';
+import FancySpinner from './components/common/FancySpinner';
 
 // Ensure messages are shown below the fixed header and are visible above content
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
@@ -57,6 +58,21 @@ const App: React.FC = () => {
     // For now, re-check insights on click
     dispatch(checkClusterInsightsThunk());
   };
+
+  // If we have persisted insights but haven't verified yet, show loading
+  if (hasClusterInsight && !initialized) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        minHeight: '100vh',
+        background: '#ffffff'
+      }}>
+        <FancySpinner label="Verifying cluster insights..." showLabel={true} />
+      </div>
+    );
+  }
 
   return (
     <ErrorBoundary>
