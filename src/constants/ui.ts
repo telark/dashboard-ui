@@ -129,17 +129,15 @@ export const COMPONENT_STYLES = {
     metricsSection: {
       background: 'white',
       borderRadius: 16,
-      border: '1px solid #e2e8f0',
       marginBottom: 16,
       overflow: 'hidden',
-      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
     },
     containersSection: {
       background: 'white',
       borderRadius: 16,
-      border: '1px solid #e2e8f0',
       overflow: 'hidden',
-      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
     },
     // Common text styles
     textPrimary: {
@@ -194,9 +192,10 @@ export const COMPONENT_STYLES = {
     },
     // Container styles
     containerCard: {
-      border: '1px solid #eef2f6',
-      borderRadius: 12,
+      borderRadius: 16,
       background: '#fff',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+      border: 'none',
     },
     // Status indicators
     statusDot: {

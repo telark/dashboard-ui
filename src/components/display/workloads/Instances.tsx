@@ -273,7 +273,7 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = React.memo(({ worklo
             justifyContent: 'space-between',
             padding: '8px 16px',
             background: '#f8fafc',
-            borderBottom: isContainersExpanded ? '1px solid #e2e8f0' : 'none'
+            borderBottom: 'none'
           }}>
             <div style={STYLES.flexCenterGap12}>
               <div style={{ 
@@ -391,12 +391,13 @@ const WorkloadInstances: React.FC<WorkloadInstancesProps> = React.memo(({ worklo
 
   return (
     <>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         {paginatedResources.map((resource, index) => (
           <Collapse
             key={index}
             items={[{ key: 'panel', label: headerNode(resource), children: detailNode(resource) }]}
             expandIconPosition="end"
+            ghost
             style={STYLES.containerCard}
           />
         ))}
