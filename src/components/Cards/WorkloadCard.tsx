@@ -47,16 +47,16 @@ const WorkloadCard: React.FC<WorkloadCardProps> = ({ workload, onClick }) => {
             icon: <CheckCircleOutlined />,
           }
         : workload.status === 'Running'
-        ? {
-            color: '#1890ff',
-            borderColor: '#1890ff',
-            icon: <WarningOutlined />,
-          }
-        : {
-            color: DEFAULT_COLORS.DEFAULT,
-            borderColor: DEFAULT_COLORS.DEFAULT,
-            icon: <CloseCircleOutlined />,
-          },
+          ? {
+              color: '#1890ff',
+              borderColor: '#1890ff',
+              icon: <WarningOutlined />,
+            }
+          : {
+              color: DEFAULT_COLORS.DEFAULT,
+              borderColor: DEFAULT_COLORS.DEFAULT,
+              icon: <CloseCircleOutlined />,
+            },
     [workload.status],
   );
 
@@ -246,7 +246,10 @@ const WorkloadCard: React.FC<WorkloadCardProps> = ({ workload, onClick }) => {
           </div>
 
           {/* Status */}
-          <StatusButton status={workload.status === 'Available' ? 'Active' : 'Inactive'} icon={statusStyle.icon} />
+          <StatusButton
+            status={workload.status === 'Available' ? 'Active' : 'Inactive'}
+            icon={statusStyle.icon}
+          />
 
           {/* Dropdown */}
           <Dropdown menu={{ items: menuItems }} trigger={['click']} placement="bottomRight">

@@ -289,9 +289,9 @@ export const COMPONENT_STYLES = {
 export const COMPONENT_CONSTANTS = {
   WORKLOAD_INSTANCES: {
     PULL_POLICY_MAP: {
-      'Always': 'Always pull',
-      'IfNotPresent': 'Pull if needed',
-      'Never': 'Local only'
+      Always: 'Always pull',
+      IfNotPresent: 'Pull if needed',
+      Never: 'Local only',
     },
     INSTANCE_TYPE: 'Instance',
   },

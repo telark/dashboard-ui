@@ -57,29 +57,20 @@ const WorkloadHeader: React.FC<WorkloadHeaderProps> = ({ workload }) => {
             />
           </div>
           <div style={{ color: '#5B6B7C', fontSize: 12, marginTop: 4 }}>
-            Last update was <TimeAgo date={workload.config?.sync?.lastUpdateTime || new Date().toISOString()} />
+            Last update was{' '}
+            <TimeAgo date={workload.config?.sync?.lastUpdateTime || new Date().toISOString()} />
           </div>
         </div>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <Button
-          size="middle"
-          icon={<SyncOutlined />}
-        >
+        <Button size="middle" icon={<SyncOutlined />}>
           Sync
         </Button>
-        <Button
-          size="middle"
-          icon={<AppstoreOutlined />}
-        >
+        <Button size="middle" icon={<AppstoreOutlined />}>
           View Grouper
         </Button>
-        <Button
-          size="middle"
-          onClick={() => navigate('/workloads')}
-          icon={<ArrowLeftOutlined />}
-        >
+        <Button size="middle" onClick={() => navigate('/workloads')} icon={<ArrowLeftOutlined />}>
           Back to Workloads
         </Button>
       </div>

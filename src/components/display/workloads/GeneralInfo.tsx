@@ -7,7 +7,6 @@ import {
 } from '@ant-design/icons';
 import TimeAgo from '../../time/TimeAgo';
 import { DEFAULT_COLORS } from '../../../constants';
-import StatusButton from '../../buttons/StatusButton';
 import { Workload } from '../../../interfaces/workload';
 
 interface WorkloadGeneralInfoProps {
@@ -69,7 +68,6 @@ const WorkloadGeneralInfo: React.FC<WorkloadGeneralInfoProps> = ({ workload }) =
       left={<Label icon={<DeploymentUnitOutlined />} text="Type" />}
       right={<span style={{ fontWeight: 700 }}>{workload.fasid?.sourceType || '—'}</span>}
     />
-
 
     <Row
       left={<Label icon={<ClockCircleOutlined />} text="Creation Date" />}

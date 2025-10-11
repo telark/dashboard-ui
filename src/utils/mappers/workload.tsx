@@ -6,24 +6,43 @@ const parseGoTimeDate = (goTimeString: string): string => {
   if (!goTimeString || goTimeString === 'Unknown') {
     return new Date().toISOString();
   }
-  
+
   // Handle Go time.Date format: time.Date(2025, time.September, 28, 12, 13, 1, 0, time.Local)
-  const match = goTimeString.match(/time\.Date\((\d+),\s*time\.(\w+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*time\.Local\)/);
-  
+  const match = goTimeString.match(
+    /time\.Date\((\d+),\s*time\.(\w+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*time\.Local\)/,
+  );
+
   if (match) {
     const [, year, monthName, day, hour, minute, second] = match;
-    
+
     // Convert month name to number
     const monthMap: { [key: string]: number } = {
-      'January': 0, 'February': 1, 'March': 2, 'April': 3, 'May': 4, 'June': 5,
-      'July': 6, 'August': 7, 'September': 8, 'October': 9, 'November': 10, 'December': 11
+      January: 0,
+      February: 1,
+      March: 2,
+      April: 3,
+      May: 4,
+      June: 5,
+      July: 6,
+      August: 7,
+      September: 8,
+      October: 9,
+      November: 10,
+      December: 11,
     };
-    
+
     const month = monthMap[monthName] || 0;
-    const date = new Date(parseInt(year), month, parseInt(day), parseInt(hour), parseInt(minute), parseInt(second));
+    const date = new Date(
+      parseInt(year),
+      month,
+      parseInt(day),
+      parseInt(hour),
+      parseInt(minute),
+      parseInt(second),
+    );
     return date.toISOString();
   }
-  
+
   // If it's already a valid ISO string, return as is
   try {
     new Date(goTimeString);
@@ -52,9 +71,12 @@ export const mapWorkloadsData = (data: any): WorkloadCardData[] => {
         total: item.cacid?.instances?.total || 0,
         available: item.cacid?.instances?.available || 0,
       },
-      containers: (item.cacid?.crates?.regular?.length || 0) + (item.cacid?.crates?.init?.length || 0),
+      containers:
+        (item.cacid?.crates?.regular?.length || 0) + (item.cacid?.crates?.init?.length || 0),
       bridges: item.cacid?.bridges?.length || 0,
-      lastUpdate: parseGoTimeDate(item.config?.sync?.lastUpdateTime || item.fasid?.creationTime || 'Unknown'),
+      lastUpdate: parseGoTimeDate(
+        item.config?.sync?.lastUpdateTime || item.fasid?.creationTime || 'Unknown',
+      ),
       sourceType: item.fasid?.sourceType || 'Unknown',
       registry: item.cacid?.registry || 'Unknown',
       strategy: item.cacid?.strategy || 'Unknown',

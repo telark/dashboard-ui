@@ -9,21 +9,12 @@ import {
 } from '../store/slices/workloadSlice';
 import { AppDispatch } from '../store';
 import { selectWorkloadDetailsData } from '../store/selectors/workloadSelectors';
-import {
-  STORE_MESSAGES,
-  HOOK_MESSAGES,
-  HOOK_CONFIGS,
-  SYNC_ACTIONS,
-} from '../constants';
+import { STORE_MESSAGES, HOOK_MESSAGES, HOOK_CONFIGS, SYNC_ACTIONS } from '../constants';
 
 export const WorkloadDetailsHook = () => {
   const dispatch: AppDispatch = useDispatch();
   const { name } = useParams<{ name: string }>();
-  const {
-    details: workloadDetails,
-    loading,
-    error,
-  } = useSelector(selectWorkloadDetailsData);
+  const { details: workloadDetails, loading, error } = useSelector(selectWorkloadDetailsData);
 
   const [isAutoSync, setIsAutoSync] = useState<boolean>(HOOK_CONFIGS.DEFAULT_VALUES.AUTO_SYNC);
   const [initialSyncMode, setInitialSyncMode] = useState<string>(

@@ -25,11 +25,7 @@ import {
 export const GrouperDetailsHook = () => {
   const dispatch: AppDispatch = useDispatch();
   const { name } = useParams<{ name: string }>();
-  const {
-    details: grouperDetails,
-    loading,
-    error,
-  } = useSelector(selectGrouperDetailsData);
+  const { details: grouperDetails, loading, error } = useSelector(selectGrouperDetailsData);
 
   const [isAutoSync, setIsAutoSync] = useState<boolean>(HOOK_CONFIGS.DEFAULT_VALUES.AUTO_SYNC);
   const [initialSyncMode, setInitialSyncMode] = useState<string>(

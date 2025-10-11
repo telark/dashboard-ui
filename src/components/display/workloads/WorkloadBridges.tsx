@@ -43,7 +43,7 @@ const WorkloadBridges: React.FC<WorkloadBridgesProps> = ({ workload }) => {
           No Bridges Attached
         </div>
         <div style={{ color: '#5B6B7C', marginBottom: 20, maxWidth: 480, lineHeight: 1.6 }}>
-          This workload doesn't have any services connected yet. Services allow communication
+          This workload doesn&apos;t have any services connected yet. Services allow communication
           between different workloads and components in your cluster.
         </div>
       </div>
@@ -79,9 +79,7 @@ const WorkloadBridges: React.FC<WorkloadBridgesProps> = ({ workload }) => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: bridge.isSameGrouper
-                  ? DEFAULT_COLORS.SUCCESS
-                  : '#3B82F6',
+                color: bridge.isSameGrouper ? DEFAULT_COLORS.SUCCESS : '#3B82F6',
                 fontSize: 12,
                 fontWeight: 600,
               }}
@@ -89,9 +87,7 @@ const WorkloadBridges: React.FC<WorkloadBridgesProps> = ({ workload }) => {
               <LinkOutlined />
             </div>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F33' }}>
-                {bridge.name}
-              </div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F33' }}>{bridge.name}</div>
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -102,9 +98,7 @@ const WorkloadBridges: React.FC<WorkloadBridgesProps> = ({ workload }) => {
                 background: bridge.isSameGrouper
                   ? 'rgba(32,201,151,0.12)'
                   : 'rgba(59,130,246,0.12)',
-                color: bridge.isSameGrouper
-                  ? DEFAULT_COLORS.SUCCESS
-                  : '#3B82F6',
+                color: bridge.isSameGrouper ? DEFAULT_COLORS.SUCCESS : '#3B82F6',
                 fontSize: 10,
                 fontWeight: 600,
                 textTransform: 'uppercase',
