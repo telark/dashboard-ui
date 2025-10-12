@@ -70,5 +70,11 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.UPDATE_SYNC(name)}`,
       method: 'PATCH',
     }),
+    BATCHES: {
+      GET_ALL: {
+        path: `${API_PATHS.RESOURCES.WORKLOADS}/batches/${RESOURCE_PATHS.GET_ALL}`,
+        method: 'GET',
+      },
+    },
   },
 };

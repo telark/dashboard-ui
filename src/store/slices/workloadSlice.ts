@@ -1,19 +1,37 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { fetchWorkloads, updateWorkloadSyncMode } from '../../clients/exporter';
+import { fetchWorkloads, fetchBatches, updateWorkloadSyncMode } from '../../clients/exporter';
 import { mapWorkloadsData, mapSingleWorkloadData } from '../../utils/mappers/workload';
 import type { Workload, WorkloadCardData } from '../../interfaces/workload';
 
+export interface BatchCardData {
+  name: string;
+  status: string;
+  lastUpdate: string;
+  instances?: {
+    available: number;
+    total: number;
+  };
+  containers?: number;
+  bridges?: number;
+  grouper?: string;
+  sourceType?: string;
+}
+
 interface WorkloadState {
   workloads: WorkloadCardData[];
+  batches: BatchCardData[];
   details: Workload | null;
   loading: boolean;
+  batchesLoading: boolean;
   error: string | null;
 }
 
 const initialState: WorkloadState = {
   workloads: [],
+  batches: [],
   details: null,
   loading: false,
+  batchesLoading: false,
   error: null,
 };
 
@@ -27,6 +45,22 @@ export const fetchAllWorkloadsThunk = createAsyncThunk(
     } catch (error: any) {
       console.error('Failed to fetch workloads:', error);
       return rejectWithValue(error.message || 'Failed to fetch workloads');
+    }
+  },
+);
+
+// Thunk for fetching all batches
+export const fetchAllBatchesThunk = createAsyncThunk(
+  'workloads/fetchBatches',
+  async (_, { rejectWithValue }) => {
+    try {
+      const rawBatchesData = await fetchBatches();
+      // For now, return empty array since API returns empty items
+      // TODO: Add proper mapping when batch data structure is known
+      return rawBatchesData.data?.items || [];
+    } catch (error: any) {
+      console.error('Failed to fetch batches:', error);
+      return rejectWithValue(error.message || 'Failed to fetch batches');
     }
   },
 );
@@ -135,6 +169,20 @@ const workloadSlice = createSlice({
         state.details = updatedItem;
       })
       .addCase(updateWorkloadSyncModeThunk.rejected, (state, action) => {
+        state.error = action.payload as string;
+      })
+      // Fetch all batches
+      .addCase(fetchAllBatchesThunk.pending, (state) => {
+        state.batchesLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllBatchesThunk.fulfilled, (state, action) => {
+        state.batchesLoading = false;
+        state.batches = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchAllBatchesThunk.rejected, (state, action) => {
+        state.batchesLoading = false;
         state.error = action.payload as string;
       });
   },
