@@ -113,3 +113,13 @@ export const fetchWorkloads = async () => {
     throw error;
   }
 };
+
+// Fetch all Batches
+export const fetchBatches = async () => {
+  try {
+    return await Client<any>(exporterApiClient, Endpoints.WORKLOADS.BATCHES.GET_ALL.path);
+  } catch (error) {
+    console.error('Failed to fetch batches:', error);
+    throw error;
+  }
+};
