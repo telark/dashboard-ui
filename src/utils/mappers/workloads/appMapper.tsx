@@ -1,5 +1,5 @@
-import { HTTP_STATUS, CARD_DEFAULTS } from '../../constants';
-import type { Workload, WorkloadCardData } from '../../interfaces/workload';
+import { HTTP_STATUS, CARD_DEFAULTS } from '../../../constants';
+import type { AppWorkload, AppWorkloadCardData } from '../../../interfaces/workload';
 
 // Helper function to parse Go time.Date format
 const parseGoTimeDate = (goTimeString: string): string => {
@@ -53,7 +53,7 @@ const parseGoTimeDate = (goTimeString: string): string => {
   }
 };
 
-export const mapWorkloadsData = (data: any): WorkloadCardData[] => {
+export const mapAppsWorkloadsData = (data: any): AppWorkloadCardData[] => {
   if (data?.status !== HTTP_STATUS.SUCCESS || !data?.data) {
     throw new Error('Invalid data format');
   }
@@ -61,7 +61,7 @@ export const mapWorkloadsData = (data: any): WorkloadCardData[] => {
   const items = Array.isArray(data.data.items) ? data.data.items : [];
   if (items.length === 0) return [];
 
-  return items.map((item: Workload) => {
+  return items.map((item: AppWorkload) => {
     return {
       name: item.fasid?.name || CARD_DEFAULTS.GROUPER.NAME,
       sourceName: item.fasid?.sourceName || CARD_DEFAULTS.GROUPER.NAME,
@@ -84,7 +84,7 @@ export const mapWorkloadsData = (data: any): WorkloadCardData[] => {
   });
 };
 
-export const mapSingleWorkloadData = (item: Workload): Workload => {
+export const mapSingleAppWorkloadData = (item: AppWorkload): AppWorkload => {
   if (!item || !item.fasid || !item.cacid) {
     throw new Error('Missing workload data');
   }

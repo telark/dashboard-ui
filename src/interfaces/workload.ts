@@ -1,5 +1,3 @@
-// Workload interfaces based on the CRD structure
-
 export interface Fasid {
   creationTime: string;
   grouper: string;
@@ -132,23 +130,22 @@ export interface Config {
   sync: Sync;
 }
 
-export interface Workload {
+export interface AppWorkload {
   fasid: Fasid;
   cacid: Cacid;
   config: Config;
 }
 
-export interface WorkloadsResponse {
+export interface AppsWorkloadsResponse {
   status: number;
   operation: string;
   message: string;
   data: {
-    items: Workload[];
+    items: AppWorkload[];
   };
 }
 
-// Simplified interfaces for card display
-export interface WorkloadCardData {
+export interface AppWorkloadCardData {
   name: string;
   sourceName: string;
   grouper: string;
@@ -163,4 +160,30 @@ export interface WorkloadCardData {
   sourceType: string;
   registry: string;
   strategy: string;
+}
+
+export interface BatchWorkloadCardData {
+  name: string;
+  sourceName: string;
+  grouper?: string;
+  sourceType?: string;
+  status: string;
+  lastUpdate: string;
+  instances?: {
+    available: number;
+    total: number;
+  };
+  containers?: number;
+  bridges?: number;
+}
+
+export interface WorkloadsState {
+  apps: AppWorkloadCardData[];
+  batches: BatchWorkloadCardData[];
+  appDetails: AppWorkload | null;
+  batchDetails: AppWorkload | null; // TODO: Add batch workload interface
+  appLoading: boolean;
+  batchLoading: boolean;
+  appError: string | null;
+  batchError: string | null;
 }

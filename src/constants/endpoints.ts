@@ -62,19 +62,33 @@ export const Endpoints = {
     },
   },
   WORKLOADS: {
-    GET_ALL: {
-      path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.GET_ALL}`,
-      method: 'GET',
+    APPS: {
+      GET_ALL_APPS: {
+        path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.GET_ALL}`,
+        method: 'GET',
+      },
+      GET_APP_DETAILS: (name: string) => ({
+        path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.GET_DETAILS(name)}`,
+        method: 'GET',
+      }),
+      UPDATE_APP_SYNC: (name: string) => ({
+        path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.UPDATE_SYNC(name)}`,
+        method: 'PATCH',
+      }),
     },
-    UPDATE_SYNC: (name: string) => ({
-      path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.UPDATE_SYNC(name)}`,
-      method: 'PATCH',
-    }),
     BATCHES: {
-      GET_ALL: {
+      GET_ALL_BATCHES: {
         path: `${API_PATHS.RESOURCES.WORKLOADS}/batches/${RESOURCE_PATHS.GET_ALL}`,
         method: 'GET',
       },
+      GET_BATCH_DETAILS: (name: string) => ({
+        path: `${API_PATHS.RESOURCES.WORKLOADS}/batches/${RESOURCE_PATHS.GET_DETAILS(name)}`,
+        method: 'GET',
+      }),
+      UPDATE_BATCH_SYNC: (name: string) => ({
+        path: `${API_PATHS.RESOURCES.WORKLOADS}/batches/${RESOURCE_PATHS.UPDATE_SYNC(name)}`,
+        method: 'PATCH',
+      }),
     },
   },
 };
