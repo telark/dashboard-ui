@@ -60,7 +60,7 @@ export const CARD_CONFIGS = {
   },
   GROUPER_CARD: {
     BORDER_RADIUS: '12px',
-    BODY_PADDING: '22px 24px 6px',
+    BODY_PADDING: '22px 24px 2px',
     ICON_SIZE: 18,
     ICON_FONT_SIZE: '16px',
     TITLE_FONT_SIZE: '16px',

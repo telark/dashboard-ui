@@ -1,10 +1,8 @@
 import React from 'react';
-import { Popover } from 'antd';
-import { ToolOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { ToolOutlined } from '@ant-design/icons';
 import StatusButton from '../../buttons/StatusButton';
 import { StatusTag } from '../../tags';
 import { GROUPER_CARD_STYLES } from '../../../constants/cards/grouper';
-import { UI } from '../../../constants/ui';
 import { CARD_STATES } from '../../../constants/cards';
 
 interface GrouperCardTopIconsProps {
@@ -32,9 +30,6 @@ const GrouperCardTopIcons: React.FC<GrouperCardTopIconsProps> = React.memo(({
           color="#f59e0b"
         />
       )}
-      <Popover content={UI.CARD.INFO_POPOVER} trigger="hover">
-        <InfoCircleOutlined style={GROUPER_CARD_STYLES.infoIcon} />
-      </Popover>
     </div>
   );
 });
