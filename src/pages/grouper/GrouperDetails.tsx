@@ -217,7 +217,7 @@ const GrouperDetails: React.FC = memo(() => {
           >
             {syncing ? (
               <FancySpinner
-                showLabel={true}
+                showLabel={false}
                 size={18}
                 ringThickness={2}
               />
