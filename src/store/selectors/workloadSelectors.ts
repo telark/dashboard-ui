@@ -5,28 +5,28 @@ import { RootState } from '../index';
 export const selectWorkloadState = (state: RootState) => state.workload;
 
 // Memoized selectors for better performance
-export const selectWorkloadDetails = createSelector(
+export const selectAppWorkloadDetails = createSelector(
   [selectWorkloadState],
-  (workload) => workload.details,
+  (workload) => workload.appDetails,
 );
 
-export const selectWorkloadLoading = createSelector(
+export const selectAppWorkloadLoading = createSelector(
   [selectWorkloadState],
-  (workload) => workload.loading,
+  (workload) => workload.appLoading,
 );
 
-export const selectWorkloadError = createSelector(
+export const selectAppWorkloadError = createSelector(
   [selectWorkloadState],
-  (workload) => workload.error,
+  (workload) => workload.appError,
 );
 
 export const selectWorkloadSyncData = createSelector(
-  [selectWorkloadDetails],
+  [selectAppWorkloadDetails],
   (details) => details?.config?.sync,
 );
 
 // Combined selector for details hook
 export const selectWorkloadDetailsData = createSelector(
-  [selectWorkloadDetails, selectWorkloadLoading, selectWorkloadError],
+  [selectAppWorkloadDetails, selectAppWorkloadLoading, selectAppWorkloadError],
   (details, loading, error) => ({ details, loading, error }),
 );

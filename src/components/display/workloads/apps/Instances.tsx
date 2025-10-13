@@ -6,12 +6,12 @@ import {
   DashboardOutlined,
 } from '@ant-design/icons';
 import { Pagination, Tag, Collapse, Button } from 'antd';
-import { Workload } from '../../../interfaces/workload';
-import { DEFAULT_COLORS } from '../../../constants';
-import { COMPONENT_STYLES, COMPONENT_CONSTANTS } from '../../../constants/ui';
+import { AppWorkload } from '../../../../interfaces/workload';
+import { DEFAULT_COLORS } from '../../../../constants';
+import { COMPONENT_STYLES, COMPONENT_CONSTANTS } from '../../../../constants/ui';
 
 interface WorkloadInstancesProps {
-  workload: Workload;
+  workload: AppWorkload;
 }
 
 // Use styles from constants for better organization

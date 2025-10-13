@@ -11,7 +11,7 @@ import {
   Groupers,
   GrouperDetails,
   Workloads,
-  WorkloadDetails,
+  AppWorkloadDetails,
   Startup,
   Welcome,
 } from './pages';
@@ -99,7 +99,7 @@ const App: React.FC = () => {
                   <Route path={APP_ROUTES.GROUPERS} element={<Groupers />} />
                   <Route path={APP_ROUTES.GROUPER_DETAILS} element={<GrouperDetails />} />
                   <Route path={APP_ROUTES.WORKLOADS} element={<Workloads />} />
-                  <Route path={APP_ROUTES.WORKLOAD_DETAILS} element={<WorkloadDetails />} />
+                  <Route path={APP_ROUTES.APP_WORKLOAD_DETAILS} element={<AppWorkloadDetails />} />
                 </Routes>
               </Layout>
             </Layout>

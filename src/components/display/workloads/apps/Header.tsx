@@ -2,13 +2,13 @@ import React from 'react';
 import { Button } from 'antd';
 import { ArrowLeftOutlined, AppstoreOutlined, SyncOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS } from '../../../constants';
-import StatusButton from '../../buttons/StatusButton';
-import TimeAgo from '../../time/TimeAgo';
-import { Workload } from '../../../interfaces/workload';
+import { DEFAULT_COLORS } from '../../../../constants';
+import StatusButton from '../../../buttons/StatusButton';
+import TimeAgo from '../../../time/TimeAgo';
+import { AppWorkload } from '../../../../interfaces/workload';
 
 interface WorkloadHeaderProps {
-  workload: Workload;
+  workload: AppWorkload;
 }
 
 const WorkloadHeader: React.FC<WorkloadHeaderProps> = ({ workload }) => {

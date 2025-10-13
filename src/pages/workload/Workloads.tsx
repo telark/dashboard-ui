@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Typography, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllWorkloadsThunk, fetchAllBatchesThunk } from '../../store/slices/workloadSlice';
-import WorkloadList from '../../components/display/workloads/CardsList';
-import BatchesList from '../../components/display/workloads/BatchesList';
-import type { WorkloadCardData } from '../../interfaces/workload';
-import type { BatchCardData } from '../../store/slices/workloadSlice';
+import { fetchAllAppsWorkloadsThunk, fetchAllBatchesWorkloadsThunk } from '../../store/slices/workloadSlice';
+import AppsList from '../../components/display/workloads/apps/AppsList';
+import BatchesList from '../../components/display/workloads/batches/List';
+import type { AppWorkloadCardData, BatchWorkloadCardData } from '../../interfaces/workload';
 import { APP_ROUTES, DEFAULT_COLORS } from '../../constants';
 import type { RootState, AppDispatch } from '../../store';
 
@@ -55,25 +54,25 @@ const TabButton: React.FC<{ label: string; active: boolean; onClick: () => void 
 const Workloads: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const { workloads, batches, loading, batchesLoading, error } = useSelector((state: RootState) => state.workload);
+  const { apps, batches, appLoading, batchLoading, appError, batchError } = useSelector((state: RootState) => state.workload);
   const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.APPS);
 
   useEffect(() => {
-    dispatch(fetchAllWorkloadsThunk());
-    dispatch(fetchAllBatchesThunk());
+    dispatch(fetchAllAppsWorkloadsThunk());
+    dispatch(fetchAllBatchesWorkloadsThunk());
   }, [dispatch]);
 
   useEffect(() => {
-    if (error) {
+    if (appError || batchError) {
       message.error('Failed to load workloads');
     }
-  }, [error]);
+  }, [appError, batchError]);
 
-  const handleWorkloadClick = (workload: WorkloadCardData) => {
-    navigate(APP_ROUTES.WORKLOAD_DETAILS.replace(':name', workload.name));
+  const handleAppClick = (app: AppWorkloadCardData) => {
+    navigate(APP_ROUTES.APP_WORKLOAD_DETAILS.replace(':name', app.name));
   };
 
-  const handleBatchClick = (batch: BatchCardData) => {
+  const handleBatchClick = (batch: BatchWorkloadCardData) => {
     // TODO: Implement batch details navigation when ready
     console.log('Batch clicked:', batch);
   };
@@ -110,17 +109,17 @@ const Workloads: React.FC = () => {
 
       {/* Content */}
       {activeTab === TAB_KEYS.APPS && (
-        <WorkloadList 
-          workloads={workloads} 
-          loading={loading} 
-          onWorkloadClick={handleWorkloadClick} 
+        <AppsList 
+          apps={apps} 
+          loading={appLoading} 
+          onAppClick={handleAppClick} 
         />
       )}
 
       {activeTab === TAB_KEYS.BATCHES && (
         <BatchesList 
           batches={batches} 
-          loading={batchesLoading} 
+          loading={batchLoading} 
           onBatchClick={handleBatchClick} 
         />
       )}

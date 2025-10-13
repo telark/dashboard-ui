@@ -1,10 +1,10 @@
 import React from 'react';
 import { LinkOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../constants';
-import { Workload } from '../../../interfaces/workload';
+import { DEFAULT_COLORS } from '../../../../constants';
+import { AppWorkload } from '../../../../interfaces/workload';
 
 interface WorkloadBridgesProps {
-  workload: Workload;
+  workload: AppWorkload;
 }
 
 const WorkloadBridges: React.FC<WorkloadBridgesProps> = ({ workload }) => {

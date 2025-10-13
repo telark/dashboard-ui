@@ -1,9 +1,9 @@
 import React from 'react';
-import { Workload } from '../../../interfaces/workload';
-import HistoryTimeLine from '../shared/HistoryTimeLine';
+import { AppWorkload } from '../../../../interfaces/workload';
+import HistoryTimeLine from '../../shared/HistoryTimeLine';
 
 interface WorkloadHistoryProps {
-  workload: Workload;
+  workload: AppWorkload;
 }
 
 const WorkloadHistory: React.FC<WorkloadHistoryProps> = ({ workload }) => {
