@@ -109,6 +109,8 @@ const GrouperDetailsView: React.FC = memo(() => {
         handleMaintenanceMode={handleMaintenanceMode}
         hasMaintenanceData={hasMaintenanceData}
         handleRemoveMaintenanceMode={handleRemoveMaintenanceMode}
+        syncing={syncing}
+        isGloballySyncing={isGloballySyncing}
       />
     </div>
   );

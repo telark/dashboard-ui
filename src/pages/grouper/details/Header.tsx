@@ -1,9 +1,10 @@
 import React from 'react';
-import { Button, Tag } from 'antd';
-import { InfoCircleOutlined, SyncOutlined, WarningOutlined, AppstoreOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
+import { InfoCircleOutlined, SyncOutlined, AppstoreOutlined, ToolOutlined } from '@ant-design/icons';
 import StatusButton from '../../../components/buttons/StatusButton';
 import TimeAgo from '../../../components/time/TimeAgo';
 import { FancySpinner } from '../../../components/shared';
+import { StatusTag } from '../../../components/tags';
 import { UI } from '../../../constants/ui';
 import { GROUPER_DETAILS_CONSTANTS } from '../../../constants/pages/grouper-details';
 
@@ -39,9 +40,11 @@ const Header: React.FC<HeaderProps> = React.memo(({
               icon={<InfoCircleOutlined />}
             />
             {isMaintenanceModeActive && (
-              <Tag color="orange" icon={<WarningOutlined />}>
-                Maintenance
-              </Tag>
+              <StatusTag
+                label="Maintenance"
+                icon={<ToolOutlined />}
+                color="#f59e0b"
+              />
             )}
           </div>
           <div style={GROUPER_DETAILS_CONSTANTS.HEADER.SUBTITLE}>
