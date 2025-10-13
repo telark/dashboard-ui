@@ -29,6 +29,9 @@ interface ContentProps {
   handleMaintenanceMode: () => void;
   hasMaintenanceData: boolean;
   handleRemoveMaintenanceMode: () => void;
+  // Sync State
+  syncing: boolean;
+  isGloballySyncing: boolean;
 }
 
 const Content: React.FC<ContentProps> = React.memo(({
@@ -51,6 +54,8 @@ const Content: React.FC<ContentProps> = React.memo(({
   handleMaintenanceMode,
   hasMaintenanceData,
   handleRemoveMaintenanceMode,
+  syncing,
+  isGloballySyncing,
 }) => {
   const renderTabContent = () => {
     switch (activeTab) {
@@ -89,6 +94,8 @@ const Content: React.FC<ContentProps> = React.memo(({
               hasChanges={hasChanges}
               handleAutoSyncChange={handleAutoSyncChange}
               handleSyncSave={handleGrouperSyncSave}
+              syncing={syncing}
+              isGloballySyncing={isGloballySyncing}
             />
           </Card>
         );
