@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { DEFAULT_COLORS } from '../../../../constants';
+import React from 'react';
+import { TabButton } from '../../../../components/shared';
 
 const TAB_KEYS = {
   GENERAL: 'general',
@@ -15,39 +15,6 @@ interface WorkloadTabsProps {
   activeTab: TabKey;
   onTabChange: (tab: TabKey) => void;
 }
-
-const TabButton: React.FC<{ label: string; active: boolean; onClick: () => void }> = ({
-  label,
-  active,
-  onClick,
-}) => {
-  const [hovered, setHovered] = useState(false);
-  const background = active ? '#fff' : hovered ? 'rgba(32,201,151,0.08)' : 'transparent';
-  const color = active ? '#0B1F33' : hovered ? DEFAULT_COLORS.SUCCESS : '#6b7280';
-
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
-      style={{
-        all: 'unset',
-        cursor: 'pointer',
-        padding: '10px 18px',
-        borderRadius: 22,
-        background,
-        color,
-        fontWeight: active ? 700 : 600,
-        boxShadow: active ? '0 6px 18px rgba(0,0,0,0.08)' : 'none',
-        transition: 'all 0.2s ease',
-      }}
-    >
-      {label}
-    </button>
-  );
-};
 
 const WorkloadTabs: React.FC<WorkloadTabsProps> = ({ activeTab, onTabChange }) => {
   return (

@@ -13,45 +13,8 @@ import { ResourcesInterface } from '../../../interfaces/shared';
 import TimeAgo from '../../time/TimeAgo';
 import { DEFAULT_COLORS } from '../../../constants';
 import { UI } from '../../../constants/ui';
+import { Label, Row } from '../../../components/shared';
 
-const Label: React.FC<{ icon: React.ReactNode; text: string }> = ({ icon, text }) => (
-  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-    <span style={{ color: DEFAULT_COLORS.SUCCESS, fontSize: 16, display: 'inline-flex' }}>
-      {icon}
-    </span>
-    <span
-      style={{
-        color: '#6b7280',
-        fontWeight: 700,
-        fontSize: 12,
-        textTransform: 'uppercase',
-        letterSpacing: 0.4,
-      }}
-    >
-      {text}
-    </span>
-  </div>
-);
-
-const Row: React.FC<{ left: React.ReactNode; right: React.ReactNode; withDivider?: boolean }> = ({
-  left,
-  right,
-  withDivider = true,
-}) => (
-  <div
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '10px 0',
-      borderBottom: withDivider ? '1px solid #eef2f6' : 'none',
-      minHeight: 40,
-    }}
-  >
-    <div>{left}</div>
-    <div style={{ color: '#111827', fontWeight: 600 }}>{right}</div>
-  </div>
-);
 
 const Resources: React.FC<ResourcesInterface> = React.memo(({ name, resources }) => {
   const navigate = useNavigate();

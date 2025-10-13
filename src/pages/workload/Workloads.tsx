@@ -6,8 +6,9 @@ import { fetchAllAppsWorkloadsThunk, fetchAllBatchesWorkloadsThunk } from '../..
 import AppsList from '../../components/display/workloads/apps/AppsList';
 import BatchesList from '../../components/display/workloads/batches/List';
 import type { AppWorkloadCardData, BatchWorkloadCardData } from '../../interfaces/workload';
-import { APP_ROUTES, DEFAULT_COLORS } from '../../constants';
+import { APP_ROUTES } from '../../constants';
 import type { RootState, AppDispatch } from '../../store';
+import { TabButton } from '../../components/shared';
 
 const { Title } = Typography;
 
@@ -18,38 +19,6 @@ const TAB_KEYS = {
 
 type TabKey = (typeof TAB_KEYS)[keyof typeof TAB_KEYS];
 
-const TabButton: React.FC<{ label: string; active: boolean; onClick: () => void }> = ({ 
-  label, 
-  active, 
-  onClick 
-}) => {
-  const [hovered, setHovered] = useState(false);
-  const background = active ? '#fff' : hovered ? 'rgba(32,201,151,0.08)' : 'transparent';
-  const color = active ? '#0B1F33' : hovered ? DEFAULT_COLORS.SUCCESS : '#6b7280';
-  
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
-      style={{
-        all: 'unset',
-        cursor: 'pointer',
-        padding: '10px 18px',
-        borderRadius: 22,
-        background,
-        color,
-        fontWeight: active ? 700 : 600,
-        boxShadow: active ? '0 6px 18px rgba(0,0,0,0.08)' : 'none',
-        transition: 'all 0.2s ease',
-      }}
-    >
-      {label}
-    </button>
-  );
-};
 
 const Workloads: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();

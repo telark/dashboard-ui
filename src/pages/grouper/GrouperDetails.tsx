@@ -18,6 +18,7 @@ import { DEFAULT_COLORS } from '../../constants';
 import TimeAgo from '../../components/time/TimeAgo';
 import FancySpinner from '../../components/common/FancySpinner';
 import { triggerSingleGrouperSync } from '../../clients/sync-manager';
+import { TabButton } from '../../components/shared';
 import { SYNC_MESSAGES } from '../../constants/modes';
 import store, { AppDispatch, RootState } from '../../store';
 import { fetchAllGroupersThunk } from '../../store/slices/grouperSlice';
@@ -42,37 +43,6 @@ const TAB_KEYS = {
 
 type TabKey = (typeof TAB_KEYS)[keyof typeof TAB_KEYS];
 
-const TabButton: React.FC<{ label: string; active: boolean; onClick: () => void }> = ({
-  label,
-  active,
-  onClick,
-}) => {
-  const [hovered, setHovered] = useState(false);
-  const background = active ? '#fff' : hovered ? 'rgba(32,201,151,0.08)' : 'transparent';
-  const color = active ? '#0B1F33' : hovered ? DEFAULT_COLORS.SUCCESS : '#6b7280';
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
-      style={{
-        all: 'unset',
-        cursor: 'pointer',
-        padding: '10px 18px',
-        borderRadius: 22,
-        background,
-        color,
-        fontWeight: active ? 700 : 600,
-        boxShadow: active ? '0 6px 18px rgba(0,0,0,0.08)' : 'none',
-        transition: 'all 0.2s ease',
-      }}
-    >
-      {label}
-    </button>
-  );
-};
 
 const GrouperDetails: React.FC = memo(() => {
   const {
