@@ -16,7 +16,7 @@ import {
   GROUPERS_SYNC_LS_KEY,
   GROUPERS_SYNC_THROTTLE_MS,
 } from '../../constants/sync';
-import GrouperCard from '../../components/cards/GrouperCard';
+import { GrouperCard } from '../../components/cards/grouper';
 import { RootState, AppDispatch } from '../../store';
 import { DEFAULT_COLORS } from '../../constants';
 import { COMPONENT_STYLES } from '../../constants/ui';
