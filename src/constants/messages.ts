@@ -16,6 +16,9 @@ export const ERROR_MESSAGES = {
     UPDATE_MAINTENANCE_MODE_FAILED: '[APIClient] Failed to update maintenance mode for',
     REMOVE_MAINTENANCE_MODE_FAILED: '[APIClient] Failed to remove maintenance mode for',
     START_CLUSTER_ANALYSIS_FAILED: '[APIClient] Failed to start cluster analysis:',
+    FETCH_APPS_FAILED: '[APIClient] Failed to fetch apps workloads:',
+    FETCH_APP_DETAILS_FAILED: '[APIClient] Failed to fetch app workload details for',
+    FETCH_BATCHES_FAILED: '[APIClient] Failed to fetch batches workloads:',
   },
 
   INSIGHTS: {
