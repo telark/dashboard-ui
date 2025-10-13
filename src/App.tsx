@@ -9,7 +9,7 @@ import { DEFAULT_COLORS, APP_CONFIGS, APP_ROUTES } from './constants';
 import {
   Dashboard,
   GroupersGlobalView,
-  GrouperDetails,
+  GrouperDetailsView,
   Workloads,
   AppWorkloadDetails,
   Startup,
@@ -97,7 +97,7 @@ const App: React.FC = () => {
                 <Routes>
                   <Route path={APP_ROUTES.HOME} element={<Dashboard />} />
                   <Route path={APP_ROUTES.GROUPERS} element={<GroupersGlobalView />} />
-                  <Route path={APP_ROUTES.GROUPER_DETAILS} element={<GrouperDetails />} />
+                  <Route path={APP_ROUTES.GROUPER_DETAILS} element={<GrouperDetailsView />} />
                   <Route path={APP_ROUTES.WORKLOADS} element={<Workloads />} />
                   <Route path={APP_ROUTES.APP_WORKLOAD_DETAILS} element={<AppWorkloadDetails />} />
                 </Routes>
