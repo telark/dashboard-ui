@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DEFAULT_COLORS } from '../../../constants';
+import { DEFAULT_COLORS } from '../../../../constants';
 
 const TAB_KEYS = {
   GENERAL: 'general',

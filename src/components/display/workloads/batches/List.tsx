@@ -1,17 +1,17 @@
 import React from 'react';
 import { Empty, Typography } from 'antd';
 import { ClockCircleOutlined } from '@ant-design/icons';
-import BatchesCard from '../../cards/BatchesCard';
-import FancySpinner from '../../common/FancySpinner';
-import { DEFAULT_COLORS } from '../../../constants';
-import type { BatchCardData } from '../../../store/slices/workloadSlice';
+import BatchesCard from '../../../cards/BatchesCard';
+import FancySpinner from '../../../common/FancySpinner';
+import { DEFAULT_COLORS } from '../../../../constants';
+import type { BatchWorkloadCardData } from '../../../../interfaces/workload';
 
 const { Title } = Typography;
 
 interface BatchesListProps {
-  batches: BatchCardData[];
+  batches: BatchWorkloadCardData[];
   loading?: boolean;
-  onBatchClick?: (batch: BatchCardData) => void;
+  onBatchClick?: (batch: BatchWorkloadCardData) => void;
 }
 
 const BatchesList: React.FC<BatchesListProps> = ({ batches, loading = false, onBatchClick }) => {

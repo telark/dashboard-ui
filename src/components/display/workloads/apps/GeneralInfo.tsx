@@ -5,12 +5,12 @@ import {
   DatabaseOutlined,
   DeploymentUnitOutlined,
 } from '@ant-design/icons';
-import TimeAgo from '../../time/TimeAgo';
-import { DEFAULT_COLORS } from '../../../constants';
-import { Workload } from '../../../interfaces/workload';
+import TimeAgo from '../../../time/TimeAgo';
+import { DEFAULT_COLORS } from '../../../../constants';
+import { AppWorkload } from '../../../../interfaces/workload';
 
 interface WorkloadGeneralInfoProps {
-  workload: Workload;
+  workload: AppWorkload;
 }
 
 const Label: React.FC<{ icon: React.ReactNode; text: string }> = ({ icon, text }) => (

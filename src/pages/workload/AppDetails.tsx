@@ -4,20 +4,20 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../constants';
 import { WorkloadDetailsHook } from '../../hooks/WorkloadDetailsHook';
-import WorkloadHeader from '../../components/display/workloads/WorkloadHeader';
-import WorkloadMetrics from '../../components/display/workloads/WorkloadMetrics';
+import WorkloadHeader from '../../components/display/workloads/apps/Header';
+import WorkloadMetrics from '../../components/display/workloads/apps/Metrics';
 import WorkloadTabs, {
   TAB_KEYS,
   type TabKey,
-} from '../../components/display/workloads/WorkloadTabs';
-import WorkloadBridges from '../../components/display/workloads/WorkloadBridges';
-import WorkloadGeneralInfo from '../../components/display/workloads/GeneralInfo';
+} from '../../components/display/workloads/apps/Tabs';
+import WorkloadBridges from '../../components/display/workloads/apps/Bridges';
+import WorkloadGeneralInfo from '../../components/display/workloads/apps/GeneralInfo';
 import SyncMode from '../../components/tabs/SyncMode';
 import FancySpinner from '../../components/common/FancySpinner';
 
 // Lazy load heavy components
-const WorkloadInstances = lazy(() => import('../../components/display/workloads/Instances'));
-const WorkloadHistory = lazy(() => import('../../components/display/workloads/History'));
+const WorkloadInstances = lazy(() => import('../../components/display/workloads/apps/Instances'));
+const WorkloadHistory = lazy(() => import('../../components/display/workloads/apps/History'));
 
 const { Title, Text } = Typography;
 
@@ -28,7 +28,7 @@ const sectionCardStyle: React.CSSProperties = {
   marginBottom: 16,
 };
 
-const WorkloadDetails: React.FC = React.memo(() => {
+const AppWorkloadDetails: React.FC = React.memo(() => {
   const { name } = useParams<{ name: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.GENERAL);
@@ -166,4 +166,4 @@ const WorkloadDetails: React.FC = React.memo(() => {
   );
 });
 
-export default WorkloadDetails;
+export default AppWorkloadDetails;

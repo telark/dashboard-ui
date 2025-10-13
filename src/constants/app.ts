@@ -21,5 +21,5 @@ export const APP_ROUTES = {
   GROUPERS: '/groupers',
   GROUPER_DETAILS: '/groupers/:name/details',
   WORKLOADS: '/workloads',
-  WORKLOAD_DETAILS: '/workloads/:name/details',
+  APP_WORKLOAD_DETAILS: '/workloads/apps/:name/details',
 } as const;

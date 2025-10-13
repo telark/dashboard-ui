@@ -1,9 +1,9 @@
 import React from 'react';
-import { DEFAULT_COLORS } from '../../../constants';
-import { Workload } from '../../../interfaces/workload';
+import { DEFAULT_COLORS } from '../../../../constants';
+import { AppWorkload } from '../../../../interfaces/workload';
 
 interface WorkloadMetricsProps {
-  workload: Workload;
+  workload: AppWorkload;
 }
 
 const WorkloadMetrics: React.FC<WorkloadMetricsProps> = ({ workload }) => {
