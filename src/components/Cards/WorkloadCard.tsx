@@ -14,24 +14,21 @@ import {
 } from '@ant-design/icons';
 import StatusButton from '../buttons/StatusButton';
 import TimeAgo from '../time/TimeAgo';
-import Metric from '../common/Metric';
+import { Metric } from '../shared';
 import {
   DEFAULT_COLORS,
   CARD_CONFIGS,
   CARD_COLORS,
   CARD_TRANSITIONS,
-  CARD_EFFECTS,
-  CARD_STATES,
-  CARD_DEFAULTS,
 } from '../../constants';
 import { UI } from '../../constants/ui';
-import type { WorkloadCardData } from '../../interfaces/workload';
+import type { AppWorkloadCardData } from '../../interfaces/workload';
 import { CapitalizeFirstLetter } from '../../utils/helpers';
 
 const { Title, Text } = Typography;
 
 interface WorkloadCardProps {
-  workload: WorkloadCardData;
+  workload: AppWorkloadCardData;
   onClick?: () => void;
 }
 

@@ -14,24 +14,21 @@ import {
 } from '@ant-design/icons';
 import StatusButton from '../buttons/StatusButton';
 import TimeAgo from '../time/TimeAgo';
-import Metric from '../common/Metric';
+import { Metric } from '../shared';
 import {
   DEFAULT_COLORS,
   CARD_CONFIGS,
   CARD_COLORS,
   CARD_TRANSITIONS,
-  CARD_EFFECTS,
-  CARD_STATES,
-  CARD_DEFAULTS,
 } from '../../constants';
 import { UI } from '../../constants/ui';
 import { CapitalizeFirstLetter } from '../../utils/helpers';
-import type { BatchCardData } from '../../store/slices/workloadSlice';
+import type { BatchWorkloadCardData } from '../../interfaces/workload';
 
 const { Title, Text } = Typography;
 
 interface BatchesCardProps {
-  batch: BatchCardData;
+  batch: BatchWorkloadCardData;
   onClick?: () => void;
 }
 
