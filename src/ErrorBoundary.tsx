@@ -1,8 +1,14 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
+import { Button, Typography } from 'antd';
+import { ReloadOutlined, BugOutlined, HomeOutlined } from '@ant-design/icons';
 import { STORE_MESSAGES } from './constants';
+import { DEFAULT_COLORS } from './constants';
+
+const { Title, Text, Paragraph } = Typography;
 
 interface State {
   hasError: boolean;
+  error?: Error;
 }
 
 interface Props {
@@ -16,18 +22,158 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   static getDerivedStateFromError(error: Error): State {
-    void error;
-    return { hasError: true };
+    return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     console.error(STORE_MESSAGES.ERROR_BOUNDARY, error, errorInfo);
   }
 
+  handleReload = () => {
+    window.location.reload();
+  };
+
+  handleGoHome = () => {
+    window.location.href = '/';
+  };
+
   render() {
     if (this.state.hasError) {
-      // Render fallback UI when an error occurs
-      return <h1>Error: Something went wrong.</h1>;
+      return (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: '#ffffff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            zIndex: 9999,
+          }}
+        >
+          <div style={{ textAlign: 'center', maxWidth: 600, width: '100%' }}>
+            {/* Error Icon */}
+            <div
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #ff6b6b, #ee5a52)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 24px',
+                boxShadow: '0 8px 20px rgba(255,107,107,0.3)',
+              }}
+            >
+              <BugOutlined
+                style={{
+                  fontSize: 32,
+                  color: '#ffffff',
+                }}
+              />
+            </div>
+
+            {/* Error Title */}
+            <Title
+              level={2}
+              style={{
+                margin: '0 0 16px',
+                color: '#2c3e50',
+                fontWeight: 700,
+              }}
+            >
+              Oops! Something went wrong
+            </Title>
+
+            {/* Error Description */}
+            <Paragraph
+              style={{
+                color: '#7f8c8d',
+                fontSize: 16,
+                lineHeight: 1.6,
+                margin: '0 0 32px',
+              }}
+            >
+              check your code for issues
+            </Paragraph>
+
+            {/* Error Details (Development) */}
+            {process.env.NODE_ENV === 'development' && this.state.error && (
+              <div
+                style={{
+                  background: '#f8f9fa',
+                  border: '1px solid #e9ecef',
+                  borderRadius: 8,
+                  margin: '0 0 24px',
+                  textAlign: 'left',
+                  padding: '16px',
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: '#6c757d',
+                    fontFamily: 'monospace',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                  }}
+                >
+                  {this.state.error.toString()}
+                </Text>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div
+              style={{
+                display: 'flex',
+                gap: 12,
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+              }}
+            >
+              <Button
+                type="primary"
+                size="large"
+                icon={<ReloadOutlined />}
+                onClick={this.handleReload}
+                style={{
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  border: 'none',
+                  borderRadius: 8,
+                  height: 44,
+                  padding: '0 24px',
+                  fontWeight: 600,
+                  boxShadow: '0 4px 12px rgba(102,126,234,0.3)',
+                }}
+              >
+                Reload Page
+              </Button>
+              <Button
+                size="large"
+                icon={<HomeOutlined />}
+                onClick={this.handleGoHome}
+                style={{
+                  borderRadius: 8,
+                  height: 44,
+                  padding: '0 24px',
+                  fontWeight: 600,
+                  borderColor: '#d1d5db',
+                  color: '#6b7280',
+                }}
+              >
+                Go Home
+              </Button>
+            </div>
+
+          </div>
+        </div>
+      );
     }
 
     return this.props.children;
