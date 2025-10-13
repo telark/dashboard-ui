@@ -7,24 +7,24 @@ import {
   WarningOutlined,
 } from '@ant-design/icons';
 
-import { GrouperDetailsHook } from '../../hooks/GrouperDetailsHook';
-import GrouperGeneralInfo from '../../components/display/grouper/GeneralInfo';
-import HistoryTimeLine from '../../components/display/shared/HistoryTimeLine';
-import MaintenanceMode from '../../components/tabs/MaintenanceMode';
-import Resources from '../../components/display/grouper/Resources';
-import SyncMode from '../../components/tabs/SyncMode';
-import StatusButton from '../../components/buttons/StatusButton';
-import { DEFAULT_COLORS } from '../../constants';
-import TimeAgo from '../../components/time/TimeAgo';
-import { FancySpinner } from '../../components/shared';
-import { triggerSingleGrouperSync } from '../../clients/sync-manager';
-import { TabButton } from '../../components/shared';
-import { SYNC_MESSAGES } from '../../constants/modes';
-import store, { AppDispatch, RootState } from '../../store';
-import { fetchAllGroupersThunk } from '../../store/slices/grouperSlice';
+import { GrouperDetailsHook } from '../../../hooks/GrouperDetailsHook';
+import GrouperGeneralInfo from '../../../components/display/grouper/GeneralInfo';
+import HistoryTimeLine from '../../../components/display/shared/HistoryTimeLine';
+import MaintenanceMode from '../../../components/tabs/MaintenanceMode';
+import Resources from '../../../components/display/grouper/Resources';
+import SyncMode from '../../../components/tabs/SyncMode';
+import StatusButton from '../../../components/buttons/StatusButton';
+import { DEFAULT_COLORS } from '../../../constants';
+import TimeAgo from '../../../components/time/TimeAgo';
+import { FancySpinner } from '../../../components/shared';
+import { triggerSingleGrouperSync } from '../../../clients/sync-manager';
+import { TabButton } from '../../../components/shared';
+import { SYNC_MESSAGES } from '../../../constants/modes';
+import store, { AppDispatch, RootState } from '../../../store';
+import { fetchAllGroupersThunk } from '../../../store/slices/grouperSlice';
 import { useSelector } from 'react-redux';
-import { startSync, endSync } from '../../store/slices/grouperSlice';
-import { UI } from '../../constants/ui';
+import { startSync, endSync } from '../../../store/slices/grouperSlice';
+import { UI } from '../../../constants/ui';
 
 const sectionCardStyle: React.CSSProperties = {
   borderRadius: 16,
