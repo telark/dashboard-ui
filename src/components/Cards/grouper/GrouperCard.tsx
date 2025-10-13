@@ -17,7 +17,7 @@ import {
 import { GrouperInterface } from '../../../interfaces/grouper';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store';
-import { getStatusStyle } from '../../../constants/cards/grouper';
+import { getStatusStyle } from '../../../utils/helpers';
 import { syncGrouper } from '../../../utils/sync';
 import { GrouperCardModal } from './index';
 import GrouperCardContent from './GrouperCardContent';
