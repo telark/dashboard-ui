@@ -90,10 +90,28 @@ export const checkClusterInsights = async () => {
   }
 };
 
-// Update Workload Sync Mode
-export const updateWorkloadSyncMode = async (name: string, syncMode: string) => {
+
+export const fetchAllAppsWorkloads = async () => {
   try {
-    const { path, method } = Endpoints.WORKLOADS.UPDATE_SYNC(name);
+    return await Client<any>(exporterApiClient, Endpoints.WORKLOADS.APPS.GET_ALL_APPS.path);
+  } catch (error) {
+    console.error('Failed to fetch apps workloads:', error);
+    throw error;
+  }
+};
+
+export const fetchAppWorkloadDetails = async (name: string) => {
+  try {
+    return await Client<any>(exporterApiClient, Endpoints.WORKLOADS.APPS.GET_APP_DETAILS(name).path);
+  } catch (error) {
+    console.error('Failed to fetch apps workloads:', error);
+    throw error;
+  }
+};
+
+export const updateAppWorkloadSyncMode = async (name: string, syncMode: string) => {
+  try {
+    const { path, method } = Endpoints.WORKLOADS.APPS.UPDATE_APP_SYNC(name);
     return await Client<any>(exporterApiClient, path, {
       method: method,
       data: { spec: { config: { sync: { mode: syncMode } } } },
@@ -104,22 +122,11 @@ export const updateWorkloadSyncMode = async (name: string, syncMode: string) => 
   }
 };
 
-// Fetch all Workloads
-export const fetchWorkloads = async () => {
+export const fetchAllBatchesWorkloads = async () => {
   try {
-    return await Client<any>(exporterApiClient, Endpoints.WORKLOADS.GET_ALL.path);
+    return await Client<any>(exporterApiClient, Endpoints.WORKLOADS.BATCHES.GET_ALL_BATCHES.path);
   } catch (error) {
-    console.error('Failed to fetch workloads:', error);
-    throw error;
-  }
-};
-
-// Fetch all Batches
-export const fetchBatches = async () => {
-  try {
-    return await Client<any>(exporterApiClient, Endpoints.WORKLOADS.BATCHES.GET_ALL.path);
-  } catch (error) {
-    console.error('Failed to fetch batches:', error);
+    console.error('Failed to fetch batches workloads:', error);
     throw error;
   }
 };
