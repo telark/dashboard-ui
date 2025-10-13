@@ -8,7 +8,7 @@ import 'antd/dist/reset.css';
 import { DEFAULT_COLORS, APP_CONFIGS, APP_ROUTES } from './constants';
 import {
   Dashboard,
-  Groupers,
+  GroupersGlobalView,
   GrouperDetails,
   Workloads,
   AppWorkloadDetails,
@@ -96,7 +96,7 @@ const App: React.FC = () => {
                 <Header />
                 <Routes>
                   <Route path={APP_ROUTES.HOME} element={<Dashboard />} />
-                  <Route path={APP_ROUTES.GROUPERS} element={<Groupers />} />
+                  <Route path={APP_ROUTES.GROUPERS} element={<GroupersGlobalView />} />
                   <Route path={APP_ROUTES.GROUPER_DETAILS} element={<GrouperDetails />} />
                   <Route path={APP_ROUTES.WORKLOADS} element={<Workloads />} />
                   <Route path={APP_ROUTES.APP_WORKLOAD_DETAILS} element={<AppWorkloadDetails />} />
