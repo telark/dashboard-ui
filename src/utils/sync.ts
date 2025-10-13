@@ -2,7 +2,7 @@ import { App as AntdApp } from 'antd';
 import { triggerSingleGrouperSync } from '../clients/sync-manager';
 import { SYNC_MESSAGES } from '../constants/modes';
 import { GROUPER_CARD_TEXTS } from '../constants/cards';
-import { SYNC_CONSTANTS } from '../constants/cards/grouper';
+import { SYNC_CONSTANTS } from '../constants/sync';
 import store, { AppDispatch, RootState } from '../store';
 import { fetchAllGroupersThunk } from '../store/slices/grouperSlice';
 import { startSync, endSync } from '../store/slices/grouperSlice';
