@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useRef, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { message, Button } from 'antd';
 import { AppstoreOutlined, ReloadOutlined } from '@ant-design/icons';
-import FancySpinner from '../../components/common/FancySpinner';
+import { FancySpinner } from '../../components/shared';
 
 import {
   fetchAllGroupersThunk,

@@ -2,7 +2,7 @@ import React from 'react';
 import { Empty, Typography } from 'antd';
 import { ClockCircleOutlined } from '@ant-design/icons';
 import BatchesCard from '../../../cards/BatchesCard';
-import FancySpinner from '../../../common/FancySpinner';
+import { FancySpinner } from '../../../shared';
 import { DEFAULT_COLORS } from '../../../../constants';
 import type { BatchWorkloadCardData } from '../../../../interfaces/workload';
 

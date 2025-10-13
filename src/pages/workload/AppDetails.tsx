@@ -13,7 +13,7 @@ import WorkloadTabs, {
 import WorkloadBridges from '../../components/display/workloads/apps/Bridges';
 import WorkloadGeneralInfo from '../../components/display/workloads/apps/GeneralInfo';
 import SyncMode from '../../components/tabs/SyncMode';
-import FancySpinner from '../../components/common/FancySpinner';
+import { FancySpinner } from '../../components/shared';
 
 // Lazy load heavy components
 const WorkloadInstances = lazy(() => import('../../components/display/workloads/apps/Instances'));

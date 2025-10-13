@@ -1,7 +1,7 @@
 import React from 'react';
 import { Empty } from 'antd';
 import WorkloadCard from '../../../cards/WorkloadCard';
-import FancySpinner from '../../../common/FancySpinner';
+import { FancySpinner } from '../../../shared';
 import type { AppWorkloadCardData } from '../../../../interfaces/workload';
 
 interface AppsListProps {

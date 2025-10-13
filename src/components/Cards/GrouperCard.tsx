@@ -14,7 +14,7 @@ import {
 
 import StatusButton from '../buttons/StatusButton';
 import TimeAgo from '../time/TimeAgo';
-import Metric from '../common/Metric';
+import { Metric } from '../shared';
 import {
   DEFAULT_COLORS,
   CARD_CONFIGS,
@@ -29,7 +29,7 @@ import { UI } from '../../constants/ui';
 import { GrouperInterface } from '../../interfaces/grouper';
 import { CapitalizeFirstLetter } from '../../utils/helpers';
 import { triggerSingleGrouperSync } from '../../clients/sync-manager';
-import FancySpinner from '../common/FancySpinner';
+import { FancySpinner } from '../shared';
 import { SYNC_MESSAGES } from '../../constants/modes';
 import store, { AppDispatch, RootState } from '../../store';
 import { fetchAllGroupersThunk } from '../../store/slices/grouperSlice';

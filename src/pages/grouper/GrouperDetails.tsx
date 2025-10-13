@@ -16,7 +16,7 @@ import SyncMode from '../../components/tabs/SyncMode';
 import StatusButton from '../../components/buttons/StatusButton';
 import { DEFAULT_COLORS } from '../../constants';
 import TimeAgo from '../../components/time/TimeAgo';
-import FancySpinner from '../../components/common/FancySpinner';
+import { FancySpinner } from '../../components/shared';
 import { triggerSingleGrouperSync } from '../../clients/sync-manager';
 import { TabButton } from '../../components/shared';
 import { SYNC_MESSAGES } from '../../constants/modes';

@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkClusterInsightsThunk } from './store/slices/insightsSlice';
 import type { RootState, AppDispatch } from './store';
-import FancySpinner from './components/common/FancySpinner';
+import { FancySpinner } from './components/shared';
 
 // Ensure messages are shown below the fixed header and are visible above content
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
