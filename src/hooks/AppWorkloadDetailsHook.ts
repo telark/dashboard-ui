@@ -3,15 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { message } from 'antd';
 import {
-  fetchWorkloadDetailsThunk,
+  fetchAppWorkloadDetailsThunk,
   clearWorkloadDetails,
-  updateWorkloadSyncModeThunk,
+  updateAppWorkloadSyncModeThunk,
 } from '../store/slices/workloadSlice';
 import { AppDispatch } from '../store';
 import { selectWorkloadDetailsData } from '../store/selectors/workloadSelectors';
 import { STORE_MESSAGES, HOOK_MESSAGES, HOOK_CONFIGS, SYNC_ACTIONS } from '../constants';
 
-export const WorkloadDetailsHook = () => {
+export const AppWorkloadDetailsHook = () => {
   const dispatch: AppDispatch = useDispatch();
   const { name } = useParams<{ name: string }>();
   const { details: workloadDetails, loading, error } = useSelector(selectWorkloadDetailsData);
@@ -30,7 +30,7 @@ export const WorkloadDetailsHook = () => {
   useEffect(() => {
     if (name) {
       dispatch(clearWorkloadDetails());
-      dispatch(fetchWorkloadDetailsThunk(name));
+      dispatch(fetchAppWorkloadDetailsThunk(name));
     }
     return () => {
       dispatch(clearWorkloadDetails());
@@ -53,7 +53,7 @@ export const WorkloadDetailsHook = () => {
     setLoadingSave(true);
     try {
       const syncMode = isAutoSync ? SYNC_ACTIONS.AUTO : SYNC_ACTIONS.MANUAL;
-      const response = await dispatch(updateWorkloadSyncModeThunk({ name, syncMode })).unwrap();
+      const response = await dispatch(updateAppWorkloadSyncModeThunk({ name, syncMode })).unwrap();
       setIsAutoSync(response.config?.sync?.mode === SYNC_ACTIONS.AUTO);
       setInitialSyncMode(response.config?.sync?.mode);
       message.success(HOOK_MESSAGES.SUCCESS.SYNC_SETTINGS_UPDATED);

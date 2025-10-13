@@ -3,7 +3,7 @@ import { message, Card, Typography, Button } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../constants';
-import { WorkloadDetailsHook } from '../../hooks/WorkloadDetailsHook';
+import { AppWorkloadDetailsHook } from '../../hooks/AppWorkloadDetailsHook';
 import WorkloadHeader from '../../components/display/workloads/apps/Header';
 import WorkloadMetrics from '../../components/display/workloads/apps/Metrics';
 import WorkloadTabs, {
@@ -42,7 +42,7 @@ const AppWorkloadDetails: React.FC = React.memo(() => {
     hasChanges,
     handleAutoSyncChange,
     handleWorkloadSyncSave,
-  } = WorkloadDetailsHook();
+  } = AppWorkloadDetailsHook();
 
   useEffect(() => {
     if (error) {
