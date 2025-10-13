@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { fetchAllAppsWorkloads, fetchAllBatchesWorkloads, fetchAppWorkloadDetails, updateAppWorkloadSyncMode } from '../../clients/exporter';
 import { mapAppsWorkloadsData, mapSingleAppWorkloadData } from '../../utils/mappers/workloads/appMapper';
 import type { WorkloadsState } from '../../interfaces/workload';
+import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../constants';
 
 const initialState: WorkloadsState = {
   apps: [],
@@ -15,53 +16,53 @@ const initialState: WorkloadsState = {
 };
 
 export const fetchAllAppsWorkloadsThunk = createAsyncThunk(
-  'workloads/fetchAllApps',
+  STORE_ACTIONS.WORKLOADS.FETCH_APPS,
   async (_, { rejectWithValue }) => {
     try {
       const rawWorkloadsData = await fetchAllAppsWorkloads();
       return mapAppsWorkloadsData(rawWorkloadsData);
     } catch (error: any) {
-      console.error('Failed to fetch apps workloads:', error);
-      return rejectWithValue(error.message || 'Failed to fetch apps workloads');
+      console.error(STORE_MESSAGES.ERROR_FETCHING_APPS, error);
+      return rejectWithValue(error.message || STORE_ERRORS.FETCH_APPS);
     }
   },
 );
 
 export const fetchAllBatchesWorkloadsThunk = createAsyncThunk(
-  'workloads/fetchAllBatches',
+  STORE_ACTIONS.WORKLOADS.FETCH_BATCHES,
   async (_, { rejectWithValue }) => {
     try {
       const rawBatchesData = await fetchAllBatchesWorkloads();
       return rawBatchesData.data?.items || [];
     } catch (error: any) {
-      console.error('Failed to fetch batches workloads:', error);
-      return rejectWithValue(error.message || 'Failed to fetch batches workloads');
+      console.error(STORE_MESSAGES.ERROR_FETCHING_BATCHES, error);
+      return rejectWithValue(error.message || STORE_ERRORS.FETCH_BATCHES);
     }
   },
 );
 
 export const fetchAppWorkloadDetailsThunk = createAsyncThunk(
-  'workloads/fetchAppDetails',
+  STORE_ACTIONS.WORKLOADS.FETCH_APP_DETAILS,
   async (name: string, { rejectWithValue }) => {
     try {
       const rawWorkloadsData = await fetchAppWorkloadDetails(name);
-
       return mapSingleAppWorkloadData(rawWorkloadsData.data);
     } catch (error: any) {
-      console.error('Failed to fetch app workload details:', error);
-      return rejectWithValue(error.message || 'Failed to fetch app workload details');
+      console.error(STORE_MESSAGES.ERROR_FETCHING_APP_DETAILS, error);
+      return rejectWithValue(error.message || STORE_ERRORS.FETCH_APP_DETAILS);
     }
   },
 );
 
 export const updateAppWorkloadSyncModeThunk = createAsyncThunk(
-  'workloads/updateAppSyncMode',
+  STORE_ACTIONS.WORKLOADS.UPDATE_APP_SYNC,
   async ({ name, syncMode }: { name: string; syncMode: string }, { rejectWithValue }) => {
     try {
       const response = await updateAppWorkloadSyncMode(name, syncMode);
       return mapSingleAppWorkloadData(response.data);
     } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to update app workload sync mode');
+      console.error(STORE_MESSAGES.ERROR_UPDATING_APP_SYNC, error);
+      return rejectWithValue(error.message || STORE_ERRORS.UPDATE_APP_SYNC);
     }
   },
 );
@@ -85,6 +86,7 @@ const workloadSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Apps
       .addCase(fetchAllAppsWorkloadsThunk.pending, (state) => {
         state.appLoading = true;
         state.appError = null;
@@ -124,12 +126,13 @@ const workloadSlice = createSlice({
           };
         }
 
-        // Update the details to reflect the most recent data
         state.appDetails = updatedItem;
       })
       .addCase(updateAppWorkloadSyncModeThunk.rejected, (state, action) => {
         state.appError = action.payload as string;
       })
+
+      // Batches
       .addCase(fetchAllBatchesWorkloadsThunk.pending, (state) => {
         state.batchLoading = true;
         state.batchError = null;

@@ -1,10 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../index';
 
-// Base selectors
 export const selectWorkloadState = (state: RootState) => state.workload;
-
-// Memoized selectors for better performance
 export const selectAppWorkloadDetails = createSelector(
   [selectWorkloadState],
   (workload) => workload.appDetails,

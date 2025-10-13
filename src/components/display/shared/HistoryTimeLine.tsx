@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { CheckOutlined, CloseOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Drawer, Button, Spin } from 'antd';
-import { HistoryInterface, Record } from '../../../interfaces/common';
+import { HistoryInterface, Record } from '../../../interfaces/shared';
 import { DEFAULT_COLORS } from '../../../constants';
 import TimeAgo from '../../time/TimeAgo';
 import { UI } from '../../../constants';

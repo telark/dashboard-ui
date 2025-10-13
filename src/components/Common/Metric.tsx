@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from 'antd';
-import { MetricInterface } from '../../interfaces/common';
+import { MetricInterface } from '../../interfaces/shared';
 
 const { Text } = Typography;
 

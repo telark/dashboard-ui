@@ -9,7 +9,7 @@ import {
   EyeOutlined,
 } from '@ant-design/icons';
 import { Button, Pagination, Space, Tag, Collapse } from 'antd';
-import { ResourcesInterface } from '../../../interfaces/common';
+import { ResourcesInterface } from '../../../interfaces/shared';
 import TimeAgo from '../../time/TimeAgo';
 import { DEFAULT_COLORS } from '../../../constants';
 import { UI } from '../../../constants/ui';

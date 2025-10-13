@@ -7,7 +7,6 @@ import {
   MAINTENANCE_ACTIONS,
 } from '../constants';
 
-// Enable Grouper Maintenance Mode
 export const enableGrouperMaintenanceMode = async (
   grouperName: string,
   resourceType: string,
@@ -34,7 +33,6 @@ export const enableGrouperMaintenanceMode = async (
   }
 };
 
-// Update Grouper Maintenance Mode
 export const updateGrouperMaintenanceMode = async (
   grouperName: string,
   updateAction: boolean,
@@ -61,7 +59,6 @@ export const updateGrouperMaintenanceMode = async (
   }
 };
 
-// Remove Grouper Maintenance Mode
 export const removeGrouperMaintenanceMode = async (grouperName: string) => {
   try {
     const { path, method } = Endpoints.GROUPER_MAINTENANCE.REMOVE;
@@ -80,7 +77,6 @@ export const removeGrouperMaintenanceMode = async (grouperName: string) => {
   }
 };
 
-// Start cluster analysis
 export const startClusterAnalyze = async () => {
   try {
     const { path, method } = Endpoints.ANALYZE.START;

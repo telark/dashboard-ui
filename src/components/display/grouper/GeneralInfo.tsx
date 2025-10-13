@@ -7,7 +7,7 @@ import {
 } from '@ant-design/icons';
 import TimeAgo from '../../time/TimeAgo';
 import { DEFAULT_COLORS } from '../../../constants';
-import { GeneralInfoInterface } from '../../../interfaces/common';
+import { GeneralInfoInterface } from '../../../interfaces/shared';
 import StatusButton from '../../buttons/StatusButton';
 
 interface GrouperGeneralInfoExtension extends GeneralInfoInterface {

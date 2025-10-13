@@ -247,11 +247,9 @@ const GrouperDetails: React.FC = memo(() => {
           >
             {syncing ? (
               <FancySpinner
-                showLabel={false}
+                showLabel={true}
                 size={18}
                 ringThickness={2}
-                icon={<SyncOutlined />}
-                orbit={false}
               />
             ) : (
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
