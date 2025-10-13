@@ -9,7 +9,6 @@ import {
   API_RESPONSES,
 } from '../constants';
 
-// Fetch all Groupers
 export const fetchGroupers = async (silent = false) => {
   try {
     const config = silent ? {
@@ -23,7 +22,7 @@ export const fetchGroupers = async (silent = false) => {
     throw error;
   }
 };
-// Fetch specific Grouper Details
+
 export const fetchGrouperDetails = async (name: string) => {
   try {
     return await Client<any>(exporterApiClient, Endpoints.GROUPERS.GET_DETAILS(name).path);
@@ -33,7 +32,6 @@ export const fetchGrouperDetails = async (name: string) => {
   }
 };
 
-// Update Grouper Sync Mode
 export const updateGrouperSyncMode = async (name: string, syncMode: string) => {
   try {
     const { path, method } = Endpoints.GROUPERS.UPDATE_SYNC(name);
@@ -47,7 +45,6 @@ export const updateGrouperSyncMode = async (name: string, syncMode: string) => {
   }
 };
 
-// Check Grouper Maintenance Mode
 export const checkGrouperMaintenanceMode = async (name: string) => {
   try {
     return await Client<any>(exporterApiClient, Endpoints.GROUPER_MAINTENANCE.CHECK(name).path, {
@@ -66,7 +63,6 @@ export const checkGrouperMaintenanceMode = async (name: string) => {
   }
 };
 
-// Check if cluster insights exist (used at startup). 404 should be silent.
 export const checkClusterInsights = async () => {
   try {
     const resp = await exporterApiClient.request({

@@ -22,6 +22,12 @@ export const STORE_ACTIONS = {
     UPDATE_MAINTENANCE: 'grouper/updateMaintenanceMode',
     REMOVE_MAINTENANCE: 'grouper/removeMaintenanceMode',
   },
+  WORKLOADS: {
+    FETCH_APPS: 'workloads/fetchApps',
+    FETCH_BATCHES: 'workloads/fetchBatches',
+    FETCH_APP_DETAILS: 'workloads/fetchAppDetails',
+    UPDATE_APP_SYNC: 'workloads/updateAppSync',
+  },
 } as const;
 
 export const SYNC_MODES = COMMON_VALUES.SYNC_MODES;
@@ -37,6 +43,10 @@ export const STORE_ERRORS = {
   REMOVE_MAINTENANCE: 'Failed to delete maintenance mode.',
   FETCH_DETAILS: 'Failed to fetch grouper details',
   CHECK_INSIGHTS: 'Failed to check cluster insights',
+  FETCH_APPS: 'Failed to fetch apps workloads',
+  FETCH_BATCHES: 'Failed to fetch batches workloads',
+  FETCH_APP_DETAILS: 'Failed to fetch app workload details',
+  UPDATE_APP_SYNC: 'Failed to update app workload sync mode',
 } as const;
 
 export const STORE_MESSAGES = {
@@ -49,4 +59,8 @@ export const STORE_MESSAGES = {
   ERROR_HANDLING_MAINTENANCE_UPDATE: 'Failed to handle maintenance mode update',
   ERROR_REMOVING_MAINTENANCE: 'Failed to remove maintenance mode',
   ERROR_BOUNDARY: 'Error caught in boundary:',
+  ERROR_FETCHING_APPS: 'Error fetching apps workloads:',
+  ERROR_FETCHING_BATCHES: 'Error fetching batches workloads:',
+  ERROR_FETCHING_APP_DETAILS: 'Error fetching app workload details:',
+  ERROR_UPDATING_APP_SYNC: 'Error updating app workload sync settings:',
 } as const;

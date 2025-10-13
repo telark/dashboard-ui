@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Menu } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_COLORS } from '../../constants';
-import { ButtonInterface } from '../../interfaces/common';
+import { ButtonInterface } from '../../interfaces/shared';
 
 const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({
   text,
