@@ -317,8 +317,15 @@ const grouperSlice = createSlice({
           };
         }
 
-        // Update the details to reflect the most recent data
-        state.details = updatedItem;
+        // Update the details to reflect the most recent data while preserving maintenance data
+        if (state.details) {
+          state.details = {
+            ...updatedItem,
+            maintenance: state.details.maintenance, // Preserve existing maintenance data
+          };
+        } else {
+          state.details = updatedItem;
+        }
       })
       .addCase(updateGrouperSyncModeThunk.rejected, (state, action: PayloadAction<any>) => {
         state.error = action.payload;

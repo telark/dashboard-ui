@@ -5,6 +5,7 @@ import { HistoryInterface, Record } from '../../../interfaces/shared';
 import { DEFAULT_COLORS } from '../../../constants';
 import TimeAgo from '../../time/TimeAgo';
 import { UI } from '../../../constants';
+import FancySpinner from '../../shared/FancySpinner';
 
 // Visual constants
 const PADDING_LEFT = 42;
@@ -358,22 +359,22 @@ const HistoryTimeLine: React.FC<HistoryInterface> = React.memo(({ Records }) => 
             {renderTimeline(visibleItems, false)}
             {hasMoreItems && (
               <div style={{ marginTop: 16, textAlign: 'center' }}>
-                <Button
-                  onClick={loadMoreItems}
-                  loading={isLoading}
-                  style={{
-                    borderColor: DEFAULT_COLORS.SUCCESS,
-                    color: DEFAULT_COLORS.SUCCESS,
-                    borderWidth: 1,
-                    borderRadius: 12,
-                    height: 36,
-                  }}
-                >
-                  {isLoading 
-                    ? 'Loading...' 
-                    : `Load More (${items.length - visibleItems.length} remaining)`
-                  }
-                </Button>
+                {isLoading ? (
+                  <FancySpinner showLabel={false} />
+                ) : (
+                  <Button
+                    onClick={loadMoreItems}
+                    style={{
+                      borderColor: DEFAULT_COLORS.SUCCESS,
+                      color: DEFAULT_COLORS.SUCCESS,
+                      borderWidth: 1,
+                      borderRadius: 12,
+                      height: 36,
+                    }}
+                  >
+                    Load More ({items.length - visibleItems.length} remaining)
+                  </Button>
+                )}
               </div>
             )}
           </>

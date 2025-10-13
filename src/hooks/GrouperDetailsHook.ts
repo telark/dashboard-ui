@@ -113,8 +113,28 @@ export const GrouperDetailsHook = () => {
     try {
       const syncMode = isAutoSync ? SYNC_ACTIONS.AUTO : SYNC_ACTIONS.MANUAL;
       const response = await dispatch(updateGrouperSyncModeThunk({ name, syncMode })).unwrap();
+      
+      // Update local state with the response data
       setIsAutoSync(response.sync.mode === SYNC_ACTIONS.AUTO);
       setInitialSyncMode(response.sync.mode);
+      
+      // Preserve existing maintenance data from current grouperDetails
+      // This prevents the maintenance data from being lost during sync update
+      if (grouperDetails?.maintenance) {
+        setHasMaintenanceData(true);
+        setIsMaintenanceModeActive(
+          grouperDetails.maintenance.status === HOOK_VALUES.MAINTENANCE_STATUS.ACTIVE,
+        );
+        setMaintenanceUpdateAction(
+          grouperDetails.maintenance.updateAction === MAINTENANCE_ACTIONS.ALLOW ||
+            (grouperDetails.maintenance.updateAction as any) === true,
+        );
+        setMaintenanceDeleteAction(
+          grouperDetails.maintenance.deleteAction === MAINTENANCE_ACTIONS.ALLOW ||
+            (grouperDetails.maintenance.deleteAction as any) === true,
+        );
+      }
+      
       message.success(HOOK_MESSAGES.SUCCESS.SYNC_SETTINGS_UPDATED);
     } catch (error) {
       console.error(STORE_MESSAGES.ERROR_UPDATING_SYNC, error);
