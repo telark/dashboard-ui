@@ -191,7 +191,7 @@ const GrouperCard: React.FC<GrouperInterface> = React.memo(
               >
                 {isSyncingEffective ? (
                   <FancySpinner
-                    showLabel={true}
+                    showLabel={false}
                     size={22}
                     ringThickness={2}
                   />
