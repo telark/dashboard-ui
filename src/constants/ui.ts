@@ -277,9 +277,9 @@ export const COMPONENT_STYLES = {
         marginTop: '60px',
       },
       gridStyle: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, minmax(260px, 1fr))',
-        gap: '16px',
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
       },
     },
   },
