@@ -91,7 +91,7 @@ export const fetchAllAppsWorkloads = async () => {
   try {
     return await Client<any>(exporterApiClient, Endpoints.WORKLOADS.APPS.GET_ALL_APPS.path);
   } catch (error) {
-    console.error('Failed to fetch apps workloads:', error);
+    console.error(ERROR_MESSAGES.CLIENT.FETCH_APPS_FAILED, error);
     throw error;
   }
 };
@@ -100,7 +100,7 @@ export const fetchAppWorkloadDetails = async (name: string) => {
   try {
     return await Client<any>(exporterApiClient, Endpoints.WORKLOADS.APPS.GET_APP_DETAILS(name).path);
   } catch (error) {
-    console.error('Failed to fetch apps workloads:', error);
+    console.error(`${ERROR_MESSAGES.CLIENT.FETCH_APP_DETAILS_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -122,7 +122,7 @@ export const fetchAllBatchesWorkloads = async () => {
   try {
     return await Client<any>(exporterApiClient, Endpoints.WORKLOADS.BATCHES.GET_ALL_BATCHES.path);
   } catch (error) {
-    console.error('Failed to fetch batches workloads:', error);
+    console.error(ERROR_MESSAGES.CLIENT.FETCH_BATCHES_FAILED, error);
     throw error;
   }
 };
