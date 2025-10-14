@@ -5,16 +5,7 @@ import { GrouperDetailsHook } from '../../../hooks/GrouperDetailsHook';
 import { syncGrouperDetails } from '../../../utils/grouper-details';
 import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../../constants/pages/grouper-details';
 import { RootState } from '../../../store';
-import {
-  Loading,
-  Error,
-  Empty,
-  Header,
-  Tabs,
-  Content,
-} from '.';
-
-
+import { Loading, Error, Empty, Header, Tabs, Content } from '.';
 
 const GrouperDetailsView: React.FC = memo(() => {
   const {
@@ -83,11 +74,7 @@ const GrouperDetailsView: React.FC = memo(() => {
         onSync={handleHeaderSync}
       />
 
-      <Tabs
-        activeTab={activeTab}
-        totalResources={totalResources}
-        onTabChange={setActiveTab}
-      />
+      <Tabs activeTab={activeTab} totalResources={totalResources} onTabChange={setActiveTab} />
 
       <Content
         activeTab={activeTab}

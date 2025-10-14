@@ -9,12 +9,7 @@ interface StatusTagProps {
   borderColor?: string;
 }
 
-const StatusTag: React.FC<StatusTagProps> = ({ 
-  label, 
-  icon, 
-  color, 
-  borderColor 
-}) => {
+const StatusTag: React.FC<StatusTagProps> = ({ label, icon, color, borderColor }) => {
   return (
     <Button
       type="default"

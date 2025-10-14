@@ -38,10 +38,10 @@ export const createRetryHandler = (
     maxDelayMs: GROUPERS_PAGE_CONSTANTS.RETRY.MAX_DELAY_MS,
     cooldownDurationMs: GROUPERS_PAGE_CONSTANTS.COOLDOWN.DURATION_MS,
     countdownIntervalMs: GROUPERS_PAGE_CONSTANTS.RETRY.COUNTDOWN_INTERVAL_MS,
-  }
+  },
 ) => {
   const timeoutRefs: { current: NodeJS.Timeout | null }[] = [];
-  
+
   return async (): Promise<void> => {
     if (callbacks.setRetrying) {
       callbacks.setRetrying(true);
@@ -49,22 +49,19 @@ export const createRetryHandler = (
     if (callbacks.setRetryCount) {
       callbacks.setRetryCount(0);
     }
-    
+
     for (let attempt = 0; attempt < config.maxAttempts; attempt++) {
       if (callbacks.setRetryCount) {
         callbacks.setRetryCount(attempt + 1);
       }
-      
+
       // Calculate delay with exponential backoff
-      const delay = Math.min(
-        config.baseDelayMs * Math.pow(2, attempt),
-        config.maxDelayMs
-      );
-      
+      const delay = Math.min(config.baseDelayMs * Math.pow(2, attempt), config.maxDelayMs);
+
       if (callbacks.setNextRetryIn) {
         callbacks.setNextRetryIn(delay);
       }
-      
+
       // Countdown timer
       let remainingTime = delay;
       const countdownInterval = setInterval(() => {
@@ -72,20 +69,20 @@ export const createRetryHandler = (
         if (callbacks.setNextRetryIn) {
           callbacks.setNextRetryIn(Math.max(0, remainingTime));
         }
-        
+
         if (remainingTime <= 0) {
           clearInterval(countdownInterval);
         }
       }, config.countdownIntervalMs);
-      
+
       // Wait for delay
-      await new Promise(resolve => {
+      await new Promise((resolve) => {
         const timeoutRef = setTimeout(resolve, delay);
         timeoutRefs.push({ current: timeoutRef });
       });
-      
+
       clearInterval(countdownInterval);
-      
+
       try {
         const success = await retryFunction();
         if (success) {
@@ -107,7 +104,7 @@ export const createRetryHandler = (
         // Continue to next attempt
       }
     }
-    
+
     // All retries failed - start cooldown
     if (callbacks.setRetrying) {
       callbacks.setRetrying(false);
@@ -124,7 +121,7 @@ export const createRetryHandler = (
     if (callbacks.setCooldownTime) {
       callbacks.setCooldownTime(config.cooldownDurationMs);
     }
-    
+
     // Start cooldown countdown
     let remainingCooldown = config.cooldownDurationMs;
     const cooldownInterval = setInterval(() => {
@@ -132,7 +129,7 @@ export const createRetryHandler = (
       if (callbacks.setCooldownTime) {
         callbacks.setCooldownTime(Math.max(0, remainingCooldown));
       }
-      
+
       if (remainingCooldown <= 0) {
         clearInterval(cooldownInterval);
         if (callbacks.setInCooldown) {
@@ -147,13 +144,13 @@ export const createRetryHandler = (
         }, GROUPERS_PAGE_CONSTANTS.COOLDOWN.AUTO_RETRY_DELAY_MS);
       }
     }, config.countdownIntervalMs);
-    
+
     // Store interval reference for cleanup
     const cooldownTimeout = setTimeout(() => {
       clearInterval(cooldownInterval);
     }, config.cooldownDurationMs);
     timeoutRefs.push({ current: cooldownTimeout });
-    
+
     if (callbacks.onError) {
       callbacks.onError();
     }
@@ -165,15 +162,15 @@ export const createRetryHandler = (
  */
 export const cancelRetry = (
   timeoutRefs: { current: NodeJS.Timeout | null }[],
-  callbacks: RetryCallbacks
+  callbacks: RetryCallbacks,
 ): void => {
-  timeoutRefs.forEach(ref => {
+  timeoutRefs.forEach((ref) => {
     if (ref.current) {
       clearTimeout(ref.current);
       ref.current = null;
     }
   });
-  
+
   if (callbacks.setRetrying) {
     callbacks.setRetrying(false);
   }

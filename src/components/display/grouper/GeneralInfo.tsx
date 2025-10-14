@@ -14,7 +14,6 @@ interface GrouperGeneralInfoExtension extends GeneralInfoInterface {
   totalResources: number;
 }
 
-
 const GrouperGeneralInfo: React.FC<GrouperGeneralInfoExtension> = ({
   name,
   creationTime,

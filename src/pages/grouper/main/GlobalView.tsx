@@ -3,21 +3,21 @@ import { useSelector, useDispatch } from 'react-redux';
 import { message } from 'antd';
 import { RootState, AppDispatch } from '../../../store';
 import { COMPONENT_STYLES } from '../../../constants/ui';
-import { loadGroupers, loadGroupersSilent, handleInitialSync, setupAutoRefresh } from '../../../utils/groupers';
+import {
+  loadGroupers,
+  loadGroupersSilent,
+  handleInitialSync,
+  setupAutoRefresh,
+} from '../../../utils/groupers';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../utils/retry';
 import { GROUPERS_PAGE_CONSTANTS } from '../../../constants/pages/groupers';
-import {
-  Loading,
-  Error,
-  Empty,
-  Success,
-} from '.';
+import { Loading, Error, Empty, Success } from '.';
 
 const GroupersGlobalView: React.FC = memo(() => {
   const dispatch: AppDispatch = useDispatch();
   const { groupers, loading, error } = useSelector((state: RootState) => state.grouper);
   const hasTriggeredInitialSync = useRef(false);
-  
+
   // Retry state
   const [isRetrying, setIsRetrying] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
@@ -42,11 +42,11 @@ const GroupersGlobalView: React.FC = memo(() => {
   // Poll only auto-sync groupers, aligned to exact interval boundaries
   useEffect(() => {
     let cleanupFn: (() => void) | undefined;
-    
+
     setupAutoRefresh(dispatch, (cleanup) => {
       cleanupFn = cleanup;
     });
-    
+
     return () => {
       if (cleanupFn) {
         cleanupFn();
@@ -68,15 +68,12 @@ const GroupersGlobalView: React.FC = memo(() => {
   // Create retry handler
   const handleRetry = useCallback(async () => {
     if (isRetrying || isInCooldown) return;
-    
-    const retryHandler = createRetryHandler(
-      () => loadGroupersSilent(dispatch),
-      retryCallbacks
-    );
-    
+
+    const retryHandler = createRetryHandler(() => loadGroupersSilent(dispatch), retryCallbacks);
+
     await retryHandler();
   }, [dispatch, isRetrying, isInCooldown, retryCallbacks]);
-  
+
   const handleCancelRetry = useCallback(() => {
     cancelRetry(timeoutRefs.current, retryCallbacks);
   }, [retryCallbacks]);

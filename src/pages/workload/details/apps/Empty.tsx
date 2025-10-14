@@ -14,21 +14,17 @@ const Empty: React.FC<EmptyProps> = React.memo(({ appName }) => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Button 
-        icon={<ArrowLeftOutlined />} 
+      <Button
+        icon={<ArrowLeftOutlined />}
         onClick={() => navigate('/workloads')}
         style={{ marginBottom: '24px' }}
       >
         Back to Workloads
       </Button>
-      
+
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <Title level={3}>
-          App not found
-        </Title>
-        <Text type="secondary">
-          The app "{appName}" could not be found.
-        </Text>
+        <Title level={3}>App not found</Title>
+        <Text type="secondary">The app "{appName}" could not be found.</Text>
       </div>
     </div>
   );

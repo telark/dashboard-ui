@@ -6,14 +6,13 @@ import WorkloadBridges from '../../../../components/display/workloads/apps/Bridg
 import WorkloadGeneralInfo from '../../../../components/display/workloads/apps/GeneralInfo';
 import SyncMode from '../../../../components/tabs/SyncMode';
 import { FancySpinner } from '../../../../components/shared';
-import {
-  TAB_KEYS,
-  type TabKey,
-} from '../../../../components/display/workloads/apps/Tabs';
+import { TAB_KEYS, type TabKey } from '../../../../components/display/workloads/apps/Tabs';
 import type { AppWorkload } from '../../../../interfaces/workload';
 
 // Lazy load heavy components
-const WorkloadInstances = lazy(() => import('../../../../components/display/workloads/apps/Instances'));
+const WorkloadInstances = lazy(
+  () => import('../../../../components/display/workloads/apps/Instances'),
+);
 const WorkloadHistory = lazy(() => import('../../../../components/display/workloads/apps/History'));
 
 interface ContentProps {
@@ -33,101 +32,107 @@ const sectionCardStyle: React.CSSProperties = {
   marginBottom: 16,
 };
 
-const Content: React.FC<ContentProps> = React.memo(({
-  workload,
-  activeTab,
-  isAutoSync,
-  loadingSave,
-  hasChanges,
-  handleAutoSyncChange,
-  handleWorkloadSyncSave,
-}) => {
-  return (
-    <div
-      style={{
-        background: DEFAULT_COLORS.PAGE_BG,
-        minHeight: '100vh',
-        marginTop: 60,
-        paddingTop: 24,
-        paddingLeft: 24,
-        paddingRight: 24,
-        paddingBottom: 64,
-      }}
-    >
-      {/* Resource Summary */}
-      <WorkloadMetrics workload={workload} />
+const Content: React.FC<ContentProps> = React.memo(
+  ({
+    workload,
+    activeTab,
+    isAutoSync,
+    loadingSave,
+    hasChanges,
+    handleAutoSyncChange,
+    handleWorkloadSyncSave,
+  }) => {
+    return (
+      <div
+        style={{
+          background: DEFAULT_COLORS.PAGE_BG,
+          minHeight: '100vh',
+          marginTop: 60,
+          paddingTop: 24,
+          paddingLeft: 24,
+          paddingRight: 24,
+          paddingBottom: 64,
+        }}
+      >
+        {/* Resource Summary */}
+        <WorkloadMetrics workload={workload} />
 
-      {/* Active section */}
-      {activeTab === TAB_KEYS.GENERAL && (
-        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
-          <WorkloadGeneralInfo workload={workload} />
-        </Card>
-      )}
+        {/* Active section */}
+        {activeTab === TAB_KEYS.GENERAL && (
+          <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
+            <WorkloadGeneralInfo workload={workload} />
+          </Card>
+        )}
 
-      {activeTab === TAB_KEYS.INSTANCES && (
-        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
-          <div style={{ padding: 4 }}>
-            <Suspense
-              fallback={
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '200px',
-                  }}
-                >
-                  <FancySpinner />
-                </div>
-              }
-            >
-              <WorkloadInstances workload={workload} />
-            </Suspense>
-          </div>
-        </Card>
-      )}
+        {activeTab === TAB_KEYS.INSTANCES && (
+          <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
+            <div style={{ padding: 4 }}>
+              <Suspense
+                fallback={
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: '200px',
+                    }}
+                  >
+                    <FancySpinner />
+                  </div>
+                }
+              >
+                <WorkloadInstances workload={workload} />
+              </Suspense>
+            </div>
+          </Card>
+        )}
 
-      {activeTab === TAB_KEYS.BRIDGES && (
-        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
-          <div style={{ padding: 4 }}>
-            <WorkloadBridges workload={workload} />
-          </div>
-        </Card>
-      )}
+        {activeTab === TAB_KEYS.BRIDGES && (
+          <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
+            <div style={{ padding: 4 }}>
+              <WorkloadBridges workload={workload} />
+            </div>
+          </Card>
+        )}
 
-      {activeTab === TAB_KEYS.HISTORY && (
-        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
-          <div style={{ padding: 4 }}>
-            <Suspense fallback={
-              <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '200px',
-              }}>
-                <FancySpinner />
-              </div>
-            }>
-              <WorkloadHistory workload={workload} />
-            </Suspense>
-          </div>
-        </Card>
-      )}
+        {activeTab === TAB_KEYS.HISTORY && (
+          <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
+            <div style={{ padding: 4 }}>
+              <Suspense
+                fallback={
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: '200px',
+                    }}
+                  >
+                    <FancySpinner />
+                  </div>
+                }
+              >
+                <WorkloadHistory workload={workload} />
+              </Suspense>
+            </div>
+          </Card>
+        )}
 
-      {activeTab === TAB_KEYS.SYNC && (
-        <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
-          <SyncMode
-            isAutoSync={isAutoSync}
-            loadingSave={loadingSave}
-            hasChanges={hasChanges}
-            handleAutoSyncChange={handleAutoSyncChange}
-            handleSyncSave={handleWorkloadSyncSave}
-          />
-        </Card>
-      )}
-    </div>
-  );
-});
+        {activeTab === TAB_KEYS.SYNC && (
+          <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
+            <SyncMode
+              isAutoSync={isAutoSync}
+              loadingSave={loadingSave}
+              hasChanges={hasChanges}
+              handleAutoSyncChange={handleAutoSyncChange}
+              handleSyncSave={handleWorkloadSyncSave}
+            />
+          </Card>
+        )}
+      </div>
+    );
+  },
+);
 
 Content.displayName = 'Content';
 

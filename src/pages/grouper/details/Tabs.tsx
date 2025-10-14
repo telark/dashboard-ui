@@ -9,11 +9,7 @@ interface TabsProps {
   onTabChange: (tab: TabKey) => void;
 }
 
-const Tabs: React.FC<TabsProps> = React.memo(({
-  activeTab,
-  totalResources,
-  onTabChange,
-}) => {
+const Tabs: React.FC<TabsProps> = React.memo(({ activeTab, totalResources, onTabChange }) => {
   return (
     <div style={GROUPER_DETAILS_CONSTANTS.LAYOUT.TABS_CONTAINER}>
       <TabButton

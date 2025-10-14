@@ -15,12 +15,7 @@ import {
 import StatusButton from '../buttons/StatusButton';
 import TimeAgo from '../time/TimeAgo';
 import { Metric } from '../shared';
-import {
-  DEFAULT_COLORS,
-  CARD_CONFIGS,
-  CARD_COLORS,
-  CARD_TRANSITIONS,
-} from '../../constants';
+import { DEFAULT_COLORS, CARD_CONFIGS, CARD_COLORS, CARD_TRANSITIONS } from '../../constants';
 import { UI } from '../../constants/ui';
 import type { AppWorkloadCardData } from '../../interfaces/workload';
 import { CapitalizeFirstLetter } from '../../utils/helpers';

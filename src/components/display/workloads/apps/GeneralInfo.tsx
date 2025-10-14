@@ -13,7 +13,6 @@ interface WorkloadGeneralInfoProps {
   workload: AppWorkload;
 }
 
-
 const WorkloadGeneralInfo: React.FC<WorkloadGeneralInfoProps> = ({ workload }) => (
   <div style={{ padding: '6px 2px' }}>
     <Row

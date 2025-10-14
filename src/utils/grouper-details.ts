@@ -24,7 +24,7 @@ export const syncGrouperDetails = async ({
     setSyncing(true);
     const apiName = grouperDetails?.syncName || grouperDetails.name;
     (store.dispatch as AppDispatch)(startSync(grouperDetails.name));
-    
+
     const key = `${GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX}${apiName}`;
     message.open({
       type: 'loading',
@@ -66,34 +66,32 @@ const handleSyncEffect = async ({
 }): Promise<void> => {
   if (GROUPER_DETAILS_CONSTANTS.SYNC.POLLING_EFFECTS.includes(effect as 'Deleted' | 'NotFound')) {
     (store.dispatch as AppDispatch)(fetchAllGroupersThunk());
-    
+
     const start = Date.now();
     const waitMs = GROUPER_DETAILS_CONSTANTS.SYNC.POLLING.MAX_WAIT_MS;
-    
+
     const interval = setInterval(() => {
       const state: RootState = store.getState();
-      const stillThere = state.grouper.groupers.some(
-        (g: any) => g.name === grouperDetails.name,
-      );
-      
+      const stillThere = state.grouper.groupers.some((g: any) => g.name === grouperDetails.name);
+
       if (!stillThere || Date.now() - start > waitMs) {
         clearInterval(interval);
         const friendly = SYNC_MESSAGES.byEffect[effect] || SYNC_MESSAGES.completed;
-        message.open({ 
-          type: 'success', 
-          content: friendly, 
-          key, 
-          duration: GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_DURATIONS.SUCCESS 
+        message.open({
+          type: 'success',
+          content: friendly,
+          key,
+          duration: GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_DURATIONS.SUCCESS,
         });
       }
     }, GROUPER_DETAILS_CONSTANTS.SYNC.POLLING.INTERVAL_MS);
   } else {
     const friendly = SYNC_MESSAGES.byEffect[effect] || SYNC_MESSAGES.completed;
-    message.open({ 
-      type: 'success', 
-      content: friendly, 
-      key, 
-      duration: GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_DURATIONS.SUCCESS 
+    message.open({
+      type: 'success',
+      content: friendly,
+      key,
+      duration: GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_DURATIONS.SUCCESS,
     });
   }
 };
@@ -101,25 +99,22 @@ const handleSyncEffect = async ({
 /**
  * Handles sync errors and displays appropriate messages
  */
-const handleSyncError = (
-  err: any,
-  message: ReturnType<typeof AntdApp.useApp>['message']
-): void => {
+const handleSyncError = (err: any, message: ReturnType<typeof AntdApp.useApp>['message']): void => {
   const meta = err?.normalized as { isTimeout?: boolean } | undefined;
   const phase = err?.response?.data?.data?.phase as string | undefined;
   const effect = err?.response?.data?.data?.syncEffect as string | undefined;
   const friendlyTimeout = GROUPER_DETAILS_CONSTANTS.SYNC.TIMEOUT_MESSAGE;
-  
+
   const friendly = meta?.isTimeout
     ? friendlyTimeout
     : (phase && SYNC_MESSAGES.byPhase[phase]) ||
       (effect && SYNC_MESSAGES.byEffect[effect!]) ||
       SYNC_MESSAGES.byPhase.Failed;
-      
-  message.open({ 
-    type: 'error', 
-    content: friendly, 
-    key: GROUPER_DETAILS_CONSTANTS.SYNC.ERROR_KEY, 
-    duration: GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_DURATIONS.ERROR 
+
+  message.open({
+    type: 'error',
+    content: friendly,
+    key: GROUPER_DETAILS_CONSTANTS.SYNC.ERROR_KEY,
+    duration: GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_DURATIONS.ERROR,
   });
 };

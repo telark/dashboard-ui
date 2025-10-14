@@ -7,13 +7,13 @@ export const WORKLOADS_PAGE_CONSTANTS = {
     MAX_DELAY_MS: 30000,
     COUNTDOWN_INTERVAL_MS: 1000,
   },
-  
+
   // Cooldown configuration
   COOLDOWN: {
     DURATION_MS: 60000, // 1 minute
     AUTO_RETRY_DELAY_MS: 1000,
   },
-  
+
   // UI dimensions and styling
   UI: {
     ICON_SIZE: 56,
@@ -24,7 +24,7 @@ export const WORKLOADS_PAGE_CONSTANTS = {
     PROGRESS_BAR_HEIGHT: 8,
     PROGRESS_BAR_BORDER_RADIUS: 4,
   },
-  
+
   // Colors
   COLORS: {
     WARNING: '#F59E0B',
@@ -33,7 +33,7 @@ export const WORKLOADS_PAGE_CONSTANTS = {
     TEXT_MUTED: '#666',
     BACKGROUND_LIGHT: '#E5E7EB',
   },
-  
+
   // Messages
   MESSAGES: {
     LOADING: 'Loading workloads…',
@@ -41,20 +41,22 @@ export const WORKLOADS_PAGE_CONSTANTS = {
     SUCCESS: 'Workloads loaded successfully!',
     ERROR_COOLDOWN: 'Connection failed after multiple attempts. Cooling down before retry...',
     ERROR_RETRYING: 'Unable to connect to the server. Retrying automatically...',
-    ERROR_RETRYING_COOLDOWN: 'Unable to connect after multiple attempts. Starting cooldown period...',
+    ERROR_RETRYING_COOLDOWN:
+      'Unable to connect after multiple attempts. Starting cooldown period...',
     COOLDOWN_TITLE: 'Cooldown Period',
     COOLDOWN_DESCRIPTION: 'Retrying in {seconds} seconds...',
     ATTEMPT_COUNT: 'Attempt {current} of {max}',
     NEXT_RETRY: 'Next retry in {seconds} seconds...',
     CANCEL: 'Cancel',
     NO_WORKLOADS_TITLE: 'No workloads yet',
-    NO_WORKLOADS_DESCRIPTION: 'When your cluster is connected, workloads will be displayed here. Make sure you have workloads running in your cluster. Try syncing to pull the latest.',
+    NO_WORKLOADS_DESCRIPTION:
+      'When your cluster is connected, workloads will be displayed here. Make sure you have workloads running in your cluster. Try syncing to pull the latest.',
     REFRESH: 'Refresh',
     CONNECTION_PROBLEM: 'Connection Problem',
     WORKLOAD_NOT_FOUND: 'Workload not found',
     WORKLOAD_NOT_FOUND_DESCRIPTION: 'The workload could not be found.',
   },
-  
+
   // Layout styles
   LAYOUT: {
     LOADING_CONTAINER: {

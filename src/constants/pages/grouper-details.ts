@@ -142,4 +142,5 @@ export const GROUPER_DETAILS_CONSTANTS = {
   },
 } as const;
 
-export type TabKey = (typeof GROUPER_DETAILS_CONSTANTS.TAB_KEYS)[keyof typeof GROUPER_DETAILS_CONSTANTS.TAB_KEYS];
+export type TabKey =
+  (typeof GROUPER_DETAILS_CONSTANTS.TAB_KEYS)[keyof typeof GROUPER_DETAILS_CONSTANTS.TAB_KEYS];

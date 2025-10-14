@@ -2,7 +2,6 @@ import { Component, ErrorInfo, ReactNode } from 'react';
 import { Button, Typography } from 'antd';
 import { ReloadOutlined, BugOutlined, HomeOutlined } from '@ant-design/icons';
 import { STORE_MESSAGES } from './constants';
-import { DEFAULT_COLORS } from './constants';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -170,7 +169,6 @@ class ErrorBoundary extends Component<Props, State> {
                 Go Home
               </Button>
             </div>
-
           </div>
         </div>
       );

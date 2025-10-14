@@ -23,65 +23,52 @@ interface SuccessProps {
   onBatchClick: (batch: BatchWorkloadCardData) => void;
 }
 
-const Success: React.FC<SuccessProps> = React.memo(({
-  apps,
-  batches,
-  appLoading,
-  batchLoading,
-  onAppClick,
-  onBatchClick,
-}) => {
-  const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.APPS);
+const Success: React.FC<SuccessProps> = React.memo(
+  ({ apps, batches, appLoading, batchLoading, onAppClick, onBatchClick }) => {
+    const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.APPS);
 
-  return (
-    <div style={{ padding: '24px' }}>
-      <div style={{ marginBottom: '24px' }}>
-        <Title level={2}>Workloads</Title>
+    return (
+      <div style={{ padding: '24px' }}>
+        <div style={{ marginBottom: '24px' }}>
+          <Title level={2}>Workloads</Title>
+        </div>
+
+        {/* Tabs */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 18,
+            background: 'linear-gradient(180deg, rgba(239,244,250,0.6), rgba(239,244,250,0))',
+            padding: '8px 0',
+            borderRadius: 24,
+            marginBottom: 24,
+          }}
+        >
+          <TabButton
+            label="Apps"
+            active={activeTab === TAB_KEYS.APPS}
+            onClick={() => setActiveTab(TAB_KEYS.APPS)}
+          />
+          <TabButton
+            label="Batches"
+            active={activeTab === TAB_KEYS.BATCHES}
+            onClick={() => setActiveTab(TAB_KEYS.BATCHES)}
+          />
+        </div>
+
+        {/* Content */}
+        {activeTab === TAB_KEYS.APPS && (
+          <AppsList apps={apps} loading={appLoading} onAppClick={onAppClick} />
+        )}
+
+        {activeTab === TAB_KEYS.BATCHES && (
+          <BatchesList batches={batches} loading={batchLoading} onBatchClick={onBatchClick} />
+        )}
       </div>
-
-      {/* Tabs */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 18,
-          background: 'linear-gradient(180deg, rgba(239,244,250,0.6), rgba(239,244,250,0))',
-          padding: '8px 0',
-          borderRadius: 24,
-          marginBottom: 24,
-        }}
-      >
-        <TabButton
-          label="Apps"
-          active={activeTab === TAB_KEYS.APPS}
-          onClick={() => setActiveTab(TAB_KEYS.APPS)}
-        />
-        <TabButton
-          label="Batches"
-          active={activeTab === TAB_KEYS.BATCHES}
-          onClick={() => setActiveTab(TAB_KEYS.BATCHES)}
-        />
-      </div>
-
-      {/* Content */}
-      {activeTab === TAB_KEYS.APPS && (
-        <AppsList 
-          apps={apps} 
-          loading={appLoading} 
-          onAppClick={onAppClick} 
-        />
-      )}
-
-      {activeTab === TAB_KEYS.BATCHES && (
-        <BatchesList 
-          batches={batches} 
-          loading={batchLoading} 
-          onBatchClick={onBatchClick} 
-        />
-      )}
-    </div>
-  );
-});
+    );
+  },
+);
 
 Success.displayName = 'Success';
 

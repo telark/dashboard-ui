@@ -73,11 +73,7 @@ const BatchesList: React.FC<BatchesListProps> = ({ batches, loading = false, onB
   return (
     <div style={{ width: '100%' }}>
       {batches.map((batch) => (
-        <BatchesCard
-          key={batch.name}
-          batch={batch}
-          onClick={() => onBatchClick?.(batch)}
-        />
+        <BatchesCard key={batch.name} batch={batch} onClick={() => onBatchClick?.(batch)} />
       ))}
     </div>
   );
