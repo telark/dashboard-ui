@@ -11,6 +11,7 @@ export const STORE_ACTIONS = {
   },
   GROUPERS: {
     FETCH: 'groupers/fetch',
+    FETCH_SILENT: 'groupers/fetchSilent',
     TRIGGER_SYNC: 'groupers/triggerSync',
     REFRESH_AUTO: 'groupers/refreshAuto',
     FETCH_DETAILS: 'groupers/fetchDetails',
