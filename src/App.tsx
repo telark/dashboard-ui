@@ -10,8 +10,8 @@ import {
   Dashboard,
   GroupersGlobalView,
   GrouperDetailsView,
-  Workloads,
-  AppWorkloadDetails,
+  WorkloadsGlobalView,
+  AppWorkloadDetailsView,
   Startup,
   Welcome,
 } from './pages';
@@ -98,8 +98,8 @@ const App: React.FC = () => {
                   <Route path={APP_ROUTES.HOME} element={<Dashboard />} />
                   <Route path={APP_ROUTES.GROUPERS} element={<GroupersGlobalView />} />
                   <Route path={APP_ROUTES.GROUPER_DETAILS} element={<GrouperDetailsView />} />
-                  <Route path={APP_ROUTES.WORKLOADS} element={<Workloads />} />
-                  <Route path={APP_ROUTES.APP_WORKLOAD_DETAILS} element={<AppWorkloadDetails />} />
+                  <Route path={APP_ROUTES.WORKLOADS} element={<WorkloadsGlobalView />} />
+                  <Route path={APP_ROUTES.APP_WORKLOAD_DETAILS} element={<AppWorkloadDetailsView />} />
                 </Routes>
               </Layout>
             </Layout>
