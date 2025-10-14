@@ -1,25 +1,30 @@
-import React, { useEffect, useState, Suspense, lazy } from 'react';
-import { message, Card, Typography, Button } from 'antd';
-import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeftOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../constants';
-import { AppWorkloadDetailsHook } from '../../hooks/AppWorkloadDetailsHook';
-import WorkloadHeader from '../../components/display/workloads/apps/Header';
-import WorkloadMetrics from '../../components/display/workloads/apps/Metrics';
-import WorkloadTabs, {
+import React, { Suspense, lazy } from 'react';
+import { Card } from 'antd';
+import { DEFAULT_COLORS } from '../../../../constants';
+import WorkloadMetrics from '../../../../components/display/workloads/apps/Metrics';
+import WorkloadBridges from '../../../../components/display/workloads/apps/Bridges';
+import WorkloadGeneralInfo from '../../../../components/display/workloads/apps/GeneralInfo';
+import SyncMode from '../../../../components/tabs/SyncMode';
+import { FancySpinner } from '../../../../components/shared';
+import {
   TAB_KEYS,
   type TabKey,
-} from '../../components/display/workloads/apps/Tabs';
-import WorkloadBridges from '../../components/display/workloads/apps/Bridges';
-import WorkloadGeneralInfo from '../../components/display/workloads/apps/GeneralInfo';
-import SyncMode from '../../components/tabs/SyncMode';
-import { FancySpinner } from '../../components/shared';
+} from '../../../../components/display/workloads/apps/Tabs';
+import type { AppWorkload } from '../../../../interfaces/workload';
 
 // Lazy load heavy components
-const WorkloadInstances = lazy(() => import('../../components/display/workloads/apps/Instances'));
-const WorkloadHistory = lazy(() => import('../../components/display/workloads/apps/History'));
+const WorkloadInstances = lazy(() => import('../../../../components/display/workloads/apps/Instances'));
+const WorkloadHistory = lazy(() => import('../../../../components/display/workloads/apps/History'));
 
-const { Title, Text } = Typography;
+interface ContentProps {
+  workload: AppWorkload;
+  activeTab: TabKey;
+  isAutoSync: boolean;
+  loadingSave: boolean;
+  hasChanges: boolean;
+  handleAutoSyncChange: (isAutoSync: boolean) => void;
+  handleWorkloadSyncSave: () => void;
+}
 
 const sectionCardStyle: React.CSSProperties = {
   borderRadius: 16,
@@ -28,51 +33,15 @@ const sectionCardStyle: React.CSSProperties = {
   marginBottom: 16,
 };
 
-const AppWorkloadDetails: React.FC = React.memo(() => {
-  const { name } = useParams<{ name: string }>();
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.GENERAL);
-
-  const {
-    workloadDetails: workload,
-    loading,
-    error,
-    isAutoSync,
-    loadingSave,
-    hasChanges,
-    handleAutoSyncChange,
-    handleWorkloadSyncSave,
-  } = AppWorkloadDetailsHook();
-
-  useEffect(() => {
-    if (error) {
-      message.error('Failed to load workload details');
-      navigate('/workloads');
-    }
-  }, [error, navigate]);
-
-  if (loading) {
-    return (
-      <div style={{ padding: '24px', textAlign: 'center' }}>
-        <FancySpinner />
-      </div>
-    );
-  }
-
-  if (!workload) {
-    return (
-      <div style={{ padding: '24px' }}>
-        <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/workloads')}>
-          Back to Workloads
-        </Button>
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
-          <Title level={3}>Workload not found</Title>
-          <Text type="secondary">The workload &quot;{name}&quot; could not be found.</Text>
-        </div>
-      </div>
-    );
-  }
-
+const Content: React.FC<ContentProps> = React.memo(({
+  workload,
+  activeTab,
+  isAutoSync,
+  loadingSave,
+  hasChanges,
+  handleAutoSyncChange,
+  handleWorkloadSyncSave,
+}) => {
   return (
     <div
       style={{
@@ -85,14 +54,8 @@ const AppWorkloadDetails: React.FC = React.memo(() => {
         paddingBottom: 64,
       }}
     >
-      {/* Header section */}
-      <WorkloadHeader workload={workload} />
-
       {/* Resource Summary */}
       <WorkloadMetrics workload={workload} />
-
-      {/* Tabs header */}
-      <WorkloadTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* Active section */}
       {activeTab === TAB_KEYS.GENERAL && (
@@ -166,4 +129,6 @@ const AppWorkloadDetails: React.FC = React.memo(() => {
   );
 });
 
-export default AppWorkloadDetails;
+Content.displayName = 'Content';
+
+export default Content;
