@@ -1,6 +1,6 @@
 import React from 'react';
 import { RightOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, CARD_CONFIGS, CARD_COLORS } from '../../constants';
+import { DEFAULT_COLORS, CARD_CONFIGS, CARD_COLORS } from '../../../constants';
 
 export interface ActionListItemProps {
   icon: React.ReactNode;

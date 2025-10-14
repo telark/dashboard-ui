@@ -2,45 +2,45 @@ import React from 'react';
 import { Dropdown } from 'antd';
 import { MoreOutlined, EyeOutlined, SyncOutlined, DeleteOutlined } from '@ant-design/icons';
 import { CARD_CONFIGS, CARD_COLORS, CARD_TRANSITIONS } from '../../../constants';
+import { ResourceCardActions, ResourceCardConfig } from './ResourceCard';
 
-interface GrouperCardDropdownProps {
+interface ResourceCardDropdownProps {
   isSyncingEffective: boolean;
-  onView: () => void;
-  onSync: () => void;
-  onDelete: () => void;
+  actions: ResourceCardActions;
+  config: ResourceCardConfig;
 }
 
-const GrouperCardDropdown: React.FC<GrouperCardDropdownProps> = React.memo(
-  ({ isSyncingEffective, onView, onSync, onDelete }) => {
+const ResourceCardDropdown: React.FC<ResourceCardDropdownProps> = React.memo(
+  ({ isSyncingEffective, actions, config }) => {
     const menuItems = [
       {
         key: 'view',
         icon: <EyeOutlined />,
-        label: 'View Details',
+        label: config.viewText,
         onClick: (e: any) => {
           e.domEvent?.stopPropagation();
-          onView();
+          actions.onView();
         },
       },
       {
         key: 'sync',
         icon: isSyncingEffective ? <SyncOutlined spin /> : <SyncOutlined />,
-        label: isSyncingEffective ? 'Syncing...' : 'Sync Grouper',
+        label: isSyncingEffective ? 'Syncing...' : config.syncText,
         onClick: isSyncingEffective
           ? undefined
           : (e: any) => {
               e.domEvent?.stopPropagation();
-              onSync();
+              actions.onSync();
             },
         disabled: isSyncingEffective,
       },
       {
         key: 'delete',
         icon: <DeleteOutlined />,
-        label: 'Delete Grouper',
+        label: config.deleteText,
         onClick: (e: any) => {
           e.domEvent?.stopPropagation();
-          onDelete();
+          actions.onDelete();
         },
         danger: true,
       },
@@ -74,6 +74,6 @@ const GrouperCardDropdown: React.FC<GrouperCardDropdownProps> = React.memo(
   },
 );
 
-GrouperCardDropdown.displayName = 'GrouperCardDropdown';
+ResourceCardDropdown.displayName = 'ResourceCardDropdown';
 
-export default GrouperCardDropdown;
+export default ResourceCardDropdown;

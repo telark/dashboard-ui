@@ -1,6 +1,6 @@
 import React from 'react';
 import { Empty } from 'antd';
-import WorkloadCard from '../../../cards/WorkloadCard';
+import { WorkloadCard } from '../../../cards';
 import { FancySpinner } from '../../../shared';
 import type { AppWorkloadCardData } from '../../../../interfaces/workload';
 

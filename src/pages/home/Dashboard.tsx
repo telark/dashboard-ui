@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppstoreOutlined, DeploymentUnitOutlined, BranchesOutlined } from '@ant-design/icons';
-import ActionCard from '../../components/cards/ActionCard';
+import ActionCard from '../../components/cards/home/ActionCard';
 import { DEFAULT_COLORS } from '../../constants';
 
 const Dashboard: React.FC = () => {
