@@ -10,7 +10,6 @@ import { CapitalizeFirstLetter } from '../../../utils/helpers';
 import {
   CARD_CONFIGS,
   CARD_COLORS,
-  CARD_TRANSITIONS,
   DEFAULT_COLORS,
   CARD_STATES,
 } from '../../../constants';
