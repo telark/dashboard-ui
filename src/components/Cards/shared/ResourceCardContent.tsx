@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from 'antd';
-import { AppstoreOutlined, ToolOutlined } from '@ant-design/icons';
+import { ToolOutlined } from '@ant-design/icons';
 import StatusButton from '../../buttons/StatusButton';
 import TimeAgo from '../../time/TimeAgo';
 import { Metric } from '../../shared';
@@ -14,41 +14,30 @@ import {
   DEFAULT_COLORS,
   CARD_STATES,
 } from '../../../constants';
-import GrouperCardDropdown from './GrouperCardDropdown';
+import { ResourceCardDropdown } from '.';
+import { ResourceCardData, ResourceCardActions, ResourceCardConfig } from './ResourceCard';
 
 const { Title, Text } = Typography;
 
-interface GrouperCardContentProps {
-  name: string;
-  lastUpdateTime: string;
-  numberOfWorkloads: number;
-  numberOfBridges: number;
-  status: string;
-  maintenance: { status: string } | null;
+interface ResourceCardContentProps {
+  data: ResourceCardData;
   statusStyle: {
     color: string;
     borderColor: string;
-    icon: React.ReactElement;
+    icon?: React.ReactElement;
   };
   isSyncingEffective: boolean;
-  onView: () => void;
-  onSync: () => void;
-  onDelete: () => void;
+  actions: ResourceCardActions;
+  config: ResourceCardConfig;
 }
 
-const GrouperCardContent: React.FC<GrouperCardContentProps> = React.memo(
+const ResourceCardContent: React.FC<ResourceCardContentProps> = React.memo(
   ({
-    name,
-    lastUpdateTime,
-    numberOfWorkloads,
-    numberOfBridges,
-    status,
-    maintenance,
+    data,
     statusStyle,
     isSyncingEffective,
-    onView,
-    onSync,
-    onDelete,
+    actions,
+    config,
   }) => {
     return (
       <div
@@ -81,7 +70,7 @@ const GrouperCardContent: React.FC<GrouperCardContentProps> = React.memo(
             <span
               style={{ display: 'inline-flex', fontSize: '18px', color: DEFAULT_COLORS.SUCCESS }}
             >
-              <AppstoreOutlined />
+              {data.icon}
             </span>
           </div>
           <div
@@ -99,7 +88,7 @@ const GrouperCardContent: React.FC<GrouperCardContentProps> = React.memo(
                 fontWeight: '600',
               }}
             >
-              {CapitalizeFirstLetter(name)}
+              {CapitalizeFirstLetter(data.name)}
             </Title>
             <Text
               style={{
@@ -109,7 +98,7 @@ const GrouperCardContent: React.FC<GrouperCardContentProps> = React.memo(
                 display: 'block',
               }}
             >
-              {UI.CARD.LAST_UPDATE_PREFIX} <TimeAgo date={lastUpdateTime} />
+              {UI.CARD.LAST_UPDATE_PREFIX} <TimeAgo date={data.lastUpdateTime} />
             </Text>
           </div>
         </div>
@@ -129,27 +118,37 @@ const GrouperCardContent: React.FC<GrouperCardContentProps> = React.memo(
               gap: CARD_CONFIGS.GROUPER_CARD.METRICS_GAP,
             }}
           >
-            <Metric label={UI.CARD.METRICS.WORKLOADS} value={numberOfWorkloads} />
-            <Metric label={UI.CARD.METRICS.BRIDGES} value={numberOfBridges} />
+            {data.metrics.map((metric, index) => (
+              <Metric key={index} label={metric.label} value={metric.value as number} />
+            ))}
           </div>
 
+          {/* Tags */}
+          {data.tags?.map((tag, index) => (
+            <StatusTag
+              key={index}
+              label={tag.label}
+              icon={tag.icon}
+              color={tag.color}
+            />
+          ))}
+
           {/* Maintenance Tag */}
-          {maintenance?.status === CARD_STATES.MAINTENANCE.ACTIVE && (
+          {data.maintenance?.status === CARD_STATES.MAINTENANCE.ACTIVE && (
             <StatusTag label={UI.CARD.MAINTENANCE_BADGE} icon={<ToolOutlined />} color="#f59e0b" />
           )}
 
           {/* Status */}
           <StatusButton
-            status={status === CARD_STATES.STATUS.ACTIVE ? 'Active' : 'Inactive'}
-            icon={statusStyle.icon}
+            status={data.status === CARD_STATES.STATUS.ACTIVE ? 'Active' : 'Inactive'}
+            icon={statusStyle.icon || <span />}
           />
 
           {/* Dropdown */}
-          <GrouperCardDropdown
+          <ResourceCardDropdown
             isSyncingEffective={isSyncingEffective}
-            onView={onView}
-            onSync={onSync}
-            onDelete={onDelete}
+            actions={actions}
+            config={config}
           />
         </div>
       </div>
@@ -157,6 +156,6 @@ const GrouperCardContent: React.FC<GrouperCardContentProps> = React.memo(
   },
 );
 
-GrouperCardContent.displayName = 'GrouperCardContent';
+ResourceCardContent.displayName = 'ResourceCardContent';
 
-export default GrouperCardContent;
+export default ResourceCardContent;

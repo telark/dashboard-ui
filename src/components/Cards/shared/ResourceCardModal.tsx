@@ -2,17 +2,19 @@ import React from 'react';
 import { Modal } from 'antd';
 import { UI } from '../../../constants/ui';
 
-interface GrouperCardModalProps {
+interface ResourceCardModalProps {
   isVisible: boolean;
+  title: string;
+  message: string;
   onConfirm: () => void;
   onCancel: () => void;
 }
 
-const GrouperCardModal: React.FC<GrouperCardModalProps> = React.memo(
-  ({ isVisible, onConfirm, onCancel }) => {
+const ResourceCardModal: React.FC<ResourceCardModalProps> = React.memo(
+  ({ isVisible, title, message, onConfirm, onCancel }) => {
     return (
       <Modal
-        title={UI.CARD.DELETE_TITLE}
+        title={title}
         open={isVisible}
         onOk={onConfirm}
         onCancel={onCancel}
@@ -20,12 +22,12 @@ const GrouperCardModal: React.FC<GrouperCardModalProps> = React.memo(
         cancelText={UI.BUTTONS.CANCEL}
         okButtonProps={{ danger: true }}
       >
-        {UI.CARD.DELETE_MESSAGE}
+        {message}
       </Modal>
     );
   },
 );
 
-GrouperCardModal.displayName = 'GrouperCardModal';
+ResourceCardModal.displayName = 'ResourceCardModal';
 
-export default GrouperCardModal;
+export default ResourceCardModal;

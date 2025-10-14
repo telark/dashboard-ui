@@ -1,7 +1,6 @@
 import React from 'react';
-import { Empty, Typography } from 'antd';
+import { Typography } from 'antd';
 import { ClockCircleOutlined } from '@ant-design/icons';
-import BatchesCard from '../../../cards/BatchesCard';
 import { FancySpinner } from '../../../shared';
 import { DEFAULT_COLORS } from '../../../../constants';
 import type { BatchWorkloadCardData } from '../../../../interfaces/workload';
@@ -72,9 +71,7 @@ const BatchesList: React.FC<BatchesListProps> = ({ batches, loading = false, onB
 
   return (
     <div style={{ width: '100%' }}>
-      {batches.map((batch) => (
-        <BatchesCard key={batch.name} batch={batch} onClick={() => onBatchClick?.(batch)} />
-      ))}
+        {/* TODO: Implement batch details navigation when ready */}
     </div>
   );
 };
