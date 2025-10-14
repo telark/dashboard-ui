@@ -2,15 +2,13 @@ import React, { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
 import { 
-  CheckCircleOutlined, 
-  WarningOutlined, 
-  CloseCircleOutlined, 
   DeploymentUnitOutlined,
   AppstoreOutlined 
 } from '@ant-design/icons';
 
 import { DEFAULT_COLORS } from '../../../constants';
 import { AppWorkloadCardData } from '../../../interfaces/workload';
+import { getDetailedStatusStyle, normalizeStatus } from '../../../utils/statusUtils';
 import { ResourceCard, ResourceCardData, ResourceCardActions, ResourceCardConfig } from '../shared';
 
 interface WorkloadCardProps {
@@ -22,31 +20,11 @@ const WorkloadCard: React.FC<WorkloadCardProps> = ({ workload, onClick }) => {
   const navigate = useNavigate();
   const { message } = AntdApp.useApp();
 
-  const statusStyle = useMemo(
-    () =>
-      workload.status === 'Available'
-        ? {
-            color: DEFAULT_COLORS.SUCCESS,
-            borderColor: DEFAULT_COLORS.SUCCESS,
-            icon: <CheckCircleOutlined />,
-          }
-        : workload.status === 'Running'
-          ? {
-              color: '#1890ff',
-              borderColor: '#1890ff',
-              icon: <WarningOutlined />,
-            }
-          : {
-              color: DEFAULT_COLORS.DEFAULT,
-              borderColor: DEFAULT_COLORS.DEFAULT,
-              icon: <CloseCircleOutlined />,
-            },
-    [workload.status],
-  );
+  const statusStyle = useMemo(() => getDetailedStatusStyle(workload.status), [workload.status]);
 
   const cardData: ResourceCardData = useMemo(() => ({
     name: workload.sourceName,
-    status: workload.status === 'Available' ? 'Active' : 'Inactive',
+    status: normalizeStatus(workload.status),
     lastUpdateTime: workload.lastUpdate,
     metrics: [
       { label: 'Instances', value: workload.instances.available },

@@ -1,17 +1,16 @@
 import React, { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
-import { CheckCircleOutlined, CloseCircleOutlined, AppstoreOutlined } from '@ant-design/icons';
+import { AppstoreOutlined } from '@ant-design/icons';
 
 import {
   GROUPER_CARD_TEXTS,
-  CARD_STATES,
   CARD_DEFAULTS,
 } from '../../../constants';
 import { GrouperInterface } from '../../../interfaces/grouper';
-import { useSelector } from 'react-redux';
 import { RootState } from '../../../store';
 import { syncGrouper } from '../../../utils/sync';
+import { getDetailedStatusStyle, normalizeStatus } from '../../../utils/statusUtils';
 import { ResourceCard, ResourceCardData, ResourceCardActions, ResourceCardConfig } from '../shared';
 
 const GrouperCard: React.FC<GrouperInterface> = React.memo(
@@ -29,7 +28,7 @@ const GrouperCard: React.FC<GrouperInterface> = React.memo(
 
     const cardData: ResourceCardData = useMemo(() => ({
       name,
-      status,
+      status: normalizeStatus(status),
       lastUpdateTime,
       maintenance,
       metrics: [
@@ -39,6 +38,8 @@ const GrouperCard: React.FC<GrouperInterface> = React.memo(
       icon: <AppstoreOutlined />,
       syncName,
     }), [name, status, lastUpdateTime, maintenance, numberOfWorkloads, numberOfBridges, syncName]);
+
+    const customStatusStyle = useMemo(() => getDetailedStatusStyle(status), [status]);
 
     const cardActions: ResourceCardActions = useMemo(() => ({
       onView: () => navigate(`/groupers/${name}/details`),
@@ -73,6 +74,7 @@ const GrouperCard: React.FC<GrouperInterface> = React.memo(
         config={cardConfig}
         globalSyncingSelector={globalSyncingSelector}
         syncFunction={syncGrouper}
+        customStatusStyle={customStatusStyle}
       />
     );
   },
