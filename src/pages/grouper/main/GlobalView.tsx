@@ -8,8 +8,8 @@ import {
   loadGroupersSilent,
   handleInitialSync,
   setupAutoRefresh,
-} from '../../../utils/groupers';
-import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../utils/retry';
+} from '../../../utils/grouper/state';
+import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../utils/shared/retry';
 import { GROUPERS_PAGE_CONSTANTS } from '../../../constants/pages/groupers';
 import { Loading, Error, Empty, Success } from '.';
 

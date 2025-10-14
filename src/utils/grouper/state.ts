@@ -1,20 +1,17 @@
-import { AppDispatch } from '../store';
+import { AppDispatch } from '../../store';
 import {
   fetchAllGroupersThunk,
   fetchAllGroupersSilentThunk,
   checkGrouperMaintenanceModeThunk,
   triggerGroupersSyncThunk,
   refreshAutoGroupersThunk,
-} from '../store/slices/grouperSlice';
+} from '../../store/slices/grouperSlice';
 import {
   GROUPERS_REFRESH_INTERVAL_MS,
   GROUPERS_SYNC_LS_KEY,
   GROUPERS_SYNC_THROTTLE_MS,
-} from '../constants/sync';
+} from '../../constants/sync';
 
-/**
- * Loads groupers and checks maintenance mode for those that need it
- */
 export const loadGroupers = async (dispatch: AppDispatch): Promise<void> => {
   const result = await dispatch(fetchAllGroupersThunk());
   if (fetchAllGroupersThunk.fulfilled.match(result)) {
@@ -26,9 +23,6 @@ export const loadGroupers = async (dispatch: AppDispatch): Promise<void> => {
   }
 };
 
-/**
- * Loads groupers silently (without showing loading state)
- */
 export const loadGroupersSilent = async (dispatch: AppDispatch): Promise<boolean> => {
   try {
     const result = await dispatch(fetchAllGroupersSilentThunk());
@@ -38,9 +32,6 @@ export const loadGroupersSilent = async (dispatch: AppDispatch): Promise<boolean
   }
 };
 
-/**
- * Handles initial sync with throttling using localStorage
- */
 export const handleInitialSync = async (dispatch: AppDispatch): Promise<void> => {
   try {
     const now = Date.now();
@@ -57,9 +48,6 @@ export const handleInitialSync = async (dispatch: AppDispatch): Promise<void> =>
   }
 };
 
-/**
- * Sets up auto-refresh polling for groupers
- */
 export const setupAutoRefresh = (
   dispatch: AppDispatch,
   onCleanup: (cleanupFn: () => void) => void,

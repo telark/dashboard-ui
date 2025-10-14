@@ -8,7 +8,7 @@ import {
 
 import { DEFAULT_COLORS } from '../../../constants';
 import { AppWorkloadCardData } from '../../../interfaces/workload';
-import { getDetailedStatusStyle, normalizeStatus } from '../../../utils/statusUtils';
+import { getDetailedStatusStyle, normalizeStatus } from '../../../utils/helpers/statusUtils';
 import { ResourceCard, ResourceCardData, ResourceCardActions, ResourceCardConfig } from '../shared';
 
 interface WorkloadCardProps {

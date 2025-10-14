@@ -8,7 +8,7 @@ import {
 import {
   mapAppsWorkloadsData,
   mapSingleAppWorkloadData,
-} from '../../utils/mappers/workloads/appMapper';
+} from '../../utils/mappers/appMapper';
 import type { WorkloadsState } from '../../interfaces/workload';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../constants';
 

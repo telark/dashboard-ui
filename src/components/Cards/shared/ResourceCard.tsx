@@ -9,7 +9,7 @@ import {
 } from '../../../constants';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store';
-import { getStatusStyle } from '../../../utils/helpers';
+import { getStatusStyle } from '../../../utils/helpers/format';
 import { ResourceCardModal, ResourceCardContent } from '.';
 
 export interface ResourceCardData {
