@@ -3,6 +3,7 @@ import { message } from 'antd';
 import { useParams } from 'react-router-dom';
 import { AppWorkloadDetailsHook } from '../../../../hooks/AppWorkloadDetailsHook';
 import { Loading, Error, Empty, Header, Tabs, Content } from '.';
+import { GROUPER_DETAILS_CONSTANTS } from '../../../../constants/pages/grouper-details';
 
 const AppWorkloadDetailsView: React.FC = memo(() => {
   const { name } = useParams<{ name: string }>();
@@ -40,7 +41,7 @@ const AppWorkloadDetailsView: React.FC = memo(() => {
   }
 
   return (
-    <>
+    <div style={GROUPER_DETAILS_CONSTANTS.LAYOUT.PAGE_CONTAINER}>
       <Header workload={workload} />
       <Tabs activeTab={activeTab} onTabChange={setActiveTab} />
       <Content
@@ -52,7 +53,7 @@ const AppWorkloadDetailsView: React.FC = memo(() => {
         handleAutoSyncChange={handleAutoSyncChange}
         handleWorkloadSyncSave={handleWorkloadSyncSave}
       />
-    </>
+    </div>
   );
 });
 
