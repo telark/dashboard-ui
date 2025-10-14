@@ -15,14 +15,14 @@ const Error: React.FC<ErrorProps> = React.memo(({ onRetry }) => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Button 
-        icon={<ArrowLeftOutlined />} 
+      <Button
+        icon={<ArrowLeftOutlined />}
         onClick={() => navigate('/workloads')}
         style={{ marginBottom: '24px' }}
       >
         Back to Workloads
       </Button>
-      
+
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
         <Title level={3} style={{ color: WORKLOADS_PAGE_CONSTANTS.COLORS.WARNING }}>
           Failed to load app details
@@ -30,7 +30,7 @@ const Error: React.FC<ErrorProps> = React.memo(({ onRetry }) => {
         <Text type="secondary" style={{ display: 'block', marginBottom: '24px' }}>
           Unable to connect to the server. Please try again.
         </Text>
-        
+
         {onRetry && (
           <Button type="primary" onClick={onRetry}>
             {WORKLOADS_PAGE_CONSTANTS.MESSAGES.REFRESH}

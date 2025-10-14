@@ -43,31 +43,35 @@ const SyncMode: React.FC<SyncModeProps> = ({
             animation: 'syncBannerFadeIn 0.3s ease-out',
           }}
         >
-          <FancySpinner 
-            size={18} 
-            color={DEFAULT_COLORS.SUCCESS} 
+          <FancySpinner
+            size={18}
+            color={DEFAULT_COLORS.SUCCESS}
             showLabel={false}
             ringThickness={2}
           />
-          
+
           <div style={{ flex: 1 }}>
-            <div style={{ 
-              color: '#24292f', 
-              fontWeight: 500, 
-              fontSize: 14,
-              marginBottom: 2
-            }}>
+            <div
+              style={{
+                color: '#24292f',
+                fontWeight: 500,
+                fontSize: 14,
+                marginBottom: 2,
+              }}
+            >
               Syncing in Progress
             </div>
-            <div style={{ 
-              color: '#656d76', 
-              fontSize: 12,
-              lineHeight: 1.4
-            }}>
+            <div
+              style={{
+                color: '#656d76',
+                fontSize: 12,
+                lineHeight: 1.4,
+              }}
+            >
               Settings are temporarily locked until sync completes
             </div>
           </div>
-          
+
           <style>{`
             @keyframes syncBannerFadeIn {
               0% { 
@@ -82,7 +86,7 @@ const SyncMode: React.FC<SyncModeProps> = ({
           `}</style>
         </div>
       )}
-      
+
       {/* Description only (title & icon are handled by the section header) */}
       <p style={{ marginTop: 0, fontSize: '13px', color: '#5B6B7C', lineHeight: 1.6 }}>
         {SYNC_MODE.description}

@@ -1,10 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, App as AntdApp } from 'antd';
-import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-} from '@ant-design/icons';
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
 import {
   GROUPER_CARD_TEXTS,
@@ -21,7 +18,6 @@ import { getStatusStyle } from '../../../utils/helpers';
 import { syncGrouper } from '../../../utils/sync';
 import { GrouperCardModal } from './index';
 import GrouperCardContent from './GrouperCardContent';
-
 
 const GrouperCard: React.FC<GrouperInterface> = React.memo(
   ({
@@ -44,7 +40,8 @@ const GrouperCard: React.FC<GrouperInterface> = React.memo(
     const statusStyle = useMemo(
       () => ({
         ...getStatusStyle(status),
-        icon: status === CARD_STATES.STATUS.ACTIVE ? <CheckCircleOutlined /> : <CloseCircleOutlined />,
+        icon:
+          status === CARD_STATES.STATUS.ACTIVE ? <CheckCircleOutlined /> : <CloseCircleOutlined />,
       }),
       [status],
     ) as {
@@ -68,7 +65,6 @@ const GrouperCard: React.FC<GrouperInterface> = React.memo(
       message.warning(GROUPER_CARD_TEXTS.SYNC.SUCCESS_DELETE);
     }, [message]);
     const handleCancelDelete = useCallback(() => setModalVisible(false), []);
-
 
     return (
       <>

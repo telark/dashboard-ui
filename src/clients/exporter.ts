@@ -11,9 +11,11 @@ import {
 
 export const fetchGroupers = async (silent = false) => {
   try {
-    const config = silent ? {
-      headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK }
-    } : {};
+    const config = silent
+      ? {
+          headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK },
+        }
+      : {};
     return await Client<any>(exporterApiClient, Endpoints.GROUPERS.GET_ALL.path, config);
   } catch (error) {
     if (!silent) {
@@ -86,7 +88,6 @@ export const checkClusterInsights = async () => {
   }
 };
 
-
 export const fetchAllAppsWorkloads = async () => {
   try {
     return await Client<any>(exporterApiClient, Endpoints.WORKLOADS.APPS.GET_ALL_APPS.path);
@@ -98,7 +99,10 @@ export const fetchAllAppsWorkloads = async () => {
 
 export const fetchAppWorkloadDetails = async (name: string) => {
   try {
-    return await Client<any>(exporterApiClient, Endpoints.WORKLOADS.APPS.GET_APP_DETAILS(name).path);
+    return await Client<any>(
+      exporterApiClient,
+      Endpoints.WORKLOADS.APPS.GET_APP_DETAILS(name).path,
+    );
   } catch (error) {
     console.error(`${ERROR_MESSAGES.CLIENT.FETCH_APP_DETAILS_FAILED} "${name}":`, error);
     throw error;

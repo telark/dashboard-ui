@@ -46,7 +46,7 @@ export const handleInitialSync = async (dispatch: AppDispatch): Promise<void> =>
     const now = Date.now();
     const lastStr = localStorage.getItem(GROUPERS_SYNC_LS_KEY);
     const last = lastStr ? parseInt(lastStr, 10) : 0;
-    
+
     if (!last || now - last >= GROUPERS_SYNC_THROTTLE_MS) {
       dispatch(triggerGroupersSyncThunk());
       localStorage.setItem(GROUPERS_SYNC_LS_KEY, String(now));
@@ -62,20 +62,19 @@ export const handleInitialSync = async (dispatch: AppDispatch): Promise<void> =>
  */
 export const setupAutoRefresh = (
   dispatch: AppDispatch,
-  onCleanup: (cleanupFn: () => void) => void
+  onCleanup: (cleanupFn: () => void) => void,
 ): void => {
   const now = Date.now();
   const remainder = now % GROUPERS_REFRESH_INTERVAL_MS;
-  const initialDelay = remainder === 0 
-    ? GROUPERS_REFRESH_INTERVAL_MS 
-    : GROUPERS_REFRESH_INTERVAL_MS - remainder;
+  const initialDelay =
+    remainder === 0 ? GROUPERS_REFRESH_INTERVAL_MS : GROUPERS_REFRESH_INTERVAL_MS - remainder;
 
   const timeoutId = window.setTimeout(() => {
     dispatch(refreshAutoGroupersThunk());
     const intervalId = window.setInterval(() => {
       dispatch(refreshAutoGroupersThunk());
     }, GROUPERS_REFRESH_INTERVAL_MS);
-    
+
     // Store cleanup function
     onCleanup(() => {
       window.clearTimeout(timeoutId);

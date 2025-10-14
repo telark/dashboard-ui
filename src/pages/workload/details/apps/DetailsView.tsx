@@ -2,18 +2,13 @@ import React, { useEffect, useState, memo } from 'react';
 import { message } from 'antd';
 import { useParams } from 'react-router-dom';
 import { AppWorkloadDetailsHook } from '../../../../hooks/AppWorkloadDetailsHook';
-import {
-  Loading,
-  Error,
-  Empty,
-  Header,
-  Tabs,
-  Content,
-} from '.';
+import { Loading, Error, Empty, Header, Tabs, Content } from '.';
 
 const AppWorkloadDetailsView: React.FC = memo(() => {
   const { name } = useParams<{ name: string }>();
-  const [activeTab, setActiveTab] = useState<'general' | 'instances' | 'bridges' | 'history' | 'sync'>('general');
+  const [activeTab, setActiveTab] = useState<
+    'general' | 'instances' | 'bridges' | 'history' | 'sync'
+  >('general');
 
   const {
     workloadDetails: workload,

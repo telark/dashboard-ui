@@ -15,12 +15,7 @@ import {
 import StatusButton from '../buttons/StatusButton';
 import TimeAgo from '../time/TimeAgo';
 import { Metric } from '../shared';
-import {
-  DEFAULT_COLORS,
-  CARD_CONFIGS,
-  CARD_COLORS,
-  CARD_TRANSITIONS,
-} from '../../constants';
+import { DEFAULT_COLORS, CARD_CONFIGS, CARD_COLORS, CARD_TRANSITIONS } from '../../constants';
 import { UI } from '../../constants/ui';
 import { CapitalizeFirstLetter } from '../../utils/helpers';
 import type { BatchWorkloadCardData } from '../../interfaces/workload';
@@ -140,9 +135,7 @@ const BatchesCard: React.FC<BatchesCardProps> = ({ batch, onClick }) => {
               boxShadow: CARD_COLORS.ICON.SHADOW,
             }}
           >
-            <span
-              style={{ display: 'inline-flex', fontSize: '18px', color: '#F59E0B' }}
-            >
+            <span style={{ display: 'inline-flex', fontSize: '18px', color: '#F59E0B' }}>
               <DeploymentUnitOutlined />
             </span>
           </div>
@@ -183,18 +176,9 @@ const BatchesCard: React.FC<BatchesCardProps> = ({ batch, onClick }) => {
               gap: CARD_CONFIGS.GROUPER_CARD.METRICS_GAP,
             }}
           >
-            <Metric 
-              label="Instances" 
-              value={batch.instances?.available || 0} 
-            />
-            <Metric 
-              label="Containers" 
-              value={batch.containers || 0} 
-            />
-            <Metric 
-              label="Attached Bridges" 
-              value={batch.bridges || 0} 
-            />
+            <Metric label="Instances" value={batch.instances?.available || 0} />
+            <Metric label="Containers" value={batch.containers || 0} />
+            <Metric label="Attached Bridges" value={batch.bridges || 0} />
           </div>
 
           {/* Batch Kind */}

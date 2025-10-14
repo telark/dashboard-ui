@@ -16,7 +16,6 @@ const FancySpinner: React.FC<FancySpinnerProps> = ({
   color = DEFAULT_COLORS.SUCCESS,
   showLabel = false,
 }) => {
-
   return (
     <div
       style={{
@@ -44,7 +43,6 @@ const FancySpinner: React.FC<FancySpinnerProps> = ({
             animation: 'fancy-spin 0.9s linear infinite',
           }}
         />
-
       </div>
       {showLabel && <div style={{ color: '#5B6B7C', fontSize: 13 }}>{label}</div>}
       <style>{`

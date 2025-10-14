@@ -62,13 +62,15 @@ const App: React.FC = () => {
   // If we have persisted insights but haven't verified yet, show loading
   if (hasClusterInsight && !initialized) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        minHeight: '100vh',
-        background: '#ffffff'
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          background: '#ffffff',
+        }}
+      >
         <FancySpinner label="Verifying cluster insights..." showLabel={true} />
       </div>
     );
@@ -99,7 +101,10 @@ const App: React.FC = () => {
                   <Route path={APP_ROUTES.GROUPERS} element={<GroupersGlobalView />} />
                   <Route path={APP_ROUTES.GROUPER_DETAILS} element={<GrouperDetailsView />} />
                   <Route path={APP_ROUTES.WORKLOADS} element={<WorkloadsGlobalView />} />
-                  <Route path={APP_ROUTES.APP_WORKLOAD_DETAILS} element={<AppWorkloadDetailsView />} />
+                  <Route
+                    path={APP_ROUTES.APP_WORKLOAD_DETAILS}
+                    element={<AppWorkloadDetailsView />}
+                  />
                 </Routes>
               </Layout>
             </Layout>

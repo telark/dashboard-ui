@@ -1,6 +1,14 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { fetchAllAppsWorkloads, fetchAllBatchesWorkloads, fetchAppWorkloadDetails, updateAppWorkloadSyncMode } from '../../clients/exporter';
-import { mapAppsWorkloadsData, mapSingleAppWorkloadData } from '../../utils/mappers/workloads/appMapper';
+import {
+  fetchAllAppsWorkloads,
+  fetchAllBatchesWorkloads,
+  fetchAppWorkloadDetails,
+  updateAppWorkloadSyncMode,
+} from '../../clients/exporter';
+import {
+  mapAppsWorkloadsData,
+  mapSingleAppWorkloadData,
+} from '../../utils/mappers/workloads/appMapper';
 import type { WorkloadsState } from '../../interfaces/workload';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../constants';
 
@@ -115,14 +123,11 @@ const workloadSlice = createSlice({
       })
       .addCase(updateAppWorkloadSyncModeThunk.fulfilled, (state, action) => {
         const updatedItem = action.payload;
-        const index = state.apps.findIndex(
-          (workload) => workload.name === updatedItem.fasid?.name,
-        );
+        const index = state.apps.findIndex((workload) => workload.name === updatedItem.fasid?.name);
         if (index !== -1) {
           state.apps[index] = {
             ...state.apps[index],
-            lastUpdate:
-              updatedItem.config?.sync?.lastUpdateTime || state.apps[index].lastUpdate,
+            lastUpdate: updatedItem.config?.sync?.lastUpdateTime || state.apps[index].lastUpdate,
           };
         }
 

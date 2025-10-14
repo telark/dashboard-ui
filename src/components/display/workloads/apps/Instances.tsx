@@ -17,14 +17,12 @@ interface WorkloadInstancesProps {
 // Use styles from constants for better organization
 const STYLES = COMPONENT_STYLES.WORKLOAD_INSTANCES;
 
-
 const WorkloadInstances: React.FC<WorkloadInstancesProps> = ({ workload }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedContainers, setExpandedContainers] = useState<{ [key: string]: boolean }>({});
   const pageSize = 5;
 
   const handlePageChange = useCallback((page: number) => setCurrentPage(page), []);
-
 
   const getPullPolicyDescription = useCallback((policy?: string) => {
     if (!policy) return null;

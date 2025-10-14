@@ -3,23 +3,23 @@ import { useSelector, useDispatch } from 'react-redux';
 import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { RootState, AppDispatch } from '../../../store';
-import { fetchAllAppsWorkloadsThunk, fetchAllBatchesWorkloadsThunk } from '../../../store/slices/workloadSlice';
+import {
+  fetchAllAppsWorkloadsThunk,
+  fetchAllBatchesWorkloadsThunk,
+} from '../../../store/slices/workloadSlice';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../utils/retry';
 import { WORKLOADS_PAGE_CONSTANTS } from '../../../constants/pages/workloads';
 import { APP_ROUTES } from '../../../constants';
 import type { AppWorkloadCardData, BatchWorkloadCardData } from '../../../interfaces/workload';
-import {
-  Loading,
-  Error,
-  Empty,
-  Success,
-} from '.';
+import { Loading, Error, Empty, Success } from '.';
 
 const WorkloadsGlobalView: React.FC = memo(() => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const { apps, batches, appLoading, batchLoading, appError, batchError } = useSelector((state: RootState) => state.workload);
-  
+  const { apps, batches, appLoading, batchLoading, appError, batchError } = useSelector(
+    (state: RootState) => state.workload,
+  );
+
   // Retry state
   const [isRetrying, setIsRetrying] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
@@ -31,7 +31,7 @@ const WorkloadsGlobalView: React.FC = memo(() => {
   const handleLoadWorkloads = useCallback(async () => {
     await Promise.all([
       dispatch(fetchAllAppsWorkloadsThunk()),
-      dispatch(fetchAllBatchesWorkloadsThunk())
+      dispatch(fetchAllBatchesWorkloadsThunk()),
     ]);
     return true;
   }, [dispatch]);
@@ -64,15 +64,12 @@ const WorkloadsGlobalView: React.FC = memo(() => {
   // Create retry handler
   const handleRetry = useCallback(async () => {
     if (isRetrying || isInCooldown) return;
-    
-    const retryHandler = createRetryHandler(
-      () => handleLoadWorkloads(),
-      retryCallbacks
-    );
-    
+
+    const retryHandler = createRetryHandler(() => handleLoadWorkloads(), retryCallbacks);
+
     await retryHandler();
   }, [handleLoadWorkloads, isRetrying, isInCooldown, retryCallbacks]);
-  
+
   const handleCancelRetry = useCallback(() => {
     cancelRetry(timeoutRefs.current, retryCallbacks);
   }, [retryCallbacks]);

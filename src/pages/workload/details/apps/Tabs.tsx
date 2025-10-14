@@ -1,8 +1,5 @@
 import React from 'react';
-import WorkloadTabs, {
-  TAB_KEYS,
-  type TabKey,
-} from '../../../../components/display/workloads/apps/Tabs';
+import WorkloadTabs, { type TabKey } from '../../../../components/display/workloads/apps/Tabs';
 
 interface TabsProps {
   activeTab: TabKey;
@@ -10,12 +7,7 @@ interface TabsProps {
 }
 
 const Tabs: React.FC<TabsProps> = React.memo(({ activeTab, onTabChange }) => {
-  return (
-    <WorkloadTabs 
-      activeTab={activeTab} 
-      onTabChange={onTabChange} 
-    />
-  );
+  return <WorkloadTabs activeTab={activeTab} onTabChange={onTabChange} />;
 });
 
 Tabs.displayName = 'Tabs';

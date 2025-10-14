@@ -34,98 +34,115 @@ interface ContentProps {
   isGloballySyncing: boolean;
 }
 
-const Content: React.FC<ContentProps> = React.memo(({
-  activeTab,
-  grouperDetails,
-  totalResources,
-  isAutoSync,
-  loadingSave,
-  hasChanges,
-  handleAutoSyncChange,
-  handleGrouperSyncSave,
-  isMaintenanceModeActive,
-  isMaintenanceModalVisible,
-  maintenaceUpdateAction,
-  maintenaceDeleteAction,
-  handleEnableMaintenanceClick,
-  handleCancelMaintenance,
-  handleMaintenanceUpdateActionChange,
-  handleMaintenanceDeleteActionChange,
-  handleMaintenanceMode,
-  hasMaintenanceData,
-  handleRemoveMaintenanceMode,
-  syncing,
-  isGloballySyncing,
-}) => {
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case GROUPER_DETAILS_CONSTANTS.TAB_KEYS.GENERAL:
-        return (
-          <Card style={GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD} styles={{ body: GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD_BODY }}>
-            <GrouperGeneralInfo {...grouperDetails} totalResources={totalResources} />
-          </Card>
-        );
+const Content: React.FC<ContentProps> = React.memo(
+  ({
+    activeTab,
+    grouperDetails,
+    totalResources,
+    isAutoSync,
+    loadingSave,
+    hasChanges,
+    handleAutoSyncChange,
+    handleGrouperSyncSave,
+    isMaintenanceModeActive,
+    isMaintenanceModalVisible,
+    maintenaceUpdateAction,
+    maintenaceDeleteAction,
+    handleEnableMaintenanceClick,
+    handleCancelMaintenance,
+    handleMaintenanceUpdateActionChange,
+    handleMaintenanceDeleteActionChange,
+    handleMaintenanceMode,
+    hasMaintenanceData,
+    handleRemoveMaintenanceMode,
+    syncing,
+    isGloballySyncing,
+  }) => {
+    const renderTabContent = () => {
+      switch (activeTab) {
+        case GROUPER_DETAILS_CONSTANTS.TAB_KEYS.GENERAL:
+          return (
+            <Card
+              style={GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD}
+              styles={{ body: GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD_BODY }}
+            >
+              <GrouperGeneralInfo {...grouperDetails} totalResources={totalResources} />
+            </Card>
+          );
 
-      case GROUPER_DETAILS_CONSTANTS.TAB_KEYS.RESOURCES:
-        return (
-          <Card style={GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD} styles={{ body: GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD_BODY }}>
-            <div style={{ padding: 4 }}>
-              <Resources
-                name={grouperDetails.name}
-                resources={[...grouperDetails.workloads, ...grouperDetails.bridges]}
+        case GROUPER_DETAILS_CONSTANTS.TAB_KEYS.RESOURCES:
+          return (
+            <Card
+              style={GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD}
+              styles={{ body: GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD_BODY }}
+            >
+              <div style={{ padding: 4 }}>
+                <Resources
+                  name={grouperDetails.name}
+                  resources={[...grouperDetails.workloads, ...grouperDetails.bridges]}
+                />
+              </div>
+            </Card>
+          );
+
+        case GROUPER_DETAILS_CONSTANTS.TAB_KEYS.HISTORY:
+          return (
+            <Card
+              style={GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD}
+              styles={{ body: GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD_BODY }}
+            >
+              <HistoryTimeLine Records={grouperDetails.history} />
+            </Card>
+          );
+
+        case GROUPER_DETAILS_CONSTANTS.TAB_KEYS.SYNC:
+          return (
+            <Card
+              style={GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD}
+              styles={{ body: GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD_BODY }}
+            >
+              <SyncMode
+                isAutoSync={isAutoSync}
+                loadingSave={loadingSave}
+                hasChanges={hasChanges}
+                handleAutoSyncChange={handleAutoSyncChange}
+                handleSyncSave={handleGrouperSyncSave}
+                syncing={syncing}
+                isGloballySyncing={isGloballySyncing}
               />
-            </div>
-          </Card>
-        );
+            </Card>
+          );
 
-      case GROUPER_DETAILS_CONSTANTS.TAB_KEYS.HISTORY:
-        return (
-          <Card style={GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD} styles={{ body: GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD_BODY }}>
-            <HistoryTimeLine Records={grouperDetails.history} />
-          </Card>
-        );
+        case GROUPER_DETAILS_CONSTANTS.TAB_KEYS.MAINTENANCE:
+          return (
+            <Card
+              style={{ ...GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD, marginBottom: 24 }}
+              styles={{ body: GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD_BODY }}
+            >
+              <MaintenanceMode
+                isMaintenanceModeActive={isMaintenanceModeActive}
+                maintenaceUpdateAction={maintenaceUpdateAction}
+                maintenaceDeleteAction={maintenaceDeleteAction}
+                isMaintenanceModalVisible={isMaintenanceModalVisible}
+                handleEnableMaintenanceClick={handleEnableMaintenanceClick}
+                handleCancelMaintenance={handleCancelMaintenance}
+                handleMaintenanceUpdateActionChange={handleMaintenanceUpdateActionChange}
+                handleMaintenanceDeleteActionChange={handleMaintenanceDeleteActionChange}
+                handleMaintenanceMode={handleMaintenanceMode}
+                hasMaintenanceData={hasMaintenanceData}
+                handleRemoveMaintenanceMode={handleRemoveMaintenanceMode}
+              />
+            </Card>
+          );
 
-      case GROUPER_DETAILS_CONSTANTS.TAB_KEYS.SYNC:
-        return (
-          <Card style={GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD} styles={{ body: GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD_BODY }}>
-            <SyncMode
-              isAutoSync={isAutoSync}
-              loadingSave={loadingSave}
-              hasChanges={hasChanges}
-              handleAutoSyncChange={handleAutoSyncChange}
-              handleSyncSave={handleGrouperSyncSave}
-              syncing={syncing}
-              isGloballySyncing={isGloballySyncing}
-            />
-          </Card>
-        );
+        default:
+          return null;
+      }
+    };
 
-      case GROUPER_DETAILS_CONSTANTS.TAB_KEYS.MAINTENANCE:
-        return (
-          <Card style={{ ...GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD, marginBottom: 24 }} styles={{ body: GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD_BODY }}>
-            <MaintenanceMode
-              isMaintenanceModeActive={isMaintenanceModeActive}
-              maintenaceUpdateAction={maintenaceUpdateAction}
-              maintenaceDeleteAction={maintenaceDeleteAction}
-              isMaintenanceModalVisible={isMaintenanceModalVisible}
-              handleEnableMaintenanceClick={handleEnableMaintenanceClick}
-              handleCancelMaintenance={handleCancelMaintenance}
-              handleMaintenanceUpdateActionChange={handleMaintenanceUpdateActionChange}
-              handleMaintenanceDeleteActionChange={handleMaintenanceDeleteActionChange}
-              handleMaintenanceMode={handleMaintenanceMode}
-              hasMaintenanceData={hasMaintenanceData}
-              handleRemoveMaintenanceMode={handleRemoveMaintenanceMode}
-            />
-          </Card>
-        );
-
-      default:
-        return null;
-    }
-  };
-
-  return <>{renderTabContent()}</>;
-});
+    return <>{renderTabContent()}</>;
+  },
+);
 
 Content.displayName = 'Content';
 
