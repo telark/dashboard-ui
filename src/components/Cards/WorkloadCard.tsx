@@ -19,6 +19,7 @@ import { DEFAULT_COLORS, CARD_CONFIGS, CARD_COLORS, CARD_TRANSITIONS } from '../
 import { UI } from '../../constants/ui';
 import type { AppWorkloadCardData } from '../../interfaces/workload';
 import { CapitalizeFirstLetter } from '../../utils/helpers';
+import { StatusTag } from '../tags';
 
 const { Title, Text } = Typography;
 
@@ -183,65 +184,10 @@ const WorkloadCard: React.FC<WorkloadCardProps> = ({ workload, onClick }) => {
             <Metric label="Attached Bridges" value={workload.bridges || 0} />
           </div>
 
-          {/* Workload Kind */}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: `${DEFAULT_COLORS.SUCCESS}15`,
-              padding: '0 8px',
-              borderRadius: '18px',
-              border: `1px solid ${DEFAULT_COLORS.SUCCESS}40`,
-              height: '26px',
-              fontSize: '11px',
-              fontWeight: '600',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-              color: DEFAULT_COLORS.SUCCESS,
-              lineHeight: 1,
-            }}
-          >
-            {workload.sourceType}
-          </div>
-
-          {/* Grouper */}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '4px',
-              backgroundColor: '#f0f8ff',
-              padding: '0 8px',
-              borderRadius: '18px',
-              border: '1px solid #d6e4ff',
-              height: '26px',
-            }}
-          >
-            <AppstoreOutlined
-              style={{
-                fontSize: '12px',
-                color: '#1890ff',
-              }}
-            />
-            <Text
-              style={{
-                fontSize: '11px',
-                color: '#1890ff',
-                fontWeight: '500',
-                lineHeight: 1,
-              }}
-            >
-              {workload.grouper}
-            </Text>
-          </div>
-
-          {/* Status */}
-          <StatusButton
-            status={workload.status === 'Available' ? 'Active' : 'Inactive'}
-            icon={statusStyle.icon}
-          />
+          {/* Tags */}
+          <StatusTag label={workload.sourceType} color={DEFAULT_COLORS.SUCCESS} />
+          <StatusTag label={workload.grouper} icon={<AppstoreOutlined />} color="#1890ff" />
+          <StatusTag label={workload.status === 'Available' ? 'Active' : 'Inactive'} icon={statusStyle.icon} color={statusStyle.color} />
 
           {/* Dropdown */}
           <Dropdown menu={{ items: menuItems }} trigger={['click']} placement="bottomRight">

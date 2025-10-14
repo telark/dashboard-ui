@@ -4,7 +4,7 @@ import { BUTTON_CONFIGS } from '../../constants';
 
 interface StatusTagProps {
   label: string;
-  icon: React.ReactElement;
+  icon?: React.ReactElement;
   color: string;
   borderColor?: string;
 }

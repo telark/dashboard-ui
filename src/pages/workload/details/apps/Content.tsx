@@ -1,6 +1,5 @@
 import React, { Suspense, lazy } from 'react';
 import { Card } from 'antd';
-import { DEFAULT_COLORS } from '../../../../constants';
 import WorkloadMetrics from '../../../../components/display/workloads/apps/Metrics';
 import WorkloadBridges from '../../../../components/display/workloads/apps/Bridges';
 import WorkloadGeneralInfo from '../../../../components/display/workloads/apps/GeneralInfo';
@@ -43,17 +42,7 @@ const Content: React.FC<ContentProps> = React.memo(
     handleWorkloadSyncSave,
   }) => {
     return (
-      <div
-        style={{
-          background: DEFAULT_COLORS.PAGE_BG,
-          minHeight: '100vh',
-          marginTop: 60,
-          paddingTop: 24,
-          paddingLeft: 24,
-          paddingRight: 24,
-          paddingBottom: 64,
-        }}
-      >
+      <div>
         {/* Resource Summary */}
         <WorkloadMetrics workload={workload} />
 

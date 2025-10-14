@@ -14,14 +14,6 @@ const Header: React.FC<HeaderProps> = React.memo(({ workload }) => {
 
   return (
     <div style={{ marginBottom: '24px' }}>
-      <Button
-        icon={<ArrowLeftOutlined />}
-        onClick={() => navigate('/workloads')}
-        style={{ marginBottom: '16px' }}
-      >
-        Back to Workloads
-      </Button>
-
       <WorkloadHeader workload={workload} />
     </div>
   );
