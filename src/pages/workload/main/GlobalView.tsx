@@ -7,7 +7,7 @@ import {
   fetchAllAppsWorkloadsThunk,
   fetchAllBatchesWorkloadsThunk,
 } from '../../../store/slices/workloadSlice';
-import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../utils/retry';
+import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../utils/shared/retry';
 import { WORKLOADS_PAGE_CONSTANTS } from '../../../constants/pages/workloads';
 import { APP_ROUTES } from '../../../constants';
 import type { AppWorkloadCardData, BatchWorkloadCardData } from '../../../interfaces/workload';

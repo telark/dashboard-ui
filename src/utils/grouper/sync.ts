@@ -49,7 +49,7 @@ export const syncGrouperDetails = async ({
       message,
     });
   } catch (err: any) {
-    handleSyncError(err, message);
+    handleSyncError(err, message, true);
   } finally {
     setSyncing(false);
     (store.dispatch as AppDispatch)(endSync(grouperDetails.name));
@@ -85,7 +85,7 @@ export const syncGrouper = async ({
       message,
     });
   } catch (err: any) {
-    handleSyncError(err, message);
+    handleSyncError(err, message, false);
   } finally {
     setSyncing(false);
     (store.dispatch as AppDispatch)(endSync(name));
