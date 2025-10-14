@@ -1,5 +1,5 @@
-import { HTTP_STATUS, CARD_DEFAULTS } from '../../../constants';
-import type { AppWorkload, AppWorkloadCardData } from '../../../interfaces/workload';
+import { HTTP_STATUS, CARD_DEFAULTS } from '../../constants';
+import type { AppWorkload, AppWorkloadCardData } from '../../interfaces/workload';
 
 // Helper function to parse Go time.Date format
 const parseGoTimeDate = (goTimeString: string): string => {

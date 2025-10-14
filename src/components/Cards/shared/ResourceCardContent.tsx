@@ -6,7 +6,7 @@ import TimeAgo from '../../time/TimeAgo';
 import { Metric } from '../../shared';
 import { StatusTag } from '../../tags';
 import { UI } from '../../../constants/ui';
-import { CapitalizeFirstLetter } from '../../../utils/helpers';
+import { CapitalizeFirstLetter } from '../../../utils/helpers/format';
 import {
   CARD_CONFIGS,
   CARD_COLORS,

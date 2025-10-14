@@ -15,9 +15,9 @@ import {
   mapGrouperMaintenanceData,
   mapGroupersData,
   mapSingleGrouperData,
-} from '../../utils/mappers/grouper';
+} from '../../utils/mappers/grouperMapper';
 import { GrouperState, Maintenance } from '../../interfaces/grouper';
-import { generateGrouperName, generateMaintenanceFeatureName } from '../../utils/helpers';
+import { generateGrouperName, generateMaintenanceFeatureName } from '../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES, SYNC_MODES } from '../../constants';
 
 const initialState: GrouperState = {

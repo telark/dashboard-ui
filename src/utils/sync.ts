@@ -14,10 +14,6 @@ interface SyncGrouperParams {
   setSyncing: (syncing: boolean) => void;
 }
 
-/**
- * Handles the sync process for a grouper
- * @param params - The sync parameters
- */
 export const syncGrouper = async ({
   name,
   syncName,
@@ -54,9 +50,6 @@ export const syncGrouper = async ({
   }
 };
 
-/**
- * Handles the sync effect after a successful sync
- */
 const handleSyncEffect = async ({
   effect,
   name,
@@ -68,12 +61,9 @@ const handleSyncEffect = async ({
   key: string;
   message: ReturnType<typeof AntdApp.useApp>['message'];
 }): Promise<void> => {
-  // If the item should disappear, keep loading toast and poll until state updates
   if (SYNC_CONSTANTS.POLLING_EFFECTS.includes(effect as 'Deleted' | 'NotFound')) {
-    // Kick a refresh immediately
     (store.dispatch as AppDispatch)(fetchAllGroupersThunk());
 
-    // Poll local state briefly until this card is gone, then show success
     const start = Date.now();
     const waitMs = SYNC_CONSTANTS.POLLING.MAX_WAIT_MS;
 
@@ -103,9 +93,6 @@ const handleSyncEffect = async ({
   }
 };
 
-/**
- * Handles sync errors and displays appropriate messages
- */
 const handleSyncError = (err: any, message: ReturnType<typeof AntdApp.useApp>['message']): void => {
   const meta = err?.normalized as { isTimeout?: boolean } | undefined;
   const phase = err?.response?.data?.data?.phase as string | undefined;
