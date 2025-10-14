@@ -9,7 +9,7 @@ import {
 } from '../../../constants';
 import { GrouperInterface } from '../../../interfaces/grouper';
 import { RootState } from '../../../store';
-import { syncGrouper } from '../../../utils/sync';
+import { syncGrouper } from '../../../utils/grouper/sync';
 import { getDetailedStatusStyle, normalizeStatus } from '../../../utils/helpers/statusUtils';
 import { ResourceCard, ResourceCardData, ResourceCardActions, ResourceCardConfig } from '../shared';
 

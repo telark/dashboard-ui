@@ -1,4 +1,4 @@
-import { GROUPERS_PAGE_CONSTANTS } from '../constants/pages/groupers';
+import { GROUPERS_PAGE_CONSTANTS } from '../../constants/pages/groupers';
 
 export interface RetryState {
   isRetrying: boolean;
