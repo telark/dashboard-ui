@@ -137,8 +137,15 @@ export const enableGrouperMaintenanceModeThunk = createAsyncThunk(
         deleteAction,
       );
       return {
+        name: grouperName,
         status: response.status,
         message: response.message,
+        maintenance: response.data ? {
+          name: response.data.name,
+          status: response.data.status,
+          deleteAction: response.data.delete,
+          updateAction: response.data.update,
+        } : null,
       };
     } catch (error: any) {
       return rejectWithValue(error.message || STORE_ERRORS.ENABLE_MAINTENANCE);
@@ -168,7 +175,14 @@ export const updateGrouperMaintenanceModeThunk = createAsyncThunk(
         deleteAction,
       );
       return {
+        name: grouperName,
         status: response.status,
+        maintenance: response.data ? {
+          name: response.data.name,
+          status: response.data.status,
+          deleteAction: response.data.delete,
+          updateAction: response.data.update,
+        } : null,
       };
     } catch (error: any) {
       return rejectWithValue(error.message || STORE_ERRORS.UPDATE_MAINTENANCE);
@@ -184,6 +198,7 @@ export const removeGrouperMaintenanceModeThunk = createAsyncThunk(
         generateMaintenanceFeatureName(grouperName),
       );
       return {
+        name: grouperName,
         status: response.status,
       };
     } catch (error: any) {
@@ -257,7 +272,24 @@ const grouperSlice = createSlice({
       })
       .addCase(fetchAllGroupersThunk.fulfilled, (state, action: PayloadAction<any[]>) => {
         state.loading = false;
-        state.groupers = action.payload;
+        
+        // Preserve maintenance state when updating groupers list
+        const existingByName: Record<string, any> = {};
+        for (const g of state.groupers) {
+          if (g?.name) existingByName[g.name] = g;
+        }
+        
+        const updatedGroupers = action.payload.map((g: any) => {
+          const existingGrouper = existingByName[g.name];
+          return {
+            ...g,
+            // Preserve maintenance data from existing state
+            maintenance: existingGrouper?.maintenance || g.maintenance,
+            hasMaintenance: existingGrouper?.hasMaintenance || g.hasMaintenance,
+          };
+        });
+        
+        state.groupers = updatedGroupers;
       })
       .addCase(fetchAllGroupersThunk.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
@@ -270,7 +302,24 @@ const grouperSlice = createSlice({
       })
       .addCase(fetchAllGroupersSilentThunk.fulfilled, (state, action: PayloadAction<any[]>) => {
         state.loading = false;
-        state.groupers = action.payload;
+        
+        // Preserve maintenance state when updating groupers list
+        const existingByName: Record<string, any> = {};
+        for (const g of state.groupers) {
+          if (g?.name) existingByName[g.name] = g;
+        }
+        
+        const updatedGroupers = action.payload.map((g: any) => {
+          const existingGrouper = existingByName[g.name];
+          return {
+            ...g,
+            // Preserve maintenance data from existing state
+            maintenance: existingGrouper?.maintenance || g.maintenance,
+            hasMaintenance: existingGrouper?.hasMaintenance || g.hasMaintenance,
+          };
+        });
+        
+        state.groupers = updatedGroupers;
       })
       .addCase(fetchAllGroupersSilentThunk.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
@@ -284,10 +333,26 @@ const grouperSlice = createSlice({
       .addCase(refreshAutoGroupersThunk.fulfilled, (state, action: PayloadAction<any[]>) => {
         const incoming = action.payload || [];
         const autoIncoming = incoming.filter((g: any) => g?.sync?.mode === SYNC_MODES.AUTO);
+        
+        // Create a map of existing groupers by name to preserve maintenance state
+        const existingByName: Record<string, any> = {};
+        for (const g of state.groupers) {
+          if (g?.name) existingByName[g.name] = g;
+        }
+        
         // Merge by name: auto items replaced from server; manual items preserved as-is
         const autoByName: Record<string, any> = {};
         for (const g of autoIncoming) {
-          if (g?.name) autoByName[g.name] = g;
+          if (g?.name) {
+            // Preserve maintenance state from existing grouper if it exists
+            const existingGrouper = existingByName[g.name];
+            autoByName[g.name] = {
+              ...g,
+              // Preserve maintenance data from existing state
+              maintenance: existingGrouper?.maintenance || g.maintenance,
+              hasMaintenance: existingGrouper?.hasMaintenance || g.hasMaintenance,
+            };
+          }
         }
 
         // Keep manual entries that aren't also present as auto with same name
@@ -363,15 +428,56 @@ const grouperSlice = createSlice({
       .addCase(updateGrouperMaintenanceModeThunk.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
         console.log(STORE_MESSAGES.MAINTENANCE_UPDATED, action.payload);
+        
+        // Update the grouper in the list with the new maintenance data
+        const grouperIndex = state.groupers.findIndex((g) => g.name === action.payload.name);
+        if (grouperIndex !== -1 && action.payload.maintenance) {
+          state.groupers[grouperIndex].maintenance = action.payload.maintenance;
+          state.groupers[grouperIndex].hasMaintenance = true;
+        }
+        
+        // Update details if it's the same grouper
+        if (state.details?.name === action.payload.name && action.payload.maintenance) {
+          state.details.maintenance = action.payload.maintenance;
+          state.details.hasMaintenance = true;
+        }
       })
       .addCase(updateGrouperMaintenanceModeThunk.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       })
+      .addCase(enableGrouperMaintenanceModeThunk.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        
+        // Update the grouper in the list with the new maintenance data
+        const grouperIndex = state.groupers.findIndex((g) => g.name === action.payload.name);
+        if (grouperIndex !== -1 && action.payload.maintenance) {
+          state.groupers[grouperIndex].maintenance = action.payload.maintenance;
+          state.groupers[grouperIndex].hasMaintenance = true;
+        }
+        
+        // Update details if it's the same grouper
+        if (state.details?.name === action.payload.name && action.payload.maintenance) {
+          state.details.maintenance = action.payload.maintenance;
+          state.details.hasMaintenance = true;
+        }
+      })
+      .addCase(enableGrouperMaintenanceModeThunk.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
       .addCase(removeGrouperMaintenanceModeThunk.fulfilled, (state, action: PayloadAction<any>) => {
-        state.groupers = state.groupers.filter((g) => g.name !== action.payload.name);
+        // Update the grouper in the list to remove maintenance data instead of filtering it out
+        const grouperIndex = state.groupers.findIndex((g) => g.name === action.payload.name);
+        if (grouperIndex !== -1) {
+          state.groupers[grouperIndex].maintenance = null;
+          state.groupers[grouperIndex].hasMaintenance = false;
+        }
+        
+        // Update details if it's the same grouper
         if (state.details?.name === action.payload.name) {
-          state.details = null;
+          state.details.maintenance = null;
+          state.details.hasMaintenance = false;
         }
       })
       .addCase(removeGrouperMaintenanceModeThunk.rejected, (state, action: PayloadAction<any>) => {
