@@ -2,6 +2,7 @@ import { AppDispatch } from '../../store';
 import {
   fetchAllAppsWorkloadsThunk,
   triggerAppsSyncThunk,
+  refreshAutoAppsThunk,
 } from '../../store/workloads/slices/workloadSlice';
 import {
   WORKLOADS_REFRESH_INTERVAL_MS,
@@ -48,9 +49,9 @@ export const setupAutoRefresh = (
     remainder === 0 ? WORKLOADS_REFRESH_INTERVAL_MS : WORKLOADS_REFRESH_INTERVAL_MS - remainder;
 
   const timeoutId = window.setTimeout(() => {
-    dispatch(fetchAllAppsWorkloadsThunk());
+    dispatch(refreshAutoAppsThunk());
     const intervalId = window.setInterval(() => {
-      dispatch(fetchAllAppsWorkloadsThunk());
+      dispatch(refreshAutoAppsThunk());
     }, WORKLOADS_REFRESH_INTERVAL_MS);
 
     // Store cleanup function

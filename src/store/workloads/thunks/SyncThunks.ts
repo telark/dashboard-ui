@@ -1,17 +1,30 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { updateAppWorkloadSyncMode } from '../../../clients/exporter';
+import { updateAppWorkloadSyncMode, fetchAllAppsWorkloads } from '../../../clients/exporter';
 import { triggerAppsSync } from '../../../clients/sync-manager';
-import { mapSingleAppWorkloadData } from '../../../utils/mappers/appMapper';
+import { mapSingleAppWorkloadData, mapAppsWorkloadsData } from '../../../utils/mappers/appMapper';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants';
 
 export const triggerAppsSyncThunk = createAsyncThunk(
-  STORE_ACTIONS.WORKLOADS.TRIGGER_SYNC,
+  STORE_ACTIONS.WORKLOADS.TRIGGER_GROUPER_SYNC,
   async (_, { rejectWithValue }) => {
     try {
       const response = await triggerAppsSync();
       return response;
     } catch (error: any) {
       return rejectWithValue(error.message || STORE_ERRORS.TRIGGER_APPS_SYNC);
+    }
+  },
+);
+
+export const refreshAutoAppsThunk = createAsyncThunk(
+  STORE_ACTIONS.WORKLOADS.REFRESH_AUTO_GROUPERS,
+  async (_, { rejectWithValue }) => {
+    try {
+      const rawWorkloadsData = await fetchAllAppsWorkloads();
+      // Server filters to auto only (similar to groupers)
+      return mapAppsWorkloadsData(rawWorkloadsData);
+    } catch (error: any) {
+      return rejectWithValue(error.message || STORE_ERRORS.REFRESH_AUTO_GROUPERS_APPS);
     }
   },
 );
