@@ -17,12 +17,6 @@ export const selectAppWorkloadError = createSelector(
   (workload) => workload.appError,
 );
 
-export const selectWorkloadSyncData = createSelector(
-  [selectAppWorkloadDetails],
-  (details) => details?.config?.sync,
-);
-
-// Combined selector for details hook
 export const selectWorkloadDetailsData = createSelector(
   [selectAppWorkloadDetails, selectAppWorkloadLoading, selectAppWorkloadError],
   (details, loading, error) => ({ details, loading, error }),
