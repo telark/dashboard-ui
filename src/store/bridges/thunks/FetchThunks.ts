@@ -37,9 +37,14 @@ export const fetchAllBridgesSilentThunk = createAsyncThunk(
 
 export const fetchBridgeDetailsThunk = createAsyncThunk(
   STORE_ACTIONS.BRIDGES.FETCH_DETAILS,
-  async (name: string, { rejectWithValue }) => {
+  async (name: string, { rejectWithValue, getState }) => {
     try {
-      const response = await fetchBridgeDetails(name);
+      // Look up the bridge from the list to get its syncName (API-facing name)
+      const state = getState() as any;
+      const bridge = state.bridge.bridges.find((b: any) => b.name === name);
+      const apiName = bridge?.syncName || name;
+      
+      const response = await fetchBridgeDetails(apiName);
       return mapSingleBridgeData(response.data);
     } catch (error) {
       console.error(STORE_MESSAGES.ERROR_FETCHING_BRIDGE_DETAILS, error);

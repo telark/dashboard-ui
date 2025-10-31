@@ -10,6 +10,8 @@ import {
   Dashboard,
   GroupersGlobalView,
   GrouperDetailsView,
+  BridgesGlobalView,
+  BridgeDetailsView,
   WorkloadsGlobalView,
   AppWorkloadDetailsView,
   Startup,
@@ -100,6 +102,8 @@ const App: React.FC = () => {
                   <Route path={APP_ROUTES.HOME} element={<Dashboard />} />
                   <Route path={APP_ROUTES.GROUPERS} element={<GroupersGlobalView />} />
                   <Route path={APP_ROUTES.GROUPER_DETAILS} element={<GrouperDetailsView />} />
+                  <Route path={APP_ROUTES.BRIDGES} element={<BridgesGlobalView />} />
+                  <Route path={APP_ROUTES.BRIDGE_DETAILS} element={<BridgeDetailsView />} />
                   <Route path={APP_ROUTES.WORKLOADS} element={<WorkloadsGlobalView />} />
                   <Route
                     path={APP_ROUTES.APP_WORKLOAD_DETAILS}

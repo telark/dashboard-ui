@@ -31,9 +31,14 @@ export const refreshAutoBridgesThunk = createAsyncThunk(
 
 export const updateBridgeSyncModeThunk = createAsyncThunk(
   STORE_ACTIONS.BRIDGE.UPDATE_SYNC,
-  async ({ name, syncMode }: { name: string; syncMode: string }, { rejectWithValue }) => {
+  async ({ name, syncMode }: { name: string; syncMode: string }, { rejectWithValue, getState }) => {
     try {
-      const response = await updateBridgeSyncMode(name, syncMode);
+      // Look up the bridge from the list to get its syncName (API-facing name)
+      const state = getState() as any;
+      const bridge = state.bridge.bridges.find((b: any) => b.name === name);
+      const apiName = bridge?.syncName || name;
+      
+      const response = await updateBridgeSyncMode(apiName, syncMode);
       return mapSingleBridgeData(response.data);
     } catch (error: any) {
       return rejectWithValue(error.message || STORE_ERRORS.UPDATE_BRIDGE_SYNC);

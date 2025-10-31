@@ -1,5 +1,5 @@
 import React from 'react';
-import { GrouperCard } from '../../../components/cards/grouper';
+import { GrouperCard } from '../../../components/cards';
 
 interface SuccessProps {
   groupers: any[];

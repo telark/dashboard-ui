@@ -42,8 +42,8 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
         <SidebarButton
           text={'Bridges'}
           icon={<BranchesOutlined />}
-          active={pathname === '/none-bridges'}
-          route="/none-bridges"
+          active={pathname.startsWith('/bridges')}
+          route="/bridges"
           isCollapsed={isCollapsed}
         />
       </Menu>
