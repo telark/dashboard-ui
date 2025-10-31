@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { RootState } from '../index';
+import { RootState } from '../../index';
 
 export const selectWorkloadState = (state: RootState) => state.workload;
 export const selectAppWorkloadDetails = createSelector(

@@ -3,8 +3,8 @@ import { triggerSingleAppSync } from '../../clients/sync-manager';
 import { SYNC_MESSAGES } from '../../constants/modes';
 import { SYNC_CONSTANTS } from '../../constants/sync';
 import store, { AppDispatch, RootState } from '../../store';
-import { fetchAllAppsWorkloadsThunk, fetchAppWorkloadDetailsThunk } from '../../store/slices/workloadSlice';
-import { startSync, endSync } from '../../store/slices/workloadSlice';
+import { fetchAllAppsWorkloadsThunk, fetchAppWorkloadDetailsThunk } from '../../store/workloads/slices/workloadSlice';
+import { startSync, endSync } from '../../store/workloads/slices/workloadSlice';
 
 interface AppWorkloadDetailsSyncParams {
   workloadDetails: any;

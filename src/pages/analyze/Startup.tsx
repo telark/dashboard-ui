@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Alert } from 'antd';
 import { motion } from 'framer-motion';
 import { useDispatch } from 'react-redux';
-import { checkClusterInsightsThunk, setHasClusterInsight } from '../../store/slices/insightsSlice';
+import { checkClusterInsightsThunk, setHasClusterInsight } from '../../store/insights/slices/insightsSlice';
 import type { AppDispatch } from '../../store';
 import { DEFAULT_COLORS } from '../../constants';
 import { startClusterAnalyze } from '../../clients/configurator';

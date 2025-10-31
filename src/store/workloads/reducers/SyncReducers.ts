@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { WorkloadsState } from '../../interfaces/workload';
+import { WorkloadsState } from '../../../interfaces/workload';
 
 export const handleTriggerSyncRejected = (state: WorkloadsState, action: PayloadAction<any>) => {
   state.appError = action.payload as string;

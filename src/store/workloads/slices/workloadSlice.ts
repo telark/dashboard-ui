@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { WorkloadsState } from '../../interfaces/workload';
+import type { WorkloadsState } from '../../../interfaces/workload';
 
 // Import thunks
 import {
   fetchAllAppsWorkloadsThunk,
   fetchAllBatchesWorkloadsThunk,
   fetchAppWorkloadDetailsThunk,
-} from '../thunks/workloadFetchThunks';
+} from '../thunks/FetchThunks';
 import {
   triggerAppsSyncThunk,
   updateAppWorkloadSyncModeThunk,
-} from '../thunks/workloadSyncThunks';
+} from '../thunks/SyncThunks';
 
 // Import reducers
 import {
@@ -23,12 +23,12 @@ import {
   handleFetchBatchesPending,
   handleFetchBatchesFulfilled,
   handleFetchBatchesRejected,
-} from '../reducers/workloadFetchReducers';
+} from '../reducers/FetchReducers';
 import {
   handleTriggerSyncRejected,
   handleUpdateSyncModeFulfilled,
   handleUpdateSyncModeRejected,
-} from '../reducers/workloadSyncReducers';
+} from '../reducers/SyncReducers';
 
 const initialState: WorkloadsState = {
   apps: [],

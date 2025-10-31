@@ -9,9 +9,9 @@ import {
   enableGrouperMaintenanceModeThunk,
   updateGrouperMaintenanceModeThunk,
   removeGrouperMaintenanceModeThunk,
-} from '../store/slices/grouperSlice';
+} from '../store/groupers/slices/grouperSlice';
 import { AppDispatch } from '../store';
-import { selectGrouperDetailsData } from '../store/selectors/grouperSelectors';
+import { selectGrouperDetailsData } from '../store/groupers/selectors/grouperSelectors';
 import {
   STORE_MESSAGES,
   HOOK_MESSAGES,

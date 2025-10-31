@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { updateGrouperSyncMode, fetchGroupers } from '../../clients/exporter';
-import { triggerGroupersSync } from '../../clients/sync-manager';
-import { mapSingleGrouperData, mapGroupersData } from '../../utils/mappers/grouperMapper';
-import { generateGrouperName } from '../../utils/helpers/format';
-import { STORE_ACTIONS, STORE_ERRORS } from '../../constants';
+import { updateGrouperSyncMode, fetchGroupers } from '../../../clients/exporter';
+import { triggerGroupersSync } from '../../../clients/sync-manager';
+import { mapSingleGrouperData, mapGroupersData } from '../../../utils/mappers/grouperMapper';
+import { generateGrouperName } from '../../../utils/helpers/format';
+import { STORE_ACTIONS, STORE_ERRORS } from '../../../constants';
 
 export const triggerGroupersSyncThunk = createAsyncThunk(
   STORE_ACTIONS.GROUPERS.TRIGGER_SYNC,

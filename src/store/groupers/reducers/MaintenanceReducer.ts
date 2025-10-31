@@ -1,6 +1,6 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { GrouperState } from '../../interfaces/grouper';
-import { STORE_MESSAGES } from '../../constants';
+import { GrouperState } from '../../../interfaces/grouper';
+import { STORE_MESSAGES } from '../../../constants';
 
 export const handleUpdateMaintenanceModePending = (state: GrouperState) => {
   state.loading = true;

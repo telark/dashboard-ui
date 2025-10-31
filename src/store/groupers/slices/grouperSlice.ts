@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GrouperState } from '../../interfaces/grouper';
+import { GrouperState } from '../../../interfaces/grouper';
 
 // Import thunks
 import {
@@ -7,17 +7,17 @@ import {
   fetchAllGroupersSilentThunk,
   fetchGrouperDetailsThunk,
   checkGrouperMaintenanceModeThunk,
-} from '../thunks/grouperFetchThunks';
+} from '../thunks/FetchThunks';
 import {
   triggerGroupersSyncThunk,
   refreshAutoGroupersThunk,
   updateGrouperSyncModeThunk,
-} from '../thunks/grouperSyncThunks';
+} from '../thunks/SyncThunks';
 import {
   enableGrouperMaintenanceModeThunk,
   updateGrouperMaintenanceModeThunk,
   removeGrouperMaintenanceModeThunk,
-} from '../thunks/grouperMaintenanceThunks';
+} from '../thunks/MaintenanceThunks';
 
 // Import reducers
 import {
@@ -31,14 +31,14 @@ import {
   handleFetchGrouperDetailsFulfilled,
   handleFetchGrouperDetailsRejected,
   handleCheckMaintenanceModeFulfilled,
-} from '../reducers/grouperFetchReducers';
+} from '../reducers/FetchReducers';
 import {
   handleTriggerSyncRejected,
   handleRefreshAutoGroupersFulfilled,
   handleRefreshAutoGroupersRejected,
   handleUpdateSyncModeFulfilled,
   handleUpdateSyncModeRejected,
-} from '../reducers/grouperSyncReducers';
+} from '../reducers/SyncReducers';
 import {
   handleUpdateMaintenanceModePending,
   handleUpdateMaintenanceModeFulfilled,
@@ -47,7 +47,7 @@ import {
   handleEnableMaintenanceModeRejected,
   handleRemoveMaintenanceModeFulfilled,
   handleRemoveMaintenanceModeRejected,
-} from '../reducers/grouperMaintenanceReducers';
+} from '../reducers/MaintenanceReducer';
 
 const initialState: GrouperState = {
   groupers: [],

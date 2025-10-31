@@ -5,8 +5,8 @@ import { GROUPER_DETAILS_CONSTANTS } from '../../constants/pages/grouper-details
 import { SYNC_CONSTANTS } from '../../constants/sync';
 import { GROUPER_CARD_TEXTS } from '../../constants/cards';
 import store, { AppDispatch, RootState } from '../../store';
-import { fetchAllGroupersThunk, fetchGrouperDetailsThunk } from '../../store/slices/grouperSlice';
-import { startSync, endSync } from '../../store/slices/grouperSlice';
+import { fetchAllGroupersThunk, fetchGrouperDetailsThunk } from '../../store/groupers/slices/grouperSlice';
+import { startSync, endSync } from '../../store/groupers/slices/grouperSlice';
 
 interface GrouperDetailsSyncParams {
   grouperDetails: any;
