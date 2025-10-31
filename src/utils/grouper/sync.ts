@@ -5,7 +5,7 @@ import { GROUPER_DETAILS_CONSTANTS } from '../../constants/pages/grouper-details
 import { SYNC_CONSTANTS } from '../../constants/sync';
 import { GROUPER_CARD_TEXTS } from '../../constants/cards';
 import store, { AppDispatch, RootState } from '../../store';
-import { fetchAllGroupersThunk } from '../../store/slices/grouperSlice';
+import { fetchAllGroupersThunk, fetchGrouperDetailsThunk } from '../../store/slices/grouperSlice';
 import { startSync, endSync } from '../../store/slices/grouperSlice';
 
 interface GrouperDetailsSyncParams {
@@ -141,6 +141,12 @@ const handleSyncEffect = async ({
       ? GROUPER_DETAILS_CONSTANTS.SYNC.POLLING.INTERVAL_MS
       : SYNC_CONSTANTS.POLLING.INTERVAL_MS);
   } else {
+    // Refresh data for Changed, NewlyCreated, and NoUpdate effects
+    // This will update both details (if in details view) and the grouper in the list (if in card view)
+    if (grouperName) {
+      await (store.dispatch as AppDispatch)(fetchGrouperDetailsThunk(grouperName));
+    }
+
     const friendly = SYNC_MESSAGES.byEffect[effect] || SYNC_MESSAGES.completed;
     const duration = isDetailsSync 
       ? GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_DURATIONS.SUCCESS

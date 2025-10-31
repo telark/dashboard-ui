@@ -74,7 +74,20 @@ export const handleFetchGrouperDetailsPending = (state: GrouperState) => {
 
 export const handleFetchGrouperDetailsFulfilled = (state: GrouperState, action: PayloadAction<any>) => {
   state.loading = false;
-  state.details = action.payload; // Populate details with fresh data
+  const updatedGrouper = action.payload;
+  state.details = updatedGrouper; // Populate details with fresh data
+  
+  // Also update the grouper in the list if it exists (for card view refresh)
+  const index = state.groupers.findIndex((grouper) => grouper.name === updatedGrouper.name);
+  if (index !== -1) {
+    // Preserve maintenance data from existing state when updating the list
+    const existingGrouper = state.groupers[index];
+    state.groupers[index] = {
+      ...updatedGrouper,
+      maintenance: existingGrouper.maintenance || updatedGrouper.maintenance,
+      hasMaintenance: existingGrouper.hasMaintenance || updatedGrouper.hasMaintenance,
+    };
+  }
 };
 
 export const handleFetchGrouperDetailsRejected = (state: GrouperState, action: PayloadAction<any>) => {
