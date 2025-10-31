@@ -7,12 +7,7 @@ import { Metric } from '../../shared';
 import { StatusTag } from '../../tags';
 import { UI } from '../../../constants/ui';
 import { CapitalizeFirstLetter } from '../../../utils/helpers/format';
-import {
-  CARD_CONFIGS,
-  CARD_COLORS,
-  DEFAULT_COLORS,
-  CARD_STATES,
-} from '../../../constants';
+import { CARD_CONFIGS, CARD_COLORS, DEFAULT_COLORS, CARD_STATES } from '../../../constants';
 import { ResourceCardDropdown } from '.';
 import { ResourceCardData, ResourceCardActions, ResourceCardConfig } from './ResourceCard';
 
@@ -31,13 +26,7 @@ interface ResourceCardContentProps {
 }
 
 const ResourceCardContent: React.FC<ResourceCardContentProps> = React.memo(
-  ({
-    data,
-    statusStyle,
-    isSyncingEffective,
-    actions,
-    config,
-  }) => {
+  ({ data, statusStyle, isSyncingEffective, actions, config }) => {
     return (
       <div
         style={{
@@ -124,12 +113,7 @@ const ResourceCardContent: React.FC<ResourceCardContentProps> = React.memo(
 
           {/* Tags */}
           {data.tags?.map((tag, index) => (
-            <StatusTag
-              key={index}
-              label={tag.label}
-              icon={tag.icon}
-              color={tag.color}
-            />
+            <StatusTag key={index} label={tag.label} icon={tag.icon} color={tag.color} />
           ))}
 
           {/* Maintenance Tag */}

@@ -2,7 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Alert } from 'antd';
 import { motion } from 'framer-motion';
 import { useDispatch } from 'react-redux';
-import { checkClusterInsightsThunk, setHasClusterInsight } from '../../store/insights/slices/insightsSlice';
+import {
+  checkClusterInsightsThunk,
+  setHasClusterInsight,
+} from '../../store/insights/slices/insightsSlice';
 import type { AppDispatch } from '../../store';
 import { DEFAULT_COLORS } from '../../constants';
 import { startClusterAnalyze } from '../../clients/configurator';
@@ -56,7 +59,7 @@ const AnalysisIllustration: React.FC = () => (
   </svg>
 );
 
-const Startup: React.FC<StartupProps> = ({ onStartAnalyze }) => {
+const Startup: React.FC<StartupProps> = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [polling, setPolling] = useState(false);

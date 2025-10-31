@@ -29,7 +29,7 @@ const WorkloadsGlobalView: React.FC = memo(() => {
   const [nextRetryIn, setNextRetryIn] = useState(0);
   const [isInCooldown, setIsInCooldown] = useState(false);
   const [cooldownTime, setCooldownTime] = useState(0);
-  const timeoutRefs = useRef<{ current: NodeJS.Timeout | null }[]>([]);
+  const timeoutRefs = useRef<{ current: ReturnType<typeof setTimeout> | null }[]>([]);
 
   const handleLoadWorkloads = useCallback(async () => {
     await loadWorkloads(dispatch);
@@ -101,7 +101,8 @@ const WorkloadsGlobalView: React.FC = memo(() => {
 
   const handleBatchClick = (batch: BatchWorkloadCardData) => {
     // TODO: Implement batch details navigation when ready
-    console.log('Batch clicked:', batch);
+    // eslint-disable-next-line no-console
+    console.warn('Batch clicked:', batch);
   };
 
   const loading = appLoading || batchLoading;

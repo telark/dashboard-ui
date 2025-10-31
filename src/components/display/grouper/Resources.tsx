@@ -15,7 +15,7 @@ import { DEFAULT_COLORS } from '../../../constants';
 import { UI } from '../../../constants/ui';
 import { Label, Row } from '../../../components/shared';
 
-const Resources: React.FC<ResourcesInterface> = React.memo(({ name, resources }) => {
+const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ name, resources }) {
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);

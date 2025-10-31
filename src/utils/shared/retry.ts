@@ -40,7 +40,7 @@ export const createRetryHandler = (
     countdownIntervalMs: GROUPERS_PAGE_CONSTANTS.RETRY.COUNTDOWN_INTERVAL_MS,
   },
 ) => {
-  const timeoutRefs: { current: NodeJS.Timeout | null }[] = [];
+  const timeoutRefs: { current: ReturnType<typeof setTimeout> | null }[] = [];
 
   return async (): Promise<void> => {
     if (callbacks.setRetrying) {
@@ -100,7 +100,7 @@ export const createRetryHandler = (
           }
           return;
         }
-      } catch (error) {
+      } catch {
         // Continue to next attempt
       }
     }
@@ -161,7 +161,7 @@ export const createRetryHandler = (
  * Cancels all active retry operations
  */
 export const cancelRetry = (
-  timeoutRefs: { current: NodeJS.Timeout | null }[],
+  timeoutRefs: { current: ReturnType<typeof setTimeout> | null }[],
   callbacks: RetryCallbacks,
 ): void => {
   timeoutRefs.forEach((ref) => {

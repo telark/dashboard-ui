@@ -10,7 +10,11 @@ interface AppsListProps {
   onAppClick?: (app: AppWorkloadCardData) => void;
 }
 
-const AppsList: React.FC<AppsListProps> = React.memo(({ apps, loading = false, onAppClick }) => {
+const AppsList: React.FC<AppsListProps> = React.memo(function AppsList({
+  apps,
+  loading = false,
+  onAppClick,
+}) {
   if (loading) {
     return (
       <div

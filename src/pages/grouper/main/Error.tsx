@@ -6,14 +6,13 @@ import { GROUPERS_PAGE_CONSTANTS } from '../../../constants/pages/groupers';
 interface ErrorProps {
   isInCooldown: boolean;
   cooldownTime: number;
-  isRetrying: boolean;
   retryCount: number;
   nextRetryIn: number;
   onCancel: () => void;
 }
 
 const Error: React.FC<ErrorProps> = React.memo(
-  ({ isInCooldown, cooldownTime, isRetrying, retryCount, nextRetryIn, onCancel }) => {
+  ({ isInCooldown, cooldownTime, retryCount, nextRetryIn, onCancel }) => {
     const formatTime = (ms: number) => Math.ceil(ms / 1000);
     const progressPercentage =
       ((GROUPERS_PAGE_CONSTANTS.COOLDOWN.DURATION_MS - cooldownTime) /

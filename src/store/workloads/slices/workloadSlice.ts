@@ -107,5 +107,6 @@ const workloadSlice = createSlice({
   },
 });
 
-export const { clearWorkloads, clearWorkloadDetails, setWorkloadError, startSync, endSync } = workloadSlice.actions;
+export const { clearWorkloads, clearWorkloadDetails, setWorkloadError, startSync, endSync } =
+  workloadSlice.actions;
 export default workloadSlice.reducer;

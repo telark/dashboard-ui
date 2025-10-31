@@ -5,14 +5,14 @@ export { GrouperCard } from './grouper';
 export { WorkloadCard } from './workloads';
 
 // Shared generic cards
-export { 
-  ResourceCard, 
-  ResourceCardContent, 
-  ResourceCardDropdown, 
+export {
+  ResourceCard,
+  ResourceCardContent,
+  ResourceCardDropdown,
   ResourceCardModal,
   type ResourceCardData,
   type ResourceCardActions,
-  type ResourceCardConfig
+  type ResourceCardConfig,
 } from './shared';
 
 export { default as ActionCard } from './home/ActionCard';

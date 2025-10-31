@@ -3,7 +3,10 @@ import { triggerSingleAppSync } from '../../clients/sync-manager';
 import { SYNC_MESSAGES } from '../../constants/modes';
 import { SYNC_CONSTANTS } from '../../constants/sync';
 import store, { AppDispatch, RootState } from '../../store';
-import { fetchAllAppsWorkloadsThunk, fetchAppWorkloadDetailsThunk } from '../../store/workloads/slices/workloadSlice';
+import {
+  fetchAllAppsWorkloadsThunk,
+  fetchAppWorkloadDetailsThunk,
+} from '../../store/workloads/slices/workloadSlice';
 import { startSync, endSync } from '../../store/workloads/slices/workloadSlice';
 
 interface AppWorkloadDetailsSyncParams {
@@ -50,7 +53,7 @@ export const syncAppWorkloadDetails = async ({
       message,
     });
   } catch (err: any) {
-    handleSyncError(err, message, true);
+    handleSyncError(err, message);
   } finally {
     const apiName = workloadDetails?.fasid?.name || workloadDetails?.name;
     if (apiName) {
@@ -87,7 +90,7 @@ export const syncAppWorkload = async ({
       message,
     });
   } catch (err: any) {
-    handleSyncError(err, message, false);
+    handleSyncError(err, message);
   } finally {
     setSyncing(false);
     (store.dispatch as AppDispatch)(endSync(name));
@@ -108,10 +111,9 @@ const handleSyncEffect = async ({
   message: ReturnType<typeof AntdApp.useApp>['message'];
 }): Promise<void> => {
   const workloadName = workloadDetails?.fasid?.name || workloadDetails?.name || name;
-  const isDetailsSync = !!workloadDetails;
-  
+
   const pollingEffects = SYNC_CONSTANTS.POLLING_EFFECTS;
-  
+
   if (pollingEffects.includes(effect as 'Deleted' | 'NotFound')) {
     (store.dispatch as AppDispatch)(fetchAllAppsWorkloadsThunk());
 
@@ -151,7 +153,7 @@ const handleSyncEffect = async ({
   }
 };
 
-const handleSyncError = (err: any, message: ReturnType<typeof AntdApp.useApp>['message'], isDetailsSync: boolean = true): void => {
+const handleSyncError = (err: any, message: ReturnType<typeof AntdApp.useApp>['message']): void => {
   const meta = err?.normalized as { isTimeout?: boolean } | undefined;
   const phase = err?.response?.data?.data?.phase as string | undefined;
   const effect = err?.response?.data?.data?.syncEffect as string | undefined;
@@ -173,4 +175,3 @@ const handleSyncError = (err: any, message: ReturnType<typeof AntdApp.useApp>['m
     duration,
   });
 };
-

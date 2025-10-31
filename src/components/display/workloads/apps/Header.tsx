@@ -81,9 +81,9 @@ const WorkloadHeader: React.FC<WorkloadHeaderProps> = ({ workload }) => {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <Button 
-          size="middle" 
-          icon={<SyncOutlined />} 
+        <Button
+          size="middle"
+          icon={<SyncOutlined />}
           loading={syncing || isGloballySyncing}
           onClick={handleSync}
         >

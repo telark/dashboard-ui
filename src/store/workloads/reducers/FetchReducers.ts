@@ -22,22 +22,25 @@ export const handleFetchAppDetailsPending = (state: WorkloadsState) => {
   state.appError = null;
 };
 
-export const handleFetchAppDetailsFulfilled = (state: WorkloadsState, action: PayloadAction<any>) => {
+export const handleFetchAppDetailsFulfilled = (
+  state: WorkloadsState,
+  action: PayloadAction<any>,
+) => {
   state.appLoading = false;
   const updatedWorkload = action.payload;
   state.appDetails = updatedWorkload;
   state.appError = null;
-  
+
   // Also update the workload in the list if it exists (for card view refresh)
   const workloadName = updatedWorkload.fasid?.name;
   if (workloadName) {
     const index = state.apps.findIndex((app) => app.name === workloadName);
     if (index !== -1) {
       // Calculate containers from crates
-      const containers = 
-        (updatedWorkload.cacid?.crates?.regular?.length || 0) + 
+      const containers =
+        (updatedWorkload.cacid?.crates?.regular?.length || 0) +
         (updatedWorkload.cacid?.crates?.init?.length || 0);
-      
+
       // Update the workload in the list with fresh data
       state.apps[index] = {
         ...state.apps[index],
@@ -53,7 +56,10 @@ export const handleFetchAppDetailsFulfilled = (state: WorkloadsState, action: Pa
   }
 };
 
-export const handleFetchAppDetailsRejected = (state: WorkloadsState, action: PayloadAction<any>) => {
+export const handleFetchAppDetailsRejected = (
+  state: WorkloadsState,
+  action: PayloadAction<any>,
+) => {
   state.appLoading = false;
   state.appError = action.payload as string;
 };
@@ -63,7 +69,10 @@ export const handleFetchBatchesPending = (state: WorkloadsState) => {
   state.batchError = null;
 };
 
-export const handleFetchBatchesFulfilled = (state: WorkloadsState, action: PayloadAction<any[]>) => {
+export const handleFetchBatchesFulfilled = (
+  state: WorkloadsState,
+  action: PayloadAction<any[]>,
+) => {
   state.batchLoading = false;
   state.batches = action.payload;
   state.batchError = null;
@@ -73,4 +82,3 @@ export const handleFetchBatchesRejected = (state: WorkloadsState, action: Payloa
   state.batchLoading = false;
   state.batchError = action.payload as string;
 };
-

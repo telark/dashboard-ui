@@ -6,7 +6,7 @@ interface WelcomeProps {
   onComplete?: () => void;
 }
 
-const Welcome: React.FC<WelcomeProps> = ({ onComplete }) => {
+const Welcome: React.FC<WelcomeProps> = () => {
   return (
     <motion.div
       initial={{ opacity: 0 }}

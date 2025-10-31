@@ -6,21 +6,23 @@ export const handleTriggerSyncRejected = (state: WorkloadsState, action: Payload
   state.appError = action.payload as string;
 };
 
-export const handleRefreshAutoAppsFulfilled = (state: WorkloadsState, action: PayloadAction<any[]>) => {
+export const handleRefreshAutoAppsFulfilled = (
+  state: WorkloadsState,
+  action: PayloadAction<any[]>,
+) => {
   const incoming = action.payload || [];
   const autoIncoming = incoming.filter((app: any) => app?.sync?.mode === SYNC_MODES.AUTO);
-  
+
   // Create a map of existing apps by name
   const existingByName: Record<string, any> = {};
   for (const app of state.apps) {
     if (app?.name) existingByName[app.name] = app;
   }
-  
+
   // Merge by name: auto items replaced from server; manual items preserved as-is
   const autoByName: Record<string, any> = {};
   for (const app of autoIncoming) {
     if (app?.name) {
-      const existingApp = existingByName[app.name];
       autoByName[app.name] = {
         ...app,
         // Preserve any existing state if needed
@@ -38,11 +40,17 @@ export const handleRefreshAutoAppsFulfilled = (state: WorkloadsState, action: Pa
   state.apps = [...Object.values(autoByName), ...manualExistingFiltered];
 };
 
-export const handleRefreshAutoAppsRejected = (state: WorkloadsState, action: PayloadAction<any>) => {
+export const handleRefreshAutoAppsRejected = (
+  state: WorkloadsState,
+  action: PayloadAction<any>,
+) => {
   state.appError = action.payload as string;
 };
 
-export const handleUpdateSyncModeFulfilled = (state: WorkloadsState, action: PayloadAction<any>) => {
+export const handleUpdateSyncModeFulfilled = (
+  state: WorkloadsState,
+  action: PayloadAction<any>,
+) => {
   const updatedItem = action.payload;
   const index = state.apps.findIndex((workload) => workload.name === updatedItem.fasid?.name);
   if (index !== -1) {
@@ -58,4 +66,3 @@ export const handleUpdateSyncModeFulfilled = (state: WorkloadsState, action: Pay
 export const handleUpdateSyncModeRejected = (state: WorkloadsState, action: PayloadAction<any>) => {
   state.appError = action.payload as string;
 };
-

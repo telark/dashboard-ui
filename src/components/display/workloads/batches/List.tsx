@@ -13,7 +13,7 @@ interface BatchesListProps {
   onBatchClick?: (batch: BatchWorkloadCardData) => void;
 }
 
-const BatchesList: React.FC<BatchesListProps> = ({ batches, loading = false, onBatchClick }) => {
+const BatchesList: React.FC<BatchesListProps> = ({ batches, loading = false }) => {
   if (loading) {
     return (
       <div
@@ -70,9 +70,7 @@ const BatchesList: React.FC<BatchesListProps> = ({ batches, loading = false, onB
   }
 
   return (
-    <div style={{ width: '100%' }}>
-        {/* TODO: Implement batch details navigation when ready */}
-    </div>
+    <div style={{ width: '100%' }}>{/* TODO: Implement batch details navigation when ready */}</div>
   );
 };
 
