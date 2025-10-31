@@ -6,7 +6,7 @@ import store, { AppDispatch } from '../../store';
 import { startSync, endSync } from '../../store/workloads/slices/workloadSlice';
 import { handleSyncEffect, handleSyncError } from '../shared/sync';
 import { WORKLOAD_SYNC_CONFIG } from '../../constants/config';
-import { DetailsSyncParams, SyncParams } from '../../interfaces/shared';
+import { DetailsSyncParams, SyncParams } from '../../interfaces/sync';
 
 
 export const syncAppWorkloadDetails = async ({

@@ -30,7 +30,7 @@ const BridgeDetailsView: React.FC = memo(function BridgeDetailsView() {
 
   const handleHeaderSync = async () => {
     await syncBridgeDetails({
-      bridgeDetails,
+      details: bridgeDetails,
       setSyncing,
       message,
     });

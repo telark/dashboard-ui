@@ -43,7 +43,7 @@ const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
 
   const handleHeaderSync = async () => {
     await syncGrouperDetails({
-      grouperDetails,
+      details: grouperDetails,
       setSyncing,
       message,
     });
