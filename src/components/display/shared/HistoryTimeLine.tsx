@@ -22,7 +22,12 @@ const capitalizeFirst = (text: string): string =>
 const HistoryTimeLine: React.FC<HistoryInterface> = React.memo(function HistoryTimeLine({
   Records,
 }) {
-  // Optimize: Only process what we need to display initially
+  // Create a stable dependency key based on records content to avoid unnecessary re-sorting
+  const recordsKey = useMemo(() => {
+    if (!Records || Records.length === 0) return '';
+    return `${Records.length}-${Records.map((r) => r.creationTime).join(',')}`;
+  }, [Records]);
+
   const { items, hasMore, displayItems } = useMemo(() => {
     if (!Records || Records.length === 0) {
       return { items: [], hasMore: false, displayItems: [] };
@@ -41,7 +46,7 @@ const HistoryTimeLine: React.FC<HistoryInterface> = React.memo(function HistoryT
       hasMore: hasMoreItems,
       displayItems: displayItemsOnly,
     };
-  }, [Records]);
+  }, [Records, recordsKey]);
 
   const [showFull, setShowFull] = useState(false);
   const [visibleItems, setVisibleItems] = useState<Record[]>([]);
