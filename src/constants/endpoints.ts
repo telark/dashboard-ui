@@ -42,6 +42,10 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.GROUPERS}/${RESOURCE_PATHS.SYNC_GROUPER(name)}`,
       method: 'POST',
     }),
+    APPS: {
+      path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.SYNC}`,
+      method: 'POST',
+    },
     APP: (name: string) => ({
       path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.SYNC_APP(name)}`,
       method: 'POST',
