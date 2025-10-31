@@ -3,7 +3,6 @@ import { DEFAULT_COLORS } from '../../constants/colors';
 import { CARD_STATES } from '../../constants/cards';
 
 export const getDetailedStatusStyle = (status: string) => {
-  // Handle various status formats and map them to consistent styling
   const normalizedStatus = status?.toLowerCase();
 
   if (normalizedStatus === 'available' || normalizedStatus === 'active') {

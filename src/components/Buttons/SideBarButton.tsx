@@ -23,7 +23,7 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({
   const coloredIcon =
     (icon &&
       (React.isValidElement(icon)
-        ? React.cloneElement(icon as any, { style: { color: iconColor } })
+        ? React.cloneElement(icon, { style: { color: iconColor } } as React.Attributes)
         : icon)) ||
     null;
 

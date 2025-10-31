@@ -19,7 +19,7 @@ const WorkloadHeader: React.FC<WorkloadHeaderProps> = ({ workload }) => {
   const navigate = useNavigate();
   const { message } = AntdApp.useApp();
   const [syncing, setSyncing] = useState(false);
-  const globalSyncing = useSelector((s: RootState) => (s.workload as any).syncing || {});
+  const globalSyncing = useSelector((s: RootState) => s.workload.syncing || {});
   const workloadName = workload?.fasid?.name;
   const isGloballySyncing = Boolean(workloadName && globalSyncing[workloadName]);
 

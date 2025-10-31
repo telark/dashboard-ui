@@ -9,7 +9,11 @@ import {
   mapSingleGrouperData,
   mapGrouperMaintenanceData,
 } from '../../../utils/mappers/grouperMapper';
-import { generateGrouperName, generateMaintenanceFeatureName } from '../../../utils/helpers/format';
+import {
+  generateGrouperName,
+  generateMaintenanceFeatureName,
+  extractErrorMessage,
+} from '../../../utils/helpers/format';
 import { Maintenance } from '../../../interfaces/grouper';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants';
 
@@ -19,9 +23,9 @@ export const fetchAllGroupersThunk = createAsyncThunk(
     try {
       const rawGroupersData = await fetchGroupers();
       return mapGroupersData(rawGroupersData);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(STORE_MESSAGES.ERROR_FETCHING_GROUPERS, error);
-      return rejectWithValue(error.message || STORE_ERRORS.FETCH_GROUPERS);
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_GROUPERS));
     }
   },
 );
@@ -32,9 +36,8 @@ export const fetchAllGroupersSilentThunk = createAsyncThunk(
     try {
       const rawGroupersData = await fetchGroupers(true); // Silent mode
       return mapGroupersData(rawGroupersData);
-    } catch (error: any) {
-      // Don't log errors during retry attempts
-      return rejectWithValue(error.message || STORE_ERRORS.FETCH_GROUPERS);
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_GROUPERS));
     }
   },
 );
@@ -52,6 +55,7 @@ export const fetchGrouperDetailsThunk = createAsyncThunk(
         try {
           const maintenanceFeatureName = generateMaintenanceFeatureName(name);
           const maintenanceResponse = await checkGrouperMaintenanceMode(maintenanceFeatureName);
+          
           // Map maintenance data if available
           maintenance = maintenanceResponse.data
             ? {
@@ -82,8 +86,8 @@ export const checkGrouperMaintenanceModeThunk = createAsyncThunk(
       const maintenanceFeatureName = generateMaintenanceFeatureName(name);
       const response = await checkGrouperMaintenanceMode(maintenanceFeatureName);
       return mapGrouperMaintenanceData(response.data);
-    } catch (error: any) {
-      return rejectWithValue(error.message || STORE_ERRORS.CHECK_MAINTENANCE);
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.CHECK_MAINTENANCE));
     }
   },
 );
