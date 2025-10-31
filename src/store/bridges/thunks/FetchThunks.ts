@@ -37,11 +37,25 @@ export const fetchAllBridgesSilentThunk = createAsyncThunk(
 
 export const fetchBridgeDetailsThunk = createAsyncThunk(
   STORE_ACTIONS.BRIDGES.FETCH_DETAILS,
-  async (name: string, { rejectWithValue, getState }) => {
+  async (name: string, { rejectWithValue, getState, dispatch }) => {
     try {
       // Look up the bridge from the list to get its syncName (API-facing name)
       const state = getState() as any;
-      const bridge = state.bridge.bridges.find((b: any) => b.name === name);
+      let bridge = state.bridge.bridges.find((b: any) => b.name === name);
+      
+      // If bridge not found in store (e.g., on page refresh), fetch the list first
+      if (!bridge && state.bridge.bridges.length === 0) {
+        try {
+          await dispatch(fetchAllBridgesSilentThunk()).unwrap();
+          // Re-fetch state after loading bridges
+          const updatedState = (getState() as any);
+          bridge = updatedState.bridge.bridges.find((b: any) => b.name === name);
+        } catch (fetchError) {
+          // If fetching list fails, proceed with name directly
+          console.warn('Failed to fetch bridges list, using name directly:', fetchError);
+        }
+      }
+      
       const apiName = bridge?.syncName || name;
       
       const response = await fetchBridgeDetails(apiName);

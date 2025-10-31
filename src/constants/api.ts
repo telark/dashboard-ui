@@ -1,6 +1,6 @@
 import { API_PORTS, buildApiUrl } from './urls';
 
-export const API_TIMEOUT = 10000; //10 seconds
+export const API_TIMEOUT = 20000; //20 seconds
 
 export const CONFIGURATOR_API = {
   PORT: API_PORTS.CONFIGURATOR,

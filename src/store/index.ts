@@ -11,6 +11,14 @@ const store = configureStore({
     workload: workloadReducer,
     bridge: bridgeReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Increase warning threshold from 32ms to 128ms
+        // This is still fast enough to catch real issues but won't warn on large valid state
+        warnAfter: 128,
+      },
+    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

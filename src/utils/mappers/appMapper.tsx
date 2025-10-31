@@ -1,57 +1,7 @@
 import { HTTP_STATUS, CARD_DEFAULTS } from '../../constants';
 import type { AppWorkload, AppWorkloadCardData } from '../../interfaces/workload';
+import { ParseGoTimeDate } from '../shared/time';
 
-// Helper function to parse Go time.Date format
-const parseGoTimeDate = (goTimeString: string): string => {
-  if (!goTimeString || goTimeString === 'Unknown') {
-    return new Date().toISOString();
-  }
-
-  // Handle Go time.Date format: time.Date(2025, time.September, 28, 12, 13, 1, 0, time.Local)
-  const match = goTimeString.match(
-    /time\.Date\((\d+),\s*time\.(\w+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*time\.Local\)/,
-  );
-
-  if (match) {
-    const [, year, monthName, day, hour, minute, second] = match;
-
-    // Convert month name to number
-    const monthMap: { [key: string]: number } = {
-      January: 0,
-      February: 1,
-      March: 2,
-      April: 3,
-      May: 4,
-      June: 5,
-      July: 6,
-      August: 7,
-      September: 8,
-      October: 9,
-      November: 10,
-      December: 11,
-    };
-
-    const month = monthMap[monthName] || 0;
-    const date = new Date(
-      parseInt(year),
-      month,
-      parseInt(day),
-      parseInt(hour),
-      parseInt(minute),
-      parseInt(second),
-    );
-    return date.toISOString();
-  }
-
-  // If it's already a valid ISO string, return as is
-  try {
-    new Date(goTimeString);
-    return goTimeString;
-  } catch {
-    // Fallback to current time
-    return new Date().toISOString();
-  }
-};
 
 export const mapAppsWorkloadsData = (data: any): AppWorkloadCardData[] => {
   if (data?.status !== HTTP_STATUS.SUCCESS || !data?.data) {
@@ -74,7 +24,7 @@ export const mapAppsWorkloadsData = (data: any): AppWorkloadCardData[] => {
       containers:
         (item.cacid?.crates?.regular?.length || 0) + (item.cacid?.crates?.init?.length || 0),
       bridges: item.cacid?.bridges?.length || 0,
-      lastUpdate: parseGoTimeDate(
+      lastUpdate: ParseGoTimeDate(
         item.config?.sync?.lastUpdateTime || item.fasid?.creationTime || 'Unknown',
       ),
       sourceType: item.fasid?.sourceType || 'Unknown',
@@ -92,7 +42,7 @@ export const mapSingleAppWorkloadData = (item: AppWorkload): AppWorkload => {
 
   return {
     fasid: {
-      creationTime: parseGoTimeDate(item.fasid.creationTime || 'Unknown'),
+      creationTime: ParseGoTimeDate(item.fasid.creationTime || 'Unknown'),
       grouper: item.fasid.grouper || 'Unknown',
       name: item.fasid.name || 'Unknown',
       sourceName: item.fasid.sourceName || 'Unknown',
@@ -134,7 +84,7 @@ export const mapSingleAppWorkloadData = (item: AppWorkload): AppWorkload => {
     config: {
       history: item.config?.history || [],
       sync: {
-        lastUpdateTime: parseGoTimeDate(item.config?.sync?.lastUpdateTime || 'Unknown'),
+        lastUpdateTime: ParseGoTimeDate(item.config?.sync?.lastUpdateTime || 'Unknown'),
         mode: item.config?.sync?.mode || 'Unknown',
       },
     },
