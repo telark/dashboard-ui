@@ -130,3 +130,41 @@ export const fetchAllBatchesWorkloads = async () => {
     throw error;
   }
 };
+
+export const fetchBridges = async (silent = false) => {
+  try {
+    const config = silent
+      ? {
+          headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK },
+        }
+      : {};
+    return await Client<any>(exporterApiClient, Endpoints.BRIDGES.GET_ALL.path, config);
+  } catch (error) {
+    if (!silent) {
+      console.error(ERROR_MESSAGES.CLIENT.FETCH_BRIDGES_FAILED, error);
+    }
+    throw error;
+  }
+};
+
+export const fetchBridgeDetails = async (name: string) => {
+  try {
+    return await Client<any>(exporterApiClient, Endpoints.BRIDGES.GET_DETAILS(name).path);
+  } catch (error) {
+    console.error(`${ERROR_MESSAGES.CLIENT.FETCH_BRIDGE_DETAILS_FAILED} "${name}":`, error);
+    throw error;
+  }
+};
+
+export const updateBridgeSyncMode = async (name: string, syncMode: string) => {
+  try {
+    const { path, method } = Endpoints.BRIDGES.UPDATE_SYNC(name);
+    return await Client<any>(exporterApiClient, path, {
+      method: method,
+      data: { spec: { config: { sync: { mode: syncMode } } } },
+    });
+  } catch (error) {
+    console.error(`${ERROR_MESSAGES.CLIENT.UPDATE_BRIDGE_SYNC_MODE_FAILED} "${name}":`, error);
+    throw error;
+  }
+};

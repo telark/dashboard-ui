@@ -31,6 +31,16 @@ export const STORE_ACTIONS = {
     TRIGGER_GROUPER_SYNC: 'workloads/triggerSync',
     REFRESH_AUTO_GROUPERS: 'workloads/refreshAuto',
   },
+  BRIDGES: {
+    FETCH: 'bridges/fetch',
+    FETCH_SILENT: 'bridges/fetchSilent',
+    TRIGGER_BRIDGE_SYNC: 'bridges/triggerSync',
+    REFRESH_AUTO_BRIDGES: 'bridges/refreshAuto',
+    FETCH_DETAILS: 'bridges/fetchDetails',
+  },
+  BRIDGE: {
+    UPDATE_SYNC: 'bridge/updateBridgeSync',
+  },
 } as const;
 
 export const SYNC_MODES = COMMON_VALUES.SYNC_MODES;
@@ -52,6 +62,11 @@ export const STORE_ERRORS = {
   UPDATE_APP_SYNC: 'Failed to update app workload sync mode',
   TRIGGER_APPS_SYNC: 'Failed to trigger apps workloads sync',
   REFRESH_AUTO_GROUPERS_APPS: 'Failed to refresh auto apps workloads',
+  FETCH_BRIDGES: 'Failed to fetch bridges',
+  TRIGGER_BRIDGE_SYNC: 'Failed to trigger bridges sync',
+  REFRESH_AUTO_BRIDGES: 'Failed to refresh auto bridges',
+  FETCH_BRIDGE_DETAILS: 'Failed to fetch bridge details',
+  UPDATE_BRIDGE_SYNC: 'Failed to update bridge sync settings.',
 } as const;
 
 export const STORE_MESSAGES = {
@@ -68,4 +83,6 @@ export const STORE_MESSAGES = {
   ERROR_FETCHING_BATCHES: 'Error fetching batches workloads:',
   ERROR_FETCHING_APP_DETAILS: 'Error fetching app workload details:',
   ERROR_UPDATING_APP_SYNC: 'Error updating app workload sync settings:',
+  ERROR_FETCHING_BRIDGES: 'Error fetching bridges:',
+  ERROR_FETCHING_BRIDGE_DETAILS: 'Error fetching bridge details:',
 } as const;
