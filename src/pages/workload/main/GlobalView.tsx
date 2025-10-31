@@ -13,7 +13,7 @@ import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../utils/
 import { WORKLOADS_PAGE_CONSTANTS } from '../../../constants/pages/workloads';
 import { APP_ROUTES } from '../../../constants';
 import type { AppWorkloadCardData, BatchWorkloadCardData } from '../../../interfaces/workload';
-import { Loading, Error, Empty, Success } from '.';
+import { Loading, Error, Success } from '.';
 
 const WorkloadsGlobalView: React.FC = memo(() => {
   const dispatch: AppDispatch = useDispatch();

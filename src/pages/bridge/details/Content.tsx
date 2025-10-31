@@ -9,14 +9,11 @@ import { BRIDGE_DETAILS_CONSTANTS, TabKey } from '../../../constants/pages/bridg
 interface ContentProps {
   activeTab: TabKey;
   bridgeDetails: any;
-  totalResources: number;
-  // Sync Mode Data
   isAutoSync: boolean;
   loadingSave: boolean;
   hasChanges: boolean;
   handleAutoSyncChange: (value: boolean) => void;
   handleBridgeSyncSave: () => void;
-  // Sync State
   syncing: boolean;
   isGloballySyncing: boolean;
 }
@@ -25,7 +22,6 @@ const Content: React.FC<ContentProps> = React.memo(
   ({
     activeTab,
     bridgeDetails,
-    totalResources,
     isAutoSync,
     loadingSave,
     hasChanges,
