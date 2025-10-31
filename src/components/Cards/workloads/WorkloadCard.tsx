@@ -5,7 +5,7 @@ import { DeploymentUnitOutlined, AppstoreOutlined } from '@ant-design/icons';
 
 import { DEFAULT_COLORS } from '../../../constants';
 import { AppWorkloadCardData } from '../../../interfaces/workload';
-import { getDetailedStatusStyle, normalizeStatus } from '../../../utils/helpers/statusUtils';
+import { getDetailedStatusStyle, normalizeStatus } from '../../../utils/helpers/status';
 import { ResourceCard, ResourceCardData, ResourceCardActions, ResourceCardConfig } from '../shared';
 import { syncAppWorkload } from '../../../utils/workload/sync';
 import { RootState } from '../../../store';

@@ -7,16 +7,12 @@ import { BRIDGE_CARD_TEXTS, CARD_DEFAULTS } from '../../../constants';
 import { BridgeInterface } from '../../../interfaces/bridge';
 import { RootState } from '../../../store';
 import { syncBridge } from '../../../utils/bridge/sync';
-import { getDetailedStatusStyle, normalizeStatus } from '../../../utils/helpers/statusUtils';
+import { getDetailedStatusStyle, normalizeStatus } from '../../../utils/helpers/status';
 import { ResourceCard, ResourceCardData, ResourceCardActions, ResourceCardConfig } from '../shared';
 
 const BridgeCard: React.FC<BridgeInterface> = React.memo(function BridgeCard({
   name = CARD_DEFAULTS.BRIDGE.NAME,
   status = CARD_DEFAULTS.BRIDGE.STATUS,
-  type = '',
-  grouper = '',
-  sourceName = CARD_DEFAULTS.BRIDGE.NAME,
-  sourceType = '',
   ports = [],
   workloads = [],
   lastUpdateTime = CARD_DEFAULTS.BRIDGE.LAST_UPDATE,
