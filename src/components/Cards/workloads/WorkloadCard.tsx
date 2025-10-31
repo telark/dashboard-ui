@@ -10,6 +10,8 @@ import { DEFAULT_COLORS } from '../../../constants';
 import { AppWorkloadCardData } from '../../../interfaces/workload';
 import { getDetailedStatusStyle, normalizeStatus } from '../../../utils/helpers/statusUtils';
 import { ResourceCard, ResourceCardData, ResourceCardActions, ResourceCardConfig } from '../shared';
+import { syncAppWorkload } from '../../../utils/workload/sync';
+import { RootState } from '../../../store';
 
 interface WorkloadCardProps {
   workload: AppWorkloadCardData;
@@ -23,7 +25,7 @@ const WorkloadCard: React.FC<WorkloadCardProps> = ({ workload, onClick }) => {
   const statusStyle = useMemo(() => getDetailedStatusStyle(workload.status), [workload.status]);
 
   const cardData: ResourceCardData = useMemo(() => ({
-    name: workload.sourceName,
+    name: workload.name,
     status: normalizeStatus(workload.status),
     lastUpdateTime: workload.lastUpdate,
     metrics: [
@@ -47,7 +49,11 @@ const WorkloadCard: React.FC<WorkloadCardProps> = ({ workload, onClick }) => {
       }
     },
     onSync: async () => {
-      message.info('Sync functionality not implemented yet');
+      await syncAppWorkload({
+        name: workload.name,
+        message,
+        setSyncing: () => {}, // This will be handled by the ResourceCard
+      });
     },
     onDelete: () => {
       message.warning('Delete functionality not implemented yet');
@@ -63,11 +69,15 @@ const WorkloadCard: React.FC<WorkloadCardProps> = ({ workload, onClick }) => {
     viewText: 'View Details',
   }), []);
 
+  const globalSyncingSelector = useCallback((state: RootState) => (state.workload as any).syncing || {}, []);
+
   return (
     <ResourceCard
       data={cardData}
       actions={cardActions}
       config={cardConfig}
+      globalSyncingSelector={globalSyncingSelector}
+      syncFunction={syncAppWorkload}
       customStatusStyle={statusStyle}
     />
   );

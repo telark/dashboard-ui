@@ -16,6 +16,7 @@ export const RESOURCE_PATHS = {
   UPDATE_SYNC: (name: string) => `${name}/patch`,
   SYNC: 'sync',
   SYNC_GROUPER: (name: string) => `${name}/sync`,
+  SYNC_APP: (name: string) => `${name}/sync`,
 } as const;
 
 export const INSIGHT_PATHS = {

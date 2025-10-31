@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from 'antd';
 import { ArrowLeftOutlined, AppstoreOutlined, SyncOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { App as AntdApp } from 'antd';
 import { DEFAULT_COLORS } from '../../../../constants';
 import StatusButton from '../../../buttons/StatusButton';
 import TimeAgo from '../../../time/TimeAgo';
 import { AppWorkload } from '../../../../interfaces/workload';
+import { syncAppWorkloadDetails } from '../../../../utils/workload/sync';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../store';
 
 interface WorkloadHeaderProps {
   workload: AppWorkload;
@@ -13,6 +17,19 @@ interface WorkloadHeaderProps {
 
 const WorkloadHeader: React.FC<WorkloadHeaderProps> = ({ workload }) => {
   const navigate = useNavigate();
+  const { message } = AntdApp.useApp();
+  const [syncing, setSyncing] = useState(false);
+  const globalSyncing = useSelector((s: RootState) => (s.workload as any).syncing || {});
+  const workloadName = workload?.fasid?.name;
+  const isGloballySyncing = Boolean(workloadName && globalSyncing[workloadName]);
+
+  const handleSync = async () => {
+    await syncAppWorkloadDetails({
+      workloadDetails: workload,
+      setSyncing,
+      message,
+    });
+  };
 
   return (
     <div
@@ -64,7 +81,12 @@ const WorkloadHeader: React.FC<WorkloadHeaderProps> = ({ workload }) => {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <Button size="middle" icon={<SyncOutlined />}>
+        <Button 
+          size="middle" 
+          icon={<SyncOutlined />} 
+          loading={syncing || isGloballySyncing}
+          onClick={handleSync}
+        >
           Sync
         </Button>
         <Button size="middle" icon={<AppstoreOutlined />}>

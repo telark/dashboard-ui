@@ -21,6 +21,7 @@ const initialState: WorkloadsState = {
   batchLoading: false,
   appError: null,
   batchError: null,
+  syncing: {},
 };
 
 export const fetchAllAppsWorkloadsThunk = createAsyncThunk(
@@ -91,6 +92,16 @@ const workloadSlice = createSlice({
     setWorkloadError: (state, action: PayloadAction<string>) => {
       state.appError = action.payload;
     },
+    startSync: (state, action: PayloadAction<string>) => {
+      const name = action.payload;
+      if (!state.syncing) state.syncing = {};
+      if (name) state.syncing[name] = true;
+    },
+    endSync: (state, action: PayloadAction<string>) => {
+      const name = action.payload;
+      if (!state.syncing) state.syncing = {};
+      if (name && state.syncing[name]) delete state.syncing[name];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -114,8 +125,33 @@ const workloadSlice = createSlice({
       })
       .addCase(fetchAppWorkloadDetailsThunk.fulfilled, (state, action) => {
         state.appLoading = false;
-        state.appDetails = action.payload;
+        const updatedWorkload = action.payload;
+        state.appDetails = updatedWorkload;
         state.appError = null;
+        
+        // Also update the workload in the list if it exists (for card view refresh)
+        const workloadName = updatedWorkload.fasid?.name;
+        if (workloadName) {
+          const index = state.apps.findIndex((app) => app.name === workloadName);
+          if (index !== -1) {
+            // Calculate containers from crates
+            const containers = 
+              (updatedWorkload.cacid?.crates?.regular?.length || 0) + 
+              (updatedWorkload.cacid?.crates?.init?.length || 0);
+            
+            // Update the workload in the list with fresh data
+            state.apps[index] = {
+              ...state.apps[index],
+              sourceName: updatedWorkload.fasid?.sourceName || state.apps[index].sourceName,
+              status: updatedWorkload.cacid?.status || state.apps[index].status,
+              instances: updatedWorkload.cacid?.instances || state.apps[index].instances,
+              containers: containers || state.apps[index].containers,
+              bridges: updatedWorkload.cacid?.bridges?.length || state.apps[index].bridges,
+              lastUpdate: updatedWorkload.config?.sync?.lastUpdateTime || state.apps[index].lastUpdate,
+              // Preserve other fields that might not be in details
+            };
+          }
+        }
       })
       .addCase(fetchAppWorkloadDetailsThunk.rejected, (state, action) => {
         state.appLoading = false;
@@ -154,5 +190,5 @@ const workloadSlice = createSlice({
   },
 });
 
-export const { clearWorkloads, clearWorkloadDetails, setWorkloadError } = workloadSlice.actions;
+export const { clearWorkloads, clearWorkloadDetails, setWorkloadError, startSync, endSync } = workloadSlice.actions;
 export default workloadSlice.reducer;
