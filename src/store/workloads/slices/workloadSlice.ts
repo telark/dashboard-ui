@@ -9,6 +9,7 @@ import {
 } from '../thunks/FetchThunks';
 import {
   triggerAppsSyncThunk,
+  refreshAutoAppsThunk,
   updateAppWorkloadSyncModeThunk,
 } from '../thunks/SyncThunks';
 
@@ -26,6 +27,8 @@ import {
 } from '../reducers/FetchReducers';
 import {
   handleTriggerSyncRejected,
+  handleRefreshAutoAppsFulfilled,
+  handleRefreshAutoAppsRejected,
   handleUpdateSyncModeFulfilled,
   handleUpdateSyncModeRejected,
 } from '../reducers/SyncReducers';
@@ -48,6 +51,7 @@ export {
   fetchAllBatchesWorkloadsThunk,
   fetchAppWorkloadDetailsThunk,
   triggerAppsSyncThunk,
+  refreshAutoAppsThunk,
   updateAppWorkloadSyncModeThunk,
 };
 
@@ -94,6 +98,9 @@ const workloadSlice = createSlice({
       .addCase(fetchAllBatchesWorkloadsThunk.rejected, handleFetchBatchesRejected)
       // Trigger Sync
       .addCase(triggerAppsSyncThunk.rejected, handleTriggerSyncRejected)
+      // Refresh Auto Apps
+      .addCase(refreshAutoAppsThunk.fulfilled, handleRefreshAutoAppsFulfilled)
+      .addCase(refreshAutoAppsThunk.rejected, handleRefreshAutoAppsRejected)
       // Update Sync Mode
       .addCase(updateAppWorkloadSyncModeThunk.fulfilled, handleUpdateSyncModeFulfilled)
       .addCase(updateAppWorkloadSyncModeThunk.rejected, handleUpdateSyncModeRejected);

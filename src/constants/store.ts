@@ -12,8 +12,8 @@ export const STORE_ACTIONS = {
   GROUPERS: {
     FETCH: 'groupers/fetch',
     FETCH_SILENT: 'groupers/fetchSilent',
-    TRIGGER_SYNC: 'groupers/triggerSync',
-    REFRESH_AUTO: 'groupers/refreshAuto',
+    TRIGGER_GROUPER_SYNC: 'groupers/triggerSync',
+    REFRESH_AUTO_GROUPERS: 'groupers/refreshAuto',
     FETCH_DETAILS: 'groupers/fetchDetails',
   },
   GROUPER: {
@@ -28,7 +28,8 @@ export const STORE_ACTIONS = {
     FETCH_BATCHES: 'workloads/fetchBatches',
     FETCH_APP_DETAILS: 'workloads/fetchAppDetails',
     UPDATE_APP_SYNC: 'workloads/updateAppSync',
-    TRIGGER_SYNC: 'workloads/triggerSync',
+    TRIGGER_GROUPER_SYNC: 'workloads/triggerSync',
+    REFRESH_AUTO_GROUPERS: 'workloads/refreshAuto',
   },
 } as const;
 
@@ -36,8 +37,8 @@ export const SYNC_MODES = COMMON_VALUES.SYNC_MODES;
 
 export const STORE_ERRORS = {
   FETCH_GROUPERS: 'Failed to fetch groupers',
-  TRIGGER_SYNC: 'Failed to trigger groupers sync',
-  REFRESH_AUTO: 'Failed to refresh auto groupers',
+  TRIGGER_GROUPER_SYNC: 'Failed to trigger groupers sync',
+  REFRESH_AUTO_GROUPERS_GROUPERS: 'Failed to refresh auto groupers',
   UPDATE_SYNC: 'Failed to update sync settings.',
   CHECK_MAINTENANCE: 'Failed to fetch maintenance mode status.',
   ENABLE_MAINTENANCE: 'Failed to enable maintenance mode.',
@@ -50,6 +51,7 @@ export const STORE_ERRORS = {
   FETCH_APP_DETAILS: 'Failed to fetch app workload details',
   UPDATE_APP_SYNC: 'Failed to update app workload sync mode',
   TRIGGER_APPS_SYNC: 'Failed to trigger apps workloads sync',
+  REFRESH_AUTO_GROUPERS_APPS: 'Failed to refresh auto apps workloads',
 } as const;
 
 export const STORE_MESSAGES = {

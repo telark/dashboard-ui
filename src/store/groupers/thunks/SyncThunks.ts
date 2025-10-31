@@ -6,26 +6,26 @@ import { generateGrouperName } from '../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS } from '../../../constants';
 
 export const triggerGroupersSyncThunk = createAsyncThunk(
-  STORE_ACTIONS.GROUPERS.TRIGGER_SYNC,
+  STORE_ACTIONS.GROUPERS.TRIGGER_GROUPER_SYNC,
   async (_, { rejectWithValue }) => {
     try {
       const response = await triggerGroupersSync();
       return response;
     } catch (error: any) {
-      return rejectWithValue(error.message || STORE_ERRORS.TRIGGER_SYNC);
+      return rejectWithValue(error.message || STORE_ERRORS.TRIGGER_GROUPER_SYNC);
     }
   },
 );
 
 export const refreshAutoGroupersThunk = createAsyncThunk(
-  STORE_ACTIONS.GROUPERS.REFRESH_AUTO,
+  STORE_ACTIONS.GROUPERS.REFRESH_AUTO_GROUPERS,
   async (_, { rejectWithValue }) => {
     try {
       const rawGroupersData = await fetchGroupers();
       // Server filters to auto only
       return mapGroupersData(rawGroupersData);
     } catch (error: any) {
-      return rejectWithValue(error.message || STORE_ERRORS.REFRESH_AUTO);
+      return rejectWithValue(error.message || STORE_ERRORS.REFRESH_AUTO_GROUPERS);
     }
   },
 );

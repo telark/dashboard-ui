@@ -80,6 +80,7 @@ export const mapAppsWorkloadsData = (data: any): AppWorkloadCardData[] => {
       sourceType: item.fasid?.sourceType || 'Unknown',
       registry: item.cacid?.registry || 'Unknown',
       strategy: item.cacid?.strategy || 'Unknown',
+      sync: item.config?.sync,
     };
   });
 };
