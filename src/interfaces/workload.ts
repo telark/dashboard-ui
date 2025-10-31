@@ -186,4 +186,5 @@ export interface WorkloadsState {
   batchLoading: boolean;
   appError: string | null;
   batchError: string | null;
+  syncing: Record<string, boolean>;
 }
