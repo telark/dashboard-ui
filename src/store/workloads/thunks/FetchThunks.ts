@@ -3,12 +3,12 @@ import {
   fetchAllAppsWorkloads,
   fetchAllBatchesWorkloads,
   fetchAppWorkloadDetails,
-} from '../../clients/exporter';
+} from '../../../clients/exporter';
 import {
   mapAppsWorkloadsData,
   mapSingleAppWorkloadData,
-} from '../../utils/mappers/appMapper';
-import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../constants';
+} from '../../../utils/mappers/appMapper';
+import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants';
 
 export const fetchAllAppsWorkloadsThunk = createAsyncThunk(
   STORE_ACTIONS.WORKLOADS.FETCH_APPS,

@@ -3,9 +3,9 @@ import {
   enableGrouperMaintenanceMode,
   updateGrouperMaintenanceMode,
   removeGrouperMaintenanceMode,
-} from '../../clients/configurator';
-import { generateGrouperName, generateMaintenanceFeatureName } from '../../utils/helpers/format';
-import { STORE_ACTIONS, STORE_ERRORS } from '../../constants';
+} from '../../../clients/configurator';
+import { generateGrouperName, generateMaintenanceFeatureName } from '../../../utils/helpers/format';
+import { STORE_ACTIONS, STORE_ERRORS } from '../../../constants';
 
 export const enableGrouperMaintenanceModeThunk = createAsyncThunk(
   STORE_ACTIONS.GROUPER.ENABLE_MAINTENANCE,

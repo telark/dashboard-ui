@@ -17,7 +17,7 @@ import {
 } from './pages';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { checkClusterInsightsThunk } from './store/slices/insightsSlice';
+import { checkClusterInsightsThunk } from './store/insights/slices/insightsSlice';
 import type { RootState, AppDispatch } from './store';
 import { FancySpinner } from './components/shared';
 

@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchGroupers, fetchGrouperDetails, checkGrouperMaintenanceMode } from '../../clients/exporter';
-import { mapGroupersData, mapSingleGrouperData, mapGrouperMaintenanceData } from '../../utils/mappers/grouperMapper';
-import { generateGrouperName, generateMaintenanceFeatureName } from '../../utils/helpers/format';
-import { Maintenance } from '../../interfaces/grouper';
-import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../constants';
+import { fetchGroupers, fetchGrouperDetails, checkGrouperMaintenanceMode } from '../../../clients/exporter';
+import { mapGroupersData, mapSingleGrouperData, mapGrouperMaintenanceData } from '../../../utils/mappers/grouperMapper';
+import { generateGrouperName, generateMaintenanceFeatureName } from '../../../utils/helpers/format';
+import { Maintenance } from '../../../interfaces/grouper';
+import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants';
 
 export const fetchAllGroupersThunk = createAsyncThunk(
   STORE_ACTIONS.GROUPERS.FETCH,

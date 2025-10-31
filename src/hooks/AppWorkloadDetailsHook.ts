@@ -6,9 +6,9 @@ import {
   fetchAppWorkloadDetailsThunk,
   clearWorkloadDetails,
   updateAppWorkloadSyncModeThunk,
-} from '../store/slices/workloadSlice';
+} from '../store/workloads/slices/workloadSlice';
 import { AppDispatch } from '../store';
-import { selectWorkloadDetailsData } from '../store/selectors/workloadSelectors';
+import { selectWorkloadDetailsData } from '../store/workloads/selectors/workloadSelectors';
 import { STORE_MESSAGES, HOOK_MESSAGES, HOOK_CONFIGS, SYNC_ACTIONS } from '../constants';
 
 export const AppWorkloadDetailsHook = () => {
