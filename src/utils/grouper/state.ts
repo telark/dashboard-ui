@@ -11,62 +11,31 @@ import {
   GROUPERS_SYNC_LS_KEY,
   GROUPERS_SYNC_THROTTLE_MS,
 } from '../../constants/sync';
+import { GrouperInterface } from '../../interfaces/grouper';
+import { createResourceStateUtils } from '../shared/resourceStateFactory';
 
-export const loadGroupers = async (dispatch: AppDispatch): Promise<void> => {
-  const result = await dispatch(fetchAllGroupersThunk());
-  if (fetchAllGroupersThunk.fulfilled.match(result)) {
-    result.payload.forEach((grouper: any) => {
-      if (grouper?.hasMaintenance) {
-        dispatch(checkGrouperMaintenanceModeThunk(grouper.name));
-      }
-    });
-  }
-};
+const grouperStateUtils = createResourceStateUtils({
+  fetchThunk: fetchAllGroupersThunk,
+  fetchSilentThunk: fetchAllGroupersSilentThunk,
+  triggerSyncThunk: triggerGroupersSyncThunk,
+  refreshAutoThunk: refreshAutoGroupersThunk,
+  refreshInterval: GROUPERS_REFRESH_INTERVAL_MS,
+  syncThrottle: GROUPERS_SYNC_THROTTLE_MS,
+  syncLsKey: GROUPERS_SYNC_LS_KEY,
+  onAfterLoad: async (dispatch: AppDispatch, payload: GrouperInterface[]) => {
+    // Collect all maintenance checks and run them in parallel
+    const maintenanceChecks = payload
+      .filter((grouper) => grouper?.hasMaintenance)
+      .map((grouper) => dispatch(checkGrouperMaintenanceModeThunk(grouper.name)));
 
-export const loadGroupersSilent = async (dispatch: AppDispatch): Promise<boolean> => {
-  try {
-    const result = await dispatch(fetchAllGroupersSilentThunk());
-    return fetchAllGroupersSilentThunk.fulfilled.match(result);
-  } catch {
-    return false;
-  }
-};
-
-export const handleInitialSync = async (dispatch: AppDispatch): Promise<void> => {
-  try {
-    const now = Date.now();
-    const lastStr = localStorage.getItem(GROUPERS_SYNC_LS_KEY);
-    const last = lastStr ? parseInt(lastStr, 10) : 0;
-
-    if (!last || now - last >= GROUPERS_SYNC_THROTTLE_MS) {
-      dispatch(triggerGroupersSyncThunk());
-      localStorage.setItem(GROUPERS_SYNC_LS_KEY, String(now));
+    // Wait for all maintenance checks to complete in parallel
+    if (maintenanceChecks.length > 0) {
+      await Promise.all(maintenanceChecks);
     }
-  } catch {
-    // Fallback without persistence
-    dispatch(triggerGroupersSyncThunk());
-  }
-};
+  },
+});
 
-export const setupAutoRefresh = (
-  dispatch: AppDispatch,
-  onCleanup: (cleanupFn: () => void) => void,
-): void => {
-  const now = Date.now();
-  const remainder = now % GROUPERS_REFRESH_INTERVAL_MS;
-  const initialDelay =
-    remainder === 0 ? GROUPERS_REFRESH_INTERVAL_MS : GROUPERS_REFRESH_INTERVAL_MS - remainder;
-
-  const timeoutId = window.setTimeout(() => {
-    dispatch(refreshAutoGroupersThunk());
-    const intervalId = window.setInterval(() => {
-      dispatch(refreshAutoGroupersThunk());
-    }, GROUPERS_REFRESH_INTERVAL_MS);
-
-    // Store cleanup function
-    onCleanup(() => {
-      window.clearTimeout(timeoutId);
-      if (intervalId) window.clearInterval(intervalId);
-    });
-  }, initialDelay);
-};
+export const loadGroupers = grouperStateUtils.loadResource;
+export const loadGroupersSilent = grouperStateUtils.loadResourceSilent;
+export const handleInitialSync = grouperStateUtils.handleInitialSync;
+export const setupAutoRefresh = grouperStateUtils.setupAutoRefresh;
