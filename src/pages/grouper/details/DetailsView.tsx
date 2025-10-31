@@ -1,4 +1,4 @@
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useCallback, useMemo } from 'react';
 import { App as AntdApp } from 'antd';
 import { useSelector } from 'react-redux';
 import { GrouperDetailsHook } from '../../../hooks/GrouperDetailsHook';
@@ -41,13 +41,19 @@ const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
   const globalSyncing = useSelector((s: RootState) => s.grouper.syncing || {});
   const isGloballySyncing = Boolean(grouperDetails?.name && globalSyncing[grouperDetails.name]);
 
-  const handleHeaderSync = async () => {
+  const handleHeaderSync = useCallback(async () => {
     await syncGrouperDetails({
       details: grouperDetails,
       setSyncing,
       message,
     });
-  };
+  }, [grouperDetails, setSyncing, message]);
+
+  const totalResources = useMemo(
+    () =>
+      (grouperDetails?.workloads?.length || 0) + (grouperDetails?.bridges?.length || 0),
+    [grouperDetails?.workloads?.length, grouperDetails?.bridges?.length],
+  );
 
   if (loading) {
     return <Loading />;
@@ -60,9 +66,6 @@ const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
   if (!grouperDetails) {
     return <Empty />;
   }
-
-  const totalResources =
-    (grouperDetails.workloads?.length || 0) + (grouperDetails.bridges?.length || 0);
 
   return (
     <div style={GROUPER_DETAILS_CONSTANTS.LAYOUT.PAGE_CONTAINER}>

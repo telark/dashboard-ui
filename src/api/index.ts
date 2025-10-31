@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import {
   EXPORTER_API,
   CONFIGURATOR_API,
@@ -31,11 +31,18 @@ const syncManagerApiClient: AxiosInstance = axios.create({
   headers: REQUEST_CONFIG.DEFAULT_HEADERS,
 });
 
-// Helpers to normalize error handling
-const normalizeError = (error: any) => {
+interface ExtendedAxiosError extends AxiosError {
+  normalized?: ReturnType<typeof normalizeError>;
+}
+
+const normalizeError = (error: AxiosError) => {
   const status = error?.response?.status ?? null;
-  const message =
-    error?.response?.data?.message || error?.message || ERROR_MESSAGES.API.UNKNOWN_ERROR;
+  const responseData = error?.response?.data;
+  const dataMessage = 
+    responseData && typeof responseData === 'object' && 'message' in responseData
+      ? String(responseData.message)
+      : undefined;
+  const message = dataMessage || error?.message || ERROR_MESSAGES.API.UNKNOWN_ERROR;
   const url = error?.config?.url ?? '';
   const method = error?.config?.method ?? '';
   const isNotFound = status === HTTP_STATUS.NOT_FOUND;
@@ -49,93 +56,62 @@ const normalizeError = (error: any) => {
   return { status, message, url, method, isNotFound, isClient, isServer, isNetwork, isTimeout };
 };
 
-// Interceptor for handling responses on the exporterApiClient
-exporterApiClient.interceptors.response.use(
-  (response: AxiosResponse) => response,
-  (error) => {
-    const meta = normalizeError(error);
-    (error as any).normalized = meta;
-    const isSilent404 =
-      meta.isNotFound &&
-      error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_404] === HEADER_VALUES.SILENT_404;
-    const isSilentNetwork =
-      meta.isNetwork &&
-      error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_NETWORK] === HEADER_VALUES.SILENT_NETWORK;
+interface ErrorInterceptorOptions {
+  silent404?: boolean;
+}
 
-    if (isSilent404) {
-      // Treat 404 as a successful, empty response when explicitly marked silent
-      const resp: AxiosResponse = error?.response ?? {
-        ...API_RESPONSES.SILENT_404,
-        config: error?.config,
-      };
-      return Promise.resolve({ ...resp, data: null });
-    }
-    if (isSilentNetwork) {
-      // Suppress logging and just propagate silently
-      return Promise.reject(error);
-    }
-    if (meta.isNotFound) {
-      console.warn(ERROR_MESSAGES.API.NOT_FOUND_WARNING, meta);
-    } else if (meta.isNetwork) {
-      console.error(ERROR_MESSAGES.API.NETWORK_ERROR, meta);
-    } else if (meta.isTimeout) {
-      console.error(ERROR_MESSAGES.API.TIMEOUT_ERROR, meta);
-    } else {
-      console.error(ERROR_MESSAGES.API.GENERIC_ERROR, meta);
-    }
-    return Promise.reject(error); // Return original error
-  },
-);
+const createErrorInterceptor = (options: ErrorInterceptorOptions = {}) => {
+  const { silent404 = false } = options;
+  
+  return [
+    (response: AxiosResponse) => response,
+    (error: AxiosError) => {
+      const meta = normalizeError(error);
+      (error as ExtendedAxiosError).normalized = meta;
+      
+      const isSilent404 =
+        silent404 &&
+        meta.isNotFound &&
+        error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_404] === HEADER_VALUES.SILENT_404;
+      const isSilentNetwork =
+        meta.isNetwork &&
+        error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_NETWORK] === HEADER_VALUES.SILENT_NETWORK;
 
-// Interceptor for handling responses on the configuratorApiClient
-configuratorApiClient.interceptors.response.use(
-  (response: AxiosResponse) => response,
-  (error) => {
-    const meta = normalizeError(error);
-    (error as any).normalized = meta;
-    const isSilentNetwork =
-      meta.isNetwork &&
-      error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_NETWORK] === HEADER_VALUES.SILENT_NETWORK;
-    if (isSilentNetwork) {
+      if (isSilent404) {
+        if (error?.response) {
+          return Promise.resolve({ ...error.response, data: null });
+        }
+        if (!error?.config) {
+          return Promise.reject(error);
+        }
+        const resp: AxiosResponse = {
+          ...API_RESPONSES.SILENT_404,
+          config: error.config,
+          statusText: 'Not Found',
+          headers: {},
+        };
+        return Promise.resolve(resp);
+      }
+      if (isSilentNetwork) {
+        return Promise.reject(error);
+      }
+      if (meta.isNotFound) {
+        console.warn(ERROR_MESSAGES.API.NOT_FOUND_WARNING, meta);
+      } else if (meta.isNetwork) {
+        console.error(ERROR_MESSAGES.API.NETWORK_ERROR, meta);
+      } else if (meta.isTimeout) {
+        console.error(ERROR_MESSAGES.API.TIMEOUT_ERROR, meta);
+      } else {
+        console.error(ERROR_MESSAGES.API.GENERIC_ERROR, meta);
+      }
       return Promise.reject(error);
-    }
-    if (meta.isNotFound) {
-      console.warn(ERROR_MESSAGES.API.NOT_FOUND_WARNING, meta);
-    } else if (meta.isNetwork) {
-      console.error(ERROR_MESSAGES.API.NETWORK_ERROR, meta);
-    } else if (meta.isTimeout) {
-      console.error(ERROR_MESSAGES.API.TIMEOUT_ERROR, meta);
-    } else {
-      console.error(ERROR_MESSAGES.API.GENERIC_ERROR, meta);
-    }
-    return Promise.reject(error);
-  },
-);
+    },
+  ] as const;
+};
 
-// Interceptor for handling responses on the syncManagerApiClient
-syncManagerApiClient.interceptors.response.use(
-  (response: AxiosResponse) => response,
-  (error) => {
-    const meta = normalizeError(error);
-    (error as any).normalized = meta;
-    const isSilentNetwork =
-      meta.isNetwork &&
-      error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_NETWORK] === HEADER_VALUES.SILENT_NETWORK;
-    if (isSilentNetwork) {
-      return Promise.reject(error);
-    }
-    if (meta.isNotFound) {
-      console.warn(ERROR_MESSAGES.API.NOT_FOUND_WARNING, meta);
-    } else if (meta.isNetwork) {
-      console.error(ERROR_MESSAGES.API.NETWORK_ERROR, meta);
-    } else if (meta.isTimeout) {
-      console.error(ERROR_MESSAGES.API.TIMEOUT_ERROR, meta);
-    } else {
-      console.error(ERROR_MESSAGES.API.GENERIC_ERROR, meta);
-    }
-    return Promise.reject(error);
-  },
-);
+exporterApiClient.interceptors.response.use(...createErrorInterceptor({ silent404: true }));
+configuratorApiClient.interceptors.response.use(...createErrorInterceptor());
+syncManagerApiClient.interceptors.response.use(...createErrorInterceptor());
 
 export const Client = async <T>(
   client: AxiosInstance,
