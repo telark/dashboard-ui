@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef, memo, useState } from 'react';
+import React, { useEffect, useCallback, useRef, memo, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -72,15 +72,18 @@ const WorkloadsGlobalView: React.FC = memo(() => {
   }, [appError, batchError, isRetrying]);
 
   // Retry callbacks
-  const retryCallbacks: RetryCallbacks = {
-    setRetrying: setIsRetrying,
-    setRetryCount: setRetryCount,
-    setNextRetryIn: setNextRetryIn,
-    setInCooldown: setIsInCooldown,
-    setCooldownTime: setCooldownTime,
-    onSuccess: () => message.success(WORKLOADS_PAGE_CONSTANTS.MESSAGES.SUCCESS),
-    onError: () => message.error(WORKLOADS_PAGE_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
-  };
+  const retryCallbacks: RetryCallbacks = useMemo(
+    () => ({
+      setRetrying: setIsRetrying,
+      setRetryCount: setRetryCount,
+      setNextRetryIn: setNextRetryIn,
+      setInCooldown: setIsInCooldown,
+      setCooldownTime: setCooldownTime,
+      onSuccess: () => message.success(WORKLOADS_PAGE_CONSTANTS.MESSAGES.SUCCESS),
+      onError: () => message.error(WORKLOADS_PAGE_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
+    }),
+    [],
+  );
 
   // Create retry handler
   const handleRetry = useCallback(async () => {
