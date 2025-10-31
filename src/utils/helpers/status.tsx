@@ -1,4 +1,3 @@
-import React from 'react';
 import { CheckCircleOutlined, WarningOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../constants/colors';
 import { CARD_STATES } from '../../constants/cards';
