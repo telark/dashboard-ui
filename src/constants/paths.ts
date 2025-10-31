@@ -3,6 +3,7 @@ export const API_PATHS = {
     GROUPERS: 'resources/groupers',
     INSIGHTS: 'resources/insights',
     WORKLOADS: 'resources/workloads',
+    BRIDGES: 'resources/bridges',
   },
   FEATS: {
     MAINTENANCE: 'feats/maintenance',
@@ -17,6 +18,7 @@ export const RESOURCE_PATHS = {
   SYNC: 'sync',
   SYNC_GROUPER: (name: string) => `${name}/sync`,
   SYNC_APP: (name: string) => `${name}/sync`,
+  SYNC_BRIDGE: (name: string) => `${name}/sync`,
 } as const;
 
 export const INSIGHT_PATHS = {

@@ -19,6 +19,9 @@ export const ERROR_MESSAGES = {
     FETCH_APPS_FAILED: '[APIClient] Failed to fetch apps workloads:',
     FETCH_APP_DETAILS_FAILED: '[APIClient] Failed to fetch app workload details for',
     FETCH_BATCHES_FAILED: '[APIClient] Failed to fetch batches workloads:',
+    FETCH_BRIDGES_FAILED: '[APIClient] Failed to fetch all bridges:',
+    FETCH_BRIDGE_DETAILS_FAILED: '[APIClient] Failed to fetch bridge details for',
+    UPDATE_BRIDGE_SYNC_MODE_FAILED: '[APIClient] Failed to update bridge sync mode for',
   },
 
   INSIGHTS: {

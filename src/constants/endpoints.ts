@@ -50,6 +50,28 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.SYNC_APP(name)}`,
       method: 'POST',
     }),
+    BRIDGES: {
+      path: `${API_PATHS.RESOURCES.BRIDGES}/${RESOURCE_PATHS.SYNC}`,
+      method: 'POST',
+    },
+    BRIDGE: (name: string) => ({
+      path: `${API_PATHS.RESOURCES.BRIDGES}/${RESOURCE_PATHS.SYNC_BRIDGE(name)}`,
+      method: 'POST',
+    }),
+  },
+  BRIDGES: {
+    GET_ALL: {
+      path: `${API_PATHS.RESOURCES.BRIDGES}/${RESOURCE_PATHS.GET_ALL}`,
+      method: 'GET',
+    },
+    GET_DETAILS: (name: string) => ({
+      path: `${API_PATHS.RESOURCES.BRIDGES}/${RESOURCE_PATHS.GET_DETAILS(name)}`,
+      method: 'GET',
+    }),
+    UPDATE_SYNC: (name: string) => ({
+      path: `${API_PATHS.RESOURCES.BRIDGES}/${RESOURCE_PATHS.UPDATE_SYNC(name)}`,
+      method: 'PATCH',
+    }),
   },
   GROUPER_MAINTENANCE: {
     CHECK: (name: string) => ({

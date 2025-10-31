@@ -1,8 +1,11 @@
 // Grouper cards
-export { GrouperCard } from './grouper';
+export { default as GrouperCard } from './grouper/GrouperCard';
 
 // Workload cards
-export { WorkloadCard } from './workloads';
+export { default as WorkloadCard } from './workloads/WorkloadCard';
+
+// Bridge cards
+export { default as BridgeCard } from './bridge/BridgeCard';
 
 // Shared generic cards
 export {
@@ -10,10 +13,15 @@ export {
   ResourceCardContent,
   ResourceCardDropdown,
   ResourceCardModal,
-  type ResourceCardData,
-  type ResourceCardActions,
-  type ResourceCardConfig,
+} from './shared';
+
+// Shared generic cards types
+export type {
+  ResourceCardData,
+  ResourceCardActions,
+  ResourceCardConfig,
 } from './shared';
 
 export { default as ActionCard } from './home/ActionCard';
 export { default as ActionListItem } from './home/ActionListItem';
+

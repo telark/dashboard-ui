@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import grouperReducer from './groupers/slices/grouperSlice';
 import insightsReducer from './insights/slices/insightsSlice';
 import workloadReducer from './workloads/slices/workloadSlice';
+import bridgeReducer from './bridges/slices/bridgeSlice';
 
 const store = configureStore({
   reducer: {
     grouper: grouperReducer,
     insights: insightsReducer,
     workload: workloadReducer,
+    bridge: bridgeReducer,
   },
 });
 

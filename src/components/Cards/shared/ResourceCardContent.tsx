@@ -9,7 +9,7 @@ import { UI } from '../../../constants/ui';
 import { CapitalizeFirstLetter } from '../../../utils/helpers/format';
 import { CARD_CONFIGS, CARD_COLORS, DEFAULT_COLORS, CARD_STATES } from '../../../constants';
 import { ResourceCardDropdown } from '.';
-import { ResourceCardData, ResourceCardActions, ResourceCardConfig } from './ResourceCard';
+import { ResourceCardData, ResourceCardActions, ResourceCardConfig } from '../shared';
 
 const { Title, Text } = Typography;
 
