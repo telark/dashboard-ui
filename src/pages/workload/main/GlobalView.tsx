@@ -4,9 +4,11 @@ import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { RootState, AppDispatch } from '../../../store';
 import {
-  fetchAllAppsWorkloadsThunk,
-  fetchAllBatchesWorkloadsThunk,
-} from '../../../store/workloads/slices/workloadSlice';
+  loadWorkloads,
+  loadWorkloadsSilent,
+  handleInitialSync,
+  setupAutoRefresh,
+} from '../../../utils/workload/state';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../utils/shared/retry';
 import { WORKLOADS_PAGE_CONSTANTS } from '../../../constants/pages/workloads';
 import { APP_ROUTES } from '../../../constants';
@@ -19,6 +21,7 @@ const WorkloadsGlobalView: React.FC = memo(() => {
   const { apps, batches, appLoading, batchLoading, appError, batchError } = useSelector(
     (state: RootState) => state.workload,
   );
+  const hasTriggeredInitialSync = useRef(false);
 
   // Retry state
   const [isRetrying, setIsRetrying] = useState(false);
@@ -29,16 +32,34 @@ const WorkloadsGlobalView: React.FC = memo(() => {
   const timeoutRefs = useRef<{ current: NodeJS.Timeout | null }[]>([]);
 
   const handleLoadWorkloads = useCallback(async () => {
-    await Promise.all([
-      dispatch(fetchAllAppsWorkloadsThunk()),
-      dispatch(fetchAllBatchesWorkloadsThunk()),
-    ]);
+    await loadWorkloads(dispatch);
     return true;
   }, [dispatch]);
 
   useEffect(() => {
-    handleLoadWorkloads();
-  }, [handleLoadWorkloads]);
+    (async () => {
+      await handleLoadWorkloads();
+      if (!hasTriggeredInitialSync.current) {
+        hasTriggeredInitialSync.current = true;
+        await handleInitialSync(dispatch);
+      }
+    })();
+  }, [handleLoadWorkloads, dispatch]);
+
+  // Poll only auto-sync workloads, aligned to exact interval boundaries
+  useEffect(() => {
+    let cleanupFn: (() => void) | undefined;
+
+    setupAutoRefresh(dispatch, (cleanup) => {
+      cleanupFn = cleanup;
+    });
+
+    return () => {
+      if (cleanupFn) {
+        cleanupFn();
+      }
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     if (appError || batchError) {
@@ -65,10 +86,10 @@ const WorkloadsGlobalView: React.FC = memo(() => {
   const handleRetry = useCallback(async () => {
     if (isRetrying || isInCooldown) return;
 
-    const retryHandler = createRetryHandler(() => handleLoadWorkloads(), retryCallbacks);
+    const retryHandler = createRetryHandler(() => loadWorkloadsSilent(dispatch), retryCallbacks);
 
     await retryHandler();
-  }, [handleLoadWorkloads, isRetrying, isInCooldown, retryCallbacks]);
+  }, [dispatch, isRetrying, isInCooldown, retryCallbacks]);
 
   const handleCancelRetry = useCallback(() => {
     cancelRetry(timeoutRefs.current, retryCallbacks);
