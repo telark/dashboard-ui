@@ -71,7 +71,7 @@ const GrouperCard: React.FC<GrouperInterface> = React.memo(function GrouperCard(
   );
 
   const globalSyncingSelector = useCallback(
-    (state: RootState) => (state.grouper as any).syncing || {},
+    (state: RootState) => state.grouper.syncing || {},
     [],
   );
 

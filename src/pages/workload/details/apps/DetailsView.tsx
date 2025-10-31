@@ -26,7 +26,7 @@ const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() 
   } = AppWorkloadDetailsHook();
 
   const workloadName = workload?.fasid?.name;
-  const globalSyncing = useSelector((s: RootState) => (s.workload as any).syncing || {});
+  const globalSyncing = useSelector((s: RootState) => s.workload.syncing || {});
   const isGloballySyncing = Boolean(workloadName && globalSyncing[workloadName]);
 
   useEffect(() => {

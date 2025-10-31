@@ -72,7 +72,7 @@ const BridgeCard: React.FC<BridgeInterface> = React.memo(function BridgeCard({
   );
 
   const globalSyncingSelector = useCallback(
-    (state: RootState) => (state.bridge as any).syncing || {},
+    (state: RootState) => state.bridge.syncing || {},
     [],
   );
 

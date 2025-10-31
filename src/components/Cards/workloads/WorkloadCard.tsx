@@ -76,7 +76,7 @@ const WorkloadCard: React.FC<WorkloadCardProps> = ({ workload, onClick }) => {
   );
 
   const globalSyncingSelector = useCallback(
-    (state: RootState) => (state.workload as any).syncing || {},
+    (state: RootState) => state.workload.syncing || {},
     [],
   );
 
