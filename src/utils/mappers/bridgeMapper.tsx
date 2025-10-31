@@ -1,4 +1,5 @@
 import { UTILS_TEXTS, HTTP_STATUS, CARD_DEFAULTS } from '../../constants';
+import { ParseGoTimeDate } from '../shared/time';
 
 export const mapBridgesData = (data: any): any[] => {
   if (data?.status !== HTTP_STATUS.SUCCESS || !data?.data) {
@@ -41,8 +42,8 @@ export const mapSingleBridgeData = (item: any): any => {
     grouper: item.fasid.grouper || UTILS_TEXTS.DEFAULTS.EMPTY_STRING,
     sourceName: item.fasid.sourceName,
     sourceType: item.fasid.sourceType || UTILS_TEXTS.DEFAULTS.EMPTY_STRING,
-    creationTime: item.fasid.creationTime,
-    lastUpdateTime: item.config?.sync?.lastUpdateTime || item.fasid.lastUpdateTime,
+    creationTime: ParseGoTimeDate(item.fasid.creationTime || item.fasid.lastUpdateTime || new Date().toISOString()),
+    lastUpdateTime: item.config?.sync?.lastUpdateTime || item.fasid.lastUpdateTime || new Date().toISOString(),
     history: item.config?.history || [],
     ports: item.cacid?.ports || [],
     selectors: item.cacid?.selectors || [],
