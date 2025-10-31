@@ -28,6 +28,7 @@ export const STORE_ACTIONS = {
     FETCH_BATCHES: 'workloads/fetchBatches',
     FETCH_APP_DETAILS: 'workloads/fetchAppDetails',
     UPDATE_APP_SYNC: 'workloads/updateAppSync',
+    TRIGGER_SYNC: 'workloads/triggerSync',
   },
 } as const;
 
@@ -48,6 +49,7 @@ export const STORE_ERRORS = {
   FETCH_BATCHES: 'Failed to fetch batches workloads',
   FETCH_APP_DETAILS: 'Failed to fetch app workload details',
   UPDATE_APP_SYNC: 'Failed to update app workload sync mode',
+  TRIGGER_APPS_SYNC: 'Failed to trigger apps workloads sync',
 } as const;
 
 export const STORE_MESSAGES = {
