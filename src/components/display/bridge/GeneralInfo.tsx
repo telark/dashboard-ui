@@ -95,4 +95,3 @@ const BridgeGeneralInfo: React.FC<BridgeGeneralInfoProps> = ({
 );
 
 export default BridgeGeneralInfo;
-

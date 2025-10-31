@@ -6,4 +6,3 @@ export { default as Tabs } from './Tabs';
 export { default as Content } from './Content';
 export { default } from './DetailsView';
 export { default as BridgeDetailsView } from './DetailsView';
-

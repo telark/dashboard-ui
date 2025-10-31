@@ -23,7 +23,7 @@ const getPollingMaxWait = (config: SyncConfig, isDetailsSync: boolean): number =
 const getSuccessDuration = (config: SyncConfig, isDetailsSync: boolean): number => {
   return isDetailsSync
     ? config.detailsConstants?.SYNC.MESSAGE_DURATIONS.SUCCESS ||
-      config.cardConstants.MESSAGE_DURATIONS.SUCCESS
+        config.cardConstants.MESSAGE_DURATIONS.SUCCESS
     : config.cardConstants.MESSAGE_DURATIONS.SUCCESS;
 };
 
@@ -59,7 +59,11 @@ const handleDeletionPolling = (
   const interval = setInterval(() => {
     const state: RootState = store.getState();
     const resourceList = config.getResourceList(state);
-    const stillThere = isResourceStillPresent(resourceName, resourceList, config.getNameFromResource);
+    const stillThere = isResourceStillPresent(
+      resourceName,
+      resourceList,
+      config.getNameFromResource,
+    );
 
     if (!stillThere || Date.now() - start > waitMs) {
       clearInterval(interval);
@@ -118,7 +122,14 @@ export const handleSyncEffect = async ({
     }
     handleDeletionPolling(resourceName, effect, key, config, isDetailsSync, message);
   } else {
-    await handleRefreshEffect(resourceName || undefined, effect, key, config, isDetailsSync, message);
+    await handleRefreshEffect(
+      resourceName || undefined,
+      effect,
+      key,
+      config,
+      isDetailsSync,
+      message,
+    );
   }
 };
 
@@ -137,7 +148,8 @@ const getErrorKey = (config: SyncConfig, isDetailsSync: boolean): string => {
 
 const getErrorDuration = (config: SyncConfig, isDetailsSync: boolean): number => {
   return isDetailsSync
-    ? config.detailsConstants?.SYNC.MESSAGE_DURATIONS.ERROR || config.cardConstants.MESSAGE_DURATIONS.ERROR
+    ? config.detailsConstants?.SYNC.MESSAGE_DURATIONS.ERROR ||
+        config.cardConstants.MESSAGE_DURATIONS.ERROR
     : config.cardConstants.MESSAGE_DURATIONS.ERROR;
 };
 
@@ -178,4 +190,3 @@ export const handleSyncError = ({
     duration,
   });
 };
-

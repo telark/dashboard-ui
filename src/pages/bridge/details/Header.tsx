@@ -64,4 +64,3 @@ const Header: React.FC<HeaderProps> = React.memo(
 Header.displayName = 'Header';
 
 export default Header;
-

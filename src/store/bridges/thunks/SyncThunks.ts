@@ -39,7 +39,7 @@ export const updateBridgeSyncModeThunk = createAsyncThunk(
       const state = getState() as RootState;
       const bridge = state.bridge.bridges.find((b: BridgeInterface) => b.name === name);
       const apiName = bridge?.syncName || name;
-      
+
       const response = await updateBridgeSyncMode(apiName, syncMode);
       return mapSingleBridgeData(response.data);
     } catch (error: unknown) {
@@ -47,4 +47,3 @@ export const updateBridgeSyncModeThunk = createAsyncThunk(
     }
   },
 );
-

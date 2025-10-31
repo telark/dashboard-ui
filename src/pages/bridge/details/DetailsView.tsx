@@ -78,4 +78,3 @@ const BridgeDetailsView: React.FC = memo(function BridgeDetailsView() {
 });
 
 export default BridgeDetailsView;
-

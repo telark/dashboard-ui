@@ -1,14 +1,19 @@
-import { RootState } from "../store";
-import { fetchAllAppsWorkloadsThunk, fetchAppWorkloadDetailsThunk } from "../store/workloads/slices/workloadSlice";
-import { SyncConfig } from "../interfaces/sync";
-import { SYNC_CONSTANTS } from "./sync";
-import { BRIDGE_DETAILS_CONSTANTS } from "./pages/bridge-details";
-import { fetchAllBridgesThunk, fetchBridgeDetailsThunk } from "../store/bridges/slices/bridgeSlice";
-import { BRIDGE_CARD_TEXTS } from "./cards";
-import { GROUPER_DETAILS_CONSTANTS } from "./pages/grouper-details";
-import { fetchAllGroupersThunk, fetchGrouperDetailsThunk } from "../store/groupers/slices/grouperSlice";
-import { GROUPER_CARD_TEXTS } from "./cards";
-
+import { RootState } from '../store';
+import {
+  fetchAllAppsWorkloadsThunk,
+  fetchAppWorkloadDetailsThunk,
+} from '../store/workloads/slices/workloadSlice';
+import { SyncConfig } from '../interfaces/sync';
+import { SYNC_CONSTANTS } from './sync';
+import { BRIDGE_DETAILS_CONSTANTS } from './pages/bridge-details';
+import { fetchAllBridgesThunk, fetchBridgeDetailsThunk } from '../store/bridges/slices/bridgeSlice';
+import { BRIDGE_CARD_TEXTS } from './cards';
+import { GROUPER_DETAILS_CONSTANTS } from './pages/grouper-details';
+import {
+  fetchAllGroupersThunk,
+  fetchGrouperDetailsThunk,
+} from '../store/groupers/slices/grouperSlice';
+import { GROUPER_CARD_TEXTS } from './cards';
 
 export const WORKLOAD_SYNC_CONFIG: SyncConfig = {
   cardConstants: {

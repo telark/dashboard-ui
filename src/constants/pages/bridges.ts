@@ -112,4 +112,3 @@ export const BRIDGES_PAGE_CONSTANTS = {
     },
   },
 } as const;
-

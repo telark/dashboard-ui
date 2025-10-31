@@ -12,4 +12,3 @@ const Empty: React.FC = React.memo(() => {
 Empty.displayName = 'Empty';
 
 export default Empty;
-

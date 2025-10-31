@@ -39,4 +39,3 @@ const Tabs: React.FC<TabsProps> = React.memo(({ activeTab, totalResources, onTab
 Tabs.displayName = 'Tabs';
 
 export default Tabs;
-

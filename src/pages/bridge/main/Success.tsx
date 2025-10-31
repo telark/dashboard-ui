@@ -18,4 +18,3 @@ const Success: React.FC<SuccessProps> = React.memo(({ bridges }) => {
 Success.displayName = 'Success';
 
 export default Success;
-

@@ -80,4 +80,3 @@ export const syncGrouper = async ({
     (store.dispatch as AppDispatch)(endSync(name));
   }
 };
-

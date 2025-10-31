@@ -64,7 +64,10 @@ const Content: React.FC<ContentProps> = React.memo(
               styles={{ body: BRIDGE_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD_BODY }}
             >
               <div style={{ padding: 4 }}>
-                <BridgeResources name={bridgeDetails.name} workloads={bridgeDetails.workloads || []} />
+                <BridgeResources
+                  name={bridgeDetails.name}
+                  workloads={bridgeDetails.workloads || []}
+                />
               </div>
             </Card>
           );
@@ -109,4 +112,3 @@ const Content: React.FC<ContentProps> = React.memo(
 Content.displayName = 'Content';
 
 export default Content;
-
