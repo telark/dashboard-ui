@@ -5,6 +5,7 @@ import {
   SyncOutlined,
   AppstoreOutlined,
 } from '@ant-design/icons';
+import { AiOutlineTag, AiOutlineCalendar, AiOutlineSync } from "react-icons/ai";
 import TimeAgo from '../../time/TimeAgo';
 import { GeneralInfoInterface } from '../../../interfaces/shared';
 import StatusButton from '../../buttons/StatusButton';
@@ -23,17 +24,17 @@ const GrouperGeneralInfo: React.FC<GrouperGeneralInfoExtension> = ({
 }) => (
   <div style={{ padding: '6px 2px' }}>
     <Row
-      left={<Label icon={<ApartmentOutlined />} text="Name" />}
+      left={<Label icon={<AiOutlineTag />} text="Name" />}
       right={<span style={{ fontWeight: 700 }}>{name || '—'}</span>}
     />
 
     <Row
-      left={<Label icon={<ClockCircleOutlined />} text="Creation Date" />}
+      left={<Label icon={<AiOutlineCalendar />} text="Creation Date" />}
       right={<TimeAgo date={creationTime} />}
     />
 
     <Row
-      left={<Label icon={<ClockCircleOutlined />} text="Last Modification" />}
+      left={<Label icon={<AiOutlineCalendar />} text="Last Modification" />}
       right={<TimeAgo date={lastUpdateTime} />}
     />
 

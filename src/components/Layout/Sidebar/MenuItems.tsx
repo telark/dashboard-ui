@@ -1,7 +1,7 @@
 import { Menu } from 'antd';
-import { AppstoreOutlined, DeploymentUnitOutlined, BranchesOutlined } from '@ant-design/icons';
 import SidebarButton from '../../buttons/SideBarButton';
 import { useLocation } from 'react-router-dom';
+import { AiOutlineCluster, AiOutlineApi, AiOutlineAppstore, AiOutlineDashboard } from "react-icons/ai";
 
 interface MenuItemsProps {
   isCollapsed?: boolean;
@@ -20,28 +20,28 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
       >
         <SidebarButton
           text={'Home'}
-          icon={<AppstoreOutlined />}
+          icon={<AiOutlineDashboard />}
           active={pathname === '/'}
           route="/"
           isCollapsed={isCollapsed}
         />
         <SidebarButton
           text={'Groupers'}
-          icon={<AppstoreOutlined />}
+          icon={<AiOutlineCluster />}
           active={pathname.startsWith('/groupers')}
           route="/groupers"
           isCollapsed={isCollapsed}
         />
         <SidebarButton
           text={'Workloads'}
-          icon={<DeploymentUnitOutlined />}
+          icon={<AiOutlineAppstore />}
           active={pathname.startsWith('/workloads')}
           route="/workloads"
           isCollapsed={isCollapsed}
         />
         <SidebarButton
           text={'Bridges'}
-          icon={<BranchesOutlined />}
+          icon={<AiOutlineApi />}
           active={pathname.startsWith('/bridges')}
           route="/bridges"
           isCollapsed={isCollapsed}

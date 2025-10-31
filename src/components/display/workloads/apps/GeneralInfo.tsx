@@ -1,10 +1,6 @@
 import React from 'react';
-import {
-  ClockCircleOutlined,
-  AppstoreOutlined,
-  DatabaseOutlined,
-  DeploymentUnitOutlined,
-} from '@ant-design/icons';
+import {DeploymentUnitOutlined} from '@ant-design/icons';
+import { AiOutlineTag, AiOutlineSwap, AiOutlineCluster, AiOutlineCalendar, AiOutlineLock } from "react-icons/ai";
 import TimeAgo from '../../../time/TimeAgo';
 import { AppWorkload } from '../../../../interfaces/workload';
 import { Label, Row } from '../../../../components/shared';
@@ -16,12 +12,12 @@ interface WorkloadGeneralInfoProps {
 const WorkloadGeneralInfo: React.FC<WorkloadGeneralInfoProps> = ({ workload }) => (
   <div style={{ padding: '6px 2px' }}>
     <Row
-      left={<Label icon={<AppstoreOutlined />} text="Name" />}
+      left={<Label icon={<AiOutlineTag />} text="Name" />}
       right={<span style={{ fontWeight: 700 }}>{workload.fasid?.sourceName || '—'}</span>}
     />
 
     <Row
-      left={<Label icon={<DatabaseOutlined />} text="Grouper" />}
+      left={<Label icon={<AiOutlineCluster />} text="Grouper" />}
       right={<span style={{ fontWeight: 700 }}>{workload.fasid?.grouper || '—'}</span>}
     />
 
@@ -31,17 +27,17 @@ const WorkloadGeneralInfo: React.FC<WorkloadGeneralInfoProps> = ({ workload }) =
     />
 
     <Row
-      left={<Label icon={<ClockCircleOutlined />} text="Creation Date" />}
+      left={<Label icon={<AiOutlineCalendar />} text="Creation Date" />}
       right={<TimeAgo date={workload.fasid?.creationTime || new Date().toISOString()} />}
     />
 
     <Row
-      left={<Label icon={<DatabaseOutlined />} text="Registry Type" />}
+      left={<Label icon={<AiOutlineLock />} text="Registry Type" />}
       right={<span style={{ fontWeight: 700 }}>{workload.cacid?.registry || '—'}</span>}
     />
 
     <Row
-      left={<Label icon={<AppstoreOutlined />} text="Strategy" />}
+      left={<Label icon={<AiOutlineSwap />} text="Strategy" />}
       right={<span style={{ fontWeight: 700 }}>{workload.cacid?.strategy || '—'}</span>}
       withDivider={false}
     />

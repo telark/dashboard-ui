@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
-import { AppstoreOutlined } from '@ant-design/icons';
+import { AiOutlineCluster } from "react-icons/ai";
 
 import { GROUPER_CARD_TEXTS, CARD_DEFAULTS } from '../../../constants';
 import { GrouperInterface } from '../../../interfaces/grouper';
@@ -32,7 +32,7 @@ const GrouperCard: React.FC<GrouperInterface> = React.memo(function GrouperCard(
         { label: 'Workloads', value: numberOfWorkloads },
         { label: 'Bridges', value: numberOfBridges },
       ],
-      icon: <AppstoreOutlined />,
+      icon: <AiOutlineCluster />,
       syncName,
     }),
     [name, status, lastUpdateTime, maintenance, numberOfWorkloads, numberOfBridges, syncName],

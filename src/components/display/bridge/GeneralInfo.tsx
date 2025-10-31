@@ -1,11 +1,11 @@
 import React from 'react';
 import {
-  ApartmentOutlined,
   ClockCircleOutlined,
   SyncOutlined,
   BranchesOutlined,
   DeploymentUnitOutlined,
 } from '@ant-design/icons';
+import { AiOutlineTag, AiOutlineCluster, AiOutlineCalendar, AiOutlineSync } from "react-icons/ai";
 import TimeAgo from '../../time/TimeAgo';
 import StatusButton from '../../buttons/StatusButton';
 import { Label, Row } from '../../../components/shared';
@@ -17,8 +17,6 @@ interface BridgeGeneralInfoProps {
   status: string;
   type: string;
   grouper: string;
-  sourceName: string;
-  sourceType: string;
   ports?: Array<{ source: number; target: number }>;
   workloads?: Array<{ name: string; type: string }>;
 }
@@ -30,14 +28,12 @@ const BridgeGeneralInfo: React.FC<BridgeGeneralInfoProps> = ({
   status,
   type,
   grouper,
-  sourceName,
-  sourceType,
   ports = [],
   workloads = [],
 }) => (
   <div style={{ padding: '6px 2px' }}>
     <Row
-      left={<Label icon={<ApartmentOutlined />} text="Name" />}
+      left={<Label icon={<AiOutlineTag />} text="Name" />}
       right={<span style={{ fontWeight: 700 }}>{name || '—'}</span>}
     />
 
@@ -47,18 +43,8 @@ const BridgeGeneralInfo: React.FC<BridgeGeneralInfoProps> = ({
     />
 
     <Row
-      left={<Label icon={<ApartmentOutlined />} text="Grouper" />}
+      left={<Label icon={<AiOutlineCluster />} text="Grouper" />}
       right={<span style={{ fontWeight: 700 }}>{grouper || '—'}</span>}
-    />
-
-    <Row
-      left={<Label icon={<DeploymentUnitOutlined />} text="Source Name" />}
-      right={<span style={{ fontWeight: 700 }}>{sourceName || '—'}</span>}
-    />
-
-    <Row
-      left={<Label icon={<DeploymentUnitOutlined />} text="Source Type" />}
-      right={<span style={{ fontWeight: 700 }}>{sourceType || '—'}</span>}
     />
 
     <Row
