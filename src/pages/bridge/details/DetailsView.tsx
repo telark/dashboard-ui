@@ -9,12 +9,9 @@ import { Loading, Error, Empty, Header, Tabs, Content } from '.';
 
 const BridgeDetailsView: React.FC = memo(function BridgeDetailsView() {
   const {
-    // Global Data
     bridgeDetails,
     loading,
     error,
-
-    // Sync Mode Data
     isAutoSync,
     loadingSave,
     hasChanges,
@@ -67,7 +64,6 @@ const BridgeDetailsView: React.FC = memo(function BridgeDetailsView() {
       <Content
         activeTab={activeTab}
         bridgeDetails={bridgeDetails}
-        totalResources={totalResources}
         isAutoSync={isAutoSync}
         loadingSave={loadingSave}
         hasChanges={hasChanges}

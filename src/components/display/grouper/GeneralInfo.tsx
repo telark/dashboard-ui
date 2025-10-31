@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  ApartmentOutlined,
-  ClockCircleOutlined,
-  SyncOutlined,
-  AppstoreOutlined,
-} from '@ant-design/icons';
-import { AiOutlineTag, AiOutlineCalendar, AiOutlineSync } from "react-icons/ai";
+import { SyncOutlined, AppstoreOutlined } from '@ant-design/icons';
+import { AiOutlineTag, AiOutlineCalendar } from 'react-icons/ai';
 import TimeAgo from '../../time/TimeAgo';
 import { GeneralInfoInterface } from '../../../interfaces/shared';
 import StatusButton from '../../buttons/StatusButton';
