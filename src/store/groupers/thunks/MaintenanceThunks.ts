@@ -4,7 +4,11 @@ import {
   updateGrouperMaintenanceMode,
   removeGrouperMaintenanceMode,
 } from '../../../clients/configurator';
-import { generateGrouperName, generateMaintenanceFeatureName } from '../../../utils/helpers/format';
+import {
+  generateGrouperName,
+  generateMaintenanceFeatureName,
+  extractErrorMessage,
+} from '../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS } from '../../../constants';
 
 export const enableGrouperMaintenanceModeThunk = createAsyncThunk(
@@ -43,8 +47,8 @@ export const enableGrouperMaintenanceModeThunk = createAsyncThunk(
             }
           : null,
       };
-    } catch (error: any) {
-      return rejectWithValue(error.message || STORE_ERRORS.ENABLE_MAINTENANCE);
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.ENABLE_MAINTENANCE));
     }
   },
 );
@@ -81,8 +85,8 @@ export const updateGrouperMaintenanceModeThunk = createAsyncThunk(
             }
           : null,
       };
-    } catch (error: any) {
-      return rejectWithValue(error.message || STORE_ERRORS.UPDATE_MAINTENANCE);
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.UPDATE_MAINTENANCE));
     }
   },
 );
@@ -98,8 +102,8 @@ export const removeGrouperMaintenanceModeThunk = createAsyncThunk(
         name: grouperName,
         status: response.status,
       };
-    } catch (error: any) {
-      return rejectWithValue(error.message || STORE_ERRORS.REMOVE_MAINTENANCE);
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.REMOVE_MAINTENANCE));
     }
   },
 );

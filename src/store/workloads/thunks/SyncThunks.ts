@@ -3,6 +3,7 @@ import { updateAppWorkloadSyncMode, fetchAllAppsWorkloads } from '../../../clien
 import { triggerAppsSync } from '../../../clients/sync-manager';
 import { mapSingleAppWorkloadData, mapAppsWorkloadsData } from '../../../utils/mappers/appMapper';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants';
+import { extractErrorMessage } from '../../../utils/helpers/format';
 
 export const triggerAppsSyncThunk = createAsyncThunk(
   STORE_ACTIONS.WORKLOADS.TRIGGER_GROUPER_SYNC,
@@ -10,8 +11,8 @@ export const triggerAppsSyncThunk = createAsyncThunk(
     try {
       const response = await triggerAppsSync();
       return response;
-    } catch (error: any) {
-      return rejectWithValue(error.message || STORE_ERRORS.TRIGGER_APPS_SYNC);
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.TRIGGER_APPS_SYNC));
     }
   },
 );
@@ -23,8 +24,8 @@ export const refreshAutoAppsThunk = createAsyncThunk(
       const rawWorkloadsData = await fetchAllAppsWorkloads();
       // Server filters to auto only (similar to groupers)
       return mapAppsWorkloadsData(rawWorkloadsData);
-    } catch (error: any) {
-      return rejectWithValue(error.message || STORE_ERRORS.REFRESH_AUTO_GROUPERS_APPS);
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.REFRESH_AUTO_GROUPERS_APPS));
     }
   },
 );
@@ -35,9 +36,9 @@ export const updateAppWorkloadSyncModeThunk = createAsyncThunk(
     try {
       const response = await updateAppWorkloadSyncMode(name, syncMode);
       return mapSingleAppWorkloadData(response.data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(STORE_MESSAGES.ERROR_UPDATING_APP_SYNC, error);
-      return rejectWithValue(error.message || STORE_ERRORS.UPDATE_APP_SYNC);
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.UPDATE_APP_SYNC));
     }
   },
 );

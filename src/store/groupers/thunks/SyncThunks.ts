@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { updateGrouperSyncMode, fetchGroupers } from '../../../clients/exporter';
 import { triggerGroupersSync } from '../../../clients/sync-manager';
 import { mapSingleGrouperData, mapGroupersData } from '../../../utils/mappers/grouperMapper';
-import { generateGrouperName } from '../../../utils/helpers/format';
+import { generateGrouperName, extractErrorMessage } from '../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS } from '../../../constants';
 
 export const triggerGroupersSyncThunk = createAsyncThunk(
@@ -11,8 +11,8 @@ export const triggerGroupersSyncThunk = createAsyncThunk(
     try {
       const response = await triggerGroupersSync();
       return response;
-    } catch (error: any) {
-      return rejectWithValue(error.message || STORE_ERRORS.TRIGGER_GROUPER_SYNC);
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.TRIGGER_GROUPER_SYNC));
     }
   },
 );
@@ -24,8 +24,8 @@ export const refreshAutoGroupersThunk = createAsyncThunk(
       const rawGroupersData = await fetchGroupers();
       // Server filters to auto only
       return mapGroupersData(rawGroupersData);
-    } catch (error: any) {
-      return rejectWithValue(error.message || STORE_ERRORS.REFRESH_AUTO_GROUPERS);
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.REFRESH_AUTO_GROUPERS));
     }
   },
 );
@@ -37,8 +37,8 @@ export const updateGrouperSyncModeThunk = createAsyncThunk(
       const grouperName = generateGrouperName(name);
       const response = await updateGrouperSyncMode(grouperName, syncMode);
       return mapSingleGrouperData(response.data, null);
-    } catch (error: any) {
-      return rejectWithValue(error.message || STORE_ERRORS.UPDATE_SYNC);
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.UPDATE_SYNC));
     }
   },
 );

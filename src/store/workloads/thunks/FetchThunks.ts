@@ -6,6 +6,7 @@ import {
 } from '../../../clients/exporter';
 import { mapAppsWorkloadsData, mapSingleAppWorkloadData } from '../../../utils/mappers/appMapper';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants';
+import { extractErrorMessage } from '../../../utils/helpers/format';
 
 export const fetchAllAppsWorkloadsThunk = createAsyncThunk(
   STORE_ACTIONS.WORKLOADS.FETCH_APPS,
@@ -13,9 +14,9 @@ export const fetchAllAppsWorkloadsThunk = createAsyncThunk(
     try {
       const rawWorkloadsData = await fetchAllAppsWorkloads();
       return mapAppsWorkloadsData(rawWorkloadsData);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(STORE_MESSAGES.ERROR_FETCHING_APPS, error);
-      return rejectWithValue(error.message || STORE_ERRORS.FETCH_APPS);
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_APPS));
     }
   },
 );
@@ -26,9 +27,9 @@ export const fetchAllBatchesWorkloadsThunk = createAsyncThunk(
     try {
       const rawBatchesData = await fetchAllBatchesWorkloads();
       return rawBatchesData.data?.items || [];
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(STORE_MESSAGES.ERROR_FETCHING_BATCHES, error);
-      return rejectWithValue(error.message || STORE_ERRORS.FETCH_BATCHES);
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_BATCHES));
     }
   },
 );
@@ -39,9 +40,9 @@ export const fetchAppWorkloadDetailsThunk = createAsyncThunk(
     try {
       const rawWorkloadsData = await fetchAppWorkloadDetails(name);
       return mapSingleAppWorkloadData(rawWorkloadsData.data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(STORE_MESSAGES.ERROR_FETCHING_APP_DETAILS, error);
-      return rejectWithValue(error.message || STORE_ERRORS.FETCH_APP_DETAILS);
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_APP_DETAILS));
     }
   },
 );

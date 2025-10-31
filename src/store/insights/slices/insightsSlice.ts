@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { checkClusterInsights } from '../../../clients/exporter';
 import { STORAGE_KEYS, STORE_ACTIONS, STORE_ERRORS, ERROR_MESSAGES } from '../../../constants';
+import { extractErrorMessage } from '../../../utils/helpers/format';
 
 export interface InsightsState {
   hasClusterInsight: boolean;
@@ -9,7 +10,6 @@ export interface InsightsState {
   initialized: boolean;
 }
 
-// Read persisted state from localStorage on startup
 const getInitialHasClusterInsight = (): boolean => {
   try {
     const stored = window.localStorage.getItem(STORAGE_KEYS.HAS_CLUSTER_INSIGHTS);
@@ -35,8 +35,8 @@ export const checkClusterInsightsThunk = createAsyncThunk(
         return rejectWithValue(ERROR_MESSAGES.INSIGHTS.NETWORK_UNAVAILABLE);
       }
       return Boolean(res?.data);
-    } catch (error: any) {
-      return rejectWithValue(error?.message || STORE_ERRORS.CHECK_INSIGHTS);
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.CHECK_INSIGHTS));
     }
   },
 );
@@ -72,7 +72,6 @@ const insightsSlice = createSlice({
           if (action.payload) {
             window.localStorage.setItem(STORAGE_KEYS.HAS_CLUSTER_INSIGHTS, 'true');
           } else {
-            // Clear localStorage if insights are not available
             window.localStorage.removeItem(STORAGE_KEYS.HAS_CLUSTER_INSIGHTS);
           }
         } catch {

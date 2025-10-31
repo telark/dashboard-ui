@@ -26,3 +26,7 @@ export const generateMaintenanceFeatureName = (parsedName: string): string => {
   const grouperName = generateGrouperName(parsedName);
   return `${grouperName}${UTILS_CONFIGS.NAMING.MAINTENANCE_FEATURE_SUFFIX}`;
 };
+
+export const extractErrorMessage = (error: unknown, fallback: string): string => {
+  return error instanceof Error ? error.message : fallback;
+};

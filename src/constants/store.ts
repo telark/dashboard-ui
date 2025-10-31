@@ -48,7 +48,7 @@ export const SYNC_MODES = COMMON_VALUES.SYNC_MODES;
 export const STORE_ERRORS = {
   FETCH_GROUPERS: 'Failed to fetch groupers',
   TRIGGER_GROUPER_SYNC: 'Failed to trigger groupers sync',
-  REFRESH_AUTO_GROUPERS_GROUPERS: 'Failed to refresh auto groupers',
+  REFRESH_AUTO_GROUPERS: 'Failed to refresh auto groupers',
   UPDATE_SYNC: 'Failed to update sync settings.',
   CHECK_MAINTENANCE: 'Failed to fetch maintenance mode status.',
   ENABLE_MAINTENANCE: 'Failed to enable maintenance mode.',
