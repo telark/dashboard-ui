@@ -38,8 +38,8 @@ const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
   const [activeTab, setActiveTab] = useState<TabKey>(GROUPER_DETAILS_CONSTANTS.TAB_KEYS.GENERAL);
   const [syncing, setSyncing] = useState(false);
   const { message } = AntdApp.useApp();
-  const globalSyncing = useSelector((s: RootState) => (s.grouper as any).syncing || {});
-  const isGloballySyncing = Boolean(globalSyncing[(grouperDetails as any)?.name]);
+  const globalSyncing = useSelector((s: RootState) => s.grouper.syncing || {});
+  const isGloballySyncing = Boolean(grouperDetails?.name && globalSyncing[grouperDetails.name]);
 
   const handleHeaderSync = async () => {
     await syncGrouperDetails({

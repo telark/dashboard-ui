@@ -25,8 +25,8 @@ const BridgeDetailsView: React.FC = memo(function BridgeDetailsView() {
   const [activeTab, setActiveTab] = useState<TabKey>(BRIDGE_DETAILS_CONSTANTS.TAB_KEYS.GENERAL);
   const [syncing, setSyncing] = useState(false);
   const { message } = AntdApp.useApp();
-  const globalSyncing = useSelector((s: RootState) => (s.bridge as any).syncing || {});
-  const isGloballySyncing = Boolean(globalSyncing[(bridgeDetails as any)?.name]);
+  const globalSyncing = useSelector((s: RootState) => s.bridge.syncing || {});
+  const isGloballySyncing = Boolean(bridgeDetails?.name && globalSyncing[bridgeDetails.name]);
 
   const handleHeaderSync = async () => {
     await syncBridgeDetails({
