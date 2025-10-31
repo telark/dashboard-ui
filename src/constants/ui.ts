@@ -282,6 +282,19 @@ export const COMPONENT_STYLES = {
         width: '100%',
       },
     },
+    BRIDGES: {
+      pageStyle: {
+        background: '#f8fafc', // DEFAULT_COLORS.PAGE_BG
+        minHeight: 'calc(100vh - 60px)',
+        padding: '48px 24px 24px',
+        marginTop: '60px',
+      },
+      gridStyle: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+      },
+    },
   },
 } as const;
 
