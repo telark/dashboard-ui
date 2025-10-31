@@ -1,16 +1,12 @@
 import React from 'react';
-import { 
-  CheckCircleOutlined, 
-  WarningOutlined, 
-  CloseCircleOutlined 
-} from '@ant-design/icons';
+import { CheckCircleOutlined, WarningOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../constants/colors';
 import { CARD_STATES } from '../../constants/cards';
 
 export const getDetailedStatusStyle = (status: string) => {
   // Handle various status formats and map them to consistent styling
   const normalizedStatus = status?.toLowerCase();
-  
+
   if (normalizedStatus === 'available' || normalizedStatus === 'active') {
     return {
       color: DEFAULT_COLORS.SUCCESS,
@@ -34,10 +30,10 @@ export const getDetailedStatusStyle = (status: string) => {
 
 export const normalizeStatus = (status: string): string => {
   const normalizedStatus = status?.toLowerCase();
-  
+
   if (normalizedStatus === 'available' || normalizedStatus === 'active') {
     return CARD_STATES.STATUS.ACTIVE;
   }
-  
+
   return CARD_STATES.STATUS.INACTIVE;
 };

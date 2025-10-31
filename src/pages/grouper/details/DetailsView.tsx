@@ -7,7 +7,7 @@ import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../../constants/pages/grou
 import { RootState } from '../../../store';
 import { Loading, Error, Empty, Header, Tabs, Content } from '.';
 
-const GrouperDetailsView: React.FC = memo(() => {
+const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
   const {
     // Global Data
     grouperDetails,

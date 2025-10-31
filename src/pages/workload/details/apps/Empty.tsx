@@ -24,7 +24,7 @@ const Empty: React.FC<EmptyProps> = React.memo(({ appName }) => {
 
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
         <Title level={3}>App not found</Title>
-        <Text type="secondary">The app "{appName}" could not be found.</Text>
+        <Text type="secondary">The app &quot;{appName}&quot; could not be found.</Text>
       </div>
     </div>
   );

@@ -19,7 +19,9 @@ const HALO_SIZE = UI.HISTORY.TIMELINE.HALO_SIZE_LAST; // last item halo size
 const capitalizeFirst = (text: string): string =>
   text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
 
-const HistoryTimeLine: React.FC<HistoryInterface> = React.memo(({ Records }) => {
+const HistoryTimeLine: React.FC<HistoryInterface> = React.memo(function HistoryTimeLine({
+  Records,
+}) {
   // Optimize: Only process what we need to display initially
   const { items, hasMore, displayItems } = useMemo(() => {
     if (!Records || Records.length === 0) {

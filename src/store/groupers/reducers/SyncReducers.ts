@@ -6,16 +6,19 @@ export const handleTriggerSyncRejected = (state: GrouperState, action: PayloadAc
   state.error = action.payload;
 };
 
-export const handleRefreshAutoGroupersFulfilled = (state: GrouperState, action: PayloadAction<any[]>) => {
+export const handleRefreshAutoGroupersFulfilled = (
+  state: GrouperState,
+  action: PayloadAction<any[]>,
+) => {
   const incoming = action.payload || [];
   const autoIncoming = incoming.filter((g: any) => g?.sync?.mode === SYNC_MODES.AUTO);
-  
+
   // Create a map of existing groupers by name to preserve maintenance state
   const existingByName: Record<string, any> = {};
   for (const g of state.groupers) {
     if (g?.name) existingByName[g.name] = g;
   }
-  
+
   // Merge by name: auto items replaced from server; manual items preserved as-is
   const autoByName: Record<string, any> = {};
   for (const g of autoIncoming) {
@@ -41,7 +44,10 @@ export const handleRefreshAutoGroupersFulfilled = (state: GrouperState, action: 
   state.groupers = [...Object.values(autoByName), ...manualExistingFiltered];
 };
 
-export const handleRefreshAutoGroupersRejected = (state: GrouperState, action: PayloadAction<any>) => {
+export const handleRefreshAutoGroupersRejected = (
+  state: GrouperState,
+  action: PayloadAction<any>,
+) => {
   state.error = action.payload;
 };
 

@@ -4,10 +4,7 @@ import {
   fetchAllBatchesWorkloads,
   fetchAppWorkloadDetails,
 } from '../../../clients/exporter';
-import {
-  mapAppsWorkloadsData,
-  mapSingleAppWorkloadData,
-} from '../../../utils/mappers/appMapper';
+import { mapAppsWorkloadsData, mapSingleAppWorkloadData } from '../../../utils/mappers/appMapper';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants';
 
 export const fetchAllAppsWorkloadsThunk = createAsyncThunk(
@@ -48,4 +45,3 @@ export const fetchAppWorkloadDetailsThunk = createAsyncThunk(
     }
   },
 );
-

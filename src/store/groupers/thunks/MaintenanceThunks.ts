@@ -34,12 +34,14 @@ export const enableGrouperMaintenanceModeThunk = createAsyncThunk(
         name: grouperName,
         status: response.status,
         message: response.message,
-        maintenance: response.data ? {
-          name: response.data.name,
-          status: response.data.status,
-          deleteAction: response.data.delete,
-          updateAction: response.data.update,
-        } : null,
+        maintenance: response.data
+          ? {
+              name: response.data.name,
+              status: response.data.status,
+              deleteAction: response.data.delete,
+              updateAction: response.data.update,
+            }
+          : null,
       };
     } catch (error: any) {
       return rejectWithValue(error.message || STORE_ERRORS.ENABLE_MAINTENANCE);
@@ -70,12 +72,14 @@ export const updateGrouperMaintenanceModeThunk = createAsyncThunk(
       return {
         name: grouperName,
         status: response.status,
-        maintenance: response.data ? {
-          name: response.data.name,
-          status: response.data.status,
-          deleteAction: response.data.delete,
-          updateAction: response.data.update,
-        } : null,
+        maintenance: response.data
+          ? {
+              name: response.data.name,
+              status: response.data.status,
+              deleteAction: response.data.delete,
+              updateAction: response.data.update,
+            }
+          : null,
       };
     } catch (error: any) {
       return rejectWithValue(error.message || STORE_ERRORS.UPDATE_MAINTENANCE);

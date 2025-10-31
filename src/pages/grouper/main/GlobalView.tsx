@@ -13,7 +13,7 @@ import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../utils/
 import { GROUPERS_PAGE_CONSTANTS } from '../../../constants/pages/groupers';
 import { Loading, Error, Empty, Success } from '.';
 
-const GroupersGlobalView: React.FC = memo(() => {
+const GroupersGlobalView: React.FC = memo(function GroupersGlobalView() {
   const dispatch: AppDispatch = useDispatch();
   const { groupers, loading, error } = useSelector((state: RootState) => state.grouper);
   const hasTriggeredInitialSync = useRef(false);
@@ -24,7 +24,7 @@ const GroupersGlobalView: React.FC = memo(() => {
   const [nextRetryIn, setNextRetryIn] = useState(0);
   const [isInCooldown, setIsInCooldown] = useState(false);
   const [cooldownTime, setCooldownTime] = useState(0);
-  const timeoutRefs = useRef<{ current: NodeJS.Timeout | null }[]>([]);
+  const timeoutRefs = useRef<{ current: ReturnType<typeof setTimeout> | null }[]>([]);
 
   const handleLoadGroupers = useCallback(async () => {
     await loadGroupers(dispatch);
@@ -104,7 +104,6 @@ const GroupersGlobalView: React.FC = memo(() => {
       <Error
         isInCooldown={isInCooldown}
         cooldownTime={cooldownTime}
-        isRetrying={isRetrying}
         retryCount={retryCount}
         nextRetryIn={nextRetryIn}
         onCancel={handleCancelRetry}

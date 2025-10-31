@@ -1,12 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Card, App as AntdApp } from 'antd';
 
-import {
-  CARD_CONFIGS,
-  CARD_COLORS,
-  CARD_TRANSITIONS,
-} from '../../../constants';
+import { CARD_CONFIGS, CARD_COLORS, CARD_TRANSITIONS } from '../../../constants';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store';
 import { getStatusStyle } from '../../../utils/helpers/format';
@@ -64,107 +59,103 @@ interface ResourceCardProps {
   };
 }
 
-const ResourceCard: React.FC<ResourceCardProps> = React.memo(
-  ({
-    data,
-    actions,
-    config,
-    isSyncing = false,
-    globalSyncingSelector,
-    syncFunction,
-    customStatusStyle,
-  }) => {
-    const [isModalVisible, setModalVisible] = useState(false);
-    const [syncing, setSyncing] = useState(false);
-    const navigate = useNavigate();
-    const { message } = AntdApp.useApp();
-    
-    const globalSyncing = globalSyncingSelector 
-      ? useSelector(globalSyncingSelector)
-      : {};
-    const isGloballySyncing = Boolean(globalSyncing[data.name]);
-    const isSyncingEffective = syncing || isGloballySyncing || isSyncing;
+const ResourceCard: React.FC<ResourceCardProps> = React.memo(function ResourceCard({
+  data,
+  actions,
+  config,
+  isSyncing = false,
+  globalSyncingSelector,
+  syncFunction,
+  customStatusStyle,
+}) {
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const { message } = AntdApp.useApp();
+  const globalSyncing = useSelector((state: RootState) =>
+    globalSyncingSelector ? globalSyncingSelector(state) : {},
+  );
+  const isGloballySyncing = Boolean(globalSyncing[data.name]);
+  const isSyncingEffective = syncing || isGloballySyncing || isSyncing;
 
-    const statusStyle = useMemo(
-      () => ({
-        ...(customStatusStyle || getStatusStyle(data.status)),
-      }),
-      [data.status, customStatusStyle],
-    ) as {
-      color: string;
-      borderColor: string;
-      icon?: React.ReactElement;
-    };
+  const statusStyle = useMemo(
+    () => ({
+      ...(customStatusStyle || getStatusStyle(data.status)),
+    }),
+    [data.status, customStatusStyle],
+  ) as {
+    color: string;
+    borderColor: string;
+    icon?: React.ReactElement;
+  };
 
-    const handleSync = useCallback(async () => {
-      if (syncFunction) {
-        await syncFunction({
-          name: data.name,
-          syncName: data.syncName,
-          message,
-          setSyncing,
-        });
-      }
-    }, [data.name, data.syncName, message, syncFunction]);
+  const handleSync = useCallback(async () => {
+    if (syncFunction) {
+      await syncFunction({
+        name: data.name,
+        syncName: data.syncName,
+        message,
+        setSyncing,
+      });
+    }
+  }, [data.name, data.syncName, message, syncFunction]);
 
-    const handleView = useCallback(() => {
-      actions.onView();
-    }, [actions]);
+  const handleView = useCallback(() => {
+    actions.onView();
+  }, [actions]);
 
-    const handleDelete = useCallback(() => {
-      setModalVisible(true);
-    }, []);
+  const handleDelete = useCallback(() => {
+    setModalVisible(true);
+  }, []);
 
-    const handleConfirmDelete = useCallback(() => {
-      setModalVisible(false);
-      actions.onDelete();
-    }, [actions]);
+  const handleConfirmDelete = useCallback(() => {
+    setModalVisible(false);
+    actions.onDelete();
+  }, [actions]);
 
-    const handleCancelDelete = useCallback(() => {
-      setModalVisible(false);
-    }, []);
+  const handleCancelDelete = useCallback(() => {
+    setModalVisible(false);
+  }, []);
 
-    return (
-      <>
-        <ResourceCardModal
-          isVisible={isModalVisible}
-          title={config.deleteTitle}
-          message={config.deleteMessage}
-          onConfirm={handleConfirmDelete}
-          onCancel={handleCancelDelete}
-        />
+  return (
+    <>
+      <ResourceCardModal
+        isVisible={isModalVisible}
+        title={config.deleteTitle}
+        message={config.deleteMessage}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
 
-        <Card
-          style={{
-            width: '100%',
-            borderRadius: CARD_CONFIGS.GROUPER_CARD.BORDER_RADIUS,
-            boxShadow: CARD_COLORS.SHADOW.CARD,
-            border: 'none',
-            position: 'relative',
-            background: CARD_COLORS.BACKGROUND.DEFAULT,
-            transition: CARD_TRANSITIONS.CARD,
-            marginBottom: '16px',
-            cursor: 'pointer',
+      <Card
+        style={{
+          width: '100%',
+          borderRadius: CARD_CONFIGS.GROUPER_CARD.BORDER_RADIUS,
+          boxShadow: CARD_COLORS.SHADOW.CARD,
+          border: 'none',
+          position: 'relative',
+          background: CARD_COLORS.BACKGROUND.DEFAULT,
+          transition: CARD_TRANSITIONS.CARD,
+          marginBottom: '16px',
+          cursor: 'pointer',
+        }}
+        styles={{ body: { padding: CARD_CONFIGS.GROUPER_CARD.BODY_PADDING } }}
+        hoverable
+        onClick={handleView}
+      >
+        <ResourceCardContent
+          data={data}
+          statusStyle={statusStyle}
+          isSyncingEffective={isSyncingEffective}
+          actions={{
+            onView: handleView,
+            onSync: handleSync,
+            onDelete: handleDelete,
           }}
-          styles={{ body: { padding: CARD_CONFIGS.GROUPER_CARD.BODY_PADDING } }}
-          hoverable
-          onClick={handleView}
-        >
-          <ResourceCardContent
-            data={data}
-            statusStyle={statusStyle}
-            isSyncingEffective={isSyncingEffective}
-            actions={{
-              onView: handleView,
-              onSync: handleSync,
-              onDelete: handleDelete,
-            }}
-            config={config}
-          />
-        </Card>
-      </>
-    );
-  },
-);
+          config={config}
+        />
+      </Card>
+    </>
+  );
+});
 
 export default ResourceCard;

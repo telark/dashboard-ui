@@ -9,13 +9,13 @@ export const handleFetchGroupersPending = (state: GrouperState) => {
 
 export const handleFetchGroupersFulfilled = (state: GrouperState, action: PayloadAction<any[]>) => {
   state.loading = false;
-  
+
   // Preserve maintenance state when updating groupers list
   const existingByName: Record<string, any> = {};
   for (const g of state.groupers) {
     if (g?.name) existingByName[g.name] = g;
   }
-  
+
   const updatedGroupers = action.payload.map((g: any) => {
     const existingGrouper = existingByName[g.name];
     return {
@@ -25,7 +25,7 @@ export const handleFetchGroupersFulfilled = (state: GrouperState, action: Payloa
       hasMaintenance: existingGrouper?.hasMaintenance || g.hasMaintenance,
     };
   });
-  
+
   state.groupers = updatedGroupers;
 };
 
@@ -39,15 +39,18 @@ export const handleFetchGroupersSilentPending = (state: GrouperState) => {
   state.error = null;
 };
 
-export const handleFetchGroupersSilentFulfilled = (state: GrouperState, action: PayloadAction<any[]>) => {
+export const handleFetchGroupersSilentFulfilled = (
+  state: GrouperState,
+  action: PayloadAction<any[]>,
+) => {
   state.loading = false;
-  
+
   // Preserve maintenance state when updating groupers list
   const existingByName: Record<string, any> = {};
   for (const g of state.groupers) {
     if (g?.name) existingByName[g.name] = g;
   }
-  
+
   const updatedGroupers = action.payload.map((g: any) => {
     const existingGrouper = existingByName[g.name];
     return {
@@ -57,11 +60,14 @@ export const handleFetchGroupersSilentFulfilled = (state: GrouperState, action: 
       hasMaintenance: existingGrouper?.hasMaintenance || g.hasMaintenance,
     };
   });
-  
+
   state.groupers = updatedGroupers;
 };
 
-export const handleFetchGroupersSilentRejected = (state: GrouperState, action: PayloadAction<any>) => {
+export const handleFetchGroupersSilentRejected = (
+  state: GrouperState,
+  action: PayloadAction<any>,
+) => {
   state.loading = false;
   state.error = action.payload;
 };
@@ -72,11 +78,14 @@ export const handleFetchGrouperDetailsPending = (state: GrouperState) => {
   state.error = null;
 };
 
-export const handleFetchGrouperDetailsFulfilled = (state: GrouperState, action: PayloadAction<any>) => {
+export const handleFetchGrouperDetailsFulfilled = (
+  state: GrouperState,
+  action: PayloadAction<any>,
+) => {
   state.loading = false;
   const updatedGrouper = action.payload;
   state.details = updatedGrouper; // Populate details with fresh data
-  
+
   // Also update the grouper in the list if it exists (for card view refresh)
   const index = state.groupers.findIndex((grouper) => grouper.name === updatedGrouper.name);
   if (index !== -1) {
@@ -90,12 +99,18 @@ export const handleFetchGrouperDetailsFulfilled = (state: GrouperState, action: 
   }
 };
 
-export const handleFetchGrouperDetailsRejected = (state: GrouperState, action: PayloadAction<any>) => {
+export const handleFetchGrouperDetailsRejected = (
+  state: GrouperState,
+  action: PayloadAction<any>,
+) => {
   state.loading = false;
   state.error = action.payload;
 };
 
-export const handleCheckMaintenanceModeFulfilled = (state: GrouperState, action: PayloadAction<any>) => {
+export const handleCheckMaintenanceModeFulfilled = (
+  state: GrouperState,
+  action: PayloadAction<any>,
+) => {
   const maintenanceData = action.payload;
   const index = state.groupers.findIndex(
     (grouper) => generateMaintenanceFeatureName(grouper.name) === maintenanceData.name,

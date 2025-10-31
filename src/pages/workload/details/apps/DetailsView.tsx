@@ -5,7 +5,7 @@ import { AppWorkloadDetailsHook } from '../../../../hooks/AppWorkloadDetailsHook
 import { Loading, Error, Empty, Header, Tabs, Content } from '.';
 import { GROUPER_DETAILS_CONSTANTS } from '../../../../constants/pages/grouper-details';
 
-const AppWorkloadDetailsView: React.FC = memo(() => {
+const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() {
   const { name } = useParams<{ name: string }>();
   const [activeTab, setActiveTab] = useState<
     'general' | 'instances' | 'bridges' | 'history' | 'sync'
