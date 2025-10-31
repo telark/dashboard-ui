@@ -1,4 +1,4 @@
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useCallback, useMemo } from 'react';
 import { App as AntdApp } from 'antd';
 import { useSelector } from 'react-redux';
 import { BridgeDetailsHook } from '../../../hooks/BridgeDetailsHook';
@@ -28,13 +28,18 @@ const BridgeDetailsView: React.FC = memo(function BridgeDetailsView() {
   const globalSyncing = useSelector((s: RootState) => s.bridge.syncing || {});
   const isGloballySyncing = Boolean(bridgeDetails?.name && globalSyncing[bridgeDetails.name]);
 
-  const handleHeaderSync = async () => {
+  const handleHeaderSync = useCallback(async () => {
     await syncBridgeDetails({
       details: bridgeDetails,
       setSyncing,
       message,
     });
-  };
+  }, [bridgeDetails, setSyncing, message]);
+
+  const totalResources = useMemo(
+    () => bridgeDetails?.workloads?.length || 0,
+    [bridgeDetails?.workloads?.length],
+  );
 
   if (loading) {
     return <Loading />;
@@ -47,8 +52,6 @@ const BridgeDetailsView: React.FC = memo(function BridgeDetailsView() {
   if (!bridgeDetails) {
     return <Empty />;
   }
-
-  const totalResources = bridgeDetails.workloads?.length || 0;
 
   return (
     <div style={BRIDGE_DETAILS_CONSTANTS.LAYOUT.PAGE_CONTAINER}>
