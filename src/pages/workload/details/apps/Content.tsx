@@ -22,6 +22,8 @@ interface ContentProps {
   hasChanges: boolean;
   handleAutoSyncChange: (isAutoSync: boolean) => void;
   handleWorkloadSyncSave: () => void;
+  syncing?: boolean;
+  isGloballySyncing?: boolean;
 }
 
 const sectionCardStyle: React.CSSProperties = {
@@ -40,6 +42,8 @@ const Content: React.FC<ContentProps> = React.memo(
     hasChanges,
     handleAutoSyncChange,
     handleWorkloadSyncSave,
+    syncing = false,
+    isGloballySyncing = false,
   }) => {
     return (
       <div>
@@ -115,6 +119,8 @@ const Content: React.FC<ContentProps> = React.memo(
               hasChanges={hasChanges}
               handleAutoSyncChange={handleAutoSyncChange}
               handleSyncSave={handleWorkloadSyncSave}
+              syncing={syncing}
+              isGloballySyncing={isGloballySyncing}
             />
           </Card>
         )}

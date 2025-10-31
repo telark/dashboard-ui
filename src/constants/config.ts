@@ -1,6 +1,6 @@
 import { RootState } from "../store";
 import { fetchAllAppsWorkloadsThunk, fetchAppWorkloadDetailsThunk } from "../store/workloads/slices/workloadSlice";
-import { SyncConfig } from "../utils/shared/sync";
+import { SyncConfig } from "../interfaces/sync";
 import { SYNC_CONSTANTS } from "./sync";
 import { BRIDGE_DETAILS_CONSTANTS } from "./pages/bridge-details";
 import { fetchAllBridgesThunk, fetchBridgeDetailsThunk } from "../store/bridges/slices/bridgeSlice";

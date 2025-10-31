@@ -25,7 +25,7 @@ const WorkloadHeader: React.FC<WorkloadHeaderProps> = ({ workload }) => {
 
   const handleSync = async () => {
     await syncAppWorkloadDetails({
-      workloadDetails: workload,
+      details: workload,
       setSyncing,
       message,
     });
@@ -84,8 +84,9 @@ const WorkloadHeader: React.FC<WorkloadHeaderProps> = ({ workload }) => {
         <Button
           size="middle"
           icon={<SyncOutlined />}
+          disabled={syncing || isGloballySyncing}
           loading={syncing || isGloballySyncing}
-          onClick={handleSync}
+          onClick={syncing || isGloballySyncing ? undefined : handleSync}
         >
           Sync
         </Button>
