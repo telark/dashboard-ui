@@ -1,12 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import {
-  fetchBridges,
-  fetchBridgeDetails,
-} from '../../../clients/exporter';
-import {
-  mapBridgesData,
-  mapSingleBridgeData,
-} from '../../../utils/mappers/bridgeMapper';
+import { fetchBridges, fetchBridgeDetails } from '../../../clients/exporter';
+import { mapBridgesData, mapSingleBridgeData } from '../../../utils/mappers/bridgeMapper';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants';
 import { RootState } from '../../../store';
 import { BridgeInterface } from '../../../interfaces/bridge';
@@ -43,7 +37,7 @@ export const fetchBridgeDetailsThunk = createAsyncThunk(
     try {
       const state = getState() as RootState;
       let bridge = state.bridge.bridges.find((b: BridgeInterface) => b.name === name);
-      
+
       if (!bridge && state.bridge.bridges.length === 0) {
         try {
           await dispatch(fetchAllBridgesSilentThunk()).unwrap();
@@ -53,9 +47,9 @@ export const fetchBridgeDetailsThunk = createAsyncThunk(
           console.error(STORE_MESSAGES.ERROR_FETCHING_BRIDGES, fetchError);
         }
       }
-      
+
       const apiName = bridge?.syncName || name;
-      
+
       const response = await fetchBridgeDetails(apiName);
       return mapSingleBridgeData(response.data);
     } catch (error) {
@@ -64,4 +58,3 @@ export const fetchBridgeDetailsThunk = createAsyncThunk(
     }
   },
 );
-

@@ -13,4 +13,3 @@ const Loading: React.FC = React.memo(() => {
 Loading.displayName = 'Loading';
 
 export default Loading;
-

@@ -80,5 +80,3 @@ export const syncBridge = async ({
     (store.dispatch as AppDispatch)(endSync(name));
   }
 };
-
-

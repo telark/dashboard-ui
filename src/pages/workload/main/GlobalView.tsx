@@ -101,7 +101,7 @@ const WorkloadsGlobalView: React.FC = memo(() => {
 
   const handleBatchClick = (batch: BatchWorkloadCardData) => {
     // TODO: Implement batch details navigation when ready
-    // eslint-disable-next-line no-console
+
     console.warn('Batch clicked:', batch);
   };
 

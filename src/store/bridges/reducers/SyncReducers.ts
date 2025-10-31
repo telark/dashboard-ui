@@ -69,4 +69,3 @@ export const handleUpdateSyncModeFulfilled = (state: BridgeState, action: Payloa
 export const handleUpdateSyncModeRejected = (state: BridgeState, action: PayloadAction<any>) => {
   state.error = action.payload;
 };
-

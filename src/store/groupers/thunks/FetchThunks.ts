@@ -55,7 +55,7 @@ export const fetchGrouperDetailsThunk = createAsyncThunk(
         try {
           const maintenanceFeatureName = generateMaintenanceFeatureName(name);
           const maintenanceResponse = await checkGrouperMaintenanceMode(maintenanceFeatureName);
-          
+
           // Map maintenance data if available
           maintenance = maintenanceResponse.data
             ? {

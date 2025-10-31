@@ -16,4 +16,3 @@ const Error: React.FC<ErrorProps> = React.memo(({ error }) => {
 Error.displayName = 'Error';
 
 export default Error;
-

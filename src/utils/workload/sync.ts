@@ -7,7 +7,6 @@ import { handleSyncEffect, handleSyncError } from '../shared/sync';
 import { WORKLOAD_SYNC_CONFIG } from '../../constants/config';
 import { DetailsSyncParams, SyncParams } from '../../interfaces/sync';
 
-
 export const syncAppWorkloadDetails = async ({
   details,
   setSyncing,
@@ -50,11 +49,7 @@ export const syncAppWorkloadDetails = async ({
   }
 };
 
-export const syncAppWorkload = async ({
-  name,
-  message,
-  setSyncing,
-}: SyncParams): Promise<void> => {
+export const syncAppWorkload = async ({ name, message, setSyncing }: SyncParams): Promise<void> => {
   try {
     setSyncing(true);
     (store.dispatch as AppDispatch)(startSync(name));
@@ -84,4 +79,3 @@ export const syncAppWorkload = async ({
     (store.dispatch as AppDispatch)(endSync(name));
   }
 };
-

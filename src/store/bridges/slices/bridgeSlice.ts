@@ -97,4 +97,3 @@ const bridgeSlice = createSlice({
 
 export const { clearDetails, startSync, endSync } = bridgeSlice.actions;
 export default bridgeSlice.reducer;
-

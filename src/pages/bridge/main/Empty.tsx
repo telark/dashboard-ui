@@ -48,4 +48,3 @@ const Empty: React.FC<EmptyProps> = React.memo(({ onRefresh }) => {
 Empty.displayName = 'Empty';
 
 export default Empty;
-

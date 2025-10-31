@@ -2,7 +2,6 @@ import { HTTP_STATUS, CARD_DEFAULTS } from '../../constants';
 import type { AppWorkload, AppWorkloadCardData } from '../../interfaces/workload';
 import { ParseGoTimeDate } from '../shared/time';
 
-
 export const mapAppsWorkloadsData = (data: any): AppWorkloadCardData[] => {
   if (data?.status !== HTTP_STATUS.SUCCESS || !data?.data) {
     throw new Error('Invalid data format');

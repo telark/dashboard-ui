@@ -130,4 +130,3 @@ const BridgesGlobalView: React.FC = memo(function BridgesGlobalView() {
 });
 
 export default BridgesGlobalView;
-

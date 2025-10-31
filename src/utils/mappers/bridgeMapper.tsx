@@ -42,8 +42,11 @@ export const mapSingleBridgeData = (item: any): any => {
     grouper: item.fasid.grouper || UTILS_TEXTS.DEFAULTS.EMPTY_STRING,
     sourceName: item.fasid.sourceName,
     sourceType: item.fasid.sourceType || UTILS_TEXTS.DEFAULTS.EMPTY_STRING,
-    creationTime: ParseGoTimeDate(item.fasid.creationTime || item.fasid.lastUpdateTime || new Date().toISOString()),
-    lastUpdateTime: item.config?.sync?.lastUpdateTime || item.fasid.lastUpdateTime || new Date().toISOString(),
+    creationTime: ParseGoTimeDate(
+      item.fasid.creationTime || item.fasid.lastUpdateTime || new Date().toISOString(),
+    ),
+    lastUpdateTime:
+      item.config?.sync?.lastUpdateTime || item.fasid.lastUpdateTime || new Date().toISOString(),
     history: item.config?.history || [],
     ports: item.cacid?.ports || [],
     selectors: item.cacid?.selectors || [],
@@ -51,4 +54,3 @@ export const mapSingleBridgeData = (item: any): any => {
     sync: item.config?.sync || null,
   };
 };
-

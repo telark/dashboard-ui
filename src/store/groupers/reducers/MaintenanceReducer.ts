@@ -12,7 +12,7 @@ export const handleUpdateMaintenanceModeFulfilled = (
   action: PayloadAction<any>,
 ) => {
   state.loading = false;
-  // eslint-disable-next-line no-console
+
   console.warn(STORE_MESSAGES.MAINTENANCE_UPDATED, action.payload);
 
   // Update the grouper in the list with the new maintenance data

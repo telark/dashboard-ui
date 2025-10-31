@@ -9,12 +9,7 @@ import {
 } from '../store/bridges/slices/bridgeSlice';
 import { AppDispatch } from '../store';
 import { selectBridgeDetailsData } from '../store/bridges/selectors/bridgeSelectors';
-import {
-  STORE_MESSAGES,
-  HOOK_MESSAGES,
-  HOOK_CONFIGS,
-  SYNC_ACTIONS,
-} from '../constants';
+import { STORE_MESSAGES, HOOK_MESSAGES, HOOK_CONFIGS, SYNC_ACTIONS } from '../constants';
 
 export const BridgeDetailsHook = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -85,4 +80,3 @@ export const BridgeDetailsHook = () => {
     handleBridgeSyncSave,
   };
 };
-

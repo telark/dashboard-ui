@@ -63,7 +63,8 @@ const BridgeResources: React.FC<BridgeResourcesProps> = React.memo(function Brid
           {UI.RESOURCES.EMPTY_TITLE}
         </div>
         <div style={{ color: '#5B6B7C', marginBottom: 16, maxWidth: 520, lineHeight: 1.6 }}>
-          This bridge currently has no workloads attached. Once workloads are connected, they'll be listed here.
+          This bridge currently has no workloads attached. Once workloads are connected, they'll be
+          listed here.
         </div>
         <Button type="primary" icon={<SyncOutlined />} onClick={handleRefresh}>
           {UI.RESOURCES.REFRESH}
@@ -185,4 +186,3 @@ const BridgeResources: React.FC<BridgeResourcesProps> = React.memo(function Brid
 });
 
 export default BridgeResources;
-
