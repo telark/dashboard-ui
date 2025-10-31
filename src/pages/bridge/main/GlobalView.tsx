@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef, memo, useState } from 'react';
+import React, { useEffect, useCallback, useRef, memo, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { message } from 'antd';
 import { RootState, AppDispatch } from '../../../store';
@@ -56,15 +56,18 @@ const BridgesGlobalView: React.FC = memo(function BridgesGlobalView() {
   }, [dispatch]);
 
   // Retry callbacks
-  const retryCallbacks: RetryCallbacks = {
-    setRetrying: setIsRetrying,
-    setRetryCount: setRetryCount,
-    setNextRetryIn: setNextRetryIn,
-    setInCooldown: setIsInCooldown,
-    setCooldownTime: setCooldownTime,
-    onSuccess: () => message.success(BRIDGES_PAGE_CONSTANTS.MESSAGES.SUCCESS),
-    onError: () => message.error(BRIDGES_PAGE_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
-  };
+  const retryCallbacks: RetryCallbacks = useMemo(
+    () => ({
+      setRetrying: setIsRetrying,
+      setRetryCount: setRetryCount,
+      setNextRetryIn: setNextRetryIn,
+      setInCooldown: setIsInCooldown,
+      setCooldownTime: setCooldownTime,
+      onSuccess: () => message.success(BRIDGES_PAGE_CONSTANTS.MESSAGES.SUCCESS),
+      onError: () => message.error(BRIDGES_PAGE_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
+    }),
+    [],
+  );
 
   // Create retry handler
   const handleRetry = useCallback(async () => {
