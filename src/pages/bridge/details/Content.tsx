@@ -49,8 +49,6 @@ const Content: React.FC<ContentProps> = React.memo(
                 status={bridgeDetails.status}
                 type={bridgeDetails.type}
                 grouper={bridgeDetails.grouper}
-                sourceName={bridgeDetails.sourceName}
-                sourceType={bridgeDetails.sourceType}
                 ports={bridgeDetails.ports}
                 workloads={bridgeDetails.workloads}
               />

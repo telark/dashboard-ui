@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
-import { DeploymentUnitOutlined, AppstoreOutlined } from '@ant-design/icons';
+import { AiOutlineCluster, AiOutlineAppstore } from "react-icons/ai";
 
 import { DEFAULT_COLORS } from '../../../constants';
 import { AppWorkloadCardData } from '../../../interfaces/workload';
@@ -33,9 +33,9 @@ const WorkloadCard: React.FC<WorkloadCardProps> = ({ workload, onClick }) => {
       ],
       tags: [
         { label: workload.sourceType, color: DEFAULT_COLORS.SUCCESS },
-        { label: workload.grouper, icon: <AppstoreOutlined />, color: '#1890ff' },
+        { label: workload.grouper, icon: <AiOutlineCluster />, color: '#1890ff' },
       ],
-      icon: <DeploymentUnitOutlined />,
+      icon: <AiOutlineAppstore />,
     }),
     [workload],
   );

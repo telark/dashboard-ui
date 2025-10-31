@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
-import { BranchesOutlined } from '@ant-design/icons';
+import { AiOutlineCluster, AiOutlineApi } from "react-icons/ai";
 
-import { BRIDGE_CARD_TEXTS, CARD_DEFAULTS } from '../../../constants';
+import { BRIDGE_CARD_TEXTS, CARD_DEFAULTS, DEFAULT_COLORS } from '../../../constants';
 import { BridgeInterface } from '../../../interfaces/bridge';
 import { RootState } from '../../../store';
 import { syncBridge } from '../../../utils/bridge/sync';
@@ -17,6 +17,8 @@ const BridgeCard: React.FC<BridgeInterface> = React.memo(function BridgeCard({
   workloads = [],
   lastUpdateTime = CARD_DEFAULTS.BRIDGE.LAST_UPDATE,
   syncName,
+  type,
+  grouper,
 }) {
   const navigate = useNavigate();
   const { message } = AntdApp.useApp();
@@ -33,10 +35,14 @@ const BridgeCard: React.FC<BridgeInterface> = React.memo(function BridgeCard({
         { label: 'Workloads', value: numberOfWorkloadsValue },
         { label: 'Ports', value: numberOfPorts },
       ],
-      icon: <BranchesOutlined />,
+      icon: <AiOutlineApi />,
       syncName,
+      tags: [
+        { label: type, color: DEFAULT_COLORS.SUCCESS },
+        { label: grouper, icon: <AiOutlineCluster />, color: '#1890ff' },
+      ],
     }),
-    [name, status, lastUpdateTime, numberOfWorkloadsValue, numberOfPorts, syncName],
+    [name, status, lastUpdateTime, numberOfWorkloadsValue, numberOfPorts, syncName, type, grouper],
   );
 
   const customStatusStyle = useMemo(() => getDetailedStatusStyle(status), [status]);

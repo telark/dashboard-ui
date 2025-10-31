@@ -1,11 +1,10 @@
 import React from 'react';
 import { Button } from 'antd';
 import {
-  InfoCircleOutlined,
   SyncOutlined,
-  AppstoreOutlined,
   ToolOutlined,
 } from '@ant-design/icons';
+import { AiOutlineCluster, AiOutlineCheckCircle } from "react-icons/ai";
 import StatusButton from '../../../components/buttons/StatusButton';
 import TimeAgo from '../../../components/time/TimeAgo';
 import { FancySpinner } from '../../../components/shared';
@@ -27,7 +26,7 @@ const Header: React.FC<HeaderProps> = React.memo(
       <div style={GROUPER_DETAILS_CONSTANTS.LAYOUT.HEADER_CONTAINER}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={GROUPER_DETAILS_CONSTANTS.HEADER.ICON_CONTAINER}>
-            <AppstoreOutlined />
+            <AiOutlineCluster />
           </div>
 
           <div>
@@ -35,7 +34,7 @@ const Header: React.FC<HeaderProps> = React.memo(
               <div style={GROUPER_DETAILS_CONSTANTS.HEADER.TITLE}>{grouperDetails.name}</div>
               <StatusButton
                 status={(grouperDetails.status as 'Active' | 'Inactive') || 'Inactive'}
-                icon={<InfoCircleOutlined />}
+                icon={<AiOutlineCheckCircle />}
               />
               {isMaintenanceModeActive && (
                 <StatusTag label="Maintenance" icon={<ToolOutlined />} color="#f59e0b" />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from 'antd';
-import { ArrowLeftOutlined, AppstoreOutlined, SyncOutlined } from '@ant-design/icons';
+import { AppstoreOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
 import { DEFAULT_COLORS } from '../../../../constants';
@@ -10,6 +10,7 @@ import { AppWorkload } from '../../../../interfaces/workload';
 import { syncAppWorkloadDetails } from '../../../../utils/workload/sync';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
+import { AiOutlineCheckCircle, AiOutlineCluster, AiOutlineArrowLeft, AiOutlineSync } from "react-icons/ai";
 
 interface WorkloadHeaderProps {
   workload: AppWorkload;
@@ -70,7 +71,7 @@ const WorkloadHeader: React.FC<WorkloadHeaderProps> = ({ workload }) => {
             </div>
             <StatusButton
               status={workload.cacid.status === 'Available' ? 'Active' : 'Inactive'}
-              icon={<SyncOutlined />}
+              icon={<AiOutlineCheckCircle />}
             />
           </div>
           <div style={{ color: '#5B6B7C', fontSize: 12, marginTop: 4 }}>
@@ -83,17 +84,17 @@ const WorkloadHeader: React.FC<WorkloadHeaderProps> = ({ workload }) => {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <Button
           size="middle"
-          icon={<SyncOutlined />}
+          icon={<AiOutlineSync />}
           disabled={syncing || isGloballySyncing}
           loading={syncing || isGloballySyncing}
           onClick={syncing || isGloballySyncing ? undefined : handleSync}
         >
           Sync
         </Button>
-        <Button size="middle" icon={<AppstoreOutlined />}>
+        <Button size="middle" icon={<AiOutlineCluster />}>
           View Grouper
         </Button>
-        <Button size="middle" onClick={() => navigate('/workloads')} icon={<ArrowLeftOutlined />}>
+        <Button size="middle" onClick={() => navigate('/workloads')} icon={<AiOutlineArrowLeft />}>
           Back to Workloads
         </Button>
       </div>

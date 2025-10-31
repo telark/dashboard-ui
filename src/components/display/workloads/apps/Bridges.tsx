@@ -1,7 +1,7 @@
 import React from 'react';
-import { LinkOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../../constants';
 import { AppWorkload } from '../../../../interfaces/workload';
+import { AiOutlineApi } from "react-icons/ai";
 
 interface WorkloadBridgesProps {
   workload: AppWorkload;
@@ -37,7 +37,7 @@ const WorkloadBridges: React.FC<WorkloadBridgesProps> = ({ workload }) => {
             fontSize: 18,
           }}
         >
-          <LinkOutlined />
+          <AiOutlineApi />
         </div>
         <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F33', marginBottom: 8 }}>
           No Bridges Attached
@@ -84,7 +84,7 @@ const WorkloadBridges: React.FC<WorkloadBridgesProps> = ({ workload }) => {
                 fontWeight: 600,
               }}
             >
-              <LinkOutlined />
+              <AiOutlineApi />
             </div>
             <div>
               <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F33' }}>{bridge.name}</div>

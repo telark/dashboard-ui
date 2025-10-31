@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
-import { InfoCircleOutlined, SyncOutlined, BranchesOutlined } from '@ant-design/icons';
+import { AiOutlineApi, AiOutlineCheckCircle, AiOutlineSync } from "react-icons/ai";
 import StatusButton from '../../../components/buttons/StatusButton';
 import TimeAgo from '../../../components/time/TimeAgo';
 import { FancySpinner } from '../../../components/shared';
@@ -20,7 +20,7 @@ const Header: React.FC<HeaderProps> = React.memo(
       <div style={BRIDGE_DETAILS_CONSTANTS.LAYOUT.HEADER_CONTAINER}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={BRIDGE_DETAILS_CONSTANTS.HEADER.ICON_CONTAINER}>
-            <BranchesOutlined />
+            <AiOutlineApi />
           </div>
 
           <div>
@@ -28,7 +28,7 @@ const Header: React.FC<HeaderProps> = React.memo(
               <div style={BRIDGE_DETAILS_CONSTANTS.HEADER.TITLE}>{bridgeDetails.name}</div>
               <StatusButton
                 status={(bridgeDetails.status as 'Active' | 'Inactive') || 'Inactive'}
-                icon={<InfoCircleOutlined />}
+                icon={<AiOutlineCheckCircle />}
               />
             </div>
             <div style={BRIDGE_DETAILS_CONSTANTS.HEADER.SUBTITLE}>
@@ -51,7 +51,7 @@ const Header: React.FC<HeaderProps> = React.memo(
               />
             ) : (
               <span style={BRIDGE_DETAILS_CONSTANTS.HEADER.SYNC_BUTTON_CONTENT}>
-                <SyncOutlined /> {UI.BUTTONS.SYNC}
+                <AiOutlineSync /> {UI.BUTTONS.SYNC}
               </span>
             )}
           </Button>
