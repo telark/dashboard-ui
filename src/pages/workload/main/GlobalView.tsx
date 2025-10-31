@@ -107,7 +107,6 @@ const WorkloadsGlobalView: React.FC = memo(() => {
 
   const loading = appLoading || batchLoading;
   const error = appError || batchError;
-  const hasWorkloads = apps.length > 0 || batches.length > 0;
 
   if (loading) {
     return <Loading />;
@@ -127,10 +126,7 @@ const WorkloadsGlobalView: React.FC = memo(() => {
     );
   }
 
-  if (!loading && !hasWorkloads) {
-    return <Empty onRefresh={handleLoadWorkloads} />;
-  }
-
+  // Always show Success component with tabs, even when empty
   return (
     <Success
       apps={apps}
@@ -139,6 +135,7 @@ const WorkloadsGlobalView: React.FC = memo(() => {
       batchLoading={batchLoading}
       onAppClick={handleAppClick}
       onBatchClick={handleBatchClick}
+      onRefresh={handleLoadWorkloads}
     />
   );
 });
