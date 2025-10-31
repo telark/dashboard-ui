@@ -1,13 +1,5 @@
 import { GROUPERS_PAGE_CONSTANTS } from '../../constants/pages/groupers';
 
-export interface RetryState {
-  isRetrying: boolean;
-  retryCount: number;
-  nextRetryIn: number;
-  isInCooldown: boolean;
-  cooldownTime: number;
-}
-
 export interface RetryCallbacks {
   setRetrying: (retrying: boolean) => void;
   setRetryCount: (count: number) => void;
@@ -26,9 +18,6 @@ export interface RetryConfig {
   countdownIntervalMs: number;
 }
 
-/**
- * Creates a retry handler with exponential backoff and cooldown
- */
 export const createRetryHandler = (
   retryFunction: () => Promise<boolean>,
   callbacks: RetryCallbacks,
@@ -157,9 +146,6 @@ export const createRetryHandler = (
   };
 };
 
-/**
- * Cancels all active retry operations
- */
 export const cancelRetry = (
   timeoutRefs: { current: ReturnType<typeof setTimeout> | null }[],
   callbacks: RetryCallbacks,

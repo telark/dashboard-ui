@@ -59,17 +59,9 @@ const workloadSlice = createSlice({
   name: 'workloads',
   initialState,
   reducers: {
-    clearWorkloads: (state) => {
-      state.apps = [];
-      state.appDetails = null;
-      state.appError = null;
-    },
     clearWorkloadDetails: (state) => {
       state.appDetails = null;
       state.appError = null;
-    },
-    setWorkloadError: (state, action: PayloadAction<string>) => {
-      state.appError = action.payload;
     },
     startSync: (state, action: PayloadAction<string>) => {
       const name = action.payload;
@@ -107,6 +99,5 @@ const workloadSlice = createSlice({
   },
 });
 
-export const { clearWorkloads, clearWorkloadDetails, setWorkloadError, startSync, endSync } =
-  workloadSlice.actions;
+export const { clearWorkloadDetails, startSync, endSync } = workloadSlice.actions;
 export default workloadSlice.reducer;
