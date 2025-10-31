@@ -1,4 +1,3 @@
-import { App as AntdApp } from 'antd';
 import { triggerSingleAppSync } from '../../clients/sync-manager';
 import { SYNC_MESSAGES } from '../../constants/modes';
 import { SYNC_CONSTANTS } from '../../constants/sync';

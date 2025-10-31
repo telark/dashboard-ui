@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import {
   AppstoreOutlined,
-  ClockCircleOutlined,
   FileOutlined,
   SyncOutlined,
   DeploymentUnitOutlined,
 } from '@ant-design/icons';
-import { Button, Pagination, Space, Tag, Collapse } from 'antd';
-import TimeAgo from '../../time/TimeAgo';
+import { Button, Pagination, Tag, Collapse } from 'antd';
 import { DEFAULT_COLORS } from '../../../constants';
 import { UI } from '../../../constants/ui';
 import { Label, Row } from '../../../components/shared';
@@ -23,7 +21,6 @@ interface BridgeResourcesProps {
 }
 
 const BridgeResources: React.FC<BridgeResourcesProps> = React.memo(function BridgeResources({
-  name,
   workloads,
 }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,13 +29,6 @@ const BridgeResources: React.FC<BridgeResourcesProps> = React.memo(function Brid
   const handlePageChange = (page: number) => setCurrentPage(page);
 
   const handleRefresh = () => window.location.reload();
-
-  const renderTime = (date?: string) => {
-    if (!date) return <span style={{ color: '#9CA3AF' }}>—</span>;
-    const parsed = new Date(date);
-    if (Number.isNaN(parsed.getTime())) return <span style={{ color: '#9CA3AF' }}>—</span>;
-    return <TimeAgo date={date} />;
-  };
 
   if (!workloads || workloads.length === 0) {
     return (
