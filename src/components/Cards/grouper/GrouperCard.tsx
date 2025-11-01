@@ -25,6 +25,7 @@ const GrouperCard: React.FC<GrouperInterface> = React.memo(function GrouperCard(
   const cardData: ResourceCardData = useMemo(
     () => ({
       name,
+      sourceName: name,
       status: normalizeStatus(status),
       lastUpdateTime,
       maintenance,

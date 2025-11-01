@@ -24,6 +24,7 @@ const WorkloadCard: React.FC<WorkloadCardProps> = ({ workload, onClick }) => {
   const cardData: ResourceCardData = useMemo(
     () => ({
       name: workload.name,
+      sourceName: workload.sourceName,
       status: normalizeStatus(workload.status),
       lastUpdateTime: workload.lastUpdate,
       metrics: [

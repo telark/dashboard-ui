@@ -76,7 +76,7 @@ const ResourceCardContent: React.FC<ResourceCardContentProps> = React.memo(
                 fontWeight: '600',
               }}
             >
-              {CapitalizeFirstLetter(data.name)}
+              {CapitalizeFirstLetter(data.sourceName)}
             </Title>
             <Text
               style={{

@@ -16,12 +16,13 @@ export const syncBridgeDetails = async ({
   try {
     setSyncing(true);
     const apiName = details?.syncName || details.name;
+    const displayName = details?.name || details?.sourceName || apiName;
     (store.dispatch as AppDispatch)(startSync(details.name));
 
     const key = `${BRIDGE_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX}${apiName}`;
     message.open({
       type: 'loading',
-      content: `${SYNC_MESSAGES.loading} ${apiName}…`,
+      content: `${SYNC_MESSAGES.loading} ${displayName}…`,
       key,
       duration: BRIDGE_DETAILS_CONSTANTS.SYNC.MESSAGE_DURATIONS.LOADING,
     });
@@ -56,13 +57,14 @@ export const syncBridge = async ({
 }: SyncParams): Promise<void> => {
   // Compute API/display identifiers upfront so they are available in all blocks
   const apiName = syncName || name;
+  const displayName = name; // 'name' is sourceName at callers; use it for user-facing label
   const key = `${SYNC_CONSTANTS.MESSAGE_KEY_PREFIX}${apiName}`;
   try {
     setSyncing(true);
     (store.dispatch as AppDispatch)(startSync(name));
     message.open({
       type: 'loading',
-      content: `${SYNC_MESSAGES.loading} ${apiName}…`,
+      content: `${SYNC_MESSAGES.loading} ${displayName}`,
       key,
       duration: SYNC_CONSTANTS.MESSAGE_DURATIONS.LOADING,
     });

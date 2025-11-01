@@ -16,12 +16,13 @@ export const syncGrouperDetails = async ({
   try {
     setSyncing(true);
     const apiName = details?.syncName || details.name;
+    const displayName = details?.name || apiName;
     (store.dispatch as AppDispatch)(startSync(details.name));
 
     const key = `${GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX}${apiName}`;
     message.open({
       type: 'loading',
-      content: `${SYNC_MESSAGES.loading} ${apiName}…`,
+      content: `${SYNC_MESSAGES.loading} ${displayName}`,
       key,
       duration: GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_DURATIONS.LOADING,
     });
@@ -37,6 +38,10 @@ export const syncGrouperDetails = async ({
       config: GROUPER_SYNC_CONFIG,
     });
   } catch (err: any) {
+    // Ensure loading message is closed on error/timeout
+    const apiName = details?.syncName || details.name;
+    const key = `${GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX}${apiName}`;
+    message.destroy(key);
     handleSyncError({ err, message, isDetailsSync: true, config: GROUPER_SYNC_CONFIG });
   } finally {
     setSyncing(false);
@@ -50,15 +55,15 @@ export const syncGrouper = async ({
   message,
   setSyncing,
 }: SyncParams): Promise<void> => {
+  const apiName = syncName || name;
+  const key = `${SYNC_CONSTANTS.MESSAGE_KEY_PREFIX}${apiName}`;
+  const displayName = name; // Grouper display = name
   try {
     setSyncing(true);
-    const apiName = syncName || name;
     (store.dispatch as AppDispatch)(startSync(name));
-
-    const key = `${SYNC_CONSTANTS.MESSAGE_KEY_PREFIX}${apiName}`;
     message.open({
       type: 'loading',
-      content: `${SYNC_MESSAGES.loading} ${apiName}…`,
+      content: `${SYNC_MESSAGES.loading} ${displayName}`,
       key,
       duration: SYNC_CONSTANTS.MESSAGE_DURATIONS.LOADING,
     });
@@ -74,6 +79,8 @@ export const syncGrouper = async ({
       config: GROUPER_SYNC_CONFIG,
     });
   } catch (err: any) {
+    // Ensure loading message is closed on error/timeout
+    message.destroy(key);
     handleSyncError({ err, message, isDetailsSync: false, config: GROUPER_SYNC_CONFIG });
   } finally {
     setSyncing(false);
