@@ -6,7 +6,7 @@ export interface LabelProps {
   text: string;
 }
 
-const Label: React.FC<LabelProps> = ({ icon, text }) => (
+const Label: React.FC<LabelProps> = React.memo(({ icon, text }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
     <span style={{ color: DEFAULT_COLORS.SUCCESS, fontSize: 16, display: 'inline-flex' }}>
       {icon}
@@ -23,6 +23,8 @@ const Label: React.FC<LabelProps> = ({ icon, text }) => (
       {text}
     </span>
   </div>
-);
+));
+
+Label.displayName = 'Label';
 
 export default Label;

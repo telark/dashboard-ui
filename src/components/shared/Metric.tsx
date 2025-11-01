@@ -4,7 +4,7 @@ import { MetricInterface } from '../../interfaces/shared';
 
 const { Text } = Typography;
 
-const Metric: React.FC<MetricInterface> = ({ label, value }) => (
+const Metric: React.FC<MetricInterface> = React.memo(({ label, value }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
     <Text style={{ fontSize: '20px', fontWeight: 'bold' }}>{value}</Text>
     <div>
@@ -14,6 +14,8 @@ const Metric: React.FC<MetricInterface> = ({ label, value }) => (
       </Text>
     </div>
   </div>
-);
+));
+
+Metric.displayName = 'Metric';
 
 export default Metric;

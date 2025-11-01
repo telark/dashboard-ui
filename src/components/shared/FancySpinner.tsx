@@ -9,7 +9,7 @@ interface FancySpinnerProps {
   showLabel?: boolean; // show/hide label
 }
 
-const FancySpinner: React.FC<FancySpinnerProps> = ({
+const FancySpinner: React.FC<FancySpinnerProps> = React.memo(({
   label = 'Loading…',
   size = 32,
   ringThickness = 2,
@@ -50,6 +50,8 @@ const FancySpinner: React.FC<FancySpinnerProps> = ({
       `}</style>
     </div>
   );
-};
+});
+
+FancySpinner.displayName = 'FancySpinner';
 
 export default FancySpinner;

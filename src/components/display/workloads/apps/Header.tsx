@@ -16,7 +16,7 @@ interface WorkloadHeaderProps {
   workload: AppWorkload;
 }
 
-const WorkloadHeader: React.FC<WorkloadHeaderProps> = ({ workload }) => {
+const WorkloadHeader: React.FC<WorkloadHeaderProps> = React.memo(({ workload }) => {
   const navigate = useNavigate();
   const { message } = AntdApp.useApp();
   const [syncing, setSyncing] = useState(false);
@@ -100,6 +100,8 @@ const WorkloadHeader: React.FC<WorkloadHeaderProps> = ({ workload }) => {
       </div>
     </div>
   );
-};
+});
+
+WorkloadHeader.displayName = 'WorkloadHeader';
 
 export default WorkloadHeader;

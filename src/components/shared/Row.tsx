@@ -6,7 +6,7 @@ export interface RowProps {
   withDivider?: boolean;
 }
 
-const Row: React.FC<RowProps> = ({ left, right, withDivider = true }) => (
+const Row: React.FC<RowProps> = React.memo(({ left, right, withDivider = true }) => (
   <div
     style={{
       display: 'flex',
@@ -20,6 +20,8 @@ const Row: React.FC<RowProps> = ({ left, right, withDivider = true }) => (
     <div>{left}</div>
     <div style={{ color: '#111827', fontWeight: 600 }}>{right}</div>
   </div>
-);
+));
+
+Row.displayName = 'Row';
 
 export default Row;
