@@ -10,7 +10,7 @@ import { ResourceRowItemProps } from '../../../interfaces/grouper';
 
 const ResourceRowItem: React.FC<ResourceRowItemProps> = React.memo(
   ({ resource, isSelected, isSyncing = false, onSelect }) => {
-    const isBridge = resource.type === 'bridge';
+    const isBridge = (resource.type || '').toLowerCase() === 'bridge';
     const sourceType = resource.sourceType || resource.type || '';
     const displayName = resource.sourceName || resource.name;
 

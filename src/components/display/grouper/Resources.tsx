@@ -83,9 +83,13 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
       } else if (selectedCount === 1) {
         const firstSelectedName = Array.from(selectedResources)[0];
         const selectedResource = paginatedResources.find((r) => r.name === firstSelectedName);
-        const resourceIsBridge = selectedResource?.type === 'bridge';
-        const route = resourceIsBridge
-          ? `/bridges/${firstSelectedName}/details`
+
+        const typeLower = (selectedResource?.type || '').toLowerCase();
+        const isBridgeType = typeLower === 'bridge';
+        const bridgeParam = (selectedResource as unknown as { sourceName?: string })?.sourceName || firstSelectedName;
+
+        const route = isBridgeType
+          ? `/bridges/${bridgeParam}/details`
           : `/workloads/apps/${firstSelectedName}/details`;
         navigate(route);
       }
@@ -94,8 +98,13 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
   );
 
   const isResourceSyncing = useCallback(
-    (resourceName: string, resourceType: string, resource?: { name: string; syncName?: string; sourceName?: string }) => {
-      if (resourceType === 'bridge') {
+    (
+      resourceName: string,
+      resourceType: string,
+      resource?: { name: string; syncName?: string; sourceName?: string },
+    ) => {
+      const typeLower = (resourceType || '').toLowerCase();
+      if (typeLower === 'bridge') {
         // Check all possible name variations for bridges
         // Redux uses the bridge's 'name' property (sourceName) as the key
         const namesToCheck = [
@@ -128,15 +137,18 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
         const resource = resources.find((r) => r.name === name);
         if (!resource) continue;
 
-        if (resource.type === 'bridge') {
-          // For bridges, use sourceName (display name) as the Redux key, same as cards/details pages
+        if (resource.type?.toLowerCase() === 'bridge') {
+          // For bridges:
+          // - name (Redux key) should be the display/source name (e.g., 'service-1')
+          // - syncName (API name) should be the backend-facing name (e.g., 'service-1-bridge')
           const bridgeResource = resource as typeof resource & { sourceName?: string; syncName?: string };
-          const bridgeName = bridgeResource.sourceName || resource.name;
-          await syncBridge({ 
-            name: bridgeName, 
-            syncName: bridgeResource.syncName,
-            message, 
-            setSyncing: () => {} 
+          const nameForRedux = bridgeResource.sourceName || resource.name;
+          const nameForApi = bridgeResource.syncName || resource.name;
+          await syncBridge({
+            name: nameForRedux,
+            syncName: nameForApi,
+            message,
+            setSyncing: () => {},
           });
         } else {
           await syncAppWorkload({ name, message, setSyncing: () => {} });
