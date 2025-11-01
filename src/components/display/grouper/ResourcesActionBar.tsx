@@ -10,6 +10,7 @@ const ResourcesActionBar: React.FC<ResourcesActionBarProps> = React.memo(
     hasSelection,
     allPageResourcesSelected,
     somePageResourcesSelected,
+    isSyncing = false,
     onSelectAll,
     onView,
     onSync,
@@ -52,17 +53,17 @@ const ResourcesActionBar: React.FC<ResourcesActionBarProps> = React.memo(
               }}
             />
           </Tooltip>
-          <Tooltip title="Sync">
+          <Tooltip title={isSyncing ? 'Syncing...' : 'Sync'}>
             <Button
-              icon={<SyncOutlined />}
+              icon={<SyncOutlined spin={isSyncing} />}
               onClick={onSync}
-              disabled={!hasSelection}
+              disabled={!hasSelection || isSyncing}
               size="small"
               type="primary"
               style={{
                 borderRadius: 8,
-                background: !hasSelection ? '#d1d5db' : DEFAULT_COLORS.SUCCESS,
-                borderColor: !hasSelection ? '#d1d5db' : DEFAULT_COLORS.SUCCESS,
+                background: !hasSelection || isSyncing ? '#d1d5db' : DEFAULT_COLORS.SUCCESS,
+                borderColor: !hasSelection || isSyncing ? '#d1d5db' : DEFAULT_COLORS.SUCCESS,
               }}
             />
           </Tooltip>

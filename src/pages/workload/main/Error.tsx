@@ -1,114 +1,118 @@
 import React from 'react';
-import { Button, Typography, Card } from 'antd';
-import { ReloadOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
+import { FancySpinner } from '../../../components/shared';
 import { WORKLOADS_PAGE_CONSTANTS } from '../../../constants/pages/workloads';
 
-const { Title, Text } = Typography;
-
 interface ErrorProps {
-  isInCooldown?: boolean;
-  cooldownTime?: number;
-  isRetrying?: boolean;
-  retryCount?: number;
-  nextRetryIn?: number;
-  onCancel?: () => void;
-  onRetry?: () => void;
+  isInCooldown: boolean;
+  cooldownTime: number;
+  retryCount: number;
+  nextRetryIn: number;
+  onCancel: () => void;
 }
 
 const Error: React.FC<ErrorProps> = React.memo(
-  ({
-    isInCooldown = false,
-    cooldownTime = 0,
-    isRetrying = false,
-    retryCount = 0,
-    nextRetryIn = 0,
-    onCancel,
-    onRetry,
-  }) => {
-    const formatTime = (seconds: number) => {
-      const mins = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
-    };
+  ({ isInCooldown, cooldownTime, retryCount, nextRetryIn, onCancel }) => {
+    const formatTime = (ms: number) => Math.ceil(ms / 1000);
+    const progressPercentage =
+      ((WORKLOADS_PAGE_CONSTANTS.COOLDOWN.DURATION_MS - cooldownTime) /
+        WORKLOADS_PAGE_CONSTANTS.COOLDOWN.DURATION_MS) *
+      100;
 
     return (
       <div style={WORKLOADS_PAGE_CONSTANTS.LAYOUT.ERROR_CONTAINER}>
-        <Card style={WORKLOADS_PAGE_CONSTANTS.LAYOUT.ERROR_CONTENT}>
+        <div style={WORKLOADS_PAGE_CONSTANTS.LAYOUT.ERROR_CONTENT}>
+          <div
+            style={{
+              fontSize: 24,
+              fontWeight: 600,
+              color: WORKLOADS_PAGE_CONSTANTS.COLORS.TEXT_PRIMARY,
+              marginBottom: 16,
+            }}
+          >
+            {WORKLOADS_PAGE_CONSTANTS.MESSAGES.CONNECTION_PROBLEM}
+          </div>
+
+          <div
+            style={{
+              fontSize: 16,
+              color: WORKLOADS_PAGE_CONSTANTS.COLORS.TEXT_SECONDARY,
+              marginBottom: 32,
+              lineHeight: 1.6,
+            }}
+          >
+            {isInCooldown
+              ? WORKLOADS_PAGE_CONSTANTS.MESSAGES.ERROR_COOLDOWN
+              : WORKLOADS_PAGE_CONSTANTS.MESSAGES.ERROR_RETRYING}
+          </div>
+
           <div style={{ textAlign: 'center' }}>
-            <div style={WORKLOADS_PAGE_CONSTANTS.LAYOUT.EMPTY_ICON}>
-              <ReloadOutlined />
-            </div>
+            {isInCooldown ? (
+              <>
+                <div
+                  style={{
+                    fontSize: 18,
+                    fontWeight: 600,
+                    color: WORKLOADS_PAGE_CONSTANTS.COLORS.WARNING,
+                    marginBottom: 12,
+                  }}
+                >
+                  {WORKLOADS_PAGE_CONSTANTS.MESSAGES.COOLDOWN_TITLE}
+                </div>
 
-            <Title
-              level={3}
-              style={{ color: WORKLOADS_PAGE_CONSTANTS.COLORS.WARNING, marginBottom: 8 }}
-            >
-              {WORKLOADS_PAGE_CONSTANTS.MESSAGES.CONNECTION_PROBLEM}
-            </Title>
+                <div
+                  style={{
+                    fontSize: 14,
+                    color: WORKLOADS_PAGE_CONSTANTS.COLORS.TEXT_MUTED,
+                    marginBottom: 16,
+                  }}
+                >
+                  {WORKLOADS_PAGE_CONSTANTS.MESSAGES.COOLDOWN_DESCRIPTION.replace(
+                    '{seconds}',
+                    formatTime(cooldownTime).toString(),
+                  )}
+                </div>
 
-            <Text
-              style={{
-                color: WORKLOADS_PAGE_CONSTANTS.COLORS.TEXT_SECONDARY,
-                marginBottom: 16,
-                display: 'block',
-              }}
-            >
-              {isInCooldown
-                ? WORKLOADS_PAGE_CONSTANTS.MESSAGES.ERROR_COOLDOWN
-                : WORKLOADS_PAGE_CONSTANTS.MESSAGES.ERROR_RETRYING}
-            </Text>
-
-            {isRetrying && (
-              <div style={{ marginBottom: 16 }}>
-                <Text style={{ color: WORKLOADS_PAGE_CONSTANTS.COLORS.TEXT_MUTED }}>
+                <div style={WORKLOADS_PAGE_CONSTANTS.LAYOUT.PROGRESS_BAR_CONTAINER}>
+                  <div
+                    style={{
+                      ...WORKLOADS_PAGE_CONSTANTS.LAYOUT.PROGRESS_BAR_FILL,
+                      width: `${progressPercentage}%`,
+                    }}
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <FancySpinner label={WORKLOADS_PAGE_CONSTANTS.MESSAGES.RETRYING} showLabel={true} />
+                <div
+                  style={{
+                    marginTop: 12,
+                    color: WORKLOADS_PAGE_CONSTANTS.COLORS.TEXT_MUTED,
+                    fontSize: 14,
+                  }}
+                >
                   {WORKLOADS_PAGE_CONSTANTS.MESSAGES.ATTEMPT_COUNT.replace(
                     '{current}',
                     retryCount.toString(),
-                  ).replace('{max}', WORKLOADS_PAGE_CONSTANTS.RETRY.MAX_ATTEMPTS.toString())}
-                </Text>
-              </div>
-            )}
-
-            {isInCooldown && cooldownTime > 0 && (
-              <div style={{ marginBottom: 16 }}>
-                <Text style={{ color: WORKLOADS_PAGE_CONSTANTS.COLORS.TEXT_MUTED }}>
-                  {WORKLOADS_PAGE_CONSTANTS.MESSAGES.COOLDOWN_DESCRIPTION.replace(
-                    '{seconds}',
-                    formatTime(cooldownTime),
+                  ).replace('{max}', '5')}
+                  {nextRetryIn > 0 && (
+                    <div>
+                      {WORKLOADS_PAGE_CONSTANTS.MESSAGES.NEXT_RETRY.replace(
+                        '{seconds}',
+                        formatTime(nextRetryIn).toString(),
+                      )}
+                    </div>
                   )}
-                </Text>
-              </div>
+                </div>
+              </>
             )}
 
-            {nextRetryIn > 0 && !isInCooldown && (
-              <div style={{ marginBottom: 16 }}>
-                <Text style={{ color: WORKLOADS_PAGE_CONSTANTS.COLORS.TEXT_MUTED }}>
-                  {WORKLOADS_PAGE_CONSTANTS.MESSAGES.NEXT_RETRY.replace(
-                    '{seconds}',
-                    formatTime(nextRetryIn),
-                  )}
-                </Text>
-              </div>
-            )}
-
-            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-              {onRetry && (
-                <Button
-                  type="primary"
-                  icon={<ReloadOutlined />}
-                  onClick={onRetry}
-                  disabled={isRetrying || isInCooldown}
-                >
-                  {WORKLOADS_PAGE_CONSTANTS.MESSAGES.REFRESH}
-                </Button>
-              )}
-
-              {onCancel && (isRetrying || isInCooldown) && (
-                <Button onClick={onCancel}>{WORKLOADS_PAGE_CONSTANTS.MESSAGES.CANCEL}</Button>
-              )}
-            </div>
+            <Button type="text" onClick={onCancel} style={{ marginTop: 8 }}>
+              {WORKLOADS_PAGE_CONSTANTS.MESSAGES.CANCEL}
+            </Button>
           </div>
-        </Card>
+        </div>
       </div>
     );
   },

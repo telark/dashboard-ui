@@ -9,7 +9,7 @@ import ResourceTag from './ResourceTag';
 import { ResourceRowItemProps } from '../../../interfaces/grouper';
 
 const ResourceRowItem: React.FC<ResourceRowItemProps> = React.memo(
-  ({ resource, isSelected, onSelect }) => {
+  ({ resource, isSelected, isSyncing = false, onSelect }) => {
     const isBridge = resource.type === 'bridge';
     const sourceType = resource.sourceType || resource.type || '';
     const displayName = resource.sourceName || resource.name;
@@ -83,11 +83,11 @@ const ResourceRowItem: React.FC<ResourceRowItemProps> = React.memo(
                 display: 'flex',
                 alignItems: 'center',
                 gap: 8,
-                color: '#5B6B7C',
+                color: isSyncing ? DEFAULT_COLORS.SUCCESS : '#5B6B7C',
                 fontSize: 12,
               }}
             >
-              <SyncOutlined />
+              <SyncOutlined spin={isSyncing} />
               <TimeAgo date={ParseGoTimeDate(resource.lastSync)} />
             </div>
           </div>

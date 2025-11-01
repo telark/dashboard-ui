@@ -120,11 +120,9 @@ const WorkloadsGlobalView: React.FC = memo(() => {
       <Error
         isInCooldown={isInCooldown}
         cooldownTime={cooldownTime}
-        isRetrying={isRetrying}
         retryCount={retryCount}
         nextRetryIn={nextRetryIn}
         onCancel={handleCancelRetry}
-        onRetry={handleRetry}
       />
     );
   }

@@ -27,6 +27,8 @@ export interface ResourceRowInterface {
   lastSync: string;
   type: string;
   status: string;
+  sourceName?: string;
+  syncName?: string;
 }
 
 export interface GeneralInfoInterface {
