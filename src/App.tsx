@@ -9,7 +9,6 @@ import { DEFAULT_COLORS, APP_CONFIGS, APP_ROUTES } from './constants';
 import {
   Dashboard,
   GroupersGlobalView,
-  GrouperDetailsView,
   BridgesGlobalView,
   BridgeDetailsView,
   WorkloadsGlobalView,
@@ -17,6 +16,7 @@ import {
   Startup,
   Welcome,
 } from './pages';
+import AnimatedDetailsView from './pages/grouper/details/AnimatedDetailsView';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkClusterInsightsThunk } from './store/insights/slices/insightsSlice';
@@ -101,7 +101,7 @@ const App: React.FC = () => {
                 <Routes>
                   <Route path={APP_ROUTES.HOME} element={<Dashboard />} />
                   <Route path={APP_ROUTES.GROUPERS} element={<GroupersGlobalView />} />
-                  <Route path={APP_ROUTES.GROUPER_DETAILS} element={<GrouperDetailsView />} />
+                  <Route path={APP_ROUTES.GROUPER_DETAILS} element={<AnimatedDetailsView />} />
                   <Route path={APP_ROUTES.BRIDGES} element={<BridgesGlobalView />} />
                   <Route path={APP_ROUTES.BRIDGE_DETAILS} element={<BridgeDetailsView />} />
                   <Route path={APP_ROUTES.WORKLOADS} element={<WorkloadsGlobalView />} />

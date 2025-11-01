@@ -5,7 +5,8 @@ import { BridgeDetailsHook } from '../../../hooks/BridgeDetailsHook';
 import { syncBridgeDetails } from '../../../utils/bridge/sync';
 import { BRIDGE_DETAILS_CONSTANTS, TabKey } from '../../../constants/pages/bridge-details';
 import { RootState } from '../../../store';
-import { Loading, Error, Empty, Header, Tabs, Content } from '.';
+import { Error, Empty, Header, Tabs, Content } from '.';
+import LoadingDetails from '../../../components/shared/LoadingDetails';
 
 const BridgeDetailsView: React.FC = memo(function BridgeDetailsView() {
   const {
@@ -39,7 +40,7 @@ const BridgeDetailsView: React.FC = memo(function BridgeDetailsView() {
   );
 
   if (loading) {
-    return <Loading />;
+    return <LoadingDetails />;
   }
 
   if (error) {

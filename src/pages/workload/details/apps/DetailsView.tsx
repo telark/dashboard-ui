@@ -3,8 +3,9 @@ import { message } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AppWorkloadDetailsHook } from '../../../../hooks/AppWorkloadDetailsHook';
-import { Loading, Error, Empty, Header, Tabs, Content } from '.';
+import { Error, Empty, Header, Tabs, Content } from '.';
 import { GROUPER_DETAILS_CONSTANTS } from '../../../../constants/pages/grouper-details';
+import LoadingDetails from '../../../../components/shared/LoadingDetails';
 import { RootState } from '../../../../store';
 
 const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() {
@@ -36,7 +37,7 @@ const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() 
   }, [error]);
 
   if (loading) {
-    return <Loading />;
+    return <LoadingDetails />;
   }
 
   if (error) {
