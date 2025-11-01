@@ -27,4 +27,3 @@ const AnimatedPageWrapper: React.FC<AnimatedPageWrapperProps> = React.memo(({ ch
 AnimatedPageWrapper.displayName = 'AnimatedPageWrapper';
 
 export default AnimatedPageWrapper;
-

@@ -1,7 +1,7 @@
 import React from 'react';
 import { DEFAULT_COLORS } from '../../../../constants';
 import { AppWorkload } from '../../../../interfaces/workload';
-import { AiOutlineApi } from "react-icons/ai";
+import { AiOutlineApi } from 'react-icons/ai';
 
 interface WorkloadBridgesProps {
   workload: AppWorkload;

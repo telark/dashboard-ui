@@ -10,7 +10,12 @@ import { AppWorkload } from '../../../../interfaces/workload';
 import { syncAppWorkloadDetails } from '../../../../utils/workload/sync';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
-import { AiOutlineCheckCircle, AiOutlineCluster, AiOutlineArrowLeft, AiOutlineSync } from "react-icons/ai";
+import {
+  AiOutlineCheckCircle,
+  AiOutlineCluster,
+  AiOutlineArrowLeft,
+  AiOutlineSync,
+} from 'react-icons/ai';
 
 interface WorkloadHeaderProps {
   workload: AppWorkload;

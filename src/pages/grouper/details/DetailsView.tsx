@@ -51,8 +51,7 @@ const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
   }, [grouperDetails, setSyncing, message]);
 
   const totalResources = useMemo(
-    () =>
-      (grouperDetails?.workloads?.length || 0) + (grouperDetails?.bridges?.length || 0),
+    () => (grouperDetails?.workloads?.length || 0) + (grouperDetails?.bridges?.length || 0),
     [grouperDetails?.workloads?.length, grouperDetails?.bridges?.length],
   );
 

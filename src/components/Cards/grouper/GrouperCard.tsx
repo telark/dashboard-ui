@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
-import { AiOutlineCluster } from "react-icons/ai";
+import { AiOutlineCluster } from 'react-icons/ai';
 
 import { GROUPER_CARD_TEXTS, CARD_DEFAULTS } from '../../../constants';
 import { GrouperInterface } from '../../../interfaces/grouper';

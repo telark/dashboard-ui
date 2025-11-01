@@ -44,7 +44,12 @@ const AppsList: React.FC<AppsListProps> = React.memo(function AppsList({
     if (showFullEmptyMessage) {
       return (
         <div style={WORKLOADS_PAGE_CONSTANTS.LAYOUT.EMPTY_STATE_CONTAINER}>
-          <div style={{ textAlign: 'center', maxWidth: WORKLOADS_PAGE_CONSTANTS.UI.EMPTY_STATE_MAX_WIDTH }}>
+          <div
+            style={{
+              textAlign: 'center',
+              maxWidth: WORKLOADS_PAGE_CONSTANTS.UI.EMPTY_STATE_MAX_WIDTH,
+            }}
+          >
             <div style={WORKLOADS_PAGE_CONSTANTS.LAYOUT.EMPTY_ICON}>
               <ReloadOutlined />
             </div>

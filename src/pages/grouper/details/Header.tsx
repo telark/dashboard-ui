@@ -1,10 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
-import {
-  SyncOutlined,
-  ToolOutlined,
-} from '@ant-design/icons';
-import { AiOutlineCluster, AiOutlineCheckCircle } from "react-icons/ai";
+import { SyncOutlined, ToolOutlined } from '@ant-design/icons';
+import { AiOutlineCluster, AiOutlineCheckCircle } from 'react-icons/ai';
 import StatusButton from '../../../components/buttons/StatusButton';
 import TimeAgo from '../../../components/time/TimeAgo';
 import { FancySpinner } from '../../../components/shared';

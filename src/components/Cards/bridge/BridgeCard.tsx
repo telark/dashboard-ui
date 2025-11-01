@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
-import { AiOutlineCluster, AiOutlineApi } from "react-icons/ai";
+import { AiOutlineCluster, AiOutlineApi } from 'react-icons/ai';
 
 import { BRIDGE_CARD_TEXTS, CARD_DEFAULTS, DEFAULT_COLORS } from '../../../constants';
 import { BridgeInterface } from '../../../interfaces/bridge';
