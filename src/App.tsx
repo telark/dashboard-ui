@@ -1,22 +1,13 @@
 import React from 'react';
 import { Layout, message, App as AntdApp } from 'antd';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import Sidebar from './components/layout/sidebar/Sidebar';
 import Header from './components/layout/header/Header';
 import ErrorBoundary from './ErrorBoundary';
 import 'antd/dist/reset.css';
-import { DEFAULT_COLORS, APP_CONFIGS, APP_ROUTES } from './constants';
-import {
-  Dashboard,
-  GroupersGlobalView,
-  BridgesGlobalView,
-  BridgeDetailsView,
-  WorkloadsGlobalView,
-  AppWorkloadDetailsView,
-  Startup,
-  Welcome,
-} from './pages';
-import AnimatedDetailsView from './pages/grouper/details/AnimatedDetailsView';
+import { DEFAULT_COLORS, APP_CONFIGS } from './constants';
+import { Startup, Welcome } from './pages';
+import AppRoutes from './routes/AppRoutes';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkClusterInsightsThunk } from './store/insights/slices/insightsSlice';
@@ -98,18 +89,7 @@ const App: React.FC = () => {
                 }}
               >
                 <Header />
-                <Routes>
-                  <Route path={APP_ROUTES.HOME} element={<Dashboard />} />
-                  <Route path={APP_ROUTES.GROUPERS} element={<GroupersGlobalView />} />
-                  <Route path={APP_ROUTES.GROUPER_DETAILS} element={<AnimatedDetailsView />} />
-                  <Route path={APP_ROUTES.BRIDGES} element={<BridgesGlobalView />} />
-                  <Route path={APP_ROUTES.BRIDGE_DETAILS} element={<BridgeDetailsView />} />
-                  <Route path={APP_ROUTES.WORKLOADS} element={<WorkloadsGlobalView />} />
-                  <Route
-                    path={APP_ROUTES.APP_WORKLOAD_DETAILS}
-                    element={<AppWorkloadDetailsView />}
-                  />
-                </Routes>
+                <AppRoutes />
               </Layout>
             </Layout>
           )}
