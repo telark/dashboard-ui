@@ -37,6 +37,10 @@ export const syncBridgeDetails = async ({
       config: BRIDGE_SYNC_CONFIG,
     });
   } catch (err: any) {
+    // Ensure loading message is closed on error/timeout
+    const apiName = details?.syncName || details.name;
+    const key = `${BRIDGE_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX}${apiName}`;
+    message.destroy(key);
     handleSyncError({ err, message, isDetailsSync: true, config: BRIDGE_SYNC_CONFIG });
   } finally {
     setSyncing(false);
@@ -50,12 +54,12 @@ export const syncBridge = async ({
   message,
   setSyncing,
 }: SyncParams): Promise<void> => {
+  // Compute API/display identifiers upfront so they are available in all blocks
+  const apiName = syncName || name;
+  const key = `${SYNC_CONSTANTS.MESSAGE_KEY_PREFIX}${apiName}`;
   try {
     setSyncing(true);
-    const apiName = syncName || name;
     (store.dispatch as AppDispatch)(startSync(name));
-
-    const key = `${SYNC_CONSTANTS.MESSAGE_KEY_PREFIX}${apiName}`;
     message.open({
       type: 'loading',
       content: `${SYNC_MESSAGES.loading} ${apiName}…`,
@@ -74,6 +78,8 @@ export const syncBridge = async ({
       config: BRIDGE_SYNC_CONFIG,
     });
   } catch (err: any) {
+    // Ensure loading message is closed on error/timeout
+    message.destroy(key);
     handleSyncError({ err, message, isDetailsSync: false, config: BRIDGE_SYNC_CONFIG });
   } finally {
     setSyncing(false);
