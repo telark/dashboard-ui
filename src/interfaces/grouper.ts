@@ -28,3 +28,52 @@ export interface Maintenance {
   deleteAction: string;
   updateAction: string;
 }
+
+export interface ResourceRowItemProps {
+  resource: {
+    name: string;
+    lastSync: string;
+    type: string;
+    status: string;
+    isBridge?: boolean;
+    sourceType?: string;
+    sourceName?: string;
+  };
+  isSelected: boolean;
+  onSelect: (checked: boolean) => void;
+}
+
+export interface ResourcesActionBarProps {
+  selectedCount: number;
+  hasSelection: boolean;
+  allPageResourcesSelected: boolean;
+  somePageResourcesSelected: boolean;
+  onSelectAll: (checked: boolean) => void;
+  onView: () => void;
+  onSync: () => void;
+  onDelete: () => void;
+}
+
+export interface ResourcesListProps {
+  resources: Resource[];
+  selectedResources: Set<string>;
+  onSelectResource: (resourceName: string, checked: boolean) => void;
+  currentPage: number;
+  pageSize: number;
+  totalResources: number;
+  onPageChange: (page: number) => void;
+}
+
+interface Resource {
+  name: string;
+  lastSync: string;
+  type: string;
+  status: string;
+  isBridge?: boolean;
+  sourceType?: string;
+}
+
+export interface ResourceTagProps {
+  type?: 'type' | 'status';
+  value: string;
+}
