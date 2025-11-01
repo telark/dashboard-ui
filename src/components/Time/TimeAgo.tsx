@@ -10,7 +10,7 @@ interface TimeAgoProps {
   formatString?: string;
 }
 
-const TimeAgo: React.FC<TimeAgoProps> = ({ date, formatString = TIME_FORMATS.DEFAULT }) => {
+const TimeAgo: React.FC<TimeAgoProps> = React.memo(({ date, formatString = TIME_FORMATS.DEFAULT }) => {
   const [timeAgo, setTimeAgo] = useState('');
 
   // Memoize the parsed date
@@ -34,6 +34,8 @@ const TimeAgo: React.FC<TimeAgoProps> = ({ date, formatString = TIME_FORMATS.DEF
   }, [parsedDate, isValidDate]);
 
   return <Popover content={formattedDate}>{timeAgo}</Popover>;
-};
+});
+
+TimeAgo.displayName = 'TimeAgo';
 
 export default TimeAgo;
