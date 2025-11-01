@@ -10,31 +10,33 @@ interface TimeAgoProps {
   formatString?: string;
 }
 
-const TimeAgo: React.FC<TimeAgoProps> = React.memo(({ date, formatString = TIME_FORMATS.DEFAULT }) => {
-  const [timeAgo, setTimeAgo] = useState('');
+const TimeAgo: React.FC<TimeAgoProps> = React.memo(
+  ({ date, formatString = TIME_FORMATS.DEFAULT }) => {
+    const [timeAgo, setTimeAgo] = useState('');
 
-  // Memoize the parsed date
-  const parsedDate = useMemo(() => new Date(date), [date]);
-  const isValidDate = useMemo(() => !isNaN(parsedDate.getTime()), [parsedDate]);
+    // Memoize the parsed date
+    const parsedDate = useMemo(() => new Date(date), [date]);
+    const isValidDate = useMemo(() => !isNaN(parsedDate.getTime()), [parsedDate]);
 
-  const formattedDate = isValidDate ? format(parsedDate, formatString) : TIME_TEXTS.INVALID_DATE;
+    const formattedDate = isValidDate ? format(parsedDate, formatString) : TIME_TEXTS.INVALID_DATE;
 
-  // Update every minute
-  useEffect(() => {
-    const update = () => {
-      setTimeAgo(
-        isValidDate
-          ? formatDistanceToNow(parsedDate, { addSuffix: true })
-          : TIME_TEXTS.INVALID_DATE,
-      );
-    };
-    update();
-    const interval = setInterval(update, TIME_CONFIGS.UPDATE_INTERVAL);
-    return () => clearInterval(interval);
-  }, [parsedDate, isValidDate]);
+    // Update every minute
+    useEffect(() => {
+      const update = () => {
+        setTimeAgo(
+          isValidDate
+            ? formatDistanceToNow(parsedDate, { addSuffix: true })
+            : TIME_TEXTS.INVALID_DATE,
+        );
+      };
+      update();
+      const interval = setInterval(update, TIME_CONFIGS.UPDATE_INTERVAL);
+      return () => clearInterval(interval);
+    }, [parsedDate, isValidDate]);
 
-  return <Popover content={formattedDate}>{timeAgo}</Popover>;
-});
+    return <Popover content={formattedDate}>{timeAgo}</Popover>;
+  },
+);
 
 TimeAgo.displayName = 'TimeAgo';
 

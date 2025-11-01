@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
-import { AiOutlineCluster, AiOutlineAppstore } from "react-icons/ai";
+import { AiOutlineCluster, AiOutlineAppstore } from 'react-icons/ai';
 
 import { DEFAULT_COLORS } from '../../../constants';
 import { AppWorkloadCardData } from '../../../interfaces/workload';

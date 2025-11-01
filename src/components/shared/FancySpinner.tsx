@@ -9,48 +9,50 @@ interface FancySpinnerProps {
   showLabel?: boolean; // show/hide label
 }
 
-const FancySpinner: React.FC<FancySpinnerProps> = React.memo(({
-  label = 'Loading…',
-  size = 32,
-  ringThickness = 2,
-  color = DEFAULT_COLORS.SUCCESS,
-  showLabel = false,
-}) => {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: showLabel ? 12 : 0,
-      }}
-    >
+const FancySpinner: React.FC<FancySpinnerProps> = React.memo(
+  ({
+    label = 'Loading…',
+    size = 32,
+    ringThickness = 2,
+    color = DEFAULT_COLORS.SUCCESS,
+    showLabel = false,
+  }) => {
+    return (
       <div
         style={{
-          position: 'relative',
-          width: size,
-          height: size,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: showLabel ? 12 : 0,
         }}
       >
-        {/* Single rotating ring */}
         <div
           style={{
-            position: 'absolute',
-            inset: 0,
-            borderRadius: '50%',
-            border: `${ringThickness}px solid rgba(32,201,151,0.15)`,
-            borderTopColor: color,
-            animation: 'fancy-spin 0.9s linear infinite',
+            position: 'relative',
+            width: size,
+            height: size,
           }}
-        />
-      </div>
-      {showLabel && <div style={{ color: '#5B6B7C', fontSize: 13 }}>{label}</div>}
-      <style>{`
+        >
+          {/* Single rotating ring */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              borderRadius: '50%',
+              border: `${ringThickness}px solid rgba(32,201,151,0.15)`,
+              borderTopColor: color,
+              animation: 'fancy-spin 0.9s linear infinite',
+            }}
+          />
+        </div>
+        {showLabel && <div style={{ color: '#5B6B7C', fontSize: 13 }}>{label}</div>}
+        <style>{`
         @keyframes fancy-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       `}</style>
-    </div>
-  );
-});
+      </div>
+    );
+  },
+);
 
 FancySpinner.displayName = 'FancySpinner';
 

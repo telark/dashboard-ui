@@ -1,7 +1,12 @@
 import { Menu } from 'antd';
 import SidebarButton from '../../buttons/SideBarButton';
 import { useLocation } from 'react-router-dom';
-import { AiOutlineCluster, AiOutlineApi, AiOutlineAppstore, AiOutlineDashboard } from "react-icons/ai";
+import {
+  AiOutlineCluster,
+  AiOutlineApi,
+  AiOutlineAppstore,
+  AiOutlineDashboard,
+} from 'react-icons/ai';
 
 interface MenuItemsProps {
   isCollapsed?: boolean;

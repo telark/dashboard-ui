@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
-import { AiOutlineApi, AiOutlineCheckCircle, AiOutlineSync } from "react-icons/ai";
+import { AiOutlineApi, AiOutlineCheckCircle, AiOutlineSync } from 'react-icons/ai';
 import StatusButton from '../../../components/buttons/StatusButton';
 import TimeAgo from '../../../components/time/TimeAgo';
 import { FancySpinner } from '../../../components/shared';

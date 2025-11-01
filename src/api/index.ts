@@ -38,7 +38,7 @@ interface ExtendedAxiosError extends AxiosError {
 const normalizeError = (error: AxiosError) => {
   const status = error?.response?.status ?? null;
   const responseData = error?.response?.data;
-  const dataMessage = 
+  const dataMessage =
     responseData && typeof responseData === 'object' && 'message' in responseData
       ? String(responseData.message)
       : undefined;
@@ -62,20 +62,21 @@ interface ErrorInterceptorOptions {
 
 const createErrorInterceptor = (options: ErrorInterceptorOptions = {}) => {
   const { silent404 = false } = options;
-  
+
   return [
     (response: AxiosResponse) => response,
     (error: AxiosError) => {
       const meta = normalizeError(error);
       (error as ExtendedAxiosError).normalized = meta;
-      
+
       const isSilent404 =
         silent404 &&
         meta.isNotFound &&
         error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_404] === HEADER_VALUES.SILENT_404;
       const isSilentNetwork =
         meta.isNetwork &&
-        error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_NETWORK] === HEADER_VALUES.SILENT_NETWORK;
+        error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_NETWORK] ===
+          HEADER_VALUES.SILENT_NETWORK;
 
       if (isSilent404) {
         if (error?.response) {

@@ -1,6 +1,12 @@
 import React from 'react';
-import {DeploymentUnitOutlined} from '@ant-design/icons';
-import { AiOutlineTag, AiOutlineSwap, AiOutlineCluster, AiOutlineCalendar, AiOutlineLock } from "react-icons/ai";
+import { DeploymentUnitOutlined } from '@ant-design/icons';
+import {
+  AiOutlineTag,
+  AiOutlineSwap,
+  AiOutlineCluster,
+  AiOutlineCalendar,
+  AiOutlineLock,
+} from 'react-icons/ai';
 import TimeAgo from '../../../time/TimeAgo';
 import { AppWorkload } from '../../../../interfaces/workload';
 import { Label, Row } from '../../../../components/shared';

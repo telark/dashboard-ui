@@ -15,10 +15,7 @@ export interface ResourceStateUtils {
   loadResource: (dispatch: AppDispatch) => Promise<void>;
   loadResourceSilent: (dispatch: AppDispatch) => Promise<boolean>;
   handleInitialSync: (dispatch: AppDispatch) => Promise<void>;
-  setupAutoRefresh: (
-    dispatch: AppDispatch,
-    onCleanup: (cleanupFn: () => void) => void,
-  ) => void;
+  setupAutoRefresh: (dispatch: AppDispatch, onCleanup: (cleanupFn: () => void) => void) => void;
 }
 
 export const createResourceStateUtils = (config: ResourceStateConfig): ResourceStateUtils => {
@@ -94,4 +91,3 @@ export const createResourceStateUtils = (config: ResourceStateConfig): ResourceS
     setupAutoRefresh,
   };
 };
-
