@@ -5,7 +5,8 @@ import { GrouperDetailsHook } from '../../../hooks/GrouperDetailsHook';
 import { syncGrouperDetails } from '../../../utils/grouper/sync';
 import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../../constants/pages/grouper-details';
 import { RootState } from '../../../store';
-import { Loading, Error, Empty, Header, Tabs, Content } from '.';
+import { Error, Empty, Header, Tabs, Content } from '.';
+import LoadingDetails from '../../../components/shared/LoadingDetails';
 
 const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
   const {
@@ -56,7 +57,7 @@ const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
   );
 
   if (loading) {
-    return <Loading />;
+    return <LoadingDetails />;
   }
 
   if (error) {
