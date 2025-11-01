@@ -1,8 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import GrouperDetailsView from './DetailsView';
 
-const AnimatedDetailsView: React.FC = () => {
+interface AnimatedPageWrapperProps {
+  children: React.ReactNode;
+}
+
+const AnimatedPageWrapper: React.FC<AnimatedPageWrapperProps> = React.memo(({ children }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.98 }}
@@ -16,10 +19,12 @@ const AnimatedDetailsView: React.FC = () => {
         height: '100%',
       }}
     >
-      <GrouperDetailsView />
+      {children}
     </motion.div>
   );
-};
+});
 
-export default AnimatedDetailsView;
+AnimatedPageWrapper.displayName = 'AnimatedPageWrapper';
+
+export default AnimatedPageWrapper;
 
