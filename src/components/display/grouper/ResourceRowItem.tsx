@@ -111,4 +111,3 @@ const ResourceRowItem: React.FC<ResourceRowItemProps> = React.memo(
 
 ResourceRowItem.displayName = 'ResourceRowItem';
 export default ResourceRowItem;
-

@@ -19,7 +19,6 @@ export interface NoLoadingButtonInterface {
 }
 
 export interface ResourcesInterface {
-  name: string;
   resources: ResourceRowInterface[];
 }
 
