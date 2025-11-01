@@ -14,7 +14,6 @@ const GrouperGeneralInfo: React.FC<GrouperGeneralInfoExtension> = ({
   name,
   creationTime,
   lastUpdateTime,
-  status,
   totalResources,
 }) => (
   <div style={{ padding: '6px 2px' }}>
@@ -31,16 +30,6 @@ const GrouperGeneralInfo: React.FC<GrouperGeneralInfoExtension> = ({
     <Row
       left={<Label icon={<AiOutlineCalendar />} text="Last Modification" />}
       right={<TimeAgo date={lastUpdateTime} />}
-    />
-
-    <Row
-      left={<Label icon={<SyncOutlined />} text="Status" />}
-      right={
-        <StatusButton
-          status={(status as 'Active' | 'Inactive') || 'Inactive'}
-          icon={<SyncOutlined />}
-        />
-      }
     />
 
     <Row
