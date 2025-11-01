@@ -9,6 +9,7 @@ import { ResourceCardModal, ResourceCardContent } from '.';
 
 export interface ResourceCardData {
   name: string;
+  sourceName: string;
   status: string;
   lastUpdateTime: string;
   maintenance?: { status: string } | null;

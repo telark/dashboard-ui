@@ -1,7 +1,7 @@
 import { triggerSingleAppSync } from '../../clients/sync-manager';
 import { SYNC_MESSAGES } from '../../constants/modes';
 import { SYNC_CONSTANTS } from '../../constants/sync';
-import store, { AppDispatch } from '../../store';
+import store, { AppDispatch, RootState } from '../../store';
 import { startSync, endSync } from '../../store/workloads/slices/workloadSlice';
 import { handleSyncEffect, handleSyncError } from '../shared/sync';
 import { WORKLOAD_SYNC_CONFIG } from '../../constants/config';
@@ -15,6 +15,7 @@ export const syncAppWorkloadDetails = async ({
   try {
     setSyncing(true);
     const apiName = details?.fasid?.name || details?.name;
+    const displayName = details?.fasid?.sourceName || details?.name;
     if (!apiName) {
       throw new Error('Workload name is required');
     }
@@ -23,7 +24,7 @@ export const syncAppWorkloadDetails = async ({
     const key = `sync-app-${apiName}`;
     message.open({
       type: 'loading',
-      content: `${SYNC_MESSAGES.loading} ${apiName}…`,
+      content: `${SYNC_MESSAGES.loading} ${displayName}…`,
       key,
       duration: SYNC_CONSTANTS.MESSAGE_DURATIONS.LOADING,
     });
@@ -61,9 +62,13 @@ export const syncAppWorkload = async ({ name, message, setSyncing }: SyncParams)
     (store.dispatch as AppDispatch)(startSync(name));
 
     const key = `${SYNC_CONSTANTS.MESSAGE_KEY_PREFIX}${name}`;
+    // Resolve display name from store (sourceName) when available
+    const state = store.getState() as RootState;
+    const app = state.workload.apps.find((a: any) => a?.name === name);
+    const displayName = app?.sourceName || name;
     message.open({
       type: 'loading',
-      content: `${SYNC_MESSAGES.loading} ${name}…`,
+      content: `${SYNC_MESSAGES.loading} ${displayName}`,
       key,
       duration: SYNC_CONSTANTS.MESSAGE_DURATIONS.LOADING,
     });

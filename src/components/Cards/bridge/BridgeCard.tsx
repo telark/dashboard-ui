@@ -29,6 +29,7 @@ const BridgeCard: React.FC<BridgeInterface> = React.memo(function BridgeCard({
   const cardData: ResourceCardData = useMemo(
     () => ({
       name,
+      sourceName: name,
       status: normalizeStatus(status),
       lastUpdateTime,
       metrics: [
