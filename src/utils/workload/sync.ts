@@ -39,6 +39,12 @@ export const syncAppWorkloadDetails = async ({
       config: WORKLOAD_SYNC_CONFIG,
     });
   } catch (err: any) {
+    // Ensure loading message is closed on error/timeout
+    const apiName = details?.fasid?.name || details?.name;
+    const key = `sync-app-${apiName}`;
+    if (apiName) {
+      message.destroy(key);
+    }
     handleSyncError({ err, message, isDetailsSync: false, config: WORKLOAD_SYNC_CONFIG });
   } finally {
     const apiName = details?.fasid?.name || details?.name;
@@ -73,6 +79,9 @@ export const syncAppWorkload = async ({ name, message, setSyncing }: SyncParams)
       config: WORKLOAD_SYNC_CONFIG,
     });
   } catch (err: any) {
+    // Ensure loading message is closed on error/timeout
+    const key = `${SYNC_CONSTANTS.MESSAGE_KEY_PREFIX}${name}`;
+    message.destroy(key);
     handleSyncError({ err, message, isDetailsSync: false, config: WORKLOAD_SYNC_CONFIG });
   } finally {
     setSyncing(false);
