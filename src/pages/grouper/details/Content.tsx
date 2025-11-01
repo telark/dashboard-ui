@@ -79,7 +79,7 @@ const Content: React.FC<ContentProps> = React.memo(
               <div style={{ padding: 4 }}>
                 <Resources
                   name={grouperDetails.name}
-                  resources={[...grouperDetails.workloads, ...grouperDetails.bridges]}
+                  resources={[...(grouperDetails.workloads || []), ...(grouperDetails.bridges || [])]}
                 />
               </div>
             </Card>
