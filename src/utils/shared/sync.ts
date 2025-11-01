@@ -27,7 +27,11 @@ const getSuccessDuration = (config: SyncConfig, isDetailsSync: boolean): number 
     : config.cardConstants.MESSAGE_DURATIONS.SUCCESS;
 };
 
-const getMessageForEffect = (effect: string): string => {
+const getMessageForEffect = (effect: string, config?: SyncConfig): string => {
+  // Make NotFound message generic instead of grouper-specific
+  if (effect === 'NotFound') {
+    return 'This resource is being removed and will disappear shortly.';
+  }
   return SYNC_MESSAGES.byEffect[effect] || SYNC_MESSAGES.completed;
 };
 
@@ -54,7 +58,7 @@ const handleDeletionPolling = (
   const waitMs = getPollingMaxWait(config, isDetailsSync);
   const intervalMs = getPollingInterval(config, isDetailsSync);
   const duration = getSuccessDuration(config, isDetailsSync);
-  const friendlyMessage = getMessageForEffect(effect);
+  const friendlyMessage = getMessageForEffect(effect, config);
 
   const interval = setInterval(() => {
     const state: RootState = store.getState();

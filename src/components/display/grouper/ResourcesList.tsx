@@ -12,6 +12,7 @@ const ResourcesList: React.FC<ResourcesListProps> = React.memo(
     pageSize,
     totalResources,
     onPageChange,
+    isResourceSyncing,
   }) => {
     const showPagination = totalResources > pageSize;
 
@@ -20,11 +21,13 @@ const ResourcesList: React.FC<ResourcesListProps> = React.memo(
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {resources.map((resource) => {
             const isSelected = selectedResources.has(resource.name);
+            const isSyncing = isResourceSyncing?.(resource.name, resource.type, resource) || false;
             return (
               <ResourceRowItem
                 key={resource.name}
                 resource={resource}
                 isSelected={isSelected}
+                isSyncing={isSyncing}
                 onSelect={(checked) => onSelectResource(resource.name, checked)}
               />
             );

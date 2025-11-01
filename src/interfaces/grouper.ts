@@ -40,6 +40,7 @@ export interface ResourceRowItemProps {
     sourceName?: string;
   };
   isSelected: boolean;
+  isSyncing?: boolean;
   onSelect: (checked: boolean) => void;
 }
 
@@ -48,6 +49,7 @@ export interface ResourcesActionBarProps {
   hasSelection: boolean;
   allPageResourcesSelected: boolean;
   somePageResourcesSelected: boolean;
+  isSyncing?: boolean;
   onSelectAll: (checked: boolean) => void;
   onView: () => void;
   onSync: () => void;
@@ -62,6 +64,7 @@ export interface ResourcesListProps {
   pageSize: number;
   totalResources: number;
   onPageChange: (page: number) => void;
+  isResourceSyncing?: (resourceName: string, resourceType: string, resource?: Resource) => boolean;
 }
 
 interface Resource {
@@ -71,6 +74,8 @@ interface Resource {
   status: string;
   isBridge?: boolean;
   sourceType?: string;
+  sourceName?: string;
+  syncName?: string;
 }
 
 export interface ResourceTagProps {
