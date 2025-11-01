@@ -5,7 +5,7 @@ import ResourcesEmptyState from './ResourcesEmptyState';
 import ResourcesActionBar from './ResourcesActionBar';
 import ResourcesList from './ResourcesList';
 
-const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ name, resources }) {
+const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ resources }) {
   const navigate = useNavigate();
   const [selectedResources, setSelectedResources] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);

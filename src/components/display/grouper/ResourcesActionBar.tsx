@@ -88,4 +88,3 @@ const ResourcesActionBar: React.FC<ResourcesActionBarProps> = React.memo(
 
 ResourcesActionBar.displayName = 'ResourcesActionBar';
 export default ResourcesActionBar;
-

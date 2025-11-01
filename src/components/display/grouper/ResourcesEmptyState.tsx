@@ -50,4 +50,3 @@ const ResourcesEmptyState: React.FC = React.memo(() => {
 
 ResourcesEmptyState.displayName = 'ResourcesEmptyState';
 export default ResourcesEmptyState;
-

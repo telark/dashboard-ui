@@ -7,13 +7,14 @@ import { Error, Empty, Header, Tabs, Content } from '.';
 import { GROUPER_DETAILS_CONSTANTS } from '../../../../constants/pages/grouper-details';
 import LoadingDetails from '../../../../components/shared/LoadingDetails';
 import { RootState } from '../../../../store';
+import { STORE_ERRORS } from '../../../../constants/store';
 
 const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() {
   const { name } = useParams<{ name: string }>();
   const [activeTab, setActiveTab] = useState<
     'general' | 'instances' | 'bridges' | 'history' | 'sync'
   >('general');
-  const [syncing, setSyncing] = useState(false);
+  const [syncing] = useState(false);
 
   const {
     workloadDetails: workload,
@@ -32,7 +33,7 @@ const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() 
 
   useEffect(() => {
     if (error) {
-      message.error('Failed to load workload details');
+      message.error(STORE_ERRORS.FETCH_APP_DETAILS);
     }
   }, [error]);
 

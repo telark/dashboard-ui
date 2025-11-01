@@ -16,4 +16,3 @@ const ResourceTag: React.FC<ResourceTagProps> = React.memo(({ type = 'type', val
 
 ResourceTag.displayName = 'ResourceTag';
 export default ResourceTag;
-

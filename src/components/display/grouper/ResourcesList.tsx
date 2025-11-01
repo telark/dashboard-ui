@@ -48,4 +48,3 @@ const ResourcesList: React.FC<ResourcesListProps> = React.memo(
 
 ResourcesList.displayName = 'ResourcesList';
 export default ResourcesList;
-
