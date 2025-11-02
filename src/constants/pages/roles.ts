@@ -17,6 +17,10 @@ export const ROLES_PAGE_CONSTANTS = {
       DELETE: 'Delete',
     },
     PERMISSIONS_SUFFIX: 'permissions',
+    CUSTOM_TYPE: 'custom',
+    DELETE_MODAL_TITLE: 'Delete Role',
+    DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
+    DELETE_MODAL_OK: 'Delete',
   },
   SIZES: {
     ROW_HEIGHT: 44,
