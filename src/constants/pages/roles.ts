@@ -1,5 +1,6 @@
-import type { RoleScopeLevel } from '../../interfaces/roles';
-import { ROLE_SCOPE_LEVELS } from '../../interfaces/roles';
+export const ROLE_SCOPE_PERMISSIONS = ['View', 'Edit', 'Delete'] as const;
+export type RoleScopePermission = typeof ROLE_SCOPE_PERMISSIONS[number];
+
 export const ROLES_PAGE_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Roles',
@@ -89,15 +90,20 @@ export const ROLES_PAGE_CONSTANTS = {
       { key: 'roles', label: 'Roles' },
       { key: 'settings', label: 'Settings' },
     ] as const,
-    LEVELS: ROLE_SCOPE_LEVELS,
+    PERMISSIONS: ROLE_SCOPE_PERMISSIONS,
     TOOLTIP: {
       View: 'Read-only access to view data and settings.',
       Edit: 'Can create and update within assigned scope.',
       Delete: 'Can remove resources within assigned scope. Use with caution.',
-    } as Record<RoleScopeLevel, string>,
+    } as Record<RoleScopePermission, string>,
   },
+  STATUS: {ACTIVE: 'Active', INACTIVE: 'Inactive'},
+  TYPE: {BUILT_IN: 'built-in', CUSTOM: 'custom'},
 } as const;
 
 export type RolesPageConstants = typeof ROLES_PAGE_CONSTANTS;
+
+export type RoleStatus = typeof ROLES_PAGE_CONSTANTS.STATUS[keyof typeof ROLES_PAGE_CONSTANTS.STATUS];
+export type RoleType = typeof ROLES_PAGE_CONSTANTS.TYPE[keyof typeof ROLES_PAGE_CONSTANTS.TYPE];
 
 

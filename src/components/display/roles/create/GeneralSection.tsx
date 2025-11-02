@@ -1,5 +1,5 @@
 import React from 'react';
-import Section from '../../../shared/Section';
+import Section from '../shared/Section';
 import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
 import type { RolesGeneralSectionProps } from '../../../../interfaces/roles';
 import LabeledInput from '../../../shared/LabeledInput';

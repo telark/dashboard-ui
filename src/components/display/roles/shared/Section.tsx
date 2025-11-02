@@ -4,13 +4,12 @@ import { Collapse, Typography } from 'antd';
 interface SectionProps {
   title: string;
   subtitle?: string;
-  children?: React.ReactNode;
-  content?: React.ReactNode; // alternative to children
+  content?: React.ReactNode;
   defaultActive?: boolean;
   className?: string;
 }
 
-const Section: React.FC<SectionProps> = ({ title, subtitle, children, content, defaultActive = true, className }) => {
+const Section: React.FC<SectionProps> = ({ title, subtitle, content, defaultActive = true, className }) => {
   return (
     <Collapse
       className={`app-section ${className || ''}`.trim()}
@@ -25,7 +24,7 @@ const Section: React.FC<SectionProps> = ({ title, subtitle, children, content, d
             {subtitle}
           </Typography.Paragraph>
         ) : null}
-        <div className="app-section-content" style={{ marginTop: 1 }}>{content ?? children}</div>
+        <div className="app-section-content" style={{ marginTop: 1 }}>{content}</div>
       </Collapse.Panel>
     </Collapse>
   );

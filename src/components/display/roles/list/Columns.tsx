@@ -34,8 +34,8 @@ export const Columns = ({ onView, onDelete, onSort, activeSortKey, getPermission
       render: (_: any, record: Role) => (
         <RowTag
           text={record.type || RPC.LABELS.CUSTOM_TYPE}
-          background={record.type === RPC.VALUES.ROLE_TYPE_BUILT_IN ? RPC.COLORS.TYPE_BUILTIN_BG : RPC.COLORS.TYPE_CUSTOM_BG}
-          color={record.type === RPC.VALUES.ROLE_TYPE_BUILT_IN ? RPC.COLORS.TYPE_BUILTIN_TEXT : RPC.COLORS.TYPE_CUSTOM_TEXT}
+          background={record.type === RPC.TYPE.BUILT_IN ? RPC.COLORS.TYPE_BUILTIN_BG : RPC.COLORS.TYPE_CUSTOM_BG}
+          color={record.type === RPC.TYPE.BUILT_IN ? RPC.COLORS.TYPE_BUILTIN_TEXT : RPC.COLORS.TYPE_CUSTOM_TEXT}
           fontSize={RPC.SIZES.CHIP_FONT}
         />
       ),

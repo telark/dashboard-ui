@@ -1,10 +1,10 @@
 import React from 'react';
 import { Checkbox, Divider, Form, Tooltip } from 'antd';
-import type { RoleScopeLevel, RolesScopesAndPermissionsListProps } from '../../../../interfaces/roles';
+import type { RoleScopePermission, RolesScopesAndPermissionsListProps } from '../../../../interfaces/roles';
 
 const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps> = ({
   areas,
-  levels,
+  permissions,
   tooltipMap,
   rowPaddingPx = 4,
   dividerMarginPx = 2,
@@ -19,7 +19,7 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
               {() => (
                 <Form.Item name={['scopes', area.key as string]} noStyle>
                   <Checkbox.Group
-                    options={levels.map((l: RoleScopeLevel) => ({
+                    options={permissions.map((l: RoleScopePermission) => ({
                       label: (
                         <Tooltip title={tooltipMap[l] as string}>
                           <span className="permission-label">{l}</span>

@@ -1,14 +1,14 @@
-export const ROLE_SCOPE_LEVELS = ['View', 'Edit', 'Delete'] as const;
-export type RoleScopeLevel = typeof ROLE_SCOPE_LEVELS[number];
-export type RoleType = 'built-in' | 'custom';
+import type { RoleScopePermission, RoleStatus, RoleType } from '../constants/pages/roles';
+export type { RoleScopePermission };
+
 export interface Role {
   id: string;
   name: string;
   group: string;
-  scopes: Record<string, RoleScopeLevel[]>;
-  status?: 'Active' | 'Inactive';
-  createdAt?: string; // ISO date
-  type?: RoleType;
+  scopes: Record<string, RoleScopePermission[]>;
+  status: RoleStatus;
+  createdAt: string;
+  type: RoleType;
 }
 
 export interface RolesHeaderProps {
@@ -35,8 +35,8 @@ export interface RolesScopesAndPermissionsSectionProps {
 
 export interface RolesScopesAndPermissionsListProps {
   areas: ReadonlyArray<{ key: string; label: string }>;
-  levels: ReadonlyArray<RoleScopeLevel>;
-  tooltipMap: Record<RoleScopeLevel, string>;
+  permissions: ReadonlyArray<RoleScopePermission>;
+  tooltipMap: Record<RoleScopePermission, string>;
   rowPaddingPx?: number;
   dividerMarginPx?: number;
 }
