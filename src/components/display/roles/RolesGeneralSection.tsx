@@ -2,14 +2,11 @@ import React from 'react';
 import { Form, Input, Select } from 'antd';
 import Section from '../../shared/Section';
 import { ROLES_PAGE_CONSTANTS as RPC } from '../../../constants/pages/roles';
-
-interface RolesGeneralSectionProps<T = any> {
-  form: any;
-}
+import type { RolesGeneralSectionProps } from '../../../interfaces/roles';
 
 const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = ({ form }) => {
   return (
-    <Section title="General" subtitle={RPC.GENERAL.SUBTITLE} className="roles-create-general">
+    <Section title={RPC.GENERAL.TITLE} subtitle={RPC.GENERAL.SUBTITLE}>
       <Form.Item
         label="Role Name"
         name="name"

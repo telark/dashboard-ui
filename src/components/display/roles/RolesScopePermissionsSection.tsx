@@ -2,22 +2,15 @@ import React from 'react';
 import { Checkbox, Divider, Form, Tooltip } from 'antd';
 import Section from '../../shared/Section';
 import { ROLES_PAGE_CONSTANTS as RPC } from '../../../constants/pages/roles';
+import type { RolesScopePermissionsSectionProps } from '../../../interfaces/roles';
 
 const AREAS = RPC.SCOPE.AREAS;
 const LEVELS = RPC.SCOPE.LEVELS as readonly ('View' | 'Edit' | 'Delete')[];
 const TOOLTIP = RPC.SCOPE.TOOLTIP;
 
-interface RolesScopePermissionsSectionProps {
-  form: any; // AntD FormInstance, kept generic
-}
-
 const RolesScopePermissionsSection: React.FC<RolesScopePermissionsSectionProps> = ({ form }) => {
   return (
-    <Section
-      title="Scope & Permissions"
-      subtitle="Define what areas this role can access and at what level."
-      className="roles-create-scope"
-    >
+    <Section title={RPC.SCOPE.TITLE} subtitle={RPC.SCOPE.SUBTITLE}>
       {AREAS.map((area, idx) => (
         <div key={area.key} style={{ padding: '4px 0' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>

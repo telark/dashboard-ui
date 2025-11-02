@@ -1,4 +1,5 @@
-export type RoleScopeLevel = 'View' | 'Edit' | 'Manage';
+export const ROLE_SCOPE_LEVELS = ['View', 'Edit', 'Delete'] as const;
+export type RoleScopeLevel = typeof ROLE_SCOPE_LEVELS[number];
 export type RoleType = 'built-in' | 'custom';
 export interface Role {
   id: string;
@@ -22,6 +23,14 @@ export interface RolesTableProps {
   roles: Role[];
   onRolesChange?: (next: Role[]) => void;
   onView?: (role: Role) => void;
+}
+
+export interface RolesGeneralSectionProps {
+  form: any; // AntD FormInstance
+}
+
+export interface RolesScopePermissionsSectionProps {
+  form: any; // AntD FormInstance
 }
 
 

@@ -1,3 +1,5 @@
+import type { RoleScopeLevel } from '../../interfaces/roles';
+import { ROLE_SCOPE_LEVELS } from '../../interfaces/roles';
 export const ROLES_PAGE_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Roles',
@@ -39,6 +41,7 @@ export const ROLES_PAGE_CONSTANTS = {
     SORT_MUTED: '#94a3b8',
   },
   GENERAL: {
+    TITLE: 'General',
     SUBTITLE: 'Provide the role details.',
     GROUP_OPTIONS: [
       { label: 'Default', value: 'default' },
@@ -48,6 +51,8 @@ export const ROLES_PAGE_CONSTANTS = {
     ],
   },
   SCOPE: {
+    TITLE: 'Scope & Permissions',
+    SUBTITLE: 'Define what areas this role can access and at what level.',
     AREAS: [
       { key: 'groupers', label: 'Groupers' },
       { key: 'workloads', label: 'Workloads' },
@@ -56,12 +61,12 @@ export const ROLES_PAGE_CONSTANTS = {
       { key: 'roles', label: 'Roles' },
       { key: 'settings', label: 'Settings' },
     ] as const,
-    LEVELS: ['View', 'Edit', 'Delete'] as const,
+    LEVELS: ROLE_SCOPE_LEVELS,
     TOOLTIP: {
       View: 'Read-only access to view data and settings.',
       Edit: 'Can create and update within assigned scope.',
       Delete: 'Can remove resources within assigned scope. Use with caution.',
-    } as const,
+    } as Record<RoleScopeLevel, string>,
   },
 } as const;
 
