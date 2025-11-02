@@ -4,16 +4,16 @@ import { EyeOutlined, DeleteOutlined, MoreOutlined } from '@ant-design/icons';
 import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
 import type { Role } from '../../../../interfaces/roles';
 
-interface ActionsDropdownProps {
+interface ActionsProps {
   record: Role;
   onView: (r: Role) => void;
   onDelete: (r: Role) => void;
 }
 
-const ActionsDropdown: React.FC<ActionsDropdownProps> = ({ record, onView, onDelete }) => {
+const Actions: React.FC<ActionsProps> = ({ record, onView, onDelete }) => {
   return (
     <Dropdown
-      trigger={[ 'click' ]}
+      trigger={['click']}
       placement="bottomRight"
       menu={{
         items: [
@@ -28,6 +28,6 @@ const ActionsDropdown: React.FC<ActionsDropdownProps> = ({ record, onView, onDel
   );
 };
 
-export default ActionsDropdown;
+export default Actions;
 
 

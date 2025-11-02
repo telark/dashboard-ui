@@ -1,13 +1,7 @@
 import React from 'react';
+import type { RowTagProps } from '../../../../interfaces/table';
 
-interface ChipProps {
-  text: string;
-  background: string;
-  color: string;
-  fontSize?: number;
-}
-
-const Chip: React.FC<ChipProps> = ({ text, background, color, fontSize = 12 }) => {
+const RowTag: React.FC<RowTagProps> = ({ text, background, color, fontSize = 12 }) => {
   return (
     <span
       style={{
@@ -26,6 +20,6 @@ const Chip: React.FC<ChipProps> = ({ text, background, color, fontSize = 12 }) =
   );
 };
 
-export default Chip;
+export default RowTag;
 
 
