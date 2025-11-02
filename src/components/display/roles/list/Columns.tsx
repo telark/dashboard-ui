@@ -63,13 +63,7 @@ export const Columns = ({ onView, onDelete, onSort, activeSortKey, getPermission
         />
       ),
     }, { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void }),
-    generateColumn({
-      key: RPC.KEYS.CREATED_AT,
-      label: RPC.LABELS.COLUMNS.CREATED,
-      icon: <AiOutlineCalendar />,
-      width: RPC.SIZES.COLUMNS.CREATED,
-      render: (date: string) => new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
-    }, { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void }),
+    
     generateColumn({
       key: RPC.KEYS.STATUS,
       label: RPC.LABELS.COLUMNS.STATUS,
@@ -83,6 +77,13 @@ export const Columns = ({ onView, onDelete, onSort, activeSortKey, getPermission
           fontSize={RPC.SIZES.CHIP_FONT}
         />
       ),
+    }, { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void }),
+    generateColumn({
+      key: RPC.KEYS.CREATED_AT,
+      label: RPC.LABELS.COLUMNS.CREATED,
+      icon: <AiOutlineCalendar />,
+      width: RPC.SIZES.COLUMNS.CREATED,
+      render: (date: string) => new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
     }, { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void }),
     {
       title: '',

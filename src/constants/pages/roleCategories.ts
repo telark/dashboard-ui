@@ -30,12 +30,12 @@ export const ROLE_CATEGORIES_CONSTANTS = {
     HEADER_ICON: 14,
     CHIP_FONT: 12,
     COLUMNS: {
-      NAME: 100,
-      DESCRIPTION: 360,
-      USED_BY: 80,
-      TYPE: 50,
-      CREATED: 160,
-      ACTIONS: 48,
+      NAME: 110,
+      DESCRIPTION: 140,
+      USED_BY: 100,
+      TYPE: 100,
+      CREATED: 100,
+      ACTIONS: 50,
     },
   },
   COLORS: {
