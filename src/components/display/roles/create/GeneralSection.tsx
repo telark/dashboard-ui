@@ -17,14 +17,14 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = ({ form }) => {
             label="Role Name"
             required
             placeholder="e.g. Platform Admin"
-            marginBottom={15}
+            marginBottom={10}
           />
           <LabeledSelect
-            name="group"
-            label="Assigned to Group"
+            name="category"
+            label={RPC.GENERAL.CATEGORY_LABEL}
             required
-            options={RPC.GENERAL.GROUP_OPTIONS as any}
-            placeholder="Select a group"
+            options={RPC.GENERAL.CATEGORY_OPTIONS as any}
+            placeholder="Select a category"
             marginBottom={6}
           />
         </>

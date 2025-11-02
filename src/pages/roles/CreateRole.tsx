@@ -1,16 +1,18 @@
 import React, { useMemo, useState } from 'react';
 import { Button, Form, message } from 'antd';
 import { DEFAULT_COLORS, APP_ROUTES } from '../../constants';
-import { COMPONENT_STYLES } from '../../constants/ui';
+import { COMPONENT_STYLES, UI } from '../../constants/ui';
 import RolesHeader from '../../components/display/roles/shared/Header';
 import { useNavigate } from 'react-router-dom';
 import RolesGeneralSection from '../../components/display/roles/create/GeneralSection';
 import RolesScopePermissionsSection from '../../components/display/roles/create/ScopesAndPermissionsSection';
+import GroupAssignmentSection from '../../components/display/roles/create/GroupAssignmentSection';
 
 type RoleScopeLevel = 'View' | 'Edit' | 'Delete';
 
 interface CreateRoleFormValues {
   name: string;
+  category: string;
   group: string;
   scopes: Record<string, RoleScopeLevel[]>; // area -> levels
 }
@@ -61,11 +63,25 @@ const CreateRole: React.FC = () => {
             layout="vertical"
             form={form}
             onFinish={handleFinish}
-            initialValues={{ group: 'default', scopes: initialScopes }}
+            initialValues={{ category: 'general', group: 'default', scopes: initialScopes }}
           >
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 16, alignItems: 'start' }}>
-              <RolesGeneralSection form={form} />
-              <RolesScopePermissionsSection form={form} />
+            <div
+              style={{
+                display: 'flex',
+                gap: 16,
+                alignItems: 'flex-start',
+                maxWidth: UI.LAYOUT.MAX_CONTENT_WIDTH,
+                margin: '0 auto',
+                width: '100%',
+              }}
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
+                <RolesGeneralSection form={form} />
+                <GroupAssignmentSection form={form} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <RolesScopePermissionsSection form={form} />
+              </div>
             </div>
 
             <Form.Item>

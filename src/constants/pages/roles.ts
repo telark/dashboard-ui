@@ -72,6 +72,13 @@ export const ROLES_PAGE_CONSTANTS = {
   GENERAL: {
     TITLE: 'General',
     SUBTITLE: 'Provide the role details.',
+    CATEGORY_LABEL: 'Role Category',
+    CATEGORY_OPTIONS: [
+      { label: 'General', value: 'general' },
+      { label: 'Administration', value: 'administration' },
+      { label: 'Operations', value: 'operations' },
+      { label: 'Security', value: 'security' },
+    ],
     GROUP_OPTIONS: [
       { label: 'Default', value: 'default' },
       { label: 'Engineering', value: 'engineering' },

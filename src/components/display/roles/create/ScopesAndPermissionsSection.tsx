@@ -5,7 +5,7 @@ import type { RolesScopesAndPermissionsSectionProps } from '../../../../interfac
 import RolesScopesAndPermissionsList from './ScopesAndPermissionsList';
 
 const AREAS = RPC.SCOPE.AREAS;
-const PERMISSIONS = RPC.SCOPE.PERMISSIONS as readonly ('View' | 'Edit' | 'ss')[];
+const PERMISSIONS = RPC.SCOPE.PERMISSIONS;
 const TOOLTIP = RPC.SCOPE.TOOLTIP;
 
 const RolesScopesAndPermissionsSection: React.FC<RolesScopesAndPermissionsSectionProps> = ({ form }) => {
@@ -18,8 +18,8 @@ const RolesScopesAndPermissionsSection: React.FC<RolesScopesAndPermissionsSectio
           areas={AREAS as any}
           permissions={PERMISSIONS as any}
           tooltipMap={TOOLTIP as any}
-          rowPaddingPx={4}
-          dividerMarginPx={2}
+          rowPaddingPx={0}
+          dividerMarginPx={0}
         />
       }
     />
