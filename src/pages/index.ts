@@ -9,3 +9,4 @@ export { default as Startup } from './analyze/Startup';
 export { default as Welcome } from './analyze/Welcome';
 export { default as RolesCreateView } from './roles/CreateRole';
 export { default as RolesListView } from './roles/ListRoles';
+export { default as RolesCategoriesListView } from './roles/ListCategories';

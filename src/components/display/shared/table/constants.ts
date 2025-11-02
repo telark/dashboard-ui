@@ -6,6 +6,8 @@ export const TABLE_DEFAULTS = {
   SORT_ACTIVE: '#0ea5e9',
   SORT_INACTIVE: '#94a3b8',
   HEADER_ALIGN_DEFAULT: 'center' as 'center',
+  SELECT_COLUMN_WIDTH: 48,
+  SCROLL_X: 1200,
 } as const;
 
 

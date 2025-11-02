@@ -39,7 +39,7 @@ export const ROLES_PAGE_CONSTANTS = {
     HEADER_ICON: 14,
     CHIP_FONT: 12,
     COLUMNS: {
-      ROLE_TITLE: 320,
+      ROLE_TITLE: 100,
       TYPE: 140,
       GROUP: 140,
       PERMISSIONS: 160,

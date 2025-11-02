@@ -19,6 +19,9 @@ export interface RolesHeaderProps {
   primaryText?: string;
   breadcrumbs?: Array<{ label: string; to?: string }>;
   primaryIcon?: ReactNode;
+  secondaryText?: string;
+  onSecondary?: () => void;
+  secondaryIcon?: ReactNode;
 }
 
 export interface RolesTableProps {
@@ -41,6 +44,21 @@ export interface RolesScopesAndPermissionsListProps {
   tooltipMap: Record<RoleScopePermission, string>;
   rowPaddingPx?: number;
   dividerMarginPx?: number;
+}
+
+export interface RoleCategory {
+  id: string;
+  name: string;
+  description: string;
+  usedBy: string[]; // role names
+  type: string;
+  createdAt: string;
+}
+
+export interface RoleCategoriesTableProps {
+  categories: RoleCategory[];
+  onView?: (cat: RoleCategory) => void;
+  onCategoriesChange?: (next: RoleCategory[]) => void;
 }
 
 

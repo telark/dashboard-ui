@@ -1,6 +1,7 @@
 import React from 'react';
 import { Breadcrumb } from 'antd';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, BUTTON_TEXTS } from '../../../../constants';
+import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
 import { AiOutlineSafety, AiOutlinePlus } from 'react-icons/ai';
 import type { RolesHeaderProps } from '../../../../interfaces/roles';
 import { useNavigate } from 'react-router-dom';
@@ -8,9 +9,13 @@ import PrimaryButton from '../../../buttons/PrimaryButton';
 
 const RolesHeader: React.FC<RolesHeaderProps> = ({
   title,
-  subtitle = 'Manage existing roles',
+  subtitle = RPC.LABELS.HEADER_SUBTITLE,
   onPrimary,
   primaryText,
+  primaryIcon,
+  onSecondary,
+  secondaryText,
+  secondaryIcon,
   breadcrumbs,
 }) => {
   const navigate = useNavigate();
@@ -72,15 +77,26 @@ const RolesHeader: React.FC<RolesHeaderProps> = ({
         </div>
       </div>
 
-      {primaryText ? (
-        <PrimaryButton
-          action={primaryText}
-          onClick={onPrimary || (() => {})}
-          icon={typeof window !== 'undefined' ? (/* default icon */ <AiOutlinePlus size={16} />) : undefined}
-        />
-      ) : (
-        <div />
-      )}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        {secondaryText ? (
+          <PrimaryButton
+            action={secondaryText}
+            onClick={onSecondary || (() => {})}
+            icon={secondaryIcon || <AiOutlineSafety size={16} />}
+            loading={false}
+            loadingLabel={BUTTON_TEXTS.LOADING}
+          />
+        ) : null}
+        {primaryText ? (
+          <PrimaryButton
+            action={primaryText}
+            onClick={onPrimary || (() => {})}
+            icon={primaryIcon || <AiOutlinePlus size={16} />}
+            loading={false}
+            loadingLabel={BUTTON_TEXTS.LOADING}
+          />
+        ) : null}
+      </div>
     </div>
   );
 };

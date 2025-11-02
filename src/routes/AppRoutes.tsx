@@ -10,6 +10,7 @@ import {
   AppWorkloadDetailsView,
   RolesCreateView,
   RolesListView,
+  RolesCategoriesListView,
 } from '../pages';
 import AnimatedPageWrapper from '../components/shared/AnimatedPageWrapper';
 import { APP_ROUTES } from '../constants';
@@ -47,6 +48,7 @@ const AppRoutes: React.FC = () => {
       />
       <Route path={APP_ROUTES.ROLES} element={<RolesListView />} />
       <Route path={APP_ROUTES.ROLE_CREATE} element={<RolesCreateView />} />
+      <Route path={APP_ROUTES.ROLE_CATEGORIES} element={<RolesCategoriesListView />} />
     </Routes>
   );
 };
