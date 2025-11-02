@@ -21,3 +21,58 @@
 .custom-table .ant-table-thead > tr > th {
   background-color: transparent !important;
 }
+
+/* Roles table overrides */
+.roles-table .ant-table-thead > tr > th.ant-table-selection-column {
+  background: #fff !important;
+}
+.roles-table .ant-table-thead > tr > th,
+.roles-table .ant-table-tbody > tr > td {
+  border-inline-end: 0 !important;
+  border-right: 0 !important;
+}
+.roles-table .ant-table-thead > tr > th::before,
+.roles-table .ant-table-cell::before {
+  display: none !important;
+}
+
+/* Breadcrumb font to match global pages */
+.ant-breadcrumb,
+.ant-breadcrumb * {
+  font-family: 'Roboto Condensed', sans-serif !important;
+  font-weight: 500 !important;
+}
+
+/* Form label typography to match pages */
+.ant-form-item-label > label {
+  font-family: 'Roboto Condensed', sans-serif !important;
+  font-weight: 700 !important;
+  color: #0B1F33 !important;
+}
+
+.app-section .ant-form-vertical .ant-form-item .ant-form-item-label {
+  margin-bottom: 2px !important;
+  padding-bottom: 0 !important;
+}
+.app-section .ant-form-vertical .ant-form-item .ant-form-item-control {
+  margin-top: 0 !important;
+}
+
+/* Generic app section spacing (title, subtitle, content) */
+.app-section .ant-collapse-header {
+  padding-top: 2px !important; /* Title spacing */
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+.app-section .ant-collapse-content,
+.app-section .ant-collapse-content > .ant-collapse-content-box {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+.app-section .app-section-subtitle {
+  margin-top: 0 !important;  /* Title -> Subtitle */
+  margin-bottom: 0 !important;
+}
+.app-section .app-section-content {
+  margin-top: 2px !important; /* Subtitle -> Content */
+}

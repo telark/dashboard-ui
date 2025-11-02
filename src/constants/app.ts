@@ -24,4 +24,6 @@ export const APP_ROUTES = {
   APP_WORKLOAD_DETAILS: '/workloads/apps/:name/details',
   BRIDGES: '/bridges',
   BRIDGE_DETAILS: '/bridges/:name/details',
+  ROLES: '/roles',
+  ROLE_CREATE: '/roles/create',
 } as const;

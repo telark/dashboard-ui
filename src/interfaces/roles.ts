@@ -1,0 +1,27 @@
+export type RoleScopeLevel = 'View' | 'Edit' | 'Manage';
+export type RoleType = 'built-in' | 'custom';
+export interface Role {
+  id: string;
+  name: string;
+  group: string;
+  scopes: Record<string, RoleScopeLevel[]>;
+  status?: 'Active' | 'Inactive';
+  createdAt?: string; // ISO date
+  type?: RoleType;
+}
+
+export interface RolesHeaderProps {
+  title?: string;
+  subtitle?: string;
+  onPrimary?: () => void;
+  primaryText?: string;
+  breadcrumbs?: Array<{ label: string; to?: string }>;
+}
+
+export interface RolesTableProps {
+  roles: Role[];
+  onRolesChange?: (next: Role[]) => void;
+  onView?: (role: Role) => void;
+}
+
+
