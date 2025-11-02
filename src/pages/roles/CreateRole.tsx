@@ -2,10 +2,10 @@ import React, { useMemo, useState } from 'react';
 import { Button, Form, message } from 'antd';
 import { DEFAULT_COLORS, APP_ROUTES } from '../../constants';
 import { COMPONENT_STYLES } from '../../constants/ui';
-import RolesHeader from '../../components/display/roles/RolesHeader';
+import RolesHeader from '../../components/display/roles/shared/Header';
 import { useNavigate } from 'react-router-dom';
-import RolesGeneralSection from '../../components/display/roles/RolesGeneralSection';
-import RolesScopePermissionsSection from '../../components/display/roles/RolesScopePermissionsSection';
+import RolesGeneralSection from '../../components/display/roles/create/GeneralSection';
+import RolesScopePermissionsSection from '../../components/display/roles/create/ScopesAndPermissionsSection';
 
 type RoleScopeLevel = 'View' | 'Edit' | 'Delete';
 

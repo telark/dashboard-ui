@@ -3,8 +3,8 @@ import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES } from '../../constants';
 import { STATIC_ROLES } from '../../data/roles';
-import RolesHeader from '../../components/display/roles/RolesHeader';
-import RolesTable from '../../components/display/roles/RolesTable';
+import RolesHeader from '../../components/display/roles/shared/Header';
+import RolesTable from '../../components/display/roles/list/Table';
 
 const RolesList: React.FC = () => {
   const navigate = useNavigate();

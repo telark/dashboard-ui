@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Breadcrumb } from 'antd';
-import { DEFAULT_COLORS } from '../../../constants';
+import { DEFAULT_COLORS } from '../../../../constants';
 import { AiOutlineSafety } from 'react-icons/ai';
-import type { RolesHeaderProps } from '../../../interfaces/roles';
+import type { RolesHeaderProps } from '../../../../interfaces/roles';
 import { useNavigate } from 'react-router-dom';
 
 const RolesHeader: React.FC<RolesHeaderProps> = ({

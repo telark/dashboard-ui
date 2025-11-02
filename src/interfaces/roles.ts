@@ -29,12 +29,11 @@ export interface RolesGeneralSectionProps {
   form: any; // AntD FormInstance
 }
 
-export interface RolesScopePermissionsSectionProps {
+export interface RolesScopesAndPermissionsSectionProps {
   form: any; // AntD FormInstance
 }
 
-export interface RolesScopeContentProps {
-  form: any;
+export interface RolesScopesAndPermissionsListProps {
   areas: ReadonlyArray<{ key: string; label: string }>;
   levels: ReadonlyArray<RoleScopeLevel>;
   tooltipMap: Record<RoleScopeLevel, string>;

@@ -9,8 +9,8 @@ import {
   AiOutlineCheckCircle,
   AiOutlineTag,
 } from 'react-icons/ai';
-import { ROLES_PAGE_CONSTANTS as RPC } from '../../../constants/pages/roles';
-import type { Role, RolesTableProps } from '../../../interfaces/roles';
+import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
+import type { Role, RolesTableProps } from '../../../../interfaces/roles';
 
 const RolesTable: React.FC<RolesTableProps> = ({ roles, onRolesChange, onView }) => {
   const [sortKey, setSortKey] = useState<'name' | 'type' | 'group' | 'permission' | 'createdAt' | 'status'>('createdAt');

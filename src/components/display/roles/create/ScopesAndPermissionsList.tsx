@@ -1,9 +1,8 @@
 import React from 'react';
 import { Checkbox, Divider, Form, Tooltip } from 'antd';
-import type { RolesScopeContentProps, RoleScopeLevel } from '../../../interfaces/roles';
+import type { RoleScopeLevel, RolesScopesAndPermissionsListProps } from '../../../../interfaces/roles';
 
-const RolesScopeContent: React.FC<RolesScopeContentProps> = ({
-  form,
+const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps> = ({
   areas,
   levels,
   tooltipMap,
@@ -41,6 +40,6 @@ const RolesScopeContent: React.FC<RolesScopeContentProps> = ({
   );
 };
 
-export default RolesScopeContent;
+export default RolesScopesAndPermissionsList;
 
 
