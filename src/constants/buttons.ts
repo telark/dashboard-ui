@@ -28,7 +28,7 @@ export const BUTTON_CONFIGS = {
   },
   PRIMARY_BUTTON: {
     TYPE: 'primary',
-    MARGIN_TOP: '20px',
+    MARGIN_TOP: '0px',
     DISABLED_COLOR: '#d9d9d9',
   },
 } as const;

@@ -1,4 +1,5 @@
 import type { RoleScopePermission, RoleStatus, RoleType } from '../constants/pages/roles';
+import type { ReactNode } from 'react';
 export type { RoleScopePermission };
 
 export interface Role {
@@ -17,6 +18,7 @@ export interface RolesHeaderProps {
   onPrimary?: () => void;
   primaryText?: string;
   breadcrumbs?: Array<{ label: string; to?: string }>;
+  primaryIcon?: ReactNode;
 }
 
 export interface RolesTableProps {

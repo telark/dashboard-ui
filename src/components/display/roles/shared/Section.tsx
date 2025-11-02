@@ -7,11 +7,12 @@ interface SectionProps {
   content?: React.ReactNode;
   defaultActive?: boolean;
   className?: string;
+  style?: React.CSSProperties;
 }
 
-const Section: React.FC<SectionProps> = ({ title, subtitle, content, className }) => {
+const Section: React.FC<SectionProps> = ({ title, subtitle, content, className, style }) => {
   return (
-    <div className={`app-section ${className || ''}`.trim()}>
+    <div className={`app-section ${className || ''}`.trim()} style={{ width: '72%', margin: '0 auto', ...(style || {}) }}>
       <div style={{ fontWeight: 600 }}>{title}</div>
       {subtitle ? (
         <Typography.Paragraph className="app-section-subtitle" type="secondary" style={{ margin: 0 }}>

@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { Button, Form, message } from 'antd';
-import { DEFAULT_COLORS, APP_ROUTES } from '../../constants';
+import { Form, message } from 'antd';
+import { AiOutlineSafety } from 'react-icons/ai';
+import PrimaryButton from '../../components/buttons/PrimaryButton';
+import { DEFAULT_COLORS, APP_ROUTES, BUTTON_TEXTS } from '../../constants';
 import { COMPONENT_STYLES, UI } from '../../constants/ui';
 import RolesHeader from '../../components/display/roles/shared/Header';
 import { useNavigate } from 'react-router-dom';
@@ -78,17 +80,22 @@ const CreateRole: React.FC = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
                 <RolesGeneralSection form={form} />
                 <GroupAssignmentSection form={form} />
+                <div style={{ width: '72%', margin: '0 auto' }}>
+                  <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
+                    <PrimaryButton
+                      action="Create Role"
+                      loading={submitting}
+                      loadingLabel={BUTTON_TEXTS.LOADING}
+                      onClick={() => form.submit()}
+                      icon={<AiOutlineSafety size={16} />}
+                    />
+                  </Form.Item>
+                </div>
               </div>
               <div style={{ flex: 1 }}>
                 <RolesScopePermissionsSection form={form} />
               </div>
             </div>
-
-            <Form.Item>
-              <Button type="primary" htmlType="submit" loading={submitting}>
-                Save Role
-              </Button>
-            </Form.Item>
           </Form>
         </div>
       </div>

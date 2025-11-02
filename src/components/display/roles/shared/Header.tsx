@@ -1,9 +1,10 @@
 import React from 'react';
-import { Button, Breadcrumb } from 'antd';
+import { Breadcrumb } from 'antd';
 import { DEFAULT_COLORS } from '../../../../constants';
-import { AiOutlineSafety } from 'react-icons/ai';
+import { AiOutlineSafety, AiOutlinePlus } from 'react-icons/ai';
 import type { RolesHeaderProps } from '../../../../interfaces/roles';
 import { useNavigate } from 'react-router-dom';
+import PrimaryButton from '../../../buttons/PrimaryButton';
 
 const RolesHeader: React.FC<RolesHeaderProps> = ({
   title,
@@ -71,7 +72,15 @@ const RolesHeader: React.FC<RolesHeaderProps> = ({
         </div>
       </div>
 
-      {primaryText ? <Button type="primary" onClick={onPrimary}>{primaryText}</Button> : <div />}
+      {primaryText ? (
+        <PrimaryButton
+          action={primaryText}
+          onClick={onPrimary || (() => {})}
+          icon={typeof window !== 'undefined' ? (/* default icon */ <AiOutlinePlus size={16} />) : undefined}
+        />
+      ) : (
+        <div />
+      )}
     </div>
   );
 };
