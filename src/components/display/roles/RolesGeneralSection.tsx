@@ -17,7 +17,7 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = ({ form }) => {
             label="Role Name"
             required
             placeholder="e.g. Platform Admin"
-            marginBottom={6}
+            marginBottom={15}
           />
           <LabeledSelect
             name="group"

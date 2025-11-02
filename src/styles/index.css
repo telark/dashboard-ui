@@ -1,21 +1,17 @@
-.ant-btn,
-.ant-card,
-.ant-typography,
-.ant-input,
-.ant-select,
-.ant-menu,
-.ant-collapse,
-.ant-tabs,
-.ant-timeline,
-.ant-drawer {
-  font-family: 'Roboto Condensed', sans-serif !important;
-  font-weight: 500 !important;
-  font-style: normal !important;
-}
-
 :root {
   --sidebar-width: 260px;
   --page-bg: #F3F6FA;
+}
+
+html,
+body,
+#root,
+#root *,
+.ant-app,
+.ant-app *,
+.app-root,
+.app-root * {
+  font-family: 'Roboto Condensed', sans-serif !important;
 }
 
 .custom-table .ant-table-thead > tr > th {
@@ -39,13 +35,11 @@
 /* Breadcrumb font to match global pages */
 .ant-breadcrumb,
 .ant-breadcrumb * {
-  font-family: 'Roboto Condensed', sans-serif !important;
   font-weight: 500 !important;
 }
 
 /* Form label typography to match pages */
 .ant-form-item-label > label {
-  font-family: 'Roboto Condensed', sans-serif !important;
   font-weight: 700 !important;
   color: #0B1F33 !important;
 }
@@ -55,6 +49,15 @@
   padding-bottom: 0 !important;
 }
 .app-section .ant-form-vertical .ant-form-item .ant-form-item-control {
+  margin-top: 0 !important;
+}
+
+/* Extra compact spacing for shared labeled inputs/selects */
+.form-item-compact .ant-form-item-label {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+.form-item-compact .ant-form-item-control {
   margin-top: 0 !important;
 }
 
@@ -74,5 +77,11 @@
   margin-bottom: 0 !important;
 }
 .app-section .app-section-content {
-  margin-top: 2px !important; /* Subtitle -> Content */
+  margin-top: 20px !important; /* Distance from subtitle to content */
+}
+
+/* Permissions label text style */
+.permission-label {
+  font-weight: 500 !important;
+  color: #5B6B7C !important;
 }

@@ -33,4 +33,13 @@ export interface RolesScopePermissionsSectionProps {
   form: any; // AntD FormInstance
 }
 
+export interface RolesScopeContentProps {
+  form: any;
+  areas: ReadonlyArray<{ key: string; label: string }>;
+  levels: ReadonlyArray<RoleScopeLevel>;
+  tooltipMap: Record<RoleScopeLevel, string>;
+  rowPaddingPx?: number;
+  dividerMarginPx?: number;
+}
+
 

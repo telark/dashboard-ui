@@ -6,6 +6,7 @@ export interface LabeledInputProps {
     rules?: any[];
     marginBottom?: number;
     allowClear?: boolean;
+    className?: string;
 }
 
 export interface LabeledSelectProps {
@@ -18,4 +19,5 @@ export interface LabeledSelectProps {
     marginBottom?: number;
     allowClear?: boolean;
     mode?: 'multiple' | 'tags';
+    className?: string;
 }

@@ -1,0 +1,46 @@
+import React from 'react';
+import { Checkbox, Divider, Form, Tooltip } from 'antd';
+import type { RolesScopeContentProps, RoleScopeLevel } from '../../../interfaces/roles';
+
+const RolesScopeContent: React.FC<RolesScopeContentProps> = ({
+  form,
+  areas,
+  levels,
+  tooltipMap,
+  rowPaddingPx = 4,
+  dividerMarginPx = 2,
+}) => {
+  return (
+    <>
+      {areas.map((area: { key: string; label: string }, idx: number) => (
+        <div key={area.key} style={{ padding: `${rowPaddingPx}px 0` }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+            <div style={{ fontWeight: 700, color: '#0B1F33' }}>{area.label}</div>
+            <Form.Item noStyle shouldUpdate>
+              {() => (
+                <Form.Item name={['scopes', area.key as string]} noStyle>
+                  <Checkbox.Group
+                    options={levels.map((l: RoleScopeLevel) => ({
+                      label: (
+                        <Tooltip title={tooltipMap[l] as string}>
+                          <span className="permission-label">{l}</span>
+                        </Tooltip>
+                      ),
+                      value: l,
+                    }))}
+                    style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                  />
+                </Form.Item>
+              )}
+            </Form.Item>
+          </div>
+          {idx < areas.length - 1 ? <Divider style={{ margin: `${dividerMarginPx}px 0` }} /> : null}
+        </div>
+      ))}
+    </>
+  );
+};
+
+export default RolesScopeContent;
+
+

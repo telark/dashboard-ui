@@ -25,7 +25,7 @@ const Section: React.FC<SectionProps> = ({ title, subtitle, children, content, d
             {subtitle}
           </Typography.Paragraph>
         ) : null}
-        <div className="app-section-content" style={{ marginTop: 2 }}>{content ?? children}</div>
+        <div className="app-section-content" style={{ marginTop: 1 }}>{content ?? children}</div>
       </Collapse.Panel>
     </Collapse>
   );

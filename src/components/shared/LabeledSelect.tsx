@@ -12,13 +12,14 @@ const LabeledSelect: React.FC<LabeledSelectProps> = ({
   marginBottom = 6,
   allowClear = false,
   mode,
+  className,
 }) => {
   const combinedRules = required
     ? [{ required: true, message: `Please select ${label.toLowerCase()}` }, ...rules]
     : rules;
 
   return (
-    <Form.Item label={label} name={name} rules={combinedRules} style={{ marginBottom }}>
+    <Form.Item label={label} name={name} rules={combinedRules} style={{ marginBottom }} className={`form-item-compact ${className || ''}`}>
       <Select options={options} placeholder={placeholder} allowClear={allowClear} mode={mode} />
     </Form.Item>
   );
