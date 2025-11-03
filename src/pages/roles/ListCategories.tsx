@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES } from '../../constants';
 import RolesHeader from '../../components/display/roles/shared/Header';
 import CategoriesTable from '../../components/display/roles/categories/Table';
-import CreateCategoryModal from '../../components/display/roles/categories/CreateCategoryModal';
+import FormModal, { FormFieldConfig } from '../../components/display/shared/modal/FormModal';
 import { STATIC_ROLE_CATEGORIES } from '../../data/roleCategories';
 import { AiOutlineFolderOpen } from 'react-icons/ai';
 import type { RoleCategory } from '../../interfaces/roles';
@@ -14,7 +14,8 @@ const CategoriesList: React.FC = () => {
   const [categories, setCategories] = useState(STATIC_ROLE_CATEGORIES);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  const handleCreateCategory = (categoryData: { name: string; description: string; type: string }) => {
+  const handleCreateCategory = async (categoryData: Record<string, any>) => {
+    await new Promise((r) => setTimeout(r, 400));
     const newCategory: RoleCategory = {
       id: `cat-${Date.now()}`,
       name: categoryData.name,
@@ -23,8 +24,41 @@ const CategoriesList: React.FC = () => {
       usedBy: [],
       createdAt: new Date().toISOString(),
     };
+    message.success(`Category "${categoryData.name}" created`);
     setCategories([...categories, newCategory]);
   };
+
+  const categoryFields: FormFieldConfig[] = [
+    {
+      type: 'input',
+      name: 'name',
+      label: 'Category Name',
+      placeholder: 'e.g. General',
+      required: true,
+      marginBottom: 18,
+    },
+    {
+      type: 'input',
+      name: 'description',
+      label: 'Category Description',
+      placeholder: 'e.g. Common roles for everyday access',
+      required: true,
+      marginBottom: 18,
+    },
+    {
+      type: 'select',
+      name: 'type',
+      label: 'Category Type',
+      placeholder: 'Select a type',
+      required: true,
+      options: [
+        { label: 'Default', value: 'default' },
+        { label: 'System', value: 'system' },
+        { label: 'Custom', value: 'custom' },
+      ],
+      marginBottom: 6,
+    },
+  ];
 
   return (
     <div
@@ -45,10 +79,19 @@ const CategoriesList: React.FC = () => {
           breadcrumbs={[{ label: 'Roles', to: APP_ROUTES.ROLES }, { label: 'Categories' }]}
         />
 
-        <CreateCategoryModal
+        <FormModal
           open={isCreateModalOpen}
           onCancel={() => setIsCreateModalOpen(false)}
           onSuccess={handleCreateCategory}
+          title="Create Category"
+          subtitle="Add a new role category"
+          sectionTitle="Category Details"
+          sectionSubtitle="Provide the category information."
+          fields={categoryFields}
+          buttonText="Create Category"
+          buttonIcon={<AiOutlineFolderOpen size={16} />}
+          width={360}
+          initialValues={{ type: 'default' }}
         />
 
         <CategoriesTable
