@@ -179,7 +179,7 @@
   margin-bottom: 0 !important;
 }
 .app-section .app-section-content {
-  margin-top: 7px !important; /* Distance from subtitle to content */
+  margin-top: 14px !important; /* Distance from subtitle to content */
 }
 
 /* Permissions label text style */
@@ -188,3 +188,19 @@
   color: #5B6B7C !important;
 }
 
+/* Ensure modal close icon is visible */
+.ant-modal-close {
+  color: #000 !important;
+}
+
+.ant-modal-close svg,
+.ant-modal-close * {
+  color: #000 !important;
+  fill: #000 !important;
+}
+
+/* Ant Design modals are rendered in a portal outside #root, so they need explicit targeting */
+.ant-modal,
+.ant-modal * {
+  font-family: 'Roboto Condensed', sans-serif !important;
+}
