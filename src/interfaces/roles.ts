@@ -2,10 +2,20 @@ import type { RoleScopePermission, RoleStatus, RoleType } from '../constants/pag
 import type { ReactNode } from 'react';
 export type { RoleScopePermission };
 
+export interface RoleCategory {
+  id: string;
+  name: string;
+  description: string;
+  usedBy: string[]; // role names
+  type: string;
+  createdAt: string;
+}
+
 export interface Role {
   id: string;
   name: string;
   group: string;
+  category?: RoleCategory;
   scopes: Record<string, RoleScopePermission[]>;
   status: RoleStatus;
   createdAt: string;
@@ -44,15 +54,6 @@ export interface RolesScopesAndPermissionsListProps {
   tooltipMap: Record<RoleScopePermission, string>;
   rowPaddingPx?: number;
   dividerMarginPx?: number;
-}
-
-export interface RoleCategory {
-  id: string;
-  name: string;
-  description: string;
-  usedBy: string[]; // role names
-  type: string;
-  createdAt: string;
 }
 
 export interface RoleCategoriesTableProps {

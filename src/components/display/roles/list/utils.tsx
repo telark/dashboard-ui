@@ -1,7 +1,7 @@
 import type { Role, RoleScopePermission } from '../../../../interfaces/roles';
 import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
 
-export type RolesSortKey = 'name' | 'type' | 'group' | 'permission' | 'createdAt' | 'status';
+export type RolesSortKey = 'name' | 'type' | 'group' | 'category' | 'permission' | 'createdAt' | 'status';
 export const getPermissionCount = (role: Role): number => {
   const levels = Object.values(role.scopes || {}) as Array<Array<RoleScopePermission>>;
   return levels.reduce((acc, arr) => acc + (Array.isArray(arr) ? arr.length : 0), 0);
@@ -27,6 +27,8 @@ export const sortRoles = (
         return (a, b) => compareStrings(a.name, b.name);
       case RPC.KEYS.GROUP:
         return (a, b) => compareStrings(a.group, b.group);
+      case RPC.KEYS.CATEGORY:
+        return (a, b) => compareStrings(a.category?.name, b.category?.name);
       case RPC.KEYS.TYPE:
         return (a, b) => compareStrings(a.type, b.type);
       case RPC.KEYS.PERMISSION:

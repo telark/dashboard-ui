@@ -3,7 +3,7 @@ import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
 import RowTag from '../../shared/table/RowTag';
 import { generateColumn } from '../../shared/table/utils';
 import Actions from './Actions';
-import { AiOutlineTeam, AiOutlineSafety, AiOutlineCalendar, AiOutlineCheckCircle, AiOutlineTag } from 'react-icons/ai';
+import { AiOutlineTeam, AiOutlineSafety, AiOutlineCalendar, AiOutlineCheckCircle, AiOutlineTag, AiOutlineFolderOpen } from 'react-icons/ai';
 import type { RolesSortKey } from './utils';
 
 interface ColumnsArgs {
@@ -47,6 +47,20 @@ export const Columns = ({ onView, onDelete, onSort, activeSortKey, getPermission
       width: RPC.SIZES.COLUMNS.GROUP,
       render: (_: any, record: Role) => (
         <RowTag text={record.group} background={RPC.COLORS.CHIP_BLUE_BG} color={RPC.COLORS.CHIP_BLUE_TEXT} fontSize={RPC.SIZES.CHIP_FONT} />
+      ),
+    }, { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void }),
+    generateColumn({
+      key: RPC.KEYS.CATEGORY,
+      label: RPC.LABELS.COLUMNS.CATEGORY,
+      icon: <AiOutlineFolderOpen />,
+      width: RPC.SIZES.COLUMNS.CATEGORY,
+      render: (_: any, record: Role) => (
+        <RowTag 
+          text={record.category?.name || 'N/A'} 
+          background={RPC.COLORS.CHIP_BLUE_BG} 
+          color={RPC.COLORS.CHIP_BLUE_TEXT} 
+          fontSize={RPC.SIZES.CHIP_FONT} 
+        />
       ),
     }, { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void }),
     generateColumn({

@@ -1,4 +1,5 @@
 import type { Role } from '../interfaces/roles';
+import { STATIC_ROLE_CATEGORIES } from './roleCategories';
 
 export type StaticRole = Role;
 
@@ -7,6 +8,7 @@ export const STATIC_ROLES: Role[] = [
     id: 'r-plat-admin',
     name: 'Platform Admin',
     group: 'engineering',
+    category: STATIC_ROLE_CATEGORIES.find(cat => cat.name === 'Administration'),
     scopes: {
       groupers: ['View', 'Edit', 'Delete'],
       workloads: ['View', 'Edit', 'Delete'],
@@ -23,6 +25,7 @@ export const STATIC_ROLES: Role[] = [
     id: 'r-ops-maintainer',
     name: 'Ops Maintainer',
     group: 'operations',
+    category: STATIC_ROLE_CATEGORIES.find(cat => cat.name === 'Operations'),
     scopes: {
       groupers: ['View', 'Edit'],
       workloads: ['View', 'Edit', 'Delete'],
@@ -39,6 +42,7 @@ export const STATIC_ROLES: Role[] = [
     id: 'r-qa-viewer',
     name: 'QA Viewer',
     group: 'qa',
+    category: STATIC_ROLE_CATEGORIES.find(cat => cat.name === 'General'),
     scopes: {
       groupers: ['View'],
       workloads: ['View'],
