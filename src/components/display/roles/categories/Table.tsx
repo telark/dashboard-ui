@@ -65,7 +65,7 @@ const CategoriesTable: React.FC<RoleCategoriesTableProps> = ({ categories, onVie
       columns={columns}
       data={sorted}
       rowKey={(r) => r.id}
-      className="roles-table"
+      className="app-table"
       rowHeight={RCC.SIZES.ROW_HEIGHT}
       tableProps={{ rowSelection: {} }}
     />

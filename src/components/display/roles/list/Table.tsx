@@ -45,7 +45,7 @@ const RolesTable: React.FC<RolesTableProps> = ({ roles, onRolesChange, onView })
 
   return (
     <DataTable
-      className="roles-table"
+      className="app-table"
       columns={columns as any}
       data={sortedRoles as any}
       rowKey={(r: any) => r.id}
