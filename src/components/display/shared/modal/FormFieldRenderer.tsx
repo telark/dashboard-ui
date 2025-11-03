@@ -2,21 +2,7 @@ import React from 'react';
 import { Form, Input } from 'antd';
 import LabeledInput from '../../../shared/LabeledInput';
 import LabeledSelect from '../../../shared/LabeledSelect';
-
-export interface FormFieldConfig {
-  type: 'input' | 'select' | 'textarea';
-  name: string;
-  label: string;
-  placeholder?: string;
-  required?: boolean;
-  options?: Array<{ label: string; value: string }>;
-  marginBottom?: number;
-  rules?: any[];
-}
-
-interface FormFieldRendererProps {
-  field: FormFieldConfig;
-}
+import type { FormFieldRendererProps } from '../../../../interfaces/modal';
 
 const FormFieldRenderer: React.FC<FormFieldRendererProps> = ({ field }) => {
   const commonProps = {

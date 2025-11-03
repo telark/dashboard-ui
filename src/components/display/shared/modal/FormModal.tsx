@@ -3,29 +3,9 @@ import { Form, message } from 'antd';
 import PrimaryButton from '../../../buttons/PrimaryButton';
 import { BUTTON_TEXTS } from '../../../../constants';
 import BaseModal from './BaseModal';
-import FormFieldRenderer, { FormFieldConfig } from './FormFieldRenderer';
+import FormFieldRenderer from './FormFieldRenderer';
 import Section from '../../roles/shared/Section';
-
-export type { FormFieldConfig };
-
-export interface FormModalProps {
-  open: boolean;
-  onCancel: () => void;
-  onSuccess: (values: Record<string, any>) => void | Promise<void>;
-  title: string;
-  subtitle?: string;
-  sectionTitle?: string;
-  sectionSubtitle?: string;
-  fields?: FormFieldConfig[];
-  customContent?: React.ReactNode | ((form: any) => React.ReactNode);
-  buttonText?: string;
-  buttonIcon?: React.ReactNode;
-  width?: number;
-  initialValues?: Record<string, any>;
-  loading?: boolean;
-  buttonWrapperStyle?: React.CSSProperties;
-  contentWrapperStyle?: React.CSSProperties;
-}
+import type { FormModalProps } from '../../../../interfaces/modal';
 
 const FormModal: React.FC<FormModalProps> = ({
   open,

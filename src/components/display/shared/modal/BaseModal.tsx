@@ -1,18 +1,7 @@
 import React from 'react';
 import { Modal } from 'antd';
 import { AiOutlineClose } from 'react-icons/ai';
-
-export interface BaseModalProps {
-  open: boolean;
-  onCancel: () => void;
-  width?: number;
-  children: React.ReactNode;
-  centered?: boolean;
-  styles?: {
-    body?: React.CSSProperties;
-    content?: React.CSSProperties;
-  };
-}
+import type { BaseModalProps } from '../../../../interfaces/modal';
 
 const BaseModal: React.FC<BaseModalProps> = ({
   open,
