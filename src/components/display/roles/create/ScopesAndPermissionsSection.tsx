@@ -8,7 +8,9 @@ const AREAS = RPC.SCOPE.AREAS;
 const PERMISSIONS = RPC.SCOPE.PERMISSIONS;
 const TOOLTIP = RPC.SCOPE.TOOLTIP;
 
-const RolesScopesAndPermissionsSection: React.FC<RolesScopesAndPermissionsSectionProps> = ({ form }) => {
+const RolesScopesAndPermissionsSection: React.FC<RolesScopesAndPermissionsSectionProps> = ({
+  form,
+}) => {
   return (
     <Section
       title={RPC.SCOPE.TITLE}
@@ -27,5 +29,3 @@ const RolesScopesAndPermissionsSection: React.FC<RolesScopesAndPermissionsSectio
 };
 
 export default RolesScopesAndPermissionsSection;
-
-

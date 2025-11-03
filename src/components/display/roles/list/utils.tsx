@@ -1,7 +1,14 @@
 import type { Role, RoleScopePermission } from '../../../../interfaces/roles';
 import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
 
-export type RolesSortKey = 'name' | 'type' | 'group' | 'category' | 'permission' | 'createdAt' | 'status';
+export type RolesSortKey =
+  | 'name'
+  | 'type'
+  | 'group'
+  | 'category'
+  | 'permission'
+  | 'createdAt'
+  | 'status';
 export const getPermissionCount = (role: Role): number => {
   const levels = Object.values(role.scopes || {}) as Array<Array<RoleScopePermission>>;
   return levels.reduce((acc, arr) => acc + (Array.isArray(arr) ? arr.length : 0), 0);
@@ -35,7 +42,10 @@ export const sortRoles = (
         return (a, b) => compareNumbers(getCount(a), getCount(b));
       case RPC.KEYS.CREATED_AT:
         return (a, b) =>
-          compareNumbers(new Date(a.createdAt || 0).getTime(), new Date(b.createdAt || 0).getTime());
+          compareNumbers(
+            new Date(a.createdAt || 0).getTime(),
+            new Date(b.createdAt || 0).getTime(),
+          );
       case RPC.KEYS.STATUS: {
         const order = { [RPC.STATUS.INACTIVE]: 0, [RPC.STATUS.ACTIVE]: 1 } as const;
         return (a, b) => compareNumbers(order[a.status], order[b.status]);
@@ -49,4 +59,3 @@ export const sortRoles = (
   items.sort((a, b) => (sortOrder === 'asc' ? comparator(a, b) : -comparator(a, b)));
   return items;
 };
-

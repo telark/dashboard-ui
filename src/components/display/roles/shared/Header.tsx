@@ -56,14 +56,17 @@ const RolesHeader: React.FC<RolesHeaderProps> = ({
             <Breadcrumb
               items={breadcrumbs.map((b, idx) => ({
                 title: b.to ? (
-                  <span style={{ cursor: 'pointer' }} onClick={() => (b.to ? navigate(b.to) : undefined)}>
+                  <span
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => (b.to ? navigate(b.to) : undefined)}
+                  >
                     {b.label}
                   </span>
                 ) : (
                   <span>{b.label}</span>
                 ),
               }))}
-              style={{ marginBottom: 0}}
+              style={{ marginBottom: 0 }}
             />
           ) : null}
           {title ? (
@@ -102,5 +105,3 @@ const RolesHeader: React.FC<RolesHeaderProps> = ({
 };
 
 export default RolesHeader;
-
-

@@ -34,5 +34,3 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = ({ form }) => {
 };
 
 export default RolesGeneralSection;
-
-

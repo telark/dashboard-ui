@@ -19,12 +19,16 @@ const LabeledSelect: React.FC<LabeledSelectProps> = ({
     : rules;
 
   return (
-    <Form.Item label={label} name={name} rules={combinedRules} style={{ marginBottom }} className={`form-item-compact ${className || ''}`}>
+    <Form.Item
+      label={label}
+      name={name}
+      rules={combinedRules}
+      style={{ marginBottom }}
+      className={`form-item-compact ${className || ''}`}
+    >
       <Select options={options} placeholder={placeholder} allowClear={allowClear} mode={mode} />
     </Form.Item>
   );
 };
 
 export default LabeledSelect;
-
-

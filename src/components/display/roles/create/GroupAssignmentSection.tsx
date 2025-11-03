@@ -24,5 +24,3 @@ const GroupAssignmentSection: React.FC<RolesGeneralSectionProps> = ({ form }) =>
 };
 
 export default GroupAssignmentSection;
-
-

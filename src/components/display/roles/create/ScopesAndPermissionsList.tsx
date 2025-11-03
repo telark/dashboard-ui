@@ -1,6 +1,9 @@
 import React from 'react';
 import { Checkbox, Divider, Form, Tooltip } from 'antd';
-import type { RoleScopePermission, RolesScopesAndPermissionsListProps } from '../../../../interfaces/roles';
+import type {
+  RoleScopePermission,
+  RolesScopesAndPermissionsListProps,
+} from '../../../../interfaces/roles';
 
 const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps> = ({
   areas,
@@ -13,7 +16,15 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
     <>
       {areas.map((area: { key: string; label: string }, idx: number) => (
         <div key={area.key} style={{ padding: `${rowPaddingPx}px 0` }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, minHeight: 30 }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 12,
+              minHeight: 30,
+            }}
+          >
             <div style={{ fontWeight: 700, color: '#0B1F33' }}>{area.label}</div>
             <Form.Item noStyle shouldUpdate>
               {() => (
@@ -41,5 +52,3 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
 };
 
 export default RolesScopesAndPermissionsList;
-
-

@@ -1,5 +1,5 @@
 export const ROLE_SCOPE_PERMISSIONS = ['View', 'Edit', 'Delete'] as const;
-export type RoleScopePermission = typeof ROLE_SCOPE_PERMISSIONS[number];
+export type RoleScopePermission = (typeof ROLE_SCOPE_PERMISSIONS)[number];
 
 export const ROLES_PAGE_CONSTANTS = {
   LABELS: {
@@ -107,13 +107,12 @@ export const ROLES_PAGE_CONSTANTS = {
       Delete: 'Can remove resources within assigned scope. Use with caution.',
     } as Record<RoleScopePermission, string>,
   },
-  STATUS: {ACTIVE: 'Active', INACTIVE: 'Inactive'},
-  TYPE: {BUILT_IN: 'built-in', CUSTOM: 'custom'},
+  STATUS: { ACTIVE: 'Active', INACTIVE: 'Inactive' },
+  TYPE: { BUILT_IN: 'built-in', CUSTOM: 'custom' },
 } as const;
 
 export type RolesPageConstants = typeof ROLES_PAGE_CONSTANTS;
 
-export type RoleStatus = typeof ROLES_PAGE_CONSTANTS.STATUS[keyof typeof ROLES_PAGE_CONSTANTS.STATUS];
-export type RoleType = typeof ROLES_PAGE_CONSTANTS.TYPE[keyof typeof ROLES_PAGE_CONSTANTS.TYPE];
-
-
+export type RoleStatus =
+  (typeof ROLES_PAGE_CONSTANTS.STATUS)[keyof typeof ROLES_PAGE_CONSTANTS.STATUS];
+export type RoleType = (typeof ROLES_PAGE_CONSTANTS.TYPE)[keyof typeof ROLES_PAGE_CONSTANTS.TYPE];

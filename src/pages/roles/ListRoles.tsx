@@ -33,12 +33,14 @@ const RolesList: React.FC = () => {
           breadcrumbs={[{ label: 'Roles' }]}
         />
 
-        <RolesTable roles={roles as any} onRolesChange={setRoles as any} onView={handleView as any} />
+        <RolesTable
+          roles={roles as any}
+          onRolesChange={setRoles as any}
+          onView={handleView as any}
+        />
       </div>
     </div>
   );
 };
 
 export default RolesList;
-
-

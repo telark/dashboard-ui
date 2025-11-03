@@ -21,5 +21,3 @@ const RowTag: React.FC<RowTagProps> = ({ text, background, color, fontSize = 12 
 };
 
 export default RowTag;
-
-

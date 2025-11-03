@@ -16,7 +16,10 @@ const RolesTable: React.FC<RolesTableProps> = ({ roles, onRolesChange, onView })
     setSortOrder(next);
   };
 
-  const sortedRoles = useMemo(() => sortRoles(roles, sortKey, sortOrder, getPermissionCount), [roles, sortKey, sortOrder]);
+  const sortedRoles = useMemo(
+    () => sortRoles(roles, sortKey, sortOrder, getPermissionCount),
+    [roles, sortKey, sortOrder],
+  );
 
   const handleView = (record: Role) => {
     onView?.(record);
@@ -56,5 +59,3 @@ const RolesTable: React.FC<RolesTableProps> = ({ roles, onRolesChange, onView })
 };
 
 export default RolesTable;
-
-

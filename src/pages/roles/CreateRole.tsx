@@ -23,7 +23,7 @@ const CreateRole: React.FC = () => {
   const [form] = Form.useForm<CreateRoleFormValues>();
   const [submitting, setSubmitting] = useState(false);
 
-  const initialScopes = useMemo(() => ({} as Record<string, RoleScopeLevel[]>), []);
+  const initialScopes = useMemo(() => ({}) as Record<string, RoleScopeLevel[]>, []);
 
   const handleFinish = async (values: CreateRoleFormValues) => {
     setSubmitting(true);
@@ -111,5 +111,3 @@ const CreateRole: React.FC = () => {
 };
 
 export default CreateRole;
-
-

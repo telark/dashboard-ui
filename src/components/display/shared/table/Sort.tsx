@@ -24,16 +24,25 @@ const SortHeader: React.FC<SortHeaderProps> = ({
       }}
     >
       {leftIcon ? (
-        <span style={{ display: 'inline-flex', alignItems: 'center', color: TABLE_DEFAULTS.ICON_MUTED }}>{leftIcon}</span>
+        <span
+          style={{ display: 'inline-flex', alignItems: 'center', color: TABLE_DEFAULTS.ICON_MUTED }}
+        >
+          {leftIcon}
+        </span>
       ) : null}
       <span>{label}</span>
       {sortable ? (
-        <BiSort onClick={onSort} style={{ cursor: 'pointer', color: isActive ? activeColor : inactiveColor, fontSize: TABLE_DEFAULTS.SORT_ICON_SIZE }} />
+        <BiSort
+          onClick={onSort}
+          style={{
+            cursor: 'pointer',
+            color: isActive ? activeColor : inactiveColor,
+            fontSize: TABLE_DEFAULTS.SORT_ICON_SIZE,
+          }}
+        />
       ) : null}
     </div>
   );
 };
 
 export default SortHeader;
-
-

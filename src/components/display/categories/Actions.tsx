@@ -18,7 +18,12 @@ const Actions: React.FC<ActionsProps> = ({ record, onView, onDelete }) => {
       menu={{
         items: [
           { key: 'view', label: RCC.LABELS.ACTIONS.VIEW, icon: <EyeOutlined /> },
-          { key: 'delete', label: RCC.LABELS.ACTIONS.DELETE, icon: <DeleteOutlined />, danger: true },
+          {
+            key: 'delete',
+            label: RCC.LABELS.ACTIONS.DELETE,
+            icon: <DeleteOutlined />,
+            danger: true,
+          },
         ],
         onClick: ({ key }) => (key === 'view' ? onView(record) : onDelete(record)),
       }}
@@ -29,5 +34,3 @@ const Actions: React.FC<ActionsProps> = ({ record, onView, onDelete }) => {
 };
 
 export default Actions;
-
-

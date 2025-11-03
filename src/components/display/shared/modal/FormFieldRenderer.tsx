@@ -15,12 +15,7 @@ const FormFieldRenderer: React.FC<FormFieldRendererProps> = ({ field }) => {
 
   switch (field.type) {
     case 'input':
-      return (
-        <LabeledInput
-          {...commonProps}
-          placeholder={field.placeholder}
-        />
-      );
+      return <LabeledInput {...commonProps} placeholder={field.placeholder} />;
     case 'select':
       return (
         <LabeledSelect
@@ -36,7 +31,10 @@ const FormFieldRenderer: React.FC<FormFieldRendererProps> = ({ field }) => {
           name={field.name}
           rules={
             field.required
-              ? [{ required: true, message: `Please enter ${field.label.toLowerCase()}` }, ...(field.rules || [])]
+              ? [
+                  { required: true, message: `Please enter ${field.label.toLowerCase()}` },
+                  ...(field.rules || []),
+                ]
               : field.rules
           }
           style={{ marginBottom: field.marginBottom ?? 18 }}
@@ -51,4 +49,3 @@ const FormFieldRenderer: React.FC<FormFieldRendererProps> = ({ field }) => {
 };
 
 export default FormFieldRenderer;
-

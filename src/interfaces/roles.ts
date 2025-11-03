@@ -61,5 +61,3 @@ export interface RoleCategoriesTableProps {
   onView?: (cat: RoleCategory) => void;
   onCategoriesChange?: (next: RoleCategory[]) => void;
 }
-
-

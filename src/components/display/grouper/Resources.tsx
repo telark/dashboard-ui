@@ -86,7 +86,8 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
 
         const typeLower = (selectedResource?.type || '').toLowerCase();
         const isBridgeType = typeLower === 'bridge';
-        const bridgeParam = (selectedResource as unknown as { sourceName?: string })?.sourceName || firstSelectedName;
+        const bridgeParam =
+          (selectedResource as unknown as { sourceName?: string })?.sourceName || firstSelectedName;
 
         const route = isBridgeType
           ? `/bridges/${bridgeParam}/details`
@@ -112,7 +113,7 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
           resource?.syncName, // The syncName if exists
           resource?.sourceName, // The sourceName if exists
         ].filter(Boolean); // Remove undefined values
-        
+
         return namesToCheck.some((name) => name && bridgeSyncing[name]);
       }
       return !!workloadSyncing[resourceName];
@@ -141,7 +142,10 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
           // For bridges:
           // - name (Redux key) should be the display/source name (e.g., 'service-1')
           // - syncName (API name) should be the backend-facing name (e.g., 'service-1-bridge')
-          const bridgeResource = resource as typeof resource & { sourceName?: string; syncName?: string };
+          const bridgeResource = resource as typeof resource & {
+            sourceName?: string;
+            syncName?: string;
+          };
           const nameForRedux = bridgeResource.sourceName || resource.name;
           const nameForApi = bridgeResource.syncName || resource.name;
           await syncBridge({

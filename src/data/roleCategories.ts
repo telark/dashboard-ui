@@ -26,5 +26,3 @@ export const STATIC_ROLE_CATEGORIES: RoleCategory[] = [
     createdAt: '2024-08-19T14:15:00Z',
   },
 ];
-
-

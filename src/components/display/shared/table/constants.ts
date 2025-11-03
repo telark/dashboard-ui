@@ -7,9 +7,7 @@ export const TABLE_DEFAULTS = {
   ICON_MUTED: '#64748b',
   SORT_ACTIVE: DEFAULT_COLORS.SUCCESS,
   SORT_INACTIVE: '#94a3b8',
-  HEADER_ALIGN_DEFAULT: 'center' as 'center',
+  HEADER_ALIGN_DEFAULT: 'center' as const,
   SELECT_COLUMN_WIDTH: 48,
   SCROLL_X: 1200,
 } as const;
-
-

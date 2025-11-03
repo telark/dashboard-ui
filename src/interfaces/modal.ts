@@ -8,11 +8,11 @@ export interface FormFieldConfig {
   marginBottom?: number;
   rules?: any[];
 }
-  
+
 export interface FormFieldRendererProps {
   field: FormFieldConfig;
 }
-  
+
 export interface BaseModalProps {
   open: boolean;
   onCancel: () => void;

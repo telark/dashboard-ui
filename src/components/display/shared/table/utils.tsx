@@ -3,7 +3,6 @@ import SortHeader from './Sort';
 import { TABLE_DEFAULTS } from './constants';
 import type { GenerateColumnCtx, GenericSortKey } from '../../../../interfaces/table';
 
-
 export const generateColumn = (
   cfg: {
     key: string;
@@ -18,7 +17,17 @@ export const generateColumn = (
   },
   ctx: GenerateColumnCtx,
 ) => {
-  const { key, label, align = TABLE_DEFAULTS.HEADER_ALIGN_DEFAULT, icon, width, render, headerBg, activeColor, inactiveColor } = cfg;
+  const {
+    key,
+    label,
+    align = TABLE_DEFAULTS.HEADER_ALIGN_DEFAULT,
+    icon,
+    width,
+    render,
+    headerBg,
+    activeColor,
+    inactiveColor,
+  } = cfg;
   const { activeSortKey, onSort } = ctx;
   const HEADER_BG = headerBg ?? TABLE_DEFAULTS.HEADER_BG;
   const sortKeyToUse = key as GenericSortKey;
@@ -43,5 +52,3 @@ export const generateColumn = (
     ...(width ? { width } : {}),
   };
 };
-
-

@@ -101,5 +101,3 @@ export const ROLE_CATEGORIES_CONSTANTS = {
 } as const;
 
 export type RoleCategoriesConstants = typeof ROLE_CATEGORIES_CONSTANTS;
-
-

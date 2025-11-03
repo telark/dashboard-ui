@@ -1,4 +1,3 @@
-import React from 'react';
 import { ROLE_CATEGORIES_CONSTANTS as RCC } from '../../../constants/pages/roleCategories';
 import { ROLES_PAGE_CONSTANTS as RPC } from '../../../constants/pages/roles';
 import RowTag from '../shared/table/RowTag';
@@ -100,5 +99,3 @@ const Columns = (ctx: GenerateColumnCtx) => {
 };
 
 export default Columns;
-
-

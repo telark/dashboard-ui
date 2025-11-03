@@ -87,12 +87,7 @@ const FormModal: React.FC<FormModalProps> = ({
           ...contentWrapperStyle,
         }}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleFinish}
-          initialValues={initialValues}
-        >
+        <Form form={form} layout="vertical" onFinish={handleFinish} initialValues={initialValues}>
           {renderContent()}
 
           <div

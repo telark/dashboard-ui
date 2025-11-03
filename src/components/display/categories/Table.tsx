@@ -40,7 +40,7 @@ const CategoriesTable: React.FC<RoleCategoriesTableProps> = ({ categories, onVie
       okText: RCC.LABELS.ACTIONS.DELETE_MODAL_OK,
       okButtonProps: { danger: true },
       onOk: () => {
-        (typeof ({} as any) !== 'undefined');
+        typeof ({} as any) !== 'undefined';
       },
     });
   };
@@ -73,5 +73,3 @@ const CategoriesTable: React.FC<RoleCategoriesTableProps> = ({ categories, onVie
 };
 
 export default CategoriesTable;
-
-

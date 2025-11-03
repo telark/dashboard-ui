@@ -34,4 +34,3 @@ const BaseModal: React.FC<BaseModalProps> = ({
 };
 
 export default BaseModal;
-
