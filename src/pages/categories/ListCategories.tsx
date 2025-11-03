@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES } from '../../constants';
 import RolesHeader from '../../components/display/roles/shared/Header';
-import CategoriesTable from '../../components/display/roles/categories/Table';
+import CategoriesTable from '../../components/display/categories/Table';
 import FormModal, { FormFieldConfig } from '../../components/display/shared/modal/FormModal';
 import { STATIC_ROLE_CATEGORIES } from '../../data/roleCategories';
 import { AiOutlineFolderOpen } from 'react-icons/ai';

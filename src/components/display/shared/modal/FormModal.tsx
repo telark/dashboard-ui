@@ -1,22 +1,12 @@
 import React, { useState } from 'react';
-import { Modal, Form, Input, message } from 'antd';
-import { AiOutlineClose } from 'react-icons/ai';
+import { Form, message } from 'antd';
 import PrimaryButton from '../../../buttons/PrimaryButton';
 import { BUTTON_TEXTS } from '../../../../constants';
-import LabeledInput from '../../../shared/LabeledInput';
-import LabeledSelect from '../../../shared/LabeledSelect';
+import BaseModal from './BaseModal';
+import FormFieldRenderer, { FormFieldConfig } from './FormFieldRenderer';
 import Section from '../../roles/shared/Section';
 
-export interface FormFieldConfig {
-  type: 'input' | 'select' | 'textarea';
-  name: string;
-  label: string;
-  placeholder?: string;
-  required?: boolean;
-  options?: Array<{ label: string; value: string }>;
-  marginBottom?: number;
-  rules?: any[];
-}
+export type { FormFieldConfig };
 
 export interface FormModalProps {
   open: boolean;
@@ -33,6 +23,8 @@ export interface FormModalProps {
   width?: number;
   initialValues?: Record<string, any>;
   loading?: boolean;
+  buttonWrapperStyle?: React.CSSProperties;
+  contentWrapperStyle?: React.CSSProperties;
 }
 
 const FormModal: React.FC<FormModalProps> = ({
@@ -50,6 +42,8 @@ const FormModal: React.FC<FormModalProps> = ({
   width = 360,
   initialValues = {},
   loading = false,
+  buttonWrapperStyle,
+  contentWrapperStyle,
 }) => {
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
@@ -75,73 +69,42 @@ const FormModal: React.FC<FormModalProps> = ({
     onCancel();
   };
 
-  const renderField = (field: FormFieldConfig) => {
-    const commonProps = {
-      name: field.name,
-      label: field.label,
-      required: field.required,
-      marginBottom: field.marginBottom ?? 18,
-      rules: field.rules,
-    };
+  const renderFields = () => {
+    if (fields.length === 0) return null;
+    return (
+      <>
+        {fields.map((field) => (
+          <FormFieldRenderer key={field.name} field={field} />
+        ))}
+      </>
+    );
+  };
 
-    switch (field.type) {
-      case 'input':
-        return (
-          <LabeledInput
-            {...commonProps}
-            placeholder={field.placeholder}
-          />
-        );
-      case 'select':
-        return (
-          <LabeledSelect
-            {...commonProps}
-            placeholder={field.placeholder}
-            options={field.options || []}
-          />
-        );
-      case 'textarea':
-        return (
-          <Form.Item
-            label={field.label}
-            name={field.name}
-            rules={field.required ? [{ required: true, message: `Please enter ${field.label.toLowerCase()}` }, ...(field.rules || [])] : field.rules}
-            style={{ marginBottom: field.marginBottom ?? 18 }}
-            className="form-item-compact"
-          >
-            <Input.TextArea
-              placeholder={field.placeholder}
-              rows={3}
-              allowClear
-            />
-          </Form.Item>
-        );
-      default:
-        return null;
+  const renderContent = () => {
+    if (customContent) {
+      return typeof customContent === 'function' ? customContent(form) : customContent;
     }
+
+    if (fields.length > 0) {
+      return (
+        <Section
+          title={sectionTitle || title}
+          subtitle={sectionSubtitle || subtitle}
+          content={renderFields()}
+        />
+      );
+    }
+
+    return null;
   };
 
   return (
-    <Modal
-      open={open}
-      onCancel={handleCancel}
-      footer={null}
-      width={width}
-      centered
-      styles={{
-        body: { padding: 0, minHeight: 320 },
-        content: { borderRadius: 16, overflow: 'hidden' },
-      }}
-      closeIcon={
-        <span style={{ display: 'inline-flex', alignItems: 'center', padding: '0 20px' }}>
-          <AiOutlineClose size={18} color="#000" />
-        </span>
-      }
-    >
+    <BaseModal open={open} onCancel={handleCancel} width={width}>
       <div
         style={{
           background: '#fff',
           padding: '24px 24px 4px 24px',
+          ...contentWrapperStyle,
         }}
       >
         <Form
@@ -150,25 +113,17 @@ const FormModal: React.FC<FormModalProps> = ({
           onFinish={handleFinish}
           initialValues={initialValues}
         >
-          {customContent ? (
-            typeof customContent === 'function' ? customContent(form) : customContent
-          ) : (
-            <Section
-              title={sectionTitle || title}
-              subtitle={sectionSubtitle || subtitle}
-              content={
-                <>
-                  {fields.map((field) => (
-                    <React.Fragment key={field.name}>
-                      {renderField(field)}
-                    </React.Fragment>
-                  ))}
-                </>
-              }
-            />
-          )}
+          {renderContent()}
 
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32, marginBottom: 0 }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: 32,
+              marginBottom: 0,
+              ...buttonWrapperStyle,
+            }}
+          >
             <Form.Item style={{ margin: 0 }}>
               <PrimaryButton
                 action={buttonText}
@@ -181,9 +136,8 @@ const FormModal: React.FC<FormModalProps> = ({
           </div>
         </Form>
       </div>
-    </Modal>
+    </BaseModal>
   );
 };
 
 export default FormModal;
-

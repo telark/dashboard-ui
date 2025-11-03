@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { Modal } from 'antd';
-import DataTable from '../../shared/table/DataTable';
-import { ROLE_CATEGORIES_CONSTANTS as RCC } from '../../../../constants/pages/roleCategories';
-import type { RoleCategory, RoleCategoriesTableProps } from '../../../../interfaces/roles';
+import DataTable from '../shared/table/DataTable';
+import { ROLE_CATEGORIES_CONSTANTS as RCC } from '../../../constants/pages/roleCategories';
+import type { RoleCategory, RoleCategoriesTableProps } from '../../../interfaces/roles';
 import Columns from './Columns';
 type SortKey = 'name' | 'type' | 'usedBy' | 'createdAt';
 

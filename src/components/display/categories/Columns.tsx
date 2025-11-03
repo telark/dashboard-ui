@@ -1,10 +1,10 @@
 import React from 'react';
-import { ROLE_CATEGORIES_CONSTANTS as RCC } from '../../../../constants/pages/roleCategories';
-import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
-import RowTag from '../../shared/table/RowTag';
-import { generateColumn } from '../../shared/table/utils';
-import type { GenerateColumnCtx } from '../../../../interfaces/table';
-import type { RoleCategory } from '../../../../interfaces/roles';
+import { ROLE_CATEGORIES_CONSTANTS as RCC } from '../../../constants/pages/roleCategories';
+import { ROLES_PAGE_CONSTANTS as RPC } from '../../../constants/pages/roles';
+import RowTag from '../shared/table/RowTag';
+import { generateColumn } from '../shared/table/utils';
+import type { GenerateColumnCtx } from '../../../interfaces/table';
+import type { RoleCategory } from '../../../interfaces/roles';
 import Actions from './Actions';
 import { AiOutlineFileText, AiOutlineTeam, AiOutlineTag, AiOutlineCalendar } from 'react-icons/ai';
 

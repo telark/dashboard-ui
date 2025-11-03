@@ -3,7 +3,7 @@ import { Form, message } from 'antd';
 import { AiOutlineSafety } from 'react-icons/ai';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
 import { DEFAULT_COLORS, APP_ROUTES, BUTTON_TEXTS } from '../../constants';
-import { COMPONENT_STYLES, UI } from '../../constants/ui';
+import { COMPONENT_STYLES } from '../../constants/ui';
 import RolesHeader from '../../components/display/roles/shared/Header';
 import { useNavigate } from 'react-router-dom';
 import RolesGeneralSection from '../../components/display/roles/create/GeneralSection';

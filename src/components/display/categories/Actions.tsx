@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Dropdown } from 'antd';
 import { EyeOutlined, DeleteOutlined, MoreOutlined } from '@ant-design/icons';
-import { ROLE_CATEGORIES_CONSTANTS as RCC } from '../../../../constants/pages/roleCategories';
-import type { RoleCategory } from '../../../../interfaces/roles';
+import { ROLE_CATEGORIES_CONSTANTS as RCC } from '../../../constants/pages/roleCategories';
+import type { RoleCategory } from '../../../interfaces/roles';
 
 interface ActionsProps {
   record: RoleCategory;
