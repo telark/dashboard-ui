@@ -70,30 +70,37 @@ const CreateRole: React.FC = () => {
             <div
               style={{
                 display: 'flex',
-                gap: 16,
-                alignItems: 'flex-start',
-                maxWidth: UI.LAYOUT.MAX_CONTENT_WIDTH,
-                margin: '0 auto',
+                flexDirection: 'column',
+                gap: 18,
                 width: '100%',
               }}
             >
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
-                <RolesGeneralSection form={form} />
-                <GroupAssignmentSection form={form} />
-                <div style={{ width: '72%', margin: '0 auto' }}>
-                  <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
-                    <PrimaryButton
-                      action="Create Role"
-                      loading={submitting}
-                      loadingLabel={BUTTON_TEXTS.LOADING}
-                      onClick={() => form.submit()}
-                      icon={<AiOutlineSafety size={16} />}
-                    />
-                  </Form.Item>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: 24,
+                  alignItems: 'flex-start',
+                  width: '100%',
+                }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
+                  <RolesGeneralSection form={form} />
+                  <GroupAssignmentSection form={form} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <RolesScopePermissionsSection form={form} />
                 </div>
               </div>
-              <div style={{ flex: 1 }}>
-                <RolesScopePermissionsSection form={form} />
+              <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
+                  <PrimaryButton
+                    action="Create Role"
+                    loading={submitting}
+                    loadingLabel={BUTTON_TEXTS.LOADING}
+                    onClick={() => form.submit()}
+                    icon={<AiOutlineSafety size={16} />}
+                  />
+                </Form.Item>
               </div>
             </div>
           </Form>
