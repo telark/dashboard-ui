@@ -4,7 +4,10 @@ import { DEFAULT_COLORS, APP_ROUTES } from '../../constants';
 import RolesHeader from '../../components/display/roles/shared/Header';
 import { STATIC_ROLES } from '../../data/roles';
 import ViewDetails from '../../components/display/shared/ViewDetails';
+import ScopesPermissions from '../../components/display/roles/view/ScopesPermissions';
 import { createRoleViewConfig } from '../../config/roleViewConfig';
+import { Card } from 'antd';
+import { COMPONENT_STYLES } from '../../constants/layout/ui';
 
 const ViewRole: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -58,6 +61,15 @@ const ViewRole: React.FC = () => {
         />
 
         <ViewDetails config={config} />
+
+        <Card
+          style={{
+            ...COMPONENT_STYLES.VIEW_DETAILS.card,
+          }}
+          styles={{ body: COMPONENT_STYLES.VIEW_DETAILS.cardBody }}
+        >
+          <ScopesPermissions scopes={role.scopes} />
+        </Card>
       </div>
     </div>
   );
