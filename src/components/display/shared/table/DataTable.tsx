@@ -9,6 +9,7 @@ function DataTable<T>({
   className,
   containerStyle,
   tableProps = {},
+  onRowClick,
 }: DataTableProps<T>) {
   return (
     <div
@@ -29,7 +30,10 @@ function DataTable<T>({
         pagination={false}
         size="small"
         tableLayout="fixed"
-        onRow={() => ({ style: { height: rowHeight } })}
+        onRow={(record) => ({
+          style: { height: rowHeight, cursor: onRowClick ? 'pointer' : 'default' },
+          onClick: onRowClick ? () => onRowClick(record as T) : undefined,
+        })}
         {...tableProps}
       />
     </div>

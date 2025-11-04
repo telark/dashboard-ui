@@ -12,24 +12,26 @@ interface ActionsProps {
 
 const Actions: React.FC<ActionsProps> = ({ record, onView, onDelete }) => {
   return (
-    <Dropdown
-      trigger={['click']}
-      placement="bottomRight"
-      menu={{
-        items: [
-          { key: 'view', label: RPC.LABELS.ACTIONS.VIEW, icon: <EyeOutlined /> },
-          {
-            key: 'delete',
-            label: RPC.LABELS.ACTIONS.DELETE,
-            icon: <DeleteOutlined />,
-            danger: true,
-          },
-        ],
-        onClick: ({ key }) => (key === 'view' ? onView(record) : onDelete(record)),
-      }}
-    >
-      <Button type="text" shape="circle" icon={<MoreOutlined />} />
-    </Dropdown>
+    <div onClick={(e) => e.stopPropagation()}>
+      <Dropdown
+        trigger={['click']}
+        placement="bottomRight"
+        menu={{
+          items: [
+            { key: 'view', label: RPC.LABELS.ACTIONS.VIEW, icon: <EyeOutlined /> },
+            {
+              key: 'delete',
+              label: RPC.LABELS.ACTIONS.DELETE,
+              icon: <DeleteOutlined />,
+              danger: true,
+            },
+          ],
+          onClick: ({ key }) => (key === 'view' ? onView(record) : onDelete(record)),
+        }}
+      >
+        <Button type="text" shape="circle" icon={<MoreOutlined />} />
+      </Dropdown>
+    </div>
   );
 };
 

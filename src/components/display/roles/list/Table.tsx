@@ -54,6 +54,7 @@ const RolesTable: React.FC<RolesTableProps> = ({ roles, onRolesChange, onView })
       rowKey={(r: any) => r.id}
       rowHeight={RPC.SIZES.ROW_HEIGHT}
       tableProps={{ rowSelection: {} }}
+      onRowClick={handleView}
     />
   );
 };

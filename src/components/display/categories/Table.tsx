@@ -68,6 +68,7 @@ const CategoriesTable: React.FC<CategoriesTableProps> = ({ categories, onView })
       className="app-table"
       rowHeight={CC.SIZES.ROW_HEIGHT}
       tableProps={{ rowSelection: {} }}
+      onRowClick={handleView}
     />
   );
 };
