@@ -1,6 +1,6 @@
-import type { RoleCategory } from '../interfaces/roles';
+import type { Category } from '../interfaces/categories';
 
-export const STATIC_ROLE_CATEGORIES: RoleCategory[] = [
+export const STATIC_CATEGORIES: Category[] = [
   {
     id: 'cat-1',
     name: 'General',
@@ -26,3 +26,4 @@ export const STATIC_ROLE_CATEGORIES: RoleCategory[] = [
     createdAt: '2024-08-19T14:15:00Z',
   },
 ];
+

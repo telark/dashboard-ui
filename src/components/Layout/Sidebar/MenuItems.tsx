@@ -7,6 +7,7 @@ import {
   AiOutlineAppstore,
   AiOutlineDashboard,
   AiOutlineSafety,
+  AiOutlineFolderOpen,
 } from 'react-icons/ai';
 
 interface MenuItemsProps {
@@ -57,6 +58,13 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
           icon={<AiOutlineSafety />}
           active={pathname.startsWith('/roles')}
           route="/roles"
+          isCollapsed={isCollapsed}
+        />
+        <SidebarButton
+          text={'Categories'}
+          icon={<AiOutlineFolderOpen />}
+          active={pathname.startsWith('/categories')}
+          route="/categories"
           isCollapsed={isCollapsed}
         />
       </Menu>

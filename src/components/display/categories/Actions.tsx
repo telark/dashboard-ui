@@ -1,13 +1,13 @@
 import React from 'react';
 import { Button, Dropdown } from 'antd';
 import { EyeOutlined, DeleteOutlined, MoreOutlined } from '@ant-design/icons';
-import { ROLE_CATEGORIES_CONSTANTS as RCC } from '../../../constants/pages/roleCategories';
-import type { RoleCategory } from '../../../interfaces/roles';
+import { CATEGORIES_CONSTANTS as CC } from '../../../constants/pages/categories';
+import type { Category } from '../../../interfaces/categories';
 
 interface ActionsProps {
-  record: RoleCategory;
-  onView: (r: RoleCategory) => void;
-  onDelete: (r: RoleCategory) => void;
+  record: Category;
+  onView: (r: Category) => void;
+  onDelete: (r: Category) => void;
 }
 
 const Actions: React.FC<ActionsProps> = ({ record, onView, onDelete }) => {
@@ -17,10 +17,10 @@ const Actions: React.FC<ActionsProps> = ({ record, onView, onDelete }) => {
       placement="bottomRight"
       menu={{
         items: [
-          { key: 'view', label: RCC.LABELS.ACTIONS.VIEW, icon: <EyeOutlined /> },
+          { key: 'view', label: CC.LABELS.ACTIONS.VIEW, icon: <EyeOutlined /> },
           {
             key: 'delete',
-            label: RCC.LABELS.ACTIONS.DELETE,
+            label: CC.LABELS.ACTIONS.DELETE,
             icon: <DeleteOutlined />,
             danger: true,
           },

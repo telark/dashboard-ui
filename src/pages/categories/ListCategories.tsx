@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
 import { message } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, APP_ROUTES } from '../../constants';
-import { ROLE_CATEGORIES_CONSTANTS as RCC } from '../../constants/pages/roleCategories';
+import { DEFAULT_COLORS } from '../../constants';
+import { CATEGORIES_CONSTANTS as CC } from '../../constants/pages/categories';
 import RolesHeader from '../../components/display/roles/shared/Header';
 import CategoriesTable from '../../components/display/categories/Table';
 import FormModal from '../../components/display/shared/modal/FormModal';
-import { STATIC_ROLE_CATEGORIES } from '../../data/roleCategories';
+import { STATIC_CATEGORIES } from '../../data/categories';
 import { AiOutlineFolderOpen } from 'react-icons/ai';
-import type { RoleCategory } from '../../interfaces/roles';
+import type { Category } from '../../interfaces/categories';
 
 const CategoriesList: React.FC = () => {
-  const navigate = useNavigate();
-  const [categories, setCategories] = useState(STATIC_ROLE_CATEGORIES);
+  const [categories, setCategories] = useState(STATIC_CATEGORIES);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const handleCreateCategory = async (categoryData: Record<string, any>) => {
     await new Promise((r) => setTimeout(r, 400));
-    const newCategory: RoleCategory = {
+    const newCategory: Category = {
       id: `cat-${Date.now()}`,
       name: categoryData.name,
       description: categoryData.description,
@@ -41,26 +39,26 @@ const CategoriesList: React.FC = () => {
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <RolesHeader
-          subtitle={RCC.LABELS.HEADER_SUBTITLE}
-          primaryText={RCC.LABELS.FORM.BUTTON_TEXT}
+          subtitle={CC.LABELS.HEADER_SUBTITLE}
+          primaryText={CC.LABELS.FORM.BUTTON_TEXT}
           primaryIcon={<AiOutlineFolderOpen size={16} />}
           onPrimary={() => setIsCreateModalOpen(true)}
-          breadcrumbs={[{ label: 'Roles', to: APP_ROUTES.ROLES }, { label: 'Categories' }]}
+          breadcrumbs={[{ label: 'Categories' }]}
         />
 
         <FormModal
           open={isCreateModalOpen}
           onCancel={() => setIsCreateModalOpen(false)}
           onSuccess={handleCreateCategory}
-          title={RCC.LABELS.FORM.TITLE}
-          subtitle={RCC.LABELS.FORM.SUBTITLE}
-          sectionTitle={RCC.LABELS.FORM.SECTION_TITLE}
-          sectionSubtitle={RCC.LABELS.FORM.SECTION_SUBTITLE}
-          fields={RCC.FORM.FIELDS}
-          buttonText={RCC.LABELS.FORM.BUTTON_TEXT}
+          title={CC.LABELS.FORM.TITLE}
+          subtitle={CC.LABELS.FORM.SUBTITLE}
+          sectionTitle={CC.LABELS.FORM.SECTION_TITLE}
+          sectionSubtitle={CC.LABELS.FORM.SECTION_SUBTITLE}
+          fields={CC.FORM.FIELDS}
+          buttonText={CC.LABELS.FORM.BUTTON_TEXT}
           buttonIcon={<AiOutlineFolderOpen size={16} />}
-          width={RCC.SIZES.MODAL_WIDTH}
-          initialValues={RCC.FORM.INITIAL_VALUES}
+          width={CC.SIZES.MODAL_WIDTH}
+          initialValues={CC.FORM.INITIAL_VALUES}
         />
 
         <CategoriesTable

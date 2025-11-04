@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES } from '../../constants';
 import { STATIC_ROLES } from '../../data/roles';
 import RolesHeader from '../../components/display/roles/shared/Header';
-import { AiOutlineTag } from 'react-icons/ai';
 import RolesTable from '../../components/display/roles/list/Table';
 
 const RolesList: React.FC = () => {
@@ -27,9 +26,6 @@ const RolesList: React.FC = () => {
           subtitle="Manage existing roles"
           primaryText="Add Role"
           onPrimary={() => navigate(APP_ROUTES.ROLE_CREATE)}
-          secondaryText="Manage Categories"
-          secondaryIcon={<AiOutlineTag size={16} />}
-          onSecondary={() => navigate(APP_ROUTES.ROLE_CATEGORIES)}
           breadcrumbs={[{ label: 'Roles' }]}
         />
 

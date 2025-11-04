@@ -1,8 +1,8 @@
 import type { FormFieldConfig } from '../../interfaces/modal';
 
-export const ROLE_CATEGORIES_CONSTANTS = {
+export const CATEGORIES_CONSTANTS = {
   LABELS: {
-    HEADER_TITLE: 'Role Categories',
+    HEADER_TITLE: 'Categories',
     HEADER_SUBTITLE: 'Manage existing categories',
     COLUMNS: {
       NAME: 'Category Name',
@@ -20,7 +20,7 @@ export const ROLE_CATEGORIES_CONSTANTS = {
     },
     FORM: {
       TITLE: 'Create Category',
-      SUBTITLE: 'Add a new role category',
+      SUBTITLE: 'Add a new category',
       SECTION_TITLE: 'Category Details',
       SECTION_SUBTITLE: 'Provide the category information.',
       BUTTON_TEXT: 'Create Category',
@@ -100,4 +100,5 @@ export const ROLE_CATEGORIES_CONSTANTS = {
   },
 } as const;
 
-export type RoleCategoriesConstants = typeof ROLE_CATEGORIES_CONSTANTS;
+export type CategoriesConstants = typeof CATEGORIES_CONSTANTS;
+

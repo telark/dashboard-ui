@@ -1,18 +1,18 @@
 import React, { useMemo, useState } from 'react';
 import { Modal } from 'antd';
 import DataTable from '../shared/table/DataTable';
-import { ROLE_CATEGORIES_CONSTANTS as RCC } from '../../../constants/pages/roleCategories';
-import type { RoleCategory, RoleCategoriesTableProps } from '../../../interfaces/roles';
+import { CATEGORIES_CONSTANTS as CC } from '../../../constants/pages/categories';
+import type { Category, CategoriesTableProps } from '../../../interfaces/categories';
 import Columns from './Columns';
 type SortKey = 'name' | 'type' | 'usedBy' | 'createdAt';
 
-const CategoriesTable: React.FC<RoleCategoriesTableProps> = ({ categories, onView }) => {
+const CategoriesTable: React.FC<CategoriesTableProps> = ({ categories, onView }) => {
   const [sortKey, setSortKey] = useState<SortKey>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const sorted = useMemo(() => {
     const items = [...categories];
-    const compare = (a: RoleCategory, b: RoleCategory) => {
+    const compare = (a: Category, b: Category) => {
       switch (sortKey) {
         case 'name':
           return String(a.name).localeCompare(String(b.name));
@@ -29,15 +29,15 @@ const CategoriesTable: React.FC<RoleCategoriesTableProps> = ({ categories, onVie
     return items;
   }, [categories, sortKey, sortOrder]);
 
-  const handleView = (record: RoleCategory) => {
+  const handleView = (record: Category) => {
     onView?.(record);
   };
 
-  const handleDelete = (record: RoleCategory) => {
+  const handleDelete = (record: Category) => {
     Modal.confirm({
-      title: RCC.LABELS.ACTIONS.DELETE_MODAL_TITLE,
-      content: RCC.LABELS.ACTIONS.DELETE_MODAL_CONTENT(record?.name || ''),
-      okText: RCC.LABELS.ACTIONS.DELETE_MODAL_OK,
+      title: CC.LABELS.ACTIONS.DELETE_MODAL_TITLE,
+      content: CC.LABELS.ACTIONS.DELETE_MODAL_CONTENT(record?.name || ''),
+      okText: CC.LABELS.ACTIONS.DELETE_MODAL_OK,
       okButtonProps: { danger: true },
       onOk: () => {
         typeof ({} as any) !== 'undefined';
@@ -61,12 +61,12 @@ const CategoriesTable: React.FC<RoleCategoriesTableProps> = ({ categories, onVie
   );
 
   return (
-    <DataTable<RoleCategory>
+    <DataTable<Category>
       columns={columns}
       data={sorted}
       rowKey={(r) => r.id}
       className="app-table"
-      rowHeight={RCC.SIZES.ROW_HEIGHT}
+      rowHeight={CC.SIZES.ROW_HEIGHT}
       tableProps={{ rowSelection: {} }}
     />
   );

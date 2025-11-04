@@ -48,7 +48,7 @@ const AppRoutes: React.FC = () => {
       />
       <Route path={APP_ROUTES.ROLES} element={<RolesListView />} />
       <Route path={APP_ROUTES.ROLE_CREATE} element={<RolesCreateView />} />
-      <Route path={APP_ROUTES.ROLE_CATEGORIES} element={<CategoriesListView />} />
+      <Route path={APP_ROUTES.CATEGORIES} element={<CategoriesListView />} />
     </Routes>
   );
 };
