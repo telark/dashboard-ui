@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input } from 'antd';
-import LabeledInput from '../../../shared/LabeledInput';
-import LabeledSelect from '../../../shared/LabeledSelect';
+import LabeledInput from '../inputs/LabeledInput';
+import LabeledSelect from '../inputs/LabeledSelect';
 import type { FormFieldRendererProps } from '../../../../interfaces/modal';
 
 const FormFieldRenderer: React.FC<FormFieldRendererProps> = ({ field }) => {

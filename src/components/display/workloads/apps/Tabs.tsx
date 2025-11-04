@@ -1,5 +1,5 @@
 import React from 'react';
-import { TabButton } from '../../../../components/shared';
+import TabButton from '../../../../components/buttons/TabButton';
 
 const TAB_KEYS = {
   GENERAL: 'general',

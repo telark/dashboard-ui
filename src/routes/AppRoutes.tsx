@@ -12,7 +12,7 @@ import {
   RolesListView,
   CategoriesListView,
 } from '../pages';
-import AnimatedPageWrapper from '../components/shared/AnimatedPageWrapper';
+import AnimatedPageWrapper from '../components/animation/AnimatedPageWrapper';
 import { APP_ROUTES } from '../constants';
 
 const AppRoutes: React.FC = () => {
