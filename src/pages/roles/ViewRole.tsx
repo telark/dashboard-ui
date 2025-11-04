@@ -1,13 +1,16 @@
 import React, { useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, APP_ROUTES } from '../../constants';
-import RolesHeader from '../../components/display/roles/shared/Header';
+import { DEFAULT_COLORS, APP_ROUTES, ICONS } from '../../constants';
+import Header from '../../components/display/shared/sections/Header';
 import { STATIC_ROLES } from '../../data/roles';
 import ViewDetails from '../../components/display/shared/ViewDetails';
 import ScopesPermissions from '../../components/display/roles/view/ScopesPermissions';
 import { createRoleViewConfig } from '../../config/roleViewConfig';
 import { Card } from 'antd';
 import { COMPONENT_STYLES } from '../../constants/layout/ui';
+import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
+
+const RoleIcon = ICONS.ROLE;
 
 const ViewRole: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -53,23 +56,26 @@ const ViewRole: React.FC = () => {
       className="app-root"
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <RolesHeader
+        <Header
           subtitle="View role details"
           breadcrumbs={breadcrumbs}
           primaryText="Back to Roles"
           onPrimary={() => navigate(APP_ROUTES.ROLES)}
+          icon={<RoleIcon />}
         />
 
-        <ViewDetails config={config} />
+        <AnimatedPageWrapper>
+          <ViewDetails config={config} />
 
-        <Card
-          style={{
-            ...COMPONENT_STYLES.VIEW_DETAILS.card,
-          }}
-          styles={{ body: COMPONENT_STYLES.VIEW_DETAILS.cardBody }}
-        >
-          <ScopesPermissions scopes={role.scopes} />
-        </Card>
+          <Card
+            style={{
+              ...COMPONENT_STYLES.VIEW_DETAILS.card,
+            }}
+            styles={{ body: COMPONENT_STYLES.VIEW_DETAILS.cardBody }}
+          >
+            <ScopesPermissions scopes={role.scopes} />
+          </Card>
+        </AnimatedPageWrapper>
       </div>
     </div>
   );

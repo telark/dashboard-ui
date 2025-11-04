@@ -1,10 +1,13 @@
 import React, { useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, APP_ROUTES } from '../../constants';
-import RolesHeader from '../../components/display/roles/shared/Header';
+import { DEFAULT_COLORS, APP_ROUTES, ICONS } from '../../constants';
+import Header from '../../components/display/shared/sections/Header';
 import { STATIC_CATEGORIES } from '../../data/categories';
 import ViewDetails from '../../components/display/shared/ViewDetails';
 import { createCategoryViewConfig } from '../../config/categoryViewConfig';
+import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
+
+const CategoryIcon = ICONS.CATEGORY;
 
 const ViewCategory: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -50,14 +53,17 @@ const ViewCategory: React.FC = () => {
       className="app-root"
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <RolesHeader
+        <Header
           subtitle="View category details"
           breadcrumbs={breadcrumbs}
           primaryText="Back to Categories"
           onPrimary={() => navigate(APP_ROUTES.CATEGORIES)}
+          icon={<CategoryIcon />}
         />
 
-        <ViewDetails config={config} />
+        <AnimatedPageWrapper>
+          <ViewDetails config={config} />
+        </AnimatedPageWrapper>
       </div>
     </div>
   );

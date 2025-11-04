@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES, ICONS } from '../../constants';
 import { CATEGORIES_CONSTANTS as CC } from '../../constants/pages/categories';
-import RolesHeader from '../../components/display/roles/shared/Header';
+import Header from '../../components/display/shared/sections/Header';
 import CategoriesTable from '../../components/display/categories/Table';
 import FormModal from '../../components/display/shared/modal/FormModal';
 import { STATIC_CATEGORIES } from '../../data/categories';
@@ -41,12 +41,13 @@ const CategoriesList: React.FC = () => {
       className="app-root"
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <RolesHeader
+        <Header
           subtitle={CC.LABELS.HEADER_SUBTITLE}
           primaryText={CC.LABELS.FORM.BUTTON_TEXT}
           primaryIcon={<CategoryIcon size={16} />}
           onPrimary={() => setIsCreateModalOpen(true)}
           breadcrumbs={[{ label: 'Categories' }]}
+          icon={<CategoryIcon />}
         />
 
         <FormModal

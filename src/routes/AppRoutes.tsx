@@ -50,23 +50,9 @@ const AppRoutes: React.FC = () => {
       />
       <Route path={APP_ROUTES.ROLES} element={<RolesListView />} />
       <Route path={APP_ROUTES.ROLE_CREATE} element={<RolesCreateView />} />
-      <Route
-        path={APP_ROUTES.ROLE_VIEW}
-        element={
-          <AnimatedPageWrapper>
-            <RoleView />
-          </AnimatedPageWrapper>
-        }
-      />
+      <Route path={APP_ROUTES.ROLE_VIEW} element={<RoleView />} />
       <Route path={APP_ROUTES.CATEGORIES} element={<CategoriesListView />} />
-      <Route
-        path={APP_ROUTES.CATEGORY_VIEW}
-        element={
-          <AnimatedPageWrapper>
-            <CategoryView />
-          </AnimatedPageWrapper>
-        }
-      />
+      <Route path={APP_ROUTES.CATEGORY_VIEW} element={<CategoryView />} />
     </Routes>
   );
 };

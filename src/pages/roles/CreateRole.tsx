@@ -3,7 +3,7 @@ import { Form, message } from 'antd';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
 import { DEFAULT_COLORS, APP_ROUTES, BUTTON_TEXTS, ICONS } from '../../constants';
 import { COMPONENT_STYLES } from '../../constants/layout/ui';
-import RolesHeader from '../../components/display/roles/shared/Header';
+import Header from '../../components/display/shared/sections/Header';
 import { useNavigate } from 'react-router-dom';
 import RolesGeneralSection from '../../components/display/roles/create/GeneralSection';
 import RolesScopePermissionsSection from '../../components/display/roles/create/ScopesAndPermissionsSection';
@@ -47,9 +47,10 @@ const CreateRole: React.FC = () => {
       className="app-root"
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <RolesHeader
+        <Header
           subtitle="Create a new role"
           breadcrumbs={[{ label: 'Roles', to: APP_ROUTES.ROLES }, { label: 'Create Role' }]}
+          icon={<RoleIcon />}
         />
 
         <div

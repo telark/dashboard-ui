@@ -1,23 +1,23 @@
 import React from 'react';
 import { Breadcrumb } from 'antd';
-import { DEFAULT_COLORS, BUTTON_TEXTS, ICONS } from '../../../../constants';
-import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
+import { DEFAULT_COLORS, BUTTON_TEXTS } from '../../../../constants';
 import { AiOutlinePlus } from 'react-icons/ai';
-import type { RolesHeaderProps } from '../../../../interfaces/roles';
 import { useNavigate } from 'react-router-dom';
 import PrimaryButton from '../../../buttons/PrimaryButton';
+import type { HeaderProps } from '../../../../interfaces/sections';
 
-const RoleIcon = ICONS.ROLE;
-
-const RolesHeader: React.FC<RolesHeaderProps> = ({
+const Header: React.FC<HeaderProps> = ({
   title,
-  subtitle = RPC.LABELS.HEADER_SUBTITLE,
+  subtitle,
   onPrimary,
   primaryText,
   primaryIcon,
   onSecondary,
   secondaryText,
   secondaryIcon,
+  icon,
+  iconColor = DEFAULT_COLORS.SUCCESS,
+  iconBackground = 'rgba(32,201,151,0.12)',
   breadcrumbs,
 }) => {
   const navigate = useNavigate();
@@ -36,27 +36,29 @@ const RolesHeader: React.FC<RolesHeaderProps> = ({
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div
-          style={{
-            width: 48,
-            height: 48,
-            borderRadius: '50%',
-            background: 'rgba(32,201,151,0.12)',
-            boxShadow: 'inset 0 0 0 2px rgba(32,201,151,0.18)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: DEFAULT_COLORS.SUCCESS,
-            fontSize: 20,
-          }}
-        >
-          <RoleIcon />
-        </div>
+        {icon && (
+          <div
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: '50%',
+              background: iconBackground,
+              boxShadow: `inset 0 0 0 2px ${iconBackground.replace('0.12', '0.18').replace('0.05', '0.08')}`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: iconColor,
+              fontSize: 20,
+            }}
+          >
+            {icon}
+          </div>
+        )}
 
         <div>
           {Array.isArray(breadcrumbs) && breadcrumbs.length ? (
             <Breadcrumb
-              items={breadcrumbs.map((b, idx) => ({
+              items={breadcrumbs.map((b: { label: string; to?: string }) => ({
                 title: b.to ? (
                   <span
                     style={{ cursor: 'pointer' }}
@@ -87,7 +89,7 @@ const RolesHeader: React.FC<RolesHeaderProps> = ({
           <PrimaryButton
             action={secondaryText}
             onClick={onSecondary || (() => {})}
-            icon={secondaryIcon || <RoleIcon size={16} />}
+            icon={secondaryIcon}
             loading={false}
             loadingLabel={BUTTON_TEXTS.LOADING}
           />
@@ -106,4 +108,5 @@ const RolesHeader: React.FC<RolesHeaderProps> = ({
   );
 };
 
-export default RolesHeader;
+export default Header;
+

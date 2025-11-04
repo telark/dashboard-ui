@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, APP_ROUTES } from '../../constants';
+import { DEFAULT_COLORS, APP_ROUTES, ICONS } from '../../constants';
 import { STATIC_ROLES } from '../../data/roles';
-import RolesHeader from '../../components/display/roles/shared/Header';
+import Header from '../../components/display/shared/sections/Header';
 import RolesTable from '../../components/display/roles/list/Table';
+
+const RoleIcon = ICONS.ROLE;
 
 const RolesList: React.FC = () => {
   const navigate = useNavigate();
@@ -21,11 +23,12 @@ const RolesList: React.FC = () => {
       className="app-root"
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <RolesHeader
+        <Header
           subtitle="Manage existing roles"
           primaryText="Add Role"
           onPrimary={() => navigate(APP_ROUTES.ROLE_CREATE)}
           breadcrumbs={[{ label: 'Roles' }]}
+          icon={<RoleIcon />}
         />
 
         <RolesTable

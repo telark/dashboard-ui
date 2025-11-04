@@ -11,18 +11,6 @@ export interface Role {
   type: RoleType;
 }
 
-export interface RolesHeaderProps {
-  title?: string;
-  subtitle?: string;
-  onPrimary?: () => void;
-  primaryText?: string;
-  breadcrumbs?: Array<{ label: string; to?: string }>;
-  primaryIcon?: ReactNode;
-  secondaryText?: string;
-  onSecondary?: () => void;
-  secondaryIcon?: ReactNode;
-}
-
 export interface RolesTableProps {
   roles: Role[];
   onRolesChange?: (next: Role[]) => void;
