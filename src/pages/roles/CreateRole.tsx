@@ -7,21 +7,20 @@ import Header from '../../components/display/shared/sections/Header';
 import { useNavigate } from 'react-router-dom';
 import RolesGeneralSection from '../../components/display/roles/create/GeneralSection';
 import RolesScopePermissionsSection from '../../components/display/roles/create/ScopesAndPermissionsSection';
+import type { RoleScopePermission } from '../../interfaces/roles';
 
 const RoleIcon = ICONS.ROLE;
 
-type RoleScopeLevel = 'View' | 'Edit' | 'Delete';
-
 interface CreateRoleFormValues {
   name: string;
-  scopes: Record<string, RoleScopeLevel[]>; // area -> levels
+  scopes: Record<string, RoleScopePermission[]>; // area -> permissions
 }
 
 const CreateRole: React.FC = () => {
   const [form] = Form.useForm<CreateRoleFormValues>();
   const [submitting, setSubmitting] = useState(false);
 
-  const initialScopes = useMemo(() => ({}) as Record<string, RoleScopeLevel[]>, []);
+  const initialScopes = useMemo(() => ({}) as Record<string, RoleScopePermission[]>, []);
 
   const handleFinish = async (values: CreateRoleFormValues) => {
     setSubmitting(true);
