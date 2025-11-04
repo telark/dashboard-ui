@@ -8,14 +8,11 @@ import RolesHeader from '../../components/display/roles/shared/Header';
 import { useNavigate } from 'react-router-dom';
 import RolesGeneralSection from '../../components/display/roles/create/GeneralSection';
 import RolesScopePermissionsSection from '../../components/display/roles/create/ScopesAndPermissionsSection';
-import GroupAssignmentSection from '../../components/display/roles/create/GroupAssignmentSection';
 
 type RoleScopeLevel = 'View' | 'Edit' | 'Delete';
 
 interface CreateRoleFormValues {
   name: string;
-  category: string;
-  group: string;
   scopes: Record<string, RoleScopeLevel[]>; // area -> levels
 }
 
@@ -65,7 +62,7 @@ const CreateRole: React.FC = () => {
             layout="vertical"
             form={form}
             onFinish={handleFinish}
-            initialValues={{ category: 'general', group: 'default', scopes: initialScopes }}
+            initialValues={{ scopes: initialScopes }}
           >
             <div
               style={{
@@ -85,7 +82,6 @@ const CreateRole: React.FC = () => {
               >
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
                   <RolesGeneralSection form={form} />
-                  <GroupAssignmentSection form={form} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <RolesScopePermissionsSection form={form} />

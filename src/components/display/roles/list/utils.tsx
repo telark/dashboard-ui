@@ -4,8 +4,6 @@ import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
 export type RolesSortKey =
   | 'name'
   | 'type'
-  | 'group'
-  | 'category'
   | 'permission'
   | 'createdAt'
   | 'status';
@@ -32,10 +30,6 @@ export const sortRoles = (
     switch (sortKey) {
       case RPC.KEYS.NAME:
         return (a, b) => compareStrings(a.name, b.name);
-      case RPC.KEYS.GROUP:
-        return (a, b) => compareStrings(a.group, b.group);
-      case RPC.KEYS.CATEGORY:
-        return (a, b) => compareStrings(a.category?.name, b.category?.name);
       case RPC.KEYS.TYPE:
         return (a, b) => compareStrings(a.type, b.type);
       case RPC.KEYS.PERMISSION:

@@ -14,8 +14,6 @@ export interface RoleCategory {
 export interface Role {
   id: string;
   name: string;
-  group: string;
-  category?: RoleCategory;
   scopes: Record<string, RoleScopePermission[]>;
   status: RoleStatus;
   createdAt: string;
