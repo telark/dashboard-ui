@@ -1,6 +1,7 @@
 export * from './config/sync';
 export * from './layout/buttons';
 export * from './layout/cards';
+export * from './layout/icons';
 export * from './layout/messages';
 export * from './layout/modes';
 export * from './layout/ui';

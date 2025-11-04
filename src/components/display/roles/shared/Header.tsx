@@ -1,11 +1,13 @@
 import React from 'react';
 import { Breadcrumb } from 'antd';
-import { DEFAULT_COLORS, BUTTON_TEXTS } from '../../../../constants';
+import { DEFAULT_COLORS, BUTTON_TEXTS, ICONS } from '../../../../constants';
 import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
-import { AiOutlineSafety, AiOutlinePlus } from 'react-icons/ai';
+import { AiOutlinePlus } from 'react-icons/ai';
 import type { RolesHeaderProps } from '../../../../interfaces/roles';
 import { useNavigate } from 'react-router-dom';
 import PrimaryButton from '../../../buttons/PrimaryButton';
+
+const RoleIcon = ICONS.ROLE;
 
 const RolesHeader: React.FC<RolesHeaderProps> = ({
   title,
@@ -48,7 +50,7 @@ const RolesHeader: React.FC<RolesHeaderProps> = ({
             fontSize: 20,
           }}
         >
-          <AiOutlineSafety />
+          <RoleIcon />
         </div>
 
         <div>
@@ -85,7 +87,7 @@ const RolesHeader: React.FC<RolesHeaderProps> = ({
           <PrimaryButton
             action={secondaryText}
             onClick={onSecondary || (() => {})}
-            icon={secondaryIcon || <AiOutlineSafety size={16} />}
+            icon={secondaryIcon || <RoleIcon size={16} />}
             loading={false}
             loadingLabel={BUTTON_TEXTS.LOADING}
           />

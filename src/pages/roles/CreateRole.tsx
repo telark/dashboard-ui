@@ -1,13 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { Form, message } from 'antd';
-import { AiOutlineSafety } from 'react-icons/ai';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
-import { DEFAULT_COLORS, APP_ROUTES, BUTTON_TEXTS } from '../../constants';
+import { DEFAULT_COLORS, APP_ROUTES, BUTTON_TEXTS, ICONS } from '../../constants';
 import { COMPONENT_STYLES } from '../../constants/layout/ui';
 import RolesHeader from '../../components/display/roles/shared/Header';
 import { useNavigate } from 'react-router-dom';
 import RolesGeneralSection from '../../components/display/roles/create/GeneralSection';
 import RolesScopePermissionsSection from '../../components/display/roles/create/ScopesAndPermissionsSection';
+
+const RoleIcon = ICONS.ROLE;
 
 type RoleScopeLevel = 'View' | 'Edit' | 'Delete';
 
@@ -94,7 +95,7 @@ const CreateRole: React.FC = () => {
                     loading={submitting}
                     loadingLabel={BUTTON_TEXTS.LOADING}
                     onClick={() => form.submit()}
-                    icon={<AiOutlineSafety size={16} />}
+                    icon={<RoleIcon size={16} />}
                   />
                 </Form.Item>
               </div>

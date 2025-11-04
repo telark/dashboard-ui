@@ -4,12 +4,14 @@ import RowTag from '../../shared/table/RowTag';
 import { generateColumn } from '../../shared/table/utils';
 import Actions from './Actions';
 import {
-  AiOutlineSafety,
   AiOutlineCalendar,
   AiOutlineCheckCircle,
   AiOutlineTag,
 } from 'react-icons/ai';
+import { ICONS } from '../../../../constants';
 import type { RolesSortKey } from './utils';
+
+const RoleIcon = ICONS.ROLE;
 
 interface ColumnsArgs {
   onView: (r: Role) => void;
@@ -69,7 +71,7 @@ export const Columns = ({
       {
         key: RPC.KEYS.PERMISSION,
         label: RPC.LABELS.COLUMNS.PERMISSIONS,
-        icon: <AiOutlineSafety />,
+        icon: <RoleIcon />,
         width: RPC.SIZES.COLUMNS.PERMISSIONS,
         render: (_: any, record: Role) => (
           <RowTag
