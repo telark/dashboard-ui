@@ -5,7 +5,7 @@ import { SYNC_CONSTANTS } from '../../constants/config/sync';
 import store, { AppDispatch } from '../../store';
 import { startSync, endSync } from '../../store/groupers/slices/grouperSlice';
 import { handleSyncEffect, handleSyncError } from '../shared/sync';
-import { GROUPER_SYNC_CONFIG } from '../../constants/config/config';
+import { GROUPER_SYNC_CONFIG } from '../../config/syncConfig';
 import { DetailsSyncParams, SyncParams } from '../../interfaces/sync';
 
 export const syncGrouperDetails = async ({

@@ -5,7 +5,7 @@ import { SYNC_CONSTANTS } from '../../constants/config/sync';
 import store, { AppDispatch } from '../../store';
 import { startSync, endSync } from '../../store/bridges/slices/bridgeSlice';
 import { handleSyncEffect, handleSyncError } from '../shared/sync';
-import { BRIDGE_SYNC_CONFIG } from '../../constants/config/config';
+import { BRIDGE_SYNC_CONFIG } from '../../config/syncConfig';
 import { DetailsSyncParams, SyncParams } from '../../interfaces/sync';
 
 export const syncBridgeDetails = async ({

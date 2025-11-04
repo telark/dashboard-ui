@@ -1,6 +1,6 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { GrouperState } from '../../../interfaces/grouper';
-import { SYNC_MODES } from '../../../constants';
+import { SYNC_MODES } from '../../../constants/store/store';
 
 export const handleTriggerSyncRejected = (state: GrouperState, action: PayloadAction<any>) => {
   state.error = action.payload;
