@@ -26,4 +26,3 @@ export const STATIC_CATEGORIES: Category[] = [
     createdAt: '2024-08-19T14:15:00Z',
   },
 ];
-

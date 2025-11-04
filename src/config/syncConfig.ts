@@ -109,4 +109,3 @@ export const GROUPER_SYNC_CONFIG: SyncConfig = {
   fetchAllResourcesThunk: fetchAllGroupersThunk,
   fetchResourceDetailsThunk: fetchGrouperDetailsThunk,
 };
-

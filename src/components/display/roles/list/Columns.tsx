@@ -3,11 +3,7 @@ import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
 import RowTag from '../../shared/table/RowTag';
 import { generateColumn } from '../../shared/table/utils';
 import Actions from './Actions';
-import {
-  AiOutlineCalendar,
-  AiOutlineCheckCircle,
-  AiOutlineTag,
-} from 'react-icons/ai';
+import { AiOutlineCalendar, AiOutlineCheckCircle, AiOutlineTag } from 'react-icons/ai';
 import { ICONS } from '../../../../constants';
 import type { RolesSortKey } from './utils';
 

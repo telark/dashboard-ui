@@ -70,4 +70,3 @@ const ViewCategory: React.FC = () => {
 };
 
 export default ViewCategory;
-

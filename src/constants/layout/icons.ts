@@ -8,4 +8,3 @@ export const ICONS = {
 
 export const getRoleIcon = (): IconType => ICONS.ROLE;
 export const getCategoryIcon = (): IconType => ICONS.CATEGORY;
-

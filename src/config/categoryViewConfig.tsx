@@ -1,9 +1,4 @@
-import {
-  AiOutlineTag,
-  AiOutlineFileText,
-  AiOutlineCalendar,
-  AiOutlineUser,
-} from 'react-icons/ai';
+import { AiOutlineTag, AiOutlineFileText, AiOutlineCalendar, AiOutlineUser } from 'react-icons/ai';
 import type { Category } from '../interfaces/categories';
 import type { ViewDetailsConfig } from '../components/display/shared/ViewDetails';
 import { Space } from 'antd';
@@ -65,18 +60,11 @@ export const createCategoryViewConfig = (category: Category): ViewDetailsConfig 
           category.usedBy && category.usedBy.length > 0 ? (
             <Space wrap>
               {category.usedBy.map((item) => (
-                <StatusTag
-                  key={item}
-                  label={item}
-                  color="#9333ea"
-                  borderColor="#9333ea"
-                />
+                <StatusTag key={item} label={item} color="#9333ea" borderColor="#9333ea" />
               ))}
             </Space>
           ) : (
-            <span style={{ color: '#999', fontStyle: 'italic' }}>
-              Not used by any roles
-            </span>
+            <span style={{ color: '#999', fontStyle: 'italic' }}>Not used by any roles</span>
           ),
         icon: <AiOutlineUser />,
         type: 'custom',
@@ -84,4 +72,3 @@ export const createCategoryViewConfig = (category: Category): ViewDetailsConfig 
     ],
   };
 };
-

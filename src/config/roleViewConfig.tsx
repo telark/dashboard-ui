@@ -1,4 +1,9 @@
-import { AiOutlineCheckCircle, AiOutlineTag, AiOutlineClockCircle, AiOutlineLock } from 'react-icons/ai';
+import {
+  AiOutlineCheckCircle,
+  AiOutlineTag,
+  AiOutlineClockCircle,
+  AiOutlineLock,
+} from 'react-icons/ai';
 import type { Role } from '../interfaces/roles';
 import type { ViewDetailsConfig } from '../components/display/shared/ViewDetails';
 import { StatusTag } from '../components/tags';
@@ -58,4 +63,3 @@ export const createRoleViewConfig = (role: Role): ViewDetailsConfig => {
     ],
   };
 };
-

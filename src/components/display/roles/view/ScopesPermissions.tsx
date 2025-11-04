@@ -91,4 +91,3 @@ const ScopesPermissions: React.FC<ScopesPermissionsProps> = ({ scopes }) => {
 };
 
 export default ScopesPermissions;
-

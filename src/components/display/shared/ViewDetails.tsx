@@ -62,7 +62,7 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({ config }) => {
           // Handle composed fields (like Scopes & Permissions) differently
           if (field.type === 'composed') {
             const hasMoreFields = index < config.fields.length - 1;
-            
+
             return (
               <div key={field.key}>
                 <div
@@ -89,9 +89,7 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({ config }) => {
                     </span>
                   )}
                 </div>
-                <div style={{ paddingLeft: field.icon ? 24 : 0 }}>
-                  {field.value}
-                </div>
+                <div style={{ paddingLeft: field.icon ? 24 : 0 }}>{field.value}</div>
                 {hasMoreFields && (
                   <div
                     style={{
@@ -137,4 +135,3 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({ config }) => {
 };
 
 export default ViewDetails;
-

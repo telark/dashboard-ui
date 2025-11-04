@@ -101,4 +101,3 @@ export const CATEGORIES_CONSTANTS = {
 } as const;
 
 export type CategoriesConstants = typeof CATEGORIES_CONSTANTS;
-

@@ -40,10 +40,7 @@ const ViewRole: React.FC = () => {
     );
   }
 
-  const breadcrumbs = [
-    { label: 'Roles', to: APP_ROUTES.ROLES },
-    { label: role.name },
-  ];
+  const breadcrumbs = [{ label: 'Roles', to: APP_ROUTES.ROLES }, { label: role.name }];
 
   return (
     <div
@@ -82,4 +79,3 @@ const ViewRole: React.FC = () => {
 };
 
 export default ViewRole;
-

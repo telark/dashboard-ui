@@ -12,4 +12,3 @@ export interface CategoriesTableProps {
   onView?: (cat: Category) => void;
   onCategoriesChange?: (next: Category[]) => void;
 }
-
