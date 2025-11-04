@@ -13,6 +13,7 @@ export const CATEGORIES_CONSTANTS = {
     },
     ACTIONS: {
       VIEW: 'View',
+      EDIT: 'Edit',
       DELETE: 'Delete',
       DELETE_MODAL_TITLE: 'Delete Category',
       DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,

@@ -15,6 +15,7 @@ export interface RolesTableProps {
   roles: Role[];
   onRolesChange?: (next: Role[]) => void;
   onView?: (role: Role) => void;
+  onEdit?: (role: Role) => void;
 }
 
 export interface RolesGeneralSectionProps {

@@ -6,7 +6,7 @@ import type { Category, CategoriesTableProps } from '../../../interfaces/categor
 import Columns from './Columns';
 type SortKey = 'name' | 'type' | 'usedBy' | 'createdAt';
 
-const CategoriesTable: React.FC<CategoriesTableProps> = ({ categories, onView }) => {
+const CategoriesTable: React.FC<CategoriesTableProps> = ({ categories, onView, onEdit }) => {
   const [sortKey, setSortKey] = useState<SortKey>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
@@ -33,6 +33,10 @@ const CategoriesTable: React.FC<CategoriesTableProps> = ({ categories, onView })
     onView?.(record);
   };
 
+  const handleEdit = (record: Category) => {
+    onEdit?.(record);
+  };
+
   const handleDelete = (record: Category) => {
     Modal.confirm({
       title: CC.LABELS.ACTIONS.DELETE_MODAL_TITLE,
@@ -55,6 +59,7 @@ const CategoriesTable: React.FC<CategoriesTableProps> = ({ categories, onView })
           setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
         },
         onView: handleView,
+        onEdit: handleEdit,
         onDelete: handleDelete,
       } as any),
     [sortKey],

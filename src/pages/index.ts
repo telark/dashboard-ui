@@ -10,5 +10,7 @@ export { default as Welcome } from './analyze/Welcome';
 export { default as RolesCreateView } from './roles/CreateRole';
 export { default as RolesListView } from './roles/ListRoles';
 export { default as RoleView } from './roles/ViewRole';
+export { default as RoleEdit } from './roles/EditRole';
 export { default as CategoriesListView } from './categories/ListCategories';
 export { default as CategoryView } from './categories/ViewCategory';
+export { default as CategoryEdit } from './categories/EditCategory';

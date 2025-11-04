@@ -6,7 +6,7 @@ import { Columns } from './Columns';
 import { getPermissionCount, RolesSortKey, sortRoles } from './utils';
 import DataTable from '../../shared/table/DataTable';
 
-const RolesTable: React.FC<RolesTableProps> = ({ roles, onRolesChange, onView }) => {
+const RolesTable: React.FC<RolesTableProps> = ({ roles, onRolesChange, onView, onEdit }) => {
   const [sortKey, setSortKey] = useState<RolesSortKey>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
@@ -37,8 +37,13 @@ const RolesTable: React.FC<RolesTableProps> = ({ roles, onRolesChange, onView })
     });
   };
 
+  const handleEdit = (record: Role) => {
+    onEdit?.(record);
+  };
+
   const columns = Columns({
     onView: handleView,
+    onEdit: handleEdit,
     onDelete: handleDelete,
     onSort,
     activeSortKey: sortKey,

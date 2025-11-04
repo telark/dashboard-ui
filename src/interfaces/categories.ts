@@ -10,5 +10,6 @@ export interface Category {
 export interface CategoriesTableProps {
   categories: Category[];
   onView?: (cat: Category) => void;
+  onEdit?: (cat: Category) => void;
   onCategoriesChange?: (next: Category[]) => void;
 }

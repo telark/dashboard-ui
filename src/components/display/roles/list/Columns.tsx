@@ -11,6 +11,7 @@ const RoleIcon = ICONS.ROLE;
 
 interface ColumnsArgs {
   onView: (r: Role) => void;
+  onEdit?: (r: Role) => void;
   onDelete: (r: Role) => void;
   onSort: (key: RolesSortKey) => void;
   activeSortKey: RolesSortKey;
@@ -20,6 +21,7 @@ interface ColumnsArgs {
 
 export const Columns = ({
   onView,
+  onEdit,
   onDelete,
   onSort,
   activeSortKey,
@@ -128,7 +130,7 @@ export const Columns = ({
       width: 48,
       onHeaderCell: () => ({ style: { background: RPC.COLORS.HEADER_BG } }),
       render: (_: any, record: Role) => (
-        <Actions record={record} onView={onView} onDelete={onDelete} />
+        <Actions record={record} onView={onView} onEdit={onEdit} onDelete={onDelete} />
       ),
     },
   ];

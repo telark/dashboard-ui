@@ -16,6 +16,7 @@ export const ROLES_PAGE_CONSTANTS = {
     },
     ACTIONS: {
       VIEW: 'View',
+      EDIT: 'Edit',
       DELETE: 'Delete',
     },
     PERMISSIONS_SUFFIX: 'permissions',

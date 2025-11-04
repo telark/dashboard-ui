@@ -27,6 +27,8 @@ export const APP_ROUTES = {
   ROLES: '/roles',
   ROLE_CREATE: '/roles/create',
   ROLE_VIEW: '/roles/:id/view',
+  ROLE_EDIT: '/roles/:id/edit',
   CATEGORIES: '/categories',
   CATEGORY_VIEW: '/categories/:id/view',
+  CATEGORY_EDIT: '/categories/:id/edit',
 } as const;

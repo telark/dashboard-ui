@@ -68,6 +68,7 @@ const CategoriesList: React.FC = () => {
         <CategoriesTable
           categories={categories}
           onView={(cat) => navigate(`${APP_ROUTES.CATEGORIES}/${cat.id}/view`)}
+          onEdit={(cat) => navigate(`${APP_ROUTES.CATEGORIES}/${cat.id}/edit`)}
           onCategoriesChange={setCategories}
         />
       </div>

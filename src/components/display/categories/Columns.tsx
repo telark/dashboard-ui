@@ -92,7 +92,12 @@ const Columns = (ctx: GenerateColumnCtx) => {
     width: CC.SIZES.COLUMNS.ACTIONS,
     onHeaderCell: () => ({ style: { background: RPC.COLORS.HEADER_BG } }),
     render: (_: any, record: Category) => (
-      <Actions record={record} onView={(ctx as any).onView} onDelete={(ctx as any).onDelete} />
+      <Actions
+        record={record}
+        onView={(ctx as any).onView}
+        onEdit={(ctx as any).onEdit}
+        onDelete={(ctx as any).onDelete}
+      />
     ),
   });
   return cols;

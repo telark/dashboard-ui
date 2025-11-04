@@ -35,6 +35,7 @@ const RolesList: React.FC = () => {
           roles={roles as any}
           onRolesChange={setRoles as any}
           onView={handleView as any}
+          onEdit={(record) => navigate(`${APP_ROUTES.ROLES}/${record.id}/edit`)}
         />
       </div>
     </div>
