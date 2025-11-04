@@ -8,7 +8,7 @@ import {
 } from '@ant-design/icons';
 import PrimaryButtonWithOutLoading from '../buttons/PrimayButtonWithOutLoading';
 import { DEFAULT_COLORS } from '../../constants';
-import { MAINTENANCE_MODE } from '../../constants/modes';
+import { MAINTENANCE_MODE } from '../../constants/layout/modes';
 
 interface MaintenanceModeProps {
   isMaintenanceModeActive: boolean;

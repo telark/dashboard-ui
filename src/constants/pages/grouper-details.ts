@@ -1,8 +1,6 @@
-import { DEFAULT_COLORS } from '../colors';
+import { DEFAULT_COLORS } from '../shared/colors';
 
-// GrouperDetails page constants
 export const GROUPER_DETAILS_CONSTANTS = {
-  // Tab keys
   TAB_KEYS: {
     GENERAL: 'general',
     RESOURCES: 'resources',
@@ -10,8 +8,6 @@ export const GROUPER_DETAILS_CONSTANTS = {
     SYNC: 'sync',
     MAINTENANCE: 'maintenance',
   } as const,
-
-  // Layout styles
   LAYOUT: {
     PAGE_CONTAINER: {
       background: DEFAULT_COLORS.PAGE_BG,
@@ -51,7 +47,6 @@ export const GROUPER_DETAILS_CONSTANTS = {
     },
   },
 
-  // Header styles
   HEADER: {
     ICON_CONTAINER: {
       width: 48,
@@ -93,7 +88,6 @@ export const GROUPER_DETAILS_CONSTANTS = {
     },
   },
 
-  // Loading and error states
   STATES: {
     LOADING_CONTAINER: {
       marginTop: 60,
@@ -109,7 +103,6 @@ export const GROUPER_DETAILS_CONSTANTS = {
     },
   },
 
-  // Sync configuration
   SYNC: {
     MESSAGE_KEY_PREFIX: 'sync-',
     POLLING: {
@@ -126,15 +119,11 @@ export const GROUPER_DETAILS_CONSTANTS = {
     ERROR_KEY: 'sync-error',
     TIMEOUT_MESSAGE: 'Taking a bit longer than usual. Please try again in a moment.',
   },
-
-  // FancySpinner configuration
   FANCY_SPINNER: {
     SHOW_LABEL: false,
     SIZE: 18,
     RING_THICKNESS: 2,
   },
-
-  // Messages
   MESSAGES: {
     LOADING: 'Loading...',
     ERROR: 'Error fetching grouper details:',

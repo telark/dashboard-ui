@@ -1,6 +1,6 @@
 import { CheckCircleOutlined, WarningOutlined, CloseCircleOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../constants/colors';
-import { CARD_STATES } from '../../constants/cards';
+import { DEFAULT_COLORS } from '../../constants/shared/colors';
+import { CARD_STATES } from '../../constants/layout/cards';
 
 export const getDetailedStatusStyle = (status: string) => {
   const normalizedStatus = status?.toLowerCase();

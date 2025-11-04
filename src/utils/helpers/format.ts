@@ -1,6 +1,6 @@
 import { UTILS_CONFIGS } from '../../constants';
-import { DEFAULT_COLORS } from '../../constants/colors';
-import { CARD_STATES } from '../../constants/cards';
+import { DEFAULT_COLORS } from '../../constants/shared/colors';
+import { CARD_STATES } from '../../constants/layout/cards';
 
 export const CapitalizeFirstLetter = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();

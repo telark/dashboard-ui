@@ -7,7 +7,7 @@ import { Error, Empty, Header, Tabs, Content } from '.';
 import { GROUPER_DETAILS_CONSTANTS } from '../../../../constants/pages/grouper-details';
 import LoadingDetails from '../../../../components/shared/LoadingDetails';
 import { RootState } from '../../../../store';
-import { STORE_ERRORS } from '../../../../constants/store';
+import { STORE_ERRORS } from '../../../../constants/store/store';
 
 const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() {
   const { name } = useParams<{ name: string }>();

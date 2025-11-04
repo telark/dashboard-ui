@@ -4,7 +4,7 @@ import {
   INSIGHT_PATHS,
   MAINTENANCE_PATHS,
   ANALYZE_PATHS,
-} from './paths';
+} from '../rest/paths';
 
 export const Endpoints = {
   GROUPERS: {

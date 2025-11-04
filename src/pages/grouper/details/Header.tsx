@@ -6,7 +6,7 @@ import StatusButton from '../../../components/buttons/StatusButton';
 import TimeAgo from '../../../components/time/TimeAgo';
 import { FancySpinner } from '../../../components/shared';
 import { StatusTag } from '../../../components/tags';
-import { UI } from '../../../constants/ui';
+import { UI } from '../../../constants/layout/ui';
 import { GROUPER_DETAILS_CONSTANTS } from '../../../constants/pages/grouper-details';
 
 interface HeaderProps {

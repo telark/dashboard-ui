@@ -7,7 +7,7 @@ import {
   WORKLOADS_REFRESH_INTERVAL_MS,
   WORKLOADS_SYNC_LS_KEY,
   WORKLOADS_SYNC_THROTTLE_MS,
-} from '../../constants/sync';
+} from '../../constants/config/sync';
 import { createResourceStateUtils } from '../shared/resourceStateFactory';
 
 const workloadStateUtils = createResourceStateUtils({

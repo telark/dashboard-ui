@@ -10,9 +10,6 @@ export const API_PORTS = {
   SYNC_MANAGER: 8004,
 } as const;
 
-/**
- * Helper function to build API base URL
- */
 export const buildApiUrl = (port: number): string => {
   return `${API_CONFIG.HOST}:${port}/${API_CONFIG.API_PREFIX}/${API_CONFIG.API_VERSION}`;
 };

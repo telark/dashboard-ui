@@ -1,11 +1,11 @@
 import { triggerSingleGrouperSync } from '../../clients/sync-manager';
-import { SYNC_MESSAGES } from '../../constants/modes';
+import { SYNC_MESSAGES } from '../../constants/layout/modes';
 import { GROUPER_DETAILS_CONSTANTS } from '../../constants/pages/grouper-details';
-import { SYNC_CONSTANTS } from '../../constants/sync';
+import { SYNC_CONSTANTS } from '../../constants/config/sync';
 import store, { AppDispatch } from '../../store';
 import { startSync, endSync } from '../../store/groupers/slices/grouperSlice';
 import { handleSyncEffect, handleSyncError } from '../shared/sync';
-import { GROUPER_SYNC_CONFIG } from '../../constants/config';
+import { GROUPER_SYNC_CONFIG } from '../../constants/config/config';
 import { DetailsSyncParams, SyncParams } from '../../interfaces/sync';
 
 export const syncGrouperDetails = async ({

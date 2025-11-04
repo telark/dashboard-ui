@@ -8,7 +8,7 @@ import {
 import { Pagination, Tag, Collapse, Button } from 'antd';
 import { AppWorkload } from '../../../../interfaces/workload';
 import { DEFAULT_COLORS } from '../../../../constants';
-import { COMPONENT_STYLES, COMPONENT_CONSTANTS } from '../../../../constants/ui';
+import { COMPONENT_STYLES, COMPONENT_CONSTANTS } from '../../../../constants/layout/ui';
 
 interface WorkloadInstancesProps {
   workload: AppWorkload;

@@ -1,4 +1,4 @@
-import { API_PORTS, buildApiUrl } from './urls';
+import { API_PORTS, buildApiUrl } from '../rest/urls';
 
 export const API_TIMEOUT = 30000; //30 seconds
 

@@ -1,4 +1,4 @@
-import { COMMON_VALUES } from './common';
+import { COMMON_VALUES } from '../shared/common';
 
 export const STORAGE_KEYS = {
   HAS_CLUSTER_INSIGHTS: 'HAS_CLUSTER_INSIGHTS',

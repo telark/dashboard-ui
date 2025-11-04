@@ -1,4 +1,4 @@
-import { COMMON_VALUES } from './common';
+import { COMMON_VALUES } from '../shared/common';
 
 export const GROUPER_CARD_TEXTS = {
   DELETE: {

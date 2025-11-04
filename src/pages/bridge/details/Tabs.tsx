@@ -1,6 +1,6 @@
 import React from 'react';
 import TabButton from '../../../components/buttons/TabButton';
-import { UI } from '../../../constants/ui';
+import { UI } from '../../../constants/layout/ui';
 import { BRIDGE_DETAILS_CONSTANTS, TabKey } from '../../../constants/pages/bridge-details';
 
 interface TabsProps {

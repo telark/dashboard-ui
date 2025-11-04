@@ -1,16 +1,12 @@
-import { DEFAULT_COLORS } from '../colors';
+import { DEFAULT_COLORS } from '../shared/colors';
 
-// BridgeDetails page constants
 export const BRIDGE_DETAILS_CONSTANTS = {
-  // Tab keys
   TAB_KEYS: {
     GENERAL: 'general',
     RESOURCES: 'resources',
     HISTORY: 'history',
     SYNC: 'sync',
   } as const,
-
-  // Layout styles
   LAYOUT: {
     PAGE_CONTAINER: {
       background: DEFAULT_COLORS.PAGE_BG,
@@ -50,7 +46,6 @@ export const BRIDGE_DETAILS_CONSTANTS = {
     },
   },
 
-  // Header styles
   HEADER: {
     ICON_CONTAINER: {
       width: 48,
@@ -92,7 +87,6 @@ export const BRIDGE_DETAILS_CONSTANTS = {
     },
   },
 
-  // Loading and error states
   STATES: {
     LOADING_CONTAINER: {
       marginTop: 60,
@@ -108,7 +102,6 @@ export const BRIDGE_DETAILS_CONSTANTS = {
     },
   },
 
-  // Sync configuration
   SYNC: {
     MESSAGE_KEY_PREFIX: 'bridge-sync-',
     POLLING: {
@@ -125,15 +118,11 @@ export const BRIDGE_DETAILS_CONSTANTS = {
     ERROR_KEY: 'bridge-sync-error',
     TIMEOUT_MESSAGE: 'Taking a bit longer than usual. Please try again in a moment.',
   },
-
-  // FancySpinner configuration
   FANCY_SPINNER: {
     SHOW_LABEL: false,
     SIZE: 18,
     RING_THICKNESS: 2,
   },
-
-  // Messages
   MESSAGES: {
     LOADING: 'Loading...',
     ERROR: 'Error fetching bridge details:',

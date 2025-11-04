@@ -10,28 +10,18 @@ export const BRIDGES_SYNC_LS_KEY = 'last_bridges_sync_ts';
 
 // Sync-related constants
 export const SYNC_CONSTANTS = {
-  // Message key prefix
   MESSAGE_KEY_PREFIX: 'sync-',
 
-  // Polling configuration
   POLLING: {
     INTERVAL_MS: 250,
     MAX_WAIT_MS: 4000,
   },
-
-  // Message durations
   MESSAGE_DURATIONS: {
     LOADING: 0,
     SUCCESS: 2,
     ERROR: 3,
   },
-
-  // Default sync effect
   DEFAULT_SYNC_EFFECT: 'NoUpdate',
-
-  // Effects that trigger polling
   POLLING_EFFECTS: ['Deleted', 'NotFound'] as const,
-
-  // Error key
   ERROR_KEY: 'sync-error',
 } as const;

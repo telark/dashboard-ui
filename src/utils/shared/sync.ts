@@ -1,4 +1,4 @@
-import { SYNC_MESSAGES } from '../../constants/modes';
+import { SYNC_MESSAGES } from '../../constants/layout/modes';
 import store, { AppDispatch, RootState } from '../../store';
 import { HandleSyncEffectParams, HandleSyncErrorParams, SyncConfig } from '../../interfaces/sync';
 

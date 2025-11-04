@@ -4,7 +4,7 @@ import { AiOutlineApi, AiOutlineCheckCircle, AiOutlineSync } from 'react-icons/a
 import StatusButton from '../../../components/buttons/StatusButton';
 import TimeAgo from '../../../components/time/TimeAgo';
 import { FancySpinner } from '../../../components/shared';
-import { UI } from '../../../constants/ui';
+import { UI } from '../../../constants/layout/ui';
 import { BRIDGE_DETAILS_CONSTANTS } from '../../../constants/pages/bridge-details';
 
 interface HeaderProps {

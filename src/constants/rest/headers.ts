@@ -1,18 +1,13 @@
 export const HTTP_HEADERS = {
-  // Content Types
   CONTENT_TYPE: {
     JSON: 'application/json',
     FORM_DATA: 'multipart/form-data',
     URL_ENCODED: 'application/x-www-form-urlencoded',
   },
-
-  // Custom Headers
   CUSTOM: {
     SILENT_404: 'X-Silent-404',
     SILENT_NETWORK: 'X-Silent-Network',
   },
-
-  // Standard Headers
   STANDARD: {
     AUTHORIZATION: 'Authorization',
     CONTENT_TYPE: 'Content-Type',
