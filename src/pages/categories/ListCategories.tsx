@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, APP_ROUTES } from '../../constants';
+import { DEFAULT_COLORS, APP_ROUTES, ICONS } from '../../constants';
 import { CATEGORIES_CONSTANTS as CC } from '../../constants/pages/categories';
 import RolesHeader from '../../components/display/roles/shared/Header';
 import CategoriesTable from '../../components/display/categories/Table';
 import FormModal from '../../components/display/shared/modal/FormModal';
 import { STATIC_CATEGORIES } from '../../data/categories';
-import { AiOutlineFolderOpen } from 'react-icons/ai';
 import type { Category } from '../../interfaces/categories';
+
+const CategoryIcon = ICONS.CATEGORY;
 
 const CategoriesList: React.FC = () => {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ const CategoriesList: React.FC = () => {
         <RolesHeader
           subtitle={CC.LABELS.HEADER_SUBTITLE}
           primaryText={CC.LABELS.FORM.BUTTON_TEXT}
-          primaryIcon={<AiOutlineFolderOpen size={16} />}
+          primaryIcon={<CategoryIcon size={16} />}
           onPrimary={() => setIsCreateModalOpen(true)}
           breadcrumbs={[{ label: 'Categories' }]}
         />
@@ -58,7 +59,7 @@ const CategoriesList: React.FC = () => {
           sectionSubtitle={CC.LABELS.FORM.SECTION_SUBTITLE}
           fields={CC.FORM.FIELDS}
           buttonText={CC.LABELS.FORM.BUTTON_TEXT}
-          buttonIcon={<AiOutlineFolderOpen size={16} />}
+          buttonIcon={<CategoryIcon size={16} />}
           width={CC.SIZES.MODAL_WIDTH}
           initialValues={CC.FORM.INITIAL_VALUES}
         />
