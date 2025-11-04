@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES } from '../../constants';
 import { STATIC_ROLES } from '../../data/roles';
@@ -9,7 +8,7 @@ import RolesTable from '../../components/display/roles/list/Table';
 const RolesList: React.FC = () => {
   const navigate = useNavigate();
   const [roles, setRoles] = useState(STATIC_ROLES);
-  const handleView = (record: any) => message.info(`View role: ${record?.name}`);
+  const handleView = (record: any) => navigate(`${APP_ROUTES.ROLES}/${record.id}/view`);
 
   return (
     <div

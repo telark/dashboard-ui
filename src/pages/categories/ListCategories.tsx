@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { message } from 'antd';
-import { DEFAULT_COLORS } from '../../constants';
+import { useNavigate } from 'react-router-dom';
+import { DEFAULT_COLORS, APP_ROUTES } from '../../constants';
 import { CATEGORIES_CONSTANTS as CC } from '../../constants/pages/categories';
 import RolesHeader from '../../components/display/roles/shared/Header';
 import CategoriesTable from '../../components/display/categories/Table';
@@ -10,6 +11,7 @@ import { AiOutlineFolderOpen } from 'react-icons/ai';
 import type { Category } from '../../interfaces/categories';
 
 const CategoriesList: React.FC = () => {
+  const navigate = useNavigate();
   const [categories, setCategories] = useState(STATIC_CATEGORIES);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
@@ -63,7 +65,7 @@ const CategoriesList: React.FC = () => {
 
         <CategoriesTable
           categories={categories}
-          onView={(cat) => message.info(`View category: ${cat.name}`)}
+          onView={(cat) => navigate(`${APP_ROUTES.CATEGORIES}/${cat.id}/view`)}
           onCategoriesChange={setCategories}
         />
       </div>

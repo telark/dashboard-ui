@@ -26,5 +26,7 @@ export const APP_ROUTES = {
   BRIDGE_DETAILS: '/bridges/:name/details',
   ROLES: '/roles',
   ROLE_CREATE: '/roles/create',
+  ROLE_VIEW: '/roles/:id/view',
   CATEGORIES: '/categories',
+  CATEGORY_VIEW: '/categories/:id/view',
 } as const;
