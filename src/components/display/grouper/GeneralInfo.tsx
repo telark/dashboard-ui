@@ -1,9 +1,8 @@
 import React from 'react';
-import { SyncOutlined, AppstoreOutlined } from '@ant-design/icons';
+import { AppstoreOutlined } from '@ant-design/icons';
 import { AiOutlineTag, AiOutlineCalendar } from 'react-icons/ai';
 import TimeAgo from '../../time/TimeAgo';
 import { GeneralInfoInterface } from '../../../interfaces/shared';
-import StatusButton from '../../buttons/StatusButton';
 import { Label, Row } from '../../../components/shared';
 
 interface GrouperGeneralInfoExtension extends GeneralInfoInterface {

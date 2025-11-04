@@ -3,19 +3,23 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES } from '../../constants';
 import RolesHeader from '../../components/display/roles/shared/Header';
 import { STATIC_CATEGORIES } from '../../data/categories';
-import type { Category } from '../../interfaces/categories';
-import { Card, Descriptions, Tag, Space } from 'antd';
-import { AiOutlineFolderOpen } from 'react-icons/ai';
+import ViewDetails from '../../components/display/shared/ViewDetails';
+import { createCategoryViewConfig } from '../../config/categoryViewConfig';
 
 const ViewCategory: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const category = useMemo<Category | undefined>(() => {
+  const category = useMemo(() => {
     return STATIC_CATEGORIES.find((c) => c.id === id);
   }, [id]);
 
-  if (!category) {
+  const config = useMemo(() => {
+    if (!category) return null;
+    return createCategoryViewConfig(category);
+  }, [category]);
+
+  if (!category || !config) {
     return (
       <div
         style={{
@@ -53,44 +57,7 @@ const ViewCategory: React.FC = () => {
           onPrimary={() => navigate(APP_ROUTES.CATEGORIES)}
         />
 
-        <Card
-          style={{
-            background: '#fff',
-            borderRadius: 16,
-            boxShadow: '0 10px 24px rgba(0,0,0,0.06)',
-          }}
-        >
-          <Descriptions bordered column={1} size="middle">
-            <Descriptions.Item label="Name">
-              <Space>
-                <AiOutlineFolderOpen />
-                {category.name}
-              </Space>
-            </Descriptions.Item>
-            <Descriptions.Item label="Description">
-              {category.description}
-            </Descriptions.Item>
-            <Descriptions.Item label="Type">
-              <Tag>{category.type}</Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label="Created At">
-              {new Date(category.createdAt).toLocaleString()}
-            </Descriptions.Item>
-            <Descriptions.Item label="Used By">
-              {category.usedBy && category.usedBy.length > 0 ? (
-                <Space wrap>
-                  {category.usedBy.map((item) => (
-                    <Tag key={item} color="purple">
-                      {item}
-                    </Tag>
-                  ))}
-                </Space>
-              ) : (
-                <span style={{ color: '#999' }}>Not used by any roles</span>
-              )}
-            </Descriptions.Item>
-          </Descriptions>
-        </Card>
+        <ViewDetails config={config} />
       </div>
     </div>
   );

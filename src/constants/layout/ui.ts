@@ -233,6 +233,51 @@ export const COMPONENT_STYLES = {
       border: '1px solid #bae6fd',
     },
   },
+  VIEW_DETAILS: {
+    row: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '10px 0',
+      minHeight: 40,
+    },
+    labelContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8,
+    },
+    icon: {
+      color: '#20C997', // DEFAULT_COLORS.SUCCESS
+      fontSize: 16,
+      display: 'inline-flex',
+    },
+    labelText: {
+      color: '#6b7280',
+      fontWeight: 700,
+      fontSize: 12,
+      textTransform: 'uppercase',
+      letterSpacing: 0.4,
+    },
+    value: {
+      color: '#111827',
+      fontWeight: 600,
+    },
+    card: {
+      borderRadius: 16,
+      boxShadow: '0 8px 20px rgba(0,0,0,0.05)',
+      border: 'none',
+      marginBottom: 16,
+    },
+    cardBody: {
+      padding: 16,
+    },
+    wrapper: {
+      padding: '6px 2px',
+    },
+    divider: {
+      borderBottom: '1px solid #eef2f6',
+    },
+  },
   // Common shared components
   SHARED: {
     HISTORY_TIMELINE: {
