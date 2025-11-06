@@ -1,17 +1,14 @@
 import React from 'react';
 import { EyeOutlined, SyncOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Space, Tooltip } from 'antd';
-import { DEFAULT_COLORS } from '../../../constants';
-import { ResourcesActionBarProps } from '../../../interfaces/grouper';
+import { Button, Space, Tooltip } from 'antd';
+import { DEFAULT_COLORS } from '../../../../constants';
+import { ResourcesActionBarProps } from '../../../../interfaces/grouper';
 
-const ResourcesActionBar: React.FC<ResourcesActionBarProps> = React.memo(
+const ActionBar: React.FC<ResourcesActionBarProps> = React.memo(
   ({
     selectedCount,
     hasSelection,
-    allPageResourcesSelected,
-    somePageResourcesSelected,
     isSyncing = false,
-    onSelectAll,
     onView,
     onSync,
     onDelete,
@@ -20,24 +17,12 @@ const ResourcesActionBar: React.FC<ResourcesActionBarProps> = React.memo(
       <div
         style={{
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-end',
           alignItems: 'center',
           marginBottom: 16,
           paddingLeft: 16,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Checkbox
-            indeterminate={somePageResourcesSelected && !allPageResourcesSelected}
-            checked={allPageResourcesSelected}
-            onChange={(e) => onSelectAll(e.target.checked)}
-          >
-            {hasSelection && (
-              <span style={{ color: '#5B6B7C', fontSize: 14 }}>{selectedCount} selected</span>
-            )}
-          </Checkbox>
-        </div>
-
         <Space size={8}>
           <Tooltip title="View">
             <Button
@@ -87,5 +72,5 @@ const ResourcesActionBar: React.FC<ResourcesActionBarProps> = React.memo(
   },
 );
 
-ResourcesActionBar.displayName = 'ResourcesActionBar';
-export default ResourcesActionBar;
+ActionBar.displayName = 'ActionBar';
+export default ActionBar;

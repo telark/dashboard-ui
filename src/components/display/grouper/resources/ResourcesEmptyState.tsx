@@ -1,8 +1,8 @@
 import React from 'react';
 import { AppstoreOutlined, SyncOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
-import { DEFAULT_COLORS } from '../../../constants';
-import { UI } from '../../../constants/layout/ui';
+import { DEFAULT_COLORS } from '../../../../constants';
+import { UI } from '../../../../constants/layout/ui';
 
 const ResourcesEmptyState: React.FC = React.memo(() => {
   const handleRefresh = () => window.location.reload();

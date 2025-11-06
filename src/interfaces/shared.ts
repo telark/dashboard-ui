@@ -28,6 +28,7 @@ export interface ResourceRowInterface {
   type: string;
   status: string;
   sourceName?: string;
+  sourceType?: string;
   syncName?: string;
 }
 

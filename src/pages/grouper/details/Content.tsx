@@ -3,7 +3,7 @@ import { Card } from 'antd';
 import ViewDetails from '../../../components/display/shared/views/ViewDetails';
 import HistoryTimeLine from '../../../components/display/shared/HistoryTimeLine';
 import MaintenanceMode from '../../../components/tabs/MaintenanceMode';
-import Resources from '../../../components/display/grouper/Resources';
+import Resources from '../../../components/display/grouper/resources/Resources';
 import SyncMode from '../../../components/tabs/SyncMode';
 import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../../constants/pages/grouper-details';
 import { createGrouperViewConfig } from '../../../config/grouperViewConfig';
@@ -12,13 +12,11 @@ interface ContentProps {
   activeTab: TabKey;
   grouperDetails: any;
   totalResources: number;
-  // Sync Mode Data
   isAutoSync: boolean;
   loadingSave: boolean;
   hasChanges: boolean;
   handleAutoSyncChange: (value: boolean) => void;
   handleGrouperSyncSave: () => void;
-  // Maintenance Mode Data
   isMaintenanceModeActive: boolean;
   isMaintenanceModalVisible: boolean;
   maintenaceUpdateAction: boolean;
@@ -30,7 +28,6 @@ interface ContentProps {
   handleMaintenanceMode: () => void;
   hasMaintenanceData: boolean;
   handleRemoveMaintenanceMode: () => void;
-  // Sync State
   syncing: boolean;
   isGloballySyncing: boolean;
 }
