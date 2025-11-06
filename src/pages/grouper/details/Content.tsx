@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Card } from 'antd';
 import ViewDetails from '../../../components/display/shared/views/ViewDetails';
-import HistoryTimeLine from '../../../components/display/shared/HistoryTimeLine';
+import HistoryTimeLine from '../../../components/display/shared/timeline';
 import MaintenanceMode from '../../../components/tabs/MaintenanceMode';
 import Resources from '../../../components/display/grouper/resources/Resources';
 import SyncMode from '../../../components/tabs/SyncMode';
