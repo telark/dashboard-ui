@@ -1,32 +1,27 @@
 import React from 'react';
-import type { Record } from '../../../../interfaces/shared';
 import { TimelineRail } from './TimelineRail';
 import { TimelineItem } from './TimelineItem';
 import { RecordingIndicator } from './RecordingIndicator';
-import { UI } from '../../../../constants';
-
-interface TimelineViewProps {
-  items: Record[];
-  withRecording?: boolean;
-}
-
-const PADDING_LEFT = 42;
-const RAIL_X = 18;
-const MARKER_SIZE = UI.HISTORY.TIMELINE.MARKER_SIZE;
-const GAP_AROUND = 6;
+import type { TimelineViewProps } from '../../../../interfaces/timeline';
+import { TIMELINE_CONSTANTS, TIMELINE_STYLES, UI } from '../../../../constants';
 
 export const TimelineView: React.FC<TimelineViewProps> = React.memo(
   ({ items, withRecording = false }) => {
-    const markerLeft = -(PADDING_LEFT - RAIL_X);
-    const cutHeight = MARKER_SIZE / 2 + GAP_AROUND;
+    const markerLeft = -(TIMELINE_CONSTANTS.PADDING_LEFT - TIMELINE_CONSTANTS.RAIL_X);
+    const cutHeight = UI.HISTORY.TIMELINE.MARKER_SIZE / 2 + TIMELINE_CONSTANTS.GAP_AROUND;
     const lastIndex = items.length - 1;
 
     return (
-      <div style={{ position: 'relative', paddingLeft: PADDING_LEFT }}>
+      <div
+        style={{
+          ...TIMELINE_STYLES.VIEW.container,
+          paddingLeft: TIMELINE_CONSTANTS.PADDING_LEFT,
+        }}
+      >
         <TimelineRail cutHeight={cutHeight} />
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {items.map((item: Record, idx: number) => (
+        <div style={TIMELINE_STYLES.VIEW.itemsContainer}>
+          {items.map((item, idx: number) => (
             <TimelineItem
               key={`${item.name}-${idx}`}
               item={item}

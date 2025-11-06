@@ -1,69 +1,44 @@
 import React from 'react';
 import { LoadingOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, UI } from '../../../../constants';
-
-interface RecordingIndicatorProps {
-  markerLeft: number;
-}
-
-const MARKER_SIZE = UI.HISTORY.TIMELINE.MARKER_SIZE;
-const GAP_AROUND = 6;
-const LINE_WIDTH = UI.HISTORY.TIMELINE.RAIL_WIDTH;
+import type { RecordingIndicatorProps } from '../../../../interfaces/timeline';
+import { TIMELINE_CONSTANTS, TIMELINE_STYLES, UI } from '../../../../constants';
 
 export const RecordingIndicator: React.FC<RecordingIndicatorProps> = React.memo(
   ({ markerLeft }) => {
+    const MARKER_SIZE = UI.HISTORY.TIMELINE.MARKER_SIZE;
+
     return (
       <>
         {/* Extra spacer to show more rail segment between last item and recording marker */}
-        <div style={{ height: 20 }} />
+        <div style={TIMELINE_STYLES.RECORDING.spacer} />
 
         <div
           style={{
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            minHeight: MARKER_SIZE + GAP_AROUND * 2,
-            gap: 14,
+            ...TIMELINE_STYLES.RECORDING.container,
+            minHeight: MARKER_SIZE + TIMELINE_CONSTANTS.GAP_AROUND * 2,
           }}
         >
           {/* Rail gap mask for spinner marker */}
           <div
             style={{
-              position: 'absolute',
+              ...TIMELINE_STYLES.RECORDING.railGapMask,
               left: markerLeft,
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: LINE_WIDTH + 6,
-              height: MARKER_SIZE + GAP_AROUND * 2,
-              background: '#fff',
-              zIndex: 1,
+              height: MARKER_SIZE + TIMELINE_CONSTANTS.GAP_AROUND * 2,
             }}
           />
 
           {/* Spinner icon only */}
           <div
             style={{
-              position: 'absolute',
+              ...TIMELINE_STYLES.RECORDING.spinnerContainer,
               left: markerLeft,
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              zIndex: 3,
             }}
           >
-            <LoadingOutlined style={{ fontSize: 14, color: DEFAULT_COLORS.SUCCESS }} spin />
+            <LoadingOutlined style={TIMELINE_STYLES.RECORDING.spinner} spin />
           </div>
 
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              lineHeight: 1.25,
-            }}
-          >
-            <div style={{ fontWeight: 600, fontSize: 16, color: '#5B6B7C' }}>
-              {UI.HISTORY.RECORDING}
-            </div>
+          <div style={TIMELINE_STYLES.RECORDING.content}>
+            <div style={TIMELINE_STYLES.RECORDING.text}>{UI.HISTORY.RECORDING}</div>
           </div>
         </div>
       </>

@@ -30,4 +30,3 @@ export const insightsPersistConfig: PersistConfig<any> = {
   storage,
   whitelist: ['hasClusterInsight', 'initialized'], // Persist these, not loading/error
 };
-

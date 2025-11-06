@@ -4,6 +4,7 @@ export * from './layout/cards';
 export * from './layout/icons';
 export * from './layout/messages';
 export * from './layout/modes';
+export * from './layout/timeline';
 export * from './layout/ui';
 export * from './rest/api';
 export * from './rest/app';

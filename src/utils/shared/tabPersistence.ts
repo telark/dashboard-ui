@@ -45,4 +45,3 @@ export const persistResourceTab = (
     // Ignore persistence errors (e.g., localStorage quota exceeded)
   }
 };
-

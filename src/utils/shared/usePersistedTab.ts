@@ -1,9 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import {
-  getPersistedResourceTab,
-  persistResourceTab,
-  type ResourceType,
-} from './tabPersistence';
+import { getPersistedResourceTab, persistResourceTab, type ResourceType } from './tabPersistence';
 
 interface UsePersistedTabParams<T extends string> {
   resourceType: ResourceType;
@@ -56,4 +52,3 @@ export const usePersistedTab = <T extends string>({
     handleTabChange,
   };
 };
-

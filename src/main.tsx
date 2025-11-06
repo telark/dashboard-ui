@@ -13,7 +13,10 @@ const persistor = persistStore(store);
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <Provider store={store}>
-    <PersistGate loading={<FancySpinner label="Loading..." showLabel={true} />} persistor={persistor}>
+    <PersistGate
+      loading={<FancySpinner label="Loading..." showLabel={true} />}
+      persistor={persistor}
+    >
       <App />
     </PersistGate>
   </Provider>,

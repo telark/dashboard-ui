@@ -32,9 +32,7 @@ export const useTimelineData = (records: Record[] | undefined): TimelineData => 
     );
 
     const hasMoreItems = sortedItems.length > INITIAL_DISPLAY_COUNT;
-    const displayItemsOnly = hasMoreItems
-      ? sortedItems.slice(-INITIAL_DISPLAY_COUNT)
-      : sortedItems;
+    const displayItemsOnly = hasMoreItems ? sortedItems.slice(-INITIAL_DISPLAY_COUNT) : sortedItems;
 
     return {
       items: sortedItems,
@@ -43,4 +41,3 @@ export const useTimelineData = (records: Record[] | undefined): TimelineData => 
     };
   }, [records, recordsKey]);
 };
-
