@@ -1,6 +1,6 @@
 import { AiOutlineTag, AiOutlineFileText, AiOutlineCalendar, AiOutlineUser } from 'react-icons/ai';
 import type { Category } from '../interfaces/categories';
-import type { ViewDetailsConfig } from '../components/display/shared/ViewDetails';
+import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import { Space } from 'antd';
 import { StatusTag } from '../components/tags';
 

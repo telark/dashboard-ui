@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES, ICONS } from '../../constants';
 import { CATEGORIES_CONSTANTS as CC } from '../../constants/pages/categories';
 import Header from '../../components/display/shared/sections/Header';
-import CategoriesTable from '../../components/display/categories/Table';
+import CategoriesTable from '../../components/display/categories/list/Table';
 import FormModal from '../../components/display/shared/modal/FormModal';
 import { STATIC_CATEGORIES } from '../../data/categories';
 import type { Category } from '../../interfaces/categories';

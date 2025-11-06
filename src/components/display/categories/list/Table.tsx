@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { Modal } from 'antd';
-import DataTable from '../shared/table/DataTable';
-import { CATEGORIES_CONSTANTS as CC } from '../../../constants/pages/categories';
-import type { Category, CategoriesTableProps } from '../../../interfaces/categories';
+import DataTable from '../../shared/table/DataTable';
+import { CATEGORIES_CONSTANTS as CC } from '../../../../constants/pages/categories';
+import type { Category, CategoriesTableProps } from '../../../../interfaces/categories';
 import Columns from './Columns';
 type SortKey = 'name' | 'type' | 'usedBy' | 'createdAt';
 

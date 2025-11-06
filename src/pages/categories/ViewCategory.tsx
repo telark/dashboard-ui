@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES, ICONS } from '../../constants';
 import Header from '../../components/display/shared/sections/Header';
 import { STATIC_CATEGORIES } from '../../data/categories';
-import ViewDetails from '../../components/display/shared/ViewDetails';
+import ViewDetails from '../../components/display/shared/views/ViewDetails';
 import { createCategoryViewConfig } from '../../config/categoryViewConfig';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
 

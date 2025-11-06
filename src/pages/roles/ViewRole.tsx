@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES, ICONS } from '../../constants';
 import Header from '../../components/display/shared/sections/Header';
 import { STATIC_ROLES } from '../../data/roles';
-import ViewDetails from '../../components/display/shared/ViewDetails';
+import ViewDetails from '../../components/display/shared/views/ViewDetails';
 import ScopesPermissions from '../../components/display/roles/view/ScopesPermissions';
 import { createRoleViewConfig } from '../../config/roleViewConfig';
 import { Card } from 'antd';

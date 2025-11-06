@@ -2,10 +2,9 @@ import {
   AiOutlineCheckCircle,
   AiOutlineTag,
   AiOutlineClockCircle,
-  AiOutlineLock,
 } from 'react-icons/ai';
 import type { Role } from '../interfaces/roles';
-import type { ViewDetailsConfig } from '../components/display/shared/ViewDetails';
+import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import { StatusTag } from '../components/tags';
 import { DEFAULT_COLORS, ICONS } from '../constants';
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card, Space, Tag } from 'antd';
 import { ReactNode } from 'react';
-import { COMPONENT_STYLES } from '../../../constants/layout/ui';
-import { Row, Label } from '../../../components/shared';
+import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
+import { Row, Label } from '../../../../components/shared';
 
 export interface ViewDetailField {
   key: string;

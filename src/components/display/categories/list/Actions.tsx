@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Dropdown } from 'antd';
 import { EyeOutlined, EditOutlined, DeleteOutlined, MoreOutlined } from '@ant-design/icons';
-import { CATEGORIES_CONSTANTS as CC } from '../../../constants/pages/categories';
-import type { Category } from '../../../interfaces/categories';
+import { CATEGORIES_CONSTANTS as CC } from '../../../../constants/pages/categories';
+import type { Category } from '../../../../interfaces/categories';
 
 interface ActionsProps {
   record: Category;

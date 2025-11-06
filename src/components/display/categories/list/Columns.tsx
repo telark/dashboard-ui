@@ -1,9 +1,9 @@
-import { CATEGORIES_CONSTANTS as CC } from '../../../constants/pages/categories';
-import { ROLES_PAGE_CONSTANTS as RPC } from '../../../constants/pages/roles';
-import RowTag from '../shared/table/RowTag';
-import { generateColumn } from '../shared/table/utils';
-import type { GenerateColumnCtx } from '../../../interfaces/table';
-import type { Category } from '../../../interfaces/categories';
+import { CATEGORIES_CONSTANTS as CC } from '../../../../constants/pages/categories';
+import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
+import RowTag from '../../shared/table/RowTag';
+import { generateColumn } from '../../shared/table/utils';
+import type { GenerateColumnCtx } from '../../../../interfaces/table';
+import type { Category } from '../../../../interfaces/categories';
 import Actions from './Actions';
 import { AiOutlineFileText, AiOutlineTeam, AiOutlineTag, AiOutlineCalendar } from 'react-icons/ai';
 
