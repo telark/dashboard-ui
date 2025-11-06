@@ -1,13 +1,15 @@
 import React from 'react';
 import { Button } from 'antd';
 import { SyncOutlined, ToolOutlined } from '@ant-design/icons';
-import { AiOutlineCluster, AiOutlineCheckCircle } from 'react-icons/ai';
+import { AiOutlineCheckCircle } from 'react-icons/ai';
 import StatusButton from '../../../components/buttons/StatusButton';
 import TimeAgo from '../../../components/time/TimeAgo';
 import { FancySpinner } from '../../../components/shared';
 import { StatusTag } from '../../../components/tags';
-import { UI } from '../../../constants/layout/ui';
+import { UI, ICONS } from '../../../constants';
 import { GROUPER_DETAILS_CONSTANTS } from '../../../constants/pages/grouper-details';
+
+const GrouperIcon = ICONS.GROUPER;
 
 interface HeaderProps {
   grouperDetails: any;
@@ -23,7 +25,7 @@ const Header: React.FC<HeaderProps> = React.memo(
       <div style={GROUPER_DETAILS_CONSTANTS.LAYOUT.HEADER_CONTAINER}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={GROUPER_DETAILS_CONSTANTS.HEADER.ICON_CONTAINER}>
-            <AiOutlineCluster />
+            <GrouperIcon />
           </div>
 
           <div>
