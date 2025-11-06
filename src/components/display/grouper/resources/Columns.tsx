@@ -74,14 +74,7 @@ export const Columns = ({ isResourceSyncing }: ColumnsArgs) => {
         width: 200,
         render: (_: any, record: ResourceRowInterface) => {
           const resourceKind = record.sourceType || record.type || '—';
-          return (
-            <RowTag
-              text={resourceKind}
-              background="#F9FAFB"
-              color="#111827"
-              fontSize={12}
-            />
-          );
+          return <RowTag text={resourceKind} background="#F9FAFB" color="#111827" fontSize={12} />;
         },
       },
       { activeSortKey: '', onSort: () => {} },
@@ -122,4 +115,3 @@ export const Columns = ({ isResourceSyncing }: ColumnsArgs) => {
     ),
   ];
 };
-

@@ -79,4 +79,3 @@ export const createBridgeViewConfig = (bridgeDetails: any): ViewDetailsConfig =>
     ],
   };
 };
-

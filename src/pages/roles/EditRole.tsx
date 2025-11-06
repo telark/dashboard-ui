@@ -146,4 +146,3 @@ const EditRole: React.FC = () => {
 };
 
 export default EditRole;
-

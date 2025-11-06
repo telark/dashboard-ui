@@ -37,3 +37,19 @@ export interface ResourcesActionBarProps {
   onSync: () => void;
   onDelete: () => void;
 }
+
+export interface BridgeFromStore {
+  name: string;
+  sourceName?: string;
+  status?: string;
+  creationTime?: string;
+  lastUpdateTime?: string;
+}
+
+export interface WorkloadFromStore {
+  name: string;
+  sourceName?: string;
+  status?: string;
+  creationTime?: string;
+  lastUpdate?: string;
+}

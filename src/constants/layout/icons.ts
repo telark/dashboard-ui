@@ -1,8 +1,8 @@
-import { 
-  AiOutlineSafety, 
-  AiOutlineTags, 
-  AiOutlineCluster, 
-  AiOutlineAppstore, 
+import {
+  AiOutlineSafety,
+  AiOutlineTags,
+  AiOutlineCluster,
+  AiOutlineAppstore,
   AiOutlineApi,
   AiOutlineDashboard,
 } from 'react-icons/ai';

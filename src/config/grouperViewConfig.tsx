@@ -7,7 +7,10 @@ import { ICONS } from '../constants';
 
 const GrouperIcon = ICONS.GROUPER;
 
-export const createGrouperViewConfig = (grouperDetails: any, totalResources: number): ViewDetailsConfig => {
+export const createGrouperViewConfig = (
+  grouperDetails: any,
+  totalResources: number,
+): ViewDetailsConfig => {
   return {
     fields: [
       {
@@ -41,4 +44,3 @@ export const createGrouperViewConfig = (grouperDetails: any, totalResources: num
     ],
   };
 };
-

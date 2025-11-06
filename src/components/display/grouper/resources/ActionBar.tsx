@@ -5,14 +5,7 @@ import { DEFAULT_COLORS } from '../../../../constants';
 import { ResourcesActionBarProps } from '../../../../interfaces/grouper';
 
 const ActionBar: React.FC<ResourcesActionBarProps> = React.memo(
-  ({
-    selectedCount,
-    hasSelection,
-    isSyncing = false,
-    onView,
-    onSync,
-    onDelete,
-  }) => {
+  ({ selectedCount, hasSelection, isSyncing = false, onView, onSync, onDelete }) => {
     return (
       <div
         style={{

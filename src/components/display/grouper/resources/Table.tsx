@@ -45,4 +45,3 @@ const ResourcesTable: React.FC<ResourcesTableProps> = ({
 };
 
 export default ResourcesTable;
-

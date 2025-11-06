@@ -173,4 +173,3 @@ const EditCategory: React.FC = () => {
 };
 
 export default EditCategory;
-
