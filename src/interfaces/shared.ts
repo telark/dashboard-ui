@@ -24,13 +24,13 @@ export interface ResourcesInterface {
 
 export interface ResourceRowInterface {
   name: string;
-  lastSync: string; // From API, fallback to Redux lastUpdate/lastUpdateTime
+  lastSync: string;
   type: string;
-  status: string; // From Redux if available, fallback to API
+  status: string;
   sourceName?: string;
   sourceType?: string;
   syncName?: string;
-  creationTime?: string; // From Redux
+  creationTime?: string;
 }
 
 export interface GeneralInfoInterface {

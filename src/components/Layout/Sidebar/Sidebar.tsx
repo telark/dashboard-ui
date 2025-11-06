@@ -20,15 +20,15 @@ const Sidebar = () => {
       width={isCollapsed ? widthCollapsed : widthExpanded}
       collapsed={isCollapsed}
       style={{
-        height: '100vh', // Ensure it takes up the full height of the screen
+        height: '100vh', 
         backgroundColor: 'white',
-        position: 'fixed', // Keep the sidebar fixed on the left
+        position: 'fixed',
         left: 0, // Align the sidebar to the left of the page
         top: 0, // Align the sidebar from the top
         zIndex: 1, // Ensure it stays above the content
-        paddingTop: '20px', // Add padding to the top for spacing
-        paddingLeft: '12px', // Keep consistent padding
-        paddingRight: 0, // Flush items to the right edge
+        paddingTop: '20px',
+        paddingLeft: '12px',
+        paddingRight: 0,
         overflow: 'hidden', // prevent inner margins from creating gutters
         display: 'flex',
         flexDirection: 'column',

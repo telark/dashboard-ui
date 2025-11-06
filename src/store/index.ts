@@ -9,7 +9,7 @@ import {
   insightsPersistConfig,
   workloadPersistConfig,
   bridgePersistConfig,
-} from './persistConfig';
+} from './persistence/persistConfig';
 
 const persistedGrouperReducer = persistReducer(grouperPersistConfig, grouperReducer);
 const persistedInsightsReducer = persistReducer(insightsPersistConfig, insightsReducer);
@@ -26,17 +26,13 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        // Ignore redux-persist actions
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE', 'persist/PURGE'],
-        // Increase warning threshold from 32ms to 128ms
-        warnAfter: 128,
+        warnAfter: 128,  // default is 32ms
       },
     }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-
-// Export persistor for PersistGate
 export { store };
 export default store;
