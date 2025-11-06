@@ -1,5 +1,5 @@
 import { SyncOutlined } from '@ant-design/icons';
-import { AiOutlineTag, AiOutlineCheckCircle } from 'react-icons/ai';
+import { AiOutlineTag, AiOutlineCheckCircle, AiOutlineCalendar } from 'react-icons/ai';
 import { generateColumn } from '../../shared/table/utils';
 import RowTag from '../../shared/table/RowTag';
 import TimeAgo from '../../../time/TimeAgo';
@@ -92,14 +92,31 @@ export const Columns = ({ isResourceSyncing }: ColumnsArgs) => {
         label: UI.RESOURCES.LABELS.STATUS,
         icon: <AiOutlineCheckCircle />,
         width: 150,
-        render: (status: string) => (
-          <RowTag
-            text={status || '—'}
-            background={status === 'Available' || 'Active' ? '#D1FAE5' : '#F3F4F6'}
-            color={status === 'Available' ? '#065F46' : '#6B7280'}
-            fontSize={12}
-          />
-        ),
+        render: (_: any, record: ResourceRowInterface) => {
+          const status = record.status || '—';
+          const isActive = status === 'Available' || status === 'Active';
+          return (
+            <RowTag
+              text={status}
+              background={isActive ? '#D1FAE5' : '#F3F4F6'}
+              color={isActive ? '#065F46' : '#6B7280'}
+              fontSize={12}
+            />
+          );
+        },
+      },
+      { activeSortKey: '', onSort: () => {} },
+    ),
+    generateColumn(
+      {
+        key: 'creationTime',
+        label: 'Creation Date',
+        icon: <AiOutlineCalendar />,
+        width: 200,
+        render: (_: any, record: ResourceRowInterface) => {
+          if (!record.creationTime) return <span style={{ color: '#999' }}>—</span>;
+          return <TimeAgo date={ParseGoTimeDate(record.creationTime)} />;
+        },
       },
       { activeSortKey: '', onSort: () => {} },
     ),

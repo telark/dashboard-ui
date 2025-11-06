@@ -6,6 +6,7 @@ import { ResourcesInterface } from '../../../../interfaces/shared';
 import { RootState } from '../../../../store';
 import { syncAppWorkload } from '../../../../utils/workload/sync';
 import { syncBridge } from '../../../../utils/bridge/sync';
+import { ParseGoTimeDate } from '../../../../utils/shared/time';
 import ResourcesEmptyState from '../resources/ResourcesEmptyState';
 import ActionBar from '../resources/ActionBar';
 import ResourcesTable from '../resources/Table';
@@ -17,6 +18,57 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
 
   const workloadSyncing = useSelector((state: RootState) => state.workload.syncing || {});
   const bridgeSyncing = useSelector((state: RootState) => state.bridge.syncing || {});
+  const workloads = useSelector((state: RootState) => state.workload.apps || []);
+  const bridges = useSelector((state: RootState) => state.bridge.bridges || []);
+
+  // Enrich resources with data from Redux store
+  const enrichedResources = useMemo(() => {
+    return resources.map((resource) => {
+      const isBridge = (resource.type || '').toLowerCase() === 'bridge';
+      const resourceName = resource.sourceName || resource.name;
+
+      if (isBridge) {
+        // Find bridge in Redux by name or sourceName
+        const bridge = bridges.find(
+          (b: any) => b.name === resourceName || b.sourceName === resourceName || b.name === resource.name,
+        );
+        if (bridge) {
+          return {
+            ...resource,
+            status: bridge.status || resource.status,
+            creationTime: bridge.creationTime
+              ? ParseGoTimeDate(bridge.creationTime)
+              : undefined,
+            lastSync: bridge.lastUpdateTime
+              ? ParseGoTimeDate(bridge.lastUpdateTime)
+              : resource.lastSync
+              ? ParseGoTimeDate(resource.lastSync)
+              : resource.lastSync,
+          };
+        }
+      } else {
+        // Find workload in Redux by name
+        const workload = workloads.find((w: any) => w.name === resource.name || w.sourceName === resourceName);
+        if (workload) {
+          return {
+            ...resource,
+            status: workload.status || resource.status,
+            creationTime: workload.creationTime
+              ? ParseGoTimeDate(workload.creationTime)
+              : undefined,
+            lastSync: workload.lastUpdate
+              ? ParseGoTimeDate(workload.lastUpdate)
+              : resource.lastSync
+              ? ParseGoTimeDate(resource.lastSync)
+              : resource.lastSync,
+          };
+        }
+      }
+
+      // Return original resource if not found in Redux (backward compatibility)
+      return resource;
+    });
+  }, [resources, workloads, bridges]);
 
   const selectedCount = selectedResources.size;
   const hasSelection = selectedCount > 0;
@@ -24,7 +76,7 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
   const handleView = useCallback(
     (resourceName?: string) => {
       if (resourceName) {
-        const resource = resources.find((r) => r.name === resourceName);
+        const resource = enrichedResources.find((r) => r.name === resourceName);
         if (!resource) return;
 
         const typeLower = (resource.type || '').toLowerCase();
@@ -38,7 +90,7 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
         navigate(route);
       } else if (selectedCount === 1) {
         const firstSelectedName = Array.from(selectedResources)[0];
-        const selectedResource = resources.find((r) => r.name === firstSelectedName);
+        const selectedResource = enrichedResources.find((r) => r.name === firstSelectedName);
         if (!selectedResource) return;
 
         const typeLower = (selectedResource.type || '').toLowerCase();
@@ -53,14 +105,14 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
         navigate(route);
       }
     },
-    [navigate, selectedResources, selectedCount, resources],
+    [navigate, selectedResources, selectedCount, enrichedResources],
   );
 
   const handleRowClick = useCallback(
-    (record: typeof resources[0]) => {
+    (record: typeof enrichedResources[0]) => {
       handleView(record.name);
     },
-    [handleView],
+    [handleView, enrichedResources],
   );
 
   const isResourceSyncing = useCallback(
@@ -88,11 +140,11 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
 
   const hasAnySyncing = useMemo(() => {
     return Array.from(selectedResources).some((name) => {
-      const resource = resources.find((r) => r.name === name);
+      const resource = enrichedResources.find((r) => r.name === name);
       if (!resource) return false;
       return isResourceSyncing(resource.name, resource.type, resource);
     });
-  }, [selectedResources, resources, isResourceSyncing]);
+  }, [selectedResources, enrichedResources, isResourceSyncing]);
 
   const isResourceSyncingForTable = useCallback(
     (resourceName: string, resourceType: string, resource?: typeof resources[0]) => {
@@ -107,7 +159,7 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
       if (targets.length === 0) return;
 
       for (const name of targets) {
-        const resource = resources.find((r) => r.name === name);
+        const resource = enrichedResources.find((r) => r.name === name);
         if (!resource) continue;
 
         if (resource.type?.toLowerCase() === 'bridge') {
@@ -128,7 +180,7 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
         }
       }
     },
-    [selectedResources, resources, message],
+    [selectedResources, enrichedResources, message],
   );
 
   const handleDelete = useCallback(
@@ -162,7 +214,7 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
         onDelete={() => handleDelete()}
       />
       <ResourcesTable
-        resources={resources}
+        resources={enrichedResources}
         isResourceSyncing={isResourceSyncingForTable}
         onRowClick={handleRowClick}
         selectedRowKeys={Array.from(selectedResources)}
