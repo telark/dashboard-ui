@@ -1,14 +1,14 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useMemo } from 'react';
 import { Card } from 'antd';
 import WorkloadMetrics from '../../../../components/display/workloads/apps/Metrics';
 import WorkloadBridges from '../../../../components/display/workloads/apps/Bridges';
-import WorkloadGeneralInfo from '../../../../components/display/workloads/apps/GeneralInfo';
+import ViewDetails from '../../../../components/display/shared/views/ViewDetails';
 import SyncMode from '../../../../components/tabs/SyncMode';
 import { FancySpinner } from '../../../../components/shared';
 import { TAB_KEYS, type TabKey } from '../../../../components/display/workloads/apps/Tabs';
 import type { AppWorkload } from '../../../../interfaces/workload';
+import { createWorkloadViewConfig } from '../../../../config/workloadViewConfig';
 
-// Lazy load heavy components
 const WorkloadInstances = lazy(
   () => import('../../../../components/display/workloads/apps/Instances'),
 );
@@ -45,16 +45,19 @@ const Content: React.FC<ContentProps> = React.memo(
     syncing = false,
     isGloballySyncing = false,
   }) => {
+    const workloadViewConfig = useMemo(() => {
+      if (!workload) return null;
+      return createWorkloadViewConfig(workload);
+    }, [workload]);
+
     return (
       <div>
         {/* Resource Summary */}
         <WorkloadMetrics workload={workload} />
 
         {/* Active section */}
-        {activeTab === TAB_KEYS.GENERAL && (
-          <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
-            <WorkloadGeneralInfo workload={workload} />
-          </Card>
+        {activeTab === TAB_KEYS.GENERAL && workloadViewConfig && (
+          <ViewDetails config={workloadViewConfig} />
         )}
 
         {activeTab === TAB_KEYS.INSTANCES && (

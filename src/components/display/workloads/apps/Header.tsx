@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from 'antd';
-import { AppstoreOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, ICONS } from '../../../../constants';
 import StatusButton from '../../../buttons/StatusButton';
 import TimeAgo from '../../../time/TimeAgo';
 import { AppWorkload } from '../../../../interfaces/workload';
@@ -16,6 +15,8 @@ import {
   AiOutlineArrowLeft,
   AiOutlineSync,
 } from 'react-icons/ai';
+
+const WorkloadIcon = ICONS.WORKLOAD;
 
 interface WorkloadHeaderProps {
   workload: AppWorkload;
@@ -66,7 +67,7 @@ const WorkloadHeader: React.FC<WorkloadHeaderProps> = React.memo(({ workload }) 
             fontSize: 20,
           }}
         >
-          <AppstoreOutlined />
+          <WorkloadIcon />
         </div>
 
         <div>
