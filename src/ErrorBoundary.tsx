@@ -1,9 +1,9 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { Button, Typography } from 'antd';
-import { ReloadOutlined, BugOutlined, HomeOutlined } from '@ant-design/icons';
+import { ReloadOutlined, BugOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS, STORE_MESSAGES } from './constants';
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 
 interface State {
   hasError: boolean;
@@ -30,10 +30,6 @@ class ErrorBoundary extends Component<Props, State> {
 
   handleReload = () => {
     window.location.reload();
-  };
-
-  handleGoHome = () => {
-    window.location.href = '/';
   };
 
   render() {

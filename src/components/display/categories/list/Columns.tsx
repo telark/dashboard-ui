@@ -22,8 +22,6 @@ const Columns = (ctx: GenerateColumnCtx) => {
       },
       ctx,
     ),
-  );
-  cols.push(
     generateColumn(
       {
         key: CC.KEYS.DESCRIPTION,
@@ -34,8 +32,6 @@ const Columns = (ctx: GenerateColumnCtx) => {
       },
       ctx,
     ),
-  );
-  cols.push(
     generateColumn(
       {
         key: CC.KEYS.USED_BY,
@@ -53,8 +49,6 @@ const Columns = (ctx: GenerateColumnCtx) => {
       },
       ctx,
     ),
-  );
-  cols.push(
     generateColumn(
       {
         key: CC.KEYS.TYPE,
@@ -72,8 +66,6 @@ const Columns = (ctx: GenerateColumnCtx) => {
       },
       ctx,
     ),
-  );
-  cols.push(
     generateColumn(
       {
         key: CC.KEYS.CREATED_AT,
@@ -84,22 +76,22 @@ const Columns = (ctx: GenerateColumnCtx) => {
       },
       ctx,
     ),
+    {
+      title: '',
+      key: CC.KEYS.ACTIONS,
+      align: 'right' as const,
+      width: CC.SIZES.COLUMNS.ACTIONS,
+      onHeaderCell: () => ({ style: { background: RPC.COLORS.HEADER_BG } }),
+      render: (_: any, record: Category) => (
+        <Actions
+          record={record}
+          onView={(ctx as any).onView}
+          onEdit={(ctx as any).onEdit}
+          onDelete={(ctx as any).onDelete}
+        />
+      ),
+    },
   );
-  cols.push({
-    title: '',
-    key: CC.KEYS.ACTIONS,
-    align: 'right' as const,
-    width: CC.SIZES.COLUMNS.ACTIONS,
-    onHeaderCell: () => ({ style: { background: RPC.COLORS.HEADER_BG } }),
-    render: (_: any, record: Category) => (
-      <Actions
-        record={record}
-        onView={(ctx as any).onView}
-        onEdit={(ctx as any).onEdit}
-        onDelete={(ctx as any).onDelete}
-      />
-    ),
-  });
   return cols;
 };
 
