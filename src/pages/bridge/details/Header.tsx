@@ -1,11 +1,13 @@
 import React from 'react';
 import { Button } from 'antd';
-import { AiOutlineApi, AiOutlineCheckCircle, AiOutlineSync } from 'react-icons/ai';
+import { AiOutlineCheckCircle, AiOutlineSync } from 'react-icons/ai';
 import StatusButton from '../../../components/buttons/StatusButton';
 import TimeAgo from '../../../components/time/TimeAgo';
 import { FancySpinner } from '../../../components/shared';
-import { UI } from '../../../constants/layout/ui';
+import { UI, ICONS } from '../../../constants';
 import { BRIDGE_DETAILS_CONSTANTS } from '../../../constants/pages/bridge-details';
+
+const BridgeIcon = ICONS.BRIDGE;
 
 interface HeaderProps {
   bridgeDetails: any;
@@ -20,7 +22,7 @@ const Header: React.FC<HeaderProps> = React.memo(
       <div style={BRIDGE_DETAILS_CONSTANTS.LAYOUT.HEADER_CONTAINER}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={BRIDGE_DETAILS_CONSTANTS.HEADER.ICON_CONTAINER}>
-            <AiOutlineApi />
+            <BridgeIcon />
           </div>
 
           <div>

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Card } from 'antd';
-import BridgeGeneralInfo from '../../../components/display/bridge/GeneralInfo';
+import ViewDetails from '../../../components/display/shared/views/ViewDetails';
 import HistoryTimeLine from '../../../components/display/shared/HistoryTimeLine';
 import BridgeResources from '../../../components/display/bridge/Resources';
 import SyncMode from '../../../components/tabs/SyncMode';
 import { BRIDGE_DETAILS_CONSTANTS, TabKey } from '../../../constants/pages/bridge-details';
+import { createBridgeViewConfig } from '../../../config/bridgeViewConfig';
 
 interface ContentProps {
   activeTab: TabKey;
@@ -30,26 +31,15 @@ const Content: React.FC<ContentProps> = React.memo(
     syncing,
     isGloballySyncing,
   }) => {
+    const bridgeViewConfig = useMemo(() => {
+      if (!bridgeDetails) return null;
+      return createBridgeViewConfig(bridgeDetails);
+    }, [bridgeDetails]);
+
     const renderTabContent = () => {
       switch (activeTab) {
         case BRIDGE_DETAILS_CONSTANTS.TAB_KEYS.GENERAL:
-          return (
-            <Card
-              style={BRIDGE_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD}
-              styles={{ body: BRIDGE_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD_BODY }}
-            >
-              <BridgeGeneralInfo
-                name={bridgeDetails.name}
-                creationTime={bridgeDetails.creationTime}
-                lastUpdateTime={bridgeDetails.lastUpdateTime}
-                status={bridgeDetails.status}
-                type={bridgeDetails.type}
-                grouper={bridgeDetails.grouper}
-                ports={bridgeDetails.ports}
-                workloads={bridgeDetails.workloads}
-              />
-            </Card>
-          );
+          return bridgeViewConfig ? <ViewDetails config={bridgeViewConfig} /> : null;
 
         case BRIDGE_DETAILS_CONSTANTS.TAB_KEYS.RESOURCES:
           return (
