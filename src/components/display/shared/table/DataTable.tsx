@@ -1,3 +1,4 @@
+import React from 'react';
 import { Table } from 'antd';
 import type { DataTableProps } from '../../../../interfaces/table';
 
@@ -40,4 +41,4 @@ function DataTable<T>({
   );
 }
 
-export default DataTable;
+export default React.memo(DataTable) as typeof DataTable;
