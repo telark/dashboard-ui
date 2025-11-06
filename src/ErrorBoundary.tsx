@@ -1,7 +1,7 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { Button, Typography } from 'antd';
 import { ReloadOutlined, BugOutlined, HomeOutlined } from '@ant-design/icons';
-import { STORE_MESSAGES } from './constants';
+import { DEFAULT_COLORS, STORE_MESSAGES } from './constants';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -89,18 +89,6 @@ class ErrorBoundary extends Component<Props, State> {
               Oops! Something went wrong
             </Title>
 
-            {/* Error Description */}
-            <Paragraph
-              style={{
-                color: '#7f8c8d',
-                fontSize: 16,
-                lineHeight: 1.6,
-                margin: '0 0 32px',
-              }}
-            >
-              check your code for issues
-            </Paragraph>
-
             {/* Error Details (Development) */}
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <div
@@ -142,7 +130,7 @@ class ErrorBoundary extends Component<Props, State> {
                 icon={<ReloadOutlined />}
                 onClick={this.handleReload}
                 style={{
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  background: DEFAULT_COLORS.SUCCESS,
                   border: 'none',
                   borderRadius: 8,
                   height: 44,
@@ -152,21 +140,6 @@ class ErrorBoundary extends Component<Props, State> {
                 }}
               >
                 Reload Page
-              </Button>
-              <Button
-                size="large"
-                icon={<HomeOutlined />}
-                onClick={this.handleGoHome}
-                style={{
-                  borderRadius: 8,
-                  height: 44,
-                  padding: '0 24px',
-                  fontWeight: 600,
-                  borderColor: '#d1d5db',
-                  color: '#6b7280',
-                }}
-              >
-                Go Home
               </Button>
             </div>
           </div>
