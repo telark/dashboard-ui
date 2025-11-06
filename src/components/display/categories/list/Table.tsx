@@ -6,7 +6,12 @@ import type { Category, CategoriesTableProps } from '../../../../interfaces/cate
 import Columns from './Columns';
 type SortKey = 'name' | 'type' | 'usedBy' | 'createdAt';
 
-const CategoriesTable: React.FC<CategoriesTableProps> = ({ categories, onView, onEdit }) => {
+const CategoriesTable: React.FC<CategoriesTableProps> = ({
+  categories,
+  onView,
+  onEdit,
+  onCategoriesChange,
+}) => {
   const [sortKey, setSortKey] = useState<SortKey>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
@@ -44,7 +49,7 @@ const CategoriesTable: React.FC<CategoriesTableProps> = ({ categories, onView, o
       okText: CC.LABELS.ACTIONS.DELETE_MODAL_OK,
       okButtonProps: { danger: true },
       onOk: () => {
-        typeof ({} as any) !== 'undefined';
+        onCategoriesChange?.(categories.filter((c) => c.id !== record.id));
       },
     });
   };

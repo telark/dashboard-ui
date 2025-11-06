@@ -77,19 +77,19 @@ const Columns = (ctx: GenerateColumnCtx) => {
       ctx,
     ),
     {
-      title: '',
-      key: CC.KEYS.ACTIONS,
-      align: 'right' as const,
-      width: CC.SIZES.COLUMNS.ACTIONS,
-      onHeaderCell: () => ({ style: { background: RPC.COLORS.HEADER_BG } }),
-      render: (_: any, record: Category) => (
-        <Actions
-          record={record}
-          onView={(ctx as any).onView}
-          onEdit={(ctx as any).onEdit}
-          onDelete={(ctx as any).onDelete}
-        />
-      ),
+    title: '',
+    key: CC.KEYS.ACTIONS,
+    align: 'right' as const,
+    width: CC.SIZES.COLUMNS.ACTIONS,
+    onHeaderCell: () => ({ style: { background: RPC.COLORS.HEADER_BG } }),
+    render: (_: any, record: Category) => (
+      <Actions
+        record={record}
+        onView={(ctx as any).onView}
+        onEdit={(ctx as any).onEdit}
+        onDelete={(ctx as any).onDelete}
+      />
+    ),
     },
   );
   return cols;
