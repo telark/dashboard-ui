@@ -4,10 +4,14 @@ import type { InstancesTableProps } from '../../../../../interfaces/instances';
 import { Columns } from './Columns';
 import { InstancesSortKey, sortInstances, transformWorkloadToInstances } from './utils';
 import DataTable from '../../../shared/table/DataTable';
+import InstanceDetailsModal from './InstanceDetailsModal';
+import type { InstanceTableRow } from '../../../../../interfaces/instances';
 
 const InstancesTable: React.FC<InstancesTableProps> = ({ workload, onInstanceClick }) => {
   const [sortKey, setSortKey] = useState<InstancesSortKey>('instanceName');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [selectedInstance, setSelectedInstance] = useState<InstanceTableRow | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const onSort = (key: InstancesSortKey) => {
     const next = sortKey === key && sortOrder === 'asc' ? 'desc' : 'asc';
@@ -26,28 +30,47 @@ const InstancesTable: React.FC<InstancesTableProps> = ({ workload, onInstanceCli
     onInstanceClick?.(record);
   };
 
+  const handleView = (record: InstanceTableRow) => {
+    setSelectedInstance(record);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedInstance(null);
+  };
+
   const columns = Columns({
     onSort,
     activeSortKey: sortKey,
     sortOrder,
+    onView: handleView,
   });
 
   return (
-    <DataTable
-      className="app-table"
-      columns={columns as any}
-      data={sortedInstances as any}
-      rowKey={(r: any) => r.id}
-      rowHeight={IPC.SIZES.ROW_HEIGHT}
-      containerStyle={{
-        background: 'transparent',
-        borderRadius: 0,
-        boxShadow: 'none',
-        padding: 0,
-      }}
-      tableProps={{ rowSelection: {} }}
-      onRowClick={handleRowClick}
-    />
+    <>
+      <DataTable
+        className="app-table"
+        columns={columns as any}
+        data={sortedInstances as any}
+        rowKey={(r: any) => r.id}
+        rowHeight={IPC.SIZES.ROW_HEIGHT}
+        containerStyle={{
+          background: 'transparent',
+          borderRadius: 0,
+          boxShadow: 'none',
+          padding: 0,
+        }}
+        tableProps={{ rowSelection: {} }}
+        onRowClick={handleRowClick}
+      />
+      <InstanceDetailsModal
+        open={isModalOpen}
+        onCancel={handleModalClose}
+        instance={selectedInstance}
+        workload={workload}
+      />
+    </>
   );
 };
 

@@ -8,8 +8,7 @@ export type InstancesSortKey =
   | 'cpu'
   | 'memory'
   | 'containers'
-  | 'imageName'
-  | 'imageVersion'
+  | 'imageNames'
 
 type Comparator<T> = (a: T, b: T) => number;
 type SortOrder = 'asc' | 'desc';
@@ -43,10 +42,8 @@ export const sortInstances = (
         };
       case IPC.KEYS.CONTAINERS:
         return (a, b) => compareStrings(a.containerNames, b.containerNames);
-      case IPC.KEYS.IMAGE_NAME:
-        return (a, b) => compareStrings(a.imageName, b.imageName);
-      case IPC.KEYS.IMAGE_VERSION:
-        return (a, b) => compareStrings(a.imageVersion, b.imageVersion);
+      case IPC.KEYS.IMAGE_NAMES:
+        return (a, b) => compareStrings(a.imageNames, b.imageNames);
       default:
         return () => 0;
     }
@@ -65,10 +62,15 @@ export const transformWorkloadToInstances = (workload: AppWorkload): InstanceTab
   // If no instances, create a single instance with all containers
   if (instances.length === 0 && containers.length > 0) {
     const containerNames = containers.map((c: Container) => c.name).join(', ');
-    const firstContainer = containers[0];
-    const imageName = firstContainer?.image?.name || 'N/A';
-    const imageVersion = firstContainer?.image?.tag || 'N/A';
-    const imagePullPolicy = firstContainer?.image?.pullPolicy || 'N/A';
+    const imageNames = containers
+      .map((c: Container) => {
+        const name = c.image?.name || 'N/A';
+        const tag = c.image?.tag || 'N/A';
+        return `${name}:${tag}`;
+      })
+      .filter((img, index, arr) => arr.indexOf(img) === index) // Remove duplicates
+      .join(', ');
+    const imagePullPolicy = containers[0]?.image?.pullPolicy || 'N/A';
 
     return [
       {
@@ -79,8 +81,7 @@ export const transformWorkloadToInstances = (workload: AppWorkload): InstanceTab
         memory: workload.cacid?.usage?.resources?.totalMemory || '0Mi',
         containersCount: containers.length,
         containerNames,
-        imageName,
-        imageVersion,
+        imageNames,
         imagePullPolicy,
       },
     ];
@@ -97,10 +98,15 @@ export const transformWorkloadToInstances = (workload: AppWorkload): InstanceTab
       instanceContainers.length > 0 ? instanceContainers : containers;
 
     const containerNames = containersToUse.map((c: Container) => c.name).join(', ');
-    const firstContainer = containersToUse[0];
-    const imageName = firstContainer?.image?.name || 'N/A';
-    const imageVersion = firstContainer?.image?.tag || 'N/A';
-    const imagePullPolicy = firstContainer?.image?.pullPolicy || 'N/A';
+    const imageNames = containersToUse
+      .map((c: Container) => {
+        const name = c.image?.name || 'N/A';
+        const tag = c.image?.tag || 'N/A';
+        return `${name}:${tag}`;
+      })
+      .filter((img, idx, arr) => arr.indexOf(img) === idx) // Remove duplicates
+      .join(', ');
+    const imagePullPolicy = containersToUse[0]?.image?.pullPolicy || 'N/A';
 
     return {
       id: `instance-${index}`,
@@ -110,8 +116,7 @@ export const transformWorkloadToInstances = (workload: AppWorkload): InstanceTab
       memory: instance.totalMemory || '0Mi',
       containersCount: containersToUse.length,
       containerNames,
-      imageName,
-      imageVersion,
+      imageNames,
       imagePullPolicy,
     };
   });

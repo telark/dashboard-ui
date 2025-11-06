@@ -4,21 +4,22 @@ import RowTag from '../../../shared/table/RowTag';
 import { generateColumn } from '../../../shared/table/utils';
 import {
   AiOutlineCheckCircle,
-  AiOutlineAppstore,
-  AiOutlineDatabase,
+  AiOutlineDashboard,
   AiOutlineContainer,
   AiOutlineFileImage,
   AiOutlineTag,
 } from 'react-icons/ai';
 import type { InstancesSortKey } from './utils';
+import Actions from './Actions';
 
 interface ColumnsArgs {
   onSort: (key: InstancesSortKey) => void;
   activeSortKey: InstancesSortKey;
   sortOrder: 'asc' | 'desc';
+  onView: (record: InstanceTableRow) => void;
 }
 
-export const Columns = ({ onSort, activeSortKey }: ColumnsArgs) => {
+export const Columns = ({ onSort, activeSortKey, onView }: ColumnsArgs) => {
   const getStatusColor = (status: string) => {
     const isActive = /active|ready|running|available/i.test(status);
     return {
@@ -66,7 +67,7 @@ export const Columns = ({ onSort, activeSortKey }: ColumnsArgs) => {
       {
         key: IPC.KEYS.CPU,
         label: IPC.LABELS.COLUMNS.CPU,
-        icon: <AiOutlineAppstore />,
+        icon: <AiOutlineDashboard />,
         width: IPC.SIZES.COLUMNS.CPU,
         render: (cpu: string) => (
           <span style={{ color: IPC.COLORS.TEXT_PRIMARY }}>{cpu}</span>
@@ -78,7 +79,7 @@ export const Columns = ({ onSort, activeSortKey }: ColumnsArgs) => {
       {
         key: IPC.KEYS.MEMORY,
         label: IPC.LABELS.COLUMNS.MEMORY,
-        icon: <AiOutlineDatabase />,
+        icon: <AiOutlineDashboard />,
         width: IPC.SIZES.COLUMNS.MEMORY,
         render: (memory: string) => (
           <span style={{ color: IPC.COLORS.TEXT_PRIMARY }}>{memory}</span>
@@ -116,28 +117,42 @@ export const Columns = ({ onSort, activeSortKey }: ColumnsArgs) => {
     ),
     generateColumn(
       {
-        key: IPC.KEYS.IMAGE_NAME,
-        label: IPC.LABELS.COLUMNS.IMAGE_NAME,
+        key: IPC.KEYS.IMAGE_NAMES,
+        label: IPC.LABELS.COLUMNS.IMAGE_NAMES,
         icon: <AiOutlineFileImage />,
-        width: IPC.SIZES.COLUMNS.IMAGE_NAME,
-        render: (name: string) => (
-          <span style={{ color: IPC.COLORS.TEXT_PRIMARY }}>{name}</span>
-        ),
+        width: IPC.SIZES.COLUMNS.IMAGE_NAMES,
+        render: (_: string, record: InstanceTableRow) => {
+          const imageNames = record.imageNames?.split(', ').filter(Boolean) || [];
+          if (imageNames.length === 0) {
+            return <span style={{ color: IPC.COLORS.TEXT_MUTED }}>N/A</span>;
+          }
+          return (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, alignItems: 'center', justifyContent: 'center' }}>
+              {imageNames.map((imageName: string, index: number) => (
+                <RowTag
+                  key={index}
+                  text={imageName}
+                  background={IPC.COLORS.CHIP_BLUE_BG}
+                  color={IPC.COLORS.CHIP_BLUE_TEXT}
+                  fontSize={IPC.SIZES.CHIP_FONT}
+                />
+              ))}
+            </div>
+          );
+        },
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
     ),
-    generateColumn(
-      {
-        key: IPC.KEYS.IMAGE_VERSION,
-        label: IPC.LABELS.COLUMNS.IMAGE_VERSION,
-        icon: <AiOutlineTag />,
-        width: IPC.SIZES.COLUMNS.IMAGE_VERSION,
-        render: (version: string) => (
-          <span style={{ color: IPC.COLORS.TEXT_PRIMARY }}>{version}</span>
-        ),
-      },
-      { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
-    ),
+    {
+      title: '',
+      key: IPC.KEYS.ACTIONS,
+      align: 'right' as const,
+      width: IPC.SIZES.COLUMNS.ACTIONS,
+      onHeaderCell: () => ({ style: { background: IPC.COLORS.HEADER_BG } }),
+      render: (_: any, record: InstanceTableRow) => (
+        <Actions record={record} onView={onView} />
+      ),
+    },
   ];
 };
 

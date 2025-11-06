@@ -8,8 +8,7 @@ export interface InstanceTableRow {
   memory: string;
   containersCount: number;
   containerNames: string;
-  imageName: string;
-  imageVersion: string;
+  imageNames: string;
   imagePullPolicy: string;
 }
 

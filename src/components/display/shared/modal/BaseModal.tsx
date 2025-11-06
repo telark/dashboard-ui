@@ -19,7 +19,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
       width={width}
       centered={centered}
       styles={{
-        body: { padding: 0, minHeight: 320, ...styles?.body },
+        body: { padding: 0, minHeight: 'auto', ...styles?.body },
         content: { borderRadius: 16, overflow: 'hidden', ...styles?.content },
       }}
       closeIcon={
