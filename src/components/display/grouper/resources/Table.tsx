@@ -31,6 +31,12 @@ const ResourcesTable: React.FC<ResourcesTableProps> = ({
       data={resources as any}
       rowKey={(r: ResourceRowInterface) => r.name}
       rowHeight={60}
+      containerStyle={{
+        background: 'transparent',
+        borderRadius: 0,
+        boxShadow: 'none',
+        padding: 0,
+      }}
       tableProps={{
         rowSelection: onRowSelectionChange
           ? {

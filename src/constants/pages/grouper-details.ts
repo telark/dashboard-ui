@@ -39,6 +39,7 @@ export const GROUPER_DETAILS_CONSTANTS = {
       boxShadow: '0 8px 20px rgba(0,0,0,0.05)',
       border: 'none',
       marginBottom: 16,
+      background: '#fff',
     },
     SECTION_CARD_BODY: {
       padding: 16,
