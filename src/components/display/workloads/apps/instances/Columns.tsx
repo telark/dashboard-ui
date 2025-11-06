@@ -7,7 +7,6 @@ import {
   AiOutlineDashboard,
   AiOutlineContainer,
   AiOutlineFileImage,
-  AiOutlineTag,
 } from 'react-icons/ai';
 import type { InstancesSortKey } from './utils';
 import Actions from './Actions';

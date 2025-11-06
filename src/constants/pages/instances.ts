@@ -33,7 +33,7 @@ export const INSTANCES_PAGE_CONSTANTS = {
         CPU: 90,
         MEMORY: 90,
         CONTAINERS: 140,
-        IMAGE_NAMES: 200,
+        IMAGE_NAMES: 139,
         ACTIONS: 50,
       },
   },
