@@ -10,6 +10,7 @@ import { RootState } from '../../../../store';
 import { STORE_ERRORS } from '../../../../constants/store/store';
 import { usePersistedTab } from '../../../../utils/shared/usePersistedTab';
 import { TAB_KEYS, type TabKey } from '../../../../components/display/workloads/apps/Tabs';
+import WorkloadMetrics from '../../../../components/display/workloads/apps/Metrics';
 
 const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() {
   const { name: workloadNameFromUrl } = useParams<{ name: string }>();
@@ -56,19 +57,22 @@ const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() 
 
   return (
     <div style={GROUPER_DETAILS_CONSTANTS.LAYOUT.PAGE_CONTAINER}>
-      <Header workload={workload} />
-      <Tabs activeTab={activeTab} onTabChange={handleTabChange} />
-      <Content
-        workload={workload}
-        activeTab={activeTab}
-        isAutoSync={isAutoSync}
-        loadingSave={loadingSave}
-        hasChanges={hasChanges}
-        handleAutoSyncChange={handleAutoSyncChange}
-        handleWorkloadSyncSave={handleWorkloadSyncSave}
-        syncing={syncing}
-        isGloballySyncing={isGloballySyncing}
-      />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <Header workload={workload} />
+        <Tabs activeTab={activeTab} onTabChange={handleTabChange} />
+        <WorkloadMetrics workload={workload} />
+        <Content
+          workload={workload}
+          activeTab={activeTab}
+          isAutoSync={isAutoSync}
+          loadingSave={loadingSave}
+          hasChanges={hasChanges}
+          handleAutoSyncChange={handleAutoSyncChange}
+          handleWorkloadSyncSave={handleWorkloadSyncSave}
+          syncing={syncing}
+          isGloballySyncing={isGloballySyncing}
+        />
+      </div>
     </div>
   );
 });

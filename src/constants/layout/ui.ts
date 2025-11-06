@@ -266,7 +266,6 @@ export const COMPONENT_STYLES = {
       borderRadius: 16,
       boxShadow: '0 8px 20px rgba(0,0,0,0.05)',
       border: 'none',
-      marginBottom: 16,
     },
     cardBody: {
       padding: 16,

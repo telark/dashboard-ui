@@ -1,6 +1,5 @@
 import React, { Suspense, lazy, useMemo } from 'react';
 import { Card } from 'antd';
-import WorkloadMetrics from '../../../../components/display/workloads/apps/Metrics';
 import WorkloadBridges from '../../../../components/display/workloads/apps/Bridges';
 import ViewDetails from '../../../../components/display/shared/views/ViewDetails';
 import SyncMode from '../../../../components/tabs/SyncMode';
@@ -30,7 +29,6 @@ const sectionCardStyle: React.CSSProperties = {
   borderRadius: 16,
   boxShadow: '0 8px 20px rgba(0,0,0,0.05)',
   border: 'none',
-  marginBottom: 16,
 };
 
 const Content: React.FC<ContentProps> = React.memo(
@@ -51,10 +49,7 @@ const Content: React.FC<ContentProps> = React.memo(
     }, [workload]);
 
     return (
-      <div>
-        {/* Resource Summary */}
-        <WorkloadMetrics workload={workload} />
-
+      <>
         {/* Active section */}
         {activeTab === TAB_KEYS.GENERAL && workloadViewConfig && (
           <ViewDetails config={workloadViewConfig} />
@@ -127,7 +122,7 @@ const Content: React.FC<ContentProps> = React.memo(
             />
           </Card>
         )}
-      </div>
+      </>
     );
   },
 );

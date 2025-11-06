@@ -26,7 +26,6 @@ const WorkloadTabs: React.FC<WorkloadTabsProps> = ({ activeTab, onTabChange }) =
         background: 'linear-gradient(180deg, rgba(239,244,250,0.6), rgba(239,244,250,0))',
         padding: '8px 0',
         borderRadius: 24,
-        marginBottom: 16,
       }}
     >
       <TabButton

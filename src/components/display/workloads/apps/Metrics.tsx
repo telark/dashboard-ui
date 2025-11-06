@@ -15,7 +15,6 @@ const WorkloadMetrics: React.FC<WorkloadMetricsProps> = ({ workload }) => {
         boxShadow: '0 8px 20px rgba(0,0,0,0.05)',
         border: '1px solid rgba(0,0,0,0.06)',
         padding: 8,
-        marginBottom: 16,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
