@@ -62,26 +62,28 @@ const BridgeDetailsView: React.FC = memo(function BridgeDetailsView() {
 
   return (
     <div style={BRIDGE_DETAILS_CONSTANTS.LAYOUT.PAGE_CONTAINER}>
-      <Header
-        bridgeDetails={bridgeDetails}
-        syncing={syncing}
-        isGloballySyncing={isGloballySyncing}
-        onSync={handleHeaderSync}
-      />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <Header
+          bridgeDetails={bridgeDetails}
+          syncing={syncing}
+          isGloballySyncing={isGloballySyncing}
+          onSync={handleHeaderSync}
+        />
 
-      <Tabs activeTab={activeTab} totalResources={totalResources} onTabChange={handleTabChange} />
+        <Tabs activeTab={activeTab} totalResources={totalResources} onTabChange={handleTabChange} />
 
-      <Content
-        activeTab={activeTab}
-        bridgeDetails={bridgeDetails}
-        isAutoSync={isAutoSync}
-        loadingSave={loadingSave}
-        hasChanges={hasChanges}
-        handleAutoSyncChange={handleAutoSyncChange}
-        handleBridgeSyncSave={handleBridgeSyncSave}
-        syncing={syncing}
-        isGloballySyncing={isGloballySyncing}
-      />
+        <Content
+          activeTab={activeTab}
+          bridgeDetails={bridgeDetails}
+          isAutoSync={isAutoSync}
+          loadingSave={loadingSave}
+          hasChanges={hasChanges}
+          handleAutoSyncChange={handleAutoSyncChange}
+          handleBridgeSyncSave={handleBridgeSyncSave}
+          syncing={syncing}
+          isGloballySyncing={isGloballySyncing}
+        />
+      </div>
     </div>
   );
 });

@@ -10,10 +10,9 @@ export const BRIDGE_DETAILS_CONSTANTS = {
   LAYOUT: {
     PAGE_CONTAINER: {
       background: DEFAULT_COLORS.PAGE_BG,
-      minHeight: '100vh',
-      marginTop: 60,
-      padding: '24px',
-      paddingBottom: 64,
+      minHeight: 'calc(100vh - 60px)',
+      marginTop: '60px',
+      padding: '48px 24px 48px',
     },
     HEADER_CONTAINER: {
       background: '#fff',
@@ -33,13 +32,11 @@ export const BRIDGE_DETAILS_CONSTANTS = {
       background: 'linear-gradient(180deg, rgba(239,244,250,0.6), rgba(239,244,250,0))',
       padding: '8px 0',
       borderRadius: 24,
-      marginBottom: 16,
     },
     SECTION_CARD: {
       borderRadius: 16,
       boxShadow: '0 8px 20px rgba(0,0,0,0.05)',
       border: 'none',
-      marginBottom: 16,
     },
     SECTION_CARD_BODY: {
       padding: 16,
