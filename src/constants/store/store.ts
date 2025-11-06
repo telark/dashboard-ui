@@ -3,6 +3,7 @@ import { COMMON_VALUES } from '../shared/common';
 export const STORAGE_KEYS = {
   HAS_CLUSTER_INSIGHTS: 'HAS_CLUSTER_INSIGHTS',
   WELCOME_PENDING: 'WELCOME_PENDING',
+  RESOURCE_ACTIVE_TAB: 'RESOURCE_ACTIVE_TAB',
 } as const;
 
 export const STORE_ACTIONS = {
