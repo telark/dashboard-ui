@@ -12,6 +12,8 @@ const Header: React.FC<HeaderProps> = ({
   onPrimary,
   primaryText,
   primaryIcon,
+  primaryLoading = false,
+  primaryDisabled = false,
   onSecondary,
   secondaryText,
   secondaryIcon,
@@ -99,8 +101,9 @@ const Header: React.FC<HeaderProps> = ({
             action={primaryText}
             onClick={onPrimary || (() => {})}
             icon={primaryIcon || <AiOutlinePlus size={16} />}
-            loading={false}
+            loading={primaryLoading}
             loadingLabel={BUTTON_TEXTS.LOADING}
+            disabled={primaryDisabled}
           />
         ) : null}
       </div>

@@ -78,39 +78,41 @@ const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
 
   return (
     <div style={GROUPER_DETAILS_CONSTANTS.LAYOUT.PAGE_CONTAINER}>
-      <Header
-        grouperDetails={grouperDetails}
-        isMaintenanceModeActive={isMaintenanceModeActive}
-        syncing={syncing}
-        isGloballySyncing={isGloballySyncing}
-        onSync={handleHeaderSync}
-      />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <Header
+          grouperDetails={grouperDetails}
+          isMaintenanceModeActive={isMaintenanceModeActive}
+          syncing={syncing}
+          isGloballySyncing={isGloballySyncing}
+          onSync={handleHeaderSync}
+        />
 
-      <Tabs activeTab={activeTab} totalResources={totalResources} onTabChange={handleTabChange} />
+        <Tabs activeTab={activeTab} totalResources={totalResources} onTabChange={handleTabChange} />
 
-      <Content
-        activeTab={activeTab}
-        grouperDetails={grouperDetails}
-        totalResources={totalResources}
-        isAutoSync={isAutoSync}
-        loadingSave={loadingSave}
-        hasChanges={hasChanges}
-        handleAutoSyncChange={handleAutoSyncChange}
-        handleGrouperSyncSave={handleGrouperSyncSave}
-        isMaintenanceModeActive={isMaintenanceModeActive}
-        isMaintenanceModalVisible={isMaintenanceModalVisible}
-        maintenaceUpdateAction={maintenaceUpdateAction}
-        maintenaceDeleteAction={maintenaceDeleteAction}
-        handleEnableMaintenanceClick={handleEnableMaintenanceClick}
-        handleCancelMaintenance={handleCancelMaintenance}
-        handleMaintenanceUpdateActionChange={handleMaintenanceUpdateActionChange}
-        handleMaintenanceDeleteActionChange={handleMaintenanceDeleteActionChange}
-        handleMaintenanceMode={handleMaintenanceMode}
-        hasMaintenanceData={hasMaintenanceData}
-        handleRemoveMaintenanceMode={handleRemoveMaintenanceMode}
-        syncing={syncing}
-        isGloballySyncing={isGloballySyncing}
-      />
+        <Content
+          activeTab={activeTab}
+          grouperDetails={grouperDetails}
+          totalResources={totalResources}
+          isAutoSync={isAutoSync}
+          loadingSave={loadingSave}
+          hasChanges={hasChanges}
+          handleAutoSyncChange={handleAutoSyncChange}
+          handleGrouperSyncSave={handleGrouperSyncSave}
+          isMaintenanceModeActive={isMaintenanceModeActive}
+          isMaintenanceModalVisible={isMaintenanceModalVisible}
+          maintenaceUpdateAction={maintenaceUpdateAction}
+          maintenaceDeleteAction={maintenaceDeleteAction}
+          handleEnableMaintenanceClick={handleEnableMaintenanceClick}
+          handleCancelMaintenance={handleCancelMaintenance}
+          handleMaintenanceUpdateActionChange={handleMaintenanceUpdateActionChange}
+          handleMaintenanceDeleteActionChange={handleMaintenanceDeleteActionChange}
+          handleMaintenanceMode={handleMaintenanceMode}
+          hasMaintenanceData={hasMaintenanceData}
+          handleRemoveMaintenanceMode={handleRemoveMaintenanceMode}
+          syncing={syncing}
+          isGloballySyncing={isGloballySyncing}
+        />
+      </div>
     </div>
   );
 });

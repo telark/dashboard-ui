@@ -11,10 +11,9 @@ export const GROUPER_DETAILS_CONSTANTS = {
   LAYOUT: {
     PAGE_CONTAINER: {
       background: DEFAULT_COLORS.PAGE_BG,
-      minHeight: '100vh',
-      marginTop: 60,
-      padding: '24px',
-      paddingBottom: 64,
+      minHeight: 'calc(100vh - 60px)',
+      marginTop: '60px',
+      padding: '48px 24px 48px',
     },
     HEADER_CONTAINER: {
       background: '#fff',
@@ -34,7 +33,6 @@ export const GROUPER_DETAILS_CONSTANTS = {
       background: 'linear-gradient(180deg, rgba(239,244,250,0.6), rgba(239,244,250,0))',
       padding: '8px 0',
       borderRadius: 24,
-      marginBottom: 16,
     },
     SECTION_CARD: {
       borderRadius: 16,
