@@ -1,4 +1,9 @@
-import type { AppWorkload, Container, Instance, ContainerUsage } from '../../../../../interfaces/workload';
+import type {
+  AppWorkload,
+  Container,
+  Instance,
+  ContainerUsage,
+} from '../../../../../interfaces/workload';
 import type { InstanceTableRow } from '../../../../../interfaces/instances';
 import { INSTANCES_PAGE_CONSTANTS as IPC } from '../../../../../constants/pages/instances';
 
@@ -8,7 +13,7 @@ export type InstancesSortKey =
   | 'cpu'
   | 'memory'
   | 'containers'
-  | 'imageNames'
+  | 'imageNames';
 
 type Comparator<T> = (a: T, b: T) => number;
 type SortOrder = 'asc' | 'desc';
@@ -94,8 +99,7 @@ export const transformWorkloadToInstances = (workload: AppWorkload): InstanceTab
     );
 
     // If no matching containers, use all containers
-    const containersToUse =
-      instanceContainers.length > 0 ? instanceContainers : containers;
+    const containersToUse = instanceContainers.length > 0 ? instanceContainers : containers;
 
     const containerNames = containersToUse.map((c: Container) => c.name).join(', ');
     const imageNames = containersToUse
@@ -121,4 +125,3 @@ export const transformWorkloadToInstances = (workload: AppWorkload): InstanceTab
     };
   });
 };
-

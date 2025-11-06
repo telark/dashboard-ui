@@ -29,4 +29,3 @@ const Actions: React.FC<ActionsProps> = ({ record, onView }) => {
 };
 
 export default Actions;
-

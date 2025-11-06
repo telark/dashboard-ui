@@ -34,9 +34,7 @@ const InstanceDetailsModal: React.FC<InstanceDetailsModalProps> = ({
   // Get the full container data from the workload
   const containers = workload.cacid?.crates?.regular || [];
   const containerNames = instance.containerNames?.split(', ').filter(Boolean) || [];
-  const instanceContainers = containers.filter((c: Container) =>
-    containerNames.includes(c.name),
-  );
+  const instanceContainers = containers.filter((c: Container) => containerNames.includes(c.name));
 
   const getStatusColor = (status: string) => {
     const isActive = /active|ready|running|available/i.test(status);
@@ -141,16 +139,21 @@ const InstanceDetailsModal: React.FC<InstanceDetailsModalProps> = ({
         key: `container-${index}-ports`,
         label: 'Ports',
         value:
-          container.ports && container.ports.length > 0
-            ? container.ports.join(', ')
-            : 'No ports',
+          container.ports && container.ports.length > 0 ? container.ports.join(', ') : 'No ports',
       },
     ];
 
     return {
       key: `container-${index}`,
       label: (
-        <span style={{ fontWeight: 700, color: IPC.COLORS.TEXT_PRIMARY, display: 'block', textAlign: 'left' }}>
+        <span
+          style={{
+            fontWeight: 700,
+            color: IPC.COLORS.TEXT_PRIMARY,
+            display: 'block',
+            textAlign: 'left',
+          }}
+        >
           {container.name}
         </span>
       ),
@@ -211,4 +214,3 @@ const InstanceDetailsModal: React.FC<InstanceDetailsModalProps> = ({
 };
 
 export default InstanceDetailsModal;
-

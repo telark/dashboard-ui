@@ -7,10 +7,8 @@ import { FancySpinner } from '../../../../components/shared';
 import { TAB_KEYS, type TabKey } from '../../../../components/display/workloads/apps/Tabs';
 import type { AppWorkload } from '../../../../interfaces/workload';
 import { createWorkloadViewConfig } from '../../../../config/workloadViewConfig';
+import InstancesTable from '../../../../components/display/workloads/apps/instances/Table';
 
-const WorkloadInstances = lazy(
-  () => import('../../../../components/display/workloads/apps/Instances'),
-);
 const WorkloadHistory = lazy(() => import('../../../../components/display/workloads/apps/History'));
 
 interface ContentProps {
@@ -58,22 +56,7 @@ const Content: React.FC<ContentProps> = React.memo(
         {activeTab === TAB_KEYS.INSTANCES && (
           <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
             <div style={{ padding: 4 }}>
-              <Suspense
-                fallback={
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      height: '200px',
-                    }}
-                  >
-                    <FancySpinner />
-                  </div>
-                }
-              >
-                <WorkloadInstances workload={workload} />
-              </Suspense>
+              <InstancesTable workload={workload} />
             </div>
           </Card>
         )}

@@ -68,9 +68,7 @@ export const Columns = ({ onSort, activeSortKey, onView }: ColumnsArgs) => {
         label: IPC.LABELS.COLUMNS.CPU,
         icon: <AiOutlineDashboard />,
         width: IPC.SIZES.COLUMNS.CPU,
-        render: (cpu: string) => (
-          <span style={{ color: IPC.COLORS.TEXT_PRIMARY }}>{cpu}</span>
-        ),
+        render: (cpu: string) => <span style={{ color: IPC.COLORS.TEXT_PRIMARY }}>{cpu}</span>,
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
     ),
@@ -98,7 +96,15 @@ export const Columns = ({ onSort, activeSortKey, onView }: ColumnsArgs) => {
             return <span style={{ color: IPC.COLORS.TEXT_MUTED }}>N/A</span>;
           }
           return (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, alignItems: 'center', justifyContent: 'center' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 4,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
               {containerNames.map((name: string, index: number) => (
                 <RowTag
                   key={index}
@@ -126,7 +132,15 @@ export const Columns = ({ onSort, activeSortKey, onView }: ColumnsArgs) => {
             return <span style={{ color: IPC.COLORS.TEXT_MUTED }}>N/A</span>;
           }
           return (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, alignItems: 'center', justifyContent: 'center' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 4,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
               {imageNames.map((imageName: string, index: number) => (
                 <RowTag
                   key={index}
@@ -148,12 +162,9 @@ export const Columns = ({ onSort, activeSortKey, onView }: ColumnsArgs) => {
       align: 'right' as const,
       width: IPC.SIZES.COLUMNS.ACTIONS,
       onHeaderCell: () => ({ style: { background: IPC.COLORS.HEADER_BG } }),
-      render: (_: any, record: InstanceTableRow) => (
-        <Actions record={record} onView={onView} />
-      ),
+      render: (_: any, record: InstanceTableRow) => <Actions record={record} onView={onView} />,
     },
   ];
 };
 
 export type { InstancesSortKey };
-

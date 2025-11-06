@@ -14,28 +14,28 @@ export const INSTANCES_PAGE_CONSTANTS = {
       VIEW: 'View',
     },
   },
-    KEYS: {
-      INSTANCE_NAME: 'instanceName',
-      STATUS: 'status',
-      CPU: 'cpu',
-      MEMORY: 'memory',
-      CONTAINERS: 'containers',
-      IMAGE_NAMES: 'imageNames',
-      ACTIONS: 'actions',
-    } as const,
+  KEYS: {
+    INSTANCE_NAME: 'instanceName',
+    STATUS: 'status',
+    CPU: 'cpu',
+    MEMORY: 'memory',
+    CONTAINERS: 'containers',
+    IMAGE_NAMES: 'imageNames',
+    ACTIONS: 'actions',
+  } as const,
   SIZES: {
     ROW_HEIGHT: 32,
     HEADER_ICON: 14,
     CHIP_FONT: 12,
-      COLUMNS: {
-        INSTANCE_NAME: 150,
-        STATUS: 90,
-        CPU: 90,
-        MEMORY: 90,
-        CONTAINERS: 140,
-        IMAGE_NAMES: 139,
-        ACTIONS: 50,
-      },
+    COLUMNS: {
+      INSTANCE_NAME: 150,
+      STATUS: 90,
+      CPU: 90,
+      MEMORY: 90,
+      CONTAINERS: 140,
+      IMAGE_NAMES: 139,
+      ACTIONS: 50,
+    },
   },
   COLORS: {
     HEADER_BG: '#fff',
@@ -59,4 +59,3 @@ export const INSTANCES_PAGE_CONSTANTS = {
 } as const;
 
 export type InstancesPageConstants = typeof INSTANCES_PAGE_CONSTANTS;
-

@@ -75,4 +75,3 @@ const InstancesTable: React.FC<InstancesTableProps> = ({ workload, onInstanceCli
 };
 
 export default InstancesTable;
-
