@@ -28,11 +28,11 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
             <div style={{ fontWeight: 700, color: '#0B1F33' }}>{area.label}</div>
             <Form.Item noStyle shouldUpdate>
               {() => (
-                <Form.Item name={['scopes', area.key as string]} noStyle>
+                <Form.Item name={['scopes', area.key]} noStyle>
                   <Checkbox.Group
                     options={permissions.map((l: RoleScopePermission) => ({
                       label: (
-                        <Tooltip title={tooltipMap[l] as string}>
+                        <Tooltip title={tooltipMap[l]}>
                           <span className="permission-label">{l}</span>
                         </Tooltip>
                       ),

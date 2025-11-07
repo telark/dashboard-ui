@@ -25,10 +25,10 @@ const ResourcesTable: React.FC<ResourcesTableProps> = ({
   const columns = useMemo(() => Columns({ isResourceSyncing }), [isResourceSyncing]);
 
   return (
-    <DataTable
+    <DataTable<ResourceRowInterface>
       className="app-table"
-      columns={columns as any}
-      data={resources as any}
+      columns={columns}
+      data={resources}
       rowKey={(r: ResourceRowInterface) => r.name}
       rowHeight={60}
       containerStyle={{

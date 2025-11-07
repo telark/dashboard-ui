@@ -26,8 +26,8 @@ const ActionBar: React.FC<ResourcesActionBarProps> = React.memo(
               style={{
                 borderRadius: 8,
                 border: '1px solid #e5e7eb',
-                color: !hasSelection || selectedCount > 1 ? '#d1d5db' : '#374151',
-                background: !hasSelection || selectedCount > 1 ? '#f9fafb' : '#fff',
+                color: hasSelection && selectedCount <= 1 ? '#374151' : '#d1d5db',
+                background: hasSelection && selectedCount <= 1 ? '#fff' : '#f9fafb',
               }}
             />
           </Tooltip>
@@ -40,8 +40,8 @@ const ActionBar: React.FC<ResourcesActionBarProps> = React.memo(
               type="primary"
               style={{
                 borderRadius: 8,
-                background: !hasSelection || isSyncing ? '#d1d5db' : DEFAULT_COLORS.SUCCESS,
-                borderColor: !hasSelection || isSyncing ? '#d1d5db' : DEFAULT_COLORS.SUCCESS,
+                background: hasSelection && !isSyncing ? DEFAULT_COLORS.SUCCESS : '#d1d5db',
+                borderColor: hasSelection && !isSyncing ? DEFAULT_COLORS.SUCCESS : '#d1d5db',
               }}
             />
           </Tooltip>
@@ -54,8 +54,8 @@ const ActionBar: React.FC<ResourcesActionBarProps> = React.memo(
               style={{
                 borderRadius: 8,
                 border: '1px solid #ef4444',
-                color: !hasSelection ? '#d1d5db' : '#ef4444',
-                background: !hasSelection ? '#f9fafb' : '#fff',
+                color: hasSelection ? '#ef4444' : '#d1d5db',
+                background: hasSelection ? '#fff' : '#f9fafb',
               }}
             />
           </Tooltip>

@@ -5,7 +5,7 @@ import { DEFAULT_COLORS } from '../../../../constants';
 import { UI } from '../../../../constants/layout/ui';
 
 const ResourcesEmptyState: React.FC = React.memo(() => {
-  const handleRefresh = () => window.location.reload();
+  const handleRefresh = () => globalThis.location.reload();
 
   return (
     <div
