@@ -105,9 +105,9 @@ export const Columns = ({ onSort, activeSortKey, onView }: ColumnsArgs) => {
                 justifyContent: 'center',
               }}
             >
-              {containerNames.map((name: string, index: number) => (
+              {containerNames.map((name: string) => (
                 <RowTag
-                  key={index}
+                  key={name}
                   text={name}
                   background={IPC.COLORS.CHIP_BLUE_BG}
                   color={IPC.COLORS.CHIP_BLUE_TEXT}
@@ -141,9 +141,9 @@ export const Columns = ({ onSort, activeSortKey, onView }: ColumnsArgs) => {
                 justifyContent: 'center',
               }}
             >
-              {imageNames.map((imageName: string, index: number) => (
+              {imageNames.map((imageName: string) => (
                 <RowTag
-                  key={index}
+                  key={imageName}
                   text={imageName}
                   background={IPC.COLORS.CHIP_BLUE_BG}
                   color={IPC.COLORS.CHIP_BLUE_TEXT}

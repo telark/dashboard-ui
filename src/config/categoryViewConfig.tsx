@@ -5,6 +5,15 @@ import { Space } from 'antd';
 import { StatusTag } from '../components/tags';
 
 export const createCategoryViewConfig = (category: Category): ViewDetailsConfig => {
+  let typeColor: string;
+  if (category.type === 'default') {
+    typeColor = '#3b82f6';
+  } else if (category.type === 'system') {
+    typeColor = '#9333ea';
+  } else {
+    typeColor = '#06b6d4';
+  }
+
   return {
     fields: [
       {
@@ -28,13 +37,7 @@ export const createCategoryViewConfig = (category: Category): ViewDetailsConfig 
           <StatusTag
             label={category.type}
             icon={<AiOutlineTag />}
-            color={
-              category.type === 'default'
-                ? '#3b82f6'
-                : category.type === 'system'
-                  ? '#9333ea'
-                  : '#06b6d4'
-            }
+            color={typeColor}
           />
         ),
         icon: <AiOutlineTag />,

@@ -35,14 +35,14 @@ export const sortInstances = (
         return (a, b) => compareStrings(a.status, b.status);
       case IPC.KEYS.CPU:
         return (a, b) => {
-          const aCpu = parseFloat(a.cpu.replace(/[^0-9.]/g, '')) || 0;
-          const bCpu = parseFloat(b.cpu.replace(/[^0-9.]/g, '')) || 0;
+          const aCpu = Number.parseFloat(a.cpu.replace(/[^0-9.]/g, '')) || 0;
+          const bCpu = Number.parseFloat(b.cpu.replace(/[^0-9.]/g, '')) || 0;
           return compareNumbers(aCpu, bCpu);
         };
       case IPC.KEYS.MEMORY:
         return (a, b) => {
-          const aMem = parseFloat(a.memory.replace(/[^0-9.]/g, '')) || 0;
-          const bMem = parseFloat(b.memory.replace(/[^0-9.]/g, '')) || 0;
+          const aMem = Number.parseFloat(a.memory.replace(/[^0-9.]/g, '')) || 0;
+          const bMem = Number.parseFloat(b.memory.replace(/[^0-9.]/g, '')) || 0;
           return compareNumbers(aMem, bMem);
         };
       case IPC.KEYS.CONTAINERS:
