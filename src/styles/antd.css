@@ -325,3 +325,8 @@
 .compact-menu .ant-menu-sub {
   background-color: transparent !important;
 }
+
+.compact-menu .ant-menu-sub .ant-menu-item {
+  padding-left: 10px !important;
+  margin-left: 9.5px !important;
+}
