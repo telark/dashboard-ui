@@ -5,6 +5,8 @@ import {
   AiOutlineAppstore,
   AiOutlineApi,
   AiOutlineDashboard,
+  AiOutlineUser,
+  AiOutlineTeam,
 } from 'react-icons/ai';
 import type { IconType } from 'react-icons';
 
@@ -15,6 +17,8 @@ export const ICONS = {
   GROUPER: AiOutlineCluster,
   WORKLOAD: AiOutlineAppstore,
   BRIDGE: AiOutlineApi,
+  USER: AiOutlineUser,
+  GROUP: AiOutlineTeam,
 } as const;
 
 export const getRoleIcon = (): IconType => ICONS.ROLE;

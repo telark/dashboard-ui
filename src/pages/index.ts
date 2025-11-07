@@ -14,3 +14,5 @@ export { default as RoleEdit } from './roles/EditRole';
 export { default as CategoriesListView } from './categories/ListCategories';
 export { default as CategoryView } from './categories/ViewCategory';
 export { default as CategoryEdit } from './categories/EditCategory';
+export { default as UsersListView } from './management/ListUsers';
+export { default as GroupsListView } from './management/ListGroups';

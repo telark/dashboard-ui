@@ -15,6 +15,8 @@ import {
   CategoriesListView,
   CategoryView,
   CategoryEdit,
+  UsersListView,
+  GroupsListView,
 } from '../pages';
 import AnimatedPageWrapper from '../components/animation/AnimatedPageWrapper';
 import { APP_ROUTES } from '../constants';
@@ -57,6 +59,8 @@ const AppRoutes: React.FC = () => {
       <Route path={APP_ROUTES.CATEGORIES} element={<CategoriesListView />} />
       <Route path={APP_ROUTES.CATEGORY_VIEW} element={<CategoryView />} />
       <Route path={APP_ROUTES.CATEGORY_EDIT} element={<CategoryEdit />} />
+      <Route path={APP_ROUTES.USERS} element={<UsersListView />} />
+      <Route path={APP_ROUTES.GROUPS} element={<GroupsListView />} />
     </Routes>
   );
 };

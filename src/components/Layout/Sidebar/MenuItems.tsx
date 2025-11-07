@@ -1,7 +1,7 @@
 import { Menu } from 'antd';
 import SidebarButton from '../../buttons/SideBarButton';
 import { useLocation } from 'react-router-dom';
-import { ICONS } from '../../../constants';
+import { ICONS, APP_ROUTES } from '../../../constants';
 
 const HomeIcon = ICONS.HOME;
 const RoleIcon = ICONS.ROLE;
@@ -9,6 +9,8 @@ const CategoryIcon = ICONS.CATEGORY;
 const GrouperIcon = ICONS.GROUPER;
 const WorkloadIcon = ICONS.WORKLOAD;
 const BridgeIcon = ICONS.BRIDGE;
+const UserIcon = ICONS.USER;
+const GroupIcon = ICONS.GROUP;
 
 interface MenuItemsProps {
   isCollapsed?: boolean;
@@ -66,6 +68,27 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
           route="/categories"
           isCollapsed={isCollapsed}
         />
+        <Menu.ItemGroup
+          title={!isCollapsed ? 'Access Management' : ''}
+          style={{
+            paddingTop: '16px',
+          }}
+        >
+          <SidebarButton
+            text={'Users'}
+            icon={<UserIcon />}
+            active={pathname.startsWith(APP_ROUTES.USERS)}
+            route={APP_ROUTES.USERS}
+            isCollapsed={isCollapsed}
+          />
+          <SidebarButton
+            text={'Groups'}
+            icon={<GroupIcon />}
+            active={pathname.startsWith(APP_ROUTES.GROUPS)}
+            route={APP_ROUTES.GROUPS}
+            isCollapsed={isCollapsed}
+          />
+        </Menu.ItemGroup>
       </Menu>
     </div>
   );
