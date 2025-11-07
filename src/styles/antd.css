@@ -300,3 +300,28 @@
   margin-bottom: 0px !important;
   padding-bottom: 0px !important;
 }
+
+.compact-menu .ant-menu-submenu {
+  background-color: transparent !important;
+}
+
+.compact-menu .ant-menu-submenu-title {
+  background-color: transparent !important;
+  padding-left: 10px !important;
+  margin-left: 9.5px !important;
+  color: #0B1F33 !important;
+}
+
+.compact-menu .ant-menu-submenu-active > .ant-menu-submenu-title,
+.compact-menu .ant-menu-submenu-open > .ant-menu-submenu-title,
+.compact-menu .ant-menu-submenu-selected > .ant-menu-submenu-title {
+  color: #0B1F33 !important;
+}
+
+.compact-menu .ant-menu-submenu-inner {
+  background-color: transparent !important;
+}
+
+.compact-menu .ant-menu-sub {
+  background-color: transparent !important;
+}
