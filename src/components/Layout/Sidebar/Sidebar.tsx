@@ -1,7 +1,6 @@
 import { Layout } from 'antd';
 import { useEffect, useState } from 'react';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
-import UserBlock from './UserBlock';
 import MenuItems from './MenuItems';
 
 const { Sider } = Layout;
@@ -10,6 +9,7 @@ const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const widthExpanded = 260;
   const widthCollapsed = 64;
+  const headerHeight = 60;
 
   useEffect(() => {
     const root = document.documentElement;
@@ -21,13 +21,13 @@ const Sidebar = () => {
       width={isCollapsed ? widthCollapsed : widthExpanded}
       collapsed={isCollapsed}
       style={{
-        height: '100vh',
+        height: `calc(100vh - ${headerHeight}px)`,
         backgroundColor: 'white',
         position: 'fixed',
         left: 0, // Align the sidebar to the left of the page
-        top: 0, // Align the sidebar from the top
+        top: `${headerHeight}px`, // Start below the header
         zIndex: 1, // Ensure it stays above the content
-        paddingTop: '20px',
+        paddingTop: 0,
         paddingLeft: isCollapsed ? '0px' : '12px',
         paddingRight: 0,
         overflow: 'hidden', // prevent inner margins from creating gutters
@@ -37,13 +37,6 @@ const Sidebar = () => {
         transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
     >
-      {/* Top Section */}
-      {!isCollapsed && (
-        <div>
-          <UserBlock />
-        </div>
-      )}
-
       {/* Menu Items */}
       <div style={{ flexGrow: 1 }}>
         {' '}
