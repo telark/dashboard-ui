@@ -1,5 +1,6 @@
 import { Layout } from 'antd';
 import { useEffect, useState } from 'react';
+import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import UserBlock from './UserBlock';
 import MenuItems from './MenuItems';
 
@@ -51,31 +52,29 @@ const Sidebar = () => {
       </div>
 
       {/* Bottom Hide Button */}
-      <div style={{ marginTop: 'auto', paddingBottom: '20px' }}>
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          style={{
-            border: 'none',
-            background: 'transparent',
-            color: '#5B6B7C',
-            fontSize: 15,
-            fontWeight: 500,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: isCollapsed ? 0 : 8,
-            padding: '8px 0',
-            position: 'fixed',
-            bottom: '20px',
-            left: '30px',
-            height: 40,
-            transition: 'all 0.3s ease',
-          }}
-        >
-          <span style={{ fontSize: 20 }}>{isCollapsed ? '›' : '‹'}</span>
-          {!isCollapsed && <span>Hide</span>}
-        </button>
-      </div>
+      <button
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          left: isCollapsed ? `${widthCollapsed - 16}px` : `${widthExpanded - 16}px`,
+          border: 'none',
+          background: 'white',
+          color: '#5B6B7C',
+          fontSize: 18,
+          cursor: 'pointer',
+          width: '32px',
+          height: '32px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'all 0.3s ease',
+          zIndex: 10,
+        }}
+      >
+        {isCollapsed ? <HiChevronRight /> : <HiChevronLeft />}
+      </button>
     </Sider>
   );
 };
