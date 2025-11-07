@@ -39,31 +39,6 @@ export const handleFetchGroupersSilentPending = (state: GrouperState) => {
   state.error = null;
 };
 
-export const handleFetchGroupersSilentFulfilled = (
-  state: GrouperState,
-  action: PayloadAction<any[]>,
-) => {
-  state.loading = false;
-
-  // Preserve maintenance state when updating groupers list
-  const existingByName: Record<string, any> = {};
-  for (const g of state.groupers) {
-    if (g?.name) existingByName[g.name] = g;
-  }
-
-  const updatedGroupers = action.payload.map((g: any) => {
-    const existingGrouper = existingByName[g.name];
-    return {
-      ...g,
-      // Preserve maintenance data from existing state
-      maintenance: existingGrouper?.maintenance || g.maintenance,
-      hasMaintenance: existingGrouper?.hasMaintenance || g.hasMaintenance,
-    };
-  });
-
-  state.groupers = updatedGroupers;
-};
-
 export const handleFetchGroupersSilentRejected = (
   state: GrouperState,
   action: PayloadAction<any>,

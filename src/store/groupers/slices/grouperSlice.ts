@@ -25,7 +25,6 @@ import {
   handleFetchGroupersFulfilled,
   handleFetchGroupersRejected,
   handleFetchGroupersSilentPending,
-  handleFetchGroupersSilentFulfilled,
   handleFetchGroupersSilentRejected,
   handleFetchGrouperDetailsPending,
   handleFetchGrouperDetailsFulfilled,
@@ -98,7 +97,7 @@ const grouperSlice = createSlice({
       .addCase(fetchAllGroupersThunk.rejected, handleFetchGroupersRejected)
       // Silent Fetch Groupers (for retry attempts)
       .addCase(fetchAllGroupersSilentThunk.pending, handleFetchGroupersSilentPending)
-      .addCase(fetchAllGroupersSilentThunk.fulfilled, handleFetchGroupersSilentFulfilled)
+      .addCase(fetchAllGroupersSilentThunk.fulfilled, handleFetchGroupersFulfilled)
       .addCase(fetchAllGroupersSilentThunk.rejected, handleFetchGroupersSilentRejected)
       // Trigger Sync (no state changes, but could be used for UI feedback)
       .addCase(triggerGroupersSyncThunk.rejected, handleTriggerSyncRejected)

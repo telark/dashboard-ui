@@ -243,6 +243,7 @@
 /* Align container fields with container name */
 .instance-containers-collapse .ant-collapse-content-box .ant-card-body {
   padding-left: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 /* Remove wrapper padding to align with container name */
@@ -259,10 +260,6 @@
 /* Reduce bottom spacing of containers section */
 .instance-containers-collapse-wrapper {
   margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-.instance-containers-collapse .ant-collapse-content-box .ant-card-body {
   padding-bottom: 0 !important;
 }
 

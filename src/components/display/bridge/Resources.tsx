@@ -140,8 +140,8 @@ const BridgeResources: React.FC<BridgeResourcesProps> = React.memo(function Brid
           left={<Label icon={<AppstoreOutlined />} text="Matched Labels" />}
           right={
             <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-              {workload.matchedLabels.map((label, idx) => (
-                <Tag key={idx} style={{ margin: 0 }}>
+              {workload.matchedLabels.map((label) => (
+                <Tag key={`${label.key}-${label.value}`} style={{ margin: 0 }}>
                   {label.key}={label.value}
                 </Tag>
               ))}
@@ -161,9 +161,9 @@ const BridgeResources: React.FC<BridgeResourcesProps> = React.memo(function Brid
   return (
     <>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {paginatedWorkloads.map((workload, index) => (
+        {paginatedWorkloads.map((workload) => (
           <Collapse
-            key={index}
+            key={workload.name}
             items={[{ key: 'panel', label: headerNode(workload), children: detailNode(workload) }]}
             expandIconPosition="end"
             style={{ border: '1px solid #eef2f6', borderRadius: 12, background: '#fff' }}
