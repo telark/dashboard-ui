@@ -30,14 +30,13 @@ const ArcSpinner: React.FC = () => (
   />
 );
 
-// Simple, modern illustration: cluster graph nodes (non-spinner)
+// cluster graph nodes (non-spinner)
 const AnalysisIllustration: React.FC = () => (
   <svg
     width="220"
     height="140"
     viewBox="0 0 220 140"
     xmlns="http://www.w3.org/2000/svg"
-    role="img"
     aria-label="Cluster analysis illustration"
     style={{ marginBottom: 14 }}
   >
@@ -81,7 +80,7 @@ const Startup: React.FC<StartupProps> = () => {
       const result = await startClusterAnalyze();
       let insightsReady = false;
       if (Array.isArray(result)) {
-        const insightsEntry = result.find((r: any) => r && r.operation === 'insights');
+        const insightsEntry = result.find((r: any) => r?.operation === 'insights');
         insightsReady = Boolean(insightsEntry && Number(insightsEntry.status) === 202);
       } else if (result && (result.operation === 'insights' || result.insights)) {
         const status = result.status ?? result?.insights?.status;

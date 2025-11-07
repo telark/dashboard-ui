@@ -7,7 +7,7 @@ import { syncBridgeDetails } from '../../../utils/bridge/sync';
 import { BRIDGE_DETAILS_CONSTANTS, TabKey } from '../../../constants/pages/bridge-details';
 import { RootState } from '../../../store';
 import { usePersistedTab } from '../../../utils/shared/usePersistedTab';
-import { Error, Empty, Header, Tabs, Content } from '.';
+import { BridgeError, Empty, Header, Tabs, Content } from '.';
 import LoadingDetails from '../../../components/shared/LoadingDetails';
 
 const BridgeDetailsView: React.FC = memo(function BridgeDetailsView() {
@@ -53,7 +53,7 @@ const BridgeDetailsView: React.FC = memo(function BridgeDetailsView() {
   }
 
   if (error) {
-    return <Error error={error} />;
+    return <BridgeError error={error} />;
   }
 
   if (!bridgeDetails) {

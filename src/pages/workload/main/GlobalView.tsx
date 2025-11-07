@@ -12,8 +12,8 @@ import {
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../utils/shared/retry';
 import { WORKLOADS_PAGE_CONSTANTS } from '../../../constants/pages/workloads';
 import { APP_ROUTES } from '../../../constants';
-import type { AppWorkloadCardData, BatchWorkloadCardData } from '../../../interfaces/workload';
-import { Loading, Error, Success } from '.';
+import type { AppWorkloadCardData } from '../../../interfaces/workload';
+import { Loading, WorkloadMainError, Success } from '.';
 
 const WorkloadsGlobalView: React.FC = memo(() => {
   const dispatch: AppDispatch = useDispatch();
@@ -22,8 +22,6 @@ const WorkloadsGlobalView: React.FC = memo(() => {
     (state: RootState) => state.workload,
   );
   const hasTriggeredInitialSync = useRef(false);
-
-  // Retry state
   const [isRetrying, setIsRetrying] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [nextRetryIn, setNextRetryIn] = useState(0);
@@ -111,7 +109,7 @@ const WorkloadsGlobalView: React.FC = memo(() => {
 
   if (error) {
     return (
-      <Error
+      <WorkloadMainError
         isInCooldown={isInCooldown}
         cooldownTime={cooldownTime}
         retryCount={retryCount}

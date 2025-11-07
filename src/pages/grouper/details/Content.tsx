@@ -19,8 +19,8 @@ interface ContentProps {
   handleGrouperSyncSave: () => void;
   isMaintenanceModeActive: boolean;
   isMaintenanceModalVisible: boolean;
-  maintenaceUpdateAction: boolean;
-  maintenaceDeleteAction: boolean;
+  maintenanceUpdateAction: boolean;
+  maintenanceDeleteAction: boolean;
   handleEnableMaintenanceClick: () => void;
   handleCancelMaintenance: () => void;
   handleMaintenanceUpdateActionChange: (checked: boolean) => void;
@@ -44,8 +44,8 @@ const Content: React.FC<ContentProps> = React.memo(
     handleGrouperSyncSave,
     isMaintenanceModeActive,
     isMaintenanceModalVisible,
-    maintenaceUpdateAction,
-    maintenaceDeleteAction,
+    maintenanceUpdateAction,
+    maintenanceDeleteAction,
     handleEnableMaintenanceClick,
     handleCancelMaintenance,
     handleMaintenanceUpdateActionChange,
@@ -119,8 +119,8 @@ const Content: React.FC<ContentProps> = React.memo(
             >
               <MaintenanceMode
                 isMaintenanceModeActive={isMaintenanceModeActive}
-                maintenaceUpdateAction={maintenaceUpdateAction}
-                maintenaceDeleteAction={maintenaceDeleteAction}
+                maintenanceUpdateAction={maintenanceUpdateAction}
+                maintenanceDeleteAction={maintenanceDeleteAction}
                 isMaintenanceModalVisible={isMaintenanceModalVisible}
                 handleEnableMaintenanceClick={handleEnableMaintenanceClick}
                 handleCancelMaintenance={handleCancelMaintenance}

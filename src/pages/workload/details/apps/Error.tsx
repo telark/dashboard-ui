@@ -6,11 +6,11 @@ import { WORKLOADS_PAGE_CONSTANTS } from '../../../../constants/pages/workloads'
 
 const { Title, Text } = Typography;
 
-interface ErrorProps {
+interface WorkloadDetailsErrorProps {
   onRetry?: () => void;
 }
 
-const Error: React.FC<ErrorProps> = React.memo(({ onRetry }) => {
+const WorkloadDetailsError: React.FC<WorkloadDetailsErrorProps> = React.memo(({ onRetry }) => {
   const navigate = useNavigate();
 
   return (
@@ -41,6 +41,6 @@ const Error: React.FC<ErrorProps> = React.memo(({ onRetry }) => {
   );
 });
 
-Error.displayName = 'Error';
+WorkloadDetailsError.displayName = 'WorkloadDetailsError';
 
-export default Error;
+export default WorkloadDetailsError;
