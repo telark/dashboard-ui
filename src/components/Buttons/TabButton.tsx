@@ -10,7 +10,7 @@ export interface TabButtonProps {
 
 const TabButton: React.FC<TabButtonProps> = React.memo(({ label, active, onClick }) => {
   const [hovered, setHovered] = useState(false);
-  
+
   const background = getTabButtonBackground(active, hovered);
   const color = getTabButtonColor(active, hovered, DEFAULT_COLORS.SUCCESS);
 

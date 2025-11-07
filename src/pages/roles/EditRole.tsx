@@ -71,11 +71,7 @@ const EditRole: React.FC = () => {
       className="app-root"
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <Header
-          subtitle="Edit role details"
-          breadcrumbs={breadcrumbs}
-          icon={<RoleIcon />}
-        />
+        <Header subtitle="Edit role details" breadcrumbs={breadcrumbs} icon={<RoleIcon />} />
 
         <RoleForm
           form={form}

@@ -1,3 +1,5 @@
+import type React from 'react';
+
 export interface FormFieldConfig {
   type: 'input' | 'select' | 'textarea';
   name: string;

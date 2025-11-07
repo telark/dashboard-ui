@@ -70,4 +70,3 @@ export const SHARED_DETAILS_CONSTANTS = {
     LOADING: 'Loading...',
   },
 } as const;
-

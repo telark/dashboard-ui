@@ -68,9 +68,7 @@ const BatchesList: React.FC<BatchesListProps> = ({ batches, loading = false }) =
     );
   }
 
-  return (
-    <div style={{ width: '100%' }}/>
-  );
+  return <div style={{ width: '100%' }} />;
 };
 
 export default BatchesList;

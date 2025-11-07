@@ -33,13 +33,7 @@ export const createCategoryViewConfig = (category: Category): ViewDetailsConfig 
       {
         key: 'type',
         label: 'Type',
-        value: (
-          <StatusTag
-            label={category.type}
-            icon={<AiOutlineTag />}
-            color={typeColor}
-          />
-        ),
+        value: <StatusTag label={category.type} icon={<AiOutlineTag />} color={typeColor} />,
         icon: <AiOutlineTag />,
         type: 'custom',
       },

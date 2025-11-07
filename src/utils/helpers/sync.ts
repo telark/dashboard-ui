@@ -11,7 +11,9 @@ export const getCardPollingEffects = (config: SyncConfig): readonly string[] => 
 };
 
 export const getDetailsPollingInterval = (config: SyncConfig): number => {
-  return config.detailsConstants?.SYNC.POLLING.INTERVAL_MS || config.cardConstants.POLLING.INTERVAL_MS;
+  return (
+    config.detailsConstants?.SYNC.POLLING.INTERVAL_MS || config.cardConstants.POLLING.INTERVAL_MS
+  );
 };
 
 export const getCardPollingInterval = (config: SyncConfig): number => {
@@ -19,7 +21,9 @@ export const getCardPollingInterval = (config: SyncConfig): number => {
 };
 
 export const getDetailsPollingMaxWait = (config: SyncConfig): number => {
-  return config.detailsConstants?.SYNC.POLLING.MAX_WAIT_MS || config.cardConstants.POLLING.MAX_WAIT_MS;
+  return (
+    config.detailsConstants?.SYNC.POLLING.MAX_WAIT_MS || config.cardConstants.POLLING.MAX_WAIT_MS
+  );
 };
 
 export const getCardPollingMaxWait = (config: SyncConfig): number => {
@@ -27,8 +31,10 @@ export const getCardPollingMaxWait = (config: SyncConfig): number => {
 };
 
 export const getDetailsSuccessDuration = (config: SyncConfig): number => {
-  return config.detailsConstants?.SYNC.MESSAGE_DURATIONS.SUCCESS ||
-    config.cardConstants.MESSAGE_DURATIONS.SUCCESS;
+  return (
+    config.detailsConstants?.SYNC.MESSAGE_DURATIONS.SUCCESS ||
+    config.cardConstants.MESSAGE_DURATIONS.SUCCESS
+  );
 };
 
 export const getCardSuccessDuration = (config: SyncConfig): number => {
@@ -44,8 +50,10 @@ export const getDetailsErrorKey = (config: SyncConfig): string => {
 };
 
 export const getDetailsErrorDuration = (config: SyncConfig): number => {
-  return config.detailsConstants?.SYNC.MESSAGE_DURATIONS.ERROR ||
-    config.cardConstants.MESSAGE_DURATIONS.ERROR;
+  return (
+    config.detailsConstants?.SYNC.MESSAGE_DURATIONS.ERROR ||
+    config.cardConstants.MESSAGE_DURATIONS.ERROR
+  );
 };
 
 export const getCardTimeoutMessage = (config: SyncConfig): string => {
@@ -67,7 +75,11 @@ export const getMessageForEffect = (effect: string): string => {
   return SYNC_MESSAGES.byEffect[effect] || SYNC_MESSAGES.completed;
 };
 
-export const getErrorMessage = (err: any, config: SyncConfig, getTimeoutMessageFn: () => string): string => {
+export const getErrorMessage = (
+  err: any,
+  config: SyncConfig,
+  getTimeoutMessageFn: () => string,
+): string => {
   const meta = err?.normalized as { isTimeout?: boolean } | undefined;
   const phase = err?.response?.data?.data?.phase as string | undefined;
   const effect = err?.response?.data?.data?.syncEffect as string | undefined;
@@ -108,4 +120,3 @@ export const destroySyncMessage = (message: MessageApi, key: string | null | und
     message.destroy(key);
   }
 };
-

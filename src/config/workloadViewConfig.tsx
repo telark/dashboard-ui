@@ -1,10 +1,5 @@
 import { DeploymentUnitOutlined } from '@ant-design/icons';
-import {
-  AiOutlineCluster,
-  AiOutlineCalendar,
-  AiOutlineLock,
-  AiOutlineSwap,
-} from 'react-icons/ai';
+import { AiOutlineCluster, AiOutlineCalendar, AiOutlineLock, AiOutlineSwap } from 'react-icons/ai';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import TimeAgo from '../components/time/TimeAgo';
 import { ICONS } from '../constants';
