@@ -1,5 +1,6 @@
 import { SYNC_MESSAGES } from '../../constants/layout/modes';
-import { SyncConfig } from '../../interfaces/sync';
+import { SYNC_CONSTANTS } from '../../constants/config/sync';
+import { SyncConfig, MessageApi } from '../../interfaces/sync';
 
 export const getDetailsPollingEffects = (config: SyncConfig): readonly string[] => {
   return config.detailsConstants?.SYNC.POLLING_EFFECTS || config.cardConstants.POLLING_EFFECTS;
@@ -93,5 +94,19 @@ export const isResourceStillPresent = (
   getNameFromResource: (resource: any) => string,
 ): boolean => {
   return resourceList.some((resource: any) => getNameFromResource(resource) === resourceName);
+};
+
+export const buildDetailsSyncKey = (prefix: string, name: string): string => {
+  return `${prefix}${name}`;
+};
+
+export const buildCardSyncKey = (name: string): string => {
+  return `${SYNC_CONSTANTS.MESSAGE_KEY_PREFIX}${name}`;
+};
+
+export const destroySyncMessage = (message: MessageApi, key: string | null | undefined): void => {
+  if (key) {
+    message.destroy(key);
+  }
 };
 
