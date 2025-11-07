@@ -293,7 +293,52 @@
 }
 
 .compact-menu.ant-menu-inline-collapsed .ant-menu-item {
-  margin: 0px -12px 0px 0 !important;
+  margin: 0px !important;
+  padding: 0px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+
+.compact-menu.ant-menu-inline-collapsed .ant-menu-item > span {
+  display: none !important;
+}
+
+.compact-menu.ant-menu-inline-collapsed .ant-menu-item-icon {
+  margin: 0px !important;
+  padding: 0px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.compact-menu.ant-menu-inline-collapsed .ant-menu-item-icon,
+.compact-menu.ant-menu-inline-collapsed .ant-menu-item-icon svg {
+  font-size: 18px !important;
+  width: 18.5px !important;
+  height: 18.5px !important;
+}
+
+.compact-menu.ant-menu-inline-collapsed {
+  padding: 0px !important;
+  margin: 0px !important;
+  width: 100% !important;
+}
+
+.compact-menu.ant-menu-inline-collapsed .ant-menu-submenu-title {
+  padding: 0px !important;
+  margin: 0px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+
+.compact-menu.ant-menu-inline-collapsed .ant-menu-submenu-title .ant-menu-submenu-arrow {
+  display: none !important;
 }
 
 .compact-menu .ant-menu-item-group-title {
@@ -333,11 +378,20 @@
 
 .compact-menu .ant-menu-item-icon {
   font-size: 18px !important;
-  width: 18px !important;
-  height: 18px !important;
+  width: 18.5px !important;
+  height: 18.5px !important;
 }
 
 .compact-menu .ant-menu-item-icon svg {
-  width: 18px !important;
-  height: 18px !important;
+  width: 18.5px !important;
+  height: 18.5px !important;
+}
+
+.compact-menu .ant-menu {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.compact-menu .ant-menu-item,
+.compact-menu .ant-menu-submenu {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
