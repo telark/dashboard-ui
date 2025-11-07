@@ -6,6 +6,7 @@ import {
   ERROR_MESSAGES,
   MAINTENANCE_ACTIONS,
 } from '../constants';
+import type { MaintenanceModeResponse, StandardApiResponse } from '../interfaces/api';
 
 export const enableGrouperMaintenanceMode = async (
   grouperName: string,
@@ -15,7 +16,7 @@ export const enableGrouperMaintenanceMode = async (
 ) => {
   try {
     const { path, method } = Endpoints.GROUPER_MAINTENANCE.ENABLE;
-    return await Client<any>(configuratorApiClient, path, {
+    return await Client<MaintenanceModeResponse>(configuratorApiClient, path, {
       method: method,
       data: {
         name: grouperName,
@@ -40,7 +41,7 @@ export const updateGrouperMaintenanceMode = async (
 ) => {
   try {
     const { path, method } = Endpoints.GROUPER_MAINTENANCE.UPDATE;
-    return await Client<any>(configuratorApiClient, path, {
+    return await Client<MaintenanceModeResponse>(configuratorApiClient, path, {
       method: method,
       data: {
         name: grouperName,
@@ -62,7 +63,7 @@ export const updateGrouperMaintenanceMode = async (
 export const removeGrouperMaintenanceMode = async (grouperName: string) => {
   try {
     const { path, method } = Endpoints.GROUPER_MAINTENANCE.REMOVE;
-    return await Client<any>(configuratorApiClient, path, {
+    return await Client<MaintenanceModeResponse>(configuratorApiClient, path, {
       method: method,
       data: {
         name: grouperName,
@@ -80,7 +81,7 @@ export const removeGrouperMaintenanceMode = async (grouperName: string) => {
 export const startClusterAnalyze = async () => {
   try {
     const { path, method } = Endpoints.ANALYZE.START;
-    return await Client<any>(configuratorApiClient, path, {
+    return await Client<StandardApiResponse>(configuratorApiClient, path, {
       method,
       headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK },
     });

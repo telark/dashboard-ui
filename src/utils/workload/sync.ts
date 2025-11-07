@@ -38,7 +38,7 @@ export const syncAppWorkloadDetails = async ({
       message,
       config: WORKLOAD_SYNC_CONFIG,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     const apiName = details?.fasid?.name || details?.name;
     const key = buildDetailsSyncKey(WORKLOAD_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX, apiName);
     destroySyncMessage(message, key);
@@ -78,7 +78,7 @@ export const syncAppWorkload = async ({ name, message, setSyncing }: SyncParams)
       message,
       config: WORKLOAD_SYNC_CONFIG,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     const key = buildCardSyncKey(name);
     destroySyncMessage(message, key);
     handleSyncError({ err, message, config: WORKLOAD_SYNC_CONFIG, isDetailsSync: false });

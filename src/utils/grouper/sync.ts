@@ -38,7 +38,7 @@ export const syncGrouperDetails = async ({
       message,
       config: GROUPER_SYNC_CONFIG,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     const apiName = details?.syncName || details.name;
     const key = buildDetailsSyncKey(GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX, apiName);
     destroySyncMessage(message, key);
@@ -78,7 +78,7 @@ export const syncGrouper = async ({
       message,
       config: GROUPER_SYNC_CONFIG,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     destroySyncMessage(message, key);
     handleSyncError({ err, message, config: GROUPER_SYNC_CONFIG, isDetailsSync: false });
   } finally {
