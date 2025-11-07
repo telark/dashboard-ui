@@ -2,7 +2,7 @@ import { triggerSingleGrouperSync } from '../../clients/sync-manager';
 import { SYNC_MESSAGES } from '../../constants/layout/modes';
 import { GROUPER_DETAILS_CONSTANTS } from '../../constants/pages/grouper-details';
 import { SYNC_CONSTANTS } from '../../constants/config/sync';
-import store, { AppDispatch } from '../../store';
+import store from '../../store';
 import { startSync, endSync } from '../../store/groupers/slices/grouperSlice';
 import { handleSyncEffect, handleSyncError } from '../shared/sync';
 import { GROUPER_SYNC_CONFIG } from '../../config/syncConfig';
@@ -17,7 +17,7 @@ export const syncGrouperDetails = async ({
     setSyncing(true);
     const apiName = details?.syncName || details.name;
     const displayName = details?.name || apiName;
-    (store.dispatch as AppDispatch)(startSync(details.name));
+    store.dispatch(startSync(details.name));
 
     const key = `${GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX}${apiName}`;
     message.open({
@@ -45,7 +45,7 @@ export const syncGrouperDetails = async ({
     handleSyncError({ err, message, isDetailsSync: true, config: GROUPER_SYNC_CONFIG });
   } finally {
     setSyncing(false);
-    (store.dispatch as AppDispatch)(endSync(details.name));
+    store.dispatch(endSync(details.name));
   }
 };
 
@@ -60,7 +60,7 @@ export const syncGrouper = async ({
   const displayName = name; // Grouper display = name
   try {
     setSyncing(true);
-    (store.dispatch as AppDispatch)(startSync(name));
+    store.dispatch(startSync(name));
     message.open({
       type: 'loading',
       content: `${SYNC_MESSAGES.loading} ${displayName}`,
@@ -84,6 +84,6 @@ export const syncGrouper = async ({
     handleSyncError({ err, message, isDetailsSync: false, config: GROUPER_SYNC_CONFIG });
   } finally {
     setSyncing(false);
-    (store.dispatch as AppDispatch)(endSync(name));
+    store.dispatch(endSync(name));
   }
 };

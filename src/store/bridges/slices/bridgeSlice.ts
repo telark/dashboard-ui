@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { BridgeState } from '../../../interfaces/bridge';
-
-// Import thunks
 import {
   fetchAllBridgesThunk,
   fetchAllBridgesSilentThunk,
@@ -12,8 +10,6 @@ import {
   refreshAutoBridgesThunk,
   updateBridgeSyncModeThunk,
 } from '../thunks/SyncThunks';
-
-// Import reducers
 import {
   handleFetchBridgesPending,
   handleFetchBridgesFulfilled,
@@ -33,23 +29,23 @@ import {
   handleUpdateSyncModeRejected,
 } from '../reducers/SyncReducers';
 
+export {
+  fetchAllBridgesThunk,
+  fetchAllBridgesSilentThunk,
+  fetchBridgeDetailsThunk,
+} from '../thunks/FetchThunks';
+export {
+  triggerBridgesSyncThunk,
+  refreshAutoBridgesThunk,
+  updateBridgeSyncModeThunk,
+} from '../thunks/SyncThunks';
+
 const initialState: BridgeState = {
   bridges: [],
   details: null,
   loading: false,
   error: null,
-  // Track in-flight syncs by bridge name
   syncing: {},
-};
-
-// Re-export thunks for external use
-export {
-  fetchAllBridgesThunk,
-  fetchAllBridgesSilentThunk,
-  fetchBridgeDetailsThunk,
-  triggerBridgesSyncThunk,
-  refreshAutoBridgesThunk,
-  updateBridgeSyncModeThunk,
 };
 
 const bridgeSlice = createSlice({

@@ -2,7 +2,7 @@ import { triggerSingleBridgeSync } from '../../clients/sync-manager';
 import { SYNC_MESSAGES } from '../../constants/layout/modes';
 import { BRIDGE_DETAILS_CONSTANTS } from '../../constants/pages/bridge-details';
 import { SYNC_CONSTANTS } from '../../constants/config/sync';
-import store, { AppDispatch } from '../../store';
+import store from '../../store';
 import { startSync, endSync } from '../../store/bridges/slices/bridgeSlice';
 import { handleSyncEffect, handleSyncError } from '../shared/sync';
 import { BRIDGE_SYNC_CONFIG } from '../../config/syncConfig';
@@ -17,7 +17,7 @@ export const syncBridgeDetails = async ({
     setSyncing(true);
     const apiName = details?.syncName || details.name;
     const displayName = details?.name || details?.sourceName || apiName;
-    (store.dispatch as AppDispatch)(startSync(details.name));
+    store.dispatch(startSync(details.name));
 
     const key = `${BRIDGE_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX}${apiName}`;
     message.open({
@@ -45,7 +45,7 @@ export const syncBridgeDetails = async ({
     handleSyncError({ err, message, isDetailsSync: true, config: BRIDGE_SYNC_CONFIG });
   } finally {
     setSyncing(false);
-    (store.dispatch as AppDispatch)(endSync(details.name));
+    store.dispatch(endSync(details.name));
   }
 };
 
@@ -61,7 +61,7 @@ export const syncBridge = async ({
   const key = `${SYNC_CONSTANTS.MESSAGE_KEY_PREFIX}${apiName}`;
   try {
     setSyncing(true);
-    (store.dispatch as AppDispatch)(startSync(name));
+    store.dispatch(startSync(name));
     message.open({
       type: 'loading',
       content: `${SYNC_MESSAGES.loading} ${displayName}`,
@@ -85,6 +85,6 @@ export const syncBridge = async ({
     handleSyncError({ err, message, isDetailsSync: false, config: BRIDGE_SYNC_CONFIG });
   } finally {
     setSyncing(false);
-    (store.dispatch as AppDispatch)(endSync(name));
+    store.dispatch(endSync(name));
   }
 };
