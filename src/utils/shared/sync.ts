@@ -20,56 +20,23 @@ import {
   isResourceStillPresent,
 } from '../helpers/sync';
 
-const handleDetailsDeletionPolling = (
+// Handle polling for deletion effects (Deleted, NotFound)
+const handleDeletionPolling = (
   resourceName: string,
   effect: string,
   key: string,
   config: SyncConfig,
   message: HandleSyncEffectParams['message'],
+  getPollingMaxWait: (config: SyncConfig) => number,
+  getPollingInterval: (config: SyncConfig) => number,
+  getSuccessDuration: (config: SyncConfig) => number,
 ): void => {
   (store.dispatch)(config.fetchAllResourcesThunk());
 
   const start = Date.now();
-  const waitMs = getDetailsPollingMaxWait(config);
-  const intervalMs = getDetailsPollingInterval(config);
-  const duration = getDetailsSuccessDuration(config);
-  const friendlyMessage = getMessageForEffect(effect, config);
-
-  const interval = setInterval(() => {
-    const state: RootState = store.getState();
-    const resourceList = config.getResourceList(state);
-    const stillThere = isResourceStillPresent(
-      resourceName,
-      resourceList,
-      config.getNameFromResource,
-    );
-
-    if (!stillThere || Date.now() - start > waitMs) {
-      clearInterval(interval);
-      message.open({
-        type: 'success',
-        content: friendlyMessage,
-        key,
-        duration,
-      });
-    }
-  }, intervalMs);
-};
-
-// Handle polling for deletion effects (Deleted, NotFound) - Card sync
-const handleCardDeletionPolling = (
-  resourceName: string,
-  effect: string,
-  key: string,
-  config: SyncConfig,
-  message: HandleSyncEffectParams['message'],
-): void => {
-  (store.dispatch)(config.fetchAllResourcesThunk());
-
-  const start = Date.now();
-  const waitMs = getCardPollingMaxWait(config);
-  const intervalMs = getCardPollingInterval(config);
-  const duration = getCardSuccessDuration(config);
+  const waitMs = getPollingMaxWait(config);
+  const intervalMs = getPollingInterval(config);
+  const duration = getSuccessDuration(config);
   const friendlyMessage = getMessageForEffect(effect, config);
 
   const interval = setInterval(() => {
@@ -165,9 +132,27 @@ export const handleSyncEffect = async ({
       return;
     }
     if (isDetailsSync) {
-      handleDetailsDeletionPolling(resourceName, effect, key, config, message);
+      handleDeletionPolling(
+        resourceName,
+        effect,
+        key,
+        config,
+        message,
+        getDetailsPollingMaxWait,
+        getDetailsPollingInterval,
+        getDetailsSuccessDuration,
+      );
     } else {
-      handleCardDeletionPolling(resourceName, effect, key, config, message);
+      handleDeletionPolling(
+        resourceName,
+        effect,
+        key,
+        config,
+        message,
+        getCardPollingMaxWait,
+        getCardPollingInterval,
+        getCardSuccessDuration,
+      );
     }
   } else {
     if (isDetailsSync) {
