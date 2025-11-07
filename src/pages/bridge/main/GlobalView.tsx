@@ -11,7 +11,7 @@ import {
 } from '../../../utils/bridge/state';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../utils/shared/retry';
 import { BRIDGES_PAGE_CONSTANTS } from '../../../constants/pages/bridges';
-import { Loading, Error, Empty, Success } from '.';
+import { Loading, BridgeMainError, Empty, Success } from '.';
 
 const BridgesGlobalView: React.FC = memo(function BridgesGlobalView() {
   const dispatch: AppDispatch = useDispatch();
@@ -105,7 +105,7 @@ const BridgesGlobalView: React.FC = memo(function BridgesGlobalView() {
 
   if (error) {
     return (
-      <Error
+      <BridgeMainError
         isInCooldown={isInCooldown}
         cooldownTime={cooldownTime}
         retryCount={retryCount}

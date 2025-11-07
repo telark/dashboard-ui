@@ -1,4 +1,4 @@
-export { default as Error } from './Error';
+export { default as GrouperDetailsError } from './Error';
 export { default as Empty } from './Empty';
 export { default as Header } from './Header';
 export { default as Tabs } from './Tabs';

@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import { FancySpinner } from '../../../components/shared';
 import { WORKLOADS_PAGE_CONSTANTS } from '../../../constants/pages/workloads';
 
-interface ErrorProps {
+interface WorkloadMainErrorProps {
   isInCooldown: boolean;
   cooldownTime: number;
   retryCount: number;
@@ -11,7 +11,7 @@ interface ErrorProps {
   onCancel: () => void;
 }
 
-const Error: React.FC<ErrorProps> = React.memo(
+const WorkloadMainError: React.FC<WorkloadMainErrorProps> = React.memo(
   ({ isInCooldown, cooldownTime, retryCount, nextRetryIn, onCancel }) => {
     const formatTime = (ms: number) => Math.ceil(ms / 1000);
     const progressPercentage =
@@ -118,6 +118,6 @@ const Error: React.FC<ErrorProps> = React.memo(
   },
 );
 
-Error.displayName = 'Error';
+WorkloadMainError.displayName = 'WorkloadMainError';
 
-export default Error;
+export default WorkloadMainError;

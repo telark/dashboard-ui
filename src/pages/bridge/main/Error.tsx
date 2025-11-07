@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import { FancySpinner } from '../../../components/shared';
 import { BRIDGES_PAGE_CONSTANTS } from '../../../constants/pages/bridges';
 
-interface ErrorProps {
+interface BridgeMainErrorProps {
   isInCooldown: boolean;
   cooldownTime: number;
   retryCount: number;
@@ -11,7 +11,7 @@ interface ErrorProps {
   onCancel: () => void;
 }
 
-const Error: React.FC<ErrorProps> = React.memo(
+const BridgeMainError: React.FC<BridgeMainErrorProps> = React.memo(
   ({ isInCooldown, cooldownTime, retryCount, nextRetryIn, onCancel }) => {
     const formatTime = (ms: number) => Math.ceil(ms / 1000);
     const progressPercentage =
@@ -118,6 +118,6 @@ const Error: React.FC<ErrorProps> = React.memo(
   },
 );
 
-Error.displayName = 'Error';
+BridgeMainError.displayName = 'BridgeMainError';
 
-export default Error;
+export default BridgeMainError;

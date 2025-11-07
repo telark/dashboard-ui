@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import { FancySpinner } from '../../../components/shared';
 import { GROUPERS_PAGE_CONSTANTS } from '../../../constants/pages/groupers';
 
-interface ErrorProps {
+interface GrouperMainErrorProps {
   isInCooldown: boolean;
   cooldownTime: number;
   retryCount: number;
@@ -11,7 +11,7 @@ interface ErrorProps {
   onCancel: () => void;
 }
 
-const Error: React.FC<ErrorProps> = React.memo(
+const GrouperMainError: React.FC<GrouperMainErrorProps> = React.memo(
   ({ isInCooldown, cooldownTime, retryCount, nextRetryIn, onCancel }) => {
     const formatTime = (ms: number) => Math.ceil(ms / 1000);
     const progressPercentage =
@@ -118,6 +118,6 @@ const Error: React.FC<ErrorProps> = React.memo(
   },
 );
 
-Error.displayName = 'Error';
+GrouperMainError.displayName = 'GrouperMainError';
 
-export default Error;
+export default GrouperMainError;

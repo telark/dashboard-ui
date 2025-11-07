@@ -7,7 +7,7 @@ import { syncGrouperDetails } from '../../../utils/grouper/sync';
 import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../../constants/pages/grouper-details';
 import { RootState } from '../../../store';
 import { usePersistedTab } from '../../../utils/shared/usePersistedTab';
-import { Error, Empty, Header, Tabs, Content } from '.';
+import { GrouperDetailsError, Empty, Header, Tabs, Content } from '.';
 import LoadingDetails from '../../../components/shared/LoadingDetails';
 
 const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
@@ -28,8 +28,8 @@ const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
     // Maintenance Mode Data
     isMaintenanceModeActive,
     isMaintenanceModalVisible,
-    maintenaceUpdateAction,
-    maintenaceDeleteAction,
+    maintenanceUpdateAction,
+    maintenanceDeleteAction,
     handleEnableMaintenanceClick,
     handleCancelMaintenance,
     handleMaintenanceUpdateActionChange,
@@ -69,7 +69,7 @@ const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
   }
 
   if (error) {
-    return <Error error={error} />;
+    return <GrouperDetailsError error={error} />;
   }
 
   if (!grouperDetails) {
@@ -100,8 +100,8 @@ const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
           handleGrouperSyncSave={handleGrouperSyncSave}
           isMaintenanceModeActive={isMaintenanceModeActive}
           isMaintenanceModalVisible={isMaintenanceModalVisible}
-          maintenaceUpdateAction={maintenaceUpdateAction}
-          maintenaceDeleteAction={maintenaceDeleteAction}
+          maintenanceUpdateAction={maintenanceUpdateAction}
+          maintenanceDeleteAction={maintenanceDeleteAction}
           handleEnableMaintenanceClick={handleEnableMaintenanceClick}
           handleCancelMaintenance={handleCancelMaintenance}
           handleMaintenanceUpdateActionChange={handleMaintenanceUpdateActionChange}

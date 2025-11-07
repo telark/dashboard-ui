@@ -52,9 +52,9 @@ const WorkloadBridges: React.FC<WorkloadBridgesProps> = ({ workload }) => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      {bridges.map((bridge, index) => (
+      {bridges.map((bridge) => (
         <div
-          key={index}
+          key={bridge.name}
           style={{
             background: '#fff',
             border: '1px solid rgba(0,0,0,0.06)',

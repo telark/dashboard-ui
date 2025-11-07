@@ -11,7 +11,7 @@ import {
 } from '../../../utils/grouper/state';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../utils/shared/retry';
 import { GROUPERS_PAGE_CONSTANTS } from '../../../constants/pages/groupers';
-import { Loading, Error, Empty, Success } from '.';
+import { Loading, GrouperMainError, Empty, Success } from '.';
 
 const GroupersGlobalView: React.FC = memo(function GroupersGlobalView() {
   const dispatch: AppDispatch = useDispatch();
@@ -104,7 +104,7 @@ const GroupersGlobalView: React.FC = memo(function GroupersGlobalView() {
 
   if (error) {
     return (
-      <Error
+      <GrouperMainError
         isInCooldown={isInCooldown}
         cooldownTime={cooldownTime}
         retryCount={retryCount}

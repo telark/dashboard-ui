@@ -12,8 +12,8 @@ import { MAINTENANCE_MODE } from '../../constants/layout/modes';
 
 interface MaintenanceModeProps {
   isMaintenanceModeActive: boolean;
-  maintenaceUpdateAction: boolean;
-  maintenaceDeleteAction: boolean;
+  maintenanceUpdateAction: boolean;
+  maintenanceDeleteAction: boolean;
   isMaintenanceModalVisible: boolean;
   handleEnableMaintenanceClick: () => void;
   handleCancelMaintenance: () => void;
@@ -26,8 +26,8 @@ interface MaintenanceModeProps {
 
 const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
   isMaintenanceModeActive,
-  maintenaceUpdateAction,
-  maintenaceDeleteAction,
+  maintenanceUpdateAction,
+  maintenanceDeleteAction,
   isMaintenanceModalVisible,
   handleEnableMaintenanceClick,
   handleCancelMaintenance,
@@ -124,7 +124,7 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
             {MAINTENANCE_MODE.updateActionLabel}
           </span>
           <Switch
-            checked={maintenaceUpdateAction}
+            checked={maintenanceUpdateAction}
             onChange={handleMaintenanceUpdateActionChange}
             disabled={hasMaintenanceData && !isMaintenanceModeActive}
           />
@@ -146,7 +146,7 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
             {MAINTENANCE_MODE.deleteActionLabel}
           </span>
           <Switch
-            checked={maintenaceDeleteAction}
+            checked={maintenanceDeleteAction}
             onChange={handleMaintenanceDeleteActionChange}
             disabled={hasMaintenanceData && !isMaintenanceModeActive}
           />

@@ -26,6 +26,13 @@ const SyncMode: React.FC<SyncModeProps> = ({
   isGloballySyncing = false,
 }) => {
   const isSyncInProgress = syncing || isGloballySyncing;
+  
+  let saveButtonAction = SYNC_MODE.saveButtonLabel;
+  if (hasChanges) {
+    const modeLabel = isAutoSync ? 'Auto Sync' : 'Manual Mode';
+    saveButtonAction = `${SYNC_MODE.saveButtonLabel} (${modeLabel})`;
+  }
+  
   return (
     <div style={{ padding: '8px 4px' }}>
       {/* Sync in progress banner */}
@@ -120,7 +127,7 @@ const SyncMode: React.FC<SyncModeProps> = ({
           disabled={!hasChanges || isSyncInProgress}
           loading={loadingSave}
           loadingLabel="Saving..."
-          action={`${SYNC_MODE.saveButtonLabel} ${hasChanges ? `(${isAutoSync ? 'Auto Sync' : 'Manual Mode'})` : ''}`}
+          action={saveButtonAction}
           icon={<CheckCircleOutlined />}
         />
       </div>
