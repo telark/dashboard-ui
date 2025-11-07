@@ -330,3 +330,14 @@
   padding-left: 10px !important;
   margin-left: 9.5px !important;
 }
+
+.compact-menu .ant-menu-item-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.compact-menu .ant-menu-item-icon svg {
+  width: 18px !important;
+  height: 18px !important;
+}
