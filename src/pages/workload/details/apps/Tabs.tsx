@@ -1,5 +1,6 @@
 import React from 'react';
-import WorkloadTabs, { type TabKey } from '../../../../components/display/workloads/apps/Tabs';
+import WorkloadTabs from '../../../../components/display/workloads/apps/Tabs';
+import { TabKey } from '../../../../constants/pages/workload-details';
 
 interface TabsProps {
   activeTab: TabKey;

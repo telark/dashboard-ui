@@ -7,7 +7,7 @@ export const GROUPER_DETAILS_CONSTANTS = {
     HISTORY: 'history',
     SYNC: 'sync',
     MAINTENANCE: 'maintenance',
-  } as const,
+  },
   LAYOUT: {
     PAGE_CONTAINER: {
       background: DEFAULT_COLORS.PAGE_BG,
@@ -45,48 +45,6 @@ export const GROUPER_DETAILS_CONSTANTS = {
       padding: 16,
     },
   },
-
-  HEADER: {
-    ICON_CONTAINER: {
-      width: 48,
-      height: 48,
-      borderRadius: '50%',
-      background: 'rgba(32,201,151,0.12)',
-      boxShadow: 'inset 0 0 0 2px rgba(32,201,151,0.18)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: DEFAULT_COLORS.SUCCESS,
-      fontSize: 20,
-    },
-    TITLE_CONTAINER: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 10,
-      flexWrap: 'wrap' as const,
-    },
-    TITLE: {
-      fontSize: 18,
-      fontWeight: 700,
-      color: '#0B1F33',
-    },
-    SUBTITLE: {
-      color: '#5B6B7C',
-      fontSize: 12,
-      marginTop: 4,
-    },
-    BUTTON_CONTAINER: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 8,
-    },
-    SYNC_BUTTON_CONTENT: {
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: 6,
-    },
-  },
-
   STATES: {
     LOADING_CONTAINER: {
       marginTop: 60,
@@ -101,9 +59,8 @@ export const GROUPER_DETAILS_CONSTANTS = {
       padding: 24,
     },
   },
-
   SYNC: {
-    MESSAGE_KEY_PREFIX: 'sync-',
+    MESSAGE_KEY_PREFIX: 'grouper-sync-',
     POLLING: {
       INTERVAL_MS: 250,
       MAX_WAIT_MS: 4000,
@@ -117,11 +74,6 @@ export const GROUPER_DETAILS_CONSTANTS = {
     POLLING_EFFECTS: ['Deleted', 'NotFound'] as const,
     ERROR_KEY: 'sync-error',
     TIMEOUT_MESSAGE: 'Taking a bit longer than usual. Please try again in a moment.',
-  },
-  FANCY_SPINNER: {
-    SHOW_LABEL: false,
-    SIZE: 18,
-    RING_THICKNESS: 2,
   },
   MESSAGES: {
     LOADING: 'Loading...',

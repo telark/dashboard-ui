@@ -3,6 +3,7 @@ import { Button, Typography } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { WORKLOADS_PAGE_CONSTANTS } from '../../../../constants/pages/workloads';
+import { WORKLOAD_DETAILS_CONSTANTS } from '../../../../constants/pages/workload-details';
 
 const { Title, Text } = Typography;
 
@@ -14,7 +15,7 @@ const WorkloadDetailsError: React.FC<WorkloadDetailsErrorProps> = React.memo(({ 
   const navigate = useNavigate();
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div style={WORKLOAD_DETAILS_CONSTANTS.STATES.ERROR_CONTAINER}>
       <Button
         icon={<ArrowLeftOutlined />}
         onClick={() => navigate('/workloads')}

@@ -4,7 +4,7 @@ import WorkloadBridges from '../../../../components/display/workloads/apps/Bridg
 import ViewDetails from '../../../../components/display/shared/views/ViewDetails';
 import SyncMode from '../../../../components/tabs/SyncMode';
 import { FancySpinner } from '../../../../components/shared';
-import { TAB_KEYS, type TabKey } from '../../../../components/display/workloads/apps/Tabs';
+import { WORKLOAD_DETAILS_CONSTANTS, TabKey } from '../../../../constants/pages/workload-details';
 import type { AppWorkload } from '../../../../interfaces/workload';
 import { createWorkloadViewConfig } from '../../../../config/workloadViewConfig';
 import InstancesTable from '../../../../components/display/workloads/apps/instances/Table';
@@ -23,11 +23,7 @@ interface ContentProps {
   isGloballySyncing?: boolean;
 }
 
-const sectionCardStyle: React.CSSProperties = {
-  borderRadius: 16,
-  boxShadow: '0 8px 20px rgba(0,0,0,0.05)',
-  border: 'none',
-};
+const { TAB_KEYS, LAYOUT } = WORKLOAD_DETAILS_CONSTANTS;
 
 const Content: React.FC<ContentProps> = React.memo(
   ({
@@ -54,7 +50,7 @@ const Content: React.FC<ContentProps> = React.memo(
         )}
 
         {activeTab === TAB_KEYS.INSTANCES && (
-          <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
+          <Card style={LAYOUT.SECTION_CARD} styles={{ body: LAYOUT.SECTION_CARD_BODY }}>
             <div style={{ padding: 4 }}>
               <InstancesTable workload={workload} />
             </div>
@@ -62,7 +58,7 @@ const Content: React.FC<ContentProps> = React.memo(
         )}
 
         {activeTab === TAB_KEYS.BRIDGES && (
-          <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
+          <Card style={LAYOUT.SECTION_CARD} styles={{ body: LAYOUT.SECTION_CARD_BODY }}>
             <div style={{ padding: 4 }}>
               <WorkloadBridges workload={workload} />
             </div>
@@ -70,7 +66,7 @@ const Content: React.FC<ContentProps> = React.memo(
         )}
 
         {activeTab === TAB_KEYS.HISTORY && (
-          <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
+          <Card style={LAYOUT.SECTION_CARD} styles={{ body: LAYOUT.SECTION_CARD_BODY }}>
             <div style={{ padding: 4 }}>
               <Suspense
                 fallback={
@@ -93,7 +89,7 @@ const Content: React.FC<ContentProps> = React.memo(
         )}
 
         {activeTab === TAB_KEYS.SYNC && (
-          <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
+          <Card style={LAYOUT.SECTION_CARD} styles={{ body: LAYOUT.SECTION_CARD_BODY }}>
             <SyncMode
               isAutoSync={isAutoSync}
               loadingSave={loadingSave}
