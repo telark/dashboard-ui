@@ -1,27 +1,19 @@
 import React, { useMemo, useState } from 'react';
 import { Form, message } from 'antd';
-import PrimaryButton from '../../components/buttons/PrimaryButton';
-import { DEFAULT_COLORS, APP_ROUTES, BUTTON_TEXTS, ICONS } from '../../constants';
-import { COMPONENT_STYLES } from '../../constants/layout/ui';
+import { DEFAULT_COLORS, APP_ROUTES, ICONS } from '../../constants';
 import Header from '../../components/display/shared/sections/Header';
-import RolesGeneralSection from '../../components/display/roles/create/GeneralSection';
-import RolesScopePermissionsSection from '../../components/display/roles/create/ScopesAndPermissionsSection';
+import RoleForm, { type RoleFormValues } from '../../components/display/roles/shared/RoleForm';
 import type { RoleScopePermission } from '../../interfaces/roles';
 
 const RoleIcon = ICONS.ROLE;
 
-interface CreateRoleFormValues {
-  name: string;
-  scopes: Record<string, RoleScopePermission[]>; // area -> permissions
-}
-
 const CreateRole: React.FC = () => {
-  const [form] = Form.useForm<CreateRoleFormValues>();
+  const [form] = Form.useForm<RoleFormValues>();
   const [submitting, setSubmitting] = useState(false);
 
   const initialScopes = useMemo(() => ({}) as Record<string, RoleScopePermission[]>, []);
 
-  const handleFinish = async (values: CreateRoleFormValues) => {
+  const handleFinish = async (values: RoleFormValues) => {
     setSubmitting(true);
     try {
       await new Promise((r) => setTimeout(r, 400));
@@ -49,56 +41,13 @@ const CreateRole: React.FC = () => {
           icon={<RoleIcon />}
         />
 
-        <div
-          style={{
-            ...COMPONENT_STYLES.WORKLOAD_INSTANCES.containerCard,
-            padding: 16,
-            width: '100%',
-          }}
-        >
-          <Form<CreateRoleFormValues>
-            layout="vertical"
-            form={form}
-            onFinish={handleFinish}
-            initialValues={{ scopes: initialScopes }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 18,
-                width: '100%',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  gap: 24,
-                  alignItems: 'flex-start',
-                  width: '100%',
-                }}
-              >
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
-                  <RolesGeneralSection form={form} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <RolesScopePermissionsSection form={form} />
-                </div>
-              </div>
-              <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-                <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
-                  <PrimaryButton
-                    action="Create Role"
-                    loading={submitting}
-                    loadingLabel={BUTTON_TEXTS.LOADING}
-                    onClick={() => form.submit()}
-                    icon={<RoleIcon size={16} />}
-                  />
-                </Form.Item>
-              </div>
-            </div>
-          </Form>
-        </div>
+        <RoleForm
+          form={form}
+          initialValues={{ name: '', scopes: initialScopes }}
+          onSubmit={handleFinish}
+          buttonText="Create Role"
+          submitting={submitting}
+        />
       </div>
     </div>
   );
