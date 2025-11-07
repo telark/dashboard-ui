@@ -38,7 +38,7 @@ export const syncBridgeDetails = async ({
       message,
       config: BRIDGE_SYNC_CONFIG,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     const apiName = details?.syncName || details.name;
     const key = buildDetailsSyncKey(BRIDGE_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX, apiName);
     destroySyncMessage(message, key);
@@ -78,7 +78,7 @@ export const syncBridge = async ({
       message,
       config: BRIDGE_SYNC_CONFIG,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     destroySyncMessage(message, key);
     handleSyncError({ err, message, config: BRIDGE_SYNC_CONFIG, isDetailsSync: false });
   } finally {

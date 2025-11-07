@@ -8,6 +8,15 @@ import {
   ERROR_CODES,
   API_RESPONSES,
 } from '../constants';
+import type {
+  ResourceListResponse,
+  ResourceDetailsResponse,
+  MaintenanceModeResponse,
+  ClusterInsightsResponse,
+  StandardApiResponse,
+} from '../interfaces/api';
+import type { AppWorkload } from '../interfaces/workload';
+import type { AxiosError } from 'axios';
 
 export const fetchGroupers = async (silent = false) => {
   try {
@@ -16,7 +25,11 @@ export const fetchGroupers = async (silent = false) => {
           headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK },
         }
       : {};
-    return await Client<any>(exporterApiClient, Endpoints.GROUPERS.GET_ALL.path, config);
+    return await Client<ResourceListResponse<unknown>>(
+      exporterApiClient,
+      Endpoints.GROUPERS.GET_ALL.path,
+      config,
+    );
   } catch (error) {
     if (!silent) {
       console.error(ERROR_MESSAGES.CLIENT.FETCH_GROUPERS_FAILED, error);
@@ -27,7 +40,10 @@ export const fetchGroupers = async (silent = false) => {
 
 export const fetchGrouperDetails = async (name: string) => {
   try {
-    return await Client<any>(exporterApiClient, Endpoints.GROUPERS.GET_DETAILS(name).path);
+    return await Client<ResourceDetailsResponse<unknown>>(
+      exporterApiClient,
+      Endpoints.GROUPERS.GET_DETAILS(name).path,
+    );
   } catch (error) {
     console.error(`${ERROR_MESSAGES.CLIENT.FETCH_GROUPER_DETAILS_FAILED} "${name}":`, error);
     throw error;
@@ -37,7 +53,7 @@ export const fetchGrouperDetails = async (name: string) => {
 export const updateGrouperSyncMode = async (name: string, syncMode: string) => {
   try {
     const { path, method } = Endpoints.GROUPERS.UPDATE_SYNC(name);
-    return await Client<any>(exporterApiClient, path, {
+    return await Client<StandardApiResponse>(exporterApiClient, path, {
       method: method,
       data: { spec: { config: { sync: { mode: syncMode } } } },
     });
@@ -49,16 +65,18 @@ export const updateGrouperSyncMode = async (name: string, syncMode: string) => {
 
 export const checkGrouperMaintenanceMode = async (name: string) => {
   try {
-    return await Client<any>(exporterApiClient, Endpoints.GROUPER_MAINTENANCE.CHECK(name).path, {
-      // Mark this request so 404 can be handled gracefully without noisy logs
-      headers: { [HTTP_HEADERS.CUSTOM.SILENT_404]: HEADER_VALUES.SILENT_404 },
-    });
+    return await Client<MaintenanceModeResponse>(
+      exporterApiClient,
+      Endpoints.GROUPER_MAINTENANCE.CHECK(name).path,
+      {
+        headers: { [HTTP_HEADERS.CUSTOM.SILENT_404]: HEADER_VALUES.SILENT_404 },
+      },
+    );
   } catch (error) {
-    // If maintenance feature is not found, treat as no maintenance (null), not an error
-    const axiosErr = error as any;
+    const axiosErr = error as AxiosError & { normalized?: { status?: number } };
     const status = axiosErr?.response?.status ?? axiosErr?.normalized?.status;
     if (status === HTTP_STATUS.NOT_FOUND) {
-      return { data: null } as any;
+      return { status: HTTP_STATUS.NOT_FOUND, message: '', data: null } as MaintenanceModeResponse;
     }
     console.error(`${ERROR_MESSAGES.CLIENT.FETCH_MAINTENANCE_MODE_FAILED} "${name}":`, error);
     throw error;
@@ -77,12 +95,13 @@ export const checkClusterInsights = async () => {
       validateStatus: () => true,
     });
     if (resp.status === HTTP_STATUS.NOT_FOUND) {
-      return { data: null, _status: HTTP_STATUS.NOT_FOUND } as any;
+      return { data: null, _status: HTTP_STATUS.NOT_FOUND } as ClusterInsightsResponse;
     }
-    return { data: resp.data, _status: resp.status } as any;
-  } catch (error: any) {
-    if (error?.code === ERROR_CODES.NETWORK) {
-      return { ...API_RESPONSES.NETWORK_ERROR, _status: 0 } as any;
+    return { data: resp.data, _status: resp.status } as ClusterInsightsResponse;
+  } catch (error: unknown) {
+    const networkError = error as { code?: string };
+    if (networkError?.code === ERROR_CODES.NETWORK) {
+      return { data: null, _status: 0, ...API_RESPONSES.NETWORK_ERROR } as ClusterInsightsResponse;
     }
     throw error;
   }
@@ -90,7 +109,10 @@ export const checkClusterInsights = async () => {
 
 export const fetchAllAppsWorkloads = async () => {
   try {
-    return await Client<any>(exporterApiClient, Endpoints.WORKLOADS.APPS.GET_ALL_APPS.path);
+    return await Client<ResourceListResponse<AppWorkload>>(
+      exporterApiClient,
+      Endpoints.WORKLOADS.APPS.GET_ALL_APPS.path,
+    );
   } catch (error) {
     console.error(ERROR_MESSAGES.CLIENT.FETCH_APPS_FAILED, error);
     throw error;
@@ -99,7 +121,7 @@ export const fetchAllAppsWorkloads = async () => {
 
 export const fetchAppWorkloadDetails = async (name: string) => {
   try {
-    return await Client<any>(
+    return await Client<ResourceDetailsResponse<AppWorkload>>(
       exporterApiClient,
       Endpoints.WORKLOADS.APPS.GET_APP_DETAILS(name).path,
     );
@@ -112,7 +134,7 @@ export const fetchAppWorkloadDetails = async (name: string) => {
 export const updateAppWorkloadSyncMode = async (name: string, syncMode: string) => {
   try {
     const { path, method } = Endpoints.WORKLOADS.APPS.UPDATE_APP_SYNC(name);
-    return await Client<any>(exporterApiClient, path, {
+    return await Client<StandardApiResponse>(exporterApiClient, path, {
       method: method,
       data: { spec: { config: { sync: { mode: syncMode } } } },
     });
@@ -124,7 +146,10 @@ export const updateAppWorkloadSyncMode = async (name: string, syncMode: string) 
 
 export const fetchAllBatchesWorkloads = async () => {
   try {
-    return await Client<any>(exporterApiClient, Endpoints.WORKLOADS.BATCHES.GET_ALL_BATCHES.path);
+    return await Client<ResourceListResponse<unknown>>(
+      exporterApiClient,
+      Endpoints.WORKLOADS.BATCHES.GET_ALL_BATCHES.path,
+    );
   } catch (error) {
     console.error(ERROR_MESSAGES.CLIENT.FETCH_BATCHES_FAILED, error);
     throw error;
@@ -138,7 +163,11 @@ export const fetchBridges = async (silent = false) => {
           headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK },
         }
       : {};
-    return await Client<any>(exporterApiClient, Endpoints.BRIDGES.GET_ALL.path, config);
+    return await Client<ResourceListResponse<unknown>>(
+      exporterApiClient,
+      Endpoints.BRIDGES.GET_ALL.path,
+      config,
+    );
   } catch (error) {
     if (!silent) {
       console.error(ERROR_MESSAGES.CLIENT.FETCH_BRIDGES_FAILED, error);
@@ -149,7 +178,10 @@ export const fetchBridges = async (silent = false) => {
 
 export const fetchBridgeDetails = async (name: string) => {
   try {
-    return await Client<any>(exporterApiClient, Endpoints.BRIDGES.GET_DETAILS(name).path);
+    return await Client<ResourceDetailsResponse<unknown>>(
+      exporterApiClient,
+      Endpoints.BRIDGES.GET_DETAILS(name).path,
+    );
   } catch (error) {
     console.error(`${ERROR_MESSAGES.CLIENT.FETCH_BRIDGE_DETAILS_FAILED} "${name}":`, error);
     throw error;
@@ -159,7 +191,7 @@ export const fetchBridgeDetails = async (name: string) => {
 export const updateBridgeSyncMode = async (name: string, syncMode: string) => {
   try {
     const { path, method } = Endpoints.BRIDGES.UPDATE_SYNC(name);
-    return await Client<any>(exporterApiClient, path, {
+    return await Client<StandardApiResponse>(exporterApiClient, path, {
       method: method,
       data: { spec: { config: { sync: { mode: syncMode } } } },
     });
