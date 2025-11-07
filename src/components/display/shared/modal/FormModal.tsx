@@ -38,7 +38,10 @@ const FormModal: React.FC<FormModalProps> = ({
       form.resetFields();
       onCancel();
     } catch (error) {
-      message.error('Failed to submit form');
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to submit form';
+      console.error('Form submission error:', error);
+      message.error(errorMessage);
     } finally {
       setSubmitting(false);
     }

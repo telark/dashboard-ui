@@ -1,4 +1,4 @@
-import type { Role, RoleScopePermission } from '../../../../interfaces/roles';
+import type { Role } from '../../../../interfaces/roles';
 import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
 
 export type RolesSortKey = 'name' | 'type' | 'permission' | 'createdAt' | 'status';

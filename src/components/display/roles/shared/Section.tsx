@@ -13,7 +13,7 @@ const Section: React.FC<SectionProps> = ({ title, subtitle, content, className, 
   return (
     <div
       className={`app-section ${className || ''}`.trim()}
-      style={{ width: '100%', ...(style || {}) }}
+      style={{ width: '100%', ...style }}
     >
       <div style={{ fontWeight: 600 }}>{title}</div>
       {subtitle ? (
