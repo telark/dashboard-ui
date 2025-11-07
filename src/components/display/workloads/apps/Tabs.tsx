@@ -1,15 +1,8 @@
 import React from 'react';
 import TabButton from '../../../../components/buttons/TabButton';
+import { WORKLOAD_DETAILS_CONSTANTS, TabKey } from '../../../../constants/pages/workload-details';
 
-const TAB_KEYS = {
-  GENERAL: 'general',
-  INSTANCES: 'instances',
-  BRIDGES: 'bridges',
-  HISTORY: 'history',
-  SYNC: 'sync',
-} as const;
-
-type TabKey = (typeof TAB_KEYS)[keyof typeof TAB_KEYS];
+const { TAB_KEYS } = WORKLOAD_DETAILS_CONSTANTS;
 
 interface WorkloadTabsProps {
   activeTab: TabKey;
@@ -18,16 +11,7 @@ interface WorkloadTabsProps {
 
 const WorkloadTabs: React.FC<WorkloadTabsProps> = ({ activeTab, onTabChange }) => {
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 18,
-        background: 'linear-gradient(180deg, rgba(239,244,250,0.6), rgba(239,244,250,0))',
-        padding: '8px 0',
-        borderRadius: 24,
-      }}
-    >
+    <div style={WORKLOAD_DETAILS_CONSTANTS.LAYOUT.TABS_CONTAINER}>
       <TabButton
         label="General"
         active={activeTab === TAB_KEYS.GENERAL}
@@ -58,5 +42,3 @@ const WorkloadTabs: React.FC<WorkloadTabsProps> = ({ activeTab, onTabChange }) =
 };
 
 export default WorkloadTabs;
-export { TAB_KEYS };
-export type { TabKey };

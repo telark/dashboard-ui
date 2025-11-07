@@ -4,12 +4,11 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AppWorkloadDetailsHook } from '../../../../hooks/AppWorkloadDetailsHook';
 import { WorkloadDetailsError, Empty, Header, Tabs, Content } from '.';
-import { GROUPER_DETAILS_CONSTANTS } from '../../../../constants/pages/grouper-details';
+import { WORKLOAD_DETAILS_CONSTANTS, TabKey } from '../../../../constants/pages/workload-details';
 import LoadingDetails from '../../../../components/shared/LoadingDetails';
 import { RootState } from '../../../../store';
 import { STORE_ERRORS } from '../../../../constants/store/store';
 import { usePersistedTab } from '../../../../utils/shared/usePersistedTab';
-import { TAB_KEYS, type TabKey } from '../../../../components/display/workloads/apps/Tabs';
 import WorkloadMetrics from '../../../../components/display/workloads/apps/Metrics';
 
 const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() {
@@ -17,8 +16,8 @@ const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() 
   const { activeTab, handleTabChange } = usePersistedTab<TabKey>({
     resourceType: 'workload',
     resourceName: workloadNameFromUrl,
-    tabKeys: TAB_KEYS,
-    defaultTab: TAB_KEYS.GENERAL,
+    tabKeys: WORKLOAD_DETAILS_CONSTANTS.TAB_KEYS,
+    defaultTab: WORKLOAD_DETAILS_CONSTANTS.TAB_KEYS.GENERAL,
   });
   const [syncing] = useState(false);
 
@@ -56,7 +55,7 @@ const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() 
   }
 
   return (
-    <div style={GROUPER_DETAILS_CONSTANTS.LAYOUT.PAGE_CONTAINER}>
+    <div style={WORKLOAD_DETAILS_CONSTANTS.LAYOUT.PAGE_CONTAINER}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <Header workload={workload} />
         <Tabs activeTab={activeTab} onTabChange={handleTabChange} />
