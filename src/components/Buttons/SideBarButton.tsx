@@ -13,7 +13,6 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({
   isCollapsed = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const navigate = useNavigate(); // For navigation
 
   const itemKey = `${route || 'route-missing'}-${text || 'text-missing'}`;
 
@@ -46,7 +45,7 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({
       eventKey={itemKey}
       title={String(text)}
       icon={isHovered && hoverIcon ? hoverIcon : coloredIcon}
-      onClick={() => navigate(route)}
+      onClick={() => useNavigate()(route)}
       style={{
         backgroundColor: 'transparent',
         color: isActiveOrHovered ? DEFAULT_COLORS.SUCCESS : BUTTON_COLORS.TEXT_DEFAULT,

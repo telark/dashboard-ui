@@ -387,10 +387,7 @@
   height: 18.5px !important;
 }
 
-.compact-menu .ant-menu {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
+.compact-menu .ant-menu,
 .compact-menu .ant-menu-item,
 .compact-menu .ant-menu-submenu {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
