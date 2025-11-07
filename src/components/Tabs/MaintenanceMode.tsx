@@ -37,18 +37,11 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
   hasMaintenanceData,
   handleRemoveMaintenanceMode,
 }) => {
-  // State for toggling advanced options (Workloads / Services)
-  const [isAdvancedOptionsVisible, setAdvancedOptionsVisible] = useState(false);
-
-  // State for checkboxes in the advanced options
+  const [isAdvancedOptionsVisible, setIsAdvancedOptionsVisible] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-
-  // Toggle Advanced Options
   const toggleAdvancedOptions = () => {
-    setAdvancedOptionsVisible(!isAdvancedOptionsVisible);
+    setIsAdvancedOptionsVisible(!isAdvancedOptionsVisible);
   };
-
-  // Note: option change handler is currently inlined where needed
 
   return (
     <div style={{ padding: '8px 4px 24px' }}>

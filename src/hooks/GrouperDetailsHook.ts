@@ -39,10 +39,10 @@ export const GrouperDetailsHook = () => {
   const [isMaintenanceModeActive, setIsMaintenanceModeActive] = useState<boolean>(
     HOOK_CONFIGS.DEFAULT_VALUES.MAINTENANCE_MODE_ACTIVE,
   );
-  const [maintenaceUpdateAction, setMaintenanceUpdateAction] = useState(
+  const [maintenanceUpdateAction, setMaintenanceUpdateAction] = useState(
     HOOK_CONFIGS.DEFAULT_VALUES.MAINTENANCE_UPDATE_ACTION,
   );
-  const [maintenaceDeleteAction, setMaintenanceDeleteAction] = useState(
+  const [maintenanceDeleteAction, setMaintenanceDeleteAction] = useState(
     HOOK_CONFIGS.DEFAULT_VALUES.MAINTENANCE_DELETE_ACTION,
   );
 
@@ -161,16 +161,18 @@ export const GrouperDetailsHook = () => {
   };
 
   const handleMaintenanceMode = async () => {
+    if (!name) {
+      return;
+    }
     const resourceType = grouperDetails?.kind?.toLowerCase();
     try {
       let response;
       if (isMaintenanceModeActive) {
-        // Update existing maintenance mode
         response = await dispatch(
           updateGrouperMaintenanceModeThunk({
-            grouperName: name!,
-            updateAction: maintenaceUpdateAction,
-            deleteAction: maintenaceDeleteAction,
+            grouperName: name,
+            updateAction: maintenanceUpdateAction,
+            deleteAction: maintenanceDeleteAction,
           }),
         ).unwrap();
         if (response.status === HTTP_STATUS.SUCCESS) {
@@ -182,10 +184,10 @@ export const GrouperDetailsHook = () => {
         // Enable maintenance mode for the first time
         response = await dispatch(
           enableGrouperMaintenanceModeThunk({
-            grouperName: name!,
+            grouperName: name,
             resourceType,
-            updateAction: maintenaceUpdateAction,
-            deleteAction: maintenaceDeleteAction,
+            updateAction: maintenanceUpdateAction,
+            deleteAction: maintenanceDeleteAction,
           }),
         ).unwrap();
 
@@ -197,7 +199,7 @@ export const GrouperDetailsHook = () => {
       }
 
       // Re-fetch details and sync local switches with the latest server state
-      const refreshed = await dispatch(fetchGrouperDetailsThunk(name!)).unwrap();
+      const refreshed = await dispatch(fetchGrouperDetailsThunk(name)).unwrap();
       if (refreshed?.maintenance) {
         setHasMaintenanceData(true);
         setIsMaintenanceModeActive(
@@ -220,14 +222,14 @@ export const GrouperDetailsHook = () => {
   };
 
   const handleRemoveMaintenanceMode = async () => {
-    try {
-      // Dispatch the action to disable maintenance mode
-      const response = await dispatch(removeGrouperMaintenanceModeThunk(name!)).unwrap();
+    if (!name) {
+      return;
+    }
 
-      // Handle the response and show a success message
+    try {
+      const response = await dispatch(removeGrouperMaintenanceModeThunk(name)).unwrap();
       if (response.status === HTTP_STATUS.SUCCESS) {
         message.success(HOOK_MESSAGES.SUCCESS.MAINTENANCE_MODE_REMOVED);
-        // Optionally update the UI state to reflect the change
         setIsMaintenanceModeActive(false);
         setMaintenanceUpdateAction(false);
         setMaintenanceDeleteAction(false);
@@ -253,8 +255,8 @@ export const GrouperDetailsHook = () => {
 
     isMaintenanceModeActive,
     isMaintenanceModalVisible,
-    maintenaceUpdateAction,
-    maintenaceDeleteAction,
+    maintenanceUpdateAction,
+    maintenanceDeleteAction,
     handleEnableMaintenanceClick,
     handleCancelMaintenance,
     handleMaintenanceUpdateActionChange,

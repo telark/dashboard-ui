@@ -10,7 +10,6 @@ const { Title } = Typography;
 interface BatchesListProps {
   batches: BatchWorkloadCardData[];
   loading?: boolean;
-  onBatchClick?: (batch: BatchWorkloadCardData) => void;
 }
 
 const BatchesList: React.FC<BatchesListProps> = ({ batches, loading = false }) => {

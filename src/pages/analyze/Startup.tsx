@@ -165,7 +165,7 @@ const Startup: React.FC<StartupProps> = () => {
           .catch(handlePollError);
 
         const madeFourFails = failureCountRef.current >= 4;
-        const baseDelay = i < delays.length ? delays[i++] : delays[delays.length - 1];
+        const baseDelay = i < delays.length ? delays[i++] : delays.at(-1)!;
         const nextDelay = madeFourFails ? Math.max(5000, baseDelay) : baseDelay;
         timeoutRef.current = globalThis.setTimeout(
           () => scheduleNextPoll(poll, madeFourFails),
@@ -178,8 +178,6 @@ const Startup: React.FC<StartupProps> = () => {
         if (startTimerRef.current) globalThis.clearTimeout(startTimerRef.current);
       };
     }
-    return;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
