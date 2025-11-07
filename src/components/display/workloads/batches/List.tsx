@@ -69,7 +69,7 @@ const BatchesList: React.FC<BatchesListProps> = ({ batches, loading = false }) =
   }
 
   return (
-    <div style={{ width: '100%' }}>{/* TODO: Implement batch details navigation when ready */}</div>
+    <div style={{ width: '100%' }}/>
   );
 };
 

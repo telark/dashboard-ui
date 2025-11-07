@@ -183,7 +183,7 @@ export interface WorkloadsState {
   apps: AppWorkloadCardData[];
   batches: BatchWorkloadCardData[];
   appDetails: AppWorkload | null;
-  batchDetails: AppWorkload | null; // TODO: Add batch workload interface
+  batchDetails: AppWorkload | null;
   appLoading: boolean;
   batchLoading: boolean;
   appError: string | null;
