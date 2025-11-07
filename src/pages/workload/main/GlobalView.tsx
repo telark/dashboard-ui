@@ -102,12 +102,6 @@ const WorkloadsGlobalView: React.FC = memo(() => {
     navigate(APP_ROUTES.APP_WORKLOAD_DETAILS.replace(':name', app.name));
   };
 
-  const handleBatchClick = (batch: BatchWorkloadCardData) => {
-    // TODO: Implement batch details navigation when ready
-
-    console.warn('Batch clicked:', batch);
-  };
-
   const loading = appLoading || batchLoading;
   const error = appError || batchError;
 
@@ -127,7 +121,6 @@ const WorkloadsGlobalView: React.FC = memo(() => {
     );
   }
 
-  // Always show Success component with tabs, even when empty
   return (
     <Success
       apps={apps}
@@ -135,7 +128,6 @@ const WorkloadsGlobalView: React.FC = memo(() => {
       appLoading={appLoading}
       batchLoading={batchLoading}
       onAppClick={handleAppClick}
-      onBatchClick={handleBatchClick}
       onRefresh={handleLoadWorkloads}
     />
   );

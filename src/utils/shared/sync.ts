@@ -1,5 +1,5 @@
 import { SYNC_MESSAGES } from '../../constants/layout/modes';
-import store, { AppDispatch, RootState } from '../../store';
+import store, { RootState } from '../../store';
 import { HandleSyncEffectParams, HandleSyncErrorParams, SyncConfig } from '../../interfaces/sync';
 
 const getPollingEffects = (config: SyncConfig, isDetailsSync: boolean): readonly string[] => {
@@ -52,7 +52,7 @@ const handleDeletionPolling = (
   isDetailsSync: boolean,
   message: HandleSyncEffectParams['message'],
 ): void => {
-  (store.dispatch as AppDispatch)(config.fetchAllResourcesThunk());
+  (store.dispatch)(config.fetchAllResourcesThunk());
 
   const start = Date.now();
   const waitMs = getPollingMaxWait(config, isDetailsSync);
@@ -91,7 +91,7 @@ const handleRefreshEffect = async (
   message: HandleSyncEffectParams['message'],
 ): Promise<void> => {
   if (resourceName) {
-    await (store.dispatch as AppDispatch)(config.fetchResourceDetailsThunk(resourceName));
+    await (store.dispatch)(config.fetchResourceDetailsThunk(resourceName));
   }
 
   const duration = getSuccessDuration(config, isDetailsSync);

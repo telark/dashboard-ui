@@ -20,12 +20,11 @@ interface SuccessProps {
   appLoading: boolean;
   batchLoading: boolean;
   onAppClick: (app: AppWorkloadCardData) => void;
-  onBatchClick: (batch: BatchWorkloadCardData) => void;
   onRefresh?: () => void;
 }
 
 const Success: React.FC<SuccessProps> = React.memo(
-  ({ apps, batches, appLoading, batchLoading, onAppClick, onBatchClick, onRefresh }) => {
+  ({ apps, batches, appLoading, batchLoading, onAppClick, onRefresh }) => {
     const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.APPS);
 
     return (
@@ -70,7 +69,7 @@ const Success: React.FC<SuccessProps> = React.memo(
         )}
 
         {activeTab === TAB_KEYS.BATCHES && (
-          <BatchesList batches={batches} loading={batchLoading} onBatchClick={onBatchClick} />
+          <BatchesList batches={batches} loading={batchLoading} />
         )}
       </div>
     );

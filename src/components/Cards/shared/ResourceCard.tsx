@@ -69,7 +69,7 @@ const ResourceCard: React.FC<ResourceCardProps> = React.memo(function ResourceCa
   syncFunction,
   customStatusStyle,
 }) {
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const { message } = AntdApp.useApp();
   const globalSyncing = useSelector((state: RootState) =>
@@ -105,16 +105,16 @@ const ResourceCard: React.FC<ResourceCardProps> = React.memo(function ResourceCa
   }, [actions]);
 
   const handleDelete = useCallback(() => {
-    setModalVisible(true);
+    setIsModalVisible(true);
   }, []);
 
   const handleConfirmDelete = useCallback(() => {
-    setModalVisible(false);
+    setIsModalVisible(false);
     actions.onDelete();
   }, [actions]);
 
   const handleCancelDelete = useCallback(() => {
-    setModalVisible(false);
+    setIsModalVisible(false);
   }, []);
 
   return (
