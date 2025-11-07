@@ -29,6 +29,7 @@ export const mapAppsWorkloadsData = (data: any): AppWorkloadCardData[] => {
       sourceType: item.fasid?.sourceType || 'Unknown',
       registry: item.cacid?.registry || 'Unknown',
       strategy: item.cacid?.strategy || 'Unknown',
+      creationTime: item.fasid?.creationTime ? ParseGoTimeDate(item.fasid.creationTime) : undefined,
       sync: item.config?.sync,
     };
   });

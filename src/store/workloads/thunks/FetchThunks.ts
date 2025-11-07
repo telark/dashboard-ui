@@ -5,7 +5,7 @@ import {
   fetchAppWorkloadDetails,
 } from '../../../clients/exporter';
 import { mapAppsWorkloadsData, mapSingleAppWorkloadData } from '../../../utils/mappers/appMapper';
-import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants';
+import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants/store/store';
 import { extractErrorMessage } from '../../../utils/helpers/format';
 
 export const fetchAllAppsWorkloadsThunk = createAsyncThunk(

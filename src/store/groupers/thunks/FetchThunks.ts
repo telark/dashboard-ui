@@ -15,7 +15,7 @@ import {
   extractErrorMessage,
 } from '../../../utils/helpers/format';
 import { Maintenance } from '../../../interfaces/grouper';
-import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants';
+import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants/store/store';
 
 export const fetchAllGroupersThunk = createAsyncThunk(
   STORE_ACTIONS.GROUPERS.FETCH,

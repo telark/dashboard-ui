@@ -1,17 +1,14 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useMemo } from 'react';
 import { Card } from 'antd';
-import WorkloadMetrics from '../../../../components/display/workloads/apps/Metrics';
 import WorkloadBridges from '../../../../components/display/workloads/apps/Bridges';
-import WorkloadGeneralInfo from '../../../../components/display/workloads/apps/GeneralInfo';
+import ViewDetails from '../../../../components/display/shared/views/ViewDetails';
 import SyncMode from '../../../../components/tabs/SyncMode';
 import { FancySpinner } from '../../../../components/shared';
 import { TAB_KEYS, type TabKey } from '../../../../components/display/workloads/apps/Tabs';
 import type { AppWorkload } from '../../../../interfaces/workload';
+import { createWorkloadViewConfig } from '../../../../config/workloadViewConfig';
+import InstancesTable from '../../../../components/display/workloads/apps/instances/Table';
 
-// Lazy load heavy components
-const WorkloadInstances = lazy(
-  () => import('../../../../components/display/workloads/apps/Instances'),
-);
 const WorkloadHistory = lazy(() => import('../../../../components/display/workloads/apps/History'));
 
 interface ContentProps {
@@ -30,7 +27,6 @@ const sectionCardStyle: React.CSSProperties = {
   borderRadius: 16,
   boxShadow: '0 8px 20px rgba(0,0,0,0.05)',
   border: 'none',
-  marginBottom: 16,
 };
 
 const Content: React.FC<ContentProps> = React.memo(
@@ -45,37 +41,22 @@ const Content: React.FC<ContentProps> = React.memo(
     syncing = false,
     isGloballySyncing = false,
   }) => {
-    return (
-      <div>
-        {/* Resource Summary */}
-        <WorkloadMetrics workload={workload} />
+    const workloadViewConfig = useMemo(() => {
+      if (!workload) return null;
+      return createWorkloadViewConfig(workload);
+    }, [workload]);
 
+    return (
+      <>
         {/* Active section */}
-        {activeTab === TAB_KEYS.GENERAL && (
-          <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
-            <WorkloadGeneralInfo workload={workload} />
-          </Card>
+        {activeTab === TAB_KEYS.GENERAL && workloadViewConfig && (
+          <ViewDetails config={workloadViewConfig} />
         )}
 
         {activeTab === TAB_KEYS.INSTANCES && (
           <Card style={sectionCardStyle} styles={{ body: { padding: 16 } }}>
             <div style={{ padding: 4 }}>
-              <Suspense
-                fallback={
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      height: '200px',
-                    }}
-                  >
-                    <FancySpinner />
-                  </div>
-                }
-              >
-                <WorkloadInstances workload={workload} />
-              </Suspense>
+              <InstancesTable workload={workload} />
             </div>
           </Card>
         )}
@@ -124,7 +105,7 @@ const Content: React.FC<ContentProps> = React.memo(
             />
           </Card>
         )}
-      </div>
+      </>
     );
   },
 );

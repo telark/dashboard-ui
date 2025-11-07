@@ -1,23 +1,22 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Card } from 'antd';
-import GrouperGeneralInfo from '../../../components/display/grouper/GeneralInfo';
-import HistoryTimeLine from '../../../components/display/shared/HistoryTimeLine';
+import ViewDetails from '../../../components/display/shared/views/ViewDetails';
+import HistoryTimeLine from '../../../components/display/shared/timeline';
 import MaintenanceMode from '../../../components/tabs/MaintenanceMode';
-import Resources from '../../../components/display/grouper/Resources';
+import Resources from '../../../components/display/grouper/resources/Resources';
 import SyncMode from '../../../components/tabs/SyncMode';
 import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../../constants/pages/grouper-details';
+import { createGrouperViewConfig } from '../../../config/grouperViewConfig';
 
 interface ContentProps {
   activeTab: TabKey;
   grouperDetails: any;
   totalResources: number;
-  // Sync Mode Data
   isAutoSync: boolean;
   loadingSave: boolean;
   hasChanges: boolean;
   handleAutoSyncChange: (value: boolean) => void;
   handleGrouperSyncSave: () => void;
-  // Maintenance Mode Data
   isMaintenanceModeActive: boolean;
   isMaintenanceModalVisible: boolean;
   maintenaceUpdateAction: boolean;
@@ -29,7 +28,6 @@ interface ContentProps {
   handleMaintenanceMode: () => void;
   hasMaintenanceData: boolean;
   handleRemoveMaintenanceMode: () => void;
-  // Sync State
   syncing: boolean;
   isGloballySyncing: boolean;
 }
@@ -58,17 +56,15 @@ const Content: React.FC<ContentProps> = React.memo(
     syncing,
     isGloballySyncing,
   }) => {
+    const grouperViewConfig = useMemo(() => {
+      if (!grouperDetails) return null;
+      return createGrouperViewConfig(grouperDetails, totalResources);
+    }, [grouperDetails, totalResources]);
+
     const renderTabContent = () => {
       switch (activeTab) {
         case GROUPER_DETAILS_CONSTANTS.TAB_KEYS.GENERAL:
-          return (
-            <Card
-              style={GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD}
-              styles={{ body: GROUPER_DETAILS_CONSTANTS.LAYOUT.SECTION_CARD_BODY }}
-            >
-              <GrouperGeneralInfo {...grouperDetails} totalResources={totalResources} />
-            </Card>
-          );
+          return grouperViewConfig ? <ViewDetails config={grouperViewConfig} /> : null;
 
         case GROUPER_DETAILS_CONSTANTS.TAB_KEYS.RESOURCES:
           return (
@@ -78,7 +74,6 @@ const Content: React.FC<ContentProps> = React.memo(
             >
               <div style={{ padding: 4 }}>
                 <Resources
-                  name={grouperDetails.name}
                   resources={[
                     ...(grouperDetails.workloads || []),
                     ...(grouperDetails.bridges || []),

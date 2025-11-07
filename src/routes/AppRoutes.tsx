@@ -8,8 +8,15 @@ import {
   BridgeDetailsView,
   WorkloadsGlobalView,
   AppWorkloadDetailsView,
+  RolesCreateView,
+  RolesListView,
+  RoleView,
+  RoleEdit,
+  CategoriesListView,
+  CategoryView,
+  CategoryEdit,
 } from '../pages';
-import AnimatedPageWrapper from '../components/shared/AnimatedPageWrapper';
+import AnimatedPageWrapper from '../components/animation/AnimatedPageWrapper';
 import { APP_ROUTES } from '../constants';
 
 const AppRoutes: React.FC = () => {
@@ -43,6 +50,13 @@ const AppRoutes: React.FC = () => {
           </AnimatedPageWrapper>
         }
       />
+      <Route path={APP_ROUTES.ROLES} element={<RolesListView />} />
+      <Route path={APP_ROUTES.ROLE_CREATE} element={<RolesCreateView />} />
+      <Route path={APP_ROUTES.ROLE_VIEW} element={<RoleView />} />
+      <Route path={APP_ROUTES.ROLE_EDIT} element={<RoleEdit />} />
+      <Route path={APP_ROUTES.CATEGORIES} element={<CategoriesListView />} />
+      <Route path={APP_ROUTES.CATEGORY_VIEW} element={<CategoryView />} />
+      <Route path={APP_ROUTES.CATEGORY_EDIT} element={<CategoryEdit />} />
     </Routes>
   );
 };

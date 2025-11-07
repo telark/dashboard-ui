@@ -160,6 +160,7 @@ export interface AppWorkloadCardData {
   sourceType: string;
   registry: string;
   strategy: string;
+  creationTime?: string;
   sync?: Sync;
 }
 

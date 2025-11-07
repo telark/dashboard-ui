@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal } from 'antd';
-import { UI } from '../../../constants/ui';
+import { UI } from '../../../constants/layout/ui';
 
 interface ResourceCardModalProps {
   isVisible: boolean;

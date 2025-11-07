@@ -10,7 +10,7 @@ import {
   GROUPERS_REFRESH_INTERVAL_MS,
   GROUPERS_SYNC_LS_KEY,
   GROUPERS_SYNC_THROTTLE_MS,
-} from '../../constants/sync';
+} from '../../constants/config/sync';
 import { GrouperInterface } from '../../interfaces/grouper';
 import { createResourceStateUtils } from '../shared/resourceStateFactory';
 

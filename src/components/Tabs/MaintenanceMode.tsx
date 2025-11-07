@@ -8,7 +8,7 @@ import {
 } from '@ant-design/icons';
 import PrimaryButtonWithOutLoading from '../buttons/PrimayButtonWithOutLoading';
 import { DEFAULT_COLORS } from '../../constants';
-import { MAINTENANCE_MODE } from '../../constants/modes';
+import { MAINTENANCE_MODE } from '../../constants/layout/modes';
 
 interface MaintenanceModeProps {
   isMaintenanceModeActive: boolean;
@@ -63,8 +63,8 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
         {MAINTENANCE_MODE.description}
       </p>
       <ul style={{ marginTop: 10, paddingLeft: 18, color: '#4a5568', fontSize: 13 }}>
-        {MAINTENANCE_MODE.list.map((item, index) => (
-          <li key={index}>{item}</li>
+        {MAINTENANCE_MODE.list.map((item) => (
+          <li key={item}>{item}</li>
         ))}
       </ul>
 

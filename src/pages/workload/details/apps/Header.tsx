@@ -7,11 +7,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = React.memo(({ workload }) => {
-  return (
-    <div style={{ marginBottom: '24px' }}>
-      <WorkloadHeader workload={workload} />
-    </div>
-  );
+  return <WorkloadHeader workload={workload} />;
 });
 
 Header.displayName = 'Header';

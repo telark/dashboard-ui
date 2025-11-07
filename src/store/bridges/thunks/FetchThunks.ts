@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchBridges, fetchBridgeDetails } from '../../../clients/exporter';
 import { mapBridgesData, mapSingleBridgeData } from '../../../utils/mappers/bridgeMapper';
-import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants';
+import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants/store/store';
 import { RootState } from '../../../store';
 import { BridgeInterface } from '../../../interfaces/bridge';
 import { extractErrorMessage } from '../../../utils/helpers/format';

@@ -1,10 +1,10 @@
 import { triggerSingleAppSync } from '../../clients/sync-manager';
-import { SYNC_MESSAGES } from '../../constants/modes';
-import { SYNC_CONSTANTS } from '../../constants/sync';
+import { SYNC_MESSAGES } from '../../constants/layout/modes';
+import { SYNC_CONSTANTS } from '../../constants/config/sync';
 import store, { AppDispatch, RootState } from '../../store';
 import { startSync, endSync } from '../../store/workloads/slices/workloadSlice';
 import { handleSyncEffect, handleSyncError } from '../shared/sync';
-import { WORKLOAD_SYNC_CONFIG } from '../../constants/config';
+import { WORKLOAD_SYNC_CONFIG } from '../../config/syncConfig';
 import { DetailsSyncParams, SyncParams } from '../../interfaces/sync';
 
 export const syncAppWorkloadDetails = async ({

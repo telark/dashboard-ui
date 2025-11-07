@@ -1,8 +1,6 @@
-import { DEFAULT_COLORS } from '../colors';
+import { DEFAULT_COLORS } from '../shared/colors';
 
-// GrouperDetails page constants
 export const GROUPER_DETAILS_CONSTANTS = {
-  // Tab keys
   TAB_KEYS: {
     GENERAL: 'general',
     RESOURCES: 'resources',
@@ -10,15 +8,12 @@ export const GROUPER_DETAILS_CONSTANTS = {
     SYNC: 'sync',
     MAINTENANCE: 'maintenance',
   } as const,
-
-  // Layout styles
   LAYOUT: {
     PAGE_CONTAINER: {
       background: DEFAULT_COLORS.PAGE_BG,
-      minHeight: '100vh',
-      marginTop: 60,
-      padding: '24px',
-      paddingBottom: 64,
+      minHeight: 'calc(100vh - 60px)',
+      marginTop: '60px',
+      padding: '48px 24px 48px',
     },
     HEADER_CONTAINER: {
       background: '#fff',
@@ -38,20 +33,19 @@ export const GROUPER_DETAILS_CONSTANTS = {
       background: 'linear-gradient(180deg, rgba(239,244,250,0.6), rgba(239,244,250,0))',
       padding: '8px 0',
       borderRadius: 24,
-      marginBottom: 16,
     },
     SECTION_CARD: {
       borderRadius: 16,
       boxShadow: '0 8px 20px rgba(0,0,0,0.05)',
       border: 'none',
       marginBottom: 16,
+      background: '#fff',
     },
     SECTION_CARD_BODY: {
       padding: 16,
     },
   },
 
-  // Header styles
   HEADER: {
     ICON_CONTAINER: {
       width: 48,
@@ -93,7 +87,6 @@ export const GROUPER_DETAILS_CONSTANTS = {
     },
   },
 
-  // Loading and error states
   STATES: {
     LOADING_CONTAINER: {
       marginTop: 60,
@@ -109,7 +102,6 @@ export const GROUPER_DETAILS_CONSTANTS = {
     },
   },
 
-  // Sync configuration
   SYNC: {
     MESSAGE_KEY_PREFIX: 'sync-',
     POLLING: {
@@ -126,15 +118,11 @@ export const GROUPER_DETAILS_CONSTANTS = {
     ERROR_KEY: 'sync-error',
     TIMEOUT_MESSAGE: 'Taking a bit longer than usual. Please try again in a moment.',
   },
-
-  // FancySpinner configuration
   FANCY_SPINNER: {
     SHOW_LABEL: false,
     SIZE: 18,
     RING_THICKNESS: 2,
   },
-
-  // Messages
   MESSAGES: {
     LOADING: 'Loading...',
     ERROR: 'Error fetching grouper details:',

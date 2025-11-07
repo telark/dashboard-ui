@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { updateAppWorkloadSyncMode, fetchAllAppsWorkloads } from '../../../clients/exporter';
 import { triggerAppsSync } from '../../../clients/sync-manager';
 import { mapSingleAppWorkloadData, mapAppsWorkloadsData } from '../../../utils/mappers/appMapper';
-import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants';
+import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants/store/store';
 import { extractErrorMessage } from '../../../utils/helpers/format';
 
 export const triggerAppsSyncThunk = createAsyncThunk(
