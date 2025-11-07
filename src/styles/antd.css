@@ -286,3 +286,17 @@
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
 }
+
+.compact-menu .ant-menu-item {
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
+.compact-menu.ant-menu-inline-collapsed .ant-menu-item {
+  margin: 0px -12px 0px 0 !important;
+}
+
+.compact-menu .ant-menu-item-group-title {
+  margin-bottom: 0px !important;
+  padding-bottom: 0px !important;
+}

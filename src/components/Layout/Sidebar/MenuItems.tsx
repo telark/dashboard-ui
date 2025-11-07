@@ -24,6 +24,7 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
       <Menu
         mode="inline"
         inlineCollapsed={isCollapsed}
+        className="compact-menu"
         style={{ backgroundColor: 'white', borderRight: 'none', padding: 0, marginRight: -12 }}
       >
         <SidebarButton
@@ -33,45 +34,38 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
           route="/"
           isCollapsed={isCollapsed}
         />
-        <SidebarButton
-          text={'Groupers'}
-          icon={<GrouperIcon />}
-          active={pathname.startsWith('/groupers')}
-          route="/groupers"
-          isCollapsed={isCollapsed}
-        />
-        <SidebarButton
-          text={'Workloads'}
-          icon={<WorkloadIcon />}
-          active={pathname.startsWith('/workloads')}
-          route="/workloads"
-          isCollapsed={isCollapsed}
-        />
-        <SidebarButton
-          text={'Bridges'}
-          icon={<BridgeIcon />}
-          active={pathname.startsWith('/bridges')}
-          route="/bridges"
-          isCollapsed={isCollapsed}
-        />
-        <SidebarButton
-          text={'Roles'}
-          icon={<RoleIcon />}
-          active={pathname.startsWith('/roles')}
-          route="/roles"
-          isCollapsed={isCollapsed}
-        />
-        <SidebarButton
-          text={'Categories'}
-          icon={<CategoryIcon />}
-          active={pathname.startsWith('/categories')}
-          route="/categories"
-          isCollapsed={isCollapsed}
-        />
         <Menu.ItemGroup
-          title={!isCollapsed ? 'Access Management' : ''}
+          title={!isCollapsed ? 'Resources' : ''}
           style={{
-            paddingTop: '16px',
+            paddingTop: '0px',
+          }}
+        >
+          <SidebarButton
+            text={'Groupers'}
+            icon={<GrouperIcon />}
+            active={pathname.startsWith('/groupers')}
+            route="/groupers"
+            isCollapsed={isCollapsed}
+          />
+          <SidebarButton
+            text={'Bridges'}
+            icon={<BridgeIcon />}
+            active={pathname.startsWith('/bridges')}
+            route="/bridges"
+            isCollapsed={isCollapsed}
+          />
+          <SidebarButton
+            text={'Workloads'}
+            icon={<WorkloadIcon />}
+            active={pathname.startsWith('/workloads')}
+            route="/workloads"
+            isCollapsed={isCollapsed}
+          />
+        </Menu.ItemGroup>
+        <Menu.ItemGroup
+          title={!isCollapsed ? 'Users and Groups' : ''}
+          style={{
+            paddingTop: '0px',
           }}
         >
           <SidebarButton
@@ -86,6 +80,20 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
             icon={<GroupIcon />}
             active={pathname.startsWith(APP_ROUTES.GROUPS)}
             route={APP_ROUTES.GROUPS}
+            isCollapsed={isCollapsed}
+          />
+          <SidebarButton
+            text={'Roles'}
+            icon={<RoleIcon />}
+            active={pathname.startsWith('/roles')}
+            route="/roles"
+            isCollapsed={isCollapsed}
+          />
+          <SidebarButton
+            text={'Categories'}
+            icon={<CategoryIcon />}
+            active={pathname.startsWith('/categories')}
+            route="/categories"
             isCollapsed={isCollapsed}
           />
         </Menu.ItemGroup>
