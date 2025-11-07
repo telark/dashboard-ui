@@ -95,4 +95,3 @@ export const SHARED_PAGE_CONSTANTS = {
     },
   },
 } as const;
-

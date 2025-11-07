@@ -20,7 +20,7 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({
   const isActive = Boolean(active);
   const isActiveOrHovered = Boolean(active) || isHovered;
   const iconColor = isActiveOrHovered ? DEFAULT_COLORS.SUCCESS : BUTTON_COLORS.ICON_DEFAULT;
-  
+
   let coloredIcon = null;
   if (icon) {
     if (React.isValidElement(icon)) {

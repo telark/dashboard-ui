@@ -68,9 +68,7 @@ const Success: React.FC<SuccessProps> = React.memo(
           />
         )}
 
-        {activeTab === TAB_KEYS.BATCHES && (
-          <BatchesList batches={batches} loading={batchLoading} />
-        )}
+        {activeTab === TAB_KEYS.BATCHES && <BatchesList batches={batches} loading={batchLoading} />}
       </div>
     );
   },

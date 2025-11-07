@@ -1,4 +1,4 @@
-import storage from 'redux-persist/lib/storage'; 
+import storage from 'redux-persist/lib/storage';
 import type { PersistConfig } from 'redux-persist';
 
 // We only persist the data, not the loading/error/syncing/details

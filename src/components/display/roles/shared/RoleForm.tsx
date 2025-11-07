@@ -89,4 +89,3 @@ const RoleForm: React.FC<RoleFormProps> = ({
 };
 
 export default RoleForm;
-

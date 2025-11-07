@@ -65,4 +65,3 @@ const RowOptions = <T,>({ record, labels, onView, onEdit, onDelete }: RowOptions
 };
 
 export default RowOptions;
-

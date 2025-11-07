@@ -27,7 +27,7 @@ const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE', 'persist/PURGE'],
-        warnAfter: 128,  // default is 32ms
+        warnAfter: 128, // default is 32ms
       },
     }),
 });

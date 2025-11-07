@@ -52,11 +52,7 @@ const ViewRole: React.FC = () => {
       className="app-root"
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <Header
-          subtitle="View role details"
-          breadcrumbs={breadcrumbs}
-          icon={<RoleIcon />}
-        />
+        <Header subtitle="View role details" breadcrumbs={breadcrumbs} icon={<RoleIcon />} />
 
         <AnimatedPageWrapper>
           <ViewDetails config={config} />

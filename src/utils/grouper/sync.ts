@@ -57,7 +57,7 @@ export const syncGrouper = async ({
 }: SyncParams): Promise<void> => {
   const apiName = syncName || name;
   const key = buildCardSyncKey(apiName);
-  
+
   try {
     setSyncing(true);
     store.dispatch(startSync(name));

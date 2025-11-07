@@ -28,10 +28,7 @@ export const findWorkloadInStore = (
   return workloads.find((w) => w.name === resource.name || w.sourceName === resourceName);
 };
 
-const getLastSync = (
-  storeLastUpdate: string | undefined,
-  resourceLastSync: string,
-): string => {
+const getLastSync = (storeLastUpdate: string | undefined, resourceLastSync: string): string => {
   if (storeLastUpdate) {
     return ParseGoTimeDate(storeLastUpdate);
   }

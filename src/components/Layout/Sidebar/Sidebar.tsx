@@ -20,7 +20,7 @@ const Sidebar = () => {
       width={isCollapsed ? widthCollapsed : widthExpanded}
       collapsed={isCollapsed}
       style={{
-        height: '100vh', 
+        height: '100vh',
         backgroundColor: 'white',
         position: 'fixed',
         left: 0, // Align the sidebar to the left of the page

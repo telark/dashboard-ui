@@ -11,10 +11,7 @@ interface SectionProps {
 
 const Section: React.FC<SectionProps> = ({ title, subtitle, content, className, style }) => {
   return (
-    <div
-      className={`app-section ${className || ''}`.trim()}
-      style={{ width: '100%', ...style }}
-    >
+    <div className={`app-section ${className || ''}`.trim()} style={{ width: '100%', ...style }}>
       <div style={{ fontWeight: 600 }}>{title}</div>
       {subtitle ? (
         <Typography.Paragraph

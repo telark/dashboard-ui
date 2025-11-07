@@ -37,7 +37,7 @@ const createCountdownTimer = (
   delay: number,
   countdownIntervalMs: number,
   onUpdate: (remaining: number) => void,
-): NodeJS.Timeout => {
+): ReturnType<typeof setInterval> => {
   let remainingTime = delay;
   const interval = setInterval(() => {
     remainingTime -= countdownIntervalMs;
@@ -142,13 +142,7 @@ export const createRetryHandler = (
     callbacks.setRetryCount?.(0);
 
     for (let attempt = 0; attempt < config.maxAttempts; attempt++) {
-      const success = await attemptRetry(
-        retryFunction,
-        attempt,
-        config,
-        callbacks,
-        timeoutRefs,
-      );
+      const success = await attemptRetry(retryFunction, attempt, config, callbacks, timeoutRefs);
       if (success) {
         return;
       }

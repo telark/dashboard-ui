@@ -22,10 +22,7 @@ export const getTabButtonStyle = (
   return values.default;
 };
 
-export const getTabButtonBackground = (
-  active: boolean,
-  hovered: boolean,
-): string => {
+export const getTabButtonBackground = (active: boolean, hovered: boolean): string => {
   return getTabButtonStyle(
     { active, hovered },
     {
@@ -50,4 +47,3 @@ export const getTabButtonColor = (
     },
   );
 };
-
