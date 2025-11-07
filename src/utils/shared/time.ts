@@ -1,12 +1,13 @@
+const GO_TIME_DATE_REGEX =
+  /time\.Date\((\d+),\s*time\.(\w+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*time\.Local\)/;
+
 export const ParseGoTimeDate = (goTimeString: string): string => {
   if (!goTimeString || goTimeString === 'Unknown') {
     return new Date().toISOString();
   }
 
   // Handle Go time.Date format: time.Date(2025, time.September, 28, 12, 13, 1, 0, time.Local)
-  const match = goTimeString.match(
-    /time\.Date\((\d+),\s*time\.(\w+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*time\.Local\)/,
-  );
+  const match = GO_TIME_DATE_REGEX.exec(goTimeString);
 
   if (match) {
     const [, year, monthName, day, hour, minute, second] = match;

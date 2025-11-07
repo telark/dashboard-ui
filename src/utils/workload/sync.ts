@@ -1,7 +1,7 @@
 import { triggerSingleAppSync } from '../../clients/sync-manager';
 import { SYNC_MESSAGES } from '../../constants/layout/modes';
 import { SYNC_CONSTANTS } from '../../constants/config/sync';
-import store, { AppDispatch, RootState } from '../../store';
+import store from '../../store';
 import { startSync, endSync } from '../../store/workloads/slices/workloadSlice';
 import { handleSyncEffect, handleSyncError } from '../shared/sync';
 import { WORKLOAD_SYNC_CONFIG } from '../../config/syncConfig';
@@ -19,7 +19,7 @@ export const syncAppWorkloadDetails = async ({
     if (!apiName) {
       throw new Error('Workload name is required');
     }
-    (store.dispatch as AppDispatch)(startSync(apiName));
+    store.dispatch(startSync(apiName));
 
     const key = `sync-app-${apiName}`;
     message.open({
@@ -51,7 +51,7 @@ export const syncAppWorkloadDetails = async ({
     const apiName = details?.fasid?.name || details?.name;
     if (apiName) {
       setSyncing(false);
-      (store.dispatch as AppDispatch)(endSync(apiName));
+      store.dispatch(endSync(apiName));
     }
   }
 };
@@ -59,11 +59,11 @@ export const syncAppWorkloadDetails = async ({
 export const syncAppWorkload = async ({ name, message, setSyncing }: SyncParams): Promise<void> => {
   try {
     setSyncing(true);
-    (store.dispatch as AppDispatch)(startSync(name));
+    store.dispatch(startSync(name));
 
     const key = `${SYNC_CONSTANTS.MESSAGE_KEY_PREFIX}${name}`;
     // Resolve display name from store (sourceName) when available
-    const state = store.getState() as RootState;
+    const state = store.getState();
     const app = state.workload.apps.find((a: any) => a?.name === name);
     const displayName = app?.sourceName || name;
     message.open({
@@ -90,6 +90,6 @@ export const syncAppWorkload = async ({ name, message, setSyncing }: SyncParams)
     handleSyncError({ err, message, isDetailsSync: false, config: WORKLOAD_SYNC_CONFIG });
   } finally {
     setSyncing(false);
-    (store.dispatch as AppDispatch)(endSync(name));
+    store.dispatch(endSync(name));
   }
 };

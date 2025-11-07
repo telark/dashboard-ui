@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { WorkloadsState } from '../../../interfaces/workload';
-
-// Import thunks
 import {
   fetchAllAppsWorkloadsThunk,
   fetchAllBatchesWorkloadsThunk,
@@ -12,8 +10,6 @@ import {
   refreshAutoAppsThunk,
   updateAppWorkloadSyncModeThunk,
 } from '../thunks/SyncThunks';
-
-// Import reducers
 import {
   handleFetchAppsPending,
   handleFetchAppsFulfilled,
@@ -33,6 +29,17 @@ import {
   handleUpdateSyncModeRejected,
 } from '../reducers/SyncReducers';
 
+export {
+  fetchAllAppsWorkloadsThunk,
+  fetchAllBatchesWorkloadsThunk,
+  fetchAppWorkloadDetailsThunk,
+} from '../thunks/FetchThunks';
+export {
+  triggerAppsSyncThunk,
+  refreshAutoAppsThunk,
+  updateAppWorkloadSyncModeThunk,
+} from '../thunks/SyncThunks';
+
 const initialState: WorkloadsState = {
   apps: [],
   batches: [],
@@ -43,16 +50,6 @@ const initialState: WorkloadsState = {
   appError: null,
   batchError: null,
   syncing: {},
-};
-
-// Re-export thunks for external use
-export {
-  fetchAllAppsWorkloadsThunk,
-  fetchAllBatchesWorkloadsThunk,
-  fetchAppWorkloadDetailsThunk,
-  triggerAppsSyncThunk,
-  refreshAutoAppsThunk,
-  updateAppWorkloadSyncModeThunk,
 };
 
 const workloadSlice = createSlice({

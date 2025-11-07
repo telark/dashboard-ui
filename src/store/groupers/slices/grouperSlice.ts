@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { GrouperState } from '../../../interfaces/grouper';
-
-// Import thunks
 import {
   fetchAllGroupersThunk,
   fetchAllGroupersSilentThunk,
@@ -18,8 +16,6 @@ import {
   updateGrouperMaintenanceModeThunk,
   removeGrouperMaintenanceModeThunk,
 } from '../thunks/MaintenanceThunks';
-
-// Import reducers
 import {
   handleFetchGroupersPending,
   handleFetchGroupersFulfilled,
@@ -48,27 +44,29 @@ import {
   handleRemoveMaintenanceModeRejected,
 } from '../reducers/MaintenanceReducer';
 
-const initialState: GrouperState = {
-  groupers: [],
-  details: null,
-  loading: false,
-  error: null,
-  // Track in-flight syncs by grouper name
-  syncing: {},
-};
-
-// Re-export thunks for external use
 export {
   fetchAllGroupersThunk,
   fetchAllGroupersSilentThunk,
   fetchGrouperDetailsThunk,
   checkGrouperMaintenanceModeThunk,
+} from '../thunks/FetchThunks';
+export {
   triggerGroupersSyncThunk,
   refreshAutoGroupersThunk,
   updateGrouperSyncModeThunk,
+} from '../thunks/SyncThunks';
+export {
   enableGrouperMaintenanceModeThunk,
   updateGrouperMaintenanceModeThunk,
   removeGrouperMaintenanceModeThunk,
+} from '../thunks/MaintenanceThunks';
+
+const initialState: GrouperState = {
+  groupers: [],
+  details: null,
+  loading: false,
+  error: null,
+  syncing: {},
 };
 
 const grouperSlice = createSlice({

@@ -50,7 +50,7 @@ export const createResourceStateUtils = (config: ResourceStateConfig): ResourceS
     try {
       const now = Date.now();
       const lastStr = localStorage.getItem(syncLsKey);
-      const last = lastStr ? parseInt(lastStr, 10) : 0;
+      const last = lastStr ? Number.parseInt(lastStr, 10) : 0;
 
       if (!last || now - last >= syncThrottle) {
         dispatch(triggerSyncThunk());

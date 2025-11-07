@@ -163,12 +163,12 @@ export const cancelRetry = (
   timeoutRefs: { current: ReturnType<typeof setTimeout> | null }[],
   callbacks: RetryCallbacks,
 ): void => {
-  timeoutRefs.forEach((ref) => {
+  for (const ref of timeoutRefs) {
     if (ref.current) {
       clearTimeout(ref.current);
       ref.current = null;
     }
-  });
+  }
 
   if (callbacks.setRetrying) {
     callbacks.setRetrying(false);
