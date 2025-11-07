@@ -1,6 +1,7 @@
 import { Menu } from 'antd';
 import SidebarButton from '../../buttons/SideBarButton';
 import { useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { ICONS, APP_ROUTES } from '../../../constants';
 
 const HomeIcon = ICONS.HOME;
@@ -19,11 +20,22 @@ interface MenuItemsProps {
 const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
   const location = useLocation();
   const pathname = location.pathname;
+  const [openKeys, setOpenKeys] = useState<string[]>(['resources', 'users-and-groups']);
+
+  useEffect(() => {
+    if (isCollapsed) {
+      setOpenKeys([]);
+    } else {
+      setOpenKeys(['resources', 'users-and-groups']);
+    }
+  }, [isCollapsed]);
   return (
     <div>
       <Menu
         mode="inline"
         inlineCollapsed={isCollapsed}
+        openKeys={openKeys}
+        onOpenChange={setOpenKeys}
         className="compact-menu"
         style={{ backgroundColor: 'white', borderRight: 'none', padding: 0, marginRight: -12 }}
       >
@@ -34,7 +46,8 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
           route="/"
           isCollapsed={isCollapsed}
         />
-        <Menu.ItemGroup
+        <Menu.SubMenu
+          key="resources"
           title={!isCollapsed ? 'Resources' : ''}
           style={{
             paddingTop: '0px',
@@ -61,9 +74,10 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
             route="/workloads"
             isCollapsed={isCollapsed}
           />
-        </Menu.ItemGroup>
-        <Menu.ItemGroup
-          title={!isCollapsed ? 'Users and Groups' : ''}
+        </Menu.SubMenu>
+        <Menu.SubMenu
+          key="users-and-groups"
+          title={!isCollapsed ? 'Access Management' : ''}
           style={{
             paddingTop: '0px',
           }}
@@ -96,7 +110,7 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
             route="/categories"
             isCollapsed={isCollapsed}
           />
-        </Menu.ItemGroup>
+        </Menu.SubMenu>
       </Menu>
     </div>
   );
