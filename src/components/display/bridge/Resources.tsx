@@ -28,7 +28,7 @@ const BridgeResources: React.FC<BridgeResourcesProps> = React.memo(function Brid
 
   const handlePageChange = (page: number) => setCurrentPage(page);
 
-  const handleRefresh = () => window.location.reload();
+  const handleRefresh = () => globalThis.location.reload();
 
   if (!workloads || workloads.length === 0) {
     return (

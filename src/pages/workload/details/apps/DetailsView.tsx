@@ -48,7 +48,7 @@ const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() 
   }
 
   if (error) {
-    return <Error onRetry={() => window.location.reload()} />;
+    return <Error onRetry={() => globalThis.location.reload()} />;
   }
 
   if (!workload) {
