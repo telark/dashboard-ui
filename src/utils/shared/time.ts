@@ -29,12 +29,12 @@ export const ParseGoTimeDate = (goTimeString: string): string => {
 
     const month = monthMap[monthName] || 0;
     const date = new Date(
-      parseInt(year),
+      Number.parseInt(year),
       month,
-      parseInt(day),
-      parseInt(hour),
-      parseInt(minute),
-      parseInt(second),
+      Number.parseInt(day),
+      Number.parseInt(hour),
+      Number.parseInt(minute),
+      Number.parseInt(second),
     );
     return date.toISOString();
   }

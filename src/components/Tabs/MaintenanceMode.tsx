@@ -63,8 +63,8 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
         {MAINTENANCE_MODE.description}
       </p>
       <ul style={{ marginTop: 10, paddingLeft: 18, color: '#4a5568', fontSize: 13 }}>
-        {MAINTENANCE_MODE.list.map((item, index) => (
-          <li key={index}>{item}</li>
+        {MAINTENANCE_MODE.list.map((item) => (
+          <li key={item}>{item}</li>
         ))}
       </ul>
 
