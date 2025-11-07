@@ -1,20 +1,14 @@
-// Bridges page constants
 export const BRIDGES_PAGE_CONSTANTS = {
-  // Retry configuration
   RETRY: {
     MAX_ATTEMPTS: 5,
     BASE_DELAY_MS: 1000,
     MAX_DELAY_MS: 30000,
     COUNTDOWN_INTERVAL_MS: 1000,
   },
-
-  // Cooldown configuration
   COOLDOWN: {
     DURATION_MS: 60000, // 1 minute
     AUTO_RETRY_DELAY_MS: 1000,
   },
-
-  // UI dimensions and styling
   UI: {
     ICON_SIZE: 56,
     ICON_FONT_SIZE: 24,
@@ -24,8 +18,6 @@ export const BRIDGES_PAGE_CONSTANTS = {
     PROGRESS_BAR_HEIGHT: 8,
     PROGRESS_BAR_BORDER_RADIUS: 4,
   },
-
-  // Colors
   COLORS: {
     WARNING: '#F59E0B',
     TEXT_PRIMARY: '#0B1F33',
@@ -33,8 +25,6 @@ export const BRIDGES_PAGE_CONSTANTS = {
     TEXT_MUTED: '#666',
     BACKGROUND_LIGHT: '#E5E7EB',
   },
-
-  // Messages
   MESSAGES: {
     LOADING: 'Loading bridges…',
     RETRYING: 'Retrying connection...',
@@ -54,8 +44,6 @@ export const BRIDGES_PAGE_CONSTANTS = {
     REFRESH: 'Refresh',
     CONNECTION_PROBLEM: 'Connection Problem',
   },
-
-  // Layout styles
   LAYOUT: {
     LOADING_CONTAINER: {
       display: 'flex',

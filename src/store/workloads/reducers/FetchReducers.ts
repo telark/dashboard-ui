@@ -50,6 +50,7 @@ export const handleFetchAppDetailsFulfilled = (
         containers: containers || state.apps[index].containers,
         bridges: updatedWorkload.cacid?.bridges?.length || state.apps[index].bridges,
         lastUpdate: updatedWorkload.config?.sync?.lastUpdateTime || state.apps[index].lastUpdate,
+        creationTime: updatedWorkload.fasid?.creationTime || state.apps[index].creationTime,
         // Preserve other fields that might not be in details
       };
     }

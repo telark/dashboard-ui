@@ -1,14 +1,17 @@
 import React, { useState, memo, useCallback, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
 import { useSelector } from 'react-redux';
 import { GrouperDetailsHook } from '../../../hooks/GrouperDetailsHook';
 import { syncGrouperDetails } from '../../../utils/grouper/sync';
 import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../../constants/pages/grouper-details';
 import { RootState } from '../../../store';
+import { usePersistedTab } from '../../../utils/shared/usePersistedTab';
 import { Error, Empty, Header, Tabs, Content } from '.';
 import LoadingDetails from '../../../components/shared/LoadingDetails';
 
 const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
+  const { name: grouperNameFromUrl } = useParams<{ name: string }>();
   const {
     // Global Data
     grouperDetails,
@@ -36,7 +39,13 @@ const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
     handleRemoveMaintenanceMode,
   } = GrouperDetailsHook();
 
-  const [activeTab, setActiveTab] = useState<TabKey>(GROUPER_DETAILS_CONSTANTS.TAB_KEYS.GENERAL);
+  const { activeTab, handleTabChange } = usePersistedTab<TabKey>({
+    resourceType: 'grouper',
+    resourceName: grouperNameFromUrl,
+    tabKeys: GROUPER_DETAILS_CONSTANTS.TAB_KEYS,
+    defaultTab: GROUPER_DETAILS_CONSTANTS.TAB_KEYS.GENERAL,
+  });
+
   const [syncing, setSyncing] = useState(false);
   const { message } = AntdApp.useApp();
   const globalSyncing = useSelector((s: RootState) => s.grouper.syncing || {});
@@ -69,39 +78,41 @@ const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
 
   return (
     <div style={GROUPER_DETAILS_CONSTANTS.LAYOUT.PAGE_CONTAINER}>
-      <Header
-        grouperDetails={grouperDetails}
-        isMaintenanceModeActive={isMaintenanceModeActive}
-        syncing={syncing}
-        isGloballySyncing={isGloballySyncing}
-        onSync={handleHeaderSync}
-      />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <Header
+          grouperDetails={grouperDetails}
+          isMaintenanceModeActive={isMaintenanceModeActive}
+          syncing={syncing}
+          isGloballySyncing={isGloballySyncing}
+          onSync={handleHeaderSync}
+        />
 
-      <Tabs activeTab={activeTab} totalResources={totalResources} onTabChange={setActiveTab} />
+        <Tabs activeTab={activeTab} totalResources={totalResources} onTabChange={handleTabChange} />
 
-      <Content
-        activeTab={activeTab}
-        grouperDetails={grouperDetails}
-        totalResources={totalResources}
-        isAutoSync={isAutoSync}
-        loadingSave={loadingSave}
-        hasChanges={hasChanges}
-        handleAutoSyncChange={handleAutoSyncChange}
-        handleGrouperSyncSave={handleGrouperSyncSave}
-        isMaintenanceModeActive={isMaintenanceModeActive}
-        isMaintenanceModalVisible={isMaintenanceModalVisible}
-        maintenaceUpdateAction={maintenaceUpdateAction}
-        maintenaceDeleteAction={maintenaceDeleteAction}
-        handleEnableMaintenanceClick={handleEnableMaintenanceClick}
-        handleCancelMaintenance={handleCancelMaintenance}
-        handleMaintenanceUpdateActionChange={handleMaintenanceUpdateActionChange}
-        handleMaintenanceDeleteActionChange={handleMaintenanceDeleteActionChange}
-        handleMaintenanceMode={handleMaintenanceMode}
-        hasMaintenanceData={hasMaintenanceData}
-        handleRemoveMaintenanceMode={handleRemoveMaintenanceMode}
-        syncing={syncing}
-        isGloballySyncing={isGloballySyncing}
-      />
+        <Content
+          activeTab={activeTab}
+          grouperDetails={grouperDetails}
+          totalResources={totalResources}
+          isAutoSync={isAutoSync}
+          loadingSave={loadingSave}
+          hasChanges={hasChanges}
+          handleAutoSyncChange={handleAutoSyncChange}
+          handleGrouperSyncSave={handleGrouperSyncSave}
+          isMaintenanceModeActive={isMaintenanceModeActive}
+          isMaintenanceModalVisible={isMaintenanceModalVisible}
+          maintenaceUpdateAction={maintenaceUpdateAction}
+          maintenaceDeleteAction={maintenaceDeleteAction}
+          handleEnableMaintenanceClick={handleEnableMaintenanceClick}
+          handleCancelMaintenance={handleCancelMaintenance}
+          handleMaintenanceUpdateActionChange={handleMaintenanceUpdateActionChange}
+          handleMaintenanceDeleteActionChange={handleMaintenanceDeleteActionChange}
+          handleMaintenanceMode={handleMaintenanceMode}
+          hasMaintenanceData={hasMaintenanceData}
+          handleRemoveMaintenanceMode={handleRemoveMaintenanceMode}
+          syncing={syncing}
+          isGloballySyncing={isGloballySyncing}
+        />
+      </div>
     </div>
   );
 });

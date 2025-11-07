@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Typography } from 'antd';
 import AppsList from '../../../components/display/workloads/apps/AppsList';
 import BatchesList from '../../../components/display/workloads/batches/List';
-import { TabButton } from '../../../components/shared';
+import TabButton from '../../../components/buttons/TabButton';
 import type { AppWorkloadCardData, BatchWorkloadCardData } from '../../../interfaces/workload';
 
 const { Title } = Typography;

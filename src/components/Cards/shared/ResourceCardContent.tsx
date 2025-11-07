@@ -5,7 +5,7 @@ import StatusButton from '../../buttons/StatusButton';
 import TimeAgo from '../../time/TimeAgo';
 import { Metric } from '../../shared';
 import { StatusTag } from '../../tags';
-import { UI } from '../../../constants/ui';
+import { UI } from '../../../constants/layout/ui';
 import { CapitalizeFirstLetter } from '../../../utils/helpers/format';
 import { CARD_CONFIGS, CARD_COLORS, DEFAULT_COLORS, CARD_STATES } from '../../../constants';
 import { ResourceCardDropdown } from '.';

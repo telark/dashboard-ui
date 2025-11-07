@@ -1,21 +1,16 @@
 import React, { useState } from 'react';
-import { Button } from 'antd';
-import { AppstoreOutlined } from '@ant-design/icons';
+import { SyncOutlined, ClusterOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
-import { DEFAULT_COLORS } from '../../../../constants';
-import StatusButton from '../../../buttons/StatusButton';
 import TimeAgo from '../../../time/TimeAgo';
+import Header from '../../shared/sections/Header';
 import { AppWorkload } from '../../../../interfaces/workload';
 import { syncAppWorkloadDetails } from '../../../../utils/workload/sync';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
-import {
-  AiOutlineCheckCircle,
-  AiOutlineCluster,
-  AiOutlineArrowLeft,
-  AiOutlineSync,
-} from 'react-icons/ai';
+import { APP_ROUTES, ICONS, UI } from '../../../../constants';
+
+const WorkloadIcon = ICONS.WORKLOAD;
 
 interface WorkloadHeaderProps {
   workload: AppWorkload;
@@ -28,6 +23,7 @@ const WorkloadHeader: React.FC<WorkloadHeaderProps> = React.memo(({ workload }) 
   const globalSyncing = useSelector((s: RootState) => s.workload.syncing || {});
   const workloadName = workload?.fasid?.name;
   const isGloballySyncing = Boolean(workloadName && globalSyncing[workloadName]);
+  const grouperName = workload?.fasid?.grouper;
 
   const handleSync = async () => {
     await syncAppWorkloadDetails({
@@ -37,73 +33,36 @@ const WorkloadHeader: React.FC<WorkloadHeaderProps> = React.memo(({ workload }) 
     });
   };
 
+  const handleViewGrouper = () => {
+    if (grouperName) {
+      navigate(`${APP_ROUTES.GROUPERS}/${grouperName}/details`);
+    }
+  };
+
+  const breadcrumbs = [
+    { label: 'Workloads', to: APP_ROUTES.WORKLOADS },
+    { label: workload.fasid.sourceName },
+  ];
+
   return (
-    <div
-      style={{
-        background: '#fff',
-        borderRadius: 16,
-        boxShadow: '0 10px 24px rgba(0,0,0,0.06)',
-        padding: 16,
-        marginBottom: 16,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 16,
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div
-          style={{
-            width: 48,
-            height: 48,
-            borderRadius: '50%',
-            background: 'rgba(32,201,151,0.12)',
-            boxShadow: 'inset 0 0 0 2px rgba(32,201,151,0.18)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: DEFAULT_COLORS.SUCCESS,
-            fontSize: 20,
-          }}
-        >
-          <AppstoreOutlined />
-        </div>
-
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F33' }}>
-              {workload.fasid.sourceName}
-            </div>
-            <StatusButton
-              status={workload.cacid.status === 'Available' ? 'Active' : 'Inactive'}
-              icon={<AiOutlineCheckCircle />}
-            />
-          </div>
-          <div style={{ color: '#5B6B7C', fontSize: 12, marginTop: 4 }}>
-            Last update was{' '}
-            <TimeAgo date={workload.config?.sync?.lastUpdateTime || new Date().toISOString()} />
-          </div>
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <Button
-          size="middle"
-          icon={<AiOutlineSync />}
-          disabled={syncing || isGloballySyncing}
-          loading={syncing || isGloballySyncing}
-          onClick={syncing || isGloballySyncing ? undefined : handleSync}
-        >
-          Sync
-        </Button>
-        <Button size="middle" icon={<AiOutlineCluster />}>
-          View Grouper
-        </Button>
-        <Button size="middle" onClick={() => navigate('/workloads')} icon={<AiOutlineArrowLeft />}>
-          Back to Workloads
-        </Button>
-      </div>
-    </div>
+    <Header
+      breadcrumbs={breadcrumbs}
+      subtitle={
+        <>
+          {UI.HEADER.LAST_UPDATE_PREFIX}{' '}
+          <TimeAgo date={workload.config?.sync?.lastUpdateTime || new Date().toISOString()} />
+        </>
+      }
+      primaryText={UI.BUTTONS.SYNC}
+      primaryIcon={<SyncOutlined size={16} />}
+      primaryLoading={syncing || isGloballySyncing}
+      primaryDisabled={syncing || isGloballySyncing}
+      onPrimary={handleSync}
+      secondaryText="View Grouper"
+      secondaryIcon={<ClusterOutlined size={16} />}
+      onSecondary={grouperName ? handleViewGrouper : undefined}
+      icon={<WorkloadIcon />}
+    />
   );
 });
 

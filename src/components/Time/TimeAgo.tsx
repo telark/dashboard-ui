@@ -16,7 +16,7 @@ const TimeAgo: React.FC<TimeAgoProps> = React.memo(
 
     // Memoize the parsed date
     const parsedDate = useMemo(() => new Date(date), [date]);
-    const isValidDate = useMemo(() => !isNaN(parsedDate.getTime()), [parsedDate]);
+    const isValidDate = useMemo(() => !Number.isNaN(parsedDate.getTime()), [parsedDate]);
 
     const formattedDate = isValidDate ? format(parsedDate, formatString) : TIME_TEXTS.INVALID_DATE;
 

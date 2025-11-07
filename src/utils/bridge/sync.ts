@@ -1,11 +1,11 @@
 import { triggerSingleBridgeSync } from '../../clients/sync-manager';
-import { SYNC_MESSAGES } from '../../constants/modes';
+import { SYNC_MESSAGES } from '../../constants/layout/modes';
 import { BRIDGE_DETAILS_CONSTANTS } from '../../constants/pages/bridge-details';
-import { SYNC_CONSTANTS } from '../../constants/sync';
+import { SYNC_CONSTANTS } from '../../constants/config/sync';
 import store, { AppDispatch } from '../../store';
 import { startSync, endSync } from '../../store/bridges/slices/bridgeSlice';
 import { handleSyncEffect, handleSyncError } from '../shared/sync';
-import { BRIDGE_SYNC_CONFIG } from '../../constants/config';
+import { BRIDGE_SYNC_CONFIG } from '../../config/syncConfig';
 import { DetailsSyncParams, SyncParams } from '../../interfaces/sync';
 
 export const syncBridgeDetails = async ({

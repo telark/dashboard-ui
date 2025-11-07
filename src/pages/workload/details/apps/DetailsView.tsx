@@ -7,13 +7,19 @@ import { Error, Empty, Header, Tabs, Content } from '.';
 import { GROUPER_DETAILS_CONSTANTS } from '../../../../constants/pages/grouper-details';
 import LoadingDetails from '../../../../components/shared/LoadingDetails';
 import { RootState } from '../../../../store';
-import { STORE_ERRORS } from '../../../../constants/store';
+import { STORE_ERRORS } from '../../../../constants/store/store';
+import { usePersistedTab } from '../../../../utils/shared/usePersistedTab';
+import { TAB_KEYS, type TabKey } from '../../../../components/display/workloads/apps/Tabs';
+import WorkloadMetrics from '../../../../components/display/workloads/apps/Metrics';
 
 const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() {
-  const { name } = useParams<{ name: string }>();
-  const [activeTab, setActiveTab] = useState<
-    'general' | 'instances' | 'bridges' | 'history' | 'sync'
-  >('general');
+  const { name: workloadNameFromUrl } = useParams<{ name: string }>();
+  const { activeTab, handleTabChange } = usePersistedTab<TabKey>({
+    resourceType: 'workload',
+    resourceName: workloadNameFromUrl,
+    tabKeys: TAB_KEYS,
+    defaultTab: TAB_KEYS.GENERAL,
+  });
   const [syncing] = useState(false);
 
   const {
@@ -46,24 +52,27 @@ const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() 
   }
 
   if (!workload) {
-    return <Empty appName={name} />;
+    return <Empty appName={workloadNameFromUrl} />;
   }
 
   return (
     <div style={GROUPER_DETAILS_CONSTANTS.LAYOUT.PAGE_CONTAINER}>
-      <Header workload={workload} />
-      <Tabs activeTab={activeTab} onTabChange={setActiveTab} />
-      <Content
-        workload={workload}
-        activeTab={activeTab}
-        isAutoSync={isAutoSync}
-        loadingSave={loadingSave}
-        hasChanges={hasChanges}
-        handleAutoSyncChange={handleAutoSyncChange}
-        handleWorkloadSyncSave={handleWorkloadSyncSave}
-        syncing={syncing}
-        isGloballySyncing={isGloballySyncing}
-      />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <Header workload={workload} />
+        <Tabs activeTab={activeTab} onTabChange={handleTabChange} />
+        <WorkloadMetrics workload={workload} />
+        <Content
+          workload={workload}
+          activeTab={activeTab}
+          isAutoSync={isAutoSync}
+          loadingSave={loadingSave}
+          hasChanges={hasChanges}
+          handleAutoSyncChange={handleAutoSyncChange}
+          handleWorkloadSyncSave={handleWorkloadSyncSave}
+          syncing={syncing}
+          isGloballySyncing={isGloballySyncing}
+        />
+      </div>
     </div>
   );
 });

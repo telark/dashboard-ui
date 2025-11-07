@@ -1,27 +1,38 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { persistReducer } from 'redux-persist';
 import grouperReducer from './groupers/slices/grouperSlice';
 import insightsReducer from './insights/slices/insightsSlice';
 import workloadReducer from './workloads/slices/workloadSlice';
 import bridgeReducer from './bridges/slices/bridgeSlice';
+import {
+  grouperPersistConfig,
+  insightsPersistConfig,
+  workloadPersistConfig,
+  bridgePersistConfig,
+} from './persistence/persistConfig';
+
+const persistedGrouperReducer = persistReducer(grouperPersistConfig, grouperReducer);
+const persistedInsightsReducer = persistReducer(insightsPersistConfig, insightsReducer);
+const persistedWorkloadReducer = persistReducer(workloadPersistConfig, workloadReducer);
+const persistedBridgeReducer = persistReducer(bridgePersistConfig, bridgeReducer);
 
 const store = configureStore({
   reducer: {
-    grouper: grouperReducer,
-    insights: insightsReducer,
-    workload: workloadReducer,
-    bridge: bridgeReducer,
+    grouper: persistedGrouperReducer,
+    insights: persistedInsightsReducer,
+    workload: persistedWorkloadReducer,
+    bridge: persistedBridgeReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        // Increase warning threshold from 32ms to 128ms
-        // This is still fast enough to catch real issues but won't warn on large valid state
-        warnAfter: 128,
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE', 'persist/PURGE'],
+        warnAfter: 128,  // default is 32ms
       },
     }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-
+export { store };
 export default store;

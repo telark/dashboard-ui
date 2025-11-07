@@ -3,7 +3,7 @@ import { Switch } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
 import PrimaryButton from '../buttons/PrimaryButton';
 import { DEFAULT_COLORS } from '../../constants';
-import { SYNC_MODE } from '../../constants/modes';
+import { SYNC_MODE } from '../../constants/layout/modes';
 import FancySpinner from '../shared/FancySpinner';
 
 interface SyncModeProps {
@@ -92,8 +92,8 @@ const SyncMode: React.FC<SyncModeProps> = ({
         {SYNC_MODE.description}
       </p>
       <ul style={{ marginTop: '10px', paddingLeft: '18px', color: '#4a5568', fontSize: '13px' }}>
-        {SYNC_MODE.list.map((item, index) => (
-          <li key={index}>{item}</li>
+        {SYNC_MODE.list.map((item) => (
+          <li key={item}>{item}</li>
         ))}
       </ul>
 

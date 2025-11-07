@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useRef, memo, useState, useMemo } from '
 import { useSelector, useDispatch } from 'react-redux';
 import { message } from 'antd';
 import { RootState, AppDispatch } from '../../../store';
-import { COMPONENT_STYLES } from '../../../constants/ui';
+import { COMPONENT_STYLES } from '../../../constants/layout/ui';
 import {
   loadBridges,
   loadBridgesSilent,

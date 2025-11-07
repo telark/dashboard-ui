@@ -1,23 +1,15 @@
-.ant-btn,
-.ant-card,
-.ant-typography,
-.ant-input,
-.ant-select,
-.ant-menu,
-.ant-collapse,
-.ant-tabs,
-.ant-timeline,
-.ant-drawer {
-  font-family: 'Roboto Condensed', sans-serif !important;
-  font-weight: 500 !important;
-  font-style: normal !important;
-}
-
 :root {
   --sidebar-width: 260px;
   --page-bg: #F3F6FA;
 }
 
-.custom-table .ant-table-thead > tr > th {
-  background-color: transparent !important;
+html,
+body,
+#root,
+#root *,
+.ant-app,
+.ant-app *,
+.app-root,
+.app-root * {
+  font-family: 'Roboto Condensed', sans-serif !important;
 }

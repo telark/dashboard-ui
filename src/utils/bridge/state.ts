@@ -8,7 +8,7 @@ import {
   BRIDGES_REFRESH_INTERVAL_MS,
   BRIDGES_SYNC_LS_KEY,
   BRIDGES_SYNC_THROTTLE_MS,
-} from '../../constants/sync';
+} from '../../constants/config/sync';
 import { createResourceStateUtils } from '../shared/resourceStateFactory';
 
 const bridgeStateUtils = createResourceStateUtils({
