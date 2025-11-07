@@ -1,18 +1,14 @@
-import { UTILS_TEXTS, HTTP_STATUS, CARD_DEFAULTS } from '../../constants';
+import { CARD_DEFAULTS, UTILS_TEXTS } from '../../constants';
 import { ParseGoTimeDate } from '../shared/time';
+import { extractItemsFromResponse } from '../helpers/api';
 
 export const mapBridgesData = (data: any): any[] => {
-  if (data?.status !== HTTP_STATUS.SUCCESS || !data?.data) {
-    throw new Error(UTILS_TEXTS.ERRORS.INVALID_DATA_FORMAT);
-  }
-
-  const items = Array.isArray(data.data.items) ? data.data.items : [];
-  if (items.length === 0) return [];
+  const items = extractItemsFromResponse(data);
 
   return items.map((item: any) => {
     return {
       name: item.fasid?.sourceName || CARD_DEFAULTS.GROUPER.NAME,
-      syncName: item.fasid?.name || item.fasid?.sourceName || CARD_DEFAULTS.GROUPER.NAME,
+      syncName: item.fasid?.name || CARD_DEFAULTS.GROUPER.NAME,
       status: item.cacid?.status || CARD_DEFAULTS.GROUPER.STATUS,
       type: item.cacid?.type || item.fasid?.type || UTILS_TEXTS.DEFAULTS.EMPTY_STRING,
       grouper: item.fasid?.grouper || UTILS_TEXTS.DEFAULTS.EMPTY_STRING,
