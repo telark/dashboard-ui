@@ -114,10 +114,14 @@ exporterApiClient.interceptors.response.use(...createErrorInterceptor({ silent40
 configuratorApiClient.interceptors.response.use(...createErrorInterceptor());
 syncManagerApiClient.interceptors.response.use(...createErrorInterceptor());
 
+const DEFAULT_CLIENT_CONFIG: AxiosRequestConfig = {
+  method: REQUEST_CONFIG.DEFAULT_METHOD,
+};
+
 export const Client = async <T>(
   client: AxiosInstance,
   url: string,
-  config: AxiosRequestConfig = { method: REQUEST_CONFIG.DEFAULT_METHOD },
+  config: AxiosRequestConfig = DEFAULT_CLIENT_CONFIG,
 ): Promise<T> => {
   const response = await client(url, config);
   return response.data;

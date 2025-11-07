@@ -30,7 +30,7 @@ export const mapBridgesData = (data: any): any[] => {
 };
 
 export const mapSingleBridgeData = (item: any): any => {
-  if (!item || !item.fasid || !item.cacid || !item.config) {
+  if (!item?.fasid || !item?.cacid || !item?.config) {
     throw new Error(UTILS_TEXTS.ERRORS.MISSING_DATA);
   }
 

@@ -38,13 +38,13 @@ export const SUCCESS_MESSAGES = {
 export const WARNING_MESSAGES = {
   BACKEND_UNAVAILABLE: 'Backend unavailable',
   BACKEND_UNAVAILABLE_DESCRIPTION:
-    "We're unable to connect to the backend service. Retrying with increasing intervals.",
+    'We cannot reach the services yet. We will retry with increasing intervals. Please start your backend if it is stopped.',
 } as const;
 
 export const INFO_MESSAGES = {
   STARTUP: {
     TITLE: 'Preparing your cluster analysis',
     DESCRIPTION:
-      "We'll scan your cluster to surface health, workload insights, and trends. Kick off the first analysis now — it's quick, read‑only, and safe for production workloads.",
+      'We will scan your cluster to identify health issues, workload insights, and trends. Start your first analysis now — it is quick, read-only, and safe for production workloads.',
   },
 } as const;

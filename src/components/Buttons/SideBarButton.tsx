@@ -20,12 +20,23 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({
   const isActive = Boolean(active);
   const isActiveOrHovered = Boolean(active) || isHovered;
   const iconColor = isActiveOrHovered ? DEFAULT_COLORS.SUCCESS : BUTTON_COLORS.ICON_DEFAULT;
-  const coloredIcon =
-    (icon &&
-      (React.isValidElement(icon)
-        ? React.cloneElement(icon, { style: { color: iconColor } } as React.Attributes)
-        : icon)) ||
-    null;
+  
+  let coloredIcon = null;
+  if (icon) {
+    if (React.isValidElement(icon)) {
+      coloredIcon = React.cloneElement(icon, { style: { color: iconColor } } as React.Attributes);
+    } else {
+      coloredIcon = icon;
+    }
+  }
+
+  let borderRight: string;
+  if (isCollapsed) {
+    borderRight = 'none';
+  } else {
+    const borderColor = isActive ? DEFAULT_COLORS.SUCCESS : 'transparent';
+    borderRight = `${BUTTON_CONFIGS.SIDEBAR_BUTTON.BORDER_WIDTH}px solid ${borderColor}`;
+  }
 
   return (
     <Menu.Item
@@ -49,9 +60,7 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({
         fontSize: BUTTON_CONFIGS.SIDEBAR_BUTTON.FONT_SIZE,
         cursor: 'pointer',
         transition: BUTTON_CONFIGS.SIDEBAR_BUTTON.TRANSITION,
-        borderRight: isCollapsed
-          ? 'none'
-          : `${BUTTON_CONFIGS.SIDEBAR_BUTTON.BORDER_WIDTH}px solid ${isActive ? DEFAULT_COLORS.SUCCESS : 'transparent'}`,
+        borderRight,
         borderTopRightRadius: 0,
         borderBottomRightRadius: 0,
         position: 'relative',

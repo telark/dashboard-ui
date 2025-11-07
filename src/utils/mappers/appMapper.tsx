@@ -36,7 +36,7 @@ export const mapAppsWorkloadsData = (data: any): AppWorkloadCardData[] => {
 };
 
 export const mapSingleAppWorkloadData = (item: AppWorkload): AppWorkload => {
-  if (!item || !item.fasid || !item.cacid) {
+  if (!item?.fasid || !item?.cacid) {
     throw new Error('Missing workload data');
   }
 

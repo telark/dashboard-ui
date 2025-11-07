@@ -106,14 +106,14 @@ const ResourceCardContent: React.FC<ResourceCardContentProps> = React.memo(
               gap: CARD_CONFIGS.GROUPER_CARD.METRICS_GAP,
             }}
           >
-            {data.metrics.map((metric, index) => (
-              <Metric key={index} label={metric.label} value={metric.value as number} />
+            {data.metrics.map((metric) => (
+              <Metric key={metric.label} label={metric.label} value={metric.value as number} />
             ))}
           </div>
 
           {/* Tags */}
-          {data.tags?.map((tag, index) => (
-            <StatusTag key={index} label={tag.label} icon={tag.icon} color={tag.color} />
+          {data.tags?.map((tag) => (
+            <StatusTag key={tag.label} label={tag.label} icon={tag.icon} color={tag.color} />
           ))}
 
           {/* Maintenance Tag */}
