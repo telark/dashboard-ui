@@ -60,8 +60,7 @@ export const getCardErrorDuration = (config: SyncConfig): number => {
   return config.cardConstants.MESSAGE_DURATIONS.ERROR;
 };
 
-export const getMessageForEffect = (effect: string, config?: SyncConfig): string => {
-  // Make NotFound message generic instead of grouper-specific
+export const getMessageForEffect = (effect: string): string => {
   if (effect === 'NotFound') {
     return 'This resource is being removed and will disappear shortly.';
   }

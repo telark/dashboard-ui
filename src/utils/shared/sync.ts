@@ -31,13 +31,13 @@ const handleDeletionPolling = (
   getPollingInterval: (config: SyncConfig) => number,
   getSuccessDuration: (config: SyncConfig) => number,
 ): void => {
-  (store.dispatch)(config.fetchAllResourcesThunk());
+  store.dispatch(config.fetchAllResourcesThunk());
 
   const start = Date.now();
   const waitMs = getPollingMaxWait(config);
   const intervalMs = getPollingInterval(config);
   const duration = getSuccessDuration(config);
-  const friendlyMessage = getMessageForEffect(effect, config);
+  const friendlyMessage = getMessageForEffect(effect);
 
   const interval = setInterval(() => {
     const state: RootState = store.getState();
@@ -69,7 +69,7 @@ const handleDetailsRefreshEffect = async (
   message: HandleSyncEffectParams['message'],
 ): Promise<void> => {
   if (resourceName) {
-    await (store.dispatch)(config.fetchResourceDetailsThunk(resourceName));
+    await store.dispatch(config.fetchResourceDetailsThunk(resourceName));
   }
 
   const duration = getDetailsSuccessDuration(config);
@@ -92,7 +92,7 @@ const handleCardRefreshEffect = async (
   message: HandleSyncEffectParams['message'],
 ): Promise<void> => {
   if (resourceName) {
-    await (store.dispatch)(config.fetchResourceDetailsThunk(resourceName));
+    await store.dispatch(config.fetchResourceDetailsThunk(resourceName));
   }
 
   const duration = getCardSuccessDuration(config);
