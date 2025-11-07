@@ -5,6 +5,7 @@ import { SYNC_CONSTANTS } from '../../constants/config/sync';
 import store from '../../store';
 import { startSync, endSync } from '../../store/groupers/slices/grouperSlice';
 import { handleSyncEffect, handleSyncError } from '../shared/sync';
+import { buildDetailsSyncKey, buildCardSyncKey, destroySyncMessage } from '../helpers/sync';
 import { GROUPER_SYNC_CONFIG } from '../../config/syncConfig';
 import { DetailsSyncParams, SyncParams } from '../../interfaces/sync';
 
@@ -16,10 +17,10 @@ export const syncGrouperDetails = async ({
   try {
     setSyncing(true);
     const apiName = details?.syncName || details.name;
-    const displayName = details?.name || apiName;
+    const displayName = details?.name;
     store.dispatch(startSync(details.name));
 
-    const key = `${GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX}${apiName}`;
+    const key = buildDetailsSyncKey(GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX, apiName);
     message.open({
       type: 'loading',
       content: `${SYNC_MESSAGES.loading} ${displayName}`,
@@ -38,10 +39,9 @@ export const syncGrouperDetails = async ({
       config: GROUPER_SYNC_CONFIG,
     });
   } catch (err: any) {
-    // Ensure loading message is closed on error/timeout
     const apiName = details?.syncName || details.name;
-    const key = `${GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX}${apiName}`;
-    message.destroy(key);
+    const key = buildDetailsSyncKey(GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX, apiName);
+    destroySyncMessage(message, key);
     handleSyncError({ err, message, config: GROUPER_SYNC_CONFIG });
   } finally {
     setSyncing(false);
@@ -56,14 +56,14 @@ export const syncGrouper = async ({
   setSyncing,
 }: SyncParams): Promise<void> => {
   const apiName = syncName || name;
-  const key = `${SYNC_CONSTANTS.MESSAGE_KEY_PREFIX}${apiName}`;
-  const displayName = name; // Grouper display = name
+  const key = buildCardSyncKey(apiName);
+  
   try {
     setSyncing(true);
     store.dispatch(startSync(name));
     message.open({
       type: 'loading',
-      content: `${SYNC_MESSAGES.loading} ${displayName}`,
+      content: `${SYNC_MESSAGES.loading} ${name}`,
       key,
       duration: SYNC_CONSTANTS.MESSAGE_DURATIONS.LOADING,
     });
@@ -79,8 +79,7 @@ export const syncGrouper = async ({
       config: GROUPER_SYNC_CONFIG,
     });
   } catch (err: any) {
-    // Ensure loading message is closed on error/timeout
-    message.destroy(key);
+    destroySyncMessage(message, key);
     handleSyncError({ err, message, config: GROUPER_SYNC_CONFIG, isDetailsSync: false });
   } finally {
     setSyncing(false);

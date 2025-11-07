@@ -4,6 +4,7 @@ import { SYNC_CONSTANTS } from '../../constants/config/sync';
 import store from '../../store';
 import { startSync, endSync } from '../../store/workloads/slices/workloadSlice';
 import { handleSyncEffect, handleSyncError } from '../shared/sync';
+import { buildDetailsSyncKey, buildCardSyncKey, destroySyncMessage } from '../helpers/sync';
 import { WORKLOAD_SYNC_CONFIG } from '../../config/syncConfig';
 import { DetailsSyncParams, SyncParams } from '../../interfaces/sync';
 
@@ -14,14 +15,11 @@ export const syncAppWorkloadDetails = async ({
 }: DetailsSyncParams): Promise<void> => {
   try {
     setSyncing(true);
-    const apiName = details?.fasid?.name || details?.name;
-    const displayName = details?.fasid?.sourceName || details?.name;
-    if (!apiName) {
-      throw new Error('Workload name is required');
-    }
+    const apiName = details?.fasid?.name;
+    const displayName = details?.fasid?.sourceName;
     store.dispatch(startSync(apiName));
 
-    const key = `sync-app-${apiName}`;
+    const key = buildDetailsSyncKey('sync-app-', apiName);
     message.open({
       type: 'loading',
       content: `${SYNC_MESSAGES.loading} ${displayName}…`,
@@ -40,12 +38,9 @@ export const syncAppWorkloadDetails = async ({
       config: WORKLOAD_SYNC_CONFIG,
     });
   } catch (err: any) {
-    // Ensure loading message is closed on error/timeout
     const apiName = details?.fasid?.name || details?.name;
-    const key = `sync-app-${apiName}`;
-    if (apiName) {
-      message.destroy(key);
-    }
+    const key = buildDetailsSyncKey('sync-app-', apiName);
+    destroySyncMessage(message, key);
     handleSyncError({ err, message, config: WORKLOAD_SYNC_CONFIG });
   } finally {
     const apiName = details?.fasid?.name || details?.name;
@@ -61,11 +56,10 @@ export const syncAppWorkload = async ({ name, message, setSyncing }: SyncParams)
     setSyncing(true);
     store.dispatch(startSync(name));
 
-    const key = `${SYNC_CONSTANTS.MESSAGE_KEY_PREFIX}${name}`;
-    // Resolve display name from store (sourceName) when available
+    const key = buildCardSyncKey(name);
     const state = store.getState();
     const app = state.workload.apps.find((a: any) => a?.name === name);
-    const displayName = app?.sourceName || name;
+    const displayName = app?.sourceName;
     message.open({
       type: 'loading',
       content: `${SYNC_MESSAGES.loading} ${displayName}`,
@@ -84,9 +78,8 @@ export const syncAppWorkload = async ({ name, message, setSyncing }: SyncParams)
       config: WORKLOAD_SYNC_CONFIG,
     });
   } catch (err: any) {
-    // Ensure loading message is closed on error/timeout
-    const key = `${SYNC_CONSTANTS.MESSAGE_KEY_PREFIX}${name}`;
-    message.destroy(key);
+    const key = buildCardSyncKey(name);
+    destroySyncMessage(message, key);
     handleSyncError({ err, message, config: WORKLOAD_SYNC_CONFIG, isDetailsSync: false });
   } finally {
     setSyncing(false);

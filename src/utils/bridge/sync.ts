@@ -5,6 +5,7 @@ import { SYNC_CONSTANTS } from '../../constants/config/sync';
 import store from '../../store';
 import { startSync, endSync } from '../../store/bridges/slices/bridgeSlice';
 import { handleSyncEffect, handleSyncError } from '../shared/sync';
+import { buildDetailsSyncKey, buildCardSyncKey, destroySyncMessage } from '../helpers/sync';
 import { BRIDGE_SYNC_CONFIG } from '../../config/syncConfig';
 import { DetailsSyncParams, SyncParams } from '../../interfaces/sync';
 
@@ -16,10 +17,10 @@ export const syncBridgeDetails = async ({
   try {
     setSyncing(true);
     const apiName = details?.syncName || details.name;
-    const displayName = details?.name || details?.sourceName || apiName;
+    const displayName = details?.name || details?.sourceName;
     store.dispatch(startSync(details.name));
 
-    const key = `${BRIDGE_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX}${apiName}`;
+    const key = buildDetailsSyncKey(BRIDGE_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX, apiName);
     message.open({
       type: 'loading',
       content: `${SYNC_MESSAGES.loading} ${displayName}…`,
@@ -38,10 +39,9 @@ export const syncBridgeDetails = async ({
       config: BRIDGE_SYNC_CONFIG,
     });
   } catch (err: any) {
-    // Ensure loading message is closed on error/timeout
     const apiName = details?.syncName || details.name;
-    const key = `${BRIDGE_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX}${apiName}`;
-    message.destroy(key);
+    const key = buildDetailsSyncKey(BRIDGE_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX, apiName);
+    destroySyncMessage(message, key);
     handleSyncError({ err, message, config: BRIDGE_SYNC_CONFIG });
   } finally {
     setSyncing(false);
@@ -55,10 +55,9 @@ export const syncBridge = async ({
   message,
   setSyncing,
 }: SyncParams): Promise<void> => {
-  // Compute API/display identifiers upfront so they are available in all blocks
   const apiName = syncName || name;
-  const displayName = name; // 'name' is sourceName at callers; use it for user-facing label
-  const key = `${SYNC_CONSTANTS.MESSAGE_KEY_PREFIX}${apiName}`;
+  const displayName = name; // 'name' is sourceName at callers
+  const key = buildCardSyncKey(apiName);
   try {
     setSyncing(true);
     store.dispatch(startSync(name));
@@ -80,8 +79,7 @@ export const syncBridge = async ({
       config: BRIDGE_SYNC_CONFIG,
     });
   } catch (err: any) {
-    // Ensure loading message is closed on error/timeout
-    message.destroy(key);
+    destroySyncMessage(message, key);
     handleSyncError({ err, message, config: BRIDGE_SYNC_CONFIG, isDetailsSync: false });
   } finally {
     setSyncing(false);
