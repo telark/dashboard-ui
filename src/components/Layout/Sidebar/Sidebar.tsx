@@ -9,7 +9,7 @@ const { Sider } = Layout;
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const widthExpanded = 260;
-  const widthCollapsed = 80;
+  const widthCollapsed = 64;
 
   useEffect(() => {
     const root = document.documentElement;
@@ -28,13 +28,13 @@ const Sidebar = () => {
         top: 0, // Align the sidebar from the top
         zIndex: 1, // Ensure it stays above the content
         paddingTop: '20px',
-        paddingLeft: '12px',
+        paddingLeft: isCollapsed ? '0px' : '12px',
         paddingRight: 0,
         overflow: 'hidden', // prevent inner margins from creating gutters
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between', // Ensures bottom alignment
-        transition: 'width 0.3s ease',
+        transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
     >
       {/* Top Section */}

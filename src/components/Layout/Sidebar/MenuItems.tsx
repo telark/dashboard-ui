@@ -30,14 +30,14 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
     }
   }, [isCollapsed]);
   return (
-    <div>
+    <div style={{ width: '100%', padding: 0, margin: 0 }}>
       <Menu
         mode="inline"
         inlineCollapsed={isCollapsed}
         openKeys={openKeys}
         onOpenChange={setOpenKeys}
         className="compact-menu"
-        style={{ backgroundColor: 'white', borderRight: 'none', padding: 0, marginRight: -12 }}
+        style={{ backgroundColor: 'white', borderRight: 'none', padding: 0, margin: 0, width: '100%' }}
       >
         <SidebarButton
           text={'Home'}
@@ -46,71 +46,127 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
           route="/"
           isCollapsed={isCollapsed}
         />
-        <Menu.SubMenu
-          key="resources"
-          title={!isCollapsed ? 'Resources' : ''}
-          style={{
-            paddingTop: '0px',
-          }}
-        >
-          <SidebarButton
-            text={'Groupers'}
-            icon={<GrouperIcon />}
-            active={pathname.startsWith('/groupers')}
-            route="/groupers"
-            isCollapsed={isCollapsed}
-          />
-          <SidebarButton
-            text={'Bridges'}
-            icon={<BridgeIcon />}
-            active={pathname.startsWith('/bridges')}
-            route="/bridges"
-            isCollapsed={isCollapsed}
-          />
-          <SidebarButton
-            text={'Workloads'}
-            icon={<WorkloadIcon />}
-            active={pathname.startsWith('/workloads')}
-            route="/workloads"
-            isCollapsed={isCollapsed}
-          />
-        </Menu.SubMenu>
-        <Menu.SubMenu
-          key="users-and-groups"
-          title={!isCollapsed ? 'Access Management' : ''}
-          style={{
-            paddingTop: '0px',
-          }}
-        >
-          <SidebarButton
-            text={'Users'}
-            icon={<UserIcon />}
-            active={pathname.startsWith(APP_ROUTES.USERS)}
-            route={APP_ROUTES.USERS}
-            isCollapsed={isCollapsed}
-          />
-          <SidebarButton
-            text={'Groups'}
-            icon={<GroupIcon />}
-            active={pathname.startsWith(APP_ROUTES.GROUPS)}
-            route={APP_ROUTES.GROUPS}
-            isCollapsed={isCollapsed}
-          />
-          <SidebarButton
-            text={'Roles'}
-            icon={<RoleIcon />}
-            active={pathname.startsWith('/roles')}
-            route="/roles"
-            isCollapsed={isCollapsed}
-          />
-          <SidebarButton
-            text={'Categories'}
-            icon={<CategoryIcon />}
-            active={pathname.startsWith('/categories')}
-            route="/categories"
-            isCollapsed={isCollapsed}
-          />
-        </Menu.SubMenu>
+        {isCollapsed ? (
+          <>
+            <SidebarButton
+              text={'Groupers'}
+              icon={<GrouperIcon />}
+              active={pathname.startsWith('/groupers')}
+              route="/groupers"
+              isCollapsed={isCollapsed}
+            />
+            <SidebarButton
+              text={'Bridges'}
+              icon={<BridgeIcon />}
+              active={pathname.startsWith('/bridges')}
+              route="/bridges"
+              isCollapsed={isCollapsed}
+            />
+            <SidebarButton
+              text={'Workloads'}
+              icon={<WorkloadIcon />}
+              active={pathname.startsWith('/workloads')}
+              route="/workloads"
+              isCollapsed={isCollapsed}
+            />
+            <SidebarButton
+              text={'Users'}
+              icon={<UserIcon />}
+              active={pathname.startsWith(APP_ROUTES.USERS)}
+              route={APP_ROUTES.USERS}
+              isCollapsed={isCollapsed}
+            />
+            <SidebarButton
+              text={'Groups'}
+              icon={<GroupIcon />}
+              active={pathname.startsWith(APP_ROUTES.GROUPS)}
+              route={APP_ROUTES.GROUPS}
+              isCollapsed={isCollapsed}
+            />
+            <SidebarButton
+              text={'Roles'}
+              icon={<RoleIcon />}
+              active={pathname.startsWith('/roles')}
+              route="/roles"
+              isCollapsed={isCollapsed}
+            />
+            <SidebarButton
+              text={'Categories'}
+              icon={<CategoryIcon />}
+              active={pathname.startsWith('/categories')}
+              route="/categories"
+              isCollapsed={isCollapsed}
+            />
+          </>
+        ) : (
+          <>
+            <Menu.SubMenu
+              key="resources"
+              title="Resources"
+              style={{
+                paddingTop: '0px',
+              }}
+            >
+              <SidebarButton
+                text={'Groupers'}
+                icon={<GrouperIcon />}
+                active={pathname.startsWith('/groupers')}
+                route="/groupers"
+                isCollapsed={isCollapsed}
+              />
+              <SidebarButton
+                text={'Bridges'}
+                icon={<BridgeIcon />}
+                active={pathname.startsWith('/bridges')}
+                route="/bridges"
+                isCollapsed={isCollapsed}
+              />
+              <SidebarButton
+                text={'Workloads'}
+                icon={<WorkloadIcon />}
+                active={pathname.startsWith('/workloads')}
+                route="/workloads"
+                isCollapsed={isCollapsed}
+              />
+            </Menu.SubMenu>
+            <Menu.SubMenu
+              key="users-and-groups"
+              title="Access Management"
+              style={{
+                paddingTop: '0px',
+              }}
+            >
+              <SidebarButton
+                text={'Users'}
+                icon={<UserIcon />}
+                active={pathname.startsWith(APP_ROUTES.USERS)}
+                route={APP_ROUTES.USERS}
+                isCollapsed={isCollapsed}
+              />
+              <SidebarButton
+                text={'Groups'}
+                icon={<GroupIcon />}
+                active={pathname.startsWith(APP_ROUTES.GROUPS)}
+                route={APP_ROUTES.GROUPS}
+                isCollapsed={isCollapsed}
+              />
+              <SidebarButton
+                text={'Roles'}
+                icon={<RoleIcon />}
+                active={pathname.startsWith('/roles')}
+                route="/roles"
+                isCollapsed={isCollapsed}
+              />
+              <SidebarButton
+                text={'Categories'}
+                icon={<CategoryIcon />}
+                active={pathname.startsWith('/categories')}
+                route="/categories"
+                isCollapsed={isCollapsed}
+              />
+            </Menu.SubMenu>
+          </>
+        )}
       </Menu>
     </div>
   );
