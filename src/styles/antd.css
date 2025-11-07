@@ -241,17 +241,8 @@
 }
 
 /* Align container fields with container name */
-.instance-containers-collapse .ant-collapse-content-box {
-  padding-left: 0 !important;
-}
-
 .instance-containers-collapse .ant-collapse-content-box .ant-card-body {
   padding-left: 0 !important;
-}
-
-.instance-containers-collapse .ant-collapse-content-box .ant-card-body > div {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
 }
 
 /* Remove wrapper padding to align with container name */
@@ -272,10 +263,6 @@
 }
 
 .instance-containers-collapse .ant-collapse-content-box .ant-card-body {
-  padding-bottom: 0 !important;
-}
-
-.instance-containers-collapse .ant-collapse-content-box .ant-card-body > div {
   padding-bottom: 0 !important;
 }
 

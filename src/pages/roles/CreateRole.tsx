@@ -4,7 +4,6 @@ import PrimaryButton from '../../components/buttons/PrimaryButton';
 import { DEFAULT_COLORS, APP_ROUTES, BUTTON_TEXTS, ICONS } from '../../constants';
 import { COMPONENT_STYLES } from '../../constants/layout/ui';
 import Header from '../../components/display/shared/sections/Header';
-import { useNavigate } from 'react-router-dom';
 import RolesGeneralSection from '../../components/display/roles/create/GeneralSection';
 import RolesScopePermissionsSection from '../../components/display/roles/create/ScopesAndPermissionsSection';
 import type { RoleScopePermission } from '../../interfaces/roles';
@@ -32,8 +31,6 @@ const CreateRole: React.FC = () => {
       setSubmitting(false);
     }
   };
-
-  const navigate = useNavigate();
 
   return (
     <div

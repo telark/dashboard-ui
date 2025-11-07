@@ -1,4 +1,3 @@
-export type GenericSortKey = string;
 export interface DataTableProps<T> {
   columns: any[];
   data: T[];
@@ -29,6 +28,6 @@ export interface SortHeaderProps {
 }
 
 export interface GenerateColumnCtx {
-  activeSortKey: GenericSortKey;
-  onSort: (key: GenericSortKey) => void;
+  activeSortKey: string;
+  onSort: (key: string) => void;
 }

@@ -20,7 +20,7 @@ export const sortRoles = (
   overrides?: Partial<Record<string, Comparator<Role>>>,
 ): Role[] => {
   const comparator: Comparator<Role> = (() => {
-    if (overrides && overrides[sortKey]) return overrides[sortKey] as Comparator<Role>;
+    if (overrides?.[sortKey]) return overrides[sortKey] as Comparator<Role>;
 
     switch (sortKey) {
       case RPC.KEYS.NAME:

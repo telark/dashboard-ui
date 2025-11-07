@@ -1,7 +1,7 @@
 import React from 'react';
 import SortHeader from './Sort';
 import { TABLE_DEFAULTS } from './constants';
-import type { GenerateColumnCtx, GenericSortKey } from '../../../../interfaces/table';
+import type { GenerateColumnCtx } from '../../../../interfaces/table';
 
 export const generateColumn = (
   cfg: {
@@ -30,7 +30,7 @@ export const generateColumn = (
   } = cfg;
   const { activeSortKey, onSort } = ctx;
   const HEADER_BG = headerBg ?? TABLE_DEFAULTS.HEADER_BG;
-  const sortKeyToUse = key as GenericSortKey;
+  const sortKeyToUse = key as string;
   return {
     title: (
       <SortHeader

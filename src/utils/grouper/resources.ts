@@ -28,6 +28,19 @@ export const findWorkloadInStore = (
   return workloads.find((w) => w.name === resource.name || w.sourceName === resourceName);
 };
 
+const getLastSync = (
+  storeLastUpdate: string | undefined,
+  resourceLastSync: string,
+): string => {
+  if (storeLastUpdate) {
+    return ParseGoTimeDate(storeLastUpdate);
+  }
+  if (resourceLastSync) {
+    return ParseGoTimeDate(resourceLastSync);
+  }
+  return resourceLastSync;
+};
+
 export const enrichBridgeResource = (
   resource: ResourceRowInterface,
   bridge: BridgeFromStore,
@@ -36,11 +49,7 @@ export const enrichBridgeResource = (
     ...resource,
     status: bridge.status || resource.status,
     creationTime: bridge.creationTime ? ParseGoTimeDate(bridge.creationTime) : undefined,
-    lastSync: bridge.lastUpdateTime
-      ? ParseGoTimeDate(bridge.lastUpdateTime)
-      : resource.lastSync
-        ? ParseGoTimeDate(resource.lastSync)
-        : resource.lastSync,
+    lastSync: getLastSync(bridge.lastUpdateTime, resource.lastSync),
   };
 };
 
@@ -52,11 +61,7 @@ export const enrichWorkloadResource = (
     ...resource,
     status: workload.status || resource.status,
     creationTime: workload.creationTime ? ParseGoTimeDate(workload.creationTime) : undefined,
-    lastSync: workload.lastUpdate
-      ? ParseGoTimeDate(workload.lastUpdate)
-      : resource.lastSync
-        ? ParseGoTimeDate(resource.lastSync)
-        : resource.lastSync,
+    lastSync: getLastSync(workload.lastUpdate, resource.lastSync),
   };
 };
 

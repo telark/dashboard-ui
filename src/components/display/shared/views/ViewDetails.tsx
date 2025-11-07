@@ -35,8 +35,8 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({ config }) => {
       case 'tags':
         return (
           <Space wrap>
-            {field.tags?.map((tag, idx) => (
-              <Tag key={idx} color={tag.color || 'blue'}>
+            {field.tags?.map((tag) => (
+              <Tag key={tag.label} color={tag.color || 'blue'}>
                 {tag.label}
               </Tag>
             ))}
