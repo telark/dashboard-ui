@@ -42,7 +42,7 @@ export const syncBridgeDetails = async ({
     const apiName = details?.syncName || details.name;
     const key = `${BRIDGE_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX}${apiName}`;
     message.destroy(key);
-    handleSyncError({ err, message, isDetailsSync: true, config: BRIDGE_SYNC_CONFIG });
+    handleSyncError({ err, message, config: BRIDGE_SYNC_CONFIG });
   } finally {
     setSyncing(false);
     store.dispatch(endSync(details.name));
@@ -82,7 +82,7 @@ export const syncBridge = async ({
   } catch (err: any) {
     // Ensure loading message is closed on error/timeout
     message.destroy(key);
-    handleSyncError({ err, message, isDetailsSync: false, config: BRIDGE_SYNC_CONFIG });
+    handleSyncError({ err, message, config: BRIDGE_SYNC_CONFIG, isDetailsSync: false });
   } finally {
     setSyncing(false);
     store.dispatch(endSync(name));

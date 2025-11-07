@@ -46,7 +46,7 @@ export const syncAppWorkloadDetails = async ({
     if (apiName) {
       message.destroy(key);
     }
-    handleSyncError({ err, message, isDetailsSync: false, config: WORKLOAD_SYNC_CONFIG });
+    handleSyncError({ err, message, config: WORKLOAD_SYNC_CONFIG });
   } finally {
     const apiName = details?.fasid?.name || details?.name;
     if (apiName) {
@@ -87,7 +87,7 @@ export const syncAppWorkload = async ({ name, message, setSyncing }: SyncParams)
     // Ensure loading message is closed on error/timeout
     const key = `${SYNC_CONSTANTS.MESSAGE_KEY_PREFIX}${name}`;
     message.destroy(key);
-    handleSyncError({ err, message, isDetailsSync: false, config: WORKLOAD_SYNC_CONFIG });
+    handleSyncError({ err, message, config: WORKLOAD_SYNC_CONFIG, isDetailsSync: false });
   } finally {
     setSyncing(false);
     store.dispatch(endSync(name));

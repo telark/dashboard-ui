@@ -42,7 +42,7 @@ export const syncGrouperDetails = async ({
     const apiName = details?.syncName || details.name;
     const key = `${GROUPER_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX}${apiName}`;
     message.destroy(key);
-    handleSyncError({ err, message, isDetailsSync: true, config: GROUPER_SYNC_CONFIG });
+    handleSyncError({ err, message, config: GROUPER_SYNC_CONFIG });
   } finally {
     setSyncing(false);
     store.dispatch(endSync(details.name));
@@ -81,7 +81,7 @@ export const syncGrouper = async ({
   } catch (err: any) {
     // Ensure loading message is closed on error/timeout
     message.destroy(key);
-    handleSyncError({ err, message, isDetailsSync: false, config: GROUPER_SYNC_CONFIG });
+    handleSyncError({ err, message, config: GROUPER_SYNC_CONFIG, isDetailsSync: false });
   } finally {
     setSyncing(false);
     store.dispatch(endSync(name));

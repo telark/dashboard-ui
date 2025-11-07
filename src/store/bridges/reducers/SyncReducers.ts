@@ -58,12 +58,7 @@ export const handleUpdateSyncModeFulfilled = (state: BridgeState, action: Payloa
     };
   }
 
-  // Update the details to reflect the most recent data
-  if (state.details) {
-    state.details = updatedItem;
-  } else {
-    state.details = updatedItem;
-  }
+  state.details = updatedItem;
 };
 
 export const handleUpdateSyncModeRejected = (state: BridgeState, action: PayloadAction<any>) => {

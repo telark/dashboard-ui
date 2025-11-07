@@ -28,8 +28,7 @@ export const mapGroupersData = (data: any): any[] => {
 };
 
 export const mapSingleGrouperData = (item: any, maintenance: Maintenance | null): any => {
-  // New API shape: { facid: {...}, cacid: {...} } without config
-  if (!item || !item.fasid || !item.cacid || !item.config) {
+  if (!item.fasid || !item.cacid || !item.config) {
     throw new Error(UTILS_TEXTS.ERRORS.MISSING_DATA);
   }
 
