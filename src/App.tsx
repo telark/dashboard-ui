@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, message, App as AntdApp } from 'antd';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Sidebar from './components/layout/sidebar/Sidebar';
@@ -8,7 +8,6 @@ import 'antd/dist/reset.css';
 import { DEFAULT_COLORS, APP_CONFIGS } from './constants';
 import { Startup, Welcome } from './pages';
 import AppRoutes from './routes/AppRoutes';
-import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkClusterInsightsThunk } from './store/insights/slices/insightsSlice';
 import type { RootState, AppDispatch } from './store';
@@ -34,11 +33,11 @@ const App: React.FC = () => {
   useEffect(() => {
     if (hasClusterInsight) {
       try {
-        const pending = window.sessionStorage.getItem(APP_CONFIGS.WELCOME.STORAGE_KEY);
+        const pending = globalThis.sessionStorage.getItem(APP_CONFIGS.WELCOME.STORAGE_KEY);
         if (pending === APP_CONFIGS.WELCOME.STORAGE_VALUE) {
           setShowWelcome(true);
-          window.sessionStorage.removeItem(APP_CONFIGS.WELCOME.STORAGE_KEY);
-          window.setTimeout(() => setShowWelcome(false), APP_CONFIGS.WELCOME.DURATION);
+          globalThis.sessionStorage.removeItem(APP_CONFIGS.WELCOME.STORAGE_KEY);
+          globalThis.setTimeout(() => setShowWelcome(false), APP_CONFIGS.WELCOME.DURATION);
         }
       } catch {
         // ignore
@@ -73,11 +72,7 @@ const App: React.FC = () => {
     <ErrorBoundary>
       <Router>
         <AntdApp>
-          {!initialized ? (
-            <Startup onStartAnalyze={handleStartAnalyze} />
-          ) : !hasClusterInsight ? (
-            <Startup onStartAnalyze={handleStartAnalyze} />
-          ) : (
+          {initialized && hasClusterInsight ? (
             <Layout style={{ minHeight: APP_CONFIGS.LAYOUT.MIN_HEIGHT }}>
               <Sidebar />
               <Layout
@@ -92,6 +87,8 @@ const App: React.FC = () => {
                 <AppRoutes />
               </Layout>
             </Layout>
+          ) : (
+            <Startup onStartAnalyze={handleStartAnalyze} />
           )}
         </AntdApp>
         {showWelcome && <Welcome />}

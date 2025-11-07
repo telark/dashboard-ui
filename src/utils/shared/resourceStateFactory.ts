@@ -70,16 +70,16 @@ export const createResourceStateUtils = (config: ResourceStateConfig): ResourceS
     const remainder = now % refreshInterval;
     const initialDelay = remainder === 0 ? refreshInterval : refreshInterval - remainder;
 
-    const timeoutId = window.setTimeout(() => {
+    const timeoutId = globalThis.setTimeout(() => {
       dispatch(refreshAutoThunk());
-      const intervalId = window.setInterval(() => {
+      const intervalId = globalThis.setInterval(() => {
         dispatch(refreshAutoThunk());
       }, refreshInterval);
 
       // Store cleanup function
       onCleanup(() => {
-        window.clearTimeout(timeoutId);
-        if (intervalId) window.clearInterval(intervalId);
+        globalThis.clearTimeout(timeoutId);
+        if (intervalId) globalThis.clearInterval(intervalId);
       });
     }, initialDelay);
   };

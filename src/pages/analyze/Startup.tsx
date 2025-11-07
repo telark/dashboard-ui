@@ -62,15 +62,15 @@ const Startup: React.FC<StartupProps> = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [polling, setPolling] = useState(false);
-  const timeoutRef = useRef<number | undefined>(undefined);
+  const timeoutRef = useRef<ReturnType<typeof globalThis.setTimeout> | undefined>(undefined);
   const [backendDown, setBackendDown] = useState(false);
   const failureCountRef = useRef(0);
   const analyzeScheduledRef = useRef(false);
-  const startTimerRef = useRef<number | undefined>(undefined);
+  const startTimerRef = useRef<ReturnType<typeof globalThis.setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     return () => {
-      if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+      if (timeoutRef.current) globalThis.clearTimeout(timeoutRef.current);
     };
   }, []);
 
@@ -91,7 +91,7 @@ const Startup: React.FC<StartupProps> = () => {
       if (insightsReady) {
         dispatch(setHasClusterInsight(true));
         try {
-          window.sessionStorage.setItem('WELCOME_PENDING', '1');
+          globalThis.sessionStorage.setItem('WELCOME_PENDING', '1');
         } catch {
           // Ignore storage errors
         }
@@ -108,7 +108,7 @@ const Startup: React.FC<StartupProps> = () => {
 
   const cancelScheduledStart = () => {
     if (startTimerRef.current) {
-      window.clearTimeout(startTimerRef.current);
+      globalThis.clearTimeout(startTimerRef.current);
       startTimerRef.current = undefined;
       analyzeScheduledRef.current = false;
     }
@@ -116,7 +116,7 @@ const Startup: React.FC<StartupProps> = () => {
 
   const scheduleAnalyzeStart = () => {
     if (!analyzeScheduledRef.current) {
-      startTimerRef.current = window.setTimeout(() => {
+      startTimerRef.current = globalThis.setTimeout(() => {
         analyzeScheduledRef.current = false;
         void handleStart();
       }, 5000);
@@ -167,15 +167,15 @@ const Startup: React.FC<StartupProps> = () => {
         const madeFourFails = failureCountRef.current >= 4;
         const baseDelay = i < delays.length ? delays[i++] : delays[delays.length - 1];
         const nextDelay = madeFourFails ? Math.max(5000, baseDelay) : baseDelay;
-        timeoutRef.current = window.setTimeout(
+        timeoutRef.current = globalThis.setTimeout(
           () => scheduleNextPoll(poll, madeFourFails),
           nextDelay,
         );
       };
       poll();
       return () => {
-        if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
-        if (startTimerRef.current) window.clearTimeout(startTimerRef.current);
+        if (timeoutRef.current) globalThis.clearTimeout(timeoutRef.current);
+        if (startTimerRef.current) globalThis.clearTimeout(startTimerRef.current);
       };
     }
     return;

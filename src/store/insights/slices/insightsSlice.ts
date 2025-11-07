@@ -13,7 +13,7 @@ export interface InsightsState {
 
 const getInitialHasClusterInsight = (): boolean => {
   try {
-    const stored = window.localStorage.getItem(STORAGE_KEYS.HAS_CLUSTER_INSIGHTS);
+    const stored = globalThis.localStorage.getItem(STORAGE_KEYS.HAS_CLUSTER_INSIGHTS);
     return stored === 'true';
   } catch {
     return false;
@@ -50,9 +50,9 @@ const insightsSlice = createSlice({
       state.hasClusterInsight = action.payload;
       try {
         if (action.payload) {
-          window.localStorage.setItem(STORAGE_KEYS.HAS_CLUSTER_INSIGHTS, 'true');
+          globalThis.localStorage.setItem(STORAGE_KEYS.HAS_CLUSTER_INSIGHTS, 'true');
         } else {
-          window.localStorage.removeItem(STORAGE_KEYS.HAS_CLUSTER_INSIGHTS);
+          globalThis.localStorage.removeItem(STORAGE_KEYS.HAS_CLUSTER_INSIGHTS);
         }
       } catch {
         // ignore persistence errors
@@ -71,9 +71,9 @@ const insightsSlice = createSlice({
         state.initialized = true;
         try {
           if (action.payload) {
-            window.localStorage.setItem(STORAGE_KEYS.HAS_CLUSTER_INSIGHTS, 'true');
+            globalThis.localStorage.setItem(STORAGE_KEYS.HAS_CLUSTER_INSIGHTS, 'true');
           } else {
-            window.localStorage.removeItem(STORAGE_KEYS.HAS_CLUSTER_INSIGHTS);
+            globalThis.localStorage.removeItem(STORAGE_KEYS.HAS_CLUSTER_INSIGHTS);
           }
         } catch {
           // ignore persistence errors
