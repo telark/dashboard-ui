@@ -1,14 +1,12 @@
-import { HTTP_STATUS, CARD_DEFAULTS } from '../../constants';
+import { CARD_DEFAULTS } from '../../constants';
 import type { AppWorkload, AppWorkloadCardData } from '../../interfaces/workload';
 import { ParseGoTimeDate } from '../shared/time';
+import { extractItemsFromResponse } from '../helpers/api';
 
-export const mapAppsWorkloadsData = (data: any): AppWorkloadCardData[] => {
-  if (data?.status !== HTTP_STATUS.SUCCESS || !data?.data) {
-    throw new Error('Invalid data format');
-  }
-
-  const items = Array.isArray(data.data.items) ? data.data.items : [];
-  if (items.length === 0) return [];
+export const mapAppsWorkloadsData = (data: unknown): AppWorkloadCardData[] => {
+  const items = extractItemsFromResponse<AppWorkload>(
+    data as { status: number; data?: { items?: AppWorkload[] } },
+  );
 
   return items.map((item: AppWorkload) => {
     return {

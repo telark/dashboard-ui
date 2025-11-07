@@ -1,18 +1,14 @@
 import { Maintenance } from '../../interfaces/grouper';
-import { UTILS_TEXTS, HTTP_STATUS, CARD_DEFAULTS } from '../../constants';
+import { UTILS_TEXTS, CARD_DEFAULTS } from '../../constants';
+import { extractItemsFromResponse } from '../helpers/api';
 
 export const mapGroupersData = (data: any): any[] => {
-  if (data?.status !== HTTP_STATUS.SUCCESS || !data?.data) {
-    throw new Error(UTILS_TEXTS.ERRORS.INVALID_DATA_FORMAT);
-  }
-
-  const items = Array.isArray(data.data.items) ? data.data.items : [];
-  if (items.length === 0) return [];
+  const items = extractItemsFromResponse(data);
 
   return items.map((item: any) => {
     return {
       name: item.fasid?.sourceName || CARD_DEFAULTS.GROUPER.NAME,
-      syncName: item.fasid?.name || item.fasid?.sourceName || CARD_DEFAULTS.GROUPER.NAME,
+      syncName: item.fasid?.name || CARD_DEFAULTS.GROUPER.NAME,
       status: item.cacid?.status || CARD_DEFAULTS.GROUPER.STATUS,
       numberOfWorkloads: item.cacid?.workloads?.length || UTILS_TEXTS.DEFAULTS.ZERO,
       numberOfBridges: item.cacid?.bridges?.length || UTILS_TEXTS.DEFAULTS.ZERO,
