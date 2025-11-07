@@ -123,13 +123,13 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
     [selectedResources],
   );
 
-  if (!resources || resources.length === 0) {
-    return <ResourcesEmptyState />;
-  }
-
   const handleRowSelection = useCallback((selectedRowKeys: React.Key[]) => {
     setSelectedResources(new Set(selectedRowKeys as string[]));
   }, []);
+
+  if (!resources || resources.length === 0) {
+    return <ResourcesEmptyState />;
+  }
 
   return (
     <>

@@ -12,8 +12,21 @@ interface ActionsProps {
 }
 
 const Actions: React.FC<ActionsProps> = ({ record, onView, onEdit, onDelete }) => {
+  const handleMenuClick = ({ key }: { key: string }) => {
+    if (key === 'view') onView(record);
+    else if (key === 'edit' && onEdit) onEdit(record);
+    else if (key === 'delete') onDelete(record);
+  };
+
   return (
-    <div onClick={(e) => e.stopPropagation()}>
+    <span
+      onClick={(e) => e.stopPropagation()}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.stopPropagation();
+        }
+      }}
+    >
       <Dropdown
         trigger={['click']}
         placement="bottomRight"
@@ -28,16 +41,22 @@ const Actions: React.FC<ActionsProps> = ({ record, onView, onEdit, onDelete }) =
               danger: true,
             },
           ],
-          onClick: ({ key }) => {
-            if (key === 'view') onView(record);
-            else if (key === 'edit' && onEdit) onEdit(record);
-            else if (key === 'delete') onDelete(record);
-          },
+          onClick: handleMenuClick,
         }}
       >
-        <Button type="text" shape="circle" icon={<MoreOutlined />} />
+        <Button
+          type="text"
+          shape="circle"
+          icon={<MoreOutlined />}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.stopPropagation();
+            }
+          }}
+        />
       </Dropdown>
-    </div>
+    </span>
   );
 };
 
