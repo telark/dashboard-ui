@@ -27,4 +27,3 @@ const GroupsList: React.FC = () => {
 };
 
 export default GroupsList;
-

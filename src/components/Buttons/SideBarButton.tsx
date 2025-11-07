@@ -13,6 +13,7 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({
   isCollapsed = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
 
   const itemKey = `${route || 'route-missing'}-${text || 'text-missing'}`;
 
@@ -23,8 +24,8 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({
   let coloredIcon = null;
   if (icon) {
     if (React.isValidElement(icon)) {
-      coloredIcon = React.cloneElement(icon, { 
-        style: { color: iconColor, fontSize: '18px', width: '18.5px', height: '18.5px' } 
+      coloredIcon = React.cloneElement(icon, {
+        style: { color: iconColor, fontSize: '18px', width: '18.5px', height: '18.5px' },
       } as React.Attributes);
     } else {
       coloredIcon = icon;
@@ -45,15 +46,13 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({
       eventKey={itemKey}
       title={String(text)}
       icon={isHovered && hoverIcon ? hoverIcon : coloredIcon}
-      onClick={() => useNavigate()(route)}
+      onClick={() => navigate(route)}
       style={{
         backgroundColor: 'transparent',
         color: isActiveOrHovered ? DEFAULT_COLORS.SUCCESS : BUTTON_COLORS.TEXT_DEFAULT,
         padding: BUTTON_CONFIGS.SIDEBAR_BUTTON.PADDING,
         borderRadius: BUTTON_CONFIGS.SIDEBAR_BUTTON.BORDER_RADIUS,
-        margin: isCollapsed
-          ? '10px auto'
-          : BUTTON_CONFIGS.SIDEBAR_BUTTON.EXPANDED_MARGIN,
+        margin: isCollapsed ? '10px auto' : BUTTON_CONFIGS.SIDEBAR_BUTTON.EXPANDED_MARGIN,
         height: BUTTON_CONFIGS.SIDEBAR_BUTTON.HEIGHT,
         display: 'flex',
         alignItems: 'center',

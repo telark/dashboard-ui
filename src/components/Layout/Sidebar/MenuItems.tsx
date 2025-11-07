@@ -38,7 +38,13 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
         openKeys={openKeys}
         onOpenChange={setOpenKeys}
         className="compact-menu"
-        style={{ backgroundColor: 'white', borderRight: 'none', padding: 0, margin: 0, width: '100%' }}
+        style={{
+          backgroundColor: 'white',
+          borderRight: 'none',
+          padding: 0,
+          margin: 0,
+          width: '100%',
+        }}
       >
         <SidebarButton
           text={'Home'}
