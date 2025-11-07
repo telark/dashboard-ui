@@ -53,7 +53,7 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({
         padding: BUTTON_CONFIGS.SIDEBAR_BUTTON.PADDING,
         borderRadius: BUTTON_CONFIGS.SIDEBAR_BUTTON.BORDER_RADIUS,
         margin: isCollapsed
-          ? BUTTON_CONFIGS.SIDEBAR_BUTTON.COLLAPSED_MARGIN
+          ? '10px auto'
           : BUTTON_CONFIGS.SIDEBAR_BUTTON.EXPANDED_MARGIN,
         height: BUTTON_CONFIGS.SIDEBAR_BUTTON.HEIGHT,
         display: 'flex',
