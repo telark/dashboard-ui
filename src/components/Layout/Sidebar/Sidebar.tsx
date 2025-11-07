@@ -55,9 +55,9 @@ const Sidebar = () => {
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
         style={{
-          position: 'fixed',
+          position: isCollapsed ? 'absolute' : 'fixed',
           bottom: '20px',
-          left: isCollapsed ? `${widthCollapsed - 16}px` : `${widthExpanded - 16}px`,
+          left: isCollapsed ? '50%' : `${widthExpanded - 16}px`,
           border: 'none',
           background: 'white',
           color: '#5B6B7C',
@@ -71,6 +71,7 @@ const Sidebar = () => {
           justifyContent: 'center',
           transition: 'all 0.3s ease',
           zIndex: 10,
+          transform: isCollapsed ? 'translateX(-50%)' : 'none',
         }}
       >
         {isCollapsed ? <HiChevronRight /> : <HiChevronLeft />}

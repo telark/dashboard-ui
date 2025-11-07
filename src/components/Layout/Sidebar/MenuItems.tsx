@@ -32,6 +32,7 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
   return (
     <div style={{ width: '100%', padding: 0, margin: 0 }}>
       <Menu
+        key={isCollapsed ? 'collapsed' : 'expanded'}
         mode="inline"
         inlineCollapsed={isCollapsed}
         openKeys={openKeys}
