@@ -63,10 +63,10 @@ const RoleForm: React.FC<RoleFormProps> = ({
             }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
-              <RolesGeneralSection form={form} />
+              <RolesGeneralSection />
             </div>
             <div style={{ flex: 1 }}>
-              <RolesScopePermissionsSection form={form} />
+              <RolesScopePermissionsSection />
             </div>
           </div>
           <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
