@@ -17,14 +17,6 @@ export interface RolesTableProps {
   onEdit?: (role: Role) => void;
 }
 
-export interface RolesGeneralSectionProps {
-  form: any; // AntD FormInstance
-}
-
-export interface RolesScopesAndPermissionsSectionProps {
-  form: any; // AntD FormInstance
-}
-
 export interface RolesScopesAndPermissionsListProps {
   areas: ReadonlyArray<{ key: string; label: string }>;
   permissions: ReadonlyArray<RoleScopePermission>;
