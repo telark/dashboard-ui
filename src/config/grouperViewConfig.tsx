@@ -1,6 +1,5 @@
 import { AppstoreOutlined } from '@ant-design/icons';
 import { AiOutlineCalendar } from 'react-icons/ai';
-
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import TimeAgo from '../components/time/TimeAgo';
 import { ICONS } from '../constants';

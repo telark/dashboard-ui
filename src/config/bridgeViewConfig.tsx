@@ -4,7 +4,7 @@ import {
   BranchesOutlined,
   DeploymentUnitOutlined,
 } from '@ant-design/icons';
-import { AiOutlineTag, AiOutlineCluster } from 'react-icons/ai';
+import { AiOutlineCluster } from 'react-icons/ai';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import TimeAgo from '../components/time/TimeAgo';
 import StatusButton from '../components/buttons/StatusButton';

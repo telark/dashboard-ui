@@ -5,7 +5,6 @@ interface SectionProps {
   title: string;
   subtitle?: string;
   content?: React.ReactNode;
-  defaultActive?: boolean;
   className?: string;
   style?: React.CSSProperties;
 }

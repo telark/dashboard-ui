@@ -3,7 +3,7 @@ import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
 
 export type RolesSortKey = 'name' | 'type' | 'permission' | 'createdAt' | 'status';
 export const getPermissionCount = (role: Role): number => {
-  const levels = Object.values(role.scopes || {}) as Array<Array<RoleScopePermission>>;
+  const levels = Object.values(role.scopes || {});
   return levels.reduce((acc, arr) => acc + (Array.isArray(arr) ? arr.length : 0), 0);
 };
 type Comparator<T> = (a: T, b: T) => number;
@@ -20,7 +20,8 @@ export const sortRoles = (
   overrides?: Partial<Record<string, Comparator<Role>>>,
 ): Role[] => {
   const comparator: Comparator<Role> = (() => {
-    if (overrides?.[sortKey]) return overrides[sortKey] as Comparator<Role>;
+    const override = overrides?.[sortKey];
+    if (override) return override;
 
     switch (sortKey) {
       case RPC.KEYS.NAME:

@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Form, message } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, APP_ROUTES, ICONS } from '../../constants';
+import { DEFAULT_COLORS, APP_ROUTES, ICONS, BUTTON_TEXTS } from '../../constants';
 import { COMPONENT_STYLES } from '../../constants/layout/ui';
 import Header from '../../components/display/shared/sections/Header';
 import { STATIC_CATEGORIES } from '../../data/categories';
@@ -10,7 +10,6 @@ import LabeledInput from '../../components/display/shared/inputs/LabeledInput';
 import LabeledSelect from '../../components/display/shared/inputs/LabeledSelect';
 import Section from '../../components/display/roles/shared/Section';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
-import { BUTTON_TEXTS } from '../../constants';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
 
 const CategoryIcon = ICONS.CATEGORY;
@@ -87,8 +86,6 @@ const EditCategory: React.FC = () => {
         <Header
           subtitle="Edit category details"
           breadcrumbs={breadcrumbs}
-          primaryText="Back to Categories"
-          onPrimary={() => navigate(APP_ROUTES.CATEGORIES)}
           icon={<CategoryIcon />}
         />
 

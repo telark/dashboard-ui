@@ -30,7 +30,6 @@ export const generateColumn = (
   } = cfg;
   const { activeSortKey, onSort } = ctx;
   const HEADER_BG = headerBg ?? TABLE_DEFAULTS.HEADER_BG;
-  const sortKeyToUse = key as string;
   return {
     title: (
       <SortHeader
@@ -38,15 +37,15 @@ export const generateColumn = (
         align={align}
         leftIcon={icon}
         sortable={true}
-        isActive={sortKeyToUse ? activeSortKey === sortKeyToUse : false}
-        onSort={sortKeyToUse ? () => onSort(sortKeyToUse) : undefined}
+        isActive={key ? activeSortKey === key : false}
+        onSort={key ? () => onSort(key) : undefined}
         activeColor={activeColor}
         inactiveColor={inactiveColor}
       />
     ),
     key,
     dataIndex: key,
-    align: align as 'left' | 'center',
+    align,
     onHeaderCell: () => ({ style: { background: HEADER_BG } }),
     ...(render ? { render } : {}),
     ...(width ? { width } : {}),

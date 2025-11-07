@@ -167,4 +167,4 @@ export const Columns = ({ onSort, activeSortKey, onView }: ColumnsArgs) => {
   ];
 };
 
-export type { InstancesSortKey };
+export type { InstancesSortKey } from './utils';

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES, ICONS } from '../../constants';
 import Header from '../../components/display/shared/sections/Header';
 import { STATIC_CATEGORIES } from '../../data/categories';
@@ -11,7 +11,6 @@ const CategoryIcon = ICONS.CATEGORY;
 
 const ViewCategory: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
 
   const category = useMemo(() => {
     return STATIC_CATEGORIES.find((c) => c.id === id);
@@ -56,8 +55,6 @@ const ViewCategory: React.FC = () => {
         <Header
           subtitle="View category details"
           breadcrumbs={breadcrumbs}
-          primaryText="Back to Categories"
-          onPrimary={() => navigate(APP_ROUTES.CATEGORIES)}
           icon={<CategoryIcon />}
         />
 

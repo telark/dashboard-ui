@@ -1,8 +1,7 @@
 import React from 'react';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../../constants';
 import type { TimelineMarkerProps } from '../../../../interfaces/timeline';
-import { TIMELINE_STYLES } from '../../../../constants';
+import { TIMELINE_STYLES, DEFAULT_COLORS } from '../../../../constants';
 
 export const TimelineMarker: React.FC<TimelineMarkerProps> = React.memo(
   ({ status, isLast, markerLeft, maskHeight }) => {

@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import type { Record } from '../interfaces/shared';
-import { UI } from '../constants';
 
 export interface TimelineData {
   items: Record[];
@@ -10,10 +9,6 @@ export interface TimelineData {
 
 const INITIAL_DISPLAY_COUNT = 5;
 
-/**
- * Hook for processing timeline records data
- * Handles sorting and initial display logic
- */
 export const useTimelineData = (records: Record[] | undefined): TimelineData => {
   // Create a stable dependency key based on records content to avoid unnecessary re-sorting
   const recordsKey = useMemo(() => {

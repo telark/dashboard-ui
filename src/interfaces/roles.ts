@@ -1,6 +1,5 @@
 import type { RoleScopePermission, RoleStatus, RoleType } from '../constants/pages/roles';
-import type { ReactNode } from 'react';
-export type { RoleScopePermission };
+export type { RoleScopePermission } from '../constants/pages/roles';
 
 export interface Role {
   id: string;

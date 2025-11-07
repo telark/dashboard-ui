@@ -1,6 +1,5 @@
 import { DeploymentUnitOutlined } from '@ant-design/icons';
 import {
-  AiOutlineTag,
   AiOutlineCluster,
   AiOutlineCalendar,
   AiOutlineLock,

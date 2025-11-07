@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES, ICONS } from '../../constants';
 import Header from '../../components/display/shared/sections/Header';
 import { STATIC_ROLES } from '../../data/roles';
@@ -14,7 +14,6 @@ const RoleIcon = ICONS.ROLE;
 
 const ViewRole: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
 
   const role = useMemo(() => {
     return STATIC_ROLES.find((r) => r.id === id);
@@ -56,8 +55,6 @@ const ViewRole: React.FC = () => {
         <Header
           subtitle="View role details"
           breadcrumbs={breadcrumbs}
-          primaryText="Back to Roles"
-          onPrimary={() => navigate(APP_ROUTES.ROLES)}
           icon={<RoleIcon />}
         />
 

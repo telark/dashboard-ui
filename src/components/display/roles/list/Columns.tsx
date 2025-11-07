@@ -136,4 +136,4 @@ export const Columns = ({
   ];
 };
 
-export type { RolesSortKey };
+export type { RolesSortKey } from './utils';

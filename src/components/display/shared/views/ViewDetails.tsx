@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Card, Space, Tag } from 'antd';
-import { ReactNode } from 'react';
 import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
 import { Row, Label } from '../../../../components/shared';
 
@@ -53,13 +52,12 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({ config }) => {
     <Card
       style={{
         ...COMPONENT_STYLES.VIEW_DETAILS.card,
-        ...(config.cardStyle || {}),
+        ...config.cardStyle,
       }}
       styles={{ body: COMPONENT_STYLES.VIEW_DETAILS.cardBody }}
     >
       <div style={COMPONENT_STYLES.VIEW_DETAILS.wrapper}>
         {config.fields.map((field, index) => {
-          // Handle composed fields (like Scopes & Permissions) differently
           if (field.type === 'composed') {
             const hasMoreFields = index < config.fields.length - 1;
 

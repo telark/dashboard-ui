@@ -83,8 +83,6 @@ const EditRole: React.FC = () => {
         <Header
           subtitle="Edit role details"
           breadcrumbs={breadcrumbs}
-          primaryText="Back to Roles"
-          onPrimary={() => navigate(APP_ROUTES.ROLES)}
           icon={<RoleIcon />}
         />
 

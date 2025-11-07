@@ -11,7 +11,7 @@ function DataTable<T>({
   containerStyle,
   tableProps = {},
   onRowClick,
-}: DataTableProps<T>) {
+}: Readonly<DataTableProps<T>>) {
   return (
     <div
       className={className}

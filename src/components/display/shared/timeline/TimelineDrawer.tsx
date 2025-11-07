@@ -3,9 +3,8 @@ import { Drawer, Button, Spin } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { TimelineView } from './TimelineView';
 import FancySpinner from '../../../shared/FancySpinner';
-import { UI } from '../../../../constants';
+import { UI, TIMELINE_CONSTANTS, TIMELINE_STYLES } from '../../../../constants';
 import type { TimelineDrawerProps } from '../../../../interfaces/timeline';
-import { TIMELINE_CONSTANTS, TIMELINE_STYLES } from '../../../../constants';
 
 export const TimelineDrawer: React.FC<TimelineDrawerProps> = React.memo(
   ({ open, onClose, visibleItems, isLoading, hasMoreItems, totalItems, onLoadMore }) => {
