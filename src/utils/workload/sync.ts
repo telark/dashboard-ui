@@ -1,6 +1,7 @@
 import { triggerSingleAppSync } from '../../clients/sync-manager';
 import { SYNC_MESSAGES } from '../../constants/layout/modes';
 import { SYNC_CONSTANTS } from '../../constants/config/sync';
+import { WORKLOAD_DETAILS_CONSTANTS } from '../../constants/pages/workload-details';
 import store from '../../store';
 import { startSync, endSync } from '../../store/workloads/slices/workloadSlice';
 import { handleSyncEffect, handleSyncError } from '../shared/sync';
@@ -19,16 +20,16 @@ export const syncAppWorkloadDetails = async ({
     const displayName = details?.fasid?.sourceName;
     store.dispatch(startSync(apiName));
 
-    const key = buildDetailsSyncKey('sync-app-', apiName);
+    const key = buildDetailsSyncKey(WORKLOAD_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX, apiName);
     message.open({
       type: 'loading',
       content: `${SYNC_MESSAGES.loading} ${displayName}…`,
       key,
-      duration: SYNC_CONSTANTS.MESSAGE_DURATIONS.LOADING,
+      duration: WORKLOAD_DETAILS_CONSTANTS.SYNC.MESSAGE_DURATIONS.LOADING,
     });
 
     const res = await triggerSingleAppSync(apiName);
-    const effect = res?.data?.syncEffect ?? SYNC_CONSTANTS.DEFAULT_SYNC_EFFECT;
+    const effect = res?.data?.syncEffect ?? WORKLOAD_DETAILS_CONSTANTS.SYNC.DEFAULT_SYNC_EFFECT;
 
     await handleSyncEffect({
       effect,
@@ -39,7 +40,7 @@ export const syncAppWorkloadDetails = async ({
     });
   } catch (err: any) {
     const apiName = details?.fasid?.name || details?.name;
-    const key = buildDetailsSyncKey('sync-app-', apiName);
+    const key = buildDetailsSyncKey(WORKLOAD_DETAILS_CONSTANTS.SYNC.MESSAGE_KEY_PREFIX, apiName);
     destroySyncMessage(message, key);
     handleSyncError({ err, message, config: WORKLOAD_SYNC_CONFIG });
   } finally {
