@@ -1,7 +1,6 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import { Form, message } from 'antd';
-import { useParams, useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, APP_ROUTES, ICONS, BUTTON_TEXTS } from '../../constants';
+import React from 'react';
+import { Form } from 'antd';
+import { APP_ROUTES, ICONS, BUTTON_TEXTS } from '../../constants';
 import { COMPONENT_STYLES } from '../../constants/layout/ui';
 import Header from '../../components/display/shared/sections/Header';
 import { STATIC_GROUPS } from '../../data/groups';
@@ -11,6 +10,10 @@ import LabeledSelect from '../../components/display/shared/inputs/LabeledSelect'
 import Section from '../../components/display/roles/shared/Section';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
+import { PageContainer, NotFound } from '../../components/shared';
+import { useEditPage } from '../../hooks/useEditPage';
+import type { Group } from '../../interfaces/groups';
+
 const GroupIcon = ICONS.GROUP;
 
 interface EditGroupFormValues {
@@ -20,50 +23,27 @@ interface EditGroupFormValues {
 }
 
 const EditGroup: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const [form] = Form.useForm<EditGroupFormValues>();
-  const [submitting, setSubmitting] = useState(false);
-
-  const group = useMemo(() => {
-    return STATIC_GROUPS.find((g) => g.id === id);
-  }, [id]);
-
-  useEffect(() => {
-    if (group) {
-      form.setFieldsValue({
-        name: group.name,
-        description: group.description,
-        category: group.category,
-      });
-    }
-  }, [group, form]);
-
-  if (!group) {
-    return (
-      <div
-        style={{
-          padding: '48px 24px 24px',
-          marginTop: '60px',
-          background: DEFAULT_COLORS.PAGE_BG,
-          minHeight: 'calc(100vh - 60px)',
-        }}
-      >
-        <div>Group not found</div>
-      </div>
-    );
-  }
-
-  const handleFinish = async (values: EditGroupFormValues) => {
-    setSubmitting(true);
-    try {
+  const { item: group, form, submitting, handleFinish, notFound } = useEditPage<
+    Group,
+    EditGroupFormValues
+  >({
+    data: STATIC_GROUPS,
+    findById: (id, data) => data.find((g) => g.id === id),
+    getFormValues: (item) => ({
+      name: item.name,
+      description: item.description,
+      category: item.category,
+    }),
+    onUpdate: async (id, values) => {
       await new Promise((r) => setTimeout(r, 400));
-      message.success(`Group "${values.name}" updated`);
-      navigate(`${APP_ROUTES.GROUPS}/${id}/view`);
-    } finally {
-      setSubmitting(false);
-    }
-  };
+    },
+    successMessage: (name) => `Group "${name}" updated`,
+    viewRoute: (id) => `${APP_ROUTES.GROUPS}/${id}/view`,
+  });
+
+  if (notFound || !group) {
+    return <NotFound message="Group not found" />;
+  }
 
   const breadcrumbs = [
     { label: 'Groups', to: APP_ROUTES.GROUPS },
@@ -72,17 +52,8 @@ const EditGroup: React.FC = () => {
   ];
 
   return (
-    <div
-      style={{
-        padding: '48px 24px 24px',
-        marginTop: '60px',
-        background: DEFAULT_COLORS.PAGE_BG,
-        minHeight: 'calc(100vh - 60px)',
-      }}
-      className="app-root"
-    >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <Header subtitle="Edit group details" breadcrumbs={breadcrumbs} icon={<GroupIcon />} />
+    <PageContainer>
+      <Header subtitle="Edit group details" breadcrumbs={breadcrumbs} icon={<GroupIcon />} />
 
         <AnimatedPageWrapper>
           <div
@@ -92,16 +63,7 @@ const EditGroup: React.FC = () => {
               width: '100%',
             }}
           >
-            <Form<EditGroupFormValues>
-              layout="vertical"
-              form={form}
-              onFinish={handleFinish}
-              initialValues={{
-                name: group.name,
-                description: group.description,
-                category: group.category,
-              }}
-            >
+            <Form<EditGroupFormValues> layout="vertical" form={form} onFinish={handleFinish}>
               <div
                 style={{
                   display: 'flex',
@@ -162,8 +124,7 @@ const EditGroup: React.FC = () => {
             </Form>
           </div>
         </AnimatedPageWrapper>
-      </div>
-    </div>
+    </PageContainer>
   );
 };
 

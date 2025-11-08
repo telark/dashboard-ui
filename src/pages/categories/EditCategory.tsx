@@ -1,7 +1,6 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import { Form, message } from 'antd';
-import { useParams, useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, APP_ROUTES, ICONS, BUTTON_TEXTS } from '../../constants';
+import React from 'react';
+import { Form } from 'antd';
+import { APP_ROUTES, ICONS, BUTTON_TEXTS } from '../../constants';
 import { COMPONENT_STYLES } from '../../constants/layout/ui';
 import Header from '../../components/display/shared/sections/Header';
 import { STATIC_CATEGORIES } from '../../data/categories';
@@ -11,6 +10,9 @@ import LabeledSelect from '../../components/display/shared/inputs/LabeledSelect'
 import Section from '../../components/display/roles/shared/Section';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
+import { PageContainer, NotFound } from '../../components/shared';
+import { useEditPage } from '../../hooks/useEditPage';
+import type { Category } from '../../interfaces/categories';
 
 const CategoryIcon = ICONS.CATEGORY;
 
@@ -21,50 +23,27 @@ interface EditCategoryFormValues {
 }
 
 const EditCategory: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const [form] = Form.useForm<EditCategoryFormValues>();
-  const [submitting, setSubmitting] = useState(false);
-
-  const category = useMemo(() => {
-    return STATIC_CATEGORIES.find((c) => c.id === id);
-  }, [id]);
-
-  useEffect(() => {
-    if (category) {
-      form.setFieldsValue({
-        name: category.name,
-        description: category.description,
-        type: category.type,
-      });
-    }
-  }, [category, form]);
-
-  if (!category) {
-    return (
-      <div
-        style={{
-          padding: '48px 24px 24px',
-          marginTop: '60px',
-          background: DEFAULT_COLORS.PAGE_BG,
-          minHeight: 'calc(100vh - 60px)',
-        }}
-      >
-        <div>Category not found</div>
-      </div>
-    );
-  }
-
-  const handleFinish = async (values: EditCategoryFormValues) => {
-    setSubmitting(true);
-    try {
+  const { item: category, form, submitting, handleFinish, notFound } = useEditPage<
+    Category,
+    EditCategoryFormValues
+  >({
+    data: STATIC_CATEGORIES,
+    findById: (id, data) => data.find((c) => c.id === id),
+    getFormValues: (item) => ({
+      name: item.name,
+      description: item.description,
+      type: item.type,
+    }),
+    onUpdate: async (id, values) => {
       await new Promise((r) => setTimeout(r, 400));
-      message.success(`Category "${values.name}" updated`);
-      navigate(`${APP_ROUTES.CATEGORIES}/${id}/view`);
-    } finally {
-      setSubmitting(false);
-    }
-  };
+    },
+    successMessage: (name) => `Category "${name}" updated`,
+    viewRoute: (id) => `${APP_ROUTES.CATEGORIES}/${id}/view`,
+  });
+
+  if (notFound || !category) {
+    return <NotFound message="Category not found" />;
+  }
 
   const breadcrumbs = [
     { label: 'Categories', to: APP_ROUTES.CATEGORIES },
@@ -73,21 +52,12 @@ const EditCategory: React.FC = () => {
   ];
 
   return (
-    <div
-      style={{
-        padding: '48px 24px 24px',
-        marginTop: '60px',
-        background: DEFAULT_COLORS.PAGE_BG,
-        minHeight: 'calc(100vh - 60px)',
-      }}
-      className="app-root"
-    >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <Header
-          subtitle="Edit category details"
-          breadcrumbs={breadcrumbs}
-          icon={<CategoryIcon />}
-        />
+    <PageContainer>
+      <Header
+        subtitle="Edit category details"
+        breadcrumbs={breadcrumbs}
+        icon={<CategoryIcon />}
+      />
 
         <AnimatedPageWrapper>
           <div
@@ -97,16 +67,7 @@ const EditCategory: React.FC = () => {
               width: '100%',
             }}
           >
-            <Form<EditCategoryFormValues>
-              layout="vertical"
-              form={form}
-              onFinish={handleFinish}
-              initialValues={{
-                name: category.name,
-                description: category.description,
-                type: category.type,
-              }}
-            >
+            <Form<EditCategoryFormValues> layout="vertical" form={form} onFinish={handleFinish}>
               <div
                 style={{
                   display: 'flex',
@@ -164,8 +125,7 @@ const EditCategory: React.FC = () => {
             </Form>
           </div>
         </AnimatedPageWrapper>
-      </div>
-    </div>
+    </PageContainer>
   );
 };
 

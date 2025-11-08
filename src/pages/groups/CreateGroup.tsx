@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, APP_ROUTES, ICONS, BUTTON_TEXTS } from '../../constants';
+import { APP_ROUTES, ICONS, BUTTON_TEXTS } from '../../constants';
 import { COMPONENT_STYLES } from '../../constants/layout/ui';
 import Header from '../../components/display/shared/sections/Header';
 import { GROUPS_CONSTANTS as GC } from '../../constants/pages/groups';
@@ -10,6 +10,7 @@ import LabeledSelect from '../../components/display/shared/inputs/LabeledSelect'
 import Section from '../../components/display/roles/shared/Section';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
+import { PageContainer } from '../../components/shared';
 import { useDispatch } from 'react-redux';
 import { addGroup } from '../../store/groups/slices/groupSlice';
 import type { Group } from '../../interfaces/groups';
@@ -48,21 +49,12 @@ const CreateGroup: React.FC = () => {
   };
 
   return (
-    <div
-      style={{
-        padding: '48px 24px 24px',
-        marginTop: '60px',
-        background: DEFAULT_COLORS.PAGE_BG,
-        minHeight: 'calc(100vh - 60px)',
-      }}
-      className="app-root"
-    >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <Header
-          subtitle="Create a new group"
-          breadcrumbs={[{ label: 'Groups', to: APP_ROUTES.GROUPS }, { label: 'Create Group' }]}
-          icon={<GroupIcon />}
-        />
+    <PageContainer>
+      <Header
+        subtitle="Create a new group"
+        breadcrumbs={[{ label: 'Groups', to: APP_ROUTES.GROUPS }, { label: 'Create Group' }]}
+        icon={<GroupIcon />}
+      />
 
         <AnimatedPageWrapper>
           <div
@@ -142,8 +134,7 @@ const CreateGroup: React.FC = () => {
             </Form>
           </div>
         </AnimatedPageWrapper>
-      </div>
-    </div>
+    </PageContainer>
   );
 };
 
