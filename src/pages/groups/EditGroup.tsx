@@ -37,7 +37,7 @@ const EditGroup: React.FC = () => {
       description: item.description,
       category: item.category,
     }),
-    onUpdate: async (_id, _values) => {
+    onUpdate: async () => {
       await new Promise((r) => setTimeout(r, 400));
     },
     successMessage: GC.LABELS.MESSAGES.UPDATED,

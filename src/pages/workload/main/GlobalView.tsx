@@ -59,16 +59,6 @@ const WorkloadsGlobalView: React.FC = memo(() => {
     };
   }, [dispatch]);
 
-  useEffect(() => {
-    if (appError || batchError) {
-      message.error('Failed to load workloads');
-      // Auto-start retry when error occurs
-      if (!isRetrying) {
-        handleRetry();
-      }
-    }
-  }, [appError, batchError, isRetrying]);
-
   // Retry callbacks
   const retryCallbacks: RetryCallbacks = useMemo(
     () => ({
@@ -91,6 +81,16 @@ const WorkloadsGlobalView: React.FC = memo(() => {
 
     await retryHandler();
   }, [dispatch, isRetrying, isInCooldown, retryCallbacks]);
+
+  useEffect(() => {
+    if (appError || batchError) {
+      message.error('Failed to load workloads');
+      // Auto-start retry when error occurs
+      if (!isRetrying) {
+        handleRetry();
+      }
+    }
+  }, [appError, batchError, isRetrying, handleRetry]);
 
   const handleCancelRetry = useCallback(() => {
     cancelRetry(timeoutRefs.current, retryCallbacks);

@@ -6,7 +6,7 @@ interface UseEditPageOptions<T, F> {
   data: T[];
   findById: (id: string, data: T[]) => T | undefined;
   getFormValues: (item: T) => F;
-  onUpdate: (id: string, values: F) => Promise<void>;
+  onUpdate: (id?: string, values?: F) => Promise<void>;
   successMessage: (name: string) => string;
   viewRoute: (id: string) => string;
 }

@@ -25,7 +25,7 @@ const EditRole: React.FC = () => {
       name: item.name,
       scopes: item.scopes,
     }),
-    onUpdate: async (_id, _values) => {
+    onUpdate: async () => {
       await new Promise((r) => setTimeout(r, 400));
     },
     successMessage: RC.LABELS.MESSAGES.UPDATED,

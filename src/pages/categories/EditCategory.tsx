@@ -37,7 +37,7 @@ const EditCategory: React.FC = () => {
       description: item.description,
       type: item.type,
     }),
-    onUpdate: async (_id, _values) => {
+    onUpdate: async () => {
       await new Promise((r) => setTimeout(r, 400));
     },
     successMessage: CC.LABELS.MESSAGES.UPDATED,

@@ -30,11 +30,7 @@ const InstanceDetailsModal: React.FC<InstanceDetailsModalProps> = ({
   const containers = workload.cacid?.crates?.regular || [];
   const containerNames = instance.containerNames?.split(', ').filter(Boolean) || [];
   const instanceContainers = containers.filter((c: Container) => containerNames.includes(c.name));
-
-  // Create instance view config
-  const instanceConfig = createInstanceViewConfig(instance, workload);
-
-  // Create container collapse items
+  const instanceConfig = createInstanceViewConfig(instance);
   const containerCollapseItems = instanceContainers.map((container: Container, index: number) => {
     const containerConfig = createContainerViewConfig(container, index);
 

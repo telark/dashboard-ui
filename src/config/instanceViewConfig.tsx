@@ -10,7 +10,7 @@ import RowTag from '../components/display/shared/table/RowTag';
 import { INSTANCES_PAGE_CONSTANTS as IPC } from '../constants/pages/instances';
 import { ICONS } from '../constants';
 import type { InstanceTableRow } from '../interfaces/instances';
-import type { AppWorkload, Container } from '../interfaces/workload';
+import type { Container } from '../interfaces/workload';
 
 const getStatusColor = (status: string) => {
   const isActive = /active|ready|running|available/i.test(status);
@@ -22,7 +22,6 @@ const getStatusColor = (status: string) => {
 
 export const createInstanceViewConfig = (
   instance: InstanceTableRow,
-  workload: AppWorkload,
 ): ViewDetailsConfig => {
   const fields: ViewDetailsConfig['fields'] = [
     {
