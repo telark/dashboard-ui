@@ -1,10 +1,8 @@
-import { AiOutlineCheckCircle, AiOutlineTag, AiOutlineClockCircle } from 'react-icons/ai';
+import { AiOutlineCheckCircle, AiOutlineTag } from 'react-icons/ai';
 import type { Role } from '../interfaces/roles';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import { StatusTag } from '../components/tags';
 import { DEFAULT_COLORS, ICONS } from '../constants';
-
-const RoleIcon = ICONS.ROLE;
 
 export const createRoleViewConfig = (role: Role): ViewDetailsConfig => {
   return {
@@ -13,7 +11,7 @@ export const createRoleViewConfig = (role: Role): ViewDetailsConfig => {
         key: 'name',
         label: 'Name',
         value: role.name,
-        icon: <RoleIcon />,
+        icon: <ICONS.VIEW_FIELD_NAME />,
         type: 'text',
       },
       {
@@ -52,7 +50,7 @@ export const createRoleViewConfig = (role: Role): ViewDetailsConfig => {
           hour: '2-digit',
           minute: '2-digit',
         }),
-        icon: <AiOutlineClockCircle />,
+        icon: <ICONS.VIEW_FIELD_DATE />,
         type: 'text',
       },
     ],

@@ -7,8 +7,10 @@ import {
   AiOutlineDashboard,
   AiOutlineUser,
   AiOutlineTeam,
+  AiFillTag,
+  AiOutlineFileText,
+  AiOutlineCalendar,
 } from 'react-icons/ai';
-import type { IconType } from 'react-icons';
 
 export const ICONS = {
   HOME: AiOutlineDashboard,
@@ -19,7 +21,7 @@ export const ICONS = {
   BRIDGE: AiOutlineApi,
   USER: AiOutlineUser,
   GROUP: AiOutlineTeam,
+  VIEW_FIELD_NAME: AiFillTag,
+  VIEW_FIELD_DESCRIPTION: AiOutlineFileText,
+  VIEW_FIELD_DATE: AiOutlineCalendar,
 } as const;
-
-export const getRoleIcon = (): IconType => ICONS.ROLE;
-export const getCategoryIcon = (): IconType => ICONS.CATEGORY;
