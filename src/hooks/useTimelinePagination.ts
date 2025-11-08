@@ -1,20 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Record } from '../interfaces/shared';
+import type { TimelinePaginationState } from '../interfaces/timeline';
 
-export interface TimelinePaginationState {
-  visibleItems: Record[];
-  isLoading: boolean;
-  currentPage: number;
-  hasMoreItems: boolean;
-}
 
 const ITEMS_PER_PAGE = 20;
 const LOADING_DELAY = 100;
 const LOAD_MORE_DELAY = 150;
 
-/**
- * Hook for managing timeline pagination in the drawer
- */
 export const useTimelinePagination = (
   showFull: boolean,
   items: Record[],
@@ -27,7 +19,6 @@ export const useTimelinePagination = (
   useEffect(() => {
     if (showFull && items.length > 0) {
       setIsLoading(true);
-      // Simulate async loading with a small delay
       const timer = setTimeout(() => {
         const initialItems = items.slice(0, ITEMS_PER_PAGE);
         setVisibleItems(initialItems);

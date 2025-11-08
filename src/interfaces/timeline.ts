@@ -36,3 +36,16 @@ export interface TimelineDrawerProps {
 export interface RecordingIndicatorProps {
   markerLeft: number;
 }
+
+export interface TimelineData {
+  items: Record[];
+  hasMore: boolean;
+  displayItems: Record[];
+}
+
+export interface TimelinePaginationState {
+  visibleItems: Record[];
+  isLoading: boolean;
+  currentPage: number;
+  hasMoreItems: boolean;
+}
