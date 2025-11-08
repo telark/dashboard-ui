@@ -5,12 +5,6 @@ import type { TimelineData } from '../interfaces/timeline';
 const INITIAL_DISPLAY_COUNT = 5;
 
 export const useTimelineData = (records: Record[] | undefined): TimelineData => {
-  // Create a stable dependency key based on records content to avoid unnecessary re-sorting
-  const recordsKey = useMemo(() => {
-    if (!records || records.length === 0) return '';
-    return `${records.length}-${records.map((r) => r.creationTime).join(',')}`;
-  }, [records]);
-
   return useMemo(() => {
     if (!records || records.length === 0) {
       return { items: [], hasMore: false, displayItems: [] };
@@ -29,5 +23,5 @@ export const useTimelineData = (records: Record[] | undefined): TimelineData => 
       hasMore: hasMoreItems,
       displayItems: displayItemsOnly,
     };
-  }, [records, recordsKey]);
+  }, [records]);
 };

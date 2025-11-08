@@ -20,9 +20,7 @@ const getStatusColor = (status: string) => {
   };
 };
 
-export const createInstanceViewConfig = (
-  instance: InstanceTableRow,
-): ViewDetailsConfig => {
+export const createInstanceViewConfig = (instance: InstanceTableRow): ViewDetailsConfig => {
   const fields: ViewDetailsConfig['fields'] = [
     {
       key: 'instance-name',
