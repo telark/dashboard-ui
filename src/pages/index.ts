@@ -15,4 +15,7 @@ export { default as CategoriesListView } from './categories/ListCategories';
 export { default as CategoryView } from './categories/ViewCategory';
 export { default as CategoryEdit } from './categories/EditCategory';
 export { default as UsersListView } from './management/ListUsers';
-export { default as GroupsListView } from './management/ListGroups';
+export { default as GroupsListView } from './groups/ListGroups';
+export { default as GroupsCreateView } from './groups/CreateGroup';
+export { default as GroupView } from './groups/ViewGroup';
+export { default as GroupEdit } from './groups/EditGroup';

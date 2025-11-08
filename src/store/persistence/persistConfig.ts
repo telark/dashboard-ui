@@ -33,3 +33,9 @@ export const insightsPersistConfig: PersistConfig<any> = {
   storage,
   whitelist: ['hasClusterInsight', 'initialized'],
 };
+
+export const groupsPersistConfig: PersistConfig<any> = {
+  key: 'groups',
+  storage,
+  whitelist: ['groups'],
+};
