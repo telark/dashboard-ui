@@ -10,7 +10,10 @@ import {
   AiFillTag,
   AiOutlineFileText,
   AiOutlineCalendar,
+  AiOutlineCheckCircle,
+  AiOutlineContainer,
 } from 'react-icons/ai';
+import { BsFillCpuFill, BsMemory } from 'react-icons/bs';
 
 export const ICONS = {
   HOME: AiOutlineDashboard,
@@ -24,4 +27,8 @@ export const ICONS = {
   VIEW_FIELD_NAME: AiFillTag,
   VIEW_FIELD_DESCRIPTION: AiOutlineFileText,
   VIEW_FIELD_DATE: AiOutlineCalendar,
+  CPU: BsFillCpuFill,
+  MEMORY: BsMemory,
+  QOS: AiOutlineCheckCircle,
+  CONTAINER: AiOutlineContainer,
 } as const;

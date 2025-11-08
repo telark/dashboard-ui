@@ -1,20 +1,15 @@
 import React from 'react';
 import { Collapse } from 'antd';
 import BaseModal from '../../../shared/modal/BaseModal';
-import ViewDetails, { type ViewDetailField } from '../../../shared/views/ViewDetails';
+import ViewDetails from '../../../shared/views/ViewDetails';
 import type { AppWorkload, Container } from '../../../../../interfaces/workload';
 import type { InstanceTableRow } from '../../../../../interfaces/instances';
 import { ContainerOutlined } from '@ant-design/icons';
-import {
-  AiOutlineCheckCircle,
-  AiOutlineDashboard,
-  AiOutlineFileImage,
-  AiOutlineTag,
-  AiOutlineSetting,
-  AiFillTag,
-} from 'react-icons/ai';
-import RowTag from '../../../shared/table/RowTag';
 import { INSTANCES_PAGE_CONSTANTS as IPC } from '../../../../../constants/pages/instances';
+import {
+  createInstanceViewConfig,
+  createContainerViewConfig,
+} from '../../../../../config/instanceViewConfig';
 
 interface InstanceDetailsModalProps {
   open: boolean;
@@ -36,112 +31,12 @@ const InstanceDetailsModal: React.FC<InstanceDetailsModalProps> = ({
   const containerNames = instance.containerNames?.split(', ').filter(Boolean) || [];
   const instanceContainers = containers.filter((c: Container) => containerNames.includes(c.name));
 
-  const getStatusColor = (status: string) => {
-    const isActive = /active|ready|running|available/i.test(status);
-    return {
-      background: isActive ? IPC.COLORS.STATUS_ACTIVE_BG : IPC.COLORS.STATUS_INACTIVE_BG,
-      color: isActive ? IPC.COLORS.STATUS_ACTIVE_TEXT : IPC.COLORS.STATUS_INACTIVE_TEXT,
-    };
-  };
-
-  // Create view config with instance details and all containers
-  const allFields: ViewDetailField[] = [
-    {
-      key: 'instance-name',
-      label: 'Instance Name',
-      value: instance.instanceName,
-      icon: <AiFillTag />,
-    },
-    {
-      key: 'instance-status',
-      label: 'Status',
-      value: (
-        <RowTag
-          text={instance.status}
-          background={getStatusColor(instance.status).background}
-          color={getStatusColor(instance.status).color}
-          fontSize={IPC.SIZES.CHIP_FONT}
-        />
-      ),
-      type: 'custom',
-      icon: <AiOutlineCheckCircle />,
-    },
-    {
-      key: 'instance-cpu',
-      label: 'CPU',
-      value: instance.cpu,
-      icon: <AiOutlineDashboard />,
-    },
-    {
-      key: 'instance-memory',
-      label: 'Memory',
-      value: instance.memory,
-      icon: <AiOutlineDashboard />,
-    },
-  ];
+  // Create instance view config
+  const instanceConfig = createInstanceViewConfig(instance, workload);
 
   // Create container collapse items
   const containerCollapseItems = instanceContainers.map((container: Container, index: number) => {
-    const containerFields: ViewDetailField[] = [
-      {
-        key: `container-${index}-name`,
-        label: 'Name',
-        value: container.name,
-        icon: <AiFillTag />,
-      },
-      {
-        key: `container-${index}-subType`,
-        label: 'Sub Type',
-        value: container.subType || 'N/A',
-        icon: <AiOutlineTag />,
-      },
-      {
-        key: `container-${index}-image-name`,
-        label: 'Image Name',
-        value: container.image?.name || 'N/A',
-        icon: <AiOutlineFileImage />,
-      },
-      {
-        key: `container-${index}-image-tag`,
-        label: 'Image Tag',
-        value: container.image?.tag || 'N/A',
-        icon: <AiOutlineTag />,
-      },
-      {
-        key: `container-${index}-image-pullPolicy`,
-        label: 'Pull Policy',
-        value: container.image?.pullPolicy || 'N/A',
-        icon: <AiOutlineSetting />,
-      },
-      {
-        key: `container-${index}-image-isCurrent`,
-        label: 'Is Current',
-        value: (
-          <RowTag
-            text={container.image?.isCurrent ? 'Yes' : 'No'}
-            background={
-              container.image?.isCurrent
-                ? IPC.COLORS.STATUS_ACTIVE_BG
-                : IPC.COLORS.STATUS_INACTIVE_BG
-            }
-            color={
-              container.image?.isCurrent
-                ? IPC.COLORS.STATUS_ACTIVE_TEXT
-                : IPC.COLORS.STATUS_INACTIVE_TEXT
-            }
-            fontSize={IPC.SIZES.CHIP_FONT}
-          />
-        ),
-        type: 'custom',
-        icon: <AiOutlineCheckCircle />,
-      },
-      {
-        key: `container-${index}-ports`,
-        label: 'Ports',
-        value:
-          container.ports && container.ports.length > 0 ? container.ports.join(', ') : 'No ports',
-      },
-    ];
+    const containerConfig = createContainerViewConfig(container, index);
 
     return {
       key: `container-${index}`,
@@ -157,25 +52,13 @@ const InstanceDetailsModal: React.FC<InstanceDetailsModalProps> = ({
           {container.name}
         </span>
       ),
-      children: (
-        <ViewDetails
-          config={{
-            fields: containerFields,
-            cardStyle: {
-              background: 'transparent',
-              boxShadow: 'none',
-              border: 'none',
-              padding: 0,
-            },
-          }}
-        />
-      ),
+      children: <ViewDetails config={containerConfig} />,
     };
   });
 
-  // Add containers section
+  // Add containers section to instance fields
   if (containerCollapseItems.length > 0) {
-    allFields.push({
+    instanceConfig.fields.push({
       key: 'containers-section',
       label: 'Containers',
       value: (
@@ -194,15 +77,7 @@ const InstanceDetailsModal: React.FC<InstanceDetailsModalProps> = ({
     });
   }
 
-  const viewConfig = {
-    fields: allFields,
-    cardStyle: {
-      background: 'transparent',
-      boxShadow: 'none',
-      border: 'none',
-      padding: 0,
-    },
-  };
+  const viewConfig = instanceConfig;
 
   return (
     <BaseModal open={open} onCancel={onCancel} width={600}>
