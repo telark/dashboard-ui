@@ -1,11 +1,6 @@
 import { useMemo } from 'react';
 import type { Record } from '../interfaces/shared';
-
-export interface TimelineData {
-  items: Record[];
-  hasMore: boolean;
-  displayItems: Record[];
-}
+import type { TimelineData } from '../interfaces/timeline';
 
 const INITIAL_DISPLAY_COUNT = 5;
 
