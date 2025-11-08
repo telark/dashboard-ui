@@ -1,0 +1,4 @@
+---
+description: avoid using "any" and "unknown" as types and use explicit types declaration instead
+alwaysApply: false
+---
