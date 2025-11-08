@@ -26,7 +26,7 @@ const GroupsList: React.FC = () => {
         createdAt: new Date().toISOString(),
       } as Group;
     },
-    successMessage: (name) => `Group "${name}" created`,
+    successMessage: GC.LABELS.MESSAGES.CREATED,
   });
 
   return (
@@ -36,7 +36,7 @@ const GroupsList: React.FC = () => {
           primaryText={GC.LABELS.FORM.BUTTON_TEXT}
           primaryIcon={<GroupIcon size={16} />}
           onPrimary={() => setIsCreateModalOpen(true)}
-          breadcrumbs={[{ label: 'Groups' }]}
+          breadcrumbs={[{ label: GC.LABELS.BREADCRUMBS.GROUPS }]}
           icon={<GroupIcon />}
         />
 

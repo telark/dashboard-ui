@@ -37,23 +37,23 @@ const EditGroup: React.FC = () => {
     onUpdate: async (id, values) => {
       await new Promise((r) => setTimeout(r, 400));
     },
-    successMessage: (name) => `Group "${name}" updated`,
+    successMessage: GC.LABELS.MESSAGES.UPDATED,
     viewRoute: (id) => `${APP_ROUTES.GROUPS}/${id}/view`,
   });
 
   if (notFound || !group) {
-    return <NotFound message="Group not found" />;
+    return <NotFound message={GC.LABELS.NOT_FOUND} />;
   }
 
   const breadcrumbs = [
-    { label: 'Groups', to: APP_ROUTES.GROUPS },
+    { label: GC.LABELS.BREADCRUMBS.GROUPS, to: APP_ROUTES.GROUPS },
     { label: group.name },
-    { label: 'Edit' },
+    { label: GC.LABELS.BREADCRUMBS.EDIT },
   ];
 
   return (
     <PageContainer>
-      <Header subtitle="Edit group details" breadcrumbs={breadcrumbs} icon={<GroupIcon />} />
+      <Header subtitle={GC.LABELS.EDIT_SUBTITLE} breadcrumbs={breadcrumbs} icon={<GroupIcon />} />
 
         <AnimatedPageWrapper>
           <div

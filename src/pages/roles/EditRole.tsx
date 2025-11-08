@@ -1,5 +1,6 @@
 import React from 'react';
 import { APP_ROUTES, ICONS } from '../../constants';
+import { ROLES_PAGE_CONSTANTS as RC } from '../../constants/pages/roles';
 import Header from '../../components/display/shared/sections/Header';
 import RoleForm, { type RoleFormValues } from '../../components/display/roles/shared/RoleForm';
 import { STATIC_ROLES } from '../../data/roles';
@@ -24,29 +25,29 @@ const EditRole: React.FC = () => {
     onUpdate: async (id, values) => {
       await new Promise((r) => setTimeout(r, 400));
     },
-    successMessage: (name) => `Role "${name}" updated`,
+    successMessage: RC.LABELS.MESSAGES.UPDATED,
     viewRoute: (id) => `${APP_ROUTES.ROLES}/${id}/view`,
   });
 
   if (notFound || !role) {
-    return <NotFound message="Role not found" />;
+    return <NotFound message={RC.LABELS.NOT_FOUND} />;
   }
 
   const breadcrumbs = [
-    { label: 'Roles', to: APP_ROUTES.ROLES },
+    { label: RC.LABELS.BREADCRUMBS.ROLES, to: APP_ROUTES.ROLES },
     { label: role.name },
-    { label: 'Edit' },
+    { label: RC.LABELS.BREADCRUMBS.EDIT },
   ];
 
   return (
     <PageContainer>
-      <Header subtitle="Edit role details" breadcrumbs={breadcrumbs} icon={<RoleIcon />} />
+      <Header subtitle={RC.LABELS.EDIT_SUBTITLE} breadcrumbs={breadcrumbs} icon={<RoleIcon />} />
 
       <RoleForm
         form={form}
         initialValues={{ name: role.name, scopes: role.scopes }}
         onSubmit={handleFinish}
-        buttonText="Update Role"
+        buttonText={RC.LABELS.UPDATE_BUTTON}
         submitting={submitting}
         wrapper={AnimatedPageWrapper}
       />

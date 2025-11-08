@@ -1,5 +1,6 @@
 import React from 'react';
 import { APP_ROUTES, ICONS } from '../../constants';
+import { CATEGORIES_CONSTANTS as CC } from '../../constants/pages/categories';
 import Header from '../../components/display/shared/sections/Header';
 import { STATIC_CATEGORIES } from '../../data/categories';
 import ViewDetails from '../../components/display/shared/views/ViewDetails';
@@ -19,18 +20,18 @@ const ViewCategory: React.FC = () => {
   });
 
   if (notFound || !category) {
-    return <NotFound message="Category not found" />;
+    return <NotFound message={CC.LABELS.NOT_FOUND} />;
   }
 
   const breadcrumbs = [
-    { label: 'Categories', to: APP_ROUTES.CATEGORIES },
+    { label: CC.LABELS.BREADCRUMBS.CATEGORIES, to: APP_ROUTES.CATEGORIES },
     { label: category.name },
   ];
 
   return (
     <PageContainer>
       <Header
-        subtitle="View category details"
+        subtitle={CC.LABELS.VIEW_SUBTITLE}
         breadcrumbs={breadcrumbs}
         icon={<CategoryIcon />}
       />

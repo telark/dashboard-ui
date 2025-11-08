@@ -1,5 +1,6 @@
 import React from 'react';
 import { APP_ROUTES, ICONS } from '../../constants';
+import { ROLES_PAGE_CONSTANTS as RC } from '../../constants/pages/roles';
 import Header from '../../components/display/shared/sections/Header';
 import { STATIC_ROLES } from '../../data/roles';
 import ViewDetails from '../../components/display/shared/views/ViewDetails';
@@ -22,14 +23,14 @@ const ViewRole: React.FC = () => {
   });
 
   if (notFound || !role) {
-    return <NotFound message="Role not found" />;
+    return <NotFound message={RC.LABELS.NOT_FOUND} />;
   }
 
-  const breadcrumbs = [{ label: 'Roles', to: APP_ROUTES.ROLES }, { label: role.name }];
+  const breadcrumbs = [{ label: RC.LABELS.BREADCRUMBS.ROLES, to: APP_ROUTES.ROLES }, { label: role.name }];
 
   return (
     <PageContainer>
-      <Header subtitle="View role details" breadcrumbs={breadcrumbs} icon={<RoleIcon />} />
+      <Header subtitle={RC.LABELS.VIEW_SUBTITLE} breadcrumbs={breadcrumbs} icon={<RoleIcon />} />
 
       <AnimatedPageWrapper>
         <ViewDetails config={config} />

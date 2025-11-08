@@ -37,24 +37,24 @@ const EditCategory: React.FC = () => {
     onUpdate: async (id, values) => {
       await new Promise((r) => setTimeout(r, 400));
     },
-    successMessage: (name) => `Category "${name}" updated`,
+    successMessage: CC.LABELS.MESSAGES.UPDATED,
     viewRoute: (id) => `${APP_ROUTES.CATEGORIES}/${id}/view`,
   });
 
   if (notFound || !category) {
-    return <NotFound message="Category not found" />;
+    return <NotFound message={CC.LABELS.NOT_FOUND} />;
   }
 
   const breadcrumbs = [
-    { label: 'Categories', to: APP_ROUTES.CATEGORIES },
+    { label: CC.LABELS.BREADCRUMBS.CATEGORIES, to: APP_ROUTES.CATEGORIES },
     { label: category.name },
-    { label: 'Edit' },
+    { label: CC.LABELS.BREADCRUMBS.EDIT },
   ];
 
   return (
     <PageContainer>
       <Header
-        subtitle="Edit category details"
+        subtitle={CC.LABELS.EDIT_SUBTITLE}
         breadcrumbs={breadcrumbs}
         icon={<CategoryIcon />}
       />

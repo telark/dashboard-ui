@@ -1,5 +1,6 @@
 import React from 'react';
 import { APP_ROUTES, ICONS } from '../../constants';
+import { GROUPS_CONSTANTS as GC } from '../../constants/pages/groups';
 import Header from '../../components/display/shared/sections/Header';
 import { STATIC_GROUPS } from '../../data/groups';
 import ViewDetails from '../../components/display/shared/views/ViewDetails';
@@ -19,14 +20,14 @@ const ViewGroup: React.FC = () => {
   });
 
   if (notFound || !group) {
-    return <NotFound message="Group not found" />;
+    return <NotFound message={GC.LABELS.NOT_FOUND} />;
   }
 
-  const breadcrumbs = [{ label: 'Groups', to: APP_ROUTES.GROUPS }, { label: group.name }];
+  const breadcrumbs = [{ label: GC.LABELS.BREADCRUMBS.GROUPS, to: APP_ROUTES.GROUPS }, { label: group.name }];
 
   return (
     <PageContainer>
-      <Header subtitle="View group details" breadcrumbs={breadcrumbs} icon={<GroupIcon />} />
+      <Header subtitle={GC.LABELS.VIEW_SUBTITLE} breadcrumbs={breadcrumbs} icon={<GroupIcon />} />
 
       <AnimatedPageWrapper>
         <ViewDetails config={config} />

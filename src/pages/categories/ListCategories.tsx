@@ -27,7 +27,7 @@ const CategoriesList: React.FC = () => {
         createdAt: new Date().toISOString(),
       } as Category;
     },
-    successMessage: (name) => `Category "${name}" created`,
+    successMessage: CC.LABELS.MESSAGES.CREATED,
   });
 
   return (
@@ -37,7 +37,7 @@ const CategoriesList: React.FC = () => {
           primaryText={CC.LABELS.FORM.BUTTON_TEXT}
           primaryIcon={<CategoryIcon size={16} />}
           onPrimary={() => setIsCreateModalOpen(true)}
-          breadcrumbs={[{ label: 'Categories' }]}
+          breadcrumbs={[{ label: CC.LABELS.BREADCRUMBS.CATEGORIES }]}
           icon={<CategoryIcon />}
         />
 

@@ -5,6 +5,22 @@ export const ROLES_PAGE_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Roles',
     HEADER_SUBTITLE: 'Manage existing roles',
+    VIEW_SUBTITLE: 'View role details',
+    EDIT_SUBTITLE: 'Edit role details',
+    CREATE_SUBTITLE: 'Create a new role',
+    NOT_FOUND: 'Role not found',
+    CREATE_BUTTON: 'Add Role',
+    UPDATE_BUTTON: 'Update Role',
+    CREATE_BUTTON_TEXT: 'Create Role',
+    BREADCRUMBS: {
+      ROLES: 'Roles',
+      EDIT: 'Edit',
+      CREATE: 'Create Role',
+    },
+    MESSAGES: {
+      CREATED: (name: string) => `Role "${name}" created`,
+      UPDATED: (name: string) => `Role "${name}" updated`,
+    },
     COLUMNS: {
       ROLE_TITLE: 'Role Title',
       TYPE: 'Type',

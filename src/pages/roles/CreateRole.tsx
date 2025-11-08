@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Form, message } from 'antd';
 import { APP_ROUTES, ICONS } from '../../constants';
+import { ROLES_PAGE_CONSTANTS as RC } from '../../constants/pages/roles';
 import Header from '../../components/display/shared/sections/Header';
 import RoleForm, { type RoleFormValues } from '../../components/display/roles/shared/RoleForm';
 import { PageContainer } from '../../components/shared';
@@ -18,7 +19,7 @@ const CreateRole: React.FC = () => {
     setSubmitting(true);
     try {
       await new Promise((r) => setTimeout(r, 400));
-      message.success(`Role "${values.name}" created`);
+      message.success(RC.LABELS.MESSAGES.CREATED(values.name));
       form.resetFields();
     } finally {
       setSubmitting(false);
@@ -28,8 +29,8 @@ const CreateRole: React.FC = () => {
   return (
     <PageContainer>
       <Header
-        subtitle="Create a new role"
-        breadcrumbs={[{ label: 'Roles', to: APP_ROUTES.ROLES }, { label: 'Create Role' }]}
+        subtitle={RC.LABELS.CREATE_SUBTITLE}
+        breadcrumbs={[{ label: RC.LABELS.BREADCRUMBS.ROLES, to: APP_ROUTES.ROLES }, { label: RC.LABELS.BREADCRUMBS.CREATE }]}
         icon={<RoleIcon />}
       />
 
@@ -37,7 +38,7 @@ const CreateRole: React.FC = () => {
         form={form}
         initialValues={{ name: '', scopes: initialScopes }}
         onSubmit={handleFinish}
-        buttonText="Create Role"
+        buttonText={RC.LABELS.CREATE_BUTTON_TEXT}
         submitting={submitting}
       />
     </PageContainer>

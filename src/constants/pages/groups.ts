@@ -4,6 +4,21 @@ export const GROUPS_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Groups',
     HEADER_SUBTITLE: 'Manage existing groups',
+    VIEW_SUBTITLE: 'View group details',
+    EDIT_SUBTITLE: 'Edit group details',
+    CREATE_SUBTITLE: 'Create a new group',
+    NOT_FOUND: 'Group not found',
+    UPDATE_BUTTON: 'Update Group',
+    CREATE_BUTTON_TEXT: 'Create Group',
+    BREADCRUMBS: {
+      GROUPS: 'Groups',
+      EDIT: 'Edit',
+      CREATE: 'Create Group',
+    },
+    MESSAGES: {
+      CREATED: (name: string) => `Group "${name}" created`,
+      UPDATED: (name: string) => `Group "${name}" updated`,
+    },
     COLUMNS: {
       NAME: 'Group Name',
       DESCRIPTION: 'Description',

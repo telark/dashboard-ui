@@ -41,7 +41,7 @@ const CreateGroup: React.FC = () => {
         createdAt: new Date().toISOString(),
       };
       dispatch(addGroup(newGroup));
-      message.success(`Group "${values.name}" created`);
+      message.success(GC.LABELS.MESSAGES.CREATED(values.name));
       navigate(`${APP_ROUTES.GROUPS}/${newGroup.id}/view`);
     } finally {
       setSubmitting(false);
@@ -51,8 +51,8 @@ const CreateGroup: React.FC = () => {
   return (
     <PageContainer>
       <Header
-        subtitle="Create a new group"
-        breadcrumbs={[{ label: 'Groups', to: APP_ROUTES.GROUPS }, { label: 'Create Group' }]}
+        subtitle={GC.LABELS.CREATE_SUBTITLE}
+        breadcrumbs={[{ label: GC.LABELS.BREADCRUMBS.GROUPS, to: APP_ROUTES.GROUPS }, { label: GC.LABELS.BREADCRUMBS.CREATE }]}
         icon={<GroupIcon />}
       />
 
