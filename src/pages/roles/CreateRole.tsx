@@ -30,7 +30,10 @@ const CreateRole: React.FC = () => {
     <PageContainer>
       <Header
         subtitle={RC.LABELS.CREATE_SUBTITLE}
-        breadcrumbs={[{ label: RC.LABELS.BREADCRUMBS.ROLES, to: APP_ROUTES.ROLES }, { label: RC.LABELS.BREADCRUMBS.CREATE }]}
+        breadcrumbs={[
+          { label: RC.LABELS.BREADCRUMBS.ROLES, to: APP_ROUTES.ROLES },
+          { label: RC.LABELS.BREADCRUMBS.CREATE },
+        ]}
         icon={<RoleIcon />}
       />
 

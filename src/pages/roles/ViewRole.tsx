@@ -16,7 +16,11 @@ import type { Role } from '../../interfaces/roles';
 const RoleIcon = ICONS.ROLE;
 
 const ViewRole: React.FC = () => {
-  const { item: role, config, notFound } = useViewPage<Role>({
+  const {
+    item: role,
+    config,
+    notFound,
+  } = useViewPage<Role>({
     data: STATIC_ROLES,
     findById: (id, data) => data.find((r) => r.id === id),
     createConfig: createRoleViewConfig,
@@ -26,7 +30,10 @@ const ViewRole: React.FC = () => {
     return <NotFound message={RC.LABELS.NOT_FOUND} />;
   }
 
-  const breadcrumbs = [{ label: RC.LABELS.BREADCRUMBS.ROLES, to: APP_ROUTES.ROLES }, { label: role.name }];
+  const breadcrumbs = [
+    { label: RC.LABELS.BREADCRUMBS.ROLES, to: APP_ROUTES.ROLES },
+    { label: role.name },
+  ];
 
   return (
     <PageContainer>

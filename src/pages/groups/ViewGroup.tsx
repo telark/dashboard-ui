@@ -13,7 +13,11 @@ import type { Group } from '../../interfaces/groups';
 const GroupIcon = ICONS.GROUP;
 
 const ViewGroup: React.FC = () => {
-  const { item: group, config, notFound } = useViewPage<Group>({
+  const {
+    item: group,
+    config,
+    notFound,
+  } = useViewPage<Group>({
     data: STATIC_GROUPS,
     findById: (id, data) => data.find((g) => g.id === id),
     createConfig: createGroupViewConfig,
@@ -23,7 +27,10 @@ const ViewGroup: React.FC = () => {
     return <NotFound message={GC.LABELS.NOT_FOUND} />;
   }
 
-  const breadcrumbs = [{ label: GC.LABELS.BREADCRUMBS.GROUPS, to: APP_ROUTES.GROUPS }, { label: group.name }];
+  const breadcrumbs = [
+    { label: GC.LABELS.BREADCRUMBS.GROUPS, to: APP_ROUTES.GROUPS },
+    { label: group.name },
+  ];
 
   return (
     <PageContainer>

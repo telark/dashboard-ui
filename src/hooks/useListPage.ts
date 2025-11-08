@@ -7,7 +7,11 @@ interface UseListPageOptions<T> {
   successMessage: (name: string) => string;
 }
 
-export const useListPage = <T,>({ initialData, onCreate, successMessage }: UseListPageOptions<T>) => {
+export const useListPage = <T>({
+  initialData,
+  onCreate,
+  successMessage,
+}: UseListPageOptions<T>) => {
   const [items, setItems] = useState<T[]>(initialData);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
@@ -26,4 +30,3 @@ export const useListPage = <T,>({ initialData, onCreate, successMessage }: UseLi
     handleCreate,
   };
 };
-

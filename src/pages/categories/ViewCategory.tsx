@@ -13,7 +13,11 @@ import type { Category } from '../../interfaces/categories';
 const CategoryIcon = ICONS.CATEGORY;
 
 const ViewCategory: React.FC = () => {
-  const { item: category, config, notFound } = useViewPage<Category>({
+  const {
+    item: category,
+    config,
+    notFound,
+  } = useViewPage<Category>({
     data: STATIC_CATEGORIES,
     findById: (id, data) => data.find((c) => c.id === id),
     createConfig: createCategoryViewConfig,

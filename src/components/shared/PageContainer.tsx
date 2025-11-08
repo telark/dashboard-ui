@@ -23,4 +23,3 @@ const PageContainer: React.FC<PageContainerProps> = ({ children, className = 'ap
 };
 
 export default PageContainer;
-

@@ -119,7 +119,9 @@ const Header: React.FC<HeaderProps> = ({
       </div>
 
       {extraContent ? (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+        <div
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}
+        >
           {extraContent}
         </div>
       ) : null}

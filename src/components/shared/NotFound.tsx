@@ -14,4 +14,3 @@ const NotFound: React.FC<NotFoundProps> = ({ message = 'Resource not found' }) =
 };
 
 export default NotFound;
-

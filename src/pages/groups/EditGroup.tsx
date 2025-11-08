@@ -23,10 +23,13 @@ interface EditGroupFormValues {
 }
 
 const EditGroup: React.FC = () => {
-  const { item: group, form, submitting, handleFinish, notFound } = useEditPage<
-    Group,
-    EditGroupFormValues
-  >({
+  const {
+    item: group,
+    form,
+    submitting,
+    handleFinish,
+    notFound,
+  } = useEditPage<Group, EditGroupFormValues>({
     data: STATIC_GROUPS,
     findById: (id, data) => data.find((g) => g.id === id),
     getFormValues: (item) => ({
@@ -34,7 +37,7 @@ const EditGroup: React.FC = () => {
       description: item.description,
       category: item.category,
     }),
-    onUpdate: async (id, values) => {
+    onUpdate: async (_id, _values) => {
       await new Promise((r) => setTimeout(r, 400));
     },
     successMessage: GC.LABELS.MESSAGES.UPDATED,
@@ -55,75 +58,75 @@ const EditGroup: React.FC = () => {
     <PageContainer>
       <Header subtitle={GC.LABELS.EDIT_SUBTITLE} breadcrumbs={breadcrumbs} icon={<GroupIcon />} />
 
-        <AnimatedPageWrapper>
-          <div
-            style={{
-              ...COMPONENT_STYLES.WORKLOAD_INSTANCES.containerCard,
-              padding: 16,
-              width: '100%',
-            }}
-          >
-            <Form<EditGroupFormValues> layout="vertical" form={form} onFinish={handleFinish}>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 18,
-                  width: '100%',
-                }}
-              >
-                <Section
-                  title={GC.LABELS.FORM.SECTION_TITLE}
-                  subtitle={GC.LABELS.FORM.SECTION_SUBTITLE}
-                  content={
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-                      <LabeledInput
-                        name="name"
-                        label={GC.LABELS.FORM.FIELDS.NAME_LABEL}
-                        required
-                        placeholder={GC.LABELS.FORM.FIELDS.NAME_PLACEHOLDER}
-                        marginBottom={18}
-                      />
-                      <LabeledInput
-                        name="description"
-                        label={GC.LABELS.FORM.FIELDS.DESCRIPTION_LABEL}
-                        required
-                        placeholder={GC.LABELS.FORM.FIELDS.DESCRIPTION_PLACEHOLDER}
-                        marginBottom={18}
-                      />
-                      <LabeledSelect
-                        name="category"
-                        label={GC.LABELS.FORM.FIELDS.CATEGORY_LABEL}
-                        placeholder={GC.LABELS.FORM.FIELDS.CATEGORY_PLACEHOLDER}
-                        required
-                        options={[
-                          { label: 'Engineering', value: 'Engineering' },
-                          { label: 'Operations', value: 'Operations' },
-                          { label: 'Quality Assurance', value: 'Quality Assurance' },
-                          { label: 'Security', value: 'Security' },
-                          { label: 'Management', value: 'Management' },
-                          { label: 'Support', value: 'Support' },
-                        ]}
-                        marginBottom={6}
-                      />
-                    </div>
-                  }
-                />
-                <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-                  <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
-                    <PrimaryButton
-                      action="Update Group"
-                      loading={submitting}
-                      loadingLabel={BUTTON_TEXTS.LOADING}
-                      onClick={() => form.submit()}
-                      icon={<GroupIcon size={16} />}
+      <AnimatedPageWrapper>
+        <div
+          style={{
+            ...COMPONENT_STYLES.WORKLOAD_INSTANCES.containerCard,
+            padding: 16,
+            width: '100%',
+          }}
+        >
+          <Form<EditGroupFormValues> layout="vertical" form={form} onFinish={handleFinish}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 18,
+                width: '100%',
+              }}
+            >
+              <Section
+                title={GC.LABELS.FORM.SECTION_TITLE}
+                subtitle={GC.LABELS.FORM.SECTION_SUBTITLE}
+                content={
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+                    <LabeledInput
+                      name="name"
+                      label={GC.LABELS.FORM.FIELDS.NAME_LABEL}
+                      required
+                      placeholder={GC.LABELS.FORM.FIELDS.NAME_PLACEHOLDER}
+                      marginBottom={18}
                     />
-                  </Form.Item>
-                </div>
+                    <LabeledInput
+                      name="description"
+                      label={GC.LABELS.FORM.FIELDS.DESCRIPTION_LABEL}
+                      required
+                      placeholder={GC.LABELS.FORM.FIELDS.DESCRIPTION_PLACEHOLDER}
+                      marginBottom={18}
+                    />
+                    <LabeledSelect
+                      name="category"
+                      label={GC.LABELS.FORM.FIELDS.CATEGORY_LABEL}
+                      placeholder={GC.LABELS.FORM.FIELDS.CATEGORY_PLACEHOLDER}
+                      required
+                      options={[
+                        { label: 'Engineering', value: 'Engineering' },
+                        { label: 'Operations', value: 'Operations' },
+                        { label: 'Quality Assurance', value: 'Quality Assurance' },
+                        { label: 'Security', value: 'Security' },
+                        { label: 'Management', value: 'Management' },
+                        { label: 'Support', value: 'Support' },
+                      ]}
+                      marginBottom={6}
+                    />
+                  </div>
+                }
+              />
+              <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
+                  <PrimaryButton
+                    action="Update Group"
+                    loading={submitting}
+                    loadingLabel={BUTTON_TEXTS.LOADING}
+                    onClick={() => form.submit()}
+                    icon={<GroupIcon size={16} />}
+                  />
+                </Form.Item>
               </div>
-            </Form>
-          </div>
-        </AnimatedPageWrapper>
+            </div>
+          </Form>
+        </div>
+      </AnimatedPageWrapper>
     </PageContainer>
   );
 };

@@ -1,7 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Form, message } from 'antd';
-import type { FormInstance } from 'antd';
 
 interface UseEditPageOptions<T, F> {
   data: T[];
@@ -58,4 +57,3 @@ export const useEditPage = <T, F extends Record<string, any>>({
     notFound: !item,
   };
 };
-

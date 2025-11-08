@@ -23,10 +23,13 @@ interface EditCategoryFormValues {
 }
 
 const EditCategory: React.FC = () => {
-  const { item: category, form, submitting, handleFinish, notFound } = useEditPage<
-    Category,
-    EditCategoryFormValues
-  >({
+  const {
+    item: category,
+    form,
+    submitting,
+    handleFinish,
+    notFound,
+  } = useEditPage<Category, EditCategoryFormValues>({
     data: STATIC_CATEGORIES,
     findById: (id, data) => data.find((c) => c.id === id),
     getFormValues: (item) => ({
@@ -34,7 +37,7 @@ const EditCategory: React.FC = () => {
       description: item.description,
       type: item.type,
     }),
-    onUpdate: async (id, values) => {
+    onUpdate: async (_id, _values) => {
       await new Promise((r) => setTimeout(r, 400));
     },
     successMessage: CC.LABELS.MESSAGES.UPDATED,
@@ -59,72 +62,72 @@ const EditCategory: React.FC = () => {
         icon={<CategoryIcon />}
       />
 
-        <AnimatedPageWrapper>
-          <div
-            style={{
-              ...COMPONENT_STYLES.WORKLOAD_INSTANCES.containerCard,
-              padding: 16,
-              width: '100%',
-            }}
-          >
-            <Form<EditCategoryFormValues> layout="vertical" form={form} onFinish={handleFinish}>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 18,
-                  width: '100%',
-                }}
-              >
-                <Section
-                  title={CC.LABELS.FORM.SECTION_TITLE}
-                  subtitle={CC.LABELS.FORM.SECTION_SUBTITLE}
-                  content={
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-                      <LabeledInput
-                        name="name"
-                        label={CC.LABELS.FORM.FIELDS.NAME_LABEL}
-                        required
-                        placeholder={CC.LABELS.FORM.FIELDS.NAME_PLACEHOLDER}
-                        marginBottom={18}
-                      />
-                      <LabeledInput
-                        name="description"
-                        label={CC.LABELS.FORM.FIELDS.DESCRIPTION_LABEL}
-                        required
-                        placeholder={CC.LABELS.FORM.FIELDS.DESCRIPTION_PLACEHOLDER}
-                        marginBottom={18}
-                      />
-                      <LabeledSelect
-                        name="type"
-                        label={CC.LABELS.FORM.FIELDS.TYPE_LABEL}
-                        placeholder={CC.LABELS.FORM.FIELDS.TYPE_PLACEHOLDER}
-                        required
-                        options={[
-                          { label: 'Default', value: 'default' },
-                          { label: 'System', value: 'system' },
-                          { label: 'Custom', value: 'custom' },
-                        ]}
-                        marginBottom={6}
-                      />
-                    </div>
-                  }
-                />
-                <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-                  <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
-                    <PrimaryButton
-                      action="Update Category"
-                      loading={submitting}
-                      loadingLabel={BUTTON_TEXTS.LOADING}
-                      onClick={() => form.submit()}
-                      icon={<CategoryIcon size={16} />}
+      <AnimatedPageWrapper>
+        <div
+          style={{
+            ...COMPONENT_STYLES.WORKLOAD_INSTANCES.containerCard,
+            padding: 16,
+            width: '100%',
+          }}
+        >
+          <Form<EditCategoryFormValues> layout="vertical" form={form} onFinish={handleFinish}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 18,
+                width: '100%',
+              }}
+            >
+              <Section
+                title={CC.LABELS.FORM.SECTION_TITLE}
+                subtitle={CC.LABELS.FORM.SECTION_SUBTITLE}
+                content={
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+                    <LabeledInput
+                      name="name"
+                      label={CC.LABELS.FORM.FIELDS.NAME_LABEL}
+                      required
+                      placeholder={CC.LABELS.FORM.FIELDS.NAME_PLACEHOLDER}
+                      marginBottom={18}
                     />
-                  </Form.Item>
-                </div>
+                    <LabeledInput
+                      name="description"
+                      label={CC.LABELS.FORM.FIELDS.DESCRIPTION_LABEL}
+                      required
+                      placeholder={CC.LABELS.FORM.FIELDS.DESCRIPTION_PLACEHOLDER}
+                      marginBottom={18}
+                    />
+                    <LabeledSelect
+                      name="type"
+                      label={CC.LABELS.FORM.FIELDS.TYPE_LABEL}
+                      placeholder={CC.LABELS.FORM.FIELDS.TYPE_PLACEHOLDER}
+                      required
+                      options={[
+                        { label: 'Default', value: 'default' },
+                        { label: 'System', value: 'system' },
+                        { label: 'Custom', value: 'custom' },
+                      ]}
+                      marginBottom={6}
+                    />
+                  </div>
+                }
+              />
+              <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
+                  <PrimaryButton
+                    action="Update Category"
+                    loading={submitting}
+                    loadingLabel={BUTTON_TEXTS.LOADING}
+                    onClick={() => form.submit()}
+                    icon={<CategoryIcon size={16} />}
+                  />
+                </Form.Item>
               </div>
-            </Form>
-          </div>
-        </AnimatedPageWrapper>
+            </div>
+          </Form>
+        </div>
+      </AnimatedPageWrapper>
     </PageContainer>
   );
 };

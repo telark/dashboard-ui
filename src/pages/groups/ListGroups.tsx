@@ -14,7 +14,13 @@ const GroupIcon = ICONS.GROUP;
 
 const GroupsList: React.FC = () => {
   const navigate = useNavigate();
-  const { items: groups, setItems: setGroups, isCreateModalOpen, setIsCreateModalOpen, handleCreate } = useListPage<Group>({
+  const {
+    items: groups,
+    setItems: setGroups,
+    isCreateModalOpen,
+    setIsCreateModalOpen,
+    handleCreate,
+  } = useListPage<Group>({
     initialData: STATIC_GROUPS,
     onCreate: async (groupData) => {
       await new Promise((r) => setTimeout(r, 400));
@@ -31,14 +37,14 @@ const GroupsList: React.FC = () => {
 
   return (
     <PageContainer>
-        <Header
-          subtitle={GC.LABELS.HEADER_SUBTITLE}
-          primaryText={GC.LABELS.FORM.BUTTON_TEXT}
-          primaryIcon={<GroupIcon size={16} />}
-          onPrimary={() => setIsCreateModalOpen(true)}
-          breadcrumbs={[{ label: GC.LABELS.BREADCRUMBS.GROUPS }]}
-          icon={<GroupIcon />}
-        />
+      <Header
+        subtitle={GC.LABELS.HEADER_SUBTITLE}
+        primaryText={GC.LABELS.FORM.BUTTON_TEXT}
+        primaryIcon={<GroupIcon size={16} />}
+        onPrimary={() => setIsCreateModalOpen(true)}
+        breadcrumbs={[{ label: GC.LABELS.BREADCRUMBS.GROUPS }]}
+        icon={<GroupIcon />}
+      />
 
       <FormModal
         open={isCreateModalOpen}

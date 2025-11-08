@@ -7,7 +7,7 @@ interface UseViewPageOptions<T> {
   createConfig: (item: T) => any;
 }
 
-export const useViewPage = <T,>({ data, findById, createConfig }: UseViewPageOptions<T>) => {
+export const useViewPage = <T>({ data, findById, createConfig }: UseViewPageOptions<T>) => {
   const { id } = useParams<{ id: string }>();
 
   const item = useMemo(() => {
@@ -27,4 +27,3 @@ export const useViewPage = <T,>({ data, findById, createConfig }: UseViewPageOpt
     notFound: !item || !config,
   };
 };
-

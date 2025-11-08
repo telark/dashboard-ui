@@ -14,7 +14,13 @@ const CategoryIcon = ICONS.CATEGORY;
 
 const CategoriesList: React.FC = () => {
   const navigate = useNavigate();
-  const { items: categories, setItems: setCategories, isCreateModalOpen, setIsCreateModalOpen, handleCreate } = useListPage<Category>({
+  const {
+    items: categories,
+    setItems: setCategories,
+    isCreateModalOpen,
+    setIsCreateModalOpen,
+    handleCreate,
+  } = useListPage<Category>({
     initialData: STATIC_CATEGORIES,
     onCreate: async (categoryData) => {
       await new Promise((r) => setTimeout(r, 400));
@@ -32,14 +38,14 @@ const CategoriesList: React.FC = () => {
 
   return (
     <PageContainer>
-        <Header
-          subtitle={CC.LABELS.HEADER_SUBTITLE}
-          primaryText={CC.LABELS.FORM.BUTTON_TEXT}
-          primaryIcon={<CategoryIcon size={16} />}
-          onPrimary={() => setIsCreateModalOpen(true)}
-          breadcrumbs={[{ label: CC.LABELS.BREADCRUMBS.CATEGORIES }]}
-          icon={<CategoryIcon />}
-        />
+      <Header
+        subtitle={CC.LABELS.HEADER_SUBTITLE}
+        primaryText={CC.LABELS.FORM.BUTTON_TEXT}
+        primaryIcon={<CategoryIcon size={16} />}
+        onPrimary={() => setIsCreateModalOpen(true)}
+        breadcrumbs={[{ label: CC.LABELS.BREADCRUMBS.CATEGORIES }]}
+        icon={<CategoryIcon />}
+      />
 
       <FormModal
         open={isCreateModalOpen}

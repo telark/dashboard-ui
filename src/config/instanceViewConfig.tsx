@@ -24,9 +24,6 @@ export const createInstanceViewConfig = (
   instance: InstanceTableRow,
   workload: AppWorkload,
 ): ViewDetailsConfig => {
-  const containers = workload.cacid?.crates?.regular || [];
-  const containerNames = instance.containerNames?.split(', ').filter(Boolean) || [];
-
   const fields: ViewDetailsConfig['fields'] = [
     {
       key: 'instance-name',
@@ -123,9 +120,7 @@ export const createContainerViewConfig = (
         <RowTag
           text={container.image?.isCurrent ? 'Yes' : 'No'}
           background={
-            container.image?.isCurrent
-              ? IPC.COLORS.STATUS_ACTIVE_BG
-              : IPC.COLORS.STATUS_INACTIVE_BG
+            container.image?.isCurrent ? IPC.COLORS.STATUS_ACTIVE_BG : IPC.COLORS.STATUS_INACTIVE_BG
           }
           color={
             container.image?.isCurrent
@@ -157,4 +152,3 @@ export const createContainerViewConfig = (
     },
   };
 };
-

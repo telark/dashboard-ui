@@ -12,17 +12,20 @@ import type { Role } from '../../interfaces/roles';
 const RoleIcon = ICONS.ROLE;
 
 const EditRole: React.FC = () => {
-  const { item: role, form, submitting, handleFinish, notFound } = useEditPage<
-    Role,
-    RoleFormValues
-  >({
+  const {
+    item: role,
+    form,
+    submitting,
+    handleFinish,
+    notFound,
+  } = useEditPage<Role, RoleFormValues>({
     data: STATIC_ROLES,
     findById: (id, data) => data.find((r) => r.id === id),
     getFormValues: (item) => ({
       name: item.name,
       scopes: item.scopes,
     }),
-    onUpdate: async (id, values) => {
+    onUpdate: async (_id, _values) => {
       await new Promise((r) => setTimeout(r, 400));
     },
     successMessage: RC.LABELS.MESSAGES.UPDATED,
