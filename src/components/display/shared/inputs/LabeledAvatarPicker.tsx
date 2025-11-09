@@ -27,7 +27,10 @@ const LabeledAvatarPicker: React.FC<LabeledAvatarPickerProps> = ({
           {label}
           {required && <span style={{ color: '#ff4d4f', marginLeft: 4 }}>*</span>}
         </span>
-        <Form.Item noStyle shouldUpdate={(prevValues, currentValues) => prevValues[name] !== currentValues[name]}>
+        <Form.Item
+          noStyle
+          shouldUpdate={(prevValues, currentValues) => prevValues[name] !== currentValues[name]}
+        >
           {({ getFieldValue, setFieldValue }) => {
             const value = getFieldValue(name);
             return (
@@ -45,4 +48,3 @@ const LabeledAvatarPicker: React.FC<LabeledAvatarPickerProps> = ({
 };
 
 export default LabeledAvatarPicker;
-

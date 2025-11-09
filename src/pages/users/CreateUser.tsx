@@ -96,10 +96,7 @@ const CreateUser: React.FC = () => {
                 subtitle={UC.LABELS.FORM.SECTION_SUBTITLE}
                 content={
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <LabeledAvatarPicker
-                      name="avatar"
-                      label="Avatar"
-                    />
+                    <LabeledAvatarPicker name="avatar" label="Avatar" />
                     <LabeledInput
                       name="username"
                       label={UC.LABELS.FORM.FIELDS.USERNAME_LABEL}
@@ -154,4 +151,3 @@ const CreateUser: React.FC = () => {
 };
 
 export default CreateUser;
-

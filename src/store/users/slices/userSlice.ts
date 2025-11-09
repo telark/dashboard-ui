@@ -53,4 +53,3 @@ export const {
   setError,
 } = userSlice.actions;
 export default userSlice.reducer;
-

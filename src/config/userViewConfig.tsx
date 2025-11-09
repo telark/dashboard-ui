@@ -59,4 +59,3 @@ export const createUserViewConfig = (user: User): ViewDetailsConfig => {
     ],
   };
 };
-

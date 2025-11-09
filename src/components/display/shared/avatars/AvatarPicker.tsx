@@ -244,4 +244,3 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
 };
 
 export default AvatarPicker;
-

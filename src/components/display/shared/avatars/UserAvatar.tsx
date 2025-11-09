@@ -42,16 +42,10 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ avatar, username, size = 40, st
   }, [avatar, size]);
 
   return (
-    <Avatar
-      src={avatarSrc}
-      size={size}
-      style={style}
-      alt={username || 'User'}
-    >
+    <Avatar src={avatarSrc} size={size} style={style} alt={username || 'User'}>
       {!avatarSrc && username ? username.charAt(0).toUpperCase() : null}
     </Avatar>
   );
 };
 
 export default UserAvatar;
-

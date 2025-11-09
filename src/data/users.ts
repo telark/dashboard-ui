@@ -50,4 +50,3 @@ export const STATIC_USERS: User[] = [
     },
   },
 ];
-

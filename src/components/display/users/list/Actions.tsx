@@ -23,4 +23,3 @@ const Actions: React.FC<ActionsProps> = ({ record, onView, onEdit, onDelete }) =
 };
 
 export default Actions;
-

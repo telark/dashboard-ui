@@ -136,4 +136,3 @@ const EditUser: React.FC = () => {
 };
 
 export default EditUser;
-

@@ -20,7 +20,9 @@ const Columns = (ctx: GenerateColumnCtx) => {
         render: (_: any, record: User) => (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <UserAvatar avatar={record.avatar} username={record.username} size={32} />
-            <span style={{ fontWeight: 700, color: RPC.COLORS.TEXT_PRIMARY }}>{record.username}</span>
+            <span style={{ fontWeight: 700, color: RPC.COLORS.TEXT_PRIMARY }}>
+              {record.username}
+            </span>
           </div>
         ),
       },
@@ -93,4 +95,3 @@ const Columns = (ctx: GenerateColumnCtx) => {
 };
 
 export default Columns;
-

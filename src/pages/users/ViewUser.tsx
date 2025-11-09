@@ -44,4 +44,3 @@ const ViewUser: React.FC = () => {
 };
 
 export default ViewUser;
-

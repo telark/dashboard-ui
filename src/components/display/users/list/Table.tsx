@@ -82,4 +82,3 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onView, onEdit, onUsersC
 };
 
 export default UsersTable;
-
