@@ -5,6 +5,8 @@
   "proxy": "http://localhost:56085",
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
+    "@dicebear/collection": "^9.2.4",
+    "@dicebear/core": "^9.2.4",
     "@reduxjs/toolkit": "^2.9.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",

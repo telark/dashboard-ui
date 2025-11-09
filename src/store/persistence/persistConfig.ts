@@ -39,3 +39,9 @@ export const groupsPersistConfig: PersistConfig<any> = {
   storage,
   whitelist: ['groups'],
 };
+
+export const usersPersistConfig: PersistConfig<any> = {
+  key: 'users',
+  storage,
+  whitelist: ['users'],
+};
