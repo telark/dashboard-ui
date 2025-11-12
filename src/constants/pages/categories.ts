@@ -4,6 +4,18 @@ export const CATEGORIES_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Categories',
     HEADER_SUBTITLE: 'Manage existing categories',
+    VIEW_SUBTITLE: 'View category details',
+    EDIT_SUBTITLE: 'Edit category details',
+    NOT_FOUND: 'Category not found',
+    UPDATE_BUTTON: 'Update Category',
+    BREADCRUMBS: {
+      CATEGORIES: 'Categories',
+      EDIT: 'Edit',
+    },
+    MESSAGES: {
+      CREATED: (name: string) => `Category "${name}" created`,
+      UPDATED: (name: string) => `Category "${name}" updated`,
+    },
     COLUMNS: {
       NAME: 'Category Name',
       DESCRIPTION: 'Description',

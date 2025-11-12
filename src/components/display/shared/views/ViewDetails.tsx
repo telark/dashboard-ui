@@ -16,6 +16,7 @@ export interface ViewDetailField {
 export interface ViewDetailsConfig {
   fields: ViewDetailField[];
   cardStyle?: React.CSSProperties;
+  headerElement?: ReactNode;
 }
 
 interface ViewDetailsProps {
@@ -53,9 +54,22 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({ config }) => {
       style={{
         ...COMPONENT_STYLES.VIEW_DETAILS.card,
         ...config.cardStyle,
+        position: 'relative',
       }}
       styles={{ body: COMPONENT_STYLES.VIEW_DETAILS.cardBody }}
     >
+      {config.headerElement && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 16,
+            right: 16,
+            zIndex: 1,
+          }}
+        >
+          {config.headerElement}
+        </div>
+      )}
       <div style={COMPONENT_STYLES.VIEW_DETAILS.wrapper}>
         {config.fields.map((field, index) => {
           if (field.type === 'composed') {

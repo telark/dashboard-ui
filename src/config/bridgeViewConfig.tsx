@@ -1,16 +1,9 @@
-import {
-  ClockCircleOutlined,
-  SyncOutlined,
-  BranchesOutlined,
-  DeploymentUnitOutlined,
-} from '@ant-design/icons';
+import { SyncOutlined, BranchesOutlined, DeploymentUnitOutlined } from '@ant-design/icons';
 import { AiOutlineCluster } from 'react-icons/ai';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import TimeAgo from '../components/time/TimeAgo';
 import StatusButton from '../components/buttons/StatusButton';
 import { ICONS } from '../constants';
-
-const BridgeIcon = ICONS.BRIDGE;
 
 export const createBridgeViewConfig = (bridgeDetails: any): ViewDetailsConfig => {
   return {
@@ -19,7 +12,7 @@ export const createBridgeViewConfig = (bridgeDetails: any): ViewDetailsConfig =>
         key: 'name',
         label: 'Name',
         value: bridgeDetails.name || '—',
-        icon: <BridgeIcon />,
+        icon: <ICONS.VIEW_FIELD_NAME />,
         type: 'text',
       },
       {
@@ -40,14 +33,14 @@ export const createBridgeViewConfig = (bridgeDetails: any): ViewDetailsConfig =>
         key: 'creationDate',
         label: 'Creation Date',
         value: <TimeAgo date={bridgeDetails.creationTime} />,
-        icon: <ClockCircleOutlined />,
+        icon: <ICONS.VIEW_FIELD_DATE />,
         type: 'custom',
       },
       {
         key: 'lastModification',
         label: 'Last Modification',
         value: <TimeAgo date={bridgeDetails.lastUpdateTime} />,
-        icon: <ClockCircleOutlined />,
+        icon: <ICONS.VIEW_FIELD_DATE />,
         type: 'custom',
       },
       {
