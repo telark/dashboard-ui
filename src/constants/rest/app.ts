@@ -32,5 +32,11 @@ export const APP_ROUTES = {
   CATEGORY_VIEW: '/categories/:id/view',
   CATEGORY_EDIT: '/categories/:id/edit',
   USERS: '/management/users',
+  USER_CREATE: '/management/users/create',
+  USER_VIEW: '/management/users/:id/view',
+  USER_EDIT: '/management/users/:id/edit',
   GROUPS: '/management/groups',
+  GROUP_CREATE: '/management/groups/create',
+  GROUP_VIEW: '/management/groups/:id/view',
+  GROUP_EDIT: '/management/groups/:id/edit',
 } as const;

@@ -1,11 +1,9 @@
 import { DeploymentUnitOutlined } from '@ant-design/icons';
-import { AiOutlineCluster, AiOutlineCalendar, AiOutlineLock, AiOutlineSwap } from 'react-icons/ai';
+import { AiOutlineCluster, AiOutlineLock, AiOutlineSwap } from 'react-icons/ai';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import TimeAgo from '../components/time/TimeAgo';
 import { ICONS } from '../constants';
 import type { AppWorkload } from '../interfaces/workload';
-
-const WorkloadIcon = ICONS.WORKLOAD;
 
 export const createWorkloadViewConfig = (workload: AppWorkload): ViewDetailsConfig => {
   return {
@@ -14,7 +12,7 @@ export const createWorkloadViewConfig = (workload: AppWorkload): ViewDetailsConf
         key: 'name',
         label: 'Name',
         value: workload.fasid?.sourceName || '—',
-        icon: <WorkloadIcon />,
+        icon: <ICONS.VIEW_FIELD_NAME />,
         type: 'text',
       },
       {
@@ -35,7 +33,7 @@ export const createWorkloadViewConfig = (workload: AppWorkload): ViewDetailsConf
         key: 'creationDate',
         label: 'Creation Date',
         value: <TimeAgo date={workload.fasid?.creationTime || new Date().toISOString()} />,
-        icon: <AiOutlineCalendar />,
+        icon: <ICONS.VIEW_FIELD_DATE />,
         type: 'custom',
       },
       {

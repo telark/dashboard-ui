@@ -56,7 +56,7 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
     (record: (typeof enrichedResources)[0]) => {
       handleView(record.name);
     },
-    [handleView, enrichedResources],
+    [handleView],
   );
 
   const isResourceSyncing = useCallback(

@@ -9,7 +9,6 @@ import LoadingDetails from '../../../../components/shared/LoadingDetails';
 import { RootState } from '../../../../store';
 import { STORE_ERRORS } from '../../../../constants/store/store';
 import { usePersistedTab } from '../../../../utils/shared/usePersistedTab';
-import WorkloadMetrics from '../../../../components/display/workloads/apps/Metrics';
 
 const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() {
   const { name: workloadNameFromUrl } = useParams<{ name: string }>();
@@ -59,7 +58,6 @@ const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <Header workload={workload} />
         <Tabs activeTab={activeTab} onTabChange={handleTabChange} />
-        <WorkloadMetrics workload={workload} />
         <Content
           workload={workload}
           activeTab={activeTab}

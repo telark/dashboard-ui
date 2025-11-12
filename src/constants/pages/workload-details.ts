@@ -20,6 +20,12 @@ export const WORKLOAD_DETAILS_CONSTANTS = {
     ERROR: 'Error fetching workload details:',
     EMPTY: 'No details available for this workload.',
   },
+  METRICS: {
+    TOTAL_USED_CPU: 'Total Used CPU',
+    TOTAL_USED_MEMORY: 'Total Used Memory',
+    QUALITY_OF_SERVICE: 'Quality of Service',
+    AVAILABLE_TOTAL: 'Available / Total',
+  },
 } as const;
 
 export type TabKey =

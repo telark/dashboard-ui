@@ -9,6 +9,7 @@ import { syncAppWorkloadDetails } from '../../../../utils/workload/sync';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
 import { APP_ROUTES, ICONS, UI } from '../../../../constants';
+import WorkloadMetrics from './Metrics';
 
 const WorkloadIcon = ICONS.WORKLOAD;
 
@@ -62,6 +63,7 @@ const WorkloadHeader: React.FC<WorkloadHeaderProps> = React.memo(({ workload }) 
       secondaryIcon={<ClusterOutlined size={16} />}
       onSecondary={grouperName ? handleViewGrouper : undefined}
       icon={<WorkloadIcon />}
+      extraContent={<WorkloadMetrics workload={workload} />}
     />
   );
 });

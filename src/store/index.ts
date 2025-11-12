@@ -4,17 +4,23 @@ import grouperReducer from './groupers/slices/grouperSlice';
 import insightsReducer from './insights/slices/insightsSlice';
 import workloadReducer from './workloads/slices/workloadSlice';
 import bridgeReducer from './bridges/slices/bridgeSlice';
+import groupsReducer from './groups/slices/groupSlice';
+import usersReducer from './users/slices/userSlice';
 import {
   grouperPersistConfig,
   insightsPersistConfig,
   workloadPersistConfig,
   bridgePersistConfig,
+  groupsPersistConfig,
+  usersPersistConfig,
 } from './persistence/persistConfig';
 
 const persistedGrouperReducer = persistReducer(grouperPersistConfig, grouperReducer);
 const persistedInsightsReducer = persistReducer(insightsPersistConfig, insightsReducer);
 const persistedWorkloadReducer = persistReducer(workloadPersistConfig, workloadReducer);
 const persistedBridgeReducer = persistReducer(bridgePersistConfig, bridgeReducer);
+const persistedGroupsReducer = persistReducer(groupsPersistConfig, groupsReducer);
+const persistedUsersReducer = persistReducer(usersPersistConfig, usersReducer);
 
 const store = configureStore({
   reducer: {
@@ -22,6 +28,8 @@ const store = configureStore({
     insights: persistedInsightsReducer,
     workload: persistedWorkloadReducer,
     bridge: persistedBridgeReducer,
+    groups: persistedGroupsReducer,
+    users: persistedUsersReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

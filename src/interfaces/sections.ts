@@ -15,4 +15,5 @@ export interface HeaderProps {
   icon?: ReactNode;
   iconColor?: string;
   iconBackground?: string;
+  extraContent?: ReactNode;
 }

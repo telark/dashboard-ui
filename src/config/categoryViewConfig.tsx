@@ -1,8 +1,9 @@
-import { AiOutlineTag, AiOutlineFileText, AiOutlineCalendar, AiOutlineUser } from 'react-icons/ai';
+import { AiOutlineTag, AiOutlineUser } from 'react-icons/ai';
 import type { Category } from '../interfaces/categories';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import { Space } from 'antd';
 import { StatusTag } from '../components/tags';
+import { ICONS } from '../constants';
 
 export const createCategoryViewConfig = (category: Category): ViewDetailsConfig => {
   let typeColor: string;
@@ -20,14 +21,14 @@ export const createCategoryViewConfig = (category: Category): ViewDetailsConfig 
         key: 'name',
         label: 'Name',
         value: category.name,
-        icon: <AiOutlineTag />,
+        icon: <ICONS.VIEW_FIELD_NAME />,
         type: 'text',
       },
       {
         key: 'description',
         label: 'Description',
         value: category.description,
-        icon: <AiOutlineFileText />,
+        icon: <ICONS.VIEW_FIELD_DESCRIPTION />,
         type: 'text',
       },
       {
@@ -47,7 +48,7 @@ export const createCategoryViewConfig = (category: Category): ViewDetailsConfig 
           hour: '2-digit',
           minute: '2-digit',
         }),
-        icon: <AiOutlineCalendar />,
+        icon: <ICONS.VIEW_FIELD_DATE />,
         type: 'text',
       },
       {
