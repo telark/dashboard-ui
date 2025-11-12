@@ -7,6 +7,7 @@ import { registerStart, createPasskey } from '../../clients/auth';
 import { registerPasskey } from '../../utils/auth/webauthn';
 import { AUTH_ERROR_MESSAGES, AUTH_SUCCESS_MESSAGES, AUTH_INFO_MESSAGES } from '../../constants/auth';
 import { APP_ROUTES } from '../../constants';
+import type { PublicKeyCredentialCreationOptions } from '../../interfaces/auth';
 
 const Register: React.FC = () => {
   const [form] = Form.useForm();
@@ -20,15 +21,48 @@ const Register: React.FC = () => {
       // For first-time registration, send username (no session required)
       const registerStartResponse = await registerStart(values.username);
 
-      // Extract options from nested structure if needed
-      const options = registerStartResponse.options?.response || registerStartResponse;
+      // Extract options from nested structure
+      // Backend returns: { options: { publicKey: { challenge, rp, user, ... } } }
+      let options: PublicKeyCredentialCreationOptions;
+      
+      // Try different possible response structures
+      if (registerStartResponse.options?.publicKey) {
+        // Structure: { options: { publicKey: {...} } } - This is the actual structure
+        const publicKey = (registerStartResponse.options as any).publicKey;
+        options = {
+          challenge: publicKey.challenge,
+          rp: publicKey.rp,
+          user: publicKey.user,
+          pubKeyCredParams: publicKey.pubKeyCredParams,
+          timeout: publicKey.timeout,
+          attestation: publicKey.attestation,
+          authenticatorSelection: publicKey.authenticatorSelection,
+        };
+      } else if (registerStartResponse.options?.response) {
+        // Structure: { options: { response: {...} } } (alternative structure)
+        options = registerStartResponse.options.response;
+      } else if (registerStartResponse.challenge) {
+        // Flattened structure (fallback)
+        options = {
+          challenge: registerStartResponse.challenge!,
+          rp: registerStartResponse.rp!,
+          user: registerStartResponse.user!,
+          pubKeyCredParams: registerStartResponse.pubKeyCredParams!,
+          timeout: registerStartResponse.timeout,
+          attestation: registerStartResponse.attestation,
+          authenticatorSelection: registerStartResponse.authenticatorSelection,
+        };
+      } else {
+        console.error('Unexpected response structure:', registerStartResponse);
+        throw new Error('Invalid response structure from server. Please check console for details.');
+      }
 
       // Step 2: Create passkey with WebAuthn
       const credential = await registerPasskey({
-        challenge: options.challenge!,
-        rp: options.rp!,
-        user: options.user!,
-        pubKeyCredParams: options.pubKeyCredParams!,
+        challenge: options.challenge,
+        rp: options.rp,
+        user: options.user,
+        pubKeyCredParams: options.pubKeyCredParams,
         timeout: options.timeout,
         attestation: options.attestation,
         authenticatorSelection: options.authenticatorSelection,
@@ -38,8 +72,9 @@ const Register: React.FC = () => {
       // Determine device type based on authenticator attachment
       // For now, default to 'platform' - this could be enhanced to detect actual type
       const deviceType: 'platform' | 'cross-platform' = 'platform';
+      // Send credential directly (not wrapped) - go-webauthn expects it at top level
       await createPasskey(
-        { credential },
+        credential,
         values.deviceName,
         deviceType,
         values.username, // Pass username for unauthenticated registration

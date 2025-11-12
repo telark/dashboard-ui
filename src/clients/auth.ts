@@ -10,12 +10,12 @@ import type {
   RegisterFinishResponse,
   LogoutResponse,
   Passkey,
-  CreatePasskeyRequest,
   CreatePasskeyResponse,
   UpdatePasskeyRequest,
   UpdatePasskeyResponse,
   DeletePasskeyRequest,
   DeletePasskeyResponse,
+  PublicKeyCredential,
 } from '../interfaces/auth';
 
 // Authentication
@@ -85,7 +85,7 @@ export const getPasskey = async (credentialId: string): Promise<Passkey> => {
 };
 
 export const createPasskey = async (
-  request: CreatePasskeyRequest,
+  credential: PublicKeyCredential,
   deviceName: string,
   deviceType: 'platform' | 'cross-platform',
   username?: string,
@@ -101,9 +101,13 @@ export const createPasskey = async (
     headers[HTTP_HEADERS.CUSTOM.USERNAME] = username;
   }
   
+  // Send credential directly (not wrapped) - go-webauthn expects it at top level of request body
+  // Debug: Log the credential structure being sent
+  console.log('Sending credential:', JSON.stringify(credential, null, 2));
+  
   return await Client<CreatePasskeyResponse>(authApiClient, path, {
     method,
-    data: request,
+    data: credential,
     headers,
   });
 };

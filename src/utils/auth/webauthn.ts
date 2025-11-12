@@ -18,7 +18,8 @@ const base64UrlToArrayBuffer = (base64url: string): ArrayBuffer => {
 };
 
 /**
- * Convert ArrayBuffer to base64url string
+ * Convert ArrayBuffer to base64url string (without padding)
+ * This matches the WebAuthn specification for base64url encoding
  */
 const arrayBufferToBase64Url = (buffer: ArrayBuffer): string => {
   const bytes = new Uint8Array(buffer);
@@ -27,7 +28,21 @@ const arrayBufferToBase64Url = (buffer: ArrayBuffer): string => {
     binary += String.fromCharCode(bytes[i]);
   }
   const base64 = globalThis.btoa(binary);
-  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+  // Convert to base64url: replace + with -, / with _, and remove trailing padding
+  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+};
+
+/**
+ * Convert base64url string to standard base64 string
+ * This is needed because go-webauthn library expects standard base64 (with + and /) not base64url (with - and _)
+ */
+export const base64UrlToBase64 = (base64url: string): string => {
+  // Add padding if needed
+  let base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+  while (base64.length % 4) {
+    base64 += '=';
+  }
+  return base64;
 };
 
 /**
@@ -94,7 +109,7 @@ const convertCredential = (credential: globalThis.PublicKeyCredential): PublicKe
   const response = credential.response;
 
   if (response instanceof globalThis.AuthenticatorAttestationResponse) {
-    return {
+    const result: PublicKeyCredential = {
       id: credential.id,
       rawId: arrayBufferToBase64Url(credential.rawId),
       type: 'public-key',
@@ -103,6 +118,13 @@ const convertCredential = (credential: globalThis.PublicKeyCredential): PublicKe
         clientDataJSON: arrayBufferToBase64Url(response.clientDataJSON),
       },
     };
+    
+    // Add getClientExtensionResults if available
+    if (credential.getClientExtensionResults) {
+      result.getClientExtensionResults = credential.getClientExtensionResults() as Record<string, unknown>;
+    }
+    
+    return result;
   } else if (response instanceof globalThis.AuthenticatorAssertionResponse) {
     return {
       id: credential.id,

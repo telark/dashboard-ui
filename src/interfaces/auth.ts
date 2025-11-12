@@ -69,6 +69,7 @@ export interface PublicKeyCredential {
   rawId: string;
   response: AuthenticatorAttestationResponse | AuthenticatorAssertionResponse;
   type: 'public-key';
+  getClientExtensionResults?: Record<string, unknown>; // Optional: client extension results
 }
 
 // Login Request/Response
@@ -78,6 +79,7 @@ export interface LoginStartRequest {
 
 export interface LoginStartResponse {
   options?: {
+    publicKey?: PublicKeyCredentialRequestOptions;
     response?: PublicKeyCredentialRequestOptions;
   };
   // Direct fields (if backend returns flattened structure)
@@ -87,14 +89,16 @@ export interface LoginStartResponse {
   rpId?: string;
 }
 
+// LoginFinishRequest - credential should be sent at the top level (not nested)
+// The go-webauthn library's FinishLogin expects the credential at the top level of the request body
+// Similar to registration, but we also include username for user lookup
 export interface LoginFinishRequest {
   username: string;
-  response: {
-    id: string;
-    rawId: string;
-    response: AuthenticatorAssertionResponse;
-    type: string;
-  };
+  // Credential fields at top level (WebAuthn format)
+  id: string;
+  rawId: string;
+  response: AuthenticatorAssertionResponse;
+  type: string;
 }
 
 export interface LoginFinishResponse {
@@ -105,7 +109,8 @@ export interface LoginFinishResponse {
 // Registration Request/Response
 export interface RegisterStartResponse {
   options?: {
-    response?: PublicKeyCredentialCreationOptions;
+    publicKey?: PublicKeyCredentialCreationOptions;
+    response?: PublicKeyCredentialCreationOptions; // Alternative structure
   };
   // Direct fields (if backend returns flattened structure)
   challenge?: string;
@@ -117,9 +122,9 @@ export interface RegisterStartResponse {
   authenticatorSelection?: AuthenticatorSelectionCriteria;
 }
 
-export interface RegisterFinishRequest {
-  credential: PublicKeyCredential;
-}
+// RegisterFinishRequest - credential should be sent directly (not nested)
+// The go-webauthn library expects the credential at the top level of the request body
+export type RegisterFinishRequest = PublicKeyCredential;
 
 export interface RegisterFinishResponse {
   id: string;

@@ -8,7 +8,7 @@ import { authenticateWithPasskey } from '../../utils/auth/webauthn';
 import { setSessionToken } from '../../utils/auth/session';
 import { AUTH_ERROR_MESSAGES, AUTH_SUCCESS_MESSAGES, AUTH_INFO_MESSAGES } from '../../constants/auth';
 import { APP_ROUTES } from '../../constants';
-import type { AuthenticatorAssertionResponse } from '../../interfaces/auth';
+import type { AuthenticatorAssertionResponse, PublicKeyCredentialRequestOptions } from '../../interfaces/auth';
 
 const Login: React.FC = () => {
   const [form] = Form.useForm();
@@ -21,28 +21,63 @@ const Login: React.FC = () => {
       // Step 1: Start login - get challenge and options
       const loginStartResponse = await loginStart({ username: values.username });
 
-      // Extract options from nested structure if needed
-      const options = loginStartResponse.options?.response || loginStartResponse;
+      // Extract options from nested structure
+      // Backend returns: { options: { publicKey: { challenge, rpId, allowCredentials, timeout } } }
+      let options: PublicKeyCredentialRequestOptions;
+      
+      // Try different possible response structures
+      if (loginStartResponse.options?.publicKey) {
+        // Structure: { options: { publicKey: {...} } } - This is the actual structure
+        const publicKey = (loginStartResponse.options as any).publicKey;
+        options = {
+          challenge: publicKey.challenge,
+          timeout: publicKey.timeout,
+          rpId: publicKey.rpId,
+          allowCredentials: publicKey.allowCredentials,
+          userVerification: publicKey.userVerification || 'preferred',
+        };
+      } else if (loginStartResponse.options?.response) {
+        // Structure: { options: { response: {...} } } (alternative structure)
+        options = loginStartResponse.options.response;
+      } else if (loginStartResponse.challenge) {
+        // Flattened structure (fallback)
+        options = {
+          challenge: loginStartResponse.challenge!,
+          timeout: loginStartResponse.timeout,
+          rpId: loginStartResponse.rpId,
+          allowCredentials: loginStartResponse.allowCredentials,
+          userVerification: 'preferred',
+        };
+      } else {
+        console.error('Unexpected login response structure:', loginStartResponse);
+        throw new Error('Invalid response structure from server. Please check console for details.');
+      }
 
       // Step 2: Authenticate with WebAuthn
       const credential = await authenticateWithPasskey({
-        challenge: options.challenge!,
+        challenge: options.challenge,
         timeout: options.timeout,
         rpId: options.rpId,
         allowCredentials: options.allowCredentials,
-        userVerification: 'preferred',
+        userVerification: options.userVerification || 'preferred',
       });
 
       // Step 3: Finish login - verify credential and get session
-      // Convert credential to the format expected by backend
+      // Send credential at top level (WebAuthn format) with username
+      // The go-webauthn library's FinishLogin expects the credential at the top level
+      const assertionResponse = credential.response as AuthenticatorAssertionResponse;
       const loginFinishResponse = await loginFinish({
         username: values.username,
+        // Credential fields at top level (WebAuthn format)
+        id: credential.id,
+        rawId: credential.rawId,
         response: {
-          id: credential.id,
-          rawId: credential.rawId,
-          response: credential.response as AuthenticatorAssertionResponse,
-          type: credential.type,
+          authenticatorData: assertionResponse.authenticatorData,
+          clientDataJSON: assertionResponse.clientDataJSON,
+          signature: assertionResponse.signature,
+          userHandle: assertionResponse.userHandle || null,
         },
+        type: credential.type,
       });
 
       // Step 4: Store session token
