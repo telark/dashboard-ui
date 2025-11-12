@@ -54,9 +54,9 @@ const Columns = (ctx: GenerateColumnCtx) => {
         label: UC.LABELS.COLUMNS.ROLE,
         icon: <AiOutlineTag />,
         width: UC.SIZES.COLUMNS.ROLE,
-        render: (value: string) => (
+        render: (_: any, record: User) => (
           <RowTag
-            text={value}
+            text={record.roleID}
             background={RPC.COLORS.TYPE_CUSTOM_BG}
             color={RPC.COLORS.TYPE_CUSTOM_TEXT}
             fontSize={RPC.SIZES.CHIP_FONT}

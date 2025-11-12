@@ -4,6 +4,7 @@ export const API_PATHS = {
     INSIGHTS: 'resources/insights',
     WORKLOADS: 'resources/workloads',
     BRIDGES: 'resources/bridges',
+    USERS: 'resources/users',
   },
   FEATS: {
     MAINTENANCE: 'feats/maintenance',
@@ -34,4 +35,24 @@ export const MAINTENANCE_PATHS = {
 
 export const ANALYZE_PATHS = {
   START: 'start',
+} as const;
+
+export const AUTH_PATHS = {
+  LOGIN: {
+    START: 'auth/login/start',
+    FINISH: 'auth/login/finish',
+  },
+  REGISTER: {
+    START: 'auth/register/start',
+  },
+  LOGOUT: 'auth/logout',
+  PASSKEYS: {
+    PROXY: {
+      GET: 'auth/passkeys/proxy/get',
+      CREATE: 'auth/passkeys/proxy/create',
+      SINGLE_GET: 'auth/passkeys/proxy/single/get',
+      PATCH: 'auth/passkeys/proxy/patch',
+      DELETE: 'auth/passkeys/proxy/delete',
+    },
+  },
 } as const;

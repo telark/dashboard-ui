@@ -18,6 +18,7 @@ export const APP_CONFIGS = {
 
 export const APP_ROUTES = {
   HOME: '/',
+  LOGIN: '/login',
   GROUPERS: '/groupers',
   GROUPER_DETAILS: '/groupers/:name/details',
   WORKLOADS: '/workloads',

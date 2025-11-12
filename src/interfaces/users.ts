@@ -3,13 +3,19 @@ export interface UserAvatar {
   seed: string;
 }
 
+export interface UserStatus {
+  phase: string;
+}
+
 export interface User {
   id: string;
   username: string;
   fullname: string;
   email: string;
-  role: string;
+  roleID: string;
+  groupID: string;
   creationDate: string;
+  status: UserStatus;
   avatar?: UserAvatar;
 }
 

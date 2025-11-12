@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import {
   Dashboard,
+  Login,
   GroupersGlobalView,
   GrouperDetailsView,
   BridgesGlobalView,
@@ -30,6 +31,7 @@ import { APP_ROUTES } from '../constants';
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
+      <Route path={APP_ROUTES.LOGIN} element={<Login />} />
       <Route path={APP_ROUTES.HOME} element={<Dashboard />} />
       <Route path={APP_ROUTES.GROUPERS} element={<GroupersGlobalView />} />
       <Route

@@ -4,6 +4,7 @@ import {
   INSIGHT_PATHS,
   MAINTENANCE_PATHS,
   ANALYZE_PATHS,
+  AUTH_PATHS,
 } from '../rest/paths';
 
 export const Endpoints = {
@@ -119,6 +120,56 @@ export const Endpoints = {
         path: `${API_PATHS.RESOURCES.WORKLOADS}/batches/${RESOURCE_PATHS.UPDATE_SYNC(name)}`,
         method: 'PATCH',
       }),
+    },
+  },
+  AUTH: {
+    LOGIN: {
+      START: {
+        path: AUTH_PATHS.LOGIN.START,
+        method: 'POST',
+      },
+      FINISH: {
+        path: AUTH_PATHS.LOGIN.FINISH,
+        method: 'POST',
+      },
+    },
+    REGISTER: {
+      START: {
+        path: AUTH_PATHS.REGISTER.START,
+        method: 'POST',
+      },
+    },
+    LOGOUT: {
+      path: AUTH_PATHS.LOGOUT,
+      method: 'POST',
+    },
+    PASSKEYS: {
+      GET_ALL: {
+        path: AUTH_PATHS.PASSKEYS.PROXY.GET,
+        method: 'GET',
+      },
+      CREATE: {
+        path: AUTH_PATHS.PASSKEYS.PROXY.CREATE,
+        method: 'POST',
+      },
+      GET_SINGLE: {
+        path: AUTH_PATHS.PASSKEYS.PROXY.SINGLE_GET,
+        method: 'GET',
+      },
+      UPDATE: {
+        path: AUTH_PATHS.PASSKEYS.PROXY.PATCH,
+        method: 'PATCH',
+      },
+      DELETE: {
+        path: AUTH_PATHS.PASSKEYS.PROXY.DELETE,
+        method: 'DELETE',
+      },
+    },
+  },
+  USERS: {
+    GET_ALL: {
+      path: `${API_PATHS.RESOURCES.USERS}/${RESOURCE_PATHS.GET_ALL}`,
+      method: 'GET',
     },
   },
 };

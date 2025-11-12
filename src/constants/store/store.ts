@@ -4,6 +4,7 @@ export const STORAGE_KEYS = {
   HAS_CLUSTER_INSIGHTS: 'HAS_CLUSTER_INSIGHTS',
   WELCOME_PENDING: 'WELCOME_PENDING',
   RESOURCE_ACTIVE_TAB: 'RESOURCE_ACTIVE_TAB',
+  SESSION_TOKEN: 'SESSION_TOKEN',
 } as const;
 
 export const STORE_ACTIONS = {
@@ -42,6 +43,10 @@ export const STORE_ACTIONS = {
   BRIDGE: {
     UPDATE_SYNC: 'bridge/updateBridgeSync',
   },
+  USERS: {
+    FETCH: 'users/fetch',
+    FETCH_SILENT: 'users/fetchSilent',
+  },
 } as const;
 
 export const SYNC_MODES = COMMON_VALUES.SYNC_MODES;
@@ -68,6 +73,7 @@ export const STORE_ERRORS = {
   REFRESH_AUTO_BRIDGES: 'Failed to refresh auto bridges',
   FETCH_BRIDGE_DETAILS: 'Failed to fetch bridge details',
   UPDATE_BRIDGE_SYNC: 'Failed to update bridge sync settings.',
+  FETCH_USERS: 'Failed to fetch users',
 } as const;
 
 export const STORE_MESSAGES = {
@@ -86,4 +92,5 @@ export const STORE_MESSAGES = {
   ERROR_UPDATING_APP_SYNC: 'Error updating app workload sync settings:',
   ERROR_FETCHING_BRIDGES: 'Error fetching bridges:',
   ERROR_FETCHING_BRIDGE_DETAILS: 'Error fetching bridge details:',
+  ERROR_FETCHING_USERS: 'Error fetching users:',
 } as const;

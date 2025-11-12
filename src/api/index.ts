@@ -3,6 +3,7 @@ import {
   EXPORTER_API,
   CONFIGURATOR_API,
   SYNC_MANAGER_API,
+  AUTH_API,
   API_TIMEOUT,
   HTTP_HEADERS,
   HEADER_VALUES,
@@ -11,6 +12,7 @@ import {
   ERROR_MESSAGES,
   REQUEST_CONFIG,
   API_RESPONSES,
+  STORAGE_KEYS,
 } from '../constants';
 
 const exporterApiClient: AxiosInstance = axios.create({
@@ -30,6 +32,26 @@ const syncManagerApiClient: AxiosInstance = axios.create({
   timeout: API_TIMEOUT,
   headers: REQUEST_CONFIG.DEFAULT_HEADERS,
 });
+
+const authApiClient: AxiosInstance = axios.create({
+  baseURL: AUTH_API.BASE_URL,
+  timeout: API_TIMEOUT,
+  headers: REQUEST_CONFIG.DEFAULT_HEADERS,
+});
+
+// Add session token interceptor for auth client
+authApiClient.interceptors.request.use(
+  (config) => {
+    const sessionToken = globalThis.localStorage?.getItem(STORAGE_KEYS.SESSION_TOKEN);
+    if (sessionToken && config.headers) {
+      config.headers[HTTP_HEADERS.CUSTOM.SESSION_TOKEN] = sessionToken;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
 
 interface ExtendedAxiosError extends AxiosError {
   normalized?: ReturnType<typeof normalizeError>;
@@ -113,6 +135,7 @@ const createErrorInterceptor = (options: ErrorInterceptorOptions = {}) => {
 exporterApiClient.interceptors.response.use(...createErrorInterceptor({ silent404: true }));
 configuratorApiClient.interceptors.response.use(...createErrorInterceptor());
 syncManagerApiClient.interceptors.response.use(...createErrorInterceptor());
+authApiClient.interceptors.response.use(...createErrorInterceptor());
 
 const DEFAULT_CLIENT_CONFIG: AxiosRequestConfig = {
   method: REQUEST_CONFIG.DEFAULT_METHOD,
@@ -127,4 +150,4 @@ export const Client = async <T>(
   return response.data;
 };
 
-export { exporterApiClient, configuratorApiClient, syncManagerApiClient };
+export { exporterApiClient, configuratorApiClient, syncManagerApiClient, authApiClient };

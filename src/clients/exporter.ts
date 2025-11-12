@@ -16,6 +16,7 @@ import type {
   StandardApiResponse,
 } from '../interfaces/api';
 import type { AppWorkload } from '../interfaces/workload';
+import type { User } from '../interfaces/users';
 import type { AxiosError } from 'axios';
 
 export const fetchGroupers = async (silent = false) => {
@@ -197,6 +198,26 @@ export const updateBridgeSyncMode = async (name: string, syncMode: string) => {
     });
   } catch (error) {
     console.error(`${ERROR_MESSAGES.CLIENT.UPDATE_BRIDGE_SYNC_MODE_FAILED} "${name}":`, error);
+    throw error;
+  }
+};
+
+export const fetchUsers = async (silent = false) => {
+  try {
+    const config = silent
+      ? {
+          headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK },
+        }
+      : {};
+    return await Client<ResourceListResponse<User>>(
+      exporterApiClient,
+      Endpoints.USERS.GET_ALL.path,
+      config,
+    );
+  } catch (error) {
+    if (!silent) {
+      console.error(ERROR_MESSAGES.CLIENT.FETCH_USERS_FAILED, error);
+    }
     throw error;
   }
 };

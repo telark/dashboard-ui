@@ -30,11 +30,32 @@ export const createUserViewConfig = (user: User): ViewDetailsConfig => {
         type: 'text',
       },
       {
-        key: 'role',
-        label: 'Role',
+        key: 'roleID',
+        label: 'Role ID',
         value: (
           <StatusTag
-            label={user.role}
+            label={user.roleID}
+            icon={<AiOutlineTag />}
+            color={RPC.COLORS.TYPE_CUSTOM_TEXT}
+            borderColor={RPC.COLORS.TYPE_CUSTOM_TEXT}
+          />
+        ),
+        icon: <AiOutlineTag />,
+        type: 'custom',
+      },
+      {
+        key: 'groupID',
+        label: 'Group ID',
+        value: user.groupID,
+        icon: <ICONS.VIEW_FIELD_NAME />,
+        type: 'text',
+      },
+      {
+        key: 'status',
+        label: 'Status',
+        value: (
+          <StatusTag
+            label={user.status.phase}
             icon={<AiOutlineTag />}
             color={RPC.COLORS.TYPE_CUSTOM_TEXT}
             borderColor={RPC.COLORS.TYPE_CUSTOM_TEXT}

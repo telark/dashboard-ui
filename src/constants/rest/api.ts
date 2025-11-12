@@ -22,3 +22,10 @@ export const SYNC_MANAGER_API = {
     return buildApiUrl(this.PORT);
   },
 };
+
+export const AUTH_API = {
+  PORT: API_PORTS.AUTH,
+  get BASE_URL() {
+    return buildApiUrl(this.PORT);
+  },
+};
