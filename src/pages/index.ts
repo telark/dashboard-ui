@@ -1,5 +1,7 @@
 export { default as Dashboard } from './home/Dashboard';
 export { default as Login } from './auth/Login';
+export { default as Register } from './auth/Register';
+export { default as Passkeys } from './auth/Passkeys';
 export { default as GroupersGlobalView } from './grouper/main/GlobalView';
 export { default as GrouperDetailsView } from './grouper/details/DetailsView';
 export { default as BridgesGlobalView } from './bridge/main/GlobalView';

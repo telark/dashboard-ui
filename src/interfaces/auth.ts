@@ -77,7 +77,11 @@ export interface LoginStartRequest {
 }
 
 export interface LoginStartResponse {
-  challenge: string;
+  options?: {
+    response?: PublicKeyCredentialRequestOptions;
+  };
+  // Direct fields (if backend returns flattened structure)
+  challenge?: string;
   allowCredentials?: PublicKeyCredentialDescriptor[];
   timeout?: number;
   rpId?: string;
@@ -85,21 +89,29 @@ export interface LoginStartResponse {
 
 export interface LoginFinishRequest {
   username: string;
-  credential: PublicKeyCredential;
+  response: {
+    id: string;
+    rawId: string;
+    response: AuthenticatorAssertionResponse;
+    type: string;
+  };
 }
 
 export interface LoginFinishResponse {
-  token: string;
+  sessionToken: string;
   user: User;
-  expiresAt: string;
 }
 
 // Registration Request/Response
 export interface RegisterStartResponse {
-  challenge: string;
-  rp: PublicKeyCredentialRpEntity;
-  user: PublicKeyCredentialUserEntity;
-  pubKeyCredParams: PublicKeyCredentialParameters[];
+  options?: {
+    response?: PublicKeyCredentialCreationOptions;
+  };
+  // Direct fields (if backend returns flattened structure)
+  challenge?: string;
+  rp?: PublicKeyCredentialRpEntity;
+  user?: PublicKeyCredentialUserEntity;
+  pubKeyCredParams?: PublicKeyCredentialParameters[];
   timeout?: number;
   attestation?: AttestationConveyancePreference;
   authenticatorSelection?: AuthenticatorSelectionCriteria;

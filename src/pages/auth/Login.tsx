@@ -7,6 +7,8 @@ import { loginStart, loginFinish } from '../../clients/auth';
 import { authenticateWithPasskey } from '../../utils/auth/webauthn';
 import { setSessionToken } from '../../utils/auth/session';
 import { AUTH_ERROR_MESSAGES, AUTH_SUCCESS_MESSAGES, AUTH_INFO_MESSAGES } from '../../constants/auth';
+import { APP_ROUTES } from '../../constants';
+import type { AuthenticatorAssertionResponse } from '../../interfaces/auth';
 
 const Login: React.FC = () => {
   const [form] = Form.useForm();
@@ -19,29 +21,50 @@ const Login: React.FC = () => {
       // Step 1: Start login - get challenge and options
       const loginStartResponse = await loginStart({ username: values.username });
 
+      // Extract options from nested structure if needed
+      const options = loginStartResponse.options?.response || loginStartResponse;
+
       // Step 2: Authenticate with WebAuthn
       const credential = await authenticateWithPasskey({
-        challenge: loginStartResponse.challenge,
-        timeout: loginStartResponse.timeout,
-        rpId: loginStartResponse.rpId,
-        allowCredentials: loginStartResponse.allowCredentials,
+        challenge: options.challenge!,
+        timeout: options.timeout,
+        rpId: options.rpId,
+        allowCredentials: options.allowCredentials,
         userVerification: 'preferred',
       });
 
       // Step 3: Finish login - verify credential and get session
+      // Convert credential to the format expected by backend
       const loginFinishResponse = await loginFinish({
         username: values.username,
-        credential,
+        response: {
+          id: credential.id,
+          rawId: credential.rawId,
+          response: credential.response as AuthenticatorAssertionResponse,
+          type: credential.type,
+        },
       });
 
       // Step 4: Store session token
-      setSessionToken(loginFinishResponse.token);
+      setSessionToken(loginFinishResponse.sessionToken);
 
       message.success(AUTH_SUCCESS_MESSAGES.LOGIN_SUCCESS);
       navigate('/');
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : AUTH_ERROR_MESSAGES.LOGIN_FINISH_FAILED;
+    } catch (error: any) {
+      // Check if error is about no passkeys
+      if (error?.response?.status === 404 || error?.status === 404) {
+        const errorMsg = error?.response?.data?.message || error?.message || '';
+        if (errorMsg.includes('no passkeys') || errorMsg.includes('No passkeys')) {
+          const errorMessage = 'No passkeys found. Please register a passkey first.';
+          message.error(errorMessage);
+          setTimeout(() => {
+            navigate(APP_ROUTES.REGISTER);
+          }, 2000);
+          return;
+        }
+      }
+      
+      const errorMessage = error instanceof Error ? error.message : AUTH_ERROR_MESSAGES.LOGIN_FINISH_FAILED;
       message.error(errorMessage);
       console.error('Login error:', error);
     } finally {

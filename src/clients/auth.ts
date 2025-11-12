@@ -35,10 +35,27 @@ export const loginFinish = async (request: LoginFinishRequest): Promise<LoginFin
   });
 };
 
-export const registerStart = async (): Promise<RegisterStartResponse> => {
+export const registerStart = async (username?: string): Promise<RegisterStartResponse> => {
   const { path, method } = Endpoints.AUTH.REGISTER.START;
-  return await Client<RegisterStartResponse>(authApiClient, path, {
+  const config: any = {
     method,
+  };
+  
+  // If username is provided, send it in request body (for unauthenticated first-time registration)
+  if (username) {
+    config.data = { username };
+  }
+  
+  return await Client<RegisterStartResponse>(authApiClient, path, config);
+};
+
+export const registerFinish = async (
+  request: RegisterFinishRequest,
+): Promise<RegisterFinishResponse> => {
+  const { path, method } = Endpoints.AUTH.PASSKEYS.CREATE;
+  return await Client<RegisterFinishResponse>(authApiClient, path, {
+    method,
+    data: request,
   });
 };
 
@@ -71,15 +88,23 @@ export const createPasskey = async (
   request: CreatePasskeyRequest,
   deviceName: string,
   deviceType: 'platform' | 'cross-platform',
+  username?: string,
 ): Promise<CreatePasskeyResponse> => {
   const { path, method } = Endpoints.AUTH.PASSKEYS.CREATE;
+  const headers: Record<string, string> = {
+    [HTTP_HEADERS.CUSTOM.DEVICE_NAME]: deviceName,
+    [HTTP_HEADERS.CUSTOM.DEVICE_TYPE]: deviceType,
+  };
+  
+  // If username is provided (for unauthenticated registration), add it to headers
+  if (username) {
+    headers[HTTP_HEADERS.CUSTOM.USERNAME] = username;
+  }
+  
   return await Client<CreatePasskeyResponse>(authApiClient, path, {
     method,
     data: request,
-    headers: {
-      [HTTP_HEADERS.CUSTOM.DEVICE_NAME]: deviceName,
-      [HTTP_HEADERS.CUSTOM.DEVICE_TYPE]: deviceType,
-    },
+    headers,
   });
 };
 

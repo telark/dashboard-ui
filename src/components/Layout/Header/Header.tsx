@@ -1,9 +1,33 @@
-import React from 'react';
-import { Button, Space } from 'antd';
-
-import { SettingOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import React, { useState } from 'react';
+import { Button, Space, message } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { SettingOutlined, InfoCircleOutlined, LogoutOutlined } from '@ant-design/icons';
+import { logout } from '../../../clients/auth';
+import { removeSessionToken } from '../../../utils/auth/session';
+import { AUTH_ERROR_MESSAGES, AUTH_SUCCESS_MESSAGES } from '../../../constants/auth';
+import { APP_ROUTES } from '../../../constants';
 
 const Header: React.FC = () => {
+  const navigate = useNavigate();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await logout();
+      removeSessionToken();
+      message.success(AUTH_SUCCESS_MESSAGES.LOGOUT_SUCCESS);
+      navigate(APP_ROUTES.LOGIN);
+    } catch (error) {
+      // Even if logout fails, clear local session
+      removeSessionToken();
+      message.error(AUTH_ERROR_MESSAGES.LOGOUT_FAILED);
+      navigate(APP_ROUTES.LOGIN);
+    } finally {
+      setLoggingOut(false);
+    }
+  };
+
   return (
     <div
       style={{
@@ -30,6 +54,15 @@ const Header: React.FC = () => {
           type="text" // Use "text" type for the ghost-like effect
         />
         <Button icon={<InfoCircleOutlined />} shape="circle" size="small" type="text" />
+        <Button
+          icon={<LogoutOutlined />}
+          shape="circle"
+          size="small"
+          type="text"
+          onClick={handleLogout}
+          loading={loggingOut}
+          title="Logout"
+        />
       </Space>
     </div>
   );
