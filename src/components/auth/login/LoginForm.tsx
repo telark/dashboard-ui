@@ -4,6 +4,7 @@ import { LoginOutlined, UserOutlined } from '@ant-design/icons';
 import { AUTH_ERROR_MESSAGES } from '../../../constants/auth';
 import { DEFAULT_COLORS } from '../../../constants';
 import { LOGIN_CONSTANTS } from '../../../constants/pages/login';
+import { AuthForm } from '../shared/AuthForm';
 
 interface LoginFormProps {
   form: FormInstance;
@@ -13,7 +14,7 @@ interface LoginFormProps {
 
 export const LoginForm: React.FC<LoginFormProps> = ({ form, loading, onFinish }) => {
   return (
-    <Form form={form} layout="vertical" onFinish={onFinish} size="large">
+    <AuthForm form={form} onFinish={onFinish}>
       <Form.Item
         name="username"
         rules={[{ required: true, message: AUTH_ERROR_MESSAGES.MISSING_USERNAME }]}
@@ -50,7 +51,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({ form, loading, onFinish })
           {loading ? LOGIN_CONSTANTS.UI.BUTTON_LOADING : LOGIN_CONSTANTS.UI.BUTTON_TEXT}
         </Button>
       </Form.Item>
-    </Form>
+    </AuthForm>
   );
 };
-

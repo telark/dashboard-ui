@@ -4,6 +4,7 @@ import { UserAddOutlined, UserOutlined } from '@ant-design/icons';
 import { AUTH_ERROR_MESSAGES } from '../../../constants/auth';
 import { DEFAULT_COLORS } from '../../../constants';
 import { REGISTER_CONSTANTS } from '../../../constants/pages/register';
+import { AuthForm } from '../shared/AuthForm';
 
 interface RegisterFormProps {
   form: FormInstance;
@@ -13,7 +14,7 @@ interface RegisterFormProps {
 
 export const RegisterForm: React.FC<RegisterFormProps> = ({ form, loading, onFinish }) => {
   return (
-    <Form form={form} layout="vertical" onFinish={onFinish} size="large">
+    <AuthForm form={form} onFinish={onFinish}>
       <Form.Item
         label={REGISTER_CONSTANTS.UI.USERNAME_LABEL}
         name="username"
@@ -67,7 +68,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ form, loading, onFin
           {loading ? REGISTER_CONSTANTS.UI.BUTTON_LOADING : REGISTER_CONSTANTS.UI.BUTTON_TEXT}
         </Button>
       </Form.Item>
-    </Form>
+    </AuthForm>
   );
 };
 
