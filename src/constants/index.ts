@@ -25,3 +25,4 @@ export * from './shared/common';
 export * from './shared/colors';
 export * from './shared/time';
 export * from './shared/utils';
+export * from './pages/passkeys';

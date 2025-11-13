@@ -4,7 +4,6 @@ import {
   Dashboard,
   Login,
   Register,
-  Passkeys,
   GroupersGlobalView,
   GrouperDetailsView,
   BridgesGlobalView,
@@ -26,6 +25,10 @@ import {
   GroupsCreateView,
   GroupView,
   GroupEdit,
+  PasskeysListView,
+  PasskeyView,
+  PasskeyEdit,
+  PasskeyCreateView,
 } from '../pages';
 import AnimatedPageWrapper from '../components/animation/AnimatedPageWrapper';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
@@ -50,14 +53,6 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={APP_ROUTES.PASSKEYS}
-        element={
-          <ProtectedRoute>
-            <Passkeys />
           </ProtectedRoute>
         }
       />
@@ -232,6 +227,38 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <GroupEdit />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={APP_ROUTES.PASSKEYS}
+        element={
+          <ProtectedRoute>
+            <PasskeysListView />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={APP_ROUTES.PASSKEY_CREATE}
+        element={
+          <ProtectedRoute>
+            <PasskeyCreateView />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={APP_ROUTES.PASSKEY_VIEW}
+        element={
+          <ProtectedRoute>
+            <PasskeyView />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={APP_ROUTES.PASSKEY_EDIT}
+        element={
+          <ProtectedRoute>
+            <PasskeyEdit />
           </ProtectedRoute>
         }
       />

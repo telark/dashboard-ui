@@ -119,7 +119,7 @@ export interface RegisterFinishResponse {
   credentialId: string;
   deviceName: string;
   deviceType: 'platform' | 'cross-platform';
-  createdAt: string;
+  creationTimestamp: string;
 }
 
 export interface User {
@@ -156,8 +156,12 @@ export interface Passkey {
   credentialId: string;
   deviceName: string;
   deviceType: 'platform' | 'cross-platform';
-  createdAt: string;
-  lastUsedAt?: string;
+  creationTimestamp: string;
+  lastUsedTimestamp?: string;
+  backupEligible?: boolean;
+  backupState?: boolean;
+  publicKey?: string;
+  userId?: string;
 }
 
 export interface CreatePasskeyRequest {
@@ -169,7 +173,7 @@ export interface CreatePasskeyResponse {
   credentialId: string;
   deviceName: string;
   deviceType: 'platform' | 'cross-platform';
-  createdAt: string;
+  creationTimestamp: string;
 }
 
 export interface UpdatePasskeyRequest {
