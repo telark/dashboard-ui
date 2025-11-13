@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, message, App as AntdApp } from 'antd';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import Sidebar from './components/layout/sidebar/Sidebar';
 import Header from './components/layout/header/Header';
 import ErrorBoundary from './ErrorBoundary';
 import 'antd/dist/reset.css';
-import { DEFAULT_COLORS, APP_CONFIGS } from './constants';
+import { DEFAULT_COLORS, APP_CONFIGS, APP_ROUTES } from './constants';
 import { Startup, Welcome } from './pages';
 import AppRoutes from './routes/AppRoutes';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,7 +16,9 @@ import { FancySpinner } from './components/shared';
 // Ensure messages are shown below the fixed header and are visible above content
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const location = useLocation();
+  const isAuthRoute = location.pathname === APP_ROUTES.LOGIN || location.pathname === APP_ROUTES.REGISTER;
   const dispatch: AppDispatch = useDispatch();
   const hasClusterInsight = useSelector((s: RootState) => s.insights.hasClusterInsight);
   const initialized = useSelector((s: RootState) => s.insights.initialized);
@@ -69,29 +71,41 @@ const App: React.FC = () => {
   }
 
   return (
+    <AntdApp>
+      {initialized && hasClusterInsight ? (
+        isAuthRoute ? (
+          // Full-page layout for auth pages (no sidebar/header)
+          <AppRoutes />
+        ) : (
+          // Standard layout with sidebar and header for authenticated pages
+          <Layout style={{ minHeight: APP_CONFIGS.LAYOUT.MIN_HEIGHT }}>
+            <Sidebar />
+            <Layout
+              style={{
+                marginLeft: APP_CONFIGS.LAYOUT.MARGIN_LEFT,
+                height: APP_CONFIGS.LAYOUT.HEIGHT,
+                transition: APP_CONFIGS.LAYOUT.TRANSITION,
+                background: DEFAULT_COLORS.PAGE_BG,
+              }}
+            >
+              <Header />
+              <AppRoutes />
+            </Layout>
+          </Layout>
+        )
+      ) : (
+        <Startup onStartAnalyze={handleStartAnalyze} />
+      )}
+      {showWelcome && <Welcome />}
+    </AntdApp>
+  );
+};
+
+const App: React.FC = () => {
+  return (
     <ErrorBoundary>
       <Router>
-        <AntdApp>
-          {initialized && hasClusterInsight ? (
-            <Layout style={{ minHeight: APP_CONFIGS.LAYOUT.MIN_HEIGHT }}>
-              <Sidebar />
-              <Layout
-                style={{
-                  marginLeft: APP_CONFIGS.LAYOUT.MARGIN_LEFT,
-                  height: APP_CONFIGS.LAYOUT.HEIGHT,
-                  transition: APP_CONFIGS.LAYOUT.TRANSITION,
-                  background: DEFAULT_COLORS.PAGE_BG,
-                }}
-              >
-                <Header />
-                <AppRoutes />
-              </Layout>
-            </Layout>
-          ) : (
-            <Startup onStartAnalyze={handleStartAnalyze} />
-          )}
-        </AntdApp>
-        {showWelcome && <Welcome />}
+        <AppContent />
       </Router>
     </ErrorBoundary>
   );

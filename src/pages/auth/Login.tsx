@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import { Form, Input, message } from 'antd';
-import { LoginOutlined } from '@ant-design/icons';
+import { Form, Input, Button } from 'antd';
+import { LoginOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import PrimaryButton from '../../components/buttons/PrimaryButton';
-import { loginStart, loginFinish } from '../../clients/auth';
-import { authenticateWithPasskey } from '../../utils/auth/webauthn';
-import { setSessionToken } from '../../utils/auth/session';
-import { AUTH_ERROR_MESSAGES, AUTH_SUCCESS_MESSAGES, AUTH_INFO_MESSAGES } from '../../constants/auth';
-import { APP_ROUTES } from '../../constants';
-import type { AuthenticatorAssertionResponse, PublicKeyCredentialRequestOptions } from '../../interfaces/auth';
+import { performLogin } from '../../utils/auth/login';
+import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
+import { APP_ROUTES, DEFAULT_COLORS } from '../../constants';
 
 const Login: React.FC = () => {
   const [form] = Form.useForm();
@@ -18,90 +14,13 @@ const Login: React.FC = () => {
   const handleLogin = async (values: { username: string }) => {
     setLoading(true);
     try {
-      // Step 1: Start login - get challenge and options
-      const loginStartResponse = await loginStart({ username: values.username });
-
-      // Extract options from nested structure
-      // Backend returns: { options: { publicKey: { challenge, rpId, allowCredentials, timeout } } }
-      let options: PublicKeyCredentialRequestOptions;
-      
-      // Try different possible response structures
-      if (loginStartResponse.options?.publicKey) {
-        // Structure: { options: { publicKey: {...} } } - This is the actual structure
-        const publicKey = (loginStartResponse.options as any).publicKey;
-        options = {
-          challenge: publicKey.challenge,
-          timeout: publicKey.timeout,
-          rpId: publicKey.rpId,
-          allowCredentials: publicKey.allowCredentials,
-          userVerification: publicKey.userVerification || 'preferred',
-        };
-      } else if (loginStartResponse.options?.response) {
-        // Structure: { options: { response: {...} } } (alternative structure)
-        options = loginStartResponse.options.response;
-      } else if (loginStartResponse.challenge) {
-        // Flattened structure (fallback)
-        options = {
-          challenge: loginStartResponse.challenge!,
-          timeout: loginStartResponse.timeout,
-          rpId: loginStartResponse.rpId,
-          allowCredentials: loginStartResponse.allowCredentials,
-          userVerification: 'preferred',
-        };
-      } else {
-        console.error('Unexpected login response structure:', loginStartResponse);
-        throw new Error('Invalid response structure from server. Please check console for details.');
-      }
-
-      // Step 2: Authenticate with WebAuthn
-      const credential = await authenticateWithPasskey({
-        challenge: options.challenge,
-        timeout: options.timeout,
-        rpId: options.rpId,
-        allowCredentials: options.allowCredentials,
-        userVerification: options.userVerification || 'preferred',
-      });
-
-      // Step 3: Finish login - verify credential and get session
-      // Send credential at top level (WebAuthn format) with username
-      // The go-webauthn library's FinishLogin expects the credential at the top level
-      const assertionResponse = credential.response as AuthenticatorAssertionResponse;
-      const loginFinishResponse = await loginFinish({
-        username: values.username,
-        // Credential fields at top level (WebAuthn format)
-        id: credential.id,
-        rawId: credential.rawId,
-        response: {
-          authenticatorData: assertionResponse.authenticatorData,
-          clientDataJSON: assertionResponse.clientDataJSON,
-          signature: assertionResponse.signature,
-          userHandle: assertionResponse.userHandle || null,
-        },
-        type: credential.type,
-      });
-
-      // Step 4: Store session token
-      setSessionToken(loginFinishResponse.sessionToken);
-
-      message.success(AUTH_SUCCESS_MESSAGES.LOGIN_SUCCESS);
-      navigate('/');
-    } catch (error: any) {
-      // Check if error is about no passkeys
-      if (error?.response?.status === 404 || error?.status === 404) {
-        const errorMsg = error?.response?.data?.message || error?.message || '';
-        if (errorMsg.includes('no passkeys') || errorMsg.includes('No passkeys')) {
-          const errorMessage = 'No passkeys found. Please register a passkey first.';
-          message.error(errorMessage);
-          setTimeout(() => {
-            navigate(APP_ROUTES.REGISTER);
-          }, 2000);
-          return;
-        }
-      }
-      
-      const errorMessage = error instanceof Error ? error.message : AUTH_ERROR_MESSAGES.LOGIN_FINISH_FAILED;
-      message.error(errorMessage);
-      console.error('Login error:', error);
+      await performLogin(
+        values.username,
+        () => navigate(APP_ROUTES.HOME),
+        () => navigate(APP_ROUTES.REGISTER),
+      );
+    } catch {
+      // Error handling is done in performLogin
     } finally {
       setLoading(false);
     }
@@ -114,45 +33,126 @@ const Login: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: '100vh',
-        background: '#f5f5f5',
+        background: '#ffffff',
+        padding: '20px',
       }}
     >
       <div
         style={{
-          background: '#fff',
-          padding: '48px',
-          borderRadius: '8px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          background: '#ffffff',
+          padding: '40px',
+          borderRadius: '16px',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
           width: '100%',
-          maxWidth: '400px',
+          maxWidth: '420px',
+          border: '1px solid #e5e7eb',
         }}
       >
-        <h1 style={{ textAlign: 'center', marginBottom: '32px' }}>Login</h1>
-        <Form form={form} layout="vertical" onFinish={handleLogin}>
-          <Form.Item
-            label="Username"
-            name="username"
-            rules={[
-              { required: true, message: AUTH_ERROR_MESSAGES.MISSING_USERNAME },
-            ]}
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div
+            style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '16px',
+              background: DEFAULT_COLORS.SUCCESS,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 16px',
+            }}
           >
-            <Input placeholder="Enter your username" size="large" />
-          </Form.Item>
+            <LoginOutlined style={{ fontSize: '32px', color: '#ffffff' }} />
+          </div>
+          <h1
+            style={{
+              margin: 0,
+              fontSize: '28px',
+              fontWeight: 600,
+              color: '#1a1a1a',
+              letterSpacing: '-0.5px',
+            }}
+          >
+            Welcome Back
+          </h1>
+          <p
+            style={{
+              margin: '8px 0 0',
+              fontSize: '14px',
+              color: '#666',
+            }}
+          >
+            Sign in with your passkey
+          </p>
+        </div>
 
-          <Form.Item style={{ marginTop: '24px', marginBottom: 0 }}>
-            <PrimaryButton
-              action="Login with Passkey"
-              loading={loading}
-              loadingLabel={AUTH_INFO_MESSAGES.LOGGING_IN}
-              onClick={() => form.submit()}
-              icon={<LoginOutlined />}
+        <Form form={form} layout="vertical" onFinish={handleLogin} size="large">
+          <Form.Item
+            name="username"
+            rules={[{ required: true, message: AUTH_ERROR_MESSAGES.MISSING_USERNAME }]}
+            style={{ marginBottom: '24px' }}
+          >
+            <Input
+              prefix={<UserOutlined style={{ color: '#999' }} />}
+              placeholder="Enter your username"
+              style={{
+                height: '48px',
+                borderRadius: '8px',
+                fontSize: '15px',
+              }}
             />
           </Form.Item>
+
+          <Form.Item style={{ marginBottom: 0 }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              block
+              icon={<LoginOutlined />}
+              style={{
+                height: '48px',
+                borderRadius: '8px',
+                fontSize: '15px',
+                fontWeight: 500,
+                background: DEFAULT_COLORS.SUCCESS,
+                border: 'none',
+                boxShadow: '0 4px 12px rgba(32, 201, 151, 0.3)',
+              }}
+            >
+              {loading ? 'Authenticating...' : 'Login with Passkey'}
+            </Button>
+          </Form.Item>
         </Form>
+
+        <div
+          style={{
+            marginTop: '24px',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#999',
+          }}
+        >
+          Don't have a passkey?{' '}
+          <a
+            href={APP_ROUTES.REGISTER}
+            style={{
+              color: DEFAULT_COLORS.SUCCESS,
+              textDecoration: 'none',
+              fontWeight: 500,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.textDecoration = 'underline';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.textDecoration = 'none';
+            }}
+          >
+            Register now
+          </a>
+        </div>
       </div>
     </div>
   );
 };
 
 export default Login;
-
