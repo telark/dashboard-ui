@@ -1,11 +1,11 @@
 export const LOGIN_CONSTANTS = {
   ERROR_PATTERNS: {
     USER_NOT_FOUND: ['user not found', 'failed to get user', 'status: 404'],
-    NO_PASSKEYS: ['no passkeys', 'no passkey'],
+    NO_PASSKEYS: ['no passkeys found', 'no passkey found', 'no passkeys', 'no passkey'],
   },
   MESSAGES: {
     USER_NOT_FOUND: 'User not found. Please check your username and try again.',
-    NO_PASSKEYS: 'No passkeys found. Please register a passkey first.',
+    NO_PASSKEYS: 'No passkey registered. Please register a passkey to continue.',
     NETWORK_ERROR: 'Network error. Please check your connection and try again.',
     TIMEOUT_ERROR: 'Request timed out. Please try again.',
     SERVER_ERROR: 'Server error. Please try again later.',

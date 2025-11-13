@@ -52,6 +52,10 @@ const isUserNotFoundError = (error: any, errorMsg?: string): boolean => {
   const axiosError = error as ExtendedAxiosError;
   const normalized = axiosError.normalized;
   
+  if (isNoPasskeysError(error, msg)) {
+    return false;
+  }
+  
   if (normalized?.isNotFound || normalized?.status === HTTP_STATUS.NOT_FOUND || error?.status === HTTP_STATUS.NOT_FOUND || error?.isNotFound) {
     return true;
   }
@@ -136,13 +140,13 @@ export const handleAuthError = (
 
   const errorMsg = extractErrorMessage(error);
 
-  if (isUserNotFoundError(error, errorMsg)) {
-    showErrorMessage(messageApi, LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND, onUserNotFound);
+  if (isNoPasskeysError(error, errorMsg)) {
+    showErrorMessage(messageApi, LOGIN_CONSTANTS.MESSAGES.NO_PASSKEYS, onNoPasskeys);
     return;
   }
 
-  if (isNoPasskeysError(error, errorMsg)) {
-    showErrorMessage(messageApi, LOGIN_CONSTANTS.MESSAGES.NO_PASSKEYS, onNoPasskeys);
+  if (isUserNotFoundError(error, errorMsg)) {
+    showErrorMessage(messageApi, LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND, onUserNotFound);
     return;
   }
 
