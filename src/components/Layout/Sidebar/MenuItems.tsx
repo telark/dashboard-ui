@@ -12,6 +12,7 @@ const WorkloadIcon = ICONS.WORKLOAD;
 const BridgeIcon = ICONS.BRIDGE;
 const UserIcon = ICONS.USER;
 const GroupIcon = ICONS.GROUP;
+const PasskeyIcon = ICONS.PASSKEY;
 
 interface MenuItemsProps {
   isCollapsed?: boolean;
@@ -104,6 +105,13 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
               route="/categories"
               isCollapsed={isCollapsed}
             />
+            <SidebarButton
+              text={'Passkeys'}
+              icon={<PasskeyIcon />}
+              active={pathname.startsWith(APP_ROUTES.PASSKEYS)}
+              route={APP_ROUTES.PASSKEYS}
+              isCollapsed={isCollapsed}
+            />
           </>
         ) : (
           <>
@@ -169,6 +177,13 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
                 icon={<CategoryIcon />}
                 active={pathname.startsWith('/categories')}
                 route="/categories"
+                isCollapsed={isCollapsed}
+              />
+              <SidebarButton
+                text={'Passkeys'}
+                icon={<PasskeyIcon />}
+                active={pathname.startsWith(APP_ROUTES.PASSKEYS)}
+                route={APP_ROUTES.PASSKEYS}
                 isCollapsed={isCollapsed}
               />
             </Menu.SubMenu>

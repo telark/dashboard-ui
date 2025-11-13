@@ -13,7 +13,7 @@ import {
   AiOutlineCheckCircle,
   AiOutlineContainer,
 } from 'react-icons/ai';
-import { BsFillCpuFill, BsMemory } from 'react-icons/bs';
+import { BsFillCpuFill, BsMemory, BsKey } from 'react-icons/bs';
 
 export const ICONS = {
   HOME: AiOutlineDashboard,
@@ -24,6 +24,7 @@ export const ICONS = {
   BRIDGE: AiOutlineApi,
   USER: AiOutlineUser,
   GROUP: AiOutlineTeam,
+  PASSKEY: BsKey,
   VIEW_FIELD_NAME: AiFillTag,
   VIEW_FIELD_DESCRIPTION: AiOutlineFileText,
   VIEW_FIELD_DATE: AiOutlineCalendar,
