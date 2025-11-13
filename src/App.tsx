@@ -16,6 +16,7 @@ import { FancySpinner } from './components/shared';
 import { hasSessionToken } from './utils/auth/session';
 import { validateSession } from './utils/auth/sessionValidation';
 import { isDevelopment } from './utils/helpers/env';
+import { AUTH_CONFIG } from './constants/auth/config';
 
 // Ensure messages are shown below the fixed header and are visible above content
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
@@ -37,28 +38,42 @@ const AppContent: React.FC = () => {
     }
   }, [dispatch, initialized]);
 
-  // Check session expiration when authenticated
+  // Check session expiration as background task when authenticated
   useEffect(() => {
+    if (!isAuthenticated || isAuthRoute) {
+      return;
+    }
+
     const checkSessionExpiration = async () => {
-      if (isAuthenticated && !isAuthRoute) {
-        try {
-          const validationResult = await validateSession();
-          if (validationResult.isExpired) {
-            if (isDevelopment()) {
-              console.warn('Session expired:', validationResult);
-            }
-            setShowSessionExpiredModal(true);
-          }
-        } catch (error) {
+      try {
+        const validationResult = await validateSession();
+        if (validationResult.isExpired) {
           if (isDevelopment()) {
-            console.error('Error checking session expiration:', error);
+            console.warn('Session expired:', validationResult);
           }
-          // On error, don't show modal - let normal auth flow handle it
+          setShowSessionExpiredModal(true);
         }
+      } catch (error) {
+        if (isDevelopment()) {
+          console.error('Error checking session expiration:', error);
+        }
+        // On error, don't show modal - let normal auth flow handle it
       }
     };
 
+    // Run initial check
     checkSessionExpiration();
+
+    // Set up interval for background checking
+    const intervalId = globalThis.setInterval(
+      checkSessionExpiration,
+      AUTH_CONFIG.SESSION.VALIDATION.INTERVAL_SECONDS * 1000,
+    );
+
+    // Cleanup interval on unmount or when dependencies change
+    return () => {
+      globalThis.clearInterval(intervalId);
+    };
   }, [isAuthenticated, isAuthRoute]);
 
   // Show a brief welcome overlay after analysis start completes
