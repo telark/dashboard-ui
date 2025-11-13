@@ -38,11 +38,19 @@ const ListPasskeys: React.FC = () => {
   }, []);
 
   const handleView = (record: Passkey) => {
-    navigate(`${APP_ROUTES.PASSKEYS}/${record.id}/view`);
+    if (!record.deviceName) {
+      console.warn('Passkey record missing deviceName:', record);
+      return;
+    }
+    navigate(APP_ROUTES.PASSKEY_VIEW.replace(':id', encodeURIComponent(record.deviceName)));
   };
 
   const handleEdit = (record: Passkey) => {
-    navigate(`${APP_ROUTES.PASSKEYS}/${record.id}/edit`);
+    if (!record.deviceName) {
+      console.warn('Passkey record missing deviceName:', record);
+      return;
+    }
+    navigate(APP_ROUTES.PASSKEY_EDIT.replace(':id', encodeURIComponent(record.deviceName)));
   };
 
   const handleDelete = async (record: Passkey) => {

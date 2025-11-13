@@ -231,22 +231,6 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route
-        path={APP_ROUTES.PASSKEYS}
-        element={
-          <ProtectedRoute>
-            <PasskeysListView />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={APP_ROUTES.PASSKEY_CREATE}
-        element={
-          <ProtectedRoute>
-            <PasskeyCreateView />
-          </ProtectedRoute>
-        }
-      />
-      <Route
         path={APP_ROUTES.PASSKEY_VIEW}
         element={
           <ProtectedRoute>
@@ -259,6 +243,22 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <PasskeyEdit />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={APP_ROUTES.PASSKEY_CREATE}
+        element={
+          <ProtectedRoute>
+            <PasskeyCreateView />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={APP_ROUTES.PASSKEYS}
+        element={
+          <ProtectedRoute>
+            <PasskeysListView />
           </ProtectedRoute>
         }
       />

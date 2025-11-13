@@ -7,7 +7,7 @@ import PasskeyForm, { type PasskeyFormValues } from '../../components/display/pa
 import { PageContainer } from '../../components/shared';
 import { createPasskey, registerStart } from '../../clients/auth';
 import { registerPasskey } from '../../utils/auth/webauthn';
-import { AUTH_ERROR_MESSAGES, AUTH_SUCCESS_MESSAGES } from '../../constants/auth';
+import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
 import type { PublicKeyCredentialCreationOptions } from '../../interfaces/auth';
 
 const PasskeyIcon = ICONS.PASSKEY;
@@ -70,7 +70,10 @@ const CreatePasskey: React.FC = () => {
 
       message.success(PPC.LABELS.MESSAGES.CREATED(values.deviceName));
       form.resetFields();
-      navigate(`${APP_ROUTES.PASSKEYS}/${response.id}/view`);
+      // Navigate using the device name from the response
+      if (response.deviceName) {
+        navigate(APP_ROUTES.PASSKEY_VIEW.replace(':id', encodeURIComponent(response.deviceName)));
+      }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : AUTH_ERROR_MESSAGES.CREATE_PASSKEY_FAILED;

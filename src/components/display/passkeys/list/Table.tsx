@@ -69,7 +69,7 @@ const PasskeysTable: React.FC<PasskeysTableProps> = ({
       className="app-table"
       columns={columns as any}
       data={sortedPasskeys as any}
-      rowKey={(p: any) => p.id}
+      rowKey={(p: any) => p.id || p.credentialId}
       rowHeight={PPC.SIZES.ROW_HEIGHT}
       tableProps={{ rowSelection: {} }}
       onRowClick={handleView}
