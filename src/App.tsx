@@ -4,6 +4,7 @@ import { BrowserRouter as Router, useLocation, Navigate } from 'react-router-dom
 import Sidebar from './components/layout/sidebar/Sidebar';
 import Header from './components/layout/header/Header';
 import ErrorBoundary from './ErrorBoundary';
+import SessionExpiredModal from './components/auth/SessionExpiredModal';
 import 'antd/dist/reset.css';
 import { DEFAULT_COLORS, APP_CONFIGS, APP_ROUTES } from './constants';
 import { Startup, Welcome } from './pages';
@@ -13,6 +14,8 @@ import { checkClusterInsightsThunk } from './store/insights/slices/insightsSlice
 import type { RootState, AppDispatch } from './store';
 import { FancySpinner } from './components/shared';
 import { hasSessionToken } from './utils/auth/session';
+import { validateSession } from './utils/auth/sessionValidation';
+import { isDevelopment } from './utils/helpers/env';
 
 // Ensure messages are shown below the fixed header and are visible above content
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
@@ -25,6 +28,7 @@ const AppContent: React.FC = () => {
   const hasClusterInsight = useSelector((s: RootState) => s.insights.hasClusterInsight);
   const initialized = useSelector((s: RootState) => s.insights.initialized);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [showSessionExpiredModal, setShowSessionExpiredModal] = useState(false);
 
   useEffect(() => {
     // Always run a first check on boot to decide screen
@@ -32,6 +36,30 @@ const AppContent: React.FC = () => {
       dispatch(checkClusterInsightsThunk());
     }
   }, [dispatch, initialized]);
+
+  // Check session expiration when authenticated
+  useEffect(() => {
+    const checkSessionExpiration = async () => {
+      if (isAuthenticated && !isAuthRoute) {
+        try {
+          const validationResult = await validateSession();
+          if (validationResult.isExpired) {
+            if (isDevelopment()) {
+              console.warn('Session expired:', validationResult);
+            }
+            setShowSessionExpiredModal(true);
+          }
+        } catch (error) {
+          if (isDevelopment()) {
+            console.error('Error checking session expiration:', error);
+          }
+          // On error, don't show modal - let normal auth flow handle it
+        }
+      }
+    };
+
+    checkSessionExpiration();
+  }, [isAuthenticated, isAuthRoute]);
 
   // Show a brief welcome overlay after analysis start completes
   useEffect(() => {
@@ -100,6 +128,10 @@ const AppContent: React.FC = () => {
         <Startup onStartAnalyze={handleStartAnalyze} />
       )}
       {showWelcome && <Welcome />}
+      <SessionExpiredModal 
+        open={showSessionExpiredModal} 
+        onClose={() => setShowSessionExpiredModal(false)}
+      />
     </AntdApp>
   );
 };

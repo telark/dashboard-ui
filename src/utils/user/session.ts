@@ -20,9 +20,6 @@ export const getCurrentUser = (): AuthUser | null => {
 export const setCurrentUser = (user: AuthUser): void => {
   try {
     globalThis.localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
-    if (isDevelopment()) {
-      console.log(USER_CONSTANTS.LOGS.SET_CURRENT_USER_SUCCESS, user);
-    }
   } catch (error) {
     if (isDevelopment()) {
       console.error(USER_CONSTANTS.LOGS.SET_CURRENT_USER_ERROR, error);

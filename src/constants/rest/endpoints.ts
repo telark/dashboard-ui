@@ -5,6 +5,7 @@ import {
   MAINTENANCE_PATHS,
   ANALYZE_PATHS,
   AUTH_PATHS,
+  SESSION_PATHS,
 } from '../rest/paths';
 
 export const Endpoints = {
@@ -174,6 +175,16 @@ export const Endpoints = {
     GET_BY_ID: (userId: string) => ({
       path: `${API_PATHS.RESOURCES.USERS}/${RESOURCE_PATHS.FIND_USER_BY_ID(userId)}`,
       method: 'GET',
+    }),
+  },
+  SESSIONS: {
+    GET_BY_TOKEN: (sessionToken: string) => ({
+      path: SESSION_PATHS.GET_BY_TOKEN(sessionToken),
+      method: 'GET',
+    }),
+    DELETE_BY_TOKEN: (sessionToken: string) => ({
+      path: SESSION_PATHS.DELETE_BY_TOKEN(sessionToken),
+      method: 'DELETE',
     }),
   },
 };

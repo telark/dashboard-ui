@@ -17,6 +17,7 @@ import type {
 } from '../interfaces/api';
 import type { AppWorkload } from '../interfaces/workload';
 import type { User } from '../interfaces/users';
+import type { SessionDetailsResponse, DeleteSessionResponse } from '../interfaces/auth';
 import type { AxiosError } from 'axios';
 
 export const fetchGroupers = async (silent = false) => {
@@ -240,4 +241,18 @@ export const fetchUserById = async (userId: string, silent = false) => {
     }
     throw error;
   }
+};
+
+export const getSessionDetails = async (sessionToken: string): Promise<SessionDetailsResponse> => {
+  const { path, method } = Endpoints.SESSIONS.GET_BY_TOKEN(sessionToken);
+  return await Client<SessionDetailsResponse>(exporterApiClient, path, {
+    method,
+  });
+};
+
+export const deleteSession = async (sessionToken: string): Promise<DeleteSessionResponse> => {
+  const { path, method } = Endpoints.SESSIONS.DELETE_BY_TOKEN(sessionToken);
+  return await Client<DeleteSessionResponse>(exporterApiClient, path, {
+    method,
+  });
 };

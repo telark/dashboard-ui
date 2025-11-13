@@ -23,6 +23,11 @@ export const RESOURCE_PATHS = {
   SYNC_BRIDGE: (name: string) => `${name}/sync`,
 } as const;
 
+export const SESSION_PATHS = {
+  GET_BY_TOKEN: (sessionToken: string) => `auth/sessions/tokens/${sessionToken}/get`,
+  DELETE_BY_TOKEN: (sessionToken: string) => `auth/sessions/tokens/${sessionToken}/delete`,
+} as const;
+
 export const INSIGHT_PATHS = {
   CLUSTER_GET: 'cluster/get',
 } as const;

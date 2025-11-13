@@ -40,3 +40,28 @@ export const AUTH_INFO_MESSAGES = {
   UPDATING_PASSKEY: 'Updating passkey...',
 } as const;
 
+export const AUTH_CONSTANTS = {
+  SESSION: {
+    VALIDATION: {
+      NO_TOKEN_ERROR: 'No session token found',
+      FETCH_ERROR: 'Failed to fetch session details',
+      VALIDATION_ERROR: 'Session validation error',
+      UNKNOWN_ERROR: 'Unknown error during session validation',
+      INVALID_TIMESTAMP_ERROR: 'Invalid timestamp format',
+    },
+    EXPIRATION: {
+      MODAL: {
+        TITLE: 'Session Expired',
+        MESSAGE: 'Your session has expired. Please log in again to continue.',
+        BUTTON_TEXT: 'Go to Login',
+      },
+      LOGS: {
+        DELETE_NON_200_STATUS: 'Session delete returned non-200 status:',
+        DELETE_FAILED: 'Failed to delete session from server:',
+        LOCAL_CLEANUP_ERROR: 'Error during local cleanup:',
+        HANDLE_LOGIN_ERROR: 'Error in handleGoToLogin:',
+      },
+    },
+  },
+} as const;
+

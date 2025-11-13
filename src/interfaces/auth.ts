@@ -137,6 +137,20 @@ export interface Session {
   expiresAt: string;
 }
 
+export interface SessionDetails {
+  createdTimestamp: string;
+  expiresTimestamp: string;
+  sessionToken: string;
+  userId: string;
+}
+
+export interface SessionDetailsResponse {
+  status: number;
+  operation: string;
+  message: string;
+  data: SessionDetails;
+}
+
 export interface Passkey {
   id: string;
   credentialId: string;
@@ -176,6 +190,12 @@ export interface DeletePasskeyResponse {
 
 export interface LogoutResponse {
   success: boolean;
+  message: string;
+}
+
+export interface DeleteSessionResponse {
+  status: number;
+  operation: string;
   message: string;
 }
 
