@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { Dropdown } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { getAuthUser } from '../../../../utils/user/session';
@@ -14,7 +14,7 @@ import type { User as UsersUser } from '../../../../interfaces/users';
 
 interface UserAvatarDropdownProps {}
 
-const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = () => {
+const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(() => {
   const [currentAuthUser, setCurrentAuthUser] = useState<AuthUser | null>(null);
   const [currentUser, setCurrentUser] = useState<UsersUser | null>(null);
   const [, setLoading] = useState(false);
@@ -79,7 +79,9 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = () => {
       </div>
     </Dropdown>
   );
-};
+});
+
+UserAvatarDropdown.displayName = 'UserAvatarDropdown';
 
 export default UserAvatarDropdown;
 
