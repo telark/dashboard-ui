@@ -19,6 +19,16 @@ export interface User {
   avatar?: UserAvatar;
 }
 
+// Form value types derived from User interface to avoid duplication
+export type UserFormBaseFields = Pick<User, 'username' | 'fullname' | 'email' | 'roleID'>;
+
+export type CreateUserFormValues = UserFormBaseFields &
+  Pick<User, 'groupID'> & {
+    avatar?: UserAvatar;
+  };
+
+export type EditUserFormValues = UserFormBaseFields;
+
 export interface UsersState {
   users: User[];
   details: User | null;

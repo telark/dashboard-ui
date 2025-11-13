@@ -14,16 +14,9 @@ import { PageContainer, NotFound } from '../../components/shared';
 import { useEditPage } from '../../hooks/useEditPage';
 import { RootState, AppDispatch } from '../../store';
 import { fetchAllUsersThunk } from '../../store/users/slices/userSlice';
-import type { User } from '../../interfaces/users';
+import type { User, EditUserFormValues } from '../../interfaces/users';
 
 const UserIcon = ICONS.USER;
-
-interface EditUserFormValues {
-  username: string;
-  fullname: string;
-  email: string;
-  roleID: string;
-}
 
 const EditUser: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();

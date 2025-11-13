@@ -18,7 +18,6 @@ import type {
   PublicKeyCredential,
 } from '../interfaces/auth';
 
-// Authentication
 export const loginStart = async (request: LoginStartRequest): Promise<LoginStartResponse> => {
   const { path, method } = Endpoints.AUTH.LOGIN.START;
   return await Client<LoginStartResponse>(authApiClient, path, {
@@ -40,8 +39,6 @@ export const registerStart = async (username?: string): Promise<RegisterStartRes
   const config: any = {
     method,
   };
-  
-  // If username is provided, send it in request body (for unauthenticated first-time registration)
   if (username) {
     config.data = { username };
   }
@@ -66,7 +63,6 @@ export const logout = async (): Promise<LogoutResponse> => {
   });
 };
 
-// Passkey Management
 export const getAllPasskeys = async (): Promise<Passkey[]> => {
   const { path, method } = Endpoints.AUTH.PASSKEYS.GET_ALL;
   return await Client<Passkey[]>(authApiClient, path, {
@@ -96,14 +92,9 @@ export const createPasskey = async (
     [HTTP_HEADERS.CUSTOM.DEVICE_TYPE]: deviceType,
   };
   
-  // If username is provided (for unauthenticated registration), add it to headers
   if (username) {
     headers[HTTP_HEADERS.CUSTOM.USERNAME] = username;
   }
-  
-  // Send credential directly (not wrapped) - go-webauthn expects it at top level of request body
-  // Debug: Log the credential structure being sent
-  console.log('Sending credential:', JSON.stringify(credential, null, 2));
   
   return await Client<CreatePasskeyResponse>(authApiClient, path, {
     method,

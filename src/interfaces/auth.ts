@@ -1,4 +1,3 @@
-// WebAuthn Types
 export interface PublicKeyCredentialRequestOptions {
   challenge: string;
   timeout?: number;
@@ -51,7 +50,6 @@ export type AttestationConveyancePreference = 'none' | 'indirect' | 'direct';
 export type AuthenticatorAttachment = 'platform' | 'cross-platform';
 export type AuthenticatorTransport = 'usb' | 'nfc' | 'ble' | 'internal';
 
-// WebAuthn Credential Response
 export interface AuthenticatorAttestationResponse {
   attestationObject: string;
   clientDataJSON: string;
@@ -72,7 +70,6 @@ export interface PublicKeyCredential {
   getClientExtensionResults?: Record<string, unknown>; // Optional: client extension results
 }
 
-// Login Request/Response
 export interface LoginStartRequest {
   username: string;
 }
@@ -82,19 +79,14 @@ export interface LoginStartResponse {
     publicKey?: PublicKeyCredentialRequestOptions;
     response?: PublicKeyCredentialRequestOptions;
   };
-  // Direct fields (if backend returns flattened structure)
   challenge?: string;
   allowCredentials?: PublicKeyCredentialDescriptor[];
   timeout?: number;
   rpId?: string;
 }
 
-// LoginFinishRequest - credential should be sent at the top level (not nested)
-// The go-webauthn library's FinishLogin expects the credential at the top level of the request body
-// Similar to registration, but we also include username for user lookup
 export interface LoginFinishRequest {
   username: string;
-  // Credential fields at top level (WebAuthn format)
   id: string;
   rawId: string;
   response: AuthenticatorAssertionResponse;
@@ -106,13 +98,11 @@ export interface LoginFinishResponse {
   user: User;
 }
 
-// Registration Request/Response
 export interface RegisterStartResponse {
   options?: {
     publicKey?: PublicKeyCredentialCreationOptions;
-    response?: PublicKeyCredentialCreationOptions; // Alternative structure
+    response?: PublicKeyCredentialCreationOptions;
   };
-  // Direct fields (if backend returns flattened structure)
   challenge?: string;
   rp?: PublicKeyCredentialRpEntity;
   user?: PublicKeyCredentialUserEntity;
@@ -122,8 +112,6 @@ export interface RegisterStartResponse {
   authenticatorSelection?: AuthenticatorSelectionCriteria;
 }
 
-// RegisterFinishRequest - credential should be sent directly (not nested)
-// The go-webauthn library expects the credential at the top level of the request body
 export type RegisterFinishRequest = PublicKeyCredential;
 
 export interface RegisterFinishResponse {
@@ -134,7 +122,6 @@ export interface RegisterFinishResponse {
   createdAt: string;
 }
 
-// User Types
 export interface User {
   id: string;
   username: string;
@@ -143,7 +130,6 @@ export interface User {
   role?: string;
 }
 
-// Session Types
 export interface Session {
   token: string;
   userId: string;
@@ -151,7 +137,6 @@ export interface Session {
   expiresAt: string;
 }
 
-// Passkey Types
 export interface Passkey {
   id: string;
   credentialId: string;
@@ -189,7 +174,6 @@ export interface DeletePasskeyResponse {
   message: string;
 }
 
-// Logout
 export interface LogoutResponse {
   success: boolean;
   message: string;
