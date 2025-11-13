@@ -12,9 +12,9 @@ import {
   ERROR_MESSAGES,
   REQUEST_CONFIG,
   API_RESPONSES,
-  STORAGE_KEYS,
 } from '../constants';
 import { ErrorInterceptorOptions } from '../interfaces/api';
+import { createSessionTokenInterceptor, createRequestErrorHandler } from '../utils/auth/interceptors';
 
 interface ExtendedAxiosError extends AxiosError {
   normalized?: ReturnType<typeof normalizeError>;
@@ -46,19 +46,9 @@ const authApiClient: AxiosInstance = axios.create({
 
 // Add session token interceptor for auth client
 authApiClient.interceptors.request.use(
-  (config) => {
-    const sessionToken = globalThis.localStorage?.getItem(STORAGE_KEYS.SESSION_TOKEN);
-    if (sessionToken && config.headers) {
-      config.headers[HTTP_HEADERS.CUSTOM.SESSION_TOKEN] = sessionToken;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
+  createSessionTokenInterceptor(),
+  createRequestErrorHandler(),
 );
-
-
 
 const normalizeError = (error: AxiosError) => {
   const status = error?.response?.status ?? null;
