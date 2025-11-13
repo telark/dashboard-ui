@@ -1,13 +1,14 @@
-import { message } from 'antd';
 import { loginStart, loginFinish } from '../../clients/auth';
 import { authenticateWithPasskey } from './webauthn';
 import { setSessionToken } from './session';
-import { AUTH_ERROR_MESSAGES, AUTH_SUCCESS_MESSAGES } from '../../constants/auth';
+import { AUTH_SUCCESS_MESSAGES } from '../../constants/auth';
+import { handleAuthError } from './errors';
 import type {
   LoginStartResponse,
   PublicKeyCredentialRequestOptions,
   AuthenticatorAssertionResponse,
 } from '../../interfaces/auth';
+import type { MessageInstance } from 'antd/es/message/interface';
 
 export const extractLoginOptions = (
   loginStartResponse: LoginStartResponse,
@@ -59,34 +60,13 @@ export const prepareLoginFinishRequest = (
   };
 };
 
-export const handleLoginError = (
-  error: any,
-  onNoPasskeys?: () => void,
-): void => {
-  if (error?.response?.status === 404 || error?.status === 404) {
-    const errorMsg = error?.response?.data?.message || error?.message || '';
-    if (errorMsg.includes('no passkeys') || errorMsg.includes('No passkeys')) {
-      const errorMessage = 'No passkeys found. Please register a passkey first.';
-      message.error(errorMessage);
-      if (onNoPasskeys) {
-        setTimeout(() => {
-          onNoPasskeys();
-        }, 2000);
-      }
-      return;
-    }
-  }
-
-  const errorMessage =
-    error instanceof Error ? error.message : AUTH_ERROR_MESSAGES.LOGIN_FINISH_FAILED;
-  message.error(errorMessage);
-  console.error('Login error:', error);
-};
 
 export const performLogin = async (
   username: string,
+  messageApi: MessageInstance,
   onSuccess?: () => void,
   onNoPasskeys?: () => void,
+  onUserNotFound?: () => void,
 ): Promise<void> => {
   try {
     const loginStartResponse = await loginStart({ username });
@@ -111,12 +91,19 @@ export const performLogin = async (
 
     setSessionToken(loginFinishResponse.sessionToken);
 
-    message.success(AUTH_SUCCESS_MESSAGES.LOGIN_SUCCESS);
+    messageApi.open({
+      type: 'success',
+      content: AUTH_SUCCESS_MESSAGES.LOGIN_SUCCESS,
+      duration: 2,
+    });
     if (onSuccess) {
       onSuccess();
     }
   } catch (error) {
-    handleLoginError(error, onNoPasskeys);
+    handleAuthError(error, messageApi, {
+      onUserNotFound,
+      onNoPasskeys,
+    });
     throw error;
   }
 };

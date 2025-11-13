@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, App as AntdApp } from 'antd';
 import { LoginOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { performLogin } from '../../utils/auth/login';
@@ -10,12 +10,14 @@ const Login: React.FC = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { message } = AntdApp.useApp();
 
   const handleLogin = async (values: { username: string }) => {
     setLoading(true);
     try {
       await performLogin(
         values.username,
+        message,
         () => navigate(APP_ROUTES.HOME),
         () => navigate(APP_ROUTES.REGISTER),
       );
