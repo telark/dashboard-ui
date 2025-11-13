@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, message, App as AntdApp } from 'antd';
-import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, useLocation, Navigate } from 'react-router-dom';
 import Sidebar from './components/layout/sidebar/Sidebar';
 import Header from './components/layout/header/Header';
 import ErrorBoundary from './ErrorBoundary';
@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { checkClusterInsightsThunk } from './store/insights/slices/insightsSlice';
 import type { RootState, AppDispatch } from './store';
 import { FancySpinner } from './components/shared';
+import { hasSessionToken } from './utils/auth/session';
 
 // Ensure messages are shown below the fixed header and are visible above content
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
@@ -19,6 +20,7 @@ message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX
 const AppContent: React.FC = () => {
   const location = useLocation();
   const isAuthRoute = location.pathname === APP_ROUTES.LOGIN || location.pathname === APP_ROUTES.REGISTER;
+  const isAuthenticated = hasSessionToken();
   const dispatch: AppDispatch = useDispatch();
   const hasClusterInsight = useSelector((s: RootState) => s.insights.hasClusterInsight);
   const initialized = useSelector((s: RootState) => s.insights.initialized);
@@ -74,10 +76,8 @@ const AppContent: React.FC = () => {
     <AntdApp>
       {initialized && hasClusterInsight ? (
         isAuthRoute ? (
-          // Full-page layout for auth pages (no sidebar/header)
           <AppRoutes />
-        ) : (
-          // Standard layout with sidebar and header for authenticated pages
+        ) : isAuthenticated ? (
           <Layout style={{ minHeight: APP_CONFIGS.LAYOUT.MIN_HEIGHT }}>
             <Sidebar />
             <Layout
@@ -92,6 +92,9 @@ const AppContent: React.FC = () => {
               <AppRoutes />
             </Layout>
           </Layout>
+        ) : (
+          // Not authenticated and not on auth route - redirect immediately without rendering layout
+          <Navigate to={APP_ROUTES.LOGIN} state={{ from: location }} replace />
         )
       ) : (
         <Startup onStartAnalyze={handleStartAnalyze} />
