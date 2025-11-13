@@ -1,13 +1,13 @@
 import { App as AntdApp } from 'antd';
 import { AxiosError } from 'axios';
 import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
+import { HTTP_STATUS } from '../../constants';
+import { LOGIN_CONSTANTS } from '../../constants/pages/login';
 
 interface ExtendedAxiosError extends AxiosError {
   normalized?: {
     status: number | null;
     message: string;
-    url: string;
-    method: string;
     isNotFound: boolean;
     isClient: boolean;
     isServer: boolean;
@@ -16,211 +16,138 @@ interface ExtendedAxiosError extends AxiosError {
   };
 }
 
-/**
- * Extract user-friendly error message from API error
- */
-export const extractErrorMessage = (error: any): string => {
-  // Check if it's an AxiosError with normalized metadata (from interceptor)
+interface ErrorHandlingOptions {
+  onUserNotFound?: () => void;
+  onNoPasskeys?: () => void;
+  customMessage?: string;
+}
+
+type MessageApi = ReturnType<typeof AntdApp.useApp>['message'];
+
+const extractErrorMessage = (error: any): string => {
   const axiosError = error as ExtendedAxiosError;
+  
   if (axiosError.normalized?.message) {
     return String(axiosError.normalized.message);
   }
-
-  // Check if error is already a normalized object (from Client function)
+  
   if (error?.message && typeof error === 'object' && 'status' in error && !error.response) {
     return String(error.message);
   }
-
-  // Check response data message
-  if (error?.response?.data?.message) {
-    return String(error.response.data.message);
-  }
-
-  // Check error message
-  if (error?.message) {
-    return String(error.message);
-  }
-
-  // Fallback to generic error
-  return AUTH_ERROR_MESSAGES.AUTHENTICATION_FAILED;
-};
-
-/**
- * Check if error indicates user not found
- */
-export const isUserNotFoundError = (error: any): boolean => {
-  const axiosError = error as ExtendedAxiosError;
-  const errorMsg = extractErrorMessage(error).toLowerCase();
-
-  // Check normalized error first (from interceptor)
-  if (axiosError.normalized) {
-    if (axiosError.normalized.isNotFound === true || axiosError.normalized.status === 404) {
-      return true;
-    }
-    // Check if it's a server error (500) but message indicates user not found
-    if (axiosError.normalized.isServer && 
-        (errorMsg.includes('failed to get user') || errorMsg.includes('status: 404'))) {
-      return true;
-    }
-  }
-
-  // Check if error is already a normalized object
-  if (error?.status === 404 || error?.isNotFound === true) {
-    return true;
-  }
-
-  // Check if it's a server error (500) but message indicates user not found
-  if ((error?.isServer || error?.status === 500) && 
-      (errorMsg.includes('failed to get user') || errorMsg.includes('status: 404'))) {
-    return true;
-  }
-
-  return (
-    error?.response?.status === 404 ||
-    error?.status === 404 ||
-    errorMsg.includes('user not found') ||
-    errorMsg.includes('failed to get user') ||
-    errorMsg.includes('status: 404')
+  
+  return String(
+    error?.response?.data?.message || 
+    error?.message || 
+    AUTH_ERROR_MESSAGES.AUTHENTICATION_FAILED
   );
 };
 
-/**
- * Check if error indicates no passkeys
- */
-export const isNoPasskeysError = (error: any): boolean => {
-  const errorMsg = extractErrorMessage(error).toLowerCase();
-  return errorMsg.includes('no passkeys') || errorMsg.includes('no passkey');
+const checkErrorPattern = (errorMsg: string, patterns: readonly string[]): boolean => {
+  const lowerMsg = errorMsg.toLowerCase();
+  return patterns.some(pattern => lowerMsg.includes(pattern));
 };
 
-/**
- * Get user-friendly error message based on error type
- */
-export const getUserFriendlyErrorMessage = (error: any): string => {
+const isUserNotFoundError = (error: any, errorMsg?: string): boolean => {
+  const msg = errorMsg || extractErrorMessage(error);
   const axiosError = error as ExtendedAxiosError;
+  const normalized = axiosError.normalized;
+  
+  if (normalized?.isNotFound || normalized?.status === HTTP_STATUS.NOT_FOUND || error?.status === HTTP_STATUS.NOT_FOUND || error?.isNotFound) {
+    return true;
+  }
+  
+  if (normalized?.isServer || error?.isServer || error?.status === HTTP_STATUS.INTERNAL_SERVER_ERROR) {
+    return checkErrorPattern(msg, LOGIN_CONSTANTS.ERROR_PATTERNS.USER_NOT_FOUND);
+  }
+  
+  return error?.response?.status === HTTP_STATUS.NOT_FOUND || checkErrorPattern(msg, LOGIN_CONSTANTS.ERROR_PATTERNS.USER_NOT_FOUND);
+};
+
+const isNoPasskeysError = (error: any, errorMsg?: string): boolean => {
+  const msg = errorMsg || extractErrorMessage(error);
+  return checkErrorPattern(msg, LOGIN_CONSTANTS.ERROR_PATTERNS.NO_PASSKEYS);
+};
+
+const getUserFriendlyErrorMessage = (error: any): string => {
   const errorMsg = extractErrorMessage(error);
-
-  // User not found
-  if (isUserNotFoundError(error)) {
-    return 'User not found. Please check your username and try again.';
+  
+  if (isUserNotFoundError(error, errorMsg)) {
+    return LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND;
   }
-
-  // No passkeys
-  if (isNoPasskeysError(error)) {
-    return 'No passkeys found. Please register a passkey first.';
+  
+  if (isNoPasskeysError(error, errorMsg)) {
+    return LOGIN_CONSTANTS.MESSAGES.NO_PASSKEYS;
   }
-
-  // Check if error is already a normalized object
-  if (error?.isNetwork) {
-    return 'Network error. Please check your connection and try again.';
+  
+  const axiosError = error as ExtendedAxiosError;
+  const normalized = axiosError.normalized;
+  const lowerMsg = errorMsg.toLowerCase();
+  
+  if (error?.isNetwork || normalized?.isNetwork) {
+    return LOGIN_CONSTANTS.MESSAGES.NETWORK_ERROR;
   }
-
-  if (error?.isTimeout) {
-    return 'Request timed out. Please try again.';
+  
+  if (error?.isTimeout || normalized?.isTimeout) {
+    return LOGIN_CONSTANTS.MESSAGES.TIMEOUT_ERROR;
   }
-
-  if (error?.isServer) {
-    // For server errors that contain user not found info, show user-friendly message
-    if (errorMsg.toLowerCase().includes('failed to get user') || errorMsg.toLowerCase().includes('status: 404')) {
-      return 'User not found. Please check your username and try again.';
-    }
-    return 'Server error. Please try again later.';
+  
+  if (error?.isServer || normalized?.isServer) {
+    return checkErrorPattern(lowerMsg, LOGIN_CONSTANTS.ERROR_PATTERNS.USER_NOT_FOUND)
+      ? LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND
+      : LOGIN_CONSTANTS.MESSAGES.SERVER_ERROR;
   }
-
-  // Network errors
-  if (axiosError.normalized?.isNetwork) {
-    return 'Network error. Please check your connection and try again.';
+  
+  if (error?.isClient || normalized?.isClient) {
+    return errorMsg && errorMsg !== 'Unknown error' 
+      ? errorMsg 
+      : LOGIN_CONSTANTS.MESSAGES.CLIENT_ERROR;
   }
-
-  // Timeout errors
-  if (axiosError.normalized?.isTimeout) {
-    return 'Request timed out. Please try again.';
-  }
-
-  // Server errors (500+)
-  if (axiosError.normalized?.isServer) {
-    // For server errors that contain user not found info, show user-friendly message
-    if (errorMsg.toLowerCase().includes('failed to get user') || errorMsg.toLowerCase().includes('status: 404')) {
-      return 'User not found. Please check your username and try again.';
-    }
-    return 'Server error. Please try again later.';
-  }
-
-  // Client errors (400-499)
-  if (error?.isClient || axiosError.normalized?.isClient) {
-    // Try to extract meaningful message from server response
-    if (errorMsg && errorMsg !== 'Unknown error') {
-      return errorMsg;
-    }
-    return 'Invalid request. Please check your input and try again.';
-  }
-
-  // Generic error
+  
   return errorMsg || AUTH_ERROR_MESSAGES.AUTHENTICATION_FAILED;
 };
 
-/**
- * Handle and display authentication error
- * Uses Ant Design message.open() API for consistent message display
- */
+const showErrorMessage = (
+  messageApi: MessageApi,
+  content: string,
+  callback?: () => void,
+): void => {
+  messageApi.open({
+    type: 'error',
+    content,
+    duration: LOGIN_CONSTANTS.TIMING.MESSAGE_DURATION,
+  });
+  
+  if (callback) {
+    setTimeout(callback, LOGIN_CONSTANTS.TIMING.CALLBACK_DELAY);
+  }
+};
+
 export const handleAuthError = (
   error: any,
-  messageApi: ReturnType<typeof AntdApp.useApp>['message'],
-  options?: {
-    onUserNotFound?: () => void;
-    onNoPasskeys?: () => void;
-    customMessage?: string;
-  },
+  messageApi: MessageApi,
+  options?: ErrorHandlingOptions,
 ): void => {
   const { onUserNotFound, onNoPasskeys, customMessage } = options || {};
 
-  // Use custom message if provided
   if (customMessage) {
-    messageApi.open({
-      type: 'error',
-      content: customMessage,
-      duration: 4,
-    });
+    showErrorMessage(messageApi, customMessage);
     return;
   }
 
-  // Check for specific error types
-  if (isUserNotFoundError(error)) {
-    const errorMessage = getUserFriendlyErrorMessage(error);
-    messageApi.open({
-      type: 'error',
-      content: errorMessage,
-      duration: 4,
-    });
-    if (onUserNotFound) {
-      setTimeout(() => {
-        onUserNotFound();
-      }, 2000);
-    }
+  const errorMsg = extractErrorMessage(error);
+
+  if (isUserNotFoundError(error, errorMsg)) {
+    showErrorMessage(messageApi, LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND, onUserNotFound);
     return;
   }
 
-  if (isNoPasskeysError(error)) {
-    const errorMessage = getUserFriendlyErrorMessage(error);
-    messageApi.open({
-      type: 'error',
-      content: errorMessage,
-      duration: 4,
-    });
-    if (onNoPasskeys) {
-      setTimeout(() => {
-        onNoPasskeys();
-      }, 2000);
-    }
+  if (isNoPasskeysError(error, errorMsg)) {
+    showErrorMessage(messageApi, LOGIN_CONSTANTS.MESSAGES.NO_PASSKEYS, onNoPasskeys);
     return;
   }
 
-  // Generic error handling
-  const errorMessage = getUserFriendlyErrorMessage(error);
-  messageApi.open({
-    type: 'error',
-    content: errorMessage,
-    duration: 4,
-  });
-  console.error('Authentication error:', error);
+  const friendlyMessage = getUserFriendlyErrorMessage(error);
+  showErrorMessage(messageApi, friendlyMessage);
+  console.error(LOGIN_CONSTANTS.LOGS.AUTH_ERROR, error);
 };
 

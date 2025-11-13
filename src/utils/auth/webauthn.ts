@@ -1,3 +1,4 @@
+import { LOGIN_CONSTANTS } from '../../constants/pages/login';
 import type {
   PublicKeyCredentialRequestOptions,
   PublicKeyCredentialCreationOptions,
@@ -55,7 +56,7 @@ const convertRequestOptions = (
     challenge: base64UrlToArrayBuffer(options.challenge),
     timeout: options.timeout,
     rpId: options.rpId,
-    userVerification: options.userVerification || 'preferred',
+    userVerification: options.userVerification || LOGIN_CONSTANTS.WEBAUTHN.USER_VERIFICATION,
   };
 
   if (options.allowCredentials) {

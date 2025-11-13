@@ -2,6 +2,7 @@ import { loginStart, loginFinish } from '../../clients/auth';
 import { authenticateWithPasskey } from './webauthn';
 import { setSessionToken } from './session';
 import { AUTH_SUCCESS_MESSAGES } from '../../constants/auth';
+import { LOGIN_CONSTANTS } from '../../constants/pages/login';
 import { handleAuthError } from './errors';
 import type {
   LoginStartResponse,
@@ -20,7 +21,7 @@ export const extractLoginOptions = (
       timeout: publicKey.timeout,
       rpId: publicKey.rpId,
       allowCredentials: publicKey.allowCredentials,
-      userVerification: publicKey.userVerification || 'preferred',
+      userVerification: publicKey.userVerification || LOGIN_CONSTANTS.WEBAUTHN.USER_VERIFICATION,
     };
   }
 
@@ -34,12 +35,15 @@ export const extractLoginOptions = (
       timeout: loginStartResponse.timeout,
       rpId: loginStartResponse.rpId,
       allowCredentials: loginStartResponse.allowCredentials,
-      userVerification: 'preferred',
+      userVerification: LOGIN_CONSTANTS.WEBAUTHN.USER_VERIFICATION,
     };
   }
 
-  console.error('Unexpected login response structure:', loginStartResponse);
-  throw new Error('Invalid response structure from server. Please check console for details.');
+  if (process.env.NODE_ENV === 'development') {
+    console.error(LOGIN_CONSTANTS.LOGS.INVALID_RESPONSE_STRUCTURE, loginStartResponse);
+  }
+  
+  throw new Error(LOGIN_CONSTANTS.MESSAGES.INVALID_RESPONSE);
 };
 
 export const prepareLoginFinishRequest = (
@@ -76,7 +80,7 @@ export const performLogin = async (
       timeout: options.timeout,
       rpId: options.rpId,
       allowCredentials: options.allowCredentials,
-      userVerification: options.userVerification || 'preferred',
+      userVerification: options.userVerification || LOGIN_CONSTANTS.WEBAUTHN.USER_VERIFICATION,
     });
 
     const assertionResponse = credential.response as AuthenticatorAssertionResponse;
