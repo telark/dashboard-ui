@@ -15,3 +15,8 @@ export const UTILS_CONFIGS = {
     MAINTENANCE_FEATURE_SUFFIX: '-maintenance-feat',
   },
 } as const;
+
+export const ENV = {
+  DEV: 'development',
+  PROD: 'production',
+} as const;

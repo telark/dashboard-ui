@@ -2,6 +2,7 @@ import { Component, ErrorInfo, ReactNode } from 'react';
 import { Button, Typography } from 'antd';
 import { ReloadOutlined, BugOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS, STORE_MESSAGES } from './constants';
+import { isDevelopment } from './utils/helpers/env';
 
 const { Title, Text } = Typography;
 
@@ -86,7 +87,7 @@ class ErrorBoundary extends Component<Props, State> {
             </Title>
 
             {/* Error Details (Development) */}
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {isDevelopment() && this.state.error && (
               <div
                 style={{
                   background: '#f8f9fa',

@@ -1,12 +1,13 @@
 import { STORAGE_KEYS } from '../../constants/store/store';
 import { LOGIN_CONSTANTS } from '../../constants/pages/login';
+import { isDevelopment } from '../helpers/env';
 import { removeCurrentUser } from '../user/session';
 
 export const getSessionToken = (): string | null => {
   try {
     return globalThis.localStorage.getItem(STORAGE_KEYS.SESSION_TOKEN);
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
+    if (isDevelopment()) {
       console.error(LOGIN_CONSTANTS.LOGS.SESSION_GET_ERROR, error);
     }
     return null;
@@ -17,7 +18,7 @@ export const setSessionToken = (token: string): void => {
   try {
     globalThis.localStorage.setItem(STORAGE_KEYS.SESSION_TOKEN, token);
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
+    if (isDevelopment()) {
       console.error(LOGIN_CONSTANTS.LOGS.SESSION_SET_ERROR, error);
     }
     
@@ -34,7 +35,7 @@ export const removeSessionToken = (): void => {
     globalThis.localStorage.removeItem(STORAGE_KEYS.SESSION_TOKEN);
     removeCurrentUser();
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
+    if (isDevelopment()) {
       console.error(LOGIN_CONSTANTS.LOGS.SESSION_REMOVE_ERROR, error);
     }
     
