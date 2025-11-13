@@ -221,3 +221,23 @@ export const fetchUsers = async (silent = false) => {
     throw error;
   }
 };
+
+export const fetchUserById = async (userId: string, silent = false) => {
+  try {
+    const config = silent
+      ? {
+          headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK },
+        }
+      : {};
+    return await Client<ResourceDetailsResponse<User>>(
+      exporterApiClient,
+      Endpoints.USERS.GET_BY_ID(userId).path,
+      config,
+    );
+  } catch (error) {
+    if (!silent) {
+      console.error(ERROR_MESSAGES.CLIENT.FETCH_USERS_FAILED, error);
+    }
+    throw error;
+  }
+};

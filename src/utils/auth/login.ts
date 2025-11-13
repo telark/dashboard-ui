@@ -1,6 +1,7 @@
 import { loginStart, loginFinish } from '../../clients/auth';
 import { authenticateWithPasskey } from './webauthn';
 import { setSessionToken } from './session';
+import { setCurrentUser } from './user';
 import { AUTH_SUCCESS_MESSAGES } from '../../constants/auth';
 import { LOGIN_CONSTANTS } from '../../constants/pages/login';
 import { handleAuthError } from './errors';
@@ -95,6 +96,9 @@ export const performLogin = async (
 
     try {
       setSessionToken(loginFinishResponse.sessionToken);
+      if (loginFinishResponse.user) {
+        setCurrentUser(loginFinishResponse.user);
+      }
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(error.message);

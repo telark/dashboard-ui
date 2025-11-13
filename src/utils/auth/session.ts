@@ -1,5 +1,6 @@
 import { STORAGE_KEYS } from '../../constants/store/store';
 import { LOGIN_CONSTANTS } from '../../constants/pages/login';
+import { removeCurrentUser } from './user';
 
 export const getSessionToken = (): string | null => {
   try {
@@ -31,6 +32,7 @@ export const setSessionToken = (token: string): void => {
 export const removeSessionToken = (): void => {
   try {
     globalThis.localStorage.removeItem(STORAGE_KEYS.SESSION_TOKEN);
+    removeCurrentUser();
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
       console.error(LOGIN_CONSTANTS.LOGS.SESSION_REMOVE_ERROR, error);

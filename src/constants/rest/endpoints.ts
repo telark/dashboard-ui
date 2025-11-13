@@ -171,5 +171,9 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.USERS}/${RESOURCE_PATHS.GET_ALL}`,
       method: 'GET',
     },
+    GET_BY_ID: (userId: string) => ({
+      path: `${API_PATHS.RESOURCES.USERS}/${RESOURCE_PATHS.FIND_USER_BY_ID(userId)}`,
+      method: 'GET',
+    }),
   },
 };
