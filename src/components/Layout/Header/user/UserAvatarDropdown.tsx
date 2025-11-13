@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { getAuthUser } from '../../../../utils/user/session';
 import { fetchCurrentUserDetails } from '../../../../utils/user/fetch';
 import { handleUserLogout } from '../../../../utils/user/logout';
+import { hasSessionToken } from '../../../../utils/auth/session';
 import { createUserMenuItems } from './UserMenuItems';
 import UserAvatar from './UserAvatar';
 import { HEADER_CONSTANTS } from '../../../../constants';
+import { isDevelopment } from '../../../../utils/helpers/env';
 import type { User as AuthUser } from '../../../../interfaces/auth';
 import type { User as UsersUser } from '../../../../interfaces/users';
 
@@ -22,6 +24,12 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = () => {
   useEffect(() => {
     const authUser = getAuthUser();
     setCurrentAuthUser(authUser);
+
+    if (hasSessionToken() && !authUser) {
+      if (isDevelopment()) {
+        console.warn(HEADER_CONSTANTS.USER.WARNINGS.MISSING_USER_DATA);
+      }
+    }
 
     if (authUser?.id) {
       setLoading(true);

@@ -5,7 +5,7 @@ import type { User as AuthUser } from '../../interfaces/auth';
 
 export const getCurrentUser = (): AuthUser | null => {
   try {
-    const userStr = globalThis.sessionStorage.getItem(STORAGE_KEYS.CURRENT_USER);
+    const userStr = globalThis.localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
     if (userStr) {
       return JSON.parse(userStr) as AuthUser;
     }
@@ -19,7 +19,7 @@ export const getCurrentUser = (): AuthUser | null => {
 
 export const setCurrentUser = (user: AuthUser): void => {
   try {
-    globalThis.sessionStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
+    globalThis.localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
     if (isDevelopment()) {
       console.log(USER_CONSTANTS.LOGS.SET_CURRENT_USER_SUCCESS, user);
     }
@@ -33,7 +33,7 @@ export const setCurrentUser = (user: AuthUser): void => {
 
 export const removeCurrentUser = (): void => {
   try {
-    globalThis.sessionStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+    globalThis.localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
   } catch (error) {
     if (isDevelopment()) {
       console.error(USER_CONSTANTS.LOGS.REMOVE_CURRENT_USER_ERROR, error);
