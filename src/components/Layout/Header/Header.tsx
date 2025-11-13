@@ -1,5 +1,5 @@
 import React from 'react';
-import UserAvatarDropdown from './UserAvatarDropdown';
+import { UserAvatarDropdown } from './user';
 
 const Header: React.FC = () => {
   return (
