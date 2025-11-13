@@ -1,155 +1,52 @@
 import React, { useState } from 'react';
-import { Form, Input, message } from 'antd';
+import { Form, App as AntdApp } from 'antd';
 import { UserAddOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import PrimaryButton from '../../components/buttons/PrimaryButton';
-import { registerStart, createPasskey } from '../../clients/auth';
-import { registerPasskey } from '../../utils/auth/webauthn';
-import { AUTH_ERROR_MESSAGES, AUTH_SUCCESS_MESSAGES, AUTH_INFO_MESSAGES } from '../../constants/auth';
+import { performRegister } from '../../utils/auth/register';
+import { handleAuthError } from '../../utils/auth/errors';
 import { APP_ROUTES } from '../../constants';
-import type { PublicKeyCredentialCreationOptions } from '../../interfaces/auth';
+import { REGISTER_CONSTANTS } from '../../constants/pages/register';
+import { RegisterForm } from '../../components/auth/register';
+import { AuthContainer, AuthCard, AuthHeader, AuthFooter } from '../../components/auth/shared';
 
 const Register: React.FC = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { message } = AntdApp.useApp();
 
   const handleRegister = async (values: { username: string; deviceName: string }) => {
     setLoading(true);
     try {
-      // Step 1: Start registration - get challenge and options
-      // For first-time registration, send username (no session required)
-      const registerStartResponse = await registerStart(values.username);
-
-      // Extract options from nested structure
-      // Backend returns: { options: { publicKey: { challenge, rp, user, ... } } }
-      let options: PublicKeyCredentialCreationOptions;
-      
-      // Try different possible response structures
-      if (registerStartResponse.options?.publicKey) {
-        // Structure: { options: { publicKey: {...} } } - This is the actual structure
-        const publicKey = (registerStartResponse.options as any).publicKey;
-        options = {
-          challenge: publicKey.challenge,
-          rp: publicKey.rp,
-          user: publicKey.user,
-          pubKeyCredParams: publicKey.pubKeyCredParams,
-          timeout: publicKey.timeout,
-          attestation: publicKey.attestation,
-          authenticatorSelection: publicKey.authenticatorSelection,
-        };
-      } else if (registerStartResponse.options?.response) {
-        // Structure: { options: { response: {...} } } (alternative structure)
-        options = registerStartResponse.options.response;
-      } else if (registerStartResponse.challenge) {
-        // Flattened structure (fallback)
-        options = {
-          challenge: registerStartResponse.challenge!,
-          rp: registerStartResponse.rp!,
-          user: registerStartResponse.user!,
-          pubKeyCredParams: registerStartResponse.pubKeyCredParams!,
-          timeout: registerStartResponse.timeout,
-          attestation: registerStartResponse.attestation,
-          authenticatorSelection: registerStartResponse.authenticatorSelection,
-        };
-      } else {
-        console.error('Unexpected response structure:', registerStartResponse);
-        throw new Error('Invalid response structure from server. Please check console for details.');
-      }
-
-      // Step 2: Create passkey with WebAuthn
-      const credential = await registerPasskey({
-        challenge: options.challenge,
-        rp: options.rp,
-        user: options.user,
-        pubKeyCredParams: options.pubKeyCredParams,
-        timeout: options.timeout,
-        attestation: options.attestation,
-        authenticatorSelection: options.authenticatorSelection,
-      });
-
-      // Step 3: Create passkey - verify attestation and store
-      // Determine device type based on authenticator attachment
-      // For now, default to 'platform' - this could be enhanced to detect actual type
-      const deviceType: 'platform' | 'cross-platform' = 'platform';
-      // Send credential directly (not wrapped) - go-webauthn expects it at top level
-      await createPasskey(
-        credential,
+      await performRegister(
+        values.username,
         values.deviceName,
-        deviceType,
-        values.username, // Pass username for unauthenticated registration
+        message,
+        () => navigate(APP_ROUTES.LOGIN),
       );
-
-      message.success(AUTH_SUCCESS_MESSAGES.REGISTER_SUCCESS);
-      navigate(APP_ROUTES.LOGIN);
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : AUTH_ERROR_MESSAGES.REGISTER_FINISH_FAILED;
-      message.error(errorMessage);
-      console.error('Registration error:', error);
+      handleAuthError(error, message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh',
-        background: '#f5f5f5',
-      }}
-    >
-      <div
-        style={{
-          background: '#fff',
-          padding: '48px',
-          borderRadius: '8px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          width: '100%',
-          maxWidth: '400px',
-        }}
-      >
-        <h1 style={{ textAlign: 'center', marginBottom: '32px' }}>Register Passkey</h1>
-        <Form form={form} layout="vertical" onFinish={handleRegister}>
-          <Form.Item
-            label="Username"
-            name="username"
-            rules={[
-              { required: true, message: AUTH_ERROR_MESSAGES.MISSING_USERNAME },
-            ]}
-          >
-            <Input placeholder="Enter your username" size="large" />
-          </Form.Item>
-          <Form.Item
-            label="Device Name"
-            name="deviceName"
-            rules={[
-              { required: true, message: AUTH_ERROR_MESSAGES.MISSING_DEVICE_NAME },
-            ]}
-          >
-            <Input placeholder="e.g. My Laptop, iPhone 13" size="large" />
-          </Form.Item>
-
-          <Form.Item style={{ marginTop: '24px', marginBottom: 0 }}>
-            <PrimaryButton
-              action="Register Passkey"
-              loading={loading}
-              loadingLabel={AUTH_INFO_MESSAGES.REGISTERING}
-              onClick={() => form.submit()}
-              icon={<UserAddOutlined />}
-            />
-          </Form.Item>
-        </Form>
-        <div style={{ marginTop: '16px', textAlign: 'center' }}>
-          <a onClick={() => navigate(APP_ROUTES.LOGIN)} style={{ cursor: 'pointer' }}>
-            Already have an account? Login
-          </a>
-        </div>
-      </div>
-    </div>
+    <AuthContainer>
+      <AuthCard>
+        <AuthHeader
+          icon={<UserAddOutlined style={{ fontSize: '32px', color: '#ffffff' }} />}
+          title={REGISTER_CONSTANTS.UI.TITLE}
+          subtitle={REGISTER_CONSTANTS.UI.SUBTITLE}
+        />
+        <RegisterForm form={form} loading={loading} onFinish={handleRegister} />
+        <AuthFooter
+          text={REGISTER_CONSTANTS.UI.FOOTER_TEXT}
+          linkText={REGISTER_CONSTANTS.UI.FOOTER_LINK}
+          onLinkClick={() => navigate(APP_ROUTES.LOGIN)}
+        />
+      </AuthCard>
+    </AuthContainer>
   );
 };
 

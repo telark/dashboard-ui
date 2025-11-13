@@ -1,9 +1,13 @@
 import React from 'react';
-import { LoginOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../constants';
-import { LOGIN_CONSTANTS } from '../../../constants/pages/login';
 
-export const LoginHeader: React.FC = () => {
+interface AuthHeaderProps {
+  icon: React.ReactNode;
+  title: string;
+  subtitle: string;
+}
+
+export const AuthHeader: React.FC<AuthHeaderProps> = ({ icon, title, subtitle }) => {
   return (
     <div style={{ textAlign: 'center', marginBottom: '32px' }}>
       <div
@@ -18,7 +22,7 @@ export const LoginHeader: React.FC = () => {
           margin: '0 auto 16px',
         }}
       >
-        <LoginOutlined style={{ fontSize: '32px', color: '#ffffff' }} />
+        {icon}
       </div>
       <h1
         style={{
@@ -29,7 +33,7 @@ export const LoginHeader: React.FC = () => {
           letterSpacing: '-0.5px',
         }}
       >
-        {LOGIN_CONSTANTS.UI.TITLE}
+        {title}
       </h1>
       <p
         style={{
@@ -38,7 +42,7 @@ export const LoginHeader: React.FC = () => {
           color: '#666',
         }}
       >
-        {LOGIN_CONSTANTS.UI.SUBTITLE}
+        {subtitle}
       </p>
     </div>
   );

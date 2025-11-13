@@ -1,10 +1,10 @@
 import React from 'react';
 
-interface LoginContainerProps {
+interface AuthContainerProps {
   children: React.ReactNode;
 }
 
-export const LoginContainer: React.FC<LoginContainerProps> = ({ children }) => {
+export const AuthContainer: React.FC<AuthContainerProps> = ({ children }) => {
   return (
     <div
       style={{

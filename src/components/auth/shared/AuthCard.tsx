@@ -1,10 +1,10 @@
 import React from 'react';
 
-interface LoginCardProps {
+interface AuthCardProps {
   children: React.ReactNode;
 }
 
-export const LoginCard: React.FC<LoginCardProps> = ({ children }) => {
+export const AuthCard: React.FC<AuthCardProps> = ({ children }) => {
   return (
     <div
       style={{

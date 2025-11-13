@@ -1,8 +1,13 @@
 import React from 'react';
-import { APP_ROUTES, DEFAULT_COLORS } from '../../../constants';
-import { LOGIN_CONSTANTS } from '../../../constants/pages/login';
+import { DEFAULT_COLORS } from '../../../constants';
 
-export const LoginFooter: React.FC = () => {
+interface AuthFooterProps {
+  text: string;
+  linkText: string;
+  onLinkClick: () => void;
+}
+
+export const AuthFooter: React.FC<AuthFooterProps> = ({ text, linkText, onLinkClick }) => {
   return (
     <div
       style={{
@@ -12,13 +17,14 @@ export const LoginFooter: React.FC = () => {
         color: '#999',
       }}
     >
-      {LOGIN_CONSTANTS.UI.FOOTER_TEXT}{' '}
+      {text}{' '}
       <a
-        href={APP_ROUTES.REGISTER}
+        onClick={onLinkClick}
         style={{
           color: DEFAULT_COLORS.SUCCESS,
           textDecoration: 'none',
           fontWeight: 500,
+          cursor: 'pointer',
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.textDecoration = 'underline';
@@ -27,7 +33,7 @@ export const LoginFooter: React.FC = () => {
           e.currentTarget.style.textDecoration = 'none';
         }}
       >
-        {LOGIN_CONSTANTS.UI.FOOTER_LINK}
+        {linkText}
       </a>
     </div>
   );
