@@ -45,6 +45,15 @@ export const LOGIN_CONSTANTS = {
     REMOVE_FAILED: 'Failed to remove session token',
     QUOTA_EXCEEDED: 'Storage quota exceeded. Please free up space and try again.',
   },
+  UI: {
+    TITLE: 'Welcome Back',
+    SUBTITLE: 'Sign in with your passkey',
+    USERNAME_PLACEHOLDER: 'Enter your username',
+    BUTTON_LOADING: 'Authenticating...',
+    BUTTON_TEXT: 'Login with Passkey',
+    FOOTER_TEXT: "Don't have a passkey?",
+    FOOTER_LINK: 'Register now',
+  },
   LOGS: {
     AUTH_ERROR: 'Authentication error:',
     INVALID_RESPONSE_STRUCTURE: 'Invalid login response structure:',
