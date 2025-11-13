@@ -14,6 +14,11 @@ import {
   API_RESPONSES,
   STORAGE_KEYS,
 } from '../constants';
+import { ErrorInterceptorOptions } from '../interfaces/api';
+
+interface ExtendedAxiosError extends AxiosError {
+  normalized?: ReturnType<typeof normalizeError>;
+}
 
 const exporterApiClient: AxiosInstance = axios.create({
   baseURL: EXPORTER_API.BASE_URL,
@@ -53,9 +58,7 @@ authApiClient.interceptors.request.use(
   },
 );
 
-interface ExtendedAxiosError extends AxiosError {
-  normalized?: ReturnType<typeof normalizeError>;
-}
+
 
 const normalizeError = (error: AxiosError) => {
   const status = error?.response?.status ?? null;
@@ -77,10 +80,6 @@ const normalizeError = (error: AxiosError) => {
   const isTimeout = error?.code === ERROR_CODES.TIMEOUT || /timeout/i.test(String(message));
   return { status, message, url, method, isNotFound, isClient, isServer, isNetwork, isTimeout };
 };
-
-interface ErrorInterceptorOptions {
-  silent404?: boolean;
-}
 
 const createErrorInterceptor = (options: ErrorInterceptorOptions = {}) => {
   const { silent404 = false } = options;

@@ -1,0 +1,29 @@
+import { fetchUserById } from '../../clients/exporter';
+import { USER_CONSTANTS } from '../../constants/user/user';
+import { getCurrentUser } from './session';
+import type { User as UsersUser } from '../../interfaces/users';
+
+export const fetchCurrentUserDetails = async (
+  onSuccess: (user: UsersUser) => void,
+  onError?: (error: unknown) => void,
+): Promise<void> => {
+  try {
+    const authUser = getCurrentUser();
+    if (!authUser?.id) {
+      return;
+    }
+
+    const response = await fetchUserById(authUser.id, true);
+    if (response.data) {
+      onSuccess(response.data);
+    }
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error(USER_CONSTANTS.LOGS.FETCH_USER_DETAILS_ERROR, error);
+    }
+    if (onError) {
+      onError(error);
+    }
+  }
+};
+

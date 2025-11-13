@@ -47,6 +47,7 @@ export const STORE_ACTIONS = {
   USERS: {
     FETCH: 'users/fetch',
     FETCH_SILENT: 'users/fetchSilent',
+    FETCH_DETAILS: 'users/fetchDetails',
   },
 } as const;
 
@@ -75,6 +76,7 @@ export const STORE_ERRORS = {
   FETCH_BRIDGE_DETAILS: 'Failed to fetch bridge details',
   UPDATE_BRIDGE_SYNC: 'Failed to update bridge sync settings.',
   FETCH_USERS: 'Failed to fetch users',
+  FETCH_USER_DETAILS: 'Failed to fetch user details',
 } as const;
 
 export const STORE_MESSAGES = {
@@ -94,4 +96,5 @@ export const STORE_MESSAGES = {
   ERROR_FETCHING_BRIDGES: 'Error fetching bridges:',
   ERROR_FETCHING_BRIDGE_DETAILS: 'Error fetching bridge details:',
   ERROR_FETCHING_USERS: 'Error fetching users:',
+  ERROR_FETCHING_USER_DETAILS: 'Error fetching user details:',
 } as const;

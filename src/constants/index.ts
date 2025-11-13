@@ -1,5 +1,6 @@
 export * from './auth';
 export * from './config/sync';
+export * from './user/user';
 export * from './layout/buttons';
 export * from './layout/cards';
 export * from './layout/header';

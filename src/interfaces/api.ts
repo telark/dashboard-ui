@@ -1,3 +1,5 @@
+import { AxiosError } from 'axios';
+
 export interface ApiResponse<T> {
   status: number;
   data?: {
@@ -41,4 +43,8 @@ export interface ResourceDetailsResponse<T> {
   operation: string;
   message: string;
   data: T;
+}
+
+export interface ErrorInterceptorOptions {
+  silent404?: boolean;
 }

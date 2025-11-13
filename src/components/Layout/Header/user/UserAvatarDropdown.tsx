@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Dropdown } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { getAuthUser, fetchCurrentUserDetails, handleUserLogout } from '../../../../utils/user/userUtils';
+import { getAuthUser } from '../../../../utils/user/session';
+import { fetchCurrentUserDetails } from '../../../../utils/user/fetch';
+import { handleUserLogout } from '../../../../utils/user/logout';
 import { createUserMenuItems } from './UserMenuItems';
 import UserAvatar from './UserAvatar';
 import { HEADER_CONSTANTS } from '../../../../constants';

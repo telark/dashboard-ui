@@ -1,6 +1,6 @@
 import { STORAGE_KEYS } from '../../constants/store/store';
 import { LOGIN_CONSTANTS } from '../../constants/pages/login';
-import { removeCurrentUser } from './user';
+import { removeCurrentUser } from '../user/session';
 
 export const getSessionToken = (): string | null => {
   try {
