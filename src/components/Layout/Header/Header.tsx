@@ -15,12 +15,19 @@ const Header: React.FC = () => {
     setLoggingOut(true);
     try {
       await logout();
-      removeSessionToken();
+      try {
+        removeSessionToken();
+      } catch {
+        // Ignore session removal errors during successful logout
+      }
       message.success(AUTH_SUCCESS_MESSAGES.LOGOUT_SUCCESS);
       navigate(APP_ROUTES.LOGIN);
     } catch (error) {
-      // Even if logout fails, clear local session
-      removeSessionToken();
+      try {
+        removeSessionToken();
+      } catch {
+        // Even if session removal fails, proceed with logout
+      }
       message.error(AUTH_ERROR_MESSAGES.LOGOUT_FAILED);
       navigate(APP_ROUTES.LOGIN);
     } finally {

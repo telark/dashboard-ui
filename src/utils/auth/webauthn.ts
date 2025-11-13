@@ -5,9 +5,6 @@ import type {
   PublicKeyCredential,
 } from '../../interfaces/auth';
 
-/**
- * Convert base64url string to ArrayBuffer
- */
 const base64UrlToArrayBuffer = (base64url: string): ArrayBuffer => {
   const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
   const binary = globalThis.atob(base64);
@@ -18,10 +15,6 @@ const base64UrlToArrayBuffer = (base64url: string): ArrayBuffer => {
   return bytes.buffer;
 };
 
-/**
- * Convert ArrayBuffer to base64url string (without padding)
- * This matches the WebAuthn specification for base64url encoding
- */
 const arrayBufferToBase64Url = (buffer: ArrayBuffer): string => {
   const bytes = new Uint8Array(buffer);
   let binary = '';
@@ -29,16 +22,10 @@ const arrayBufferToBase64Url = (buffer: ArrayBuffer): string => {
     binary += String.fromCharCode(bytes[i]);
   }
   const base64 = globalThis.btoa(binary);
-  // Convert to base64url: replace + with -, / with _, and remove trailing padding
   return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 };
 
-/**
- * Convert base64url string to standard base64 string
- * This is needed because go-webauthn library expects standard base64 (with + and /) not base64url (with - and _)
- */
 export const base64UrlToBase64 = (base64url: string): string => {
-  // Add padding if needed
   let base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
   while (base64.length % 4) {
     base64 += '=';
@@ -46,9 +33,6 @@ export const base64UrlToBase64 = (base64url: string): string => {
   return base64;
 };
 
-/**
- * Convert PublicKeyCredentialRequestOptions to WebAuthn format
- */
 const convertRequestOptions = (
   options: PublicKeyCredentialRequestOptions,
 ): CredentialRequestOptions => {
@@ -62,7 +46,7 @@ const convertRequestOptions = (
   if (options.allowCredentials) {
     publicKey.allowCredentials = options.allowCredentials.map((cred) => ({
       id: base64UrlToArrayBuffer(cred.id),
-      type: 'public-key' as const,
+      type: LOGIN_CONSTANTS.WEBAUTHN.CREDENTIAL_TYPE,
       transports: cred.transports,
     }));
   }
@@ -70,9 +54,6 @@ const convertRequestOptions = (
   return { publicKey };
 };
 
-/**
- * Convert PublicKeyCredentialCreationOptions to WebAuthn format
- */
 const convertCreationOptions = (
   options: PublicKeyCredentialCreationOptions,
 ): CredentialCreationOptions => {
@@ -85,7 +66,7 @@ const convertCreationOptions = (
     },
     pubKeyCredParams: options.pubKeyCredParams,
     timeout: options.timeout,
-    attestation: options.attestation || 'none',
+    attestation: options.attestation || LOGIN_CONSTANTS.WEBAUTHN.ATTESTATION,
   };
 
   if (options.authenticatorSelection) {
@@ -95,7 +76,7 @@ const convertCreationOptions = (
   if (options.excludeCredentials) {
     publicKey.excludeCredentials = options.excludeCredentials.map((cred) => ({
       id: base64UrlToArrayBuffer(cred.id),
-      type: 'public-key' as const,
+      type: LOGIN_CONSTANTS.WEBAUTHN.CREDENTIAL_TYPE,
       transports: cred.transports,
     }));
   }
@@ -103,9 +84,6 @@ const convertCreationOptions = (
   return { publicKey };
 };
 
-/**
- * Convert WebAuthn credential to our format
- */
 const convertCredential = (credential: globalThis.PublicKeyCredential): PublicKeyCredential => {
   const response = credential.response;
 
@@ -113,14 +91,13 @@ const convertCredential = (credential: globalThis.PublicKeyCredential): PublicKe
     const result: PublicKeyCredential = {
       id: credential.id,
       rawId: arrayBufferToBase64Url(credential.rawId),
-      type: 'public-key',
+      type: LOGIN_CONSTANTS.WEBAUTHN.CREDENTIAL_TYPE,
       response: {
         attestationObject: arrayBufferToBase64Url(response.attestationObject),
         clientDataJSON: arrayBufferToBase64Url(response.clientDataJSON),
       },
     };
     
-    // Add getClientExtensionResults if available
     if (credential.getClientExtensionResults) {
       result.getClientExtensionResults = credential.getClientExtensionResults() as Record<string, unknown>;
     }
@@ -130,7 +107,7 @@ const convertCredential = (credential: globalThis.PublicKeyCredential): PublicKe
     return {
       id: credential.id,
       rawId: arrayBufferToBase64Url(credential.rawId),
-      type: 'public-key',
+      type: LOGIN_CONSTANTS.WEBAUTHN.CREDENTIAL_TYPE,
       response: {
         authenticatorData: arrayBufferToBase64Url(response.authenticatorData),
         clientDataJSON: arrayBufferToBase64Url(response.clientDataJSON),
@@ -142,12 +119,9 @@ const convertCredential = (credential: globalThis.PublicKeyCredential): PublicKe
     };
   }
 
-  throw new Error('Unsupported credential response type');
+  throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.UNSUPPORTED_RESPONSE_TYPE);
 };
 
-/**
- * Check if WebAuthn is supported in the browser
- */
 export const isWebAuthnSupported = (): boolean => {
   return (
     typeof globalThis.PublicKeyCredential !== 'undefined' &&
@@ -156,14 +130,11 @@ export const isWebAuthnSupported = (): boolean => {
   );
 };
 
-/**
- * Authenticate user with passkey (login)
- */
 export const authenticateWithPasskey = async (
   options: PublicKeyCredentialRequestOptions,
 ): Promise<PublicKeyCredential> => {
   if (!isWebAuthnSupported()) {
-    throw new Error('WebAuthn is not supported in this browser');
+    throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NOT_SUPPORTED);
   }
 
   try {
@@ -172,35 +143,32 @@ export const authenticateWithPasskey = async (
     )) as globalThis.PublicKeyCredential | null;
 
     if (!credential) {
-      throw new Error('User cancelled authentication or no credential found');
+      throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NO_CREDENTIAL_FOUND);
     }
 
     return convertCredential(credential);
   } catch (error) {
     if (error instanceof Error) {
-      if (error.name === 'NotAllowedError') {
-        throw new Error('User cancelled authentication');
+      if (error.name === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_ALLOWED) {
+        throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.USER_CANCELLED_AUTH);
       }
-      if (error.name === 'InvalidStateError') {
-        throw new Error('The operation is not allowed');
+      if (error.name === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.INVALID_STATE) {
+        throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.OPERATION_NOT_ALLOWED);
       }
-      if (error.name === 'NotSupportedError') {
-        throw new Error('WebAuthn is not supported');
+      if (error.name === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_SUPPORTED) {
+        throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NOT_SUPPORTED_ERROR);
       }
       throw error;
     }
-    throw new Error('Authentication failed');
+    throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.AUTHENTICATION_FAILED);
   }
 };
 
-/**
- * Register new passkey (create credential)
- */
 export const registerPasskey = async (
   options: PublicKeyCredentialCreationOptions,
 ): Promise<PublicKeyCredential> => {
   if (!isWebAuthnSupported()) {
-    throw new Error('WebAuthn is not supported in this browser');
+    throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NOT_SUPPORTED);
   }
 
   try {
@@ -209,27 +177,27 @@ export const registerPasskey = async (
     )) as globalThis.PublicKeyCredential | null;
 
     if (!credential) {
-      throw new Error('User cancelled registration or credential creation failed');
+      throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.REGISTRATION_CANCELLED);
     }
 
     return convertCredential(credential);
   } catch (error) {
     if (error instanceof Error) {
-      if (error.name === 'NotAllowedError') {
-        throw new Error('User cancelled registration');
+      if (error.name === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_ALLOWED) {
+        throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.USER_CANCELLED_REGISTRATION);
       }
-      if (error.name === 'InvalidStateError') {
-        throw new Error('The operation is not allowed');
+      if (error.name === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.INVALID_STATE) {
+        throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.OPERATION_NOT_ALLOWED);
       }
-      if (error.name === 'NotSupportedError') {
-        throw new Error('WebAuthn is not supported');
+      if (error.name === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_SUPPORTED) {
+        throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NOT_SUPPORTED_ERROR);
       }
-      if (error.name === 'ConstraintError') {
-        throw new Error('Constraint validation failed');
+      if (error.name === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.CONSTRAINT) {
+        throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.CONSTRAINT_VALIDATION_FAILED);
       }
       throw error;
     }
-    throw new Error('Registration failed');
+    throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.REGISTRATION_FAILED);
   }
 };
 

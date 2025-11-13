@@ -1,9 +1,13 @@
 import { STORAGE_KEYS } from '../../constants/store/store';
+import { LOGIN_CONSTANTS } from '../../constants/pages/login';
 
 export const getSessionToken = (): string | null => {
   try {
     return globalThis.localStorage.getItem(STORAGE_KEYS.SESSION_TOKEN);
-  } catch {
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error(LOGIN_CONSTANTS.LOGS.SESSION_GET_ERROR, error);
+    }
     return null;
   }
 };
@@ -11,16 +15,28 @@ export const getSessionToken = (): string | null => {
 export const setSessionToken = (token: string): void => {
   try {
     globalThis.localStorage.setItem(STORAGE_KEYS.SESSION_TOKEN, token);
-  } catch {
-    // Ignore persistence errors (e.g., localStorage quota exceeded)
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error(LOGIN_CONSTANTS.LOGS.SESSION_SET_ERROR, error);
+    }
+    
+    const errorMessage = error instanceof DOMException && error.name === 'QuotaExceededError'
+      ? LOGIN_CONSTANTS.SESSION.QUOTA_EXCEEDED
+      : LOGIN_CONSTANTS.SESSION.SET_FAILED;
+    
+    throw new Error(errorMessage);
   }
 };
 
 export const removeSessionToken = (): void => {
   try {
     globalThis.localStorage.removeItem(STORAGE_KEYS.SESSION_TOKEN);
-  } catch {
-    // Ignore removal errors
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error(LOGIN_CONSTANTS.LOGS.SESSION_REMOVE_ERROR, error);
+    }
+    
+    throw new Error(LOGIN_CONSTANTS.SESSION.REMOVE_FAILED);
   }
 };
 

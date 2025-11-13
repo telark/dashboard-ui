@@ -93,7 +93,14 @@ export const performLogin = async (
       }),
     );
 
-    setSessionToken(loginFinishResponse.sessionToken);
+    try {
+      setSessionToken(loginFinishResponse.sessionToken);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw error;
+    }
 
     messageApi.open({
       type: 'success',
