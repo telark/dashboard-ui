@@ -1,5 +1,5 @@
 import { AiOutlineTag } from 'react-icons/ai';
-import type { User } from '../interfaces/users';
+import type { User } from '../interfaces/resources/users';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import { StatusTag } from '../components/tags';
 import { ROLES_PAGE_CONSTANTS as RPC } from '../constants/pages/roles';

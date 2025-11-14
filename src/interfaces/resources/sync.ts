@@ -1,5 +1,5 @@
 import { App as AntdApp } from 'antd';
-import { RootState } from '../store';
+import { RootState } from '../../store';
 
 export interface DetailsSyncParams {
   details: any;
@@ -68,3 +68,4 @@ export interface HandleSyncErrorParams {
   isDetailsSync: boolean;
   config: SyncConfig;
 }
+

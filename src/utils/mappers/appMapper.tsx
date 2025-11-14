@@ -1,5 +1,5 @@
 import { CARD_DEFAULTS } from '../../constants';
-import type { AppWorkload, AppWorkloadCardData } from '../../interfaces/workload';
+import type { AppWorkload, AppWorkloadCardData } from '../../interfaces/resources/workload';
 import { ParseGoTimeDate } from '../shared/time';
 import { extractItemsFromResponse } from '../helpers/api';
 

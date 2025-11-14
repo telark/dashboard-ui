@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { UsersState, User } from '../../../interfaces/users';
+import type { UsersState, User } from '../../../interfaces/resources/users';
 import {
   fetchAllUsersThunk,
   fetchAllUsersSilentThunk,

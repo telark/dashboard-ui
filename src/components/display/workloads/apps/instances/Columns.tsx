@@ -1,4 +1,4 @@
-import type { InstanceTableRow } from '../../../../../interfaces/instances';
+import type { InstanceTableRow } from '../../../../../interfaces/resources/instances';
 import { INSTANCES_PAGE_CONSTANTS as IPC } from '../../../../../constants/pages/instances';
 import { ICONS } from '../../../../../constants';
 import RowTag from '../../../shared/table/RowTag';

@@ -11,7 +11,7 @@ import { COMPONENT_STYLES } from '../../constants/layout/ui';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../components/shared';
 import { useViewPage } from '../../hooks/useViewPage';
-import type { Role } from '../../interfaces/roles';
+import type { Role } from '../../interfaces/resources/roles';
 
 const RoleIcon = ICONS.ROLE;
 

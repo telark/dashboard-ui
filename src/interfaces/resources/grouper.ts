@@ -53,3 +53,4 @@ export interface WorkloadFromStore {
   creationTime?: string;
   lastUpdate?: string;
 }
+

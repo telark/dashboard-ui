@@ -3,7 +3,7 @@ import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
 import RowTag from '../../shared/table/RowTag';
 import { generateColumn } from '../../shared/table/utils';
 import type { GenerateColumnCtx } from '../../../../interfaces/layout/table';
-import type { User } from '../../../../interfaces/users';
+import type { User } from '../../../../interfaces/resources/users';
 import Actions from './Actions';
 import UserAvatar from '../../shared/avatars/UserAvatar';
 import { AiOutlineUser, AiOutlineMail, AiOutlineTag, AiOutlineCalendar } from 'react-icons/ai';

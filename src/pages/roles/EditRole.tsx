@@ -7,7 +7,7 @@ import { STATIC_ROLES } from '../../data/roles';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../components/shared';
 import { useEditPage } from '../../hooks/useEditPage';
-import type { Role } from '../../interfaces/roles';
+import type { Role } from '../../interfaces/resources/roles';
 
 const RoleIcon = ICONS.ROLE;
 

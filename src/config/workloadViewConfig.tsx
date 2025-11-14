@@ -3,7 +3,7 @@ import { AiOutlineCluster, AiOutlineLock, AiOutlineSwap } from 'react-icons/ai';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import TimeAgo from '../components/time/TimeAgo';
 import { ICONS } from '../constants';
-import type { AppWorkload } from '../interfaces/workload';
+import type { AppWorkload } from '../interfaces/resources/workload';
 
 export const createWorkloadViewConfig = (workload: AppWorkload): ViewDetailsConfig => {
   return {

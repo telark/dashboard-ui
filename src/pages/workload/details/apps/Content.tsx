@@ -5,7 +5,7 @@ import ViewDetails from '../../../../components/display/shared/views/ViewDetails
 import SyncMode from '../../../../components/tabs/SyncMode';
 import { FancySpinner } from '../../../../components/shared';
 import { WORKLOAD_DETAILS_CONSTANTS, TabKey } from '../../../../constants/pages/workload-details';
-import type { AppWorkload } from '../../../../interfaces/workload';
+import type { AppWorkload } from '../../../../interfaces/resources/workload';
 import { createWorkloadViewConfig } from '../../../../config/workloadViewConfig';
 import InstancesTable from '../../../../components/display/workloads/apps/instances/Table';
 

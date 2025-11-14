@@ -1,4 +1,4 @@
-import { Maintenance } from '../../interfaces/grouper';
+import { Maintenance } from '../../interfaces/resources/grouper';
 import { UTILS_TEXTS, CARD_DEFAULTS } from '../../constants';
 import { extractItemsFromResponse } from '../helpers/api';
 

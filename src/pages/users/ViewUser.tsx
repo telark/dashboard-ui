@@ -10,7 +10,7 @@ import { PageContainer, NotFound } from '../../components/shared';
 import { useViewPage } from '../../hooks/useViewPage';
 import { RootState, AppDispatch } from '../../store';
 import { fetchAllUsersThunk } from '../../store/users/slices/userSlice';
-import type { User } from '../../interfaces/users';
+import type { User } from '../../interfaces/resources/users';
 
 const UserIcon = ICONS.USER;
 

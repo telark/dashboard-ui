@@ -7,7 +7,7 @@ import {
   ERROR_MESSAGES,
   MAINTENANCE_ACTIONS,
 } from '../constants';
-import type { MaintenanceModeResponse, StandardApiResponse } from '../interfaces/api';
+import type { MaintenanceModeResponse, StandardApiResponse } from '../interfaces/http';
 
 export const enableGrouperMaintenanceMode = async (
   grouperName: string,

@@ -5,7 +5,7 @@ import { triggerAppsSync } from '../../../clients/sync-manager';
 import { mapSingleAppWorkloadData, mapAppsWorkloadsData } from '../../../utils/mappers/appMapper';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants/store/store';
 import { extractErrorMessage } from '../../../utils/helpers/format';
-import type { AppWorkload } from '../../../interfaces/workload';
+import type { AppWorkload } from '../../../interfaces/resources/workload';
 
 export const triggerAppsSyncThunk = createAsyncThunk(
   STORE_ACTIONS.WORKLOADS.TRIGGER_GROUPER_SYNC,

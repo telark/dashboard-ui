@@ -1,6 +1,6 @@
 import { SYNC_MESSAGES } from '../../constants/layout/modes';
 import { SYNC_CONSTANTS } from '../../constants/config/sync';
-import { SyncConfig, MessageApi } from '../../interfaces/sync';
+import { SyncConfig, MessageApi } from '../../interfaces/resources/sync';
 
 export const getDetailsPollingEffects = (config: SyncConfig): readonly string[] => {
   return config.detailsConstants?.SYNC.POLLING_EFFECTS || config.cardConstants.POLLING_EFFECTS;

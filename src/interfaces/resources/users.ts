@@ -42,3 +42,4 @@ export interface UsersTableProps {
   onEdit?: (user: User) => void;
   onUsersChange?: (next: User[]) => void;
 }
+

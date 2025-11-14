@@ -8,7 +8,7 @@ import FormModal from '../../components/display/shared/modal/FormModal';
 import { STATIC_GROUPS } from '../../data/groups';
 import { PageContainer } from '../../components/shared';
 import { useListPage } from '../../hooks/useListPage';
-import type { Group } from '../../interfaces/groups';
+import type { Group } from '../../interfaces/resources/groups';
 
 const GroupIcon = ICONS.GROUP;
 

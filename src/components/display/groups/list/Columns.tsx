@@ -3,7 +3,7 @@ import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
 import RowTag from '../../shared/table/RowTag';
 import { generateColumn } from '../../shared/table/utils';
 import type { GenerateColumnCtx } from '../../../../interfaces/layout/table';
-import type { Group } from '../../../../interfaces/groups';
+import type { Group } from '../../../../interfaces/resources/groups';
 import Actions from './Actions';
 import { AiOutlineFileText, AiOutlineTag, AiOutlineCalendar } from 'react-icons/ai';
 

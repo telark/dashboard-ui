@@ -10,7 +10,7 @@ import UserAvatar from './UserAvatar';
 import { HEADER_CONSTANTS } from '../../../../constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import type { User as AuthUser } from '../../../../interfaces/auth/credentials';
-import type { User as UsersUser } from '../../../../interfaces/users';
+import type { User as UsersUser } from '../../../../interfaces/resources/users';
 import logger from '../../../../logging';
 
 const UserAvatarDropdown: React.FC = memo(() => {

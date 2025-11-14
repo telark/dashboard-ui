@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { createAvatar } from '@dicebear/core';
 import * as avatarStyles from '@dicebear/collection';
 import { Avatar } from 'antd';
-import type { UserAvatar as UserAvatarType } from '../../../../interfaces/users';
+import type { UserAvatar as UserAvatarType } from '../../../../interfaces/resources/users';
 
 interface UserAvatarProps {
   avatar?: UserAvatarType;

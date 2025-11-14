@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { createAvatar } from '@dicebear/core';
 import * as avatarStyles from '@dicebear/collection';
 import { Avatar, Grid, Modal } from 'antd';
-import type { UserAvatar } from '../../../../interfaces/users';
+import type { UserAvatar } from '../../../../interfaces/resources/users';
 
 const { useBreakpoint } = Grid;
 

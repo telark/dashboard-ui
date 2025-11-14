@@ -1,4 +1,4 @@
-import type { Group } from '../interfaces/groups';
+import type { Group } from '../interfaces/resources/groups';
 
 export const STATIC_GROUPS: Group[] = [
   {

@@ -19,3 +19,4 @@ export interface GroupsTableProps {
   onEdit?: (group: Group) => void;
   onGroupsChange?: (next: Group[]) => void;
 }
+

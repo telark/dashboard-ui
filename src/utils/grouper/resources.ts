@@ -1,6 +1,6 @@
 import type { ResourceRowInterface } from '../../interfaces/shared';
 import { ParseGoTimeDate } from '../shared/time';
-import type { BridgeFromStore, WorkloadFromStore } from '../../interfaces/grouper';
+import type { BridgeFromStore, WorkloadFromStore } from '../../interfaces/resources/grouper';
 
 export const isBridgeResource = (resourceType: string): boolean => {
   return (resourceType || '').toLowerCase() === 'bridge';

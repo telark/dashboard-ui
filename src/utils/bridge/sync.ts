@@ -7,7 +7,7 @@ import { startSync, endSync } from '../../store/bridges/slices/bridgeSlice';
 import { handleSyncEffect, handleSyncError } from '../shared/sync';
 import { buildDetailsSyncKey, buildCardSyncKey, destroySyncMessage } from '../helpers/sync';
 import { BRIDGE_SYNC_CONFIG } from '../../config/syncConfig';
-import { DetailsSyncParams, SyncParams } from '../../interfaces/sync';
+import { DetailsSyncParams, SyncParams } from '../../interfaces/resources/sync';
 
 export const syncBridgeDetails = async ({
   details,

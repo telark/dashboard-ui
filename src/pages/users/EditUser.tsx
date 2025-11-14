@@ -14,7 +14,7 @@ import { PageContainer, NotFound } from '../../components/shared';
 import { useEditPage } from '../../hooks/useEditPage';
 import { RootState, AppDispatch } from '../../store';
 import { fetchAllUsersThunk } from '../../store/users/slices/userSlice';
-import type { User, EditUserFormValues } from '../../interfaces/users';
+import type { User, EditUserFormValues } from '../../interfaces/resources/users';
 
 const UserIcon = ICONS.USER;
 

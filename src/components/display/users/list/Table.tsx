@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Modal } from 'antd';
 import DataTable from '../../shared/table/DataTable';
 import { USERS_CONSTANTS as UC } from '../../../../constants/pages/users';
-import type { User, UsersTableProps } from '../../../../interfaces/users';
+import type { User, UsersTableProps } from '../../../../interfaces/resources/users';
 import Columns from './Columns';
 
 type SortKey = 'username' | 'fullname' | 'email' | 'roleID' | 'creationDate';

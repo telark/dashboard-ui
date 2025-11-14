@@ -16,3 +16,4 @@ export interface InstancesTableProps {
   workload: AppWorkload;
   onInstanceClick?: (instance: InstanceTableRow) => void;
 }
+

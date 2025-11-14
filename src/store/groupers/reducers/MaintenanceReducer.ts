@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { GrouperState } from '../../../interfaces/grouper';
+import { GrouperState } from '../../../interfaces/resources/grouper';
 import { STORE_MESSAGES } from '../../../constants/store/store';
 import logger from '../../../logging';
 

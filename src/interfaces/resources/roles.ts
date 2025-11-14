@@ -1,5 +1,5 @@
-import type { RoleScopePermission, RoleStatus, RoleType } from '../constants/pages/roles';
-export type { RoleScopePermission } from '../constants/pages/roles';
+import type { RoleScopePermission, RoleStatus, RoleType } from '../../constants/pages/roles';
+export type { RoleScopePermission } from '../../constants/pages/roles';
 
 export interface Role {
   id: string;
@@ -24,3 +24,4 @@ export interface RolesScopesAndPermissionsListProps {
   rowPaddingPx?: number;
   dividerMarginPx?: number;
 }
+

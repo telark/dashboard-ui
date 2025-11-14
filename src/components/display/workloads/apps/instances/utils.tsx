@@ -3,8 +3,8 @@ import type {
   Container,
   Instance,
   ContainerUsage,
-} from '../../../../../interfaces/workload';
-import type { InstanceTableRow } from '../../../../../interfaces/instances';
+} from '../../../../../interfaces/resources/workload';
+import type { InstanceTableRow } from '../../../../../interfaces/resources/instances';
 import { INSTANCES_PAGE_CONSTANTS as IPC } from '../../../../../constants/pages/instances';
 
 export type InstancesSortKey =

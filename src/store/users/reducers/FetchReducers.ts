@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { UsersState } from '../../../interfaces/users';
+import { UsersState } from '../../../interfaces/resources/users';
 
 export const handleFetchUsersPending = (state: UsersState) => {
   state.loading = true;

@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { BridgeState } from '../../../interfaces/bridge';
+import { BridgeState } from '../../../interfaces/resources/bridge';
 import { SYNC_MODES } from '../../../constants/store/store';
 
 export const handleTriggerSyncRejected = (state: BridgeState, action: PayloadAction<any>) => {

@@ -2,7 +2,7 @@ import React from 'react';
 import { EyeOutlined, SyncOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Button, Space, Tooltip } from 'antd';
 import { DEFAULT_COLORS } from '../../../../constants';
-import { ResourcesActionBarProps } from '../../../../interfaces/grouper';
+import { ResourcesActionBarProps } from '../../../../interfaces/resources/grouper';
 
 const ActionBar: React.FC<ResourcesActionBarProps> = React.memo(
   ({ selectedCount, hasSelection, isSyncing = false, onView, onSync, onDelete }) => {

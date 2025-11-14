@@ -3,7 +3,7 @@ import { Avatar } from 'antd';
 import { DEFAULT_COLORS, HEADER_CONSTANTS } from '../../../../constants';
 import UserAvatarComponent from '../../../display/shared/avatars/UserAvatar';
 import type { User as AuthUser } from '../../../../interfaces/auth/credentials';
-import type { User as UsersUser } from '../../../../interfaces/users';
+import type { User as UsersUser } from '../../../../interfaces/resources/users';
 
 interface UserAvatarProps {
   currentUser: UsersUser | null;

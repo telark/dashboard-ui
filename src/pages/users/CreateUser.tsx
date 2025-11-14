@@ -14,7 +14,7 @@ import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper'
 import { PageContainer } from '../../components/shared';
 import { useDispatch } from 'react-redux';
 import { addUser } from '../../store/users/slices/userSlice';
-import type { User, CreateUserFormValues } from '../../interfaces/users';
+import type { User, CreateUserFormValues } from '../../interfaces/resources/users';
 
 const UserIcon = ICONS.USER;
 

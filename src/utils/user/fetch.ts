@@ -3,7 +3,7 @@ import { USER_CONSTANTS } from '../../constants/user/user';
 import { isDevelopment } from '../helpers/env';
 import logger from '../../logging';
 import { getCurrentUser } from './session';
-import type { User as UsersUser } from '../../interfaces/users';
+import type { User as UsersUser } from '../../interfaces/resources/users';
 
 export const fetchCurrentUserDetails = async (
   onSuccess: (user: UsersUser) => void,

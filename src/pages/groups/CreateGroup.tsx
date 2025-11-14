@@ -13,7 +13,7 @@ import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper'
 import { PageContainer } from '../../components/shared';
 import { useDispatch } from 'react-redux';
 import { addGroup } from '../../store/groups/slices/groupSlice';
-import type { Group } from '../../interfaces/groups';
+import type { Group } from '../../interfaces/resources/groups';
 
 const GroupIcon = ICONS.GROUP;
 

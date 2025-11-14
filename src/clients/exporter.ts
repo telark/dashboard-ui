@@ -15,9 +15,9 @@ import type {
   MaintenanceModeResponse,
   ClusterInsightsResponse,
   StandardApiResponse,
-} from '../interfaces/api';
-import type { AppWorkload } from '../interfaces/workload';
-import type { User } from '../interfaces/users';
+} from '../interfaces/http';
+import type { AppWorkload } from '../interfaces/resources/workload';
+import type { User } from '../interfaces/resources/users';
 import type { SessionDetailsResponse, DeleteSessionResponse } from '../interfaces/auth/session';
 import type { AxiosError } from 'axios';
 

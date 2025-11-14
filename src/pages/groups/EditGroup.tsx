@@ -12,7 +12,7 @@ import PrimaryButton from '../../components/buttons/PrimaryButton';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../components/shared';
 import { useEditPage } from '../../hooks/useEditPage';
-import type { Group } from '../../interfaces/groups';
+import type { Group } from '../../interfaces/resources/groups';
 
 const GroupIcon = ICONS.GROUP;
 

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { WorkloadsState } from '../../../interfaces/workload';
+import type { WorkloadsState } from '../../../interfaces/resources/workload';
 import {
   fetchAllAppsWorkloadsThunk,
   fetchAllBatchesWorkloadsThunk,
