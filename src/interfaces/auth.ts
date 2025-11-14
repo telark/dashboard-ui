@@ -202,3 +202,10 @@ export interface DeleteSessionResponse {
   operation: string;
   message: string;
 }
+
+export interface PasskeysState {
+  passkeys: Passkey[];
+  details: Passkey | null;
+  loading: boolean;
+  error: string | null;
+}

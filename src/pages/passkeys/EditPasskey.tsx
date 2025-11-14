@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Form, message } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { APP_ROUTES, ICONS, PASSKEYS_PAGE_CONSTANTS as PPC, SHARED_DETAILS_CONSTANTS } from '../../constants';
 import Header from '../../components/display/shared/sections/Header';
 import PasskeyForm, {
   type PasskeyFormValues,
 } from '../../components/display/passkeys/shared/PasskeyForm';
 import { PageContainer, NotFound } from '../../components/shared';
-import { getAllPasskeys, updatePasskey } from '../../clients/auth';
 import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
 import { isDevelopment } from '../../utils/helpers/env';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
-import type { Passkey, UpdatePasskeyRequest } from '../../interfaces/auth';
+import { AppDispatch } from '../../store';
+import { fetchAllPasskeysThunk, updatePasskeyThunk } from '../../store/passkeys/slices/passkeySlice';
+import { selectPasskeys, selectPasskeyLoading, selectPasskeyError } from '../../store/passkeys/selectors/passkeySelectors';
+import type { UpdatePasskeyRequest } from '../../interfaces/auth';
 
 const PasskeyIcon = ICONS.PASSKEY;
 
@@ -19,64 +22,70 @@ const EditPasskey: React.FC = () => {
   const { id: encodedDeviceName } = useParams<{ id: string }>();
   const deviceName = encodedDeviceName ? decodeURIComponent(encodedDeviceName) : undefined;
   const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
   const [form] = Form.useForm<PasskeyFormValues>();
-  const [passkey, setPasskey] = useState<Passkey | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const passkeys = useSelector(selectPasskeys);
+  const loading = useSelector(selectPasskeyLoading);
+  const error = useSelector(selectPasskeyError);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    const loadPasskey = async () => {
-      if (!deviceName) {
-        setNotFound(true);
-        setLoading(false);
-        return;
-      }
+    if (passkeys.length === 0) {
+      dispatch(fetchAllPasskeysThunk());
+    }
+  }, [dispatch, passkeys.length]);
 
-      try {
-        // Get all passkeys and find the one matching the device name
-        const allPasskeys = await getAllPasskeys();
-        const found = allPasskeys.find((p) => p.deviceName === deviceName);
-        if (found) {
-          setPasskey(found);
-          form.setFieldsValue({ deviceName: found.deviceName });
-        } else {
-          setNotFound(true);
-        }
-      } catch (error) {
-        message.error(AUTH_ERROR_MESSAGES.FETCH_PASSKEY_FAILED);
-        if (isDevelopment()) {
-          console.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEY, error);
-        }
-        setNotFound(true);
-      } finally {
-        setLoading(false);
+  useEffect(() => {
+    if (error) {
+      message.error(AUTH_ERROR_MESSAGES.FETCH_PASSKEY_FAILED);
+      if (isDevelopment()) {
+        console.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEY, error);
       }
-    };
+      setNotFound(true);
+    }
+  }, [error]);
 
-    loadPasskey();
-  }, [deviceName, form]);
+  const passkey = deviceName ? passkeys.find((p) => p.deviceName === deviceName) : null;
+
+  useEffect(() => {
+    if (passkey) {
+      form.setFieldsValue({ deviceName: passkey.deviceName });
+    }
+  }, [passkey, form]);
+
+  useEffect(() => {
+    if (!loading && deviceName && !passkey) {
+      setNotFound(true);
+    }
+  }, [loading, deviceName, passkey]);
 
   const handleFinish = async (values: PasskeyFormValues) => {
     if (!passkey) return;
 
-    setSubmitting(true);
     try {
       const updateRequest: UpdatePasskeyRequest = {
         deviceName: values.deviceName,
       };
-      await updatePasskey(passkey.credentialId, updateRequest);
-      message.success(PPC.LABELS.MESSAGES.UPDATED(values.deviceName));
-      // Navigate using the updated device name
-      if (values.deviceName) {
-        navigate(APP_ROUTES.PASSKEY_VIEW.replace(':id', encodeURIComponent(values.deviceName)));
+      const result = await dispatch(
+        updatePasskeyThunk({ credentialId: passkey.credentialId, request: updateRequest }),
+      );
+      if (updatePasskeyThunk.fulfilled.match(result)) {
+        message.success(PPC.LABELS.MESSAGES.UPDATED(values.deviceName));
+        // Navigate using the updated device name
+        if (values.deviceName) {
+          navigate(APP_ROUTES.PASSKEY_VIEW.replace(':id', encodeURIComponent(values.deviceName)));
+        }
+      } else {
+        const errorMessage =
+          result.payload instanceof Error
+            ? result.payload.message
+            : AUTH_ERROR_MESSAGES.UPDATE_PASSKEY_FAILED;
+        message.error(errorMessage);
       }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : AUTH_ERROR_MESSAGES.UPDATE_PASSKEY_FAILED;
       message.error(errorMessage);
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -111,7 +120,7 @@ const EditPasskey: React.FC = () => {
         initialValues={{ deviceName: passkey.deviceName }}
         onSubmit={handleFinish}
         buttonText={PPC.LABELS.UPDATE_BUTTON}
-        submitting={submitting}
+        submitting={loading}
         wrapper={AnimatedPageWrapper}
       />
     </PageContainer>

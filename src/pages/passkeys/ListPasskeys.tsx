@@ -1,40 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { message } from 'antd';
-import { APP_ROUTES, ICONS, PASSKEYS_PAGE_CONSTANTS as PPC } from '../../constants';
+import { APP_ROUTES, ICONS, PASSKEYS_PAGE_CONSTANTS as PPC, SHARED_DETAILS_CONSTANTS } from '../../constants';
 import Header from '../../components/display/shared/sections/Header';
 import PasskeysTable from '../../components/display/passkeys/list/Table';
 import FormModal from '../../components/display/shared/modal/FormModal';
 import { PageContainer } from '../../components/shared';
-import { getAllPasskeys, deletePasskey, createPasskey, registerStart } from '../../clients/auth';
+import { registerStart } from '../../clients/auth';
 import { registerPasskey } from '../../utils/auth/webauthn';
 import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
 import { isDevelopment } from '../../utils/helpers/env';
+import { AppDispatch } from '../../store';
+import {
+  fetchAllPasskeysThunk,
+  createPasskeyThunk,
+  deletePasskeyThunk,
+} from '../../store/passkeys/slices/passkeySlice';
+import { selectPasskeys, selectPasskeyLoading, selectPasskeyError } from '../../store/passkeys/selectors/passkeySelectors';
 import type { Passkey, PublicKeyCredentialCreationOptions } from '../../interfaces/auth';
 
 const PasskeyIcon = ICONS.PASSKEY;
 
 const ListPasskeys: React.FC = () => {
   const navigate = useNavigate();
-  const [passkeys, setPasskeys] = useState<Passkey[]>([]);
+  const dispatch: AppDispatch = useDispatch();
+  const passkeys = useSelector(selectPasskeys);
+  const loading = useSelector(selectPasskeyLoading);
+  const error = useSelector(selectPasskeyError);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const loadPasskeys = async () => {
-    try {
-      const data = await getAllPasskeys();
-      setPasskeys(data);
-    } catch (error) {
+  useEffect(() => {
+    dispatch(fetchAllPasskeysThunk());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (error) {
       message.error(AUTH_ERROR_MESSAGES.FETCH_PASSKEYS_FAILED);
       if (isDevelopment()) {
         console.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEYS, error);
       }
     }
-  };
-
-  useEffect(() => {
-    loadPasskeys();
-  }, []);
+  }, [error]);
 
   const handleView = (record: Passkey) => {
     if (!record.deviceName) {
@@ -58,9 +66,18 @@ const ListPasskeys: React.FC = () => {
 
   const handleDelete = async (record: Passkey, forceLastDelete = false) => {
     try {
-      await deletePasskey(record.credentialId, { forceLastDelete });
-      message.success(PPC.LABELS.MESSAGES.DELETED(record.deviceName));
-      await loadPasskeys();
+      const result = await dispatch(
+        deletePasskeyThunk({ credentialId: record.credentialId, request: { forceLastDelete } }),
+      );
+      if (deletePasskeyThunk.fulfilled.match(result)) {
+        message.success(PPC.LABELS.MESSAGES.DELETED(record.deviceName));
+      } else {
+        const errorMessage =
+          result.payload instanceof Error
+            ? result.payload.message
+            : AUTH_ERROR_MESSAGES.DELETE_PASSKEY_FAILED;
+        message.error(errorMessage);
+      }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : AUTH_ERROR_MESSAGES.DELETE_PASSKEY_FAILED;
@@ -121,11 +138,21 @@ const ListPasskeys: React.FC = () => {
 
       // Step 3: Create passkey - verify attestation and store
       const deviceType: 'platform' | 'cross-platform' = PPC.VALUES.DEVICE_TYPE_PLATFORM as 'platform';
-      await createPasskey(credential, deviceName, deviceType);
+      const result = await dispatch(
+        createPasskeyThunk({ credential, deviceName, deviceType }),
+      );
 
-      message.success(PPC.LABELS.MESSAGES.CREATED(deviceName));
-      setIsCreateModalOpen(false);
-      await loadPasskeys();
+      if (createPasskeyThunk.fulfilled.match(result)) {
+        message.success(PPC.LABELS.MESSAGES.CREATED(deviceName));
+        // Modal will be closed by FormModal's handleFinish after onSuccess resolves
+      } else {
+        const errorMessage =
+          result.payload instanceof Error
+            ? result.payload.message
+            : AUTH_ERROR_MESSAGES.CREATE_PASSKEY_FAILED;
+        message.error(errorMessage);
+        throw new Error(errorMessage); // Re-throw to prevent modal from closing on error
+      }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : AUTH_ERROR_MESSAGES.CREATE_PASSKEY_FAILED;
@@ -135,6 +162,21 @@ const ListPasskeys: React.FC = () => {
       setSubmitting(false);
     }
   };
+
+  if (loading) {
+    return (
+      <PageContainer>
+        <Header
+          subtitle={PPC.LABELS.HEADER_SUBTITLE}
+          primaryText={PPC.LABELS.CREATE_BUTTON}
+          onPrimary={() => setIsCreateModalOpen(true)}
+          breadcrumbs={[{ label: PPC.LABELS.BREADCRUMBS.PASSKEYS }]}
+          icon={<PasskeyIcon />}
+        />
+        <div>{SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING}</div>
+      </PageContainer>
+    );
+  }
 
   return (
     <PageContainer>
