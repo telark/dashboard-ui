@@ -17,3 +17,4 @@ export interface HeaderProps {
   iconBackground?: string;
   extraContent?: ReactNode;
 }
+

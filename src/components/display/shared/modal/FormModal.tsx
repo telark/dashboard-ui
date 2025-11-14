@@ -6,7 +6,7 @@ import { BUTTON_TEXTS } from '../../../../constants';
 import BaseModal from './BaseModal';
 import FormFieldRenderer from './FormFieldRenderer';
 import Section from '../../roles/shared/Section';
-import type { FormModalProps } from '../../../../interfaces/modal';
+import type { FormModalProps } from '../../../../interfaces/layout/modal';
 
 const FormModal: React.FC<FormModalProps> = ({
   open,

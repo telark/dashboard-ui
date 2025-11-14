@@ -1,4 +1,4 @@
-import type { Record } from './shared';
+import type { Record } from '../shared';
 
 export interface TimelineRailProps {
   cutHeight: number;
@@ -49,3 +49,4 @@ export interface TimelinePaginationState {
   currentPage: number;
   hasMoreItems: boolean;
 }
+

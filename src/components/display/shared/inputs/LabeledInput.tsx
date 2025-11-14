@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input } from 'antd';
-import type { LabeledInputProps } from '../../../../interfaces/inputs';
+import type { LabeledInputProps } from '../../../../interfaces/layout/inputs';
 
 const LabeledInput: React.FC<LabeledInputProps> = ({
   name,

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { TimelineRailProps } from '../../../../interfaces/timeline';
+import type { TimelineRailProps } from '../../../../interfaces/layout/timeline';
 import { TIMELINE_CONSTANTS, TIMELINE_STYLES } from '../../../../constants';
 
 export const TimelineRail: React.FC<TimelineRailProps> = React.memo(({ cutHeight }) => {

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Record } from '../interfaces/shared';
-import type { TimelinePaginationState } from '../interfaces/timeline';
+import type { TimelinePaginationState } from '../interfaces/layout/timeline';
 
 const ITEMS_PER_PAGE = 20;
 const LOADING_DELAY = 100;
