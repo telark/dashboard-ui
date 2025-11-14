@@ -47,9 +47,3 @@ export const usersPersistConfig: PersistConfig<any> = {
   storage,
   whitelist: ['users'],
 };
-
-export const passkeysPersistConfig: PersistConfig<any> = {
-  key: 'passkeys',
-  storage,
-  whitelist: ['passkeys'],
-};

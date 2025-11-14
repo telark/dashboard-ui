@@ -21,6 +21,14 @@ export const AUTH_ERROR_MESSAGES = {
   MISSING_DEVICE_NAME: 'Device name is required',
   MISSING_USERNAME: 'Username is required',
   LAST_PASSKEY_DELETE: 'Cannot delete last passkey',
+  PASSKEY_ALREADY_EXISTS: 'A passkey with this name already exists',
+  ORPHANED_PASSKEY_DETECTED: 'Found passkey in backend but not in browser. Cleaning up...',
+  ORPHANED_PASSKEY_CLEANUP_FAILED: 'Failed to cleanup orphaned passkey',
+  ORPHANED_PASSKEYS_LOGIN_WARNING:
+    'Your browser does not have the passkeys that are registered in your account. This may happen if you cleared your browser data or switched devices.',
+  CLEANUP_STORED_PASSKEYS: 'Cleanup stored passkeys',
+  CLEANUP_REQUIRES_AUTH:
+    'Unable to automatically cleanup orphaned passkeys. Please contact support to reset your passkeys, or use a different browser/device where your passkeys are still available.',
 } as const;
 
 export const AUTH_SUCCESS_MESSAGES = {

@@ -12,6 +12,7 @@ export const HTTP_HEADERS = {
     DEVICE_NAME: 'X-Device-Name',
     DEVICE_TYPE: 'X-Device-Type',
     USERNAME: 'X-Username',
+    USER_ID: 'X-User-ID',
   },
   STANDARD: {
     AUTHORIZATION: 'Authorization',

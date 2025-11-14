@@ -23,6 +23,7 @@ export const LOGIN_CONSTANTS = {
     ERROR_NAMES: {
       NOT_ALLOWED: 'NotAllowedError',
       INVALID_STATE: 'InvalidStateError',
+      NOT_FOUND: 'NotFoundError',
       NOT_SUPPORTED: 'NotSupportedError',
       CONSTRAINT: 'ConstraintError',
     },
@@ -38,6 +39,10 @@ export const LOGIN_CONSTANTS = {
       REGISTRATION_FAILED: 'Registration failed',
       UNSUPPORTED_RESPONSE_TYPE: 'Unsupported credential response type',
       CONSTRAINT_VALIDATION_FAILED: 'Constraint validation failed',
+    },
+    ERROR_PATTERNS: {
+      USER_CANCELLED_AUTH: 'user cancelled authentication',
+      NO_CREDENTIAL_FOUND: 'no credential found',
     },
   },
   SESSION: {

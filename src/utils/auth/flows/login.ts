@@ -1,53 +1,24 @@
-import { loginStart, loginFinish } from '../../../clients/auth';
-import { authenticateWithPasskey } from '../webauthn';
+import { loginStart, loginFinish, deletePasskey } from '../../../clients/auth';
+import {
+  authenticateWithPasskey,
+  base64UrlToBase64,
+  extractLoginOptions,
+  extractCredentialIds,
+  hasBackendPasskeys,
+  validateBackendPasskeysInBrowser,
+  isCancelledOrNoCredentialError,
+} from '../webauthn';
 import { setSessionToken } from '../session/token';
 import { setCurrentUser } from '../../user/session';
-import { AUTH_SUCCESS_MESSAGES } from '../../../constants/auth';
+import { AUTH_SUCCESS_MESSAGES, AUTH_ERROR_MESSAGES } from '../../../constants/auth';
 import { LOGIN_CONSTANTS } from '../../../constants/pages/login';
+import { HTTP_STATUS } from '../../../constants/rest/http';
 import { handleAuthError } from '../shared/errors';
-import { isDevelopment } from '../../helpers/env';
-import logger from '../../../logging';
 import type {
   LoginStartResponse,
-  PublicKeyCredentialRequestOptions,
   AuthenticatorAssertionResponse,
 } from '../../../interfaces/auth/credentials';
 import type { MessageInstance } from 'antd/es/message/interface';
-
-export const extractLoginOptions = (
-  loginStartResponse: LoginStartResponse,
-): PublicKeyCredentialRequestOptions => {
-  if (loginStartResponse.options?.publicKey) {
-    const publicKey = (loginStartResponse.options as any).publicKey;
-    return {
-      challenge: publicKey.challenge,
-      timeout: publicKey.timeout,
-      rpId: publicKey.rpId,
-      allowCredentials: publicKey.allowCredentials,
-      userVerification: publicKey.userVerification || LOGIN_CONSTANTS.WEBAUTHN.USER_VERIFICATION,
-    };
-  }
-
-  if (loginStartResponse.options?.response) {
-    return loginStartResponse.options.response;
-  }
-
-  if (loginStartResponse.challenge) {
-    return {
-      challenge: loginStartResponse.challenge,
-      timeout: loginStartResponse.timeout,
-      rpId: loginStartResponse.rpId,
-      allowCredentials: loginStartResponse.allowCredentials,
-      userVerification: LOGIN_CONSTANTS.WEBAUTHN.USER_VERIFICATION,
-    };
-  }
-
-  if (isDevelopment()) {
-    logger.error(LOGIN_CONSTANTS.LOGS.INVALID_RESPONSE_STRUCTURE, loginStartResponse);
-  }
-
-  throw new Error(LOGIN_CONSTANTS.MESSAGES.INVALID_RESPONSE);
-};
 
 export const prepareLoginFinishRequest = (
   username: string,
@@ -67,6 +38,58 @@ export const prepareLoginFinishRequest = (
   };
 };
 
+const isUnauthorizedError = (error: unknown): boolean => {
+  const axiosError = error as any;
+  const status = axiosError?.response?.status || axiosError?.normalized?.status;
+  return status === HTTP_STATUS.UNAUTHORIZED;
+};
+
+const isNotFoundError = (error: unknown): boolean => {
+  const axiosError = error as any;
+  const status = axiosError?.response?.status || axiosError?.normalized?.status;
+  return status === HTTP_STATUS.NOT_FOUND || status === HTTP_STATUS.BAD_REQUEST;
+};
+
+const cleanupOrphanedPasskeys = async (
+  credentialIds: string[],
+  userId: string,
+  messageApi: MessageInstance,
+): Promise<boolean> => {
+  if (credentialIds.length === 0) {
+    return false;
+  }
+
+  const loadingMessage = messageApi.loading(AUTH_ERROR_MESSAGES.CLEANUP_STORED_PASSKEYS, 0);
+
+  let hasUnauthorizedError = false;
+
+  try {
+    const deletePromises = credentialIds.map(async (credentialId) => {
+      try {
+        const base64CredentialId = base64UrlToBase64(credentialId);
+        await deletePasskey(
+          base64CredentialId,
+          { cleanupOrphaned: true, forceLastDelete: true },
+          userId,
+        );
+      } catch (error) {
+        if (isUnauthorizedError(error)) {
+          hasUnauthorizedError = true;
+        } else if (isNotFoundError(error)) {
+          // Passkey not found - may be due to format mismatch, continue cleanup
+        }
+      }
+    });
+
+    await Promise.all(deletePromises);
+    loadingMessage();
+    return hasUnauthorizedError;
+  } catch (error) {
+    loadingMessage();
+    return isUnauthorizedError(error);
+  }
+};
+
 export const performLogin = async (
   username: string,
   messageApi: MessageInstance,
@@ -74,14 +97,33 @@ export const performLogin = async (
   onNoPasskeys?: () => void,
   onUserNotFound?: () => void,
 ): Promise<void> => {
+  let loginStartResponse: LoginStartResponse | null = null;
   try {
-    const loginStartResponse = await loginStart({ username });
+    loginStartResponse = await loginStart({ username });
+    const validation = await validateBackendPasskeysInBrowser(loginStartResponse);
+
+    if (!validation.hasValidPasskeys && validation.orphanedCredentialIds.length > 0) {
+      const userId = loginStartResponse.userId;
+      if (userId) {
+        await cleanupOrphanedPasskeys(validation.orphanedCredentialIds, userId, messageApi);
+      }
+      throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NO_CREDENTIAL_FOUND);
+    }
+
     const options = extractLoginOptions(loginStartResponse);
+    let filteredAllowCredentials = options.allowCredentials;
+    if (validation.orphanedCredentialIds.length > 0 && validation.hasValidPasskeys) {
+      filteredAllowCredentials = options.allowCredentials?.filter((cred) => {
+        const credId = typeof cred.id === 'string' ? cred.id : '';
+        return !validation.orphanedCredentialIds.includes(credId);
+      });
+    }
+    
     const credential = await authenticateWithPasskey({
       challenge: options.challenge,
       timeout: options.timeout,
       rpId: options.rpId,
-      allowCredentials: options.allowCredentials,
+      allowCredentials: filteredAllowCredentials,
       userVerification: options.userVerification || LOGIN_CONSTANTS.WEBAUTHN.USER_VERIFICATION,
     });
 
@@ -116,6 +158,33 @@ export const performLogin = async (
       onSuccess();
     }
   } catch (error) {
+    // Check for orphaned passkeys scenario
+    if (loginStartResponse && isCancelledOrNoCredentialError(error)) {
+      const backendHasPasskeys = hasBackendPasskeys(loginStartResponse);
+      if (backendHasPasskeys) {
+        messageApi.open({
+          type: 'warning',
+          content: AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_LOGIN_WARNING,
+          duration: 6,
+        });
+
+        const credentialIds = extractCredentialIds(loginStartResponse);
+        const userId = loginStartResponse.userId;
+        if (credentialIds.length > 0 && userId) {
+          const requiresAuth = await cleanupOrphanedPasskeys(credentialIds, userId, messageApi);
+          if (requiresAuth) {
+            messageApi.open({
+              type: 'info',
+              content: AUTH_ERROR_MESSAGES.CLEANUP_REQUIRES_AUTH,
+              duration: 8,
+            });
+          }
+        }
+
+        throw error;
+      }
+    }
+
     handleAuthError(error, messageApi, {
       onUserNotFound,
       onNoPasskeys,

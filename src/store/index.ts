@@ -14,7 +14,6 @@ import {
   bridgePersistConfig,
   groupsPersistConfig,
   usersPersistConfig,
-  passkeysPersistConfig,
 } from './persistence/persistConfig';
 
 const persistedGrouperReducer = persistReducer(grouperPersistConfig, grouperReducer);
@@ -23,7 +22,6 @@ const persistedWorkloadReducer = persistReducer(workloadPersistConfig, workloadR
 const persistedBridgeReducer = persistReducer(bridgePersistConfig, bridgeReducer);
 const persistedGroupsReducer = persistReducer(groupsPersistConfig, groupsReducer);
 const persistedUsersReducer = persistReducer(usersPersistConfig, usersReducer);
-const persistedPasskeysReducer = persistReducer(passkeysPersistConfig, passkeysReducer);
 
 const store = configureStore({
   reducer: {
@@ -33,7 +31,7 @@ const store = configureStore({
     bridge: persistedBridgeReducer,
     groups: persistedGroupsReducer,
     users: persistedUsersReducer,
-    passkeys: persistedPasskeysReducer,
+    passkeys: passkeysReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -83,6 +83,7 @@ export interface LoginStartResponse {
   allowCredentials?: PublicKeyCredentialDescriptor[];
   timeout?: number;
   rpId?: string;
+  userId?: string;
 }
 
 export interface LoginFinishRequest {
