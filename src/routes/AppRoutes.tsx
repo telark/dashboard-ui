@@ -14,9 +14,6 @@ import {
   RolesListView,
   RoleView,
   RoleEdit,
-  CategoriesListView,
-  CategoryView,
-  CategoryEdit,
   UsersListView,
   UsersCreateView,
   UserView,
@@ -139,30 +136,6 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <RoleEdit />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={APP_ROUTES.CATEGORIES}
-        element={
-          <ProtectedRoute>
-            <CategoriesListView />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={APP_ROUTES.CATEGORY_VIEW}
-        element={
-          <ProtectedRoute>
-            <CategoryView />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={APP_ROUTES.CATEGORY_EDIT}
-        element={
-          <ProtectedRoute>
-            <CategoryEdit />
           </ProtectedRoute>
         }
       />

@@ -6,7 +6,6 @@ import { ICONS, APP_ROUTES } from '../../../constants';
 
 const HomeIcon = ICONS.HOME;
 const RoleIcon = ICONS.ROLE;
-const CategoryIcon = ICONS.CATEGORY;
 const GrouperIcon = ICONS.GROUPER;
 const WorkloadIcon = ICONS.WORKLOAD;
 const BridgeIcon = ICONS.BRIDGE;
@@ -99,13 +98,6 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
               isCollapsed={isCollapsed}
             />
             <SidebarButton
-              text={'Categories'}
-              icon={<CategoryIcon />}
-              active={pathname.startsWith('/categories')}
-              route="/categories"
-              isCollapsed={isCollapsed}
-            />
-            <SidebarButton
               text={'Passkeys'}
               icon={<PasskeyIcon />}
               active={pathname.startsWith(APP_ROUTES.PASSKEYS)}
@@ -170,13 +162,6 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
                 icon={<RoleIcon />}
                 active={pathname.startsWith('/roles')}
                 route="/roles"
-                isCollapsed={isCollapsed}
-              />
-              <SidebarButton
-                text={'Categories'}
-                icon={<CategoryIcon />}
-                active={pathname.startsWith('/categories')}
-                route="/categories"
                 isCollapsed={isCollapsed}
               />
               <SidebarButton

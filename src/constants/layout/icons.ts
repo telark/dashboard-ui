@@ -18,7 +18,6 @@ import { BsFillCpuFill, BsMemory, BsKey } from 'react-icons/bs';
 export const ICONS = {
   HOME: AiOutlineDashboard,
   ROLE: AiOutlineSafety,
-  CATEGORY: AiOutlineTags,
   GROUPER: AiOutlineCluster,
   WORKLOAD: AiOutlineAppstore,
   BRIDGE: AiOutlineApi,
