@@ -14,7 +14,7 @@ import { checkClusterInsightsThunk } from './store/insights/slices/insightsSlice
 import type { RootState, AppDispatch } from './store';
 import { FancySpinner } from './components/shared';
 import { hasSessionToken } from './utils/auth/session';
-import { useSessionExpirationCheck } from './utils/auth/session/expirationCheck';
+import { useSessionExpirationCheck } from './utils/auth/session/expiration';
 
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
 

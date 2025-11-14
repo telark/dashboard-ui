@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { validateSession } from './sessionValidation';
+import { validateSession } from './validation';
 import { isDevelopment } from '../../helpers/env';
 import logger from '../../../logging';
 import { AUTH_CONFIG } from '../../../constants/auth/config';
