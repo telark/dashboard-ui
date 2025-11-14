@@ -99,6 +99,20 @@ export const PASSKEYS_PAGE_CONSTANTS = {
       deviceName: '',
     },
     MODAL_WIDTH: 360,
+    STYLES: {
+      CARD_PADDING: 16,
+      FORM_GAP: 18,
+      FULL_WIDTH: '100%',
+    },
+  },
+  ERRORS: {
+    DEVICE_NAME_REQUIRED: 'Device name is required',
+    INVALID_RESPONSE_STRUCTURE: 'Invalid response structure from server',
+  },
+  LOGS: {
+    FAILED_TO_LOAD_PASSKEYS: 'Failed to load passkeys:',
+    FAILED_TO_LOAD_PASSKEY: 'Failed to load passkey:',
+    MISSING_DEVICE_NAME: 'Passkey record missing deviceName:',
   },
 } as const;
 

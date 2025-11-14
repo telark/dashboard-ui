@@ -9,6 +9,7 @@ import PasskeyForm, {
 import { PageContainer, NotFound } from '../../components/shared';
 import { getAllPasskeys, updatePasskey } from '../../clients/auth';
 import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
+import { isDevelopment } from '../../utils/helpers/env';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
 import type { Passkey, UpdatePasskeyRequest } from '../../interfaces/auth';
 
@@ -44,7 +45,9 @@ const EditPasskey: React.FC = () => {
         }
       } catch (error) {
         message.error(AUTH_ERROR_MESSAGES.FETCH_PASSKEY_FAILED);
-        console.error('Failed to load passkey:', error);
+        if (isDevelopment()) {
+          console.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEY, error);
+        }
         setNotFound(true);
       } finally {
         setLoading(false);

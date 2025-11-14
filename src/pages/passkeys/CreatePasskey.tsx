@@ -52,7 +52,7 @@ const CreatePasskey: React.FC = () => {
           authenticatorSelection: registerStartResponse.authenticatorSelection,
         };
       } else {
-        throw new Error('Invalid response structure from server');
+        throw new Error(PPC.ERRORS.INVALID_RESPONSE_STRUCTURE);
       }
 
       // Step 2: Create passkey with WebAuthn
@@ -67,7 +67,7 @@ const CreatePasskey: React.FC = () => {
       });
 
       // Step 3: Create passkey - verify attestation and store
-      const deviceType: 'platform' | 'cross-platform' = 'platform';
+      const deviceType: 'platform' | 'cross-platform' = PPC.VALUES.DEVICE_TYPE_PLATFORM as 'platform';
       const response = await createPasskey(credential, values.deviceName, deviceType);
 
       message.success(PPC.LABELS.MESSAGES.CREATED(values.deviceName));
@@ -98,7 +98,7 @@ const CreatePasskey: React.FC = () => {
 
       <PasskeyForm
         form={form}
-        initialValues={{ deviceName: '' }}
+        initialValues={PPC.FORM.INITIAL_VALUES}
         onSubmit={handleFinish}
         buttonText={PPC.LABELS.CREATE_BUTTON_TEXT}
         submitting={submitting}

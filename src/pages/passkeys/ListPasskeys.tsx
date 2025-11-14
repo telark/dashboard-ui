@@ -9,6 +9,7 @@ import { PageContainer } from '../../components/shared';
 import { getAllPasskeys, deletePasskey, createPasskey, registerStart } from '../../clients/auth';
 import { registerPasskey } from '../../utils/auth/webauthn';
 import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
+import { isDevelopment } from '../../utils/helpers/env';
 import type { Passkey, PublicKeyCredentialCreationOptions } from '../../interfaces/auth';
 
 const PasskeyIcon = ICONS.PASSKEY;
@@ -25,7 +26,9 @@ const ListPasskeys: React.FC = () => {
       setPasskeys(data);
     } catch (error) {
       message.error(AUTH_ERROR_MESSAGES.FETCH_PASSKEYS_FAILED);
-      console.error('Failed to load passkeys:', error);
+      if (isDevelopment()) {
+        console.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEYS, error);
+      }
     }
   };
 
@@ -35,7 +38,9 @@ const ListPasskeys: React.FC = () => {
 
   const handleView = (record: Passkey) => {
     if (!record.deviceName) {
-      console.warn('Passkey record missing deviceName:', record);
+      if (isDevelopment()) {
+        console.warn(PPC.LOGS.MISSING_DEVICE_NAME, record);
+      }
       return;
     }
     navigate(APP_ROUTES.PASSKEY_VIEW.replace(':id', encodeURIComponent(record.deviceName)));
@@ -43,7 +48,9 @@ const ListPasskeys: React.FC = () => {
 
   const handleEdit = (record: Passkey) => {
     if (!record.deviceName) {
-      console.warn('Passkey record missing deviceName:', record);
+      if (isDevelopment()) {
+        console.warn(PPC.LOGS.MISSING_DEVICE_NAME, record);
+      }
       return;
     }
     navigate(APP_ROUTES.PASSKEY_EDIT.replace(':id', encodeURIComponent(record.deviceName)));
@@ -64,7 +71,7 @@ const ListPasskeys: React.FC = () => {
   const handleCreate = async (values: Record<string, any>) => {
     const deviceName = values.deviceName as string;
     if (!deviceName) {
-      throw new Error('Device name is required');
+      throw new Error(PPC.ERRORS.DEVICE_NAME_REQUIRED);
     }
     setSubmitting(true);
     try {
@@ -98,7 +105,7 @@ const ListPasskeys: React.FC = () => {
           authenticatorSelection: registerStartResponse.authenticatorSelection,
         };
       } else {
-        throw new Error('Invalid response structure from server');
+        throw new Error(PPC.ERRORS.INVALID_RESPONSE_STRUCTURE);
       }
 
       // Step 2: Create passkey with WebAuthn
@@ -113,7 +120,7 @@ const ListPasskeys: React.FC = () => {
       });
 
       // Step 3: Create passkey - verify attestation and store
-      const deviceType: 'platform' | 'cross-platform' = 'platform';
+      const deviceType: 'platform' | 'cross-platform' = PPC.VALUES.DEVICE_TYPE_PLATFORM as 'platform';
       await createPasskey(credential, deviceName, deviceType);
 
       message.success(PPC.LABELS.MESSAGES.CREATED(deviceName));

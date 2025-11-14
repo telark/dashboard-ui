@@ -9,6 +9,7 @@ import { PageContainer, NotFound } from '../../components/shared';
 import { getAllPasskeys } from '../../clients/auth';
 import { message } from 'antd';
 import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
+import { isDevelopment } from '../../utils/helpers/env';
 import type { Passkey } from '../../interfaces/auth';
 
 const PasskeyIcon = ICONS.PASSKEY;
@@ -29,7 +30,6 @@ const ViewPasskey: React.FC = () => {
       }
 
       try {
-        // Get all passkeys and find the one matching the device name
         const allPasskeys = await getAllPasskeys();
         const found = allPasskeys.find((p) => p.deviceName === deviceName);
         if (found) {
@@ -39,7 +39,9 @@ const ViewPasskey: React.FC = () => {
         }
       } catch (error) {
         message.error(AUTH_ERROR_MESSAGES.FETCH_PASSKEYS_FAILED);
-        console.error('Failed to load passkey:', error);
+        if (isDevelopment()) {
+          console.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEY, error);
+        }
         setNotFound(true);
       } finally {
         setLoading(false);

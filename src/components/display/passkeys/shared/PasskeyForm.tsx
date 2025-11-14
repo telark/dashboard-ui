@@ -33,8 +33,8 @@ const PasskeyForm: React.FC<PasskeyFormProps> = ({
     <div
       style={{
         ...COMPONENT_STYLES.WORKLOAD_INSTANCES.containerCard,
-        padding: 16,
-        width: '100%',
+        padding: PPC.FORM.STYLES.CARD_PADDING,
+        width: PPC.FORM.STYLES.FULL_WIDTH,
       }}
     >
       <Form<PasskeyFormValues>
@@ -47,8 +47,8 @@ const PasskeyForm: React.FC<PasskeyFormProps> = ({
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 18,
-            width: '100%',
+            gap: PPC.FORM.STYLES.FORM_GAP,
+            width: PPC.FORM.STYLES.FULL_WIDTH,
           }}
         >
           <LabeledInput
@@ -58,7 +58,7 @@ const PasskeyForm: React.FC<PasskeyFormProps> = ({
             rules={[{ required: true, message: PPC.FORM.DEVICE_NAME_REQUIRED }]}
             component={Input}
           />
-          <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+          <div style={{ width: PPC.FORM.STYLES.FULL_WIDTH, display: 'flex', justifyContent: 'center' }}>
             <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
               <PrimaryButton
                 action={buttonText}
