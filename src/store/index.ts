@@ -37,6 +37,10 @@ const store = configureStore({
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE', 'persist/PURGE'],
         warnAfter: 128, // default is 32ms
       },
+      immutableCheck: {
+        // Increase threshold for immutable checks since we have large state objects
+        warnAfter: 128, // default is 32ms
+      },
     }),
 });
 
