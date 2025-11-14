@@ -16,20 +16,16 @@ const PasskeyIcon = ICONS.PASSKEY;
 const ListPasskeys: React.FC = () => {
   const navigate = useNavigate();
   const [passkeys, setPasskeys] = useState<Passkey[]>([]);
-  const [loading, setLoading] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const loadPasskeys = async () => {
-    setLoading(true);
     try {
       const data = await getAllPasskeys();
       setPasskeys(data);
     } catch (error) {
       message.error(AUTH_ERROR_MESSAGES.FETCH_PASSKEYS_FAILED);
       console.error('Failed to load passkeys:', error);
-    } finally {
-      setLoading(false);
     }
   };
 

@@ -1,11 +1,10 @@
 import React, { useMemo, useState } from 'react';
-import { App, message } from 'antd';
+import { App } from 'antd';
 import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../../constants/pages/passkeys';
 import type { Passkey } from '../../../../interfaces/auth';
 import { Columns } from './Columns';
 import { PasskeysSortKey, sortPasskeys } from './utils';
 import DataTable from '../../shared/table/DataTable';
-import { AUTH_ERROR_MESSAGES } from '../../../../constants/auth';
 
 interface PasskeysTableProps {
   passkeys: Passkey[];
@@ -48,8 +47,8 @@ const PasskeysTable: React.FC<PasskeysTableProps> = ({ passkeys, onView, onEdit,
       onOk: async () => {
         try {
           await onDelete(record, isLastPasskey);
-        } catch (_: unknown) {
-          message.error(AUTH_ERROR_MESSAGES.DELETE_PASSKEY_FAILED);
+        } catch {
+          // Error is handled by the onDelete function
         }
       },
     });

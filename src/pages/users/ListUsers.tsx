@@ -64,7 +64,7 @@ const UsersList: React.FC = () => {
 
       <UsersTable
         users={users as any}
-        onUsersChange={(updatedUsers) => {
+        onUsersChange={() => {
           // Users are managed by Redux, so we don't need to update local state
           // This is kept for compatibility with the table component
         }}

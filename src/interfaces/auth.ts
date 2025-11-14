@@ -181,7 +181,7 @@ export interface UpdatePasskeyRequest {
   lastUsedTimestamp?: string;
 }
 
-export interface UpdatePasskeyResponse extends Passkey {}
+export type UpdatePasskeyResponse = Passkey;
 
 export interface DeletePasskeyRequest {
   forceLastDelete?: boolean;

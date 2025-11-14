@@ -1,6 +1,5 @@
 import {
   AiOutlineSafety,
-  AiOutlineTags,
   AiOutlineCluster,
   AiOutlineAppstore,
   AiOutlineApi,

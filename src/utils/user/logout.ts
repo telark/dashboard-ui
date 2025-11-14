@@ -14,7 +14,7 @@ export const handleUserLogout = async (navigate: (path: string) => void): Promis
     }
     message.success(AUTH_SUCCESS_MESSAGES.LOGOUT_SUCCESS);
     navigate(APP_ROUTES.LOGIN);
-  } catch (error) {
+  } catch {
     try {
       removeSessionToken();
     } catch {

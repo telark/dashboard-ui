@@ -35,7 +35,7 @@ export const base64UrlToBase64 = (base64url: string): string => {
 
 const convertRequestOptions = (
   options: PublicKeyCredentialRequestOptions,
-): CredentialRequestOptions => {
+): globalThis.CredentialRequestOptions => {
   const publicKey: globalThis.PublicKeyCredentialRequestOptions = {
     challenge: base64UrlToArrayBuffer(options.challenge),
     timeout: options.timeout,
@@ -56,7 +56,7 @@ const convertRequestOptions = (
 
 const convertCreationOptions = (
   options: PublicKeyCredentialCreationOptions,
-): CredentialCreationOptions => {
+): globalThis.CredentialCreationOptions => {
   const publicKey: globalThis.PublicKeyCredentialCreationOptions = {
     challenge: base64UrlToArrayBuffer(options.challenge),
     rp: options.rp,

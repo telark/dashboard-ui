@@ -3,7 +3,7 @@ import { AiOutlineCalendar, AiOutlineClockCircle } from 'react-icons/ai';
 import type { Passkey } from '../interfaces/auth';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import { StatusTag } from '../components/tags';
-import { DEFAULT_COLORS, ICONS, PASSKEYS_PAGE_CONSTANTS as PPC } from '../constants';
+import { DEFAULT_COLORS, PASSKEYS_PAGE_CONSTANTS as PPC } from '../constants';
 import TimeAgo from '../components/time/TimeAgo';
 
 export const createPasskeyViewConfig = (passkey: Passkey): ViewDetailsConfig => {

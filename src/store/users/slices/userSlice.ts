@@ -9,8 +9,6 @@ import {
   handleFetchUsersPending,
   handleFetchUsersFulfilled,
   handleFetchUsersRejected,
-  handleFetchUsersSilentPending,
-  handleFetchUsersSilentRejected,
   handleFetchUserDetailsPending,
   handleFetchUserDetailsFulfilled,
   handleFetchUserDetailsRejected,
@@ -56,10 +54,8 @@ const userSlice = createSlice({
       .addCase(fetchAllUsersThunk.pending, handleFetchUsersPending)
       .addCase(fetchAllUsersThunk.fulfilled, handleFetchUsersFulfilled)
       .addCase(fetchAllUsersThunk.rejected, handleFetchUsersRejected)
-      // Fetch all users (silent)
-      .addCase(fetchAllUsersSilentThunk.pending, handleFetchUsersSilentPending)
+      // Fetch all users (silent) - only handle fulfilled, skip pending/rejected to avoid UI updates
       .addCase(fetchAllUsersSilentThunk.fulfilled, handleFetchUsersFulfilled)
-      .addCase(fetchAllUsersSilentThunk.rejected, handleFetchUsersSilentRejected)
       // Fetch user details
       .addCase(fetchUserDetailsThunk.pending, handleFetchUserDetailsPending)
       .addCase(fetchUserDetailsThunk.fulfilled, handleFetchUserDetailsFulfilled)

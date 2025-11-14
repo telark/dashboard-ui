@@ -17,14 +17,6 @@ export const handleFetchUsersRejected = (state: UsersState, action: PayloadActio
   state.error = action.payload;
 };
 
-export const handleFetchUsersSilentPending = (state: UsersState) => {
-  // Don't set loading for silent fetches
-};
-
-export const handleFetchUsersSilentRejected = (state: UsersState, action: PayloadAction<any>) => {
-  // Don't set error for silent fetches
-};
-
 export const handleFetchUserDetailsPending = (state: UsersState) => {
   state.loading = true;
   state.details = null; // Clear details on new fetch

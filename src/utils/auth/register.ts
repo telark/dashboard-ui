@@ -54,33 +54,29 @@ export const performRegister = async (
   messageApi: MessageInstance,
   onSuccess?: () => void,
 ): Promise<void> => {
-  try {
-    const registerStartResponse = await registerStart(username);
-    const options = extractRegisterOptions(registerStartResponse);
+  const registerStartResponse = await registerStart(username);
+  const options = extractRegisterOptions(registerStartResponse);
 
-    const credential = await registerPasskey({
-      challenge: options.challenge,
-      rp: options.rp,
-      user: options.user,
-      pubKeyCredParams: options.pubKeyCredParams,
-      timeout: options.timeout,
-      attestation: options.attestation,
-      authenticatorSelection: options.authenticatorSelection,
-    });
+  const credential = await registerPasskey({
+    challenge: options.challenge,
+    rp: options.rp,
+    user: options.user,
+    pubKeyCredParams: options.pubKeyCredParams,
+    timeout: options.timeout,
+    attestation: options.attestation,
+    authenticatorSelection: options.authenticatorSelection,
+  });
 
-    const deviceType: 'platform' | 'cross-platform' = 'platform';
-    await createPasskey(credential, deviceName, deviceType, username);
+  const deviceType: 'platform' | 'cross-platform' = 'platform';
+  await createPasskey(credential, deviceName, deviceType, username);
 
-    messageApi.open({
-      type: 'success',
-      content: AUTH_SUCCESS_MESSAGES.REGISTER_SUCCESS,
-      duration: 2,
-    });
+  messageApi.open({
+    type: 'success',
+    content: AUTH_SUCCESS_MESSAGES.REGISTER_SUCCESS,
+    duration: 2,
+  });
 
-    if (onSuccess) {
-      onSuccess();
-    }
-  } catch (error) {
-    throw error;
+  if (onSuccess) {
+    onSuccess();
   }
 };

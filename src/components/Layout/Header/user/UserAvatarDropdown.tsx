@@ -12,9 +12,7 @@ import { isDevelopment } from '../../../../utils/helpers/env';
 import type { User as AuthUser } from '../../../../interfaces/auth';
 import type { User as UsersUser } from '../../../../interfaces/users';
 
-interface UserAvatarDropdownProps {}
-
-const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(() => {
+const UserAvatarDropdown: React.FC = memo(() => {
   const [currentAuthUser, setCurrentAuthUser] = useState<AuthUser | null>(null);
   const [currentUser, setCurrentUser] = useState<UsersUser | null>(null);
   const [, setLoading] = useState(false);
