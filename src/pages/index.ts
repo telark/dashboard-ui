@@ -1,27 +1,4 @@
-export { default as Dashboard } from './home/Dashboard';
-export { default as Login } from './auth/Login';
-export { default as Register } from './auth/Register';
-export { default as PasskeysListView } from './passkeys/ListPasskeys';
-export { default as PasskeyView } from './passkeys/ViewPasskey';
-export { default as PasskeyEdit } from './passkeys/EditPasskey';
-export { default as PasskeyCreateView } from './passkeys/CreatePasskey';
-export { default as GroupersGlobalView } from './grouper/main/GlobalView';
-export { default as GrouperDetailsView } from './grouper/details/DetailsView';
-export { default as BridgesGlobalView } from './bridge/main/GlobalView';
-export { default as BridgeDetailsView } from './bridge/details/DetailsView';
-export { default as WorkloadsGlobalView } from './workload/main/GlobalView';
-export { default as AppWorkloadDetailsView } from './workload/details/apps/DetailsView';
+// Only export pages that are not lazy-loaded in AppRoutes.tsx
+// Pages that are lazy-loaded should be imported directly to enable code splitting
 export { default as Startup } from './analyze/Startup';
 export { default as Welcome } from './analyze/Welcome';
-export { default as RolesCreateView } from './roles/CreateRole';
-export { default as RolesListView } from './roles/ListRoles';
-export { default as RoleView } from './roles/ViewRole';
-export { default as RoleEdit } from './roles/EditRole';
-export { default as UsersListView } from './users/ListUsers';
-export { default as UsersCreateView } from './users/CreateUser';
-export { default as UserView } from './users/ViewUser';
-export { default as UserEdit } from './users/EditUser';
-export { default as GroupsListView } from './groups/ListGroups';
-export { default as GroupsCreateView } from './groups/CreateGroup';
-export { default as GroupView } from './groups/ViewGroup';
-export { default as GroupEdit } from './groups/EditGroup';
