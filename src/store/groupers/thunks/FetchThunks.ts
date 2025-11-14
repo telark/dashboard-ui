@@ -35,7 +35,7 @@ export const fetchAllGroupersSilentThunk = createAsyncThunk(
   STORE_ACTIONS.GROUPERS.FETCH_SILENT,
   async (_, { rejectWithValue }) => {
     try {
-      const rawGroupersData = await fetchGroupers(true); // Silent mode
+      const rawGroupersData = await fetchGroupers(true);
       return mapGroupersData(rawGroupersData);
     } catch (error: unknown) {
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_GROUPERS));
@@ -51,21 +51,22 @@ export const fetchGrouperDetailsThunk = createAsyncThunk(
       const response = await fetchGrouperDetails(grouperName);
 
       let maintenance: Maintenance | null = null;
-      const hasMaintenance = Boolean(response.data?.config?.maintenance);
+      const responseData = response.data as { config?: { maintenance?: unknown } } | undefined;
+      const hasMaintenance = Boolean(responseData?.config?.maintenance);
       if (hasMaintenance) {
         try {
           const maintenanceFeatureName = generateMaintenanceFeatureName(name);
           const maintenanceResponse = await checkGrouperMaintenanceMode(maintenanceFeatureName);
 
           // Map maintenance data if available
-          maintenance = maintenanceResponse.data
-            ? {
-                name: maintenanceResponse.data.name,
-                status: maintenanceResponse.data.status,
-                deleteAction: maintenanceResponse.data.delete,
-                updateAction: maintenanceResponse.data.update,
-              }
-            : null;
+          if (maintenanceResponse.data) {
+            maintenance = {
+              name: maintenanceResponse.data.name,
+              status: maintenanceResponse.data.status,
+              deleteAction: String(maintenanceResponse.data.delete),
+              updateAction: String(maintenanceResponse.data.update),
+            };
+          }
         } catch (maintenanceError) {
           logger.warn(STORE_MESSAGES.FETCH_MAINTENANCE_FAILED, maintenanceError);
           maintenance = null;

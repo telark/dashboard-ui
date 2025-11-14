@@ -1,9 +1,9 @@
-import { getSessionToken } from './session';
-import { getSessionDetails } from '../../clients/exporter';
-import { isDevelopment } from '../helpers/env';
-import logger from '../../logging';
-import { AUTH_CONSTANTS } from '../../constants/auth/messages';
-import { HTTP_STATUS } from '../../constants';
+import { getSessionToken } from '../session';
+import { getSessionDetails } from '../../../clients/exporter';
+import { isDevelopment } from '../../helpers/env';
+import logger from '../../../logging';
+import { AUTH_CONSTANTS } from '../../../constants/auth/messages';
+import { HTTP_STATUS } from '../../../constants';
 import type { AxiosError } from 'axios';
 
 export interface SessionValidationResult {
@@ -91,3 +91,4 @@ export const validateSession = async (): Promise<SessionValidationResult> => {
     };
   }
 };
+

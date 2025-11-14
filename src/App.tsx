@@ -14,12 +14,8 @@ import { checkClusterInsightsThunk } from './store/insights/slices/insightsSlice
 import type { RootState, AppDispatch } from './store';
 import { FancySpinner } from './components/shared';
 import { hasSessionToken } from './utils/auth/session';
-import { validateSession } from './utils/auth/sessionValidation';
-import { isDevelopment } from './utils/helpers/env';
-import logger from './logging';
-import { AUTH_CONFIG } from './constants/auth/config';
+import { useSessionExpirationCheck } from './utils/auth/session/expirationCheck';
 
-// Ensure messages are shown below the fixed header and are visible above content
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
 
 const AppContent: React.FC = () => {
@@ -41,42 +37,11 @@ const AppContent: React.FC = () => {
   }, [dispatch, initialized]);
 
   // Check session expiration as background task when authenticated
-  useEffect(() => {
-    if (!isAuthenticated || isAuthRoute) {
-      return;
-    }
-
-    const checkSessionExpiration = async () => {
-      try {
-        const validationResult = await validateSession();
-        if (validationResult.isExpired) {
-          if (isDevelopment()) {
-            logger.warn('Session expired:', validationResult);
-          }
-          setShowSessionExpiredModal(true);
-        }
-      } catch (error) {
-        if (isDevelopment()) {
-          logger.error('Error checking session expiration:', error);
-        }
-        // On error, don't show modal - let normal auth flow handle it
-      }
-    };
-
-    // Run initial check
-    checkSessionExpiration();
-
-    // Set up interval for background checking
-    const intervalId = globalThis.setInterval(
-      checkSessionExpiration,
-      AUTH_CONFIG.SESSION.VALIDATION.INTERVAL_SECONDS * 1000,
-    );
-
-    // Cleanup interval on unmount or when dependencies change
-    return () => {
-      globalThis.clearInterval(intervalId);
-    };
-  }, [isAuthenticated, isAuthRoute]);
+  useSessionExpirationCheck({
+    isAuthenticated,
+    isAuthRoute,
+    onSessionExpired: () => setShowSessionExpiredModal(true),
+  });
 
   // Show a brief welcome overlay after analysis start completes
   useEffect(() => {
@@ -138,7 +103,6 @@ const AppContent: React.FC = () => {
             </Layout>
           </Layout>
         ) : (
-          // Not authenticated and not on auth route - redirect immediately without rendering layout
           <Navigate to={APP_ROUTES.LOGIN} state={{ from: location }} replace />
         )
       ) : (
