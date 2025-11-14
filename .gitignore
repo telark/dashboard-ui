@@ -1,6 +1,6 @@
 .vscode
 dist
-CODE_*
+CODE*
 
 # dependencies
 /node_modules
