@@ -202,4 +202,3 @@ export interface DeleteSessionResponse {
   operation: string;
   message: string;
 }
-

@@ -68,4 +68,3 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
 };
 
 export default UserAvatar;
-

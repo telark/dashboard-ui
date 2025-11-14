@@ -7,4 +7,3 @@ export const USER_CONSTANTS = {
     FETCH_USER_DETAILS_ERROR: 'Failed to fetch user details:',
   },
 } as const;
-

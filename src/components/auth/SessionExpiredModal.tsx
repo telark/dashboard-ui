@@ -22,14 +22,17 @@ const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({ open, onClose
     setLoading(true);
     try {
       const sessionToken = getSessionToken();
-      
+
       // Delete session from server
       if (sessionToken) {
         try {
           const deleteResponse = await deleteSession(sessionToken);
           if (deleteResponse.status !== 200) {
             if (isDevelopment()) {
-              console.warn(AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.DELETE_NON_200_STATUS, deleteResponse.status);
+              console.warn(
+                AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.DELETE_NON_200_STATUS,
+                deleteResponse.status,
+              );
             }
           }
         } catch (error) {
@@ -96,4 +99,3 @@ const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({ open, onClose
 };
 
 export default SessionExpiredModal;
-

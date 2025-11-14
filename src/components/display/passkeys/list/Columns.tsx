@@ -17,14 +17,7 @@ interface ColumnsArgs {
   sortOrder: 'asc' | 'desc';
 }
 
-export const Columns = ({
-  onView,
-  onEdit,
-  onDelete,
-  onSort,
-  activeSortKey,
-  sortOrder,
-}: ColumnsArgs) => {
+export const Columns = ({ onView, onEdit, onDelete, onSort, activeSortKey }: ColumnsArgs) => {
   return [
     generateColumn(
       {
@@ -113,4 +106,3 @@ export const Columns = ({
 };
 
 export type { PasskeysSortKey } from './utils';
-

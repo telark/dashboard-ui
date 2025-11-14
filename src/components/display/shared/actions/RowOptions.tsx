@@ -55,11 +55,7 @@ const RowOptions = <T,>({ record, labels, onView, onEdit, onDelete }: RowOptions
         }
       }}
     >
-      <Dropdown
-        trigger={['click']}
-        placement="bottomRight"
-        menu={{ items: menuItems }}
-      >
+      <Dropdown trigger={['click']} placement="bottomRight" menu={{ items: menuItems }}>
         <Button
           type="text"
           shape="circle"

@@ -5,4 +5,3 @@ export const AUTH_CONFIG = {
     },
   },
 } as const;
-

@@ -84,4 +84,3 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(() => {
 UserAvatarDropdown.displayName = 'UserAvatarDropdown';
 
 export default UserAvatarDropdown;
-

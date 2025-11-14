@@ -1,7 +1,11 @@
 import type { Passkey } from '../../../../interfaces/auth';
 import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../../constants/pages/passkeys';
 
-export type PasskeysSortKey = 'deviceName' | 'deviceType' | 'creationTimestamp' | 'lastUsedTimestamp';
+export type PasskeysSortKey =
+  | 'deviceName'
+  | 'deviceType'
+  | 'creationTimestamp'
+  | 'lastUsedTimestamp';
 
 type Comparator<T> = (a: T, b: T) => number;
 type SortOrder = 'asc' | 'desc';
@@ -46,4 +50,3 @@ export const sortPasskeys = (
   items.sort((a, b) => (sortOrder === 'asc' ? comparator(a, b) : -comparator(a, b)));
   return items;
 };
-

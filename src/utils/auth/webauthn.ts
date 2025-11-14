@@ -97,11 +97,14 @@ const convertCredential = (credential: globalThis.PublicKeyCredential): PublicKe
         clientDataJSON: arrayBufferToBase64Url(response.clientDataJSON),
       },
     };
-    
+
     if (credential.getClientExtensionResults) {
-      result.getClientExtensionResults = credential.getClientExtensionResults() as Record<string, unknown>;
+      result.getClientExtensionResults = credential.getClientExtensionResults() as Record<
+        string,
+        unknown
+      >;
     }
-    
+
     return result;
   } else if (response instanceof globalThis.AuthenticatorAssertionResponse) {
     return {
@@ -112,9 +115,7 @@ const convertCredential = (credential: globalThis.PublicKeyCredential): PublicKe
         authenticatorData: arrayBufferToBase64Url(response.authenticatorData),
         clientDataJSON: arrayBufferToBase64Url(response.clientDataJSON),
         signature: arrayBufferToBase64Url(response.signature),
-        userHandle: response.userHandle
-          ? arrayBufferToBase64Url(response.userHandle)
-          : null,
+        userHandle: response.userHandle ? arrayBufferToBase64Url(response.userHandle) : null,
       },
     };
   }
@@ -200,4 +201,3 @@ export const registerPasskey = async (
     throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.REGISTRATION_FAILED);
   }
 };
-

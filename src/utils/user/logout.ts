@@ -4,9 +4,7 @@ import { removeSessionToken } from '../auth/session';
 import { AUTH_ERROR_MESSAGES, AUTH_SUCCESS_MESSAGES } from '../../constants/auth';
 import { APP_ROUTES } from '../../constants';
 
-export const handleUserLogout = async (
-  navigate: (path: string) => void,
-): Promise<void> => {
+export const handleUserLogout = async (navigate: (path: string) => void): Promise<void> => {
   try {
     await logout();
     try {
@@ -26,4 +24,3 @@ export const handleUserLogout = async (
     navigate(APP_ROUTES.LOGIN);
   }
 };
-

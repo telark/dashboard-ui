@@ -42,7 +42,7 @@ export const registerStart = async (username?: string): Promise<RegisterStartRes
   if (username) {
     config.data = { username };
   }
-  
+
   return await Client<RegisterStartResponse>(authApiClient, path, config);
 };
 
@@ -91,11 +91,11 @@ export const createPasskey = async (
     [HTTP_HEADERS.CUSTOM.DEVICE_NAME]: deviceName,
     [HTTP_HEADERS.CUSTOM.DEVICE_TYPE]: deviceType,
   };
-  
+
   if (username) {
     headers[HTTP_HEADERS.CUSTOM.USERNAME] = username;
   }
-  
+
   return await Client<CreatePasskeyResponse>(authApiClient, path, {
     method,
     data: credential,
@@ -130,4 +130,3 @@ export const deletePasskey = async (
     },
   });
 };
-

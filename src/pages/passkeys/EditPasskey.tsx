@@ -3,7 +3,9 @@ import { Form, message } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import { APP_ROUTES, ICONS, PASSKEYS_PAGE_CONSTANTS as PPC } from '../../constants';
 import Header from '../../components/display/shared/sections/Header';
-import PasskeyForm, { type PasskeyFormValues } from '../../components/display/passkeys/shared/PasskeyForm';
+import PasskeyForm, {
+  type PasskeyFormValues,
+} from '../../components/display/passkeys/shared/PasskeyForm';
 import { PageContainer, NotFound } from '../../components/shared';
 import { getAllPasskeys, updatePasskey } from '../../clients/auth';
 import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
@@ -95,7 +97,11 @@ const EditPasskey: React.FC = () => {
 
   return (
     <PageContainer>
-      <Header subtitle={PPC.LABELS.EDIT_SUBTITLE} breadcrumbs={breadcrumbs} icon={<PasskeyIcon />} />
+      <Header
+        subtitle={PPC.LABELS.EDIT_SUBTITLE}
+        breadcrumbs={breadcrumbs}
+        icon={<PasskeyIcon />}
+      />
 
       <PasskeyForm
         form={form}
@@ -110,4 +116,3 @@ const EditPasskey: React.FC = () => {
 };
 
 export default EditPasskey;
-

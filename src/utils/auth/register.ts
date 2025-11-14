@@ -44,7 +44,7 @@ export const extractRegisterOptions = (
   if (isDevelopment()) {
     console.error(LOGIN_CONSTANTS.LOGS.INVALID_RESPONSE_STRUCTURE, registerStartResponse);
   }
-  
+
   throw new Error(LOGIN_CONSTANTS.MESSAGES.INVALID_RESPONSE);
 };
 
@@ -57,7 +57,7 @@ export const performRegister = async (
   try {
     const registerStartResponse = await registerStart(username);
     const options = extractRegisterOptions(registerStartResponse);
-    
+
     const credential = await registerPasskey({
       challenge: options.challenge,
       rp: options.rp,
@@ -69,19 +69,14 @@ export const performRegister = async (
     });
 
     const deviceType: 'platform' | 'cross-platform' = 'platform';
-    await createPasskey(
-      credential,
-      deviceName,
-      deviceType,
-      username,
-    );
+    await createPasskey(credential, deviceName, deviceType, username);
 
     messageApi.open({
       type: 'success',
       content: AUTH_SUCCESS_MESSAGES.REGISTER_SUCCESS,
       duration: 2,
     });
-    
+
     if (onSuccess) {
       onSuccess();
     }
@@ -89,4 +84,3 @@ export const performRegister = async (
     throw error;
   }
 };
-

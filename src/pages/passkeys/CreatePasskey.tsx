@@ -3,7 +3,9 @@ import { Form, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { APP_ROUTES, ICONS, PASSKEYS_PAGE_CONSTANTS as PPC } from '../../constants';
 import Header from '../../components/display/shared/sections/Header';
-import PasskeyForm, { type PasskeyFormValues } from '../../components/display/passkeys/shared/PasskeyForm';
+import PasskeyForm, {
+  type PasskeyFormValues,
+} from '../../components/display/passkeys/shared/PasskeyForm';
 import { PageContainer } from '../../components/shared';
 import { createPasskey, registerStart } from '../../clients/auth';
 import { registerPasskey } from '../../utils/auth/webauthn';
@@ -106,4 +108,3 @@ const CreatePasskey: React.FC = () => {
 };
 
 export default CreatePasskey;
-

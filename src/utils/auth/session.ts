@@ -21,11 +21,12 @@ export const setSessionToken = (token: string): void => {
     if (isDevelopment()) {
       console.error(LOGIN_CONSTANTS.LOGS.SESSION_SET_ERROR, error);
     }
-    
-    const errorMessage = error instanceof DOMException && error.name === 'QuotaExceededError'
-      ? LOGIN_CONSTANTS.SESSION.QUOTA_EXCEEDED
-      : LOGIN_CONSTANTS.SESSION.SET_FAILED;
-    
+
+    const errorMessage =
+      error instanceof DOMException && error.name === 'QuotaExceededError'
+        ? LOGIN_CONSTANTS.SESSION.QUOTA_EXCEEDED
+        : LOGIN_CONSTANTS.SESSION.SET_FAILED;
+
     throw new Error(errorMessage);
   }
 };
@@ -38,7 +39,7 @@ export const removeSessionToken = (): void => {
     if (isDevelopment()) {
       console.error(LOGIN_CONSTANTS.LOGS.SESSION_REMOVE_ERROR, error);
     }
-    
+
     throw new Error(LOGIN_CONSTANTS.SESSION.REMOVE_FAILED);
   }
 };
@@ -46,4 +47,3 @@ export const removeSessionToken = (): void => {
 export const hasSessionToken = (): boolean => {
   return getSessionToken() !== null;
 };
-

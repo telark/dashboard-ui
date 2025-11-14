@@ -60,12 +60,16 @@ export const validateSession = async (): Promise<SessionValidationResult> => {
     };
   } catch (error) {
     const axiosError = error as AxiosError & { normalized?: { status: number; message: string } };
-    
+
     // Check if the error is a 410 Gone (session expired) response
-    const status = axiosError.normalized?.status || axiosError.response?.status || (error as any)?.status;
+    const status =
+      axiosError.normalized?.status || axiosError.response?.status || (error as any)?.status;
     const isExpiredStatus = status === HTTP_STATUS.GONE;
-    const errorMessage = axiosError.normalized?.message || axiosError.message || (error as any)?.message || '';
-    const isExpiredMessage = errorMessage.toLowerCase().includes('session') && errorMessage.toLowerCase().includes('expired');
+    const errorMessage =
+      axiosError.normalized?.message || axiosError.message || (error as any)?.message || '';
+    const isExpiredMessage =
+      errorMessage.toLowerCase().includes('session') &&
+      errorMessage.toLowerCase().includes('expired');
 
     if (isExpiredStatus || isExpiredMessage) {
       return {
@@ -81,8 +85,8 @@ export const validateSession = async (): Promise<SessionValidationResult> => {
     return {
       isValid: false,
       isExpired: false,
-      error: error instanceof Error ? error.message : AUTH_CONSTANTS.SESSION.VALIDATION.UNKNOWN_ERROR,
+      error:
+        error instanceof Error ? error.message : AUTH_CONSTANTS.SESSION.VALIDATION.UNKNOWN_ERROR,
     };
   }
 };
-

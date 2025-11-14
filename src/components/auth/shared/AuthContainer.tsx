@@ -20,4 +20,3 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({ children }) => {
     </div>
   );
 };
-

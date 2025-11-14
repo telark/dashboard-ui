@@ -57,7 +57,13 @@ export const createUserMenuItems = ({
     {
       key: 'settings',
       label: (
-        <div style={{ display: 'flex', alignItems: 'center', gap: HEADER_CONSTANTS.USER.MENU_ITEM.GAP }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: HEADER_CONSTANTS.USER.MENU_ITEM.GAP,
+          }}
+        >
           <SettingOutlined />
           <span>Settings</span>
         </div>
@@ -84,4 +90,3 @@ export const createUserMenuItems = ({
     },
   ];
 };
-

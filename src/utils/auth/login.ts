@@ -44,7 +44,7 @@ export const extractLoginOptions = (
   if (isDevelopment()) {
     console.error(LOGIN_CONSTANTS.LOGS.INVALID_RESPONSE_STRUCTURE, loginStartResponse);
   }
-  
+
   throw new Error(LOGIN_CONSTANTS.MESSAGES.INVALID_RESPONSE);
 };
 
@@ -65,7 +65,6 @@ export const prepareLoginFinishRequest = (
     type: credential.type,
   };
 };
-
 
 export const performLogin = async (
   username: string,
@@ -123,4 +122,3 @@ export const performLogin = async (
     throw error;
   }
 };
-

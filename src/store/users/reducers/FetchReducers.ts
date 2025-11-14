@@ -47,4 +47,3 @@ export const handleFetchUserDetailsRejected = (state: UsersState, action: Payloa
   state.loading = false;
   state.error = action.payload;
 };
-

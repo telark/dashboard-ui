@@ -14,7 +14,10 @@ import {
   API_RESPONSES,
 } from '../constants';
 import { ErrorInterceptorOptions } from '../interfaces/api';
-import { createSessionTokenInterceptor, createRequestErrorHandler } from '../utils/auth/interceptors';
+import {
+  createSessionTokenInterceptor,
+  createRequestErrorHandler,
+} from '../utils/auth/interceptors';
 
 interface ExtendedAxiosError extends AxiosError {
   normalized?: ReturnType<typeof normalizeError>;

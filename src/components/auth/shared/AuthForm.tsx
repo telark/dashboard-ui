@@ -14,4 +14,3 @@ export const AuthForm: React.FC<AuthFormProps> = ({ form, onFinish, children }) 
     </Form>
   );
 };
-

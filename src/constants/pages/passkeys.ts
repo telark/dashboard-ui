@@ -31,7 +31,8 @@ export const PASSKEYS_PAGE_CONSTANTS = {
       DELETE: 'Delete',
     },
     DELETE_MODAL_TITLE: 'Delete Passkey',
-    DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"? This action cannot be undone.`,
+    DELETE_MODAL_CONTENT: (name: string) =>
+      `Are you sure you want to delete "${name}"? This action cannot be undone.`,
     DELETE_MODAL_OK: 'Delete',
     FORCE_DELETE_MODAL_TITLE: 'Delete Last Passkey',
     FORCE_DELETE_MODAL_CONTENT: (name: string) =>
@@ -104,4 +105,3 @@ export const PASSKEYS_PAGE_CONSTANTS = {
 export type PasskeysPageConstants = typeof PASSKEYS_PAGE_CONSTANTS;
 
 export type PasskeyDeviceType = 'platform' | 'cross-platform';
-

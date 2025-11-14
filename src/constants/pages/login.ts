@@ -62,4 +62,3 @@ export const LOGIN_CONSTANTS = {
     SESSION_REMOVE_ERROR: 'Failed to remove session token:',
   },
 } as const;
-

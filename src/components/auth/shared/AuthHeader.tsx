@@ -47,4 +47,3 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({ icon, title, subtitle })
     </div>
   );
 };
-

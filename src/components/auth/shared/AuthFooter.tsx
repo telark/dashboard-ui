@@ -38,4 +38,3 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({ text, linkText, onLinkCl
     </div>
   );
 };
-

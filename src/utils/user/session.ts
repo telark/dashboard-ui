@@ -41,4 +41,3 @@ export const removeCurrentUser = (): void => {
 export const getAuthUser = (): AuthUser | null => {
   return getCurrentUser();
 };
-

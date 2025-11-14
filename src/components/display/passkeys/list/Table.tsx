@@ -1,10 +1,11 @@
 import React, { useMemo, useState } from 'react';
-import { App } from 'antd';
+import { App, message } from 'antd';
 import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../../constants/pages/passkeys';
 import type { Passkey } from '../../../../interfaces/auth';
 import { Columns } from './Columns';
 import { PasskeysSortKey, sortPasskeys } from './utils';
 import DataTable from '../../shared/table/DataTable';
+import { AUTH_ERROR_MESSAGES } from '../../../../constants/auth';
 
 interface PasskeysTableProps {
   passkeys: Passkey[];
@@ -14,12 +15,7 @@ interface PasskeysTableProps {
   onDelete: (passkey: Passkey, forceLastDelete?: boolean) => Promise<void>;
 }
 
-const PasskeysTable: React.FC<PasskeysTableProps> = ({
-  passkeys,
-  onView,
-  onEdit,
-  onDelete,
-}) => {
+const PasskeysTable: React.FC<PasskeysTableProps> = ({ passkeys, onView, onEdit, onDelete }) => {
   const { modal } = App.useApp();
   const [sortKey, setSortKey] = useState<PasskeysSortKey>('creationTimestamp');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
@@ -43,9 +39,7 @@ const PasskeysTable: React.FC<PasskeysTableProps> = ({
     const isLastPasskey = passkeys.length === 1;
 
     modal.confirm({
-      title: isLastPasskey
-        ? PPC.LABELS.FORCE_DELETE_MODAL_TITLE
-        : PPC.LABELS.DELETE_MODAL_TITLE,
+      title: isLastPasskey ? PPC.LABELS.FORCE_DELETE_MODAL_TITLE : PPC.LABELS.DELETE_MODAL_TITLE,
       content: isLastPasskey
         ? PPC.LABELS.FORCE_DELETE_MODAL_CONTENT(record?.deviceName || '')
         : PPC.LABELS.DELETE_MODAL_CONTENT(record?.deviceName || ''),
@@ -54,8 +48,8 @@ const PasskeysTable: React.FC<PasskeysTableProps> = ({
       onOk: async () => {
         try {
           await onDelete(record, isLastPasskey);
-        } catch (error) {
-          // Error is handled by the onDelete function
+        } catch (_: unknown) {
+          message.error(AUTH_ERROR_MESSAGES.DELETE_PASSKEY_FAILED);
         }
       },
     });
@@ -88,4 +82,3 @@ const PasskeysTable: React.FC<PasskeysTableProps> = ({
 };
 
 export default PasskeysTable;
-

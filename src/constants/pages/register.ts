@@ -12,4 +12,3 @@ export const REGISTER_CONSTANTS = {
     FOOTER_LINK: 'Login',
   },
 } as const;
-

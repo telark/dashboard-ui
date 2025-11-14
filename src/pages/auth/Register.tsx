@@ -18,11 +18,8 @@ const Register: React.FC = () => {
   const handleRegister = async (values: { username: string; deviceName: string }) => {
     setLoading(true);
     try {
-      await performRegister(
-        values.username,
-        values.deviceName,
-        message,
-        () => navigate(APP_ROUTES.LOGIN),
+      await performRegister(values.username, values.deviceName, message, () =>
+        navigate(APP_ROUTES.LOGIN),
       );
     } catch (error) {
       handleAuthError(error, message);
@@ -51,4 +48,3 @@ const Register: React.FC = () => {
 };
 
 export default Register;
-

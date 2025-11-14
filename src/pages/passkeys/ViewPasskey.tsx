@@ -70,7 +70,11 @@ const ViewPasskey: React.FC = () => {
 
   return (
     <PageContainer>
-      <Header subtitle={PPC.LABELS.VIEW_SUBTITLE} breadcrumbs={breadcrumbs} icon={<PasskeyIcon />} />
+      <Header
+        subtitle={PPC.LABELS.VIEW_SUBTITLE}
+        breadcrumbs={breadcrumbs}
+        icon={<PasskeyIcon />}
+      />
 
       <AnimatedPageWrapper>
         <ViewDetails config={config} />
@@ -80,4 +84,3 @@ const ViewPasskey: React.FC = () => {
 };
 
 export default ViewPasskey;
-

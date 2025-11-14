@@ -23,7 +23,8 @@ message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX
 
 const AppContent: React.FC = () => {
   const location = useLocation();
-  const isAuthRoute = location.pathname === APP_ROUTES.LOGIN || location.pathname === APP_ROUTES.REGISTER;
+  const isAuthRoute =
+    location.pathname === APP_ROUTES.LOGIN || location.pathname === APP_ROUTES.REGISTER;
   const isAuthenticated = hasSessionToken();
   const dispatch: AppDispatch = useDispatch();
   const hasClusterInsight = useSelector((s: RootState) => s.insights.hasClusterInsight);
@@ -143,8 +144,8 @@ const AppContent: React.FC = () => {
         <Startup onStartAnalyze={handleStartAnalyze} />
       )}
       {showWelcome && <Welcome />}
-      <SessionExpiredModal 
-        open={showSessionExpiredModal} 
+      <SessionExpiredModal
+        open={showSessionExpiredModal}
         onClose={() => setShowSessionExpiredModal(false)}
       />
     </AntdApp>

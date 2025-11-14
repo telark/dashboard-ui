@@ -62,4 +62,3 @@ export const createPasskeyViewConfig = (passkey: Passkey): ViewDetailsConfig => 
     ],
   };
 };
-

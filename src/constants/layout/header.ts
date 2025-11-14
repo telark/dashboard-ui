@@ -31,8 +31,8 @@ export const HEADER_CONSTANTS = {
       MESSAGE: 'Settings feature coming soon',
     },
     WARNINGS: {
-      MISSING_USER_DATA: 'Session token exists but user data is missing from localStorage. User may need to log in again.',
+      MISSING_USER_DATA:
+        'Session token exists but user data is missing from localStorage. User may need to log in again.',
     },
   },
 } as const;
-
