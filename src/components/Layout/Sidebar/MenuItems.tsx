@@ -138,7 +138,7 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
             </Menu.SubMenu>
             <Menu.SubMenu
               key="users-and-groups"
-              title="Access Management"
+              title="Access & Permissions"
               style={{
                 paddingTop: '0px',
               }}
