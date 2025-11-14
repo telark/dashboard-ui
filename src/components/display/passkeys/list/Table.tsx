@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { App } from 'antd';
 import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../../constants/pages/passkeys';
-import type { Passkey } from '../../../../interfaces/auth';
+import type { Passkey } from '../../../../interfaces/passkeys';
 import { Columns } from './Columns';
 import { PasskeysSortKey, sortPasskeys } from './utils';
 import DataTable from '../../shared/table/DataTable';

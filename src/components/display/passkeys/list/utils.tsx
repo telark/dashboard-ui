@@ -1,4 +1,4 @@
-import type { Passkey } from '../../../../interfaces/auth';
+import type { Passkey } from '../../../../interfaces/passkeys';
 import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../../constants/pages/passkeys';
 
 export type PasskeysSortKey =

@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { APP_ROUTES, ICONS, PASSKEYS_PAGE_CONSTANTS as PPC, SHARED_DETAILS_CONSTANTS } from '../../constants';
+import {
+  APP_ROUTES,
+  ICONS,
+  PASSKEYS_PAGE_CONSTANTS as PPC,
+  SHARED_DETAILS_CONSTANTS,
+} from '../../constants';
 import Header from '../../components/display/shared/sections/Header';
 import ViewDetails from '../../components/display/shared/views/ViewDetails';
 import { createPasskeyViewConfig } from '../../config/passkeyViewConfig';
@@ -12,7 +17,11 @@ import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
 import { isDevelopment } from '../../utils/helpers/env';
 import { AppDispatch } from '../../store';
 import { fetchAllPasskeysThunk } from '../../store/passkeys/slices/passkeySlice';
-import { selectPasskeys, selectPasskeyLoading, selectPasskeyError } from '../../store/passkeys/selectors/passkeySelectors';
+import {
+  selectPasskeys,
+  selectPasskeyLoading,
+  selectPasskeyError,
+} from '../../store/passkeys/selectors/passkeySelectors';
 
 const PasskeyIcon = ICONS.PASSKEY;
 

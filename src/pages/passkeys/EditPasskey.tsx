@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Form, message } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { APP_ROUTES, ICONS, PASSKEYS_PAGE_CONSTANTS as PPC, SHARED_DETAILS_CONSTANTS } from '../../constants';
+import {
+  APP_ROUTES,
+  ICONS,
+  PASSKEYS_PAGE_CONSTANTS as PPC,
+  SHARED_DETAILS_CONSTANTS,
+} from '../../constants';
 import Header from '../../components/display/shared/sections/Header';
 import PasskeyForm, {
   type PasskeyFormValues,
@@ -12,9 +17,16 @@ import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
 import { isDevelopment } from '../../utils/helpers/env';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
 import { AppDispatch } from '../../store';
-import { fetchAllPasskeysThunk, updatePasskeyThunk } from '../../store/passkeys/slices/passkeySlice';
-import { selectPasskeys, selectPasskeyLoading, selectPasskeyError } from '../../store/passkeys/selectors/passkeySelectors';
-import type { UpdatePasskeyRequest } from '../../interfaces/auth';
+import {
+  fetchAllPasskeysThunk,
+  updatePasskeyThunk,
+} from '../../store/passkeys/slices/passkeySlice';
+import {
+  selectPasskeys,
+  selectPasskeyLoading,
+  selectPasskeyError,
+} from '../../store/passkeys/selectors/passkeySelectors';
+import type { UpdatePasskeyRequest } from '../../interfaces/passkeys';
 
 const PasskeyIcon = ICONS.PASSKEY;
 

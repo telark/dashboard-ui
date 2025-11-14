@@ -67,7 +67,8 @@ const CreatePasskey: React.FC = () => {
       });
 
       // Step 3: Create passkey - verify attestation and store
-      const deviceType: 'platform' | 'cross-platform' = PPC.VALUES.DEVICE_TYPE_PLATFORM as 'platform';
+      const deviceType: 'platform' | 'cross-platform' = PPC.VALUES
+        .DEVICE_TYPE_PLATFORM as 'platform';
       const response = await createPasskey(credential, values.deviceName, deviceType);
 
       message.success(PPC.LABELS.MESSAGES.CREATED(values.deviceName));

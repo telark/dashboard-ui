@@ -58,7 +58,9 @@ const PasskeyForm: React.FC<PasskeyFormProps> = ({
             rules={[{ required: true, message: PPC.FORM.DEVICE_NAME_REQUIRED }]}
             component={Input}
           />
-          <div style={{ width: PPC.FORM.STYLES.FULL_WIDTH, display: 'flex', justifyContent: 'center' }}>
+          <div
+            style={{ width: PPC.FORM.STYLES.FULL_WIDTH, display: 'flex', justifyContent: 'center' }}
+          >
             <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
               <PrimaryButton
                 action={buttonText}

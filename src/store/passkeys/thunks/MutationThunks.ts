@@ -1,9 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import {
-  createPasskey,
-  updatePasskey,
-  deletePasskey,
-} from '../../../clients/auth';
+import { createPasskey, updatePasskey, deletePasskey } from '../../../clients/auth';
 import { extractErrorMessage } from '../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants/store/store';
 import type {
@@ -12,15 +8,8 @@ import type {
   UpdatePasskeyRequest,
   UpdatePasskeyResponse,
   DeletePasskeyRequest,
-  PublicKeyCredential,
-} from '../../../interfaces/auth';
-
-interface CreatePasskeyParams {
-  credential: PublicKeyCredential;
-  deviceName: string;
-  deviceType: 'platform' | 'cross-platform';
-  username?: string;
-}
+  CreatePasskeyParams,
+} from '../../../interfaces/passkeys';
 
 export const createPasskeyThunk = createAsyncThunk(
   STORE_ACTIONS.PASSKEYS.CREATE,
@@ -79,4 +68,3 @@ export const deletePasskeyThunk = createAsyncThunk(
     }
   },
 );
-

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { PasskeysState, Passkey } from '../../../interfaces/auth';
+import type { PasskeysState, Passkey } from '../../../interfaces/passkeys';
 import {
   fetchAllPasskeysThunk,
   fetchAllPasskeysSilentThunk,
@@ -60,9 +60,7 @@ const passkeySlice = createSlice({
       state.passkeys.push(action.payload);
     },
     updatePasskey: (state, action: PayloadAction<Passkey>) => {
-      const index = state.passkeys.findIndex(
-        (p) => p.credentialId === action.payload.credentialId,
-      );
+      const index = state.passkeys.findIndex((p) => p.credentialId === action.payload.credentialId);
       if (index !== -1) {
         state.passkeys[index] = action.payload;
       }
@@ -101,4 +99,3 @@ const passkeySlice = createSlice({
 export const { clearDetails, addPasskey, updatePasskey, deletePasskey } = passkeySlice.actions;
 
 export default passkeySlice.reducer;
-

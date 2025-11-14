@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { PasskeysState, Passkey } from '../../../interfaces/auth';
+import type { PasskeysState, Passkey } from '../../../interfaces/passkeys';
 
 export const handleCreatePasskeyPending = (state: PasskeysState) => {
   state.loading = true;
@@ -34,20 +34,18 @@ export const handleUpdatePasskeyFulfilled = (
 ) => {
   state.loading = false;
   const updatedPasskey = action.payload;
-  
+
   // Update in list
-  const index = state.passkeys.findIndex(
-    (p) => p.credentialId === updatedPasskey.credentialId,
-  );
+  const index = state.passkeys.findIndex((p) => p.credentialId === updatedPasskey.credentialId);
   if (index !== -1) {
     state.passkeys[index] = updatedPasskey;
   }
-  
+
   // Update details if it's the same passkey
   if (state.details?.credentialId === updatedPasskey.credentialId) {
     state.details = updatedPasskey;
   }
-  
+
   state.error = null;
 };
 
@@ -70,12 +68,12 @@ export const handleDeletePasskeyFulfilled = (
 ) => {
   state.loading = false;
   state.passkeys = state.passkeys.filter((p) => p.credentialId !== action.payload);
-  
+
   // Clear details if it's the deleted passkey
   if (state.details?.credentialId === action.payload) {
     state.details = null;
   }
-  
+
   state.error = null;
 };
 
@@ -86,4 +84,3 @@ export const handleDeletePasskeyRejected = (
   state.loading = false;
   state.error = action.payload as string;
 };
-

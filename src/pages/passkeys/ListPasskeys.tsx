@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { message } from 'antd';
-import { APP_ROUTES, ICONS, PASSKEYS_PAGE_CONSTANTS as PPC, SHARED_DETAILS_CONSTANTS } from '../../constants';
+import {
+  APP_ROUTES,
+  ICONS,
+  PASSKEYS_PAGE_CONSTANTS as PPC,
+  SHARED_DETAILS_CONSTANTS,
+} from '../../constants';
 import Header from '../../components/display/shared/sections/Header';
 import PasskeysTable from '../../components/display/passkeys/list/Table';
 import FormModal from '../../components/display/shared/modal/FormModal';
@@ -17,8 +22,13 @@ import {
   createPasskeyThunk,
   deletePasskeyThunk,
 } from '../../store/passkeys/slices/passkeySlice';
-import { selectPasskeys, selectPasskeyLoading, selectPasskeyError } from '../../store/passkeys/selectors/passkeySelectors';
-import type { Passkey, PublicKeyCredentialCreationOptions } from '../../interfaces/auth';
+import {
+  selectPasskeys,
+  selectPasskeyLoading,
+  selectPasskeyError,
+} from '../../store/passkeys/selectors/passkeySelectors';
+import type { PublicKeyCredentialCreationOptions } from '../../interfaces/auth';
+import type { Passkey } from '../../interfaces/passkeys';
 
 const PasskeyIcon = ICONS.PASSKEY;
 
@@ -137,10 +147,9 @@ const ListPasskeys: React.FC = () => {
       });
 
       // Step 3: Create passkey - verify attestation and store
-      const deviceType: 'platform' | 'cross-platform' = PPC.VALUES.DEVICE_TYPE_PLATFORM as 'platform';
-      const result = await dispatch(
-        createPasskeyThunk({ credential, deviceName, deviceType }),
-      );
+      const deviceType: 'platform' | 'cross-platform' = PPC.VALUES
+        .DEVICE_TYPE_PLATFORM as 'platform';
+      const result = await dispatch(createPasskeyThunk({ credential, deviceName, deviceType }));
 
       if (createPasskeyThunk.fulfilled.match(result)) {
         message.success(PPC.LABELS.MESSAGES.CREATED(deviceName));

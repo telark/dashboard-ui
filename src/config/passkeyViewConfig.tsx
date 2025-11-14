@@ -1,6 +1,6 @@
 import { BsKey } from 'react-icons/bs';
 import { AiOutlineCalendar, AiOutlineClockCircle } from 'react-icons/ai';
-import type { Passkey } from '../interfaces/auth';
+import type { Passkey } from '../interfaces/passkeys';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import { StatusTag } from '../components/tags';
 import { DEFAULT_COLORS, PASSKEYS_PAGE_CONSTANTS as PPC } from '../constants';

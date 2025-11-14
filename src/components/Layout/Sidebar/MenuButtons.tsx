@@ -135,4 +135,3 @@ export const PasskeysMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = fa
     />
   );
 };
-

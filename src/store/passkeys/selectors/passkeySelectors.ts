@@ -19,4 +19,3 @@ export const selectPasskeyDetailsData = createSelector(
   [selectPasskeyDetails, selectPasskeyLoading, selectPasskeyError],
   (details, loading, error) => ({ details, loading, error }),
 );
-

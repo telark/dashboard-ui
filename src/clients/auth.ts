@@ -9,14 +9,16 @@ import type {
   RegisterFinishRequest,
   RegisterFinishResponse,
   LogoutResponse,
+  PublicKeyCredential,
+} from '../interfaces/auth';
+import type {
   Passkey,
   CreatePasskeyResponse,
   UpdatePasskeyRequest,
   UpdatePasskeyResponse,
   DeletePasskeyRequest,
   DeletePasskeyResponse,
-  PublicKeyCredential,
-} from '../interfaces/auth';
+} from '../interfaces/passkeys';
 
 export const loginStart = async (request: LoginStartRequest): Promise<LoginStartResponse> => {
   const { path, method } = Endpoints.AUTH.LOGIN.START;

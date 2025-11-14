@@ -1,6 +1,6 @@
 import React from 'react';
 import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../../constants/pages/passkeys';
-import type { Passkey } from '../../../../interfaces/auth';
+import type { Passkey } from '../../../../interfaces/passkeys';
 import RowOptions from '../../shared/actions/RowOptions';
 
 interface ActionsProps {

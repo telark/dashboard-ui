@@ -17,4 +17,3 @@ export const MENU_KEYS = {
   COLLAPSED: 'collapsed',
   EXPANDED: 'expanded',
 } as const;
-

@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { PasskeysState, Passkey } from '../../../interfaces/auth';
+import type { PasskeysState, Passkey } from '../../../interfaces/passkeys';
 
 export const handleFetchPasskeysPending = (state: PasskeysState) => {
   state.loading = true;
@@ -38,9 +38,7 @@ export const handleFetchPasskeyDetailsFulfilled = (
   state.details = updatedPasskey; // Populate details with fresh data
 
   // Also update the passkey in the list if it exists
-  const index = state.passkeys.findIndex(
-    (p) => p.credentialId === updatedPasskey.credentialId,
-  );
+  const index = state.passkeys.findIndex((p) => p.credentialId === updatedPasskey.credentialId);
   if (index !== -1) {
     state.passkeys[index] = updatedPasskey;
   }
@@ -53,4 +51,3 @@ export const handleFetchPasskeyDetailsRejected = (
   state.loading = false;
   state.error = action.payload as string;
 };
-
