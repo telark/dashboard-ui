@@ -92,6 +92,7 @@ const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({ open, onClose
       closable={false}
       maskClosable={false}
       centered
+      destroyOnHidden
     >
       <p>{AUTH_CONSTANTS.SESSION.EXPIRATION.MODAL.MESSAGE}</p>
     </Modal>

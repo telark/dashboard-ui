@@ -18,6 +18,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
       footer={null}
       width={width}
       centered={centered}
+      destroyOnHidden
       styles={{
         body: { padding: 0, minHeight: 'auto', ...styles?.body },
         content: { borderRadius: 16, overflow: 'hidden', ...styles?.content },
