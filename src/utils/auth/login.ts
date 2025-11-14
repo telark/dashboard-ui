@@ -6,6 +6,7 @@ import { AUTH_SUCCESS_MESSAGES } from '../../constants/auth';
 import { LOGIN_CONSTANTS } from '../../constants/pages/login';
 import { handleAuthError } from './errors';
 import { isDevelopment } from '../helpers/env';
+import logger from '../../logging';
 import type {
   LoginStartResponse,
   PublicKeyCredentialRequestOptions,
@@ -42,7 +43,7 @@ export const extractLoginOptions = (
   }
 
   if (isDevelopment()) {
-    console.error(LOGIN_CONSTANTS.LOGS.INVALID_RESPONSE_STRUCTURE, loginStartResponse);
+    logger.error(LOGIN_CONSTANTS.LOGS.INVALID_RESPONSE_STRUCTURE, loginStartResponse);
   }
 
   throw new Error(LOGIN_CONSTANTS.MESSAGES.INVALID_RESPONSE);

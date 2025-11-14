@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logger from '../../../../logging';
 import { Form, message } from 'antd';
 import PrimaryButton from '../../../buttons/PrimaryButton';
 import { BUTTON_TEXTS } from '../../../../constants';
@@ -39,7 +40,7 @@ const FormModal: React.FC<FormModalProps> = ({
       onCancel();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to submit form';
-      console.error('Form submission error:', error);
+      logger.error('Form submission error:', error);
       message.error(errorMessage);
     } finally {
       setSubmitting(false);

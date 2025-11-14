@@ -15,6 +15,7 @@ import { PageContainer, NotFound } from '../../components/shared';
 import { message } from 'antd';
 import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
 import { isDevelopment } from '../../utils/helpers/env';
+import logger from '../../logging';
 import { AppDispatch } from '../../store';
 import { fetchAllPasskeysThunk } from '../../store/passkeys/slices/passkeySlice';
 import {
@@ -44,7 +45,7 @@ const ViewPasskey: React.FC = () => {
     if (error) {
       message.error(AUTH_ERROR_MESSAGES.FETCH_PASSKEYS_FAILED);
       if (isDevelopment()) {
-        console.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEY, error);
+        logger.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEY, error);
       }
       setNotFound(true);
     }

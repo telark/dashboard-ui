@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchUsers, fetchUserById } from '../../../clients/exporter';
 import { extractErrorMessage } from '../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants/store/store';
+import logger from '../../../logging';
 import type { User } from '../../../interfaces/users';
 import type { ResourceListResponse, ResourceDetailsResponse } from '../../../interfaces/api';
 
@@ -20,7 +21,7 @@ export const fetchAllUsersThunk = createAsyncThunk(
       const rawUsersData = await fetchUsers();
       return mapUsersData(rawUsersData);
     } catch (error: unknown) {
-      console.error(STORE_MESSAGES.ERROR_FETCHING_USERS, error);
+      logger.error(STORE_MESSAGES.ERROR_FETCHING_USERS, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_USERS));
     }
   },
@@ -45,7 +46,7 @@ export const fetchUserDetailsThunk = createAsyncThunk(
       const response = await fetchUserById(userId);
       return mapUserDetailsData(response);
     } catch (error: unknown) {
-      console.error(STORE_MESSAGES.ERROR_FETCHING_USER_DETAILS, error);
+      logger.error(STORE_MESSAGES.ERROR_FETCHING_USER_DETAILS, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_USER_DETAILS));
     }
   },

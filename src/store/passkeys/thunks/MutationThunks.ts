@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { createPasskey, updatePasskey, deletePasskey } from '../../../clients/auth';
 import { extractErrorMessage } from '../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants/store/store';
+import logger from '../../../logging';
 import type {
   Passkey,
   CreatePasskeyResponse,
@@ -31,7 +32,7 @@ export const createPasskeyThunk = createAsyncThunk(
       };
       return passkey;
     } catch (error: unknown) {
-      console.error(STORE_MESSAGES.ERROR_CREATING_PASSKEY, error);
+      logger.error(STORE_MESSAGES.ERROR_CREATING_PASSKEY, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.CREATE_PASSKEY));
     }
   },
@@ -47,7 +48,7 @@ export const updatePasskeyThunk = createAsyncThunk(
       const updatedPasskey: UpdatePasskeyResponse = await updatePasskey(credentialId, request);
       return updatedPasskey;
     } catch (error: unknown) {
-      console.error(STORE_MESSAGES.ERROR_UPDATING_PASSKEY, error);
+      logger.error(STORE_MESSAGES.ERROR_UPDATING_PASSKEY, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.UPDATE_PASSKEY));
     }
   },
@@ -63,7 +64,7 @@ export const deletePasskeyThunk = createAsyncThunk(
       await deletePasskey(credentialId, request);
       return credentialId;
     } catch (error: unknown) {
-      console.error(STORE_MESSAGES.ERROR_DELETING_PASSKEY, error);
+      logger.error(STORE_MESSAGES.ERROR_DELETING_PASSKEY, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.DELETE_PASSKEY));
     }
   },

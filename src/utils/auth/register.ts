@@ -3,6 +3,7 @@ import { registerPasskey } from './webauthn';
 import { AUTH_SUCCESS_MESSAGES } from '../../constants/auth';
 import { LOGIN_CONSTANTS } from '../../constants/pages/login';
 import { isDevelopment } from '../helpers/env';
+import logger from '../../logging';
 import type {
   RegisterStartResponse,
   PublicKeyCredentialCreationOptions,
@@ -42,7 +43,7 @@ export const extractRegisterOptions = (
   }
 
   if (isDevelopment()) {
-    console.error(LOGIN_CONSTANTS.LOGS.INVALID_RESPONSE_STRUCTURE, registerStartResponse);
+    logger.error(LOGIN_CONSTANTS.LOGS.INVALID_RESPONSE_STRUCTURE, registerStartResponse);
   }
 
   throw new Error(LOGIN_CONSTANTS.MESSAGES.INVALID_RESPONSE);

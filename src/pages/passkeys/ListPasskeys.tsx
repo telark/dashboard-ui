@@ -16,6 +16,7 @@ import { registerStart } from '../../clients/auth';
 import { registerPasskey } from '../../utils/auth/webauthn';
 import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
 import { isDevelopment } from '../../utils/helpers/env';
+import logger from '../../logging';
 import { AppDispatch } from '../../store';
 import {
   fetchAllPasskeysThunk,
@@ -49,7 +50,7 @@ const ListPasskeys: React.FC = () => {
     if (error) {
       message.error(AUTH_ERROR_MESSAGES.FETCH_PASSKEYS_FAILED);
       if (isDevelopment()) {
-        console.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEYS, error);
+        logger.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEYS, error);
       }
     }
   }, [error]);
@@ -57,7 +58,7 @@ const ListPasskeys: React.FC = () => {
   const handleView = (record: Passkey) => {
     if (!record.deviceName) {
       if (isDevelopment()) {
-        console.warn(PPC.LOGS.MISSING_DEVICE_NAME, record);
+        logger.warn(PPC.LOGS.MISSING_DEVICE_NAME, record);
       }
       return;
     }
@@ -67,7 +68,7 @@ const ListPasskeys: React.FC = () => {
   const handleEdit = (record: Passkey) => {
     if (!record.deviceName) {
       if (isDevelopment()) {
-        console.warn(PPC.LOGS.MISSING_DEVICE_NAME, record);
+        logger.warn(PPC.LOGS.MISSING_DEVICE_NAME, record);
       }
       return;
     }

@@ -11,6 +11,7 @@ import { HEADER_CONSTANTS } from '../../../../constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import type { User as AuthUser } from '../../../../interfaces/auth';
 import type { User as UsersUser } from '../../../../interfaces/users';
+import logger from '../../../../logging';
 
 const UserAvatarDropdown: React.FC = memo(() => {
   const [currentAuthUser, setCurrentAuthUser] = useState<AuthUser | null>(null);
@@ -25,7 +26,7 @@ const UserAvatarDropdown: React.FC = memo(() => {
 
     if (hasSessionToken() && !authUser) {
       if (isDevelopment()) {
-        console.warn(HEADER_CONSTANTS.USER.WARNINGS.MISSING_USER_DATA);
+        logger.warn(HEADER_CONSTANTS.USER.WARNINGS.MISSING_USER_DATA);
       }
     }
 

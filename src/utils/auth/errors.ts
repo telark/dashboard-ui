@@ -3,6 +3,7 @@ import { AxiosError } from 'axios';
 import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
 import { HTTP_STATUS } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/pages/login';
+import logger from '../../logging';
 
 interface ExtendedAxiosError extends AxiosError {
   normalized?: {
@@ -158,5 +159,5 @@ export const handleAuthError = (
 
   const friendlyMessage = getUserFriendlyErrorMessage(error);
   showErrorMessage(messageApi, friendlyMessage);
-  console.error(LOGIN_CONSTANTS.LOGS.AUTH_ERROR, error);
+  logger.error(LOGIN_CONSTANTS.LOGS.AUTH_ERROR, error);
 };

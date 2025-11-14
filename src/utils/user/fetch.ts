@@ -1,6 +1,7 @@
 import { fetchUserById } from '../../clients/exporter';
 import { USER_CONSTANTS } from '../../constants/user/user';
 import { isDevelopment } from '../helpers/env';
+import logger from '../../logging';
 import { getCurrentUser } from './session';
 import type { User as UsersUser } from '../../interfaces/users';
 
@@ -20,7 +21,7 @@ export const fetchCurrentUserDetails = async (
     }
   } catch (error) {
     if (isDevelopment()) {
-      console.error(USER_CONSTANTS.LOGS.FETCH_USER_DETAILS_ERROR, error);
+      logger.error(USER_CONSTANTS.LOGS.FETCH_USER_DETAILS_ERROR, error);
     }
     if (onError) {
       onError(error);

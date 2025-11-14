@@ -111,13 +111,13 @@ const createErrorInterceptor = (options: ErrorInterceptorOptions = {}) => {
         return Promise.reject(error);
       }
       if (meta.isNotFound) {
-        console.warn(ERROR_MESSAGES.API.NOT_FOUND_WARNING, meta);
+        logger.warn(ERROR_MESSAGES.API.NOT_FOUND_WARNING, meta);
       } else if (meta.isNetwork) {
-        console.error(ERROR_MESSAGES.API.NETWORK_ERROR, meta);
+        logger.error(ERROR_MESSAGES.API.NETWORK_ERROR, meta);
       } else if (meta.isTimeout) {
-        console.error(ERROR_MESSAGES.API.TIMEOUT_ERROR, meta);
+        logger.error(ERROR_MESSAGES.API.TIMEOUT_ERROR, meta);
       } else {
-        console.error(ERROR_MESSAGES.API.GENERIC_ERROR, meta);
+        logger.error(ERROR_MESSAGES.API.GENERIC_ERROR, meta);
       }
       return Promise.reject(error);
     },

@@ -1,9 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import logger from '../../../logging';
 import { updateAppWorkloadSyncMode, fetchAllAppsWorkloads } from '../../../clients/exporter';
 import { triggerAppsSync } from '../../../clients/sync-manager';
 import { mapSingleAppWorkloadData, mapAppsWorkloadsData } from '../../../utils/mappers/appMapper';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants/store/store';
 import { extractErrorMessage } from '../../../utils/helpers/format';
+import type { AppWorkload } from '../../../interfaces/workload';
 
 export const triggerAppsSyncThunk = createAsyncThunk(
   STORE_ACTIONS.WORKLOADS.TRIGGER_GROUPER_SYNC,
@@ -35,9 +37,12 @@ export const updateAppWorkloadSyncModeThunk = createAsyncThunk(
   async ({ name, syncMode }: { name: string; syncMode: string }, { rejectWithValue }) => {
     try {
       const response = await updateAppWorkloadSyncMode(name, syncMode);
-      return mapSingleAppWorkloadData(response.data);
+      if (!response.data) {
+        throw new Error('Invalid response structure');
+      }
+      return mapSingleAppWorkloadData(response.data as AppWorkload);
     } catch (error: unknown) {
-      console.error(STORE_MESSAGES.ERROR_UPDATING_APP_SYNC, error);
+      logger.error(STORE_MESSAGES.ERROR_UPDATING_APP_SYNC, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.UPDATE_APP_SYNC));
     }
   },

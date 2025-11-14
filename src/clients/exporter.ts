@@ -1,4 +1,5 @@
 import { Client, exporterApiClient } from '../api/index';
+import logger from '../logging';
 import {
   Endpoints,
   HTTP_HEADERS,
@@ -34,7 +35,7 @@ export const fetchGroupers = async (silent = false) => {
     );
   } catch (error) {
     if (!silent) {
-      console.error(ERROR_MESSAGES.CLIENT.FETCH_GROUPERS_FAILED, error);
+      logger.error(ERROR_MESSAGES.CLIENT.FETCH_GROUPERS_FAILED, error);
     }
     throw error;
   }
@@ -47,7 +48,7 @@ export const fetchGrouperDetails = async (name: string) => {
       Endpoints.GROUPERS.GET_DETAILS(name).path,
     );
   } catch (error) {
-    console.error(`${ERROR_MESSAGES.CLIENT.FETCH_GROUPER_DETAILS_FAILED} "${name}":`, error);
+    logger.error(`${ERROR_MESSAGES.CLIENT.FETCH_GROUPER_DETAILS_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -60,7 +61,7 @@ export const updateGrouperSyncMode = async (name: string, syncMode: string) => {
       data: { spec: { config: { sync: { mode: syncMode } } } },
     });
   } catch (error) {
-    console.error(`${ERROR_MESSAGES.CLIENT.UPDATE_SYNC_MODE_FAILED} "${name}":`, error);
+    logger.error(`${ERROR_MESSAGES.CLIENT.UPDATE_SYNC_MODE_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -80,7 +81,7 @@ export const checkGrouperMaintenanceMode = async (name: string) => {
     if (status === HTTP_STATUS.NOT_FOUND) {
       return { status: HTTP_STATUS.NOT_FOUND, message: '', data: null } as MaintenanceModeResponse;
     }
-    console.error(`${ERROR_MESSAGES.CLIENT.FETCH_MAINTENANCE_MODE_FAILED} "${name}":`, error);
+    logger.error(`${ERROR_MESSAGES.CLIENT.FETCH_MAINTENANCE_MODE_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -116,7 +117,7 @@ export const fetchAllAppsWorkloads = async () => {
       Endpoints.WORKLOADS.APPS.GET_ALL_APPS.path,
     );
   } catch (error) {
-    console.error(ERROR_MESSAGES.CLIENT.FETCH_APPS_FAILED, error);
+    logger.error(ERROR_MESSAGES.CLIENT.FETCH_APPS_FAILED, error);
     throw error;
   }
 };
@@ -128,7 +129,7 @@ export const fetchAppWorkloadDetails = async (name: string) => {
       Endpoints.WORKLOADS.APPS.GET_APP_DETAILS(name).path,
     );
   } catch (error) {
-    console.error(`${ERROR_MESSAGES.CLIENT.FETCH_APP_DETAILS_FAILED} "${name}":`, error);
+    logger.error(`${ERROR_MESSAGES.CLIENT.FETCH_APP_DETAILS_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -141,7 +142,7 @@ export const updateAppWorkloadSyncMode = async (name: string, syncMode: string) 
       data: { spec: { config: { sync: { mode: syncMode } } } },
     });
   } catch (error) {
-    console.error(`${ERROR_MESSAGES.CLIENT.UPDATE_SYNC_MODE_FAILED} "${name}":`, error);
+    logger.error(`${ERROR_MESSAGES.CLIENT.UPDATE_SYNC_MODE_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -153,7 +154,7 @@ export const fetchAllBatchesWorkloads = async () => {
       Endpoints.WORKLOADS.BATCHES.GET_ALL_BATCHES.path,
     );
   } catch (error) {
-    console.error(ERROR_MESSAGES.CLIENT.FETCH_BATCHES_FAILED, error);
+    logger.error(ERROR_MESSAGES.CLIENT.FETCH_BATCHES_FAILED, error);
     throw error;
   }
 };
@@ -172,7 +173,7 @@ export const fetchBridges = async (silent = false) => {
     );
   } catch (error) {
     if (!silent) {
-      console.error(ERROR_MESSAGES.CLIENT.FETCH_BRIDGES_FAILED, error);
+      logger.error(ERROR_MESSAGES.CLIENT.FETCH_BRIDGES_FAILED, error);
     }
     throw error;
   }
@@ -185,7 +186,7 @@ export const fetchBridgeDetails = async (name: string) => {
       Endpoints.BRIDGES.GET_DETAILS(name).path,
     );
   } catch (error) {
-    console.error(`${ERROR_MESSAGES.CLIENT.FETCH_BRIDGE_DETAILS_FAILED} "${name}":`, error);
+    logger.error(`${ERROR_MESSAGES.CLIENT.FETCH_BRIDGE_DETAILS_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -198,7 +199,7 @@ export const updateBridgeSyncMode = async (name: string, syncMode: string) => {
       data: { spec: { config: { sync: { mode: syncMode } } } },
     });
   } catch (error) {
-    console.error(`${ERROR_MESSAGES.CLIENT.UPDATE_BRIDGE_SYNC_MODE_FAILED} "${name}":`, error);
+    logger.error(`${ERROR_MESSAGES.CLIENT.UPDATE_BRIDGE_SYNC_MODE_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -217,7 +218,7 @@ export const fetchUsers = async (silent = false) => {
     );
   } catch (error) {
     if (!silent) {
-      console.error(ERROR_MESSAGES.CLIENT.FETCH_USERS_FAILED, error);
+      logger.error(ERROR_MESSAGES.CLIENT.FETCH_USERS_FAILED, error);
     }
     throw error;
   }
@@ -237,7 +238,7 @@ export const fetchUserById = async (userId: string, silent = false) => {
     );
   } catch (error) {
     if (!silent) {
-      console.error(ERROR_MESSAGES.CLIENT.FETCH_USERS_FAILED, error);
+      logger.error(ERROR_MESSAGES.CLIENT.FETCH_USERS_FAILED, error);
     }
     throw error;
   }

@@ -1,6 +1,7 @@
 import { STORAGE_KEYS } from '../../constants/store/store';
 import { LOGIN_CONSTANTS } from '../../constants/pages/login';
 import { isDevelopment } from '../helpers/env';
+import logger from '../../logging';
 import { removeCurrentUser } from '../user/session';
 
 export const getSessionToken = (): string | null => {
@@ -8,7 +9,7 @@ export const getSessionToken = (): string | null => {
     return globalThis.localStorage.getItem(STORAGE_KEYS.SESSION_TOKEN);
   } catch (error) {
     if (isDevelopment()) {
-      console.error(LOGIN_CONSTANTS.LOGS.SESSION_GET_ERROR, error);
+      logger.error(LOGIN_CONSTANTS.LOGS.SESSION_GET_ERROR, error);
     }
     return null;
   }
@@ -19,7 +20,7 @@ export const setSessionToken = (token: string): void => {
     globalThis.localStorage.setItem(STORAGE_KEYS.SESSION_TOKEN, token);
   } catch (error) {
     if (isDevelopment()) {
-      console.error(LOGIN_CONSTANTS.LOGS.SESSION_SET_ERROR, error);
+      logger.error(LOGIN_CONSTANTS.LOGS.SESSION_SET_ERROR, error);
     }
 
     const errorMessage =
@@ -37,7 +38,7 @@ export const removeSessionToken = (): void => {
     removeCurrentUser();
   } catch (error) {
     if (isDevelopment()) {
-      console.error(LOGIN_CONSTANTS.LOGS.SESSION_REMOVE_ERROR, error);
+      logger.error(LOGIN_CONSTANTS.LOGS.SESSION_REMOVE_ERROR, error);
     }
 
     throw new Error(LOGIN_CONSTANTS.SESSION.REMOVE_FAILED);

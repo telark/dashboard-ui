@@ -16,6 +16,7 @@ import { FancySpinner } from './components/shared';
 import { hasSessionToken } from './utils/auth/session';
 import { validateSession } from './utils/auth/sessionValidation';
 import { isDevelopment } from './utils/helpers/env';
+import logger from './logging';
 import { AUTH_CONFIG } from './constants/auth/config';
 
 // Ensure messages are shown below the fixed header and are visible above content
@@ -50,13 +51,13 @@ const AppContent: React.FC = () => {
         const validationResult = await validateSession();
         if (validationResult.isExpired) {
           if (isDevelopment()) {
-            console.warn('Session expired:', validationResult);
+            logger.warn('Session expired:', validationResult);
           }
           setShowSessionExpiredModal(true);
         }
       } catch (error) {
         if (isDevelopment()) {
-          console.error('Error checking session expiration:', error);
+          logger.error('Error checking session expiration:', error);
         }
         // On error, don't show modal - let normal auth flow handle it
       }

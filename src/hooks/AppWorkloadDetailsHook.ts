@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import logger from '../logging';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { message } from 'antd';
@@ -58,7 +59,7 @@ export const AppWorkloadDetailsHook = () => {
       setInitialSyncMode(response.config?.sync?.mode);
       message.success(HOOK_MESSAGES.SUCCESS.SYNC_SETTINGS_UPDATED);
     } catch (error) {
-      console.error(STORE_MESSAGES.ERROR_UPDATING_SYNC, error);
+      logger.error(STORE_MESSAGES.ERROR_UPDATING_SYNC, error);
       message.error(HOOK_MESSAGES.ERROR.UPDATE_SETTINGS_FAILED);
     } finally {
       setLoadingSave(false);

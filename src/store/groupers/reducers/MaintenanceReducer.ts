@@ -1,6 +1,7 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { GrouperState } from '../../../interfaces/grouper';
 import { STORE_MESSAGES } from '../../../constants/store/store';
+import logger from '../../../logging';
 
 export const handleUpdateMaintenanceModePending = (state: GrouperState) => {
   state.loading = true;
@@ -13,7 +14,7 @@ export const handleUpdateMaintenanceModeFulfilled = (
 ) => {
   state.loading = false;
 
-  console.warn(STORE_MESSAGES.MAINTENANCE_UPDATED, action.payload);
+  logger.warn(STORE_MESSAGES.MAINTENANCE_UPDATED, action.payload);
 
   // Update the grouper in the list with the new maintenance data
   const grouperIndex = state.groupers.findIndex((g) => g.name === action.payload.name);

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import logger from '../logging';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { message } from 'antd';
@@ -137,7 +138,7 @@ export const GrouperDetailsHook = () => {
 
       message.success(HOOK_MESSAGES.SUCCESS.SYNC_SETTINGS_UPDATED);
     } catch (error) {
-      console.error(STORE_MESSAGES.ERROR_UPDATING_SYNC, error);
+      logger.error(STORE_MESSAGES.ERROR_UPDATING_SYNC, error);
       message.error(HOOK_MESSAGES.ERROR.UPDATE_SETTINGS_FAILED);
     } finally {
       setLoadingSave(false);
@@ -216,7 +217,7 @@ export const GrouperDetailsHook = () => {
       }
       setIsMaintenanceModalVisible(false);
     } catch (error) {
-      console.error(STORE_MESSAGES.ERROR_HANDLING_MAINTENANCE_UPDATE, error);
+      logger.error(STORE_MESSAGES.ERROR_HANDLING_MAINTENANCE_UPDATE, error);
       message.error(HOOK_MESSAGES.ERROR.UPDATE_MAINTENANCE_FAILED);
     }
   };
@@ -237,7 +238,7 @@ export const GrouperDetailsHook = () => {
         throw new Error(HOOK_MESSAGES.ERROR.UNEXPECTED_RESPONSE);
       }
     } catch (error) {
-      console.error(STORE_MESSAGES.ERROR_REMOVING_MAINTENANCE, error);
+      logger.error(STORE_MESSAGES.ERROR_REMOVING_MAINTENANCE, error);
       message.error(HOOK_MESSAGES.ERROR.REMOVE_MAINTENANCE_FAILED);
     }
   };

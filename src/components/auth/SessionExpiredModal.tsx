@@ -8,6 +8,7 @@ import { AUTH_CONSTANTS } from '../../constants/auth/messages';
 import { APP_ROUTES } from '../../constants';
 import { DEFAULT_COLORS } from '../../constants';
 import { isDevelopment } from '../../utils/helpers/env';
+import logger from '../../logging';
 
 interface SessionExpiredModalProps {
   open: boolean;
@@ -29,7 +30,7 @@ const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({ open, onClose
           const deleteResponse = await deleteSession(sessionToken);
           if (deleteResponse.status !== 200) {
             if (isDevelopment()) {
-              console.warn(
+              logger.warn(
                 AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.DELETE_NON_200_STATUS,
                 deleteResponse.status,
               );
@@ -37,7 +38,7 @@ const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({ open, onClose
           }
         } catch (error) {
           if (isDevelopment()) {
-            console.error(AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.DELETE_FAILED, error);
+            logger.error(AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.DELETE_FAILED, error);
           }
           // Continue with cleanup even if delete fails
         }
@@ -49,7 +50,7 @@ const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({ open, onClose
         removeCurrentUser();
       } catch (error) {
         if (isDevelopment()) {
-          console.error(AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.LOCAL_CLEANUP_ERROR, error);
+          logger.error(AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.LOCAL_CLEANUP_ERROR, error);
         }
       }
 
@@ -62,7 +63,7 @@ const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({ open, onClose
       navigate(APP_ROUTES.LOGIN);
     } catch (error) {
       if (isDevelopment()) {
-        console.error(AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.HANDLE_LOGIN_ERROR, error);
+        logger.error(AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.HANDLE_LOGIN_ERROR, error);
       }
       // Still navigate to login even if there's an error
       if (onClose) {

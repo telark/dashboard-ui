@@ -1,6 +1,7 @@
 import { getSessionToken } from './session';
 import { getSessionDetails } from '../../clients/exporter';
 import { isDevelopment } from '../helpers/env';
+import logger from '../../logging';
 import { AUTH_CONSTANTS } from '../../constants/auth/messages';
 import { HTTP_STATUS } from '../../constants';
 import type { AxiosError } from 'axios';
@@ -24,7 +25,7 @@ export const isSessionExpired = (expiresTimestamp: string): boolean => {
     return now >= expiresDate;
   } catch (error) {
     if (isDevelopment()) {
-      console.error(AUTH_CONSTANTS.SESSION.VALIDATION.INVALID_TIMESTAMP_ERROR, error);
+      logger.error(AUTH_CONSTANTS.SESSION.VALIDATION.INVALID_TIMESTAMP_ERROR, error);
     }
     return true; // If we can't parse the timestamp, consider it expired for safety
   }
@@ -80,7 +81,7 @@ export const validateSession = async (): Promise<SessionValidationResult> => {
     }
 
     if (isDevelopment()) {
-      console.error(AUTH_CONSTANTS.SESSION.VALIDATION.VALIDATION_ERROR, error);
+      logger.error(AUTH_CONSTANTS.SESSION.VALIDATION.VALIDATION_ERROR, error);
     }
     return {
       isValid: false,

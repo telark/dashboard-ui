@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import logger from '../../../logging';
 import {
   fetchGroupers,
   fetchGrouperDetails,
@@ -24,7 +25,7 @@ export const fetchAllGroupersThunk = createAsyncThunk(
       const rawGroupersData = await fetchGroupers();
       return mapGroupersData(rawGroupersData);
     } catch (error: unknown) {
-      console.error(STORE_MESSAGES.ERROR_FETCHING_GROUPERS, error);
+      logger.error(STORE_MESSAGES.ERROR_FETCHING_GROUPERS, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_GROUPERS));
     }
   },
@@ -66,14 +67,14 @@ export const fetchGrouperDetailsThunk = createAsyncThunk(
               }
             : null;
         } catch (maintenanceError) {
-          console.warn(STORE_MESSAGES.FETCH_MAINTENANCE_FAILED, maintenanceError);
+          logger.warn(STORE_MESSAGES.FETCH_MAINTENANCE_FAILED, maintenanceError);
           maintenance = null;
         }
       }
 
       return mapSingleGrouperData(response.data, maintenance);
     } catch (error) {
-      console.error(STORE_MESSAGES.ERROR_FETCHING_GROUPER_DETAILS, error);
+      logger.error(STORE_MESSAGES.ERROR_FETCHING_GROUPER_DETAILS, error);
       return rejectWithValue(STORE_ERRORS.FETCH_DETAILS);
     }
   },

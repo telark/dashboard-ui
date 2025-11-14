@@ -3,6 +3,7 @@ import { Button, Typography } from 'antd';
 import { ReloadOutlined, BugOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS, STORE_MESSAGES } from './constants';
 import { isDevelopment } from './utils/helpers/env';
+import logger from './logging';
 
 const { Title, Text } = Typography;
 
@@ -26,7 +27,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.error(STORE_MESSAGES.ERROR_BOUNDARY, error, errorInfo);
+    logger.error(STORE_MESSAGES.ERROR_BOUNDARY, error, errorInfo);
   }
 
   handleReload = () => {
