@@ -53,9 +53,9 @@ const ListPasskeys: React.FC = () => {
     navigate(APP_ROUTES.PASSKEY_EDIT.replace(':id', encodeURIComponent(record.deviceName)));
   };
 
-  const handleDelete = async (record: Passkey) => {
+  const handleDelete = async (record: Passkey, forceLastDelete = false) => {
     try {
-      await deletePasskey(record.credentialId);
+      await deletePasskey(record.credentialId, { forceLastDelete });
       message.success(PPC.LABELS.MESSAGES.DELETED(record.deviceName));
       await loadPasskeys();
     } catch (error) {

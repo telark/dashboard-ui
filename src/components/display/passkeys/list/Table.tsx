@@ -11,7 +11,7 @@ interface PasskeysTableProps {
   onPasskeysChange?: (passkeys: Passkey[]) => void;
   onView?: (passkey: Passkey) => void;
   onEdit?: (passkey: Passkey) => void;
-  onDelete: (passkey: Passkey) => Promise<void>;
+  onDelete: (passkey: Passkey, forceLastDelete?: boolean) => Promise<void>;
 }
 
 const PasskeysTable: React.FC<PasskeysTableProps> = ({
@@ -40,14 +40,20 @@ const PasskeysTable: React.FC<PasskeysTableProps> = ({
   };
 
   const handleDelete = (record: Passkey) => {
+    const isLastPasskey = passkeys.length === 1;
+
     modal.confirm({
-      title: PPC.LABELS.DELETE_MODAL_TITLE,
-      content: PPC.LABELS.DELETE_MODAL_CONTENT(record?.deviceName || ''),
-      okText: PPC.LABELS.DELETE_MODAL_OK,
+      title: isLastPasskey
+        ? PPC.LABELS.FORCE_DELETE_MODAL_TITLE
+        : PPC.LABELS.DELETE_MODAL_TITLE,
+      content: isLastPasskey
+        ? PPC.LABELS.FORCE_DELETE_MODAL_CONTENT(record?.deviceName || '')
+        : PPC.LABELS.DELETE_MODAL_CONTENT(record?.deviceName || ''),
+      okText: isLastPasskey ? PPC.LABELS.FORCE_DELETE_MODAL_OK : PPC.LABELS.DELETE_MODAL_OK,
       okButtonProps: { danger: true },
       onOk: async () => {
         try {
-          await onDelete(record);
+          await onDelete(record, isLastPasskey);
         } catch (error) {
           // Error is handled by the onDelete function
         }

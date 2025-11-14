@@ -33,6 +33,10 @@ export const PASSKEYS_PAGE_CONSTANTS = {
     DELETE_MODAL_TITLE: 'Delete Passkey',
     DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"? This action cannot be undone.`,
     DELETE_MODAL_OK: 'Delete',
+    FORCE_DELETE_MODAL_TITLE: 'Delete Last Passkey',
+    FORCE_DELETE_MODAL_CONTENT: (name: string) =>
+      `Warning: "${name}" is your last passkey. Deleting it will lock you out of your account. You will need to contact support to regain access. Are you absolutely sure you want to proceed?`,
+    FORCE_DELETE_MODAL_OK: 'Force Delete',
     DEVICE_TYPE_PLATFORM: 'Platform',
     DEVICE_TYPE_CROSS_PLATFORM: 'Cross-Platform',
     NEVER_USED: 'Never',
