@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { hasSessionToken } from '../../utils/auth/session';
+import { hasSessionToken } from '../../utils/auth/session/token';
 import { APP_ROUTES } from '../../constants';
 
 interface ProtectedRouteProps {

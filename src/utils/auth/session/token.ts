@@ -1,8 +1,10 @@
-import { STORAGE_KEYS } from '../../constants/store/store';
-import { LOGIN_CONSTANTS } from '../../constants/pages/login';
-import { isDevelopment } from '../helpers/env';
-import logger from '../../logging';
-import { removeCurrentUser } from '../user/session';
+import type { InternalAxiosRequestConfig } from 'axios';
+import { STORAGE_KEYS } from '../../../constants/store/store';
+import { LOGIN_CONSTANTS } from '../../../constants/pages/login';
+import { HTTP_HEADERS } from '../../../constants';
+import { isDevelopment } from '../../helpers/env';
+import logger from '../../../logging';
+import { removeCurrentUser } from '../../user/session';
 
 export const getSessionToken = (): string | null => {
   try {
@@ -48,3 +50,14 @@ export const removeSessionToken = (): void => {
 export const hasSessionToken = (): boolean => {
   return getSessionToken() !== null;
 };
+
+export const createSessionTokenInterceptor = () => {
+  return (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+    const sessionToken = getSessionToken();
+    if (sessionToken && config.headers) {
+      config.headers[HTTP_HEADERS.CUSTOM.SESSION_TOKEN] = sessionToken;
+    }
+    return config;
+  };
+};
+

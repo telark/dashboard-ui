@@ -1,4 +1,4 @@
-import { getSessionToken } from '../session';
+import { getSessionToken } from './token';
 import { getSessionDetails } from '../../../clients/exporter';
 import { isDevelopment } from '../../helpers/env';
 import logger from '../../../logging';

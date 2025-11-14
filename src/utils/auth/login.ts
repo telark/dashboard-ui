@@ -1,6 +1,6 @@
 import { loginStart, loginFinish } from '../../clients/auth';
 import { authenticateWithPasskey } from './webauthn';
-import { setSessionToken } from './session';
+import { setSessionToken } from './session/token';
 import { setCurrentUser } from '../user/session';
 import { AUTH_SUCCESS_MESSAGES } from '../../constants/auth';
 import { LOGIN_CONSTANTS } from '../../constants/pages/login';

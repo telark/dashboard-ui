@@ -4,7 +4,7 @@ import AnimatedPageWrapper from '../components/animation/AnimatedPageWrapper';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
 import { FancySpinner } from '../components/shared';
 import { APP_ROUTES } from '../constants';
-import { hasSessionToken } from '../utils/auth/session';
+import { hasSessionToken } from '../utils/auth/session/token';
 
 // Lazy load pages for code splitting
 const Dashboard = lazy(() => import('../pages/home/Dashboard'));

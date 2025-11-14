@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { checkClusterInsightsThunk } from './store/insights/slices/insightsSlice';
 import type { RootState, AppDispatch } from './store';
 import { FancySpinner } from './components/shared';
-import { hasSessionToken } from './utils/auth/session';
+import { hasSessionToken } from './utils/auth/session/token';
 import { useSessionExpirationCheck } from './utils/auth/session/expiration';
 
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
