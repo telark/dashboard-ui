@@ -8,7 +8,7 @@ import FormModal from '../../components/display/shared/modal/FormModal';
 import { PageContainer } from '../../components/shared';
 import { getAllPasskeys, deletePasskey, createPasskey, registerStart } from '../../clients/auth';
 import { registerPasskey } from '../../utils/auth/webauthn';
-import { AUTH_ERROR_MESSAGES, AUTH_SUCCESS_MESSAGES } from '../../constants/auth';
+import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
 import type { Passkey, PublicKeyCredentialCreationOptions } from '../../interfaces/auth';
 
 const PasskeyIcon = ICONS.PASSKEY;

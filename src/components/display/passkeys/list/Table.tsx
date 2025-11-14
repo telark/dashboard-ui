@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Modal } from 'antd';
+import { App } from 'antd';
 import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../../constants/pages/passkeys';
 import type { Passkey } from '../../../../interfaces/auth';
 import { Columns } from './Columns';
@@ -11,16 +11,16 @@ interface PasskeysTableProps {
   onPasskeysChange?: (passkeys: Passkey[]) => void;
   onView?: (passkey: Passkey) => void;
   onEdit?: (passkey: Passkey) => void;
-  onDelete?: (passkey: Passkey) => void;
+  onDelete: (passkey: Passkey) => Promise<void>;
 }
 
 const PasskeysTable: React.FC<PasskeysTableProps> = ({
   passkeys,
-  onPasskeysChange,
   onView,
   onEdit,
   onDelete,
 }) => {
+  const { modal } = App.useApp();
   const [sortKey, setSortKey] = useState<PasskeysSortKey>('creationTimestamp');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
@@ -40,13 +40,17 @@ const PasskeysTable: React.FC<PasskeysTableProps> = ({
   };
 
   const handleDelete = (record: Passkey) => {
-    Modal.confirm({
+    modal.confirm({
       title: PPC.LABELS.DELETE_MODAL_TITLE,
       content: PPC.LABELS.DELETE_MODAL_CONTENT(record?.deviceName || ''),
       okText: PPC.LABELS.DELETE_MODAL_OK,
       okButtonProps: { danger: true },
-      onOk: () => {
-        onDelete?.(record);
+      onOk: async () => {
+        try {
+          await onDelete(record);
+        } catch (error) {
+          // Error is handled by the onDelete function
+        }
       },
     });
   };
