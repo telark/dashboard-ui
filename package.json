@@ -5,6 +5,7 @@
   "proxy": "http://localhost:56085",
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
+    "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@dicebear/collection": "^9.2.4",
     "@dicebear/core": "^9.2.4",
     "@reduxjs/toolkit": "^2.9.0",
