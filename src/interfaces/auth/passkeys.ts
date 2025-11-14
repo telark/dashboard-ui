@@ -1,4 +1,4 @@
-import type { PublicKeyCredential } from './auth';
+import type { PublicKeyCredential } from './credentials';
 
 export interface Passkey {
   id: string;
@@ -54,3 +54,4 @@ export interface CreatePasskeyParams {
   deviceType: 'platform' | 'cross-platform';
   username?: string;
 }
+

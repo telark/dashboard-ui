@@ -3,7 +3,7 @@ import type {
   PublicKeyCredentialRequestOptions,
   PublicKeyCredentialCreationOptions,
   PublicKeyCredential,
-} from '../../../interfaces/auth';
+} from '../../../interfaces/auth/credentials';
 
 const base64UrlToArrayBuffer = (base64url: string): ArrayBuffer => {
   const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');

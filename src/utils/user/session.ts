@@ -2,7 +2,7 @@ import { STORAGE_KEYS } from '../../constants/store/store';
 import { USER_CONSTANTS } from '../../constants/user/user';
 import { isDevelopment } from '../helpers/env';
 import logger from '../../logging';
-import type { User as AuthUser } from '../../interfaces/auth';
+import type { User as AuthUser } from '../../interfaces/auth/credentials';
 
 export const getCurrentUser = (): AuthUser | null => {
   try {

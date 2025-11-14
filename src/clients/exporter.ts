@@ -18,7 +18,7 @@ import type {
 } from '../interfaces/api';
 import type { AppWorkload } from '../interfaces/workload';
 import type { User } from '../interfaces/users';
-import type { SessionDetailsResponse, DeleteSessionResponse } from '../interfaces/session';
+import type { SessionDetailsResponse, DeleteSessionResponse } from '../interfaces/auth/session';
 import type { AxiosError } from 'axios';
 
 export const fetchGroupers = async (silent = false) => {

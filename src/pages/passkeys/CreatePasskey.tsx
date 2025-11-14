@@ -10,7 +10,7 @@ import { PageContainer } from '../../components/shared';
 import { createPasskey, registerStart } from '../../clients/auth';
 import { registerPasskey } from '../../utils/auth/webauthn';
 import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
-import type { PublicKeyCredentialCreationOptions } from '../../interfaces/auth';
+import type { PublicKeyCredentialCreationOptions } from '../../interfaces/auth/credentials';
 
 const PasskeyIcon = ICONS.PASSKEY;
 

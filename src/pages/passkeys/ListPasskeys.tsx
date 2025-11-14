@@ -28,8 +28,8 @@ import {
   selectPasskeyLoading,
   selectPasskeyError,
 } from '../../store/passkeys/selectors/passkeySelectors';
-import type { PublicKeyCredentialCreationOptions } from '../../interfaces/auth';
-import type { Passkey } from '../../interfaces/passkeys';
+import type { PublicKeyCredentialCreationOptions } from '../../interfaces/auth/credentials';
+import type { Passkey } from '../../interfaces/auth/passkeys';
 
 const PasskeyIcon = ICONS.PASSKEY;
 

@@ -27,7 +27,7 @@ import {
   selectPasskeyLoading,
   selectPasskeyError,
 } from '../../store/passkeys/selectors/passkeySelectors';
-import type { UpdatePasskeyRequest } from '../../interfaces/passkeys';
+import type { UpdatePasskeyRequest } from '../../interfaces/auth/passkeys';
 
 const PasskeyIcon = ICONS.PASSKEY;
 

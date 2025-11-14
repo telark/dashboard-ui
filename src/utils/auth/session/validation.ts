@@ -5,7 +5,7 @@ import logger from '../../../logging';
 import { AUTH_CONSTANTS } from '../../../constants/auth/messages';
 import { HTTP_STATUS } from '../../../constants';
 import type { AxiosError } from 'axios';
-import type { SessionValidationResult } from '../../../interfaces/session';
+import type { SessionValidationResult } from '../../../interfaces/auth/session';
 
 export const isSessionExpired = (expiresTimestamp: string): boolean => {
   try {

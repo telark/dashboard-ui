@@ -10,7 +10,7 @@ import type {
   UpdatePasskeyResponse,
   DeletePasskeyRequest,
   CreatePasskeyParams,
-} from '../../../interfaces/passkeys';
+} from '../../../interfaces/auth/passkeys';
 
 export const createPasskeyThunk = createAsyncThunk(
   STORE_ACTIONS.PASSKEYS.CREATE,

@@ -11,7 +11,7 @@ import type {
   LoginStartResponse,
   PublicKeyCredentialRequestOptions,
   AuthenticatorAssertionResponse,
-} from '../../../interfaces/auth';
+} from '../../../interfaces/auth/credentials';
 import type { MessageInstance } from 'antd/es/message/interface';
 
 export const extractLoginOptions = (
