@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { APP_ROUTES, ICONS } from '../../constants';
+import { APP_ROUTES, ICONS, SHARED_DETAILS_CONSTANTS } from '../../constants';
 import { USERS_CONSTANTS as UC } from '../../constants/pages/users';
 import Header from '../../components/display/shared/sections/Header';
 import UsersTable from '../../components/display/users/list/Table';
@@ -32,7 +32,7 @@ const UsersList: React.FC = () => {
           breadcrumbs={[{ label: UC.LABELS.BREADCRUMBS.USERS }]}
           icon={<UserIcon />}
         />
-        <div>Loading...</div>
+        <div>{SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING}</div>
       </PageContainer>
     );
   }

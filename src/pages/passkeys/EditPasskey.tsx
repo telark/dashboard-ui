@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, message } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
-import { APP_ROUTES, ICONS, PASSKEYS_PAGE_CONSTANTS as PPC } from '../../constants';
+import { APP_ROUTES, ICONS, PASSKEYS_PAGE_CONSTANTS as PPC, SHARED_DETAILS_CONSTANTS } from '../../constants';
 import Header from '../../components/display/shared/sections/Header';
 import PasskeyForm, {
   type PasskeyFormValues,
@@ -80,7 +80,7 @@ const EditPasskey: React.FC = () => {
   if (loading) {
     return (
       <PageContainer>
-        <div>Loading...</div>
+        <div>{SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING}</div>
       </PageContainer>
     );
   }

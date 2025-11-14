@@ -6,7 +6,7 @@ import Header from './components/layout/header/Header';
 import ErrorBoundary from './ErrorBoundary';
 import SessionExpiredModal from './components/auth/SessionExpiredModal';
 import 'antd/dist/reset.css';
-import { DEFAULT_COLORS, APP_CONFIGS, APP_ROUTES } from './constants';
+import { DEFAULT_COLORS, APP_CONFIGS, APP_ROUTES, COMMON_VALUES } from './constants';
 import { Startup, Welcome } from './pages';
 import AppRoutes from './routes/AppRoutes';
 import { useDispatch, useSelector } from 'react-redux';
@@ -111,7 +111,7 @@ const AppContent: React.FC = () => {
           background: '#ffffff',
         }}
       >
-        <FancySpinner label="Verifying cluster insights..." showLabel={true} />
+        <FancySpinner label={COMMON_VALUES.LOADING.VERIFYING_CLUSTER_INSIGHTS} showLabel={true} />
       </div>
     );
   }

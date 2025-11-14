@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { APP_ROUTES, ICONS } from '../../constants';
+import { APP_ROUTES, ICONS, SHARED_DETAILS_CONSTANTS } from '../../constants';
 import { USERS_CONSTANTS as UC } from '../../constants/pages/users';
 import Header from '../../components/display/shared/sections/Header';
 import ViewDetails from '../../components/display/shared/views/ViewDetails';
@@ -38,7 +38,7 @@ const ViewUser: React.FC = () => {
     return (
       <PageContainer>
         <Header subtitle={UC.LABELS.VIEW_SUBTITLE} breadcrumbs={[]} icon={<UserIcon />} />
-        <div>Loading...</div>
+        <div>{SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING}</div>
       </PageContainer>
     );
   }

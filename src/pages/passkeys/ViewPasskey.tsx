@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { APP_ROUTES, ICONS, PASSKEYS_PAGE_CONSTANTS as PPC } from '../../constants';
+import { APP_ROUTES, ICONS, PASSKEYS_PAGE_CONSTANTS as PPC, SHARED_DETAILS_CONSTANTS } from '../../constants';
 import Header from '../../components/display/shared/sections/Header';
 import ViewDetails from '../../components/display/shared/views/ViewDetails';
 import { createPasskeyViewConfig } from '../../config/passkeyViewConfig';
@@ -52,7 +52,7 @@ const ViewPasskey: React.FC = () => {
   if (loading) {
     return (
       <PageContainer>
-        <div>Loading...</div>
+        <div>{SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING}</div>
       </PageContainer>
     );
   }

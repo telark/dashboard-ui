@@ -24,6 +24,7 @@ export * from './store/hooks';
 export * from './store/store';
 export * from './shared/common';
 export * from './shared/colors';
+export * from './shared/details';
 export * from './shared/time';
 export * from './shared/utils';
 export * from './pages/passkeys';
