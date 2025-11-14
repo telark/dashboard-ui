@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, App as AntdApp } from 'antd';
 import { LoginOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { performLogin } from '../../utils/auth/login';
+import { performLogin } from '../../utils/auth/flows/login';
 import { APP_ROUTES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/pages/login';
 import { LoginForm } from '../../components/auth/login';

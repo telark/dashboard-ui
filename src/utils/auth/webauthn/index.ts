@@ -1,9 +1,9 @@
-import { LOGIN_CONSTANTS } from '../../constants/pages/login';
+import { LOGIN_CONSTANTS } from '../../../constants/pages/login';
 import type {
   PublicKeyCredentialRequestOptions,
   PublicKeyCredentialCreationOptions,
   PublicKeyCredential,
-} from '../../interfaces/auth';
+} from '../../../interfaces/auth';
 
 const base64UrlToArrayBuffer = (base64url: string): ArrayBuffer => {
   const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
@@ -201,3 +201,4 @@ export const registerPasskey = async (
     throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.REGISTRATION_FAILED);
   }
 };
+

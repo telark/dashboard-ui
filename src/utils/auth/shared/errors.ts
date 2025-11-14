@@ -1,9 +1,9 @@
 import { App as AntdApp } from 'antd';
 import { AxiosError } from 'axios';
-import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
-import { HTTP_STATUS } from '../../constants';
-import { LOGIN_CONSTANTS } from '../../constants/pages/login';
-import logger from '../../logging';
+import { AUTH_ERROR_MESSAGES } from '../../../constants/auth';
+import { HTTP_STATUS } from '../../../constants';
+import { LOGIN_CONSTANTS } from '../../../constants/pages/login';
+import logger from '../../../logging';
 
 interface ExtendedAxiosError extends AxiosError {
   normalized?: {
@@ -161,3 +161,4 @@ export const handleAuthError = (
   showErrorMessage(messageApi, friendlyMessage);
   logger.error(LOGIN_CONSTANTS.LOGS.AUTH_ERROR, error);
 };
+

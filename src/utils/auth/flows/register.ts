@@ -1,13 +1,13 @@
-import { registerStart, createPasskey } from '../../clients/auth';
-import { registerPasskey } from './webauthn';
-import { AUTH_SUCCESS_MESSAGES } from '../../constants/auth';
-import { LOGIN_CONSTANTS } from '../../constants/pages/login';
-import { isDevelopment } from '../helpers/env';
-import logger from '../../logging';
+import { registerStart, createPasskey } from '../../../clients/auth';
+import { registerPasskey } from '../webauthn';
+import { AUTH_SUCCESS_MESSAGES } from '../../../constants/auth';
+import { LOGIN_CONSTANTS } from '../../../constants/pages/login';
+import { isDevelopment } from '../../helpers/env';
+import logger from '../../../logging';
 import type {
   RegisterStartResponse,
   PublicKeyCredentialCreationOptions,
-} from '../../interfaces/auth';
+} from '../../../interfaces/auth';
 import type { MessageInstance } from 'antd/es/message/interface';
 
 export const extractRegisterOptions = (
@@ -81,3 +81,4 @@ export const performRegister = async (
     onSuccess();
   }
 };
+

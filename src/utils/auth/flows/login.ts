@@ -1,17 +1,17 @@
-import { loginStart, loginFinish } from '../../clients/auth';
-import { authenticateWithPasskey } from './webauthn';
-import { setSessionToken } from './session/token';
-import { setCurrentUser } from '../user/session';
-import { AUTH_SUCCESS_MESSAGES } from '../../constants/auth';
-import { LOGIN_CONSTANTS } from '../../constants/pages/login';
-import { handleAuthError } from './errors';
-import { isDevelopment } from '../helpers/env';
-import logger from '../../logging';
+import { loginStart, loginFinish } from '../../../clients/auth';
+import { authenticateWithPasskey } from '../webauthn';
+import { setSessionToken } from '../session/token';
+import { setCurrentUser } from '../../user/session';
+import { AUTH_SUCCESS_MESSAGES } from '../../../constants/auth';
+import { LOGIN_CONSTANTS } from '../../../constants/pages/login';
+import { handleAuthError } from '../shared/errors';
+import { isDevelopment } from '../../helpers/env';
+import logger from '../../../logging';
 import type {
   LoginStartResponse,
   PublicKeyCredentialRequestOptions,
   AuthenticatorAssertionResponse,
-} from '../../interfaces/auth';
+} from '../../../interfaces/auth';
 import type { MessageInstance } from 'antd/es/message/interface';
 
 export const extractLoginOptions = (
@@ -123,3 +123,4 @@ export const performLogin = async (
     throw error;
   }
 };
+
