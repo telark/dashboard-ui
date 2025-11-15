@@ -2,7 +2,7 @@ import { LOGIN_CONSTANTS } from '../../../constants/pages/login';
 import { isWebAuthnSupported, base64UrlToArrayBuffer } from './core';
 import { isErrorName } from './shared';
 import type { LoginStartResponse } from '../../../interfaces/auth/credentials';
-import { extractCredentialIds } from './extraction';
+import { extractCredentialIds, extractLoginOptions } from './extraction';
 
 export const browserHasCredential = async (
   credentialId: string,
@@ -75,11 +75,14 @@ export const validateBackendPasskeysInBrowser = async (
     return { hasValidPasskeys: false, orphanedCredentialIds: [] };
   }
 
+  const options = extractLoginOptions(loginStartResponse);
+  const rpId = options.rpId;
+
   const orphanedCredentialIds: string[] = [];
   let hasValidPasskeys = false;
 
   for (const credentialId of credentialIds) {
-    const existsInBrowser = await browserHasCredential(credentialId);
+    const existsInBrowser = await browserHasCredential(credentialId, rpId);
     if (!existsInBrowser) {
       orphanedCredentialIds.push(credentialId);
     } else {

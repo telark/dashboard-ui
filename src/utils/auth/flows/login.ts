@@ -5,7 +5,6 @@ import {
   extractLoginOptions,
   extractCredentialIds,
   hasBackendPasskeys,
-  validateBackendPasskeysInBrowser,
   isCancelledOrNoCredentialError,
 } from '../webauthn';
 import { setSessionToken } from '../session/token';
@@ -100,30 +99,13 @@ export const performLogin = async (
   let loginStartResponse: LoginStartResponse | null = null;
   try {
     loginStartResponse = await loginStart({ username });
-    const validation = await validateBackendPasskeysInBrowser(loginStartResponse);
-
-    if (!validation.hasValidPasskeys && validation.orphanedCredentialIds.length > 0) {
-      const userId = loginStartResponse.userId;
-      if (userId) {
-        await cleanupOrphanedPasskeys(validation.orphanedCredentialIds, userId, messageApi);
-      }
-      throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NO_CREDENTIAL_FOUND);
-    }
-
     const options = extractLoginOptions(loginStartResponse);
-    let filteredAllowCredentials = options.allowCredentials;
-    if (validation.orphanedCredentialIds.length > 0 && validation.hasValidPasskeys) {
-      filteredAllowCredentials = options.allowCredentials?.filter((cred) => {
-        const credId = typeof cred.id === 'string' ? cred.id : '';
-        return !validation.orphanedCredentialIds.includes(credId);
-      });
-    }
 
     const credential = await authenticateWithPasskey({
       challenge: options.challenge,
       timeout: options.timeout,
       rpId: options.rpId,
-      allowCredentials: filteredAllowCredentials,
+      allowCredentials: options.allowCredentials,
       userVerification: options.userVerification || LOGIN_CONSTANTS.WEBAUTHN.USER_VERIFICATION,
     });
 
