@@ -4,7 +4,7 @@ import {
   extractLoginOptions,
   extractCredentialIds,
   hasBackendPasskeys,
-  isCancelledOrNoCredentialError,
+  isNoCredentialFoundError,
 } from '../webauthn';
 import { setSessionToken } from '../session/token';
 import { setCurrentUser } from '../../user/session';
@@ -137,8 +137,7 @@ export const performLogin = async (
       onSuccess();
     }
   } catch (error) {
-    // Check for orphaned passkeys scenario
-    if (loginStartResponse && isCancelledOrNoCredentialError(error)) {
+    if (loginStartResponse && isNoCredentialFoundError(error)) {
       const backendHasPasskeys = hasBackendPasskeys(loginStartResponse);
       if (backendHasPasskeys) {
         messageApi.open({

@@ -232,4 +232,4 @@ export {
   validateBackendPasskeysInBrowser,
 } from './validation';
 export { extractLoginOptions, extractCredentialIds, hasBackendPasskeys } from './extraction';
-export { isCancelledOrNoCredentialError } from './errors';
+export { isCancelledOrNoCredentialError, isNoCredentialFoundError, isUserCancelledError } from './errors';
