@@ -21,4 +21,3 @@ export interface LabeledSelectProps {
   mode?: 'multiple' | 'tags';
   className?: string;
 }
-

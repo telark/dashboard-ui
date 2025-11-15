@@ -161,4 +161,3 @@ export const handleAuthError = (
   showErrorMessage(messageApi, friendlyMessage);
   logger.error(LOGIN_CONSTANTS.LOGS.AUTH_ERROR, error);
 };
-

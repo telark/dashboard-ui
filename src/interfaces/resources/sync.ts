@@ -68,4 +68,3 @@ export interface HandleSyncErrorParams {
   isDetailsSync: boolean;
   config: SyncConfig;
 }
-

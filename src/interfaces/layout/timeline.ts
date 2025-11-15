@@ -49,4 +49,3 @@ export interface TimelinePaginationState {
   currentPage: number;
   hasMoreItems: boolean;
 }
-

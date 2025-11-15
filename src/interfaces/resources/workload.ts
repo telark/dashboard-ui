@@ -190,4 +190,3 @@ export interface WorkloadsState {
   batchError: string | null;
   syncing: Record<string, boolean>;
 }
-

@@ -24,4 +24,3 @@ export interface RolesScopesAndPermissionsListProps {
   rowPaddingPx?: number;
   dividerMarginPx?: number;
 }
-

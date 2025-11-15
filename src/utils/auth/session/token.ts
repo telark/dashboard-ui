@@ -60,4 +60,3 @@ export const createSessionTokenInterceptor = () => {
     return config;
   };
 };
-

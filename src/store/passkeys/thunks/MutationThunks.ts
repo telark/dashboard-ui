@@ -65,17 +65,14 @@ export const createPasskeyThunk = createAsyncThunk(
                 };
                 return retryPasskey;
               } catch (cleanupError) {
-                logger.error(
-                  AUTH_ERROR_MESSAGES.ORPHANED_PASSKEY_CLEANUP_FAILED,
-                  cleanupError,
-                );
-                return rejectWithValue(
-                  AUTH_ERROR_MESSAGES.ORPHANED_PASSKEY_CLEANUP_FAILED,
-                );
+                logger.error(AUTH_ERROR_MESSAGES.ORPHANED_PASSKEY_CLEANUP_FAILED, cleanupError);
+                return rejectWithValue(AUTH_ERROR_MESSAGES.ORPHANED_PASSKEY_CLEANUP_FAILED);
               }
             }
           }
-        } catch {}
+        } catch {
+          // Fall through to return PASSKEY_ALREADY_EXISTS
+        }
         return rejectWithValue(AUTH_ERROR_MESSAGES.PASSKEY_ALREADY_EXISTS);
       }
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.CREATE_PASSKEY));

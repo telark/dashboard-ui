@@ -31,4 +31,3 @@ export interface SessionValidationResult {
   sessionDetails?: SessionDetails;
   error?: string;
 }
-

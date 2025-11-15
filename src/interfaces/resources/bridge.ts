@@ -39,4 +39,3 @@ export interface Workload {
   isSameGrouper: boolean;
   matchedLabels: Selector[];
 }
-

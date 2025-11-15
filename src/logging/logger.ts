@@ -51,7 +51,10 @@ class EnhancedLogger {
     }
 
     // Truncate message if max length is set
-    if (config.formatting.maxMessageLength > 0 && formattedMessage.length > config.formatting.maxMessageLength) {
+    if (
+      config.formatting.maxMessageLength > 0 &&
+      formattedMessage.length > config.formatting.maxMessageLength
+    ) {
       formattedMessage = formattedMessage.substring(0, config.formatting.maxMessageLength) + '...';
     }
 
@@ -124,4 +127,3 @@ class EnhancedLogger {
 
 export const logger = new EnhancedLogger();
 export default logger;
-

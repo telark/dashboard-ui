@@ -55,4 +55,3 @@ export interface CreatePasskeyParams {
   deviceType: 'platform' | 'cross-platform';
   username?: string;
 }
-

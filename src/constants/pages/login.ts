@@ -18,8 +18,27 @@ export const LOGIN_CONSTANTS = {
   },
   WEBAUTHN: {
     USER_VERIFICATION: 'preferred',
+    USER_VERIFICATION_DISCOURAGED: 'discouraged',
     CREDENTIAL_TYPE: 'public-key',
     ATTESTATION: 'none',
+    TIMEOUT: {
+      VALIDATION_CHECK: 1000,
+    },
+    REGEX: {
+      BASE64URL_TO_BASE64: {
+        REPLACE_DASH: /-/g,
+        REPLACE_UNDERSCORE: /_/g,
+        REPLACE_WITH_PLUS: '+',
+        REPLACE_WITH_SLASH: '/',
+      },
+      BASE64_TO_BASE64URL: {
+        REPLACE_PLUS: /\+/g,
+        REPLACE_SLASH: /\//g,
+        REPLACE_TRAILING_EQUALS: /=+$/,
+        REPLACE_WITH_DASH: '-',
+        REPLACE_WITH_UNDERSCORE: '_',
+      },
+    },
     ERROR_NAMES: {
       NOT_ALLOWED: 'NotAllowedError',
       INVALID_STATE: 'InvalidStateError',

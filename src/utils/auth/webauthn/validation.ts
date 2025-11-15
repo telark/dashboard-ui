@@ -1,5 +1,6 @@
 import { LOGIN_CONSTANTS } from '../../../constants/pages/login';
 import { isWebAuthnSupported, base64UrlToArrayBuffer } from './core';
+import { isErrorName } from './shared';
 import type { LoginStartResponse } from '../../../interfaces/auth/credentials';
 import { extractCredentialIds } from './extraction';
 
@@ -26,22 +27,21 @@ export const browserHasCredential = async (
             type: LOGIN_CONSTANTS.WEBAUTHN.CREDENTIAL_TYPE,
           },
         ],
-        userVerification: 'discouraged', // Don't require user interaction
-        timeout: 1000, // Short timeout since we're just checking existence
+        userVerification: LOGIN_CONSTANTS.WEBAUTHN.USER_VERIFICATION_DISCOURAGED,
+        timeout: LOGIN_CONSTANTS.WEBAUTHN.TIMEOUT.VALIDATION_CHECK,
       },
     });
 
     return !!credential;
   } catch (error) {
-    if (error instanceof Error) {
-      const errorName = error.name;
-      if (
-        errorName === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_ALLOWED ||
-        errorName === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.INVALID_STATE ||
-        errorName === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_FOUND
-      ) {
-        return false;
-      }
+    if (
+      isErrorName(error, [
+        LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_ALLOWED,
+        LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.INVALID_STATE,
+        LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_FOUND,
+      ])
+    ) {
+      return false;
     }
     return false;
   }
@@ -89,4 +89,3 @@ export const validateBackendPasskeysInBrowser = async (
 
   return { hasValidPasskeys, orphanedCredentialIds };
 };
-

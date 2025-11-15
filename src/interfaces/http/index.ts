@@ -46,4 +46,3 @@ export interface ResourceDetailsResponse<T> {
 export interface ErrorInterceptorOptions {
   silent404?: boolean;
 }
-

@@ -12,4 +12,3 @@ export const isCancelledOrNoCredentialError = (error: unknown): boolean => {
     errorMessage === LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NO_CREDENTIAL_FOUND.toLowerCase()
   );
 };
-

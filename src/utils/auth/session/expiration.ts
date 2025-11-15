@@ -52,4 +52,3 @@ export const useSessionExpirationCheck = ({
     };
   }, [isAuthenticated, isAuthRoute, onSessionExpired]);
 };
-

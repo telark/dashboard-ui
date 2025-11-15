@@ -53,4 +53,3 @@ export const hasBackendPasskeys = (loginStartResponse: LoginStartResponse): bool
     loginStartResponse.allowCredentials && loginStartResponse.allowCredentials.length > 0;
   return !!(hasInOptions || hasInResponse);
 };
-

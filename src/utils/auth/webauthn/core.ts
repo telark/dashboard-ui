@@ -5,13 +5,20 @@ import type {
   PublicKeyCredential,
 } from '../../../interfaces/auth/credentials';
 
+import { addBase64Padding, convertCredentialDescriptors, handleWebAuthnError } from './shared';
+
 export const base64UrlToArrayBuffer = (base64url: string): ArrayBuffer => {
-  const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
-  let paddedBase64 = base64;
-  while (paddedBase64.length % 4) {
-    paddedBase64 += '=';
-  }
-  
+  const base64 = base64url
+    .replace(
+      LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64URL_TO_BASE64.REPLACE_DASH,
+      LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64URL_TO_BASE64.REPLACE_WITH_PLUS,
+    )
+    .replace(
+      LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64URL_TO_BASE64.REPLACE_UNDERSCORE,
+      LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64URL_TO_BASE64.REPLACE_WITH_SLASH,
+    );
+  const paddedBase64 = addBase64Padding(base64);
+
   const binary = globalThis.atob(paddedBase64);
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) {
@@ -27,15 +34,29 @@ const arrayBufferToBase64Url = (buffer: ArrayBuffer): string => {
     binary += String.fromCharCode(bytes[i]);
   }
   const base64 = globalThis.btoa(binary);
-  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return base64
+    .replace(
+      LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64_TO_BASE64URL.REPLACE_PLUS,
+      LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64_TO_BASE64URL.REPLACE_WITH_DASH,
+    )
+    .replace(
+      LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64_TO_BASE64URL.REPLACE_SLASH,
+      LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64_TO_BASE64URL.REPLACE_WITH_UNDERSCORE,
+    )
+    .replace(LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64_TO_BASE64URL.REPLACE_TRAILING_EQUALS, '');
 };
 
 export const base64UrlToBase64 = (base64url: string): string => {
-  let base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
-  while (base64.length % 4) {
-    base64 += '=';
-  }
-  return base64;
+  const base64 = base64url
+    .replace(
+      LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64URL_TO_BASE64.REPLACE_DASH,
+      LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64URL_TO_BASE64.REPLACE_WITH_PLUS,
+    )
+    .replace(
+      LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64URL_TO_BASE64.REPLACE_UNDERSCORE,
+      LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64URL_TO_BASE64.REPLACE_WITH_SLASH,
+    );
+  return addBase64Padding(base64);
 };
 
 const convertRequestOptions = (
@@ -49,11 +70,10 @@ const convertRequestOptions = (
   };
 
   if (options.allowCredentials) {
-    publicKey.allowCredentials = options.allowCredentials.map((cred) => ({
-      id: base64UrlToArrayBuffer(cred.id),
-      type: LOGIN_CONSTANTS.WEBAUTHN.CREDENTIAL_TYPE,
-      transports: cred.transports,
-    }));
+    publicKey.allowCredentials = convertCredentialDescriptors(
+      options.allowCredentials,
+      base64UrlToArrayBuffer,
+    );
   }
 
   return { publicKey };
@@ -79,11 +99,10 @@ const convertCreationOptions = (
   }
 
   if (options.excludeCredentials) {
-    publicKey.excludeCredentials = options.excludeCredentials.map((cred) => ({
-      id: base64UrlToArrayBuffer(cred.id),
-      type: LOGIN_CONSTANTS.WEBAUTHN.CREDENTIAL_TYPE,
-      transports: cred.transports,
-    }));
+    publicKey.excludeCredentials = convertCredentialDescriptors(
+      options.excludeCredentials,
+      base64UrlToArrayBuffer,
+    );
   }
 
   return { publicKey };
@@ -155,16 +174,19 @@ export const authenticateWithPasskey = async (
     return convertCredential(credential);
   } catch (error) {
     if (error instanceof Error) {
-      if (error.name === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_ALLOWED) {
-        throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.USER_CANCELLED_AUTH);
-      }
-      if (error.name === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.INVALID_STATE) {
-        throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.OPERATION_NOT_ALLOWED);
-      }
-      if (error.name === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_SUPPORTED) {
-        throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NOT_SUPPORTED_ERROR);
-      }
-      throw error;
+      const errorMap: Record<string, string> = {
+        [LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_ALLOWED]:
+          LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.USER_CANCELLED_AUTH,
+        [LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.INVALID_STATE]:
+          LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.OPERATION_NOT_ALLOWED,
+        [LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_SUPPORTED]:
+          LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NOT_SUPPORTED_ERROR,
+      };
+      throw handleWebAuthnError(
+        error,
+        errorMap,
+        LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.AUTHENTICATION_FAILED,
+      );
     }
     throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.AUTHENTICATION_FAILED);
   }
@@ -189,24 +211,30 @@ export const registerPasskey = async (
     return convertCredential(credential);
   } catch (error) {
     if (error instanceof Error) {
-      if (error.name === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_ALLOWED) {
-        throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.USER_CANCELLED_REGISTRATION);
-      }
-      if (error.name === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.INVALID_STATE) {
-        throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.OPERATION_NOT_ALLOWED);
-      }
-      if (error.name === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_SUPPORTED) {
-        throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NOT_SUPPORTED_ERROR);
-      }
-      if (error.name === LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.CONSTRAINT) {
-        throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.CONSTRAINT_VALIDATION_FAILED);
-      }
-      throw error;
+      const errorMap: Record<string, string> = {
+        [LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_ALLOWED]:
+          LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.USER_CANCELLED_REGISTRATION,
+        [LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.INVALID_STATE]:
+          LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.OPERATION_NOT_ALLOWED,
+        [LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_SUPPORTED]:
+          LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NOT_SUPPORTED_ERROR,
+        [LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.CONSTRAINT]:
+          LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.CONSTRAINT_VALIDATION_FAILED,
+      };
+      throw handleWebAuthnError(
+        error,
+        errorMap,
+        LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.REGISTRATION_FAILED,
+      );
     }
     throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.REGISTRATION_FAILED);
   }
 };
 
-export { browserHasCredential, detectOrphanedPasskeys, validateBackendPasskeysInBrowser } from './validation';
+export {
+  browserHasCredential,
+  detectOrphanedPasskeys,
+  validateBackendPasskeysInBrowser,
+} from './validation';
 export { extractLoginOptions, extractCredentialIds, hasBackendPasskeys } from './extraction';
 export { isCancelledOrNoCredentialError } from './errors';

@@ -45,4 +45,3 @@ export interface FormModalProps {
   buttonWrapperStyle?: React.CSSProperties;
   contentWrapperStyle?: React.CSSProperties;
 }
-

@@ -118,7 +118,7 @@ export const performLogin = async (
         return !validation.orphanedCredentialIds.includes(credId);
       });
     }
-    
+
     const credential = await authenticateWithPasskey({
       challenge: options.challenge,
       timeout: options.timeout,
@@ -192,4 +192,3 @@ export const performLogin = async (
     throw error;
   }
 };
-

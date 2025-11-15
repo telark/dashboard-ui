@@ -9,4 +9,3 @@ export const LOGGER_CONFIG = {
   INCLUDE_TIMESTAMP: true,
   TIMESTAMP_FORMAT: 'YYYY-MM-DD HH:mm:ss.SSS',
 } as const;
-

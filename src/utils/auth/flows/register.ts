@@ -81,4 +81,3 @@ export const performRegister = async (
     onSuccess();
   }
 };
-
