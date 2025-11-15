@@ -108,9 +108,10 @@ const ListPasskeys: React.FC = () => {
       const registerStartResponse = await registerStart();
       const options = extractRegisterOptions(registerStartResponse);
 
-      // Step 2: Override user.displayName with device name so browser shows device name in selection popup
+      // Step 2: Override user.name and user.displayName with device name so browser shows device name in selection popup
       const userWithDeviceName = {
         ...options.user,
+        name: deviceName,
         displayName: deviceName,
       };
 

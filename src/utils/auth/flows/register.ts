@@ -60,9 +60,10 @@ export const performRegister = async (
   const registerStartResponse = await registerStart(username);
   const options = extractRegisterOptions(registerStartResponse);
 
-  // Override user.displayName with device name so browser shows device name in selection popup
+  // Override user.name and user.displayName with device name so browser shows device name in selection popup
   const userWithDeviceName = {
     ...options.user,
+    name: deviceName,
     displayName: deviceName,
   };
 
