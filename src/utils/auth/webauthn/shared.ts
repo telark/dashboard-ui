@@ -1,4 +1,5 @@
 import { LOGIN_CONSTANTS } from '../../../constants/pages/login';
+import logger from '../../../logging';
 import type { PublicKeyCredentialDescriptor } from '../../../interfaces/auth/credentials';
 
 export const addBase64Padding = (base64: string): string => {
@@ -12,11 +13,19 @@ export const addBase64Padding = (base64: string): string => {
 export const convertCredentialDescriptor = (
   cred: PublicKeyCredentialDescriptor,
   base64UrlToArrayBufferFn: (base64url: string) => ArrayBuffer,
-): globalThis.PublicKeyCredentialDescriptor => ({
-  id: base64UrlToArrayBufferFn(cred.id),
-  type: LOGIN_CONSTANTS.WEBAUTHN.CREDENTIAL_TYPE,
-  transports: cred.transports,
-});
+): globalThis.PublicKeyCredentialDescriptor => {
+  try {
+    const arrayBuffer = base64UrlToArrayBufferFn(cred.id);
+    return {
+      id: arrayBuffer,
+      type: LOGIN_CONSTANTS.WEBAUTHN.CREDENTIAL_TYPE,
+      transports: cred.transports,
+    };
+  } catch (error) {
+    logger.error('[WebAuthn] Failed to convert credential ID:', cred.id, error);
+    throw error;
+  }
+};
 
 export const convertCredentialDescriptors = (
   credentials: PublicKeyCredentialDescriptor[],

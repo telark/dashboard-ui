@@ -25,7 +25,7 @@ export const createPasskeyThunk = createAsyncThunk(
         params.deviceType,
         params.username,
       );
-      // Convert CreatePasskeyResponse to Passkey format
+      
       const passkey: Passkey = {
         id: response.id,
         credentialId: response.credentialId,
@@ -35,7 +35,6 @@ export const createPasskeyThunk = createAsyncThunk(
       };
       return passkey;
     } catch (error: unknown) {
-      // Check if it's a 409 conflict (passkey already exists)
       const axiosError = error as any;
       const status = axiosError?.response?.status || axiosError?.normalized?.status;
 

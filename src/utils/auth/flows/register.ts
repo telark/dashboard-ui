@@ -13,9 +13,10 @@ import type { MessageInstance } from 'antd/es/message/interface';
 export const extractRegisterOptions = (
   registerStartResponse: RegisterStartResponse,
 ): PublicKeyCredentialCreationOptions => {
+  let options: PublicKeyCredentialCreationOptions;
   if (registerStartResponse.options?.publicKey) {
     const publicKey = (registerStartResponse.options as any).publicKey;
-    return {
+    options = {
       challenge: publicKey.challenge,
       rp: publicKey.rp,
       user: publicKey.user,
@@ -23,15 +24,14 @@ export const extractRegisterOptions = (
       timeout: publicKey.timeout,
       attestation: publicKey.attestation,
       authenticatorSelection: publicKey.authenticatorSelection,
+      // Do not include excludeCredentials - using discoverable credentials (resident keys)
     };
-  }
-
-  if (registerStartResponse.options?.response) {
-    return registerStartResponse.options.response;
-  }
-
-  if (registerStartResponse.challenge) {
-    return {
+  } else if (registerStartResponse.options?.response) {
+    const { excludeCredentials, ...responseWithoutExclude } = registerStartResponse.options.response;
+    options = responseWithoutExclude;
+  } else if (registerStartResponse.challenge) {
+    const { excludeCredentials, ...flatWithoutExclude } = registerStartResponse;
+    options = {
       challenge: registerStartResponse.challenge,
       rp: registerStartResponse.rp!,
       user: registerStartResponse.user!,
@@ -39,14 +39,16 @@ export const extractRegisterOptions = (
       timeout: registerStartResponse.timeout,
       attestation: registerStartResponse.attestation,
       authenticatorSelection: registerStartResponse.authenticatorSelection,
+      // Do not include excludeCredentials - using discoverable credentials (resident keys)
     };
+  } else {
+    if (isDevelopment()) {
+      logger.error(LOGIN_CONSTANTS.LOGS.INVALID_RESPONSE_STRUCTURE, registerStartResponse);
+    }
+    throw new Error(LOGIN_CONSTANTS.MESSAGES.INVALID_RESPONSE);
   }
 
-  if (isDevelopment()) {
-    logger.error(LOGIN_CONSTANTS.LOGS.INVALID_RESPONSE_STRUCTURE, registerStartResponse);
-  }
-
-  throw new Error(LOGIN_CONSTANTS.MESSAGES.INVALID_RESPONSE);
+  return options;
 };
 
 export const performRegister = async (
@@ -58,14 +60,21 @@ export const performRegister = async (
   const registerStartResponse = await registerStart(username);
   const options = extractRegisterOptions(registerStartResponse);
 
+  // Override user.displayName with device name so browser shows device name in selection popup
+  const userWithDeviceName = {
+    ...options.user,
+    displayName: deviceName,
+  };
+
   const credential = await registerPasskey({
     challenge: options.challenge,
     rp: options.rp,
-    user: options.user,
+    user: userWithDeviceName,
     pubKeyCredParams: options.pubKeyCredParams,
     timeout: options.timeout,
     attestation: options.attestation,
     authenticatorSelection: options.authenticatorSelection,
+    excludeCredentials: options.excludeCredentials,
   });
 
   const deviceType: 'platform' | 'cross-platform' = 'platform';

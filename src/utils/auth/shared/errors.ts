@@ -133,6 +133,18 @@ const showErrorMessage = (messageApi: MessageApi, content: string, callback?: ()
   }
 };
 
+const showInfoMessage = (messageApi: MessageApi, content: string, callback?: () => void): void => {
+  messageApi.open({
+    type: 'info',
+    content,
+    duration: LOGIN_CONSTANTS.TIMING.MESSAGE_DURATION,
+  });
+
+  if (callback) {
+    setTimeout(callback, LOGIN_CONSTANTS.TIMING.CALLBACK_DELAY);
+  }
+};
+
 export const handleAuthError = (
   error: any,
   messageApi: MessageApi,
@@ -148,7 +160,7 @@ export const handleAuthError = (
   const errorMsg = extractErrorMessage(error);
 
   if (isNoPasskeysError(error, errorMsg)) {
-    showErrorMessage(messageApi, LOGIN_CONSTANTS.MESSAGES.NO_PASSKEYS, onNoPasskeys);
+    showInfoMessage(messageApi, LOGIN_CONSTANTS.MESSAGES.NO_PASSKEYS, onNoPasskeys);
     return;
   }
 

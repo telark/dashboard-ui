@@ -14,6 +14,7 @@ import FormModal from '../../components/display/shared/modal/FormModal';
 import { PageContainer } from '../../components/shared';
 import { registerStart } from '../../clients/auth';
 import { registerPasskey } from '../../utils/auth/webauthn';
+import { extractRegisterOptions } from '../../utils/auth/flows/register';
 import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
 import { isDevelopment } from '../../utils/helpers/env';
 import logger from '../../logging';
@@ -105,46 +106,24 @@ const ListPasskeys: React.FC = () => {
     try {
       // Step 1: Start registration - get challenge and options
       const registerStartResponse = await registerStart();
+      const options = extractRegisterOptions(registerStartResponse);
 
-      // Extract options from nested structure
-      let options: PublicKeyCredentialCreationOptions;
+      // Step 2: Override user.displayName with device name so browser shows device name in selection popup
+      const userWithDeviceName = {
+        ...options.user,
+        displayName: deviceName,
+      };
 
-      if (registerStartResponse.options?.publicKey) {
-        const publicKey = (registerStartResponse.options as any).publicKey;
-        options = {
-          challenge: publicKey.challenge,
-          rp: publicKey.rp,
-          user: publicKey.user,
-          pubKeyCredParams: publicKey.pubKeyCredParams,
-          timeout: publicKey.timeout,
-          attestation: publicKey.attestation,
-          authenticatorSelection: publicKey.authenticatorSelection,
-        };
-      } else if (registerStartResponse.options?.response) {
-        options = registerStartResponse.options.response;
-      } else if (registerStartResponse.challenge) {
-        options = {
-          challenge: registerStartResponse.challenge!,
-          rp: registerStartResponse.rp!,
-          user: registerStartResponse.user!,
-          pubKeyCredParams: registerStartResponse.pubKeyCredParams!,
-          timeout: registerStartResponse.timeout,
-          attestation: registerStartResponse.attestation,
-          authenticatorSelection: registerStartResponse.authenticatorSelection,
-        };
-      } else {
-        throw new Error(PPC.ERRORS.INVALID_RESPONSE_STRUCTURE);
-      }
-
-      // Step 2: Create passkey with WebAuthn
+      // Step 3: Create passkey with WebAuthn (using discoverable credentials/resident keys)
       const credential = await registerPasskey({
         challenge: options.challenge,
         rp: options.rp,
-        user: options.user,
+        user: userWithDeviceName,
         pubKeyCredParams: options.pubKeyCredParams,
         timeout: options.timeout,
         attestation: options.attestation,
         authenticatorSelection: options.authenticatorSelection,
+        // excludeCredentials is not included - discoverable credentials support multiple passkeys per device
       });
 
       // Step 3: Create passkey - verify attestation and store

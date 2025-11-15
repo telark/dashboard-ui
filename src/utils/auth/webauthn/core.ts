@@ -69,8 +69,8 @@ const convertRequestOptions = (
     userVerification: options.userVerification || LOGIN_CONSTANTS.WEBAUTHN.USER_VERIFICATION,
   };
 
-  if (options.allowCredentials) {
-    publicKey.allowCredentials = convertCredentialDescriptors(
+  if (options.allowCredentials && options.allowCredentials.length > 0) {
+    const converted = convertCredentialDescriptors(
       options.allowCredentials,
       base64UrlToArrayBuffer,
     );
@@ -94,16 +94,11 @@ const convertCreationOptions = (
     attestation: options.attestation || LOGIN_CONSTANTS.WEBAUTHN.ATTESTATION,
   };
 
-  if (options.authenticatorSelection) {
-    publicKey.authenticatorSelection = options.authenticatorSelection;
-  }
-
-  if (options.excludeCredentials) {
-    publicKey.excludeCredentials = convertCredentialDescriptors(
-      options.excludeCredentials,
-      base64UrlToArrayBuffer,
-    );
-  }
+  publicKey.authenticatorSelection = {
+    ...options.authenticatorSelection,
+    requireResidentKey: true,
+    residentKey: 'required',
+  };
 
   return { publicKey };
 };
@@ -200,10 +195,10 @@ export const registerPasskey = async (
   }
 
   try {
+    const creationOptions = convertCreationOptions(options);
     const credential = (await globalThis.navigator.credentials.create(
-      convertCreationOptions(options),
+      creationOptions,
     )) as globalThis.PublicKeyCredential | null;
-
     if (!credential) {
       throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.REGISTRATION_CANCELLED);
     }

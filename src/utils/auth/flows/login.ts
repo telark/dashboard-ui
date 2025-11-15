@@ -1,7 +1,6 @@
 import { loginStart, loginFinish, deletePasskey } from '../../../clients/auth';
 import {
   authenticateWithPasskey,
-  base64UrlToBase64,
   extractLoginOptions,
   extractCredentialIds,
   hasBackendPasskeys,
@@ -65,9 +64,8 @@ const cleanupOrphanedPasskeys = async (
   try {
     const deletePromises = credentialIds.map(async (credentialId) => {
       try {
-        const base64CredentialId = base64UrlToBase64(credentialId);
         await deletePasskey(
-          base64CredentialId,
+          credentialId,
           { cleanupOrphaned: true, forceLastDelete: true },
           userId,
         );
@@ -100,7 +98,6 @@ export const performLogin = async (
   try {
     loginStartResponse = await loginStart({ username });
     const options = extractLoginOptions(loginStartResponse);
-
     const credential = await authenticateWithPasskey({
       challenge: options.challenge,
       timeout: options.timeout,

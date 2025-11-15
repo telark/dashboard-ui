@@ -5,7 +5,7 @@ export const LOGIN_CONSTANTS = {
   },
   MESSAGES: {
     USER_NOT_FOUND: 'User not found. Please check your username and try again.',
-    NO_PASSKEYS: 'No passkey registered. Please register a passkey to continue.',
+    NO_PASSKEYS: 'User has no passkeys and must register to login',
     NETWORK_ERROR: 'Network error. Please check your connection and try again.',
     TIMEOUT_ERROR: 'Request timed out. Please try again.',
     SERVER_ERROR: 'Server error. Please try again later.',
@@ -53,6 +53,8 @@ export const LOGIN_CONSTANTS = {
       NO_CREDENTIAL_FOUND: 'User cancelled authentication or no credential found',
       REGISTRATION_CANCELLED: 'User cancelled registration or credential creation failed',
       OPERATION_NOT_ALLOWED: 'The operation is not allowed',
+      AUTHENTICATOR_ALREADY_HAS_CREDENTIAL:
+        'This device already has a passkey registered. Platform authenticators can only store one passkey per account.',
       NOT_SUPPORTED_ERROR: 'WebAuthn is not supported',
       AUTHENTICATION_FAILED: 'Authentication failed',
       REGISTRATION_FAILED: 'Registration failed',

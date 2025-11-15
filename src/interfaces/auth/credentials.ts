@@ -43,6 +43,7 @@ export interface AuthenticatorSelectionCriteria {
   authenticatorAttachment?: AuthenticatorAttachment;
   userVerification?: UserVerificationRequirement;
   requireResidentKey?: boolean;
+  residentKey?: 'discouraged' | 'preferred' | 'required';
 }
 
 export type UserVerificationRequirement = 'required' | 'preferred' | 'discouraged';
@@ -111,6 +112,7 @@ export interface RegisterStartResponse {
   timeout?: number;
   attestation?: AttestationConveyancePreference;
   authenticatorSelection?: AuthenticatorSelectionCriteria;
+  excludeCredentials?: PublicKeyCredentialDescriptor[];
 }
 
 export type RegisterFinishRequest = PublicKeyCredential;

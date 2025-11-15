@@ -108,6 +108,10 @@ export const PASSKEYS_PAGE_CONSTANTS = {
   ERRORS: {
     DEVICE_NAME_REQUIRED: 'Device name is required',
     INVALID_RESPONSE_STRUCTURE: 'Invalid response structure from server',
+    AUTHENTICATOR_ALREADY_HAS_CREDENTIAL:
+      'This device already has a passkey registered. Platform authenticators (Windows Hello, Touch ID, etc.) can only store one passkey per account. To add another passkey, please use a different device or a security key.',
+    RETRY_WITHOUT_EXCLUDE:
+      'Would you like to try creating a passkey without checking for duplicates? This may allow the authenticator to create a new credential, but there is a risk of duplicate credential IDs.',
   },
   LOGS: {
     FAILED_TO_LOAD_PASSKEYS: 'Failed to load passkeys:',
