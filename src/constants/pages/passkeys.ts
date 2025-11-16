@@ -18,6 +18,8 @@ export const PASSKEYS_PAGE_CONSTANTS = {
       CREATED: (name: string) => `Passkey "${name}" registered successfully`,
       UPDATED: (name: string) => `Passkey "${name}" updated successfully`,
       DELETED: (name: string) => `Passkey "${name}" deleted successfully`,
+      BROWSER_NAME_WONT_UPDATE:
+        'Note: The browser will still show the old passkey name. To update it, delete and recreate the passkey.',
     },
     COLUMNS: {
       DEVICE_NAME: 'Device Name',

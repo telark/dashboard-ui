@@ -75,6 +75,8 @@ const EditPasskey: React.FC = () => {
   const handleFinish = async (values: PasskeyFormValues) => {
     if (!passkey) return;
 
+    const deviceNameChanged = values.deviceName !== passkey.deviceName;
+
     try {
       const updateRequest: UpdatePasskeyRequest = {
         deviceName: values.deviceName,
@@ -84,6 +86,12 @@ const EditPasskey: React.FC = () => {
       );
       if (updatePasskeyThunk.fulfilled.match(result)) {
         message.success(PPC.LABELS.MESSAGES.UPDATED(values.deviceName));
+        
+        // Warn user that browser display name won't change
+        if (deviceNameChanged) {
+          message.info(PPC.LABELS.MESSAGES.BROWSER_NAME_WONT_UPDATE, 6);
+        }
+        
         // Navigate using the updated device name
         if (values.deviceName) {
           navigate(APP_ROUTES.PASSKEY_VIEW.replace(':id', encodeURIComponent(values.deviceName)));
