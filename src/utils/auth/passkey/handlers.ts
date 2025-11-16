@@ -4,25 +4,23 @@ import { registerPasskey } from '../webauthn';
 import { extractRegisterOptions } from '../flows/register';
 import { AUTH_ERROR_MESSAGES } from '../../../constants/auth';
 import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../constants/pages/passkeys';
-import type { AppDispatch } from '../../../store';
 import {
   createPasskeyThunk,
   updatePasskeyThunk,
   deletePasskeyThunk,
 } from '../../../store/passkeys/slices/passkeySlice';
-import type { Passkey, UpdatePasskeyRequest } from '../../../interfaces/auth/passkeys';
-
-export interface CreatePasskeyParams {
-  deviceName: string;
-  dispatch: AppDispatch;
-  setSubmitting: (value: boolean) => void;
-}
+import type {
+  UpdatePasskeyRequest,
+  CreatePasskeyHandlerParams,
+  UpdatePasskeyHandlerParams,
+  DeletePasskeyHandlerParams,
+} from '../../../interfaces/auth/passkeys';
 
 export const handleCreatePasskey = async ({
   deviceName,
   dispatch,
   setSubmitting,
-}: CreatePasskeyParams): Promise<void> => {
+}: CreatePasskeyHandlerParams): Promise<void> => {
   if (!deviceName) {
     throw new Error(PPC.ERRORS.DEVICE_NAME_REQUIRED);
   }
@@ -72,19 +70,12 @@ export const handleCreatePasskey = async ({
   }
 };
 
-export interface UpdatePasskeyParams {
-  passkey: Passkey;
-  deviceName: string;
-  dispatch: AppDispatch;
-  setSubmitting: (value: boolean) => void;
-}
-
 export const handleUpdatePasskey = async ({
   passkey,
   deviceName,
   dispatch,
   setSubmitting,
-}: UpdatePasskeyParams): Promise<void> => {
+}: UpdatePasskeyHandlerParams): Promise<void> => {
   if (!deviceName) {
     throw new Error(PPC.ERRORS.DEVICE_NAME_REQUIRED);
   }
@@ -124,17 +115,11 @@ export const handleUpdatePasskey = async ({
   }
 };
 
-export interface DeletePasskeyParams {
-  passkey: Passkey;
-  forceLastDelete: boolean;
-  dispatch: AppDispatch;
-}
-
 export const handleDeletePasskey = async ({
   passkey,
   forceLastDelete,
   dispatch,
-}: DeletePasskeyParams): Promise<void> => {
+}: DeletePasskeyHandlerParams): Promise<void> => {
   try {
     const result = await dispatch(
       deletePasskeyThunk({ credentialId: passkey.credentialId, request: { forceLastDelete } }),

@@ -1,8 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { message } from 'antd';
-import { AUTH_ERROR_MESSAGES } from '../constants/auth';
 import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../constants/pages/passkeys';
 import { isDevelopment } from '../utils/helpers/env';
 import logger from '../logging';
@@ -13,16 +11,7 @@ import {
   handleDeletePasskey,
 } from '../utils/auth/passkey/handlers';
 import { navigateToPasskeyView, validatePasskeyForNavigation } from '../utils/auth/passkey/navigation';
-import type { Passkey } from '../interfaces/auth/passkeys';
-
-export interface UsePasskeyHandlersReturn {
-  submitting: boolean;
-  handleView: (record: Passkey) => void;
-  handleEdit: (record: Passkey) => void;
-  handleDelete: (record: Passkey, forceLastDelete?: boolean) => Promise<void>;
-  handleCreate: (values: Record<string, any>) => Promise<void>;
-  handleUpdate: (values: Record<string, any>, selectedPasskey: Passkey | null) => Promise<void>;
-}
+import type { Passkey, UsePasskeyHandlersReturn } from '../interfaces/auth/passkeys';
 
 export const usePasskeyHandlers = (
   openEditModal: (passkey: Passkey) => void,

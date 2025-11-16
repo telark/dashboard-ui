@@ -1,12 +1,6 @@
 import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../constants/pages/passkeys';
+import type { ValidateDeviceNameOptions } from '../../../interfaces/auth/passkeys';
 import type { Passkey } from '../../../interfaces/auth/passkeys';
-
-export interface ValidateDeviceNameOptions {
-  value: string;
-  existingPasskeys: Passkey[];
-  isEditMode?: boolean;
-  currentDeviceName?: string;
-}
 
 export const validateDeviceName = ({
   value,

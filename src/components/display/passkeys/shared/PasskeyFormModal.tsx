@@ -4,19 +4,9 @@ import type { FormInstance } from 'antd';
 import { ICONS, PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../../constants';
 import FormModal from '../../shared/modal/FormModal';
 import { createDeviceNameValidator } from '../../../../utils/auth/passkey/validation';
-import type { Passkey } from '../../../../interfaces/auth/passkeys';
+import type { PasskeyFormModalProps } from '../../../../interfaces/auth/passkeys';
 
 const PasskeyIcon = ICONS.PASSKEY;
-
-export interface PasskeyFormModalProps {
-  open: boolean;
-  isEditMode: boolean;
-  selectedPasskey: Passkey | null;
-  passkeys: Passkey[];
-  submitting: boolean;
-  onCancel: () => void;
-  onSubmit: (values: Record<string, any>) => Promise<void>;
-}
 
 const PasskeyFormModal: React.FC<PasskeyFormModalProps> = ({
   open,
