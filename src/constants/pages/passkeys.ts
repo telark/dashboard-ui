@@ -34,11 +34,11 @@ export const PASSKEYS_PAGE_CONSTANTS = {
     },
     DELETE_MODAL_TITLE: 'Delete Passkey',
     DELETE_MODAL_CONTENT: (name: string) =>
-      `Are you sure you want to delete "${name}"? This action cannot be undone.`,
+      `You are about to delete ${name} from your account. This will remove the passkey from our system and it will no longer be available for authentication.\n\nPlease note that this action will not remove the passkey from your browser's stored credentials. If you wish to remove it from your browser as well, you will need to do so manually through your browser settings. However, deleted passkeys will be automatically filtered out and will not appear during login.`,
     DELETE_MODAL_OK: 'Delete',
     FORCE_DELETE_MODAL_TITLE: 'Delete Last Passkey',
     FORCE_DELETE_MODAL_CONTENT: (name: string) =>
-      `Warning: "${name}" is your last passkey. Deleting it will lock you out of your account. You will need to contact support to regain access. Are you absolutely sure you want to proceed?`,
+      `${name} is your last passkey. You will need to register a new passkey to regain access. Are you absolutely sure you want to proceed?`,
     FORCE_DELETE_MODAL_OK: 'Force Delete',
     DEVICE_TYPE_PLATFORM: 'Platform',
     DEVICE_TYPE_CROSS_PLATFORM: 'Cross-Platform',

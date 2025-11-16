@@ -36,14 +36,29 @@ const PasskeysTable: React.FC<PasskeysTableProps> = ({ passkeys, onView, onEdit,
 
   const handleDelete = (record: Passkey) => {
     const isLastPasskey = passkeys.length === 1;
+    const passkeyName = record?.deviceName || '';
+    const contentText = isLastPasskey
+      ? PPC.LABELS.FORCE_DELETE_MODAL_CONTENT(passkeyName)
+      : PPC.LABELS.DELETE_MODAL_CONTENT(passkeyName);
+
+    // Render content with passkey name in bold
+    const renderContent = () => {
+      const parts = contentText.split(passkeyName);
+      return (
+        <div style={{ whiteSpace: 'pre-line' }}>
+          {parts[0]}
+          <strong>{passkeyName}</strong>
+          {parts[1]}
+        </div>
+      );
+    };
 
     modal.confirm({
       title: isLastPasskey ? PPC.LABELS.FORCE_DELETE_MODAL_TITLE : PPC.LABELS.DELETE_MODAL_TITLE,
-      content: isLastPasskey
-        ? PPC.LABELS.FORCE_DELETE_MODAL_CONTENT(record?.deviceName || '')
-        : PPC.LABELS.DELETE_MODAL_CONTENT(record?.deviceName || ''),
+      content: renderContent(),
       okText: isLastPasskey ? PPC.LABELS.FORCE_DELETE_MODAL_OK : PPC.LABELS.DELETE_MODAL_OK,
       okButtonProps: { danger: true },
+      icon: null,
       onOk: async () => {
         try {
           await onDelete(record, isLastPasskey);
