@@ -31,7 +31,6 @@ const GroupEdit = lazy(() => import('../pages/groups/EditGroup'));
 const PasskeysListView = lazy(() => import('../pages/passkeys/ListPasskeys'));
 const PasskeyView = lazy(() => import('../pages/passkeys/ViewPasskey'));
 const PasskeyEdit = lazy(() => import('../pages/passkeys/EditPasskey'));
-const PasskeyCreateView = lazy(() => import('../pages/passkeys/CreatePasskey'));
 
 // Loading fallback component
 const PageLoader: React.FC = () => (
@@ -289,16 +288,6 @@ const AppRoutes: React.FC = () => {
             <ProtectedRoute>
               <Suspense fallback={<PageLoader />}>
                 <PasskeyEdit />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.PASSKEY_CREATE}
-          element={
-            <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <PasskeyCreateView />
               </Suspense>
             </ProtectedRoute>
           }
