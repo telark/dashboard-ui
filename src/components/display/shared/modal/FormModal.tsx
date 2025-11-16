@@ -61,11 +61,8 @@ const FormModal: React.FC<FormModalProps> = ({
       setHasValidationErrors(false);
       form.resetFields();
       form.setFieldsValue(initialValues);
-    } else {
-      // Clear form when modal closes
-      form.resetFields();
     }
-  }, [open, form]);
+  }, [open, form, initialValues]);
   
   // Update form values when initialValues change (for switching between create/edit modes)
   useEffect(() => {
