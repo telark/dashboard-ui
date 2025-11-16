@@ -55,7 +55,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
   const [selectedStyle, setSelectedStyle] = useState<string | null>(value?.style || null);
   const [avatarStyles, setAvatarStyles] = useState<AvatarStyle[]>([]);
   const [isLoadingStyles, setIsLoadingStyles] = useState(false);
-  
+
   // Use ref to store preview URLs - they never change once generated
   const previewUrlsRef = useRef<Record<string, string>>({});
 

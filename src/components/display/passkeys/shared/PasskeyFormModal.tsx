@@ -49,7 +49,10 @@ const PasskeyFormModal: React.FC<PasskeyFormModalProps> = ({
       sectionSubtitle={PPC.FORM.SECTION_SUBTITLE}
       fields={[]}
       customContent={(form) => (
-        <div className="form-item-compact passkey-form-modal" style={{ marginTop: -4, width: '100%', marginLeft: 0, marginRight: 0 }}>
+        <div
+          className="form-item-compact passkey-form-modal"
+          style={{ marginTop: -4, width: '100%', marginLeft: 0, marginRight: 0 }}
+        >
           <Form.Item
             name="deviceName"
             label={PPC.FORM.DEVICE_NAME_LABEL}
@@ -85,8 +88,23 @@ const PasskeyFormModal: React.FC<PasskeyFormModalProps> = ({
       initialValues={initialValues}
       loading={submitting}
       buttonDisabled={checkButtonDisabled}
-      contentWrapperStyle={{ padding: '1px 0px 0px 0px', paddingLeft: 0, paddingRight: 0, paddingBottom: 0, margin: 0 }}
-      buttonWrapperStyle={{ marginTop: 8, marginBottom: -12, width: '100%', padding: '0 0px', paddingLeft: 0, paddingRight: 0, marginLeft: 0, marginRight: 0 }}
+      contentWrapperStyle={{
+        padding: '1px 0px 0px 0px',
+        paddingLeft: 0,
+        paddingRight: 0,
+        paddingBottom: 0,
+        margin: 0,
+      }}
+      buttonWrapperStyle={{
+        marginTop: 8,
+        marginBottom: -12,
+        width: '100%',
+        padding: '0 0px',
+        paddingLeft: 0,
+        paddingRight: 0,
+        marginLeft: 0,
+        marginRight: 0,
+      }}
     />
   );
 };

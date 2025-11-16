@@ -16,7 +16,10 @@ const BROWSER_PATTERNS = [
   { pattern: /brave/i, name: 'Brave' },
 ];
 
-const detect = (patterns: Array<{ pattern: RegExp; name: string; exclude?: RegExp }>, text: string): string => {
+const detect = (
+  patterns: Array<{ pattern: RegExp; name: string; exclude?: RegExp }>,
+  text: string,
+): string => {
   for (const { pattern, name, exclude } of patterns) {
     if (pattern.test(text) && (!exclude || !exclude.test(text))) {
       return name;
@@ -35,4 +38,3 @@ export const getDeviceInfo = (): { os: string; browser: string } => {
     browser: detect(BROWSER_PATTERNS, ua),
   };
 };
-

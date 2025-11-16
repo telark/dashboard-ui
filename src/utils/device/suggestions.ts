@@ -46,4 +46,3 @@ export const generateDeviceNameSuggestions = (
 
   return unique.slice(0, 3);
 };
-

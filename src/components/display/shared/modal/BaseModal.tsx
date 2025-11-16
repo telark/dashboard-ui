@@ -29,7 +29,9 @@ const BaseModal: React.FC<BaseModalProps> = ({
           <span style={{ display: 'inline-flex', alignItems: 'center' }}>
             <AiOutlineClose size={18} color="#000" />
           </span>
-        ) : false
+        ) : (
+          false
+        )
       }
     >
       {children}

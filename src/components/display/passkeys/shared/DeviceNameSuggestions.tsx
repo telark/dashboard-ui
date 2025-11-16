@@ -8,7 +8,10 @@ interface DeviceNameSuggestionsProps {
   existingPasskeys: Passkey[];
 }
 
-const DeviceNameSuggestions: React.FC<DeviceNameSuggestionsProps> = ({ onSelect, existingPasskeys }) => {
+const DeviceNameSuggestions: React.FC<DeviceNameSuggestionsProps> = ({
+  onSelect,
+  existingPasskeys,
+}) => {
   const existingNames = React.useMemo(
     () => existingPasskeys.map((p) => p.deviceName || '').filter(Boolean),
     [existingPasskeys],
@@ -91,4 +94,3 @@ const DeviceNameSuggestions: React.FC<DeviceNameSuggestionsProps> = ({ onSelect,
 };
 
 export default DeviceNameSuggestions;
-

@@ -63,7 +63,7 @@ const FormModal: React.FC<FormModalProps> = ({
       form.setFieldsValue(initialValues);
     }
   }, [open, form, initialValues]);
-  
+
   // Update form values when initialValues change (for switching between create/edit modes)
   useEffect(() => {
     if (open) {
@@ -107,8 +107,11 @@ const FormModal: React.FC<FormModalProps> = ({
           background: '#fff',
           padding: '24px 24px 4px 24px',
           ...contentWrapperStyle,
-          paddingLeft: contentWrapperStyle?.paddingLeft ?? (contentWrapperStyle?.padding ? undefined : '24px'),
-          paddingRight: contentWrapperStyle?.paddingRight ?? (contentWrapperStyle?.padding ? undefined : '24px'),
+          paddingLeft:
+            contentWrapperStyle?.paddingLeft ?? (contentWrapperStyle?.padding ? undefined : '24px'),
+          paddingRight:
+            contentWrapperStyle?.paddingRight ??
+            (contentWrapperStyle?.padding ? undefined : '24px'),
         }}
       >
         <Form
