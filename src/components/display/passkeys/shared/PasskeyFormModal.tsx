@@ -4,6 +4,7 @@ import { ICONS, PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../../constants';
 import FormModal from '../../shared/modal/FormModal';
 import { createDeviceNameValidator } from '../../../../utils/auth/passkey/validation';
 import type { PasskeyFormModalProps } from '../../../../interfaces/auth/passkeys';
+import DeviceNameSuggestions from './DeviceNameSuggestions';
 
 const PasskeyIcon = ICONS.PASSKEY;
 
@@ -47,7 +48,7 @@ const PasskeyFormModal: React.FC<PasskeyFormModalProps> = ({
       sectionTitle={PPC.FORM.SECTION_TITLE}
       sectionSubtitle={PPC.FORM.SECTION_SUBTITLE}
       fields={[]}
-      customContent={() => (
+      customContent={(form) => (
         <div className="form-item-compact passkey-form-modal" style={{ marginTop: -4, width: '100%', marginLeft: 0, marginRight: 0 }}>
           <Form.Item
             name="deviceName"
@@ -67,6 +68,15 @@ const PasskeyFormModal: React.FC<PasskeyFormModalProps> = ({
           >
             <Input placeholder={PPC.FORM.DEVICE_NAME_PLACEHOLDER} style={{ width: '100%' }} />
           </Form.Item>
+          {!isEditMode && (
+            <DeviceNameSuggestions
+              existingPasskeys={passkeys}
+              onSelect={(suggestion) => {
+                form.setFieldsValue({ deviceName: suggestion });
+                form.validateFields(['deviceName']);
+              }}
+            />
+          )}
         </div>
       )}
       buttonText={isEditMode ? PPC.FORM.EDIT_BUTTON_TEXT : PPC.FORM.BUTTON_TEXT}

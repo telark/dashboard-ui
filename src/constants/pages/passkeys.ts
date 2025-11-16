@@ -89,6 +89,8 @@ export const PASSKEYS_PAGE_CONSTANTS = {
     DEVICE_NAME_PLACEHOLDER: 'e.g. My Laptop, iPhone 13',
     DEVICE_NAME_REQUIRED: 'Device name is required',
     DEVICE_NAME_DUPLICATE: 'A passkey with this name already exists',
+    SUGGESTIONS_TITLE: 'Suggestions',
+    SUGGESTIONS_SUBTITLE: 'Tap to use',
     FIELDS: [
       {
         type: 'input',
