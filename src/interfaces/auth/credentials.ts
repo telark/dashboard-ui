@@ -16,8 +16,8 @@ export interface PublicKeyCredentialRequestOptions {
 
 export interface PublicKeyCredentialCreationOptions {
   challenge: string;
-  rp: PublicKeyCredentialRpEntity;
-  user: PublicKeyCredentialUserEntity;
+  rp: PublicKeyCredentialEntity;
+  user: PublicKeyCredentialEntity;
   pubKeyCredParams: PublicKeyCredentialParameters[];
   timeout?: number;
   attestation?: AttestationConveyancePreference;
@@ -31,15 +31,10 @@ export interface PublicKeyCredentialDescriptor {
   transports?: AuthenticatorTransport[];
 }
 
-export interface PublicKeyCredentialRpEntity {
+export interface PublicKeyCredentialEntity {
   id: string;
   name: string;
-}
-
-export interface PublicKeyCredentialUserEntity {
-  id: string;
-  name: string;
-  displayName: string;
+  displayName?: string;
 }
 
 export interface PublicKeyCredentialParameters {
@@ -109,8 +104,8 @@ export interface RegisterStartResponse {
     response?: PublicKeyCredentialCreationOptions;
   };
   challenge?: string;
-  rp?: PublicKeyCredentialRpEntity;
-  user?: PublicKeyCredentialUserEntity;
+  rp?: PublicKeyCredentialEntity;
+  user?: PublicKeyCredentialEntity;
   pubKeyCredParams?: PublicKeyCredentialParameters[];
   timeout?: number;
   attestation?: AttestationConveyancePreference;
