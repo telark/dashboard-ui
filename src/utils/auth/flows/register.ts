@@ -14,6 +14,8 @@ import type { MessageInstance } from 'antd/es/message/interface';
 export const extractRegisterOptions = (
   registerStartResponse: RegisterStartResponse,
 ): PublicKeyCredentialCreationOptions => {
+  // excludeCredentials is intentionally excluded - using discoverable credentials (resident keys)
+
   let options: PublicKeyCredentialCreationOptions;
   if (registerStartResponse.options?.publicKey) {
     const publicKey = (registerStartResponse.options as any).publicKey;
@@ -25,14 +27,13 @@ export const extractRegisterOptions = (
       timeout: publicKey.timeout,
       attestation: publicKey.attestation,
       authenticatorSelection: publicKey.authenticatorSelection,
-      // Do not include excludeCredentials - using discoverable credentials (resident keys)
     };
   } else if (registerStartResponse.options?.response) {
-    const { excludeCredentials, ...responseWithoutExclude } =
-      registerStartResponse.options.response;
+    const response = registerStartResponse.options.response;
+    const { excludeCredentials: _excludeCredentials, ...responseWithoutExclude } = response;
+    void _excludeCredentials;
     options = responseWithoutExclude;
   } else if (registerStartResponse.challenge) {
-    const { excludeCredentials, ...flatWithoutExclude } = registerStartResponse;
     options = {
       challenge: registerStartResponse.challenge,
       rp: registerStartResponse.rp!,
@@ -41,7 +42,6 @@ export const extractRegisterOptions = (
       timeout: registerStartResponse.timeout,
       attestation: registerStartResponse.attestation,
       authenticatorSelection: registerStartResponse.authenticatorSelection,
-      // Do not include excludeCredentials - using discoverable credentials (resident keys)
     };
   } else {
     if (isDevelopment()) {

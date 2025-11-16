@@ -1,6 +1,5 @@
 import React from 'react';
 import { Form, Input } from 'antd';
-import type { FormInstance } from 'antd';
 import { ICONS, PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../../constants';
 import FormModal from '../../shared/modal/FormModal';
 import { createDeviceNameValidator } from '../../../../utils/auth/passkey/validation';
@@ -27,7 +26,7 @@ const PasskeyFormModal: React.FC<PasskeyFormModalProps> = ({
       sectionTitle={PPC.FORM.SECTION_TITLE}
       sectionSubtitle={PPC.FORM.SECTION_SUBTITLE}
       fields={[]}
-      customContent={(form: FormInstance) => (
+      customContent={() => (
         <Form.Item
           name="deviceName"
           label={PPC.FORM.DEVICE_NAME_LABEL}

@@ -89,7 +89,7 @@ const Login: React.FC = () => {
         setModalOpen(false);
         navigate(APP_ROUTES.REGISTER);
       }
-    } catch (error) {
+    } catch {
       // Error is already handled in cleanupOrphanedPasskeys
     } finally {
       setRemoving(false);
