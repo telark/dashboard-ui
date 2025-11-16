@@ -4,7 +4,6 @@ import {
   extractLoginOptions,
   extractCredentialIds,
   hasBackendPasskeys,
-  isNoCredentialFoundError,
 } from '../webauthn';
 import { setSessionToken } from '../session/token';
 import { setCurrentUser } from '../../user/session';
@@ -48,7 +47,7 @@ const isNotFoundError = (error: unknown): boolean => {
   return status === HTTP_STATUS.NOT_FOUND || status === HTTP_STATUS.BAD_REQUEST;
 };
 
-const cleanupOrphanedPasskeys = async (
+export const cleanupOrphanedPasskeys = async (
   credentialIds: string[],
   userId: string,
   messageApi: MessageInstance,
@@ -80,12 +79,20 @@ const cleanupOrphanedPasskeys = async (
 
     await Promise.all(deletePromises);
     loadingMessage();
+    messageApi.success(AUTH_SUCCESS_MESSAGES.PASSKEY_DELETED, 2);
     return hasUnauthorizedError;
   } catch (error) {
     loadingMessage();
+    messageApi.error(AUTH_ERROR_MESSAGES.ORPHANED_PASSKEY_CLEANUP_FAILED, 5);
     return isUnauthorizedError(error);
   }
 };
+
+export interface OrphanedPasskeysInfo {
+  credentialIds: string[];
+  userId: string;
+  errorName?: string;
+}
 
 export const performLogin = async (
   username: string,
@@ -93,10 +100,13 @@ export const performLogin = async (
   onSuccess?: () => void,
   onNoPasskeys?: () => void,
   onUserNotFound?: () => void,
+  onShowOrphanedModal?: (info: OrphanedPasskeysInfo) => void,
 ): Promise<void> => {
   let loginStartResponse: LoginStartResponse | null = null;
   try {
     loginStartResponse = await loginStart({ username });
+    
+    // Call authentication normally - one attempt only
     const options = extractLoginOptions(loginStartResponse);
     const credential = await authenticateWithPasskey({
       challenge: options.challenge,
@@ -137,32 +147,26 @@ export const performLogin = async (
       onSuccess();
     }
   } catch (error) {
-    if (loginStartResponse && isNoCredentialFoundError(error)) {
-      const backendHasPasskeys = hasBackendPasskeys(loginStartResponse);
-      if (backendHasPasskeys) {
-        messageApi.open({
-          type: 'warning',
-          content: AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_LOGIN_WARNING,
-          duration: 6,
+    // On authentication failure, show modal if backend has passkeys
+    // User must explicitly confirm before cleanup
+    if (loginStartResponse && hasBackendPasskeys(loginStartResponse) && onShowOrphanedModal) {
+      const originalErrorName = (error as Error & { originalErrorName?: string })?.originalErrorName;
+      const credentialIds = extractCredentialIds(loginStartResponse);
+      const userId = loginStartResponse.userId;
+      
+      if (credentialIds.length > 0 && userId) {
+        // Show modal - user must explicitly choose to cleanup
+        onShowOrphanedModal({
+          credentialIds,
+          userId,
+          errorName: originalErrorName,
         });
-
-        const credentialIds = extractCredentialIds(loginStartResponse);
-        const userId = loginStartResponse.userId;
-        if (credentialIds.length > 0 && userId) {
-          const requiresAuth = await cleanupOrphanedPasskeys(credentialIds, userId, messageApi);
-          if (requiresAuth) {
-            messageApi.open({
-              type: 'info',
-              content: AUTH_ERROR_MESSAGES.CLEANUP_REQUIRES_AUTH,
-              duration: 8,
-            });
-          }
-        }
-
-        throw error;
+        // Don't throw error here - let modal handle retry/cleanup
+        return;
       }
     }
 
+    // Handle other errors normally
     handleAuthError(error, messageApi, {
       onUserNotFound,
       onNoPasskeys,
