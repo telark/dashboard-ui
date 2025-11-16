@@ -79,7 +79,6 @@ export const cleanupOrphanedPasskeys = async (
 
     await Promise.all(deletePromises);
     loadingMessage();
-    messageApi.success(AUTH_SUCCESS_MESSAGES.PASSKEY_DELETED, 2);
     return hasUnauthorizedError;
   } catch (error) {
     loadingMessage();

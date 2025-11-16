@@ -26,7 +26,7 @@ export const AUTH_ERROR_MESSAGES = {
   ORPHANED_PASSKEY_CLEANUP_FAILED: 'Failed to cleanup orphaned passkey',
   ORPHANED_PASSKEYS_LOGIN_WARNING:
     'Your browser does not have the passkeys that are registered in your account. This may happen if you cleared your browser data or switched devices.',
-  CLEANUP_STORED_PASSKEYS: 'Cleanup stored passkeys',
+  CLEANUP_STORED_PASSKEYS: 'Removing passkeys...',
   CLEANUP_REQUIRES_AUTH:
     'Unable to automatically cleanup orphaned passkeys. Please contact support to reset your passkeys, or use a different browser/device where your passkeys are still available.',
   ORPHANED_PASSKEYS_MODAL: {

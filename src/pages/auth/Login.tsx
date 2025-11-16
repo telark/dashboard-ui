@@ -86,7 +86,7 @@ const Login: React.FC = () => {
         navigate(APP_ROUTES.REGISTER);
       }
     } catch (error) {
-      message.error('Failed to remove orphaned passkeys. Please try again.');
+      // Error is already handled in cleanupOrphanedPasskeys
     } finally {
       setRemoving(false);
     }
