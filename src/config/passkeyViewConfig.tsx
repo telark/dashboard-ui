@@ -11,7 +11,7 @@ export const createPasskeyViewConfig = (passkey: Passkey): ViewDetailsConfig => 
     fields: [
       {
         key: 'deviceName',
-        label: 'Device Name',
+        label: 'Passkey Name',
         value: passkey.deviceName,
         icon: <BsKey />,
         type: 'text',

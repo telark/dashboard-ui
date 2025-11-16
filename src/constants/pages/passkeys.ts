@@ -20,7 +20,7 @@ export const PASSKEYS_PAGE_CONSTANTS = {
       DELETED: (name: string) => `Passkey "${name}" deleted successfully`,
     },
     COLUMNS: {
-      DEVICE_NAME: 'Device Name',
+      DEVICE_NAME: 'Passkey Name',
       DEVICE_TYPE: 'Device Type',
       CREATED: 'Created',
       LAST_USED: 'Last Used',
@@ -85,10 +85,10 @@ export const PASSKEYS_PAGE_CONSTANTS = {
     SECTION_SUBTITLE: 'Provide a name for this device',
     BUTTON_TEXT: 'Register Passkey',
     EDIT_BUTTON_TEXT: 'Update Passkey',
-    DEVICE_NAME_LABEL: 'Device Name',
+    DEVICE_NAME_LABEL: 'Passkey Name',
     DEVICE_NAME_PLACEHOLDER: 'e.g. My Laptop, iPhone 13',
     DEVICE_NAME_REQUIRED: 'Device name is required',
-    DEVICE_NAME_DUPLICATE: 'A passkey with this device name already exists',
+    DEVICE_NAME_DUPLICATE: 'A passkey with this name already exists',
     FIELDS: [
       {
         type: 'input',
