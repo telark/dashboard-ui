@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import logger from '../../../../logging';
-import { Form, message } from 'antd';
+import { Form, message, Button } from 'antd';
 import PrimaryButton from '../../../buttons/PrimaryButton';
 import { BUTTON_TEXTS } from '../../../../constants';
 import BaseModal from './BaseModal';
@@ -104,12 +104,14 @@ const FormModal: React.FC<FormModalProps> = ({
   };
 
   return (
-    <BaseModal open={open} onCancel={handleCancel} width={width}>
+    <BaseModal open={open} onCancel={handleCancel} width={width} showCloseIcon={false}>
       <div
         style={{
           background: '#fff',
           padding: '24px 24px 4px 24px',
           ...contentWrapperStyle,
+          paddingLeft: contentWrapperStyle?.paddingLeft ?? (contentWrapperStyle?.padding ? undefined : '24px'),
+          paddingRight: contentWrapperStyle?.paddingRight ?? (contentWrapperStyle?.padding ? undefined : '24px'),
         }}
       >
         <Form
@@ -135,14 +137,16 @@ const FormModal: React.FC<FormModalProps> = ({
           <div
             style={{
               display: 'flex',
-              justifyContent: 'center',
+              flexDirection: 'column',
+              alignItems: 'center',
               marginTop: 32,
               marginBottom: 0,
+              gap: 8,
               ...buttonWrapperStyle,
             }}
           >
             <Form.Item
-              style={{ margin: 0 }}
+              style={{ margin: 0, width: buttonWrapperStyle?.width === '100%' ? '100%' : 'auto' }}
               shouldUpdate={(prevValues, currentValues) => {
                 // Force re-render when values change to update button disabled state
                 return typeof buttonDisabled === 'function';
@@ -161,9 +165,21 @@ const FormModal: React.FC<FormModalProps> = ({
                       ? buttonDisabled(form)
                       : buttonDisabled === true)
                   }
+                  style={buttonWrapperStyle?.width === '100%' ? { width: '100%' } : undefined}
                 />
               )}
             </Form.Item>
+            <Button
+              type="text"
+              onClick={handleCancel}
+              style={{
+                width: buttonWrapperStyle?.width === '100%' ? '100%' : 'auto',
+                color: '#64748b',
+                padding: '4px 8px',
+              }}
+            >
+              Cancel
+            </Button>
           </div>
         </Form>
       </div>

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { CSSProperties } from 'react';
 
 export interface LoadingButtonInterface {
   action: string;
@@ -8,6 +9,7 @@ export interface LoadingButtonInterface {
   icon: ReactNode;
   color?: string;
   disabled?: boolean;
+  style?: CSSProperties;
 }
 
 export interface NoLoadingButtonInterface {

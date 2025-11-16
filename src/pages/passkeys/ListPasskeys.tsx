@@ -73,7 +73,6 @@ const ListPasskeys: React.FC = () => {
       <Header
         subtitle={PPC.LABELS.HEADER_SUBTITLE}
         primaryText={PPC.LABELS.CREATE_BUTTON}
-        primaryIcon={<PasskeyIcon size={16} />}
         onPrimary={openCreateModal}
         breadcrumbs={[{ label: PPC.LABELS.BREADCRUMBS.PASSKEYS }]}
         icon={<PasskeyIcon />}

@@ -21,6 +21,7 @@ export interface BaseModalProps {
   width?: number;
   children: React.ReactNode;
   centered?: boolean;
+  showCloseIcon?: boolean;
   styles?: {
     body?: React.CSSProperties;
     content?: React.CSSProperties;

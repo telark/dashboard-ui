@@ -9,6 +9,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
   width = 360,
   children,
   centered = true,
+  showCloseIcon = true,
   styles,
 }) => {
   return (
@@ -24,9 +25,11 @@ const BaseModal: React.FC<BaseModalProps> = ({
         content: { borderRadius: 16, overflow: 'hidden', ...styles?.content },
       }}
       closeIcon={
-        <span style={{ display: 'inline-flex', alignItems: 'center', padding: '0 20px' }}>
-          <AiOutlineClose size={18} color="#000" />
-        </span>
+        showCloseIcon ? (
+          <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+            <AiOutlineClose size={18} color="#000" />
+          </span>
+        ) : false
       }
     >
       {children}

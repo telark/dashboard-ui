@@ -102,7 +102,7 @@ export const PASSKEYS_PAGE_CONSTANTS = {
     INITIAL_VALUES: {
       deviceName: '',
     },
-    MODAL_WIDTH: 360,
+    MODAL_WIDTH: 300,
     STYLES: {
       CARD_PADDING: 16,
       FORM_GAP: 18,
