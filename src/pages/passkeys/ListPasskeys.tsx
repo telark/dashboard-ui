@@ -1,47 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { Form, Input, message } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { message } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  APP_ROUTES,
   ICONS,
   PASSKEYS_PAGE_CONSTANTS as PPC,
   SHARED_DETAILS_CONSTANTS,
 } from '../../constants';
 import Header from '../../components/display/shared/sections/Header';
 import PasskeysTable from '../../components/display/passkeys/list/Table';
-import FormModal from '../../components/display/shared/modal/FormModal';
+import PasskeyFormModal from '../../components/display/passkeys/shared/PasskeyFormModal';
 import { PageContainer } from '../../components/shared';
-import { registerStart } from '../../clients/auth';
-import { registerPasskey } from '../../utils/auth/webauthn';
-import { extractRegisterOptions } from '../../utils/auth/flows/register';
 import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
 import { isDevelopment } from '../../utils/helpers/env';
 import logger from '../../logging';
 import { AppDispatch } from '../../store';
-import {
-  fetchAllPasskeysThunk,
-  createPasskeyThunk,
-  deletePasskeyThunk,
-} from '../../store/passkeys/slices/passkeySlice';
+import { fetchAllPasskeysThunk } from '../../store/passkeys/slices/passkeySlice';
 import {
   selectPasskeys,
   selectPasskeyLoading,
   selectPasskeyError,
 } from '../../store/passkeys/selectors/passkeySelectors';
-import type { PublicKeyCredentialCreationOptions } from '../../interfaces/auth/credentials';
-import type { Passkey } from '../../interfaces/auth/passkeys';
+import { usePasskeyModal } from '../../hooks/usePasskeyModal';
+import { usePasskeyHandlers } from '../../hooks/usePasskeyHandlers';
 
 const PasskeyIcon = ICONS.PASSKEY;
 
 const ListPasskeys: React.FC = () => {
-  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const passkeys = useSelector(selectPasskeys);
   const loading = useSelector(selectPasskeyLoading);
   const error = useSelector(selectPasskeyError);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+
+  const { isModalOpen, isEditMode, selectedPasskey, openCreateModal, openEditModal, closeModal } =
+    usePasskeyModal();
+
+  const { submitting, handleView, handleEdit, handleDelete, handleCreate, handleUpdate } =
+    usePasskeyHandlers(openEditModal);
 
   useEffect(() => {
     dispatch(fetchAllPasskeysThunk());
@@ -56,100 +50,11 @@ const ListPasskeys: React.FC = () => {
     }
   }, [error]);
 
-  const handleView = (record: Passkey) => {
-    if (!record.deviceName) {
-      if (isDevelopment()) {
-        logger.warn(PPC.LOGS.MISSING_DEVICE_NAME, record);
-      }
-      return;
-    }
-    navigate(APP_ROUTES.PASSKEY_VIEW.replace(':id', encodeURIComponent(record.deviceName)));
-  };
-
-  const handleEdit = (record: Passkey) => {
-    if (!record.deviceName) {
-      if (isDevelopment()) {
-        logger.warn(PPC.LOGS.MISSING_DEVICE_NAME, record);
-      }
-      return;
-    }
-    navigate(APP_ROUTES.PASSKEY_EDIT.replace(':id', encodeURIComponent(record.deviceName)));
-  };
-
-  const handleDelete = async (record: Passkey, forceLastDelete = false) => {
-    try {
-      const result = await dispatch(
-        deletePasskeyThunk({ credentialId: record.credentialId, request: { forceLastDelete } }),
-      );
-      if (deletePasskeyThunk.fulfilled.match(result)) {
-        message.success(PPC.LABELS.MESSAGES.DELETED(record.deviceName));
-      } else {
-        const errorMessage =
-          result.payload instanceof Error
-            ? result.payload.message
-            : AUTH_ERROR_MESSAGES.DELETE_PASSKEY_FAILED;
-        message.error(errorMessage);
-      }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : AUTH_ERROR_MESSAGES.DELETE_PASSKEY_FAILED;
-      message.error(errorMessage);
-    }
-  };
-
-  const handleCreate = async (values: Record<string, any>) => {
-    const deviceName = values.deviceName as string;
-    if (!deviceName) {
-      throw new Error(PPC.ERRORS.DEVICE_NAME_REQUIRED);
-    }
-    setSubmitting(true);
-    try {
-      // Step 1: Start registration - get challenge and options
-      const registerStartResponse = await registerStart();
-      const options = extractRegisterOptions(registerStartResponse);
-
-      // Step 2: Override user.name and user.displayName with device name so browser shows device name in selection popup
-      const userWithDeviceName = {
-        ...options.user,
-        name: deviceName,
-        displayName: deviceName,
-      };
-
-      // Step 3: Create passkey with WebAuthn (using discoverable credentials/resident keys)
-      const credential = await registerPasskey({
-        challenge: options.challenge,
-        rp: options.rp,
-        user: userWithDeviceName,
-        pubKeyCredParams: options.pubKeyCredParams,
-        timeout: options.timeout,
-        attestation: options.attestation,
-        authenticatorSelection: options.authenticatorSelection,
-        // excludeCredentials is not included - discoverable credentials support multiple passkeys per device
-      });
-
-      // Step 3: Create passkey - verify attestation and store
-      const deviceType: 'platform' | 'cross-platform' = PPC.VALUES
-        .DEVICE_TYPE_PLATFORM as 'platform';
-      const result = await dispatch(createPasskeyThunk({ credential, deviceName, deviceType }));
-
-      if (createPasskeyThunk.fulfilled.match(result)) {
-        message.success(PPC.LABELS.MESSAGES.CREATED(deviceName));
-        // Modal will be closed by FormModal's handleFinish after onSuccess resolves
-      } else {
-        const errorMessage =
-          result.payload instanceof Error
-            ? result.payload.message
-            : AUTH_ERROR_MESSAGES.CREATE_PASSKEY_FAILED;
-        message.error(errorMessage);
-        throw new Error(errorMessage); // Re-throw to prevent modal from closing on error
-      }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : AUTH_ERROR_MESSAGES.CREATE_PASSKEY_FAILED;
-      message.error(errorMessage);
-      throw error; // Re-throw to prevent modal from closing on error
-    } finally {
-      setSubmitting(false);
+  const handleModalSubmit = async (values: Record<string, any>) => {
+    if (isEditMode) {
+      await handleUpdate(values, selectedPasskey);
+    } else {
+      await handleCreate(values);
     }
   };
 
@@ -159,7 +64,7 @@ const ListPasskeys: React.FC = () => {
         <Header
           subtitle={PPC.LABELS.HEADER_SUBTITLE}
           primaryText={PPC.LABELS.CREATE_BUTTON}
-          onPrimary={() => setIsCreateModalOpen(true)}
+          onPrimary={openCreateModal}
           breadcrumbs={[{ label: PPC.LABELS.BREADCRUMBS.PASSKEYS }]}
           icon={<PasskeyIcon />}
         />
@@ -174,52 +79,19 @@ const ListPasskeys: React.FC = () => {
         subtitle={PPC.LABELS.HEADER_SUBTITLE}
         primaryText={PPC.LABELS.CREATE_BUTTON}
         primaryIcon={<PasskeyIcon size={16} />}
-        onPrimary={() => setIsCreateModalOpen(true)}
+        onPrimary={openCreateModal}
         breadcrumbs={[{ label: PPC.LABELS.BREADCRUMBS.PASSKEYS }]}
         icon={<PasskeyIcon />}
       />
 
-      <FormModal
-        open={isCreateModalOpen}
-        onCancel={() => setIsCreateModalOpen(false)}
-        onSuccess={handleCreate}
-        title={PPC.FORM.TITLE}
-        subtitle={PPC.FORM.SUBTITLE}
-        sectionTitle={PPC.FORM.SECTION_TITLE}
-        sectionSubtitle={PPC.FORM.SECTION_SUBTITLE}
-        fields={[]}
-        customContent={(form) => (
-          <Form.Item
-            name="deviceName"
-            label={PPC.FORM.DEVICE_NAME_LABEL}
-            rules={[
-              { required: true, message: PPC.FORM.DEVICE_NAME_REQUIRED },
-              {
-                validator: (_: unknown, value: string) => {
-                  if (!value || value.trim() === '') {
-                    return Promise.resolve();
-                  }
-                  const trimmedName = value.trim();
-                  const exists = passkeys.some(
-                    (passkey) => passkey.deviceName?.toLowerCase() === trimmedName.toLowerCase(),
-                  );
-                  if (exists) {
-                    return Promise.reject(new Error(PPC.FORM.DEVICE_NAME_DUPLICATE));
-                  }
-                  return Promise.resolve();
-                },
-              },
-            ]}
-            validateTrigger="onChange"
-          >
-            <Input placeholder={PPC.FORM.DEVICE_NAME_PLACEHOLDER} />
-          </Form.Item>
-        )}
-        buttonText={PPC.FORM.BUTTON_TEXT}
-        buttonIcon={<PasskeyIcon size={16} />}
-        width={PPC.FORM.MODAL_WIDTH}
-        initialValues={PPC.FORM.INITIAL_VALUES}
-        loading={submitting}
+      <PasskeyFormModal
+        open={isModalOpen}
+        isEditMode={isEditMode}
+        selectedPasskey={selectedPasskey}
+        passkeys={passkeys}
+        submitting={submitting}
+        onCancel={closeModal}
+        onSubmit={handleModalSubmit}
       />
 
       <PasskeysTable

@@ -1,0 +1,106 @@
+import { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { message } from 'antd';
+import { AUTH_ERROR_MESSAGES } from '../constants/auth';
+import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../constants/pages/passkeys';
+import { isDevelopment } from '../utils/helpers/env';
+import logger from '../logging';
+import { AppDispatch } from '../store';
+import {
+  handleCreatePasskey,
+  handleUpdatePasskey,
+  handleDeletePasskey,
+} from '../utils/auth/passkey/handlers';
+import { navigateToPasskeyView, validatePasskeyForNavigation } from '../utils/auth/passkey/navigation';
+import type { Passkey } from '../interfaces/auth/passkeys';
+
+export interface UsePasskeyHandlersReturn {
+  submitting: boolean;
+  handleView: (record: Passkey) => void;
+  handleEdit: (record: Passkey) => void;
+  handleDelete: (record: Passkey, forceLastDelete?: boolean) => Promise<void>;
+  handleCreate: (values: Record<string, any>) => Promise<void>;
+  handleUpdate: (values: Record<string, any>, selectedPasskey: Passkey | null) => Promise<void>;
+}
+
+export const usePasskeyHandlers = (
+  openEditModal: (passkey: Passkey) => void,
+): UsePasskeyHandlersReturn => {
+  const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleView = useCallback(
+    (record: Passkey) => {
+      if (!validatePasskeyForNavigation(record)) {
+        if (isDevelopment()) {
+          logger.warn(PPC.LOGS.MISSING_DEVICE_NAME, record);
+        }
+        return;
+      }
+      navigate(navigateToPasskeyView(record.deviceName!));
+    },
+    [navigate],
+  );
+
+  const handleEdit = useCallback(
+    (record: Passkey) => {
+      if (!validatePasskeyForNavigation(record)) {
+        if (isDevelopment()) {
+          logger.warn(PPC.LOGS.MISSING_DEVICE_NAME, record);
+        }
+        return;
+      }
+      openEditModal(record);
+    },
+    [openEditModal],
+  );
+
+  const handleDelete = useCallback(
+    async (record: Passkey, forceLastDelete = false) => {
+      await handleDeletePasskey({
+        passkey: record,
+        forceLastDelete,
+        dispatch,
+      });
+    },
+    [dispatch],
+  );
+
+  const handleCreate = useCallback(
+    async (values: Record<string, any>) => {
+      await handleCreatePasskey({
+        deviceName: values.deviceName as string,
+        dispatch,
+        setSubmitting,
+      });
+    },
+    [dispatch],
+  );
+
+  const handleUpdate = useCallback(
+    async (values: Record<string, any>, selectedPasskey: Passkey | null) => {
+      if (!selectedPasskey) {
+        throw new Error('No passkey selected for update');
+      }
+      await handleUpdatePasskey({
+        passkey: selectedPasskey,
+        deviceName: values.deviceName as string,
+        dispatch,
+        setSubmitting,
+      });
+    },
+    [dispatch],
+  );
+
+  return {
+    submitting,
+    handleView,
+    handleEdit,
+    handleDelete,
+    handleCreate,
+    handleUpdate,
+  };
+};
+

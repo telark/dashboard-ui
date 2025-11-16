@@ -80,10 +80,13 @@ export const PASSKEYS_PAGE_CONSTANTS = {
   },
   FORM: {
     TITLE: 'Register Passkey',
+    EDIT_TITLE: 'Edit Passkey',
     SUBTITLE: 'Create a new passkey for your account',
+    EDIT_SUBTITLE: 'Update passkey information',
     SECTION_TITLE: 'Device Information',
     SECTION_SUBTITLE: 'Provide a name for this device',
     BUTTON_TEXT: 'Register Passkey',
+    EDIT_BUTTON_TEXT: 'Update Passkey',
     DEVICE_NAME_LABEL: 'Device Name',
     DEVICE_NAME_PLACEHOLDER: 'e.g. My Laptop, iPhone 13',
     DEVICE_NAME_REQUIRED: 'Device name is required',
