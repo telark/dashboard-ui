@@ -19,7 +19,7 @@ export const LOGIN_CONSTANTS = {
   WEBAUTHN: {
     USER_VERIFICATION: 'preferred',
     USER_VERIFICATION_DISCOURAGED: 'discouraged',
-    CREDENTIAL_TYPE: 'public-key',
+    CREDENTIAL_TYPE: 'public-key' as const,
     ATTESTATION: 'none',
     TIMEOUT: {
       VALIDATION_CHECK: 1000,

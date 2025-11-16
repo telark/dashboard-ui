@@ -1,3 +1,11 @@
+import type {
+  PasskeyDeviceType,
+  PublicKeyCredentialType,
+  UserVerificationRequirement,
+  AttestationConveyancePreference,
+  AuthenticatorTransport,
+} from './types';
+
 export interface PublicKeyCredentialRequestOptions {
   challenge: string;
   timeout?: number;
@@ -19,7 +27,7 @@ export interface PublicKeyCredentialCreationOptions {
 
 export interface PublicKeyCredentialDescriptor {
   id: string;
-  type: 'public-key';
+  type: PublicKeyCredentialType;
   transports?: AuthenticatorTransport[];
 }
 
@@ -35,21 +43,16 @@ export interface PublicKeyCredentialUserEntity {
 }
 
 export interface PublicKeyCredentialParameters {
-  type: 'public-key';
+  type: PublicKeyCredentialType;
   alg: number;
 }
 
 export interface AuthenticatorSelectionCriteria {
-  authenticatorAttachment?: AuthenticatorAttachment;
+  authenticatorAttachment?: PasskeyDeviceType;
   userVerification?: UserVerificationRequirement;
   requireResidentKey?: boolean;
-  residentKey?: 'discouraged' | 'preferred' | 'required';
+  residentKey?: UserVerificationRequirement;
 }
-
-export type UserVerificationRequirement = 'required' | 'preferred' | 'discouraged';
-export type AttestationConveyancePreference = 'none' | 'indirect' | 'direct';
-export type AuthenticatorAttachment = 'platform' | 'cross-platform';
-export type AuthenticatorTransport = 'usb' | 'nfc' | 'ble' | 'internal';
 
 export interface AuthenticatorAttestationResponse {
   attestationObject: string;
@@ -67,8 +70,8 @@ export interface PublicKeyCredential {
   id: string;
   rawId: string;
   response: AuthenticatorAttestationResponse | AuthenticatorAssertionResponse;
-  type: 'public-key';
-  getClientExtensionResults?: Record<string, unknown>; // Optional: client extension results
+  type: PublicKeyCredentialType;
+  getClientExtensionResults?: Record<string, unknown>;
 }
 
 export interface LoginStartRequest {
@@ -121,7 +124,7 @@ export interface RegisterFinishResponse {
   id: string;
   credentialId: string;
   deviceName: string;
-  deviceType: 'platform' | 'cross-platform';
+  deviceType: PasskeyDeviceType;
   creationTimestamp: string;
 }
 

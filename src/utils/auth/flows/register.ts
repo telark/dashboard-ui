@@ -8,6 +8,7 @@ import type {
   RegisterStartResponse,
   PublicKeyCredentialCreationOptions,
 } from '../../../interfaces/auth/credentials';
+import type { PasskeyDeviceType } from '../../../interfaces/auth/types';
 import type { MessageInstance } from 'antd/es/message/interface';
 
 export const extractRegisterOptions = (
@@ -78,7 +79,7 @@ export const performRegister = async (
     excludeCredentials: options.excludeCredentials,
   });
 
-  const deviceType: 'platform' | 'cross-platform' = 'platform';
+  const deviceType: PasskeyDeviceType = 'platform';
   await createPasskey(credential, deviceName, deviceType, username);
 
   messageApi.open({

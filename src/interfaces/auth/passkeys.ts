@@ -1,11 +1,12 @@
 import type { PublicKeyCredential } from './credentials';
 import type { AppDispatch } from '../../store';
+import type { PasskeyDeviceType } from './types';
 
 export interface Passkey {
   id: string;
   credentialId: string;
   deviceName: string;
-  deviceType: 'platform' | 'cross-platform';
+  deviceType: PasskeyDeviceType;
   creationTimestamp: string;
   lastUsedTimestamp?: string;
   backupEligible?: boolean;
@@ -22,7 +23,7 @@ export interface CreatePasskeyResponse {
   id: string;
   credentialId: string;
   deviceName: string;
-  deviceType: 'platform' | 'cross-platform';
+  deviceType: PasskeyDeviceType;
   creationTimestamp: string;
 }
 
@@ -53,7 +54,7 @@ export interface PasskeysState {
 export interface CreatePasskeyParams {
   credential: PublicKeyCredential;
   deviceName: string;
-  deviceType: 'platform' | 'cross-platform';
+  deviceType: PasskeyDeviceType;
   username?: string;
 }
 

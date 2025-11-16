@@ -19,6 +19,7 @@ import type {
   DeletePasskeyRequest,
   DeletePasskeyResponse,
 } from '../interfaces/auth/passkeys';
+import type { PasskeyDeviceType } from '../interfaces/auth/types';
 
 export const loginStart = async (request: LoginStartRequest): Promise<LoginStartResponse> => {
   const { path, method } = Endpoints.AUTH.LOGIN.START;
@@ -85,7 +86,7 @@ export const getPasskey = async (credentialId: string): Promise<Passkey> => {
 export const createPasskey = async (
   credential: PublicKeyCredential,
   deviceName: string,
-  deviceType: 'platform' | 'cross-platform',
+  deviceType: PasskeyDeviceType,
   username?: string,
 ): Promise<CreatePasskeyResponse> => {
   const { path, method } = Endpoints.AUTH.PASSKEYS.CREATE;

@@ -127,5 +127,3 @@ export const PASSKEYS_PAGE_CONSTANTS = {
 } as const;
 
 export type PasskeysPageConstants = typeof PASSKEYS_PAGE_CONSTANTS;
-
-export type PasskeyDeviceType = 'platform' | 'cross-platform';

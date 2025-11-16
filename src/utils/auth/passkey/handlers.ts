@@ -15,6 +15,7 @@ import type {
   UpdatePasskeyHandlerParams,
   DeletePasskeyHandlerParams,
 } from '../../../interfaces/auth/passkeys';
+import type { PasskeyDeviceType } from '../../../interfaces/auth/types';
 
 export const handleCreatePasskey = async ({
   deviceName,
@@ -46,8 +47,7 @@ export const handleCreatePasskey = async ({
       authenticatorSelection: options.authenticatorSelection,
     });
 
-    const deviceType: 'platform' | 'cross-platform' = PPC.VALUES
-      .DEVICE_TYPE_PLATFORM as 'platform';
+    const deviceType: PasskeyDeviceType = PPC.VALUES.DEVICE_TYPE_PLATFORM;
     const result = await dispatch(createPasskeyThunk({ credential, deviceName, deviceType }));
 
     if (createPasskeyThunk.fulfilled.match(result)) {
