@@ -69,15 +69,9 @@ const convertRequestOptions = (
     userVerification: options.userVerification || LOGIN_CONSTANTS.WEBAUTHN.USER_VERIFICATION,
   };
 
-  /* 
-    Show all available passkeys for the domain
-    Browser will show all available passkeys for the domain
-  */
-  if (
-    !LOGIN_CONSTANTS.WEBAUTHN.SHOW_ALL_PASSKEYS &&
-    options.allowCredentials &&
-    options.allowCredentials.length > 0
-  ) {
+  // Always include allowCredentials when provided to filter out deleted credentials
+  // This ensures deleted passkeys don't appear in the browser popup
+  if (options.allowCredentials && options.allowCredentials.length > 0) {
     const converted = convertCredentialDescriptors(
       options.allowCredentials,
       base64UrlToArrayBuffer,
