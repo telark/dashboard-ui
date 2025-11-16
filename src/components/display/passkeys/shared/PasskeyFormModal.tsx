@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Form, Input } from 'antd';
 import { ICONS, PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../../constants';
 import FormModal from '../../shared/modal/FormModal';
@@ -16,6 +16,19 @@ const PasskeyFormModal: React.FC<PasskeyFormModalProps> = ({
   onCancel,
   onSubmit,
 }) => {
+  const originalDeviceName = useMemo(
+    () => (isEditMode && selectedPasskey ? selectedPasskey.deviceName : undefined),
+    [isEditMode, selectedPasskey],
+  );
+
+  const checkButtonDisabled = (form: any): boolean => {
+    if (!isEditMode || !originalDeviceName) {
+      return false;
+    }
+    const currentValue = form.getFieldValue('deviceName');
+    return currentValue === originalDeviceName;
+  };
+
   return (
     <FormModal
       open={open}
@@ -54,6 +67,7 @@ const PasskeyFormModal: React.FC<PasskeyFormModalProps> = ({
           : PPC.FORM.INITIAL_VALUES
       }
       loading={submitting}
+      buttonDisabled={checkButtonDisabled}
     />
   );
 };

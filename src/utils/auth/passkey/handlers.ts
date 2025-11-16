@@ -80,8 +80,6 @@ export const handleUpdatePasskey = async ({
     throw new Error(PPC.ERRORS.DEVICE_NAME_REQUIRED);
   }
 
-  const deviceNameChanged = deviceName !== passkey.deviceName;
-
   setSubmitting(true);
   try {
     const updateRequest: UpdatePasskeyRequest = {
@@ -93,10 +91,6 @@ export const handleUpdatePasskey = async ({
 
     if (updatePasskeyThunk.fulfilled.match(result)) {
       message.success(PPC.LABELS.MESSAGES.UPDATED(deviceName));
-
-      if (deviceNameChanged) {
-        message.info(PPC.LABELS.MESSAGES.BROWSER_NAME_WONT_UPDATE, 6);
-      }
     } else {
       const errorMessage =
         result.payload instanceof Error

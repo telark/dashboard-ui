@@ -44,4 +44,5 @@ export interface FormModalProps {
   loading?: boolean;
   buttonWrapperStyle?: React.CSSProperties;
   contentWrapperStyle?: React.CSSProperties;
+  buttonDisabled?: boolean | ((form: any) => boolean);
 }

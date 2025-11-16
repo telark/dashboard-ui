@@ -25,6 +25,7 @@ const FormModal: React.FC<FormModalProps> = ({
   loading = false,
   buttonWrapperStyle,
   contentWrapperStyle,
+  buttonDisabled,
 }) => {
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
@@ -54,13 +55,24 @@ const FormModal: React.FC<FormModalProps> = ({
     onCancel();
   };
 
-  // Reset validation state when modal opens
+  // Reset form and validation state when modal opens
   useEffect(() => {
     if (open) {
       setHasValidationErrors(false);
       form.resetFields();
+      form.setFieldsValue(initialValues);
+    } else {
+      // Clear form when modal closes
+      form.resetFields();
     }
   }, [open, form]);
+  
+  // Update form values when initialValues change (for switching between create/edit modes)
+  useEffect(() => {
+    if (open) {
+      form.setFieldsValue(initialValues);
+    }
+  }, [initialValues, open, form]);
 
   const renderFields = () => {
     if (fields.length === 0) return null;
@@ -129,15 +141,28 @@ const FormModal: React.FC<FormModalProps> = ({
               ...buttonWrapperStyle,
             }}
           >
-            <Form.Item style={{ margin: 0 }}>
-              <PrimaryButton
-                action={buttonText}
-                loading={submitting || loading}
-                loadingLabel={BUTTON_TEXTS.LOADING}
-                onClick={() => form.submit()}
-                icon={buttonIcon}
-                disabled={hasValidationErrors}
-              />
+            <Form.Item
+              style={{ margin: 0 }}
+              shouldUpdate={(prevValues, currentValues) => {
+                // Force re-render when values change to update button disabled state
+                return typeof buttonDisabled === 'function';
+              }}
+            >
+              {() => (
+                <PrimaryButton
+                  action={buttonText}
+                  loading={submitting || loading}
+                  loadingLabel={BUTTON_TEXTS.LOADING}
+                  onClick={() => form.submit()}
+                  icon={buttonIcon}
+                  disabled={
+                    hasValidationErrors ||
+                    (typeof buttonDisabled === 'function'
+                      ? buttonDisabled(form)
+                      : buttonDisabled === true)
+                  }
+                />
+              )}
             </Form.Item>
           </div>
         </Form>
