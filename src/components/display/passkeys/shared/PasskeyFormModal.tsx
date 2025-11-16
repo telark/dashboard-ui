@@ -21,6 +21,14 @@ const PasskeyFormModal: React.FC<PasskeyFormModalProps> = ({
     [isEditMode, selectedPasskey],
   );
 
+  const initialValues = useMemo(
+    () =>
+      isEditMode && selectedPasskey
+        ? { deviceName: selectedPasskey.deviceName }
+        : PPC.FORM.INITIAL_VALUES,
+    [isEditMode, selectedPasskey],
+  );
+
   const checkButtonDisabled = (form: any): boolean => {
     if (!isEditMode || !originalDeviceName) {
       return false;
@@ -64,11 +72,7 @@ const PasskeyFormModal: React.FC<PasskeyFormModalProps> = ({
       buttonText={isEditMode ? PPC.FORM.EDIT_BUTTON_TEXT : PPC.FORM.BUTTON_TEXT}
       buttonIcon={<PasskeyIcon size={16} />}
       width={PPC.FORM.MODAL_WIDTH}
-      initialValues={
-        isEditMode && selectedPasskey
-          ? { deviceName: selectedPasskey.deviceName }
-          : PPC.FORM.INITIAL_VALUES
-      }
+      initialValues={initialValues}
       loading={submitting}
       buttonDisabled={checkButtonDisabled}
       contentWrapperStyle={{ padding: '1px 0px 0px 0px', paddingLeft: 0, paddingRight: 0, paddingBottom: 0, margin: 0 }}

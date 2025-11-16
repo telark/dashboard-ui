@@ -19,9 +19,9 @@ export const usePasskeyModal = (): UsePasskeyModalReturn => {
   }, []);
 
   const closeModal = useCallback(() => {
-    setIsModalOpen(false);
-    setIsEditMode(false);
     setSelectedPasskey(null);
+    setIsEditMode(false);
+    setIsModalOpen(false);
   }, []);
 
   return {
