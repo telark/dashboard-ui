@@ -69,7 +69,15 @@ const convertRequestOptions = (
     userVerification: options.userVerification || LOGIN_CONSTANTS.WEBAUTHN.USER_VERIFICATION,
   };
 
-  if (options.allowCredentials && options.allowCredentials.length > 0) {
+  /* 
+    Show all available passkeys for the domain
+    Browser will show all available passkeys for the domain
+  */
+  if (
+    !LOGIN_CONSTANTS.WEBAUTHN.SHOW_ALL_PASSKEYS &&
+    options.allowCredentials &&
+    options.allowCredentials.length > 0
+  ) {
     const converted = convertCredentialDescriptors(
       options.allowCredentials,
       base64UrlToArrayBuffer,
@@ -89,6 +97,7 @@ const convertCreationOptions = (
     user: {
       ...options.user,
       id: base64UrlToArrayBuffer(options.user.id),
+      displayName: options.user.displayName || options.user.name,
     },
     pubKeyCredParams: options.pubKeyCredParams,
     timeout: options.timeout,

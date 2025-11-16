@@ -21,6 +21,7 @@ export const LOGIN_CONSTANTS = {
     USER_VERIFICATION_DISCOURAGED: 'discouraged',
     CREDENTIAL_TYPE: 'public-key' as const,
     ATTESTATION: 'none',
+    SHOW_ALL_PASSKEYS: true,
     TIMEOUT: {
       VALIDATION_CHECK: 1000,
     },
