@@ -13,44 +13,37 @@ export default defineConfig({
     },
   },
   build: {
+    minify: 'esbuild', // Faster than terser
     rollupOptions: {
       output: {
         manualChunks: (id) => {
           // Vendor chunks
           if (id.includes('node_modules')) {
-            // React core
             if (id.includes('react') || id.includes('react-dom') || id.includes('scheduler')) {
               return 'react-vendor';
             }
-            // Ant Design
             if (id.includes('antd') || id.includes('@ant-design')) {
               return 'antd-vendor';
             }
-            // Redux
             if (id.includes('redux') || id.includes('@reduxjs')) {
               return 'redux-vendor';
             }
-            // Router
             if (id.includes('react-router')) {
               return 'router-vendor';
             }
-            // Icons
             if (id.includes('react-icons')) {
               return 'icons-vendor';
             }
-            // Date utilities
             if (id.includes('date-fns') || id.includes('react-timeago')) {
               return 'date-vendor';
             }
-            // Animation
             if (id.includes('framer-motion')) {
               return 'animation-vendor';
             }
-            // Avatar generation
+            // Avatar packages - exclude from manual chunking to allow dynamic import code splitting
             if (id.includes('@dicebear')) {
-              return 'avatar-vendor';
+              return undefined; // Vite will handle code splitting via dynamic imports
             }
-            // HTTP client
             if (id.includes('axios')) {
               return 'http-vendor';
             }
@@ -60,7 +53,7 @@ export default defineConfig({
         },
       },
     },
-    chunkSizeWarningLimit: 1200,
+    chunkSizeWarningLimit: 1000,
   },
   base: './', // Relative base path for assets
 });
