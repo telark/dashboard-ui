@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logger from '../../../../logging';
 import { Form, message } from 'antd';
 import PrimaryButton from '../../../buttons/PrimaryButton';
@@ -28,6 +28,7 @@ const FormModal: React.FC<FormModalProps> = ({
 }) => {
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
+  const [hasValidationErrors, setHasValidationErrors] = useState(false);
 
   const handleFinish = async (values: Record<string, any>) => {
     setSubmitting(true);
@@ -49,8 +50,17 @@ const FormModal: React.FC<FormModalProps> = ({
 
   const handleCancel = () => {
     form.resetFields();
+    setHasValidationErrors(false);
     onCancel();
   };
+
+  // Reset validation state when modal opens
+  useEffect(() => {
+    if (open) {
+      setHasValidationErrors(false);
+      form.resetFields();
+    }
+  }, [open, form]);
 
   const renderFields = () => {
     if (fields.length === 0) return null;
@@ -90,7 +100,21 @@ const FormModal: React.FC<FormModalProps> = ({
           ...contentWrapperStyle,
         }}
       >
-        <Form form={form} layout="vertical" onFinish={handleFinish} initialValues={initialValues}>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleFinish}
+          initialValues={initialValues}
+          onValuesChange={() => {
+            // Trigger validation on value change and check for errors
+            form.validateFields().then(() => {
+              setHasValidationErrors(false);
+            }).catch(() => {
+              const errors = form.getFieldsError();
+              setHasValidationErrors(errors.some((field) => field.errors.length > 0));
+            });
+          }}
+        >
           {renderContent()}
 
           <div
@@ -109,6 +133,7 @@ const FormModal: React.FC<FormModalProps> = ({
                 loadingLabel={BUTTON_TEXTS.LOADING}
                 onClick={() => form.submit()}
                 icon={buttonIcon}
+                disabled={hasValidationErrors}
               />
             </Form.Item>
           </div>

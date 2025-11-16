@@ -143,6 +143,8 @@ const EditPasskey: React.FC = () => {
         buttonText={PPC.LABELS.UPDATE_BUTTON}
         submitting={loading}
         wrapper={AnimatedPageWrapper}
+        existingPasskeys={passkeys}
+        isEditMode={true}
       />
     </PageContainer>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { Form, Input, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { message } from 'antd';
 import {
   APP_ROUTES,
   ICONS,
@@ -187,7 +187,34 @@ const ListPasskeys: React.FC = () => {
         subtitle={PPC.FORM.SUBTITLE}
         sectionTitle={PPC.FORM.SECTION_TITLE}
         sectionSubtitle={PPC.FORM.SECTION_SUBTITLE}
-        fields={[...PPC.FORM.FIELDS]}
+        fields={[]}
+        customContent={(form) => (
+          <Form.Item
+            name="deviceName"
+            label={PPC.FORM.DEVICE_NAME_LABEL}
+            rules={[
+              { required: true, message: PPC.FORM.DEVICE_NAME_REQUIRED },
+              {
+                validator: (_: unknown, value: string) => {
+                  if (!value || value.trim() === '') {
+                    return Promise.resolve();
+                  }
+                  const trimmedName = value.trim();
+                  const exists = passkeys.some(
+                    (passkey) => passkey.deviceName?.toLowerCase() === trimmedName.toLowerCase(),
+                  );
+                  if (exists) {
+                    return Promise.reject(new Error(PPC.FORM.DEVICE_NAME_DUPLICATE));
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
+            validateTrigger="onChange"
+          >
+            <Input placeholder={PPC.FORM.DEVICE_NAME_PLACEHOLDER} />
+          </Form.Item>
+        )}
         buttonText={PPC.FORM.BUTTON_TEXT}
         buttonIcon={<PasskeyIcon size={16} />}
         width={PPC.FORM.MODAL_WIDTH}

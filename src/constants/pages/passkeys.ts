@@ -87,6 +87,7 @@ export const PASSKEYS_PAGE_CONSTANTS = {
     DEVICE_NAME_LABEL: 'Device Name',
     DEVICE_NAME_PLACEHOLDER: 'e.g. My Laptop, iPhone 13',
     DEVICE_NAME_REQUIRED: 'Device name is required',
+    DEVICE_NAME_DUPLICATE: 'A passkey with this device name already exists',
     FIELDS: [
       {
         type: 'input',
