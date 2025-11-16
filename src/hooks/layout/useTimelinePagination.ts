@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, startTransition } from 'react';
 import type { Record } from '../../interfaces/shared';
 import type { TimelinePaginationState } from '../../interfaces/layout/timeline';
 
@@ -17,19 +17,25 @@ export const useTimelinePagination = (
   // Lazy load items when drawer opens
   useEffect(() => {
     if (showFull && items.length > 0) {
-      setIsLoading(true);
+      startTransition(() => {
+        setIsLoading(true);
+      });
       const timer = setTimeout(() => {
         const initialItems = items.slice(0, ITEMS_PER_PAGE);
-        setVisibleItems(initialItems);
-        setCurrentPage(1);
-        setIsLoading(false);
+        startTransition(() => {
+          setVisibleItems(initialItems);
+          setCurrentPage(1);
+          setIsLoading(false);
+        });
       }, LOADING_DELAY);
 
       return () => clearTimeout(timer);
     } else if (!showFull) {
       // Reset when drawer closes
-      setVisibleItems([]);
-      setCurrentPage(0);
+      startTransition(() => {
+        setVisibleItems([]);
+        setCurrentPage(0);
+      });
     }
   }, [showFull, items]);
 

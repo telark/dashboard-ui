@@ -44,12 +44,10 @@ const getAvatarStyle = async (styleName: string) => {
 
 const UserAvatar: React.FC<UserAvatarProps> = ({ avatar, username, size = 40, style }) => {
   const [avatarSrc, setAvatarSrc] = useState<string | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const generateAvatar = async () => {
       if (avatar && avatar.style && avatar.seed) {
-        setIsLoading(true);
         try {
           const styleModule = await getAvatarStyle(avatar.style);
           if (styleModule) {
@@ -65,8 +63,6 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ avatar, username, size = 40, st
         } catch (error) {
           console.error('Failed to load avatar style:', error);
           setAvatarSrc(undefined);
-        } finally {
-          setIsLoading(false);
         }
       } else {
         setAvatarSrc(undefined);

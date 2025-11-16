@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useRef } from 'react';
+import React, { useMemo, useState, useEffect, useRef, startTransition } from 'react';
 import { createAvatar } from '@dicebear/core';
 import { Avatar, Grid, Modal, Spin } from 'antd';
 import { DEFAULT_COLORS } from '../../../../constants';
@@ -58,14 +58,19 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
 
   // Use ref to store preview URLs - they never change once generated
   const previewUrlsRef = useRef<Record<string, string>>({});
+  // Store preview URLs in state to avoid accessing ref during render
+  const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (isModalOpen && avatarStyles.length === 0) {
-      setIsLoadingStyles(true);
+      startTransition(() => {
+        setIsLoadingStyles(true);
+      });
       loadAvatarStyles()
         .then((styles) => {
           setAvatarStyles(styles);
           // Generate preview URLs using the fixed seeds - one unique seed per style
+          const newPreviewUrls: Record<string, string> = {};
           styles.forEach((style) => {
             if (!previewUrlsRef.current[style.name]) {
               const seed = AVATAR_SEEDS[style.name];
@@ -73,8 +78,15 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
                 seed,
                 size: AVATAR_SIZE,
               });
-              previewUrlsRef.current[style.name] = avatar.toDataUri();
+              const url = avatar.toDataUri();
+              previewUrlsRef.current[style.name] = url;
+              newPreviewUrls[style.name] = url;
+            } else {
+              newPreviewUrls[style.name] = previewUrlsRef.current[style.name];
             }
+          });
+          startTransition(() => {
+            setPreviewUrls((prev) => ({ ...prev, ...newPreviewUrls }));
           });
         })
         .catch((error) => {
@@ -185,7 +197,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
             {avatarStyles.map((style) => {
               const isSelected = selectedStyle === style.name;
               // Always use the same preview URL - never change
-              const previewUrl = previewUrlsRef.current[style.name] || '';
+              const previewUrl = previewUrls[style.name];
 
               return (
                 <div
@@ -225,7 +237,11 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
                       }
                     }}
                   >
-                    <Avatar src={previewUrl} size={AVATAR_SIZE} style={{ border: 'none' }} />
+                    <Avatar
+                      src={previewUrl || undefined}
+                      size={AVATAR_SIZE}
+                      style={{ border: 'none' }}
+                    />
                   </div>
                 </div>
               );

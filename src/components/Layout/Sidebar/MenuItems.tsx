@@ -1,5 +1,5 @@
 import { Menu } from 'antd';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, startTransition } from 'react';
 import { MENU_LABELS, MENU_KEYS } from '../../../constants';
 import {
   HomeMenuButton,
@@ -24,9 +24,13 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
 
   useEffect(() => {
     if (isCollapsed) {
-      setOpenKeys([]);
+      startTransition(() => {
+        setOpenKeys([]);
+      });
     } else {
-      setOpenKeys([MENU_KEYS.RESOURCES, MENU_KEYS.USERS_AND_GROUPS]);
+      startTransition(() => {
+        setOpenKeys([MENU_KEYS.RESOURCES, MENU_KEYS.USERS_AND_GROUPS]);
+      });
     }
   }, [isCollapsed]);
   return (

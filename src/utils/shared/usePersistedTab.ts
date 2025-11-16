@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, startTransition } from 'react';
 import { getPersistedResourceTab, persistResourceTab, type ResourceType } from './tabPersistence';
 
 interface UsePersistedTabParams<T extends string> {
@@ -32,7 +32,9 @@ export const usePersistedTab = <T extends string>({
         defaultTab,
         validTabs,
       );
-      setActiveTab(persistedTab);
+      startTransition(() => {
+        setActiveTab(persistedTab);
+      });
     }
   }, [resourceName, resourceType, defaultTab, validTabs]);
 

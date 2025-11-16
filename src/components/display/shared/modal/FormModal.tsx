@@ -147,7 +147,7 @@ const FormModal: React.FC<FormModalProps> = ({
           >
             <Form.Item
               style={{ margin: 0, width: buttonWrapperStyle?.width === '100%' ? '100%' : 'auto' }}
-              shouldUpdate={(prevValues, currentValues) => {
+              shouldUpdate={() => {
                 // Force re-render when values change to update button disabled state
                 return typeof buttonDisabled === 'function';
               }}

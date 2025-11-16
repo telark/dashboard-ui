@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, startTransition } from 'react';
 import { Layout, message, App as AntdApp } from 'antd';
 import { BrowserRouter as Router, useLocation, Navigate } from 'react-router-dom';
 import Sidebar from './components/layout/sidebar/Sidebar';
@@ -49,7 +49,9 @@ const AppContent: React.FC = () => {
       try {
         const pending = globalThis.sessionStorage.getItem(APP_CONFIGS.WELCOME.STORAGE_KEY);
         if (pending === APP_CONFIGS.WELCOME.STORAGE_VALUE) {
-          setShowWelcome(true);
+          startTransition(() => {
+            setShowWelcome(true);
+          });
           globalThis.sessionStorage.removeItem(APP_CONFIGS.WELCOME.STORAGE_KEY);
           globalThis.setTimeout(() => setShowWelcome(false), APP_CONFIGS.WELCOME.DURATION);
         }

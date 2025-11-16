@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, startTransition } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -47,7 +47,9 @@ const ViewPasskey: React.FC = () => {
       if (isDevelopment()) {
         logger.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEY, error);
       }
-      setNotFound(true);
+      startTransition(() => {
+        setNotFound(true);
+      });
     }
   }, [error]);
 
@@ -55,7 +57,9 @@ const ViewPasskey: React.FC = () => {
 
   useEffect(() => {
     if (!loading && deviceName && !passkey) {
-      setNotFound(true);
+      startTransition(() => {
+        setNotFound(true);
+      });
     }
   }, [loading, deviceName, passkey]);
 
