@@ -29,6 +29,23 @@ export const AUTH_ERROR_MESSAGES = {
   CLEANUP_STORED_PASSKEYS: 'Cleanup stored passkeys',
   CLEANUP_REQUIRES_AUTH:
     'Unable to automatically cleanup orphaned passkeys. Please contact support to reset your passkeys, or use a different browser/device where your passkeys are still available.',
+  ORPHANED_PASSKEYS_MODAL: {
+    TITLE: 'Authentication Failed',
+    NOT_FOUND_MESSAGE:
+      'No passkeys were found in your browser. This may happen if you cleared your browser data or switched devices.',
+    NOT_FOUND_DESCRIPTION:
+      'If you no longer have access to your passkeys, you can remove the orphaned passkeys from your account and register a new one.',
+    GENERAL_MESSAGE:
+      'Unable to authenticate with your passkey. This may happen if you cancelled the authentication or if your passkey is no longer available.',
+    GENERAL_DESCRIPTION:
+      'You can try again, or if you no longer have access to your passkeys, you can remove them from your account.',
+    BUTTONS: {
+      RETRY: 'Try Again',
+      REMOVE: "I lost my passkey",
+      REMOVING: 'Removing...',
+      CANCEL: 'Cancel',
+    },
+  },
 } as const;
 
 export const AUTH_SUCCESS_MESSAGES = {

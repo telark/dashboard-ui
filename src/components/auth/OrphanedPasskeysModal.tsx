@@ -1,7 +1,9 @@
 import React from 'react';
 import { Modal, Button, Space } from 'antd';
+import { AiOutlineClose } from 'react-icons/ai';
 import { LOGIN_CONSTANTS } from '../../constants/pages/login';
-import { AUTH_ERROR_MESSAGES, AUTH_SUCCESS_MESSAGES } from '../../constants/auth';
+import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
+import { DEFAULT_COLORS } from '../../constants';
 import logger from '../../logging';
 
 interface OrphanedPasskeysModalProps {
@@ -38,33 +40,47 @@ const OrphanedPasskeysModal: React.FC<OrphanedPasskeysModalProps> = ({
       footer={null}
       centered
       closable
-      width={480}
+      width={400}
       destroyOnHidden
+      styles={{
+        body: { padding: '24px', minHeight: 'auto' },
+        content: { borderRadius: 16, overflow: 'hidden' },
+      }}
+      closeIcon={
+        <span style={{ display: 'inline-flex', alignItems: 'center', padding: '0 20px' }}>
+          <AiOutlineClose size={18} color="#000" />
+        </span>
+      }
     >
-      <div style={{ padding: '8px 0' }}>
-        <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>
-          Authentication Failed
+      <div style={{ padding: 0 }}>
+        <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>
+          {AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.TITLE}
         </h3>
-        <p style={{ fontSize: 14, color: '#666', marginBottom: 20, lineHeight: 1.6 }}>
+        <p style={{ fontSize: 13, color: '#666', marginBottom: 12, lineHeight: 1.5 }}>
           {isNotFoundError
-            ? 'No passkeys were found in your browser. This may happen if you cleared your browser data or switched devices.'
-            : 'Unable to authenticate with your passkey. This may happen if you cancelled the authentication or if your passkey is no longer available.'}
+            ? AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.NOT_FOUND_MESSAGE
+            : AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.GENERAL_MESSAGE}
         </p>
-        <p style={{ fontSize: 13, color: '#999', marginBottom: 24, lineHeight: 1.5 }}>
+        <p style={{ fontSize: 12, color: '#999', marginBottom: 20, lineHeight: 1.4 }}>
           {isNotFoundError
-            ? 'If you no longer have access to your passkeys, you can remove the orphaned passkeys from your account and register a new one.'
-            : 'You can try again, or if you no longer have access to your passkeys, you can remove them from your account.'}
+            ? AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.NOT_FOUND_DESCRIPTION
+            : AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.GENERAL_DESCRIPTION}
         </p>
 
-        <Space direction="vertical" style={{ width: '100%' }} size="middle">
+        <Space direction="vertical" style={{ width: '100%' }} size="small">
           <Button
             type="primary"
             block
             onClick={onRetry}
             disabled={isRemoving}
-            style={{ height: 40 }}
+            style={{
+              height: 36,
+              fontSize: 13,
+              backgroundColor: DEFAULT_COLORS.SUCCESS,
+              borderColor: DEFAULT_COLORS.SUCCESS,
+            }}
           >
-            Try Again
+            {AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.BUTTONS.RETRY}
           </Button>
           <Button
             type="default"
@@ -73,12 +89,11 @@ const OrphanedPasskeysModal: React.FC<OrphanedPasskeysModalProps> = ({
             onClick={onRemove}
             loading={isRemoving}
             disabled={isRemoving}
-            style={{ height: 40 }}
+            style={{ height: 36, fontSize: 13 }}
           >
-            {isRemoving ? 'Removing...' : "I don't have my passkey (Remove orphaned passkeys)"}
-          </Button>
-          <Button block onClick={onCancel} disabled={isRemoving} style={{ height: 40 }}>
-            Cancel
+            {isRemoving
+              ? AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.BUTTONS.REMOVING
+              : AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.BUTTONS.REMOVE}
           </Button>
         </Space>
       </div>
