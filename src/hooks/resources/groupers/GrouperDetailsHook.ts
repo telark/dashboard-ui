@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import logger from '../logging';
+import logger from '../../../logging';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { message } from 'antd';
@@ -10,9 +10,9 @@ import {
   enableGrouperMaintenanceModeThunk,
   updateGrouperMaintenanceModeThunk,
   removeGrouperMaintenanceModeThunk,
-} from '../store/groupers/slices/grouperSlice';
-import { AppDispatch } from '../store';
-import { selectGrouperDetailsData } from '../store/groupers/selectors/grouperSelectors';
+} from '../../../store/groupers/slices/grouperSlice';
+import { AppDispatch } from '../../../store';
+import { selectGrouperDetailsData } from '../../../store/groupers/selectors/grouperSelectors';
 import {
   STORE_MESSAGES,
   HOOK_MESSAGES,
@@ -21,7 +21,7 @@ import {
   MAINTENANCE_ACTIONS,
   SYNC_ACTIONS,
   HTTP_STATUS,
-} from '../constants';
+} from '../../../constants';
 
 export const GrouperDetailsHook = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -267,3 +267,4 @@ export const GrouperDetailsHook = () => {
     handleRemoveMaintenanceMode,
   };
 };
+

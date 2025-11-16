@@ -30,3 +30,4 @@ export const useListPage = <T>({
     handleCreate,
   };
 };
+

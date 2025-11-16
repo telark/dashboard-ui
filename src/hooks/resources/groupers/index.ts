@@ -1,0 +1,2 @@
+export { GrouperDetailsHook } from './GrouperDetailsHook';
+

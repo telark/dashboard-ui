@@ -6,7 +6,7 @@ import RoleForm, { type RoleFormValues } from '../../components/display/roles/sh
 import { STATIC_ROLES } from '../../data/roles';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../components/shared';
-import { useEditPage } from '../../hooks/useEditPage';
+import { useEditPage } from '../../hooks/layout';
 import type { Role } from '../../interfaces/resources/roles';
 
 const RoleIcon = ICONS.ROLE;

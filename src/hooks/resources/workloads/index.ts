@@ -1,0 +1,2 @@
+export { AppWorkloadDetailsHook } from './AppWorkloadDetailsHook';
+

@@ -37,11 +37,11 @@ const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE', 'persist/PURGE'],
-        warnAfter: 128, // default is 32ms
+        warnAfter: 128, // default: 32ms
       },
       immutableCheck: {
-        // Increase threshold for immutable checks since we have large state objects
-        warnAfter: 128, // default is 32ms
+        // Increase threshold since we have large state objects
+        warnAfter: 128, // default: 32ms
       },
     }),
 });

@@ -2,7 +2,7 @@ import React, { useState, memo, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
 import { useSelector } from 'react-redux';
-import { GrouperDetailsHook } from '../../../hooks/GrouperDetailsHook';
+import { GrouperDetailsHook } from '../../../hooks/resources/groupers';
 import { syncGrouperDetails } from '../../../utils/grouper/sync';
 import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../../constants/pages/grouper-details';
 import { RootState } from '../../../store';

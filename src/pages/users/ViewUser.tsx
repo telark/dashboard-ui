@@ -7,7 +7,7 @@ import ViewDetails from '../../components/display/shared/views/ViewDetails';
 import { createUserViewConfig } from '../../config/userViewConfig';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../components/shared';
-import { useViewPage } from '../../hooks/useViewPage';
+import { useViewPage } from '../../hooks/layout';
 import { RootState, AppDispatch } from '../../store';
 import { fetchAllUsersThunk } from '../../store/users/slices/userSlice';
 import type { User } from '../../interfaces/resources/users';

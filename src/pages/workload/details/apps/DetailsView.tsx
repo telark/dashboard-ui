@@ -2,7 +2,7 @@ import React, { useEffect, useState, memo } from 'react';
 import { message } from 'antd';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { AppWorkloadDetailsHook } from '../../../../hooks/AppWorkloadDetailsHook';
+import { AppWorkloadDetailsHook } from '../../../../hooks/resources/workloads';
 import { WorkloadDetailsError, Empty, Header, Tabs, Content } from '.';
 import { WORKLOAD_DETAILS_CONSTANTS, TabKey } from '../../../../constants/pages/workload-details';
 import LoadingDetails from '../../../../components/shared/LoadingDetails';

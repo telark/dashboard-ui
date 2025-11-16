@@ -20,8 +20,7 @@ import {
   selectPasskeyLoading,
   selectPasskeyError,
 } from '../../store/passkeys/selectors/passkeySelectors';
-import { usePasskeyModal } from '../../hooks/usePasskeyModal';
-import { usePasskeyHandlers } from '../../hooks/usePasskeyHandlers';
+import { usePasskeyModal, usePasskeyHandlers } from '../../hooks/auth/passkeys';
 
 const PasskeyIcon = ICONS.PASSKEY;
 

@@ -11,7 +11,7 @@ import Section from '../../components/display/roles/shared/Section';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../components/shared';
-import { useEditPage } from '../../hooks/useEditPage';
+import { useEditPage } from '../../hooks/layout';
 import type { Group } from '../../interfaces/resources/groups';
 
 const GroupIcon = ICONS.GROUP;

@@ -27,3 +27,4 @@ export const useViewPage = <T>({ data, findById, createConfig }: UseViewPageOpti
     notFound: !item || !config,
   };
 };
+

@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
-import logger from '../logging';
+import logger from '../../../logging';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { message } from 'antd';
 import {
-  fetchAppWorkloadDetailsThunk,
-  clearWorkloadDetails,
-  updateAppWorkloadSyncModeThunk,
-} from '../store/workloads/slices/workloadSlice';
-import { AppDispatch } from '../store';
-import { selectWorkloadDetailsData } from '../store/workloads/selectors/workloadSelectors';
-import { STORE_MESSAGES, HOOK_MESSAGES, HOOK_CONFIGS, SYNC_ACTIONS } from '../constants';
+  fetchBridgeDetailsThunk,
+  clearDetails,
+  updateBridgeSyncModeThunk,
+} from '../../../store/bridges/slices/bridgeSlice';
+import { AppDispatch } from '../../../store';
+import { selectBridgeDetailsData } from '../../../store/bridges/selectors/bridgeSelectors';
+import { STORE_MESSAGES, HOOK_MESSAGES, HOOK_CONFIGS, SYNC_ACTIONS } from '../../../constants';
 
-export const AppWorkloadDetailsHook = () => {
+export const BridgeDetailsHook = () => {
   const dispatch: AppDispatch = useDispatch();
   const { name } = useParams<{ name: string }>();
-  const { details: workloadDetails, loading, error } = useSelector(selectWorkloadDetailsData);
+  const { details: bridgeDetails, loading, error } = useSelector(selectBridgeDetailsData);
 
   const [isAutoSync, setIsAutoSync] = useState<boolean>(HOOK_CONFIGS.DEFAULT_VALUES.AUTO_SYNC);
   const [initialSyncMode, setInitialSyncMode] = useState<string>(
@@ -30,36 +30,39 @@ export const AppWorkloadDetailsHook = () => {
 
   useEffect(() => {
     if (name) {
-      dispatch(clearWorkloadDetails());
-      dispatch(fetchAppWorkloadDetailsThunk(name));
+      dispatch(clearDetails());
+      dispatch(fetchBridgeDetailsThunk(name));
     }
     return () => {
-      dispatch(clearWorkloadDetails());
+      dispatch(clearDetails());
     };
   }, [dispatch, name]);
 
   useEffect(() => {
-    if (workloadDetails?.config?.sync) {
-      setIsAutoSync(workloadDetails.config.sync.mode === SYNC_ACTIONS.AUTO);
-      setInitialSyncMode(workloadDetails.config.sync.mode);
+    if (bridgeDetails?.sync) {
+      setIsAutoSync(bridgeDetails.sync.mode === SYNC_ACTIONS.AUTO);
+      setInitialSyncMode(bridgeDetails.sync.mode);
     }
-  }, [workloadDetails]);
+  }, [bridgeDetails]);
 
   const handleAutoSyncChange = (checked: boolean) => {
     setIsAutoSync(checked);
   };
 
-  const handleWorkloadSyncSave = async () => {
+  const handleBridgeSyncSave = async () => {
     if (!name) return;
     setLoadingSave(true);
     try {
       const syncMode = isAutoSync ? SYNC_ACTIONS.AUTO : SYNC_ACTIONS.MANUAL;
-      const response = await dispatch(updateAppWorkloadSyncModeThunk({ name, syncMode })).unwrap();
-      setIsAutoSync(response.config?.sync?.mode === SYNC_ACTIONS.AUTO);
-      setInitialSyncMode(response.config?.sync?.mode);
+      const response = await dispatch(updateBridgeSyncModeThunk({ name, syncMode })).unwrap();
+
+      // Update local state with the response data
+      setIsAutoSync(response.sync.mode === SYNC_ACTIONS.AUTO);
+      setInitialSyncMode(response.sync.mode);
+
       message.success(HOOK_MESSAGES.SUCCESS.SYNC_SETTINGS_UPDATED);
     } catch (error) {
-      logger.error(STORE_MESSAGES.ERROR_UPDATING_SYNC, error);
+      logger.error(STORE_MESSAGES.ERROR_UPDATING_APP_SYNC, error);
       message.error(HOOK_MESSAGES.ERROR.UPDATE_SETTINGS_FAILED);
     } finally {
       setLoadingSave(false);
@@ -67,7 +70,7 @@ export const AppWorkloadDetailsHook = () => {
   };
 
   return {
-    workloadDetails,
+    bridgeDetails,
     loading,
     error,
     isAutoSync,
@@ -75,6 +78,7 @@ export const AppWorkloadDetailsHook = () => {
     loadingSave,
     hasChanges,
     handleAutoSyncChange,
-    handleWorkloadSyncSave,
+    handleBridgeSyncSave,
   };
 };
+

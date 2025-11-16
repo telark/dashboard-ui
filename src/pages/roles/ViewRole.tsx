@@ -10,7 +10,7 @@ import { Card } from 'antd';
 import { COMPONENT_STYLES } from '../../constants/layout/ui';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../components/shared';
-import { useViewPage } from '../../hooks/useViewPage';
+import { useViewPage } from '../../hooks/layout';
 import type { Role } from '../../interfaces/resources/roles';
 
 const RoleIcon = ICONS.ROLE;

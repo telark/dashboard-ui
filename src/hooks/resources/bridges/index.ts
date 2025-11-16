@@ -1,0 +1,2 @@
+export { BridgeDetailsHook } from './BridgeDetailsHook';
+

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import type { Record } from '../interfaces/shared';
-import type { TimelineData } from '../interfaces/layout/timeline';
+import type { Record } from '../../interfaces/shared';
+import type { TimelineData } from '../../interfaces/layout/timeline';
 
 const INITIAL_DISPLAY_COUNT = 5;
 
@@ -25,3 +25,4 @@ export const useTimelineData = (records: Record[] | undefined): TimelineData => 
     };
   }, [records]);
 };
+
