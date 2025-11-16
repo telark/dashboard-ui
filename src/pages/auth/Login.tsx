@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { Form, App as AntdApp } from 'antd';
 import { LoginOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { performLogin, cleanupOrphanedPasskeys, type OrphanedPasskeysInfo } from '../../utils/auth/flows/login';
+import {
+  performLogin,
+  cleanupOrphanedPasskeys,
+  type OrphanedPasskeysInfo,
+} from '../../utils/auth/flows/login';
 import { APP_ROUTES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/pages/login';
 import { LoginForm } from '../../components/auth/login';
@@ -65,7 +69,7 @@ const Login: React.FC = () => {
 
   const handleRemove = async () => {
     if (!orphanedInfo) return;
-    
+
     setRemoving(true);
     try {
       const requiresAuth = await cleanupOrphanedPasskeys(
@@ -73,7 +77,7 @@ const Login: React.FC = () => {
         orphanedInfo.userId,
         message,
       );
-      
+
       if (requiresAuth) {
         message.open({
           type: 'info',

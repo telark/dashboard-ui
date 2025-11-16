@@ -60,4 +60,3 @@ const PasskeyFormModal: React.FC<PasskeyFormModalProps> = ({
 };
 
 export default PasskeyFormModal;
-

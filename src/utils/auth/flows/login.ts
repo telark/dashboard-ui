@@ -63,11 +63,7 @@ export const cleanupOrphanedPasskeys = async (
   try {
     const deletePromises = credentialIds.map(async (credentialId) => {
       try {
-        await deletePasskey(
-          credentialId,
-          { cleanupOrphaned: true, forceLastDelete: true },
-          userId,
-        );
+        await deletePasskey(credentialId, { cleanupOrphaned: true, forceLastDelete: true }, userId);
       } catch (error) {
         if (isUnauthorizedError(error)) {
           hasUnauthorizedError = true;
@@ -104,7 +100,7 @@ export const performLogin = async (
   let loginStartResponse: LoginStartResponse | null = null;
   try {
     loginStartResponse = await loginStart({ username });
-    
+
     // Call authentication normally - one attempt only
     const options = extractLoginOptions(loginStartResponse);
     const credential = await authenticateWithPasskey({
@@ -149,10 +145,11 @@ export const performLogin = async (
     // On authentication failure, show modal if backend has passkeys
     // User must explicitly confirm before cleanup
     if (loginStartResponse && hasBackendPasskeys(loginStartResponse) && onShowOrphanedModal) {
-      const originalErrorName = (error as Error & { originalErrorName?: string })?.originalErrorName;
+      const originalErrorName = (error as Error & { originalErrorName?: string })
+        ?.originalErrorName;
       const credentialIds = extractCredentialIds(loginStartResponse);
       const userId = loginStartResponse.userId;
-      
+
       if (credentialIds.length > 0 && userId) {
         // Show modal - user must explicitly choose to cleanup
         onShowOrphanedModal({

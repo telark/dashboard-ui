@@ -10,7 +10,10 @@ import {
   handleUpdatePasskey,
   handleDeletePasskey,
 } from '../../../utils/auth/passkey/handlers';
-import { navigateToPasskeyView, validatePasskeyForNavigation } from '../../../utils/auth/passkey/navigation';
+import {
+  navigateToPasskeyView,
+  validatePasskeyForNavigation,
+} from '../../../utils/auth/passkey/navigation';
 import type { Passkey, UsePasskeyHandlersReturn } from '../../../interfaces/auth/passkeys';
 
 export const usePasskeyHandlers = (
@@ -92,4 +95,3 @@ export const usePasskeyHandlers = (
     handleUpdate,
   };
 };
-

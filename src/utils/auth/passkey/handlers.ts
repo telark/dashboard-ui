@@ -139,4 +139,3 @@ export const handleDeletePasskey = async ({
     message.error(errorMessage);
   }
 };
-

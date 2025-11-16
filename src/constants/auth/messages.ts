@@ -41,7 +41,7 @@ export const AUTH_ERROR_MESSAGES = {
       'You can try again, or if you no longer have access to your passkeys, you can remove them from your account.',
     BUTTONS: {
       RETRY: 'Try Again',
-      REMOVE: "I lost my passkey",
+      REMOVE: 'I lost my passkey',
       REMOVING: 'Removing...',
       CANCEL: 'Cancel',
     },

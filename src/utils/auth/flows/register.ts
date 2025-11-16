@@ -28,7 +28,8 @@ export const extractRegisterOptions = (
       // Do not include excludeCredentials - using discoverable credentials (resident keys)
     };
   } else if (registerStartResponse.options?.response) {
-    const { excludeCredentials, ...responseWithoutExclude } = registerStartResponse.options.response;
+    const { excludeCredentials, ...responseWithoutExclude } =
+      registerStartResponse.options.response;
     options = responseWithoutExclude;
   } else if (registerStartResponse.challenge) {
     const { excludeCredentials, ...flatWithoutExclude } = registerStartResponse;

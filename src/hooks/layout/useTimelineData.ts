@@ -25,4 +25,3 @@ export const useTimelineData = (records: Record[] | undefined): TimelineData => 
     };
   }, [records]);
 };
-

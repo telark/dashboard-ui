@@ -169,31 +169,31 @@ export const authenticateWithPasskey = async (
 
     return convertCredential(credential);
   } catch (error) {
-      if (error instanceof Error) {
-        const errorMap: Record<string, string> = {
-          [LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_FOUND]:
-            LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NO_CREDENTIAL_FOUND,
-          [LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_ALLOWED]:
-            LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.USER_CANCELLED_AUTH,
-          [LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.INVALID_STATE]:
-            LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.OPERATION_NOT_ALLOWED,
-          [LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_SUPPORTED]:
-            LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NOT_SUPPORTED_ERROR,
-        };
-        
-        const mappedError = handleWebAuthnError(
-          error,
-          errorMap,
-          LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.AUTHENTICATION_FAILED,
-        );
-        
-        // Preserve original error name to help distinguish error types
-        (mappedError as Error & { originalErrorName?: string }).originalErrorName = error.name;
-        
-        throw mappedError;
-      }
-      throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.AUTHENTICATION_FAILED);
+    if (error instanceof Error) {
+      const errorMap: Record<string, string> = {
+        [LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_FOUND]:
+          LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NO_CREDENTIAL_FOUND,
+        [LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_ALLOWED]:
+          LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.USER_CANCELLED_AUTH,
+        [LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.INVALID_STATE]:
+          LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.OPERATION_NOT_ALLOWED,
+        [LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_SUPPORTED]:
+          LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.NOT_SUPPORTED_ERROR,
+      };
+
+      const mappedError = handleWebAuthnError(
+        error,
+        errorMap,
+        LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.AUTHENTICATION_FAILED,
+      );
+
+      // Preserve original error name to help distinguish error types
+      (mappedError as Error & { originalErrorName?: string }).originalErrorName = error.name;
+
+      throw mappedError;
     }
+    throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.AUTHENTICATION_FAILED);
+  }
 };
 
 export const registerPasskey = async (
@@ -241,4 +241,8 @@ export {
   validateBackendPasskeysInBrowser,
 } from './validation';
 export { extractLoginOptions, extractCredentialIds, hasBackendPasskeys } from './extraction';
-export { isCancelledOrNoCredentialError, isNoCredentialFoundError, isUserCancelledError } from './errors';
+export {
+  isCancelledOrNoCredentialError,
+  isNoCredentialFoundError,
+  isUserCancelledError,
+} from './errors';

@@ -8,4 +8,3 @@ export const navigateToPasskeyView = (deviceName: string): string => {
 export const validatePasskeyForNavigation = (passkey: Passkey): boolean => {
   return !!passkey.deviceName;
 };
-

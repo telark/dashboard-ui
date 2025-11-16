@@ -25,7 +25,7 @@ export const createPasskeyThunk = createAsyncThunk(
         params.deviceType,
         params.username,
       );
-      
+
       const passkey: Passkey = {
         id: response.id,
         credentialId: response.credentialId,
