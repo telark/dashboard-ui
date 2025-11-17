@@ -4,10 +4,10 @@ import RowTag from '../../shared/table/RowTag';
 import { generateColumn } from '../../shared/table/utils';
 import Actions from './Actions';
 import { AiOutlineCalendar, AiOutlineCheckCircle, AiOutlineTag } from 'react-icons/ai';
-import { ICONS } from '../../../../constants';
+import { Icons } from '../../../../constants';
 import type { RolesSortKey } from './utils';
 
-const RoleIcon = ICONS.ROLE;
+const RoleIcon = Icons.ROLE;
 
 interface ColumnsArgs {
   onView: (r: Role) => void;

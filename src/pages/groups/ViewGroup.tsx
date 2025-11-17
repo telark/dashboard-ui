@@ -1,5 +1,5 @@
 import React from 'react';
-import { APP_ROUTES, ICONS } from '../../constants';
+import { APP_ROUTES, Icons } from '../../constants';
 import { GROUPS_CONSTANTS as GC } from '../../constants/pages/groups';
 import Header from '../../components/display/shared/sections/Header';
 import { STATIC_GROUPS } from '../../data/groups';
@@ -10,7 +10,7 @@ import { PageContainer, NotFound } from '../../components/shared';
 import { useViewPage } from '../../hooks/layout';
 import type { Group } from '../../interfaces/resources/groups';
 
-const GroupIcon = ICONS.GROUP;
+const GroupIcon = Icons.GROUP;
 
 const ViewGroup: React.FC = () => {
   const {

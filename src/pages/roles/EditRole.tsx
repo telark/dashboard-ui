@@ -1,5 +1,5 @@
 import React from 'react';
-import { APP_ROUTES, ICONS } from '../../constants';
+import { APP_ROUTES, Icons } from '../../constants';
 import { ROLES_PAGE_CONSTANTS as RC } from '../../constants/pages/roles';
 import Header from '../../components/display/shared/sections/Header';
 import RoleForm, { type RoleFormValues } from '../../components/display/roles/shared/RoleForm';
@@ -9,7 +9,7 @@ import { PageContainer, NotFound } from '../../components/shared';
 import { useEditPage } from '../../hooks/layout';
 import type { Role } from '../../interfaces/resources/roles';
 
-const RoleIcon = ICONS.ROLE;
+const RoleIcon = Icons.ROLE;
 
 const EditRole: React.FC = () => {
   const {

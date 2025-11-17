@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form } from 'antd';
-import { APP_ROUTES, ICONS, BUTTON_TEXTS } from '../../constants';
+import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../constants';
 import { COMPONENT_STYLES } from '../../constants/layout/ui';
 import Header from '../../components/display/shared/sections/Header';
 import { STATIC_GROUPS } from '../../data/groups';
@@ -14,7 +14,7 @@ import { PageContainer, NotFound } from '../../components/shared';
 import { useEditPage } from '../../hooks/layout';
 import type { Group } from '../../interfaces/resources/groups';
 
-const GroupIcon = ICONS.GROUP;
+const GroupIcon = Icons.GROUP;
 
 interface EditGroupFormValues {
   name: string;

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Form } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { APP_ROUTES, ICONS, BUTTON_TEXTS } from '../../constants';
+import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../constants';
 import { COMPONENT_STYLES } from '../../constants/layout/ui';
 import Header from '../../components/display/shared/sections/Header';
 import { USERS_CONSTANTS as UC } from '../../constants/pages/users';
@@ -16,7 +16,7 @@ import { RootState, AppDispatch } from '../../store';
 import { fetchAllUsersThunk } from '../../store/users/slices/userSlice';
 import type { User, UserFormBaseFields } from '../../interfaces/resources/users';
 
-const UserIcon = ICONS.USER;
+const UserIcon = Icons.USER;
 
 const EditUser: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   APP_ROUTES,
-  ICONS,
+  Icons,
   PASSKEYS_PAGE_CONSTANTS as PPC,
   SHARED_DETAILS_CONSTANTS,
 } from '../../constants';
@@ -24,7 +24,7 @@ import {
   selectPasskeyError,
 } from '../../store/passkeys/selectors/passkeySelectors';
 
-const PasskeyIcon = ICONS.PASSKEY;
+const PasskeyIcon = Icons.PASSKEY;
 
 const ViewPasskey: React.FC = () => {
   const { id: encodedDeviceName } = useParams<{ id: string }>();

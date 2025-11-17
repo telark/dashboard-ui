@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { APP_ROUTES, ICONS, BUTTON_TEXTS } from '../../constants';
+import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../constants';
 import { COMPONENT_STYLES } from '../../constants/layout/ui';
 import Header from '../../components/display/shared/sections/Header';
 import { USERS_CONSTANTS as UC } from '../../constants/pages/users';
@@ -16,7 +16,7 @@ import { useDispatch } from 'react-redux';
 import { addUser } from '../../store/users/slices/userSlice';
 import type { User, CreateUserFormValues } from '../../interfaces/resources/users';
 
-const UserIcon = ICONS.USER;
+const UserIcon = Icons.USER;
 
 const CreateUser: React.FC = () => {
   const navigate = useNavigate();

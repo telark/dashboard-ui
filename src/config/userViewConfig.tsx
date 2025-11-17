@@ -3,7 +3,7 @@ import type { User } from '../interfaces/resources/users';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import { StatusTag } from '../components/tags';
 import { ROLES_PAGE_CONSTANTS as RPC } from '../constants/pages/roles';
-import { ICONS as Icons } from '../constants';
+import { Icons } from '../constants';
 
 export const createUserViewConfig = (user: User): ViewDetailsConfig => {
   return {
