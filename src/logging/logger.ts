@@ -13,7 +13,7 @@ const configureLogger = (): void => {
     return;
   }
 
-  if (config.persistence.enabled && typeof globalThis.window !== 'undefined') {
+  if (config.persistence.enabled && globalThis.window !== undefined) {
     try {
       const storedLevel = localStorage.getItem(config.persistence.storageKey);
       if (storedLevel && Object.values(LOG_LEVEL_NAMES).includes(storedLevel as LogLevelName)) {
@@ -24,7 +24,7 @@ const configureLogger = (): void => {
     }
   }
 
-  if (config.persistence.enabled && typeof globalThis.window !== 'undefined') {
+  if (config.persistence.enabled && globalThis.window !== undefined) {
     const originalSetLevel = log.setLevel.bind(log);
     log.setLevel = function (level: log.LogLevelDesc, persist?: boolean) {
       originalSetLevel(level, persist);

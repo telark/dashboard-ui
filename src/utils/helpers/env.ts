@@ -7,7 +7,7 @@ export const isDevelopment = (): boolean => {
   }
 
   // Fallback to Node.js environment check
-  if (typeof process !== 'undefined' && process.env?.NODE_ENV !== undefined) {
+  if (process !== undefined && process.env?.NODE_ENV !== undefined) {
     return process.env.NODE_ENV === ENV.DEV;
   }
 
