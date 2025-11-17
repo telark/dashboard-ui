@@ -21,7 +21,7 @@ const WorkloadHeader: React.FC<WorkloadHeaderProps> = React.memo(({ workload }) 
   const navigate = useNavigate();
   const { message } = AntdApp.useApp();
   const [syncing, setSyncing] = useState(false);
-  const globalSyncing = useSelector((s: RootState) => s.workload.syncing || {});
+  const globalSyncing = useSelector((s: RootState) => s.workload.syncing ?? {});
   const workloadName = workload?.fasid?.name;
   const isGloballySyncing = Boolean(workloadName && globalSyncing[workloadName]);
   const grouperName = workload?.fasid?.grouper;
@@ -51,7 +51,7 @@ const WorkloadHeader: React.FC<WorkloadHeaderProps> = React.memo(({ workload }) 
       subtitle={
         <>
           {UI.HEADER.LAST_UPDATE_PREFIX}{' '}
-          <TimeAgo date={workload.config?.sync?.lastUpdateTime || new Date().toISOString()} />
+          <TimeAgo date={workload.config?.sync?.lastUpdateTime ?? new Date().toISOString()} />
         </>
       }
       primaryText={UI.BUTTONS.SYNC}

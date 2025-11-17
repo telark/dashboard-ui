@@ -48,7 +48,7 @@ export const Columns = ({
         width: RPC.SIZES.COLUMNS.TYPE,
         render: (_: any, record: Role) => (
           <RowTag
-            text={record.type || RPC.LABELS.CUSTOM_TYPE}
+            text={record.type ?? RPC.LABELS.CUSTOM_TYPE}
             background={
               record.type === RPC.TYPE.BUILT_IN
                 ? RPC.COLORS.TYPE_BUILTIN_BG
