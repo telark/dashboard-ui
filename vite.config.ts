@@ -2,6 +2,26 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 
+const VENDOR_CHUNK_MAPPINGS: Array<{ patterns: string[]; chunkName: string }> = [
+  { patterns: ['react', 'react-dom', 'scheduler'], chunkName: 'react-vendor' },
+  { patterns: ['antd', '@ant-design'], chunkName: 'antd-vendor' },
+  { patterns: ['redux', '@reduxjs'], chunkName: 'redux-vendor' },
+  { patterns: ['react-router'], chunkName: 'router-vendor' },
+  { patterns: ['react-icons'], chunkName: 'icons-vendor' },
+  { patterns: ['date-fns', 'react-timeago'], chunkName: 'date-vendor' },
+  { patterns: ['framer-motion'], chunkName: 'animation-vendor' },
+  { patterns: ['axios'], chunkName: 'http-vendor' },
+];
+
+const getVendorChunkName = (id: string): string => {
+  for (const { patterns, chunkName } of VENDOR_CHUNK_MAPPINGS) {
+    if (patterns.some((pattern) => id.includes(pattern))) {
+      return chunkName;
+    }
+  }
+  return 'vendor';
+};
+
 export default defineConfig({
   plugins: [react()],
   define: {
@@ -17,39 +37,16 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Vendor chunks
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('scheduler')) {
-              return 'react-vendor';
-            }
-            if (id.includes('antd') || id.includes('@ant-design')) {
-              return 'antd-vendor';
-            }
-            if (id.includes('redux') || id.includes('@reduxjs')) {
-              return 'redux-vendor';
-            }
-            if (id.includes('react-router')) {
-              return 'router-vendor';
-            }
-            if (id.includes('react-icons')) {
-              return 'icons-vendor';
-            }
-            if (id.includes('date-fns') || id.includes('react-timeago')) {
-              return 'date-vendor';
-            }
-            if (id.includes('framer-motion')) {
-              return 'animation-vendor';
-            }
-            // Avatar packages - exclude from manual chunking to allow dynamic import code splitting
-            if (id.includes('@dicebear')) {
-              return undefined; // Vite will handle code splitting via dynamic imports
-            }
-            if (id.includes('axios')) {
-              return 'http-vendor';
-            }
-            // Other node_modules
-            return 'vendor';
+          if (!id.includes('node_modules')) {
+            return undefined;
           }
+
+          // Avatar packages - exclude from manual chunking to allow dynamic import code splitting
+          if (id.includes('@dicebear')) {
+            return undefined; // Vite will handle code splitting via dynamic imports
+          }
+
+          return getVendorChunkName(id);
         },
       },
     },

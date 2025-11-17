@@ -31,7 +31,6 @@ export const extractRegisterOptions = (
   } else if (registerStartResponse.options?.response) {
     const response = registerStartResponse.options.response;
     const { excludeCredentials: _excludeCredentials, ...responseWithoutExclude } = response;
-    void _excludeCredentials;
     options = responseWithoutExclude;
   } else if (registerStartResponse.challenge) {
     options = {
