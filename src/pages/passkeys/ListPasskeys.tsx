@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { message } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { ICONS, PASSKEYS_PAGE_CONSTANTS as PPC, SHARED_DETAILS_CONSTANTS } from '../../constants';
@@ -32,18 +32,30 @@ const ListPasskeys: React.FC = () => {
   const { submitting, handleView, handleEdit, handleDelete, handleCreate, handleUpdate } =
     usePasskeyHandlers(openEditModal);
 
+  const [lastFetchError, setLastFetchError] = useState<string | null>(null);
+
   useEffect(() => {
     dispatch(fetchAllPasskeysThunk());
   }, [dispatch]);
 
   useEffect(() => {
-    if (error) {
-      message.error(AUTH_ERROR_MESSAGES.FETCH_PASSKEYS_FAILED);
-      if (isDevelopment()) {
-        logger.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEYS, error);
+    // in the mutation handlers and should not be shown here
+    if (error && !loading) {
+      const isMutationError =
+        error === AUTH_ERROR_MESSAGES.PASSKEY_ALREADY_EXISTS ||
+        error === AUTH_ERROR_MESSAGES.CREATE_PASSKEY_FAILED ||
+        error === AUTH_ERROR_MESSAGES.UPDATE_PASSKEY_FAILED ||
+        error === AUTH_ERROR_MESSAGES.DELETE_PASSKEY_FAILED;
+
+      if (!isMutationError && error !== lastFetchError) {
+        message.error(AUTH_ERROR_MESSAGES.FETCH_PASSKEYS_FAILED);
+        if (isDevelopment()) {
+          logger.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEYS, error);
+        }
+        setLastFetchError(error);
       }
     }
-  }, [error]);
+  }, [error, loading, lastFetchError]);
 
   const handleModalSubmit = async (values: Record<string, any>) => {
     if (isEditMode) {
