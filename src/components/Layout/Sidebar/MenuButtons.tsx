@@ -3,14 +3,14 @@ import { useLocation } from 'react-router-dom';
 import SidebarButton from '../../buttons/SideBarButton';
 import { Icons, APP_ROUTES, MENU_LABELS } from '../../../constants';
 
-const HomeIcon = Icons.HOME;
-const RoleIcon = Icons.ROLE;
-const GrouperIcon = Icons.GROUPER;
-const WorkloadIcon = Icons.WORKLOAD;
-const BridgeIcon = Icons.BRIDGE;
-const UserIcon = Icons.USER;
-const GroupIcon = Icons.GROUP;
-const PasskeyIcon = Icons.PASSKEY;
+const HomeIcon = Icons.Home;
+const RoleIcon = Icons.Role;
+const GrouperIcon = Icons.Grouper;
+const WorkloadIcon = Icons.Workload;
+const BridgeIcon = Icons.Bridge;
+const UserIcon = Icons.User;
+const GroupIcon = Icons.Group;
+const PasskeyIcon = Icons.Passkey;
 
 interface MenuButtonProps {
   isCollapsed?: boolean;

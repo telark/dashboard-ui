@@ -6,7 +6,7 @@ import { createDeviceNameValidator } from '../../../../utils/auth/passkey/valida
 import type { PasskeyFormModalProps } from '../../../../interfaces/auth/passkeys';
 import DeviceNameSuggestions from './DeviceNameSuggestions';
 
-const PasskeyIcon = Icons.PASSKEY;
+const PasskeyIcon = Icons.Passkey;
 
 interface PasskeyFormContentProps {
   form: any;

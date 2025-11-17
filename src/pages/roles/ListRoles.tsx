@@ -7,7 +7,7 @@ import Header from '../../components/display/shared/sections/Header';
 import RolesTable from '../../components/display/roles/list/Table';
 import { PageContainer } from '../../components/shared';
 
-const RoleIcon = Icons.ROLE;
+const RoleIcon = Icons.Role;
 
 const RolesList: React.FC = () => {
   const navigate = useNavigate();

@@ -16,7 +16,7 @@ import { RootState, AppDispatch } from '../../store';
 import { fetchAllUsersThunk } from '../../store/users/slices/userSlice';
 import type { User, UserFormBaseFields } from '../../interfaces/resources/users';
 
-const UserIcon = Icons.USER;
+const UserIcon = Icons.User;
 
 const EditUser: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();

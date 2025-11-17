@@ -16,7 +16,7 @@ import { useDispatch } from 'react-redux';
 import { addUser } from '../../store/users/slices/userSlice';
 import type { User, CreateUserFormValues } from '../../interfaces/resources/users';
 
-const UserIcon = Icons.USER;
+const UserIcon = Icons.User;
 
 const CreateUser: React.FC = () => {
   const navigate = useNavigate();

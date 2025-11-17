@@ -14,7 +14,7 @@ import { PageContainer, NotFound } from '../../components/shared';
 import { useEditPage } from '../../hooks/layout';
 import type { Group } from '../../interfaces/resources/groups';
 
-const GroupIcon = Icons.GROUP;
+const GroupIcon = Icons.Group;
 
 interface EditGroupFormValues {
   name: string;

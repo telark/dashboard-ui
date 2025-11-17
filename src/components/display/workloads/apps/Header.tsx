@@ -11,7 +11,7 @@ import { RootState } from '../../../../store';
 import { APP_ROUTES, Icons, UI } from '../../../../constants';
 import WorkloadMetrics from './Metrics';
 
-const WorkloadIcon = Icons.WORKLOAD;
+const WorkloadIcon = Icons.Workload;
 
 interface WorkloadHeaderProps {
   workload: AppWorkload;

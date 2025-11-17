@@ -7,7 +7,7 @@ import RoleForm, { type RoleFormValues } from '../../components/display/roles/sh
 import { PageContainer } from '../../components/shared';
 import type { RoleScopePermission } from '../../interfaces/resources/roles';
 
-const RoleIcon = Icons.ROLE;
+const RoleIcon = Icons.Role;
 
 const CreateRole: React.FC = () => {
   const [form] = Form.useForm<RoleFormValues>();

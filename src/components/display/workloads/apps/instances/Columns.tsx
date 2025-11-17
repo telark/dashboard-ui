@@ -62,7 +62,7 @@ export const Columns = ({ onSort, activeSortKey, onView }: ColumnsArgs) => {
       {
         key: IPC.KEYS.CPU,
         label: IPC.LABELS.COLUMNS.CPU,
-        icon: <Icons.CPU />,
+        icon: <Icons.Cpu />,
         width: IPC.SIZES.COLUMNS.CPU,
         render: (cpu: string) => <span style={{ color: IPC.COLORS.TEXT_PRIMARY }}>{cpu}</span>,
       },
@@ -72,7 +72,7 @@ export const Columns = ({ onSort, activeSortKey, onView }: ColumnsArgs) => {
       {
         key: IPC.KEYS.MEMORY,
         label: IPC.LABELS.COLUMNS.MEMORY,
-        icon: <Icons.MEMORY />,
+        icon: <Icons.Memory />,
         width: IPC.SIZES.COLUMNS.MEMORY,
         render: (memory: string) => (
           <span style={{ color: IPC.COLORS.TEXT_PRIMARY }}>{memory}</span>
@@ -84,7 +84,7 @@ export const Columns = ({ onSort, activeSortKey, onView }: ColumnsArgs) => {
       {
         key: IPC.KEYS.CONTAINERS,
         label: IPC.LABELS.COLUMNS.CONTAINERS,
-        icon: <Icons.CONTAINER />,
+        icon: <Icons.Container />,
         width: IPC.SIZES.COLUMNS.CONTAINERS,
         render: (_: number, record: InstanceTableRow) => {
           const containerNames = record.containerNames?.split(', ').filter(Boolean) || [];

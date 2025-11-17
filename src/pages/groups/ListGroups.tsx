@@ -10,7 +10,7 @@ import { PageContainer } from '../../components/shared';
 import { useListPage } from '../../hooks/layout';
 import type { Group } from '../../interfaces/resources/groups';
 
-const GroupIcon = Icons.GROUP;
+const GroupIcon = Icons.Group;
 
 const GroupsList: React.FC = () => {
   const navigate = useNavigate();

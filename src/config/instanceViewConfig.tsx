@@ -47,14 +47,14 @@ export const createInstanceViewConfig = (instance: InstanceTableRow): ViewDetail
       key: 'instance-cpu',
       label: 'CPU',
       value: instance.cpu,
-      icon: <Icons.CPU />,
+      icon: <Icons.Cpu />,
       type: 'text',
     },
     {
       key: 'instance-memory',
       label: 'Memory',
       value: instance.memory,
-      icon: <Icons.MEMORY />,
+      icon: <Icons.Memory />,
       type: 'text',
     },
   ];

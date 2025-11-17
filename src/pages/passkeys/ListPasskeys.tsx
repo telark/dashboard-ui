@@ -18,7 +18,7 @@ import {
 } from '../../store/passkeys/selectors/passkeySelectors';
 import { usePasskeyModal, usePasskeyHandlers } from '../../hooks/auth/passkeys';
 
-const PasskeyIcon = Icons.PASSKEY;
+const PasskeyIcon = Icons.Passkey;
 
 const ListPasskeys: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();

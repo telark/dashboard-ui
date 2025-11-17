@@ -9,7 +9,7 @@ import { PageContainer, NotFound } from '../../components/shared';
 import { useEditPage } from '../../hooks/layout';
 import type { Role } from '../../interfaces/resources/roles';
 
-const RoleIcon = Icons.ROLE;
+const RoleIcon = Icons.Role;
 
 const EditRole: React.FC = () => {
   const {

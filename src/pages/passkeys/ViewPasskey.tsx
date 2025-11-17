@@ -24,7 +24,7 @@ import {
   selectPasskeyError,
 } from '../../store/passkeys/selectors/passkeySelectors';
 
-const PasskeyIcon = Icons.PASSKEY;
+const PasskeyIcon = Icons.Passkey;
 
 const ViewPasskey: React.FC = () => {
   const { id: encodedDeviceName } = useParams<{ id: string }>();

@@ -7,7 +7,7 @@ import { AiOutlineCalendar, AiOutlineCheckCircle, AiOutlineTag } from 'react-ico
 import { Icons } from '../../../../constants';
 import type { RolesSortKey } from './utils';
 
-const RoleIcon = Icons.ROLE;
+const RoleIcon = Icons.Role;
 
 interface ColumnsArgs {
   onView: (r: Role) => void;

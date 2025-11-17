@@ -12,7 +12,7 @@ export const createBridgeViewConfig = (bridgeDetails: any): ViewDetailsConfig =>
         key: 'name',
         label: 'Name',
         value: bridgeDetails.name || '—',
-        icon: <Icons.VIEW_FIELD_NAME />,
+        icon: <Icons.ViewFieldName />,
         type: 'text',
       },
       {
@@ -33,14 +33,14 @@ export const createBridgeViewConfig = (bridgeDetails: any): ViewDetailsConfig =>
         key: 'creationDate',
         label: 'Creation Date',
         value: <TimeAgo date={bridgeDetails.creationTime} />,
-        icon: <Icons.VIEW_FIELD_DATE />,
+        icon: <Icons.ViewFieldDate />,
         type: 'custom',
       },
       {
         key: 'lastModification',
         label: 'Last Modification',
         value: <TimeAgo date={bridgeDetails.lastUpdateTime} />,
-        icon: <Icons.VIEW_FIELD_DATE />,
+        icon: <Icons.ViewFieldDate />,
         type: 'custom',
       },
       {
