@@ -35,7 +35,7 @@ export const LOGIN_CONSTANTS = {
       BASE64_TO_BASE64URL: {
         REPLACE_PLUS: /\+/g,
         REPLACE_SLASH: /\//g,
-        REPLACE_TRAILING_EQUALS: /=+$/,
+        REPLACE_TRAILING_EQUALS: /={1,2}$/,
         REPLACE_WITH_DASH: '-',
         REPLACE_WITH_UNDERSCORE: '_',
       },
