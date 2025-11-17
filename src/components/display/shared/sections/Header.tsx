@@ -71,12 +71,21 @@ const Header: React.FC<HeaderProps> = ({
               <Breadcrumb
                 items={breadcrumbs.map((b: { label: string; to?: string }) => ({
                   title: b.to ? (
-                    <span
-                      style={{ cursor: 'pointer' }}
+                    <button
+                      type="button"
                       onClick={() => (b.to ? navigate(b.to) : undefined)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer',
+                        color: 'inherit',
+                        font: 'inherit',
+                        textDecoration: 'none',
+                      }}
                     >
                       {b.label}
-                    </span>
+                    </button>
                   ) : (
                     <span>{b.label}</span>
                   ),

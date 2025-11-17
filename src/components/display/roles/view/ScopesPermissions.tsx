@@ -29,6 +29,8 @@ const ScopesPermissions: React.FC<ScopesPermissionsProps> = ({ scopes }) => {
           return (
             <div
               key={area}
+              role="group"
+              aria-label={`${area} permissions`}
               style={{
                 display: 'flex',
                 flexDirection: 'column',

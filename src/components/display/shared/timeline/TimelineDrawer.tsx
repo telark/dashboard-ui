@@ -18,9 +18,14 @@ export const TimelineDrawer: React.FC<TimelineDrawerProps> = React.memo(
             }}
           >
             <span style={TIMELINE_STYLES.DRAWER.titleText}>{UI.HISTORY.FULL_TITLE}</span>
-            <span onClick={onClose} style={TIMELINE_STYLES.DRAWER.closeButton} aria-label="Close">
+            <button
+              type="button"
+              onClick={onClose}
+              style={TIMELINE_STYLES.DRAWER.closeButton}
+              aria-label="Close"
+            >
               <CloseOutlined />
-            </span>
+            </button>
           </div>
         }
         closable={false}
