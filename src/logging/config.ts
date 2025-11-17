@@ -1,0 +1,11 @@
+export const LOGGER_CONFIG = {
+  ENABLE_IN_PRODUCTION: false,
+  ENABLE_IN_DEVELOPMENT: true,
+  ENABLE_CONSOLE: true,
+  PERSIST_LEVEL: true,
+  STORAGE_KEY: 'loglevel',
+  INCLUDE_STACK_TRACE: true,
+  MAX_MESSAGE_LENGTH: 0,
+  INCLUDE_TIMESTAMP: true,
+  TIMESTAMP_FORMAT: 'YYYY-MM-DD HH:mm:ss.SSS',
+} as const;

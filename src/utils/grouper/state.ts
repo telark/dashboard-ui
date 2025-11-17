@@ -11,7 +11,7 @@ import {
   GROUPERS_SYNC_LS_KEY,
   GROUPERS_SYNC_THROTTLE_MS,
 } from '../../constants/config/sync';
-import { GrouperInterface } from '../../interfaces/grouper';
+import { GrouperInterface } from '../../interfaces/resources/grouper';
 import { createResourceStateUtils } from '../shared/resourceStateFactory';
 
 const grouperStateUtils = createResourceStateUtils({

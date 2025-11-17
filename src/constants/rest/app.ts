@@ -18,6 +18,12 @@ export const APP_CONFIGS = {
 
 export const APP_ROUTES = {
   HOME: '/',
+  LOGIN: '/login',
+  REGISTER: '/register',
+  PASSKEYS: '/passkeys',
+  PASSKEY_CREATE: '/passkeys/create',
+  PASSKEY_VIEW: '/passkeys/:id/view',
+  PASSKEY_EDIT: '/passkeys/:id/edit',
   GROUPERS: '/groupers',
   GROUPER_DETAILS: '/groupers/:name/details',
   WORKLOADS: '/workloads',
@@ -28,9 +34,6 @@ export const APP_ROUTES = {
   ROLE_CREATE: '/roles/create',
   ROLE_VIEW: '/roles/:id/view',
   ROLE_EDIT: '/roles/:id/edit',
-  CATEGORIES: '/categories',
-  CATEGORY_VIEW: '/categories/:id/view',
-  CATEGORY_EDIT: '/categories/:id/edit',
   USERS: '/management/users',
   USER_CREATE: '/management/users/create',
   USER_VIEW: '/management/users/:id/view',

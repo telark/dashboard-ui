@@ -3,7 +3,7 @@ import { Typography } from 'antd';
 import { ClockCircleOutlined } from '@ant-design/icons';
 import { FancySpinner } from '../../../shared';
 import { DEFAULT_COLORS } from '../../../../constants';
-import type { BatchWorkloadCardData } from '../../../../interfaces/workload';
+import type { BatchWorkloadCardData } from '../../../../interfaces/resources/workload';
 
 const { Title } = Typography;
 

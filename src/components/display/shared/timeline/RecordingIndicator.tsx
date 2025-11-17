@@ -1,6 +1,6 @@
 import React from 'react';
 import { LoadingOutlined } from '@ant-design/icons';
-import type { RecordingIndicatorProps } from '../../../../interfaces/timeline';
+import type { RecordingIndicatorProps } from '../../../../interfaces/layout/timeline';
 import { TIMELINE_CONSTANTS, TIMELINE_STYLES, UI } from '../../../../constants';
 
 export const RecordingIndicator: React.FC<RecordingIndicatorProps> = React.memo(

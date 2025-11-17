@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { WorkloadsState } from '../../../interfaces/workload';
+import { WorkloadsState } from '../../../interfaces/resources/workload';
 
 export const handleFetchAppsPending = (state: WorkloadsState) => {
   state.appLoading = true;

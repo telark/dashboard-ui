@@ -4,7 +4,7 @@ import { App as AntdApp } from 'antd';
 import { AiOutlineCluster, AiOutlineAppstore } from 'react-icons/ai';
 
 import { DEFAULT_COLORS } from '../../../constants';
-import { AppWorkloadCardData } from '../../../interfaces/workload';
+import { AppWorkloadCardData } from '../../../interfaces/resources/workload';
 import { getDetailedStatusStyle, normalizeStatus } from '../../../utils/helpers/status';
 import { ResourceCard, ResourceCardData, ResourceCardActions, ResourceCardConfig } from '../shared';
 import { syncAppWorkload } from '../../../utils/workload/sync';

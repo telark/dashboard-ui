@@ -1,6 +1,6 @@
 import React from 'react';
 import WorkloadHeader from '../../../../components/display/workloads/apps/Header';
-import type { AppWorkload } from '../../../../interfaces/workload';
+import type { AppWorkload } from '../../../../interfaces/resources/workload';
 
 interface HeaderProps {
   workload: AppWorkload;

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { BridgeState } from '../../../interfaces/bridge';
+import { BridgeState } from '../../../interfaces/resources/bridge';
 import {
   fetchAllBridgesThunk,
   fetchAllBridgesSilentThunk,

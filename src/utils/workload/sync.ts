@@ -7,7 +7,7 @@ import { startSync, endSync } from '../../store/workloads/slices/workloadSlice';
 import { handleSyncEffect, handleSyncError } from '../shared/sync';
 import { buildDetailsSyncKey, buildCardSyncKey, destroySyncMessage } from '../helpers/sync';
 import { WORKLOAD_SYNC_CONFIG } from '../../config/syncConfig';
-import { DetailsSyncParams, SyncParams } from '../../interfaces/sync';
+import { DetailsSyncParams, SyncParams } from '../../interfaces/resources/sync';
 
 export const syncAppWorkloadDetails = async ({
   details,

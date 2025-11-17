@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GrouperState } from '../../../interfaces/grouper';
+import { GrouperState } from '../../../interfaces/resources/grouper';
 import {
   fetchAllGroupersThunk,
   fetchAllGroupersSilentThunk,

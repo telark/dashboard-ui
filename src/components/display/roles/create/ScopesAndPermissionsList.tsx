@@ -3,7 +3,7 @@ import { Checkbox, Divider, Form, Tooltip } from 'antd';
 import type {
   RoleScopePermission,
   RolesScopesAndPermissionsListProps,
-} from '../../../../interfaces/roles';
+} from '../../../../interfaces/resources/roles';
 
 const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps> = ({
   areas,

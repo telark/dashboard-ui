@@ -1,0 +1,91 @@
+export const LOGIN_CONSTANTS = {
+  ERROR_PATTERNS: {
+    USER_NOT_FOUND: ['user not found', 'failed to get user', 'status: 404'],
+    NO_PASSKEYS: ['no passkeys found', 'no passkey found', 'no passkeys', 'no passkey'],
+  },
+  MESSAGES: {
+    USER_NOT_FOUND: 'User not found. Please check your username and try again.',
+    NO_PASSKEYS: 'User has no passkeys and must register to login',
+    NETWORK_ERROR: 'Network error. Please check your connection and try again.',
+    TIMEOUT_ERROR: 'Request timed out. Please try again.',
+    SERVER_ERROR: 'Server error. Please try again later.',
+    CLIENT_ERROR: 'Invalid request. Please check your input and try again.',
+    INVALID_RESPONSE: 'Invalid response from server. Please try again.',
+  },
+  TIMING: {
+    MESSAGE_DURATION: 4,
+    CALLBACK_DELAY: 2000,
+  },
+  WEBAUTHN: {
+    USER_VERIFICATION: 'preferred',
+    USER_VERIFICATION_DISCOURAGED: 'discouraged',
+    CREDENTIAL_TYPE: 'public-key' as const,
+    ATTESTATION: 'none',
+    SHOW_ALL_PASSKEYS: true,
+    TIMEOUT: {
+      VALIDATION_CHECK: 1000,
+    },
+    REGEX: {
+      BASE64URL_TO_BASE64: {
+        REPLACE_DASH: /-/g,
+        REPLACE_UNDERSCORE: /_/g,
+        REPLACE_WITH_PLUS: '+',
+        REPLACE_WITH_SLASH: '/',
+      },
+      BASE64_TO_BASE64URL: {
+        REPLACE_PLUS: /\+/g,
+        REPLACE_SLASH: /\//g,
+        REPLACE_TRAILING_EQUALS: /=+$/,
+        REPLACE_WITH_DASH: '-',
+        REPLACE_WITH_UNDERSCORE: '_',
+      },
+    },
+    ERROR_NAMES: {
+      NOT_ALLOWED: 'NotAllowedError',
+      INVALID_STATE: 'InvalidStateError',
+      NOT_FOUND: 'NotFoundError',
+      NOT_SUPPORTED: 'NotSupportedError',
+      CONSTRAINT: 'ConstraintError',
+    },
+    MESSAGES: {
+      NOT_SUPPORTED: 'WebAuthn is not supported in this browser',
+      USER_CANCELLED_AUTH: 'User cancelled authentication',
+      USER_CANCELLED_REGISTRATION: 'User cancelled registration',
+      NO_CREDENTIAL_FOUND: 'User cancelled authentication or no credential found',
+      REGISTRATION_CANCELLED: 'User cancelled registration or credential creation failed',
+      OPERATION_NOT_ALLOWED: 'The operation is not allowed',
+      AUTHENTICATOR_ALREADY_HAS_CREDENTIAL:
+        'This device already has a passkey registered. Platform authenticators can only store one passkey per account.',
+      NOT_SUPPORTED_ERROR: 'WebAuthn is not supported',
+      AUTHENTICATION_FAILED: 'Authentication failed',
+      REGISTRATION_FAILED: 'Registration failed',
+      UNSUPPORTED_RESPONSE_TYPE: 'Unsupported credential response type',
+      CONSTRAINT_VALIDATION_FAILED: 'Constraint validation failed',
+    },
+    ERROR_PATTERNS: {
+      USER_CANCELLED_AUTH: 'user cancelled authentication',
+      NO_CREDENTIAL_FOUND: 'no credential found',
+    },
+  },
+  SESSION: {
+    SET_FAILED: 'Failed to save session token',
+    REMOVE_FAILED: 'Failed to remove session token',
+    QUOTA_EXCEEDED: 'Storage quota exceeded. Please free up space and try again.',
+  },
+  UI: {
+    TITLE: 'Welcome Back',
+    SUBTITLE: 'Sign in with your passkey',
+    USERNAME_PLACEHOLDER: 'Enter your username',
+    BUTTON_LOADING: 'Authenticating...',
+    BUTTON_TEXT: 'Login with Passkey',
+    FOOTER_TEXT: "Don't have a passkey?",
+    FOOTER_LINK: 'Register now',
+  },
+  LOGS: {
+    AUTH_ERROR: 'Authentication error:',
+    INVALID_RESPONSE_STRUCTURE: 'Invalid login response structure:',
+    SESSION_GET_ERROR: 'Failed to get session token:',
+    SESSION_SET_ERROR: 'Failed to set session token:',
+    SESSION_REMOVE_ERROR: 'Failed to remove session token:',
+  },
+} as const;

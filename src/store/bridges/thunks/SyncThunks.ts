@@ -4,7 +4,7 @@ import { triggerBridgesSync } from '../../../clients/sync-manager';
 import { mapSingleBridgeData, mapBridgesData } from '../../../utils/mappers/bridgeMapper';
 import { STORE_ACTIONS, STORE_ERRORS } from '../../../constants/store/store';
 import { RootState } from '../../../store';
-import { BridgeInterface } from '../../../interfaces/bridge';
+import { BridgeInterface } from '../../../interfaces/resources/bridge';
 import { extractErrorMessage } from '../../../utils/helpers/format';
 
 export const triggerBridgesSyncThunk = createAsyncThunk(

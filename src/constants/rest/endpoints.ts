@@ -4,6 +4,8 @@ import {
   INSIGHT_PATHS,
   MAINTENANCE_PATHS,
   ANALYZE_PATHS,
+  AUTH_PATHS,
+  SESSION_PATHS,
 } from '../rest/paths';
 
 export const Endpoints = {
@@ -120,5 +122,69 @@ export const Endpoints = {
         method: 'PATCH',
       }),
     },
+  },
+  AUTH: {
+    LOGIN: {
+      START: {
+        path: AUTH_PATHS.LOGIN.START,
+        method: 'POST',
+      },
+      FINISH: {
+        path: AUTH_PATHS.LOGIN.FINISH,
+        method: 'POST',
+      },
+    },
+    REGISTER: {
+      START: {
+        path: AUTH_PATHS.REGISTER.START,
+        method: 'POST',
+      },
+    },
+    LOGOUT: {
+      path: AUTH_PATHS.LOGOUT,
+      method: 'POST',
+    },
+    PASSKEYS: {
+      GET_ALL: {
+        path: AUTH_PATHS.PASSKEYS.PROXY.GET,
+        method: 'GET',
+      },
+      CREATE: {
+        path: AUTH_PATHS.PASSKEYS.PROXY.CREATE,
+        method: 'POST',
+      },
+      GET_SINGLE: {
+        path: AUTH_PATHS.PASSKEYS.PROXY.SINGLE_GET,
+        method: 'GET',
+      },
+      UPDATE: {
+        path: AUTH_PATHS.PASSKEYS.PROXY.PATCH,
+        method: 'PATCH',
+      },
+      DELETE: {
+        path: AUTH_PATHS.PASSKEYS.PROXY.DELETE,
+        method: 'DELETE',
+      },
+    },
+  },
+  USERS: {
+    GET_ALL: {
+      path: `${API_PATHS.RESOURCES.USERS}/${RESOURCE_PATHS.GET_ALL}`,
+      method: 'GET',
+    },
+    GET_BY_ID: (userId: string) => ({
+      path: `${API_PATHS.RESOURCES.USERS}/${RESOURCE_PATHS.FIND_USER_BY_ID(userId)}`,
+      method: 'GET',
+    }),
+  },
+  SESSIONS: {
+    GET_BY_TOKEN: (sessionToken: string) => ({
+      path: SESSION_PATHS.GET_BY_TOKEN(sessionToken),
+      method: 'GET',
+    }),
+    DELETE_BY_TOKEN: (sessionToken: string) => ({
+      path: SESSION_PATHS.DELETE_BY_TOKEN(sessionToken),
+      method: 'DELETE',
+    }),
   },
 };

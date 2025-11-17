@@ -1,7 +1,7 @@
 import React from 'react';
 import { DEFAULT_COLORS, ICONS } from '../../../../constants';
 import { WORKLOAD_DETAILS_CONSTANTS } from '../../../../constants/pages/workload-details';
-import { AppWorkload } from '../../../../interfaces/workload';
+import { AppWorkload } from '../../../../interfaces/resources/workload';
 
 interface WorkloadMetricsProps {
   workload: AppWorkload;

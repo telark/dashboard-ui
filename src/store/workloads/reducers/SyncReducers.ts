@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { WorkloadsState } from '../../../interfaces/workload';
+import { WorkloadsState } from '../../../interfaces/resources/workload';
 import { SYNC_MODES } from '../../../constants/store/store';
 
 export const handleTriggerSyncRejected = (state: WorkloadsState, action: PayloadAction<any>) => {

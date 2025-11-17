@@ -16,11 +16,35 @@ interface RowOptionsProps<T> {
 }
 
 const RowOptions = <T,>({ record, labels, onView, onEdit, onDelete }: RowOptionsProps<T>) => {
-  const handleMenuClick = ({ key }: { key: string }) => {
-    if (key === 'view') onView(record);
-    else if (key === 'edit' && onEdit) onEdit(record);
-    else if (key === 'delete') onDelete(record);
-  };
+  const menuItems = [
+    {
+      key: 'view',
+      label: labels.VIEW,
+      icon: <EyeOutlined />,
+      onClick: () => {
+        onView(record);
+      },
+    },
+    {
+      key: 'edit',
+      label: labels.EDIT,
+      icon: <EditOutlined />,
+      onClick: () => {
+        if (onEdit) {
+          onEdit(record);
+        }
+      },
+    },
+    {
+      key: 'delete',
+      label: labels.DELETE,
+      icon: <DeleteOutlined />,
+      danger: true,
+      onClick: () => {
+        onDelete(record);
+      },
+    },
+  ];
 
   return (
     <span
@@ -31,23 +55,7 @@ const RowOptions = <T,>({ record, labels, onView, onEdit, onDelete }: RowOptions
         }
       }}
     >
-      <Dropdown
-        trigger={['click']}
-        placement="bottomRight"
-        menu={{
-          items: [
-            { key: 'view', label: labels.VIEW, icon: <EyeOutlined /> },
-            { key: 'edit', label: labels.EDIT, icon: <EditOutlined /> },
-            {
-              key: 'delete',
-              label: labels.DELETE,
-              icon: <DeleteOutlined />,
-              danger: true,
-            },
-          ],
-          onClick: handleMenuClick,
-        }}
-      >
+      <Dropdown trigger={['click']} placement="bottomRight" menu={{ items: menuItems }}>
         <Button
           type="text"
           shape="circle"

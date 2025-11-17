@@ -22,6 +22,7 @@ export const ERROR_MESSAGES = {
     FETCH_BRIDGES_FAILED: '[APIClient] Failed to fetch all bridges:',
     FETCH_BRIDGE_DETAILS_FAILED: '[APIClient] Failed to fetch bridge details for',
     UPDATE_BRIDGE_SYNC_MODE_FAILED: '[APIClient] Failed to update bridge sync mode for',
+    FETCH_USERS_FAILED: '[APIClient] Failed to fetch users:',
   },
 
   INSIGHTS: {

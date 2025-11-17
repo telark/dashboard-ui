@@ -13,6 +13,7 @@ const PrimaryButton: React.FC<LoadingButtonInterface> = ({
   icon,
   color = DEFAULT_COLORS.SUCCESS,
   disabled = false,
+  style,
 }) => {
   return (
     <Button
@@ -25,6 +26,10 @@ const PrimaryButton: React.FC<LoadingButtonInterface> = ({
         marginTop: BUTTON_CONFIGS.PRIMARY_BUTTON.MARGIN_TOP,
         backgroundColor: color,
         borderColor: color,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        ...style,
       }}
     >
       {loading ? loadingLabel : action}

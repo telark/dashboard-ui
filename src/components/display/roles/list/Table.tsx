@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Modal } from 'antd';
 import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
-import type { Role, RolesTableProps } from '../../../../interfaces/roles';
+import type { Role, RolesTableProps } from '../../../../interfaces/resources/roles';
 import { Columns } from './Columns';
 import { getPermissionCount, RolesSortKey, sortRoles } from './utils';
 import DataTable from '../../shared/table/DataTable';

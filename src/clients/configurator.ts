@@ -1,4 +1,5 @@
 import { Client, configuratorApiClient } from '../api';
+import logger from '../logging';
 import {
   Endpoints,
   HTTP_HEADERS,
@@ -6,7 +7,7 @@ import {
   ERROR_MESSAGES,
   MAINTENANCE_ACTIONS,
 } from '../constants';
-import type { MaintenanceModeResponse, StandardApiResponse } from '../interfaces/api';
+import type { MaintenanceModeResponse, StandardApiResponse } from '../interfaces/http';
 
 export const enableGrouperMaintenanceMode = async (
   grouperName: string,
@@ -26,7 +27,7 @@ export const enableGrouperMaintenanceMode = async (
       },
     });
   } catch (error) {
-    console.error(
+    logger.error(
       `${ERROR_MESSAGES.CLIENT.ENABLE_MAINTENANCE_MODE_FAILED} "${grouperName}":`,
       error,
     );
@@ -52,7 +53,7 @@ export const updateGrouperMaintenanceMode = async (
       },
     });
   } catch (error) {
-    console.error(
+    logger.error(
       `${ERROR_MESSAGES.CLIENT.UPDATE_MAINTENANCE_MODE_FAILED} "${grouperName}":`,
       error,
     );
@@ -70,7 +71,7 @@ export const removeGrouperMaintenanceMode = async (grouperName: string) => {
       },
     });
   } catch (error) {
-    console.error(
+    logger.error(
       `${ERROR_MESSAGES.CLIENT.REMOVE_MAINTENANCE_MODE_FAILED} "${grouperName}":`,
       error,
     );
@@ -86,7 +87,7 @@ export const startClusterAnalyze = async () => {
       headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK },
     });
   } catch (error) {
-    console.error(ERROR_MESSAGES.CLIENT.START_CLUSTER_ANALYSIS_FAILED, error);
+    logger.error(ERROR_MESSAGES.CLIENT.START_CLUSTER_ANALYSIS_FAILED, error);
     throw error;
   }
 };

@@ -1,5 +1,5 @@
 import store, { RootState } from '../../store';
-import { HandleSyncEffectParams, SyncConfig, MessageApi } from '../../interfaces/sync';
+import { HandleSyncEffectParams, SyncConfig, MessageApi } from '../../interfaces/resources/sync';
 import {
   getDetailsPollingEffects,
   getCardPollingEffects,

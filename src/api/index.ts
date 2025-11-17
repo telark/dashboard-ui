@@ -3,6 +3,7 @@ import {
   EXPORTER_API,
   CONFIGURATOR_API,
   SYNC_MANAGER_API,
+  AUTH_API,
   API_TIMEOUT,
   HTTP_HEADERS,
   HEADER_VALUES,
@@ -12,6 +13,14 @@ import {
   REQUEST_CONFIG,
   API_RESPONSES,
 } from '../constants';
+import { ErrorInterceptorOptions } from '../interfaces/http';
+import { createSessionTokenInterceptor } from '../utils/auth/session/token';
+import { createRequestErrorHandler } from '../utils/shared/errors';
+import logger from '../logging';
+
+interface ExtendedAxiosError extends AxiosError {
+  normalized?: ReturnType<typeof normalizeError>;
+}
 
 const exporterApiClient: AxiosInstance = axios.create({
   baseURL: EXPORTER_API.BASE_URL,
@@ -31,9 +40,17 @@ const syncManagerApiClient: AxiosInstance = axios.create({
   headers: REQUEST_CONFIG.DEFAULT_HEADERS,
 });
 
-interface ExtendedAxiosError extends AxiosError {
-  normalized?: ReturnType<typeof normalizeError>;
-}
+const authApiClient: AxiosInstance = axios.create({
+  baseURL: AUTH_API.BASE_URL,
+  timeout: API_TIMEOUT,
+  headers: REQUEST_CONFIG.DEFAULT_HEADERS,
+});
+
+// Add session token interceptor for auth client
+authApiClient.interceptors.request.use(
+  createSessionTokenInterceptor(),
+  createRequestErrorHandler(),
+);
 
 const normalizeError = (error: AxiosError) => {
   const status = error?.response?.status ?? null;
@@ -55,10 +72,6 @@ const normalizeError = (error: AxiosError) => {
   const isTimeout = error?.code === ERROR_CODES.TIMEOUT || /timeout/i.test(String(message));
   return { status, message, url, method, isNotFound, isClient, isServer, isNetwork, isTimeout };
 };
-
-interface ErrorInterceptorOptions {
-  silent404?: boolean;
-}
 
 const createErrorInterceptor = (options: ErrorInterceptorOptions = {}) => {
   const { silent404 = false } = options;
@@ -97,13 +110,13 @@ const createErrorInterceptor = (options: ErrorInterceptorOptions = {}) => {
         return Promise.reject(error);
       }
       if (meta.isNotFound) {
-        console.warn(ERROR_MESSAGES.API.NOT_FOUND_WARNING, meta);
+        logger.warn(ERROR_MESSAGES.API.NOT_FOUND_WARNING, meta);
       } else if (meta.isNetwork) {
-        console.error(ERROR_MESSAGES.API.NETWORK_ERROR, meta);
+        logger.error(ERROR_MESSAGES.API.NETWORK_ERROR, meta);
       } else if (meta.isTimeout) {
-        console.error(ERROR_MESSAGES.API.TIMEOUT_ERROR, meta);
+        logger.error(ERROR_MESSAGES.API.TIMEOUT_ERROR, meta);
       } else {
-        console.error(ERROR_MESSAGES.API.GENERIC_ERROR, meta);
+        logger.error(ERROR_MESSAGES.API.GENERIC_ERROR, meta);
       }
       return Promise.reject(error);
     },
@@ -113,6 +126,7 @@ const createErrorInterceptor = (options: ErrorInterceptorOptions = {}) => {
 exporterApiClient.interceptors.response.use(...createErrorInterceptor({ silent404: true }));
 configuratorApiClient.interceptors.response.use(...createErrorInterceptor());
 syncManagerApiClient.interceptors.response.use(...createErrorInterceptor());
+authApiClient.interceptors.response.use(...createErrorInterceptor());
 
 const DEFAULT_CLIENT_CONFIG: AxiosRequestConfig = {
   method: REQUEST_CONFIG.DEFAULT_METHOD,
@@ -127,4 +141,4 @@ export const Client = async <T>(
   return response.data;
 };
 
-export { exporterApiClient, configuratorApiClient, syncManagerApiClient };
+export { exporterApiClient, configuratorApiClient, syncManagerApiClient, authApiClient };

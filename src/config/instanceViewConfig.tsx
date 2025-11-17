@@ -9,8 +9,8 @@ import type { ViewDetailsConfig } from '../components/display/shared/views/ViewD
 import RowTag from '../components/display/shared/table/RowTag';
 import { INSTANCES_PAGE_CONSTANTS as IPC } from '../constants/pages/instances';
 import { ICONS } from '../constants';
-import type { InstanceTableRow } from '../interfaces/instances';
-import type { Container } from '../interfaces/workload';
+import type { InstanceTableRow } from '../interfaces/resources/instances';
+import type { Container } from '../interfaces/resources/workload';
 
 const getStatusColor = (status: string) => {
   const isActive = /active|ready|running|available/i.test(status);

@@ -1,4 +1,4 @@
-import type { Role } from '../interfaces/roles';
+import type { Role } from '../interfaces/resources/roles';
 
 export type StaticRole = Role;
 

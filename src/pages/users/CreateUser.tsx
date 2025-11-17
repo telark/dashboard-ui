@@ -14,17 +14,9 @@ import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper'
 import { PageContainer } from '../../components/shared';
 import { useDispatch } from 'react-redux';
 import { addUser } from '../../store/users/slices/userSlice';
-import type { User } from '../../interfaces/users';
+import type { User, CreateUserFormValues } from '../../interfaces/resources/users';
 
 const UserIcon = ICONS.USER;
-
-interface CreateUserFormValues {
-  username: string;
-  fullname: string;
-  email: string;
-  role: string;
-  avatar?: { style: string; seed: string };
-}
 
 const CreateUser: React.FC = () => {
   const navigate = useNavigate();
@@ -41,8 +33,12 @@ const CreateUser: React.FC = () => {
         username: values.username,
         fullname: values.fullname,
         email: values.email,
-        role: values.role,
+        roleID: values.roleID,
+        groupID: values.groupID,
         creationDate: new Date().toISOString(),
+        status: {
+          phase: 'active',
+        },
         avatar: values.avatar,
       };
       dispatch(addUser(newUser));
@@ -80,7 +76,8 @@ const CreateUser: React.FC = () => {
               username: '',
               fullname: '',
               email: '',
-              role: 'Viewer',
+              roleID: 'role-456',
+              groupID: 'group-456',
             }}
           >
             <div
@@ -116,17 +113,23 @@ const CreateUser: React.FC = () => {
                       placeholder={UC.LABELS.FORM.FIELDS.EMAIL_PLACEHOLDER}
                     />
                     <LabeledSelect
-                      name="role"
+                      name="roleID"
                       label={UC.LABELS.FORM.FIELDS.ROLE_LABEL}
                       placeholder={UC.LABELS.FORM.FIELDS.ROLE_PLACEHOLDER}
                       required
                       options={[
-                        { label: 'Admin', value: 'Admin' },
-                        { label: 'Viewer', value: 'Viewer' },
-                        { label: 'Contributor', value: 'Contributor' },
-                        { label: 'Ops Engineer', value: 'Ops Engineer' },
-                        { label: 'Platform Admin', value: 'Platform Admin' },
+                        { label: 'Admin', value: 'role-123' },
+                        { label: 'Viewer', value: 'role-456' },
+                        { label: 'Contributor', value: 'role-789' },
+                        { label: 'Ops Engineer', value: 'role-101' },
+                        { label: 'Platform Admin', value: 'role-102' },
                       ]}
+                    />
+                    <LabeledInput
+                      name="groupID"
+                      label="Group ID"
+                      required
+                      placeholder="Enter group ID"
                     />
                   </div>
                 }

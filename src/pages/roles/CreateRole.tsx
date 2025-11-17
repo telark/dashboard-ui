@@ -5,7 +5,7 @@ import { ROLES_PAGE_CONSTANTS as RC } from '../../constants/pages/roles';
 import Header from '../../components/display/shared/sections/Header';
 import RoleForm, { type RoleFormValues } from '../../components/display/roles/shared/RoleForm';
 import { PageContainer } from '../../components/shared';
-import type { RoleScopePermission } from '../../interfaces/roles';
+import type { RoleScopePermission } from '../../interfaces/resources/roles';
 
 const RoleIcon = ICONS.ROLE;
 

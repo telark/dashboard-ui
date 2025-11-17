@@ -2,8 +2,8 @@ import React from 'react';
 import { Collapse } from 'antd';
 import BaseModal from '../../../shared/modal/BaseModal';
 import ViewDetails from '../../../shared/views/ViewDetails';
-import type { AppWorkload, Container } from '../../../../../interfaces/workload';
-import type { InstanceTableRow } from '../../../../../interfaces/instances';
+import type { AppWorkload, Container } from '../../../../../interfaces/resources/workload';
+import type { InstanceTableRow } from '../../../../../interfaces/resources/instances';
 import { ContainerOutlined } from '@ant-design/icons';
 import { INSTANCES_PAGE_CONSTANTS as IPC } from '../../../../../constants/pages/instances';
 import {

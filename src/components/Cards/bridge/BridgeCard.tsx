@@ -4,7 +4,7 @@ import { App as AntdApp } from 'antd';
 import { AiOutlineCluster, AiOutlineApi } from 'react-icons/ai';
 
 import { BRIDGE_CARD_TEXTS, CARD_DEFAULTS, DEFAULT_COLORS } from '../../../constants';
-import { BridgeInterface } from '../../../interfaces/bridge';
+import { BridgeInterface } from '../../../interfaces/resources/bridge';
 import { RootState } from '../../../store';
 import { syncBridge } from '../../../utils/bridge/sync';
 import { getDetailedStatusStyle, normalizeStatus } from '../../../utils/helpers/status';

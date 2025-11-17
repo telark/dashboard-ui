@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form } from 'antd';
+import { useSelector, useDispatch } from 'react-redux';
 import { APP_ROUTES, ICONS, BUTTON_TEXTS } from '../../constants';
 import { COMPONENT_STYLES } from '../../constants/layout/ui';
 import Header from '../../components/display/shared/sections/Header';
-import { STATIC_USERS } from '../../data/users';
 import { USERS_CONSTANTS as UC } from '../../constants/pages/users';
 import LabeledInput from '../../components/display/shared/inputs/LabeledInput';
 import LabeledSelect from '../../components/display/shared/inputs/LabeledSelect';
@@ -11,19 +11,23 @@ import Section from '../../components/display/roles/shared/Section';
 import PrimaryButton from '../../components/buttons/PrimaryButton';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../components/shared';
-import { useEditPage } from '../../hooks/useEditPage';
-import type { User } from '../../interfaces/users';
+import { useEditPage } from '../../hooks/layout';
+import { RootState, AppDispatch } from '../../store';
+import { fetchAllUsersThunk } from '../../store/users/slices/userSlice';
+import type { User, EditUserFormValues } from '../../interfaces/resources/users';
 
 const UserIcon = ICONS.USER;
 
-interface EditUserFormValues {
-  username: string;
-  fullname: string;
-  email: string;
-  role: string;
-}
-
 const EditUser: React.FC = () => {
+  const dispatch: AppDispatch = useDispatch();
+  const { users, loading } = useSelector((state: RootState) => state.users);
+
+  useEffect(() => {
+    if (users.length === 0 && !loading) {
+      dispatch(fetchAllUsersThunk());
+    }
+  }, [dispatch, users.length, loading]);
+
   const {
     item: user,
     form,
@@ -31,13 +35,13 @@ const EditUser: React.FC = () => {
     handleFinish,
     notFound,
   } = useEditPage<User, EditUserFormValues>({
-    data: STATIC_USERS,
+    data: users,
     findById: (id, data) => data.find((u) => u.id === id),
     getFormValues: (item) => ({
       username: item.username,
       fullname: item.fullname,
       email: item.email,
-      role: item.role,
+      roleID: item.roleID,
     }),
     onUpdate: async () => {
       await new Promise((r) => setTimeout(r, 400));
@@ -101,16 +105,16 @@ const EditUser: React.FC = () => {
                       placeholder={UC.LABELS.FORM.FIELDS.EMAIL_PLACEHOLDER}
                     />
                     <LabeledSelect
-                      name="role"
+                      name="roleID"
                       label={UC.LABELS.FORM.FIELDS.ROLE_LABEL}
                       placeholder={UC.LABELS.FORM.FIELDS.ROLE_PLACEHOLDER}
                       required
                       options={[
-                        { label: 'Admin', value: 'Admin' },
-                        { label: 'Viewer', value: 'Viewer' },
-                        { label: 'Contributor', value: 'Contributor' },
-                        { label: 'Ops Engineer', value: 'Ops Engineer' },
-                        { label: 'Platform Admin', value: 'Platform Admin' },
+                        { label: 'Admin', value: 'role-123' },
+                        { label: 'Viewer', value: 'role-456' },
+                        { label: 'Contributor', value: 'role-789' },
+                        { label: 'Ops Engineer', value: 'role-101' },
+                        { label: 'Platform Admin', value: 'role-102' },
                       ]}
                     />
                   </div>

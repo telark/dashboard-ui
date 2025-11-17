@@ -2,7 +2,7 @@ import React from 'react';
 import TimeAgo from '../../../time/TimeAgo';
 import { TimelineMarker } from './TimelineMarker';
 import { CapitalizeFirstLetter } from '../../../../utils/helpers/format';
-import type { TimelineItemProps } from '../../../../interfaces/timeline';
+import type { TimelineItemProps } from '../../../../interfaces/layout/timeline';
 import { TIMELINE_CONSTANTS, TIMELINE_STYLES, UI } from '../../../../constants';
 
 export const TimelineItem: React.FC<TimelineItemProps> = React.memo(
