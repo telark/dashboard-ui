@@ -1,5 +1,4 @@
-import type { ReactNode } from 'react';
-import type { CSSProperties } from 'react';
+import type { ReactNode, CSSProperties } from 'react';
 
 export interface LoadingButtonInterface {
   action: string;
