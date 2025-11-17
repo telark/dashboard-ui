@@ -5,8 +5,7 @@ import { getSessionToken, removeSessionToken } from '../../utils/auth/session/to
 import { removeCurrentUser } from '../../utils/user/session';
 import { deleteSession } from '../../clients/exporter';
 import { AUTH_CONSTANTS } from '../../constants/auth/messages';
-import { APP_ROUTES } from '../../constants';
-import { DEFAULT_COLORS } from '../../constants';
+import { APP_ROUTES, DEFAULT_COLORS } from '../../constants';
 import { isDevelopment } from '../../utils/helpers/env';
 import logger from '../../logging';
 

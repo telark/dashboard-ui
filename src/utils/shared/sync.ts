@@ -1,5 +1,10 @@
 import store, { RootState } from '../../store';
-import { HandleSyncEffectParams, SyncConfig, MessageApi } from '../../interfaces/resources/sync';
+import {
+  HandleSyncEffectParams,
+  SyncConfig,
+  MessageApi,
+  DeletionPollingParams,
+} from '../../interfaces/resources/sync';
 import {
   getDetailsPollingEffects,
   getCardPollingEffects,
@@ -19,7 +24,6 @@ import {
   getErrorMessage,
   isResourceStillPresent,
 } from '../helpers/sync';
-import { DeletionPollingParams } from '../../interfaces/resources/sync';
 
 
 const handleDeletionPolling = ({
