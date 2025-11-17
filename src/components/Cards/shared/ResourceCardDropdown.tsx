@@ -47,27 +47,39 @@ const ResourceCardDropdown: React.FC<ResourceCardDropdownProps> = React.memo(
     ];
 
     return (
-      <div onClick={(e) => e.stopPropagation()}>
+      <div onClick={(e) => e.stopPropagation()} role="presentation">
         <Dropdown menu={{ items: menuItems }} trigger={['click']} placement="bottomRight">
-          <MoreOutlined
+          <button
+            type="button"
             style={{
-              fontSize: CARD_CONFIGS.GROUPER_CARD.ICON_FONT_SIZE,
-              color: CARD_COLORS.TEXT.INFO,
-              cursor: 'pointer',
+              background: 'transparent',
+              border: 'none',
               padding: '4px',
               borderRadius: '4px',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               transition: CARD_TRANSITIONS.ICON,
             }}
             onClick={(e) => {
               e.stopPropagation();
             }}
             onMouseOver={(e) => {
-              (e.currentTarget as HTMLElement).style.backgroundColor = '#f5f5f5';
+              e.currentTarget.style.backgroundColor = '#f5f5f5';
             }}
             onMouseOut={(e) => {
-              (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+              e.currentTarget.style.backgroundColor = 'transparent';
             }}
-          />
+            aria-label="More options"
+          >
+            <MoreOutlined
+              style={{
+                fontSize: CARD_CONFIGS.GROUPER_CARD.ICON_FONT_SIZE,
+                color: CARD_COLORS.TEXT.INFO,
+              }}
+            />
+          </button>
         </Dropdown>
       </div>
     );
