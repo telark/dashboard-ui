@@ -54,10 +54,14 @@ const UserAvatarDropdown: React.FC = memo(() => {
     }
   };
 
+  const handleLogoutWrapper = () => {
+    void handleLogout();
+  };
+
   const menuItems = createUserMenuItems({
     currentUser,
     currentAuthUser,
-    onLogout: handleLogout,
+    onLogout: handleLogoutWrapper,
     loggingOut,
   });
 

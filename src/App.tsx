@@ -84,32 +84,40 @@ const AppContent: React.FC = () => {
     );
   }
 
+  const renderMainContent = () => {
+    if (!initialized || !hasClusterInsight) {
+      return <Startup onStartAnalyze={handleStartAnalyze} />;
+    }
+
+    if (isAuthRoute) {
+      return <AppRoutes />;
+    }
+
+    if (isAuthenticated) {
+      return (
+        <Layout style={{ minHeight: APP_CONFIGS.LAYOUT.MIN_HEIGHT }}>
+          <Sidebar />
+          <Layout
+            style={{
+              marginLeft: APP_CONFIGS.LAYOUT.MARGIN_LEFT,
+              height: APP_CONFIGS.LAYOUT.HEIGHT,
+              transition: APP_CONFIGS.LAYOUT.TRANSITION,
+              background: DEFAULT_COLORS.PAGE_BG,
+            }}
+          >
+            <Header />
+            <AppRoutes />
+          </Layout>
+        </Layout>
+      );
+    }
+
+    return <Navigate to={APP_ROUTES.LOGIN} state={{ from: location }} replace />;
+  };
+
   return (
     <AntdApp>
-      {initialized && hasClusterInsight ? (
-        isAuthRoute ? (
-          <AppRoutes />
-        ) : isAuthenticated ? (
-          <Layout style={{ minHeight: APP_CONFIGS.LAYOUT.MIN_HEIGHT }}>
-            <Sidebar />
-            <Layout
-              style={{
-                marginLeft: APP_CONFIGS.LAYOUT.MARGIN_LEFT,
-                height: APP_CONFIGS.LAYOUT.HEIGHT,
-                transition: APP_CONFIGS.LAYOUT.TRANSITION,
-                background: DEFAULT_COLORS.PAGE_BG,
-              }}
-            >
-              <Header />
-              <AppRoutes />
-            </Layout>
-          </Layout>
-        ) : (
-          <Navigate to={APP_ROUTES.LOGIN} state={{ from: location }} replace />
-        )
-      ) : (
-        <Startup onStartAnalyze={handleStartAnalyze} />
-      )}
+      {renderMainContent()}
       {showWelcome && <Welcome />}
       <SessionExpiredModal
         open={showSessionExpiredModal}

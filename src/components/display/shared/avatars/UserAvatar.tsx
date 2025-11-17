@@ -47,7 +47,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ avatar, username, size = 40, st
 
   useEffect(() => {
     const generateAvatar = async () => {
-      if (avatar && avatar.style && avatar.seed) {
+      if (avatar?.style && avatar?.seed) {
         try {
           const styleModule = await getAvatarStyle(avatar.style);
           if (styleModule) {
