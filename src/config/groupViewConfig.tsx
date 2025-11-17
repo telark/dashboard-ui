@@ -3,7 +3,7 @@ import type { Group } from '../interfaces/resources/groups';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import { StatusTag } from '../components/tags';
 import { ROLES_PAGE_CONSTANTS as RPC } from '../constants/pages/roles';
-import { ICONS } from '../constants';
+import { ICONS as Icons } from '../constants';
 
 export const createGroupViewConfig = (group: Group): ViewDetailsConfig => {
   return {
@@ -12,14 +12,14 @@ export const createGroupViewConfig = (group: Group): ViewDetailsConfig => {
         key: 'name',
         label: 'Name',
         value: group.name,
-        icon: <ICONS.VIEW_FIELD_NAME />,
+        icon: <Icons.VIEW_FIELD_NAME />,
         type: 'text',
       },
       {
         key: 'description',
         label: 'Description',
         value: group.description,
-        icon: <ICONS.VIEW_FIELD_DESCRIPTION />,
+        icon: <Icons.VIEW_FIELD_DESCRIPTION />,
         type: 'text',
       },
       {
@@ -46,7 +46,7 @@ export const createGroupViewConfig = (group: Group): ViewDetailsConfig => {
           hour: '2-digit',
           minute: '2-digit',
         }),
-        icon: <ICONS.VIEW_FIELD_DATE />,
+        icon: <Icons.VIEW_FIELD_DATE />,
         type: 'text',
       },
     ],
