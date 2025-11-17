@@ -18,8 +18,17 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
   size,
   borderWidth,
 }) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+    }
+  };
+
   return (
     <div
+      role="button"
+      tabIndex={0}
+      aria-label="User avatar"
       style={{
         cursor: 'pointer',
         display: 'flex',
@@ -38,6 +47,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'scale(1)';
       }}
+      onKeyDown={handleKeyDown}
     >
       {(() => {
         if (currentUser?.avatar) {

@@ -19,18 +19,19 @@ import {
   getErrorMessage,
   isResourceStillPresent,
 } from '../helpers/sync';
+import { DeletionPollingParams } from '../../interfaces/resources/sync';
 
-// Handle polling for deletion effects (Deleted, NotFound)
-const handleDeletionPolling = (
-  resourceName: string,
-  effect: string,
-  key: string,
-  config: SyncConfig,
-  message: HandleSyncEffectParams['message'],
-  getPollingMaxWait: (config: SyncConfig) => number,
-  getPollingInterval: (config: SyncConfig) => number,
-  getSuccessDuration: (config: SyncConfig) => number,
-): void => {
+
+const handleDeletionPolling = ({
+  resourceName,
+  effect,
+  key,
+  config,
+  message,
+  getPollingMaxWait,
+  getPollingInterval,
+  getSuccessDuration,
+}: DeletionPollingParams): void => {
   store.dispatch(config.fetchAllResourcesThunk());
 
   const start = Date.now();
@@ -106,7 +107,6 @@ const handleCardRefreshEffect = async (
   });
 };
 
-// Main handler - orchestrates the sync effect logic
 export const handleSyncEffect = async ({
   effect,
   resourceDetails,
@@ -132,34 +132,34 @@ export const handleSyncEffect = async ({
       return;
     }
     if (isDetailsSync) {
-      handleDeletionPolling(
+      handleDeletionPolling({
         resourceName,
         effect,
         key,
         config,
         message,
-        getDetailsPollingMaxWait,
-        getDetailsPollingInterval,
-        getDetailsSuccessDuration,
-      );
+        getPollingMaxWait: getDetailsPollingMaxWait,
+        getPollingInterval: getDetailsPollingInterval,
+        getSuccessDuration: getDetailsSuccessDuration,
+      });
     } else {
-      handleDeletionPolling(
+      handleDeletionPolling({
         resourceName,
         effect,
         key,
         config,
         message,
-        getCardPollingMaxWait,
-        getCardPollingInterval,
-        getCardSuccessDuration,
-      );
+        getPollingMaxWait: getCardPollingMaxWait,
+        getPollingInterval: getCardPollingInterval,
+        getSuccessDuration: getCardSuccessDuration,
+      });
     }
+    return;
+  }
+  if (isDetailsSync) {
+    await handleDetailsRefreshEffect(resourceName || undefined, effect, key, config, message);
   } else {
-    if (isDetailsSync) {
-      await handleDetailsRefreshEffect(resourceName || undefined, effect, key, config, message);
-    } else {
-      await handleCardRefreshEffect(resourceName || undefined, effect, key, config, message);
-    }
+    await handleCardRefreshEffect(resourceName || undefined, effect, key, config, message);
   }
 };
 
