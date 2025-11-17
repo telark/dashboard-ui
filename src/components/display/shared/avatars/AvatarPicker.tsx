@@ -85,24 +85,37 @@ interface AvatarItemProps {
 }
 
 const AvatarItem: React.FC<AvatarItemProps> = ({ style, isSelected, previewUrl, onSelect }) => {
-  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = () => {
     if (!isSelected) {
-      e.currentTarget.style.borderColor = DEFAULT_COLORS.SUCCESS;
-      e.currentTarget.style.backgroundColor = 'rgba(32, 201, 151, 0.05)';
+      setIsHovered(true);
     }
   };
 
-  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseLeave = () => {
     if (!isSelected) {
-      e.currentTarget.style.borderColor = '#d9d9d9';
-      e.currentTarget.style.backgroundColor = 'transparent';
+      setIsHovered(false);
     }
   };
+
+  const borderColor = isSelected
+    ? DEFAULT_COLORS.SUCCESS
+    : isHovered
+      ? DEFAULT_COLORS.SUCCESS
+      : '#d9d9d9';
+  const backgroundColor = isSelected
+    ? 'rgba(32, 201, 151, 0.1)'
+    : isHovered
+      ? 'rgba(32, 201, 151, 0.05)'
+      : 'transparent';
 
   return (
     <button
       type="button"
       onClick={() => onSelect(style.name)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       aria-label={`Select ${style.name} avatar style`}
       style={{
         cursor: 'pointer',
@@ -121,16 +134,14 @@ const AvatarItem: React.FC<AvatarItemProps> = ({ style, isSelected, previewUrl, 
           width: AVATAR_SIZE + 4,
           height: AVATAR_SIZE + 4,
           borderRadius: '50%',
-          border: `2px solid ${isSelected ? DEFAULT_COLORS.SUCCESS : '#d9d9d9'}`,
-          backgroundColor: isSelected ? 'rgba(32, 201, 151, 0.1)' : 'transparent',
+          border: `2px solid ${borderColor}`,
+          backgroundColor,
           padding: 2,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           transition: 'all 0.2s',
         }}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
       >
         <Avatar src={previewUrl || undefined} size={AVATAR_SIZE} style={{ border: 'none' }} />
       </div>
