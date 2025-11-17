@@ -39,30 +39,41 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
         e.currentTarget.style.transform = 'scale(1)';
       }}
     >
-      {currentUser?.avatar ? (
-        <UserAvatarComponent
-          avatar={currentUser.avatar}
-          username={currentUser.username}
-          size={size}
-          style={{ border: 'none' }}
-        />
-      ) : currentUser ? (
-        <UserAvatarComponent
-          username={currentUser.username}
-          size={size}
-          style={{ border: 'none' }}
-        />
-      ) : currentAuthUser ? (
-        <UserAvatarComponent
-          username={currentAuthUser.username}
-          size={size}
-          style={{ border: 'none' }}
-        />
-      ) : (
-        <Avatar size={size} style={{ backgroundColor: DEFAULT_COLORS.SUCCESS }}>
-          {'U'}
-        </Avatar>
-      )}
+      {(() => {
+        if (currentUser?.avatar) {
+          return (
+            <UserAvatarComponent
+              avatar={currentUser.avatar}
+              username={currentUser.username}
+              size={size}
+              style={{ border: 'none' }}
+            />
+          );
+        }
+        if (currentUser) {
+          return (
+            <UserAvatarComponent
+              username={currentUser.username}
+              size={size}
+              style={{ border: 'none' }}
+            />
+          );
+        }
+        if (currentAuthUser) {
+          return (
+            <UserAvatarComponent
+              username={currentAuthUser.username}
+              size={size}
+              style={{ border: 'none' }}
+            />
+          );
+        }
+        return (
+          <Avatar size={size} style={{ backgroundColor: DEFAULT_COLORS.SUCCESS }}>
+            {'U'}
+          </Avatar>
+        );
+      })()}
     </div>
   );
 };

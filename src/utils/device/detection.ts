@@ -21,7 +21,7 @@ const detect = (
   text: string,
 ): string => {
   for (const { pattern, name, exclude } of patterns) {
-    if (pattern.test(text) && (!exclude || !exclude.test(text))) {
+    if (pattern.test(text) && !exclude?.test(text)) {
       return name;
     }
   }
