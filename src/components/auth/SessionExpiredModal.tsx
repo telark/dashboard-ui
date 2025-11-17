@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, type NavigateFunction } from 'react-router-dom';
 import { getSessionToken, removeSessionToken } from '../../utils/auth/session/token';
 import { removeCurrentUser } from '../../utils/user/session';
 import { deleteSession } from '../../clients/exporter';
@@ -15,6 +15,40 @@ interface SessionExpiredModalProps {
   onClose?: () => void;
 }
 
+const deleteServerSession = async (sessionToken: string): Promise<void> => {
+  try {
+    const deleteResponse = await deleteSession(sessionToken);
+    if (deleteResponse.status !== 200 && isDevelopment()) {
+      logger.warn(
+        AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.DELETE_NON_200_STATUS,
+        deleteResponse.status,
+      );
+    }
+  } catch (error) {
+    if (isDevelopment()) {
+      logger.error(AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.DELETE_FAILED, error);
+    }
+  }
+};
+
+const cleanupLocalStorage = (): void => {
+  try {
+    removeSessionToken();
+    removeCurrentUser();
+  } catch (error) {
+    if (isDevelopment()) {
+      logger.error(AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.LOCAL_CLEANUP_ERROR, error);
+    }
+  }
+};
+
+const navigateToLogin = (navigate: NavigateFunction, onClose?: () => void): void => {
+  if (onClose) {
+    onClose();
+  }
+  navigate(APP_ROUTES.LOGIN);
+};
+
 const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({ open, onClose }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -23,53 +57,17 @@ const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({ open, onClose
     setLoading(true);
     try {
       const sessionToken = getSessionToken();
-
-      // Delete session from server
       if (sessionToken) {
-        try {
-          const deleteResponse = await deleteSession(sessionToken);
-          if (deleteResponse.status !== 200) {
-            if (isDevelopment()) {
-              logger.warn(
-                AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.DELETE_NON_200_STATUS,
-                deleteResponse.status,
-              );
-            }
-          }
-        } catch (error) {
-          if (isDevelopment()) {
-            logger.error(AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.DELETE_FAILED, error);
-          }
-          // Continue with cleanup even if delete fails
-        }
+        await deleteServerSession(sessionToken);
       }
 
-      // Clean up local storage
-      try {
-        removeSessionToken();
-        removeCurrentUser();
-      } catch (error) {
-        if (isDevelopment()) {
-          logger.error(AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.LOCAL_CLEANUP_ERROR, error);
-        }
-      }
-
-      // Close modal
-      if (onClose) {
-        onClose();
-      }
-
-      // Navigate to login
-      navigate(APP_ROUTES.LOGIN);
+      cleanupLocalStorage();
+      navigateToLogin(navigate, onClose);
     } catch (error) {
       if (isDevelopment()) {
         logger.error(AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.HANDLE_LOGIN_ERROR, error);
       }
-      // Still navigate to login even if there's an error
-      if (onClose) {
-        onClose();
-      }
-      navigate(APP_ROUTES.LOGIN);
+      navigateToLogin(navigate, onClose);
     } finally {
       setLoading(false);
     }
