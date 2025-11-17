@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { APP_ROUTES, ICONS, BUTTON_TEXTS } from '../../constants';
+import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../constants';
 import { COMPONENT_STYLES } from '../../constants/layout/ui';
 import Header from '../../components/display/shared/sections/Header';
 import { GROUPS_CONSTANTS as GC } from '../../constants/pages/groups';
@@ -15,7 +15,7 @@ import { useDispatch } from 'react-redux';
 import { addGroup } from '../../store/groups/slices/groupSlice';
 import type { Group } from '../../interfaces/resources/groups';
 
-const GroupIcon = ICONS.GROUP;
+const GroupIcon = Icons.GROUP;
 
 interface CreateGroupFormValues {
   name: string;

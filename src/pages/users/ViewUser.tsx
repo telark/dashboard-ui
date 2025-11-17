@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { APP_ROUTES, ICONS, SHARED_DETAILS_CONSTANTS } from '../../constants';
+import { APP_ROUTES, Icons, SHARED_DETAILS_CONSTANTS } from '../../constants';
 import { USERS_CONSTANTS as UC } from '../../constants/pages/users';
 import Header from '../../components/display/shared/sections/Header';
 import ViewDetails from '../../components/display/shared/views/ViewDetails';
@@ -12,7 +12,7 @@ import { RootState, AppDispatch } from '../../store';
 import { fetchAllUsersThunk } from '../../store/users/slices/userSlice';
 import type { User } from '../../interfaces/resources/users';
 
-const UserIcon = ICONS.USER;
+const UserIcon = Icons.USER;
 
 const ViewUser: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();

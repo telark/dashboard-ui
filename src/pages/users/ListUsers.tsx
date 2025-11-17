@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { APP_ROUTES, ICONS, SHARED_DETAILS_CONSTANTS } from '../../constants';
+import { APP_ROUTES, Icons, SHARED_DETAILS_CONSTANTS } from '../../constants';
 import { USERS_CONSTANTS as UC } from '../../constants/pages/users';
 import Header from '../../components/display/shared/sections/Header';
 import UsersTable from '../../components/display/users/list/Table';
@@ -9,7 +9,7 @@ import { PageContainer } from '../../components/shared';
 import { RootState, AppDispatch } from '../../store';
 import { fetchAllUsersThunk } from '../../store/users/slices/userSlice';
 
-const UserIcon = ICONS.USER;
+const UserIcon = Icons.USER;
 
 const UsersList: React.FC = () => {
   const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { APP_ROUTES, ICONS } from '../../constants';
+import { APP_ROUTES, Icons } from '../../constants';
 import { GROUPS_CONSTANTS as GC } from '../../constants/pages/groups';
 import Header from '../../components/display/shared/sections/Header';
 import GroupsTable from '../../components/display/groups/list/Table';
@@ -10,7 +10,7 @@ import { PageContainer } from '../../components/shared';
 import { useListPage } from '../../hooks/layout';
 import type { Group } from '../../interfaces/resources/groups';
 
-const GroupIcon = ICONS.GROUP;
+const GroupIcon = Icons.GROUP;
 
 const GroupsList: React.FC = () => {
   const navigate = useNavigate();

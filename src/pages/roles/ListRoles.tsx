@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { APP_ROUTES, ICONS } from '../../constants';
+import { APP_ROUTES, Icons } from '../../constants';
 import { ROLES_PAGE_CONSTANTS as RC } from '../../constants/pages/roles';
 import { STATIC_ROLES } from '../../data/roles';
 import Header from '../../components/display/shared/sections/Header';
 import RolesTable from '../../components/display/roles/list/Table';
 import { PageContainer } from '../../components/shared';
 
-const RoleIcon = ICONS.ROLE;
+const RoleIcon = Icons.ROLE;
 
 const RolesList: React.FC = () => {
   const navigate = useNavigate();

@@ -1,5 +1,5 @@
 import React from 'react';
-import { APP_ROUTES, ICONS } from '../../constants';
+import { APP_ROUTES, Icons } from '../../constants';
 import { ROLES_PAGE_CONSTANTS as RC } from '../../constants/pages/roles';
 import Header from '../../components/display/shared/sections/Header';
 import { STATIC_ROLES } from '../../data/roles';
@@ -13,7 +13,7 @@ import { PageContainer, NotFound } from '../../components/shared';
 import { useViewPage } from '../../hooks/layout';
 import type { Role } from '../../interfaces/resources/roles';
 
-const RoleIcon = ICONS.ROLE;
+const RoleIcon = Icons.ROLE;
 
 const ViewRole: React.FC = () => {
   const {

@@ -2,13 +2,13 @@ import React from 'react';
 import { Form } from 'antd';
 import type { FormInstance } from 'antd';
 import PrimaryButton from '../../../buttons/PrimaryButton';
-import { BUTTON_TEXTS, ICONS } from '../../../../constants';
+import { BUTTON_TEXTS, Icons } from '../../../../constants';
 import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
 import RolesGeneralSection from '../create/GeneralSection';
 import RolesScopePermissionsSection from '../create/ScopesAndPermissionsSection';
 import type { RoleScopePermission } from '../../../../interfaces/resources/roles';
 
-const RoleIcon = ICONS.ROLE;
+const RoleIcon = Icons.ROLE;
 
 export interface RoleFormValues {
   name: string;

@@ -14,7 +14,7 @@ import {
 } from 'react-icons/ai';
 import { BsFillCpuFill, BsMemory, BsKey } from 'react-icons/bs';
 
-export const ICONS = {
+export const Icons = {
   HOME: AiOutlineDashboard,
   ROLE: AiOutlineSafety,
   GROUPER: AiOutlineCluster,

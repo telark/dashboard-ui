@@ -8,7 +8,7 @@ import {
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import RowTag from '../components/display/shared/table/RowTag';
 import { INSTANCES_PAGE_CONSTANTS as IPC } from '../constants/pages/instances';
-import { ICONS as Icons } from '../constants';
+import { Icons } from '../constants';
 import type { InstanceTableRow } from '../interfaces/resources/instances';
 import type { Container } from '../interfaces/resources/workload';
 

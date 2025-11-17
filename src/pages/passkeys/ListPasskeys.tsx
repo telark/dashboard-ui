@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { message } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { ICONS, PASSKEYS_PAGE_CONSTANTS as PPC, SHARED_DETAILS_CONSTANTS } from '../../constants';
+import { Icons, PASSKEYS_PAGE_CONSTANTS as PPC, SHARED_DETAILS_CONSTANTS } from '../../constants';
 import Header from '../../components/display/shared/sections/Header';
 import PasskeysTable from '../../components/display/passkeys/list/Table';
 import PasskeyFormModal from '../../components/display/passkeys/shared/PasskeyFormModal';
@@ -18,7 +18,7 @@ import {
 } from '../../store/passkeys/selectors/passkeySelectors';
 import { usePasskeyModal, usePasskeyHandlers } from '../../hooks/auth/passkeys';
 
-const PasskeyIcon = ICONS.PASSKEY;
+const PasskeyIcon = Icons.PASSKEY;
 
 const ListPasskeys: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();

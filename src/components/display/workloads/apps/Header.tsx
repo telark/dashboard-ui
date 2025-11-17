@@ -8,10 +8,10 @@ import { AppWorkload } from '../../../../interfaces/resources/workload';
 import { syncAppWorkloadDetails } from '../../../../utils/workload/sync';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
-import { APP_ROUTES, ICONS, UI } from '../../../../constants';
+import { APP_ROUTES, Icons, UI } from '../../../../constants';
 import WorkloadMetrics from './Metrics';
 
-const WorkloadIcon = ICONS.WORKLOAD;
+const WorkloadIcon = Icons.WORKLOAD;
 
 interface WorkloadHeaderProps {
   workload: AppWorkload;

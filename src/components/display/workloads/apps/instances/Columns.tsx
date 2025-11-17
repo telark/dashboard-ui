@@ -1,6 +1,6 @@
 import type { InstanceTableRow } from '../../../../../interfaces/resources/instances';
 import { INSTANCES_PAGE_CONSTANTS as IPC } from '../../../../../constants/pages/instances';
-import { ICONS as Icons } from '../../../../../constants';
+import { Icons } from '../../../../../constants';
 import RowTag from '../../../shared/table/RowTag';
 import { generateColumn } from '../../../shared/table/utils';
 import { AiOutlineCheckCircle, AiOutlineFileImage } from 'react-icons/ai';

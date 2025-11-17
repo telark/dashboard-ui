@@ -2,9 +2,9 @@ import React from 'react';
 import { SyncOutlined } from '@ant-design/icons';
 import TimeAgo from '../../../components/time/TimeAgo';
 import Header from '../../../components/display/shared/sections/Header';
-import { APP_ROUTES, ICONS, UI } from '../../../constants';
+import { APP_ROUTES, Icons, UI } from '../../../constants';
 
-const GrouperIcon = ICONS.GROUPER;
+const GrouperIcon = Icons.GROUPER;
 
 interface HeaderProps {
   grouperDetails: any;

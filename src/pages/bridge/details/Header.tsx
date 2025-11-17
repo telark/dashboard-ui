@@ -3,9 +3,9 @@ import { SyncOutlined, ClusterOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import TimeAgo from '../../../components/time/TimeAgo';
 import Header from '../../../components/display/shared/sections/Header';
-import { APP_ROUTES, ICONS, UI } from '../../../constants';
+import { APP_ROUTES, Icons, UI } from '../../../constants';
 
-const BridgeIcon = ICONS.BRIDGE;
+const BridgeIcon = Icons.BRIDGE;
 
 interface HeaderProps {
   bridgeDetails: any;

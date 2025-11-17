@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
 import { Form, Input } from 'antd';
-import { ICONS, PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../../constants';
+import { Icons, PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../../constants';
 import FormModal from '../../shared/modal/FormModal';
 import { createDeviceNameValidator } from '../../../../utils/auth/passkey/validation';
 import type { PasskeyFormModalProps } from '../../../../interfaces/auth/passkeys';
 import DeviceNameSuggestions from './DeviceNameSuggestions';
 
-const PasskeyIcon = ICONS.PASSKEY;
+const PasskeyIcon = Icons.PASSKEY;
 
 interface PasskeyFormContentProps {
   form: any;

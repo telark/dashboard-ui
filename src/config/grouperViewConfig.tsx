@@ -1,7 +1,7 @@
 import { AppstoreOutlined } from '@ant-design/icons';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import TimeAgo from '../components/time/TimeAgo';
-import { ICONS as Icons } from '../constants';
+import { Icons } from '../constants';
 
 export const createGrouperViewConfig = (
   grouperDetails: any,

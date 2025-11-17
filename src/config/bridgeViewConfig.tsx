@@ -3,7 +3,7 @@ import { AiOutlineCluster } from 'react-icons/ai';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import TimeAgo from '../components/time/TimeAgo';
 import StatusButton from '../components/buttons/StatusButton';
-import { ICONS as Icons } from '../constants';
+import { Icons } from '../constants';
 
 export const createBridgeViewConfig = (bridgeDetails: any): ViewDetailsConfig => {
   return {
