@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useRef, startTransition } from 'react';
+import React, { useMemo, useState, useEffect, useRef, useCallback, startTransition } from 'react';
 import { createAvatar } from '@dicebear/core';
 import { Avatar, Grid, Modal, Spin } from 'antd';
 import { DEFAULT_COLORS } from '../../../../constants';
@@ -99,19 +99,10 @@ const AvatarItem: React.FC<AvatarItemProps> = ({ style, isSelected, previewUrl, 
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      onSelect(style.name);
-    }
-  };
-
   return (
-    <div
+    <button
+      type="button"
       onClick={() => onSelect(style.name)}
-      onKeyDown={handleKeyDown}
-      role="button"
-      tabIndex={0}
       aria-label={`Select ${style.name} avatar style`}
       style={{
         cursor: 'pointer',
@@ -119,6 +110,10 @@ const AvatarItem: React.FC<AvatarItemProps> = ({ style, isSelected, previewUrl, 
         alignItems: 'center',
         justifyContent: 'center',
         transition: 'all 0.2s',
+        background: 'transparent',
+        border: 'none',
+        padding: 0,
+        outline: 'none',
       }}
     >
       <div
@@ -139,7 +134,7 @@ const AvatarItem: React.FC<AvatarItemProps> = ({ style, isSelected, previewUrl, 
       >
         <Avatar src={previewUrl || undefined} size={AVATAR_SIZE} style={{ border: 'none' }} />
       </div>
-    </div>
+    </button>
   );
 };
 
@@ -165,32 +160,31 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
   // Store preview URLs in state to avoid accessing ref during render
   const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
 
+  const handleLoadStyles = useCallback(async () => {
+    startTransition(() => {
+      setIsLoadingStyles(true);
+    });
+
+    try {
+      const styles = await loadAvatarStyles();
+      setAvatarStyles(styles);
+      const newPreviewUrls = generatePreviewUrls(styles, previewUrlsRef);
+      startTransition(() => {
+        setPreviewUrls((prev) => ({ ...prev, ...newPreviewUrls }));
+      });
+    } catch (error) {
+      console.error('Failed to load avatar styles:', error);
+    } finally {
+      setIsLoadingStyles(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (!isModalOpen || avatarStyles.length > 0) {
       return;
     }
-
-    const loadStyles = async () => {
-      startTransition(() => {
-        setIsLoadingStyles(true);
-      });
-
-      try {
-        const styles = await loadAvatarStyles();
-        setAvatarStyles(styles);
-        const newPreviewUrls = generatePreviewUrls(styles, previewUrlsRef);
-        startTransition(() => {
-          setPreviewUrls((prev) => ({ ...prev, ...newPreviewUrls }));
-        });
-      } catch (error) {
-        console.error('Failed to load avatar styles:', error);
-      } finally {
-        setIsLoadingStyles(false);
-      }
-    };
-
-    loadStyles();
-  }, [isModalOpen, avatarStyles.length]);
+    handleLoadStyles();
+  }, [isModalOpen, avatarStyles.length, handleLoadStyles]);
 
   const handleStyleSelect = (styleName: string) => {
     setSelectedStyle(styleName);
@@ -225,28 +219,19 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
 
   const columns = screens.xs ? 4 : GRID_COLUMNS;
 
-  const handleAvatarMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleAvatarMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.currentTarget.style.borderColor = '#1890ff';
   };
 
-  const handleAvatarMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleAvatarMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.currentTarget.style.borderColor = '#d9d9d9';
-  };
-
-  const handleAvatarKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      setIsModalOpen(true);
-    }
   };
 
   return (
     <>
-      <div
+      <button
+        type="button"
         onClick={() => setIsModalOpen(true)}
-        onKeyDown={handleAvatarKeyDown}
-        role="button"
-        tabIndex={0}
         aria-label="Choose avatar"
         style={{
           cursor: 'pointer',
@@ -257,6 +242,8 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
           border: '2px solid #d9d9d9',
           padding: 2,
           transition: 'all 0.2s',
+          background: 'transparent',
+          outline: 'none',
         }}
         onMouseEnter={handleAvatarMouseEnter}
         onMouseLeave={handleAvatarMouseLeave}
@@ -268,7 +255,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
             border: '1px solid #f0f0f0',
           }}
         />
-      </div>
+      </button>
 
       <Modal
         title="Choose Avatar"

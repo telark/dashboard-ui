@@ -18,16 +18,9 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
   size,
   borderWidth,
 }) => {
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-    }
-  };
-
   return (
-    <div
-      role="button"
-      tabIndex={0}
+    <button
+      type="button"
       aria-label="User avatar"
       style={{
         cursor: 'pointer',
@@ -40,6 +33,8 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
         border: `${borderWidth}px solid ${DEFAULT_COLORS.SUCCESS}`,
         padding: borderWidth,
         transition: HEADER_CONSTANTS.USER.AVATAR.TRANSITION,
+        background: 'transparent',
+        outline: 'none',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = `scale(${HEADER_CONSTANTS.USER.AVATAR.HOVER_SCALE})`;
@@ -47,7 +42,6 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'scale(1)';
       }}
-      onKeyDown={handleKeyDown}
     >
       {(() => {
         if (currentUser?.avatar) {
@@ -81,10 +75,10 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
         return (
           <Avatar size={size} style={{ backgroundColor: DEFAULT_COLORS.SUCCESS }}>
             {'U'}
-          </Avatar>
-        );
+        </Avatar>
+      );
       })()}
-    </div>
+    </button>
   );
 };
 
