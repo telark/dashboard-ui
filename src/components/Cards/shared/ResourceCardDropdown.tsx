@@ -71,6 +71,12 @@ const ResourceCardDropdown: React.FC<ResourceCardDropdownProps> = React.memo(
             onMouseOut={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';
             }}
+            onFocus={(e) => {
+              e.currentTarget.style.backgroundColor = '#f5f5f5';
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }}
             aria-label="More options"
           >
             <MoreOutlined

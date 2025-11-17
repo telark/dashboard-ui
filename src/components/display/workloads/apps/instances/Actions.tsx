@@ -11,7 +11,14 @@ interface ActionsProps {
 
 const Actions: React.FC<ActionsProps> = ({ record, onView }) => {
   return (
-    <div onClick={(e) => e.stopPropagation()}>
+    <div
+      onClick={(e) => e.stopPropagation()}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.stopPropagation();
+        }
+      }}
+    >
       <Dropdown
         trigger={['click']}
         placement="bottomRight"
