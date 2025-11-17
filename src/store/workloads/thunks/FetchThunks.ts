@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import logger from '../../../logging';
 import {
   fetchAllAppsWorkloads,
   fetchAllBatchesWorkloads,
@@ -15,7 +16,7 @@ export const fetchAllAppsWorkloadsThunk = createAsyncThunk(
       const rawWorkloadsData = await fetchAllAppsWorkloads();
       return mapAppsWorkloadsData(rawWorkloadsData);
     } catch (error: unknown) {
-      console.error(STORE_MESSAGES.ERROR_FETCHING_APPS, error);
+      logger.error(STORE_MESSAGES.ERROR_FETCHING_APPS, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_APPS));
     }
   },
@@ -28,7 +29,7 @@ export const fetchAllBatchesWorkloadsThunk = createAsyncThunk(
       const rawBatchesData = await fetchAllBatchesWorkloads();
       return rawBatchesData.data?.items || [];
     } catch (error: unknown) {
-      console.error(STORE_MESSAGES.ERROR_FETCHING_BATCHES, error);
+      logger.error(STORE_MESSAGES.ERROR_FETCHING_BATCHES, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_BATCHES));
     }
   },
@@ -41,7 +42,7 @@ export const fetchAppWorkloadDetailsThunk = createAsyncThunk(
       const rawWorkloadsData = await fetchAppWorkloadDetails(name);
       return mapSingleAppWorkloadData(rawWorkloadsData.data);
     } catch (error: unknown) {
-      console.error(STORE_MESSAGES.ERROR_FETCHING_APP_DETAILS, error);
+      logger.error(STORE_MESSAGES.ERROR_FETCHING_APP_DETAILS, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_APP_DETAILS));
     }
   },

@@ -1,4 +1,5 @@
 import { Client, exporterApiClient } from '../api/index';
+import logger from '../logging';
 import {
   Endpoints,
   HTTP_HEADERS,
@@ -14,8 +15,10 @@ import type {
   MaintenanceModeResponse,
   ClusterInsightsResponse,
   StandardApiResponse,
-} from '../interfaces/api';
-import type { AppWorkload } from '../interfaces/workload';
+} from '../interfaces/http';
+import type { AppWorkload } from '../interfaces/resources/workload';
+import type { User } from '../interfaces/resources/users';
+import type { SessionDetailsResponse, DeleteSessionResponse } from '../interfaces/auth/session';
 import type { AxiosError } from 'axios';
 
 export const fetchGroupers = async (silent = false) => {
@@ -32,7 +35,7 @@ export const fetchGroupers = async (silent = false) => {
     );
   } catch (error) {
     if (!silent) {
-      console.error(ERROR_MESSAGES.CLIENT.FETCH_GROUPERS_FAILED, error);
+      logger.error(ERROR_MESSAGES.CLIENT.FETCH_GROUPERS_FAILED, error);
     }
     throw error;
   }
@@ -45,7 +48,7 @@ export const fetchGrouperDetails = async (name: string) => {
       Endpoints.GROUPERS.GET_DETAILS(name).path,
     );
   } catch (error) {
-    console.error(`${ERROR_MESSAGES.CLIENT.FETCH_GROUPER_DETAILS_FAILED} "${name}":`, error);
+    logger.error(`${ERROR_MESSAGES.CLIENT.FETCH_GROUPER_DETAILS_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -58,7 +61,7 @@ export const updateGrouperSyncMode = async (name: string, syncMode: string) => {
       data: { spec: { config: { sync: { mode: syncMode } } } },
     });
   } catch (error) {
-    console.error(`${ERROR_MESSAGES.CLIENT.UPDATE_SYNC_MODE_FAILED} "${name}":`, error);
+    logger.error(`${ERROR_MESSAGES.CLIENT.UPDATE_SYNC_MODE_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -78,7 +81,7 @@ export const checkGrouperMaintenanceMode = async (name: string) => {
     if (status === HTTP_STATUS.NOT_FOUND) {
       return { status: HTTP_STATUS.NOT_FOUND, message: '', data: null } as MaintenanceModeResponse;
     }
-    console.error(`${ERROR_MESSAGES.CLIENT.FETCH_MAINTENANCE_MODE_FAILED} "${name}":`, error);
+    logger.error(`${ERROR_MESSAGES.CLIENT.FETCH_MAINTENANCE_MODE_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -114,7 +117,7 @@ export const fetchAllAppsWorkloads = async () => {
       Endpoints.WORKLOADS.APPS.GET_ALL_APPS.path,
     );
   } catch (error) {
-    console.error(ERROR_MESSAGES.CLIENT.FETCH_APPS_FAILED, error);
+    logger.error(ERROR_MESSAGES.CLIENT.FETCH_APPS_FAILED, error);
     throw error;
   }
 };
@@ -126,7 +129,7 @@ export const fetchAppWorkloadDetails = async (name: string) => {
       Endpoints.WORKLOADS.APPS.GET_APP_DETAILS(name).path,
     );
   } catch (error) {
-    console.error(`${ERROR_MESSAGES.CLIENT.FETCH_APP_DETAILS_FAILED} "${name}":`, error);
+    logger.error(`${ERROR_MESSAGES.CLIENT.FETCH_APP_DETAILS_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -139,7 +142,7 @@ export const updateAppWorkloadSyncMode = async (name: string, syncMode: string) 
       data: { spec: { config: { sync: { mode: syncMode } } } },
     });
   } catch (error) {
-    console.error(`${ERROR_MESSAGES.CLIENT.UPDATE_SYNC_MODE_FAILED} "${name}":`, error);
+    logger.error(`${ERROR_MESSAGES.CLIENT.UPDATE_SYNC_MODE_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -151,7 +154,7 @@ export const fetchAllBatchesWorkloads = async () => {
       Endpoints.WORKLOADS.BATCHES.GET_ALL_BATCHES.path,
     );
   } catch (error) {
-    console.error(ERROR_MESSAGES.CLIENT.FETCH_BATCHES_FAILED, error);
+    logger.error(ERROR_MESSAGES.CLIENT.FETCH_BATCHES_FAILED, error);
     throw error;
   }
 };
@@ -170,7 +173,7 @@ export const fetchBridges = async (silent = false) => {
     );
   } catch (error) {
     if (!silent) {
-      console.error(ERROR_MESSAGES.CLIENT.FETCH_BRIDGES_FAILED, error);
+      logger.error(ERROR_MESSAGES.CLIENT.FETCH_BRIDGES_FAILED, error);
     }
     throw error;
   }
@@ -183,7 +186,7 @@ export const fetchBridgeDetails = async (name: string) => {
       Endpoints.BRIDGES.GET_DETAILS(name).path,
     );
   } catch (error) {
-    console.error(`${ERROR_MESSAGES.CLIENT.FETCH_BRIDGE_DETAILS_FAILED} "${name}":`, error);
+    logger.error(`${ERROR_MESSAGES.CLIENT.FETCH_BRIDGE_DETAILS_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -196,7 +199,61 @@ export const updateBridgeSyncMode = async (name: string, syncMode: string) => {
       data: { spec: { config: { sync: { mode: syncMode } } } },
     });
   } catch (error) {
-    console.error(`${ERROR_MESSAGES.CLIENT.UPDATE_BRIDGE_SYNC_MODE_FAILED} "${name}":`, error);
+    logger.error(`${ERROR_MESSAGES.CLIENT.UPDATE_BRIDGE_SYNC_MODE_FAILED} "${name}":`, error);
     throw error;
   }
+};
+
+export const fetchUsers = async (silent = false) => {
+  try {
+    const config = silent
+      ? {
+          headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK },
+        }
+      : {};
+    return await Client<ResourceListResponse<User>>(
+      exporterApiClient,
+      Endpoints.USERS.GET_ALL.path,
+      config,
+    );
+  } catch (error) {
+    if (!silent) {
+      logger.error(ERROR_MESSAGES.CLIENT.FETCH_USERS_FAILED, error);
+    }
+    throw error;
+  }
+};
+
+export const fetchUserById = async (userId: string, silent = false) => {
+  try {
+    const config = silent
+      ? {
+          headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK },
+        }
+      : {};
+    return await Client<ResourceDetailsResponse<User>>(
+      exporterApiClient,
+      Endpoints.USERS.GET_BY_ID(userId).path,
+      config,
+    );
+  } catch (error) {
+    if (!silent) {
+      logger.error(ERROR_MESSAGES.CLIENT.FETCH_USERS_FAILED, error);
+    }
+    throw error;
+  }
+};
+
+export const getSessionDetails = async (sessionToken: string): Promise<SessionDetailsResponse> => {
+  const { path, method } = Endpoints.SESSIONS.GET_BY_TOKEN(sessionToken);
+  return await Client<SessionDetailsResponse>(exporterApiClient, path, {
+    method,
+  });
+};
+
+export const deleteSession = async (sessionToken: string): Promise<DeleteSessionResponse> => {
+  const { path, method } = Endpoints.SESSIONS.DELETE_BY_TOKEN(sessionToken);
+  return await Client<DeleteSessionResponse>(exporterApiClient, path, {
+    method,
+  });
 };

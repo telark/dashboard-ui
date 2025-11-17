@@ -2,7 +2,7 @@ import React, { useState, memo, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
 import { useSelector } from 'react-redux';
-import { BridgeDetailsHook } from '../../../hooks/BridgeDetailsHook';
+import { BridgeDetailsHook } from '../../../hooks/resources/bridges';
 import { syncBridgeDetails } from '../../../utils/bridge/sync';
 import { BRIDGE_DETAILS_CONSTANTS, TabKey } from '../../../constants/pages/bridge-details';
 import { RootState } from '../../../store';

@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { BridgeState } from '../../../interfaces/bridge';
+import { BridgeState } from '../../../interfaces/resources/bridge';
 
 export const handleFetchBridgesPending = (state: BridgeState) => {
   state.loading = true;

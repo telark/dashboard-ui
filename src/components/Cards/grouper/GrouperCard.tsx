@@ -4,7 +4,7 @@ import { App as AntdApp } from 'antd';
 import { AiOutlineCluster } from 'react-icons/ai';
 
 import { GROUPER_CARD_TEXTS, CARD_DEFAULTS } from '../../../constants';
-import { GrouperInterface } from '../../../interfaces/grouper';
+import { GrouperInterface } from '../../../interfaces/resources/grouper';
 import { RootState } from '../../../store';
 import { syncGrouper } from '../../../utils/grouper/sync';
 import { getDetailedStatusStyle, normalizeStatus } from '../../../utils/helpers/status';

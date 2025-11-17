@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
+import logger from '../../../../logging';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { App as AntdApp } from 'antd';
@@ -118,7 +119,7 @@ const Resources: React.FC<ResourcesInterface> = React.memo(function Resources({ 
   const handleDelete = useCallback(
     (resourceName?: string) => {
       const targets = resourceName ? [resourceName] : Array.from(selectedResources);
-      console.log('Delete resources:', targets);
+      logger.debug('Delete resources:', targets);
     },
     [selectedResources],
   );

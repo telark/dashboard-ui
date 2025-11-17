@@ -7,7 +7,7 @@ import {
   fetchAllGroupersThunk,
   fetchGrouperDetailsThunk,
 } from '../store/groupers/thunks/FetchThunks';
-import { SyncConfig } from '../interfaces/sync';
+import { SyncConfig } from '../interfaces/resources/sync';
 import { SYNC_CONSTANTS } from '../constants/config/sync';
 import { BRIDGE_DETAILS_CONSTANTS } from '../constants/pages/bridge-details';
 import { fetchAllBridgesThunk, fetchBridgeDetailsThunk } from '../store/bridges/thunks/FetchThunks';

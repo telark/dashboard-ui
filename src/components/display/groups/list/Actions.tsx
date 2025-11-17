@@ -1,6 +1,6 @@
 import React from 'react';
 import { GROUPS_CONSTANTS as GC } from '../../../../constants/pages/groups';
-import type { Group } from '../../../../interfaces/groups';
+import type { Group } from '../../../../interfaces/resources/groups';
 import RowOptions from '../../shared/actions/RowOptions';
 
 interface ActionsProps {

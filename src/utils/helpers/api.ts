@@ -1,5 +1,5 @@
 import { HTTP_STATUS, UTILS_TEXTS } from '../../constants';
-import { ApiResponse } from '../../interfaces/api';
+import { ApiResponse } from '../../interfaces/http';
 
 export const extractItemsFromResponse = <T = any>(
   data: ApiResponse<T> | any | null | undefined,

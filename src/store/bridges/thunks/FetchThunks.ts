@@ -1,9 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import logger from '../../../logging';
 import { fetchBridges, fetchBridgeDetails } from '../../../clients/exporter';
 import { mapBridgesData, mapSingleBridgeData } from '../../../utils/mappers/bridgeMapper';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants/store/store';
 import { RootState } from '../../../store';
-import { BridgeInterface } from '../../../interfaces/bridge';
+import { BridgeInterface } from '../../../interfaces/resources/bridge';
 import { extractErrorMessage } from '../../../utils/helpers/format';
 
 export const fetchAllBridgesThunk = createAsyncThunk(
@@ -13,7 +14,7 @@ export const fetchAllBridgesThunk = createAsyncThunk(
       const rawBridgesData = await fetchBridges();
       return mapBridgesData(rawBridgesData);
     } catch (error: unknown) {
-      console.error(STORE_MESSAGES.ERROR_FETCHING_BRIDGES, error);
+      logger.error(STORE_MESSAGES.ERROR_FETCHING_BRIDGES, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_BRIDGES));
     }
   },
@@ -44,7 +45,7 @@ export const fetchBridgeDetailsThunk = createAsyncThunk(
           const updatedState = getState() as RootState;
           bridge = updatedState.bridge.bridges.find((b: BridgeInterface) => b.name === name);
         } catch (fetchError) {
-          console.error(STORE_MESSAGES.ERROR_FETCHING_BRIDGES, fetchError);
+          logger.error(STORE_MESSAGES.ERROR_FETCHING_BRIDGES, fetchError);
         }
       }
 
@@ -53,7 +54,7 @@ export const fetchBridgeDetailsThunk = createAsyncThunk(
       const response = await fetchBridgeDetails(apiName);
       return mapSingleBridgeData(response.data);
     } catch (error) {
-      console.error(STORE_MESSAGES.ERROR_FETCHING_BRIDGE_DETAILS, error);
+      logger.error(STORE_MESSAGES.ERROR_FETCHING_BRIDGE_DETAILS, error);
       return rejectWithValue(STORE_ERRORS.FETCH_BRIDGE_DETAILS);
     }
   },

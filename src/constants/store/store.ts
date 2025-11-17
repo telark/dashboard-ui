@@ -4,6 +4,8 @@ export const STORAGE_KEYS = {
   HAS_CLUSTER_INSIGHTS: 'HAS_CLUSTER_INSIGHTS',
   WELCOME_PENDING: 'WELCOME_PENDING',
   RESOURCE_ACTIVE_TAB: 'RESOURCE_ACTIVE_TAB',
+  SESSION_TOKEN: 'SESSION_TOKEN',
+  CURRENT_USER: 'CURRENT_USER',
 } as const;
 
 export const STORE_ACTIONS = {
@@ -42,6 +44,19 @@ export const STORE_ACTIONS = {
   BRIDGE: {
     UPDATE_SYNC: 'bridge/updateBridgeSync',
   },
+  USERS: {
+    FETCH: 'users/fetch',
+    FETCH_SILENT: 'users/fetchSilent',
+    FETCH_DETAILS: 'users/fetchDetails',
+  },
+  PASSKEYS: {
+    FETCH: 'passkeys/fetch',
+    FETCH_SILENT: 'passkeys/fetchSilent',
+    FETCH_DETAILS: 'passkeys/fetchDetails',
+    CREATE: 'passkeys/create',
+    UPDATE: 'passkeys/update',
+    DELETE: 'passkeys/delete',
+  },
 } as const;
 
 export const SYNC_MODES = COMMON_VALUES.SYNC_MODES;
@@ -68,6 +83,13 @@ export const STORE_ERRORS = {
   REFRESH_AUTO_BRIDGES: 'Failed to refresh auto bridges',
   FETCH_BRIDGE_DETAILS: 'Failed to fetch bridge details',
   UPDATE_BRIDGE_SYNC: 'Failed to update bridge sync settings.',
+  FETCH_USERS: 'Failed to fetch users',
+  FETCH_USER_DETAILS: 'Failed to fetch user details',
+  FETCH_PASSKEYS: 'Failed to fetch passkeys',
+  FETCH_PASSKEY_DETAILS: 'Failed to fetch passkey details',
+  CREATE_PASSKEY: 'Failed to create passkey',
+  UPDATE_PASSKEY: 'Failed to update passkey',
+  DELETE_PASSKEY: 'Failed to delete passkey',
 } as const;
 
 export const STORE_MESSAGES = {
@@ -86,4 +108,11 @@ export const STORE_MESSAGES = {
   ERROR_UPDATING_APP_SYNC: 'Error updating app workload sync settings:',
   ERROR_FETCHING_BRIDGES: 'Error fetching bridges:',
   ERROR_FETCHING_BRIDGE_DETAILS: 'Error fetching bridge details:',
+  ERROR_FETCHING_USERS: 'Error fetching users:',
+  ERROR_FETCHING_USER_DETAILS: 'Error fetching user details:',
+  ERROR_FETCHING_PASSKEYS: 'Error fetching passkeys:',
+  ERROR_FETCHING_PASSKEY_DETAILS: 'Error fetching passkey details:',
+  ERROR_CREATING_PASSKEY: 'Error creating passkey:',
+  ERROR_UPDATING_PASSKEY: 'Error updating passkey:',
+  ERROR_DELETING_PASSKEY: 'Error deleting passkey:',
 } as const;

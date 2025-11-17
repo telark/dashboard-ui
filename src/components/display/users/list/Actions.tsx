@@ -1,6 +1,6 @@
 import React from 'react';
 import { USERS_CONSTANTS as UC } from '../../../../constants/pages/users';
-import type { User } from '../../../../interfaces/users';
+import type { User } from '../../../../interfaces/resources/users';
 import RowOptions from '../../shared/actions/RowOptions';
 
 interface ActionsProps {

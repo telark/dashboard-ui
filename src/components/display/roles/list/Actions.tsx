@@ -1,6 +1,6 @@
 import React from 'react';
 import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
-import type { Role } from '../../../../interfaces/roles';
+import type { Role } from '../../../../interfaces/resources/roles';
 import RowOptions from '../../shared/actions/RowOptions';
 
 interface ActionsProps {

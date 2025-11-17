@@ -1,7 +1,5 @@
 import React from 'react';
-import { Button, Space } from 'antd';
-
-import { SettingOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { UserAvatarDropdown } from './user';
 
 const Header: React.FC = () => {
   return (
@@ -22,15 +20,9 @@ const Header: React.FC = () => {
       }}
     >
       {/* Action Buttons */}
-      <Space size="middle">
-        <Button
-          icon={<SettingOutlined />}
-          shape="circle"
-          size="small"
-          type="text" // Use "text" type for the ghost-like effect
-        />
-        <Button icon={<InfoCircleOutlined />} shape="circle" size="small" type="text" />
-      </Space>
+      <div style={{ marginRight: '20px' }}>
+        <UserAvatarDropdown />
+      </div>
     </div>
   );
 };

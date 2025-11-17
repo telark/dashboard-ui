@@ -3,8 +3,7 @@ import { Button } from 'antd';
 import type { HistoryInterface } from '../../../../interfaces/shared';
 import { TimelineView } from './TimelineView';
 import { TimelineDrawer } from './TimelineDrawer';
-import { useTimelineData } from '../../../../hooks/useTimelineData';
-import { useTimelinePagination } from '../../../../hooks/useTimelinePagination';
+import { useTimelineData, useTimelinePagination } from '../../../../hooks/layout';
 import { DEFAULT_COLORS } from '../../../../constants';
 
 const HistoryTimeLine: React.FC<HistoryInterface> = React.memo(function HistoryTimeLine({

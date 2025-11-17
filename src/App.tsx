@@ -1,26 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, startTransition } from 'react';
 import { Layout, message, App as AntdApp } from 'antd';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, useLocation, Navigate } from 'react-router-dom';
 import Sidebar from './components/layout/sidebar/Sidebar';
 import Header from './components/layout/header/Header';
 import ErrorBoundary from './ErrorBoundary';
+import SessionExpiredModal from './components/auth/SessionExpiredModal';
 import 'antd/dist/reset.css';
-import { DEFAULT_COLORS, APP_CONFIGS } from './constants';
+import { DEFAULT_COLORS, APP_CONFIGS, APP_ROUTES, COMMON_VALUES } from './constants';
 import { Startup, Welcome } from './pages';
 import AppRoutes from './routes/AppRoutes';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkClusterInsightsThunk } from './store/insights/slices/insightsSlice';
 import type { RootState, AppDispatch } from './store';
 import { FancySpinner } from './components/shared';
+import { hasSessionToken } from './utils/auth/session/token';
+import { useSessionExpirationCheck } from './utils/auth/session/expiration';
 
-// Ensure messages are shown below the fixed header and are visible above content
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const location = useLocation();
+  const isAuthRoute =
+    location.pathname === APP_ROUTES.LOGIN || location.pathname === APP_ROUTES.REGISTER;
+  const isAuthenticated = hasSessionToken();
   const dispatch: AppDispatch = useDispatch();
   const hasClusterInsight = useSelector((s: RootState) => s.insights.hasClusterInsight);
   const initialized = useSelector((s: RootState) => s.insights.initialized);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [showSessionExpiredModal, setShowSessionExpiredModal] = useState(false);
 
   useEffect(() => {
     // Always run a first check on boot to decide screen
@@ -29,13 +36,22 @@ const App: React.FC = () => {
     }
   }, [dispatch, initialized]);
 
+  // Check session expiration as background task when authenticated
+  useSessionExpirationCheck({
+    isAuthenticated,
+    isAuthRoute,
+    onSessionExpired: () => setShowSessionExpiredModal(true),
+  });
+
   // Show a brief welcome overlay after analysis start completes
   useEffect(() => {
     if (hasClusterInsight) {
       try {
         const pending = globalThis.sessionStorage.getItem(APP_CONFIGS.WELCOME.STORAGE_KEY);
         if (pending === APP_CONFIGS.WELCOME.STORAGE_VALUE) {
-          setShowWelcome(true);
+          startTransition(() => {
+            setShowWelcome(true);
+          });
           globalThis.sessionStorage.removeItem(APP_CONFIGS.WELCOME.STORAGE_KEY);
           globalThis.setTimeout(() => setShowWelcome(false), APP_CONFIGS.WELCOME.DURATION);
         }
@@ -63,35 +79,51 @@ const App: React.FC = () => {
           background: '#ffffff',
         }}
       >
-        <FancySpinner label="Verifying cluster insights..." showLabel={true} />
+        <FancySpinner label={COMMON_VALUES.LOADING.VERIFYING_CLUSTER_INSIGHTS} showLabel={true} />
       </div>
     );
   }
 
   return (
+    <AntdApp>
+      {initialized && hasClusterInsight ? (
+        isAuthRoute ? (
+          <AppRoutes />
+        ) : isAuthenticated ? (
+          <Layout style={{ minHeight: APP_CONFIGS.LAYOUT.MIN_HEIGHT }}>
+            <Sidebar />
+            <Layout
+              style={{
+                marginLeft: APP_CONFIGS.LAYOUT.MARGIN_LEFT,
+                height: APP_CONFIGS.LAYOUT.HEIGHT,
+                transition: APP_CONFIGS.LAYOUT.TRANSITION,
+                background: DEFAULT_COLORS.PAGE_BG,
+              }}
+            >
+              <Header />
+              <AppRoutes />
+            </Layout>
+          </Layout>
+        ) : (
+          <Navigate to={APP_ROUTES.LOGIN} state={{ from: location }} replace />
+        )
+      ) : (
+        <Startup onStartAnalyze={handleStartAnalyze} />
+      )}
+      {showWelcome && <Welcome />}
+      <SessionExpiredModal
+        open={showSessionExpiredModal}
+        onClose={() => setShowSessionExpiredModal(false)}
+      />
+    </AntdApp>
+  );
+};
+
+const App: React.FC = () => {
+  return (
     <ErrorBoundary>
       <Router>
-        <AntdApp>
-          {initialized && hasClusterInsight ? (
-            <Layout style={{ minHeight: APP_CONFIGS.LAYOUT.MIN_HEIGHT }}>
-              <Sidebar />
-              <Layout
-                style={{
-                  marginLeft: APP_CONFIGS.LAYOUT.MARGIN_LEFT,
-                  height: APP_CONFIGS.LAYOUT.HEIGHT,
-                  transition: APP_CONFIGS.LAYOUT.TRANSITION,
-                  background: DEFAULT_COLORS.PAGE_BG,
-                }}
-              >
-                <Header />
-                <AppRoutes />
-              </Layout>
-            </Layout>
-          ) : (
-            <Startup onStartAnalyze={handleStartAnalyze} />
-          )}
-        </AntdApp>
-        {showWelcome && <Welcome />}
+        <AppContent />
       </Router>
     </ErrorBoundary>
   );

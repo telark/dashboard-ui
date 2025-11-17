@@ -191,6 +191,12 @@
 /* Ensure modal close icon is visible */
 .ant-modal-close {
   color: #000 !important;
+  top: 12px !important;
+  right: 3px !important;
+  width: auto !important;
+  height: auto !important;
+  line-height: 1 !important;
+  padding: 0 !important;
 }
 
 .ant-modal-close svg,
@@ -199,10 +205,36 @@
   fill: #000 !important;
 }
 
+.ant-modal-close-x {
+  width: auto !important;
+  height: auto !important;
+  line-height: 1 !important;
+}
+
 /* Ant Design modals are rendered in a portal outside #root, so they need explicit targeting */
 .ant-modal,
 .ant-modal * {
   font-family: 'Roboto Condensed', sans-serif !important;
+}
+
+/* Button icon vertical alignment */
+.ant-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.ant-btn .anticon,
+.ant-btn-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  vertical-align: middle !important;
+  line-height: 1 !important;
+}
+.ant-btn > span {
+  display: inline-flex !important;
+  align-items: center !important;
+  vertical-align: middle !important;
 }
 
 /* Instance containers collapse - left align header content */
@@ -276,6 +308,17 @@
 /* Reduce bottom spacing in modals */
 .ant-modal .ant-modal-body {
   padding-bottom: 0 !important;
+}
+
+/* Passkey form modal - remove edge padding */
+.passkey-form-modal .ant-form-item {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.passkey-form-modal .ant-input {
+  padding-left: 11px !important;
+  padding-right: 11px !important;
 }
 
 .ant-modal .ant-card-body > div {

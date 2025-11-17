@@ -4,7 +4,7 @@ import { ReloadOutlined } from '@ant-design/icons';
 import { WorkloadCard } from '../../../cards';
 import { FancySpinner } from '../../../shared';
 import { WORKLOADS_PAGE_CONSTANTS } from '../../../../constants/pages/workloads';
-import type { AppWorkloadCardData } from '../../../../interfaces/workload';
+import type { AppWorkloadCardData } from '../../../../interfaces/resources/workload';
 
 const { Title, Text } = Typography;
 

@@ -7,8 +7,8 @@ import ViewDetails from '../../components/display/shared/views/ViewDetails';
 import { createGroupViewConfig } from '../../config/groupViewConfig';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../components/shared';
-import { useViewPage } from '../../hooks/useViewPage';
-import type { Group } from '../../interfaces/groups';
+import { useViewPage } from '../../hooks/layout';
+import type { Group } from '../../interfaces/resources/groups';
 
 const GroupIcon = ICONS.GROUP;
 

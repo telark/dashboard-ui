@@ -1,4 +1,4 @@
-import type { FormFieldConfig } from '../../interfaces/modal';
+import type { FormFieldConfig } from '../../interfaces/layout/modal';
 
 export const USERS_CONSTANTS = {
   LABELS: {
@@ -24,7 +24,7 @@ export const USERS_CONSTANTS = {
       USERNAME: 'Username',
       FULLNAME: 'Full Name',
       EMAIL: 'Email',
-      ROLE: 'Role',
+      ROLE: 'Role ID',
       CREATED: 'Creation Date',
     },
     ACTIONS: {
@@ -57,7 +57,7 @@ export const USERS_CONSTANTS = {
     USERNAME: 'username',
     FULLNAME: 'fullname',
     EMAIL: 'email',
-    ROLE: 'role',
+    ROLE: 'roleID',
     CREATION_DATE: 'creationDate',
     ACTIONS: 'actions',
   } as const,

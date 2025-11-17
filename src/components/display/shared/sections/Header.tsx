@@ -4,7 +4,7 @@ import { DEFAULT_COLORS, BUTTON_TEXTS } from '../../../../constants';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 import PrimaryButton from '../../../buttons/PrimaryButton';
-import type { HeaderProps } from '../../../../interfaces/sections';
+import type { HeaderProps } from '../../../../interfaces/layout/sections';
 
 const Header: React.FC<HeaderProps> = ({
   title,

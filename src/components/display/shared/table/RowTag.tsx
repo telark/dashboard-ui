@@ -1,5 +1,5 @@
 import React from 'react';
-import type { RowTagProps } from '../../../../interfaces/table';
+import type { RowTagProps } from '../../../../interfaces/layout/table';
 
 const RowTag: React.FC<RowTagProps> = ({ text, background, color, fontSize = 12 }) => {
   return (

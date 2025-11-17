@@ -1,3 +1,4 @@
+import '@ant-design/v5-patch-for-react-19';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -5,6 +6,7 @@ import { persistStore } from 'redux-persist';
 import store from './store';
 import App from './App';
 import { FancySpinner } from './components/shared';
+import { SHARED_DETAILS_CONSTANTS } from './constants';
 import './styles/index.css';
 import './styles/antd.css';
 
@@ -14,7 +16,7 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <Provider store={store}>
     <PersistGate
-      loading={<FancySpinner label="Loading..." showLabel={true} />}
+      loading={<FancySpinner label={SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING} showLabel={true} />}
       persistor={persistor}
     >
       <App />

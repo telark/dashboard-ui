@@ -12,7 +12,7 @@ import {
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../utils/shared/retry';
 import { WORKLOADS_PAGE_CONSTANTS } from '../../../constants/pages/workloads';
 import { APP_ROUTES } from '../../../constants';
-import type { AppWorkloadCardData } from '../../../interfaces/workload';
+import type { AppWorkloadCardData } from '../../../interfaces/resources/workload';
 import { Loading, WorkloadMainError, Success } from '.';
 
 const WorkloadsGlobalView: React.FC = memo(() => {

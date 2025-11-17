@@ -2,10 +2,10 @@ import React, { useMemo, useState } from 'react';
 import { Modal } from 'antd';
 import DataTable from '../../shared/table/DataTable';
 import { USERS_CONSTANTS as UC } from '../../../../constants/pages/users';
-import type { User, UsersTableProps } from '../../../../interfaces/users';
+import type { User, UsersTableProps } from '../../../../interfaces/resources/users';
 import Columns from './Columns';
 
-type SortKey = 'username' | 'fullname' | 'email' | 'role' | 'creationDate';
+type SortKey = 'username' | 'fullname' | 'email' | 'roleID' | 'creationDate';
 
 const UsersTable: React.FC<UsersTableProps> = ({ users, onView, onEdit, onUsersChange }) => {
   const [sortKey, setSortKey] = useState<SortKey>('creationDate');
@@ -21,8 +21,8 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onView, onEdit, onUsersC
           return String(a.fullname).localeCompare(String(b.fullname));
         case 'email':
           return String(a.email).localeCompare(String(b.email));
-        case 'role':
-          return String(a.role).localeCompare(String(b.role));
+        case 'roleID':
+          return String(a.roleID).localeCompare(String(b.roleID));
         case 'creationDate':
         default:
           return new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();

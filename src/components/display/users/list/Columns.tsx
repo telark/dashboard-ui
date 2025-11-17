@@ -2,8 +2,8 @@ import { USERS_CONSTANTS as UC } from '../../../../constants/pages/users';
 import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
 import RowTag from '../../shared/table/RowTag';
 import { generateColumn } from '../../shared/table/utils';
-import type { GenerateColumnCtx } from '../../../../interfaces/table';
-import type { User } from '../../../../interfaces/users';
+import type { GenerateColumnCtx } from '../../../../interfaces/layout/table';
+import type { User } from '../../../../interfaces/resources/users';
 import Actions from './Actions';
 import UserAvatar from '../../shared/avatars/UserAvatar';
 import { AiOutlineUser, AiOutlineMail, AiOutlineTag, AiOutlineCalendar } from 'react-icons/ai';
@@ -54,9 +54,9 @@ const Columns = (ctx: GenerateColumnCtx) => {
         label: UC.LABELS.COLUMNS.ROLE,
         icon: <AiOutlineTag />,
         width: UC.SIZES.COLUMNS.ROLE,
-        render: (value: string) => (
+        render: (_: any, record: User) => (
           <RowTag
-            text={value}
+            text={record.roleID}
             background={RPC.COLORS.TYPE_CUSTOM_BG}
             color={RPC.COLORS.TYPE_CUSTOM_TEXT}
             fontSize={RPC.SIZES.CHIP_FONT}

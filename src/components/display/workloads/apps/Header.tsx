@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
 import TimeAgo from '../../../time/TimeAgo';
 import Header from '../../shared/sections/Header';
-import { AppWorkload } from '../../../../interfaces/workload';
+import { AppWorkload } from '../../../../interfaces/resources/workload';
 import { syncAppWorkloadDetails } from '../../../../utils/workload/sync';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../store';

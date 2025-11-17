@@ -1,5 +1,5 @@
 import { AiOutlineCheckCircle, AiOutlineTag } from 'react-icons/ai';
-import type { Role } from '../interfaces/roles';
+import type { Role } from '../interfaces/resources/roles';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import { StatusTag } from '../components/tags';
 import { DEFAULT_COLORS, ICONS } from '../constants';

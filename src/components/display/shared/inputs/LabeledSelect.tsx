@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Select } from 'antd';
-import type { LabeledSelectProps } from '../../../../interfaces/inputs';
+import type { LabeledSelectProps } from '../../../../interfaces/layout/inputs';
 
 const LabeledSelect: React.FC<LabeledSelectProps> = ({
   name,

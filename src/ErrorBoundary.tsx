@@ -2,6 +2,8 @@ import { Component, ErrorInfo, ReactNode } from 'react';
 import { Button, Typography } from 'antd';
 import { ReloadOutlined, BugOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS, STORE_MESSAGES } from './constants';
+import { isDevelopment } from './utils/helpers/env';
+import logger from './logging';
 
 const { Title, Text } = Typography;
 
@@ -25,7 +27,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.error(STORE_MESSAGES.ERROR_BOUNDARY, error, errorInfo);
+    logger.error(STORE_MESSAGES.ERROR_BOUNDARY, error, errorInfo);
   }
 
   handleReload = () => {
@@ -86,7 +88,7 @@ class ErrorBoundary extends Component<Props, State> {
             </Title>
 
             {/* Error Details (Development) */}
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {isDevelopment() && this.state.error && (
               <div
                 style={{
                   background: '#f8f9fa',
