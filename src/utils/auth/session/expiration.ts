@@ -3,6 +3,7 @@ import { validateSession } from './validation';
 import { isDevelopment } from '../../helpers/env';
 import logger from '../../../logging';
 import { AUTH_CONFIG } from '../../../constants/auth/config';
+import { HTTP_STATUS } from '../../../constants';
 
 export interface UseSessionExpirationCheckOptions {
   isAuthenticated: boolean;
@@ -24,16 +25,17 @@ export const useSessionExpirationCheck = ({
       try {
         const validationResult = await validateSession();
         if (validationResult.isExpired) {
-          if (isDevelopment()) {
-            logger.warn('Session expired:', validationResult);
-          }
           onSessionExpired();
         }
       } catch (error) {
-        if (isDevelopment()) {
+        // Only log unexpected errors, not session expiration (410) responses
+        const axiosError = error as { normalized?: { status: number } };
+        const isSessionExpiredError =
+          axiosError.normalized?.status === HTTP_STATUS.GONE ||
+          (error as { response?: { status: number } })?.response?.status === HTTP_STATUS.GONE;
+        if (!isSessionExpiredError && isDevelopment()) {
           logger.error('Error checking session expiration:', error);
         }
-        // On error, don't show modal - let normal auth flow handle it
       }
     };
 
