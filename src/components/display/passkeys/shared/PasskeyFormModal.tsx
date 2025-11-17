@@ -8,6 +8,55 @@ import DeviceNameSuggestions from './DeviceNameSuggestions';
 
 const PasskeyIcon = ICONS.PASSKEY;
 
+interface PasskeyFormContentProps {
+  form: any;
+  passkeys: PasskeyFormModalProps['passkeys'];
+  isEditMode: boolean;
+  selectedPasskey: PasskeyFormModalProps['selectedPasskey'];
+}
+
+const PasskeyFormContent: React.FC<PasskeyFormContentProps> = ({
+  form,
+  passkeys,
+  isEditMode,
+  selectedPasskey,
+}) => {
+  return (
+    <div
+      className="form-item-compact passkey-form-modal"
+      style={{ marginTop: -4, width: '100%', marginLeft: 0, marginRight: 0 }}
+    >
+      <Form.Item
+        name="deviceName"
+        label={PPC.FORM.DEVICE_NAME_LABEL}
+        style={{ marginBottom: 0, marginTop: 0, width: '100%', marginLeft: 0, marginRight: 0 }}
+        rules={[
+          { required: true, message: PPC.FORM.DEVICE_NAME_REQUIRED },
+          {
+            validator: createDeviceNameValidator(
+              passkeys,
+              isEditMode,
+              selectedPasskey?.deviceName,
+            ),
+          },
+        ]}
+        validateTrigger="onChange"
+      >
+        <Input placeholder={PPC.FORM.DEVICE_NAME_PLACEHOLDER} style={{ width: '100%' }} />
+      </Form.Item>
+      {!isEditMode && (
+        <DeviceNameSuggestions
+          existingPasskeys={passkeys}
+          onSelect={(suggestion) => {
+            form.setFieldsValue({ deviceName: suggestion });
+            form.validateFields(['deviceName']);
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
 const PasskeyFormModal: React.FC<PasskeyFormModalProps> = ({
   open,
   isEditMode,
@@ -38,6 +87,15 @@ const PasskeyFormModal: React.FC<PasskeyFormModalProps> = ({
     return currentValue === originalDeviceName;
   };
 
+  const renderCustomContent = (form: any) => (
+    <PasskeyFormContent
+      form={form}
+      passkeys={passkeys}
+      isEditMode={isEditMode}
+      selectedPasskey={selectedPasskey}
+    />
+  );
+
   return (
     <FormModal
       open={open}
@@ -48,40 +106,7 @@ const PasskeyFormModal: React.FC<PasskeyFormModalProps> = ({
       sectionTitle={PPC.FORM.SECTION_TITLE}
       sectionSubtitle={PPC.FORM.SECTION_SUBTITLE}
       fields={[]}
-      customContent={(form) => (
-        <div
-          className="form-item-compact passkey-form-modal"
-          style={{ marginTop: -4, width: '100%', marginLeft: 0, marginRight: 0 }}
-        >
-          <Form.Item
-            name="deviceName"
-            label={PPC.FORM.DEVICE_NAME_LABEL}
-            style={{ marginBottom: 0, marginTop: 0, width: '100%', marginLeft: 0, marginRight: 0 }}
-            rules={[
-              { required: true, message: PPC.FORM.DEVICE_NAME_REQUIRED },
-              {
-                validator: createDeviceNameValidator(
-                  passkeys,
-                  isEditMode,
-                  selectedPasskey?.deviceName,
-                ),
-              },
-            ]}
-            validateTrigger="onChange"
-          >
-            <Input placeholder={PPC.FORM.DEVICE_NAME_PLACEHOLDER} style={{ width: '100%' }} />
-          </Form.Item>
-          {!isEditMode && (
-            <DeviceNameSuggestions
-              existingPasskeys={passkeys}
-              onSelect={(suggestion) => {
-                form.setFieldsValue({ deviceName: suggestion });
-                form.validateFields(['deviceName']);
-              }}
-            />
-          )}
-        </div>
-      )}
+      customContent={renderCustomContent}
       buttonText={isEditMode ? PPC.FORM.EDIT_BUTTON_TEXT : PPC.FORM.BUTTON_TEXT}
       buttonIcon={<PasskeyIcon size={16} />}
       width={PPC.FORM.MODAL_WIDTH}

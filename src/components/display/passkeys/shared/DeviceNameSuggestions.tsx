@@ -47,9 +47,9 @@ const DeviceNameSuggestions: React.FC<DeviceNameSuggestionsProps> = ({
           gap: 6,
         }}
       >
-        {suggestions.map((suggestion, index) => (
+        {suggestions.map((suggestion) => (
           <button
-            key={index}
+            key={suggestion}
             type="button"
             onClick={() => onSelect(suggestion)}
             style={{

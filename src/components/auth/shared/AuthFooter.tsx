@@ -18,13 +18,18 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({ text, linkText, onLinkCl
       }}
     >
       {text}{' '}
-      <a
+      <button
+        type="button"
         onClick={onLinkClick}
         style={{
           color: DEFAULT_COLORS.SUCCESS,
           textDecoration: 'none',
           fontWeight: 500,
           cursor: 'pointer',
+          background: 'none',
+          border: 'none',
+          padding: 0,
+          font: 'inherit',
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.textDecoration = 'underline';
@@ -34,7 +39,7 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({ text, linkText, onLinkCl
         }}
       >
         {linkText}
-      </a>
+      </button>
     </div>
   );
 };

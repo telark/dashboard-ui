@@ -14,7 +14,7 @@ import { PageContainer, NotFound } from '../../components/shared';
 import { useEditPage } from '../../hooks/layout';
 import { RootState, AppDispatch } from '../../store';
 import { fetchAllUsersThunk } from '../../store/users/slices/userSlice';
-import type { User, EditUserFormValues } from '../../interfaces/resources/users';
+import type { User, UserFormBaseFields } from '../../interfaces/resources/users';
 
 const UserIcon = ICONS.USER;
 
@@ -34,7 +34,7 @@ const EditUser: React.FC = () => {
     submitting,
     handleFinish,
     notFound,
-  } = useEditPage<User, EditUserFormValues>({
+  } = useEditPage<User, UserFormBaseFields>({
     data: users,
     findById: (id, data) => data.find((u) => u.id === id),
     getFormValues: (item) => ({
@@ -72,7 +72,7 @@ const EditUser: React.FC = () => {
             width: '100%',
           }}
         >
-          <Form<EditUserFormValues> layout="vertical" form={form} onFinish={handleFinish}>
+          <Form<UserFormBaseFields> layout="vertical" form={form} onFinish={handleFinish}>
             <div
               style={{
                 display: 'flex',
