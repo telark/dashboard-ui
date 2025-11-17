@@ -90,7 +90,6 @@ const createErrorInterceptor = (options: ErrorInterceptorOptions = {}) => {
         meta.isNetwork &&
         error?.config?.headers?.[HTTP_HEADERS.CUSTOM.SILENT_NETWORK] ===
           HEADER_VALUES.SILENT_NETWORK;
-
       if (isSilent404) {
         if (error?.response) {
           return Promise.resolve({ ...error.response, data: null });
@@ -107,6 +106,11 @@ const createErrorInterceptor = (options: ErrorInterceptorOptions = {}) => {
         return Promise.resolve(resp);
       }
       if (isSilentNetwork) {
+        return Promise.reject(error);
+      }
+      // Don't log 410 (Gone) as error - it's expected for session expiration
+      const isSessionExpired = meta.status === HTTP_STATUS.GONE;
+      if (isSessionExpired) {
         return Promise.reject(error);
       }
       if (meta.isNotFound) {
