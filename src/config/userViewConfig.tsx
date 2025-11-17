@@ -3,7 +3,7 @@ import type { User } from '../interfaces/resources/users';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import { StatusTag } from '../components/tags';
 import { ROLES_PAGE_CONSTANTS as RPC } from '../constants/pages/roles';
-import { ICONS } from '../constants';
+import { ICONS as Icons } from '../constants';
 
 export const createUserViewConfig = (user: User): ViewDetailsConfig => {
   return {
@@ -12,21 +12,21 @@ export const createUserViewConfig = (user: User): ViewDetailsConfig => {
         key: 'username',
         label: 'Username',
         value: user.username,
-        icon: <ICONS.VIEW_FIELD_NAME />,
+        icon: <Icons.VIEW_FIELD_NAME />,
         type: 'text',
       },
       {
         key: 'fullname',
         label: 'Full Name',
         value: user.fullname,
-        icon: <ICONS.VIEW_FIELD_NAME />,
+        icon: <Icons.VIEW_FIELD_NAME />,
         type: 'text',
       },
       {
         key: 'email',
         label: 'Email',
         value: user.email,
-        icon: <ICONS.VIEW_FIELD_DESCRIPTION />,
+        icon: <Icons.VIEW_FIELD_DESCRIPTION />,
         type: 'text',
       },
       {
@@ -47,7 +47,7 @@ export const createUserViewConfig = (user: User): ViewDetailsConfig => {
         key: 'groupID',
         label: 'Group ID',
         value: user.groupID,
-        icon: <ICONS.VIEW_FIELD_NAME />,
+        icon: <Icons.VIEW_FIELD_NAME />,
         type: 'text',
       },
       {
@@ -74,7 +74,7 @@ export const createUserViewConfig = (user: User): ViewDetailsConfig => {
           hour: '2-digit',
           minute: '2-digit',
         }),
-        icon: <ICONS.VIEW_FIELD_DATE />,
+        icon: <Icons.VIEW_FIELD_DATE />,
         type: 'text',
       },
     ],

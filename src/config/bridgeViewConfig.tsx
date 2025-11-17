@@ -3,7 +3,7 @@ import { AiOutlineCluster } from 'react-icons/ai';
 import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
 import TimeAgo from '../components/time/TimeAgo';
 import StatusButton from '../components/buttons/StatusButton';
-import { ICONS } from '../constants';
+import { ICONS as Icons } from '../constants';
 
 export const createBridgeViewConfig = (bridgeDetails: any): ViewDetailsConfig => {
   return {
@@ -12,7 +12,7 @@ export const createBridgeViewConfig = (bridgeDetails: any): ViewDetailsConfig =>
         key: 'name',
         label: 'Name',
         value: bridgeDetails.name || '—',
-        icon: <ICONS.VIEW_FIELD_NAME />,
+        icon: <Icons.VIEW_FIELD_NAME />,
         type: 'text',
       },
       {
@@ -33,14 +33,14 @@ export const createBridgeViewConfig = (bridgeDetails: any): ViewDetailsConfig =>
         key: 'creationDate',
         label: 'Creation Date',
         value: <TimeAgo date={bridgeDetails.creationTime} />,
-        icon: <ICONS.VIEW_FIELD_DATE />,
+        icon: <Icons.VIEW_FIELD_DATE />,
         type: 'custom',
       },
       {
         key: 'lastModification',
         label: 'Last Modification',
         value: <TimeAgo date={bridgeDetails.lastUpdateTime} />,
-        icon: <ICONS.VIEW_FIELD_DATE />,
+        icon: <Icons.VIEW_FIELD_DATE />,
         type: 'custom',
       },
       {

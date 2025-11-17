@@ -1,6 +1,6 @@
 import type { InstanceTableRow } from '../../../../../interfaces/resources/instances';
 import { INSTANCES_PAGE_CONSTANTS as IPC } from '../../../../../constants/pages/instances';
-import { ICONS } from '../../../../../constants';
+import { ICONS as Icons } from '../../../../../constants';
 import RowTag from '../../../shared/table/RowTag';
 import { generateColumn } from '../../../shared/table/utils';
 import { AiOutlineCheckCircle, AiOutlineFileImage } from 'react-icons/ai';
@@ -62,7 +62,7 @@ export const Columns = ({ onSort, activeSortKey, onView }: ColumnsArgs) => {
       {
         key: IPC.KEYS.CPU,
         label: IPC.LABELS.COLUMNS.CPU,
-        icon: <ICONS.CPU />,
+        icon: <Icons.CPU />,
         width: IPC.SIZES.COLUMNS.CPU,
         render: (cpu: string) => <span style={{ color: IPC.COLORS.TEXT_PRIMARY }}>{cpu}</span>,
       },
@@ -72,7 +72,7 @@ export const Columns = ({ onSort, activeSortKey, onView }: ColumnsArgs) => {
       {
         key: IPC.KEYS.MEMORY,
         label: IPC.LABELS.COLUMNS.MEMORY,
-        icon: <ICONS.MEMORY />,
+        icon: <Icons.MEMORY />,
         width: IPC.SIZES.COLUMNS.MEMORY,
         render: (memory: string) => (
           <span style={{ color: IPC.COLORS.TEXT_PRIMARY }}>{memory}</span>
@@ -84,7 +84,7 @@ export const Columns = ({ onSort, activeSortKey, onView }: ColumnsArgs) => {
       {
         key: IPC.KEYS.CONTAINERS,
         label: IPC.LABELS.COLUMNS.CONTAINERS,
-        icon: <ICONS.CONTAINER />,
+        icon: <Icons.CONTAINER />,
         width: IPC.SIZES.COLUMNS.CONTAINERS,
         render: (_: number, record: InstanceTableRow) => {
           const containerNames = record.containerNames?.split(', ').filter(Boolean) || [];
