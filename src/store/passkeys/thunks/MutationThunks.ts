@@ -15,6 +15,60 @@ import type {
   CreatePasskeyParams,
 } from '../../../interfaces/auth/passkeys';
 
+const mapResponseToPasskey = (response: CreatePasskeyResponse): Passkey => {
+  return {
+    id: response.id,
+    credentialId: response.credentialId,
+    deviceName: response.deviceName,
+    deviceType: response.deviceType,
+    creationTimestamp: response.creationTimestamp,
+  };
+};
+
+const handleOrphanedPasskeyCleanup = async (
+  params: CreatePasskeyParams,
+  existingPasskey: Passkey,
+  rejectWithValue: (value: string) => unknown,
+): Promise<Passkey | unknown> => {
+  try {
+    await deletePasskey(existingPasskey.credentialId, {});
+    const retryResponse: CreatePasskeyResponse = await createPasskey(
+      params.credential,
+      params.deviceName,
+      params.deviceType,
+      params.username,
+    );
+    return mapResponseToPasskey(retryResponse);
+  } catch (cleanupError) {
+    logger.error(AUTH_ERROR_MESSAGES.ORPHANED_PASSKEY_CLEANUP_FAILED, cleanupError);
+    return rejectWithValue(AUTH_ERROR_MESSAGES.ORPHANED_PASSKEY_CLEANUP_FAILED);
+  }
+};
+
+const handleConflictCase = async (
+  params: CreatePasskeyParams,
+  rejectWithValue: (value: string) => unknown,
+): Promise<Passkey | unknown | null> => {
+  try {
+    const allPasskeys = await getAllPasskeys();
+    const existingPasskey = allPasskeys.find((p) => p.deviceName === params.deviceName);
+
+    if (!existingPasskey) {
+      return null;
+    }
+
+    const hasInBrowser = await browserHasCredential(existingPasskey.credentialId);
+    if (!hasInBrowser) {
+      return handleOrphanedPasskeyCleanup(params, existingPasskey, rejectWithValue);
+    }
+
+    return null;
+  } catch {
+    // Fall through to return PASSKEY_ALREADY_EXISTS
+    return null;
+  }
+};
+
 export const createPasskeyThunk = createAsyncThunk(
   STORE_ACTIONS.PASSKEYS.CREATE,
   async (params: CreatePasskeyParams, { rejectWithValue }) => {
@@ -25,52 +79,15 @@ export const createPasskeyThunk = createAsyncThunk(
         params.deviceType,
         params.username,
       );
-
-      const passkey: Passkey = {
-        id: response.id,
-        credentialId: response.credentialId,
-        deviceName: response.deviceName,
-        deviceType: response.deviceType,
-        creationTimestamp: response.creationTimestamp,
-      };
-      return passkey;
+      return mapResponseToPasskey(response);
     } catch (error: unknown) {
       const axiosError = error as any;
       const status = axiosError?.response?.status || axiosError?.normalized?.status;
 
       if (status === HTTP_STATUS.CONFLICT) {
-        try {
-          const allPasskeys = await getAllPasskeys();
-          const existingPasskey = allPasskeys.find((p) => p.deviceName === params.deviceName);
-
-          if (existingPasskey) {
-            const hasInBrowser = await browserHasCredential(existingPasskey.credentialId);
-
-            if (!hasInBrowser) {
-              try {
-                await deletePasskey(existingPasskey.credentialId, {});
-                const retryResponse: CreatePasskeyResponse = await createPasskey(
-                  params.credential,
-                  params.deviceName,
-                  params.deviceType,
-                  params.username,
-                );
-                const retryPasskey: Passkey = {
-                  id: retryResponse.id,
-                  credentialId: retryResponse.credentialId,
-                  deviceName: retryResponse.deviceName,
-                  deviceType: retryResponse.deviceType,
-                  creationTimestamp: retryResponse.creationTimestamp,
-                };
-                return retryPasskey;
-              } catch (cleanupError) {
-                logger.error(AUTH_ERROR_MESSAGES.ORPHANED_PASSKEY_CLEANUP_FAILED, cleanupError);
-                return rejectWithValue(AUTH_ERROR_MESSAGES.ORPHANED_PASSKEY_CLEANUP_FAILED);
-              }
-            }
-          }
-        } catch {
-          // Fall through to return PASSKEY_ALREADY_EXISTS
+        const conflictResult = await handleConflictCase(params, rejectWithValue);
+        if (conflictResult !== null) {
+          return conflictResult;
         }
         return rejectWithValue(AUTH_ERROR_MESSAGES.PASSKEY_ALREADY_EXISTS);
       }
