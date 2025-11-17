@@ -49,6 +49,86 @@ const AVATAR_SEEDS: Record<string, string> = {
   personas: 'seed-personas-005',
 };
 
+const generatePreviewUrl = (style: AvatarStyle, previewUrlsRef: React.MutableRefObject<Record<string, string>>): string => {
+  if (previewUrlsRef.current[style.name]) {
+    return previewUrlsRef.current[style.name];
+  }
+  const seed = AVATAR_SEEDS[style.name];
+  const avatar = createAvatar(style.style, {
+    seed,
+    size: AVATAR_SIZE,
+  });
+  const url = avatar.toDataUri();
+  previewUrlsRef.current[style.name] = url;
+  return url;
+};
+
+const generatePreviewUrls = (
+  styles: AvatarStyle[],
+  previewUrlsRef: React.MutableRefObject<Record<string, string>>,
+): Record<string, string> => {
+  const newPreviewUrls: Record<string, string> = {};
+  styles.forEach((style) => {
+    newPreviewUrls[style.name] = generatePreviewUrl(style, previewUrlsRef);
+  });
+  return newPreviewUrls;
+};
+
+interface AvatarItemProps {
+  style: AvatarStyle;
+  isSelected: boolean;
+  previewUrl?: string;
+  onSelect: (styleName: string) => void;
+}
+
+const AvatarItem: React.FC<AvatarItemProps> = ({ style, isSelected, previewUrl, onSelect }) => {
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isSelected) {
+      e.currentTarget.style.borderColor = DEFAULT_COLORS.SUCCESS;
+      e.currentTarget.style.backgroundColor = 'rgba(32, 201, 151, 0.05)';
+    }
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isSelected) {
+      e.currentTarget.style.borderColor = '#d9d9d9';
+      e.currentTarget.style.backgroundColor = 'transparent';
+    }
+  };
+
+  return (
+    <div
+      onClick={() => onSelect(style.name)}
+      style={{
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        transition: 'all 0.2s',
+      }}
+    >
+      <div
+        style={{
+          width: AVATAR_SIZE + 4,
+          height: AVATAR_SIZE + 4,
+          borderRadius: '50%',
+          border: `2px solid ${isSelected ? DEFAULT_COLORS.SUCCESS : '#d9d9d9'}`,
+          backgroundColor: isSelected ? 'rgba(32, 201, 151, 0.1)' : 'transparent',
+          padding: 2,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'all 0.2s',
+        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <Avatar src={previewUrl || undefined} size={AVATAR_SIZE} style={{ border: 'none' }} />
+      </div>
+    </div>
+  );
+};
+
 const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 }) => {
   const screens = useBreakpoint();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,40 +142,28 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
   const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (isModalOpen && avatarStyles.length === 0) {
-      startTransition(() => {
-        setIsLoadingStyles(true);
-      });
-      loadAvatarStyles()
-        .then((styles) => {
-          setAvatarStyles(styles);
-          // Generate preview URLs using the fixed seeds - one unique seed per style
-          const newPreviewUrls: Record<string, string> = {};
-          styles.forEach((style) => {
-            if (!previewUrlsRef.current[style.name]) {
-              const seed = AVATAR_SEEDS[style.name];
-              const avatar = createAvatar(style.style, {
-                seed,
-                size: AVATAR_SIZE,
-              });
-              const url = avatar.toDataUri();
-              previewUrlsRef.current[style.name] = url;
-              newPreviewUrls[style.name] = url;
-            } else {
-              newPreviewUrls[style.name] = previewUrlsRef.current[style.name];
-            }
-          });
-          startTransition(() => {
-            setPreviewUrls((prev) => ({ ...prev, ...newPreviewUrls }));
-          });
-        })
-        .catch((error) => {
-          console.error('Failed to load avatar styles:', error);
-        })
-        .finally(() => {
-          setIsLoadingStyles(false);
-        });
+    if (!isModalOpen || avatarStyles.length > 0) {
+      return;
     }
+
+    startTransition(() => {
+      setIsLoadingStyles(true);
+    });
+
+    loadAvatarStyles()
+      .then((styles) => {
+        setAvatarStyles(styles);
+        const newPreviewUrls = generatePreviewUrls(styles, previewUrlsRef);
+        startTransition(() => {
+          setPreviewUrls((prev) => ({ ...prev, ...newPreviewUrls }));
+        });
+      })
+      .catch((error) => {
+        console.error('Failed to load avatar styles:', error);
+      })
+      .finally(() => {
+        setIsLoadingStyles(false);
+      });
   }, [isModalOpen, avatarStyles.length]);
 
   const handleStyleSelect = (styleName: string) => {
@@ -131,6 +199,14 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
 
   const columns = screens.xs ? 4 : GRID_COLUMNS;
 
+  const handleAvatarMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.currentTarget.style.borderColor = '#1890ff';
+  };
+
+  const handleAvatarMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.currentTarget.style.borderColor = '#d9d9d9';
+  };
+
   return (
     <>
       <div
@@ -145,12 +221,8 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
           padding: 2,
           transition: 'all 0.2s',
         }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = '#1890ff';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = '#d9d9d9';
-        }}
+        onMouseEnter={handleAvatarMouseEnter}
+        onMouseLeave={handleAvatarMouseLeave}
       >
         <Avatar
           src={previewAvatar}
@@ -194,58 +266,15 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
               padding: '8px 0',
             }}
           >
-            {avatarStyles.map((style) => {
-              const isSelected = selectedStyle === style.name;
-              // Always use the same preview URL - never change
-              const previewUrl = previewUrls[style.name];
-
-              return (
-                <div
-                  key={style.name}
-                  onClick={() => handleStyleSelect(style.name)}
-                  style={{
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'all 0.2s',
-                  }}
-                >
-                  <div
-                    style={{
-                      width: AVATAR_SIZE + 4,
-                      height: AVATAR_SIZE + 4,
-                      borderRadius: '50%',
-                      border: `2px solid ${isSelected ? DEFAULT_COLORS.SUCCESS : '#d9d9d9'}`,
-                      backgroundColor: isSelected ? 'rgba(32, 201, 151, 0.1)' : 'transparent',
-                      padding: 2,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      transition: 'all 0.2s',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isSelected) {
-                        e.currentTarget.style.borderColor = DEFAULT_COLORS.SUCCESS;
-                        e.currentTarget.style.backgroundColor = 'rgba(32, 201, 151, 0.05)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isSelected) {
-                        e.currentTarget.style.borderColor = '#d9d9d9';
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                      }
-                    }}
-                  >
-                    <Avatar
-                      src={previewUrl || undefined}
-                      size={AVATAR_SIZE}
-                      style={{ border: 'none' }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
+            {avatarStyles.map((style) => (
+              <AvatarItem
+                key={style.name}
+                style={style}
+                isSelected={selectedStyle === style.name}
+                previewUrl={previewUrls[style.name]}
+                onSelect={handleStyleSelect}
+              />
+            ))}
           </div>
         )}
       </Modal>
