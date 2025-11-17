@@ -27,8 +27,6 @@ export type CreateUserFormValues = UserFormBaseFields &
     avatar?: UserAvatar;
   };
 
-export type EditUserFormValues = UserFormBaseFields;
-
 export interface UsersState {
   users: User[];
   details: User | null;
