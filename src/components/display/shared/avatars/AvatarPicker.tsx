@@ -87,6 +87,13 @@ interface AvatarItemProps {
 const AvatarItem: React.FC<AvatarItemProps> = ({ style, isSelected, previewUrl, onSelect }) => {
   const [isHovered, setIsHovered] = useState(false);
 
+  // Clear hover state when selection changes
+  useEffect(() => {
+    if (isSelected) {
+      setIsHovered(false);
+    }
+  }, [isSelected]);
+
   const handleMouseEnter = () => {
     if (!isSelected) {
       setIsHovered(true);
@@ -94,9 +101,7 @@ const AvatarItem: React.FC<AvatarItemProps> = ({ style, isSelected, previewUrl, 
   };
 
   const handleMouseLeave = () => {
-    if (!isSelected) {
-      setIsHovered(false);
-    }
+    setIsHovered(false);
   };
 
   let borderColor: string;
@@ -209,7 +214,8 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
     if (isModalOpen) {
       setSelectedStyle(value?.style || null);
     }
-  }, [isModalOpen, value?.style]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isModalOpen]);
 
   const handleStyleSelect = (styleName: string) => {
     setSelectedStyle(styleName);
