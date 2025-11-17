@@ -47,7 +47,7 @@ const ResourceCardDropdown: React.FC<ResourceCardDropdownProps> = React.memo(
     ];
 
     return (
-      <div onClick={(e) => e.stopPropagation()} role="presentation">
+      <div onClick={(e) => e.stopPropagation()}>
         <Dropdown menu={{ items: menuItems }} trigger={['click']} placement="bottomRight">
           <button
             type="button"

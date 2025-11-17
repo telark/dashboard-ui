@@ -99,16 +99,23 @@ const AvatarItem: React.FC<AvatarItemProps> = ({ style, isSelected, previewUrl, 
     }
   };
 
-  const borderColor = isSelected
-    ? DEFAULT_COLORS.SUCCESS
-    : isHovered
-      ? DEFAULT_COLORS.SUCCESS
-      : '#d9d9d9';
-  const backgroundColor = isSelected
-    ? 'rgba(32, 201, 151, 0.1)'
-    : isHovered
-      ? 'rgba(32, 201, 151, 0.05)'
-      : 'transparent';
+  let borderColor: string;
+  if (isSelected) {
+    borderColor = DEFAULT_COLORS.SUCCESS;
+  } else if (isHovered) {
+    borderColor = DEFAULT_COLORS.SUCCESS;
+  } else {
+    borderColor = '#d9d9d9';
+  }
+
+  let backgroundColor: string;
+  if (isSelected) {
+    backgroundColor = 'rgba(32, 201, 151, 0.1)';
+  } else if (isHovered) {
+    backgroundColor = 'rgba(32, 201, 151, 0.05)';
+  } else {
+    backgroundColor = 'transparent';
+  }
 
   return (
     <button
@@ -197,9 +204,21 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
     handleLoadStyles();
   }, [isModalOpen, avatarStyles.length, handleLoadStyles]);
 
+  // Reset selectedStyle when modal opens to current value
+  useEffect(() => {
+    if (isModalOpen) {
+      setSelectedStyle(value?.style || null);
+    }
+  }, [isModalOpen, value?.style]);
+
   const handleStyleSelect = (styleName: string) => {
     setSelectedStyle(styleName);
     // Don't generate seed yet - keep showing the same preview
+  };
+
+  const handleCancel = () => {
+    setSelectedStyle(value?.style || null);
+    setIsModalOpen(false);
   };
 
   const handleConfirm = () => {
@@ -271,7 +290,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
       <Modal
         title="Choose Avatar"
         open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
+        onCancel={handleCancel}
         onOk={handleConfirm}
         okText="Select"
         okButtonProps={{

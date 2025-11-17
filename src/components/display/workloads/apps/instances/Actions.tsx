@@ -11,7 +11,7 @@ interface ActionsProps {
 
 const Actions: React.FC<ActionsProps> = ({ record, onView }) => {
   return (
-    <div onClick={(e) => e.stopPropagation()} role="presentation">
+    <div onClick={(e) => e.stopPropagation()}>
       <Dropdown
         trigger={['click']}
         placement="bottomRight"
