@@ -49,7 +49,10 @@ const AVATAR_SEEDS: Record<string, string> = {
   personas: 'seed-personas-005',
 };
 
-const generatePreviewUrl = (style: AvatarStyle, previewUrlsRef: React.MutableRefObject<Record<string, string>>): string => {
+const generatePreviewUrl = (
+  style: AvatarStyle,
+  previewUrlsRef: React.MutableRefObject<Record<string, string>>,
+): string => {
   if (previewUrlsRef.current[style.name]) {
     return previewUrlsRef.current[style.name];
   }
@@ -146,24 +149,26 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
       return;
     }
 
-    startTransition(() => {
-      setIsLoadingStyles(true);
-    });
+    const loadStyles = async () => {
+      startTransition(() => {
+        setIsLoadingStyles(true);
+      });
 
-    loadAvatarStyles()
-      .then((styles) => {
+      try {
+        const styles = await loadAvatarStyles();
         setAvatarStyles(styles);
         const newPreviewUrls = generatePreviewUrls(styles, previewUrlsRef);
         startTransition(() => {
           setPreviewUrls((prev) => ({ ...prev, ...newPreviewUrls }));
         });
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Failed to load avatar styles:', error);
-      })
-      .finally(() => {
+      } finally {
         setIsLoadingStyles(false);
-      });
+      }
+    };
+
+    loadStyles();
   }, [isModalOpen, avatarStyles.length]);
 
   const handleStyleSelect = (styleName: string) => {
