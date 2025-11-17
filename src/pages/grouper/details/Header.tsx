@@ -4,7 +4,7 @@ import TimeAgo from '../../../components/time/TimeAgo';
 import Header from '../../../components/display/shared/sections/Header';
 import { APP_ROUTES, Icons, UI } from '../../../constants';
 
-const GrouperIcon = Icons.GROUPER;
+const GrouperIcon = Icons.Grouper;
 
 interface HeaderProps {
   grouperDetails: any;

@@ -9,7 +9,7 @@ import { PageContainer } from '../../components/shared';
 import { RootState, AppDispatch } from '../../store';
 import { fetchAllUsersThunk } from '../../store/users/slices/userSlice';
 
-const UserIcon = Icons.USER;
+const UserIcon = Icons.User;
 
 const UsersList: React.FC = () => {
   const navigate = useNavigate();

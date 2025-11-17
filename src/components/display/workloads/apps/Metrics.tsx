@@ -52,28 +52,28 @@ const WorkloadMetrics: React.FC<WorkloadMetricsProps> = ({ workload }) => {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 64, flexWrap: 'wrap' }}>
       <MetricItem
-        icon={Icons.CPU}
+        icon={Icons.Cpu}
         iconBackground="rgba(32,201,151,0.12)"
         iconColor={DEFAULT_COLORS.SUCCESS}
         value={workload.cacid?.usage?.resources?.totalCpu ?? 'N/A'}
         label={WORKLOAD_DETAILS_CONSTANTS.METRICS.TOTAL_USED_CPU}
       />
       <MetricItem
-        icon={Icons.MEMORY}
+        icon={Icons.Memory}
         iconBackground="rgba(59,130,246,0.12)"
         iconColor="#3B82F6"
         value={workload.cacid?.usage?.resources?.totalMemory ?? 'N/A'}
         label={WORKLOAD_DETAILS_CONSTANTS.METRICS.TOTAL_USED_MEMORY}
       />
       <MetricItem
-        icon={Icons.QOS}
+        icon={Icons.Qos}
         iconBackground="rgba(168,85,247,0.12)"
         iconColor="#A855F7"
         value={workload.cacid?.usage?.qos ?? 'N/A'}
         label={WORKLOAD_DETAILS_CONSTANTS.METRICS.QUALITY_OF_SERVICE}
       />
       <MetricItem
-        icon={Icons.CONTAINER}
+        icon={Icons.Container}
         iconBackground="rgba(245,158,11,0.12)"
         iconColor="#F59E0B"
         value={`${workload.cacid?.instances?.available ?? 0}/${workload.cacid?.instances?.total ?? 0}`}

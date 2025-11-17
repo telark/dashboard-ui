@@ -15,7 +15,7 @@ import { useDispatch } from 'react-redux';
 import { addGroup } from '../../store/groups/slices/groupSlice';
 import type { Group } from '../../interfaces/resources/groups';
 
-const GroupIcon = Icons.GROUP;
+const GroupIcon = Icons.Group;
 
 interface CreateGroupFormValues {
   name: string;

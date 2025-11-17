@@ -12,7 +12,7 @@ import { RootState, AppDispatch } from '../../store';
 import { fetchAllUsersThunk } from '../../store/users/slices/userSlice';
 import type { User } from '../../interfaces/resources/users';
 
-const UserIcon = Icons.USER;
+const UserIcon = Icons.User;
 
 const ViewUser: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();

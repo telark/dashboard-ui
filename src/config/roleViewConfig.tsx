@@ -11,7 +11,7 @@ export const createRoleViewConfig = (role: Role): ViewDetailsConfig => {
         key: 'name',
         label: 'Name',
         value: role.name,
-        icon: <Icons.VIEW_FIELD_NAME />,
+        icon: <Icons.ViewFieldName />,
         type: 'text',
       },
       {
@@ -50,7 +50,7 @@ export const createRoleViewConfig = (role: Role): ViewDetailsConfig => {
           hour: '2-digit',
           minute: '2-digit',
         }),
-        icon: <Icons.VIEW_FIELD_DATE />,
+        icon: <Icons.ViewFieldDate />,
         type: 'text',
       },
     ],

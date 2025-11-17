@@ -12,7 +12,7 @@ export const createWorkloadViewConfig = (workload: AppWorkload): ViewDetailsConf
         key: 'name',
         label: 'Name',
         value: workload.fasid?.sourceName || '—',
-        icon: <Icons.VIEW_FIELD_NAME />,
+        icon: <Icons.ViewFieldName />,
         type: 'text',
       },
       {
@@ -33,7 +33,7 @@ export const createWorkloadViewConfig = (workload: AppWorkload): ViewDetailsConf
         key: 'creationDate',
         label: 'Creation Date',
         value: <TimeAgo date={workload.fasid?.creationTime || new Date().toISOString()} />,
-        icon: <Icons.VIEW_FIELD_DATE />,
+        icon: <Icons.ViewFieldDate />,
         type: 'custom',
       },
       {

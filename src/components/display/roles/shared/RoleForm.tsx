@@ -8,7 +8,7 @@ import RolesGeneralSection from '../create/GeneralSection';
 import RolesScopePermissionsSection from '../create/ScopesAndPermissionsSection';
 import type { RoleScopePermission } from '../../../../interfaces/resources/roles';
 
-const RoleIcon = Icons.ROLE;
+const RoleIcon = Icons.Role;
 
 export interface RoleFormValues {
   name: string;

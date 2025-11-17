@@ -10,7 +10,7 @@ import { PageContainer, NotFound } from '../../components/shared';
 import { useViewPage } from '../../hooks/layout';
 import type { Group } from '../../interfaces/resources/groups';
 
-const GroupIcon = Icons.GROUP;
+const GroupIcon = Icons.Group;
 
 const ViewGroup: React.FC = () => {
   const {
