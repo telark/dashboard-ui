@@ -23,6 +23,14 @@ export const generateDeviceNameSuggestions = (
   const suggestions: string[] = [];
   const nextNumber = existingCount + 1;
 
+  // Add browser-only suggestions (prioritize browser name)
+  if (browser !== 'Unknown') {
+    suggestions.push(
+      formatSuggestion(browser, nextNumber),
+      formatSuggestion(`My-${browser}`, nextNumber),
+    );
+  }
+
   // Add OS-based suggestions
   if (OS_SUGGESTIONS[os]) {
     OS_SUGGESTIONS[os].forEach((suggestion) => {
@@ -30,7 +38,7 @@ export const generateDeviceNameSuggestions = (
     });
   }
 
-  // Add browser-based suggestions
+  // Add browser-OS combination suggestions
   if (browser !== 'Unknown' && os !== 'Unknown') {
     suggestions.push(
       formatSuggestion(`${os}-${browser}`, nextNumber),
