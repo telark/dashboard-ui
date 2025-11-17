@@ -10,7 +10,7 @@ const OS_SUGGESTIONS: Record<string, string[]> = {
 };
 
 const formatSuggestion = (baseName: string, nextNumber: number): string => {
-  const formatted = baseName.replace(/\s+/g, '-');
+  const formatted = baseName.replaceAll(/\s+/g, '-');
   const paddedNumber = String(nextNumber).padStart(2, '0');
   return `${formatted}-pk-${paddedNumber}`;
 };

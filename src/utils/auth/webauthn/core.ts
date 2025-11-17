@@ -22,7 +22,8 @@ export const base64UrlToArrayBuffer = (base64url: string): ArrayBuffer => {
   const binary = globalThis.atob(paddedBase64);
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) {
-    bytes[i] = binary.charCodeAt(i);
+    const codePoint = binary.codePointAt(i);
+    bytes[i] = codePoint !== undefined ? codePoint : 0;
   }
   return bytes.buffer;
 };
@@ -31,7 +32,7 @@ const arrayBufferToBase64Url = (buffer: ArrayBuffer): string => {
   const bytes = new Uint8Array(buffer);
   let binary = '';
   for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i]);
+    binary += String.fromCodePoint(bytes[i]);
   }
   const base64 = globalThis.btoa(binary);
   return base64
@@ -148,7 +149,7 @@ const convertCredential = (credential: globalThis.PublicKeyCredential): PublicKe
 
 export const isWebAuthnSupported = (): boolean => {
   return (
-    typeof globalThis.PublicKeyCredential !== 'undefined' &&
+    globalThis.PublicKeyCredential !== undefined &&
     typeof globalThis.navigator?.credentials?.create === 'function' &&
     typeof globalThis.navigator?.credentials?.get === 'function'
   );
