@@ -68,3 +68,14 @@ export interface HandleSyncErrorParams {
   isDetailsSync: boolean;
   config: SyncConfig;
 }
+
+export interface DeletionPollingParams {
+  resourceName: string;
+  effect: string;
+  key: string;
+  config: SyncConfig;
+  message: HandleSyncEffectParams['message'];
+  getPollingMaxWait: (config: SyncConfig) => number;
+  getPollingInterval: (config: SyncConfig) => number;
+  getSuccessDuration: (config: SyncConfig) => number;
+}

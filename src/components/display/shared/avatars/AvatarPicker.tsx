@@ -99,9 +99,20 @@ const AvatarItem: React.FC<AvatarItemProps> = ({ style, isSelected, previewUrl, 
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onSelect(style.name);
+    }
+  };
+
   return (
     <div
       onClick={() => onSelect(style.name)}
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-label={`Select ${style.name} avatar style`}
       style={{
         cursor: 'pointer',
         display: 'flex',
@@ -131,6 +142,16 @@ const AvatarItem: React.FC<AvatarItemProps> = ({ style, isSelected, previewUrl, 
     </div>
   );
 };
+
+interface ModalFooterProps {
+  OkBtn: React.ComponentType;
+}
+
+const renderModalFooter = (_: unknown, { OkBtn }: ModalFooterProps) => (
+  <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+    <OkBtn />
+  </div>
+);
 
 const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 }) => {
   const screens = useBreakpoint();
@@ -212,10 +233,21 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
     e.currentTarget.style.borderColor = '#d9d9d9';
   };
 
+  const handleAvatarKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      setIsModalOpen(true);
+    }
+  };
+
   return (
     <>
       <div
         onClick={() => setIsModalOpen(true)}
+        onKeyDown={handleAvatarKeyDown}
+        role="button"
+        tabIndex={0}
+        aria-label="Choose avatar"
         style={{
           cursor: 'pointer',
           display: 'inline-flex',
@@ -251,11 +283,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
             borderColor: DEFAULT_COLORS.SUCCESS,
           },
         }}
-        footer={(_, { OkBtn }) => (
-          <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-            <OkBtn />
-          </div>
-        )}
+        footer={renderModalFooter}
         width={480}
       >
         {isLoadingStyles ? (
