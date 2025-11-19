@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, startTransition } from 'react';
 import { message } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { Icons, PASSKEYS_PAGE_CONSTANTS as PPC, SHARED_DETAILS_CONSTANTS } from '../../constants';
@@ -52,7 +52,9 @@ const ListPasskeys: React.FC = () => {
         if (isDevelopment()) {
           logger.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEYS, error);
         }
-        setLastFetchError(error);
+        startTransition(() => {
+          setLastFetchError(error);
+        });
       }
     }
   }, [error, loading, lastFetchError]);
