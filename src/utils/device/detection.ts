@@ -30,7 +30,8 @@ const detect = (
 
 export const getDeviceInfo = (): { os: string; browser: string } => {
   const ua = globalThis.navigator.userAgent;
-  const platform = globalThis.navigator.platform;
+  const userAgentData = (globalThis.navigator as Navigator & { userAgentData?: { platform?: string } }).userAgentData;
+  const platform = userAgentData?.platform ?? '';
   const combined = `${ua} ${platform}`;
 
   return {
