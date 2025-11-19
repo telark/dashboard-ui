@@ -8,7 +8,6 @@ import DataTable from '../../shared/table/DataTable';
 
 interface PasskeysTableProps {
   passkeys: Passkey[];
-  onPasskeysChange?: (passkeys: Passkey[]) => void;
   onView?: (passkey: Passkey) => void;
   onEdit?: (passkey: Passkey) => void;
   onDelete: (passkey: Passkey, forceLastDelete?: boolean) => Promise<void>;

@@ -16,7 +16,7 @@ import logger from '../../../../logging';
 const UserAvatarDropdown: React.FC = memo(() => {
   const [currentAuthUser, setCurrentAuthUser] = useState<AuthUser | null>(null);
   const [currentUser, setCurrentUser] = useState<UsersUser | null>(null);
-  const [, setLoading] = useState(false);
+  const [_loading, setLoading] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const navigate = useNavigate();
 
