@@ -96,7 +96,7 @@ class EnhancedLogger {
           errorMessage += `\n[Unable to stringify error object]`;
         }
       } else {
-        errorMessage += `\n${String(error)}`;
+        errorMessage += `\n${error as string | number | boolean | undefined | null}`;
       }
     }
 
