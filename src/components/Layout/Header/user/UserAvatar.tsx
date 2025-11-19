@@ -75,8 +75,8 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
         return (
           <Avatar size={size} style={{ backgroundColor: DEFAULT_COLORS.SUCCESS }}>
             {'U'}
-        </Avatar>
-      );
+          </Avatar>
+        );
       })()}
     </button>
   );

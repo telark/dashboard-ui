@@ -77,7 +77,7 @@ class EnhancedLogger {
     log.warn(this.formatMessage(message), ...args);
   }
 
-  error(message: string, error?: Error | unknown, ...args: unknown[]): void {
+  error(message: string, error?: unknown, ...args: unknown[]): void {
     const config = getLoggerConfig();
     let errorMessage = this.formatMessage(message);
 

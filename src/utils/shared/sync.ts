@@ -25,7 +25,6 @@ import {
   isResourceStillPresent,
 } from '../helpers/sync';
 
-
 const handleDeletionPolling = ({
   resourceName,
   effect,
