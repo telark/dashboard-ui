@@ -30,6 +30,7 @@ export const extractRegisterOptions = (
     };
   } else if (registerStartResponse.options?.response) {
     const response = registerStartResponse.options.response;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { excludeCredentials: _excludeCredentials, ...responseWithoutExclude } = response;
     options = responseWithoutExclude;
   } else if (registerStartResponse.challenge) {
