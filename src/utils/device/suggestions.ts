@@ -47,9 +47,9 @@ export const generateDeviceNameSuggestions = (
   }
 
   // Filter out existing names (case-insensitive)
-  const existingLower = existingNames.map((name) => name.toLowerCase());
+  const existingLower = new Set(existingNames.map((name) => name.toLowerCase()));
   const unique = Array.from(new Set(suggestions)).filter(
-    (suggestion) => !existingLower.includes(suggestion.toLowerCase()),
+    (suggestion) => !existingLower.has(suggestion.toLowerCase()),
   );
 
   return unique.slice(0, 3);
