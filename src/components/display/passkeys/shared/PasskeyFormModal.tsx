@@ -33,11 +33,7 @@ const PasskeyFormContent: React.FC<PasskeyFormContentProps> = ({
         rules={[
           { required: true, message: PPC.FORM.DEVICE_NAME_REQUIRED },
           {
-            validator: createDeviceNameValidator(
-              passkeys,
-              isEditMode,
-              selectedPasskey?.deviceName,
-            ),
+            validator: createDeviceNameValidator(passkeys, isEditMode, selectedPasskey?.deviceName),
           },
         ]}
         validateTrigger="onChange"
