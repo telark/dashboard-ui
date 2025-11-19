@@ -51,7 +51,6 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ avatar, username, size = 40, st
         try {
           const styleModule = await getAvatarStyle(avatar.style);
           if (styleModule) {
-            // styleModule is the imported module, use it with createAvatar
             const generated = createAvatar(styleModule as any, {
               seed: avatar.seed,
               size: size * 2,

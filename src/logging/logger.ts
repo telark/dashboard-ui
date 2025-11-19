@@ -85,11 +85,12 @@ class EnhancedLogger {
     if (error) {
       if (config.formatting.includeStackTrace && error instanceof Error && error.stack) {
         errorMessage += `\n${error.stack}`;
-      } else if (typeof error === 'object') {
+      } else if (typeof error === 'object' && error !== null) {
         try {
           errorMessage += `\n${JSON.stringify(error, null, 2)}`;
         } catch {
-          errorMessage += `\n${String(error)}`;
+          const errorString = error instanceof Error ? error.message : '[Unable to stringify error object]';
+          errorMessage += `\n${errorString}`;
         }
       } else {
         errorMessage += `\n${String(error)}`;

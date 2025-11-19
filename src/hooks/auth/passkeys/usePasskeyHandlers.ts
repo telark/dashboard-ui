@@ -31,7 +31,7 @@ export const usePasskeyHandlers = (
         }
         return;
       }
-      navigate(navigateToPasskeyView(record.deviceName!));
+      navigate(navigateToPasskeyView(record.deviceName));
     },
     [navigate],
   );

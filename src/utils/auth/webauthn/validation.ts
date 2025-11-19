@@ -83,10 +83,10 @@ export const validateBackendPasskeysInBrowser = async (
 
   for (const credentialId of credentialIds) {
     const existsInBrowser = await browserHasCredential(credentialId, rpId);
-    if (!existsInBrowser) {
-      orphanedCredentialIds.push(credentialId);
-    } else {
+    if (existsInBrowser) {
       hasValidPasskeys = true;
+    } else {
+      orphanedCredentialIds.push(credentialId);
     }
   }
 

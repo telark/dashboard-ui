@@ -23,7 +23,7 @@ export const base64UrlToArrayBuffer = (base64url: string): ArrayBuffer => {
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) {
     const codePoint = binary.codePointAt(i);
-    bytes[i] = codePoint !== undefined ? codePoint : 0;
+    bytes[i] = codePoint ?? 0;
   }
   return bytes.buffer;
 };
@@ -31,8 +31,8 @@ export const base64UrlToArrayBuffer = (base64url: string): ArrayBuffer => {
 const arrayBufferToBase64Url = (buffer: ArrayBuffer): string => {
   const bytes = new Uint8Array(buffer);
   let binary = '';
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCodePoint(bytes[i]);
+  for (const byte of bytes) {
+    binary += String.fromCodePoint(byte);
   }
   const base64 = globalThis.btoa(binary);
   return base64
