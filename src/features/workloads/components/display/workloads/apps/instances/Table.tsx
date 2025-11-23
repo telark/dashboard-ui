@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { INSTANCES_PAGE_CONSTANTS as IPC } from '../../../../../constants/instances';
+import { INSTANCES_CONSTANTS as IPC } from '../../../../../constants/instances';
 import type {
   InstancesTableProps,
   InstanceTableRow,

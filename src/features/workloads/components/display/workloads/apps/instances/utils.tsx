@@ -5,7 +5,7 @@ import type {
   ContainerUsage,
 } from '../../../../../models';
 import type { InstanceTableRow } from '../../../../../models/instances';
-import { INSTANCES_PAGE_CONSTANTS as IPC } from '../../../../../constants/instances';
+import { INSTANCES_CONSTANTS as IPC } from '../../../../../constants/instances';
 
 export type InstancesSortKey =
   | 'instanceName'

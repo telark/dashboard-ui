@@ -1,4 +1,4 @@
-export const INSTANCES_PAGE_CONSTANTS = {
+export const INSTANCES_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Instances',
     HEADER_SUBTITLE: 'Manage instances',
@@ -58,4 +58,4 @@ export const INSTANCES_PAGE_CONSTANTS = {
   },
 } as const;
 
-export type InstancesPageConstants = typeof INSTANCES_PAGE_CONSTANTS;
+export type InstancesConstants = typeof INSTANCES_CONSTANTS;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Dropdown } from 'antd';
 import { EyeOutlined, MoreOutlined } from '@ant-design/icons';
-import { INSTANCES_PAGE_CONSTANTS as IPC } from '../../../../../constants/instances';
+import { INSTANCES_CONSTANTS as IPC } from '../../../../../constants/instances';
 import type { InstanceTableRow } from '../../../../../models/instances';
 
 interface ActionsProps {

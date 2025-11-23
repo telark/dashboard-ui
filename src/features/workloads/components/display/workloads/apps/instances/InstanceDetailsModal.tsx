@@ -5,7 +5,7 @@ import ViewDetails from '../../../../../../../components/display/shared/views/Vi
 import type { AppWorkload, Container } from '../../../../../models';
 import type { InstanceTableRow } from '../../../../../models/instances';
 import { ContainerOutlined } from '@ant-design/icons';
-import { INSTANCES_PAGE_CONSTANTS as IPC } from '../../../../../constants/instances';
+import { INSTANCES_CONSTANTS as IPC } from '../../../../../constants/instances';
 import {
   createInstanceViewConfig,
   createContainerViewConfig,

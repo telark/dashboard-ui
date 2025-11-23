@@ -10,7 +10,7 @@ import {
   setupAutoRefresh,
 } from '../../utils/state/state';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../utils/shared/retry';
-import { WORKLOADS_PAGE_CONSTANTS } from '../../constants';
+import { WORKLOADS_CONSTANTS } from '../../constants';
 import { APP_ROUTES } from '../../../../constants';
 import type { AppWorkloadCardData } from '../../models';
 import Loading from './Loading';
@@ -69,8 +69,8 @@ const WorkloadsGlobalView: React.FC = memo(() => {
       setNextRetryIn: setNextRetryIn,
       setInCooldown: setIsInCooldown,
       setCooldownTime: setCooldownTime,
-      onSuccess: () => message.success(WORKLOADS_PAGE_CONSTANTS.MESSAGES.SUCCESS),
-      onError: () => message.error(WORKLOADS_PAGE_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
+      onSuccess: () => message.success(WORKLOADS_CONSTANTS.MESSAGES.SUCCESS),
+      onError: () => message.error(WORKLOADS_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
     }),
     [],
   );
