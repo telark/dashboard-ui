@@ -1,5 +1,5 @@
 import type { PublicKeyCredential } from './credentials';
-import type { AppDispatch } from '../../store';
+import type { AppDispatch } from '../../../store';
 import type { PasskeyDeviceType } from './types';
 
 export interface Passkey {
@@ -59,7 +59,7 @@ export interface CreatePasskeyParams {
 }
 
 // Hook interfaces
-export interface UsePasskeyModalReturn {
+export interface PasskeyModalStateReturn {
   isModalOpen: boolean;
   isEditMode: boolean;
   selectedPasskey: Passkey | null;
@@ -68,7 +68,7 @@ export interface UsePasskeyModalReturn {
   closeModal: () => void;
 }
 
-export interface UsePasskeyHandlersReturn {
+export interface PasskeyActionsReturn {
   submitting: boolean;
   handleView: (record: Passkey) => void;
   handleEdit: (record: Passkey) => void;

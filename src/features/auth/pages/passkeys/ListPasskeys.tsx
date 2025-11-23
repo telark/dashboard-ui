@@ -2,7 +2,7 @@ import React, { useEffect, useState, startTransition } from 'react';
 import { message } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { Icons, SHARED_DETAILS_CONSTANTS } from '../../../../constants';
-import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../constants/passkeys';
+import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
 import Header from '../../../../components/display/shared/sections/Header';
 import PasskeysTable from '../../components/passkeys/list/Table';
 import PasskeyFormModal from '../../components/passkeys/shared/PasskeyFormModal';
@@ -17,7 +17,7 @@ import {
   selectPasskeyLoading,
   selectPasskeyError,
 } from '../../../../store/passkeys/selectors/passkeySelectors';
-import { usePasskeyModal, usePasskeyHandlers } from '../../hooks/passkeys';
+import { passkeyModalState, passkeyActions } from '../../hooks/passkeys';
 
 const PasskeyIcon = Icons.Passkey;
 
@@ -28,10 +28,10 @@ const ListPasskeys: React.FC = () => {
   const error = useSelector(selectPasskeyError);
 
   const { isModalOpen, isEditMode, selectedPasskey, openCreateModal, openEditModal, closeModal } =
-    usePasskeyModal();
+    passkeyModalState();
 
   const { submitting, handleView, handleEdit, handleDelete, handleCreate, handleUpdate } =
-    usePasskeyHandlers(openEditModal);
+    passkeyActions(openEditModal);
 
   const [lastFetchError, setLastFetchError] = useState<string | null>(null);
 

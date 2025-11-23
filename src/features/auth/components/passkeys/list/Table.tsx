@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { App } from 'antd';
-import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../constants/passkeys';
+import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
 import type { Passkey } from '../../../models/passkeys';
 import { Columns } from './Columns';
 import { PasskeysSortKey, sortPasskeys } from './utils';

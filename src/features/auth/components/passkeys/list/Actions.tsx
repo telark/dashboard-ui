@@ -1,5 +1,5 @@
 import React from 'react';
-import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../constants/passkeys';
+import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
 import type { Passkey } from '../../../models/passkeys';
 import RowOptions from '../../../../../components/display/shared/actions/RowOptions';
 

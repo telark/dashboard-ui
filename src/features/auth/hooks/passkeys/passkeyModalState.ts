@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
-import type { Passkey, UsePasskeyModalReturn } from '../../models/passkeys';
+import type { Passkey, PasskeyModalStateReturn } from '../../models/passkeys';
 
-export const usePasskeyModal = (): UsePasskeyModalReturn => {
+export const passkeyModalState = (): PasskeyModalStateReturn => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedPasskey, setSelectedPasskey] = useState<Passkey | null>(null);

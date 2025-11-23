@@ -1,4 +1,4 @@
-export const PASSKEYS_PAGE_CONSTANTS = {
+export const PASSKEYS_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Passkeys',
     HEADER_SUBTITLE: 'Manage your passkeys',
@@ -126,4 +126,4 @@ export const PASSKEYS_PAGE_CONSTANTS = {
   },
 } as const;
 
-export type PasskeysPageConstants = typeof PASSKEYS_PAGE_CONSTANTS;
+export type PasskeysConstants = typeof PASSKEYS_CONSTANTS;

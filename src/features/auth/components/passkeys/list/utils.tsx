@@ -1,5 +1,5 @@
 import type { Passkey } from '../../../models/passkeys';
-import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../constants/passkeys';
+import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
 
 export type PasskeysSortKey =
   | 'deviceName'

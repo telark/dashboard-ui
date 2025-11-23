@@ -3,7 +3,7 @@ import { registerStart } from '../../clients';
 import { registerPasskey } from '../webauthn';
 import { extractRegisterOptions } from '../flow/register';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
-import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../constants/passkeys';
+import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
 import {
   createPasskeyThunk,
   updatePasskeyThunk,

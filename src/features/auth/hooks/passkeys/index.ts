@@ -1,2 +1,2 @@
-export { usePasskeyModal } from './usePasskeyModal';
-export { usePasskeyHandlers } from './usePasskeyHandlers';
+export { passkeyModalState } from './passkeyModalState';
+export { passkeyActions } from './passkeyActions';

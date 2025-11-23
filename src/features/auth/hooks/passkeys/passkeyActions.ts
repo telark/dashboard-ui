@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../constants/passkeys';
+import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 import { AppDispatch } from '../../../../store';
@@ -12,11 +12,11 @@ import {
   navigateToPasskeyView,
   validatePasskeyForNavigation,
 } from '../../utils/passkey';
-import type { Passkey, UsePasskeyHandlersReturn } from '../../models/passkeys';
+import type { Passkey, PasskeyActionsReturn } from '../../models/passkeys';
 
-export const usePasskeyHandlers = (
+export const passkeyActions = (
   openEditModal: (passkey: Passkey) => void,
-): UsePasskeyHandlersReturn => {
+): PasskeyActionsReturn => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);

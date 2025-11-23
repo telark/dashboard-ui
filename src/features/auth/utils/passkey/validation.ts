@@ -1,4 +1,4 @@
-import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../constants/passkeys';
+import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
 import type { ValidateDeviceNameOptions, Passkey } from '../../models/passkeys';
 
 export const validateDeviceName = ({
