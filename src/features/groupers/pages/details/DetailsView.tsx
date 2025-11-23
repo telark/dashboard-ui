@@ -3,11 +3,11 @@ import { useParams } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
 import { useSelector } from 'react-redux';
 import { GrouperDetailsHook } from '../../hooks';
-import { syncGrouperDetails } from '../../utils/sync';
+import { syncGrouperDetails } from '../../utils';
 import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../constants/grouper-details';
 import { RootState } from '../../../../store';
 import { usePersistedTab } from '../../../../utils/shared/usePersistedTab';
-import { GrouperDetailsError, GrouperDetailsEmpty, Header, Tabs, Content } from '.';
+import { GrouperDetailsError, GrouperDetailsEmpty, Header, Tabs, Content } from '..';
 import LoadingDetails from '../../../../components/shared/LoadingDetails';
 
 const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {

@@ -14,7 +14,7 @@ import {
   getBridgeReduxName,
   getBridgeApiName,
   isBridgeResource,
-} from '../../../utils/resources';
+} from '../../../utils';
 import ResourcesEmptyState from '../resources/ResourcesEmptyState';
 import ActionBar from '../resources/ActionBar';
 import ResourcesTable from '../resources/Table';

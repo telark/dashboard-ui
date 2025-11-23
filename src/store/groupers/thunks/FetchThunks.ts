@@ -9,7 +9,7 @@ import {
   mapGroupersData,
   mapSingleGrouperData,
   mapGrouperMaintenanceData,
-} from '../../../features/groupers/utils/mappers';
+} from '../../../features/groupers/utils';
 import {
   generateGrouperName,
   generateMaintenanceFeatureName,

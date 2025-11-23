@@ -6,7 +6,7 @@ import { AiOutlineCluster } from 'react-icons/ai';
 import { GROUPER_CARD_TEXTS, CARD_DEFAULTS } from '../../../../constants';
 import type { GrouperInterface } from '../../models';
 import type { RootState } from '../../../../store';
-import { syncGrouper } from '../../utils/sync';
+import { syncGrouper } from '../../utils';
 import { getDetailedStatusStyle, normalizeStatus } from '../../../../utils/helpers/status';
 import { ResourceCard, ResourceCardData, ResourceCardActions, ResourceCardConfig } from '../../../../components/cards/shared';
 

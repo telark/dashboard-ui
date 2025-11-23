@@ -8,10 +8,10 @@ import {
   loadGroupersSilent,
   handleInitialSync,
   setupAutoRefresh,
-} from '../../utils/state';
+} from '../../utils';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../utils/shared/retry';
 import { GROUPERS_PAGE_CONSTANTS } from '../../constants/groupers';
-import { Loading, GrouperMainError, GrouperMainEmpty, Success } from '.';
+import { Loading, GrouperMainError, GrouperMainEmpty, Success } from '..';
 
 const GroupersGlobalView: React.FC = memo(function GroupersGlobalView() {
   const dispatch: AppDispatch = useDispatch();
