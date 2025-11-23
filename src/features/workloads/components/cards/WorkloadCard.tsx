@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
 import { AiOutlineCluster, AiOutlineAppstore } from 'react-icons/ai';
 
-import { DEFAULT_COLORS } from '../../../constants';
-import { AppWorkloadCardData } from '../../../interfaces/resources/workload';
-import { getDetailedStatusStyle, normalizeStatus } from '../../../utils/helpers/status';
-import { ResourceCard, ResourceCardData, ResourceCardActions, ResourceCardConfig } from '../shared';
-import { syncAppWorkload } from '../../../features/workloads/utils/sync/sync';
-import { RootState } from '../../../store';
+import { DEFAULT_COLORS } from '../../../../constants';
+import type { AppWorkloadCardData } from '../../models';
+import { getDetailedStatusStyle, normalizeStatus } from '../../../../utils/helpers/status';
+import { ResourceCard, ResourceCardData, ResourceCardActions, ResourceCardConfig } from '../../../../components/cards/shared';
+import { syncAppWorkload } from '../../utils/sync/sync';
+import { RootState } from '../../../../store';
 
 interface WorkloadCardProps {
   workload: AppWorkloadCardData;

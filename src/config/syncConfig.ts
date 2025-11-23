@@ -2,7 +2,7 @@ import { RootState } from '../store';
 import {
   fetchAllAppsWorkloadsThunk,
   fetchAppWorkloadDetailsThunk,
-} from '../store/workloads/thunks/FetchThunks';
+} from '../features/workloads/store/thunks/fetchThunks';
 import {
   fetchAllGroupersThunk,
   fetchGrouperDetailsThunk,

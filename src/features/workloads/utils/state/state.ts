@@ -1,16 +1,17 @@
+import type { AppDispatch } from '../../../../store';
 import {
   fetchAllAppsWorkloadsThunk,
-} from '../../features/workloads/store/thunks/fetchThunks';
+} from '../../store/thunks/fetchThunks';
 import {
   triggerAppsSyncThunk,
   refreshAutoAppsThunk,
-} from '../../features/workloads/store/thunks/syncThunks';
+} from '../../store/thunks/syncThunks';
 import {
   WORKLOADS_REFRESH_INTERVAL_MS,
   WORKLOADS_SYNC_LS_KEY,
   WORKLOADS_SYNC_THROTTLE_MS,
-} from '../../constants/config/sync';
-import { createResourceStateUtils } from '../shared/resourceStateFactory';
+} from '../../../../constants/config/sync';
+import { createResourceStateUtils } from '../../../../utils/shared/resourceStateFactory';
 
 const workloadStateUtils = createResourceStateUtils({
   fetchThunk: fetchAllAppsWorkloadsThunk,
@@ -26,3 +27,4 @@ export const loadWorkloads = workloadStateUtils.loadResource;
 export const loadWorkloadsSilent = workloadStateUtils.loadResourceSilent;
 export const handleInitialSync = workloadStateUtils.handleInitialSync;
 export const setupAutoRefresh = workloadStateUtils.setupAutoRefresh;
+

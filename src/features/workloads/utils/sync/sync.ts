@@ -1,13 +1,13 @@
-import { triggerSingleAppSync } from '../../features/workloads/clients';
-import { SYNC_MESSAGES } from '../../constants/layout/modes';
-import { SYNC_CONSTANTS } from '../../constants/config/sync';
-import { WORKLOAD_DETAILS_CONSTANTS } from '../../features/workloads/constants';
-import store from '../../store';
-import { startSync, endSync } from '../../features/workloads/store/slices/workloadSlice';
-import { handleSyncEffect, handleSyncError } from '../shared/sync';
-import { buildDetailsSyncKey, buildCardSyncKey, destroySyncMessage } from '../helpers/sync';
-import { WORKLOAD_SYNC_CONFIG } from '../../config/syncConfig';
-import { DetailsSyncParams, SyncParams } from '../../interfaces/resources/sync';
+import { triggerSingleAppSync } from '../../clients';
+import { SYNC_MESSAGES } from '../../../../constants/layout/modes';
+import { SYNC_CONSTANTS } from '../../../../constants/config/sync';
+import { WORKLOAD_DETAILS_CONSTANTS } from '../../constants';
+import store from '../../../../store';
+import { startSync, endSync } from '../../store/slices/workloadSlice';
+import { handleSyncEffect, handleSyncError } from '../../../../utils/shared/sync';
+import { buildDetailsSyncKey, buildCardSyncKey, destroySyncMessage } from '../../../../utils/helpers/sync';
+import { WORKLOAD_SYNC_CONFIG } from '../../../../config/syncConfig';
+import type { DetailsSyncParams, SyncParams } from '../../../../interfaces/resources/sync';
 
 export const syncAppWorkloadDetails = async ({
   details,
@@ -87,3 +87,4 @@ export const syncAppWorkload = async ({ name, message, setSyncing }: SyncParams)
     store.dispatch(endSync(name));
   }
 };
+

@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
 import { grouperReducer } from '../features/groupers/store';
 import insightsReducer from './insights/slices/insightsSlice';
-import workloadReducer from './workloads/slices/workloadSlice';
+import { workloadReducer } from '../features/workloads/store';
 import { bridgeReducer } from '../features/bridges/store';
 import groupsReducer from './groups/slices/groupSlice';
 import usersReducer from './users/slices/userSlice';

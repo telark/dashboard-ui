@@ -14,8 +14,8 @@ const GroupersGlobalView = lazy(() => import('../features/groupers/pages/main/Gl
 const GrouperDetailsView = lazy(() => import('../features/groupers/pages/details/DetailsView'));
 const BridgesGlobalView = lazy(() => import('../features/bridges/pages/main/GlobalView'));
 const BridgeDetailsView = lazy(() => import('../features/bridges/pages/details/DetailsView'));
-const WorkloadsGlobalView = lazy(() => import('../pages/workload/main/GlobalView'));
-const AppWorkloadDetailsView = lazy(() => import('../pages/workload/details/apps/DetailsView'));
+const WorkloadsGlobalView = lazy(() => import('../features/workloads/pages/main/GlobalView'));
+const AppWorkloadDetailsView = lazy(() => import('../features/workloads/pages/details/apps/DetailsView'));
 const RolesCreateView = lazy(() => import('../pages/roles/CreateRole'));
 const RolesListView = lazy(() => import('../pages/roles/ListRoles'));
 const RoleView = lazy(() => import('../pages/roles/ViewRole'));

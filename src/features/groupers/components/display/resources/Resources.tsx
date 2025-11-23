@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { App as AntdApp } from 'antd';
 import type { ResourcesInterface } from '../../../../../interfaces/shared';
 import type { RootState } from '../../../../../store';
-import { syncAppWorkload } from '../../../../../utils/workload/sync';
+import { syncAppWorkload } from '../../../../../features/workloads/utils/sync/sync';
 import { syncBridge } from '../../../../../features/bridges/utils/sync/sync';
 import {
   enrichResources,

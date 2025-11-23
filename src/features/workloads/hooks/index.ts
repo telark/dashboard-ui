@@ -1,0 +1,2 @@
+export { useWorkloadDetails } from './workloadDetails';
+

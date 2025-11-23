@@ -1,0 +1,2 @@
+export { createWorkloadViewConfig } from './workloadViewConfig';
+

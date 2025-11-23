@@ -1,0 +1,46 @@
+import React from 'react';
+import { Button, Typography } from 'antd';
+import { ArrowLeftOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import { WORKLOADS_PAGE_CONSTANTS, WORKLOAD_DETAILS_CONSTANTS } from '../../../constants';
+
+const { Title, Text } = Typography;
+
+interface WorkloadDetailsErrorProps {
+  onRetry?: () => void;
+}
+
+const WorkloadDetailsError: React.FC<WorkloadDetailsErrorProps> = React.memo(({ onRetry }) => {
+  const navigate = useNavigate();
+
+  return (
+    <div style={WORKLOAD_DETAILS_CONSTANTS.STATES.ERROR_CONTAINER}>
+      <Button
+        icon={<ArrowLeftOutlined />}
+        onClick={() => navigate('/workloads')}
+        style={{ marginBottom: '24px' }}
+      >
+        Back to Workloads
+      </Button>
+
+      <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <Title level={3} style={{ color: WORKLOADS_PAGE_CONSTANTS.COLORS.WARNING }}>
+          Failed to load app details
+        </Title>
+        <Text type="secondary" style={{ display: 'block', marginBottom: '24px' }}>
+          Unable to connect to the server. Please try again.
+        </Text>
+
+        {onRetry && (
+          <Button type="primary" onClick={onRetry}>
+            {WORKLOADS_PAGE_CONSTANTS.MESSAGES.REFRESH}
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+});
+
+WorkloadDetailsError.displayName = 'WorkloadDetailsError';
+
+export default WorkloadDetailsError;

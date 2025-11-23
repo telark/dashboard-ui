@@ -13,9 +13,7 @@ import type {
   ResourceListResponse,
   ResourceDetailsResponse,
   ClusterInsightsResponse,
-  StandardApiResponse,
 } from '../interfaces/http';
-import type { AppWorkload } from '../interfaces/resources/workload';
 import type { User } from '../interfaces/resources/users';
 import type {
   SessionDetailsResponse,
@@ -46,54 +44,6 @@ export const checkClusterInsights = async () => {
   }
 };
 
-export const fetchAllAppsWorkloads = async () => {
-  try {
-    return await Client<ResourceListResponse<AppWorkload>>(
-      exporterApiClient,
-      Endpoints.WORKLOADS.APPS.GET_ALL_APPS.path,
-    );
-  } catch (error) {
-    logger.error(ERROR_MESSAGES.CLIENT.FETCH_APPS_FAILED, error);
-    throw error;
-  }
-};
-
-export const fetchAppWorkloadDetails = async (name: string) => {
-  try {
-    return await Client<ResourceDetailsResponse<AppWorkload>>(
-      exporterApiClient,
-      Endpoints.WORKLOADS.APPS.GET_APP_DETAILS(name).path,
-    );
-  } catch (error) {
-    logger.error(`${ERROR_MESSAGES.CLIENT.FETCH_APP_DETAILS_FAILED} "${name}":`, error);
-    throw error;
-  }
-};
-
-export const updateAppWorkloadSyncMode = async (name: string, syncMode: string) => {
-  try {
-    const { path, method } = Endpoints.WORKLOADS.APPS.UPDATE_APP_SYNC(name);
-    return await Client<StandardApiResponse>(exporterApiClient, path, {
-      method: method,
-      data: { spec: { config: { sync: { mode: syncMode } } } },
-    });
-  } catch (error) {
-    logger.error(`${ERROR_MESSAGES.CLIENT.UPDATE_SYNC_MODE_FAILED} "${name}":`, error);
-    throw error;
-  }
-};
-
-export const fetchAllBatchesWorkloads = async () => {
-  try {
-    return await Client<ResourceListResponse<unknown>>(
-      exporterApiClient,
-      Endpoints.WORKLOADS.BATCHES.GET_ALL_BATCHES.path,
-    );
-  } catch (error) {
-    logger.error(ERROR_MESSAGES.CLIENT.FETCH_BATCHES_FAILED, error);
-    throw error;
-  }
-};
 
 export const fetchUsers = async (silent = false) => {
   try {
