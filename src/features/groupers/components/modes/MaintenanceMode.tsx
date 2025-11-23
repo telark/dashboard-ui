@@ -6,9 +6,9 @@ import {
   DownOutlined,
   UpOutlined,
 } from '@ant-design/icons';
-import PrimaryButtonWithOutLoading from '../buttons/PrimayButtonWithOutLoading';
-import { DEFAULT_COLORS } from '../../constants';
-import { MAINTENANCE_MODE } from '../../constants/layout/modes';
+import PrimaryButtonWithOutLoading from '../../../../components/buttons/PrimayButtonWithOutLoading';
+import { DEFAULT_COLORS } from '../../../../constants';
+import { MAINTENANCE_MODE } from '../../../../constants/layout/modes';
 
 interface MaintenanceModeProps {
   isMaintenanceModeActive: boolean;
@@ -201,3 +201,4 @@ const MaintenanceMode: React.FC<MaintenanceModeProps> = ({
 };
 
 export default MaintenanceMode;
+

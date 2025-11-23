@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Card } from 'antd';
 import ViewDetails from '../../../../components/display/shared/views/ViewDetails';
 import HistoryTimeLine from '../../../../components/display/shared/timeline';
-import MaintenanceMode from '../../../../components/tabs/MaintenanceMode';
+import { MaintenanceMode } from '../../components';
 import { Resources } from '../../components';
 import SyncMode from '../../../../components/tabs/SyncMode';
 import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../constants/grouper-details';
