@@ -1,4 +1,4 @@
-import { registerStart, createPasskey } from '../../clients/auth';
+import { registerStart, createPasskey } from '../../clients';
 import { registerPasskey } from '../webauthn';
 import { AUTH_SUCCESS_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
@@ -7,8 +7,8 @@ import logger from '../../../../logging';
 import type {
   RegisterStartResponse,
   PublicKeyCredentialCreationOptions,
-} from '../../models/credentials';
-import type { PasskeyDeviceType } from '../../models/types';
+  PasskeyDeviceType,
+} from '../../models';
 import type { MessageInstance } from 'antd/es/message/interface';
 
 export const extractRegisterOptions = (

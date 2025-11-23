@@ -1,12 +1,11 @@
-import { loginStart, loginFinish, deletePasskey } from '../../clients/auth';
+import { loginStart, loginFinish, deletePasskey } from '../../clients';
 import {
   authenticateWithPasskey,
   extractLoginOptions,
   extractCredentialIds,
   hasBackendPasskeys,
 } from '../webauthn';
-import { setSessionToken } from '../session/token';
-import { setCurrentUser } from '../session/user';
+import { setSessionToken, setCurrentUser } from '../session';
 import { AUTH_SUCCESS_MESSAGES, AUTH_ERROR_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { HTTP_STATUS } from '../../../../constants/rest/http';
@@ -14,7 +13,7 @@ import { handleAuthError } from '../shared/errors';
 import type {
   LoginStartResponse,
   AuthenticatorAssertionResponse,
-} from '../../models/credentials';
+} from '../../models';
 import type { MessageInstance } from 'antd/es/message/interface';
 
 export const prepareLoginFinishRequest = (

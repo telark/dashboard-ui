@@ -3,7 +3,7 @@ import { Form, Input } from 'antd';
 import { Icons } from '../../../../../constants';
 import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../constants/passkeys';
 import FormModal from '../../../../../components/display/shared/modal/FormModal';
-import { createDeviceNameValidator } from '../../../utils/passkey/validation';
+import { createDeviceNameValidator } from '../../../utils/passkey';
 import type { PasskeyFormModalProps } from '../../../models/passkeys';
 import DeviceNameSuggestions from './DeviceNameSuggestions';
 

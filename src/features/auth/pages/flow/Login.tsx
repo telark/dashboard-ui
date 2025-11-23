@@ -6,12 +6,12 @@ import {
   performLogin,
   cleanupOrphanedPasskeys,
   type OrphanedPasskeysInfo,
-} from '../../utils/flows/login';
+} from '../../utils/flow';
 import { APP_ROUTES } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { LoginForm } from '../../components/login';
 import { AuthContainer, AuthCard, AuthHeader, AuthFooter } from '../../components/shared';
-import OrphanedPasskeysModal from '../../components/modals/OrphanedPasskeysModal';
+import { OrphanedPasskeysModal } from '../../components/modals';
 
 const Login: React.FC = () => {
   const [form] = Form.useForm();

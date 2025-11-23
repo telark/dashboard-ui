@@ -9,11 +9,9 @@ import {
   handleCreatePasskey,
   handleUpdatePasskey,
   handleDeletePasskey,
-} from '../../utils/passkey/handlers';
-import {
   navigateToPasskeyView,
   validatePasskeyForNavigation,
-} from '../../utils/passkey/navigation';
+} from '../../utils/passkey';
 import type { Passkey, UsePasskeyHandlersReturn } from '../../models/passkeys';
 
 export const usePasskeyHandlers = (

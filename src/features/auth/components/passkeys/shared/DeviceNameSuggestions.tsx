@@ -1,5 +1,5 @@
 import React from 'react';
-import { generateDeviceNameSuggestions } from '../../../../../utils/device/suggestions';
+import { generateDeviceNameSuggestions } from '../../../utils/passkey/device';
 import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../constants/passkeys';
 import type { Passkey } from '../../../models/passkeys';
 

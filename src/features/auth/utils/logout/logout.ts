@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { logout } from '../../clients/auth';
+import { logout } from '../../clients';
 import { removeSessionToken } from '../session/token';
 import { AUTH_ERROR_MESSAGES, AUTH_SUCCESS_MESSAGES } from '../../constants';
 import { APP_ROUTES } from '../../../../constants';

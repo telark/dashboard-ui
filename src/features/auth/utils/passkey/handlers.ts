@@ -1,7 +1,7 @@
 import { message } from 'antd';
-import { registerStart } from '../../clients/auth';
+import { registerStart } from '../../clients';
 import { registerPasskey } from '../webauthn';
-import { extractRegisterOptions } from '../flows/register';
+import { extractRegisterOptions } from '../flow/register';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../constants/passkeys';
 import {
@@ -14,8 +14,8 @@ import type {
   CreatePasskeyHandlerParams,
   UpdatePasskeyHandlerParams,
   DeletePasskeyHandlerParams,
-} from '../../models/passkeys';
-import type { PasskeyDeviceType } from '../../models/types';
+  PasskeyDeviceType,
+} from '../../models';
 
 export const handleCreatePasskey = async ({
   deviceName,

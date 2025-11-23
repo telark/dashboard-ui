@@ -9,7 +9,7 @@ import {
 import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../constants/passkeys';
 import Header from '../../../../components/display/shared/sections/Header';
 import ViewDetails from '../../../../components/display/shared/views/ViewDetails';
-import { createPasskeyViewConfig } from '../../config/passkeyViewConfig';
+import { createPasskeyViewConfig } from '../../config';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
 import { message } from 'antd';

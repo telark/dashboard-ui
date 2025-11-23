@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Modal } from 'antd';
 import { useNavigate, type NavigateFunction } from 'react-router-dom';
-import { getSessionToken, removeSessionToken } from '../../utils/session/token';
-import { removeCurrentUser } from '../../utils/session/user';
+import { getSessionToken, removeSessionToken, removeCurrentUser } from '../../utils/session';
 import { deleteSession } from '../../../../clients/exporter';
 import { AUTH_CONSTANTS } from '../../constants/messages';
 import { APP_ROUTES, DEFAULT_COLORS } from '../../../../constants';
