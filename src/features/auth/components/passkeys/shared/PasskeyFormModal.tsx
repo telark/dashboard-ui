@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { Form, Input } from 'antd';
 import { Icons } from '../../../../../constants';
 import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
@@ -22,6 +22,25 @@ const PasskeyFormContent: React.FC<PasskeyFormContentProps> = ({
   isEditMode,
   selectedPasskey,
 }) => {
+  const inputRef = useRef<any>(null);
+
+  const handleSuggestionSelect = (suggestion: string) => {
+    form.setFieldValue('deviceName', suggestion);
+    if (inputRef.current) {
+      const input = inputRef.current.input || inputRef.current;
+      if (input) {
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+          window.HTMLInputElement.prototype,
+          'value'
+        )?.set;
+        nativeInputValueSetter?.call(input, suggestion);
+        const event = new Event('input', { bubbles: true });
+        input.dispatchEvent(event);
+      }
+    }
+    form.validateFields(['deviceName']);
+  };
+
   return (
     <div
       className="form-item-compact passkey-form-modal"
@@ -39,15 +58,16 @@ const PasskeyFormContent: React.FC<PasskeyFormContentProps> = ({
         ]}
         validateTrigger="onChange"
       >
-        <Input placeholder={PPC.FORM.DEVICE_NAME_PLACEHOLDER} style={{ width: '100%' }} />
+        <Input
+          ref={inputRef}
+          placeholder={PPC.FORM.DEVICE_NAME_PLACEHOLDER}
+          style={{ width: '100%' }}
+        />
       </Form.Item>
       {!isEditMode && (
         <DeviceNameSuggestions
           existingPasskeys={passkeys}
-          onSelect={(suggestion) => {
-            form.setFieldsValue({ deviceName: suggestion });
-            form.validateFields(['deviceName']);
-          }}
+          onSelect={handleSuggestionSelect}
         />
       )}
     </div>
