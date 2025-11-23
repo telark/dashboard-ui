@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { message } from 'antd';
 import { RootState, AppDispatch } from '../../../../store';
 import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
-import { loadGroupers, loadGroupersSilent, handleInitialSync, setupAutoRefresh } from '../../utils';
+import { loadGroupers, loadGroupersSilent, handleInitialSync, setupAutoRefresh } from '../../utils/state/state';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../utils/shared/retry';
 import { GROUPERS_PAGE_CONSTANTS } from '../../constants/groupers';
 import { Loading, GrouperMainError, GrouperMainEmpty, Success } from '..';

@@ -1,4 +1,5 @@
-import { loginStart, loginFinish, deletePasskey } from '../../clients';
+import { loginStart, loginFinish } from '../../clients/login';
+import { deletePasskey } from '../../clients/passkeys';
 import { authenticateWithPasskey } from '../webauthn/core';
 import {
   extractLoginOptions,

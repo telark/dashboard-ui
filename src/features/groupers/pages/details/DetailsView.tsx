@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
 import { useSelector } from 'react-redux';
 import { GrouperDetailsHook } from '../../hooks';
-import { syncGrouperDetails } from '../../utils';
+import { syncGrouperDetails } from '../../utils/sync/sync';
 import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../constants/grouper-details';
 import { RootState } from '../../../../store';
 import { usePersistedTab } from '../../../../utils/shared/usePersistedTab';

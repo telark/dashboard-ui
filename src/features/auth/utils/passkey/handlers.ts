@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { registerStart } from '../../clients';
+import { registerStart } from '../../clients/register';
 import { registerPasskey } from '../webauthn/core';
 import { extractRegisterOptions } from '../flow/register';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
