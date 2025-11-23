@@ -44,7 +44,6 @@ export const checkClusterInsights = async () => {
   }
 };
 
-
 export const fetchUsers = async (silent = false) => {
   try {
     const config = silent

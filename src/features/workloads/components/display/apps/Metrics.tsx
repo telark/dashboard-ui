@@ -1,7 +1,7 @@
 import React from 'react';
-import { DEFAULT_COLORS, Icons } from '../../../../../../constants';
-import { WORKLOAD_DETAILS_CONSTANTS } from '../../../../constants';
-import type { AppWorkload } from '../../../../models';
+import { DEFAULT_COLORS, Icons } from '../../../../../constants';
+import { WORKLOAD_DETAILS_CONSTANTS } from '../../../constants';
+import type { AppWorkload } from '../../../models';
 
 interface WorkloadMetricsProps {
   workload: AppWorkload;

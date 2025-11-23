@@ -12,4 +12,3 @@ export { default as Header } from './details/apps/Header';
 export { default as Tabs } from './details/apps/Tabs';
 export { default as Content } from './details/apps/Content';
 export { default as AppWorkloadDetailsView } from './details/apps/DetailsView';
-

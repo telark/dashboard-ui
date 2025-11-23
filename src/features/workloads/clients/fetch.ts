@@ -1,7 +1,11 @@
 import { Client, exporterApiClient } from '../../../api/index';
 import logger from '../../../logging';
 import { Endpoints, ERROR_MESSAGES } from '../../../constants';
-import type { ResourceListResponse, ResourceDetailsResponse, StandardApiResponse } from '../../../interfaces/http';
+import type {
+  ResourceListResponse,
+  ResourceDetailsResponse,
+  StandardApiResponse,
+} from '../../../interfaces/http';
 import type { AppWorkload } from '../models';
 
 export const fetchAllAppsWorkloads = async () => {
@@ -52,4 +56,3 @@ export const fetchAllBatchesWorkloads = async () => {
     throw error;
   }
 };
-

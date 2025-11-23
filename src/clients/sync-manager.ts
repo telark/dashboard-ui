@@ -1,4 +1,3 @@
-
 export interface SyncGrouperResponse {
   status: number;
   operation: string;
@@ -9,4 +8,3 @@ export interface SyncGrouperResponse {
     syncEffect: string; // Changed | NoUpdate | NewlyCreated | Deleted | NotFound
   };
 }
-

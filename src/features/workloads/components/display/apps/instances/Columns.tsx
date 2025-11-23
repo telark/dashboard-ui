@@ -1,8 +1,8 @@
-import type { InstanceTableRow } from '../../../../../models/instances';
-import { INSTANCES_CONSTANTS as IPC } from '../../../../../constants/instances';
-import { Icons } from '../../../../../../../constants';
-import RowTag from '../../../../../../../components/display/shared/table/RowTag';
-import { generateColumn } from '../../../../../../../components/display/shared/table/utils';
+import type { InstanceTableRow } from '../../../../models/instances';
+import { INSTANCES_CONSTANTS as IPC } from '../../../../constants/instances';
+import { Icons } from '../../../../../../constants';
+import RowTag from '../../../../../../components/display/shared/table/RowTag';
+import { generateColumn } from '../../../../../../components/display/shared/table/utils';
 import { AiOutlineCheckCircle, AiOutlineFileImage } from 'react-icons/ai';
 import type { InstancesSortKey } from './utils';
 import Actions from './Actions';

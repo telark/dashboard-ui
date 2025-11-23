@@ -87,4 +87,3 @@ const workloadSlice = createSlice({
 
 export const { clearWorkloadDetails, startSync, endSync } = workloadSlice.actions;
 export default workloadSlice.reducer;
-

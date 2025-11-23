@@ -1,12 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { INSTANCES_CONSTANTS as IPC } from '../../../../../constants/instances';
-import type {
-  InstancesTableProps,
-  InstanceTableRow,
-} from '../../../../../models/instances';
+import { INSTANCES_CONSTANTS as IPC } from '../../../../constants/instances';
+import type { InstancesTableProps, InstanceTableRow } from '../../../../models/instances';
 import { Columns } from './Columns';
 import { InstancesSortKey, sortInstances, transformWorkloadToInstances } from './utils';
-import DataTable from '../../../../../../../components/display/shared/table/DataTable';
+import DataTable from '../../../../../../components/display/shared/table/DataTable';
 import InstanceDetailsModal from './InstanceDetailsModal';
 
 const InstancesTable: React.FC<InstancesTableProps> = ({ workload, onInstanceClick }) => {

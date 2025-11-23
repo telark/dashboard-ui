@@ -5,5 +5,9 @@ export { mapAppsWorkloadsData, mapSingleAppWorkloadData } from './mappers/appMap
 export { syncAppWorkloadDetails, syncAppWorkload } from './sync/sync';
 
 // State
-export { loadWorkloads, loadWorkloadsSilent, handleInitialSync, setupAutoRefresh } from './state/state';
-
+export {
+  loadWorkloads,
+  loadWorkloadsSilent,
+  handleInitialSync,
+  setupAutoRefresh,
+} from './state/state';

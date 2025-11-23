@@ -1,10 +1,5 @@
-import {
-  fetchAllAppsWorkloadsThunk,
-} from '../../store/thunks/fetchThunks';
-import {
-  triggerAppsSyncThunk,
-  refreshAutoAppsThunk,
-} from '../../store/thunks/syncThunks';
+import { fetchAllAppsWorkloadsThunk } from '../../store/thunks/fetchThunks';
+import { triggerAppsSyncThunk, refreshAutoAppsThunk } from '../../store/thunks/syncThunks';
 import {
   WORKLOADS_REFRESH_INTERVAL_MS,
   WORKLOADS_SYNC_LS_KEY,
@@ -26,4 +21,3 @@ export const loadWorkloads = workloadStateUtils.loadResource;
 export const loadWorkloadsSilent = workloadStateUtils.loadResourceSilent;
 export const handleInitialSync = workloadStateUtils.handleInitialSync;
 export const setupAutoRefresh = workloadStateUtils.setupAutoRefresh;
-

@@ -11,4 +11,3 @@ export const triggerSingleAppSync = async (name: string) => {
   const { path, method } = Endpoints.SYNC.APP(name);
   return Client<SyncGrouperResponse>(syncManagerApiClient, path, { method });
 };
-

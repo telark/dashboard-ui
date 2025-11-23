@@ -1,2 +1,1 @@
 export { useWorkloadDetails } from './workloadDetails';
-

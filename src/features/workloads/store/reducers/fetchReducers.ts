@@ -83,4 +83,3 @@ export const handleFetchBatchesRejected = (state: WorkloadsState, action: Payloa
   state.batchLoading = false;
   state.batchError = action.payload as string;
 };
-

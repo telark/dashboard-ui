@@ -1,11 +1,6 @@
-import type {
-  AppWorkload,
-  Container,
-  Instance,
-  ContainerUsage,
-} from '../../../../../models';
-import type { InstanceTableRow } from '../../../../../models/instances';
-import { INSTANCES_CONSTANTS as IPC } from '../../../../../constants/instances';
+import type { AppWorkload, Container, Instance, ContainerUsage } from '../../../../models';
+import type { InstanceTableRow } from '../../../../models/instances';
+import { INSTANCES_CONSTANTS as IPC } from '../../../../constants/instances';
 
 export type InstancesSortKey =
   | 'instanceName'

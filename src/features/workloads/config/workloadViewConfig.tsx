@@ -53,4 +53,3 @@ export const createWorkloadViewConfig = (workload: AppWorkload): ViewDetailsConf
     ],
   };
 };
-

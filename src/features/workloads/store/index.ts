@@ -22,4 +22,3 @@ export {
   selectAppWorkloadError,
   selectWorkloadDetailsData,
 } from './selectors/workloadSelectors';
-

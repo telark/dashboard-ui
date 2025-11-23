@@ -12,9 +12,7 @@ interface EmptyProps {
 const Empty: React.FC<EmptyProps> = React.memo(({ onRefresh }) => {
   return (
     <div style={WORKLOADS_CONSTANTS.LAYOUT.EMPTY_STATE_CONTAINER}>
-      <div
-        style={{ textAlign: 'center', maxWidth: WORKLOADS_CONSTANTS.UI.EMPTY_STATE_MAX_WIDTH }}
-      >
+      <div style={{ textAlign: 'center', maxWidth: WORKLOADS_CONSTANTS.UI.EMPTY_STATE_MAX_WIDTH }}>
         <div style={WORKLOADS_CONSTANTS.LAYOUT.EMPTY_ICON}>
           <ReloadOutlined />
         </div>

@@ -1,15 +1,15 @@
 import React from 'react';
 import { Collapse } from 'antd';
-import BaseModal from '../../../../../../../components/display/shared/modal/BaseModal';
-import ViewDetails from '../../../../../../../components/display/shared/views/ViewDetails';
-import type { AppWorkload, Container } from '../../../../../models';
-import type { InstanceTableRow } from '../../../../../models/instances';
+import BaseModal from '../../../../../../components/display/shared/modal/BaseModal';
+import ViewDetails from '../../../../../../components/display/shared/views/ViewDetails';
+import type { AppWorkload, Container } from '../../../../models';
+import type { InstanceTableRow } from '../../../../models/instances';
 import { ContainerOutlined } from '@ant-design/icons';
-import { INSTANCES_CONSTANTS as IPC } from '../../../../../constants/instances';
+import { INSTANCES_CONSTANTS as IPC } from '../../../../constants/instances';
 import {
   createInstanceViewConfig,
   createContainerViewConfig,
-} from '../../../../../config/instanceViewConfig';
+} from '../../../../config/instanceViewConfig';
 
 interface InstanceDetailsModalProps {
   open: boolean;

@@ -3,12 +3,8 @@ import logger from '../../../logging';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { message } from 'antd';
-import {
-  fetchAppWorkloadDetailsThunk,
-} from '../store/thunks/fetchThunks';
-import {
-  updateAppWorkloadSyncModeThunk,
-} from '../store/thunks/syncThunks';
+import { fetchAppWorkloadDetailsThunk } from '../store/thunks/fetchThunks';
+import { updateAppWorkloadSyncModeThunk } from '../store/thunks/syncThunks';
 import { clearWorkloadDetails } from '../store/slices/workloadSlice';
 import { AppDispatch } from '../../../store';
 import { selectWorkloadDetailsData } from '../store/selectors/workloadSelectors';
@@ -83,4 +79,3 @@ export const useWorkloadDetails = () => {
     handleWorkloadSyncSave,
   };
 };
-

@@ -66,4 +66,3 @@ export const handleUpdateSyncModeFulfilled = (
 export const handleUpdateSyncModeRejected = (state: WorkloadsState, action: PayloadAction<any>) => {
   state.appError = action.payload as string;
 };
-

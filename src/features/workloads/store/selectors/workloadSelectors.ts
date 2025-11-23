@@ -21,4 +21,3 @@ export const selectWorkloadDetailsData = createSelector(
   [selectAppWorkloadDetails, selectAppWorkloadLoading, selectAppWorkloadError],
   (details, loading, error) => ({ details, loading, error }),
 );
-

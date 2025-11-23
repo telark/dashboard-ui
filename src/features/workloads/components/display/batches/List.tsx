@@ -1,9 +1,9 @@
 import React from 'react';
 import { Typography } from 'antd';
 import { ClockCircleOutlined } from '@ant-design/icons';
-import { FancySpinner } from '../../../../../../components/shared';
-import { DEFAULT_COLORS } from '../../../../../../constants';
-import type { BatchWorkloadCardData } from '../../../../models';
+import { FancySpinner } from '../../../../../components/shared';
+import { DEFAULT_COLORS } from '../../../../../constants';
+import type { BatchWorkloadCardData } from '../../../models';
 
 const { Title } = Typography;
 

@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { Typography } from 'antd';
-import AppsList from '../../components/display/workloads/apps/AppsList';
-import BatchesList from '../../components/display/workloads/batches/List';
+import AppsList from '../../components/display/apps/AppsList';
+import BatchesList from '../../components/display/batches/List';
 import TabButton from '../../../../components/buttons/TabButton';
-import type {
-  AppWorkloadCardData,
-  BatchWorkloadCardData,
-} from '../../models';
+import type { AppWorkloadCardData, BatchWorkloadCardData } from '../../models';
 
 const { Title } = Typography;
 

@@ -5,7 +5,11 @@ import { WORKLOAD_DETAILS_CONSTANTS } from '../../constants';
 import store from '../../../../store';
 import { startSync, endSync } from '../../store/slices/workloadSlice';
 import { handleSyncEffect, handleSyncError } from '../../../../utils/shared/sync';
-import { buildDetailsSyncKey, buildCardSyncKey, destroySyncMessage } from '../../../../utils/helpers/sync';
+import {
+  buildDetailsSyncKey,
+  buildCardSyncKey,
+  destroySyncMessage,
+} from '../../../../utils/helpers/sync';
 import { WORKLOAD_SYNC_CONFIG } from '../../../../config/syncConfig';
 import type { DetailsSyncParams, SyncParams } from '../../../../interfaces/resources/sync';
 
@@ -87,4 +91,3 @@ export const syncAppWorkload = async ({ name, message, setSyncing }: SyncParams)
     store.dispatch(endSync(name));
   }
 };
-
