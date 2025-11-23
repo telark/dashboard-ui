@@ -94,4 +94,3 @@ export const handleCheckMaintenanceModeFulfilled = (
     state.groupers[index].maintenance = maintenanceData;
   }
 };
-

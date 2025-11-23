@@ -1,15 +1,7 @@
 import { Client, exporterApiClient } from '../../../api/index';
 import logger from '../../../logging';
-import {
-  Endpoints,
-  HTTP_HEADERS,
-  HEADER_VALUES,
-  ERROR_MESSAGES,
-} from '../../../constants';
-import type {
-  ResourceListResponse,
-  ResourceDetailsResponse,
-} from '../../../interfaces/http';
+import { Endpoints, HTTP_HEADERS, HEADER_VALUES, ERROR_MESSAGES } from '../../../constants';
+import type { ResourceListResponse, ResourceDetailsResponse } from '../../../interfaces/http';
 
 export const fetchGroupers = async (silent = false) => {
   try {
@@ -42,4 +34,3 @@ export const fetchGrouperDetails = async (name: string) => {
     throw error;
   }
 };
-

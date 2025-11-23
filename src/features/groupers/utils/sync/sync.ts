@@ -3,7 +3,7 @@ import { SYNC_MESSAGES } from '../../../../constants/layout/modes';
 import { GROUPER_DETAILS_CONSTANTS } from '../../constants/grouper-details';
 import { SYNC_CONSTANTS } from '../../../../constants/config/sync';
 import store from '../../../../store';
-import { startSync, endSync } from '../../store';
+import { startSync, endSync } from '../../store/slices/grouperSlice';
 import { handleSyncEffect, handleSyncError } from '../../../../utils/shared/sync';
 import {
   buildDetailsSyncKey,

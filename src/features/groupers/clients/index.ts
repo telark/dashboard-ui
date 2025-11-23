@@ -12,4 +12,3 @@ export {
 // Sync
 export { updateGrouperSyncMode, triggerGroupersSync, triggerSingleGrouperSync } from './sync';
 export type { SyncGrouperResponse } from './sync';
-

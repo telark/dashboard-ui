@@ -3,15 +3,14 @@ import logger from '../../../logging';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { message } from 'antd';
+import { fetchGrouperDetailsThunk, clearDetails } from '../store/slices/grouperSlice';
 import {
-  fetchGrouperDetailsThunk,
-  clearDetails,
   updateGrouperSyncModeThunk,
   enableGrouperMaintenanceModeThunk,
   updateGrouperMaintenanceModeThunk,
   removeGrouperMaintenanceModeThunk,
-  selectGrouperDetailsData,
 } from '../store';
+import { selectGrouperDetailsData } from '../store/selectors/grouperSelectors';
 import type { AppDispatch } from '../../../store';
 import {
   STORE_MESSAGES,
@@ -267,4 +266,3 @@ export const useGrouperDetails = () => {
     handleRemoveMaintenanceMode,
   };
 };
-

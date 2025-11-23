@@ -1,11 +1,6 @@
 import { Client, configuratorApiClient } from '../api';
 import logger from '../logging';
-import {
-  Endpoints,
-  HTTP_HEADERS,
-  HEADER_VALUES,
-  ERROR_MESSAGES,
-} from '../constants';
+import { Endpoints, HTTP_HEADERS, HEADER_VALUES, ERROR_MESSAGES } from '../constants';
 import type { StandardApiResponse } from '../interfaces/http';
 
 export const startClusterAnalyze = async () => {

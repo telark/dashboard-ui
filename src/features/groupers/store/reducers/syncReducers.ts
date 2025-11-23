@@ -79,4 +79,3 @@ export const handleUpdateSyncModeFulfilled = (state: GrouperState, action: Paylo
 export const handleUpdateSyncModeRejected = (state: GrouperState, action: PayloadAction<any>) => {
   state.error = action.payload;
 };
-

@@ -126,4 +126,3 @@ const grouperSlice = createSlice({
 
 export const { clearDetails, startSync, endSync } = grouperSlice.actions;
 export default grouperSlice.reducer;
-

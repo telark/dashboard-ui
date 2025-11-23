@@ -3,10 +3,7 @@ import {
   fetchAllAppsWorkloadsThunk,
   fetchAppWorkloadDetailsThunk,
 } from '../store/workloads/thunks/FetchThunks';
-import {
-  fetchAllGroupersThunk,
-  fetchGrouperDetailsThunk,
-} from '../features/groupers/store';
+import { fetchAllGroupersThunk, fetchGrouperDetailsThunk } from '../features/groupers/store';
 import { SyncConfig } from '../interfaces/resources/sync';
 import { SYNC_CONSTANTS } from '../constants/config/sync';
 import { BRIDGE_DETAILS_CONSTANTS } from '../constants/pages/bridge-details';

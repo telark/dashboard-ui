@@ -15,4 +15,3 @@ export const selectGrouperDetailsData = createSelector(
   [selectGrouperDetails, selectGrouperLoading, selectGrouperError],
   (details, loading, error) => ({ details, loading, error }),
 );
-
