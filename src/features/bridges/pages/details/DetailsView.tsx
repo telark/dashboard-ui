@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
 import { useSelector } from 'react-redux';
 import { useBridgeDetails } from '../../hooks';
-import { syncBridgeDetails } from '../../utils/sync/sync';
+import { syncBridgeDetails } from '../../utils/management/sync';
 import { BRIDGE_DETAILS_CONSTANTS, TabKey } from '../../constants';
 import { RootState } from '../../../../store';
 import { usePersistedTab } from '../../../../utils/shared/usePersistedTab';

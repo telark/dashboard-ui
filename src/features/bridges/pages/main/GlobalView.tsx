@@ -8,9 +8,9 @@ import {
   loadBridgesSilent,
   handleInitialSync,
   setupAutoRefresh,
-} from '../../utils/state/state';
+} from '../../utils/management/state';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../utils/shared/retry';
-import { BRIDGES_PAGE_CONSTANTS } from '../../constants';
+import { BRIDGES_CONSTANTS } from '../../constants';
 import Loading from './Loading';
 import BridgeMainError from './Error';
 import Empty from './Empty';
@@ -66,8 +66,8 @@ const BridgesGlobalView: React.FC = memo(function BridgesGlobalView() {
       setNextRetryIn: setNextRetryIn,
       setInCooldown: setIsInCooldown,
       setCooldownTime: setCooldownTime,
-      onSuccess: () => message.success(BRIDGES_PAGE_CONSTANTS.MESSAGES.SUCCESS),
-      onError: () => message.error(BRIDGES_PAGE_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
+      onSuccess: () => message.success(BRIDGES_CONSTANTS.MESSAGES.SUCCESS),
+      onError: () => message.error(BRIDGES_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
     }),
     [],
   );

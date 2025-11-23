@@ -1,3 +1,2 @@
-export { BRIDGES_PAGE_CONSTANTS } from './bridges';
-export { BRIDGE_DETAILS_CONSTANTS } from './bridge-details';
-export type { TabKey } from './bridge-details';
+export { BRIDGES_CONSTANTS, BRIDGE_DETAILS_CONSTANTS } from './bridges';
+export type { TabKey } from './bridges';

@@ -2,7 +2,7 @@
 export { mapBridgesData, mapSingleBridgeData } from './mappers/bridgeMapper';
 
 // Sync
-export { syncBridgeDetails, syncBridge } from './sync/sync';
+export { syncBridgeDetails, syncBridge } from './management/sync';
 
 // State
-export { loadBridges, loadBridgesSilent, handleInitialSync, setupAutoRefresh } from './state/state';
+export { loadBridges, loadBridgesSilent, handleInitialSync, setupAutoRefresh } from './management/state';

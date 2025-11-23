@@ -6,7 +6,7 @@ import { AiOutlineCluster, AiOutlineApi } from 'react-icons/ai';
 import { BRIDGE_CARD_TEXTS, CARD_DEFAULTS, DEFAULT_COLORS } from '../../../../constants';
 import type { BridgeInterface } from '../../models';
 import { RootState } from '../../../../store';
-import { syncBridge } from '../../utils/sync/sync';
+import { syncBridge } from '../../utils/management/sync';
 import { getDetailedStatusStyle, normalizeStatus } from '../../../../utils/helpers/status';
 import {
   ResourceCard,
