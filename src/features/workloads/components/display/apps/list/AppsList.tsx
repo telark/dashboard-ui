@@ -1,10 +1,10 @@
 import React from 'react';
 import { Empty, Button, Typography } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
-import WorkloadCard from '../../../components/cards/WorkloadCard';
-import { FancySpinner } from '../../../../../components/shared';
-import { WORKLOADS_CONSTANTS } from '../../../constants';
-import type { AppWorkloadCardData } from '../../../models';
+import WorkloadCard from '../../../../components/cards/WorkloadCard';
+import { FancySpinner } from '../../../../../../components/shared';
+import { WORKLOADS_CONSTANTS } from '../../../../constants';
+import type { AppWorkloadCardData } from '../../../../models';
 
 const { Title, Text } = Typography;
 

@@ -2,12 +2,12 @@
 export { default as WorkloadCard } from './cards/WorkloadCard';
 
 // Display - Apps
-export { default as AppsList } from './display/apps/AppsList';
-export { default as WorkloadHeader } from './display/apps/Header';
-export { default as WorkloadTabs } from './display/apps/Tabs';
-export { default as WorkloadBridges } from './display/apps/Bridges';
-export { default as WorkloadHistory } from './display/apps/History';
-export { default as WorkloadMetrics } from './display/apps/Metrics';
+export { default as AppsList } from './display/apps/list/AppsList';
+export { default as WorkloadHeader } from './display/apps/header/Header';
+export { default as WorkloadTabs } from './display/apps/tabs/Tabs';
+export { default as WorkloadBridges } from './display/apps/tabs/Bridges';
+export { default as WorkloadHistory } from './display/apps/tabs/History';
+export { default as WorkloadMetrics } from './display/apps/header/Metrics';
 export { default as InstancesTable } from './display/apps/instances/Table';
 export { default as InstanceDetailsModal } from './display/apps/instances/InstanceDetailsModal';
 export { Columns } from './display/apps/instances/Columns';

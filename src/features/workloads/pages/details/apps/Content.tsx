@@ -1,6 +1,6 @@
 import React, { Suspense, lazy, useMemo } from 'react';
 import { Card } from 'antd';
-import WorkloadBridges from '../../../components/display/apps/Bridges';
+import WorkloadBridges from '../../../components/display/apps/tabs/Bridges';
 import ViewDetails from '../../../../../components/display/shared/views/ViewDetails';
 import SyncMode from '../../../../../components/tabs/SyncMode';
 import { FancySpinner } from '../../../../../components/shared';
@@ -9,7 +9,7 @@ import type { AppWorkload } from '../../../models';
 import { createWorkloadViewConfig } from '../../../config';
 import InstancesTable from '../../../components/display/apps/instances/Table';
 
-const WorkloadHistory = lazy(() => import('../../../components/display/apps/History'));
+const WorkloadHistory = lazy(() => import('../../../components/display/apps/tabs/History'));
 
 interface ContentProps {
   workload: AppWorkload;

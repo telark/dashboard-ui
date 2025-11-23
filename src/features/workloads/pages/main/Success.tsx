@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Typography } from 'antd';
-import AppsList from '../../components/display/apps/AppsList';
+import AppsList from '../../components/display/apps/list/AppsList';
 import BatchesList from '../../components/display/batches/List';
 import TabButton from '../../../../components/buttons/TabButton';
 import type { AppWorkloadCardData, BatchWorkloadCardData } from '../../models';

@@ -1,5 +1,5 @@
 import React from 'react';
-import WorkloadTabs from '../../../components/display/apps/Tabs';
+import WorkloadTabs from '../../../components/display/apps/tabs/Tabs';
 import { TabKey } from '../../../constants';
 
 interface TabsProps {

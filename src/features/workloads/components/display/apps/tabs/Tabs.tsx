@@ -1,6 +1,6 @@
 import React from 'react';
-import TabButton from '../../../../../components/buttons/TabButton';
-import { WORKLOAD_DETAILS_CONSTANTS, TabKey } from '../../../constants';
+import TabButton from '../../../../../../components/buttons/TabButton';
+import { WORKLOAD_DETAILS_CONSTANTS, TabKey } from '../../../../constants';
 
 const { TAB_KEYS } = WORKLOAD_DETAILS_CONSTANTS;
 
