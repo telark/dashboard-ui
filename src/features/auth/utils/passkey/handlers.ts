@@ -8,7 +8,7 @@ import {
   createPasskeyThunk,
   updatePasskeyThunk,
   deletePasskeyThunk,
-} from '../../../../store/passkeys/slices/passkeySlice';
+} from '../../store/thunks/mutationThunks';
 import type {
   UpdatePasskeyRequest,
   CreatePasskeyHandlerParams,

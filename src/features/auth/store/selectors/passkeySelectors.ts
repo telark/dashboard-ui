@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { RootState } from '../../index';
+import { RootState } from '../../../../store/index';
 
 export const selectPasskeyState = (state: RootState) => state.passkeys;
 export const selectPasskeys = createSelector([selectPasskeyState], (passkeys) => passkeys.passkeys);

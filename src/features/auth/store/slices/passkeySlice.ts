@@ -1,15 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { PasskeysState, Passkey } from '../../../features/auth/models/passkeys';
+import type { PasskeysState, Passkey } from '../../models/passkeys';
 import {
   fetchAllPasskeysThunk,
   fetchAllPasskeysSilentThunk,
   fetchPasskeyDetailsThunk,
-} from '../thunks/FetchThunks';
+} from '../thunks/fetchThunks';
 import {
   createPasskeyThunk,
   updatePasskeyThunk,
   deletePasskeyThunk,
-} from '../thunks/MutationThunks';
+} from '../thunks/mutationThunks';
 import {
   handleFetchPasskeysPending,
   handleFetchPasskeysFulfilled,
@@ -17,7 +17,7 @@ import {
   handleFetchPasskeyDetailsPending,
   handleFetchPasskeyDetailsFulfilled,
   handleFetchPasskeyDetailsRejected,
-} from '../reducers/FetchReducers';
+} from '../reducers/fetchReducers';
 import {
   handleCreatePasskeyPending,
   handleCreatePasskeyFulfilled,
@@ -28,18 +28,7 @@ import {
   handleDeletePasskeyPending,
   handleDeletePasskeyFulfilled,
   handleDeletePasskeyRejected,
-} from '../reducers/MutationReducers';
-
-export {
-  fetchAllPasskeysThunk,
-  fetchAllPasskeysSilentThunk,
-  fetchPasskeyDetailsThunk,
-} from '../thunks/FetchThunks';
-export {
-  createPasskeyThunk,
-  updatePasskeyThunk,
-  deletePasskeyThunk,
-} from '../thunks/MutationThunks';
+} from '../reducers/mutationReducers';
 
 const initialState: PasskeysState = {
   passkeys: [],

@@ -6,7 +6,7 @@ import workloadReducer from './workloads/slices/workloadSlice';
 import bridgeReducer from './bridges/slices/bridgeSlice';
 import groupsReducer from './groups/slices/groupSlice';
 import usersReducer from './users/slices/userSlice';
-import passkeysReducer from './passkeys/slices/passkeySlice';
+import { passkeyReducer } from '../features/auth/store';
 import {
   grouperPersistConfig,
   insightsPersistConfig,
@@ -31,7 +31,7 @@ const store = configureStore({
     bridge: persistedBridgeReducer,
     groups: persistedGroupsReducer,
     users: persistedUsersReducer,
-    passkeys: passkeysReducer,
+    passkeys: passkeyReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

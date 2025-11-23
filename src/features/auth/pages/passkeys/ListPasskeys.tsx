@@ -10,12 +10,12 @@ import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 import { AppDispatch } from '../../../../store';
-import { fetchAllPasskeysThunk } from '../../../../store/passkeys/slices/passkeySlice';
+import { fetchAllPasskeysThunk } from '../../store/thunks/fetchThunks';
 import {
   selectPasskeys,
   selectPasskeyLoading,
   selectPasskeyError,
-} from '../../../../store/passkeys/selectors/passkeySelectors';
+} from '../../store/selectors/passkeySelectors';
 import { usePasskeyModalState, usePasskeyActions } from '../../hooks';
 
 const PasskeyIcon = Icons.Passkey;

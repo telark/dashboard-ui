@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { getAllPasskeys, getPasskey } from '../../../features/auth/clients';
-import { extractErrorMessage } from '../../../utils/helpers/format';
-import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants/store/store';
-import logger from '../../../logging';
+import { getAllPasskeys, getPasskey } from '../../clients';
+import { extractErrorMessage } from '../../../../utils/helpers/format';
+import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../constants/store/store';
+import logger from '../../../../logging';
 
 export const fetchAllPasskeysThunk = createAsyncThunk(
   STORE_ACTIONS.PASSKEYS.FETCH,

@@ -1,16 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import {
-  createPasskey,
-  updatePasskey,
-  deletePasskey,
-  getAllPasskeys,
-} from '../../../features/auth/clients';
-import { extractErrorMessage } from '../../../utils/helpers/format';
-import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants/store/store';
-import { HTTP_STATUS } from '../../../constants/rest/http';
-import { AUTH_ERROR_MESSAGES } from '../../../features/auth/constants/messages';
-import { browserHasCredential } from '../../../features/auth/utils';
-import logger from '../../../logging';
+import { createPasskey, updatePasskey, deletePasskey, getAllPasskeys } from '../../clients';
+import { extractErrorMessage } from '../../../../utils/helpers/format';
+import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../constants/store/store';
+import { HTTP_STATUS } from '../../../../constants/rest/http';
+import { AUTH_ERROR_MESSAGES } from '../../constants/messages';
+import { browserHasCredential } from '../../utils';
+import logger from '../../../../logging';
 import type {
   Passkey,
   CreatePasskeyResponse,
@@ -18,7 +13,7 @@ import type {
   UpdatePasskeyResponse,
   DeletePasskeyRequest,
   CreatePasskeyParams,
-} from '../../../features/auth/models/passkeys';
+} from '../../models/passkeys';
 
 const mapResponseToPasskey = (response: CreatePasskeyResponse): Passkey => {
   return {

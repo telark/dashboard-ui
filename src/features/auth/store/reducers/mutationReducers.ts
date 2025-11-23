@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import type { PasskeysState, Passkey } from '../../../features/auth/models/passkeys';
+import type { PasskeysState, Passkey } from '../../models/passkeys';
 
 export const handleCreatePasskeyPending = (state: PasskeysState) => {
   state.loading = true;
@@ -8,10 +8,13 @@ export const handleCreatePasskeyPending = (state: PasskeysState) => {
 
 export const handleCreatePasskeyFulfilled = (
   state: PasskeysState,
-  action: PayloadAction<Passkey>,
+  action: PayloadAction<Passkey | unknown>,
 ) => {
   state.loading = false;
-  state.passkeys.push(action.payload);
+  // Type guard: ensure payload is a Passkey before adding
+  if (action.payload && typeof action.payload === 'object' && 'credentialId' in action.payload) {
+    state.passkeys.push(action.payload as Passkey);
+  }
   state.error = null;
 };
 
