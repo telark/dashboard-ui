@@ -1,1 +1,0 @@
-export { handleUserLogout } from './logout';

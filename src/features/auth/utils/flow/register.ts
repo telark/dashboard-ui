@@ -1,5 +1,5 @@
 import { registerStart, createPasskey } from '../../clients';
-import { registerPasskey } from '../webauthn';
+import { registerPasskey } from '../webauthn/core';
 import { AUTH_SUCCESS_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { isDevelopment } from '../../../../utils/helpers/env';

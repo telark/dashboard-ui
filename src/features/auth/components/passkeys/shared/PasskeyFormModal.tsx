@@ -3,7 +3,7 @@ import { Form, Input } from 'antd';
 import { Icons } from '../../../../../constants';
 import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
 import FormModal from '../../../../../components/display/shared/modal/FormModal';
-import { createDeviceNameValidator } from '../../../utils/passkey';
+import { createDeviceNameValidator } from '../../../utils';
 import type { PasskeyFormModalProps } from '../../../models/passkeys';
 import DeviceNameSuggestions from './DeviceNameSuggestions';
 
@@ -31,7 +31,7 @@ const PasskeyFormContent: React.FC<PasskeyFormContentProps> = ({
       if (input) {
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
           window.HTMLInputElement.prototype,
-          'value'
+          'value',
         )?.set;
         nativeInputValueSetter?.call(input, suggestion);
         const event = new Event('input', { bubbles: true });
@@ -65,10 +65,7 @@ const PasskeyFormContent: React.FC<PasskeyFormContentProps> = ({
         />
       </Form.Item>
       {!isEditMode && (
-        <DeviceNameSuggestions
-          existingPasskeys={passkeys}
-          onSelect={handleSuggestionSelect}
-        />
+        <DeviceNameSuggestions existingPasskeys={passkeys} onSelect={handleSuggestionSelect} />
       )}
     </div>
   );

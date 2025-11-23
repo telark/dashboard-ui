@@ -2,7 +2,7 @@ import { fetchUserById } from '../../clients/exporter';
 import { USER_CONSTANTS } from '../../constants/user/user';
 import { isDevelopment } from '../helpers/env';
 import logger from '../../logging';
-import { getCurrentUser } from '../../features/auth/utils/session/user';
+import { getCurrentUser } from '../../features/auth/utils';
 import type { User as UsersUser } from '../../interfaces/resources/users';
 
 export const fetchCurrentUserDetails = async (

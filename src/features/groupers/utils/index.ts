@@ -26,4 +26,3 @@ export {
   handleInitialSync,
   setupAutoRefresh,
 } from './state/state';
-

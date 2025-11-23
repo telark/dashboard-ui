@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import { Form, App as AntdApp } from 'antd';
 import { UserAddOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { performRegister } from '../../utils/flow';
-import { handleAuthError } from '../../utils/shared';
+import { performRegister, handleAuthError } from '../../utils';
 import { APP_ROUTES } from '../../../../constants';
 import { REGISTER_CONSTANTS } from '../../constants/register';
-import { RegisterForm } from '../../components/register';
-import { AuthContainer, AuthCard, AuthHeader, AuthFooter } from '../../components/shared';
+import { RegisterForm, AuthContainer, AuthCard, AuthHeader, AuthFooter } from '../../components';
 
 const Register: React.FC = () => {
   const [form] = Form.useForm();

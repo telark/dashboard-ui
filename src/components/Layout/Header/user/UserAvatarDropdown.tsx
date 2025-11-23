@@ -1,10 +1,8 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Dropdown } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { getAuthUser } from '../../../../features/auth/utils/session/user';
+import { getAuthUser, handleUserLogout, hasSessionToken } from '../../../../features/auth/utils';
 import { fetchCurrentUserDetails } from '../../../../utils/user/fetch';
-import { handleUserLogout } from '../../../../features/auth/utils/logout/logout';
-import { hasSessionToken } from '../../../../features/auth/utils/session/token';
 import { createUserMenuItems } from './UserMenuItems';
 import UserAvatar from './UserAvatar';
 import { HEADER_CONSTANTS } from '../../../../constants';

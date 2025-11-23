@@ -1,11 +1,12 @@
 import { loginStart, loginFinish, deletePasskey } from '../../clients';
+import { authenticateWithPasskey } from '../webauthn/core';
 import {
-  authenticateWithPasskey,
   extractLoginOptions,
   extractCredentialIds,
   hasBackendPasskeys,
-} from '../webauthn';
-import { setSessionToken, setCurrentUser } from '../session';
+} from '../webauthn/extraction';
+import { setSessionToken } from '../session/token';
+import { setCurrentUser } from '../session/user';
 import { AUTH_SUCCESS_MESSAGES, AUTH_ERROR_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { HTTP_STATUS } from '../../../../constants/rest/http';

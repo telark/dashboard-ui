@@ -9,7 +9,7 @@ import { extractErrorMessage } from '../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants/store/store';
 import { HTTP_STATUS } from '../../../constants/rest/http';
 import { AUTH_ERROR_MESSAGES } from '../../../features/auth/constants/messages';
-import { browserHasCredential } from '../../../features/auth/utils/webauthn';
+import { browserHasCredential } from '../../../features/auth/utils';
 import logger from '../../../logging';
 import type {
   Passkey,

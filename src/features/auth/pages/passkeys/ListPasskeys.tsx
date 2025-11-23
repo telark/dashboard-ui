@@ -4,8 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Icons, SHARED_DETAILS_CONSTANTS } from '../../../../constants';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
 import Header from '../../../../components/display/shared/sections/Header';
-import PasskeysTable from '../../components/passkeys/list/Table';
-import PasskeyFormModal from '../../components/passkeys/shared/PasskeyFormModal';
+import { PasskeysTable, PasskeyFormModal } from '../../components';
 import { PageContainer } from '../../../../components/shared';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
@@ -17,7 +16,7 @@ import {
   selectPasskeyLoading,
   selectPasskeyError,
 } from '../../../../store/passkeys/selectors/passkeySelectors';
-import { passkeyModalState, passkeyActions } from '../../hooks/passkeys';
+import { passkeyModalState, passkeyActions } from '../../hooks';
 
 const PasskeyIcon = Icons.Passkey;
 

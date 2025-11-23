@@ -8,7 +8,12 @@ import type { GrouperInterface } from '../../models';
 import type { RootState } from '../../../../store';
 import { syncGrouper } from '../../utils';
 import { getDetailedStatusStyle, normalizeStatus } from '../../../../utils/helpers/status';
-import { ResourceCard, ResourceCardData, ResourceCardActions, ResourceCardConfig } from '../../../../components/cards/shared';
+import {
+  ResourceCard,
+  ResourceCardData,
+  ResourceCardActions,
+  ResourceCardConfig,
+} from '../../../../components/cards/shared';
 
 const GrouperCard: React.FC<GrouperInterface> = React.memo(function GrouperCard({
   name = CARD_DEFAULTS.GROUPER.NAME,
