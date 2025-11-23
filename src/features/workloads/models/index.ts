@@ -18,4 +18,5 @@ export type {
   BatchWorkloadCardData,
   WorkloadsState,
 } from './workload';
+export type { InstanceTableRow, InstancesTableProps } from './instances';
 

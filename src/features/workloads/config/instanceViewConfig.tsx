@@ -5,12 +5,12 @@ import {
   AiOutlineSetting,
   AiFillTag,
 } from 'react-icons/ai';
-import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
-import RowTag from '../components/display/shared/table/RowTag';
-import { INSTANCES_PAGE_CONSTANTS as IPC } from '../constants/pages/instances';
-import { Icons } from '../constants';
-import type { InstanceTableRow } from '../interfaces/resources/instances';
-import type { Container } from '../interfaces/resources/workload';
+import type { ViewDetailsConfig } from '../../../components/display/shared/views/ViewDetails';
+import RowTag from '../../../components/display/shared/table/RowTag';
+import { INSTANCES_PAGE_CONSTANTS as IPC } from '../constants/instances';
+import { Icons } from '../../../constants';
+import type { InstanceTableRow } from '../models/instances';
+import type { Container } from '../models';
 
 const getStatusColor = (status: string) => {
   const isActive = /active|ready|running|available/i.test(status);

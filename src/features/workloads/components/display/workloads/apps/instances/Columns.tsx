@@ -1,5 +1,5 @@
-import type { InstanceTableRow } from '../../../../../../../interfaces/resources/instances';
-import { INSTANCES_PAGE_CONSTANTS as IPC } from '../../../../../../../constants/pages/instances';
+import type { InstanceTableRow } from '../../../../../models/instances';
+import { INSTANCES_PAGE_CONSTANTS as IPC } from '../../../../../constants/instances';
 import { Icons } from '../../../../../../../constants';
 import RowTag from '../../../../../../../components/display/shared/table/RowTag';
 import { generateColumn } from '../../../../../../../components/display/shared/table/utils';

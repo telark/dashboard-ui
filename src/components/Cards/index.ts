@@ -1,6 +1,3 @@
-export { default as WorkloadCard } from './workloads/WorkloadCard';
-
-// Shared generic cards
 export {
   ResourceCard,
   ResourceCardContent,
