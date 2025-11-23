@@ -3,7 +3,7 @@ import type {
   Container,
   Instance,
   ContainerUsage,
-} from '../../../../../../models';
+} from '../../../../../models';
 import type { InstanceTableRow } from '../../../../../models/instances';
 import { INSTANCES_PAGE_CONSTANTS as IPC } from '../../../../../constants/instances';
 
@@ -73,7 +73,7 @@ export const transformWorkloadToInstances = (workload: AppWorkload): InstanceTab
         const tag = c.image?.tag || 'N/A';
         return `${name}:${tag}`;
       })
-      .filter((img, index, arr) => arr.indexOf(img) === index) // Remove duplicates
+      .filter((img: string, index: number, arr: string[]) => arr.indexOf(img) === index) // Remove duplicates
       .join(', ');
     const imagePullPolicy = containers[0]?.image?.pullPolicy || 'N/A';
 
@@ -108,7 +108,7 @@ export const transformWorkloadToInstances = (workload: AppWorkload): InstanceTab
         const tag = c.image?.tag || 'N/A';
         return `${name}:${tag}`;
       })
-      .filter((img, idx, arr) => arr.indexOf(img) === idx) // Remove duplicates
+      .filter((img: string, idx: number, arr: string[]) => arr.indexOf(img) === idx) // Remove duplicates
       .join(', ');
     const imagePullPolicy = containersToUse[0]?.image?.pullPolicy || 'N/A';
 

@@ -1,5 +1,3 @@
-import { Client, syncManagerApiClient } from '../api';
-import { Endpoints } from '../constants/rest/endpoints';
 
 export interface SyncGrouperResponse {
   status: number;

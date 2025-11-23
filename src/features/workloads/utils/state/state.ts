@@ -1,4 +1,3 @@
-import type { AppDispatch } from '../../../../store';
 import {
   fetchAllAppsWorkloadsThunk,
 } from '../../store/thunks/fetchThunks';
