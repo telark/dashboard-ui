@@ -1,4 +1,0 @@
----
-description: after editing the codebase and any part of it always execute "npm run build" and make sure  no issues or errors are left
-alwaysApply: false
----

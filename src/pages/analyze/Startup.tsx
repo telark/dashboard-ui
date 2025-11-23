@@ -82,9 +82,12 @@ const Startup: React.FC<StartupProps> = () => {
       if (Array.isArray(result)) {
         const insightsEntry = result.find((r: any) => r?.operation === 'insights');
         insightsReady = Boolean(insightsEntry && Number(insightsEntry.status) === 202);
-      } else if (result && (result.operation === 'insights' || result.insights)) {
-        const status = result.status ?? result?.insights?.status;
-        insightsReady = Number(status) === 202;
+      } else if (result) {
+        const resultAny = result as any;
+        if (resultAny.operation === 'insights' || resultAny.insights) {
+          const status = result.status ?? resultAny?.insights?.status;
+          insightsReady = Number(status) === 202;
+        }
       }
 
       if (insightsReady) {

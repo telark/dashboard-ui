@@ -25,6 +25,7 @@ export interface MaintenanceModeResponse {
 export interface ClusterInsightsResponse {
   data: unknown | null;
   _status: number;
+  _network?: boolean;
 }
 
 export interface ResourceListResponse<T> {
