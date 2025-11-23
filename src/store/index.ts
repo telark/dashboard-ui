@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
-import grouperReducer from './groupers/slices/grouperSlice';
+import { grouperReducer } from '../features/groupers/store';
 import insightsReducer from './insights/slices/insightsSlice';
 import workloadReducer from './workloads/slices/workloadSlice';
 import bridgeReducer from './bridges/slices/bridgeSlice';

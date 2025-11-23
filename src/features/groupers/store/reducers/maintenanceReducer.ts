@@ -1,7 +1,7 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import type { GrouperState } from '../../../features/groupers/models';
-import { STORE_MESSAGES } from '../../../constants/store/store';
-import logger from '../../../logging';
+import type { GrouperState } from '../../models';
+import { STORE_MESSAGES } from '../../../../constants/store/store';
+import logger from '../../../../logging';
 
 export const handleUpdateMaintenanceModePending = (state: GrouperState) => {
   state.loading = true;
@@ -90,3 +90,4 @@ export const handleRemoveMaintenanceModeRejected = (
 ) => {
   state.error = action.payload;
 };
+

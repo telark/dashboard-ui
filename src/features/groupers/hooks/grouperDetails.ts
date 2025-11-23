@@ -10,9 +10,9 @@ import {
   enableGrouperMaintenanceModeThunk,
   updateGrouperMaintenanceModeThunk,
   removeGrouperMaintenanceModeThunk,
-} from '../../../store/groupers/slices/grouperSlice';
+  selectGrouperDetailsData,
+} from '../store';
 import type { AppDispatch } from '../../../store';
-import { selectGrouperDetailsData } from '../../../store/groupers/selectors/grouperSelectors';
 import {
   STORE_MESSAGES,
   HOOK_MESSAGES,
@@ -23,7 +23,7 @@ import {
   HTTP_STATUS,
 } from '../../../constants';
 
-export const GrouperDetailsHook = () => {
+export const useGrouperDetails = () => {
   const dispatch: AppDispatch = useDispatch();
   const { name } = useParams<{ name: string }>();
   const { details: grouperDetails, loading, error } = useSelector(selectGrouperDetailsData);
@@ -267,3 +267,4 @@ export const GrouperDetailsHook = () => {
     handleRemoveMaintenanceMode,
   };
 };
+

@@ -1,21 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { GrouperState } from '../../../features/groupers/models';
+import type { GrouperState } from '../../models';
 import {
   fetchAllGroupersThunk,
   fetchAllGroupersSilentThunk,
   fetchGrouperDetailsThunk,
   checkGrouperMaintenanceModeThunk,
-} from '../thunks/FetchThunks';
+} from '../thunks/fetchThunks';
 import {
   triggerGroupersSyncThunk,
   refreshAutoGroupersThunk,
   updateGrouperSyncModeThunk,
-} from '../thunks/SyncThunks';
+} from '../thunks/syncThunks';
 import {
   enableGrouperMaintenanceModeThunk,
   updateGrouperMaintenanceModeThunk,
   removeGrouperMaintenanceModeThunk,
-} from '../thunks/MaintenanceThunks';
+} from '../thunks/maintenanceThunks';
 import {
   handleFetchGroupersPending,
   handleFetchGroupersFulfilled,
@@ -26,14 +26,14 @@ import {
   handleFetchGrouperDetailsFulfilled,
   handleFetchGrouperDetailsRejected,
   handleCheckMaintenanceModeFulfilled,
-} from '../reducers/FetchReducers';
+} from '../reducers/fetchReducers';
 import {
   handleTriggerSyncRejected,
   handleRefreshAutoGroupersFulfilled,
   handleRefreshAutoGroupersRejected,
   handleUpdateSyncModeFulfilled,
   handleUpdateSyncModeRejected,
-} from '../reducers/SyncReducers';
+} from '../reducers/syncReducers';
 import {
   handleUpdateMaintenanceModePending,
   handleUpdateMaintenanceModeFulfilled,
@@ -42,24 +42,24 @@ import {
   handleEnableMaintenanceModeRejected,
   handleRemoveMaintenanceModeFulfilled,
   handleRemoveMaintenanceModeRejected,
-} from '../reducers/MaintenanceReducer';
+} from '../reducers/maintenanceReducer';
 
 export {
   fetchAllGroupersThunk,
   fetchAllGroupersSilentThunk,
   fetchGrouperDetailsThunk,
   checkGrouperMaintenanceModeThunk,
-} from '../thunks/FetchThunks';
+} from '../thunks/fetchThunks';
 export {
   triggerGroupersSyncThunk,
   refreshAutoGroupersThunk,
   updateGrouperSyncModeThunk,
-} from '../thunks/SyncThunks';
+} from '../thunks/syncThunks';
 export {
   enableGrouperMaintenanceModeThunk,
   updateGrouperMaintenanceModeThunk,
   removeGrouperMaintenanceModeThunk,
-} from '../thunks/MaintenanceThunks';
+} from '../thunks/maintenanceThunks';
 
 const initialState: GrouperState = {
   groupers: [],
@@ -126,3 +126,4 @@ const grouperSlice = createSlice({
 
 export const { clearDetails, startSync, endSync } = grouperSlice.actions;
 export default grouperSlice.reducer;
+

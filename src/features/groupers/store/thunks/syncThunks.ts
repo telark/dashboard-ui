@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { updateGrouperSyncMode, triggerGroupersSync, fetchGroupers } from '../../../features/groupers/clients';
-import { mapSingleGrouperData, mapGroupersData } from '../../../features/groupers/utils';
-import { generateGrouperName, extractErrorMessage } from '../../../utils/helpers/format';
-import { STORE_ACTIONS, STORE_ERRORS } from '../../../constants/store/store';
+import { updateGrouperSyncMode, triggerGroupersSync, fetchGroupers } from '../../clients';
+import { mapSingleGrouperData, mapGroupersData } from '../../utils';
+import { generateGrouperName, extractErrorMessage } from '../../../../utils/helpers/format';
+import { STORE_ACTIONS, STORE_ERRORS } from '../../../../constants/store/store';
 
 export const triggerGroupersSyncThunk = createAsyncThunk(
   STORE_ACTIONS.GROUPERS.TRIGGER_GROUPER_SYNC,
@@ -41,3 +41,4 @@ export const updateGrouperSyncModeThunk = createAsyncThunk(
     }
   },
 );
+

@@ -1,6 +1,6 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import type { GrouperState } from '../../../features/groupers/models';
-import { SYNC_MODES } from '../../../constants/store/store';
+import type { GrouperState } from '../../models';
+import { SYNC_MODES } from '../../../../constants/store/store';
 
 export const handleTriggerSyncRejected = (state: GrouperState, action: PayloadAction<any>) => {
   state.error = action.payload;
@@ -79,3 +79,4 @@ export const handleUpdateSyncModeFulfilled = (state: GrouperState, action: Paylo
 export const handleUpdateSyncModeRejected = (state: GrouperState, action: PayloadAction<any>) => {
   state.error = action.payload;
 };
+

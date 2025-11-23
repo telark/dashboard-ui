@@ -3,13 +3,13 @@ import {
   enableGrouperMaintenanceMode,
   updateGrouperMaintenanceMode,
   removeGrouperMaintenanceMode,
-} from '../../../features/groupers/clients';
+} from '../../clients';
 import {
   generateGrouperName,
   generateMaintenanceFeatureName,
   extractErrorMessage,
-} from '../../../utils/helpers/format';
-import { STORE_ACTIONS, STORE_ERRORS } from '../../../constants/store/store';
+} from '../../../../utils/helpers/format';
+import { STORE_ACTIONS, STORE_ERRORS } from '../../../../constants/store/store';
 
 export const enableGrouperMaintenanceModeThunk = createAsyncThunk(
   STORE_ACTIONS.GROUPER.ENABLE_MAINTENANCE,
@@ -107,3 +107,4 @@ export const removeGrouperMaintenanceModeThunk = createAsyncThunk(
     }
   },
 );
+

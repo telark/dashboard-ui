@@ -5,7 +5,7 @@ import {
   checkGrouperMaintenanceModeThunk,
   triggerGroupersSyncThunk,
   refreshAutoGroupersThunk,
-} from '../../../../store/groupers/slices/grouperSlice';
+} from '../../store';
 import {
   GROUPERS_REFRESH_INTERVAL_MS,
   GROUPERS_SYNC_LS_KEY,

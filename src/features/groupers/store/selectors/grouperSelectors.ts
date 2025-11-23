@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { RootState } from '../../index';
+import { RootState } from '../../../../store/index';
 
 export const selectGrouperState = (state: RootState) => state.grouper;
 export const selectGrouperDetails = createSelector(
@@ -15,3 +15,4 @@ export const selectGrouperDetailsData = createSelector(
   [selectGrouperDetails, selectGrouperLoading, selectGrouperError],
   (details, loading, error) => ({ details, loading, error }),
 );
+

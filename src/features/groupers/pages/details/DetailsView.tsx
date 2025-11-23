@@ -2,7 +2,7 @@ import React, { useState, memo, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
 import { useSelector } from 'react-redux';
-import { GrouperDetailsHook } from '../../hooks';
+import { useGrouperDetails } from '../../hooks';
 import { syncGrouperDetails } from '../../utils/sync/sync';
 import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../constants/grouper-details';
 import { RootState } from '../../../../store';
@@ -37,7 +37,7 @@ const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
     handleMaintenanceMode,
     hasMaintenanceData,
     handleRemoveMaintenanceMode,
-  } = GrouperDetailsHook();
+  } = useGrouperDetails();
 
   const { activeTab, handleTabChange } = usePersistedTab<TabKey>({
     resourceType: 'grouper',

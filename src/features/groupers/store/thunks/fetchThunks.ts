@@ -1,22 +1,22 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import logger from '../../../logging';
+import logger from '../../../../logging';
 import {
   fetchGroupers,
   fetchGrouperDetails,
   checkGrouperMaintenanceMode,
-} from '../../../features/groupers/clients';
+} from '../../clients';
 import {
   mapGroupersData,
   mapSingleGrouperData,
   mapGrouperMaintenanceData,
-} from '../../../features/groupers/utils';
+} from '../../utils';
 import {
   generateGrouperName,
   generateMaintenanceFeatureName,
   extractErrorMessage,
-} from '../../../utils/helpers/format';
-import type { Maintenance } from '../../../features/groupers/models';
-import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants/store/store';
+} from '../../../../utils/helpers/format';
+import type { Maintenance } from '../../models';
+import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../constants/store/store';
 
 export const fetchAllGroupersThunk = createAsyncThunk(
   STORE_ACTIONS.GROUPERS.FETCH,
@@ -93,3 +93,4 @@ export const checkGrouperMaintenanceModeThunk = createAsyncThunk(
     }
   },
 );
+
