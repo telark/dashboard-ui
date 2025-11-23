@@ -5,4 +5,9 @@ export { mapBridgesData, mapSingleBridgeData } from './mappers/bridgeMapper';
 export { syncBridgeDetails, syncBridge } from './management/sync';
 
 // State
-export { loadBridges, loadBridgesSilent, handleInitialSync, setupAutoRefresh } from './management/state';
+export {
+  loadBridges,
+  loadBridgesSilent,
+  handleInitialSync,
+  setupAutoRefresh,
+} from './management/state';

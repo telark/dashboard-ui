@@ -2,17 +2,7 @@ import { Client, exporterApiClient, syncManagerApiClient } from '../../../api/in
 import logger from '../../../logging';
 import { Endpoints, ERROR_MESSAGES } from '../../../constants';
 import type { StandardApiResponse } from '../../../interfaces/http';
-
-export interface SyncGrouperResponse {
-  status: number;
-  operation: string;
-  message: string;
-  data: {
-    name: string;
-    phase: string; // Completed | NotStarted | Failed
-    syncEffect: string; // Changed | NoUpdate | NewlyCreated | Deleted | NotFound
-  };
-}
+import type { SyncWithEffectResponse } from '../../../interfaces/resources/sync';
 
 export const updateGrouperSyncMode = async (name: string, syncMode: string) => {
   try {
@@ -29,10 +19,10 @@ export const updateGrouperSyncMode = async (name: string, syncMode: string) => {
 
 export const triggerGroupersSync = async () => {
   const { path, method } = Endpoints.SYNC.GROUPERS;
-  return Client<SyncGrouperResponse>(syncManagerApiClient, path, { method });
+  return Client<SyncWithEffectResponse>(syncManagerApiClient, path, { method });
 };
 
 export const triggerSingleGrouperSync = async (name: string) => {
   const { path, method } = Endpoints.SYNC.GROUPER(name);
-  return Client<SyncGrouperResponse>(syncManagerApiClient, path, { method });
+  return Client<SyncWithEffectResponse>(syncManagerApiClient, path, { method });
 };
