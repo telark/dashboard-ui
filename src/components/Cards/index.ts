@@ -1,5 +1,3 @@
-// Grouper cards
-export { default as GrouperCard } from './grouper/GrouperCard';
 export { default as WorkloadCard } from './workloads/WorkloadCard';
 export { default as BridgeCard } from './bridge/BridgeCard';
 

@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { GrouperState } from '../../../interfaces/resources/grouper';
+import type { GrouperState } from '../../../features/groupers/models';
 import { generateMaintenanceFeatureName } from '../../../utils/helpers/format';
 
 export const handleFetchGroupersPending = (state: GrouperState) => {

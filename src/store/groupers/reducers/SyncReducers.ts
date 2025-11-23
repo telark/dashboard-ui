@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { GrouperState } from '../../../interfaces/resources/grouper';
+import type { GrouperState } from '../../../features/groupers/models';
 import { SYNC_MODES } from '../../../constants/store/store';
 
 export const handleTriggerSyncRejected = (state: GrouperState, action: PayloadAction<any>) => {

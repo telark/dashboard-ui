@@ -9,13 +9,13 @@ import {
   mapGroupersData,
   mapSingleGrouperData,
   mapGrouperMaintenanceData,
-} from '../../../utils/mappers/grouperMapper';
+} from '../../../features/groupers/utils/mappers';
 import {
   generateGrouperName,
   generateMaintenanceFeatureName,
   extractErrorMessage,
 } from '../../../utils/helpers/format';
-import { Maintenance } from '../../../interfaces/resources/grouper';
+import type { Maintenance } from '../../../features/groupers/models';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants/store/store';
 
 export const fetchAllGroupersThunk = createAsyncThunk(
