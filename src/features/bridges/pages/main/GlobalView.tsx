@@ -11,7 +11,10 @@ import {
 } from '../../utils/state/state';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../utils/shared/retry';
 import { BRIDGES_PAGE_CONSTANTS } from '../../constants';
-import { Loading, BridgeMainError, Empty, Success } from '.';
+import Loading from './Loading';
+import BridgeMainError from './Error';
+import Empty from './Empty';
+import Success from './Success';
 
 const BridgesGlobalView: React.FC = memo(function BridgesGlobalView() {
   const dispatch: AppDispatch = useDispatch();

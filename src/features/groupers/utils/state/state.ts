@@ -4,10 +4,7 @@ import {
   fetchAllGroupersSilentThunk,
   checkGrouperMaintenanceModeThunk,
 } from '../../store/thunks/fetchThunks';
-import {
-  triggerGroupersSyncThunk,
-  refreshAutoGroupersThunk,
-} from '../../store/thunks/syncThunks';
+import { triggerGroupersSyncThunk, refreshAutoGroupersThunk } from '../../store/thunks/syncThunks';
 import {
   GROUPERS_REFRESH_INTERVAL_MS,
   GROUPERS_SYNC_LS_KEY,

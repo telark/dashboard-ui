@@ -9,4 +9,3 @@ export const selectBridgeDetailsData = createSelector(
   [selectBridgeDetails, selectBridgeLoading, selectBridgeError],
   (details, loading, error) => ({ details, loading, error }),
 );
-

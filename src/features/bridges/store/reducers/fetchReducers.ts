@@ -65,4 +65,3 @@ export const handleFetchBridgeDetailsRejected = (
   state.loading = false;
   state.error = action.payload;
 };
-

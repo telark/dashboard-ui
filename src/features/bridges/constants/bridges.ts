@@ -15,4 +15,3 @@ export const BRIDGES_PAGE_CONSTANTS = {
   },
   LAYOUT: SHARED_PAGE_CONSTANTS.LAYOUT,
 } as const;
-

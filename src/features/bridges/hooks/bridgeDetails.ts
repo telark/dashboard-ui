@@ -3,12 +3,8 @@ import logger from '../../../logging';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { message } from 'antd';
-import {
-  fetchBridgeDetailsThunk,
-} from '../store/thunks/fetchThunks';
-import {
-  updateBridgeSyncModeThunk,
-} from '../store/thunks/syncThunks';
+import { fetchBridgeDetailsThunk } from '../store/thunks/fetchThunks';
+import { updateBridgeSyncModeThunk } from '../store/thunks/syncThunks';
 import { clearDetails } from '../store/slices/bridgeSlice';
 import { AppDispatch } from '../../../store';
 import { selectBridgeDetailsData } from '../store/selectors/bridgeSelectors';
@@ -83,4 +79,3 @@ export const useBridgeDetails = () => {
     handleBridgeSyncSave,
   };
 };
-

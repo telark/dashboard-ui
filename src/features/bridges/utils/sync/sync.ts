@@ -5,7 +5,11 @@ import { SYNC_CONSTANTS } from '../../../../constants/config/sync';
 import store from '../../../../store';
 import { startSync, endSync } from '../../store/slices/bridgeSlice';
 import { handleSyncEffect, handleSyncError } from '../../../../utils/shared/sync';
-import { buildDetailsSyncKey, buildCardSyncKey, destroySyncMessage } from '../../../../utils/helpers/sync';
+import {
+  buildDetailsSyncKey,
+  buildCardSyncKey,
+  destroySyncMessage,
+} from '../../../../utils/helpers/sync';
 import { BRIDGE_SYNC_CONFIG } from '../../../../config/syncConfig';
 import type { DetailsSyncParams, SyncParams } from '../../../../interfaces/resources/sync';
 
@@ -86,4 +90,3 @@ export const syncBridge = async ({
     store.dispatch(endSync(name));
   }
 };
-

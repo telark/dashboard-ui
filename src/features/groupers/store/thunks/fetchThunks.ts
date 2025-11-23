@@ -1,7 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import logger from '../../../../logging';
 import { fetchGroupers, fetchGrouperDetails, checkGrouperMaintenanceMode } from '../../clients';
-import { mapGroupersData, mapSingleGrouperData, mapGrouperMaintenanceData } from '../../utils/mappers/grouperMapper';
+import {
+  mapGroupersData,
+  mapSingleGrouperData,
+  mapGrouperMaintenanceData,
+} from '../../utils/mappers/grouperMapper';
 import {
   generateGrouperName,
   generateMaintenanceFeatureName,

@@ -11,4 +11,3 @@ export const triggerSingleBridgeSync = async (name: string) => {
   const { path, method } = Endpoints.SYNC.BRIDGE(name);
   return Client<SyncGrouperResponse>(syncManagerApiClient, path, { method });
 };
-

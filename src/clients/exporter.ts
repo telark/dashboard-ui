@@ -95,8 +95,6 @@ export const fetchAllBatchesWorkloads = async () => {
   }
 };
 
-
-
 export const fetchUsers = async (silent = false) => {
   try {
     const config = silent

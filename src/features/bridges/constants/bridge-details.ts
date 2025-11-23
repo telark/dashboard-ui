@@ -32,4 +32,3 @@ export const BRIDGE_DETAILS_CONSTANTS = {
 
 export type TabKey =
   (typeof BRIDGE_DETAILS_CONSTANTS.TAB_KEYS)[keyof typeof BRIDGE_DETAILS_CONSTANTS.TAB_KEYS];
-

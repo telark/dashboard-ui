@@ -22,4 +22,3 @@ export {
   selectBridgeError,
   selectBridgeDetailsData,
 } from './selectors/bridgeSelectors';
-

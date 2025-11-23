@@ -8,7 +8,12 @@ import type { BridgeInterface } from '../../models';
 import { RootState } from '../../../../store';
 import { syncBridge } from '../../utils/sync/sync';
 import { getDetailedStatusStyle, normalizeStatus } from '../../../../utils/helpers/status';
-import { ResourceCard, ResourceCardData, ResourceCardActions, ResourceCardConfig } from '../../../../components/cards/shared';
+import {
+  ResourceCard,
+  ResourceCardData,
+  ResourceCardActions,
+  ResourceCardConfig,
+} from '../../../../components/cards/shared';
 
 const BridgeCard: React.FC<BridgeInterface> = React.memo(function BridgeCard({
   name = CARD_DEFAULTS.BRIDGE.NAME,

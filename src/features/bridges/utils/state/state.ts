@@ -1,11 +1,5 @@
-import {
-  fetchAllBridgesThunk,
-  fetchAllBridgesSilentThunk,
-} from '../../store/thunks/fetchThunks';
-import {
-  triggerBridgesSyncThunk,
-  refreshAutoBridgesThunk,
-} from '../../store/thunks/syncThunks';
+import { fetchAllBridgesThunk, fetchAllBridgesSilentThunk } from '../../store/thunks/fetchThunks';
+import { triggerBridgesSyncThunk, refreshAutoBridgesThunk } from '../../store/thunks/syncThunks';
 import {
   BRIDGES_REFRESH_INTERVAL_MS,
   BRIDGES_SYNC_LS_KEY,
@@ -27,4 +21,3 @@ export const loadBridges = bridgeStateUtils.loadResource;
 export const loadBridgesSilent = bridgeStateUtils.loadResourceSilent;
 export const handleInitialSync = bridgeStateUtils.handleInitialSync;
 export const setupAutoRefresh = bridgeStateUtils.setupAutoRefresh;
-

@@ -50,4 +50,3 @@ export const mapSingleBridgeData = (item: any): any => {
     sync: item.config?.sync || null,
   };
 };
-
