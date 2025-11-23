@@ -1,4 +1,3 @@
-export * from './auth';
 export * from './config/sync';
 export * from './user/user';
 export * from './layout/buttons';
@@ -27,4 +26,3 @@ export * from './shared/colors';
 export * from './shared/details';
 export * from './shared/time';
 export * from './shared/utils';
-export * from './pages/passkeys';

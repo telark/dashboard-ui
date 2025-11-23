@@ -4,7 +4,7 @@ import { BrowserRouter as Router, useLocation, Navigate } from 'react-router-dom
 import Sidebar from './components/layout/sidebar/Sidebar';
 import Header from './components/layout/header/Header';
 import ErrorBoundary from './ErrorBoundary';
-import SessionExpiredModal from './components/auth/SessionExpiredModal';
+import SessionExpiredModal from './features/auth/components/modals/SessionExpiredModal';
 import 'antd/dist/reset.css';
 import { DEFAULT_COLORS, APP_CONFIGS, APP_ROUTES, COMMON_VALUES } from './constants';
 import { Startup, Welcome } from './pages';
@@ -13,8 +13,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { checkClusterInsightsThunk } from './store/insights/slices/insightsSlice';
 import type { RootState, AppDispatch } from './store';
 import { FancySpinner } from './components/shared';
-import { hasSessionToken } from './utils/auth/session/token';
-import { useSessionExpirationCheck } from './utils/auth/session/expiration';
+import { hasSessionToken } from './features/auth/utils/session/token';
+import { useSessionExpirationCheck } from './features/auth/utils/session/expiration';
 
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
 

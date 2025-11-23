@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { PasskeysState, Passkey } from '../../../interfaces/auth/passkeys';
+import type { PasskeysState, Passkey } from '../../../features/auth/models/passkeys';
 import {
   fetchAllPasskeysThunk,
   fetchAllPasskeysSilentThunk,

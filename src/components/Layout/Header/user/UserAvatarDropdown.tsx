@@ -1,15 +1,15 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Dropdown } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { getAuthUser } from '../../../../utils/user/session';
+import { getAuthUser } from '../../../../features/auth/utils/session/user';
 import { fetchCurrentUserDetails } from '../../../../utils/user/fetch';
-import { handleUserLogout } from '../../../../utils/user/logout';
-import { hasSessionToken } from '../../../../utils/auth/session/token';
+import { handleUserLogout } from '../../../../features/auth/utils/logout/logout';
+import { hasSessionToken } from '../../../../features/auth/utils/session/token';
 import { createUserMenuItems } from './UserMenuItems';
 import UserAvatar from './UserAvatar';
 import { HEADER_CONSTANTS } from '../../../../constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
-import type { User as AuthUser } from '../../../../interfaces/auth/credentials';
+import type { User as AuthUser } from '../../../../features/auth/models/credentials';
 import type { User as UsersUser } from '../../../../interfaces/resources/users';
 import logger from '../../../../logging';
 

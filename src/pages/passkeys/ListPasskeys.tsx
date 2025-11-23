@@ -6,7 +6,7 @@ import Header from '../../components/display/shared/sections/Header';
 import PasskeysTable from '../../components/display/passkeys/list/Table';
 import PasskeyFormModal from '../../components/display/passkeys/shared/PasskeyFormModal';
 import { PageContainer } from '../../components/shared';
-import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
+import { AUTH_ERROR_MESSAGES } from '../../features/auth/constants';
 import { isDevelopment } from '../../utils/helpers/env';
 import logger from '../../logging';
 import { AppDispatch } from '../../store';
@@ -16,7 +16,7 @@ import {
   selectPasskeyLoading,
   selectPasskeyError,
 } from '../../store/passkeys/selectors/passkeySelectors';
-import { usePasskeyModal, usePasskeyHandlers } from '../../hooks/auth/passkeys';
+import { usePasskeyModal, usePasskeyHandlers } from '../../features/auth/hooks/passkeys';
 
 const PasskeyIcon = Icons.Passkey;
 

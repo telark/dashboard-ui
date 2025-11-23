@@ -13,7 +13,7 @@ import { createPasskeyViewConfig } from '../../config/passkeyViewConfig';
 import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../components/shared';
 import { message } from 'antd';
-import { AUTH_ERROR_MESSAGES } from '../../constants/auth';
+import { AUTH_ERROR_MESSAGES } from '../../features/auth/constants';
 import { isDevelopment } from '../../utils/helpers/env';
 import logger from '../../logging';
 import { AppDispatch } from '../../store';

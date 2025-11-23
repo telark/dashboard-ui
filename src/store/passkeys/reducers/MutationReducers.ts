@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import type { PasskeysState, Passkey } from '../../../interfaces/auth/passkeys';
+import type { PasskeysState, Passkey } from '../../../features/auth/models/passkeys';
 
 export const handleCreatePasskeyPending = (state: PasskeysState) => {
   state.loading = true;

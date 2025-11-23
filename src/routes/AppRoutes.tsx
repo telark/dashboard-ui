@@ -1,15 +1,15 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AnimatedPageWrapper from '../components/animation/AnimatedPageWrapper';
-import ProtectedRoute from '../components/auth/ProtectedRoute';
+import ProtectedRoute from '../features/auth/components/routes/ProtectedRoute';
 import { FancySpinner } from '../components/shared';
 import { APP_ROUTES } from '../constants';
-import { hasSessionToken } from '../utils/auth/session/token';
+import { hasSessionToken } from '../features/auth/utils/session/token';
 
 // Lazy load pages for code splitting
 const Dashboard = lazy(() => import('../pages/home/Dashboard'));
-const Login = lazy(() => import('../pages/auth/Login'));
-const Register = lazy(() => import('../pages/auth/Register'));
+const Login = lazy(() => import('../features/auth/pages/flow/Login'));
+const Register = lazy(() => import('../features/auth/pages/flow/Register'));
 const GroupersGlobalView = lazy(() => import('../pages/grouper/main/GlobalView'));
 const GrouperDetailsView = lazy(() => import('../pages/grouper/details/DetailsView'));
 const BridgesGlobalView = lazy(() => import('../pages/bridge/main/GlobalView'));
@@ -28,8 +28,8 @@ const GroupsListView = lazy(() => import('../pages/groups/ListGroups'));
 const GroupsCreateView = lazy(() => import('../pages/groups/CreateGroup'));
 const GroupView = lazy(() => import('../pages/groups/ViewGroup'));
 const GroupEdit = lazy(() => import('../pages/groups/EditGroup'));
-const PasskeysListView = lazy(() => import('../pages/passkeys/ListPasskeys'));
-const PasskeyView = lazy(() => import('../pages/passkeys/ViewPasskey'));
+const PasskeysListView = lazy(() => import('../features/auth/pages/passkeys/ListPasskeys'));
+const PasskeyView = lazy(() => import('../features/auth/pages/passkeys/ViewPasskey'));
 
 // Loading fallback component
 const PageLoader: React.FC = () => (

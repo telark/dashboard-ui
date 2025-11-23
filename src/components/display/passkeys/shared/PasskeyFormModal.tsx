@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 import { Form, Input } from 'antd';
 import { Icons, PASSKEYS_PAGE_CONSTANTS as PPC } from '../../../../constants';
 import FormModal from '../../shared/modal/FormModal';
-import { createDeviceNameValidator } from '../../../../utils/auth/passkey/validation';
-import type { PasskeyFormModalProps } from '../../../../interfaces/auth/passkeys';
+import { createDeviceNameValidator } from '../../../../features/auth/utils/passkey/validation';
+import type { PasskeyFormModalProps } from '../../../../features/auth/interfaces/passkeys';
 import DeviceNameSuggestions from './DeviceNameSuggestions';
 
 const PasskeyIcon = Icons.Passkey;
