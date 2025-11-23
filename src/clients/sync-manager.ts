@@ -22,12 +22,3 @@ export const triggerSingleAppSync = async (name: string) => {
   return Client<SyncGrouperResponse>(syncManagerApiClient, path, { method });
 };
 
-export const triggerBridgesSync = async () => {
-  const { path, method } = Endpoints.SYNC.BRIDGES;
-  return Client<SyncGrouperResponse>(syncManagerApiClient, path, { method });
-};
-
-export const triggerSingleBridgeSync = async (name: string) => {
-  const { path, method } = Endpoints.SYNC.BRIDGE(name);
-  return Client<SyncGrouperResponse>(syncManagerApiClient, path, { method });
-};

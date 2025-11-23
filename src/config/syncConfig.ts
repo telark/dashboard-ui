@@ -6,8 +6,8 @@ import {
 import { fetchAllGroupersThunk, fetchGrouperDetailsThunk } from '../features/groupers/store/thunks/fetchThunks';
 import { SyncConfig } from '../interfaces/resources/sync';
 import { SYNC_CONSTANTS } from '../constants/config/sync';
-import { BRIDGE_DETAILS_CONSTANTS } from '../constants/pages/bridge-details';
-import { fetchAllBridgesThunk, fetchBridgeDetailsThunk } from '../store/bridges/thunks/FetchThunks';
+import { BRIDGE_DETAILS_CONSTANTS } from '../features/bridges/constants';
+import { fetchAllBridgesThunk, fetchBridgeDetailsThunk } from '../features/bridges/store/thunks/fetchThunks';
 import { GROUPER_DETAILS_CONSTANTS } from '../features/groupers/constants/grouper-details';
 import { GROUPER_CARD_TEXTS, BRIDGE_CARD_TEXTS } from '../constants/layout/cards';
 

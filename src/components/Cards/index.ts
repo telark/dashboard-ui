@@ -1,5 +1,4 @@
 export { default as WorkloadCard } from './workloads/WorkloadCard';
-export { default as BridgeCard } from './bridge/BridgeCard';
 
 // Shared generic cards
 export {

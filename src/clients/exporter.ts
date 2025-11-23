@@ -95,50 +95,7 @@ export const fetchAllBatchesWorkloads = async () => {
   }
 };
 
-export const fetchBridges = async (silent = false) => {
-  try {
-    const config = silent
-      ? {
-          headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK },
-        }
-      : {};
-    return await Client<ResourceListResponse<unknown>>(
-      exporterApiClient,
-      Endpoints.BRIDGES.GET_ALL.path,
-      config,
-    );
-  } catch (error) {
-    if (!silent) {
-      logger.error(ERROR_MESSAGES.CLIENT.FETCH_BRIDGES_FAILED, error);
-    }
-    throw error;
-  }
-};
 
-export const fetchBridgeDetails = async (name: string) => {
-  try {
-    return await Client<ResourceDetailsResponse<unknown>>(
-      exporterApiClient,
-      Endpoints.BRIDGES.GET_DETAILS(name).path,
-    );
-  } catch (error) {
-    logger.error(`${ERROR_MESSAGES.CLIENT.FETCH_BRIDGE_DETAILS_FAILED} "${name}":`, error);
-    throw error;
-  }
-};
-
-export const updateBridgeSyncMode = async (name: string, syncMode: string) => {
-  try {
-    const { path, method } = Endpoints.BRIDGES.UPDATE_SYNC(name);
-    return await Client<StandardApiResponse>(exporterApiClient, path, {
-      method: method,
-      data: { spec: { config: { sync: { mode: syncMode } } } },
-    });
-  } catch (error) {
-    logger.error(`${ERROR_MESSAGES.CLIENT.UPDATE_BRIDGE_SYNC_MODE_FAILED} "${name}":`, error);
-    throw error;
-  }
-};
 
 export const fetchUsers = async (silent = false) => {
   try {

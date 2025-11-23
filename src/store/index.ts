@@ -3,7 +3,7 @@ import { persistReducer } from 'redux-persist';
 import { grouperReducer } from '../features/groupers/store';
 import insightsReducer from './insights/slices/insightsSlice';
 import workloadReducer from './workloads/slices/workloadSlice';
-import bridgeReducer from './bridges/slices/bridgeSlice';
+import { bridgeReducer } from '../features/bridges/store';
 import groupsReducer from './groups/slices/groupSlice';
 import usersReducer from './users/slices/userSlice';
 import { passkeyReducer } from '../features/auth/store';

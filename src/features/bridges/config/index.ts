@@ -1,0 +1,2 @@
+export { createBridgeViewConfig } from './bridgeViewConfig';
+
