@@ -5,7 +5,7 @@ import HistoryTimeLine from '../../../../components/display/shared/timeline';
 import { MaintenanceMode } from '../../components';
 import { Resources } from '../../components';
 import SyncMode from '../../../../components/tabs/SyncMode';
-import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../constants/grouper-details';
+import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../constants';
 import { createGrouperViewConfig } from '../../config';
 
 interface ContentProps {

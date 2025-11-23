@@ -3,7 +3,7 @@ export {
   mapSingleGrouperData,
   mapGrouperMaintenanceData,
 } from './mappers/grouperMapper';
-export { syncGrouperDetails, syncGrouper } from './sync/sync';
+export { syncGrouperDetails, syncGrouper } from './management/sync';
 export {
   isBridgeResource,
   getResourceName,
@@ -25,4 +25,4 @@ export {
   loadGroupersSilent,
   handleInitialSync,
   setupAutoRefresh,
-} from './state/state';
+} from './management/state';

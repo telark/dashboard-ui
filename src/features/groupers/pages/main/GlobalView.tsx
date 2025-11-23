@@ -8,9 +8,9 @@ import {
   loadGroupersSilent,
   handleInitialSync,
   setupAutoRefresh,
-} from '../../utils/state/state';
+} from '../../utils/management/state';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../utils/shared/retry';
-import { GROUPERS_PAGE_CONSTANTS } from '../../constants/groupers';
+import { GROUPERS_CONSTANTS } from '../../constants';
 import { Loading, GrouperMainError, GrouperMainEmpty, Success } from '..';
 
 const GroupersGlobalView: React.FC = memo(function GroupersGlobalView() {
@@ -62,8 +62,8 @@ const GroupersGlobalView: React.FC = memo(function GroupersGlobalView() {
       setNextRetryIn: setNextRetryIn,
       setInCooldown: setIsInCooldown,
       setCooldownTime: setCooldownTime,
-      onSuccess: () => message.success(GROUPERS_PAGE_CONSTANTS.MESSAGES.SUCCESS),
-      onError: () => message.error(GROUPERS_PAGE_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
+      onSuccess: () => message.success(GROUPERS_CONSTANTS.MESSAGES.SUCCESS),
+      onError: () => message.error(GROUPERS_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
     }),
     [],
   );

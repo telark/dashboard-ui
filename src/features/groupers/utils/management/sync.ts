@@ -1,6 +1,6 @@
 import { triggerSingleGrouperSync } from '../../clients';
 import { SYNC_MESSAGES } from '../../../../constants/layout/modes';
-import { GROUPER_DETAILS_CONSTANTS } from '../../constants/grouper-details';
+import { GROUPER_DETAILS_CONSTANTS } from '../../constants';
 import { SYNC_CONSTANTS } from '../../../../constants/config/sync';
 import store from '../../../../store';
 import { startSync, endSync } from '../../store/slices/grouperSlice';

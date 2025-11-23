@@ -14,7 +14,7 @@ import {
   fetchAllBridgesThunk,
   fetchBridgeDetailsThunk,
 } from '../features/bridges/store/thunks/fetchThunks';
-import { GROUPER_DETAILS_CONSTANTS } from '../features/groupers/constants/grouper-details';
+import { GROUPER_DETAILS_CONSTANTS } from '../features/groupers/constants';
 import { GROUPER_CARD_TEXTS, BRIDGE_CARD_TEXTS } from '../constants/layout/cards';
 
 export const WORKLOAD_SYNC_CONFIG: SyncConfig = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { GROUPER_DETAILS_CONSTANTS } from '../../constants/grouper-details';
+import { GROUPER_DETAILS_CONSTANTS } from '../../constants';
 
 interface GrouperDetailsErrorProps {
   error: string;

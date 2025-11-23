@@ -1,7 +1,7 @@
 import React from 'react';
 import TabButton from '../../../../components/buttons/TabButton';
 import { UI } from '../../../../constants/layout/ui';
-import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../constants/grouper-details';
+import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../constants';
 
 interface TabsProps {
   activeTab: TabKey;
