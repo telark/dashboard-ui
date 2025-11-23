@@ -8,7 +8,7 @@ import {
   loadWorkloadsSilent,
   handleInitialSync,
   setupAutoRefresh,
-} from '../../utils/state/state';
+} from '../../utils/management/state';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../utils/shared/retry';
 import { WORKLOADS_CONSTANTS } from '../../constants';
 import { APP_ROUTES } from '../../../../constants';

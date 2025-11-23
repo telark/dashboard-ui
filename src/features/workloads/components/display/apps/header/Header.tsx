@@ -5,7 +5,7 @@ import { App as AntdApp } from 'antd';
 import TimeAgo from '../../../../../../components/time/TimeAgo';
 import Header from '../../../../../../components/display/shared/sections/Header';
 import type { AppWorkload } from '../../../../models';
-import { syncAppWorkloadDetails } from '../../../../utils/sync/sync';
+import { syncAppWorkloadDetails } from '../../../../utils/management/sync';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../../../store';
 import { APP_ROUTES, Icons, UI } from '../../../../../../constants';

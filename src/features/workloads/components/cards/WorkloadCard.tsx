@@ -12,7 +12,7 @@ import {
   ResourceCardActions,
   ResourceCardConfig,
 } from '../../../../components/cards/shared';
-import { syncAppWorkload } from '../../utils/sync/sync';
+import { syncAppWorkload } from '../../utils/management/sync';
 import { RootState } from '../../../../store';
 
 interface WorkloadCardProps {
