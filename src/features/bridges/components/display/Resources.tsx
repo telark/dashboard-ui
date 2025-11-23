@@ -6,9 +6,9 @@ import {
   DeploymentUnitOutlined,
 } from '@ant-design/icons';
 import { Button, Pagination, Tag, Collapse } from 'antd';
-import { DEFAULT_COLORS } from '../../../constants';
-import { UI } from '../../../constants/layout/ui';
-import { Label, Row } from '../../../components/shared';
+import { DEFAULT_COLORS } from '../../../../constants';
+import { UI } from '../../../../constants/layout/ui';
+import { Label, Row } from '../../../../components/shared';
 
 interface BridgeResourcesProps {
   name: string;
