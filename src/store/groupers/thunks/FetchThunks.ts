@@ -4,7 +4,7 @@ import {
   fetchGroupers,
   fetchGrouperDetails,
   checkGrouperMaintenanceMode,
-} from '../../../clients/exporter';
+} from '../../../features/groupers/clients';
 import {
   mapGroupersData,
   mapSingleGrouperData,

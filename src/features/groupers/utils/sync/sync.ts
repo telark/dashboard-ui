@@ -1,4 +1,4 @@
-import { triggerSingleGrouperSync } from '../../../../clients/sync-manager';
+import { triggerSingleGrouperSync } from '../../clients';
 import { SYNC_MESSAGES } from '../../../../constants/layout/modes';
 import { GROUPER_DETAILS_CONSTANTS } from '../../constants/grouper-details';
 import { SYNC_CONSTANTS } from '../../../../constants/config/sync';

@@ -5,79 +5,8 @@ import {
   HTTP_HEADERS,
   HEADER_VALUES,
   ERROR_MESSAGES,
-  MAINTENANCE_ACTIONS,
 } from '../constants';
-import type { MaintenanceModeResponse, StandardApiResponse } from '../interfaces/http';
-
-export const enableGrouperMaintenanceMode = async (
-  grouperName: string,
-  resourceType: string,
-  updateAction: boolean,
-  deleteAction: boolean,
-) => {
-  try {
-    const { path, method } = Endpoints.GROUPER_MAINTENANCE.ENABLE;
-    return await Client<MaintenanceModeResponse>(configuratorApiClient, path, {
-      method: method,
-      data: {
-        name: grouperName,
-        type: resourceType,
-        update: updateAction ? MAINTENANCE_ACTIONS.ALLOW : MAINTENANCE_ACTIONS.DENY,
-        delete: deleteAction ? MAINTENANCE_ACTIONS.ALLOW : MAINTENANCE_ACTIONS.DENY,
-      },
-    });
-  } catch (error) {
-    logger.error(
-      `${ERROR_MESSAGES.CLIENT.ENABLE_MAINTENANCE_MODE_FAILED} "${grouperName}":`,
-      error,
-    );
-    throw error;
-  }
-};
-
-export const updateGrouperMaintenanceMode = async (
-  grouperName: string,
-  updateAction: boolean,
-  deleteAction: boolean,
-) => {
-  try {
-    const { path, method } = Endpoints.GROUPER_MAINTENANCE.UPDATE;
-    return await Client<MaintenanceModeResponse>(configuratorApiClient, path, {
-      method: method,
-      data: {
-        name: grouperName,
-        spec: {
-          update: updateAction ? MAINTENANCE_ACTIONS.ALLOW : MAINTENANCE_ACTIONS.DENY,
-          delete: deleteAction ? MAINTENANCE_ACTIONS.ALLOW : MAINTENANCE_ACTIONS.DENY,
-        },
-      },
-    });
-  } catch (error) {
-    logger.error(
-      `${ERROR_MESSAGES.CLIENT.UPDATE_MAINTENANCE_MODE_FAILED} "${grouperName}":`,
-      error,
-    );
-    throw error;
-  }
-};
-
-export const removeGrouperMaintenanceMode = async (grouperName: string) => {
-  try {
-    const { path, method } = Endpoints.GROUPER_MAINTENANCE.REMOVE;
-    return await Client<MaintenanceModeResponse>(configuratorApiClient, path, {
-      method: method,
-      data: {
-        name: grouperName,
-      },
-    });
-  } catch (error) {
-    logger.error(
-      `${ERROR_MESSAGES.CLIENT.REMOVE_MAINTENANCE_MODE_FAILED} "${grouperName}":`,
-      error,
-    );
-    throw error;
-  }
-};
+import type { StandardApiResponse } from '../interfaces/http';
 
 export const startClusterAnalyze = async () => {
   try {

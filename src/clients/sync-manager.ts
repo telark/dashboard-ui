@@ -12,16 +12,6 @@ export interface SyncGrouperResponse {
   };
 }
 
-export const triggerGroupersSync = async () => {
-  const { path, method } = Endpoints.SYNC.GROUPERS;
-  return Client<SyncGrouperResponse>(syncManagerApiClient, path, { method });
-};
-
-export const triggerSingleGrouperSync = async (name: string) => {
-  const { path, method } = Endpoints.SYNC.GROUPER(name);
-  return Client<SyncGrouperResponse>(syncManagerApiClient, path, { method });
-};
-
 export const triggerAppsSync = async () => {
   const { path, method } = Endpoints.SYNC.APPS;
   return Client<SyncGrouperResponse>(syncManagerApiClient, path, { method });

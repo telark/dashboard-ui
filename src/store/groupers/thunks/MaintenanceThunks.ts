@@ -3,7 +3,7 @@ import {
   enableGrouperMaintenanceMode,
   updateGrouperMaintenanceMode,
   removeGrouperMaintenanceMode,
-} from '../../../clients/configurator';
+} from '../../../features/groupers/clients';
 import {
   generateGrouperName,
   generateMaintenanceFeatureName,
