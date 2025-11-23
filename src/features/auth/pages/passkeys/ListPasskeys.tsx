@@ -16,7 +16,7 @@ import {
   selectPasskeyLoading,
   selectPasskeyError,
 } from '../../../../store/passkeys/selectors/passkeySelectors';
-import { passkeyModalState, passkeyActions } from '../../hooks';
+import { usePasskeyModalState, usePasskeyActions } from '../../hooks';
 
 const PasskeyIcon = Icons.Passkey;
 
@@ -27,10 +27,10 @@ const ListPasskeys: React.FC = () => {
   const error = useSelector(selectPasskeyError);
 
   const { isModalOpen, isEditMode, selectedPasskey, openCreateModal, openEditModal, closeModal } =
-    passkeyModalState();
+    usePasskeyModalState();
 
   const { submitting, handleView, handleEdit, handleDelete, handleCreate, handleUpdate } =
-    passkeyActions(openEditModal);
+    usePasskeyActions(openEditModal);
 
   const [lastFetchError, setLastFetchError] = useState<string | null>(null);
 

@@ -14,7 +14,9 @@ import {
 } from '../../utils';
 import type { Passkey, PasskeyActionsReturn } from '../../models/passkeys';
 
-export const passkeyActions = (openEditModal: (passkey: Passkey) => void): PasskeyActionsReturn => {
+export const usePasskeyActions = (
+  openEditModal: (passkey: Passkey) => void,
+): PasskeyActionsReturn => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
