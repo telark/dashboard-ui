@@ -1,13 +1,10 @@
+export { loginStart, loginFinish } from './login';
+export { registerStart, registerFinish } from './register';
+export { logout } from './logout';
 export {
-  loginStart,
-  loginFinish,
-  registerStart,
-  registerFinish,
-  logout,
   getAllPasskeys,
   getPasskey,
   createPasskey,
   updatePasskey,
   deletePasskey,
-} from './auth';
-
+} from './passkeys';

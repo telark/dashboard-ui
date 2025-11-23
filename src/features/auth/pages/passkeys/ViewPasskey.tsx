@@ -1,11 +1,7 @@
 import React, { useEffect, useState, startTransition } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  APP_ROUTES,
-  Icons,
-  SHARED_DETAILS_CONSTANTS,
-} from '../../../../constants';
+import { APP_ROUTES, Icons, SHARED_DETAILS_CONSTANTS } from '../../../../constants';
 import { PASSKEYS_PAGE_CONSTANTS as PPC } from '../../constants/passkeys';
 import Header from '../../../../components/display/shared/sections/Header';
 import ViewDetails from '../../../../components/display/shared/views/ViewDetails';

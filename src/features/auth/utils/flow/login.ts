@@ -10,10 +10,7 @@ import { AUTH_SUCCESS_MESSAGES, AUTH_ERROR_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { HTTP_STATUS } from '../../../../constants/rest/http';
 import { handleAuthError } from '../shared/errors';
-import type {
-  LoginStartResponse,
-  AuthenticatorAssertionResponse,
-} from '../../models';
+import type { LoginStartResponse, AuthenticatorAssertionResponse } from '../../models';
 import type { MessageInstance } from 'antd/es/message/interface';
 
 export const prepareLoginFinishRequest = (

@@ -1,2 +1,1 @@
 export { handleAuthError } from './errors';
-

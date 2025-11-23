@@ -18,7 +18,10 @@ import type {
 } from '../interfaces/http';
 import type { AppWorkload } from '../interfaces/resources/workload';
 import type { User } from '../interfaces/resources/users';
-import type { SessionDetailsResponse, DeleteSessionResponse } from '../features/auth/models/session';
+import type {
+  SessionDetailsResponse,
+  DeleteSessionResponse,
+} from '../features/auth/models/session';
 import type { AxiosError } from 'axios';
 
 export const fetchGroupers = async (silent = false) => {

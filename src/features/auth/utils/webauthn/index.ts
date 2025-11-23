@@ -5,11 +5,7 @@ export {
   authenticateWithPasskey,
   registerPasskey,
 } from './core';
-export {
-  extractLoginOptions,
-  extractCredentialIds,
-  hasBackendPasskeys,
-} from './extraction';
+export { extractLoginOptions, extractCredentialIds, hasBackendPasskeys } from './extraction';
 export {
   addBase64Padding,
   convertCredentialDescriptor,
@@ -27,4 +23,3 @@ export {
   isUserCancelledError,
   isNoCredentialFoundError,
 } from './errors';
-

@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import { Form, App as AntdApp } from 'antd';
 import { LoginOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import {
-  performLogin,
-  cleanupOrphanedPasskeys,
-  type OrphanedPasskeysInfo,
-} from '../../utils/flow';
+import { performLogin, cleanupOrphanedPasskeys, type OrphanedPasskeysInfo } from '../../utils/flow';
 import { APP_ROUTES } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { LoginForm } from '../../components/login';
