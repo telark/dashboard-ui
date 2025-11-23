@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { updateGrouperSyncMode, triggerGroupersSync, fetchGroupers } from '../../clients';
-import { mapSingleGrouperData, mapGroupersData } from '../../utils';
+import { mapSingleGrouperData, mapGroupersData } from '../../utils/mappers/grouperMapper';
 import { generateGrouperName, extractErrorMessage } from '../../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS } from '../../../../constants/store/store';
 
