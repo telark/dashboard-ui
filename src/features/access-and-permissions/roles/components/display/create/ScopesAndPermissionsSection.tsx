@@ -1,5 +1,5 @@
 import React from 'react';
-import Section from '../shared/Section';
+import Section from '../../../../../../components/display/shared/sections/Section';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import RolesScopesAndPermissionsList from './ScopesAndPermissionsList';
 

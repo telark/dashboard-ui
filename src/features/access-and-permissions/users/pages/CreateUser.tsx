@@ -8,7 +8,7 @@ import { USERS_CONSTANTS as UC } from '../constants';
 import LabeledInput from '../../../../components/display/shared/inputs/LabeledInput';
 import LabeledSelect from '../../../../components/display/shared/inputs/LabeledSelect';
 import LabeledAvatarPicker from '../../../../components/display/shared/inputs/LabeledAvatarPicker';
-import Section from '../../roles/components/display/shared/Section';
+import Section from '../../../../components/display/shared/sections/Section';
 import PrimaryButton from '../../../../components/buttons/PrimaryButton';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer } from '../../../../components/shared';

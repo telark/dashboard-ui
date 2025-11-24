@@ -7,7 +7,7 @@ import { STATIC_GROUPS } from '../data';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import LabeledInput from '../../../../components/display/shared/inputs/LabeledInput';
 import LabeledSelect from '../../../../components/display/shared/inputs/LabeledSelect';
-import Section from '../../roles/components/display/shared/Section';
+import Section from '../../../../components/display/shared/sections/Section';
 import PrimaryButton from '../../../../components/buttons/PrimaryButton';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
