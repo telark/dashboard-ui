@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AiOutlineLock } from 'react-icons/ai';
-import { StatusTag } from '../../../../../../components/tags';
+import { StatusTag } from '../../../../../../components/display/tags';
 import { Label } from '../../../../../../components/shared';
 import { CARD_TRANSITIONS } from '../../../../../../constants';
 

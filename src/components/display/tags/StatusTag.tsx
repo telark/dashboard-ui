@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
-import { BUTTON_CONFIGS } from '../../constants';
+import { BUTTON_CONFIGS } from '../../../constants';
 
 interface StatusTagProps {
   label: string;

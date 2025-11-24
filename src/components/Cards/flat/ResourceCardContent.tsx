@@ -4,7 +4,7 @@ import { ToolOutlined } from '@ant-design/icons';
 import StatusButton from '../../buttons/StatusButton';
 import TimeAgo from '../../display/time/TimeAgo';
 import { Metric } from '../../shared';
-import { StatusTag } from '../../tags';
+import { StatusTag } from '../../display/tags';
 import { UI } from '../../../constants/layout/ui';
 import { CapitalizeFirstLetter } from '../../../utils/helpers/format';
 import { CARD_CONFIGS, CARD_COLORS, DEFAULT_COLORS, CARD_STATES } from '../../../constants';
