@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { Form, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../constants';
-import { COMPONENT_STYLES } from '../../constants/layout/ui';
-import Header from '../../components/display/shared/sections/Header';
-import { GROUPS_CONSTANTS as GC } from '../../constants/pages/groups';
-import LabeledInput from '../../components/display/shared/inputs/LabeledInput';
-import LabeledSelect from '../../components/display/shared/inputs/LabeledSelect';
-import Section from '../../components/display/roles/shared/Section';
-import PrimaryButton from '../../components/buttons/PrimaryButton';
-import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
-import { PageContainer } from '../../components/shared';
+import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../../../constants';
+import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
+import Header from '../../../../components/display/shared/sections/Header';
+import { GROUPS_CONSTANTS as GC } from '../constants';
+import LabeledInput from '../../../../components/display/shared/inputs/LabeledInput';
+import LabeledSelect from '../../../../components/display/shared/inputs/LabeledSelect';
+import Section from '../../../../components/display/roles/shared/Section';
+import PrimaryButton from '../../../../components/buttons/PrimaryButton';
+import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
+import { PageContainer } from '../../../../components/shared';
 import { useDispatch } from 'react-redux';
-import { addGroup } from '../../store/groups/slices/groupSlice';
-import type { Group } from '../../interfaces/resources/groups';
+import { addGroup } from '../store';
+import type { Group } from '../models';
 
 const GroupIcon = Icons.Group;
 

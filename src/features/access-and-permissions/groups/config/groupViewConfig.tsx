@@ -1,9 +1,9 @@
 import { AiOutlineTag } from 'react-icons/ai';
-import type { Group } from '../interfaces/resources/groups';
-import type { ViewDetailsConfig } from '../components/display/shared/views/ViewDetails';
-import { StatusTag } from '../components/tags';
-import { ROLES_PAGE_CONSTANTS as RPC } from '../constants/pages/roles';
-import { Icons } from '../constants';
+import type { Group } from '../models';
+import type { ViewDetailsConfig } from '../../../../components/display/shared/views/ViewDetails';
+import { StatusTag } from '../../../../components/tags';
+import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
+import { Icons } from '../../../../constants';
 
 export const createGroupViewConfig = (group: Group): ViewDetailsConfig => {
   return {

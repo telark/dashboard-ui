@@ -1,18 +1,18 @@
 import React from 'react';
 import { Form } from 'antd';
-import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../constants';
-import { COMPONENT_STYLES } from '../../constants/layout/ui';
-import Header from '../../components/display/shared/sections/Header';
-import { STATIC_GROUPS } from '../../data/groups';
-import { GROUPS_CONSTANTS as GC } from '../../constants/pages/groups';
-import LabeledInput from '../../components/display/shared/inputs/LabeledInput';
-import LabeledSelect from '../../components/display/shared/inputs/LabeledSelect';
-import Section from '../../components/display/roles/shared/Section';
-import PrimaryButton from '../../components/buttons/PrimaryButton';
-import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
-import { PageContainer, NotFound } from '../../components/shared';
-import { useEditPage } from '../../hooks/layout';
-import type { Group } from '../../interfaces/resources/groups';
+import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../../../constants';
+import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
+import Header from '../../../../components/display/shared/sections/Header';
+import { STATIC_GROUPS } from '../data';
+import { GROUPS_CONSTANTS as GC } from '../constants';
+import LabeledInput from '../../../../components/display/shared/inputs/LabeledInput';
+import LabeledSelect from '../../../../components/display/shared/inputs/LabeledSelect';
+import Section from '../../../../components/display/roles/shared/Section';
+import PrimaryButton from '../../../../components/buttons/PrimaryButton';
+import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
+import { PageContainer, NotFound } from '../../../../components/shared';
+import { useEditPage } from '../../../../hooks/layout';
+import type { Group } from '../models';
 
 const GroupIcon = Icons.Group;
 

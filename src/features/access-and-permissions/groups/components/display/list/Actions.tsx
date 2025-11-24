@@ -1,7 +1,7 @@
 import React from 'react';
-import { GROUPS_CONSTANTS as GC } from '../../../../constants/pages/groups';
-import type { Group } from '../../../../interfaces/resources/groups';
-import RowOptions from '../../shared/actions/RowOptions';
+import { GROUPS_CONSTANTS as GC } from '../../../constants';
+import type { Group } from '../../../models';
+import RowOptions from '../../../../../../components/display/shared/actions/RowOptions';
 
 interface ActionsProps {
   record: Group;

@@ -38,10 +38,14 @@ const UsersCreateView = lazy(
 );
 const UserView = lazy(() => import('../features/access-and-permissions/users/pages/ViewUser'));
 const UserEdit = lazy(() => import('../features/access-and-permissions/users/pages/EditUser'));
-const GroupsListView = lazy(() => import('../pages/groups/ListGroups'));
-const GroupsCreateView = lazy(() => import('../pages/groups/CreateGroup'));
-const GroupView = lazy(() => import('../pages/groups/ViewGroup'));
-const GroupEdit = lazy(() => import('../pages/groups/EditGroup'));
+const GroupsListView = lazy(
+  () => import('../features/access-and-permissions/groups/pages/ListGroups'),
+);
+const GroupsCreateView = lazy(
+  () => import('../features/access-and-permissions/groups/pages/CreateGroup'),
+);
+const GroupView = lazy(() => import('../features/access-and-permissions/groups/pages/ViewGroup'));
+const GroupEdit = lazy(() => import('../features/access-and-permissions/groups/pages/EditGroup'));
 const PasskeysListView = lazy(() => import('../features/auth/pages/passkeys/ListPasskeys'));
 const PasskeyView = lazy(() => import('../features/auth/pages/passkeys/ViewPasskey'));
 

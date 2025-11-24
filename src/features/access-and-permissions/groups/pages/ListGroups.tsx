@@ -1,14 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { APP_ROUTES, Icons } from '../../constants';
-import { GROUPS_CONSTANTS as GC } from '../../constants/pages/groups';
-import Header from '../../components/display/shared/sections/Header';
-import GroupsTable from '../../components/display/groups/list/Table';
-import FormModal from '../../components/display/shared/modal/FormModal';
-import { STATIC_GROUPS } from '../../data/groups';
-import { PageContainer } from '../../components/shared';
-import { useListPage } from '../../hooks/layout';
-import type { Group } from '../../interfaces/resources/groups';
+import { APP_ROUTES, Icons } from '../../../../constants';
+import { GROUPS_CONSTANTS as GC } from '../constants';
+import Header from '../../../../components/display/shared/sections/Header';
+import GroupsTable from '../components/display/list/Table';
+import FormModal from '../../../../components/display/shared/modal/FormModal';
+import { STATIC_GROUPS } from '../data';
+import { PageContainer } from '../../../../components/shared';
+import { useListPage } from '../../../../hooks/layout';
+import type { Group } from '../models';
 
 const GroupIcon = Icons.Group;
 

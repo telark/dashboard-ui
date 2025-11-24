@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { GroupsState, Group } from '../../../interfaces/resources/groups';
+import type { GroupsState, Group } from '../../models';
 
 const initialState: GroupsState = {
   groups: [],

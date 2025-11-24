@@ -1,14 +1,14 @@
 import React from 'react';
-import { APP_ROUTES, Icons } from '../../constants';
-import { GROUPS_CONSTANTS as GC } from '../../constants/pages/groups';
-import Header from '../../components/display/shared/sections/Header';
-import { STATIC_GROUPS } from '../../data/groups';
-import ViewDetails from '../../components/display/shared/views/ViewDetails';
-import { createGroupViewConfig } from '../../config/groupViewConfig';
-import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
-import { PageContainer, NotFound } from '../../components/shared';
-import { useViewPage } from '../../hooks/layout';
-import type { Group } from '../../interfaces/resources/groups';
+import { APP_ROUTES, Icons } from '../../../../constants';
+import { GROUPS_CONSTANTS as GC } from '../constants';
+import Header from '../../../../components/display/shared/sections/Header';
+import { STATIC_GROUPS } from '../data';
+import ViewDetails from '../../../../components/display/shared/views/ViewDetails';
+import { createGroupViewConfig } from '../config';
+import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
+import { PageContainer, NotFound } from '../../../../components/shared';
+import { useViewPage } from '../../../../hooks/layout';
+import type { Group } from '../models';
 
 const GroupIcon = Icons.Group;
 

@@ -1,4 +1,4 @@
-import type { FormFieldConfig } from '../../interfaces/layout/modal';
+import type { FormFieldConfig } from '../../../../interfaces/layout/modal';
 
 export const GROUPS_CONSTANTS = {
   LABELS: {
@@ -118,5 +118,3 @@ export const GROUPS_CONSTANTS = {
     },
   },
 } as const;
-
-export type GroupsConstants = typeof GROUPS_CONSTANTS;
