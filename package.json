@@ -49,7 +49,8 @@
     "lint:f": "eslint . --fix",
     "format": "prettier --write .",
     "type-check": "tsc --noEmit",
-    "check-all": "npm run type-check && npm run lint"
+    "check-all": "npm run type-check && npm run lint",
+    "check-all-and-build": "npm run type-check && npm run lint && npm run build"
   },
   "browserslist": {
     "production": [
