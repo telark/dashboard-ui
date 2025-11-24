@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { DEFAULT_COLORS, HEADER_CONSTANTS } from '../../../../../constants';
-import UserAvatarComponent from '../../../../../components/display/shared/avatars/UserAvatar';
+import UserAvatarComponent from '../../../../../components/display/avatars/UserAvatar';
 import type { User } from '../../models';
 
 interface UserAvatarProps {

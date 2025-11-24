@@ -1,4 +1,4 @@
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS } from '../../../constants';
 
 export const TABLE_DEFAULTS = {
   HEADER_BG: '#fff',

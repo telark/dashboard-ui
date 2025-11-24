@@ -12,8 +12,8 @@ import {
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../../utils/shared/retry';
 import { GROUPERS_CONSTANTS } from '../../constants';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
-import LoadingView from '../../../../../components/display/shared/views/LoadingView';
-import ReachabilityErrorView from '../../../../../components/display/shared/views/ReachabilityErrorView';
+import LoadingView from '../../../../../components/display/views/LoadingView';
+import ReachabilityErrorView from '../../../../../components/display/views/ReachabilityErrorView';
 import { GrouperMainEmpty, Success } from '..';
 
 const GroupersGlobalView: React.FC = memo(function GroupersGlobalView() {

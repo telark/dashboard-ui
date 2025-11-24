@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Modal } from 'antd';
-import DataTable from '../../../../../../components/display/shared/table/DataTable';
+import DataTable from '../../../../../../components/display/table/DataTable';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import type { Group, GroupsTableProps } from '../../../models';
 import Columns from './Columns';

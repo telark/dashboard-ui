@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal } from 'antd';
 import { AiOutlineClose } from 'react-icons/ai';
-import type { BaseModalProps } from '../../../../interfaces/layout/modal';
+import type { BaseModalProps } from '../../../interfaces/layout/modal';
 
 const BaseModal: React.FC<BaseModalProps> = ({
   open,

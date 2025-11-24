@@ -1,10 +1,10 @@
 import React from 'react';
 import { Breadcrumb } from 'antd';
-import { DEFAULT_COLORS, BUTTON_TEXTS } from '../../../../constants';
+import { DEFAULT_COLORS, BUTTON_TEXTS } from '../../../constants';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
-import PrimaryButton from '../../../buttons/PrimaryButton';
-import type { HeaderProps } from '../../../../interfaces/layout/sections';
+import PrimaryButton from '../../buttons/PrimaryButton';
+import type { HeaderProps } from '../../../interfaces/layout/sections';
 
 const Header: React.FC<HeaderProps> = ({
   title,

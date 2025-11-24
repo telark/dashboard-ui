@@ -2,8 +2,8 @@ import React from 'react';
 import { TimelineRail } from './TimelineRail';
 import { TimelineItem } from './TimelineItem';
 import { RecordingIndicator } from './RecordingIndicator';
-import type { TimelineViewProps } from '../../../../interfaces/layout/timeline';
-import { TIMELINE_CONSTANTS, TIMELINE_STYLES, UI } from '../../../../constants';
+import type { TimelineViewProps } from '../../../interfaces/layout/timeline';
+import { TIMELINE_CONSTANTS, TIMELINE_STYLES, UI } from '../../../constants';
 
 export const TimelineView: React.FC<TimelineViewProps> = React.memo(
   ({ items, withRecording = false }) => {

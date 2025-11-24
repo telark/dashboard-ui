@@ -1,7 +1,7 @@
 import type { Role } from '../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
-import RowTag from '../../../../../../components/display/shared/table/RowTag';
-import { generateColumn } from '../../../../../../components/display/shared/table/utils';
+import RowTag from '../../../../../../components/display/table/RowTag';
+import { generateColumn } from '../../../../../../components/display/table/utils';
 import Actions from './Actions';
 import { AiOutlineCalendar, AiOutlineCheckCircle, AiOutlineTag } from 'react-icons/ai';
 import { Icons } from '../../../../../../constants';

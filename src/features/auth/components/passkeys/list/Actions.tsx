@@ -1,7 +1,7 @@
 import React from 'react';
 import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
 import type { Passkey } from '../../../models/passkeys';
-import RowOptions from '../../../../../components/display/shared/actions/RowOptions';
+import RowOptions from '../../../../../components/display/actions/RowOptions';
 
 interface ActionsProps {
   record: Passkey;

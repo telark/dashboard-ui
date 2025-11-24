@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Modal } from 'antd';
-import DataTable from '../../../../../../components/display/shared/table/DataTable';
+import DataTable from '../../../../../../components/display/table/DataTable';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import type { User, UsersTableProps } from '../../../models';
 import Columns from './Columns';

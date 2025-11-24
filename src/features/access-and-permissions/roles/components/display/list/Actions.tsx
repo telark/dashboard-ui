@@ -1,7 +1,7 @@
 import React from 'react';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import type { Role } from '../../../models';
-import RowOptions from '../../../../../../components/display/shared/actions/RowOptions';
+import RowOptions from '../../../../../../components/display/actions/RowOptions';
 
 interface ActionsProps {
   record: Role;

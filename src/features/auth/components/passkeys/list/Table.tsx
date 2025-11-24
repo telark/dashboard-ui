@@ -4,7 +4,7 @@ import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
 import type { Passkey } from '../../../models/passkeys';
 import { Columns } from './Columns';
 import { PasskeysSortKey, sortPasskeys } from './utils';
-import DataTable from '../../../../../components/display/shared/table/DataTable';
+import DataTable from '../../../../../components/display/table/DataTable';
 
 interface PasskeysTableProps {
   passkeys: Passkey[];

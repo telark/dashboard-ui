@@ -1,9 +1,9 @@
 import React from 'react';
 import { APP_ROUTES, Icons } from '../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../constants';
-import Header from '../../../../components/display/shared/sections/Header';
+import Header from '../../../../components/display/sections/Header';
 import { STATIC_ROLES } from '../data';
-import ViewDetails from '../../../../components/display/shared/views/ViewDetails';
+import ViewDetails from '../../../../components/display/views/ViewDetails';
 import ScopesPermissions from '../components/display/view/ScopesPermissions';
 import { createRoleViewConfig } from '../config';
 import { Card } from 'antd';

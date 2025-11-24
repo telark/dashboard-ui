@@ -2,7 +2,7 @@ import React, { useMemo, useRef } from 'react';
 import { Form, Input } from 'antd';
 import { Icons } from '../../../../../constants';
 import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
-import FormModal from '../../../../../components/display/shared/modal/FormModal';
+import FormModal from '../../../../../components/display/modal/FormModal';
 import { createDeviceNameValidator } from '../../../utils';
 import type { PasskeyFormModalProps } from '../../../models/passkeys';
 import DeviceNameSuggestions from './DeviceNameSuggestions';

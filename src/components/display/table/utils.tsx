@@ -1,7 +1,7 @@
 import React from 'react';
 import SortHeader from './Sort';
 import { TABLE_DEFAULTS } from './constants';
-import type { GenerateColumnCtx } from '../../../../interfaces/layout/table';
+import type { GenerateColumnCtx } from '../../../interfaces/layout/table';
 
 export const generateColumn = (
   cfg: {

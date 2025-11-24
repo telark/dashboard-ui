@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { APP_ROUTES, Icons } from '../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../constants';
 import { STATIC_ROLES } from '../data';
-import Header from '../../../../components/display/shared/sections/Header';
+import Header from '../../../../components/display/sections/Header';
 import RolesTable from '../components/display/list/Table';
 import { PageContainer } from '../../../../components/shared';
 

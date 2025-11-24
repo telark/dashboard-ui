@@ -1,9 +1,9 @@
 import React from 'react';
 import { APP_ROUTES, Icons } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
-import Header from '../../../../components/display/shared/sections/Header';
+import Header from '../../../../components/display/sections/Header';
 import { STATIC_GROUPS } from '../data';
-import ViewDetails from '../../../../components/display/shared/views/ViewDetails';
+import ViewDetails from '../../../../components/display/views/ViewDetails';
 import { createGroupViewConfig } from '../config';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';

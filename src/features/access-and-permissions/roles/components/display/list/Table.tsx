@@ -4,7 +4,7 @@ import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import type { Role, RolesTableProps } from '../../../models';
 import { Columns } from './Columns';
 import { getPermissionCount, RolesSortKey, sortRoles } from './utils';
-import DataTable from '../../../../../../components/display/shared/table/DataTable';
+import DataTable from '../../../../../../components/display/table/DataTable';
 
 const RolesTable: React.FC<RolesTableProps> = ({ roles, onRolesChange, onView, onEdit }) => {
   const [sortKey, setSortKey] = useState<RolesSortKey>('createdAt');

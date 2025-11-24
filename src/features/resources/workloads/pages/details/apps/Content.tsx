@@ -1,7 +1,7 @@
 import React, { Suspense, lazy, useMemo } from 'react';
 import { Card } from 'antd';
 import WorkloadBridges from '../../../components/display/apps/tabs/Bridges';
-import ViewDetails from '../../../../../../components/display/shared/views/ViewDetails';
+import ViewDetails from '../../../../../../components/display/views/ViewDetails';
 import SyncMode from '../../../../../../components/tabs/SyncMode';
 import { FancySpinner } from '../../../../../../components/shared';
 import { WORKLOAD_DETAILS_CONSTANTS, TabKey } from '../../../constants';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Collapse } from 'antd';
-import BaseModal from '../../../../../../../components/display/shared/modal/BaseModal';
-import ViewDetails from '../../../../../../../components/display/shared/views/ViewDetails';
+import BaseModal from '../../../../../../../components/display/modal/BaseModal';
+import ViewDetails from '../../../../../../../components/display/views/ViewDetails';
 import type { AppWorkload, Container } from '../../../../models';
 import type { InstanceTableRow } from '../../../../models/instances';
 import { ContainerOutlined } from '@ant-design/icons';

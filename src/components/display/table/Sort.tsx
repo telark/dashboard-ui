@@ -1,6 +1,6 @@
 import React from 'react';
 import { BiSort } from 'react-icons/bi';
-import type { SortHeaderProps } from '../../../../interfaces/layout/table';
+import type { SortHeaderProps } from '../../../interfaces/layout/table';
 import { TABLE_DEFAULTS } from './constants';
 
 const SortHeader: React.FC<SortHeaderProps> = ({

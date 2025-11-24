@@ -1,7 +1,7 @@
 import React from 'react';
 import { SyncOutlined } from '@ant-design/icons';
 import TimeAgo from '../../../../../components/time/TimeAgo';
-import Header from '../../../../../components/display/shared/sections/Header';
+import Header from '../../../../../components/display/sections/Header';
 import { APP_ROUTES, Icons, UI } from '../../../../../constants';
 
 const GrouperIcon = Icons.Grouper;

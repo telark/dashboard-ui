@@ -1,7 +1,7 @@
 import React from 'react';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import type { User } from '../../../models';
-import RowOptions from '../../../../../../components/display/shared/actions/RowOptions';
+import RowOptions from '../../../../../../components/display/actions/RowOptions';
 
 interface ActionsProps {
   record: User;

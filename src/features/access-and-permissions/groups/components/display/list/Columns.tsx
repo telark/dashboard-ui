@@ -1,7 +1,7 @@
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import { ROLES_CONSTANTS as RPC } from '../../../../roles/constants';
-import RowTag from '../../../../../../components/display/shared/table/RowTag';
-import { generateColumn } from '../../../../../../components/display/shared/table/utils';
+import RowTag from '../../../../../../components/display/table/RowTag';
+import { generateColumn } from '../../../../../../components/display/table/utils';
 import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
 import type { Group } from '../../../models';
 import Actions from './Actions';

@@ -7,7 +7,7 @@ import { syncBridgeDetails } from '../../utils/management/sync';
 import { BRIDGE_DETAILS_CONSTANTS, TabKey } from '../../constants';
 import { RootState } from '../../../../../store';
 import { usePersistedTab } from '../../../../../utils/shared/usePersistedTab';
-import ErrorView from '../../../../../components/display/shared/views/ErrorView';
+import ErrorView from '../../../../../components/display/views/ErrorView';
 import Empty from './Empty';
 import Header from './Header';
 import Tabs from './Tabs';

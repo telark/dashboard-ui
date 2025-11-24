@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Card, Space, Tag } from 'antd';
-import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
-import { Row, Label } from '../../../../components/shared';
+import { COMPONENT_STYLES } from '../../../constants/layout/ui';
+import { Row, Label } from '../../shared';
 
 export interface ViewDetailField {
   key: string;

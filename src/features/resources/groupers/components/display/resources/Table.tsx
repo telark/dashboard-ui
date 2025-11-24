@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import type { ResourceRowInterface } from '../../../../../../interfaces/shared';
 import { Columns } from './Columns';
-import DataTable from '../../../../../../components/display/shared/table/DataTable';
+import DataTable from '../../../../../../components/display/table/DataTable';
 
 interface ResourcesTableProps {
   resources: ResourceRowInterface[];

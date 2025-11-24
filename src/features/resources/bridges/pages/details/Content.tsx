@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Card } from 'antd';
-import ViewDetails from '../../../../../components/display/shared/views/ViewDetails';
-import HistoryTimeLine from '../../../../../components/display/shared/timeline';
+import ViewDetails from '../../../../../components/display/views/ViewDetails';
+import HistoryTimeLine from '../../../../../components/display/timeline';
 import { BridgeResources } from '../../components';
 import SyncMode from '../../../../../components/tabs/SyncMode';
 import { BRIDGE_DETAILS_CONSTANTS, TabKey } from '../../constants';

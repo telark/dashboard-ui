@@ -1,6 +1,6 @@
 import React from 'react';
 import type { AppWorkload } from '../../../../models';
-import HistoryTimeLine from '../../../../../../../components/display/shared/timeline';
+import HistoryTimeLine from '../../../../../../../components/display/timeline';
 
 interface WorkloadHistoryProps {
   workload: AppWorkload;

@@ -8,7 +8,7 @@ import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../constants';
 import { RootState } from '../../../../../store';
 import { usePersistedTab } from '../../../../../utils/shared/usePersistedTab';
 import { GrouperDetailsEmpty, Header, Tabs, Content } from '..';
-import ErrorView from '../../../../../components/display/shared/views/ErrorView';
+import ErrorView from '../../../../../components/display/views/ErrorView';
 import LoadingDetails from '../../../../../components/shared/LoadingDetails';
 
 const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {

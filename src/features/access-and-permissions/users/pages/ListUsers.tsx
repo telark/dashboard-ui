@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { APP_ROUTES, Icons, SHARED_DETAILS_CONSTANTS } from '../../../../constants';
 import { USERS_CONSTANTS as UC } from '../constants';
-import Header from '../../../../components/display/shared/sections/Header';
+import Header from '../../../../components/display/sections/Header';
 import UsersTable from '../components/display/list/Table';
 import { PageContainer } from '../../../../components/shared';
 import { RootState, AppDispatch } from '../../../../store';

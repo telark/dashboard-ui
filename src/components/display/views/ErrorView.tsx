@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react';
-import { SHARED_DETAILS_CONSTANTS } from '../../../../constants/shared/details';
+import { SHARED_DETAILS_CONSTANTS } from '../../../constants/shared/details';
 
 interface ErrorViewProps {
   error: string;

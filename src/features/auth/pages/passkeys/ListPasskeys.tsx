@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { Icons, SHARED_DETAILS_CONSTANTS } from '../../../../constants';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
-import Header from '../../../../components/display/shared/sections/Header';
+import Header from '../../../../components/display/sections/Header';
 import { PasskeysTable, PasskeyFormModal } from '../../components';
 import { PageContainer } from '../../../../components/shared';
 import { AUTH_ERROR_MESSAGES } from '../../constants';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
-import { FancySpinner } from '../../../shared';
-import { CONNECTIVITY_CONSTANTS } from '../../../../constants/pages/connectivity';
+import { FancySpinner } from '../../shared';
+import { CONNECTIVITY_CONSTANTS } from '../../../constants/pages/connectivity';
 
 interface ReachabilityErrorViewProps {
   isInCooldown: boolean;

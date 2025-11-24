@@ -1,7 +1,7 @@
 import type { Passkey } from '../../../models/passkeys';
 import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
-import RowTag from '../../../../../components/display/shared/table/RowTag';
-import { generateColumn } from '../../../../../components/display/shared/table/utils';
+import RowTag from '../../../../../components/display/table/RowTag';
+import { generateColumn } from '../../../../../components/display/table/utils';
 import Actions from './Actions';
 import { AiOutlineCalendar, AiOutlineClockCircle } from 'react-icons/ai';
 import { BsKey } from 'react-icons/bs';

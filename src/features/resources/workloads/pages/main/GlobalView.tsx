@@ -14,8 +14,8 @@ import { WORKLOADS_CONSTANTS } from '../../constants';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import { APP_ROUTES } from '../../../../../constants';
 import type { AppWorkloadCardData } from '../../models';
-import LoadingView from '../../../../../components/display/shared/views/LoadingView';
-import ReachabilityErrorView from '../../../../../components/display/shared/views/ReachabilityErrorView';
+import LoadingView from '../../../../../components/display/views/LoadingView';
+import ReachabilityErrorView from '../../../../../components/display/views/ReachabilityErrorView';
 import Success from './Success';
 
 const WorkloadsGlobalView: React.FC = memo(() => {

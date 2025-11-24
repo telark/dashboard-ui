@@ -3,7 +3,7 @@ import { SyncOutlined, ClusterOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
 import TimeAgo from '../../../../../../../components/time/TimeAgo';
-import Header from '../../../../../../../components/display/shared/sections/Header';
+import Header from '../../../../../../../components/display/sections/Header';
 import type { AppWorkload } from '../../../../models';
 import { syncAppWorkloadDetails } from '../../../../utils/management/sync';
 import { useSelector } from 'react-redux';

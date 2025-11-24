@@ -12,8 +12,8 @@ import {
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../../utils/shared/retry';
 import { BRIDGES_CONSTANTS } from '../../constants';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
-import LoadingView from '../../../../../components/display/shared/views/LoadingView';
-import ReachabilityErrorView from '../../../../../components/display/shared/views/ReachabilityErrorView';
+import LoadingView from '../../../../../components/display/views/LoadingView';
+import ReachabilityErrorView from '../../../../../components/display/views/ReachabilityErrorView';
 import Empty from './Empty';
 import Success from './Success';
 

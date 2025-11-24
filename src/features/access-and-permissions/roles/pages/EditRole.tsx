@@ -1,7 +1,7 @@
 import React from 'react';
 import { APP_ROUTES, Icons } from '../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../constants';
-import Header from '../../../../components/display/shared/sections/Header';
+import Header from '../../../../components/display/sections/Header';
 import RoleForm, { type RoleFormValues } from '../components/display/shared/RoleForm';
 import { STATIC_ROLES } from '../data';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';

@@ -1,11 +1,11 @@
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { ROLES_CONSTANTS as RPC } from '../../../../roles/constants';
-import RowTag from '../../../../../../components/display/shared/table/RowTag';
-import { generateColumn } from '../../../../../../components/display/shared/table/utils';
+import RowTag from '../../../../../../components/display/table/RowTag';
+import { generateColumn } from '../../../../../../components/display/table/utils';
 import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
 import type { User } from '../../../models';
 import Actions from './Actions';
-import UserAvatar from '../../../../../../components/display/shared/avatars/UserAvatar';
+import UserAvatar from '../../../../../../components/display/avatars/UserAvatar';
 import { AiOutlineUser, AiOutlineMail, AiOutlineTag, AiOutlineCalendar } from 'react-icons/ai';
 
 const Columns = (ctx: GenerateColumnCtx) => {

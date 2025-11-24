@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
-import { FancySpinner } from '../../../shared';
-import { SHARED_PAGE_CONSTANTS } from '../../../../constants/shared/pages';
+import { FancySpinner } from '../../shared';
+import { SHARED_PAGE_CONSTANTS } from '../../../constants/shared/pages';
 
 interface LoadingViewProps {
   label: string;

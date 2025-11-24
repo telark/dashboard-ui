@@ -5,8 +5,8 @@ import {
   AiOutlineSetting,
   AiFillTag,
 } from 'react-icons/ai';
-import type { ViewDetailsConfig } from '../../../../components/display/shared/views/ViewDetails';
-import RowTag from '../../../../components/display/shared/table/RowTag';
+import type { ViewDetailsConfig } from '../../../../components/display/views/ViewDetails';
+import RowTag from '../../../../components/display/table/RowTag';
 import { INSTANCES_CONSTANTS as IPC } from '../constants/instances';
 import { Icons } from '../../../../constants';
 import type { InstanceTableRow } from '../models/instances';
