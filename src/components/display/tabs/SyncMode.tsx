@@ -1,10 +1,10 @@
 import React from 'react';
 import { Switch } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
-import PrimaryButton from '../buttons/PrimaryButton';
-import { DEFAULT_COLORS } from '../../constants';
-import { SYNC_MODE } from '../../constants/layout/modes';
-import FancySpinner from '../shared/FancySpinner';
+import PrimaryButton from '../../buttons/PrimaryButton';
+import { DEFAULT_COLORS } from '../../../constants';
+import { SYNC_MODE } from '../../../constants/layout/modes';
+import FancySpinner from '../../shared/FancySpinner';
 
 interface SyncModeProps {
   isAutoSync: boolean;
