@@ -2,19 +2,19 @@ import { RootState } from '../store';
 import {
   fetchAllAppsWorkloadsThunk,
   fetchAppWorkloadDetailsThunk,
-} from '../features/workloads/store/thunks/fetchThunks';
+} from '../features/resources/workloads/store/thunks/fetchThunks';
 import {
   fetchAllGroupersThunk,
   fetchGrouperDetailsThunk,
-} from '../features/groupers/store/thunks/fetchThunks';
+} from '../features/resources/groupers/store/thunks/fetchThunks';
 import { SyncConfig } from '../interfaces/resources/sync';
 import { SYNC_CONSTANTS } from '../constants/config/sync';
-import { BRIDGE_DETAILS_CONSTANTS } from '../features/bridges/constants';
+import { BRIDGE_DETAILS_CONSTANTS } from '../features/resources/bridges/constants';
 import {
   fetchAllBridgesThunk,
   fetchBridgeDetailsThunk,
-} from '../features/bridges/store/thunks/fetchThunks';
-import { GROUPER_DETAILS_CONSTANTS } from '../features/groupers/constants';
+} from '../features/resources/bridges/store/thunks/fetchThunks';
+import { GROUPER_DETAILS_CONSTANTS } from '../features/resources/groupers/constants';
 import { GROUPER_CARD_TEXTS, BRIDGE_CARD_TEXTS } from '../constants/layout/cards';
 
 export const WORKLOAD_SYNC_CONFIG: SyncConfig = {

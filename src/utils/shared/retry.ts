@@ -1,4 +1,4 @@
-import { GROUPERS_CONSTANTS } from '../../features/groupers/constants';
+import { GROUPERS_CONSTANTS } from '../../features/resources/groupers/constants';
 
 export interface RetryCallbacks {
   setRetrying: (retrying: boolean) => void;

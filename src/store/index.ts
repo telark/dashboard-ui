@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
-import { grouperReducer } from '../features/groupers/store';
+import { grouperReducer } from '../features/resources/groupers/store';
+import { workloadReducer } from '../features/resources/workloads/store';
+import { bridgeReducer } from '../features/resources/bridges/store';
 import insightsReducer from './insights/slices/insightsSlice';
-import { workloadReducer } from '../features/workloads/store';
-import { bridgeReducer } from '../features/bridges/store';
 import groupsReducer from './groups/slices/groupSlice';
 import { userReducer as usersReducer } from '../features/access-and-permissions/users/store';
 import { passkeyReducer } from '../features/auth/store';
