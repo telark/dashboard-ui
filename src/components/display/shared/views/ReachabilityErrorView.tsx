@@ -121,4 +121,3 @@ const ReachabilityErrorView: React.FC<ReachabilityErrorViewProps> = React.memo(
 ReachabilityErrorView.displayName = 'ReachabilityErrorView';
 
 export default ReachabilityErrorView;
-
