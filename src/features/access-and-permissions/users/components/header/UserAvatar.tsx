@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Avatar } from 'antd';
 import { DEFAULT_COLORS, HEADER_CONSTANTS } from '../../../../../constants';
 import UserAvatarComponent from '../../../../../components/display/shared/avatars/UserAvatar';
@@ -10,7 +10,7 @@ interface UserAvatarProps {
   borderWidth: number;
 }
 
-const UserAvatar: React.FC<UserAvatarProps> = ({ currentUser, size, borderWidth }) => {
+const UserAvatar: React.FC<UserAvatarProps> = memo(({ currentUser, size, borderWidth }) => {
   return (
     <button
       type="button"
@@ -64,6 +64,8 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ currentUser, size, borderWidth 
       })()}
     </button>
   );
-};
+});
+
+UserAvatar.displayName = 'UserAvatar';
 
 export default UserAvatar;
