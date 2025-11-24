@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react';
-import { FancySpinner } from '../../shared';
+import { FancySpinner } from '../../animation';
 import { SHARED_PAGE_CONSTANTS } from '../../../constants/shared/pages';
 
 interface LoadingViewProps {

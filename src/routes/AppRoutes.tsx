@@ -1,8 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import AnimatedPageWrapper from '../components/animation/AnimatedPageWrapper';
 import { ProtectedRoute } from '../features/auth/components';
-import { FancySpinner } from '../components/shared';
+import { FancySpinner, AnimatedPageWrapper } from '../components/animation';
 import { APP_ROUTES } from '../constants';
 import { hasSessionToken } from '../features/auth/utils';
 

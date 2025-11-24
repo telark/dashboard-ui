@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
-import { FancySpinner } from '../../shared';
+import { FancySpinner } from '../../animation';
 import { CONNECTIVITY_CONSTANTS } from '../../../constants/pages/connectivity';
 
 interface ReachabilityErrorViewProps {

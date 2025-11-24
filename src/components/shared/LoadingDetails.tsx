@@ -1,5 +1,5 @@
 import React from 'react';
-import FancySpinner from './FancySpinner';
+import { FancySpinner } from '../animation';
 
 const Loading: React.FC = React.memo(() => {
   return (

@@ -2,7 +2,7 @@ import React from 'react';
 import { Drawer, Button, Spin } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { TimelineView } from './TimelineView';
-import FancySpinner from '../../shared/FancySpinner';
+import { FancySpinner } from '../../animation';
 import { UI, TIMELINE_CONSTANTS, TIMELINE_STYLES } from '../../../constants';
 import type { TimelineDrawerProps } from '../../../interfaces/layout/timeline';
 

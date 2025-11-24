@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography } from 'antd';
 import { ClockCircleOutlined } from '@ant-design/icons';
-import { FancySpinner } from '../../../../../../components/shared';
+import { FancySpinner } from '../../../../../../components/animation';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import type { BatchWorkloadCardData } from '../../../models';
 

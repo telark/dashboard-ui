@@ -5,7 +5,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import store from './store';
 import App from './App';
-import { FancySpinner } from './components/shared';
+import { FancySpinner } from './components/animation';
 import { SHARED_DETAILS_CONSTANTS } from './constants';
 import './styles/index.css';
 import './styles/antd.css';

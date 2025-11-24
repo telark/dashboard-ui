@@ -2,7 +2,7 @@ import React from 'react';
 import { Empty, Button, Typography } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import WorkloadCard from '../../../cards/WorkloadCard';
-import { FancySpinner } from '../../../../../../../components/shared';
+import { FancySpinner } from '../../../../../../../components/animation';
 import { WORKLOADS_CONSTANTS } from '../../../../constants';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../../../constants/pages/connectivity';
 import type { AppWorkloadCardData } from '../../../../models';

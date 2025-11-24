@@ -12,7 +12,7 @@ import { checkClusterInsightsThunk } from './features/insights/store';
 import AppRoutes from './routes/AppRoutes';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from './store';
-import { FancySpinner } from './components/shared';
+import { FancySpinner } from './components/animation';
 import { hasSessionToken, useSessionExpirationCheck } from './features/auth/utils';
 
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
