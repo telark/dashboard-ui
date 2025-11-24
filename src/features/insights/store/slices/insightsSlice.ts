@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { checkClusterInsights } from '../../../clients/exporter';
-import { STORAGE_KEYS, STORE_ACTIONS, STORE_ERRORS } from '../../../constants/store/store';
-import { ERROR_MESSAGES } from '../../../constants/layout/messages';
-import { extractErrorMessage } from '../../../utils/helpers/format';
+import { checkClusterInsights } from '../../clients';
+import { STORAGE_KEYS, STORE_ACTIONS, STORE_ERRORS } from '../../../../constants/store/store';
+import { ERROR_MESSAGES } from '../../../../constants/layout/messages';
+import { extractErrorMessage } from '../../../../utils/helpers/format';
 
 export interface InsightsState {
   hasClusterInsight: boolean;

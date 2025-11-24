@@ -1,4 +1,4 @@
-import { exporterApiClient } from '../api/index';
+import { exporterApiClient } from '../../../api/index';
 import {
   Endpoints,
   HTTP_HEADERS,
@@ -6,8 +6,8 @@ import {
   HTTP_STATUS,
   ERROR_CODES,
   API_RESPONSES,
-} from '../constants';
-import type { ClusterInsightsResponse } from '../interfaces/http';
+} from '../../../constants';
+import type { ClusterInsightsResponse } from '../../../interfaces/http';
 
 export const checkClusterInsights = async () => {
   try {

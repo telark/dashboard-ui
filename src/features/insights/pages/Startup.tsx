@@ -2,13 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Alert } from 'antd';
 import { motion } from 'framer-motion';
 import { useDispatch } from 'react-redux';
-import {
-  checkClusterInsightsThunk,
-  setHasClusterInsight,
-} from '../../store/insights/slices/insightsSlice';
-import type { AppDispatch } from '../../store';
-import { DEFAULT_COLORS, INFO_MESSAGES, WARNING_MESSAGES } from '../../constants';
-import { startClusterAnalyze } from '../../clients/configurator';
+import { checkClusterInsightsThunk, setHasClusterInsight } from '../store/slices/insightsSlice';
+import type { AppDispatch } from '../../../store';
+import { DEFAULT_COLORS, INFO_MESSAGES, WARNING_MESSAGES } from '../../../constants';
+import { startClusterAnalyze } from '../clients';
 import { useNavigate } from 'react-router-dom';
 
 interface StartupProps {
@@ -31,13 +28,13 @@ const ArcSpinner: React.FC = () => (
 );
 
 // cluster graph nodes (non-spinner)
-const AnalysisIllustration: React.FC = () => (
+const InsightsIllustration: React.FC = () => (
   <svg
     width="220"
     height="140"
     viewBox="0 0 220 140"
     xmlns="http://www.w3.org/2000/svg"
-    aria-label="Cluster analysis illustration"
+    aria-label="Cluster insights illustration"
     style={{ marginBottom: 14 }}
   >
     <g fill="none" stroke="#E6EEF3" strokeWidth="2">
@@ -64,7 +61,7 @@ const Startup: React.FC<StartupProps> = () => {
   const timeoutRef = useRef<ReturnType<typeof globalThis.setTimeout> | undefined>(undefined);
   const [backendDown, setBackendDown] = useState(false);
   const failureCountRef = useRef(0);
-  const analyzeScheduledRef = useRef(false);
+  const insightsScheduledRef = useRef(false);
   const startTimerRef = useRef<ReturnType<typeof globalThis.setTimeout> | undefined>(undefined);
 
   useEffect(() => {
@@ -112,17 +109,17 @@ const Startup: React.FC<StartupProps> = () => {
     if (startTimerRef.current) {
       globalThis.clearTimeout(startTimerRef.current);
       startTimerRef.current = undefined;
-      analyzeScheduledRef.current = false;
+      insightsScheduledRef.current = false;
     }
   };
 
-  const scheduleAnalyzeStart = () => {
-    if (!analyzeScheduledRef.current) {
+  const scheduleInsightsStart = () => {
+    if (!insightsScheduledRef.current) {
       startTimerRef.current = globalThis.setTimeout(() => {
-        analyzeScheduledRef.current = false;
+        insightsScheduledRef.current = false;
         void handleStart();
       }, 5000);
-      analyzeScheduledRef.current = true;
+      insightsScheduledRef.current = true;
     }
   };
 
@@ -130,8 +127,8 @@ const Startup: React.FC<StartupProps> = () => {
     setBackendDown(false);
     failureCountRef.current = ok ? 0 : failureCountRef.current + 1;
 
-    if (!ok && !analyzeScheduledRef.current) {
-      scheduleAnalyzeStart();
+    if (!ok && !insightsScheduledRef.current) {
+      scheduleInsightsStart();
     }
 
     if (ok) {
@@ -154,7 +151,7 @@ const Startup: React.FC<StartupProps> = () => {
     poll();
   };
 
-  // Simple backoff poller after starting analyze and to recheck when backend is down
+  // Simple backoff poller after starting insights and to recheck when backend is down
   useEffect(() => {
     if (!polling && starting) {
       setPolling(true);
@@ -194,7 +191,7 @@ const Startup: React.FC<StartupProps> = () => {
       }}
     >
       <div style={{ maxWidth: 820, width: '100%', textAlign: 'center' }}>
-        {starting ? <ArcSpinner /> : <AnalysisIllustration />}
+        {starting ? <ArcSpinner /> : <InsightsIllustration />}
         <h2 style={{ margin: 0, fontSize: 28, color: '#0B1F33' }}>{INFO_MESSAGES.STARTUP.TITLE}</h2>
         <p
           style={{

@@ -30,4 +30,3 @@ const Section: React.FC<SectionProps> = ({ title, subtitle, content, className, 
 };
 
 export default Section;
-
