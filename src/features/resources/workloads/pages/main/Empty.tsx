@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Typography } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { WORKLOADS_CONSTANTS } from '../../constants';
+import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 
 const { Title, Text } = Typography;
 
@@ -19,14 +20,14 @@ const Empty: React.FC<EmptyProps> = React.memo(({ onRefresh }) => {
 
         <Title
           level={3}
-          style={{ color: WORKLOADS_CONSTANTS.COLORS.TEXT_PRIMARY, marginBottom: 8 }}
+          style={{ color: CONNECTIVITY_CONSTANTS.COLORS.TEXT_PRIMARY, marginBottom: 8 }}
         >
           {WORKLOADS_CONSTANTS.MESSAGES.NO_WORKLOADS_TITLE}
         </Title>
 
         <Text
           style={{
-            color: WORKLOADS_CONSTANTS.COLORS.TEXT_SECONDARY,
+            color: CONNECTIVITY_CONSTANTS.COLORS.TEXT_SECONDARY,
             marginBottom: 24,
             display: 'block',
           }}
@@ -36,7 +37,7 @@ const Empty: React.FC<EmptyProps> = React.memo(({ onRefresh }) => {
 
         {onRefresh && (
           <Button type="primary" icon={<ReloadOutlined />} onClick={onRefresh}>
-            {WORKLOADS_CONSTANTS.MESSAGES.REFRESH}
+            {CONNECTIVITY_CONSTANTS.MESSAGES.REFRESH}
           </Button>
         )}
       </div>

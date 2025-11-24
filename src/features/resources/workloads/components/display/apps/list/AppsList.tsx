@@ -4,6 +4,7 @@ import { ReloadOutlined } from '@ant-design/icons';
 import WorkloadCard from '../../../cards/WorkloadCard';
 import { FancySpinner } from '../../../../../../../components/shared';
 import { WORKLOADS_CONSTANTS } from '../../../../constants';
+import { CONNECTIVITY_CONSTANTS } from '../../../../../../../constants/pages/connectivity';
 import type { AppWorkloadCardData } from '../../../../models';
 
 const { Title, Text } = Typography;
@@ -56,14 +57,14 @@ const AppsList: React.FC<AppsListProps> = React.memo(function AppsList({
 
             <Title
               level={3}
-              style={{ color: WORKLOADS_CONSTANTS.COLORS.TEXT_PRIMARY, marginBottom: 8 }}
+              style={{ color: CONNECTIVITY_CONSTANTS.COLORS.TEXT_PRIMARY, marginBottom: 8 }}
             >
               {WORKLOADS_CONSTANTS.MESSAGES.NO_WORKLOADS_TITLE}
             </Title>
 
             <Text
               style={{
-                color: WORKLOADS_CONSTANTS.COLORS.TEXT_SECONDARY,
+                color: CONNECTIVITY_CONSTANTS.COLORS.TEXT_SECONDARY,
                 marginBottom: 24,
                 display: 'block',
               }}
@@ -73,7 +74,7 @@ const AppsList: React.FC<AppsListProps> = React.memo(function AppsList({
 
             {onRefresh && (
               <Button type="primary" icon={<ReloadOutlined />} onClick={onRefresh}>
-                {WORKLOADS_CONSTANTS.MESSAGES.REFRESH}
+                {CONNECTIVITY_CONSTANTS.MESSAGES.REFRESH}
               </Button>
             )}
           </div>

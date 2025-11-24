@@ -11,8 +11,9 @@ import {
 } from '../../utils/management/state';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../../utils/shared/retry';
 import { BRIDGES_CONSTANTS } from '../../constants';
+import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import LoadingView from '../../../../../components/display/shared/views/LoadingView';
-import BridgeMainError from './Error';
+import ReachabilityErrorView from '../../../../../components/display/shared/views/ReachabilityErrorView';
 import Empty from './Empty';
 import Success from './Success';
 
@@ -67,7 +68,7 @@ const BridgesGlobalView: React.FC = memo(function BridgesGlobalView() {
       setInCooldown: setIsInCooldown,
       setCooldownTime: setCooldownTime,
       onSuccess: () => message.success(BRIDGES_CONSTANTS.MESSAGES.SUCCESS),
-      onError: () => message.error(BRIDGES_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
+      onError: () => message.error(CONNECTIVITY_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
     }),
     [],
   );
@@ -108,7 +109,7 @@ const BridgesGlobalView: React.FC = memo(function BridgesGlobalView() {
 
   if (error) {
     return (
-      <BridgeMainError
+      <ReachabilityErrorView
         isInCooldown={isInCooldown}
         cooldownTime={cooldownTime}
         retryCount={retryCount}

@@ -1,5 +1,4 @@
 // Main pages
-export { default as GrouperMainError } from './main/Error';
 export { default as GrouperMainEmpty } from './main/Empty';
 export { default as Success } from './main/Success';
 

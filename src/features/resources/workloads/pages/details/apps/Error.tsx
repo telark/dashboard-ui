@@ -2,7 +2,8 @@ import React from 'react';
 import { Button, Typography } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { WORKLOADS_CONSTANTS, WORKLOAD_DETAILS_CONSTANTS } from '../../../constants';
+import { WORKLOAD_DETAILS_CONSTANTS } from '../../../constants';
+import { CONNECTIVITY_CONSTANTS } from '../../../../../../constants/pages/connectivity';
 
 const { Title, Text } = Typography;
 
@@ -24,7 +25,7 @@ const WorkloadDetailsError: React.FC<WorkloadDetailsErrorProps> = React.memo(({ 
       </Button>
 
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <Title level={3} style={{ color: WORKLOADS_CONSTANTS.COLORS.WARNING }}>
+        <Title level={3} style={{ color: CONNECTIVITY_CONSTANTS.COLORS.WARNING }}>
           Failed to load app details
         </Title>
         <Text type="secondary" style={{ display: 'block', marginBottom: '24px' }}>
@@ -33,7 +34,7 @@ const WorkloadDetailsError: React.FC<WorkloadDetailsErrorProps> = React.memo(({ 
 
         {onRetry && (
           <Button type="primary" onClick={onRetry}>
-            {WORKLOADS_CONSTANTS.MESSAGES.REFRESH}
+            {CONNECTIVITY_CONSTANTS.MESSAGES.REFRESH}
           </Button>
         )}
       </div>

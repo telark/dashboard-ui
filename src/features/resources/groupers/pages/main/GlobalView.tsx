@@ -11,8 +11,10 @@ import {
 } from '../../utils/management/state';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../../utils/shared/retry';
 import { GROUPERS_CONSTANTS } from '../../constants';
+import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import LoadingView from '../../../../../components/display/shared/views/LoadingView';
-import { GrouperMainError, GrouperMainEmpty, Success } from '..';
+import ReachabilityErrorView from '../../../../../components/display/shared/views/ReachabilityErrorView';
+import { GrouperMainEmpty, Success } from '..';
 
 const GroupersGlobalView: React.FC = memo(function GroupersGlobalView() {
   const dispatch: AppDispatch = useDispatch();
@@ -64,7 +66,7 @@ const GroupersGlobalView: React.FC = memo(function GroupersGlobalView() {
       setInCooldown: setIsInCooldown,
       setCooldownTime: setCooldownTime,
       onSuccess: () => message.success(GROUPERS_CONSTANTS.MESSAGES.SUCCESS),
-      onError: () => message.error(GROUPERS_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
+      onError: () => message.error(CONNECTIVITY_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
     }),
     [],
   );
@@ -105,7 +107,7 @@ const GroupersGlobalView: React.FC = memo(function GroupersGlobalView() {
 
   if (error) {
     return (
-      <GrouperMainError
+      <ReachabilityErrorView
         isInCooldown={isInCooldown}
         cooldownTime={cooldownTime}
         retryCount={retryCount}

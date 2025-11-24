@@ -1,6 +1,5 @@
 // Main
 export { default as WorkloadsGlobalView } from './main/GlobalView';
-export { default as WorkloadMainError } from './main/Error';
 export { default as Empty } from './main/Empty';
 export { default as Success } from './main/Success';
 

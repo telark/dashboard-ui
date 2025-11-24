@@ -2,19 +2,20 @@ import { SHARED_PAGE_CONSTANTS } from '../../../../constants/shared/pages';
 import { SHARED_DETAILS_CONSTANTS } from '../../../../constants/shared/details';
 
 export const GROUPERS_CONSTANTS = {
-  RETRY: SHARED_PAGE_CONSTANTS.RETRY,
-  COOLDOWN: SHARED_PAGE_CONSTANTS.COOLDOWN,
-  UI: SHARED_PAGE_CONSTANTS.UI,
-  COLORS: SHARED_PAGE_CONSTANTS.COLORS,
+  UI: {
+    EMPTY_STATE_MAX_WIDTH: SHARED_PAGE_CONSTANTS.UI.EMPTY_STATE_MAX_WIDTH,
+  },
   MESSAGES: {
-    ...SHARED_PAGE_CONSTANTS.MESSAGES,
     LOADING: 'Loading groupers…',
     SUCCESS: 'Groupers loaded successfully!',
     NO_GROUPERS_TITLE: 'No groupers yet',
     NO_GROUPERS_DESCRIPTION:
       "When your cluster is connected, groupers represent your namespaces. Make sure you have at least one namespace (excluding any you've set to be ignored in Settings). Try syncing to pull the latest.",
   },
-  LAYOUT: SHARED_PAGE_CONSTANTS.LAYOUT,
+  LAYOUT: {
+    EMPTY_STATE_CONTAINER: SHARED_PAGE_CONSTANTS.LAYOUT.EMPTY_STATE_CONTAINER,
+    EMPTY_ICON: SHARED_PAGE_CONSTANTS.LAYOUT.EMPTY_ICON,
+  },
 } as const;
 
 export const GROUPER_DETAILS_CONSTANTS = {

@@ -11,10 +11,11 @@ import {
 } from '../../utils/management/state';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../../utils/shared/retry';
 import { WORKLOADS_CONSTANTS } from '../../constants';
+import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import { APP_ROUTES } from '../../../../../constants';
 import type { AppWorkloadCardData } from '../../models';
 import LoadingView from '../../../../../components/display/shared/views/LoadingView';
-import WorkloadMainError from './Error';
+import ReachabilityErrorView from '../../../../../components/display/shared/views/ReachabilityErrorView';
 import Success from './Success';
 
 const WorkloadsGlobalView: React.FC = memo(() => {
@@ -70,7 +71,7 @@ const WorkloadsGlobalView: React.FC = memo(() => {
       setInCooldown: setIsInCooldown,
       setCooldownTime: setCooldownTime,
       onSuccess: () => message.success(WORKLOADS_CONSTANTS.MESSAGES.SUCCESS),
-      onError: () => message.error(WORKLOADS_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
+      onError: () => message.error(CONNECTIVITY_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
     }),
     [],
   );
@@ -111,7 +112,7 @@ const WorkloadsGlobalView: React.FC = memo(() => {
 
   if (error) {
     return (
-      <WorkloadMainError
+      <ReachabilityErrorView
         isInCooldown={isInCooldown}
         cooldownTime={cooldownTime}
         retryCount={retryCount}
