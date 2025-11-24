@@ -13,7 +13,7 @@ import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../../
 import { WORKLOADS_CONSTANTS } from '../../constants';
 import { APP_ROUTES } from '../../../../../constants';
 import type { AppWorkloadCardData } from '../../models';
-import Loading from './Loading';
+import LoadingView from '../../../../../components/display/shared/views/LoadingView';
 import WorkloadMainError from './Error';
 import Success from './Success';
 
@@ -106,7 +106,7 @@ const WorkloadsGlobalView: React.FC = memo(() => {
   const error = appError || batchError;
 
   if (loading) {
-    return <Loading />;
+    return <LoadingView label={WORKLOADS_CONSTANTS.MESSAGES.LOADING} />;
   }
 
   if (error) {

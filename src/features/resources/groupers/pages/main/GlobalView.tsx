@@ -11,7 +11,8 @@ import {
 } from '../../utils/management/state';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../../utils/shared/retry';
 import { GROUPERS_CONSTANTS } from '../../constants';
-import { Loading, GrouperMainError, GrouperMainEmpty, Success } from '..';
+import LoadingView from '../../../../../components/display/shared/views/LoadingView';
+import { GrouperMainError, GrouperMainEmpty, Success } from '..';
 
 const GroupersGlobalView: React.FC = memo(function GroupersGlobalView() {
   const dispatch: AppDispatch = useDispatch();
@@ -97,7 +98,7 @@ const GroupersGlobalView: React.FC = memo(function GroupersGlobalView() {
   if (loading) {
     return (
       <div style={pageStyle}>
-        <Loading />
+        <LoadingView label={GROUPERS_CONSTANTS.MESSAGES.LOADING} />
       </div>
     );
   }

@@ -11,7 +11,7 @@ import {
 } from '../../utils/management/state';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../../utils/shared/retry';
 import { BRIDGES_CONSTANTS } from '../../constants';
-import Loading from './Loading';
+import LoadingView from '../../../../../components/display/shared/views/LoadingView';
 import BridgeMainError from './Error';
 import Empty from './Empty';
 import Success from './Success';
@@ -101,7 +101,7 @@ const BridgesGlobalView: React.FC = memo(function BridgesGlobalView() {
   if (loading) {
     return (
       <div style={pageStyle}>
-        <Loading />
+        <LoadingView label={BRIDGES_CONSTANTS.MESSAGES.LOADING} />
       </div>
     );
   }
