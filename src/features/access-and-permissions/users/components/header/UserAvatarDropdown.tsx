@@ -11,29 +11,23 @@ import type { User } from '../../models';
 import logger from '../../../../../logging';
 
 const UserAvatarDropdown: React.FC = memo(() => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(() => getCurrentUser());
   const [loggingOut, setLoggingOut] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const currentAuthUser = getCurrentUser();
-
-    if (hasSessionToken() && !currentAuthUser) {
+    const initialUser = getCurrentUser();
+    
+    if (hasSessionToken() && !initialUser) {
       if (isDevelopment()) {
         logger.warn(HEADER_CONSTANTS.USER.WARNINGS.MISSING_USER_DATA);
       }
     }
 
-    if (currentAuthUser) {
-      // Set the user immediately for display
-      setCurrentUser(currentAuthUser);
-
-      // Fetch full user details if we have an id
-      if (currentAuthUser.id) {
-        fetchCurrentUserDetails((user) => {
-          setCurrentUser(user);
-        });
-      }
+    if (initialUser?.id) {
+      fetchCurrentUserDetails((user) => {
+        setCurrentUser(user);
+      });
     }
   }, []);
 
@@ -49,6 +43,11 @@ const UserAvatarDropdown: React.FC = memo(() => {
   const handleLogoutWrapper = () => {
     void handleLogout();
   };
+
+  // Don't render anything if no user - avoid flash of 'U' on page load
+  if (!currentUser) {
+    return null;
+  }
 
   const menuItems = createUserMenuItems({
     currentUser,

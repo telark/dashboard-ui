@@ -11,6 +11,10 @@ interface UserAvatarProps {
 }
 
 const UserAvatar: React.FC<UserAvatarProps> = memo(({ currentUser, size, borderWidth }) => {
+  if (!currentUser) {
+    return null;
+  }
+
   return (
     <button
       type="button"
@@ -36,32 +40,20 @@ const UserAvatar: React.FC<UserAvatarProps> = memo(({ currentUser, size, borderW
         e.currentTarget.style.transform = 'scale(1)';
       }}
     >
-      {(() => {
-        if (currentUser?.avatar) {
-          return (
-            <UserAvatarComponent
-              avatar={currentUser.avatar}
-              username={currentUser.username}
-              size={size}
-              style={{ border: 'none' }}
-            />
-          );
-        }
-        if (currentUser) {
-          return (
-            <UserAvatarComponent
-              username={currentUser.username}
-              size={size}
-              style={{ border: 'none' }}
-            />
-          );
-        }
-        return (
-          <Avatar size={size} style={{ backgroundColor: DEFAULT_COLORS.SUCCESS }}>
-            {'U'}
-          </Avatar>
-        );
-      })()}
+      {currentUser.avatar ? (
+        <UserAvatarComponent
+          avatar={currentUser.avatar}
+          username={currentUser.username}
+          size={size}
+          style={{ border: 'none' }}
+        />
+      ) : (
+        <UserAvatarComponent
+          username={currentUser.username}
+          size={size}
+          style={{ border: 'none' }}
+        />
+      )}
     </button>
   );
 });
