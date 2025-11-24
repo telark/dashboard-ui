@@ -1,7 +1,7 @@
 import React from 'react';
 import { Collapse } from 'antd';
 import BaseModal from '../../../../../../../components/display/modal/BaseModal';
-import ViewDetails from '../../../../../../../components/display/views/ViewDetails';
+import DetailsView from '../../../../../../../components/display/views/DetailsView';
 import type { AppWorkload, Container } from '../../../../models';
 import type { InstanceTableRow } from '../../../../models/instances';
 import { ContainerOutlined } from '@ant-design/icons';
@@ -48,7 +48,7 @@ const InstanceDetailsModal: React.FC<InstanceDetailsModalProps> = ({
           {container.name}
         </span>
       ),
-      children: <ViewDetails config={containerConfig} />,
+      children: <DetailsView config={containerConfig} />,
     };
   });
 
@@ -78,7 +78,7 @@ const InstanceDetailsModal: React.FC<InstanceDetailsModalProps> = ({
   return (
     <BaseModal open={open} onCancel={onCancel} width={600}>
       <div style={{ paddingTop: 24 }}>
-        <ViewDetails config={viewConfig} />
+        <DetailsView config={viewConfig} />
       </div>
     </BaseModal>
   );

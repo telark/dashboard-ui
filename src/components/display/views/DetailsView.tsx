@@ -3,7 +3,7 @@ import { Card, Space, Tag } from 'antd';
 import { COMPONENT_STYLES } from '../../../constants/layout/ui';
 import { Row, Label } from '../../shared';
 
-export interface ViewDetailField {
+export interface DetailsViewField {
   key: string;
   label: string;
   value: ReactNode;
@@ -13,18 +13,18 @@ export interface ViewDetailField {
   tags?: Array<{ label: string; color?: string }>;
 }
 
-export interface ViewDetailsConfig {
-  fields: ViewDetailField[];
+export interface DetailsViewConfig {
+  fields: DetailsViewField[];
   cardStyle?: React.CSSProperties;
   headerElement?: ReactNode;
 }
 
-interface ViewDetailsProps {
-  config: ViewDetailsConfig;
+interface DetailsViewProps {
+  config: DetailsViewConfig;
 }
 
-const ViewDetails: React.FC<ViewDetailsProps> = ({ config }) => {
-  const renderValue = (field: ViewDetailField) => {
+const DetailsView: React.FC<DetailsViewProps> = ({ config }) => {
+  const renderValue = (field: DetailsViewField) => {
     switch (field.type) {
       case 'tag':
         return (
@@ -146,4 +146,4 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({ config }) => {
   );
 };
 
-export default ViewDetails;
+export default DetailsView;

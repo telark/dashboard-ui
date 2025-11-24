@@ -1,11 +1,11 @@
 import { AiOutlineTag } from 'react-icons/ai';
 import type { User } from '../models';
-import type { ViewDetailsConfig } from '../../../../components/display/views/ViewDetails';
+import type { DetailsViewConfig } from '../../../../components/display/views/DetailsView';
 import { StatusTag } from '../../../../components/display/tags';
 import { ROLES_CONSTANTS as RPC } from '../../roles/constants';
 import { Icons } from '../../../../constants';
 
-export const createUserViewConfig = (user: User): ViewDetailsConfig => {
+export const createUserViewConfig = (user: User): DetailsViewConfig => {
   return {
     fields: [
       {

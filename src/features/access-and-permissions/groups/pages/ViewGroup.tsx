@@ -3,7 +3,7 @@ import { APP_ROUTES, Icons } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import Header from '../../../../components/display/sections/Header';
 import { STATIC_GROUPS } from '../data';
-import ViewDetails from '../../../../components/display/views/ViewDetails';
+import DetailsView from '../../../../components/display/views/DetailsView';
 import { createGroupViewConfig } from '../config';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
@@ -37,7 +37,7 @@ const ViewGroup: React.FC = () => {
       <Header subtitle={GC.LABELS.VIEW_SUBTITLE} breadcrumbs={breadcrumbs} icon={<GroupIcon />} />
 
       <AnimatedPageWrapper>
-        <ViewDetails config={config} />
+        <DetailsView config={config} />
       </AnimatedPageWrapper>
     </PageContainer>
   );

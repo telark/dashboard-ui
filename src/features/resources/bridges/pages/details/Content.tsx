@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Card } from 'antd';
-import ViewDetails from '../../../../../components/display/views/ViewDetails';
+import DetailsView from '../../../../../components/display/views/DetailsView';
 import HistoryTimeLine from '../../../../../components/display/timeline';
 import { BridgeResources } from '../../components';
 import SyncMode from '../../../../../components/display/tabs/SyncMode';
@@ -39,7 +39,7 @@ const Content: React.FC<ContentProps> = React.memo(
     const renderTabContent = () => {
       switch (activeTab) {
         case BRIDGE_DETAILS_CONSTANTS.TAB_KEYS.GENERAL:
-          return bridgeViewConfig ? <ViewDetails config={bridgeViewConfig} /> : null;
+          return bridgeViewConfig ? <DetailsView config={bridgeViewConfig} /> : null;
 
         case BRIDGE_DETAILS_CONSTANTS.TAB_KEYS.RESOURCES:
           return (

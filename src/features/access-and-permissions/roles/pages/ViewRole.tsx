@@ -3,7 +3,7 @@ import { APP_ROUTES, Icons } from '../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../constants';
 import Header from '../../../../components/display/sections/Header';
 import { STATIC_ROLES } from '../data';
-import ViewDetails from '../../../../components/display/views/ViewDetails';
+import DetailsView from '../../../../components/display/views/DetailsView';
 import ScopesPermissions from '../components/display/view/ScopesPermissions';
 import { createRoleViewConfig } from '../config';
 import { Card } from 'antd';
@@ -40,7 +40,7 @@ const ViewRole: React.FC = () => {
       <Header subtitle={RC.LABELS.VIEW_SUBTITLE} breadcrumbs={breadcrumbs} icon={<RoleIcon />} />
 
       <AnimatedPageWrapper>
-        <ViewDetails config={config} />
+        <DetailsView config={config} />
 
         <Card
           style={{

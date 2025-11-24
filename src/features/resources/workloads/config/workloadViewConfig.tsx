@@ -1,11 +1,11 @@
 import { DeploymentUnitOutlined } from '@ant-design/icons';
 import { AiOutlineCluster, AiOutlineLock, AiOutlineSwap } from 'react-icons/ai';
-import type { ViewDetailsConfig } from '../../../../components/display/views/ViewDetails';
+import type { DetailsViewConfig } from '../../../../components/display/views/DetailsView';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import { Icons } from '../../../../constants';
 import type { AppWorkload } from '../models';
 
-export const createWorkloadViewConfig = (workload: AppWorkload): ViewDetailsConfig => {
+export const createWorkloadViewConfig = (workload: AppWorkload): DetailsViewConfig => {
   return {
     fields: [
       {

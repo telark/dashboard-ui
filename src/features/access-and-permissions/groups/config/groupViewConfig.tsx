@@ -1,11 +1,11 @@
 import { AiOutlineTag } from 'react-icons/ai';
 import type { Group } from '../models';
-import type { ViewDetailsConfig } from '../../../../components/display/views/ViewDetails';
+import type { DetailsViewConfig } from '../../../../components/display/views/DetailsView';
 import { StatusTag } from '../../../../components/display/tags';
 import { ROLES_CONSTANTS as RPC } from '../../roles/constants';
 import { Icons } from '../../../../constants';
 
-export const createGroupViewConfig = (group: Group): ViewDetailsConfig => {
+export const createGroupViewConfig = (group: Group): DetailsViewConfig => {
   return {
     fields: [
       {

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Card } from 'antd';
-import ViewDetails from '../../../../../components/display/views/ViewDetails';
+import DetailsView from '../../../../../components/display/views/DetailsView';
 import HistoryTimeLine from '../../../../../components/display/timeline';
 import { MaintenanceMode } from '../../components';
 import { Resources } from '../../components';
@@ -64,7 +64,7 @@ const Content: React.FC<ContentProps> = React.memo(
     const renderTabContent = () => {
       switch (activeTab) {
         case GROUPER_DETAILS_CONSTANTS.TAB_KEYS.GENERAL:
-          return grouperViewConfig ? <ViewDetails config={grouperViewConfig} /> : null;
+          return grouperViewConfig ? <DetailsView config={grouperViewConfig} /> : null;
 
         case GROUPER_DETAILS_CONSTANTS.TAB_KEYS.RESOURCES:
           return (

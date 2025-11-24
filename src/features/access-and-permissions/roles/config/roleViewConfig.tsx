@@ -1,10 +1,10 @@
 import { AiOutlineCheckCircle, AiOutlineTag } from 'react-icons/ai';
 import type { Role } from '../models';
-import type { ViewDetailsConfig } from '../../../../components/display/views/ViewDetails';
+import type { DetailsViewConfig } from '../../../../components/display/views/DetailsView';
 import { StatusTag } from '../../../../components/display/tags';
 import { DEFAULT_COLORS, Icons } from '../../../../constants';
 
-export const createRoleViewConfig = (role: Role): ViewDetailsConfig => {
+export const createRoleViewConfig = (role: Role): DetailsViewConfig => {
   return {
     fields: [
       {

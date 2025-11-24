@@ -5,7 +5,7 @@ import {
   AiOutlineSetting,
   AiFillTag,
 } from 'react-icons/ai';
-import type { ViewDetailsConfig } from '../../../../components/display/views/ViewDetails';
+import type { DetailsViewConfig } from '../../../../components/display/views/DetailsView';
 import RowTag from '../../../../components/display/table/RowTag';
 import { INSTANCES_CONSTANTS as IPC } from '../constants/instances';
 import { Icons } from '../../../../constants';
@@ -20,8 +20,8 @@ const getStatusColor = (status: string) => {
   };
 };
 
-export const createInstanceViewConfig = (instance: InstanceTableRow): ViewDetailsConfig => {
-  const fields: ViewDetailsConfig['fields'] = [
+export const createInstanceViewConfig = (instance: InstanceTableRow): DetailsViewConfig => {
+  const fields: DetailsViewConfig['fields'] = [
     {
       key: 'instance-name',
       label: 'Instance Name',
@@ -73,8 +73,8 @@ export const createInstanceViewConfig = (instance: InstanceTableRow): ViewDetail
 export const createContainerViewConfig = (
   container: Container,
   index: number,
-): ViewDetailsConfig => {
-  const fields: ViewDetailsConfig['fields'] = [
+): DetailsViewConfig => {
+  const fields: DetailsViewConfig['fields'] = [
     {
       key: `container-${index}-name`,
       label: 'Name',

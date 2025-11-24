@@ -1,7 +1,7 @@
 import React, { Suspense, lazy, useMemo } from 'react';
 import { Card } from 'antd';
 import WorkloadBridges from '../../../components/display/apps/tabs/Bridges';
-import ViewDetails from '../../../../../../components/display/views/ViewDetails';
+import DetailsView from '../../../../../../components/display/views/DetailsView';
 import SyncMode from '../../../../../../components/display/tabs/SyncMode';
 import { FancySpinner } from '../../../../../../components/animation';
 import { WORKLOAD_DETAILS_CONSTANTS, TabKey } from '../../../constants';
@@ -46,7 +46,7 @@ const Content: React.FC<ContentProps> = React.memo(
       <>
         {/* Active section */}
         {activeTab === TAB_KEYS.GENERAL && workloadViewConfig && (
-          <ViewDetails config={workloadViewConfig} />
+          <DetailsView config={workloadViewConfig} />
         )}
 
         {activeTab === TAB_KEYS.INSTANCES && (

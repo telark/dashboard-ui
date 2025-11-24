@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { APP_ROUTES, Icons, SHARED_DETAILS_CONSTANTS } from '../../../../constants';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
 import Header from '../../../../components/display/sections/Header';
-import ViewDetails from '../../../../components/display/views/ViewDetails';
+import DetailsView from '../../../../components/display/views/DetailsView';
 import { createPasskeyViewConfig } from '../../config';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
@@ -87,7 +87,7 @@ const ViewPasskey: React.FC = () => {
       />
 
       <AnimatedPageWrapper>
-        <ViewDetails config={config} />
+        <DetailsView config={config} />
       </AnimatedPageWrapper>
     </PageContainer>
   );

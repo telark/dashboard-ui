@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { APP_ROUTES, Icons, SHARED_DETAILS_CONSTANTS } from '../../../../constants';
 import { USERS_CONSTANTS as UC } from '../constants';
 import Header from '../../../../components/display/sections/Header';
-import ViewDetails from '../../../../components/display/views/ViewDetails';
+import DetailsView from '../../../../components/display/views/DetailsView';
 import { createUserViewConfig } from '../config';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
@@ -57,7 +57,7 @@ const ViewUser: React.FC = () => {
       <Header subtitle={UC.LABELS.VIEW_SUBTITLE} breadcrumbs={breadcrumbs} icon={<UserIcon />} />
 
       <AnimatedPageWrapper>
-        <ViewDetails config={config} />
+        <DetailsView config={config} />
       </AnimatedPageWrapper>
     </PageContainer>
   );

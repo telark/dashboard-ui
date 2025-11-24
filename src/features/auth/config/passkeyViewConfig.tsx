@@ -1,13 +1,13 @@
 import { BsKey } from 'react-icons/bs';
 import { AiOutlineCalendar, AiOutlineClockCircle } from 'react-icons/ai';
 import type { Passkey } from '../models/passkeys';
-import type { ViewDetailsConfig } from '../../../components/display/views/ViewDetails';
+import type { DetailsViewConfig } from '../../../components/display/views/DetailsView';
 import { StatusTag } from '../../../components/display/tags';
 import { DEFAULT_COLORS } from '../../../constants';
 import { PASSKEYS_CONSTANTS as PPC } from '../constants/passkeys';
 import TimeAgo from '../../../components/display/time/TimeAgo';
 
-export const createPasskeyViewConfig = (passkey: Passkey): ViewDetailsConfig => {
+export const createPasskeyViewConfig = (passkey: Passkey): DetailsViewConfig => {
   return {
     fields: [
       {
