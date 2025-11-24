@@ -1,4 +1,4 @@
-import { GROUPERS_PAGE_CONSTANTS } from '../../constants/pages/groupers';
+import { CONNECTIVITY_CONSTANTS } from '../../constants/pages/connectivity';
 
 export interface RetryCallbacks {
   setRetrying: (retrying: boolean) => void;
@@ -112,7 +112,7 @@ const startCooldown = (
       callbacks.setCooldownTime?.(0);
       setTimeout(() => {
         createRetryHandler(retryFunction, callbacks, config)();
-      }, GROUPERS_PAGE_CONSTANTS.COOLDOWN.AUTO_RETRY_DELAY_MS);
+      }, CONNECTIVITY_CONSTANTS.COOLDOWN.AUTO_RETRY_DELAY_MS);
     }
   }, config.countdownIntervalMs);
 
@@ -123,11 +123,11 @@ const startCooldown = (
 };
 
 const DEFAULT_RETRY_CONFIG: RetryConfig = {
-  maxAttempts: GROUPERS_PAGE_CONSTANTS.RETRY.MAX_ATTEMPTS,
-  baseDelayMs: GROUPERS_PAGE_CONSTANTS.RETRY.BASE_DELAY_MS,
-  maxDelayMs: GROUPERS_PAGE_CONSTANTS.RETRY.MAX_DELAY_MS,
-  cooldownDurationMs: GROUPERS_PAGE_CONSTANTS.COOLDOWN.DURATION_MS,
-  countdownIntervalMs: GROUPERS_PAGE_CONSTANTS.RETRY.COUNTDOWN_INTERVAL_MS,
+  maxAttempts: CONNECTIVITY_CONSTANTS.RETRY.MAX_ATTEMPTS,
+  baseDelayMs: CONNECTIVITY_CONSTANTS.RETRY.BASE_DELAY_MS,
+  maxDelayMs: CONNECTIVITY_CONSTANTS.RETRY.MAX_DELAY_MS,
+  cooldownDurationMs: CONNECTIVITY_CONSTANTS.COOLDOWN.DURATION_MS,
+  countdownIntervalMs: CONNECTIVITY_CONSTANTS.RETRY.COUNTDOWN_INTERVAL_MS,
 };
 
 export const createRetryHandler = (

@@ -1,0 +1,54 @@
+import { AiOutlineTag } from 'react-icons/ai';
+import type { Group } from '../models';
+import type { DetailsViewConfig } from '../../../../components/display/views/DetailsView';
+import { StatusTag } from '../../../../components/display/tags';
+import { ROLES_CONSTANTS as RPC } from '../../roles/constants';
+import { Icons } from '../../../../constants';
+
+export const createGroupViewConfig = (group: Group): DetailsViewConfig => {
+  return {
+    fields: [
+      {
+        key: 'name',
+        label: 'Name',
+        value: group.name,
+        icon: <Icons.ViewFieldName />,
+        type: 'text',
+      },
+      {
+        key: 'description',
+        label: 'Description',
+        value: group.description,
+        icon: <Icons.ViewFieldDescription />,
+        type: 'text',
+      },
+      {
+        key: 'category',
+        label: 'Category',
+        value: (
+          <StatusTag
+            label={group.category}
+            icon={<AiOutlineTag />}
+            color={RPC.COLORS.TYPE_CUSTOM_TEXT}
+            borderColor={RPC.COLORS.TYPE_CUSTOM_TEXT}
+          />
+        ),
+        icon: <AiOutlineTag />,
+        type: 'custom',
+      },
+      {
+        key: 'createdAt',
+        label: 'Creation Date',
+        value: new Date(group.createdAt).toLocaleString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+        icon: <Icons.ViewFieldDate />,
+        type: 'text',
+      },
+    ],
+  };
+};

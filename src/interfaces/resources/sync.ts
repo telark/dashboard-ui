@@ -79,3 +79,14 @@ export interface DeletionPollingParams {
   getPollingInterval: (config: SyncConfig) => number;
   getSuccessDuration: (config: SyncConfig) => number;
 }
+
+export interface SyncWithEffectResponse {
+  status: number;
+  operation: string;
+  message: string;
+  data: {
+    name: string;
+    phase: string; // Completed | NotStarted | Failed
+    syncEffect: string; // Changed | NoUpdate | NewlyCreated | Deleted | NotFound
+  };
+}

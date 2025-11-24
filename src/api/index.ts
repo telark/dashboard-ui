@@ -14,7 +14,7 @@ import {
   API_RESPONSES,
 } from '../constants';
 import { ErrorInterceptorOptions } from '../interfaces/http';
-import { createSessionTokenInterceptor } from '../utils/auth/session/token';
+import { createSessionTokenInterceptor } from '../features/auth/utils';
 import { createRequestErrorHandler } from '../utils/shared/errors';
 import logger from '../logging';
 
