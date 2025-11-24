@@ -1,10 +1,10 @@
-import type { Role } from '../../../../interfaces/resources/roles';
-import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
-import RowTag from '../../shared/table/RowTag';
-import { generateColumn } from '../../shared/table/utils';
+import type { Role } from '../../../models';
+import { ROLES_CONSTANTS as RPC } from '../../../constants';
+import RowTag from '../../../../../../components/display/shared/table/RowTag';
+import { generateColumn } from '../../../../../../components/display/shared/table/utils';
 import Actions from './Actions';
 import { AiOutlineCalendar, AiOutlineCheckCircle, AiOutlineTag } from 'react-icons/ai';
-import { Icons } from '../../../../constants';
+import { Icons } from '../../../../../../constants';
 import type { RolesSortKey } from './utils';
 
 const RoleIcon = Icons.Role;

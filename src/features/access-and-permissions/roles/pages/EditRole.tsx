@@ -1,13 +1,13 @@
 import React from 'react';
-import { APP_ROUTES, Icons } from '../../constants';
-import { ROLES_PAGE_CONSTANTS as RC } from '../../constants/pages/roles';
-import Header from '../../components/display/shared/sections/Header';
-import RoleForm, { type RoleFormValues } from '../../components/display/roles/shared/RoleForm';
-import { STATIC_ROLES } from '../../data/roles';
-import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
-import { PageContainer, NotFound } from '../../components/shared';
-import { useEditPage } from '../../hooks/layout';
-import type { Role } from '../../interfaces/resources/roles';
+import { APP_ROUTES, Icons } from '../../../../constants';
+import { ROLES_CONSTANTS as RC } from '../constants';
+import Header from '../../../../components/display/shared/sections/Header';
+import RoleForm, { type RoleFormValues } from '../components/display/shared/RoleForm';
+import { STATIC_ROLES } from '../data';
+import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
+import { PageContainer, NotFound } from '../../../../components/shared';
+import { useEditPage } from '../../../../hooks/layout';
+import type { Role } from '../models';
 
 const RoleIcon = Icons.Role;
 

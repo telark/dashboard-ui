@@ -1,5 +1,5 @@
-import type { Role } from '../../../../interfaces/resources/roles';
-import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
+import type { Role } from '../../../models';
+import { ROLES_CONSTANTS as RPC } from '../../../constants';
 
 export type RolesSortKey = 'name' | 'type' | 'permission' | 'createdAt' | 'status';
 export const getPermissionCount = (role: Role): number => {

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { AiOutlineLock } from 'react-icons/ai';
-import { StatusTag } from '../../../tags';
-import { Label } from '../../../shared';
-import { CARD_TRANSITIONS } from '../../../../constants';
+import { StatusTag } from '../../../../../../components/tags';
+import { Label } from '../../../../../../components/shared';
+import { CARD_TRANSITIONS } from '../../../../../../constants';
 
 interface ScopesPermissionsProps {
   scopes: Record<string, string[]>;

@@ -1,5 +1,5 @@
 import { USERS_CONSTANTS as UC } from '../../../constants';
-import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../../../constants/pages/roles';
+import { ROLES_CONSTANTS as RPC } from '../../../../roles/constants';
 import RowTag from '../../../../../../components/display/shared/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/shared/table/utils';
 import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';

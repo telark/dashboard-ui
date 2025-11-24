@@ -1,6 +1,6 @@
 import React from 'react';
 import Section from '../shared/Section';
-import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
+import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import RolesScopesAndPermissionsList from './ScopesAndPermissionsList';
 
 const AREAS = RPC.SCOPE.AREAS;

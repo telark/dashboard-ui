@@ -1,12 +1,12 @@
 import React from 'react';
 import { Form } from 'antd';
 import type { FormInstance } from 'antd';
-import PrimaryButton from '../../../buttons/PrimaryButton';
-import { BUTTON_TEXTS, Icons } from '../../../../constants';
-import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
+import PrimaryButton from '../../../../../../components/buttons/PrimaryButton';
+import { BUTTON_TEXTS, Icons } from '../../../../../../constants';
+import { COMPONENT_STYLES } from '../../../../../../constants/layout/ui';
 import RolesGeneralSection from '../create/GeneralSection';
 import RolesScopePermissionsSection from '../create/ScopesAndPermissionsSection';
-import type { RoleScopePermission } from '../../../../interfaces/resources/roles';
+import type { RoleScopePermission } from '../../../constants';
 
 const RoleIcon = Icons.Role;
 

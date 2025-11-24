@@ -1,7 +1,7 @@
 import React from 'react';
 import Section from '../shared/Section';
-import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
-import LabeledSelect from '../../shared/inputs/LabeledSelect';
+import { ROLES_CONSTANTS as RPC } from '../../../constants';
+import LabeledSelect from '../../../../../../components/display/shared/inputs/LabeledSelect';
 
 const GroupAssignmentSection: React.FC = () => {
   return (

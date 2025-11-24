@@ -26,10 +26,14 @@ const WorkloadsGlobalView = lazy(
 const AppWorkloadDetailsView = lazy(
   () => import('../features/resources/workloads/pages/details/apps/DetailsView'),
 );
-const RolesCreateView = lazy(() => import('../pages/roles/CreateRole'));
-const RolesListView = lazy(() => import('../pages/roles/ListRoles'));
-const RoleView = lazy(() => import('../pages/roles/ViewRole'));
-const RoleEdit = lazy(() => import('../pages/roles/EditRole'));
+const RolesCreateView = lazy(
+  () => import('../features/access-and-permissions/roles/pages/CreateRole'),
+);
+const RolesListView = lazy(
+  () => import('../features/access-and-permissions/roles/pages/ListRoles'),
+);
+const RoleView = lazy(() => import('../features/access-and-permissions/roles/pages/ViewRole'));
+const RoleEdit = lazy(() => import('../features/access-and-permissions/roles/pages/EditRole'));
 const UsersListView = lazy(
   () => import('../features/access-and-permissions/users/pages/ListUsers'),
 );

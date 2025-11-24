@@ -1,7 +1,7 @@
 import React from 'react';
 import Section from '../shared/Section';
-import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
-import LabeledInput from '../../shared/inputs/LabeledInput';
+import { ROLES_CONSTANTS as RPC } from '../../../constants';
+import LabeledInput from '../../../../../../components/display/shared/inputs/LabeledInput';
 
 const RolesGeneralSection: React.FC = () => {
   return (

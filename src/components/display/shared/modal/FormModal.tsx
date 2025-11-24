@@ -5,7 +5,7 @@ import PrimaryButton from '../../../buttons/PrimaryButton';
 import { BUTTON_TEXTS } from '../../../../constants';
 import BaseModal from './BaseModal';
 import FormFieldRenderer from './FormFieldRenderer';
-import Section from '../../roles/shared/Section';
+import Section from '../../../../features/access-and-permissions/roles/components/display/shared/Section';
 import type { FormModalProps } from '../../../../interfaces/layout/modal';
 
 const FormModal: React.FC<FormModalProps> = ({
