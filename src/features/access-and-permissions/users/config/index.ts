@@ -1,0 +1,2 @@
+export { createUserViewConfig } from './userViewConfig';
+

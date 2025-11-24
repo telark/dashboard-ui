@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { Form, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../constants';
-import { COMPONENT_STYLES } from '../../constants/layout/ui';
-import Header from '../../components/display/shared/sections/Header';
-import { USERS_CONSTANTS as UC } from '../../constants/pages/users';
-import LabeledInput from '../../components/display/shared/inputs/LabeledInput';
-import LabeledSelect from '../../components/display/shared/inputs/LabeledSelect';
-import LabeledAvatarPicker from '../../components/display/shared/inputs/LabeledAvatarPicker';
-import Section from '../../components/display/roles/shared/Section';
-import PrimaryButton from '../../components/buttons/PrimaryButton';
-import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
-import { PageContainer } from '../../components/shared';
+import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../../../constants';
+import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
+import Header from '../../../../components/display/shared/sections/Header';
+import { USERS_CONSTANTS as UC } from '../constants';
+import LabeledInput from '../../../../components/display/shared/inputs/LabeledInput';
+import LabeledSelect from '../../../../components/display/shared/inputs/LabeledSelect';
+import LabeledAvatarPicker from '../../../../components/display/shared/inputs/LabeledAvatarPicker';
+import Section from '../../../../components/display/roles/shared/Section';
+import PrimaryButton from '../../../../components/buttons/PrimaryButton';
+import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
+import { PageContainer } from '../../../../components/shared';
 import { useDispatch } from 'react-redux';
-import { addUser } from '../../store/users/slices/userSlice';
-import type { User, CreateUserFormValues } from '../../interfaces/resources/users';
+import { addUser } from '../store';
+import type { User, CreateUserFormValues } from '../models';
 
 const UserIcon = Icons.User;
 

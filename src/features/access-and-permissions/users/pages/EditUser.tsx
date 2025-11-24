@@ -1,20 +1,20 @@
 import React, { useEffect } from 'react';
 import { Form } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../constants';
-import { COMPONENT_STYLES } from '../../constants/layout/ui';
-import Header from '../../components/display/shared/sections/Header';
-import { USERS_CONSTANTS as UC } from '../../constants/pages/users';
-import LabeledInput from '../../components/display/shared/inputs/LabeledInput';
-import LabeledSelect from '../../components/display/shared/inputs/LabeledSelect';
-import Section from '../../components/display/roles/shared/Section';
-import PrimaryButton from '../../components/buttons/PrimaryButton';
-import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
-import { PageContainer, NotFound } from '../../components/shared';
-import { useEditPage } from '../../hooks/layout';
-import { RootState, AppDispatch } from '../../store';
-import { fetchAllUsersThunk } from '../../store/users/slices/userSlice';
-import type { User, UserFormBaseFields } from '../../interfaces/resources/users';
+import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../../../constants';
+import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
+import Header from '../../../../components/display/shared/sections/Header';
+import { USERS_CONSTANTS as UC } from '../constants';
+import LabeledInput from '../../../../components/display/shared/inputs/LabeledInput';
+import LabeledSelect from '../../../../components/display/shared/inputs/LabeledSelect';
+import Section from '../../../../components/display/roles/shared/Section';
+import PrimaryButton from '../../../../components/buttons/PrimaryButton';
+import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
+import { PageContainer, NotFound } from '../../../../components/shared';
+import { useEditPage } from '../../../../hooks/layout';
+import { RootState, AppDispatch } from '../../../../store';
+import { fetchAllUsersThunk } from '../store';
+import type { User, UserFormBaseFields } from '../models';
 
 const UserIcon = Icons.User;
 

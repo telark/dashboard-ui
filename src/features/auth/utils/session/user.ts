@@ -1,5 +1,5 @@
 import { STORAGE_KEYS } from '../../../../constants/store/store';
-import { USER_CONSTANTS } from '../../../../constants/user/user';
+import { USER_ERROR_MESSAGES } from '../../../../features/access-and-permissions/users/constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 import type { User as AuthUser } from '../../models/credentials';
@@ -12,7 +12,7 @@ export const getCurrentUser = (): AuthUser | null => {
     }
   } catch (error) {
     if (isDevelopment()) {
-      logger.error(USER_CONSTANTS.LOGS.GET_CURRENT_USER_ERROR, error);
+      logger.error(USER_ERROR_MESSAGES.LOGS.GET_CURRENT_USER_ERROR, error);
     }
   }
   return null;
@@ -23,7 +23,7 @@ export const setCurrentUser = (user: AuthUser): void => {
     globalThis.localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
   } catch (error) {
     if (isDevelopment()) {
-      logger.error(USER_CONSTANTS.LOGS.SET_CURRENT_USER_ERROR, error);
+      logger.error(USER_ERROR_MESSAGES.LOGS.SET_CURRENT_USER_ERROR, error);
     }
     // Don't throw - allow login to continue even if storage fails
   }
@@ -34,7 +34,7 @@ export const removeCurrentUser = (): void => {
     globalThis.localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
   } catch (error) {
     if (isDevelopment()) {
-      logger.error(USER_CONSTANTS.LOGS.REMOVE_CURRENT_USER_ERROR, error);
+      logger.error(USER_ERROR_MESSAGES.LOGS.REMOVE_CURRENT_USER_ERROR, error);
     }
   }
 };

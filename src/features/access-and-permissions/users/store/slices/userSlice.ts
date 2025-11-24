@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { UsersState, User } from '../../../interfaces/resources/users';
+import type { UsersState, User } from '../../models';
 import {
   fetchAllUsersThunk,
   fetchAllUsersSilentThunk,
   fetchUserDetailsThunk,
-} from '../thunks/FetchThunks';
+} from '../thunks/fetchThunks';
 import {
   handleFetchUsersPending,
   handleFetchUsersFulfilled,
@@ -12,13 +12,13 @@ import {
   handleFetchUserDetailsPending,
   handleFetchUserDetailsFulfilled,
   handleFetchUserDetailsRejected,
-} from '../reducers/FetchReducers';
+} from '../reducers/fetchReducers';
 
 export {
   fetchAllUsersThunk,
   fetchAllUsersSilentThunk,
   fetchUserDetailsThunk,
-} from '../thunks/FetchThunks';
+} from '../thunks/fetchThunks';
 
 const initialState: UsersState = {
   users: [],

@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect, useRef, useCallback, startTransiti
 import { createAvatar } from '@dicebear/core';
 import { Avatar, Grid, Modal, Spin } from 'antd';
 import { DEFAULT_COLORS } from '../../../../constants';
-import type { UserAvatar } from '../../../../interfaces/resources/users';
+import type { UserAvatar } from '../../../../features/access-and-permissions/users/models';
 
 const { useBreakpoint } = Grid;
 

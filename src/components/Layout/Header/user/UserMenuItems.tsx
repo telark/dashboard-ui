@@ -3,7 +3,7 @@ import type { MenuProps } from 'antd';
 import { LogoutOutlined, SettingOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS, HEADER_CONSTANTS } from '../../../../constants';
 import type { User as AuthUser } from '../../../../features/auth/models/credentials';
-import type { User as UsersUser } from '../../../../interfaces/resources/users';
+import type { User as UsersUser } from '../../../../features/access-and-permissions/users/models';
 
 interface UserMenuItemsProps {
   currentUser: UsersUser | null;

@@ -5,7 +5,7 @@ import insightsReducer from './insights/slices/insightsSlice';
 import { workloadReducer } from '../features/workloads/store';
 import { bridgeReducer } from '../features/bridges/store';
 import groupsReducer from './groups/slices/groupSlice';
-import usersReducer from './users/slices/userSlice';
+import { userReducer as usersReducer } from '../features/access-and-permissions/users/store';
 import { passkeyReducer } from '../features/auth/store';
 import {
   grouperPersistConfig,

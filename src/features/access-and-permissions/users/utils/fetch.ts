@@ -1,9 +1,9 @@
-import { fetchUserById } from '../../features/access-and-permissions/users/clients';
-import { USER_CONSTANTS } from '../../constants/user/user';
-import { isDevelopment } from '../helpers/env';
-import logger from '../../logging';
-import { getCurrentUser } from '../../features/auth/utils';
-import type { User as UsersUser } from '../../features/access-and-permissions/users/models';
+import { fetchUserById } from '../clients';
+import { USER_ERROR_MESSAGES } from '../constants';
+import { isDevelopment } from '../../../../utils/helpers/env';
+import logger from '../../../../logging';
+import { getCurrentUser } from '../../../auth/utils';
+import type { User as UsersUser } from '../models';
 
 export const fetchCurrentUserDetails = async (
   onSuccess: (user: UsersUser) => void,
@@ -21,7 +21,7 @@ export const fetchCurrentUserDetails = async (
     }
   } catch (error) {
     if (isDevelopment()) {
-      logger.error(USER_CONSTANTS.LOGS.FETCH_USER_DETAILS_ERROR, error);
+      logger.error(USER_ERROR_MESSAGES.LOGS.FETCH_USER_DETAILS_ERROR, error);
     }
     if (onError) {
       onError(error);

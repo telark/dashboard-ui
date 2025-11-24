@@ -1,4 +1,4 @@
-import type { FormFieldConfig } from '../../interfaces/layout/modal';
+import type { FormFieldConfig } from '../../../../interfaces/layout/modal';
 
 export const USERS_CONSTANTS = {
   LABELS: {

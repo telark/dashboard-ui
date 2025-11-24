@@ -1,10 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchUsers, fetchUserById } from '../../../clients/exporter';
-import { extractErrorMessage } from '../../../utils/helpers/format';
-import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../constants/store/store';
-import logger from '../../../logging';
-import type { User } from '../../../interfaces/resources/users';
-import type { ResourceListResponse, ResourceDetailsResponse } from '../../../interfaces/http';
+import { fetchUsers, fetchUserById } from '../../clients';
+import { extractErrorMessage } from '../../../../../utils/helpers/format';
+import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../../constants/store/store';
+import logger from '../../../../../logging';
+import type { User } from '../../models';
+import type { ResourceListResponse, ResourceDetailsResponse } from '../../../../../interfaces/http';
 
 const mapUsersData = (response: ResourceListResponse<User>): User[] => {
   return response.data?.items || [];

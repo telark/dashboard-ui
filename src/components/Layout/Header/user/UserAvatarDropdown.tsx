@@ -2,13 +2,13 @@ import React, { useState, useEffect, memo } from 'react';
 import { Dropdown } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { getAuthUser, handleUserLogout, hasSessionToken } from '../../../../features/auth/utils';
-import { fetchCurrentUserDetails } from '../../../../utils/user/fetch';
+import { fetchCurrentUserDetails } from '../../../../features/access-and-permissions/users/utils';
 import { createUserMenuItems } from './UserMenuItems';
 import UserAvatar from './UserAvatar';
 import { HEADER_CONSTANTS } from '../../../../constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import type { User as AuthUser } from '../../../../features/auth/models/credentials';
-import type { User as UsersUser } from '../../../../interfaces/resources/users';
+import type { User as UsersUser } from '../../../../features/access-and-permissions/users/models';
 import logger from '../../../../logging';
 
 const UserAvatarDropdown: React.FC = memo(() => {

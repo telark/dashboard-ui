@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { APP_ROUTES, Icons, SHARED_DETAILS_CONSTANTS } from '../../constants';
-import { USERS_CONSTANTS as UC } from '../../constants/pages/users';
-import Header from '../../components/display/shared/sections/Header';
-import ViewDetails from '../../components/display/shared/views/ViewDetails';
-import { createUserViewConfig } from '../../config/userViewConfig';
-import AnimatedPageWrapper from '../../components/animation/AnimatedPageWrapper';
-import { PageContainer, NotFound } from '../../components/shared';
-import { useViewPage } from '../../hooks/layout';
-import { RootState, AppDispatch } from '../../store';
-import { fetchAllUsersThunk } from '../../store/users/slices/userSlice';
-import type { User } from '../../interfaces/resources/users';
+import { APP_ROUTES, Icons, SHARED_DETAILS_CONSTANTS } from '../../../../constants';
+import { USERS_CONSTANTS as UC } from '../constants';
+import Header from '../../../../components/display/shared/sections/Header';
+import ViewDetails from '../../../../components/display/shared/views/ViewDetails';
+import { createUserViewConfig } from '../config';
+import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
+import { PageContainer, NotFound } from '../../../../components/shared';
+import { useViewPage } from '../../../../hooks/layout';
+import { RootState, AppDispatch } from '../../../../store';
+import { fetchAllUsersThunk } from '../store';
+import type { User } from '../models';
 
 const UserIcon = Icons.User;
 

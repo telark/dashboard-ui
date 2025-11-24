@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createAvatar } from '@dicebear/core';
 import { Avatar } from 'antd';
-import type { UserAvatar as UserAvatarType } from '../../../../interfaces/resources/users';
+import type { UserAvatar as UserAvatarType } from '../../../../features/access-and-permissions/users/models';
 
 interface UserAvatarProps {
   avatar?: UserAvatarType;

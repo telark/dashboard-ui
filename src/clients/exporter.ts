@@ -1,20 +1,15 @@
 import { Client, exporterApiClient } from '../api/index';
-import logger from '../logging';
 import {
   Endpoints,
   HTTP_HEADERS,
   HEADER_VALUES,
-  ERROR_MESSAGES,
   HTTP_STATUS,
   ERROR_CODES,
   API_RESPONSES,
 } from '../constants';
 import type {
-  ResourceListResponse,
-  ResourceDetailsResponse,
   ClusterInsightsResponse,
 } from '../interfaces/http';
-import type { User } from '../interfaces/resources/users';
 import type {
   SessionDetailsResponse,
   DeleteSessionResponse,
@@ -39,46 +34,6 @@ export const checkClusterInsights = async () => {
     const networkError = error as { code?: string };
     if (networkError?.code === ERROR_CODES.NETWORK) {
       return { data: null, _status: 0, ...API_RESPONSES.NETWORK_ERROR } as ClusterInsightsResponse;
-    }
-    throw error;
-  }
-};
-
-export const fetchUsers = async (silent = false) => {
-  try {
-    const config = silent
-      ? {
-          headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK },
-        }
-      : {};
-    return await Client<ResourceListResponse<User>>(
-      exporterApiClient,
-      Endpoints.USERS.GET_ALL.path,
-      config,
-    );
-  } catch (error) {
-    if (!silent) {
-      logger.error(ERROR_MESSAGES.CLIENT.FETCH_USERS_FAILED, error);
-    }
-    throw error;
-  }
-};
-
-export const fetchUserById = async (userId: string, silent = false) => {
-  try {
-    const config = silent
-      ? {
-          headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK },
-        }
-      : {};
-    return await Client<ResourceDetailsResponse<User>>(
-      exporterApiClient,
-      Endpoints.USERS.GET_BY_ID(userId).path,
-      config,
-    );
-  } catch (error) {
-    if (!silent) {
-      logger.error(ERROR_MESSAGES.CLIENT.FETCH_USERS_FAILED, error);
     }
     throw error;
   }

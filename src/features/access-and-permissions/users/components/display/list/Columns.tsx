@@ -1,11 +1,11 @@
-import { USERS_CONSTANTS as UC } from '../../../../constants/pages/users';
-import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../constants/pages/roles';
-import RowTag from '../../shared/table/RowTag';
-import { generateColumn } from '../../shared/table/utils';
-import type { GenerateColumnCtx } from '../../../../interfaces/layout/table';
-import type { User } from '../../../../interfaces/resources/users';
+import { USERS_CONSTANTS as UC } from '../../../constants';
+import { ROLES_PAGE_CONSTANTS as RPC } from '../../../../../../constants/pages/roles';
+import RowTag from '../../../../../../components/display/shared/table/RowTag';
+import { generateColumn } from '../../../../../../components/display/shared/table/utils';
+import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
+import type { User } from '../../../models';
 import Actions from './Actions';
-import UserAvatar from '../../shared/avatars/UserAvatar';
+import UserAvatar from '../../../../../../components/display/shared/avatars/UserAvatar';
 import { AiOutlineUser, AiOutlineMail, AiOutlineTag, AiOutlineCalendar } from 'react-icons/ai';
 
 const Columns = (ctx: GenerateColumnCtx) => {
