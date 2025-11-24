@@ -1,9 +1,12 @@
 {
-    "cSpell.words": [
-        "antd",
-        "Appstore",
-        "cacid",
-        "fasid",
-        "reduxjs"
-    ]
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "typescript.tsserver.maxTsServerMemory": 4096,
+  
+  // Show all problems in the Problems panel
+  "problems.showCurrentInStatus": true,
+  
+  // Auto-fix on save
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  }
 }

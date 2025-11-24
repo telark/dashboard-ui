@@ -1,0 +1,98 @@
+import React from 'react';
+import { Empty, Button, Typography } from 'antd';
+import { ReloadOutlined } from '@ant-design/icons';
+import WorkloadCard from '../../../cards/WorkloadCard';
+import { FancySpinner } from '../../../../../../../components/animation';
+import { WORKLOADS_CONSTANTS } from '../../../../constants';
+import { CONNECTIVITY_CONSTANTS } from '../../../../../../../constants/pages/connectivity';
+import type { AppWorkloadCardData } from '../../../../models';
+
+const { Title, Text } = Typography;
+
+interface AppsListProps {
+  apps: AppWorkloadCardData[];
+  loading?: boolean;
+  onAppClick?: (app: AppWorkloadCardData) => void;
+  onRefresh?: () => void;
+  showFullEmptyMessage?: boolean;
+}
+
+const AppsList: React.FC<AppsListProps> = React.memo(function AppsList({
+  apps,
+  loading = false,
+  onAppClick,
+  onRefresh,
+  showFullEmptyMessage = false,
+}) {
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '50vh',
+          width: '100%',
+        }}
+      >
+        <FancySpinner label="Loading apps" showLabel={true} />
+      </div>
+    );
+  }
+
+  if (apps.length === 0) {
+    // Show full empty message when both apps and batches are empty
+    if (showFullEmptyMessage) {
+      return (
+        <div style={WORKLOADS_CONSTANTS.LAYOUT.EMPTY_STATE_CONTAINER}>
+          <div
+            style={{
+              textAlign: 'center',
+              maxWidth: WORKLOADS_CONSTANTS.UI.EMPTY_STATE_MAX_WIDTH,
+            }}
+          >
+            <div style={WORKLOADS_CONSTANTS.LAYOUT.EMPTY_ICON}>
+              <ReloadOutlined />
+            </div>
+
+            <Title
+              level={3}
+              style={{ color: CONNECTIVITY_CONSTANTS.COLORS.TEXT_PRIMARY, marginBottom: 8 }}
+            >
+              {WORKLOADS_CONSTANTS.MESSAGES.NO_WORKLOADS_TITLE}
+            </Title>
+
+            <Text
+              style={{
+                color: CONNECTIVITY_CONSTANTS.COLORS.TEXT_SECONDARY,
+                marginBottom: 24,
+                display: 'block',
+              }}
+            >
+              {WORKLOADS_CONSTANTS.MESSAGES.NO_WORKLOADS_DESCRIPTION}
+            </Text>
+
+            {onRefresh && (
+              <Button type="primary" icon={<ReloadOutlined />} onClick={onRefresh}>
+                {CONNECTIVITY_CONSTANTS.MESSAGES.REFRESH}
+              </Button>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // Show simple empty state when only apps are empty (but batches exist)
+    return <Empty description="No apps found" image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+  }
+
+  return (
+    <div style={{ width: '100%' }}>
+      {apps.map((app) => (
+        <WorkloadCard key={app.name} workload={app} onClick={() => onAppClick?.(app)} />
+      ))}
+    </div>
+  );
+});
+
+export default AppsList;

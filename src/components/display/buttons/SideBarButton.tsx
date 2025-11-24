@@ -1,0 +1,89 @@
+import React, { useState } from 'react';
+import { Menu } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_COLORS } from '../../../constants';
+import { ButtonInterface } from '../../../interfaces/shared';
+
+const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = ({
+  text,
+  icon,
+  active,
+  hoverIcon,
+  route,
+  isCollapsed = false,
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
+
+  const itemKey = `${route || 'route-missing'}-${text || 'text-missing'}`;
+
+  const isActive = Boolean(active);
+  const isActiveOrHovered = Boolean(active) || isHovered;
+  const iconColor = isActiveOrHovered ? DEFAULT_COLORS.SUCCESS : BUTTON_COLORS.ICON_DEFAULT;
+
+  let coloredIcon = null;
+  if (icon) {
+    if (React.isValidElement(icon)) {
+      coloredIcon = React.cloneElement(icon, {
+        style: { color: iconColor, fontSize: '18px', width: '18.5px', height: '18.5px' },
+      } as React.Attributes);
+    } else {
+      coloredIcon = icon;
+    }
+  }
+
+  let borderRight: string;
+  if (isCollapsed) {
+    borderRight = 'none';
+  } else {
+    const borderColor = isActive ? DEFAULT_COLORS.SUCCESS : 'transparent';
+    borderRight = `${BUTTON_CONFIGS.SIDEBAR_BUTTON.BORDER_WIDTH}px solid ${borderColor}`;
+  }
+
+  return (
+    <Menu.Item
+      key={itemKey}
+      eventKey={itemKey}
+      title={String(text)}
+      icon={isHovered && hoverIcon ? hoverIcon : coloredIcon}
+      onClick={() => navigate(route)}
+      style={{
+        backgroundColor: 'transparent',
+        color: isActiveOrHovered ? DEFAULT_COLORS.SUCCESS : BUTTON_COLORS.TEXT_DEFAULT,
+        padding: BUTTON_CONFIGS.SIDEBAR_BUTTON.PADDING,
+        borderRadius: BUTTON_CONFIGS.SIDEBAR_BUTTON.BORDER_RADIUS,
+        margin: isCollapsed ? '10px auto' : BUTTON_CONFIGS.SIDEBAR_BUTTON.EXPANDED_MARGIN,
+        height: BUTTON_CONFIGS.SIDEBAR_BUTTON.HEIGHT,
+        display: 'flex',
+        alignItems: 'center',
+        fontWeight: BUTTON_CONFIGS.SIDEBAR_BUTTON.FONT_WEIGHT,
+        fontSize: BUTTON_CONFIGS.SIDEBAR_BUTTON.FONT_SIZE,
+        cursor: 'pointer',
+        transition: BUTTON_CONFIGS.SIDEBAR_BUTTON.TRANSITION,
+        borderRight,
+        borderTopRightRadius: 0,
+        borderBottomRightRadius: 0,
+        position: 'relative',
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {text}
+      {isCollapsed && isActive ? (
+        <div
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: BUTTON_CONFIGS.SIDEBAR_BUTTON.BORDER_WIDTH,
+            backgroundColor: DEFAULT_COLORS.SUCCESS,
+            pointerEvents: 'none',
+          }}
+        />
+      ) : null}
+    </Menu.Item>
+  );
+};
+
+export default SidebarButton;

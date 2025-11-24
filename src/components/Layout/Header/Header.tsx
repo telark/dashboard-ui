@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserAvatarDropdown } from './user';
+import { UserAvatarDropdown } from '../../../features/access-and-permissions/users/components';
 
 const Header: React.FC = () => {
   return (

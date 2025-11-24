@@ -1,35 +1,56 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import AnimatedPageWrapper from '../components/animation/AnimatedPageWrapper';
-import ProtectedRoute from '../components/auth/ProtectedRoute';
-import { FancySpinner } from '../components/shared';
+import { ProtectedRoute } from '../features/auth/components';
+import { FancySpinner, AnimatedPageWrapper } from '../components/animation';
 import { APP_ROUTES } from '../constants';
-import { hasSessionToken } from '../utils/auth/session/token';
+import { hasSessionToken } from '../features/auth/utils';
 
 // Lazy load pages for code splitting
-const Dashboard = lazy(() => import('../pages/home/Dashboard'));
-const Login = lazy(() => import('../pages/auth/Login'));
-const Register = lazy(() => import('../pages/auth/Register'));
-const GroupersGlobalView = lazy(() => import('../pages/grouper/main/GlobalView'));
-const GrouperDetailsView = lazy(() => import('../pages/grouper/details/DetailsView'));
-const BridgesGlobalView = lazy(() => import('../pages/bridge/main/GlobalView'));
-const BridgeDetailsView = lazy(() => import('../pages/bridge/details/DetailsView'));
-const WorkloadsGlobalView = lazy(() => import('../pages/workload/main/GlobalView'));
-const AppWorkloadDetailsView = lazy(() => import('../pages/workload/details/apps/DetailsView'));
-const RolesCreateView = lazy(() => import('../pages/roles/CreateRole'));
-const RolesListView = lazy(() => import('../pages/roles/ListRoles'));
-const RoleView = lazy(() => import('../pages/roles/ViewRole'));
-const RoleEdit = lazy(() => import('../pages/roles/EditRole'));
-const UsersListView = lazy(() => import('../pages/users/ListUsers'));
-const UsersCreateView = lazy(() => import('../pages/users/CreateUser'));
-const UserView = lazy(() => import('../pages/users/ViewUser'));
-const UserEdit = lazy(() => import('../pages/users/EditUser'));
-const GroupsListView = lazy(() => import('../pages/groups/ListGroups'));
-const GroupsCreateView = lazy(() => import('../pages/groups/CreateGroup'));
-const GroupView = lazy(() => import('../pages/groups/ViewGroup'));
-const GroupEdit = lazy(() => import('../pages/groups/EditGroup'));
-const PasskeysListView = lazy(() => import('../pages/passkeys/ListPasskeys'));
-const PasskeyView = lazy(() => import('../pages/passkeys/ViewPasskey'));
+const Dashboard = lazy(() => import('../features/home/pages/Dashboard'));
+const Login = lazy(() => import('../features/auth/pages/flow/Login'));
+const Register = lazy(() => import('../features/auth/pages/flow/Register'));
+const GroupersGlobalView = lazy(
+  () => import('../features/resources/groupers/pages/main/GlobalView'),
+);
+const GrouperDetailsView = lazy(
+  () => import('../features/resources/groupers/pages/details/DetailsView'),
+);
+const BridgesGlobalView = lazy(() => import('../features/resources/bridges/pages/main/GlobalView'));
+const BridgeDetailsView = lazy(
+  () => import('../features/resources/bridges/pages/details/DetailsView'),
+);
+const WorkloadsGlobalView = lazy(
+  () => import('../features/resources/workloads/pages/main/GlobalView'),
+);
+const AppWorkloadDetailsView = lazy(
+  () => import('../features/resources/workloads/pages/details/apps/DetailsView'),
+);
+const RolesCreateView = lazy(
+  () => import('../features/access-and-permissions/roles/pages/CreateRole'),
+);
+const RolesListView = lazy(
+  () => import('../features/access-and-permissions/roles/pages/ListRoles'),
+);
+const RoleView = lazy(() => import('../features/access-and-permissions/roles/pages/ViewRole'));
+const RoleEdit = lazy(() => import('../features/access-and-permissions/roles/pages/EditRole'));
+const UsersListView = lazy(
+  () => import('../features/access-and-permissions/users/pages/ListUsers'),
+);
+const UsersCreateView = lazy(
+  () => import('../features/access-and-permissions/users/pages/CreateUser'),
+);
+const UserView = lazy(() => import('../features/access-and-permissions/users/pages/ViewUser'));
+const UserEdit = lazy(() => import('../features/access-and-permissions/users/pages/EditUser'));
+const GroupsListView = lazy(
+  () => import('../features/access-and-permissions/groups/pages/ListGroups'),
+);
+const GroupsCreateView = lazy(
+  () => import('../features/access-and-permissions/groups/pages/CreateGroup'),
+);
+const GroupView = lazy(() => import('../features/access-and-permissions/groups/pages/ViewGroup'));
+const GroupEdit = lazy(() => import('../features/access-and-permissions/groups/pages/EditGroup'));
+const PasskeysListView = lazy(() => import('../features/auth/pages/passkeys/ListPasskeys'));
+const PasskeyView = lazy(() => import('../features/auth/pages/passkeys/ViewPasskey'));
 
 // Loading fallback component
 const PageLoader: React.FC = () => (
