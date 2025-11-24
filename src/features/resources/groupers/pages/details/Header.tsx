@@ -1,6 +1,6 @@
 import React from 'react';
 import { SyncOutlined } from '@ant-design/icons';
-import TimeAgo from '../../../../../components/time/TimeAgo';
+import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import Header from '../../../../../components/display/sections/Header';
 import { APP_ROUTES, Icons, UI } from '../../../../../constants';
 

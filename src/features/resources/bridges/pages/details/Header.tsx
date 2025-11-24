@@ -1,7 +1,7 @@
 import React from 'react';
 import { SyncOutlined, ClusterOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import TimeAgo from '../../../../../components/time/TimeAgo';
+import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import Header from '../../../../../components/display/sections/Header';
 import { APP_ROUTES, Icons, UI } from '../../../../../constants';
 

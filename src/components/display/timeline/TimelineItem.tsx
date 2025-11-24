@@ -1,5 +1,5 @@
 import React from 'react';
-import TimeAgo from '../../time/TimeAgo';
+import TimeAgo from '../time/TimeAgo';
 import { TimelineMarker } from './TimelineMarker';
 import { CapitalizeFirstLetter } from '../../../utils/helpers/format';
 import type { TimelineItemProps } from '../../../interfaces/layout/timeline';

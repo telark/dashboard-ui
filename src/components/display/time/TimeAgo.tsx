@@ -3,7 +3,7 @@ import { formatDistanceToNow, format } from 'date-fns';
 
 import { Popover } from 'antd';
 
-import { TIME_FORMATS, TIME_CONFIGS, TIME_TEXTS } from '../../constants';
+import { TIME_FORMATS, TIME_CONFIGS, TIME_TEXTS } from '../../../constants';
 
 interface TimeAgoProps {
   date: string | Date;

@@ -5,7 +5,7 @@ import type { ViewDetailsConfig } from '../../../components/display/views/ViewDe
 import { StatusTag } from '../../../components/tags';
 import { DEFAULT_COLORS } from '../../../constants';
 import { PASSKEYS_CONSTANTS as PPC } from '../constants/passkeys';
-import TimeAgo from '../../../components/time/TimeAgo';
+import TimeAgo from '../../../components/display/time/TimeAgo';
 
 export const createPasskeyViewConfig = (passkey: Passkey): ViewDetailsConfig => {
   return {

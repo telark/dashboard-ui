@@ -1,7 +1,7 @@
 import { SyncOutlined, BranchesOutlined, DeploymentUnitOutlined } from '@ant-design/icons';
 import { AiOutlineCluster } from 'react-icons/ai';
 import type { ViewDetailsConfig } from '../../../../components/display/views/ViewDetails';
-import TimeAgo from '../../../../components/time/TimeAgo';
+import TimeAgo from '../../../../components/display/time/TimeAgo';
 import StatusButton from '../../../../components/buttons/StatusButton';
 import { Icons } from '../../../../constants';
 

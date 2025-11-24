@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography } from 'antd';
 import { ToolOutlined } from '@ant-design/icons';
 import StatusButton from '../../buttons/StatusButton';
-import TimeAgo from '../../time/TimeAgo';
+import TimeAgo from '../../display/time/TimeAgo';
 import { Metric } from '../../shared';
 import { StatusTag } from '../../tags';
 import { UI } from '../../../constants/layout/ui';

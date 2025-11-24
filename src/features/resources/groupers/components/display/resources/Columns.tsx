@@ -2,7 +2,7 @@ import { SyncOutlined } from '@ant-design/icons';
 import { AiOutlineTag, AiOutlineCheckCircle, AiOutlineCalendar } from 'react-icons/ai';
 import { generateColumn } from '../../../../../../components/display/table/utils';
 import RowTag from '../../../../../../components/display/table/RowTag';
-import TimeAgo from '../../../../../../components/time/TimeAgo';
+import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import { ParseGoTimeDate } from '../../../../../../utils/shared/time';
 import type { ResourceRowInterface } from '../../../../../../interfaces/shared';
 import { UI, DEFAULT_COLORS } from '../../../../../../constants';

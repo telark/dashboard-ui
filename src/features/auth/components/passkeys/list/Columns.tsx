@@ -5,7 +5,7 @@ import { generateColumn } from '../../../../../components/display/table/utils';
 import Actions from './Actions';
 import { AiOutlineCalendar, AiOutlineClockCircle } from 'react-icons/ai';
 import { BsKey } from 'react-icons/bs';
-import TimeAgo from '../../../../../components/time/TimeAgo';
+import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type { PasskeysSortKey } from './utils';
 
 interface ColumnsArgs {
