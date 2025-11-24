@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import SidebarButton from '../../buttons/SideBarButton';
+import SidebarButton from '../../display/buttons/SideBarButton';
 import { Icons, APP_ROUTES, MENU_LABELS } from '../../../constants';
 
 const HomeIcon = Icons.Home;

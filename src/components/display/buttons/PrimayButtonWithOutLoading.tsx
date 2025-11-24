@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button } from 'antd';
 
-import { NoLoadingButtonInterface } from '../../interfaces/shared';
-import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_COLORS } from '../../constants';
+import { NoLoadingButtonInterface } from '../../../interfaces/shared';
+import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_COLORS } from '../../../constants';
 
 const PrimaryButtonWithOutLoading: React.FC<NoLoadingButtonInterface> = ({
   action,

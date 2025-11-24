@@ -6,7 +6,7 @@ import {
   DownOutlined,
   UpOutlined,
 } from '@ant-design/icons';
-import PrimaryButtonWithOutLoading from '../../../../../components/buttons/PrimayButtonWithOutLoading';
+import { PrimaryButtonWithOutLoading } from '../../../../../components/display/buttons';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import { MAINTENANCE_MODE } from '../../../../../constants/layout/modes';
 

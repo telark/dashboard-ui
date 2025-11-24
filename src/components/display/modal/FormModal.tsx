@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import logger from '../../../logging';
 import { Form, message, Button } from 'antd';
-import PrimaryButton from '../../buttons/PrimaryButton';
+import { PrimaryButton } from '../buttons';
 import { BUTTON_TEXTS } from '../../../constants';
 import BaseModal from './BaseModal';
 import FormFieldRenderer from './FormFieldRenderer';

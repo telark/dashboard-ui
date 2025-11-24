@@ -2,8 +2,8 @@ import React from 'react';
 import { Button } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
-import { LoadingButtonInterface } from '../../interfaces/shared';
-import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_TEXTS } from '../../constants';
+import { LoadingButtonInterface } from '../../../interfaces/shared';
+import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_TEXTS } from '../../../constants';
 
 const PrimaryButton: React.FC<LoadingButtonInterface> = ({
   action,

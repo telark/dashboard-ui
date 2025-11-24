@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form } from 'antd';
 import type { FormInstance } from 'antd';
-import PrimaryButton from '../../../../../../components/buttons/PrimaryButton';
+import { PrimaryButton } from '../../../../../../components/display/buttons';
 import { BUTTON_TEXTS, Icons } from '../../../../../../constants';
 import { COMPONENT_STYLES } from '../../../../../../constants/layout/ui';
 import RolesGeneralSection from '../create/GeneralSection';

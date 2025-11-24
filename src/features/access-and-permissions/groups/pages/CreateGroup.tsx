@@ -8,7 +8,7 @@ import { GROUPS_CONSTANTS as GC } from '../constants';
 import LabeledInput from '../../../../components/display/inputs/LabeledInput';
 import LabeledSelect from '../../../../components/display/inputs/LabeledSelect';
 import Section from '../../../../components/display/sections/Section';
-import PrimaryButton from '../../../../components/buttons/PrimaryButton';
+import { PrimaryButton } from '../../../../components/display/buttons';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer } from '../../../../components/shared';
 import { useDispatch } from 'react-redux';

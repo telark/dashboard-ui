@@ -3,7 +3,7 @@ import { Breadcrumb } from 'antd';
 import { DEFAULT_COLORS, BUTTON_TEXTS } from '../../../constants';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
-import PrimaryButton from '../../buttons/PrimaryButton';
+import { PrimaryButton } from '../buttons';
 import type { HeaderProps } from '../../../interfaces/layout/sections';
 
 const Header: React.FC<HeaderProps> = ({

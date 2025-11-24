@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
-import PrimaryButton from '../../buttons/PrimaryButton';
+import { PrimaryButton } from '../buttons';
 import { DEFAULT_COLORS } from '../../../constants';
 import { SYNC_MODE } from '../../../constants/layout/modes';
 import { FancySpinner } from '../../animation';

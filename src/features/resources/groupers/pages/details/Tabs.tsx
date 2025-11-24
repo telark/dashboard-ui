@@ -1,5 +1,5 @@
 import React from 'react';
-import TabButton from '../../../../../components/buttons/TabButton';
+import { TabButton } from '../../../../../components/display/buttons';
 import { UI } from '../../../../../constants/layout/ui';
 import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../constants';
 

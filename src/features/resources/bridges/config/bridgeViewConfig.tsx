@@ -2,7 +2,7 @@ import { SyncOutlined, BranchesOutlined, DeploymentUnitOutlined } from '@ant-des
 import { AiOutlineCluster } from 'react-icons/ai';
 import type { DetailsViewConfig } from '../../../../components/display/views/DetailsView';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
-import StatusButton from '../../../../components/buttons/StatusButton';
+import { StatusButton } from '../../../../components/display/buttons';
 import { Icons } from '../../../../constants';
 
 export const createBridgeViewConfig = (bridgeDetails: any): DetailsViewConfig => {

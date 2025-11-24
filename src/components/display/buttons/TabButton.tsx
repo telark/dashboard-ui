@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { DEFAULT_COLORS } from '../../constants';
-import { getTabButtonBackground, getTabButtonColor } from '../../utils/shared/tabButtonStyles';
+import { DEFAULT_COLORS } from '../../../constants';
+import { getTabButtonBackground, getTabButtonColor } from '../../../utils/shared/tabButtonStyles';
 
 export interface TabButtonProps {
   label: string;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
-import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_STATES } from '../../constants';
+import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_STATES } from '../../../constants';
 
 interface StatusButtonProps {
   status: typeof BUTTON_STATES.STATUS.ACTIVE | typeof BUTTON_STATES.STATUS.INACTIVE;
