@@ -5,6 +5,7 @@ import type {
   AttestationConveyancePreference,
   AuthenticatorTransport,
 } from './types';
+import type { User } from '../../access-and-permissions/users/models';
 
 export interface PublicKeyCredentialRequestOptions {
   challenge: string;
@@ -121,14 +122,6 @@ export interface RegisterFinishResponse {
   deviceName: string;
   deviceType: PasskeyDeviceType;
   creationTimestamp: string;
-}
-
-export interface User {
-  id: string;
-  username: string;
-  fullname?: string;
-  email?: string;
-  role?: string;
 }
 
 export interface LogoutResponse {

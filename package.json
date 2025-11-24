@@ -46,7 +46,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint:f": "eslint . --fix",
     "format": "prettier --write .",
     "type-check": "tsc --noEmit",
     "check-all": "npm run type-check && npm run lint"

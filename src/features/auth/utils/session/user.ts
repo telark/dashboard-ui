@@ -2,13 +2,13 @@ import { STORAGE_KEYS } from '../../../../constants/store/store';
 import { USER_ERROR_MESSAGES } from '../../../../features/access-and-permissions/users/constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
-import type { User as AuthUser } from '../../models/credentials';
+import type { User } from '../../../../features/access-and-permissions/users/models';
 
-export const getCurrentUser = (): AuthUser | null => {
+export const getCurrentUser = (): User | null => {
   try {
     const userStr = globalThis.localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
     if (userStr) {
-      return JSON.parse(userStr) as AuthUser;
+      return JSON.parse(userStr) as User;
     }
   } catch (error) {
     if (isDevelopment()) {
@@ -18,7 +18,7 @@ export const getCurrentUser = (): AuthUser | null => {
   return null;
 };
 
-export const setCurrentUser = (user: AuthUser): void => {
+export const setCurrentUser = (user: User): void => {
   try {
     globalThis.localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
   } catch (error) {
@@ -37,8 +37,4 @@ export const removeCurrentUser = (): void => {
       logger.error(USER_ERROR_MESSAGES.LOGS.REMOVE_CURRENT_USER_ERROR, error);
     }
   }
-};
-
-export const getAuthUser = (): AuthUser | null => {
-  return getCurrentUser();
 };

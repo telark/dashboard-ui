@@ -1,23 +1,16 @@
 import React from 'react';
 import { Avatar } from 'antd';
-import { DEFAULT_COLORS, HEADER_CONSTANTS } from '../../../../constants';
-import UserAvatarComponent from '../../../display/shared/avatars/UserAvatar';
-import type { User as AuthUser } from '../../../../features/auth/models/credentials';
-import type { User as UsersUser } from '../../../../features/access-and-permissions/users/models';
+import { DEFAULT_COLORS, HEADER_CONSTANTS } from '../../../../../constants';
+import UserAvatarComponent from '../../../../../components/display/shared/avatars/UserAvatar';
+import type { User } from '../../models';
 
 interface UserAvatarProps {
-  currentUser: UsersUser | null;
-  currentAuthUser: AuthUser | null;
+  currentUser: User | null;
   size: number;
   borderWidth: number;
 }
 
-const UserAvatar: React.FC<UserAvatarProps> = ({
-  currentUser,
-  currentAuthUser,
-  size,
-  borderWidth,
-}) => {
+const UserAvatar: React.FC<UserAvatarProps> = ({ currentUser, size, borderWidth }) => {
   return (
     <button
       type="button"
@@ -58,15 +51,6 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
           return (
             <UserAvatarComponent
               username={currentUser.username}
-              size={size}
-              style={{ border: 'none' }}
-            />
-          );
-        }
-        if (currentAuthUser) {
-          return (
-            <UserAvatarComponent
-              username={currentAuthUser.username}
               size={size}
               style={{ border: 'none' }}
             />

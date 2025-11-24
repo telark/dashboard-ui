@@ -1,20 +1,17 @@
 import { message } from 'antd';
 import type { MenuProps } from 'antd';
 import { LogoutOutlined, SettingOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, HEADER_CONSTANTS } from '../../../../constants';
-import type { User as AuthUser } from '../../../../features/auth/models/credentials';
-import type { User as UsersUser } from '../../../../features/access-and-permissions/users/models';
+import { DEFAULT_COLORS, HEADER_CONSTANTS } from '../../../../../constants';
+import type { User } from '../../models';
 
 interface UserMenuItemsProps {
-  currentUser: UsersUser | null;
-  currentAuthUser: AuthUser | null;
+  currentUser: User | null;
   onLogout: () => void;
   loggingOut: boolean;
 }
 
 export const createUserMenuItems = ({
   currentUser,
-  currentAuthUser,
   onLogout,
   loggingOut,
 }: UserMenuItemsProps): MenuProps['items'] => {
@@ -34,9 +31,9 @@ export const createUserMenuItems = ({
               color: HEADER_CONSTANTS.USER.USER_INFO.USERNAME.COLOR,
             }}
           >
-            {currentUser?.username || currentAuthUser?.username || 'User'}
+            {currentUser?.username || 'User'}
           </div>
-          {currentUser?.email || currentAuthUser?.email ? (
+          {currentUser?.email ? (
             <div
               style={{
                 fontSize: HEADER_CONSTANTS.USER.USER_INFO.EMAIL.FONT_SIZE,
@@ -44,7 +41,7 @@ export const createUserMenuItems = ({
                 marginTop: HEADER_CONSTANTS.USER.USER_INFO.EMAIL.MARGIN_TOP,
               }}
             >
-              {currentUser?.email || currentAuthUser?.email}
+              {currentUser?.email}
             </div>
           ) : null}
         </div>

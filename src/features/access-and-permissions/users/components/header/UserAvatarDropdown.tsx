@@ -1,41 +1,39 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Dropdown } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { getAuthUser, handleUserLogout, hasSessionToken } from '../../../../features/auth/utils';
-import { fetchCurrentUserDetails } from '../../../../features/access-and-permissions/users/utils';
+import { getCurrentUser, handleUserLogout, hasSessionToken } from '../../../../auth/utils';
+import { fetchCurrentUserDetails } from '../../utils';
 import { createUserMenuItems } from './UserMenuItems';
 import UserAvatar from './UserAvatar';
-import { HEADER_CONSTANTS } from '../../../../constants';
-import { isDevelopment } from '../../../../utils/helpers/env';
-import type { User as AuthUser } from '../../../../features/auth/models/credentials';
-import type { User as UsersUser } from '../../../../features/access-and-permissions/users/models';
-import logger from '../../../../logging';
+import { HEADER_CONSTANTS } from '../../../../../constants';
+import { isDevelopment } from '../../../../../utils/helpers/env';
+import type { User } from '../../models';
+import logger from '../../../../../logging';
 
 const UserAvatarDropdown: React.FC = memo(() => {
-  const [currentAuthUser, setCurrentAuthUser] = useState<AuthUser | null>(null);
-  const [currentUser, setCurrentUser] = useState<UsersUser | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const authUser = getAuthUser();
-    setCurrentAuthUser(authUser);
+    const currentAuthUser = getCurrentUser();
 
-    if (hasSessionToken() && !authUser) {
+    if (hasSessionToken() && !currentAuthUser) {
       if (isDevelopment()) {
         logger.warn(HEADER_CONSTANTS.USER.WARNINGS.MISSING_USER_DATA);
       }
     }
 
-    if (authUser?.id) {
-      fetchCurrentUserDetails(
-        (user) => {
+    if (currentAuthUser) {
+      // Set the user immediately for display
+      setCurrentUser(currentAuthUser);
+
+      // Fetch full user details if we have an id
+      if (currentAuthUser.id) {
+        fetchCurrentUserDetails((user) => {
           setCurrentUser(user);
-        },
-        () => {
-          // Error handling is done in fetchCurrentUserDetails
-        },
-      );
+        });
+      }
     }
   }, []);
 
@@ -54,7 +52,6 @@ const UserAvatarDropdown: React.FC = memo(() => {
 
   const menuItems = createUserMenuItems({
     currentUser,
-    currentAuthUser,
     onLogout: handleLogoutWrapper,
     loggingOut,
   });
@@ -69,7 +66,6 @@ const UserAvatarDropdown: React.FC = memo(() => {
       <div>
         <UserAvatar
           currentUser={currentUser}
-          currentAuthUser={currentAuthUser}
           size={HEADER_CONSTANTS.USER.AVATAR.SIZE}
           borderWidth={HEADER_CONSTANTS.USER.AVATAR.BORDER_WIDTH}
         />
