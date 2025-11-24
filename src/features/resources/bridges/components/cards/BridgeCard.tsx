@@ -13,7 +13,7 @@ import {
   ResourceCardData,
   ResourceCardActions,
   ResourceCardConfig,
-} from '../../../../../components/cards/shared';
+} from '../../../../../components/cards/flat';
 
 const BridgeCard: React.FC<BridgeInterface> = React.memo(function BridgeCard({
   name = CARD_DEFAULTS.BRIDGE.NAME,

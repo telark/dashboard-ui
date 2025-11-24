@@ -11,7 +11,7 @@ import {
   ResourceCardData,
   ResourceCardActions,
   ResourceCardConfig,
-} from '../../../../../components/cards/shared';
+} from '../../../../../components/cards/flat';
 import { syncAppWorkload } from '../../utils/management/sync';
 import { RootState } from '../../../../../store';
 

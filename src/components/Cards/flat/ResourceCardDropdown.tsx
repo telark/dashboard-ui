@@ -2,7 +2,7 @@ import React from 'react';
 import { Dropdown } from 'antd';
 import { MoreOutlined, EyeOutlined, SyncOutlined, DeleteOutlined } from '@ant-design/icons';
 import { CARD_CONFIGS, CARD_COLORS, CARD_TRANSITIONS } from '../../../constants';
-import { ResourceCardActions, ResourceCardConfig } from '../shared';
+import { ResourceCardActions, ResourceCardConfig } from '../flat';
 
 interface ResourceCardDropdownProps {
   isSyncingEffective: boolean;

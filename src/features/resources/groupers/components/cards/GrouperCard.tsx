@@ -13,7 +13,7 @@ import {
   ResourceCardData,
   ResourceCardActions,
   ResourceCardConfig,
-} from '../../../../../components/cards/shared';
+} from '../../../../../components/cards/flat';
 
 const GrouperCard: React.FC<GrouperInterface> = React.memo(function GrouperCard({
   name = CARD_DEFAULTS.GROUPER.NAME,
