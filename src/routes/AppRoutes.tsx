@@ -7,7 +7,7 @@ import { APP_ROUTES } from '../constants';
 import { hasSessionToken } from '../features/auth/utils';
 
 // Lazy load pages for code splitting
-const Dashboard = lazy(() => import('../pages/home/Dashboard'));
+const Dashboard = lazy(() => import('../features/home/pages/Dashboard'));
 const Login = lazy(() => import('../features/auth/pages/flow/Login'));
 const Register = lazy(() => import('../features/auth/pages/flow/Register'));
 const GroupersGlobalView = lazy(

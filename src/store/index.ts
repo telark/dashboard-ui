@@ -14,7 +14,7 @@ import {
   bridgePersistConfig,
   groupsPersistConfig,
   usersPersistConfig,
-} from './persistence/persistConfig';
+} from './persistConfig';
 
 const persistedGrouperReducer = persistReducer(grouperPersistConfig, grouperReducer);
 const persistedInsightsReducer = persistReducer(insightsPersistConfig, insightsReducer);

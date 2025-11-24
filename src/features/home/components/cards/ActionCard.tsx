@@ -6,7 +6,7 @@ import {
   CARD_COLORS,
   CARD_TRANSITIONS,
   CARD_EFFECTS,
-} from '../../../constants';
+} from '../../../../constants';
 
 export interface ActionCardProps {
   title: string;
@@ -162,3 +162,4 @@ const ActionCard: React.FC<ActionCardProps> = ({
 };
 
 export default React.memo(ActionCard);
+
