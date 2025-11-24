@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import { Avatar } from 'antd';
 import { DEFAULT_COLORS, HEADER_CONSTANTS } from '../../../../../constants';
 import UserAvatarComponent from '../../../../../components/display/shared/avatars/UserAvatar';
 import type { User } from '../../models';
