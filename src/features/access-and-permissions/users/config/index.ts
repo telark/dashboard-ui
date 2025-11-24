@@ -1,2 +1,1 @@
 export { createUserViewConfig } from './userViewConfig';
-

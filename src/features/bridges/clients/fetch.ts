@@ -45,7 +45,10 @@ export const updateBridgeSyncMode = async (name: string, syncMode: string) => {
       data: { spec: { config: { sync: { mode: syncMode } } } },
     });
   } catch (error) {
-    logger.error(`${BRIDGE_ERROR_MESSAGES.CLIENT.UPDATE_BRIDGE_SYNC_MODE_FAILED} "${name}":`, error);
+    logger.error(
+      `${BRIDGE_ERROR_MESSAGES.CLIENT.UPDATE_BRIDGE_SYNC_MODE_FAILED} "${name}":`,
+      error,
+    );
     throw error;
   }
 };

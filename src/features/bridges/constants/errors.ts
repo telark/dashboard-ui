@@ -5,4 +5,3 @@ export const BRIDGE_ERROR_MESSAGES = {
     UPDATE_BRIDGE_SYNC_MODE_FAILED: '[APIClient] Failed to update bridge sync mode for',
   },
 } as const;
-

@@ -17,4 +17,3 @@ export {
   selectUserError,
   selectUserDetailsData,
 } from './selectors/userSelectors';
-

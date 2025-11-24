@@ -26,7 +26,10 @@ export const checkGrouperMaintenanceMode = async (name: string) => {
     if (status === HTTP_STATUS.NOT_FOUND) {
       return { status: HTTP_STATUS.NOT_FOUND, message: '', data: null } as MaintenanceModeResponse;
     }
-    logger.error(`${GROUPER_ERROR_MESSAGES.CLIENT.FETCH_MAINTENANCE_MODE_FAILED} "${name}":`, error);
+    logger.error(
+      `${GROUPER_ERROR_MESSAGES.CLIENT.FETCH_MAINTENANCE_MODE_FAILED} "${name}":`,
+      error,
+    );
     throw error;
   }
 };

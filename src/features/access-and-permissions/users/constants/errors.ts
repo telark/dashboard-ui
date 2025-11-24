@@ -11,4 +11,3 @@ export const USER_ERROR_MESSAGES = {
     FETCH_USER_DETAILS_ERROR: 'Failed to fetch user details:',
   },
 } as const;
-

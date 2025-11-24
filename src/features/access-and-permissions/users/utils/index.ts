@@ -1,2 +1,1 @@
 export { fetchCurrentUserDetails } from './fetch';
-

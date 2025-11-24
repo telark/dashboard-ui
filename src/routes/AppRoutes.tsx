@@ -22,8 +22,12 @@ const RolesCreateView = lazy(() => import('../pages/roles/CreateRole'));
 const RolesListView = lazy(() => import('../pages/roles/ListRoles'));
 const RoleView = lazy(() => import('../pages/roles/ViewRole'));
 const RoleEdit = lazy(() => import('../pages/roles/EditRole'));
-const UsersListView = lazy(() => import('../features/access-and-permissions/users/pages/ListUsers'));
-const UsersCreateView = lazy(() => import('../features/access-and-permissions/users/pages/CreateUser'));
+const UsersListView = lazy(
+  () => import('../features/access-and-permissions/users/pages/ListUsers'),
+);
+const UsersCreateView = lazy(
+  () => import('../features/access-and-permissions/users/pages/CreateUser'),
+);
 const UserView = lazy(() => import('../features/access-and-permissions/users/pages/ViewUser'));
 const UserEdit = lazy(() => import('../features/access-and-permissions/users/pages/EditUser'));
 const GroupsListView = lazy(() => import('../pages/groups/ListGroups'));

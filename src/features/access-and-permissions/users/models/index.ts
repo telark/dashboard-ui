@@ -7,4 +7,3 @@ export type {
   UsersState,
   UsersTableProps,
 } from './users';
-

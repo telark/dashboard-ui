@@ -5,4 +5,3 @@ export const WORKLOAD_ERROR_MESSAGES = {
     FETCH_BATCHES_FAILED: '[APIClient] Failed to fetch batches workloads:',
   },
 } as const;
-

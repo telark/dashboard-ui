@@ -44,4 +44,3 @@ export const fetchUserById = async (userId: string, silent = false) => {
     throw error;
   }
 };
-
