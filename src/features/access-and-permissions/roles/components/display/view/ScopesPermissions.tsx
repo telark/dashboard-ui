@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AiOutlineLock } from 'react-icons/ai';
 import { StatusTag } from '../../../../../../components/display/tags';
-import { Label } from '../../../../../../components/shared';
+import { SimpleLabel } from '../../../../../../components/display/labels';
 import { CARD_TRANSITIONS } from '../../../../../../constants';
 
 interface ScopesPermissionsProps {
@@ -14,7 +14,7 @@ const ScopesPermissions: React.FC<ScopesPermissionsProps> = ({ scopes }) => {
   return (
     <div style={{ marginTop: 24 }}>
       <div style={{ marginBottom: 20 }}>
-        <Label icon={<AiOutlineLock />} text="Scopes & Permissions" />
+        <SimpleLabel icon={<AiOutlineLock />} text="Scopes & Permissions" />
       </div>
 
       <div

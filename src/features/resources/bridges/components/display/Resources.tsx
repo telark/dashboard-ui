@@ -8,7 +8,8 @@ import {
 import { Button, Pagination, Tag, Collapse } from 'antd';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import { UI } from '../../../../../constants/layout/ui';
-import { Label, Row } from '../../../../../components/shared';
+import { Row } from '../../../../../components/shared';
+import { SimpleLabel } from '../../../../../components/display/labels';
 
 interface BridgeResourcesProps {
   name: string;
@@ -131,13 +132,13 @@ const BridgeResources: React.FC<BridgeResourcesProps> = React.memo(function Brid
   const detailNode = (workload: (typeof workloads)[number]) => (
     <div style={{ paddingTop: 4 }}>
       <Row
-        left={<Label icon={<FileOutlined />} text={UI.RESOURCES.LABELS.KIND} />}
+        left={<SimpleLabel icon={<FileOutlined />} text={UI.RESOURCES.LABELS.KIND} />}
         right={<span>{kindPill(workload.type)}</span>}
         withDivider={false}
       />
       {workload.matchedLabels && workload.matchedLabels.length > 0 && (
         <Row
-          left={<Label icon={<AppstoreOutlined />} text="Matched Labels" />}
+          left={<SimpleLabel icon={<AppstoreOutlined />} text="Matched Labels" />}
           right={
             <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
               {workload.matchedLabels.map((label) => (
@@ -151,7 +152,7 @@ const BridgeResources: React.FC<BridgeResourcesProps> = React.memo(function Brid
         />
       )}
       <Row
-        left={<Label icon={<SyncOutlined />} text="Same Grouper" />}
+        left={<SimpleLabel icon={<SyncOutlined />} text="Same Grouper" />}
         right={<span>{workload.isSameGrouper ? 'Yes' : 'No'}</span>}
         withDivider={false}
       />

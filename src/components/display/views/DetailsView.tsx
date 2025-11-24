@@ -1,7 +1,8 @@
 import React, { ReactNode } from 'react';
 import { Card, Space, Tag } from 'antd';
 import { COMPONENT_STYLES } from '../../../constants/layout/ui';
-import { Row, Label } from '../../shared';
+import { Row } from '../../shared';
+import { SimpleLabel } from '../labels';
 
 export interface DetailsViewField {
   key: string;
@@ -86,7 +87,7 @@ const DetailsView: React.FC<DetailsViewProps> = ({ config }) => {
                   }}
                 >
                   {field.icon ? (
-                    <Label icon={field.icon} text={field.label} />
+                    <SimpleLabel icon={field.icon} text={field.label} />
                   ) : (
                     <span
                       style={{
@@ -121,7 +122,7 @@ const DetailsView: React.FC<DetailsViewProps> = ({ config }) => {
               key={field.key}
               left={
                 field.icon ? (
-                  <Label icon={field.icon} text={field.label} />
+                  <SimpleLabel icon={field.icon} text={field.label} />
                 ) : (
                   <span
                     style={{

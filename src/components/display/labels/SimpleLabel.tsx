@@ -1,12 +1,12 @@
 import React from 'react';
-import { DEFAULT_COLORS } from '../../constants';
+import { DEFAULT_COLORS } from '../../../constants';
 
-export interface LabelProps {
+export interface SimpleLabelProps {
   icon: React.ReactNode;
   text: string;
 }
 
-const Label: React.FC<LabelProps> = React.memo(({ icon, text }) => (
+const SimpleLabel: React.FC<SimpleLabelProps> = React.memo(({ icon, text }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
     <span style={{ color: DEFAULT_COLORS.SUCCESS, fontSize: 16, display: 'inline-flex' }}>
       {icon}
@@ -25,6 +25,6 @@ const Label: React.FC<LabelProps> = React.memo(({ icon, text }) => (
   </div>
 ));
 
-Label.displayName = 'Label';
+SimpleLabel.displayName = 'SimpleLabel';
 
-export default Label;
+export default SimpleLabel;
