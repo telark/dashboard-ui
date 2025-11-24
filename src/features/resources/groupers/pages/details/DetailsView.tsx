@@ -70,7 +70,9 @@ const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
   }
 
   if (error) {
-    return <ErrorView error={error} errorMessagePrefix={GROUPER_DETAILS_CONSTANTS.MESSAGES.ERROR} />;
+    return (
+      <ErrorView error={error} errorMessagePrefix={GROUPER_DETAILS_CONSTANTS.MESSAGES.ERROR} />
+    );
   }
 
   if (!grouperDetails) {

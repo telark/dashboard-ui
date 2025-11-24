@@ -18,4 +18,3 @@ const LoadingView: React.FC<LoadingViewProps> = React.memo(({ label, containerSt
 LoadingView.displayName = 'LoadingView';
 
 export default LoadingView;
-
