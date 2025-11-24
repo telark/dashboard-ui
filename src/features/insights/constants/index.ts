@@ -1,0 +1,1 @@
+export { INSIGHTS_CONSTANTS } from './messages';

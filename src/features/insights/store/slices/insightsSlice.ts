@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { checkClusterInsights } from '../../clients';
 import { STORAGE_KEYS, STORE_ACTIONS, STORE_ERRORS } from '../../../../constants/store/store';
-import { ERROR_MESSAGES } from '../../../../constants/layout/messages';
+import { INSIGHTS_CONSTANTS } from '../../constants';
 import { extractErrorMessage } from '../../../../utils/helpers/format';
 
 export interface InsightsState {
@@ -33,7 +33,7 @@ export const checkClusterInsightsThunk = createAsyncThunk(
     try {
       const res = await checkClusterInsights();
       if (res?._network) {
-        return rejectWithValue(ERROR_MESSAGES.INSIGHTS.NETWORK_UNAVAILABLE);
+        return rejectWithValue(INSIGHTS_CONSTANTS.ERROR.NETWORK_UNAVAILABLE);
       }
       return Boolean(res?.data);
     } catch (error: unknown) {

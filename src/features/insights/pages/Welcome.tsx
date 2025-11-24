@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { DEFAULT_COLORS, SUCCESS_MESSAGES } from '../../../constants';
+import { DEFAULT_COLORS } from '../../../constants';
+import { INSIGHTS_CONSTANTS } from '../constants';
 
 interface WelcomeProps {
   onComplete?: () => void;
@@ -80,7 +81,7 @@ const Welcome: React.FC<WelcomeProps> = () => {
             textShadow: '0 2px 4px rgba(0,0,0,0.1)',
           }}
         >
-          {SUCCESS_MESSAGES.WELCOME}
+          {INSIGHTS_CONSTANTS.SUCCESS.WELCOME}
         </motion.div>
 
         <motion.div
@@ -94,7 +95,7 @@ const Welcome: React.FC<WelcomeProps> = () => {
             textShadow: '0 1px 2px rgba(0,0,0,0.1)',
           }}
         >
-          {SUCCESS_MESSAGES.WELCOME_SUBTITLE}
+          {INSIGHTS_CONSTANTS.SUCCESS.WELCOME_SUBTITLE}
         </motion.div>
       </div>
     </motion.div>

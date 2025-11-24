@@ -4,7 +4,8 @@ import { motion } from 'framer-motion';
 import { useDispatch } from 'react-redux';
 import { checkClusterInsightsThunk, setHasClusterInsight } from '../store/slices/insightsSlice';
 import type { AppDispatch } from '../../../store';
-import { DEFAULT_COLORS, INFO_MESSAGES, WARNING_MESSAGES } from '../../../constants';
+import { DEFAULT_COLORS } from '../../../constants';
+import { INSIGHTS_CONSTANTS } from '../constants';
 import { startClusterAnalyze } from '../clients';
 import { useNavigate } from 'react-router-dom';
 
@@ -192,7 +193,7 @@ const Startup: React.FC<StartupProps> = () => {
     >
       <div style={{ maxWidth: 820, width: '100%', textAlign: 'center' }}>
         {starting ? <ArcSpinner /> : <InsightsIllustration />}
-        <h2 style={{ margin: 0, fontSize: 28, color: '#0B1F33' }}>{INFO_MESSAGES.STARTUP.TITLE}</h2>
+        <h2 style={{ margin: 0, fontSize: 28, color: '#0B1F33' }}>{INSIGHTS_CONSTANTS.INFO.STARTUP.TITLE}</h2>
         <p
           style={{
             color: '#5B6B7C',
@@ -203,15 +204,15 @@ const Startup: React.FC<StartupProps> = () => {
             fontSize: 16,
           }}
         >
-          {INFO_MESSAGES.STARTUP.DESCRIPTION}
+          {INSIGHTS_CONSTANTS.INFO.STARTUP.DESCRIPTION}
         </p>
         {backendDown && (
           <div style={{ maxWidth: 640, margin: '12px auto 0' }}>
             <Alert
               type="warning"
               showIcon
-              message={WARNING_MESSAGES.BACKEND_UNAVAILABLE}
-              description={WARNING_MESSAGES.BACKEND_UNAVAILABLE_DESCRIPTION}
+              message={INSIGHTS_CONSTANTS.WARNING.BACKEND_UNAVAILABLE}
+              description={INSIGHTS_CONSTANTS.WARNING.BACKEND_UNAVAILABLE_DESCRIPTION}
             />
           </div>
         )}
