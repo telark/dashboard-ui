@@ -7,7 +7,8 @@ import { syncGrouperDetails } from '../../utils/management/sync';
 import { GROUPER_DETAILS_CONSTANTS, TabKey } from '../../constants';
 import { RootState } from '../../../../../store';
 import { usePersistedTab } from '../../../../../utils/shared/usePersistedTab';
-import { GrouperDetailsError, GrouperDetailsEmpty, Header, Tabs, Content } from '..';
+import { GrouperDetailsEmpty, Header, Tabs, Content } from '..';
+import ErrorView from '../../../../../components/display/shared/views/ErrorView';
 import LoadingDetails from '../../../../../components/shared/LoadingDetails';
 
 const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
@@ -69,7 +70,7 @@ const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
   }
 
   if (error) {
-    return <GrouperDetailsError error={error} />;
+    return <ErrorView error={error} errorMessagePrefix={GROUPER_DETAILS_CONSTANTS.MESSAGES.ERROR} />;
   }
 
   if (!grouperDetails) {

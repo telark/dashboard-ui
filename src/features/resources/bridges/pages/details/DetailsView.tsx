@@ -7,7 +7,7 @@ import { syncBridgeDetails } from '../../utils/management/sync';
 import { BRIDGE_DETAILS_CONSTANTS, TabKey } from '../../constants';
 import { RootState } from '../../../../../store';
 import { usePersistedTab } from '../../../../../utils/shared/usePersistedTab';
-import BridgeError from './Error';
+import ErrorView from '../../../../../components/display/shared/views/ErrorView';
 import Empty from './Empty';
 import Header from './Header';
 import Tabs from './Tabs';
@@ -57,7 +57,7 @@ const BridgeDetailsView: React.FC = memo(function BridgeDetailsView() {
   }
 
   if (error) {
-    return <BridgeError error={error} />;
+    return <ErrorView error={error} errorMessagePrefix={BRIDGE_DETAILS_CONSTANTS.MESSAGES.ERROR} />;
   }
 
   if (!bridgeDetails) {

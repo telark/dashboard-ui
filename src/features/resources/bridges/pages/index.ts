@@ -5,7 +5,6 @@ export { default as Empty } from './main/Empty';
 export { default as Success } from './main/Success';
 
 // Details pages
-export { default as BridgeError } from './details/Error';
 export { default as BridgeDetailsEmpty } from './details/Empty';
 export { default as Header } from './details/Header';
 export { default as Tabs } from './details/Tabs';
