@@ -12,7 +12,7 @@ import Empty from './Empty';
 import Header from './Header';
 import Tabs from './Tabs';
 import Content from './Content';
-import LoadingDetails from '../../../../../components/shared/LoadingDetails';
+import LoadingDetailsView from '../../../../../components/display/views/LoadingDetailsView';
 
 const BridgeDetailsView: React.FC = memo(function BridgeDetailsView() {
   const { name: bridgeNameFromUrl } = useParams<{ name: string }>();
@@ -53,7 +53,7 @@ const BridgeDetailsView: React.FC = memo(function BridgeDetailsView() {
   );
 
   if (loading) {
-    return <LoadingDetails />;
+    return <LoadingDetailsView />;
   }
 
   if (error) {

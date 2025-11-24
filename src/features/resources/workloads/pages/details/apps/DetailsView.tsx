@@ -9,7 +9,7 @@ import Header from './Header';
 import Tabs from './Tabs';
 import Content from './Content';
 import { WORKLOAD_DETAILS_CONSTANTS, TabKey } from '../../../constants';
-import LoadingDetails from '../../../../../../components/shared/LoadingDetails';
+import LoadingDetailsView from '../../../../../../components/display/views/LoadingDetailsView';
 import { RootState } from '../../../../../../store';
 import { STORE_ERRORS } from '../../../../../../constants/store/store';
 import { usePersistedTab } from '../../../../../../utils/shared/usePersistedTab';
@@ -46,7 +46,7 @@ const AppWorkloadDetailsView: React.FC = memo(function AppWorkloadDetailsView() 
   }, [error]);
 
   if (loading) {
-    return <LoadingDetails />;
+    return <LoadingDetailsView />;
   }
 
   if (error) {

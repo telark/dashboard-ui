@@ -1,7 +1,7 @@
 import React from 'react';
-import { FancySpinner } from '../animation';
+import { FancySpinner } from '../../animation';
 
-const Loading: React.FC = React.memo(() => {
+const LoadingDetailsView: React.FC = React.memo(() => {
   return (
     <div style={{ padding: '24px', textAlign: 'center' }}>
       <FancySpinner label="Loading details…" showLabel={true} />
@@ -9,6 +9,6 @@ const Loading: React.FC = React.memo(() => {
   );
 });
 
-Loading.displayName = 'Loading';
+LoadingDetailsView.displayName = 'Loading';
 
-export default Loading;
+export default LoadingDetailsView;

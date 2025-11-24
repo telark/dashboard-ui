@@ -9,7 +9,7 @@ import { RootState } from '../../../../../store';
 import { usePersistedTab } from '../../../../../utils/shared/usePersistedTab';
 import { GrouperDetailsEmpty, Header, Tabs, Content } from '..';
 import ErrorView from '../../../../../components/display/views/ErrorView';
-import LoadingDetails from '../../../../../components/shared/LoadingDetails';
+import LoadingDetailsView from '../../../../../components/display/views/LoadingDetailsView';
 
 const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
   const { name: grouperNameFromUrl } = useParams<{ name: string }>();
@@ -66,7 +66,7 @@ const GrouperDetailsView: React.FC = memo(function GrouperDetailsView() {
   );
 
   if (loading) {
-    return <LoadingDetails />;
+    return <LoadingDetailsView />;
   }
 
   if (error) {
