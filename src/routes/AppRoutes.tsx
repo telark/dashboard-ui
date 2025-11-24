@@ -10,11 +10,19 @@ import { hasSessionToken } from '../features/auth/utils';
 const Dashboard = lazy(() => import('../pages/home/Dashboard'));
 const Login = lazy(() => import('../features/auth/pages/flow/Login'));
 const Register = lazy(() => import('../features/auth/pages/flow/Register'));
-const GroupersGlobalView = lazy(() => import('../features/resources/groupers/pages/main/GlobalView'));
-const GrouperDetailsView = lazy(() => import('../features/resources/groupers/pages/details/DetailsView'));
+const GroupersGlobalView = lazy(
+  () => import('../features/resources/groupers/pages/main/GlobalView'),
+);
+const GrouperDetailsView = lazy(
+  () => import('../features/resources/groupers/pages/details/DetailsView'),
+);
 const BridgesGlobalView = lazy(() => import('../features/resources/bridges/pages/main/GlobalView'));
-const BridgeDetailsView = lazy(() => import('../features/resources/bridges/pages/details/DetailsView'));
-const WorkloadsGlobalView = lazy(() => import('../features/resources/workloads/pages/main/GlobalView'));
+const BridgeDetailsView = lazy(
+  () => import('../features/resources/bridges/pages/details/DetailsView'),
+);
+const WorkloadsGlobalView = lazy(
+  () => import('../features/resources/workloads/pages/main/GlobalView'),
+);
 const AppWorkloadDetailsView = lazy(
   () => import('../features/resources/workloads/pages/details/apps/DetailsView'),
 );

@@ -17,7 +17,7 @@ const UserAvatarDropdown: React.FC = memo(() => {
 
   useEffect(() => {
     const initialUser = getCurrentUser();
-    
+
     if (hasSessionToken() && !initialUser) {
       if (isDevelopment()) {
         logger.warn(HEADER_CONSTANTS.USER.WARNINGS.MISSING_USER_DATA);
