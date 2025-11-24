@@ -83,7 +83,7 @@ const Startup: React.FC<StartupProps> = () => {
       } else if (result) {
         const resultAny = result as any;
         if (resultAny.operation === 'insights' || resultAny.insights) {
-          const status = result.status ?? resultAny?.insights?.status;
+          const status = resultAny.status ?? resultAny?.insights?.status;
           insightsReady = Number(status) === 202;
         }
       }
