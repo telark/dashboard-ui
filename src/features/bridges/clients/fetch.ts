@@ -1,8 +1,9 @@
 import { Client, exporterApiClient } from '../../../api/index';
 import logger from '../../../logging';
 import type { StandardApiResponse } from '../../../interfaces/http';
-import { Endpoints, HTTP_HEADERS, HEADER_VALUES, ERROR_MESSAGES } from '../../../constants';
+import { Endpoints, HTTP_HEADERS, HEADER_VALUES } from '../../../constants';
 import type { ResourceListResponse, ResourceDetailsResponse } from '../../../interfaces/http';
+import { BRIDGE_ERROR_MESSAGES } from '../constants';
 
 export const fetchBridges = async (silent = false) => {
   try {
@@ -18,7 +19,7 @@ export const fetchBridges = async (silent = false) => {
     );
   } catch (error) {
     if (!silent) {
-      logger.error(ERROR_MESSAGES.CLIENT.FETCH_BRIDGES_FAILED, error);
+      logger.error(BRIDGE_ERROR_MESSAGES.CLIENT.FETCH_BRIDGES_FAILED, error);
     }
     throw error;
   }
@@ -31,7 +32,7 @@ export const fetchBridgeDetails = async (name: string) => {
       Endpoints.BRIDGES.GET_DETAILS(name).path,
     );
   } catch (error) {
-    logger.error(`${ERROR_MESSAGES.CLIENT.FETCH_BRIDGE_DETAILS_FAILED} "${name}":`, error);
+    logger.error(`${BRIDGE_ERROR_MESSAGES.CLIENT.FETCH_BRIDGE_DETAILS_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -44,7 +45,7 @@ export const updateBridgeSyncMode = async (name: string, syncMode: string) => {
       data: { spec: { config: { sync: { mode: syncMode } } } },
     });
   } catch (error) {
-    logger.error(`${ERROR_MESSAGES.CLIENT.UPDATE_BRIDGE_SYNC_MODE_FAILED} "${name}":`, error);
+    logger.error(`${BRIDGE_ERROR_MESSAGES.CLIENT.UPDATE_BRIDGE_SYNC_MODE_FAILED} "${name}":`, error);
     throw error;
   }
 };

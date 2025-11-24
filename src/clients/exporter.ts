@@ -10,10 +10,6 @@ import {
 import type {
   ClusterInsightsResponse,
 } from '../interfaces/http';
-import type {
-  SessionDetailsResponse,
-  DeleteSessionResponse,
-} from '../features/auth/models/session';
 
 export const checkClusterInsights = async () => {
   try {
@@ -37,18 +33,4 @@ export const checkClusterInsights = async () => {
     }
     throw error;
   }
-};
-
-export const getSessionDetails = async (sessionToken: string): Promise<SessionDetailsResponse> => {
-  const { path, method } = Endpoints.SESSIONS.GET_BY_TOKEN(sessionToken);
-  return await Client<SessionDetailsResponse>(exporterApiClient, path, {
-    method,
-  });
-};
-
-export const deleteSession = async (sessionToken: string): Promise<DeleteSessionResponse> => {
-  const { path, method } = Endpoints.SESSIONS.DELETE_BY_TOKEN(sessionToken);
-  return await Client<DeleteSessionResponse>(exporterApiClient, path, {
-    method,
-  });
 };

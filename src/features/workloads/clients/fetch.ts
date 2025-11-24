@@ -1,6 +1,7 @@
 import { Client, exporterApiClient } from '../../../api/index';
 import logger from '../../../logging';
 import { Endpoints, ERROR_MESSAGES } from '../../../constants';
+import { WORKLOAD_ERROR_MESSAGES } from '../constants';
 import type {
   ResourceListResponse,
   ResourceDetailsResponse,
@@ -15,7 +16,7 @@ export const fetchAllAppsWorkloads = async () => {
       Endpoints.WORKLOADS.APPS.GET_ALL_APPS.path,
     );
   } catch (error) {
-    logger.error(ERROR_MESSAGES.CLIENT.FETCH_APPS_FAILED, error);
+    logger.error(WORKLOAD_ERROR_MESSAGES.CLIENT.FETCH_APPS_FAILED, error);
     throw error;
   }
 };
@@ -27,7 +28,7 @@ export const fetchAppWorkloadDetails = async (name: string) => {
       Endpoints.WORKLOADS.APPS.GET_APP_DETAILS(name).path,
     );
   } catch (error) {
-    logger.error(`${ERROR_MESSAGES.CLIENT.FETCH_APP_DETAILS_FAILED} "${name}":`, error);
+    logger.error(`${WORKLOAD_ERROR_MESSAGES.CLIENT.FETCH_APP_DETAILS_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -52,7 +53,7 @@ export const fetchAllBatchesWorkloads = async () => {
       Endpoints.WORKLOADS.BATCHES.GET_ALL_BATCHES.path,
     );
   } catch (error) {
-    logger.error(ERROR_MESSAGES.CLIENT.FETCH_BATCHES_FAILED, error);
+    logger.error(WORKLOAD_ERROR_MESSAGES.CLIENT.FETCH_BATCHES_FAILED, error);
     throw error;
   }
 };

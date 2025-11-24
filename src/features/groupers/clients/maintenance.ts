@@ -4,10 +4,10 @@ import {
   Endpoints,
   HTTP_HEADERS,
   HEADER_VALUES,
-  ERROR_MESSAGES,
   HTTP_STATUS,
   MAINTENANCE_ACTIONS,
 } from '../../../constants';
+import { GROUPER_ERROR_MESSAGES } from '../constants';
 import type { MaintenanceModeResponse } from '../../../interfaces/http';
 import type { AxiosError } from 'axios';
 
@@ -26,7 +26,7 @@ export const checkGrouperMaintenanceMode = async (name: string) => {
     if (status === HTTP_STATUS.NOT_FOUND) {
       return { status: HTTP_STATUS.NOT_FOUND, message: '', data: null } as MaintenanceModeResponse;
     }
-    logger.error(`${ERROR_MESSAGES.CLIENT.FETCH_MAINTENANCE_MODE_FAILED} "${name}":`, error);
+    logger.error(`${GROUPER_ERROR_MESSAGES.CLIENT.FETCH_MAINTENANCE_MODE_FAILED} "${name}":`, error);
     throw error;
   }
 };
@@ -50,7 +50,7 @@ export const enableGrouperMaintenanceMode = async (
     });
   } catch (error) {
     logger.error(
-      `${ERROR_MESSAGES.CLIENT.ENABLE_MAINTENANCE_MODE_FAILED} "${grouperName}":`,
+      `${GROUPER_ERROR_MESSAGES.CLIENT.ENABLE_MAINTENANCE_MODE_FAILED} "${grouperName}":`,
       error,
     );
     throw error;
@@ -76,7 +76,7 @@ export const updateGrouperMaintenanceMode = async (
     });
   } catch (error) {
     logger.error(
-      `${ERROR_MESSAGES.CLIENT.UPDATE_MAINTENANCE_MODE_FAILED} "${grouperName}":`,
+      `${GROUPER_ERROR_MESSAGES.CLIENT.UPDATE_MAINTENANCE_MODE_FAILED} "${grouperName}":`,
       error,
     );
     throw error;
@@ -94,7 +94,7 @@ export const removeGrouperMaintenanceMode = async (grouperName: string) => {
     });
   } catch (error) {
     logger.error(
-      `${ERROR_MESSAGES.CLIENT.REMOVE_MAINTENANCE_MODE_FAILED} "${grouperName}":`,
+      `${GROUPER_ERROR_MESSAGES.CLIENT.REMOVE_MAINTENANCE_MODE_FAILED} "${grouperName}":`,
       error,
     );
     throw error;

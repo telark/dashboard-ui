@@ -8,21 +8,8 @@ export const ERROR_MESSAGES = {
   },
 
   CLIENT: {
-    FETCH_GROUPERS_FAILED: '[APIClient] Failed to fetch all groupers:',
-    FETCH_GROUPER_DETAILS_FAILED: '[APIClient] Failed to fetch grouper details for',
     UPDATE_SYNC_MODE_FAILED: '[APIClient] Failed to update sync mode for',
-    FETCH_MAINTENANCE_MODE_FAILED: '[APIClient] Failed to fetch maintenance mode for',
-    ENABLE_MAINTENANCE_MODE_FAILED: '[APIClient] Failed to enable maintenance mode for',
-    UPDATE_MAINTENANCE_MODE_FAILED: '[APIClient] Failed to update maintenance mode for',
-    REMOVE_MAINTENANCE_MODE_FAILED: '[APIClient] Failed to remove maintenance mode for',
     START_CLUSTER_ANALYSIS_FAILED: '[APIClient] Failed to start cluster analysis:',
-    FETCH_APPS_FAILED: '[APIClient] Failed to fetch apps workloads:',
-    FETCH_APP_DETAILS_FAILED: '[APIClient] Failed to fetch app workload details for',
-    FETCH_BATCHES_FAILED: '[APIClient] Failed to fetch batches workloads:',
-    FETCH_BRIDGES_FAILED: '[APIClient] Failed to fetch all bridges:',
-    FETCH_BRIDGE_DETAILS_FAILED: '[APIClient] Failed to fetch bridge details for',
-    UPDATE_BRIDGE_SYNC_MODE_FAILED: '[APIClient] Failed to update bridge sync mode for',
-    FETCH_USERS_FAILED: '[APIClient] Failed to fetch users:',
   },
 
   INSIGHTS: {

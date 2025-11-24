@@ -1,5 +1,5 @@
 import { getSessionToken } from './token';
-import { getSessionDetails } from '../../../../clients/exporter';
+import { getSessionDetails } from '../../clients';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 import { AUTH_CONSTANTS } from '../../constants/messages';
