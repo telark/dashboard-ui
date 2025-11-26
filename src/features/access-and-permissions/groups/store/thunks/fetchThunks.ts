@@ -5,7 +5,10 @@ import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../../cons
 import logger from '../../../../../logging';
 import type { Group } from '../../models';
 import type { ResourceListResponse } from '../../../../../interfaces/http';
-import { mapGroupsData as mapGroupsArray, mapGroupDetailsData } from '../../utils/mappers/groupMapper';
+import {
+  mapGroupsData as mapGroupsArray,
+  mapGroupDetailsData,
+} from '../../utils/mappers/groupMapper';
 
 const mapGroupsData = (response: ResourceListResponse<Group>): Group[] => {
   const items = response.data?.items || [];

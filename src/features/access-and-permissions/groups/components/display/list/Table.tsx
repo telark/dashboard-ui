@@ -34,7 +34,6 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
     return items;
   }, [groups, sortKey, sortOrder]);
 
-
   const handleDeleteClick = (record: Group) => {
     Modal.confirm({
       title: GC.LABELS.ACTIONS.DELETE_MODAL_TITLE,
