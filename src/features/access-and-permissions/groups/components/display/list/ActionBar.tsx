@@ -73,4 +73,3 @@ const ActionBar: React.FC<GroupsActionBarProps> = React.memo(
 
 ActionBar.displayName = 'ActionBar';
 export default ActionBar;
-
