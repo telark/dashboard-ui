@@ -18,3 +18,5 @@ export interface GroupsTableProps {
   onView?: (group: Group) => void;
   onEdit?: (group: Group) => void;
 }
+
+export type GroupFormData = Omit<Group, 'id' | 'creationDate'>;

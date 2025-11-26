@@ -3,7 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../../store';
 import { fetchCategoriesByScopeThunk } from '../store';
 import { CATEGORIES_CONSTANTS } from '../constants';
-import { selectCategoriesByScope, selectCategoriesState } from '../store/selectors/categorySelectors';
+import {
+  selectCategoriesByScope,
+  selectCategoriesState,
+} from '../store/selectors/categorySelectors';
 
 export const useCategories = (scope: string = CATEGORIES_CONSTANTS.SCOPES.GROUPS) => {
   const dispatch: AppDispatch = useDispatch();

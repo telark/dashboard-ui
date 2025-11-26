@@ -6,14 +6,17 @@ import Header from '../../../../components/display/sections/Header';
 import GroupsTable from '../components/display/list/Table';
 import { PageContainer } from '../../../../components/shared';
 import { useGroups } from '../hooks';
+import { useCategories } from '../../categories/hooks';
+import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 
 const GroupIcon = Icons.Group;
 
 const GroupsList: React.FC = () => {
   const navigate = useNavigate();
   const { groups, loading, error } = useGroups();
+  const { loading: categoriesLoading } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
 
-  if (loading) {
+  if (loading || categoriesLoading) {
     return (
       <PageContainer>
         <Header

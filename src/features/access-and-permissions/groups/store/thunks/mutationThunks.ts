@@ -3,7 +3,7 @@ import { createGroup, updateGroup, deleteGroup } from '../../clients';
 import { extractErrorMessage } from '../../../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../../constants/store/store';
 import logger from '../../../../../logging';
-import type { Group } from '../../models';
+import type { Group, GroupFormData } from '../../models';
 import type { ResourceDetailsResponse } from '../../../../../interfaces/http';
 import { mapGroupData } from '../../utils/mappers/groupMapper';
 
@@ -13,7 +13,7 @@ const mapGroupDetailsData = (response: ResourceDetailsResponse<Group>): Group =>
 
 export const createGroupThunk = createAsyncThunk(
   STORE_ACTIONS.GROUPS.CREATE,
-  async (group: Omit<Group, 'id' | 'creationDate'>, { rejectWithValue }) => {
+  async (group: GroupFormData, { rejectWithValue }) => {
     try {
       const response = await createGroup(group);
       return mapGroupDetailsData(response);
@@ -26,10 +26,7 @@ export const createGroupThunk = createAsyncThunk(
 
 export const updateGroupThunk = createAsyncThunk(
   STORE_ACTIONS.GROUPS.UPDATE,
-  async (
-    { id, group }: { id: string; group: Partial<Omit<Group, 'id' | 'creationDate'>> },
-    { rejectWithValue },
-  ) => {
+  async ({ id, group }: { id: string; group: Partial<GroupFormData> }, { rejectWithValue }) => {
     try {
       const response = await updateGroup(id, group);
       return mapGroupDetailsData(response);

@@ -15,17 +15,12 @@ import { useGroupActions } from '../hooks';
 import { useCategories } from '../../categories/hooks';
 import type { Category } from '../../categories/models';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
+import type { GroupFormData } from '../models';
 
 const GroupIcon = Icons.Group;
 
-interface CreateGroupFormValues {
-  name: string;
-  description: string;
-  categoryID: string;
-}
-
 const CreateGroup: React.FC = () => {
-  const [form] = Form.useForm<CreateGroupFormValues>();
+  const [form] = Form.useForm<GroupFormData>();
   const { handleCreate, submitting } = useGroupActions();
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
 
@@ -42,12 +37,8 @@ const CreateGroup: React.FC = () => {
     );
   }, [categories]);
 
-  const handleFinish = async (values: CreateGroupFormValues) => {
-    await handleCreate({
-      name: values.name,
-      description: values.description,
-      categoryID: values.categoryID,
-    });
+  const handleFinish = async (values: GroupFormData) => {
+    await handleCreate(values);
   };
 
   return (
@@ -69,7 +60,7 @@ const CreateGroup: React.FC = () => {
             width: '100%',
           }}
         >
-          <Form<CreateGroupFormValues>
+          <Form<GroupFormData>
             layout="vertical"
             form={form}
             onFinish={handleFinish}

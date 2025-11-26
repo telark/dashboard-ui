@@ -19,7 +19,10 @@ const Columns = (ctx: ColumnsContext) => {
   const getCategoryName = (categoryId: string): string => {
     if (!categoryId) return '—';
     const category = categories.find((cat: Category) => cat.id === categoryId);
-    return category?.name || categoryId;
+    if (!category) {
+      return '—';
+    }
+    return category.name;
   };
 
   const cols: any[] = [];

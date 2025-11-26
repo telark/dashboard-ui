@@ -14,19 +14,14 @@ import { useGroupDetails, useGroupActions } from '../hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import type { Category } from '../../categories/models';
+import type { GroupFormData } from '../models';
 
 const GroupIcon = Icons.Group;
-
-interface EditGroupFormValues {
-  name: string;
-  description: string;
-  categoryID: string;
-}
 
 const EditGroup: React.FC = () => {
   const { id, group, loading, notFound } = useGroupDetails();
   const { handleUpdate, submitting } = useGroupActions();
-  const [form] = Form.useForm<EditGroupFormValues>();
+  const [form] = Form.useForm<GroupFormData>();
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
 
   const categoryOptions = useMemo(() => {
@@ -46,13 +41,9 @@ const EditGroup: React.FC = () => {
     }
   }, [group, form]);
 
-  const handleFinish = async (values: EditGroupFormValues) => {
+  const handleFinish = async (values: GroupFormData) => {
     if (!id) return;
-    await handleUpdate(id, {
-      name: values.name,
-      description: values.description,
-      categoryID: values.categoryID,
-    });
+    await handleUpdate(id, values);
   };
 
   if (loading) {
@@ -86,7 +77,7 @@ const EditGroup: React.FC = () => {
             width: '100%',
           }}
         >
-          <Form<EditGroupFormValues> layout="vertical" form={form} onFinish={handleFinish}>
+          <Form<GroupFormData> layout="vertical" form={form} onFinish={handleFinish}>
             <div
               style={{
                 display: 'flex',

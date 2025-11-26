@@ -14,7 +14,12 @@ export const createGroupViewConfig = (
   const getCategoryName = (categoryId: string): string => {
     if (!categoryId) return '—';
     const category = categories.find((cat) => cat.id === categoryId);
-    return category?.name || categoryId;
+    // Always return the category name, never the ID
+    if (!category) {
+      // If category not found, return a placeholder instead of the ID
+      return '—';
+    }
+    return category.name;
   };
   return {
     fields: [

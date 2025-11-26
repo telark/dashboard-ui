@@ -6,18 +6,7 @@ import { APP_ROUTES } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import { createGroupThunk, updateGroupThunk, deleteGroupThunk } from '../store';
 import type { AppDispatch } from '../../../../store';
-
-interface CreateGroupData {
-  name: string;
-  description: string;
-  categoryID: string;
-}
-
-interface UpdateGroupData {
-  name: string;
-  description: string;
-  categoryID: string;
-}
+import type { GroupFormData } from '../models';
 
 export const useGroupActions = () => {
   const navigate = useNavigate();
@@ -25,7 +14,7 @@ export const useGroupActions = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const handleCreate = useCallback(
-    async (data: CreateGroupData) => {
+    async (data: GroupFormData) => {
       setSubmitting(true);
       try {
         const result = await dispatch(createGroupThunk(data)).unwrap();
@@ -43,16 +32,16 @@ export const useGroupActions = () => {
   );
 
   const handleUpdate = useCallback(
-    async (id: string, data: UpdateGroupData) => {
+    async (id: string, data: Partial<GroupFormData>) => {
       setSubmitting(true);
       try {
-        await dispatch(
+        const result = await dispatch(
           updateGroupThunk({
             id,
             group: data,
           }),
         ).unwrap();
-        message.success(GC.LABELS.MESSAGES.UPDATED(data.name));
+        message.success(GC.LABELS.MESSAGES.UPDATED(result.name));
         navigate(`${APP_ROUTES.GROUPS}/${id}/view`);
       } catch {
         message.error(GC.LABELS.MESSAGES.UPDATE_FAILED);

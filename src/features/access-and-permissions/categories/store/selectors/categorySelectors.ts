@@ -15,5 +15,7 @@ export const selectCategoriesByScope = createSelector(
 );
 
 export const selectGroupsCategories = createSelector([selectCategoriesState], (categoriesState) => {
-  return categoriesState.categoriesByScope[CATEGORIES_CONSTANTS.SCOPES.GROUPS] || EMPTY_CATEGORIES_ARRAY;
+  return (
+    categoriesState.categoriesByScope[CATEGORIES_CONSTANTS.SCOPES.GROUPS] || EMPTY_CATEGORIES_ARRAY
+  );
 });
