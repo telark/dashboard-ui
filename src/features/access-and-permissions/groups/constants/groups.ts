@@ -117,4 +117,16 @@ export const GROUPS_CONSTANTS = {
       category: 'Engineering',
     },
   },
+  ERROR_MESSAGES: {
+    CLIENT: {
+      FETCH_GROUPS_FAILED: '[APIClient] Failed to fetch groups:',
+      FETCH_GROUP_DETAILS_FAILED: (id: string) =>
+        `[APIClient] Failed to fetch group details for ${id}:`,
+      CREATE_GROUP_FAILED: (name: string) => `[APIClient] Failed to create group: ${name}`,
+      UPDATE_GROUP_FAILED: (id: string) => `[APIClient] Failed to update group: ${id}`,
+      DELETE_GROUP_FAILED: (id: string) => `[APIClient] Failed to delete group: ${id}`,
+    },
+  },
 } as const;
+
+export const GROUPS_ERROR_MESSAGES = GROUPS_CONSTANTS.ERROR_MESSAGES;

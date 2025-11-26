@@ -1,12 +1,10 @@
 // Slice
 export { default as groupReducer } from './slices/groupSlice';
+export { clearGroupDetails } from './slices/groupSlice';
+// Thunks
 export {
-  setGroups,
-  addGroup,
-  updateGroup,
-  deleteGroup,
-  setGroupDetails,
-  clearGroupDetails,
-  setLoading,
-  setError,
-} from './slices/groupSlice';
+  fetchAllGroupsThunk,
+  fetchAllGroupsSilentThunk,
+  fetchGroupDetailsThunk,
+} from './thunks/fetchThunks';
+export { createGroupThunk, updateGroupThunk, deleteGroupThunk } from './thunks/mutationThunks';

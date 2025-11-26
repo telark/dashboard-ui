@@ -1,31 +1,44 @@
-import React from 'react';
-import { APP_ROUTES, Icons } from '../../../../constants';
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { APP_ROUTES, Icons, SHARED_DETAILS_CONSTANTS } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import Header from '../../../../components/display/sections/Header';
-import { STATIC_GROUPS } from '../data';
 import DetailsView from '../../../../components/display/views/DetailsView';
 import { createGroupViewConfig } from '../config';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
-import { useViewPage } from '../../../../hooks/layout';
-import type { Group } from '../models';
+import { RootState, AppDispatch } from '../../../../store';
+import { fetchGroupDetailsThunk } from '../store';
 
 const GroupIcon = Icons.Group;
 
 const ViewGroup: React.FC = () => {
-  const {
-    item: group,
-    config,
-    notFound,
-  } = useViewPage<Group>({
-    data: STATIC_GROUPS,
-    findById: (id, data) => data.find((g) => g.id === id),
-    createConfig: createGroupViewConfig,
-  });
+  const { id } = useParams<{ id: string }>();
+  const dispatch: AppDispatch = useDispatch();
+  const { details, loading } = useSelector((state: RootState) => state.groups);
 
-  if (notFound || !group) {
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchGroupDetailsThunk(id));
+    }
+  }, [dispatch, id]);
+
+  if (loading) {
+    return (
+      <PageContainer>
+        <Header subtitle={GC.LABELS.VIEW_SUBTITLE} breadcrumbs={[]} icon={<GroupIcon />} />
+        <div>{SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING}</div>
+      </PageContainer>
+    );
+  }
+
+  if (!details) {
     return <NotFound message={GC.LABELS.NOT_FOUND} />;
   }
+
+  const group = details;
+  const config = createGroupViewConfig(group);
 
   const breadcrumbs = [
     { label: GC.LABELS.BREADCRUMBS.GROUPS, to: APP_ROUTES.GROUPS },

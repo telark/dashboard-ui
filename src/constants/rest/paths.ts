@@ -5,6 +5,7 @@ export const API_PATHS = {
     WORKLOADS: 'resources/workloads',
     BRIDGES: 'resources/bridges',
     USERS: 'resources/users',
+    GROUPS: 'resources/groups',
   },
   FEATS: {
     MAINTENANCE: 'feats/maintenance',
@@ -71,6 +72,14 @@ export const CATEGORY_PATHS = {
   GET_ALL: 'get',
   GET_BY_ID: (id: string) => `${id}/get`,
   GET_BY_SCOPE: (scope: string) => `scope/${scope}/get`,
+  PATCH_BY_ID: (id: string) => `${id}/patch`,
+  DELETE_BY_ID: (id: string) => `${id}/delete`,
+} as const;
+
+export const GROUP_PATHS = {
+  CREATE: 'create',
+  GET_ALL: 'get',
+  GET_BY_ID: (id: string) => `${id}/get`,
   PATCH_BY_ID: (id: string) => `${id}/patch`,
   DELETE_BY_ID: (id: string) => `${id}/delete`,
 } as const;

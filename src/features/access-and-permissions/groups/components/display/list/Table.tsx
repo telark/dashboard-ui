@@ -1,13 +1,17 @@
 import React, { useMemo, useState } from 'react';
 import { Modal } from 'antd';
+import { useDispatch } from 'react-redux';
 import DataTable from '../../../../../../components/display/table/DataTable';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import type { Group, GroupsTableProps } from '../../../models';
 import Columns from './Columns';
+import { deleteGroupThunk } from '../../../store';
+import type { AppDispatch } from '../../../../../../store';
 
 type SortKey = 'name' | 'category' | 'createdAt';
 
-const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit, onGroupsChange }) => {
+const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => {
+  const dispatch: AppDispatch = useDispatch();
   const [sortKey, setSortKey] = useState<SortKey>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
@@ -43,7 +47,7 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit, onGro
       okText: GC.LABELS.ACTIONS.DELETE_MODAL_OK,
       okButtonProps: { danger: true },
       onOk: () => {
-        onGroupsChange?.(groups.filter((g) => g.id !== record.id));
+        dispatch(deleteGroupThunk(record.id));
       },
     });
   };

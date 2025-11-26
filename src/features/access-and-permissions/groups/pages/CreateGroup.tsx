@@ -12,8 +12,8 @@ import { PrimaryButton } from '../../../../components/display/buttons';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer } from '../../../../components/shared';
 import { useDispatch } from 'react-redux';
-import { addGroup } from '../store';
-import type { Group } from '../models';
+import { createGroupThunk } from '../store';
+import type { AppDispatch } from '../../../../store';
 
 const GroupIcon = Icons.Group;
 
@@ -25,24 +25,24 @@ interface CreateGroupFormValues {
 
 const CreateGroup: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const [form] = Form.useForm<CreateGroupFormValues>();
   const [submitting, setSubmitting] = useState(false);
 
   const handleFinish = async (values: CreateGroupFormValues) => {
     setSubmitting(true);
     try {
-      await new Promise((r) => setTimeout(r, 400));
-      const newGroup: Group = {
-        id: `grp-${Date.now()}`,
-        name: values.name,
-        description: values.description,
-        category: values.category,
-        createdAt: new Date().toISOString(),
-      };
-      dispatch(addGroup(newGroup));
+      const result = await dispatch(
+        createGroupThunk({
+          name: values.name,
+          description: values.description,
+          category: values.category,
+        }),
+      ).unwrap();
       message.success(GC.LABELS.MESSAGES.CREATED(values.name));
-      navigate(`${APP_ROUTES.GROUPS}/${newGroup.id}/view`);
+      navigate(`${APP_ROUTES.GROUPS}/${result.id}/view`);
+    } catch {
+      message.error('Failed to create group');
     } finally {
       setSubmitting(false);
     }
