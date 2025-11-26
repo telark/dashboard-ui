@@ -4,8 +4,18 @@ import type { DetailsViewConfig } from '../../../../components/display/views/Det
 import { StatusTag } from '../../../../components/display/tags';
 import { ROLES_CONSTANTS as RPC } from '../../roles/constants';
 import { Icons } from '../../../../constants';
+import TimeAgo from '../../../../components/display/time/TimeAgo';
+import type { Category } from '../../categories/models';
 
-export const createGroupViewConfig = (group: Group): DetailsViewConfig => {
+export const createGroupViewConfig = (
+  group: Group,
+  categories: Category[] = [],
+): DetailsViewConfig => {
+  const getCategoryName = (categoryId: string): string => {
+    if (!categoryId) return '—';
+    const category = categories.find((cat) => cat.id === categoryId);
+    return category?.name || categoryId;
+  };
   return {
     fields: [
       {
@@ -27,7 +37,7 @@ export const createGroupViewConfig = (group: Group): DetailsViewConfig => {
         label: 'Category',
         value: (
           <StatusTag
-            label={group.category}
+            label={getCategoryName(group.categoryID)}
             icon={<AiOutlineTag />}
             color={RPC.COLORS.TYPE_CUSTOM_TEXT}
             borderColor={RPC.COLORS.TYPE_CUSTOM_TEXT}
@@ -37,17 +47,15 @@ export const createGroupViewConfig = (group: Group): DetailsViewConfig => {
         type: 'custom',
       },
       {
-        key: 'createdAt',
+        key: 'creationDate',
         label: 'Creation Date',
-        value: new Date(group.createdAt).toLocaleString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
+        value: group.creationDate ? (
+          <TimeAgo date={group.creationDate} />
+        ) : (
+          <span style={{ color: '#999' }}>—</span>
+        ),
         icon: <Icons.ViewFieldDate />,
-        type: 'text',
+        type: 'custom',
       },
     ],
   };

@@ -21,7 +21,7 @@ const GroupIcon = Icons.Group;
 interface CreateGroupFormValues {
   name: string;
   description: string;
-  category: string;
+  categoryID: string;
 }
 
 const CreateGroup: React.FC = () => {
@@ -43,7 +43,11 @@ const CreateGroup: React.FC = () => {
   }, [categories]);
 
   const handleFinish = async (values: CreateGroupFormValues) => {
-    await handleCreate(values);
+    await handleCreate({
+      name: values.name,
+      description: values.description,
+      categoryID: values.categoryID,
+    });
   };
 
   return (
@@ -72,7 +76,7 @@ const CreateGroup: React.FC = () => {
             initialValues={{
               name: '',
               description: '',
-              category: defaultCategoryId,
+              categoryID: defaultCategoryId,
             }}
           >
             <div
@@ -103,7 +107,7 @@ const CreateGroup: React.FC = () => {
                       marginBottom={18}
                     />
                     <LabeledSelect
-                      name="category"
+                      name="categoryID"
                       label={GC.LABELS.FORM.FIELDS.CATEGORY_LABEL}
                       placeholder={GC.LABELS.FORM.FIELDS.CATEGORY_PLACEHOLDER}
                       required

@@ -10,13 +10,13 @@ import type { AppDispatch } from '../../../../store';
 interface CreateGroupData {
   name: string;
   description: string;
-  category: string;
+  categoryID: string;
 }
 
 interface UpdateGroupData {
   name: string;
   description: string;
-  category: string;
+  categoryID: string;
 }
 
 export const useGroupActions = () => {

@@ -1,5 +1,3 @@
-import type { FormFieldConfig } from '../../../../interfaces/layout/modal';
-
 export const GROUPS_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Groups',
@@ -56,8 +54,8 @@ export const GROUPS_CONSTANTS = {
   KEYS: {
     NAME: 'name',
     DESCRIPTION: 'description',
-    CATEGORY: 'category',
-    CREATED_AT: 'createdAt',
+    CATEGORY: 'categoryID',
+    CREATED_AT: 'creationDate',
     ACTIONS: 'actions',
   } as const,
   SIZES: {
@@ -81,45 +79,6 @@ export const GROUPS_CONSTANTS = {
     TYPE_CUSTOM_BG: '#f1f5f9',
     TYPE_CUSTOM_TEXT: '#334155',
     HEADER_BG: '#f8fafc',
-  },
-  FORM: {
-    FIELDS: [
-      {
-        type: 'input',
-        name: 'name',
-        label: 'Group Name',
-        placeholder: 'e.g. Development Team',
-        required: true,
-        marginBottom: 18,
-      },
-      {
-        type: 'input',
-        name: 'description',
-        label: 'Description',
-        placeholder: 'e.g. Group for development team members',
-        required: true,
-        marginBottom: 18,
-      },
-      {
-        type: 'select',
-        name: 'category',
-        label: 'Category',
-        placeholder: 'Select a category',
-        required: true,
-        options: [
-          { label: 'Engineering', value: 'Engineering' },
-          { label: 'Operations', value: 'Operations' },
-          { label: 'Quality Assurance', value: 'Quality Assurance' },
-          { label: 'Security', value: 'Security' },
-          { label: 'Management', value: 'Management' },
-          { label: 'Support', value: 'Support' },
-        ],
-        marginBottom: 6,
-      },
-    ] as FormFieldConfig[],
-    INITIAL_VALUES: {
-      category: 'Engineering',
-    },
   },
   ERROR_MESSAGES: {
     CLIENT: {

@@ -7,11 +7,14 @@ import { createGroupViewConfig } from '../config';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
 import { useGroupDetails } from '../hooks';
+import { useCategories } from '../../categories/hooks';
+import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 
 const GroupIcon = Icons.Group;
 
 const ViewGroup: React.FC = () => {
   const { group, loading, notFound } = useGroupDetails();
+  const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
 
   if (loading) {
     return (
@@ -26,7 +29,7 @@ const ViewGroup: React.FC = () => {
     return <NotFound message={GC.LABELS.NOT_FOUND} />;
   }
 
-  const config = createGroupViewConfig(group);
+  const config = createGroupViewConfig(group, categories);
 
   const breadcrumbs = [
     { label: GC.LABELS.BREADCRUMBS.GROUPS, to: APP_ROUTES.GROUPS },

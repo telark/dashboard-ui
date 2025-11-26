@@ -5,13 +5,15 @@ import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../../cons
 import logger from '../../../../../logging';
 import type { Group } from '../../models';
 import type { ResourceListResponse, ResourceDetailsResponse } from '../../../../../interfaces/http';
+import { mapGroupData, mapGroupsData as mapGroupsArray } from '../../utils/mappers/groupMapper';
 
 const mapGroupsData = (response: ResourceListResponse<Group>): Group[] => {
-  return response.data?.items || [];
+  const items = response.data?.items || [];
+  return mapGroupsArray(items as any[]);
 };
 
 const mapGroupDetailsData = (response: ResourceDetailsResponse<Group>): Group => {
-  return response.data;
+  return mapGroupData(response.data as any);
 };
 
 export const fetchAllGroupsThunk = createAsyncThunk(

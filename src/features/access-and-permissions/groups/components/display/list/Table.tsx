@@ -8,11 +8,11 @@ import Columns from './Columns';
 import { useGroupActions } from '../../../hooks';
 import { selectGroupsCategories } from '../../../../categories/store/selectors/categorySelectors';
 
-type SortKey = 'name' | 'category' | 'createdAt';
+type SortKey = 'name' | 'categoryID' | 'creationDate';
 
 const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => {
   const { handleDelete } = useGroupActions();
-  const [sortKey, setSortKey] = useState<SortKey>('createdAt');
+  const [sortKey, setSortKey] = useState<SortKey>('creationDate');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const categories = useSelector(selectGroupsCategories);
@@ -23,11 +23,11 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
       switch (sortKey) {
         case 'name':
           return String(a.name).localeCompare(String(b.name));
-        case 'category':
-          return String(a.category).localeCompare(String(b.category));
-        case 'createdAt':
+        case 'categoryID':
+          return String(a.categoryID).localeCompare(String(b.categoryID));
+        case 'creationDate':
         default:
-          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          return new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();
       }
     };
     items.sort((a, b) => (sortOrder === 'asc' ? compare(a, b) : -compare(a, b)));

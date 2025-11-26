@@ -20,7 +20,7 @@ const GroupIcon = Icons.Group;
 interface EditGroupFormValues {
   name: string;
   description: string;
-  category: string;
+  categoryID: string;
 }
 
 const EditGroup: React.FC = () => {
@@ -41,14 +41,18 @@ const EditGroup: React.FC = () => {
       form.setFieldsValue({
         name: group.name,
         description: group.description,
-        category: group.category,
+        categoryID: group.categoryID,
       });
     }
   }, [group, form]);
 
   const handleFinish = async (values: EditGroupFormValues) => {
     if (!id) return;
-    await handleUpdate(id, values);
+    await handleUpdate(id, {
+      name: values.name,
+      description: values.description,
+      categoryID: values.categoryID,
+    });
   };
 
   if (loading) {
@@ -111,7 +115,7 @@ const EditGroup: React.FC = () => {
                       marginBottom={18}
                     />
                     <LabeledSelect
-                      name="category"
+                      name="categoryID"
                       label={GC.LABELS.FORM.FIELDS.CATEGORY_LABEL}
                       placeholder={GC.LABELS.FORM.FIELDS.CATEGORY_PLACEHOLDER}
                       required

@@ -2,8 +2,8 @@ export interface Group {
   id: string;
   name: string;
   description: string;
-  category: string;
-  createdAt: string;
+  categoryID: string;
+  creationDate: string;
 }
 
 export interface GroupsState {

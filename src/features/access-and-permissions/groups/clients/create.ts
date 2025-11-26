@@ -5,11 +5,12 @@ import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import type { Group } from '../models';
 import { GROUPS_ERROR_MESSAGES } from '../constants';
 
-export const createGroup = async (group: Omit<Group, 'id' | 'createdAt'>) => {
+export const createGroup = async (group: Omit<Group, 'id' | 'creationDate'>) => {
   try {
     const groupData = {
-      ...group,
-      createdAt: new Date().toISOString(),
+      name: group.name,
+      description: group.description,
+      categoryID: group.categoryID,
     };
     return await Client<ResourceDetailsResponse<Group>>(
       exporterApiClient,

@@ -7,6 +7,7 @@ import type { Group } from '../../../models';
 import Actions from './Actions';
 import { AiOutlineFileText, AiOutlineTag, AiOutlineCalendar } from 'react-icons/ai';
 import type { Category } from '../../../../categories/models';
+import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 
 interface ColumnsContext extends GenerateColumnCtx {
   categories?: Category[];
@@ -16,6 +17,7 @@ const Columns = (ctx: ColumnsContext) => {
   const categories = ctx.categories || [];
 
   const getCategoryName = (categoryId: string): string => {
+    if (!categoryId) return '—';
     const category = categories.find((cat: Category) => cat.id === categoryId);
     return category?.name || categoryId;
   };
@@ -50,14 +52,17 @@ const Columns = (ctx: ColumnsContext) => {
         label: GC.LABELS.COLUMNS.CATEGORY,
         icon: <AiOutlineTag />,
         width: GC.SIZES.COLUMNS.CATEGORY,
-        render: (value: string) => (
-          <RowTag
-            text={getCategoryName(value)}
-            background={RPC.COLORS.TYPE_CUSTOM_BG}
-            color={RPC.COLORS.TYPE_CUSTOM_TEXT}
-            fontSize={RPC.SIZES.CHIP_FONT}
-          />
-        ),
+        render: (value: string) => {
+          const categoryName = getCategoryName(value);
+          return (
+            <RowTag
+              text={categoryName}
+              background={RPC.COLORS.TYPE_CUSTOM_BG}
+              color={RPC.COLORS.TYPE_CUSTOM_TEXT}
+              fontSize={RPC.SIZES.CHIP_FONT}
+            />
+          );
+        },
       },
       ctx,
     ),
@@ -67,7 +72,14 @@ const Columns = (ctx: ColumnsContext) => {
         label: GC.LABELS.COLUMNS.CREATED,
         icon: <AiOutlineCalendar />,
         width: GC.SIZES.COLUMNS.CREATED,
-        render: (value: string) => <span>{new Date(value).toLocaleDateString()}</span>,
+        render: (value: string) => {
+          if (!value) return <span style={{ color: '#999' }}>—</span>;
+          try {
+            return <TimeAgo date={value} />;
+          } catch {
+            return <span style={{ color: '#999' }}>—</span>;
+          }
+        },
       },
       ctx,
     ),

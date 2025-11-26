@@ -5,14 +5,15 @@ import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../../cons
 import logger from '../../../../../logging';
 import type { Group } from '../../models';
 import type { ResourceDetailsResponse } from '../../../../../interfaces/http';
+import { mapGroupData } from '../../utils/mappers/groupMapper';
 
 const mapGroupDetailsData = (response: ResourceDetailsResponse<Group>): Group => {
-  return response.data;
+  return mapGroupData(response.data as any);
 };
 
 export const createGroupThunk = createAsyncThunk(
   STORE_ACTIONS.GROUPS.CREATE,
-  async (group: Omit<Group, 'id' | 'createdAt'>, { rejectWithValue }) => {
+  async (group: Omit<Group, 'id' | 'creationDate'>, { rejectWithValue }) => {
     try {
       const response = await createGroup(group);
       return mapGroupDetailsData(response);
@@ -26,7 +27,7 @@ export const createGroupThunk = createAsyncThunk(
 export const updateGroupThunk = createAsyncThunk(
   STORE_ACTIONS.GROUPS.UPDATE,
   async (
-    { id, group }: { id: string; group: Partial<Omit<Group, 'id' | 'createdAt'>> },
+    { id, group }: { id: string; group: Partial<Omit<Group, 'id' | 'creationDate'>> },
     { rejectWithValue },
   ) => {
     try {

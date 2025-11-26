@@ -7,15 +7,20 @@ import { GROUPS_ERROR_MESSAGES } from '../constants';
 
 export const updateGroup = async (
   groupId: string,
-  group: Partial<Omit<Group, 'id' | 'createdAt'>>,
+  group: Partial<Omit<Group, 'id' | 'creationDate'>>,
 ) => {
   try {
+    const groupData = {
+      name: group.name,
+      description: group.description,
+      categoryID: group.categoryID,
+    };
     return await Client<ResourceDetailsResponse<Group>>(
       exporterApiClient,
       Endpoints.GROUPS.PATCH_BY_ID(groupId).path,
       {
         method: Endpoints.GROUPS.PATCH_BY_ID(groupId).method,
-        data: group,
+        data: groupData,
       },
     );
   } catch (error) {
