@@ -12,3 +12,9 @@ export interface Category {
 
 export type CategoryListResponse = ResourceListResponse<Category>;
 export type CategoryResponse = ResourceDetailsResponse<Category>;
+
+export interface CategoriesState {
+  categoriesByScope: Record<string, Category[]>;
+  loading: boolean;
+  error: string | null;
+}

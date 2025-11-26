@@ -42,7 +42,7 @@
     "web-vitals": "^5.1.0"
   },
   "scripts": {
-    "dev": "vite --port 3000",
+    "dev": "BROWSER='Google Chrome' vite --port 3000 --open",
     "build": "vite build",
     "serve": "vite preview",
     "lint": "eslint .",

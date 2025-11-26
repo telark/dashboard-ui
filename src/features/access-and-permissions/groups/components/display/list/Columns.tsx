@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import { ROLES_CONSTANTS as RPC } from '../../../../roles/constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
@@ -6,8 +7,21 @@ import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/tabl
 import type { Group } from '../../../models';
 import Actions from './Actions';
 import { AiOutlineFileText, AiOutlineTag, AiOutlineCalendar } from 'react-icons/ai';
+import { RootState } from '../../../../../../store';
+import { CATEGORIES_CONSTANTS } from '../../../../categories/constants';
+import type { Category } from '../../../../categories/models';
 
 const Columns = (ctx: GenerateColumnCtx) => {
+  const categories = useSelector(
+    (state: RootState) =>
+      state.categories.categoriesByScope[CATEGORIES_CONSTANTS.SCOPES.GROUPS] || [],
+  );
+
+  const getCategoryName = (categoryId: string): string => {
+    const category = categories.find((cat: Category) => cat.id === categoryId);
+    return category?.name || categoryId;
+  };
+
   const cols: any[] = [];
   cols.push(
     generateColumn(
@@ -40,7 +54,7 @@ const Columns = (ctx: GenerateColumnCtx) => {
         width: GC.SIZES.COLUMNS.CATEGORY,
         render: (value: string) => (
           <RowTag
-            text={value}
+            text={getCategoryName(value)}
             background={RPC.COLORS.TYPE_CUSTOM_BG}
             color={RPC.COLORS.TYPE_CUSTOM_TEXT}
             fontSize={RPC.SIZES.CHIP_FONT}

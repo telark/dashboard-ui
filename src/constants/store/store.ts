@@ -57,6 +57,10 @@ export const STORE_ACTIONS = {
     UPDATE: 'groups/update',
     DELETE: 'groups/delete',
   },
+  CATEGORIES: {
+    FETCH_BY_SCOPE: 'categories/fetchByScope',
+    FETCH_BY_SCOPE_SILENT: 'categories/fetchByScopeSilent',
+  },
   PASSKEYS: {
     FETCH: 'passkeys/fetch',
     FETCH_SILENT: 'passkeys/fetchSilent',
@@ -103,6 +107,7 @@ export const STORE_ERRORS = {
   CREATE_GROUP: 'Failed to create group',
   UPDATE_GROUP: 'Failed to update group',
   DELETE_GROUP: 'Failed to delete group',
+  FETCH_CATEGORIES: 'Failed to fetch categories',
 } as const;
 
 export const STORE_MESSAGES = {
@@ -133,4 +138,5 @@ export const STORE_MESSAGES = {
   ERROR_CREATING_GROUP: 'Error creating group:',
   ERROR_UPDATING_GROUP: 'Error updating group:',
   ERROR_DELETING_GROUP: 'Error deleting group:',
+  ERROR_FETCHING_CATEGORIES: 'Error fetching categories:',
 } as const;

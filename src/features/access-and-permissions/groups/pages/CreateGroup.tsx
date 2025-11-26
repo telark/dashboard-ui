@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Form } from 'antd';
 import { Icons, BUTTON_TEXTS } from '../../../../constants';
 import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
@@ -12,6 +12,9 @@ import { PrimaryButton } from '../../../../components/display/buttons';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer } from '../../../../components/shared';
 import { useGroupActions } from '../hooks';
+import { useCategories } from '../../categories/hooks';
+import type { Category } from '../../categories/models';
+import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 
 const GroupIcon = Icons.Group;
 
@@ -24,6 +27,20 @@ interface CreateGroupFormValues {
 const CreateGroup: React.FC = () => {
   const [form] = Form.useForm<CreateGroupFormValues>();
   const { handleCreate, submitting } = useGroupActions();
+  const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
+
+  const categoryOptions = useMemo(() => {
+    return categories.map((category: Category) => ({
+      label: category.name,
+      value: category.id,
+    }));
+  }, [categories]);
+
+  const defaultCategoryId = useMemo(() => {
+    return (
+      categories.find((cat: Category) => cat.name === 'Engineering')?.id || categories[0]?.id || ''
+    );
+  }, [categories]);
 
   const handleFinish = async (values: CreateGroupFormValues) => {
     await handleCreate(values);
@@ -55,7 +72,7 @@ const CreateGroup: React.FC = () => {
             initialValues={{
               name: '',
               description: '',
-              category: 'Engineering',
+              category: defaultCategoryId,
             }}
           >
             <div
@@ -90,14 +107,7 @@ const CreateGroup: React.FC = () => {
                       label={GC.LABELS.FORM.FIELDS.CATEGORY_LABEL}
                       placeholder={GC.LABELS.FORM.FIELDS.CATEGORY_PLACEHOLDER}
                       required
-                      options={[
-                        { label: 'Engineering', value: 'Engineering' },
-                        { label: 'Operations', value: 'Operations' },
-                        { label: 'Quality Assurance', value: 'Quality Assurance' },
-                        { label: 'Security', value: 'Security' },
-                        { label: 'Management', value: 'Management' },
-                        { label: 'Support', value: 'Support' },
-                      ]}
+                      options={categoryOptions}
                       marginBottom={6}
                     />
                   </div>

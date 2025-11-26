@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Form } from 'antd';
 import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../../../constants';
 import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
@@ -11,6 +11,9 @@ import { PrimaryButton } from '../../../../components/display/buttons';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
 import { useGroupDetails, useGroupActions } from '../hooks';
+import { useCategories } from '../../categories/hooks';
+import { CATEGORIES_CONSTANTS } from '../../categories/constants';
+import type { Category } from '../../categories/models';
 
 const GroupIcon = Icons.Group;
 
@@ -24,6 +27,14 @@ const EditGroup: React.FC = () => {
   const { id, group, loading, notFound } = useGroupDetails();
   const { handleUpdate, submitting } = useGroupActions();
   const [form] = Form.useForm<EditGroupFormValues>();
+  const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
+
+  const categoryOptions = useMemo(() => {
+    return categories.map((category: Category) => ({
+      label: category.name,
+      value: category.id,
+    }));
+  }, [categories]);
 
   useEffect(() => {
     if (group) {
@@ -104,14 +115,7 @@ const EditGroup: React.FC = () => {
                       label={GC.LABELS.FORM.FIELDS.CATEGORY_LABEL}
                       placeholder={GC.LABELS.FORM.FIELDS.CATEGORY_PLACEHOLDER}
                       required
-                      options={[
-                        { label: 'Engineering', value: 'Engineering' },
-                        { label: 'Operations', value: 'Operations' },
-                        { label: 'Quality Assurance', value: 'Quality Assurance' },
-                        { label: 'Security', value: 'Security' },
-                        { label: 'Management', value: 'Management' },
-                        { label: 'Support', value: 'Support' },
-                      ]}
+                      options={categoryOptions}
                       marginBottom={6}
                     />
                   </div>
