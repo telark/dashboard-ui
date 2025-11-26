@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { Modal } from 'antd';
 import { useSelector } from 'react-redux';
 import DataTable from '../../../../../../components/display/table/DataTable';
@@ -7,6 +7,7 @@ import type { Group, GroupsTableProps } from '../../../models';
 import Columns from './Columns';
 import { useGroupActions } from '../../../hooks';
 import { selectGroupsCategories } from '../../../../categories/store/selectors/categorySelectors';
+import ActionBar from './ActionBar';
 
 type SortKey = 'name' | 'categoryID' | 'creationDate';
 
@@ -14,8 +15,12 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
   const { handleDelete } = useGroupActions();
   const [sortKey, setSortKey] = useState<SortKey>('creationDate');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [selectedGroups, setSelectedGroups] = useState<Set<string>>(new Set());
 
   const categories = useSelector(selectGroupsCategories);
+
+  const selectedCount = selectedGroups.size;
+  const hasSelection = selectedCount > 0;
 
   const sorted = useMemo(() => {
     const items = [...groups];
@@ -34,17 +39,62 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
     return items;
   }, [groups, sortKey, sortOrder]);
 
-  const handleDeleteClick = (record: Group) => {
+  const handleView = useCallback(() => {
+    if (selectedCount === 1) {
+      const selectedId = Array.from(selectedGroups)[0];
+      const selectedGroup = groups.find((g) => g.id === selectedId);
+      if (selectedGroup) {
+        onView?.(selectedGroup);
+      }
+    }
+  }, [selectedCount, selectedGroups, groups, onView]);
+
+  const handleEdit = useCallback(() => {
+    if (selectedCount === 1) {
+      const selectedId = Array.from(selectedGroups)[0];
+      const selectedGroup = groups.find((g) => g.id === selectedId);
+      if (selectedGroup) {
+        onEdit?.(selectedGroup);
+      }
+    }
+  }, [selectedCount, selectedGroups, groups, onEdit]);
+
+  const handleDeleteClick = useCallback(() => {
+    const selectedIds = Array.from(selectedGroups);
+    if (selectedIds.length === 0) return;
+
+    const selectedGroupNames = selectedIds
+      .map((id) => groups.find((g) => g.id === id)?.name)
+      .filter(Boolean) as string[];
+
     Modal.confirm({
       title: GC.LABELS.ACTIONS.DELETE_MODAL_TITLE,
-      content: GC.LABELS.ACTIONS.DELETE_MODAL_CONTENT(record?.name || ''),
+      content: GC.LABELS.ACTIONS.DELETE_MODAL_CONTENT(
+        selectedGroupNames.length === 1
+          ? selectedGroupNames[0]
+          : `${selectedGroupNames.length} groups`,
+      ),
       okText: GC.LABELS.ACTIONS.DELETE_MODAL_OK,
       okButtonProps: { danger: true },
-      onOk: () => {
-        handleDelete(record.id);
+      onOk: async () => {
+        for (const id of selectedIds) {
+          const group = groups.find((g) => g.id === id);
+          if (group) {
+            try {
+              await handleDelete(id);
+            } catch {
+              // Error message already shown by handleDelete
+            }
+          }
+        }
+        setSelectedGroups(new Set());
       },
     });
-  };
+  }, [selectedGroups, groups, handleDelete]);
+
+  const handleRowSelection = useCallback((selectedRowKeys: React.Key[]) => {
+    setSelectedGroups(new Set(selectedRowKeys as string[]));
+  }, []);
 
   const columns = useMemo(
     () =>
@@ -55,24 +105,35 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
           setSortKey(key);
           setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
         },
-        onView,
-        onEdit,
-        onDelete: handleDeleteClick,
         categories,
       } as any),
-    [sortKey, onView, onEdit, handleDeleteClick, categories],
+    [sortKey, categories],
   );
 
   return (
-    <DataTable<Group>
-      columns={columns}
-      data={sorted}
-      rowKey={(r) => r.id}
-      className="app-table"
-      rowHeight={GC.SIZES.ROW_HEIGHT}
-      tableProps={{ rowSelection: {} }}
-      onRowClick={onView}
-    />
+    <>
+      <ActionBar
+        selectedCount={selectedCount}
+        hasSelection={hasSelection}
+        onView={handleView}
+        onEdit={handleEdit}
+        onDelete={handleDeleteClick}
+      />
+      <DataTable<Group>
+        columns={columns}
+        data={sorted}
+        rowKey={(r) => r.id}
+        className="app-table"
+        rowHeight={GC.SIZES.ROW_HEIGHT}
+        tableProps={{
+          rowSelection: {
+            selectedRowKeys: Array.from(selectedGroups),
+            onChange: handleRowSelection,
+          },
+        }}
+        onRowClick={(record) => onView?.(record)}
+      />
+    </>
   );
 };
 

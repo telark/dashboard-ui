@@ -4,7 +4,6 @@ import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
 import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
 import type { Group } from '../../../models';
-import Actions from './Actions';
 import { AiOutlineFileText, AiOutlineTag, AiOutlineCalendar } from 'react-icons/ai';
 import type { Category } from '../../../../categories/models';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
@@ -12,6 +11,9 @@ import { getCategoryName } from '../../../../categories/utils';
 
 interface ColumnsContext extends GenerateColumnCtx {
   categories?: Category[];
+  onView?: (record: Group) => void;
+  onEdit?: (record: Group) => void;
+  onDelete?: (record: Group) => void;
 }
 
 const Columns = (ctx: ColumnsContext) => {
@@ -78,21 +80,6 @@ const Columns = (ctx: ColumnsContext) => {
       },
       ctx,
     ),
-    {
-      title: '',
-      key: GC.KEYS.ACTIONS,
-      align: 'right' as const,
-      width: GC.SIZES.COLUMNS.ACTIONS,
-      onHeaderCell: () => ({ style: { background: RPC.COLORS.HEADER_BG } }),
-      render: (_: any, record: Group) => (
-        <Actions
-          record={record}
-          onView={(ctx as any).onView}
-          onEdit={(ctx as any).onEdit}
-          onDelete={(ctx as any).onDelete}
-        />
-      ),
-    },
   );
   return cols;
 };
