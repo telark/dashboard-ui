@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Form, message } from 'antd';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect } from 'react';
+import { Form } from 'antd';
 import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../../../constants';
 import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
 import Header from '../../../../components/display/sections/Header';
@@ -12,8 +10,7 @@ import Section from '../../../../components/display/sections/Section';
 import { PrimaryButton } from '../../../../components/display/buttons';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
-import { RootState, AppDispatch } from '../../../../store';
-import { fetchGroupDetailsThunk, updateGroupThunk } from '../store';
+import { useGroupDetails, useGroupActions } from '../hooks';
 
 const GroupIcon = Icons.Group;
 
@@ -24,50 +21,23 @@ interface EditGroupFormValues {
 }
 
 const EditGroup: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const dispatch: AppDispatch = useDispatch();
-  const { details, loading } = useSelector((state: RootState) => state.groups);
+  const { id, group, loading, notFound } = useGroupDetails();
+  const { handleUpdate, submitting } = useGroupActions();
   const [form] = Form.useForm<EditGroupFormValues>();
-  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      dispatch(fetchGroupDetailsThunk(id));
-    }
-  }, [dispatch, id]);
-
-  useEffect(() => {
-    if (details) {
+    if (group) {
       form.setFieldsValue({
-        name: details.name,
-        description: details.description,
-        category: details.category,
+        name: group.name,
+        description: group.description,
+        category: group.category,
       });
     }
-  }, [details, form]);
+  }, [group, form]);
 
   const handleFinish = async (values: EditGroupFormValues) => {
     if (!id) return;
-    setSubmitting(true);
-    try {
-      await dispatch(
-        updateGroupThunk({
-          id,
-          group: {
-            name: values.name,
-            description: values.description,
-            category: values.category,
-          },
-        }),
-      ).unwrap();
-      message.success(GC.LABELS.MESSAGES.UPDATED(values.name));
-      navigate(`${APP_ROUTES.GROUPS}/${id}/view`);
-    } catch {
-      message.error('Failed to update group');
-    } finally {
-      setSubmitting(false);
-    }
+    await handleUpdate(id, values);
   };
 
   if (loading) {
@@ -79,11 +49,9 @@ const EditGroup: React.FC = () => {
     );
   }
 
-  if (!details) {
+  if (notFound || !group) {
     return <NotFound message={GC.LABELS.NOT_FOUND} />;
   }
-
-  const group = details;
 
   const breadcrumbs = [
     { label: GC.LABELS.BREADCRUMBS.GROUPS, to: APP_ROUTES.GROUPS },

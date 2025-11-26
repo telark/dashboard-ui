@@ -1,19 +1,17 @@
-import React, { useState } from 'react';
-import { Form, message } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../../../constants';
+import React from 'react';
+import { Form } from 'antd';
+import { Icons, BUTTON_TEXTS } from '../../../../constants';
 import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
 import Header from '../../../../components/display/sections/Header';
 import { GROUPS_CONSTANTS as GC } from '../constants';
+import { APP_ROUTES } from '../../../../constants';
 import LabeledInput from '../../../../components/display/inputs/LabeledInput';
 import LabeledSelect from '../../../../components/display/inputs/LabeledSelect';
 import Section from '../../../../components/display/sections/Section';
 import { PrimaryButton } from '../../../../components/display/buttons';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer } from '../../../../components/shared';
-import { useDispatch } from 'react-redux';
-import { createGroupThunk } from '../store';
-import type { AppDispatch } from '../../../../store';
+import { useGroupActions } from '../hooks';
 
 const GroupIcon = Icons.Group;
 
@@ -24,28 +22,11 @@ interface CreateGroupFormValues {
 }
 
 const CreateGroup: React.FC = () => {
-  const navigate = useNavigate();
-  const dispatch: AppDispatch = useDispatch();
   const [form] = Form.useForm<CreateGroupFormValues>();
-  const [submitting, setSubmitting] = useState(false);
+  const { handleCreate, submitting } = useGroupActions();
 
   const handleFinish = async (values: CreateGroupFormValues) => {
-    setSubmitting(true);
-    try {
-      const result = await dispatch(
-        createGroupThunk({
-          name: values.name,
-          description: values.description,
-          category: values.category,
-        }),
-      ).unwrap();
-      message.success(GC.LABELS.MESSAGES.CREATED(values.name));
-      navigate(`${APP_ROUTES.GROUPS}/${result.id}/view`);
-    } catch {
-      message.error('Failed to create group');
-    } finally {
-      setSubmitting(false);
-    }
+    await handleCreate(values);
   };
 
   return (

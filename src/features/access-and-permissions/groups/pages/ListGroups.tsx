@@ -1,24 +1,17 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
 import { APP_ROUTES, Icons, SHARED_DETAILS_CONSTANTS } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import Header from '../../../../components/display/sections/Header';
 import GroupsTable from '../components/display/list/Table';
 import { PageContainer } from '../../../../components/shared';
-import { RootState, AppDispatch } from '../../../../store';
-import { fetchAllGroupsThunk } from '../store';
+import { useGroups } from '../hooks';
 
 const GroupIcon = Icons.Group;
 
 const GroupsList: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch: AppDispatch = useDispatch();
-  const { groups, loading, error } = useSelector((state: RootState) => state.groups);
-
-  useEffect(() => {
-    dispatch(fetchAllGroupsThunk());
-  }, [dispatch]);
+  const { groups, loading, error } = useGroups();
 
   if (loading) {
     return (

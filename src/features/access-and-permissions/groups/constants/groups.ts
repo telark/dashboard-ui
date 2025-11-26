@@ -18,6 +18,10 @@ export const GROUPS_CONSTANTS = {
     MESSAGES: {
       CREATED: (name: string) => `Group "${name}" created`,
       UPDATED: (name: string) => `Group "${name}" updated`,
+      DELETED: 'Group deleted successfully',
+      CREATE_FAILED: 'Failed to create group',
+      UPDATE_FAILED: 'Failed to update group',
+      DELETE_FAILED: 'Failed to delete group',
     },
     COLUMNS: {
       NAME: 'Group Name',

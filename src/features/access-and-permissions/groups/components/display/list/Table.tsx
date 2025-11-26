@@ -1,17 +1,15 @@
 import React, { useMemo, useState } from 'react';
 import { Modal } from 'antd';
-import { useDispatch } from 'react-redux';
 import DataTable from '../../../../../../components/display/table/DataTable';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import type { Group, GroupsTableProps } from '../../../models';
 import Columns from './Columns';
-import { deleteGroupThunk } from '../../../store';
-import type { AppDispatch } from '../../../../../../store';
+import { useGroupActions } from '../../../hooks';
 
 type SortKey = 'name' | 'category' | 'createdAt';
 
 const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => {
-  const dispatch: AppDispatch = useDispatch();
+  const { handleDelete } = useGroupActions();
   const [sortKey, setSortKey] = useState<SortKey>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
@@ -40,14 +38,14 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
     onEdit?.(record);
   };
 
-  const handleDelete = (record: Group) => {
+  const handleDeleteClick = (record: Group) => {
     Modal.confirm({
       title: GC.LABELS.ACTIONS.DELETE_MODAL_TITLE,
       content: GC.LABELS.ACTIONS.DELETE_MODAL_CONTENT(record?.name || ''),
       okText: GC.LABELS.ACTIONS.DELETE_MODAL_OK,
       okButtonProps: { danger: true },
       onOk: () => {
-        dispatch(deleteGroupThunk(record.id));
+        handleDelete(record.id);
       },
     });
   };
@@ -63,9 +61,9 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
         },
         onView: handleView,
         onEdit: handleEdit,
-        onDelete: handleDelete,
+        onDelete: handleDeleteClick,
       } as any),
-    [sortKey],
+    [sortKey, handleView, handleEdit, handleDeleteClick],
   );
 
   return (
