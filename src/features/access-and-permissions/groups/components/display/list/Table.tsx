@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { Modal } from 'antd';
+import { useSelector } from 'react-redux';
 import DataTable from '../../../../../../components/display/table/DataTable';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import type { Group, GroupsTableProps } from '../../../models';
 import Columns from './Columns';
 import { useGroupActions } from '../../../hooks';
+import { selectGroupsCategories } from '../../../../categories/store/selectors/categorySelectors';
 
 type SortKey = 'name' | 'category' | 'createdAt';
 
@@ -12,6 +14,8 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
   const { handleDelete } = useGroupActions();
   const [sortKey, setSortKey] = useState<SortKey>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
+  const categories = useSelector(selectGroupsCategories);
 
   const sorted = useMemo(() => {
     const items = [...groups];
@@ -62,8 +66,9 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
         onView: handleView,
         onEdit: handleEdit,
         onDelete: handleDeleteClick,
+        categories,
       } as any),
-    [sortKey, handleView, handleEdit, handleDeleteClick],
+    [sortKey, handleView, handleEdit, handleDeleteClick, categories],
   );
 
   return (
