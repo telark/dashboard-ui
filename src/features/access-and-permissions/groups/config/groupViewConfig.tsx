@@ -6,21 +6,12 @@ import { ROLES_CONSTANTS as RPC } from '../../roles/constants';
 import { Icons } from '../../../../constants';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import type { Category } from '../../categories/models';
+import { getCategoryName } from '../../categories/utils';
 
 export const createGroupViewConfig = (
   group: Group,
   categories: Category[] = [],
 ): DetailsViewConfig => {
-  const getCategoryName = (categoryId: string): string => {
-    if (!categoryId) return '—';
-    const category = categories.find((cat) => cat.id === categoryId);
-    // Always return the category name, never the ID
-    if (!category) {
-      // If category not found, return a placeholder instead of the ID
-      return '—';
-    }
-    return category.name;
-  };
   return {
     fields: [
       {
@@ -42,7 +33,7 @@ export const createGroupViewConfig = (
         label: 'Category',
         value: (
           <StatusTag
-            label={getCategoryName(group.categoryID)}
+            label={getCategoryName(group.categoryID, categories)}
             icon={<AiOutlineTag />}
             color={RPC.COLORS.TYPE_CUSTOM_TEXT}
             borderColor={RPC.COLORS.TYPE_CUSTOM_TEXT}

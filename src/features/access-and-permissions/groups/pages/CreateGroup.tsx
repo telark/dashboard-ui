@@ -13,9 +13,9 @@ import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWr
 import { PageContainer } from '../../../../components/shared';
 import { useGroupActions } from '../hooks';
 import { useCategories } from '../../categories/hooks';
-import type { Category } from '../../categories/models';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import type { GroupFormData } from '../models';
+import { mapCategoriesToOptions } from '../../categories/utils';
 
 const GroupIcon = Icons.Group;
 
@@ -24,17 +24,10 @@ const CreateGroup: React.FC = () => {
   const { handleCreate, submitting } = useGroupActions();
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
 
-  const categoryOptions = useMemo(() => {
-    return categories.map((category: Category) => ({
-      label: category.name,
-      value: category.id,
-    }));
-  }, [categories]);
+  const categoryOptions = useMemo(() => mapCategoriesToOptions(categories), [categories]);
 
   const defaultCategoryId = useMemo(() => {
-    return (
-      categories.find((cat: Category) => cat.name === 'Engineering')?.id || categories[0]?.id || ''
-    );
+    return categories[0]?.id || '';
   }, [categories]);
 
   const handleFinish = async (values: GroupFormData) => {

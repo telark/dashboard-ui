@@ -2,13 +2,10 @@ import { Client, exporterApiClient } from '../../../../api/index';
 import logger from '../../../../logging';
 import { Endpoints } from '../../../../constants';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
-import type { Group } from '../models';
+import type { Group, GroupFormData } from '../models';
 import { GROUPS_ERROR_MESSAGES } from '../constants';
 
-export const updateGroup = async (
-  groupId: string,
-  group: Partial<Omit<Group, 'id' | 'creationDate'>>,
-) => {
+export const updateGroup = async (groupId: string, group: Partial<GroupFormData>) => {
   try {
     const groupData = {
       name: group.name,

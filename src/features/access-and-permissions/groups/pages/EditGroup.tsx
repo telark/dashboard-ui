@@ -13,8 +13,8 @@ import { PageContainer, NotFound } from '../../../../components/shared';
 import { useGroupDetails, useGroupActions } from '../hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
-import type { Category } from '../../categories/models';
 import type { GroupFormData } from '../models';
+import { mapCategoriesToOptions } from '../../categories/utils';
 
 const GroupIcon = Icons.Group;
 
@@ -24,12 +24,7 @@ const EditGroup: React.FC = () => {
   const [form] = Form.useForm<GroupFormData>();
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
 
-  const categoryOptions = useMemo(() => {
-    return categories.map((category: Category) => ({
-      label: category.name,
-      value: category.id,
-    }));
-  }, [categories]);
+  const categoryOptions = useMemo(() => mapCategoriesToOptions(categories), [categories]);
 
   useEffect(() => {
     if (group) {

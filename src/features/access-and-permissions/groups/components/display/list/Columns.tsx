@@ -8,6 +8,7 @@ import Actions from './Actions';
 import { AiOutlineFileText, AiOutlineTag, AiOutlineCalendar } from 'react-icons/ai';
 import type { Category } from '../../../../categories/models';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
+import { getCategoryName } from '../../../../categories/utils';
 
 interface ColumnsContext extends GenerateColumnCtx {
   categories?: Category[];
@@ -15,15 +16,6 @@ interface ColumnsContext extends GenerateColumnCtx {
 
 const Columns = (ctx: ColumnsContext) => {
   const categories = ctx.categories || [];
-
-  const getCategoryName = (categoryId: string): string => {
-    if (!categoryId) return '—';
-    const category = categories.find((cat: Category) => cat.id === categoryId);
-    if (!category) {
-      return '—';
-    }
-    return category.name;
-  };
 
   const cols: any[] = [];
   cols.push(
@@ -56,7 +48,7 @@ const Columns = (ctx: ColumnsContext) => {
         icon: <AiOutlineTag />,
         width: GC.SIZES.COLUMNS.CATEGORY,
         render: (value: string) => {
-          const categoryName = getCategoryName(value);
+          const categoryName = getCategoryName(value, categories);
           return (
             <RowTag
               text={categoryName}

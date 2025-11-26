@@ -34,13 +34,6 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
     return items;
   }, [groups, sortKey, sortOrder]);
 
-  const handleView = (record: Group) => {
-    onView?.(record);
-  };
-
-  const handleEdit = (record: Group) => {
-    onEdit?.(record);
-  };
 
   const handleDeleteClick = (record: Group) => {
     Modal.confirm({
@@ -63,12 +56,12 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
           setSortKey(key);
           setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
         },
-        onView: handleView,
-        onEdit: handleEdit,
+        onView,
+        onEdit,
         onDelete: handleDeleteClick,
         categories,
       } as any),
-    [sortKey, handleView, handleEdit, handleDeleteClick, categories],
+    [sortKey, onView, onEdit, handleDeleteClick, categories],
   );
 
   return (
@@ -79,7 +72,7 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
       className="app-table"
       rowHeight={GC.SIZES.ROW_HEIGHT}
       tableProps={{ rowSelection: {} }}
-      onRowClick={handleView}
+      onRowClick={onView}
     />
   );
 };
