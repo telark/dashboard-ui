@@ -1,20 +1,23 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Form, Input } from 'antd';
+import React, { useEffect, useMemo } from 'react';
+import { Form } from 'antd';
 import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../../../constants';
 import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
 import Header from '../../../../components/display/sections/Header';
 import { GROUPS_CONSTANTS as GC } from '../constants';
-import LabeledInput from '../../../../components/display/inputs/LabeledInput';
-import LabeledSelect from '../../../../components/display/inputs/LabeledSelect';
 import Section from '../../../../components/display/sections/Section';
 import { PrimaryButton } from '../../../../components/display/buttons';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
-import { useGroupDetails, useGroupActions, useGroups, useGroupNameValidation } from '../hooks';
-import { useCategories } from '../../categories/hooks';
-import { CATEGORIES_CONSTANTS } from '../../categories/constants';
+import {
+  useGroupDetails,
+  useGroupActions,
+  useGroups,
+  useGroupNameValidation,
+  useGroupCategories,
+  useGroupFormState,
+} from '../hooks';
+import GroupFormFields from '../components/display/shared/GroupFormFields';
 import type { GroupFormData } from '../models';
-import { mapCategoriesToOptions } from '../../categories/utils';
 
 const GroupIcon = Icons.Group;
 
@@ -23,9 +26,7 @@ const EditGroup: React.FC = () => {
   const { handleUpdate, submitting } = useGroupActions();
   const { groups } = useGroups();
   const [form] = Form.useForm<GroupFormData>();
-  const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
-
-  const categoryOptions = useMemo(() => mapCategoriesToOptions(categories), [categories]);
+  const { categoryOptions } = useGroupCategories();
 
   const { nameValidator, normalizeName } = useGroupNameValidation({
     groups,
@@ -33,8 +34,20 @@ const EditGroup: React.FC = () => {
     currentName: group?.name,
   });
 
-  const [hasFormErrors, setHasFormErrors] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
+  const initialFormValues = useMemo(() => {
+    if (!group) return null;
+    return {
+      name: group.name,
+      description: group.description,
+      categoryID: group.categoryID,
+    };
+  }, [group]);
+
+  const { handleValuesChange, handleFieldsChange, hasFormErrors, hasChanges } = useGroupFormState({
+    form,
+    isEditMode: true,
+    initialValues: initialFormValues,
+  });
 
   useEffect(() => {
     if (group) {
@@ -51,20 +64,7 @@ const EditGroup: React.FC = () => {
     await handleUpdate(id, values);
   };
 
-  const initialFormValues = useMemo(() => {
-    if (!group) return null;
-    return {
-      name: group.name,
-      description: group.description,
-      categoryID: group.categoryID,
-    };
-  }, [group]);
-
-  const isButtonDisabled = useMemo(() => {
-    if (submitting) return true;
-    if (hasFormErrors) return true;
-    return !hasChanges;
-  }, [submitting, hasFormErrors, hasChanges]);
+  const isButtonDisabled = submitting || hasFormErrors || !hasChanges;
 
   if (loading) {
     return (
@@ -101,20 +101,8 @@ const EditGroup: React.FC = () => {
             layout="vertical"
             form={form}
             onFinish={handleFinish}
-            onValuesChange={() => {
-              const fieldsError = form.getFieldsError();
-              const hasErrors = fieldsError.some((field) => field.errors.length > 0);
-              setHasFormErrors(hasErrors);
-
-              if (initialFormValues) {
-                const currentValues = form.getFieldsValue();
-                const changed =
-                  currentValues.name !== initialFormValues.name ||
-                  currentValues.description !== initialFormValues.description ||
-                  currentValues.categoryID !== initialFormValues.categoryID;
-                setHasChanges(changed);
-              }
-            }}
+            onValuesChange={handleValuesChange}
+            onFieldsChange={handleFieldsChange}
           >
             <div
               style={{
@@ -128,41 +116,11 @@ const EditGroup: React.FC = () => {
                 title={GC.LABELS.FORM.SECTION_TITLE}
                 subtitle={GC.LABELS.FORM.SECTION_SUBTITLE}
                 content={
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-                    <Form.Item
-                      name="name"
-                      label={GC.LABELS.FORM.FIELDS.NAME_LABEL}
-                      required
-                      normalize={normalizeName}
-                      rules={[
-                        {
-                          required: true,
-                          message: `Please enter ${GC.LABELS.FORM.FIELDS.NAME_LABEL.toLowerCase()}`,
-                        },
-                        { validator: nameValidator },
-                      ]}
-                      style={{ marginBottom: 18 }}
-                      className="form-item-compact"
-                      validateTrigger="onChange"
-                    >
-                      <Input placeholder={GC.LABELS.FORM.FIELDS.NAME_PLACEHOLDER} allowClear />
-                    </Form.Item>
-                    <LabeledInput
-                      name="description"
-                      label={GC.LABELS.FORM.FIELDS.DESCRIPTION_LABEL}
-                      required
-                      placeholder={GC.LABELS.FORM.FIELDS.DESCRIPTION_PLACEHOLDER}
-                      marginBottom={18}
-                    />
-                    <LabeledSelect
-                      name="categoryID"
-                      label={GC.LABELS.FORM.FIELDS.CATEGORY_LABEL}
-                      placeholder={GC.LABELS.FORM.FIELDS.CATEGORY_PLACEHOLDER}
-                      required
-                      options={categoryOptions}
-                      marginBottom={6}
-                    />
-                  </div>
+                  <GroupFormFields
+                    nameValidator={nameValidator}
+                    normalizeName={normalizeName}
+                    categoryOptions={categoryOptions}
+                  />
                 }
               />
               <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
