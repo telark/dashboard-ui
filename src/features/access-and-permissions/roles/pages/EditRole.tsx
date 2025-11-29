@@ -3,10 +3,11 @@ import { Form } from 'antd';
 import { APP_ROUTES, Icons } from '../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../constants';
 import Header from '../../../../components/display/sections/Header';
-import RoleForm, { type RoleFormValues } from '../components/display/shared/RoleForm';
+import RoleForm from '../components/display/shared/RoleForm';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
 import { useRoleDetails, useRoleActions, useRoles } from '../hooks';
+import type { RoleFormValues } from '../models';
 import { convertRoleToFormValues, convertFormValuesToRoleFormData } from '../utils/converters';
 
 const RoleIcon = Icons.Role;

@@ -1,23 +1,12 @@
-import type { Role } from '../../../models';
+import type { Role, ColumnsArgs } from '../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
 import Actions from './Actions';
 import { AiOutlineCalendar, AiOutlineCheckCircle, AiOutlineTag } from 'react-icons/ai';
 import { Icons } from '../../../../../../constants';
-import type { RolesSortKey } from './utils';
 
 const RoleIcon = Icons.Role;
-
-interface ColumnsArgs {
-  onView: (r: Role) => void;
-  onEdit?: (r: Role) => void;
-  onDelete: (r: Role) => void;
-  onSort: (key: RolesSortKey) => void;
-  activeSortKey: RolesSortKey;
-  sortOrder: 'asc' | 'desc';
-  getPermissionCount: (r: Role) => number;
-}
 
 export const Columns = ({
   onView,
@@ -136,4 +125,3 @@ export const Columns = ({
   ];
 };
 
-export type { RolesSortKey } from './utils';

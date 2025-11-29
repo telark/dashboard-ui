@@ -1,15 +1,6 @@
-import type { Role, RoleFormData } from '../../models';
-import type { RoleScopePermission } from '../../constants';
+import type { Role, RoleFormData, RoleFormValues } from '../../models';
 import { convertScopesToAPI, convertScopesFromAPI } from './scopes';
 import { convertAssignedToToAPI, convertAssignedToFromAPI } from './assignment';
-
-export interface RoleFormValues {
-  name: string;
-  type?: string;
-  status?: string;
-  scopes: Record<string, RoleScopePermission[]>;
-  assignedTo?: string[];
-}
 
 export const convertFormValuesToRoleFormData = (
   formValues: RoleFormValues,

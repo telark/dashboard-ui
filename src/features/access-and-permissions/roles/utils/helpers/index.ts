@@ -1,0 +1,2 @@
+export { deepEqual } from './deepEqual';
+

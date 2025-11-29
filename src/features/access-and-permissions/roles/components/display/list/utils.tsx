@@ -1,7 +1,5 @@
-import type { Role } from '../../../models';
+import type { Role, RolesSortKey } from '../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
-
-export type RolesSortKey = 'name' | 'type' | 'permission' | 'creationDate' | 'status';
 export const getPermissionCount = (role: Role): number => {
   if (!role.scopesAndPermissions || role.scopesAndPermissions.length === 0) {
     return 0;

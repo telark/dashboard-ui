@@ -3,10 +3,7 @@ import { AiOutlineLock } from 'react-icons/ai';
 import { StatusTag } from '../../../../../../components/display/tags';
 import { SimpleLabel } from '../../../../../../components/display/labels';
 import { CARD_TRANSITIONS } from '../../../../../../constants';
-
-interface ScopesPermissionsProps {
-  scopes: Record<string, string[]>;
-}
+import type { ScopesPermissionsProps } from '../../../models';
 
 const ScopesPermissions: React.FC<ScopesPermissionsProps> = ({ scopes }) => {
   const [hoveredScope, setHoveredScope] = useState<string | null>(null);

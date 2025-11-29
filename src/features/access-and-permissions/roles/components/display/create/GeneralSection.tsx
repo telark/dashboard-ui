@@ -4,13 +4,7 @@ import Section from '../../../../../../components/display/sections/Section';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import { createNameValidator, sanitizeName } from '../../../../../shared';
 import { DEFAULT_NAME_VALIDATION_CONFIG } from '../../../../../shared/constants';
-import type { Role } from '../../../models';
-
-interface RolesGeneralSectionProps {
-  roles: Role[];
-  isEditMode?: boolean;
-  currentName?: string;
-}
+import type { Role, RolesGeneralSectionProps } from '../../../models';
 
 const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = ({
   roles,

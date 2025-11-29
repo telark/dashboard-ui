@@ -3,9 +3,9 @@ import { Form } from 'antd';
 import { APP_ROUTES, Icons } from '../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../constants';
 import Header from '../../../../components/display/sections/Header';
-import RoleForm, { type RoleFormValues } from '../components/display/shared/RoleForm';
+import RoleForm from '../components/display/shared/RoleForm';
 import { PageContainer } from '../../../../components/shared';
-import type { RoleScopePermission } from '../constants';
+import type { RoleScopePermission, RoleFormValues } from '../models';
 import { useRoleActions, useRoles } from '../hooks';
 import { convertFormValuesToRoleFormData } from '../utils/converters';
 
