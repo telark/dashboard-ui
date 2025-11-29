@@ -8,7 +8,6 @@ export const createCategory = async (category: Omit<Category, 'id' | 'creationDa
   try {
     const categoryData = {
       ...category,
-      creationDate: new Date().toISOString(),
     };
     return await Client<CategoryResponse>(exporterApiClient, Endpoints.CATEGORIES.CREATE.path, {
       method: Endpoints.CATEGORIES.CREATE.method,
