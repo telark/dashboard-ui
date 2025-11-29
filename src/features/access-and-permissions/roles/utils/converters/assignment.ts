@@ -1,34 +1,21 @@
 export const convertAssignedToToAPI = (
   assignedTo?: string[],
-): { groupIDs: string[]; userIDs: string[] } | undefined => {
-  if (!assignedTo || assignedTo.length === 0) {
-    return undefined;
-  }
-
+): { groupIDs: string[]; userIDs: string[] } => {
   const groupIDs: string[] = [];
   const userIDs: string[] = [];
 
-  assignedTo.forEach((item) => {
-    if (item.startsWith('group-')) {
-      groupIDs.push(item.replace('group-', ''));
-    } else if (item.startsWith('user-')) {
-      userIDs.push(item.replace('user-', ''));
-    }
-  });
-
-  if (groupIDs.length === 0 && userIDs.length === 0) {
-    return undefined;
+  if (assignedTo && assignedTo.length > 0) {
+    assignedTo.forEach((item) => {
+      if (item.startsWith('group-')) {
+        groupIDs.push(item.replace('group-', ''));
+      } else if (item.startsWith('user-')) {
+        userIDs.push(item.replace('user-', ''));
+      }
+    });
   }
 
-  const result: { groupIDs?: string[]; userIDs?: string[] } = {};
-  if (groupIDs.length > 0) {
-    result.groupIDs = groupIDs;
-  }
-  if (userIDs.length > 0) {
-    result.userIDs = userIDs;
-  }
-
-  return result as { groupIDs: string[]; userIDs: string[] };
+  // Always return an object, even if empty, to allow clearing assignments
+  return { groupIDs, userIDs };
 };
 
 export const convertAssignedToFromAPI = (assignedTo?: {

@@ -22,9 +22,7 @@ export const convertFormValuesToRoleFormData = (
     type: (formValues.type as 'built-in' | 'custom') || defaultType,
     status: (formValues.status as 'Active' | 'Inactive') || defaultStatus,
     scopesAndPermissions: convertScopesToAPI(formValues.scopes),
-    assignedTo: assignedTo
-      ? { groupIDs: assignedTo.groupIDs, userIDs: assignedTo.userIDs }
-      : undefined,
+    assignedTo: { groupIDs: assignedTo.groupIDs, userIDs: assignedTo.userIDs },
   };
 };
 
