@@ -435,3 +435,42 @@
 .compact-menu .ant-menu-submenu {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
+
+/* Role Assignment Select Styles */
+.role-assignment-select .ant-select-selector {
+  border-color: #d9d9d9 !important;
+}
+
+.role-assignment-select.ant-select-focused .ant-select-selector {
+  border-color: #20C997 !important;
+  box-shadow: 0 0 0 2px rgba(32, 201, 151, 0.1) !important;
+}
+
+.role-assignment-select .ant-select-selection-item {
+  background-color: #20C997 !important;
+  border-color: #20C997 !important;
+  color: white !important;
+}
+
+.role-assignment-select .ant-select-selection-item-remove {
+  color: white !important;
+}
+
+.role-assignment-select .ant-select-selection-item-remove:hover {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Remove default indentation and set consistent padding */
+.role-assignment-select .ant-select-item-group {
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+}
+
+.role-assignment-select .ant-select-item-option {
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+}
+
+.role-assignment-select .rc-virtual-list-holder-inner > div > div {
+  padding-left: 0 !important;
+}
