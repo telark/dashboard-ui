@@ -1,6 +1,6 @@
 import type { FormInstance } from 'antd';
 import type { ReactNode, ComponentType } from 'react';
-import type { RoleScopePermission } from '../constants';
+import type { RoleScopePermission } from './types';
 import type { Role } from './roles';
 
 export interface RoleFormValues {

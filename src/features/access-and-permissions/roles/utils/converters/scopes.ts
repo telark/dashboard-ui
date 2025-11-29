@@ -1,5 +1,4 @@
-import type { ScopeAndPermissions } from '../../models';
-import type { RoleScopePermission } from '../../constants';
+import type { ScopeAndPermissions, RoleScopePermission } from '../../models';
 
 export const convertScopesToAPI = (
   scopes: Record<string, RoleScopePermission[]>,

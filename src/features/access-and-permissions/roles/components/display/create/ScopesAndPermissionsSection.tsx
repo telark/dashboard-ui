@@ -1,10 +1,10 @@
 import React from 'react';
 import Section from '../../../../../../components/display/sections/Section';
-import { ROLES_CONSTANTS as RPC } from '../../../constants';
+import { ROLES_CONSTANTS as RPC, SCOPE_PERMISSIONS } from '../../../constants';
 import RolesScopesAndPermissionsList from './ScopesAndPermissionsList';
 
 const AREAS = RPC.SCOPE.DEFAULT_AREAS;
-const PERMISSIONS = RPC.SCOPE.DEFAULT_PERMISSIONS;
+const PERMISSIONS = SCOPE_PERMISSIONS;
 const TOOLTIP = RPC.SCOPE.TOOLTIP;
 
 const RolesScopesAndPermissionsSection: React.FC = () => {

@@ -8,7 +8,7 @@ import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWr
 import { PageContainer, NotFound } from '../../../../components/shared';
 import { useRoleDetails, useRoleActions, useRoles } from '../hooks';
 import type { RoleFormValues } from '../models';
-import { convertRoleToFormValues, convertFormValuesToRoleFormData } from '../utils/converters';
+import { convertRoleToFormValues, convertFormValuesToRoleFormData } from '../utils';
 
 const RoleIcon = Icons.Role;
 

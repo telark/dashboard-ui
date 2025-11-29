@@ -10,7 +10,7 @@ import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
 import { useRoleDetails } from '../hooks';
-import { convertScopesFromAPI } from '../utils/converters';
+import { convertScopesFromAPI } from '../utils';
 
 const RoleIcon = Icons.Role;
 

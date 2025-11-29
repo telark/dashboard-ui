@@ -1,6 +1,6 @@
-export const ROLE_SCOPE_PERMISSIONS = ['View', 'Edit', 'Delete'] as const;
-export type RoleScopePermission = (typeof ROLE_SCOPE_PERMISSIONS)[number];
+import type { RoleScopePermission } from '../models/types';
 
+export const SCOPE_PERMISSIONS = ['View', 'Edit', 'Delete'] as const;
 export const ROLES_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Roles',
@@ -112,7 +112,6 @@ export const ROLES_CONSTANTS = {
       { key: 'users', label: 'Users' },
       { key: 'roles', label: 'Roles' },
     ] as const,
-    DEFAULT_PERMISSIONS: ROLE_SCOPE_PERMISSIONS,
     TOOLTIP: {
       View: 'Read-only access to view data and settings.',
       Edit: 'Can create and update within assigned scope.',

@@ -1,4 +1,5 @@
 import type { Role } from './roles';
+import type { RolesSortKey } from './types';
 
 export interface RolesGeneralSectionProps {
   roles: Role[];
@@ -16,8 +17,6 @@ export interface ActionsProps {
 export interface ScopesPermissionsProps {
   scopes: Record<string, string[]>;
 }
-
-export type RolesSortKey = 'name' | 'type' | 'permission' | 'creationDate' | 'status';
 
 export interface ColumnsArgs {
   onView: (r: Role) => void;

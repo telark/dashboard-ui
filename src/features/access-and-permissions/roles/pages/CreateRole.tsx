@@ -7,7 +7,7 @@ import RoleForm from '../components/display/shared/RoleForm';
 import { PageContainer } from '../../../../components/shared';
 import type { RoleScopePermission, RoleFormValues } from '../models';
 import { useRoleActions, useRoles } from '../hooks';
-import { convertFormValuesToRoleFormData } from '../utils/converters';
+import { convertFormValuesToRoleFormData } from '../utils';
 
 const RoleIcon = Icons.Role;
 

@@ -1,5 +1,4 @@
-import type { RoleScopePermission } from '../constants/roles';
-export type { RoleScopePermission } from '../constants/roles';
+import type { RoleStatus, RoleType, RoleScopePermission } from './types';
 
 export interface ScopeAndPermissions {
   scope: string;
@@ -37,14 +36,9 @@ export interface RolesScopesAndPermissionsListProps {
   dividerMarginPx?: number;
 }
 
-export type RoleStatus = 'Active' | 'Inactive';
-export type RoleType = 'built-in' | 'custom';
-
 export interface RolesState {
   roles: Role[];
   details: Role | null;
   loading: boolean;
   error: string | null;
 }
-
-export type RoleFormData = Omit<Role, 'id' | 'creationDate' | 'lastUpdateDate'>;

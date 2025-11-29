@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import type { FormInstance } from 'antd';
 import type { RoleFormValues } from '../models';
-import { deepEqual } from '../utils/helpers';
+import { deepEqual } from '../utils';
 
 interface UseRoleFormStateOptions {
   form: FormInstance<RoleFormValues>;
