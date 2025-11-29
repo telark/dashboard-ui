@@ -2,7 +2,6 @@ import React from 'react';
 import { APP_ROUTES, Icons } from '../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../constants';
 import Header from '../../../../components/display/sections/Header';
-import { STATIC_ROLES } from '../data';
 import DetailsView from '../../../../components/display/views/DetailsView';
 import ScopesPermissions from '../components/display/view/ScopesPermissions';
 import { createRoleViewConfig } from '../config';
@@ -10,30 +9,29 @@ import { Card } from 'antd';
 import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
-import { useViewPage } from '../../../../hooks/layout';
-import type { Role } from '../models';
+import { useRoleDetails } from '../hooks';
+import { convertScopesFromAPI } from '../utils/converters';
 
 const RoleIcon = Icons.Role;
 
 const ViewRole: React.FC = () => {
-  const {
-    item: role,
-    config,
-    notFound,
-  } = useViewPage<Role>({
-    data: STATIC_ROLES,
-    findById: (id, data) => data.find((r) => r.id === id),
-    createConfig: createRoleViewConfig,
-  });
+  const { role, loading, notFound } = useRoleDetails();
+
+  if (loading) {
+    return <PageContainer>Loading...</PageContainer>;
+  }
 
   if (notFound || !role) {
     return <NotFound message={RC.LABELS.NOT_FOUND} />;
   }
 
+  const config = createRoleViewConfig(role);
   const breadcrumbs = [
     { label: RC.LABELS.BREADCRUMBS.ROLES, to: APP_ROUTES.ROLES },
     { label: role.name },
   ];
+
+  const scopesRecord = convertScopesFromAPI(role.scopesAndPermissions || []);
 
   return (
     <PageContainer>
@@ -48,7 +46,7 @@ const ViewRole: React.FC = () => {
           }}
           styles={{ body: COMPONENT_STYLES.VIEW_DETAILS.cardBody }}
         >
-          <ScopesPermissions scopes={role.scopes} />
+          <ScopesPermissions scopes={scopesRecord} />
         </Card>
       </AnimatedPageWrapper>
     </PageContainer>

@@ -1,13 +1,22 @@
 import React, { useMemo, useState } from 'react';
 import { Modal } from 'antd';
+import { useDispatch } from 'react-redux';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import type { Role, RolesTableProps } from '../../../models';
 import { Columns } from './Columns';
 import { getPermissionCount, RolesSortKey, sortRoles } from './utils';
 import DataTable from '../../../../../../components/display/table/DataTable';
+import { deleteRoleThunk } from '../../../store';
+import type { AppDispatch } from '../../../../../../store';
 
-const RolesTable: React.FC<RolesTableProps> = ({ roles, onRolesChange, onView, onEdit }) => {
-  const [sortKey, setSortKey] = useState<RolesSortKey>('createdAt');
+const RolesTable: React.FC<RolesTableProps & { loading?: boolean }> = ({
+  roles,
+  onView,
+  onEdit,
+  loading = false,
+}) => {
+  const dispatch: AppDispatch = useDispatch();
+  const [sortKey, setSortKey] = useState<RolesSortKey>('creationDate');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const onSort = (key: RolesSortKey) => {
@@ -31,8 +40,8 @@ const RolesTable: React.FC<RolesTableProps> = ({ roles, onRolesChange, onView, o
       content: RPC.LABELS.DELETE_MODAL_CONTENT(record?.name || ''),
       okText: RPC.LABELS.DELETE_MODAL_OK,
       okButtonProps: { danger: true },
-      onOk: () => {
-        onRolesChange?.(roles.filter((r) => r.id !== record.id));
+      onOk: async () => {
+        await dispatch(deleteRoleThunk(record.id));
       },
     });
   };
@@ -58,7 +67,7 @@ const RolesTable: React.FC<RolesTableProps> = ({ roles, onRolesChange, onView, o
       data={sortedRoles as any}
       rowKey={(r: any) => r.id}
       rowHeight={RPC.SIZES.ROW_HEIGHT}
-      tableProps={{ rowSelection: {} }}
+      tableProps={{ rowSelection: {}, loading }}
       onRowClick={handleView}
     />
   );

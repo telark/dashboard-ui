@@ -12,6 +12,8 @@ const RoleIcon = Icons.Role;
 
 export interface RoleFormValues {
   name: string;
+  type?: string;
+  status?: string;
   scopes: Record<string, RoleScopePermission[]>;
 }
 

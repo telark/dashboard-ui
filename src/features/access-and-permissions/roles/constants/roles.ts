@@ -20,6 +20,10 @@ export const ROLES_CONSTANTS = {
     MESSAGES: {
       CREATED: (name: string) => `Role "${name}" created`,
       UPDATED: (name: string) => `Role "${name}" updated`,
+      DELETED: 'Role deleted successfully',
+      CREATE_FAILED: 'Failed to create role',
+      UPDATE_FAILED: 'Failed to update role',
+      DELETE_FAILED: 'Failed to delete role',
     },
     COLUMNS: {
       ROLE_TITLE: 'Role Title',
@@ -49,7 +53,7 @@ export const ROLES_CONSTANTS = {
     GROUP: 'group',
     CATEGORY: 'category',
     PERMISSION: 'permission',
-    CREATED_AT: 'createdAt',
+    CREATED_AT: 'creationDate',
     STATUS: 'status',
     ACTIONS: 'actions',
   } as const,
@@ -109,15 +113,14 @@ export const ROLES_CONSTANTS = {
   SCOPE: {
     TITLE: 'Scope & Permissions',
     SUBTITLE: 'Define what areas this role can access and at what level.',
-    AREAS: [
+    DEFAULT_AREAS: [
       { key: 'groupers', label: 'Groupers' },
       { key: 'workloads', label: 'Workloads' },
       { key: 'bridges', label: 'Bridges' },
       { key: 'users', label: 'Users' },
       { key: 'roles', label: 'Roles' },
-      { key: 'settings', label: 'Settings' },
     ] as const,
-    PERMISSIONS: ROLE_SCOPE_PERMISSIONS,
+    DEFAULT_PERMISSIONS: ROLE_SCOPE_PERMISSIONS,
     TOOLTIP: {
       View: 'Read-only access to view data and settings.',
       Edit: 'Can create and update within assigned scope.',
@@ -126,4 +129,16 @@ export const ROLES_CONSTANTS = {
   },
   STATUS: { ACTIVE: 'Active', INACTIVE: 'Inactive' },
   TYPE: { BUILT_IN: 'built-in', CUSTOM: 'custom' },
+  ERROR_MESSAGES: {
+    CLIENT: {
+      FETCH_ROLES_FAILED: '[APIClient] Failed to fetch roles:',
+      FETCH_ROLE_DETAILS_FAILED: (id: string) =>
+        `[APIClient] Failed to fetch role details for ${id}:`,
+      CREATE_ROLE_FAILED: (name: string) => `[APIClient] Failed to create role: ${name}`,
+      UPDATE_ROLE_FAILED: (id: string) => `[APIClient] Failed to update role: ${id}`,
+      DELETE_ROLE_FAILED: (id: string) => `[APIClient] Failed to delete role: ${id}`,
+    },
+  },
 } as const;
+
+export const ROLES_ERROR_MESSAGES = ROLES_CONSTANTS.ERROR_MESSAGES;

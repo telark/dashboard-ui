@@ -114,8 +114,8 @@ export const Columns = ({
         label: RPC.LABELS.COLUMNS.CREATED,
         icon: <AiOutlineCalendar />,
         width: RPC.SIZES.COLUMNS.CREATED,
-        render: (date: string) =>
-          new Date(date).toLocaleDateString(undefined, {
+        render: (_: any, record: Role) =>
+          new Date(record.creationDate || 0).toLocaleDateString(undefined, {
             month: 'short',
             day: 'numeric',
             year: 'numeric',

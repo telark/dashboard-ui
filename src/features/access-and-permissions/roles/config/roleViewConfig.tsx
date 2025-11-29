@@ -41,9 +41,9 @@ export const createRoleViewConfig = (role: Role): DetailsViewConfig => {
         type: 'custom',
       },
       {
-        key: 'createdAt',
+        key: 'creationDate',
         label: 'Created At',
-        value: new Date(role.createdAt).toLocaleString('en-US', {
+        value: new Date(role.creationDate).toLocaleString('en-US', {
           year: 'numeric',
           month: 'long',
           day: 'numeric',

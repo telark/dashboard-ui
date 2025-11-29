@@ -57,6 +57,14 @@ export const STORE_ACTIONS = {
     UPDATE: 'groups/update',
     DELETE: 'groups/delete',
   },
+  ROLES: {
+    FETCH: 'roles/fetch',
+    FETCH_SILENT: 'roles/fetchSilent',
+    FETCH_DETAILS: 'roles/fetchDetails',
+    CREATE: 'roles/create',
+    UPDATE: 'roles/update',
+    DELETE: 'roles/delete',
+  },
   CATEGORIES: {
     FETCH_BY_SCOPE: 'categories/fetchByScope',
     FETCH_BY_SCOPE_SILENT: 'categories/fetchByScopeSilent',
@@ -107,6 +115,11 @@ export const STORE_ERRORS = {
   CREATE_GROUP: 'Failed to create group',
   UPDATE_GROUP: 'Failed to update group',
   DELETE_GROUP: 'Failed to delete group',
+  FETCH_ROLES: 'Failed to fetch roles',
+  FETCH_ROLE_DETAILS: 'Failed to fetch role details',
+  CREATE_ROLE: 'Failed to create role',
+  UPDATE_ROLE: 'Failed to update role',
+  DELETE_ROLE: 'Failed to delete role',
   FETCH_CATEGORIES: 'Failed to fetch categories',
 } as const;
 
@@ -138,5 +151,10 @@ export const STORE_MESSAGES = {
   ERROR_CREATING_GROUP: 'Error creating group:',
   ERROR_UPDATING_GROUP: 'Error updating group:',
   ERROR_DELETING_GROUP: 'Error deleting group:',
+  ERROR_FETCHING_ROLES: 'Error fetching roles:',
+  ERROR_FETCHING_ROLE_DETAILS: 'Error fetching role details:',
+  ERROR_CREATING_ROLE: 'Error creating role:',
+  ERROR_UPDATING_ROLE: 'Error updating role:',
+  ERROR_DELETING_ROLE: 'Error deleting role:',
   ERROR_FETCHING_CATEGORIES: 'Error fetching categories:',
 } as const;

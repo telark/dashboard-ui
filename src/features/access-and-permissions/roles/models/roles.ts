@@ -1,21 +1,32 @@
 import type { RoleScopePermission } from '../constants/roles';
-
 export type { RoleScopePermission } from '../constants/roles';
+
+export interface ScopeAndPermissions {
+  scope: string;
+  permissions: string[];
+}
+
+export interface AssignedTo {
+  groupIDs?: string[];
+  userIDs?: string[];
+}
 
 export interface Role {
   id: string;
   name: string;
-  scopes: Record<string, RoleScopePermission[]>;
-  status: RoleStatus;
-  createdAt: string;
   type: RoleType;
+  scopesAndPermissions: ScopeAndPermissions[];
+  status: RoleStatus;
+  creationDate: string;
+  lastUpdateDate?: string;
+  assignedTo?: AssignedTo;
 }
 
 export interface RolesTableProps {
   roles: Role[];
-  onRolesChange?: (next: Role[]) => void;
   onView?: (role: Role) => void;
   onEdit?: (role: Role) => void;
+  loading?: boolean;
 }
 
 export interface RolesScopesAndPermissionsListProps {
@@ -28,3 +39,12 @@ export interface RolesScopesAndPermissionsListProps {
 
 export type RoleStatus = 'Active' | 'Inactive';
 export type RoleType = 'built-in' | 'custom';
+
+export interface RolesState {
+  roles: Role[];
+  details: Role | null;
+  loading: boolean;
+  error: string | null;
+}
+
+export type RoleFormData = Omit<Role, 'id' | 'creationDate' | 'lastUpdateDate'>;
