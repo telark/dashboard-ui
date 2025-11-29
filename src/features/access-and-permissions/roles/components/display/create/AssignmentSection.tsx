@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { Form, Select, Divider } from 'antd';
+import { Form, Select } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../../../../../store';
 import { fetchAllGroupsThunk } from '../../../../groups/store';
@@ -19,7 +19,7 @@ const AssignmentSection: React.FC = () => {
     dispatch(fetchAllUsersThunk());
   }, [dispatch]);
 
-  const allOptions = useMemo(() => {
+  const groupedOptions = useMemo(() => {
     const groupOptions = groups.map((group: Group) => ({
       label: group.name,
       value: `group-${group.id}`,
@@ -28,7 +28,17 @@ const AssignmentSection: React.FC = () => {
       label: user.fullname || user.username,
       value: `user-${user.id}`,
     }));
-    return [...groupOptions, ...userOptions];
+
+    return [
+      {
+        label: RC.ASSIGNMENT.GROUPS_LABEL,
+        options: groupOptions,
+      },
+      {
+        label: RC.ASSIGNMENT.USERS_LABEL,
+        options: userOptions,
+      },
+    ];
   }, [groups, users]);
 
   return (
@@ -42,31 +52,7 @@ const AssignmentSection: React.FC = () => {
             placeholder={RC.ASSIGNMENT.PLACEHOLDER}
             loading={groupsLoading || usersLoading}
             maxTagCount="responsive"
-            options={allOptions}
-            popupRender={(menu) => (
-              <div>
-                <div
-                  style={{
-                    padding: '8px 12px',
-                    fontWeight: 600,
-                    color: RC.COLORS.TEXT_PRIMARY,
-                  }}
-                >
-                  {RC.ASSIGNMENT.GROUPS_LABEL}
-                </div>
-                <Divider style={{ margin: '4px 0' }} />
-                <div
-                  style={{
-                    padding: '8px 12px',
-                    fontWeight: 600,
-                    color: RC.COLORS.TEXT_PRIMARY,
-                  }}
-                >
-                  {RC.ASSIGNMENT.USERS_LABEL}
-                </div>
-                {menu}
-              </div>
-            )}
+            options={groupedOptions}
           />
         </Form.Item>
       }
