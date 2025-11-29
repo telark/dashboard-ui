@@ -32,10 +32,19 @@ export const useGroupFormState = ({
   }, [form, isEditMode, initialValues]);
 
   const handleValuesChange = useCallback(() => {
-    checkFormState();
-  }, [checkFormState]);
+    // Trigger validation to ensure async validators complete
+    form
+      .validateFields()
+      .then(() => {
+        checkFormState();
+      })
+      .catch(() => {
+        checkFormState();
+      });
+  }, [form, checkFormState]);
 
   const handleFieldsChange = useCallback(() => {
+    // onFieldsChange fires when field status changes (including validation)
     checkFormState();
   }, [checkFormState]);
 
