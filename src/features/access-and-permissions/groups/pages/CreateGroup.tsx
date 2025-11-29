@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Form, Input } from 'antd';
 import { Icons, BUTTON_TEXTS } from '../../../../constants';
 import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
@@ -11,14 +11,11 @@ import Section from '../../../../components/display/sections/Section';
 import { PrimaryButton } from '../../../../components/display/buttons';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer } from '../../../../components/shared';
-import { useGroupActions, useGroups } from '../hooks';
+import { useGroupActions, useGroups, useGroupNameValidation } from '../hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import type { GroupFormData } from '../models';
 import { mapCategoriesToOptions } from '../../categories/utils';
-import { createNameValidator, sanitizeName } from '../../../shared';
-import { DEFAULT_NAME_VALIDATION_CONFIG } from '../../../shared/constants';
-import type { Group } from '../models';
 
 const GroupIcon = Icons.Group;
 
@@ -34,31 +31,21 @@ const CreateGroup: React.FC = () => {
     return categories[0]?.id || '';
   }, [categories]);
 
-  const nameValidationConfig = useMemo(
-    () => ({
-      ...DEFAULT_NAME_VALIDATION_CONFIG,
-      minLength: GC.LABELS.FORM.FIELDS.NAME_VALIDATION.MIN_LENGTH,
-      maxLength: GC.LABELS.FORM.FIELDS.NAME_VALIDATION.MAX_LENGTH,
-      duplicateErrorMessage: GC.LABELS.FORM.FIELDS.NAME_VALIDATION.DUPLICATE_ERROR,
-      invalidCharsErrorMessage: GC.LABELS.FORM.FIELDS.NAME_VALIDATION.INVALID_CHARS_ERROR,
-      lengthErrorMessage: GC.LABELS.FORM.FIELDS.NAME_VALIDATION.LENGTH_ERROR,
-    }),
-    [],
-  );
-
-  const nameValidator = useMemo(
-    () => createNameValidator(groups, (group: Group) => group.name, nameValidationConfig, false),
-    [groups, nameValidationConfig],
-  );
-
-  const normalizeName = useMemo(
-    () => (value: string) => sanitizeName(value, nameValidationConfig),
-    [nameValidationConfig],
-  );
+  const { nameValidator, normalizeName } = useGroupNameValidation({
+    groups,
+    isEditMode: false,
+  });
 
   const handleFinish = async (values: GroupFormData) => {
     await handleCreate(values);
   };
+
+  const [hasFormErrors, setHasFormErrors] = useState(false);
+
+  const isButtonDisabled = useMemo(() => {
+    if (submitting) return true;
+    return hasFormErrors;
+  }, [submitting, hasFormErrors]);
 
   return (
     <PageContainer>
@@ -87,6 +74,11 @@ const CreateGroup: React.FC = () => {
               name: '',
               description: '',
               categoryID: defaultCategoryId,
+            }}
+            onValuesChange={() => {
+              const fieldsError = form.getFieldsError();
+              const hasErrors = fieldsError.some((field) => field.errors.length > 0);
+              setHasFormErrors(hasErrors);
             }}
           >
             <div
@@ -146,6 +138,7 @@ const CreateGroup: React.FC = () => {
                     loadingLabel={BUTTON_TEXTS.LOADING}
                     onClick={() => form.submit()}
                     icon={<GroupIcon size={16} />}
+                    disabled={isButtonDisabled}
                   />
                 </Form.Item>
               </div>

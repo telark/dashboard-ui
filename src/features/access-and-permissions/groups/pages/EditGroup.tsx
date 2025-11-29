@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Form, Input } from 'antd';
 import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../../../constants';
 import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
@@ -10,13 +10,11 @@ import Section from '../../../../components/display/sections/Section';
 import { PrimaryButton } from '../../../../components/display/buttons';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
-import { useGroupDetails, useGroupActions, useGroups } from '../hooks';
+import { useGroupDetails, useGroupActions, useGroups, useGroupNameValidation } from '../hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
-import type { GroupFormData, Group } from '../models';
+import type { GroupFormData } from '../models';
 import { mapCategoriesToOptions } from '../../categories/utils';
-import { createNameValidator, sanitizeName } from '../../../shared';
-import { DEFAULT_NAME_VALIDATION_CONFIG } from '../../../shared/constants';
 
 const GroupIcon = Icons.Group;
 
@@ -29,28 +27,14 @@ const EditGroup: React.FC = () => {
 
   const categoryOptions = useMemo(() => mapCategoriesToOptions(categories), [categories]);
 
-  const nameValidationConfig = useMemo(
-    () => ({
-      ...DEFAULT_NAME_VALIDATION_CONFIG,
-      minLength: GC.LABELS.FORM.FIELDS.NAME_VALIDATION.MIN_LENGTH,
-      maxLength: GC.LABELS.FORM.FIELDS.NAME_VALIDATION.MAX_LENGTH,
-      duplicateErrorMessage: GC.LABELS.FORM.FIELDS.NAME_VALIDATION.DUPLICATE_ERROR,
-      invalidCharsErrorMessage: GC.LABELS.FORM.FIELDS.NAME_VALIDATION.INVALID_CHARS_ERROR,
-      lengthErrorMessage: GC.LABELS.FORM.FIELDS.NAME_VALIDATION.LENGTH_ERROR,
-    }),
-    [],
-  );
+  const { nameValidator, normalizeName } = useGroupNameValidation({
+    groups,
+    isEditMode: true,
+    currentName: group?.name,
+  });
 
-  const nameValidator = useMemo(
-    () =>
-      createNameValidator(groups, (g: Group) => g.name, nameValidationConfig, true, group?.name),
-    [groups, nameValidationConfig, group?.name],
-  );
-
-  const normalizeName = useMemo(
-    () => (value: string) => sanitizeName(value, nameValidationConfig),
-    [nameValidationConfig],
-  );
+  const [hasFormErrors, setHasFormErrors] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
 
   useEffect(() => {
     if (group) {
@@ -66,6 +50,21 @@ const EditGroup: React.FC = () => {
     if (!id) return;
     await handleUpdate(id, values);
   };
+
+  const initialFormValues = useMemo(() => {
+    if (!group) return null;
+    return {
+      name: group.name,
+      description: group.description,
+      categoryID: group.categoryID,
+    };
+  }, [group]);
+
+  const isButtonDisabled = useMemo(() => {
+    if (submitting) return true;
+    if (hasFormErrors) return true;
+    return !hasChanges;
+  }, [submitting, hasFormErrors, hasChanges]);
 
   if (loading) {
     return (
@@ -98,7 +97,25 @@ const EditGroup: React.FC = () => {
             width: '100%',
           }}
         >
-          <Form<GroupFormData> layout="vertical" form={form} onFinish={handleFinish}>
+          <Form<GroupFormData>
+            layout="vertical"
+            form={form}
+            onFinish={handleFinish}
+            onValuesChange={() => {
+              const fieldsError = form.getFieldsError();
+              const hasErrors = fieldsError.some((field) => field.errors.length > 0);
+              setHasFormErrors(hasErrors);
+
+              if (initialFormValues) {
+                const currentValues = form.getFieldsValue();
+                const changed =
+                  currentValues.name !== initialFormValues.name ||
+                  currentValues.description !== initialFormValues.description ||
+                  currentValues.categoryID !== initialFormValues.categoryID;
+                setHasChanges(changed);
+              }
+            }}
+          >
             <div
               style={{
                 display: 'flex',
@@ -156,6 +173,7 @@ const EditGroup: React.FC = () => {
                     loadingLabel={BUTTON_TEXTS.LOADING}
                     onClick={() => form.submit()}
                     icon={<GroupIcon size={16} />}
+                    disabled={isButtonDisabled}
                   />
                 </Form.Item>
               </div>

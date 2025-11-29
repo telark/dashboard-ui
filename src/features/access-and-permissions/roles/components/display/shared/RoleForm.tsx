@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Form } from 'antd';
 import type { FormInstance } from 'antd';
 import { PrimaryButton } from '../../../../../../components/display/buttons';
@@ -43,6 +43,15 @@ const RoleForm: React.FC<RoleFormProps> = ({
   isEditMode = false,
   currentName,
 }) => {
+  const [hasFormErrors, setHasFormErrors] = useState(false);
+  const [hasChanges, setHasChanges] = useState(!isEditMode);
+
+  const isButtonDisabled = useMemo(() => {
+    if (submitting) return true;
+    if (isEditMode) return !hasChanges || hasFormErrors;
+    return hasFormErrors;
+  }, [submitting, isEditMode, hasChanges, hasFormErrors]);
+
   const formContent = (
     <div
       style={{
@@ -56,6 +65,23 @@ const RoleForm: React.FC<RoleFormProps> = ({
         form={form}
         onFinish={onSubmit}
         initialValues={initialValues}
+        onValuesChange={() => {
+          const fieldsError = form.getFieldsError();
+          const hasErrors = fieldsError.some((field) => field.errors.length > 0);
+          setHasFormErrors(hasErrors);
+
+          if (isEditMode) {
+            const currentValues = form.getFieldsValue();
+            const changed =
+              currentValues.name !== initialValues.name ||
+              currentValues.type !== initialValues.type ||
+              currentValues.status !== initialValues.status ||
+              JSON.stringify(currentValues.scopes) !== JSON.stringify(initialValues.scopes) ||
+              JSON.stringify(currentValues.assignedTo || []) !==
+                JSON.stringify(initialValues.assignedTo || []);
+            setHasChanges(changed);
+          }
+        }}
       >
         <div
           style={{
@@ -93,6 +119,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
                 loadingLabel={BUTTON_TEXTS.LOADING}
                 onClick={() => form.submit()}
                 icon={<RoleIcon size={16} />}
+                disabled={isButtonDisabled}
               />
             </Form.Item>
           </div>
