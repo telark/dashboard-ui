@@ -1,1 +1,1 @@
-export { GROUPS_CONSTANTS } from './groups';
+export { GROUPS_CONSTANTS, GROUPS_ERROR_MESSAGES } from './groups';

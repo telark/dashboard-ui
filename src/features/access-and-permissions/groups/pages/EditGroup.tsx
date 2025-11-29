@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Form } from 'antd';
 import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../../../constants';
 import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
 import Header from '../../../../components/display/sections/Header';
-import { STATIC_GROUPS } from '../data';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import LabeledInput from '../../../../components/display/inputs/LabeledInput';
 import LabeledSelect from '../../../../components/display/inputs/LabeledSelect';
@@ -11,38 +10,45 @@ import Section from '../../../../components/display/sections/Section';
 import { PrimaryButton } from '../../../../components/display/buttons';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
-import { useEditPage } from '../../../../hooks/layout';
-import type { Group } from '../models';
+import { useGroupDetails, useGroupActions } from '../hooks';
+import { useCategories } from '../../categories/hooks';
+import { CATEGORIES_CONSTANTS } from '../../categories/constants';
+import type { GroupFormData } from '../models';
+import { mapCategoriesToOptions } from '../../categories/utils';
 
 const GroupIcon = Icons.Group;
 
-interface EditGroupFormValues {
-  name: string;
-  description: string;
-  category: string;
-}
-
 const EditGroup: React.FC = () => {
-  const {
-    item: group,
-    form,
-    submitting,
-    handleFinish,
-    notFound,
-  } = useEditPage<Group, EditGroupFormValues>({
-    data: STATIC_GROUPS,
-    findById: (id, data) => data.find((g) => g.id === id),
-    getFormValues: (item) => ({
-      name: item.name,
-      description: item.description,
-      category: item.category,
-    }),
-    onUpdate: async () => {
-      await new Promise((r) => setTimeout(r, 400));
-    },
-    successMessage: GC.LABELS.MESSAGES.UPDATED,
-    viewRoute: (id) => `${APP_ROUTES.GROUPS}/${id}/view`,
-  });
+  const { id, group, loading, notFound } = useGroupDetails();
+  const { handleUpdate, submitting } = useGroupActions();
+  const [form] = Form.useForm<GroupFormData>();
+  const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
+
+  const categoryOptions = useMemo(() => mapCategoriesToOptions(categories), [categories]);
+
+  useEffect(() => {
+    if (group) {
+      form.setFieldsValue({
+        name: group.name,
+        description: group.description,
+        categoryID: group.categoryID,
+      });
+    }
+  }, [group, form]);
+
+  const handleFinish = async (values: GroupFormData) => {
+    if (!id) return;
+    await handleUpdate(id, values);
+  };
+
+  if (loading) {
+    return (
+      <PageContainer>
+        <Header subtitle={GC.LABELS.EDIT_SUBTITLE} breadcrumbs={[]} icon={<GroupIcon />} />
+        <div>Loading...</div>
+      </PageContainer>
+    );
+  }
 
   if (notFound || !group) {
     return <NotFound message={GC.LABELS.NOT_FOUND} />;
@@ -66,7 +72,7 @@ const EditGroup: React.FC = () => {
             width: '100%',
           }}
         >
-          <Form<EditGroupFormValues> layout="vertical" form={form} onFinish={handleFinish}>
+          <Form<GroupFormData> layout="vertical" form={form} onFinish={handleFinish}>
             <div
               style={{
                 display: 'flex',
@@ -95,18 +101,11 @@ const EditGroup: React.FC = () => {
                       marginBottom={18}
                     />
                     <LabeledSelect
-                      name="category"
+                      name="categoryID"
                       label={GC.LABELS.FORM.FIELDS.CATEGORY_LABEL}
                       placeholder={GC.LABELS.FORM.FIELDS.CATEGORY_PLACEHOLDER}
                       required
-                      options={[
-                        { label: 'Engineering', value: 'Engineering' },
-                        { label: 'Operations', value: 'Operations' },
-                        { label: 'Quality Assurance', value: 'Quality Assurance' },
-                        { label: 'Security', value: 'Security' },
-                        { label: 'Management', value: 'Management' },
-                        { label: 'Support', value: 'Support' },
-                      ]}
+                      options={categoryOptions}
                       marginBottom={6}
                     />
                   </div>

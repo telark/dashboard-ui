@@ -1,51 +1,37 @@
-import React, { useState } from 'react';
-import { Form, message } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../../../constants';
+import React, { useMemo } from 'react';
+import { Form } from 'antd';
+import { Icons, BUTTON_TEXTS } from '../../../../constants';
 import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
 import Header from '../../../../components/display/sections/Header';
 import { GROUPS_CONSTANTS as GC } from '../constants';
+import { APP_ROUTES } from '../../../../constants';
 import LabeledInput from '../../../../components/display/inputs/LabeledInput';
 import LabeledSelect from '../../../../components/display/inputs/LabeledSelect';
 import Section from '../../../../components/display/sections/Section';
 import { PrimaryButton } from '../../../../components/display/buttons';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer } from '../../../../components/shared';
-import { useDispatch } from 'react-redux';
-import { addGroup } from '../store';
-import type { Group } from '../models';
+import { useGroupActions } from '../hooks';
+import { useCategories } from '../../categories/hooks';
+import { CATEGORIES_CONSTANTS } from '../../categories/constants';
+import type { GroupFormData } from '../models';
+import { mapCategoriesToOptions } from '../../categories/utils';
 
 const GroupIcon = Icons.Group;
 
-interface CreateGroupFormValues {
-  name: string;
-  description: string;
-  category: string;
-}
-
 const CreateGroup: React.FC = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [form] = Form.useForm<CreateGroupFormValues>();
-  const [submitting, setSubmitting] = useState(false);
+  const [form] = Form.useForm<GroupFormData>();
+  const { handleCreate, submitting } = useGroupActions();
+  const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
 
-  const handleFinish = async (values: CreateGroupFormValues) => {
-    setSubmitting(true);
-    try {
-      await new Promise((r) => setTimeout(r, 400));
-      const newGroup: Group = {
-        id: `grp-${Date.now()}`,
-        name: values.name,
-        description: values.description,
-        category: values.category,
-        createdAt: new Date().toISOString(),
-      };
-      dispatch(addGroup(newGroup));
-      message.success(GC.LABELS.MESSAGES.CREATED(values.name));
-      navigate(`${APP_ROUTES.GROUPS}/${newGroup.id}/view`);
-    } finally {
-      setSubmitting(false);
-    }
+  const categoryOptions = useMemo(() => mapCategoriesToOptions(categories), [categories]);
+
+  const defaultCategoryId = useMemo(() => {
+    return categories[0]?.id || '';
+  }, [categories]);
+
+  const handleFinish = async (values: GroupFormData) => {
+    await handleCreate(values);
   };
 
   return (
@@ -67,14 +53,14 @@ const CreateGroup: React.FC = () => {
             width: '100%',
           }}
         >
-          <Form<CreateGroupFormValues>
+          <Form<GroupFormData>
             layout="vertical"
             form={form}
             onFinish={handleFinish}
             initialValues={{
               name: '',
               description: '',
-              category: 'Engineering',
+              categoryID: defaultCategoryId,
             }}
           >
             <div
@@ -105,18 +91,11 @@ const CreateGroup: React.FC = () => {
                       marginBottom={18}
                     />
                     <LabeledSelect
-                      name="category"
+                      name="categoryID"
                       label={GC.LABELS.FORM.FIELDS.CATEGORY_LABEL}
                       placeholder={GC.LABELS.FORM.FIELDS.CATEGORY_PLACEHOLDER}
                       required
-                      options={[
-                        { label: 'Engineering', value: 'Engineering' },
-                        { label: 'Operations', value: 'Operations' },
-                        { label: 'Quality Assurance', value: 'Quality Assurance' },
-                        { label: 'Security', value: 'Security' },
-                        { label: 'Management', value: 'Management' },
-                        { label: 'Support', value: 'Support' },
-                      ]}
+                      options={categoryOptions}
                       marginBottom={6}
                     />
                   </div>

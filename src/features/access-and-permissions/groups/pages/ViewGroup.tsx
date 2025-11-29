@@ -1,31 +1,35 @@
 import React from 'react';
-import { APP_ROUTES, Icons } from '../../../../constants';
+import { APP_ROUTES, Icons, SHARED_DETAILS_CONSTANTS } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import Header from '../../../../components/display/sections/Header';
-import { STATIC_GROUPS } from '../data';
 import DetailsView from '../../../../components/display/views/DetailsView';
 import { createGroupViewConfig } from '../config';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
-import { useViewPage } from '../../../../hooks/layout';
-import type { Group } from '../models';
+import { useGroupDetails } from '../hooks';
+import { useCategories } from '../../categories/hooks';
+import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 
 const GroupIcon = Icons.Group;
 
 const ViewGroup: React.FC = () => {
-  const {
-    item: group,
-    config,
-    notFound,
-  } = useViewPage<Group>({
-    data: STATIC_GROUPS,
-    findById: (id, data) => data.find((g) => g.id === id),
-    createConfig: createGroupViewConfig,
-  });
+  const { group, loading, notFound } = useGroupDetails();
+  const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
+
+  if (loading) {
+    return (
+      <PageContainer>
+        <Header subtitle={GC.LABELS.VIEW_SUBTITLE} breadcrumbs={[]} icon={<GroupIcon />} />
+        <div>{SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING}</div>
+      </PageContainer>
+    );
+  }
 
   if (notFound || !group) {
     return <NotFound message={GC.LABELS.NOT_FOUND} />;
   }
+
+  const config = createGroupViewConfig(group, categories);
 
   const breadcrumbs = [
     { label: GC.LABELS.BREADCRUMBS.GROUPS, to: APP_ROUTES.GROUPS },

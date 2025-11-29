@@ -1,5 +1,3 @@
-import type { FormFieldConfig } from '../../../../interfaces/layout/modal';
-
 export const GROUPS_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Groups',
@@ -18,6 +16,10 @@ export const GROUPS_CONSTANTS = {
     MESSAGES: {
       CREATED: (name: string) => `Group "${name}" created`,
       UPDATED: (name: string) => `Group "${name}" updated`,
+      DELETED: 'Group deleted successfully',
+      CREATE_FAILED: 'Failed to create group',
+      UPDATE_FAILED: 'Failed to update group',
+      DELETE_FAILED: 'Failed to delete group',
     },
     COLUMNS: {
       NAME: 'Group Name',
@@ -52,8 +54,8 @@ export const GROUPS_CONSTANTS = {
   KEYS: {
     NAME: 'name',
     DESCRIPTION: 'description',
-    CATEGORY: 'category',
-    CREATED_AT: 'createdAt',
+    CATEGORY: 'categoryID',
+    CREATED_AT: 'creationDate',
     ACTIONS: 'actions',
   } as const,
   SIZES: {
@@ -78,43 +80,16 @@ export const GROUPS_CONSTANTS = {
     TYPE_CUSTOM_TEXT: '#334155',
     HEADER_BG: '#f8fafc',
   },
-  FORM: {
-    FIELDS: [
-      {
-        type: 'input',
-        name: 'name',
-        label: 'Group Name',
-        placeholder: 'e.g. Development Team',
-        required: true,
-        marginBottom: 18,
-      },
-      {
-        type: 'input',
-        name: 'description',
-        label: 'Description',
-        placeholder: 'e.g. Group for development team members',
-        required: true,
-        marginBottom: 18,
-      },
-      {
-        type: 'select',
-        name: 'category',
-        label: 'Category',
-        placeholder: 'Select a category',
-        required: true,
-        options: [
-          { label: 'Engineering', value: 'Engineering' },
-          { label: 'Operations', value: 'Operations' },
-          { label: 'Quality Assurance', value: 'Quality Assurance' },
-          { label: 'Security', value: 'Security' },
-          { label: 'Management', value: 'Management' },
-          { label: 'Support', value: 'Support' },
-        ],
-        marginBottom: 6,
-      },
-    ] as FormFieldConfig[],
-    INITIAL_VALUES: {
-      category: 'Engineering',
+  ERROR_MESSAGES: {
+    CLIENT: {
+      FETCH_GROUPS_FAILED: '[APIClient] Failed to fetch groups:',
+      FETCH_GROUP_DETAILS_FAILED: (id: string) =>
+        `[APIClient] Failed to fetch group details for ${id}:`,
+      CREATE_GROUP_FAILED: (name: string) => `[APIClient] Failed to create group: ${name}`,
+      UPDATE_GROUP_FAILED: (id: string) => `[APIClient] Failed to update group: ${id}`,
+      DELETE_GROUP_FAILED: (id: string) => `[APIClient] Failed to delete group: ${id}`,
     },
   },
 } as const;
+
+export const GROUPS_ERROR_MESSAGES = GROUPS_CONSTANTS.ERROR_MESSAGES;

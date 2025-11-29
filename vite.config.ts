@@ -53,4 +53,7 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
   },
   base: './', // Relative base path for assets
+  server: {
+    open: '/',
+  },
 });

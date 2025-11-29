@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert } from 'antd';
 import { motion } from 'framer-motion';
 import { useDispatch } from 'react-redux';
@@ -72,7 +72,7 @@ const Startup: React.FC<StartupProps> = () => {
   }, []);
 
   const [starting, setStarting] = useState(true); // auto-start mode
-  const handleStart = async () => {
+  const handleStart = useCallback(async () => {
     try {
       setStarting(true);
       const result = await startClusterAnalyze();
@@ -104,17 +104,17 @@ const Startup: React.FC<StartupProps> = () => {
     } catch {
       setStarting(true);
     }
-  };
+  }, [dispatch, navigate]);
 
-  const cancelScheduledStart = () => {
+  const cancelScheduledStart = useCallback(() => {
     if (startTimerRef.current) {
       globalThis.clearTimeout(startTimerRef.current);
       startTimerRef.current = undefined;
       insightsScheduledRef.current = false;
     }
-  };
+  }, []);
 
-  const scheduleInsightsStart = () => {
+  const scheduleInsightsStart = useCallback(() => {
     if (!insightsScheduledRef.current) {
       startTimerRef.current = globalThis.setTimeout(() => {
         insightsScheduledRef.current = false;
@@ -122,35 +122,41 @@ const Startup: React.FC<StartupProps> = () => {
       }, 5000);
       insightsScheduledRef.current = true;
     }
-  };
+  }, [handleStart]);
 
-  const handlePollSuccess = (ok: boolean) => {
-    setBackendDown(false);
-    failureCountRef.current = ok ? 0 : failureCountRef.current + 1;
+  const handlePollSuccess = useCallback(
+    (ok: boolean) => {
+      setBackendDown(false);
+      failureCountRef.current = ok ? 0 : failureCountRef.current + 1;
 
-    if (!ok && !insightsScheduledRef.current) {
-      scheduleInsightsStart();
-    }
+      if (!ok && !insightsScheduledRef.current) {
+        scheduleInsightsStart();
+      }
 
-    if (ok) {
-      cancelScheduledStart();
-    }
-  };
+      if (ok) {
+        cancelScheduledStart();
+      }
+    },
+    [scheduleInsightsStart, cancelScheduledStart],
+  );
 
-  const handlePollError = (e: any) => {
-    if (e === 'NETWORK_UNAVAILABLE') {
-      setBackendDown(true);
-      failureCountRef.current += 1;
-      cancelScheduledStart();
-    }
-  };
+  const handlePollError = useCallback(
+    (e: any) => {
+      if (e === 'NETWORK_UNAVAILABLE') {
+        setBackendDown(true);
+        failureCountRef.current += 1;
+        cancelScheduledStart();
+      }
+    },
+    [cancelScheduledStart],
+  );
 
-  const scheduleNextPoll = (poll: () => void, madeFourFails: boolean) => {
+  const scheduleNextPoll = useCallback((poll: () => void, madeFourFails: boolean) => {
     if (madeFourFails) {
       failureCountRef.current = 0;
     }
     poll();
-  };
+  }, []);
 
   // Simple backoff poller after starting insights and to recheck when backend is down
   useEffect(() => {
@@ -178,7 +184,7 @@ const Startup: React.FC<StartupProps> = () => {
         if (startTimerRef.current) globalThis.clearTimeout(startTimerRef.current);
       };
     }
-  }, []);
+  }, [dispatch, handlePollError, handlePollSuccess, polling, starting, scheduleNextPoll]);
 
   return (
     <div
