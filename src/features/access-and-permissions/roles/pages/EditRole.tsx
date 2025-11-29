@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Form } from 'antd';
 import { APP_ROUTES, Icons } from '../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../constants';
@@ -17,15 +17,24 @@ const EditRole: React.FC = () => {
   const { roles } = useRoles();
   const [form] = Form.useForm<RoleFormValues>();
 
+  const initialValues = useMemo(() => {
+    if (!role) return null;
+    return convertRoleToFormValues(role);
+  }, [role]);
+
+  useEffect(() => {
+    if (role && initialValues) {
+      form.setFieldsValue(initialValues);
+    }
+  }, [role, initialValues, form]);
+
   if (loading) {
     return <PageContainer>Loading...</PageContainer>;
   }
 
-  if (notFound || !role || !id) {
+  if (notFound || !role || !id || !initialValues) {
     return <NotFound message={RC.LABELS.NOT_FOUND} />;
   }
-
-  const initialValues = convertRoleToFormValues(role);
 
   const handleFinish = async (values: RoleFormValues) => {
     const roleData = convertFormValuesToRoleFormData(values, role.type, role.status);

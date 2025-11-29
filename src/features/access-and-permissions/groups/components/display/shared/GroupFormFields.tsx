@@ -55,4 +55,3 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
 };
 
 export default GroupFormFields;
-
