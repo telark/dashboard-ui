@@ -47,6 +47,7 @@ const CreateRole: React.FC = () => {
           type: RC.VALUES.ROLE_TYPE_CUSTOM,
           status: RC.STATUS.ACTIVE,
           scopes: initialScopes,
+          assignedTo: [],
         }}
         onSubmit={handleFinish}
         buttonText={RC.LABELS.CREATE_BUTTON_TEXT}

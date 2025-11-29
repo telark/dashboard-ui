@@ -6,6 +6,7 @@ import { BUTTON_TEXTS, Icons } from '../../../../../../constants';
 import { COMPONENT_STYLES } from '../../../../../../constants/layout/ui';
 import RolesGeneralSection from '../create/GeneralSection';
 import RolesScopePermissionsSection from '../create/ScopesAndPermissionsSection';
+import AssignmentSection from '../create/AssignmentSection';
 import type { RoleScopePermission } from '../../../constants';
 
 const RoleIcon = Icons.Role;
@@ -15,6 +16,7 @@ export interface RoleFormValues {
   type?: string;
   status?: string;
   scopes: Record<string, RoleScopePermission[]>;
+  assignedTo?: string[];
 }
 
 interface RoleFormProps {
@@ -66,6 +68,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
               <RolesGeneralSection />
+              <AssignmentSection />
             </div>
             <div style={{ flex: 1 }}>
               <RolesScopePermissionsSection />

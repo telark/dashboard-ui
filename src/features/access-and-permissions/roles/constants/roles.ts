@@ -112,6 +112,14 @@ export const ROLES_CONSTANTS = {
   },
   STATUS: { ACTIVE: 'Active', INACTIVE: 'Inactive' },
   TYPE: { BUILT_IN: 'built-in', CUSTOM: 'custom' },
+  ASSIGNMENT: {
+    TITLE: 'Assignment',
+    SUBTITLE: 'Assign this role to groups and users.',
+    LABEL: 'Assigned To',
+    PLACEHOLDER: 'Select groups and users',
+    GROUPS_LABEL: 'Groups',
+    USERS_LABEL: 'Users',
+  },
   ERROR_MESSAGES: {
     CLIENT: {
       FETCH_ROLES_FAILED: '[APIClient] Failed to fetch roles:',
