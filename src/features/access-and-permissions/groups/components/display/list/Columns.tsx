@@ -4,10 +4,21 @@ import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
 import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
 import type { Group } from '../../../models';
-import Actions from './Actions';
 import { AiOutlineFileText, AiOutlineTag, AiOutlineCalendar } from 'react-icons/ai';
+import type { Category } from '../../../../categories/models';
+import TimeAgo from '../../../../../../components/display/time/TimeAgo';
+import { getCategoryName } from '../../../../categories/utils';
 
-const Columns = (ctx: GenerateColumnCtx) => {
+interface ColumnsContext extends GenerateColumnCtx {
+  categories?: Category[];
+  onView?: (record: Group) => void;
+  onEdit?: (record: Group) => void;
+  onDelete?: (record: Group) => void;
+}
+
+const Columns = (ctx: ColumnsContext) => {
+  const categories = ctx.categories || [];
+
   const cols: any[] = [];
   cols.push(
     generateColumn(
@@ -38,14 +49,17 @@ const Columns = (ctx: GenerateColumnCtx) => {
         label: GC.LABELS.COLUMNS.CATEGORY,
         icon: <AiOutlineTag />,
         width: GC.SIZES.COLUMNS.CATEGORY,
-        render: (value: string) => (
-          <RowTag
-            text={value}
-            background={RPC.COLORS.TYPE_CUSTOM_BG}
-            color={RPC.COLORS.TYPE_CUSTOM_TEXT}
-            fontSize={RPC.SIZES.CHIP_FONT}
-          />
-        ),
+        render: (value: string) => {
+          const categoryName = getCategoryName(value, categories);
+          return (
+            <RowTag
+              text={categoryName}
+              background={RPC.COLORS.TYPE_CUSTOM_BG}
+              color={RPC.COLORS.TYPE_CUSTOM_TEXT}
+              fontSize={RPC.SIZES.CHIP_FONT}
+            />
+          );
+        },
       },
       ctx,
     ),
@@ -55,25 +69,17 @@ const Columns = (ctx: GenerateColumnCtx) => {
         label: GC.LABELS.COLUMNS.CREATED,
         icon: <AiOutlineCalendar />,
         width: GC.SIZES.COLUMNS.CREATED,
-        render: (value: string) => <span>{new Date(value).toLocaleDateString()}</span>,
+        render: (value: string) => {
+          if (!value) return <span style={{ color: '#999' }}>—</span>;
+          try {
+            return <TimeAgo date={value} />;
+          } catch {
+            return <span style={{ color: '#999' }}>—</span>;
+          }
+        },
       },
       ctx,
     ),
-    {
-      title: '',
-      key: GC.KEYS.ACTIONS,
-      align: 'right' as const,
-      width: GC.SIZES.COLUMNS.ACTIONS,
-      onHeaderCell: () => ({ style: { background: RPC.COLORS.HEADER_BG } }),
-      render: (_: any, record: Group) => (
-        <Actions
-          record={record}
-          onView={(ctx as any).onView}
-          onEdit={(ctx as any).onEdit}
-          onDelete={(ctx as any).onDelete}
-        />
-      ),
-    },
   );
   return cols;
 };

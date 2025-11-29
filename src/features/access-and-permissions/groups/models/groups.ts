@@ -2,8 +2,8 @@ export interface Group {
   id: string;
   name: string;
   description: string;
-  category: string;
-  createdAt: string;
+  categoryID: string;
+  creationDate: string;
 }
 
 export interface GroupsState {
@@ -17,5 +17,6 @@ export interface GroupsTableProps {
   groups: Group[];
   onView?: (group: Group) => void;
   onEdit?: (group: Group) => void;
-  onGroupsChange?: (next: Group[]) => void;
 }
+
+export type GroupFormData = Omit<Group, 'id' | 'creationDate'>;

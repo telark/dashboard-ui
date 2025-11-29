@@ -6,6 +6,8 @@ import {
   ANALYZE_PATHS,
   AUTH_PATHS,
   SESSION_PATHS,
+  CATEGORY_PATHS,
+  GROUP_PATHS,
 } from '../rest/paths';
 
 export const Endpoints = {
@@ -184,6 +186,54 @@ export const Endpoints = {
     }),
     DELETE_BY_TOKEN: (sessionToken: string) => ({
       path: SESSION_PATHS.DELETE_BY_TOKEN(sessionToken),
+      method: 'DELETE',
+    }),
+  },
+  CATEGORIES: {
+    CREATE: {
+      path: `${API_PATHS.CLASSIFICATION.CATEGORIES}/${CATEGORY_PATHS.CREATE}`,
+      method: 'POST',
+    },
+    GET_ALL: {
+      path: `${API_PATHS.CLASSIFICATION.CATEGORIES}/${CATEGORY_PATHS.GET_ALL}`,
+      method: 'GET',
+    },
+    GET_BY_ID: (id: string) => ({
+      path: `${API_PATHS.CLASSIFICATION.CATEGORIES}/${CATEGORY_PATHS.GET_BY_ID(id)}`,
+      method: 'GET',
+    }),
+    GET_BY_SCOPE: (scope: string) => ({
+      path: `${API_PATHS.CLASSIFICATION.CATEGORIES}/${CATEGORY_PATHS.GET_BY_SCOPE(scope)}`,
+      method: 'GET',
+    }),
+    PATCH_BY_ID: (id: string) => ({
+      path: `${API_PATHS.CLASSIFICATION.CATEGORIES}/${CATEGORY_PATHS.PATCH_BY_ID(id)}`,
+      method: 'PATCH',
+    }),
+    DELETE_BY_ID: (id: string) => ({
+      path: `${API_PATHS.CLASSIFICATION.CATEGORIES}/${CATEGORY_PATHS.DELETE_BY_ID(id)}`,
+      method: 'DELETE',
+    }),
+  },
+  GROUPS: {
+    CREATE: {
+      path: `${API_PATHS.RESOURCES.GROUPS}/${GROUP_PATHS.CREATE}`,
+      method: 'POST',
+    },
+    GET_ALL: {
+      path: `${API_PATHS.RESOURCES.GROUPS}/${GROUP_PATHS.GET_ALL}`,
+      method: 'GET',
+    },
+    GET_BY_ID: (id: string) => ({
+      path: `${API_PATHS.RESOURCES.GROUPS}/${GROUP_PATHS.GET_BY_ID(id)}`,
+      method: 'GET',
+    }),
+    PATCH_BY_ID: (id: string) => ({
+      path: `${API_PATHS.RESOURCES.GROUPS}/${GROUP_PATHS.PATCH_BY_ID(id)}`,
+      method: 'PATCH',
+    }),
+    DELETE_BY_ID: (id: string) => ({
+      path: `${API_PATHS.RESOURCES.GROUPS}/${GROUP_PATHS.DELETE_BY_ID(id)}`,
       method: 'DELETE',
     }),
   },

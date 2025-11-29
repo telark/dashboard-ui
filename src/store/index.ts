@@ -6,6 +6,7 @@ import { bridgeReducer } from '../features/resources/bridges/store';
 import { insightsReducer } from '../features/insights/store';
 import { groupReducer as groupsReducer } from '../features/access-and-permissions/groups/store';
 import { userReducer as usersReducer } from '../features/access-and-permissions/users/store';
+import { categoryReducer as categoriesReducer } from '../features/access-and-permissions/categories/store';
 import { passkeyReducer } from '../features/auth/store';
 import {
   grouperPersistConfig,
@@ -31,6 +32,7 @@ const store = configureStore({
     bridge: persistedBridgeReducer,
     groups: persistedGroupsReducer,
     users: persistedUsersReducer,
+    categories: categoriesReducer,
     passkeys: passkeyReducer,
   },
   middleware: (getDefaultMiddleware) =>

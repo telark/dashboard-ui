@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from './store';
 import { FancySpinner } from './components/animation';
 import { hasSessionToken, useSessionExpirationCheck } from './features/auth/utils';
+import { useInitializeCategories } from './features/access-and-permissions/categories/hooks';
 
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
 
@@ -41,6 +42,9 @@ const AppContent: React.FC = () => {
     isAuthRoute,
     onSessionExpired: () => setShowSessionExpiredModal(true),
   });
+
+  // Initialize built-in categories when authenticated
+  useInitializeCategories(isAuthenticated);
 
   // Show a brief welcome overlay after analysis start completes
   useEffect(() => {
