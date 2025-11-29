@@ -83,11 +83,13 @@ const RoleForm: React.FC<RoleFormProps> = ({
   };
 
   const checkFormState = () => {
-    if (!isEditMode || !initialValues) return;
-
+    // Always check for form errors in both create and edit modes
     const fieldsError = form.getFieldsError();
     const hasErrors = fieldsError.some((field) => field.errors.length > 0);
     setHasFormErrors(hasErrors);
+
+    // Only check for changes in edit mode
+    if (!isEditMode || !initialValues) return;
 
     const currentValues = form.getFieldsValue();
     
