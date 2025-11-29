@@ -27,4 +27,3 @@ export interface ColumnsArgs {
   sortOrder: 'asc' | 'desc';
   getPermissionCount: (r: Role) => number;
 }
-

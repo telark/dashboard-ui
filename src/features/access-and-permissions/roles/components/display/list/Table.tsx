@@ -62,11 +62,11 @@ const RolesTable: React.FC<RolesTableProps & { loading?: boolean }> = ({
   });
 
   return (
-    <DataTable
+    <DataTable<Role>
       className="app-table"
-      columns={columns as any}
-      data={sortedRoles as any}
-      rowKey={(r: any) => r.id}
+      columns={columns}
+      data={sortedRoles}
+      rowKey={(r: Role) => r.id}
       rowHeight={RPC.SIZES.ROW_HEIGHT}
       tableProps={{ rowSelection: {}, loading }}
       onRowClick={handleView}

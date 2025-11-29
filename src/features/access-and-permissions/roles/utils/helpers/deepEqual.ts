@@ -32,4 +32,3 @@ export const deepEqual = (obj1: unknown, obj2: unknown): boolean => {
     return deepEqual(val1, val2);
   });
 };
-

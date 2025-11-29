@@ -90,15 +90,13 @@ export const useRoleFormState = ({
       }, 100);
       return () => clearTimeout(timer);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditMode, initialValues, form]);
 
-  // Also check when form values are set via setFieldsValue
+  // Check when form values are set via setFieldsValue
   useEffect(() => {
     if (isEditMode && isInitialized) {
       checkFormState();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isInitialized]);
 
   return {
@@ -108,4 +106,3 @@ export const useRoleFormState = ({
     handleFieldsChange,
   };
 };
-

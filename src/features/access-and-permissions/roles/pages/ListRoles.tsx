@@ -6,13 +6,13 @@ import Header from '../../../../components/display/sections/Header';
 import RolesTable from '../components/display/list/Table';
 import { PageContainer } from '../../../../components/shared';
 import { useRoles } from '../hooks';
+import type { Role } from '../models';
 
 const RoleIcon = Icons.Role;
-
 const RolesList: React.FC = () => {
   const navigate = useNavigate();
   const { roles, loading } = useRoles();
-  const handleView = (record: any) => navigate(`${APP_ROUTES.ROLES}/${record.id}/view`);
+  const handleView = (record: Role) => navigate(`${APP_ROUTES.ROLES}/${record.id}/view`);
 
   return (
     <PageContainer>

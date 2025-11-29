@@ -6,4 +6,3 @@ export type RoleStatus = 'Active' | 'Inactive';
 export type RoleType = 'built-in' | 'custom';
 export type RoleFormData = Omit<Role, 'id' | 'creationDate' | 'lastUpdateDate'>;
 export type RolesSortKey = 'name' | 'type' | 'permission' | 'creationDate' | 'status';
-

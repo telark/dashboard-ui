@@ -9,7 +9,7 @@ import { mapRolesData as mapRolesArray, mapRoleDetailsData } from '../../utils/m
 
 const mapRolesData = (response: ResourceListResponse<Role>): Role[] => {
   const items = response.data?.items || [];
-  return mapRolesArray(items as any[]);
+  return mapRolesArray(items);
 };
 
 export const fetchAllRolesThunk = createAsyncThunk(

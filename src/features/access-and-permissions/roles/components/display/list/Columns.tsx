@@ -35,7 +35,7 @@ export const Columns = ({
         label: RPC.LABELS.COLUMNS.TYPE,
         icon: <AiOutlineTag />,
         width: RPC.SIZES.COLUMNS.TYPE,
-        render: (_: any, record: Role) => (
+        render: (_: unknown, record: Role) => (
           <RowTag
             text={record.type ?? RPC.LABELS.CUSTOM_TYPE}
             background={
@@ -60,7 +60,7 @@ export const Columns = ({
         label: RPC.LABELS.COLUMNS.PERMISSIONS,
         icon: <RoleIcon />,
         width: RPC.SIZES.COLUMNS.PERMISSIONS,
-        render: (_: any, record: Role) => (
+        render: (_: unknown, record: Role) => (
           <RowTag
             text={`${getPermissionCount(record)} ${RPC.LABELS.PERMISSIONS_SUFFIX}`}
             background={RPC.COLORS.CHIP_BLUE_BG}
@@ -103,7 +103,7 @@ export const Columns = ({
         label: RPC.LABELS.COLUMNS.CREATED,
         icon: <AiOutlineCalendar />,
         width: RPC.SIZES.COLUMNS.CREATED,
-        render: (_: any, record: Role) =>
+        render: (_: unknown, record: Role) =>
           new Date(record.creationDate || 0).toLocaleDateString(undefined, {
             month: 'short',
             day: 'numeric',
@@ -118,10 +118,9 @@ export const Columns = ({
       align: 'right' as const,
       width: 48,
       onHeaderCell: () => ({ style: { background: RPC.COLORS.HEADER_BG } }),
-      render: (_: any, record: Role) => (
+      render: (_: unknown, record: Role) => (
         <Actions record={record} onView={onView} onEdit={onEdit} onDelete={onDelete} />
       ),
     },
   ];
 };
-

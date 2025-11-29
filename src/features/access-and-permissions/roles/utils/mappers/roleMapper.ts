@@ -19,5 +19,5 @@ export const mapRolesData = (apiRoles: Role[]): Role[] => {
 };
 
 export const mapRoleDetailsData = (response: ResourceDetailsResponse<Role>): Role => {
-  return mapRoleData(response.data as any);
+  return mapRoleData(response.data);
 };

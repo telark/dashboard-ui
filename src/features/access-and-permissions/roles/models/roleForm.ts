@@ -22,4 +22,3 @@ export interface RoleFormProps {
   isEditMode?: boolean;
   currentName?: string;
 }
-
