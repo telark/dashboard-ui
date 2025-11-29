@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import type { FormInstance } from 'antd';
 import type { RoleFormValues } from '../models';
 import { deepEqual } from '../utils';
@@ -16,23 +16,33 @@ export const useRoleFormState = ({
 }: UseRoleFormStateOptions) => {
   const [hasFormErrors, setHasFormErrors] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const isInitializedRef = useRef(false);
+  const initialValuesRef = useRef(initialValues);
+
+  // Update ref when initialValues change (refs can be updated in effects)
+  useEffect(() => {
+    if (initialValues !== initialValuesRef.current) {
+      initialValuesRef.current = initialValues;
+      // Reset initialization when initialValues change
+      if (initialValues) {
+        isInitializedRef.current = false;
+      }
+    }
+  }, [initialValues]);
 
   const checkFormState = useCallback(() => {
-    // Always check for form errors in both create and edit modes
     const fieldsError = form.getFieldsError();
     const hasErrors = fieldsError.some((field) => field.errors.length > 0);
     setHasFormErrors(hasErrors);
 
     // Only check for changes in edit mode
-    if (!isEditMode || !initialValues) return;
+    if (!isEditMode || !initialValuesRef.current) return;
 
     const currentValues = form.getFieldsValue();
 
     // Ensure we have values before comparing (form must be initialized)
-    if (!currentValues.name || !isInitialized) {
-      // If form is not initialized yet, assume no changes
-      if (isInitialized) {
+    if (!currentValues.name || !isInitializedRef.current) {
+      if (isInitializedRef.current) {
         setHasChanges(false);
       }
       return;
@@ -41,25 +51,38 @@ export const useRoleFormState = ({
     // Normalize values for comparison (handle undefined arrays and ensure consistent structure)
     const normalizedCurrent: RoleFormValues = {
       name: currentValues.name || '',
-      type: currentValues.type || initialValues.type || 'custom',
-      status: currentValues.status || initialValues.status || 'Active',
+      type: currentValues.type || initialValuesRef.current.type || 'custom',
+      status: currentValues.status || initialValuesRef.current.status || 'Active',
       scopes: currentValues.scopes || {},
       assignedTo: Array.isArray(currentValues.assignedTo) ? currentValues.assignedTo : [],
     };
 
     const normalizedInitial: RoleFormValues = {
-      name: initialValues.name || '',
-      type: initialValues.type || 'custom',
-      status: initialValues.status || 'Active',
-      scopes: initialValues.scopes || {},
-      assignedTo: Array.isArray(initialValues.assignedTo) ? initialValues.assignedTo : [],
+      name: initialValuesRef.current.name || '',
+      type: initialValuesRef.current.type || 'custom',
+      status: initialValuesRef.current.status || 'Active',
+      scopes: initialValuesRef.current.scopes || {},
+      assignedTo: Array.isArray(initialValuesRef.current.assignedTo)
+        ? initialValuesRef.current.assignedTo
+        : [],
     };
 
     const changed = !deepEqual(normalizedCurrent, normalizedInitial);
     setHasChanges(changed);
-  }, [form, isEditMode, initialValues, isInitialized]);
+  }, [form, isEditMode]);
 
   const handleValuesChange = useCallback(() => {
+    // Check if form is initialized (has name field populated)
+    if (isEditMode && !isInitializedRef.current) {
+      const currentValues = form.getFieldsValue();
+      if (currentValues.name) {
+        isInitializedRef.current = true;
+        // Check form state after initialization
+        checkFormState();
+        return;
+      }
+    }
+
     // Trigger validation to ensure async validators complete
     form
       .validateFields()
@@ -69,35 +92,12 @@ export const useRoleFormState = ({
       .catch(() => {
         checkFormState();
       });
-  }, [form, checkFormState]);
+  }, [form, isEditMode, checkFormState]);
 
   const handleFieldsChange = useCallback(() => {
     // onFieldsChange fires when field status changes (including validation)
     checkFormState();
   }, [checkFormState]);
-
-  // Check form state after form is initialized with values
-  useEffect(() => {
-    if (isEditMode && initialValues) {
-      // Wait for form to be initialized, then check state
-      const timer = setTimeout(() => {
-        const currentValues = form.getFieldsValue();
-        // Check if form has been populated (has at least name field)
-        if (currentValues.name) {
-          setIsInitialized(true);
-          checkFormState();
-        }
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [isEditMode, initialValues, form]);
-
-  // Check when form values are set via setFieldsValue
-  useEffect(() => {
-    if (isEditMode && isInitialized) {
-      checkFormState();
-    }
-  }, [isInitialized]);
 
   return {
     hasFormErrors,
