@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { Form } from 'antd';
+import { Form, Input } from 'antd';
 import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../../../constants';
 import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
 import Header from '../../../../components/display/sections/Header';
@@ -10,21 +10,47 @@ import Section from '../../../../components/display/sections/Section';
 import { PrimaryButton } from '../../../../components/display/buttons';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
-import { useGroupDetails, useGroupActions } from '../hooks';
+import { useGroupDetails, useGroupActions, useGroups } from '../hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
-import type { GroupFormData } from '../models';
+import type { GroupFormData, Group } from '../models';
 import { mapCategoriesToOptions } from '../../categories/utils';
+import { createNameValidator, sanitizeName } from '../../../shared';
+import { DEFAULT_NAME_VALIDATION_CONFIG } from '../../../shared/constants';
 
 const GroupIcon = Icons.Group;
 
 const EditGroup: React.FC = () => {
   const { id, group, loading, notFound } = useGroupDetails();
   const { handleUpdate, submitting } = useGroupActions();
+  const { groups } = useGroups();
   const [form] = Form.useForm<GroupFormData>();
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
 
   const categoryOptions = useMemo(() => mapCategoriesToOptions(categories), [categories]);
+
+  const nameValidationConfig = useMemo(
+    () => ({
+      ...DEFAULT_NAME_VALIDATION_CONFIG,
+      minLength: GC.LABELS.FORM.FIELDS.NAME_VALIDATION.MIN_LENGTH,
+      maxLength: GC.LABELS.FORM.FIELDS.NAME_VALIDATION.MAX_LENGTH,
+      duplicateErrorMessage: GC.LABELS.FORM.FIELDS.NAME_VALIDATION.DUPLICATE_ERROR,
+      invalidCharsErrorMessage: GC.LABELS.FORM.FIELDS.NAME_VALIDATION.INVALID_CHARS_ERROR,
+      lengthErrorMessage: GC.LABELS.FORM.FIELDS.NAME_VALIDATION.LENGTH_ERROR,
+    }),
+    [],
+  );
+
+  const nameValidator = useMemo(
+    () =>
+      createNameValidator(groups, (g: Group) => g.name, nameValidationConfig, true, group?.name),
+    [groups, nameValidationConfig, group?.name],
+  );
+
+  const normalizeName = useMemo(
+    () => (value: string) => sanitizeName(value, nameValidationConfig),
+    [nameValidationConfig],
+  );
 
   useEffect(() => {
     if (group) {
@@ -86,13 +112,24 @@ const EditGroup: React.FC = () => {
                 subtitle={GC.LABELS.FORM.SECTION_SUBTITLE}
                 content={
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-                    <LabeledInput
+                    <Form.Item
                       name="name"
                       label={GC.LABELS.FORM.FIELDS.NAME_LABEL}
                       required
-                      placeholder={GC.LABELS.FORM.FIELDS.NAME_PLACEHOLDER}
-                      marginBottom={18}
-                    />
+                      normalize={normalizeName}
+                      rules={[
+                        {
+                          required: true,
+                          message: `Please enter ${GC.LABELS.FORM.FIELDS.NAME_LABEL.toLowerCase()}`,
+                        },
+                        { validator: nameValidator },
+                      ]}
+                      style={{ marginBottom: 18 }}
+                      className="form-item-compact"
+                      validateTrigger="onChange"
+                    >
+                      <Input placeholder={GC.LABELS.FORM.FIELDS.NAME_PLACEHOLDER} allowClear />
+                    </Form.Item>
                     <LabeledInput
                       name="description"
                       label={GC.LABELS.FORM.FIELDS.DESCRIPTION_LABEL}

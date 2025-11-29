@@ -6,7 +6,7 @@ import Header from '../../../../components/display/sections/Header';
 import RoleForm, { type RoleFormValues } from '../components/display/shared/RoleForm';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
-import { useRoleDetails, useRoleActions } from '../hooks';
+import { useRoleDetails, useRoleActions, useRoles } from '../hooks';
 import { convertRoleToFormValues, convertFormValuesToRoleFormData } from '../utils/converters';
 
 const RoleIcon = Icons.Role;
@@ -14,6 +14,7 @@ const RoleIcon = Icons.Role;
 const EditRole: React.FC = () => {
   const { id, role, loading, notFound } = useRoleDetails();
   const { handleUpdate, submitting } = useRoleActions();
+  const { roles } = useRoles();
   const [form] = Form.useForm<RoleFormValues>();
 
   if (loading) {
@@ -48,6 +49,9 @@ const EditRole: React.FC = () => {
         buttonText={RC.LABELS.UPDATE_BUTTON}
         submitting={submitting}
         wrapper={AnimatedPageWrapper}
+        roles={roles}
+        isEditMode={true}
+        currentName={role.name}
       />
     </PageContainer>
   );

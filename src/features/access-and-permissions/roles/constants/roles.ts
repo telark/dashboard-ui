@@ -92,6 +92,15 @@ export const ROLES_CONSTANTS = {
     SUBTITLE: 'Provide the role details.',
     NAME_LABEL: 'Role Name',
     NAME_PLACEHOLDER: 'e.g. Platform Admin',
+    NAME_VALIDATION: {
+      MIN_LENGTH: 1,
+      MAX_LENGTH: 100,
+      DUPLICATE_ERROR: 'A role with this name already exists',
+      INVALID_CHARS_ERROR:
+        'Role name can only contain letters, numbers, hyphens (-), and underscores (_)',
+      LENGTH_ERROR: (min: number, max: number) =>
+        `Role name must be between ${min} and ${max} characters`,
+    },
   },
   SCOPE: {
     TITLE: 'Scope & Permissions',

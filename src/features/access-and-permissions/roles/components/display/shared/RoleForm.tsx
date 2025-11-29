@@ -8,6 +8,7 @@ import RolesGeneralSection from '../create/GeneralSection';
 import RolesScopePermissionsSection from '../create/ScopesAndPermissionsSection';
 import AssignmentSection from './AssignmentSection';
 import type { RoleScopePermission } from '../../../constants';
+import type { Role } from '../../../models';
 
 const RoleIcon = Icons.Role;
 
@@ -26,6 +27,9 @@ interface RoleFormProps {
   buttonText: string;
   submitting?: boolean;
   wrapper?: React.ComponentType<{ children: React.ReactNode }>;
+  roles: Role[];
+  isEditMode?: boolean;
+  currentName?: string;
 }
 
 const RoleForm: React.FC<RoleFormProps> = ({
@@ -35,6 +39,9 @@ const RoleForm: React.FC<RoleFormProps> = ({
   buttonText,
   submitting = false,
   wrapper: Wrapper,
+  roles,
+  isEditMode = false,
+  currentName,
 }) => {
   const formContent = (
     <div
@@ -67,7 +74,11 @@ const RoleForm: React.FC<RoleFormProps> = ({
             }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
-              <RolesGeneralSection />
+              <RolesGeneralSection
+                roles={roles}
+                isEditMode={isEditMode}
+                currentName={currentName}
+              />
               <AssignmentSection />
             </div>
             <div style={{ flex: 1 }}>

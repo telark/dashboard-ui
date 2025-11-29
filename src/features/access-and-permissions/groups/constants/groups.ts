@@ -48,6 +48,15 @@ export const GROUPS_CONSTANTS = {
         DESCRIPTION_PLACEHOLDER: 'e.g. Group for development team members',
         CATEGORY_LABEL: 'Category',
         CATEGORY_PLACEHOLDER: 'Select a category',
+        NAME_VALIDATION: {
+          MIN_LENGTH: 1,
+          MAX_LENGTH: 100,
+          DUPLICATE_ERROR: 'A group with this name already exists',
+          INVALID_CHARS_ERROR:
+            'Group name can only contain letters, numbers, hyphens (-), and underscores (_)',
+          LENGTH_ERROR: (min: number, max: number) =>
+            `Group name must be between ${min} and ${max} characters`,
+        },
       },
     },
   },

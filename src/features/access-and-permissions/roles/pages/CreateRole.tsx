@@ -6,7 +6,7 @@ import Header from '../../../../components/display/sections/Header';
 import RoleForm, { type RoleFormValues } from '../components/display/shared/RoleForm';
 import { PageContainer } from '../../../../components/shared';
 import type { RoleScopePermission } from '../constants';
-import { useRoleActions } from '../hooks';
+import { useRoleActions, useRoles } from '../hooks';
 import { convertFormValuesToRoleFormData } from '../utils/converters';
 
 const RoleIcon = Icons.Role;
@@ -14,6 +14,7 @@ const RoleIcon = Icons.Role;
 const CreateRole: React.FC = () => {
   const [form] = Form.useForm<RoleFormValues>();
   const { handleCreate, submitting } = useRoleActions();
+  const { roles } = useRoles();
 
   const initialScopes = useMemo(() => {
     const scopes: Record<string, RoleScopePermission[]> = {};
@@ -52,6 +53,8 @@ const CreateRole: React.FC = () => {
         onSubmit={handleFinish}
         buttonText={RC.LABELS.CREATE_BUTTON_TEXT}
         submitting={submitting}
+        roles={roles}
+        isEditMode={false}
       />
     </PageContainer>
   );
