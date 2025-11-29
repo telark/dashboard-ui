@@ -22,8 +22,8 @@ export const useRoleActions = () => {
         navigate(`${APP_ROUTES.ROLES}/${result.id}/view`);
         return result;
       } catch {
-        message.error(RC.LABELS.MESSAGES.CREATE_FAILED || 'Failed to create role');
-        throw new Error(RC.LABELS.MESSAGES.CREATE_FAILED || 'Failed to create role');
+        message.error(RC.LABELS.MESSAGES.CREATE_FAILED);
+        throw new Error(RC.LABELS.MESSAGES.CREATE_FAILED);
       } finally {
         setSubmitting(false);
       }
@@ -44,8 +44,8 @@ export const useRoleActions = () => {
         message.success(RC.LABELS.MESSAGES.UPDATED(result.name));
         navigate(`${APP_ROUTES.ROLES}/${id}/view`);
       } catch {
-        message.error(RC.LABELS.MESSAGES.UPDATE_FAILED || 'Failed to update role');
-        throw new Error(RC.LABELS.MESSAGES.UPDATE_FAILED || 'Failed to update role');
+        message.error(RC.LABELS.MESSAGES.UPDATE_FAILED);
+        throw new Error(RC.LABELS.MESSAGES.UPDATE_FAILED);
       } finally {
         setSubmitting(false);
       }
@@ -57,10 +57,10 @@ export const useRoleActions = () => {
     async (roleId: string) => {
       try {
         await dispatch(deleteRoleThunk(roleId)).unwrap();
-        message.success(RC.LABELS.MESSAGES.DELETED || 'Role deleted successfully');
+        message.success(RC.LABELS.MESSAGES.DELETED);
       } catch {
-        message.error(RC.LABELS.MESSAGES.DELETE_FAILED || 'Failed to delete role');
-        throw new Error(RC.LABELS.MESSAGES.DELETE_FAILED || 'Failed to delete role');
+        message.error(RC.LABELS.MESSAGES.DELETE_FAILED);
+        throw new Error(RC.LABELS.MESSAGES.DELETE_FAILED);
       }
     },
     [dispatch],

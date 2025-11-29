@@ -28,8 +28,6 @@ export const ROLES_CONSTANTS = {
     COLUMNS: {
       ROLE_TITLE: 'Role Title',
       TYPE: 'Type',
-      GROUP: 'Group',
-      CATEGORY: 'Category',
       PERMISSIONS: 'Permissions',
       CREATED: 'Created',
       STATUS: 'Status',
@@ -50,8 +48,6 @@ export const ROLES_CONSTANTS = {
   KEYS: {
     NAME: 'name',
     TYPE: 'type',
-    GROUP: 'group',
-    CATEGORY: 'category',
     PERMISSION: 'permission',
     CREATED_AT: 'creationDate',
     STATUS: 'status',
@@ -64,8 +60,6 @@ export const ROLES_CONSTANTS = {
     COLUMNS: {
       ROLE_TITLE: 110,
       TYPE: 100,
-      GROUP: 100,
-      CATEGORY: 100,
       PERMISSIONS: 100,
       CREATED: 100,
       STATUS: 100,
@@ -96,19 +90,8 @@ export const ROLES_CONSTANTS = {
   GENERAL: {
     TITLE: 'General',
     SUBTITLE: 'Provide the role details.',
-    CATEGORY_LABEL: 'Role Category',
-    CATEGORY_OPTIONS: [
-      { label: 'General', value: 'general' },
-      { label: 'Administration', value: 'administration' },
-      { label: 'Operations', value: 'operations' },
-      { label: 'Security', value: 'security' },
-    ],
-    GROUP_OPTIONS: [
-      { label: 'Default', value: 'default' },
-      { label: 'Engineering', value: 'engineering' },
-      { label: 'Operations', value: 'operations' },
-      { label: 'QA', value: 'qa' },
-    ],
+    NAME_LABEL: 'Role Name',
+    NAME_PLACEHOLDER: 'e.g. Platform Admin',
   },
   SCOPE: {
     TITLE: 'Scope & Permissions',

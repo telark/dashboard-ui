@@ -11,9 +11,9 @@ const RolesGeneralSection: React.FC = () => {
       content={
         <LabeledInput
           name="name"
-          label="Role Name"
+          label={RPC.GENERAL.NAME_LABEL}
           required
-          placeholder="e.g. Platform Admin"
+          placeholder={RPC.GENERAL.NAME_PLACEHOLDER}
           marginBottom={6}
         />
       }
