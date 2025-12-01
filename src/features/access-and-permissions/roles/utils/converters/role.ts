@@ -6,11 +6,15 @@ export const convertFormValuesToRoleFormData = (
   formValues: RoleFormValues,
   defaultType: string = 'custom',
   defaultStatus: string = 'Active',
+  description: string = '',
+  categoryID: string = '',
 ): RoleFormData => {
   const assignedTo = convertAssignedToToAPI(formValues.assignedTo);
   return {
     name: formValues.name,
+    description,
     type: (formValues.type as 'built-in' | 'custom') || defaultType,
+    categoryID,
     status: (formValues.status as 'Active' | 'Inactive') || defaultStatus,
     scopesAndPermissions: convertScopesToAPI(formValues.scopes),
     assignedTo: { groupIDs: assignedTo.groupIDs, userIDs: assignedTo.userIDs },

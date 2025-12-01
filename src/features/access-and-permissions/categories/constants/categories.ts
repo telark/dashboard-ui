@@ -33,6 +33,13 @@ export const CATEGORIES_CONSTANTS = {
       type: TYPES.BUILT_IN,
     },
   ],
+  BUILT_IN_ROLES_CAT: [
+    {
+      name: 'Platform',
+      scope: SCOPES.ROLES,
+      type: TYPES.BUILT_IN,
+    },
+  ],
   LOGS: {
     CATEGORIES_ALREADY_EXIST: (scope: string) =>
       `Categories for scope "${scope}" already exist. Skipping initialization.`,

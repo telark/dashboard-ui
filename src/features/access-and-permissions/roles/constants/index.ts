@@ -1,1 +1,8 @@
-export { ROLES_CONSTANTS, SCOPE_PERMISSIONS, ROLES_ERROR_MESSAGES } from './roles';
+export {
+  ROLES_CONSTANTS,
+  SCOPE_PERMISSIONS,
+  PERMISSION_LEVELS,
+  VALIDITY_TYPES,
+  ROLES_ERROR_MESSAGES,
+} from './roles';
+export { BUILT_IN_ROLES } from './builtInRoles';

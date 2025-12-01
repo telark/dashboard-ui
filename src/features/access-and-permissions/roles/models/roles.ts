@@ -1,8 +1,18 @@
-import type { RoleStatus, RoleType, RoleScopePermission } from './types';
+import type {
+  RoleStatus,
+  RoleType,
+  RoleScopePermission,
+  PermissionLevel,
+  ValidityType,
+} from './types';
 
 export interface ScopeAndPermissions {
   scope: string;
-  permissions: string[];
+  level: PermissionLevel;
+  rules?: {
+    allow?: string[];
+    deny?: string[];
+  };
 }
 
 export interface AssignedTo {
@@ -13,12 +23,34 @@ export interface AssignedTo {
 export interface Role {
   id: string;
   name: string;
+  description: string;
+  version: string;
   type: RoleType;
+  priority: number;
+  categoryID: string;
   scopesAndPermissions: ScopeAndPermissions[];
+  protection?: {
+    preventDeletion?: boolean;
+    preventModification?: boolean;
+    preventScopeChanges?: boolean;
+    lockName?: boolean;
+    lockCategory?: boolean;
+    softDelete?: boolean;
+  };
   status: RoleStatus;
+  validity?: {
+    type: ValidityType;
+    expiresAt?: string;
+    durationHours?: number;
+    autoRevoke?: boolean;
+  };
+  assignedTo?: AssignedTo;
   creationDate: string;
   lastUpdateDate?: string;
-  assignedTo?: AssignedTo;
+  createdBy?: string;
+  lastUpdatedBy?: string;
+  deprecatedAt?: string;
+  deletedAt?: string;
 }
 
 export interface RolesTableProps {

@@ -25,7 +25,8 @@ const CreateRole: React.FC = () => {
   }, []);
 
   const handleFinish = async (values: RoleFormValues) => {
-    const roleData = convertFormValuesToRoleFormData(values);
+    // TODO: Add description and categoryID fields to the form
+    const roleData = convertFormValuesToRoleFormData(values, 'custom', 'Active', '', '');
     await handleCreate(roleData);
     form.resetFields();
   };

@@ -1,13 +1,16 @@
 import type { Role, RolesSortKey } from '../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
+
 export const getPermissionCount = (role: Role): number => {
   if (!role.scopesAndPermissions || role.scopesAndPermissions.length === 0) {
     return 0;
   }
-  return role.scopesAndPermissions.reduce(
-    (acc, scopeAndPerm) => acc + (scopeAndPerm.permissions?.length || 0),
-    0,
-  );
+  return role.scopesAndPermissions.reduce((acc, scopeAndPerm) => {
+    if (scopeAndPerm.scope === 'ALL' && scopeAndPerm.level === RPC.PERMISSION_LEVEL.ADMIN) {
+      return acc + 10;
+    }
+    return acc + 1;
+  }, 0);
 };
 type Comparator<T> = (a: T, b: T) => number;
 type SortOrder = 'asc' | 'desc';

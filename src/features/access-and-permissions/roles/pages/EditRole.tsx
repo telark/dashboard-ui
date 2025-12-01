@@ -38,7 +38,14 @@ const EditRole: React.FC = () => {
   }
 
   const handleFinish = async (values: RoleFormValues) => {
-    const roleData = convertFormValuesToRoleFormData(values, role.type, role.status);
+    // TODO: Add description and categoryID fields to the form
+    const roleData = convertFormValuesToRoleFormData(
+      values,
+      role.type,
+      role.status,
+      role.description || '',
+      role.categoryID || '',
+    );
     await handleUpdate(id, roleData);
   };
 

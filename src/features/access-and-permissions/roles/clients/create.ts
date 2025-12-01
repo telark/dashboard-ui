@@ -9,10 +9,15 @@ export const createRole = async (role: RoleFormData) => {
   try {
     const roleData = {
       name: role.name,
+      description: role.description,
       type: role.type,
+      categoryID: role.categoryID,
       scopesAndPermissions: role.scopesAndPermissions,
+      protection: role.protection,
       status: role.status,
+      validity: role.validity,
       assignedTo: role.assignedTo,
+      // Note: version and priority are computed server-side, do not send them
     };
     return await Client<ResourceDetailsResponse<Role>>(
       exporterApiClient,

@@ -19,6 +19,8 @@ export const initializeBuiltInCategories = async (scope: string): Promise<void> 
     let categoriesToCreate;
     if (scope === CATEGORIES_CONSTANTS.SCOPES.GROUPS) {
       categoriesToCreate = CATEGORIES_CONSTANTS.BUILT_IN_GROUPS_CAT;
+    } else if (scope === CATEGORIES_CONSTANTS.SCOPES.ROLES) {
+      categoriesToCreate = CATEGORIES_CONSTANTS.BUILT_IN_ROLES_CAT;
     } else {
       logger.warn(CATEGORIES_CONSTANTS.LOGS.NO_BUILT_IN_CATEGORIES(scope));
       return;
@@ -41,6 +43,8 @@ export const initializeBuiltInCategories = async (scope: string): Promise<void> 
         let categoriesToCreate;
         if (scope === CATEGORIES_CONSTANTS.SCOPES.GROUPS) {
           categoriesToCreate = CATEGORIES_CONSTANTS.BUILT_IN_GROUPS_CAT;
+        } else if (scope === CATEGORIES_CONSTANTS.SCOPES.ROLES) {
+          categoriesToCreate = CATEGORIES_CONSTANTS.BUILT_IN_ROLES_CAT;
         } else {
           logger.warn(CATEGORIES_CONSTANTS.LOGS.NO_BUILT_IN_CATEGORIES(scope));
           return;

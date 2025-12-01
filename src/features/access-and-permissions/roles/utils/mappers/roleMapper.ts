@@ -5,12 +5,22 @@ export const mapRoleData = (apiRole: Role): Role => {
   return {
     id: apiRole.id,
     name: apiRole.name,
+    description: apiRole.description || '',
+    version: apiRole.version || 'v1.0.0',
     type: apiRole.type,
+    priority: apiRole.priority || 0,
+    categoryID: apiRole.categoryID || '',
     scopesAndPermissions: apiRole.scopesAndPermissions || [],
+    protection: apiRole.protection,
     status: apiRole.status,
+    validity: apiRole.validity,
+    assignedTo: apiRole.assignedTo,
     creationDate: apiRole.creationDate || new Date().toISOString(),
     lastUpdateDate: apiRole.lastUpdateDate,
-    assignedTo: apiRole.assignedTo,
+    createdBy: apiRole.createdBy,
+    lastUpdatedBy: apiRole.lastUpdatedBy,
+    deprecatedAt: apiRole.deprecatedAt,
+    deletedAt: apiRole.deletedAt,
   };
 };
 

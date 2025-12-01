@@ -15,6 +15,7 @@ import type { RootState, AppDispatch } from './store';
 import { FancySpinner } from './components/animation';
 import { hasSessionToken, useSessionExpirationCheck } from './features/auth/utils';
 import { useInitializeCategories } from './features/access-and-permissions/categories/hooks';
+import { useInitializeRoles } from './features/access-and-permissions/roles/hooks';
 
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
 
@@ -43,8 +44,9 @@ const AppContent: React.FC = () => {
     onSessionExpired: () => setShowSessionExpiredModal(true),
   });
 
-  // Initialize built-in categories when authenticated
+  // Initialize built-in categories and roles when authenticated
   useInitializeCategories(isAuthenticated);
+  useInitializeRoles(isAuthenticated);
 
   // Show a brief welcome overlay after analysis start completes
   useEffect(() => {
