@@ -4,3 +4,4 @@ export * from './converters/role';
 export * from './mappers/roleMapper';
 export * from './helpers/deepEqual';
 export * from './initialize';
+export * from './protection';

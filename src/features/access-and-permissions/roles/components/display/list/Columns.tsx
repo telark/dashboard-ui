@@ -2,20 +2,16 @@ import type { Role, ColumnsArgs } from '../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
-import Actions from './Actions';
 import { AiOutlineCalendar, AiOutlineCheckCircle, AiOutlineTag } from 'react-icons/ai';
 import { Icons } from '../../../../../../constants';
 
 const RoleIcon = Icons.Role;
 
 export const Columns = ({
-  onView,
-  onEdit,
-  onDelete,
   onSort,
   activeSortKey,
   getPermissionCount,
-}: ColumnsArgs) => {
+}: Omit<ColumnsArgs, 'onView' | 'onEdit' | 'onDelete'>) => {
   return [
     generateColumn(
       {
@@ -112,15 +108,5 @@ export const Columns = ({
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
     ),
-    {
-      title: '',
-      key: RPC.KEYS.ACTIONS,
-      align: 'right' as const,
-      width: 48,
-      onHeaderCell: () => ({ style: { background: RPC.COLORS.HEADER_BG } }),
-      render: (_: unknown, record: Role) => (
-        <Actions record={record} onView={onView} onEdit={onEdit} onDelete={onDelete} />
-      ),
-    },
   ];
 };

@@ -145,6 +145,7 @@ export const ROLES_CONSTANTS = {
     INITIALIZING_ROLES: 'Initializing built-in roles...',
     INITIALIZATION_SUCCESS: 'Successfully initialized built-in roles',
     INITIALIZATION_FAILED: 'Failed to initialize built-in roles',
+    ROLES_ALREADY_EXIST: 'Built-in roles already exist. Skipping initialization.',
     PLATFORM_CATEGORY_ALREADY_EXISTS: (id: string) =>
       `Platform category already exists with ID: ${id}`,
     CREATING_PLATFORM_CATEGORY: 'Creating platform category...',

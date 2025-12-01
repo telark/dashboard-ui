@@ -1,9 +1,10 @@
 import { fetchCategoriesByScope, createCategory } from '../../categories/clients';
-import { createRole } from '../clients';
+import { createRole, fetchRoles } from '../clients';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { BUILT_IN_ROLES, ROLES_CONSTANTS } from '../constants';
 import logger from '../../../../logging';
 import type { Category } from '../../categories/models';
+import type { Role } from '../models';
 
 export const initializeBuiltInRoles = async (): Promise<void> => {
   try {
@@ -15,12 +16,37 @@ export const initializeBuiltInRoles = async (): Promise<void> => {
       return;
     }
 
-    logger.info(ROLES_CONSTANTS.LOGS.INITIALIZING_ROLES);
+    // Check if built-in roles already exist
+    const existingRoles = await fetchRoles(true);
+    const existingRoleNames = new Set<string>();
 
-    const rolesToCreate = BUILT_IN_ROLES.map((role) => ({
+    if (
+      existingRoles &&
+      existingRoles.data &&
+      existingRoles.data.items &&
+      existingRoles.data.items.length > 0
+    ) {
+      existingRoles.data.items.forEach((role: Role) => {
+        if (role.type === ROLES_CONSTANTS.VALUES.ROLE_TYPE_BUILT_IN) {
+          existingRoleNames.add(role.name);
+        }
+      });
+    }
+
+    // Filter out roles that already exist
+    const rolesToCreate = BUILT_IN_ROLES.filter(
+      (role) => !existingRoleNames.has(role.name),
+    ).map((role) => ({
       ...role,
       categoryID: platformCategoryId,
     }));
+
+    if (rolesToCreate.length === 0) {
+      logger.info(ROLES_CONSTANTS.LOGS.ROLES_ALREADY_EXIST);
+      return;
+    }
+
+    logger.info(ROLES_CONSTANTS.LOGS.INITIALIZING_ROLES);
 
     const createPromises = rolesToCreate.map((role) =>
       createRole(role).catch((error) => {

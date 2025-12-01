@@ -19,11 +19,11 @@ export interface ScopesPermissionsProps {
 }
 
 export interface ColumnsArgs {
-  onView: (r: Role) => void;
+  onView?: (r: Role) => void;
   onEdit?: (r: Role) => void;
-  onDelete: (r: Role) => void;
+  onDelete?: (r: Role) => void;
   onSort: (key: RolesSortKey) => void;
   activeSortKey: RolesSortKey;
-  sortOrder: 'asc' | 'desc';
+  sortOrder?: 'asc' | 'desc';
   getPermissionCount: (r: Role) => number;
 }
