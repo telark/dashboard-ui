@@ -1,7 +1,7 @@
 import React from 'react';
-import { Form, Select, DatePicker } from 'antd';
+import { Form, Select } from 'antd';
 import Section from '../../../../../../components/display/sections/Section';
-import { Switch, NumberInput } from '../../../../../../components/display/inputs';
+import { Switch, NumberInput, DatePicker } from '../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import dayjs from 'dayjs';
 
@@ -90,7 +90,7 @@ const ValiditySection: React.FC = () => {
                             >
                               <DatePicker
                                 showTime
-                                format="YYYY-MM-DD HH:mm:ss"
+                                format="YYYY-MM-DD HH:mm"
                                 placeholder={RPC.VALIDITY.EXPIRES_AT_PLACEHOLDER}
                                 style={{ width: '100%' }}
                                 disabledDate={(current) =>
