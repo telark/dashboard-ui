@@ -1,8 +1,8 @@
 import React from 'react';
 import { Form, Select } from 'antd';
-import Section from '../../../../../../components/display/sections/Section';
-import { Switch, NumberInput, DatePicker } from '../../../../../../components/display/inputs';
-import { ROLES_CONSTANTS as RPC } from '../../../constants';
+import Section from '../../../../../../../components/display/sections/Section';
+import { Switch, NumberInput, DatePicker } from '../../../../../../../components/display/inputs';
+import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import dayjs from 'dayjs';
 
 const ValiditySection: React.FC = () => {

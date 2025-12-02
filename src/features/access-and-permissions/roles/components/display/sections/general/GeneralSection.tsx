@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import { Form, Input } from 'antd';
-import Section from '../../../../../../components/display/sections/Section';
-import LabeledInput from '../../../../../../components/display/inputs/LabeledInput';
-import LabeledSelect from '../../../../../../components/display/inputs/LabeledSelect';
-import { ROLES_CONSTANTS as RPC } from '../../../constants';
-import { createNameValidator, sanitizeName } from '../../../../../shared';
-import { DEFAULT_NAME_VALIDATION_CONFIG } from '../../../../../shared/constants';
-import type { Role, RolesGeneralSectionProps } from '../../../models';
-import { useRoleCategories } from '../../../hooks';
+import Section from '../../../../../../../components/display/sections/Section';
+import LabeledInput from '../../../../../../../components/display/inputs/LabeledInput';
+import LabeledSelect from '../../../../../../../components/display/inputs/LabeledSelect';
+import { ROLES_CONSTANTS as RPC } from '../../../../constants';
+import { createNameValidator, sanitizeName } from '../../../../../../shared';
+import { DEFAULT_NAME_VALIDATION_CONFIG } from '../../../../../../shared/constants';
+import type { Role, RolesGeneralSectionProps } from '../../../../models';
+import { useRoleCategories } from '../../../../hooks';
 
 const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = ({
   roles,

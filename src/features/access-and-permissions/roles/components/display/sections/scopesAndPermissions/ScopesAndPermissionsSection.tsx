@@ -1,8 +1,8 @@
 import React from 'react';
-import Section from '../../../../../../components/display/sections/Section';
-import { ROLES_CONSTANTS as RPC, PERMISSION_LEVELS } from '../../../constants';
+import Section from '../../../../../../../components/display/sections/Section';
+import { ROLES_CONSTANTS as RPC, PERMISSION_LEVELS } from '../../../../constants';
 import RolesScopesAndPermissionsList from './ScopesAndPermissionsList';
-import type { RolesScopesAndPermissionsListProps } from '../../../models';
+import type { RolesScopesAndPermissionsListProps } from '../../../../models';
 
 const AREAS = RPC.SCOPE.DEFAULT_AREAS;
 const PERMISSION_LEVEL_OPTIONS = PERMISSION_LEVELS.map((level) => ({
@@ -29,3 +29,4 @@ const RolesScopesAndPermissionsSection: React.FC = () => {
 };
 
 export default RolesScopesAndPermissionsSection;
+
