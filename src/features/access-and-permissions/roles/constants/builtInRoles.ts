@@ -1,7 +1,7 @@
 import type { RoleFormData } from '../models';
 import { ROLES_CONSTANTS } from './roles';
 
-const { PERMISSION_LEVEL, VALIDITY, STATUS, VALUES } = ROLES_CONSTANTS;
+const { PERMISSION_LEVEL, STATUS, VALUES } = ROLES_CONSTANTS;
 
 export const BUILT_IN_ROLES: Omit<RoleFormData, 'id' | 'creationDate' | 'lastUpdateDate'>[] = [
   {
@@ -49,7 +49,7 @@ export const BUILT_IN_ROLES: Omit<RoleFormData, 'id' | 'creationDate' | 'lastUpd
     },
     status: STATUS.ACTIVE,
     validity: {
-      type: VALIDITY.PERMANENT,
+      type: ROLES_CONSTANTS.VALIDITY_TYPES.PERMANENT,
     },
     assignedTo: {
       groupIDs: [],
@@ -101,7 +101,7 @@ export const BUILT_IN_ROLES: Omit<RoleFormData, 'id' | 'creationDate' | 'lastUpd
     },
     status: STATUS.ACTIVE,
     validity: {
-      type: VALIDITY.PERMANENT,
+      type: ROLES_CONSTANTS.VALIDITY_TYPES.PERMANENT,
     },
     assignedTo: {
       groupIDs: [],
@@ -153,7 +153,7 @@ export const BUILT_IN_ROLES: Omit<RoleFormData, 'id' | 'creationDate' | 'lastUpd
     },
     status: STATUS.ACTIVE,
     validity: {
-      type: VALIDITY.PERMANENT,
+      type: ROLES_CONSTANTS.VALIDITY_TYPES.PERMANENT,
     },
     assignedTo: {
       groupIDs: [],
@@ -181,7 +181,7 @@ export const BUILT_IN_ROLES: Omit<RoleFormData, 'id' | 'creationDate' | 'lastUpd
     },
     status: STATUS.ACTIVE,
     validity: {
-      type: VALIDITY.PERMANENT,
+      type: ROLES_CONSTANTS.VALIDITY_TYPES.PERMANENT,
     },
     assignedTo: {
       groupIDs: [],

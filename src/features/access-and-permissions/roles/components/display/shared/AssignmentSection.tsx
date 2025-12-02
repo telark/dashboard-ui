@@ -85,7 +85,7 @@ const AssignmentSection: React.FC = () => {
       title={RC.ASSIGNMENT.TITLE}
       subtitle={RC.ASSIGNMENT.SUBTITLE}
       content={
-        <Form.Item name="assignedTo" label={RC.ASSIGNMENT.LABEL}>
+        <Form.Item name="assignedTo" style={{ marginBottom: 0 }} className="form-item-compact">
           <Select
             mode="multiple"
             placeholder={RC.ASSIGNMENT.PLACEHOLDER}

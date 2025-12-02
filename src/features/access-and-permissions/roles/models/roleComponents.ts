@@ -15,7 +15,7 @@ export interface ActionsProps {
 }
 
 export interface ScopesPermissionsProps {
-  scopes: Record<string, string[]>;
+  scopes: Record<string, { level: string; rules?: string[] }>;
 }
 
 export interface ColumnsArgs {

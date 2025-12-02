@@ -93,9 +93,7 @@ const RolesTable: React.FC<RolesTableProps & { loading?: boolean }> = ({
     Modal.confirm({
       title: RPC.LABELS.DELETE_MODAL_TITLE,
       content: RPC.LABELS.DELETE_MODAL_CONTENT(
-        selectedRoleNames.length === 1
-          ? selectedRoleNames[0]
-          : `${selectedRoleNames.length} roles`,
+        selectedRoleNames.length === 1 ? selectedRoleNames[0] : `${selectedRoleNames.length} roles`,
       ),
       okText: RPC.LABELS.DELETE_MODAL_OK,
       okButtonProps: { danger: true },

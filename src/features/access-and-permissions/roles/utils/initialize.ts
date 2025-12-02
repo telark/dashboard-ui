@@ -34,12 +34,12 @@ export const initializeBuiltInRoles = async (): Promise<void> => {
     }
 
     // Filter out roles that already exist
-    const rolesToCreate = BUILT_IN_ROLES.filter(
-      (role) => !existingRoleNames.has(role.name),
-    ).map((role) => ({
-      ...role,
-      categoryID: platformCategoryId,
-    }));
+    const rolesToCreate = BUILT_IN_ROLES.filter((role) => !existingRoleNames.has(role.name)).map(
+      (role) => ({
+        ...role,
+        categoryID: platformCategoryId,
+      }),
+    );
 
     if (rolesToCreate.length === 0) {
       logger.info(ROLES_CONSTANTS.LOGS.ROLES_ALREADY_EXIST);

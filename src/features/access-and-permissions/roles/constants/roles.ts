@@ -1,4 +1,4 @@
-import type { RoleScopePermission, PermissionLevel, ValidityType } from '../models/types';
+import type { PermissionLevel, ValidityType } from '../models/types';
 
 export const SCOPE_PERMISSIONS = ['View', 'Edit', 'Delete'] as const;
 export const PERMISSION_LEVELS = ['ReadOnly', 'Contributor', 'Owner', 'Admin'] as const;
@@ -95,16 +95,35 @@ export const ROLES_CONSTANTS = {
     OWNER: 'Owner' as PermissionLevel,
     ADMIN: 'Admin' as PermissionLevel,
   },
-  VALIDITY: {
+  VALIDITY_TYPES: {
     PERMANENT: 'permanent' as ValidityType,
     TEMPORARY: 'temporary' as ValidityType,
     SESSION_BASED: 'sessionBased' as ValidityType,
+  },
+  VALIDITY: {
+    TITLE: 'Validity',
+    SUBTITLE: 'Define when and how long this role is valid.',
+    TYPE_LABEL: 'Validity Type',
+    EXPIRATION_MODEL_LABEL: 'Expiration Model',
+    EXPIRATION_MODEL_OPTIONS: {
+      EXPIRES_AT: 'expiresAt',
+      DURATION: 'durationHours',
+    },
+    EXPIRES_AT_LABEL: 'Expires At',
+    EXPIRES_AT_PLACEHOLDER: 'Select expiration date and time',
+    DURATION_LABEL: 'Duration',
+    DURATION_PLACEHOLDER: 'Enter duration in hours',
+    AUTO_REVOKE_LABEL: 'Auto Revoke',
   },
   GENERAL: {
     TITLE: 'General',
     SUBTITLE: 'Provide the role details.',
     NAME_LABEL: 'Role Name',
     NAME_PLACEHOLDER: 'e.g. Platform Admin',
+    DESCRIPTION_LABEL: 'Description',
+    DESCRIPTION_PLACEHOLDER: 'Enter role description',
+    CATEGORY_LABEL: 'Category',
+    CATEGORY_PLACEHOLDER: 'Select a category',
     NAME_VALIDATION: {
       MIN_LENGTH: 1,
       MAX_LENGTH: 100,
@@ -122,14 +141,21 @@ export const ROLES_CONSTANTS = {
       { key: 'groupers', label: 'Groupers' },
       { key: 'workloads', label: 'Workloads' },
       { key: 'bridges', label: 'Bridges' },
+      { key: 'groups', label: 'Groups' },
       { key: 'users', label: 'Users' },
       { key: 'roles', label: 'Roles' },
     ] as const,
-    TOOLTIP: {
-      View: 'Read-only access to view data and settings.',
-      Edit: 'Can create and update within assigned scope.',
-      Delete: 'Can remove resources within assigned scope. Use with caution.',
-    } as Record<RoleScopePermission, string>,
+    PERMISSION_LEVEL_TOOLTIP: {
+      ReadOnly: 'Read-only access to view data and settings.',
+      Contributor: 'Can create and update within assigned scope.',
+      Owner: 'Full control including deletion and role assignment.',
+      Admin: 'Top-level authority with override capabilities.',
+    },
+    RULES: {
+      BLOCK_CERTAIN_RULES: 'Block certain rules',
+      DENY_LABEL: 'Deny Rules',
+      DENY_PLACEHOLDER: 'Enter denied actions (comma-separated)',
+    },
   },
   STATUS: { ACTIVE: 'Active', INACTIVE: 'Inactive' },
   TYPE: { BUILT_IN: 'built-in', CUSTOM: 'custom' },
@@ -140,6 +166,16 @@ export const ROLES_CONSTANTS = {
     PLACEHOLDER: 'Select groups and users',
     GROUPS_LABEL: 'Groups',
     USERS_LABEL: 'Users',
+  },
+  PROTECTION: {
+    TITLE: 'Protection',
+    SUBTITLE: 'Configure protection flags to prevent unauthorized changes.',
+    PREVENT_DELETION_LABEL: 'Prevent Deletion',
+    PREVENT_MODIFICATION_LABEL: 'Prevent Modification',
+    PREVENT_SCOPE_CHANGES_LABEL: 'Prevent Scope Changes',
+    LOCK_NAME_LABEL: 'Lock Name',
+    LOCK_CATEGORY_LABEL: 'Lock Category',
+    SOFT_DELETE_LABEL: 'Soft Delete',
   },
   LOGS: {
     INITIALIZING_ROLES: 'Initializing built-in roles...',

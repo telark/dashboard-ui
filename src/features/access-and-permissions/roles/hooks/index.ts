@@ -3,3 +3,4 @@ export { useRoleDetails } from './useRoleDetails';
 export { useRoleActions } from './useRoleActions';
 export { useRoleFormState } from './useRoleFormState';
 export { useInitializeRoles } from './useInitializeRoles';
+export { useRoleCategories } from './useRoleCategories';

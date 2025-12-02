@@ -1,20 +1,22 @@
 import React from 'react';
 import Section from '../../../../../../components/display/sections/Section';
-import { ROLES_CONSTANTS as RPC, SCOPE_PERMISSIONS } from '../../../constants';
+import { ROLES_CONSTANTS as RPC, PERMISSION_LEVELS } from '../../../constants';
 import RolesScopesAndPermissionsList from './ScopesAndPermissionsList';
 import type { RolesScopesAndPermissionsListProps } from '../../../models';
 
 const AREAS = RPC.SCOPE.DEFAULT_AREAS;
-const PERMISSIONS = SCOPE_PERMISSIONS;
-const TOOLTIP = RPC.SCOPE.TOOLTIP;
+const PERMISSION_LEVEL_OPTIONS = PERMISSION_LEVELS.map((level) => ({
+  value: level,
+  label: level,
+}));
+const TOOLTIP = RPC.SCOPE.PERMISSION_LEVEL_TOOLTIP;
 
 const RolesScopesAndPermissionsSection: React.FC = () => {
   const props: RolesScopesAndPermissionsListProps = {
     areas: AREAS,
-    permissions: PERMISSIONS,
+    permissionLevels: PERMISSION_LEVEL_OPTIONS,
     tooltipMap: TOOLTIP,
     rowPaddingPx: 0,
-    dividerMarginPx: 0,
   };
 
   return (

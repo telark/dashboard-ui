@@ -51,17 +51,25 @@ export const useRoleFormState = ({
     // Normalize values for comparison (handle undefined arrays and ensure consistent structure)
     const normalizedCurrent: RoleFormValues = {
       name: currentValues.name || '',
+      description: currentValues.description || '',
+      categoryID: currentValues.categoryID || '',
       type: currentValues.type || initialValuesRef.current.type || 'custom',
       status: currentValues.status || initialValuesRef.current.status || 'Active',
       scopes: currentValues.scopes || {},
+      validity: currentValues.validity,
+      protection: currentValues.protection,
       assignedTo: Array.isArray(currentValues.assignedTo) ? currentValues.assignedTo : [],
     };
 
     const normalizedInitial: RoleFormValues = {
       name: initialValuesRef.current.name || '',
+      description: initialValuesRef.current.description || '',
+      categoryID: initialValuesRef.current.categoryID || '',
       type: initialValuesRef.current.type || 'custom',
       status: initialValuesRef.current.status || 'Active',
       scopes: initialValuesRef.current.scopes || {},
+      validity: initialValuesRef.current.validity,
+      protection: initialValuesRef.current.protection,
       assignedTo: Array.isArray(initialValuesRef.current.assignedTo)
         ? initialValuesRef.current.assignedTo
         : [],

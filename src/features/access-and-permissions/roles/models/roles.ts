@@ -1,18 +1,9 @@
-import type {
-  RoleStatus,
-  RoleType,
-  RoleScopePermission,
-  PermissionLevel,
-  ValidityType,
-} from './types';
+import type { RoleStatus, RoleType, PermissionLevel, ValidityType } from './types';
 
 export interface ScopeAndPermissions {
   scope: string;
   level: PermissionLevel;
-  rules?: {
-    allow?: string[];
-    deny?: string[];
-  };
+  rules?: string[];
 }
 
 export interface AssignedTo {
@@ -62,8 +53,8 @@ export interface RolesTableProps {
 
 export interface RolesScopesAndPermissionsListProps {
   areas: ReadonlyArray<{ key: string; label: string }>;
-  permissions: ReadonlyArray<RoleScopePermission>;
-  tooltipMap: Record<RoleScopePermission, string>;
+  permissionLevels: ReadonlyArray<{ value: PermissionLevel; label: string }>;
+  tooltipMap: Record<PermissionLevel, string>;
   rowPaddingPx?: number;
   dividerMarginPx?: number;
 }

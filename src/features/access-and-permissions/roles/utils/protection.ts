@@ -1,6 +1,5 @@
 import type { Role } from '../models';
 
-
 export const canModifyRole = (role: Role): boolean => {
   if (!role.protection) {
     return true;
@@ -35,4 +34,3 @@ export const canDeleteRoles = (roles: Role[]): boolean => {
   }
   return roles.every(canDeleteRole);
 };
-

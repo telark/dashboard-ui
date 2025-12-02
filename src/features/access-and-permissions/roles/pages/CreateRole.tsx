@@ -5,8 +5,8 @@ import { ROLES_CONSTANTS as RC } from '../constants';
 import Header from '../../../../components/display/sections/Header';
 import RoleForm from '../components/display/shared/RoleForm';
 import { PageContainer } from '../../../../components/shared';
-import type { RoleScopePermission, RoleFormValues } from '../models';
-import { useRoleActions, useRoles } from '../hooks';
+import type { RoleFormValues, ScopeFormValue } from '../models';
+import { useRoleActions, useRoles, useRoleCategories } from '../hooks';
 import { convertFormValuesToRoleFormData } from '../utils';
 
 const RoleIcon = Icons.Role;
@@ -15,18 +15,21 @@ const CreateRole: React.FC = () => {
   const [form] = Form.useForm<RoleFormValues>();
   const { handleCreate, submitting } = useRoleActions();
   const { roles } = useRoles();
+  const { defaultCategoryId } = useRoleCategories();
 
   const initialScopes = useMemo(() => {
-    const scopes: Record<string, RoleScopePermission[]> = {};
+    const scopes: Record<string, ScopeFormValue> = {};
     RC.SCOPE.DEFAULT_AREAS.forEach((area) => {
-      scopes[area.key] = [];
+      scopes[area.key] = {
+        level: RC.PERMISSION_LEVEL.READ_ONLY,
+        // Rules will be initialized by the form when user selects them
+      };
     });
     return scopes;
   }, []);
 
   const handleFinish = async (values: RoleFormValues) => {
-    // TODO: Add description and categoryID fields to the form
-    const roleData = convertFormValuesToRoleFormData(values, 'custom', 'Active', '', '');
+    const roleData = convertFormValuesToRoleFormData(values, 'custom', 'Active');
     await handleCreate(roleData);
     form.resetFields();
   };
@@ -46,9 +49,23 @@ const CreateRole: React.FC = () => {
         form={form}
         initialValues={{
           name: '',
+          description: '',
+          categoryID: defaultCategoryId,
           type: RC.VALUES.ROLE_TYPE_CUSTOM,
           status: RC.STATUS.ACTIVE,
           scopes: initialScopes,
+          validity: {
+            type: RC.VALIDITY_TYPES.PERMANENT,
+            autoRevoke: true,
+          },
+          protection: {
+            preventDeletion: false,
+            preventModification: false,
+            preventScopeChanges: false,
+            lockName: false,
+            lockCategory: false,
+            softDelete: false,
+          },
           assignedTo: [],
         }}
         onSubmit={handleFinish}
