@@ -1,8 +1,8 @@
 import React from 'react';
-import { Form, Switch } from 'antd';
+import { Form } from 'antd';
 import Section from '../../../../../../components/display/sections/Section';
+import { Switch } from '../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
-import { DEFAULT_COLORS } from '../../../../../../constants/shared/colors';
 
 const ProtectionSection: React.FC = () => {
   return (
@@ -23,99 +23,51 @@ const ProtectionSection: React.FC = () => {
               <div style={{ display: 'flex', gap: 24 }}>
                 {/* Column 1 */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 0, flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
-                    <span style={{ fontSize: '14px', fontWeight: 600, marginRight: 8, minWidth: 200 }}>
-                      {RPC.PROTECTION.PREVENT_DELETION_LABEL}
-                    </span>
-                    <Switch
-                      checked={preventDeletion}
-                      onChange={(checked) => setFieldValue(['protection', 'preventDeletion'], checked)}
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      style={{
-                        marginLeft: 8,
-                        backgroundColor: preventDeletion ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.SWITCH_OFF,
-                      }}
-                    />
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
-                    <span style={{ fontSize: '14px', fontWeight: 600, marginRight: 8, minWidth: 200 }}>
-                      {RPC.PROTECTION.PREVENT_MODIFICATION_LABEL}
-                    </span>
-                    <Switch
-                      checked={preventModification}
-                      onChange={(checked) => setFieldValue(['protection', 'preventModification'], checked)}
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      style={{
-                        marginLeft: 8,
-                        backgroundColor: preventModification ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.SWITCH_OFF,
-                      }}
-                    />
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: 0 }}>
-                    <span style={{ fontSize: '14px', fontWeight: 600, marginRight: 8, minWidth: 200 }}>
-                      {RPC.PROTECTION.PREVENT_SCOPE_CHANGES_LABEL}
-                    </span>
-                    <Switch
-                      checked={preventScopeChanges}
-                      onChange={(checked) => setFieldValue(['protection', 'preventScopeChanges'], checked)}
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      style={{
-                        marginLeft: 8,
-                        backgroundColor: preventScopeChanges ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.SWITCH_OFF,
-                      }}
-                    />
-                  </div>
+                  <Switch
+                    checked={preventDeletion}
+                    onChange={(checked) => setFieldValue(['protection', 'preventDeletion'], checked)}
+                    label={RPC.PROTECTION.PREVENT_DELETION_LABEL}
+                    labelStyle={{ minWidth: 200 }}
+                    containerStyle={{ marginBottom: 12 }}
+                  />
+                  <Switch
+                    checked={preventModification}
+                    onChange={(checked) => setFieldValue(['protection', 'preventModification'], checked)}
+                    label={RPC.PROTECTION.PREVENT_MODIFICATION_LABEL}
+                    labelStyle={{ minWidth: 200 }}
+                    containerStyle={{ marginBottom: 12 }}
+                  />
+                  <Switch
+                    checked={preventScopeChanges}
+                    onChange={(checked) => setFieldValue(['protection', 'preventScopeChanges'], checked)}
+                    label={RPC.PROTECTION.PREVENT_SCOPE_CHANGES_LABEL}
+                    labelStyle={{ minWidth: 200 }}
+                    containerStyle={{ marginBottom: 0 }}
+                  />
                 </div>
                 {/* Column 2 */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 0, flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
-                    <span style={{ fontSize: '14px', fontWeight: 600, marginRight: 8, minWidth: 200 }}>
-                      {RPC.PROTECTION.LOCK_NAME_LABEL}
-                    </span>
-                    <Switch
-                      checked={lockName}
-                      onChange={(checked) => setFieldValue(['protection', 'lockName'], checked)}
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      style={{
-                        marginLeft: 8,
-                        backgroundColor: lockName ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.SWITCH_OFF,
-                      }}
-                    />
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
-                    <span style={{ fontSize: '14px', fontWeight: 600, marginRight: 8, minWidth: 200 }}>
-                      {RPC.PROTECTION.LOCK_CATEGORY_LABEL}
-                    </span>
-                    <Switch
-                      checked={lockCategory}
-                      onChange={(checked) => setFieldValue(['protection', 'lockCategory'], checked)}
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      style={{
-                        marginLeft: 8,
-                        backgroundColor: lockCategory ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.SWITCH_OFF,
-                      }}
-                    />
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: 0 }}>
-                    <span style={{ fontSize: '14px', fontWeight: 600, marginRight: 8, minWidth: 200 }}>
-                      {RPC.PROTECTION.SOFT_DELETE_LABEL}
-                    </span>
-                    <Switch
-                      checked={softDelete}
-                      onChange={(checked) => setFieldValue(['protection', 'softDelete'], checked)}
-                      checkedChildren="On"
-                      unCheckedChildren="Off"
-                      style={{
-                        marginLeft: 8,
-                        backgroundColor: softDelete ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.SWITCH_OFF,
-                      }}
-                    />
-                  </div>
+                  <Switch
+                    checked={lockName}
+                    onChange={(checked) => setFieldValue(['protection', 'lockName'], checked)}
+                    label={RPC.PROTECTION.LOCK_NAME_LABEL}
+                    labelStyle={{ minWidth: 200 }}
+                    containerStyle={{ marginBottom: 12 }}
+                  />
+                  <Switch
+                    checked={lockCategory}
+                    onChange={(checked) => setFieldValue(['protection', 'lockCategory'], checked)}
+                    label={RPC.PROTECTION.LOCK_CATEGORY_LABEL}
+                    labelStyle={{ minWidth: 200 }}
+                    containerStyle={{ marginBottom: 12 }}
+                  />
+                  <Switch
+                    checked={softDelete}
+                    onChange={(checked) => setFieldValue(['protection', 'softDelete'], checked)}
+                    label={RPC.PROTECTION.SOFT_DELETE_LABEL}
+                    labelStyle={{ minWidth: 200 }}
+                    containerStyle={{ marginBottom: 0 }}
+                  />
                 </div>
               </div>
             );

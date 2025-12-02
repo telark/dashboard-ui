@@ -1,8 +1,8 @@
 import React from 'react';
-import { Form, Select, DatePicker, InputNumber, Switch } from 'antd';
+import { Form, Select, DatePicker } from 'antd';
 import Section from '../../../../../../components/display/sections/Section';
+import { Switch, NumberInput } from '../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
-import { DEFAULT_COLORS } from '../../../../../../constants/shared/colors';
 import dayjs from 'dayjs';
 
 const ValiditySection: React.FC = () => {
@@ -112,7 +112,7 @@ const ValiditySection: React.FC = () => {
                               style={{ marginBottom: 12 }}
                               className="form-item-compact"
                             >
-                              <InputNumber
+                              <NumberInput
                                 min={1}
                                 placeholder={RPC.VALIDITY.DURATION_PLACEHOLDER}
                                 style={{ width: '100%' }}
@@ -133,21 +133,12 @@ const ValiditySection: React.FC = () => {
                       {({ getFieldValue: getFieldValueInner, setFieldValue: setFieldValueInner }) => {
                         const autoRevokeInner = getFieldValueInner(['validity', 'autoRevoke']) || false;
                         return (
-                          <div style={{ display: 'flex', alignItems: 'center', marginTop: 20 }}>
-                            <span style={{ fontSize: '14px', fontWeight: 600, marginRight: 8 }}>
-                              {RPC.VALIDITY.AUTO_REVOKE_LABEL}
-                            </span>
-                            <Switch
-                              checked={autoRevokeInner}
-                              onChange={(checked) => setFieldValueInner(['validity', 'autoRevoke'], checked)}
-                              checkedChildren="On"
-                              unCheckedChildren="Off"
-                              style={{
-                                marginLeft: 8,
-                                backgroundColor: autoRevokeInner ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.SWITCH_OFF,
-                              }}
-                            />
-                          </div>
+                          <Switch
+                            checked={autoRevokeInner}
+                            onChange={(checked) => setFieldValueInner(['validity', 'autoRevoke'], checked)}
+                            label={RPC.VALIDITY.AUTO_REVOKE_LABEL}
+                            containerStyle={{ marginTop: 20 }}
+                          />
                         );
                       }}
                     </Form.Item>
