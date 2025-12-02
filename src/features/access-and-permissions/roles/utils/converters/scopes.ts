@@ -12,10 +12,11 @@ export const convertScopesToAPI = (
         level: scopeValue.level,
       };
 
+      // Always include rules array, even if empty
+      // Remove duplicates using Set
       const rules = scopeValue.rules?.filter(Boolean) || [];
-      if (rules.length > 0) {
-        result.rules = rules;
-      }
+      const uniqueRules = Array.from(new Set(rules));
+      result.rules = uniqueRules;
 
       return result;
     });

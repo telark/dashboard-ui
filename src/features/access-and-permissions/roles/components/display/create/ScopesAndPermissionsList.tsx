@@ -32,9 +32,9 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
   return (
     <>
       {areas.map((area: { key: string; label: string }, index: number) => (
-        <div
+          <div
           key={area.key}
-          style={{
+            style={{
             padding: `${rowPaddingPx}px 0`,
             marginBottom: index < areas.length - 1 ? 12 : 0,
           }}
@@ -54,6 +54,12 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
               const denyRules = scopeValue?.rules || [];
               const isExpanded = expandedScopes.has(area.key);
 
+              // Filter out rules that are not available for the current level (for display only)
+              const validDenyRules = denyRules.filter((rule) => {
+                const formattedKeys = availableRules.map((r) => formatRuleKey(area.key, r.key));
+                return formattedKeys.includes(rule);
+              });
+
               return (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
                   <Form.Item
@@ -67,14 +73,32 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
                       <Select
                         placeholder="Select permission level"
                         style={{ flex: 1 }}
+                        value={selectedLevel}
                         options={permissionLevels.map((level) => ({
                           value: level.value,
-                          label: (
+                      label: (
                             <Tooltip title={tooltipMap[level.value]}>
                               <span>{level.label}</span>
-                            </Tooltip>
-                          ),
+                        </Tooltip>
+                      ),
                         }))}
+                        onChange={(value) => {
+                          const currentScope = getFieldValue(['scopes', area.key]) as
+                            | ScopeFormValue
+                            | undefined;
+                          const newLevel = value as PermissionLevel;
+                          const newAvailableRules = getScopeRules(area.key, newLevel);
+                          
+                          // Filter existing rules to only include those valid for the new level
+                          const currentRules = currentScope?.rules || [];
+                          const formattedKeys = newAvailableRules.map((r) => formatRuleKey(area.key, r.key));
+                          const validRules = currentRules.filter((rule) => formattedKeys.includes(rule));
+                          
+                          setFieldValue(['scopes', area.key], {
+                            level: newLevel,
+                            rules: validRules,
+                          });
+                        }}
                       />
                       {availableRules.length > 0 && (
                         <div
@@ -128,7 +152,7 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
                         </div>
                       )}
                     </div>
-                  </Form.Item>
+                </Form.Item>
 
                   <div
                     style={{
@@ -159,7 +183,7 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
                         >
                           {availableRules.map((rule) => {
                             const formattedKey = formatRuleKey(area.key, rule.key);
-                            const isChecked = denyRules.includes(formattedKey);
+                            const isChecked = validDenyRules.includes(formattedKey);
                             return (
                               <div
                                 key={rule.key}
@@ -190,14 +214,22 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
                                     | ScopeFormValue
                                     | undefined;
                                   const currentRules = currentScope?.rules || [];
-                                  const newDenyRules = isChecked
-                                    ? currentRules.filter((r) => r !== formattedKey)
-                                    : [...currentRules, formattedKey];
-                                  setFieldValue(['scopes', area.key], {
-                                    ...currentScope,
-                                    level: currentScope?.level || RPC.PERMISSION_LEVEL.READ_ONLY,
-                                    rules: newDenyRules,
-                                  });
+                                  // Only toggle if clicking outside the checkbox
+                                  if (!isChecked) {
+                                    // Add rule only if it doesn't already exist
+                                    if (!currentRules.includes(formattedKey)) {
+                                      setFieldValue(['scopes', area.key], {
+                                        level: selectedLevel,
+                                        rules: [...currentRules, formattedKey],
+                                      });
+                                    }
+                                  } else {
+                                    // Remove rule
+                                    setFieldValue(['scopes', area.key], {
+                                      level: selectedLevel,
+                                      rules: currentRules.filter((r) => r !== formattedKey),
+                                    });
+                                  }
                                 }}
                               >
                                 <Checkbox
@@ -209,11 +241,13 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
                                       | undefined;
                                     const currentRules = currentScope?.rules || [];
                                     const newDenyRules = e.target.checked
-                                      ? [...currentRules, formattedKey]
+                                      ? // Add rule only if it doesn't already exist
+                                        currentRules.includes(formattedKey)
+                                        ? currentRules
+                                        : [...currentRules, formattedKey]
                                       : currentRules.filter((r) => r !== formattedKey);
                                     setFieldValue(['scopes', area.key], {
-                                      ...currentScope,
-                                      level: currentScope?.level || RPC.PERMISSION_LEVEL.READ_ONLY,
+                                      level: selectedLevel,
                                       rules: newDenyRules,
                                     });
                                   }}
@@ -242,7 +276,7 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
                 </div>
               );
             }}
-          </Form.Item>
+            </Form.Item>
         </div>
       ))}
     </>

@@ -25,14 +25,15 @@ export const convertFormValuesToRoleFormData = (
       }
     : undefined;
 
-  // Ensure protection is always an object (not undefined)
-  const protection = formValues.protection || {
-    preventDeletion: false,
-    preventModification: false,
-    preventScopeChanges: false,
-    lockName: false,
-    lockCategory: false,
-    softDelete: false,
+  // Ensure protection is always an object with actual values from form
+  // Use explicit boolean conversion to handle undefined/null values
+  const protection = {
+    preventDeletion: Boolean(formValues.protection?.preventDeletion),
+    preventModification: Boolean(formValues.protection?.preventModification),
+    preventScopeChanges: Boolean(formValues.protection?.preventScopeChanges),
+    lockName: Boolean(formValues.protection?.lockName),
+    lockCategory: Boolean(formValues.protection?.lockCategory),
+    softDelete: Boolean(formValues.protection?.softDelete),
   };
 
   return {

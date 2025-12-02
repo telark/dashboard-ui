@@ -29,7 +29,23 @@ const CreateRole: React.FC = () => {
   }, []);
 
   const handleFinish = async (values: RoleFormValues) => {
-    const roleData = convertFormValuesToRoleFormData(values, 'custom', 'Active');
+    // Get all form values to ensure nested fields (scopes, protection) are captured
+    const allFormValues = form.getFieldsValue(true); // true = get all fields including nested
+    const finalValues: RoleFormValues = {
+      ...values,
+      // Merge scopes from form state (prioritize form state over values param)
+      scopes: allFormValues.scopes || values.scopes || {},
+      // Merge protection from form state (prioritize form state over values param)
+      protection: allFormValues.protection || values.protection || {
+        preventDeletion: false,
+        preventModification: false,
+        preventScopeChanges: false,
+        lockName: false,
+        lockCategory: false,
+        softDelete: false,
+      },
+    };
+    const roleData = convertFormValuesToRoleFormData(finalValues, 'custom', 'Active');
     await handleCreate(roleData);
     form.resetFields();
   };
