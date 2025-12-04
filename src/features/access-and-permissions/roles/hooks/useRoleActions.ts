@@ -19,7 +19,7 @@ export const useRoleActions = () => {
       try {
         const result = await dispatch(createRoleThunk(data)).unwrap();
         message.success(RC.LABELS.MESSAGES.CREATED(data.name));
-        navigate(`${APP_ROUTES.ROLES}/${result.id}/view`);
+        navigate(APP_ROUTES.ROLES);
         return result;
       } catch {
         message.error(RC.LABELS.MESSAGES.CREATE_FAILED);

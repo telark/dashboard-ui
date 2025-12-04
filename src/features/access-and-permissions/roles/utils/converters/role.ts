@@ -1,4 +1,4 @@
-import type { Role, RoleFormData, RoleFormValues } from '../../models';
+import type { Role, RoleFormData, RoleFormValues, ValidityType } from '../../models';
 import { convertScopesToAPI, convertScopesFromAPI } from './scopes';
 import { convertAssignedToToAPI, convertAssignedToFromAPI } from './assignment';
 import dayjs from 'dayjs';
@@ -14,18 +14,27 @@ export const convertFormValuesToRoleFormData = (
   // Remove expirationModel as it's only a UI helper
   // Only include temporary-specific fields (autoRevoke, expiresAt, durationHours) for temporary roles
   const validity = formValues.validity
-    ? {
-        type: formValues.validity.type,
-        ...(formValues.validity.type === 'temporary' && {
-          expiresAt: formValues.validity.expiresAt
-            ? dayjs.isDayjs(formValues.validity.expiresAt)
+    ? (() => {
+        const baseValidity: { type: ValidityType; expiresAt?: string; durationHours?: number; autoRevoke?: boolean } = {
+          type: formValues.validity.type as ValidityType,
+        };
+        
+        if (formValues.validity.type === 'temporary') {
+          if (formValues.validity.expiresAt) {
+            baseValidity.expiresAt = dayjs.isDayjs(formValues.validity.expiresAt)
               ? formValues.validity.expiresAt.toISOString()
-              : formValues.validity.expiresAt
-            : undefined,
-          durationHours: formValues.validity.durationHours,
-          autoRevoke: formValues.validity.autoRevoke,
-        }),
-      }
+              : formValues.validity.expiresAt;
+          }
+          if (formValues.validity.durationHours !== undefined) {
+            baseValidity.durationHours = formValues.validity.durationHours;
+          }
+          if (formValues.validity.autoRevoke !== undefined) {
+            baseValidity.autoRevoke = formValues.validity.autoRevoke;
+          }
+        }
+        
+        return baseValidity;
+      })()
     : undefined;
 
   // Ensure protection is always an object with actual values from form

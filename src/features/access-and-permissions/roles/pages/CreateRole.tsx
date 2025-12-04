@@ -72,7 +72,6 @@ const CreateRole: React.FC = () => {
           scopes: initialScopes,
           validity: {
             type: RC.VALIDITY_TYPES.PERMANENT,
-            autoRevoke: true,
           },
           protection: {
             preventDeletion: false,

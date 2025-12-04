@@ -23,15 +23,8 @@ const ValiditySection: React.FC = memo(() => {
       subtitle={RPC.VALIDITY.SUBTITLE}
       content={
         <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-          <Form.Item
-            noStyle
-            shouldUpdate={(prevValues, currValues) => {
-              const prevType = prevValues?.validity?.type;
-              const currType = currValues?.validity?.type;
-              return prevType !== currType;
-            }}
-          >
-            {({ setFieldValue }) => (
+          <Form.Item noStyle dependencies={[]}>
+            {({ setFieldsValue }) => (
               <Form.Item
                 name={['validity', 'type']}
                 label={RPC.VALIDITY.TYPE_LABEL}
@@ -45,10 +38,15 @@ const ValiditySection: React.FC = memo(() => {
                   onChange={(value) => {
                     // Clear temporary-only fields when switching to permanent or sessionBased
                     if (value !== RPC.VALIDITY_TYPES.TEMPORARY) {
-                      setFieldValue(['validity', 'autoRevoke'], undefined);
-                      setFieldValue(['validity', 'expirationModel'], undefined);
-                      setFieldValue(['validity', 'expiresAt'], undefined);
-                      setFieldValue(['validity', 'durationHours'], undefined);
+                      setFieldsValue({
+                        validity: {
+                          type: value,
+                          autoRevoke: undefined,
+                          expirationModel: undefined,
+                          expiresAt: undefined,
+                          durationHours: undefined,
+                        },
+                      });
                     }
                   }}
                 />
