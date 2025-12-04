@@ -59,7 +59,7 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
               ]}
               style={{ marginBottom: 12 }}
               className="form-item-compact"
-              validateTrigger="onChange"
+              validateTrigger={['onBlur', 'onSubmit']}
             >
               <Input placeholder={RPC.GENERAL.NAME_PLACEHOLDER} allowClear />
             </Form.Item>

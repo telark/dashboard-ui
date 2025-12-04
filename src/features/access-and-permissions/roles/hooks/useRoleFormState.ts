@@ -85,21 +85,11 @@ export const useRoleFormState = ({
       const currentValues = form.getFieldsValue();
       if (currentValues.name) {
         isInitializedRef.current = true;
-        // Check form state after initialization
-        checkFormState();
-        return;
       }
     }
 
-    // Trigger validation to ensure async validators complete
-    form
-      .validateFields()
-      .then(() => {
-        checkFormState();
-      })
-      .catch(() => {
-        checkFormState();
-      });
+    // Just update form state to reflect changes
+    checkFormState();
   }, [form, isEditMode, checkFormState]);
 
   const handleFieldsChange = useCallback(() => {
