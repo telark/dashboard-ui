@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Form, Select } from 'antd';
 import Section from '../../../../../../../components/display/sections/Section';
 import { Switch, NumberInput, DatePicker } from '../../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import dayjs from 'dayjs';
 
-const ValiditySection: React.FC = () => {
+const ValiditySection: React.FC = memo(() => {
   const validityTypeOptions = [
     { value: RPC.VALIDITY_TYPES.PERMANENT, label: 'Permanent' },
     { value: RPC.VALIDITY_TYPES.TEMPORARY, label: 'Temporary' },
@@ -154,6 +154,8 @@ const ValiditySection: React.FC = () => {
       }
     />
   );
-};
+});
+
+ValiditySection.displayName = 'ValiditySection';
 
 export default ValiditySection;

@@ -3,8 +3,8 @@ import { Switch as AntSwitch } from 'antd';
 import { DEFAULT_COLORS } from '../../../constants/shared/colors';
 
 export interface SwitchProps {
-  checked: boolean;
-  onChange: (checked: boolean) => void;
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
   label?: string;
   disabled?: boolean;
   checkedChildren?: React.ReactNode;
@@ -14,7 +14,7 @@ export interface SwitchProps {
 }
 
 const Switch: React.FC<SwitchProps> = ({
-  checked,
+  checked = false,
   onChange,
   label,
   disabled = false,

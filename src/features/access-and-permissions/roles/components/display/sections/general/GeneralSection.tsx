@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, memo } from 'react';
 import { Form, Input } from 'antd';
 import Section from '../../../../../../../components/display/sections/Section';
 import LabeledInput from '../../../../../../../components/display/inputs/LabeledInput';
@@ -9,7 +9,7 @@ import { DEFAULT_NAME_VALIDATION_CONFIG } from '../../../../../../shared/constan
 import type { Role, RolesGeneralSectionProps } from '../../../../models';
 import { useRoleCategories } from '../../../../hooks';
 
-const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = ({
+const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(({
   roles,
   isEditMode = false,
   currentName,
@@ -85,6 +85,8 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = ({
       }
     />
   );
-};
+});
+
+RolesGeneralSection.displayName = 'RolesGeneralSection';
 
 export default RolesGeneralSection;

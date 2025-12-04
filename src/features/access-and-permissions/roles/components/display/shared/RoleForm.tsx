@@ -3,8 +3,13 @@ import { Form } from 'antd';
 import { PrimaryButton } from '../../../../../../components/display/buttons';
 import { BUTTON_TEXTS, Icons } from '../../../../../../constants';
 import { COMPONENT_STYLES } from '../../../../../../constants/layout/ui';
-import { GeneralSection, ScopesAndPermissionsSection, ValiditySection, ProtectionSection } from '../sections';
-import AssignmentSection from './AssignmentSection';
+import {
+  GeneralSection,
+  ScopesAndPermissionsSection,
+  ValiditySection,
+  ProtectionSection,
+  AssignmentSection,
+} from '../sections';
 import { useRoleFormState } from '../../../hooks';
 import type { RoleFormValues, RoleFormProps } from '../../../models';
 

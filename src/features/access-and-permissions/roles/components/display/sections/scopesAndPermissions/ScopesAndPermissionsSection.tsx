@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import Section from '../../../../../../../components/display/sections/Section';
 import { ROLES_CONSTANTS as RPC, PERMISSION_LEVELS } from '../../../../constants';
 import RolesScopesAndPermissionsList from './ScopesAndPermissionsList';
@@ -11,7 +11,7 @@ const PERMISSION_LEVEL_OPTIONS = PERMISSION_LEVELS.map((level) => ({
 }));
 const TOOLTIP = RPC.SCOPE.PERMISSION_LEVEL_TOOLTIP;
 
-const RolesScopesAndPermissionsSection: React.FC = () => {
+const RolesScopesAndPermissionsSection: React.FC = memo(() => {
   const props: RolesScopesAndPermissionsListProps = {
     areas: AREAS,
     permissionLevels: PERMISSION_LEVEL_OPTIONS,
@@ -26,7 +26,9 @@ const RolesScopesAndPermissionsSection: React.FC = () => {
       content={<RolesScopesAndPermissionsList {...props} />}
     />
   );
-};
+});
+
+RolesScopesAndPermissionsSection.displayName = 'RolesScopesAndPermissionsSection';
 
 export default RolesScopesAndPermissionsSection;
 
