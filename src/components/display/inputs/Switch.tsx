@@ -61,4 +61,3 @@ const Switch: React.FC<SwitchProps> = ({
 };
 
 export default Switch;
-

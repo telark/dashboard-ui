@@ -10,18 +10,16 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
 }) => {
   // Handlers can be extended in the future if needed
   const handleLevelChange = (scopeKey: string, level: PermissionLevel) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     void scopeKey;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     void level;
   };
 
   const handleRuleToggle = (scopeKey: string, formattedKey: string, checked: boolean) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     void scopeKey;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     void formattedKey;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     void checked;
   };
 
@@ -35,7 +33,9 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
           permissionLevels={permissionLevels}
           tooltipMap={tooltipMap}
           onLevelChange={(scopeKey, level) => handleLevelChange(scopeKey, level)}
-          onRuleToggle={(scopeKey, formattedKey, checked) => handleRuleToggle(scopeKey, formattedKey, checked)}
+          onRuleToggle={(scopeKey, formattedKey, checked) =>
+            handleRuleToggle(scopeKey, formattedKey, checked)
+          }
           rowPaddingPx={rowPaddingPx}
           isLast={index === areas.length - 1}
         />
@@ -45,4 +45,3 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
 };
 
 export default RolesScopesAndPermissionsList;
-

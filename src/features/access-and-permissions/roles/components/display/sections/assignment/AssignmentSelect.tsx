@@ -90,4 +90,3 @@ const AssignmentSelect: React.FC<AssignmentSelectProps> = memo(
 AssignmentSelect.displayName = 'AssignmentSelect';
 
 export default AssignmentSelect;
-

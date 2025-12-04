@@ -34,4 +34,3 @@ export const canDeleteRoles = (roles: Role[]): boolean => {
   }
   return roles.every(canDeleteRole);
 };
-

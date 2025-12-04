@@ -135,4 +135,3 @@ const ensurePlatformCategory = async (): Promise<string | null> => {
     return null;
   }
 };
-

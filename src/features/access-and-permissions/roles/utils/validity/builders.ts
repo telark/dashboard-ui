@@ -28,9 +28,7 @@ export const buildValidityForAPI = (
   return baseValidity;
 };
 
-export const buildValidityForForm = (
-  validity: Role['validity'],
-): RoleFormValues['validity'] => {
+export const buildValidityForForm = (validity: Role['validity']): RoleFormValues['validity'] => {
   if (!validity) {
     return { type: RC.VALIDITY_TYPES.PERMANENT };
   }
@@ -58,4 +56,3 @@ export const buildValidityForForm = (
 
   return baseValidity;
 };
-

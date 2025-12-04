@@ -31,4 +31,3 @@ const RolesScopesAndPermissionsSection: React.FC = memo(() => {
 RolesScopesAndPermissionsSection.displayName = 'RolesScopesAndPermissionsSection';
 
 export default RolesScopesAndPermissionsSection;
-

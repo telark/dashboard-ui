@@ -52,4 +52,3 @@ const RulesList: React.FC<RulesListProps> = ({
 };
 
 export default RulesList;
-

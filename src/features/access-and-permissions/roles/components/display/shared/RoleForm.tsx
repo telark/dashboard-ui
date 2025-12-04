@@ -71,11 +71,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
             }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
-              <GeneralSection
-                roles={roles}
-                isEditMode={isEditMode}
-                currentName={currentName}
-              />
+              <GeneralSection roles={roles} isEditMode={isEditMode} currentName={currentName} />
               <ValiditySection />
               <ProtectionSection />
             </div>

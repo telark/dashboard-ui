@@ -50,7 +50,8 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
       >
         {({ getFieldValue, setFieldValue }) => {
           const scopeValue = getFieldValue(['scopes', scopeKey]) as ScopeFormValue | undefined;
-          const selectedLevel = (scopeValue?.level || RPC.PERMISSION_LEVEL.READ_ONLY) as PermissionLevel;
+          const selectedLevel = (scopeValue?.level ||
+            RPC.PERMISSION_LEVEL.READ_ONLY) as PermissionLevel;
           const availableRules = getScopeRules(scopeKey, selectedLevel);
           const denyRules = scopeValue?.rules || [];
 
@@ -193,4 +194,3 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
 };
 
 export default ScopeRow;
-

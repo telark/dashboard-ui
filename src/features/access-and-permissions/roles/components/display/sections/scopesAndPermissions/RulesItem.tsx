@@ -7,11 +7,7 @@ export interface RulesItemProps {
   onToggle: (checked: boolean) => void;
 }
 
-const RulesItem: React.FC<RulesItemProps> = ({
-  ruleLabel,
-  isChecked,
-  onToggle,
-}) => {
+const RulesItem: React.FC<RulesItemProps> = ({ ruleLabel, isChecked, onToggle }) => {
   return (
     <div
       style={{
@@ -64,4 +60,3 @@ const RulesItem: React.FC<RulesItemProps> = ({
 };
 
 export default RulesItem;
-

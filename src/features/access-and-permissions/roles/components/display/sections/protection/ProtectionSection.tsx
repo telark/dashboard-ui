@@ -27,8 +27,10 @@ const ProtectionSection: React.FC = () => {
         >
           {({ getFieldValue, setFieldValue }) => {
             const preventDeletion = getFieldValue(['protection', 'preventDeletion']) || false;
-            const preventModification = getFieldValue(['protection', 'preventModification']) || false;
-            const preventScopeChanges = getFieldValue(['protection', 'preventScopeChanges']) || false;
+            const preventModification =
+              getFieldValue(['protection', 'preventModification']) || false;
+            const preventScopeChanges =
+              getFieldValue(['protection', 'preventScopeChanges']) || false;
             const lockName = getFieldValue(['protection', 'lockName']) || false;
             const lockCategory = getFieldValue(['protection', 'lockCategory']) || false;
             const softDelete = getFieldValue(['protection', 'softDelete']) || false;
@@ -54,14 +56,18 @@ const ProtectionSection: React.FC = () => {
                   />
                   <Switch
                     checked={preventModification}
-                    onChange={(checked) => setFieldValue(['protection', 'preventModification'], checked)}
+                    onChange={(checked) =>
+                      setFieldValue(['protection', 'preventModification'], checked)
+                    }
                     label={RPC.PROTECTION.PREVENT_MODIFICATION_LABEL}
                     labelStyle={{ minWidth: 200 }}
                     containerStyle={{ marginBottom: 12 }}
                   />
                   <Switch
                     checked={preventScopeChanges}
-                    onChange={(checked) => setFieldValue(['protection', 'preventScopeChanges'], checked)}
+                    onChange={(checked) =>
+                      setFieldValue(['protection', 'preventScopeChanges'], checked)
+                    }
                     label={RPC.PROTECTION.PREVENT_SCOPE_CHANGES_LABEL}
                     labelStyle={{ minWidth: 200 }}
                     containerStyle={{ marginBottom: 0 }}
@@ -95,7 +101,9 @@ const ProtectionSection: React.FC = () => {
                     labelStyle={{ minWidth: 200 }}
                     containerStyle={{ marginBottom: 0 }}
                     disabled={isSoftDeleteDisabled}
-                    tooltip={isSoftDeleteDisabled ? RPC.PROTECTION.SOFT_DELETE_DISABLED_NOTE : undefined}
+                    tooltip={
+                      isSoftDeleteDisabled ? RPC.PROTECTION.SOFT_DELETE_DISABLED_NOTE : undefined
+                    }
                   />
                 </div>
               </div>

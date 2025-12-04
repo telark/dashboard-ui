@@ -138,7 +138,6 @@ const ValiditySection: React.FC = memo(() => {
                         return null;
                       }}
                     </Form.Item>
-
                   </>
                 );
               }
