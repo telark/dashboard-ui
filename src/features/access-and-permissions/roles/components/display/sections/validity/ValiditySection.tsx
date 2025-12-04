@@ -54,14 +54,7 @@ const ValiditySection: React.FC = memo(() => {
             )}
           </Form.Item>
 
-          <Form.Item
-            noStyle
-            shouldUpdate={(prevValues, currValues) => {
-              const prevType = prevValues?.validity?.type;
-              const currType = currValues?.validity?.type;
-              return prevType !== currType;
-            }}
-          >
+          <Form.Item noStyle dependencies={[['validity', 'type']]}>
             {({ getFieldValue, setFieldValue }) => {
               const validityType = getFieldValue(['validity', 'type']);
 
@@ -93,14 +86,7 @@ const ValiditySection: React.FC = memo(() => {
                       />
                     </Form.Item>
 
-                    <Form.Item
-                      noStyle
-                      shouldUpdate={(prevValues, currValues) => {
-                        const prevModel = prevValues?.validity?.expirationModel;
-                        const currModel = currValues?.validity?.expirationModel;
-                        return prevModel !== currModel;
-                      }}
-                    >
+                    <Form.Item noStyle dependencies={[['validity', 'expirationModel']]}>
                       {({ getFieldValue: getFieldValueInner }) => {
                         const expirationModel = getFieldValueInner(['validity', 'expirationModel']);
 
@@ -153,37 +139,44 @@ const ValiditySection: React.FC = memo(() => {
                       }}
                     </Form.Item>
 
-                    <Form.Item
-                      noStyle
-                      shouldUpdate={(prevValues, currValues) => {
-                        const prevAutoRevoke = prevValues?.validity?.autoRevoke;
-                        const currAutoRevoke = currValues?.validity?.autoRevoke;
-                        return prevAutoRevoke !== currAutoRevoke;
-                      }}
-                    >
-                      {({
-                        getFieldValue: getFieldValueInner,
-                        setFieldValue: setFieldValueInner,
-                      }) => {
-                        const autoRevokeInner =
-                          getFieldValueInner(['validity', 'autoRevoke']) || false;
-                        return (
-                          <Switch
-                            checked={autoRevokeInner}
-                            onChange={(checked) =>
-                              setFieldValueInner(['validity', 'autoRevoke'], checked)
-                            }
-                            label={RPC.VALIDITY.AUTO_REVOKE_LABEL}
-                            containerStyle={{ marginTop: 20 }}
-                          />
-                        );
-                      }}
-                    </Form.Item>
                   </>
                 );
               }
               // Session-based and permanent doesn't show any additional fields
               return null;
+            }}
+          </Form.Item>
+
+          {/* Auto revoke switch - controlled similarly to protection switches for smoother UX */}
+          <Form.Item
+            noStyle
+            shouldUpdate={(prevValues, currentValues) => {
+              const prevValidity = prevValues?.validity;
+              const currentValidity = currentValues?.validity;
+
+              return (
+                prevValidity?.type !== currentValidity?.type ||
+                prevValidity?.autoRevoke !== currentValidity?.autoRevoke
+              );
+            }}
+          >
+            {({ getFieldValue, setFieldValue }) => {
+              const validityType = getFieldValue(['validity', 'type']);
+
+              if (validityType !== RPC.VALIDITY_TYPES.TEMPORARY) {
+                return null;
+              }
+
+              const autoRevoke = getFieldValue(['validity', 'autoRevoke']) ?? false;
+
+              return (
+                <Switch
+                  checked={autoRevoke}
+                  onChange={(checked) => setFieldValue(['validity', 'autoRevoke'], checked)}
+                  label={RPC.VALIDITY.AUTO_REVOKE_LABEL}
+                  containerStyle={{ marginTop: 20 }}
+                />
+              );
             }}
           </Form.Item>
         </div>

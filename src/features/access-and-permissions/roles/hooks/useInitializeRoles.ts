@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { initializeBuiltInRoles } from '../utils/initialize';
+import { initializeBuiltInRoles } from '../utils';
 import { ROLES_CONSTANTS } from '../constants';
 import logger from '../../../../logging';
 

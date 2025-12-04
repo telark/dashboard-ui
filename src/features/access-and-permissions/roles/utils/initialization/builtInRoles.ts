@@ -1,14 +1,13 @@
-import { fetchCategoriesByScope, createCategory } from '../../categories/clients';
-import { createRole, fetchRoles } from '../clients';
-import { CATEGORIES_CONSTANTS } from '../../categories/constants';
-import { BUILT_IN_ROLES, ROLES_CONSTANTS } from '../constants';
-import logger from '../../../../logging';
-import type { Category } from '../../categories/models';
-import type { Role } from '../models';
+import { fetchCategoriesByScope, createCategory } from '../../../categories/clients';
+import { createRole, fetchRoles } from '../../clients';
+import { CATEGORIES_CONSTANTS } from '../../../categories/constants';
+import { BUILT_IN_ROLES, ROLES_CONSTANTS } from '../../constants';
+import logger from '../../../../../logging';
+import type { Category } from '../../../categories/models';
+import type { Role } from '../../models';
 
 export const initializeBuiltInRoles = async (): Promise<void> => {
   try {
-    // First, ensure the platform category exists
     const platformCategoryId = await ensurePlatformCategory();
 
     if (!platformCategoryId) {
@@ -16,7 +15,6 @@ export const initializeBuiltInRoles = async (): Promise<void> => {
       return;
     }
 
-    // Check if built-in roles already exist
     const existingRoles = await fetchRoles(true);
     const existingRoleNames = new Set<string>();
 
@@ -33,7 +31,6 @@ export const initializeBuiltInRoles = async (): Promise<void> => {
       });
     }
 
-    // Filter out roles that already exist
     const rolesToCreate = BUILT_IN_ROLES.filter((role) => !existingRoleNames.has(role.name)).map(
       (role) => ({
         ...role,
@@ -138,3 +135,4 @@ const ensurePlatformCategory = async (): Promise<string | null> => {
     return null;
   }
 };
+

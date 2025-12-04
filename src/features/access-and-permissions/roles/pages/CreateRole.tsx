@@ -29,13 +29,14 @@ const CreateRole: React.FC = () => {
   }, []);
 
   const handleFinish = async (values: RoleFormValues) => {
-    // Get all form values to ensure nested fields (scopes, protection) are captured
-    const allFormValues = form.getFieldsValue(true); // true = get all fields including nested
+    // Get all form values to ensure nested fields (scopes, protection, validity, etc.) are captured
+    const allFormValues = form.getFieldsValue(true) as RoleFormValues; // true = get all fields including nested
+
     const finalValues: RoleFormValues = {
-      ...values,
-      // Merge scopes from form state (prioritize form state over values param)
+      ...allFormValues,
+      // Ensure scopes are taken from the latest form state
       scopes: allFormValues.scopes || values.scopes || {},
-      // Merge protection from form state (prioritize form state over values param)
+      // Ensure protection is fully populated with explicit booleans
       protection: allFormValues.protection || values.protection || {
         preventDeletion: false,
         preventModification: false,

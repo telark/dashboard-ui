@@ -14,7 +14,6 @@ export const convertAssignedToToAPI = (
     });
   }
 
-  // Always return an object, even if empty, to allow clearing assignments
   return { groupIDs, userIDs };
 };
 
