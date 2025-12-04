@@ -24,18 +24,45 @@ const ValiditySection: React.FC = memo(() => {
       content={
         <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
           <Form.Item
-            name={['validity', 'type']}
-            label={RPC.VALIDITY.TYPE_LABEL}
-            rules={[{ required: true, message: 'Please select a validity type' }]}
-            style={{ marginBottom: 12 }}
-            className="form-item-compact"
+            noStyle
+            shouldUpdate={(prevValues, currValues) => {
+              const prevType = prevValues?.validity?.type;
+              const currType = currValues?.validity?.type;
+              return prevType !== currType;
+            }}
           >
-            <Select placeholder="Select validity type" options={validityTypeOptions} />
+            {({ setFieldValue }) => (
+              <Form.Item
+                name={['validity', 'type']}
+                label={RPC.VALIDITY.TYPE_LABEL}
+                rules={[{ required: true, message: 'Please select a validity type' }]}
+                style={{ marginBottom: 12 }}
+                className="form-item-compact"
+              >
+                <Select
+                  placeholder="Select validity type"
+                  options={validityTypeOptions}
+                  onChange={(value) => {
+                    // Clear temporary-only fields when switching to permanent or sessionBased
+                    if (value !== RPC.VALIDITY_TYPES.TEMPORARY) {
+                      setFieldValue(['validity', 'autoRevoke'], undefined);
+                      setFieldValue(['validity', 'expirationModel'], undefined);
+                      setFieldValue(['validity', 'expiresAt'], undefined);
+                      setFieldValue(['validity', 'durationHours'], undefined);
+                    }
+                  }}
+                />
+              </Form.Item>
+            )}
           </Form.Item>
 
           <Form.Item
             noStyle
-            shouldUpdate={(prev, curr) => prev?.validity?.type !== curr?.validity?.type}
+            shouldUpdate={(prevValues, currValues) => {
+              const prevType = prevValues?.validity?.type;
+              const currType = currValues?.validity?.type;
+              return prevType !== currType;
+            }}
           >
             {({ getFieldValue, setFieldValue }) => {
               const validityType = getFieldValue(['validity', 'type']);
@@ -70,9 +97,11 @@ const ValiditySection: React.FC = memo(() => {
 
                     <Form.Item
                       noStyle
-                      shouldUpdate={(prev, curr) =>
-                        prev?.validity?.expirationModel !== curr?.validity?.expirationModel
-                      }
+                      shouldUpdate={(prevValues, currValues) => {
+                        const prevModel = prevValues?.validity?.expirationModel;
+                        const currModel = currValues?.validity?.expirationModel;
+                        return prevModel !== currModel;
+                      }}
                     >
                       {({ getFieldValue: getFieldValueInner }) => {
                         const expirationModel = getFieldValueInner(['validity', 'expirationModel']);
@@ -128,14 +157,24 @@ const ValiditySection: React.FC = memo(() => {
 
                     <Form.Item
                       noStyle
-                      shouldUpdate={(prev, curr) => prev?.validity?.autoRevoke !== curr?.validity?.autoRevoke}
+                      shouldUpdate={(prevValues, currValues) => {
+                        const prevAutoRevoke = prevValues?.validity?.autoRevoke;
+                        const currAutoRevoke = currValues?.validity?.autoRevoke;
+                        return prevAutoRevoke !== currAutoRevoke;
+                      }}
                     >
-                      {({ getFieldValue: getFieldValueInner, setFieldValue: setFieldValueInner }) => {
-                        const autoRevokeInner = getFieldValueInner(['validity', 'autoRevoke']) || false;
+                      {({
+                        getFieldValue: getFieldValueInner,
+                        setFieldValue: setFieldValueInner,
+                      }) => {
+                        const autoRevokeInner =
+                          getFieldValueInner(['validity', 'autoRevoke']) || false;
                         return (
                           <Switch
                             checked={autoRevokeInner}
-                            onChange={(checked) => setFieldValueInner(['validity', 'autoRevoke'], checked)}
+                            onChange={(checked) =>
+                              setFieldValueInner(['validity', 'autoRevoke'], checked)
+                            }
                             label={RPC.VALIDITY.AUTO_REVOKE_LABEL}
                             containerStyle={{ marginTop: 20 }}
                           />
@@ -145,8 +184,7 @@ const ValiditySection: React.FC = memo(() => {
                   </>
                 );
               }
-
-              // Session-based and permanent don't show any additional fields
+              // Session-based and permanent doesn't show any additional fields
               return null;
             }}
           </Form.Item>

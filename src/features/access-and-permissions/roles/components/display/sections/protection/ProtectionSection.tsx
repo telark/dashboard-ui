@@ -12,9 +12,9 @@ const ProtectionSection: React.FC = () => {
       content={
         <Form.Item
           noStyle
-          shouldUpdate={(prev, curr) => {
-            const prevProtection = prev?.protection;
-            const currProtection = curr?.protection;
+          shouldUpdate={(prevValues, currValues) => {
+            const prevProtection = prevValues?.protection;
+            const currProtection = currValues?.protection;
             return (
               prevProtection?.preventDeletion !== currProtection?.preventDeletion ||
               prevProtection?.preventModification !== currProtection?.preventModification ||
@@ -33,13 +33,21 @@ const ProtectionSection: React.FC = () => {
             const lockCategory = getFieldValue(['protection', 'lockCategory']) || false;
             const softDelete = getFieldValue(['protection', 'softDelete']) || false;
 
+            const isSoftDeleteDisabled = preventDeletion;
+
             return (
               <div style={{ display: 'flex', gap: 24 }}>
                 {/* Column 1 */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 0, flex: 1 }}>
                   <Switch
                     checked={preventDeletion}
-                    onChange={(checked) => setFieldValue(['protection', 'preventDeletion'], checked)}
+                    onChange={(checked) => {
+                      setFieldValue(['protection', 'preventDeletion'], checked);
+                      // When preventDeletion is enabled, disable softDelete
+                      if (checked) {
+                        setFieldValue(['protection', 'softDelete'], false);
+                      }
+                    }}
                     label={RPC.PROTECTION.PREVENT_DELETION_LABEL}
                     labelStyle={{ minWidth: 200 }}
                     containerStyle={{ marginBottom: 12 }}
@@ -77,10 +85,17 @@ const ProtectionSection: React.FC = () => {
                   />
                   <Switch
                     checked={softDelete}
-                    onChange={(checked) => setFieldValue(['protection', 'softDelete'], checked)}
+                    onChange={(checked) => {
+                      // Block enabling softDelete if preventDeletion is true
+                      if (!isSoftDeleteDisabled) {
+                        setFieldValue(['protection', 'softDelete'], checked);
+                      }
+                    }}
                     label={RPC.PROTECTION.SOFT_DELETE_LABEL}
                     labelStyle={{ minWidth: 200 }}
                     containerStyle={{ marginBottom: 0 }}
+                    disabled={isSoftDeleteDisabled}
+                    tooltip={isSoftDeleteDisabled ? RPC.PROTECTION.SOFT_DELETE_DISABLED_NOTE : undefined}
                   />
                 </div>
               </div>

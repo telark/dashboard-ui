@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch as AntSwitch } from 'antd';
+import { Switch as AntSwitch, Tooltip } from 'antd';
 import { DEFAULT_COLORS } from '../../../constants/shared/colors';
 
 export interface SwitchProps {
@@ -11,6 +11,7 @@ export interface SwitchProps {
   unCheckedChildren?: React.ReactNode;
   labelStyle?: React.CSSProperties;
   containerStyle?: React.CSSProperties;
+  tooltip?: string;
 }
 
 const Switch: React.FC<SwitchProps> = ({
@@ -22,8 +23,9 @@ const Switch: React.FC<SwitchProps> = ({
   unCheckedChildren = 'Off',
   labelStyle,
   containerStyle,
+  tooltip,
 }) => {
-  return (
+  const switchElement = (
     <div style={{ display: 'flex', alignItems: 'center', ...containerStyle }}>
       {label && (
         <span
@@ -50,6 +52,12 @@ const Switch: React.FC<SwitchProps> = ({
       />
     </div>
   );
+
+  if (tooltip) {
+    return <Tooltip title={tooltip}>{switchElement}</Tooltip>;
+  }
+
+  return switchElement;
 };
 
 export default Switch;

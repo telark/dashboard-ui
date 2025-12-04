@@ -12,16 +12,19 @@ export const convertFormValuesToRoleFormData = (
 
   // Convert expiresAt from dayjs to ISO string if present
   // Remove expirationModel as it's only a UI helper
+  // Only include temporary-specific fields (autoRevoke, expiresAt, durationHours) for temporary roles
   const validity = formValues.validity
     ? {
         type: formValues.validity.type,
-        expiresAt: formValues.validity.expiresAt
-          ? dayjs.isDayjs(formValues.validity.expiresAt)
-            ? formValues.validity.expiresAt.toISOString()
-            : formValues.validity.expiresAt
-          : undefined,
-        durationHours: formValues.validity.durationHours,
-        autoRevoke: formValues.validity.autoRevoke,
+        ...(formValues.validity.type === 'temporary' && {
+          expiresAt: formValues.validity.expiresAt
+            ? dayjs.isDayjs(formValues.validity.expiresAt)
+              ? formValues.validity.expiresAt.toISOString()
+              : formValues.validity.expiresAt
+            : undefined,
+          durationHours: formValues.validity.durationHours,
+          autoRevoke: formValues.validity.autoRevoke,
+        }),
       }
     : undefined;
 
@@ -45,7 +48,6 @@ export const convertFormValuesToRoleFormData = (
     scopesAndPermissions: convertScopesToAPI(formValues.scopes),
     validity: validity || {
       type: 'permanent',
-      autoRevoke: true,
     },
     protection,
     assignedTo: { groupIDs: assignedTo.groupIDs, userIDs: assignedTo.userIDs },
@@ -63,7 +65,6 @@ export const convertRoleToFormValues = (role: Role | null): RoleFormValues => {
       scopes: {},
       validity: {
         type: 'permanent',
-        autoRevoke: true,
       },
       protection: {
         preventDeletion: false,
@@ -100,7 +101,6 @@ export const convertRoleToFormValues = (role: Role | null): RoleFormValues => {
     scopes: convertScopesFromAPI(role.scopesAndPermissions || []),
     validity: validity || {
       type: 'permanent',
-      autoRevoke: true,
     },
     protection: role.protection || {
       preventDeletion: false,

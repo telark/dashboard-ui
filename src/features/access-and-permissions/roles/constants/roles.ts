@@ -176,6 +176,7 @@ export const ROLES_CONSTANTS = {
     LOCK_NAME_LABEL: 'Lock Name',
     LOCK_CATEGORY_LABEL: 'Lock Category',
     SOFT_DELETE_LABEL: 'Soft Delete',
+    SOFT_DELETE_DISABLED_NOTE: 'Soft delete is disabled because deletion is prevented.',
   },
   LOGS: {
     INITIALIZING_ROLES: 'Initializing built-in roles...',
