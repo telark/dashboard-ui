@@ -7,7 +7,11 @@ import UsersSelect from './UsersSelect';
 
 const AssignmentSection: React.FC = memo(() => {
   const form = Form.useFormInstance();
-  const assignedToValue = Form.useWatch('assignedTo', form) || [];
+  const watchedAssignedTo = Form.useWatch('assignedTo', form);
+
+  const assignedToValue = useMemo(() => {
+    return watchedAssignedTo || [];
+  }, [watchedAssignedTo]);
 
   const [allOptionsMap, setAllOptionsMap] = useState<Map<string, string>>(new Map());
 

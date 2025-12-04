@@ -1,11 +1,18 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { Modal } from 'antd';
 import DataTable from '../../../../../../components/display/table/DataTable';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import type { User, UsersTableProps } from '../../../models';
+import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
 import Columns from './Columns';
 
 type SortKey = 'username' | 'fullname' | 'email' | 'roleID' | 'creationDate';
+
+type ExtendedColumnCtx = GenerateColumnCtx & {
+  onView?: (record: User) => void;
+  onEdit?: (record: User) => void;
+  onDelete?: (record: User) => void;
+};
 
 const UsersTable: React.FC<UsersTableProps> = ({ users, onView, onEdit, onUsersChange }) => {
   const [sortKey, setSortKey] = useState<SortKey>('creationDate');
@@ -32,25 +39,34 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onView, onEdit, onUsersC
     return items;
   }, [users, sortKey, sortOrder]);
 
-  const handleView = (record: User) => {
-    onView?.(record);
-  };
+  const handleView = useCallback(
+    (record: User) => {
+      onView?.(record);
+    },
+    [onView],
+  );
 
-  const handleEdit = (record: User) => {
-    onEdit?.(record);
-  };
+  const handleEdit = useCallback(
+    (record: User) => {
+      onEdit?.(record);
+    },
+    [onEdit],
+  );
 
-  const handleDelete = (record: User) => {
-    Modal.confirm({
-      title: UC.LABELS.ACTIONS.DELETE_MODAL_TITLE,
-      content: UC.LABELS.ACTIONS.DELETE_MODAL_CONTENT(record?.fullname || record?.username || ''),
-      okText: UC.LABELS.ACTIONS.DELETE_MODAL_OK,
-      okButtonProps: { danger: true },
-      onOk: () => {
-        onUsersChange?.(users.filter((u) => u.id !== record.id));
-      },
-    });
-  };
+  const handleDelete = useCallback(
+    (record: User) => {
+      Modal.confirm({
+        title: UC.LABELS.ACTIONS.DELETE_MODAL_TITLE,
+        content: UC.LABELS.ACTIONS.DELETE_MODAL_CONTENT(record?.fullname || record?.username || ''),
+        okText: UC.LABELS.ACTIONS.DELETE_MODAL_OK,
+        okButtonProps: { danger: true },
+        onOk: () => {
+          onUsersChange?.(users.filter((u) => u.id !== record.id));
+        },
+      });
+    },
+    [onUsersChange, users],
+  );
 
   const columns = useMemo(
     () =>
@@ -64,8 +80,8 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onView, onEdit, onUsersC
         onView: handleView,
         onEdit: handleEdit,
         onDelete: handleDelete,
-      } as any),
-    [sortKey],
+      } as ExtendedColumnCtx),
+    [sortKey, handleView, handleEdit, handleDelete],
   );
 
   return (

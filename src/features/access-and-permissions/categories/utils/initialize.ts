@@ -12,7 +12,6 @@ export const initializeBuiltInCategories = async (scope: string): Promise<void> 
       existingCategories.data.items &&
       existingCategories.data.items.length > 0
     ) {
-      logger.info(CATEGORIES_CONSTANTS.LOGS.CATEGORIES_ALREADY_EXIST(scope));
       return;
     }
 

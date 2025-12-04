@@ -39,17 +39,13 @@ export const initializeBuiltInRoles = async (): Promise<void> => {
     );
 
     if (rolesToCreate.length === 0) {
-      logger.info(ROLES_CONSTANTS.LOGS.ROLES_ALREADY_EXIST);
       return;
     }
-
-    logger.info(ROLES_CONSTANTS.LOGS.INITIALIZING_ROLES);
 
     const createPromises = rolesToCreate.map((role) =>
       createRole(role).catch((error) => {
         const errorMessage = error instanceof Error ? error.message : String(error);
         if (errorMessage.includes('already exists') || errorMessage.includes('409')) {
-          logger.info(ROLES_CONSTANTS.LOGS.ROLE_ALREADY_EXISTS(role.name));
           return null;
         }
         logger.error(ROLES_CONSTANTS.LOGS.ROLE_CREATE_FAILED(role.name), error);
@@ -58,8 +54,6 @@ export const initializeBuiltInRoles = async (): Promise<void> => {
     );
 
     await Promise.allSettled(createPromises);
-
-    logger.info(ROLES_CONSTANTS.LOGS.INITIALIZATION_SUCCESS);
   } catch (error) {
     logger.error(ROLES_CONSTANTS.LOGS.INITIALIZATION_FAILED, error);
     throw error;
@@ -84,12 +78,9 @@ const ensurePlatformCategory = async (): Promise<string | null> => {
       );
 
       if (platformCategory) {
-        logger.info(ROLES_CONSTANTS.LOGS.PLATFORM_CATEGORY_ALREADY_EXISTS(platformCategory.id));
         return platformCategory.id;
       }
     }
-
-    logger.info(ROLES_CONSTANTS.LOGS.CREATING_PLATFORM_CATEGORY);
     const categoryData = {
       name: ROLES_CONSTANTS.PLATFORM_CATEGORY_NAME,
       scope: CATEGORIES_CONSTANTS.SCOPES.ROLES,
@@ -99,7 +90,6 @@ const ensurePlatformCategory = async (): Promise<string | null> => {
     const response = await createCategory(categoryData);
 
     if (response && response.data && response.data.id) {
-      logger.info(ROLES_CONSTANTS.LOGS.PLATFORM_CATEGORY_CREATED(response.data.id));
       return response.data.id;
     }
 
@@ -108,7 +98,6 @@ const ensurePlatformCategory = async (): Promise<string | null> => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     if (errorMessage.includes('already exists') || errorMessage.includes('409')) {
-      logger.info(ROLES_CONSTANTS.LOGS.PLATFORM_CATEGORY_ALREADY_EXISTS_FETCHING);
       try {
         const existingCategories = await fetchCategoriesByScope(
           CATEGORIES_CONSTANTS.SCOPES.ROLES,
