@@ -96,21 +96,31 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
 
           return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-              <Form.Item
-                name={['scopes', scopeKey, 'level']}
-                label={<span style={{ fontWeight: 700, color: '#0B1F33' }}>{scopeLabel}</span>}
-                style={{ marginBottom: 0 }}
-                className="form-item-compact"
-                rules={[{ required: true, message: 'Please select a permission level' }]}
-              >
+              <div style={{ marginBottom: 8 }}>
+                <label
+                  style={{
+                    display: 'block',
+                    fontWeight: 700,
+                    color: '#0B1F33',
+                    marginBottom: 8,
+                  }}
+                >
+                  {scopeLabel}
+                </label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <LevelSelector
-                    value={selectedLevel}
-                    onChange={handleLevelChange}
-                    options={permissionLevels}
-                    tooltipMap={tooltipMap}
-                    style={{ flex: 1 }}
-                  />
+                  <Form.Item
+                    name={['scopes', scopeKey, 'level']}
+                    style={{ marginBottom: 0, flex: 1 }}
+                    rules={[{ required: true, message: 'Please select a permission level' }]}
+                  >
+                    <LevelSelector
+                      value={selectedLevel}
+                      onChange={handleLevelChange}
+                      options={permissionLevels}
+                      tooltipMap={tooltipMap}
+                      style={{ width: '100%' }}
+                    />
+                  </Form.Item>
                   {availableRules.length > 0 && (
                     <div
                       onClick={toggleScope}
@@ -163,7 +173,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                     </div>
                   )}
                 </div>
-              </Form.Item>
+              </div>
 
               <div
                 style={{

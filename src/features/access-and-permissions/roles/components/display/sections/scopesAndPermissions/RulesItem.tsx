@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Checkbox } from 'antd';
 
 export interface RulesItemProps {
   ruleLabel: string;
+  formattedKey: string;
   isChecked: boolean;
   onToggle: (checked: boolean) => void;
 }
 
-const RulesItem: React.FC<RulesItemProps> = ({ ruleLabel, isChecked, onToggle }) => {
+const RulesItem: React.FC<RulesItemProps> = ({ ruleLabel, formattedKey, isChecked, onToggle }) => {
+  const checkboxId = useMemo(
+    () => `rule-checkbox-${formattedKey.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+    [formattedKey],
+  );
+
   return (
     <div
       style={{
@@ -35,6 +41,7 @@ const RulesItem: React.FC<RulesItemProps> = ({ ruleLabel, isChecked, onToggle })
       onClick={() => onToggle(!isChecked)}
     >
       <Checkbox
+        id={checkboxId}
         checked={isChecked}
         onChange={(e) => {
           e.stopPropagation();

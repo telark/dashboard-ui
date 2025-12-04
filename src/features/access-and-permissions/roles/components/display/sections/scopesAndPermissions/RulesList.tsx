@@ -41,6 +41,7 @@ const RulesList: React.FC<RulesListProps> = ({
             <RulesItem
               key={rule.key}
               ruleLabel={rule.label}
+              formattedKey={formattedKey}
               isChecked={isChecked}
               onToggle={(checked) => onRuleToggle(formattedKey, checked)}
             />
