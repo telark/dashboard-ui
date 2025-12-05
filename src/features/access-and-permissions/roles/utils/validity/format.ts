@@ -28,10 +28,15 @@ const formatTimeRemaining = (milliseconds: number): string => {
   return `${totalMinutes}m`;
 };
 
-export const formatValidity = (validity: Role['validity'], record: Role): string => {
-  if (!validity) return 'Permanent';
-  if (validity.type === 'permanent') return 'Permanent';
-  if (validity.type === 'sessionBased') return 'Session Based';
+export interface ValidityFormatResult {
+  label: string;
+  expiresIn?: string;
+}
+
+export const formatValidity = (validity: Role['validity'], record: Role): ValidityFormatResult => {
+  if (!validity) return { label: 'Permanent' };
+  if (validity.type === 'permanent') return { label: 'Permanent' };
+  if (validity.type === 'sessionBased') return { label: 'Session Based' };
   if (validity.type === 'temporary') {
     const now = new Date().getTime();
 
@@ -39,7 +44,7 @@ export const formatValidity = (validity: Role['validity'], record: Role): string
       const expiresAt = new Date(validity.expiresAt).getTime();
       const remaining = expiresAt - now;
       const timeRemaining = formatTimeRemaining(remaining);
-      return `Temporary (expires in ${timeRemaining})`;
+      return { label: 'Temporary', expiresIn: `(expires in ${timeRemaining})` };
     }
 
     if (validity.durationHours) {
@@ -48,11 +53,11 @@ export const formatValidity = (validity: Role['validity'], record: Role): string
       const expirationTime = startDate.getTime() + validity.durationHours * 60 * 60 * 1000;
       const remaining = expirationTime - now;
       const timeRemaining = formatTimeRemaining(remaining);
-      return `Temporary (expires in ${timeRemaining})`;
+      return { label: 'Temporary', expiresIn: `(expires in ${timeRemaining})` };
     }
 
-    return 'Temporary';
+    return { label: 'Temporary' };
   }
-  return 'Permanent';
+  return { label: 'Permanent' };
 };
 

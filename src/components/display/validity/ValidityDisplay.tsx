@@ -29,7 +29,14 @@ const ValidityDisplay: React.FC<ValidityDisplayProps> = ({ validity, record }) =
     return () => clearInterval(interval);
   }, []);
 
-  return <span>{formattedValidity}</span>;
+  return (
+    <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <span>{formattedValidity.label}</span>
+      {formattedValidity.expiresIn && (
+        <span style={{ fontSize: '0.85em', color: '#64748b' }}>{formattedValidity.expiresIn}</span>
+      )}
+    </span>
+  );
 };
 
 ValidityDisplay.displayName = 'ValidityDisplay';
