@@ -2,25 +2,7 @@ import React, { memo } from 'react';
 import { Select } from 'antd';
 import { AiOutlineClose } from 'react-icons/ai';
 import { DEFAULT_COLORS } from '../../../../../../../constants/shared/colors';
-
-export interface AssignmentSelectOption {
-  label: React.ReactNode;
-  value: string;
-  displayName?: string;
-}
-
-export interface AssignmentSelectProps {
-  value?: string[];
-  onChange?: (value: string[]) => void;
-  options: AssignmentSelectOption[];
-  placeholder?: string;
-  loading?: boolean;
-  allOptionsMap?: Map<string, string>;
-  className?: string;
-  allowClear?: boolean;
-  showSearch?: boolean;
-  filterOption?: (input: string, option?: AssignmentSelectOption) => boolean;
-}
+import type { AssignmentSelectProps } from '../../../../models';
 
 const AssignmentSelect: React.FC<AssignmentSelectProps> = memo(
   ({

@@ -1,14 +1,6 @@
 import React from 'react';
 import RulesItem from './RulesItem';
-import type { ScopeRule } from '../../../../constants/scopeRules';
-
-export interface RulesListProps {
-  rules: ScopeRule[];
-  scopeKey: string;
-  selectedRules: string[];
-  onRuleToggle: (formattedKey: string, checked: boolean) => void;
-  formatRuleKey: (scope: string, ruleKey: string) => string;
-}
+import type { RulesListProps } from '../../../../models';
 
 const RulesList: React.FC<RulesListProps> = ({
   rules,

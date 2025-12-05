@@ -4,13 +4,12 @@ import Section from '../../../../../../../components/display/sections/Section';
 import { Switch } from '../../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import { useProtectionFields } from '../../../../hooks';
-
-interface ProtectionSectionProps {
-  onManualChange?: () => void;
-}
+import type { ProtectionSectionProps } from '../../../../models';
 
 const ProtectionSection: React.FC<ProtectionSectionProps> = ({ onManualChange }) => {
-  const { updateProtectionFields, getPreventScopeChanges } = useProtectionFields({ onManualChange });
+  const { updateProtectionFields, getPreventScopeChanges } = useProtectionFields({
+    onManualChange,
+  });
 
   return (
     <Section
@@ -65,14 +64,18 @@ const ProtectionSection: React.FC<ProtectionSectionProps> = ({ onManualChange })
                   />
                   <Switch
                     checked={preventModification}
-                    onChange={(checked) => handleUpdateProtectionFields({ preventModification: checked })}
+                    onChange={(checked) =>
+                      handleUpdateProtectionFields({ preventModification: checked })
+                    }
                     label={RPC.PROTECTION.PREVENT_MODIFICATION_LABEL}
                     labelStyle={{ minWidth: 200 }}
                     containerStyle={{ marginBottom: 12 }}
                   />
                   <Switch
                     checked={preventScopeChanges}
-                    onChange={(checked) => handleUpdateProtectionFields({ preventScopeChanges: checked })}
+                    onChange={(checked) =>
+                      handleUpdateProtectionFields({ preventScopeChanges: checked })
+                    }
                     label={RPC.PROTECTION.PREVENT_SCOPE_CHANGES_LABEL}
                     labelStyle={{ minWidth: 200 }}
                     containerStyle={{ marginBottom: 0 }}

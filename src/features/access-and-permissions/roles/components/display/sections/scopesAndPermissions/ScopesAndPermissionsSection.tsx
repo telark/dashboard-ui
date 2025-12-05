@@ -3,7 +3,10 @@ import Section from '../../../../../../../components/display/sections/Section';
 import { LockBanner } from '../../../../../../../components/display/banners';
 import { ROLES_CONSTANTS as RPC, PERMISSION_LEVELS } from '../../../../constants';
 import RolesScopesAndPermissionsList from './ScopesAndPermissionsList';
-import type { RolesScopesAndPermissionsListProps } from '../../../../models';
+import type {
+  RolesScopesAndPermissionsListProps,
+  ScopesAndPermissionsSectionProps,
+} from '../../../../models';
 
 const AREAS = RPC.SCOPE.DEFAULT_AREAS;
 const PERMISSION_LEVEL_OPTIONS = PERMISSION_LEVELS.map((level) => ({
@@ -11,12 +14,6 @@ const PERMISSION_LEVEL_OPTIONS = PERMISSION_LEVELS.map((level) => ({
   label: level,
 }));
 const TOOLTIP = RPC.SCOPE.PERMISSION_LEVEL_TOOLTIP;
-
-interface ScopesAndPermissionsSectionProps {
-  isLocked?: boolean;
-  onManualChange?: () => void;
-  initialValues?: { scopes?: Record<string, { level: string; rules?: string[] }> } | null;
-}
 
 const RolesScopesAndPermissionsSection: React.FC<ScopesAndPermissionsSectionProps> = memo(
   ({ isLocked = false, onManualChange, initialValues }) => {

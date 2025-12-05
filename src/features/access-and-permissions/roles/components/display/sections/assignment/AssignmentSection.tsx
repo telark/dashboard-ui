@@ -4,10 +4,7 @@ import Section from '../../../../../../../components/display/sections/Section';
 import { ROLES_CONSTANTS as RC } from '../../../../constants';
 import GroupsSelect from './GroupsSelect';
 import UsersSelect from './UsersSelect';
-
-interface AssignmentSectionProps {
-  onManualChange?: () => void;
-}
+import type { AssignmentSectionProps } from '../../../../models';
 
 const AssignmentSection: React.FC<AssignmentSectionProps> = memo(({ onManualChange }) => {
   const form = Form.useFormInstance();

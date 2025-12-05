@@ -5,14 +5,8 @@ import { fetchAllUsersThunk } from '../../../../../users/store';
 import UserAvatar from '../../../../../../../components/display/avatars/UserAvatar';
 import { DEFAULT_COLORS } from '../../../../../../../constants/shared/colors';
 import type { User } from '../../../../../users/models';
-import AssignmentSelect, { type AssignmentSelectOption } from './AssignmentSelect';
-
-export interface UsersSelectProps {
-  value?: string[];
-  onChange?: (value: string[]) => void;
-  allOptionsMap?: Map<string, string>;
-  onOptionsMapUpdate?: (map: Map<string, string>) => void;
-}
+import AssignmentSelect from './AssignmentSelect';
+import type { AssignmentSelectOption, UsersSelectProps } from '../../../../models';
 
 const UsersSelect: React.FC<UsersSelectProps> = memo(
   ({ value, onChange, allOptionsMap, onOptionsMapUpdate }) => {

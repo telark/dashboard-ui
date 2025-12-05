@@ -3,14 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../../../../../../store';
 import { fetchAllGroupsThunk } from '../../../../../groups/store';
 import type { Group } from '../../../../../groups/models';
-import AssignmentSelect, { type AssignmentSelectOption } from './AssignmentSelect';
-
-export interface GroupsSelectProps {
-  value?: string[];
-  onChange?: (value: string[]) => void;
-  allOptionsMap?: Map<string, string>;
-  onOptionsMapUpdate?: (map: Map<string, string>) => void;
-}
+import AssignmentSelect from './AssignmentSelect';
+import type { AssignmentSelectOption, GroupsSelectProps } from '../../../../models';
 
 const GroupsSelect: React.FC<GroupsSelectProps> = memo(
   ({ value, onChange, allOptionsMap, onOptionsMapUpdate }) => {

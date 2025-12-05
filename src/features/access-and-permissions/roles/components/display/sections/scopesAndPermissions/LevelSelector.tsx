@@ -1,16 +1,6 @@
 import React from 'react';
 import { Select, Tooltip } from 'antd';
-import type { PermissionLevel } from '../../../../models/types';
-
-export interface LevelSelectorProps {
-  value: PermissionLevel;
-  onChange: (value: PermissionLevel) => void;
-  options: readonly { value: PermissionLevel; label: string }[];
-  tooltipMap: Record<PermissionLevel, string>;
-  placeholder?: string;
-  style?: React.CSSProperties;
-  disabled?: boolean;
-}
+import type { LevelSelectorProps } from '../../../../models';
 
 const LevelSelector: React.FC<LevelSelectorProps> = ({
   value,

@@ -1,16 +1,7 @@
 import React from 'react';
 import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Button, Space, Tooltip } from 'antd';
-
-interface RolesActionBarProps {
-  selectedCount: number;
-  hasSelection: boolean;
-  canEdit: boolean;
-  canDelete: boolean;
-  onView: () => void;
-  onEdit: () => void;
-  onDelete: () => void;
-}
+import type { RolesActionBarProps } from '../../../models';
 
 const ActionBar: React.FC<RolesActionBarProps> = React.memo(
   ({ selectedCount, hasSelection, canEdit, canDelete, onView, onEdit, onDelete }) => {

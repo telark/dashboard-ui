@@ -6,20 +6,7 @@ import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import { getScopeRules, formatRuleKey } from '../../../../constants/scopeRules';
 import LevelSelector from './LevelSelector';
 import RulesList from './RulesList';
-
-export interface ScopeRowProps {
-  scopeKey: string;
-  scopeLabel: string;
-  permissionLevels: readonly { value: PermissionLevel; label: string }[];
-  tooltipMap: Record<string, string>;
-  onLevelChange?: (scopeKey: string, level: PermissionLevel) => void;
-  onRuleToggle?: (scopeKey: string, formattedKey: string, checked: boolean) => void;
-  rowPaddingPx?: number;
-  isLast?: boolean;
-  isLocked?: boolean;
-  onManualChange?: () => void;
-  initialScopeValue?: { level: string; rules?: string[] };
-}
+import type { ScopeRowProps } from '../../../../models';
 
 const ScopeRow: React.FC<ScopeRowProps> = ({
   scopeKey,

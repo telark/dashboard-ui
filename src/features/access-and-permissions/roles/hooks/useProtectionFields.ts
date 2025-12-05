@@ -34,10 +34,9 @@ export const useProtectionFields = ({ onManualChange }: UseProtectionFieldsOptio
     }
   };
 
-  const getPreventScopeChanges = (
-    getFieldValue: (name: string[]) => unknown,
-  ): boolean => {
-    const formPreventScopeChanges = (getFieldValue(['protection', 'preventScopeChanges']) || false) as boolean;
+  const getPreventScopeChanges = (getFieldValue: (name: string[]) => unknown): boolean => {
+    const formPreventScopeChanges = (getFieldValue(['protection', 'preventScopeChanges']) ||
+      false) as boolean;
     return localPreventScopeChanges !== null ? localPreventScopeChanges : formPreventScopeChanges;
   };
 
@@ -46,4 +45,3 @@ export const useProtectionFields = ({ onManualChange }: UseProtectionFieldsOptio
     getPreventScopeChanges,
   };
 };
-

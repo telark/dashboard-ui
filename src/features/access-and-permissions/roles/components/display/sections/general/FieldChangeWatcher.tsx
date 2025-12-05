@@ -1,10 +1,6 @@
 import React, { useRef } from 'react';
 import { Form } from 'antd';
-
-interface FieldChangeWatcherProps {
-  fieldName: string;
-  onChange?: () => void;
-}
+import type { FieldChangeWatcherProps } from '../../../../models';
 
 export const FieldChangeWatcher: React.FC<FieldChangeWatcherProps> = ({ fieldName, onChange }) => {
   const changeTriggeredRef = useRef(false);

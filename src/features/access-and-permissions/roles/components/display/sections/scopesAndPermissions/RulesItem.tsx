@@ -1,12 +1,6 @@
 import React, { useMemo } from 'react';
 import { Checkbox } from 'antd';
-
-export interface RulesItemProps {
-  ruleLabel: string;
-  formattedKey: string;
-  isChecked: boolean;
-  onToggle: (checked: boolean) => void;
-}
+import type { RulesItemProps } from '../../../../models';
 
 const RulesItem: React.FC<RulesItemProps> = ({ ruleLabel, formattedKey, isChecked, onToggle }) => {
   const checkboxId = useMemo(

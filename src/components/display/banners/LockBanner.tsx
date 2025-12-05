@@ -62,4 +62,3 @@ const LockBanner: React.FC<LockBannerProps> = ({ title, message, icon }) => {
 };
 
 export default LockBanner;
-
