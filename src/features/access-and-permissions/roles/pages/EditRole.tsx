@@ -44,7 +44,40 @@ const EditRole: React.FC = () => {
       ...values,
     };
 
-    const roleData = convertFormValuesToRoleFormData(finalValues, role.type, role.status);
+    const fullRoleData = convertFormValuesToRoleFormData(finalValues, role.type, role.status);
+
+    // Create partial update payload, excluding fields that are locked by protection flags
+    const roleData: Partial<typeof fullRoleData> = {};
+
+    // Only include fields that are not locked
+    if (!role.protection?.lockName) {
+      roleData.name = fullRoleData.name;
+    }
+    if (fullRoleData.description !== undefined) {
+      roleData.description = fullRoleData.description;
+    }
+    if (!role.protection?.lockCategory) {
+      roleData.categoryID = fullRoleData.categoryID;
+    }
+    if (fullRoleData.type !== undefined) {
+      roleData.type = fullRoleData.type;
+    }
+    if (fullRoleData.status !== undefined) {
+      roleData.status = fullRoleData.status;
+    }
+    if (!role.protection?.preventScopeChanges) {
+      roleData.scopesAndPermissions = fullRoleData.scopesAndPermissions;
+    }
+    if (fullRoleData.validity !== undefined) {
+      roleData.validity = fullRoleData.validity;
+    }
+    if (fullRoleData.protection !== undefined) {
+      roleData.protection = fullRoleData.protection;
+    }
+    if (fullRoleData.assignedTo !== undefined) {
+      roleData.assignedTo = fullRoleData.assignedTo;
+    }
+
     await handleUpdate(id, roleData);
   };
 

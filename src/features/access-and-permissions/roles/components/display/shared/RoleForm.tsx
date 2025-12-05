@@ -59,7 +59,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
           shouldUpdate={(prevValues, currValues) => {
             // Only check protection in edit mode
             if (!isEditMode) return false;
-            
+
             const prevProtection = prevValues?.protection;
             const currProtection = currValues?.protection;
             return (
@@ -71,14 +71,14 @@ const RoleForm: React.FC<RoleFormProps> = ({
         >
           {({ getFieldValue }) => {
             // Only apply protection locks in edit mode
-            const preventScopeChanges = isEditMode 
-              ? (getFieldValue(['protection', 'preventScopeChanges']) || false)
+            const preventScopeChanges = isEditMode
+              ? getFieldValue(['protection', 'preventScopeChanges']) || false
               : false;
-            const lockName = isEditMode 
-              ? (getFieldValue(['protection', 'lockName']) || false)
+            const lockName = isEditMode
+              ? getFieldValue(['protection', 'lockName']) || false
               : false;
-            const lockCategory = isEditMode 
-              ? (getFieldValue(['protection', 'lockCategory']) || false)
+            const lockCategory = isEditMode
+              ? getFieldValue(['protection', 'lockCategory']) || false
               : false;
 
             return (
