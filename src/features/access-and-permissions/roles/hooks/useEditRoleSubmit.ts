@@ -14,7 +14,11 @@ interface UseEditRoleSubmitOptions {
   role: Role;
   initialValues: RoleFormValues;
   form: FormInstance<RoleFormValues>;
-  handleUpdate: (id: string, data: Partial<RoleFormData>, options?: { silent?: boolean }) => Promise<Role>;
+  handleUpdate: (
+    id: string,
+    data: Partial<RoleFormData>,
+    options?: { silent?: boolean },
+  ) => Promise<Role>;
 }
 
 export const useEditRoleSubmit = ({
@@ -70,4 +74,3 @@ export const useEditRoleSubmit = ({
     isSubmitting,
   };
 };
-

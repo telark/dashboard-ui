@@ -8,14 +8,6 @@ export type PermissionLevel = 'ReadOnly' | 'Contributor' | 'Owner' | 'Admin';
 export type ValidityType = 'permanent' | 'temporary' | 'sessionBased';
 export type RoleFormData = Omit<
   Role,
-  | 'id'
-  | 'creationDate'
-  | 'lastUpdateDate'
-  | 'version'
-  | 'priority'
-  | 'createdBy'
-  | 'lastUpdatedBy'
-  | 'deprecatedAt'
-  | 'deletedAt'
+  'id' | 'creationDate' | 'lastUpdateDate' | 'version' | 'priority' | 'deprecatedAt' | 'deletedAt'
 >;
 export type RolesSortKey = 'name' | 'type' | 'permission' | 'creationDate' | 'status';

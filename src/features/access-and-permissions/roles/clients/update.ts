@@ -4,10 +4,12 @@ import { Endpoints } from '../../../../constants';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import type { Role, RoleFormData } from '../models';
 import { ROLES_ERROR_MESSAGES } from '../constants';
+import { getCurrentUser } from '../../../../features/auth/utils';
 
 export const updateRole = async (roleId: string, role: Partial<RoleFormData>) => {
   try {
-    const roleData: Partial<RoleFormData> = {};
+    const currentUser = getCurrentUser();
+    const roleData: Partial<RoleFormData> & { lastUpdatedBy?: string } = {};
     if (role.name !== undefined) roleData.name = role.name;
     if (role.description !== undefined) roleData.description = role.description;
     if (role.type !== undefined) roleData.type = role.type;
@@ -18,6 +20,10 @@ export const updateRole = async (roleId: string, role: Partial<RoleFormData>) =>
     if (role.validity !== undefined) roleData.validity = role.validity;
     if (role.status !== undefined) roleData.status = role.status;
     if (role.assignedTo !== undefined) roleData.assignedTo = role.assignedTo;
+
+    if (currentUser?.id) {
+      roleData.lastUpdatedBy = currentUser.id;
+    }
 
     return await Client<ResourceDetailsResponse<Role>>(
       exporterApiClient,

@@ -23,4 +23,3 @@ export const normalizeValue = (value: unknown): unknown => {
   if (typeof value === 'string' && value.trim() === '') return undefined;
   return value;
 };
-
