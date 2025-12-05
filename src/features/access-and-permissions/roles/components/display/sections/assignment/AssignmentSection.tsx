@@ -5,7 +5,11 @@ import { ROLES_CONSTANTS as RC } from '../../../../constants';
 import GroupsSelect from './GroupsSelect';
 import UsersSelect from './UsersSelect';
 
-const AssignmentSection: React.FC = memo(() => {
+interface AssignmentSectionProps {
+  onManualChange?: () => void;
+}
+
+const AssignmentSection: React.FC<AssignmentSectionProps> = memo(({ onManualChange }) => {
   const form = Form.useFormInstance();
   const watchedAssignedTo = Form.useWatch('assignedTo', form);
 
@@ -47,18 +51,22 @@ const AssignmentSection: React.FC = memo(() => {
     (values: string[]) => {
       const currentAssignedTo = form.getFieldValue('assignedTo') || [];
       const otherValues = currentAssignedTo.filter((v: string) => !v.startsWith('group-'));
-      form.setFieldValue('assignedTo', [...otherValues, ...values]);
+      const newAssignedTo = [...otherValues, ...values];
+      form.setFieldsValue({ assignedTo: newAssignedTo });
+      requestAnimationFrame(() => onManualChange?.());
     },
-    [form],
+    [form, onManualChange],
   );
 
   const handleUsersChange = useCallback(
     (values: string[]) => {
       const currentAssignedTo = form.getFieldValue('assignedTo') || [];
       const otherValues = currentAssignedTo.filter((v: string) => !v.startsWith('user-'));
-      form.setFieldValue('assignedTo', [...otherValues, ...values]);
+      const newAssignedTo = [...otherValues, ...values];
+      form.setFieldsValue({ assignedTo: newAssignedTo });
+      requestAnimationFrame(() => onManualChange?.());
     },
-    [form],
+    [form, onManualChange],
   );
 
   return (

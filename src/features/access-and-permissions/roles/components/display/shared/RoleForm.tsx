@@ -112,7 +112,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
                       onManualChange={handleValuesChange}
                       initialValues={initialValues}
                     />
-                    <AssignmentSection />
+                    <AssignmentSection onManualChange={handleValuesChange} />
                   </div>
                 </div>
                 <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
