@@ -20,4 +20,6 @@ export interface LabeledSelectProps {
   allowClear?: boolean;
   mode?: 'multiple' | 'tags';
   className?: string;
+  disabled?: boolean;
+  tooltip?: string;
 }

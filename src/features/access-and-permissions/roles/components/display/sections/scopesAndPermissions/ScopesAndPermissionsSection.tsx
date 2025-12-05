@@ -11,22 +11,49 @@ const PERMISSION_LEVEL_OPTIONS = PERMISSION_LEVELS.map((level) => ({
 }));
 const TOOLTIP = RPC.SCOPE.PERMISSION_LEVEL_TOOLTIP;
 
-const RolesScopesAndPermissionsSection: React.FC = memo(() => {
-  const props: RolesScopesAndPermissionsListProps = {
-    areas: AREAS,
-    permissionLevels: PERMISSION_LEVEL_OPTIONS,
-    tooltipMap: TOOLTIP,
-    rowPaddingPx: 0,
-  };
+interface ScopesAndPermissionsSectionProps {
+  isLocked?: boolean;
+}
 
-  return (
-    <Section
-      title={RPC.SCOPE.TITLE}
-      subtitle={RPC.SCOPE.SUBTITLE}
-      content={<RolesScopesAndPermissionsList {...props} />}
-    />
-  );
-});
+const RolesScopesAndPermissionsSection: React.FC<ScopesAndPermissionsSectionProps> = memo(
+  ({ isLocked = false }) => {
+    const props: RolesScopesAndPermissionsListProps = {
+      areas: AREAS,
+      permissionLevels: PERMISSION_LEVEL_OPTIONS,
+      tooltipMap: TOOLTIP,
+      rowPaddingPx: 0,
+      isLocked,
+    };
+
+    return (
+      <Section
+        title={RPC.SCOPE.TITLE}
+        subtitle={RPC.SCOPE.SUBTITLE}
+        content={
+          <>
+            {isLocked && (
+              <div
+                style={{
+                  padding: '12px 16px',
+                  background: '#fef3c7',
+                  border: '1px solid #fbbf24',
+                  borderRadius: 8,
+                  marginBottom: 16,
+                  fontSize: 14,
+                  color: '#92400e',
+                  fontWeight: 500,
+                }}
+              >
+                🔒 {RPC.SCOPE.LOCKED_MESSAGE}
+              </div>
+            )}
+            <RolesScopesAndPermissionsList {...props} />
+          </>
+        }
+      />
+    );
+  },
+);
 
 RolesScopesAndPermissionsSection.displayName = 'RolesScopesAndPermissionsSection';
 

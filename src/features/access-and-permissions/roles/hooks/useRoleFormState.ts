@@ -88,8 +88,10 @@ export const useRoleFormState = ({
       }
     }
 
-    // Just update form state to reflect changes
-    checkFormState();
+    // Use setTimeout to ensure form state is updated before checking
+    setTimeout(() => {
+      checkFormState();
+    }, 0);
   }, [form, isEditMode, checkFormState]);
 
   const handleFieldsChange = useCallback(() => {

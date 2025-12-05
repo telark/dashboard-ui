@@ -9,6 +9,7 @@ export interface LevelSelectorProps {
   tooltipMap: Record<PermissionLevel, string>;
   placeholder?: string;
   style?: React.CSSProperties;
+  disabled?: boolean;
 }
 
 const LevelSelector: React.FC<LevelSelectorProps> = ({
@@ -18,6 +19,7 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({
   tooltipMap,
   placeholder = 'Select permission level',
   style,
+  disabled = false,
 }) => {
   return (
     <Select
@@ -33,6 +35,7 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({
         ),
       }))}
       onChange={onChange}
+      disabled={disabled}
     />
   );
 };

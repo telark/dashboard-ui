@@ -5,6 +5,8 @@ export interface RolesGeneralSectionProps {
   roles: Role[];
   isEditMode?: boolean;
   currentName?: string;
+  lockName?: boolean;
+  lockCategory?: boolean;
 }
 
 export interface ActionsProps {

@@ -16,6 +16,7 @@ export interface ScopeRowProps {
   onRuleToggle?: (scopeKey: string, formattedKey: string, checked: boolean) => void;
   rowPaddingPx?: number;
   isLast?: boolean;
+  isLocked?: boolean;
 }
 
 const ScopeRow: React.FC<ScopeRowProps> = ({
@@ -27,11 +28,14 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
   onRuleToggle,
   rowPaddingPx = 4,
   isLast = false,
+  isLocked = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleScope = () => {
-    setIsExpanded((prev) => !prev);
+    if (!isLocked) {
+      setIsExpanded((prev) => !prev);
+    }
   };
 
   return (
@@ -119,6 +123,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                       options={permissionLevels}
                       tooltipMap={tooltipMap}
                       style={{ width: '100%' }}
+                      disabled={isLocked}
                     />
                   </Form.Item>
                   {availableRules.length > 0 && (

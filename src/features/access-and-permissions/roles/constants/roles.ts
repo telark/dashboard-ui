@@ -124,6 +124,8 @@ export const ROLES_CONSTANTS = {
     DESCRIPTION_PLACEHOLDER: 'Enter role description',
     CATEGORY_LABEL: 'Category',
     CATEGORY_PLACEHOLDER: 'Select a category',
+    LOCK_NAME_TOOLTIP: 'Name is locked for this role',
+    LOCK_CATEGORY_TOOLTIP: 'Category is locked for this role',
     NAME_VALIDATION: {
       MIN_LENGTH: 1,
       MAX_LENGTH: 100,
@@ -137,6 +139,7 @@ export const ROLES_CONSTANTS = {
   SCOPE: {
     TITLE: 'Scope & Permissions',
     SUBTITLE: 'Define what areas this role can access and at what level.',
+    LOCKED_MESSAGE: 'Scopes and permissions are locked for this role.',
     DEFAULT_AREAS: [
       { key: 'groupers', label: 'Groupers' },
       { key: 'workloads', label: 'Workloads' },

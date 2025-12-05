@@ -10,7 +10,7 @@ import type { Role, RolesGeneralSectionProps } from '../../../../models';
 import { useRoleCategories } from '../../../../hooks';
 
 const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
-  ({ roles, isEditMode = false, currentName }) => {
+  ({ roles, isEditMode = false, currentName, lockName = false, lockCategory = false }) => {
     const { categoryOptions } = useRoleCategories();
 
     const validationConfig = useMemo(
@@ -60,8 +60,9 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
               style={{ marginBottom: 12 }}
               className="form-item-compact"
               validateTrigger={['onBlur', 'onSubmit']}
+              tooltip={lockName ? RPC.GENERAL.LOCK_NAME_TOOLTIP : undefined}
             >
-              <Input placeholder={RPC.GENERAL.NAME_PLACEHOLDER} allowClear />
+              <Input placeholder={RPC.GENERAL.NAME_PLACEHOLDER} allowClear disabled={lockName} />
             </Form.Item>
             <LabeledInput
               name="description"
@@ -77,6 +78,8 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
               required
               options={categoryOptions}
               marginBottom={0}
+              disabled={lockCategory}
+              tooltip={lockCategory ? RPC.GENERAL.LOCK_CATEGORY_TOOLTIP : undefined}
             />
           </div>
         }

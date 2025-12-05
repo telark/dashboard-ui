@@ -54,45 +54,82 @@ const RoleForm: React.FC<RoleFormProps> = ({
         onValuesChange={handleValuesChange}
         onFieldsChange={handleFieldsChange}
       >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 18,
-            width: '100%',
+        <Form.Item
+          noStyle
+          shouldUpdate={(prevValues, currValues) => {
+            // Only check protection in edit mode
+            if (!isEditMode) return false;
+            
+            const prevProtection = prevValues?.protection;
+            const currProtection = currValues?.protection;
+            return (
+              prevProtection?.preventScopeChanges !== currProtection?.preventScopeChanges ||
+              prevProtection?.lockName !== currProtection?.lockName ||
+              prevProtection?.lockCategory !== currProtection?.lockCategory
+            );
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              gap: 24,
-              alignItems: 'flex-start',
-              width: '100%',
-            }}
-          >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
-              <GeneralSection roles={roles} isEditMode={isEditMode} currentName={currentName} />
-              <ValiditySection />
-              <ProtectionSection />
-            </div>
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 18 }}>
-              <ScopesAndPermissionsSection />
-              <AssignmentSection />
-            </div>
-          </div>
-          <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-            <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
-              <PrimaryButton
-                action={buttonText}
-                loading={submitting}
-                loadingLabel={BUTTON_TEXTS.LOADING}
-                onClick={() => form.submit()}
-                icon={<RoleIcon size={16} />}
-                disabled={isButtonDisabled}
-              />
-            </Form.Item>
-          </div>
-        </div>
+          {({ getFieldValue }) => {
+            // Only apply protection locks in edit mode
+            const preventScopeChanges = isEditMode 
+              ? (getFieldValue(['protection', 'preventScopeChanges']) || false)
+              : false;
+            const lockName = isEditMode 
+              ? (getFieldValue(['protection', 'lockName']) || false)
+              : false;
+            const lockCategory = isEditMode 
+              ? (getFieldValue(['protection', 'lockCategory']) || false)
+              : false;
+
+            return (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 18,
+                  width: '100%',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: 24,
+                    alignItems: 'flex-start',
+                    width: '100%',
+                  }}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
+                    <GeneralSection
+                      roles={roles}
+                      isEditMode={isEditMode}
+                      currentName={currentName}
+                      lockName={lockName}
+                      lockCategory={lockCategory}
+                    />
+                    <ValiditySection />
+                    <ProtectionSection />
+                  </div>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 18 }}>
+                    <ScopesAndPermissionsSection isLocked={preventScopeChanges} />
+                    <AssignmentSection />
+                  </div>
+                </div>
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                  <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
+                    <PrimaryButton
+                      action={buttonText}
+                      loading={submitting}
+                      loadingLabel={BUTTON_TEXTS.LOADING}
+                      onClick={() => form.submit()}
+                      icon={<RoleIcon size={16} />}
+                      disabled={isButtonDisabled}
+                    />
+                  </Form.Item>
+                </div>
+              </div>
+            );
+          }}
+        </Form.Item>
       </Form>
     </div>
   );

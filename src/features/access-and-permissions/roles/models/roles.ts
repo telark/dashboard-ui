@@ -57,6 +57,7 @@ export interface RolesScopesAndPermissionsListProps {
   tooltipMap: Record<PermissionLevel, string>;
   rowPaddingPx?: number;
   dividerMarginPx?: number;
+  isLocked?: boolean;
 }
 
 export interface RolesState {
