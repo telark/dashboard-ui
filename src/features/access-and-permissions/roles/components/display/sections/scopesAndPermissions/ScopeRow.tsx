@@ -56,8 +56,8 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
           prev?.scopes?.[scopeKey]?.level !== curr?.scopes?.[scopeKey]?.level ||
           prev?.scopes?.[scopeKey]?.rules !== curr?.scopes?.[scopeKey]?.rules
         }
-        >
-          {({ getFieldValue }) => {
+      >
+        {({ getFieldValue }) => {
           const scopeValue = getFieldValue(['scopes', scopeKey]) as ScopeFormValue | undefined;
           const selectedLevel = (scopeValue?.level ||
             RPC.PERMISSION_LEVEL.READ_ONLY) as PermissionLevel;
@@ -72,10 +72,10 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
 
           const handleLevelChange = (value: PermissionLevel) => {
             const newLevel = value;
-            
+
             // Determine rules based on whether we're returning to initial level or changing to new one
             let newRules: string[] = [];
-            
+
             if (initialScopeValue && initialScopeValue.level === newLevel) {
               // Restoring to initial level - restore initial rules
               newRules = initialScopeValue.rules || [];
@@ -88,43 +88,43 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
               level: newLevel,
               rules: newRules,
             };
-            
+
             form.setFieldsValue({ scopes: updatedScopes });
-            
+
             // Delay change detection to ensure form state is committed
             requestAnimationFrame(() => {
               onManualChange?.();
             });
-            
+
             onLevelChange?.(scopeKey, newLevel);
           };
 
           const handleRuleToggle = (formattedKey: string, checked: boolean) => {
             const currentScope = getFieldValue(['scopes', scopeKey]) as ScopeFormValue | undefined;
             const currentRules = currentScope?.rules || [];
-            
+
             // Normalize rules for comparison (ensure consistent format and casing)
             const normalizeRule = (rule: string) => rule.toLowerCase().trim();
             const normalizedFormattedKey = normalizeRule(formattedKey);
             const normalizedCurrentRules = currentRules.map(normalizeRule);
-            
+
             const wouldAdd = checked && !normalizedCurrentRules.includes(normalizedFormattedKey);
             const wouldRemove = !checked && normalizedCurrentRules.includes(normalizedFormattedKey);
-            
+
             if (!wouldAdd && !wouldRemove) {
               return;
             }
-            
+
             const newDenyRules = checked
               ? [...currentRules, formattedKey]
               : currentRules.filter((r) => normalizeRule(r) !== normalizedFormattedKey);
-            
+
             const allScopes = form.getFieldValue('scopes') || {};
             const newScopeValue = {
               level: selectedLevel,
               rules: newDenyRules,
             };
-            
+
             // Build completely new scopes object
             const newScopes: Record<string, typeof newScopeValue> = {};
             Object.keys(allScopes).forEach((key) => {
@@ -134,18 +134,18 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                 newScopes[key] = { ...allScopes[key] };
               }
             });
-            
+
             if (!newScopes[scopeKey]) {
               newScopes[scopeKey] = newScopeValue;
             }
-            
+
             form.setFieldsValue({ scopes: newScopes });
-            
+
             // Delay change detection to ensure form state is committed
             requestAnimationFrame(() => {
               onManualChange?.();
             });
-            
+
             onRuleToggle?.(scopeKey, formattedKey, checked);
           };
 
@@ -154,7 +154,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
               <Form.Item name={['scopes', scopeKey, 'rules']} hidden>
                 <input type="hidden" />
               </Form.Item>
-              
+
               <div style={{ marginBottom: 8 }}>
                 <label
                   style={{

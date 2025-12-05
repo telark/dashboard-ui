@@ -9,34 +9,34 @@ interface UseRoleFormStateOptions {
   initialValues?: RoleFormValues | null;
 }
 
-  const normalizeValue = (value: unknown): unknown => {
-    if (value === null || value === undefined) return undefined;
-    if (Array.isArray(value)) {
-      // Special handling for rules arrays - normalize and sort for consistent comparison
-      const nonEmpty = value.filter(v => v !== null && v !== undefined && v !== '');
-      if (nonEmpty.length === 0) return undefined;
-      
-      // If it's an array of strings (like rules), normalize casing and sort
-      if (nonEmpty.every(v => typeof v === 'string')) {
-        return nonEmpty.map(v => (v as string).toLowerCase().trim()).sort();
-      }
-      return nonEmpty.map(normalizeValue);
+const normalizeValue = (value: unknown): unknown => {
+  if (value === null || value === undefined) return undefined;
+  if (Array.isArray(value)) {
+    // Special handling for rules arrays - normalize and sort for consistent comparison
+    const nonEmpty = value.filter((v) => v !== null && v !== undefined && v !== '');
+    if (nonEmpty.length === 0) return undefined;
+
+    // If it's an array of strings (like rules), normalize casing and sort
+    if (nonEmpty.every((v) => typeof v === 'string')) {
+      return nonEmpty.map((v) => (v as string).toLowerCase().trim()).sort();
     }
-    if (typeof value === 'object') {
-      const normalized: Record<string, unknown> = {};
-      let hasValues = false;
-      for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
-        const normalizedVal = normalizeValue(val);
-        if (normalizedVal !== undefined) {
-          normalized[key] = normalizedVal;
-          hasValues = true;
-        }
+    return nonEmpty.map(normalizeValue);
+  }
+  if (typeof value === 'object') {
+    const normalized: Record<string, unknown> = {};
+    let hasValues = false;
+    for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
+      const normalizedVal = normalizeValue(val);
+      if (normalizedVal !== undefined) {
+        normalized[key] = normalizedVal;
+        hasValues = true;
       }
-      return hasValues ? normalized : undefined;
     }
-    if (typeof value === 'string' && value.trim() === '') return undefined;
-    return value;
-  };
+    return hasValues ? normalized : undefined;
+  }
+  if (typeof value === 'string' && value.trim() === '') return undefined;
+  return value;
+};
 
 export const useRoleFormState = ({
   form,
@@ -106,20 +106,23 @@ export const useRoleFormState = ({
     setHasChanges(changed);
   }, [form, isEditMode]);
 
-  const handleValuesChange = useCallback((_changedValues: Partial<RoleFormValues>) => {
-    // Check if form is initialized (has name field populated)
-    if (isEditMode && !isInitializedRef.current) {
-      const currentValues = form.getFieldsValue(true);
-      if (currentValues.name) {
-        isInitializedRef.current = true;
+  const handleValuesChange = useCallback(
+    (_changedValues: Partial<RoleFormValues>) => {
+      // Check if form is initialized (has name field populated)
+      if (isEditMode && !isInitializedRef.current) {
+        const currentValues = form.getFieldsValue(true);
+        if (currentValues.name) {
+          isInitializedRef.current = true;
+        }
       }
-    }
 
-    // Use requestAnimationFrame for better performance and timing
-    requestAnimationFrame(() => {
-      checkFormState();
-    });
-  }, [form, isEditMode, checkFormState]);
+      // Use requestAnimationFrame for better performance and timing
+      requestAnimationFrame(() => {
+        checkFormState();
+      });
+    },
+    [form, isEditMode, checkFormState],
+  );
 
   const handleFieldsChange = useCallback(() => {
     requestAnimationFrame(() => {
