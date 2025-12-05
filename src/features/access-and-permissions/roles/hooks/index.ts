@@ -6,3 +6,4 @@ export { useInitializeRoles } from './useInitializeRoles';
 export { useRoleCategories } from './useRoleCategories';
 export { useNameValidation } from './useNameValidation';
 export { useProtectionFields } from './useProtectionFields';
+export { useEditRoleSubmit } from './useEditRoleSubmit';

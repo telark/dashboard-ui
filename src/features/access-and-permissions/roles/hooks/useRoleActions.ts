@@ -32,7 +32,7 @@ export const useRoleActions = () => {
   );
 
   const handleUpdate = useCallback(
-    async (id: string, data: Partial<RoleFormData>) => {
+    async (id: string, data: Partial<RoleFormData>, options?: { silent?: boolean }) => {
       setSubmitting(true);
       try {
         const result = await dispatch(
@@ -41,13 +41,20 @@ export const useRoleActions = () => {
             role: data,
           }),
         ).unwrap();
-        message.success(RC.LABELS.MESSAGES.UPDATED(result.name));
-        navigate(`${APP_ROUTES.ROLES}/${id}/view`);
+        if (!options?.silent) {
+          message.success(RC.LABELS.MESSAGES.UPDATED(result.name));
+          navigate(`${APP_ROUTES.ROLES}/${id}/view`);
+        }
+        return result;
       } catch {
-        message.error(RC.LABELS.MESSAGES.UPDATE_FAILED);
+        if (!options?.silent) {
+          message.error(RC.LABELS.MESSAGES.UPDATE_FAILED);
+        }
         throw new Error(RC.LABELS.MESSAGES.UPDATE_FAILED);
       } finally {
-        setSubmitting(false);
+        if (!options?.silent) {
+          setSubmitting(false);
+        }
       }
     },
     [dispatch, navigate],

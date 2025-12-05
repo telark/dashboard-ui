@@ -1,39 +1,13 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import type { FormInstance } from 'antd';
 import type { RoleFormValues } from '../models';
-import { deepEqual } from '../utils';
+import { deepEqual, normalizeValue } from '../utils';
 
-interface UseRoleFormStateOptions {
+export interface UseRoleFormStateOptions {
   form: FormInstance<RoleFormValues>;
   isEditMode?: boolean;
   initialValues?: RoleFormValues | null;
 }
-
-const normalizeValue = (value: unknown): unknown => {
-  if (value === null || value === undefined) return undefined;
-  if (Array.isArray(value)) {
-    const nonEmpty = value.filter((v) => v !== null && v !== undefined && v !== '');
-    if (nonEmpty.length === 0) return undefined;
-    if (nonEmpty.every((v) => typeof v === 'string')) {
-      return nonEmpty.map((v) => (v as string).toLowerCase().trim()).sort();
-    }
-    return nonEmpty.map(normalizeValue);
-  }
-  if (typeof value === 'object') {
-    const normalized: Record<string, unknown> = {};
-    let hasValues = false;
-    for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
-      const normalizedVal = normalizeValue(val);
-      if (normalizedVal !== undefined) {
-        normalized[key] = normalizedVal;
-        hasValues = true;
-      }
-    }
-    return hasValues ? normalized : undefined;
-  }
-  if (typeof value === 'string' && value.trim() === '') return undefined;
-  return value;
-};
 
 export const useRoleFormState = ({
   form,
@@ -56,7 +30,7 @@ export const useRoleFormState = ({
 
   const checkFormState = useCallback(() => {
     const fieldsError = form.getFieldsError();
-    const hasErrors = fieldsError.some((field) => field.errors.length > 0);
+    const hasErrors = fieldsError.some((field: { errors: unknown[] }) => field.errors.length > 0);
     setHasFormErrors(hasErrors);
 
     if (!isEditMode || !initialValuesRef.current) return;
