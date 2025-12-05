@@ -46,12 +46,13 @@ export const useRoleActions = () => {
           navigate(`${APP_ROUTES.ROLES}/${id}/view`);
         }
         return result;
-      } catch {
+      } catch (error) {
         if (!options?.silent) {
           message.error(RC.LABELS.MESSAGES.UPDATE_FAILED);
         }
-        throw new Error(RC.LABELS.MESSAGES.UPDATE_FAILED);
+        throw error instanceof Error ? error : new Error(RC.LABELS.MESSAGES.UPDATE_FAILED);
       } finally {
+        // Always reset submitting state, regardless of silent option or success/failure
         setSubmitting(false);
       }
     },
