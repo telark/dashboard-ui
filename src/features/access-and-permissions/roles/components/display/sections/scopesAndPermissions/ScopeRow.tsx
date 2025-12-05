@@ -63,89 +63,53 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
             RPC.PERMISSION_LEVEL.READ_ONLY) as PermissionLevel;
           const availableRules = getScopeRules(scopeKey, selectedLevel);
           const denyRules = scopeValue?.rules || [];
-
-          // Filter out rules that are not available for the current level (for display only)
-          const validDenyRules = denyRules.filter((rule) => {
-            const formattedKeys = availableRules.map((r) => formatRuleKey(scopeKey, r.key));
-            return formattedKeys.includes(rule);
-          });
+          const formattedKeys = availableRules.map((r) => formatRuleKey(scopeKey, r.key));
+          const validDenyRules = denyRules.filter((rule) => formattedKeys.includes(rule));
 
           const handleLevelChange = (value: PermissionLevel) => {
             const newLevel = value;
-
-            // Determine rules based on whether we're returning to initial level or changing to new one
-            let newRules: string[] = [];
-
-            if (initialScopeValue && initialScopeValue.level === newLevel) {
-              // Restoring to initial level - restore initial rules
-              newRules = initialScopeValue.rules || [];
-            }
-            // else: Changing to different level - start with empty rules (no bleeding across levels)
+            const newRules =
+              initialScopeValue && initialScopeValue.level === newLevel
+                ? initialScopeValue.rules || []
+                : [];
 
             const allScopes = form.getFieldValue('scopes') || {};
-            const updatedScopes = { ...allScopes };
-            updatedScopes[scopeKey] = {
-              level: newLevel,
-              rules: newRules,
-            };
-
-            form.setFieldsValue({ scopes: updatedScopes });
-
-            // Delay change detection to ensure form state is committed
-            requestAnimationFrame(() => {
-              onManualChange?.();
+            form.setFieldsValue({
+              scopes: {
+                ...allScopes,
+                [scopeKey]: { level: newLevel, rules: newRules },
+              },
             });
 
+            requestAnimationFrame(() => onManualChange?.());
             onLevelChange?.(scopeKey, newLevel);
           };
 
           const handleRuleToggle = (formattedKey: string, checked: boolean) => {
             const currentScope = getFieldValue(['scopes', scopeKey]) as ScopeFormValue | undefined;
             const currentRules = currentScope?.rules || [];
-
-            // Normalize rules for comparison (ensure consistent format and casing)
             const normalizeRule = (rule: string) => rule.toLowerCase().trim();
-            const normalizedFormattedKey = normalizeRule(formattedKey);
-            const normalizedCurrentRules = currentRules.map(normalizeRule);
+            const normalizedKey = normalizeRule(formattedKey);
+            const normalizedRules = currentRules.map(normalizeRule);
 
-            const wouldAdd = checked && !normalizedCurrentRules.includes(normalizedFormattedKey);
-            const wouldRemove = !checked && normalizedCurrentRules.includes(normalizedFormattedKey);
+            const wouldAdd = checked && !normalizedRules.includes(normalizedKey);
+            const wouldRemove = !checked && normalizedRules.includes(normalizedKey);
 
-            if (!wouldAdd && !wouldRemove) {
-              return;
-            }
+            if (!wouldAdd && !wouldRemove) return;
 
             const newDenyRules = checked
               ? [...currentRules, formattedKey]
-              : currentRules.filter((r) => normalizeRule(r) !== normalizedFormattedKey);
+              : currentRules.filter((r) => normalizeRule(r) !== normalizedKey);
 
             const allScopes = form.getFieldValue('scopes') || {};
-            const newScopeValue = {
-              level: selectedLevel,
-              rules: newDenyRules,
-            };
-
-            // Build completely new scopes object
-            const newScopes: Record<string, typeof newScopeValue> = {};
-            Object.keys(allScopes).forEach((key) => {
-              if (key === scopeKey) {
-                newScopes[key] = newScopeValue;
-              } else {
-                newScopes[key] = { ...allScopes[key] };
-              }
+            form.setFieldsValue({
+              scopes: {
+                ...allScopes,
+                [scopeKey]: { level: selectedLevel, rules: newDenyRules },
+              },
             });
 
-            if (!newScopes[scopeKey]) {
-              newScopes[scopeKey] = newScopeValue;
-            }
-
-            form.setFieldsValue({ scopes: newScopes });
-
-            // Delay change detection to ensure form state is committed
-            requestAnimationFrame(() => {
-              onManualChange?.();
-            });
-
+            requestAnimationFrame(() => onManualChange?.());
             onRuleToggle?.(scopeKey, formattedKey, checked);
           };
 

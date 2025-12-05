@@ -12,11 +12,8 @@ interface UseRoleFormStateOptions {
 const normalizeValue = (value: unknown): unknown => {
   if (value === null || value === undefined) return undefined;
   if (Array.isArray(value)) {
-    // Special handling for rules arrays - normalize and sort for consistent comparison
     const nonEmpty = value.filter((v) => v !== null && v !== undefined && v !== '');
     if (nonEmpty.length === 0) return undefined;
-
-    // If it's an array of strings (like rules), normalize casing and sort
     if (nonEmpty.every((v) => typeof v === 'string')) {
       return nonEmpty.map((v) => (v as string).toLowerCase().trim()).sort();
     }
@@ -48,11 +45,9 @@ export const useRoleFormState = ({
   const isInitializedRef = useRef(false);
   const initialValuesRef = useRef(initialValues);
 
-  // Update ref when initialValues change (refs can be updated in effects)
   useEffect(() => {
     if (initialValues !== initialValuesRef.current) {
       initialValuesRef.current = initialValues;
-      // Reset initialization when initialValues change
       if (initialValues) {
         isInitializedRef.current = false;
       }
@@ -64,20 +59,16 @@ export const useRoleFormState = ({
     const hasErrors = fieldsError.some((field) => field.errors.length > 0);
     setHasFormErrors(hasErrors);
 
-    // Only check for changes in edit mode
     if (!isEditMode || !initialValuesRef.current) return;
 
     const currentValues = form.getFieldsValue(true);
 
-    // Ensure we have values before comparing (form must be initialized)
     if (!currentValues.name || !isInitializedRef.current) {
       if (isInitializedRef.current) {
         setHasChanges(false);
       }
       return;
     }
-
-    // Normalize both current and initial values for consistent comparison
     const normalizedCurrent = {
       name: currentValues.name || '',
       description: currentValues.description || '',
@@ -106,23 +97,15 @@ export const useRoleFormState = ({
     setHasChanges(changed);
   }, [form, isEditMode]);
 
-  const handleValuesChange = useCallback(
-    (_changedValues: Partial<RoleFormValues>) => {
-      // Check if form is initialized (has name field populated)
-      if (isEditMode && !isInitializedRef.current) {
-        const currentValues = form.getFieldsValue(true);
-        if (currentValues.name) {
-          isInitializedRef.current = true;
-        }
+  const handleValuesChange = useCallback(() => {
+    if (isEditMode && !isInitializedRef.current) {
+      const currentValues = form.getFieldsValue(true);
+      if (currentValues.name) {
+        isInitializedRef.current = true;
       }
-
-      // Use requestAnimationFrame for better performance and timing
-      requestAnimationFrame(() => {
-        checkFormState();
-      });
-    },
-    [form, isEditMode, checkFormState],
-  );
+    }
+    requestAnimationFrame(() => checkFormState());
+  }, [form, isEditMode, checkFormState]);
 
   const handleFieldsChange = useCallback(() => {
     requestAnimationFrame(() => {

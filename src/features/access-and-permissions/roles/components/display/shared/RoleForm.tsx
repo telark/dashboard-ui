@@ -57,9 +57,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
         <Form.Item
           noStyle
           shouldUpdate={(prevValues, currValues) => {
-            // Only check protection in edit mode
             if (!isEditMode) return false;
-
             const prevProtection = prevValues?.protection;
             const currProtection = currValues?.protection;
             return (
@@ -70,7 +68,6 @@ const RoleForm: React.FC<RoleFormProps> = ({
           }}
         >
           {({ getFieldValue }) => {
-            // Only apply protection locks in edit mode
             const preventScopeChanges = isEditMode
               ? getFieldValue(['protection', 'preventScopeChanges']) || false
               : false;
@@ -112,7 +109,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 18 }}>
                     <ScopesAndPermissionsSection
                       isLocked={preventScopeChanges}
-                      onManualChange={() => handleValuesChange({})}
+                      onManualChange={handleValuesChange}
                       initialValues={initialValues}
                     />
                     <AssignmentSection />
