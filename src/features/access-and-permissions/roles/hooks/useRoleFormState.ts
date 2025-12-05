@@ -9,6 +9,28 @@ interface UseRoleFormStateOptions {
   initialValues?: RoleFormValues | null;
 }
 
+// Helper to normalize values for consistent comparison
+const normalizeValue = (value: unknown): unknown => {
+  if (value === null || value === undefined) return undefined;
+  if (Array.isArray(value)) {
+    return value.length === 0 ? undefined : value.map(normalizeValue);
+  }
+  if (typeof value === 'object') {
+    const normalized: Record<string, unknown> = {};
+    let hasValues = false;
+    for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
+      const normalizedVal = normalizeValue(val);
+      if (normalizedVal !== undefined) {
+        normalized[key] = normalizedVal;
+        hasValues = true;
+      }
+    }
+    return hasValues ? normalized : undefined;
+  }
+  if (typeof value === 'string' && value.trim() === '') return undefined;
+  return value;
+};
+
 export const useRoleFormState = ({
   form,
   isEditMode = false,
@@ -38,7 +60,7 @@ export const useRoleFormState = ({
     // Only check for changes in edit mode
     if (!isEditMode || !initialValuesRef.current) return;
 
-    const currentValues = form.getFieldsValue();
+    const currentValues = form.getFieldsValue(true);
 
     // Ensure we have values before comparing (form must be initialized)
     if (!currentValues.name || !isInitializedRef.current) {
@@ -48,31 +70,29 @@ export const useRoleFormState = ({
       return;
     }
 
-    // Normalize values for comparison (handle undefined arrays and ensure consistent structure)
-    const normalizedCurrent: RoleFormValues = {
+    // Normalize both current and initial values for consistent comparison
+    const normalizedCurrent = {
       name: currentValues.name || '',
       description: currentValues.description || '',
       categoryID: currentValues.categoryID || '',
-      type: currentValues.type || initialValuesRef.current.type || 'custom',
-      status: currentValues.status || initialValuesRef.current.status || 'Active',
-      scopes: currentValues.scopes || {},
-      validity: currentValues.validity,
-      protection: currentValues.protection,
-      assignedTo: Array.isArray(currentValues.assignedTo) ? currentValues.assignedTo : [],
+      type: currentValues.type || 'custom',
+      status: currentValues.status || 'Active',
+      scopes: normalizeValue(currentValues.scopes) || {},
+      validity: normalizeValue(currentValues.validity),
+      protection: normalizeValue(currentValues.protection),
+      assignedTo: normalizeValue(currentValues.assignedTo) || [],
     };
 
-    const normalizedInitial: RoleFormValues = {
+    const normalizedInitial = {
       name: initialValuesRef.current.name || '',
       description: initialValuesRef.current.description || '',
       categoryID: initialValuesRef.current.categoryID || '',
       type: initialValuesRef.current.type || 'custom',
       status: initialValuesRef.current.status || 'Active',
-      scopes: initialValuesRef.current.scopes || {},
-      validity: initialValuesRef.current.validity,
-      protection: initialValuesRef.current.protection,
-      assignedTo: Array.isArray(initialValuesRef.current.assignedTo)
-        ? initialValuesRef.current.assignedTo
-        : [],
+      scopes: normalizeValue(initialValuesRef.current.scopes) || {},
+      validity: normalizeValue(initialValuesRef.current.validity),
+      protection: normalizeValue(initialValuesRef.current.protection),
+      assignedTo: normalizeValue(initialValuesRef.current.assignedTo) || [],
     };
 
     const changed = !deepEqual(normalizedCurrent, normalizedInitial);
@@ -82,21 +102,24 @@ export const useRoleFormState = ({
   const handleValuesChange = useCallback(() => {
     // Check if form is initialized (has name field populated)
     if (isEditMode && !isInitializedRef.current) {
-      const currentValues = form.getFieldsValue();
+      const currentValues = form.getFieldsValue(true);
       if (currentValues.name) {
         isInitializedRef.current = true;
       }
     }
 
-    // Use setTimeout to ensure form state is updated before checking
-    setTimeout(() => {
+    // Use requestAnimationFrame for better performance and timing
+    requestAnimationFrame(() => {
       checkFormState();
-    }, 0);
+    });
   }, [form, isEditMode, checkFormState]);
 
   const handleFieldsChange = useCallback(() => {
     // onFieldsChange fires when field status changes (including validation)
-    checkFormState();
+    // Use requestAnimationFrame to batch updates
+    requestAnimationFrame(() => {
+      checkFormState();
+    });
   }, [checkFormState]);
 
   return {
