@@ -132,7 +132,15 @@ const RolesTable: React.FC<RolesTableProps & { loading?: boolean }> = ({
   );
 
   return (
-    <>
+    <div
+      style={{
+        background: '#fff',
+        borderRadius: 16,
+        boxShadow: '0 10px 24px rgba(0,0,0,0.06)',
+        padding: 16,
+        overflow: 'hidden',
+      }}
+    >
       <ActionBar
         selectedCount={selectedCount}
         hasSelection={hasSelection}
@@ -148,6 +156,12 @@ const RolesTable: React.FC<RolesTableProps & { loading?: boolean }> = ({
         data={sortedRoles}
         rowKey={(r: Role) => r.id}
         rowHeight={RPC.SIZES.ROW_HEIGHT}
+        containerStyle={{
+          background: 'transparent',
+          borderRadius: 0,
+          boxShadow: 'none',
+          padding: 0,
+        }}
         tableProps={{
           rowSelection: {
             selectedRowKeys: Array.from(selectedRoles),
@@ -157,7 +171,7 @@ const RolesTable: React.FC<RolesTableProps & { loading?: boolean }> = ({
         }}
         onRowClick={(record) => onView?.(record)}
       />
-    </>
+    </div>
   );
 };
 

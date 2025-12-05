@@ -1,64 +1,114 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Button, Space, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
 import type { RolesActionBarProps } from '../../../models';
+
+interface ActionButtonProps {
+  icon: React.ReactNode;
+  onClick: () => void;
+  disabled: boolean;
+  tooltip: string;
+  isDanger?: boolean;
+}
+
+const ActionButton: React.FC<ActionButtonProps> = ({ icon, onClick, disabled, tooltip, isDanger = false }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const getButtonStyles = () => {
+    if (disabled) {
+      return {
+        cursor: 'not-allowed',
+        color: '#d1d5db',
+        background: 'transparent',
+        border: 'none',
+        boxShadow: 'none',
+      };
+    }
+
+    if (isDanger) {
+      return {
+        cursor: 'pointer',
+        color: isHovered ? '#fff' : '#ef4444',
+        background: isHovered ? '#ef4444' : 'transparent',
+        border: 'none',
+        boxShadow: isHovered ? '0 2px 8px rgba(239, 68, 68, 0.2)' : 'none',
+      };
+    }
+
+    return {
+      cursor: 'pointer',
+      color: isHovered ? '#20C997' : '#64748b',
+      background: isHovered ? '#f0fdfa' : 'transparent',
+      border: 'none',
+      boxShadow: isHovered ? '0 2px 8px rgba(32, 201, 151, 0.15)' : 'none',
+    };
+  };
+
+  const styles = getButtonStyles();
+
+  return (
+    <Tooltip title={tooltip}>
+      <button
+        onClick={disabled ? undefined : onClick}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        disabled={disabled}
+        style={{
+          all: 'unset',
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 28,
+          height: 28,
+          borderRadius: 6,
+          transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+          fontSize: 14,
+          ...styles,
+        }}
+      >
+        {icon}
+      </button>
+    </Tooltip>
+  );
+};
 
 const ActionBar: React.FC<RolesActionBarProps> = React.memo(
   ({ selectedCount, hasSelection, canEdit, canDelete, onView, onEdit, onDelete }) => {
+    const isViewEnabled = hasSelection && selectedCount <= 1;
+    const isEditEnabled = hasSelection && selectedCount <= 1 && canEdit;
+    const isDeleteEnabled = hasSelection && canDelete;
+
     return (
       <div
         style={{
           display: 'flex',
           justifyContent: 'flex-end',
           alignItems: 'center',
-          marginBottom: 16,
-          paddingLeft: 16,
+          marginBottom: 12,
+          padding: '8px 0',
         }}
       >
-        <Space size={8}>
-          <Tooltip title="View">
-            <Button
-              icon={<EyeOutlined />}
-              onClick={onView}
-              disabled={!hasSelection || selectedCount > 1}
-              size="small"
-              style={{
-                borderRadius: 8,
-                border: '1px solid #e5e7eb',
-                color: hasSelection && selectedCount <= 1 ? '#374151' : '#d1d5db',
-                background: hasSelection && selectedCount <= 1 ? '#fff' : '#f9fafb',
-              }}
-            />
-          </Tooltip>
-          <Tooltip title={canEdit ? 'Edit' : 'Edit is prevented by protection flags'}>
-            <Button
-              icon={<EditOutlined />}
-              onClick={onEdit}
-              disabled={!hasSelection || selectedCount > 1 || !canEdit}
-              size="small"
-              style={{
-                borderRadius: 8,
-                border: '1px solid #e5e7eb',
-                color: hasSelection && selectedCount <= 1 && canEdit ? '#374151' : '#d1d5db',
-                background: hasSelection && selectedCount <= 1 && canEdit ? '#fff' : '#f9fafb',
-              }}
-            />
-          </Tooltip>
-          <Tooltip title={canDelete ? 'Delete' : 'Delete is prevented by protection flags'}>
-            <Button
-              icon={<DeleteOutlined />}
-              onClick={onDelete}
-              disabled={!hasSelection || !canDelete}
-              size="small"
-              style={{
-                borderRadius: 8,
-                border: hasSelection && canDelete ? '1px solid #ef4444' : '1px solid #e5e7eb',
-                color: hasSelection && canDelete ? '#ef4444' : '#d1d5db',
-                background: hasSelection && canDelete ? '#fff' : '#f9fafb',
-              }}
-            />
-          </Tooltip>
-        </Space>
+        <div style={{ display: 'flex', gap: 4 }}>
+          <ActionButton
+            icon={<EyeOutlined />}
+            onClick={onView}
+            disabled={!isViewEnabled}
+            tooltip="View"
+          />
+          <ActionButton
+            icon={<EditOutlined />}
+            onClick={onEdit}
+            disabled={!isEditEnabled}
+            tooltip={canEdit ? 'Edit' : 'Edit is prevented by protection flags'}
+          />
+          <ActionButton
+            icon={<DeleteOutlined />}
+            onClick={onDelete}
+            disabled={!isDeleteEnabled}
+            tooltip={canDelete ? 'Delete' : 'Delete is prevented by protection flags'}
+            isDanger={true}
+          />
+        </div>
       </div>
     );
   },
