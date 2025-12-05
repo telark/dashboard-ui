@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import Section from '../../../../../../../components/display/sections/Section';
+import { LockBanner } from '../../../../../../../components/display/banners';
 import { ROLES_CONSTANTS as RPC, PERMISSION_LEVELS } from '../../../../constants';
 import RolesScopesAndPermissionsList from './ScopesAndPermissionsList';
 import type { RolesScopesAndPermissionsListProps } from '../../../../models';
@@ -36,20 +37,11 @@ const RolesScopesAndPermissionsSection: React.FC<ScopesAndPermissionsSectionProp
         content={
           <>
             {isLocked && (
-              <div
-                style={{
-                  padding: '12px 16px',
-                  background: '#fef3c7',
-                  border: '1px solid #fbbf24',
-                  borderRadius: 8,
-                  marginBottom: 16,
-                  fontSize: 14,
-                  color: '#92400e',
-                  fontWeight: 500,
-                }}
-              >
-                🔒 {RPC.SCOPE.LOCKED_MESSAGE}
-              </div>
+              <LockBanner
+                title="Scopes and Permissions Locked"
+                message={RPC.SCOPE.LOCKED_MESSAGE}
+                icon={<span style={{ fontSize: 18 }}>🔒</span>}
+              />
             )}
             <RolesScopesAndPermissionsList {...props} />
           </>

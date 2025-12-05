@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Form } from 'antd';
 import Section from '../../../../../../../components/display/sections/Section';
 import { Switch } from '../../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
+import { useProtectionFields } from '../../../../hooks';
 
 interface ProtectionSectionProps {
   onManualChange?: () => void;
 }
 
 const ProtectionSection: React.FC<ProtectionSectionProps> = ({ onManualChange }) => {
-  const form = Form.useFormInstance();
-  const [localPreventScopeChanges, setLocalPreventScopeChanges] = useState<boolean | null>(null);
+  const { updateProtectionFields, getPreventScopeChanges } = useProtectionFields({ onManualChange });
 
   return (
     <Section
@@ -36,38 +36,15 @@ const ProtectionSection: React.FC<ProtectionSectionProps> = ({ onManualChange })
             const preventDeletion = getFieldValue(['protection', 'preventDeletion']) || false;
             const preventModification =
               getFieldValue(['protection', 'preventModification']) || false;
-            const formPreventScopeChanges =
-              getFieldValue(['protection', 'preventScopeChanges']) || false;
-            const preventScopeChanges =
-              localPreventScopeChanges !== null ? localPreventScopeChanges : formPreventScopeChanges;
+            const preventScopeChanges = getPreventScopeChanges(getFieldValue);
             const lockName = getFieldValue(['protection', 'lockName']) || false;
             const lockCategory = getFieldValue(['protection', 'lockCategory']) || false;
             const softDelete = getFieldValue(['protection', 'softDelete']) || false;
 
             const isSoftDeleteDisabled = preventDeletion;
 
-            const updateProtectionFields = (updates: Record<string, boolean>) => {
-              const hasPreventScopeChanges = 'preventScopeChanges' in updates;
-              if (hasPreventScopeChanges) {
-                const newValue = updates.preventScopeChanges;
-                setLocalPreventScopeChanges(newValue);
-                setTimeout(() => {
-                  setFieldValue(['protection', 'preventScopeChanges'], newValue);
-                  setTimeout(() => {
-                    setLocalPreventScopeChanges(null);
-                    onManualChange?.();
-                  }, 100);
-                }, 300);
-              } else {
-                Object.entries(updates).forEach(([field, value]) => {
-                  setFieldValue(['protection', field], value);
-                });
-                requestAnimationFrame(() => {
-                  requestAnimationFrame(() => {
-                    onManualChange?.();
-                  });
-                });
-              }
+            const handleUpdateProtectionFields = (updates: Record<string, boolean>) => {
+              updateProtectionFields(setFieldValue, updates);
             };
 
             return (
@@ -77,7 +54,7 @@ const ProtectionSection: React.FC<ProtectionSectionProps> = ({ onManualChange })
                   <Switch
                     checked={preventDeletion}
                     onChange={(checked) => {
-                      updateProtectionFields({
+                      handleUpdateProtectionFields({
                         preventDeletion: checked,
                         ...(checked ? { softDelete: false } : {}),
                       });
@@ -88,14 +65,14 @@ const ProtectionSection: React.FC<ProtectionSectionProps> = ({ onManualChange })
                   />
                   <Switch
                     checked={preventModification}
-                    onChange={(checked) => updateProtectionFields({ preventModification: checked })}
+                    onChange={(checked) => handleUpdateProtectionFields({ preventModification: checked })}
                     label={RPC.PROTECTION.PREVENT_MODIFICATION_LABEL}
                     labelStyle={{ minWidth: 200 }}
                     containerStyle={{ marginBottom: 12 }}
                   />
                   <Switch
                     checked={preventScopeChanges}
-                    onChange={(checked) => updateProtectionFields({ preventScopeChanges: checked })}
+                    onChange={(checked) => handleUpdateProtectionFields({ preventScopeChanges: checked })}
                     label={RPC.PROTECTION.PREVENT_SCOPE_CHANGES_LABEL}
                     labelStyle={{ minWidth: 200 }}
                     containerStyle={{ marginBottom: 0 }}
@@ -105,14 +82,14 @@ const ProtectionSection: React.FC<ProtectionSectionProps> = ({ onManualChange })
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 0, flex: 1 }}>
                   <Switch
                     checked={lockName}
-                    onChange={(checked) => updateProtectionFields({ lockName: checked })}
+                    onChange={(checked) => handleUpdateProtectionFields({ lockName: checked })}
                     label={RPC.PROTECTION.LOCK_NAME_LABEL}
                     labelStyle={{ minWidth: 200 }}
                     containerStyle={{ marginBottom: 12 }}
                   />
                   <Switch
                     checked={lockCategory}
-                    onChange={(checked) => updateProtectionFields({ lockCategory: checked })}
+                    onChange={(checked) => handleUpdateProtectionFields({ lockCategory: checked })}
                     label={RPC.PROTECTION.LOCK_CATEGORY_LABEL}
                     labelStyle={{ minWidth: 200 }}
                     containerStyle={{ marginBottom: 12 }}
@@ -121,7 +98,7 @@ const ProtectionSection: React.FC<ProtectionSectionProps> = ({ onManualChange })
                     checked={softDelete}
                     onChange={(checked) => {
                       if (!isSoftDeleteDisabled) {
-                        updateProtectionFields({ softDelete: checked });
+                        handleUpdateProtectionFields({ softDelete: checked });
                       }
                     }}
                     label={RPC.PROTECTION.SOFT_DELETE_LABEL}
