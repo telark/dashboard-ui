@@ -4,3 +4,5 @@ export { default as NumberInput } from './NumberInput';
 export type { NumberInputProps } from './NumberInput';
 export { default as DatePicker } from './DatePicker';
 export type { DatePickerProps } from './DatePicker';
+export { default as LabeledInput } from './LabeledInput';
+export { default as LabeledSelect } from './LabeledSelect';

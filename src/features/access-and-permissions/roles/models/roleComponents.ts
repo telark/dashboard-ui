@@ -7,6 +7,7 @@ export interface RolesGeneralSectionProps {
   currentName?: string;
   lockName?: boolean;
   lockCategory?: boolean;
+  onManualChange?: () => void;
 }
 
 export interface ActionsProps {

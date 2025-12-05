@@ -7,6 +7,10 @@ export interface LabeledInputProps {
   marginBottom?: number;
   allowClear?: boolean;
   className?: string;
+  normalize?: (value: string) => string;
+  validateTrigger?: string | string[];
+  tooltip?: string;
+  disabled?: boolean;
 }
 
 export interface LabeledSelectProps {

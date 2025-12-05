@@ -1,46 +1,23 @@
-import React, { useMemo, memo } from 'react';
-import { Form, Input } from 'antd';
+import React, { memo } from 'react';
 import Section from '../../../../../../../components/display/sections/Section';
-import LabeledInput from '../../../../../../../components/display/inputs/LabeledInput';
-import LabeledSelect from '../../../../../../../components/display/inputs/LabeledSelect';
+import { LabeledInput, LabeledSelect } from '../../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
-import { createNameValidator, sanitizeName } from '../../../../../../shared';
-import { DEFAULT_NAME_VALIDATION_CONFIG } from '../../../../../../shared/constants';
-import type { Role, RolesGeneralSectionProps } from '../../../../models';
+import type { RolesGeneralSectionProps } from '../../../../models';
 import { useRoleCategories } from '../../../../hooks';
+import { useNameValidation } from '../../../../hooks/useNameValidation';
+import { FieldChangeWatcher } from './FieldChangeWatcher';
 
 const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
-  ({ roles, isEditMode = false, currentName, lockName = false, lockCategory = false }) => {
+  ({
+    roles,
+    isEditMode = false,
+    currentName,
+    lockName = false,
+    lockCategory = false,
+    onManualChange,
+  }) => {
     const { categoryOptions } = useRoleCategories();
-
-    const validationConfig = useMemo(
-      () => ({
-        ...DEFAULT_NAME_VALIDATION_CONFIG,
-        minLength: RPC.GENERAL.NAME_VALIDATION.MIN_LENGTH,
-        maxLength: RPC.GENERAL.NAME_VALIDATION.MAX_LENGTH,
-        duplicateErrorMessage: RPC.GENERAL.NAME_VALIDATION.DUPLICATE_ERROR,
-        invalidCharsErrorMessage: RPC.GENERAL.NAME_VALIDATION.INVALID_CHARS_ERROR,
-        lengthErrorMessage: RPC.GENERAL.NAME_VALIDATION.LENGTH_ERROR,
-      }),
-      [],
-    );
-
-    const nameValidator = useMemo(
-      () =>
-        createNameValidator(
-          roles,
-          (role: Role) => role.name,
-          validationConfig,
-          isEditMode,
-          currentName,
-        ),
-      [roles, validationConfig, isEditMode, currentName],
-    );
-
-    const normalizeName = useMemo(
-      () => (value: string) => sanitizeName(value, validationConfig),
-      [validationConfig],
-    );
+    const { nameValidator, normalizeName } = useNameValidation({ roles, isEditMode, currentName });
 
     return (
       <Section
@@ -48,22 +25,19 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
         subtitle={RPC.GENERAL.SUBTITLE}
         content={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-            <Form.Item
+            <FieldChangeWatcher fieldName="name" onChange={onManualChange} />
+            <LabeledInput
               name="name"
               label={RPC.GENERAL.NAME_LABEL}
               required
               normalize={normalizeName}
-              rules={[
-                { required: true, message: `Please enter ${RPC.GENERAL.NAME_LABEL.toLowerCase()}` },
-                { validator: nameValidator },
-              ]}
-              style={{ marginBottom: 12 }}
-              className="form-item-compact"
+              rules={[{ validator: nameValidator }]}
+              marginBottom={12}
               validateTrigger={['onBlur', 'onSubmit']}
               tooltip={lockName ? RPC.GENERAL.LOCK_NAME_TOOLTIP : undefined}
-            >
-              <Input placeholder={RPC.GENERAL.NAME_PLACEHOLDER} allowClear disabled={lockName} />
-            </Form.Item>
+              placeholder={RPC.GENERAL.NAME_PLACEHOLDER}
+              disabled={lockName}
+            />
             <LabeledInput
               name="description"
               label={RPC.GENERAL.DESCRIPTION_LABEL}
@@ -71,6 +45,7 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
               placeholder={RPC.GENERAL.DESCRIPTION_PLACEHOLDER}
               marginBottom={12}
             />
+            <FieldChangeWatcher fieldName="categoryID" onChange={onManualChange} />
             <LabeledSelect
               name="categoryID"
               label={RPC.GENERAL.CATEGORY_LABEL}

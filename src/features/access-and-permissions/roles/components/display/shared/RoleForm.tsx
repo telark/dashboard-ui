@@ -102,6 +102,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
                       currentName={currentName}
                       lockName={lockName}
                       lockCategory={lockCategory}
+                      onManualChange={handleValuesChange}
                     />
                     <ValiditySection />
                     <ProtectionSection />
