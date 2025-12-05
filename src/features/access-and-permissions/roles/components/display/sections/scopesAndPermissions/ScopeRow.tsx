@@ -103,8 +103,13 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
             const currentScope = getFieldValue(['scopes', scopeKey]) as ScopeFormValue | undefined;
             const currentRules = currentScope?.rules || [];
             
-            const wouldAdd = checked && !currentRules.includes(formattedKey);
-            const wouldRemove = !checked && currentRules.includes(formattedKey);
+            // Normalize rules for comparison (ensure consistent format and casing)
+            const normalizeRule = (rule: string) => rule.toLowerCase().trim();
+            const normalizedFormattedKey = normalizeRule(formattedKey);
+            const normalizedCurrentRules = currentRules.map(normalizeRule);
+            
+            const wouldAdd = checked && !normalizedCurrentRules.includes(normalizedFormattedKey);
+            const wouldRemove = !checked && normalizedCurrentRules.includes(normalizedFormattedKey);
             
             if (!wouldAdd && !wouldRemove) {
               return;
@@ -112,7 +117,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
             
             const newDenyRules = checked
               ? [...currentRules, formattedKey]
-              : currentRules.filter((r) => r !== formattedKey);
+              : currentRules.filter((r) => normalizeRule(r) !== normalizedFormattedKey);
             
             const allScopes = form.getFieldValue('scopes') || {};
             const newScopeValue = {
