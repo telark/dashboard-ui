@@ -26,10 +26,7 @@ const UserDisplay: React.FC<UserDisplayProps> = memo(
     const config = SIZE_CONFIG[size];
 
     return (
-      <div
-        className={className}
-        style={{ display: 'flex', alignItems: 'center', gap: config.gap }}
-      >
+      <div className={className} style={{ display: 'flex', alignItems: 'center', gap: config.gap }}>
         {showBorder ? (
           <div
             style={{
@@ -52,11 +49,7 @@ const UserDisplay: React.FC<UserDisplayProps> = memo(
             />
           </div>
         ) : (
-          <UserAvatar
-            avatar={user.avatar}
-            username={user.username}
-            size={config.avatar}
-          />
+          <UserAvatar avatar={user.avatar} username={user.username} size={config.avatar} />
         )}
         <span>{displayName}</span>
       </div>
@@ -67,4 +60,3 @@ const UserDisplay: React.FC<UserDisplayProps> = memo(
 UserDisplay.displayName = 'UserDisplay';
 
 export default UserDisplay;
-

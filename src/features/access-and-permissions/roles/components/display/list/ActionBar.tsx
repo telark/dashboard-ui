@@ -11,7 +11,13 @@ interface ActionButtonProps {
   isDanger?: boolean;
 }
 
-const ActionButton: React.FC<ActionButtonProps> = ({ icon, onClick, disabled, tooltip, isDanger = false }) => {
+const ActionButton: React.FC<ActionButtonProps> = ({
+  icon,
+  onClick,
+  disabled,
+  tooltip,
+  isDanger = false,
+}) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const getButtonStyles = () => {

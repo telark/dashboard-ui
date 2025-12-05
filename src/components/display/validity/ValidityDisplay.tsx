@@ -9,7 +9,9 @@ interface ValidityDisplayProps {
 }
 
 const ValidityDisplay: React.FC<ValidityDisplayProps> = ({ validity, record }) => {
-  const [formattedValidity, setFormattedValidity] = useState(() => formatValidity(validity, record));
+  const [formattedValidity, setFormattedValidity] = useState(() =>
+    formatValidity(validity, record),
+  );
   const validityRef = useRef(validity);
   const recordRef = useRef(record);
 
@@ -42,4 +44,3 @@ const ValidityDisplay: React.FC<ValidityDisplayProps> = ({ validity, record }) =
 ValidityDisplay.displayName = 'ValidityDisplay';
 
 export default React.memo(ValidityDisplay);
-

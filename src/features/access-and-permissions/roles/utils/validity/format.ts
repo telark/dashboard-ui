@@ -49,7 +49,9 @@ export const formatValidity = (validity: Role['validity'], record: Role): Validi
 
     if (validity.durationHours) {
       // Calculate expiration time from creation date or last update date
-      const startDate = record.lastUpdateDate ? new Date(record.lastUpdateDate) : new Date(record.creationDate);
+      const startDate = record.lastUpdateDate
+        ? new Date(record.lastUpdateDate)
+        : new Date(record.creationDate);
       const expirationTime = startDate.getTime() + validity.durationHours * 60 * 60 * 1000;
       const remaining = expirationTime - now;
       const timeRemaining = formatTimeRemaining(remaining);
@@ -60,4 +62,3 @@ export const formatValidity = (validity: Role['validity'], record: Role): Validi
   }
   return { label: 'Permanent' };
 };
-

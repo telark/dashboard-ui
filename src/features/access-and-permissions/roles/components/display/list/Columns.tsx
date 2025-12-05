@@ -24,7 +24,7 @@ export const Columns = ({
   users = [],
 }: Omit<ColumnsArgs, 'onView' | 'onEdit' | 'onDelete'>) => {
   const isBuiltIn = (record: Role) => record.type === RPC.TYPE.BUILT_IN;
-  
+
   const getUserById = (userId?: string) => {
     if (!userId) return null;
     return users.find((u) => u.id === userId) || null;
