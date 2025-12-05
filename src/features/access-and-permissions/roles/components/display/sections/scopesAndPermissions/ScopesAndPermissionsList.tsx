@@ -8,8 +8,8 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
   tooltipMap,
   rowPaddingPx = 4,
   isLocked = false,
+  onManualChange,
 }) => {
-  // Handlers can be extended in the future if needed
   const handleLevelChange = (scopeKey: string, level: PermissionLevel) => {
     void scopeKey;
 
@@ -40,6 +40,7 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
           rowPaddingPx={rowPaddingPx}
           isLast={index === areas.length - 1}
           isLocked={isLocked}
+          onManualChange={onManualChange}
         />
       ))}
     </>

@@ -58,6 +58,7 @@ export interface RolesScopesAndPermissionsListProps {
   rowPaddingPx?: number;
   dividerMarginPx?: number;
   isLocked?: boolean;
+  onManualChange?: () => void;
 }
 
 export interface RolesState {

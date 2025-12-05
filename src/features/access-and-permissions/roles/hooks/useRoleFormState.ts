@@ -9,7 +9,6 @@ interface UseRoleFormStateOptions {
   initialValues?: RoleFormValues | null;
 }
 
-// Helper to normalize values for consistent comparison
 const normalizeValue = (value: unknown): unknown => {
   if (value === null || value === undefined) return undefined;
   if (Array.isArray(value)) {
@@ -99,7 +98,7 @@ export const useRoleFormState = ({
     setHasChanges(changed);
   }, [form, isEditMode]);
 
-  const handleValuesChange = useCallback(() => {
+  const handleValuesChange = useCallback((_changedValues: Partial<RoleFormValues>) => {
     // Check if form is initialized (has name field populated)
     if (isEditMode && !isInitializedRef.current) {
       const currentValues = form.getFieldsValue(true);
@@ -115,8 +114,6 @@ export const useRoleFormState = ({
   }, [form, isEditMode, checkFormState]);
 
   const handleFieldsChange = useCallback(() => {
-    // onFieldsChange fires when field status changes (including validation)
-    // Use requestAnimationFrame to batch updates
     requestAnimationFrame(() => {
       checkFormState();
     });

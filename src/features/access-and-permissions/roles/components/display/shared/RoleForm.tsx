@@ -110,7 +110,10 @@ const RoleForm: React.FC<RoleFormProps> = ({
                     <ProtectionSection />
                   </div>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 18 }}>
-                    <ScopesAndPermissionsSection isLocked={preventScopeChanges} />
+                    <ScopesAndPermissionsSection 
+                      isLocked={preventScopeChanges}
+                      onManualChange={() => handleValuesChange({})}
+                    />
                     <AssignmentSection />
                   </div>
                 </div>

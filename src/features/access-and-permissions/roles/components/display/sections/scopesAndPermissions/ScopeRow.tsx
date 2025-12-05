@@ -17,6 +17,7 @@ export interface ScopeRowProps {
   rowPaddingPx?: number;
   isLast?: boolean;
   isLocked?: boolean;
+  onManualChange?: () => void;
 }
 
 const ScopeRow: React.FC<ScopeRowProps> = ({
@@ -29,8 +30,10 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
   rowPaddingPx = 4,
   isLast = false,
   isLocked = false,
+  onManualChange,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const form = Form.useFormInstance();
 
   const toggleScope = () => {
     if (!isLocked) {
@@ -51,8 +54,8 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
           prev?.scopes?.[scopeKey]?.level !== curr?.scopes?.[scopeKey]?.level ||
           prev?.scopes?.[scopeKey]?.rules !== curr?.scopes?.[scopeKey]?.rules
         }
-      >
-        {({ getFieldValue, setFieldValue }) => {
+        >
+          {({ getFieldValue }) => {
           const scopeValue = getFieldValue(['scopes', scopeKey]) as ScopeFormValue | undefined;
           const selectedLevel = (scopeValue?.level ||
             RPC.PERMISSION_LEVEL.READ_ONLY) as PermissionLevel;
@@ -75,31 +78,67 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
             const formattedKeys = newAvailableRules.map((r) => formatRuleKey(scopeKey, r.key));
             const validRules = currentRules.filter((rule) => formattedKeys.includes(rule));
 
-            setFieldValue(['scopes', scopeKey], {
+            // Get all scopes and create a completely new structure
+            const allScopes = form.getFieldValue('scopes') || {};
+            const updatedScopes = { ...allScopes };
+            updatedScopes[scopeKey] = {
               level: newLevel,
-              rules: validRules,
-            });
+              rules: [...validRules],
+            };
+            
+            form.setFieldsValue({ scopes: updatedScopes });
             onLevelChange?.(scopeKey, newLevel);
           };
 
           const handleRuleToggle = (formattedKey: string, checked: boolean) => {
             const currentScope = getFieldValue(['scopes', scopeKey]) as ScopeFormValue | undefined;
             const currentRules = currentScope?.rules || [];
+            
+            const wouldAdd = checked && !currentRules.includes(formattedKey);
+            const wouldRemove = !checked && currentRules.includes(formattedKey);
+            
+            if (!wouldAdd && !wouldRemove) {
+              return;
+            }
+            
             const newDenyRules = checked
-              ? // Add rule only if it doesn't already exist
-                currentRules.includes(formattedKey)
-                ? currentRules
-                : [...currentRules, formattedKey]
+              ? [...currentRules, formattedKey]
               : currentRules.filter((r) => r !== formattedKey);
-            setFieldValue(['scopes', scopeKey], {
+            
+            const allScopes = form.getFieldValue('scopes') || {};
+            const newScopeValue = {
               level: selectedLevel,
               rules: newDenyRules,
+            };
+            
+            // Build completely new scopes object
+            const newScopes: Record<string, typeof newScopeValue> = {};
+            Object.keys(allScopes).forEach((key) => {
+              if (key === scopeKey) {
+                newScopes[key] = newScopeValue;
+              } else {
+                newScopes[key] = { ...allScopes[key] };
+              }
             });
+            
+            if (!newScopes[scopeKey]) {
+              newScopes[scopeKey] = newScopeValue;
+            }
+            
+            form.setFieldsValue({ scopes: newScopes });
+            
+            // Manually trigger change detection since setFieldsValue doesn't always fire onValuesChange for nested changes
+            onManualChange?.();
+            
             onRuleToggle?.(scopeKey, formattedKey, checked);
           };
 
           return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+              <Form.Item name={['scopes', scopeKey, 'rules']} hidden>
+                <input type="hidden" />
+              </Form.Item>
+              
               <div style={{ marginBottom: 8 }}>
                 <label
                   style={{
