@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import type { Role, RolesTableProps } from '../../../models';
 import { Columns } from './Columns';
-import { getPermissionCount, sortRoles } from './utils';
+import { sortRoles } from './utils';
 import type { RolesSortKey } from '../../../models';
 import DataTable from '../../../../../../components/display/table/DataTable';
 import { deleteRoleThunk } from '../../../store';
@@ -13,6 +13,7 @@ import ActionBar from './ActionBar';
 import { canModifyRoles, canDeleteRoles } from '../../../utils';
 import { useCategories } from '../../../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../../../categories/constants';
+import { useUsers } from '../../../../users/hooks';
 
 const RolesTable: React.FC<RolesTableProps & { loading?: boolean }> = ({
   roles,
@@ -22,6 +23,7 @@ const RolesTable: React.FC<RolesTableProps & { loading?: boolean }> = ({
 }) => {
   const dispatch: AppDispatch = useDispatch();
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.ROLES);
+  const { users } = useUsers();
   const [sortKey, setSortKey] = useState<RolesSortKey>('creationDate');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedRoles, setSelectedRoles] = useState<Set<string>>(new Set());
@@ -49,7 +51,7 @@ const RolesTable: React.FC<RolesTableProps & { loading?: boolean }> = ({
   }, []);
 
   const sortedRoles = useMemo(
-    () => sortRoles(roles, sortKey, sortOrder, getPermissionCount),
+    () => sortRoles(roles, sortKey, sortOrder),
     [roles, sortKey, sortOrder],
   );
 
@@ -123,10 +125,10 @@ const RolesTable: React.FC<RolesTableProps & { loading?: boolean }> = ({
         onSort,
         activeSortKey: sortKey,
         sortOrder,
-        getPermissionCount,
         categories,
+        users,
       }),
-    [sortKey, sortOrder, onSort, categories],
+    [sortKey, sortOrder, onSort, categories, users],
   );
 
   return (

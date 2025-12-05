@@ -11,11 +11,10 @@ import {
   AiOutlineFolder,
   AiOutlineCode,
 } from 'react-icons/ai';
-import { Icons } from '../../../../../../constants';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import { getCategoryName } from '../../../../categories/utils/helpers';
-
-const RoleIcon = Icons.Role;
+import { UserDisplay } from '../../../../../../components/display/users';
+import { AiOutlineUser } from 'react-icons/ai';
 
 const formatValidity = (validity: Role['validity']): string => {
   if (!validity) return 'Permanent';
@@ -36,10 +35,15 @@ const formatValidity = (validity: Role['validity']): string => {
 export const Columns = ({
   onSort,
   activeSortKey,
-  getPermissionCount,
   categories = [],
+  users = [],
 }: Omit<ColumnsArgs, 'onView' | 'onEdit' | 'onDelete'>) => {
   const isBuiltIn = (record: Role) => record.type === RPC.TYPE.BUILT_IN;
+  
+  const getUserById = (userId?: string) => {
+    if (!userId) return null;
+    return users.find((u) => u.id === userId) || null;
+  };
   return [
     generateColumn(
       {
@@ -80,24 +84,6 @@ export const Columns = ({
     ),
     generateColumn(
       {
-        key: RPC.KEYS.PERMISSION,
-        label: RPC.LABELS.COLUMNS.PERMISSIONS,
-        icon: <RoleIcon />,
-        width: RPC.SIZES.COLUMNS.PERMISSIONS,
-        render: (_: unknown, record: Role) => (
-          <RowTag
-            text={`${getPermissionCount(record)} ${RPC.LABELS.PERMISSIONS_SUFFIX}`}
-            background={RPC.COLORS.CHIP_BLUE_BG}
-            color={RPC.COLORS.CHIP_BLUE_TEXT}
-            fontSize={RPC.SIZES.CHIP_FONT}
-          />
-        ),
-      },
-      { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
-    ),
-
-    generateColumn(
-      {
         key: RPC.KEYS.STATUS,
         label: RPC.LABELS.COLUMNS.STATUS,
         icon: <AiOutlineCheckCircle />,
@@ -130,6 +116,24 @@ export const Columns = ({
         render: (_: unknown, record: Role) => {
           if (isBuiltIn(record)) return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
           return <TimeAgo date={record.creationDate} />;
+        },
+      },
+      { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
+    ),
+    generateColumn(
+      {
+        key: RPC.KEYS.CREATED_BY,
+        label: RPC.LABELS.COLUMNS.CREATED_BY,
+        icon: <AiOutlineUser />,
+        width: RPC.SIZES.COLUMNS.CREATED_BY,
+        render: (_: unknown, record: Role) => {
+          if (isBuiltIn(record)) return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
+          const user = getUserById(record.createdBy);
+          return (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <UserDisplay user={user} size="small" />
+            </div>
+          );
         },
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },

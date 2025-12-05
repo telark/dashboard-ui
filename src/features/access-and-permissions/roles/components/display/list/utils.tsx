@@ -22,7 +22,6 @@ export const sortRoles = (
   roles: Role[],
   sortKey: RolesSortKey,
   sortOrder: SortOrder,
-  getCount: (r: Role) => number,
   overrides?: Partial<Record<string, Comparator<Role>>>,
 ): Role[] => {
   const comparator: Comparator<Role> = (() => {
@@ -34,8 +33,6 @@ export const sortRoles = (
         return (a, b) => compareStrings(a.name, b.name);
       case RPC.KEYS.TYPE:
         return (a, b) => compareStrings(a.type, b.type);
-      case RPC.KEYS.PERMISSION:
-        return (a, b) => compareNumbers(getCount(a), getCount(b));
       case RPC.KEYS.CREATED_AT:
         return (a, b) =>
           compareNumbers(

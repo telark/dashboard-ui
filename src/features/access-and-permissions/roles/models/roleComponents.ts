@@ -24,6 +24,7 @@ export interface ScopesPermissionsProps {
 }
 
 import type { Category } from '../../categories/models';
+import type { User } from '../../users/models';
 
 export interface ColumnsArgs {
   onView?: (r: Role) => void;
@@ -32,8 +33,8 @@ export interface ColumnsArgs {
   onSort: (key: RolesSortKey) => void;
   activeSortKey: RolesSortKey;
   sortOrder?: 'asc' | 'desc';
-  getPermissionCount: (r: Role) => number;
   categories?: Category[];
+  users?: User[];
 }
 
 export interface ScopesAndPermissionsSectionProps {
