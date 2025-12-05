@@ -2,16 +2,44 @@ import type { Role, ColumnsArgs } from '../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
-import { AiOutlineCalendar, AiOutlineCheckCircle, AiOutlineTag } from 'react-icons/ai';
+import {
+  AiOutlineCalendar,
+  AiOutlineCheckCircle,
+  AiOutlineTag,
+  AiOutlineClockCircle,
+  AiOutlineHourglass,
+  AiOutlineFolder,
+  AiOutlineCode,
+} from 'react-icons/ai';
 import { Icons } from '../../../../../../constants';
+import TimeAgo from '../../../../../../components/display/time/TimeAgo';
+import { getCategoryName } from '../../../../categories/utils/helpers';
 
 const RoleIcon = Icons.Role;
+
+const formatValidity = (validity: Role['validity']): string => {
+  if (!validity) return 'Permanent';
+  if (validity.type === 'permanent') return 'Permanent';
+  if (validity.type === 'sessionBased') return 'Session Based';
+  if (validity.type === 'temporary') {
+    if (validity.expiresAt) {
+      return `Temporary (expires ${new Date(validity.expiresAt).toLocaleDateString()})`;
+    }
+    if (validity.durationHours) {
+      return `Temporary (${validity.durationHours}h)`;
+    }
+    return 'Temporary';
+  }
+  return 'Permanent';
+};
 
 export const Columns = ({
   onSort,
   activeSortKey,
   getPermissionCount,
+  categories = [],
 }: Omit<ColumnsArgs, 'onView' | 'onEdit' | 'onDelete'>) => {
+  const isBuiltIn = (record: Role) => record.type === RPC.TYPE.BUILT_IN;
   return [
     generateColumn(
       {
@@ -99,12 +127,79 @@ export const Columns = ({
         label: RPC.LABELS.COLUMNS.CREATED,
         icon: <AiOutlineCalendar />,
         width: RPC.SIZES.COLUMNS.CREATED,
-        render: (_: unknown, record: Role) =>
-          new Date(record.creationDate || 0).toLocaleDateString(undefined, {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-          }),
+        render: (_: unknown, record: Role) => {
+          if (isBuiltIn(record)) return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
+          return <TimeAgo date={record.creationDate} />;
+        },
+      },
+      { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
+    ),
+    generateColumn(
+      {
+        key: RPC.KEYS.LAST_UPDATE,
+        label: RPC.LABELS.COLUMNS.LAST_UPDATE,
+        icon: <AiOutlineClockCircle />,
+        width: RPC.SIZES.COLUMNS.LAST_UPDATE,
+        render: (_: unknown, record: Role) => {
+          if (isBuiltIn(record) || !record.lastUpdateDate) {
+            return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
+          }
+          return <TimeAgo date={record.lastUpdateDate} />;
+        },
+      },
+      { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
+    ),
+    generateColumn(
+      {
+        key: RPC.KEYS.VALIDITY,
+        label: RPC.LABELS.COLUMNS.VALIDITY,
+        icon: <AiOutlineHourglass />,
+        width: RPC.SIZES.COLUMNS.VALIDITY,
+        render: (_: unknown, record: Role) => {
+          if (isBuiltIn(record)) return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
+          return <span style={{ color: RPC.COLORS.TEXT_PRIMARY }}>{formatValidity(record.validity)}</span>;
+        },
+      },
+      { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
+    ),
+    generateColumn(
+      {
+        key: RPC.KEYS.CATEGORY,
+        label: RPC.LABELS.COLUMNS.CATEGORY,
+        icon: <AiOutlineFolder />,
+        width: RPC.SIZES.COLUMNS.CATEGORY,
+        render: (_: unknown, record: Role) => {
+          if (isBuiltIn(record)) return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
+          const categoryName = getCategoryName(record.categoryID, categories);
+          return (
+            <RowTag
+              text={categoryName}
+              background={RPC.COLORS.TYPE_CUSTOM_BG}
+              color={RPC.COLORS.TYPE_CUSTOM_TEXT}
+              fontSize={RPC.SIZES.CHIP_FONT}
+            />
+          );
+        },
+      },
+      { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
+    ),
+    generateColumn(
+      {
+        key: RPC.KEYS.VERSION,
+        label: RPC.LABELS.COLUMNS.VERSION,
+        icon: <AiOutlineCode />,
+        width: RPC.SIZES.COLUMNS.VERSION,
+        render: (_: unknown, record: Role) => {
+          if (isBuiltIn(record)) return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
+          return (
+            <RowTag
+              text={record.version || '—'}
+              background={RPC.COLORS.CHIP_BLUE_BG}
+              color={RPC.COLORS.CHIP_BLUE_TEXT}
+              fontSize={RPC.SIZES.CHIP_FONT}
+            />
+          );
+        },
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
     ),

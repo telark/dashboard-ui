@@ -23,6 +23,8 @@ export interface ScopesPermissionsProps {
   scopes: Record<string, { level: string; rules?: string[] }>;
 }
 
+import type { Category } from '../../categories/models';
+
 export interface ColumnsArgs {
   onView?: (r: Role) => void;
   onEdit?: (r: Role) => void;
@@ -31,6 +33,7 @@ export interface ColumnsArgs {
   activeSortKey: RolesSortKey;
   sortOrder?: 'asc' | 'desc';
   getPermissionCount: (r: Role) => number;
+  categories?: Category[];
 }
 
 export interface ScopesAndPermissionsSectionProps {

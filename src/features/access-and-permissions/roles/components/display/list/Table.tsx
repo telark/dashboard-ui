@@ -11,6 +11,8 @@ import { deleteRoleThunk } from '../../../store';
 import type { AppDispatch } from '../../../../../../store';
 import ActionBar from './ActionBar';
 import { canModifyRoles, canDeleteRoles } from '../../../utils';
+import { useCategories } from '../../../../categories/hooks';
+import { CATEGORIES_CONSTANTS } from '../../../../categories/constants';
 
 const RolesTable: React.FC<RolesTableProps & { loading?: boolean }> = ({
   roles,
@@ -19,6 +21,7 @@ const RolesTable: React.FC<RolesTableProps & { loading?: boolean }> = ({
   loading = false,
 }) => {
   const dispatch: AppDispatch = useDispatch();
+  const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.ROLES);
   const [sortKey, setSortKey] = useState<RolesSortKey>('creationDate');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedRoles, setSelectedRoles] = useState<Set<string>>(new Set());
@@ -121,8 +124,9 @@ const RolesTable: React.FC<RolesTableProps & { loading?: boolean }> = ({
         activeSortKey: sortKey,
         sortOrder,
         getPermissionCount,
+        categories,
       }),
-    [sortKey, sortOrder, onSort],
+    [sortKey, sortOrder, onSort, categories],
   );
 
   return (
