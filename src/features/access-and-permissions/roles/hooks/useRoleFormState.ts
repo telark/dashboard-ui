@@ -37,11 +37,10 @@ export const useRoleFormState = ({
 
     const currentValues = form.getFieldsValue(true);
 
-    if (!currentValues.name) {
-      return;
-    }
-
     if (!isInitializedRef.current) {
+      if (!currentValues.name) {
+        return;
+      }
       setHasChanges(false);
       return;
     }
