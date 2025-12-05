@@ -10,4 +10,4 @@ export type RoleFormData = Omit<
   Role,
   'id' | 'creationDate' | 'lastUpdateDate' | 'version' | 'priority' | 'deprecatedAt' | 'deletedAt'
 >;
-export type RolesSortKey = 'name' | 'type' | 'permission' | 'creationDate' | 'status';
+export type RolesSortKey = 'name' | 'type' | 'creationDate' | 'status';
