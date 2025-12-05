@@ -15,22 +15,7 @@ import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import { getCategoryName } from '../../../../categories/utils/helpers';
 import { UserDisplay } from '../../../../../../components/display/users';
 import { AiOutlineUser } from 'react-icons/ai';
-
-const formatValidity = (validity: Role['validity']): string => {
-  if (!validity) return 'Permanent';
-  if (validity.type === 'permanent') return 'Permanent';
-  if (validity.type === 'sessionBased') return 'Session Based';
-  if (validity.type === 'temporary') {
-    if (validity.expiresAt) {
-      return `Temporary (expires ${new Date(validity.expiresAt).toLocaleDateString()})`;
-    }
-    if (validity.durationHours) {
-      return `Temporary (${validity.durationHours}h)`;
-    }
-    return 'Temporary';
-  }
-  return 'Permanent';
-};
+import { ValidityDisplay } from '../../../../../../components/display/validity';
 
 export const Columns = ({
   onSort,
@@ -161,7 +146,11 @@ export const Columns = ({
         width: RPC.SIZES.COLUMNS.VALIDITY,
         render: (_: unknown, record: Role) => {
           if (isBuiltIn(record)) return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
-          return <span style={{ color: RPC.COLORS.TEXT_PRIMARY }}>{formatValidity(record.validity)}</span>;
+          return (
+            <span style={{ color: RPC.COLORS.TEXT_PRIMARY }}>
+              <ValidityDisplay validity={record.validity} record={record} />
+            </span>
+          );
         },
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },

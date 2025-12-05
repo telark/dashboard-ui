@@ -7,5 +7,6 @@ export * from './helpers/normalizeValue';
 export * from './helpers/changeDetection';
 export * from './helpers/buildUpdatePayload';
 export * from './validity/builders';
+export * from './validity/format';
 export * from './initialization/builtInRoles';
 export * from './protection/flags';
