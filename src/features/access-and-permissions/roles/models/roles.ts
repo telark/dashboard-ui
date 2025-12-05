@@ -59,6 +59,7 @@ export interface RolesScopesAndPermissionsListProps {
   dividerMarginPx?: number;
   isLocked?: boolean;
   onManualChange?: () => void;
+  initialScopes?: Record<string, { level: string; rules?: string[] }>;
 }
 
 export interface RolesState {

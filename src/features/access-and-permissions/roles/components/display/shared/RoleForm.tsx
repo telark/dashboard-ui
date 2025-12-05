@@ -113,6 +113,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
                     <ScopesAndPermissionsSection 
                       isLocked={preventScopeChanges}
                       onManualChange={() => handleValuesChange({})}
+                      initialValues={initialValues}
                     />
                     <AssignmentSection />
                   </div>

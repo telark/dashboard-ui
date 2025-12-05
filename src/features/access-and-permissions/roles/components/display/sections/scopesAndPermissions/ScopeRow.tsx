@@ -18,6 +18,7 @@ export interface ScopeRowProps {
   isLast?: boolean;
   isLocked?: boolean;
   onManualChange?: () => void;
+  initialScopeValue?: { level: string; rules?: string[] };
 }
 
 const ScopeRow: React.FC<ScopeRowProps> = ({
@@ -31,6 +32,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
   isLast = false,
   isLocked = false,
   onManualChange,
+  initialScopeValue,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const form = Form.useFormInstance();
@@ -69,24 +71,31 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
           });
 
           const handleLevelChange = (value: PermissionLevel) => {
-            const currentScope = getFieldValue(['scopes', scopeKey]) as ScopeFormValue | undefined;
             const newLevel = value;
-            const newAvailableRules = getScopeRules(scopeKey, newLevel);
+            
+            // Determine rules based on whether we're returning to initial level or changing to new one
+            let newRules: string[] = [];
+            
+            if (initialScopeValue && initialScopeValue.level === newLevel) {
+              // Restoring to initial level - restore initial rules
+              newRules = initialScopeValue.rules || [];
+            }
+            // else: Changing to different level - start with empty rules (no bleeding across levels)
 
-            // Filter existing rules to only include those valid for the new level
-            const currentRules = currentScope?.rules || [];
-            const formattedKeys = newAvailableRules.map((r) => formatRuleKey(scopeKey, r.key));
-            const validRules = currentRules.filter((rule) => formattedKeys.includes(rule));
-
-            // Get all scopes and create a completely new structure
             const allScopes = form.getFieldValue('scopes') || {};
             const updatedScopes = { ...allScopes };
             updatedScopes[scopeKey] = {
               level: newLevel,
-              rules: [...validRules],
+              rules: newRules,
             };
             
             form.setFieldsValue({ scopes: updatedScopes });
+            
+            // Delay change detection to ensure form state is committed
+            requestAnimationFrame(() => {
+              onManualChange?.();
+            });
+            
             onLevelChange?.(scopeKey, newLevel);
           };
 
@@ -127,8 +136,10 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
             
             form.setFieldsValue({ scopes: newScopes });
             
-            // Manually trigger change detection since setFieldsValue doesn't always fire onValuesChange for nested changes
-            onManualChange?.();
+            // Delay change detection to ensure form state is committed
+            requestAnimationFrame(() => {
+              onManualChange?.();
+            });
             
             onRuleToggle?.(scopeKey, formattedKey, checked);
           };

@@ -14,10 +14,11 @@ const TOOLTIP = RPC.SCOPE.PERMISSION_LEVEL_TOOLTIP;
 interface ScopesAndPermissionsSectionProps {
   isLocked?: boolean;
   onManualChange?: () => void;
+  initialValues?: { scopes?: Record<string, { level: string; rules?: string[] }> } | null;
 }
 
 const RolesScopesAndPermissionsSection: React.FC<ScopesAndPermissionsSectionProps> = memo(
-  ({ isLocked = false, onManualChange }) => {
+  ({ isLocked = false, onManualChange, initialValues }) => {
     const props: RolesScopesAndPermissionsListProps = {
       areas: AREAS,
       permissionLevels: PERMISSION_LEVEL_OPTIONS,
@@ -25,6 +26,7 @@ const RolesScopesAndPermissionsSection: React.FC<ScopesAndPermissionsSectionProp
       rowPaddingPx: 0,
       isLocked,
       onManualChange,
+      initialScopes: initialValues?.scopes,
     };
 
     return (

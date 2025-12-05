@@ -9,6 +9,7 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
   rowPaddingPx = 4,
   isLocked = false,
   onManualChange,
+  initialScopes,
 }) => {
   const handleLevelChange = (scopeKey: string, level: PermissionLevel) => {
     void scopeKey;
@@ -41,6 +42,7 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
           isLast={index === areas.length - 1}
           isLocked={isLocked}
           onManualChange={onManualChange}
+          initialScopeValue={initialScopes?.[area.key]}
         />
       ))}
     </>
