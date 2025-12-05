@@ -52,9 +52,7 @@ export const useRoleActions = () => {
         }
         throw new Error(RC.LABELS.MESSAGES.UPDATE_FAILED);
       } finally {
-        if (!options?.silent) {
-          setSubmitting(false);
-        }
+        setSubmitting(false);
       }
     },
     [dispatch, navigate],
