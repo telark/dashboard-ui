@@ -105,7 +105,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
                       onManualChange={handleValuesChange}
                     />
                     <ValiditySection />
-                    <ProtectionSection />
+                    <ProtectionSection onManualChange={handleValuesChange} />
                   </div>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 18 }}>
                     <ScopesAndPermissionsSection

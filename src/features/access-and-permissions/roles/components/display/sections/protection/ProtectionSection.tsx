@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form } from 'antd';
 import Section from '../../../../../../../components/display/sections/Section';
 import { Switch } from '../../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 
-const ProtectionSection: React.FC = () => {
+interface ProtectionSectionProps {
+  onManualChange?: () => void;
+}
+
+const ProtectionSection: React.FC<ProtectionSectionProps> = ({ onManualChange }) => {
+  const form = Form.useFormInstance();
+  const [localPreventScopeChanges, setLocalPreventScopeChanges] = useState<boolean | null>(null);
+
   return (
     <Section
       title={RPC.PROTECTION.TITLE}
@@ -29,13 +36,39 @@ const ProtectionSection: React.FC = () => {
             const preventDeletion = getFieldValue(['protection', 'preventDeletion']) || false;
             const preventModification =
               getFieldValue(['protection', 'preventModification']) || false;
-            const preventScopeChanges =
+            const formPreventScopeChanges =
               getFieldValue(['protection', 'preventScopeChanges']) || false;
+            const preventScopeChanges =
+              localPreventScopeChanges !== null ? localPreventScopeChanges : formPreventScopeChanges;
             const lockName = getFieldValue(['protection', 'lockName']) || false;
             const lockCategory = getFieldValue(['protection', 'lockCategory']) || false;
             const softDelete = getFieldValue(['protection', 'softDelete']) || false;
 
             const isSoftDeleteDisabled = preventDeletion;
+
+            const updateProtectionFields = (updates: Record<string, boolean>) => {
+              const hasPreventScopeChanges = 'preventScopeChanges' in updates;
+              if (hasPreventScopeChanges) {
+                const newValue = updates.preventScopeChanges;
+                setLocalPreventScopeChanges(newValue);
+                setTimeout(() => {
+                  setFieldValue(['protection', 'preventScopeChanges'], newValue);
+                  setTimeout(() => {
+                    setLocalPreventScopeChanges(null);
+                    onManualChange?.();
+                  }, 100);
+                }, 300);
+              } else {
+                Object.entries(updates).forEach(([field, value]) => {
+                  setFieldValue(['protection', field], value);
+                });
+                requestAnimationFrame(() => {
+                  requestAnimationFrame(() => {
+                    onManualChange?.();
+                  });
+                });
+              }
+            };
 
             return (
               <div style={{ display: 'flex', gap: 24 }}>
@@ -44,11 +77,10 @@ const ProtectionSection: React.FC = () => {
                   <Switch
                     checked={preventDeletion}
                     onChange={(checked) => {
-                      setFieldValue(['protection', 'preventDeletion'], checked);
-                      // When preventDeletion is enabled, disable softDelete
-                      if (checked) {
-                        setFieldValue(['protection', 'softDelete'], false);
-                      }
+                      updateProtectionFields({
+                        preventDeletion: checked,
+                        ...(checked ? { softDelete: false } : {}),
+                      });
                     }}
                     label={RPC.PROTECTION.PREVENT_DELETION_LABEL}
                     labelStyle={{ minWidth: 200 }}
@@ -56,18 +88,14 @@ const ProtectionSection: React.FC = () => {
                   />
                   <Switch
                     checked={preventModification}
-                    onChange={(checked) =>
-                      setFieldValue(['protection', 'preventModification'], checked)
-                    }
+                    onChange={(checked) => updateProtectionFields({ preventModification: checked })}
                     label={RPC.PROTECTION.PREVENT_MODIFICATION_LABEL}
                     labelStyle={{ minWidth: 200 }}
                     containerStyle={{ marginBottom: 12 }}
                   />
                   <Switch
                     checked={preventScopeChanges}
-                    onChange={(checked) =>
-                      setFieldValue(['protection', 'preventScopeChanges'], checked)
-                    }
+                    onChange={(checked) => updateProtectionFields({ preventScopeChanges: checked })}
                     label={RPC.PROTECTION.PREVENT_SCOPE_CHANGES_LABEL}
                     labelStyle={{ minWidth: 200 }}
                     containerStyle={{ marginBottom: 0 }}
@@ -77,14 +105,14 @@ const ProtectionSection: React.FC = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 0, flex: 1 }}>
                   <Switch
                     checked={lockName}
-                    onChange={(checked) => setFieldValue(['protection', 'lockName'], checked)}
+                    onChange={(checked) => updateProtectionFields({ lockName: checked })}
                     label={RPC.PROTECTION.LOCK_NAME_LABEL}
                     labelStyle={{ minWidth: 200 }}
                     containerStyle={{ marginBottom: 12 }}
                   />
                   <Switch
                     checked={lockCategory}
-                    onChange={(checked) => setFieldValue(['protection', 'lockCategory'], checked)}
+                    onChange={(checked) => updateProtectionFields({ lockCategory: checked })}
                     label={RPC.PROTECTION.LOCK_CATEGORY_LABEL}
                     labelStyle={{ minWidth: 200 }}
                     containerStyle={{ marginBottom: 12 }}
@@ -92,9 +120,8 @@ const ProtectionSection: React.FC = () => {
                   <Switch
                     checked={softDelete}
                     onChange={(checked) => {
-                      // Block enabling softDelete if preventDeletion is true
                       if (!isSoftDeleteDisabled) {
-                        setFieldValue(['protection', 'softDelete'], checked);
+                        updateProtectionFields({ softDelete: checked });
                       }
                     }}
                     label={RPC.PROTECTION.SOFT_DELETE_LABEL}
