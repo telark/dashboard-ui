@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { APP_ROUTES, Icons, SHARED_DETAILS_CONSTANTS } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
@@ -16,33 +16,26 @@ const GroupsList: React.FC = () => {
   const navigate = useNavigate();
   const { groups, loading, error } = useGroups();
   const { loading: categoriesLoading } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
-  const [hasInitialized, setHasInitialized] = useState(false);
-
+  const hasStartedLoadingRef = useRef(false);
+  const hasLoadedOnceRef = useRef(false);
+  
   useEffect(() => {
-    if (!loading && !categoriesLoading) {
-      setHasInitialized(true);
+    if (loading || categoriesLoading) {
+      hasStartedLoadingRef.current = true;
+    }
+    if (!loading && !categoriesLoading && hasStartedLoadingRef.current) {
+      hasLoadedOnceRef.current = true;
     }
   }, [loading, categoriesLoading]);
 
-  const isLoading = loading || categoriesLoading || !hasInitialized;
-  const isEmpty = hasInitialized && !loading && !categoriesLoading && groups.length === 0;
-
-  if (isLoading) {
-    return (
-      <PageContainer>
-        <Header
-          subtitle={GC.LABELS.HEADER_SUBTITLE}
-          primaryText={GC.LABELS.FORM.BUTTON_TEXT}
-          primaryIcon={<GroupIcon size={16} />}
-          onPrimary={() => navigate(APP_ROUTES.GROUP_CREATE)}
-          breadcrumbs={[{ label: GC.LABELS.BREADCRUMBS.GROUPS }]}
-          icon={<GroupIcon />}
-        />
-        <div>{SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING}</div>
-      </PageContainer>
-    );
-  }
-
+  const isCurrentlyLoading = loading || categoriesLoading;
+  const hasLoadedOnce = hasLoadedOnceRef.current;
+  const hasStartedLoading = hasStartedLoadingRef.current;
+  const hasGroups = groups.length > 0;
+  
+  const loadingJustCompleted = !isCurrentlyLoading && hasStartedLoading;
+  const shouldShowEmpty = loadingJustCompleted && !hasGroups;
+  
   if (error) {
     return (
       <PageContainer>
@@ -59,7 +52,7 @@ const GroupsList: React.FC = () => {
     );
   }
 
-  if (isEmpty) {
+  if (shouldShowEmpty) {
     return (
       <EmptyState
         title={GC.LABELS.MESSAGES.NO_GROUPS_TITLE}
@@ -69,6 +62,22 @@ const GroupsList: React.FC = () => {
         onButtonClick={() => navigate(APP_ROUTES.GROUP_CREATE)}
         icon={<GroupIcon size={40} />}
       />
+    );
+  }
+
+  if (isCurrentlyLoading || !hasStartedLoading) {
+    return (
+      <PageContainer>
+        <Header
+          subtitle={GC.LABELS.HEADER_SUBTITLE}
+          primaryText={GC.LABELS.FORM.BUTTON_TEXT}
+          primaryIcon={<GroupIcon size={16} />}
+          onPrimary={() => navigate(APP_ROUTES.GROUP_CREATE)}
+          breadcrumbs={[{ label: GC.LABELS.BREADCRUMBS.GROUPS }]}
+          icon={<GroupIcon />}
+        />
+        <div>{SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING}</div>
+      </PageContainer>
     );
   }
 
