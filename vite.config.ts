@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import type { Plugin } from 'vite';
 import { visualizer } from 'rollup-plugin-visualizer';
-import viteCompression from 'vite-plugin-compression';
 
 const VENDOR_CHUNK_MAPPINGS: Array<{ patterns: string[]; chunkName: string }> = [
   { patterns: ['react', 'react-dom', 'scheduler'], chunkName: 'react-vendor' },
@@ -47,33 +46,8 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react({
         jsxRuntime: 'automatic',
-        babel: {
-          plugins:
-            env.NODE_ENV === 'production'
-              ? [
-                  [
-                    'babel-plugin-transform-react-remove-prop-types',
-                    { mode: 'remove', removeImport: true },
-                  ],
-                ]
-              : [],
-        },
       }),
       performancePlugin(),
-      viteCompression({
-        verbose: true,
-        disable: false,
-        threshold: 10240,
-        algorithm: 'gzip',
-        ext: '.gz',
-      }),
-      viteCompression({
-        verbose: true,
-        disable: false,
-        threshold: 10240,
-        algorithm: 'brotliCompress',
-        ext: '.br',
-      }),
       isAnalyze &&
         visualizer({
           open: true,
@@ -92,25 +66,11 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      minify: 'terser',
-      terserOptions: {
-        compress: {
-          drop_console: env.NODE_ENV === 'production',
-          drop_debugger: true,
-          pure_funcs:
-            env.NODE_ENV === 'production' ? ['console.log', 'console.info', 'console.debug'] : [],
-          passes: 2,
-        },
-        mangle: {
-          safari10: true,
-        },
-        format: {
-          comments: false,
-        },
-      },
-      cssCodeSplit: true,
+      minify: 'esbuild',
+      cssCodeSplit: false,
       chunkSizeWarningLimit: 1000,
       sourcemap: false,
+      reportCompressedSize: false,
       commonjsOptions: {
         include: [/node_modules/],
         transformMixedEsModules: true,
@@ -121,26 +81,11 @@ export default defineConfig(({ mode }) => {
           entryFileNames: 'assets/[name]-[hash].js',
           assetFileNames: 'assets/[name]-[hash].[ext]',
           manualChunks: (id) => {
-            if (!id.includes('node_modules')) {
-              if (id.includes('/features/auth/')) return 'features-auth';
-              if (id.includes('/features/resources/')) return 'features-resources';
-              if (id.includes('/features/access-and-permissions/')) return 'features-access';
-              if (id.includes('/features/insights/')) return 'features-insights';
-              return undefined;
+            if (id.includes('node_modules')) {
+              if (id.includes('@dicebear')) return undefined;
+              return getVendorChunkName(id);
             }
-
-            if (id.includes('@dicebear')) {
-              return undefined;
-            }
-
-            return getVendorChunkName(id);
           },
-          experimentalMinChunkSize: 10000,
-        },
-        treeshake: {
-          moduleSideEffects: 'no-external',
-          propertyReadSideEffects: false,
-          unknownGlobalSideEffects: false,
         },
       },
     },

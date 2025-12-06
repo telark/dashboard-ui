@@ -1,4 +1,5 @@
 import { onCLS, onFCP, onLCP, onTTFB, type Metric } from 'web-vitals';
+import { trackLCPComponent, trackLCPCandidates } from './lcpTracker';
 
 type PerformanceMetricName = 'CLS' | 'FCP' | 'LCP' | 'TTFB';
 
@@ -40,8 +41,13 @@ const logMetric = (metric: Metric) => {
 export const initPerformanceMonitoring = () => {
   onCLS(logMetric);
   onFCP(logMetric);
-  onLCP(logMetric);
   onTTFB(logMetric);
+
+  onLCP((metric) => {
+    logMetric(metric);
+    trackLCPCandidates(metric);
+    trackLCPComponent(metric);
+  });
 
   if (typeof window !== 'undefined' && window.performance) {
     window.addEventListener('load', () => {
