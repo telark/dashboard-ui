@@ -1,12 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { Form } from 'antd';
 import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../../../constants';
 import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
 import Header from '../../../../components/display/sections/Header';
 import { USERS_CONSTANTS as UC } from '../constants';
-import LabeledInput from '../../../../components/display/inputs/LabeledInput';
-import LabeledSelect from '../../../../components/display/inputs/LabeledSelect';
-import LabeledAvatarPicker from '../../../../components/display/inputs/LabeledAvatarPicker';
 import Section from '../../../../components/display/sections/Section';
 import { PrimaryButton } from '../../../../components/display/buttons';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
@@ -14,6 +11,7 @@ import { PageContainer } from '../../../../components/shared';
 import { useUserActions } from '../hooks';
 import { useRoles } from '../../roles/hooks';
 import { useGroups } from '../../groups/hooks';
+import UserFormFields from '../components/display/shared/UserFormFields';
 import type { CreateUserFormValues } from '../models';
 
 const UserIcon = Icons.User;
@@ -23,6 +21,21 @@ const CreateUser: React.FC = () => {
   const { handleCreate, submitting } = useUserActions();
   const { roles } = useRoles();
   const { groups } = useGroups();
+  const [hasFormErrors, setHasFormErrors] = useState(false);
+
+  const checkFormState = useCallback(() => {
+    const fieldsError = form.getFieldsError();
+    const hasErrors = fieldsError.some((field) => field.errors.length > 0);
+    setHasFormErrors(hasErrors);
+  }, [form]);
+
+  const handleValuesChange = useCallback(() => {
+    checkFormState();
+  }, [checkFormState]);
+
+  const handleFieldsChange = useCallback(() => {
+    checkFormState();
+  }, [checkFormState]);
 
   const roleOptions = useMemo(() => {
     return roles.map((role) => ({
@@ -74,6 +87,8 @@ const CreateUser: React.FC = () => {
             layout="vertical"
             form={form}
             onFinish={handleFinish}
+            onValuesChange={handleValuesChange}
+            onFieldsChange={handleFieldsChange}
             initialValues={{
               username: '',
               fullname: '',
@@ -93,54 +108,7 @@ const CreateUser: React.FC = () => {
               <Section
                 title={UC.LABELS.FORM.SECTION_TITLE}
                 subtitle={UC.LABELS.FORM.SECTION_SUBTITLE}
-                content={
-                  <div
-                    style={{
-                      display: 'flex',
-                      gap: 24,
-                      alignItems: 'flex-start',
-                      width: '100%',
-                    }}
-                  >
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
-                      <LabeledAvatarPicker name="avatar" label="Avatar" />
-                      <LabeledInput
-                        name="username"
-                        label={UC.LABELS.FORM.FIELDS.USERNAME_LABEL}
-                        required
-                        placeholder={UC.LABELS.FORM.FIELDS.USERNAME_PLACEHOLDER}
-                      />
-                      <LabeledInput
-                        name="fullname"
-                        label={UC.LABELS.FORM.FIELDS.FULLNAME_LABEL}
-                        required
-                        placeholder={UC.LABELS.FORM.FIELDS.FULLNAME_PLACEHOLDER}
-                      />
-                      <LabeledInput
-                        name="email"
-                        label={UC.LABELS.FORM.FIELDS.EMAIL_LABEL}
-                        required
-                        placeholder={UC.LABELS.FORM.FIELDS.EMAIL_PLACEHOLDER}
-                      />
-                    </div>
-                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 18 }}>
-                      <LabeledSelect
-                        name="roleID"
-                        label={UC.LABELS.FORM.FIELDS.ROLE_LABEL}
-                        placeholder={UC.LABELS.FORM.FIELDS.ROLE_PLACEHOLDER}
-                        required
-                        options={roleOptions}
-                      />
-                      <LabeledSelect
-                        name="groupID"
-                        label={UC.LABELS.FORM.FIELDS.GROUP_LABEL}
-                        placeholder={UC.LABELS.FORM.FIELDS.GROUP_PLACEHOLDER}
-                        required
-                        options={groupOptions}
-                      />
-                    </div>
-                  </div>
-                }
+                content={<UserFormFields roleOptions={roleOptions} groupOptions={groupOptions} />}
               />
               <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                 <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
@@ -150,6 +118,7 @@ const CreateUser: React.FC = () => {
                     loadingLabel={BUTTON_TEXTS.LOADING}
                     onClick={() => form.submit()}
                     icon={<UserIcon size={16} />}
+                    disabled={submitting || hasFormErrors}
                   />
                 </Form.Item>
               </div>

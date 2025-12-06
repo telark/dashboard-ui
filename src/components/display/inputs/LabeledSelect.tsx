@@ -37,6 +37,7 @@ const LabeledSelect: React.FC<LabeledSelectProps> = ({
       className={`form-item-compact ${className || ''}`}
     >
       <Select
+        size="small"
         options={options}
         placeholder={placeholder}
         allowClear={allowClear}
