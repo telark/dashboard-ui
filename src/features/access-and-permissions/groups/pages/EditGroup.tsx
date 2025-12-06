@@ -8,6 +8,8 @@ import Section from '../../../../components/display/sections/Section';
 import { PrimaryButton } from '../../../../components/display/buttons';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
+import { FancySpinner } from '../../../../components/animation';
+import { useDelayedMount } from '../../../../hooks/layout';
 import {
   useGroupDetails,
   useGroupActions,
@@ -27,6 +29,7 @@ const EditGroup: React.FC = () => {
   const { groups } = useGroups();
   const [form] = Form.useForm<GroupFormData>();
   const { categoryOptions } = useGroupCategories();
+  const isComponentLoaded = useDelayedMount();
 
   const { nameValidator, normalizeName } = useGroupNameValidation({
     groups,
@@ -66,11 +69,23 @@ const EditGroup: React.FC = () => {
 
   const isButtonDisabled = submitting || hasFormErrors || !hasChanges;
 
-  if (loading) {
+  if (loading || (!group && id)) {
+    if (!isComponentLoaded) {
+      return null;
+    }
     return (
       <PageContainer>
-        <Header subtitle={GC.LABELS.EDIT_SUBTITLE} breadcrumbs={[]} icon={<GroupIcon />} />
-        <div>Loading...</div>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: 'calc(100vh - 60px)',
+            marginTop: '60px',
+          }}
+        >
+          <FancySpinner showLabel={false} size={40} />
+        </div>
       </PageContainer>
     );
   }

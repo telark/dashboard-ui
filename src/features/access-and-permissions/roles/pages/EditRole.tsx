@@ -6,6 +6,8 @@ import Header from '../../../../components/display/sections/Header';
 import RoleForm from '../components/display/shared/RoleForm';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
+import { FancySpinner } from '../../../../components/animation';
+import { useDelayedMount } from '../../../../hooks/layout';
 import { useRoleDetails, useRoleActions, useRoles, useEditRoleSubmit } from '../hooks';
 import type { RoleFormValues } from '../models';
 import { convertRoleToFormValues } from '../utils';
@@ -17,6 +19,7 @@ const EditRole: React.FC = () => {
   const { handleUpdate, submitting } = useRoleActions();
   const { roles } = useRoles();
   const [form] = Form.useForm<RoleFormValues>();
+  const isComponentLoaded = useDelayedMount();
 
   const initialValues = useMemo(() => {
     if (!role) return null;
@@ -38,7 +41,24 @@ const EditRole: React.FC = () => {
   }, [role, initialValues, form]);
 
   if (loading) {
-    return <PageContainer>Loading...</PageContainer>;
+    if (!isComponentLoaded) {
+      return null;
+    }
+    return (
+      <PageContainer>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: 'calc(100vh - 60px)',
+            marginTop: '60px',
+          }}
+        >
+          <FancySpinner showLabel={false} size={40} />
+        </div>
+      </PageContainer>
+    );
   }
 
   if (notFound || !role || !id || !initialValues) {
