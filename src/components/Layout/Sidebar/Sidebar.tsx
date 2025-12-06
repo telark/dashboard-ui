@@ -1,11 +1,11 @@
 import { Layout } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import MenuItems from './MenuItems';
 
 const { Sider } = Layout;
 
-const Sidebar = () => {
+const Sidebar = memo(() => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const widthExpanded = 260;
   const widthCollapsed = 64;
@@ -24,27 +24,23 @@ const Sidebar = () => {
         height: `calc(100vh - ${headerHeight}px)`,
         backgroundColor: 'white',
         position: 'fixed',
-        left: 0, // Align the sidebar to the left of the page
-        top: `${headerHeight}px`, // Start below the header
-        zIndex: 1, // Ensure it stays above the content
+        left: 0,
+        top: `${headerHeight}px`,
+        zIndex: 1,
         paddingTop: 0,
         paddingLeft: isCollapsed ? '0px' : '12px',
         paddingRight: 0,
-        overflow: 'hidden', // prevent inner margins from creating gutters
+        overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between', // Ensures bottom alignment
+        justifyContent: 'space-between',
         transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
     >
-      {/* Menu Items */}
       <div style={{ flexGrow: 1 }}>
-        {' '}
-        {/* This ensures the menu takes up available space */}
         <MenuItems isCollapsed={isCollapsed} />
       </div>
 
-      {/* Bottom Hide Button */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
         style={{
@@ -71,6 +67,8 @@ const Sidebar = () => {
       </button>
     </Sider>
   );
-};
+});
+
+Sidebar.displayName = 'Sidebar';
 
 export default Sidebar;

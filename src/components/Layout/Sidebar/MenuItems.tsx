@@ -1,5 +1,5 @@
 import { Menu } from 'antd';
-import { useState, useEffect, startTransition } from 'react';
+import { useState, useEffect, startTransition, memo, useMemo } from 'react';
 import { MENU_LABELS, MENU_KEYS } from '../../../constants';
 import {
   HomeMenuButton,
@@ -16,7 +16,7 @@ interface MenuItemsProps {
   isCollapsed?: boolean;
 }
 
-const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
+const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
   const [openKeys, setOpenKeys] = useState<string[]>([
     MENU_KEYS.RESOURCES,
     MENU_KEYS.USERS_AND_GROUPS,
@@ -33,6 +33,25 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
       });
     }
   }, [isCollapsed]);
+
+  const menuStyle = useMemo(
+    () => ({
+      backgroundColor: 'white',
+      borderRight: 'none',
+      padding: 0,
+      margin: 0,
+      width: '100%',
+    }),
+    [],
+  );
+
+  const submenuStyle = useMemo(
+    () => ({
+      paddingTop: '0px',
+    }),
+    [],
+  );
+
   return (
     <div style={{ width: '100%', padding: 0, margin: 0 }}>
       <Menu
@@ -42,13 +61,7 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
         openKeys={openKeys}
         onOpenChange={setOpenKeys}
         className="compact-menu"
-        style={{
-          backgroundColor: 'white',
-          borderRight: 'none',
-          padding: 0,
-          margin: 0,
-          width: '100%',
-        }}
+        style={menuStyle}
       >
         <HomeMenuButton isCollapsed={isCollapsed} />
         {isCollapsed ? (
@@ -63,13 +76,7 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
           </>
         ) : (
           <>
-            <Menu.SubMenu
-              key={MENU_KEYS.RESOURCES}
-              title={MENU_LABELS.RESOURCES}
-              style={{
-                paddingTop: '0px',
-              }}
-            >
+            <Menu.SubMenu key={MENU_KEYS.RESOURCES} title={MENU_LABELS.RESOURCES} style={submenuStyle}>
               <GroupersMenuButton isCollapsed={isCollapsed} />
               <BridgesMenuButton isCollapsed={isCollapsed} />
               <WorkloadsMenuButton isCollapsed={isCollapsed} />
@@ -77,9 +84,7 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
             <Menu.SubMenu
               key={MENU_KEYS.USERS_AND_GROUPS}
               title={MENU_LABELS.ACCESS_AND_PERMISSIONS}
-              style={{
-                paddingTop: '0px',
-              }}
+              style={submenuStyle}
             >
               <UsersMenuButton isCollapsed={isCollapsed} />
               <GroupsMenuButton isCollapsed={isCollapsed} />
@@ -91,6 +96,8 @@ const MenuItems = ({ isCollapsed = false }: MenuItemsProps) => {
       </Menu>
     </div>
   );
-};
+});
+
+MenuItems.displayName = 'MenuItems';
 
 export default MenuItems;
