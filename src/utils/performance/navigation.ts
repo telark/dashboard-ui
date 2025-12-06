@@ -76,3 +76,4 @@ export const initNavigationOptimizations = () => {
     console.log('[Navigation] View Transitions supported:', enableViewTransitions());
   }
 };
+

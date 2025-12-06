@@ -16,6 +16,26 @@ const Sidebar = memo(() => {
     root.style.setProperty('--sidebar-width', `${isCollapsed ? widthCollapsed : widthExpanded}px`);
   }, [isCollapsed, widthCollapsed, widthExpanded]);
 
+  const siderStyle = useMemo(
+    () => ({
+      height: `calc(100vh - ${headerHeight}px)`,
+      backgroundColor: 'white',
+      position: 'fixed' as const,
+      left: 0,
+      top: `${headerHeight}px`,
+      zIndex: 1,
+      paddingTop: 0,
+      paddingLeft: isCollapsed ? '0px' : '12px',
+      paddingRight: 0,
+      overflow: 'hidden' as const,
+      display: 'flex',
+      flexDirection: 'column' as const,
+      justifyContent: 'space-between' as const,
+      transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    }),
+    [isCollapsed, headerHeight],
+  );
+
   const handleToggle = useCallback(() => {
     setIsCollapsed((prev) => !prev);
   }, []);
@@ -24,22 +44,7 @@ const Sidebar = memo(() => {
     <Sider
       width={isCollapsed ? widthCollapsed : widthExpanded}
       collapsed={isCollapsed}
-      style={{
-        height: `calc(100vh - ${headerHeight}px)`,
-        backgroundColor: 'white',
-        position: 'fixed',
-        left: 0,
-        top: `${headerHeight}px`,
-        zIndex: 1,
-        paddingTop: 0,
-        paddingLeft: isCollapsed ? '0px' : '12px',
-        paddingRight: 0,
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-      }}
+      style={siderStyle}
     >
       <div style={{ flexGrow: 1 }}>
         <MenuItems isCollapsed={isCollapsed} />

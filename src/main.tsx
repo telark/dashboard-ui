@@ -8,8 +8,7 @@ import store from './store';
 import App from './App';
 import { FancySpinner } from './components/animation';
 import { SHARED_DETAILS_CONSTANTS } from './constants';
-import { initPerformanceMonitoring } from './utils/shared/performance';
-import { initNavigationOptimizations } from './utils/shared/navigation';
+import { initPerformanceMonitoring, initNavigationOptimizations } from './utils/performance';
 import './styles/index.css';
 import './styles/antd.css';
 
