@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { APP_ROUTES, Icons, SHARED_DETAILS_CONSTANTS } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
@@ -6,6 +6,7 @@ import Header from '../../../../components/display/sections/Header';
 import GroupsTable from '../components/display/list/Table';
 import EmptyState from '../../../../components/display/views/EmptyState';
 import { PageContainer } from '../../../../components/shared';
+import { FancySpinner } from '../../../../components/animation';
 import { useGroups } from '../hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
@@ -16,26 +17,9 @@ const GroupsList: React.FC = () => {
   const navigate = useNavigate();
   const { groups, loading, error } = useGroups();
   const { loading: categoriesLoading } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
-  const hasStartedLoadingRef = useRef(false);
-  const hasLoadedOnceRef = useRef(false);
-  
-  useEffect(() => {
-    if (loading || categoriesLoading) {
-      hasStartedLoadingRef.current = true;
-    }
-    if (!loading && !categoriesLoading && hasStartedLoadingRef.current) {
-      hasLoadedOnceRef.current = true;
-    }
-  }, [loading, categoriesLoading]);
+  const isFetching = groups === undefined || loading || categoriesLoading;
+  const shouldShowEmpty = Array.isArray(groups) && groups.length === 0 && !error;
 
-  const isCurrentlyLoading = loading || categoriesLoading;
-  const hasLoadedOnce = hasLoadedOnceRef.current;
-  const hasStartedLoading = hasStartedLoadingRef.current;
-  const hasGroups = groups.length > 0;
-  
-  const loadingJustCompleted = !isCurrentlyLoading && hasStartedLoading;
-  const shouldShowEmpty = loadingJustCompleted && !hasGroups;
-  
   if (error) {
     return (
       <PageContainer>
@@ -65,7 +49,7 @@ const GroupsList: React.FC = () => {
     );
   }
 
-  if (isCurrentlyLoading || !hasStartedLoading) {
+  if (isFetching) {
     return (
       <PageContainer>
         <Header
@@ -76,7 +60,17 @@ const GroupsList: React.FC = () => {
           breadcrumbs={[{ label: GC.LABELS.BREADCRUMBS.GROUPS }]}
           icon={<GroupIcon />}
         />
-        <div>{SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING}</div>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '400px',
+            width: '100%',
+          }}
+        >
+          <FancySpinner label={SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING} showLabel={true} />
+        </div>
       </PageContainer>
     );
   }
