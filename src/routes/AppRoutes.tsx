@@ -1,11 +1,10 @@
-import React, { lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React, { lazy, Suspense, useTransition, useEffect } from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ProtectedRoute } from '../features/auth/components';
 import { FancySpinner, AnimatedPageWrapper } from '../components/animation';
 import { APP_ROUTES } from '../constants';
 import { hasSessionToken } from '../features/auth/utils';
 
-// Lazy load pages for code splitting
 const Dashboard = lazy(() => import('../features/home/pages/Dashboard'));
 const Login = lazy(() => import('../features/auth/pages/flow/Login'));
 const Register = lazy(() => import('../features/auth/pages/flow/Register'));
@@ -52,57 +51,47 @@ const GroupEdit = lazy(() => import('../features/access-and-permissions/groups/p
 const PasskeysListView = lazy(() => import('../features/auth/pages/passkeys/ListPasskeys'));
 const PasskeyView = lazy(() => import('../features/auth/pages/passkeys/ViewPasskey'));
 
-// Loading fallback component
 const PageLoader: React.FC = () => (
   <div
     style={{
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      minHeight: '100vh',
+      padding: '40px',
+      minHeight: '200px',
     }}
   >
-    <FancySpinner showLabel={false} />
+    <FancySpinner showLabel={false} size={24} />
   </div>
 );
 
 const AppRoutes: React.FC = () => {
   const isAuthenticated = hasSessionToken();
+  const location = useLocation();
+  const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    startTransition(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    });
+  }, [location.pathname]);
 
   return (
     <Suspense fallback={<PageLoader />}>
-      <Routes>
+      <Routes location={location}>
         <Route
           path={APP_ROUTES.LOGIN}
-          element={
-            isAuthenticated ? (
-              <Navigate to={APP_ROUTES.HOME} replace />
-            ) : (
-              <Suspense fallback={<PageLoader />}>
-                <Login />
-              </Suspense>
-            )
-          }
+          element={isAuthenticated ? <Navigate to={APP_ROUTES.HOME} replace /> : <Login />}
         />
         <Route
           path={APP_ROUTES.REGISTER}
-          element={
-            isAuthenticated ? (
-              <Navigate to={APP_ROUTES.HOME} replace />
-            ) : (
-              <Suspense fallback={<PageLoader />}>
-                <Register />
-              </Suspense>
-            )
-          }
+          element={isAuthenticated ? <Navigate to={APP_ROUTES.HOME} replace /> : <Register />}
         />
         <Route
           path={APP_ROUTES.HOME}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <Dashboard />
-              </Suspense>
+              <Dashboard />
             </ProtectedRoute>
           }
         />
@@ -110,9 +99,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.GROUPERS}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <GroupersGlobalView />
-              </Suspense>
+              <GroupersGlobalView />
             </ProtectedRoute>
           }
         />
@@ -120,11 +107,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.GROUPER_DETAILS}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <AnimatedPageWrapper>
-                  <GrouperDetailsView />
-                </AnimatedPageWrapper>
-              </Suspense>
+              <AnimatedPageWrapper>
+                <GrouperDetailsView />
+              </AnimatedPageWrapper>
             </ProtectedRoute>
           }
         />
@@ -132,9 +117,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.BRIDGES}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <BridgesGlobalView />
-              </Suspense>
+              <BridgesGlobalView />
             </ProtectedRoute>
           }
         />
@@ -142,11 +125,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.BRIDGE_DETAILS}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <AnimatedPageWrapper>
-                  <BridgeDetailsView />
-                </AnimatedPageWrapper>
-              </Suspense>
+              <AnimatedPageWrapper>
+                <BridgeDetailsView />
+              </AnimatedPageWrapper>
             </ProtectedRoute>
           }
         />
@@ -154,9 +135,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.WORKLOADS}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <WorkloadsGlobalView />
-              </Suspense>
+              <WorkloadsGlobalView />
             </ProtectedRoute>
           }
         />
@@ -164,11 +143,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.APP_WORKLOAD_DETAILS}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <AnimatedPageWrapper>
-                  <AppWorkloadDetailsView />
-                </AnimatedPageWrapper>
-              </Suspense>
+              <AnimatedPageWrapper>
+                <AppWorkloadDetailsView />
+              </AnimatedPageWrapper>
             </ProtectedRoute>
           }
         />
@@ -176,9 +153,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.ROLES}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <RolesListView />
-              </Suspense>
+              <RolesListView />
             </ProtectedRoute>
           }
         />
@@ -186,9 +161,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.ROLE_CREATE}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <RolesCreateView />
-              </Suspense>
+              <RolesCreateView />
             </ProtectedRoute>
           }
         />
@@ -196,9 +169,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.ROLE_VIEW}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <RoleView />
-              </Suspense>
+              <RoleView />
             </ProtectedRoute>
           }
         />
@@ -206,9 +177,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.ROLE_EDIT}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <RoleEdit />
-              </Suspense>
+              <RoleEdit />
             </ProtectedRoute>
           }
         />
@@ -216,9 +185,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.USERS}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <UsersListView />
-              </Suspense>
+              <UsersListView />
             </ProtectedRoute>
           }
         />
@@ -226,9 +193,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.USER_CREATE}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <UsersCreateView />
-              </Suspense>
+              <UsersCreateView />
             </ProtectedRoute>
           }
         />
@@ -236,9 +201,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.USER_VIEW}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <UserView />
-              </Suspense>
+              <UserView />
             </ProtectedRoute>
           }
         />
@@ -246,9 +209,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.USER_EDIT}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <UserEdit />
-              </Suspense>
+              <UserEdit />
             </ProtectedRoute>
           }
         />
@@ -256,9 +217,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.GROUPS}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <GroupsListView />
-              </Suspense>
+              <GroupsListView />
             </ProtectedRoute>
           }
         />
@@ -266,9 +225,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.GROUP_CREATE}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <GroupsCreateView />
-              </Suspense>
+              <GroupsCreateView />
             </ProtectedRoute>
           }
         />
@@ -276,9 +233,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.GROUP_VIEW}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <GroupView />
-              </Suspense>
+              <GroupView />
             </ProtectedRoute>
           }
         />
@@ -286,9 +241,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.GROUP_EDIT}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <GroupEdit />
-              </Suspense>
+              <GroupEdit />
             </ProtectedRoute>
           }
         />
@@ -296,9 +249,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.PASSKEY_VIEW}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <PasskeyView />
-              </Suspense>
+              <PasskeyView />
             </ProtectedRoute>
           }
         />
@@ -306,13 +257,25 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.PASSKEYS}
           element={
             <ProtectedRoute>
-              <Suspense fallback={<PageLoader />}>
-                <PasskeysListView />
-              </Suspense>
+              <PasskeysListView />
             </ProtectedRoute>
           }
         />
       </Routes>
+      {isPending && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '2px',
+            background: 'linear-gradient(90deg, #20c997, #10b981)',
+            zIndex: 9999,
+            animation: 'slideIn 0.3s ease-out',
+          }}
+        />
+      )}
     </Suspense>
   );
 };
