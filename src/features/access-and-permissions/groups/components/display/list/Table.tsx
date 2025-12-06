@@ -7,7 +7,7 @@ import type { Group, GroupsTableProps } from '../../../models';
 import Columns from './Columns';
 import { useGroupActions } from '../../../hooks';
 import { selectGroupsCategories } from '../../../../categories/store/selectors/categorySelectors';
-import ActionBar from './ActionBar';
+import ActionBar from '../../../../../../components/display/actions/ActionBar';
 
 type SortKey = 'name' | 'categoryID' | 'creationDate';
 
@@ -111,7 +111,15 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
   );
 
   return (
-    <>
+    <div
+      style={{
+        background: '#fff',
+        borderRadius: 16,
+        boxShadow: '0 10px 24px rgba(0,0,0,0.06)',
+        padding: 16,
+        overflow: 'hidden',
+      }}
+    >
       <ActionBar
         selectedCount={selectedCount}
         hasSelection={hasSelection}
@@ -120,11 +128,17 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
         onDelete={handleDeleteClick}
       />
       <DataTable<Group>
+        className="app-table"
         columns={columns}
         data={sorted}
         rowKey={(r) => r.id}
-        className="app-table"
         rowHeight={GC.SIZES.ROW_HEIGHT}
+        containerStyle={{
+          background: 'transparent',
+          borderRadius: 0,
+          boxShadow: 'none',
+          padding: 0,
+        }}
         tableProps={{
           rowSelection: {
             selectedRowKeys: Array.from(selectedGroups),
@@ -133,7 +147,7 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
         }}
         onRowClick={(record) => onView?.(record)}
       />
-    </>
+    </div>
   );
 };
 

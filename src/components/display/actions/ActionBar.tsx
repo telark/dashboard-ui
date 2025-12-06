@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
 import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
-import type { RolesActionBarProps } from '../../../models';
+
+export interface ActionBarProps {
+  selectedCount: number;
+  hasSelection: boolean;
+  canEdit?: boolean;
+  canDelete?: boolean;
+  onView: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}
 
 interface ActionButtonProps {
   icon: React.ReactNode;
@@ -78,11 +87,25 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   );
 };
 
-const ActionBar: React.FC<RolesActionBarProps> = React.memo(
-  ({ selectedCount, hasSelection, canEdit, canDelete, onView, onEdit, onDelete }) => {
+const ActionBar: React.FC<ActionBarProps> = React.memo(
+  ({ selectedCount, hasSelection, canEdit = true, canDelete = true, onView, onEdit, onDelete }) => {
     const isViewEnabled = hasSelection && selectedCount <= 1;
     const isEditEnabled = hasSelection && selectedCount <= 1 && canEdit;
     const isDeleteEnabled = hasSelection && canDelete;
+
+    const getEditTooltip = () => {
+      if (!hasSelection || selectedCount > 1) {
+        return 'Edit';
+      }
+      return canEdit ? 'Edit' : 'Edit is prevented by protection flags';
+    };
+
+    const getDeleteTooltip = () => {
+      if (!hasSelection) {
+        return 'Delete';
+      }
+      return canDelete ? 'Delete' : 'Delete is prevented by protection flags';
+    };
 
     return (
       <div
@@ -105,13 +128,13 @@ const ActionBar: React.FC<RolesActionBarProps> = React.memo(
             icon={<EditOutlined />}
             onClick={onEdit}
             disabled={!isEditEnabled}
-            tooltip={canEdit ? 'Edit' : 'Edit is prevented by protection flags'}
+            tooltip={getEditTooltip()}
           />
           <ActionButton
             icon={<DeleteOutlined />}
             onClick={onDelete}
             disabled={!isDeleteEnabled}
-            tooltip={canDelete ? 'Delete' : 'Delete is prevented by protection flags'}
+            tooltip={getDeleteTooltip()}
             isDanger={true}
           />
         </div>

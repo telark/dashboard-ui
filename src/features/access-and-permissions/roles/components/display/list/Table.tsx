@@ -9,7 +9,7 @@ import type { RolesSortKey } from '../../../models';
 import DataTable from '../../../../../../components/display/table/DataTable';
 import { deleteRoleThunk } from '../../../store';
 import type { AppDispatch } from '../../../../../../store';
-import ActionBar from './ActionBar';
+import ActionBar from '../../../../../../components/display/actions/ActionBar';
 import { canModifyRoles, canDeleteRoles } from '../../../utils';
 import { useCategories } from '../../../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../../../categories/constants';
