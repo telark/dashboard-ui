@@ -20,6 +20,9 @@ export const GROUPS_CONSTANTS = {
       CREATE_FAILED: 'Failed to create group',
       UPDATE_FAILED: 'Failed to update group',
       DELETE_FAILED: 'Failed to delete group',
+      NO_GROUPS_TITLE: 'No groups yet',
+      NO_GROUPS_DESCRIPTION:
+        'Get started by creating your first group. Groups help you organize and manage users with similar roles and permissions.',
     },
     COLUMNS: {
       NAME: 'Group Name',
