@@ -1,5 +1,5 @@
 import { Layout } from 'antd';
-import { useEffect, useState, memo } from 'react';
+import { useEffect, useState, memo, useCallback, useMemo } from 'react';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import MenuItems from './MenuItems';
 
@@ -14,7 +14,11 @@ const Sidebar = memo(() => {
   useEffect(() => {
     const root = document.documentElement;
     root.style.setProperty('--sidebar-width', `${isCollapsed ? widthCollapsed : widthExpanded}px`);
-  }, [isCollapsed]);
+  }, [isCollapsed, widthCollapsed, widthExpanded]);
+
+  const handleToggle = useCallback(() => {
+    setIsCollapsed((prev) => !prev);
+  }, []);
 
   return (
     <Sider
@@ -42,26 +46,29 @@ const Sidebar = memo(() => {
       </div>
 
       <button
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        style={{
-          position: isCollapsed ? 'absolute' : 'fixed',
-          bottom: '20px',
-          left: isCollapsed ? '50%' : `${widthExpanded - 16}px`,
-          border: 'none',
-          background: 'white',
-          color: '#5B6B7C',
-          fontSize: 18,
-          cursor: 'pointer',
-          width: '32px',
-          height: '32px',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 0.3s ease',
-          zIndex: 10,
-          transform: isCollapsed ? 'translateX(-50%)' : 'none',
-        }}
+        onClick={handleToggle}
+        style={useMemo(
+          () => ({
+            position: isCollapsed ? 'absolute' : 'fixed',
+            bottom: '20px',
+            left: isCollapsed ? '50%' : `${widthExpanded - 16}px`,
+            border: 'none',
+            background: 'white',
+            color: '#5B6B7C',
+            fontSize: 18,
+            cursor: 'pointer',
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.3s ease',
+            zIndex: 10,
+            transform: isCollapsed ? 'translateX(-50%)' : 'none',
+          }),
+          [isCollapsed, widthExpanded],
+        )}
       >
         {isCollapsed ? <HiChevronRight /> : <HiChevronLeft />}
       </button>
