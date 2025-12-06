@@ -12,8 +12,8 @@ import { initPerformanceMonitoring, initNavigationOptimizations } from './utils/
 import './styles/index.css';
 import './styles/antd.css';
 
-initPerformanceMonitoring();
-initNavigationOptimizations();
+//initPerformanceMonitoring();
+//initNavigationOptimizations();
 
 const persistor = persistStore(store);
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);

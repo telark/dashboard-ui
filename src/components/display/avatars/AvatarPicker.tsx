@@ -257,14 +257,6 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
 
   const columns = screens.xs ? 4 : GRID_COLUMNS;
 
-  const handleAvatarMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.currentTarget.style.borderColor = '#1890ff';
-  };
-
-  const handleAvatarMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.currentTarget.style.borderColor = '#d9d9d9';
-  };
-
   return (
     <>
       <button
@@ -277,20 +269,38 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
           alignItems: 'center',
           justifyContent: 'center',
           borderRadius: '50%',
-          border: '2px solid #d9d9d9',
-          padding: 2,
-          transition: 'all 0.2s',
-          background: 'transparent',
+          border: '2px solid transparent',
+          padding: 3,
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          background:
+            'linear-gradient(135deg, rgba(32, 201, 151, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)',
           outline: 'none',
+          boxShadow: previewAvatar
+            ? '0 4px 12px rgba(32, 201, 151, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.1)'
+            : '0 2px 8px rgba(0, 0, 0, 0.08)',
         }}
-        onMouseEnter={handleAvatarMouseEnter}
-        onMouseLeave={handleAvatarMouseLeave}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.boxShadow = previewAvatar
+            ? '0 6px 16px rgba(32, 201, 151, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.2)'
+            : '0 4px 12px rgba(0, 0, 0, 0.12)';
+          e.currentTarget.style.transform = 'scale(1.05)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.boxShadow = previewAvatar
+            ? '0 4px 12px rgba(32, 201, 151, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.1)'
+            : '0 2px 8px rgba(0, 0, 0, 0.08)';
+          e.currentTarget.style.transform = 'scale(1)';
+        }}
       >
         <Avatar
           src={previewAvatar}
           size={size}
           style={{
-            border: '1px solid #f0f0f0',
+            border: 'none',
+            boxShadow: previewAvatar
+              ? '0 2px 8px rgba(0, 0, 0, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.3)'
+              : 'none',
+            filter: previewAvatar ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))' : 'none',
           }}
         />
       </button>

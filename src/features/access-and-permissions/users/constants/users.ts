@@ -19,6 +19,7 @@ export const USERS_CONSTANTS = {
     MESSAGES: {
       CREATED: (name: string) => `User "${name}" created`,
       UPDATED: (name: string) => `User "${name}" updated`,
+      CREATE_FAILED: 'Failed to create user',
     },
     COLUMNS: {
       USERNAME: 'Username',
@@ -50,6 +51,8 @@ export const USERS_CONSTANTS = {
         EMAIL_PLACEHOLDER: 'e.g. john.doe@example.com',
         ROLE_LABEL: 'Role',
         ROLE_PLACEHOLDER: 'Select a role',
+        GROUP_LABEL: 'Group',
+        GROUP_PLACEHOLDER: 'Select a group',
       },
     },
   },

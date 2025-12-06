@@ -2,6 +2,7 @@ export const USER_ERROR_MESSAGES = {
   CLIENT: {
     FETCH_USERS_FAILED: '[APIClient] Failed to fetch users:',
     FETCH_USER_DETAILS_FAILED: '[APIClient] Failed to fetch user details for',
+    CREATE_USER_FAILED: (fullname: string) => `[APIClient] Failed to create user ${fullname}:`,
   },
   LOGS: {
     GET_CURRENT_USER_ERROR: 'Failed to get current user:',

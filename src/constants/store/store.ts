@@ -48,6 +48,7 @@ export const STORE_ACTIONS = {
     FETCH: 'users/fetch',
     FETCH_SILENT: 'users/fetchSilent',
     FETCH_DETAILS: 'users/fetchDetails',
+    CREATE: 'users/create',
   },
   GROUPS: {
     FETCH: 'groups/fetch',
@@ -105,6 +106,7 @@ export const STORE_ERRORS = {
   UPDATE_BRIDGE_SYNC: 'Failed to update bridge sync settings.',
   FETCH_USERS: 'Failed to fetch users',
   FETCH_USER_DETAILS: 'Failed to fetch user details',
+  CREATE_USER: 'Failed to create user',
   FETCH_PASSKEYS: 'Failed to fetch passkeys',
   FETCH_PASSKEY_DETAILS: 'Failed to fetch passkey details',
   CREATE_PASSKEY: 'Failed to create passkey',
@@ -141,6 +143,7 @@ export const STORE_MESSAGES = {
   ERROR_FETCHING_BRIDGE_DETAILS: 'Error fetching bridge details:',
   ERROR_FETCHING_USERS: 'Error fetching users:',
   ERROR_FETCHING_USER_DETAILS: 'Error fetching user details:',
+  ERROR_CREATING_USER: 'Error creating user:',
   ERROR_FETCHING_PASSKEYS: 'Error fetching passkeys:',
   ERROR_FETCHING_PASSKEY_DETAILS: 'Error fetching passkey details:',
   ERROR_CREATING_PASSKEY: 'Error creating passkey:',

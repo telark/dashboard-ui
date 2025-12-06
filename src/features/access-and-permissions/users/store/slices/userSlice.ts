@@ -5,6 +5,7 @@ import {
   fetchAllUsersSilentThunk,
   fetchUserDetailsThunk,
 } from '../thunks/fetchThunks';
+import { createUserThunk } from '../thunks/mutationThunks';
 import {
   handleFetchUsersPending,
   handleFetchUsersFulfilled,
@@ -13,6 +14,7 @@ import {
   handleFetchUserDetailsFulfilled,
   handleFetchUserDetailsRejected,
 } from '../reducers/fetchReducers';
+import { handleCreateUserFulfilled, handleCreateUserRejected } from '../reducers/mutationReducers';
 
 export {
   fetchAllUsersThunk,
@@ -59,7 +61,10 @@ const userSlice = createSlice({
       // Fetch user details
       .addCase(fetchUserDetailsThunk.pending, handleFetchUserDetailsPending)
       .addCase(fetchUserDetailsThunk.fulfilled, handleFetchUserDetailsFulfilled)
-      .addCase(fetchUserDetailsThunk.rejected, handleFetchUserDetailsRejected);
+      .addCase(fetchUserDetailsThunk.rejected, handleFetchUserDetailsRejected)
+      // Create user
+      .addCase(createUserThunk.fulfilled, handleCreateUserFulfilled)
+      .addCase(createUserThunk.rejected, handleCreateUserRejected);
   },
 });
 

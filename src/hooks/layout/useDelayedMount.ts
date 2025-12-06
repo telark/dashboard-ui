@@ -16,4 +16,3 @@ export const useDelayedMount = ({ delay = 100 }: UseDelayedMountOptions = {}) =>
 
   return isMounted;
 };
-

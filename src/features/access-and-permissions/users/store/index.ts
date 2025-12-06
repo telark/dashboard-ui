@@ -8,6 +8,7 @@ export {
   fetchAllUsersSilentThunk,
   fetchUserDetailsThunk,
 } from './thunks/fetchThunks';
+export { createUserThunk } from './thunks/mutationThunks';
 
 // Selectors
 export {

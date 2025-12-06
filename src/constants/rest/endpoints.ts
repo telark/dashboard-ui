@@ -9,6 +9,7 @@ import {
   CATEGORY_PATHS,
   GROUP_PATHS,
   ROLE_PATHS,
+  USER_PATHS,
 } from '../rest/paths';
 
 export const Endpoints = {
@@ -171,6 +172,10 @@ export const Endpoints = {
     },
   },
   USERS: {
+    CREATE: {
+      path: `${API_PATHS.RESOURCES.USERS}/${USER_PATHS.CREATE}`,
+      method: 'POST',
+    },
     GET_ALL: {
       path: `${API_PATHS.RESOURCES.USERS}/${RESOURCE_PATHS.GET_ALL}`,
       method: 'GET',

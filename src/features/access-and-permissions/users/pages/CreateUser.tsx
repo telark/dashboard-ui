@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { Form, message } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import React, { useMemo } from 'react';
+import { Form } from 'antd';
 import { APP_ROUTES, Icons, BUTTON_TEXTS } from '../../../../constants';
 import { COMPONENT_STYLES } from '../../../../constants/layout/ui';
 import Header from '../../../../components/display/sections/Header';
@@ -12,41 +11,44 @@ import Section from '../../../../components/display/sections/Section';
 import { PrimaryButton } from '../../../../components/display/buttons';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer } from '../../../../components/shared';
-import { useDispatch } from 'react-redux';
-import { addUser } from '../store';
-import type { User, CreateUserFormValues } from '../models';
+import { useUserActions } from '../hooks';
+import { useRoles } from '../../roles/hooks';
+import { useGroups } from '../../groups/hooks';
+import type { CreateUserFormValues } from '../models';
 
 const UserIcon = Icons.User;
 
 const CreateUser: React.FC = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [form] = Form.useForm<CreateUserFormValues>();
-  const [submitting, setSubmitting] = useState(false);
+  const { handleCreate, submitting } = useUserActions();
+  const { roles } = useRoles();
+  const { groups } = useGroups();
+
+  const roleOptions = useMemo(() => {
+    return roles.map((role) => ({
+      label: role.name,
+      value: role.id,
+    }));
+  }, [roles]);
+
+  const groupOptions = useMemo(() => {
+    return groups.map((group) => ({
+      label: group.name,
+      value: group.id,
+    }));
+  }, [groups]);
 
   const handleFinish = async (values: CreateUserFormValues) => {
-    setSubmitting(true);
-    try {
-      await new Promise((r) => setTimeout(r, 400));
-      const newUser: User = {
-        id: `usr-${Date.now()}`,
-        username: values.username,
-        fullname: values.fullname,
-        email: values.email,
-        roleID: values.roleID,
-        groupID: values.groupID,
-        creationDate: new Date().toISOString(),
-        status: {
-          phase: 'active',
-        },
-        avatar: values.avatar,
-      };
-      dispatch(addUser(newUser));
-      message.success(UC.LABELS.MESSAGES.CREATED(values.fullname));
-      navigate(`${APP_ROUTES.USERS}/${newUser.id}/view`);
-    } finally {
-      setSubmitting(false);
-    }
+    const userData: CreateUserFormValues = {
+      username: values.username,
+      fullname: values.fullname,
+      email: values.email,
+      roleID: values.roleID,
+      groupID: values.groupID || '',
+      avatar: values.avatar,
+    };
+    await handleCreate(userData);
+    form.resetFields();
   };
 
   return (
@@ -76,8 +78,8 @@ const CreateUser: React.FC = () => {
               username: '',
               fullname: '',
               email: '',
-              roleID: 'role-456',
-              groupID: 'group-456',
+              roleID: '',
+              groupID: '',
             }}
           >
             <div
@@ -92,45 +94,51 @@ const CreateUser: React.FC = () => {
                 title={UC.LABELS.FORM.SECTION_TITLE}
                 subtitle={UC.LABELS.FORM.SECTION_SUBTITLE}
                 content={
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <LabeledAvatarPicker name="avatar" label="Avatar" />
-                    <LabeledInput
-                      name="username"
-                      label={UC.LABELS.FORM.FIELDS.USERNAME_LABEL}
-                      required
-                      placeholder={UC.LABELS.FORM.FIELDS.USERNAME_PLACEHOLDER}
-                    />
-                    <LabeledInput
-                      name="fullname"
-                      label={UC.LABELS.FORM.FIELDS.FULLNAME_LABEL}
-                      required
-                      placeholder={UC.LABELS.FORM.FIELDS.FULLNAME_PLACEHOLDER}
-                    />
-                    <LabeledInput
-                      name="email"
-                      label={UC.LABELS.FORM.FIELDS.EMAIL_LABEL}
-                      required
-                      placeholder={UC.LABELS.FORM.FIELDS.EMAIL_PLACEHOLDER}
-                    />
-                    <LabeledSelect
-                      name="roleID"
-                      label={UC.LABELS.FORM.FIELDS.ROLE_LABEL}
-                      placeholder={UC.LABELS.FORM.FIELDS.ROLE_PLACEHOLDER}
-                      required
-                      options={[
-                        { label: 'Admin', value: 'role-123' },
-                        { label: 'Viewer', value: 'role-456' },
-                        { label: 'Contributor', value: 'role-789' },
-                        { label: 'Ops Engineer', value: 'role-101' },
-                        { label: 'Platform Admin', value: 'role-102' },
-                      ]}
-                    />
-                    <LabeledInput
-                      name="groupID"
-                      label="Group ID"
-                      required
-                      placeholder="Enter group ID"
-                    />
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: 24,
+                      alignItems: 'flex-start',
+                      width: '100%',
+                    }}
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
+                      <LabeledAvatarPicker name="avatar" label="Avatar" />
+                      <LabeledInput
+                        name="username"
+                        label={UC.LABELS.FORM.FIELDS.USERNAME_LABEL}
+                        required
+                        placeholder={UC.LABELS.FORM.FIELDS.USERNAME_PLACEHOLDER}
+                      />
+                      <LabeledInput
+                        name="fullname"
+                        label={UC.LABELS.FORM.FIELDS.FULLNAME_LABEL}
+                        required
+                        placeholder={UC.LABELS.FORM.FIELDS.FULLNAME_PLACEHOLDER}
+                      />
+                      <LabeledInput
+                        name="email"
+                        label={UC.LABELS.FORM.FIELDS.EMAIL_LABEL}
+                        required
+                        placeholder={UC.LABELS.FORM.FIELDS.EMAIL_PLACEHOLDER}
+                      />
+                    </div>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 18 }}>
+                      <LabeledSelect
+                        name="roleID"
+                        label={UC.LABELS.FORM.FIELDS.ROLE_LABEL}
+                        placeholder={UC.LABELS.FORM.FIELDS.ROLE_PLACEHOLDER}
+                        required
+                        options={roleOptions}
+                      />
+                      <LabeledSelect
+                        name="groupID"
+                        label={UC.LABELS.FORM.FIELDS.GROUP_LABEL}
+                        placeholder={UC.LABELS.FORM.FIELDS.GROUP_PLACEHOLDER}
+                        required
+                        options={groupOptions}
+                      />
+                    </div>
                   </div>
                 }
               />

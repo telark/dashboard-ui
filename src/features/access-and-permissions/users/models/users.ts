@@ -25,6 +25,7 @@ export type UserFormBaseFields = Pick<User, 'username' | 'fullname' | 'email' | 
 export type CreateUserFormValues = UserFormBaseFields &
   Pick<User, 'groupID'> & {
     avatar?: UserAvatar;
+    group?: string;
   };
 
 export interface UsersState {
