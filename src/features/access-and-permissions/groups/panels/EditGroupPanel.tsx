@@ -16,12 +16,7 @@ interface EditGroupPanelProps {
 
 const GroupIcon = Icons.Group;
 
-const EditGroupPanel: React.FC<EditGroupPanelProps> = ({
-  open,
-  onClose,
-  editingGroup,
-  form,
-}) => {
+const EditGroupPanel: React.FC<EditGroupPanelProps> = ({ open, onClose, editingGroup, form }) => {
   const { groups } = useGroups();
   const { handleUpdate, submitting } = useGroupActions();
   const { userOptions, roleOptions, categoryOptions } = useGroupFormOptions();
@@ -30,12 +25,7 @@ const EditGroupPanel: React.FC<EditGroupPanelProps> = ({
     isEditMode: true,
     currentName: editingGroup?.name,
   });
-  const {
-    handleValuesChange,
-    handleFieldsChange,
-    hasFormErrors,
-    hasChanges,
-  } = useGroupFormState({
+  const { handleValuesChange, handleFieldsChange, hasFormErrors, hasChanges } = useGroupFormState({
     form,
     isEditMode: true,
     initialValues: editingGroup

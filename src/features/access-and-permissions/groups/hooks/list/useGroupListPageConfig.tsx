@@ -1,17 +1,17 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import type { PageLayoutConfig } from '../../../../interfaces/layout/page';
-import { GROUPS_CONSTANTS as GC } from '../constants';
-import { selectGroupsCategories } from '../../categories/store/selectors/categorySelectors';
-import Columns from '../components/display/list/Columns';
-import CategoryColumns from '../../categories/components/display/list/CategoryColumns';
-import { CategoryActionsColumn } from '../../categories/components/display/list/CategoryActionsColumn';
-import { GroupActionsColumn } from '../components/display/list/GroupActionsColumn';
-import { useGroupListConfig } from '../config/groupListConfig';
-import { mapCategoriesToFilterOptions } from '../utils/groupListUtils';
-import { useCategoryListView } from '../../categories/hooks';
-import type { Group } from '../models';
-import type { Category } from '../../categories/models';
+import type { PageLayoutConfig } from '../../../../../interfaces/layout/page';
+import { GROUPS_CONSTANTS as GC } from '../../constants';
+import { selectGroupsCategories } from '../../../categories/store/selectors/categorySelectors';
+import Columns from '../../components/display/list/Columns';
+import CategoryColumns from '../../../categories/components/display/list/CategoryColumns';
+import { CategoryActionsColumn } from '../../../categories/components/display/list/CategoryActionsColumn';
+import { GroupActionsColumn } from '../../components/display/list/GroupActionsColumn';
+import { useGroupListConfig } from '../../config/groupListConfig';
+import { mapCategoriesToFilterOptions } from '../../utils/groupListUtils';
+import { useCategoryListView } from '../../../categories/hooks';
+import type { Group } from '../../models';
+import type { Category } from '../../../categories/models';
 
 type ViewMode = 'groups' | 'categories';
 
@@ -116,7 +116,6 @@ export const useGroupListPageConfig = ({
     }
     return [];
   }, [viewMode, setViewMode]);
-
 
   return useMemo(
     () => ({

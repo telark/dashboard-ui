@@ -15,7 +15,7 @@ import {
   useGroupPanels,
   useGroupListPageConfig,
 } from '../hooks';
-import { useCategories, useCategoryListView } from '../../categories/hooks';
+import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { CreateGroupPanel, EditGroupPanel } from '../panels';
 
@@ -47,17 +47,6 @@ const MainPage: React.FC = () => {
     selectedCount,
     hasSelection,
   } = useGroupListState(groups);
-
-  const {
-    sortKey: categorySortKey,
-    currentPage: categoryCurrentPage,
-    pageSize: categoryPageSize,
-    setCurrentPage: setCategoryCurrentPage,
-    setPageSize: setCategoryPageSize,
-    handleSort: handleCategorySort,
-    sortedCategories,
-    paginatedCategories,
-  } = useCategoryListView({ categories });
 
   const {
     createPanelOpen,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useMemo } from 'react';
-import type { Group } from '../models';
+import type { Group } from '../../models';
 
 export type SortKey = 'name' | 'categoryID' | 'creationDate';
 export type SortOrder = 'asc' | 'desc';

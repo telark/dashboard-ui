@@ -2,9 +2,9 @@ import React from 'react';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Modal } from 'antd';
-import { APP_ROUTES } from '../../../../constants';
-import { GROUPS_CONSTANTS as GC } from '../constants';
-import type { Group } from '../models';
+import { APP_ROUTES } from '../../../../../constants';
+import { GROUPS_CONSTANTS as GC } from '../../constants';
+import type { Group } from '../../models';
 
 interface UseGroupListActionsProps {
   selectedGroups: React.Key[];

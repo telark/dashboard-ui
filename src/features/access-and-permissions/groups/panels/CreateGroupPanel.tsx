@@ -23,11 +23,7 @@ const CreateGroupPanel: React.FC<CreateGroupPanelProps> = ({ open, onClose, form
     groups,
     isEditMode: false,
   });
-  const {
-    handleValuesChange,
-    handleFieldsChange,
-    hasFormErrors,
-  } = useGroupFormState({
+  const { handleValuesChange, handleFieldsChange, hasFormErrors } = useGroupFormState({
     form,
     isEditMode: false,
   });

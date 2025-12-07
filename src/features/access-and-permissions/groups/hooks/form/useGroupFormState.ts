@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { FormInstance } from 'antd';
-import type { GroupFormData } from '../models';
+import type { GroupFormData } from '../../models';
 
 interface UseGroupFormStateOptions {
   form: FormInstance<GroupFormData>;

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch } from '../../../../store';
-import { fetchAllGroupsThunk } from '../store';
+import { RootState, AppDispatch } from '../../../../../store';
+import { fetchAllGroupsThunk } from '../../store';
 
 export const useGroups = () => {
   const dispatch: AppDispatch = useDispatch();

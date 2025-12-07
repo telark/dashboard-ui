@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
-import { createNameValidator, sanitizeName } from '../../../shared';
-import { DEFAULT_NAME_VALIDATION_CONFIG } from '../../../shared/constants';
-import { GROUPS_CONSTANTS as GC } from '../constants';
-import type { Group } from '../models';
+import { createNameValidator, sanitizeName } from '../../../../shared';
+import { DEFAULT_NAME_VALIDATION_CONFIG } from '../../../../shared/constants';
+import { GROUPS_CONSTANTS as GC } from '../../constants';
+import type { Group } from '../../models';
 
 interface UseGroupNameValidationOptions {
   groups: Group[];

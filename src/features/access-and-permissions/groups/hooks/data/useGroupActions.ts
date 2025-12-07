@@ -2,11 +2,11 @@ import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
-import { APP_ROUTES } from '../../../../constants';
-import { GROUPS_CONSTANTS as GC } from '../constants';
-import { createGroupThunk, updateGroupThunk, deleteGroupThunk } from '../store';
-import type { AppDispatch } from '../../../../store';
-import type { GroupFormData } from '../models';
+import { APP_ROUTES } from '../../../../../constants';
+import { GROUPS_CONSTANTS as GC } from '../../constants';
+import { createGroupThunk, updateGroupThunk, deleteGroupThunk } from '../../store';
+import type { AppDispatch } from '../../../../../store';
+import type { GroupFormData } from '../../models';
 
 export const useGroupActions = () => {
   const navigate = useNavigate();
