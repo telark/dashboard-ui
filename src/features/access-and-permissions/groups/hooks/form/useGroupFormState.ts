@@ -23,10 +23,16 @@ export const useGroupFormState = ({
 
     if (isEditMode && initialValues) {
       const currentValues = form.getFieldsValue();
+      const currentAssignedUsers = currentValues.assignedUsersIDs || [];
+      const initialAssignedUsers = initialValues.assignedUsersIDs || [];
+      const assignedUsersChanged =
+        currentAssignedUsers.length !== initialAssignedUsers.length ||
+        currentAssignedUsers.some((id: string) => !initialAssignedUsers.includes(id));
       const changed =
         currentValues.name !== initialValues.name ||
         currentValues.description !== initialValues.description ||
-        currentValues.categoryID !== initialValues.categoryID;
+        currentValues.categoryID !== initialValues.categoryID ||
+        assignedUsersChanged;
       setHasChanges(changed);
     }
   }, [form, isEditMode, initialValues]);

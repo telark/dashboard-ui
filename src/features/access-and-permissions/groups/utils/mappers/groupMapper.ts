@@ -4,10 +4,14 @@ import type { ResourceDetailsResponse } from '../../../../../interfaces/http';
 export const mapGroupData = (apiGroup: Group): Group => {
   return {
     id: apiGroup.id,
+    assignedUsersIDs: apiGroup.assignedUsersIDs || [],
     name: apiGroup.name,
     description: apiGroup.description,
     categoryID: apiGroup.categoryID || '',
     creationDate: apiGroup.creationDate || new Date().toISOString(),
+    lastUpdateDate: apiGroup.lastUpdateDate,
+    createdBy: apiGroup.createdBy,
+    lastUpdatedBy: apiGroup.lastUpdatedBy,
   };
 };
 

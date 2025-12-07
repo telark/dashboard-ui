@@ -1,9 +1,13 @@
 export interface Group {
   id: string;
+  assignedUsersIDs: string[];
   name: string;
   description: string;
   categoryID: string;
   creationDate: string;
+  lastUpdateDate?: string;
+  createdBy?: string;
+  lastUpdatedBy?: string;
 }
 
 export interface GroupsState {

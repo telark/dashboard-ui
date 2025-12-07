@@ -110,14 +110,17 @@ const MainPage: React.FC = () => {
 
   if (shouldShowEmpty && viewMode === 'groups') {
     return (
-      <EmptyState
-        title={GC.LABELS.MESSAGES.NO_GROUPS_TITLE}
-        description={GC.LABELS.MESSAGES.NO_GROUPS_DESCRIPTION}
-        buttonText={GC.LABELS.FORM.BUTTON_TEXT}
-        buttonIcon={<GroupIcon size={16} />}
-        onButtonClick={openCreatePanel}
-        icon={<GroupIcon size={40} />}
-      />
+      <>
+        <EmptyState
+          title={GC.LABELS.MESSAGES.NO_GROUPS_TITLE}
+          description={GC.LABELS.MESSAGES.NO_GROUPS_DESCRIPTION}
+          buttonText={GC.LABELS.FORM.BUTTON_TEXT}
+          buttonIcon={<GroupIcon size={16} />}
+          onButtonClick={openCreatePanel}
+          icon={<GroupIcon size={40} />}
+        />
+        <CreateGroupPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />
+      </>
     );
   }
 

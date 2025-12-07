@@ -18,7 +18,7 @@ const GroupIcon = Icons.Group;
 const CreateGroupPanel: React.FC<CreateGroupPanelProps> = ({ open, onClose, form }) => {
   const { groups } = useFetchGroups();
   const { handleCreate, submitting } = useGroupMutations();
-  const { userOptions, roleOptions, categoryOptions, defaultCategoryId } = useGroupFormSelectOptions();
+  const { userOptions, categoryOptions, defaultCategoryId } = useGroupFormSelectOptions();
   const { nameValidator, normalizeName } = useGroupNameValidator({
     groups,
     isEditMode: false,
@@ -45,7 +45,6 @@ const CreateGroupPanel: React.FC<CreateGroupPanelProps> = ({ open, onClose, form
           normalizeName={normalizeName}
           categoryOptions={categoryOptions}
           userOptions={userOptions}
-          roleOptions={roleOptions}
         />
       }
       onSubmit={handleSubmit}
@@ -58,8 +57,7 @@ const CreateGroupPanel: React.FC<CreateGroupPanelProps> = ({ open, onClose, form
         name: '',
         description: '',
         categoryID: defaultCategoryId,
-        memberIDs: [],
-        roleIDs: [],
+        assignedUsersIDs: [],
       }}
       onValuesChange={handleValuesChange}
       onFieldsChange={handleFieldsChange}

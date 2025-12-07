@@ -19,7 +19,7 @@ const GroupIcon = Icons.Group;
 const EditGroupPanel: React.FC<EditGroupPanelProps> = ({ open, onClose, editingGroup, form }) => {
   const { groups } = useFetchGroups();
   const { handleUpdate, submitting } = useGroupMutations();
-  const { userOptions, roleOptions, categoryOptions } = useGroupFormSelectOptions();
+  const { userOptions, categoryOptions } = useGroupFormSelectOptions();
   const { nameValidator, normalizeName } = useGroupNameValidator({
     groups,
     isEditMode: true,
@@ -33,6 +33,7 @@ const EditGroupPanel: React.FC<EditGroupPanelProps> = ({ open, onClose, editingG
           name: editingGroup.name,
           description: editingGroup.description,
           categoryID: editingGroup.categoryID,
+          assignedUsersIDs: editingGroup.assignedUsersIDs || [],
         }
       : null,
   });
@@ -57,7 +58,6 @@ const EditGroupPanel: React.FC<EditGroupPanelProps> = ({ open, onClose, editingG
           normalizeName={normalizeName}
           categoryOptions={categoryOptions}
           userOptions={userOptions}
-          roleOptions={roleOptions}
         />
       }
       onSubmit={handleSubmit}
@@ -70,8 +70,7 @@ const EditGroupPanel: React.FC<EditGroupPanelProps> = ({ open, onClose, editingG
         name: editingGroup.name,
         description: editingGroup.description,
         categoryID: editingGroup.categoryID,
-        memberIDs: [],
-        roleIDs: [],
+        assignedUsersIDs: editingGroup.assignedUsersIDs || [],
       }}
       onValuesChange={handleValuesChange}
       onFieldsChange={handleFieldsChange}

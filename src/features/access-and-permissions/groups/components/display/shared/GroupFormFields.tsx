@@ -10,7 +10,6 @@ interface GroupFormFieldsProps {
   normalizeName: (value: string) => string;
   categoryOptions: Array<{ label: string; value: string }>;
   userOptions: Array<{ label: string; value: string }>;
-  roleOptions: Array<{ label: string; value: string }>;
 }
 
 const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
@@ -18,7 +17,6 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
   normalizeName,
   categoryOptions,
   userOptions,
-  roleOptions,
 }) => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -74,34 +72,19 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
         }
       />
 
-      {/* Members and Roles Section */}
+      {/* Members Section */}
       <Section
-        title="Members and Roles"
+        title="Members"
         content={
-          <div style={{ display: 'flex', gap: 16 }}>
-            <div style={{ flex: 1 }}>
-              <LabeledSelect
-                name="memberIDs"
-                label="Members"
-                placeholder="-Select members"
-                required={false}
-                options={userOptions}
-                mode="multiple"
-                marginBottom={0}
-              />
-            </div>
-            <div style={{ flex: 1 }}>
-              <LabeledSelect
-                name="roleIDs"
-                label="Roles"
-                placeholder="-Select roles"
-                required={false}
-                options={roleOptions}
-                mode="multiple"
-                marginBottom={0}
-              />
-            </div>
-          </div>
+          <LabeledSelect
+            name="assignedUsersIDs"
+            label="Assigned Users"
+            placeholder="-Select users"
+            required={false}
+            options={userOptions}
+            mode="multiple"
+            marginBottom={0}
+          />
         }
       />
     </div>

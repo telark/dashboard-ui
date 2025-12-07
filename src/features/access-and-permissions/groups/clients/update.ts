@@ -11,6 +11,7 @@ export const updateGroup = async (groupId: string, group: Partial<GroupFormData>
       name: group.name,
       description: group.description,
       categoryID: group.categoryID,
+      assignedUsersIDs: group.assignedUsersIDs || [],
     };
     return await Client<ResourceDetailsResponse<Group>>(
       exporterApiClient,
