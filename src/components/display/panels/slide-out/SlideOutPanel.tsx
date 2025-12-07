@@ -25,6 +25,7 @@ const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
     initialValues = {},
     cancelButtonText = 'Cancel',
     width = 480,
+    form: externalForm,
     onValuesChange,
     onFieldsChange,
   }) => {
@@ -34,6 +35,7 @@ const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
       onSubmit,
       onClose,
       onCancel,
+      form: externalForm,
     });
 
     return (

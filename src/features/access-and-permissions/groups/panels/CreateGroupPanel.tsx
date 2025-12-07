@@ -54,6 +54,7 @@ const CreateGroupPanel: React.FC<CreateGroupPanelProps> = ({ open, onClose, form
       submitButtonIcon={<GroupIcon size={16} />}
       loading={submitting}
       disabled={hasFormErrors}
+      form={form}
       initialValues={{
         name: '',
         description: '',

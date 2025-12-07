@@ -1,4 +1,5 @@
 import type React from 'react';
+import type { FormInstance } from 'antd/es/form';
 
 export interface AnimationWrapperProps {
   open: boolean;
@@ -21,6 +22,7 @@ export interface SlideOutPanelProps extends Omit<AnimationWrapperProps, 'childre
   disabled?: boolean;
   initialValues?: Record<string, unknown>;
   cancelButtonText?: string;
+  form?: FormInstance;
   onValuesChange?: (
     changedValues: Record<string, unknown>,
     allValues: Record<string, unknown>,

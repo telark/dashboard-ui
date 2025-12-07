@@ -9,6 +9,7 @@ interface UseSlideOutPanelFormOptions {
   onSubmit: (values: Record<string, unknown>) => Promise<void> | void;
   onClose: () => void;
   onCancel: () => void;
+  form?: FormInstance;
 }
 
 interface UseSlideOutPanelFormReturn {
@@ -23,8 +24,10 @@ export const useSlideOutPanelForm = ({
   onSubmit,
   onClose,
   onCancel,
+  form: externalForm,
 }: UseSlideOutPanelFormOptions): UseSlideOutPanelFormReturn => {
-  const [form] = Form.useForm();
+  const [internalForm] = Form.useForm();
+  const form = externalForm || internalForm;
 
   const handleFinish = async (values: Record<string, unknown>) => {
     try {

@@ -67,6 +67,7 @@ const EditGroupPanel: React.FC<EditGroupPanelProps> = ({ open, onClose, editingG
       submitButtonIcon={<GroupIcon size={16} />}
       loading={submitting}
       disabled={hasFormErrors || !hasChanges}
+      form={form}
       initialValues={{
         name: editingGroup.name,
         description: editingGroup.description,
