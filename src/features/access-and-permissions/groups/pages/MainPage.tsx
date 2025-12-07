@@ -119,7 +119,9 @@ const MainPage: React.FC = () => {
           onButtonClick={openCreatePanel}
           icon={<GroupIcon size={40} />}
         />
-        <CreateGroupPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />
+        {createPanelOpen && (
+          <CreateGroupPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />
+        )}
       </>
     );
   }
@@ -166,13 +168,17 @@ const MainPage: React.FC = () => {
         </div>
       </Activity>
       <PageLayout config={pageConfig} />
-      <CreateGroupPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />
-      <EditGroupPanel
-        open={editPanelOpen}
-        onClose={closeEditPanel}
-        editingGroup={editingGroup}
-        form={editForm}
-      />
+      {createPanelOpen && (
+        <CreateGroupPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />
+      )}
+      {editPanelOpen && editingGroup && (
+        <EditGroupPanel
+          open={editPanelOpen}
+          onClose={closeEditPanel}
+          editingGroup={editingGroup}
+          form={editForm}
+        />
+      )}
     </div>
   );
 };

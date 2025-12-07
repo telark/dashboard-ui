@@ -1,10 +1,12 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../store';
 import { SlideOutPanel } from '../../../../components/display/panels/slide-out';
 import { Icons } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import GroupFormFields from '../components/display/shared/GroupFormFields';
 import { useGroupNameValidator, useGroupFormState, useGroupFormSelectOptions } from '../hooks';
-import { useFetchGroups, useGroupMutations } from '../hooks';
+import { useGroupMutations } from '../hooks';
 import type { GroupFormData } from '../models';
 
 interface CreateGroupPanelProps {
@@ -16,7 +18,7 @@ interface CreateGroupPanelProps {
 const GroupIcon = Icons.Group;
 
 const CreateGroupPanel: React.FC<CreateGroupPanelProps> = ({ open, onClose, form }) => {
-  const { groups } = useFetchGroups();
+  const groups = useSelector((state: RootState) => state.groups.groups);
   const { handleCreate, submitting } = useGroupMutations();
   const { categoryOptions, defaultCategoryId } = useGroupFormSelectOptions();
   const { nameValidator, normalizeName } = useGroupNameValidator({
