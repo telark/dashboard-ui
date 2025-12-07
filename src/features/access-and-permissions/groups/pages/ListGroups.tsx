@@ -72,7 +72,7 @@ const GroupsList: React.FC = () => {
         activeSortKey: sortKey,
         onSort: handleSort,
         categories: reduxCategories,
-      } as any),
+      }),
     [sortKey, reduxCategories, handleSort],
   );
 

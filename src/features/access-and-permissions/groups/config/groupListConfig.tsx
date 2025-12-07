@@ -44,7 +44,6 @@ export const useGroupListConfig = ({
           variant: 'ghost',
           onClick: () => {
             // TODO: Implement search functionality
-            console.log('Search clicked');
           },
         },
         {
@@ -54,7 +53,6 @@ export const useGroupListConfig = ({
           variant: 'ghost',
           onClick: () => {
             // TODO: Implement filter functionality
-            console.log('Filter clicked');
           },
         },
         {

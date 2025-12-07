@@ -1,4 +1,5 @@
 import { onCLS, onFCP, onLCP, onTTFB, type Metric } from 'web-vitals';
+import logger from '../../logging';
 import { trackLCPComponent, trackLCPCandidates } from './lcpTracker';
 
 type PerformanceMetricName = 'CLS' | 'FCP' | 'LCP' | 'TTFB';
@@ -29,7 +30,7 @@ const logMetric = (metric: Metric) => {
   const rating = getRating(metric.name as PerformanceMetricName, metric.value);
 
   if (process.env.NODE_ENV === 'development') {
-    console.log(`[Performance] ${metric.name}:`, {
+    logger.info(`[Performance] ${metric.name}:`, {
       value: metric.value,
       rating,
       delta: metric.delta,
@@ -61,7 +62,7 @@ export const initPerformanceMonitoring = () => {
         const dnsTime = navTiming.domainLookupEnd - navTiming.domainLookupStart;
 
         if (process.env.NODE_ENV === 'development') {
-          console.log('[Performance] Page Load Metrics:', {
+          logger.info('[Performance] Page Load Metrics:', {
             pageLoadTime: `${Math.round(pageLoadTime)}ms`,
             connectTime: `${Math.round(connectTime)}ms`,
             renderTime: `${Math.round(renderTime)}ms`,
@@ -81,7 +82,7 @@ export const measureRender = (componentName: string) => {
     const duration = endTime - startTime;
 
     if (process.env.NODE_ENV === 'development' && duration > 16) {
-      console.log(`[Performance] ${componentName} render time: ${duration.toFixed(2)}ms`);
+      logger.info(`[Performance] ${componentName} render time: ${duration.toFixed(2)}ms`);
     }
   };
 };
@@ -99,7 +100,7 @@ export const measureBetween = (name: string, startMark: string, endMark: string)
       const measure = performance.getEntriesByName(name)[0];
 
       if (process.env.NODE_ENV === 'development') {
-        console.log(`[Performance] ${name}: ${measure.duration.toFixed(2)}ms`);
+        logger.info(`[Performance] ${name}: ${measure.duration.toFixed(2)}ms`);
       }
 
       return measure.duration;

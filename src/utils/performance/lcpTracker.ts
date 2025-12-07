@@ -98,17 +98,17 @@ function getRating(value: number): string {
 function logOptimizationTips(isImage: boolean): void {
   logger.info('💡 Optimization Tips:');
   if (isImage) {
-    logger.info('   • This is an image - consider:');
-    logger.info('     - Adding width/height attributes to prevent layout shift');
-    logger.info('     - Using next-gen formats (WebP, AVIF)');
-    logger.info('     - Lazy loading with priority for above-fold images');
-    logger.info('     - Optimizing image size and compression');
+    logger.info('• This is an image - consider:');
+    logger.info('- Adding width/height attributes to prevent layout shift');
+    logger.info('- Using next-gen formats (WebP, AVIF)');
+    logger.info('- Lazy loading with priority for above-fold images');
+    logger.info('- Optimizing image size and compression');
   } else {
-    logger.info('   • This is a text/content element - consider:');
-    logger.info('     - Reducing time to first byte (TTFB)');
-    logger.info('     - Minimizing render-blocking resources');
-    logger.info('     - Using font-display: swap for web fonts');
-    logger.info('     - Reducing JavaScript blocking main thread');
+    logger.info('• This is a text/content element - consider:');
+    logger.info('- Reducing time to first byte (TTFB)');
+    logger.info('- Minimizing render-blocking resources');
+    logger.info('- Using font-display: swap for web fonts');
+    logger.info('- Reducing JavaScript blocking main thread');
   }
 }
 
@@ -131,26 +131,24 @@ export function trackLCPComponent(metric: LCPMetric): void {
   const rating = getRating(metric.value);
   const isImage = lcpElement.tagName === 'IMG';
 
-  logger.info(`\n${SEPARATOR}`);
-  logger.info('🎯 LARGEST CONTENTFUL PAINT (LCP) DETECTED');
+  logger.info(`${SEPARATOR}`);
+  logger.info('Largest Contentful Paint (LCP) Detected');
   logger.info(SEPARATOR);
-  logger.info(`⏱️  LCP Time: ${metric.value.toFixed(0)}ms`);
-  logger.info(`📊 Rating: ${rating}`);
-  logger.info('\n🔍 DOM Element:');
-  logger.info(`   Selector: ${selector}`);
-  logger.info(`   Content: ${content}`);
-  logger.debug('   Element:', lcpElement);
+  logger.info(`LCP Time: ${metric.value.toFixed(0)}ms`);
+  logger.info(`Rating: ${rating}`);
+  logger.info('DOM Element:');
+  logger.info(`Selector: ${selector}`);
+  logger.info(`Content: ${content}`);
+  logger.debug('Element:', lcpElement);
 
   if (components.length > 0) {
     const primaryComponent = components[0];
-    logger.info(`\n⚛️  React Component Tree (${components.length} components):`);
-    logger.info(`   🎯 Primary: ${primaryComponent.componentName}`);
-    logger.info(
-      `      📁 ${formatFilePath(primaryComponent.filePath, primaryComponent.lineNumber)}`,
-    );
+    logger.info(`React Component Tree (${components.length} components):`);
+    logger.info(`Primary: ${primaryComponent.componentName}`);
+    logger.info(`      ${formatFilePath(primaryComponent.filePath, primaryComponent.lineNumber)}`);
 
     if (components.length > 1) {
-      logger.info('\n   📦 Parent Components:');
+      logger.info('Parent Components:');
       const parents = components.slice(1, MAX_PARENT_COMPONENTS + 1);
       parents.forEach((comp, index) => {
         const indent = '      ' + '  '.repeat(index);
@@ -164,29 +162,27 @@ export function trackLCPComponent(metric: LCPMetric): void {
       }
     }
   } else {
-    logger.warn('\n⚠️  Could not map to React component');
-    logger.info('   This might be a static HTML element or non-React content');
+    logger.warn('Could not map to React component');
+    logger.info('This might be a static HTML element or non-React content');
   }
 
   logOptimizationTips(isImage);
 
   if (metric.value > 2500) {
-    logger.warn('\n⚡ Action Required:');
-    logger.warn(
-      `   LCP is ${(metric.value - 2500).toFixed(0)}ms over the "good" threshold (2500ms)`,
-    );
-    logger.warn(`   Focus optimization on: ${components[0]?.componentName || selector}`);
+    logger.warn('Action Required:');
+    logger.warn(`LCP is ${(metric.value - 2500).toFixed(0)}ms over the "good" threshold (2500ms)`);
+    logger.warn(`Focus optimization on: ${components[0]?.componentName || selector}`);
   }
 
-  logger.info(`${SEPARATOR}\n`);
+  logger.info(`${SEPARATOR}`);
 
   if (components.length > 0) {
-    logger.debug('📋 Full Component Tree Details:');
+    logger.debug('Full Component Tree Details:');
     components.forEach((comp, index) => {
       logger.debug(`${index + 1}. ${comp.componentName}`);
-      logger.debug(`   File: ${comp.filePath}`);
-      if (comp.lineNumber) logger.debug(`   Line: ${comp.lineNumber}`);
-      logger.debug(`   Depth: ${comp.depth}`);
+      logger.debug(`File: ${comp.filePath}`);
+      if (comp.lineNumber) logger.debug(`Line: ${comp.lineNumber}`);
+      logger.debug(`Depth: ${comp.depth}`);
     });
   }
 }

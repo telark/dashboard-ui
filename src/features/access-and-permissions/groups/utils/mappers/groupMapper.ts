@@ -16,5 +16,5 @@ export const mapGroupsData = (apiGroups: Group[]): Group[] => {
 };
 
 export const mapGroupDetailsData = (response: ResourceDetailsResponse<Group>): Group => {
-  return mapGroupData(response.data as any);
+  return mapGroupData(response.data);
 };

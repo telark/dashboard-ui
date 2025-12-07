@@ -1,3 +1,5 @@
+import logger from '../../logging';
+
 export const enableViewTransitions = () => {
   if ('startViewTransition' in document && typeof document.startViewTransition === 'function') {
     return true;
@@ -73,6 +75,6 @@ export const initNavigationOptimizations = () => {
   optimizeScrollRestoration();
 
   if (process.env.NODE_ENV === 'development') {
-    console.log('[Navigation] View Transitions supported:', enableViewTransitions());
+    logger.info('[Navigation] View Transitions supported:', enableViewTransitions());
   }
 };

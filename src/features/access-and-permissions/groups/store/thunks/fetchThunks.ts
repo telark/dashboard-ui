@@ -12,7 +12,7 @@ import {
 
 const mapGroupsData = (response: ResourceListResponse<Group>): Group[] => {
   const items = response.data?.items || [];
-  return mapGroupsArray(items as any[]);
+  return mapGroupsArray(items);
 };
 
 export const fetchAllGroupsThunk = createAsyncThunk(
