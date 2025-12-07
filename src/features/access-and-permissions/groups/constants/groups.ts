@@ -75,10 +75,10 @@ export const GROUPS_CONSTANTS = {
     HEADER_ICON: 14,
     CHIP_FONT: 12,
     COLUMNS: {
-      NAME: 150,
+      NAME: 200,
       DESCRIPTION: 200,
       CATEGORY: 120,
-      CREATED: 120,
+      CREATED: 200,
       ACTIONS: 50,
     },
     MODAL_WIDTH: 360,

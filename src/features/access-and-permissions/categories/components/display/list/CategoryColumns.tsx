@@ -5,7 +5,7 @@ import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/tabl
 import type { Category } from '../../../models';
 import { AiOutlineTag, AiOutlineCalendar, AiOutlineAppstore } from 'react-icons/ai';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
-import { CATEGORIES_CONSTANTS } from '../../../constants';
+import { CATEGORIES_CONSTANTS as CC } from '../../../constants';
 
 interface CategoryColumnsContext extends GenerateColumnCtx {
   onView?: (record: Category) => void;
@@ -19,10 +19,10 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
   cols.push(
     generateColumn(
       {
-        key: 'name',
-        label: 'Name',
+        key: CC.KEYS.NAME,
+        label: CC.LABELS.COLUMNS.NAME,
         align: 'left',
-        width: 200,
+        width: CC.SIZES.COLUMNS.NAME,
         render: (_: unknown, record: Category) => (
           <span style={{ fontWeight: 700, color: RPC.COLORS.TEXT_PRIMARY }}>{record.name}</span>
         ),
@@ -31,12 +31,12 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
     ),
     generateColumn(
       {
-        key: 'type',
-        label: 'Type',
+        key: CC.KEYS.TYPE,
+        label: CC.LABELS.COLUMNS.TYPE,
         icon: <AiOutlineAppstore />,
-        width: 150,
+        width: CC.SIZES.COLUMNS.TYPE,
         render: (value: string) => {
-          const isBuiltIn = value === CATEGORIES_CONSTANTS.TYPES.BUILT_IN;
+          const isBuiltIn = value === CC.TYPES.BUILT_IN;
           return (
             <RowTag
               text={isBuiltIn ? 'Built-in' : 'Custom'}
@@ -51,10 +51,10 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
     ),
     generateColumn(
       {
-        key: 'scope',
-        label: 'Scope',
+        key: CC.KEYS.SCOPE,
+        label: CC.LABELS.COLUMNS.SCOPE,
         icon: <AiOutlineTag />,
-        width: 150,
+        width: CC.SIZES.COLUMNS.SCOPE,
         render: (value: string) => (
           <RowTag
             text={value}
@@ -68,10 +68,10 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
     ),
     generateColumn(
       {
-        key: 'creationDate',
-        label: 'Created',
+        key: CC.KEYS.CREATED_AT,
+        label: CC.LABELS.COLUMNS.CREATED,
         icon: <AiOutlineCalendar />,
-        width: 200,
+        width: CC.SIZES.COLUMNS.CREATED,
         render: (value: string) => {
           if (!value) return <span style={{ color: '#999' }}>—</span>;
           try {
