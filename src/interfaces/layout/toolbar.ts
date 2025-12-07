@@ -17,4 +17,3 @@ export interface ToolbarButtonConfig {
 export interface ToolbarConfig {
   buttons: ToolbarButtonConfig[];
 }
-

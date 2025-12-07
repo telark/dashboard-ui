@@ -9,4 +9,3 @@ export interface FilterSectionConfig {
   selectedValue: string;
   onChange: (value: string) => void;
 }
-

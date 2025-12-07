@@ -19,4 +19,3 @@ export interface PageLayoutConfig<T = unknown> {
   onRowClick?: (record: T) => void;
   containerStyle?: React.CSSProperties;
 }
-
