@@ -5,10 +5,12 @@ import { DEFAULT_COLORS } from '../../../constants';
 import type { ToolbarConfig } from '../../../interfaces/layout/toolbar';
 
 interface ToolbarProps {
-  config: ToolbarConfig;
+  config: ToolbarConfig | undefined;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
+  if (!config) return null;
+  
   const { buttons } = config;
 
   return (

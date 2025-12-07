@@ -7,6 +7,7 @@ import type { TablePaginationConfig } from './table';
 export interface PageLayoutConfig<T = unknown> {
   title: string;
   subtitle?: string;
+  breadcrumbs?: Array<{ label: string; to?: string; onClick?: () => void }>;
   filterSection?: FilterSectionConfig;
   toolbar?: ToolbarConfig;
   columns: ColumnType<T>[];

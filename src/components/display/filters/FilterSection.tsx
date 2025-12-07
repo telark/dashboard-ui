@@ -4,10 +4,12 @@ import { DEFAULT_COLORS } from '../../../constants';
 import type { FilterSectionConfig } from '../../../interfaces/layout/filters';
 
 interface FilterSectionProps {
-  config: FilterSectionConfig;
+  config: FilterSectionConfig | undefined;
 }
 
 const FilterSection: React.FC<FilterSectionProps> = ({ config }) => {
+  if (!config) return null;
+  
   const { label, options, selectedValue, onChange } = config;
 
   return (

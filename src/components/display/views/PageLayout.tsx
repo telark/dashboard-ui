@@ -1,4 +1,7 @@
 import { Activity, memo } from 'react';
+import React from 'react';
+import { Breadcrumb } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import DataTable from '../table/DataTable';
 import { FilterSection } from '../filters';
 import { Toolbar } from '../toolbar';
@@ -6,9 +9,11 @@ import { TablePagination } from '../table';
 import type { PageLayoutConfig } from '../../../interfaces/layout/page';
 
 const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfig<T> }) => {
+  const navigate = useNavigate();
   const {
     title,
     subtitle,
+    breadcrumbs,
     filterSection,
     toolbar,
     columns,
@@ -35,6 +40,39 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          {breadcrumbs && breadcrumbs.length > 1 ? (
+            <Breadcrumb
+              items={breadcrumbs.map((b, index) => ({
+                title:
+                  (b.to || b.onClick) && index < breadcrumbs.length - 1 ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (b.onClick) {
+                          b.onClick();
+                        } else if (b.to) {
+                          navigate(b.to);
+                        }
+                      }}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer',
+                        color: 'inherit',
+                        font: 'inherit',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      {b.label}
+                    </button>
+                  ) : (
+                    <span>{b.label}</span>
+                  ),
+              }))}
+              style={{ marginBottom: 8 }}
+            />
+          ) : null}
           <h1
             style={{
               fontSize: 28,
@@ -42,6 +80,7 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
               color: '#0B1F33',
               margin: 0,
               padding: 0,
+              lineHeight: 1.2,
             }}
           >
             {title}
@@ -65,23 +104,41 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
         </div>
 
         {/* Filters and Toolbar */}
-        <Activity mode={filterSection || toolbar ? 'visible' : 'hidden'}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '300px auto',
+            alignItems: 'flex-end',
+            gap: 16,
+            minHeight: '60px',
+            width: '100%',
+          }}
+        >
+          {/* FILTER COLUMN - Always rendered */}
+          <div
+            style={{
+              minHeight: '60px',
+              visibility: filterSection ? 'visible' : 'hidden',
+              pointerEvents: filterSection ? 'auto' : 'none',
+              display: 'flex',
+              alignItems: 'flex-end',
+            }}
+          >
+            {filterSection ? <FilterSection config={filterSection} /> : null}
+          </div>
+
+          {/* TOOLBAR - Always same position */}
           <div
             style={{
               display: 'flex',
-              justifyContent: 'space-between',
               alignItems: 'flex-end',
-              gap: 16,
+              justifyContent: 'flex-end',
+              minHeight: '60px',
             }}
           >
-            <Activity mode={filterSection ? 'visible' : 'hidden'}>
-              <FilterSection config={filterSection!} />
-            </Activity>
-            <Activity mode={toolbar ? 'visible' : 'hidden'}>
-              <Toolbar config={toolbar!} />
-            </Activity>
+            {toolbar ? <Toolbar config={toolbar} /> : null}
           </div>
-        </Activity>
+        </div>
 
         {/* Table */}
         <DataTable<T>
