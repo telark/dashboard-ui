@@ -7,7 +7,7 @@ import { Toolbar } from '../toolbar';
 import { TablePagination } from '../table';
 import type { PageLayoutConfig } from '../../../interfaces/layout/page';
 
-const PageLayoutComponent = <T = unknown>({ config }: { config: PageLayoutConfig<T> }) => {
+const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfig<T> }) => {
   const navigate = useNavigate();
   const {
     title,

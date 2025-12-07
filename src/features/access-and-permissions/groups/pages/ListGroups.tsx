@@ -21,7 +21,7 @@ import { useGroupListConfig } from '../config/groupListConfig';
 import { mapCategoriesToFilterOptions } from '../utils/groupListUtils';
 import type { Group } from '../models';
 import type { Category } from '../../categories/models';
-import { CreatePanel } from '../../../../components/display/panel';
+import { SlideOutPanel } from '../../../../components/display/panels/slide-out';
 import { useGroupNameValidation, useGroupCategories, useGroupFormState } from '../hooks';
 import { useUsers } from '../../users/hooks';
 import { useRoles } from '../../roles/hooks';
@@ -419,7 +419,7 @@ const GroupsList: React.FC = () => {
         </div>
       </Activity>
       <PageLayout config={pageConfig} />
-      <CreatePanel
+      <SlideOutPanel
         open={createPanelOpen}
         onClose={() => setCreatePanelOpen(false)}
         title={GC.LABELS.FORM.TITLE}
@@ -448,7 +448,7 @@ const GroupsList: React.FC = () => {
         onValuesChange={handleCreateValuesChange}
         onFieldsChange={handleCreateFieldsChange}
       />
-      <CreatePanel
+      <SlideOutPanel
         open={editPanelOpen}
         onClose={() => {
           setEditPanelOpen(false);
