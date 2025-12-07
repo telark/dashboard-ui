@@ -6,4 +6,7 @@ export { useGroupCategories } from './useGroupCategories';
 export { useGroupFormState } from './useGroupFormState';
 export { useGroupListState } from './useGroupListState';
 export { useGroupListActions } from './useGroupListActions';
+export { useGroupFormOptions } from './useGroupFormOptions';
+export { useGroupPanels } from './useGroupPanels';
+export { useGroupListPageConfig } from './useGroupListPageConfig';
 export type { SortKey, SortOrder } from './useGroupListState';

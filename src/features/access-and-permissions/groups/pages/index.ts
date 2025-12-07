@@ -1,2 +1,2 @@
-export { default as ListGroups } from './ListGroups';
+export { default as MainPage } from './MainPage';
 export { default as ViewGroup } from './ViewGroup';
