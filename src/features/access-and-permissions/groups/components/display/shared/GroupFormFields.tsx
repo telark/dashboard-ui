@@ -64,7 +64,12 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
               name="categoryID"
               label={GC.LABELS.FORM.FIELDS.CATEGORY_LABEL}
               required
-              rules={[{ required: true, message: `Please select ${GC.LABELS.FORM.FIELDS.CATEGORY_LABEL.toLowerCase()}` }]}
+              rules={[
+                {
+                  required: true,
+                  message: `Please select ${GC.LABELS.FORM.FIELDS.CATEGORY_LABEL.toLowerCase()}`,
+                },
+              ]}
               style={{ marginBottom: 0 }}
               className="form-item-compact no-asterisk"
             >

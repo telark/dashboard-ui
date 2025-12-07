@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useState, useCallback } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../../../../../store';
 import { fetchAllUsersThunk } from '../../../../users/store';
@@ -15,7 +15,6 @@ interface UsersSelectProps {
 const UsersSelect: React.FC<UsersSelectProps> = memo(({ value, onChange }) => {
   const dispatch: AppDispatch = useDispatch();
   const { users, loading: usersLoading } = useSelector((state: RootState) => state.users);
-  const [allOptionsMap, setAllOptionsMap] = useState<Map<string, string>>(new Map());
 
   useEffect(() => {
     dispatch(fetchAllUsersThunk());
@@ -32,12 +31,12 @@ const UsersSelect: React.FC<UsersSelectProps> = memo(({ value, onChange }) => {
     });
   }, [users]);
 
-  useEffect(() => {
+  const allOptionsMap = useMemo((): Map<string, string> => {
     const map = new Map<string, string>();
     users.forEach((user: User) => {
       map.set(user.id, user.fullname || user.username);
     });
-    setAllOptionsMap(map);
+    return map;
   }, [users]);
 
   return (

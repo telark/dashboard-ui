@@ -7,10 +7,7 @@ import type { AssignmentSelectOption } from '../../../roles/models';
 export const useGroupCategoryOptions = () => {
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
 
-  const uniqueCategories = useMemo(
-    () => deduplicateCategoriesByName(categories),
-    [categories],
-  );
+  const uniqueCategories = useMemo(() => deduplicateCategoriesByName(categories), [categories]);
 
   const categoryOptions = useMemo((): AssignmentSelectOption[] => {
     const mapped = mapCategoriesToOptions(uniqueCategories);

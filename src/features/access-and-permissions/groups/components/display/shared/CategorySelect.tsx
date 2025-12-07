@@ -14,7 +14,16 @@ interface CategorySelectProps {
 }
 
 const CategorySelect: React.FC<CategorySelectProps> = memo(
-  ({ value, onChange, options, placeholder = 'Select category', loading = false, allowClear = true, showSearch = true, filterOption }) => {
+  ({
+    value,
+    onChange,
+    options,
+    placeholder = 'Select category',
+    loading = false,
+    allowClear = true,
+    showSearch = true,
+    filterOption,
+  }) => {
     return (
       <Select
         placeholder={placeholder}

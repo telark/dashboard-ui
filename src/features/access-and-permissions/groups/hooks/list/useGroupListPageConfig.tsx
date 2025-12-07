@@ -13,6 +13,7 @@ import { useCategoryListView } from '../../../categories/hooks';
 import { deduplicateCategoriesByName } from '../../../categories/utils/helpers';
 import type { Group } from '../../models';
 import type { Category } from '../../../categories/models';
+import logger from '../../../../../logging';
 
 type ViewMode = 'groups' | 'categories';
 
@@ -61,12 +62,12 @@ export const useGroupListPageConfig = ({
 }: UseGroupListPageConfigOptions): PageLayoutConfig<Group | Category> => {
   const [selectedCategories, setSelectedCategories] = useState<React.Key[]>([]);
   const reduxCategories = useSelector(selectGroupsCategories);
-  
+
   const uniqueReduxCategories = useMemo(
     () => deduplicateCategoriesByName(reduxCategories),
     [reduxCategories],
   );
-  
+
   const uniqueCategories = useMemo(
     () => deduplicateCategoriesByName(categories || []),
     [categories],
@@ -164,12 +165,10 @@ export const useGroupListPageConfig = ({
                   <CategoryActionsColumn
                     record={record as Category}
                     onEdit={(cat) => {
-                      // TODO: Implement edit category
-                      console.log('Edit category:', cat);
+                      logger.info('Edit category:', cat);
                     }}
                     onDelete={(cat) => {
-                      // TODO: Implement delete category
-                      console.log('Delete category:', cat);
+                      logger.info('Delete category:', cat);
                     }}
                   />
                 ),
