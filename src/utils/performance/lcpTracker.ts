@@ -1,4 +1,5 @@
 import type { LCPMetric } from 'web-vitals';
+import logger from '../../logging';
 
 interface ReactFiber {
   elementType?: { name?: string; displayName?: string };
@@ -24,7 +25,7 @@ const FIBER_KEYS = ['__reactFiber$', '__reactInternalInstance$'];
 function getReactFiber(element: HTMLElement): ReactFiber | null {
   for (const key in element) {
     if (FIBER_KEYS.some((prefix) => key.startsWith(prefix))) {
-      return (element as any)[key];
+      return (element as unknown as Record<string, ReactFiber>)[key];
     }
   }
   return null;
@@ -95,19 +96,19 @@ function getRating(value: number): string {
 }
 
 function logOptimizationTips(isImage: boolean): void {
-  console.log(`\n%c💡 Optimization Tips:`, 'color: #14b8a6; font-weight: bold');
+  logger.info('💡 Optimization Tips:');
   if (isImage) {
-    console.log('   • This is an image - consider:');
-    console.log('     - Adding width/height attributes to prevent layout shift');
-    console.log('     - Using next-gen formats (WebP, AVIF)');
-    console.log('     - Lazy loading with priority for above-fold images');
-    console.log('     - Optimizing image size and compression');
+    logger.info('   • This is an image - consider:');
+    logger.info('     - Adding width/height attributes to prevent layout shift');
+    logger.info('     - Using next-gen formats (WebP, AVIF)');
+    logger.info('     - Lazy loading with priority for above-fold images');
+    logger.info('     - Optimizing image size and compression');
   } else {
-    console.log('   • This is a text/content element - consider:');
-    console.log('     - Reducing time to first byte (TTFB)');
-    console.log('     - Minimizing render-blocking resources');
-    console.log('     - Using font-display: swap for web fonts');
-    console.log('     - Reducing JavaScript blocking main thread');
+    logger.info('   • This is a text/content element - consider:');
+    logger.info('     - Reducing time to first byte (TTFB)');
+    logger.info('     - Minimizing render-blocking resources');
+    logger.info('     - Using font-display: swap for web fonts');
+    logger.info('     - Reducing JavaScript blocking main thread');
   }
 }
 
@@ -118,11 +119,8 @@ export function trackLCPComponent(metric: LCPMetric): void {
   const lcpEntry = entries?.[entries.length - 1];
 
   if (!lcpEntry?.element) {
-    console.log(
-      `%c[LCP Performance] ${metric.value.toFixed(0)}ms`,
-      'color: #10b981; font-weight: bold; font-size: 14px',
-    );
-    console.log('⚠️ No LCP element found');
+    logger.info(`[LCP Performance] ${metric.value.toFixed(0)}ms`);
+    logger.warn('⚠️ No LCP element found');
     return;
   }
 
@@ -133,76 +131,61 @@ export function trackLCPComponent(metric: LCPMetric): void {
   const rating = getRating(metric.value);
   const isImage = lcpElement.tagName === 'IMG';
 
-  console.log(`\n${SEPARATOR}`);
-  console.log(
-    `%c🎯 LARGEST CONTENTFUL PAINT (LCP) DETECTED`,
-    'color: #10b981; font-weight: bold; font-size: 16px',
-  );
-  console.log(SEPARATOR);
-  console.log(
-    `%c⏱️  LCP Time: ${metric.value.toFixed(0)}ms`,
-    'color: #3b82f6; font-weight: bold; font-size: 14px',
-  );
-  console.log(`%c📊 Rating: ${rating}`, 'color: #6366f1; font-weight: bold');
-  console.log(`\n%c🔍 DOM Element:`, 'color: #f59e0b; font-weight: bold');
-  console.log(`   Selector: ${selector}`);
-  console.log(`   Content: ${content}`);
-  console.log('   Element:', lcpElement);
+  logger.info(`\n${SEPARATOR}`);
+  logger.info('🎯 LARGEST CONTENTFUL PAINT (LCP) DETECTED');
+  logger.info(SEPARATOR);
+  logger.info(`⏱️  LCP Time: ${metric.value.toFixed(0)}ms`);
+  logger.info(`📊 Rating: ${rating}`);
+  logger.info('\n🔍 DOM Element:');
+  logger.info(`   Selector: ${selector}`);
+  logger.info(`   Content: ${content}`);
+  logger.debug('   Element:', lcpElement);
 
   if (components.length > 0) {
     const primaryComponent = components[0];
-    console.log(
-      `\n%c⚛️  React Component Tree (${components.length} components):`,
-      'color: #8b5cf6; font-weight: bold',
-    );
-    console.log(
-      `%c   🎯 Primary: ${primaryComponent.componentName}`,
-      'color: #ec4899; font-weight: bold; font-size: 13px',
-    );
-    console.log(
-      `      📁 ${formatFilePath(primaryComponent.filePath, primaryComponent.lineNumber)}`,
-    );
+    logger.info(`\n⚛️  React Component Tree (${components.length} components):`);
+    logger.info(`   🎯 Primary: ${primaryComponent.componentName}`);
+    logger.info(`      📁 ${formatFilePath(primaryComponent.filePath, primaryComponent.lineNumber)}`);
 
     if (components.length > 1) {
-      console.log(`\n   📦 Parent Components:`);
+      logger.info('\n   📦 Parent Components:');
       const parents = components.slice(1, MAX_PARENT_COMPONENTS + 1);
       parents.forEach((comp, index) => {
         const indent = '      ' + '  '.repeat(index);
-        console.log(`${indent}↳ ${comp.componentName}`);
-        console.log(`${indent}  📁 ${formatFilePath(comp.filePath, comp.lineNumber)}`);
+        logger.info(`${indent}↳ ${comp.componentName}`);
+        logger.info(`${indent}  📁 ${formatFilePath(comp.filePath, comp.lineNumber)}`);
       });
       if (components.length > MAX_PARENT_COMPONENTS + 1) {
-        console.log(
+        logger.info(
           `      ... and ${components.length - MAX_PARENT_COMPONENTS - 1} more parent components`,
         );
       }
     }
   } else {
-    console.log(`\n%c⚠️  Could not map to React component`, 'color: #ef4444; font-weight: bold');
-    console.log('   This might be a static HTML element or non-React content');
+    logger.warn('\n⚠️  Could not map to React component');
+    logger.info('   This might be a static HTML element or non-React content');
   }
 
   logOptimizationTips(isImage);
 
   if (metric.value > 2500) {
-    console.log(`\n%c⚡ Action Required:`, 'color: #ef4444; font-weight: bold');
-    console.log(
+    logger.warn('\n⚡ Action Required:');
+    logger.warn(
       `   LCP is ${(metric.value - 2500).toFixed(0)}ms over the "good" threshold (2500ms)`,
     );
-    console.log(`   Focus optimization on: ${components[0]?.componentName || selector}`);
+    logger.warn(`   Focus optimization on: ${components[0]?.componentName || selector}`);
   }
 
-  console.log(`${SEPARATOR}\n`);
+  logger.info(`${SEPARATOR}\n`);
 
   if (components.length > 0) {
-    console.groupCollapsed('📋 Full Component Tree Details');
+    logger.debug('📋 Full Component Tree Details:');
     components.forEach((comp, index) => {
-      console.log(`${index + 1}. ${comp.componentName}`);
-      console.log(`   File: ${comp.filePath}`);
-      if (comp.lineNumber) console.log(`   Line: ${comp.lineNumber}`);
-      console.log(`   Depth: ${comp.depth}`);
+      logger.debug(`${index + 1}. ${comp.componentName}`);
+      logger.debug(`   File: ${comp.filePath}`);
+      if (comp.lineNumber) logger.debug(`   Line: ${comp.lineNumber}`);
+      logger.debug(`   Depth: ${comp.depth}`);
     });
-    console.groupEnd();
   }
 }
 
@@ -212,16 +195,15 @@ export function trackLCPCandidates(metric: LCPMetric): void {
   const entries = metric.entries;
   if (!entries || entries.length <= 1) return;
 
-  console.groupCollapsed(`🔄 LCP Candidates (${entries.length} detected)`);
+  logger.debug(`🔄 LCP Candidates (${entries.length} detected):`);
   entries.forEach((entry, index) => {
     if (entry.element) {
       const element = entry.element as HTMLElement;
       const components = getComponentInfo(getReactFiber(element));
       const componentName = components[0]?.componentName || 'Unknown';
-      console.log(
+      logger.debug(
         `${index + 1}. ${entry.renderTime.toFixed(0)}ms - ${componentName} (${getElementSelector(element)})`,
       );
     }
   });
-  console.groupEnd();
 }

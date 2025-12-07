@@ -1,158 +1,79 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Modal } from 'antd';
 import { useSelector } from 'react-redux';
-import { APP_ROUTES, Icons, SHARED_DETAILS_CONSTANTS, DEFAULT_COLORS } from '../../../../constants';
+import { APP_ROUTES, Icons, SHARED_DETAILS_CONSTANTS } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import { PageLayout } from '../../../../components/display/views';
 import type { PageLayoutConfig } from '../../../../interfaces/layout/page';
 import EmptyState from '../../../../components/display/views/EmptyState';
 import { FancySpinner } from '../../../../components/animation';
-import { useGroups } from '../hooks';
-import { useGroupActions } from '../hooks';
+import { useGroups, useGroupActions, useGroupListState, useGroupListActions } from '../hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { selectGroupsCategories } from '../../categories/store/selectors/categorySelectors';
 import Columns from '../components/display/list/Columns';
+import { GroupActionsColumn } from '../components/display/list/GroupActionsColumn';
 import ActionBar from '../../../../components/display/actions/ActionBar';
+import { useGroupListConfig } from '../config/groupListConfig';
+import { mapCategoriesToFilterOptions } from '../utils/groupListUtils';
 import type { Group } from '../models';
-import { EyeOutlined, EditOutlined, SearchOutlined, AppstoreOutlined, PlusOutlined, FilterOutlined } from '@ant-design/icons';
 
 const GroupIcon = Icons.Group;
-
-type SortKey = 'name' | 'categoryID' | 'creationDate';
 
 const GroupsList: React.FC = () => {
   const navigate = useNavigate();
   const { groups, loading, error } = useGroups();
   const { handleDelete } = useGroupActions();
-  const { loading: categoriesLoading, categories } = useCategories(
-    CATEGORIES_CONSTANTS.SCOPES.GROUPS,
-  );
+  const { loading: categoriesLoading } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
   const reduxCategories = useSelector(selectGroupsCategories);
 
-  const [sortKey, setSortKey] = useState<SortKey>('creationDate');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-  const [selectedGroups, setSelectedGroups] = useState<React.Key[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const {
+    sortKey,
+    selectedGroups,
+    selectedCategory,
+    currentPage,
+    pageSize,
+    setSelectedCategory,
+    setCurrentPage,
+    setPageSize,
+    setSelectedGroups,
+    handleSort,
+    sortedGroups,
+    paginatedGroups,
+    selectedCount,
+    hasSelection,
+  } = useGroupListState(groups);
 
-  const isFetching = groups === undefined || loading || categoriesLoading;
-  const shouldShowEmpty = Array.isArray(groups) && groups.length === 0 && !error;
+  const { handleView, handleEdit, handleDeleteClick, handleViewGroup } = useGroupListActions({
+    selectedGroups,
+    groups,
+    handleDelete,
+    setSelectedGroups,
+  });
 
-  // Filter by category
-  const filteredGroups = useMemo(() => {
-    if (!groups) return [];
-    if (selectedCategory === 'all') return groups;
-    return groups.filter((group) => group.categoryID === selectedCategory);
-  }, [groups, selectedCategory]);
+  const categoryFilterOptions = useMemo(
+    () => mapCategoriesToFilterOptions(reduxCategories),
+    [reduxCategories],
+  );
 
-  // Sort groups
-  const sortedGroups = useMemo(() => {
-    const items = [...filteredGroups];
-    const compare = (a: Group, b: Group) => {
-      switch (sortKey) {
-        case 'name':
-          return String(a.name).localeCompare(String(b.name));
-        case 'categoryID':
-          return String(a.categoryID).localeCompare(String(b.categoryID));
-        case 'creationDate':
-        default:
-          return new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();
-      }
-    };
-    items.sort((a, b) => (sortOrder === 'asc' ? compare(a, b) : -compare(a, b)));
-    return items;
-  }, [filteredGroups, sortKey, sortOrder]);
-
-  // Paginate groups
-  const paginatedGroups = useMemo(() => {
-    const start = (currentPage - 1) * pageSize;
-    const end = start + pageSize;
-    return sortedGroups.slice(start, end);
-  }, [sortedGroups, currentPage, pageSize]);
-
-  const selectedCount = selectedGroups.length;
-  const hasSelection = selectedCount > 0;
-
-  const handleView = useCallback(() => {
-    if (selectedCount === 1) {
-      const selectedId = selectedGroups[0] as string;
-      const selectedGroup = groups?.find((g) => g.id === selectedId);
-      if (selectedGroup) {
-        navigate(`${APP_ROUTES.GROUPS}/${selectedGroup.id}/view`);
-      }
-    }
-  }, [selectedCount, selectedGroups, groups, navigate]);
-
-  const handleEdit = useCallback(() => {
-    if (selectedCount === 1) {
-      const selectedId = selectedGroups[0] as string;
-      const selectedGroup = groups?.find((g) => g.id === selectedId);
-      if (selectedGroup) {
-        navigate(`${APP_ROUTES.GROUPS}/${selectedGroup.id}/edit`);
-      }
-    }
-  }, [selectedCount, selectedGroups, groups, navigate]);
-
-  const handleDeleteClick = useCallback(() => {
-    const selectedIds = selectedGroups as string[];
-    if (selectedIds.length === 0) return;
-
-    const selectedGroupNames = selectedIds
-      .map((id) => groups?.find((g) => g.id === id)?.name)
-      .filter(Boolean) as string[];
-
-    Modal.confirm({
-      title: GC.LABELS.ACTIONS.DELETE_MODAL_TITLE,
-      content: GC.LABELS.ACTIONS.DELETE_MODAL_CONTENT(
-        selectedGroupNames.length === 1
-          ? selectedGroupNames[0]
-          : `${selectedGroupNames.length} groups`,
-      ),
-      okText: GC.LABELS.ACTIONS.DELETE_MODAL_OK,
-      okButtonProps: { danger: true },
-      onOk: async () => {
-        for (const id of selectedIds) {
-          const group = groups?.find((g) => g.id === id);
-          if (group) {
-            try {
-              await handleDelete(id);
-            } catch {
-              // Error message already shown by handleDelete
-            }
-          }
-        }
-        setSelectedGroups([]);
-      },
-    });
-  }, [selectedGroups, groups, handleDelete]);
-
-  // Category filter options
-  const categoryFilterOptions = useMemo(() => {
-    const options = [{ value: 'all', label: 'All' }];
-    if (reduxCategories && reduxCategories.length > 0) {
-      reduxCategories.forEach((category) => {
-        options.push({ value: category.id, label: category.name });
-      });
-    }
-    return options;
-  }, [reduxCategories]);
+  const { filterSectionConfig, toolbarConfig } = useGroupListConfig({
+    categoryFilterOptions,
+    selectedCategory,
+    onCategoryChange: (value: string) => {
+      setSelectedCategory(value);
+      setCurrentPage(1);
+    },
+  });
 
   // Generate columns
   const columns = useMemo(
     () =>
       Columns({
         activeSortKey: sortKey,
-        onSort: (k: string) => {
-          const key = k as SortKey;
-          setSortKey(key);
-          setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-        },
+        onSort: handleSort,
         categories: reduxCategories,
       } as any),
-    [sortKey, reduxCategories],
+    [sortKey, reduxCategories, handleSort],
   );
 
   // PageLayout config - must be before any early returns
@@ -160,75 +81,8 @@ const GroupsList: React.FC = () => {
     () => ({
       title: GC.LABELS.HEADER_TITLE,
       subtitle: GC.LABELS.HEADER_SUBTITLE,
-      filterSection: {
-        label: 'Categories',
-        options: categoryFilterOptions,
-        selectedValue: selectedCategory,
-        onChange: (value: string) => {
-          setSelectedCategory(value);
-          setCurrentPage(1);
-        },
-      },
-      toolbar: {
-        buttons: [
-          {
-            key: 'search',
-            label: 'Search',
-            icon: <SearchOutlined />,
-            variant: 'ghost',
-            onClick: () => {
-              // TODO: Implement search functionality
-              console.log('Search clicked');
-            },
-          },
-          {
-            key: 'filter',
-            label: 'Filter',
-            icon: <FilterOutlined />,
-            variant: 'ghost',
-            onClick: () => {
-              // TODO: Implement filter functionality
-              console.log('Filter clicked');
-            },
-          },
-          {
-            key: 'manage-categories',
-            label: 'Manage Categories',
-            icon: <AppstoreOutlined />,
-            variant: 'default',
-            dropdown: {
-              items: [
-                {
-                  key: 'view-categories',
-                  label: 'View Categories',
-                  icon: <AppstoreOutlined />,
-                },
-                {
-                  key: 'add-category',
-                  label: 'Add Category',
-                  icon: <PlusOutlined />,
-                },
-              ],
-              onItemClick: (key: string) => {
-                if (key === 'view-categories') {
-                  // TODO: Navigate to view categories page
-                  console.log('View categories clicked');
-                } else if (key === 'add-category') {
-                  // TODO: Open add category modal or navigate to create category page
-                  console.log('Add category clicked');
-                }
-              },
-            },
-          },
-          {
-            key: 'create-group',
-            label: GC.LABELS.FORM.BUTTON_TEXT,
-            icon: <GroupIcon size={14} />,
-            variant: 'primary',
-            onClick: () => navigate(APP_ROUTES.GROUP_CREATE),
-          },
-        ],
-      },
+      filterSection: filterSectionConfig,
+      toolbar: toolbarConfig,
       columns: [
         ...columns,
         {
@@ -237,75 +91,7 @@ const GroupsList: React.FC = () => {
           align: 'right' as const,
           width: 120,
           onHeaderCell: () => ({ style: { background: '#fff' } }),
-          render: (_: unknown, record: Group) => (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                gap: 12,
-              }}
-            >
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate(`${APP_ROUTES.GROUPS}/${record.id}/view`);
-                }}
-                style={{
-                  all: 'unset',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#64748b',
-                  fontSize: 16,
-                  width: 28,
-                  height: 28,
-                  borderRadius: 4,
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#f0fdfa';
-                  e.currentTarget.style.color = DEFAULT_COLORS.SUCCESS;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = '#64748b';
-                }}
-              >
-                <EyeOutlined />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate(`${APP_ROUTES.GROUPS}/${record.id}/edit`);
-                }}
-                style={{
-                  all: 'unset',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#64748b',
-                  fontSize: 16,
-                  width: 28,
-                  height: 28,
-                  borderRadius: 4,
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#f0fdfa';
-                  e.currentTarget.style.color = DEFAULT_COLORS.SUCCESS;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = '#64748b';
-                }}
-              >
-                <EditOutlined />
-              </button>
-            </div>
-          ),
+          render: (_: unknown, record: Group) => <GroupActionsColumn record={record} />,
         },
       ],
       data: paginatedGroups,
@@ -332,24 +118,28 @@ const GroupsList: React.FC = () => {
           setSelectedGroups(keys);
         },
       },
-      onRowClick: (record: Group) => {
-        navigate(`${APP_ROUTES.GROUPS}/${record.id}/view`);
-      },
+      onRowClick: handleViewGroup,
       rowHeight: GC.SIZES.ROW_HEIGHT,
     }),
     [
-      categoryFilterOptions,
-      selectedCategory,
+      filterSectionConfig,
+      toolbarConfig,
       columns,
       paginatedGroups,
       currentPage,
       pageSize,
       sortedGroups.length,
       selectedGroups,
-      navigate,
       hasSelection,
+      handleViewGroup,
+      setCurrentPage,
+      setPageSize,
+      setSelectedGroups,
     ],
   );
+
+  const isFetching = groups === undefined || loading || categoriesLoading;
+  const shouldShowEmpty = Array.isArray(groups) && groups.length === 0 && !error;
 
   // Error state
   if (error) {

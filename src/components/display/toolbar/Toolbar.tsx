@@ -84,7 +84,9 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                 }}
               >
                 {button.icon && (
-                  <span style={{ fontSize: 14, display: 'flex', alignItems: 'center', lineHeight: 1 }}>
+                  <span
+                    style={{ fontSize: 14, display: 'flex', alignItems: 'center', lineHeight: 1 }}
+                  >
                     {button.icon}
                   </span>
                 )}
