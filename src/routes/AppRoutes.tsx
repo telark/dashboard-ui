@@ -43,11 +43,7 @@ const UserEdit = lazy(() => import('../features/access-and-permissions/users/pag
 const GroupsListView = lazy(
   () => import('../features/access-and-permissions/groups/pages/ListGroups'),
 );
-const GroupsCreateView = lazy(
-  () => import('../features/access-and-permissions/groups/pages/CreateGroup'),
-);
 const GroupView = lazy(() => import('../features/access-and-permissions/groups/pages/ViewGroup'));
-const GroupEdit = lazy(() => import('../features/access-and-permissions/groups/pages/EditGroup'));
 const PasskeysListView = lazy(() => import('../features/auth/pages/passkeys/ListPasskeys'));
 const PasskeyView = lazy(() => import('../features/auth/pages/passkeys/ViewPasskey'));
 
@@ -222,26 +218,10 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path={APP_ROUTES.GROUP_CREATE}
-          element={
-            <ProtectedRoute>
-              <GroupsCreateView />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path={APP_ROUTES.GROUP_VIEW}
           element={
             <ProtectedRoute>
               <GroupView />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.GROUP_EDIT}
-          element={
-            <ProtectedRoute>
-              <GroupEdit />
             </ProtectedRoute>
           }
         />

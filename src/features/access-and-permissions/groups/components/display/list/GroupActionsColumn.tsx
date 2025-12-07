@@ -7,9 +7,10 @@ import type { Group } from '../../../models';
 
 interface GroupActionsColumnProps {
   record: Group;
+  onEdit?: (record: Group) => void;
 }
 
-export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({ record }) => {
+export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({ record, onEdit }) => {
   const navigate = useNavigate();
 
   return (
@@ -53,7 +54,11 @@ export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({ record }
       <button
         onClick={(e) => {
           e.stopPropagation();
-          navigate(`${APP_ROUTES.GROUPS}/${record.id}/edit`);
+          if (onEdit) {
+            onEdit(record);
+          } else {
+            navigate(`${APP_ROUTES.GROUPS}/${record.id}/edit`);
+          }
         }}
         style={{
           all: 'unset',

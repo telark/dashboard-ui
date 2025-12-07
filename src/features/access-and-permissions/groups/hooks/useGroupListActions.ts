@@ -11,6 +11,7 @@ interface UseGroupListActionsProps {
   groups: Group[] | undefined;
   handleDelete: (id: string) => Promise<void>;
   setSelectedGroups: (keys: React.Key[]) => void;
+  onEdit?: (group: Group) => void;
 }
 
 interface UseGroupListActionsReturn {
@@ -26,6 +27,7 @@ export const useGroupListActions = ({
   groups,
   handleDelete,
   setSelectedGroups,
+  onEdit,
 }: UseGroupListActionsProps): UseGroupListActionsReturn => {
   const navigate = useNavigate();
   const selectedCount = selectedGroups.length;
@@ -45,10 +47,14 @@ export const useGroupListActions = ({
       const selectedId = selectedGroups[0] as string;
       const selectedGroup = groups?.find((g) => g.id === selectedId);
       if (selectedGroup) {
-        navigate(`${APP_ROUTES.GROUPS}/${selectedGroup.id}/edit`);
+        if (onEdit) {
+          onEdit(selectedGroup);
+        } else {
+          navigate(`${APP_ROUTES.GROUPS}/${selectedGroup.id}/edit`);
+        }
       }
     }
-  }, [selectedCount, selectedGroups, groups, navigate]);
+  }, [selectedCount, selectedGroups, groups, navigate, onEdit]);
 
   const handleDeleteClick = useCallback(() => {
     const selectedIds = selectedGroups as string[];
@@ -92,9 +98,13 @@ export const useGroupListActions = ({
 
   const handleEditGroup = useCallback(
     (record: Group) => {
-      navigate(`${APP_ROUTES.GROUPS}/${record.id}/edit`);
+      if (onEdit) {
+        onEdit(record);
+      } else {
+        navigate(`${APP_ROUTES.GROUPS}/${record.id}/edit`);
+      }
     },
-    [navigate],
+    [navigate, onEdit],
   );
 
   return {

@@ -33,8 +33,9 @@ const LabeledSelect: React.FC<LabeledSelectProps> = ({
       label={labelContent}
       name={name}
       rules={combinedRules}
+      required={required}
       style={{ marginBottom }}
-      className={`form-item-compact ${className || ''}`}
+      className={`form-item-compact no-asterisk ${className || ''}`}
     >
       <Select
         size="small"
@@ -43,6 +44,7 @@ const LabeledSelect: React.FC<LabeledSelectProps> = ({
         allowClear={allowClear}
         mode={mode}
         disabled={disabled}
+        className="role-assignment-select"
       />
     </Form.Item>
   );

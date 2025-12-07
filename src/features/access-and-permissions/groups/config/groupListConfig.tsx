@@ -1,6 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { APP_ROUTES, Icons } from '../../../../constants';
+import { Icons } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import { SearchOutlined, AppstoreOutlined, PlusOutlined, FilterOutlined } from '@ant-design/icons';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
@@ -15,6 +14,7 @@ interface UseGroupListConfigProps {
   onCategoryChange: (value: string) => void;
   viewMode?: 'groups' | 'categories';
   onViewModeChange?: (mode: 'groups' | 'categories') => void;
+  onCreateGroupClick?: () => void;
 }
 
 export const useGroupListConfig = ({
@@ -23,8 +23,8 @@ export const useGroupListConfig = ({
   onCategoryChange,
   viewMode = 'groups',
   onViewModeChange,
+  onCreateGroupClick,
 }: UseGroupListConfigProps) => {
-  const navigate = useNavigate();
 
   const filterSectionConfig: FilterSectionConfig | undefined = React.useMemo(() => {
     if (viewMode === 'categories') return undefined;
@@ -91,11 +91,13 @@ export const useGroupListConfig = ({
           label: GC.LABELS.FORM.BUTTON_TEXT,
           icon: <GroupIcon size={14} />,
           variant: 'primary',
-          onClick: () => navigate(APP_ROUTES.GROUP_CREATE),
+            onClick: () => {
+              onCreateGroupClick?.();
+            },
         },
       ],
     }),
-    [navigate, onViewModeChange],
+    [onViewModeChange, onCreateGroupClick],
   );
 
   return {

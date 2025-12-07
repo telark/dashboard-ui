@@ -142,12 +142,21 @@
 
 /* Form label typography to match pages */
 .ant-form-item-label > label {
-  font-weight: 700 !important;
+  font-weight: 400 !important;
   color: #0B1F33 !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+/* More space between label and input */
+.ant-form-item-label {
+  margin-bottom: 8px !important;
+  padding-bottom: 0 !important;
+  line-height: 1.5 !important;
 }
 
 .app-section .ant-form-vertical .ant-form-item .ant-form-item-label {
-  margin-bottom: 2px !important;
+  margin-bottom: 8px !important;
   padding-bottom: 0 !important;
 }
 .app-section .ant-form-vertical .ant-form-item .ant-form-item-control {
@@ -156,7 +165,7 @@
 
 /* Extra compact spacing for shared labeled inputs/selects */
 .form-item-compact .ant-form-item-label {
-  margin-bottom: 0 !important;
+  margin-bottom: 8px !important;
   padding-bottom: 0 !important;
 }
 .form-item-compact .ant-form-item-control {
@@ -442,22 +451,34 @@
 }
 
 .role-assignment-select.ant-select-focused .ant-select-selector {
-  border-color: #20C997 !important;
-  box-shadow: 0 0 0 2px rgba(32, 201, 151, 0.1) !important;
+  border-color: #40a9ff !important;
+  box-shadow: 0 0 0 2px rgba(64, 169, 255, 0.1) !important;
 }
 
 .role-assignment-select .ant-select-selection-item {
-  background-color: #20C997 !important;
-  border-color: #20C997 !important;
-  color: white !important;
+  background-color: transparent !important;
+  border-color: #d9d9d9 !important;
+  color: #0B1F33 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  line-height: 1.5 !important;
+}
+
+.role-assignment-select .ant-select-selection-item-content {
+  display: inline-flex !important;
+  align-items: center !important;
+  line-height: 1.5 !important;
 }
 
 .role-assignment-select .ant-select-selection-item-remove {
-  color: white !important;
+  color: #0B1F33 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  line-height: 1.5 !important;
 }
 
 .role-assignment-select .ant-select-selection-item-remove:hover {
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: #40a9ff !important;
 }
 
 /* Remove default indentation and set consistent padding */
