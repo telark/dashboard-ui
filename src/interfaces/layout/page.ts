@@ -6,6 +6,7 @@ import type { TablePaginationConfig } from './table';
 
 export interface PageLayoutConfig<T = unknown> {
   title: string;
+  subtitle?: string;
   filterSection?: FilterSectionConfig;
   toolbar?: ToolbarConfig;
   columns: ColumnType<T>[];
@@ -18,4 +19,5 @@ export interface PageLayoutConfig<T = unknown> {
   };
   onRowClick?: (record: T) => void;
   containerStyle?: React.CSSProperties;
+  rowHeight?: number;
 }

@@ -17,7 +17,6 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
         display: 'flex',
         alignItems: 'center',
         gap: 8,
-        marginTop: 32,
       }}
     >
       {buttons.map((button) => {
@@ -84,7 +83,11 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                   }
                 }}
               >
-                {button.icon && <span style={{ fontSize: 14 }}>{button.icon}</span>}
+                {button.icon && (
+                  <span style={{ fontSize: 14, display: 'flex', alignItems: 'center', lineHeight: 1 }}>
+                    {button.icon}
+                  </span>
+                )}
                 <span>{button.label}</span>
                 <DownOutlined style={{ fontSize: 10 }} />
               </button>
@@ -141,7 +144,11 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
               }
             }}
           >
-            {button.icon && <span style={{ fontSize: 14 }}>{button.icon}</span>}
+            {button.icon && (
+              <span style={{ fontSize: 14, display: 'flex', alignItems: 'center', lineHeight: 1 }}>
+                {button.icon}
+              </span>
+            )}
             <span>{button.label}</span>
           </button>
         );
