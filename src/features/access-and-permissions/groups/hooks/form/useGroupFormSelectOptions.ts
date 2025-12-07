@@ -1,7 +1,8 @@
 import { useGroupCategoryOptions } from '../categories/useGroupCategoryOptions';
+import type { AssignmentSelectOption } from '../../../roles/models';
 
 interface UseGroupFormSelectOptionsReturn {
-  categoryOptions: Array<{ label: string; value: string }>;
+  categoryOptions: AssignmentSelectOption[];
   defaultCategoryId: string | undefined;
 }
 

@@ -1,15 +1,16 @@
 import React from 'react';
 import { Form, Input } from 'antd';
 import LabeledInput from '../../../../../../components/display/inputs/LabeledInput';
-import LabeledSelect from '../../../../../../components/display/inputs/LabeledSelect';
 import Section from '../../../../../../components/display/sections/Section';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import UsersSelect from './UsersSelect';
+import CategorySelect from './CategorySelect';
+import type { AssignmentSelectOption } from '../../../../roles/models';
 
 interface GroupFormFieldsProps {
   nameValidator: (rule: unknown, value: string) => Promise<void>;
   normalizeName: (value: string) => string;
-  categoryOptions: Array<{ label: string; value: string }>;
+  categoryOptions: AssignmentSelectOption[];
 }
 
 const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
@@ -59,14 +60,23 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
               placeholder={GC.LABELS.FORM.FIELDS.DESCRIPTION_PLACEHOLDER}
               marginBottom={16}
             />
-            <LabeledSelect
+            <Form.Item
               name="categoryID"
               label={GC.LABELS.FORM.FIELDS.CATEGORY_LABEL}
-              placeholder={GC.LABELS.FORM.FIELDS.CATEGORY_PLACEHOLDER}
               required
-              options={categoryOptions}
-              marginBottom={0}
-            />
+              rules={[{ required: true, message: `Please select ${GC.LABELS.FORM.FIELDS.CATEGORY_LABEL.toLowerCase()}` }]}
+              style={{ marginBottom: 0 }}
+              className="form-item-compact no-asterisk"
+            >
+              <CategorySelect
+                placeholder={GC.LABELS.FORM.FIELDS.CATEGORY_PLACEHOLDER}
+                options={categoryOptions}
+                filterOption={(input, option) => {
+                  const displayName = option?.displayName || '';
+                  return displayName.toLowerCase().includes(input.toLowerCase());
+                }}
+              />
+            </Form.Item>
           </div>
         }
       />
