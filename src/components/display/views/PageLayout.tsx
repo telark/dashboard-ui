@@ -1,11 +1,11 @@
-import { Activity } from 'react';
+import { Activity, memo } from 'react';
 import DataTable from '../table/DataTable';
 import { FilterSection } from '../filters';
 import { Toolbar } from '../toolbar';
 import { TablePagination } from '../table';
 import type { PageLayoutConfig } from '../../../interfaces/layout/page';
 
-function PageLayout<T = unknown>({ config }: { config: PageLayoutConfig<T> }) {
+const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfig<T> }) => {
   const {
     title,
     subtitle,
@@ -34,7 +34,6 @@ function PageLayout<T = unknown>({ config }: { config: PageLayoutConfig<T> }) {
       }}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
-        {/* Title and Subtitle */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
           <h1
             style={{
@@ -43,7 +42,6 @@ function PageLayout<T = unknown>({ config }: { config: PageLayoutConfig<T> }) {
               color: '#0B1F33',
               margin: 0,
               padding: 0,
-              fontFamily: "'Roboto Condensed', sans-serif",
             }}
           >
             {title}
@@ -119,6 +117,15 @@ function PageLayout<T = unknown>({ config }: { config: PageLayoutConfig<T> }) {
       </div>
     </div>
   );
-}
+};
+
+const PageLayout = memo(PageLayoutComponent, (prevProps, nextProps) => {
+  return (
+    prevProps.config.title === nextProps.config.title &&
+    prevProps.config.subtitle === nextProps.config.subtitle &&
+    prevProps.config.data.length === nextProps.config.data.length &&
+    prevProps.config.columns.length === nextProps.config.columns.length
+  );
+}) as typeof PageLayoutComponent;
 
 export default PageLayout;

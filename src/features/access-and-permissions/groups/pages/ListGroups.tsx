@@ -76,7 +76,6 @@ const GroupsList: React.FC = () => {
     [sortKey, reduxCategories, handleSort],
   );
 
-  // PageLayout config - must be before any early returns
   const pageConfig: PageLayoutConfig<Group> = useMemo(
     () => ({
       title: GC.LABELS.HEADER_TITLE,

@@ -145,7 +145,9 @@ export function trackLCPComponent(metric: LCPMetric): void {
     const primaryComponent = components[0];
     logger.info(`\n⚛️  React Component Tree (${components.length} components):`);
     logger.info(`   🎯 Primary: ${primaryComponent.componentName}`);
-    logger.info(`      📁 ${formatFilePath(primaryComponent.filePath, primaryComponent.lineNumber)}`);
+    logger.info(
+      `      📁 ${formatFilePath(primaryComponent.filePath, primaryComponent.lineNumber)}`,
+    );
 
     if (components.length > 1) {
       logger.info('\n   📦 Parent Components:');
