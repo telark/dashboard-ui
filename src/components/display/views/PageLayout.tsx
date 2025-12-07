@@ -7,7 +7,7 @@ import { Toolbar } from '../toolbar';
 import { TablePagination } from '../table';
 import type { PageLayoutConfig } from '../../../interfaces/layout/page';
 
-const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfig<T> }) => {
+const PageLayoutComponent = <T = unknown>({ config }: { config: PageLayoutConfig<T> }) => {
   const navigate = useNavigate();
   const {
     title,
@@ -132,8 +132,6 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
           >
             {filterSection ? <FilterSection config={filterSection} /> : null}
           </div>
-
-          {/* TOOLBAR - Always same position */}
           <div
             style={{
               display: 'flex',
@@ -146,7 +144,6 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
           </div>
         </div>
 
-        {/* Table */}
         <DataTable<T>
           columns={columns}
           data={data}
@@ -175,7 +172,6 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
           }}
         />
 
-        {/* Pagination */}
         <TablePagination config={pagination} />
       </div>
     </div>
@@ -187,8 +183,9 @@ const PageLayout = memo(PageLayoutComponent, (prevProps, nextProps) => {
     prevProps.config.title === nextProps.config.title &&
     prevProps.config.subtitle === nextProps.config.subtitle &&
     prevProps.config.data.length === nextProps.config.data.length &&
-    prevProps.config.columns.length === nextProps.config.columns.length
+    prevProps.config.columns.length === nextProps.config.columns.length &&
+    JSON.stringify(prevProps.config.breadcrumbs) === JSON.stringify(nextProps.config.breadcrumbs)
   );
-}) as typeof PageLayoutComponent;
+}) as <T = unknown>(props: { config: PageLayoutConfig<T> }) => React.ReactElement;
 
 export default PageLayout;

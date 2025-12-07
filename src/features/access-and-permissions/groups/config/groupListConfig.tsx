@@ -26,77 +26,74 @@ export const useGroupListConfig = ({
 }: UseGroupListConfigProps) => {
   const navigate = useNavigate();
 
-  const filterSectionConfig: FilterSectionConfig | undefined = React.useMemo(
-    () => {
-      if (viewMode === 'categories') return undefined;
-      return {
-        label: 'Categories',
-        options: categoryFilterOptions,
-        selectedValue: selectedCategory,
-        onChange: (value: string) => {
-          onCategoryChange(value);
-        },
-      };
-    },
-    [categoryFilterOptions, selectedCategory, onCategoryChange, viewMode],
-  );
+  const filterSectionConfig: FilterSectionConfig | undefined = React.useMemo(() => {
+    if (viewMode === 'categories') return undefined;
+    return {
+      label: 'Categories',
+      options: categoryFilterOptions,
+      selectedValue: selectedCategory,
+      onChange: (value: string) => {
+        onCategoryChange(value);
+      },
+    };
+  }, [categoryFilterOptions, selectedCategory, onCategoryChange, viewMode]);
 
   const toolbarConfig: ToolbarConfig = React.useMemo(
     () => ({
-        buttons: [
-          {
-            key: 'search',
-            label: 'Search',
-            icon: <SearchOutlined />,
-            variant: 'ghost',
-            onClick: () => {
-              // TODO: Implement search functionality
-            },
+      buttons: [
+        {
+          key: 'search',
+          label: 'Search',
+          icon: <SearchOutlined />,
+          variant: 'ghost',
+          onClick: () => {
+            // TODO: Implement search functionality
           },
-          {
-            key: 'filter',
-            label: 'Filter',
-            icon: <FilterOutlined />,
-            variant: 'ghost',
-            onClick: () => {
-              // TODO: Implement filter functionality
-            },
+        },
+        {
+          key: 'filter',
+          label: 'Filter',
+          icon: <FilterOutlined />,
+          variant: 'ghost',
+          onClick: () => {
+            // TODO: Implement filter functionality
           },
-          {
-            key: 'manage-categories',
-            label: 'Manage Categories',
-            icon: <AppstoreOutlined />,
-            variant: 'default',
-            dropdown: {
-              items: [
-                {
-                  key: 'view-categories',
-                  label: 'View Categories',
-                  icon: <AppstoreOutlined />,
-                },
-                {
-                  key: 'add-category',
-                  label: 'Add Category',
-                  icon: <PlusOutlined />,
-                },
-              ],
-              onItemClick: (key: string) => {
-                if (key === 'view-categories') {
-                  onViewModeChange?.('categories');
-                } else if (key === 'add-category') {
-                  // TODO: Open add category modal or navigate to create category page
-                }
+        },
+        {
+          key: 'manage-categories',
+          label: 'Manage Categories',
+          icon: <AppstoreOutlined />,
+          variant: 'default',
+          dropdown: {
+            items: [
+              {
+                key: 'view-categories',
+                label: 'View Categories',
+                icon: <AppstoreOutlined />,
               },
+              {
+                key: 'add-category',
+                label: 'Add Category',
+                icon: <PlusOutlined />,
+              },
+            ],
+            onItemClick: (key: string) => {
+              if (key === 'view-categories') {
+                onViewModeChange?.('categories');
+              } else if (key === 'add-category') {
+                // TODO: Open add category modal or navigate to create category page
+              }
             },
           },
-          {
-            key: 'create-group',
-            label: GC.LABELS.FORM.BUTTON_TEXT,
-            icon: <GroupIcon size={14} />,
-            variant: 'primary',
-            onClick: () => navigate(APP_ROUTES.GROUP_CREATE),
-          },
-        ],
+        },
+        {
+          key: 'create-group',
+          label: GC.LABELS.FORM.BUTTON_TEXT,
+          icon: <GroupIcon size={14} />,
+          variant: 'primary',
+          onClick: () => navigate(APP_ROUTES.GROUP_CREATE),
+        },
+      ],
     }),
     [navigate, onViewModeChange],
   );

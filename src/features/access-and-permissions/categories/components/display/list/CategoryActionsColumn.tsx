@@ -88,4 +88,3 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
     </div>
   );
 };
-

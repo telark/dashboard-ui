@@ -14,14 +14,17 @@ export const useCategoryListView = ({ categories }: UseCategoryListViewProps) =>
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const handleSort = useCallback((key: string) => {
-    if (key === sortKey) {
-      setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setSortKey(key as SortKey);
-      setSortOrder('asc');
-    }
-  }, [sortKey]);
+  const handleSort = useCallback(
+    (key: string) => {
+      if (key === sortKey) {
+        setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+      } else {
+        setSortKey(key as SortKey);
+        setSortOrder('asc');
+      }
+    },
+    [sortKey],
+  );
 
   const sortedCategories = useMemo(() => {
     const items = [...categories];
@@ -60,4 +63,3 @@ export const useCategoryListView = ({ categories }: UseCategoryListViewProps) =>
     paginatedCategories,
   };
 };
-

@@ -31,7 +31,9 @@ const GroupsList: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('groups');
   const { groups, loading, error } = useGroups();
   const { handleDelete } = useGroupActions();
-  const { categories, loading: categoriesLoading } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
+  const { categories, loading: categoriesLoading } = useCategories(
+    CATEGORIES_CONSTANTS.SCOPES.GROUPS,
+  );
   const reduxCategories = useSelector(selectGroupsCategories);
 
   const {
@@ -280,19 +282,19 @@ const GroupsList: React.FC = () => {
   // Loading state
   if (isFetching) {
     return (
-        <div
-          style={{
+      <div
+        style={{
           background: '#fff',
           minHeight: 'calc(100vh - 60px)',
           padding: '48px 32px 32px',
           marginTop: '60px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <FancySpinner label={SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING} showLabel={true} />
-        </div>
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <FancySpinner label={SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING} showLabel={true} />
+      </div>
     );
   }
 

@@ -15,7 +15,7 @@ interface CategoryColumnsContext extends GenerateColumnCtx {
 
 const CategoryColumns = (ctx: CategoryColumnsContext) => {
   const cols: ReturnType<typeof generateColumn>[] = [];
-  
+
   cols.push(
     generateColumn(
       {
@@ -84,9 +84,8 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
       ctx,
     ),
   );
-  
+
   return cols;
 };
 
 export default CategoryColumns;
-

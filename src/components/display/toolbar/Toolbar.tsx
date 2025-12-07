@@ -10,7 +10,7 @@ interface ToolbarProps {
 
 const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
   if (!config) return null;
-  
+
   const { buttons } = config;
 
   return (

@@ -9,7 +9,7 @@ interface FilterSectionProps {
 
 const FilterSection: React.FC<FilterSectionProps> = ({ config }) => {
   if (!config) return null;
-  
+
   const { label, options, selectedValue, onChange } = config;
 
   return (
