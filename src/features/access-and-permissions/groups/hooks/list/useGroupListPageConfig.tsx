@@ -10,6 +10,7 @@ import { GroupActionsColumn } from '../../components/display/list/GroupActionsCo
 import { useGroupListConfig } from '../../config/groupListConfig';
 import { mapCategoriesToFilterOptions } from '../../utils/groupListUtils';
 import { useCategoryListView } from '../../../categories/hooks';
+import { deduplicateCategoriesByName } from '../../../categories/utils/helpers';
 import type { Group } from '../../models';
 import type { Category } from '../../../categories/models';
 
@@ -60,6 +61,17 @@ export const useGroupListPageConfig = ({
 }: UseGroupListPageConfigOptions): PageLayoutConfig<Group | Category> => {
   const [selectedCategories, setSelectedCategories] = useState<React.Key[]>([]);
   const reduxCategories = useSelector(selectGroupsCategories);
+  
+  const uniqueReduxCategories = useMemo(
+    () => deduplicateCategoriesByName(reduxCategories),
+    [reduxCategories],
+  );
+  
+  const uniqueCategories = useMemo(
+    () => deduplicateCategoriesByName(categories || []),
+    [categories],
+  );
+
   const {
     sortKey: categorySortKey,
     currentPage: categoryCurrentPage,
@@ -69,11 +81,11 @@ export const useGroupListPageConfig = ({
     handleSort: handleCategorySort,
     sortedCategories,
     paginatedCategories,
-  } = useCategoryListView({ categories: categories || [] });
+  } = useCategoryListView({ categories: uniqueCategories });
 
   const categoryFilterOptions = useMemo(
-    () => mapCategoriesToFilterOptions(reduxCategories),
-    [reduxCategories],
+    () => mapCategoriesToFilterOptions(uniqueReduxCategories),
+    [uniqueReduxCategories],
   );
 
   const { filterSectionConfig, toolbarConfig } = useGroupListConfig({
@@ -93,9 +105,9 @@ export const useGroupListPageConfig = ({
       Columns({
         activeSortKey: sortKey || 'creationDate',
         onSort: handleSort,
-        categories: reduxCategories,
+        categories: uniqueReduxCategories,
       }),
-    [sortKey, reduxCategories, handleSort],
+    [sortKey, uniqueReduxCategories, handleSort],
   );
 
   const categoryColumns = useMemo(

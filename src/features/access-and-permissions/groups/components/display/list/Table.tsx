@@ -7,6 +7,7 @@ import type { Group, GroupsTableProps } from '../../../models';
 import Columns from './Columns';
 import { useGroupMutations } from '../../../hooks';
 import { selectGroupsCategories } from '../../../../categories/store/selectors/categorySelectors';
+import { deduplicateCategoriesByName } from '../../../../categories/utils/helpers';
 import ActionBar from '../../../../../../components/display/actions/ActionBar';
 
 type SortKey = 'name' | 'categoryID' | 'creationDate';
@@ -17,7 +18,11 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedGroups, setSelectedGroups] = useState<Set<string>>(new Set());
 
-  const categories = useSelector(selectGroupsCategories);
+  const categoriesFromStore = useSelector(selectGroupsCategories);
+  const categories = useMemo(
+    () => deduplicateCategoriesByName(categoriesFromStore),
+    [categoriesFromStore],
+  );
 
   const selectedCount = selectedGroups.size;
   const hasSelection = selectedCount > 0;
