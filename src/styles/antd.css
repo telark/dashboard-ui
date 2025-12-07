@@ -150,13 +150,13 @@
 
 /* More space between label and input */
 .ant-form-item-label {
-  margin-bottom: 8px !important;
+  margin-bottom: 4px !important;
   padding-bottom: 0 !important;
   line-height: 1.5 !important;
 }
 
 .app-section .ant-form-vertical .ant-form-item .ant-form-item-label {
-  margin-bottom: 8px !important;
+  margin-bottom: 4px !important;
   padding-bottom: 0 !important;
 }
 .app-section .ant-form-vertical .ant-form-item .ant-form-item-control {
@@ -165,7 +165,7 @@
 
 /* Extra compact spacing for shared labeled inputs/selects */
 .form-item-compact .ant-form-item-label {
-  margin-bottom: 8px !important;
+  margin-bottom: 4px !important;
   padding-bottom: 0 !important;
 }
 .form-item-compact .ant-form-item-control {
