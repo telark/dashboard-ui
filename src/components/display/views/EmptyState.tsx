@@ -103,4 +103,3 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
 EmptyState.displayName = 'EmptyState';
 
 export default EmptyState;
-

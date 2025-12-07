@@ -33,3 +33,13 @@ export interface GenerateColumnCtx {
   activeSortKey: string;
   onSort: (key: string) => void;
 }
+
+export interface TablePaginationConfig {
+  currentPage: number;
+  pageSize: number;
+  total: number;
+  onPageChange: (page: number) => void;
+  onPageSizeChange: (size: number) => void;
+  pageSizeOptions: number[];
+  showRowsLabel?: string;
+}

@@ -118,7 +118,10 @@ export function trackLCPComponent(metric: LCPMetric): void {
   const lcpEntry = entries?.[entries.length - 1];
 
   if (!lcpEntry?.element) {
-    console.log(`%c[LCP Performance] ${metric.value.toFixed(0)}ms`, 'color: #10b981; font-weight: bold; font-size: 14px');
+    console.log(
+      `%c[LCP Performance] ${metric.value.toFixed(0)}ms`,
+      'color: #10b981; font-weight: bold; font-size: 14px',
+    );
     console.log('⚠️ No LCP element found');
     return;
   }
@@ -131,9 +134,15 @@ export function trackLCPComponent(metric: LCPMetric): void {
   const isImage = lcpElement.tagName === 'IMG';
 
   console.log(`\n${SEPARATOR}`);
-  console.log(`%c🎯 LARGEST CONTENTFUL PAINT (LCP) DETECTED`, 'color: #10b981; font-weight: bold; font-size: 16px');
+  console.log(
+    `%c🎯 LARGEST CONTENTFUL PAINT (LCP) DETECTED`,
+    'color: #10b981; font-weight: bold; font-size: 16px',
+  );
   console.log(SEPARATOR);
-  console.log(`%c⏱️  LCP Time: ${metric.value.toFixed(0)}ms`, 'color: #3b82f6; font-weight: bold; font-size: 14px');
+  console.log(
+    `%c⏱️  LCP Time: ${metric.value.toFixed(0)}ms`,
+    'color: #3b82f6; font-weight: bold; font-size: 14px',
+  );
   console.log(`%c📊 Rating: ${rating}`, 'color: #6366f1; font-weight: bold');
   console.log(`\n%c🔍 DOM Element:`, 'color: #f59e0b; font-weight: bold');
   console.log(`   Selector: ${selector}`);
@@ -142,9 +151,17 @@ export function trackLCPComponent(metric: LCPMetric): void {
 
   if (components.length > 0) {
     const primaryComponent = components[0];
-    console.log(`\n%c⚛️  React Component Tree (${components.length} components):`, 'color: #8b5cf6; font-weight: bold');
-    console.log(`%c   🎯 Primary: ${primaryComponent.componentName}`, 'color: #ec4899; font-weight: bold; font-size: 13px');
-    console.log(`      📁 ${formatFilePath(primaryComponent.filePath, primaryComponent.lineNumber)}`);
+    console.log(
+      `\n%c⚛️  React Component Tree (${components.length} components):`,
+      'color: #8b5cf6; font-weight: bold',
+    );
+    console.log(
+      `%c   🎯 Primary: ${primaryComponent.componentName}`,
+      'color: #ec4899; font-weight: bold; font-size: 13px',
+    );
+    console.log(
+      `      📁 ${formatFilePath(primaryComponent.filePath, primaryComponent.lineNumber)}`,
+    );
 
     if (components.length > 1) {
       console.log(`\n   📦 Parent Components:`);
@@ -155,7 +172,9 @@ export function trackLCPComponent(metric: LCPMetric): void {
         console.log(`${indent}  📁 ${formatFilePath(comp.filePath, comp.lineNumber)}`);
       });
       if (components.length > MAX_PARENT_COMPONENTS + 1) {
-        console.log(`      ... and ${components.length - MAX_PARENT_COMPONENTS - 1} more parent components`);
+        console.log(
+          `      ... and ${components.length - MAX_PARENT_COMPONENTS - 1} more parent components`,
+        );
       }
     }
   } else {
@@ -167,7 +186,9 @@ export function trackLCPComponent(metric: LCPMetric): void {
 
   if (metric.value > 2500) {
     console.log(`\n%c⚡ Action Required:`, 'color: #ef4444; font-weight: bold');
-    console.log(`   LCP is ${(metric.value - 2500).toFixed(0)}ms over the "good" threshold (2500ms)`);
+    console.log(
+      `   LCP is ${(metric.value - 2500).toFixed(0)}ms over the "good" threshold (2500ms)`,
+    );
     console.log(`   Focus optimization on: ${components[0]?.componentName || selector}`);
   }
 
@@ -197,7 +218,9 @@ export function trackLCPCandidates(metric: LCPMetric): void {
       const element = entry.element as HTMLElement;
       const components = getComponentInfo(getReactFiber(element));
       const componentName = components[0]?.componentName || 'Unknown';
-      console.log(`${index + 1}. ${entry.renderTime.toFixed(0)}ms - ${componentName} (${getElementSelector(element)})`);
+      console.log(
+        `${index + 1}. ${entry.renderTime.toFixed(0)}ms - ${componentName} (${getElementSelector(element)})`,
+      );
     }
   });
   console.groupEnd();

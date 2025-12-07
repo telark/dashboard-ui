@@ -9,7 +9,10 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = mem
     const [isHovered, setIsHovered] = useState(false);
     const navigate = useNavigate();
 
-    const itemKey = useMemo(() => `${route || 'route-missing'}-${text || 'text-missing'}`, [route, text]);
+    const itemKey = useMemo(
+      () => `${route || 'route-missing'}-${text || 'text-missing'}`,
+      [route, text],
+    );
 
     const isActive = Boolean(active);
     const isActiveOrHovered = isActive || isHovered;

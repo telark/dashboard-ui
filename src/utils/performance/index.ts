@@ -1,4 +1,9 @@
-export { initPerformanceMonitoring, measureRender, markMilestone, measureBetween } from './performance';
+export {
+  initPerformanceMonitoring,
+  measureRender,
+  markMilestone,
+  measureBetween,
+} from './performance';
 export { trackLCPComponent, trackLCPCandidates } from './lcpTracker';
 export {
   enableViewTransitions,
@@ -8,4 +13,3 @@ export {
   smoothScrollToTop,
   initNavigationOptimizations,
 } from './navigation';
-

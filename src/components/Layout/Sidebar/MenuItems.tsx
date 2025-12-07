@@ -17,10 +17,7 @@ interface MenuItemsProps {
 }
 
 const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
-  const defaultOpenKeys = useMemo(
-    () => [MENU_KEYS.RESOURCES, MENU_KEYS.USERS_AND_GROUPS],
-    [],
-  );
+  const defaultOpenKeys = useMemo(() => [MENU_KEYS.RESOURCES, MENU_KEYS.USERS_AND_GROUPS], []);
 
   const [openKeys, setOpenKeys] = useState<string[]>(isCollapsed ? [] : defaultOpenKeys);
 
