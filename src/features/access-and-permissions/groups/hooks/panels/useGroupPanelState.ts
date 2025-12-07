@@ -3,7 +3,7 @@ import { Form } from 'antd';
 import type { Group } from '../../models';
 import type { GroupFormData } from '../../models';
 
-interface UseGroupPanelsReturn {
+interface UseGroupPanelStateReturn {
   createPanelOpen: boolean;
   editPanelOpen: boolean;
   editingGroup: Group | null;
@@ -15,7 +15,7 @@ interface UseGroupPanelsReturn {
   closeEditPanel: () => void;
 }
 
-export const useGroupPanels = (): UseGroupPanelsReturn => {
+export const useGroupPanelState = (): UseGroupPanelStateReturn => {
   const [createPanelOpen, setCreatePanelOpen] = useState(false);
   const [editPanelOpen, setEditPanelOpen] = useState(false);
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);

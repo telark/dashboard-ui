@@ -6,7 +6,7 @@ import { APP_ROUTES } from '../../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
 import type { Group } from '../../models';
 
-interface UseGroupListActionsProps {
+interface UseGroupListInteractionsProps {
   selectedGroups: React.Key[];
   groups: Group[] | undefined;
   handleDelete: (id: string) => Promise<void>;
@@ -14,7 +14,7 @@ interface UseGroupListActionsProps {
   onEdit?: (group: Group) => void;
 }
 
-interface UseGroupListActionsReturn {
+interface UseGroupListInteractionsReturn {
   handleView: () => void;
   handleEdit: () => void;
   handleDeleteClick: () => void;
@@ -22,13 +22,13 @@ interface UseGroupListActionsReturn {
   handleEditGroup: (record: Group) => void;
 }
 
-export const useGroupListActions = ({
+export const useGroupListInteractions = ({
   selectedGroups,
   groups,
   handleDelete,
   setSelectedGroups,
   onEdit,
-}: UseGroupListActionsProps): UseGroupListActionsReturn => {
+}: UseGroupListInteractionsProps): UseGroupListInteractionsReturn => {
   const navigate = useNavigate();
   const selectedCount = selectedGroups.length;
 

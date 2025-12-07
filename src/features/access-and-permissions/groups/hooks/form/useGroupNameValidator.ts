@@ -4,17 +4,17 @@ import { DEFAULT_NAME_VALIDATION_CONFIG } from '../../../../shared/constants';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
 import type { Group } from '../../models';
 
-interface UseGroupNameValidationOptions {
+interface UseGroupNameValidatorOptions {
   groups: Group[];
   isEditMode?: boolean;
   currentName?: string;
 }
 
-export const useGroupNameValidation = ({
+export const useGroupNameValidator = ({
   groups,
   isEditMode = false,
   currentName,
-}: UseGroupNameValidationOptions) => {
+}: UseGroupNameValidatorOptions) => {
   const nameValidationConfig = useMemo(
     () => ({
       ...DEFAULT_NAME_VALIDATION_CONFIG,

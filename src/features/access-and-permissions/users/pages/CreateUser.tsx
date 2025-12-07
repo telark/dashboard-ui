@@ -10,7 +10,7 @@ import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWr
 import { PageContainer } from '../../../../components/shared';
 import { useUserActions } from '../hooks';
 import { useRoles } from '../../roles/hooks';
-import { useGroups } from '../../groups/hooks';
+import { useFetchGroups } from '../../groups/hooks';
 import UserFormFields from '../components/display/shared/UserFormFields';
 import type { CreateUserFormValues } from '../models';
 
@@ -20,7 +20,7 @@ const CreateUser: React.FC = () => {
   const [form] = Form.useForm<CreateUserFormValues>();
   const { handleCreate, submitting } = useUserActions();
   const { roles } = useRoles();
-  const { groups } = useGroups();
+  const { groups } = useFetchGroups();
   const [hasFormErrors, setHasFormErrors] = useState(false);
 
   const checkFormState = useCallback(() => {

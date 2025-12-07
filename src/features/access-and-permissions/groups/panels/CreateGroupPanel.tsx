@@ -3,8 +3,8 @@ import { SlideOutPanel } from '../../../../components/display/panels/slide-out';
 import { Icons } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import GroupFormFields from '../components/display/shared/GroupFormFields';
-import { useGroupNameValidation, useGroupFormState, useGroupFormOptions } from '../hooks';
-import { useGroups, useGroupActions } from '../hooks';
+import { useGroupNameValidator, useGroupFormState, useGroupFormSelectOptions } from '../hooks';
+import { useFetchGroups, useGroupMutations } from '../hooks';
 import type { GroupFormData } from '../models';
 
 interface CreateGroupPanelProps {
@@ -16,10 +16,10 @@ interface CreateGroupPanelProps {
 const GroupIcon = Icons.Group;
 
 const CreateGroupPanel: React.FC<CreateGroupPanelProps> = ({ open, onClose, form }) => {
-  const { groups } = useGroups();
-  const { handleCreate, submitting } = useGroupActions();
-  const { userOptions, roleOptions, categoryOptions, defaultCategoryId } = useGroupFormOptions();
-  const { nameValidator, normalizeName } = useGroupNameValidation({
+  const { groups } = useFetchGroups();
+  const { handleCreate, submitting } = useGroupMutations();
+  const { userOptions, roleOptions, categoryOptions, defaultCategoryId } = useGroupFormSelectOptions();
+  const { nameValidator, normalizeName } = useGroupNameValidator({
     groups,
     isEditMode: false,
   });

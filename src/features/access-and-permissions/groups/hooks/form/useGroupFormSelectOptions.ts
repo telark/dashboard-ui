@@ -1,19 +1,19 @@
 import { useMemo } from 'react';
 import { useUsers } from '../../../users/hooks';
 import { useRoles } from '../../../roles/hooks';
-import { useGroupCategories } from '../categories/useGroupCategories';
+import { useGroupCategoryOptions } from '../categories/useGroupCategoryOptions';
 
-interface UseGroupFormOptionsReturn {
+interface UseGroupFormSelectOptionsReturn {
   userOptions: Array<{ label: string; value: string }>;
   roleOptions: Array<{ label: string; value: string }>;
   categoryOptions: Array<{ label: string; value: string }>;
   defaultCategoryId: string | undefined;
 }
 
-export const useGroupFormOptions = (): UseGroupFormOptionsReturn => {
+export const useGroupFormSelectOptions = (): UseGroupFormSelectOptionsReturn => {
   const { users } = useUsers();
   const { roles } = useRoles();
-  const { categoryOptions, defaultCategoryId } = useGroupCategories();
+  const { categoryOptions, defaultCategoryId } = useGroupCategoryOptions();
 
   const userOptions = useMemo(
     () =>

@@ -8,11 +8,11 @@ import { FancySpinner } from '../../../../components/animation';
 import ActionBar from '../../../../components/display/actions/ActionBar';
 import { Icons } from '../../../../constants';
 import {
-  useGroups,
-  useGroupActions,
+  useFetchGroups,
+  useGroupMutations,
   useGroupListState,
-  useGroupListActions,
-  useGroupPanels,
+  useGroupListInteractions,
+  useGroupPanelState,
   useGroupListPageConfig,
 } from '../hooks';
 import { useCategories } from '../../categories/hooks';
@@ -25,8 +25,8 @@ type ViewMode = 'groups' | 'categories';
 
 const MainPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('groups');
-  const { groups, loading, error } = useGroups();
-  const { handleDelete } = useGroupActions();
+  const { groups, loading, error } = useFetchGroups();
+  const { handleDelete } = useGroupMutations();
   const { categories, loading: categoriesLoading } = useCategories(
     CATEGORIES_CONSTANTS.SCOPES.GROUPS,
   );
@@ -58,9 +58,9 @@ const MainPage: React.FC = () => {
     closeCreatePanel,
     openEditPanel,
     closeEditPanel,
-  } = useGroupPanels();
+  } = useGroupPanelState();
 
-  const { handleView, handleEdit, handleDeleteClick, handleViewGroup } = useGroupListActions({
+  const { handleView, handleEdit, handleDeleteClick, handleViewGroup } = useGroupListInteractions({
     selectedGroups,
     groups,
     handleDelete,

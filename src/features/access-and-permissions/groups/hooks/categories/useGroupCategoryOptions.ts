@@ -3,7 +3,7 @@ import { useCategories } from '../../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../../categories/constants';
 import { mapCategoriesToOptions } from '../../../categories/utils';
 
-export const useGroupCategories = () => {
+export const useGroupCategoryOptions = () => {
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
 
   const categoryOptions = useMemo(() => mapCategoriesToOptions(categories), [categories]);

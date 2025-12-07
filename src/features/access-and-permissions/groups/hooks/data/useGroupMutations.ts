@@ -8,7 +8,7 @@ import { createGroupThunk, updateGroupThunk, deleteGroupThunk } from '../../stor
 import type { AppDispatch } from '../../../../../store';
 import type { GroupFormData } from '../../models';
 
-export const useGroupActions = () => {
+export const useGroupMutations = () => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);

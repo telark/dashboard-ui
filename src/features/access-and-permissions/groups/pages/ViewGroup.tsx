@@ -6,14 +6,14 @@ import DetailsView from '../../../../components/display/views/DetailsView';
 import { createGroupViewConfig } from '../config';
 import AnimatedPageWrapper from '../../../../components/animation/AnimatedPageWrapper';
 import { PageContainer, NotFound } from '../../../../components/shared';
-import { useGroupDetails } from '../hooks';
+import { useFetchGroupDetails } from '../hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 
 const GroupIcon = Icons.Group;
 
 const ViewGroup: React.FC = () => {
-  const { group, loading, notFound } = useGroupDetails();
+  const { group, loading, notFound } = useFetchGroupDetails();
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.GROUPS);
 
   if (loading) {

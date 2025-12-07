@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../../../../store';
 import { fetchAllGroupsThunk } from '../../store';
 
-export const useGroups = () => {
+export const useFetchGroups = () => {
   const dispatch: AppDispatch = useDispatch();
   const { groups, loading, error } = useSelector((state: RootState) => state.groups);
 

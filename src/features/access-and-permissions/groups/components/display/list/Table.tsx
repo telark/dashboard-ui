@@ -5,14 +5,14 @@ import DataTable from '../../../../../../components/display/table/DataTable';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import type { Group, GroupsTableProps } from '../../../models';
 import Columns from './Columns';
-import { useGroupActions } from '../../../hooks';
+import { useGroupMutations } from '../../../hooks';
 import { selectGroupsCategories } from '../../../../categories/store/selectors/categorySelectors';
 import ActionBar from '../../../../../../components/display/actions/ActionBar';
 
 type SortKey = 'name' | 'categoryID' | 'creationDate';
 
 const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => {
-  const { handleDelete } = useGroupActions();
+  const { handleDelete } = useGroupMutations();
   const [sortKey, setSortKey] = useState<SortKey>('creationDate');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedGroups, setSelectedGroups] = useState<Set<string>>(new Set());
