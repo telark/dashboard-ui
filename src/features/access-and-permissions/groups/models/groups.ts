@@ -23,4 +23,7 @@ export interface GroupsTableProps {
   onEdit?: (group: Group) => void;
 }
 
-export type GroupFormData = Omit<Group, 'id' | 'creationDate'>;
+export type GroupFormData = Omit<Group, 'id' | 'creationDate' | 'lastUpdateDate'> & {
+  createdBy?: string;
+  lastUpdatedBy?: string;
+};
