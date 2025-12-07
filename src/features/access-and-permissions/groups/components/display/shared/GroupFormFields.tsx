@@ -4,19 +4,18 @@ import LabeledInput from '../../../../../../components/display/inputs/LabeledInp
 import LabeledSelect from '../../../../../../components/display/inputs/LabeledSelect';
 import Section from '../../../../../../components/display/sections/Section';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
+import UsersSelect from './UsersSelect';
 
 interface GroupFormFieldsProps {
   nameValidator: (rule: unknown, value: string) => Promise<void>;
   normalizeName: (value: string) => string;
   categoryOptions: Array<{ label: string; value: string }>;
-  userOptions: Array<{ label: string; value: string }>;
 }
 
 const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
   nameValidator,
   normalizeName,
   categoryOptions,
-  userOptions,
 }) => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -76,15 +75,15 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
       <Section
         title="Members"
         content={
-          <LabeledSelect
+          <Form.Item
             name="assignedUsersIDs"
             label="Assigned Users"
-            placeholder="-Select users"
             required={false}
-            options={userOptions}
-            mode="multiple"
-            marginBottom={0}
-          />
+            style={{ marginBottom: 0 }}
+            className="form-item-compact no-asterisk"
+          >
+            <UsersSelect />
+          </Form.Item>
         }
       />
     </div>

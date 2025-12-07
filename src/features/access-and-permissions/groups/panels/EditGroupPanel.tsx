@@ -19,7 +19,7 @@ const GroupIcon = Icons.Group;
 const EditGroupPanel: React.FC<EditGroupPanelProps> = ({ open, onClose, editingGroup, form }) => {
   const { groups } = useFetchGroups();
   const { handleUpdate, submitting } = useGroupMutations();
-  const { userOptions, categoryOptions } = useGroupFormSelectOptions();
+  const { categoryOptions } = useGroupFormSelectOptions();
   const { nameValidator, normalizeName } = useGroupNameValidator({
     groups,
     isEditMode: true,
@@ -57,7 +57,6 @@ const EditGroupPanel: React.FC<EditGroupPanelProps> = ({ open, onClose, editingG
           nameValidator={nameValidator}
           normalizeName={normalizeName}
           categoryOptions={categoryOptions}
-          userOptions={userOptions}
         />
       }
       onSubmit={handleSubmit}
