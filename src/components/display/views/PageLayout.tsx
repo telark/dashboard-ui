@@ -113,7 +113,7 @@ const PageLayoutComponent = <T = unknown>({ config }: { config: PageLayoutConfig
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: '300px auto',
+            gridTemplateColumns: '1fr auto',
             alignItems: 'flex-end',
             gap: 16,
             minHeight: '60px',

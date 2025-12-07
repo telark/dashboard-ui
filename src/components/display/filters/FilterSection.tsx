@@ -26,7 +26,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({ config }) => {
       >
         {label}
       </span>
-      <Space wrap size={[8, 8]}>
+      <Space wrap={false} size={[8, 8]}>
         {options.map((option) => {
           const isActive = selectedValue === option.value;
           return (
