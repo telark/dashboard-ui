@@ -157,4 +157,3 @@ const SlideOutPanel: React.FC<SlideOutPanelProps> = ({
 };
 
 export default SlideOutPanel;
-

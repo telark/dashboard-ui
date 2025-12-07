@@ -22,11 +22,7 @@ import { mapCategoriesToFilterOptions } from '../utils/groupListUtils';
 import type { Group } from '../models';
 import type { Category } from '../../categories/models';
 import { CreatePanel } from '../../../../components/display/panel';
-import {
-  useGroupNameValidation,
-  useGroupCategories,
-  useGroupFormState,
-} from '../hooks';
+import { useGroupNameValidation, useGroupCategories, useGroupFormState } from '../hooks';
 import { useUsers } from '../../users/hooks';
 import { useRoles } from '../../roles/hooks';
 import GroupFormFields from '../components/display/shared/GroupFormFields';
@@ -52,27 +48,40 @@ const GroupsList: React.FC = () => {
   const { categoryOptions, defaultCategoryId } = useGroupCategories();
   const { users } = useUsers();
   const { roles } = useRoles();
-  const { nameValidator: createNameValidator, normalizeName: createNormalizeName } = useGroupNameValidation({
-    groups,
-    isEditMode: false,
-  });
-  const { nameValidator: editNameValidator, normalizeName: editNormalizeName } = useGroupNameValidation({
-    groups,
-    isEditMode: true,
-    currentName: editingGroup?.name,
-  });
-  const { handleValuesChange: handleCreateValuesChange, handleFieldsChange: handleCreateFieldsChange, hasFormErrors: hasCreateFormErrors } = useGroupFormState({
+  const { nameValidator: createNameValidator, normalizeName: createNormalizeName } =
+    useGroupNameValidation({
+      groups,
+      isEditMode: false,
+    });
+  const { nameValidator: editNameValidator, normalizeName: editNormalizeName } =
+    useGroupNameValidation({
+      groups,
+      isEditMode: true,
+      currentName: editingGroup?.name,
+    });
+  const {
+    handleValuesChange: handleCreateValuesChange,
+    handleFieldsChange: handleCreateFieldsChange,
+    hasFormErrors: hasCreateFormErrors,
+  } = useGroupFormState({
     form: createForm,
     isEditMode: false,
   });
-  const { handleValuesChange: handleEditValuesChange, handleFieldsChange: handleEditFieldsChange, hasFormErrors: hasEditFormErrors, hasChanges } = useGroupFormState({
+  const {
+    handleValuesChange: handleEditValuesChange,
+    handleFieldsChange: handleEditFieldsChange,
+    hasFormErrors: hasEditFormErrors,
+    hasChanges,
+  } = useGroupFormState({
     form: editForm,
     isEditMode: true,
-    initialValues: editingGroup ? {
-      name: editingGroup.name,
-      description: editingGroup.description,
-      categoryID: editingGroup.categoryID,
-    } : null,
+    initialValues: editingGroup
+      ? {
+          name: editingGroup.name,
+          description: editingGroup.description,
+          categoryID: editingGroup.categoryID,
+        }
+      : null,
   });
 
   const userOptions = useMemo(
@@ -226,7 +235,9 @@ const GroupsList: React.FC = () => {
                 width: 120,
                 onHeaderCell: () => ({ style: { background: '#fff' } }),
                 render: (_: unknown, record: Group | Category) =>
-                  viewMode === 'groups' ? <GroupActionsColumn record={record as Group} onEdit={handleEditClick} /> : null,
+                  viewMode === 'groups' ? (
+                    <GroupActionsColumn record={record as Group} onEdit={handleEditClick} />
+                  ) : null,
               },
             ]
           : [
@@ -368,19 +379,19 @@ const GroupsList: React.FC = () => {
   // Loading state
   if (isFetching) {
     return (
-        <div
-          style={{
+      <div
+        style={{
           background: '#fff',
           minHeight: 'calc(100vh - 60px)',
           padding: '48px 32px 32px',
           marginTop: '60px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <FancySpinner label={SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING} showLabel={true} />
-        </div>
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <FancySpinner label={SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING} showLabel={true} />
+      </div>
     );
   }
 

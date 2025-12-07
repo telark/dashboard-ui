@@ -25,7 +25,6 @@ export const useGroupListConfig = ({
   onViewModeChange,
   onCreateGroupClick,
 }: UseGroupListConfigProps) => {
-
   const filterSectionConfig: FilterSectionConfig | undefined = React.useMemo(() => {
     if (viewMode === 'categories') return undefined;
     return {
@@ -91,9 +90,9 @@ export const useGroupListConfig = ({
           label: GC.LABELS.FORM.BUTTON_TEXT,
           icon: <GroupIcon size={14} />,
           variant: 'primary',
-            onClick: () => {
-              onCreateGroupClick?.();
-            },
+          onClick: () => {
+            onCreateGroupClick?.();
+          },
         },
       ],
     }),

@@ -18,7 +18,10 @@ export interface CreatePanelProps extends Omit<SlideOutPanelProps, 'children'> {
   disabled?: boolean;
   initialValues?: Record<string, unknown>;
   cancelButtonText?: string;
-  onValuesChange?: (changedValues: Record<string, unknown>, allValues: Record<string, unknown>) => void;
+  onValuesChange?: (
+    changedValues: Record<string, unknown>,
+    allValues: Record<string, unknown>,
+  ) => void;
   onFieldsChange?: (changedFields: unknown[], allFields: unknown[]) => void;
 }
 
@@ -136,4 +139,3 @@ const CreatePanel: React.FC<CreatePanelProps> = ({
 };
 
 export default CreatePanel;
-
