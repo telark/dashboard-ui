@@ -40,39 +40,6 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-          {breadcrumbs && breadcrumbs.length > 1 ? (
-            <Breadcrumb
-              items={breadcrumbs.map((b, index) => ({
-                title:
-                  (b.to || b.onClick) && index < breadcrumbs.length - 1 ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (b.onClick) {
-                          b.onClick();
-                        } else if (b.to) {
-                          navigate(b.to);
-                        }
-                      }}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        padding: 0,
-                        cursor: 'pointer',
-                        color: 'inherit',
-                        font: 'inherit',
-                        textDecoration: 'none',
-                      }}
-                    >
-                      {b.label}
-                    </button>
-                  ) : (
-                    <span>{b.label}</span>
-                  ),
-              }))}
-              style={{ marginBottom: 8 }}
-            />
-          ) : null}
           <h1
             style={{
               fontSize: 28,
@@ -81,9 +48,49 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
               margin: 0,
               padding: 0,
               lineHeight: 1.2,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
             }}
           >
-            {title}
+            {breadcrumbs && breadcrumbs.length > 0 ? (
+              <>
+                {breadcrumbs.map((b, index) => (
+                  <React.Fragment key={index}>
+                    {index > 0 && <span style={{ color: '#64748b' }}>/</span>}
+                    {b.onClick || b.to ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (b.onClick) {
+                            b.onClick();
+                          } else if (b.to) {
+                            navigate(b.to);
+                          }
+                        }}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          cursor: 'pointer',
+                          color: '#64748b',
+                          fontSize: 28,
+                          fontWeight: 700,
+                          fontFamily: 'inherit',
+                          textDecoration: 'none',
+                        }}
+                      >
+                        {b.label}
+                      </button>
+                    ) : (
+                      <span>{b.label}</span>
+                    )}
+                  </React.Fragment>
+                ))}
+              </>
+            ) : (
+              title
+            )}
           </h1>
           <Activity mode={subtitle ? 'visible' : 'hidden'}>
             <p

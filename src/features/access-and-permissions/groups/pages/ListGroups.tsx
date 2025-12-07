@@ -108,7 +108,7 @@ const GroupsList: React.FC = () => {
     [categorySortKey, handleCategorySort],
   );
 
-  // Breadcrumbs based on view mode
+  // Breadcrumbs based on view mode - used in title
   const breadcrumbs = useMemo(() => {
     if (viewMode === 'categories') {
       return [
@@ -116,7 +116,7 @@ const GroupsList: React.FC = () => {
         { label: 'Categories' },
       ];
     }
-    return [{ label: GC.LABELS.BREADCRUMBS.GROUPS }];
+    return [];
   }, [viewMode]);
 
   // Single page config that changes only columns based on view mode

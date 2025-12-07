@@ -13,7 +13,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({ config }) => {
   const { label, options, selectedValue, onChange } = config;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, width: '100%' }}>
       <span
         style={{
           fontSize: 13,
