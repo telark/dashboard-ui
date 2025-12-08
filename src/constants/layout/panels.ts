@@ -1,3 +1,5 @@
+import { DEFAULT_COLORS } from '../shared/colors';
+
 export const SLIDE_OUT = {
   BACKDROP: {
     position: 'fixed' as const,
@@ -93,7 +95,7 @@ export const SLIDE_OUT = {
     borderRadius: 6,
     transition: 'all 0.2s',
   },
-  CANCEL_BUTTON_HOVER_BACKGROUND: '#f5f5f5',
+  CANCEL_BUTTON_HOVER_BACKGROUND: DEFAULT_COLORS.HOVER_BG,
   CANCEL_BUTTON_DEFAULT_BACKGROUND: 'none',
   KEYFRAMES: {
     SLIDE_IN_RIGHT: `

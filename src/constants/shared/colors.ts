@@ -4,4 +4,5 @@ export const DEFAULT_COLORS = {
   DEFAULT: '#999',
   SWITCH_OFF: '#d9d9d9',
   PAGE_BG: '#F3F6FA',
+  HOVER_BG: '#f5f5f5',
 } as const;

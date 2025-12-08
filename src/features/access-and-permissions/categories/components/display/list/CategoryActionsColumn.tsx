@@ -41,14 +41,19 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
             height: 28,
             borderRadius: 4,
             transition: 'all 0.2s',
+            outline: 'none',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#f0fdfa';
-            e.currentTarget.style.color = DEFAULT_COLORS.SUCCESS;
+            e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = 'transparent';
-            e.currentTarget.style.color = '#64748b';
+          }}
+          onMouseDown={(e) => {
+            e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
+          }}
+          onMouseUp={(e) => {
+            e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
           }}
         >
           <EditOutlined />

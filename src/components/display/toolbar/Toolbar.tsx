@@ -64,7 +64,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                   if (isPrimary) {
                     e.currentTarget.style.opacity = '0.9';
                   } else if (!button.active) {
-                    e.currentTarget.style.backgroundColor = isGhost ? '#f5f5f5' : '#f5f5f5';
+                    e.currentTarget.style.backgroundColor = DEFAULT_COLORS.HOVER_BG;
                     if (!isGhost) {
                       e.currentTarget.style.borderColor = DEFAULT_COLORS.SUCCESS;
                       e.currentTarget.style.color = DEFAULT_COLORS.SUCCESS;
