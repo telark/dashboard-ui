@@ -27,3 +27,10 @@ export type GroupFormData = Omit<Group, 'id' | 'creationDate' | 'lastUpdateDate'
   createdBy?: string;
   lastUpdatedBy?: string;
 };
+
+export interface GroupPanelProps {
+  open: boolean;
+  onClose: () => void;
+  form: ReturnType<typeof import('antd').Form.useForm<GroupFormData>>[0];
+  editingGroup?: Group | null;
+}

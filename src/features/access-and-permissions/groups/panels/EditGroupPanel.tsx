@@ -7,18 +7,12 @@ import { GROUPS_CONSTANTS as GC } from '../constants';
 import GroupFormFields from '../components/display/shared/GroupFormFields';
 import { useGroupNameValidator, useGroupFormState, useGroupFormSelectOptions } from '../hooks';
 import { useGroupMutations } from '../hooks';
-import type { Group, GroupFormData } from '../models';
-
-interface EditGroupPanelProps {
-  open: boolean;
-  onClose: () => void;
-  editingGroup: Group | null;
-  form: ReturnType<typeof import('antd').Form.useForm<GroupFormData>>[0];
-}
+import { normalizeGroupFormData } from '../utils';
+import type { GroupPanelProps, GroupFormData } from '../models';
 
 const GroupIcon = Icons.Group;
 
-const EditGroupPanel: React.FC<EditGroupPanelProps> = ({ open, onClose, editingGroup, form }) => {
+const EditGroupPanel: React.FC<GroupPanelProps> = ({ open, onClose, editingGroup, form }) => {
   const groups = useSelector((state: RootState) => state.groups.groups);
   const { handleUpdate, submitting } = useGroupMutations();
   const { categoryOptions } = useGroupFormSelectOptions();
@@ -61,7 +55,7 @@ const EditGroupPanel: React.FC<EditGroupPanelProps> = ({ open, onClose, editingG
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     if (!editingGroup) return;
-    const formData = values as GroupFormData;
+    const formData = normalizeGroupFormData(values);
     await handleUpdate(editingGroup.id, formData);
     form.resetFields();
     onClose();

@@ -7,17 +7,12 @@ import { GROUPS_CONSTANTS as GC } from '../constants';
 import GroupFormFields from '../components/display/shared/GroupFormFields';
 import { useGroupNameValidator, useGroupFormState, useGroupFormSelectOptions } from '../hooks';
 import { useGroupMutations } from '../hooks';
-import type { GroupFormData } from '../models';
-
-interface CreateGroupPanelProps {
-  open: boolean;
-  onClose: () => void;
-  form: ReturnType<typeof import('antd').Form.useForm<GroupFormData>>[0];
-}
+import { normalizeGroupFormData } from '../utils';
+import type { GroupPanelProps } from '../models';
 
 const GroupIcon = Icons.Group;
 
-const CreateGroupPanel: React.FC<CreateGroupPanelProps> = ({ open, onClose, form }) => {
+const CreateGroupPanel: React.FC<GroupPanelProps> = ({ open, onClose, form }) => {
   const groups = useSelector((state: RootState) => state.groups.groups);
   const { handleCreate, submitting } = useGroupMutations();
   const { categoryOptions, defaultCategoryId } = useGroupFormSelectOptions();
@@ -31,7 +26,8 @@ const CreateGroupPanel: React.FC<CreateGroupPanelProps> = ({ open, onClose, form
   });
 
   const handleSubmit = async (values: Record<string, unknown>) => {
-    await handleCreate(values as GroupFormData);
+    const formData = normalizeGroupFormData(values);
+    await handleCreate(formData);
     form.resetFields();
     onClose();
   };

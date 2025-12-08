@@ -96,6 +96,7 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
             required={false}
             style={{ marginBottom: 0 }}
             className="form-item-compact no-asterisk"
+            normalize={(value) => (Array.isArray(value) ? value : [])}
           >
             <UsersSelect />
           </Form.Item>

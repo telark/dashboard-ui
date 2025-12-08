@@ -1,6 +1,6 @@
-import type { Category } from '../../categories/models';
-import type { FilterOption } from '../../../../interfaces/layout/filters';
-import { deduplicateCategoriesByName } from '../../categories/utils/helpers';
+import type { Category } from '../../../categories/models';
+import type { FilterOption } from '../../../../../interfaces/layout/filters';
+import { deduplicateCategoriesByName } from '../../../categories/utils/helpers';
 
 export const mapCategoriesToFilterOptions = (
   categories: Category[] | undefined,

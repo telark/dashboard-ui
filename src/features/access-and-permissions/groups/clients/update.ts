@@ -9,16 +9,23 @@ import { getCurrentUser } from '../../../../features/auth/utils';
 export const updateGroup = async (groupId: string, group: Partial<GroupFormData>) => {
   try {
     const currentUser = getCurrentUser();
-    const groupData: Partial<GroupFormData> = {
-      name: group.name,
-      description: group.description,
-      categoryID: group.categoryID,
-      assignedUsersIDs: group.assignedUsersIDs || [],
-    };
+    const groupData: Partial<GroupFormData> = {};
+
+    if (group.name !== undefined) groupData.name = group.name;
+    if (group.description !== undefined) groupData.description = group.description;
+    if (group.categoryID !== undefined) groupData.categoryID = group.categoryID;
+    if (group.assignedUsersIDs !== undefined) {
+      groupData.assignedUsersIDs = Array.isArray(group.assignedUsersIDs)
+        ? group.assignedUsersIDs
+        : [];
+    } else {
+      groupData.assignedUsersIDs = [];
+    }
 
     if (currentUser?.id) {
       groupData.lastUpdatedBy = currentUser.id;
     }
+
     return await Client<ResourceDetailsResponse<Group>>(
       exporterApiClient,
       Endpoints.GROUPS.PATCH_BY_ID(groupId).path,

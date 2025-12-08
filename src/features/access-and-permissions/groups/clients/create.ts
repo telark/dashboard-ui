@@ -13,7 +13,7 @@ export const createGroup = async (group: GroupFormData) => {
       name: group.name,
       description: group.description,
       categoryID: group.categoryID,
-      assignedUsersIDs: group.assignedUsersIDs || [],
+      assignedUsersIDs: Array.isArray(group.assignedUsersIDs) ? group.assignedUsersIDs : [],
     };
 
     if (currentUser?.id) {

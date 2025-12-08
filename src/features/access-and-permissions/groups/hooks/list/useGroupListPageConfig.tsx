@@ -8,7 +8,7 @@ import CategoryColumns from '../../../categories/components/display/list/Categor
 import { CategoryActionsColumn } from '../../../categories/components/display/list/CategoryActionsColumn';
 import { GroupActionsColumn } from '../../components/display/list/GroupActionsColumn';
 import { useGroupListConfig } from '../../config/groupListConfig';
-import { mapCategoriesToFilterOptions } from '../../utils/groupListUtils';
+import { mapCategoriesToFilterOptions } from '../../utils';
 import { useCategoryListView } from '../../../categories/hooks';
 import { deduplicateCategoriesByName } from '../../../categories/utils/helpers';
 import { useUsers } from '../../../users/hooks';
