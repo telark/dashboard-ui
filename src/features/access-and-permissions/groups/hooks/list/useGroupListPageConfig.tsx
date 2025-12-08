@@ -174,7 +174,9 @@ export const useGroupListPageConfig = ({
                 ),
               },
             ],
-      data: (viewMode === 'groups' ? paginatedGroups : paginatedCategories) as (Group | Category)[],
+      data: (viewMode === 'groups' ? paginatedGroups : paginatedCategories).filter(
+        (item): item is Group | Category => item != null,
+      ),
       rowKey: (record: Group | Category) => record.id,
       containerStyle: {
         marginTop: viewMode === 'groups' && hasSelection ? '0' : undefined,

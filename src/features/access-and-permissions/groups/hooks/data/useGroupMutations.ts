@@ -1,15 +1,17 @@
 import { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
-import { APP_ROUTES } from '../../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
-import { createGroupThunk, updateGroupThunk, deleteGroupThunk } from '../../store';
+import {
+  createGroupThunk,
+  updateGroupThunk,
+  deleteGroupThunk,
+  fetchGroupDetailsThunk,
+} from '../../store';
 import type { AppDispatch } from '../../../../../store';
 import type { GroupFormData } from '../../models';
 
 export const useGroupMutations = () => {
-  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
 
@@ -19,7 +21,7 @@ export const useGroupMutations = () => {
       try {
         const result = await dispatch(createGroupThunk(data)).unwrap();
         message.success(GC.LABELS.MESSAGES.CREATED(data.name));
-        navigate(`${APP_ROUTES.GROUPS}/${result.id}/view`);
+        await dispatch(fetchGroupDetailsThunk(result.id));
         return result;
       } catch {
         message.error(GC.LABELS.MESSAGES.CREATE_FAILED);
@@ -28,7 +30,7 @@ export const useGroupMutations = () => {
         setSubmitting(false);
       }
     },
-    [dispatch, navigate],
+    [dispatch],
   );
 
   const handleUpdate = useCallback(
@@ -42,6 +44,7 @@ export const useGroupMutations = () => {
           }),
         ).unwrap();
         message.success(GC.LABELS.MESSAGES.UPDATED(result.name));
+        await dispatch(fetchGroupDetailsThunk(id));
         return result;
       } catch {
         message.error(GC.LABELS.MESSAGES.UPDATE_FAILED);

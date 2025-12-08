@@ -12,6 +12,8 @@ function DataTable<T>({
   tableProps = {},
   onRowClick,
 }: Readonly<DataTableProps<T>>) {
+  const filteredData = Array.isArray(data) ? data.filter((item) => item != null) : data;
+
   return (
     <div
       className={className}
@@ -27,7 +29,7 @@ function DataTable<T>({
       <Table
         rowKey={rowKey as any}
         columns={columns as any}
-        dataSource={data as any}
+        dataSource={filteredData as any}
         pagination={false}
         size="small"
         tableLayout="fixed"
