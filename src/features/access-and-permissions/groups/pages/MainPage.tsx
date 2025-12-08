@@ -33,7 +33,6 @@ const MainPage: React.FC = () => {
 
   const {
     sortKey,
-    sortOrder,
     selectedGroups,
     selectedCategory,
     currentPage,
@@ -79,7 +78,6 @@ const MainPage: React.FC = () => {
     setViewMode,
     categories,
     sortKey,
-    sortOrder,
     handleSort,
     selectedGroups,
     setSelectedGroups,
@@ -187,11 +185,7 @@ const MainPage: React.FC = () => {
         />
       )}
       {viewPanelOpen && viewingGroup && (
-        <ViewGroupPanel
-          open={viewPanelOpen}
-          onClose={closeViewPanel}
-          group={viewingGroup}
-        />
+        <ViewGroupPanel open={viewPanelOpen} onClose={closeViewPanel} group={viewingGroup} />
       )}
     </div>
   );

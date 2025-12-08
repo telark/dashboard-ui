@@ -8,7 +8,11 @@ const GROUP_SORT_FIELDS: SortFieldConfig<Group>[] = [
   { key: 'name', type: 'string' },
   { key: 'description', type: 'string' },
   { key: 'categoryID', type: 'string' },
-  { key: 'assignedUsersIDs', type: 'number', getValue: (item) => item.assignedUsersIDs?.length || 0 },
+  {
+    key: 'assignedUsersIDs',
+    type: 'number',
+    getValue: (item) => item.assignedUsersIDs?.length || 0,
+  },
   { key: 'creationDate', type: 'date' },
   { key: 'lastUpdateDate', type: 'date' },
   { key: 'createdBy', type: 'string' },

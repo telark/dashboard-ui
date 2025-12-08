@@ -60,7 +60,7 @@ export const useGroupFormState = ({
 
       const changed = nameChanged || descriptionChanged || categoryChanged || assignedUsersChanged;
       if (!needsResetRef.current) {
-      setHasChanges(changed);
+        setHasChanges(changed);
       }
     }
   }, [form, isEditMode]);

@@ -38,12 +38,12 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({ open, onClose, group })
   const createdByUser = useMemo(() => {
     if (!group?.createdBy || !users) return null;
     return users.find((u) => u.id === group.createdBy) || null;
-  }, [group?.createdBy, users]);
+  }, [group, users]);
 
   const lastUpdatedByUser = useMemo(() => {
     if (!group?.lastUpdatedBy || !users) return null;
     return users.find((u) => u.id === group.lastUpdatedBy) || null;
-  }, [group?.lastUpdatedBy, users]);
+  }, [group, users]);
 
   if (!group) return null;
 
@@ -112,7 +112,9 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({ open, onClose, group })
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: '#64748b', fontSize: 14 }}>Name:</span>
-                <span style={{ fontWeight: 500, color: '#0B1F33', fontSize: 14 }}>{group.name}</span>
+                <span style={{ fontWeight: 500, color: '#0B1F33', fontSize: 14 }}>
+                  {group.name}
+                </span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: '#64748b', fontSize: 14 }}>Description:</span>
@@ -120,7 +122,9 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({ open, onClose, group })
                   {group.description || '—'}
                 </span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              >
                 <span style={{ color: '#64748b', fontSize: 14 }}>Category:</span>
                 <RowTag
                   text={categoryName}
@@ -176,9 +180,7 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({ open, onClose, group })
               gap: 16,
             }}
           >
-            <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#0B1F33' }}>
-              Metadata
-            </h4>
+            <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#0B1F33' }}>Metadata</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: '#64748b', fontSize: 14 }}>Creation Date:</span>
@@ -192,11 +194,15 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({ open, onClose, group })
                   {group.lastUpdateDate ? <TimeAgo date={group.lastUpdateDate} /> : '—'}
                 </span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              >
                 <span style={{ color: '#64748b', fontSize: 14 }}>Created By:</span>
                 <UserDisplay user={createdByUser} size="small" showBorder={false} />
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              >
                 <span style={{ color: '#64748b', fontSize: 14 }}>Last Updated By:</span>
                 <UserDisplay user={lastUpdatedByUser} size="small" showBorder={false} />
               </div>
