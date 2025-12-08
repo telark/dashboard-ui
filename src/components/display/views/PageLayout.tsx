@@ -7,7 +7,7 @@ import { Toolbar } from '../toolbar';
 import { TablePagination } from '../table';
 import type { PageLayoutConfig } from '../../../interfaces/layout/page';
 
-const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfig<T> }) => {
+const PageLayoutComponent = <T = unknown>({ config }: { config: PageLayoutConfig<T> }) => {
   const navigate = useNavigate();
   const {
     title,
@@ -144,35 +144,36 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
           </div>
         </div>
 
-        <DataTable<T>
-          columns={columns}
-          data={data}
-          rowKey={rowKey}
-          className="app-table"
-          rowHeight={rowHeight}
-          tableProps={{
-            rowSelection: rowSelection
-              ? {
-                  selectedRowKeys: rowSelection.selectedRowKeys,
-                  onChange: rowSelection.onChange,
-                }
-              : undefined,
-            onRow: onRowClick
-              ? (record: T) => ({
-                  onClick: () => onRowClick(record),
-                  style: { cursor: 'pointer' },
-                })
-              : undefined,
-          }}
-          containerStyle={{
-            background: 'transparent',
-            borderRadius: 0,
-            boxShadow: 'none',
-            padding: 0,
-          }}
-        />
-
-        <TablePagination config={pagination} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          <DataTable<T>
+            columns={columns}
+            data={data}
+            rowKey={rowKey}
+            className="app-table"
+            rowHeight={rowHeight}
+            tableProps={{
+              rowSelection: rowSelection
+                ? {
+                    selectedRowKeys: rowSelection.selectedRowKeys,
+                    onChange: rowSelection.onChange,
+                  }
+                : undefined,
+              onRow: onRowClick
+                ? (record: T) => ({
+                    onClick: () => onRowClick(record),
+                    style: { cursor: 'pointer' },
+                  })
+                : undefined,
+            }}
+            containerStyle={{
+              background: 'transparent',
+              borderRadius: 0,
+              boxShadow: 'none',
+              padding: 0,
+            }}
+          />
+          <TablePagination config={pagination} />
+        </div>
       </div>
     </div>
   );
