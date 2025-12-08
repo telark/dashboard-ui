@@ -1,48 +1,29 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo } from 'react';
+import { useSortState, sortData } from '../../../../utils/layout/sort';
+import type { SortFieldConfig } from '../../../../utils/layout/sort';
 import type { Category } from '../models';
 
-type SortKey = 'name' | 'type' | 'scope' | 'creationDate';
-type SortOrder = 'asc' | 'desc';
+const CATEGORY_SORT_FIELDS: SortFieldConfig<Category>[] = [
+  { key: 'name', type: 'string' },
+  { key: 'type', type: 'string' },
+  { key: 'scope', type: 'string' },
+  { key: 'creationDate', type: 'date' },
+];
 
 interface UseCategoryListViewProps {
   categories: Category[];
 }
 
 export const useCategoryListView = ({ categories }: UseCategoryListViewProps) => {
-  const [sortKey, setSortKey] = useState<SortKey>('creationDate');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+  const { sortKey, sortOrder, handleSort } = useSortState({
+    defaultSortKey: 'creationDate',
+    defaultSortOrder: 'desc',
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const handleSort = useCallback(
-    (key: string) => {
-      if (key === sortKey) {
-        setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-      } else {
-        setSortKey(key as SortKey);
-        setSortOrder('asc');
-      }
-    },
-    [sortKey],
-  );
-
   const sortedCategories = useMemo(() => {
-    const items = [...categories];
-    const compare = (a: Category, b: Category) => {
-      switch (sortKey) {
-        case 'name':
-          return String(a.name).localeCompare(String(b.name));
-        case 'type':
-          return String(a.type).localeCompare(String(b.type));
-        case 'scope':
-          return String(a.scope).localeCompare(String(b.scope));
-        case 'creationDate':
-        default:
-          return new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();
-      }
-    };
-    items.sort((a, b) => (sortOrder === 'asc' ? compare(a, b) : -compare(a, b)));
-    return items;
+    return sortData(categories, sortKey, sortOrder, CATEGORY_SORT_FIELDS);
   }, [categories, sortKey, sortOrder]);
 
   const paginatedCategories = useMemo(() => {

@@ -7,7 +7,6 @@ export { useGroupMutations } from './data/useGroupMutations';
 export { useGroupListState } from './list/useGroupListState';
 export { useGroupListInteractions } from './list/useGroupListInteractions';
 export { useGroupListPageConfig } from './list/useGroupListPageConfig';
-export type { SortKey, SortOrder } from './list/useGroupListState';
 
 // Form hooks
 export { useGroupFormState } from './form/useGroupFormState';

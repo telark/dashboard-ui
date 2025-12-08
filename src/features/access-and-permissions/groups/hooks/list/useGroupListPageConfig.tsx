@@ -22,6 +22,7 @@ interface UseGroupListPageConfigOptions {
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
   sortKey: string | null;
+  sortOrder: 'asc' | 'desc';
   handleSort: (key: string) => void;
   selectedGroups: React.Key[];
   setSelectedGroups: (keys: React.Key[]) => void;
@@ -45,6 +46,7 @@ export const useGroupListPageConfig = ({
   setViewMode,
   categories,
   sortKey,
+  sortOrder,
   handleSort,
   selectedGroups,
   setSelectedGroups,
@@ -77,6 +79,7 @@ export const useGroupListPageConfig = ({
 
   const {
     sortKey: categorySortKey,
+    sortOrder: categorySortOrder,
     currentPage: categoryCurrentPage,
     pageSize: categoryPageSize,
     setCurrentPage: setCategoryCurrentPage,
@@ -106,21 +109,21 @@ export const useGroupListPageConfig = ({
   const groupColumns = useMemo(
     () =>
       Columns({
-        activeSortKey: sortKey || 'creationDate',
+        activeSortKey: sortKey ?? 'creationDate',
         onSort: handleSort,
         categories: uniqueReduxCategories,
         users: users || [],
       }),
-    [sortKey, uniqueReduxCategories, handleSort, users],
+    [sortKey, sortOrder, uniqueReduxCategories, handleSort, users],
   );
 
   const categoryColumns = useMemo(
     () =>
       CategoryColumns({
-        activeSortKey: categorySortKey,
+        activeSortKey: categorySortKey ?? 'creationDate',
         onSort: handleCategorySort,
       }),
-    [categorySortKey, handleCategorySort],
+    [categorySortKey, categorySortOrder, handleCategorySort],
   );
 
   const breadcrumbs = useMemo(() => {

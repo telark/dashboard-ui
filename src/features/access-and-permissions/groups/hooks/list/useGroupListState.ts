@@ -1,18 +1,25 @@
 import React from 'react';
 import { useState, useMemo } from 'react';
+import { useSortState, sortData } from '../../../../../utils/layout/sort';
+import type { SortFieldConfig, SortOrder } from '../../../../../utils/layout/sort';
 import type { Group } from '../../models';
 
-export type SortKey = 'name' | 'categoryID' | 'creationDate';
-export type SortOrder = 'asc' | 'desc';
+const GROUP_SORT_FIELDS: SortFieldConfig<Group>[] = [
+  { key: 'name', type: 'string' },
+  { key: 'description', type: 'string' },
+  { key: 'categoryID', type: 'string' },
+  { key: 'creationDate', type: 'date' },
+  { key: 'lastUpdateDate', type: 'date' },
+];
 
 interface UseGroupListStateReturn {
-  sortKey: SortKey;
+  sortKey: string | null;
   sortOrder: SortOrder;
   selectedGroups: React.Key[];
   selectedCategory: string;
   currentPage: number;
   pageSize: number;
-  setSortKey: (key: SortKey) => void;
+  setSortKey: (key: string | null) => void;
   setSortOrder: (order: SortOrder) => void;
   setSelectedGroups: (keys: React.Key[]) => void;
   setSelectedCategory: (category: string) => void;
@@ -27,18 +34,14 @@ interface UseGroupListStateReturn {
 }
 
 export const useGroupListState = (groups: Group[] | undefined): UseGroupListStateReturn => {
-  const [sortKey, setSortKey] = useState<SortKey>('creationDate');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+  const { sortKey, sortOrder, handleSort, setSortKey, setSortOrder } = useSortState({
+    defaultSortKey: 'creationDate',
+    defaultSortOrder: 'desc',
+  });
   const [selectedGroups, setSelectedGroups] = useState<React.Key[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
-
-  const handleSort = (key: string) => {
-    const sortKeyValue = key as SortKey;
-    setSortKey(sortKeyValue);
-    setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-  };
 
   // Filter by category
   const filteredGroups = useMemo(() => {
@@ -49,20 +52,7 @@ export const useGroupListState = (groups: Group[] | undefined): UseGroupListStat
 
   // Sort groups
   const sortedGroups = useMemo(() => {
-    const items = [...filteredGroups];
-    const compare = (a: Group, b: Group) => {
-      switch (sortKey) {
-        case 'name':
-          return String(a.name).localeCompare(String(b.name));
-        case 'categoryID':
-          return String(a.categoryID).localeCompare(String(b.categoryID));
-        case 'creationDate':
-        default:
-          return new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();
-      }
-    };
-    items.sort((a, b) => (sortOrder === 'asc' ? compare(a, b) : -compare(a, b)));
-    return items;
+    return sortData(filteredGroups, sortKey, sortOrder, GROUP_SORT_FIELDS);
   }, [filteredGroups, sortKey, sortOrder]);
 
   // Paginate groups

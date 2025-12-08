@@ -43,4 +43,4 @@ function DataTable<T>({
   );
 }
 
-export default React.memo(DataTable) as typeof DataTable;
+export default DataTable;
