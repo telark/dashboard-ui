@@ -42,7 +42,7 @@ export const useGroupMutations = () => {
           }),
         ).unwrap();
         message.success(GC.LABELS.MESSAGES.UPDATED(result.name));
-        navigate(`${APP_ROUTES.GROUPS}/${id}/view`);
+        return result;
       } catch {
         message.error(GC.LABELS.MESSAGES.UPDATE_FAILED);
         throw new Error(GC.LABELS.MESSAGES.UPDATE_FAILED);
@@ -50,7 +50,7 @@ export const useGroupMutations = () => {
         setSubmitting(false);
       }
     },
-    [dispatch, navigate],
+    [dispatch],
   );
 
   const handleDelete = useCallback(
