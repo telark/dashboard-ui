@@ -6,9 +6,7 @@ interface UseSortStateOptions {
   defaultSortOrder?: SortOrder;
 }
 
-export const useSortState = (
-  options: UseSortStateOptions = {},
-): UseSortStateReturn => {
+export const useSortState = (options: UseSortStateOptions = {}): UseSortStateReturn => {
   const { defaultSortKey = null, defaultSortOrder = 'desc' } = options;
 
   const [sortKey, setSortKey] = useState<string | null>(defaultSortKey);

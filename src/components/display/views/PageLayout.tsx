@@ -145,34 +145,34 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-        <DataTable<T>
-          columns={columns}
-          data={data}
-          rowKey={rowKey}
-          className="app-table"
-          rowHeight={rowHeight}
-          tableProps={{
-            rowSelection: rowSelection
-              ? {
-                  selectedRowKeys: rowSelection.selectedRowKeys,
-                  onChange: rowSelection.onChange,
-                }
-              : undefined,
-            onRow: onRowClick
-              ? (record: T) => ({
-                  onClick: () => onRowClick(record),
-                  style: { cursor: 'pointer' },
-                })
-              : undefined,
-          }}
-          containerStyle={{
-            background: 'transparent',
-            borderRadius: 0,
-            boxShadow: 'none',
-            padding: 0,
-          }}
-        />
-        <TablePagination config={pagination} />
+          <DataTable<T>
+            columns={columns}
+            data={data}
+            rowKey={rowKey}
+            className="app-table"
+            rowHeight={rowHeight}
+            tableProps={{
+              rowSelection: rowSelection
+                ? {
+                    selectedRowKeys: rowSelection.selectedRowKeys,
+                    onChange: rowSelection.onChange,
+                  }
+                : undefined,
+              onRow: onRowClick
+                ? (record: T) => ({
+                    onClick: () => onRowClick(record),
+                    style: { cursor: 'pointer' },
+                  })
+                : undefined,
+            }}
+            containerStyle={{
+              background: 'transparent',
+              borderRadius: 0,
+              boxShadow: 'none',
+              padding: 0,
+            }}
+          />
+          <TablePagination config={pagination} />
         </div>
       </div>
     </div>
@@ -182,7 +182,7 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
 const PageLayout = memo(PageLayoutComponent, (prevProps, nextProps) => {
   const columnsChanged = prevProps.config.columns !== nextProps.config.columns;
   const dataChanged = prevProps.config.data !== nextProps.config.data;
-  
+
   return (
     !columnsChanged &&
     !dataChanged &&

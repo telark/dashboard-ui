@@ -24,7 +24,8 @@ export const sortData = <T>(
     }
 
     // Get values using custom getValue or default to accessing by key
-    const getValue = fieldConfig.getValue || ((item: T) => (item as Record<string, unknown>)[fieldConfig.key]);
+    const getValue =
+      fieldConfig.getValue || ((item: T) => (item as Record<string, unknown>)[fieldConfig.key]);
     const valueA = getValue(a);
     const valueB = getValue(b);
 
@@ -40,7 +41,10 @@ export const sortData = <T>(
       case 'number':
         return Number(valueA) - Number(valueB);
       case 'date':
-        return new Date(valueA as string | number | Date).getTime() - new Date(valueB as string | number | Date).getTime();
+        return (
+          new Date(valueA as string | number | Date).getTime() -
+          new Date(valueB as string | number | Date).getTime()
+        );
       case 'custom':
         if (valueA < valueB) return -1;
         if (valueA > valueB) return 1;
