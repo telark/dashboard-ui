@@ -39,5 +39,4 @@ export const APP_ROUTES = {
   USER_VIEW: '/management/users/:id/view',
   USER_EDIT: '/management/users/:id/edit',
   GROUPS: '/management/groups',
-  GROUP_VIEW: '/management/groups/:id/view',
 } as const;

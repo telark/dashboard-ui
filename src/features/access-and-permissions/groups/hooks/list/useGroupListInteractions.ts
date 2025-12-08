@@ -1,8 +1,6 @@
 import React from 'react';
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Modal } from 'antd';
-import { APP_ROUTES } from '../../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
 import type { Group } from '../../models';
 
@@ -12,6 +10,7 @@ interface UseGroupListInteractionsProps {
   handleDelete: (id: string) => Promise<void>;
   setSelectedGroups: (keys: React.Key[]) => void;
   onEdit?: (group: Group) => void;
+  onView?: (group: Group) => void;
 }
 
 interface UseGroupListInteractionsReturn {
@@ -28,33 +27,29 @@ export const useGroupListInteractions = ({
   handleDelete,
   setSelectedGroups,
   onEdit,
+  onView,
 }: UseGroupListInteractionsProps): UseGroupListInteractionsReturn => {
-  const navigate = useNavigate();
   const selectedCount = selectedGroups.length;
 
   const handleView = useCallback(() => {
     if (selectedCount === 1) {
       const selectedId = selectedGroups[0] as string;
       const selectedGroup = groups?.find((g) => g.id === selectedId);
-      if (selectedGroup) {
-        navigate(`${APP_ROUTES.GROUPS}/${selectedGroup.id}/view`);
+      if (selectedGroup && onView) {
+        onView(selectedGroup);
       }
     }
-  }, [selectedCount, selectedGroups, groups, navigate]);
+  }, [selectedCount, selectedGroups, groups, onView]);
 
   const handleEdit = useCallback(() => {
     if (selectedCount === 1) {
       const selectedId = selectedGroups[0] as string;
       const selectedGroup = groups?.find((g) => g.id === selectedId);
-      if (selectedGroup) {
-        if (onEdit) {
-          onEdit(selectedGroup);
-        } else {
-          navigate(`${APP_ROUTES.GROUPS}/${selectedGroup.id}/edit`);
-        }
+      if (selectedGroup && onEdit) {
+        onEdit(selectedGroup);
       }
     }
-  }, [selectedCount, selectedGroups, groups, navigate, onEdit]);
+  }, [selectedCount, selectedGroups, groups, onEdit]);
 
   const handleDeleteClick = useCallback(() => {
     const selectedIds = selectedGroups as string[];
@@ -91,20 +86,20 @@ export const useGroupListInteractions = ({
 
   const handleViewGroup = useCallback(
     (record: Group) => {
-      navigate(`${APP_ROUTES.GROUPS}/${record.id}/view`);
+      if (onView) {
+        onView(record);
+      }
     },
-    [navigate],
+    [onView],
   );
 
   const handleEditGroup = useCallback(
     (record: Group) => {
       if (onEdit) {
         onEdit(record);
-      } else {
-        navigate(`${APP_ROUTES.GROUPS}/${record.id}/edit`);
       }
     },
-    [navigate, onEdit],
+    [onEdit],
   );
 
   return {

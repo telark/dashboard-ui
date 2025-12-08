@@ -17,7 +17,7 @@ import {
 } from '../hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
-import { CreateGroupPanel, EditGroupPanel } from '../panels';
+import { CreateGroupPanel, EditGroupPanel, ViewGroupPanel } from '../panels';
 
 const GroupIcon = Icons.Group;
 
@@ -52,6 +52,8 @@ const MainPage: React.FC = () => {
   const {
     createPanelOpen,
     editPanelOpen,
+    viewPanelOpen,
+    viewingGroup,
     editingGroup,
     createForm,
     editForm,
@@ -59,6 +61,8 @@ const MainPage: React.FC = () => {
     closeCreatePanel,
     openEditPanel,
     closeEditPanel,
+    openViewPanel,
+    closeViewPanel,
   } = useGroupPanelState();
 
   const { handleView, handleEdit, handleDeleteClick, handleViewGroup } = useGroupListInteractions({
@@ -67,6 +71,7 @@ const MainPage: React.FC = () => {
     handleDelete,
     setSelectedGroups,
     onEdit: openEditPanel,
+    onView: openViewPanel,
   });
 
   const pageConfig = useGroupListPageConfig({
@@ -179,6 +184,13 @@ const MainPage: React.FC = () => {
           onClose={closeEditPanel}
           editingGroup={editingGroup}
           form={editForm}
+        />
+      )}
+      {viewPanelOpen && viewingGroup && (
+        <ViewGroupPanel
+          open={viewPanelOpen}
+          onClose={closeViewPanel}
+          group={viewingGroup}
         />
       )}
     </div>
