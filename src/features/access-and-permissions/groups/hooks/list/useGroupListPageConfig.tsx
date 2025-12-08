@@ -11,6 +11,7 @@ import { useGroupListConfig } from '../../config/groupListConfig';
 import { mapCategoriesToFilterOptions } from '../../utils/groupListUtils';
 import { useCategoryListView } from '../../../categories/hooks';
 import { deduplicateCategoriesByName } from '../../../categories/utils/helpers';
+import { useUsers } from '../../../users/hooks';
 import type { Group } from '../../models';
 import type { Category } from '../../../categories/models';
 import logger from '../../../../../logging';
@@ -62,6 +63,7 @@ export const useGroupListPageConfig = ({
 }: UseGroupListPageConfigOptions): PageLayoutConfig<Group | Category> => {
   const [selectedCategories, setSelectedCategories] = useState<React.Key[]>([]);
   const reduxCategories = useSelector(selectGroupsCategories);
+  const { users } = useUsers();
 
   const uniqueReduxCategories = useMemo(
     () => deduplicateCategoriesByName(reduxCategories),
@@ -107,8 +109,9 @@ export const useGroupListPageConfig = ({
         activeSortKey: sortKey || 'creationDate',
         onSort: handleSort,
         categories: uniqueReduxCategories,
+        users: users || [],
       }),
-    [sortKey, uniqueReduxCategories, handleSort],
+    [sortKey, uniqueReduxCategories, handleSort, users],
   );
 
   const categoryColumns = useMemo(
