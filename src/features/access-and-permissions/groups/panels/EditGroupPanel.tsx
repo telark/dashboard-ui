@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
 import { SlideOutPanel } from '../../../../components/display/panels/slide-out';
@@ -22,32 +22,52 @@ const EditGroupPanel: React.FC<EditGroupPanelProps> = ({ open, onClose, editingG
   const groups = useSelector((state: RootState) => state.groups.groups);
   const { handleUpdate, submitting } = useGroupMutations();
   const { categoryOptions } = useGroupFormSelectOptions();
+  const previousGroupIdRef = useRef<string | null>(null);
+  const previousOpenRef = useRef(false);
+
+  const initialValues = useMemo<GroupFormData | null>(() => {
+    if (!editingGroup) return null;
+    return {
+      name: editingGroup.name,
+      description: editingGroup.description,
+      categoryID: editingGroup.categoryID,
+      assignedUsersIDs: editingGroup.assignedUsersIDs || [],
+    };
+  }, [editingGroup]);
+
   const { nameValidator, normalizeName } = useGroupNameValidator({
     groups,
     isEditMode: true,
     currentName: editingGroup?.name,
   });
+
   const { handleValuesChange, handleFieldsChange, hasFormErrors, hasChanges } = useGroupFormState({
     form,
     isEditMode: true,
-    initialValues: editingGroup
-      ? {
-          name: editingGroup.name,
-          description: editingGroup.description,
-          categoryID: editingGroup.categoryID,
-          assignedUsersIDs: editingGroup.assignedUsersIDs || [],
-        }
-      : null,
+    initialValues,
   });
+
+  useEffect(() => {
+    const isOpening = open && !previousOpenRef.current;
+    const groupChanged = editingGroup?.id !== previousGroupIdRef.current;
+
+    if (open && initialValues && (isOpening || groupChanged)) {
+      form.setFieldsValue(initialValues);
+    }
+
+    previousOpenRef.current = open;
+    previousGroupIdRef.current = editingGroup?.id || null;
+  }, [open, editingGroup?.id, initialValues, form]);
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     if (!editingGroup) return;
-    await handleUpdate(editingGroup.id, values as GroupFormData);
+    const formData = values as GroupFormData;
+    await handleUpdate(editingGroup.id, formData);
     form.resetFields();
     onClose();
   };
 
-  if (!editingGroup) return null;
+  if (!editingGroup || !initialValues) return null;
 
   return (
     <SlideOutPanel
@@ -68,12 +88,7 @@ const EditGroupPanel: React.FC<EditGroupPanelProps> = ({ open, onClose, editingG
       loading={submitting}
       disabled={hasFormErrors || !hasChanges}
       form={form}
-      initialValues={{
-        name: editingGroup.name,
-        description: editingGroup.description,
-        categoryID: editingGroup.categoryID,
-        assignedUsersIDs: editingGroup.assignedUsersIDs || [],
-      }}
+      initialValues={initialValues}
       onValuesChange={handleValuesChange}
       onFieldsChange={handleFieldsChange}
     />

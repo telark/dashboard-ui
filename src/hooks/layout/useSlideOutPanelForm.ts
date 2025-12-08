@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Form } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import logger from '../../logging';
@@ -28,6 +28,8 @@ export const useSlideOutPanelForm = ({
 }: UseSlideOutPanelFormOptions): UseSlideOutPanelFormReturn => {
   const [internalForm] = Form.useForm();
   const form = externalForm || internalForm;
+  const previousOpenRef = useRef(false);
+  const hasExternalForm = !!externalForm;
 
   const handleFinish = async (values: Record<string, unknown>) => {
     try {
@@ -46,11 +48,19 @@ export const useSlideOutPanelForm = ({
   };
 
   useEffect(() => {
-    if (open) {
-      form.resetFields();
-      form.setFieldsValue(initialValues);
+    const isOpening = open && !previousOpenRef.current;
+
+    if (isOpening) {
+      if (!hasExternalForm) {
+        form.resetFields();
+        if (Object.keys(initialValues).length > 0) {
+          form.setFieldsValue(initialValues);
+        }
+      }
     }
-  }, [open, form, initialValues]);
+
+    previousOpenRef.current = open;
+  }, [open, form, hasExternalForm]);
 
   return {
     form,

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import type { FormInstance } from 'antd';
 import type { GroupFormData } from '../../models';
 
@@ -8,6 +8,13 @@ interface UseGroupFormStateOptions {
   initialValues?: GroupFormData | null;
 }
 
+const arraysEqual = (arr1: string[], arr2: string[]): boolean => {
+  if (arr1.length !== arr2.length) return false;
+  const sorted1 = [...arr1].sort();
+  const sorted2 = [...arr2].sort();
+  return sorted1.every((val, index) => val === sorted2[index]);
+};
+
 export const useGroupFormState = ({
   form,
   isEditMode = false,
@@ -15,35 +22,54 @@ export const useGroupFormState = ({
 }: UseGroupFormStateOptions) => {
   const [hasFormErrors, setHasFormErrors] = useState(false);
   const [hasChanges, setHasChanges] = useState(!isEditMode);
+  const initialValuesRef = useRef<GroupFormData | null>(null);
+  const needsResetRef = useRef(false);
+
+  useEffect(() => {
+    if (initialValues) {
+      const previousInitial = initialValuesRef.current;
+      initialValuesRef.current = initialValues;
+
+      if (isEditMode && previousInitial !== null && previousInitial !== initialValues) {
+        needsResetRef.current = true;
+      }
+    }
+  }, [initialValues, isEditMode]);
 
   const checkFormState = useCallback(() => {
     const fieldsError = form.getFieldsError();
     const hasErrors = fieldsError.some((field) => field.errors.length > 0);
     setHasFormErrors(hasErrors);
 
-    if (isEditMode && initialValues) {
-      const currentValues = form.getFieldsValue();
-      const currentAssignedUsers = currentValues.assignedUsersIDs || [];
-      const initialAssignedUsers = initialValues.assignedUsersIDs || [];
-      const assignedUsersChanged =
-        currentAssignedUsers.length !== initialAssignedUsers.length ||
-        currentAssignedUsers.some((id: string) => !initialAssignedUsers.includes(id));
-      const changed =
-        currentValues.name !== initialValues.name ||
-        currentValues.description !== initialValues.description ||
-        currentValues.categoryID !== initialValues.categoryID ||
-        assignedUsersChanged;
-      setHasChanges(changed);
+    if (needsResetRef.current) {
+      setHasChanges(false);
+      needsResetRef.current = false;
     }
-  }, [form, isEditMode, initialValues]);
+
+    if (isEditMode && initialValuesRef.current) {
+      const currentValues = form.getFieldsValue();
+      const initial = initialValuesRef.current;
+
+      const nameChanged = currentValues.name !== initial.name;
+      const descriptionChanged = currentValues.description !== initial.description;
+      const categoryChanged = currentValues.categoryID !== initial.categoryID;
+      const assignedUsersChanged = !arraysEqual(
+        currentValues.assignedUsersIDs || [],
+        initial.assignedUsersIDs || [],
+      );
+
+      const changed = nameChanged || descriptionChanged || categoryChanged || assignedUsersChanged;
+      if (!needsResetRef.current) {
+        setHasChanges(changed);
+      }
+    }
+  }, [form, isEditMode]);
 
   const handleValuesChange = useCallback(() => {
-    // Just update form state to reflect changes
     checkFormState();
   }, [checkFormState]);
 
   const handleFieldsChange = useCallback(() => {
-    // onFieldsChange fires when field status changes (including validation)
     checkFormState();
   }, [checkFormState]);
 
