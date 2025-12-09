@@ -15,6 +15,7 @@ export { useGroupNameValidator } from './form/useGroupNameValidator';
 
 // Panel hooks
 export { useGroupPanelState } from './panels/useGroupPanelState';
+export { useViewGroupPanel } from './panels/useViewGroupPanel';
 
 // Category hooks
 export { useGroupCategoryOptions } from './categories/useGroupCategoryOptions';
