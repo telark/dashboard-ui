@@ -20,6 +20,8 @@ export { useViewGroupPanel } from './panels/useViewGroupPanel';
 export { useViewGroupPanelData } from './panels/useViewGroupPanelData';
 export { useEditGroupPanel } from './panels/useEditGroupPanel';
 export { useCreateGroupPanel } from './panels/useCreateGroupPanel';
+export { useAttachRolePanel } from './panels/useAttachRolePanel';
+export { useRoleTypeFilter } from './panels/useRoleTypeFilter';
 
 // Category hooks
 export { useGroupCategoryOptions } from './categories/useGroupCategoryOptions';
