@@ -1,6 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { Activity } from 'react';
-import { Modal } from 'antd';
 import { SHARED_DETAILS_CONSTANTS } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import { PageLayout } from '../../../../components/display/views';
@@ -10,7 +9,6 @@ import ActionBar from '../../../../components/display/actions/ActionBar';
 import { Icons } from '../../../../constants';
 import {
   useFetchGroups,
-  useGroupMutations,
   useGroupListState,
   useGroupListInteractions,
   useGroupPanelState,
@@ -27,7 +25,6 @@ type ViewMode = 'groups' | 'categories';
 const MainPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('groups');
   const { groups, loading, error } = useFetchGroups();
-  const { handleDelete } = useGroupMutations();
   const { categories, loading: categoriesLoading } = useCategories(
     CATEGORIES_CONSTANTS.SCOPES.GROUPS,
   );
@@ -65,36 +62,14 @@ const MainPage: React.FC = () => {
     closeViewPanel,
   } = useGroupPanelState();
 
-  const { handleView, handleEdit, handleDeleteClick, handleViewGroup } = useGroupListInteractions({
+  const { handleView, handleEdit, handleViewGroup } = useGroupListInteractions({
     selectedGroups,
     groups,
-    handleDelete,
+    handleDelete: async () => {},
     setSelectedGroups,
     onEdit: openEditPanel,
     onView: openViewPanel,
   });
-
-  const handleDeleteFromView = useCallback(() => {
-    if (!viewingGroup) return;
-
-    closeViewPanel();
-    // Small delay to allow smooth transition before showing modal
-    setTimeout(() => {
-      Modal.confirm({
-        title: GC.LABELS.ACTIONS.DELETE_MODAL_TITLE,
-        content: GC.LABELS.ACTIONS.DELETE_MODAL_CONTENT(viewingGroup.name),
-        okText: GC.LABELS.ACTIONS.DELETE_MODAL_OK,
-        okButtonProps: { danger: true },
-        onOk: async () => {
-          try {
-            await handleDelete(viewingGroup.id);
-          } catch {
-            // Error message already shown by handleDelete
-          }
-        },
-      });
-    }, 150);
-  }, [viewingGroup, handleDelete, closeViewPanel]);
 
   const pageConfig = useGroupListPageConfig({
     viewMode,
@@ -191,7 +166,6 @@ const MainPage: React.FC = () => {
             hasSelection={hasSelection}
             onView={handleView}
             onEdit={handleEdit}
-            onDelete={handleDeleteClick}
           />
         </div>
       </Activity>
@@ -218,7 +192,6 @@ const MainPage: React.FC = () => {
               openEditPanel(viewingGroup);
             }, 150);
           }}
-          onDelete={handleDeleteFromView}
         />
       )}
     </div>

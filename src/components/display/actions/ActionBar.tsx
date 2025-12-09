@@ -9,7 +9,7 @@ export interface ActionBarProps {
   canDelete?: boolean;
   onView: () => void;
   onEdit: () => void;
-  onDelete: () => void;
+  onDelete?: () => void;
 }
 
 interface ActionButtonProps {
@@ -130,13 +130,15 @@ const ActionBar: React.FC<ActionBarProps> = React.memo(
             disabled={!isEditEnabled}
             tooltip={getEditTooltip()}
           />
-          <ActionButton
-            icon={<DeleteOutlined />}
-            onClick={onDelete}
-            disabled={!isDeleteEnabled}
-            tooltip={getDeleteTooltip()}
-            isDanger={true}
-          />
+          {onDelete && (
+            <ActionButton
+              icon={<DeleteOutlined />}
+              onClick={onDelete}
+              disabled={!isDeleteEnabled}
+              tooltip={getDeleteTooltip()}
+              isDanger={true}
+            />
+          )}
         </div>
       </div>
     );

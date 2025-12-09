@@ -1,19 +1,16 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { Modal } from 'antd';
 import { useSelector } from 'react-redux';
 import DataTable from '../../../../../../components/display/table/DataTable';
-import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import type { Group, GroupsTableProps } from '../../../models';
 import Columns from './Columns';
-import { useGroupMutations } from '../../../hooks';
 import { selectGroupsCategories } from '../../../../categories/store/selectors/categorySelectors';
 import { deduplicateCategoriesByName } from '../../../../categories/utils/helpers';
 import ActionBar from '../../../../../../components/display/actions/ActionBar';
+import { GROUPS_CONSTANTS as GC } from '../../../constants';
 
 type SortKey = 'name' | 'categoryID' | 'creationDate';
 
 const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => {
-  const { handleDelete } = useGroupMutations();
   const [sortKey, setSortKey] = useState<SortKey>('creationDate');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedGroups, setSelectedGroups] = useState<Set<string>>(new Set());
@@ -64,39 +61,6 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
     }
   }, [selectedCount, selectedGroups, groups, onEdit]);
 
-  const handleDeleteClick = useCallback(() => {
-    const selectedIds = Array.from(selectedGroups);
-    if (selectedIds.length === 0) return;
-
-    const selectedGroupNames = selectedIds
-      .map((id) => groups.find((g) => g.id === id)?.name)
-      .filter(Boolean) as string[];
-
-    Modal.confirm({
-      title: GC.LABELS.ACTIONS.DELETE_MODAL_TITLE,
-      content: GC.LABELS.ACTIONS.DELETE_MODAL_CONTENT(
-        selectedGroupNames.length === 1
-          ? selectedGroupNames[0]
-          : `${selectedGroupNames.length} groups`,
-      ),
-      okText: GC.LABELS.ACTIONS.DELETE_MODAL_OK,
-      okButtonProps: { danger: true },
-      onOk: async () => {
-        for (const id of selectedIds) {
-          const group = groups.find((g) => g.id === id);
-          if (group) {
-            try {
-              await handleDelete(id);
-            } catch {
-              // Error message already shown by handleDelete
-            }
-          }
-        }
-        setSelectedGroups(new Set());
-      },
-    });
-  }, [selectedGroups, groups, handleDelete]);
-
   const handleRowSelection = useCallback((selectedRowKeys: React.Key[]) => {
     setSelectedGroups(new Set(selectedRowKeys as string[]));
   }, []);
@@ -130,7 +94,6 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
         hasSelection={hasSelection}
         onView={handleView}
         onEdit={handleEdit}
-        onDelete={handleDeleteClick}
       />
       <DataTable<Group>
         className="app-table"

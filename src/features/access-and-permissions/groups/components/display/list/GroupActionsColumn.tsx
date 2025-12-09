@@ -1,9 +1,9 @@
-import React from 'react';
-import { Modal } from 'antd';
+import React, { useState } from 'react';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import { useGroupMutations } from '../../../hooks';
+import ActionConfirmModal from '../../../../../../components/display/modal/ActionConfirmModal';
 import type { Group } from '../../../models';
 
 interface GroupActionsColumnProps {
@@ -18,25 +18,28 @@ export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({
   onDelete,
 }) => {
   const { handleDelete } = useGroupMutations();
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     if (onDelete) {
       onDelete(record);
     } else {
-      Modal.confirm({
-        title: GC.LABELS.ACTIONS.DELETE_MODAL_TITLE,
-        content: GC.LABELS.ACTIONS.DELETE_MODAL_CONTENT(record.name),
-        okText: GC.LABELS.ACTIONS.DELETE_MODAL_OK,
-        okButtonProps: { danger: true },
-        onOk: async () => {
-          try {
-            await handleDelete(record.id);
-          } catch {
-            // Error message already shown by handleDelete
-          }
-        },
-      });
+      setDeleteModalOpen(true);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await handleDelete(record.id);
+      setDeleteModalOpen(false);
+    } catch {
+      // Error message already shown by handleDelete
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -114,6 +117,19 @@ export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({
       >
         <DeleteOutlined />
       </button>
+      {!onDelete && (
+        <ActionConfirmModal
+          open={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          onConfirm={handleConfirmDelete}
+          title={GC.LABELS.ACTIONS.DELETE_MODAL_TITLE}
+          action="delete"
+          resourceName={record.name}
+          resourceType="group"
+          confirmText={GC.LABELS.ACTIONS.DELETE_MODAL_OK}
+          loading={isDeleting}
+        />
+      )}
     </div>
   );
 };
