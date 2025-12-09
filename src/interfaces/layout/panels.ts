@@ -1,6 +1,11 @@
 import type React from 'react';
 import type { FormInstance } from 'antd/es/form';
 
+export interface TopPanelToolbarActions {
+  onEdit?: () => void;
+  onDelete?: () => void;
+}
+
 export interface AnimationWrapperProps {
   open: boolean;
   onClose: () => void;
@@ -8,6 +13,7 @@ export interface AnimationWrapperProps {
   subtitle?: string;
   children: React.ReactNode;
   width?: number;
+  toolbarActions?: TopPanelToolbarActions;
 }
 
 export interface SlideOutPanelProps extends Omit<AnimationWrapperProps, 'children'> {

@@ -18,6 +18,11 @@ export interface ViewDetailRow {
   value: ReactNode;
 }
 
+export interface ViewPanelActions {
+  onEdit?: () => void;
+  onDelete?: () => void;
+}
+
 export interface ViewPanelProps {
   open: boolean;
   onClose: () => void;
@@ -29,6 +34,7 @@ export interface ViewPanelProps {
   overflowItems?: ViewOverflowItem[];
   width?: number;
   details?: ViewDetailRow[];
+  actions?: ViewPanelActions;
 }
 
 export interface ViewPanelDetailsProps {

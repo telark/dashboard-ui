@@ -17,9 +17,16 @@ const ViewPanel: React.FC<ViewPanelProps> = ({
   overflowItems = [],
   width = DEFAULT_WIDTH,
   details = [],
+  actions,
 }) => {
   return (
-    <AnimationWrapper open={open} onClose={onClose} title={title} width={width}>
+    <AnimationWrapper
+      open={open}
+      onClose={onClose}
+      title={title}
+      width={width}
+      toolbarActions={actions}
+    >
       <div style={VIEW.CONTAINER}>
         <ViewPanelHeader
           icon={icon}

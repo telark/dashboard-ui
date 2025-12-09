@@ -14,9 +14,17 @@ interface ViewGroupPanelProps {
   open: boolean;
   onClose: () => void;
   group: Group | null;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
-const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({ open, onClose, group }) => {
+const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({
+  open,
+  onClose,
+  group,
+  onEdit,
+  onDelete,
+}) => {
   const { groupUsers, categoryName, createdByUser, lastUpdatedByUser, avatarSources } =
     useViewGroupPanel(group);
 
@@ -93,6 +101,10 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({ open, onClose, group })
       overflowItems={overflowItems}
       details={details}
       width={520}
+      actions={{
+        onEdit,
+        onDelete,
+      }}
     />
   );
 };

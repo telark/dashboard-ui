@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Activity } from 'react';
+import { Modal } from 'antd';
 import { SHARED_DETAILS_CONSTANTS } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import { PageLayout } from '../../../../components/display/views';
@@ -72,6 +73,28 @@ const MainPage: React.FC = () => {
     onEdit: openEditPanel,
     onView: openViewPanel,
   });
+
+  const handleDeleteFromView = useCallback(() => {
+    if (!viewingGroup) return;
+
+    closeViewPanel();
+    // Small delay to allow smooth transition before showing modal
+    setTimeout(() => {
+      Modal.confirm({
+        title: GC.LABELS.ACTIONS.DELETE_MODAL_TITLE,
+        content: GC.LABELS.ACTIONS.DELETE_MODAL_CONTENT(viewingGroup.name),
+        okText: GC.LABELS.ACTIONS.DELETE_MODAL_OK,
+        okButtonProps: { danger: true },
+        onOk: async () => {
+          try {
+            await handleDelete(viewingGroup.id);
+          } catch {
+            // Error message already shown by handleDelete
+          }
+        },
+      });
+    }, 150);
+  }, [viewingGroup, handleDelete, closeViewPanel]);
 
   const pageConfig = useGroupListPageConfig({
     viewMode,
@@ -185,7 +208,18 @@ const MainPage: React.FC = () => {
         />
       )}
       {viewPanelOpen && viewingGroup && (
-        <ViewGroupPanel open={viewPanelOpen} onClose={closeViewPanel} group={viewingGroup} />
+        <ViewGroupPanel
+          open={viewPanelOpen}
+          onClose={closeViewPanel}
+          group={viewingGroup}
+          onEdit={() => {
+            closeViewPanel();
+            setTimeout(() => {
+              openEditPanel(viewingGroup);
+            }, 150);
+          }}
+          onDelete={handleDeleteFromView}
+        />
       )}
     </div>
   );
