@@ -120,7 +120,7 @@ const MainPage: React.FC = () => {
           buttonText={GC.LABELS.FORM.BUTTON_TEXT}
           buttonIcon={<GroupIcon size={16} />}
           onButtonClick={openCreatePanel}
-          icon={<GroupIcon size={40} />}
+          icon={<GroupIcon size={32} />}
         />
         {createPanelOpen && (
           <CreateGroupPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />

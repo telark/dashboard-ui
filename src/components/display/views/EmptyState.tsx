@@ -45,17 +45,16 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
         {icon && (
           <div
             style={{
-              width: 80,
-              height: 80,
+              width: 64,
+              height: 64,
               borderRadius: '50%',
-              background: iconBackground,
+              background: '#fff',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: iconColor,
-              fontSize: 40,
-              marginBottom: 24,
-              boxShadow: `0 4px 12px ${iconBackground.replace('0.12', '0.2')}`,
+              border: '2px solid rgba(32, 201, 151, 0.35)',
+              marginBottom: 12,
             }}
           >
             {icon}
@@ -68,7 +67,7 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
             fontWeight: 700,
             color: '#0B1F33',
             margin: 0,
-            marginBottom: 12,
+            marginBottom: 4,
           }}
         >
           {title}
@@ -79,7 +78,7 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
             fontSize: 14,
             color: '#5B6B7C',
             margin: 0,
-            marginBottom: 32,
+            marginBottom: 16,
             maxWidth: 480,
             lineHeight: 1.6,
           }}
