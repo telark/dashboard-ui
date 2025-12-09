@@ -1,6 +1,7 @@
 import React from 'react';
 import { Checkbox, Form } from 'antd';
 import { GROUPS_CONSTANTS as GC, ATTACHED_ROLES_CONSTANTS as ARC } from '../../../constants';
+import { truncateText } from '../../../../../../utils/helpers/format';
 import type { Role } from '../../../../roles/models';
 
 interface RoleListProps {
@@ -14,9 +15,7 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading }) => {
   }
 
   if (!roles || roles.length === 0) {
-    return (
-      <div style={ARC.LIST.EMPTY_STATE}>{GC.LABELS.MESSAGES.NO_ROLES_AVAILABLE}</div>
-    );
+    return <div style={ARC.LIST.EMPTY_STATE}>{GC.LABELS.MESSAGES.NO_ROLES_AVAILABLE}</div>;
   }
 
   return (
@@ -42,9 +41,7 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading }) => {
 
                     {role.description && (
                       <div style={ARC.LIST.ROLE_DESCRIPTION}>
-                        {role.description.length > 60
-                          ? `${role.description.substring(0, 60)}...`
-                          : role.description}
+                        {truncateText(role.description, 60)}
                       </div>
                     )}
                   </div>

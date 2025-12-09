@@ -46,10 +46,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
       subtitle={`Select roles to attach to ${currentGroup.name}`}
       formContent={
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
-          <RoleTypeFilter
-            selectedRoleType={selectedRoleType}
-            onTypeChange={setSelectedRoleType}
-          />
+          <RoleTypeFilter selectedRoleType={selectedRoleType} onTypeChange={setSelectedRoleType} />
           <RoleList roles={filteredRoles} loading={rolesLoading} />
         </div>
       }

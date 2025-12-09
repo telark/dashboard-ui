@@ -30,3 +30,9 @@ export const generateMaintenanceFeatureName = (parsedName: string): string => {
 export const extractErrorMessage = (error: unknown, fallback: string): string => {
   return error instanceof Error ? error.message : fallback;
 };
+
+export const truncateText = (text: string, maxLength: number = 60): string => {
+  if (!text) return text;
+  if (text.length <= maxLength) return text;
+  return `${text.substring(0, maxLength)}...`;
+};

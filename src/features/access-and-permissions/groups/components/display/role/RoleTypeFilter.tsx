@@ -17,16 +17,18 @@ const RoleTypeFilter: React.FC<RoleTypeFilterProps> = ({ selectedRoleType, onTyp
 
   const getButtonStyle = (isActive: boolean) => ({
     ...ARC.FILTER.BUTTON.BASE,
-    ...(isActive
-      ? ARC.FILTER.BUTTON.ACTIVE
-      : ARC.FILTER.BUTTON.INACTIVE),
+    ...(isActive ? ARC.FILTER.BUTTON.ACTIVE : ARC.FILTER.BUTTON.INACTIVE),
   });
 
   return (
     <div style={ARC.FILTER.CONTAINER}>
       <span style={ARC.FILTER.LABEL}>Role Type</span>
       <Space wrap={false} size={[8, 8]}>
-        <button type="button" onClick={handleTypeChange('all')} style={getButtonStyle(selectedRoleType === 'all')}>
+        <button
+          type="button"
+          onClick={handleTypeChange('all')}
+          style={getButtonStyle(selectedRoleType === 'all')}
+        >
           All
         </button>
         <button
