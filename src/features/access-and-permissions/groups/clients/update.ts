@@ -18,8 +18,6 @@ export const updateGroup = async (groupId: string, group: Partial<GroupFormData>
       groupData.assignedUsersIDs = Array.isArray(group.assignedUsersIDs)
         ? group.assignedUsersIDs
         : [];
-    } else {
-      groupData.assignedUsersIDs = [];
     }
 
     if (group.assignedRolesIDs !== undefined) {
