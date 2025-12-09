@@ -1,13 +1,14 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Checkbox, Form } from 'antd';
+import { Checkbox, Form, Space } from 'antd';
 import { SlideOutPanel } from '../../../../components/display/panels/slide-out';
-import { Icons } from '../../../../constants';
+import { Icons, DEFAULT_COLORS } from '../../../../constants';
 import { useGroupMutations } from '../hooks';
 import { useRoles } from '../../roles/hooks';
 import type { Group } from '../models';
 import type { RootState } from '../../../../store';
 import { GROUPS_CONSTANTS as GC } from '../constants';
+import { ROLES_CONSTANTS as RC } from '../../roles/constants';
 
 const RoleIcon = Icons.Role;
 
@@ -29,6 +30,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
   const { handleUpdate, submitting } = useGroupMutations();
   const [form] = Form.useForm();
   const groups = useSelector((state: RootState) => state.groups.groups);
+  const [selectedRoleType, setSelectedRoleType] = useState<string>('all');
 
   const currentGroup = useMemo(() => {
     if (!group) return null;
@@ -48,10 +50,17 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
     );
   }, [currentSelectedRoles, initialSelectedRoles]);
 
+  const filteredRoles = useMemo(() => {
+    if (!roles) return [];
+    if (selectedRoleType === 'all') return roles;
+    return roles.filter((role) => role.type === selectedRoleType);
+  }, [roles, selectedRoleType]);
+
   useEffect(() => {
     if (open && currentGroup && !rolesLoading && roles) {
       const assignedRoles = currentGroup.assignedRolesIDs || [];
       form.setFieldsValue({ assignedRolesIDs: assignedRoles });
+      setSelectedRoleType('all');
     }
   }, [open, currentGroup?.id, currentGroup?.assignedRolesIDs, rolesLoading, roles, form]);
 
@@ -73,11 +82,99 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
       subtitle={`Select roles to attach to ${currentGroup.name}`}
       formContent={
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, width: '100%' }}>
+            <span
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: '#64748b',
+                textTransform: 'uppercase',
+                letterSpacing: 0.5,
+                fontFamily: "'Roboto Condensed', sans-serif",
+              }}
+            >
+              Role Type
+            </span>
+            <Space wrap={false} size={[8, 8]}>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setSelectedRoleType('all');
+                }}
+                style={{
+                  all: 'unset',
+                  cursor: 'pointer',
+                  borderRadius: 20,
+                  height: 28,
+                  padding: '0 16px',
+                  fontSize: 13,
+                  fontWeight: selectedRoleType === 'all' ? 600 : 500,
+                  border: `1px solid ${selectedRoleType === 'all' ? DEFAULT_COLORS.SUCCESS : '#d9d9d9'}`,
+                  backgroundColor: selectedRoleType === 'all' ? DEFAULT_COLORS.SUCCESS : '#fff',
+                  color: selectedRoleType === 'all' ? '#fff' : '#64748b',
+                  fontFamily: "'Roboto Condensed', sans-serif",
+                  transition: 'all 0.2s',
+                }}
+              >
+                All
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setSelectedRoleType(RC.VALUES.ROLE_TYPE_BUILT_IN);
+                }}
+                style={{
+                  all: 'unset',
+                  cursor: 'pointer',
+                  borderRadius: 20,
+                  height: 28,
+                  padding: '0 16px',
+                  fontSize: 13,
+                  fontWeight: selectedRoleType === RC.VALUES.ROLE_TYPE_BUILT_IN ? 600 : 500,
+                  border: `1px solid ${selectedRoleType === RC.VALUES.ROLE_TYPE_BUILT_IN ? DEFAULT_COLORS.SUCCESS : '#d9d9d9'}`,
+                  backgroundColor: selectedRoleType === RC.VALUES.ROLE_TYPE_BUILT_IN ? DEFAULT_COLORS.SUCCESS : '#fff',
+                  color: selectedRoleType === RC.VALUES.ROLE_TYPE_BUILT_IN ? '#fff' : '#64748b',
+                  fontFamily: "'Roboto Condensed', sans-serif",
+                  transition: 'all 0.2s',
+                }}
+              >
+                Built-in
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setSelectedRoleType(RC.VALUES.ROLE_TYPE_CUSTOM);
+                }}
+                style={{
+                  all: 'unset',
+                  cursor: 'pointer',
+                  borderRadius: 20,
+                  height: 28,
+                  padding: '0 16px',
+                  fontSize: 13,
+                  fontWeight: selectedRoleType === RC.VALUES.ROLE_TYPE_CUSTOM ? 600 : 500,
+                  border: `1px solid ${selectedRoleType === RC.VALUES.ROLE_TYPE_CUSTOM ? DEFAULT_COLORS.SUCCESS : '#d9d9d9'}`,
+                  backgroundColor: selectedRoleType === RC.VALUES.ROLE_TYPE_CUSTOM ? DEFAULT_COLORS.SUCCESS : '#fff',
+                  color: selectedRoleType === RC.VALUES.ROLE_TYPE_CUSTOM ? '#fff' : '#64748b',
+                  fontFamily: "'Roboto Condensed', sans-serif",
+                  transition: 'all 0.2s',
+                }}
+              >
+                Custom
+              </button>
+            </Space>
+          </div>
           {rolesLoading ? (
             <div style={{ padding: '24px', textAlign: 'center', color: '#64748b' }}>
               {GC.LABELS.MESSAGES.LOADING_ROLES}
             </div>
-          ) : roles && roles.length > 0 ? (
+          ) : filteredRoles && filteredRoles.length > 0 ? (
             <Form.Item name="assignedRolesIDs" style={{ margin: 0, width: '100%' }}>
               <Checkbox.Group style={{ width: '100%' }}>
                 <div
@@ -93,7 +190,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                     alignItems: 'stretch',
                   }}
                 >
-                  {roles.map((role) => {
+                  {filteredRoles.map((role) => {
                     return (
                       <div
                         key={role.id}
