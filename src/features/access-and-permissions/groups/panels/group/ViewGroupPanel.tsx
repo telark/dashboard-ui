@@ -1,13 +1,13 @@
 import React from 'react';
-import { ROLES_CONSTANTS as RPC } from '../../roles/constants';
-import TimeAgo from '../../../../components/display/time/TimeAgo';
-import RowTag from '../../../../components/display/table/RowTag';
-import { UserDisplay } from '../../../../components/display/users';
-import { Icons } from '../../../../constants';
-import ViewPanel from '../../../../components/display/panels/view/ViewPanel';
-import { useViewGroupPanel } from '../hooks';
-import { useGroupDeleteModal, GroupDeleteModal } from '../components/delete';
-import type { Group } from '../models';
+import { ROLES_CONSTANTS as RPC } from '../../../roles/constants';
+import TimeAgo from '../../../../../components/display/time/TimeAgo';
+import RowTag from '../../../../../components/display/table/RowTag';
+import { UserDisplay } from '../../../../../components/display/users';
+import { Icons } from '../../../../../constants';
+import ViewPanel from '../../../../../components/display/panels/view/ViewPanel';
+import { useViewGroupPanel } from '../../hooks';
+import { useGroupDeleteModal, GroupDeleteModal } from '../../components/delete';
+import type { Group } from '../../models';
 
 const GroupIcon = Icons.Group;
 

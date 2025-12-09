@@ -1,14 +1,14 @@
 import React, { useMemo, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../../store';
-import { SlideOutPanel } from '../../../../components/display/panels/slide-out';
-import { Icons } from '../../../../constants';
-import { GROUPS_CONSTANTS as GC } from '../constants';
-import GroupFormFields from '../components/display/shared/GroupFormFields';
-import { useGroupNameValidator, useGroupFormState, useGroupFormSelectOptions } from '../hooks';
-import { useGroupMutations } from '../hooks';
-import { normalizeGroupFormData } from '../utils';
-import type { GroupPanelProps, GroupFormData } from '../models';
+import { RootState } from '../../../../../store';
+import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
+import { Icons } from '../../../../../constants';
+import { GROUPS_CONSTANTS as GC } from '../../constants';
+import GroupFormFields from '../../components/display/shared/GroupFormFields';
+import { useGroupNameValidator, useGroupFormState, useGroupFormSelectOptions } from '../../hooks';
+import { useGroupMutations } from '../../hooks';
+import { normalizeGroupFormData } from '../../utils';
+import type { GroupPanelProps, GroupFormData } from '../../models';
 
 const GroupIcon = Icons.Group;
 

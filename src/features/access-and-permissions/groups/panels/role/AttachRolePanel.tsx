@@ -1,14 +1,14 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Checkbox, Form, Space } from 'antd';
-import { SlideOutPanel } from '../../../../components/display/panels/slide-out';
-import { Icons, DEFAULT_COLORS } from '../../../../constants';
-import { useGroupMutations } from '../hooks';
-import { useRoles } from '../../roles/hooks';
-import type { Group } from '../models';
-import type { RootState } from '../../../../store';
-import { GROUPS_CONSTANTS as GC } from '../constants';
-import { ROLES_CONSTANTS as RC } from '../../roles/constants';
+import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
+import { Icons, DEFAULT_COLORS } from '../../../../../constants';
+import { useGroupMutations } from '../../hooks';
+import { useRoles } from '../../../roles/hooks';
+import type { Group } from '../../models';
+import type { RootState } from '../../../../../store';
+import { GROUPS_CONSTANTS as GC } from '../../constants';
+import { ROLES_CONSTANTS as RC } from '../../../roles/constants';
 
 const RoleIcon = Icons.Role;
 
