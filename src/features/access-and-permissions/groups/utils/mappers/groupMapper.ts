@@ -5,6 +5,7 @@ export const mapGroupData = (apiGroup: Group): Group => {
   return {
     id: apiGroup.id,
     assignedUsersIDs: apiGroup.assignedUsersIDs || [],
+    assignedRolesIDs: apiGroup.assignedRolesIDs || [],
     name: apiGroup.name,
     description: apiGroup.description,
     categoryID: apiGroup.categoryID || '',

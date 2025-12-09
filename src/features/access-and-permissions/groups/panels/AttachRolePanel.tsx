@@ -7,6 +7,7 @@ import { useGroupMutations } from '../hooks';
 import { useRoles } from '../../roles/hooks';
 import type { Group } from '../models';
 import type { RootState } from '../../../../store';
+import { GROUPS_CONSTANTS as GC } from '../constants';
 
 const RoleIcon = Icons.Role;
 
@@ -22,7 +23,6 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
   const [form] = Form.useForm();
   const groups = useSelector((state: RootState) => state.groups.groups);
 
-  // Get the latest group from the store to ensure we have the most up-to-date assignedRolesIDs
   const currentGroup = useMemo(() => {
     if (!group) return null;
     return groups.find((g) => g.id === group.id) || group;
@@ -33,10 +33,11 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
   }, [currentGroup]);
 
   useEffect(() => {
-    if (open && currentGroup) {
-      form.setFieldsValue({ assignedRolesIDs: initialSelectedRoles });
+    if (open && currentGroup && !rolesLoading && roles) {
+      const assignedRoles = currentGroup.assignedRolesIDs || [];
+      form.setFieldsValue({ assignedRolesIDs: assignedRoles });
     }
-  }, [open, currentGroup, initialSelectedRoles, form]);
+  }, [open, currentGroup?.id, currentGroup?.assignedRolesIDs, rolesLoading, roles, form]);
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     if (!currentGroup) return;
@@ -58,7 +59,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
           {rolesLoading ? (
             <div style={{ padding: '24px', textAlign: 'center', color: '#64748b' }}>
-              Loading roles...
+              {GC.LABELS.MESSAGES.LOADING_ROLES}
             </div>
           ) : roles && roles.length > 0 ? (
             <Form.Item name="assignedRolesIDs" style={{ margin: 0, width: '100%' }}>
@@ -143,7 +144,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
             </Form.Item>
           ) : (
             <div style={{ padding: '24px', textAlign: 'center', color: '#64748b' }}>
-              No roles available
+              {GC.LABELS.MESSAGES.NO_ROLES_AVAILABLE}
             </div>
           )}
         </div>

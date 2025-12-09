@@ -23,6 +23,8 @@ export const GROUPS_CONSTANTS = {
       NO_GROUPS_TITLE: 'No groups yet',
       NO_GROUPS_DESCRIPTION:
         'Get started by creating your first group. Groups help you organize and manage users with similar roles and permissions.',
+      LOADING_ROLES: 'Loading roles...',
+      NO_ROLES_AVAILABLE: 'No roles available',
     },
     COLUMNS: {
       NAME: 'Group Name',
