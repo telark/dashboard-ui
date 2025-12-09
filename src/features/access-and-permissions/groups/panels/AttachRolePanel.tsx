@@ -17,6 +17,13 @@ interface AttachRolePanelProps {
   group: Group | null;
 }
 
+const arraysEqual = (a: string[], b: string[]): boolean => {
+  if (a.length !== b.length) return false;
+  const sortedA = [...a].sort();
+  const sortedB = [...b].sort();
+  return sortedA.every((val, index) => val === sortedB[index]);
+};
+
 const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group }) => {
   const { roles, loading: rolesLoading } = useRoles();
   const { handleUpdate, submitting } = useGroupMutations();
@@ -31,6 +38,15 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
   const initialSelectedRoles = useMemo(() => {
     return currentGroup?.assignedRolesIDs || [];
   }, [currentGroup]);
+
+  const currentSelectedRoles = Form.useWatch('assignedRolesIDs', form) || [];
+
+  const hasChanges = useMemo(() => {
+    return !arraysEqual(
+      (currentSelectedRoles as string[]) || [],
+      initialSelectedRoles || [],
+    );
+  }, [currentSelectedRoles, initialSelectedRoles]);
 
   useEffect(() => {
     if (open && currentGroup && !rolesLoading && roles) {
@@ -154,7 +170,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
       submitButtonText="Attach Roles"
       submitButtonIcon={<RoleIcon size={16} />}
       loading={submitting}
-      disabled={false}
+      disabled={!hasChanges}
       form={form}
       initialValues={{ assignedRolesIDs: initialSelectedRoles }}
     />
