@@ -5,7 +5,7 @@ import { SLIDE_OUT } from '../../../constants';
 
 export interface ActionConfirmModalProps {
   open: boolean;
-  onClose: () => void;
+  onClose: (e?: React.MouseEvent) => void;
   onConfirm: () => void | Promise<void>;
   title: string;
   action: string;
@@ -32,9 +32,17 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
   danger = true,
   icon,
 }) => {
+  const handleClose = (e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+    onClose(e);
+  };
+
   const handleConfirm = async () => {
     await onConfirm();
-    onClose();
+    handleClose();
   };
 
   const message = resourceType
@@ -94,17 +102,38 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
           .action-confirm-modal .ant-modal-close-x:active {
             background: transparent !important;
           }
+          .action-confirm-modal .ant-modal-mask {
+            pointer-events: auto !important;
+          }
+          .action-confirm-modal .ant-modal-wrap {
+            pointer-events: auto !important;
+          }
         `}
       </style>
       <Modal
         open={open}
-        onCancel={onClose}
+        onCancel={(e) => {
+          if (e) {
+            e.stopPropagation();
+            e.preventDefault();
+          }
+          // Use setTimeout to prevent click from propagating to row
+          setTimeout(() => {
+            handleClose(e);
+          }, 10);
+        }}
         title={null}
         width={360}
         footer={null}
-        maskClosable={false}
+        maskClosable={true}
+        getContainer={false}
         closeIcon={
           <span
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              handleClose(e);
+            }}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -209,7 +238,8 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                onClose();
+                e.preventDefault();
+                handleClose(e);
               }}
               disabled={loading}
               style={SLIDE_OUT.CANCEL_BUTTON}

@@ -43,6 +43,14 @@ export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({
     }
   };
 
+  const handleModalClose = (e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+    setDeleteModalOpen(false);
+  };
+
   return (
     <div
       style={{
@@ -118,17 +126,19 @@ export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({
         <DeleteOutlined />
       </button>
       {!onDelete && (
-        <ActionConfirmModal
-          open={deleteModalOpen}
-          onClose={() => setDeleteModalOpen(false)}
-          onConfirm={handleConfirmDelete}
-          title={GC.LABELS.ACTIONS.DELETE_MODAL_TITLE}
-          action="delete"
-          resourceName={record.name}
-          resourceType="group"
-          confirmText={GC.LABELS.ACTIONS.DELETE_MODAL_OK}
-          loading={isDeleting}
-        />
+        <div style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
+          <ActionConfirmModal
+            open={deleteModalOpen}
+            onClose={handleModalClose}
+            onConfirm={handleConfirmDelete}
+            title={GC.LABELS.ACTIONS.DELETE_MODAL_TITLE}
+            action="delete"
+            resourceName={record.name}
+            resourceType="group"
+            confirmText={GC.LABELS.ACTIONS.DELETE_MODAL_OK}
+            loading={isDeleting}
+          />
+        </div>
       )}
     </div>
   );
