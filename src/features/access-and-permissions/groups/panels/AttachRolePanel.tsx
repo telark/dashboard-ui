@@ -62,9 +62,9 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                     maxHeight: 'calc(100vh - 300px)',
                     overflowY: 'auto',
                     width: '100%',
-                    padding: '0 16px',
+                    padding: '0 0px',
                     boxSizing: 'border-box',
-                    alignItems: 'center',
+                    alignItems: 'stretch',
                   }}
                 >
                   {roles.map((role) => {
@@ -74,7 +74,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                         style={{
                           display: 'flex',
                           alignItems: 'center',
-                          padding: '10px 14px',
+                          padding: '5px 14px',
                           background: '#f8fafc',
                           border: '1px solid #e2e8f0',
                           borderRadius: 8,
@@ -82,7 +82,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                           cursor: 'pointer',
                           minHeight: '48px',
                           width: '100%',
-                          maxWidth: 420,
+                          maxWidth: '100%',
                           boxSizing: 'border-box',
                         }}
                         onMouseEnter={(e) => {
