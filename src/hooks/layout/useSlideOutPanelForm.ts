@@ -60,7 +60,7 @@ export const useSlideOutPanelForm = ({
     }
 
     previousOpenRef.current = open;
-  }, [open, form, hasExternalForm]);
+  }, [open, form, hasExternalForm, initialValues]);
 
   return {
     form,

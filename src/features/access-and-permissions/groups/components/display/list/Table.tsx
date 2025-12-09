@@ -111,7 +111,7 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
           setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
         },
         categories,
-      } as any),
+      }),
     [sortKey, categories],
   );
 

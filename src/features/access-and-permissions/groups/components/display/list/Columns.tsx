@@ -28,7 +28,9 @@ interface ColumnsContext extends GenerateColumnCtx {
 
 const DESCRIPTION_PREVIEW_MAX = 40;
 
-const Columns = (ctx: ColumnsContext) => {
+type GeneratedColumn = ReturnType<typeof generateColumn>;
+
+const Columns = (ctx: ColumnsContext): GeneratedColumn[] => {
   const categories = ctx.categories || [];
   const users = ctx.users || [];
 
@@ -37,7 +39,7 @@ const Columns = (ctx: ColumnsContext) => {
     return users.find((u) => u.id === userId) || null;
   };
 
-  const cols: any[] = [];
+  const cols: GeneratedColumn[] = [];
   cols.push(
     generateColumn(
       {
@@ -45,7 +47,7 @@ const Columns = (ctx: ColumnsContext) => {
         label: GC.LABELS.COLUMNS.NAME,
         align: 'left',
         width: GC.SIZES.COLUMNS.NAME,
-        render: (_: any, record: Group) => (
+        render: (_: unknown, record: Group) => (
           <span style={{ fontWeight: 700, color: RPC.COLORS.TEXT_PRIMARY }}>{record.name}</span>
         ),
       },
