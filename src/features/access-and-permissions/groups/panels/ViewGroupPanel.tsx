@@ -38,23 +38,46 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({ open, onClose, group })
   const details = [
     {
       label: 'Category',
-      value: <RowTag text={categoryName} background={RPC.COLORS.TYPE_CUSTOM_BG} color={RPC.COLORS.TYPE_CUSTOM_TEXT} fontSize={12} />,
+      value: (
+        <RowTag
+          text={categoryName}
+          background={RPC.COLORS.TYPE_CUSTOM_BG}
+          color={RPC.COLORS.TYPE_CUSTOM_TEXT}
+          fontSize={12}
+        />
+      ),
     },
     {
       label: 'Creation Date',
-      value: <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F33' }}>{group.creationDate ? <TimeAgo date={group.creationDate} /> : '—'}</span>,
+      value: (
+        <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F33' }}>
+          {group.creationDate ? <TimeAgo date={group.creationDate} /> : '—'}
+        </span>
+      ),
     },
     {
       label: 'Last Update',
-      value: <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F33' }}>{group.lastUpdateDate ? <TimeAgo date={group.lastUpdateDate} /> : '—'}</span>,
+      value: (
+        <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F33' }}>
+          {group.lastUpdateDate ? <TimeAgo date={group.lastUpdateDate} /> : '—'}
+        </span>
+      ),
     },
     {
       label: 'Created By',
-      value: createdByUser ? <UserDisplay user={createdByUser} size="small" showBorder /> : <span style={{ color: '#64748b' }}>—</span>,
+      value: createdByUser ? (
+        <UserDisplay user={createdByUser} size="small" showBorder />
+      ) : (
+        <span style={{ color: '#64748b' }}>—</span>
+      ),
     },
     {
       label: 'Last Updated By',
-      value: lastUpdatedByUser ? <UserDisplay user={lastUpdatedByUser} size="small" showBorder /> : <span style={{ color: '#64748b' }}>—</span>,
+      value: lastUpdatedByUser ? (
+        <UserDisplay user={lastUpdatedByUser} size="small" showBorder />
+      ) : (
+        <span style={{ color: '#64748b' }}>—</span>
+      ),
     },
   ];
 

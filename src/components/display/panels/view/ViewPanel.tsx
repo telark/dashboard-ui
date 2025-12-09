@@ -81,7 +81,15 @@ const ViewPanel: React.FC<ViewPanelProps> = ({
           >
             {icon}
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0, marginTop: -4 }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 0,
+              marginTop: -4,
+            }}
+          >
             <h3
               style={{
                 margin: 0,
@@ -143,7 +151,9 @@ const ViewPanel: React.FC<ViewPanelProps> = ({
                             }}
                           >
                             <Avatar src={user.src} size={24} />
-                            <span style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>{user.username}</span>
+                            <span style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>
+                              {user.username}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -180,8 +190,24 @@ const ViewPanel: React.FC<ViewPanelProps> = ({
         {/* Details */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, paddingTop: 12 }}>
           {details.map((row) => (
-            <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: 0.6 }}>
+            <div
+              key={row.label}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: 12,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: '#6b7280',
+                  textTransform: 'uppercase',
+                  letterSpacing: 0.6,
+                }}
+              >
                 {row.label}
               </span>
               <div style={{ display: 'flex', alignItems: 'center' }}>{row.value}</div>

@@ -59,7 +59,10 @@ const Columns = (ctx: ColumnsContext) => {
         width: GC.SIZES.COLUMNS.DESCRIPTION,
         render: (value: string) => {
           const text = value || '';
-          const truncated = text.length > DESCRIPTION_PREVIEW_MAX ? `${text.slice(0, DESCRIPTION_PREVIEW_MAX)}...` : text;
+          const truncated =
+            text.length > DESCRIPTION_PREVIEW_MAX
+              ? `${text.slice(0, DESCRIPTION_PREVIEW_MAX)}...`
+              : text;
           return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>{truncated}</span>;
         },
       },

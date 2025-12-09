@@ -3,7 +3,7 @@ import { DatePicker as AntDatePicker } from 'antd';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import '../../../styles/DatePicker.css';
-import { getDisabledTimeForFutureDates } from '../../../utils/layout/datePicker';
+import { getDisabledTimeForFutureDates } from '../../../utils/layout';
 
 export interface DatePickerProps {
   value?: Dayjs | string;
