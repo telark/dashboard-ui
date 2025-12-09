@@ -62,7 +62,7 @@ const MainPage: React.FC = () => {
     closeViewPanel,
   } = useGroupPanelState();
 
-  const { handleView, handleEdit, handleViewGroup } = useGroupListInteractions({
+  const { handleViewGroup } = useGroupListInteractions({
     selectedGroups,
     groups,
     handleDelete: async () => {},

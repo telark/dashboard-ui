@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
@@ -19,7 +20,6 @@ interface UseBulkDeleteGroupsReturn {
 
 export const useBulkDeleteGroups = ({
   selectedGroups,
-  groups,
   setSelectedGroups,
 }: UseBulkDeleteGroupsProps): UseBulkDeleteGroupsReturn => {
   const dispatch: AppDispatch = useDispatch();
@@ -40,9 +40,7 @@ export const useBulkDeleteGroups = ({
         duration: 0,
       });
 
-      const deletePromises = selectedIds.map((id) =>
-        dispatch(deleteGroupThunk(id)).unwrap(),
-      );
+      const deletePromises = selectedIds.map((id) => dispatch(deleteGroupThunk(id)).unwrap());
       await Promise.all(deletePromises);
 
       message.success({
@@ -52,7 +50,7 @@ export const useBulkDeleteGroups = ({
       });
 
       setSelectedGroups([]);
-    } catch (error) {
+    } catch {
       message.error({
         content: GC.LABELS.ACTIONS.BULK_DELETE_FAILED,
         key: loadingKey,

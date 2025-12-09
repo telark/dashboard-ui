@@ -59,11 +59,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                     : button.active
                       ? '#e6f7ff'
                       : 'transparent',
-                  color: isDisabled
-                    ? '#d1d5db'
-                    : isPrimary
-                      ? '#fff'
-                      : '#64748b',
+                  color: isDisabled ? '#d1d5db' : isPrimary ? '#fff' : '#64748b',
                   opacity: isDisabled ? 0.6 : 1,
                   fontFamily: "'Roboto Condensed', sans-serif",
                   transition: 'all 0.2s',
@@ -132,11 +128,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                 : button.active
                   ? '#e6f7ff'
                   : 'transparent',
-              color: isDisabled
-                ? '#d1d5db'
-                : isPrimary
-                  ? '#fff'
-                  : '#64748b',
+              color: isDisabled ? '#d1d5db' : isPrimary ? '#fff' : '#64748b',
               opacity: isDisabled ? 0.6 : 1,
               fontFamily: "'Roboto Condensed', sans-serif",
               transition: 'all 0.2s',

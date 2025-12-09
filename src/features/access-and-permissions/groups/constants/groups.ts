@@ -46,7 +46,8 @@ export const GROUPS_CONSTANTS = {
         `Are you sure you want to delete ${count} group${count > 1 ? 's' : ''}? This action cannot be undone.`,
       DELETE_MODAL_OK: 'Delete',
       BULK_DELETE_LOADING: (count: number) => `Deleting ${count} group${count > 1 ? 's' : ''}...`,
-      BULK_DELETE_SUCCESS: (count: number) => `${count} group${count > 1 ? 's' : ''} deleted successfully`,
+      BULK_DELETE_SUCCESS: (count: number) =>
+        `${count} group${count > 1 ? 's' : ''} deleted successfully`,
       BULK_DELETE_FAILED: 'Failed to delete some groups',
     },
     FORM: {
