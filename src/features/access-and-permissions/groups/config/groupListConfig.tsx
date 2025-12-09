@@ -7,13 +7,13 @@ import {
   PlusOutlined,
   FilterOutlined,
   DeleteOutlined,
-  LinkOutlined,
 } from '@ant-design/icons';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import type { FilterSectionConfig } from '../../../../interfaces/layout/filters';
 import type { FilterOption } from '../../../../interfaces/layout/filters';
 
 const GroupIcon = Icons.Group;
+const RoleIcon = Icons.Role;
 
 interface UseGroupListConfigProps {
   categoryFilterOptions: FilterOption[];
@@ -74,7 +74,7 @@ export const useGroupListConfig = ({
         {
           key: 'attach-role',
           label: GC.LABELS.ACTIONS.ATTACH_ROLE,
-          icon: <LinkOutlined />,
+          icon: <RoleIcon size={14} />,
           variant: 'default',
           disabled: selectedGroupsCount !== 1,
           onClick: () => {
