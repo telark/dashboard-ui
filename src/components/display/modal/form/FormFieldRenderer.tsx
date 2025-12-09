@@ -1,8 +1,8 @@
 import React from 'react';
 import { Form, Input } from 'antd';
-import LabeledInput from '../inputs/LabeledInput';
-import LabeledSelect from '../inputs/LabeledSelect';
-import type { FormFieldRendererProps } from '../../../interfaces/layout/modal';
+import LabeledInput from '../../inputs/LabeledInput';
+import LabeledSelect from '../../inputs/LabeledSelect';
+import type { FormFieldRendererProps } from '../../../../interfaces/layout/modal';
 
 const FormFieldRenderer: React.FC<FormFieldRendererProps> = ({ field }) => {
   const commonProps = {

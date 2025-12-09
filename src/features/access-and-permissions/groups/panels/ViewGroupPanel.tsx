@@ -18,16 +18,16 @@ interface ViewGroupPanelProps {
   onEdit?: () => void;
 }
 
-const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({
-  open,
-  onClose,
-  group,
-  onEdit,
-}) => {
+const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({ open, onClose, group, onEdit }) => {
   const { groupUsers, categoryName, createdByUser, lastUpdatedByUser, avatarSources } =
     useViewGroupPanel(group);
-  const { deleteModalOpen, isDeleting, openDeleteModal, closeDeleteModal, handleConfirmDelete: baseHandleConfirmDelete } =
-    useGroupDeleteModal(group);
+  const {
+    deleteModalOpen,
+    isDeleting,
+    openDeleteModal,
+    closeDeleteModal,
+    handleConfirmDelete: baseHandleConfirmDelete,
+  } = useGroupDeleteModal(group);
 
   const handleConfirmDelete = async () => {
     await baseHandleConfirmDelete();
@@ -98,30 +98,30 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({
 
   return (
     <>
-    <ViewPanel
-      open={open}
-      onClose={onClose}
-      title="Group Details"
-      icon={<GroupIcon size={32} style={{ color: '#20C997' }} />}
-      name={group.name}
-      description={group.description}
-      avatars={avatars}
-      overflowItems={overflowItems}
-      details={details}
-      width={520}
-      actions={{
-        onEdit,
-        onDelete: openDeleteModal,
-      }}
-    />
-    <GroupDeleteModal
-      open={deleteModalOpen}
-      onClose={closeDeleteModal}
-      onConfirm={handleConfirmDelete}
-      groupName={group.name}
-      loading={isDeleting}
-    />
-  </>
+      <ViewPanel
+        open={open}
+        onClose={onClose}
+        title="Group Details"
+        icon={<GroupIcon size={32} style={{ color: '#20C997' }} />}
+        name={group.name}
+        description={group.description}
+        avatars={avatars}
+        overflowItems={overflowItems}
+        details={details}
+        width={520}
+        actions={{
+          onEdit,
+          onDelete: openDeleteModal,
+        }}
+      />
+      <GroupDeleteModal
+        open={deleteModalOpen}
+        onClose={closeDeleteModal}
+        onConfirm={handleConfirmDelete}
+        groupName={group.name}
+        loading={isDeleting}
+      />
+    </>
   );
 };
 

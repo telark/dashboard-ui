@@ -26,7 +26,6 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
     buttonDisabled = false,
     icon,
     iconColor = '#10b981',
-    iconBackground = 'rgba(16, 185, 129, 0.12)',
   }) => {
     return (
       <div

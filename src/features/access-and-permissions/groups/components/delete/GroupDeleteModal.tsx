@@ -1,5 +1,5 @@
 import React from 'react';
-import ActionConfirmModal from '../../../../../components/display/modal/ActionConfirmModal';
+import { ActionConfirmModal } from '../../../../../components/display/modal';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
 
 interface GroupDeleteModalProps {

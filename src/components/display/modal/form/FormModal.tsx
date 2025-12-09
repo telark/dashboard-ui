@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import logger from '../../../logging';
+import logger from '../../../../logging';
 import { Form, message, Button } from 'antd';
-import { PrimaryButton } from '../buttons';
-import { BUTTON_TEXTS } from '../../../constants';
-import BaseModal from './BaseModal';
+import { PrimaryButton } from '../../buttons';
+import { BUTTON_TEXTS } from '../../../../constants';
+import BaseModal from '../base/BaseModal';
 import FormFieldRenderer from './FormFieldRenderer';
-import Section from '../sections/Section';
-import type { FormModalProps } from '../../../interfaces/layout/modal';
+import Section from '../../sections/Section';
+import type { FormModalProps } from '../../../../interfaces/layout/modal';
 
 const FormModal: React.FC<FormModalProps> = ({
   open,

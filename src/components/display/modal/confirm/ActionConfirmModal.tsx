@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Button } from 'antd';
 import { DeleteOutlined, CloseOutlined } from '@ant-design/icons';
-import { SLIDE_OUT } from '../../../constants';
+import { SLIDE_OUT } from '../../../../constants';
 
 export interface ActionConfirmModalProps {
   open: boolean;
