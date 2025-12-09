@@ -8,6 +8,7 @@ export interface ToolbarButtonConfig {
   onClick?: () => void;
   variant?: 'default' | 'primary' | 'ghost';
   active?: boolean;
+  disabled?: boolean;
   dropdown?: {
     items: MenuProps['items'];
     onItemClick?: (key: string) => void;

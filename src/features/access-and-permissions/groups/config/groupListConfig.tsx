@@ -1,7 +1,13 @@
 import React from 'react';
 import { Icons } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
-import { SearchOutlined, AppstoreOutlined, PlusOutlined, FilterOutlined } from '@ant-design/icons';
+import {
+  SearchOutlined,
+  AppstoreOutlined,
+  PlusOutlined,
+  FilterOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import type { FilterSectionConfig } from '../../../../interfaces/layout/filters';
 import type { FilterOption } from '../../../../interfaces/layout/filters';
@@ -15,6 +21,8 @@ interface UseGroupListConfigProps {
   viewMode?: 'groups' | 'categories';
   onViewModeChange?: (mode: 'groups' | 'categories') => void;
   onCreateGroupClick?: () => void;
+  selectedGroupsCount?: number;
+  onBulkDeleteClick?: () => void;
 }
 
 export const useGroupListConfig = ({
@@ -24,6 +32,8 @@ export const useGroupListConfig = ({
   viewMode = 'groups',
   onViewModeChange,
   onCreateGroupClick,
+  selectedGroupsCount = 0,
+  onBulkDeleteClick,
 }: UseGroupListConfigProps) => {
   const filterSectionConfig: FilterSectionConfig | undefined = React.useMemo(() => {
     if (viewMode === 'categories') return undefined;
@@ -56,6 +66,16 @@ export const useGroupListConfig = ({
           variant: 'ghost',
           onClick: () => {
             // TODO: Implement filter functionality
+          },
+        },
+        {
+          key: 'bulk-delete',
+          label: GC.LABELS.ACTIONS.BULK_DELETE,
+          icon: <DeleteOutlined />,
+          variant: 'default',
+          disabled: selectedGroupsCount < 2,
+          onClick: () => {
+            onBulkDeleteClick?.();
           },
         },
         {
@@ -96,7 +116,7 @@ export const useGroupListConfig = ({
         },
       ],
     }),
-    [onViewModeChange, onCreateGroupClick],
+    [onViewModeChange, onCreateGroupClick, selectedGroupsCount, onBulkDeleteClick],
   );
 
   return {

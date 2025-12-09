@@ -38,6 +38,8 @@ interface UseGroupListPageConfigOptions {
   handleEditClick: (group: Group) => void;
   onCreateGroupClick: () => void;
   categories: Category[] | undefined;
+  selectedGroupsCount?: number;
+  onBulkDeleteClick?: () => void;
 }
 
 export const useGroupListPageConfig = ({
@@ -60,6 +62,8 @@ export const useGroupListPageConfig = ({
   handleViewGroup,
   handleEditClick,
   onCreateGroupClick,
+  selectedGroupsCount = 0,
+  onBulkDeleteClick,
 }: UseGroupListPageConfigOptions): PageLayoutConfig<Group | Category> => {
   const [selectedCategories, setSelectedCategories] = useState<React.Key[]>([]);
   const reduxCategories = useSelector(selectGroupsCategories);
@@ -101,6 +105,8 @@ export const useGroupListPageConfig = ({
     viewMode,
     onViewModeChange: setViewMode,
     onCreateGroupClick,
+    selectedGroupsCount,
+    onBulkDeleteClick,
   });
 
   const groupColumns = useMemo(

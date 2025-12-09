@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { Activity } from 'react';
 import { SHARED_DETAILS_CONSTANTS } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import { PageLayout } from '../../../../components/display/views';
 import EmptyState from '../../../../components/display/views/EmptyState';
 import { FancySpinner } from '../../../../components/animation';
-import ActionBar from '../../../../components/display/actions/ActionBar';
 import { Icons } from '../../../../constants';
 import {
   useFetchGroups,
@@ -13,10 +11,12 @@ import {
   useGroupListInteractions,
   useGroupPanelState,
   useGroupListPageConfig,
+  useBulkDeleteGroups,
 } from '../hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { CreateGroupPanel, EditGroupPanel, ViewGroupPanel } from '../panels';
+import ActionConfirmModal from '../../../../components/display/modal/confirm/ActionConfirmModal';
 
 const GroupIcon = Icons.Group;
 
@@ -71,6 +71,24 @@ const MainPage: React.FC = () => {
     onView: openViewPanel,
   });
 
+  const [bulkDeleteModalOpen, setBulkDeleteModalOpen] = useState(false);
+  const { isDeleting, handleBulkDelete } = useBulkDeleteGroups({
+    selectedGroups,
+    groups,
+    setSelectedGroups,
+  });
+
+  const handleBulkDeleteClick = () => {
+    if (selectedCount >= 2) {
+      setBulkDeleteModalOpen(true);
+    }
+  };
+
+  const handleConfirmBulkDelete = async () => {
+    await handleBulkDelete();
+    setBulkDeleteModalOpen(false);
+  };
+
   const pageConfig = useGroupListPageConfig({
     viewMode,
     setViewMode,
@@ -91,6 +109,8 @@ const MainPage: React.FC = () => {
     handleViewGroup,
     handleEditClick: openEditPanel,
     onCreateGroupClick: openCreatePanel,
+    selectedGroupsCount: selectedCount,
+    onBulkDeleteClick: handleBulkDeleteClick,
   });
 
   const isFetching = groups === undefined || loading || categoriesLoading;
@@ -172,6 +192,20 @@ const MainPage: React.FC = () => {
               openEditPanel(viewingGroup);
             }, 150);
           }}
+        />
+      )}
+      {bulkDeleteModalOpen && (
+        <ActionConfirmModal
+          open={bulkDeleteModalOpen}
+          onClose={() => setBulkDeleteModalOpen(false)}
+          onConfirm={handleConfirmBulkDelete}
+          title={GC.LABELS.ACTIONS.BULK_DELETE_MODAL_TITLE}
+          action="delete"
+          resourceName={`${selectedCount} group${selectedCount > 1 ? 's' : ''}`}
+          confirmText={GC.LABELS.ACTIONS.DELETE_MODAL_OK}
+          cancelText="Cancel"
+          loading={isDeleting}
+          danger={true}
         />
       )}
     </div>

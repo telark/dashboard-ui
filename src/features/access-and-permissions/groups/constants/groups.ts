@@ -38,9 +38,16 @@ export const GROUPS_CONSTANTS = {
       VIEW: 'View',
       EDIT: 'Edit',
       DELETE: 'Delete',
+      BULK_DELETE: 'Bulk Delete',
       DELETE_MODAL_TITLE: 'Delete Group',
       DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
+      BULK_DELETE_MODAL_TITLE: 'Delete Groups',
+      BULK_DELETE_MODAL_CONTENT: (count: number) =>
+        `Are you sure you want to delete ${count} group${count > 1 ? 's' : ''}? This action cannot be undone.`,
       DELETE_MODAL_OK: 'Delete',
+      BULK_DELETE_LOADING: (count: number) => `Deleting ${count} group${count > 1 ? 's' : ''}...`,
+      BULK_DELETE_SUCCESS: (count: number) => `${count} group${count > 1 ? 's' : ''} deleted successfully`,
+      BULK_DELETE_FAILED: 'Failed to delete some groups',
     },
     FORM: {
       TITLE: 'Create Group',

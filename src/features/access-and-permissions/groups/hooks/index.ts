@@ -7,6 +7,7 @@ export { useGroupMutations } from './data/useGroupMutations';
 export { useGroupListState } from './list/useGroupListState';
 export { useGroupListInteractions } from './list/useGroupListInteractions';
 export { useGroupListPageConfig } from './list/useGroupListPageConfig';
+export { useBulkDeleteGroups } from './list/useBulkDeleteGroups';
 
 // Form hooks
 export { useGroupFormState } from './form/useGroupFormState';

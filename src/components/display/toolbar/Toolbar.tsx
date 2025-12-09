@@ -24,6 +24,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
       {buttons.map((button) => {
         const isPrimary = button.variant === 'primary';
         const isGhost = button.variant === 'ghost';
+        const isDisabled = button.disabled ?? false;
 
         if (button.dropdown) {
           return (
@@ -36,11 +37,13 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                 },
               }}
               trigger={['click']}
+              disabled={isDisabled}
             >
               <button
+                disabled={isDisabled}
                 style={{
                   all: 'unset',
-                  cursor: 'pointer',
+                  cursor: isDisabled ? 'not-allowed' : 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   gap: 6,
@@ -56,11 +59,17 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                     : button.active
                       ? '#e6f7ff'
                       : 'transparent',
-                  color: isPrimary ? '#fff' : '#64748b',
+                  color: isDisabled
+                    ? '#d1d5db'
+                    : isPrimary
+                      ? '#fff'
+                      : '#64748b',
+                  opacity: isDisabled ? 0.6 : 1,
                   fontFamily: "'Roboto Condensed', sans-serif",
                   transition: 'all 0.2s',
                 }}
                 onMouseEnter={(e) => {
+                  if (isDisabled) return;
                   if (isPrimary) {
                     e.currentTarget.style.opacity = '0.9';
                   } else if (!button.active) {
@@ -72,6 +81,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                   }
                 }}
                 onMouseLeave={(e) => {
+                  if (isDisabled) return;
                   if (isPrimary) {
                     e.currentTarget.style.opacity = '1';
                   } else {
@@ -102,10 +112,11 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
         return (
           <button
             key={button.key}
-            onClick={button.onClick}
+            onClick={isDisabled ? undefined : button.onClick}
+            disabled={isDisabled}
             style={{
               all: 'unset',
-              cursor: 'pointer',
+              cursor: isDisabled ? 'not-allowed' : 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: 6,
@@ -121,11 +132,17 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                 : button.active
                   ? '#e6f7ff'
                   : 'transparent',
-              color: isPrimary ? '#fff' : '#64748b',
+              color: isDisabled
+                ? '#d1d5db'
+                : isPrimary
+                  ? '#fff'
+                  : '#64748b',
+              opacity: isDisabled ? 0.6 : 1,
               fontFamily: "'Roboto Condensed', sans-serif",
               transition: 'all 0.2s',
             }}
             onMouseEnter={(e) => {
+              if (isDisabled) return;
               if (isPrimary) {
                 e.currentTarget.style.opacity = '0.9';
               } else if (!button.active) {
@@ -137,6 +154,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
               }
             }}
             onMouseLeave={(e) => {
+              if (isDisabled) return;
               if (isPrimary) {
                 e.currentTarget.style.opacity = '1';
               } else {
