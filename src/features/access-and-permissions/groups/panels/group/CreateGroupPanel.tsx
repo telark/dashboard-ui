@@ -1,36 +1,28 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../../../store';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
 import { Icons } from '../../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
 import GroupFormFields from '../../components/display/shared/GroupFormFields';
-import { useGroupNameValidator, useGroupFormState, useGroupFormSelectOptions } from '../../hooks';
-import { useGroupMutations } from '../../hooks';
-import { normalizeGroupFormData } from '../../utils';
+import { useCreateGroupPanel } from '../../hooks';
 import type { GroupPanelProps } from '../../models';
 
 const GroupIcon = Icons.Group;
 
 const CreateGroupPanel: React.FC<GroupPanelProps> = ({ open, onClose, form }) => {
-  const groups = useSelector((state: RootState) => state.groups.groups);
-  const { handleCreate, submitting } = useGroupMutations();
-  const { categoryOptions, defaultCategoryId } = useGroupFormSelectOptions();
-  const { nameValidator, normalizeName } = useGroupNameValidator({
-    groups,
-    isEditMode: false,
-  });
-  const { handleValuesChange, handleFieldsChange, hasFormErrors } = useGroupFormState({
+  const {
+    nameValidator,
+    normalizeName,
+    categoryOptions,
+    defaultCategoryId,
+    handleValuesChange,
+    handleFieldsChange,
+    hasFormErrors,
+    submitting,
+    handleSubmit,
+  } = useCreateGroupPanel({
     form,
-    isEditMode: false,
+    onClose,
   });
-
-  const handleSubmit = async (values: Record<string, unknown>) => {
-    const formData = normalizeGroupFormData(values);
-    await handleCreate(formData);
-    form.resetFields();
-    onClose();
-  };
 
   return (
     <SlideOutPanel
@@ -44,7 +36,7 @@ const CreateGroupPanel: React.FC<GroupPanelProps> = ({ open, onClose, form }) =>
           categoryOptions={categoryOptions}
         />
       }
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
       onCancel={onClose}
       submitButtonText={GC.LABELS.FORM.BUTTON_TEXT}
       submitButtonIcon={<GroupIcon size={16} />}

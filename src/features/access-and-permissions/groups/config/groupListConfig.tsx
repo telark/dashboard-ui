@@ -129,7 +129,13 @@ export const useGroupListConfig = ({
         },
       ],
     }),
-    [onViewModeChange, onCreateGroupClick, selectedGroupsCount, onBulkDeleteClick, onAttachRoleClick],
+    [
+      onViewModeChange,
+      onCreateGroupClick,
+      selectedGroupsCount,
+      onBulkDeleteClick,
+      onAttachRoleClick,
+    ],
   );
 
   return {

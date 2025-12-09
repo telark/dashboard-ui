@@ -1,0 +1,130 @@
+import React, { useMemo } from 'react';
+import { ROLES_CONSTANTS as RPC } from '../../../roles/constants';
+import TimeAgo from '../../../../../components/display/time/TimeAgo';
+import RowTag from '../../../../../components/display/table/RowTag';
+import { UserDisplay } from '../../../../../components/display/users';
+import { useViewGroupPanel } from './useViewGroupPanel';
+import { useGroupDeleteModal } from '../../components/delete';
+import type { Group } from '../../models';
+import type {
+  ViewAvatar,
+  ViewOverflowItem,
+  ViewDetailRow,
+} from '../../../../../components/display/panels/view/types';
+
+interface UseViewGroupPanelDataOptions {
+  group: Group | null;
+  onClose: () => void;
+}
+
+interface UseViewGroupPanelDataReturn {
+  avatars: ViewAvatar[];
+  overflowItems: ViewOverflowItem[];
+  details: ViewDetailRow[];
+  deleteModalOpen: boolean;
+  isDeleting: boolean;
+  openDeleteModal: () => void;
+  closeDeleteModal: () => void;
+  handleConfirmDelete: () => Promise<void>;
+  groupName: string;
+}
+
+export const useViewGroupPanelData = ({
+  group,
+  onClose,
+}: UseViewGroupPanelDataOptions): UseViewGroupPanelDataReturn => {
+  const { groupUsers, categoryName, createdByUser, lastUpdatedByUser, avatarSources } =
+    useViewGroupPanel(group);
+  const {
+    deleteModalOpen,
+    isDeleting,
+    openDeleteModal,
+    closeDeleteModal,
+    handleConfirmDelete: baseHandleConfirmDelete,
+  } = useGroupDeleteModal(group);
+
+  const handleConfirmDelete = async () => {
+    await baseHandleConfirmDelete();
+    onClose();
+  };
+
+  const avatars = useMemo(() => {
+    if (!group) return [];
+    return groupUsers.map((user) => ({
+      key: user.id,
+      src: avatarSources[user.id],
+      fallback: user.username ? user.username.charAt(0).toUpperCase() : undefined,
+      tooltip: user.username || '',
+    }));
+  }, [group, groupUsers, avatarSources]);
+
+  const overflowItems = useMemo(() => {
+    if (!group) return [];
+    return groupUsers.slice(5).map((user) => ({
+      key: user.id,
+      src: avatarSources[user.id],
+      username: user.username || '',
+    }));
+  }, [group, groupUsers, avatarSources]);
+
+  const details = useMemo(() => {
+    if (!group) return [];
+    return [
+      {
+        label: 'Category',
+        value: (
+          <RowTag
+            text={categoryName}
+            background={RPC.COLORS.TYPE_CUSTOM_BG}
+            color={RPC.COLORS.TYPE_CUSTOM_TEXT}
+            fontSize={12}
+          />
+        ),
+      },
+      {
+        label: 'Creation Date',
+        value: (
+          <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F33' }}>
+            {group.creationDate ? <TimeAgo date={group.creationDate} /> : '—'}
+          </span>
+        ),
+      },
+      {
+        label: 'Last Update',
+        value: (
+          <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F33' }}>
+            {group.lastUpdateDate ? <TimeAgo date={group.lastUpdateDate} /> : '—'}
+          </span>
+        ),
+      },
+      {
+        label: 'Created By',
+        value: createdByUser ? (
+          <UserDisplay user={createdByUser} size="small" showBorder />
+        ) : (
+          <span style={{ color: '#64748b' }}>—</span>
+        ),
+      },
+      {
+        label: 'Last Updated By',
+        value: lastUpdatedByUser ? (
+          <UserDisplay user={lastUpdatedByUser} size="small" showBorder />
+        ) : (
+          <span style={{ color: '#64748b' }}>—</span>
+        ),
+      },
+    ];
+  }, [group, categoryName, createdByUser, lastUpdatedByUser]);
+
+  return {
+    avatars,
+    overflowItems,
+    details,
+    deleteModalOpen,
+    isDeleting,
+    openDeleteModal,
+    closeDeleteModal,
+    handleConfirmDelete,
+    groupName: group?.name || '',
+  };
+};

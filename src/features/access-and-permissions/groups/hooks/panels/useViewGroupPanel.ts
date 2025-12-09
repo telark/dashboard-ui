@@ -42,7 +42,6 @@ export const useViewGroupPanel = (group: Group | null): UseViewGroupPanelReturn 
     return users.find((u) => u.id === group.lastUpdatedBy) || null;
   }, [group, users]);
 
-  // Generate avatar sources for Avatar.Group
   useEffect(() => {
     const generateAvatars = async () => {
       const sources = await buildAvatarSources({

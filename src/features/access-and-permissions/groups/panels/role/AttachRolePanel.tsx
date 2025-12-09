@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useEffect, useState, useRef, startTransition } from 'react';
 import { useSelector } from 'react-redux';
 import { Checkbox, Form, Space } from 'antd';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
@@ -31,6 +31,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
   const [form] = Form.useForm();
   const groups = useSelector((state: RootState) => state.groups.groups);
   const [selectedRoleType, setSelectedRoleType] = useState<string>('all');
+  const previousOpenRef = useRef(false);
 
   const currentGroup = useMemo(() => {
     if (!group) return null;
@@ -41,13 +42,12 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
     return currentGroup?.assignedRolesIDs || [];
   }, [currentGroup]);
 
-  const currentSelectedRoles = Form.useWatch('assignedRolesIDs', form) || [];
+  const currentSelectedRoles = Form.useWatch('assignedRolesIDs', form);
 
   const hasChanges = useMemo(() => {
-    return !arraysEqual(
-      (currentSelectedRoles as string[]) || [],
-      initialSelectedRoles || [],
-    );
+    const current = (currentSelectedRoles as string[]) || [];
+    const initial = initialSelectedRoles || [];
+    return !arraysEqual(current, initial);
   }, [currentSelectedRoles, initialSelectedRoles]);
 
   const filteredRoles = useMemo(() => {
@@ -57,12 +57,21 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
   }, [roles, selectedRoleType]);
 
   useEffect(() => {
+    const isOpening = open && !previousOpenRef.current;
+    previousOpenRef.current = open;
+    if (isOpening) {
+      startTransition(() => {
+        setSelectedRoleType('all');
+      });
+    }
+  }, [open]);
+
+  useEffect(() => {
     if (open && currentGroup && !rolesLoading && roles) {
       const assignedRoles = currentGroup.assignedRolesIDs || [];
       form.setFieldsValue({ assignedRolesIDs: assignedRoles });
-      setSelectedRoleType('all');
     }
-  }, [open, currentGroup?.id, currentGroup?.assignedRolesIDs, rolesLoading, roles, form]);
+  }, [open, currentGroup, rolesLoading, roles, form]);
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     if (!currentGroup) return;
@@ -136,7 +145,10 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                   fontSize: 13,
                   fontWeight: selectedRoleType === RC.VALUES.ROLE_TYPE_BUILT_IN ? 600 : 500,
                   border: `1px solid ${selectedRoleType === RC.VALUES.ROLE_TYPE_BUILT_IN ? DEFAULT_COLORS.SUCCESS : '#d9d9d9'}`,
-                  backgroundColor: selectedRoleType === RC.VALUES.ROLE_TYPE_BUILT_IN ? DEFAULT_COLORS.SUCCESS : '#fff',
+                  backgroundColor:
+                    selectedRoleType === RC.VALUES.ROLE_TYPE_BUILT_IN
+                      ? DEFAULT_COLORS.SUCCESS
+                      : '#fff',
                   color: selectedRoleType === RC.VALUES.ROLE_TYPE_BUILT_IN ? '#fff' : '#64748b',
                   fontFamily: "'Roboto Condensed', sans-serif",
                   transition: 'all 0.2s',
@@ -160,7 +172,10 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                   fontSize: 13,
                   fontWeight: selectedRoleType === RC.VALUES.ROLE_TYPE_CUSTOM ? 600 : 500,
                   border: `1px solid ${selectedRoleType === RC.VALUES.ROLE_TYPE_CUSTOM ? DEFAULT_COLORS.SUCCESS : '#d9d9d9'}`,
-                  backgroundColor: selectedRoleType === RC.VALUES.ROLE_TYPE_CUSTOM ? DEFAULT_COLORS.SUCCESS : '#fff',
+                  backgroundColor:
+                    selectedRoleType === RC.VALUES.ROLE_TYPE_CUSTOM
+                      ? DEFAULT_COLORS.SUCCESS
+                      : '#fff',
                   color: selectedRoleType === RC.VALUES.ROLE_TYPE_CUSTOM ? '#fff' : '#64748b',
                   fontFamily: "'Roboto Condensed', sans-serif",
                   transition: 'all 0.2s',

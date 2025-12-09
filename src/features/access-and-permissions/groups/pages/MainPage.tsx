@@ -15,12 +15,7 @@ import {
 } from '../hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
-import {
-  CreateGroupPanel,
-  EditGroupPanel,
-  ViewGroupPanel,
-  AttachRolePanel,
-} from '../panels';
+import { CreateGroupPanel, EditGroupPanel, ViewGroupPanel, AttachRolePanel } from '../panels';
 import ActionConfirmModal from '../../../../components/display/modal/confirm/ActionConfirmModal';
 
 const GroupIcon = Icons.Group;
