@@ -26,6 +26,8 @@ interface ColumnsContext extends GenerateColumnCtx {
   onDelete?: (record: Group) => void;
 }
 
+const DESCRIPTION_PREVIEW_MAX = 40;
+
 const Columns = (ctx: ColumnsContext) => {
   const categories = ctx.categories || [];
   const users = ctx.users || [];
@@ -55,7 +57,11 @@ const Columns = (ctx: ColumnsContext) => {
         label: GC.LABELS.COLUMNS.DESCRIPTION,
         icon: <AiOutlineFileText />,
         width: GC.SIZES.COLUMNS.DESCRIPTION,
-        render: (value: string) => <span style={{ color: RPC.COLORS.TEXT_MUTED }}>{value}</span>,
+        render: (value: string) => {
+          const text = value || '';
+          const truncated = text.length > DESCRIPTION_PREVIEW_MAX ? `${text.slice(0, DESCRIPTION_PREVIEW_MAX)}...` : text;
+          return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>{truncated}</span>;
+        },
       },
       ctx,
     ),
