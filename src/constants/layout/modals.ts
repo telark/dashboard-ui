@@ -1,56 +1,56 @@
 export const ACTION_CONFIRM_MODAL = {
-    MODAL: {
-      WIDTH: 360,
-      BORDER_RADIUS: 12,
-      CLASS_NAME: 'action-confirm-modal',
+  MODAL: {
+    WIDTH: 360,
+    BORDER_RADIUS: 12,
+    CLASS_NAME: 'action-confirm-modal',
+  },
+  CLOSE_ICON: {
+    SIZE: 20,
+    ICON_SIZE: 10,
+    BACKGROUND: '#777',
+    COLOR: '#ffffff',
+    BORDER_RADIUS: '50%',
+    POSITION: {
+      TOP: 8,
+      RIGHT: 8,
     },
-    CLOSE_ICON: {
-      SIZE: 20,
-      ICON_SIZE: 10,
-      BACKGROUND: '#777',
-      COLOR: '#ffffff',
-      BORDER_RADIUS: '50%',
-      POSITION: {
-        TOP: 8,
-        RIGHT: 8,
-      },
+  },
+  CONTENT: {
+    GAP: 6,
+    PADDING: '16px 20px 8px',
+  },
+  ICON_CONTAINER: {
+    SIZE: 50,
+    BORDER_RADIUS: 10,
+    BACKGROUND: '#fff1f0',
+  },
+  TITLE: {
+    FONT_SIZE: 18,
+    FONT_WEIGHT: 700,
+    COLOR: '#0B1F33',
+    MARGIN_TOP: 0,
+  },
+  MESSAGE: {
+    FONT_SIZE: 14,
+    LINE_HEIGHT: 1.6,
+    COLOR: '#64748b',
+    MARGIN_TOP: -7,
+    RESOURCE_NAME_COLOR: '#0B1F33',
+    RESOURCE_NAME_FONT_WEIGHT: 700,
+  },
+  BUTTONS: {
+    GAP: 12,
+    MARGIN_TOP: 10,
+    MARGIN_BOTTOM: -12,
+    CONFIRM: {
+      BORDER_RADIUS: 6,
+      FONT_WEIGHT: 500,
+      HEIGHT: 36,
+      PADDING: '0 16px',
     },
-    CONTENT: {
-      GAP: 6,
-      PADDING: '16px 20px 8px',
-    },
-    ICON_CONTAINER: {
-      SIZE: 50,
-      BORDER_RADIUS: 10,
-      BACKGROUND: '#fff1f0',
-    },
-    TITLE: {
-      FONT_SIZE: 18,
-      FONT_WEIGHT: 700,
-      COLOR: '#0B1F33',
-      MARGIN_TOP: 0,
-    },
-    MESSAGE: {
-      FONT_SIZE: 14,
-      LINE_HEIGHT: 1.6,
-      COLOR: '#64748b',
-      MARGIN_TOP: -7,
-      RESOURCE_NAME_COLOR: '#0B1F33',
-      RESOURCE_NAME_FONT_WEIGHT: 700,
-    },
-    BUTTONS: {
-      GAP: 12,
-      MARGIN_TOP: 10,
-      MARGIN_BOTTOM: -12,
-      CONFIRM: {
-        BORDER_RADIUS: 6,
-        FONT_WEIGHT: 500,
-        HEIGHT: 36,
-        PADDING: '0 16px',
-      },
-    },
-    DEFAULT_ICON: {
-      FONT_SIZE: 24,
-      COLOR: '#ff4d4f',
-    },
-  } as const;
+  },
+  DEFAULT_ICON: {
+    FONT_SIZE: 24,
+    COLOR: '#ff4d4f',
+  },
+} as const;

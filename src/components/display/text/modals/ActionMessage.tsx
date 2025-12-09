@@ -8,11 +8,7 @@ interface ActionMessageProps {
   resourceType?: string;
 }
 
-const ActionMessage: React.FC<ActionMessageProps> = ({
-  action,
-  resourceName,
-  resourceType,
-}) => {
+const ActionMessage: React.FC<ActionMessageProps> = ({ action, resourceName, resourceType }) => {
   const message = buildConfirmMessage(action, resourceName, resourceType);
 
   return (

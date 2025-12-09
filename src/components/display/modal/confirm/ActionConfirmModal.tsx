@@ -36,12 +36,8 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
   danger = true,
   icon,
 }) => {
-  const {
-    handleModalCancel,
-    handleCloseIconClick,
-    handleCancelClick,
-    handleConfirmClick,
-  } = useActionConfirmHandlers({ onClose, onConfirm });
+  const { handleModalCancel, handleCloseIconClick, handleCancelClick, handleConfirmClick } =
+    useActionConfirmHandlers({ onClose, onConfirm });
 
   const defaultIcon = (
     <DeleteOutlined
@@ -55,49 +51,49 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
 
   return (
     <Modal
-        open={open}
-        onCancel={handleModalCancel}
-        title={null}
-        width={ACTION_CONFIRM_MODAL.MODAL.WIDTH}
-        footer={null}
-        maskClosable={true}
-        getContainer={false}
-        closeIcon={<ActionCloseIcon onClick={handleCloseIconClick} />}
-        className={ACTION_CONFIRM_MODAL.MODAL.CLASS_NAME}
-        styles={{
-          content: {
-            borderRadius: ACTION_CONFIRM_MODAL.MODAL.BORDER_RADIUS,
-            overflow: 'hidden',
-            position: 'relative',
-          },
-          body: {
-            padding: ACTION_CONFIRM_MODAL.CONTENT.PADDING,
-          },
+      open={open}
+      onCancel={handleModalCancel}
+      title={null}
+      width={ACTION_CONFIRM_MODAL.MODAL.WIDTH}
+      footer={null}
+      maskClosable={true}
+      getContainer={false}
+      closeIcon={<ActionCloseIcon onClick={handleCloseIconClick} />}
+      className={ACTION_CONFIRM_MODAL.MODAL.CLASS_NAME}
+      styles={{
+        content: {
+          borderRadius: ACTION_CONFIRM_MODAL.MODAL.BORDER_RADIUS,
+          overflow: 'hidden',
+          position: 'relative',
+        },
+        body: {
+          padding: ACTION_CONFIRM_MODAL.CONTENT.PADDING,
+        },
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: ACTION_CONFIRM_MODAL.CONTENT.GAP,
         }}
       >
-        <div
-          onClick={(e) => e.stopPropagation()}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: ACTION_CONFIRM_MODAL.CONTENT.GAP,
-          }}
-        >
-          <ActionIcon icon={actionIcon} />
-          <ActionTitle title={title} />
-          <ActionMessage action={action} resourceName={resourceName} resourceType={resourceType} />
-          <ActionButtons
-            cancelText={cancelText}
-            confirmText={confirmText || ''}
-            action={action}
-            loading={loading}
-            danger={danger}
-            onCancel={handleCancelClick}
-            onConfirm={handleConfirmClick}
-          />
-        </div>
-      </Modal>
+        <ActionIcon icon={actionIcon} />
+        <ActionTitle title={title} />
+        <ActionMessage action={action} resourceName={resourceName} resourceType={resourceType} />
+        <ActionButtons
+          cancelText={cancelText}
+          confirmText={confirmText || ''}
+          action={action}
+          loading={loading}
+          danger={danger}
+          onCancel={handleCancelClick}
+          onConfirm={handleConfirmClick}
+        />
+      </div>
+    </Modal>
   );
 };
 

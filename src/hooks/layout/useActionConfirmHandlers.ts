@@ -5,10 +5,7 @@ interface UseActionConfirmHandlersProps {
   onConfirm: () => void | Promise<void>;
 }
 
-export const useActionConfirmHandlers = ({
-  onClose,
-  onConfirm,
-}: UseActionConfirmHandlersProps) => {
+export const useActionConfirmHandlers = ({ onClose, onConfirm }: UseActionConfirmHandlersProps) => {
   const handleClose = useCallback(
     (e?: React.MouseEvent) => {
       if (e) {
