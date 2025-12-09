@@ -149,26 +149,6 @@ const MainPage: React.FC = () => {
 
   return (
     <div style={{ background: '#fff', minHeight: '100vh' }}>
-      <Activity mode={viewMode === 'groups' && hasSelection ? 'visible' : 'hidden'}>
-        <div
-          style={{
-            background: '#fff',
-            padding: '16px 32px',
-            marginTop: '60px',
-            borderBottom: '1px solid #f0f0f0',
-            position: 'sticky',
-            top: '60px',
-            zIndex: 10,
-          }}
-        >
-          <ActionBar
-            selectedCount={selectedCount}
-            hasSelection={hasSelection}
-            onView={handleView}
-            onEdit={handleEdit}
-          />
-        </div>
-      </Activity>
       <PageLayout config={pageConfig} />
       {createPanelOpen && (
         <CreateGroupPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />
