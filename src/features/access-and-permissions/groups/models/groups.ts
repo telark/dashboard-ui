@@ -1,6 +1,7 @@
 export interface Group {
   id: string;
   assignedUsersIDs: string[];
+  assignedRolesIDs?: string[];
   name: string;
   description: string;
   categoryID: string;

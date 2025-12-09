@@ -6,7 +6,7 @@ import { SLIDE_OUT } from '../../../../constants';
 import TopPanelToolbar from './TopPanelToolbar';
 
 const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
-  ({ open, onClose, title, children, width = 480, toolbarActions }) => {
+  ({ open, onClose, title, subtitle, children, width = 480, toolbarActions }) => {
     useBodyOverflow(open);
 
     if (!open) return null;
@@ -27,6 +27,18 @@ const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
             <div style={SLIDE_OUT.HEADER_CONTENT}>
               <div style={SLIDE_OUT.TITLE_CONTAINER}>
                 <h2 style={SLIDE_OUT.TITLE}>{title}</h2>
+                {subtitle && (
+                  <p
+                    style={{
+                      margin: '4px 0 0 0',
+                      fontSize: 14,
+                      color: '#64748b',
+                      fontWeight: 400,
+                    }}
+                  >
+                    {subtitle}
+                  </p>
+                )}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                 <TopPanelToolbar actions={toolbarActions} />

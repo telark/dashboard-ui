@@ -7,8 +7,10 @@ interface UseGroupPanelStateReturn {
   createPanelOpen: boolean;
   editPanelOpen: boolean;
   viewPanelOpen: boolean;
+  attachRolePanelOpen: boolean;
   viewingGroup: Group | null;
   editingGroup: Group | null;
+  attachingRoleGroup: Group | null;
   createForm: ReturnType<typeof Form.useForm<GroupFormData>>[0];
   editForm: ReturnType<typeof Form.useForm<GroupFormData>>[0];
   openCreatePanel: () => void;
@@ -17,14 +19,18 @@ interface UseGroupPanelStateReturn {
   closeEditPanel: () => void;
   openViewPanel: (group: Group) => void;
   closeViewPanel: () => void;
+  openAttachRolePanel: (group: Group) => void;
+  closeAttachRolePanel: () => void;
 }
 
 export const useGroupPanelState = (): UseGroupPanelStateReturn => {
   const [createPanelOpen, setCreatePanelOpen] = useState(false);
   const [editPanelOpen, setEditPanelOpen] = useState(false);
   const [viewPanelOpen, setViewPanelOpen] = useState(false);
+  const [attachRolePanelOpen, setAttachRolePanelOpen] = useState(false);
   const [viewingGroup, setViewingGroup] = useState<Group | null>(null);
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
+  const [attachingRoleGroup, setAttachingRoleGroup] = useState<Group | null>(null);
   const [createForm] = Form.useForm<GroupFormData>();
   const [editForm] = Form.useForm<GroupFormData>();
 
@@ -58,12 +64,24 @@ export const useGroupPanelState = (): UseGroupPanelStateReturn => {
     setViewingGroup(null);
   }, []);
 
+  const openAttachRolePanel = useCallback((group: Group) => {
+    setAttachingRoleGroup(group);
+    setAttachRolePanelOpen(true);
+  }, []);
+
+  const closeAttachRolePanel = useCallback(() => {
+    setAttachRolePanelOpen(false);
+    setAttachingRoleGroup(null);
+  }, []);
+
   return {
     createPanelOpen,
     editPanelOpen,
     viewPanelOpen,
+    attachRolePanelOpen,
     viewingGroup,
     editingGroup,
+    attachingRoleGroup,
     createForm,
     editForm,
     openCreatePanel,
@@ -72,5 +90,7 @@ export const useGroupPanelState = (): UseGroupPanelStateReturn => {
     closeEditPanel,
     openViewPanel,
     closeViewPanel,
+    openAttachRolePanel,
+    closeAttachRolePanel,
   };
 };

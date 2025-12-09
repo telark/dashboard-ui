@@ -39,6 +39,7 @@ export const GROUPS_CONSTANTS = {
       EDIT: 'Edit',
       DELETE: 'Delete',
       BULK_DELETE: 'Bulk Delete',
+      ATTACH_ROLE: 'Attach Role',
       DELETE_MODAL_TITLE: 'Delete Group',
       DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
       BULK_DELETE_MODAL_TITLE: 'Delete Groups',

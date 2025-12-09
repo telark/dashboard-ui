@@ -7,6 +7,7 @@ import {
   PlusOutlined,
   FilterOutlined,
   DeleteOutlined,
+  LinkOutlined,
 } from '@ant-design/icons';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import type { FilterSectionConfig } from '../../../../interfaces/layout/filters';
@@ -23,6 +24,7 @@ interface UseGroupListConfigProps {
   onCreateGroupClick?: () => void;
   selectedGroupsCount?: number;
   onBulkDeleteClick?: () => void;
+  onAttachRoleClick?: () => void;
 }
 
 export const useGroupListConfig = ({
@@ -34,6 +36,7 @@ export const useGroupListConfig = ({
   onCreateGroupClick,
   selectedGroupsCount = 0,
   onBulkDeleteClick,
+  onAttachRoleClick,
 }: UseGroupListConfigProps) => {
   const filterSectionConfig: FilterSectionConfig | undefined = React.useMemo(() => {
     if (viewMode === 'categories') return undefined;
@@ -66,6 +69,16 @@ export const useGroupListConfig = ({
           variant: 'ghost',
           onClick: () => {
             // TODO: Implement filter functionality
+          },
+        },
+        {
+          key: 'attach-role',
+          label: GC.LABELS.ACTIONS.ATTACH_ROLE,
+          icon: <LinkOutlined />,
+          variant: 'default',
+          disabled: selectedGroupsCount !== 1,
+          onClick: () => {
+            onAttachRoleClick?.();
           },
         },
         {
@@ -116,7 +129,7 @@ export const useGroupListConfig = ({
         },
       ],
     }),
-    [onViewModeChange, onCreateGroupClick, selectedGroupsCount, onBulkDeleteClick],
+    [onViewModeChange, onCreateGroupClick, selectedGroupsCount, onBulkDeleteClick, onAttachRoleClick],
   );
 
   return {

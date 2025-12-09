@@ -15,7 +15,12 @@ import {
 } from '../hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
-import { CreateGroupPanel, EditGroupPanel, ViewGroupPanel } from '../panels';
+import {
+  CreateGroupPanel,
+  EditGroupPanel,
+  ViewGroupPanel,
+  AttachRolePanel,
+} from '../panels';
 import ActionConfirmModal from '../../../../components/display/modal/confirm/ActionConfirmModal';
 
 const GroupIcon = Icons.Group;
@@ -50,8 +55,10 @@ const MainPage: React.FC = () => {
     createPanelOpen,
     editPanelOpen,
     viewPanelOpen,
+    attachRolePanelOpen,
     viewingGroup,
     editingGroup,
+    attachingRoleGroup,
     createForm,
     editForm,
     openCreatePanel,
@@ -60,6 +67,8 @@ const MainPage: React.FC = () => {
     closeEditPanel,
     openViewPanel,
     closeViewPanel,
+    openAttachRolePanel,
+    closeAttachRolePanel,
   } = useGroupPanelState();
 
   const { handleViewGroup } = useGroupListInteractions({
@@ -89,6 +98,16 @@ const MainPage: React.FC = () => {
     setBulkDeleteModalOpen(false);
   };
 
+  const handleAttachRoleClick = () => {
+    if (selectedCount === 1 && groups) {
+      const selectedId = selectedGroups[0] as string;
+      const selectedGroup = groups.find((g) => g.id === selectedId);
+      if (selectedGroup) {
+        openAttachRolePanel(selectedGroup);
+      }
+    }
+  };
+
   const pageConfig = useGroupListPageConfig({
     viewMode,
     setViewMode,
@@ -111,6 +130,7 @@ const MainPage: React.FC = () => {
     onCreateGroupClick: openCreatePanel,
     selectedGroupsCount: selectedCount,
     onBulkDeleteClick: handleBulkDeleteClick,
+    onAttachRoleClick: handleAttachRoleClick,
   });
 
   const isFetching = groups === undefined || loading || categoriesLoading;
@@ -192,6 +212,13 @@ const MainPage: React.FC = () => {
               openEditPanel(viewingGroup);
             }, 150);
           }}
+        />
+      )}
+      {attachRolePanelOpen && attachingRoleGroup && (
+        <AttachRolePanel
+          open={attachRolePanelOpen}
+          onClose={closeAttachRolePanel}
+          group={attachingRoleGroup}
         />
       )}
       {bulkDeleteModalOpen && (
