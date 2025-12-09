@@ -6,6 +6,7 @@ import { UserDisplay } from '../../../../components/display/users';
 import { Icons } from '../../../../constants';
 import ViewPanel from '../../../../components/display/panels/view/ViewPanel';
 import { useViewGroupPanel } from '../hooks';
+import { useGroupDeleteModal, GroupDeleteModal } from '../components/delete';
 import type { Group } from '../models';
 
 const GroupIcon = Icons.Group;
@@ -15,7 +16,6 @@ interface ViewGroupPanelProps {
   onClose: () => void;
   group: Group | null;
   onEdit?: () => void;
-  onDelete?: () => void;
 }
 
 const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({
@@ -23,10 +23,17 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({
   onClose,
   group,
   onEdit,
-  onDelete,
 }) => {
   const { groupUsers, categoryName, createdByUser, lastUpdatedByUser, avatarSources } =
     useViewGroupPanel(group);
+  const { deleteModalOpen, isDeleting, openDeleteModal, closeDeleteModal, handleConfirmDelete: baseHandleConfirmDelete } =
+    useGroupDeleteModal(group);
+
+  const handleConfirmDelete = async () => {
+    await baseHandleConfirmDelete();
+    // Close the view panel after successful delete
+    onClose();
+  };
 
   if (!group) return null;
 
@@ -90,6 +97,7 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({
   ];
 
   return (
+    <>
     <ViewPanel
       open={open}
       onClose={onClose}
@@ -103,9 +111,17 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({
       width={520}
       actions={{
         onEdit,
-        onDelete,
+        onDelete: openDeleteModal,
       }}
     />
+    <GroupDeleteModal
+      open={deleteModalOpen}
+      onClose={closeDeleteModal}
+      onConfirm={handleConfirmDelete}
+      groupName={group.name}
+      loading={isDeleting}
+    />
+  </>
   );
 };
 

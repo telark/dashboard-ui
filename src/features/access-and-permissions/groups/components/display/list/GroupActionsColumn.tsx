@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../../../../constants';
-import { GROUPS_CONSTANTS as GC } from '../../../constants';
-import { useGroupMutations } from '../../../hooks';
-import ActionConfirmModal from '../../../../../../components/display/modal/ActionConfirmModal';
+import { useGroupDeleteModal, GroupDeleteModal } from '../../delete';
 import type { Group } from '../../../models';
 
 interface GroupActionsColumnProps {
@@ -17,9 +15,8 @@ export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const { handleDelete } = useGroupMutations();
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const { deleteModalOpen, isDeleting, openDeleteModal, closeDeleteModal, handleConfirmDelete } =
+    useGroupDeleteModal(record);
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -27,28 +24,8 @@ export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({
     if (onDelete) {
       onDelete(record);
     } else {
-      setDeleteModalOpen(true);
+      openDeleteModal();
     }
-  };
-
-  const handleConfirmDelete = async () => {
-    setIsDeleting(true);
-    try {
-      await handleDelete(record.id);
-      setDeleteModalOpen(false);
-    } catch {
-      // Error message already shown by handleDelete
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
-  const handleModalClose = (e?: React.MouseEvent) => {
-    if (e) {
-      e.stopPropagation();
-      e.preventDefault();
-    }
-    setDeleteModalOpen(false);
   };
 
   return (
@@ -126,19 +103,13 @@ export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({
         <DeleteOutlined />
       </button>
       {!onDelete && (
-        <div style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
-          <ActionConfirmModal
-            open={deleteModalOpen}
-            onClose={handleModalClose}
-            onConfirm={handleConfirmDelete}
-            title={GC.LABELS.ACTIONS.DELETE_MODAL_TITLE}
-            action="delete"
-            resourceName={record.name}
-            resourceType="group"
-            confirmText={GC.LABELS.ACTIONS.DELETE_MODAL_OK}
-            loading={isDeleting}
-          />
-        </div>
+        <GroupDeleteModal
+          open={deleteModalOpen}
+          onClose={closeDeleteModal}
+          onConfirm={handleConfirmDelete}
+          groupName={record.name}
+          loading={isDeleting}
+        />
       )}
     </div>
   );
