@@ -23,6 +23,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
     initialSelectedRoles,
     hasChanges,
     filteredRoles,
+    allRoles,
     rolesLoading,
     submitting,
     selectedRoleType,
@@ -47,7 +48,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
       formContent={
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
           <RoleTypeFilter selectedRoleType={selectedRoleType} onTypeChange={setSelectedRoleType} />
-          <RoleList roles={filteredRoles} loading={rolesLoading} />
+          <RoleList roles={filteredRoles} loading={rolesLoading} allRoles={allRoles} />
         </div>
       }
       onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}

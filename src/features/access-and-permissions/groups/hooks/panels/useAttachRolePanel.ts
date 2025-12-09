@@ -27,6 +27,7 @@ interface UseAttachRolePanelReturn {
   initialSelectedRoles: string[];
   hasChanges: boolean;
   filteredRoles: ReturnType<typeof useRoles>['roles'];
+  allRoles: ReturnType<typeof useRoles>['roles'];
   rolesLoading: boolean;
   submitting: boolean;
   selectedRoleType: string;
@@ -87,6 +88,7 @@ export const useAttachRolePanel = ({
     initialSelectedRoles,
     hasChanges,
     filteredRoles,
+    allRoles: roles,
     rolesLoading,
     submitting,
     selectedRoleType,
