@@ -22,6 +22,12 @@ export const updateGroup = async (groupId: string, group: Partial<GroupFormData>
       groupData.assignedUsersIDs = [];
     }
 
+    if (group.assignedRolesIDs !== undefined) {
+      groupData.assignedRolesIDs = Array.isArray(group.assignedRolesIDs)
+        ? group.assignedRolesIDs
+        : [];
+    }
+
     if (currentUser?.id) {
       groupData.lastUpdatedBy = currentUser.id;
     }

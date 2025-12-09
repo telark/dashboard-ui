@@ -1,10 +1,12 @@
 import React, { useMemo, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Checkbox, Form } from 'antd';
 import { SlideOutPanel } from '../../../../components/display/panels/slide-out';
 import { Icons } from '../../../../constants';
 import { useGroupMutations } from '../hooks';
 import { useRoles } from '../../roles/hooks';
 import type { Group } from '../models';
+import type { RootState } from '../../../../store';
 
 const RoleIcon = Icons.Role;
 
@@ -18,33 +20,40 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
   const { roles, loading: rolesLoading } = useRoles();
   const { handleUpdate, submitting } = useGroupMutations();
   const [form] = Form.useForm();
+  const groups = useSelector((state: RootState) => state.groups.groups);
+
+  // Get the latest group from the store to ensure we have the most up-to-date assignedRolesIDs
+  const currentGroup = useMemo(() => {
+    if (!group) return null;
+    return groups.find((g) => g.id === group.id) || group;
+  }, [group, groups]);
 
   const initialSelectedRoles = useMemo(() => {
-    return group?.assignedRolesIDs || [];
-  }, [group]);
+    return currentGroup?.assignedRolesIDs || [];
+  }, [currentGroup]);
 
   useEffect(() => {
-    if (open && group) {
+    if (open && currentGroup) {
       form.setFieldsValue({ assignedRolesIDs: initialSelectedRoles });
     }
-  }, [open, group, initialSelectedRoles, form]);
+  }, [open, currentGroup, initialSelectedRoles, form]);
 
   const handleSubmit = async (values: Record<string, unknown>) => {
-    if (!group) return;
+    if (!currentGroup) return;
     const assignedRolesIDs = (values.assignedRolesIDs as string[]) || [];
-    await handleUpdate(group.id, { assignedRolesIDs });
+    await handleUpdate(currentGroup.id, { assignedRolesIDs });
     form.resetFields();
     onClose();
   };
 
-  if (!group) return null;
+  if (!currentGroup) return null;
 
   return (
     <SlideOutPanel
       open={open}
       onClose={onClose}
       title="Attach Roles"
-      subtitle={`Select roles to attach to ${group.name}`}
+      subtitle={`Select roles to attach to ${currentGroup.name}`}
       formContent={
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
           {rolesLoading ? (
