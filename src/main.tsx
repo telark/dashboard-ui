@@ -10,6 +10,7 @@ import { FancySpinner } from './components/animation';
 import { SHARED_DETAILS_CONSTANTS } from './constants';
 import './styles/index.css';
 import './styles/antd.css';
+import './styles/actionConfirmModal.css';
 
 const persistor = persistStore(store);
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);

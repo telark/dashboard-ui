@@ -1,7 +1,11 @@
 import React from 'react';
-import { Modal, Button } from 'antd';
-import { DeleteOutlined, CloseOutlined } from '@ant-design/icons';
-import { SLIDE_OUT } from '../../../../constants';
+import { Modal } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
+import { ACTION_CONFIRM_MODAL } from '../../../../constants';
+import { useActionConfirmHandlers } from '../../../../hooks/layout/useActionConfirmHandlers';
+import { ActionIcon, ActionCloseIcon } from '../../icons';
+import { ActionTitle, ActionMessage } from '../../text';
+import ActionButtons from '../../buttons/ActionButtons';
 
 export interface ActionConfirmModalProps {
   open: boolean;
@@ -32,131 +36,42 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
   danger = true,
   icon,
 }) => {
-  const handleClose = (e?: React.MouseEvent) => {
-    if (e) {
-      e.stopPropagation();
-      e.preventDefault();
-    }
-    onClose(e);
-  };
+  const {
+    handleModalCancel,
+    handleCloseIconClick,
+    handleCancelClick,
+    handleConfirmClick,
+  } = useActionConfirmHandlers({ onClose, onConfirm });
 
-  const handleConfirm = async () => {
-    await onConfirm();
-    handleClose();
-  };
-
-  const message = resourceType
-    ? `Are you sure you want to ${action} ${resourceType} `
-    : `Are you sure you want to ${action} `;
-
-  const defaultIcon = <DeleteOutlined style={{ fontSize: 24, color: '#ff4d4f' }} />;
+  const defaultIcon = (
+    <DeleteOutlined
+      style={{
+        fontSize: ACTION_CONFIRM_MODAL.DEFAULT_ICON.FONT_SIZE,
+        color: ACTION_CONFIRM_MODAL.DEFAULT_ICON.COLOR,
+      }}
+    />
+  );
   const actionIcon = icon || defaultIcon;
 
   return (
-    <>
-      <style>
-        {`
-          .action-confirm-modal .ant-modal-close {
-            top: 8px !important;
-            right: 8px !important;
-            width: 20px !important;
-            height: 20px !important;
-            line-height: 20px !important;
-            padding: 0 !important;
-            margin: 0 !important;
-          }
-          .action-confirm-modal .ant-modal-close-x {
-            width: 20px !important;
-            height: 20px !important;
-            line-height: 20px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            color: #ffffff !important;
-          }
-          .action-confirm-modal .ant-modal-close-x svg {
-            color: #ffffff !important;
-            fill: #ffffff !important;
-          }
-          .action-confirm-modal .ant-modal-close-x svg path {
-            fill: #ffffff !important;
-            stroke: #ffffff !important;
-          }
-          .action-confirm-modal .ant-modal-close:hover {
-            background: transparent !important;
-          }
-          .action-confirm-modal .ant-modal-close:focus {
-            background: transparent !important;
-            outline: none !important;
-          }
-          .action-confirm-modal .ant-modal-close:active {
-            background: transparent !important;
-          }
-          .action-confirm-modal .ant-modal-close-x:hover {
-            background: transparent !important;
-          }
-          .action-confirm-modal .ant-modal-close-x:focus {
-            background: transparent !important;
-            outline: none !important;
-          }
-          .action-confirm-modal .ant-modal-close-x:active {
-            background: transparent !important;
-          }
-          .action-confirm-modal .ant-modal-mask {
-            pointer-events: auto !important;
-          }
-          .action-confirm-modal .ant-modal-wrap {
-            pointer-events: auto !important;
-          }
-        `}
-      </style>
-      <Modal
+    <Modal
         open={open}
-        onCancel={(e) => {
-          if (e) {
-            e.stopPropagation();
-            e.preventDefault();
-          }
-          // Use setTimeout to prevent click from propagating to row
-          setTimeout(() => {
-            handleClose(e);
-          }, 10);
-        }}
+        onCancel={handleModalCancel}
         title={null}
-        width={360}
+        width={ACTION_CONFIRM_MODAL.MODAL.WIDTH}
         footer={null}
         maskClosable={true}
         getContainer={false}
-        closeIcon={
-          <span
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              handleClose(e);
-            }}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 20,
-              height: 20,
-              borderRadius: '50%',
-              background: '#777',
-              color: '#ffffff',
-            }}
-          >
-            <CloseOutlined style={{ fontSize: 10, color: '#ffffff' }} />
-          </span>
-        }
-        className="action-confirm-modal"
+        closeIcon={<ActionCloseIcon onClick={handleCloseIconClick} />}
+        className={ACTION_CONFIRM_MODAL.MODAL.CLASS_NAME}
         styles={{
           content: {
-            borderRadius: 12,
+            borderRadius: ACTION_CONFIRM_MODAL.MODAL.BORDER_RADIUS,
             overflow: 'hidden',
             position: 'relative',
           },
           body: {
-            padding: '16px 20px 8px',
+            padding: ACTION_CONFIRM_MODAL.CONTENT.PADDING,
           },
         }}
       >
@@ -166,115 +81,23 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: 6,
+            gap: ACTION_CONFIRM_MODAL.CONTENT.GAP,
           }}
         >
-          {/* Icon */}
-          <div
-            style={{
-              width: 50,
-              height: 50,
-              minWidth: 50,
-              minHeight: 50,
-              maxWidth: 50,
-              maxHeight: 50,
-              borderRadius: 10,
-              background: '#fff1f0',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxSizing: 'border-box',
-            }}
-          >
-            {actionIcon}
-          </div>
-
-          {/* Title */}
-          <h3
-            style={{
-              margin: 0,
-              fontSize: 18,
-              fontWeight: 700,
-              color: '#0B1F33',
-              textAlign: 'center',
-            }}
-          >
-            {title}
-          </h3>
-
-          {/* Message */}
-          <div
-            style={{
-              fontSize: 14,
-              lineHeight: 1.6,
-              color: '#64748b',
-              textAlign: 'center',
-              marginTop: -7,
-            }}
-          >
-            {message}
-            <span
-              style={{
-                fontWeight: 700,
-                color: '#0B1F33',
-              }}
-            >
-              {resourceName}
-            </span>
-            ?
-          </div>
-
-          {/* Buttons */}
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              gap: 12,
-              marginTop: 10,
-              marginBottom: -12,
-            }}
-          >
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                handleClose(e);
-              }}
-              disabled={loading}
-              style={SLIDE_OUT.CANCEL_BUTTON}
-              onMouseEnter={(e) => {
-                if (!loading) {
-                  e.currentTarget.style.background = SLIDE_OUT.CANCEL_BUTTON_HOVER_BACKGROUND;
-                }
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = SLIDE_OUT.CANCEL_BUTTON_DEFAULT_BACKGROUND;
-              }}
-            >
-              {cancelText}
-            </button>
-            <Button
-              type="primary"
-              danger={danger}
-              loading={loading}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleConfirm();
-              }}
-              style={{
-                borderRadius: 6,
-                fontWeight: 500,
-                height: 36,
-                padding: '0 16px',
-              }}
-            >
-              {confirmText || action}
-            </Button>
-          </div>
+          <ActionIcon icon={actionIcon} />
+          <ActionTitle title={title} />
+          <ActionMessage action={action} resourceName={resourceName} resourceType={resourceType} />
+          <ActionButtons
+            cancelText={cancelText}
+            confirmText={confirmText || ''}
+            action={action}
+            loading={loading}
+            danger={danger}
+            onCancel={handleCancelClick}
+            onConfirm={handleConfirmClick}
+          />
         </div>
       </Modal>
-    </>
   );
 };
 

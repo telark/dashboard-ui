@@ -26,3 +26,4 @@ export * from './shared/colors';
 export * from './shared/details';
 export * from './shared/time';
 export * from './shared/utils';
+export * from './layout/modals';
