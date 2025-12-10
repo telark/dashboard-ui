@@ -10,7 +10,7 @@ interface RoleListProps {
   allRoles?: Role[];
 }
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 11;
 const MAX_HEIGHT = `${PAGE_SIZE * 56}px`; // 48px minHeight + 8px gap per item
 
 const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
