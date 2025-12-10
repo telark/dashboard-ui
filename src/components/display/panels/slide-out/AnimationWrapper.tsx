@@ -1,7 +1,7 @@
 import React from 'react';
 import { CloseOutlined } from '@ant-design/icons';
 import type { AnimationWrapperProps } from '../../../../interfaces/layout/panels';
-import { useBodyOverflow } from '../../../../hooks/layout';
+import { useBodyOverflow } from '../../../../hooks/panel';
 import { SLIDE_OUT } from '../../../../constants';
 import TopPanelToolbar from './TopPanelToolbar';
 

@@ -5,7 +5,7 @@ import Section from '../../sections/Section';
 import AnimationWrapper from './AnimationWrapper';
 import { BUTTON_TEXTS, SLIDE_OUT } from '../../../../constants';
 import type { SlideOutPanelProps } from '../../../../interfaces/layout/panels';
-import { useSlideOutPanelForm } from '../../../../hooks/layout';
+import { useSlideOutPanelForm } from '../../../../hooks/panel';
 
 const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
   ({

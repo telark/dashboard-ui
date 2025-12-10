@@ -294,6 +294,11 @@ export const FILTER_PANEL = {
   },
 } as const;
 
+export const FILTER_PANEL_CONFIG = {
+  DATE_PLACEHOLDER: 'dd / mm / yyyy',
+  DATE_FORMAT: 'DD / MM / YYYY',
+} as const;
+
 export const VIEW = {
   CONTAINER: {
     display: 'flex' as const,
