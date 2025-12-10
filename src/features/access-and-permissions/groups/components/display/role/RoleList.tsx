@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { Checkbox, Form } from 'antd';
 import { GROUPS_CONSTANTS as GC, ATTACHED_ROLES_CONSTANTS as ARC } from '../../../constants';
 import { truncateText } from '../../../../../../utils/helpers/format';
@@ -10,6 +10,8 @@ interface RoleListProps {
   allRoles?: Role[] | undefined;
 }
 
+const PAGE_SIZE = 10;
+
 const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
   const form = Form.useFormInstance();
   const watchedSelectedRoles = Form.useWatch('assignedRolesIDs', form);
@@ -17,6 +19,8 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
     () => (watchedSelectedRoles as string[]) || [],
     [watchedSelectedRoles],
   );
+
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   const handleChange = useCallback(
     (checkedValues: string[]) => {
@@ -45,19 +49,27 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
     return <div style={ARC.LIST.EMPTY_STATE}>{GC.LABELS.MESSAGES.NO_ROLES_AVAILABLE}</div>;
   }
 
-  const filteredSelectedRoles = (currentSelectedRoles as string[]).filter((roleId) =>
-    roles.some((role) => role.id === roleId),
-  );
+  const isScrollable = roles.length > PAGE_SIZE;
+  const maxHeightForScroll = '560px'; // approx 10 items
 
   return (
     <Form.Item name="assignedRolesIDs" style={{ margin: 0, width: '100%' }}>
       <Checkbox.Group
         style={{ width: '100%' }}
-        value={filteredSelectedRoles}
+        value={currentSelectedRoles}
         onChange={handleChange}
       >
-        <div style={ARC.LIST.CONTAINER}>
-          {roles.map((role) => {
+        <div
+          ref={scrollContainerRef}
+          className={isScrollable ? 'role-list-scroll' : undefined}
+          style={{
+            ...ARC.LIST.CONTAINER,
+            maxHeight: maxHeightForScroll,
+            overflowY: isScrollable ? 'auto' : 'visible',
+            height: isScrollable ? maxHeightForScroll : 'auto',
+          }}
+        >
+          {roles.map((role: Role) => {
             return (
               <div
                 key={role.id}
@@ -73,7 +85,6 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
                 <Checkbox value={role.id} style={{ margin: 0 }}>
                   <div style={ARC.LIST.ROLE_CONTENT}>
                     <div style={ARC.LIST.ROLE_NAME}>{role.name}</div>
-
                     {role.description && (
                       <div style={ARC.LIST.ROLE_DESCRIPTION}>
                         {truncateText(role.description, 60)}
