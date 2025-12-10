@@ -5,12 +5,13 @@ import { truncateText } from '../../../../../../utils/helpers/format';
 import type { Role } from '../../../../roles/models';
 
 interface RoleListProps {
-  roles: Role[] | undefined;
+  roles?: Role[];
   loading: boolean;
-  allRoles?: Role[] | undefined;
+  allRoles?: Role[];
 }
 
 const PAGE_SIZE = 10;
+const MAX_HEIGHT = `${PAGE_SIZE * 56}px`; // 48px minHeight + 8px gap per item
 
 const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
   const form = Form.useFormInstance();
@@ -24,19 +25,19 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
 
   const handleChange = useCallback(
     (checkedValues: string[]) => {
-      if (!allRoles) {
+      if (!allRoles || !roles) {
         form.setFieldsValue({ assignedRolesIDs: checkedValues });
         return;
       }
 
-      const filteredRoleIds = roles?.map((role) => role.id) || [];
-      const preservedSelections = (currentSelectedRoles as string[]).filter(
-        (roleId) => !filteredRoleIds.includes(roleId),
+      const roleIdsOnScreen = roles.map((r) => r.id);
+      const preservedSelections = currentSelectedRoles.filter(
+        (id) => !roleIdsOnScreen.includes(id),
       );
 
-      const mergedSelections = [...preservedSelections, ...checkedValues];
-      const uniqueSelections = Array.from(new Set(mergedSelections));
-      form.setFieldsValue({ assignedRolesIDs: uniqueSelections });
+      form.setFieldsValue({
+        assignedRolesIDs: Array.from(new Set([...preservedSelections, ...checkedValues])),
+      });
     },
     [form, allRoles, roles, currentSelectedRoles],
   );
@@ -50,51 +51,46 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
   }
 
   const isScrollable = roles.length > PAGE_SIZE;
-  const maxHeightForScroll = '560px'; // approx 10 items
 
   return (
     <Form.Item name="assignedRolesIDs" style={{ margin: 0, width: '100%' }}>
       <Checkbox.Group
-        style={{ width: '100%' }}
         value={currentSelectedRoles}
         onChange={handleChange}
+        style={{ width: '100%' }}
       >
         <div
           ref={scrollContainerRef}
           className={isScrollable ? 'role-list-scroll' : undefined}
           style={{
             ...ARC.LIST.CONTAINER,
-            maxHeight: maxHeightForScroll,
+            maxHeight: isScrollable ? MAX_HEIGHT : 'auto',
+            height: isScrollable ? MAX_HEIGHT : 'auto',
             overflowY: isScrollable ? 'auto' : 'visible',
-            height: isScrollable ? maxHeightForScroll : 'auto',
           }}
         >
-          {roles.map((role: Role) => {
-            return (
-              <div
-                key={role.id}
-                style={ARC.LIST.ITEM.BASE}
-                onMouseEnter={(e) => {
-                  Object.assign(e.currentTarget.style, ARC.LIST.ITEM.HOVER);
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = ARC.LIST.ITEM.BASE.background;
-                  e.currentTarget.style.borderColor = ARC.LIST.ITEM.BASE.border;
-                }}
-              >
-                <Checkbox value={role.id} style={{ margin: 0 }}>
-                  <div style={ARC.LIST.ROLE_CONTENT}>
-                    <div style={ARC.LIST.ROLE_NAME}>{role.name}</div>
-                    {role.description && (
-                      <div style={ARC.LIST.ROLE_DESCRIPTION}>
-                        {truncateText(role.description, 60)}
-                      </div>
-                    )}
-                  </div>
-                </Checkbox>
-              </div>
-            );
-          })}
+          {roles.map((role) => (
+            <div
+              key={role.id}
+              style={ARC.LIST.ITEM.BASE}
+              onMouseEnter={(e) => Object.assign(e.currentTarget.style, ARC.LIST.ITEM.HOVER)}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = ARC.LIST.ITEM.BASE.background;
+                e.currentTarget.style.borderColor = ARC.LIST.ITEM.BASE.border;
+              }}
+            >
+              <Checkbox value={role.id} style={{ margin: 0 }}>
+                <div style={ARC.LIST.ROLE_CONTENT}>
+                  <div style={ARC.LIST.ROLE_NAME}>{role.name}</div>
+                  {role.description && (
+                    <div style={ARC.LIST.ROLE_DESCRIPTION}>
+                      {truncateText(role.description, 60)}
+                    </div>
+                  )}
+                </div>
+              </Checkbox>
+            </div>
+          ))}
         </div>
       </Checkbox.Group>
     </Form.Item>
