@@ -1,3 +1,4 @@
+import React from 'react';
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { Button, Typography } from 'antd';
 import { ReloadOutlined, BugOutlined, HomeOutlined } from '@ant-design/icons';
@@ -31,9 +32,7 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    const featureContext = this.props.featureName
-      ? `[${this.props.featureName}] `
-      : '';
+    const featureContext = this.props.featureName ? `[${this.props.featureName}] ` : '';
     logger.error(`${featureContext}${STORE_MESSAGES.ERROR_BOUNDARY}`, error, errorInfo);
   }
 
