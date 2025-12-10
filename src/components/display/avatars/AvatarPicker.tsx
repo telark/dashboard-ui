@@ -3,6 +3,7 @@ import { createAvatar } from '@dicebear/core';
 import { Avatar, Grid, Modal, Spin } from 'antd';
 import { DEFAULT_COLORS } from '../../../constants';
 import type { UserAvatar } from '../../../features/access-and-permissions/users/models';
+import logger from '../../../logging';
 
 const { useBreakpoint } = Grid;
 
@@ -198,7 +199,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
         setPreviewUrls((prev) => ({ ...prev, ...newPreviewUrls }));
       });
     } catch (error) {
-      console.error('Failed to load avatar styles:', error);
+      logger.error('Failed to load avatar styles:', error);
     } finally {
       setIsLoadingStyles(false);
     }
