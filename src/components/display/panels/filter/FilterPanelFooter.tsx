@@ -8,12 +8,7 @@ interface FilterPanelFooterProps {
 
 const FilterPanelFooter: React.FC<FilterPanelFooterProps> = ({ onReset, onApply }) => {
   return (
-    <PanelFooter
-      onCancel={onReset}
-      onPrimary={onApply}
-      cancelLabel="Reset"
-      primaryLabel="Apply"
-    />
+    <PanelFooter onCancel={onReset} onPrimary={onApply} cancelLabel="Reset" primaryLabel="Apply" />
   );
 };
 

@@ -6,3 +6,5 @@ export type {
   FilterButtonOption,
   FilterDropdownOption,
 } from './FilterPanel';
+export { default as FilterButtonGroup } from './FilterButtonGroup';
+export type { FilterButtonGroupProps } from './FilterButtonGroup';

@@ -1,9 +1,10 @@
 import React from 'react';
-import { Space, Select } from 'antd';
+import { Select } from 'antd';
 import { DatePicker } from '../../inputs';
 import { FILTER_PANEL, FILTER_PANEL_CONFIG } from '../../../../constants';
 import type { FilterField, FilterFieldType } from './FilterPanel';
 import type { Dayjs } from 'dayjs';
+import FilterButtonGroup from './FilterButtonGroup';
 
 interface FilterFieldRendererProps {
   field: FilterField;
@@ -50,29 +51,15 @@ const FilterFieldRenderer: React.FC<FilterFieldRendererProps> = ({ field, value,
   };
 
   const renderButtonGroup = () => {
-    const selectedValue = (value as string) || field.options?.[0]?.key || '';
+    if (!field.options) return null;
     return (
-      <div key={field.key} style={FILTER_PANEL.SECTION}>
-        <div style={FILTER_PANEL.SECTION_TITLE}>{field.label}</div>
-        <Space wrap={false} size={[8, 8]}>
-          {field.options?.map((option) => {
-            const isActive = selectedValue === option.key;
-            return (
-              <button
-                key={option.key}
-                type="button"
-                onClick={() => onChange(option.key)}
-                style={{
-                  ...FILTER_PANEL.BUTTON_BASE,
-                  ...(isActive ? FILTER_PANEL.BUTTON_ACTIVE : FILTER_PANEL.BUTTON_INACTIVE),
-                }}
-              >
-                {option.label}
-              </button>
-            );
-          })}
-        </Space>
-      </div>
+      <FilterButtonGroup
+        key={field.key}
+        label={field.label}
+        options={field.options}
+        value={value as string | undefined}
+        onChange={(val) => onChange(val)}
+      />
     );
   };
 

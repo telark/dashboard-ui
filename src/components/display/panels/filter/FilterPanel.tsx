@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SLIDE_OUT, FILTER_PANEL } from '../../../../constants';
+import { SLIDE_OUT } from '../../../../constants';
 import FilterPanelHeader from './FilterPanelHeader';
 import FilterPanelFooter from './FilterPanelFooter';
 import FilterFieldRenderer from './FilterFieldRenderer';

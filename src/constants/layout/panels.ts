@@ -177,7 +177,7 @@ export const FILTER_PANEL = {
   SECTION: {
     display: 'flex' as const,
     flexDirection: 'column' as const,
-    gap: 12,
+    gap: 5,
   },
   SECTION_TITLE: {
     fontSize: 12,
