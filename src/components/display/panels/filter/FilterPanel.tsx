@@ -96,29 +96,31 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 
   return (
     <>
-      {/* Backdrop */}
-      <div onClick={onClose} style={FILTER_PANEL.BACKDROP} />
-      {/* Panel */}
+      <div onClick={onClose} style={SLIDE_OUT.BACKDROP} />
       <div
         style={{
-          ...FILTER_PANEL.PANEL,
+          ...SLIDE_OUT.PANEL,
           width: width,
         }}
       >
         <FilterPanelHeader onClose={onClose} subtitle={subtitle} />
 
-        <div style={FILTER_PANEL.CONTENT}>
-          {fields.map((field) => (
-            <FilterFieldRenderer
-              key={field.key}
-              field={field}
-              value={filters[field.key]}
-              onChange={(val) => handleFilterChange(field.key, val)}
-            />
-          ))}
-        </div>
+        <div style={SLIDE_OUT.CONTENT}>
+          <div style={SLIDE_OUT.FORM}>
+            <div style={SLIDE_OUT.FORM_CONTENT}>
+              {fields.map((field) => (
+                <FilterFieldRenderer
+                  key={field.key}
+                  field={field}
+                  value={filters[field.key]}
+                  onChange={(val) => handleFilterChange(field.key, val)}
+                />
+              ))}
+            </div>
 
-        <FilterPanelFooter onReset={handleReset} onApply={handleApply} />
+            <FilterPanelFooter onReset={handleReset} onApply={handleApply} />
+          </div>
+        </div>
       </div>
 
       <style>
