@@ -119,17 +119,15 @@ const FormModal: React.FC<FormModalProps> = ({
           layout="vertical"
           onFinish={handleFinish}
           initialValues={initialValues}
-          onValuesChange={() => {
+          onValuesChange={async () => {
             // Trigger validation on value change and check for errors
-            form
-              .validateFields()
-              .then(() => {
-                setHasValidationErrors(false);
-              })
-              .catch(() => {
-                const errors = form.getFieldsError();
-                setHasValidationErrors(errors.some((field) => field.errors.length > 0));
-              });
+            try {
+              await form.validateFields();
+              setHasValidationErrors(false);
+            } catch {
+              const errors = form.getFieldsError();
+              setHasValidationErrors(errors.some((field) => field.errors.length > 0));
+            }
           }}
         >
           {renderContent()}

@@ -2,6 +2,7 @@ import React, { lazy, Suspense, useTransition, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ProtectedRoute } from '../features/auth/components';
 import { FancySpinner, AnimatedPageWrapper } from '../components/animation';
+import { FeatureErrorBoundary } from '../components/error-boundary';
 import { APP_ROUTES } from '../constants';
 import { hasSessionToken } from '../features/auth/utils';
 
@@ -94,7 +95,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.GROUPERS}
           element={
             <ProtectedRoute>
-              <GroupersGlobalView />
+              <FeatureErrorBoundary featureName="Groupers">
+                <GroupersGlobalView />
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
@@ -102,9 +105,11 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.GROUPER_DETAILS}
           element={
             <ProtectedRoute>
-              <AnimatedPageWrapper>
-                <GrouperDetailsView />
-              </AnimatedPageWrapper>
+              <FeatureErrorBoundary featureName="Grouper Details">
+                <AnimatedPageWrapper>
+                  <GrouperDetailsView />
+                </AnimatedPageWrapper>
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
@@ -112,7 +117,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.BRIDGES}
           element={
             <ProtectedRoute>
-              <BridgesGlobalView />
+              <FeatureErrorBoundary featureName="Bridges">
+                <BridgesGlobalView />
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
@@ -120,9 +127,11 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.BRIDGE_DETAILS}
           element={
             <ProtectedRoute>
-              <AnimatedPageWrapper>
-                <BridgeDetailsView />
-              </AnimatedPageWrapper>
+              <FeatureErrorBoundary featureName="Bridge Details">
+                <AnimatedPageWrapper>
+                  <BridgeDetailsView />
+                </AnimatedPageWrapper>
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
@@ -130,7 +139,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.WORKLOADS}
           element={
             <ProtectedRoute>
-              <WorkloadsGlobalView />
+              <FeatureErrorBoundary featureName="Workloads">
+                <WorkloadsGlobalView />
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
@@ -138,9 +149,11 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.APP_WORKLOAD_DETAILS}
           element={
             <ProtectedRoute>
-              <AnimatedPageWrapper>
-                <AppWorkloadDetailsView />
-              </AnimatedPageWrapper>
+              <FeatureErrorBoundary featureName="Workload Details">
+                <AnimatedPageWrapper>
+                  <AppWorkloadDetailsView />
+                </AnimatedPageWrapper>
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
@@ -148,7 +161,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.ROLES}
           element={
             <ProtectedRoute>
-              <RolesListView />
+              <FeatureErrorBoundary featureName="Roles">
+                <RolesListView />
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
@@ -156,7 +171,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.ROLE_CREATE}
           element={
             <ProtectedRoute>
-              <RolesCreateView />
+              <FeatureErrorBoundary featureName="Create Role">
+                <RolesCreateView />
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
@@ -164,7 +181,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.ROLE_VIEW}
           element={
             <ProtectedRoute>
-              <RoleView />
+              <FeatureErrorBoundary featureName="Role Details">
+                <RoleView />
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
@@ -172,7 +191,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.ROLE_EDIT}
           element={
             <ProtectedRoute>
-              <RoleEdit />
+              <FeatureErrorBoundary key={APP_ROUTES.ROLE_EDIT} featureName="Edit Role">
+                <RoleEdit />
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
@@ -180,7 +201,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.USERS}
           element={
             <ProtectedRoute>
-              <UsersListView />
+              <FeatureErrorBoundary featureName="Users">
+                <UsersListView />
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
@@ -188,7 +211,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.USER_CREATE}
           element={
             <ProtectedRoute>
-              <UsersCreateView />
+              <FeatureErrorBoundary featureName="Create User">
+                <UsersCreateView />
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
@@ -196,7 +221,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.USER_VIEW}
           element={
             <ProtectedRoute>
-              <UserView />
+              <FeatureErrorBoundary featureName="User Details">
+                <UserView />
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
@@ -204,7 +231,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.USER_EDIT}
           element={
             <ProtectedRoute>
-              <UserEdit />
+              <FeatureErrorBoundary featureName="Edit User">
+                <UserEdit />
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
@@ -212,7 +241,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.GROUPS}
           element={
             <ProtectedRoute>
-              <GroupsMainPage />
+              <FeatureErrorBoundary key={APP_ROUTES.GROUPS} featureName="Groups">
+                <GroupsMainPage />
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
@@ -220,7 +251,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.PASSKEY_VIEW}
           element={
             <ProtectedRoute>
-              <PasskeyView />
+              <FeatureErrorBoundary featureName="Passkey Details">
+                <PasskeyView />
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
@@ -228,7 +261,9 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.PASSKEYS}
           element={
             <ProtectedRoute>
-              <PasskeysListView />
+              <FeatureErrorBoundary featureName="Passkeys">
+                <PasskeysListView />
+              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />

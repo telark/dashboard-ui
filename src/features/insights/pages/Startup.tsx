@@ -164,11 +164,13 @@ const Startup: React.FC<StartupProps> = () => {
       setPolling(true);
       const delays = [2000, 4000, 8000, 12000, 20000, 30000];
       let i = 0;
-      const poll = () => {
-        dispatch(checkClusterInsightsThunk())
-          .unwrap()
-          .then(handlePollSuccess)
-          .catch(handlePollError);
+      const poll = async () => {
+        try {
+          const result = await dispatch(checkClusterInsightsThunk()).unwrap();
+          handlePollSuccess(result);
+        } catch (error) {
+          handlePollError(error);
+        }
 
         const madeFourFails = failureCountRef.current >= 4;
         const baseDelay = i < delays.length ? delays[i++] : delays.at(-1)!;

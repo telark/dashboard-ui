@@ -4,7 +4,7 @@ import { Button } from 'antd';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import { UI } from '../../../../../../constants/layout/ui';
 
-const ResourcesEmptyState: React.FC = React.memo(() => {
+const ResourcesEmptyState: React.FC = () => {
   const handleRefresh = () => globalThis.location.reload();
 
   return (
@@ -46,7 +46,7 @@ const ResourcesEmptyState: React.FC = React.memo(() => {
       </Button>
     </div>
   );
-});
+};
 
 ResourcesEmptyState.displayName = 'ResourcesEmptyState';
 export default ResourcesEmptyState;
