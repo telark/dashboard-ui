@@ -8,9 +8,11 @@ interface UseGroupPanelStateReturn {
   editPanelOpen: boolean;
   viewPanelOpen: boolean;
   attachRolePanelOpen: boolean;
+  attachMemberPanelOpen: boolean;
   viewingGroup: Group | null;
   editingGroup: Group | null;
   attachingRoleGroup: Group | null;
+  attachingMemberGroup: Group | null;
   createForm: ReturnType<typeof Form.useForm<GroupFormData>>[0];
   editForm: ReturnType<typeof Form.useForm<GroupFormData>>[0];
   openCreatePanel: () => void;
@@ -21,6 +23,8 @@ interface UseGroupPanelStateReturn {
   closeViewPanel: () => void;
   openAttachRolePanel: (group: Group) => void;
   closeAttachRolePanel: () => void;
+  openAttachMemberPanel: (group: Group) => void;
+  closeAttachMemberPanel: () => void;
 }
 
 export const useGroupPanelState = (): UseGroupPanelStateReturn => {
@@ -28,9 +32,11 @@ export const useGroupPanelState = (): UseGroupPanelStateReturn => {
   const [editPanelOpen, setEditPanelOpen] = useState(false);
   const [viewPanelOpen, setViewPanelOpen] = useState(false);
   const [attachRolePanelOpen, setAttachRolePanelOpen] = useState(false);
+  const [attachMemberPanelOpen, setAttachMemberPanelOpen] = useState(false);
   const [viewingGroup, setViewingGroup] = useState<Group | null>(null);
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
   const [attachingRoleGroup, setAttachingRoleGroup] = useState<Group | null>(null);
+  const [attachingMemberGroup, setAttachingMemberGroup] = useState<Group | null>(null);
   const [createForm] = Form.useForm<GroupFormData>();
   const [editForm] = Form.useForm<GroupFormData>();
 
@@ -74,14 +80,26 @@ export const useGroupPanelState = (): UseGroupPanelStateReturn => {
     setAttachingRoleGroup(null);
   }, []);
 
+  const openAttachMemberPanel = useCallback((group: Group) => {
+    setAttachingMemberGroup(group);
+    setAttachMemberPanelOpen(true);
+  }, []);
+
+  const closeAttachMemberPanel = useCallback(() => {
+    setAttachMemberPanelOpen(false);
+    setAttachingMemberGroup(null);
+  }, []);
+
   return {
     createPanelOpen,
     editPanelOpen,
     viewPanelOpen,
     attachRolePanelOpen,
+    attachMemberPanelOpen,
     viewingGroup,
     editingGroup,
     attachingRoleGroup,
+    attachingMemberGroup,
     createForm,
     editForm,
     openCreatePanel,
@@ -92,5 +110,7 @@ export const useGroupPanelState = (): UseGroupPanelStateReturn => {
     closeViewPanel,
     openAttachRolePanel,
     closeAttachRolePanel,
+    openAttachMemberPanel,
+    closeAttachMemberPanel,
   };
 };

@@ -7,6 +7,7 @@ import {
   PlusOutlined,
   FilterOutlined,
   DeleteOutlined,
+  SettingOutlined,
 } from '@ant-design/icons';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import type { FilterSectionConfig } from '../../../../interfaces/layout/filters';
@@ -14,6 +15,7 @@ import type { FilterOption } from '../../../../interfaces/layout/filters';
 
 const GroupIcon = Icons.Group;
 const RoleIcon = Icons.Role;
+const UserIcon = Icons.User;
 
 interface UseGroupListConfigProps {
   categoryFilterOptions: FilterOption[];
@@ -25,6 +27,7 @@ interface UseGroupListConfigProps {
   selectedGroupsCount?: number;
   onBulkDeleteClick?: () => void;
   onAttachRoleClick?: () => void;
+  onAttachMemberClick?: () => void;
 }
 
 export const useGroupListConfig = ({
@@ -37,6 +40,7 @@ export const useGroupListConfig = ({
   selectedGroupsCount = 0,
   onBulkDeleteClick,
   onAttachRoleClick,
+  onAttachMemberClick,
 }: UseGroupListConfigProps) => {
   const filterSectionConfig: FilterSectionConfig | undefined = React.useMemo(() => {
     if (viewMode === 'categories') return undefined;
@@ -69,16 +73,6 @@ export const useGroupListConfig = ({
           variant: 'ghost',
           onClick: () => {
             // TODO: Implement filter functionality
-          },
-        },
-        {
-          key: 'attach-role',
-          label: GC.LABELS.ACTIONS.ATTACH_ROLE,
-          icon: <RoleIcon size={14} />,
-          variant: 'default',
-          disabled: selectedGroupsCount !== 1,
-          onClick: () => {
-            onAttachRoleClick?.();
           },
         },
         {
@@ -119,6 +113,34 @@ export const useGroupListConfig = ({
           },
         },
         {
+          key: 'manage-assignments',
+          label: 'Manage',
+          icon: <SettingOutlined />,
+          variant: 'default',
+          disabled: selectedGroupsCount !== 1,
+          dropdown: {
+            items: [
+              {
+                key: 'manage-roles',
+                label: GC.LABELS.ACTIONS.MANAGE_ROLES,
+                icon: <RoleIcon size={14} />,
+              },
+              {
+                key: 'manage-members',
+                label: GC.LABELS.ACTIONS.MANAGE_MEMBERS,
+                icon: <UserIcon size={14} />,
+              },
+            ],
+            onItemClick: (key: string) => {
+              if (key === 'manage-roles') {
+                onAttachRoleClick?.();
+              } else if (key === 'manage-members') {
+                onAttachMemberClick?.();
+              }
+            },
+          },
+        },
+        {
           key: 'create-group',
           label: GC.LABELS.FORM.BUTTON_TEXT,
           icon: <GroupIcon size={14} />,
@@ -135,6 +157,7 @@ export const useGroupListConfig = ({
       selectedGroupsCount,
       onBulkDeleteClick,
       onAttachRoleClick,
+      onAttachMemberClick,
     ],
   );
 

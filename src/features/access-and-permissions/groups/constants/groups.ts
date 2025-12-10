@@ -25,6 +25,8 @@ export const GROUPS_CONSTANTS = {
         'Get started by creating your first group. Groups help you organize and manage users with similar roles and permissions.',
       LOADING_ROLES: 'Loading roles...',
       NO_ROLES_AVAILABLE: 'No roles available',
+      LOADING_MEMBERS: 'Loading members...',
+      NO_MEMBERS_AVAILABLE: 'No members available',
     },
     COLUMNS: {
       NAME: 'Group Name',
@@ -42,6 +44,8 @@ export const GROUPS_CONSTANTS = {
       DELETE: 'Delete',
       BULK_DELETE: 'Bulk Delete',
       ATTACH_ROLE: 'Attach Role',
+      MANAGE_ROLES: 'Manage Roles',
+      MANAGE_MEMBERS: 'Manage Members',
       DELETE_MODAL_TITLE: 'Delete Group',
       DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
       BULK_DELETE_MODAL_TITLE: 'Delete Groups',

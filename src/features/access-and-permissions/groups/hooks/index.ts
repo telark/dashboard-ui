@@ -22,6 +22,7 @@ export { useEditGroupPanel } from './panels/useEditGroupPanel';
 export { useCreateGroupPanel } from './panels/useCreateGroupPanel';
 export { useAttachRolePanel } from './panels/useAttachRolePanel';
 export { useRoleTypeFilter } from './panels/useRoleTypeFilter';
+export { useAttachMemberPanel } from './panels/useAttachMemberPanel';
 
 // Category hooks
 export { useGroupCategoryOptions } from './categories/useGroupCategoryOptions';
