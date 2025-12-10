@@ -150,7 +150,6 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         disabled={!hasChanges}
         form={form}
         initialValues={{ assignedRolesIDs: initialSelectedRoles }}
-        rightOffset={filterPanelOpen ? 400 : 0}
       />
       <FilterPanel
         open={filterPanelOpen}
