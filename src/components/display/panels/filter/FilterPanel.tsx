@@ -46,7 +46,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   onFilterChange,
   onApply,
   onReset,
-  width = 400,
+  width = 480,
 }) => {
   const [filters, setFilters] = useState<Record<string, unknown>>(() => {
     const initial: Record<string, unknown> = {};

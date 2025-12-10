@@ -158,7 +158,6 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         onFilterChange={handleFilterChange}
         onApply={handleFilterApply}
         onReset={handleFilterReset}
-        width={400}
       />
     </>
   );

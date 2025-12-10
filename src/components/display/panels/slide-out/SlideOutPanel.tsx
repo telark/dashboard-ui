@@ -1,11 +1,11 @@
 import React from 'react';
 import { Form } from 'antd';
-import { PrimaryButton } from '../../buttons';
 import Section from '../../sections/Section';
 import AnimationWrapper from './AnimationWrapper';
 import { BUTTON_TEXTS, SLIDE_OUT } from '../../../../constants';
 import type { SlideOutPanelProps } from '../../../../interfaces/layout/panels';
 import { useSlideOutPanelForm } from '../../../../hooks/panel';
+import { PanelFooter } from '../shared';
 
 const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
   ({
@@ -63,30 +63,16 @@ const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
             )}
           </div>
 
-          {/* Footer Actions */}
-          <div style={SLIDE_OUT.FOOTER}>
-            <button
-              type="button"
-              onClick={handleCancel}
-              style={SLIDE_OUT.CANCEL_BUTTON}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = SLIDE_OUT.CANCEL_BUTTON_HOVER_BACKGROUND;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = SLIDE_OUT.CANCEL_BUTTON_DEFAULT_BACKGROUND;
-              }}
-            >
-              {cancelButtonText}
-            </button>
-            <PrimaryButton
-              action={submitButtonText}
-              loading={loading}
-              loadingLabel={BUTTON_TEXTS.LOADING}
-              onClick={() => form.submit()}
-              icon={submitButtonIcon}
-              disabled={disabled || loading}
-            />
-          </div>
+          <PanelFooter
+            onCancel={handleCancel}
+            onPrimary={() => form.submit()}
+            cancelLabel={cancelButtonText}
+            primaryLabel={submitButtonText}
+            primaryLoading={loading}
+            primaryLoadingLabel={BUTTON_TEXTS.LOADING}
+            primaryDisabled={disabled || loading}
+            primaryIcon={submitButtonIcon}
+          />
         </Form>
       </AnimationWrapper>
     );

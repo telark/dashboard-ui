@@ -13,6 +13,7 @@ const FilterPanelFooter: React.FC<FilterPanelFooterProps> = ({ onReset, onApply 
       onPrimary={onApply}
       cancelLabel="Reset"
       primaryLabel="Apply"
+      horizontalPadding={24}
     />
   );
 };

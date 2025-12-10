@@ -6,9 +6,10 @@ interface PanelHeaderProps {
   title?: string;
   subtitle?: string;
   onClose: () => void;
+  extra?: React.ReactNode;
 }
 
-const PanelHeader: React.FC<PanelHeaderProps> = ({ title = 'Panel', subtitle, onClose }) => {
+const PanelHeader: React.FC<PanelHeaderProps> = ({ title = 'Panel', subtitle, extra, onClose }) => {
   return (
     <div style={SLIDE_OUT.HEADER}>
       <div style={SLIDE_OUT.HEADER_CONTENT}>
@@ -27,7 +28,8 @@ const PanelHeader: React.FC<PanelHeaderProps> = ({ title = 'Panel', subtitle, on
             </p>
           )}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {extra}
           <button
             type="button"
             onClick={onClose}

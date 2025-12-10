@@ -7,6 +7,11 @@ interface PanelFooterProps {
   onPrimary?: () => void;
   cancelLabel?: string;
   primaryLabel?: string;
+  primaryDisabled?: boolean;
+  primaryLoading?: boolean;
+  primaryIcon?: React.ReactNode;
+  primaryLoadingLabel?: string;
+  horizontalPadding?: number;
 }
 
 const PanelFooter: React.FC<PanelFooterProps> = ({
@@ -14,10 +19,18 @@ const PanelFooter: React.FC<PanelFooterProps> = ({
   onPrimary,
   cancelLabel = 'Cancel',
   primaryLabel = 'Submit',
+  primaryDisabled = false,
+  primaryLoading = false,
+  primaryIcon,
+  primaryLoadingLabel,
+  horizontalPadding = 32,
 }) => {
   const footerStyle: React.CSSProperties = {
     ...SLIDE_OUT.FOOTER,
-    padding: '16px 24px',
+    paddingTop: 24,
+    paddingLeft: horizontalPadding,
+    paddingRight: horizontalPadding,
+    paddingBottom: 0,
     marginTop: 'auto',
   };
 
@@ -39,10 +52,10 @@ const PanelFooter: React.FC<PanelFooterProps> = ({
       <PrimaryButton
         action={primaryLabel}
         onClick={onPrimary || (() => {})}
-        loading={false}
-        loadingLabel={primaryLabel}
-        icon={undefined}
-        disabled={!onPrimary}
+        loading={primaryLoading}
+        loadingLabel={primaryLoadingLabel || primaryLabel}
+        icon={primaryIcon}
+        disabled={primaryDisabled || !onPrimary}
       />
     </div>
   );
