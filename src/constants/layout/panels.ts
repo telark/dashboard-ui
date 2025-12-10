@@ -22,6 +22,8 @@ export const SLIDE_OUT = {
     flexDirection: 'column' as const,
     boxShadow: '-2px 0 8px rgba(0, 0, 0, 0.15)',
     animation: 'slideInRight 0.3s ease-out',
+    transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    willChange: 'transform',
   },
   HEADER: {
     padding: '16px 24px',
