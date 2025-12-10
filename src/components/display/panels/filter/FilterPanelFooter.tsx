@@ -1,5 +1,5 @@
 import React from 'react';
-import PanelFooter from '../PanelFooter';
+import { PanelFooter } from '../shared';
 
 interface FilterPanelFooterProps {
   onReset: () => void;

@@ -1,6 +1,6 @@
 import React from 'react';
-import { SLIDE_OUT } from '../../../constants';
-import { PrimaryButton } from '../buttons';
+import { SLIDE_OUT } from '../../../../constants';
+import { PrimaryButton } from '../../buttons';
 
 interface PanelFooterProps {
   onCancel?: () => void;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { CloseOutlined } from '@ant-design/icons';
-import { SLIDE_OUT } from '../../../constants';
+import { SLIDE_OUT } from '../../../../constants';
 
 interface PanelHeaderProps {
   title?: string;

@@ -1,5 +1,5 @@
 import React from 'react';
-import PanelHeader from '../PanelHeader';
+import { PanelHeader } from '../shared';
 
 interface FilterPanelHeaderProps {
   onClose: () => void;
