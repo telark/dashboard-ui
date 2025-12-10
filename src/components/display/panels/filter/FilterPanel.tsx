@@ -20,12 +20,9 @@ export interface FilterField {
   key: string;
   label: string;
   type: FilterFieldType;
-  // For dateRange
   fromLabel?: string;
   toLabel?: string;
-  // For buttonGroup
   options?: FilterButtonOption[];
-  // For dropdown
   dropdownOptions?: FilterDropdownOption[];
   defaultValue?: string | { from?: string; to?: string };
 }
@@ -33,6 +30,7 @@ export interface FilterField {
 export interface FilterPanelProps {
   open: boolean;
   onClose: () => void;
+  subtitle?: string;
   fields: FilterField[];
   onFilterChange?: (filters: Record<string, unknown>) => void;
   onApply?: (filters: Record<string, unknown>) => void;
@@ -43,6 +41,7 @@ export interface FilterPanelProps {
 const FilterPanel: React.FC<FilterPanelProps> = ({
   open,
   onClose,
+  subtitle = 'Adjust filters to refine results',
   fields,
   onFilterChange,
   onApply,
@@ -106,7 +105,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           width: width,
         }}
       >
-        <FilterPanelHeader onClose={onClose} />
+        <FilterPanelHeader onClose={onClose} subtitle={subtitle} />
 
         <div style={FILTER_PANEL.CONTENT}>
           {fields.map((field) => (

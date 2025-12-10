@@ -1,5 +1,5 @@
 import React from 'react';
-import { FILTER_PANEL } from '../../../../constants';
+import PanelFooter from '../PanelFooter';
 
 interface FilterPanelFooterProps {
   onReset: () => void;
@@ -8,14 +8,12 @@ interface FilterPanelFooterProps {
 
 const FilterPanelFooter: React.FC<FilterPanelFooterProps> = ({ onReset, onApply }) => {
   return (
-    <div style={FILTER_PANEL.FOOTER}>
-      <button type="button" onClick={onReset} style={FILTER_PANEL.RESET_BUTTON}>
-        Reset
-      </button>
-      <button type="button" onClick={onApply} style={FILTER_PANEL.APPLY_BUTTON}>
-        Apply
-      </button>
-    </div>
+    <PanelFooter
+      onCancel={onReset}
+      onPrimary={onApply}
+      cancelLabel="Reset"
+      primaryLabel="Apply"
+    />
   );
 };
 
