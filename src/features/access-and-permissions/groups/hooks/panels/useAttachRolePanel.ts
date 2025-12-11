@@ -4,7 +4,7 @@ import type { FormInstance } from 'antd';
 import { RootState } from '../../../../../store';
 import { useGroupMutations } from '../';
 import { useRoles } from '../../../roles/hooks';
-import { useRoleTypeFilter } from './useRoleTypeFilter';
+import { useRoleTypeFilter } from '../filter/useRoleTypeFilter';
 import type { Group } from '../../models';
 
 const arraysEqual = (a: string[], b: string[]): boolean => {

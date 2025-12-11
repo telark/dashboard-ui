@@ -10,6 +10,7 @@ import type { Group } from '../../models';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import type { ValidityType } from '../../../roles/models/types';
+import { ATTACH_ROLE_FILTER_FIELDS } from '../../../groups/config/attachRoleFilterConfig';
 
 const RoleIcon = Icons.Role;
 
@@ -45,42 +46,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
     currentSelectedRoles,
   });
 
-  // Filter fields configuration
-  const filterFields: FilterField[] = useMemo(
-    () => [
-      {
-        key: 'dateRange',
-        label: 'DATE FILTER',
-        type: 'dateRange',
-        fromLabel: 'Created From',
-        toLabel: 'Created To',
-      },
-      {
-        key: 'type',
-        label: 'BY VALIDITY',
-        type: 'buttonGroup',
-        options: [
-          { key: 'all', label: 'All' },
-          { key: 'permanent', label: 'Permanent' },
-          { key: 'temporary', label: 'Temporary' },
-          { key: 'sessionBased', label: 'Session-based' },
-        ],
-        defaultValue: 'all',
-      },
-      {
-        key: 'status',
-        label: 'BY STATUS',
-        type: 'buttonGroup',
-        options: [
-          { key: 'all', label: 'All' },
-          { key: 'Active', label: 'Active' },
-          { key: 'Inactive', label: 'Inactive' },
-        ],
-        defaultValue: 'all',
-      },
-    ],
-    [],
-  );
+  const filterFields: FilterField[] = ATTACH_ROLE_FILTER_FIELDS;
 
   // Apply additional filters from filter panel
   const filteredRoles = useMemo(() => {
