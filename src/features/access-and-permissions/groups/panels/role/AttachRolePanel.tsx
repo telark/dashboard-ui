@@ -7,10 +7,8 @@ import { useAttachRolePanel } from '../../hooks';
 import RoleTypeFilter from '../../components/display/role/RoleTypeFilter';
 import RoleList from '../../components/display/role/RoleList';
 import type { Group } from '../../models';
-import type { Dayjs } from 'dayjs';
-import dayjs from 'dayjs';
-import type { ValidityType } from '../../../roles/models/types';
 import { ATTACH_ROLE_FILTER_FIELDS } from '../../../groups/config/attachRoleFilterConfig';
+import { applyRoleFilters } from '../../../groups/utils';
 
 const RoleIcon = Icons.Role;
 
@@ -49,39 +47,10 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
   const filterFields: FilterField[] = ATTACH_ROLE_FILTER_FIELDS;
 
   // Apply additional filters from filter panel
-  const filteredRoles = useMemo(() => {
-    let roles = baseFilteredRoles || [];
-
-    // Apply date range filter
-    const dateRange = appliedFilters.dateRange as
-      | { from?: Dayjs | null; to?: Dayjs | null }
-      | undefined;
-    if (dateRange?.from || dateRange?.to) {
-      const from = dateRange.from ? dayjs(dateRange.from).startOf('day') : null;
-      const to = dateRange.to ? dayjs(dateRange.to).endOf('day') : null;
-
-      roles = roles.filter((role) => {
-        const roleDate = dayjs(role.creationDate);
-        if (from && roleDate.isBefore(from)) return false;
-        if (to && roleDate.isAfter(to)) return false;
-        return true;
-      });
-    }
-
-    // Apply validity filter
-    const filterValidity = appliedFilters.type as ValidityType | 'all' | undefined;
-    if (filterValidity && filterValidity !== 'all') {
-      roles = roles.filter((role) => role.validity?.type === filterValidity);
-    }
-
-    // Apply status filter
-    const filterStatus = appliedFilters.status as string | undefined;
-    if (filterStatus && filterStatus !== 'all') {
-      roles = roles.filter((role) => role.status === filterStatus);
-    }
-
-    return roles;
-  }, [baseFilteredRoles, appliedFilters]);
+  const filteredRoles = useMemo(
+    () => applyRoleFilters(baseFilteredRoles, appliedFilters),
+    [baseFilteredRoles, appliedFilters],
+  );
 
   const handleFilterChange = (filters: Record<string, unknown>) => {
     setAppliedFilters(filters);
