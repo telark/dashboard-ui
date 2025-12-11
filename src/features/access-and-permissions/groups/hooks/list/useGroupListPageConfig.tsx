@@ -40,6 +40,9 @@ interface UseGroupListPageConfigOptions {
   onAttachRoleClick?: () => void;
   onAttachMemberClick?: () => void;
   onFilterClick?: () => void;
+  searchValue: string;
+  onSearchChange: (value: string) => void;
+  onSearchSubmit?: () => void;
 }
 
 export const useGroupListPageConfig = ({
@@ -65,6 +68,9 @@ export const useGroupListPageConfig = ({
   onAttachRoleClick,
   onAttachMemberClick,
   onFilterClick,
+  searchValue,
+  onSearchChange,
+  onSearchSubmit,
 }: UseGroupListPageConfigOptions): PageLayoutConfig<Group | Category> => {
   const [selectedCategories, setSelectedCategories] = useState<React.Key[]>([]);
   const reduxCategories = useSelector(selectGroupsCategories);
@@ -100,6 +106,9 @@ export const useGroupListPageConfig = ({
     onAttachRoleClick,
     onAttachMemberClick,
     onFilterClick,
+    searchValue,
+    onSearchChange,
+    onSearchSubmit,
   });
 
   const groupColumns = useMemo(

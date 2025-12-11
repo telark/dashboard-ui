@@ -5,3 +5,4 @@ export { default as StatusButton } from './StatusButton';
 export { default as TabButton } from './TabButton';
 export { default as ActionButtons } from './ActionButtons';
 export { default as FilterButton } from './FilterButton';
+export { default as SearchButton } from './SearchButton';

@@ -38,6 +38,7 @@ const MainPage: React.FC = () => {
   const { categories, loading: categoriesLoading } = useCategories(
     CATEGORIES_CONSTANTS.SCOPES.GROUPS,
   );
+  const [searchTerm, setSearchTerm] = useState('');
   const categoryOptions = useMemo(
     () => mapCategoriesToFilterOptions(categories || []),
     [categories],
@@ -167,6 +168,9 @@ const MainPage: React.FC = () => {
     onAttachRoleClick: handleAttachRoleClick,
     onAttachMemberClick: handleAttachMemberClick,
     onFilterClick: openFilterPanel,
+    searchValue: searchTerm,
+    onSearchChange: setSearchTerm,
+    onSearchSubmit: undefined,
   });
 
   const isFetching = groups === undefined || loading || categoriesLoading;

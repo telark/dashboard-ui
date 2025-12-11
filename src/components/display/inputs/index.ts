@@ -6,3 +6,5 @@ export { default as DatePicker } from './DatePicker';
 export type { DatePickerProps } from './DatePicker';
 export { default as LabeledInput } from './LabeledInput';
 export { default as LabeledSelect } from './LabeledSelect';
+export { default as SearchInput } from './SearchInput';
+export type { SearchInputProps } from './SearchInput';

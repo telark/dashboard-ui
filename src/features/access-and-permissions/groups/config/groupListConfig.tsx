@@ -24,6 +24,9 @@ interface UseGroupListConfigProps {
   onAttachRoleClick?: () => void;
   onAttachMemberClick?: () => void;
   onFilterClick?: () => void;
+  searchValue: string;
+  onSearchChange: (value: string) => void;
+  onSearchSubmit?: () => void;
 }
 
 export const useGroupListConfig = ({
@@ -34,9 +37,18 @@ export const useGroupListConfig = ({
   onAttachRoleClick,
   onAttachMemberClick,
   onFilterClick,
+  searchValue,
+  onSearchChange,
+  onSearchSubmit,
 }: UseGroupListConfigProps) => {
   const toolbarConfig: ToolbarConfig = React.useMemo(
     () => ({
+      search: {
+        placeholder: 'Search groups',
+        value: searchValue,
+        onChange: onSearchChange,
+        onSubmit: onSearchSubmit,
+      },
       buttons: [
         {
           key: 'search',
@@ -140,6 +152,9 @@ export const useGroupListConfig = ({
       onAttachRoleClick,
       onAttachMemberClick,
       onFilterClick,
+      searchValue,
+      onSearchChange,
+      onSearchSubmit,
     ],
   );
 

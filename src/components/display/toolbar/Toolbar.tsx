@@ -3,28 +3,68 @@ import { Dropdown } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../constants';
 import type { ToolbarConfig } from '../../../interfaces/layout/toolbar';
+import { SearchButton } from '../buttons';
+import { SearchInput } from '../inputs';
 
 interface ToolbarProps {
   config: ToolbarConfig | undefined;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
-  if (!config) return null;
+  const buttons = config?.buttons ?? [];
+  const search = config?.search;
+  const [showSearch, setShowSearch] = React.useState(false);
 
-  const { buttons } = config;
+  const handleSearchToggle = React.useCallback(() => {
+    if (!search) return;
+    setShowSearch((prev) => !prev);
+  }, [search]);
+
+  if (!config) return null;
 
   return (
     <div
       style={{
         display: 'flex',
-        alignItems: 'center',
-        gap: 8,
+        alignItems: 'flex-end',
+        gap: 12,
       }}
     >
+      {showSearch && search ? (
+        <SearchInput
+          value={search.value}
+          onChange={search.onChange}
+          placeholder={search.placeholder ?? 'Search'}
+          onSubmit={search.onSubmit}
+        />
+      ) : null}
+
       {buttons.map((button) => {
         const isPrimary = button.variant === 'primary';
         const isGhost = button.variant === 'ghost';
         const isDisabled = button.disabled ?? false;
+        const isSearchButton = search && button.key === 'search';
+        const buttonLabel = isSearchButton && showSearch ? 'Hide' : button.label;
+
+        const handleButtonClick = () => {
+          if (isDisabled) return;
+          if (search && button.key === 'search') {
+            handleSearchToggle();
+          }
+          button.onClick?.();
+        };
+
+        if (isSearchButton) {
+          return (
+            <SearchButton
+              key={button.key}
+              onClick={handleButtonClick}
+              label={buttonLabel}
+              disabled={isDisabled}
+              active={showSearch}
+            />
+          );
+        }
 
         if (button.dropdown) {
           return (
@@ -64,6 +104,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                   fontFamily: "'Roboto Condensed', sans-serif",
                   transition: 'all 0.2s',
                 }}
+                onClick={isDisabled ? undefined : handleButtonClick}
                 onMouseEnter={(e) => {
                   if (isDisabled) return;
                   if (isPrimary) {
@@ -98,7 +139,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                     {button.icon}
                   </span>
                 )}
-                <span>{button.label}</span>
+                <span>{buttonLabel}</span>
                 <DownOutlined style={{ fontSize: 10 }} />
               </button>
             </Dropdown>
@@ -108,7 +149,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
         return (
           <button
             key={button.key}
-            onClick={isDisabled ? undefined : button.onClick}
+            onClick={handleButtonClick}
             disabled={isDisabled}
             style={{
               all: 'unset',
@@ -163,7 +204,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                 {button.icon}
               </span>
             )}
-            <span>{button.label}</span>
+            <span>{buttonLabel}</span>
           </button>
         );
       })}

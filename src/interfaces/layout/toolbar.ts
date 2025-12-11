@@ -13,8 +13,17 @@ export interface ToolbarButtonConfig {
     items: MenuProps['items'];
     onItemClick?: (key: string) => void;
   };
+  component?: React.ReactNode;
+}
+
+export interface ToolbarSearchConfig {
+  placeholder?: string;
+  value: string;
+  onChange: (value: string) => void;
+  onSubmit?: () => void;
 }
 
 export interface ToolbarConfig {
   buttons: ToolbarButtonConfig[];
+  search?: ToolbarSearchConfig;
 }
