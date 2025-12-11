@@ -1,12 +1,7 @@
 import dayjs from 'dayjs';
 import type { Role } from '../../../roles/models/roles';
 import type { ValidityType } from '../../../roles/models/types';
-import type { Dayjs } from 'dayjs';
-
-interface DateRangeFilter {
-  from?: Dayjs | null;
-  to?: Dayjs | null;
-}
+import type { DateRangeFilter } from '../../../../../interfaces/date/filter';
 
 export const applyRoleFilters = (
   baseRoles: Role[] | undefined,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { SHARED_DETAILS_CONSTANTS } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import { PageLayout } from '../../../../components/display/views';
@@ -12,6 +12,7 @@ import {
   useGroupPanelState,
   useGroupListPageConfig,
   useBulkDeleteGroups,
+  useGroupFilters,
 } from '../hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
@@ -23,6 +24,9 @@ import {
   AttachMemberPanel,
 } from '../panels';
 import ActionConfirmModal from '../../../../components/display/modal/confirm/ActionConfirmModal';
+import { FilterPanel } from '../../../../components/display/panels/filter';
+import { GROUP_FILTER_FIELDS } from '../config/groupFilterConfig';
+import { applyGroupFilters } from '../utils';
 
 const GroupIcon = Icons.Group;
 
@@ -33,6 +37,21 @@ const MainPage: React.FC = () => {
   const { groups, loading, error } = useFetchGroups();
   const { categories, loading: categoriesLoading } = useCategories(
     CATEGORIES_CONSTANTS.SCOPES.GROUPS,
+  );
+
+  const {
+    filterPanelOpen,
+    openFilterPanel,
+    closeFilterPanel,
+    appliedFilters,
+    handleFilterChange,
+    handleFilterApply,
+    handleFilterReset,
+  } = useGroupFilters();
+
+  const filteredGroups = useMemo(
+    () => applyGroupFilters(groups, appliedFilters),
+    [groups, appliedFilters],
   );
 
   const {
@@ -50,7 +69,7 @@ const MainPage: React.FC = () => {
     paginatedGroups,
     selectedCount,
     hasSelection,
-  } = useGroupListState(groups);
+  } = useGroupListState(filteredGroups);
 
   const {
     createPanelOpen,
@@ -78,7 +97,7 @@ const MainPage: React.FC = () => {
 
   const { handleViewGroup } = useGroupListInteractions({
     selectedGroups,
-    groups,
+    groups: filteredGroups,
     handleDelete: async () => {},
     setSelectedGroups,
     onEdit: openEditPanel,
@@ -104,9 +123,9 @@ const MainPage: React.FC = () => {
   };
 
   const handleAttachRoleClick = () => {
-    if (selectedCount === 1 && groups) {
+    if (selectedCount === 1 && filteredGroups) {
       const selectedId = selectedGroups[0] as string;
-      const selectedGroup = groups.find((g) => g.id === selectedId);
+      const selectedGroup = filteredGroups.find((g) => g.id === selectedId);
       if (selectedGroup) {
         openAttachRolePanel(selectedGroup);
       }
@@ -114,9 +133,9 @@ const MainPage: React.FC = () => {
   };
 
   const handleAttachMemberClick = () => {
-    if (selectedCount === 1 && groups) {
+    if (selectedCount === 1 && filteredGroups) {
       const selectedId = selectedGroups[0] as string;
-      const selectedGroup = groups.find((g) => g.id === selectedId);
+      const selectedGroup = filteredGroups.find((g) => g.id === selectedId);
       if (selectedGroup) {
         openAttachMemberPanel(selectedGroup);
       }
@@ -147,6 +166,7 @@ const MainPage: React.FC = () => {
     onBulkDeleteClick: handleBulkDeleteClick,
     onAttachRoleClick: handleAttachRoleClick,
     onAttachMemberClick: handleAttachMemberClick,
+    onFilterClick: openFilterPanel,
   });
 
   const isFetching = groups === undefined || loading || categoriesLoading;
@@ -244,6 +264,14 @@ const MainPage: React.FC = () => {
           group={attachingMemberGroup}
         />
       )}
+      <FilterPanel
+        open={filterPanelOpen}
+        onClose={closeFilterPanel}
+        fields={GROUP_FILTER_FIELDS}
+        onFilterChange={handleFilterChange}
+        onApply={handleFilterApply}
+        onReset={handleFilterReset}
+      />
       {bulkDeleteModalOpen && (
         <ActionConfirmModal
           open={bulkDeleteModalOpen}

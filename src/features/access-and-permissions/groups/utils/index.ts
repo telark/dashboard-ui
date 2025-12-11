@@ -7,3 +7,4 @@ export { mapGroupData, mapGroupsData, mapGroupDetailsData } from './mappers/grou
 
 // Filters
 export { applyRoleFilters } from './filter/applyRoleFilters';
+export { applyGroupFilters } from './filter/applyGroupFilters';

@@ -28,6 +28,7 @@ interface UseGroupListConfigProps {
   onBulkDeleteClick?: () => void;
   onAttachRoleClick?: () => void;
   onAttachMemberClick?: () => void;
+  onFilterClick?: () => void;
 }
 
 export const useGroupListConfig = ({
@@ -41,6 +42,7 @@ export const useGroupListConfig = ({
   onBulkDeleteClick,
   onAttachRoleClick,
   onAttachMemberClick,
+  onFilterClick,
 }: UseGroupListConfigProps) => {
   const filterSectionConfig: FilterSectionConfig | undefined = React.useMemo(() => {
     if (viewMode === 'categories') return undefined;
@@ -72,7 +74,7 @@ export const useGroupListConfig = ({
           icon: <FilterOutlined />,
           variant: 'ghost',
           onClick: () => {
-            // TODO: Implement filter functionality
+            onFilterClick?.();
           },
         },
         {
@@ -158,6 +160,7 @@ export const useGroupListConfig = ({
       onBulkDeleteClick,
       onAttachRoleClick,
       onAttachMemberClick,
+      onFilterClick,
     ],
   );
 

@@ -21,8 +21,11 @@ export { useViewGroupPanelData } from './panels/useViewGroupPanelData';
 export { useEditGroupPanel } from './panels/useEditGroupPanel';
 export { useCreateGroupPanel } from './panels/useCreateGroupPanel';
 export { useAttachRolePanel } from './panels/useAttachRolePanel';
-export { useRoleTypeFilter } from './filter/useRoleTypeFilter';
 export { useAttachMemberPanel } from './panels/useAttachMemberPanel';
 
 // Category hooks
 export { useGroupCategoryOptions } from './categories/useGroupCategoryOptions';
+
+// Filter hooks
+export { useRoleTypeFilter } from './filter/useRoleTypeFilter';
+export { useGroupFilters } from './filter/useGroupFilters';

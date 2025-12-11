@@ -42,6 +42,7 @@ interface UseGroupListPageConfigOptions {
   onBulkDeleteClick?: () => void;
   onAttachRoleClick?: () => void;
   onAttachMemberClick?: () => void;
+  onFilterClick?: () => void;
 }
 
 export const useGroupListPageConfig = ({
@@ -68,6 +69,7 @@ export const useGroupListPageConfig = ({
   onBulkDeleteClick,
   onAttachRoleClick,
   onAttachMemberClick,
+  onFilterClick,
 }: UseGroupListPageConfigOptions): PageLayoutConfig<Group | Category> => {
   const [selectedCategories, setSelectedCategories] = useState<React.Key[]>([]);
   const reduxCategories = useSelector(selectGroupsCategories);
@@ -113,6 +115,7 @@ export const useGroupListPageConfig = ({
     onBulkDeleteClick,
     onAttachRoleClick,
     onAttachMemberClick,
+    onFilterClick,
   });
 
   const groupColumns = useMemo(
