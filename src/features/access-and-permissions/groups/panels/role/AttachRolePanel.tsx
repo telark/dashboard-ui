@@ -9,6 +9,7 @@ import RoleList from '../../components/display/role/RoleList';
 import type { Group } from '../../models';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
+import type { ValidityType } from '../../../roles/models/types';
 
 const RoleIcon = Icons.Role;
 
@@ -56,12 +57,13 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
       },
       {
         key: 'type',
-        label: 'BY TYPE',
+        label: 'BY VALIDITY',
         type: 'buttonGroup',
         options: [
           { key: 'all', label: 'All' },
-          { key: 'built-in', label: 'Built-in' },
-          { key: 'custom', label: 'Custom' },
+          { key: 'permanent', label: 'Permanent' },
+          { key: 'temporary', label: 'Temporary' },
+          { key: 'sessionBased', label: 'Session-based' },
         ],
         defaultValue: 'all',
       },
@@ -100,10 +102,10 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
       });
     }
 
-    // Apply type filter (if not already applied by RoleTypeFilter)
-    const filterType = appliedFilters.type as string | undefined;
-    if (filterType && filterType !== 'all') {
-      roles = roles.filter((role) => role.type === filterType);
+    // Apply validity filter
+    const filterValidity = appliedFilters.type as ValidityType | 'all' | undefined;
+    if (filterValidity && filterValidity !== 'all') {
+      roles = roles.filter((role) => role.validity?.type === filterValidity);
     }
 
     // Apply status filter
