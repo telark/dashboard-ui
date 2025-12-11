@@ -20,14 +20,13 @@ const FilterFieldRenderer: React.FC<FilterFieldRendererProps> = ({ field, value,
     };
     return (
       <div key={field.key} style={FILTER_PANEL.SECTION}>
-        <div style={FILTER_PANEL.SECTION_TITLE}>{field.label}</div>
+        <div style={FILTER_PANEL.SECTION_TITLE}>BY CREATION DATE</div>
         <div style={FILTER_PANEL.DATE_RANGE_CONTAINER}>
           <div style={FILTER_PANEL.DATE_INPUT_WRAPPER}>
-            <label style={FILTER_PANEL.DATE_LABEL}>{field.fromLabel || 'From'}</label>
             <DatePicker
               value={dateRange.from || undefined}
               onChange={(date) => onChange({ ...dateRange, from: date })}
-              placeholder={FILTER_PANEL_CONFIG.DATE_PLACEHOLDER}
+              placeholder={`From (${FILTER_PANEL_CONFIG.DATE_PLACEHOLDER})`}
               format={FILTER_PANEL_CONFIG.DATE_FORMAT}
               showTime={false}
               style={FILTER_PANEL.DATE_INPUT}
@@ -35,11 +34,10 @@ const FilterFieldRenderer: React.FC<FilterFieldRendererProps> = ({ field, value,
           </div>
           <div style={FILTER_PANEL.DATE_ARROW}>→</div>
           <div style={FILTER_PANEL.DATE_INPUT_WRAPPER}>
-            <label style={FILTER_PANEL.DATE_LABEL}>{field.toLabel || 'To'}</label>
             <DatePicker
               value={dateRange.to || undefined}
               onChange={(date) => onChange({ ...dateRange, to: date })}
-              placeholder={FILTER_PANEL_CONFIG.DATE_PLACEHOLDER}
+              placeholder={`To (${FILTER_PANEL_CONFIG.DATE_PLACEHOLDER})`}
               format={FILTER_PANEL_CONFIG.DATE_FORMAT}
               showTime={false}
               style={FILTER_PANEL.DATE_INPUT}
