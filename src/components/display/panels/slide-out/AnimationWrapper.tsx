@@ -6,7 +6,7 @@ import TopPanelToolbar from './TopPanelToolbar';
 import { PanelHeader } from '../shared';
 
 const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
-  ({ open, onClose, title, subtitle, children, width = 480, toolbarActions }) => {
+  ({ open, onClose, title, subtitle, children, width = 480, offsetX = 0, toolbarActions }) => {
     useBodyOverflow(open);
 
     if (!open) return null;
@@ -20,6 +20,9 @@ const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
           style={{
             ...SLIDE_OUT.PANEL,
             width: width,
+            transform: offsetX ? `translateX(-${offsetX}px)` : undefined,
+            transition: 'transform 0.3s ease',
+            willChange: 'transform',
           }}
         >
           <PanelHeader

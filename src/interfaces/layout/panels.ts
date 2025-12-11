@@ -14,6 +14,7 @@ export interface AnimationWrapperProps {
   children: React.ReactNode;
   width?: number;
   toolbarActions?: TopPanelToolbarActions;
+  offsetX?: number;
 }
 
 export interface SlideOutPanelProps extends Omit<AnimationWrapperProps, 'children'> {

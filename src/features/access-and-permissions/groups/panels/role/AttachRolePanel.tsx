@@ -22,6 +22,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
   const currentSelectedRoles = Form.useWatch('assignedRolesIDs', form) || [];
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
+  const FILTER_PANEL_WIDTH = 480;
 
   const {
     currentGroup,
@@ -132,6 +133,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         onClose={onClose}
         title="Attach Roles"
         subtitle={`Select roles to attach to ${currentGroup.name}`}
+        offsetX={filterPanelOpen ? FILTER_PANEL_WIDTH : 0}
         formContent={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
             <RoleTypeFilter
@@ -154,6 +156,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
       <FilterPanel
         open={filterPanelOpen}
         onClose={() => setFilterPanelOpen(false)}
+        width={FILTER_PANEL_WIDTH}
         fields={filterFields}
         onFilterChange={handleFilterChange}
         onApply={handleFilterApply}
