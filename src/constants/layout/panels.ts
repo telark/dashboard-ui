@@ -215,7 +215,7 @@ export const FILTER_PANEL = {
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
-    marginTop: 28,
+    marginTop: 33,
     lineHeight: 1,
     height: 'fit-content' as const,
   },
