@@ -172,12 +172,12 @@ export const FILTER_PANEL = {
     padding: '24px',
     display: 'flex' as const,
     flexDirection: 'column' as const,
-    gap: 24,
+    gap: 32,
   },
   SECTION: {
     display: 'flex' as const,
     flexDirection: 'column' as const,
-    gap: 5,
+    gap: 8,
   },
   SECTION_TITLE: {
     fontSize: 12,
@@ -189,8 +189,9 @@ export const FILTER_PANEL = {
   },
   DATE_RANGE_CONTAINER: {
     display: 'flex' as const,
-    alignItems: 'flex-end' as const,
+    alignItems: 'flex-start' as const,
     gap: 12,
+    position: 'relative' as const,
   },
   DATE_INPUT_WRAPPER: {
     display: 'flex' as const,
@@ -202,6 +203,8 @@ export const FILTER_PANEL = {
     fontSize: 13,
     fontWeight: 500,
     color: '#64748b',
+    lineHeight: '20px',
+    height: 20,
   },
   DATE_INPUT: {
     width: '100%',
@@ -209,7 +212,12 @@ export const FILTER_PANEL = {
   DATE_ARROW: {
     fontSize: 18,
     color: '#64748b',
-    paddingBottom: 6,
+    display: 'flex' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
+    marginTop: 28,
+    lineHeight: 1,
+    height: 'fit-content' as const,
   },
   BUTTON_BASE: {
     all: 'unset' as const,

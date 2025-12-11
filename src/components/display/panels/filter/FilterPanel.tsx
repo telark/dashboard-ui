@@ -107,7 +107,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 
         <div style={SLIDE_OUT.CONTENT}>
           <div style={SLIDE_OUT.FORM}>
-            <div style={SLIDE_OUT.FORM_CONTENT}>
+            <div style={{ ...SLIDE_OUT.FORM_CONTENT, gap: 24 }}>
               {fields.map((field) => (
                 <FilterFieldRenderer
                   key={field.key}
