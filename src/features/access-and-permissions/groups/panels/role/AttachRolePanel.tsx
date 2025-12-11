@@ -8,6 +8,7 @@ import RoleTypeFilter from '../../components/display/role/RoleTypeFilter';
 import RoleList from '../../components/display/role/RoleList';
 import type { Group } from '../../models';
 import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
 const RoleIcon = Icons.Role;
 
@@ -88,10 +89,13 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
       | { from?: Dayjs | null; to?: Dayjs | null }
       | undefined;
     if (dateRange?.from || dateRange?.to) {
+      const from = dateRange.from ? dayjs(dateRange.from).startOf('day') : null;
+      const to = dateRange.to ? dayjs(dateRange.to).endOf('day') : null;
+
       roles = roles.filter((role) => {
-        const roleDate = new Date(role.creationDate);
-        if (dateRange.from && roleDate < dateRange.from.toDate()) return false;
-        if (dateRange.to && roleDate > dateRange.to.toDate()) return false;
+        const roleDate = dayjs(role.creationDate);
+        if (from && roleDate.isBefore(from)) return false;
+        if (to && roleDate.isAfter(to)) return false;
         return true;
       });
     }

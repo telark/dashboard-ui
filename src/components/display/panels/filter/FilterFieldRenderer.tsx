@@ -18,6 +18,14 @@ const FilterFieldRenderer: React.FC<FilterFieldRendererProps> = ({ field, value,
       from: undefined,
       to: undefined,
     };
+    const disableFromDate = (current: Dayjs) => {
+      if (!dateRange.to) return false;
+      return current.isAfter(dateRange.to, 'day');
+    };
+    const disableToDate = (current: Dayjs) => {
+      if (!dateRange.from) return false;
+      return current.isBefore(dateRange.from, 'day');
+    };
     return (
       <div key={field.key} style={FILTER_PANEL.SECTION}>
         <div style={FILTER_PANEL.SECTION_TITLE}>BY CREATION DATE</div>
@@ -29,6 +37,7 @@ const FilterFieldRenderer: React.FC<FilterFieldRendererProps> = ({ field, value,
               placeholder={`From (${FILTER_PANEL_CONFIG.DATE_PLACEHOLDER})`}
               format={FILTER_PANEL_CONFIG.DATE_FORMAT}
               showTime={false}
+              disabledDate={disableFromDate}
               style={FILTER_PANEL.DATE_INPUT}
             />
           </div>
@@ -40,6 +49,7 @@ const FilterFieldRenderer: React.FC<FilterFieldRendererProps> = ({ field, value,
               placeholder={`To (${FILTER_PANEL_CONFIG.DATE_PLACEHOLDER})`}
               format={FILTER_PANEL_CONFIG.DATE_FORMAT}
               showTime={false}
+              disabledDate={disableToDate}
               style={FILTER_PANEL.DATE_INPUT}
             />
           </div>
