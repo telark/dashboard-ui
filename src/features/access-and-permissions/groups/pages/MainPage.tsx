@@ -25,8 +25,8 @@ import {
 } from '../panels';
 import ActionConfirmModal from '../../../../components/display/modal/confirm/ActionConfirmModal';
 import { FilterPanel } from '../../../../components/display/panels/filter';
-import { GROUP_FILTER_FIELDS } from '../config/groupFilterConfig';
-import { applyGroupFilters } from '../utils';
+import { buildGroupFilterFields } from '../config/groupFilterConfig';
+import { applyGroupFilters, mapCategoriesToFilterOptions } from '../utils';
 
 const GroupIcon = Icons.Group;
 
@@ -37,6 +37,10 @@ const MainPage: React.FC = () => {
   const { groups, loading, error } = useFetchGroups();
   const { categories, loading: categoriesLoading } = useCategories(
     CATEGORIES_CONSTANTS.SCOPES.GROUPS,
+  );
+  const categoryOptions = useMemo(
+    () => mapCategoriesToFilterOptions(categories || []),
+    [categories],
   );
 
   const {
@@ -57,10 +61,8 @@ const MainPage: React.FC = () => {
   const {
     sortKey,
     selectedGroups,
-    selectedCategory,
     currentPage,
     pageSize,
-    setSelectedCategory,
     setCurrentPage,
     setPageSize,
     setSelectedGroups,
@@ -150,8 +152,6 @@ const MainPage: React.FC = () => {
     handleSort,
     selectedGroups,
     setSelectedGroups,
-    selectedCategory,
-    setSelectedCategory,
     currentPage,
     setCurrentPage,
     pageSize,
@@ -267,7 +267,7 @@ const MainPage: React.FC = () => {
       <FilterPanel
         open={filterPanelOpen}
         onClose={closeFilterPanel}
-        fields={GROUP_FILTER_FIELDS}
+        fields={buildGroupFilterFields(categoryOptions)}
         onFilterChange={handleFilterChange}
         onApply={handleFilterApply}
         onReset={handleFilterReset}

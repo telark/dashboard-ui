@@ -8,7 +8,6 @@ import CategoryColumns from '../../../categories/components/display/list/Categor
 import { CategoryActionsColumn } from '../../../categories/components/display/list/CategoryActionsColumn';
 import { GroupActionsColumn } from '../../components/display/list/GroupActionsColumn';
 import { useGroupListConfig } from '../../config/groupListConfig';
-import { mapCategoriesToFilterOptions } from '../../utils';
 import { useCategoryListView } from '../../../categories/hooks';
 import { deduplicateCategoriesByName } from '../../../categories/utils/helpers';
 import { useUsers } from '../../../users/hooks';
@@ -25,8 +24,6 @@ interface UseGroupListPageConfigOptions {
   handleSort: (key: string) => void;
   selectedGroups: React.Key[];
   setSelectedGroups: (keys: React.Key[]) => void;
-  selectedCategory: string;
-  setSelectedCategory: (value: string) => void;
   currentPage: number;
   setCurrentPage: (page: number) => void;
   pageSize: number;
@@ -53,8 +50,6 @@ export const useGroupListPageConfig = ({
   handleSort,
   selectedGroups,
   setSelectedGroups,
-  selectedCategory,
-  setSelectedCategory,
   currentPage,
   setCurrentPage,
   pageSize,
@@ -96,18 +91,7 @@ export const useGroupListPageConfig = ({
     paginatedCategories,
   } = useCategoryListView({ categories: uniqueCategories });
 
-  const categoryFilterOptions = useMemo(
-    () => mapCategoriesToFilterOptions(uniqueReduxCategories),
-    [uniqueReduxCategories],
-  );
-
-  const { filterSectionConfig, toolbarConfig } = useGroupListConfig({
-    categoryFilterOptions,
-    selectedCategory,
-    onCategoryChange: (value: string) => {
-      setSelectedCategory(value);
-      setCurrentPage(1);
-    },
+  const { toolbarConfig } = useGroupListConfig({
     viewMode,
     onViewModeChange: setViewMode,
     onCreateGroupClick,
@@ -153,7 +137,6 @@ export const useGroupListPageConfig = ({
       title: GC.LABELS.HEADER_TITLE,
       subtitle: GC.LABELS.HEADER_SUBTITLE,
       breadcrumbs,
-      filterSection: filterSectionConfig,
       toolbar: toolbarConfig,
       columns:
         viewMode === 'groups'
@@ -248,7 +231,6 @@ export const useGroupListPageConfig = ({
     }),
     [
       breadcrumbs,
-      filterSectionConfig,
       toolbarConfig,
       viewMode,
       groupColumns,

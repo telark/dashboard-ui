@@ -8,6 +8,7 @@ export const applyGroupFilters = (
 ): Group[] => {
   let result = baseGroups || [];
 
+  // Date range filter
   const dateRange = appliedFilters.dateRange as DateRangeFilter | undefined;
   if (dateRange?.from || dateRange?.to) {
     const from = dateRange.from ? dayjs(dateRange.from).startOf('day') : null;
@@ -19,6 +20,12 @@ export const applyGroupFilters = (
       if (to && creation.isAfter(to)) return false;
       return true;
     });
+  }
+
+  // Category filter
+  const category = appliedFilters.category as string | undefined;
+  if (category && category !== 'all') {
+    result = result.filter((group) => group.categoryID === category);
   }
 
   return result;

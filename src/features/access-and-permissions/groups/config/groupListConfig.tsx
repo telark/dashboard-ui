@@ -10,17 +10,12 @@ import {
   SettingOutlined,
 } from '@ant-design/icons';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
-import type { FilterSectionConfig } from '../../../../interfaces/layout/filters';
-import type { FilterOption } from '../../../../interfaces/layout/filters';
 
 const GroupIcon = Icons.Group;
 const RoleIcon = Icons.Role;
 const UserIcon = Icons.User;
 
 interface UseGroupListConfigProps {
-  categoryFilterOptions: FilterOption[];
-  selectedCategory: string;
-  onCategoryChange: (value: string) => void;
   viewMode?: 'groups' | 'categories';
   onViewModeChange?: (mode: 'groups' | 'categories') => void;
   onCreateGroupClick?: () => void;
@@ -32,10 +27,6 @@ interface UseGroupListConfigProps {
 }
 
 export const useGroupListConfig = ({
-  categoryFilterOptions,
-  selectedCategory,
-  onCategoryChange,
-  viewMode = 'groups',
   onViewModeChange,
   onCreateGroupClick,
   selectedGroupsCount = 0,
@@ -44,18 +35,6 @@ export const useGroupListConfig = ({
   onAttachMemberClick,
   onFilterClick,
 }: UseGroupListConfigProps) => {
-  const filterSectionConfig: FilterSectionConfig | undefined = React.useMemo(() => {
-    if (viewMode === 'categories') return undefined;
-    return {
-      label: 'Categories',
-      options: categoryFilterOptions,
-      selectedValue: selectedCategory,
-      onChange: (value: string) => {
-        onCategoryChange(value);
-      },
-    };
-  }, [categoryFilterOptions, selectedCategory, onCategoryChange, viewMode]);
-
   const toolbarConfig: ToolbarConfig = React.useMemo(
     () => ({
       buttons: [
@@ -165,7 +144,6 @@ export const useGroupListConfig = ({
   );
 
   return {
-    filterSectionConfig,
     toolbarConfig,
   };
 };

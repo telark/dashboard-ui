@@ -9,7 +9,7 @@ export const applyRoleFilters = (
 ): Role[] => {
   let roles = baseRoles || [];
 
-  // Date range filter (inclusive, day-level)
+  // Date range filter
   const dateRange = appliedFilters.dateRange as DateRangeFilter | undefined;
   if (dateRange?.from || dateRange?.to) {
     const from = dateRange.from ? dayjs(dateRange.from).startOf('day') : null;
