@@ -12,11 +12,8 @@ export const buildGroupFilterFields = (categoryOptions: FilterOption[]): FilterF
   {
     key: 'category',
     label: 'BY CATEGORY',
-    type: 'dropdown',
-    dropdownOptions: [
-      { value: 'all', label: 'All categories' },
-      ...categoryOptions.map((opt) => ({ value: opt.value, label: opt.label })),
-    ],
+    type: 'buttonGroup',
+    options: categoryOptions.map((opt) => ({ key: opt.value, label: opt.label })),
     defaultValue: 'all',
   },
 ];

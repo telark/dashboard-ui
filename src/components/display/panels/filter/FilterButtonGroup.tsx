@@ -17,7 +17,7 @@ const FilterButtonGroup: React.FC<FilterButtonGroupProps> = React.memo(
     return (
       <div style={FILTER_PANEL.SECTION}>
         <div style={FILTER_PANEL.SECTION_TITLE}>{label}</div>
-        <Space wrap={false} size={[8, 8]}>
+        <Space wrap size={[8, 8]}>
           {options.map((option) => {
             const isActive = selectedValue === option.key;
             return (
