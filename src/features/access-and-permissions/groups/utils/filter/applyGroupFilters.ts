@@ -1,6 +1,6 @@
-import dayjs from 'dayjs';
 import type { Group } from '../../models/groups';
 import type { DateRangeFilter } from '../../../../../interfaces/date/filter';
+import { filterByDateRange } from './dateRangeUtils';
 
 export const applyGroupFilters = (
   baseGroups: Group[] | undefined,
@@ -8,21 +8,9 @@ export const applyGroupFilters = (
 ): Group[] => {
   let result = baseGroups || [];
 
-  // Date range filter
   const dateRange = appliedFilters.dateRange as DateRangeFilter | undefined;
-  if (dateRange?.from || dateRange?.to) {
-    const from = dateRange.from ? dayjs(dateRange.from).startOf('day') : null;
-    const to = dateRange.to ? dayjs(dateRange.to).endOf('day') : null;
+  result = filterByDateRange(result, dateRange, (group) => group.creationDate);
 
-    result = result.filter((group) => {
-      const creation = dayjs(group.creationDate);
-      if (from && creation.isBefore(from)) return false;
-      if (to && creation.isAfter(to)) return false;
-      return true;
-    });
-  }
-
-  // Category filter
   const category = appliedFilters.category as string | undefined;
   if (category && category !== 'all') {
     result = result.filter((group) => group.categoryID === category);
