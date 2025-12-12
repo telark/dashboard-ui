@@ -81,7 +81,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         formContent={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
             <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-              <FilterButton onClick={() => setFilterPanelOpen(true)} />
+              <FilterButton onClick={() => setFilterPanelOpen(true)} disabled={filterPanelOpen} />
             </div>
             <RoleList roles={filteredRoles} loading={rolesLoading} allRoles={allRoles} />
           </div>
