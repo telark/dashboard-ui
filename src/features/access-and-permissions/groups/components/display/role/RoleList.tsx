@@ -61,7 +61,7 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
       >
         <div
           ref={scrollContainerRef}
-          className={isScrollable ? 'role-list-scroll' : undefined}
+          className={`role-list-container ${isScrollable ? 'role-list-scroll' : ''}`}
           style={{
             ...ARC.LIST.CONTAINER,
             maxHeight: isScrollable ? MAX_HEIGHT : 'auto',

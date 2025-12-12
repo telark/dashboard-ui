@@ -104,6 +104,29 @@
   background-color: #fff !important;
 }
 
+/* Style checkboxes with success color for role list */
+.role-list-container .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #20C997 !important;
+  border-color: #20C997 !important;
+}
+
+.role-list-container .ant-checkbox-wrapper:hover .ant-checkbox-inner {
+  border-color: #20C997 !important;
+}
+
+.role-list-container .ant-checkbox-input:focus + .ant-checkbox-inner {
+  border-color: #20C997 !important;
+}
+
+.role-list-container .ant-checkbox-indeterminate .ant-checkbox-inner {
+  background-color: #20C997 !important;
+  border-color: #20C997 !important;
+}
+
+.role-list-container .ant-checkbox-indeterminate .ant-checkbox-inner::after {
+  background-color: #fff !important;
+}
+
 /* First data column - move it closer to checkbox column */
 .app-table .ant-table-thead > tr > th:nth-child(2),
 .app-table .ant-table-tbody > tr > td:nth-child(2) {

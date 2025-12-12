@@ -27,6 +27,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
   const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
   const [searchTerm, setSearchTerm] = useState('');
   const FILTER_PANEL_WIDTH = 480;
+  const PANEL_WIDTH = 650;
 
   const { categoryOptions } = useRoleCategoryOptions();
 
@@ -79,6 +80,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         onClose={onClose}
         title="Attach Roles"
         subtitle={`Select roles to attach to ${currentGroup.name}`}
+        width={PANEL_WIDTH}
         offsetX={filterPanelOpen ? FILTER_PANEL_WIDTH : 0}
         formContent={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
