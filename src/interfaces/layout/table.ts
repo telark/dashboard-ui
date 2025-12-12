@@ -9,6 +9,7 @@ export interface DataTableProps<T> {
   containerStyle?: React.CSSProperties;
   tableProps?: Record<string, any>;
   onRowClick?: (record: T) => void;
+  empty?: React.ReactNode;
 }
 
 export interface RowTagProps {

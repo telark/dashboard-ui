@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Empty } from 'antd';
 import type { PageLayoutConfig } from '../../../../../interfaces/layout/page';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
+import { Icons } from '../../../../../constants';
 import { selectGroupsCategories } from '../../../categories/store/selectors/categorySelectors';
 import Columns from '../../components/display/list/Columns';
 import CategoryColumns from '../../../categories/components/display/list/CategoryColumns';
@@ -14,6 +16,8 @@ import { useUsers } from '../../../users/hooks';
 import type { Group } from '../../models';
 import type { Category } from '../../../categories/models';
 import logger from '../../../../../logging';
+
+const GroupIcon = Icons.Group;
 
 type ViewMode = 'groups' | 'categories';
 
@@ -237,6 +241,13 @@ export const useGroupListPageConfig = ({
           ? (record: Group | Category) => handleViewGroup(record as Group)
           : undefined,
       rowHeight: GC.SIZES.ROW_HEIGHT,
+      empty:
+        viewMode === 'groups' ? (
+          <Empty
+            description="No Groups Found"
+            image={<GroupIcon size={64} style={{ color: '#d1d5db', marginTop: 22 }} />}
+          />
+        ) : undefined,
     }),
     [
       breadcrumbs,

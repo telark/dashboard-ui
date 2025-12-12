@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'antd';
+import { Table, Empty } from 'antd';
 import type { DataTableProps } from '../../../interfaces/layout/table';
 
 function DataTable<T>({
@@ -11,8 +11,13 @@ function DataTable<T>({
   containerStyle,
   tableProps = {},
   onRowClick,
+  empty,
 }: Readonly<DataTableProps<T>>) {
   const filteredData = Array.isArray(data) ? data.filter((item) => item != null) : data;
+
+  const emptyComponent = empty || (
+    <Empty description="No data" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+  );
 
   return (
     <div
@@ -37,6 +42,9 @@ function DataTable<T>({
           style: { height: rowHeight, cursor: onRowClick ? 'pointer' : 'default' },
           onClick: onRowClick ? () => onRowClick(record as T) : undefined,
         })}
+        locale={{
+          emptyText: emptyComponent,
+        }}
         {...tableProps}
       />
     </div>

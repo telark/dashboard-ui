@@ -23,6 +23,7 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
     onRowClick,
     containerStyle,
     rowHeight = 44,
+    empty,
   } = config;
 
   return (
@@ -151,6 +152,7 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
             rowKey={rowKey}
             className="app-table"
             rowHeight={rowHeight}
+            empty={empty}
             tableProps={{
               rowSelection: rowSelection
                 ? {
