@@ -20,7 +20,7 @@ export const SLIDE_OUT = {
     zIndex: 1001,
     display: 'flex' as const,
     flexDirection: 'column' as const,
-    boxShadow: '-2px 0 8px rgba(0, 0, 0, 0.15)',
+    borderRight: '0.5px solid #e5e7eb',
     animation: 'slideInRight 0.3s ease-out',
     transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     willChange: 'transform',
@@ -163,7 +163,7 @@ export const FILTER_PANEL = {
     zIndex: 1003,
     display: 'flex' as const,
     flexDirection: 'column' as const,
-    boxShadow: '-2px 0 8px rgba(0, 0, 0, 0.15)',
+    borderRight: '0.5px solid #e5e7eb',
     animation: 'slideInRight 0.3s ease-out',
   },
   CONTENT: {
