@@ -3,6 +3,7 @@ import { Form } from 'antd';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
 import { FilterPanel } from '../../../../../components/display/panels/filter';
 import { FilterButton } from '../../../../../components/display/buttons';
+import { SearchInput } from '../../../../../components/display/inputs';
 import { Icons } from '../../../../../constants';
 import { useAttachRolePanel } from '../../hooks';
 import RoleList from '../../components/display/role/RoleList';
@@ -24,6 +25,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
   const currentSelectedRoles = Form.useWatch('assignedRolesIDs', form) || [];
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
+  const [searchTerm, setSearchTerm] = useState('');
   const FILTER_PANEL_WIDTH = 480;
 
   const { categoryOptions } = useRoleCategoryOptions();
@@ -51,8 +53,8 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
   );
 
   const filteredRoles = useMemo(
-    () => applyRoleFilters(baseFilteredRoles, appliedFilters),
-    [baseFilteredRoles, appliedFilters],
+    () => applyRoleFilters(baseFilteredRoles, appliedFilters, searchTerm),
+    [baseFilteredRoles, appliedFilters, searchTerm],
   );
 
   const handleFilterChange = (filters: Record<string, unknown>) => {
@@ -80,10 +82,29 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         offsetX={filterPanelOpen ? FILTER_PANEL_WIDTH : 0}
         formContent={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 12,
+                width: '100%',
+                boxSizing: 'border-box',
+                margin: 0,
+                padding: 0,
+              }}
+            >
+              <SearchInput
+                value={searchTerm}
+                onChange={setSearchTerm}
+                placeholder="Search roles by name, type, status, or validity..."
+                minWidth={300}
+              />
               <FilterButton onClick={() => setFilterPanelOpen(true)} disabled={filterPanelOpen} />
             </div>
-            <RoleList roles={filteredRoles} loading={rolesLoading} allRoles={allRoles} />
+            <div style={{ width: '100%', margin: 0, padding: 0, boxSizing: 'border-box' }}>
+              <RoleList roles={filteredRoles} loading={rolesLoading} allRoles={allRoles} />
+            </div>
           </div>
         }
         onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
