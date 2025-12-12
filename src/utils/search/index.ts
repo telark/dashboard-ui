@@ -1,0 +1,1 @@
+export { applySearch } from './applySearch';

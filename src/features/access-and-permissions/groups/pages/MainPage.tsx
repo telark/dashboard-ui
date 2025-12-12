@@ -55,8 +55,8 @@ const MainPage: React.FC = () => {
   } = useGroupFilters();
 
   const filteredGroups = useMemo(
-    () => applyGroupFilters(groups, appliedFilters),
-    [groups, appliedFilters],
+    () => applyGroupFilters(groups, appliedFilters, searchTerm),
+    [groups, appliedFilters, searchTerm],
   );
 
   const {
