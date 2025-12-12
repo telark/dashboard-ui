@@ -1,14 +1,15 @@
 import React, { useState, useMemo } from 'react';
 import { Form } from 'antd';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
-import { FilterPanel, type FilterField } from '../../../../../components/display/panels/filter';
+import { FilterPanel } from '../../../../../components/display/panels/filter';
+import { FilterButton } from '../../../../../components/display/buttons';
 import { Icons } from '../../../../../constants';
 import { useAttachRolePanel } from '../../hooks';
-import RoleTypeFilter from '../../components/display/role/RoleTypeFilter';
 import RoleList from '../../components/display/role/RoleList';
 import type { Group } from '../../models';
-import { ATTACH_ROLE_FILTER_FIELDS } from '../../../groups/config/attachRoleFilterConfig';
-import { applyRoleFilters } from '../../../groups/utils';
+import { buildAttachRoleFilterFields } from '../../config/attachRoleFilterConfig';
+import { applyRoleFilters } from '../../utils';
+import { useRoleCategoryOptions } from '../../hooks/categories/useRoleCategoryOptions';
 
 const RoleIcon = Icons.Role;
 
@@ -25,6 +26,8 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
   const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
   const FILTER_PANEL_WIDTH = 480;
 
+  const { categoryOptions } = useRoleCategoryOptions();
+
   const {
     currentGroup,
     initialSelectedRoles,
@@ -33,8 +36,6 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
     allRoles,
     rolesLoading,
     submitting,
-    selectedRoleType,
-    setSelectedRoleType,
     handleSubmit,
   } = useAttachRolePanel({
     open,
@@ -44,9 +45,11 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
     currentSelectedRoles,
   });
 
-  const filterFields: FilterField[] = ATTACH_ROLE_FILTER_FIELDS;
+  const filterFields = useMemo(
+    () => buildAttachRoleFilterFields(categoryOptions),
+    [categoryOptions],
+  );
 
-  // Apply additional filters from filter panel
   const filteredRoles = useMemo(
     () => applyRoleFilters(baseFilteredRoles, appliedFilters),
     [baseFilteredRoles, appliedFilters],
@@ -77,11 +80,9 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         offsetX={filterPanelOpen ? FILTER_PANEL_WIDTH : 0}
         formContent={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
-            <RoleTypeFilter
-              selectedRoleType={selectedRoleType}
-              onTypeChange={setSelectedRoleType}
-              onFilterClick={() => setFilterPanelOpen(true)}
-            />
+            <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+              <FilterButton onClick={() => setFilterPanelOpen(true)} />
+            </div>
             <RoleList roles={filteredRoles} loading={rolesLoading} allRoles={allRoles} />
           </div>
         }

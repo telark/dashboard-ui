@@ -25,6 +25,7 @@ export { useAttachMemberPanel } from './panels/useAttachMemberPanel';
 
 // Category hooks
 export { useGroupCategoryOptions } from './categories/useGroupCategoryOptions';
+export { useRoleCategoryOptions } from './categories/useRoleCategoryOptions';
 
 // Filter hooks
 export { useRoleTypeFilter } from './filter/useRoleTypeFilter';

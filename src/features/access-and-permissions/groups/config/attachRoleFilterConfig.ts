@@ -1,15 +1,35 @@
 import type { FilterField } from '../../../../components/display/panels/filter';
+import type { FilterOption } from '../../../../interfaces/layout/filters';
+import { ROLES_CONSTANTS as RC } from '../../roles/constants/roles';
 
-export const ATTACH_ROLE_FILTER_FIELDS: FilterField[] = [
+export const buildAttachRoleFilterFields = (categoryOptions: FilterOption[]): FilterField[] => [
   {
     key: 'dateRange',
-    label: 'DATE FILTER',
+    label: 'BY CREATION DATE',
     type: 'dateRange',
-    fromLabel: 'Created From',
-    toLabel: 'Created To',
+    fromLabel: 'From',
+    toLabel: 'To',
   },
   {
-    key: 'type',
+    key: 'roleType',
+    label: 'BY TYPE',
+    type: 'buttonGroup',
+    options: [
+      { key: 'all', label: 'All' },
+      { key: RC.VALUES.ROLE_TYPE_BUILT_IN, label: 'Built-in' },
+      { key: RC.VALUES.ROLE_TYPE_CUSTOM, label: 'Custom' },
+    ],
+    defaultValue: 'all',
+  },
+  {
+    key: 'category',
+    label: 'BY CATEGORY',
+    type: 'buttonGroup',
+    options: categoryOptions.map((opt) => ({ key: opt.value, label: opt.label })),
+    defaultValue: 'all',
+  },
+  {
+    key: 'validity',
     label: 'BY VALIDITY',
     type: 'buttonGroup',
     options: [

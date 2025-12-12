@@ -4,7 +4,6 @@ import type { FormInstance } from 'antd';
 import { RootState } from '../../../../../store';
 import { useGroupMutations } from '../';
 import { useRoles } from '../../../roles/hooks';
-import { useRoleTypeFilter } from '../filter/useRoleTypeFilter';
 import type { Group } from '../../models';
 
 const arraysEqual = (a: string[], b: string[]): boolean => {
@@ -30,8 +29,6 @@ interface UseAttachRolePanelReturn {
   allRoles: ReturnType<typeof useRoles>['roles'];
   rolesLoading: boolean;
   submitting: boolean;
-  selectedRoleType: string;
-  setSelectedRoleType: (type: string) => void;
   handleSubmit: (values: Record<string, unknown>) => Promise<void>;
 }
 
@@ -45,7 +42,6 @@ export const useAttachRolePanel = ({
   const groups = useSelector((state: RootState) => state.groups.groups);
   const { roles, loading: rolesLoading } = useRoles();
   const { handleUpdate, submitting } = useGroupMutations();
-  const { selectedRoleType, setSelectedRoleType } = useRoleTypeFilter({ open });
 
   const currentGroup = useMemo(() => {
     if (!group) return null;
@@ -57,10 +53,8 @@ export const useAttachRolePanel = ({
   }, [currentGroup]);
 
   const filteredRoles = useMemo(() => {
-    if (!roles) return [];
-    if (selectedRoleType === 'all') return roles;
-    return roles.filter((role) => role.type === selectedRoleType);
-  }, [roles, selectedRoleType]);
+    return roles || [];
+  }, [roles]);
 
   useEffect(() => {
     if (open && currentGroup && !rolesLoading && roles) {
@@ -91,8 +85,6 @@ export const useAttachRolePanel = ({
     allRoles: roles,
     rolesLoading,
     submitting,
-    selectedRoleType,
-    setSelectedRoleType,
     handleSubmit,
   };
 };
