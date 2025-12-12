@@ -1,5 +1,6 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Checkbox, Form } from 'antd';
+import { ScrollIndicator } from '../../../../../../components/display/indicators';
 import { GROUPS_CONSTANTS as GC, ATTACHED_ROLES_CONSTANTS as ARC } from '../../../constants';
 import { truncateText } from '../../../../../../utils/helpers/format';
 import type { Role } from '../../../../roles/models';
@@ -22,6 +23,8 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
   );
 
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
+  const isScrollable = useMemo(() => (roles?.length || 0) > PAGE_SIZE, [roles]);
 
   const handleChange = useCallback(
     (checkedValues: string[]) => {
@@ -50,8 +53,6 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
     return <div style={ARC.LIST.EMPTY_STATE}>{GC.LABELS.MESSAGES.NO_ROLES_AVAILABLE}</div>;
   }
 
-  const isScrollable = roles.length > PAGE_SIZE;
-
   return (
     <Form.Item name="assignedRolesIDs" style={{ margin: 0, width: '100%' }}>
       <Checkbox.Group
@@ -60,37 +61,50 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
         style={{ width: '100%' }}
       >
         <div
-          ref={scrollContainerRef}
-          className={`role-list-container ${isScrollable ? 'role-list-scroll' : ''}`}
           style={{
-            ...ARC.LIST.CONTAINER,
-            maxHeight: isScrollable ? MAX_HEIGHT : 'auto',
-            height: isScrollable ? MAX_HEIGHT : 'auto',
-            overflowY: isScrollable ? 'auto' : 'visible',
+            position: 'relative',
+            width: '100%',
+            paddingBottom: isScrollable && showScrollIndicator ? 24 : 0,
           }}
         >
-          {roles.map((role) => (
-            <div
-              key={role.id}
-              style={ARC.LIST.ITEM.BASE}
-              onMouseEnter={(e) => Object.assign(e.currentTarget.style, ARC.LIST.ITEM.HOVER)}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = ARC.LIST.ITEM.BASE.background;
-                e.currentTarget.style.borderColor = ARC.LIST.ITEM.BASE.border;
-              }}
-            >
-              <Checkbox value={role.id} style={{ margin: 0 }}>
-                <div style={ARC.LIST.ROLE_CONTENT}>
-                  <div style={ARC.LIST.ROLE_NAME}>{role.name}</div>
-                  {role.description && (
-                    <div style={ARC.LIST.ROLE_DESCRIPTION}>
-                      {truncateText(role.description, 60)}
-                    </div>
-                  )}
-                </div>
-              </Checkbox>
-            </div>
-          ))}
+          <div
+            ref={scrollContainerRef}
+            className={`role-list-container ${isScrollable ? 'role-list-scroll' : ''}`}
+            style={{
+              ...ARC.LIST.CONTAINER,
+              maxHeight: isScrollable ? MAX_HEIGHT : 'auto',
+              height: isScrollable ? MAX_HEIGHT : 'auto',
+              overflowY: isScrollable ? 'auto' : 'visible',
+            }}
+          >
+            {roles.map((role) => (
+              <div
+                key={role.id}
+                style={ARC.LIST.ITEM.BASE}
+                onMouseEnter={(e) => Object.assign(e.currentTarget.style, ARC.LIST.ITEM.HOVER)}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = ARC.LIST.ITEM.BASE.background;
+                  e.currentTarget.style.borderColor = ARC.LIST.ITEM.BASE.border;
+                }}
+              >
+                <Checkbox value={role.id} style={{ margin: 0 }}>
+                  <div style={ARC.LIST.ROLE_CONTENT}>
+                    <div style={ARC.LIST.ROLE_NAME}>{role.name}</div>
+                    {role.description && (
+                      <div style={ARC.LIST.ROLE_DESCRIPTION}>
+                        {truncateText(role.description, 60)}
+                      </div>
+                    )}
+                  </div>
+                </Checkbox>
+              </div>
+            ))}
+          </div>
+          <ScrollIndicator
+            containerRef={scrollContainerRef}
+            isScrollable={isScrollable}
+            onVisibilityChange={setShowScrollIndicator}
+          />
         </div>
       </Checkbox.Group>
     </Form.Item>

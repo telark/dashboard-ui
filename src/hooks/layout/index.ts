@@ -6,3 +6,5 @@ export { useTimelinePagination } from './useTimelinePagination';
 export { useDelayedMount } from './useDelayedMount';
 export { useBodyOverflow, useSlideOutPanelForm } from '../panel';
 export { useActionConfirmHandlers } from './useActionConfirmHandlers';
+export { useScrollIndicator } from './useScrollIndicator';
+export type { UseScrollIndicatorOptions, UseScrollIndicatorReturn } from './useScrollIndicator';
