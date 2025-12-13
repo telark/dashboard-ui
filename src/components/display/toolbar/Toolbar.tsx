@@ -30,14 +30,27 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
         gap: 12,
       }}
     >
-      {showSearch && search ? (
-        <SearchInput
-          value={search.value}
-          onChange={search.onChange}
-          placeholder={search.placeholder ?? 'Search'}
-          onSubmit={search.onSubmit}
-        />
-      ) : null}
+      <div
+        style={{
+          overflow: 'hidden',
+          maxWidth: showSearch && search ? 300 : 0,
+          opacity: showSearch && search ? 1 : 0,
+          transition:
+            'max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          width: showSearch && search ? 'auto' : 0,
+        }}
+      >
+        {search && (
+          <div style={{ whiteSpace: 'nowrap' }}>
+            <SearchInput
+              value={search.value}
+              onChange={search.onChange}
+              placeholder={search.placeholder ?? 'Search'}
+              onSubmit={search.onSubmit}
+            />
+          </div>
+        )}
+      </div>
 
       {buttons.map((button) => {
         const isPrimary = button.variant === 'primary';

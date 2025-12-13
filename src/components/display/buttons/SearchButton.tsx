@@ -1,5 +1,5 @@
 import React from 'react';
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined, CloseOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../constants';
 
 interface SearchButtonProps {
@@ -15,6 +15,7 @@ const SearchButton: React.FC<SearchButtonProps> = ({
   disabled = false,
   active = false,
 }) => {
+  const Icon = active ? CloseOutlined : SearchOutlined;
   const baseStyle: React.CSSProperties = {
     all: 'unset',
     cursor: disabled ? 'not-allowed' : 'pointer',
@@ -54,7 +55,7 @@ const SearchButton: React.FC<SearchButtonProps> = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <SearchOutlined style={{ fontSize: 14, lineHeight: 1 }} />
+      <Icon style={{ fontSize: 14, lineHeight: 1 }} />
       <span>{label}</span>
     </button>
   );
