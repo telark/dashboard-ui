@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Checkbox, Form, Tooltip } from 'antd';
+import { Checkbox, Form } from 'antd';
 import { ScrollIndicator } from '../../../../../../components/display/indicators';
+import { SelectableListItem } from '../../../../../../components/display/list';
 import { GROUPS_CONSTANTS as GC, ATTACHED_ROLES_CONSTANTS as ARC } from '../../../constants';
 import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../../roles/constants';
@@ -91,60 +92,37 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
                 role.protection?.preventDeletion === true &&
                 role.protection?.preventModification === true;
 
+              const scopesContent =
+                role.scopesAndPermissions && role.scopesAndPermissions.length > 0 ? (
+                  <div style={ARC.LIST.ROLE_SCOPES}>
+                    {role.scopesAndPermissions.map((scope, index) => (
+                      <span key={`${scope.scope}-${index}`} style={ARC.LIST.SCOPE_ITEM}>
+                        {getScopeLabel(scope.scope)}: {scope.level}
+                      </span>
+                    ))}
+                  </div>
+                ) : null;
+
               return (
-                <div
+                <SelectableListItem
                   key={role.id}
-                  style={{
-                    ...ARC.LIST.ITEM.BASE,
-                    width: '100%',
-                    flexShrink: 0,
-                    position: 'relative',
+                  value={role.id}
+                  name={role.name}
+                  description={role.description ? truncateText(role.description, 60) : undefined}
+                  customContent={scopesContent}
+                  isProtected={isProtected}
+                  protectionIcon={<RoleIcon />}
+                  protectionTooltip={ARC.TOOLTIPS.PROTECTED_ROLE}
+                  protectionIconColor={DEFAULT_COLORS.SUCCESS}
+                  protectionIconSize={18}
+                  itemStyles={{
+                    base: ARC.LIST.ITEM.BASE,
+                    hover: ARC.LIST.ITEM.HOVER,
                   }}
-                  onMouseEnter={(e) => Object.assign(e.currentTarget.style, ARC.LIST.ITEM.HOVER)}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = ARC.LIST.ITEM.BASE.background;
-                    e.currentTarget.style.borderColor = ARC.LIST.ITEM.BASE.border;
-                  }}
-                >
-                  {isProtected && (
-                    <Tooltip title="This role is protected from deletion and modification">
-                      <div
-                        style={{
-                          position: 'absolute',
-                          top: 8,
-                          right: 8,
-                          zIndex: 1,
-                        }}
-                      >
-                        <RoleIcon
-                          style={{
-                            fontSize: 18,
-                            color: DEFAULT_COLORS.SUCCESS,
-                          }}
-                        />
-                      </div>
-                    </Tooltip>
-                  )}
-                  <Checkbox value={role.id} style={{ margin: 0, width: '100%' }}>
-                    <div style={ARC.LIST.ROLE_CONTENT}>
-                      <div style={ARC.LIST.ROLE_NAME}>{role.name}</div>
-                      {role.description && (
-                        <div style={ARC.LIST.ROLE_DESCRIPTION}>
-                          {truncateText(role.description, 60)}
-                        </div>
-                      )}
-                      {role.scopesAndPermissions && role.scopesAndPermissions.length > 0 && (
-                        <div style={ARC.LIST.ROLE_SCOPES}>
-                          {role.scopesAndPermissions.map((scope, index) => (
-                            <span key={`${scope.scope}-${index}`} style={ARC.LIST.SCOPE_ITEM}>
-                              {getScopeLabel(scope.scope)}: {scope.level}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </Checkbox>
-                </div>
+                  contentStyles={ARC.LIST.ROLE_CONTENT}
+                  nameStyles={ARC.LIST.ROLE_NAME}
+                  descriptionStyles={ARC.LIST.ROLE_DESCRIPTION}
+                />
               );
             })}
           </div>

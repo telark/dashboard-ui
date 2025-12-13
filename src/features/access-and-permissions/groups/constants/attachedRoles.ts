@@ -113,4 +113,7 @@ export const ATTACHED_ROLES_CONSTANTS = {
       lineHeight: 1.4,
     },
   },
+  TOOLTIPS: {
+    PROTECTED_ROLE: 'This role is protected from deletion and modification',
+  },
 } as const;
