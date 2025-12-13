@@ -61,7 +61,7 @@ export const ATTACHED_ROLES_CONSTANTS = {
     ITEM: {
       BASE: {
         display: 'flex',
-        alignItems: 'center' as const,
+        alignItems: 'flex-start' as const,
         padding: '5px 14px',
         background: '#f8fafc',
         border: '1px solid #e2e8f0',
@@ -94,8 +94,23 @@ export const ATTACHED_ROLES_CONSTANTS = {
       whiteSpace: 'nowrap' as const,
     },
     ROLE_CONTENT: {
-      marginLeft: 8,
-      width: '100%',
+      flex: 1,
+      minWidth: 0,
+    },
+    ROLE_SCOPES: {
+      display: 'flex',
+      flexWrap: 'wrap' as const,
+      gap: 6,
+      marginTop: 4,
+    },
+    SCOPE_ITEM: {
+      fontSize: 11,
+      color: '#64748b',
+      padding: '2px 6px',
+      background: '#f1f5f9',
+      borderRadius: 4,
+      border: '1px solid #e2e8f0',
+      lineHeight: 1.4,
     },
   },
 } as const;

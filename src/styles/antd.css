@@ -127,6 +127,16 @@
   background-color: #fff !important;
 }
 
+.role-list-container .ant-checkbox-wrapper {
+  width: 100% !important;
+  display: flex !important;
+  align-items: flex-start !important;
+}
+
+.role-list-container .ant-checkbox {
+  flex-shrink: 0 !important;
+}
+
 /* First data column - move it closer to checkbox column */
 .app-table .ant-table-thead > tr > th:nth-child(2),
 .app-table .ant-table-tbody > tr > td:nth-child(2) {
