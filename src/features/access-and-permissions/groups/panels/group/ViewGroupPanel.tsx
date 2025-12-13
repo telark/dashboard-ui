@@ -4,6 +4,7 @@ import ViewPanel from '../../../../../components/display/panels/view/ViewPanel';
 import { useViewGroupPanelData } from '../../hooks';
 import { GroupDeleteModal } from '../../components/delete';
 import type { Group } from '../../models';
+import { GROUPS_CONSTANTS as GC } from '../../constants';
 
 const GroupIcon = Icons.Group;
 
@@ -37,7 +38,7 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({ open, onClose, group, o
       <ViewPanel
         open={open}
         onClose={onClose}
-        title="Group Details"
+        title={GC.LABELS.PANELS.VIEW.TITLE}
         icon={<GroupIcon size={32} style={{ color: DEFAULT_COLORS.SUCCESS }} />}
         name={group.name}
         description={group.description}

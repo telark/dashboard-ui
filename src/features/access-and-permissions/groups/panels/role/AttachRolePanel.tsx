@@ -11,6 +11,7 @@ import type { Group } from '../../models';
 import { buildAttachRoleFilterFields } from '../../config/attachRoleFilterConfig';
 import { applyRoleFilters } from '../../utils';
 import { useRoleCategoryOptions } from '../../hooks/categories/useRoleCategoryOptions';
+import { GROUPS_CONSTANTS as GC } from '../../constants';
 
 const RoleIcon = Icons.Role;
 
@@ -78,8 +79,8 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
       <SlideOutPanel
         open={open}
         onClose={onClose}
-        title="Attach Roles"
-        subtitle={`Select roles to attach to ${currentGroup.name}`}
+        title={GC.LABELS.PANELS.ATTACH_ROLES.TITLE}
+        subtitle={GC.LABELS.PANELS.ATTACH_ROLES.SUBTITLE(currentGroup.name)}
         width={PANEL_WIDTH}
         offsetX={filterPanelOpen ? FILTER_PANEL_WIDTH : 0}
         formContent={
@@ -99,7 +100,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
               <SearchInput
                 value={searchTerm}
                 onChange={setSearchTerm}
-                placeholder="Search roles by name, type, status, or validity..."
+                placeholder={GC.LABELS.PANELS.ATTACH_ROLES.SEARCH_PLACEHOLDER}
                 minWidth={300}
               />
               <FilterButton onClick={() => setFilterPanelOpen(true)} disabled={filterPanelOpen} />
@@ -111,7 +112,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         }
         onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
         onCancel={onClose}
-        submitButtonText="Attach Roles"
+        submitButtonText={GC.LABELS.PANELS.ATTACH_ROLES.SUBMIT_BUTTON}
         submitButtonIcon={<RoleIcon size={16} />}
         loading={submitting}
         disabled={!hasChanges}

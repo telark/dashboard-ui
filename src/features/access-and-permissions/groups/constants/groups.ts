@@ -12,6 +12,7 @@ export const GROUPS_CONSTANTS = {
       GROUPS: 'Groups',
       EDIT: 'Edit',
       CREATE: 'Create Group',
+      CATEGORIES: 'Categories',
     },
     MESSAGES: {
       CREATED: (name: string) => `Group "${name}" created`,
@@ -63,6 +64,10 @@ export const GROUPS_CONSTANTS = {
       SECTION_TITLE: 'Group Details',
       SECTION_SUBTITLE: 'Provide the group information.',
       BUTTON_TEXT: 'Create Group',
+      SECTIONS: {
+        BASIC_DETAILS: 'Basic Details',
+        MEMBERS: 'Members',
+      },
       FIELDS: {
         NAME_LABEL: 'Group Name',
         NAME_PLACEHOLDER: 'e.g. Development Team',
@@ -70,6 +75,7 @@ export const GROUPS_CONSTANTS = {
         DESCRIPTION_PLACEHOLDER: 'e.g. Group for development team members',
         CATEGORY_LABEL: 'Category',
         CATEGORY_PLACEHOLDER: 'Select a category',
+        ASSIGNED_USERS_LABEL: 'Assigned Users',
         NAME_VALIDATION: {
           MIN_LENGTH: 1,
           MAX_LENGTH: 100,
@@ -80,6 +86,85 @@ export const GROUPS_CONSTANTS = {
             `Group name must be between ${min} and ${max} characters`,
         },
       },
+    },
+    PANELS: {
+      VIEW: {
+        TITLE: 'Group Details',
+      },
+      EDIT: {
+        TITLE: 'Edit Group',
+      },
+      ATTACH_ROLES: {
+        TITLE: 'Attach Roles',
+        SUBTITLE: (groupName: string) => `Select roles to attach to ${groupName}`,
+        SUBMIT_BUTTON: 'Attach Roles',
+        SEARCH_PLACEHOLDER: 'Search roles by name, type, status, or validity...',
+      },
+      ASSIGN_MEMBERS: {
+        TITLE: 'Assign Members',
+        SUBTITLE: (groupName: string) => `Select members to assign to ${groupName}`,
+        SUBMIT_BUTTON: 'Assign Members',
+      },
+    },
+    VIEW_LABELS: {
+      NAME: 'Name',
+      DESCRIPTION: 'Description',
+      CATEGORY: 'Category',
+      CREATION_DATE: 'Creation Date',
+      LAST_UPDATE: 'Last Update',
+      CREATED_BY: 'Created By',
+      LAST_UPDATED_BY: 'Last Updated By',
+    },
+    FILTER: {
+      LABELS: {
+        BY_CREATION_DATE: 'BY CREATION DATE',
+        BY_TYPE: 'BY TYPE',
+        BY_CATEGORY: 'BY CATEGORY',
+        BY_VALIDITY: 'BY VALIDITY',
+        BY_STATUS: 'BY STATUS',
+        FROM: 'From',
+        TO: 'To',
+      },
+      OPTIONS: {
+        ALL: 'All',
+        BUILT_IN: 'Built-in',
+        CUSTOM: 'Custom',
+        PERMANENT: 'Permanent',
+        TEMPORARY: 'Temporary',
+        SESSION_BASED: 'Session-based',
+        ACTIVE: 'Active',
+        INACTIVE: 'Inactive',
+      },
+    },
+    TOOLBAR: {
+      SEARCH: {
+        PLACEHOLDER: 'Search groups',
+        BUTTON_LABEL: 'Search',
+      },
+      FILTER: {
+        BUTTON_LABEL: 'Filter',
+      },
+      MANAGE_CATEGORIES: {
+        BUTTON_LABEL: 'Manage Categories',
+        VIEW_CATEGORIES: 'View Categories',
+        ADD_CATEGORY: 'Add Category',
+      },
+      MANAGE: {
+        BUTTON_LABEL: 'Manage',
+      },
+    },
+    EMPTY: {
+      NO_GROUPS_FOUND: 'No Groups Found',
+    },
+    PAGINATION: {
+      SHOW_ROWS: 'Show rows',
+    },
+    LOGS: {
+      EDIT_CATEGORY: (category: unknown) => `Edit category: ${JSON.stringify(category)}`,
+      DELETE_CATEGORY: (category: unknown) => `Delete category: ${JSON.stringify(category)}`,
+    },
+    MODAL: {
+      CANCEL: 'Cancel',
     },
   },
   KEYS: {

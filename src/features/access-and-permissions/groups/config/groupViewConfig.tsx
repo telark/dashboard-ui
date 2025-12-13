@@ -7,6 +7,7 @@ import { Icons } from '../../../../constants';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import type { Category } from '../../categories/models';
 import { getCategoryName } from '../../categories/utils';
+import { GROUPS_CONSTANTS as GC } from '../constants';
 
 export const createGroupViewConfig = (
   group: Group,
@@ -16,21 +17,21 @@ export const createGroupViewConfig = (
     fields: [
       {
         key: 'name',
-        label: 'Name',
+        label: GC.LABELS.VIEW_LABELS.NAME,
         value: group.name,
         icon: <Icons.ViewFieldName />,
         type: 'text',
       },
       {
         key: 'description',
-        label: 'Description',
+        label: GC.LABELS.VIEW_LABELS.DESCRIPTION,
         value: group.description,
         icon: <Icons.ViewFieldDescription />,
         type: 'text',
       },
       {
         key: 'category',
-        label: 'Category',
+        label: GC.LABELS.VIEW_LABELS.CATEGORY,
         value: (
           <StatusTag
             label={getCategoryName(group.categoryID, categories)}
@@ -44,7 +45,7 @@ export const createGroupViewConfig = (
       },
       {
         key: 'creationDate',
-        label: 'Creation Date',
+        label: GC.LABELS.VIEW_LABELS.CREATION_DATE,
         value: group.creationDate ? (
           <TimeAgo date={group.creationDate} />
         ) : (

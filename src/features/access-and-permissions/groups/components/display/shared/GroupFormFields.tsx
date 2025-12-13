@@ -23,7 +23,7 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       {/* Basic Details Section */}
       <Section
-        title="Basic Details"
+        title={GC.LABELS.FORM.SECTIONS.BASIC_DETAILS}
         content={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
             <Form.Item
@@ -89,11 +89,11 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
 
       {/* Members Section */}
       <Section
-        title="Members"
+        title={GC.LABELS.FORM.SECTIONS.MEMBERS}
         content={
           <Form.Item
             name="assignedUsersIDs"
-            label="Assigned Users"
+            label={GC.LABELS.FORM.FIELDS.ASSIGNED_USERS_LABEL}
             required={false}
             style={{ marginBottom: 0 }}
             className="form-item-compact no-asterisk"

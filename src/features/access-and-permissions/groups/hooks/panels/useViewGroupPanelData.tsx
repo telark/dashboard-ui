@@ -5,6 +5,7 @@ import RowTag from '../../../../../components/display/table/RowTag';
 import { UserDisplay } from '../../../../../components/display/users';
 import { useViewGroupPanel } from './useViewGroupPanel';
 import { useGroupDeleteModal } from '../../components/delete';
+import { GROUPS_CONSTANTS as GC } from '../../constants';
 import type { Group } from '../../models';
 import type {
   ViewAvatar,
@@ -71,7 +72,7 @@ export const useViewGroupPanelData = ({
     if (!group) return [];
     return [
       {
-        label: 'Category',
+        label: GC.LABELS.VIEW_LABELS.CATEGORY,
         value: (
           <RowTag
             text={categoryName}
@@ -90,7 +91,7 @@ export const useViewGroupPanelData = ({
         ),
       },
       {
-        label: 'Last Update',
+        label: GC.LABELS.VIEW_LABELS.LAST_UPDATE,
         value: (
           <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
             {group.lastUpdateDate ? <TimeAgo date={group.lastUpdateDate} /> : '—'}
@@ -98,7 +99,7 @@ export const useViewGroupPanelData = ({
         ),
       },
       {
-        label: 'Created By',
+        label: GC.LABELS.VIEW_LABELS.CREATED_BY,
         value: createdByUser ? (
           <UserDisplay user={createdByUser} size="small" showBorder />
         ) : (
@@ -106,7 +107,7 @@ export const useViewGroupPanelData = ({
         ),
       },
       {
-        label: 'Last Updated By',
+        label: GC.LABELS.VIEW_LABELS.LAST_UPDATED_BY,
         value: lastUpdatedByUser ? (
           <UserDisplay user={lastUpdatedByUser} size="small" showBorder />
         ) : (

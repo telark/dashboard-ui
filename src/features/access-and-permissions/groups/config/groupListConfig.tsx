@@ -44,7 +44,7 @@ export const useGroupListConfig = ({
   const toolbarConfig: ToolbarConfig = React.useMemo(
     () => ({
       search: {
-        placeholder: 'Search groups',
+        placeholder: GC.LABELS.TOOLBAR.SEARCH.PLACEHOLDER,
         value: searchValue,
         onChange: onSearchChange,
         onSubmit: onSearchSubmit,
@@ -52,7 +52,7 @@ export const useGroupListConfig = ({
       buttons: [
         {
           key: 'search',
-          label: 'Search',
+          label: GC.LABELS.TOOLBAR.SEARCH.BUTTON_LABEL,
           icon: <SearchOutlined />,
           variant: 'ghost',
           onClick: () => {
@@ -61,7 +61,7 @@ export const useGroupListConfig = ({
         },
         {
           key: 'filter',
-          label: 'Filter',
+          label: GC.LABELS.TOOLBAR.FILTER.BUTTON_LABEL,
           icon: <FilterOutlined />,
           variant: 'ghost',
           onClick: () => {
@@ -107,7 +107,7 @@ export const useGroupListConfig = ({
         },
         {
           key: 'manage-assignments',
-          label: 'Manage',
+          label: GC.LABELS.TOOLBAR.MANAGE.BUTTON_LABEL,
           icon: <SettingOutlined />,
           variant: 'default',
           disabled: selectedGroupsCount !== 1,

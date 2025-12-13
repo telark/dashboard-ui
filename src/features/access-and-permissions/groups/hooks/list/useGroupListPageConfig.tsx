@@ -140,7 +140,7 @@ export const useGroupListPageConfig = ({
     if (viewMode === 'categories') {
       return [
         { label: GC.LABELS.BREADCRUMBS.GROUPS, onClick: () => setViewMode('groups') },
-        { label: 'Categories' },
+        { label: GC.LABELS.BREADCRUMBS.CATEGORIES },
       ];
     }
     return [];
@@ -209,7 +209,7 @@ export const useGroupListPageConfig = ({
                 setCurrentPage(1);
               },
               pageSizeOptions: [10, 20, 50, 100],
-              showRowsLabel: 'Show rows',
+              showRowsLabel: GC.LABELS.PAGINATION.SHOW_ROWS,
             }
           : {
               currentPage: categoryCurrentPage,
@@ -221,7 +221,7 @@ export const useGroupListPageConfig = ({
                 setCategoryCurrentPage(1);
               },
               pageSizeOptions: [10, 20, 50, 100],
-              showRowsLabel: 'Show rows',
+              showRowsLabel: GC.LABELS.PAGINATION.SHOW_ROWS,
             },
       rowSelection:
         viewMode === 'groups'
@@ -245,7 +245,7 @@ export const useGroupListPageConfig = ({
       empty:
         viewMode === 'groups' ? (
           <Empty
-            description="No Groups Found"
+            description={GC.LABELS.EMPTY.NO_GROUPS_FOUND}
             image={
               <GroupIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />
             }

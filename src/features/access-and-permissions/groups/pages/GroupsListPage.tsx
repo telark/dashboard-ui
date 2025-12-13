@@ -146,7 +146,7 @@ const GroupsListPage: React.FC<GroupsListPageProps> = memo(
             action="delete"
             resourceName={resourceName}
             confirmText={GC.LABELS.ACTIONS.DELETE_MODAL_OK}
-            cancelText="Cancel"
+            cancelText={GC.LABELS.MODAL.CANCEL}
             loading={isDeleting}
             danger={true}
           />

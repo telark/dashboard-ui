@@ -5,6 +5,7 @@ import { Icons } from '../../../../../constants';
 import { useAttachMemberPanel } from '../../hooks';
 import MemberList from '../../components/display/member/MemberList';
 import type { Group } from '../../models';
+import { GROUPS_CONSTANTS as GC } from '../../constants';
 
 const UserIcon = Icons.User;
 
@@ -39,8 +40,8 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
     <SlideOutPanel
       open={open}
       onClose={onClose}
-      title="Assign Members"
-      subtitle={`Select members to assign to ${currentGroup.name}`}
+      title={GC.LABELS.PANELS.ASSIGN_MEMBERS.TITLE}
+      subtitle={GC.LABELS.PANELS.ASSIGN_MEMBERS.SUBTITLE(currentGroup.name)}
       formContent={
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
           <MemberList users={allUsers} loading={usersLoading} allUsers={allUsers} />
@@ -48,7 +49,7 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
       }
       onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
       onCancel={onClose}
-      submitButtonText="Assign Members"
+      submitButtonText={GC.LABELS.PANELS.ASSIGN_MEMBERS.SUBMIT_BUTTON}
       submitButtonIcon={<UserIcon size={16} />}
       loading={submitting}
       disabled={!hasChanges}

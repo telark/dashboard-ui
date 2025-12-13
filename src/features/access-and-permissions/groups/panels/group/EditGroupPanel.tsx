@@ -33,7 +33,7 @@ const EditGroupPanel: React.FC<GroupPanelProps> = ({ open, onClose, editingGroup
     <SlideOutPanel
       open={open}
       onClose={onClose}
-      title="Edit Group"
+      title={GC.LABELS.PANELS.EDIT.TITLE}
       formContent={
         <GroupFormFields
           nameValidator={nameValidator}
