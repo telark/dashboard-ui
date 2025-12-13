@@ -3,7 +3,11 @@ import { DEFAULT_COLORS } from '../../constants/shared/colors';
 import { CARD_STATES } from '../../constants/layout/cards';
 
 export const CapitalizeFirstLetter = (str: string) => {
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  if (!str) return str;
+  return str
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
 };
 
 export const getStatusStyle = (status: string) => {

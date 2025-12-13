@@ -55,9 +55,6 @@ export const useGroupListConfig = ({
           label: GC.LABELS.TOOLBAR.SEARCH.BUTTON_LABEL,
           icon: <SearchOutlined />,
           variant: 'ghost',
-          onClick: () => {
-            // TODO: Implement search functionality
-          },
         },
         {
           key: 'filter',

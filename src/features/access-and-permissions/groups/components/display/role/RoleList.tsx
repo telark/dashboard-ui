@@ -7,7 +7,7 @@ import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../../roles/constants';
 import { isRoleProtected, getRoleScopesContent } from '../../../../roles/utils';
 import { useRoleListScroll } from '../../../hooks';
-import { truncateText } from '../../../../../../utils/helpers/format';
+import { truncateText, CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
 import type { Role } from '../../../../roles/models';
 
 const RoleIcon = Icons.Role;
@@ -99,8 +99,12 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
                 <SelectableListItem
                   key={role.id}
                   value={role.id}
-                  name={role.name}
-                  description={role.description ? truncateText(role.description, 60) : undefined}
+                  name={CapitalizeFirstLetter(role.name)}
+                  description={
+                    role.description
+                      ? CapitalizeFirstLetter(truncateText(role.description, 100))
+                      : undefined
+                  }
                   customContent={scopesContent}
                   isProtected={isProtected}
                   protectionIcon={<RoleIcon />}
