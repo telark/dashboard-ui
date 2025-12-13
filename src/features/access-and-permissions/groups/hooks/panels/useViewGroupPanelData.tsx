@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ROLES_CONSTANTS as RPC } from '../../../roles/constants';
+import { DEFAULT_COLORS } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { UserDisplay } from '../../../../../components/display/users';
@@ -75,8 +75,8 @@ export const useViewGroupPanelData = ({
         value: (
           <RowTag
             text={categoryName}
-            background={RPC.COLORS.TYPE_CUSTOM_BG}
-            color={RPC.COLORS.TYPE_CUSTOM_TEXT}
+            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
             fontSize={12}
           />
         ),
@@ -84,7 +84,7 @@ export const useViewGroupPanelData = ({
       {
         label: 'Creation Date',
         value: (
-          <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F33' }}>
+          <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
             {group.creationDate ? <TimeAgo date={group.creationDate} /> : '—'}
           </span>
         ),
@@ -92,7 +92,7 @@ export const useViewGroupPanelData = ({
       {
         label: 'Last Update',
         value: (
-          <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F33' }}>
+          <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
             {group.lastUpdateDate ? <TimeAgo date={group.lastUpdateDate} /> : '—'}
           </span>
         ),
@@ -102,7 +102,7 @@ export const useViewGroupPanelData = ({
         value: createdByUser ? (
           <UserDisplay user={createdByUser} size="small" showBorder />
         ) : (
-          <span style={{ color: '#64748b' }}>—</span>
+          <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>
         ),
       },
       {
@@ -110,7 +110,7 @@ export const useViewGroupPanelData = ({
         value: lastUpdatedByUser ? (
           <UserDisplay user={lastUpdatedByUser} size="small" showBorder />
         ) : (
-          <span style={{ color: '#64748b' }}>—</span>
+          <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>
         ),
       },
     ];

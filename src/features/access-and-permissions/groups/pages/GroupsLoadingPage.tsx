@@ -1,12 +1,12 @@
 import React from 'react';
-import { SHARED_DETAILS_CONSTANTS } from '../../../../constants';
+import { SHARED_DETAILS_CONSTANTS, DEFAULT_COLORS } from '../../../../constants';
 import { FancySpinner } from '../../../../components/animation';
 
 const GroupsLoadingPage: React.FC = () => {
   return (
     <div
       style={{
-        background: '#fff',
+        background: DEFAULT_COLORS.BACKGROUND_WHITE,
         minHeight: 'calc(100vh - 60px)',
         padding: '48px 32px 32px',
         marginTop: '60px',

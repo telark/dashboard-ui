@@ -110,15 +110,6 @@ export const GROUPS_CONSTANTS = {
     },
     MODAL_WIDTH: 360,
   },
-  COLORS: {
-    TEXT_PRIMARY: '#0B1F33',
-    TEXT_MUTED: '#64748b',
-    CHIP_BLUE_BG: '#dbeafe',
-    CHIP_BLUE_TEXT: '#1e40af',
-    TYPE_CUSTOM_BG: '#f1f5f9',
-    TYPE_CUSTOM_TEXT: '#334155',
-    HEADER_BG: '#f8fafc',
-  },
   ERROR_MESSAGES: {
     CLIENT: {
       FETCH_GROUPS_FAILED: '[APIClient] Failed to fetch groups:',

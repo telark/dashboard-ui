@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icons } from '../../../../../constants';
+import { Icons, DEFAULT_COLORS } from '../../../../../constants';
 import ViewPanel from '../../../../../components/display/panels/view/ViewPanel';
 import { useViewGroupPanelData } from '../../hooks';
 import { GroupDeleteModal } from '../../components/delete';
@@ -38,7 +38,7 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({ open, onClose, group, o
         open={open}
         onClose={onClose}
         title="Group Details"
-        icon={<GroupIcon size={32} style={{ color: '#20C997' }} />}
+        icon={<GroupIcon size={32} style={{ color: DEFAULT_COLORS.SUCCESS }} />}
         name={group.name}
         description={group.description}
         avatars={avatars}

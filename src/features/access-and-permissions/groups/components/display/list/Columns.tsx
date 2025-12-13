@@ -1,4 +1,5 @@
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
+import { DEFAULT_COLORS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RPC } from '../../../../roles/constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
@@ -48,7 +49,7 @@ const Columns = (ctx: ColumnsContext): GeneratedColumn[] => {
         align: 'left',
         width: GC.SIZES.COLUMNS.NAME,
         render: (_: unknown, record: Group) => (
-          <span style={{ fontWeight: 700, color: RPC.COLORS.TEXT_PRIMARY }}>{record.name}</span>
+          <span style={{ fontWeight: 700, color: DEFAULT_COLORS.TEXT_PRIMARY }}>{record.name}</span>
         ),
       },
       ctx,
@@ -81,8 +82,8 @@ const Columns = (ctx: ColumnsContext): GeneratedColumn[] => {
           return (
             <RowTag
               text={categoryName}
-              background={RPC.COLORS.TYPE_CUSTOM_BG}
-              color={RPC.COLORS.TYPE_CUSTOM_TEXT}
+              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
               fontSize={RPC.SIZES.CHIP_FONT}
             />
           );
@@ -102,8 +103,8 @@ const Columns = (ctx: ColumnsContext): GeneratedColumn[] => {
           return (
             <RowTag
               text={memberText}
-              background={RPC.COLORS.TYPE_CUSTOM_BG}
-              color={RPC.COLORS.TYPE_CUSTOM_TEXT}
+              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
               fontSize={RPC.SIZES.CHIP_FONT}
             />
           );
@@ -122,7 +123,7 @@ const Columns = (ctx: ColumnsContext): GeneratedColumn[] => {
           try {
             return <TimeAgo date={value} />;
           } catch {
-            return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
+            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
           }
         },
       },
@@ -136,7 +137,7 @@ const Columns = (ctx: ColumnsContext): GeneratedColumn[] => {
         width: GC.SIZES.COLUMNS.LAST_UPDATE,
         render: (_: unknown, record: Group) => {
           if (!record.lastUpdateDate) {
-            return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
+            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
           }
           return <TimeAgo date={record.lastUpdateDate} />;
         },

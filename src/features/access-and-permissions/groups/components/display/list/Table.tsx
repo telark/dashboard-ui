@@ -7,6 +7,7 @@ import { selectGroupsCategories } from '../../../../categories/store/selectors/c
 import { deduplicateCategoriesByName } from '../../../../categories/utils/helpers';
 import ActionBar from '../../../../../../components/display/actions/ActionBar';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
+import { DEFAULT_COLORS } from '../../../../../../constants';
 
 type SortKey = 'name' | 'categoryID' | 'creationDate';
 
@@ -82,7 +83,7 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
   return (
     <div
       style={{
-        background: '#fff',
+        background: DEFAULT_COLORS.BACKGROUND_WHITE,
         borderRadius: 16,
         boxShadow: '0 10px 24px rgba(0,0,0,0.06)',
         padding: 16,

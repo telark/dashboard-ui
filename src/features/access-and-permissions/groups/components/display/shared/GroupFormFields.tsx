@@ -3,6 +3,7 @@ import { Form, Input } from 'antd';
 import LabeledInput from '../../../../../../components/display/inputs/LabeledInput';
 import Section from '../../../../../../components/display/sections/Section';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
+import { DEFAULT_COLORS } from '../../../../../../constants';
 import UsersSelect from './UsersSelect';
 import CategorySelect from './CategorySelect';
 import type { AssignmentSelectOption } from '../../../../roles/models';
@@ -47,7 +48,7 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
                 style={{
                   height: 36,
                   borderRadius: 8,
-                  border: '1px solid #d9d9d9',
+                  border: `1px solid ${DEFAULT_COLORS.BORDER_DEFAULT}`,
                   fontSize: 14,
                   padding: '0 12px',
                 }}

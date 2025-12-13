@@ -1,9 +1,11 @@
+import { DEFAULT_COLORS } from '../../../../constants';
+
 export const ATTACHED_MEMBERS_CONSTANTS = {
   LIST: {
     EMPTY_STATE: {
       padding: '24px',
       textAlign: 'center' as const,
-      color: '#64748b',
+      color: DEFAULT_COLORS.TEXT_MUTED,
     },
     CONTAINER: {
       display: 'flex',
@@ -21,8 +23,8 @@ export const ATTACHED_MEMBERS_CONSTANTS = {
         display: 'flex',
         alignItems: 'center' as const,
         padding: '5px 14px',
-        background: '#f8fafc',
-        border: '1px solid #e2e8f0',
+        background: DEFAULT_COLORS.BACKGROUND_LIGHT,
+        border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
         borderRadius: 8,
         transition: 'all 0.2s ease',
         cursor: 'pointer' as const,
@@ -32,8 +34,8 @@ export const ATTACHED_MEMBERS_CONSTANTS = {
         boxSizing: 'border-box' as const,
       },
       HOVER: {
-        background: '#f1f5f9',
-        borderColor: '#cbd5e1',
+        background: DEFAULT_COLORS.BACKGROUND_HOVER,
+        borderColor: DEFAULT_COLORS.BORDER_HOVER,
       },
     },
     MEMBER_CONTENT: {
@@ -55,13 +57,13 @@ export const ATTACHED_MEMBERS_CONSTANTS = {
     },
     MEMBER_NAME: {
       fontSize: 14,
-      color: '#0B1F33',
+      color: DEFAULT_COLORS.TEXT_PRIMARY,
       fontWeight: 500,
       lineHeight: 1.4,
     },
     MEMBER_EMAIL: {
       fontSize: 12,
-      color: '#64748b',
+      color: DEFAULT_COLORS.TEXT_MUTED,
       lineHeight: 1.3,
     },
   },

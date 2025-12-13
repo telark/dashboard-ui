@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Empty } from 'antd';
 import type { PageLayoutConfig } from '../../../../../interfaces/layout/page';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
+import { DEFAULT_COLORS } from '../../../../../constants';
 import { Icons } from '../../../../../constants';
 import { selectGroupsCategories } from '../../../categories/store/selectors/categorySelectors';
 import Columns from '../../components/display/list/Columns';
@@ -160,7 +161,7 @@ export const useGroupListPageConfig = ({
                 key: 'actions',
                 align: 'right' as const,
                 width: 120,
-                onHeaderCell: () => ({ style: { background: '#fff' } }),
+                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
                 render: (_: unknown, record: Group | Category) =>
                   viewMode === 'groups' ? (
                     <GroupActionsColumn record={record as Group} onEdit={handleEditClick} />
@@ -174,7 +175,7 @@ export const useGroupListPageConfig = ({
                 key: 'actions',
                 align: 'right' as const,
                 width: 120,
-                onHeaderCell: () => ({ style: { background: '#fff' } }),
+                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
                 render: (_: unknown, record: Group | Category) => (
                   <CategoryActionsColumn
                     record={record as Category}
@@ -245,7 +246,9 @@ export const useGroupListPageConfig = ({
         viewMode === 'groups' ? (
           <Empty
             description="No Groups Found"
-            image={<GroupIcon size={64} style={{ color: '#d1d5db', marginTop: 22 }} />}
+            image={
+              <GroupIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />
+            }
           />
         ) : undefined,
     }),
