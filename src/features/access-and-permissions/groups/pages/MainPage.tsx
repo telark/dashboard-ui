@@ -1,10 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { SHARED_DETAILS_CONSTANTS } from '../../../../constants';
-import { GROUPS_CONSTANTS as GC } from '../constants';
-import { PageLayout } from '../../../../components/display/views';
-import EmptyState from '../../../../components/display/views/EmptyState';
-import { FancySpinner } from '../../../../components/animation';
-import { Icons } from '../../../../constants';
 import {
   useFetchGroups,
   useGroupListState,
@@ -16,19 +10,11 @@ import {
 } from '../hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
-import {
-  CreateGroupPanel,
-  EditGroupPanel,
-  ViewGroupPanel,
-  AttachRolePanel,
-  AttachMemberPanel,
-} from '../panels';
-import ActionConfirmModal from '../../../../components/display/modal/confirm/ActionConfirmModal';
-import { FilterPanel } from '../../../../components/display/panels/filter';
-import { buildGroupFilterFields } from '../config/groupFilterConfig';
 import { applyGroupFilters, mapCategoriesToFilterOptions } from '../utils';
-
-const GroupIcon = Icons.Group;
+import GroupsErrorPage from './GroupsErrorPage';
+import GroupsLoadingPage from './GroupsLoadingPage';
+import GroupsEmptyPage from './GroupsEmptyPage';
+import GroupsListPage from './GroupsListPage';
 
 type ViewMode = 'groups' | 'categories';
 
@@ -177,120 +163,61 @@ const MainPage: React.FC = () => {
   const shouldShowEmpty = Array.isArray(groups) && groups.length === 0 && !error;
 
   if (error) {
-    return (
-      <div
-        style={{
-          background: '#fff',
-          minHeight: 'calc(100vh - 60px)',
-          padding: '48px 32px 32px',
-          marginTop: '60px',
-        }}
-      >
-        <div>Error: {error}</div>
-      </div>
-    );
+    return <GroupsErrorPage error={error} />;
   }
 
   if (shouldShowEmpty && viewMode === 'groups') {
     return (
-      <>
-        <EmptyState
-          title={GC.LABELS.MESSAGES.NO_GROUPS_TITLE}
-          description={GC.LABELS.MESSAGES.NO_GROUPS_DESCRIPTION}
-          buttonText={GC.LABELS.FORM.BUTTON_TEXT}
-          buttonIcon={<GroupIcon size={16} />}
-          onButtonClick={openCreatePanel}
-          icon={<GroupIcon size={32} />}
-        />
-        {createPanelOpen && (
-          <CreateGroupPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />
-        )}
-      </>
+      <GroupsEmptyPage
+        createPanelOpen={createPanelOpen}
+        onCloseCreatePanel={closeCreatePanel}
+        onCreateGroupClick={openCreatePanel}
+        createForm={createForm}
+      />
     );
   }
 
   if (isFetching) {
-    return (
-      <div
-        style={{
-          background: '#fff',
-          minHeight: 'calc(100vh - 60px)',
-          padding: '48px 32px 32px',
-          marginTop: '60px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <FancySpinner label={SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING} showLabel={true} />
-      </div>
-    );
+    return <GroupsLoadingPage />;
   }
 
   return (
-    <div style={{ background: '#fff', minHeight: '100vh' }}>
-      <PageLayout config={pageConfig} />
-      {createPanelOpen && (
-        <CreateGroupPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />
-      )}
-      {editPanelOpen && editingGroup && (
-        <EditGroupPanel
-          open={editPanelOpen}
-          onClose={closeEditPanel}
-          editingGroup={editingGroup}
-          form={editForm}
-        />
-      )}
-      {viewPanelOpen && viewingGroup && (
-        <ViewGroupPanel
-          open={viewPanelOpen}
-          onClose={closeViewPanel}
-          group={viewingGroup}
-          onEdit={() => {
-            closeViewPanel();
-            setTimeout(() => {
-              openEditPanel(viewingGroup);
-            }, 150);
-          }}
-        />
-      )}
-      {attachRolePanelOpen && attachingRoleGroup && (
-        <AttachRolePanel
-          open={attachRolePanelOpen}
-          onClose={closeAttachRolePanel}
-          group={attachingRoleGroup}
-        />
-      )}
-      {attachMemberPanelOpen && attachingMemberGroup && (
-        <AttachMemberPanel
-          open={attachMemberPanelOpen}
-          onClose={closeAttachMemberPanel}
-          group={attachingMemberGroup}
-        />
-      )}
-      <FilterPanel
-        open={filterPanelOpen}
-        onClose={closeFilterPanel}
-        fields={buildGroupFilterFields(categoryOptions)}
-        onFilterChange={handleFilterChange}
-        onApply={handleFilterApply}
-        onReset={handleFilterReset}
-      />
-      {bulkDeleteModalOpen && (
-        <ActionConfirmModal
-          open={bulkDeleteModalOpen}
-          onClose={() => setBulkDeleteModalOpen(false)}
-          onConfirm={handleConfirmBulkDelete}
-          title={GC.LABELS.ACTIONS.BULK_DELETE_MODAL_TITLE}
-          action="delete"
-          resourceName={`${selectedCount} group${selectedCount > 1 ? 's' : ''}`}
-          confirmText={GC.LABELS.ACTIONS.DELETE_MODAL_OK}
-          cancelText="Cancel"
-          loading={isDeleting}
-          danger={true}
-        />
-      )}
-    </div>
+    <GroupsListPage
+      pageConfig={pageConfig}
+      createPanelOpen={createPanelOpen}
+      editPanelOpen={editPanelOpen}
+      viewPanelOpen={viewPanelOpen}
+      attachRolePanelOpen={attachRolePanelOpen}
+      attachMemberPanelOpen={attachMemberPanelOpen}
+      viewingGroup={viewingGroup}
+      editingGroup={editingGroup}
+      attachingRoleGroup={attachingRoleGroup}
+      attachingMemberGroup={attachingMemberGroup}
+      createForm={createForm}
+      editForm={editForm}
+      filterPanelOpen={filterPanelOpen}
+      categoryOptions={categoryOptions}
+      bulkDeleteModalOpen={bulkDeleteModalOpen}
+      selectedCount={selectedCount}
+      isDeleting={isDeleting}
+      onCloseCreatePanel={closeCreatePanel}
+      onCloseEditPanel={closeEditPanel}
+      onCloseViewPanel={closeViewPanel}
+      onCloseAttachRolePanel={closeAttachRolePanel}
+      onCloseAttachMemberPanel={closeAttachMemberPanel}
+      onCloseFilterPanel={closeFilterPanel}
+      onCloseBulkDeleteModal={() => setBulkDeleteModalOpen(false)}
+      onConfirmBulkDelete={handleConfirmBulkDelete}
+      onViewPanelEdit={(group) => {
+        closeViewPanel();
+        setTimeout(() => {
+          openEditPanel(group);
+        }, 150);
+      }}
+      handleFilterChange={handleFilterChange}
+      handleFilterApply={handleFilterApply}
+      handleFilterReset={handleFilterReset}
+    />
   );
 };
 
