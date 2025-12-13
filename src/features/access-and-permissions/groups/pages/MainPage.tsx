@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   useFetchGroups,
   useGroupListState,
@@ -11,6 +11,7 @@ import {
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { applyGroupFilters, mapCategoriesToFilterOptions } from '../utils';
+import type { Group } from '../models';
 import GroupsErrorPage from './GroupsErrorPage';
 import GroupsLoadingPage from './GroupsLoadingPage';
 import GroupsEmptyPage from './GroupsEmptyPage';
@@ -100,18 +101,18 @@ const MainPage: React.FC = () => {
     setSelectedGroups,
   });
 
-  const handleBulkDeleteClick = () => {
+  const handleBulkDeleteClick = useCallback(() => {
     if (selectedCount >= 2) {
       setBulkDeleteModalOpen(true);
     }
-  };
+  }, [selectedCount]);
 
-  const handleConfirmBulkDelete = async () => {
+  const handleConfirmBulkDelete = useCallback(async () => {
     await handleBulkDelete();
     setBulkDeleteModalOpen(false);
-  };
+  }, [handleBulkDelete]);
 
-  const handleAttachRoleClick = () => {
+  const handleAttachRoleClick = useCallback(() => {
     if (selectedCount === 1 && filteredGroups) {
       const selectedId = selectedGroups[0] as string;
       const selectedGroup = filteredGroups.find((g) => g.id === selectedId);
@@ -119,9 +120,9 @@ const MainPage: React.FC = () => {
         openAttachRolePanel(selectedGroup);
       }
     }
-  };
+  }, [selectedCount, filteredGroups, selectedGroups, openAttachRolePanel]);
 
-  const handleAttachMemberClick = () => {
+  const handleAttachMemberClick = useCallback(() => {
     if (selectedCount === 1 && filteredGroups) {
       const selectedId = selectedGroups[0] as string;
       const selectedGroup = filteredGroups.find((g) => g.id === selectedId);
@@ -129,7 +130,31 @@ const MainPage: React.FC = () => {
         openAttachMemberPanel(selectedGroup);
       }
     }
-  };
+  }, [selectedCount, filteredGroups, selectedGroups, openAttachMemberPanel]);
+
+  const handleCloseBulkDeleteModal = useCallback(() => {
+    setBulkDeleteModalOpen(false);
+  }, []);
+
+  const handleViewPanelEdit = useCallback(
+    (group: Group) => {
+      closeViewPanel();
+      setTimeout(() => {
+        openEditPanel(group);
+      }, 150);
+    },
+    [closeViewPanel, openEditPanel],
+  );
+
+  const isFetching = useMemo(
+    () => groups === undefined || loading || categoriesLoading,
+    [groups, loading, categoriesLoading],
+  );
+
+  const shouldShowEmpty = useMemo(
+    () => Array.isArray(groups) && groups.length === 0 && !error,
+    [groups, error],
+  );
 
   const pageConfig = useGroupListPageConfig({
     viewMode,
@@ -158,9 +183,6 @@ const MainPage: React.FC = () => {
     onSearchChange: setSearchTerm,
     onSearchSubmit: undefined,
   });
-
-  const isFetching = groups === undefined || loading || categoriesLoading;
-  const shouldShowEmpty = Array.isArray(groups) && groups.length === 0 && !error;
 
   if (error) {
     return <GroupsErrorPage error={error} />;
@@ -206,14 +228,9 @@ const MainPage: React.FC = () => {
       onCloseAttachRolePanel={closeAttachRolePanel}
       onCloseAttachMemberPanel={closeAttachMemberPanel}
       onCloseFilterPanel={closeFilterPanel}
-      onCloseBulkDeleteModal={() => setBulkDeleteModalOpen(false)}
+      onCloseBulkDeleteModal={handleCloseBulkDeleteModal}
       onConfirmBulkDelete={handleConfirmBulkDelete}
-      onViewPanelEdit={(group) => {
-        closeViewPanel();
-        setTimeout(() => {
-          openEditPanel(group);
-        }, 150);
-      }}
+      onViewPanelEdit={handleViewPanelEdit}
       handleFilterChange={handleFilterChange}
       handleFilterApply={handleFilterApply}
       handleFilterReset={handleFilterReset}

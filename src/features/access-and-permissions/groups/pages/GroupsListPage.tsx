@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { PageLayout } from '../../../../components/display/views';
 import {
   CreateGroupPanel,
@@ -48,97 +48,113 @@ interface GroupsListPageProps {
   handleFilterReset: () => void;
 }
 
-const GroupsListPage: React.FC<GroupsListPageProps> = ({
-  pageConfig,
-  createPanelOpen,
-  editPanelOpen,
-  viewPanelOpen,
-  attachRolePanelOpen,
-  attachMemberPanelOpen,
-  viewingGroup,
-  editingGroup,
-  attachingRoleGroup,
-  attachingMemberGroup,
-  createForm,
-  editForm,
-  filterPanelOpen,
-  categoryOptions,
-  bulkDeleteModalOpen,
-  selectedCount,
-  isDeleting,
-  onCloseCreatePanel,
-  onCloseEditPanel,
-  onCloseViewPanel,
-  onCloseAttachRolePanel,
-  onCloseAttachMemberPanel,
-  onCloseFilterPanel,
-  onCloseBulkDeleteModal,
-  onConfirmBulkDelete,
-  onViewPanelEdit,
-  handleFilterChange,
-  handleFilterApply,
-  handleFilterReset,
-}) => {
-  return (
-    <div style={{ background: '#fff', minHeight: '100vh' }}>
-      <PageLayout config={pageConfig} />
-      {createPanelOpen && (
-        <CreateGroupPanel open={createPanelOpen} onClose={onCloseCreatePanel} form={createForm} />
-      )}
-      {editPanelOpen && editingGroup && (
-        <EditGroupPanel
-          open={editPanelOpen}
-          onClose={onCloseEditPanel}
-          editingGroup={editingGroup}
-          form={editForm}
+const GroupsListPage: React.FC<GroupsListPageProps> = memo(
+  ({
+    pageConfig,
+    createPanelOpen,
+    editPanelOpen,
+    viewPanelOpen,
+    attachRolePanelOpen,
+    attachMemberPanelOpen,
+    viewingGroup,
+    editingGroup,
+    attachingRoleGroup,
+    attachingMemberGroup,
+    createForm,
+    editForm,
+    filterPanelOpen,
+    categoryOptions,
+    bulkDeleteModalOpen,
+    selectedCount,
+    isDeleting,
+    onCloseCreatePanel,
+    onCloseEditPanel,
+    onCloseViewPanel,
+    onCloseAttachRolePanel,
+    onCloseAttachMemberPanel,
+    onCloseFilterPanel,
+    onCloseBulkDeleteModal,
+    onConfirmBulkDelete,
+    onViewPanelEdit,
+    handleFilterChange,
+    handleFilterApply,
+    handleFilterReset,
+  }) => {
+    const filterFields = useMemo(() => buildGroupFilterFields(categoryOptions), [categoryOptions]);
+
+    const resourceName = useMemo(
+      () => `${selectedCount} group${selectedCount > 1 ? 's' : ''}`,
+      [selectedCount],
+    );
+
+    const handleViewPanelEditClick = useMemo(
+      () => (viewingGroup ? () => onViewPanelEdit(viewingGroup) : undefined),
+      [viewingGroup, onViewPanelEdit],
+    );
+
+    return (
+      <div style={{ background: '#fff', minHeight: '100vh' }}>
+        <PageLayout config={pageConfig} />
+        {createPanelOpen && (
+          <CreateGroupPanel open={createPanelOpen} onClose={onCloseCreatePanel} form={createForm} />
+        )}
+        {editPanelOpen && editingGroup && (
+          <EditGroupPanel
+            open={editPanelOpen}
+            onClose={onCloseEditPanel}
+            editingGroup={editingGroup}
+            form={editForm}
+          />
+        )}
+        {viewPanelOpen && viewingGroup && (
+          <ViewGroupPanel
+            open={viewPanelOpen}
+            onClose={onCloseViewPanel}
+            group={viewingGroup}
+            onEdit={handleViewPanelEditClick}
+          />
+        )}
+        {attachRolePanelOpen && attachingRoleGroup && (
+          <AttachRolePanel
+            open={attachRolePanelOpen}
+            onClose={onCloseAttachRolePanel}
+            group={attachingRoleGroup}
+          />
+        )}
+        {attachMemberPanelOpen && attachingMemberGroup && (
+          <AttachMemberPanel
+            open={attachMemberPanelOpen}
+            onClose={onCloseAttachMemberPanel}
+            group={attachingMemberGroup}
+          />
+        )}
+        <FilterPanel
+          open={filterPanelOpen}
+          onClose={onCloseFilterPanel}
+          fields={filterFields}
+          onFilterChange={handleFilterChange}
+          onApply={handleFilterApply}
+          onReset={handleFilterReset}
         />
-      )}
-      {viewPanelOpen && viewingGroup && (
-        <ViewGroupPanel
-          open={viewPanelOpen}
-          onClose={onCloseViewPanel}
-          group={viewingGroup}
-          onEdit={() => onViewPanelEdit(viewingGroup)}
-        />
-      )}
-      {attachRolePanelOpen && attachingRoleGroup && (
-        <AttachRolePanel
-          open={attachRolePanelOpen}
-          onClose={onCloseAttachRolePanel}
-          group={attachingRoleGroup}
-        />
-      )}
-      {attachMemberPanelOpen && attachingMemberGroup && (
-        <AttachMemberPanel
-          open={attachMemberPanelOpen}
-          onClose={onCloseAttachMemberPanel}
-          group={attachingMemberGroup}
-        />
-      )}
-      <FilterPanel
-        open={filterPanelOpen}
-        onClose={onCloseFilterPanel}
-        fields={buildGroupFilterFields(categoryOptions)}
-        onFilterChange={handleFilterChange}
-        onApply={handleFilterApply}
-        onReset={handleFilterReset}
-      />
-      {bulkDeleteModalOpen && (
-        <ActionConfirmModal
-          open={bulkDeleteModalOpen}
-          onClose={onCloseBulkDeleteModal}
-          onConfirm={onConfirmBulkDelete}
-          title={GC.LABELS.ACTIONS.BULK_DELETE_MODAL_TITLE}
-          action="delete"
-          resourceName={`${selectedCount} group${selectedCount > 1 ? 's' : ''}`}
-          confirmText={GC.LABELS.ACTIONS.DELETE_MODAL_OK}
-          cancelText="Cancel"
-          loading={isDeleting}
-          danger={true}
-        />
-      )}
-    </div>
-  );
-};
+        {bulkDeleteModalOpen && (
+          <ActionConfirmModal
+            open={bulkDeleteModalOpen}
+            onClose={onCloseBulkDeleteModal}
+            onConfirm={onConfirmBulkDelete}
+            title={GC.LABELS.ACTIONS.BULK_DELETE_MODAL_TITLE}
+            action="delete"
+            resourceName={resourceName}
+            confirmText={GC.LABELS.ACTIONS.DELETE_MODAL_OK}
+            cancelText="Cancel"
+            loading={isDeleting}
+            danger={true}
+          />
+        )}
+      </div>
+    );
+  },
+);
+
+GroupsListPage.displayName = 'GroupsListPage';
 
 export default GroupsListPage;

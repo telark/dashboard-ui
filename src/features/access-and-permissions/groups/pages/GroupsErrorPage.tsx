@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 interface GroupsErrorPageProps {
   error: string;
 }
 
-const GroupsErrorPage: React.FC<GroupsErrorPageProps> = ({ error }) => {
+const GroupsErrorPage: React.FC<GroupsErrorPageProps> = memo(({ error }) => {
   return (
     <div
       style={{
@@ -17,6 +17,8 @@ const GroupsErrorPage: React.FC<GroupsErrorPageProps> = ({ error }) => {
       <div>Error: {error}</div>
     </div>
   );
-};
+});
+
+GroupsErrorPage.displayName = 'GroupsErrorPage';
 
 export default GroupsErrorPage;
