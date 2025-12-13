@@ -1,10 +1,12 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Checkbox, Form } from 'antd';
 import { ScrollIndicator } from '../../../../../../components/display/indicators';
 import { SelectableListItem } from '../../../../../../components/display/list';
 import { GROUPS_CONSTANTS as GC, ATTACHED_ROLES_CONSTANTS as ARC } from '../../../constants';
 import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../../roles/constants';
+import { isRoleProtected, getRoleScopesContent } from '../../../../roles/utils';
+import { useRoleListScroll } from '../../../hooks';
 import { truncateText } from '../../../../../../utils/helpers/format';
 import type { Role } from '../../../../roles/models';
 
@@ -21,9 +23,6 @@ interface RoleListProps {
   allRoles?: Role[];
 }
 
-const PAGE_SIZE = 11;
-const MAX_HEIGHT = `${PAGE_SIZE * 56}px`; // 48px minHeight + 8px gap per item
-
 const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
   const form = Form.useFormInstance();
   const watchedSelectedRoles = Form.useWatch('assignedRolesIDs', form);
@@ -32,9 +31,16 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
     [watchedSelectedRoles],
   );
 
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
-  const isScrollable = useMemo(() => (roles?.length || 0) > PAGE_SIZE, [roles]);
+  const {
+    scrollContainerRef,
+    setShowScrollIndicator,
+    isScrollable,
+    containerClassName,
+    containerStyle,
+    wrapperStyle,
+  } = useRoleListScroll({
+    itemsCount: roles?.length,
+  });
 
   const handleChange = useCallback(
     (checkedValues: string[]) => {
@@ -70,38 +76,24 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
         onChange={handleChange}
         style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
       >
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            paddingBottom: isScrollable && showScrollIndicator ? 24 : 0,
-          }}
-        >
+        <div style={wrapperStyle}>
           <div
             ref={scrollContainerRef}
-            className={`role-list-container ${isScrollable ? 'role-list-scroll' : ''}`}
+            className={containerClassName}
             style={{
               ...ARC.LIST.CONTAINER,
-              maxHeight: isScrollable ? MAX_HEIGHT : 'auto',
-              height: isScrollable ? MAX_HEIGHT : 'auto',
-              overflowY: isScrollable ? 'auto' : 'visible',
+              ...containerStyle,
             }}
           >
             {roles.map((role) => {
-              const isProtected =
-                role.protection?.preventDeletion === true &&
-                role.protection?.preventModification === true;
+              const isProtected = isRoleProtected(role);
 
-              const scopesContent =
-                role.scopesAndPermissions && role.scopesAndPermissions.length > 0 ? (
-                  <div style={ARC.LIST.ROLE_SCOPES}>
-                    {role.scopesAndPermissions.map((scope, index) => (
-                      <span key={`${scope.scope}-${index}`} style={ARC.LIST.SCOPE_ITEM}>
-                        {getScopeLabel(scope.scope)}: {scope.level}
-                      </span>
-                    ))}
-                  </div>
-                ) : null;
+              const scopesContent = getRoleScopesContent(role, {
+                scopesAndPermissions: role.scopesAndPermissions || [],
+                getScopeLabel,
+                scopesContainerStyle: ARC.LIST.ROLE_SCOPES,
+                scopeItemStyle: ARC.LIST.SCOPE_ITEM,
+              });
 
               return (
                 <SelectableListItem

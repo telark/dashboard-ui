@@ -30,3 +30,7 @@ export { useRoleCategoryOptions } from './categories/useRoleCategoryOptions';
 // Filter hooks
 export { useRoleTypeFilter } from './filter/useRoleTypeFilter';
 export { useGroupFilters } from './filter/useGroupFilters';
+
+// Scroll hooks
+export { useRoleListScroll } from './scroll/useRoleListScroll';
+export type { UseRoleListScrollOptions, UseRoleListScrollReturn } from './scroll/useRoleListScroll';

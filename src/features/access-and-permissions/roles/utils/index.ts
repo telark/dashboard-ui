@@ -10,3 +10,4 @@ export * from './validity/builders';
 export * from './validity/format';
 export * from './initialization/builtInRoles';
 export * from './protection/flags';
+export * from './protection/scopesDisplay';
