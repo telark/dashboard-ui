@@ -7,7 +7,6 @@ const USER_SORT_FIELDS: SortFieldConfig<User>[] = [
   { key: 'username', type: 'string' },
   { key: 'fullname', type: 'string' },
   { key: 'email', type: 'string' },
-  { key: 'roleID', type: 'string' },
   { key: 'creationDate', type: 'date' },
 ];
 

@@ -6,6 +6,7 @@ import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/tabl
 import type { User } from '../../../models';
 import UserAvatar from '../../../../../../components/display/avatars/UserAvatar';
 import { AiOutlineUser, AiOutlineMail, AiOutlineTag, AiOutlineCalendar } from 'react-icons/ai';
+import React from 'react';
 
 const Columns = (ctx: GenerateColumnCtx) => {
   const cols = [
@@ -52,18 +53,37 @@ const Columns = (ctx: GenerateColumnCtx) => {
     ),
     generateColumn(
       {
-        key: UC.KEYS.ROLE,
-        label: UC.LABELS.COLUMNS.ROLE,
+        key: UC.KEYS.ROLES,
+        label: UC.LABELS.COLUMNS.ROLES,
         icon: <AiOutlineTag />,
         width: UC.SIZES.COLUMNS.ROLE,
-        render: (_: unknown, record: User) => (
-          <RowTag
-            text={record.roleID}
-            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-            fontSize={UC.SIZES.CHIP_FONT}
-          />
-        ),
+        render: (_: unknown, record: User) => {
+          const roles = record.assignedRolesIDs || [];
+          if (roles.length === 0) {
+            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12 }}>—</span>;
+          }
+          return (
+            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+              {roles.slice(0, 2).map((roleId) => (
+                <RowTag
+                  key={roleId}
+                  text={roleId}
+                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                  color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                  fontSize={UC.SIZES.CHIP_FONT}
+                />
+              ))}
+              {roles.length > 2 && (
+                <RowTag
+                  text={`+${roles.length - 2}`}
+                  background={DEFAULT_COLORS.BACKGROUND_HOVER}
+                  color={DEFAULT_COLORS.TEXT_MUTED}
+                  fontSize={UC.SIZES.CHIP_FONT}
+                />
+              )}
+            </div>
+          );
+        },
       },
       ctx,
     ),

@@ -39,6 +39,10 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({ open, onClose, user, onEd
 
   const details = useMemo<ViewDetailRow[]>(() => {
     if (!user) return [];
+
+    const roles = user.assignedRolesIDs || [];
+    const groups = user.assignedGroupsIDs || [];
+
     return [
       {
         label: UC.LABELS.VIEW_LABELS.USERNAME,
@@ -49,21 +53,29 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({ open, onClose, user, onEd
         ),
       },
       {
-        label: UC.LABELS.VIEW_LABELS.ROLE_ID,
-        value: (
-          <RowTag
-            text={user.roleID}
-            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-            fontSize={12}
-          />
-        ),
+        label: UC.LABELS.VIEW_LABELS.ROLES,
+        value:
+          roles.length > 0 ? (
+            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+              {roles.map((id) => (
+                <RowTag
+                  key={id}
+                  text={id}
+                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                  color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                  fontSize={12}
+                />
+              ))}
+            </div>
+          ) : (
+            <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 14 }}>—</span>
+          ),
       },
       {
-        label: UC.LABELS.VIEW_LABELS.GROUP_ID,
+        label: UC.LABELS.VIEW_LABELS.GROUPS,
         value: (
           <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-            {user.groupID || '—'}
+            {groups.length > 0 ? groups.join(', ') : '—'}
           </span>
         ),
       },

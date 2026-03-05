@@ -8,16 +8,23 @@ import { useFetchGroups } from '../../../groups/hooks';
 import type { User } from '../../models';
 import { USERS_CONSTANTS as UC } from '../../constants';
 
+const arraysEqual = (a: string[], b: string[]): boolean => {
+  if (a.length !== b.length) return false;
+  const sortedA = [...a].sort();
+  const sortedB = [...b].sort();
+  return sortedA.every((val, idx) => val === sortedB[idx]);
+};
+
 interface UseManageUserGroupPanelOptions {
   open: boolean;
   user: User | null;
   form: FormInstance;
   onClose: () => void;
-  currentSelectedGroup: string;
+  currentSelectedGroups: string[];
 }
 
 interface UseManageUserGroupPanelReturn {
-  initialSelectedGroup: string;
+  initialSelectedGroups: string[];
   hasChanges: boolean;
   groups: ReturnType<typeof useFetchGroups>['groups'];
   groupsLoading: boolean;
@@ -30,22 +37,22 @@ export const useManageUserGroupPanel = ({
   user,
   form,
   onClose,
-  currentSelectedGroup,
+  currentSelectedGroups,
 }: UseManageUserGroupPanelOptions): UseManageUserGroupPanelReturn => {
   const dispatch: AppDispatch = useDispatch();
   const { groups, loading: groupsLoading } = useFetchGroups();
 
-  const initialSelectedGroup = useMemo(() => user?.groupID ?? '', [user]);
+  const initialSelectedGroups = useMemo(() => user?.assignedGroupsIDs ?? [], [user]);
 
   useEffect(() => {
-    if (open && user) {
-      form.setFieldsValue({ groupID: user.groupID });
+    if (open && user && !groupsLoading && groups) {
+      form.setFieldsValue({ assignedGroupsIDs: user.assignedGroupsIDs ?? [] });
     }
-  }, [open, user, form]);
+  }, [open, user, groupsLoading, groups, form]);
 
   const hasChanges = useMemo(
-    () => currentSelectedGroup !== initialSelectedGroup,
-    [currentSelectedGroup, initialSelectedGroup],
+    () => !arraysEqual(currentSelectedGroups, initialSelectedGroups),
+    [currentSelectedGroups, initialSelectedGroups],
   );
 
   const handleSubmit = async (values: Record<string, unknown>) => {
@@ -53,7 +60,7 @@ export const useManageUserGroupPanel = ({
     try {
       const updatedUser: User = {
         ...user,
-        groupID: (values.groupID as string) || user.groupID,
+        assignedGroupsIDs: (values.assignedGroupsIDs as string[]) ?? [],
       };
       dispatch(updateUser(updatedUser));
       message.success(UC.LABELS.MESSAGES.GROUP_ASSIGNED(user.fullname || user.username));
@@ -65,7 +72,7 @@ export const useManageUserGroupPanel = ({
   };
 
   return {
-    initialSelectedGroup,
+    initialSelectedGroups,
     hasChanges,
     groups,
     groupsLoading,

@@ -45,7 +45,7 @@ const MainPage: React.FC = () => {
         (u: User) => u.username,
         (u: User) => u.fullname,
         (u: User) => u.email,
-        (u: User) => u.roleID,
+        (u: User) => (u.assignedRolesIDs || []).join(' '),
       ]),
     [users, searchTerm],
   );

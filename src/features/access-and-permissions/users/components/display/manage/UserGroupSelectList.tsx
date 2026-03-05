@@ -1,104 +1,107 @@
-import React from 'react';
-import { Form, Radio } from 'antd';
-import { DEFAULT_COLORS } from '../../../../../../constants';
+import React, { useCallback, useMemo } from 'react';
+import { Checkbox, Form } from 'antd';
 import { USERS_CONSTANTS as UC } from '../../../constants';
+import { DEFAULT_COLORS, Icons } from '../../../../../../constants';
+import { ATTACHED_MEMBERS_CONSTANTS as AMC } from '../../../../groups/constants';
 import { CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
 import type { Group } from '../../../../groups/models';
+
+const GroupIcon = Icons.Group;
 
 interface UserGroupSelectListProps {
   groups?: Group[];
   loading: boolean;
+  allGroups?: Group[];
 }
 
-const listContainerStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 8,
-  maxHeight: 'calc(100vh - 320px)',
-  overflowY: 'auto',
-  width: '100%',
-  boxSizing: 'border-box',
-};
+const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({
+  groups,
+  loading,
+  allGroups,
+}) => {
+  const form = Form.useFormInstance();
+  const watchedSelectedGroups = Form.useWatch('assignedGroupsIDs', form);
+  const currentSelectedGroups = useMemo(
+    () => (watchedSelectedGroups as string[]) || [],
+    [watchedSelectedGroups],
+  );
 
-const itemBaseStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'flex-start',
-  padding: '5px 14px',
-  background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-  border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-  borderRadius: 8,
-  transition: 'all 0.2s ease',
-  cursor: 'pointer',
-  minHeight: 48,
-  width: '100%',
-  boxSizing: 'border-box',
-};
+  const handleChange = useCallback(
+    (checkedValues: string[]) => {
+      if (!allGroups) {
+        form.setFieldsValue({ assignedGroupsIDs: checkedValues });
+        return;
+      }
 
-const emptyStateStyle: React.CSSProperties = {
-  padding: 24,
-  textAlign: 'center',
-  color: DEFAULT_COLORS.TEXT_MUTED,
-};
+      const filteredGroupIds = groups?.map((g) => g.id) || [];
+      const preservedSelections = currentSelectedGroups.filter(
+        (groupId) => !filteredGroupIds.includes(groupId),
+      );
 
-const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({ groups, loading }) => {
+      const merged = Array.from(new Set([...preservedSelections, ...checkedValues]));
+      form.setFieldsValue({ assignedGroupsIDs: merged });
+    },
+    [form, allGroups, groups, currentSelectedGroups],
+  );
+
   if (loading) {
-    return <div style={emptyStateStyle}>{UC.LABELS.MESSAGES.LOADING_GROUPS}</div>;
+    return <div style={AMC.LIST.EMPTY_STATE}>{UC.LABELS.MESSAGES.LOADING_GROUPS}</div>;
   }
 
   if (!groups || groups.length === 0) {
-    return <div style={emptyStateStyle}>{UC.LABELS.MESSAGES.NO_GROUPS_AVAILABLE}</div>;
+    return <div style={AMC.LIST.EMPTY_STATE}>{UC.LABELS.MESSAGES.NO_GROUPS_AVAILABLE}</div>;
   }
 
+  const filteredSelectedGroups = currentSelectedGroups.filter((gId) =>
+    groups.some((g) => g.id === gId),
+  );
+
   return (
-    <Form.Item name="groupID" style={{ margin: 0, width: '100%' }}>
-      <Radio.Group style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <div style={listContainerStyle}>
+    <Form.Item name="assignedGroupsIDs" style={{ margin: 0, width: '100%' }}>
+      <Checkbox.Group
+        style={{ width: '100%' }}
+        value={filteredSelectedGroups}
+        onChange={handleChange}
+      >
+        <div style={AMC.LIST.CONTAINER}>
           {groups.map((group) => (
             <div
               key={group.id}
-              style={itemBaseStyle}
+              style={AMC.LIST.ITEM.BASE}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = DEFAULT_COLORS.BACKGROUND_HOVER;
-                e.currentTarget.style.borderColor = DEFAULT_COLORS.BORDER_HOVER;
+                Object.assign(e.currentTarget.style, AMC.LIST.ITEM.HOVER);
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = DEFAULT_COLORS.BACKGROUND_LIGHT;
-                e.currentTarget.style.borderColor = DEFAULT_COLORS.BORDER_LIGHT;
+                e.currentTarget.style.background = AMC.LIST.ITEM.BASE.background;
+                e.currentTarget.style.borderColor = AMC.LIST.ITEM.BASE.border;
               }}
             >
-              <Radio value={group.id} style={{ margin: 0, width: '100%' }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
+              <Checkbox value={group.id} style={{ margin: 0 }}>
+                <div style={AMC.LIST.MEMBER_CONTENT}>
                   <div
                     style={{
-                      fontSize: 14,
-                      color: DEFAULT_COLORS.TEXT_PRIMARY,
-                      fontWeight: 500,
-                      lineHeight: 1.4,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: DEFAULT_COLORS.TEXT_MUTED,
                     }}
                   >
-                    {CapitalizeFirstLetter(group.name)}
+                    <GroupIcon size={28} />
                   </div>
-                  {group.description && (
-                    <div
-                      style={{
-                        fontSize: 12,
-                        color: DEFAULT_COLORS.TEXT_MUTED,
-                        marginTop: 2,
-                        lineHeight: 1.3,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {CapitalizeFirstLetter(group.description)}
-                    </div>
-                  )}
+                  <div style={AMC.LIST.MEMBER_INFO}>
+                    <div style={AMC.LIST.MEMBER_NAME}>{CapitalizeFirstLetter(group.name)}</div>
+                    {group.description && (
+                      <div style={AMC.LIST.MEMBER_EMAIL}>
+                        {CapitalizeFirstLetter(group.description)}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </Radio>
+              </Checkbox>
             </div>
           ))}
         </div>
-      </Radio.Group>
+      </Checkbox.Group>
     </Form.Item>
   );
 };

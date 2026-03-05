@@ -8,18 +8,26 @@ import { useRoles } from '../../../roles/hooks';
 import type { User } from '../../models';
 import { USERS_CONSTANTS as UC } from '../../constants';
 
+const arraysEqual = (a: string[], b: string[]): boolean => {
+  if (a.length !== b.length) return false;
+  const sortedA = [...a].sort();
+  const sortedB = [...b].sort();
+  return sortedA.every((val, idx) => val === sortedB[idx]);
+};
+
 interface UseManageUserRolePanelOptions {
   open: boolean;
   user: User | null;
   form: FormInstance;
   onClose: () => void;
-  currentSelectedRole: string;
+  currentSelectedRoles: string[];
 }
 
 interface UseManageUserRolePanelReturn {
-  initialSelectedRole: string;
+  initialSelectedRoles: string[];
   hasChanges: boolean;
-  roles: ReturnType<typeof useRoles>['roles'];
+  filteredRoles: ReturnType<typeof useRoles>['roles'];
+  allRoles: ReturnType<typeof useRoles>['roles'];
   rolesLoading: boolean;
   submitting: boolean;
   handleSubmit: (values: Record<string, unknown>) => Promise<void>;
@@ -30,22 +38,22 @@ export const useManageUserRolePanel = ({
   user,
   form,
   onClose,
-  currentSelectedRole,
+  currentSelectedRoles,
 }: UseManageUserRolePanelOptions): UseManageUserRolePanelReturn => {
   const dispatch: AppDispatch = useDispatch();
   const { roles, loading: rolesLoading } = useRoles();
 
-  const initialSelectedRole = useMemo(() => user?.roleID ?? '', [user]);
+  const initialSelectedRoles = useMemo(() => user?.assignedRolesIDs ?? [], [user]);
 
   useEffect(() => {
-    if (open && user) {
-      form.setFieldsValue({ roleID: user.roleID });
+    if (open && user && !rolesLoading && roles) {
+      form.setFieldsValue({ assignedRolesIDs: user.assignedRolesIDs ?? [] });
     }
-  }, [open, user, form]);
+  }, [open, user, rolesLoading, roles, form]);
 
   const hasChanges = useMemo(
-    () => currentSelectedRole !== initialSelectedRole,
-    [currentSelectedRole, initialSelectedRole],
+    () => !arraysEqual(currentSelectedRoles, initialSelectedRoles),
+    [currentSelectedRoles, initialSelectedRoles],
   );
 
   const handleSubmit = async (values: Record<string, unknown>) => {
@@ -53,7 +61,7 @@ export const useManageUserRolePanel = ({
     try {
       const updatedUser: User = {
         ...user,
-        roleID: (values.roleID as string) || user.roleID,
+        assignedRolesIDs: (values.assignedRolesIDs as string[]) ?? [],
       };
       dispatch(updateUser(updatedUser));
       message.success(UC.LABELS.MESSAGES.ROLE_ASSIGNED(user.fullname || user.username));
@@ -65,9 +73,10 @@ export const useManageUserRolePanel = ({
   };
 
   return {
-    initialSelectedRole,
+    initialSelectedRoles,
     hasChanges,
-    roles,
+    filteredRoles: roles,
+    allRoles: roles,
     rolesLoading,
     submitting: false,
     handleSubmit,

@@ -5,6 +5,7 @@ export interface UserAvatar {
 
 export interface UserStatus {
   phase: string;
+  lastLoginAt?: string;
 }
 
 export interface User {
@@ -12,21 +13,20 @@ export interface User {
   username: string;
   fullname: string;
   email: string;
-  roleID: string;
-  groupID: string;
+  assignedRolesIDs: string[];
+  assignedGroupsIDs: string[];
   creationDate: string;
   status: UserStatus;
   avatar?: UserAvatar;
 }
 
-// Form value types derived from User interface to avoid duplication
-export type UserFormBaseFields = Pick<User, 'username' | 'fullname' | 'email' | 'roleID'>;
+export type UserFormBaseFields = Pick<User, 'username' | 'fullname' | 'email'>;
 
-export type CreateUserFormValues = UserFormBaseFields &
-  Pick<User, 'groupID'> & {
-    avatar?: UserAvatar;
-    group?: string;
-  };
+export type CreateUserFormValues = UserFormBaseFields & {
+  avatar?: UserAvatar;
+  assignedRolesIDs?: string[];
+  assignedGroupsIDs?: string[];
+};
 
 export interface UsersState {
   users: User[];

@@ -21,11 +21,17 @@ const PANEL_WIDTH = 600;
 
 const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClose, user }) => {
   const [form] = Form.useForm();
-  const currentSelectedGroup = (Form.useWatch('groupID', form) as string) || '';
+  const currentSelectedGroups = (Form.useWatch('assignedGroupsIDs', form) as string[]) || [];
   const [searchTerm, setSearchTerm] = useState('');
 
-  const { initialSelectedGroup, hasChanges, groups, groupsLoading, submitting, handleSubmit } =
-    useManageUserGroupPanel({ open, user, form, onClose, currentSelectedGroup });
+  const {
+    initialSelectedGroups,
+    hasChanges,
+    groups,
+    groupsLoading,
+    submitting,
+    handleSubmit,
+  } = useManageUserGroupPanel({ open, user, form, onClose, currentSelectedGroups });
 
   const filteredGroups = useMemo(() => {
     if (!searchTerm) return groups;
@@ -56,7 +62,11 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
             placeholder={UC.LABELS.PANELS.MANAGE_GROUP.SEARCH_PLACEHOLDER}
             minWidth={300}
           />
-          <UserGroupSelectList groups={filteredGroups} loading={groupsLoading} />
+          <UserGroupSelectList
+            groups={filteredGroups}
+            loading={groupsLoading}
+            allGroups={groups}
+          />
         </div>
       }
       onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
@@ -66,7 +76,7 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
       loading={submitting}
       disabled={!hasChanges}
       form={form}
-      initialValues={{ groupID: initialSelectedGroup }}
+      initialValues={{ assignedGroupsIDs: initialSelectedGroups }}
     />
   );
 };

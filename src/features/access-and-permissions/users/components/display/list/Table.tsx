@@ -28,8 +28,8 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onView, onEdit, onUsersC
         case 'email':
           cmp = a.email.localeCompare(b.email);
           break;
-        case 'roleID':
-          cmp = a.roleID.localeCompare(b.roleID);
+        case 'assignedRolesIDs':
+          cmp = (a.assignedRolesIDs?.[0] ?? '').localeCompare(b.assignedRolesIDs?.[0] ?? '');
           break;
         case 'creationDate':
         default:

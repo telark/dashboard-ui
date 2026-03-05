@@ -27,8 +27,6 @@ export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUs
       username: editingUser.username,
       fullname: editingUser.fullname,
       email: editingUser.email,
-      roleID: editingUser.roleID,
-      groupID: editingUser.groupID,
       avatar: editingUser.avatar,
     };
   }, [editingUser]);
@@ -58,6 +56,9 @@ export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUs
           username: values.username as string,
           fullname: values.fullname as string,
           email: values.email as string,
+          // Preserve existing role/group assignments — managed via Manage panels
+          assignedRolesIDs: editingUser.assignedRolesIDs,
+          assignedGroupsIDs: editingUser.assignedGroupsIDs,
           avatar: (values.avatar as UserAvatar | undefined) ?? editingUser.avatar,
         };
         dispatch(updateUser(updated));

@@ -1,104 +1,127 @@
-import React from 'react';
-import { Form, Radio } from 'antd';
-import { DEFAULT_COLORS } from '../../../../../../constants';
+import React, { useCallback, useMemo } from 'react';
+import { Checkbox, Form } from 'antd';
+import { ScrollIndicator } from '../../../../../../components/display/indicators';
+import { SelectableListItem } from '../../../../../../components/display/list';
 import { USERS_CONSTANTS as UC } from '../../../constants';
-import { CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
+import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
+import { ROLES_CONSTANTS as RC } from '../../../../roles/constants';
+import { isRoleProtected, getRoleScopesContent } from '../../../../roles/utils';
+import { useRoleListScroll } from '../../../../groups/hooks/scroll/useRoleListScroll';
+import { truncateText, CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
+import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../groups/constants';
 import type { Role } from '../../../../roles/models';
+
+const RoleIcon = Icons.Role;
+
+const getScopeLabel = (scopeKey: string): string => {
+  const area = RC.SCOPE.DEFAULT_AREAS.find((a) => a.key === scopeKey);
+  return area?.label || scopeKey;
+};
 
 interface UserRoleSelectListProps {
   roles?: Role[];
   loading: boolean;
+  allRoles?: Role[];
 }
 
-const listContainerStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 8,
-  maxHeight: 'calc(100vh - 320px)',
-  overflowY: 'auto',
-  width: '100%',
-  boxSizing: 'border-box',
-};
+const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({ roles, loading, allRoles }) => {
+  const form = Form.useFormInstance();
+  const watchedSelectedRoles = Form.useWatch('assignedRolesIDs', form);
+  const currentSelectedRoles = useMemo(
+    () => (watchedSelectedRoles as string[]) || [],
+    [watchedSelectedRoles],
+  );
 
-const itemBaseStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'flex-start',
-  padding: '5px 14px',
-  background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-  border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-  borderRadius: 8,
-  transition: 'all 0.2s ease',
-  cursor: 'pointer',
-  minHeight: 48,
-  width: '100%',
-  boxSizing: 'border-box',
-};
+  const {
+    scrollContainerRef,
+    setShowScrollIndicator,
+    isScrollable,
+    containerClassName,
+    containerStyle,
+    wrapperStyle,
+  } = useRoleListScroll({ itemsCount: roles?.length });
 
-const emptyStateStyle: React.CSSProperties = {
-  padding: 24,
-  textAlign: 'center',
-  color: DEFAULT_COLORS.TEXT_MUTED,
-};
+  const handleChange = useCallback(
+    (checkedValues: string[]) => {
+      if (!allRoles || !roles) {
+        form.setFieldsValue({ assignedRolesIDs: checkedValues });
+        return;
+      }
 
-const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({ roles, loading }) => {
+      const roleIdsOnScreen = roles.map((r) => r.id);
+      const preservedSelections = currentSelectedRoles.filter(
+        (id) => !roleIdsOnScreen.includes(id),
+      );
+
+      form.setFieldsValue({
+        assignedRolesIDs: Array.from(new Set([...preservedSelections, ...checkedValues])),
+      });
+    },
+    [form, allRoles, roles, currentSelectedRoles],
+  );
+
   if (loading) {
-    return <div style={emptyStateStyle}>{UC.LABELS.MESSAGES.LOADING_ROLES}</div>;
+    return <div style={ARC.LIST.EMPTY_STATE}>{UC.LABELS.MESSAGES.LOADING_ROLES}</div>;
   }
 
   if (!roles || roles.length === 0) {
-    return <div style={emptyStateStyle}>{UC.LABELS.MESSAGES.NO_ROLES_AVAILABLE}</div>;
+    return <div style={ARC.LIST.EMPTY_STATE}>{UC.LABELS.MESSAGES.NO_ROLES_AVAILABLE}</div>;
   }
 
   return (
-    <Form.Item name="roleID" style={{ margin: 0, width: '100%' }}>
-      <Radio.Group style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <div style={listContainerStyle}>
-          {roles.map((role) => (
-            <div
-              key={role.id}
-              style={itemBaseStyle}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = DEFAULT_COLORS.BACKGROUND_HOVER;
-                e.currentTarget.style.borderColor = DEFAULT_COLORS.BORDER_HOVER;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = DEFAULT_COLORS.BACKGROUND_LIGHT;
-                e.currentTarget.style.borderColor = DEFAULT_COLORS.BORDER_LIGHT;
-              }}
-            >
-              <Radio value={role.id} style={{ margin: 0, width: '100%' }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div
-                    style={{
-                      fontSize: 14,
-                      color: DEFAULT_COLORS.TEXT_PRIMARY,
-                      fontWeight: 500,
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    {CapitalizeFirstLetter(role.name)}
-                  </div>
-                  {role.description && (
-                    <div
-                      style={{
-                        fontSize: 12,
-                        color: DEFAULT_COLORS.TEXT_MUTED,
-                        marginTop: 2,
-                        lineHeight: 1.3,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {CapitalizeFirstLetter(role.description)}
-                    </div>
-                  )}
-                </div>
-              </Radio>
-            </div>
-          ))}
+    <Form.Item name="assignedRolesIDs" style={{ margin: 0, width: '100%' }}>
+      <Checkbox.Group
+        value={currentSelectedRoles}
+        onChange={handleChange}
+        style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
+      >
+        <div style={wrapperStyle}>
+          <div
+            ref={scrollContainerRef}
+            className={containerClassName}
+            style={{ ...ARC.LIST.CONTAINER, ...containerStyle }}
+          >
+            {roles.map((role) => {
+              const isProtected = isRoleProtected(role);
+
+              const scopesContent = getRoleScopesContent(role, {
+                scopesAndPermissions: role.scopesAndPermissions || [],
+                getScopeLabel,
+                scopesContainerStyle: ARC.LIST.ROLE_SCOPES,
+                scopeItemStyle: ARC.LIST.SCOPE_ITEM,
+              });
+
+              return (
+                <SelectableListItem
+                  key={role.id}
+                  value={role.id}
+                  name={CapitalizeFirstLetter(role.name)}
+                  description={
+                    role.description
+                      ? CapitalizeFirstLetter(truncateText(role.description, 100))
+                      : undefined
+                  }
+                  customContent={scopesContent}
+                  isProtected={isProtected}
+                  protectionIcon={<RoleIcon />}
+                  protectionTooltip={ARC.TOOLTIPS.PROTECTED_ROLE}
+                  protectionIconColor={DEFAULT_COLORS.SUCCESS}
+                  protectionIconSize={18}
+                  itemStyles={{ base: ARC.LIST.ITEM.BASE, hover: ARC.LIST.ITEM.HOVER }}
+                  contentStyles={ARC.LIST.ROLE_CONTENT}
+                  nameStyles={ARC.LIST.ROLE_NAME}
+                  descriptionStyles={ARC.LIST.ROLE_DESCRIPTION}
+                />
+              );
+            })}
+          </div>
+          <ScrollIndicator
+            containerRef={scrollContainerRef}
+            isScrollable={isScrollable}
+            onVisibilityChange={setShowScrollIndicator}
+          />
         </div>
-      </Radio.Group>
+      </Checkbox.Group>
     </Form.Item>
   );
 };

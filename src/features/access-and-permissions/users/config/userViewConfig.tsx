@@ -7,6 +7,24 @@ import { DEFAULT_COLORS, Icons } from '../../../../constants';
 import { USERS_CONSTANTS as UC } from '../constants';
 
 export const createUserViewConfig = (user: User): DetailsViewConfig => {
+  const rolesTags =
+    user.assignedRolesIDs?.length > 0
+      ? user.assignedRolesIDs.map((id) => (
+          <StatusTag
+            key={id}
+            label={id}
+            icon={<AiOutlineTag />}
+            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+            borderColor={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+          />
+        ))
+      : '—';
+
+  const groupsTags =
+    user.assignedGroupsIDs?.length > 0
+      ? user.assignedGroupsIDs.join(', ')
+      : '—';
+
   return {
     fields: [
       {
@@ -31,23 +49,18 @@ export const createUserViewConfig = (user: User): DetailsViewConfig => {
         type: 'text',
       },
       {
-        key: 'roleID',
-        label: UC.LABELS.VIEW_LABELS.ROLE_ID,
+        key: 'assignedRolesIDs',
+        label: UC.LABELS.VIEW_LABELS.ROLES,
         value: (
-          <StatusTag
-            label={user.roleID}
-            icon={<AiOutlineTag />}
-            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-            borderColor={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-          />
+          <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>{rolesTags}</div>
         ),
         icon: <AiOutlineTag />,
         type: 'custom',
       },
       {
-        key: 'groupID',
-        label: UC.LABELS.VIEW_LABELS.GROUP_ID,
-        value: user.groupID,
+        key: 'assignedGroupsIDs',
+        label: UC.LABELS.VIEW_LABELS.GROUPS,
+        value: groupsTags,
         icon: <Icons.ViewFieldName />,
         type: 'text',
       },

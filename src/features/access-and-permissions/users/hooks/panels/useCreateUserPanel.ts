@@ -30,8 +30,8 @@ export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions)
           username: values.username as string,
           fullname: values.fullname as string,
           email: values.email as string,
-          roleID: '',
-          groupID: '',
+          assignedRolesIDs: [],
+          assignedGroupsIDs: [],
           avatar: values.avatar as UserAvatar | undefined,
         };
         await dispatch(createUserThunk(userData)).unwrap();
