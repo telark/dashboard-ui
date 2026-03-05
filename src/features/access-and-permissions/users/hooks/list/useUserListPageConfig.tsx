@@ -83,7 +83,7 @@ export const useUserListPageConfig = ({
       ],
       data: paginatedUsers,
       rowKey: (record: User) => record.id,
-      containerStyle: { paddingBottom: '48px' },
+      containerStyle: { marginTop: '0', paddingBottom: '48px' },
       pagination: {
         currentPage,
         pageSize,
