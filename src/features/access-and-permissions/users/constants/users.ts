@@ -20,11 +20,19 @@ export const USERS_CONSTANTS = {
       CREATED: (name: string) => `User "${name}" created`,
       UPDATED: (name: string) => `User "${name}" updated`,
       DELETED: (name: string) => `User "${name}" deleted`,
+      ROLE_ASSIGNED: (userName: string) => `Role assigned to "${userName}"`,
+      GROUP_ASSIGNED: (userName: string) => `Group assigned to "${userName}"`,
       CREATE_FAILED: 'Failed to create user',
       UPDATE_FAILED: 'Failed to update user',
       DELETE_FAILED: 'Failed to delete user',
+      ROLE_ASSIGN_FAILED: 'Failed to assign role',
+      GROUP_ASSIGN_FAILED: 'Failed to assign group',
       NO_USERS_TITLE: 'No users yet',
       NO_USERS_DESCRIPTION: 'Get started by adding your first user to the system.',
+      NO_ROLES_AVAILABLE: 'No roles available',
+      NO_GROUPS_AVAILABLE: 'No groups available',
+      LOADING_ROLES: 'Loading roles...',
+      LOADING_GROUPS: 'Loading groups...',
     },
     COLUMNS: {
       USERNAME: 'Username',
@@ -46,6 +54,8 @@ export const USERS_CONSTANTS = {
       VIEW: 'View',
       EDIT: 'Edit',
       DELETE: 'Delete',
+      MANAGE_ROLES: 'Manage Roles',
+      MANAGE_GROUPS: 'Manage Groups',
       DELETE_MODAL_TITLE: 'Delete User',
       DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
       DELETE_MODAL_OK: 'Delete',
@@ -88,6 +98,18 @@ export const USERS_CONSTANTS = {
         SUBTITLE: 'Add a new user to the system',
         SUBMIT_BUTTON: 'Create User',
       },
+      MANAGE_ROLE: {
+        TITLE: 'Manage Roles',
+        SUBTITLE: (userName: string) => `Assign a role to ${userName}`,
+        SUBMIT_BUTTON: 'Assign Role',
+        SEARCH_PLACEHOLDER: 'Search roles by name or description...',
+      },
+      MANAGE_GROUP: {
+        TITLE: 'Manage Groups',
+        SUBTITLE: (userName: string) => `Assign ${userName} to a group`,
+        SUBMIT_BUTTON: 'Assign Group',
+        SEARCH_PLACEHOLDER: 'Search groups by name or description...',
+      },
     },
     TOOLBAR: {
       SEARCH: {
@@ -96,6 +118,13 @@ export const USERS_CONSTANTS = {
       },
       CREATE: {
         BUTTON_LABEL: 'Add User',
+      },
+      MANAGE: {
+        BUTTON_LABEL: 'Manage',
+        ITEMS: {
+          MANAGE_ROLES: 'Manage Roles',
+          MANAGE_GROUPS: 'Manage Groups',
+        },
       },
     },
     EMPTY: {

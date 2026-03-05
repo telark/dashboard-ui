@@ -19,8 +19,12 @@ const MainPage: React.FC = () => {
     createPanelOpen,
     editPanelOpen,
     viewPanelOpen,
+    manageRolePanelOpen,
+    manageGroupPanelOpen,
     viewingUser,
     editingUser,
+    managingRoleUser,
+    managingGroupUser,
     createForm,
     editForm,
     openCreatePanel,
@@ -29,6 +33,10 @@ const MainPage: React.FC = () => {
     closeEditPanel,
     openViewPanel,
     closeViewPanel,
+    openManageRolePanel,
+    closeManageRolePanel,
+    openManageGroupPanel,
+    closeManageGroupPanel,
   } = useUserPanelState();
 
   const filteredUsers = useMemo(
@@ -53,7 +61,6 @@ const MainPage: React.FC = () => {
     handleSort,
     sortedUsers,
     paginatedUsers,
-    hasSelection,
   } = useUserListState(filteredUsers);
 
   const handleViewUser = useCallback((user: User) => openViewPanel(user), [openViewPanel]);
@@ -66,6 +73,22 @@ const MainPage: React.FC = () => {
     }
   }, [viewingUser, closeViewPanel, openEditPanel]);
 
+  const handleManageRolesClick = useCallback(() => {
+    if (selectedUsers.length === 1) {
+      const selectedId = selectedUsers[0] as string;
+      const selectedUser = filteredUsers.find((u) => u.id === selectedId);
+      if (selectedUser) openManageRolePanel(selectedUser);
+    }
+  }, [selectedUsers, filteredUsers, openManageRolePanel]);
+
+  const handleManageGroupsClick = useCallback(() => {
+    if (selectedUsers.length === 1) {
+      const selectedId = selectedUsers[0] as string;
+      const selectedUser = filteredUsers.find((u) => u.id === selectedId);
+      if (selectedUser) openManageGroupPanel(selectedUser);
+    }
+  }, [selectedUsers, filteredUsers, openManageGroupPanel]);
+
   const pageConfig = useUserListPageConfig({
     sortKey,
     handleSort,
@@ -77,10 +100,12 @@ const MainPage: React.FC = () => {
     setPageSize,
     sortedUsers,
     paginatedUsers,
-    hasSelection,
+    hasSelection: selectedUsers.length > 0,
     handleViewUser,
     handleEditUser,
     onCreateUserClick: openCreatePanel,
+    onManageRoleClick: handleManageRolesClick,
+    onManageGroupClick: handleManageGroupsClick,
     searchValue: searchTerm,
     onSearchChange: setSearchTerm,
     onSearchSubmit: undefined,
@@ -118,13 +143,19 @@ const MainPage: React.FC = () => {
       createPanelOpen={createPanelOpen}
       editPanelOpen={editPanelOpen}
       viewPanelOpen={viewPanelOpen}
+      manageRolePanelOpen={manageRolePanelOpen}
+      manageGroupPanelOpen={manageGroupPanelOpen}
       viewingUser={viewingUser}
       editingUser={editingUser}
+      managingRoleUser={managingRoleUser}
+      managingGroupUser={managingGroupUser}
       createForm={createForm}
       editForm={editForm}
       onCloseCreatePanel={closeCreatePanel}
       onCloseEditPanel={closeEditPanel}
       onCloseViewPanel={closeViewPanel}
+      onCloseManageRolePanel={closeManageRolePanel}
+      onCloseManageGroupPanel={closeManageGroupPanel}
       onViewPanelEdit={handleViewPanelEdit}
     />
   );

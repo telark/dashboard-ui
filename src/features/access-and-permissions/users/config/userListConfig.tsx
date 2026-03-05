@@ -1,16 +1,21 @@
 import React from 'react';
 import { USERS_CONSTANTS as UC } from '../constants';
 import { Icons } from '../../../../constants';
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined, SettingOutlined } from '@ant-design/icons';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 
 const UserIcon = Icons.User;
+const RoleIcon = Icons.Role;
+const GroupIcon = Icons.Group;
 
 interface UseUserListConfigProps {
   searchValue: string;
   onSearchChange: (value: string) => void;
   onSearchSubmit?: () => void;
   onCreateUserClick: () => void;
+  selectedUsersCount?: number;
+  onManageRoleClick?: () => void;
+  onManageGroupClick?: () => void;
 }
 
 export const useUserListConfig = ({
@@ -18,6 +23,9 @@ export const useUserListConfig = ({
   onSearchChange,
   onSearchSubmit,
   onCreateUserClick,
+  selectedUsersCount = 0,
+  onManageRoleClick,
+  onManageGroupClick,
 }: UseUserListConfigProps) => {
   const toolbarConfig: ToolbarConfig = React.useMemo(
     () => ({
@@ -35,6 +43,34 @@ export const useUserListConfig = ({
           variant: 'ghost',
         },
         {
+          key: 'manage',
+          label: UC.LABELS.TOOLBAR.MANAGE.BUTTON_LABEL,
+          icon: <SettingOutlined />,
+          variant: 'default',
+          disabled: selectedUsersCount !== 1,
+          dropdown: {
+            items: [
+              {
+                key: 'manage-roles',
+                label: UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_ROLES,
+                icon: <RoleIcon size={14} />,
+              },
+              {
+                key: 'manage-groups',
+                label: UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_GROUPS,
+                icon: <GroupIcon size={14} />,
+              },
+            ],
+            onItemClick: (key: string) => {
+              if (key === 'manage-roles') {
+                onManageRoleClick?.();
+              } else if (key === 'manage-groups') {
+                onManageGroupClick?.();
+              }
+            },
+          },
+        },
+        {
           key: 'create-user',
           label: UC.LABELS.TOOLBAR.CREATE.BUTTON_LABEL,
           icon: <UserIcon size={14} />,
@@ -43,7 +79,15 @@ export const useUserListConfig = ({
         },
       ],
     }),
-    [searchValue, onSearchChange, onSearchSubmit, onCreateUserClick],
+    [
+      searchValue,
+      onSearchChange,
+      onSearchSubmit,
+      onCreateUserClick,
+      selectedUsersCount,
+      onManageRoleClick,
+      onManageGroupClick,
+    ],
   );
 
   return { toolbarConfig };

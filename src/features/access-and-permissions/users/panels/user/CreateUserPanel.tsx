@@ -16,15 +16,8 @@ interface CreateUserPanelProps {
 }
 
 const CreateUserPanel: React.FC<CreateUserPanelProps> = ({ open, onClose, form }) => {
-  const {
-    roleOptions,
-    groupOptions,
-    submitting,
-    hasFormErrors,
-    handleValuesChange,
-    handleFieldsChange,
-    handleSubmit,
-  } = useCreateUserPanel({ form, onClose });
+  const { submitting, hasFormErrors, handleValuesChange, handleFieldsChange, handleSubmit } =
+    useCreateUserPanel({ form, onClose });
 
   return (
     <SlideOutPanel
@@ -32,7 +25,7 @@ const CreateUserPanel: React.FC<CreateUserPanelProps> = ({ open, onClose, form }
       onClose={onClose}
       title={UC.LABELS.PANELS.CREATE.TITLE}
       subtitle={UC.LABELS.PANELS.CREATE.SUBTITLE}
-      formContent={<UserFormFields roleOptions={roleOptions} groupOptions={groupOptions} />}
+      formContent={<UserFormFields />}
       onSubmit={handleSubmit}
       onCancel={onClose}
       submitButtonText={UC.LABELS.PANELS.CREATE.SUBMIT_BUTTON}
@@ -40,7 +33,7 @@ const CreateUserPanel: React.FC<CreateUserPanelProps> = ({ open, onClose, form }
       loading={submitting}
       disabled={hasFormErrors}
       form={form}
-      initialValues={{ username: '', fullname: '', email: '', roleID: '', groupID: '' }}
+      initialValues={{ username: '', fullname: '', email: '' }}
       onValuesChange={handleValuesChange}
       onFieldsChange={handleFieldsChange}
     />

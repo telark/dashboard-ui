@@ -6,8 +6,12 @@ interface UseUserPanelStateReturn {
   createPanelOpen: boolean;
   editPanelOpen: boolean;
   viewPanelOpen: boolean;
+  manageRolePanelOpen: boolean;
+  manageGroupPanelOpen: boolean;
   viewingUser: User | null;
   editingUser: User | null;
+  managingRoleUser: User | null;
+  managingGroupUser: User | null;
   createForm: ReturnType<typeof Form.useForm<CreateUserFormValues>>[0];
   editForm: ReturnType<typeof Form.useForm<CreateUserFormValues>>[0];
   openCreatePanel: () => void;
@@ -16,14 +20,22 @@ interface UseUserPanelStateReturn {
   closeEditPanel: () => void;
   openViewPanel: (user: User) => void;
   closeViewPanel: () => void;
+  openManageRolePanel: (user: User) => void;
+  closeManageRolePanel: () => void;
+  openManageGroupPanel: (user: User) => void;
+  closeManageGroupPanel: () => void;
 }
 
 export const useUserPanelState = (): UseUserPanelStateReturn => {
   const [createPanelOpen, setCreatePanelOpen] = useState(false);
   const [editPanelOpen, setEditPanelOpen] = useState(false);
   const [viewPanelOpen, setViewPanelOpen] = useState(false);
+  const [manageRolePanelOpen, setManageRolePanelOpen] = useState(false);
+  const [manageGroupPanelOpen, setManageGroupPanelOpen] = useState(false);
   const [viewingUser, setViewingUser] = useState<User | null>(null);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [managingRoleUser, setManagingRoleUser] = useState<User | null>(null);
+  const [managingGroupUser, setManagingGroupUser] = useState<User | null>(null);
   const [createForm] = Form.useForm<CreateUserFormValues>();
   const [editForm] = Form.useForm<CreateUserFormValues>();
 
@@ -55,12 +67,36 @@ export const useUserPanelState = (): UseUserPanelStateReturn => {
     setViewingUser(null);
   }, []);
 
+  const openManageRolePanel = useCallback((user: User) => {
+    setManagingRoleUser(user);
+    setManageRolePanelOpen(true);
+  }, []);
+
+  const closeManageRolePanel = useCallback(() => {
+    setManageRolePanelOpen(false);
+    setManagingRoleUser(null);
+  }, []);
+
+  const openManageGroupPanel = useCallback((user: User) => {
+    setManagingGroupUser(user);
+    setManageGroupPanelOpen(true);
+  }, []);
+
+  const closeManageGroupPanel = useCallback(() => {
+    setManageGroupPanelOpen(false);
+    setManagingGroupUser(null);
+  }, []);
+
   return {
     createPanelOpen,
     editPanelOpen,
     viewPanelOpen,
+    manageRolePanelOpen,
+    manageGroupPanelOpen,
     viewingUser,
     editingUser,
+    managingRoleUser,
+    managingGroupUser,
     createForm,
     editForm,
     openCreatePanel,
@@ -69,5 +105,9 @@ export const useUserPanelState = (): UseUserPanelStateReturn => {
     closeEditPanel,
     openViewPanel,
     closeViewPanel,
+    openManageRolePanel,
+    closeManageRolePanel,
+    openManageGroupPanel,
+    closeManageGroupPanel,
   };
 };

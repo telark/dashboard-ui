@@ -6,8 +6,6 @@ import { updateUser } from '../../store';
 import type { AppDispatch } from '../../../../../store';
 import type { User, CreateUserFormValues, UserAvatar } from '../../models';
 import { USERS_CONSTANTS as UC } from '../../constants';
-import { useRoles } from '../../../roles/hooks';
-import { useFetchGroups } from '../../../groups/hooks';
 
 interface UseEditUserPanelOptions {
   open: boolean;
@@ -18,19 +16,10 @@ interface UseEditUserPanelOptions {
 
 export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUserPanelOptions) => {
   const dispatch: AppDispatch = useDispatch();
-  const { roles } = useRoles();
-  const { groups } = useFetchGroups();
   const [submitting, setSubmitting] = useState(false);
   const [hasFormErrors, setHasFormErrors] = useState(false);
   const previousOpenRef = useRef(false);
   const previousUserIdRef = useRef<string | null>(null);
-
-  const roleOptions = useMemo(() => roles.map((r) => ({ label: r.name, value: r.id })), [roles]);
-
-  const groupOptions = useMemo(
-    () => (groups || []).map((g) => ({ label: g.name, value: g.id })),
-    [groups],
-  );
 
   const initialValues = useMemo<CreateUserFormValues | null>(() => {
     if (!editingUser) return null;
@@ -69,8 +58,6 @@ export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUs
           username: values.username as string,
           fullname: values.fullname as string,
           email: values.email as string,
-          roleID: values.roleID as string,
-          groupID: (values.groupID as string) || editingUser.groupID,
           avatar: (values.avatar as UserAvatar | undefined) ?? editingUser.avatar,
         };
         dispatch(updateUser(updated));
@@ -78,7 +65,7 @@ export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUs
         form.resetFields();
         onClose();
       } catch {
-        message.error('Failed to update user');
+        message.error(UC.LABELS.MESSAGES.UPDATE_FAILED);
       } finally {
         setSubmitting(false);
       }
@@ -88,8 +75,6 @@ export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUs
 
   return {
     initialValues,
-    roleOptions,
-    groupOptions,
     submitting,
     hasFormErrors,
     handleValuesChange: checkFormState,

@@ -25,6 +25,8 @@ interface UseUserListPageConfigOptions {
   handleViewUser: (user: User) => void;
   handleEditUser: (user: User) => void;
   onCreateUserClick: () => void;
+  onManageRoleClick?: () => void;
+  onManageGroupClick?: () => void;
   searchValue: string;
   onSearchChange: (value: string) => void;
   onSearchSubmit?: () => void;
@@ -44,6 +46,8 @@ export const useUserListPageConfig = ({
   handleViewUser,
   handleEditUser,
   onCreateUserClick,
+  onManageRoleClick,
+  onManageGroupClick,
   searchValue,
   onSearchChange,
   onSearchSubmit,
@@ -53,6 +57,9 @@ export const useUserListPageConfig = ({
     onSearchChange,
     onSearchSubmit,
     onCreateUserClick,
+    selectedUsersCount: selectedUsers.length,
+    onManageRoleClick,
+    onManageGroupClick,
   });
 
   const ctx = useMemo(

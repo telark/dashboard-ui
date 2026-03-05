@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
 import type { FormInstance } from 'antd';
@@ -6,8 +6,6 @@ import { createUserThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
 import type { CreateUserFormValues, UserAvatar } from '../../models';
 import { USERS_CONSTANTS as UC } from '../../constants';
-import { useRoles } from '../../../roles/hooks';
-import { useFetchGroups } from '../../../groups/hooks';
 
 interface UseCreateUserPanelOptions {
   form: FormInstance<CreateUserFormValues>;
@@ -16,17 +14,8 @@ interface UseCreateUserPanelOptions {
 
 export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions) => {
   const dispatch: AppDispatch = useDispatch();
-  const { roles } = useRoles();
-  const { groups } = useFetchGroups();
   const [submitting, setSubmitting] = useState(false);
   const [hasFormErrors, setHasFormErrors] = useState(false);
-
-  const roleOptions = useMemo(() => roles.map((r) => ({ label: r.name, value: r.id })), [roles]);
-
-  const groupOptions = useMemo(
-    () => (groups || []).map((g) => ({ label: g.name, value: g.id })),
-    [groups],
-  );
 
   const checkFormState = useCallback(() => {
     const errors = form.getFieldsError();
@@ -41,8 +30,8 @@ export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions)
           username: values.username as string,
           fullname: values.fullname as string,
           email: values.email as string,
-          roleID: values.roleID as string,
-          groupID: (values.groupID as string) || '',
+          roleID: '',
+          groupID: '',
           avatar: values.avatar as UserAvatar | undefined,
         };
         await dispatch(createUserThunk(userData)).unwrap();
@@ -59,8 +48,6 @@ export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions)
   );
 
   return {
-    roleOptions,
-    groupOptions,
     submitting,
     hasFormErrors,
     handleValuesChange: checkFormState,

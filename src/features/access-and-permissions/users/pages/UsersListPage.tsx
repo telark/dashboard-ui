@@ -1,7 +1,13 @@
 import React, { memo, useMemo } from 'react';
 import { PageLayout } from '../../../../components/display/views';
 import { DEFAULT_COLORS } from '../../../../constants';
-import { CreateUserPanel, EditUserPanel, ViewUserPanel } from '../panels';
+import {
+  CreateUserPanel,
+  EditUserPanel,
+  ViewUserPanel,
+  ManageUserRolePanel,
+  ManageUserGroupPanel,
+} from '../panels';
 import type { PageLayoutConfig } from '../../../../interfaces/layout/page';
 import type { User, CreateUserFormValues } from '../models';
 import type { FormInstance } from 'antd';
@@ -11,13 +17,19 @@ interface UsersListPageProps {
   createPanelOpen: boolean;
   editPanelOpen: boolean;
   viewPanelOpen: boolean;
+  manageRolePanelOpen: boolean;
+  manageGroupPanelOpen: boolean;
   viewingUser: User | null;
   editingUser: User | null;
+  managingRoleUser: User | null;
+  managingGroupUser: User | null;
   createForm: FormInstance<CreateUserFormValues>;
   editForm: FormInstance<CreateUserFormValues>;
   onCloseCreatePanel: () => void;
   onCloseEditPanel: () => void;
   onCloseViewPanel: () => void;
+  onCloseManageRolePanel: () => void;
+  onCloseManageGroupPanel: () => void;
   onViewPanelEdit: () => void;
 }
 
@@ -27,13 +39,19 @@ const UsersListPage: React.FC<UsersListPageProps> = memo(
     createPanelOpen,
     editPanelOpen,
     viewPanelOpen,
+    manageRolePanelOpen,
+    manageGroupPanelOpen,
     viewingUser,
     editingUser,
+    managingRoleUser,
+    managingGroupUser,
     createForm,
     editForm,
     onCloseCreatePanel,
     onCloseEditPanel,
     onCloseViewPanel,
+    onCloseManageRolePanel,
+    onCloseManageGroupPanel,
     onViewPanelEdit,
   }) => {
     const handleViewPanelEditClick = useMemo(
@@ -61,6 +79,20 @@ const UsersListPage: React.FC<UsersListPageProps> = memo(
             onClose={onCloseViewPanel}
             user={viewingUser}
             onEdit={handleViewPanelEditClick}
+          />
+        )}
+        {manageRolePanelOpen && managingRoleUser && (
+          <ManageUserRolePanel
+            open={manageRolePanelOpen}
+            onClose={onCloseManageRolePanel}
+            user={managingRoleUser}
+          />
+        )}
+        {manageGroupPanelOpen && managingGroupUser && (
+          <ManageUserGroupPanel
+            open={manageGroupPanelOpen}
+            onClose={onCloseManageGroupPanel}
+            user={managingGroupUser}
           />
         )}
       </div>

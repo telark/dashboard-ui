@@ -5,3 +5,5 @@ export { useUserListPageConfig } from './list/useUserListPageConfig';
 export { useUserPanelState } from './panels/useUserPanelState';
 export { useCreateUserPanel } from './panels/useCreateUserPanel';
 export { useEditUserPanel } from './panels/useEditUserPanel';
+export { useManageUserRolePanel } from './panels/useManageUserRolePanel';
+export { useManageUserGroupPanel } from './panels/useManageUserGroupPanel';

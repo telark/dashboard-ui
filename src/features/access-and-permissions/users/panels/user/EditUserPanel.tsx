@@ -19,8 +19,6 @@ interface EditUserPanelProps {
 const EditUserPanel: React.FC<EditUserPanelProps> = ({ open, onClose, editingUser, form }) => {
   const {
     initialValues,
-    roleOptions,
-    groupOptions,
     submitting,
     hasFormErrors,
     handleValuesChange,
@@ -36,7 +34,7 @@ const EditUserPanel: React.FC<EditUserPanelProps> = ({ open, onClose, editingUse
       onClose={onClose}
       title={UC.LABELS.PANELS.EDIT.TITLE}
       subtitle={UC.LABELS.PANELS.EDIT.SUBTITLE(editingUser.fullname)}
-      formContent={<UserFormFields roleOptions={roleOptions} groupOptions={groupOptions} />}
+      formContent={<UserFormFields />}
       onSubmit={handleSubmit}
       onCancel={onClose}
       submitButtonText={UC.LABELS.PANELS.EDIT.SUBMIT_BUTTON}
