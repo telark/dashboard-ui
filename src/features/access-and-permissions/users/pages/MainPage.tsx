@@ -11,7 +11,7 @@ import UsersLoadingPage from './UsersLoadingPage';
 import UsersEmptyPage from './UsersEmptyPage';
 import UsersListPage from './UsersListPage';
 
-const ListUsers: React.FC = () => {
+const MainPage: React.FC = () => {
   const { users, loading, error } = useUsers();
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -130,4 +130,4 @@ const ListUsers: React.FC = () => {
   );
 };
 
-export default ListUsers;
+export default MainPage;

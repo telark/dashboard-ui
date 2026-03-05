@@ -33,14 +33,7 @@ const RolesListView = lazy(
 );
 const RoleView = lazy(() => import('../features/access-and-permissions/roles/pages/ViewRole'));
 const RoleEdit = lazy(() => import('../features/access-and-permissions/roles/pages/EditRole'));
-const UsersListView = lazy(
-  () => import('../features/access-and-permissions/users/pages/ListUsers'),
-);
-const UsersCreateView = lazy(
-  () => import('../features/access-and-permissions/users/pages/CreateUser'),
-);
-const UserView = lazy(() => import('../features/access-and-permissions/users/pages/ViewUser'));
-const UserEdit = lazy(() => import('../features/access-and-permissions/users/pages/EditUser'));
+const UsersMainPage = lazy(() => import('../features/access-and-permissions/users/pages/MainPage'));
 const GroupsMainPage = lazy(
   () => import('../features/access-and-permissions/groups/pages/MainPage'),
 );
@@ -201,38 +194,8 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.USERS}
           element={
             <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Users">
-                <UsersListView />
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.USER_CREATE}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Create User">
-                <UsersCreateView />
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.USER_VIEW}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="User Details">
-                <UserView />
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.USER_EDIT}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Edit User">
-                <UserEdit />
+              <FeatureErrorBoundary key={APP_ROUTES.USERS} featureName="Users">
+                <UsersMainPage />
               </FeatureErrorBoundary>
             </ProtectedRoute>
           }

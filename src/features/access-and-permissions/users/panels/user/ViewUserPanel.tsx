@@ -5,6 +5,7 @@ import ViewPanel from '../../../../../components/display/panels/view/ViewPanel';
 import RowTag from '../../../../../components/display/table/RowTag';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import UserAvatar from '../../../../../components/display/avatars/UserAvatar';
+import { useUserDeleteModal, UserDeleteModal } from '../../components/delete';
 import type { ViewDetailRow } from '../../../../../components/display/panels/view/types';
 import type { User } from '../../models';
 
@@ -13,11 +14,24 @@ interface ViewUserPanelProps {
   onClose: () => void;
   user: User | null;
   onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 const UserIcon = Icons.User;
 
-const ViewUserPanel: React.FC<ViewUserPanelProps> = ({ open, onClose, user, onEdit }) => {
+const ViewUserPanel: React.FC<ViewUserPanelProps> = ({ open, onClose, user, onEdit, onDelete }) => {
+  const { deleteModalOpen, isDeleting, openDeleteModal, closeDeleteModal, handleConfirmDelete } =
+    useUserDeleteModal(user);
+
+  const handleDeleteAction = useMemo(
+    () =>
+      onDelete ??
+      (() => {
+        openDeleteModal();
+      }),
+    [onDelete, openDeleteModal],
+  );
+
   const icon = useMemo(() => {
     if (!user) return <UserIcon size={32} style={{ color: DEFAULT_COLORS.SUCCESS }} />;
     return <UserAvatar avatar={user.avatar} username={user.username} size={48} />;
@@ -78,17 +92,26 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({ open, onClose, user, onEd
   if (!user) return null;
 
   return (
-    <ViewPanel
-      open={open}
-      onClose={onClose}
-      title={UC.LABELS.PANELS.VIEW.TITLE}
-      icon={icon}
-      name={user.fullname}
-      description={user.email}
-      details={details}
-      width={520}
-      actions={{ onEdit }}
-    />
+    <>
+      <ViewPanel
+        open={open}
+        onClose={onClose}
+        title={UC.LABELS.PANELS.VIEW.TITLE}
+        icon={icon}
+        name={user.fullname}
+        description={user.email}
+        details={details}
+        width={520}
+        actions={{ onEdit, onDelete: handleDeleteAction }}
+      />
+      <UserDeleteModal
+        open={deleteModalOpen}
+        onClose={closeDeleteModal}
+        onConfirm={handleConfirmDelete}
+        userName={user.fullname || user.username}
+        loading={isDeleting}
+      />
+    </>
   );
 };
 

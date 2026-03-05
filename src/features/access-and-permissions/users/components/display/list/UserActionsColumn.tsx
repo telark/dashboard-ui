@@ -1,8 +1,7 @@
 import React from 'react';
 import { EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Modal } from 'antd';
 import { DEFAULT_COLORS } from '../../../../../../constants';
-import { USERS_CONSTANTS as UC } from '../../../constants';
+import { useUserDeleteModal, UserDeleteModal } from '../../delete';
 import type { User } from '../../../models';
 
 interface UserActionsColumnProps {
@@ -27,34 +26,23 @@ const actionButtonStyle: React.CSSProperties = {
   outline: 'none',
 };
 
-const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
-  e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
-};
-
-const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
-  e.currentTarget.style.background = 'transparent';
-};
-
 export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
   record,
   onView,
   onEdit,
   onDelete,
 }) => {
+  const { deleteModalOpen, isDeleting, openDeleteModal, closeDeleteModal, handleConfirmDelete } =
+    useUserDeleteModal(record);
+
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
     if (onDelete) {
       onDelete(record);
-      return;
+    } else {
+      openDeleteModal();
     }
-    Modal.confirm({
-      title: UC.LABELS.ACTIONS.DELETE_MODAL_TITLE,
-      content: UC.LABELS.ACTIONS.DELETE_MODAL_CONTENT(record.fullname || record.username),
-      okText: UC.LABELS.ACTIONS.DELETE_MODAL_OK,
-      okButtonProps: { danger: true },
-      onOk: () => {},
-    });
   };
 
   return (
@@ -72,8 +60,12 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
           onView?.(record);
         }}
         style={actionButtonStyle}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'transparent';
+        }}
       >
         <EyeOutlined />
       </button>
@@ -83,19 +75,36 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
           onEdit?.(record);
         }}
         style={actionButtonStyle}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'transparent';
+        }}
       >
         <EditOutlined />
       </button>
       <button
         onClick={handleDeleteClick}
         style={actionButtonStyle}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'transparent';
+        }}
       >
         <DeleteOutlined />
       </button>
+      {!onDelete && (
+        <UserDeleteModal
+          open={deleteModalOpen}
+          onClose={closeDeleteModal}
+          onConfirm={handleConfirmDelete}
+          userName={record.fullname || record.username}
+          loading={isDeleting}
+        />
+      )}
     </div>
   );
 };

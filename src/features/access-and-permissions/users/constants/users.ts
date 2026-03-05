@@ -19,7 +19,10 @@ export const USERS_CONSTANTS = {
     MESSAGES: {
       CREATED: (name: string) => `User "${name}" created`,
       UPDATED: (name: string) => `User "${name}" updated`,
+      DELETED: (name: string) => `User "${name}" deleted`,
       CREATE_FAILED: 'Failed to create user',
+      UPDATE_FAILED: 'Failed to update user',
+      DELETE_FAILED: 'Failed to delete user',
       NO_USERS_TITLE: 'No users yet',
       NO_USERS_DESCRIPTION: 'Get started by adding your first user to the system.',
     },
@@ -53,7 +56,12 @@ export const USERS_CONSTANTS = {
       SECTION_TITLE: 'User Details',
       SECTION_SUBTITLE: 'Provide the user information.',
       BUTTON_TEXT: 'Create User',
+      SECTIONS: {
+        USER_DETAILS: 'User Details',
+        ASSIGNMENT: 'Assignment',
+      },
       FIELDS: {
+        AVATAR_LABEL: 'Avatar',
         USERNAME_LABEL: 'Username',
         USERNAME_PLACEHOLDER: 'e.g. john.doe',
         FULLNAME_LABEL: 'Full Name',
