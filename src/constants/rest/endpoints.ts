@@ -181,8 +181,16 @@ export const Endpoints = {
       method: 'GET',
     },
     GET_BY_ID: (userId: string) => ({
-      path: `${API_PATHS.RESOURCES.USERS}/${RESOURCE_PATHS.FIND_USER_BY_ID(userId)}`,
+      path: `${API_PATHS.RESOURCES.USERS}/${USER_PATHS.GET_BY_ID(userId)}`,
       method: 'GET',
+    }),
+    PATCH_BY_ID: (userId: string) => ({
+      path: `${API_PATHS.RESOURCES.USERS}/${USER_PATHS.PATCH_BY_ID(userId)}`,
+      method: 'PATCH',
+    }),
+    DELETE_BY_ID: (userId: string) => ({
+      path: `${API_PATHS.RESOURCES.USERS}/${USER_PATHS.DELETE_BY_ID(userId)}`,
+      method: 'DELETE',
     }),
   },
   SESSIONS: {

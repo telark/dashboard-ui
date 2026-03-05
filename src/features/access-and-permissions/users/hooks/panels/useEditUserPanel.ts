@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
 import type { FormInstance } from 'antd';
-import { updateUser } from '../../store';
+import { updateUserThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
 import type { User, CreateUserFormValues, UserAvatar } from '../../models';
 import { USERS_CONSTANTS as UC } from '../../constants';
@@ -51,18 +51,14 @@ export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUs
       if (!editingUser) return;
       setSubmitting(true);
       try {
-        const updated: User = {
-          ...editingUser,
+        const updated: Partial<User> = {
           username: values.username as string,
           fullname: values.fullname as string,
           email: values.email as string,
-          // Preserve existing role/group assignments — managed via Manage panels
-          assignedRolesIDs: editingUser.assignedRolesIDs,
-          assignedGroupsIDs: editingUser.assignedGroupsIDs,
           avatar: (values.avatar as UserAvatar | undefined) ?? editingUser.avatar,
         };
-        dispatch(updateUser(updated));
-        message.success(UC.LABELS.MESSAGES.UPDATED(updated.fullname));
+        await dispatch(updateUserThunk({ id: editingUser.id, user: updated })).unwrap();
+        message.success(UC.LABELS.MESSAGES.UPDATED(values.fullname as string));
         form.resetFields();
         onClose();
       } catch {

@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
-import { deleteUser } from '../../store';
+import { deleteUserThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
 import type { User } from '../../models';
 import { USERS_CONSTANTS as UC } from '../../constants';
@@ -36,7 +36,7 @@ export const useUserDeleteModal = (user: User | null): UseUserDeleteModalReturn 
     if (!user) return;
     setIsDeleting(true);
     try {
-      dispatch(deleteUser(user.id));
+      await dispatch(deleteUserThunk(user.id)).unwrap();
       message.success(UC.LABELS.MESSAGES.DELETED(user.fullname || user.username));
       setDeleteModalOpen(false);
     } catch {

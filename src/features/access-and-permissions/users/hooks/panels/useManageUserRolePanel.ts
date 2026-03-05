@@ -1,8 +1,8 @@
-import { useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
 import type { FormInstance } from 'antd';
-import { updateUser } from '../../store';
+import { updateUserThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
 import { useRoles } from '../../../roles/hooks';
 import type { User } from '../../models';
@@ -42,6 +42,7 @@ export const useManageUserRolePanel = ({
 }: UseManageUserRolePanelOptions): UseManageUserRolePanelReturn => {
   const dispatch: AppDispatch = useDispatch();
   const { roles, loading: rolesLoading } = useRoles();
+  const [submitting, setSubmitting] = useState(false);
 
   const initialSelectedRoles = useMemo(() => user?.assignedRolesIDs ?? [], [user]);
 
@@ -58,17 +59,21 @@ export const useManageUserRolePanel = ({
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     if (!user) return;
+    setSubmitting(true);
     try {
-      const updatedUser: User = {
-        ...user,
-        assignedRolesIDs: (values.assignedRolesIDs as string[]) ?? [],
-      };
-      dispatch(updateUser(updatedUser));
+      await dispatch(
+        updateUserThunk({
+          id: user.id,
+          user: { assignedRolesIDs: (values.assignedRolesIDs as string[]) ?? [] },
+        }),
+      ).unwrap();
       message.success(UC.LABELS.MESSAGES.ROLE_ASSIGNED(user.fullname || user.username));
       form.resetFields();
       onClose();
     } catch {
       message.error(UC.LABELS.MESSAGES.ROLE_ASSIGN_FAILED);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -78,7 +83,7 @@ export const useManageUserRolePanel = ({
     filteredRoles: roles,
     allRoles: roles,
     rolesLoading,
-    submitting: false,
+    submitting,
     handleSubmit,
   };
 };

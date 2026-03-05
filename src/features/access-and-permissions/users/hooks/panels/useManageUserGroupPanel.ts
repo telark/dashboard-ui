@@ -1,8 +1,8 @@
-import { useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
 import type { FormInstance } from 'antd';
-import { updateUser } from '../../store';
+import { updateUserThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
 import { useFetchGroups } from '../../../groups/hooks';
 import type { User } from '../../models';
@@ -41,6 +41,7 @@ export const useManageUserGroupPanel = ({
 }: UseManageUserGroupPanelOptions): UseManageUserGroupPanelReturn => {
   const dispatch: AppDispatch = useDispatch();
   const { groups, loading: groupsLoading } = useFetchGroups();
+  const [submitting, setSubmitting] = useState(false);
 
   const initialSelectedGroups = useMemo(() => user?.assignedGroupsIDs ?? [], [user]);
 
@@ -57,17 +58,21 @@ export const useManageUserGroupPanel = ({
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     if (!user) return;
+    setSubmitting(true);
     try {
-      const updatedUser: User = {
-        ...user,
-        assignedGroupsIDs: (values.assignedGroupsIDs as string[]) ?? [],
-      };
-      dispatch(updateUser(updatedUser));
+      await dispatch(
+        updateUserThunk({
+          id: user.id,
+          user: { assignedGroupsIDs: (values.assignedGroupsIDs as string[]) ?? [] },
+        }),
+      ).unwrap();
       message.success(UC.LABELS.MESSAGES.GROUP_ASSIGNED(user.fullname || user.username));
       form.resetFields();
       onClose();
     } catch {
       message.error(UC.LABELS.MESSAGES.GROUP_ASSIGN_FAILED);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -76,7 +81,7 @@ export const useManageUserGroupPanel = ({
     hasChanges,
     groups,
     groupsLoading,
-    submitting: false,
+    submitting,
     handleSubmit,
   };
 };
