@@ -1,78 +1,133 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { APP_ROUTES, Icons, SHARED_DETAILS_CONSTANTS } from '../../../../constants';
-import { USERS_CONSTANTS as UC } from '../constants';
-import Header from '../../../../components/display/sections/Header';
-import UsersTable from '../components/display/list/Table';
-import { PageContainer } from '../../../../components/shared';
-import { RootState, AppDispatch } from '../../../../store';
-import { fetchAllUsersThunk } from '../store';
+import React, { useState, useMemo, useCallback } from 'react';
+import { useUsers } from '../hooks';
+import { useUserListState } from '../hooks/list/useUserListState';
+import { useUserListPageConfig } from '../hooks/list/useUserListPageConfig';
+import { useUserPanelState } from '../hooks/panels/useUserPanelState';
+import { applySearch } from '../../../../utils/search';
+import { CreateUserPanel } from '../panels';
+import type { User } from '../models';
+import UsersErrorPage from './UsersErrorPage';
+import UsersLoadingPage from './UsersLoadingPage';
+import UsersEmptyPage from './UsersEmptyPage';
+import UsersListPage from './UsersListPage';
 
-const UserIcon = Icons.User;
+const ListUsers: React.FC = () => {
+  const { users, loading, error } = useUsers();
+  const [searchTerm, setSearchTerm] = useState('');
 
-const UsersList: React.FC = () => {
-  const navigate = useNavigate();
-  const dispatch: AppDispatch = useDispatch();
-  const { users, loading, error } = useSelector((state: RootState) => state.users);
+  const {
+    createPanelOpen,
+    editPanelOpen,
+    viewPanelOpen,
+    viewingUser,
+    editingUser,
+    createForm,
+    editForm,
+    openCreatePanel,
+    closeCreatePanel,
+    openEditPanel,
+    closeEditPanel,
+    openViewPanel,
+    closeViewPanel,
+  } = useUserPanelState();
 
-  useEffect(() => {
-    dispatch(fetchAllUsersThunk());
-  }, [dispatch]);
+  const filteredUsers = useMemo(
+    () =>
+      applySearch(users, searchTerm, [
+        (u: User) => u.username,
+        (u: User) => u.fullname,
+        (u: User) => u.email,
+        (u: User) => u.roleID,
+      ]),
+    [users, searchTerm],
+  );
 
-  const handleView = (record: any) => navigate(`${APP_ROUTES.USERS}/${record.id}/view`);
+  const {
+    sortKey,
+    selectedUsers,
+    currentPage,
+    pageSize,
+    setCurrentPage,
+    setPageSize,
+    setSelectedUsers,
+    handleSort,
+    sortedUsers,
+    paginatedUsers,
+    hasSelection,
+  } = useUserListState(filteredUsers);
 
-  if (loading) {
+  const handleViewUser = useCallback((user: User) => openViewPanel(user), [openViewPanel]);
+  const handleEditUser = useCallback((user: User) => openEditPanel(user), [openEditPanel]);
+
+  const handleViewPanelEdit = useCallback(() => {
+    if (viewingUser) {
+      closeViewPanel();
+      setTimeout(() => openEditPanel(viewingUser), 150);
+    }
+  }, [viewingUser, closeViewPanel, openEditPanel]);
+
+  const pageConfig = useUserListPageConfig({
+    sortKey,
+    handleSort,
+    selectedUsers,
+    setSelectedUsers,
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    sortedUsers,
+    paginatedUsers,
+    hasSelection,
+    handleViewUser,
+    handleEditUser,
+    onCreateUserClick: openCreatePanel,
+    searchValue: searchTerm,
+    onSearchChange: setSearchTerm,
+    onSearchSubmit: undefined,
+  });
+
+  const isFetching = useMemo(() => users.length === 0 && loading, [users.length, loading]);
+
+  const shouldShowEmpty = useMemo(
+    () => Array.isArray(users) && users.length === 0 && !loading && !error,
+    [users, loading, error],
+  );
+
+  if (error) {
+    return <UsersErrorPage error={error} />;
+  }
+
+  if (shouldShowEmpty) {
     return (
-      <PageContainer>
-        <Header
-          subtitle={UC.LABELS.HEADER_SUBTITLE}
-          primaryText={UC.LABELS.CREATE_BUTTON}
-          onPrimary={() => navigate(APP_ROUTES.USER_CREATE)}
-          breadcrumbs={[{ label: UC.LABELS.BREADCRUMBS.USERS }]}
-          icon={<UserIcon />}
-        />
-        <div>{SHARED_DETAILS_CONSTANTS.MESSAGES.LOADING}</div>
-      </PageContainer>
+      <>
+        <UsersEmptyPage onCreateUserClick={openCreatePanel} />
+        {createPanelOpen && (
+          <CreateUserPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />
+        )}
+      </>
     );
   }
 
-  if (error) {
-    return (
-      <PageContainer>
-        <Header
-          subtitle={UC.LABELS.HEADER_SUBTITLE}
-          primaryText={UC.LABELS.CREATE_BUTTON}
-          onPrimary={() => navigate(APP_ROUTES.USER_CREATE)}
-          breadcrumbs={[{ label: UC.LABELS.BREADCRUMBS.USERS }]}
-          icon={<UserIcon />}
-        />
-        <div>Error: {error}</div>
-      </PageContainer>
-    );
+  if (isFetching) {
+    return <UsersLoadingPage />;
   }
 
   return (
-    <PageContainer>
-      <Header
-        subtitle={UC.LABELS.HEADER_SUBTITLE}
-        primaryText={UC.LABELS.CREATE_BUTTON}
-        onPrimary={() => navigate(APP_ROUTES.USER_CREATE)}
-        breadcrumbs={[{ label: UC.LABELS.BREADCRUMBS.USERS }]}
-        icon={<UserIcon />}
-      />
-
-      <UsersTable
-        users={users as any}
-        onUsersChange={() => {
-          // Users are managed by Redux, so we don't need to update local state
-          // This is kept for compatibility with the table component
-        }}
-        onView={handleView as any}
-        onEdit={(record) => navigate(`${APP_ROUTES.USERS}/${record.id}/edit`)}
-      />
-    </PageContainer>
+    <UsersListPage
+      pageConfig={pageConfig}
+      createPanelOpen={createPanelOpen}
+      editPanelOpen={editPanelOpen}
+      viewPanelOpen={viewPanelOpen}
+      viewingUser={viewingUser}
+      editingUser={editingUser}
+      createForm={createForm}
+      editForm={editForm}
+      onCloseCreatePanel={closeCreatePanel}
+      onCloseEditPanel={closeEditPanel}
+      onCloseViewPanel={closeViewPanel}
+      onViewPanelEdit={handleViewPanelEdit}
+    />
   );
 };
 
-export default UsersList;
+export default ListUsers;

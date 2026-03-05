@@ -20,6 +20,8 @@ export const USERS_CONSTANTS = {
       CREATED: (name: string) => `User "${name}" created`,
       UPDATED: (name: string) => `User "${name}" updated`,
       CREATE_FAILED: 'Failed to create user',
+      NO_USERS_TITLE: 'No users yet',
+      NO_USERS_DESCRIPTION: 'Get started by adding your first user to the system.',
     },
     COLUMNS: {
       USERNAME: 'Username',
@@ -27,6 +29,15 @@ export const USERS_CONSTANTS = {
       EMAIL: 'Email',
       ROLE: 'Role ID',
       CREATED: 'Creation Date',
+    },
+    VIEW_LABELS: {
+      USERNAME: 'Username',
+      FULLNAME: 'Full Name',
+      EMAIL: 'Email',
+      ROLE_ID: 'Role ID',
+      GROUP_ID: 'Group ID',
+      STATUS: 'Status',
+      CREATION_DATE: 'Creation Date',
     },
     ACTIONS: {
       VIEW: 'View',
@@ -55,6 +66,42 @@ export const USERS_CONSTANTS = {
         GROUP_PLACEHOLDER: 'Select a group',
       },
     },
+    PANELS: {
+      VIEW: {
+        TITLE: 'User Details',
+      },
+      EDIT: {
+        TITLE: 'Edit User',
+        SUBTITLE: (name: string) => `Edit information for ${name}`,
+        SUBMIT_BUTTON: 'Update User',
+      },
+      CREATE: {
+        TITLE: 'Create User',
+        SUBTITLE: 'Add a new user to the system',
+        SUBMIT_BUTTON: 'Create User',
+      },
+    },
+    TOOLBAR: {
+      SEARCH: {
+        PLACEHOLDER: 'Search users by name, email...',
+        BUTTON_LABEL: 'Search',
+      },
+      CREATE: {
+        BUTTON_LABEL: 'Add User',
+      },
+    },
+    EMPTY: {
+      NO_USERS_FOUND: 'No Users Found',
+    },
+    PAGINATION: {
+      SHOW_ROWS: 'Show rows',
+    },
+    MODAL: {
+      CANCEL: 'Cancel',
+    },
+    LOGS: {
+      FETCH_USERS: 'Fetching users',
+    },
   },
   KEYS: {
     USERNAME: 'username',
@@ -77,15 +124,6 @@ export const USERS_CONSTANTS = {
       ACTIONS: 50,
     },
     MODAL_WIDTH: 360,
-  },
-  COLORS: {
-    TEXT_PRIMARY: '#0B1F33',
-    TEXT_MUTED: '#64748b',
-    CHIP_BLUE_BG: '#dbeafe',
-    CHIP_BLUE_TEXT: '#1e40af',
-    TYPE_CUSTOM_BG: '#f1f5f9',
-    TYPE_CUSTOM_TEXT: '#334155',
-    HEADER_BG: '#f8fafc',
   },
   FORM: {
     FIELDS: [
