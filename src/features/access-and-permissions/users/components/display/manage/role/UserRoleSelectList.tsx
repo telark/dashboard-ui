@@ -1,15 +1,15 @@
 import React, { useCallback, useMemo } from 'react';
 import { Checkbox, Form } from 'antd';
-import { ScrollIndicator } from '../../../../../../components/display/indicators';
-import { SelectableListItem } from '../../../../../../components/display/list';
-import { USERS_CONSTANTS as UC } from '../../../constants';
-import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
-import { ROLES_CONSTANTS as RC } from '../../../../roles/constants';
-import { isRoleProtected, getRoleScopesContent } from '../../../../roles/utils';
-import { useRoleListScroll } from '../../../../groups/hooks/scroll/useRoleListScroll';
-import { truncateText, CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
-import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../groups/constants';
-import type { Role } from '../../../../roles/models';
+import { ScrollIndicator } from '../../../../../../../components/display/indicators';
+import { SelectableListItem } from '../../../../../../../components/display/list';
+import { USERS_CONSTANTS as UC } from '../../../../constants';
+import { Icons, DEFAULT_COLORS } from '../../../../../../../constants';
+import { ROLES_CONSTANTS as RC } from '../../../../../roles/constants';
+import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/utils';
+import { useRoleListScroll } from '../../../../../groups/hooks/scroll/useRoleListScroll';
+import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
+import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
+import type { Role } from '../../../../../roles/models';
 
 const RoleIcon = Icons.Role;
 

@@ -1,10 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
 import { Checkbox, Form } from 'antd';
-import { USERS_CONSTANTS as UC } from '../../../constants';
-import { DEFAULT_COLORS, Icons } from '../../../../../../constants';
-import { ATTACHED_MEMBERS_CONSTANTS as AMC } from '../../../../groups/constants';
-import { CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
-import type { Group } from '../../../../groups/models';
+import { USERS_CONSTANTS as UC } from '../../../../constants';
+import { DEFAULT_COLORS, Icons } from '../../../../../../../constants';
+import { ATTACHED_MEMBERS_CONSTANTS as AMC } from '../../../../../groups/constants';
+import { CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
+import type { Group } from '../../../../../groups/models';
 
 const GroupIcon = Icons.Group;
 
@@ -14,11 +14,7 @@ interface UserGroupSelectListProps {
   allGroups?: Group[];
 }
 
-const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({
-  groups,
-  loading,
-  allGroups,
-}) => {
+const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({ groups, loading, allGroups }) => {
   const form = Form.useFormInstance();
   const watchedSelectedGroups = Form.useWatch('assignedGroupsIDs', form);
   const currentSelectedGroups = useMemo(

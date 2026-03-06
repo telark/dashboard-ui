@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
-import { AssignedItemsList } from '../../../../shared';
-import { USERS_CONSTANTS as UC } from '../../../constants';
-import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
-import { ROLES_CONSTANTS as RC } from '../../../../roles/constants';
-import { isRoleProtected, getRoleScopesContent } from '../../../../roles/utils';
-import { truncateText, CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
-import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../groups/constants';
-import type { Role } from '../../../../roles/models';
+import { AssignedItemsList } from '../../../../../shared';
+import { USERS_CONSTANTS as UC } from '../../../../constants';
+import { Icons, DEFAULT_COLORS } from '../../../../../../../constants';
+import { ROLES_CONSTANTS as RC } from '../../../../../roles/constants';
+import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/utils';
+import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
+import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
+import type { Role } from '../../../../../roles/models';
 
 const RoleIcon = Icons.Role;
 

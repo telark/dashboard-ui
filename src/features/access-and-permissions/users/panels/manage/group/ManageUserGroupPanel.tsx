@@ -5,7 +5,7 @@ import { SearchInput } from '../../../../../../components/display/inputs';
 import { Icons } from '../../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { useManageUserGroupPanel } from '../../../hooks/panels/useManageUserGroupPanel';
-import UserGroupSelectList from '../../../components/display/manage/UserGroupSelectList';
+import UserGroupSelectList from '../../../components/display/manage/group/UserGroupSelectList';
 import { CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
 import type { User } from '../../../models';
 
