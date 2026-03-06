@@ -31,6 +31,7 @@ export const USERS_CONSTANTS = {
       NO_USERS_DESCRIPTION: 'Get started by adding your first user to the system.',
       NO_ROLES_AVAILABLE: 'No roles available',
       NO_GROUPS_AVAILABLE: 'No groups available',
+      NO_ASSIGNED_ROLES: 'No roles assigned yet',
       LOADING_ROLES: 'Loading roles...',
       LOADING_GROUPS: 'Loading groups...',
     },
@@ -103,6 +104,7 @@ export const USERS_CONSTANTS = {
         SUBTITLE: (userName: string) => `Assign a role to ${userName}`,
         SUBMIT_BUTTON: 'Assign Role',
         SEARCH_PLACEHOLDER: 'Search roles by name or description...',
+        SHOW_ASSIGNED_BUTTON: 'Assigned',
       },
       MANAGE_GROUP: {
         TITLE: 'Manage Groups',

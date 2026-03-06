@@ -6,3 +6,4 @@ export { default as TabButton } from './TabButton';
 export { default as ActionButtons } from './ActionButtons';
 export { default as FilterButton } from './FilterButton';
 export { default as SearchButton } from './SearchButton';
+export { default as ToggleButton } from './ToggleButton';
