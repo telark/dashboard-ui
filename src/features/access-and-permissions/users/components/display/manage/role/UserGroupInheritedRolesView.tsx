@@ -2,16 +2,15 @@ import React from 'react';
 import { AssignedItemsList } from '../../../../../shared';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
 import { Icons, DEFAULT_COLORS } from '../../../../../../../constants';
+import RowTag from '../../../../../../../components/display/table/RowTag';
 import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/utils';
 import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
 import { getScopeLabel } from '../../../../utils/role/scope';
-import { GROUP_TAG_STYLE } from './styles';
 import type { GroupInheritedRole } from '../../../../hooks/panels/role/useGroupInheritedRoles';
 import type { Group } from '../../../../../groups/models';
 
 const RoleIcon = Icons.Role;
-const GroupIcon = Icons.Group;
 
 const renderRoleContent = (item: GroupInheritedRole): React.ReactNode => {
   const { role } = item;
@@ -51,10 +50,13 @@ const renderGroupTags = (item: GroupInheritedRole): React.ReactNode => (
     }}
   >
     {item.fromGroups.map((group: Group) => (
-      <span key={group.id} style={GROUP_TAG_STYLE}>
-        <GroupIcon size={10} />
-        {CapitalizeFirstLetter(group.name)}
-      </span>
+      <RowTag
+        key={group.id}
+        text={CapitalizeFirstLetter(group.name)}
+        background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+        color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+        fontSize={12}
+      />
     ))}
   </div>
 );

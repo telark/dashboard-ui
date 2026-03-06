@@ -2,14 +2,12 @@ import React, { useMemo } from 'react';
 import { AssignedItemsList } from '../../../../../shared';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
 import { Icons, DEFAULT_COLORS } from '../../../../../../../constants';
+import RowTag from '../../../../../../../components/display/table/RowTag';
 import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/utils';
 import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
 import { getScopeLabel } from '../../../../utils/role/scope';
-import { GROUP_TAG_STYLE } from './styles';
 import type { Role } from '../../../../../roles/models';
-
-const GroupIcon = Icons.Group;
 
 const GROUP_TAGS_WRAPPER: React.CSSProperties = {
   display: 'flex',
@@ -79,10 +77,13 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
       return (
         <div style={GROUP_TAGS_WRAPPER}>
           {groupNames.map((name) => (
-            <span key={name} style={GROUP_TAG_STYLE}>
-              <GroupIcon size={10} />
-              {name}
-            </span>
+            <RowTag
+              key={name}
+              text={name}
+              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+              fontSize={12}
+            />
           ))}
         </div>
       );
