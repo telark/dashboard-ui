@@ -75,7 +75,7 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onView, onEdit, onUsersC
         ),
       },
     ],
-    [ctx, handleView, handleEdit, handleDelete],
+    [ctx, groups, handleView, handleEdit, handleDelete],
   );
 
   return (

@@ -1,5 +1,6 @@
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { DEFAULT_COLORS, Icons } from '../../../../../../constants';
+import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
 import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
 import type { User } from '../../../models';
@@ -10,20 +11,6 @@ import React from 'react';
 import { getTotalRoleCount } from '../../../utils';
 
 const RoleIcon = Icons.Role;
-
-const ROLE_TAG_STYLE: React.CSSProperties = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: 4,
-  height: 20,
-  padding: '0 8px',
-  borderRadius: 10,
-  fontSize: 12,
-  fontWeight: 500,
-  background: `${DEFAULT_COLORS.SUCCESS}18`,
-  color: DEFAULT_COLORS.SUCCESS,
-  whiteSpace: 'nowrap',
-};
 
 const Columns = (ctx: GenerateColumnCtx, groups: Group[] = []) => {
   const cols = [
@@ -79,10 +66,14 @@ const Columns = (ctx: GenerateColumnCtx, groups: Group[] = []) => {
           if (total === 0) {
             return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12 }}>—</span>;
           }
+          const text = total === 1 ? '1 role' : `${total} roles`;
           return (
-            <span style={ROLE_TAG_STYLE}>
-              {total} {total === 1 ? 'Role' : 'Roles'}
-            </span>
+            <RowTag
+              text={text}
+              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+              fontSize={UC.SIZES.CHIP_FONT}
+            />
           );
         },
       },
