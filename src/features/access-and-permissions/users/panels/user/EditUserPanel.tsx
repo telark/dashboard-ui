@@ -21,6 +21,9 @@ const EditUserPanel: React.FC<EditUserPanelProps> = ({ open, onClose, editingUse
     initialValues,
     submitting,
     hasFormErrors,
+    usernameRules,
+    emailRules,
+    fullnameRules,
     handleValuesChange,
     handleFieldsChange,
     handleSubmit,
@@ -34,7 +37,13 @@ const EditUserPanel: React.FC<EditUserPanelProps> = ({ open, onClose, editingUse
       onClose={onClose}
       title={UC.LABELS.PANELS.EDIT.TITLE}
       subtitle={UC.LABELS.PANELS.EDIT.SUBTITLE(editingUser.fullname)}
-      formContent={<UserFormFields />}
+      formContent={
+        <UserFormFields
+          usernameRules={usernameRules}
+          emailRules={emailRules}
+          fullnameRules={fullnameRules}
+        />
+      }
       onSubmit={handleSubmit}
       onCancel={onClose}
       submitButtonText={UC.LABELS.PANELS.EDIT.SUBMIT_BUTTON}

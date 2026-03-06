@@ -1,11 +1,16 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { message } from 'antd';
 import type { FormInstance } from 'antd';
 import { updateUserThunk } from '../../../store';
-import type { AppDispatch } from '../../../../../../store';
+import type { AppDispatch, RootState } from '../../../../../../store';
 import type { User, CreateUserFormValues, UserAvatar } from '../../../models';
 import { USERS_CONSTANTS as UC } from '../../../constants';
+import {
+  makeUsernameUniqueRule,
+  makeEmailFormatRule,
+  makeFullnameCharsRule,
+} from '../../../utils';
 
 interface UseEditUserPanelOptions {
   open: boolean;
@@ -16,8 +21,18 @@ interface UseEditUserPanelOptions {
 
 export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUserPanelOptions) => {
   const dispatch: AppDispatch = useDispatch();
+  const existingUsers = useSelector((state: RootState) => state.users.users);
   const [submitting, setSubmitting] = useState(false);
   const [hasFormErrors, setHasFormErrors] = useState(false);
+
+  const usernameRules = useMemo(
+    () => [makeUsernameUniqueRule(existingUsers, editingUser?.id)],
+    [existingUsers, editingUser?.id],
+  );
+
+  const emailRules = useMemo(() => [makeEmailFormatRule()], []);
+
+  const fullnameRules = useMemo(() => [makeFullnameCharsRule()], []);
   const previousOpenRef = useRef(false);
   const previousUserIdRef = useRef<string | null>(null);
 
@@ -74,6 +89,9 @@ export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUs
     initialValues,
     submitting,
     hasFormErrors,
+    usernameRules,
+    emailRules,
+    fullnameRules,
     handleValuesChange: checkFormState,
     handleFieldsChange: checkFormState,
     handleSubmit,
