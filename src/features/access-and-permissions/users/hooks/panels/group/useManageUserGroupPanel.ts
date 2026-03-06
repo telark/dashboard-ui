@@ -1,13 +1,8 @@
-import { useState, useMemo, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { message } from 'antd';
 import type { FormInstance } from 'antd';
-import { updateUserThunk } from '../../../store';
-import type { AppDispatch } from '../../../../../../store';
 import { useFetchGroups } from '../../../../groups/hooks';
 import type { User } from '../../../models';
 import { USERS_CONSTANTS as UC } from '../../../constants';
-import { arraysEqual } from '../../../utils/assignment/arrays';
+import { useAssignmentPanelBase } from '../shared/useAssignmentPanelBase';
 
 interface UseManageUserGroupPanelOptions {
   open: boolean;
@@ -33,45 +28,22 @@ export const useManageUserGroupPanel = ({
   onClose,
   currentSelectedGroups,
 }: UseManageUserGroupPanelOptions): UseManageUserGroupPanelReturn => {
-  const dispatch: AppDispatch = useDispatch();
   const { groups, loading: groupsLoading } = useFetchGroups();
-  const [submitting, setSubmitting] = useState(false);
 
-  const initialSelectedGroups = useMemo(() => user?.assignedGroupsIDs ?? [], [user]);
-
-  useEffect(() => {
-    if (open && user && !groupsLoading && groups) {
-      form.setFieldsValue({ assignedGroupsIDs: user.assignedGroupsIDs ?? [] });
-    }
-  }, [open, user, groupsLoading, groups, form]);
-
-  const hasChanges = useMemo(
-    () => !arraysEqual(currentSelectedGroups, initialSelectedGroups),
-    [currentSelectedGroups, initialSelectedGroups],
-  );
-
-  const handleSubmit = async (values: Record<string, unknown>) => {
-    if (!user) return;
-    setSubmitting(true);
-    try {
-      await dispatch(
-        updateUserThunk({
-          id: user.id,
-          user: { assignedGroupsIDs: (values.assignedGroupsIDs as string[]) ?? [] },
-        }),
-      ).unwrap();
-      message.success(UC.LABELS.MESSAGES.GROUP_ASSIGNED(user.fullname || user.username));
-      form.resetFields();
-      onClose();
-    } catch {
-      message.error(UC.LABELS.MESSAGES.GROUP_ASSIGN_FAILED);
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const { initialSelectedIds, hasChanges, submitting, handleSubmit } = useAssignmentPanelBase({
+    open,
+    user,
+    form,
+    onClose,
+    fieldName: 'assignedGroupsIDs',
+    currentSelected: currentSelectedGroups,
+    dataReady: !groupsLoading && !!groups,
+    successMessage: UC.LABELS.MESSAGES.GROUP_ASSIGNED,
+    failMessage: UC.LABELS.MESSAGES.GROUP_ASSIGN_FAILED,
+  });
 
   return {
-    initialSelectedGroups,
+    initialSelectedGroups: initialSelectedIds,
     hasChanges,
     groups,
     groupsLoading,

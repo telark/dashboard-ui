@@ -1,13 +1,8 @@
-import { useState, useMemo, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { message } from 'antd';
 import type { FormInstance } from 'antd';
-import { updateUserThunk } from '../../../store';
-import type { AppDispatch } from '../../../../../../store';
 import { useRoles } from '../../../../roles/hooks';
 import type { User } from '../../../models';
 import { USERS_CONSTANTS as UC } from '../../../constants';
-import { arraysEqual } from '../../../utils/assignment/arrays';
+import { useAssignmentPanelBase } from '../shared/useAssignmentPanelBase';
 
 interface UseManageUserRolePanelOptions {
   open: boolean;
@@ -34,45 +29,22 @@ export const useManageUserRolePanel = ({
   onClose,
   currentSelectedRoles,
 }: UseManageUserRolePanelOptions): UseManageUserRolePanelReturn => {
-  const dispatch: AppDispatch = useDispatch();
   const { roles, loading: rolesLoading } = useRoles();
-  const [submitting, setSubmitting] = useState(false);
 
-  const initialSelectedRoles = useMemo(() => user?.assignedRolesIDs ?? [], [user]);
-
-  useEffect(() => {
-    if (open && user && !rolesLoading && roles) {
-      form.setFieldsValue({ assignedRolesIDs: user.assignedRolesIDs ?? [] });
-    }
-  }, [open, user, rolesLoading, roles, form]);
-
-  const hasChanges = useMemo(
-    () => !arraysEqual(currentSelectedRoles, initialSelectedRoles),
-    [currentSelectedRoles, initialSelectedRoles],
-  );
-
-  const handleSubmit = async (values: Record<string, unknown>) => {
-    if (!user) return;
-    setSubmitting(true);
-    try {
-      await dispatch(
-        updateUserThunk({
-          id: user.id,
-          user: { assignedRolesIDs: (values.assignedRolesIDs as string[]) ?? [] },
-        }),
-      ).unwrap();
-      message.success(UC.LABELS.MESSAGES.ROLE_ASSIGNED(user.fullname || user.username));
-      form.resetFields();
-      onClose();
-    } catch {
-      message.error(UC.LABELS.MESSAGES.ROLE_ASSIGN_FAILED);
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const { initialSelectedIds, hasChanges, submitting, handleSubmit } = useAssignmentPanelBase({
+    open,
+    user,
+    form,
+    onClose,
+    fieldName: 'assignedRolesIDs',
+    currentSelected: currentSelectedRoles,
+    dataReady: !rolesLoading && !!roles,
+    successMessage: UC.LABELS.MESSAGES.ROLE_ASSIGNED,
+    failMessage: UC.LABELS.MESSAGES.ROLE_ASSIGN_FAILED,
+  });
 
   return {
-    initialSelectedRoles,
+    initialSelectedRoles: initialSelectedIds,
     hasChanges,
     filteredRoles: roles,
     allRoles: roles,

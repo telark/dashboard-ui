@@ -1,11 +1,6 @@
-import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { message } from 'antd';
 import type { FormInstance } from 'antd';
-import { useDeassignModal } from '../../../../shared';
-import { updateUserThunk } from '../../../store';
+import { useDeassignUserField } from '../shared/useDeassignUserField';
 import { USERS_CONSTANTS as UC } from '../../../constants';
-import type { AppDispatch } from '../../../../../../store';
 import type { User } from '../../../models';
 import type { Role } from '../../../../roles/models';
 
@@ -29,34 +24,15 @@ export const useDeassignUserRole = ({
   form,
   onSuccess,
 }: UseDeassignUserRoleOptions): UseDeassignUserRoleReturn => {
-  const dispatch: AppDispatch = useDispatch();
-
-  const performDeassign = useCallback(
-    async (role: Role) => {
-      if (!user) throw new Error('No user selected');
-      const currentRoles = (form.getFieldValue('assignedRolesIDs') as string[]) ?? [];
-      const updatedRoles = currentRoles.filter((id) => id !== role.id);
-      try {
-        await dispatch(
-          updateUserThunk({ id: user.id, user: { assignedRolesIDs: updatedRoles } }),
-        ).unwrap();
-        form.setFieldsValue({ assignedRolesIDs: updatedRoles });
-        message.success(UC.LABELS.MESSAGES.ROLE_DEASSIGNED(role.name));
-      } catch {
-        message.error(UC.LABELS.MESSAGES.ROLE_DEASSIGN_FAILED);
-        throw new Error(UC.LABELS.MESSAGES.ROLE_DEASSIGN_FAILED);
-      }
-    },
-    [user, form, dispatch],
-  );
-
-  const handleDeassignSuccess = useCallback(() => {
-    const updatedRoles = (form.getFieldValue('assignedRolesIDs') as string[]) ?? [];
-    onSuccess?.(updatedRoles);
-  }, [form, onSuccess]);
-
   const { modalOpen, deassigningItem, isDeassigning, openModal, closeModal, handleConfirm } =
-    useDeassignModal<Role>({ onConfirm: performDeassign, onSuccess: handleDeassignSuccess });
+    useDeassignUserField<Role>({
+      user,
+      form,
+      fieldName: 'assignedRolesIDs',
+      successMessage: UC.LABELS.MESSAGES.ROLE_DEASSIGNED,
+      failMessage: UC.LABELS.MESSAGES.ROLE_DEASSIGN_FAILED,
+      onSuccess,
+    });
 
   return {
     deassignModalOpen: modalOpen,
