@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Form } from 'antd';
-import { CheckCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, MinusCircleOutlined, TeamOutlined } from '@ant-design/icons';
 import { SlideOutPanel } from '../../../../../../components/display/panels/slide-out';
 import { FilterPanel } from '../../../../../../components/display/panels/filter';
 import { FilterButton, ToggleButton } from '../../../../../../components/display/buttons';
@@ -10,8 +10,11 @@ import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { useManageUserRolePanel } from '../../../hooks/panels/role/useManageUserRolePanel';
 import { useDeassignUserRole } from '../../../hooks/panels/role/useDeassignUserRole';
+import { useGroupInheritedRoles } from '../../../hooks/panels/role/useGroupInheritedRoles';
+import { useFetchGroups } from '../../../../groups/hooks/data/useFetchGroups';
 import UserRoleSelectList from '../../../components/display/manage/role/UserRoleSelectList';
 import UserAssignedRolesView from '../../../components/display/manage/role/UserAssignedRolesView';
+import UserGroupInheritedRolesView from '../../../components/display/manage/role/UserGroupInheritedRolesView';
 import { buildAttachRoleFilterFields } from '../../../../groups/config/attachRoleFilterConfig';
 import { applyRoleFilters } from '../../../../groups/utils';
 import { useRoleCategoryOptions } from '../../../../groups/hooks/categories/useRoleCategoryOptions';
@@ -19,6 +22,8 @@ import { CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
 import type { User } from '../../../models';
 
 const RoleIcon = Icons.Role;
+
+type ActiveView = 'select' | 'assigned' | 'groupRoles';
 
 interface ManageUserRolePanelProps {
   open: boolean;
@@ -35,7 +40,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
   const [searchTerm, setSearchTerm] = useState('');
-  const [showAssignedOnly, setShowAssignedOnly] = useState(false);
+  const [activeView, setActiveView] = useState<ActiveView>('select');
   // Local source of truth for assigned IDs — no timing dependency on roles loading
   const [localAssignedIds, setLocalAssignedIds] = useState<string[]>(
     () => user?.assignedRolesIDs ?? [],
@@ -46,6 +51,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
   }, [user]);
 
   const { categoryOptions } = useRoleCategoryOptions();
+  const { groups, loading: groupsLoading } = useFetchGroups();
 
   const {
     initialSelectedRoles,
@@ -70,6 +76,8 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     handleConfirmDeassign,
   } = useDeassignUserRole({ user, form, onSuccess: handleDeassignSuccess });
 
+  const groupInheritedRoles = useGroupInheritedRoles(user, allRoles, groups);
+
   const filterFields = useMemo(
     () => buildAttachRoleFilterFields(categoryOptions),
     [categoryOptions],
@@ -82,15 +90,23 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
 
   const filteredAssignedRoleIds = useMemo(() => {
     if (!searchTerm) return localAssignedIds;
-    const lowerSearch = searchTerm.toLowerCase();
+    const lower = searchTerm.toLowerCase();
     return localAssignedIds.filter((id) => {
       const role = allRoles?.find((r) => r.id === id);
       return (
-        role?.name.toLowerCase().includes(lowerSearch) ||
-        role?.description?.toLowerCase().includes(lowerSearch)
+        role?.name.toLowerCase().includes(lower) ||
+        role?.description?.toLowerCase().includes(lower)
       );
     });
   }, [localAssignedIds, searchTerm, allRoles]);
+
+  const filteredGroupInheritedRoles = useMemo(() => {
+    if (!searchTerm) return groupInheritedRoles;
+    const lower = searchTerm.toLowerCase();
+    return groupInheritedRoles.filter(({ role }) =>
+      role.name.toLowerCase().includes(lower) || role.description?.toLowerCase().includes(lower),
+    );
+  }, [groupInheritedRoles, searchTerm]);
 
   const handleFilterChange = (filters: Record<string, unknown>) => setAppliedFilters(filters);
 
@@ -101,12 +117,17 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
 
   const handleFilterReset = () => setAppliedFilters({});
 
-  const handleToggleAssignedOnly = () => {
-    setShowAssignedOnly((prev) => !prev);
-    if (!showAssignedOnly) {
-      setFilterPanelOpen(false);
-    }
+  const handleToggleAssigned = () => {
+    setActiveView((prev) => (prev === 'assigned' ? 'select' : 'assigned'));
+    setFilterPanelOpen(false);
   };
+
+  const handleToggleGroupRoles = () => {
+    setActiveView((prev) => (prev === 'groupRoles' ? 'select' : 'groupRoles'));
+    setFilterPanelOpen(false);
+  };
+
+  const isReadOnlyView = activeView !== 'select';
 
   if (!user) return null;
 
@@ -139,30 +160,43 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                 value={searchTerm}
                 onChange={setSearchTerm}
                 placeholder={UC.LABELS.PANELS.MANAGE_ROLE.SEARCH_PLACEHOLDER}
-                minWidth={300}
+                minWidth={200}
               />
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
                 <ToggleButton
-                  active={showAssignedOnly}
-                  onClick={handleToggleAssignedOnly}
+                  active={activeView === 'assigned'}
+                  onClick={handleToggleAssigned}
                   label={UC.LABELS.PANELS.MANAGE_ROLE.SHOW_ASSIGNED_BUTTON}
                   icon={<CheckCircleOutlined />}
                 />
+                <ToggleButton
+                  active={activeView === 'groupRoles'}
+                  onClick={handleToggleGroupRoles}
+                  label={UC.LABELS.PANELS.MANAGE_ROLE.FROM_GROUPS_BUTTON}
+                  icon={<TeamOutlined />}
+                />
                 <FilterButton
                   onClick={() => setFilterPanelOpen(true)}
-                  disabled={filterPanelOpen || showAssignedOnly}
+                  disabled={filterPanelOpen || isReadOnlyView}
                 />
               </div>
             </div>
             <div style={{ width: '100%', margin: 0, padding: 0, boxSizing: 'border-box' }}>
-              {showAssignedOnly ? (
+              {activeView === 'assigned' && (
                 <UserAssignedRolesView
                   assignedRoleIds={filteredAssignedRoleIds}
                   allRoles={allRoles}
                   loading={rolesLoading}
                   onDeassignClick={openDeassignModal}
                 />
-              ) : (
+              )}
+              {activeView === 'groupRoles' && (
+                <UserGroupInheritedRolesView
+                  items={filteredGroupInheritedRoles}
+                  loading={rolesLoading || groupsLoading}
+                />
+              )}
+              {activeView === 'select' && (
                 <UserRoleSelectList
                   roles={filteredRoles}
                   loading={rolesLoading}
@@ -177,7 +211,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
         submitButtonText={UC.LABELS.PANELS.MANAGE_ROLE.SUBMIT_BUTTON}
         submitButtonIcon={<RoleIcon size={16} />}
         loading={submitting}
-        disabled={!hasChanges || showAssignedOnly}
+        disabled={!hasChanges || isReadOnlyView}
         form={form}
         initialValues={{ assignedRolesIDs: initialSelectedRoles }}
       />
