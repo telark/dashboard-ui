@@ -6,25 +6,12 @@ import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/util
 import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
 import { getScopeLabel } from '../../../../utils/role/scope';
+import { GROUP_TAG_STYLE } from './styles';
 import type { GroupInheritedRole } from '../../../../hooks/panels/role/useGroupInheritedRoles';
 import type { Group } from '../../../../../groups/models';
 
 const RoleIcon = Icons.Role;
 const GroupIcon = Icons.Group;
-
-const GROUP_TAG_STYLE: React.CSSProperties = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: 3,
-  fontSize: 12,
-  color: DEFAULT_COLORS.TEXT_PRIMARY,
-  padding: '2px 8px',
-  background: `${DEFAULT_COLORS.SUCCESS}18`,
-  borderRadius: 20,
-  border: `1px solid ${DEFAULT_COLORS.SUCCESS}40`,
-  lineHeight: 1.4,
-  whiteSpace: 'nowrap',
-};
 
 const renderRoleContent = (item: GroupInheritedRole): React.ReactNode => {
   const { role } = item;

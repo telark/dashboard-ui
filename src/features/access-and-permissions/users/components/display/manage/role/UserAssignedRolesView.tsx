@@ -6,7 +6,19 @@ import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/util
 import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
 import { getScopeLabel } from '../../../../utils/role/scope';
+import { GROUP_TAG_STYLE } from './styles';
 import type { Role } from '../../../../../roles/models';
+
+const GroupIcon = Icons.Group;
+
+const GROUP_TAGS_WRAPPER: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-end',
+  gap: 3,
+  flexShrink: 0,
+  marginTop: 2,
+};
 
 const RoleIcon = Icons.Role;
 
@@ -40,8 +52,10 @@ interface UserAssignedRolesViewProps {
   allRoles?: Role[];
   loading: boolean;
   onDeassignClick?: (role: Role) => void;
-  /** Role IDs that are inherited via group membership — deassign is not allowed for these. */
+  /** Role IDs inherited via group — deassign is blocked for these. */
   inheritedRoleIds?: Set<string>;
+  /** Maps role ID → group names for inherited roles — renders source tags on their cards. */
+  inheritedGroupsByRoleId?: Map<string, string[]>;
 }
 
 const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
@@ -50,11 +64,31 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
   loading,
   onDeassignClick,
   inheritedRoleIds,
+  inheritedGroupsByRoleId,
 }) => {
   const assignedRoles = useMemo(() => {
     if (!allRoles) return [];
     return allRoles.filter((r) => assignedRoleIds.includes(r.id));
   }, [allRoles, assignedRoleIds]);
+
+  const renderAssignmentSource = useMemo(() => {
+    if (!inheritedGroupsByRoleId) return undefined;
+    function renderGroupTags(role: Role): React.ReactNode {
+      const groupNames = inheritedGroupsByRoleId!.get(role.id);
+      if (!groupNames?.length) return undefined;
+      return (
+        <div style={GROUP_TAGS_WRAPPER}>
+          {groupNames.map((name) => (
+            <span key={name} style={GROUP_TAG_STYLE}>
+              <GroupIcon size={10} />
+              {name}
+            </span>
+          ))}
+        </div>
+      );
+    }
+    return renderGroupTags;
+  }, [inheritedGroupsByRoleId]);
 
   return (
     <AssignedItemsList<Role>
@@ -67,6 +101,7 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
       onDeassignClick={onDeassignClick}
       deassignTooltip="Remove role"
       canDeassign={(role) => !inheritedRoleIds?.has(role.id)}
+      renderRightContent={renderAssignmentSource}
     />
   );
 };

@@ -89,14 +89,41 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     [baseFilteredRoles, appliedFilters, searchTerm],
   );
 
-  const filteredAssignedRoleIds = useMemo(
+  const inheritedGroupsByRoleId = useMemo(
     () =>
-      filterBySearchTerm(localAssignedIds, searchTerm, (id) => {
-        const role = allRoles?.find((r) => r.id === id);
-        return [role?.name, role?.description];
-      }),
-    [localAssignedIds, searchTerm, allRoles],
+      new Map(
+        groupInheritedRoles.map(({ role, fromGroups }) => [
+          role.id,
+          fromGroups.map((g) => CapitalizeFirstLetter(g.name)),
+        ]),
+      ),
+    [groupInheritedRoles],
   );
+
+  // Both derived from inheritedGroupsByRoleId — no redundant iteration over groupInheritedRoles
+  const inheritedRoleIds = useMemo(
+    () => new Set(inheritedGroupsByRoleId.keys()),
+    [inheritedGroupsByRoleId],
+  );
+
+  const inheritedRoleTooltips = useMemo(
+    () =>
+      new Map(
+        Array.from(inheritedGroupsByRoleId.entries()).map(([roleId, groupNames]) => [
+          roleId,
+          UC.LABELS.MESSAGES.ROLE_INHERITED_FROM_GROUP(groupNames.join(', ')),
+        ]),
+      ),
+    [inheritedGroupsByRoleId],
+  );
+
+  const filteredAssignedRoleIds = useMemo(() => {
+    const allAssignedIds = [...new Set([...localAssignedIds, ...inheritedRoleIds])];
+    return filterBySearchTerm(allAssignedIds, searchTerm, (id) => {
+      const role = allRoles?.find((r) => r.id === id);
+      return [role?.name, role?.description];
+    });
+  }, [localAssignedIds, inheritedRoleIds, searchTerm, allRoles]);
 
   const filteredGroupInheritedRoles = useMemo(
     () =>
@@ -105,24 +132,6 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
         role.description,
       ]),
     [groupInheritedRoles, searchTerm],
-  );
-
-  const inheritedRoleTooltips = useMemo(
-    () =>
-      new Map(
-        groupInheritedRoles.map(({ role, fromGroups }) => [
-          role.id,
-          UC.LABELS.MESSAGES.ROLE_INHERITED_FROM_GROUP(
-            fromGroups.map((g) => CapitalizeFirstLetter(g.name)).join(', '),
-          ),
-        ]),
-      ),
-    [groupInheritedRoles],
-  );
-
-  const inheritedRoleIds = useMemo(
-    () => new Set(groupInheritedRoles.map(({ role }) => role.id)),
-    [groupInheritedRoles],
   );
 
   const handleFilterChange = (filters: Record<string, unknown>) => setAppliedFilters(filters);
@@ -206,6 +215,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                   loading={rolesLoading}
                   onDeassignClick={openDeassignModal}
                   inheritedRoleIds={inheritedRoleIds}
+                  inheritedGroupsByRoleId={inheritedGroupsByRoleId}
                 />
               )}
               {activeView === 'groupRoles' && (
