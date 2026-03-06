@@ -1,7 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
 import type { FormInstance } from 'antd';
+import { useDeassignModal } from '../../../shared';
 import { updateUserThunk } from '../../store';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import type { AppDispatch } from '../../../../../store';
@@ -29,50 +30,40 @@ export const useDeassignUserRole = ({
   onSuccess,
 }: UseDeassignUserRoleOptions): UseDeassignUserRoleReturn => {
   const dispatch: AppDispatch = useDispatch();
-  const [deassignModalOpen, setDeassignModalOpen] = useState(false);
-  const [deassigningRole, setDeassigningRole] = useState<Role | null>(null);
-  const [isDeassigning, setIsDeassigning] = useState(false);
 
-  const openDeassignModal = useCallback((role: Role) => {
-    setDeassigningRole(role);
-    setDeassignModalOpen(true);
-  }, []);
+  const performDeassign = useCallback(
+    async (role: Role) => {
+      if (!user) throw new Error('No user selected');
+      const currentRoles = (form.getFieldValue('assignedRolesIDs') as string[]) ?? [];
+      const updatedRoles = currentRoles.filter((id) => id !== role.id);
+      try {
+        await dispatch(
+          updateUserThunk({ id: user.id, user: { assignedRolesIDs: updatedRoles } }),
+        ).unwrap();
+        form.setFieldsValue({ assignedRolesIDs: updatedRoles });
+        message.success(UC.LABELS.MESSAGES.ROLE_DEASSIGNED(role.name));
+      } catch {
+        message.error(UC.LABELS.MESSAGES.ROLE_DEASSIGN_FAILED);
+        throw new Error(UC.LABELS.MESSAGES.ROLE_DEASSIGN_FAILED);
+      }
+    },
+    [user, form, dispatch],
+  );
 
-  const closeDeassignModal = useCallback(() => {
-    setDeassignModalOpen(false);
-    setDeassigningRole(null);
-  }, []);
+  const handleDeassignSuccess = useCallback(() => {
+    const updatedRoles = (form.getFieldValue('assignedRolesIDs') as string[]) ?? [];
+    onSuccess?.(updatedRoles);
+  }, [form, onSuccess]);
 
-  const handleConfirmDeassign = useCallback(async () => {
-    if (!user || !deassigningRole) return;
-
-    const currentRoles = (form.getFieldValue('assignedRolesIDs') as string[]) ?? [];
-    const updatedRoles = currentRoles.filter((id) => id !== deassigningRole.id);
-
-    setIsDeassigning(true);
-    try {
-      await dispatch(
-        updateUserThunk({ id: user.id, user: { assignedRolesIDs: updatedRoles } }),
-      ).unwrap();
-
-      form.setFieldsValue({ assignedRolesIDs: updatedRoles });
-      onSuccess?.(updatedRoles);
-      message.success(UC.LABELS.MESSAGES.ROLE_DEASSIGNED(deassigningRole.name));
-      setDeassignModalOpen(false);
-      setDeassigningRole(null);
-    } catch {
-      message.error(UC.LABELS.MESSAGES.ROLE_DEASSIGN_FAILED);
-    } finally {
-      setIsDeassigning(false);
-    }
-  }, [user, deassigningRole, form, dispatch, onSuccess]);
+  const { modalOpen, deassigningItem, isDeassigning, openModal, closeModal, handleConfirm } =
+    useDeassignModal<Role>({ onConfirm: performDeassign, onSuccess: handleDeassignSuccess });
 
   return {
-    deassignModalOpen,
-    deassigningRole,
+    deassignModalOpen: modalOpen,
+    deassigningRole: deassigningItem,
     isDeassigning,
-    openDeassignModal,
-    closeDeassignModal,
-    handleConfirmDeassign,
+    openDeassignModal: openModal,
+    closeDeassignModal: closeModal,
+    handleConfirmDeassign: handleConfirm,
   };
 };
