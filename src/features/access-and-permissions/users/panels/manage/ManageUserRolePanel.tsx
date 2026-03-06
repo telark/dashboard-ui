@@ -1,13 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Form } from 'antd';
-import { CheckCircleOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
 import { FilterPanel } from '../../../../../components/display/panels/filter';
 import { FilterButton, ToggleButton } from '../../../../../components/display/buttons';
 import { SearchInput } from '../../../../../components/display/inputs';
-import { Icons } from '../../../../../constants';
+import { ActionConfirmModal } from '../../../../../components/display/modal';
+import { Icons, DEFAULT_COLORS } from '../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import { useManageUserRolePanel } from '../../hooks/panels/useManageUserRolePanel';
+import { useDeassignUserRole } from '../../hooks/panels/useDeassignUserRole';
 import UserRoleSelectList from '../../components/display/manage/UserRoleSelectList';
 import UserAssignedRolesView from '../../components/display/manage/UserAssignedRolesView';
 import { buildAttachRoleFilterFields } from '../../../groups/config/attachRoleFilterConfig';
@@ -34,6 +36,14 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
   const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
   const [searchTerm, setSearchTerm] = useState('');
   const [showAssignedOnly, setShowAssignedOnly] = useState(false);
+  // Local source of truth for assigned IDs — no timing dependency on roles loading
+  const [localAssignedIds, setLocalAssignedIds] = useState<string[]>(
+    () => user?.assignedRolesIDs ?? [],
+  );
+
+  useEffect(() => {
+    setLocalAssignedIds(user?.assignedRolesIDs ?? []);
+  }, [user]);
 
   const { categoryOptions } = useRoleCategoryOptions();
 
@@ -47,6 +57,19 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     handleSubmit,
   } = useManageUserRolePanel({ open, user, form, onClose, currentSelectedRoles });
 
+  const handleDeassignSuccess = useCallback((updatedRoles: string[]) => {
+    setLocalAssignedIds(updatedRoles);
+  }, []);
+
+  const {
+    deassignModalOpen,
+    deassigningRole,
+    isDeassigning,
+    openDeassignModal,
+    closeDeassignModal,
+    handleConfirmDeassign,
+  } = useDeassignUserRole({ user, form, onSuccess: handleDeassignSuccess });
+
   const filterFields = useMemo(
     () => buildAttachRoleFilterFields(categoryOptions),
     [categoryOptions],
@@ -57,19 +80,17 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     [baseFilteredRoles, appliedFilters, searchTerm],
   );
 
-  const assignedRoleIds = useMemo(() => user?.assignedRolesIDs ?? [], [user]);
-
   const filteredAssignedRoleIds = useMemo(() => {
-    if (!searchTerm) return assignedRoleIds;
+    if (!searchTerm) return localAssignedIds;
     const lowerSearch = searchTerm.toLowerCase();
-    return assignedRoleIds.filter((id) => {
+    return localAssignedIds.filter((id) => {
       const role = allRoles?.find((r) => r.id === id);
       return (
         role?.name.toLowerCase().includes(lowerSearch) ||
         role?.description?.toLowerCase().includes(lowerSearch)
       );
     });
-  }, [assignedRoleIds, searchTerm, allRoles]);
+  }, [localAssignedIds, searchTerm, allRoles]);
 
   const handleFilterChange = (filters: Record<string, unknown>) => setAppliedFilters(filters);
 
@@ -139,6 +160,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                   assignedRoleIds={filteredAssignedRoleIds}
                   allRoles={allRoles}
                   loading={rolesLoading}
+                  onDeassignClick={openDeassignModal}
                 />
               ) : (
                 <UserRoleSelectList
@@ -167,6 +189,20 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
         onFilterChange={handleFilterChange}
         onApply={handleFilterApply}
         onReset={handleFilterReset}
+      />
+      <ActionConfirmModal
+        open={deassignModalOpen}
+        onClose={closeDeassignModal}
+        onConfirm={handleConfirmDeassign}
+        title={UC.LABELS.ACTIONS.DEASSIGN_ROLE_MODAL_TITLE}
+        action={UC.LABELS.ACTIONS.DEASSIGN_ROLE_MODAL_ACTION}
+        resourceName={CapitalizeFirstLetter(deassigningRole?.name ?? '')}
+        resourceType={UC.LABELS.ACTIONS.DEASSIGN_ROLE_RESOURCE_TYPE}
+        confirmText={UC.LABELS.ACTIONS.DEASSIGN_ROLE_MODAL_CONFIRM}
+        loading={isDeassigning}
+        icon={<MinusCircleOutlined style={{ fontSize: 28, color: DEFAULT_COLORS.ERROR }} />}
+        getContainer={() => document.body}
+        offsetRight={PANEL_WIDTH}
       />
     </>
   );

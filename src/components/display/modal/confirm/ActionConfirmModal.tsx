@@ -20,6 +20,10 @@ export interface ActionConfirmModalProps {
   loading?: boolean;
   danger?: boolean;
   icon?: React.ReactNode;
+  /** Shifts the modal's centering leftward by this many px (useful when a side panel is open) */
+  offsetRight?: number;
+  /** Override the portal container; defaults to false (inline). Pass () => document.body for viewport centering. */
+  getContainer?: false | (() => HTMLElement);
 }
 
 const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
@@ -35,6 +39,8 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
   loading = false,
   danger = true,
   icon,
+  offsetRight,
+  getContainer = false,
 }) => {
   const { handleModalCancel, handleCloseIconClick, handleCancelClick, handleConfirmClick } =
     useActionConfirmHandlers({ onClose, onConfirm });
@@ -57,7 +63,7 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
       width={ACTION_CONFIRM_MODAL.MODAL.WIDTH}
       footer={null}
       maskClosable={true}
-      getContainer={false}
+      getContainer={getContainer}
       closeIcon={<ActionCloseIcon onClick={handleCloseIconClick} />}
       className={ACTION_CONFIRM_MODAL.MODAL.CLASS_NAME}
       styles={{
@@ -69,6 +75,7 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
         body: {
           padding: ACTION_CONFIRM_MODAL.CONTENT.PADDING,
         },
+        wrapper: offsetRight ? { paddingRight: offsetRight } : undefined,
       }}
     >
       <div

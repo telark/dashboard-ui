@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
-import { CheckCircleOutlined } from '@ant-design/icons';
+import React, { useMemo, useState, useCallback } from 'react';
+import { MinusCircleOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 import { ScrollIndicator } from '../../../../../../components/display/indicators';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
@@ -12,6 +13,9 @@ import type { Role } from '../../../../roles/models';
 
 const RoleIcon = Icons.Role;
 
+const DEASSIGN_ICON_DEFAULT_COLOR = DEFAULT_COLORS.ICON_SECONDARY;
+const DEASSIGN_ICON_HOVER_COLOR = DEFAULT_COLORS.ERROR;
+
 const getScopeLabel = (scopeKey: string): string => {
   const area = RC.SCOPE.DEFAULT_AREAS.find((a) => a.key === scopeKey);
   return area?.label || scopeKey;
@@ -21,6 +25,7 @@ interface UserAssignedRolesViewProps {
   assignedRoleIds: string[];
   allRoles?: Role[];
   loading: boolean;
+  onDeassignClick?: (role: Role) => void;
 }
 
 const cardStyle: React.CSSProperties = {
@@ -32,10 +37,53 @@ const cardStyle: React.CSSProperties = {
   gap: 8,
 };
 
+interface DeassignButtonProps {
+  onClick: () => void;
+}
+
+const DeassignButton: React.FC<DeassignButtonProps> = ({ onClick }) => {
+  const [hovered, setHovered] = useState(false);
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      onClick();
+    },
+    [onClick],
+  );
+
+  return (
+    <Tooltip title="Remove role">
+      <button
+        type="button"
+        onClick={handleClick}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{
+          all: 'unset',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+          marginTop: 4,
+          padding: 2,
+          borderRadius: 4,
+          transition: 'color 0.2s',
+          color: hovered ? DEASSIGN_ICON_HOVER_COLOR : DEASSIGN_ICON_DEFAULT_COLOR,
+        }}
+      >
+        <MinusCircleOutlined style={{ fontSize: 16 }} />
+      </button>
+    </Tooltip>
+  );
+};
+
 const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
   assignedRoleIds,
   allRoles,
   loading,
+  onDeassignClick,
 }) => {
   const assignedRoles = useMemo(() => {
     if (!allRoles) return [];
@@ -90,9 +138,7 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
                 )}
                 {scopesContent}
               </div>
-              <CheckCircleOutlined
-                style={{ color: DEFAULT_COLORS.SUCCESS, fontSize: 16, marginTop: 4, flexShrink: 0 }}
-              />
+              {onDeassignClick && <DeassignButton onClick={() => onDeassignClick(role)} />}
             </div>
           );
         })}

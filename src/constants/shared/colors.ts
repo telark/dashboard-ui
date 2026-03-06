@@ -24,4 +24,6 @@ export const DEFAULT_COLORS = {
   CHIP_CUSTOM_TEXT: '#334155',
   // Icon colors
   ICON_MUTED: '#d1d5db',
+  ICON_SECONDARY: '#94a3b8',
+  ERROR: '#ef4444',
 } as const;
