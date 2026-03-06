@@ -22,6 +22,7 @@ const SelectableListItem: React.FC<SelectableListItemProps> = ({
   className,
   checkboxStyle,
   children,
+  disabled = false,
 }) => {
   const baseStyles = itemStyles?.base || {};
   const hoverStyles = itemStyles?.hover || {};
@@ -112,7 +113,11 @@ const SelectableListItem: React.FC<SelectableListItemProps> = ({
           </div>
         </Tooltip>
       )}
-      <Checkbox value={value} style={{ margin: 0, width: '100%', ...checkboxStyle }}>
+      <Checkbox
+        value={value}
+        disabled={disabled}
+        style={{ margin: 0, width: '100%', ...checkboxStyle }}
+      >
         <div style={defaultContentStyles}>
           {name && <div style={defaultNameStyles}>{name}</div>}
           {description && <div style={defaultDescriptionStyles}>{description}</div>}

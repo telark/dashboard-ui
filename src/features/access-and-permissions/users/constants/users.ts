@@ -38,6 +38,8 @@ export const USERS_CONSTANTS = {
       NO_GROUPS_AVAILABLE: 'No groups available',
       NO_ASSIGNED_ROLES: 'No roles assigned yet',
       NO_GROUP_ROLES: 'No roles inherited from groups',
+      ROLE_INHERITED_FROM_GROUP: (groupNames: string) =>
+        `Already granted via group: ${groupNames}`,
       LOADING_ROLES: 'Loading roles...',
       LOADING_GROUPS: 'Loading groups...',
     },

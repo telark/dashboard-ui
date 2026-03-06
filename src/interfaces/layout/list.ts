@@ -30,4 +30,5 @@ export interface SelectableListItemProps {
   className?: string;
   checkboxStyle?: React.CSSProperties;
   children?: React.ReactNode;
+  disabled?: boolean;
 }

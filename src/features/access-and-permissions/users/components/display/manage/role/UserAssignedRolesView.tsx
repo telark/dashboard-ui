@@ -40,6 +40,8 @@ interface UserAssignedRolesViewProps {
   allRoles?: Role[];
   loading: boolean;
   onDeassignClick?: (role: Role) => void;
+  /** Role IDs that are inherited via group membership — deassign is not allowed for these. */
+  inheritedRoleIds?: Set<string>;
 }
 
 const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
@@ -47,6 +49,7 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
   allRoles,
   loading,
   onDeassignClick,
+  inheritedRoleIds,
 }) => {
   const assignedRoles = useMemo(() => {
     if (!allRoles) return [];
@@ -63,6 +66,7 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
       loadingMessage={UC.LABELS.MESSAGES.LOADING_ROLES}
       onDeassignClick={onDeassignClick}
       deassignTooltip="Remove role"
+      canDeassign={(role) => !inheritedRoleIds?.has(role.id)}
     />
   );
 };

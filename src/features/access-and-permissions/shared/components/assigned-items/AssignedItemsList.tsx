@@ -15,6 +15,8 @@ export interface AssignedItemsListProps<T> {
   deassignTooltip?: string;
   /** Optional renderer for a custom element in the top-right slot of each card */
   renderRightContent?: (item: T) => React.ReactNode;
+  /** When provided, controls per-item deassign button visibility. Defaults to always true. */
+  canDeassign?: (item: T) => boolean;
 }
 
 function AssignedItemsList<T>({
@@ -27,6 +29,7 @@ function AssignedItemsList<T>({
   onDeassignClick,
   deassignTooltip,
   renderRightContent,
+  canDeassign,
 }: AssignedItemsListProps<T>) {
   const {
     scrollContainerRef,
@@ -52,16 +55,19 @@ function AssignedItemsList<T>({
         className={containerClassName}
         style={{ ...ASSIGNED_LIST_CONTAINER_STYLE, ...containerStyle }}
       >
-        {items.map((item) => (
-          <AssignedItemCard
-            key={getItemKey(item)}
-            onDeassign={onDeassignClick ? () => onDeassignClick(item) : undefined}
-            deassignTooltip={deassignTooltip}
-            rightContent={renderRightContent ? renderRightContent(item) : undefined}
-          >
-            {renderItemContent(item)}
-          </AssignedItemCard>
-        ))}
+        {items.map((item) => {
+          const deassignAllowed = canDeassign ? canDeassign(item) : true;
+          return (
+            <AssignedItemCard
+              key={getItemKey(item)}
+              onDeassign={onDeassignClick && deassignAllowed ? () => onDeassignClick(item) : undefined}
+              deassignTooltip={deassignTooltip}
+              rightContent={renderRightContent ? renderRightContent(item) : undefined}
+            >
+              {renderItemContent(item)}
+            </AssignedItemCard>
+          );
+        })}
       </div>
       <ScrollIndicator
         containerRef={scrollContainerRef}

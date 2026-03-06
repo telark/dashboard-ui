@@ -107,6 +107,24 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     [groupInheritedRoles, searchTerm],
   );
 
+  const inheritedRoleTooltips = useMemo(
+    () =>
+      new Map(
+        groupInheritedRoles.map(({ role, fromGroups }) => [
+          role.id,
+          UC.LABELS.MESSAGES.ROLE_INHERITED_FROM_GROUP(
+            fromGroups.map((g) => CapitalizeFirstLetter(g.name)).join(', '),
+          ),
+        ]),
+      ),
+    [groupInheritedRoles],
+  );
+
+  const inheritedRoleIds = useMemo(
+    () => new Set(groupInheritedRoles.map(({ role }) => role.id)),
+    [groupInheritedRoles],
+  );
+
   const handleFilterChange = (filters: Record<string, unknown>) => setAppliedFilters(filters);
 
   const handleFilterApply = (filters: Record<string, unknown>) => {
@@ -187,6 +205,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                   allRoles={allRoles}
                   loading={rolesLoading}
                   onDeassignClick={openDeassignModal}
+                  inheritedRoleIds={inheritedRoleIds}
                 />
               )}
               {activeView === 'groupRoles' && (
@@ -200,6 +219,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                   roles={filteredRoles}
                   loading={rolesLoading}
                   allRoles={allRoles}
+                  inheritedRoleTooltips={inheritedRoleTooltips}
                 />
               )}
             </div>

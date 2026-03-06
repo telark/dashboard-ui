@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { Checkbox, Form } from 'antd';
+import { Checkbox, Form, Tooltip } from 'antd';
 import { ScrollIndicator } from '../../../../../../../components/display/indicators';
 import { SelectableListItem } from '../../../../../../../components/display/list';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
@@ -17,9 +17,16 @@ interface UserRoleSelectListProps {
   roles?: Role[];
   loading: boolean;
   allRoles?: Role[];
+  /** Maps role ID → tooltip text for roles that are already inherited via a group. */
+  inheritedRoleTooltips?: Map<string, string>;
 }
 
-const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({ roles, loading, allRoles }) => {
+const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
+  roles,
+  loading,
+  allRoles,
+  inheritedRoleTooltips,
+}) => {
   const form = Form.useFormInstance();
   const watchedSelectedRoles = Form.useWatch('assignedRolesIDs', form);
   const currentSelectedRoles = useMemo(
@@ -78,6 +85,8 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({ roles, loading,
           >
             {roles.map((role) => {
               const isProtected = isRoleProtected(role);
+              const inheritedTooltip = inheritedRoleTooltips?.get(role.id);
+              const isInherited = Boolean(inheritedTooltip);
 
               const scopesContent = getRoleScopesContent(role, {
                 scopesAndPermissions: role.scopesAndPermissions || [],
@@ -86,10 +95,10 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({ roles, loading,
                 scopeItemStyle: ARC.LIST.SCOPE_ITEM,
               });
 
-              return (
+              const listItem = (
                 <SelectableListItem
-                  key={role.id}
                   value={role.id}
+                  disabled={isInherited}
                   name={CapitalizeFirstLetter(role.name)}
                   description={
                     role.description
@@ -102,11 +111,25 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({ roles, loading,
                   protectionTooltip={ARC.TOOLTIPS.PROTECTED_ROLE}
                   protectionIconColor={DEFAULT_COLORS.SUCCESS}
                   protectionIconSize={18}
-                  itemStyles={{ base: ARC.LIST.ITEM.BASE, hover: ARC.LIST.ITEM.HOVER }}
+                  itemStyles={{
+                    base: {
+                      ...ARC.LIST.ITEM.BASE,
+                      ...(isInherited ? { opacity: 0.55, cursor: 'not-allowed' } : {}),
+                    },
+                    hover: isInherited ? ARC.LIST.ITEM.BASE : ARC.LIST.ITEM.HOVER,
+                  }}
                   contentStyles={ARC.LIST.ROLE_CONTENT}
                   nameStyles={ARC.LIST.ROLE_NAME}
                   descriptionStyles={ARC.LIST.ROLE_DESCRIPTION}
                 />
+              );
+
+              return isInherited ? (
+                <Tooltip key={role.id} title={inheritedTooltip} placement="left">
+                  <div>{listItem}</div>
+                </Tooltip>
+              ) : (
+                <React.Fragment key={role.id}>{listItem}</React.Fragment>
               );
             })}
           </div>
