@@ -19,6 +19,7 @@ import { buildAttachRoleFilterFields } from '../../../../groups/config/attachRol
 import { applyRoleFilters } from '../../../../groups/utils';
 import { useRoleCategoryOptions } from '../../../../groups/hooks/categories/useRoleCategoryOptions';
 import { CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
+import { filterBySearchTerm } from '../../../utils/search/filter';
 import type { User } from '../../../models';
 
 const RoleIcon = Icons.Role;
@@ -88,25 +89,23 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     [baseFilteredRoles, appliedFilters, searchTerm],
   );
 
-  const filteredAssignedRoleIds = useMemo(() => {
-    if (!searchTerm) return localAssignedIds;
-    const lower = searchTerm.toLowerCase();
-    return localAssignedIds.filter((id) => {
-      const role = allRoles?.find((r) => r.id === id);
-      return (
-        role?.name.toLowerCase().includes(lower) ||
-        role?.description?.toLowerCase().includes(lower)
-      );
-    });
-  }, [localAssignedIds, searchTerm, allRoles]);
+  const filteredAssignedRoleIds = useMemo(
+    () =>
+      filterBySearchTerm(localAssignedIds, searchTerm, (id) => {
+        const role = allRoles?.find((r) => r.id === id);
+        return [role?.name, role?.description];
+      }),
+    [localAssignedIds, searchTerm, allRoles],
+  );
 
-  const filteredGroupInheritedRoles = useMemo(() => {
-    if (!searchTerm) return groupInheritedRoles;
-    const lower = searchTerm.toLowerCase();
-    return groupInheritedRoles.filter(({ role }) =>
-      role.name.toLowerCase().includes(lower) || role.description?.toLowerCase().includes(lower),
-    );
-  }, [groupInheritedRoles, searchTerm]);
+  const filteredGroupInheritedRoles = useMemo(
+    () =>
+      filterBySearchTerm(groupInheritedRoles, searchTerm, ({ role }) => [
+        role.name,
+        role.description,
+      ]),
+    [groupInheritedRoles, searchTerm],
+  );
 
   const handleFilterChange = (filters: Record<string, unknown>) => setAppliedFilters(filters);
 

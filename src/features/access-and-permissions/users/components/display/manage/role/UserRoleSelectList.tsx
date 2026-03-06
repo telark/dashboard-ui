@@ -4,19 +4,14 @@ import { ScrollIndicator } from '../../../../../../../components/display/indicat
 import { SelectableListItem } from '../../../../../../../components/display/list';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
 import { Icons, DEFAULT_COLORS } from '../../../../../../../constants';
-import { ROLES_CONSTANTS as RC } from '../../../../../roles/constants';
 import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/utils';
 import { useRoleListScroll } from '../../../../../groups/hooks/scroll/useRoleListScroll';
 import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
+import { getScopeLabel } from '../../../../utils/role/scope';
 import type { Role } from '../../../../../roles/models';
 
 const RoleIcon = Icons.Role;
-
-const getScopeLabel = (scopeKey: string): string => {
-  const area = RC.SCOPE.DEFAULT_AREAS.find((a) => a.key === scopeKey);
-  return area?.label || scopeKey;
-};
 
 interface UserRoleSelectListProps {
   roles?: Role[];

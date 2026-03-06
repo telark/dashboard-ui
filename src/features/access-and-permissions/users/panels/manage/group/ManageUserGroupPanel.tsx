@@ -12,6 +12,7 @@ import { useDeassignUserGroup } from '../../../hooks/panels/group/useDeassignUse
 import UserGroupSelectList from '../../../components/display/manage/group/UserGroupSelectList';
 import UserAssignedGroupsView from '../../../components/display/manage/group/UserAssignedGroupsView';
 import { CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
+import { filterBySearchTerm } from '../../../utils/search/filter';
 import type { User } from '../../../models';
 
 const GroupIcon = Icons.Group;
@@ -53,27 +54,19 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
     handleConfirmDeassign,
   } = useDeassignUserGroup({ user, form, onSuccess: handleDeassignSuccess });
 
-  const filteredGroups = useMemo(() => {
-    if (!searchTerm) return groups;
-    const lower = searchTerm.toLowerCase();
-    return (groups || []).filter(
-      (g) =>
-        g.name.toLowerCase().includes(lower) ||
-        (g.description && g.description.toLowerCase().includes(lower)),
-    );
-  }, [groups, searchTerm]);
+  const filteredGroups = useMemo(
+    () => filterBySearchTerm(groups || [], searchTerm, (g) => [g.name, g.description]),
+    [groups, searchTerm],
+  );
 
-  const filteredAssignedGroupIds = useMemo(() => {
-    if (!searchTerm) return localAssignedIds;
-    const lower = searchTerm.toLowerCase();
-    return localAssignedIds.filter((id) => {
-      const group = groups?.find((g) => g.id === id);
-      return (
-        group?.name.toLowerCase().includes(lower) ||
-        group?.description?.toLowerCase().includes(lower)
-      );
-    });
-  }, [localAssignedIds, searchTerm, groups]);
+  const filteredAssignedGroupIds = useMemo(
+    () =>
+      filterBySearchTerm(localAssignedIds, searchTerm, (id) => {
+        const group = groups?.find((g) => g.id === id);
+        return [group?.name, group?.description];
+      }),
+    [localAssignedIds, searchTerm, groups],
+  );
 
   const handleToggleAssignedOnly = () => {
     setShowAssignedOnly((prev) => !prev);

@@ -2,10 +2,10 @@ import React from 'react';
 import { AssignedItemsList } from '../../../../../shared';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
 import { Icons, DEFAULT_COLORS } from '../../../../../../../constants';
-import { ROLES_CONSTANTS as RC } from '../../../../../roles/constants';
 import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/utils';
 import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
+import { getScopeLabel } from '../../../../utils/role/scope';
 import type { GroupInheritedRole } from '../../../../hooks/panels/role/useGroupInheritedRoles';
 import type { Group } from '../../../../../groups/models';
 
@@ -17,18 +17,13 @@ const GROUP_TAG_STYLE: React.CSSProperties = {
   alignItems: 'center',
   gap: 3,
   fontSize: 12,
-  color: DEFAULT_COLORS.SUCCESS,
+  color: DEFAULT_COLORS.TEXT_PRIMARY,
   padding: '2px 8px',
   background: `${DEFAULT_COLORS.SUCCESS}18`,
   borderRadius: 20,
   border: `1px solid ${DEFAULT_COLORS.SUCCESS}40`,
   lineHeight: 1.4,
   whiteSpace: 'nowrap',
-};
-
-const getScopeLabel = (scopeKey: string): string => {
-  const area = RC.SCOPE.DEFAULT_AREAS.find((a) => a.key === scopeKey);
-  return area?.label || scopeKey;
 };
 
 const renderRoleContent = (item: GroupInheritedRole): React.ReactNode => {

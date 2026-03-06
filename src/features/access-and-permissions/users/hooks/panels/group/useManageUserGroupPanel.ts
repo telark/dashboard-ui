@@ -7,13 +7,7 @@ import type { AppDispatch } from '../../../../../../store';
 import { useFetchGroups } from '../../../../groups/hooks';
 import type { User } from '../../../models';
 import { USERS_CONSTANTS as UC } from '../../../constants';
-
-const arraysEqual = (a: string[], b: string[]): boolean => {
-  if (a.length !== b.length) return false;
-  const sortedA = [...a].sort();
-  const sortedB = [...b].sort();
-  return sortedA.every((val, idx) => val === sortedB[idx]);
-};
+import { arraysEqual } from '../../../utils/assignment/arrays';
 
 interface UseManageUserGroupPanelOptions {
   open: boolean;

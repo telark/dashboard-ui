@@ -2,18 +2,13 @@ import React, { useMemo } from 'react';
 import { AssignedItemsList } from '../../../../../shared';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
 import { Icons, DEFAULT_COLORS } from '../../../../../../../constants';
-import { ROLES_CONSTANTS as RC } from '../../../../../roles/constants';
 import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/utils';
 import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
+import { getScopeLabel } from '../../../../utils/role/scope';
 import type { Role } from '../../../../../roles/models';
 
 const RoleIcon = Icons.Role;
-
-const getScopeLabel = (scopeKey: string): string => {
-  const area = RC.SCOPE.DEFAULT_AREAS.find((a) => a.key === scopeKey);
-  return area?.label || scopeKey;
-};
 
 const renderRoleContent = (role: Role): React.ReactNode => {
   const isProtected = isRoleProtected(role);
