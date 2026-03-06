@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo } from 'react';
 import { Checkbox, Form } from 'antd';
+import { ScrollIndicator } from '../../../../../../../components/display/indicators';
+import { SelectableListItem } from '../../../../../../../components/display/list';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
-import { DEFAULT_COLORS, Icons } from '../../../../../../../constants';
 import { ATTACHED_MEMBERS_CONSTANTS as AMC } from '../../../../../groups/constants';
+import { useRoleListScroll } from '../../../../../groups/hooks/scroll/useRoleListScroll';
 import { CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
 import type { Group } from '../../../../../groups/models';
-
-const GroupIcon = Icons.Group;
 
 interface UserGroupSelectListProps {
   groups?: Group[];
@@ -14,13 +14,26 @@ interface UserGroupSelectListProps {
   allGroups?: Group[];
 }
 
-const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({ groups, loading, allGroups }) => {
+const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({
+  groups,
+  loading,
+  allGroups,
+}) => {
   const form = Form.useFormInstance();
   const watchedSelectedGroups = Form.useWatch('assignedGroupsIDs', form);
   const currentSelectedGroups = useMemo(
     () => (watchedSelectedGroups as string[]) || [],
     [watchedSelectedGroups],
   );
+
+  const {
+    scrollContainerRef,
+    setShowScrollIndicator,
+    isScrollable,
+    containerClassName,
+    containerStyle,
+    wrapperStyle,
+  } = useRoleListScroll({ itemsCount: groups?.length });
 
   const handleChange = useCallback(
     (checkedValues: string[]) => {
@@ -34,8 +47,9 @@ const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({ groups, loadi
         (groupId) => !filteredGroupIds.includes(groupId),
       );
 
-      const merged = Array.from(new Set([...preservedSelections, ...checkedValues]));
-      form.setFieldsValue({ assignedGroupsIDs: merged });
+      form.setFieldsValue({
+        assignedGroupsIDs: Array.from(new Set([...preservedSelections, ...checkedValues])),
+      });
     },
     [form, allGroups, groups, currentSelectedGroups],
   );
@@ -48,54 +62,42 @@ const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({ groups, loadi
     return <div style={AMC.LIST.EMPTY_STATE}>{UC.LABELS.MESSAGES.NO_GROUPS_AVAILABLE}</div>;
   }
 
-  const filteredSelectedGroups = currentSelectedGroups.filter((gId) =>
+  const visibleSelectedGroups = currentSelectedGroups.filter((gId) =>
     groups.some((g) => g.id === gId),
   );
 
   return (
     <Form.Item name="assignedGroupsIDs" style={{ margin: 0, width: '100%' }}>
       <Checkbox.Group
-        style={{ width: '100%' }}
-        value={filteredSelectedGroups}
+        value={visibleSelectedGroups}
         onChange={handleChange}
+        style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
       >
-        <div style={AMC.LIST.CONTAINER}>
-          {groups.map((group) => (
-            <div
-              key={group.id}
-              style={AMC.LIST.ITEM.BASE}
-              onMouseEnter={(e) => {
-                Object.assign(e.currentTarget.style, AMC.LIST.ITEM.HOVER);
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = AMC.LIST.ITEM.BASE.background;
-                e.currentTarget.style.borderColor = AMC.LIST.ITEM.BASE.border;
-              }}
-            >
-              <Checkbox value={group.id} style={{ margin: 0 }}>
-                <div style={AMC.LIST.MEMBER_CONTENT}>
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: DEFAULT_COLORS.TEXT_MUTED,
-                    }}
-                  >
-                    <GroupIcon size={28} />
-                  </div>
-                  <div style={AMC.LIST.MEMBER_INFO}>
-                    <div style={AMC.LIST.MEMBER_NAME}>{CapitalizeFirstLetter(group.name)}</div>
-                    {group.description && (
-                      <div style={AMC.LIST.MEMBER_EMAIL}>
-                        {CapitalizeFirstLetter(group.description)}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </Checkbox>
-            </div>
-          ))}
+        <div style={wrapperStyle}>
+          <div
+            ref={scrollContainerRef}
+            className={containerClassName}
+            style={{ ...AMC.LIST.CONTAINER, ...containerStyle }}
+          >
+            {groups.map((group) => (
+              <SelectableListItem
+                key={group.id}
+                value={group.id}
+                name={CapitalizeFirstLetter(group.name)}
+                description={
+                  group.description ? CapitalizeFirstLetter(group.description) : undefined
+                }
+                itemStyles={{ base: AMC.LIST.ITEM.BASE, hover: AMC.LIST.ITEM.HOVER }}
+                nameStyles={AMC.LIST.MEMBER_NAME}
+                descriptionStyles={AMC.LIST.MEMBER_EMAIL}
+              />
+            ))}
+          </div>
+          <ScrollIndicator
+            containerRef={scrollContainerRef}
+            isScrollable={isScrollable}
+            onVisibilityChange={setShowScrollIndicator}
+          />
         </div>
       </Checkbox.Group>
     </Form.Item>

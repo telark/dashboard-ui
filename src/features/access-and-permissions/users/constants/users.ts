@@ -29,6 +29,9 @@ export const USERS_CONSTANTS = {
       GROUP_ASSIGN_FAILED: 'Failed to assign group',
       ROLE_DEASSIGNED: (roleName: string) => `Role "${roleName}" was removed`,
       ROLE_DEASSIGN_FAILED: 'Failed to remove role',
+      GROUP_DEASSIGNED: (groupName: string) => `Group "${groupName}" was removed`,
+      GROUP_DEASSIGN_FAILED: 'Failed to remove group',
+      NO_ASSIGNED_GROUPS: 'No groups assigned yet',
       NO_USERS_TITLE: 'No users yet',
       NO_USERS_DESCRIPTION: 'Get started by adding your first user to the system.',
       NO_ROLES_AVAILABLE: 'No roles available',
@@ -66,6 +69,10 @@ export const USERS_CONSTANTS = {
       DEASSIGN_ROLE_MODAL_ACTION: 'Remove',
       DEASSIGN_ROLE_MODAL_CONFIRM: 'Remove',
       DEASSIGN_ROLE_RESOURCE_TYPE: 'role',
+      DEASSIGN_GROUP_MODAL_TITLE: 'Remove Group',
+      DEASSIGN_GROUP_MODAL_ACTION: 'Remove',
+      DEASSIGN_GROUP_MODAL_CONFIRM: 'Remove',
+      DEASSIGN_GROUP_RESOURCE_TYPE: 'group',
     },
     FORM: {
       TITLE: 'Create User',
@@ -117,6 +124,7 @@ export const USERS_CONSTANTS = {
         SUBTITLE: (userName: string) => `Assign ${userName} to a group`,
         SUBMIT_BUTTON: 'Assign Group',
         SEARCH_PLACEHOLDER: 'Search groups by name or description...',
+        SHOW_ASSIGNED_BUTTON: 'Assigned',
       },
     },
     TOOLBAR: {
