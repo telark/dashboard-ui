@@ -7,6 +7,7 @@ import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/util
 import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
 import type { GroupInheritedRole } from '../../../../hooks/panels/role/useGroupInheritedRoles';
+import type { Group } from '../../../../../groups/models';
 
 const RoleIcon = Icons.Role;
 const GroupIcon = Icons.Group;
@@ -14,15 +15,15 @@ const GroupIcon = Icons.Group;
 const GROUP_TAG_STYLE: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
-  gap: 4,
-  fontSize: 11,
-  color: DEFAULT_COLORS.CHIP_BLUE_TEXT,
+  gap: 3,
+  fontSize: 12,
+  color: DEFAULT_COLORS.SUCCESS,
   padding: '2px 8px',
-  background: DEFAULT_COLORS.CHIP_BLUE_BG,
+  background: `${DEFAULT_COLORS.SUCCESS}18`,
   borderRadius: 20,
-  border: `1px solid ${DEFAULT_COLORS.CHIP_BLUE_TEXT}30`,
+  border: `1px solid ${DEFAULT_COLORS.SUCCESS}40`,
   lineHeight: 1.4,
-  whiteSpace: 'nowrap' as const,
+  whiteSpace: 'nowrap',
 };
 
 const getScopeLabel = (scopeKey: string): string => {
@@ -30,8 +31,8 @@ const getScopeLabel = (scopeKey: string): string => {
   return area?.label || scopeKey;
 };
 
-const renderInheritedRoleContent = (item: GroupInheritedRole): React.ReactNode => {
-  const { role, fromGroups } = item;
+const renderRoleContent = (item: GroupInheritedRole): React.ReactNode => {
+  const { role } = item;
   const isProtected = isRoleProtected(role);
   const scopesContent = getRoleScopesContent(role, {
     scopesAndPermissions: role.scopesAndPermissions || [],
@@ -52,17 +53,29 @@ const renderInheritedRoleContent = (item: GroupInheritedRole): React.ReactNode =
         </span>
       )}
       {scopesContent}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 6 }}>
-        {fromGroups.map((group) => (
-          <span key={group.id} style={GROUP_TAG_STYLE}>
-            <GroupIcon size={10} />
-            {CapitalizeFirstLetter(group.name)}
-          </span>
-        ))}
-      </div>
     </div>
   );
 };
+
+const renderGroupTags = (item: GroupInheritedRole): React.ReactNode => (
+  <div
+    style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'flex-end',
+      gap: 3,
+      flexShrink: 0,
+      marginTop: 2,
+    }}
+  >
+    {item.fromGroups.map((group: Group) => (
+      <span key={group.id} style={GROUP_TAG_STYLE}>
+        <GroupIcon size={10} />
+        {CapitalizeFirstLetter(group.name)}
+      </span>
+    ))}
+  </div>
+);
 
 interface UserGroupInheritedRolesViewProps {
   items: GroupInheritedRole[];
@@ -76,7 +89,8 @@ const UserGroupInheritedRolesView: React.FC<UserGroupInheritedRolesViewProps> = 
   <AssignedItemsList<GroupInheritedRole>
     items={items}
     getItemKey={(item) => item.role.id}
-    renderItemContent={renderInheritedRoleContent}
+    renderItemContent={renderRoleContent}
+    renderRightContent={renderGroupTags}
     loading={loading}
     emptyMessage={UC.LABELS.MESSAGES.NO_GROUP_ROLES}
     loadingMessage={UC.LABELS.MESSAGES.LOADING_ROLES}

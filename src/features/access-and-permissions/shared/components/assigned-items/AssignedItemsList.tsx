@@ -13,6 +13,8 @@ export interface AssignedItemsListProps<T> {
   loadingMessage?: string;
   onDeassignClick?: (item: T) => void;
   deassignTooltip?: string;
+  /** Optional renderer for a custom element in the top-right slot of each card */
+  renderRightContent?: (item: T) => React.ReactNode;
 }
 
 function AssignedItemsList<T>({
@@ -24,6 +26,7 @@ function AssignedItemsList<T>({
   loadingMessage = 'Loading...',
   onDeassignClick,
   deassignTooltip,
+  renderRightContent,
 }: AssignedItemsListProps<T>) {
   const {
     scrollContainerRef,
@@ -54,6 +57,7 @@ function AssignedItemsList<T>({
             key={getItemKey(item)}
             onDeassign={onDeassignClick ? () => onDeassignClick(item) : undefined}
             deassignTooltip={deassignTooltip}
+            rightContent={renderRightContent ? renderRightContent(item) : undefined}
           >
             {renderItemContent(item)}
           </AssignedItemCard>
