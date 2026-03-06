@@ -1,11 +1,16 @@
-import { useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState, useCallback, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { message } from 'antd';
 import type { FormInstance } from 'antd';
 import { createUserThunk } from '../../../store';
-import type { AppDispatch } from '../../../../../../store';
+import type { AppDispatch, RootState } from '../../../../../../store';
 import type { CreateUserFormValues, UserAvatar } from '../../../models';
 import { USERS_CONSTANTS as UC } from '../../../constants';
+import {
+  makeUsernameUniqueRule,
+  makeEmailFormatRule,
+  makeFullnameCharsRule,
+} from '../../../utils';
 
 interface UseCreateUserPanelOptions {
   form: FormInstance<CreateUserFormValues>;
@@ -14,8 +19,18 @@ interface UseCreateUserPanelOptions {
 
 export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions) => {
   const dispatch: AppDispatch = useDispatch();
+  const existingUsers = useSelector((state: RootState) => state.users.users);
   const [submitting, setSubmitting] = useState(false);
   const [hasFormErrors, setHasFormErrors] = useState(false);
+
+  const usernameRules = useMemo(
+    () => [makeUsernameUniqueRule(existingUsers)],
+    [existingUsers],
+  );
+
+  const emailRules = useMemo(() => [makeEmailFormatRule()], []);
+
+  const fullnameRules = useMemo(() => [makeFullnameCharsRule()], []);
 
   const checkFormState = useCallback(() => {
     const errors = form.getFieldsError();
@@ -50,6 +65,9 @@ export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions)
   return {
     submitting,
     hasFormErrors,
+    usernameRules,
+    emailRules,
+    fullnameRules,
     handleValuesChange: checkFormState,
     handleFieldsChange: checkFormState,
     handleSubmit,

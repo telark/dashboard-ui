@@ -43,6 +43,11 @@ export const USERS_CONSTANTS = {
       LOADING_ROLES: 'Loading roles...',
       LOADING_GROUPS: 'Loading groups...',
     },
+    VALIDATION: {
+      USERNAME_TAKEN: 'Username is already taken',
+      INVALID_EMAIL: 'Please enter a valid email address',
+      FULLNAME_SPECIAL_CHARS: 'Full name must not contain special characters',
+    },
     COLUMNS: {
       USERNAME: 'Username',
       FULLNAME: 'Full Name',

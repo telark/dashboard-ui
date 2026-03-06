@@ -16,16 +16,29 @@ interface CreateUserPanelProps {
 }
 
 const CreateUserPanel: React.FC<CreateUserPanelProps> = ({ open, onClose, form }) => {
-  const { submitting, hasFormErrors, handleValuesChange, handleFieldsChange, handleSubmit } =
-    useCreateUserPanel({ form, onClose });
+  const {
+    submitting,
+    hasFormErrors,
+    usernameRules,
+    emailRules,
+    fullnameRules,
+    handleValuesChange,
+    handleFieldsChange,
+    handleSubmit,
+  } = useCreateUserPanel({ form, onClose });
 
   return (
     <SlideOutPanel
       open={open}
       onClose={onClose}
       title={UC.LABELS.PANELS.CREATE.TITLE}
-      subtitle={UC.LABELS.PANELS.CREATE.SUBTITLE}
-      formContent={<UserFormFields />}
+      formContent={
+        <UserFormFields
+          usernameRules={usernameRules}
+          emailRules={emailRules}
+          fullnameRules={fullnameRules}
+        />
+      }
       onSubmit={handleSubmit}
       onCancel={onClose}
       submitButtonText={UC.LABELS.PANELS.CREATE.SUBMIT_BUTTON}
