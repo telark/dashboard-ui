@@ -1,8 +1,11 @@
 import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { Empty } from 'antd';
 import type { PageLayoutConfig } from '../../../../../interfaces/layout/page';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import { DEFAULT_COLORS, Icons } from '../../../../../constants';
+import type { RootState } from '../../../../../store';
+import { useFetchGroups } from '../../../groups/hooks';
 import Columns from '../../components/display/list/Columns';
 import { UserActionsColumn } from '../../components/display/list/UserActionsColumn';
 import { useUserListConfig } from '../../config/userListConfig';
@@ -62,12 +65,15 @@ export const useUserListPageConfig = ({
     onManageGroupClick,
   });
 
+  useFetchGroups();
+  const groups = useSelector((state: RootState) => state.groups.groups);
+
   const ctx = useMemo(
     () => ({ activeSortKey: sortKey ?? UC.KEYS.CREATION_DATE, onSort: handleSort }),
     [sortKey, handleSort],
   );
 
-  const userColumns = useMemo(() => Columns(ctx), [ctx]);
+  const userColumns = useMemo(() => Columns(ctx, groups), [ctx, groups]);
 
   return useMemo(
     () => ({
