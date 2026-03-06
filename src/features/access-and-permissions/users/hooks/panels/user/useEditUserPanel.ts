@@ -24,6 +24,7 @@ export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUs
   const existingUsers = useSelector((state: RootState) => state.users.users);
   const [submitting, setSubmitting] = useState(false);
   const [hasFormErrors, setHasFormErrors] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
 
   const usernameRules = useMemo(
     () => [makeUsernameUniqueRule(existingUsers, editingUser?.id)],
@@ -51,6 +52,7 @@ export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUs
     const userChanged = editingUser?.id !== previousUserIdRef.current;
     if (open && initialValues && (isOpening || userChanged)) {
       form.setFieldsValue(initialValues);
+      setHasChanges(false);
     }
     previousOpenRef.current = open;
     previousUserIdRef.current = editingUser?.id ?? null;
@@ -59,7 +61,17 @@ export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUs
   const checkFormState = useCallback(() => {
     const errors = form.getFieldsError();
     setHasFormErrors(errors.some((f) => f.errors.length > 0));
-  }, [form]);
+
+    if (!initialValues) return;
+    const current = form.getFieldsValue() as CreateUserFormValues;
+    setHasChanges(
+      current.username !== initialValues.username ||
+        current.fullname !== initialValues.fullname ||
+        current.email !== initialValues.email ||
+        current.avatar?.style !== initialValues.avatar?.style ||
+        current.avatar?.seed !== initialValues.avatar?.seed,
+    );
+  }, [form, initialValues]);
 
   const handleSubmit = useCallback(
     async (values: Record<string, unknown>) => {
@@ -89,6 +101,7 @@ export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUs
     initialValues,
     submitting,
     hasFormErrors,
+    hasChanges,
     usernameRules,
     emailRules,
     fullnameRules,
