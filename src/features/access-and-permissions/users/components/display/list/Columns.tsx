@@ -1,14 +1,31 @@
 import { USERS_CONSTANTS as UC } from '../../../constants';
-import { DEFAULT_COLORS } from '../../../../../../constants';
-import RowTag from '../../../../../../components/display/table/RowTag';
+import { DEFAULT_COLORS, Icons } from '../../../../../../constants';
 import { generateColumn } from '../../../../../../components/display/table/utils';
 import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
 import type { User } from '../../../models';
+import type { Group } from '../../../../groups/models';
 import UserAvatar from '../../../../../../components/display/avatars/UserAvatar';
-import { AiOutlineUser, AiOutlineMail, AiOutlineTag, AiOutlineCalendar } from 'react-icons/ai';
+import { AiOutlineUser, AiOutlineMail, AiOutlineCalendar } from 'react-icons/ai';
 import React from 'react';
+import { getTotalRoleCount } from '../../../utils';
 
-const Columns = (ctx: GenerateColumnCtx) => {
+const RoleIcon = Icons.Role;
+
+const ROLE_TAG_STYLE: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: 4,
+  height: 20,
+  padding: '0 8px',
+  borderRadius: 10,
+  fontSize: 12,
+  fontWeight: 500,
+  background: `${DEFAULT_COLORS.SUCCESS}18`,
+  color: DEFAULT_COLORS.SUCCESS,
+  whiteSpace: 'nowrap',
+};
+
+const Columns = (ctx: GenerateColumnCtx, groups: Group[] = []) => {
   const cols = [
     generateColumn(
       {
@@ -55,33 +72,17 @@ const Columns = (ctx: GenerateColumnCtx) => {
       {
         key: UC.KEYS.ROLES,
         label: UC.LABELS.COLUMNS.ROLES,
-        icon: <AiOutlineTag />,
+        icon: <RoleIcon />,
         width: UC.SIZES.COLUMNS.ROLE,
         render: (_: unknown, record: User) => {
-          const roles = record.assignedRolesIDs || [];
-          if (roles.length === 0) {
+          const total = getTotalRoleCount(record, groups);
+          if (total === 0) {
             return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12 }}>—</span>;
           }
           return (
-            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-              {roles.slice(0, 2).map((roleId) => (
-                <RowTag
-                  key={roleId}
-                  text={roleId}
-                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                  color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                  fontSize={UC.SIZES.CHIP_FONT}
-                />
-              ))}
-              {roles.length > 2 && (
-                <RowTag
-                  text={`+${roles.length - 2}`}
-                  background={DEFAULT_COLORS.BACKGROUND_HOVER}
-                  color={DEFAULT_COLORS.TEXT_MUTED}
-                  fontSize={UC.SIZES.CHIP_FONT}
-                />
-              )}
-            </div>
+            <span style={ROLE_TAG_STYLE}>
+              {total} {total === 1 ? 'Role' : 'Roles'}
+            </span>
           );
         },
       },

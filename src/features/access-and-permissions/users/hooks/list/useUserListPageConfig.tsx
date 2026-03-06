@@ -84,7 +84,7 @@ export const useUserListPageConfig = ({
           width: 120,
           onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
           render: (_: unknown, record: User) => (
-            <UserActionsColumn record={record} onView={handleViewUser} onEdit={handleEditUser} />
+            <UserActionsColumn record={record} onEdit={handleEditUser} />
           ),
         },
       ],

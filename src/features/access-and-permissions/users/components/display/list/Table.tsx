@@ -1,14 +1,19 @@
 import React, { useMemo, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import DataTable from '../../../../../../components/display/table/DataTable';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import type { User, UsersTableProps } from '../../../models';
 import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
+import type { RootState } from '../../../../../../store';
+import { useFetchGroups } from '../../../../groups/hooks';
 import Columns from './Columns';
 import { UserActionsColumn } from './UserActionsColumn';
 import { useSortState } from '../../../../../../utils/layout/sort';
 
 const UsersTable: React.FC<UsersTableProps> = ({ users, onView, onEdit, onUsersChange }) => {
+  useFetchGroups();
+  const groups = useSelector((state: RootState) => state.groups.groups);
   const { sortKey, sortOrder, handleSort } = useSortState({
     defaultSortKey: 'creationDate',
     defaultSortOrder: 'desc',
@@ -54,7 +59,7 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onView, onEdit, onUsersC
 
   const columns = useMemo(
     () => [
-      ...Columns(ctx),
+      ...Columns(ctx, groups),
       {
         title: '',
         key: UC.KEYS.ACTIONS,
@@ -64,7 +69,6 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onView, onEdit, onUsersC
         render: (_: unknown, record: User) => (
           <UserActionsColumn
             record={record}
-            onView={handleView}
             onEdit={handleEdit}
             onDelete={handleDelete}
           />

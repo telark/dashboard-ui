@@ -1,12 +1,11 @@
 import React from 'react';
-import { EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import { useUserDeleteModal, UserDeleteModal } from '../../delete';
 import type { User } from '../../../models';
 
 interface UserActionsColumnProps {
   record: User;
-  onView?: (record: User) => void;
   onEdit?: (record: User) => void;
   onDelete?: (record: User) => void;
 }
@@ -28,7 +27,6 @@ const actionButtonStyle: React.CSSProperties = {
 
 export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
   record,
-  onView,
   onEdit,
   onDelete,
 }) => {
@@ -54,21 +52,6 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
         gap: 8,
       }}
     >
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onView?.(record);
-        }}
-        style={actionButtonStyle}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'transparent';
-        }}
-      >
-        <EyeOutlined />
-      </button>
       <button
         onClick={(e) => {
           e.stopPropagation();
