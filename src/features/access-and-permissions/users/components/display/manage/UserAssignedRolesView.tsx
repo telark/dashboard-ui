@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { AssignedItemsView } from '../../../../shared';
+import { AssignedItemsList } from '../../../../shared';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../../roles/constants';
@@ -59,7 +59,7 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
   }, [allRoles, assignedRoleIds]);
 
   return (
-    <AssignedItemsView<Role>
+    <AssignedItemsList<Role>
       items={assignedRoles}
       getItemKey={(r) => r.id}
       renderItemContent={renderRoleContent}

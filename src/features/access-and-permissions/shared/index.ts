@@ -1,5 +1,13 @@
-export { default as AssignedItemsView } from './components/AssignedItemsView';
-export type { AssignedItemsViewProps } from './components/AssignedItemsView';
+export {
+  AssignedItemsList,
+  AssignedItemCard,
+  DeassignButton,
+} from './components';
+export type {
+  AssignedItemsListProps,
+  AssignedItemCardProps,
+  DeassignButtonProps,
+} from './components';
 
-export { useDeassignModal } from './hooks/useDeassignModal';
-export type { UseDeassignModalOptions, UseDeassignModalReturn } from './hooks/useDeassignModal';
+export { useDeassignModal } from './hooks';
+export type { UseDeassignModalOptions, UseDeassignModalReturn } from './hooks';
