@@ -113,18 +113,25 @@ const SelectableListItem: React.FC<SelectableListItemProps> = ({
           </div>
         </Tooltip>
       )}
-      <Checkbox
-        value={value}
-        disabled={disabled}
-        style={{ margin: 0, width: '100%', ...checkboxStyle }}
-      >
-        <div style={defaultContentStyles}>
-          {name && <div style={defaultNameStyles}>{name}</div>}
-          {description && <div style={defaultDescriptionStyles}>{description}</div>}
-          {customContent && <div>{customContent}</div>}
-          {children}
+      {disabled ? (
+        <div style={{ margin: 0, width: '100%', paddingLeft: 24, ...checkboxStyle }}>
+          <div style={defaultContentStyles}>
+            {name && <div style={defaultNameStyles}>{name}</div>}
+            {description && <div style={defaultDescriptionStyles}>{description}</div>}
+            {customContent && <div>{customContent}</div>}
+            {children}
+          </div>
         </div>
-      </Checkbox>
+      ) : (
+        <Checkbox value={value} style={{ margin: 0, width: '100%', ...checkboxStyle }}>
+          <div style={defaultContentStyles}>
+            {name && <div style={defaultNameStyles}>{name}</div>}
+            {description && <div style={defaultDescriptionStyles}>{description}</div>}
+            {customContent && <div>{customContent}</div>}
+            {children}
+          </div>
+        </Checkbox>
+      )}
     </div>
   );
 };
