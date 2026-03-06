@@ -2,11 +2,11 @@ import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
-import { APP_ROUTES } from '../../../../constants';
-import { USERS_CONSTANTS as UC } from '../constants';
-import { createUserThunk } from '../store';
-import type { AppDispatch } from '../../../../store';
-import type { CreateUserFormValues } from '../models';
+import { APP_ROUTES } from '../../../../../constants';
+import { USERS_CONSTANTS as UC } from '../../constants';
+import { createUserThunk } from '../../store';
+import type { AppDispatch } from '../../../../../store';
+import type { CreateUserFormValues } from '../../models';
 
 export const useUserActions = () => {
   const navigate = useNavigate();

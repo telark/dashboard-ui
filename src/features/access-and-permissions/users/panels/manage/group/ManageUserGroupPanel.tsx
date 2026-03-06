@@ -1,13 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { Form } from 'antd';
-import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
-import { SearchInput } from '../../../../../components/display/inputs';
-import { Icons } from '../../../../../constants';
-import { USERS_CONSTANTS as UC } from '../../constants';
-import { useManageUserGroupPanel } from '../../hooks/panels/useManageUserGroupPanel';
-import UserGroupSelectList from '../../components/display/manage/UserGroupSelectList';
-import { CapitalizeFirstLetter } from '../../../../../utils/helpers/format';
-import type { User } from '../../models';
+import { SlideOutPanel } from '../../../../../../components/display/panels/slide-out';
+import { SearchInput } from '../../../../../../components/display/inputs';
+import { Icons } from '../../../../../../constants';
+import { USERS_CONSTANTS as UC } from '../../../constants';
+import { useManageUserGroupPanel } from '../../../hooks/panels/useManageUserGroupPanel';
+import UserGroupSelectList from '../../../components/display/manage/UserGroupSelectList';
+import { CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
+import type { User } from '../../../models';
 
 const GroupIcon = Icons.Group;
 
@@ -24,14 +24,8 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
   const currentSelectedGroups = (Form.useWatch('assignedGroupsIDs', form) as string[]) || [];
   const [searchTerm, setSearchTerm] = useState('');
 
-  const {
-    initialSelectedGroups,
-    hasChanges,
-    groups,
-    groupsLoading,
-    submitting,
-    handleSubmit,
-  } = useManageUserGroupPanel({ open, user, form, onClose, currentSelectedGroups });
+  const { initialSelectedGroups, hasChanges, groups, groupsLoading, submitting, handleSubmit } =
+    useManageUserGroupPanel({ open, user, form, onClose, currentSelectedGroups });
 
   const filteredGroups = useMemo(() => {
     if (!searchTerm) return groups;
@@ -62,11 +56,7 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
             placeholder={UC.LABELS.PANELS.MANAGE_GROUP.SEARCH_PLACEHOLDER}
             minWidth={300}
           />
-          <UserGroupSelectList
-            groups={filteredGroups}
-            loading={groupsLoading}
-            allGroups={groups}
-          />
+          <UserGroupSelectList groups={filteredGroups} loading={groupsLoading} allGroups={groups} />
         </div>
       }
       onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}

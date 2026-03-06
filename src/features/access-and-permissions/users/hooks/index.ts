@@ -1,5 +1,5 @@
-export { useUsers } from './useUsers';
-export { useUserActions } from './useUserActions';
+export { useUsers } from './user/useUsers';
+export { useUserActions } from './user/useUserActions';
 export { useUserListState } from './list/useUserListState';
 export { useUserListPageConfig } from './list/useUserListPageConfig';
 export { useUserPanelState } from './panels/useUserPanelState';

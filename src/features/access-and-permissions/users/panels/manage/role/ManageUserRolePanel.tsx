@@ -1,22 +1,22 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Form } from 'antd';
 import { CheckCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
-import { FilterPanel } from '../../../../../components/display/panels/filter';
-import { FilterButton, ToggleButton } from '../../../../../components/display/buttons';
-import { SearchInput } from '../../../../../components/display/inputs';
-import { ActionConfirmModal } from '../../../../../components/display/modal';
-import { Icons, DEFAULT_COLORS } from '../../../../../constants';
-import { USERS_CONSTANTS as UC } from '../../constants';
-import { useManageUserRolePanel } from '../../hooks/panels/useManageUserRolePanel';
-import { useDeassignUserRole } from '../../hooks/panels/useDeassignUserRole';
-import UserRoleSelectList from '../../components/display/manage/UserRoleSelectList';
-import UserAssignedRolesView from '../../components/display/manage/UserAssignedRolesView';
-import { buildAttachRoleFilterFields } from '../../../groups/config/attachRoleFilterConfig';
-import { applyRoleFilters } from '../../../groups/utils';
-import { useRoleCategoryOptions } from '../../../groups/hooks/categories/useRoleCategoryOptions';
-import { CapitalizeFirstLetter } from '../../../../../utils/helpers/format';
-import type { User } from '../../models';
+import { SlideOutPanel } from '../../../../../../components/display/panels/slide-out';
+import { FilterPanel } from '../../../../../../components/display/panels/filter';
+import { FilterButton, ToggleButton } from '../../../../../../components/display/buttons';
+import { SearchInput } from '../../../../../../components/display/inputs';
+import { ActionConfirmModal } from '../../../../../../components/display/modal';
+import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
+import { USERS_CONSTANTS as UC } from '../../../constants';
+import { useManageUserRolePanel } from '../../../hooks/panels/useManageUserRolePanel';
+import { useDeassignUserRole } from '../../../hooks/panels/useDeassignUserRole';
+import UserRoleSelectList from '../../../components/display/manage/UserRoleSelectList';
+import UserAssignedRolesView from '../../../components/display/manage/UserAssignedRolesView';
+import { buildAttachRoleFilterFields } from '../../../../groups/config/attachRoleFilterConfig';
+import { applyRoleFilters } from '../../../../groups/utils';
+import { useRoleCategoryOptions } from '../../../../groups/hooks/categories/useRoleCategoryOptions';
+import { CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
+import type { User } from '../../../models';
 
 const RoleIcon = Icons.Role;
 
