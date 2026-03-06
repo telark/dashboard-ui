@@ -2,11 +2,11 @@ import { useState, useMemo, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
 import type { FormInstance } from 'antd';
-import { updateUserThunk } from '../../store';
-import type { AppDispatch } from '../../../../../store';
-import { useRoles } from '../../../roles/hooks';
-import type { User } from '../../models';
-import { USERS_CONSTANTS as UC } from '../../constants';
+import { updateUserThunk } from '../../../store';
+import type { AppDispatch } from '../../../../../../store';
+import { useRoles } from '../../../../roles/hooks';
+import type { User } from '../../../models';
+import { USERS_CONSTANTS as UC } from '../../../constants';
 
 const arraysEqual = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) return false;

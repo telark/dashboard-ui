@@ -2,10 +2,10 @@ import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
 import type { FormInstance } from 'antd';
-import { updateUserThunk } from '../../store';
-import type { AppDispatch } from '../../../../../store';
-import type { User, CreateUserFormValues, UserAvatar } from '../../models';
-import { USERS_CONSTANTS as UC } from '../../constants';
+import { updateUserThunk } from '../../../store';
+import type { AppDispatch } from '../../../../../../store';
+import type { User, CreateUserFormValues, UserAvatar } from '../../../models';
+import { USERS_CONSTANTS as UC } from '../../../constants';
 
 interface UseEditUserPanelOptions {
   open: boolean;

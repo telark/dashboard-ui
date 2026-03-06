@@ -2,10 +2,10 @@ import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
 import type { FormInstance } from 'antd';
-import { createUserThunk } from '../../store';
-import type { AppDispatch } from '../../../../../store';
-import type { CreateUserFormValues, UserAvatar } from '../../models';
-import { USERS_CONSTANTS as UC } from '../../constants';
+import { createUserThunk } from '../../../store';
+import type { AppDispatch } from '../../../../../../store';
+import type { CreateUserFormValues, UserAvatar } from '../../../models';
+import { USERS_CONSTANTS as UC } from '../../../constants';
 
 interface UseCreateUserPanelOptions {
   form: FormInstance<CreateUserFormValues>;

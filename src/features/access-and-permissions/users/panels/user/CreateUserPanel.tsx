@@ -3,7 +3,7 @@ import { SlideOutPanel } from '../../../../../components/display/panels/slide-ou
 import { Icons } from '../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import UserFormFields from '../../components/display/shared/UserFormFields';
-import { useCreateUserPanel } from '../../hooks/panels/useCreateUserPanel';
+import { useCreateUserPanel } from '../../hooks/panels/user/useCreateUserPanel';
 import type { FormInstance } from 'antd';
 import type { CreateUserFormValues } from '../../models';
 

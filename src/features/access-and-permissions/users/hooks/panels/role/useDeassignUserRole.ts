@@ -2,12 +2,12 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
 import type { FormInstance } from 'antd';
-import { useDeassignModal } from '../../../shared';
-import { updateUserThunk } from '../../store';
-import { USERS_CONSTANTS as UC } from '../../constants';
-import type { AppDispatch } from '../../../../../store';
-import type { User } from '../../models';
-import type { Role } from '../../../roles/models';
+import { useDeassignModal } from '../../../../shared';
+import { updateUserThunk } from '../../../store';
+import { USERS_CONSTANTS as UC } from '../../../constants';
+import type { AppDispatch } from '../../../../../../store';
+import type { User } from '../../../models';
+import type { Role } from '../../../../roles/models';
 
 interface UseDeassignUserRoleOptions {
   user: User | null;

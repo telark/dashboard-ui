@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Form } from 'antd';
-import type { User, CreateUserFormValues } from '../../models';
+import type { User, CreateUserFormValues } from '../../../models';
 
 interface UseUserPanelStateReturn {
   createPanelOpen: boolean;

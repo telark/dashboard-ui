@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { useUsers } from '../hooks';
 import { useUserListState } from '../hooks/list/useUserListState';
 import { useUserListPageConfig } from '../hooks/list/useUserListPageConfig';
-import { useUserPanelState } from '../hooks/panels/useUserPanelState';
+import { useUserPanelState } from '../hooks/panels/user/useUserPanelState';
 import { applySearch } from '../../../../utils/search';
 import { CreateUserPanel } from '../panels';
 import type { User } from '../models';
