@@ -9,7 +9,6 @@ export const ASSIGNED_CARD_STYLE: React.CSSProperties = {
   padding: '5px 14px',
   background: DEFAULT_COLORS.BACKGROUND_LIGHT,
   border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-  borderLeft: `3px solid ${DEFAULT_COLORS.SUCCESS}`,
   borderRadius: 8,
   transition: 'all 0.2s ease',
   cursor: 'default',
