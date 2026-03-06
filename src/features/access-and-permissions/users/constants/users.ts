@@ -126,7 +126,9 @@ export const USERS_CONSTANTS = {
         SUBMIT_BUTTON: 'Assign Role',
         SEARCH_PLACEHOLDER: 'Search roles by name or description...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
+        SHOW_ASSIGNED_TOOLTIP: 'View all roles currently assigned to this user, including inherited ones from groups',
         FROM_GROUPS_BUTTON: 'From Groups',
+        FROM_GROUPS_TOOLTIP: 'View roles this user inherits through their assigned groups',
       },
       MANAGE_GROUP: {
         TITLE: 'Manage Groups',

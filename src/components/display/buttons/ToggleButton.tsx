@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tooltip } from 'antd';
 import { DEFAULT_COLORS } from '../../../constants';
 
 interface ToggleButtonProps {
@@ -7,6 +8,7 @@ interface ToggleButtonProps {
   label: string;
   icon?: React.ReactNode;
   disabled?: boolean;
+  tooltip?: string;
 }
 
 const ACTIVE_COLOR = DEFAULT_COLORS.SUCCESS;
@@ -17,6 +19,7 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
   label,
   icon,
   disabled = false,
+  tooltip,
 }) => {
   const baseStyle: React.CSSProperties = {
     all: 'unset',
@@ -50,17 +53,19 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
   };
 
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      style={baseStyle}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      {icon && <span style={{ fontSize: 14, lineHeight: 1 }}>{icon}</span>}
-      <span>{label}</span>
-    </button>
+    <Tooltip title={tooltip} placement="bottom">
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={disabled}
+        style={baseStyle}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {icon && <span style={{ fontSize: 14, lineHeight: 1 }}>{icon}</span>}
+        <span>{label}</span>
+      </button>
+    </Tooltip>
   );
 };
 

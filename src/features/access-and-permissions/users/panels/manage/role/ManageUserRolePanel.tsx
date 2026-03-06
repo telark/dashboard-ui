@@ -194,12 +194,14 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                   onClick={handleToggleAssigned}
                   label={UC.LABELS.PANELS.MANAGE_ROLE.SHOW_ASSIGNED_BUTTON}
                   icon={<CheckCircleOutlined />}
+                  tooltip={UC.LABELS.PANELS.MANAGE_ROLE.SHOW_ASSIGNED_TOOLTIP}
                 />
                 <ToggleButton
                   active={activeView === 'groupRoles'}
                   onClick={handleToggleGroupRoles}
                   label={UC.LABELS.PANELS.MANAGE_ROLE.FROM_GROUPS_BUTTON}
                   icon={<TeamOutlined />}
+                  tooltip={UC.LABELS.PANELS.MANAGE_ROLE.FROM_GROUPS_TOOLTIP}
                 />
                 <FilterButton
                   onClick={() => setFilterPanelOpen(true)}
