@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
+import { getCurrentUser } from '../../../auth/utils';
 import { useUsers } from '../hooks';
 import { useUserListState } from '../hooks/list/useUserListState';
 import { useUserListPageConfig } from '../hooks/list/useUserListPageConfig';
@@ -39,15 +40,21 @@ const MainPage: React.FC = () => {
     closeManageGroupPanel,
   } = useUserPanelState();
 
+  const usersExcludingSelf = useMemo(() => {
+    const currentUser = getCurrentUser();
+    if (!currentUser?.id) return users;
+    return users.filter((u) => u.id !== currentUser.id);
+  }, [users]);
+
   const filteredUsers = useMemo(
     () =>
-      applySearch(users, searchTerm, [
+      applySearch(usersExcludingSelf, searchTerm, [
         (u: User) => u.username,
         (u: User) => u.fullname,
         (u: User) => u.email,
         (u: User) => (u.assignedRolesIDs || []).join(' '),
       ]),
-    [users, searchTerm],
+    [usersExcludingSelf, searchTerm],
   );
 
   const {
