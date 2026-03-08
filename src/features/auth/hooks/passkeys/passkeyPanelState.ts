@@ -1,7 +1,10 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Form } from 'antd';
+import type { FormInstance } from 'antd';
 import type { Passkey } from '../../models/passkeys';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
+
+export type PasskeyPanelFormValues = { deviceName: string };
 
 export interface UsePasskeyPanelStateReturn {
   isPanelOpen: boolean;
@@ -11,11 +14,11 @@ export interface UsePasskeyPanelStateReturn {
   openCreatePanel: () => void;
   openEditPanel: (passkey: Passkey) => void;
   closePanel: () => void;
-  form: ReturnType<typeof Form.useForm>[0];
+  form: FormInstance<PasskeyPanelFormValues>;
 }
 
 export const usePasskeyPanelState = (): UsePasskeyPanelStateReturn => {
-  const [form] = Form.useForm<{ deviceName: string }>();
+  const [form] = Form.useForm<PasskeyPanelFormValues>();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedPasskey, setSelectedPasskey] = useState<Passkey | null>(null);
