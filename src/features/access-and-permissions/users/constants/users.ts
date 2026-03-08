@@ -132,8 +132,8 @@ export const USERS_CONSTANTS = {
       },
       MANAGE_GROUP: {
         TITLE: 'Manage Groups',
-        SUBTITLE: (userName: string) => `Assign ${userName} to a group`,
-        SUBMIT_BUTTON: 'Assign Group',
+        SUBTITLE: (userName: string) => `View and manage groups for ${userName}`,
+        SUBMIT_BUTTON: 'Update groups',
         SEARCH_PLACEHOLDER: 'Search groups by name or description...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
       },

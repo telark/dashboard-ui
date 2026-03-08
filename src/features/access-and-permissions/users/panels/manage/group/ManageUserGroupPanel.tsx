@@ -1,7 +1,10 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Form } from 'antd';
 import { CheckCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import { SlideOutPanel } from '../../../../../../components/display/panels/slide-out';
+import {
+  SlideOutPanel,
+  ExpandPanelButton,
+} from '../../../../../../components/display/panels/slide-out';
 import { SearchInput } from '../../../../../../components/display/inputs';
 import { ToggleButton } from '../../../../../../components/display/buttons';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
@@ -24,12 +27,14 @@ interface ManageUserGroupPanelProps {
 }
 
 const PANEL_WIDTH = 600;
+const PANEL_WIDTH_EXPANDED = 900;
 
 const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClose, user }) => {
   const [form] = Form.useForm();
   const currentSelectedGroups = (Form.useWatch('assignedGroupsIDs', form) as string[]) || [];
   const [searchTerm, setSearchTerm] = useState('');
   const [showAssignedOnly, setShowAssignedOnly] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [localAssignedIds, setLocalAssignedIds] = useState<string[]>(
     () => user?.assignedGroupsIDs ?? [],
   );
@@ -74,6 +79,8 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
 
   if (!user) return null;
 
+  const panelWidth = expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH;
+
   return (
     <>
       <SlideOutPanel
@@ -83,7 +90,13 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
         subtitle={UC.LABELS.PANELS.MANAGE_GROUP.SUBTITLE(
           CapitalizeFirstLetter(user.fullname || user.username),
         )}
-        width={PANEL_WIDTH}
+        width={panelWidth}
+        headerExtra={
+          <ExpandPanelButton
+            expanded={expanded}
+            onToggle={() => setExpanded((prev) => !prev)}
+          />
+        }
         formContent={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
             <div
@@ -150,7 +163,7 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
         loading={isDeassigning}
         icon={<MinusCircleOutlined style={{ fontSize: 28, color: DEFAULT_COLORS.ERROR }} />}
         getContainer={() => document.body}
-        offsetRight={PANEL_WIDTH}
+        offsetRight={panelWidth}
       />
     </>
   );
