@@ -122,8 +122,8 @@ export const USERS_CONSTANTS = {
       },
       MANAGE_ROLE: {
         TITLE: 'Manage Roles',
-        SUBTITLE: (userName: string) => `Assign a role to ${userName}`,
-        SUBMIT_BUTTON: 'Assign Role',
+        SUBTITLE: (userName: string) => `View and manage roles for ${userName}`,
+        SUBMIT_BUTTON: 'Update roles',
         SEARCH_PLACEHOLDER: 'Search roles by name or description...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
         SHOW_ASSIGNED_TOOLTIP: 'View all roles currently assigned to this user, including inherited ones from groups',
