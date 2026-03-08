@@ -2,8 +2,6 @@ import React, { useEffect, useState, useMemo, useCallback, startTransition } fro
 import { App, message } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
-import { Toolbar } from '../../../../components/display/toolbar';
-import { PasskeyPanel, PasskeyCard } from '../../components';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
@@ -15,21 +13,16 @@ import {
   selectPasskeyError,
 } from '../../store/selectors/passkeySelectors';
 import { usePasskeyPanelState, usePasskeyActions } from '../../hooks';
-import { usePasskeyListConfig } from '../../config/passkeyListConfig';
+import { usePasskeyListPageConfig } from '../../hooks/passkeys/usePasskeyListPageConfig';
 import { sortPasskeys } from '../../components/passkeys/list/utils';
 import type { Passkey } from '../../models/passkeys';
-import { DEFAULT_COLORS } from '../../../../constants';
+import PasskeysErrorPage from './PasskeysErrorPage';
+import PasskeysLoadingPage from './PasskeysLoadingPage';
+import PasskeysEmptyPage from './PasskeysEmptyPage';
+import PasskeysListPage from './PasskeysListPage';
+import { PasskeyPanel } from '../../components';
 
-const INNER_CONTAINER_STYLE: React.CSSProperties = {
-  background: '#fff',
-  minHeight: '100vh',
-  padding: '100px 48px 48px',
-  marginTop: 0,
-  width: '100%',
-  boxSizing: 'border-box',
-};
-
-const ListPasskeys: React.FC = () => {
+const MainPage: React.FC = () => {
   const { modal } = App.useApp();
   const dispatch: AppDispatch = useDispatch();
   const passkeys = useSelector(selectPasskeys);
@@ -133,128 +126,66 @@ const ListPasskeys: React.FC = () => {
     return sortPasskeys(filtered, 'creationTimestamp', sortOrder);
   }, [passkeys, searchTerm, sortOrder]);
 
-  const toolbarConfig = usePasskeyListConfig({
-    onAddPasskeyClick: openCreatePanel,
+  const pageConfig = usePasskeyListPageConfig({
     searchValue: searchTerm,
     onSearchChange: setSearchTerm,
+    onCreatePasskeyClick: openCreatePanel,
   });
 
-  const titleBlock = (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-      <h1
-        style={{
-          fontSize: 28,
-          fontWeight: 700,
-          color: '#0B1F33',
-          margin: 0,
-          padding: 0,
-          lineHeight: 1.2,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-        }}
-      >
-        {PPC.LABELS.BREADCRUMBS.PASSKEYS}
-      </h1>
-      <p
-        style={{
-          fontSize: 14,
-          fontWeight: 400,
-          color: '#64748b',
-          margin: 0,
-          marginTop: 0,
-          padding: 0,
-          lineHeight: 1.2,
-          fontFamily: "'Roboto Condensed', sans-serif",
-        }}
-      >
-        {PPC.LABELS.HEADER_SUBTITLE}
-      </p>
-    </div>
+  const isFetching = useMemo(() => passkeys.length === 0 && loading, [passkeys.length, loading]);
+
+  const shouldShowEmpty = useMemo(
+    () => Array.isArray(passkeys) && passkeys.length === 0 && !loading && !error,
+    [passkeys, loading, error],
   );
 
-  if (loading) {
+  if (error) {
+    return <PasskeysErrorPage error={error} />;
+  }
+
+  if (shouldShowEmpty) {
     return (
-      <div style={{ background: DEFAULT_COLORS.BACKGROUND_WHITE, minHeight: '100vh' }}>
-        <div style={INNER_CONTAINER_STYLE}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
-            {titleBlock}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'flex-end', minHeight: '60px' }}>
-              <div />
-              <Toolbar config={toolbarConfig} />
-            </div>
-            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>Loading passkeys...</div>
-          </div>
-        </div>
-      </div>
+      <>
+        <PasskeysEmptyPage onCreatePasskeyClick={openCreatePanel} />
+        {isPanelOpen && (
+          <PasskeyPanel
+            open={isPanelOpen}
+            onClose={closePanel}
+            isEditMode={false}
+            selectedPasskey={null}
+            passkeys={passkeys}
+            submitting={submitting}
+            onSubmit={handlePanelSubmit}
+            form={form}
+            formSyncKey={formSyncKey}
+          />
+        )}
+      </>
     );
   }
 
+  if (isFetching) {
+    return <PasskeysLoadingPage />;
+  }
+
   return (
-    <div style={{ background: DEFAULT_COLORS.BACKGROUND_WHITE, minHeight: '100vh' }}>
-      <div style={INNER_CONTAINER_STYLE}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
-          {titleBlock}
-
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr auto',
-            alignItems: 'flex-end',
-            minHeight: '60px',
-            width: '100%',
-          }}
-        >
-          <div />
-          <Toolbar config={toolbarConfig} />
-        </div>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-              gap: 24,
-            }}
-          >
-            {filteredAndSortedPasskeys.length === 0 ? (
-              <div
-                style={{
-                  gridColumn: '1 / -1',
-                  padding: 48,
-                  textAlign: 'center',
-                  color: DEFAULT_COLORS.TEXT_MUTED,
-                  fontSize: 14,
-                }}
-              >
-                {searchTerm ? 'No passkeys match your search.' : 'No passkeys yet. Add one to get started.'}
-              </div>
-            ) : (
-              filteredAndSortedPasskeys.map((passkey) => (
-                <PasskeyCard
-                  key={passkey.credentialId ?? passkey.id}
-                  passkey={passkey}
-                  onEdit={openEditPanel}
-                  onDelete={confirmDelete}
-                />
-              ))
-            )}
-          </div>
-        </div>
-      </div>
-
-      <PasskeyPanel
-        open={isPanelOpen}
-        onClose={closePanel}
-        isEditMode={isEditMode}
-        selectedPasskey={selectedPasskey}
-        passkeys={passkeys}
-        submitting={submitting}
-        onSubmit={handlePanelSubmit}
-        form={form}
-        formSyncKey={formSyncKey}
-      />
-    </div>
+    <PasskeysListPage
+      pageConfig={pageConfig}
+      passkeys={filteredAndSortedPasskeys}
+      allPasskeys={passkeys}
+      searchTerm={searchTerm}
+      onEdit={openEditPanel}
+      onConfirmDelete={confirmDelete}
+      panelOpen={isPanelOpen}
+      isEditMode={isEditMode}
+      selectedPasskey={selectedPasskey}
+      onClosePanel={closePanel}
+      form={form}
+      formSyncKey={formSyncKey}
+      submitting={submitting}
+      onSubmit={handlePanelSubmit}
+    />
   );
 };
 
-export default ListPasskeys;
+export default MainPage;

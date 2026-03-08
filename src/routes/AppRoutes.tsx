@@ -37,8 +37,7 @@ const UsersMainPage = lazy(() => import('../features/access-and-permissions/user
 const GroupsMainPage = lazy(
   () => import('../features/access-and-permissions/groups/pages/MainPage'),
 );
-const PasskeysListView = lazy(() => import('../features/auth/pages/passkeys/ListPasskeys'));
-const PasskeyView = lazy(() => import('../features/auth/pages/passkeys/ViewPasskey'));
+const PasskeysMainPage = lazy(() => import('../features/auth/pages/passkeys/MainPage'));
 
 const PageLoader: React.FC = () => (
   <div
@@ -211,21 +210,11 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path={APP_ROUTES.PASSKEY_VIEW}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Passkey Details">
-                <PasskeyView />
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path={APP_ROUTES.PASSKEYS}
           element={
             <ProtectedRoute>
               <FeatureErrorBoundary featureName="Passkeys">
-                <PasskeysListView />
+                <PasskeysMainPage />
               </FeatureErrorBoundary>
             </ProtectedRoute>
           }

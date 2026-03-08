@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
 import { isDevelopment } from '../../../../utils/helpers/env';
@@ -9,34 +8,18 @@ import {
   handleCreatePasskey,
   handleUpdatePasskey,
   handleDeletePasskey,
-  navigateToPasskeyView,
-  validatePasskeyForNavigation,
 } from '../../utils';
 import type { Passkey, PasskeyActionsReturn } from '../../models/passkeys';
 
 export const usePasskeyActions = (
   openEditModal: (passkey: Passkey) => void,
 ): PasskeyActionsReturn => {
-  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
 
-  const handleView = useCallback(
-    (record: Passkey) => {
-      if (!validatePasskeyForNavigation(record)) {
-        if (isDevelopment()) {
-          logger.warn(PPC.LOGS.MISSING_DEVICE_NAME, record);
-        }
-        return;
-      }
-      navigate(navigateToPasskeyView(record.deviceName));
-    },
-    [navigate],
-  );
-
   const handleEdit = useCallback(
     (record: Passkey) => {
-      if (!validatePasskeyForNavigation(record)) {
+      if (!record?.deviceName) {
         if (isDevelopment()) {
           logger.warn(PPC.LOGS.MISSING_DEVICE_NAME, record);
         }
@@ -86,7 +69,6 @@ export const usePasskeyActions = (
 
   return {
     submitting,
-    handleView,
     handleEdit,
     handleDelete,
     handleCreate,

@@ -70,7 +70,6 @@ export interface PasskeyModalStateReturn {
 
 export interface PasskeyActionsReturn {
   submitting: boolean;
-  handleView: (record: Passkey) => void;
   handleEdit: (record: Passkey) => void;
   handleDelete: (record: Passkey, forceLastDelete?: boolean) => Promise<void>;
   handleCreate: (values: Record<string, any>) => Promise<void>;

@@ -14,6 +14,11 @@ export const PASSKEYS_CONSTANTS = {
       EDIT: 'Edit',
       CREATE: 'Register Passkey',
     },
+    EMPTY: {
+      TITLE: 'No passkeys yet',
+      DESCRIPTION: 'Add a passkey to sign in securely without a password.',
+      BUTTON: 'Register New Passkey',
+    },
     MESSAGES: {
       CREATED: (name: string) => `Passkey "${name}" registered successfully`,
       UPDATED: (name: string) => `Passkey "${name}" updated successfully`,
