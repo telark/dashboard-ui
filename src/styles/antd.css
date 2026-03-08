@@ -104,6 +104,39 @@
   background-color: #fff !important;
 }
 
+/* Style checkboxes with success color for role list */
+.role-list-container .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #20C997 !important;
+  border-color: #20C997 !important;
+}
+
+.role-list-container .ant-checkbox-wrapper:hover .ant-checkbox-inner {
+  border-color: #20C997 !important;
+}
+
+.role-list-container .ant-checkbox-input:focus + .ant-checkbox-inner {
+  border-color: #20C997 !important;
+}
+
+.role-list-container .ant-checkbox-indeterminate .ant-checkbox-inner {
+  background-color: #20C997 !important;
+  border-color: #20C997 !important;
+}
+
+.role-list-container .ant-checkbox-indeterminate .ant-checkbox-inner::after {
+  background-color: #fff !important;
+}
+
+.role-list-container .ant-checkbox-wrapper {
+  width: 100% !important;
+  display: flex !important;
+  align-items: flex-start !important;
+}
+
+.role-list-container .ant-checkbox {
+  flex-shrink: 0 !important;
+}
+
 /* First data column - move it closer to checkbox column */
 .app-table .ant-table-thead > tr > th:nth-child(2),
 .app-table .ant-table-tbody > tr > td:nth-child(2) {
@@ -142,12 +175,21 @@
 
 /* Form label typography to match pages */
 .ant-form-item-label > label {
-  font-weight: 700 !important;
+  font-weight: 400 !important;
   color: #0B1F33 !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+/* More space between label and input */
+.ant-form-item-label {
+  margin-bottom: 4px !important;
+  padding-bottom: 0 !important;
+  line-height: 1.5 !important;
 }
 
 .app-section .ant-form-vertical .ant-form-item .ant-form-item-label {
-  margin-bottom: 2px !important;
+  margin-bottom: 4px !important;
   padding-bottom: 0 !important;
 }
 .app-section .ant-form-vertical .ant-form-item .ant-form-item-control {
@@ -156,7 +198,7 @@
 
 /* Extra compact spacing for shared labeled inputs/selects */
 .form-item-compact .ant-form-item-label {
-  margin-bottom: 0 !important;
+  margin-bottom: 4px !important;
   padding-bottom: 0 !important;
 }
 .form-item-compact .ant-form-item-control {
@@ -434,4 +476,55 @@
 .compact-menu .ant-menu-item,
 .compact-menu .ant-menu-submenu {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Role Assignment Select Styles */
+.role-assignment-select .ant-select-selector {
+  border-color: #d9d9d9 !important;
+}
+
+.role-assignment-select.ant-select-focused .ant-select-selector {
+  border-color: #40a9ff !important;
+  box-shadow: 0 0 0 2px rgba(64, 169, 255, 0.1) !important;
+}
+
+.role-assignment-select .ant-select-selection-item {
+  background-color: transparent !important;
+  border-color: #d9d9d9 !important;
+  color: #0B1F33 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  line-height: 1.5 !important;
+}
+
+.role-assignment-select .ant-select-selection-item-content {
+  display: inline-flex !important;
+  align-items: center !important;
+  line-height: 1.5 !important;
+}
+
+.role-assignment-select .ant-select-selection-item-remove {
+  color: #0B1F33 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  line-height: 1.5 !important;
+}
+
+.role-assignment-select .ant-select-selection-item-remove:hover {
+  color: #40a9ff !important;
+}
+
+/* Remove default indentation and set consistent padding */
+.role-assignment-select .ant-select-item-group {
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+}
+
+.role-assignment-select .ant-select-item-option {
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+}
+
+.role-assignment-select .rc-virtual-list-holder-inner > div > div {
+  padding-left: 0 !important;
 }

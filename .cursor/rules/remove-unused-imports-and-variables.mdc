@@ -1,4 +1,3 @@
 ---
-description: when doing code edit always remove usless imports and variables and make sure to avoid multi-duplicated imports 
-alwaysApply: false
+alwaysApply: true
 ---

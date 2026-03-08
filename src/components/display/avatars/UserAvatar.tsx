@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createAvatar } from '@dicebear/core';
 import { Avatar } from 'antd';
 import type { UserAvatar as UserAvatarType } from '../../../features/access-and-permissions/users/models';
+import logger from '../../../logging';
 
 interface UserAvatarProps {
   avatar?: UserAvatarType;
@@ -60,7 +61,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ avatar, username, size = 40, st
             setAvatarSrc(undefined);
           }
         } catch (error) {
-          console.error('Failed to load avatar style:', error);
+          logger.error('Failed to load avatar style:', error);
           setAvatarSrc(undefined);
         }
       } else {

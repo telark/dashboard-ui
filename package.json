@@ -44,6 +44,7 @@
   "scripts": {
     "dev": "BROWSER='Google Chrome' vite --port 3000 --open",
     "build": "vite build",
+    "build:analyze": "vite build --mode analyze",
     "serve": "vite preview",
     "lint": "eslint .",
     "lint:f": "eslint . --fix",
@@ -70,6 +71,7 @@
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",
     "@vitejs/plugin-react": "^5.1.1",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
@@ -77,6 +79,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "globals": "^15.15.0",
     "prettier": "^3.6.2",
+    "rollup-plugin-visualizer": "^5.14.0",
     "terser": "^5.44.0",
     "typescript": "^5.9.3",
     "vite": "^7.2.2"

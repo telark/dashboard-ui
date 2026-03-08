@@ -1,0 +1,93 @@
+import React, { useCallback, useMemo } from 'react';
+import { Checkbox, Form } from 'antd';
+import { GROUPS_CONSTANTS as GC, ATTACHED_MEMBERS_CONSTANTS as AMC } from '../../../constants';
+import UserAvatar from '../../../../../../components/display/avatars/UserAvatar';
+import type { User } from '../../../../users/models';
+
+interface MemberListProps {
+  users: User[] | undefined;
+  loading: boolean;
+  allUsers?: User[] | undefined;
+}
+
+const MemberList: React.FC<MemberListProps> = ({ users, loading, allUsers }) => {
+  const form = Form.useFormInstance();
+  const watchedSelectedUsers = Form.useWatch('assignedUsersIDs', form);
+  const currentSelectedUsers = useMemo(
+    () => (watchedSelectedUsers as string[]) || [],
+    [watchedSelectedUsers],
+  );
+
+  const handleChange = useCallback(
+    (checkedValues: string[]) => {
+      if (!allUsers) {
+        form.setFieldsValue({ assignedUsersIDs: checkedValues });
+        return;
+      }
+
+      const filteredUserIds = users?.map((user) => user.id) || [];
+      const preservedSelections = (currentSelectedUsers as string[]).filter(
+        (userId) => !filteredUserIds.includes(userId),
+      );
+
+      const mergedSelections = [...preservedSelections, ...checkedValues];
+      const uniqueSelections = Array.from(new Set(mergedSelections));
+      form.setFieldsValue({ assignedUsersIDs: uniqueSelections });
+    },
+    [form, allUsers, users, currentSelectedUsers],
+  );
+
+  if (loading) {
+    return <div style={AMC.LIST.EMPTY_STATE}>{GC.LABELS.MESSAGES.LOADING_MEMBERS}</div>;
+  }
+
+  if (!users || users.length === 0) {
+    return <div style={AMC.LIST.EMPTY_STATE}>{GC.LABELS.MESSAGES.NO_MEMBERS_AVAILABLE}</div>;
+  }
+
+  const filteredSelectedUsers = (currentSelectedUsers as string[]).filter((userId) =>
+    users.some((user) => user.id === userId),
+  );
+
+  return (
+    <Form.Item name="assignedUsersIDs" style={{ margin: 0, width: '100%' }}>
+      <Checkbox.Group
+        style={{ width: '100%' }}
+        value={filteredSelectedUsers}
+        onChange={handleChange}
+      >
+        <div style={AMC.LIST.CONTAINER}>
+          {users.map((user) => {
+            return (
+              <div
+                key={user.id}
+                style={AMC.LIST.ITEM.BASE}
+                onMouseEnter={(e) => {
+                  Object.assign(e.currentTarget.style, AMC.LIST.ITEM.HOVER);
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = AMC.LIST.ITEM.BASE.background;
+                  e.currentTarget.style.borderColor = AMC.LIST.ITEM.BASE.border;
+                }}
+              >
+                <Checkbox value={user.id} style={{ margin: 0 }}>
+                  <div style={AMC.LIST.MEMBER_CONTENT}>
+                    <div style={AMC.LIST.MEMBER_AVATAR_CONTAINER}>
+                      <UserAvatar avatar={user.avatar} username={user.username} size={32} />
+                    </div>
+                    <div style={AMC.LIST.MEMBER_INFO}>
+                      <div style={AMC.LIST.MEMBER_NAME}>{user.username}</div>
+                      {user.email && <div style={AMC.LIST.MEMBER_EMAIL}>{user.email}</div>}
+                    </div>
+                  </div>
+                </Checkbox>
+              </div>
+            );
+          })}
+        </div>
+      </Checkbox.Group>
+    </Form.Item>
+  );
+};
+
+export default MemberList;

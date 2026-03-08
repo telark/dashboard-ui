@@ -17,6 +17,7 @@ const Header: React.FC = () => {
         top: '0',
         zIndex: 1000,
         transition: 'width 0.3s ease',
+        borderBottom: '1px solid #f0f0f0',
       }}
     >
       {/* Action Buttons */}

@@ -1,71 +1,81 @@
-import React, { useMemo, useState } from 'react';
-import { Modal } from 'antd';
+import React, { useMemo, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import DataTable from '../../../../../../components/display/table/DataTable';
 import { USERS_CONSTANTS as UC } from '../../../constants';
+import { DEFAULT_COLORS } from '../../../../../../constants';
 import type { User, UsersTableProps } from '../../../models';
+import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
+import type { RootState } from '../../../../../../store';
+import { useFetchGroups } from '../../../../groups/hooks';
 import Columns from './Columns';
-
-type SortKey = 'username' | 'fullname' | 'email' | 'roleID' | 'creationDate';
+import { UserActionsColumn } from './UserActionsColumn';
+import { useSortState } from '../../../../../../utils/layout/sort';
 
 const UsersTable: React.FC<UsersTableProps> = ({ users, onView, onEdit, onUsersChange }) => {
-  const [sortKey, setSortKey] = useState<SortKey>('creationDate');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  useFetchGroups();
+  const groups = useSelector((state: RootState) => state.groups.groups);
+  const { sortKey, sortOrder, handleSort } = useSortState({
+    defaultSortKey: 'creationDate',
+    defaultSortOrder: 'desc',
+  });
 
   const sorted = useMemo(() => {
     const items = [...users];
-    const compare = (a: User, b: User) => {
+    items.sort((a, b) => {
+      let cmp = 0;
       switch (sortKey) {
         case 'username':
-          return String(a.username).localeCompare(String(b.username));
+          cmp = a.username.localeCompare(b.username);
+          break;
         case 'fullname':
-          return String(a.fullname).localeCompare(String(b.fullname));
+          cmp = a.fullname.localeCompare(b.fullname);
+          break;
         case 'email':
-          return String(a.email).localeCompare(String(b.email));
-        case 'roleID':
-          return String(a.roleID).localeCompare(String(b.roleID));
+          cmp = a.email.localeCompare(b.email);
+          break;
+        case 'assignedRolesIDs':
+          cmp = (a.assignedRolesIDs?.[0] ?? '').localeCompare(b.assignedRolesIDs?.[0] ?? '');
+          break;
         case 'creationDate':
         default:
-          return new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();
+          cmp = new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();
       }
-    };
-    items.sort((a, b) => (sortOrder === 'asc' ? compare(a, b) : -compare(a, b)));
+      return sortOrder === 'asc' ? cmp : -cmp;
+    });
     return items;
   }, [users, sortKey, sortOrder]);
 
-  const handleView = (record: User) => {
-    onView?.(record);
-  };
+  const handleView = useCallback((record: User) => onView?.(record), [onView]);
+  const handleEdit = useCallback((record: User) => onEdit?.(record), [onEdit]);
+  const handleDelete = useCallback(
+    (record: User) => onUsersChange?.(users.filter((u) => u.id !== record.id)),
+    [onUsersChange, users],
+  );
 
-  const handleEdit = (record: User) => {
-    onEdit?.(record);
-  };
-
-  const handleDelete = (record: User) => {
-    Modal.confirm({
-      title: UC.LABELS.ACTIONS.DELETE_MODAL_TITLE,
-      content: UC.LABELS.ACTIONS.DELETE_MODAL_CONTENT(record?.fullname || record?.username || ''),
-      okText: UC.LABELS.ACTIONS.DELETE_MODAL_OK,
-      okButtonProps: { danger: true },
-      onOk: () => {
-        onUsersChange?.(users.filter((u) => u.id !== record.id));
-      },
-    });
-  };
+  const ctx: GenerateColumnCtx = useMemo(
+    () => ({ activeSortKey: sortKey ?? 'creationDate', onSort: handleSort }),
+    [sortKey, handleSort],
+  );
 
   const columns = useMemo(
-    () =>
-      Columns({
-        activeSortKey: sortKey,
-        onSort: (k: string) => {
-          const key = k as SortKey;
-          setSortKey(key);
-          setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-        },
-        onView: handleView,
-        onEdit: handleEdit,
-        onDelete: handleDelete,
-      } as any),
-    [sortKey],
+    () => [
+      ...Columns(ctx, groups),
+      {
+        title: '',
+        key: UC.KEYS.ACTIONS,
+        align: 'right' as const,
+        width: 120,
+        onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
+        render: (_: unknown, record: User) => (
+          <UserActionsColumn
+            record={record}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        ),
+      },
+    ],
+    [ctx, groups, handleView, handleEdit, handleDelete],
   );
 
   return (

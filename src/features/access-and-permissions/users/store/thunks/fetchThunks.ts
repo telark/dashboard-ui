@@ -10,7 +10,7 @@ const mapUsersData = (response: ResourceListResponse<User>): User[] => {
   return response.data?.items || [];
 };
 
-const mapUserDetailsData = (response: ResourceDetailsResponse<User>): User => {
+export const mapUserDetailsData = (response: ResourceDetailsResponse<User>): User => {
   return response.data;
 };
 

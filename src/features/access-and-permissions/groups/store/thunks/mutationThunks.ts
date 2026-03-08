@@ -4,7 +4,7 @@ import { extractErrorMessage } from '../../../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../../constants/store/store';
 import logger from '../../../../../logging';
 import type { GroupFormData } from '../../models';
-import { mapGroupDetailsData } from '../../utils/mappers/groupMapper';
+import { mapGroupDetailsData } from '../../utils';
 
 export const createGroupThunk = createAsyncThunk(
   STORE_ACTIONS.GROUPS.CREATE,
