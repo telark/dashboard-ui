@@ -26,6 +26,9 @@ export const GROUPS_CONSTANTS = {
         'Get started by creating your first group. Groups help you organize and manage users with similar roles and permissions.',
       LOADING_ROLES: 'Loading roles...',
       NO_ROLES_AVAILABLE: 'No roles available',
+      NO_ASSIGNED_ROLES: 'No roles assigned yet',
+      ROLE_DEASSIGNED: (roleName: string) => `Role "${roleName}" was removed from group`,
+      ROLE_DEASSIGN_FAILED: 'Failed to remove role from group',
       LOADING_MEMBERS: 'Loading members...',
       NO_MEMBERS_AVAILABLE: 'No members available',
     },
@@ -57,6 +60,10 @@ export const GROUPS_CONSTANTS = {
       BULK_DELETE_SUCCESS: (count: number) =>
         `${count} group${count > 1 ? 's' : ''} deleted successfully`,
       BULK_DELETE_FAILED: 'Failed to delete some groups',
+      DEASSIGN_ROLE_MODAL_TITLE: 'Remove Role',
+      DEASSIGN_ROLE_MODAL_ACTION: 'Remove',
+      DEASSIGN_ROLE_MODAL_CONFIRM: 'Remove',
+      DEASSIGN_ROLE_RESOURCE_TYPE: 'role',
     },
     FORM: {
       TITLE: 'Create Group',
@@ -99,6 +106,8 @@ export const GROUPS_CONSTANTS = {
         SUBTITLE: (groupName: string) => `Select roles to attach to ${groupName}`,
         SUBMIT_BUTTON: 'Attach Roles',
         SEARCH_PLACEHOLDER: 'Search roles by name, type, status, or validity...',
+        SHOW_ASSIGNED_BUTTON: 'Assigned',
+        SHOW_ASSIGNED_TOOLTIP: 'View all roles currently assigned to this group',
       },
       ASSIGN_MEMBERS: {
         TITLE: 'Assign Members',

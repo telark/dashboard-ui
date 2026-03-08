@@ -21,6 +21,7 @@ export { useViewGroupPanelData } from './panels/useViewGroupPanelData';
 export { useEditGroupPanel } from './panels/useEditGroupPanel';
 export { useCreateGroupPanel } from './panels/useCreateGroupPanel';
 export { useAttachRolePanel } from './panels/useAttachRolePanel';
+export { useDeassignGroupRole } from './panels/role/useDeassignGroupRole';
 export { useAttachMemberPanel } from './panels/useAttachMemberPanel';
 
 // Category hooks
