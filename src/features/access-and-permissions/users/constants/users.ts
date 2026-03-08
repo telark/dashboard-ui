@@ -2,8 +2,8 @@ import type { FormFieldConfig } from '../../../../interfaces/layout/modal';
 
 export const USERS_CONSTANTS = {
   LABELS: {
-    HEADER_TITLE: 'Users',
-    HEADER_SUBTITLE: 'Manage existing users',
+    HEADER_TITLE: 'Members',
+    HEADER_SUBTITLE: 'Manage existing members',
     VIEW_SUBTITLE: 'View user details',
     EDIT_SUBTITLE: 'Edit user details',
     CREATE_SUBTITLE: 'Create a new user',
