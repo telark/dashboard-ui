@@ -7,11 +7,11 @@ export const GROUPS_CONSTANTS = {
     CREATE_SUBTITLE: 'Create a new group',
     NOT_FOUND: 'Group not found',
     UPDATE_BUTTON: 'Update Group',
-    CREATE_BUTTON_TEXT: 'Create Group',
+    CREATE_BUTTON_TEXT: 'Add New Group',
     BREADCRUMBS: {
       GROUPS: 'Groups',
       EDIT: 'Edit',
-      CREATE: 'Create Group',
+      CREATE: 'Add New Group',
       CATEGORIES: 'Categories',
     },
     MESSAGES: {
@@ -75,11 +75,11 @@ export const GROUPS_CONSTANTS = {
       DEASSIGN_MEMBER_RESOURCE_TYPE: 'member',
     },
     FORM: {
-      TITLE: 'Create Group',
+      TITLE: 'Add New Group',
       SUBTITLE: 'Add a new group',
       SECTION_TITLE: 'Group Details',
       SECTION_SUBTITLE: 'Provide the group information.',
-      BUTTON_TEXT: 'Create Group',
+      BUTTON_TEXT: 'Add New Group',
       SECTIONS: {
         BASIC_DETAILS: 'Basic Details',
         MEMBERS: 'Members',
