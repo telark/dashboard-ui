@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { usePasskeyListConfig } from '../../config/passkeyListConfig';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
