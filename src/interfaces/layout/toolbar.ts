@@ -6,7 +6,7 @@ export interface ToolbarButtonConfig {
   label: string;
   icon?: React.ReactNode;
   onClick?: () => void;
-  variant?: 'default' | 'primary' | 'ghost';
+  variant?: 'default' | 'primary' | 'ghost' | 'danger';
   active?: boolean;
   disabled?: boolean;
   dropdown?: {

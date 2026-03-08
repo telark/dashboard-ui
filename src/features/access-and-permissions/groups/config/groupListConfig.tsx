@@ -69,7 +69,7 @@ export const useGroupListConfig = ({
           key: 'bulk-delete',
           label: GC.LABELS.ACTIONS.BULK_DELETE,
           icon: <DeleteOutlined />,
-          variant: 'default',
+          variant: 'danger',
           disabled: selectedGroupsCount < 2,
           onClick: () => {
             onBulkDeleteClick?.();

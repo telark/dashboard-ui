@@ -1,6 +1,10 @@
 import React, { memo, useMemo } from 'react';
 import { PageLayout } from '../../../../components/display/views';
 import { DEFAULT_COLORS } from '../../../../constants';
+import ActionConfirmModal from '../../../../components/display/modal/confirm/ActionConfirmModal';
+import { FilterPanel } from '../../../../components/display/panels/filter';
+import { buildUserFilterFields } from '../config/userFilterConfig';
+import { USERS_CONSTANTS as UC } from '../constants';
 import {
   CreateUserPanel,
   EditUserPanel,
@@ -25,13 +29,25 @@ interface UsersListPageProps {
   managingGroupUser: User | null;
   createForm: FormInstance<CreateUserFormValues>;
   editForm: FormInstance<CreateUserFormValues>;
+  filterPanelOpen: boolean;
+  bulkDeleteModalOpen: boolean;
+  bulkDeleteSelectedCount: number;
+  bulkDeleteIsDeleting: boolean;
   onCloseCreatePanel: () => void;
   onCloseEditPanel: () => void;
   onCloseViewPanel: () => void;
   onCloseManageRolePanel: () => void;
   onCloseManageGroupPanel: () => void;
+  onCloseFilterPanel: () => void;
+  onCloseBulkDeleteModal: () => void;
+  onConfirmBulkDelete: () => Promise<void>;
+  handleFilterChange: (filters: Record<string, unknown>) => void;
+  handleFilterApply: (filters: Record<string, unknown>) => void;
+  handleFilterReset: () => void;
   onViewPanelEdit: () => void;
 }
+
+const filterFields = buildUserFilterFields();
 
 const UsersListPage: React.FC<UsersListPageProps> = memo(
   ({
@@ -47,16 +63,31 @@ const UsersListPage: React.FC<UsersListPageProps> = memo(
     managingGroupUser,
     createForm,
     editForm,
+    filterPanelOpen,
+    bulkDeleteModalOpen,
+    bulkDeleteSelectedCount,
+    bulkDeleteIsDeleting,
     onCloseCreatePanel,
     onCloseEditPanel,
     onCloseViewPanel,
     onCloseManageRolePanel,
     onCloseManageGroupPanel,
+    onCloseFilterPanel,
+    onCloseBulkDeleteModal,
+    onConfirmBulkDelete,
+    handleFilterChange,
+    handleFilterApply,
+    handleFilterReset,
     onViewPanelEdit,
   }) => {
     const handleViewPanelEditClick = useMemo(
       () => (viewingUser ? onViewPanelEdit : undefined),
       [viewingUser, onViewPanelEdit],
+    );
+
+    const bulkDeleteResourceName = useMemo(
+      () => `${bulkDeleteSelectedCount} user${bulkDeleteSelectedCount > 1 ? 's' : ''}`,
+      [bulkDeleteSelectedCount],
     );
 
     return (
@@ -93,6 +124,28 @@ const UsersListPage: React.FC<UsersListPageProps> = memo(
             open={manageGroupPanelOpen}
             onClose={onCloseManageGroupPanel}
             user={managingGroupUser}
+          />
+        )}
+        <FilterPanel
+          open={filterPanelOpen}
+          onClose={onCloseFilterPanel}
+          fields={filterFields}
+          onFilterChange={handleFilterChange}
+          onApply={handleFilterApply}
+          onReset={handleFilterReset}
+        />
+        {bulkDeleteModalOpen && (
+          <ActionConfirmModal
+            open={bulkDeleteModalOpen}
+            onClose={onCloseBulkDeleteModal}
+            onConfirm={onConfirmBulkDelete}
+            title={UC.LABELS.ACTIONS.BULK_DELETE_MODAL_TITLE}
+            action="delete"
+            resourceName={bulkDeleteResourceName}
+            confirmText={UC.LABELS.ACTIONS.DELETE_MODAL_OK}
+            cancelText={UC.LABELS.MODAL.CANCEL}
+            loading={bulkDeleteIsDeleting}
+            danger={true}
           />
         )}
       </div>

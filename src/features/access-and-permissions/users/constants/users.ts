@@ -81,6 +81,26 @@ export const USERS_CONSTANTS = {
       DEASSIGN_GROUP_MODAL_ACTION: 'Remove',
       DEASSIGN_GROUP_MODAL_CONFIRM: 'Remove',
       DEASSIGN_GROUP_RESOURCE_TYPE: 'group',
+      BULK_DELETE: 'Bulk Delete',
+      BULK_DELETE_MODAL_TITLE: 'Delete Users',
+      BULK_DELETE_LOADING: (count: number) =>
+        `Deleting ${count} user${count > 1 ? 's' : ''}...`,
+      BULK_DELETE_SUCCESS: (count: number) =>
+        `${count} user${count > 1 ? 's' : ''} deleted successfully`,
+      BULK_DELETE_FAILED: 'Failed to delete some users',
+    },
+    FILTER: {
+      LABELS: {
+        BY_CREATION_DATE: 'By creation date',
+        BY_STATUS: 'By status',
+        FROM: 'From',
+        TO: 'To',
+      },
+      STATUS_OPTIONS: {
+        ALL: 'All',
+        ACTIVE: 'Active',
+        INACTIVE: 'Inactive',
+      },
     },
     FORM: {
       TITLE: 'Add User',
@@ -142,6 +162,9 @@ export const USERS_CONSTANTS = {
       SEARCH: {
         PLACEHOLDER: 'Search users by name, email...',
         BUTTON_LABEL: 'Search',
+      },
+      FILTER: {
+        BUTTON_LABEL: 'Filter',
       },
       CREATE: {
         BUTTON_LABEL: 'Add User',

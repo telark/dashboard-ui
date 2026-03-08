@@ -1,10 +1,14 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { getCurrentUser } from '../../../auth/utils';
-import { useUsers } from '../hooks';
-import { useUserListState } from '../hooks/list/useUserListState';
+import {
+  useUsers,
+  useUserFilters,
+  useBulkDeleteUsers,
+  useUserListState,
+} from '../hooks';
 import { useUserListPageConfig } from '../hooks/list/useUserListPageConfig';
 import { useUserPanelState } from '../hooks/panels/user/useUserPanelState';
-import { applySearch } from '../../../../utils/search';
+import { applyUserFilters } from '../utils/filter/applyUserFilters';
 import { CreateUserPanel } from '../panels';
 import type { User } from '../models';
 import UsersErrorPage from './UsersErrorPage';
@@ -15,6 +19,17 @@ import UsersListPage from './UsersListPage';
 const MainPage: React.FC = () => {
   const { users, loading, error } = useUsers();
   const [searchTerm, setSearchTerm] = useState('');
+  const [bulkDeleteModalOpen, setBulkDeleteModalOpen] = useState(false);
+
+  const {
+    filterPanelOpen,
+    closeFilterPanel,
+    appliedFilters,
+    handleFilterChange,
+    handleFilterApply,
+    handleFilterReset,
+    openFilterPanel,
+  } = useUserFilters();
 
   const {
     createPanelOpen,
@@ -47,14 +62,8 @@ const MainPage: React.FC = () => {
   }, [users]);
 
   const filteredUsers = useMemo(
-    () =>
-      applySearch(usersExcludingSelf, searchTerm, [
-        (u: User) => u.username,
-        (u: User) => u.fullname,
-        (u: User) => u.email,
-        (u: User) => (u.assignedRolesIDs || []).join(' '),
-      ]),
-    [usersExcludingSelf, searchTerm],
+    () => applyUserFilters(usersExcludingSelf, appliedFilters, searchTerm),
+    [usersExcludingSelf, appliedFilters, searchTerm],
   );
 
   const {
@@ -69,6 +78,11 @@ const MainPage: React.FC = () => {
     sortedUsers,
     paginatedUsers,
   } = useUserListState(filteredUsers);
+
+  const { isDeleting, handleBulkDelete } = useBulkDeleteUsers({
+    selectedUsers,
+    setSelectedUsers,
+  });
 
   const handleViewUser = useCallback((user: User) => openViewPanel(user), [openViewPanel]);
   const handleEditUser = useCallback((user: User) => openEditPanel(user), [openEditPanel]);
@@ -96,6 +110,19 @@ const MainPage: React.FC = () => {
     }
   }, [selectedUsers, filteredUsers, openManageGroupPanel]);
 
+  const handleBulkDeleteClick = useCallback(() => {
+    if (selectedUsers.length >= 2) setBulkDeleteModalOpen(true);
+  }, [selectedUsers.length]);
+
+  const handleConfirmBulkDelete = useCallback(async () => {
+    await handleBulkDelete();
+    setBulkDeleteModalOpen(false);
+  }, [handleBulkDelete]);
+
+  const handleCloseBulkDeleteModal = useCallback(() => {
+    setBulkDeleteModalOpen(false);
+  }, []);
+
   const pageConfig = useUserListPageConfig({
     sortKey,
     handleSort,
@@ -111,6 +138,8 @@ const MainPage: React.FC = () => {
     handleViewUser,
     handleEditUser,
     onCreateUserClick: openCreatePanel,
+    onFilterClick: openFilterPanel,
+    onBulkDeleteClick: handleBulkDeleteClick,
     onManageRoleClick: handleManageRolesClick,
     onManageGroupClick: handleManageGroupsClick,
     searchValue: searchTerm,
@@ -162,6 +191,16 @@ const MainPage: React.FC = () => {
       managingGroupUser={managingGroupUser}
       createForm={createForm}
       editForm={editForm}
+      filterPanelOpen={filterPanelOpen}
+      onCloseFilterPanel={closeFilterPanel}
+      handleFilterChange={handleFilterChange}
+      handleFilterApply={handleFilterApply}
+      handleFilterReset={handleFilterReset}
+      bulkDeleteModalOpen={bulkDeleteModalOpen}
+      bulkDeleteSelectedCount={selectedUsers.length}
+      bulkDeleteIsDeleting={isDeleting}
+      onCloseBulkDeleteModal={handleCloseBulkDeleteModal}
+      onConfirmBulkDelete={handleConfirmBulkDelete}
       onCloseCreatePanel={closeCreatePanel}
       onCloseEditPanel={closeEditPanel}
       onCloseViewPanel={closeViewPanel}

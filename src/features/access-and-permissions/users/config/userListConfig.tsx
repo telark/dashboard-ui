@@ -1,7 +1,12 @@
 import React from 'react';
 import { USERS_CONSTANTS as UC } from '../constants';
 import { Icons } from '../../../../constants';
-import { SearchOutlined, SettingOutlined } from '@ant-design/icons';
+import {
+  SearchOutlined,
+  SettingOutlined,
+  FilterOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 
 const UserIcon = Icons.User;
@@ -14,6 +19,8 @@ interface UseUserListConfigProps {
   onSearchSubmit?: () => void;
   onCreateUserClick: () => void;
   selectedUsersCount?: number;
+  onFilterClick?: () => void;
+  onBulkDeleteClick?: () => void;
   onManageRoleClick?: () => void;
   onManageGroupClick?: () => void;
 }
@@ -24,6 +31,8 @@ export const useUserListConfig = ({
   onSearchSubmit,
   onCreateUserClick,
   selectedUsersCount = 0,
+  onFilterClick,
+  onBulkDeleteClick,
   onManageRoleClick,
   onManageGroupClick,
 }: UseUserListConfigProps) => {
@@ -41,6 +50,21 @@ export const useUserListConfig = ({
           label: UC.LABELS.TOOLBAR.SEARCH.BUTTON_LABEL,
           icon: <SearchOutlined />,
           variant: 'ghost',
+        },
+        {
+          key: 'filter',
+          label: UC.LABELS.TOOLBAR.FILTER.BUTTON_LABEL,
+          icon: <FilterOutlined />,
+          variant: 'ghost',
+          onClick: () => onFilterClick?.(),
+        },
+        {
+          key: 'bulk-delete',
+          label: UC.LABELS.ACTIONS.BULK_DELETE,
+          icon: <DeleteOutlined />,
+          variant: 'danger',
+          disabled: selectedUsersCount < 2,
+          onClick: () => onBulkDeleteClick?.(),
         },
         {
           key: 'manage',
@@ -85,6 +109,8 @@ export const useUserListConfig = ({
       onSearchSubmit,
       onCreateUserClick,
       selectedUsersCount,
+      onFilterClick,
+      onBulkDeleteClick,
       onManageRoleClick,
       onManageGroupClick,
     ],

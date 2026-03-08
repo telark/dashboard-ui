@@ -54,6 +54,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
 
       {buttons.map((button) => {
         const isPrimary = button.variant === 'primary';
+        const isDanger = button.variant === 'danger';
         const isGhost = button.variant === 'ghost';
         const isDisabled = button.disabled ?? false;
         const isSearchButton = search && button.key === 'search';
@@ -106,13 +107,21 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                   fontWeight: 500,
                   border: isGhost
                     ? 'none'
-                    : `1px solid ${isPrimary ? DEFAULT_COLORS.SUCCESS : '#d9d9d9'}`,
+                    : `1px solid ${
+                        isDisabled && isDanger
+                          ? '#d9d9d9'
+                          : isPrimary
+                            ? DEFAULT_COLORS.SUCCESS
+                            : isDanger
+                              ? DEFAULT_COLORS.DANGER
+                              : '#d9d9d9'
+                      }`,
                   backgroundColor: isPrimary
                     ? DEFAULT_COLORS.SUCCESS
                     : button.active
                       ? '#e6f7ff'
                       : 'transparent',
-                  color: isDisabled ? '#d1d5db' : isPrimary ? '#fff' : '#64748b',
+                  color: isDisabled ? '#d1d5db' : isPrimary ? '#fff' : isDanger ? DEFAULT_COLORS.DANGER : '#64748b',
                   opacity: isDisabled ? 0.6 : 1,
                   fontFamily: "'Roboto Condensed', sans-serif",
                   transition: 'all 0.2s',
@@ -122,6 +131,8 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                   if (isDisabled) return;
                   if (isPrimary) {
                     e.currentTarget.style.opacity = '0.9';
+                  } else if (isDanger && !button.active) {
+                    e.currentTarget.style.backgroundColor = '#fff1f0';
                   } else if (!button.active) {
                     e.currentTarget.style.backgroundColor = DEFAULT_COLORS.HOVER_BG;
                     if (!isGhost) {
@@ -134,6 +145,8 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                   if (isDisabled) return;
                   if (isPrimary) {
                     e.currentTarget.style.opacity = '1';
+                  } else if (isDanger) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
                   } else {
                     e.currentTarget.style.backgroundColor = button.active
                       ? '#e6f7ff'
@@ -176,13 +189,21 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
               fontWeight: 500,
               border: isGhost
                 ? 'none'
-                : `1px solid ${isPrimary ? DEFAULT_COLORS.SUCCESS : '#d9d9d9'}`,
+                : `1px solid ${
+                    isDisabled && isDanger
+                      ? '#d9d9d9'
+                      : isPrimary
+                        ? DEFAULT_COLORS.SUCCESS
+                        : isDanger
+                          ? DEFAULT_COLORS.DANGER
+                          : '#d9d9d9'
+                  }`,
               backgroundColor: isPrimary
                 ? DEFAULT_COLORS.SUCCESS
                 : button.active
                   ? '#e6f7ff'
                   : 'transparent',
-              color: isDisabled ? '#d1d5db' : isPrimary ? '#fff' : '#64748b',
+              color: isDisabled ? '#d1d5db' : isPrimary ? '#fff' : isDanger ? DEFAULT_COLORS.DANGER : '#64748b',
               opacity: isDisabled ? 0.6 : 1,
               fontFamily: "'Roboto Condensed', sans-serif",
               transition: 'all 0.2s',
@@ -191,6 +212,8 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
               if (isDisabled) return;
               if (isPrimary) {
                 e.currentTarget.style.opacity = '0.9';
+              } else if (isDanger && !button.active) {
+                e.currentTarget.style.backgroundColor = '#fff1f0';
               } else if (!button.active) {
                 e.currentTarget.style.backgroundColor = isGhost ? '#f5f5f5' : '#f5f5f5';
                 if (!isGhost) {
@@ -203,6 +226,8 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
               if (isDisabled) return;
               if (isPrimary) {
                 e.currentTarget.style.opacity = '1';
+              } else if (isDanger) {
+                e.currentTarget.style.backgroundColor = 'transparent';
               } else {
                 e.currentTarget.style.backgroundColor = button.active ? '#e6f7ff' : 'transparent';
                 if (!isGhost) {
