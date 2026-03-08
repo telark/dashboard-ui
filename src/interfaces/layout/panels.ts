@@ -14,6 +14,7 @@ export interface AnimationWrapperProps {
   children: React.ReactNode;
   width?: number;
   toolbarActions?: TopPanelToolbarActions;
+  headerExtra?: React.ReactNode;
   offsetX?: number;
 }
 

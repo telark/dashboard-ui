@@ -82,6 +82,8 @@ export const SLIDE_OUT = {
   },
   CLOSE_BUTTON_HOVER_COLOR: '#0B1F33',
   CLOSE_BUTTON_DEFAULT_COLOR: '#64748b',
+  EXPAND_TOOLTIP: 'Expand panel for a wider layout',
+  COLLAPSE_TOOLTIP: 'Collapse panel to default width',
   CONTENT: {
     flex: 1,
     overflowY: 'auto' as const,

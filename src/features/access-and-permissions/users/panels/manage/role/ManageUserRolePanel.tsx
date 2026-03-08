@@ -1,7 +1,10 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Form } from 'antd';
 import { CheckCircleOutlined, MinusCircleOutlined, TeamOutlined } from '@ant-design/icons';
-import { SlideOutPanel } from '../../../../../../components/display/panels/slide-out';
+import {
+  SlideOutPanel,
+  ExpandPanelButton,
+} from '../../../../../../components/display/panels/slide-out';
 import { FilterPanel } from '../../../../../../components/display/panels/filter';
 import { FilterButton, ToggleButton } from '../../../../../../components/display/buttons';
 import { SearchInput } from '../../../../../../components/display/inputs';
@@ -33,6 +36,7 @@ interface ManageUserRolePanelProps {
 }
 
 const PANEL_WIDTH = 650;
+const PANEL_WIDTH_EXPANDED = 960;
 const FILTER_PANEL_WIDTH = 480;
 
 const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose, user }) => {
@@ -42,6 +46,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
   const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
   const [searchTerm, setSearchTerm] = useState('');
   const [activeView, setActiveView] = useState<ActiveView>('select');
+  const [expanded, setExpanded] = useState(false);
   // Local source of truth for assigned IDs — no timing dependency on roles loading
   const [localAssignedIds, setLocalAssignedIds] = useState<string[]>(
     () => user?.assignedRolesIDs ?? [],
@@ -166,8 +171,14 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
         subtitle={UC.LABELS.PANELS.MANAGE_ROLE.SUBTITLE(
           CapitalizeFirstLetter(user.fullname || user.username),
         )}
-        width={PANEL_WIDTH}
+        width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
         offsetX={filterPanelOpen ? FILTER_PANEL_WIDTH : 0}
+        headerExtra={
+          <ExpandPanelButton
+            expanded={expanded}
+            onToggle={() => setExpanded((prev) => !prev)}
+          />
+        }
         formContent={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
             <div
