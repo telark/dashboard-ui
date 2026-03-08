@@ -10,11 +10,11 @@ export const USERS_CONSTANTS = {
     NOT_FOUND: 'User not found',
     UPDATE_BUTTON: 'Update User',
     CREATE_BUTTON: 'Add User',
-    CREATE_BUTTON_TEXT: 'Create User',
+    CREATE_BUTTON_TEXT: 'Add User',
     BREADCRUMBS: {
       USERS: 'Users',
       EDIT: 'Edit',
-      CREATE: 'Create User',
+      CREATE: 'Add User',
     },
     MESSAGES: {
       CREATED: (name: string) => `User "${name}" created`,
@@ -83,11 +83,11 @@ export const USERS_CONSTANTS = {
       DEASSIGN_GROUP_RESOURCE_TYPE: 'group',
     },
     FORM: {
-      TITLE: 'Create User',
+      TITLE: 'Add User',
       SUBTITLE: 'Add a new user',
       SECTION_TITLE: 'User Details',
       SECTION_SUBTITLE: 'Provide the user information.',
-      BUTTON_TEXT: 'Create User',
+      BUTTON_TEXT: 'Add User',
       SECTIONS: {
         USER_DETAILS: 'User Details',
         ASSIGNMENT: 'Assignment',
@@ -116,9 +116,9 @@ export const USERS_CONSTANTS = {
         SUBMIT_BUTTON: 'Update User',
       },
       CREATE: {
-        TITLE: 'Create User',
+        TITLE: 'Add User',
         SUBTITLE: 'Add a new user to the system',
-        SUBMIT_BUTTON: 'Create User',
+        SUBMIT_BUTTON: 'Add User',
       },
       MANAGE_ROLE: {
         TITLE: 'Manage Roles',
