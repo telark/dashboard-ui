@@ -156,6 +156,7 @@ export const USERS_CONSTANTS = {
         SUBMIT_BUTTON: 'Update groups',
         SEARCH_PLACEHOLDER: 'Search groups by name or description...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
+        SHOW_ASSIGNED_TOOLTIP: 'View all groups currently assigned to this user',
       },
     },
     TOOLBAR: {

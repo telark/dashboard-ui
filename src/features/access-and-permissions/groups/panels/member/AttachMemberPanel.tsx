@@ -136,6 +136,7 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
                 onClick={handleToggleAssignedOnly}
                 label={GC.LABELS.PANELS.ASSIGN_MEMBERS.SHOW_ASSIGNED_BUTTON}
                 icon={<CheckCircleOutlined />}
+                tooltip={GC.LABELS.PANELS.ASSIGN_MEMBERS.SHOW_ASSIGNED_TOOLTIP}
               />
             </div>
             <div style={{ width: '100%', margin: 0, padding: 0, boxSizing: 'border-box' }}>
