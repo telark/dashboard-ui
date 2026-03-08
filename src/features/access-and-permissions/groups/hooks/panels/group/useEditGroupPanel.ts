@@ -49,7 +49,7 @@ export const useEditGroupPanel = ({
       name: editingGroup.name,
       description: editingGroup.description,
       categoryID: editingGroup.categoryID,
-      assignedUsersIDs: editingGroup.assignedUsersIDs || [],
+      assignedUsersIDs: editingGroup.assignedUsersIDs ?? [],
     };
   }, [editingGroup]);
 
@@ -79,7 +79,13 @@ export const useEditGroupPanel = ({
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     if (!editingGroup) return;
-    const formData = normalizeGroupFormData(values);
+    const formData = normalizeGroupFormData({
+      ...values,
+      assignedUsersIDs:
+        (values.assignedUsersIDs as string[] | undefined) ??
+        editingGroup.assignedUsersIDs ??
+        [],
+    });
     await handleUpdate(editingGroup.id, formData);
     form.resetFields();
     onClose();
