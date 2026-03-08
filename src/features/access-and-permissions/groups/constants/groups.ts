@@ -102,9 +102,9 @@ export const GROUPS_CONSTANTS = {
         TITLE: 'Edit Group',
       },
       ATTACH_ROLES: {
-        TITLE: 'Attach Roles',
-        SUBTITLE: (groupName: string) => `Select roles to attach to ${groupName}`,
-        SUBMIT_BUTTON: 'Attach Roles',
+        TITLE: 'Manage Roles',
+        SUBTITLE: (groupName: string) => `View and manage roles for ${groupName}`,
+        SUBMIT_BUTTON: 'Update roles',
         SEARCH_PLACEHOLDER: 'Search roles by name, type, status, or validity...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
         SHOW_ASSIGNED_TOOLTIP: 'View all roles currently assigned to this group',

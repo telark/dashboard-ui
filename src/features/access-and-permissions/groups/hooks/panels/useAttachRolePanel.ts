@@ -1,7 +1,8 @@
 import { useMemo, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { FormInstance } from 'antd';
-import { RootState } from '../../../../../store';
+import { RootState, AppDispatch } from '../../../../../store';
+import { fetchGroupDetailsThunk } from '../../store';
 import { useGroupMutations } from '../';
 import { useRoles } from '../../../roles/hooks';
 import type { Group } from '../../models';
@@ -39,9 +40,16 @@ export const useAttachRolePanel = ({
   onClose,
   currentSelectedRoles,
 }: UseAttachRolePanelOptions): UseAttachRolePanelReturn => {
+  const dispatch: AppDispatch = useDispatch();
   const groups = useSelector((state: RootState) => state.groups.groups);
   const { roles, loading: rolesLoading } = useRoles();
   const { handleUpdate, submitting } = useGroupMutations();
+
+  useEffect(() => {
+    if (open && group?.id) {
+      dispatch(fetchGroupDetailsThunk(group.id));
+    }
+  }, [open, group?.id, dispatch]);
 
   const currentGroup = useMemo(() => {
     if (!group) return null;

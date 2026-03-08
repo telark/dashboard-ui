@@ -86,12 +86,17 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
     [baseFilteredRoles, appliedFilters, searchTerm],
   );
 
+  const assignedRoleIdsForView = useMemo(() => {
+    if (currentSelectedRoles.length > 0) return currentSelectedRoles;
+    return currentGroup?.assignedRolesIDs ?? [];
+  }, [currentSelectedRoles, currentGroup?.assignedRolesIDs]);
+
   const filteredAssignedRoleIds = useMemo(() => {
-    return filterBySearchTerm(currentSelectedRoles, searchTerm, (id) => {
+    return filterBySearchTerm(assignedRoleIdsForView, searchTerm, (id) => {
       const role = allRoles?.find((r) => r.id === id);
       return [role?.name, role?.description];
     });
-  }, [currentSelectedRoles, searchTerm, allRoles]);
+  }, [assignedRoleIdsForView, searchTerm, allRoles]);
 
   const handleFilterChange = (filters: Record<string, unknown>) => {
     setAppliedFilters(filters);
@@ -121,7 +126,9 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         open={open}
         onClose={onClose}
         title={GC.LABELS.PANELS.ATTACH_ROLES.TITLE}
-        subtitle={GC.LABELS.PANELS.ATTACH_ROLES.SUBTITLE(currentGroup.name)}
+        subtitle={GC.LABELS.PANELS.ATTACH_ROLES.SUBTITLE(
+          CapitalizeFirstLetter(currentGroup.name),
+        )}
         width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
         offsetX={filterPanelOpen ? FILTER_PANEL_WIDTH : 0}
         headerExtra={
