@@ -9,12 +9,12 @@ export const USERS_CONSTANTS = {
     CREATE_SUBTITLE: 'Create a new user',
     NOT_FOUND: 'User not found',
     UPDATE_BUTTON: 'Update User',
-    CREATE_BUTTON: 'Add User',
-    CREATE_BUTTON_TEXT: 'Add User',
+    CREATE_BUTTON: 'Add New Member',
+    CREATE_BUTTON_TEXT: 'Add New Member',
     BREADCRUMBS: {
       USERS: 'Users',
       EDIT: 'Edit',
-      CREATE: 'Add User',
+      CREATE: 'Add New Member',
     },
     MESSAGES: {
       CREATED: (name: string) => `User "${name}" created`,
@@ -103,11 +103,11 @@ export const USERS_CONSTANTS = {
       },
     },
     FORM: {
-      TITLE: 'Add User',
-      SUBTITLE: 'Add a new user',
+      TITLE: 'Add New Member',
+      SUBTITLE: 'Add a new member',
       SECTION_TITLE: 'User Details',
       SECTION_SUBTITLE: 'Provide the user information.',
-      BUTTON_TEXT: 'Add User',
+      BUTTON_TEXT: 'Add New Member',
       SECTIONS: {
         USER_DETAILS: 'User Details',
         ASSIGNMENT: 'Assignment',
@@ -136,9 +136,9 @@ export const USERS_CONSTANTS = {
         SUBMIT_BUTTON: 'Update User',
       },
       CREATE: {
-        TITLE: 'Add User',
-        SUBTITLE: 'Add a new user to the system',
-        SUBMIT_BUTTON: 'Add User',
+        TITLE: 'Add New Member',
+        SUBTITLE: 'Add a new member to the system',
+        SUBMIT_BUTTON: 'Add New Member',
       },
       MANAGE_ROLE: {
         TITLE: 'Manage Roles',
@@ -168,7 +168,7 @@ export const USERS_CONSTANTS = {
         BUTTON_LABEL: 'Filter',
       },
       CREATE: {
-        BUTTON_LABEL: 'Add User',
+        BUTTON_LABEL: 'Add New Member',
       },
       MANAGE: {
         BUTTON_LABEL: 'Manage',
