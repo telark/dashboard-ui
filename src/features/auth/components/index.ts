@@ -9,8 +9,12 @@ export { default as SessionExpiredModal } from './modals/SessionExpiredModal';
 export { default as Actions } from './passkeys/list/Actions';
 export { Columns } from './passkeys/list/Columns';
 export { default as PasskeysTable } from './passkeys/list/Table';
+export { default as PasskeyCard } from './passkeys/list/PasskeyCard';
 export { sortPasskeys } from './passkeys/list/utils';
 export type { PasskeysSortKey } from './passkeys/list/utils';
+
+// Passkeys Panel
+export { default as PasskeyPanel } from './passkeys/panel/PasskeyPanel';
 
 // Passkeys Shared
 export { default as DeviceNameSuggestions } from './passkeys/shared/DeviceNameSuggestions';
