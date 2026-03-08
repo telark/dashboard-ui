@@ -121,8 +121,12 @@ const MainPage: React.FC = () => {
   const isFetching = useMemo(() => users.length === 0 && loading, [users.length, loading]);
 
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(users) && users.length === 0 && !loading && !error,
-    [users, loading, error],
+    () =>
+      Array.isArray(users) &&
+      usersExcludingSelf.length === 0 &&
+      !loading &&
+      !error,
+    [users, usersExcludingSelf.length, loading, error],
   );
 
   if (error) {
