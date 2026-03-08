@@ -23,6 +23,7 @@ export { useCreateGroupPanel } from './panels/group/useCreateGroupPanel';
 export { useAttachRolePanel } from './panels/role/useAttachRolePanel';
 export { useDeassignGroupRole } from './panels/role/useDeassignGroupRole';
 export { useAttachMemberPanel } from './panels/member/useAttachMemberPanel';
+export { useDeassignGroupMember } from './panels/member/useDeassignGroupMember';
 
 // Category hooks
 export { useGroupCategoryOptions } from './categories/useGroupCategoryOptions';

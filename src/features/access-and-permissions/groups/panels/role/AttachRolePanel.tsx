@@ -38,10 +38,7 @@ interface AttachRolePanelProps {
 const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group }) => {
   const [form] = Form.useForm();
   const watchedRoles = Form.useWatch('assignedRolesIDs', form);
-  const currentSelectedRoles = useMemo(
-    () => (watchedRoles as string[]) || [],
-    [watchedRoles],
-  );
+  const currentSelectedRoles = useMemo(() => (watchedRoles as string[]) || [], [watchedRoles]);
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
   const [searchTerm, setSearchTerm] = useState('');
@@ -126,9 +123,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         open={open}
         onClose={onClose}
         title={GC.LABELS.PANELS.ATTACH_ROLES.TITLE}
-        subtitle={GC.LABELS.PANELS.ATTACH_ROLES.SUBTITLE(
-          CapitalizeFirstLetter(currentGroup.name),
-        )}
+        subtitle={GC.LABELS.PANELS.ATTACH_ROLES.SUBTITLE(CapitalizeFirstLetter(currentGroup.name))}
         width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
         offsetX={filterPanelOpen ? FILTER_PANEL_WIDTH : 0}
         headerExtra={

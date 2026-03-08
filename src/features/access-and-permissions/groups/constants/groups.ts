@@ -31,6 +31,11 @@ export const GROUPS_CONSTANTS = {
       ROLE_DEASSIGN_FAILED: 'Failed to remove role from group',
       LOADING_MEMBERS: 'Loading members...',
       NO_MEMBERS_AVAILABLE: 'No members available',
+      NO_ASSIGNED_MEMBERS: 'No members assigned yet',
+      MEMBER_DEASSIGNED: (memberName: string) => `Member "${memberName}" was removed from group`,
+      MEMBER_DEASSIGN_FAILED: 'Failed to remove member from group',
+      MEMBERS_UPDATED: (groupName: string) => `Members for "${groupName}" updated`,
+      MEMBERS_UPDATE_FAILED: 'Failed to update group members',
     },
     COLUMNS: {
       NAME: 'Group Name',
@@ -64,6 +69,10 @@ export const GROUPS_CONSTANTS = {
       DEASSIGN_ROLE_MODAL_ACTION: 'Remove',
       DEASSIGN_ROLE_MODAL_CONFIRM: 'Remove',
       DEASSIGN_ROLE_RESOURCE_TYPE: 'role',
+      DEASSIGN_MEMBER_MODAL_TITLE: 'Remove Member',
+      DEASSIGN_MEMBER_MODAL_ACTION: 'Remove',
+      DEASSIGN_MEMBER_MODAL_CONFIRM: 'Remove',
+      DEASSIGN_MEMBER_RESOURCE_TYPE: 'member',
     },
     FORM: {
       TITLE: 'Create Group',
@@ -110,9 +119,12 @@ export const GROUPS_CONSTANTS = {
         SHOW_ASSIGNED_TOOLTIP: 'View all roles currently assigned to this group',
       },
       ASSIGN_MEMBERS: {
-        TITLE: 'Assign Members',
-        SUBTITLE: (groupName: string) => `Select members to assign to ${groupName}`,
-        SUBMIT_BUTTON: 'Assign Members',
+        TITLE: 'Manage Members',
+        SUBTITLE: (groupName: string) => `View and manage members for ${groupName}`,
+        SUBMIT_BUTTON: 'Update members',
+        SEARCH_PLACEHOLDER: 'Search members by username or email...',
+        SHOW_ASSIGNED_BUTTON: 'Assigned',
+        SHOW_ASSIGNED_TOOLTIP: 'View all members currently assigned to this group',
       },
     },
     VIEW_LABELS: {

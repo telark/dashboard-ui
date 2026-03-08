@@ -116,15 +116,7 @@ export const useAttachMemberPanel = ({
       form.resetFields();
       onClose();
     },
-    [
-      currentGroup,
-      handleUpdate,
-      dispatch,
-      initialSelectedUsers,
-      users,
-      form,
-      onClose,
-    ],
+    [currentGroup, handleUpdate, dispatch, initialSelectedUsers, users, form, onClose],
   );
 
   return {
