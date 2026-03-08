@@ -52,11 +52,11 @@ const MemberList: React.FC<MemberListProps> = ({ users, loading, allUsers }) => 
   return (
     <Form.Item name="assignedUsersIDs" style={{ margin: 0, width: '100%' }}>
       <Checkbox.Group
-        style={{ width: '100%' }}
+        style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
         value={filteredSelectedUsers}
         onChange={handleChange}
       >
-        <div style={AMC.LIST.CONTAINER}>
+        <div className="role-list-container" style={AMC.LIST.CONTAINER}>
           {users.map((user) => {
             return (
               <div
@@ -70,7 +70,7 @@ const MemberList: React.FC<MemberListProps> = ({ users, loading, allUsers }) => 
                   e.currentTarget.style.borderColor = AMC.LIST.ITEM.BASE.border;
                 }}
               >
-                <Checkbox value={user.id} style={{ margin: 0 }}>
+                <Checkbox value={user.id} style={{ margin: 0, width: '100%' }}>
                   <div style={AMC.LIST.MEMBER_CONTENT}>
                     <div style={AMC.LIST.MEMBER_AVATAR_CONTAINER}>
                       <UserAvatar avatar={user.avatar} username={user.username} size={32} />
