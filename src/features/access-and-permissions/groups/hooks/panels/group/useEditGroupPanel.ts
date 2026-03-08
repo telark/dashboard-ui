@@ -1,15 +1,15 @@
 import { useMemo, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import type { FormInstance } from 'antd';
-import { RootState } from '../../../../../store';
+import { RootState } from '../../../../../../store';
 import {
   useGroupNameValidator,
   useGroupFormState,
   useGroupFormSelectOptions,
   useGroupMutations,
-} from '../';
-import { normalizeGroupFormData } from '../../utils';
-import type { GroupPanelProps, GroupFormData } from '../../models';
+} from '../../';
+import { normalizeGroupFormData } from '../../../utils';
+import type { GroupPanelProps, GroupFormData } from '../../../models';
 
 interface UseEditGroupPanelOptions {
   open: boolean;

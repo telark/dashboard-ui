@@ -1,10 +1,10 @@
 import { useMemo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import type { FormInstance } from 'antd';
-import { RootState } from '../../../../../store';
-import { useGroupMutations } from '../';
-import { useRoles } from '../../../roles/hooks';
-import type { Group } from '../../models';
+import { RootState } from '../../../../../../store';
+import { useGroupMutations } from '../../';
+import { useRoles } from '../../../../roles/hooks';
+import type { Group } from '../../../models';
 
 const arraysEqual = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) return false;

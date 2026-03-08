@@ -1,17 +1,17 @@
 import React, { useMemo } from 'react';
-import { DEFAULT_COLORS } from '../../../../../constants';
-import TimeAgo from '../../../../../components/display/time/TimeAgo';
-import RowTag from '../../../../../components/display/table/RowTag';
-import { UserDisplay } from '../../../../../components/display/users';
+import { DEFAULT_COLORS } from '../../../../../../constants';
+import TimeAgo from '../../../../../../components/display/time/TimeAgo';
+import RowTag from '../../../../../../components/display/table/RowTag';
+import { UserDisplay } from '../../../../../../components/display/users';
 import { useViewGroupPanel } from './useViewGroupPanel';
-import { useGroupDeleteModal } from '../../components/delete';
-import { GROUPS_CONSTANTS as GC } from '../../constants';
-import type { Group } from '../../models';
+import { useGroupDeleteModal } from '../../../components/delete';
+import { GROUPS_CONSTANTS as GC } from '../../../constants';
+import type { Group } from '../../../models';
 import type {
   ViewAvatar,
   ViewOverflowItem,
   ViewDetailRow,
-} from '../../../../../components/display/panels/view/types';
+} from '../../../../../../components/display/panels/view/types';
 
 interface UseViewGroupPanelDataOptions {
   group: Group | null;
