@@ -12,6 +12,7 @@ export const GROUPS_CONSTANTS = {
       GROUPS: 'Groups',
       EDIT: 'Edit',
       CREATE: 'Create Group',
+      CATEGORIES: 'Categories',
     },
     MESSAGES: {
       CREATED: (name: string) => `Group "${name}" created`,
@@ -20,20 +21,42 @@ export const GROUPS_CONSTANTS = {
       CREATE_FAILED: 'Failed to create group',
       UPDATE_FAILED: 'Failed to update group',
       DELETE_FAILED: 'Failed to delete group',
+      NO_GROUPS_TITLE: 'No groups yet',
+      NO_GROUPS_DESCRIPTION:
+        'Get started by creating your first group. Groups help you organize and manage users with similar roles and permissions.',
+      LOADING_ROLES: 'Loading roles...',
+      NO_ROLES_AVAILABLE: 'No roles available',
+      LOADING_MEMBERS: 'Loading members...',
+      NO_MEMBERS_AVAILABLE: 'No members available',
     },
     COLUMNS: {
       NAME: 'Group Name',
       DESCRIPTION: 'Description',
       CATEGORY: 'Category',
       CREATED: 'Creation Date',
+      LAST_UPDATE: 'Last Updated',
+      CREATED_BY: 'Created By',
+      LAST_UPDATED_BY: 'Last Updated By',
+      MEMBERS: 'Members',
     },
     ACTIONS: {
       VIEW: 'View',
       EDIT: 'Edit',
       DELETE: 'Delete',
+      BULK_DELETE: 'Bulk Delete',
+      ATTACH_ROLE: 'Attach Role',
+      MANAGE_ROLES: 'Manage Roles',
+      MANAGE_MEMBERS: 'Manage Members',
       DELETE_MODAL_TITLE: 'Delete Group',
       DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
+      BULK_DELETE_MODAL_TITLE: 'Delete Groups',
+      BULK_DELETE_MODAL_CONTENT: (count: number) =>
+        `Are you sure you want to delete ${count} group${count > 1 ? 's' : ''}? This action cannot be undone.`,
       DELETE_MODAL_OK: 'Delete',
+      BULK_DELETE_LOADING: (count: number) => `Deleting ${count} group${count > 1 ? 's' : ''}...`,
+      BULK_DELETE_SUCCESS: (count: number) =>
+        `${count} group${count > 1 ? 's' : ''} deleted successfully`,
+      BULK_DELETE_FAILED: 'Failed to delete some groups',
     },
     FORM: {
       TITLE: 'Create Group',
@@ -41,6 +64,10 @@ export const GROUPS_CONSTANTS = {
       SECTION_TITLE: 'Group Details',
       SECTION_SUBTITLE: 'Provide the group information.',
       BUTTON_TEXT: 'Create Group',
+      SECTIONS: {
+        BASIC_DETAILS: 'Basic Details',
+        MEMBERS: 'Members',
+      },
       FIELDS: {
         NAME_LABEL: 'Group Name',
         NAME_PLACEHOLDER: 'e.g. Development Team',
@@ -48,7 +75,96 @@ export const GROUPS_CONSTANTS = {
         DESCRIPTION_PLACEHOLDER: 'e.g. Group for development team members',
         CATEGORY_LABEL: 'Category',
         CATEGORY_PLACEHOLDER: 'Select a category',
+        ASSIGNED_USERS_LABEL: 'Assigned Users',
+        NAME_VALIDATION: {
+          MIN_LENGTH: 1,
+          MAX_LENGTH: 100,
+          DUPLICATE_ERROR: 'A group with this name already exists',
+          INVALID_CHARS_ERROR:
+            'Group name can only contain letters, numbers, hyphens (-), and underscores (_)',
+          LENGTH_ERROR: (min: number, max: number) =>
+            `Group name must be between ${min} and ${max} characters`,
+        },
       },
+    },
+    PANELS: {
+      VIEW: {
+        TITLE: 'Group Details',
+      },
+      EDIT: {
+        TITLE: 'Edit Group',
+      },
+      ATTACH_ROLES: {
+        TITLE: 'Attach Roles',
+        SUBTITLE: (groupName: string) => `Select roles to attach to ${groupName}`,
+        SUBMIT_BUTTON: 'Attach Roles',
+        SEARCH_PLACEHOLDER: 'Search roles by name, type, status, or validity...',
+      },
+      ASSIGN_MEMBERS: {
+        TITLE: 'Assign Members',
+        SUBTITLE: (groupName: string) => `Select members to assign to ${groupName}`,
+        SUBMIT_BUTTON: 'Assign Members',
+      },
+    },
+    VIEW_LABELS: {
+      NAME: 'Name',
+      DESCRIPTION: 'Description',
+      CATEGORY: 'Category',
+      CREATION_DATE: 'Creation Date',
+      LAST_UPDATE: 'Last Update',
+      CREATED_BY: 'Created By',
+      LAST_UPDATED_BY: 'Last Updated By',
+    },
+    FILTER: {
+      LABELS: {
+        BY_CREATION_DATE: 'BY CREATION DATE',
+        BY_TYPE: 'BY TYPE',
+        BY_CATEGORY: 'BY CATEGORY',
+        BY_VALIDITY: 'BY VALIDITY',
+        BY_STATUS: 'BY STATUS',
+        FROM: 'From',
+        TO: 'To',
+      },
+      OPTIONS: {
+        ALL: 'All',
+        BUILT_IN: 'Built-in',
+        CUSTOM: 'Custom',
+        PERMANENT: 'Permanent',
+        TEMPORARY: 'Temporary',
+        SESSION_BASED: 'Session-based',
+        ACTIVE: 'Active',
+        INACTIVE: 'Inactive',
+      },
+    },
+    TOOLBAR: {
+      SEARCH: {
+        PLACEHOLDER: 'Search groups',
+        BUTTON_LABEL: 'Search',
+      },
+      FILTER: {
+        BUTTON_LABEL: 'Filter',
+      },
+      MANAGE_CATEGORIES: {
+        BUTTON_LABEL: 'Manage Categories',
+        VIEW_CATEGORIES: 'View Categories',
+        ADD_CATEGORY: 'Add Category',
+      },
+      MANAGE: {
+        BUTTON_LABEL: 'Manage',
+      },
+    },
+    EMPTY: {
+      NO_GROUPS_FOUND: 'No Groups Found',
+    },
+    PAGINATION: {
+      SHOW_ROWS: 'Show rows',
+    },
+    LOGS: {
+      EDIT_CATEGORY: (category: unknown) => `Edit category: ${JSON.stringify(category)}`,
+      DELETE_CATEGORY: (category: unknown) => `Delete category: ${JSON.stringify(category)}`,
+    },
+    MODAL: {
+      CANCEL: 'Cancel',
     },
   },
   KEYS: {
@@ -56,6 +172,10 @@ export const GROUPS_CONSTANTS = {
     DESCRIPTION: 'description',
     CATEGORY: 'categoryID',
     CREATED_AT: 'creationDate',
+    LAST_UPDATE: 'lastUpdateDate',
+    CREATED_BY: 'createdBy',
+    LAST_UPDATED_BY: 'lastUpdatedBy',
+    MEMBERS: 'assignedUsersIDs',
     ACTIONS: 'actions',
   } as const,
   SIZES: {
@@ -64,21 +184,16 @@ export const GROUPS_CONSTANTS = {
     CHIP_FONT: 12,
     COLUMNS: {
       NAME: 150,
-      DESCRIPTION: 200,
-      CATEGORY: 120,
-      CREATED: 120,
-      ACTIONS: 50,
+      DESCRIPTION: 150,
+      CATEGORY: 130,
+      CREATED: 150,
+      LAST_UPDATE: 140,
+      CREATED_BY: 140,
+      LAST_UPDATED_BY: 140,
+      MEMBERS: 110,
+      ACTIONS: 70,
     },
     MODAL_WIDTH: 360,
-  },
-  COLORS: {
-    TEXT_PRIMARY: '#0B1F33',
-    TEXT_MUTED: '#64748b',
-    CHIP_BLUE_BG: '#dbeafe',
-    CHIP_BLUE_TEXT: '#1e40af',
-    TYPE_CUSTOM_BG: '#f1f5f9',
-    TYPE_CUSTOM_TEXT: '#334155',
-    HEADER_BG: '#f8fafc',
   },
   ERROR_MESSAGES: {
     CLIENT: {

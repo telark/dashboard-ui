@@ -25,7 +25,7 @@ export const useInitializeCategories = (isAuthenticated: boolean): void => {
     };
 
     const initializeAllScopes = async () => {
-      const scopes = [CATEGORIES_CONSTANTS.SCOPES.GROUPS];
+      const scopes = [CATEGORIES_CONSTANTS.SCOPES.GROUPS, CATEGORIES_CONSTANTS.SCOPES.ROLES];
       await Promise.allSettled(scopes.map((scope) => initializeCategoriesForScope(scope)));
     };
 

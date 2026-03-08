@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useLocation } from 'react-router-dom';
 import SidebarButton from '../../display/buttons/SideBarButton';
 import { Icons, APP_ROUTES, MENU_LABELS } from '../../../constants';
@@ -16,7 +16,7 @@ interface MenuButtonProps {
   isCollapsed?: boolean;
 }
 
-export const HomeMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = false }) => {
+export const HomeMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
   const location = useLocation();
   const pathname = location.pathname;
 
@@ -29,9 +29,11 @@ export const HomeMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = false 
       isCollapsed={isCollapsed}
     />
   );
-};
+});
 
-export const GroupersMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = false }) => {
+HomeMenuButton.displayName = 'HomeMenuButton';
+
+export const GroupersMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
   const location = useLocation();
   const pathname = location.pathname;
 
@@ -44,9 +46,11 @@ export const GroupersMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = fa
       isCollapsed={isCollapsed}
     />
   );
-};
+});
 
-export const BridgesMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = false }) => {
+GroupersMenuButton.displayName = 'GroupersMenuButton';
+
+export const BridgesMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
   const location = useLocation();
   const pathname = location.pathname;
 
@@ -59,9 +63,11 @@ export const BridgesMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = fal
       isCollapsed={isCollapsed}
     />
   );
-};
+});
 
-export const WorkloadsMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = false }) => {
+BridgesMenuButton.displayName = 'BridgesMenuButton';
+
+export const WorkloadsMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
   const location = useLocation();
   const pathname = location.pathname;
 
@@ -74,9 +80,11 @@ export const WorkloadsMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = f
       isCollapsed={isCollapsed}
     />
   );
-};
+});
 
-export const UsersMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = false }) => {
+WorkloadsMenuButton.displayName = 'WorkloadsMenuButton';
+
+export const UsersMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
   const location = useLocation();
   const pathname = location.pathname;
 
@@ -89,9 +97,11 @@ export const UsersMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = false
       isCollapsed={isCollapsed}
     />
   );
-};
+});
 
-export const GroupsMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = false }) => {
+UsersMenuButton.displayName = 'UsersMenuButton';
+
+export const GroupsMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
   const location = useLocation();
   const pathname = location.pathname;
 
@@ -104,9 +114,11 @@ export const GroupsMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = fals
       isCollapsed={isCollapsed}
     />
   );
-};
+});
 
-export const RolesMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = false }) => {
+GroupsMenuButton.displayName = 'GroupsMenuButton';
+
+export const RolesMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
   const location = useLocation();
   const pathname = location.pathname;
 
@@ -119,9 +131,11 @@ export const RolesMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = false
       isCollapsed={isCollapsed}
     />
   );
-};
+});
 
-export const PasskeysMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = false }) => {
+RolesMenuButton.displayName = 'RolesMenuButton';
+
+export const PasskeysMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
   const location = useLocation();
   const pathname = location.pathname;
 
@@ -134,4 +148,6 @@ export const PasskeysMenuButton: React.FC<MenuButtonProps> = ({ isCollapsed = fa
       isCollapsed={isCollapsed}
     />
   );
-};
+});
+
+PasskeysMenuButton.displayName = 'PasskeysMenuButton';

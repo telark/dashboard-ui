@@ -1,4 +1,3 @@
 ---
-description: always consider making generic components and funcs if they are or will be used by multi features
-alwaysApply: false
+alwaysApply: true
 ---

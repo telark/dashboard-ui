@@ -1,4 +1,3 @@
 ---
-description: do no add direct constants or harcoded configs (texts, strings, values or nmubers) in components or funcs but rather always add them in the specific folder and file under src/constants/
-alwaysApply: false
+alwaysApply: true
 ---

@@ -1,11 +1,8 @@
-import React, { useState } from 'react';
-import { Typography } from 'antd';
+import React, { useState, useMemo } from 'react';
 import AppsList from '../../components/display/apps/list/AppsList';
 import BatchesList from '../../components/display/batches/List';
 import { TabButton } from '../../../../../components/display/buttons';
 import type { AppWorkloadCardData, BatchWorkloadCardData } from '../../models';
-
-const { Title } = Typography;
 
 const TAB_KEYS = {
   APPS: 'apps',
@@ -27,10 +24,22 @@ const Success: React.FC<SuccessProps> = React.memo(
   ({ apps, batches, appLoading, batchLoading, onAppClick, onRefresh }) => {
     const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.APPS);
 
+    const headingStyle = useMemo(
+      () => ({
+        margin: 0,
+        marginBottom: 0,
+        fontWeight: 600,
+        fontSize: '24px',
+        lineHeight: 1.35,
+        color: 'rgba(0, 0, 0, 0.88)',
+      }),
+      [],
+    );
+
     return (
       <div style={{ padding: '24px' }}>
         <div style={{ marginBottom: '24px' }}>
-          <Title level={2}>Workloads</Title>
+          <h2 style={headingStyle}>Workloads</h2>
         </div>
 
         {/* Tabs */}

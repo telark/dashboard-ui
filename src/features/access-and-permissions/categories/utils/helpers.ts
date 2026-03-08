@@ -15,3 +15,15 @@ export const getCategoryName = (categoryId: string, categories: Category[]): str
   }
   return category.name;
 };
+
+export const deduplicateCategoriesByName = (categories: Category[]): Category[] => {
+  const seenNames = new Set<string>();
+  return categories.filter((category) => {
+    const nameLower = category.name.toLowerCase();
+    if (seenNames.has(nameLower)) {
+      return false;
+    }
+    seenNames.add(nameLower);
+    return true;
+  });
+};

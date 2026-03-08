@@ -1,0 +1,252 @@
+/* Custom DatePicker styles - Replace blue with success color (#20C997) */
+/* Make DatePicker smaller */
+.ant-picker-dropdown.custom-date-picker-popup {
+  font-size: 12px !important;
+}
+
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-panel {
+  min-width: 280px !important;
+}
+
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-header {
+  padding: 8px 12px !important;
+}
+
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-body {
+  padding: 8px !important;
+}
+
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell {
+  min-width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+}
+
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell-inner {
+  width: 28px !important;
+  height: 28px !important;
+  line-height: 28px !important;
+  font-size: 12px !important;
+}
+
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel {
+  min-width: 120px !important;
+}
+
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel-column {
+  width: 60px !important;
+}
+
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel-cell {
+  height: 28px !important;
+  padding: 0 !important;
+}
+
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel-cell-inner {
+  height: 28px !important;
+  line-height: 28px !important;
+  font-size: 12px !important;
+}
+
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-footer {
+  padding: 8px 12px !important;
+}
+
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-now-btn,
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-ok button {
+  height: 28px !important;
+  padding: 0 12px !important;
+  font-size: 12px !important;
+}
+
+/* Target the popup directly since it's rendered in a portal */
+.ant-picker-dropdown.custom-date-picker-popup,
+.custom-date-picker-wrapper .ant-picker:hover,
+.custom-date-picker-wrapper .ant-picker-focused {
+  border-color: #20C997 !important;
+}
+
+.custom-date-picker-wrapper .ant-picker-focused {
+  border-color: #20C997 !important;
+  box-shadow: 0 0 0 2px rgba(32, 201, 151, 0.2) !important;
+}
+
+/* Selected date cells */
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell-selected .ant-picker-cell-inner,
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell-range-start .ant-picker-cell-inner,
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell-range-end .ant-picker-cell-inner,
+.custom-date-picker-wrapper .ant-picker-cell-selected .ant-picker-cell-inner,
+.custom-date-picker-wrapper .ant-picker-cell-range-start .ant-picker-cell-inner,
+.custom-date-picker-wrapper .ant-picker-cell-range-end .ant-picker-cell-inner {
+  background: #20C997 !important;
+  color: #fff !important;
+}
+
+/* Range selection background */
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell-in-range::before,
+.custom-date-picker-wrapper .ant-picker-cell-in-range::before {
+  background: rgba(32, 201, 151, 0.1) !important;
+}
+
+/* Today's date border */
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-today .ant-picker-cell-inner,
+.custom-date-picker-wrapper .ant-picker-today .ant-picker-cell-inner {
+  border-color: #20C997 !important;
+}
+
+/* Header navigation buttons hover */
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-header-view button:hover,
+.custom-date-picker-wrapper .ant-picker-header-view button:hover {
+  color: #20C997 !important;
+}
+
+/* Time picker selected cell */
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel-column > li.ant-picker-time-panel-cell-selected .ant-picker-time-panel-cell-inner,
+.custom-date-picker-wrapper .ant-picker-time-panel-column > li.ant-picker-time-panel-cell-selected .ant-picker-time-panel-cell-inner {
+  background: #20C997 !important;
+  color: #fff !important;
+}
+
+/* Time picker hover - only for non-selected cells */
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel-column > li.ant-picker-time-panel-cell:hover:not(.ant-picker-time-panel-cell-selected) .ant-picker-time-panel-cell-inner,
+.custom-date-picker-wrapper .ant-picker-time-panel-column > li.ant-picker-time-panel-cell:hover:not(.ant-picker-time-panel-cell-selected) .ant-picker-time-panel-cell-inner {
+  background: rgba(32, 201, 151, 0.1) !important;
+}
+
+/* OK button */
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-ok button,
+.custom-date-picker-wrapper .ant-picker-ok button {
+  background: #20C997 !important;
+  border-color: #20C997 !important;
+}
+
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-ok button:hover,
+.custom-date-picker-wrapper .ant-picker-ok button:hover {
+  background: #1db584 !important;
+  border-color: #1db584 !important;
+}
+
+/* Month/Year panel selected */
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-month-panel-selected-cell .ant-picker-cell-inner,
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-year-panel-selected-cell .ant-picker-cell-inner,
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-decade-panel-selected-cell .ant-picker-cell-inner,
+.custom-date-picker-wrapper .ant-picker-month-panel-selected-cell .ant-picker-cell-inner,
+.custom-date-picker-wrapper .ant-picker-year-panel-selected-cell .ant-picker-cell-inner,
+.custom-date-picker-wrapper .ant-picker-decade-panel-selected-cell .ant-picker-cell-inner {
+  background: #20C997 !important;
+  color: #fff !important;
+}
+
+/* Month/Year panel hover */
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-month-panel-cell:hover .ant-picker-cell-inner,
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-year-panel-cell:hover .ant-picker-cell-inner,
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-decade-panel-cell:hover .ant-picker-cell-inner,
+.custom-date-picker-wrapper .ant-picker-month-panel-cell:hover .ant-picker-cell-inner,
+.custom-date-picker-wrapper .ant-picker-year-panel-cell:hover .ant-picker-cell-inner,
+.custom-date-picker-wrapper .ant-picker-decade-panel-cell:hover .ant-picker-cell-inner {
+  background: rgba(32, 201, 151, 0.1) !important;
+}
+
+/* Active date cell - only for non-selected cells */
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell:hover:not(.ant-picker-cell-disabled):not(.ant-picker-cell-selected) .ant-picker-cell-inner,
+.custom-date-picker-wrapper .ant-picker-cell:hover:not(.ant-picker-cell-disabled):not(.ant-picker-cell-selected) .ant-picker-cell-inner {
+  background: rgba(32, 201, 151, 0.1) !important;
+}
+
+/* Range start/end hover */
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell-range-start:hover:not(.ant-picker-cell-disabled) .ant-picker-cell-inner,
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-cell-range-end:hover:not(.ant-picker-cell-disabled) .ant-picker-cell-inner,
+.custom-date-picker-wrapper .ant-picker-cell-range-start:hover:not(.ant-picker-cell-disabled) .ant-picker-cell-inner,
+.custom-date-picker-wrapper .ant-picker-cell-range-end:hover:not(.ant-picker-cell-disabled) .ant-picker-cell-inner {
+  background: #20C997 !important;
+  color: #fff !important;
+}
+
+/* Clear button */
+.custom-date-picker-wrapper .ant-picker-clear {
+  color: rgba(0, 0, 0, 0.25) !important;
+}
+
+.custom-date-picker-wrapper .ant-picker-clear:hover {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Suffix icon color */
+.custom-date-picker-wrapper .ant-picker-suffix {
+  color: rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Hide scrollbar in time picker columns */
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel-column,
+.custom-date-picker-wrapper .ant-picker-time-panel-column {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel-column::-webkit-scrollbar,
+.custom-date-picker-wrapper .ant-picker-time-picker-column::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Now button */
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-now-btn,
+.custom-date-picker-wrapper .ant-picker-now-btn {
+  color: #20C997 !important;
+}
+
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-now-btn:hover,
+.custom-date-picker-wrapper .ant-picker-now-btn:hover {
+  color: #1db584 !important;
+}
+
+/* Time panel active state */
+.ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel-column > li.ant-picker-time-panel-cell-active .ant-picker-time-panel-cell-inner,
+.custom-date-picker-wrapper .ant-picker-time-panel-column > li.ant-picker-time-panel-cell-active .ant-picker-time-panel-cell-inner {
+  background: #20C997 !important;
+  color: #fff !important;
+}
+
+/* Override ALL blue colors - Global approach for popup */
+.ant-picker-dropdown.custom-date-picker-popup {
+  --ant-primary-color: #20C997 !important;
+  --ant-primary-color-hover: #1db584 !important;
+  --ant-primary-color-active: #1aa572 !important;
+}
+
+.ant-picker-dropdown.custom-date-picker-popup * {
+  --ant-primary-color: #20C997 !important;
+  --ant-primary-color-hover: #1db584 !important;
+  --ant-primary-color-active: #1aa572 !important;
+}
+
+/* Override any blue background colors in popup */
+.ant-picker-dropdown.custom-date-picker-popup [style*="rgb(22, 119, 255)"],
+.ant-picker-dropdown.custom-date-picker-popup [style*="rgb(24, 144, 255)"],
+.ant-picker-dropdown.custom-date-picker-popup [style*="#1890ff"],
+.ant-picker-dropdown.custom-date-picker-popup [style*="#1677ff"] {
+  background-color: #20C997 !important;
+  background: #20C997 !important;
+}
+
+/* Override any blue border colors in popup */
+.ant-picker-dropdown.custom-date-picker-popup [style*="border-color: rgb(22, 119, 255)"],
+.ant-picker-dropdown.custom-date-picker-popup [style*="border-color: rgb(24, 144, 255)"],
+.ant-picker-dropdown.custom-date-picker-popup [style*="border-color: #1890ff"],
+.ant-picker-dropdown.custom-date-picker-popup [style*="border-color: #1677ff"] {
+  border-color: #20C997 !important;
+}
+
+/* Override any blue text colors in popup */
+.ant-picker-dropdown.custom-date-picker-popup [style*="color: rgb(22, 119, 255)"],
+.ant-picker-dropdown.custom-date-picker-popup [style*="color: rgb(24, 144, 255)"],
+.ant-picker-dropdown.custom-date-picker-popup [style*="color: #1890ff"],
+.ant-picker-dropdown.custom-date-picker-popup [style*="color: #1677ff"] {
+  color: #20C997 !important;
+}
+
+/* Override Ant Design's primary color at root level */
+.custom-date-picker-wrapper {
+  --ant-primary-color: #20C997 !important;
+  --ant-primary-color-hover: #1db584 !important;
+  --ant-primary-color-active: #1aa572 !important;
+}

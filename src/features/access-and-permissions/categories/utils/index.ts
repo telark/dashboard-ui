@@ -1,2 +1,2 @@
 export { initializeBuiltInCategories } from './initialize';
-export { mapCategoriesToOptions, getCategoryName } from './helpers';
+export { mapCategoriesToOptions, getCategoryName, deduplicateCategoriesByName } from './helpers';

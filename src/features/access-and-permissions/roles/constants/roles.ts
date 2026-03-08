@@ -1,6 +1,8 @@
-export const ROLE_SCOPE_PERMISSIONS = ['View', 'Edit', 'Delete'] as const;
-export type RoleScopePermission = (typeof ROLE_SCOPE_PERMISSIONS)[number];
+import type { PermissionLevel, ValidityType } from '../models/types';
 
+export const SCOPE_PERMISSIONS = ['View', 'Edit', 'Delete'] as const;
+export const PERMISSION_LEVELS = ['ReadOnly', 'Contributor', 'Owner', 'Admin'] as const;
+export const VALIDITY_TYPES = ['permanent', 'temporary', 'sessionBased'] as const;
 export const ROLES_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Roles',
@@ -20,14 +22,21 @@ export const ROLES_CONSTANTS = {
     MESSAGES: {
       CREATED: (name: string) => `Role "${name}" created`,
       UPDATED: (name: string) => `Role "${name}" updated`,
+      DELETED: 'Role deleted successfully',
+      CREATE_FAILED: 'Failed to create role',
+      UPDATE_FAILED: 'Failed to update role',
+      DELETE_FAILED: 'Failed to delete role',
     },
     COLUMNS: {
       ROLE_TITLE: 'Role Title',
       TYPE: 'Type',
-      GROUP: 'Group',
-      CATEGORY: 'Category',
       PERMISSIONS: 'Permissions',
       CREATED: 'Created',
+      CREATED_BY: 'Created By',
+      LAST_UPDATE: 'Last Update',
+      VALIDITY: 'Validity',
+      CATEGORY: 'Category',
+      VERSION: 'Version',
       STATUS: 'Status',
     },
     ACTIONS: {
@@ -46,10 +55,13 @@ export const ROLES_CONSTANTS = {
   KEYS: {
     NAME: 'name',
     TYPE: 'type',
-    GROUP: 'group',
-    CATEGORY: 'category',
     PERMISSION: 'permission',
-    CREATED_AT: 'createdAt',
+    CREATED_AT: 'creationDate',
+    CREATED_BY: 'createdBy',
+    LAST_UPDATE: 'lastUpdateDate',
+    VALIDITY: 'validity',
+    CATEGORY: 'category',
+    VERSION: 'version',
     STATUS: 'status',
     ACTIONS: 'actions',
   } as const,
@@ -59,13 +71,14 @@ export const ROLES_CONSTANTS = {
     CHIP_FONT: 12,
     COLUMNS: {
       ROLE_TITLE: 110,
-      TYPE: 100,
-      GROUP: 100,
-      CATEGORY: 100,
-      PERMISSIONS: 100,
-      CREATED: 100,
-      STATUS: 100,
-      ACTIONS: 50,
+      TYPE: 80,
+      CREATED: 90,
+      CREATED_BY: 90,
+      LAST_UPDATE: 90,
+      VALIDITY: 80,
+      CATEGORY: 80,
+      VERSION: 80,
+      STATUS: 80,
     },
   },
   COLORS: {
@@ -89,41 +102,127 @@ export const ROLES_CONSTANTS = {
     ROLE_TYPE_BUILT_IN: 'built-in',
     ROLE_TYPE_CUSTOM: 'custom',
   },
+  PERMISSION_LEVEL: {
+    READ_ONLY: 'ReadOnly' as PermissionLevel,
+    CONTRIBUTOR: 'Contributor' as PermissionLevel,
+    OWNER: 'Owner' as PermissionLevel,
+    ADMIN: 'Admin' as PermissionLevel,
+  },
+  VALIDITY_TYPES: {
+    PERMANENT: 'permanent' as ValidityType,
+    TEMPORARY: 'temporary' as ValidityType,
+    SESSION_BASED: 'sessionBased' as ValidityType,
+  },
+  VALIDITY: {
+    TITLE: 'Validity',
+    SUBTITLE: 'Define when and how long this role is valid.',
+    TYPE_LABEL: 'Validity Type',
+    EXPIRATION_MODEL_LABEL: 'Expiration Model',
+    EXPIRATION_MODEL_OPTIONS: {
+      EXPIRES_AT: 'expiresAt',
+      DURATION: 'durationHours',
+    },
+    EXPIRES_AT_LABEL: 'Expires At',
+    EXPIRES_AT_PLACEHOLDER: 'Select expiration date and time',
+    DURATION_LABEL: 'Duration',
+    DURATION_PLACEHOLDER: 'Enter duration in hours',
+    AUTO_REVOKE_LABEL: 'Auto Revoke',
+  },
   GENERAL: {
     TITLE: 'General',
     SUBTITLE: 'Provide the role details.',
-    CATEGORY_LABEL: 'Role Category',
-    CATEGORY_OPTIONS: [
-      { label: 'General', value: 'general' },
-      { label: 'Administration', value: 'administration' },
-      { label: 'Operations', value: 'operations' },
-      { label: 'Security', value: 'security' },
-    ],
-    GROUP_OPTIONS: [
-      { label: 'Default', value: 'default' },
-      { label: 'Engineering', value: 'engineering' },
-      { label: 'Operations', value: 'operations' },
-      { label: 'QA', value: 'qa' },
-    ],
+    NAME_LABEL: 'Role Name',
+    NAME_PLACEHOLDER: 'e.g. Platform Admin',
+    DESCRIPTION_LABEL: 'Description',
+    DESCRIPTION_PLACEHOLDER: 'Enter role description',
+    CATEGORY_LABEL: 'Category',
+    CATEGORY_PLACEHOLDER: 'Select a category',
+    LOCK_NAME_TOOLTIP: 'Name is locked for this role',
+    LOCK_CATEGORY_TOOLTIP: 'Category is locked for this role',
+    NAME_VALIDATION: {
+      MIN_LENGTH: 1,
+      MAX_LENGTH: 100,
+      DUPLICATE_ERROR: 'A role with this name already exists',
+      INVALID_CHARS_ERROR:
+        'Role name can only contain letters, numbers, hyphens (-), and underscores (_)',
+      LENGTH_ERROR: (min: number, max: number) =>
+        `Role name must be between ${min} and ${max} characters`,
+    },
   },
   SCOPE: {
     TITLE: 'Scope & Permissions',
     SUBTITLE: 'Define what areas this role can access and at what level.',
-    AREAS: [
+    LOCKED_MESSAGE: 'Scopes and permissions are locked for this role.',
+    DEFAULT_AREAS: [
       { key: 'groupers', label: 'Groupers' },
       { key: 'workloads', label: 'Workloads' },
       { key: 'bridges', label: 'Bridges' },
+      { key: 'groups', label: 'Groups' },
       { key: 'users', label: 'Users' },
       { key: 'roles', label: 'Roles' },
-      { key: 'settings', label: 'Settings' },
     ] as const,
-    PERMISSIONS: ROLE_SCOPE_PERMISSIONS,
-    TOOLTIP: {
-      View: 'Read-only access to view data and settings.',
-      Edit: 'Can create and update within assigned scope.',
-      Delete: 'Can remove resources within assigned scope. Use with caution.',
-    } as Record<RoleScopePermission, string>,
+    PERMISSION_LEVEL_TOOLTIP: {
+      ReadOnly: 'Read-only access to view data and settings.',
+      Contributor: 'Can create and update within assigned scope.',
+      Owner: 'Full control including deletion and role assignment.',
+      Admin: 'Top-level authority with override capabilities.',
+    },
+    RULES: {
+      BLOCK_CERTAIN_RULES: 'Block certain rules',
+      DENY_LABEL: 'Deny Rules',
+      DENY_PLACEHOLDER: 'Enter denied actions (comma-separated)',
+    },
   },
   STATUS: { ACTIVE: 'Active', INACTIVE: 'Inactive' },
   TYPE: { BUILT_IN: 'built-in', CUSTOM: 'custom' },
+  ASSIGNMENT: {
+    TITLE: 'Assignment',
+    SUBTITLE: 'Assign this role to groups and users.',
+    LABEL: 'Assigned To',
+    PLACEHOLDER: 'Select groups and users',
+    GROUPS_LABEL: 'Groups',
+    USERS_LABEL: 'Users',
+  },
+  PROTECTION: {
+    TITLE: 'Protection',
+    SUBTITLE: 'Configure protection flags to prevent unauthorized changes.',
+    PREVENT_DELETION_LABEL: 'Prevent Deletion',
+    PREVENT_MODIFICATION_LABEL: 'Prevent Modification',
+    PREVENT_SCOPE_CHANGES_LABEL: 'Prevent Scope Changes',
+    LOCK_NAME_LABEL: 'Lock Name',
+    LOCK_CATEGORY_LABEL: 'Lock Category',
+    SOFT_DELETE_LABEL: 'Soft Delete',
+    SOFT_DELETE_DISABLED_NOTE: 'Soft delete is disabled because deletion is prevented.',
+  },
+  LOGS: {
+    INITIALIZING_ROLES: 'Initializing built-in roles...',
+    INITIALIZATION_SUCCESS: 'Successfully initialized built-in roles',
+    INITIALIZATION_FAILED: 'Failed to initialize built-in roles',
+    ROLES_ALREADY_EXIST: 'Built-in roles already exist. Skipping initialization.',
+    PLATFORM_CATEGORY_ALREADY_EXISTS: (id: string) =>
+      `Platform category already exists with ID: ${id}`,
+    CREATING_PLATFORM_CATEGORY: 'Creating platform category...',
+    PLATFORM_CATEGORY_CREATED: (id: string) => `Platform category created with ID: ${id}`,
+    PLATFORM_CATEGORY_CREATE_FAILED: 'Failed to create platform category: No ID returned',
+    PLATFORM_CATEGORY_FETCH_FAILED: 'Failed to fetch existing platform category',
+    PLATFORM_CATEGORY_ENSURE_FAILED: 'Failed to ensure platform category exists',
+    PLATFORM_CATEGORY_ID_MISSING:
+      'Failed to get platform category ID. Cannot initialize built-in roles.',
+    ROLE_ALREADY_EXISTS: (name: string) => `Built-in role "${name}" already exists. Skipping.`,
+    ROLE_CREATE_FAILED: (name: string) => `Failed to create built-in role "${name}"`,
+    PLATFORM_CATEGORY_ALREADY_EXISTS_FETCHING: 'Platform category already exists. Fetching...',
+  },
+  ERROR_MESSAGES: {
+    CLIENT: {
+      FETCH_ROLES_FAILED: '[APIClient] Failed to fetch roles:',
+      FETCH_ROLE_DETAILS_FAILED: (id: string) =>
+        `[APIClient] Failed to fetch role details for ${id}:`,
+      CREATE_ROLE_FAILED: (name: string) => `[APIClient] Failed to create role: ${name}`,
+      UPDATE_ROLE_FAILED: (id: string) => `[APIClient] Failed to update role: ${id}`,
+      DELETE_ROLE_FAILED: (id: string) => `[APIClient] Failed to delete role: ${id}`,
+    },
+  },
+  PLATFORM_CATEGORY_NAME: 'Platform',
 } as const;
+
+export const ROLES_ERROR_MESSAGES = ROLES_CONSTANTS.ERROR_MESSAGES;

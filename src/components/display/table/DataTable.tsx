@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'antd';
+import { Table, Empty } from 'antd';
 import type { DataTableProps } from '../../../interfaces/layout/table';
 
 function DataTable<T>({
@@ -11,7 +11,14 @@ function DataTable<T>({
   containerStyle,
   tableProps = {},
   onRowClick,
+  empty,
 }: Readonly<DataTableProps<T>>) {
+  const filteredData = Array.isArray(data) ? data.filter((item) => item != null) : data;
+
+  const emptyComponent = empty || (
+    <Empty description="No data" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+  );
+
   return (
     <div
       className={className}
@@ -27,7 +34,7 @@ function DataTable<T>({
       <Table
         rowKey={rowKey as any}
         columns={columns as any}
-        dataSource={data as any}
+        dataSource={filteredData as any}
         pagination={false}
         size="small"
         tableLayout="fixed"
@@ -35,10 +42,13 @@ function DataTable<T>({
           style: { height: rowHeight, cursor: onRowClick ? 'pointer' : 'default' },
           onClick: onRowClick ? () => onRowClick(record as T) : undefined,
         })}
+        locale={{
+          emptyText: emptyComponent,
+        }}
         {...tableProps}
       />
     </div>
   );
 }
 
-export default React.memo(DataTable) as typeof DataTable;
+export default DataTable;

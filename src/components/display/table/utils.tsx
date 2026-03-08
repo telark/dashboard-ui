@@ -30,15 +30,18 @@ export const generateColumn = (
   } = cfg;
   const { activeSortKey, onSort } = ctx;
   const HEADER_BG = headerBg ?? TABLE_DEFAULTS.HEADER_BG;
+  const isActive = key ? activeSortKey === key : false;
+  const handleSort = key ? () => onSort(key) : undefined;
   return {
     title: (
       <SortHeader
+        key={`${key}-${isActive ? 'active' : 'inactive'}-${activeSortKey}`}
         label={label}
         align={align}
         leftIcon={icon}
         sortable={true}
-        isActive={key ? activeSortKey === key : false}
-        onSort={key ? () => onSort(key) : undefined}
+        isActive={isActive}
+        onSort={handleSort}
         activeColor={activeColor}
         inactiveColor={inactiveColor}
       />

@@ -13,14 +13,26 @@ const SortHeader: React.FC<SortHeaderProps> = ({
   activeColor = TABLE_DEFAULTS.SORT_ACTIVE,
   inactiveColor = TABLE_DEFAULTS.SORT_INACTIVE,
 }) => {
+  const handleClick = (e: React.MouseEvent) => {
+    if (!sortable || !onSort) return;
+    e.preventDefault();
+    e.stopPropagation();
+    onSort();
+  };
+
+  const iconColor = isActive ? activeColor : inactiveColor;
+
   return (
     <div
+      onClick={handleClick}
       style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: align === 'center' ? 'center' : 'flex-start',
         gap: TABLE_DEFAULTS.HEADER_ICON_GAP,
         width: '100%',
+        cursor: sortable ? 'pointer' : 'default',
+        userSelect: 'none',
       }}
     >
       {leftIcon ? (
@@ -33,10 +45,9 @@ const SortHeader: React.FC<SortHeaderProps> = ({
       <span>{label}</span>
       {sortable ? (
         <BiSort
-          onClick={onSort}
           style={{
-            cursor: 'pointer',
-            color: isActive ? activeColor : inactiveColor,
+            pointerEvents: 'none',
+            color: iconColor,
             fontSize: TABLE_DEFAULTS.SORT_ICON_SIZE,
           }}
         />

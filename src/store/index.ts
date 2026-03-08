@@ -7,6 +7,7 @@ import { insightsReducer } from '../features/insights/store';
 import { groupReducer as groupsReducer } from '../features/access-and-permissions/groups/store';
 import { userReducer as usersReducer } from '../features/access-and-permissions/users/store';
 import { categoryReducer as categoriesReducer } from '../features/access-and-permissions/categories/store';
+import { roleReducer as rolesReducer } from '../features/access-and-permissions/roles/store';
 import { passkeyReducer } from '../features/auth/store';
 import {
   grouperPersistConfig,
@@ -33,6 +34,7 @@ const store = configureStore({
     groups: persistedGroupsReducer,
     users: persistedUsersReducer,
     categories: categoriesReducer,
+    roles: rolesReducer,
     passkeys: passkeyReducer,
   },
   middleware: (getDefaultMiddleware) =>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Collapse } from 'antd';
-import BaseModal from '../../../../../../../components/display/modal/BaseModal';
+import { BaseModal } from '../../../../../../../components/display/modal';
 import DetailsView from '../../../../../../../components/display/views/DetailsView';
 import type { AppWorkload, Container } from '../../../../models';
 import type { InstanceTableRow } from '../../../../models/instances';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dropdown } from 'antd';
 import { MoreOutlined, EyeOutlined, SyncOutlined, DeleteOutlined } from '@ant-design/icons';
-import { CARD_CONFIGS, CARD_COLORS, CARD_TRANSITIONS } from '../../../constants';
+import { CARD_CONFIGS, CARD_COLORS, CARD_TRANSITIONS, DEFAULT_COLORS } from '../../../constants';
 import { ResourceCardActions, ResourceCardConfig } from '../flat';
 
 interface ResourceCardDropdownProps {
@@ -66,13 +66,13 @@ const ResourceCardDropdown: React.FC<ResourceCardDropdownProps> = React.memo(
               e.stopPropagation();
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = '#f5f5f5';
+              e.currentTarget.style.backgroundColor = DEFAULT_COLORS.HOVER_BG;
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';
             }}
             onFocus={(e) => {
-              e.currentTarget.style.backgroundColor = '#f5f5f5';
+              e.currentTarget.style.backgroundColor = DEFAULT_COLORS.HOVER_BG;
             }}
             onBlur={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';

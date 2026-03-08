@@ -3,10 +3,7 @@ import { AiOutlineLock } from 'react-icons/ai';
 import { StatusTag } from '../../../../../../components/display/tags';
 import { SimpleLabel } from '../../../../../../components/display/labels';
 import { CARD_TRANSITIONS } from '../../../../../../constants';
-
-interface ScopesPermissionsProps {
-  scopes: Record<string, string[]>;
-}
+import type { ScopesPermissionsProps } from '../../../models';
 
 const ScopesPermissions: React.FC<ScopesPermissionsProps> = ({ scopes }) => {
   const [hoveredScope, setHoveredScope] = useState<string | null>(null);
@@ -24,7 +21,7 @@ const ScopesPermissions: React.FC<ScopesPermissionsProps> = ({ scopes }) => {
           gap: 16,
         }}
       >
-        {Object.entries(scopes).map(([area, permissions]) => {
+        {Object.entries(scopes).map(([area, scopeValue]) => {
           const isHovered = hoveredScope === area;
           return (
             <div
@@ -67,21 +64,19 @@ const ScopesPermissions: React.FC<ScopesPermissionsProps> = ({ scopes }) => {
               <div
                 style={{
                   display: 'flex',
-                  flexWrap: 'wrap',
+                  flexDirection: 'column',
                   gap: 6,
                   justifyContent: 'center',
                   alignItems: 'center',
                   width: '100%',
                 }}
               >
-                {permissions.map((permission) => (
-                  <StatusTag
-                    key={permission}
-                    label={permission}
-                    color="#3b82f6"
-                    borderColor="#3b82f6"
-                  />
-                ))}
+                <StatusTag label={scopeValue.level} color="#3b82f6" borderColor="#3b82f6" />
+                {scopeValue.rules && scopeValue.rules.length > 0 && (
+                  <div style={{ fontSize: 11, color: '#ef4444', marginTop: 4 }}>
+                    Blocked: {scopeValue.rules.join(', ')}
+                  </div>
+                )}
               </div>
             </div>
           );

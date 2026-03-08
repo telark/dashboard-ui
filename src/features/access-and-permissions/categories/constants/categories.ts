@@ -11,6 +11,30 @@ const TYPES = {
 export const CATEGORIES_CONSTANTS = {
   SCOPES,
   TYPES,
+  LABELS: {
+    COLUMNS: {
+      NAME: 'Category Name',
+      TYPE: 'Type',
+      SCOPE: 'Scope',
+      CREATED: 'Creation Date',
+    },
+  },
+  KEYS: {
+    NAME: 'name',
+    TYPE: 'type',
+    SCOPE: 'scope',
+    CREATED_AT: 'creationDate',
+    ACTIONS: 'actions',
+  } as const,
+  SIZES: {
+    COLUMNS: {
+      NAME: 200,
+      TYPE: 200,
+      SCOPE: 200,
+      CREATED: 200,
+      ACTIONS: 120,
+    },
+  },
   BUILT_IN_GROUPS_CAT: [
     {
       name: 'Engineering',
@@ -30,6 +54,13 @@ export const CATEGORIES_CONSTANTS = {
     {
       name: 'Security',
       scope: SCOPES.GROUPS,
+      type: TYPES.BUILT_IN,
+    },
+  ],
+  BUILT_IN_ROLES_CAT: [
+    {
+      name: 'Platform',
+      scope: SCOPES.ROLES,
       type: TYPES.BUILT_IN,
     },
   ],

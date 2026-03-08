@@ -1,6 +1,6 @@
 // Slice
 export { default as userReducer } from './slices/userSlice';
-export { clearDetails, addUser, updateUser, deleteUser } from './slices/userSlice';
+export { clearDetails } from './slices/userSlice';
 
 // Thunks
 export {
@@ -8,6 +8,7 @@ export {
   fetchAllUsersSilentThunk,
   fetchUserDetailsThunk,
 } from './thunks/fetchThunks';
+export { createUserThunk, updateUserThunk, deleteUserThunk } from './thunks/mutationThunks';
 
 // Selectors
 export {

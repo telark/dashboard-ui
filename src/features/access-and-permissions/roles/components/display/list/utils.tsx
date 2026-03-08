@@ -1,10 +1,16 @@
-import type { Role } from '../../../models';
+import type { Role, RolesSortKey } from '../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
 
-export type RolesSortKey = 'name' | 'type' | 'permission' | 'createdAt' | 'status';
 export const getPermissionCount = (role: Role): number => {
-  const levels = Object.values(role.scopes || {});
-  return levels.reduce((acc, arr) => acc + (Array.isArray(arr) ? arr.length : 0), 0);
+  if (!role.scopesAndPermissions || role.scopesAndPermissions.length === 0) {
+    return 0;
+  }
+  return role.scopesAndPermissions.reduce((acc, scopeAndPerm) => {
+    if (scopeAndPerm.scope === 'ALL' && scopeAndPerm.level === RPC.PERMISSION_LEVEL.ADMIN) {
+      return acc + 10;
+    }
+    return acc + 1;
+  }, 0);
 };
 type Comparator<T> = (a: T, b: T) => number;
 type SortOrder = 'asc' | 'desc';
@@ -16,7 +22,6 @@ export const sortRoles = (
   roles: Role[],
   sortKey: RolesSortKey,
   sortOrder: SortOrder,
-  getCount: (r: Role) => number,
   overrides?: Partial<Record<string, Comparator<Role>>>,
 ): Role[] => {
   const comparator: Comparator<Role> = (() => {
@@ -28,13 +33,11 @@ export const sortRoles = (
         return (a, b) => compareStrings(a.name, b.name);
       case RPC.KEYS.TYPE:
         return (a, b) => compareStrings(a.type, b.type);
-      case RPC.KEYS.PERMISSION:
-        return (a, b) => compareNumbers(getCount(a), getCount(b));
       case RPC.KEYS.CREATED_AT:
         return (a, b) =>
           compareNumbers(
-            new Date(a.createdAt || 0).getTime(),
-            new Date(b.createdAt || 0).getTime(),
+            new Date(a.creationDate || 0).getTime(),
+            new Date(b.creationDate || 0).getTime(),
           );
       case RPC.KEYS.STATUS: {
         const order = { [RPC.STATUS.INACTIVE]: 0, [RPC.STATUS.ACTIVE]: 1 } as const;

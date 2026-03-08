@@ -1,11 +1,11 @@
 import { Layout } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo, useCallback, useMemo } from 'react';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import MenuItems from './MenuItems';
 
 const { Sider } = Layout;
 
-const Sidebar = () => {
+const Sidebar = memo(() => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const widthExpanded = 260;
   const widthCollapsed = 64;
@@ -14,63 +14,73 @@ const Sidebar = () => {
   useEffect(() => {
     const root = document.documentElement;
     root.style.setProperty('--sidebar-width', `${isCollapsed ? widthCollapsed : widthExpanded}px`);
-  }, [isCollapsed]);
+  }, [isCollapsed, widthCollapsed, widthExpanded]);
+
+  const siderStyle = useMemo(
+    () => ({
+      height: `calc(100vh - ${headerHeight}px)`,
+      backgroundColor: 'white',
+      position: 'fixed' as const,
+      left: 0,
+      top: `${headerHeight}px`,
+      zIndex: 1,
+      paddingTop: 0,
+      paddingLeft: isCollapsed ? '0px' : '12px',
+      paddingRight: 0,
+      overflow: 'hidden' as const,
+      display: 'flex',
+      flexDirection: 'column' as const,
+      justifyContent: 'space-between' as const,
+      transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    }),
+    [isCollapsed, headerHeight],
+  );
+
+  const handleToggle = useCallback(() => {
+    setIsCollapsed((prev) => !prev);
+  }, []);
 
   return (
     <Sider
       width={isCollapsed ? widthCollapsed : widthExpanded}
       collapsed={isCollapsed}
-      style={{
-        height: `calc(100vh - ${headerHeight}px)`,
-        backgroundColor: 'white',
-        position: 'fixed',
-        left: 0, // Align the sidebar to the left of the page
-        top: `${headerHeight}px`, // Start below the header
-        zIndex: 1, // Ensure it stays above the content
-        paddingTop: 0,
-        paddingLeft: isCollapsed ? '0px' : '12px',
-        paddingRight: 0,
-        overflow: 'hidden', // prevent inner margins from creating gutters
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between', // Ensures bottom alignment
-        transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-      }}
+      style={siderStyle}
     >
-      {/* Menu Items */}
       <div style={{ flexGrow: 1 }}>
-        {' '}
-        {/* This ensures the menu takes up available space */}
         <MenuItems isCollapsed={isCollapsed} />
       </div>
 
-      {/* Bottom Hide Button */}
       <button
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        style={{
-          position: isCollapsed ? 'absolute' : 'fixed',
-          bottom: '20px',
-          left: isCollapsed ? '50%' : `${widthExpanded - 16}px`,
-          border: 'none',
-          background: 'white',
-          color: '#5B6B7C',
-          fontSize: 18,
-          cursor: 'pointer',
-          width: '32px',
-          height: '32px',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 0.3s ease',
-          zIndex: 10,
-          transform: isCollapsed ? 'translateX(-50%)' : 'none',
-        }}
+        onClick={handleToggle}
+        style={useMemo(
+          () => ({
+            position: isCollapsed ? 'absolute' : 'fixed',
+            bottom: '20px',
+            left: isCollapsed ? '50%' : `${widthExpanded - 16}px`,
+            border: 'none',
+            background: 'white',
+            color: '#5B6B7C',
+            fontSize: 18,
+            cursor: 'pointer',
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.3s ease',
+            zIndex: 10,
+            transform: isCollapsed ? 'translateX(-50%)' : 'none',
+          }),
+          [isCollapsed, widthExpanded],
+        )}
       >
         {isCollapsed ? <HiChevronRight /> : <HiChevronLeft />}
       </button>
     </Sider>
   );
-};
+});
+
+Sidebar.displayName = 'Sidebar';
 
 export default Sidebar;

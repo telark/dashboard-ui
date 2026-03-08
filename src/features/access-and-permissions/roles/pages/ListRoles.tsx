@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { APP_ROUTES, Icons } from '../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../constants';
-import { STATIC_ROLES } from '../data';
 import Header from '../../../../components/display/sections/Header';
 import RolesTable from '../components/display/list/Table';
 import { PageContainer } from '../../../../components/shared';
+import { useRoles } from '../hooks';
+import type { Role } from '../models';
 
 const RoleIcon = Icons.Role;
-
 const RolesList: React.FC = () => {
   const navigate = useNavigate();
-  const [roles, setRoles] = useState(STATIC_ROLES);
-  const handleView = (record: any) => navigate(`${APP_ROUTES.ROLES}/${record.id}/view`);
+  const { roles, loading } = useRoles();
+  const handleView = (record: Role) => navigate(`${APP_ROUTES.ROLES}/${record.id}/view`);
 
   return (
     <PageContainer>
@@ -25,10 +25,10 @@ const RolesList: React.FC = () => {
       />
 
       <RolesTable
-        roles={roles as any}
-        onRolesChange={setRoles as any}
-        onView={handleView as any}
+        roles={roles}
+        onView={handleView}
         onEdit={(record) => navigate(`${APP_ROUTES.ROLES}/${record.id}/edit`)}
+        loading={loading}
       />
     </PageContainer>
   );

@@ -12,17 +12,21 @@ interface SectionProps {
 const Section: React.FC<SectionProps> = ({ title, subtitle, content, className, style }) => {
   return (
     <div className={`app-section ${className || ''}`.trim()} style={{ width: '100%', ...style }}>
-      <div style={{ fontWeight: 600 }}>{title}</div>
+      <div
+        style={{ fontWeight: 600, fontSize: 16, color: '#0B1F33', marginBottom: subtitle ? 4 : 12 }}
+      >
+        {title}
+      </div>
       {subtitle ? (
         <Typography.Paragraph
           className="app-section-subtitle"
           type="secondary"
-          style={{ margin: 0 }}
+          style={{ margin: 0, marginBottom: 12, fontSize: 13, color: '#64748b' }}
         >
           {subtitle}
         </Typography.Paragraph>
       ) : null}
-      <div className="app-section-content" style={{ marginTop: 1 }}>
+      <div className="app-section-content" style={{ marginTop: 0 }}>
         {content}
       </div>
     </div>

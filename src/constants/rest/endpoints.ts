@@ -8,6 +8,8 @@ import {
   SESSION_PATHS,
   CATEGORY_PATHS,
   GROUP_PATHS,
+  ROLE_PATHS,
+  USER_PATHS,
 } from '../rest/paths';
 
 export const Endpoints = {
@@ -170,13 +172,25 @@ export const Endpoints = {
     },
   },
   USERS: {
+    CREATE: {
+      path: `${API_PATHS.RESOURCES.USERS}/${USER_PATHS.CREATE}`,
+      method: 'POST',
+    },
     GET_ALL: {
       path: `${API_PATHS.RESOURCES.USERS}/${RESOURCE_PATHS.GET_ALL}`,
       method: 'GET',
     },
     GET_BY_ID: (userId: string) => ({
-      path: `${API_PATHS.RESOURCES.USERS}/${RESOURCE_PATHS.FIND_USER_BY_ID(userId)}`,
+      path: `${API_PATHS.RESOURCES.USERS}/${USER_PATHS.GET_BY_ID(userId)}`,
       method: 'GET',
+    }),
+    PATCH_BY_ID: (userId: string) => ({
+      path: `${API_PATHS.RESOURCES.USERS}/${USER_PATHS.PATCH_BY_ID(userId)}`,
+      method: 'PATCH',
+    }),
+    DELETE_BY_ID: (userId: string) => ({
+      path: `${API_PATHS.RESOURCES.USERS}/${USER_PATHS.DELETE_BY_ID(userId)}`,
+      method: 'DELETE',
     }),
   },
   SESSIONS: {
@@ -234,6 +248,28 @@ export const Endpoints = {
     }),
     DELETE_BY_ID: (id: string) => ({
       path: `${API_PATHS.RESOURCES.GROUPS}/${GROUP_PATHS.DELETE_BY_ID(id)}`,
+      method: 'DELETE',
+    }),
+  },
+  ROLES: {
+    CREATE: {
+      path: `${API_PATHS.RESOURCES.ROLES}/${ROLE_PATHS.CREATE}`,
+      method: 'POST',
+    },
+    GET_ALL: {
+      path: `${API_PATHS.RESOURCES.ROLES}/${ROLE_PATHS.GET_ALL}`,
+      method: 'GET',
+    },
+    GET_BY_ID: (id: string) => ({
+      path: `${API_PATHS.RESOURCES.ROLES}/${ROLE_PATHS.GET_BY_ID(id)}`,
+      method: 'GET',
+    }),
+    PATCH_BY_ID: (id: string) => ({
+      path: `${API_PATHS.RESOURCES.ROLES}/${ROLE_PATHS.PATCH_BY_ID(id)}`,
+      method: 'PATCH',
+    }),
+    DELETE_BY_ID: (id: string) => ({
+      path: `${API_PATHS.RESOURCES.ROLES}/${ROLE_PATHS.DELETE_BY_ID(id)}`,
       method: 'DELETE',
     }),
   },
