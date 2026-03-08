@@ -31,7 +31,7 @@ const PasskeyPanel: React.FC<PasskeyPanelProps> = ({
   submitting,
   onSubmit,
   form,
-  formSyncKey: _formSyncKey,
+  formSyncKey,
 }) => {
   const inputRef = useRef<{ input?: HTMLInputElement | null } | null>(null);
   const [, setFormChanged] = useState(0);
@@ -115,6 +115,8 @@ const PasskeyPanel: React.FC<PasskeyPanelProps> = ({
       )}
     </div>
   );
+
+  void formSyncKey;
 
   return (
     <SlideOutPanel

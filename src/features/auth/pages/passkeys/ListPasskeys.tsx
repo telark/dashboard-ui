@@ -38,7 +38,7 @@ const ListPasskeys: React.FC = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [lastFetchError, setLastFetchError] = useState<string | null>(null);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [sortOrder] = useState<'asc' | 'desc'>('desc');
 
   const {
     isPanelOpen,

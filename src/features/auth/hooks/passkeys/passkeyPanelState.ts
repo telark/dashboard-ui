@@ -50,7 +50,8 @@ export const usePasskeyPanelState = (): UsePasskeyPanelStateReturn => {
     } else {
       form.setFieldsValue(PPC.FORM.INITIAL_VALUES);
     }
-    setFormSyncKey((k) => k + 1);
+    const id = setTimeout(() => setFormSyncKey((k) => k + 1), 0);
+    return () => clearTimeout(id);
   }, [isPanelOpen, isEditMode, selectedPasskey, form]);
 
   return {
