@@ -15,6 +15,8 @@ interface RoleActionsColumnProps {
   onDelete?: (record: Role) => void;
 }
 
+const ACTION_SIZE = 28;
+
 const actionButtonStyle = (disabled: boolean): React.CSSProperties => ({
   all: 'unset',
   cursor: disabled ? 'not-allowed' : 'pointer',
@@ -23,13 +25,23 @@ const actionButtonStyle = (disabled: boolean): React.CSSProperties => ({
   justifyContent: 'center',
   color: disabled ? DEFAULT_COLORS.ICON_MUTED : DEFAULT_COLORS.TEXT_MUTED,
   fontSize: 16,
-  width: 28,
-  height: 28,
+  width: ACTION_SIZE,
+  height: ACTION_SIZE,
   borderRadius: 4,
-  transition: 'all 0.2s',
+  transition: 'color 0.2s, opacity 0.2s',
   outline: 'none',
   opacity: disabled ? 0.6 : 1,
+  pointerEvents: disabled ? 'none' : 'auto',
 });
+
+const actionWrapperStyle: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: ACTION_SIZE,
+  height: ACTION_SIZE,
+  flexShrink: 0,
+};
 
 export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
   record,
@@ -80,7 +92,7 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
       }}
     >
       <Tooltip title={canEdit ? RC.LABELS.ACTIONS.EDIT : RC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP}>
-        <span>
+        <span style={actionWrapperStyle}>
           <button
             type="button"
             onClick={handleEditClick}
@@ -99,7 +111,7 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
         </span>
       </Tooltip>
       <Tooltip title={canDelete ? RC.LABELS.ACTIONS.DELETE : RC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP}>
-        <span>
+        <span style={actionWrapperStyle}>
           <button
             type="button"
             onClick={handleDeleteClick}
