@@ -38,7 +38,7 @@ export const Columns = ({
         align: 'left',
         width: RPC.SIZES.COLUMNS.ROLE_TITLE,
         render: (_: string, record: Role) => (
-          <span style={{ fontWeight: 700, color: RPC.COLORS.TEXT_PRIMARY }}>{record.name}</span>
+          <span style={{ fontWeight: 700, color: DEFAULT_COLORS.TEXT_PRIMARY }}>{record.name}</span>
         ),
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
@@ -84,7 +84,7 @@ export const Columns = ({
         icon: <AiOutlineCalendar />,
         width: RPC.SIZES.COLUMNS.CREATED,
         render: (_: unknown, record: Role) => {
-          if (isBuiltIn(record)) return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
+          if (isBuiltIn(record)) return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
           return <TimeAgo date={record.creationDate} />;
         },
       },
@@ -97,7 +97,7 @@ export const Columns = ({
         icon: <AiOutlineUser />,
         width: RPC.SIZES.COLUMNS.CREATED_BY,
         render: (_: unknown, record: Role) => {
-          if (isBuiltIn(record)) return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
+          if (isBuiltIn(record)) return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
           const user = getUserById(record.createdBy);
           return (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -116,7 +116,7 @@ export const Columns = ({
         width: RPC.SIZES.COLUMNS.LAST_UPDATE,
         render: (_: unknown, record: Role) => {
           if (isBuiltIn(record) || !record.lastUpdateDate) {
-            return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
+            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
           }
           return <TimeAgo date={record.lastUpdateDate} />;
         },
@@ -130,9 +130,9 @@ export const Columns = ({
         icon: <AiOutlineHourglass />,
         width: RPC.SIZES.COLUMNS.VALIDITY,
         render: (_: unknown, record: Role) => {
-          if (isBuiltIn(record)) return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
+          if (isBuiltIn(record)) return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
           return (
-            <span style={{ color: RPC.COLORS.TEXT_PRIMARY }}>
+            <span style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
               <ValidityDisplay validity={record.validity} record={record} />
             </span>
           );
@@ -147,7 +147,7 @@ export const Columns = ({
         icon: <AiOutlineFolder />,
         width: RPC.SIZES.COLUMNS.CATEGORY,
         render: (_: unknown, record: Role) => {
-          if (isBuiltIn(record)) return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
+          if (isBuiltIn(record)) return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
           const categoryName = getCategoryName(record.categoryID, categories);
           return (
             <RowTag
@@ -168,7 +168,7 @@ export const Columns = ({
         icon: <AiOutlineCode />,
         width: RPC.SIZES.COLUMNS.VERSION,
         render: (_: unknown, record: Role) => {
-          if (isBuiltIn(record)) return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
+          if (isBuiltIn(record)) return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
           return (
             <RowTag
               text={record.version || '—'}
