@@ -29,6 +29,10 @@ export const ROLES_CONSTANTS = {
       DELETE_FAILED: 'Failed to delete role',
       CATEGORY_CREATED: (name: string) => `Category "${name}" created`,
       CATEGORY_CREATE_FAILED: 'Failed to create category',
+      CATEGORY_UPDATED: (name: string) => `Category "${name}" updated`,
+      CATEGORY_UPDATE_FAILED: 'Failed to update category',
+      CATEGORY_DELETED: 'Category deleted successfully',
+      CATEGORY_DELETE_FAILED: 'Failed to delete category',
     },
     COLUMNS: {
       ROLE_TITLE: 'Role Title',
@@ -92,6 +96,21 @@ export const ROLES_CONSTANTS = {
         NAME_EMPTY_MESSAGE: 'Category name cannot be empty',
         NAME_EXISTS_MESSAGE: 'A category with this name already exists',
         CANCEL: 'Cancel',
+      },
+      EDIT_CATEGORY: {
+        TITLE: 'Edit Category',
+        SUBTITLE: (name: string) => `Edit ${name}`,
+        SUBMIT_BUTTON: 'Update Category',
+        NAME_LABEL: 'Category Name',
+        NAME_PLACEHOLDER: 'e.g. Engineering, Operations',
+        NAME_REQUIRED_MESSAGE: 'Category name is required',
+        NAME_EMPTY_MESSAGE: 'Category name cannot be empty',
+        NAME_EXISTS_MESSAGE: 'A category with this name already exists',
+        CANCEL: 'Cancel',
+      },
+      DELETE_CATEGORY: {
+        MODAL_TITLE: 'Delete Category',
+        MODAL_OK: 'Delete',
       },
     },
     TOOLBAR: {

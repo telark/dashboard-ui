@@ -4,7 +4,13 @@ import { DEFAULT_COLORS } from '../../../../constants';
 import { FilterPanel } from '../../../../components/display/panels/filter';
 import { buildAttachRoleFilterFields } from '../../groups/config/attachRoleFilterConfig';
 import { useRoleCategoryOptions } from '../../groups/hooks/categories/useRoleCategoryOptions';
-import { CreateRolePanel, EditRolePanel, ViewRolePanel, AddRoleCategoryPanel } from '../panels';
+import {
+  CreateRolePanel,
+  EditRolePanel,
+  ViewRolePanel,
+  AddRoleCategoryPanel,
+  EditRoleCategoryPanel,
+} from '../panels';
 import type { PageLayoutConfig } from '../../../../interfaces/layout/page';
 import type { Category } from '../../categories/models';
 import type { Role, RoleFormValues } from '../models';
@@ -44,11 +50,14 @@ const RolesListPage: React.FC<RolesListPageProps> = memo(
     editForm,
     filterPanelOpen,
     addCategoryPanelOpen,
+    editCategoryPanelOpen,
+    editingCategory,
     onCloseCreatePanel,
     onCloseEditPanel,
     onCloseViewPanel,
     onCloseFilterPanel,
     onCloseAddCategoryPanel,
+    onCloseEditCategoryPanel,
     handleFilterChange,
     handleFilterApply,
     handleFilterReset,
@@ -97,6 +106,13 @@ const RolesListPage: React.FC<RolesListPageProps> = memo(
         />
         {addCategoryPanelOpen && (
           <AddRoleCategoryPanel open={addCategoryPanelOpen} onClose={onCloseAddCategoryPanel} />
+        )}
+        {editCategoryPanelOpen && editingCategory && (
+          <EditRoleCategoryPanel
+            open={editCategoryPanelOpen}
+            onClose={onCloseEditCategoryPanel}
+            editingCategory={editingCategory}
+          />
         )}
       </div>
     );

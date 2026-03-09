@@ -4,6 +4,7 @@ import { Tooltip } from 'antd';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../../roles/constants';
 import { CATEGORIES_CONSTANTS as CC } from '../../../constants';
+import { useCategoryDeleteModal, CategoryDeleteModal } from '../../delete';
 import type { Category } from '../../../models';
 
 interface CategoryActionsColumnProps {
@@ -18,7 +19,26 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
   onDelete,
 }) => {
   const isBuiltIn = record.type === CC.TYPES.BUILT_IN;
-  const showActions = !isBuiltIn && (onEdit || onDelete);
+  const {
+    deleteModalOpen,
+    isDeleting,
+    openDeleteModal,
+    closeDeleteModal,
+    handleConfirmDelete,
+  } = useCategoryDeleteModal(record);
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (onDelete) {
+      onDelete(record);
+    } else {
+      openDeleteModal();
+    }
+  };
+
+  const showEdit = !isBuiltIn && onEdit;
+  const showDelete = !isBuiltIn;
 
   return (
     <div
@@ -29,12 +49,12 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
         gap: 12,
       }}
     >
-      {showActions && onEdit && (
+      {showEdit && (
         <Tooltip title={RC.LABELS.ACTIONS.EDIT} placement="left">
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onEdit(record);
+              onEdit?.(record);
             }}
             style={{
               all: 'unset',
@@ -67,13 +87,10 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
           </button>
         </Tooltip>
       )}
-      {showActions && onDelete && (
+      {showDelete && (
         <Tooltip title={RC.LABELS.ACTIONS.DELETE} placement="left">
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(record);
-            }}
+            onClick={handleDeleteClick}
             style={{
               all: 'unset',
               cursor: 'pointer',
@@ -104,6 +121,15 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
             <DeleteOutlined />
           </button>
         </Tooltip>
+      )}
+      {!onDelete && (
+        <CategoryDeleteModal
+          open={deleteModalOpen}
+          onClose={closeDeleteModal}
+          onConfirm={handleConfirmDelete}
+          categoryName={record.name}
+          loading={isDeleting}
+        />
       )}
     </div>
   );

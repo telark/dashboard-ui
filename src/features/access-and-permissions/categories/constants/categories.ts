@@ -18,6 +18,14 @@ export const CATEGORIES_CONSTANTS = {
       SCOPE: 'Scope',
       CREATED: 'Creation Date',
     },
+    ACTIONS: {
+      DELETE_MODAL_TITLE: 'Delete Category',
+      DELETE_MODAL_OK: 'Delete',
+    },
+    MESSAGES: {
+      DELETED: 'Category deleted successfully',
+      DELETE_FAILED: 'Failed to delete category',
+    },
   },
   KEYS: {
     NAME: 'name',
@@ -85,6 +93,8 @@ export const CATEGORIES_CONSTANTS = {
       FETCH_ALL_CATEGORIES_FAILED: 'Failed to fetch all categories',
       FETCH_CATEGORY_BY_ID_FAILED: (id: string) => `Failed to fetch category by id: ${id}`,
       CREATE_CATEGORY_FAILED: (name: string) => `Failed to create category: ${name}`,
+      UPDATE_CATEGORY_FAILED: (id: string) => `Failed to update category: ${id}`,
+      DELETE_CATEGORY_FAILED: (id: string) => `Failed to delete category: ${id}`,
     },
   },
 } as const;

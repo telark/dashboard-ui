@@ -10,8 +10,9 @@ import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { deduplicateCategoriesByName } from '../../categories/utils/helpers';
 import { applyRoleFilters } from '../../groups/utils';
-import { CreateRolePanel } from '../panels';
+import { CreateRolePanel, AddRoleCategoryPanel, EditRoleCategoryPanel } from '../panels';
 import type { Role, RoleFormValues } from '../models';
+import type { Category } from '../../categories/models';
 import type { FormInstance } from 'antd';
 import RolesErrorPage from './RolesErrorPage';
 import RolesLoadingPage from './RolesLoadingPage';
@@ -25,6 +26,8 @@ const MainPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<ViewMode>('roles');
   const [addCategoryPanelOpen, setAddCategoryPanelOpen] = useState(false);
+  const [editCategoryPanelOpen, setEditCategoryPanelOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.ROLES);
   const uniqueCategories = useMemo(
@@ -87,6 +90,15 @@ const MainPage: React.FC = () => {
     }
   }, [viewingRole, closeViewPanel, openEditPanel]);
 
+  const openEditCategoryPanel = useCallback((category: Category) => {
+    setEditingCategory(category);
+    setEditCategoryPanelOpen(true);
+  }, []);
+  const closeEditCategoryPanel = useCallback(() => {
+    setEditCategoryPanelOpen(false);
+    setEditingCategory(null);
+  }, []);
+
   const pageConfig = useRoleListPageConfig({
     viewMode,
     setViewMode,
@@ -104,6 +116,7 @@ const MainPage: React.FC = () => {
     paginatedRoles,
     handleViewRole,
     handleEditRole,
+    onEditCategory: openEditCategoryPanel,
     onCreateRoleClick: openCreatePanel,
     onFilterClick: openFilterPanel,
     onAddCategoryClick: () => setAddCategoryPanelOpen(true),
@@ -153,11 +166,14 @@ const MainPage: React.FC = () => {
       editForm={editForm}
       filterPanelOpen={filterPanelOpen}
       addCategoryPanelOpen={addCategoryPanelOpen}
+      editCategoryPanelOpen={editCategoryPanelOpen}
+      editingCategory={editingCategory}
       onCloseCreatePanel={closeCreatePanel}
       onCloseEditPanel={closeEditPanel}
       onCloseViewPanel={closeViewPanel}
       onCloseFilterPanel={closeFilterPanel}
       onCloseAddCategoryPanel={() => setAddCategoryPanelOpen(false)}
+      onCloseEditCategoryPanel={closeEditCategoryPanel}
       handleFilterChange={handleFilterChange}
       handleFilterApply={handleFilterApply}
       handleFilterReset={handleFilterReset}

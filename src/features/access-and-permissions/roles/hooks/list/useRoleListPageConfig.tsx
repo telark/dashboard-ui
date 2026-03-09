@@ -39,6 +39,7 @@ interface UseRoleListPageConfigOptions {
   onCreateRoleClick: () => void;
   onFilterClick?: () => void;
   onAddCategoryClick?: () => void;
+  onEditCategory?: (category: Category) => void;
   searchValue: string;
   onSearchChange: (value: string) => void;
   onSearchSubmit?: () => void;
@@ -64,6 +65,7 @@ export const useRoleListPageConfig = ({
   onCreateRoleClick,
   onFilterClick,
   onAddCategoryClick,
+  onEditCategory,
   searchValue,
   onSearchChange,
   onSearchSubmit,
@@ -161,8 +163,7 @@ export const useRoleListPageConfig = ({
                 render: (_: unknown, record: Role | Category) => (
                   <CategoryActionsColumn
                     record={record as Category}
-                    onEdit={() => {}}
-                    onDelete={() => {}}
+                    onEdit={onEditCategory}
                   />
                 ),
               },
