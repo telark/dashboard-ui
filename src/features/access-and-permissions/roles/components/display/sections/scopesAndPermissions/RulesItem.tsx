@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Checkbox } from 'antd';
+import { DEFAULT_COLORS } from '../../../../../../../constants';
 import type { RulesItemProps } from '../../../../models';
 
 const RulesItem: React.FC<RulesItemProps> = ({ ruleLabel, formattedKey, isChecked, onToggle }) => {
@@ -13,26 +14,28 @@ const RulesItem: React.FC<RulesItemProps> = ({ ruleLabel, formattedKey, isChecke
       style={{
         display: 'flex',
         alignItems: 'center',
-        padding: '12px 16px',
-        background: isChecked ? '#fef2f2' : '#f8fafc',
-        border: `1px solid ${isChecked ? '#fecaca' : '#e2e8f0'}`,
+        padding: '8px 14px',
+        background: DEFAULT_COLORS.BACKGROUND_LIGHT,
+        border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
         borderRadius: 8,
         transition: 'all 0.2s ease',
         cursor: 'pointer',
+        minHeight: 44,
+        width: '100%',
+        boxSizing: 'border-box',
       }}
       onMouseEnter={(e) => {
-        if (!isChecked) {
-          e.currentTarget.style.background = '#f1f5f9';
-          e.currentTarget.style.borderColor = '#cbd5e1';
-        }
+        e.currentTarget.style.background = DEFAULT_COLORS.BACKGROUND_HOVER;
+        e.currentTarget.style.borderColor = DEFAULT_COLORS.BORDER_HOVER;
       }}
       onMouseLeave={(e) => {
-        if (!isChecked) {
-          e.currentTarget.style.background = '#f8fafc';
-          e.currentTarget.style.borderColor = '#e2e8f0';
-        }
+        e.currentTarget.style.background = DEFAULT_COLORS.BACKGROUND_LIGHT;
+        e.currentTarget.style.borderColor = DEFAULT_COLORS.BORDER_LIGHT;
       }}
-      onClick={() => onToggle(!isChecked)}
+      onClick={(e) => {
+        if ((e.target as HTMLElement).closest?.('.ant-checkbox-wrapper')) return;
+        onToggle(!isChecked);
+      }}
     >
       <Checkbox
         id={checkboxId}
@@ -41,16 +44,14 @@ const RulesItem: React.FC<RulesItemProps> = ({ ruleLabel, formattedKey, isChecke
           e.stopPropagation();
           onToggle(e.target.checked);
         }}
-        style={{
-          margin: 0,
-        }}
+        style={{ margin: 0, width: '100%' }}
       >
         <span
           style={{
             fontSize: 14,
-            color: '#475569',
+            color: DEFAULT_COLORS.TEXT_PRIMARY,
             fontWeight: 500,
-            marginLeft: 8,
+            lineHeight: 1.4,
           }}
         >
           {ruleLabel}
