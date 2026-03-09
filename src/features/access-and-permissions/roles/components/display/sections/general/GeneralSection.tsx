@@ -57,7 +57,12 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
             <Form.Item
               label={categoryLabel}
               name="categoryID"
-              rules={[{ required: true, message: `Please select ${RPC.GENERAL.CATEGORY_LABEL.toLowerCase()}` }]}
+              rules={[
+                {
+                  required: true,
+                  message: `Please select ${RPC.GENERAL.CATEGORY_LABEL.toLowerCase()}`,
+                },
+              ]}
               required
               style={{ marginBottom: 0 }}
               className="form-item-compact no-asterisk"

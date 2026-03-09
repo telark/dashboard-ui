@@ -38,8 +38,7 @@ export const USERS_CONSTANTS = {
       NO_GROUPS_AVAILABLE: 'No groups available',
       NO_ASSIGNED_ROLES: 'No roles assigned yet',
       NO_GROUP_ROLES: 'No roles inherited from groups',
-      ROLE_INHERITED_FROM_GROUP: (groupNames: string) =>
-        `Already granted via group: ${groupNames}`,
+      ROLE_INHERITED_FROM_GROUP: (groupNames: string) => `Already granted via group: ${groupNames}`,
       LOADING_ROLES: 'Loading roles...',
       LOADING_GROUPS: 'Loading groups...',
     },
@@ -83,8 +82,7 @@ export const USERS_CONSTANTS = {
       DEASSIGN_GROUP_RESOURCE_TYPE: 'group',
       BULK_DELETE: 'Bulk Delete',
       BULK_DELETE_MODAL_TITLE: 'Delete Users',
-      BULK_DELETE_LOADING: (count: number) =>
-        `Deleting ${count} user${count > 1 ? 's' : ''}...`,
+      BULK_DELETE_LOADING: (count: number) => `Deleting ${count} user${count > 1 ? 's' : ''}...`,
       BULK_DELETE_SUCCESS: (count: number) =>
         `${count} user${count > 1 ? 's' : ''} deleted successfully`,
       BULK_DELETE_FAILED: 'Failed to delete some users',
@@ -146,7 +144,8 @@ export const USERS_CONSTANTS = {
         SUBMIT_BUTTON: 'Update roles',
         SEARCH_PLACEHOLDER: 'Search roles by name or description...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
-        SHOW_ASSIGNED_TOOLTIP: 'View all roles currently assigned to this user, including inherited ones from groups',
+        SHOW_ASSIGNED_TOOLTIP:
+          'View all roles currently assigned to this user, including inherited ones from groups',
         FROM_GROUPS_BUTTON: 'From Groups',
         FROM_GROUPS_TOOLTIP: 'View roles this user inherits through their assigned groups',
       },

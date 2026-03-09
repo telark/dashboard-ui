@@ -4,11 +4,7 @@ import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 import { AppDispatch } from '../../../../store';
-import {
-  handleCreatePasskey,
-  handleUpdatePasskey,
-  handleDeletePasskey,
-} from '../../utils';
+import { handleCreatePasskey, handleUpdatePasskey, handleDeletePasskey } from '../../utils';
 import type { Passkey, PasskeyActionsReturn } from '../../models/passkeys';
 
 export const usePasskeyActions = (

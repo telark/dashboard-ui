@@ -19,13 +19,8 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
   onDelete,
 }) => {
   const isBuiltIn = record.type === CC.TYPES.BUILT_IN;
-  const {
-    deleteModalOpen,
-    isDeleting,
-    openDeleteModal,
-    closeDeleteModal,
-    handleConfirmDelete,
-  } = useCategoryDeleteModal(record);
+  const { deleteModalOpen, isDeleting, openDeleteModal, closeDeleteModal, handleConfirmDelete } =
+    useCategoryDeleteModal(record);
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();

@@ -18,10 +18,7 @@ export const updateCategory = async (
       },
     );
   } catch (error) {
-    logger.error(
-      CATEGORIES_CONSTANTS.ERROR_MESSAGES.CLIENT.UPDATE_CATEGORY_FAILED(id),
-      error,
-    );
+    logger.error(CATEGORIES_CONSTANTS.ERROR_MESSAGES.CLIENT.UPDATE_CATEGORY_FAILED(id), error);
     throw error;
   }
 };

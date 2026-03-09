@@ -6,11 +6,7 @@ import { updateUserThunk } from '../../../store';
 import type { AppDispatch, RootState } from '../../../../../../store';
 import type { User, CreateUserFormValues, UserAvatar } from '../../../models';
 import { USERS_CONSTANTS as UC } from '../../../constants';
-import {
-  makeUsernameUniqueRule,
-  makeEmailFormatRule,
-  makeFullnameCharsRule,
-} from '../../../utils';
+import { makeUsernameUniqueRule, makeEmailFormatRule, makeFullnameCharsRule } from '../../../utils';
 
 interface UseEditUserPanelOptions {
   open: boolean;

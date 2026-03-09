@@ -20,10 +20,7 @@ export const createUserViewConfig = (user: User): DetailsViewConfig => {
         ))
       : '—';
 
-  const groupsTags =
-    user.assignedGroupsIDs?.length > 0
-      ? user.assignedGroupsIDs.join(', ')
-      : '—';
+  const groupsTags = user.assignedGroupsIDs?.length > 0 ? user.assignedGroupsIDs.join(', ') : '—';
 
   return {
     fields: [
@@ -51,9 +48,7 @@ export const createUserViewConfig = (user: User): DetailsViewConfig => {
       {
         key: 'assignedRolesIDs',
         label: UC.LABELS.VIEW_LABELS.ROLES,
-        value: (
-          <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>{rolesTags}</div>
-        ),
+        value: <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>{rolesTags}</div>,
         icon: <AiOutlineTag />,
         type: 'custom',
       },

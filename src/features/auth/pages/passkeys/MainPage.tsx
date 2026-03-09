@@ -44,8 +44,7 @@ const MainPage: React.FC = () => {
     formSyncKey,
   } = usePasskeyPanelState();
 
-  const { submitting, handleDelete, handleCreate, handleUpdate } =
-    usePasskeyActions(openEditPanel);
+  const { submitting, handleDelete, handleCreate, handleUpdate } = usePasskeyActions(openEditPanel);
 
   useEffect(() => {
     dispatch(fetchAllPasskeysThunk());
@@ -119,9 +118,7 @@ const MainPage: React.FC = () => {
 
   const filteredAndSortedPasskeys = useMemo(() => {
     const filtered = searchTerm
-      ? passkeys.filter((p) =>
-          p.deviceName?.toLowerCase().includes(searchTerm.toLowerCase()),
-        )
+      ? passkeys.filter((p) => p.deviceName?.toLowerCase().includes(searchTerm.toLowerCase()))
       : passkeys;
     return sortPasskeys(filtered, 'creationTimestamp', sortOrder);
   }, [passkeys, searchTerm, sortOrder]);

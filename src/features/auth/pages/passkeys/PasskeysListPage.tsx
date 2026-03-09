@@ -101,8 +101,9 @@ const PasskeysListPage: React.FC<PasskeysListPageProps> = memo(
     submitting,
     onSubmit,
   }) => {
-    const emptyMessage =
-      searchTerm ? 'No passkeys match your search.' : 'No passkeys yet. Add one to get started.';
+    const emptyMessage = searchTerm
+      ? 'No passkeys match your search.'
+      : 'No passkeys yet. Add one to get started.';
 
     return (
       <div style={{ background: DEFAULT_COLORS.BACKGROUND_WHITE, minHeight: '100vh' }}>

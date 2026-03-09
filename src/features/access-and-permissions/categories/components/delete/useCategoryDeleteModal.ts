@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
@@ -16,9 +17,7 @@ interface UseCategoryDeleteModalReturn {
   categoryName: string;
 }
 
-export const useCategoryDeleteModal = (
-  category: Category | null,
-): UseCategoryDeleteModalReturn => {
+export const useCategoryDeleteModal = (category: Category | null): UseCategoryDeleteModalReturn => {
   const dispatch: AppDispatch = useDispatch();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);

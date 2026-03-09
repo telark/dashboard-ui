@@ -161,10 +161,7 @@ export const useRoleListPageConfig = ({
                 width: 120,
                 onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
                 render: (_: unknown, record: Role | Category) => (
-                  <CategoryActionsColumn
-                    record={record as Category}
-                    onEdit={onEditCategory}
-                  />
+                  <CategoryActionsColumn record={record as Category} onEdit={onEditCategory} />
                 ),
               },
             ],
@@ -219,9 +216,7 @@ export const useRoleListPageConfig = ({
               ? RC.LABELS.EMPTY.NO_ROLES_FOUND
               : RC.LABELS.EMPTY.NO_CATEGORIES_FOUND
           }
-          image={
-            <RoleIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />
-          }
+          image={<RoleIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />}
         />
       ),
     }),
