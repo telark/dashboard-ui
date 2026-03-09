@@ -1,19 +1,18 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Form, Input, message } from 'antd';
 import { useDispatch } from 'react-redux';
-import AnimationWrapper from '../../../../../components/display/panels/slide-out/AnimationWrapper';
-import { PanelFooter } from '../../../../../components/display/panels/shared';
-import { updateCategory } from '../../../categories/clients';
-import { fetchCategoriesByScopeThunk } from '../../../categories/store';
-import { useCategories } from '../../../categories/hooks';
-import { CATEGORIES_CONSTANTS } from '../../../categories/constants';
-import { ROLES_CONSTANTS as RC } from '../../constants';
-import type { AppDispatch } from '../../../../../store';
-import type { Category } from '../../../categories/models';
+import AnimationWrapper from '../../../../components/display/panels/slide-out/AnimationWrapper';
+import { PanelFooter } from '../../../../components/display/panels/shared';
+import { updateCategory } from '../clients';
+import { fetchCategoriesByScopeThunk } from '../store';
+import { useCategories } from '../hooks';
+import { CATEGORIES_CONSTANTS } from '../constants';
+import type { AppDispatch } from '../../../../store';
+import type { Category } from '../models';
 
 const PANEL_WIDTH = 440;
 
-interface EditRoleCategoryPanelProps {
+interface EditCategoryPanelProps {
   open: boolean;
   onClose: () => void;
   editingCategory: Category | null;
@@ -23,7 +22,7 @@ interface FormValues {
   name: string;
 }
 
-const EditRoleCategoryPanel: React.FC<EditRoleCategoryPanelProps> = ({
+const EditCategoryPanel: React.FC<EditCategoryPanelProps> = ({
   open,
   onClose,
   editingCategory,
@@ -32,7 +31,8 @@ const EditRoleCategoryPanel: React.FC<EditRoleCategoryPanelProps> = ({
   const dispatch: AppDispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
 
-  const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.ROLES);
+  const scope = editingCategory?.scope ?? CATEGORIES_CONSTANTS.SCOPES.ROLES;
+  const { categories } = useCategories(scope);
   const existingNamesExcludingCurrent = useMemo(() => {
     const set = new Set((categories ?? []).map((c) => c.name.toLowerCase()));
     if (editingCategory?.name) {
@@ -62,13 +62,13 @@ const EditRoleCategoryPanel: React.FC<EditRoleCategoryPanelProps> = ({
       const values = await form.validateFields();
       setSubmitting(true);
       await updateCategory(editingCategory.id, { name: values.name.trim() });
-      message.success(RC.LABELS.MESSAGES.CATEGORY_UPDATED(values.name.trim()));
+      message.success(CATEGORIES_CONSTANTS.LABELS.MESSAGES.CATEGORY_UPDATED(values.name.trim()));
       form.resetFields();
       onClose();
-      await dispatch(fetchCategoriesByScopeThunk(CATEGORIES_CONSTANTS.SCOPES.ROLES));
+      await dispatch(fetchCategoriesByScopeThunk(editingCategory.scope));
     } catch (err) {
       if (err && typeof err === 'object' && 'errorFields' in err) return;
-      message.error(RC.LABELS.MESSAGES.CATEGORY_UPDATE_FAILED);
+      message.error(CATEGORIES_CONSTANTS.LABELS.MESSAGES.CATEGORY_UPDATE_FAILED);
     } finally {
       setSubmitting(false);
     }
@@ -81,13 +81,10 @@ const EditRoleCategoryPanel: React.FC<EditRoleCategoryPanelProps> = ({
 
   if (!editingCategory) return null;
 
+  const labels = CATEGORIES_CONSTANTS.LABELS.PANELS.EDIT_CATEGORY;
+
   return (
-    <AnimationWrapper
-      open={open}
-      onClose={handleCancel}
-      title={RC.LABELS.PANELS.EDIT_CATEGORY.TITLE}
-      width={PANEL_WIDTH}
-    >
+    <AnimationWrapper open={open} onClose={handleCancel} title={labels.TITLE} width={PANEL_WIDTH}>
       <div
         style={{
           height: '100%',
@@ -100,18 +97,16 @@ const EditRoleCategoryPanel: React.FC<EditRoleCategoryPanelProps> = ({
           <Form form={form} layout="vertical" initialValues={{ name: editingCategory.name }}>
             <Form.Item
               name="name"
-              label={RC.LABELS.PANELS.EDIT_CATEGORY.NAME_LABEL}
+              label={labels.NAME_LABEL}
               rules={[
-                { required: true, message: RC.LABELS.PANELS.EDIT_CATEGORY.NAME_REQUIRED_MESSAGE },
-                { whitespace: true, message: RC.LABELS.PANELS.EDIT_CATEGORY.NAME_EMPTY_MESSAGE },
+                { required: true, message: labels.NAME_REQUIRED_MESSAGE },
+                { whitespace: true, message: labels.NAME_EMPTY_MESSAGE },
                 {
                   validator: (_, value) => {
                     const trimmed = value?.trim();
                     if (!trimmed) return Promise.resolve();
                     if (existingNamesExcludingCurrent.has(trimmed.toLowerCase())) {
-                      return Promise.reject(
-                        new Error(RC.LABELS.PANELS.EDIT_CATEGORY.NAME_EXISTS_MESSAGE),
-                      );
+                      return Promise.reject(new Error(labels.NAME_EXISTS_MESSAGE));
                     }
                     return Promise.resolve();
                   },
@@ -119,15 +114,15 @@ const EditRoleCategoryPanel: React.FC<EditRoleCategoryPanelProps> = ({
                 },
               ]}
             >
-              <Input placeholder={RC.LABELS.PANELS.EDIT_CATEGORY.NAME_PLACEHOLDER} allowClear />
+              <Input placeholder={labels.NAME_PLACEHOLDER} allowClear />
             </Form.Item>
           </Form>
         </div>
         <PanelFooter
           onCancel={handleCancel}
           onPrimary={handleSubmit}
-          cancelLabel={RC.LABELS.PANELS.EDIT_CATEGORY.CANCEL}
-          primaryLabel={RC.LABELS.PANELS.EDIT_CATEGORY.SUBMIT_BUTTON}
+          cancelLabel={labels.CANCEL}
+          primaryLabel={labels.SUBMIT_BUTTON}
           primaryLoading={submitting}
           primaryDisabled={submitting || !isNameValid || !hasChanges}
           horizontalPadding={0}
@@ -137,4 +132,4 @@ const EditRoleCategoryPanel: React.FC<EditRoleCategoryPanelProps> = ({
   );
 };
 
-export default EditRoleCategoryPanel;
+export default EditCategoryPanel;

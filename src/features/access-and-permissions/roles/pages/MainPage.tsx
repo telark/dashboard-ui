@@ -10,7 +10,7 @@ import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { deduplicateCategoriesByName } from '../../categories/utils/helpers';
 import { applyRoleFilters } from '../../groups/utils';
-import { CreateRolePanel, AddRoleCategoryPanel, EditRoleCategoryPanel } from '../panels';
+import { CreateRolePanel } from '../panels';
 import type { Role, RoleFormValues } from '../models';
 import type { Category } from '../../categories/models';
 import type { FormInstance } from 'antd';

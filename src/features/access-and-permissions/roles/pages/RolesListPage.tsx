@@ -4,13 +4,9 @@ import { DEFAULT_COLORS } from '../../../../constants';
 import { FilterPanel } from '../../../../components/display/panels/filter';
 import { buildAttachRoleFilterFields } from '../../groups/config/attachRoleFilterConfig';
 import { useRoleCategoryOptions } from '../../groups/hooks/categories/useRoleCategoryOptions';
-import {
-  CreateRolePanel,
-  EditRolePanel,
-  ViewRolePanel,
-  AddRoleCategoryPanel,
-  EditRoleCategoryPanel,
-} from '../panels';
+import { CreateRolePanel, EditRolePanel, ViewRolePanel } from '../panels';
+import { AddCategoryPanel, EditCategoryPanel } from '../../categories/panels';
+import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import type { PageLayoutConfig } from '../../../../interfaces/layout/page';
 import type { Category } from '../../categories/models';
 import type { Role, RoleFormValues } from '../models';
@@ -27,11 +23,14 @@ interface RolesListPageProps {
   editForm: FormInstance<RoleFormValues>;
   filterPanelOpen: boolean;
   addCategoryPanelOpen: boolean;
+  editCategoryPanelOpen: boolean;
+  editingCategory: Category | null;
   onCloseCreatePanel: () => void;
   onCloseEditPanel: () => void;
   onCloseViewPanel: () => void;
   onCloseFilterPanel: () => void;
   onCloseAddCategoryPanel: () => void;
+  onCloseEditCategoryPanel: () => void;
   handleFilterChange: (filters: Record<string, unknown>) => void;
   handleFilterApply: (filters: Record<string, unknown>) => void;
   handleFilterReset: () => void;
@@ -105,10 +104,14 @@ const RolesListPage: React.FC<RolesListPageProps> = memo(
           onReset={handleFilterReset}
         />
         {addCategoryPanelOpen && (
-          <AddRoleCategoryPanel open={addCategoryPanelOpen} onClose={onCloseAddCategoryPanel} />
+          <AddCategoryPanel
+            open={addCategoryPanelOpen}
+            onClose={onCloseAddCategoryPanel}
+            scope={CATEGORIES_CONSTANTS.SCOPES.ROLES}
+          />
         )}
         {editCategoryPanelOpen && editingCategory && (
-          <EditRoleCategoryPanel
+          <EditCategoryPanel
             open={editCategoryPanelOpen}
             onClose={onCloseEditCategoryPanel}
             editingCategory={editingCategory}

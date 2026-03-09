@@ -3,4 +3,3 @@ export { default as EditGroupPanel } from './group/EditGroupPanel';
 export { default as ViewGroupPanel } from './group/ViewGroupPanel';
 export { default as AttachRolePanel } from './role/AttachRolePanel';
 export { default as AttachMemberPanel } from './member/AttachMemberPanel';
-export { AddGroupCategoryPanel, EditGroupCategoryPanel } from './category';

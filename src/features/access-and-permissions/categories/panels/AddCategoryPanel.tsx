@@ -1,32 +1,34 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { Form, Input, message } from 'antd';
 import { useDispatch } from 'react-redux';
-import AnimationWrapper from '../../../../../components/display/panels/slide-out/AnimationWrapper';
-import { PanelFooter } from '../../../../../components/display/panels/shared';
-import { createCategory } from '../../../categories/clients';
-import { fetchCategoriesByScopeThunk } from '../../../categories/store';
-import { useCategories } from '../../../categories/hooks';
-import { CATEGORIES_CONSTANTS } from '../../../categories/constants';
-import { ROLES_CONSTANTS as RC } from '../../constants';
-import type { AppDispatch } from '../../../../../store';
+import AnimationWrapper from '../../../../components/display/panels/slide-out/AnimationWrapper';
+import { PanelFooter } from '../../../../components/display/panels/shared';
+import { createCategory } from '../clients';
+import { fetchCategoriesByScopeThunk } from '../store';
+import { useCategories } from '../hooks';
+import { CATEGORIES_CONSTANTS } from '../constants';
+import type { AppDispatch } from '../../../../store';
 
 const PANEL_WIDTH = 440;
 
-interface AddRoleCategoryPanelProps {
+type CategoryScope = (typeof CATEGORIES_CONSTANTS.SCOPES)[keyof typeof CATEGORIES_CONSTANTS.SCOPES];
+
+interface AddCategoryPanelProps {
   open: boolean;
   onClose: () => void;
+  scope: CategoryScope;
 }
 
 interface FormValues {
   name: string;
 }
 
-const AddRoleCategoryPanel: React.FC<AddRoleCategoryPanelProps> = ({ open, onClose }) => {
+const AddCategoryPanel: React.FC<AddCategoryPanelProps> = ({ open, onClose, scope }) => {
   const [form] = Form.useForm<FormValues>();
   const dispatch: AppDispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
 
-  const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.ROLES);
+  const { categories } = useCategories(scope);
   const existingNames = useMemo(
     () => new Set((categories ?? []).map((c) => c.name.toLowerCase())),
     [categories],
@@ -43,33 +45,30 @@ const AddRoleCategoryPanel: React.FC<AddRoleCategoryPanelProps> = ({ open, onClo
       setSubmitting(true);
       await createCategory({
         name: values.name.trim(),
-        scope: CATEGORIES_CONSTANTS.SCOPES.ROLES,
+        scope,
         type: CATEGORIES_CONSTANTS.TYPES.CUSTOM,
       });
-      message.success(RC.LABELS.MESSAGES.CATEGORY_CREATED(values.name.trim()));
+      message.success(CATEGORIES_CONSTANTS.LABELS.MESSAGES.CATEGORY_CREATED(values.name.trim()));
       form.resetFields();
       onClose();
-      await dispatch(fetchCategoriesByScopeThunk(CATEGORIES_CONSTANTS.SCOPES.ROLES));
+      await dispatch(fetchCategoriesByScopeThunk(scope));
     } catch (err) {
       if (err && typeof err === 'object' && 'errorFields' in err) return;
-      message.error(RC.LABELS.MESSAGES.CATEGORY_CREATE_FAILED);
+      message.error(CATEGORIES_CONSTANTS.LABELS.MESSAGES.CATEGORY_CREATE_FAILED);
     } finally {
       setSubmitting(false);
     }
-  }, [form, onClose, dispatch]);
+  }, [form, onClose, dispatch, scope]);
 
   const handleCancel = useCallback(() => {
     form.resetFields();
     onClose();
   }, [form, onClose]);
 
+  const labels = CATEGORIES_CONSTANTS.LABELS.PANELS.ADD_CATEGORY;
+
   return (
-    <AnimationWrapper
-      open={open}
-      onClose={handleCancel}
-      title={RC.LABELS.PANELS.ADD_CATEGORY.TITLE}
-      width={PANEL_WIDTH}
-    >
+    <AnimationWrapper open={open} onClose={handleCancel} title={labels.TITLE} width={PANEL_WIDTH}>
       <div
         style={{
           height: '100%',
@@ -82,18 +81,16 @@ const AddRoleCategoryPanel: React.FC<AddRoleCategoryPanelProps> = ({ open, onClo
           <Form form={form} layout="vertical" initialValues={{ name: '' }}>
             <Form.Item
               name="name"
-              label={RC.LABELS.PANELS.ADD_CATEGORY.NAME_LABEL}
+              label={labels.NAME_LABEL}
               rules={[
-                { required: true, message: RC.LABELS.PANELS.ADD_CATEGORY.NAME_REQUIRED_MESSAGE },
-                { whitespace: true, message: RC.LABELS.PANELS.ADD_CATEGORY.NAME_EMPTY_MESSAGE },
+                { required: true, message: labels.NAME_REQUIRED_MESSAGE },
+                { whitespace: true, message: labels.NAME_EMPTY_MESSAGE },
                 {
                   validator: (_, value) => {
                     const trimmed = value?.trim();
                     if (!trimmed) return Promise.resolve();
                     if (existingNames.has(trimmed.toLowerCase())) {
-                      return Promise.reject(
-                        new Error(RC.LABELS.PANELS.ADD_CATEGORY.NAME_EXISTS_MESSAGE),
-                      );
+                      return Promise.reject(new Error(labels.NAME_EXISTS_MESSAGE));
                     }
                     return Promise.resolve();
                   },
@@ -101,15 +98,15 @@ const AddRoleCategoryPanel: React.FC<AddRoleCategoryPanelProps> = ({ open, onClo
                 },
               ]}
             >
-              <Input placeholder={RC.LABELS.PANELS.ADD_CATEGORY.NAME_PLACEHOLDER} allowClear />
+              <Input placeholder={labels.NAME_PLACEHOLDER} allowClear />
             </Form.Item>
           </Form>
         </div>
         <PanelFooter
           onCancel={handleCancel}
           onPrimary={handleSubmit}
-          cancelLabel={RC.LABELS.PANELS.ADD_CATEGORY.CANCEL}
-          primaryLabel={RC.LABELS.PANELS.ADD_CATEGORY.SUBMIT_BUTTON}
+          cancelLabel={labels.CANCEL}
+          primaryLabel={labels.SUBMIT_BUTTON}
           primaryLoading={submitting}
           primaryDisabled={submitting || !isNameValid}
           horizontalPadding={0}
@@ -119,4 +116,4 @@ const AddRoleCategoryPanel: React.FC<AddRoleCategoryPanelProps> = ({ open, onClo
   );
 };
 
-export default AddRoleCategoryPanel;
+export default AddCategoryPanel;

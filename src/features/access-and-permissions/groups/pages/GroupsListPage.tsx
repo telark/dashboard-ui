@@ -6,9 +6,9 @@ import {
   ViewGroupPanel,
   AttachRolePanel,
   AttachMemberPanel,
-  AddGroupCategoryPanel,
-  EditGroupCategoryPanel,
 } from '../panels';
+import { AddCategoryPanel, EditCategoryPanel } from '../../categories/panels';
+import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import ActionConfirmModal from '../../../../components/display/modal/confirm/ActionConfirmModal';
 import { FilterPanel } from '../../../../components/display/panels/filter';
 import { buildGroupFilterFields } from '../config/groupFilterConfig';
@@ -120,10 +120,14 @@ const GroupsListPage: React.FC<GroupsListPageProps> = memo(
           />
         )}
         {addCategoryPanelOpen && (
-          <AddGroupCategoryPanel open={addCategoryPanelOpen} onClose={onCloseAddCategoryPanel} />
+          <AddCategoryPanel
+            open={addCategoryPanelOpen}
+            onClose={onCloseAddCategoryPanel}
+            scope={CATEGORIES_CONSTANTS.SCOPES.GROUPS}
+          />
         )}
         {editCategoryPanelOpen && (
-          <EditGroupCategoryPanel
+          <EditCategoryPanel
             open={editCategoryPanelOpen}
             onClose={onCloseEditCategoryPanel}
             editingCategory={editingCategory}
