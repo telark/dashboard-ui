@@ -8,10 +8,16 @@ import { createRoleThunk, updateRoleThunk, deleteRoleThunk } from '../store';
 import type { AppDispatch } from '../../../../store';
 import type { RoleFormData } from '../models';
 
-export const useRoleActions = () => {
+export interface UseRoleActionsOptions {
+  /** When true, create/update do not navigate (e.g. when using panels on list page). */
+  skipNavigate?: boolean;
+}
+
+export const useRoleActions = (options?: UseRoleActionsOptions) => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
+  const skipNavigate = Boolean(options?.skipNavigate);
 
   const handleCreate = useCallback(
     async (data: RoleFormData) => {
@@ -19,7 +25,9 @@ export const useRoleActions = () => {
       try {
         const result = await dispatch(createRoleThunk(data)).unwrap();
         message.success(RC.LABELS.MESSAGES.CREATED(data.name));
-        navigate(APP_ROUTES.ROLES);
+        if (!skipNavigate) {
+          navigate(APP_ROUTES.ROLES);
+        }
         return result;
       } catch {
         message.error(RC.LABELS.MESSAGES.CREATE_FAILED);
@@ -28,7 +36,7 @@ export const useRoleActions = () => {
         setSubmitting(false);
       }
     },
-    [dispatch, navigate],
+    [dispatch, navigate, skipNavigate],
   );
 
   const handleUpdate = useCallback(
@@ -43,7 +51,9 @@ export const useRoleActions = () => {
         ).unwrap();
         if (!options?.silent) {
           message.success(RC.LABELS.MESSAGES.UPDATED(result.name));
-          navigate(`${APP_ROUTES.ROLES}/${id}/view`);
+          if (!skipNavigate) {
+            navigate(`${APP_ROUTES.ROLES}/${id}/view`);
+          }
         }
         return result;
       } catch (error) {
@@ -52,11 +62,10 @@ export const useRoleActions = () => {
         }
         throw error instanceof Error ? error : new Error(RC.LABELS.MESSAGES.UPDATE_FAILED);
       } finally {
-        // Always reset submitting state, regardless of silent option or success/failure
         setSubmitting(false);
       }
     },
-    [dispatch, navigate],
+    [dispatch, navigate, skipNavigate],
   );
 
   const handleDelete = useCallback(

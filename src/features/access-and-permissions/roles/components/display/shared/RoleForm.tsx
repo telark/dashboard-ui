@@ -25,6 +25,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
   roles,
   isEditMode = false,
   currentName,
+  hideSubmitButton = false,
 }) => {
   const { hasFormErrors, hasChanges, handleValuesChange, handleFieldsChange } = useRoleFormState({
     form,
@@ -116,18 +117,20 @@ const RoleForm: React.FC<RoleFormProps> = ({
                     <AssignmentSection onManualChange={handleValuesChange} />
                   </div>
                 </div>
-                <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-                  <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
-                    <PrimaryButton
-                      action={buttonText}
-                      loading={submitting}
-                      loadingLabel={BUTTON_TEXTS.LOADING}
-                      onClick={() => form.submit()}
-                      icon={<RoleIcon size={16} />}
-                      disabled={isButtonDisabled}
-                    />
-                  </Form.Item>
-                </div>
+                {!hideSubmitButton && (
+                  <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                    <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
+                      <PrimaryButton
+                        action={buttonText}
+                        loading={submitting}
+                        loadingLabel={BUTTON_TEXTS.LOADING}
+                        onClick={() => form.submit()}
+                        icon={<RoleIcon size={16} />}
+                        disabled={isButtonDisabled}
+                      />
+                    </Form.Item>
+                  </div>
+                )}
               </div>
             );
           }}

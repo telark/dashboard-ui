@@ -51,6 +51,25 @@ export const ROLES_CONSTANTS = {
     DELETE_MODAL_TITLE: 'Delete Role',
     DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
     DELETE_MODAL_OK: 'Delete',
+    NO_ROLES_TITLE: 'No roles yet',
+    NO_ROLES_DESCRIPTION: 'Get started by creating your first role.',
+    PANELS: {
+      VIEW: { TITLE: 'Role Details' },
+      EDIT: {
+        TITLE: 'Edit Role',
+        SUBTITLE: (name: string) => `Edit ${name}`,
+        SUBMIT_BUTTON: 'Update Role',
+      },
+      CREATE: {
+        TITLE: 'Add Role',
+        SUBTITLE: 'Create a new role',
+        SUBMIT_BUTTON: 'Create Role',
+      },
+    },
+    TOOLBAR: {
+      SEARCH: { PLACEHOLDER: 'Search roles by name...', BUTTON_LABEL: 'Search' },
+      CREATE: { BUTTON_LABEL: 'Add Role' },
+    },
   },
   KEYS: {
     NAME: 'name',

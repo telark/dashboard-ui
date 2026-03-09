@@ -19,6 +19,10 @@ interface UseEditRoleSubmitOptions {
     data: Partial<RoleFormData>,
     options?: { silent?: boolean },
   ) => Promise<Role>;
+  /** When true, do not navigate after update (e.g. when using edit panel on list page). */
+  skipNavigate?: boolean;
+  /** Called after successful update (e.g. close panel). */
+  onSuccess?: () => void;
 }
 
 export const useEditRoleSubmit = ({
@@ -27,6 +31,8 @@ export const useEditRoleSubmit = ({
   initialValues,
   form,
   handleUpdate,
+  skipNavigate = false,
+  onSuccess,
 }: UseEditRoleSubmitOptions) => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,7 +61,10 @@ export const useEditRoleSubmit = ({
           const result = await handleUpdate(id, fieldsData, { silent: true });
 
           message.success(RC.LABELS.MESSAGES.UPDATED(result.name));
-          navigate(`${APP_ROUTES.ROLES}/${id}/view`);
+          if (!skipNavigate) {
+            navigate(`${APP_ROUTES.ROLES}/${id}/view`);
+          }
+          onSuccess?.();
         } catch {
           // Error handling is done in handleUpdate
         } finally {
@@ -64,9 +73,10 @@ export const useEditRoleSubmit = ({
       } else {
         const roleData = buildUpdatePayload(fullRoleData, currentProtection, changes);
         await handleUpdate(id, roleData);
+        onSuccess?.();
       }
     },
-    [id, role, initialValues, form, handleUpdate, navigate],
+    [id, role, initialValues, form, handleUpdate, navigate, skipNavigate, onSuccess],
   );
 
   return {
