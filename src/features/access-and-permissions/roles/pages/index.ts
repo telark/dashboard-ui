@@ -3,7 +3,3 @@ export { default as RolesListPage } from './RolesListPage';
 export { default as RolesEmptyPage } from './RolesEmptyPage';
 export { default as RolesLoadingPage } from './RolesLoadingPage';
 export { default as RolesErrorPage } from './RolesErrorPage';
-export { default as ListRoles } from './ListRoles';
-export { default as CreateRole } from './CreateRole';
-export { default as EditRole } from './EditRole';
-export { default as ViewRole } from './ViewRole';
