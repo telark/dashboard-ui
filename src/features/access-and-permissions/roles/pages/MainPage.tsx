@@ -4,7 +4,9 @@ import {
   useRolePanelState,
   useRoleListState,
   useRoleListPageConfig,
+  useRoleFilters,
 } from '../hooks';
+import { applyRoleFilters } from '../../groups/utils';
 import { CreateRolePanel } from '../panels';
 import type { Role, RoleFormValues } from '../models';
 import type { FormInstance } from 'antd';
@@ -16,6 +18,16 @@ import RolesListPage from './RolesListPage';
 const MainPage: React.FC = () => {
   const { roles, loading, error } = useRoles();
   const [searchTerm, setSearchTerm] = useState('');
+
+  const {
+    filterPanelOpen,
+    openFilterPanel,
+    closeFilterPanel,
+    appliedFilters,
+    handleFilterChange,
+    handleFilterApply,
+    handleFilterReset,
+  } = useRoleFilters();
 
   const {
     createPanelOpen,
@@ -34,11 +46,8 @@ const MainPage: React.FC = () => {
   } = useRolePanelState();
 
   const filteredRoles = useMemo(
-    () =>
-      roles.filter((r) =>
-        r.name?.toLowerCase().includes(searchTerm.trim().toLowerCase()),
-      ),
-    [roles, searchTerm],
+    () => applyRoleFilters(roles, appliedFilters, searchTerm),
+    [roles, appliedFilters, searchTerm],
   );
 
   const {
@@ -80,6 +89,7 @@ const MainPage: React.FC = () => {
     handleViewRole,
     handleEditRole,
     onCreateRoleClick: openCreatePanel,
+    onFilterClick: openFilterPanel,
     searchValue: searchTerm,
     onSearchChange: setSearchTerm,
   });
@@ -124,9 +134,14 @@ const MainPage: React.FC = () => {
       editingRole={editingRole}
       createForm={createForm}
       editForm={editForm}
+      filterPanelOpen={filterPanelOpen}
       onCloseCreatePanel={closeCreatePanel}
       onCloseEditPanel={closeEditPanel}
       onCloseViewPanel={closeViewPanel}
+      onCloseFilterPanel={closeFilterPanel}
+      handleFilterChange={handleFilterChange}
+      handleFilterApply={handleFilterApply}
+      handleFilterReset={handleFilterReset}
       onViewPanelEdit={handleViewPanelEdit}
     />
   );

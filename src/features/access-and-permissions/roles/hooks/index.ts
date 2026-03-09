@@ -8,5 +8,6 @@ export { useProtectionFields } from './useProtectionFields';
 export { useEditRoleSubmit } from './useEditRoleSubmit';
 export { useRolePanelState } from './panels/role/useRolePanelState';
 export { useViewRolePanelData } from './panels/role/useViewRolePanelData';
+export { useRoleFilters } from './filter/useRoleFilters';
 export { useRoleListState } from './list/useRoleListState';
 export { useRoleListPageConfig } from './list/useRoleListPageConfig';

@@ -28,6 +28,7 @@ interface UseRoleListPageConfigOptions {
   handleViewRole: (role: Role) => void;
   handleEditRole: (role: Role) => void;
   onCreateRoleClick: () => void;
+  onFilterClick?: () => void;
   searchValue: string;
   onSearchChange: (value: string) => void;
   onSearchSubmit?: () => void;
@@ -48,6 +49,7 @@ export const useRoleListPageConfig = ({
   handleViewRole,
   handleEditRole,
   onCreateRoleClick,
+  onFilterClick,
   searchValue,
   onSearchChange,
   onSearchSubmit,
@@ -57,6 +59,7 @@ export const useRoleListPageConfig = ({
     onSearchChange,
     onSearchSubmit,
     onCreateRoleClick,
+    onFilterClick,
   });
 
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.ROLES);

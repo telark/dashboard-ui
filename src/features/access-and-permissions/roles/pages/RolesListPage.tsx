@@ -1,6 +1,9 @@
 import React, { memo, useMemo } from 'react';
 import { PageLayout } from '../../../../components/display/views';
 import { DEFAULT_COLORS } from '../../../../constants';
+import { FilterPanel } from '../../../../components/display/panels/filter';
+import { buildAttachRoleFilterFields } from '../../groups/config/attachRoleFilterConfig';
+import { useRoleCategoryOptions } from '../../groups/hooks/categories/useRoleCategoryOptions';
 import {
   CreateRolePanel,
   EditRolePanel,
@@ -19,9 +22,14 @@ interface RolesListPageProps {
   editingRole: Role | null;
   createForm: FormInstance<RoleFormValues>;
   editForm: FormInstance<RoleFormValues>;
+  filterPanelOpen: boolean;
   onCloseCreatePanel: () => void;
   onCloseEditPanel: () => void;
   onCloseViewPanel: () => void;
+  onCloseFilterPanel: () => void;
+  handleFilterChange: (filters: Record<string, unknown>) => void;
+  handleFilterApply: (filters: Record<string, unknown>) => void;
+  handleFilterReset: () => void;
   onViewPanelEdit: () => void;
 }
 
@@ -35,11 +43,22 @@ const RolesListPage: React.FC<RolesListPageProps> = memo(
     editingRole,
     createForm,
     editForm,
+    filterPanelOpen,
     onCloseCreatePanel,
     onCloseEditPanel,
     onCloseViewPanel,
+    onCloseFilterPanel,
+    handleFilterChange,
+    handleFilterApply,
+    handleFilterReset,
     onViewPanelEdit,
   }) => {
+    const { categoryOptions } = useRoleCategoryOptions();
+    const filterFields = useMemo(
+      () => buildAttachRoleFilterFields(categoryOptions),
+      [categoryOptions],
+    );
+
     const handleViewPanelEditClick = useMemo(
       () => (viewingRole ? onViewPanelEdit : undefined),
       [viewingRole, onViewPanelEdit],
@@ -67,6 +86,14 @@ const RolesListPage: React.FC<RolesListPageProps> = memo(
             onEdit={handleViewPanelEditClick}
           />
         )}
+        <FilterPanel
+          open={filterPanelOpen}
+          onClose={onCloseFilterPanel}
+          fields={filterFields}
+          onFilterChange={handleFilterChange}
+          onApply={handleFilterApply}
+          onReset={handleFilterReset}
+        />
       </div>
     );
   },

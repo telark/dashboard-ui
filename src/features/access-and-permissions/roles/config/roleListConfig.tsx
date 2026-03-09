@@ -1,7 +1,7 @@
 import React from 'react';
 import { ROLES_CONSTANTS as RC } from '../constants';
 import { Icons } from '../../../../constants';
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined, FilterOutlined } from '@ant-design/icons';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 
 const RoleIcon = Icons.Role;
@@ -11,6 +11,7 @@ interface UseRoleListConfigProps {
   onSearchChange: (value: string) => void;
   onSearchSubmit?: () => void;
   onCreateRoleClick: () => void;
+  onFilterClick?: () => void;
 }
 
 export const useRoleListConfig = ({
@@ -18,6 +19,7 @@ export const useRoleListConfig = ({
   onSearchChange,
   onSearchSubmit,
   onCreateRoleClick,
+  onFilterClick,
 }: UseRoleListConfigProps) => {
   const toolbarConfig: ToolbarConfig = React.useMemo(
     () => ({
@@ -35,6 +37,13 @@ export const useRoleListConfig = ({
           variant: 'ghost',
         },
         {
+          key: 'filter',
+          label: RC.LABELS.TOOLBAR.FILTER.BUTTON_LABEL,
+          icon: <FilterOutlined />,
+          variant: 'ghost',
+          onClick: () => onFilterClick?.(),
+        },
+        {
           key: 'create-role',
           label: RC.LABELS.TOOLBAR.CREATE.BUTTON_LABEL,
           icon: <RoleIcon size={14} />,
@@ -43,7 +52,7 @@ export const useRoleListConfig = ({
         },
       ],
     }),
-    [searchValue, onSearchChange, onSearchSubmit, onCreateRoleClick],
+    [searchValue, onSearchChange, onSearchSubmit, onCreateRoleClick, onFilterClick],
   );
 
   return { toolbarConfig };
