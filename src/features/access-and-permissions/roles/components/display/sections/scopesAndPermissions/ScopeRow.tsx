@@ -34,7 +34,6 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
     <div
       style={{
         padding: `${rowPaddingPx}px 0`,
-        marginBottom: isLast ? 0 : 12,
       }}
     >
       <Form.Item
@@ -106,21 +105,15 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                 <input type="hidden" />
               </Form.Item>
 
-              <div style={{ marginBottom: 8 }}>
-                <label
-                  style={{
-                    display: 'block',
-                    fontWeight: 700,
-                    color: '#0B1F33',
-                    marginBottom: 8,
-                  }}
-                >
-                  {scopeLabel}
-                </label>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <Form.Item
+                label={scopeLabel}
+                style={{ marginBottom: isLast ? 0 : 8 }}
+                className="form-item-compact"
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                   <Form.Item
                     name={['scopes', scopeKey, 'level']}
-                    style={{ marginBottom: 0, flex: 1 }}
+                    noStyle
                     rules={[{ required: true, message: 'Please select a permission level' }]}
                   >
                     <LevelSelector
@@ -133,58 +126,42 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                     />
                   </Form.Item>
                   {availableRules.length > 0 && (
-                    <div
+                    <button
+                      type="button"
                       onClick={toggleScope}
                       style={{
-                        display: 'flex',
+                        display: 'inline-flex',
                         alignItems: 'center',
-                        gap: 6,
+                        gap: 4,
+                        padding: 0,
+                        margin: 0,
+                        border: 'none',
+                        background: 'none',
                         cursor: 'pointer',
-                        userSelect: 'none',
-                        padding: '4px 0',
-                        transition: 'opacity 0.2s ease',
+                        fontFamily: 'inherit',
+                        fontSize: 12,
+                        color: '#64748b',
+                        fontWeight: 400,
+                        alignSelf: 'flex-start',
+                        transition: 'color 0.15s ease',
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.opacity = '0.7';
+                        e.currentTarget.style.color = '#0B1F33';
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.opacity = '1';
+                        e.currentTarget.style.color = '#64748b';
                       }}
                     >
                       {isExpanded ? (
-                        <AiOutlineDown
-                          style={{
-                            width: 14,
-                            height: 14,
-                            color: '#64748b',
-                            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                            transform: 'rotate(0deg)',
-                          }}
-                        />
+                        <AiOutlineDown style={{ width: 12, height: 12, flexShrink: 0 }} />
                       ) : (
-                        <AiOutlineRight
-                          style={{
-                            width: 14,
-                            height: 14,
-                            color: '#64748b',
-                            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                            transform: 'rotate(0deg)',
-                          }}
-                        />
+                        <AiOutlineRight style={{ width: 12, height: 12, flexShrink: 0 }} />
                       )}
-                      <span
-                        style={{
-                          fontSize: 13,
-                          color: '#64748b',
-                          fontWeight: 400,
-                        }}
-                      >
-                        {RPC.SCOPE.RULES.BLOCK_CERTAIN_RULES}
-                      </span>
-                    </div>
+                      <span>{RPC.SCOPE.RULES.BLOCK_CERTAIN_RULES}</span>
+                    </button>
                   )}
                 </div>
-              </div>
+              </Form.Item>
 
               <div
                 style={{
@@ -193,7 +170,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                   transition:
                     'max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin-top 0.3s ease',
                   opacity: isExpanded && availableRules.length > 0 ? 1 : 0,
-                  marginTop: isExpanded && availableRules.length > 0 ? 16 : 0,
+                  marginTop: isExpanded && availableRules.length > 0 ? 8 : 0,
                 }}
               >
                 {availableRules.length > 0 && (

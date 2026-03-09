@@ -2,13 +2,11 @@ import React, { useMemo } from 'react';
 import { Form } from 'antd';
 import { PrimaryButton } from '../../../../../../components/display/buttons';
 import { BUTTON_TEXTS, Icons } from '../../../../../../constants';
-import { COMPONENT_STYLES } from '../../../../../../constants/layout/ui';
 import {
   GeneralSection,
   ScopesAndPermissionsSection,
   ValiditySection,
   ProtectionSection,
-  AssignmentSection,
 } from '../sections';
 import { useRoleFormState } from '../../../hooks';
 import type { RoleFormValues, RoleFormProps } from '../../../models';
@@ -25,6 +23,8 @@ const RoleForm: React.FC<RoleFormProps> = ({
   roles,
   isEditMode = false,
   currentName,
+  hideSubmitButton = false,
+  expanded = false,
 }) => {
   const { hasFormErrors, hasChanges, handleValuesChange, handleFieldsChange } = useRoleFormState({
     form,
@@ -39,13 +39,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
   }, [submitting, isEditMode, hasChanges, hasFormErrors]);
 
   const formContent = (
-    <div
-      style={{
-        ...COMPONENT_STYLES.WORKLOAD_INSTANCES.containerCard,
-        padding: 16,
-        width: '100%',
-      }}
-    >
+    <div style={{ width: '100%' }}>
       <Form<RoleFormValues>
         layout="vertical"
         form={form}
@@ -78,56 +72,83 @@ const RoleForm: React.FC<RoleFormProps> = ({
               ? getFieldValue(['protection', 'lockCategory']) || false
               : false;
 
+            const leftColumn = (
+              <>
+                <GeneralSection
+                  roles={roles}
+                  isEditMode={isEditMode}
+                  currentName={currentName}
+                  lockName={lockName}
+                  lockCategory={lockCategory}
+                  onManualChange={handleValuesChange}
+                />
+                <ValiditySection />
+                <ProtectionSection onManualChange={handleValuesChange} />
+              </>
+            );
+            const rightColumn = (
+              <ScopesAndPermissionsSection
+                isLocked={preventScopeChanges}
+                onManualChange={handleValuesChange}
+                initialValues={initialValues}
+              />
+            );
+
             return (
               <div
                 style={{
                   display: 'flex',
-                  flexDirection: 'column',
-                  gap: 18,
+                  flexDirection: expanded ? 'row' : 'column',
+                  gap: 24,
                   width: '100%',
+                  alignItems: expanded ? 'flex-start' : undefined,
                 }}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: 24,
-                    alignItems: 'flex-start',
-                    width: '100%',
-                  }}
-                >
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
-                    <GeneralSection
-                      roles={roles}
-                      isEditMode={isEditMode}
-                      currentName={currentName}
-                      lockName={lockName}
-                      lockCategory={lockCategory}
-                      onManualChange={handleValuesChange}
-                    />
-                    <ValiditySection />
-                    <ProtectionSection onManualChange={handleValuesChange} />
+                {expanded ? (
+                  <>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 18,
+                        flex: 1,
+                        minWidth: 0,
+                      }}
+                    >
+                      {leftColumn}
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 18,
+                        flex: 1,
+                        minWidth: 0,
+                      }}
+                    >
+                      {rightColumn}
+                    </div>
+                  </>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 18, width: '100%' }}>
+                    {leftColumn}
+                    {rightColumn}
                   </div>
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 18 }}>
-                    <ScopesAndPermissionsSection
-                      isLocked={preventScopeChanges}
-                      onManualChange={handleValuesChange}
-                      initialValues={initialValues}
-                    />
-                    <AssignmentSection onManualChange={handleValuesChange} />
+                )}
+                {!hideSubmitButton && (
+                  <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                    <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
+                      <PrimaryButton
+                        action={buttonText}
+                        loading={submitting}
+                        loadingLabel={BUTTON_TEXTS.LOADING}
+                        onClick={() => form.submit()}
+                        icon={<RoleIcon size={16} />}
+                        disabled={isButtonDisabled}
+                      />
+                    </Form.Item>
                   </div>
-                </div>
-                <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-                  <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
-                    <PrimaryButton
-                      action={buttonText}
-                      loading={submitting}
-                      loadingLabel={BUTTON_TEXTS.LOADING}
-                      onClick={() => form.submit()}
-                      icon={<RoleIcon size={16} />}
-                      disabled={isButtonDisabled}
-                    />
-                  </Form.Item>
-                </div>
+                )}
               </div>
             );
           }}

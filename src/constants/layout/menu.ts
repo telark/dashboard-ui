@@ -3,7 +3,7 @@ export const MENU_LABELS = {
   GROUPERS: 'Groupers',
   BRIDGES: 'Bridges',
   WORKLOADS: 'Workloads',
-  USERS: 'Users',
+  USERS: 'Members',
   GROUPS: 'Groups',
   ROLES: 'Roles',
   PASSKEYS: 'Passkeys',

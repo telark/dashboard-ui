@@ -44,13 +44,6 @@ export interface Role {
   deletedAt?: string;
 }
 
-export interface RolesTableProps {
-  roles: Role[];
-  onView?: (role: Role) => void;
-  onEdit?: (role: Role) => void;
-  loading?: boolean;
-}
-
 export interface RolesScopesAndPermissionsListProps {
   areas: ReadonlyArray<{ key: string; label: string }>;
   permissionLevels: ReadonlyArray<{ value: PermissionLevel; label: string }>;

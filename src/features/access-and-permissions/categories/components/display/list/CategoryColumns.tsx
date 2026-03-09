@@ -5,6 +5,7 @@ import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/tabl
 import type { Category } from '../../../models';
 import { AiOutlineTag, AiOutlineCalendar, AiOutlineAppstore } from 'react-icons/ai';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
+import { DEFAULT_COLORS } from '../../../../../../constants';
 import { CATEGORIES_CONSTANTS as CC } from '../../../constants';
 
 interface CategoryColumnsContext extends GenerateColumnCtx {
@@ -24,7 +25,7 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
         align: 'left',
         width: CC.SIZES.COLUMNS.NAME,
         render: (_: unknown, record: Category) => (
-          <span style={{ fontWeight: 700, color: RPC.COLORS.TEXT_PRIMARY }}>{record.name}</span>
+          <span style={{ fontWeight: 700, color: DEFAULT_COLORS.TEXT_PRIMARY }}>{record.name}</span>
         ),
       },
       ctx,
@@ -40,8 +41,8 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
           return (
             <RowTag
               text={isBuiltIn ? 'Built-in' : 'Custom'}
-              background={isBuiltIn ? RPC.COLORS.TYPE_CUSTOM_BG : '#e6f7ff'}
-              color={isBuiltIn ? RPC.COLORS.TYPE_CUSTOM_TEXT : '#1890ff'}
+              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
               fontSize={RPC.SIZES.CHIP_FONT}
             />
           );
@@ -58,8 +59,8 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
         render: (value: string) => (
           <RowTag
             text={value}
-            background={RPC.COLORS.TYPE_CUSTOM_BG}
-            color={RPC.COLORS.TYPE_CUSTOM_TEXT}
+            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
             fontSize={RPC.SIZES.CHIP_FONT}
           />
         ),
@@ -73,11 +74,11 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
         icon: <AiOutlineCalendar />,
         width: CC.SIZES.COLUMNS.CREATED,
         render: (value: string) => {
-          if (!value) return <span style={{ color: '#999' }}>—</span>;
+          if (!value) return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
           try {
             return <TimeAgo date={value} />;
           } catch {
-            return <span style={{ color: '#999' }}>—</span>;
+            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
           }
         },
       },

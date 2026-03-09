@@ -16,12 +16,14 @@ export { useGroupNameValidator } from './form/useGroupNameValidator';
 
 // Panel hooks
 export { useGroupPanelState } from './panels/useGroupPanelState';
-export { useViewGroupPanel } from './panels/useViewGroupPanel';
-export { useViewGroupPanelData } from './panels/useViewGroupPanelData';
-export { useEditGroupPanel } from './panels/useEditGroupPanel';
-export { useCreateGroupPanel } from './panels/useCreateGroupPanel';
-export { useAttachRolePanel } from './panels/useAttachRolePanel';
-export { useAttachMemberPanel } from './panels/useAttachMemberPanel';
+export { useViewGroupPanel } from './panels/group/useViewGroupPanel';
+export { useViewGroupPanelData } from './panels/group/useViewGroupPanelData';
+export { useEditGroupPanel } from './panels/group/useEditGroupPanel';
+export { useCreateGroupPanel } from './panels/group/useCreateGroupPanel';
+export { useAttachRolePanel } from './panels/role/useAttachRolePanel';
+export { useDeassignGroupRole } from './panels/role/useDeassignGroupRole';
+export { useAttachMemberPanel } from './panels/member/useAttachMemberPanel';
+export { useDeassignGroupMember } from './panels/member/useDeassignGroupMember';
 
 // Category hooks
 export { useGroupCategoryOptions } from './categories/useGroupCategoryOptions';

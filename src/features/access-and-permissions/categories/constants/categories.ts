@@ -18,6 +18,49 @@ export const CATEGORIES_CONSTANTS = {
       SCOPE: 'Scope',
       CREATED: 'Creation Date',
     },
+    ACTIONS: {
+      DELETE_MODAL_TITLE: 'Delete Category',
+      DELETE_MODAL_OK: 'Delete',
+    },
+    MESSAGES: {
+      DELETED: 'Category deleted successfully',
+      DELETE_FAILED: 'Failed to delete category',
+      CATEGORY_CREATED: (name: string) => `Category "${name}" created`,
+      CATEGORY_CREATE_FAILED: 'Failed to create category',
+      CATEGORY_UPDATED: (name: string) => `Category "${name}" updated`,
+      CATEGORY_UPDATE_FAILED: 'Failed to update category',
+      CATEGORY_DELETED: 'Category deleted successfully',
+      CATEGORY_DELETE_FAILED: 'Failed to delete category',
+    },
+    PANELS: {
+      ADD_CATEGORY: {
+        TITLE: 'Add Category',
+        SUBMIT_BUTTON: 'Create Category',
+        NAME_LABEL: 'Category Name',
+        NAME_PLACEHOLDER: 'e.g. Engineering, Operations',
+        NAME_REQUIRED_MESSAGE: 'Category name is required',
+        NAME_EMPTY_MESSAGE: 'Category name cannot be empty',
+        NAME_EXISTS_MESSAGE: 'A category with this name already exists',
+        CANCEL: 'Cancel',
+      },
+      EDIT_CATEGORY: {
+        TITLE: 'Edit Category',
+        SUBMIT_BUTTON: 'Update Category',
+        NAME_LABEL: 'Category Name',
+        NAME_PLACEHOLDER: 'e.g. Engineering, Operations',
+        NAME_REQUIRED_MESSAGE: 'Category name is required',
+        NAME_EMPTY_MESSAGE: 'Category name cannot be empty',
+        NAME_EXISTS_MESSAGE: 'A category with this name already exists',
+        CANCEL: 'Cancel',
+      },
+    },
+    TOOLBAR: {
+      MANAGE_CATEGORIES: {
+        BUTTON_LABEL: 'Manage Categories',
+        VIEW_CATEGORIES: 'View Categories',
+        ADD_CATEGORY: 'Add Category',
+      },
+    },
   },
   KEYS: {
     NAME: 'name',
@@ -85,6 +128,8 @@ export const CATEGORIES_CONSTANTS = {
       FETCH_ALL_CATEGORIES_FAILED: 'Failed to fetch all categories',
       FETCH_CATEGORY_BY_ID_FAILED: (id: string) => `Failed to fetch category by id: ${id}`,
       CREATE_CATEGORY_FAILED: (name: string) => `Failed to create category: ${name}`,
+      UPDATE_CATEGORY_FAILED: (id: string) => `Failed to update category: ${id}`,
+      DELETE_CATEGORY_FAILED: (id: string) => `Failed to delete category: ${id}`,
     },
   },
 } as const;

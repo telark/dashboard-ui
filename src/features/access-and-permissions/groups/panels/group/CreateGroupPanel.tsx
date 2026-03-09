@@ -47,7 +47,6 @@ const CreateGroupPanel: React.FC<GroupPanelProps> = ({ open, onClose, form }) =>
         name: '',
         description: '',
         categoryID: defaultCategoryId,
-        assignedUsersIDs: [],
       }}
       onValuesChange={handleValuesChange}
       onFieldsChange={handleFieldsChange}

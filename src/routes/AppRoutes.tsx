@@ -6,9 +6,14 @@ import { FeatureErrorBoundary } from '../components/error-boundary';
 import { APP_ROUTES } from '../constants';
 import { hasSessionToken } from '../features/auth/utils';
 
+// home
 const Dashboard = lazy(() => import('../features/home/pages/Dashboard'));
+
+// auth
 const Login = lazy(() => import('../features/auth/pages/flow/Login'));
 const Register = lazy(() => import('../features/auth/pages/flow/Register'));
+
+// resources
 const GroupersGlobalView = lazy(
   () => import('../features/resources/groupers/pages/main/GlobalView'),
 );
@@ -25,20 +30,14 @@ const WorkloadsGlobalView = lazy(
 const AppWorkloadDetailsView = lazy(
   () => import('../features/resources/workloads/pages/details/apps/DetailsView'),
 );
-const RolesCreateView = lazy(
-  () => import('../features/access-and-permissions/roles/pages/CreateRole'),
-);
-const RolesListView = lazy(
-  () => import('../features/access-and-permissions/roles/pages/ListRoles'),
-);
-const RoleView = lazy(() => import('../features/access-and-permissions/roles/pages/ViewRole'));
-const RoleEdit = lazy(() => import('../features/access-and-permissions/roles/pages/EditRole'));
+
+// access-and-permissions
+const RolesMainPage = lazy(() => import('../features/access-and-permissions/roles/pages/MainPage'));
 const UsersMainPage = lazy(() => import('../features/access-and-permissions/users/pages/MainPage'));
 const GroupsMainPage = lazy(
   () => import('../features/access-and-permissions/groups/pages/MainPage'),
 );
-const PasskeysListView = lazy(() => import('../features/auth/pages/passkeys/ListPasskeys'));
-const PasskeyView = lazy(() => import('../features/auth/pages/passkeys/ViewPasskey'));
+const PasskeysMainPage = lazy(() => import('../features/auth/pages/passkeys/MainPage'));
 
 const PageLoader: React.FC = () => (
   <div
@@ -155,37 +154,7 @@ const AppRoutes: React.FC = () => {
           element={
             <ProtectedRoute>
               <FeatureErrorBoundary featureName="Roles">
-                <RolesListView />
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.ROLE_CREATE}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Create Role">
-                <RolesCreateView />
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.ROLE_VIEW}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Role Details">
-                <RoleView />
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.ROLE_EDIT}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary key={APP_ROUTES.ROLE_EDIT} featureName="Edit Role">
-                <RoleEdit />
+                <RolesMainPage />
               </FeatureErrorBoundary>
             </ProtectedRoute>
           }
@@ -211,21 +180,11 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path={APP_ROUTES.PASSKEY_VIEW}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Passkey Details">
-                <PasskeyView />
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path={APP_ROUTES.PASSKEYS}
           element={
             <ProtectedRoute>
               <FeatureErrorBoundary featureName="Passkeys">
-                <PasskeysListView />
+                <PasskeysMainPage />
               </FeatureErrorBoundary>
             </ProtectedRoute>
           }

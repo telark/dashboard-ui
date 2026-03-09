@@ -1,1 +1,0 @@
-export { createRoleViewConfig } from './roleViewConfig';

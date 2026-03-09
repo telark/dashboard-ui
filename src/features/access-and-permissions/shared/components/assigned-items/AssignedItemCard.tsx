@@ -18,7 +18,8 @@ const AssignedItemCard: React.FC<AssignedItemCardProps> = ({
 }) => (
   <div style={ASSIGNED_CARD_STYLE}>
     <div style={{ flex: 1, minWidth: 0 }}>{children}</div>
-    {rightContent ?? (onDeassign && <DeassignButton onClick={onDeassign} tooltip={deassignTooltip} />)}
+    {rightContent ??
+      (onDeassign && <DeassignButton onClick={onDeassign} tooltip={deassignTooltip} />)}
   </div>
 );
 

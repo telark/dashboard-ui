@@ -12,6 +12,7 @@ import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { applyGroupFilters, mapCategoriesToFilterOptions } from '../utils';
 import type { Group } from '../models';
+import type { Category } from '../../categories/models';
 import GroupsErrorPage from './GroupsErrorPage';
 import GroupsLoadingPage from './GroupsLoadingPage';
 import GroupsEmptyPage from './GroupsEmptyPage';
@@ -21,6 +22,9 @@ type ViewMode = 'groups' | 'categories';
 
 const MainPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('groups');
+  const [addCategoryPanelOpen, setAddCategoryPanelOpen] = useState(false);
+  const [editCategoryPanelOpen, setEditCategoryPanelOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const { groups, loading, error } = useFetchGroups();
   const { categories, loading: categoriesLoading } = useCategories(
     CATEGORIES_CONSTANTS.SCOPES.GROUPS,
@@ -146,6 +150,17 @@ const MainPage: React.FC = () => {
     [closeViewPanel, openEditPanel],
   );
 
+  const onAddCategoryClick = useCallback(() => setAddCategoryPanelOpen(true), []);
+  const closeAddCategoryPanel = useCallback(() => setAddCategoryPanelOpen(false), []);
+  const openEditCategoryPanel = useCallback((category: Category) => {
+    setEditingCategory(category);
+    setEditCategoryPanelOpen(true);
+  }, []);
+  const closeEditCategoryPanel = useCallback(() => {
+    setEditCategoryPanelOpen(false);
+    setEditingCategory(null);
+  }, []);
+
   const isFetching = useMemo(
     () => groups === undefined || loading || categoriesLoading,
     [groups, loading, categoriesLoading],
@@ -174,6 +189,8 @@ const MainPage: React.FC = () => {
     handleViewGroup,
     handleEditClick: openEditPanel,
     onCreateGroupClick: openCreatePanel,
+    onAddCategoryClick,
+    onEditCategory: openEditCategoryPanel,
     selectedGroupsCount: selectedCount,
     onBulkDeleteClick: handleBulkDeleteClick,
     onAttachRoleClick: handleAttachRoleClick,
@@ -222,12 +239,17 @@ const MainPage: React.FC = () => {
       bulkDeleteModalOpen={bulkDeleteModalOpen}
       selectedCount={selectedCount}
       isDeleting={isDeleting}
+      addCategoryPanelOpen={addCategoryPanelOpen}
+      editCategoryPanelOpen={editCategoryPanelOpen}
+      editingCategory={editingCategory}
       onCloseCreatePanel={closeCreatePanel}
       onCloseEditPanel={closeEditPanel}
       onCloseViewPanel={closeViewPanel}
       onCloseAttachRolePanel={closeAttachRolePanel}
       onCloseAttachMemberPanel={closeAttachMemberPanel}
       onCloseFilterPanel={closeFilterPanel}
+      onCloseAddCategoryPanel={closeAddCategoryPanel}
+      onCloseEditCategoryPanel={closeEditCategoryPanel}
       onCloseBulkDeleteModal={handleCloseBulkDeleteModal}
       onConfirmBulkDelete={handleConfirmBulkDelete}
       onViewPanelEdit={handleViewPanelEdit}

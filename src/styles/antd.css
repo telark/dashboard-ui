@@ -217,11 +217,11 @@
   margin-top: 0 !important;
 }
 .app-section .app-section-subtitle {
-  margin-top: 0 !important;  /* Title -> Subtitle */
-  margin-bottom: 0 !important;
+  margin-top: -2px !important; /* Tighten gap between title and subtitle */
+  margin-bottom: 4px !important; /* Small gap before content */
 }
 .app-section .app-section-content {
-  margin-top: 14px !important; /* Distance from subtitle to content */
+  margin-top: 8px !important; /* Distance from subtitle to content */
 }
 
 /* Permissions label text style */

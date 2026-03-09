@@ -2,19 +2,19 @@ import type { FormFieldConfig } from '../../../../interfaces/layout/modal';
 
 export const USERS_CONSTANTS = {
   LABELS: {
-    HEADER_TITLE: 'Users',
-    HEADER_SUBTITLE: 'Manage existing users',
+    HEADER_TITLE: 'Members',
+    HEADER_SUBTITLE: 'Manage existing members',
     VIEW_SUBTITLE: 'View user details',
     EDIT_SUBTITLE: 'Edit user details',
     CREATE_SUBTITLE: 'Create a new user',
     NOT_FOUND: 'User not found',
     UPDATE_BUTTON: 'Update User',
-    CREATE_BUTTON: 'Add User',
-    CREATE_BUTTON_TEXT: 'Add User',
+    CREATE_BUTTON: 'Add New Member',
+    CREATE_BUTTON_TEXT: 'Add New Member',
     BREADCRUMBS: {
       USERS: 'Users',
       EDIT: 'Edit',
-      CREATE: 'Add User',
+      CREATE: 'Add New Member',
     },
     MESSAGES: {
       CREATED: (name: string) => `User "${name}" created`,
@@ -38,8 +38,7 @@ export const USERS_CONSTANTS = {
       NO_GROUPS_AVAILABLE: 'No groups available',
       NO_ASSIGNED_ROLES: 'No roles assigned yet',
       NO_GROUP_ROLES: 'No roles inherited from groups',
-      ROLE_INHERITED_FROM_GROUP: (groupNames: string) =>
-        `Already granted via group: ${groupNames}`,
+      ROLE_INHERITED_FROM_GROUP: (groupNames: string) => `Already granted via group: ${groupNames}`,
       LOADING_ROLES: 'Loading roles...',
       LOADING_GROUPS: 'Loading groups...',
     },
@@ -83,8 +82,7 @@ export const USERS_CONSTANTS = {
       DEASSIGN_GROUP_RESOURCE_TYPE: 'group',
       BULK_DELETE: 'Bulk Delete',
       BULK_DELETE_MODAL_TITLE: 'Delete Users',
-      BULK_DELETE_LOADING: (count: number) =>
-        `Deleting ${count} user${count > 1 ? 's' : ''}...`,
+      BULK_DELETE_LOADING: (count: number) => `Deleting ${count} user${count > 1 ? 's' : ''}...`,
       BULK_DELETE_SUCCESS: (count: number) =>
         `${count} user${count > 1 ? 's' : ''} deleted successfully`,
       BULK_DELETE_FAILED: 'Failed to delete some users',
@@ -103,11 +101,11 @@ export const USERS_CONSTANTS = {
       },
     },
     FORM: {
-      TITLE: 'Add User',
-      SUBTITLE: 'Add a new user',
+      TITLE: 'Add New Member',
+      SUBTITLE: 'Add a new member',
       SECTION_TITLE: 'User Details',
       SECTION_SUBTITLE: 'Provide the user information.',
-      BUTTON_TEXT: 'Add User',
+      BUTTON_TEXT: 'Add New Member',
       SECTIONS: {
         USER_DETAILS: 'User Details',
         ASSIGNMENT: 'Assignment',
@@ -136,9 +134,9 @@ export const USERS_CONSTANTS = {
         SUBMIT_BUTTON: 'Update User',
       },
       CREATE: {
-        TITLE: 'Add User',
-        SUBTITLE: 'Add a new user to the system',
-        SUBMIT_BUTTON: 'Add User',
+        TITLE: 'Add New Member',
+        SUBTITLE: 'Add a new member to the system',
+        SUBMIT_BUTTON: 'Add New Member',
       },
       MANAGE_ROLE: {
         TITLE: 'Manage Roles',
@@ -146,7 +144,8 @@ export const USERS_CONSTANTS = {
         SUBMIT_BUTTON: 'Update roles',
         SEARCH_PLACEHOLDER: 'Search roles by name or description...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
-        SHOW_ASSIGNED_TOOLTIP: 'View all roles currently assigned to this user, including inherited ones from groups',
+        SHOW_ASSIGNED_TOOLTIP:
+          'View all roles currently assigned to this user, including inherited ones from groups',
         FROM_GROUPS_BUTTON: 'From Groups',
         FROM_GROUPS_TOOLTIP: 'View roles this user inherits through their assigned groups',
       },
@@ -156,6 +155,7 @@ export const USERS_CONSTANTS = {
         SUBMIT_BUTTON: 'Update groups',
         SEARCH_PLACEHOLDER: 'Search groups by name or description...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
+        SHOW_ASSIGNED_TOOLTIP: 'View all groups currently assigned to this user',
       },
     },
     TOOLBAR: {
@@ -167,7 +167,7 @@ export const USERS_CONSTANTS = {
         BUTTON_LABEL: 'Filter',
       },
       CREATE: {
-        BUTTON_LABEL: 'Add User',
+        BUTTON_LABEL: 'Add New Member',
       },
       MANAGE: {
         BUTTON_LABEL: 'Manage',
