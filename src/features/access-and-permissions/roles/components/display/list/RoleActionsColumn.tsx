@@ -91,7 +91,10 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
         gap: 8,
       }}
     >
-      <Tooltip title={canEdit ? RC.LABELS.ACTIONS.EDIT : RC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP}>
+      <Tooltip
+        title={canEdit ? RC.LABELS.ACTIONS.EDIT : RC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP}
+        placement="left"
+      >
         <span style={actionWrapperStyle}>
           <button
             type="button"
@@ -110,7 +113,10 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
           </button>
         </span>
       </Tooltip>
-      <Tooltip title={canDelete ? RC.LABELS.ACTIONS.DELETE : RC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP}>
+      <Tooltip
+        title={canDelete ? RC.LABELS.ACTIONS.DELETE : RC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP}
+        placement="left"
+      >
         <span style={actionWrapperStyle}>
           <button
             type="button"
