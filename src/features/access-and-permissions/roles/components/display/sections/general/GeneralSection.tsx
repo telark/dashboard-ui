@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
+import { Form, Select, Tooltip } from 'antd';
 import Section from '../../../../../../../components/display/sections/Section';
-import { LabeledInput, LabeledSelect } from '../../../../../../../components/display/inputs';
+import { LabeledInput } from '../../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import type { RolesGeneralSectionProps } from '../../../../models';
 import { useRoleCategories } from '../../../../hooks';
@@ -18,6 +19,14 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
   }) => {
     const { categoryOptions } = useRoleCategories();
     const { nameValidator, normalizeName } = useNameValidation({ roles, isEditMode, currentName });
+
+    const categoryLabel = lockCategory ? (
+      <Tooltip title={RPC.GENERAL.LOCK_CATEGORY_TOOLTIP}>
+        <span>{RPC.GENERAL.CATEGORY_LABEL}</span>
+      </Tooltip>
+    ) : (
+      RPC.GENERAL.CATEGORY_LABEL
+    );
 
     return (
       <Section
@@ -46,16 +55,20 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
               marginBottom={12}
             />
             <FieldChangeWatcher fieldName="categoryID" onChange={onManualChange} />
-            <LabeledSelect
+            <Form.Item
+              label={categoryLabel}
               name="categoryID"
-              label={RPC.GENERAL.CATEGORY_LABEL}
-              placeholder={RPC.GENERAL.CATEGORY_PLACEHOLDER}
+              rules={[{ required: true, message: `Please select ${RPC.GENERAL.CATEGORY_LABEL.toLowerCase()}` }]}
               required
-              options={categoryOptions}
-              marginBottom={0}
-              disabled={lockCategory}
-              tooltip={lockCategory ? RPC.GENERAL.LOCK_CATEGORY_TOOLTIP : undefined}
-            />
+              style={{ marginBottom: 0 }}
+              className="form-item-compact no-asterisk"
+            >
+              <Select
+                placeholder={RPC.GENERAL.CATEGORY_PLACEHOLDER}
+                options={categoryOptions}
+                disabled={lockCategory}
+              />
+            </Form.Item>
           </div>
         }
       />
