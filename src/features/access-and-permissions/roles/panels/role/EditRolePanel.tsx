@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { Icons } from '../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import RoleForm from '../../components/display/shared/RoleForm';
@@ -7,7 +7,11 @@ import { convertRoleToFormValues } from '../../utils';
 import type { Role, RoleFormValues } from '../../models';
 import AnimationWrapper from '../../../../../components/display/panels/slide-out/AnimationWrapper';
 import { PanelFooter } from '../../../../../components/display/panels/shared';
+import { ExpandPanelButton } from '../../../../../components/display/panels/slide-out';
 import type { FormInstance } from 'antd';
+
+const PANEL_WIDTH = 720;
+const PANEL_WIDTH_EXPANDED = 1400;
 
 const RoleIcon = Icons.Role;
 
@@ -24,6 +28,7 @@ const EditRolePanel: React.FC<EditRolePanelProps> = ({
   editingRole,
   form,
 }) => {
+  const [expanded, setExpanded] = useState(false);
   const { handleUpdate, submitting } = useRoleActions({ skipNavigate: true });
   const { roles } = useRoles();
 
@@ -71,7 +76,10 @@ const EditRolePanel: React.FC<EditRolePanelProps> = ({
       onClose={onClose}
       title={RC.LABELS.PANELS.EDIT.TITLE}
       subtitle={RC.LABELS.PANELS.EDIT.SUBTITLE(editingRole.name)}
-      width={720}
+      width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
+      headerExtra={
+        <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((prev) => !prev)} />
+      }
     >
       <div style={{ overflow: 'auto', flex: 1 }}>
         <RoleForm
@@ -84,6 +92,7 @@ const EditRolePanel: React.FC<EditRolePanelProps> = ({
           isEditMode
           currentName={editingRole.name}
           hideSubmitButton
+          expanded={expanded}
         />
       </div>
       <PanelFooter

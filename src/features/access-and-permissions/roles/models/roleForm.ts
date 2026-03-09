@@ -46,4 +46,6 @@ export interface RoleFormProps {
   currentName?: string;
   /** When true, do not render the submit button (e.g. when used inside SlideOutPanel). */
   hideSubmitButton?: boolean;
+  /** When true, show two columns: General/Validity/Protection | Scope & Permissions. */
+  expanded?: boolean;
 }

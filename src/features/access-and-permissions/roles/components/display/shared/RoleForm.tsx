@@ -24,6 +24,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
   isEditMode = false,
   currentName,
   hideSubmitButton = false,
+  expanded = false,
 }) => {
   const { hasFormErrors, hasChanges, handleValuesChange, handleFieldsChange } = useRoleFormState({
     form,
@@ -71,15 +72,8 @@ const RoleForm: React.FC<RoleFormProps> = ({
               ? getFieldValue(['protection', 'lockCategory']) || false
               : false;
 
-            return (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 18,
-                  width: '100%',
-                }}
-              >
+            const leftColumn = (
+              <>
                 <GeneralSection
                   roles={roles}
                   isEditMode={isEditMode}
@@ -90,11 +84,41 @@ const RoleForm: React.FC<RoleFormProps> = ({
                 />
                 <ValiditySection />
                 <ProtectionSection onManualChange={handleValuesChange} />
-                <ScopesAndPermissionsSection
-                  isLocked={preventScopeChanges}
-                  onManualChange={handleValuesChange}
-                  initialValues={initialValues}
-                />
+              </>
+            );
+            const rightColumn = (
+              <ScopesAndPermissionsSection
+                isLocked={preventScopeChanges}
+                onManualChange={handleValuesChange}
+                initialValues={initialValues}
+              />
+            );
+
+            return (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: expanded ? 'row' : 'column',
+                  gap: 24,
+                  width: '100%',
+                  alignItems: expanded ? 'flex-start' : undefined,
+                }}
+              >
+                {expanded ? (
+                  <>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1, minWidth: 0 }}>
+                      {leftColumn}
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1, minWidth: 0 }}>
+                      {rightColumn}
+                    </div>
+                  </>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 18, width: '100%' }}>
+                    {leftColumn}
+                    {rightColumn}
+                  </div>
+                )}
                 {!hideSubmitButton && (
                   <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                     <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>

@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useCallback } from 'react';
+import React, { useMemo, useEffect, useCallback, useState } from 'react';
 import { Icons } from '../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import RoleForm from '../../components/display/shared/RoleForm';
@@ -7,7 +7,11 @@ import { convertFormValuesToRoleFormData } from '../../utils';
 import type { RoleFormValues, ScopeFormValue } from '../../models';
 import AnimationWrapper from '../../../../../components/display/panels/slide-out/AnimationWrapper';
 import { PanelFooter } from '../../../../../components/display/panels/shared';
+import { ExpandPanelButton } from '../../../../../components/display/panels/slide-out';
 import type { FormInstance } from 'antd';
+
+const PANEL_WIDTH = 720;
+const PANEL_WIDTH_EXPANDED = 1400;
 
 const RoleIcon = Icons.Role;
 
@@ -18,6 +22,7 @@ interface CreateRolePanelProps {
 }
 
 const CreateRolePanel: React.FC<CreateRolePanelProps> = ({ open, onClose, form }) => {
+  const [expanded, setExpanded] = useState(false);
   const { handleCreate, submitting } = useRoleActions({ skipNavigate: true });
   const { roles } = useRoles();
   const { defaultCategoryId } = useRoleCategories();
@@ -84,7 +89,10 @@ const CreateRolePanel: React.FC<CreateRolePanelProps> = ({ open, onClose, form }
       onClose={onClose}
       title={RC.LABELS.PANELS.CREATE.TITLE}
       subtitle={RC.LABELS.PANELS.CREATE.SUBTITLE}
-      width={720}
+      width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
+      headerExtra={
+        <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((prev) => !prev)} />
+      }
     >
       <div style={{ overflow: 'auto', flex: 1 }}>
         <RoleForm
@@ -96,6 +104,7 @@ const CreateRolePanel: React.FC<CreateRolePanelProps> = ({ open, onClose, form }
           roles={roles}
           isEditMode={false}
           hideSubmitButton
+          expanded={expanded}
         />
       </div>
       <PanelFooter
