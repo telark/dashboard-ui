@@ -20,6 +20,8 @@ export interface UseAssignmentPanelBaseOptions {
   dataReady: boolean;
   successMessage: (userName: string) => string;
   failMessage: string;
+  /** Called after user update succeeds with the new assigned ids (e.g. to sync inverse side). */
+  onSuccess?: (newIds: string[]) => void | Promise<void>;
 }
 
 export interface UseAssignmentPanelBaseReturn {
@@ -39,6 +41,7 @@ export const useAssignmentPanelBase = ({
   dataReady,
   successMessage,
   failMessage,
+  onSuccess,
 }: UseAssignmentPanelBaseOptions): UseAssignmentPanelBaseReturn => {
   const dispatch: AppDispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
@@ -60,12 +63,14 @@ export const useAssignmentPanelBase = ({
     if (!user) return;
     setSubmitting(true);
     try {
+      const newIds = (values[fieldName] as string[]) ?? [];
       await dispatch(
         updateUserThunk({
           id: user.id,
-          user: { [fieldName]: (values[fieldName] as string[]) ?? [] },
+          user: { [fieldName]: newIds },
         }),
       ).unwrap();
+      await onSuccess?.(newIds);
       message.success(successMessage(user.fullname || user.username));
       form.resetFields();
       onClose();

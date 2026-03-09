@@ -13,7 +13,7 @@ const Section: React.FC<SectionProps> = ({ title, subtitle, content, className, 
   return (
     <div className={`app-section ${className || ''}`.trim()} style={{ width: '100%', ...style }}>
       <div
-        style={{ fontWeight: 600, fontSize: 16, color: '#0B1F33', marginBottom: subtitle ? 4 : 12 }}
+        style={{ fontWeight: 600, fontSize: 16, color: '#0B1F33', marginBottom: subtitle ? 0 : 12 }}
       >
         {title}
       </div>
@@ -21,7 +21,7 @@ const Section: React.FC<SectionProps> = ({ title, subtitle, content, className, 
         <Typography.Paragraph
           className="app-section-subtitle"
           type="secondary"
-          style={{ margin: 0, marginBottom: 12, fontSize: 13, color: '#64748b' }}
+          style={{ margin: 0, marginBottom: 1, fontSize: 13, color: '#64748b' }}
         >
           {subtitle}
         </Typography.Paragraph>

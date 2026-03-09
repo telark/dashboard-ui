@@ -7,6 +7,8 @@ import {
   AttachRolePanel,
   AttachMemberPanel,
 } from '../panels';
+import { AddCategoryPanel, EditCategoryPanel } from '../../categories/panels';
+import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import ActionConfirmModal from '../../../../components/display/modal/confirm/ActionConfirmModal';
 import { FilterPanel } from '../../../../components/display/panels/filter';
 import { buildGroupFilterFields } from '../config/groupFilterConfig';
@@ -35,7 +37,12 @@ interface GroupsListPageProps {
   bulkDeleteModalOpen: boolean;
   selectedCount: number;
   isDeleting: boolean;
+  addCategoryPanelOpen: boolean;
+  editCategoryPanelOpen: boolean;
+  editingCategory: Category | null;
   onCloseCreatePanel: () => void;
+  onCloseAddCategoryPanel: () => void;
+  onCloseEditCategoryPanel: () => void;
   onCloseEditPanel: () => void;
   onCloseViewPanel: () => void;
   onCloseAttachRolePanel: () => void;
@@ -68,7 +75,12 @@ const GroupsListPage: React.FC<GroupsListPageProps> = memo(
     bulkDeleteModalOpen,
     selectedCount,
     isDeleting,
+    addCategoryPanelOpen,
+    editCategoryPanelOpen,
+    editingCategory,
     onCloseCreatePanel,
+    onCloseAddCategoryPanel,
+    onCloseEditCategoryPanel,
     onCloseEditPanel,
     onCloseViewPanel,
     onCloseAttachRolePanel,
@@ -105,6 +117,20 @@ const GroupsListPage: React.FC<GroupsListPageProps> = memo(
             onClose={onCloseEditPanel}
             editingGroup={editingGroup}
             form={editForm}
+          />
+        )}
+        {addCategoryPanelOpen && (
+          <AddCategoryPanel
+            open={addCategoryPanelOpen}
+            onClose={onCloseAddCategoryPanel}
+            scope={CATEGORIES_CONSTANTS.SCOPES.GROUPS}
+          />
+        )}
+        {editCategoryPanelOpen && (
+          <EditCategoryPanel
+            open={editCategoryPanelOpen}
+            onClose={onCloseEditCategoryPanel}
+            editingCategory={editingCategory}
           />
         )}
         {viewPanelOpen && viewingGroup && (

@@ -18,7 +18,7 @@ const ViewPanelHeader: React.FC<ViewPanelHeaderProps> = ({
 
   return (
     <div style={VIEW.HEADER}>
-      <div style={VIEW.ICON_WRAPPER}>{icon}</div>
+      {icon != null && <div style={VIEW.ICON_WRAPPER}>{icon}</div>}
       <div style={VIEW.NAME_STACK}>
         <h3 style={VIEW.TITLE}>{name}</h3>
         {description && <p style={VIEW.DESCRIPTION}>{description}</p>}

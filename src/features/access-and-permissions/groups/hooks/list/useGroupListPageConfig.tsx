@@ -16,7 +16,6 @@ import { deduplicateCategoriesByName } from '../../../categories/utils/helpers';
 import { useUsers } from '../../../users/hooks';
 import type { Group } from '../../models';
 import type { Category } from '../../../categories/models';
-import logger from '../../../../../logging';
 
 const GroupIcon = Icons.Group;
 
@@ -39,6 +38,8 @@ interface UseGroupListPageConfigOptions {
   handleViewGroup: (group: Group) => void;
   handleEditClick: (group: Group) => void;
   onCreateGroupClick: () => void;
+  onAddCategoryClick?: () => void;
+  onEditCategory?: (category: Category) => void;
   categories: Category[] | undefined;
   selectedGroupsCount?: number;
   onBulkDeleteClick?: () => void;
@@ -68,6 +69,8 @@ export const useGroupListPageConfig = ({
   handleViewGroup,
   handleEditClick,
   onCreateGroupClick,
+  onAddCategoryClick,
+  onEditCategory,
   selectedGroupsCount = 0,
   onBulkDeleteClick,
   onAttachRoleClick,
@@ -106,6 +109,7 @@ export const useGroupListPageConfig = ({
     viewMode,
     onViewModeChange: setViewMode,
     onCreateGroupClick,
+    onAddCategoryClick,
     selectedGroupsCount,
     onBulkDeleteClick,
     onAttachRoleClick,
@@ -177,15 +181,7 @@ export const useGroupListPageConfig = ({
                 width: 120,
                 onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
                 render: (_: unknown, record: Group | Category) => (
-                  <CategoryActionsColumn
-                    record={record as Category}
-                    onEdit={(cat) => {
-                      logger.info('Edit category:', cat);
-                    }}
-                    onDelete={(cat) => {
-                      logger.info('Delete category:', cat);
-                    }}
-                  />
+                  <CategoryActionsColumn record={record as Category} onEdit={onEditCategory} />
                 ),
               },
             ],
@@ -250,7 +246,14 @@ export const useGroupListPageConfig = ({
               <GroupIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />
             }
           />
-        ) : undefined,
+        ) : (
+          <Empty
+            description={GC.LABELS.EMPTY.NO_CATEGORIES_FOUND}
+            image={
+              <GroupIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />
+            }
+          />
+        ),
     }),
     [
       breadcrumbs,
@@ -277,6 +280,7 @@ export const useGroupListPageConfig = ({
       setSelectedGroups,
       selectedCategories,
       setSelectedCategories,
+      onEditCategory,
     ],
   );
 };

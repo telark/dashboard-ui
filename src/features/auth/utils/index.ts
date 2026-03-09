@@ -8,7 +8,6 @@ export { handleUserLogout } from './logout/logout';
 
 // Passkey
 export { createDeviceNameValidator } from './passkey/validation';
-export { navigateToPasskeyView, validatePasskeyForNavigation } from './passkey/navigation';
 export { handleCreatePasskey, handleUpdatePasskey, handleDeletePasskey } from './passkey/handlers';
 
 // Passkey Device

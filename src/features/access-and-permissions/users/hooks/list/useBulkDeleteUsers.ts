@@ -1,3 +1,4 @@
+import type React from 'react';
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
@@ -37,9 +38,7 @@ export const useBulkDeleteUsers = ({
         duration: 0,
       });
 
-      const deletePromises = selectedIds.map((id) =>
-        dispatch(deleteUserThunk(id)).unwrap(),
-      );
+      const deletePromises = selectedIds.map((id) => dispatch(deleteUserThunk(id)).unwrap());
       await Promise.all(deletePromises);
 
       message.success({

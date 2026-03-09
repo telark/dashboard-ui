@@ -31,7 +31,6 @@ const CategorySelect: React.FC<CategorySelectProps> = memo(
         options={options}
         value={value}
         onChange={onChange}
-        className="role-assignment-select-users"
         style={{ width: '100%' }}
         allowClear={allowClear}
         showSearch={showSearch}
