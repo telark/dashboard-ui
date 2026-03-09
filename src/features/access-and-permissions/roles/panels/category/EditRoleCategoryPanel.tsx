@@ -43,6 +43,8 @@ const EditRoleCategoryPanel: React.FC<EditRoleCategoryPanelProps> = ({
 
   const nameValue = Form.useWatch('name', form);
   const trimmedName = nameValue?.trim() ?? '';
+  const originalName = editingCategory?.name?.trim() ?? '';
+  const hasChanges = trimmedName !== originalName;
   const nameExists = Boolean(
     trimmedName && existingNamesExcludingCurrent.has(trimmedName.toLowerCase()),
   );
@@ -84,7 +86,6 @@ const EditRoleCategoryPanel: React.FC<EditRoleCategoryPanelProps> = ({
       open={open}
       onClose={handleCancel}
       title={RC.LABELS.PANELS.EDIT_CATEGORY.TITLE}
-      subtitle={RC.LABELS.PANELS.EDIT_CATEGORY.SUBTITLE(editingCategory.name)}
       width={PANEL_WIDTH}
     >
       <div
@@ -128,7 +129,7 @@ const EditRoleCategoryPanel: React.FC<EditRoleCategoryPanelProps> = ({
           cancelLabel={RC.LABELS.PANELS.EDIT_CATEGORY.CANCEL}
           primaryLabel={RC.LABELS.PANELS.EDIT_CATEGORY.SUBMIT_BUTTON}
           primaryLoading={submitting}
-          primaryDisabled={submitting || !isNameValid}
+          primaryDisabled={submitting || !isNameValid || !hasChanges}
           horizontalPadding={0}
         />
       </div>
