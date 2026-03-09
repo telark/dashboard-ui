@@ -1,11 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { getCurrentUser } from '../../../auth/utils';
-import {
-  useUsers,
-  useUserFilters,
-  useBulkDeleteUsers,
-  useUserListState,
-} from '../hooks';
+import { useUsers, useUserFilters, useBulkDeleteUsers, useUserListState } from '../hooks';
 import { useUserListPageConfig } from '../hooks/list/useUserListPageConfig';
 import { useUserPanelState } from '../hooks/panels/user/useUserPanelState';
 import { applyUserFilters } from '../utils/filter/applyUserFilters';
@@ -150,11 +145,7 @@ const MainPage: React.FC = () => {
   const isFetching = useMemo(() => users.length === 0 && loading, [users.length, loading]);
 
   const shouldShowEmpty = useMemo(
-    () =>
-      Array.isArray(users) &&
-      usersExcludingSelf.length === 0 &&
-      !loading &&
-      !error,
+    () => Array.isArray(users) && usersExcludingSelf.length === 0 && !loading && !error,
     [users, usersExcludingSelf.length, loading, error],
   );
 

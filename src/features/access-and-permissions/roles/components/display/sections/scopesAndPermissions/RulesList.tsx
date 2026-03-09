@@ -10,7 +10,10 @@ const RulesList: React.FC<RulesListProps> = ({
   formatRuleKey,
 }) => {
   return (
-    <div className="role-list-container" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+    <div
+      className="role-list-container"
+      style={{ display: 'flex', flexDirection: 'column', gap: 12 }}
+    >
       {rules.map((rule) => {
         const formattedKey = formatRuleKey(scopeKey, rule.key);
         const isChecked = selectedRules.includes(formattedKey);

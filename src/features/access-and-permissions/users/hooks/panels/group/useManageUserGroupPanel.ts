@@ -46,7 +46,9 @@ const syncGroupsMembers = async (
     const group = groups?.find((g) => g.id === groupId);
     const nextMemberIds = [...(group?.assignedUsersIDs || []), userId];
     updates.push(
-      dispatch(updateGroupThunk({ id: groupId, group: { assignedUsersIDs: nextMemberIds } })).unwrap(),
+      dispatch(
+        updateGroupThunk({ id: groupId, group: { assignedUsersIDs: nextMemberIds } }),
+      ).unwrap(),
     );
   }
 
@@ -54,7 +56,9 @@ const syncGroupsMembers = async (
     const group = groups?.find((g) => g.id === groupId);
     const nextMemberIds = (group?.assignedUsersIDs || []).filter((id) => id !== userId);
     updates.push(
-      dispatch(updateGroupThunk({ id: groupId, group: { assignedUsersIDs: nextMemberIds } })).unwrap(),
+      dispatch(
+        updateGroupThunk({ id: groupId, group: { assignedUsersIDs: nextMemberIds } }),
+      ).unwrap(),
     );
   }
 

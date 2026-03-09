@@ -37,12 +37,12 @@ export const useViewRolePanelData = ({
   const createdByUser = useMemo(() => {
     if (!role?.createdBy || !users) return null;
     return users.find((u) => u.id === role.createdBy) ?? null;
-  }, [role?.createdBy, users]);
+  }, [role, users]);
 
   const lastUpdatedByUser = useMemo(() => {
     if (!role?.lastUpdatedBy || !users) return null;
     return users.find((u) => u.id === role.lastUpdatedBy) ?? null;
-  }, [role?.lastUpdatedBy, users]);
+  }, [role, users]);
 
   const details = useMemo(() => {
     if (!role) return [];

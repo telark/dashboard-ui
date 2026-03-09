@@ -9,7 +9,9 @@ import type { User } from '../../../models';
 
 type AssignmentField = 'assignedRolesIDs' | 'assignedGroupsIDs';
 
-export interface UseDeassignUserFieldOptions<T extends { id: string; name: string } = { id: string; name: string }> {
+export interface UseDeassignUserFieldOptions<
+  T extends { id: string; name: string } = { id: string; name: string },
+> {
   user: User | null;
   form: FormInstance;
   fieldName: AssignmentField;
@@ -37,9 +39,7 @@ export const useDeassignUserField = <T extends { id: string; name: string }>({
       const current = (form.getFieldValue(fieldName) as string[]) ?? [];
       const updated = current.filter((id) => id !== item.id);
       try {
-        await dispatch(
-          updateUserThunk({ id: user.id, user: { [fieldName]: updated } }),
-        ).unwrap();
+        await dispatch(updateUserThunk({ id: user.id, user: { [fieldName]: updated } })).unwrap();
         form.setFieldsValue({ [fieldName]: updated });
         await onAfterDeassign?.(item, updated);
         message.success(successMessage(item.name));

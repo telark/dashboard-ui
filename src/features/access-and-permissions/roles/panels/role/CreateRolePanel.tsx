@@ -64,8 +64,7 @@ const CreateRolePanel: React.FC<CreateRolePanelProps> = ({ open, onClose, form }
       const finalValues: RoleFormValues = {
         ...allFormValues,
         scopes: allFormValues.scopes || values.scopes || {},
-        protection:
-          allFormValues.protection ||
+        protection: allFormValues.protection ||
           values.protection || {
             preventDeletion: false,
             preventModification: false,
