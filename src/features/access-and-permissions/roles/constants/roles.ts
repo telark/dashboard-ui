@@ -61,8 +61,8 @@ export const ROLES_CONSTANTS = {
         SUBMIT_BUTTON: 'Update Role',
       },
       CREATE: {
-        TITLE: 'Add Role',
-        SUBTITLE: 'Create a new role',
+        TITLE: 'Create New Role',
+        SUBTITLE: '',
         SUBMIT_BUTTON: 'Create Role',
       },
     },

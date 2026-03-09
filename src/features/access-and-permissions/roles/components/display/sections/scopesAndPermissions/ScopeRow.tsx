@@ -34,7 +34,6 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
     <div
       style={{
         padding: `${rowPaddingPx}px 0`,
-        marginBottom: isLast ? 0 : 12,
       }}
     >
       <Form.Item
@@ -106,21 +105,15 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                 <input type="hidden" />
               </Form.Item>
 
-              <div style={{ marginBottom: 8 }}>
-                <label
-                  style={{
-                    display: 'block',
-                    fontWeight: 700,
-                    color: '#0B1F33',
-                    marginBottom: 8,
-                  }}
-                >
-                  {scopeLabel}
-                </label>
+              <Form.Item
+                label={scopeLabel}
+                style={{ marginBottom: isLast ? 0 : 12 }}
+                className="form-item-compact"
+              >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <Form.Item
                     name={['scopes', scopeKey, 'level']}
-                    style={{ marginBottom: 0, flex: 1 }}
+                    noStyle
                     rules={[{ required: true, message: 'Please select a permission level' }]}
                   >
                     <LevelSelector
@@ -128,7 +121,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                       onChange={handleLevelChange}
                       options={permissionLevels}
                       tooltipMap={tooltipMap}
-                      style={{ width: '100%' }}
+                      style={{ width: '100%', flex: 1 }}
                       disabled={isLocked}
                     />
                   </Form.Item>
@@ -184,7 +177,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                     </div>
                   )}
                 </div>
-              </div>
+              </Form.Item>
 
               <div
                 style={{
