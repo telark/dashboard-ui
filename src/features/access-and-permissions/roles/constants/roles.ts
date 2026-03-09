@@ -57,8 +57,13 @@ export const ROLES_CONSTANTS = {
       STATUS: 'Status',
       TYPE: 'Type',
       CATEGORY: 'Category',
+      VERSION: 'Version',
       CREATION_DATE: 'Creation Date',
       LAST_UPDATE: 'Last Update',
+      CREATED_BY: 'Created By',
+      LAST_UPDATED_BY: 'Last Updated By',
+      VALIDITY: 'Validity',
+      PROTECTION: 'Protection',
     },
     PANELS: {
       VIEW: { TITLE: 'Role Details' },
