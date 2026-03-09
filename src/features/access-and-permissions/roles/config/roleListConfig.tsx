@@ -1,7 +1,13 @@
 import React from 'react';
 import { ROLES_CONSTANTS as RC } from '../constants';
 import { Icons } from '../../../../constants';
-import { SearchOutlined, FilterOutlined, AppstoreOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  SearchOutlined,
+  FilterOutlined,
+  TagOutlined,
+  EyeOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 
 const RoleIcon = Icons.Role;
@@ -68,14 +74,14 @@ export const useRoleListConfig = ({
             {
               key: 'manage-categories',
               label: RC.LABELS.TOOLBAR.MANAGE_CATEGORIES.BUTTON_LABEL,
-              icon: <AppstoreOutlined />,
+              icon: <TagOutlined />,
               variant: 'default' as const,
               dropdown: {
                 items: [
                   {
                     key: 'view-categories',
                     label: RC.LABELS.TOOLBAR.MANAGE_CATEGORIES.VIEW_CATEGORIES,
-                    icon: <AppstoreOutlined />,
+                    icon: <EyeOutlined />,
                   },
                   {
                     key: 'add-category',

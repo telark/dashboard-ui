@@ -3,7 +3,8 @@ import { Icons } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import {
   SearchOutlined,
-  AppstoreOutlined,
+  TagOutlined,
+  EyeOutlined,
   PlusOutlined,
   FilterOutlined,
   DeleteOutlined,
@@ -91,14 +92,14 @@ export const useGroupListConfig = ({
             {
               key: 'manage-categories',
               label: GC.LABELS.TOOLBAR.MANAGE_CATEGORIES.BUTTON_LABEL,
-              icon: <AppstoreOutlined />,
+              icon: <TagOutlined />,
               variant: 'default' as const,
               dropdown: {
                 items: [
                   {
                     key: 'view-categories',
                     label: GC.LABELS.TOOLBAR.MANAGE_CATEGORIES.VIEW_CATEGORIES,
-                    icon: <AppstoreOutlined />,
+                    icon: <EyeOutlined />,
                   },
                   {
                     key: 'add-category',
