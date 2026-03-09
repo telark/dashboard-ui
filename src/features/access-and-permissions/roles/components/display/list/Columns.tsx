@@ -2,6 +2,7 @@ import type { Role, ColumnsArgs } from '../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
+import { DEFAULT_COLORS } from '../../../../../../constants';
 import {
   AiOutlineCalendar,
   AiOutlineCheckCircle,
@@ -51,16 +52,8 @@ export const Columns = ({
         render: (_: unknown, record: Role) => (
           <RowTag
             text={record.type ?? RPC.LABELS.CUSTOM_TYPE}
-            background={
-              record.type === RPC.TYPE.BUILT_IN
-                ? RPC.COLORS.TYPE_BUILTIN_BG
-                : RPC.COLORS.TYPE_CUSTOM_BG
-            }
-            color={
-              record.type === RPC.TYPE.BUILT_IN
-                ? RPC.COLORS.TYPE_BUILTIN_TEXT
-                : RPC.COLORS.TYPE_CUSTOM_TEXT
-            }
+            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
             fontSize={RPC.SIZES.CHIP_FONT}
           />
         ),
@@ -76,16 +69,8 @@ export const Columns = ({
         render: (status: string) => (
           <RowTag
             text={status}
-            background={
-              status === RPC.LABELS.STATUS_ACTIVE
-                ? RPC.COLORS.STATUS_ACTIVE_BG
-                : RPC.COLORS.STATUS_INACTIVE_BG
-            }
-            color={
-              status === RPC.LABELS.STATUS_ACTIVE
-                ? RPC.COLORS.STATUS_ACTIVE_TEXT
-                : RPC.COLORS.STATUS_INACTIVE_TEXT
-            }
+            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
             fontSize={RPC.SIZES.CHIP_FONT}
           />
         ),
@@ -167,8 +152,8 @@ export const Columns = ({
           return (
             <RowTag
               text={categoryName}
-              background={RPC.COLORS.TYPE_CUSTOM_BG}
-              color={RPC.COLORS.TYPE_CUSTOM_TEXT}
+              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
               fontSize={RPC.SIZES.CHIP_FONT}
             />
           );
@@ -187,8 +172,8 @@ export const Columns = ({
           return (
             <RowTag
               text={record.version || '—'}
-              background={RPC.COLORS.CHIP_BLUE_BG}
-              color={RPC.COLORS.CHIP_BLUE_TEXT}
+              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
               fontSize={RPC.SIZES.CHIP_FONT}
             />
           );

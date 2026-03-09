@@ -92,7 +92,6 @@ export const useRoleListPageConfig = ({
           render: (_: unknown, record: Role) => (
             <RoleActionsColumn
               record={record}
-              onView={handleViewRole}
               onEdit={handleEditRole}
             />
           ),

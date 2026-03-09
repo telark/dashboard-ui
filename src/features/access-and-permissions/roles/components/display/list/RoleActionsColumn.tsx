@@ -1,55 +1,62 @@
 import React from 'react';
-import { Modal } from 'antd';
-import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Modal, Tooltip } from 'antd';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../constants';
 import { deleteRoleThunk } from '../../../store';
-import { canDeleteRoles } from '../../../utils';
+import { canDeleteRole, canModifyRole } from '../../../utils';
 import type { AppDispatch } from '../../../../../../store';
 import type { Role } from '../../../models';
 
 interface RoleActionsColumnProps {
   record: Role;
-  onView?: (record: Role) => void;
   onEdit?: (record: Role) => void;
   onDelete?: (record: Role) => void;
 }
 
-const actionButtonStyle: React.CSSProperties = {
+const actionButtonStyle = (disabled: boolean): React.CSSProperties => ({
   all: 'unset',
-  cursor: 'pointer',
+  cursor: disabled ? 'not-allowed' : 'pointer',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  color: DEFAULT_COLORS.TEXT_MUTED,
+  color: disabled ? DEFAULT_COLORS.ICON_MUTED : DEFAULT_COLORS.TEXT_MUTED,
   fontSize: 16,
   width: 28,
   height: 28,
   borderRadius: 4,
   transition: 'all 0.2s',
   outline: 'none',
-};
+  opacity: disabled ? 0.6 : 1,
+});
 
 export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
   record,
-  onView,
   onEdit,
   onDelete,
 }) => {
   const dispatch: AppDispatch = useDispatch();
+  const canEdit = canModifyRole(record);
+  const canDelete = canDeleteRole(record);
+
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!canEdit || !onEdit) return;
+    onEdit(record);
+  };
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (onDelete) {
-      onDelete(record);
+    if (!canDelete) {
+      Modal.warning({
+        title: RC.LABELS.ACTIONS.CANNOT_DELETE_TITLE,
+        content: RC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP,
+      });
       return;
     }
-    if (!canDeleteRoles([record])) {
-      Modal.warning({
-        title: 'Cannot Delete',
-        content: 'This role cannot be deleted due to protection flags.',
-      });
+    if (onDelete) {
+      onDelete(record);
       return;
     }
     Modal.confirm({
@@ -72,58 +79,44 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
         gap: 8,
       }}
     >
-      {onView && (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onView(record);
-          }}
-          style={actionButtonStyle}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'transparent';
-          }}
-          title={RC.LABELS.ACTIONS.VIEW}
-        >
-          <EyeOutlined />
-        </button>
-      )}
-      {onEdit && (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onEdit(record);
-          }}
-          style={actionButtonStyle}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'transparent';
-          }}
-          title={RC.LABELS.ACTIONS.EDIT}
-        >
-          <EditOutlined />
-        </button>
-      )}
-      <button
-        type="button"
-        onClick={handleDeleteClick}
-        style={actionButtonStyle}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'transparent';
-        }}
-        title={RC.LABELS.ACTIONS.DELETE}
-      >
-        <DeleteOutlined />
-      </button>
+      <Tooltip title={canEdit ? RC.LABELS.ACTIONS.EDIT : RC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP}>
+        <span>
+          <button
+            type="button"
+            onClick={handleEditClick}
+            style={actionButtonStyle(!canEdit)}
+            disabled={!canEdit}
+            onMouseEnter={(e) => {
+              if (canEdit) e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent';
+            }}
+            aria-label={RC.LABELS.ACTIONS.EDIT}
+          >
+            <EditOutlined />
+          </button>
+        </span>
+      </Tooltip>
+      <Tooltip title={canDelete ? RC.LABELS.ACTIONS.DELETE : RC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP}>
+        <span>
+          <button
+            type="button"
+            onClick={handleDeleteClick}
+            style={actionButtonStyle(!canDelete)}
+            disabled={!canDelete}
+            onMouseEnter={(e) => {
+              if (canDelete) e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent';
+            }}
+            aria-label={RC.LABELS.ACTIONS.DELETE}
+          >
+            <DeleteOutlined />
+          </button>
+        </span>
+      </Tooltip>
     </div>
   );
 };
