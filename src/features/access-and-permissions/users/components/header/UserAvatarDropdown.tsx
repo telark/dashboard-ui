@@ -5,7 +5,7 @@ import { getCurrentUser, handleUserLogout, hasSessionToken } from '../../../../a
 import { fetchCurrentUserDetails } from '../../utils';
 import { createUserMenuItems } from './UserMenuItems';
 import UserAvatar from './UserAvatar';
-import { HEADER_CONSTANTS } from '../../../../../constants';
+import { APP_ROUTES, HEADER_CONSTANTS } from '../../../../../constants';
 import { isDevelopment } from '../../../../../utils/helpers/env';
 import type { User } from '../../models';
 import logger from '../../../../../logging';
@@ -52,6 +52,7 @@ const UserAvatarDropdown: React.FC = memo(() => {
   const menuItems = createUserMenuItems({
     currentUser,
     onLogout: handleLogoutWrapper,
+    onSettings: () => navigate(APP_ROUTES.SETTINGS),
     loggingOut,
   });
 
