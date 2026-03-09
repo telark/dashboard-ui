@@ -4,17 +4,14 @@ import { DEFAULT_COLORS } from '../../../../constants';
 import { FilterPanel } from '../../../../components/display/panels/filter';
 import { buildAttachRoleFilterFields } from '../../groups/config/attachRoleFilterConfig';
 import { useRoleCategoryOptions } from '../../groups/hooks/categories/useRoleCategoryOptions';
-import {
-  CreateRolePanel,
-  EditRolePanel,
-  ViewRolePanel,
-} from '../panels';
+import { CreateRolePanel, EditRolePanel, ViewRolePanel, AddRoleCategoryPanel } from '../panels';
 import type { PageLayoutConfig } from '../../../../interfaces/layout/page';
+import type { Category } from '../../categories/models';
 import type { Role, RoleFormValues } from '../models';
 import type { FormInstance } from 'antd';
 
 interface RolesListPageProps {
-  pageConfig: PageLayoutConfig<Role>;
+  pageConfig: PageLayoutConfig<Role | Category>;
   createPanelOpen: boolean;
   editPanelOpen: boolean;
   viewPanelOpen: boolean;
@@ -23,10 +20,12 @@ interface RolesListPageProps {
   createForm: FormInstance<RoleFormValues>;
   editForm: FormInstance<RoleFormValues>;
   filterPanelOpen: boolean;
+  addCategoryPanelOpen: boolean;
   onCloseCreatePanel: () => void;
   onCloseEditPanel: () => void;
   onCloseViewPanel: () => void;
   onCloseFilterPanel: () => void;
+  onCloseAddCategoryPanel: () => void;
   handleFilterChange: (filters: Record<string, unknown>) => void;
   handleFilterApply: (filters: Record<string, unknown>) => void;
   handleFilterReset: () => void;
@@ -44,10 +43,12 @@ const RolesListPage: React.FC<RolesListPageProps> = memo(
     createForm,
     editForm,
     filterPanelOpen,
+    addCategoryPanelOpen,
     onCloseCreatePanel,
     onCloseEditPanel,
     onCloseViewPanel,
     onCloseFilterPanel,
+    onCloseAddCategoryPanel,
     handleFilterChange,
     handleFilterApply,
     handleFilterReset,
@@ -94,6 +95,9 @@ const RolesListPage: React.FC<RolesListPageProps> = memo(
           onApply={handleFilterApply}
           onReset={handleFilterReset}
         />
+        {addCategoryPanelOpen && (
+          <AddRoleCategoryPanel open={addCategoryPanelOpen} onClose={onCloseAddCategoryPanel} />
+        )}
       </div>
     );
   },

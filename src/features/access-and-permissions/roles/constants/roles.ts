@@ -18,6 +18,7 @@ export const ROLES_CONSTANTS = {
       ROLES: 'Roles',
       EDIT: 'Edit',
       CREATE: 'Create Role',
+      CATEGORIES: 'Categories',
     },
     MESSAGES: {
       CREATED: (name: string) => `Role "${name}" created`,
@@ -26,6 +27,8 @@ export const ROLES_CONSTANTS = {
       CREATE_FAILED: 'Failed to create role',
       UPDATE_FAILED: 'Failed to update role',
       DELETE_FAILED: 'Failed to delete role',
+      CATEGORY_CREATED: (name: string) => `Category "${name}" created`,
+      CATEGORY_CREATE_FAILED: 'Failed to create category',
     },
     COLUMNS: {
       ROLE_TITLE: 'Role Title',
@@ -79,11 +82,33 @@ export const ROLES_CONSTANTS = {
         SUBTITLE: '',
         SUBMIT_BUTTON: 'Create Role',
       },
+      ADD_CATEGORY: {
+        TITLE: 'Add Category',
+        SUBTITLE: 'Create a new role category',
+        SUBMIT_BUTTON: 'Create Category',
+        NAME_LABEL: 'Category Name',
+        NAME_PLACEHOLDER: 'e.g. Engineering, Operations',
+        NAME_REQUIRED_MESSAGE: 'Category name is required',
+        NAME_EMPTY_MESSAGE: 'Category name cannot be empty',
+        CANCEL: 'Cancel',
+      },
     },
     TOOLBAR: {
       SEARCH: { PLACEHOLDER: 'Search roles by name...', BUTTON_LABEL: 'Search' },
       FILTER: { BUTTON_LABEL: 'Filter' },
+      MANAGE_CATEGORIES: {
+        BUTTON_LABEL: 'Manage Categories',
+        VIEW_CATEGORIES: 'View Categories',
+        ADD_CATEGORY: 'Add Category',
+      },
       CREATE: { BUTTON_LABEL: 'Add Role' },
+    },
+    EMPTY: {
+      NO_ROLES_FOUND: 'No roles found',
+      NO_CATEGORIES_FOUND: 'No categories found',
+    },
+    PAGINATION: {
+      SHOW_ROWS: 'Show rows',
     },
   },
   KEYS: {
