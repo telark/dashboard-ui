@@ -7,7 +7,6 @@ import {
   ScopesAndPermissionsSection,
   ValiditySection,
   ProtectionSection,
-  AssignmentSection,
 } from '../sections';
 import { useRoleFormState } from '../../../hooks';
 import type { RoleFormValues, RoleFormProps } from '../../../models';
@@ -96,7 +95,6 @@ const RoleForm: React.FC<RoleFormProps> = ({
                   onManualChange={handleValuesChange}
                   initialValues={initialValues}
                 />
-                <AssignmentSection onManualChange={handleValuesChange} />
                 {!hideSubmitButton && (
                   <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                     <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
