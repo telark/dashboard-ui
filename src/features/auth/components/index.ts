@@ -15,7 +15,6 @@ export { default as PasskeyPanel } from './passkeys/panel/PasskeyPanel';
 
 // Passkeys Shared
 export { default as DeviceNameSuggestions } from './passkeys/shared/DeviceNameSuggestions';
-export { default as PasskeyFormModal } from './passkeys/shared/PasskeyFormModal';
 
 // Register
 export { RegisterForm } from './register/RegisterForm';

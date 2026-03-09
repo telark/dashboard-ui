@@ -59,15 +59,6 @@ export interface CreatePasskeyParams {
 }
 
 // Hook interfaces
-export interface PasskeyModalStateReturn {
-  isModalOpen: boolean;
-  isEditMode: boolean;
-  selectedPasskey: Passkey | null;
-  openCreateModal: () => void;
-  openEditModal: (passkey: Passkey) => void;
-  closeModal: () => void;
-}
-
 export interface PasskeyActionsReturn {
   submitting: boolean;
   handleEdit: (record: Passkey) => void;
@@ -102,15 +93,4 @@ export interface ValidateDeviceNameOptions {
   existingPasskeys: Passkey[];
   isEditMode?: boolean;
   currentDeviceName?: string;
-}
-
-// Component interfaces
-export interface PasskeyFormModalProps {
-  open: boolean;
-  isEditMode: boolean;
-  selectedPasskey: Passkey | null;
-  passkeys: Passkey[];
-  submitting: boolean;
-  onCancel: () => void;
-  onSubmit: (values: Record<string, any>) => Promise<void>;
 }
