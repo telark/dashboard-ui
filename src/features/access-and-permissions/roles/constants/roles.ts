@@ -31,7 +31,7 @@ export const ROLES_CONSTANTS = {
       ROLE_TITLE: 'Role Title',
       TYPE: 'Type',
       PERMISSIONS: 'Permissions',
-      CREATED: 'Created',
+      CREATED: 'Creation Date',
       CREATED_BY: 'Created By',
       LAST_UPDATE: 'Last Update',
       VALIDITY: 'Validity',
