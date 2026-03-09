@@ -1,11 +1,8 @@
 import React, { useMemo } from 'react';
-import { Card } from 'antd';
-import { COMPONENT_STYLES } from '../../../../../constants/layout/ui';
-import { createRoleViewConfig } from '../../config';
-import DetailsView from '../../../../../components/display/views/DetailsView';
-import ScopesPermissions from '../../components/display/view/ScopesPermissions';
+import ViewPanel from '../../../../../components/display/panels/view/ViewPanel';
+import { useViewRolePanelData } from '../../hooks';
+import RoleScopesView from '../../components/display/view/RoleScopesView';
 import { convertScopesFromAPI } from '../../utils';
-import AnimationWrapper from '../../../../../components/display/panels/slide-out/AnimationWrapper';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import type { Role } from '../../models';
 
@@ -22,35 +19,32 @@ const ViewRolePanel: React.FC<ViewRolePanelProps> = ({
   role,
   onEdit,
 }) => {
-  const config = useMemo(
-    () => (role ? createRoleViewConfig(role) : { fields: [] }),
-    [role],
-  );
+  const { details, name, description } = useViewRolePanelData({ role });
+
   const scopesRecord = useMemo(
     () => (role ? convertScopesFromAPI(role.scopesAndPermissions ?? []) : {}),
     [role],
   );
 
+  const extraContent = useMemo(() => {
+    if (Object.keys(scopesRecord).length === 0) return null;
+    return <RoleScopesView scopes={scopesRecord} />;
+  }, [scopesRecord]);
+
   if (!role) return null;
 
   return (
-    <AnimationWrapper
+    <ViewPanel
       open={open}
       onClose={onClose}
       title={RC.LABELS.PANELS.VIEW.TITLE}
-      width={560}
-      toolbarActions={{ onEdit }}
-    >
-      <div style={{ overflow: 'auto', flex: 1 }}>
-        <DetailsView config={config} />
-        <Card
-          style={{ ...COMPONENT_STYLES.VIEW_DETAILS.card, marginTop: 24 }}
-          styles={{ body: COMPONENT_STYLES.VIEW_DETAILS.cardBody }}
-        >
-          <ScopesPermissions scopes={scopesRecord} />
-        </Card>
-      </div>
-    </AnimationWrapper>
+      name={name}
+      description={description}
+      details={details}
+      extraContent={extraContent}
+      width={520}
+      actions={{ onEdit }}
+    />
   );
 };
 

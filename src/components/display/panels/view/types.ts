@@ -27,13 +27,14 @@ export interface ViewPanelProps {
   open: boolean;
   onClose: () => void;
   title: string;
-  icon: ReactNode;
+  icon?: ReactNode;
   name: string;
   description?: string;
   avatars?: ViewAvatar[];
   overflowItems?: ViewOverflowItem[];
   width?: number;
   details?: ViewDetailRow[];
+  extraContent?: ReactNode;
   actions?: ViewPanelActions;
 }
 
@@ -42,7 +43,7 @@ export interface ViewPanelDetailsProps {
 }
 
 export interface ViewPanelHeaderProps {
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   name: string;
   description?: string;
   avatars?: ViewAvatar[];

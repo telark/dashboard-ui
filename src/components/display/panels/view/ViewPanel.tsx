@@ -17,6 +17,7 @@ const ViewPanel: React.FC<ViewPanelProps> = ({
   overflowItems = [],
   width = DEFAULT_WIDTH,
   details = [],
+  extraContent,
   actions,
 }) => {
   return (
@@ -36,6 +37,7 @@ const ViewPanel: React.FC<ViewPanelProps> = ({
           overflowItems={overflowItems}
         />
         <ViewPanelDetails details={details} />
+        {extraContent}
       </div>
     </AnimationWrapper>
   );

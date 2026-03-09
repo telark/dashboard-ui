@@ -53,6 +53,13 @@ export const ROLES_CONSTANTS = {
     DELETE_MODAL_OK: 'Delete',
     NO_ROLES_TITLE: 'No roles yet',
     NO_ROLES_DESCRIPTION: 'Get started by creating your first role.',
+    VIEW_LABELS: {
+      STATUS: 'Status',
+      TYPE: 'Type',
+      CATEGORY: 'Category',
+      CREATION_DATE: 'Creation Date',
+      LAST_UPDATE: 'Last Update',
+    },
     PANELS: {
       VIEW: { TITLE: 'Role Details' },
       EDIT: {
@@ -190,6 +197,7 @@ export const ROLES_CONSTANTS = {
       BLOCK_CERTAIN_RULES: 'Block certain rules',
       DENY_LABEL: 'Deny Rules',
       DENY_PLACEHOLDER: 'Enter denied actions (comma-separated)',
+      VIEW_DENIED_TOOLTIP: 'Click to view denied rules',
     },
   },
   STATUS: { ACTIVE: 'Active', INACTIVE: 'Inactive' },
