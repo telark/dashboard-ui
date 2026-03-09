@@ -86,7 +86,7 @@ const CreateRolePanel: React.FC<CreateRolePanelProps> = ({ open, onClose, form }
       subtitle={RC.LABELS.PANELS.CREATE.SUBTITLE}
       width={720}
     >
-      <div style={{ padding: 24, overflow: 'auto', flex: 1 }}>
+      <div style={{ overflow: 'auto', flex: 1 }}>
         <RoleForm
           form={form}
           initialValues={initialValues}

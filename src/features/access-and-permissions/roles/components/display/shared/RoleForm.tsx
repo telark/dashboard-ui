@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { Form } from 'antd';
 import { PrimaryButton } from '../../../../../../components/display/buttons';
 import { BUTTON_TEXTS, Icons } from '../../../../../../constants';
-import { COMPONENT_STYLES } from '../../../../../../constants/layout/ui';
 import {
   GeneralSection,
   ScopesAndPermissionsSection,
@@ -40,13 +39,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
   }, [submitting, isEditMode, hasChanges, hasFormErrors]);
 
   const formContent = (
-    <div
-      style={{
-        ...COMPONENT_STYLES.WORKLOAD_INSTANCES.containerCard,
-        padding: 16,
-        width: '100%',
-      }}
-    >
+    <div style={{ width: '100%' }}>
       <Form<RoleFormValues>
         layout="vertical"
         form={form}
@@ -88,35 +81,22 @@ const RoleForm: React.FC<RoleFormProps> = ({
                   width: '100%',
                 }}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: 24,
-                    alignItems: 'flex-start',
-                    width: '100%',
-                  }}
-                >
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
-                    <GeneralSection
-                      roles={roles}
-                      isEditMode={isEditMode}
-                      currentName={currentName}
-                      lockName={lockName}
-                      lockCategory={lockCategory}
-                      onManualChange={handleValuesChange}
-                    />
-                    <ValiditySection />
-                    <ProtectionSection onManualChange={handleValuesChange} />
-                  </div>
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 18 }}>
-                    <ScopesAndPermissionsSection
-                      isLocked={preventScopeChanges}
-                      onManualChange={handleValuesChange}
-                      initialValues={initialValues}
-                    />
-                    <AssignmentSection onManualChange={handleValuesChange} />
-                  </div>
-                </div>
+                <GeneralSection
+                  roles={roles}
+                  isEditMode={isEditMode}
+                  currentName={currentName}
+                  lockName={lockName}
+                  lockCategory={lockCategory}
+                  onManualChange={handleValuesChange}
+                />
+                <ValiditySection />
+                <ProtectionSection onManualChange={handleValuesChange} />
+                <ScopesAndPermissionsSection
+                  isLocked={preventScopeChanges}
+                  onManualChange={handleValuesChange}
+                  initialValues={initialValues}
+                />
+                <AssignmentSection onManualChange={handleValuesChange} />
                 {!hideSubmitButton && (
                   <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                     <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>

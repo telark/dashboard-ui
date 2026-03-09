@@ -41,7 +41,7 @@ const ViewRolePanel: React.FC<ViewRolePanelProps> = ({
       width={560}
       toolbarActions={{ onEdit }}
     >
-      <div style={{ padding: 24, overflow: 'auto', flex: 1 }}>
+      <div style={{ overflow: 'auto', flex: 1 }}>
         <DetailsView config={config} />
         <Card
           style={{ ...COMPONENT_STYLES.VIEW_DETAILS.card, marginTop: 24 }}

@@ -73,7 +73,7 @@ const EditRolePanel: React.FC<EditRolePanelProps> = ({
       subtitle={RC.LABELS.PANELS.EDIT.SUBTITLE(editingRole.name)}
       width={720}
     >
-      <div style={{ padding: 24, overflow: 'auto', flex: 1 }}>
+      <div style={{ overflow: 'auto', flex: 1 }}>
         <RoleForm
           form={form}
           initialValues={initialValues}

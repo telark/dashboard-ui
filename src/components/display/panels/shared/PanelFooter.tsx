@@ -23,7 +23,7 @@ const PanelFooter: React.FC<PanelFooterProps> = ({
   primaryLoading = false,
   primaryIcon,
   primaryLoadingLabel,
-  horizontalPadding = 32,
+  horizontalPadding = 24,
 }) => {
   const footerStyle: React.CSSProperties = {
     ...SLIDE_OUT.FOOTER,
