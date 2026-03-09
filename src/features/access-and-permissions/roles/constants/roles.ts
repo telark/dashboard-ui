@@ -63,7 +63,6 @@ export const ROLES_CONSTANTS = {
       CREATED_BY: 'Created By',
       LAST_UPDATED_BY: 'Last Updated By',
       VALIDITY: 'Validity',
-      PROTECTION: 'Protection',
     },
     PANELS: {
       VIEW: { TITLE: 'Role Details' },

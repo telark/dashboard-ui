@@ -28,19 +28,6 @@ const valueStyle = {
   color: DEFAULT_COLORS.TEXT_PRIMARY,
 } as const;
 
-const getProtectionSummary = (role: Role): string => {
-  const p = role.protection;
-  if (!p) return 'None';
-  const labels: string[] = [];
-  if (p.preventDeletion) labels.push(RC.PROTECTION.PREVENT_DELETION_LABEL);
-  if (p.preventModification) labels.push(RC.PROTECTION.PREVENT_MODIFICATION_LABEL);
-  if (p.preventScopeChanges) labels.push(RC.PROTECTION.PREVENT_SCOPE_CHANGES_LABEL);
-  if (p.lockName) labels.push(RC.PROTECTION.LOCK_NAME_LABEL);
-  if (p.lockCategory) labels.push(RC.PROTECTION.LOCK_CATEGORY_LABEL);
-  if (p.softDelete) labels.push(RC.PROTECTION.SOFT_DELETE_LABEL);
-  return labels.length > 0 ? labels.join(', ') : 'None';
-};
-
 export const useViewRolePanelData = ({
   role,
 }: UseViewRolePanelDataOptions): UseViewRolePanelDataReturn => {
@@ -153,12 +140,6 @@ export const useViewRolePanelData = ({
           <span style={valueStyle}>
             <ValidityDisplay validity={role.validity} record={role} />
           </span>
-        ),
-      },
-      {
-        label: RC.LABELS.VIEW_LABELS.PROTECTION,
-        value: (
-          <span style={valueStyle}>{getProtectionSummary(role)}</span>
         ),
       },
     ];

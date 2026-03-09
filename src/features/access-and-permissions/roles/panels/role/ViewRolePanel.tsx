@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import ViewPanel from '../../../../../components/display/panels/view/ViewPanel';
 import { useViewRolePanelData } from '../../hooks';
+import RoleProtectionView from '../../components/display/view/RoleProtectionView';
 import RoleScopesView from '../../components/display/view/RoleScopesView';
 import { convertScopesFromAPI } from '../../utils';
 import { ROLES_CONSTANTS as RC } from '../../constants';
@@ -26,10 +27,17 @@ const ViewRolePanel: React.FC<ViewRolePanelProps> = ({
     [role],
   );
 
-  const extraContent = useMemo(() => {
-    if (Object.keys(scopesRecord).length === 0) return null;
-    return <RoleScopesView scopes={scopesRecord} />;
-  }, [scopesRecord]);
+  const extraContent = useMemo(
+    () => (
+      <>
+        <RoleProtectionView role={role} />
+        {Object.keys(scopesRecord).length > 0 && (
+          <RoleScopesView scopes={scopesRecord} />
+        )}
+      </>
+    ),
+    [role, scopesRecord],
+  );
 
   if (!role) return null;
 
