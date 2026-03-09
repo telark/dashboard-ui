@@ -4,8 +4,7 @@ import Section from '../../../../../../../components/display/sections/Section';
 import { LabeledInput } from '../../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import type { RolesGeneralSectionProps } from '../../../../models';
-import { useRoleCategories } from '../../../../hooks';
-import { useNameValidation } from '../../../../hooks/useNameValidation';
+import { useRoleCategories, useNameValidation } from '../../../../hooks';
 import { FieldChangeWatcher } from './FieldChangeWatcher';
 
 const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(

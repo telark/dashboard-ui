@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
-import { useCategories } from '../../categories/hooks';
-import { CATEGORIES_CONSTANTS } from '../../categories/constants';
-import { deduplicateCategoriesByName } from '../../categories/utils/helpers';
-import { mapCategoriesToOptions } from '../../categories/utils';
+import { useCategories } from '../../../categories/hooks';
+import { CATEGORIES_CONSTANTS } from '../../../categories/constants';
+import { deduplicateCategoriesByName } from '../../../categories/utils/helpers';
+import { mapCategoriesToOptions } from '../../../categories/utils';
 
 export const useRoleCategories = () => {
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.ROLES);

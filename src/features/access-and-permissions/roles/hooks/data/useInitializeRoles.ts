@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { initializeBuiltInRoles } from '../utils';
-import { ROLES_CONSTANTS } from '../constants';
-import logger from '../../../../logging';
+import { initializeBuiltInRoles } from '../../utils';
+import { ROLES_CONSTANTS } from '../../constants';
+import logger from '../../../../../logging';
 
 export const useInitializeRoles = (isAuthenticated: boolean): void => {
   const initializedRef = useRef(false);

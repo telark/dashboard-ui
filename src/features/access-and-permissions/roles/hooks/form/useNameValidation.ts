@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
-import { createNameValidator, sanitizeName, DEFAULT_NAME_VALIDATION_CONFIG } from '../../../shared';
-import { ROLES_CONSTANTS as RPC } from '../constants';
-import type { Role } from '../models';
+import {
+  createNameValidator,
+  sanitizeName,
+  DEFAULT_NAME_VALIDATION_CONFIG,
+} from '../../../../shared';
+import { ROLES_CONSTANTS as RPC } from '../../constants';
+import type { Role } from '../../models';
 
 interface UseNameValidationOptions {
   roles: Role[];
