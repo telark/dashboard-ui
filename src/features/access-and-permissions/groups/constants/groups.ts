@@ -21,6 +21,12 @@ export const GROUPS_CONSTANTS = {
       CREATE_FAILED: 'Failed to create group',
       UPDATE_FAILED: 'Failed to update group',
       DELETE_FAILED: 'Failed to delete group',
+      CATEGORY_CREATED: (name: string) => `Category "${name}" created`,
+      CATEGORY_CREATE_FAILED: 'Failed to create category',
+      CATEGORY_UPDATED: (name: string) => `Category "${name}" updated`,
+      CATEGORY_UPDATE_FAILED: 'Failed to update category',
+      CATEGORY_DELETED: 'Category deleted successfully',
+      CATEGORY_DELETE_FAILED: 'Failed to delete category',
       NO_GROUPS_TITLE: 'No groups yet',
       NO_GROUPS_DESCRIPTION:
         'Get started by creating your first group. Groups help you organize and manage users with similar roles and permissions.',
@@ -110,6 +116,31 @@ export const GROUPS_CONSTANTS = {
       EDIT: {
         TITLE: 'Edit Group',
       },
+      ADD_CATEGORY: {
+        TITLE: 'Add Category',
+        SUBTITLE: 'Create a new group category',
+        SUBMIT_BUTTON: 'Create Category',
+        NAME_LABEL: 'Category Name',
+        NAME_PLACEHOLDER: 'e.g. Engineering, Operations',
+        NAME_REQUIRED_MESSAGE: 'Category name is required',
+        NAME_EMPTY_MESSAGE: 'Category name cannot be empty',
+        NAME_EXISTS_MESSAGE: 'A category with this name already exists',
+        CANCEL: 'Cancel',
+      },
+      EDIT_CATEGORY: {
+        TITLE: 'Edit Category',
+        SUBMIT_BUTTON: 'Update Category',
+        NAME_LABEL: 'Category Name',
+        NAME_PLACEHOLDER: 'e.g. Engineering, Operations',
+        NAME_REQUIRED_MESSAGE: 'Category name is required',
+        NAME_EMPTY_MESSAGE: 'Category name cannot be empty',
+        NAME_EXISTS_MESSAGE: 'A category with this name already exists',
+        CANCEL: 'Cancel',
+      },
+      DELETE_CATEGORY: {
+        MODAL_TITLE: 'Delete Category',
+        MODAL_OK: 'Delete',
+      },
       ATTACH_ROLES: {
         TITLE: 'Manage Roles',
         SUBTITLE: (groupName: string) => `View and manage roles for ${groupName}`,
@@ -176,6 +207,7 @@ export const GROUPS_CONSTANTS = {
     },
     EMPTY: {
       NO_GROUPS_FOUND: 'No Groups Found',
+      NO_CATEGORIES_FOUND: 'No categories found',
     },
     PAGINATION: {
       SHOW_ROWS: 'Show rows',

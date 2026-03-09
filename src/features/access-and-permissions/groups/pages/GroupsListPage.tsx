@@ -6,6 +6,8 @@ import {
   ViewGroupPanel,
   AttachRolePanel,
   AttachMemberPanel,
+  AddGroupCategoryPanel,
+  EditGroupCategoryPanel,
 } from '../panels';
 import ActionConfirmModal from '../../../../components/display/modal/confirm/ActionConfirmModal';
 import { FilterPanel } from '../../../../components/display/panels/filter';
@@ -35,7 +37,12 @@ interface GroupsListPageProps {
   bulkDeleteModalOpen: boolean;
   selectedCount: number;
   isDeleting: boolean;
+  addCategoryPanelOpen: boolean;
+  editCategoryPanelOpen: boolean;
+  editingCategory: Category | null;
   onCloseCreatePanel: () => void;
+  onCloseAddCategoryPanel: () => void;
+  onCloseEditCategoryPanel: () => void;
   onCloseEditPanel: () => void;
   onCloseViewPanel: () => void;
   onCloseAttachRolePanel: () => void;
@@ -68,7 +75,12 @@ const GroupsListPage: React.FC<GroupsListPageProps> = memo(
     bulkDeleteModalOpen,
     selectedCount,
     isDeleting,
+    addCategoryPanelOpen,
+    editCategoryPanelOpen,
+    editingCategory,
     onCloseCreatePanel,
+    onCloseAddCategoryPanel,
+    onCloseEditCategoryPanel,
     onCloseEditPanel,
     onCloseViewPanel,
     onCloseAttachRolePanel,
@@ -105,6 +117,16 @@ const GroupsListPage: React.FC<GroupsListPageProps> = memo(
             onClose={onCloseEditPanel}
             editingGroup={editingGroup}
             form={editForm}
+          />
+        )}
+        {addCategoryPanelOpen && (
+          <AddGroupCategoryPanel open={addCategoryPanelOpen} onClose={onCloseAddCategoryPanel} />
+        )}
+        {editCategoryPanelOpen && (
+          <EditGroupCategoryPanel
+            open={editCategoryPanelOpen}
+            onClose={onCloseEditCategoryPanel}
+            editingCategory={editingCategory}
           />
         )}
         {viewPanelOpen && viewingGroup && (
