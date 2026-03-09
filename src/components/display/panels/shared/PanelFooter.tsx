@@ -27,12 +27,10 @@ const PanelFooter: React.FC<PanelFooterProps> = ({
 }) => {
   const footerStyle: React.CSSProperties = {
     ...SLIDE_OUT.FOOTER,
-    alignItems: 'center',
-    paddingTop: 12,
-    paddingBottom: 12,
+    paddingTop: 6,
+    paddingBottom: 6,
     paddingLeft: horizontalPadding,
     paddingRight: horizontalPadding,
-    marginTop: 16,
   };
 
   return (
@@ -57,6 +55,7 @@ const PanelFooter: React.FC<PanelFooterProps> = ({
         loadingLabel={primaryLoadingLabel || primaryLabel}
         icon={primaryIcon}
         disabled={primaryDisabled || !onPrimary}
+        style={{ minHeight: 32, height: 32, paddingTop: 0, paddingBottom: 0 }}
       />
     </div>
   );
