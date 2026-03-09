@@ -115,6 +115,7 @@ const CreateRolePanel: React.FC<CreateRolePanelProps> = ({ open, onClose, form }
         primaryLoading={submitting}
         primaryIcon={<RoleIcon size={16} />}
         primaryLoadingLabel="Creating..."
+        horizontalPadding={0}
       />
     </AnimationWrapper>
   );

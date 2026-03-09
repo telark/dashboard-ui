@@ -27,11 +27,12 @@ const PanelFooter: React.FC<PanelFooterProps> = ({
 }) => {
   const footerStyle: React.CSSProperties = {
     ...SLIDE_OUT.FOOTER,
-    paddingTop: 24,
+    alignItems: 'center',
+    paddingTop: 12,
+    paddingBottom: 12,
     paddingLeft: horizontalPadding,
     paddingRight: horizontalPadding,
-    paddingBottom: 0,
-    marginTop: 'auto',
+    marginTop: 16,
   };
 
   return (

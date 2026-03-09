@@ -103,6 +103,7 @@ const EditRolePanel: React.FC<EditRolePanelProps> = ({
         primaryLoading={isSubmittingCombined}
         primaryIcon={<RoleIcon size={16} />}
         primaryLoadingLabel="Updating..."
+        horizontalPadding={0}
       />
     </AnimationWrapper>
   );
