@@ -54,6 +54,13 @@ export const CATEGORIES_CONSTANTS = {
         CANCEL: 'Cancel',
       },
     },
+    TOOLBAR: {
+      MANAGE_CATEGORIES: {
+        BUTTON_LABEL: 'Manage Categories',
+        VIEW_CATEGORIES: 'View Categories',
+        ADD_CATEGORY: 'Add Category',
+      },
+    },
   },
   KEYS: {
     NAME: 'name',

@@ -84,11 +84,6 @@ export const ROLES_CONSTANTS = {
     TOOLBAR: {
       SEARCH: { PLACEHOLDER: 'Search roles by name...', BUTTON_LABEL: 'Search' },
       FILTER: { BUTTON_LABEL: 'Filter' },
-      MANAGE_CATEGORIES: {
-        BUTTON_LABEL: 'Manage Categories',
-        VIEW_CATEGORIES: 'View Categories',
-        ADD_CATEGORY: 'Add Category',
-      },
       CREATE: { BUTTON_LABEL: 'Add Role' },
     },
     EMPTY: {

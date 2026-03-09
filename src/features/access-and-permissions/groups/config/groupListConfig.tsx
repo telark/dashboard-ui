@@ -1,10 +1,10 @@
 import React from 'react';
 import { Icons } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
+import { getManageCategoriesButtonConfig } from '../../categories/config';
+import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import {
   SearchOutlined,
-  TagOutlined,
-  EyeOutlined,
   PlusOutlined,
   FilterOutlined,
   DeleteOutlined,
@@ -61,7 +61,7 @@ export const useGroupListConfig = ({
         ? [
             {
               key: 'add-category',
-              label: GC.LABELS.TOOLBAR.MANAGE_CATEGORIES.ADD_CATEGORY,
+              label: CATEGORIES_CONSTANTS.LABELS.TOOLBAR.MANAGE_CATEGORIES.ADD_CATEGORY,
               icon: <PlusOutlined />,
               variant: 'primary' as const,
               onClick: () => onAddCategoryClick?.(),
@@ -89,33 +89,10 @@ export const useGroupListConfig = ({
               disabled: selectedGroupsCount < 2,
               onClick: () => onBulkDeleteClick?.(),
             },
-            {
-              key: 'manage-categories',
-              label: GC.LABELS.TOOLBAR.MANAGE_CATEGORIES.BUTTON_LABEL,
-              icon: <TagOutlined />,
-              variant: 'default' as const,
-              dropdown: {
-                items: [
-                  {
-                    key: 'view-categories',
-                    label: GC.LABELS.TOOLBAR.MANAGE_CATEGORIES.VIEW_CATEGORIES,
-                    icon: <EyeOutlined />,
-                  },
-                  {
-                    key: 'add-category',
-                    label: GC.LABELS.TOOLBAR.MANAGE_CATEGORIES.ADD_CATEGORY,
-                    icon: <PlusOutlined />,
-                  },
-                ],
-                onItemClick: (key: string) => {
-                  if (key === 'view-categories') {
-                    onViewModeChange?.('categories');
-                  } else if (key === 'add-category') {
-                    onAddCategoryClick?.();
-                  }
-                },
-              },
-            },
+            getManageCategoriesButtonConfig({
+              onViewCategories: () => onViewModeChange?.('categories'),
+              onAddCategory: () => onAddCategoryClick?.(),
+            }),
             {
               key: 'manage-assignments',
               label: GC.LABELS.TOOLBAR.MANAGE.BUTTON_LABEL,

@@ -1,13 +1,9 @@
 import React from 'react';
 import { ROLES_CONSTANTS as RC } from '../constants';
 import { Icons } from '../../../../constants';
-import {
-  SearchOutlined,
-  FilterOutlined,
-  TagOutlined,
-  EyeOutlined,
-  PlusOutlined,
-} from '@ant-design/icons';
+import { getManageCategoriesButtonConfig } from '../../categories/config';
+import { CATEGORIES_CONSTANTS } from '../../categories/constants';
+import { SearchOutlined, FilterOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 
 const RoleIcon = Icons.Role;
@@ -51,7 +47,7 @@ export const useRoleListConfig = ({
         ? [
             {
               key: 'add-category',
-              label: RC.LABELS.TOOLBAR.MANAGE_CATEGORIES.ADD_CATEGORY,
+              label: CATEGORIES_CONSTANTS.LABELS.TOOLBAR.MANAGE_CATEGORIES.ADD_CATEGORY,
               icon: <PlusOutlined />,
               variant: 'primary' as const,
               onClick: () => onAddCategoryClick?.(),
@@ -71,33 +67,10 @@ export const useRoleListConfig = ({
               variant: 'ghost' as const,
               onClick: () => onFilterClick?.(),
             },
-            {
-              key: 'manage-categories',
-              label: RC.LABELS.TOOLBAR.MANAGE_CATEGORIES.BUTTON_LABEL,
-              icon: <TagOutlined />,
-              variant: 'default' as const,
-              dropdown: {
-                items: [
-                  {
-                    key: 'view-categories',
-                    label: RC.LABELS.TOOLBAR.MANAGE_CATEGORIES.VIEW_CATEGORIES,
-                    icon: <EyeOutlined />,
-                  },
-                  {
-                    key: 'add-category',
-                    label: RC.LABELS.TOOLBAR.MANAGE_CATEGORIES.ADD_CATEGORY,
-                    icon: <PlusOutlined />,
-                  },
-                ],
-                onItemClick: (key: string) => {
-                  if (key === 'view-categories') {
-                    onViewModeChange?.('categories');
-                  } else if (key === 'add-category') {
-                    onAddCategoryClick?.();
-                  }
-                },
-              },
-            },
+            getManageCategoriesButtonConfig({
+              onViewCategories: () => onViewModeChange?.('categories'),
+              onAddCategory: () => onAddCategoryClick?.(),
+            }),
             {
               key: 'create-role',
               label: RC.LABELS.TOOLBAR.CREATE.BUTTON_LABEL,

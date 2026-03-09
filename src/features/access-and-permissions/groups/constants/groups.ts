@@ -165,11 +165,6 @@ export const GROUPS_CONSTANTS = {
       FILTER: {
         BUTTON_LABEL: 'Filter',
       },
-      MANAGE_CATEGORIES: {
-        BUTTON_LABEL: 'Manage Categories',
-        VIEW_CATEGORIES: 'View Categories',
-        ADD_CATEGORY: 'Add Category',
-      },
       MANAGE: {
         BUTTON_LABEL: 'Manage',
       },
