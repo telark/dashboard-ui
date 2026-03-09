@@ -29,78 +29,88 @@ export const useRoleListConfig = ({
   onFilterClick,
   onAddCategoryClick,
 }: UseRoleListConfigProps) => {
-  const toolbarConfig: ToolbarConfig = React.useMemo(
-    () => ({
-      search: {
-        placeholder: RC.LABELS.TOOLBAR.SEARCH.PLACEHOLDER,
-        value: searchValue,
-        onChange: onSearchChange,
-        onSubmit: onSearchSubmit,
-      },
-      buttons: [
-        {
-          key: 'search',
-          label: RC.LABELS.TOOLBAR.SEARCH.BUTTON_LABEL,
-          icon: <SearchOutlined />,
-          variant: 'ghost',
-        },
-        {
-          key: 'filter',
-          label: RC.LABELS.TOOLBAR.FILTER.BUTTON_LABEL,
-          icon: <FilterOutlined />,
-          variant: 'ghost',
-          onClick: () => onFilterClick?.(),
-        },
-        {
-          key: 'manage-categories',
-          label: RC.LABELS.TOOLBAR.MANAGE_CATEGORIES.BUTTON_LABEL,
-          icon: <AppstoreOutlined />,
-          variant: 'default',
-          dropdown: {
-            items: [
-              {
-                key: 'view-categories',
-                label:
-                  viewMode === 'categories'
-                    ? RC.LABELS.HEADER_TITLE
-                    : RC.LABELS.TOOLBAR.MANAGE_CATEGORIES.VIEW_CATEGORIES,
-                icon: <AppstoreOutlined />,
-              },
-              {
-                key: 'add-category',
-                label: RC.LABELS.TOOLBAR.MANAGE_CATEGORIES.ADD_CATEGORY,
-                icon: <PlusOutlined />,
-              },
-            ],
-            onItemClick: (key: string) => {
-              if (key === 'view-categories') {
-                onViewModeChange?.(viewMode === 'categories' ? 'roles' : 'categories');
-              } else if (key === 'add-category') {
-                onAddCategoryClick?.();
-              }
-            },
+  const toolbarConfig: ToolbarConfig = React.useMemo(() => {
+    const isCategoriesView = viewMode === 'categories';
+
+    return {
+      search: isCategoriesView
+        ? undefined
+        : {
+            placeholder: RC.LABELS.TOOLBAR.SEARCH.PLACEHOLDER,
+            value: searchValue,
+            onChange: onSearchChange,
+            onSubmit: onSearchSubmit,
           },
-        },
-        {
-          key: 'create-role',
-          label: RC.LABELS.TOOLBAR.CREATE.BUTTON_LABEL,
-          icon: <RoleIcon size={14} />,
-          variant: 'primary',
-          onClick: onCreateRoleClick,
-        },
-      ],
-    }),
-    [
-      viewMode,
-      searchValue,
-      onSearchChange,
-      onSearchSubmit,
-      onCreateRoleClick,
-      onFilterClick,
-      onViewModeChange,
-      onAddCategoryClick,
-    ],
-  );
+      buttons: isCategoriesView
+        ? [
+            {
+              key: 'add-category',
+              label: RC.LABELS.TOOLBAR.MANAGE_CATEGORIES.ADD_CATEGORY,
+              icon: <PlusOutlined />,
+              variant: 'primary' as const,
+              onClick: () => onAddCategoryClick?.(),
+            },
+          ]
+        : [
+            {
+              key: 'search',
+              label: RC.LABELS.TOOLBAR.SEARCH.BUTTON_LABEL,
+              icon: <SearchOutlined />,
+              variant: 'ghost' as const,
+            },
+            {
+              key: 'filter',
+              label: RC.LABELS.TOOLBAR.FILTER.BUTTON_LABEL,
+              icon: <FilterOutlined />,
+              variant: 'ghost' as const,
+              onClick: () => onFilterClick?.(),
+            },
+            {
+              key: 'manage-categories',
+              label: RC.LABELS.TOOLBAR.MANAGE_CATEGORIES.BUTTON_LABEL,
+              icon: <AppstoreOutlined />,
+              variant: 'default' as const,
+              dropdown: {
+                items: [
+                  {
+                    key: 'view-categories',
+                    label: RC.LABELS.TOOLBAR.MANAGE_CATEGORIES.VIEW_CATEGORIES,
+                    icon: <AppstoreOutlined />,
+                  },
+                  {
+                    key: 'add-category',
+                    label: RC.LABELS.TOOLBAR.MANAGE_CATEGORIES.ADD_CATEGORY,
+                    icon: <PlusOutlined />,
+                  },
+                ],
+                onItemClick: (key: string) => {
+                  if (key === 'view-categories') {
+                    onViewModeChange?.('categories');
+                  } else if (key === 'add-category') {
+                    onAddCategoryClick?.();
+                  }
+                },
+              },
+            },
+            {
+              key: 'create-role',
+              label: RC.LABELS.TOOLBAR.CREATE.BUTTON_LABEL,
+              icon: <RoleIcon size={14} />,
+              variant: 'primary' as const,
+              onClick: onCreateRoleClick,
+            },
+          ],
+    };
+  }, [
+    viewMode,
+    searchValue,
+    onSearchChange,
+    onSearchSubmit,
+    onCreateRoleClick,
+    onFilterClick,
+    onViewModeChange,
+    onAddCategoryClick,
+  ]);
 
   return { toolbarConfig };
 };

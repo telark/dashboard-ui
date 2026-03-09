@@ -1,10 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Form, Input, message } from 'antd';
 import { useDispatch } from 'react-redux';
 import AnimationWrapper from '../../../../../components/display/panels/slide-out/AnimationWrapper';
 import { PanelFooter } from '../../../../../components/display/panels/shared';
 import { createCategory } from '../../../categories/clients';
 import { fetchCategoriesByScopeThunk } from '../../../categories/store';
+import { useCategories } from '../../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../../categories/constants';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import type { AppDispatch } from '../../../../../store';
@@ -24,6 +25,17 @@ const AddRoleCategoryPanel: React.FC<AddRoleCategoryPanelProps> = ({ open, onClo
   const [form] = Form.useForm<FormValues>();
   const dispatch: AppDispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
+
+  const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.ROLES);
+  const existingNames = useMemo(
+    () => new Set((categories ?? []).map((c) => c.name.toLowerCase())),
+    [categories],
+  );
+
+  const nameValue = Form.useWatch('name', form);
+  const trimmedName = nameValue?.trim() ?? '';
+  const nameExists = Boolean(trimmedName && existingNames.has(trimmedName.toLowerCase()));
+  const isNameValid = Boolean(trimmedName) && !nameExists;
 
   const handleSubmit = useCallback(async () => {
     try {
@@ -58,31 +70,51 @@ const AddRoleCategoryPanel: React.FC<AddRoleCategoryPanelProps> = ({ open, onClo
       title={RC.LABELS.PANELS.ADD_CATEGORY.TITLE}
       width={PANEL_WIDTH}
     >
-      <Form
-        form={form}
-        layout="vertical"
-        style={{ padding: 24 }}
-        initialValues={{ name: '' }}
+      <div
+        style={{
+          height: '100%',
+          minHeight: 0,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
       >
-        <Form.Item
-          name="name"
-          label={RC.LABELS.PANELS.ADD_CATEGORY.NAME_LABEL}
-          rules={[
-            { required: true, message: RC.LABELS.PANELS.ADD_CATEGORY.NAME_REQUIRED_MESSAGE },
-            { whitespace: true, message: RC.LABELS.PANELS.ADD_CATEGORY.NAME_EMPTY_MESSAGE },
-          ]}
-        >
-          <Input placeholder={RC.LABELS.PANELS.ADD_CATEGORY.NAME_PLACEHOLDER} allowClear />
-        </Form.Item>
-      </Form>
-      <PanelFooter
-        onCancel={handleCancel}
-        onPrimary={handleSubmit}
-        cancelLabel={RC.LABELS.PANELS.ADD_CATEGORY.CANCEL}
-        primaryLabel={RC.LABELS.PANELS.ADD_CATEGORY.SUBMIT_BUTTON}
-        primaryLoading={submitting}
-        primaryDisabled={submitting}
-      />
+        <div style={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
+          <Form form={form} layout="vertical" initialValues={{ name: '' }}>
+            <Form.Item
+              name="name"
+              label={RC.LABELS.PANELS.ADD_CATEGORY.NAME_LABEL}
+              rules={[
+                { required: true, message: RC.LABELS.PANELS.ADD_CATEGORY.NAME_REQUIRED_MESSAGE },
+                { whitespace: true, message: RC.LABELS.PANELS.ADD_CATEGORY.NAME_EMPTY_MESSAGE },
+                {
+                  validator: (_, value) => {
+                    const trimmed = value?.trim();
+                    if (!trimmed) return Promise.resolve();
+                    if (existingNames.has(trimmed.toLowerCase())) {
+                      return Promise.reject(
+                        new Error(RC.LABELS.PANELS.ADD_CATEGORY.NAME_EXISTS_MESSAGE),
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                  validateTrigger: 'onChange',
+                },
+              ]}
+            >
+              <Input placeholder={RC.LABELS.PANELS.ADD_CATEGORY.NAME_PLACEHOLDER} allowClear />
+            </Form.Item>
+          </Form>
+        </div>
+        <PanelFooter
+          onCancel={handleCancel}
+          onPrimary={handleSubmit}
+          cancelLabel={RC.LABELS.PANELS.ADD_CATEGORY.CANCEL}
+          primaryLabel={RC.LABELS.PANELS.ADD_CATEGORY.SUBMIT_BUTTON}
+          primaryLoading={submitting}
+          primaryDisabled={submitting || !isNameValid}
+          horizontalPadding={0}
+        />
+      </div>
     </AnimationWrapper>
   );
 };

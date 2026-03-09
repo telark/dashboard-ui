@@ -90,6 +90,7 @@ export const ROLES_CONSTANTS = {
         NAME_PLACEHOLDER: 'e.g. Engineering, Operations',
         NAME_REQUIRED_MESSAGE: 'Category name is required',
         NAME_EMPTY_MESSAGE: 'Category name cannot be empty',
+        NAME_EXISTS_MESSAGE: 'A category with this name already exists',
         CANCEL: 'Cancel',
       },
     },
