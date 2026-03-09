@@ -106,26 +106,10 @@ const RoleForm: React.FC<RoleFormProps> = ({
               >
                 {expanded ? (
                   <>
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 18,
-                        flex: 1,
-                        minWidth: 0,
-                      }}
-                    >
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1, minWidth: 0 }}>
                       {leftColumn}
                     </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 18,
-                        flex: 1,
-                        minWidth: 0,
-                      }}
-                    >
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1, minWidth: 0 }}>
                       {rightColumn}
                     </div>
                   </>

@@ -1,4 +1,8 @@
-export { AssignedItemsList, AssignedItemCard, DeassignButton } from './components';
+export {
+  AssignedItemsList,
+  AssignedItemCard,
+  DeassignButton,
+} from './components';
 export type {
   AssignedItemsListProps,
   AssignedItemCardProps,

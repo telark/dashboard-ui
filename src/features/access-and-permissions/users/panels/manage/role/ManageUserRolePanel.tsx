@@ -174,7 +174,10 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
         width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
         offsetX={filterPanelOpen ? FILTER_PANEL_WIDTH : 0}
         headerExtra={
-          <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((prev) => !prev)} />
+          <ExpandPanelButton
+            expanded={expanded}
+            onToggle={() => setExpanded((prev) => !prev)}
+          />
         }
         formContent={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>

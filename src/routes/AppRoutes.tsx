@@ -32,7 +32,9 @@ const AppWorkloadDetailsView = lazy(
 );
 
 // access-and-permissions
-const RolesMainPage = lazy(() => import('../features/access-and-permissions/roles/pages/MainPage'));
+const RolesMainPage = lazy(
+  () => import('../features/access-and-permissions/roles/pages/MainPage'),
+);
 const UsersMainPage = lazy(() => import('../features/access-and-permissions/users/pages/MainPage'));
 const GroupsMainPage = lazy(
   () => import('../features/access-and-permissions/groups/pages/MainPage'),

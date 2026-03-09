@@ -14,7 +14,12 @@ interface ViewRolePanelProps {
   onEdit?: () => void;
 }
 
-const ViewRolePanel: React.FC<ViewRolePanelProps> = ({ open, onClose, role, onEdit }) => {
+const ViewRolePanel: React.FC<ViewRolePanelProps> = ({
+  open,
+  onClose,
+  role,
+  onEdit,
+}) => {
   const { details, name, description } = useViewRolePanelData({ role });
 
   const scopesRecord = useMemo(
@@ -26,7 +31,9 @@ const ViewRolePanel: React.FC<ViewRolePanelProps> = ({ open, onClose, role, onEd
     () => (
       <>
         <RoleProtectionView role={role} />
-        {Object.keys(scopesRecord).length > 0 && <RoleScopesView scopes={scopesRecord} />}
+        {Object.keys(scopesRecord).length > 0 && (
+          <RoleScopesView scopes={scopesRecord} />
+        )}
       </>
     ),
     [role, scopesRecord],

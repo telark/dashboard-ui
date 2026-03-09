@@ -24,7 +24,11 @@ interface UseDeassignUserGroupReturn {
 }
 
 /** Sync group's assignedUsersIDs when user is removed from group (so Groups UI stays correct). */
-const syncGroupRemoveUser = async (dispatch: AppDispatch, group: Group, userId: string) => {
+const syncGroupRemoveUser = async (
+  dispatch: AppDispatch,
+  group: Group,
+  userId: string,
+) => {
   const nextMemberIds = (group.assignedUsersIDs || []).filter((id) => id !== userId);
   await dispatch(
     updateGroupThunk({ id: group.id, group: { assignedUsersIDs: nextMemberIds } }),

@@ -14,7 +14,9 @@ export const updateUser = async (userId: string, user: Partial<User>) => {
     if (user.email !== undefined) userData.email = user.email;
     if (user.avatar !== undefined) userData.avatar = user.avatar;
     if (user.assignedRolesIDs !== undefined) {
-      userData.assignedRolesIDs = Array.isArray(user.assignedRolesIDs) ? user.assignedRolesIDs : [];
+      userData.assignedRolesIDs = Array.isArray(user.assignedRolesIDs)
+        ? user.assignedRolesIDs
+        : [];
     }
     if (user.assignedGroupsIDs !== undefined) {
       userData.assignedGroupsIDs = Array.isArray(user.assignedGroupsIDs)

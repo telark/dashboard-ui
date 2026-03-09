@@ -1,7 +1,12 @@
 import React from 'react';
 import { USERS_CONSTANTS as UC } from '../constants';
 import { Icons } from '../../../../constants';
-import { SearchOutlined, SettingOutlined, FilterOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  SearchOutlined,
+  SettingOutlined,
+  FilterOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 
 const UserIcon = Icons.User;

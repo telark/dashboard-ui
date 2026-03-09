@@ -3,8 +3,4 @@ export { arraysEqual } from './assignment/arrays';
 export { filterBySearchTerm } from './search/filter';
 export { getScopeLabel } from './role/scope';
 export { getTotalRoleCount } from './role/count';
-export {
-  makeUsernameUniqueRule,
-  makeEmailFormatRule,
-  makeFullnameCharsRule,
-} from './user/validation';
+export { makeUsernameUniqueRule, makeEmailFormatRule, makeFullnameCharsRule } from './user/validation';

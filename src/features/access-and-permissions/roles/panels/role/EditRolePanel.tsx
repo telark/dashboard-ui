@@ -22,7 +22,12 @@ interface EditRolePanelProps {
   form: FormInstance<RoleFormValues>;
 }
 
-const EditRolePanel: React.FC<EditRolePanelProps> = ({ open, onClose, editingRole, form }) => {
+const EditRolePanel: React.FC<EditRolePanelProps> = ({
+  open,
+  onClose,
+  editingRole,
+  form,
+}) => {
   const [expanded, setExpanded] = useState(false);
   const { handleUpdate, submitting } = useRoleActions({ skipNavigate: true });
   const { roles } = useRoles();
@@ -38,20 +43,18 @@ const EditRolePanel: React.FC<EditRolePanelProps> = ({ open, onClose, editingRol
     }
   }, [open, editingRole, initialValues, form]);
 
-  const roleForHook =
-    editingRole ??
-    ({
-      id: '',
-      name: '',
-      description: '',
-      version: '',
-      type: RC.VALUES.ROLE_TYPE_CUSTOM,
-      status: RC.STATUS.ACTIVE,
-      categoryID: '',
-      priority: 0,
-      scopesAndPermissions: [],
-      creationDate: '',
-    } as Role);
+  const roleForHook = editingRole ?? ({
+    id: '',
+    name: '',
+    description: '',
+    version: '',
+    type: RC.VALUES.ROLE_TYPE_CUSTOM,
+    status: RC.STATUS.ACTIVE,
+    categoryID: '',
+    priority: 0,
+    scopesAndPermissions: [],
+    creationDate: '',
+  } as Role);
 
   const { handleSubmit, isSubmitting } = useEditRoleSubmit({
     id: roleForHook.id,

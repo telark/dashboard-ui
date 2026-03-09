@@ -67,7 +67,11 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onView, onEdit, onUsersC
         width: 120,
         onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
         render: (_: unknown, record: User) => (
-          <UserActionsColumn record={record} onEdit={handleEdit} onDelete={handleDelete} />
+          <UserActionsColumn
+            record={record}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
         ),
       },
     ],

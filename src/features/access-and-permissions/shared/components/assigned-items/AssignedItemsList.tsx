@@ -60,9 +60,7 @@ function AssignedItemsList<T>({
           return (
             <AssignedItemCard
               key={getItemKey(item)}
-              onDeassign={
-                onDeassignClick && deassignAllowed ? () => onDeassignClick(item) : undefined
-              }
+              onDeassign={onDeassignClick && deassignAllowed ? () => onDeassignClick(item) : undefined}
               deassignTooltip={deassignTooltip}
               rightContent={renderRightContent ? renderRightContent(item) : undefined}
             >

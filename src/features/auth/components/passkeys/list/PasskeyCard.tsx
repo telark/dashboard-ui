@@ -19,7 +19,9 @@ const CARD_STYLE: React.CSSProperties = {
   transition: 'box-shadow 0.2s, border-color 0.2s',
 };
 
-const iconButtonStyle = (color: string): React.CSSProperties => ({
+const iconButtonStyle = (
+  color: string,
+): React.CSSProperties => ({
   border: 'none',
   background: 'none',
   cursor: 'pointer',
@@ -148,7 +150,10 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
               placement="bottomRight"
             >
               <Tooltip title={PPC.LABELS.PUBLIC_KEY}>
-                <button type="button" style={iconButtonStyle(PPC.COLORS.TEXT_MUTED)}>
+                <button
+                  type="button"
+                  style={iconButtonStyle(PPC.COLORS.TEXT_MUTED)}
+                >
                   <KeyOutlined />
                 </button>
               </Tooltip>

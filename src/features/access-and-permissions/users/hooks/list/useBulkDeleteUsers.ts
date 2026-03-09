@@ -38,7 +38,9 @@ export const useBulkDeleteUsers = ({
         duration: 0,
       });
 
-      const deletePromises = selectedIds.map((id) => dispatch(deleteUserThunk(id)).unwrap());
+      const deletePromises = selectedIds.map((id) =>
+        dispatch(deleteUserThunk(id)).unwrap(),
+      );
       await Promise.all(deletePromises);
 
       message.success({

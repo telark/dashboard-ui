@@ -8,7 +8,8 @@ export const makeUsernameUniqueRule = (existingUsers: User[], currentUserId?: st
   validator(_: unknown, value: string) {
     if (!value?.trim()) return Promise.resolve();
     const isTaken = existingUsers.some(
-      (u) => u.username.toLowerCase() === value.trim().toLowerCase() && u.id !== currentUserId,
+      (u) =>
+        u.username.toLowerCase() === value.trim().toLowerCase() && u.id !== currentUserId,
     );
     return isTaken
       ? Promise.reject(new Error(UC.LABELS.VALIDATION.USERNAME_TAKEN))

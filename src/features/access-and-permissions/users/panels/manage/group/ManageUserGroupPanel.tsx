@@ -92,7 +92,10 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
         )}
         width={panelWidth}
         headerExtra={
-          <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((prev) => !prev)} />
+          <ExpandPanelButton
+            expanded={expanded}
+            onToggle={() => setExpanded((prev) => !prev)}
+          />
         }
         formContent={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>

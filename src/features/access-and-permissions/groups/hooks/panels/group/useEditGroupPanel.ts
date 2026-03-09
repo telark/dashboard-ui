@@ -82,7 +82,9 @@ export const useEditGroupPanel = ({
     const formData = normalizeGroupFormData({
       ...values,
       assignedUsersIDs:
-        (values.assignedUsersIDs as string[] | undefined) ?? editingGroup.assignedUsersIDs ?? [],
+        (values.assignedUsersIDs as string[] | undefined) ??
+        editingGroup.assignedUsersIDs ??
+        [],
     });
     await handleUpdate(editingGroup.id, formData);
     form.resetFields();

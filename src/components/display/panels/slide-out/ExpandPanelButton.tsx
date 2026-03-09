@@ -16,7 +16,10 @@ const ExpandPanelButton: React.FC<ExpandPanelButtonProps> = ({
   expandTooltip = SLIDE_OUT.EXPAND_TOOLTIP,
   collapseTooltip = SLIDE_OUT.COLLAPSE_TOOLTIP,
 }) => (
-  <Tooltip title={expanded ? collapseTooltip : expandTooltip} placement="bottom">
+  <Tooltip
+    title={expanded ? collapseTooltip : expandTooltip}
+    placement="bottom"
+  >
     <button
       type="button"
       onClick={(e) => {

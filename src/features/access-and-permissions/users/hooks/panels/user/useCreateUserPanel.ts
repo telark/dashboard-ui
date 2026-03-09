@@ -6,7 +6,11 @@ import { createUserThunk } from '../../../store';
 import type { AppDispatch, RootState } from '../../../../../../store';
 import type { CreateUserFormValues, UserAvatar } from '../../../models';
 import { USERS_CONSTANTS as UC } from '../../../constants';
-import { makeUsernameUniqueRule, makeEmailFormatRule, makeFullnameCharsRule } from '../../../utils';
+import {
+  makeUsernameUniqueRule,
+  makeEmailFormatRule,
+  makeFullnameCharsRule,
+} from '../../../utils';
 
 interface UseCreateUserPanelOptions {
   form: FormInstance<CreateUserFormValues>;
@@ -19,7 +23,10 @@ export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions)
   const [submitting, setSubmitting] = useState(false);
   const [hasFormErrors, setHasFormErrors] = useState(false);
 
-  const usernameRules = useMemo(() => [makeUsernameUniqueRule(existingUsers)], [existingUsers]);
+  const usernameRules = useMemo(
+    () => [makeUsernameUniqueRule(existingUsers)],
+    [existingUsers],
+  );
 
   const emailRules = useMemo(() => [makeEmailFormatRule()], []);
 
