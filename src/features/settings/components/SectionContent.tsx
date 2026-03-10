@@ -28,18 +28,14 @@ const SectionContent: React.FC<SectionContentProps> = memo(({ sectionKey }) => {
             title="Language"
             description="Select your preferred language for the interface."
           >
-            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 14 }}>
-              English (default)
-            </div>
+            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 14 }}>English (default)</div>
           </SettingsCard>
           <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
             <SettingsCard
               title="Timezone"
               description="All dates and times will be shown in this timezone."
             >
-              <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 14 }}>
-                Browser default
-              </div>
+              <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 14 }}>Browser default</div>
             </SettingsCard>
           </div>
         </>

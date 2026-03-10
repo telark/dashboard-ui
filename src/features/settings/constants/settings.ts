@@ -7,12 +7,7 @@ import {
 } from '@ant-design/icons';
 import type { ComponentType, CSSProperties } from 'react';
 
-export type SettingsSectionKey =
-  | 'profile'
-  | 'appearance'
-  | 'security'
-  | 'preferences'
-  | 'about';
+export type SettingsSectionKey = 'profile' | 'appearance' | 'security' | 'preferences' | 'about';
 
 export interface SettingsSectionConfig {
   key: SettingsSectionKey;

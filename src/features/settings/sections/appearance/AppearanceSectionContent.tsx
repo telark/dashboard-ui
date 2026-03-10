@@ -22,7 +22,7 @@ const {
 } = APPEARANCE_SECTION_CONSTANTS;
 
 const getStored = <T extends string>(key: string, fallback: T): T =>
-  (typeof window !== 'undefined' && localStorage.getItem(key)) as T | null ?? fallback;
+  ((typeof window !== 'undefined' && localStorage.getItem(key)) as T | null) ?? fallback;
 
 const optionsRowStyle = {
   display: 'flex' as const,
@@ -86,10 +86,7 @@ const AppearanceSectionContent: React.FC = memo(() => {
 
   return (
     <>
-      <SettingsCard
-        title={LABELS.THEME_CARD_TITLE}
-        description={LABELS.THEME_CARD_DESCRIPTION}
-      >
+      <SettingsCard title={LABELS.THEME_CARD_TITLE} description={LABELS.THEME_CARD_DESCRIPTION}>
         <div style={optionsRowStyle}>
           {THEME_OPTIONS.map((option) => {
             const isSelected = theme === option;
@@ -103,7 +100,9 @@ const AppearanceSectionContent: React.FC = memo(() => {
                   padding: LAYOUT.OPTION_BUTTON_PADDING,
                   borderRadius: LAYOUT.OPTION_BUTTON_BORDER_RADIUS,
                   border: `1px solid ${isSelected ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.BORDER_LIGHT}`,
-                  background: isSelected ? `${DEFAULT_COLORS.SUCCESS}18` : DEFAULT_COLORS.BACKGROUND_WHITE,
+                  background: isSelected
+                    ? `${DEFAULT_COLORS.SUCCESS}18`
+                    : DEFAULT_COLORS.BACKGROUND_WHITE,
                   color: isSelected ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.TEXT_MUTED,
                   fontWeight: isSelected ? 600 : 500,
                   fontSize: 14,
@@ -128,7 +127,8 @@ const AppearanceSectionContent: React.FC = memo(() => {
           <div style={optionsRowStyle}>
             {DENSITY_OPTIONS.map((option) => {
               const isSelected = density === option;
-              const label = option === 'Comfortable' ? LABELS.DENSITY_COMFORTABLE : LABELS.DENSITY_COMPACT;
+              const label =
+                option === 'Comfortable' ? LABELS.DENSITY_COMFORTABLE : LABELS.DENSITY_COMPACT;
               return (
                 <button
                   key={option}
@@ -139,7 +139,9 @@ const AppearanceSectionContent: React.FC = memo(() => {
                     padding: LAYOUT.OPTION_BUTTON_PADDING,
                     borderRadius: LAYOUT.OPTION_BUTTON_BORDER_RADIUS,
                     border: `1px solid ${isSelected ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.BORDER_LIGHT}`,
-                    background: isSelected ? `${DEFAULT_COLORS.SUCCESS}18` : DEFAULT_COLORS.BACKGROUND_WHITE,
+                    background: isSelected
+                      ? `${DEFAULT_COLORS.SUCCESS}18`
+                      : DEFAULT_COLORS.BACKGROUND_WHITE,
                     color: isSelected ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.TEXT_MUTED,
                     fontWeight: isSelected ? 600 : 500,
                     fontSize: 14,
@@ -177,7 +179,9 @@ const AppearanceSectionContent: React.FC = memo(() => {
                     padding: LAYOUT.OPTION_BUTTON_PADDING,
                     borderRadius: LAYOUT.OPTION_BUTTON_BORDER_RADIUS,
                     border: `1px solid ${isSelected ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.BORDER_LIGHT}`,
-                    background: isSelected ? `${DEFAULT_COLORS.SUCCESS}18` : DEFAULT_COLORS.BACKGROUND_WHITE,
+                    background: isSelected
+                      ? `${DEFAULT_COLORS.SUCCESS}18`
+                      : DEFAULT_COLORS.BACKGROUND_WHITE,
                     color: isSelected ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.TEXT_MUTED,
                     fontWeight: isSelected ? 600 : 500,
                     fontSize: 14,

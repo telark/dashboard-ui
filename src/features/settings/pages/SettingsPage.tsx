@@ -81,10 +81,7 @@ const SettingsPage: React.FC = () => {
             <SectionContent sectionKey={activeSection} />
           </div>
         </main>
-        <SettingsSidebar
-          activeSection={activeSection}
-          onSectionChange={setActiveSection}
-        />
+        <SettingsSidebar activeSection={activeSection} onSectionChange={setActiveSection} />
       </div>
     </div>
   );
