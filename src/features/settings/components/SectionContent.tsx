@@ -4,6 +4,7 @@ import SettingsCard from './SettingsCard';
 import { SETTINGS_CONSTANTS } from '../constants';
 import type { SettingsSectionKey } from '../constants';
 import { ProfileSectionContent } from '../sections/profile';
+import { AppearanceSectionContent } from '../sections/appearance';
 
 const { CONTENT } = SETTINGS_CONSTANTS;
 
@@ -16,51 +17,7 @@ const SectionContent: React.FC<SectionContentProps> = memo(({ sectionKey }) => {
     case 'profile':
       return <ProfileSectionContent />;
     case 'appearance':
-      return (
-        <>
-          <SettingsCard
-            title="Theme"
-            description="Choose how the dashboard looks. System preference support coming soon."
-          >
-            <div
-              style={{
-                display: 'flex',
-                gap: 12,
-                flexWrap: 'wrap',
-              }}
-            >
-              {['Light', 'Dark', 'System'].map((theme) => (
-                <div
-                  key={theme}
-                  style={{
-                    padding: '12px 20px',
-                    borderRadius: 8,
-                    border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-                    background:
-                      theme === 'Light' ? 'rgba(32, 201, 151, 0.08)' : DEFAULT_COLORS.BACKGROUND_WHITE,
-                    color: theme === 'Light' ? '#0d9488' : DEFAULT_COLORS.TEXT_MUTED,
-                    fontWeight: theme === 'Light' ? 600 : 500,
-                    fontSize: 14,
-                    cursor: 'default',
-                  }}
-                >
-                  {theme}
-                </div>
-              ))}
-            </div>
-          </SettingsCard>
-          <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
-            <SettingsCard
-              title="Density"
-              description="Compact or comfortable spacing for lists and tables."
-            >
-              <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 14 }}>
-                Comfortable (default)
-              </div>
-            </SettingsCard>
-          </div>
-        </>
-      );
+      return <AppearanceSectionContent />;
     case 'notifications':
       return (
         <>
