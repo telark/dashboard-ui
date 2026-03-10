@@ -5,6 +5,7 @@ import { SETTINGS_CONSTANTS } from '../constants';
 import type { SettingsSectionKey } from '../constants';
 import { ProfileSectionContent } from '../sections/profile';
 import { AppearanceSectionContent } from '../sections/appearance';
+import { SecuritySectionContent } from '../sections/security';
 
 const { CONTENT } = SETTINGS_CONSTANTS;
 
@@ -19,38 +20,7 @@ const SectionContent: React.FC<SectionContentProps> = memo(({ sectionKey }) => {
     case 'appearance':
       return <AppearanceSectionContent />;
     case 'security':
-      return (
-        <>
-          <SettingsCard
-            title="Password"
-            description="Change your password. Use a strong password you don’t use elsewhere."
-          >
-            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 14 }}>
-              Password change will be available here.
-            </div>
-          </SettingsCard>
-          <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
-            <SettingsCard
-              title="Two-factor authentication"
-              description="Add an extra layer of security to your account."
-            >
-              <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 14 }}>
-                2FA setup coming soon.
-              </div>
-            </SettingsCard>
-          </div>
-          <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
-            <SettingsCard
-              title="Active sessions"
-              description="Manage devices where you’re currently signed in."
-            >
-              <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 14 }}>
-                Session management coming soon.
-              </div>
-            </SettingsCard>
-          </div>
-        </>
-      );
+      return <SecuritySectionContent />;
     case 'preferences':
       return (
         <>
