@@ -1,17 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getCurrentUser } from '../../../../auth/utils';
 import { fetchCurrentUserDetails } from '../../../../access-and-permissions/users/utils';
 import type { User } from '../../../../access-and-permissions/users/models';
 
-export function useProfileUser(): User | null {
+export interface UseProfileUserResult {
+  currentUser: User | null;
+  refetch: () => Promise<void>;
+}
+
+export function useProfileUser(): UseProfileUserResult {
   const [currentUser, setCurrentUser] = useState<User | null>(() => getCurrentUser());
 
-  useEffect(() => {
+  const refetch = useCallback(() => {
     const initial = getCurrentUser();
-    if (initial?.id) {
-      fetchCurrentUserDetails((user) => setCurrentUser(user));
-    }
+    if (!initial?.id) return Promise.resolve();
+    return new Promise<void>((resolve) => {
+      fetchCurrentUserDetails(
+        (user) => {
+          setCurrentUser(user);
+          resolve();
+        },
+        () => resolve(),
+      );
+    });
   }, []);
 
-  return currentUser;
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  return { currentUser, refetch };
 }

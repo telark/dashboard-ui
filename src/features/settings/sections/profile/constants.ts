@@ -19,5 +19,18 @@ export const PROFILE_SECTION_CONSTANTS = {
     LAST_LOGIN: 'Last login',
     STATUS: 'Status',
     PLACEHOLDER: '—',
+    EDIT_PROFILE_PANEL: {
+      TITLE: 'Edit profile',
+      SUBTITLE: 'Update your account details',
+      USERNAME_LABEL: 'Username',
+      FULLNAME_LABEL: 'Full name',
+      FULLNAME_PLACEHOLDER: 'e.g. John Doe',
+      EMAIL_LABEL: 'Email',
+      EMAIL_PLACEHOLDER: 'e.g. john@example.com',
+      SAVE: 'Save',
+      CANCEL: 'Cancel',
+      SUCCESS: 'Profile updated.',
+      ERROR: 'Failed to update profile.',
+    },
   },
 } as const;

@@ -6,7 +6,7 @@ import {
   IdcardOutlined,
   CalendarOutlined,
   ClockCircleOutlined,
-  SafetyCertificateOutlined,
+  CheckCircleOutlined,
 } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
@@ -133,7 +133,7 @@ const ProfileDetailsCard: React.FC<ProfileDetailsCardProps> = memo(
           </div>
         </div>
         <div style={rowBaseStyle}>
-          <SafetyCertificateOutlined style={iconStyle} />
+          <CheckCircleOutlined style={iconStyle} />
           <div style={profileRowLabelStyle}>{LABELS.STATUS}</div>
           <div
             style={{
