@@ -8,6 +8,7 @@ import store from './store';
 import App from './App';
 import { FancySpinner } from './components/animation';
 import { SHARED_DETAILS_CONSTANTS } from './constants';
+import { AppearanceProvider } from './features/settings/sections/appearance';
 import './styles/index.css';
 import './styles/antd.css';
 import './styles/actionConfirmModal.css';
@@ -25,7 +26,9 @@ startTransition(() => {
           }
           persistor={persistor}
         >
-          <App />
+          <AppearanceProvider>
+            <App />
+          </AppearanceProvider>
         </PersistGate>
       </Provider>
     </StrictMode>,

@@ -3,6 +3,7 @@ import { Empty } from 'antd';
 import type { PageLayoutConfig } from '../../../../../interfaces/layout/page';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import { DEFAULT_COLORS, Icons } from '../../../../../constants';
+import { useAppearance } from '../../../../../features/settings/sections/appearance';
 import { useCategories } from '../../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../../categories/constants';
 import { useCategoryListView } from '../../../categories/hooks';
@@ -71,6 +72,7 @@ export const useRoleListPageConfig = ({
   onSearchSubmit,
 }: UseRoleListPageConfigOptions): PageLayoutConfig<Role | Category> => {
   const [selectedCategories, setSelectedCategories] = useState<React.Key[]>([]);
+  const { rowHeight } = useAppearance();
 
   const {
     sortKey: categorySortKey,
@@ -208,7 +210,7 @@ export const useRoleListPageConfig = ({
         viewMode === 'roles'
           ? (record: Role | Category) => handleViewRole(record as Role)
           : undefined,
-      rowHeight: RC.SIZES.ROW_HEIGHT,
+      rowHeight,
       empty: (
         <Empty
           description={
@@ -244,6 +246,7 @@ export const useRoleListPageConfig = ({
       setSelectedRoles,
       setCategoryCurrentPage,
       setCategoryPageSize,
+      rowHeight,
     ],
   );
 };

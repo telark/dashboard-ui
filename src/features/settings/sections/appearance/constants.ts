@@ -28,12 +28,30 @@ export const APPEARANCE_SECTION_CONSTANTS = {
     OPTION_SYSTEM: 'System',
     DENSITY_COMFORTABLE: 'Comfortable (default)',
     DENSITY_COMPACT: 'Compact',
+    DENSITY_LIVE_EXAMPLE_LABEL: 'Live preview',
+    DENSITY_PREVIEW_HEADER_NAME: 'Name',
+    DENSITY_PREVIEW_HEADER_ROLE: 'Role',
     FONT_SIZE_SMALL: 'Small',
     FONT_SIZE_MEDIUM: 'Medium (default)',
     FONT_SIZE_LARGE: 'Large',
   },
   THEME_OPTIONS: ['Light', 'Dark', 'System'] as const,
   DENSITY_OPTIONS: ['Comfortable', 'Compact'] as const,
+  /** Short names, 2 rows so both densities fit inside fixed box without clipping. */
+  DENSITY_PREVIEW_SAMPLES: {
+    names: ['Alex M.', 'Jordan L.'],
+    roles: ['Admin', 'Editor'],
+  } as const,
+  /** Row height (px) and content gap (px) per density; used by tables and page layout. */
+  DENSITY_VALUES: {
+    Comfortable: { rowHeight: 44, contentGap: 32 },
+    Compact: { rowHeight: 36, contentGap: 24 },
+  } as const,
+  /** Fixed size for both preview boxes: same width and height. */
+  DENSITY_PREVIEW_BOX: {
+    WIDTH: 144,
+    HEIGHT: 160,
+  } as const,
   FONT_SIZE_OPTIONS: ['Small', 'Medium', 'Large'] as const,
   /** Font scale values for --app-font-size-scale (e.g. 0.9, 1, 1.1). */
   FONT_SIZE_SCALES: { Small: 0.9375, Medium: 1, Large: 1.0625 } as const,

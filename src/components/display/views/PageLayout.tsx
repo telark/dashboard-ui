@@ -2,6 +2,7 @@ import { Activity, memo } from 'react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
+import { useAppearance } from '../../../features/settings/sections/appearance';
 import DataTable from '../table/DataTable';
 import { FilterSection } from '../filters';
 import { Toolbar } from '../toolbar';
@@ -10,6 +11,7 @@ import type { PageLayoutConfig } from '../../../interfaces/layout/page';
 
 const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfig<T> }) => {
   const navigate = useNavigate();
+  const { rowHeight: densityRowHeight, contentGap } = useAppearance();
   const {
     title,
     subtitle,
@@ -23,9 +25,10 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
     rowSelection,
     onRowClick,
     containerStyle,
-    rowHeight = 44,
+    rowHeight: configRowHeight,
     empty,
   } = config;
+  const rowHeight = configRowHeight ?? densityRowHeight;
 
   return (
     <div
@@ -39,7 +42,7 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
         ...containerStyle,
       }}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: contentGap }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
           <h1
             style={{
