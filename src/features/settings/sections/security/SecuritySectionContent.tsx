@@ -98,22 +98,25 @@ const SecuritySectionContent: React.FC<SecuritySectionContentProps> = memo(
     const handleRevokeConfirm = useCallback(
       async () => {
         if (!sessionToRevoke) return;
-        const token = sessionToRevoke.sessionToken;
-        setRevokingToken(token);
+        const isCurrent = sessionToRevoke.sessionToken === currentToken;
+        setRevokingToken(sessionToRevoke.sessionToken);
+        setSessionToRevoke(null);
         try {
-          await revokeSession(token, {
-            onRevokedCurrentSession: () => handleUserLogout(navigate),
-          });
-          message.success(LABELS.SESSIONS_REVOKE_SUCCESS);
-          setSessionToRevoke(null);
+          if (isCurrent) {
+            await handleUserLogout(navigate);
+          } else {
+            await revokeSession(sessionToRevoke.sessionToken, {});
+            message.success(LABELS.SESSIONS_REVOKE_SUCCESS);
+          }
         } catch {
-          message.error(LABELS.SESSIONS_REVOKE_ERROR);
-          setSessionToRevoke(null);
+          if (!isCurrent) {
+            message.error(LABELS.SESSIONS_REVOKE_ERROR);
+          }
         } finally {
           setRevokingToken(null);
         }
       },
-      [sessionToRevoke, revokeSession, navigate],
+      [sessionToRevoke, currentToken, revokeSession, navigate],
     );
 
     const revokeModalMessage =
@@ -221,7 +224,7 @@ const SecuritySectionContent: React.FC<SecuritySectionContentProps> = memo(
             danger: true,
           }}
           centered
-          destroyOnClose
+          destroyOnHidden
         >
           <p>{revokeModalMessage}</p>
         </Modal>
