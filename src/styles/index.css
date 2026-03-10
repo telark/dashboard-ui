@@ -1,7 +1,11 @@
 :root {
   --sidebar-width: 260px;
   --page-bg: #F3F6FA;
+  /* Appearance settings: set by Settings > Appearance (e.g. 0.9375, 1, 1.0625). */
+  --app-font-size-scale: 1;
 }
+
+/* Dark theme: add styles under [data-theme="dark"] when ready. */
 
 html,
 body,
