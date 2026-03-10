@@ -18,44 +18,6 @@ const SectionContent: React.FC<SectionContentProps> = memo(({ sectionKey }) => {
       return <ProfileSectionContent />;
     case 'appearance':
       return <AppearanceSectionContent />;
-    case 'notifications':
-      return (
-        <>
-          <SettingsCard
-            title="Email notifications"
-            description="Choose which updates you want to receive by email."
-          >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {['Security alerts', 'Product updates', 'Weekly digest'].map((label, i) => (
-                <div
-                  key={label}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '12px 0',
-                    borderBottom:
-                      i < 2 ? `1px solid ${DEFAULT_COLORS.BACKGROUND_HOVER}` : 'none',
-                  }}
-                >
-                  <span style={{ fontSize: 14, color: DEFAULT_COLORS.TEXT_SECONDARY }}>
-                    {label}
-                  </span>
-                  <div
-                    style={{
-                      width: 40,
-                      height: 22,
-                      borderRadius: 11,
-                      background: DEFAULT_COLORS.BORDER_LIGHT,
-                      cursor: 'default',
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-          </SettingsCard>
-        </>
-      );
     case 'security':
       return (
         <>

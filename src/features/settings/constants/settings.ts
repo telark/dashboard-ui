@@ -1,7 +1,6 @@
 import {
   UserOutlined,
   BulbOutlined,
-  BellOutlined,
   SafetyOutlined,
   ControlOutlined,
   InfoCircleOutlined,
@@ -11,7 +10,6 @@ import type { ComponentType, CSSProperties } from 'react';
 export type SettingsSectionKey =
   | 'profile'
   | 'appearance'
-  | 'notifications'
   | 'security'
   | 'preferences'
   | 'about';
@@ -40,12 +38,6 @@ export const SETTINGS_CONSTANTS = {
       label: 'Appearance',
       description: 'Theme, layout, and display options',
       icon: BulbOutlined,
-    },
-    NOTIFICATIONS: {
-      key: 'notifications' as const,
-      label: 'Notifications',
-      description: 'Email and in-app notification preferences',
-      icon: BellOutlined,
     },
     SECURITY: {
       key: 'security' as const,
@@ -82,7 +74,6 @@ export const SETTINGS_CONSTANTS = {
 export const SETTINGS_SECTIONS_LIST: SettingsSectionConfig[] = [
   SETTINGS_CONSTANTS.SECTIONS.PROFILE,
   SETTINGS_CONSTANTS.SECTIONS.APPEARANCE,
-  SETTINGS_CONSTANTS.SECTIONS.NOTIFICATIONS,
   SETTINGS_CONSTANTS.SECTIONS.SECURITY,
   SETTINGS_CONSTANTS.SECTIONS.PREFERENCES,
   SETTINGS_CONSTANTS.SECTIONS.ABOUT,
