@@ -29,6 +29,7 @@ export const RESOURCE_PATHS = {
 } as const;
 
 export const SESSION_PATHS = {
+  GET_ALL_BY_USER: (userId: string) => `auth/sessions/${userId}/get`,
   GET_BY_TOKEN: (sessionToken: string) => `auth/sessions/tokens/${sessionToken}/get`,
   DELETE_BY_TOKEN: (sessionToken: string) => `auth/sessions/tokens/${sessionToken}/delete`,
 } as const;

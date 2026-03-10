@@ -194,6 +194,10 @@ export const Endpoints = {
     }),
   },
   SESSIONS: {
+    GET_ALL_BY_USER: (userId: string) => ({
+      path: SESSION_PATHS.GET_ALL_BY_USER(userId),
+      method: 'GET',
+    }),
     GET_BY_TOKEN: (sessionToken: string) => ({
       path: SESSION_PATHS.GET_BY_TOKEN(sessionToken),
       method: 'GET',
