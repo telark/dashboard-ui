@@ -1,6 +1,7 @@
 import { Activity, memo } from 'react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
 import DataTable from '../table/DataTable';
 import { FilterSection } from '../filters';
 import { Toolbar } from '../toolbar';
@@ -31,8 +32,8 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
       style={{
         background: '#fff',
         minHeight: '100vh',
-        padding: '100px 48px 48px',
-        marginTop: '60px',
+        padding: PAGE_CONTENT_LAYOUT.PADDING,
+        marginTop: `${PAGE_CONTENT_LAYOUT.HEADER_OFFSET_PX}px`,
         width: '100%',
         boxSizing: 'border-box',
         ...containerStyle,

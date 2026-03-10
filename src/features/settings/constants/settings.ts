@@ -32,7 +32,7 @@ export const SETTINGS_CONSTANTS = {
     PROFILE: {
       key: 'profile' as const,
       label: 'Profile',
-      description: 'Your personal information and avatar',
+      description: 'Your personal information',
       icon: UserOutlined,
     },
     APPEARANCE: {

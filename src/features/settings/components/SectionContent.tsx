@@ -1,10 +1,280 @@
-import React, { memo } from 'react';
-import { DEFAULT_COLORS } from '../../../constants';
+import React, { memo, useCallback, useState, useEffect } from 'react';
+import {
+  UserOutlined,
+  MailOutlined,
+  EditOutlined,
+  IdcardOutlined,
+  CalendarOutlined,
+  ClockCircleOutlined,
+  SafetyCertificateOutlined,
+} from '@ant-design/icons';
+import { DEFAULT_COLORS, HEADER_CONSTANTS } from '../../../constants';
 import SettingsCard from './SettingsCard';
 import { SETTINGS_CONSTANTS } from '../constants';
 import type { SettingsSectionKey } from '../constants';
+import { getCurrentUser } from '../../auth/utils';
+import { fetchCurrentUserDetails } from '../../access-and-permissions/users/utils';
+import UserAvatar from '../../../components/display/avatars/UserAvatar';
+import TimeAgo from '../../../components/display/time/TimeAgo';
+import RowTag from '../../../components/display/table/RowTag';
+import type { User } from '../../access-and-permissions/users/models';
 
 const { CONTENT } = SETTINGS_CONSTANTS;
+const AVATAR_SIZE = 40;
+const AVATAR_BORDER = HEADER_CONSTANTS.USER.AVATAR.BORDER_WIDTH;
+
+const iconStyle = { color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 16 };
+const PROFILE_ROW_GAP = 12;
+
+const rowBase = {
+  display: 'flex' as const,
+  flexWrap: 'wrap' as const,
+  alignItems: 'center',
+  gap: 8,
+  borderTop: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+  minHeight: 32,
+  paddingTop: 0,
+  paddingBottom: 0,
+};
+
+const profileRowLabelStyle = {
+  fontSize: 12 as const,
+  fontWeight: 500 as const,
+  color: DEFAULT_COLORS.TEXT_MUTED,
+  textTransform: 'uppercase' as const,
+  letterSpacing: '0.02em' as const,
+  flexShrink: 0 as const,
+  minWidth: 100,
+};
+
+const ProfileSection: React.FC = memo(() => {
+  const [currentUser, setCurrentUser] = useState<User | null>(() => getCurrentUser());
+  const handleEditProfile = useCallback(() => {}, []);
+
+  useEffect(() => {
+    const initial = getCurrentUser();
+    if (initial?.id) {
+      fetchCurrentUserDetails((user) => setCurrentUser(user));
+    }
+  }, []);
+
+  const avatarWrapperSize = AVATAR_SIZE + AVATAR_BORDER * 2;
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: PROFILE_ROW_GAP,
+        fontSize: 14,
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          flexWrap: 'wrap',
+        }}
+      >
+        <div
+          style={{
+            width: avatarWrapperSize,
+            height: avatarWrapperSize,
+            flexShrink: 0,
+            borderRadius: '50%',
+            border: `${AVATAR_BORDER}px solid ${DEFAULT_COLORS.SUCCESS}`,
+            padding: AVATAR_BORDER,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxSizing: 'border-box',
+          }}
+        >
+          {currentUser ? (
+            <UserAvatar
+              avatar={currentUser.avatar}
+              username={currentUser.username}
+              size={AVATAR_SIZE}
+              style={{ border: 'none' }}
+            />
+          ) : (
+            <div
+              style={{
+                width: AVATAR_SIZE,
+                height: AVATAR_SIZE,
+                borderRadius: '50%',
+                background: DEFAULT_COLORS.BACKGROUND_HOVER,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 18,
+                fontWeight: 600,
+                color: DEFAULT_COLORS.TEXT_MUTED,
+              }}
+            >
+              —
+            </div>
+          )}
+        </div>
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+            fontWeight: 600,
+            fontSize: 15,
+            color: DEFAULT_COLORS.TEXT_PRIMARY,
+          }}
+        >
+          Profile photo
+        </div>
+        <button
+          type="button"
+          onClick={handleEditProfile}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            padding: '6px 12px',
+            border: 'none',
+            borderRadius: 6,
+            background: 'transparent',
+            color: DEFAULT_COLORS.TEXT_MUTED,
+            fontSize: 14,
+            fontWeight: 500,
+            cursor: 'pointer',
+          }}
+          title="Edit profile"
+        >
+          <EditOutlined style={{ fontSize: 14 }} />
+          <span>Edit</span>
+        </button>
+      </div>
+      <div style={rowBase}>
+        <IdcardOutlined style={iconStyle} />
+        <div style={profileRowLabelStyle}>Full name</div>
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+            fontSize: 15,
+            color: DEFAULT_COLORS.TEXT_PRIMARY,
+            marginLeft: 'auto',
+            textAlign: 'right',
+          }}
+        >
+          {currentUser?.fullname ?? '—'}
+        </div>
+      </div>
+      <div style={{ ...rowBase, borderTop: 'none' }}>
+        <UserOutlined style={iconStyle} />
+        <div style={profileRowLabelStyle}>Username</div>
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+            fontSize: 15,
+            color: DEFAULT_COLORS.TEXT_PRIMARY,
+            marginLeft: 'auto',
+            textAlign: 'right',
+          }}
+        >
+          {currentUser?.username ?? '—'}
+        </div>
+      </div>
+      <div style={{ ...rowBase, borderTop: 'none' }}>
+        <MailOutlined style={iconStyle} />
+        <div style={profileRowLabelStyle}>Email</div>
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+            fontSize: 15,
+            color: DEFAULT_COLORS.TEXT_PRIMARY,
+            marginLeft: 'auto',
+            textAlign: 'right',
+          }}
+        >
+          {currentUser?.email ?? '—'}
+        </div>
+      </div>
+      <div style={{ ...rowBase, borderTop: 'none' }}>
+        <CalendarOutlined style={iconStyle} />
+        <div style={profileRowLabelStyle}>Member since</div>
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+            fontSize: 15,
+            color: DEFAULT_COLORS.TEXT_PRIMARY,
+            marginLeft: 'auto',
+            textAlign: 'right',
+          }}
+        >
+          {currentUser?.creationDate ? (
+            <TimeAgo date={currentUser.creationDate} />
+          ) : (
+            '—'
+          )}
+        </div>
+      </div>
+      <div style={{ ...rowBase, borderTop: 'none' }}>
+        <ClockCircleOutlined style={iconStyle} />
+        <div style={profileRowLabelStyle}>Last login</div>
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+            fontSize: 15,
+            color: DEFAULT_COLORS.TEXT_PRIMARY,
+            marginLeft: 'auto',
+            textAlign: 'right',
+          }}
+        >
+          {currentUser?.status?.lastLoginAt ? (
+            <TimeAgo date={currentUser.status.lastLoginAt} />
+          ) : (
+            '—'
+          )}
+        </div>
+      </div>
+      <div style={{ ...rowBase, borderTop: 'none' }}>
+        <SafetyCertificateOutlined style={iconStyle} />
+        <div style={profileRowLabelStyle}>Status</div>
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+            marginLeft: 'auto',
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
+          {currentUser?.status?.phase ? (
+            <RowTag
+              text={currentUser.status.phase}
+              background={
+                currentUser.status.phase === 'active'
+                  ? `${DEFAULT_COLORS.SUCCESS}18`
+                  : DEFAULT_COLORS.CHIP_CUSTOM_BG
+              }
+              color={
+                currentUser.status.phase === 'active'
+                  ? DEFAULT_COLORS.SUCCESS
+                  : DEFAULT_COLORS.CHIP_CUSTOM_TEXT
+              }
+              fontSize={12}
+            />
+          ) : (
+            <span style={{ fontSize: 15, color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+});
+
+ProfileSection.displayName = 'ProfileSection';
 
 interface SectionContentProps {
   sectionKey: SettingsSectionKey;
@@ -13,73 +283,7 @@ interface SectionContentProps {
 const SectionContent: React.FC<SectionContentProps> = memo(({ sectionKey }) => {
   switch (sectionKey) {
     case 'profile':
-      return (
-        <>
-          <SettingsCard
-            title="Personal information"
-            description="Update your display name and email (read-only for now)."
-          >
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 16,
-                color: DEFAULT_COLORS.TEXT_MUTED,
-                fontSize: 14,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                <div
-                  style={{
-                    width: 64,
-                    height: 64,
-                    borderRadius: '50%',
-                    background: `linear-gradient(135deg, ${DEFAULT_COLORS.SUCCESS} 0%, #0d9488 100%)`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#fff',
-                    fontSize: 24,
-                    fontWeight: 600,
-                  }}
-                >
-                  U
-                </div>
-                <div>
-                  <div style={{ fontWeight: 500, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-                    Profile photo
-                  </div>
-                  <div style={{ marginTop: 4 }}>Avatar management coming soon</div>
-                </div>
-              </div>
-              <div style={{ paddingTop: 8, borderTop: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}` }}>
-                <div
-                  style={{
-                    marginBottom: 8,
-                    color: DEFAULT_COLORS.TEXT_PRIMARY,
-                    fontWeight: 500,
-                  }}
-                >
-                  Display name
-                </div>
-                <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</div>
-              </div>
-              <div style={{ paddingTop: 8, borderTop: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}` }}>
-                <div
-                  style={{
-                    marginBottom: 8,
-                    color: DEFAULT_COLORS.TEXT_PRIMARY,
-                    fontWeight: 500,
-                  }}
-                >
-                  Email
-                </div>
-                <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</div>
-              </div>
-            </div>
-          </SettingsCard>
-        </>
-      );
+      return <ProfileSection />;
     case 'appearance':
       return (
         <>
