@@ -328,7 +328,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({
         onOk={handleConfirm}
         okText={okText}
         okButtonProps={{
-          disabled: !selectedStyle,
+          disabled: !selectedStyle || selectedStyle === value?.style,
           style: {
             backgroundColor: DEFAULT_COLORS.SUCCESS,
             borderColor: DEFAULT_COLORS.SUCCESS,
