@@ -9,11 +9,27 @@ import type { ComponentType, CSSProperties } from 'react';
 
 export type SettingsSectionKey = 'profile' | 'appearance' | 'security' | 'preferences' | 'about';
 
+const ROW_TAG_DEFAULTS = {
+  COMING_SOON_TEXT: 'Coming soon',
+  BACKGROUND: '#F0F5FF',
+  COLOR: '#000',
+  FONT_SIZE: 11,
+} as const;
+
+export interface SettingsSectionRowTag {
+  text: string;
+  background?: string;
+  color?: string;
+  fontSize?: number;
+}
+
 export interface SettingsSectionConfig {
   key: SettingsSectionKey;
   label: string;
   description: string;
   icon: ComponentType<{ style?: CSSProperties }>;
+  /** Optional tag shown next to the menu item (e.g. "Coming soon"). */
+  rowTag?: SettingsSectionRowTag;
 }
 
 export const SETTINGS_CONSTANTS = {
@@ -45,12 +61,24 @@ export const SETTINGS_CONSTANTS = {
       label: 'Preferences',
       description: 'Language, timezone, and defaults',
       icon: ControlOutlined,
+      rowTag: {
+        text: ROW_TAG_DEFAULTS.COMING_SOON_TEXT,
+        background: ROW_TAG_DEFAULTS.BACKGROUND,
+        color: ROW_TAG_DEFAULTS.COLOR,
+        fontSize: ROW_TAG_DEFAULTS.FONT_SIZE,
+      },
     },
     ABOUT: {
       key: 'about' as const,
       label: 'About',
       description: 'Version, license, and support',
       icon: InfoCircleOutlined,
+      rowTag: {
+        text: ROW_TAG_DEFAULTS.COMING_SOON_TEXT,
+        background: ROW_TAG_DEFAULTS.BACKGROUND,
+        color: ROW_TAG_DEFAULTS.COLOR,
+        fontSize: ROW_TAG_DEFAULTS.FONT_SIZE,
+      },
     },
   },
   SIDEBAR: {

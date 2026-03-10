@@ -3,6 +3,7 @@ import { SETTINGS_CONSTANTS, SETTINGS_SECTIONS_LIST } from '../constants';
 import type { SettingsSectionKey } from '../constants';
 import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_COLORS } from '../../../constants';
 import { PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
+import RowTag from '../../../components/display/table/RowTag';
 
 const { SIDEBAR } = SETTINGS_CONSTANTS;
 const SB = BUTTON_CONFIGS.SIDEBAR_BUTTON;
@@ -135,9 +136,17 @@ const SettingsSidebarItem: React.FC<ItemProps> = memo(({ section, isActive, onSe
           flexShrink: 0,
         }}
       />
-      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1, minWidth: 0 }}>
         {section.label}
       </span>
+      {section.rowTag && (
+        <RowTag
+          text={section.rowTag.text}
+          background={section.rowTag.background ?? '#F0F5FF'}
+          color={section.rowTag.color ?? '#2F54EB'}
+          fontSize={section.rowTag.fontSize}
+        />
+      )}
     </button>
   );
 });
