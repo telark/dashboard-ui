@@ -16,7 +16,7 @@ export interface EditProfileFormValues {
 
 export interface UseEditProfileOptions {
   currentUser: User | null;
-  refetch: () => Promise<void>;
+  refetch: (updatedUser?: User) => Promise<void>;
 }
 
 export interface UseEditProfileResult {
@@ -104,7 +104,7 @@ export function useEditProfile({
         });
         if (response?.data) {
           setCurrentUser(response.data);
-          await refetch();
+          await refetch(response.data);
           message.success(P.SUCCESS);
         } else {
           message.error(P.ERROR);

@@ -5,19 +5,23 @@ import type { User } from '../../../../access-and-permissions/users/models';
 
 export interface UseProfileUserResult {
   currentUser: User | null;
-  refetch: () => Promise<void>;
+  refetch: (updatedUser?: User) => Promise<void>;
 }
 
 export function useProfileUser(): UseProfileUserResult {
-  const [currentUser, setCurrentUser] = useState<User | null>(() => getCurrentUser());
+  const [currentUser, setCurrentUserState] = useState<User | null>(() => getCurrentUser());
 
-  const refetch = useCallback(() => {
+  const refetch = useCallback((updatedUser?: User) => {
+    if (updatedUser != null) {
+      setCurrentUserState(updatedUser);
+      return Promise.resolve();
+    }
     const initial = getCurrentUser();
     if (!initial?.id) return Promise.resolve();
     return new Promise<void>((resolve) => {
       fetchCurrentUserDetails(
         (user) => {
-          setCurrentUser(user);
+          setCurrentUserState(user);
           resolve();
         },
         () => resolve(),
