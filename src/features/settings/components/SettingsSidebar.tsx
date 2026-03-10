@@ -2,9 +2,17 @@ import React, { memo, useCallback, useState, useMemo } from 'react';
 import { SETTINGS_CONSTANTS, SETTINGS_SECTIONS_LIST } from '../constants';
 import type { SettingsSectionKey } from '../constants';
 import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_COLORS } from '../../../constants';
+import { PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
 
 const { SIDEBAR } = SETTINGS_CONSTANTS;
 const SB = BUTTON_CONFIGS.SIDEBAR_BUTTON;
+const HEADER_OFFSET_PX = PAGE_CONTENT_LAYOUT.HEADER_OFFSET_PX;
+
+const ITEM_GAP_PX = 10;
+/** No top margin so first item is flush with sidebar top; bar at sidebar left so no left margin. */
+const ITEM_MARGIN = '0 12px 10px 0';
+/** Space between selection bar and icon. */
+const BAR_TO_CONTENT_GAP = 8;
 
 interface SettingsSidebarProps {
   activeSection: SettingsSectionKey;
@@ -13,30 +21,41 @@ interface SettingsSidebarProps {
 
 const SettingsSidebar: React.FC<SettingsSidebarProps> = memo(
   ({ activeSection, onSectionChange }) => {
-    const navStyle = useMemo(
+    const wrapperStyle = useMemo(
       () => ({
+        position: 'fixed' as const,
+        right: 0,
+        top: HEADER_OFFSET_PX,
         width: SIDEBAR.WIDTH,
-        flexShrink: 0 as const,
+        height: `calc(100vh - ${HEADER_OFFSET_PX}px)`,
         backgroundColor: DEFAULT_COLORS.BACKGROUND_WHITE,
+        borderLeft: SIDEBAR.BORDER_RIGHT,
+        zIndex: 1,
+        overflowY: 'auto' as const,
         paddingTop: 0,
-        paddingLeft: '12px',
-        paddingRight: '12px',
+        paddingLeft: 0,
+        paddingRight: 12,
         paddingBottom: 24,
+        display: 'flex' as const,
+        flexDirection: 'column' as const,
+        alignItems: 'stretch' as const,
       }),
       [],
     );
 
     return (
-      <nav style={navStyle}>
-        {SETTINGS_SECTIONS_LIST.map((section) => (
-          <SettingsSidebarItem
-            key={section.key}
-            section={section}
-            isActive={activeSection === section.key}
-            onSelect={() => onSectionChange(section.key)}
-          />
-        ))}
-      </nav>
+      <aside style={wrapperStyle}>
+        <nav style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+          {SETTINGS_SECTIONS_LIST.map((section) => (
+            <SettingsSidebarItem
+              key={section.key}
+              section={section}
+              isActive={activeSection === section.key}
+              onSelect={() => onSectionChange(section.key)}
+            />
+          ))}
+        </nav>
+      </aside>
     );
   },
 );
@@ -48,9 +67,6 @@ interface ItemProps {
   isActive: boolean;
   onSelect: () => void;
 }
-
-/** Same as app sidebar EXPANDED_MARGIN but mirrored for right sidebar (bar on left). */
-const ITEM_MARGIN = '10px 0 10px -12px';
 
 const SettingsSidebarItem: React.FC<ItemProps> = memo(({ section, isActive, onSelect }) => {
   const [hovered, setHovered] = useState(false);
@@ -66,14 +82,16 @@ const SettingsSidebarItem: React.FC<ItemProps> = memo(({ section, isActive, onSe
     () => ({
       display: 'flex' as const,
       alignItems: 'center' as const,
-      gap: 10,
+      gap: ITEM_GAP_PX,
       width: '100%' as const,
       height: SB.HEIGHT,
-      padding: SB.PADDING,
+      padding: `12px 10px 12px ${SB.BORDER_WIDTH + BAR_TO_CONTENT_GAP}px`,
       margin: ITEM_MARGIN,
       border: 'none' as const,
       outline: 'none' as const,
       borderRadius: SB.BORDER_RADIUS,
+      borderTopLeftRadius: 0,
+      borderBottomLeftRadius: 0,
       backgroundColor: 'transparent' as const,
       color: textColor,
       fontWeight: SB.FONT_WEIGHT,

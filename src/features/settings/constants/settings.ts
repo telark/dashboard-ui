@@ -55,7 +55,9 @@ export const SETTINGS_CONSTANTS = {
   },
   SIDEBAR: {
     WIDTH: 260,
-    BORDER_RIGHT: '1px solid #e2e8f0',
+    /** Icon-only width for settings sidebar (labels in tooltips). */
+    WIDTH_COLLAPSED: 56,
+    BORDER_RIGHT: '0.5px solid #e2e8f0',
   },
   CONTENT: {
     MAX_WIDTH: 640,
