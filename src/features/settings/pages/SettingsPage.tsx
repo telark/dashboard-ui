@@ -105,12 +105,7 @@ const SettingsPage: React.FC = () => {
                   >
                     {passkeysBreadcrumbItems.map((b, index) => (
                       <React.Fragment key={index}>
-                        {index > 0 && (
-                          <span style={{ color: '#64748b' }}>
-                            {' '}
-                            /{' '}
-                          </span>
-                        )}
+                        {index > 0 && <span style={{ color: '#64748b' }}> / </span>}
                         {b.onClick ? (
                           <button
                             type="button"
@@ -130,9 +125,7 @@ const SettingsPage: React.FC = () => {
                             {b.label}
                           </button>
                         ) : (
-                          <span style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-                            {b.label}
-                          </span>
+                          <span style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>{b.label}</span>
                         )}
                       </React.Fragment>
                     ))}

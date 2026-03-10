@@ -61,14 +61,7 @@ export interface SessionsTableProps {
 }
 
 const SessionsTable: React.FC<SessionsTableProps> = memo(
-  ({
-    sessions,
-    loading,
-    error,
-    currentToken,
-    revokingToken,
-    onRevokeClick,
-  }) => (
+  ({ sessions, loading, error, currentToken, revokingToken, onRevokeClick }) => (
     <div>
       <div style={tableHeaderStyle}>
         <span>{LABELS.ACTIVE_SESSIONS_HEADER_DEVICE}</span>
@@ -76,36 +69,24 @@ const SessionsTable: React.FC<SessionsTableProps> = memo(
         <span>{LABELS.ACTIVE_SESSIONS_HEADER_EXPIRES}</span>
         <span />
       </div>
-      {loading && (
-        <div style={emptyRowStyle}>{LABELS.SESSIONS_LOADING}</div>
-      )}
-      {!loading && error && (
-        <div style={emptyRowStyle}>{LABELS.SESSIONS_ERROR}</div>
-      )}
+      {loading && <div style={emptyRowStyle}>{LABELS.SESSIONS_LOADING}</div>}
+      {!loading && error && <div style={emptyRowStyle}>{LABELS.SESSIONS_ERROR}</div>}
       {!loading && !error && sessions.length === 0 && (
         <div style={emptyRowStyle}>{LABELS.ACTIVE_SESSIONS_EMPTY}</div>
       )}
-      {!loading && !error && sessions.length > 0 &&
+      {!loading &&
+        !error &&
+        sessions.length > 0 &&
         sessions.map((session) => {
           const expired = isSessionExpired(session.expiresTimestamp);
           const isCurrent = session.sessionToken === currentToken;
           return (
             <div key={session.sessionToken} style={rowStyle}>
-              <span>
-                {isCurrent
-                  ? LABELS.SESSIONS_THIS_DEVICE
-                  : LABELS.SESSIONS_OTHER_SESSION}
-              </span>
+              <span>{isCurrent ? LABELS.SESSIONS_THIS_DEVICE : LABELS.SESSIONS_OTHER_SESSION}</span>
               <span>
                 <TimeAgo date={session.createdTimestamp} />
               </span>
-              <span
-                style={
-                  expired
-                    ? { color: DEFAULT_COLORS.TEXT_MUTED }
-                    : undefined
-                }
-              >
+              <span style={expired ? { color: DEFAULT_COLORS.TEXT_MUTED } : undefined}>
                 <TimeAgo date={session.expiresTimestamp} />
               </span>
               <span>

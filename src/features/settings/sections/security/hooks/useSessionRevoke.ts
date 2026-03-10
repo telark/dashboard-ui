@@ -41,29 +41,26 @@ export const useSessionRevoke = ({
     setSessionToRevoke(null);
   }, []);
 
-  const handleRevokeConfirm = useCallback(
-    async () => {
-      if (!sessionToRevoke) return;
-      const isCurrent = sessionToRevoke.sessionToken === currentToken;
-      setRevokingToken(sessionToRevoke.sessionToken);
-      setSessionToRevoke(null);
-      try {
-        if (isCurrent) {
-          await handleUserLogout(navigate);
-        } else {
-          await revokeSession(sessionToRevoke.sessionToken, {});
-          message.success(LABELS.SESSIONS_REVOKE_SUCCESS);
-        }
-      } catch {
-        if (!isCurrent) {
-          message.error(LABELS.SESSIONS_REVOKE_ERROR);
-        }
-      } finally {
-        setRevokingToken(null);
+  const handleRevokeConfirm = useCallback(async () => {
+    if (!sessionToRevoke) return;
+    const isCurrent = sessionToRevoke.sessionToken === currentToken;
+    setRevokingToken(sessionToRevoke.sessionToken);
+    setSessionToRevoke(null);
+    try {
+      if (isCurrent) {
+        await handleUserLogout(navigate);
+      } else {
+        await revokeSession(sessionToRevoke.sessionToken, {});
+        message.success(LABELS.SESSIONS_REVOKE_SUCCESS);
       }
-    },
-    [sessionToRevoke, currentToken, revokeSession, navigate],
-  );
+    } catch {
+      if (!isCurrent) {
+        message.error(LABELS.SESSIONS_REVOKE_ERROR);
+      }
+    } finally {
+      setRevokingToken(null);
+    }
+  }, [sessionToRevoke, currentToken, revokeSession, navigate]);
 
   const revokeModalMessage =
     sessionToRevoke?.sessionToken === currentToken

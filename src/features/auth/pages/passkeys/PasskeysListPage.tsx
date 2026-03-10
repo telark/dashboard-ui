@@ -140,26 +140,24 @@ const PasskeysListPage: React.FC<PasskeysListPageProps> = memo(
       : 'No passkeys yet. Add one to get started.';
 
     const titleContent =
-      hideTitle === true
-        ? null
-        : breadcrumbItems && breadcrumbItems.length > 0
-          ? (
-              <>
-                {breadcrumbItems.map((b, index) => (
-                  <React.Fragment key={index}>
-                    {index > 0 && <span style={{ color: '#64748b' }}> / </span>}
-                    {b.onClick ? (
-                      <button type="button" onClick={b.onClick} style={BREADCRUMB_LINK_STYLE}>
-                        {b.label}
-                      </button>
-                    ) : (
-                      <span style={{ color: '#0B1F33' }}>{b.label}</span>
-                    )}
-                  </React.Fragment>
-                ))}
-              </>
-            )
-          : pageConfig.title;
+      hideTitle === true ? null : breadcrumbItems && breadcrumbItems.length > 0 ? (
+        <>
+          {breadcrumbItems.map((b, index) => (
+            <React.Fragment key={index}>
+              {index > 0 && <span style={{ color: '#64748b' }}> / </span>}
+              {b.onClick ? (
+                <button type="button" onClick={b.onClick} style={BREADCRUMB_LINK_STYLE}>
+                  {b.label}
+                </button>
+              ) : (
+                <span style={{ color: '#0B1F33' }}>{b.label}</span>
+              )}
+            </React.Fragment>
+          ))}
+        </>
+      ) : (
+        pageConfig.title
+      );
 
     const wrapperStyle: React.CSSProperties = hideTitle
       ? { background: 'transparent', minHeight: 'auto' }

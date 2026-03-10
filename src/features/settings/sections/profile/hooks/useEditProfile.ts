@@ -2,7 +2,10 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { Form, message } from 'antd';
 import { updateUser } from '../../../../access-and-permissions/users/clients';
 import { setCurrentUser } from '../../../../auth/utils/session/user';
-import { makeEmailFormatRule, makeFullnameCharsRule } from '../../../../access-and-permissions/users/utils';
+import {
+  makeEmailFormatRule,
+  makeFullnameCharsRule,
+} from '../../../../access-and-permissions/users/utils';
 import { PROFILE_SECTION_CONSTANTS } from '../constants';
 import type { User } from '../../../../access-and-permissions/users/models';
 
@@ -54,9 +57,7 @@ export function useEditProfile({
   const emailRules = [makeEmailFormatRule()];
 
   const initialValues: EditProfileFormValues | null =
-    currentUser != null
-      ? { fullname: currentUser.fullname, email: currentUser.email }
-      : null;
+    currentUser != null ? { fullname: currentUser.fullname, email: currentUser.email } : null;
 
   const checkFormState = useCallback(() => {
     const errors = form.getFieldsError();

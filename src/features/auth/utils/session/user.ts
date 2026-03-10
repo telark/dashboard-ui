@@ -24,9 +24,7 @@ export const setCurrentUser = (user: User): void => {
   try {
     globalThis.localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
     if (typeof globalThis.dispatchEvent === 'function') {
-      globalThis.dispatchEvent(
-        new CustomEvent(CURRENT_USER_UPDATED_EVENT, { detail: user }),
-      );
+      globalThis.dispatchEvent(new CustomEvent(CURRENT_USER_UPDATED_EVENT, { detail: user }));
     }
   } catch (error) {
     if (isDevelopment()) {

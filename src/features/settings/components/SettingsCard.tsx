@@ -33,9 +33,7 @@ const SettingsCard: React.FC<SettingsCardProps> = memo(
         }}
       >
         <div style={headerStyle}>
-          {headerStart != null ? (
-            <div style={{ flexShrink: 0 }}>{headerStart}</div>
-          ) : null}
+          {headerStart != null ? <div style={{ flexShrink: 0 }}>{headerStart}</div> : null}
           <div style={{ minWidth: 0, flex: 1 }}>
             {title.length > 0 && (
               <h3
@@ -62,9 +60,7 @@ const SettingsCard: React.FC<SettingsCardProps> = memo(
               </p>
             )}
           </div>
-          {headerAction != null ? (
-            <div style={{ flexShrink: 0 }}>{headerAction}</div>
-          ) : null}
+          {headerAction != null ? <div style={{ flexShrink: 0 }}>{headerAction}</div> : null}
         </div>
         {children}
       </div>

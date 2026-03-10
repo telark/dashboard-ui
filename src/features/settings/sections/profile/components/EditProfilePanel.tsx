@@ -52,7 +52,9 @@ const EditProfilePanel: React.FC<EditProfilePanelProps> = memo(
       formContent={
         <>
           <div style={{ marginBottom: 16 }}>
-            <label style={{ display: 'block', fontSize: 12, color: 'rgba(0,0,0,0.65)', marginBottom: 4 }}>
+            <label
+              style={{ display: 'block', fontSize: 12, color: 'rgba(0,0,0,0.65)', marginBottom: 4 }}
+            >
               {P.USERNAME_LABEL}
             </label>
             <span style={{ fontSize: 14, color: 'rgba(0,0,0,0.85)' }}>{username}</span>

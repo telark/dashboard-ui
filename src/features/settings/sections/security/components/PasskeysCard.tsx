@@ -22,19 +22,14 @@ export interface PasskeysCardProps {
 }
 
 const PasskeysCard: React.FC<PasskeysCardProps> = memo(({ onManagePasskeysClick }) => (
-  <SettingsCard
-    title={LABELS.PASSKEYS_CARD_TITLE}
-    description={LABELS.PASSKEYS_CARD_DESCRIPTION}
-  >
+  <SettingsCard title={LABELS.PASSKEYS_CARD_TITLE} description={LABELS.PASSKEYS_CARD_DESCRIPTION}>
     <div style={{ fontSize: 14, color: DEFAULT_COLORS.TEXT_SECONDARY }}>
       {onManagePasskeysClick ? (
         <button type="button" style={linkStyle} onClick={onManagePasskeysClick}>
           {LABELS.PASSKEYS_MANAGE_LINK}
         </button>
       ) : (
-        <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
-          {LABELS.PASSKEYS_MANAGE_LINK}
-        </span>
+        <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{LABELS.PASSKEYS_MANAGE_LINK}</span>
       )}
     </div>
   </SettingsCard>

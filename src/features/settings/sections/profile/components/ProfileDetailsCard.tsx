@@ -71,103 +71,92 @@ export interface ProfileDetailsCardProps {
   onEditClick?: () => void;
 }
 
-const ProfileDetailsCard: React.FC<ProfileDetailsCardProps> = memo(
-  ({ user, onEditClick }) => {
-    const handleEdit = useCallback(() => {
-      onEditClick?.();
-    }, [onEditClick]);
+const ProfileDetailsCard: React.FC<ProfileDetailsCardProps> = memo(({ user, onEditClick }) => {
+  const handleEdit = useCallback(() => {
+    onEditClick?.();
+  }, [onEditClick]);
 
-    const editButton = (
-      <button
-        type="button"
-        onClick={handleEdit}
-        style={editButtonStyle}
-        title={LABELS.EDIT_TITLE}
-      >
-        <EditOutlined style={{ fontSize: 14 }} />
-        <span>{LABELS.EDIT}</span>
-      </button>
-    );
+  const editButton = (
+    <button type="button" onClick={handleEdit} style={editButtonStyle} title={LABELS.EDIT_TITLE}>
+      <EditOutlined style={{ fontSize: 14 }} />
+      <span>{LABELS.EDIT}</span>
+    </button>
+  );
 
-    return (
-      <SettingsCard
-        title={LABELS.PROFILE_DETAILS_CARD_TITLE}
-        description={LABELS.PROFILE_DETAILS_CARD_DESCRIPTION}
-        headerAction={onEditClick ? editButton : undefined}
-      >
-        <div style={rowBaseStyle}>
-          <IdcardOutlined style={iconStyle} />
-          <div style={profileRowLabelStyle}>{LABELS.FULL_NAME}</div>
-          <div style={valueCellStyle}>{user?.fullname ?? LABELS.PLACEHOLDER}</div>
+  return (
+    <SettingsCard
+      title={LABELS.PROFILE_DETAILS_CARD_TITLE}
+      description={LABELS.PROFILE_DETAILS_CARD_DESCRIPTION}
+      headerAction={onEditClick ? editButton : undefined}
+    >
+      <div style={rowBaseStyle}>
+        <IdcardOutlined style={iconStyle} />
+        <div style={profileRowLabelStyle}>{LABELS.FULL_NAME}</div>
+        <div style={valueCellStyle}>{user?.fullname ?? LABELS.PLACEHOLDER}</div>
+      </div>
+      <div style={rowBaseStyle}>
+        <UserOutlined style={iconStyle} />
+        <div style={profileRowLabelStyle}>{LABELS.USERNAME}</div>
+        <div style={valueCellStyle}>{user?.username ?? LABELS.PLACEHOLDER}</div>
+      </div>
+      <div style={rowBaseStyle}>
+        <MailOutlined style={iconStyle} />
+        <div style={profileRowLabelStyle}>{LABELS.EMAIL}</div>
+        <div style={valueCellStyle}>{user?.email ?? LABELS.PLACEHOLDER}</div>
+      </div>
+      <div style={rowBaseStyle}>
+        <CalendarOutlined style={iconStyle} />
+        <div style={profileRowLabelStyle}>{LABELS.MEMBER_SINCE}</div>
+        <div style={valueCellStyle}>
+          {user?.creationDate ? <TimeAgo date={user.creationDate} /> : LABELS.PLACEHOLDER}
         </div>
-        <div style={rowBaseStyle}>
-          <UserOutlined style={iconStyle} />
-          <div style={profileRowLabelStyle}>{LABELS.USERNAME}</div>
-          <div style={valueCellStyle}>{user?.username ?? LABELS.PLACEHOLDER}</div>
+      </div>
+      <div style={rowBaseStyle}>
+        <ClockCircleOutlined style={iconStyle} />
+        <div style={profileRowLabelStyle}>{LABELS.LAST_LOGIN}</div>
+        <div style={valueCellStyle}>
+          {user?.status?.lastLoginAt ? (
+            <TimeAgo date={user.status.lastLoginAt} />
+          ) : (
+            LABELS.PLACEHOLDER
+          )}
         </div>
-        <div style={rowBaseStyle}>
-          <MailOutlined style={iconStyle} />
-          <div style={profileRowLabelStyle}>{LABELS.EMAIL}</div>
-          <div style={valueCellStyle}>{user?.email ?? LABELS.PLACEHOLDER}</div>
+      </div>
+      <div style={rowBaseStyle}>
+        <CheckCircleOutlined style={iconStyle} />
+        <div style={profileRowLabelStyle}>{LABELS.STATUS}</div>
+        <div
+          style={{
+            ...valueCellStyle,
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
+          {user?.status?.phase ? (
+            <RowTag
+              text={user.status.phase}
+              background={
+                user.status.phase === 'active'
+                  ? `${DEFAULT_COLORS.SUCCESS}18`
+                  : DEFAULT_COLORS.CHIP_CUSTOM_BG
+              }
+              color={
+                user.status.phase === 'active'
+                  ? DEFAULT_COLORS.SUCCESS
+                  : DEFAULT_COLORS.CHIP_CUSTOM_TEXT
+              }
+              fontSize={12}
+            />
+          ) : (
+            <span style={{ fontSize: 15, color: DEFAULT_COLORS.TEXT_MUTED }}>
+              {LABELS.PLACEHOLDER}
+            </span>
+          )}
         </div>
-        <div style={rowBaseStyle}>
-          <CalendarOutlined style={iconStyle} />
-          <div style={profileRowLabelStyle}>{LABELS.MEMBER_SINCE}</div>
-          <div style={valueCellStyle}>
-            {user?.creationDate ? (
-              <TimeAgo date={user.creationDate} />
-            ) : (
-              LABELS.PLACEHOLDER
-            )}
-          </div>
-        </div>
-        <div style={rowBaseStyle}>
-          <ClockCircleOutlined style={iconStyle} />
-          <div style={profileRowLabelStyle}>{LABELS.LAST_LOGIN}</div>
-          <div style={valueCellStyle}>
-            {user?.status?.lastLoginAt ? (
-              <TimeAgo date={user.status.lastLoginAt} />
-            ) : (
-              LABELS.PLACEHOLDER
-            )}
-          </div>
-        </div>
-        <div style={rowBaseStyle}>
-          <CheckCircleOutlined style={iconStyle} />
-          <div style={profileRowLabelStyle}>{LABELS.STATUS}</div>
-          <div
-            style={{
-              ...valueCellStyle,
-              display: 'flex',
-              justifyContent: 'flex-end',
-            }}
-          >
-            {user?.status?.phase ? (
-              <RowTag
-                text={user.status.phase}
-                background={
-                  user.status.phase === 'active'
-                    ? `${DEFAULT_COLORS.SUCCESS}18`
-                    : DEFAULT_COLORS.CHIP_CUSTOM_BG
-                }
-                color={
-                  user.status.phase === 'active'
-                    ? DEFAULT_COLORS.SUCCESS
-                    : DEFAULT_COLORS.CHIP_CUSTOM_TEXT
-                }
-                fontSize={12}
-              />
-            ) : (
-              <span style={{ fontSize: 15, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                {LABELS.PLACEHOLDER}
-              </span>
-            )}
-          </div>
-        </div>
-      </SettingsCard>
-    );
-  },
-);
+      </div>
+    </SettingsCard>
+  );
+});
 
 ProfileDetailsCard.displayName = 'ProfileDetailsCard';
 
