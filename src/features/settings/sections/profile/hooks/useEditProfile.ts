@@ -119,19 +119,13 @@ export function useEditProfile({
     [currentUser, refetch],
   );
 
-  const handleValuesChange = useCallback(
-    (_changedValues: Record<string, unknown>, _allValues: Record<string, unknown>) => {
-      checkFormState();
-    },
-    [checkFormState],
-  );
+  const handleValuesChange = useCallback(() => {
+    checkFormState();
+  }, [checkFormState]);
 
-  const handleFieldsChange = useCallback(
-    (_changedFields: unknown[], _allFields: unknown[]) => {
-      checkFormState();
-    },
-    [checkFormState],
-  );
+  const handleFieldsChange = useCallback(() => {
+    checkFormState();
+  }, [checkFormState]);
 
   return {
     panelOpen,

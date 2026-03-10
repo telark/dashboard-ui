@@ -30,8 +30,19 @@ export function useProfileUser(): UseProfileUserResult {
   }, []);
 
   useEffect(() => {
-    refetch();
-  }, [refetch]);
+    const initial = getCurrentUser();
+    if (!initial?.id) return;
+    let cancelled = false;
+    fetchCurrentUserDetails(
+      (user) => {
+        if (!cancelled) setCurrentUserState(user);
+      },
+      () => {},
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return { currentUser, refetch };
 }

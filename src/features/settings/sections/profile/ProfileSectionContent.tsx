@@ -32,7 +32,7 @@ const ProfileSectionContent: React.FC = memo(() => {
         message.error(LABELS.AVATAR_UPDATE_ERROR);
       }
     },
-    [currentUser?.id, refetch],
+    [currentUser, refetch],
   );
   const {
     panelOpen,
