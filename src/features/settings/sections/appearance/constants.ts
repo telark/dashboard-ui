@@ -34,6 +34,7 @@ export const APPEARANCE_SECTION_CONSTANTS = {
     FONT_SIZE_SMALL: 'Small',
     FONT_SIZE_MEDIUM: 'Medium (default)',
     FONT_SIZE_LARGE: 'Large',
+    COMING_SOON: 'Coming soon',
   },
   THEME_OPTIONS: ['Light', 'Dark', 'System'] as const,
   DENSITY_OPTIONS: ['Comfortable', 'Compact'] as const,
