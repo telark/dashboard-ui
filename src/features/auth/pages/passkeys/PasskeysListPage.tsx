@@ -16,6 +16,16 @@ const CONTAINER_STYLE: React.CSSProperties = {
   boxSizing: 'border-box',
 };
 
+/** When embedded in Settings (hideTitle), no extra padding or full-height so it aligns with Security layout. */
+const EMBEDDED_CONTAINER_STYLE: React.CSSProperties = {
+  background: 'transparent',
+  minHeight: 'auto',
+  padding: 0,
+  marginTop: 0,
+  width: '100%',
+  boxSizing: 'border-box',
+};
+
 const TITLE_BLOCK_STYLE: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
@@ -67,6 +77,24 @@ const EMPTY_MESSAGE_STYLE: React.CSSProperties = {
   fontSize: 14,
 };
 
+const BREADCRUMB_LINK_STYLE: React.CSSProperties = {
+  background: 'none',
+  border: 'none',
+  padding: 0,
+  cursor: 'pointer',
+  color: '#64748b',
+  fontSize: 28,
+  fontWeight: 700,
+  fontFamily: 'inherit',
+  textDecoration: 'none',
+};
+
+/** Same shape as groups breadcrumb: label + optional onClick to go back (no route). */
+export interface PasskeyBreadcrumbItem {
+  label: string;
+  onClick?: () => void;
+}
+
 export interface PasskeysListPageProps {
   pageConfig: PasskeyListPageConfig;
   passkeys: Passkey[];
@@ -82,6 +110,10 @@ export interface PasskeysListPageProps {
   formSyncKey: number;
   submitting: boolean;
   onSubmit: (values: Record<string, unknown>) => Promise<void>;
+  /** When provided (e.g. embedded in Settings), show breadcrumb as title instead of plain title. */
+  breadcrumbItems?: PasskeyBreadcrumbItem[];
+  /** When true, parent renders title/breadcrumb; hide this page's title block. */
+  hideTitle?: boolean;
 }
 
 const PasskeysListPage: React.FC<PasskeysListPageProps> = memo(
@@ -100,19 +132,50 @@ const PasskeysListPage: React.FC<PasskeysListPageProps> = memo(
     formSyncKey,
     submitting,
     onSubmit,
+    breadcrumbItems,
+    hideTitle,
   }) => {
     const emptyMessage = searchTerm
       ? 'No passkeys match your search.'
       : 'No passkeys yet. Add one to get started.';
 
+    const titleContent =
+      hideTitle === true
+        ? null
+        : breadcrumbItems && breadcrumbItems.length > 0
+          ? (
+              <>
+                {breadcrumbItems.map((b, index) => (
+                  <React.Fragment key={index}>
+                    {index > 0 && <span style={{ color: '#64748b' }}> / </span>}
+                    {b.onClick ? (
+                      <button type="button" onClick={b.onClick} style={BREADCRUMB_LINK_STYLE}>
+                        {b.label}
+                      </button>
+                    ) : (
+                      <span style={{ color: '#0B1F33' }}>{b.label}</span>
+                    )}
+                  </React.Fragment>
+                ))}
+              </>
+            )
+          : pageConfig.title;
+
+    const wrapperStyle: React.CSSProperties = hideTitle
+      ? { background: 'transparent', minHeight: 'auto' }
+      : { background: DEFAULT_COLORS.BACKGROUND_WHITE, minHeight: '100vh' };
+    const containerStyle = hideTitle ? EMBEDDED_CONTAINER_STYLE : CONTAINER_STYLE;
+
     return (
-      <div style={{ background: DEFAULT_COLORS.BACKGROUND_WHITE, minHeight: '100vh' }}>
-        <div style={CONTAINER_STYLE}>
+      <div style={wrapperStyle}>
+        <div style={containerStyle}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
-            <div style={TITLE_BLOCK_STYLE}>
-              <h1 style={TITLE_STYLE}>{pageConfig.title}</h1>
-              <p style={SUBTITLE_STYLE}>{pageConfig.subtitle}</p>
-            </div>
+            {!hideTitle && (
+              <div style={TITLE_BLOCK_STYLE}>
+                <h1 style={TITLE_STYLE}>{titleContent}</h1>
+                <p style={SUBTITLE_STYLE}>{pageConfig.subtitle}</p>
+              </div>
+            )}
 
             <div style={TOOLBAR_ROW_STYLE}>
               <div />

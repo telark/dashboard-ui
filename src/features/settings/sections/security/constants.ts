@@ -1,5 +1,10 @@
 export const SECURITY_SECTION_CONSTANTS = {
   LABELS: {
+    BREADCRUMBS: {
+      SETTINGS: 'Settings',
+      SECURITY: 'Security',
+      PASSKEYS: 'Passkeys',
+    },
     PASSKEYS_CARD_TITLE: 'Passkeys',
     PASSKEYS_CARD_DESCRIPTION:
       'Sign in with passkeys on this device and others. Add or remove passkeys to manage how you sign in.',

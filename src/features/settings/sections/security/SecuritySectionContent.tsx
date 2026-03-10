@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
-import { Link } from 'react-router-dom';
-import { DEFAULT_COLORS, APP_ROUTES } from '../../../../constants';
+import { DEFAULT_COLORS } from '../../../../constants';
 import SettingsCard from '../../components/SettingsCard';
 import { SETTINGS_CONSTANTS } from '../../constants';
 import { SECURITY_SECTION_CONSTANTS } from './constants';
@@ -33,39 +32,57 @@ const linkStyle: React.CSSProperties = {
   fontWeight: 500,
   color: DEFAULT_COLORS.SUCCESS,
   textDecoration: 'none',
+  background: 'none',
+  border: 'none',
+  padding: 0,
+  cursor: 'pointer',
+  fontFamily: 'inherit',
 };
 
-const SecuritySectionContent: React.FC = memo(() => {
-  return (
-    <>
-      <SettingsCard
-        title={LABELS.PASSKEYS_CARD_TITLE}
-        description={LABELS.PASSKEYS_CARD_DESCRIPTION}
-      >
-        <div style={{ fontSize: 14, color: DEFAULT_COLORS.TEXT_SECONDARY }}>
-          <Link to={APP_ROUTES.PASSKEYS} style={linkStyle}>
-            {LABELS.PASSKEYS_MANAGE_LINK}
-          </Link>
-        </div>
-      </SettingsCard>
-      <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
+interface SecuritySectionContentProps {
+  /** When provided, "Manage passkeys" stays in Security (no route); opens passkeys sub-view with breadcrumb. */
+  onManagePasskeysClick?: () => void;
+}
+
+const SecuritySectionContent: React.FC<SecuritySectionContentProps> = memo(
+  ({ onManagePasskeysClick }) => {
+    return (
+      <>
         <SettingsCard
-          title={LABELS.ACTIVE_SESSIONS_CARD_TITLE}
-          description={LABELS.ACTIVE_SESSIONS_CARD_DESCRIPTION}
+          title={LABELS.PASSKEYS_CARD_TITLE}
+          description={LABELS.PASSKEYS_CARD_DESCRIPTION}
         >
-          <div>
-            <div style={tableHeaderStyle}>
-              <span>{LABELS.ACTIVE_SESSIONS_HEADER_DEVICE}</span>
-              <span>{LABELS.ACTIVE_SESSIONS_HEADER_LAST_ACTIVE}</span>
-              <span>{LABELS.ACTIVE_SESSIONS_HEADER_ACTIONS}</span>
-            </div>
-            <div style={emptyRowStyle}>{LABELS.ACTIVE_SESSIONS_EMPTY}</div>
+          <div style={{ fontSize: 14, color: DEFAULT_COLORS.TEXT_SECONDARY }}>
+            {onManagePasskeysClick ? (
+              <button type="button" style={linkStyle} onClick={onManagePasskeysClick}>
+                {LABELS.PASSKEYS_MANAGE_LINK}
+              </button>
+            ) : (
+              <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
+                {LABELS.PASSKEYS_MANAGE_LINK}
+              </span>
+            )}
           </div>
         </SettingsCard>
-      </div>
-    </>
-  );
-});
+        <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
+          <SettingsCard
+            title={LABELS.ACTIVE_SESSIONS_CARD_TITLE}
+            description={LABELS.ACTIVE_SESSIONS_CARD_DESCRIPTION}
+          >
+            <div>
+              <div style={tableHeaderStyle}>
+                <span>{LABELS.ACTIVE_SESSIONS_HEADER_DEVICE}</span>
+                <span>{LABELS.ACTIVE_SESSIONS_HEADER_LAST_ACTIVE}</span>
+                <span>{LABELS.ACTIVE_SESSIONS_HEADER_ACTIONS}</span>
+              </div>
+              <div style={emptyRowStyle}>{LABELS.ACTIVE_SESSIONS_EMPTY}</div>
+            </div>
+          </SettingsCard>
+        </div>
+      </>
+    );
+  },
+);
 
 SecuritySectionContent.displayName = 'SecuritySectionContent';
 
