@@ -9,6 +9,7 @@ import {
   UsersMenuButton,
   GroupsMenuButton,
   RolesMenuButton,
+  ProtectionPlansMenuButton,
 } from './MenuButtons';
 
 interface MenuItemsProps {
@@ -16,7 +17,10 @@ interface MenuItemsProps {
 }
 
 const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
-  const defaultOpenKeys = useMemo(() => [MENU_KEYS.RESOURCES, MENU_KEYS.USERS_AND_GROUPS], []);
+  const defaultOpenKeys = useMemo(
+    () => [MENU_KEYS.RESOURCES, MENU_KEYS.USERS_AND_GROUPS, MENU_KEYS.GOVERNANCE],
+    [],
+  );
 
   const [openKeys, setOpenKeys] = useState<string[]>(isCollapsed ? [] : defaultOpenKeys);
 
@@ -53,6 +57,7 @@ const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
         <UsersMenuButton isCollapsed={isCollapsed} />
         <GroupsMenuButton isCollapsed={isCollapsed} />
         <RolesMenuButton isCollapsed={isCollapsed} />
+        <ProtectionPlansMenuButton isCollapsed={isCollapsed} />
       </>
     ),
     [isCollapsed],
@@ -74,6 +79,13 @@ const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
           <UsersMenuButton isCollapsed={isCollapsed} />
           <GroupsMenuButton isCollapsed={isCollapsed} />
           <RolesMenuButton isCollapsed={isCollapsed} />
+        </Menu.SubMenu>
+        <Menu.SubMenu
+          key={MENU_KEYS.GOVERNANCE}
+          title={MENU_LABELS.GOVERNANCE}
+          style={submenuStyle}
+        >
+          <ProtectionPlansMenuButton isCollapsed={isCollapsed} />
         </Menu.SubMenu>
       </>
     ),

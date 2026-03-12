@@ -31,4 +31,5 @@ export const APP_ROUTES = {
   USERS: '/management/users',
   GROUPS: '/management/groups',
   SETTINGS: '/settings',
+  PROTECTION_PLANS: '/management/protection-plans',
 } as const;

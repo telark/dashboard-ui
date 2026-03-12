@@ -10,6 +10,7 @@ const WorkloadIcon = Icons.Workload;
 const BridgeIcon = Icons.Bridge;
 const UserIcon = Icons.User;
 const GroupIcon = Icons.Group;
+const ShieldIcon = Icons.Role;
 
 interface MenuButtonProps {
   isCollapsed?: boolean;
@@ -133,3 +134,22 @@ export const RolesMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = 
 });
 
 RolesMenuButton.displayName = 'RolesMenuButton';
+
+export const ProtectionPlansMenuButton: React.FC<MenuButtonProps> = memo(
+  ({ isCollapsed = false }) => {
+    const location = useLocation();
+    const pathname = location.pathname;
+
+    return (
+      <SidebarButton
+        text={MENU_LABELS.PROTECTION_PLANS}
+        icon={<ShieldIcon />}
+        active={pathname.startsWith(APP_ROUTES.PROTECTION_PLANS)}
+        route={APP_ROUTES.PROTECTION_PLANS}
+        isCollapsed={isCollapsed}
+      />
+    );
+  },
+);
+
+ProtectionPlansMenuButton.displayName = 'ProtectionPlansMenuButton';
