@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useProtectionPlans } from '../hooks/useProtectionPlans';
-import ProtectionPlansEmptyPage from '../components/ProtectionPlansEmptyPage';
-import ProtectionPlansLoadingPage from '../components/ProtectionPlansLoadingPage';
-import ProtectionPlansErrorPage from '../components/ProtectionPlansErrorPage';
-import ProtectionPlansListPage from '../components/ProtectionPlansListPage';
+import ProtectionPlansEmptyPage from './ProtectionPlansEmptyPage';
+import ProtectionPlansLoadingPage from './ProtectionPlansLoadingPage';
+import ProtectionPlansErrorPage from './ProtectionPlansErrorPage';
+import ProtectionPlansListPage from './ProtectionPlansListPage';
 
 const MainPage: React.FC = () => {
   const { plans, loading, error } = useProtectionPlans();

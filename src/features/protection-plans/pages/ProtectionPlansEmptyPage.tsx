@@ -56,3 +56,4 @@ const ProtectionPlansEmptyPage: React.FC<ProtectionPlansEmptyPageProps> = ({
 };
 
 export default ProtectionPlansEmptyPage;
+
