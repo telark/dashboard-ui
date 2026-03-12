@@ -1,5 +1,5 @@
-import React, { memo } from 'react';
-import { Tag } from 'antd';
+import React, { memo, useMemo } from 'react';
+import { Avatar } from 'antd';
 import dayjs from 'dayjs';
 import { DEFAULT_COLORS } from '../../../../constants';
 import {
@@ -7,6 +7,8 @@ import {
   PROTECTION_PLANS_POLICY_KEYS,
 } from '../../constants/protectionPlans';
 import type { ProtectionPlan } from '../../models';
+import RowTag from '../../../../components/display/table/RowTag';
+import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 interface ProtectionPlanCardProps {
   plan: ProtectionPlan;
@@ -18,25 +20,24 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     .map((p) => PPC.LABELS.POLICY_LABELS[p.key]);
 
   const lifecycleLabel = PPC.LABELS.LIFECYCLE_LABELS[plan.lifecycle];
-  const isActive = plan.lifecycle === 'active';
-  const isScheduled = plan.lifecycle === 'scheduled';
-  const lifecycleBg = isActive ? '#22c55e30' : isScheduled ? '#0ea5e930' : '#e5e7eb80';
-  const lifecycleColor = isActive ? '#16a34a' : isScheduled ? '#0369a1' : '#4b5563';
 
   const windowText = `${dayjs(plan.schedule.startAt).format('MMM D, HH:mm')} → ${dayjs(
     plan.schedule.endAt,
   ).format('MMM D, HH:mm')}`;
 
-  const primaryParticipant = plan.participants[0]?.displayName ?? 'Unassigned';
-  const extraParticipants = plan.participants.length - 1;
+  const participantsToShow = useMemo(() => plan.participants.slice(0, 4), [plan.participants]);
+  const extraParticipants =
+    plan.participants.length > participantsToShow.length
+      ? plan.participants.length - participantsToShow.length
+      : 0;
 
   return (
     <div
       style={{
         background: DEFAULT_COLORS.BACKGROUND_WHITE,
-        borderRadius: 12,
+        borderRadius: 10,
         border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-        padding: 16,
+        padding: 12,
       }}
     >
       <div
@@ -44,8 +45,8 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           display: 'flex',
           alignItems: 'flex-start',
           justifyContent: 'space-between',
-          gap: 12,
-          marginBottom: plan.description ? 12 : 16,
+          gap: 10,
+          marginBottom: plan.description ? 8 : 10,
         }}
       >
         <div style={{ minWidth: 0, flex: 1 }}>
@@ -62,8 +63,8 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           {plan.description && (
             <p
               style={{
-                margin: 4,
-                marginLeft: 0,
+                marginTop: 2,
+                marginBottom: 0,
                 fontSize: 13,
                 color: DEFAULT_COLORS.TEXT_MUTED,
               }}
@@ -72,29 +73,40 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
             </p>
           )}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-          <Tag
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            flexShrink: 0,
+          }}
+        >
+          <RowTag
+            text={lifecycleLabel}
+            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+            fontSize={12}
+          />
+          <RowTag
+            text={plan.typeLabel}
+            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+            fontSize={12}
+          />
+          <div
             style={{
-              borderRadius: 999,
-              border: 'none',
-              background: lifecycleBg,
-              color: lifecycleColor,
-              fontWeight: 500,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              marginLeft: 4,
+              color: DEFAULT_COLORS.TEXT_MUTED,
+              fontSize: 14,
             }}
           >
-            {lifecycleLabel}
-          </Tag>
-          <Tag
-            style={{
-              borderRadius: 999,
-              border: 'none',
-              background: '#0ea5e930',
-              color: '#0369a1',
-              fontWeight: 500,
-            }}
-          >
-            {plan.typeLabel}
-          </Tag>
+            <EyeOutlined />
+            <EditOutlined />
+            <DeleteOutlined />
+          </div>
         </div>
       </div>
 
@@ -102,7 +114,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: 16,
+          gap: 12,
           fontSize: 13,
         }}
       >
@@ -140,17 +152,13 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           ) : (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {enabledPolicies.slice(0, 3).map((label) => (
-                <Tag
+                <RowTag
                   key={label}
-                  style={{
-                    borderRadius: 999,
-                    border: 'none',
-                    background: '#f1f5f9',
-                    color: '#0f172a',
-                  }}
-                >
-                  {label}
-                </Tag>
+                  text={label}
+                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                  color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                  fontSize={12}
+                />
               ))}
               {enabledPolicies.length > 3 && (
                 <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12 }}>
@@ -165,9 +173,44 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 4 }}>
             {PPC.LABELS.COLUMNS.PARTICIPANTS}
           </div>
-          <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-            {primaryParticipant}
-            {extraParticipants > 0 ? ` +${extraParticipants}` : ''}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            {participantsToShow.map((participant) => {
+              const name = participant.displayName || '';
+              const initials = name
+                .split(' ')
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((part) => part.charAt(0).toUpperCase())
+                .join('');
+
+              return (
+                <Avatar
+                  key={participant.id}
+                  size={24}
+                  style={{
+                    backgroundColor: '#e2e8f0',
+                    color: '#0f172a',
+                    fontSize: 12,
+                    fontWeight: 500,
+                  }}
+                >
+                  {initials || '?'}
+                </Avatar>
+              );
+            })}
+            {extraParticipants > 0 && (
+              <Avatar
+                size={24}
+                style={{
+                  backgroundColor: '#0f172a',
+                  color: '#e5e7eb',
+                  fontSize: 12,
+                  fontWeight: 600,
+                }}
+              >
+                +{extraParticipants}
+              </Avatar>
+            )}
           </div>
         </div>
       </div>
