@@ -1,5 +1,5 @@
 import React from 'react';
-import { DEFAULT_COLORS, Icons } from '../../../constants';
+import { DEFAULT_COLORS, Icons } from '../../../../constants';
 
 const NoProtectionPlansState: React.FC = () => (
   <div

@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, Icons } from '../../../constants';
-import Toolbar from '../../../components/display/toolbar/Toolbar';
-import type { ToolbarConfig } from '../../../interfaces/layout/toolbar';
-import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
+import { Icons } from '../../../../constants';
+import Toolbar from '../../../../components/display/toolbar/Toolbar';
+import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
+import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 
 interface ProtectionPlansToolbarProps {
   searchValue: string;

@@ -1,6 +1,6 @@
 import React from 'react';
-import { DEFAULT_COLORS } from '../../../constants';
-import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
+import { DEFAULT_COLORS } from '../../../../constants';
+import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 
 const ProtectionPlansHeader: React.FC = () => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>

@@ -1,12 +1,12 @@
 import React, { memo } from 'react';
 import { Tag } from 'antd';
 import dayjs from 'dayjs';
-import { DEFAULT_COLORS } from '../../../constants';
+import { DEFAULT_COLORS } from '../../../../constants';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
   PROTECTION_PLANS_POLICY_KEYS,
-} from '../constants/protectionPlans';
-import type { ProtectionPlan } from '../models';
+} from '../../constants/protectionPlans';
+import type { ProtectionPlan } from '../../models';
 
 interface ProtectionPlanCardProps {
   plan: ProtectionPlan;
