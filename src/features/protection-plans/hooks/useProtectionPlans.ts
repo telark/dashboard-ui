@@ -20,7 +20,7 @@ export const useProtectionPlans = (): UseProtectionPlansResult => {
       setError(null);
       const data = await fetchProtectionPlans();
       setPlans(data);
-    } catch (e) {
+    } catch {
       setError('Failed to load Protection Plans');
     } finally {
       setLoading(false);

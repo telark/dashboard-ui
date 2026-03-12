@@ -38,4 +38,3 @@ const ProtectionPlansHeader: React.FC = () => (
 );
 
 export default ProtectionPlansHeader;
-

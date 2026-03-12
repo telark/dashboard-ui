@@ -1,5 +1,6 @@
 import React from 'react';
 import { DEFAULT_COLORS, Icons } from '../../../../constants';
+import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 
 const NoProtectionPlansState: React.FC = () => (
   <div
@@ -48,10 +49,9 @@ const NoProtectionPlansState: React.FC = () => (
         maxWidth: 480,
       }}
     >
-      Try adjusting your search or create a new Protection Plan to guard critical workloads.
+      {PPC.LABELS.MESSAGES.EMPTY_LIST_DESCRIPTION}
     </p>
   </div>
 );
 
 export default NoProtectionPlansState;
-

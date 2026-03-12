@@ -39,6 +39,11 @@ export const PROTECTION_PLANS_CONSTANTS = {
         'Create a plan to protect namespaces or workloads during maintenance windows and critical operations.',
       BUTTON: 'Create Protection Plan',
     },
+    MESSAGES: {
+      EMPTY_LIST_DESCRIPTION:
+        'Try adjusting your search or create a new Protection Plan to guard critical workloads.',
+      ERROR_TITLE: 'Failed to load Protection Plans.',
+    },
     COLUMNS: {
       NAME: 'Plan Name',
       TYPE: 'Type',

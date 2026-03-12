@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { DEFAULT_COLORS } from '../../../constants';
+import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
 
 interface ProtectionPlansErrorPageProps {
   error: string;
@@ -16,7 +17,7 @@ const ProtectionPlansErrorPage: React.FC<ProtectionPlansErrorPageProps> = memo((
       }}
     >
       <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY, fontSize: 16, fontWeight: 500 }}>
-        Failed to load Protection Plans.
+        {PPC.LABELS.MESSAGES.ERROR_TITLE}
       </div>
       <div
         style={{
@@ -35,4 +36,3 @@ const ProtectionPlansErrorPage: React.FC<ProtectionPlansErrorPageProps> = memo((
 ProtectionPlansErrorPage.displayName = 'ProtectionPlansErrorPage';
 
 export default ProtectionPlansErrorPage;
-

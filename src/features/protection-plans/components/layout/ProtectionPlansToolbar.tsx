@@ -56,4 +56,3 @@ const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
 };
 
 export default ProtectionPlansToolbar;
-

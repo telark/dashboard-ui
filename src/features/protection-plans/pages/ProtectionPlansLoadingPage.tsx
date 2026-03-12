@@ -7,4 +7,3 @@ const ProtectionPlansLoadingPage: React.FC = () => {
 };
 
 export default ProtectionPlansLoadingPage;
-

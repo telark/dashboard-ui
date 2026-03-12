@@ -178,4 +178,3 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
 ProtectionPlanCard.displayName = 'ProtectionPlanCard';
 
 export default ProtectionPlanCard;
-

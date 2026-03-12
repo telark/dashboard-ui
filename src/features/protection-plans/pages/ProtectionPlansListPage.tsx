@@ -3,10 +3,12 @@ import { DEFAULT_COLORS } from '../../../constants';
 import { PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
 import type { ProtectionPlan } from '../models';
 import { useAppearance } from '../../../features/settings/sections/appearance';
-import ProtectionPlanCard from '../components/cards/ProtectionPlanCard';
-import ProtectionPlansHeader from '../components/layout/ProtectionPlansHeader';
-import ProtectionPlansToolbar from '../components/layout/ProtectionPlansToolbar';
-import NoProtectionPlansState from '../components/states/NoProtectionPlansState';
+import {
+  ProtectionPlanCard,
+  ProtectionPlansHeader,
+  ProtectionPlansToolbar,
+  NoProtectionPlansState,
+} from '../components';
 
 interface ProtectionPlansListPageProps {
   plans: ProtectionPlan[];
@@ -68,4 +70,3 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
 ProtectionPlansListPage.displayName = 'ProtectionPlansListPage';
 
 export default ProtectionPlansListPage;
-
