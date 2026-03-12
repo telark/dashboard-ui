@@ -46,7 +46,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           alignItems: 'flex-start',
           justifyContent: 'space-between',
           gap: 8,
-          marginBottom: plan.description ? 6 : 8,
+          marginBottom: plan.description ? 12 : 16,
         }}
       >
         <div style={{ minWidth: 0, flex: 1 }}>
@@ -63,10 +63,12 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           {plan.description && (
             <p
               style={{
-                marginTop: 1,
-                marginBottom: 0,
-                fontSize: 13,
+                margin: 0,
+                fontSize: 14,
+                fontWeight: 400,
                 color: DEFAULT_COLORS.TEXT_MUTED,
+                lineHeight: 1.2,
+                fontFamily: "'Roboto Condensed', sans-serif",
               }}
             >
               {plan.description}
