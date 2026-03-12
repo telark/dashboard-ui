@@ -12,6 +12,7 @@ import {
   PROTECTION_PLANS_POLICY_KEYS,
 } from '../constants/protectionPlans';
 import type { ProtectionPlan } from '../models';
+import { useAppearance } from '../../../features/settings/sections/appearance';
 
 const ShieldIcon = Icons.Role;
 
@@ -24,6 +25,7 @@ interface ProtectionPlansListPageProps {
 
 const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
   ({ plans, searchValue, onSearchChange, onCreatePlanClick }) => {
+    const { contentGap } = useAppearance();
     const filteredPlans = useMemo(() => {
       if (!searchValue) return plans;
       const lower = searchValue.toLowerCase();
@@ -70,51 +72,57 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           minHeight: '100vh',
           background: DEFAULT_COLORS.BACKGROUND_WHITE,
           padding: PAGE_CONTENT_LAYOUT.PADDING,
-          marginTop: `${PAGE_CONTENT_LAYOUT.HEADER_OFFSET_PX}px`,
           boxSizing: 'border-box',
         }}
       >
-        {/* Header - match PageLayout styles */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 0, marginBottom: 24 }}>
-          <h1
+        <div style={{ display: 'flex', flexDirection: 'column', gap: contentGap }}>
+          {/* Header - match PageLayout styles */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            <h1
+              style={{
+                fontSize: 28,
+                fontWeight: 700,
+                color: DEFAULT_COLORS.TEXT_PRIMARY,
+                margin: 0,
+                padding: 0,
+                lineHeight: 1.2,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+              }}
+            >
+              {PPC.LABELS.HEADER_TITLE}
+            </h1>
+            <p
+              style={{
+                margin: 0,
+                marginTop: 0,
+                fontSize: 14,
+                fontWeight: 400,
+                color: DEFAULT_COLORS.TEXT_MUTED,
+                padding: 0,
+                lineHeight: 1.2,
+                fontFamily: "'Roboto Condensed', sans-serif",
+                maxWidth: 560,
+              }}
+            >
+              {PPC.LABELS.HEADER_SUBTITLE}
+            </p>
+          </div>
+
+          {/* Toolbar row (reuses shared toolbar styles) */}
+          <div
             style={{
-              fontSize: 28,
-              fontWeight: 700,
-              color: DEFAULT_COLORS.TEXT_PRIMARY,
-              margin: 0,
-              padding: 0,
-              lineHeight: 1.2,
               display: 'flex',
-              alignItems: 'center',
-              gap: 8,
+              justifyContent: 'flex-end',
+              marginBottom: 0,
             }}
           >
-            {PPC.LABELS.HEADER_TITLE}
-          </h1>
-          <p
-            style={{
-              margin: 0,
-              marginTop: 0,
-              fontSize: 14,
-              fontWeight: 400,
-              color: DEFAULT_COLORS.TEXT_MUTED,
-              padding: 0,
-              lineHeight: 1.2,
-              fontFamily: "'Roboto Condensed', sans-serif",
-              maxWidth: 560,
-            }}
-          >
-            {PPC.LABELS.HEADER_SUBTITLE}
-          </p>
-        </div>
+            <Toolbar config={toolbarConfig} />
+          </div>
 
-        {/* Toolbar row (reuses shared toolbar styles) */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 24 }}>
-          <Toolbar config={toolbarConfig} />
-        </div>
-
-        {/* Content */}
-        {!hasPlans ? (
+          {/* Content */}
+          {!hasPlans ? (
           <div
             style={{
               minHeight: '50vh',
@@ -164,7 +172,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
               Try adjusting your search or create a new Protection Plan to guard critical workloads.
             </p>
           </div>
-        ) : (
+          ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {filteredPlans.map((plan) => {
               const enabledPolicies = plan.policies
@@ -291,7 +299,8 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
               );
             })}
           </div>
-        )}
+          )}
+        </div>
       </div>
     );
   },
