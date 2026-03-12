@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import { Avatar } from 'antd';
+import { Avatar, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import { DEFAULT_COLORS } from '../../../../constants';
 import {
@@ -25,7 +25,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     plan.schedule.endAt,
   ).format('MMM D, HH:mm')}`;
 
-  const participantsToShow = useMemo(() => plan.participants.slice(0, 4), [plan.participants]);
+  const participantsToShow = useMemo(() => plan.participants.slice(0, 5), [plan.participants]);
   const extraParticipants =
     plan.participants.length > participantsToShow.length
       ? plan.participants.length - participantsToShow.length
@@ -45,8 +45,8 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           display: 'flex',
           alignItems: 'flex-start',
           justifyContent: 'space-between',
-          gap: 10,
-          marginBottom: plan.description ? 8 : 10,
+          gap: 8,
+          marginBottom: plan.description ? 6 : 8,
         }}
       >
         <div style={{ minWidth: 0, flex: 1 }}>
@@ -63,7 +63,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           {plan.description && (
             <p
               style={{
-                marginTop: 2,
+                marginTop: 1,
                 marginBottom: 0,
                 fontSize: 13,
                 color: DEFAULT_COLORS.TEXT_MUTED,
@@ -114,7 +114,8 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: 12,
+          rowGap: 10,
+          columnGap: 12,
           fontSize: 13,
         }}
       >
@@ -173,8 +174,8 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 4 }}>
             {PPC.LABELS.COLUMNS.PARTICIPANTS}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            {participantsToShow.map((participant) => {
+          <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+            {participantsToShow.map((participant, index) => {
               const name = participant.displayName || '';
               const initials = name
                 .split(' ')
@@ -184,28 +185,35 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
                 .join('');
 
               return (
-                <Avatar
-                  key={participant.id}
-                  size={24}
-                  style={{
-                    backgroundColor: '#e2e8f0',
-                    color: '#0f172a',
-                    fontSize: 12,
-                    fontWeight: 500,
-                  }}
-                >
-                  {initials || '?'}
-                </Avatar>
+                <Tooltip key={participant.id} title={name} placement="top">
+                  <Avatar
+                    size={26}
+                    style={{
+                      backgroundColor: '#e2e8f0',
+                      color: '#0f172a',
+                      fontSize: 12,
+                      fontWeight: 500,
+                      border: '2px solid #ffffff',
+                      boxShadow: '0 0 0 1px rgba(15,23,42,0.05)',
+                      marginLeft: index === 0 ? 0 : -8,
+                    }}
+                  >
+                    {initials || '?'}
+                  </Avatar>
+                </Tooltip>
               );
             })}
             {extraParticipants > 0 && (
               <Avatar
-                size={24}
+                size={26}
                 style={{
                   backgroundColor: '#0f172a',
                   color: '#e5e7eb',
                   fontSize: 12,
                   fontWeight: 600,
+                  border: '2px solid #ffffff',
+                  boxShadow: '0 0 0 1px rgba(15,23,42,0.05)',
+                  marginLeft: participantsToShow.length ? -8 : 0,
                 }}
               >
                 +{extraParticipants}
