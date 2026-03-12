@@ -3,8 +3,6 @@ import { Empty, Button } from 'antd';
 import { DEFAULT_COLORS, Icons } from '../../../constants';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
 
-const ShieldIcon = Icons.Role;
-
 interface ProtectionPlansEmptyPageProps {
   onCreatePlanClick: () => void;
 }
@@ -23,7 +21,7 @@ const ProtectionPlansEmptyPage: React.FC<ProtectionPlansEmptyPageProps> = ({
       }}
     >
       <Empty
-        image={<ShieldIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED }} />}
+        image={<Icons.ProtectionPlans size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED }} />}
         description={
           <div style={{ maxWidth: 420 }}>
             <h2

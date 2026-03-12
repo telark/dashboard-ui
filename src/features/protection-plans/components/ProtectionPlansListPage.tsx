@@ -14,8 +14,6 @@ import {
 import type { ProtectionPlan } from '../models';
 import { useAppearance } from '../../../features/settings/sections/appearance';
 
-const ShieldIcon = Icons.Role;
-
 interface ProtectionPlansListPageProps {
   plans: ProtectionPlan[];
   searchValue: string;
@@ -57,7 +55,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           {
             key: 'create-plan',
             label: PPC.LABELS.CREATE_BUTTON,
-            icon: <ShieldIcon size={14} />,
+            icon: <Icons.ProtectionPlans size={14} />,
             variant: 'primary',
             onClick: onCreatePlanClick,
           },
@@ -148,7 +146,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
                   fontSize: 24,
                 }}
               >
-                <ShieldIcon />
+                <Icons.ProtectionPlans />
               </div>
               <h3
                 style={{
