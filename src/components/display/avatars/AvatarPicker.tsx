@@ -11,6 +11,10 @@ interface AvatarPickerProps {
   value?: UserAvatar;
   onChange?: (avatar: UserAvatar) => void;
   size?: number;
+  /** When provided, renders this instead of the default button; receives openModal callback. */
+  trigger?: (openModal: () => void) => React.ReactNode;
+  /** Modal confirm button label. Defaults to "Select". */
+  okText?: string;
 }
 
 interface AvatarStyle {
@@ -174,9 +178,16 @@ const renderModalFooter = (_: unknown, { OkBtn }: ModalFooterProps) => (
   </div>
 );
 
-const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 }) => {
+const AvatarPicker: React.FC<AvatarPickerProps> = ({
+  value,
+  onChange,
+  size = 40,
+  trigger: triggerRender,
+  okText = 'Select',
+}) => {
   const screens = useBreakpoint();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = useCallback(() => setIsModalOpen(true), []);
   const [selectedStyle, setSelectedStyle] = useState<string | null>(value?.style || null);
   const [avatarStyles, setAvatarStyles] = useState<AvatarStyle[]>([]);
   const [isLoadingStyles, setIsLoadingStyles] = useState(false);
@@ -260,60 +271,64 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onChange, size = 40 
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setIsModalOpen(true)}
-        aria-label="Choose avatar"
-        style={{
-          cursor: 'pointer',
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: '50%',
-          border: '2px solid transparent',
-          padding: 3,
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          background:
-            'linear-gradient(135deg, rgba(32, 201, 151, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)',
-          outline: 'none',
-          boxShadow: previewAvatar
-            ? '0 4px 12px rgba(32, 201, 151, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.1)'
-            : '0 2px 8px rgba(0, 0, 0, 0.08)',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.boxShadow = previewAvatar
-            ? '0 6px 16px rgba(32, 201, 151, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.2)'
-            : '0 4px 12px rgba(0, 0, 0, 0.12)';
-          e.currentTarget.style.transform = 'scale(1.05)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.boxShadow = previewAvatar
-            ? '0 4px 12px rgba(32, 201, 151, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.1)'
-            : '0 2px 8px rgba(0, 0, 0, 0.08)';
-          e.currentTarget.style.transform = 'scale(1)';
-        }}
-      >
-        <Avatar
-          src={previewAvatar}
-          size={size}
+      {triggerRender != null ? (
+        triggerRender(openModal)
+      ) : (
+        <button
+          type="button"
+          onClick={openModal}
+          aria-label="Choose avatar"
           style={{
-            border: 'none',
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '50%',
+            border: '2px solid transparent',
+            padding: 3,
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            background:
+              'linear-gradient(135deg, rgba(32, 201, 151, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)',
+            outline: 'none',
             boxShadow: previewAvatar
-              ? '0 2px 8px rgba(0, 0, 0, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.3)'
-              : 'none',
-            filter: previewAvatar ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))' : 'none',
+              ? '0 4px 12px rgba(32, 201, 151, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.1)'
+              : '0 2px 8px rgba(0, 0, 0, 0.08)',
           }}
-        />
-      </button>
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = previewAvatar
+              ? '0 6px 16px rgba(32, 201, 151, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.2)'
+              : '0 4px 12px rgba(0, 0, 0, 0.12)';
+            e.currentTarget.style.transform = 'scale(1.05)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = previewAvatar
+              ? '0 4px 12px rgba(32, 201, 151, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.1)'
+              : '0 2px 8px rgba(0, 0, 0, 0.08)';
+            e.currentTarget.style.transform = 'scale(1)';
+          }}
+        >
+          <Avatar
+            src={previewAvatar}
+            size={size}
+            style={{
+              border: 'none',
+              boxShadow: previewAvatar
+                ? '0 2px 8px rgba(0, 0, 0, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.3)'
+                : 'none',
+              filter: previewAvatar ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))' : 'none',
+            }}
+          />
+        </button>
+      )}
 
       <Modal
         title="Choose Avatar"
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleConfirm}
-        okText="Select"
+        okText={okText}
         okButtonProps={{
-          disabled: !selectedStyle,
+          disabled: !selectedStyle || selectedStyle === value?.style,
           style: {
             backgroundColor: DEFAULT_COLORS.SUCCESS,
             borderColor: DEFAULT_COLORS.SUCCESS,

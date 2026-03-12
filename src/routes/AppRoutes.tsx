@@ -38,6 +38,9 @@ const GroupsMainPage = lazy(
   () => import('../features/access-and-permissions/groups/pages/MainPage'),
 );
 const PasskeysMainPage = lazy(() => import('../features/auth/pages/passkeys/MainPage'));
+const SettingsPage = lazy(() =>
+  import('../features/settings').then((m) => ({ default: m.SettingsPage })),
+);
 
 const PageLoader: React.FC = () => (
   <div
@@ -185,6 +188,16 @@ const AppRoutes: React.FC = () => {
             <ProtectedRoute>
               <FeatureErrorBoundary featureName="Passkeys">
                 <PasskeysMainPage />
+              </FeatureErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={APP_ROUTES.SETTINGS}
+          element={
+            <ProtectedRoute>
+              <FeatureErrorBoundary featureName="Settings">
+                <SettingsPage />
               </FeatureErrorBoundary>
             </ProtectedRoute>
           }

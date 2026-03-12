@@ -15,7 +15,12 @@ export { getDeviceInfo } from './passkey/device/detection';
 export { generateDeviceNameSuggestions } from './passkey/device/suggestions';
 
 // Session
-export { getCurrentUser, setCurrentUser, removeCurrentUser } from './session/user';
+export {
+  getCurrentUser,
+  setCurrentUser,
+  removeCurrentUser,
+  CURRENT_USER_UPDATED_EVENT,
+} from './session/user';
 export { isSessionExpired, validateSession } from './session/validation';
 export { useSessionExpirationCheck } from './session/expiration';
 export type { UseSessionExpirationCheckOptions } from './session/expiration';

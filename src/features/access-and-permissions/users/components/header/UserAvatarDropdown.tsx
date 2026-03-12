@@ -1,11 +1,16 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Dropdown } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { getCurrentUser, handleUserLogout, hasSessionToken } from '../../../../auth/utils';
+import {
+  getCurrentUser,
+  CURRENT_USER_UPDATED_EVENT,
+  handleUserLogout,
+  hasSessionToken,
+} from '../../../../auth/utils';
 import { fetchCurrentUserDetails } from '../../utils';
 import { createUserMenuItems } from './UserMenuItems';
 import UserAvatar from './UserAvatar';
-import { HEADER_CONSTANTS } from '../../../../../constants';
+import { APP_ROUTES, HEADER_CONSTANTS } from '../../../../../constants';
 import { isDevelopment } from '../../../../../utils/helpers/env';
 import type { User } from '../../models';
 import logger from '../../../../../logging';
@@ -29,6 +34,15 @@ const UserAvatarDropdown: React.FC = memo(() => {
         setCurrentUser(user);
       });
     }
+
+    const handleCurrentUserUpdated = (e: Event) => {
+      const user = (e as CustomEvent<User>).detail;
+      if (user) setCurrentUser(user);
+    };
+    globalThis.addEventListener(CURRENT_USER_UPDATED_EVENT, handleCurrentUserUpdated);
+    return () => {
+      globalThis.removeEventListener(CURRENT_USER_UPDATED_EVENT, handleCurrentUserUpdated);
+    };
   }, []);
 
   const handleLogout = async () => {
@@ -52,6 +66,7 @@ const UserAvatarDropdown: React.FC = memo(() => {
   const menuItems = createUserMenuItems({
     currentUser,
     onLogout: handleLogoutWrapper,
+    onSettings: () => navigate(APP_ROUTES.SETTINGS),
     loggingOut,
   });
 

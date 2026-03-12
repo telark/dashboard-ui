@@ -9,7 +9,6 @@ import {
   UsersMenuButton,
   GroupsMenuButton,
   RolesMenuButton,
-  PasskeysMenuButton,
 } from './MenuButtons';
 
 interface MenuItemsProps {
@@ -54,7 +53,6 @@ const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
         <UsersMenuButton isCollapsed={isCollapsed} />
         <GroupsMenuButton isCollapsed={isCollapsed} />
         <RolesMenuButton isCollapsed={isCollapsed} />
-        <PasskeysMenuButton isCollapsed={isCollapsed} />
       </>
     ),
     [isCollapsed],
@@ -76,7 +74,6 @@ const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
           <UsersMenuButton isCollapsed={isCollapsed} />
           <GroupsMenuButton isCollapsed={isCollapsed} />
           <RolesMenuButton isCollapsed={isCollapsed} />
-          <PasskeysMenuButton isCollapsed={isCollapsed} />
         </Menu.SubMenu>
       </>
     ),

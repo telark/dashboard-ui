@@ -10,7 +10,6 @@ const WorkloadIcon = Icons.Workload;
 const BridgeIcon = Icons.Bridge;
 const UserIcon = Icons.User;
 const GroupIcon = Icons.Group;
-const PasskeyIcon = Icons.Passkey;
 
 interface MenuButtonProps {
   isCollapsed?: boolean;
@@ -134,20 +133,3 @@ export const RolesMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = 
 });
 
 RolesMenuButton.displayName = 'RolesMenuButton';
-
-export const PasskeysMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
-  const location = useLocation();
-  const pathname = location.pathname;
-
-  return (
-    <SidebarButton
-      text={MENU_LABELS.PASSKEYS}
-      icon={<PasskeyIcon />}
-      active={pathname.startsWith(APP_ROUTES.PASSKEYS)}
-      route={APP_ROUTES.PASSKEYS}
-      isCollapsed={isCollapsed}
-    />
-  );
-});
-
-PasskeysMenuButton.displayName = 'PasskeysMenuButton';

@@ -20,9 +20,17 @@ import PasskeysErrorPage from './PasskeysErrorPage';
 import PasskeysLoadingPage from './PasskeysLoadingPage';
 import PasskeysEmptyPage from './PasskeysEmptyPage';
 import PasskeysListPage from './PasskeysListPage';
+import type { PasskeyBreadcrumbItem } from './PasskeysListPage';
 import { PasskeyPanel } from '../../components';
 
-const MainPage: React.FC = () => {
+export interface PasskeysMainPageProps {
+  /** When provided (e.g. embedded in Settings), show breadcrumb in title. */
+  breadcrumbItems?: PasskeyBreadcrumbItem[];
+  /** When true, parent renders breadcrumb; list page hides title block (fixed position in Settings). */
+  embedInSettings?: boolean;
+}
+
+const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSettings }) => {
   const { modal } = App.useApp();
   const dispatch: AppDispatch = useDispatch();
   const passkeys = useSelector(selectPasskeys);
@@ -181,6 +189,8 @@ const MainPage: React.FC = () => {
       formSyncKey={formSyncKey}
       submitting={submitting}
       onSubmit={handlePanelSubmit}
+      breadcrumbItems={embedInSettings ? undefined : breadcrumbItems}
+      hideTitle={embedInSettings}
     />
   );
 };
