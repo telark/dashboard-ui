@@ -38,4 +38,3 @@ export const useProtectionPlans = (): UseProtectionPlansResult => {
     refresh: loadPlans,
   };
 };
-

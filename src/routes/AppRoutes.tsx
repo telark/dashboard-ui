@@ -41,9 +41,7 @@ const PasskeysMainPage = lazy(() => import('../features/auth/pages/passkeys/Main
 const SettingsPage = lazy(() =>
   import('../features/settings').then((m) => ({ default: m.SettingsPage })),
 );
-const ProtectionPlansMainPage = lazy(
-  () => import('../features/protection-plans/pages/MainPage'),
-);
+const ProtectionPlansMainPage = lazy(() => import('../features/protection-plans/pages/MainPage'));
 
 const PageLoader: React.FC = () => (
   <div

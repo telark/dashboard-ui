@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { useLocation } from 'react-router-dom';
 import SidebarButton from '../../display/buttons/SideBarButton';
 import { Icons, APP_ROUTES, MENU_LABELS } from '../../../constants';
+import { AiOutlineFileProtect } from 'react-icons/ai';
 
 const HomeIcon = Icons.Home;
 const RoleIcon = Icons.Role;
@@ -10,7 +11,7 @@ const WorkloadIcon = Icons.Workload;
 const BridgeIcon = Icons.Bridge;
 const UserIcon = Icons.User;
 const GroupIcon = Icons.Group;
-const ShieldIcon = Icons.Role;
+const ProtectionIcon = AiOutlineFileProtect;
 
 interface MenuButtonProps {
   isCollapsed?: boolean;
@@ -143,7 +144,7 @@ export const ProtectionPlansMenuButton: React.FC<MenuButtonProps> = memo(
     return (
       <SidebarButton
         text={MENU_LABELS.PROTECTION_PLANS}
-        icon={<ShieldIcon />}
+        icon={<ProtectionIcon size={18} />}
         active={pathname.startsWith(APP_ROUTES.PROTECTION_PLANS)}
         route={APP_ROUTES.PROTECTION_PLANS}
         isCollapsed={isCollapsed}

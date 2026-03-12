@@ -137,4 +137,3 @@ export const fetchProtectionPlans = async (): Promise<ProtectionPlan[]> => {
 
   return mockPlans;
 };
-

@@ -123,182 +123,189 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
 
           {/* Content */}
           {!hasPlans ? (
-          <div
-            style={{
-              minHeight: '50vh',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              textAlign: 'center',
-            }}
-          >
             <div
               style={{
-                width: 56,
-                height: 56,
-                borderRadius: '50%',
-                background: 'rgba(32,201,151,0.12)',
-                boxShadow: 'inset 0 0 0 2px rgba(32,201,151,0.18)',
+                minHeight: '50vh',
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: 12,
-                color: '#20C997',
-                fontSize: 24,
+                textAlign: 'center',
               }}
             >
-              <ShieldIcon />
+              <div
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: '50%',
+                  background: 'rgba(32,201,151,0.12)',
+                  boxShadow: 'inset 0 0 0 2px rgba(32,201,151,0.18)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: 12,
+                  color: '#20C997',
+                  fontSize: 24,
+                }}
+              >
+                <ShieldIcon />
+              </div>
+              <h3
+                style={{
+                  margin: 0,
+                  marginBottom: 8,
+                  fontSize: 18,
+                  fontWeight: 600,
+                  color: DEFAULT_COLORS.TEXT_PRIMARY,
+                }}
+              >
+                No plans found
+              </h3>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: 14,
+                  color: DEFAULT_COLORS.TEXT_MUTED,
+                  maxWidth: 480,
+                }}
+              >
+                Try adjusting your search or create a new Protection Plan to guard critical
+                workloads.
+              </p>
             </div>
-            <h3
-              style={{
-                margin: 0,
-                marginBottom: 8,
-                fontSize: 18,
-                fontWeight: 600,
-                color: DEFAULT_COLORS.TEXT_PRIMARY,
-              }}
-            >
-              No plans found
-            </h3>
-            <p
-              style={{
-                margin: 0,
-                fontSize: 14,
-                color: DEFAULT_COLORS.TEXT_MUTED,
-                maxWidth: 480,
-              }}
-            >
-              Try adjusting your search or create a new Protection Plan to guard critical workloads.
-            </p>
-          </div>
           ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {filteredPlans.map((plan) => {
-              const enabledPolicies = plan.policies
-                .filter((p) => p.enabled && PROTECTION_PLANS_POLICY_KEYS.includes(p.key))
-                .map((p) => PPC.LABELS.POLICY_LABELS[p.key]);
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {filteredPlans.map((plan) => {
+                const enabledPolicies = plan.policies
+                  .filter((p) => p.enabled && PROTECTION_PLANS_POLICY_KEYS.includes(p.key))
+                  .map((p) => PPC.LABELS.POLICY_LABELS[p.key]);
 
-              const lifecycleLabel = PPC.LABELS.LIFECYCLE_LABELS[plan.lifecycle];
-              const isActive = plan.lifecycle === 'active';
-              const isScheduled = plan.lifecycle === 'scheduled';
-              const lifecycleBg = isActive ? '#22c55e30' : isScheduled ? '#0ea5e930' : '#e5e7eb80';
-              const lifecycleColor = isActive ? '#16a34a' : isScheduled ? '#0369a1' : '#4b5563';
+                const lifecycleLabel = PPC.LABELS.LIFECYCLE_LABELS[plan.lifecycle];
+                const isActive = plan.lifecycle === 'active';
+                const isScheduled = plan.lifecycle === 'scheduled';
+                const lifecycleBg = isActive
+                  ? '#22c55e30'
+                  : isScheduled
+                    ? '#0ea5e930'
+                    : '#e5e7eb80';
+                const lifecycleColor = isActive ? '#16a34a' : isScheduled ? '#0369a1' : '#4b5563';
 
-              const windowText = `${dayjs(plan.schedule.startAt).format(
-                'MMM D, HH:mm',
-              )} → ${dayjs(plan.schedule.endAt).format('MMM D, HH:mm')}`;
+                const windowText = `${dayjs(plan.schedule.startAt).format(
+                  'MMM D, HH:mm',
+                )} → ${dayjs(plan.schedule.endAt).format('MMM D, HH:mm')}`;
 
-              const primaryParticipant = plan.participants[0]?.displayName ?? 'Unassigned';
-              const extraParticipants = plan.participants.length - 1;
+                const primaryParticipant = plan.participants[0]?.displayName ?? 'Unassigned';
+                const extraParticipants = plan.participants.length - 1;
 
-              return (
-                <SettingsCard
-                  key={plan.id}
-                  title={plan.name}
-                  description={plan.description}
-                  headerAction={
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <Tag
-                        style={{
-                          borderRadius: 999,
-                          border: 'none',
-                          background: lifecycleBg,
-                          color: lifecycleColor,
-                          fontWeight: 500,
-                        }}
-                      >
-                        {lifecycleLabel}
-                      </Tag>
-                      <Tag
-                        style={{
-                          borderRadius: 999,
-                          border: 'none',
-                          background: '#0ea5e930',
-                          color: '#0369a1',
-                          fontWeight: 500,
-                        }}
-                      >
-                        {plan.typeLabel}
-                      </Tag>
-                    </div>
-                  }
-                >
-                  <div
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                      gap: 16,
-                      fontSize: 13,
-                    }}
+                return (
+                  <SettingsCard
+                    key={plan.id}
+                    title={plan.name}
+                    description={plan.description}
+                    headerAction={
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <Tag
+                          style={{
+                            borderRadius: 999,
+                            border: 'none',
+                            background: lifecycleBg,
+                            color: lifecycleColor,
+                            fontWeight: 500,
+                          }}
+                        >
+                          {lifecycleLabel}
+                        </Tag>
+                        <Tag
+                          style={{
+                            borderRadius: 999,
+                            border: 'none',
+                            background: '#0ea5e930',
+                            color: '#0369a1',
+                            fontWeight: 500,
+                          }}
+                        >
+                          {plan.typeLabel}
+                        </Tag>
+                      </div>
+                    }
                   >
-                    <div>
-                      <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 4 }}>
-                        {PPC.LABELS.COLUMNS.SCOPE}
-                      </div>
-                      <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-                        {plan.scope.type === 'namespace' ? (
-                          <>
-                            Namespace <strong>{plan.scope.namespace}</strong>
-                            {plan.scope.cluster ? ` · ${plan.scope.cluster}` : ''}
-                          </>
-                        ) : (
-                          <>
-                            {plan.scope.kind} <strong>{plan.scope.name}</strong> ·{' '}
-                            {plan.scope.namespace}
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div>
-                      <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 4 }}>
-                        {PPC.LABELS.COLUMNS.WINDOW}
-                      </div>
-                      <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>{windowText}</div>
-                    </div>
-                    <div>
-                      <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 4 }}>
-                        {PPC.LABELS.COLUMNS.POLICIES}
-                      </div>
-                      {enabledPolicies.length === 0 ? (
-                        <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>No policies enabled</div>
-                      ) : (
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                          {enabledPolicies.slice(0, 3).map((label) => (
-                            <Tag
-                              key={label}
-                              style={{
-                                borderRadius: 999,
-                                border: 'none',
-                                background: '#f1f5f9',
-                                color: '#0f172a',
-                              }}
-                            >
-                              {label}
-                            </Tag>
-                          ))}
-                          {enabledPolicies.length > 3 && (
-                            <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12 }}>
-                              +{enabledPolicies.length - 3} more
-                            </span>
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                        gap: 16,
+                        fontSize: 13,
+                      }}
+                    >
+                      <div>
+                        <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 4 }}>
+                          {PPC.LABELS.COLUMNS.SCOPE}
+                        </div>
+                        <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+                          {plan.scope.type === 'namespace' ? (
+                            <>
+                              Namespace <strong>{plan.scope.namespace}</strong>
+                              {plan.scope.cluster ? ` · ${plan.scope.cluster}` : ''}
+                            </>
+                          ) : (
+                            <>
+                              {plan.scope.kind} <strong>{plan.scope.name}</strong> ·{' '}
+                              {plan.scope.namespace}
+                            </>
                           )}
                         </div>
-                      )}
-                    </div>
-                    <div>
-                      <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 4 }}>
-                        {PPC.LABELS.COLUMNS.PARTICIPANTS}
                       </div>
-                      <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-                        {primaryParticipant}
-                        {extraParticipants > 0 ? ` +${extraParticipants}` : ''}
+                      <div>
+                        <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 4 }}>
+                          {PPC.LABELS.COLUMNS.WINDOW}
+                        </div>
+                        <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>{windowText}</div>
+                      </div>
+                      <div>
+                        <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 4 }}>
+                          {PPC.LABELS.COLUMNS.POLICIES}
+                        </div>
+                        {enabledPolicies.length === 0 ? (
+                          <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
+                            No policies enabled
+                          </div>
+                        ) : (
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                            {enabledPolicies.slice(0, 3).map((label) => (
+                              <Tag
+                                key={label}
+                                style={{
+                                  borderRadius: 999,
+                                  border: 'none',
+                                  background: '#f1f5f9',
+                                  color: '#0f172a',
+                                }}
+                              >
+                                {label}
+                              </Tag>
+                            ))}
+                            {enabledPolicies.length > 3 && (
+                              <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12 }}>
+                                +{enabledPolicies.length - 3} more
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 4 }}>
+                          {PPC.LABELS.COLUMNS.PARTICIPANTS}
+                        </div>
+                        <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+                          {primaryParticipant}
+                          {extraParticipants > 0 ? ` +${extraParticipants}` : ''}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </SettingsCard>
-              );
-            })}
-          </div>
+                  </SettingsCard>
+                );
+              })}
+            </div>
           )}
         </div>
       </div>
@@ -309,4 +316,3 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
 ProtectionPlansListPage.displayName = 'ProtectionPlansListPage';
 
 export default ProtectionPlansListPage;
-

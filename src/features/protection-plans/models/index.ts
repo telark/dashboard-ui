@@ -84,4 +84,3 @@ export interface ProtectionPlansState {
   loading: boolean;
   error: string | null;
 }
-

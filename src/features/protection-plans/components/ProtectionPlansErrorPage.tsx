@@ -5,7 +5,7 @@ interface ProtectionPlansErrorPageProps {
   error: string;
 }
 
-const ProtectionPlansErrorPage: React.FC<ProtectionPlansErrorPageProps> = ({ error }) => {
+const ProtectionPlansErrorPage: React.FC<ProtectionPlansErrorPageProps> = () => {
   return (
     <ReachabilityErrorView
       isInCooldown={false}
@@ -13,10 +13,8 @@ const ProtectionPlansErrorPage: React.FC<ProtectionPlansErrorPageProps> = ({ err
       retryCount={0}
       nextRetryIn={0}
       onCancel={() => undefined}
-      errorDetails={error}
     />
   );
 };
 
 export default ProtectionPlansErrorPage;
-

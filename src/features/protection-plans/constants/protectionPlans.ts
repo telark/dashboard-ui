@@ -104,4 +104,3 @@ export const PROTECTION_PLANS_CONSTANTS = {
     },
   },
 } as const;
-

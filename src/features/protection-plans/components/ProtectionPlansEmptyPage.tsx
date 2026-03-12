@@ -9,7 +9,9 @@ interface ProtectionPlansEmptyPageProps {
   onCreatePlanClick: () => void;
 }
 
-const ProtectionPlansEmptyPage: React.FC<ProtectionPlansEmptyPageProps> = ({ onCreatePlanClick }) => {
+const ProtectionPlansEmptyPage: React.FC<ProtectionPlansEmptyPageProps> = ({
+  onCreatePlanClick,
+}) => {
   return (
     <div
       style={{
@@ -56,4 +58,3 @@ const ProtectionPlansEmptyPage: React.FC<ProtectionPlansEmptyPageProps> = ({ onC
 };
 
 export default ProtectionPlansEmptyPage;
-
