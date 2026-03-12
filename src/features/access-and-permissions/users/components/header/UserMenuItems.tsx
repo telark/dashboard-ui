@@ -1,4 +1,3 @@
-import { message } from 'antd';
 import type { MenuProps } from 'antd';
 import { LogoutOutlined, SettingOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS, HEADER_CONSTANTS } from '../../../../../constants';
@@ -7,18 +6,16 @@ import type { User } from '../../models';
 interface UserMenuItemsProps {
   currentUser: User | null;
   onLogout: () => void;
+  onSettings?: () => void;
   loggingOut: boolean;
 }
 
 export const createUserMenuItems = ({
   currentUser,
   onLogout,
+  onSettings,
   loggingOut,
 }: UserMenuItemsProps): MenuProps['items'] => {
-  const handleSettings = () => {
-    message.info(HEADER_CONSTANTS.USER.SETTINGS.MESSAGE);
-  };
-
   return [
     {
       key: 'user-info',
@@ -65,7 +62,7 @@ export const createUserMenuItems = ({
           <span>Settings</span>
         </div>
       ),
-      onClick: handleSettings,
+      onClick: () => onSettings?.(),
     },
     {
       key: 'logout',

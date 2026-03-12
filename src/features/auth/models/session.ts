@@ -31,3 +31,12 @@ export interface SessionValidationResult {
   sessionDetails?: SessionDetails;
   error?: string;
 }
+
+export interface ListSessionsResponse {
+  status?: number;
+  operation?: string;
+  message?: string;
+  data: {
+    items: SessionDetails[];
+  };
+}
