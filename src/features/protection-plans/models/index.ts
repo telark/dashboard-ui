@@ -63,6 +63,8 @@ export interface ProtectionPlanSchedule {
   endAt: string;
 }
 
+import type { ProtectionPlanLevel } from '../constants/protectionPlans';
+
 export interface ProtectionPlan {
   id: string;
   name: string;
@@ -71,6 +73,7 @@ export interface ProtectionPlan {
   type: string;
   typeLabel: string;
   builtInType?: boolean;
+  level?: ProtectionPlanLevel;
   scope: ProtectionPlanScope;
   policies: ProtectionPlanPolicy[];
   schedule: ProtectionPlanSchedule;

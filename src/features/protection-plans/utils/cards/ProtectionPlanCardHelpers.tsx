@@ -1,7 +1,6 @@
-import React from 'react';
 import dayjs from 'dayjs';
-import type { ProtectionPlan, ProtectionPlanPolicyKey } from '../../../models';
-import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../../constants/protectionPlans';
+import type { ProtectionPlan, ProtectionPlanPolicyKey } from '../../models';
+import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import {
   ClockCircleOutlined,
   DeleteOutlined,
@@ -32,6 +31,10 @@ export const formatRemainingTime = (
 export const getProtectionLevel = (
   plan: ProtectionPlan,
 ): keyof typeof PPC.LABELS.PROTECTION_LEVELS => {
+  if (plan.level) {
+    return plan.level;
+  }
+
   const hasUpdateBlock = plan.policies.some((p) => p.enabled && p.key === 'preventWorkloadUpdates');
   const hasDeleteBlock = plan.policies.some(
     (p) => p.enabled && p.key === 'preventResourceDeletion',
@@ -60,3 +63,4 @@ export const renderPolicyIcon = (key: ProtectionPlanPolicyKey) => {
       return null;
   }
 };
+

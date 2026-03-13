@@ -7,7 +7,7 @@ import {
   PROTECTION_PLANS_POLICY_KEYS,
   PROTECTION_PLAN_POLICY_SHORT_LABELS,
 } from '../../../constants/protectionPlans';
-import { getProtectionLevel, renderPolicyIcon } from './ProtectionPlanCardHelpers';
+import { getProtectionLevel, renderPolicyIcon } from '../../../utils';
 
 interface ProtectionPlanCardRightProps {
   plan: ProtectionPlan;

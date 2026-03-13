@@ -3,7 +3,7 @@ import { DEFAULT_COLORS } from '../../../../../constants';
 import type { ProtectionPlan } from '../../../models';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../../constants/protectionPlans';
 import dayjs from 'dayjs';
-import { formatRemainingTime } from './ProtectionPlanCardHelpers';
+import { formatRemainingTime } from '../../../utils';
 
 interface ProtectionPlanCardLeftProps {
   plan: ProtectionPlan;

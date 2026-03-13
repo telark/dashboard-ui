@@ -14,6 +14,7 @@ const mockPlans: ProtectionPlan[] = [
     type: 'production-update',
     typeLabel: 'Production Update',
     builtInType: true,
+    level: 'high',
     scope: {
       type: 'namespace',
       namespace: 'production',
@@ -73,6 +74,7 @@ const mockPlans: ProtectionPlan[] = [
     type: 'migration',
     typeLabel: 'Migration',
     builtInType: true,
+    level: 'high',
     scope: {
       type: 'workload',
       namespace: 'production',
