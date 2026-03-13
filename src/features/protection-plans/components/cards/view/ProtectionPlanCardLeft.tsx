@@ -6,8 +6,7 @@ import {
   PROTECTION_PLANS_POLICY_KEYS,
   PROTECTION_PLAN_POLICY_SHORT_LABELS,
 } from '../../../constants/protectionPlans';
-import dayjs from 'dayjs';
-import { formatRemainingTime, renderPolicyIcon } from '../../../utils';
+import { renderPolicyIcon } from '../../../utils';
 import { Tooltip } from 'antd';
 import FieldLabel from '../../shared/FieldLabel';
 
@@ -16,9 +15,6 @@ interface ProtectionPlanCardLeftProps {
 }
 
 const ProtectionPlanCardLeft: React.FC<ProtectionPlanCardLeftProps> = memo(({ plan }) => {
-  const startAt = dayjs(plan.schedule.startAt);
-  const endAt = dayjs(plan.schedule.endAt);
-  const remainingText = formatRemainingTime(plan.schedule.endAt, plan.lifecycle);
   const enabledPolicies = plan.policies.filter(
     (p) => p.enabled && PROTECTION_PLANS_POLICY_KEYS.includes(p.key),
   );

@@ -63,4 +63,3 @@ export const renderPolicyIcon = (key: ProtectionPlanPolicyKey) => {
       return null;
   }
 };
-

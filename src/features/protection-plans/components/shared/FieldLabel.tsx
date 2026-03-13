@@ -20,4 +20,3 @@ const FieldLabel: React.FC<FieldLabelProps> = memo(({ children }) => (
 FieldLabel.displayName = 'ProtectionPlansFieldLabel';
 
 export default FieldLabel;
-
