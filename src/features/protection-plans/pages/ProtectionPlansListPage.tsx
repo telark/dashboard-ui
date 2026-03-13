@@ -40,16 +40,40 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           minHeight: '100vh',
           background: DEFAULT_COLORS.BACKGROUND_WHITE,
           padding: PAGE_CONTENT_LAYOUT.PADDING,
+          marginTop: 0,
           boxSizing: 'border-box',
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: contentGap }}>
           <ProtectionPlansHeader />
-          <ProtectionPlansToolbar
-            searchValue={searchValue}
-            onSearchChange={onSearchChange}
-            onCreatePlanClick={onCreatePlanClick}
-          />
+
+          {/* Toolba */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr auto',
+              alignItems: 'flex-end',
+              gap: 16,
+              minHeight: '60px',
+              width: '100%',
+            }}
+          >
+            <div style={{ minHeight: '60px' }} />
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'flex-end',
+                justifyContent: 'flex-end',
+                minHeight: '60px',
+              }}
+            >
+              <ProtectionPlansToolbar
+                searchValue={searchValue}
+                onSearchChange={onSearchChange}
+                onCreatePlanClick={onCreatePlanClick}
+              />
+            </div>
+          </div>
 
           {/* Content */}
           {!hasPlans ? (
