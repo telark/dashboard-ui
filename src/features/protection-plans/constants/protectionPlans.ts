@@ -50,7 +50,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       NAME: 'Plan Name',
       TYPE: 'Type',
       SCOPE: 'Scope',
-      POLICIES: 'Policies',
+      POLICIES: 'Enforced Policies',
       LIFECYCLE: 'Lifecycle',
       WINDOW: 'Time Window',
       CREATED: 'Created',
