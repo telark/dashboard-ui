@@ -235,7 +235,15 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <div>
-            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 2 }}>Protected Scope</div>
+            <div
+              style={{
+                color: DEFAULT_COLORS.TEXT_MUTED,
+                marginBottom: 0,
+                lineHeight: 1.2,
+              }}
+            >
+              Protected Scope
+            </div>
             <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <div>
@@ -277,7 +285,13 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           </div>
 
           <div>
-            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 2 }}>
+            <div
+              style={{
+                color: DEFAULT_COLORS.TEXT_MUTED,
+                marginBottom: 0,
+                lineHeight: 1.2,
+              }}
+            >
               {PPC.LABELS.COLUMNS.WINDOW}
             </div>
             <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
@@ -304,14 +318,30 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <div>
-            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 4 }}>Protection Type</div>
+            <div
+              style={{
+                color: DEFAULT_COLORS.TEXT_MUTED,
+                marginBottom: 0,
+                lineHeight: 1.2,
+              }}
+            >
+              Protection Type
+            </div>
             <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY, fontWeight: 600 }}>
               {plan.typeLabel}
             </div>
           </div>
 
           <div>
-            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 2 }}>Protection Level</div>
+            <div
+              style={{
+                color: DEFAULT_COLORS.TEXT_MUTED,
+                marginBottom: 0,
+                lineHeight: 1.2,
+              }}
+            >
+              Protection Level
+            </div>
             <div>
               {(() => {
                 const levelKey = getProtectionLevel(plan);
@@ -341,7 +371,13 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           </div>
 
           <div>
-            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 2 }}>
+            <div
+              style={{
+                color: DEFAULT_COLORS.TEXT_MUTED,
+                marginBottom: 0,
+                lineHeight: 1.2,
+              }}
+            >
               {PPC.LABELS.COLUMNS.POLICIES}
             </div>
             {enabledPolicies.length === 0 ? (
@@ -389,7 +425,13 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           </div>
 
           <div>
-            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 2 }}>
+            <div
+              style={{
+                color: DEFAULT_COLORS.TEXT_MUTED,
+                marginBottom: 0,
+                lineHeight: 1.2,
+              }}
+            >
               {PPC.LABELS.COLUMNS.PARTICIPANTS}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
