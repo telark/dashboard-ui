@@ -5,6 +5,7 @@ import type { ProtectionPlan } from '../../../models';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../../constants/protectionPlans';
 import { getProtectionLevel } from '../../../utils';
 import dayjs from 'dayjs';
+import FieldLabel from '../../shared/FieldLabel';
 
 interface ProtectionPlanCardRightProps {
   plan: ProtectionPlan;
@@ -55,28 +56,12 @@ const ProtectionPlanCardRight: React.FC<ProtectionPlanCardRightProps> = memo(({ 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div>
-        <div
-          style={{
-            color: DEFAULT_COLORS.TEXT_MUTED,
-            marginBottom: 0,
-            lineHeight: 1.2,
-          }}
-        >
-          Protection Type
-        </div>
+        <FieldLabel>Protection Type</FieldLabel>
         <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY, fontWeight: 600 }}>{plan.typeLabel}</div>
       </div>
 
       <div>
-        <div
-          style={{
-            color: DEFAULT_COLORS.TEXT_MUTED,
-            marginBottom: 0,
-            lineHeight: 1.2,
-          }}
-        >
-          Protection Level
-        </div>
+        <FieldLabel>Protection Level</FieldLabel>
         <div>
           <span
             style={{
@@ -94,15 +79,7 @@ const ProtectionPlanCardRight: React.FC<ProtectionPlanCardRightProps> = memo(({ 
       </div>
 
       <div>
-        <div
-          style={{
-            color: DEFAULT_COLORS.TEXT_MUTED,
-            marginBottom: 0,
-            lineHeight: 1.2,
-          }}
-        >
-          {PPC.LABELS.COLUMNS.WINDOW}
-        </div>
+        <FieldLabel>{PPC.LABELS.COLUMNS.WINDOW}</FieldLabel>
         <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
           {startAt.format('MMM D HH:mm')} → {endAt.format('MMM D HH:mm')}
           {remainingText && (
@@ -121,15 +98,7 @@ const ProtectionPlanCardRight: React.FC<ProtectionPlanCardRightProps> = memo(({ 
 
       {owner && (
         <div>
-          <div
-            style={{
-              color: DEFAULT_COLORS.TEXT_MUTED,
-              marginBottom: 0,
-              lineHeight: 1.2,
-            }}
-          >
-            Owner
-          </div>
+          <FieldLabel>Owner</FieldLabel>
           <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
             {(() => {
               const name = owner.displayName || '';
@@ -161,15 +130,7 @@ const ProtectionPlanCardRight: React.FC<ProtectionPlanCardRightProps> = memo(({ 
       )}
 
       <div>
-        <div
-          style={{
-            color: DEFAULT_COLORS.TEXT_MUTED,
-            marginBottom: 0,
-            lineHeight: 1.2,
-          }}
-        >
-          Participants
-        </div>
+        <FieldLabel>Participants</FieldLabel>
         <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
           {participantsToShow.map((participant, index) => {
             const name = participant.displayName || '';

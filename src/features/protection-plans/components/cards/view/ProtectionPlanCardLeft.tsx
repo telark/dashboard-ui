@@ -9,6 +9,7 @@ import {
 import dayjs from 'dayjs';
 import { formatRemainingTime, renderPolicyIcon } from '../../../utils';
 import { Tooltip } from 'antd';
+import FieldLabel from '../../shared/FieldLabel';
 
 interface ProtectionPlanCardLeftProps {
   plan: ProtectionPlan;
@@ -25,15 +26,7 @@ const ProtectionPlanCardLeft: React.FC<ProtectionPlanCardLeftProps> = memo(({ pl
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div>
-        <div
-          style={{
-            color: DEFAULT_COLORS.TEXT_MUTED,
-            marginBottom: 0,
-            lineHeight: 1.2,
-          }}
-        >
-          Protected Scope
-        </div>
+        <FieldLabel>Protected Scope</FieldLabel>
         <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <div>
@@ -71,15 +64,7 @@ const ProtectionPlanCardLeft: React.FC<ProtectionPlanCardLeftProps> = memo(({ pl
       </div>
 
       <div>
-        <div
-          style={{
-            color: DEFAULT_COLORS.TEXT_MUTED,
-            marginBottom: 0,
-            lineHeight: 1.2,
-          }}
-        >
-          Enforced Policies
-        </div>
+        <FieldLabel>Enforced Policies</FieldLabel>
         {enabledPolicies.length === 0 ? (
           <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>No policies enabled</div>
         ) : (
