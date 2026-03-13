@@ -18,10 +18,24 @@ const ProtectionPlanCardRight: React.FC<ProtectionPlanCardRightProps> = memo(({ 
     (p) => p.enabled && PROTECTION_PLANS_POLICY_KEYS.includes(p.key),
   );
 
-  const participantsToShow = useMemo(() => plan.participants.slice(0, 5), [plan.participants]);
+  const owner = useMemo(
+    () => plan.participants.find((participant) => participant.id === plan.ownerId),
+    [plan.ownerId, plan.participants],
+  );
+
+  const nonOwnerParticipants = useMemo(
+    () => plan.participants.filter((participant) => participant.id !== plan.ownerId),
+    [plan.ownerId, plan.participants],
+  );
+
+  const participantsToShow = useMemo(
+    () => nonOwnerParticipants.slice(0, 5),
+    [nonOwnerParticipants],
+  );
+
   const extraParticipants =
-    plan.participants.length > participantsToShow.length
-      ? plan.participants.length - participantsToShow.length
+    nonOwnerParticipants.length > participantsToShow.length
+      ? nonOwnerParticipants.length - participantsToShow.length
       : 0;
 
   const levelKey = getProtectionLevel(plan);
@@ -35,7 +49,59 @@ const ProtectionPlanCardRight: React.FC<ProtectionPlanCardRightProps> = memo(({ 
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <div>
+      {owner && (
+        <div>
+          <div
+            style={{
+              color: DEFAULT_COLORS.TEXT_MUTED,
+              marginBottom: 0,
+              lineHeight: 1.2,
+            }}
+          >
+            Owner
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {(() => {
+              const name = owner.displayName || '';
+              const initials = name
+                .split(' ')
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((part) => part.charAt(0).toUpperCase())
+                .join('');
+
+              return (
+                <>
+                  <Avatar
+                    size={26}
+                    style={{
+                      backgroundColor: '#0f172a',
+                      color: '#e5e7eb',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      border: '2px solid #ffffff',
+                      boxShadow: '0 0 0 1px rgba(15,23,42,0.08)',
+                    }}
+                  >
+                    {initials || '?'}
+                  </Avatar>
+                  <span
+                    style={{
+                      fontSize: 13,
+                      color: DEFAULT_COLORS.TEXT_PRIMARY,
+                      fontWeight: 600,
+                    }}
+                  >
+                    {name}
+                  </span>
+                </>
+              );
+            })()}
+          </div>
+        </div>
+      )}
+
+      <div style={{ marginTop: owner ? 4 : 0 }}>
         <div
           style={{
             color: DEFAULT_COLORS.TEXT_MUTED,
@@ -136,7 +202,7 @@ const ProtectionPlanCardRight: React.FC<ProtectionPlanCardRightProps> = memo(({ 
             lineHeight: 1.2,
           }}
         >
-          {PPC.LABELS.COLUMNS.PARTICIPANTS}
+          Participants
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
           {participantsToShow.map((participant, index) => {

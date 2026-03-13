@@ -74,6 +74,7 @@ export interface ProtectionPlan {
   typeLabel: string;
   builtInType?: boolean;
   level?: ProtectionPlanLevel;
+  ownerId?: string;
   scope: ProtectionPlanScope;
   policies: ProtectionPlanPolicy[];
   schedule: ProtectionPlanSchedule;

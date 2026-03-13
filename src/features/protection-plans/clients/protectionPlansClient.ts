@@ -15,6 +15,7 @@ const mockPlans: ProtectionPlan[] = [
     typeLabel: 'Production Update',
     builtInType: true,
     level: 'high',
+    ownerId: 'u-1',
     scope: {
       type: 'namespace',
       namespace: 'production',
@@ -37,9 +38,9 @@ const mockPlans: ProtectionPlan[] = [
     lastUpdatedAt: new Date(mockNow.getTime() - 2 * 60 * 60 * 1000).toISOString(),
     lastUpdatedBy: 'ops-lead@example.com',
     participants: [
-      { id: 'u-1', displayName: 'Alice (Contributor)', role: 'contributor' },
-      { id: 'u-2', displayName: 'Bob (Reviewer)', role: 'reviewer' },
-      { id: 'u-3', displayName: 'Carol (Approver)', role: 'approver' },
+      { id: 'u-1', displayName: 'Alice', role: 'contributor' },
+      { id: 'u-2', displayName: 'Bob', role: 'reviewer' },
+      { id: 'u-3', displayName: 'Carol', role: 'approver' },
     ],
     history: [
       {
@@ -75,6 +76,7 @@ const mockPlans: ProtectionPlan[] = [
     typeLabel: 'Migration',
     builtInType: true,
     level: 'high',
+    ownerId: 'u-4',
     scope: {
       type: 'workload',
       namespace: 'production',
