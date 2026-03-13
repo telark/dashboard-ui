@@ -82,7 +82,7 @@ const ProtectionPlanCardHeader: React.FC<ProtectionPlanCardHeaderProps> = memo((
             color: DEFAULT_COLORS.TEXT_MUTED,
           }}
         >
-          Duration: {durationLabel}
+          {PPC.LABELS.CARD.DURATION_PREFIX}: {durationLabel}
         </span>
         <span
           style={{

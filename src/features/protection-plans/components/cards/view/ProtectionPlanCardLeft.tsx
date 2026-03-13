@@ -26,7 +26,7 @@ const ProtectionPlanCardLeft: React.FC<ProtectionPlanCardLeftProps> = memo(({ pl
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div>
-        <FieldLabel>Protected Scope</FieldLabel>
+        <FieldLabel>{PPC.LABELS.CARD.PROTECTED_SCOPE}</FieldLabel>
         <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <div>
@@ -64,7 +64,7 @@ const ProtectionPlanCardLeft: React.FC<ProtectionPlanCardLeftProps> = memo(({ pl
       </div>
 
       <div>
-        <FieldLabel>Enforced Policies</FieldLabel>
+        <FieldLabel>{PPC.LABELS.CARD.ENFORCED_POLICIES}</FieldLabel>
         {enabledPolicies.length === 0 ? (
           <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>No policies enabled</div>
         ) : (

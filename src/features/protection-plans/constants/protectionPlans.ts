@@ -85,6 +85,15 @@ export const PROTECTION_PLANS_CONSTANTS = {
       medium: 'Medium',
       high: 'High',
     } as Record<ProtectionPlanLevel, string>,
+    CARD: {
+      PROTECTED_SCOPE: 'Protected Scope',
+      ENFORCED_POLICIES: 'Enforced Policies',
+      PROTECTION_TYPE: 'Protection Type',
+      PROTECTION_LEVEL: 'Protection Level',
+      OWNER: 'Owner',
+      PARTICIPANTS: 'Participants',
+      DURATION_PREFIX: 'Duration',
+    },
   },
   KEYS: {
     NAME: 'name',

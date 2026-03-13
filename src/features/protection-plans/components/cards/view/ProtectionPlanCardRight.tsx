@@ -56,12 +56,12 @@ const ProtectionPlanCardRight: React.FC<ProtectionPlanCardRightProps> = memo(({ 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div>
-        <FieldLabel>Protection Type</FieldLabel>
+        <FieldLabel>{PPC.LABELS.CARD.PROTECTION_TYPE}</FieldLabel>
         <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY, fontWeight: 600 }}>{plan.typeLabel}</div>
       </div>
 
       <div>
-        <FieldLabel>Protection Level</FieldLabel>
+        <FieldLabel>{PPC.LABELS.CARD.PROTECTION_LEVEL}</FieldLabel>
         <div>
           <span
             style={{
@@ -98,7 +98,7 @@ const ProtectionPlanCardRight: React.FC<ProtectionPlanCardRightProps> = memo(({ 
 
       {owner && (
         <div>
-          <FieldLabel>Owner</FieldLabel>
+          <FieldLabel>{PPC.LABELS.CARD.OWNER}</FieldLabel>
           <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
             {(() => {
               const name = owner.displayName || '';
@@ -130,7 +130,7 @@ const ProtectionPlanCardRight: React.FC<ProtectionPlanCardRightProps> = memo(({ 
       )}
 
       <div>
-        <FieldLabel>Participants</FieldLabel>
+        <FieldLabel>{PPC.LABELS.CARD.PARTICIPANTS}</FieldLabel>
         <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
           {participantsToShow.map((participant, index) => {
             const name = participant.displayName || '';
