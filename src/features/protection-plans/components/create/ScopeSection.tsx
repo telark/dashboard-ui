@@ -6,18 +6,20 @@ import SectionCard from './SectionCard';
 
 const { SCOPE_TITLE, SCOPE_DESCRIPTION } = PPC.CREATE_PAGE.SECTIONS;
 const FORM = PPC.CREATE_PAGE.FORM;
-const { WORKLOAD_KIND_OPTIONS, RESOURCE_KIND_OPTIONS } = PPC.CREATE_PAGE;
+const { WORKLOAD_KIND_OPTIONS, RESOURCE_KIND_OPTIONS, APPLICATION_OPTIONS } = PPC.CREATE_PAGE;
 
 const SCOPE_TYPE_OPTIONS = [
   { value: 'namespace', label: FORM.SCOPE_TYPE_NAMESPACE },
   { value: 'workload', label: FORM.SCOPE_TYPE_WORKLOAD },
   { value: 'resource', label: FORM.SCOPE_TYPE_RESOURCE },
+  { value: 'application', label: FORM.SCOPE_TYPE_APPLICATION },
 ];
 
 const SCOPE_TYPE_HINTS: Record<string, string> = {
   namespace: FORM.SCOPE_TYPE_NAMESPACE_HINT,
   workload: FORM.SCOPE_TYPE_WORKLOAD_HINT,
   resource: FORM.SCOPE_TYPE_RESOURCE_HINT,
+  application: FORM.SCOPE_TYPE_APPLICATION_HINT,
 };
 
 const FORM_ITEM_CLASS = 'form-item-compact no-asterisk';
@@ -63,13 +65,17 @@ const ScopeSection: React.FC = memo(() => {
             const isNamespace = scopeType === 'namespace';
             const isWorkload = scopeType === 'workload';
             const isResource = scopeType === 'resource';
+            const isApplication = scopeType === 'application';
             const hint = scopeType ? SCOPE_TYPE_HINTS[scopeType] : null;
             const showExclusions = isNamespace;
             const showWorkloadFields = isWorkload;
             const showResourceFields = isResource;
+            const showApplicationFields = isApplication;
 
             const marginAfterNamespaces =
-              showExclusions || showWorkloadFields || showResourceFields ? 12 : 0;
+              showExclusions || showWorkloadFields || showResourceFields || showApplicationFields
+                ? 12
+                : 0;
 
             return (
               <>
@@ -243,6 +249,23 @@ const ScopeSection: React.FC = memo(() => {
                       />
                     </Form.Item>
                   </>
+                )}
+                {showApplicationFields && (
+                  <Form.Item
+                    name="scope.applicationNames"
+                    label={FORM.APPLICATION_NAME_LABEL}
+                    style={{ marginBottom: 0 }}
+                    className={FORM_ITEM_CLASS}
+                  >
+                    <Select
+                      placeholder={FORM.APPLICATION_NAME_PLACEHOLDER}
+                      options={APPLICATION_OPTIONS}
+                      allowClear
+                      mode="multiple"
+                      style={{ width: '100%' }}
+                      getPopupContainer={(node) => node.parentElement ?? document.body}
+                    />
+                  </Form.Item>
                 )}
               </>
             );

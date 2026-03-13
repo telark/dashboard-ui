@@ -143,6 +143,8 @@ export const PROTECTION_PLANS_CONSTANTS = {
       SCOPE_TYPE_RESOURCE: 'Resource',
       SCOPE_TYPE_RESOURCE_HINT:
         'Protect by resource kind (e.g. Service, ConfigMap). More kinds will be available via API later.',
+      SCOPE_TYPE_APPLICATION: 'Application',
+      SCOPE_TYPE_APPLICATION_HINT: 'Protect by application. (Coming soon)',
       NAMESPACE_LABEL: 'Namespaces',
       NAMESPACE_PLACEHOLDER: 'Select namespace(s)',
       EXCLUDED_RESOURCES_LABEL: 'Excluded resources',
@@ -155,6 +157,8 @@ export const PROTECTION_PLANS_CONSTANTS = {
       RESOURCE_KIND_PLACEHOLDER: 'Select resource kind(s)',
       RESOURCES_LABEL: 'Resources',
       RESOURCES_PLACEHOLDER: 'Select resource(s)',
+      APPLICATION_NAME_LABEL: 'Application',
+      APPLICATION_NAME_PLACEHOLDER: 'Select application (coming soon)',
       SCOPE_RESOURCE_TYPE_APP: 'App',
       SCOPE_RESOURCE_TYPE_SERVICE: 'Service',
       START_AT_LABEL: 'Start',
@@ -178,6 +182,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       { value: 'PersistentVolumeClaim', label: 'PersistentVolumeClaim' },
       { value: 'HorizontalPodAutoscaler', label: 'HorizontalPodAutoscaler' },
     ] as Array<{ value: string; label: string }>,
+    APPLICATION_OPTIONS: [] as Array<{ value: string; label: string }>,
   },
   SIZES: {
     ROW_HEIGHT: 32,
