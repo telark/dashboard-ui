@@ -15,6 +15,7 @@ export interface ProtectionPlanScopeNamespace {
   type: 'namespace';
   namespace: string;
   cluster?: string;
+  workloadsCount?: number;
 }
 
 export interface ProtectionPlanScopeWorkload {
@@ -22,6 +23,8 @@ export interface ProtectionPlanScopeWorkload {
   namespace: string;
   name: string;
   kind: 'Deployment' | 'StatefulSet' | 'DaemonSet' | 'Job' | 'CronJob' | 'Other';
+  cluster?: string;
+  workloadsCount?: number;
 }
 
 export type ProtectionPlanScope = ProtectionPlanScopeNamespace | ProtectionPlanScopeWorkload;

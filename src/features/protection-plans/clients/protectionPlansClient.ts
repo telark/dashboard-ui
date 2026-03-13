@@ -18,6 +18,7 @@ const mockPlans: ProtectionPlan[] = [
       type: 'namespace',
       namespace: 'production',
       cluster: 'prod-cluster-1',
+      workloadsCount: 14,
     },
     policies: [
       { key: 'preventWorkloadUpdates', enabled: true },
@@ -77,6 +78,8 @@ const mockPlans: ProtectionPlan[] = [
       namespace: 'production',
       name: 'payments-api',
       kind: 'Deployment',
+      cluster: 'prod-cluster-1',
+      workloadsCount: 3,
     },
     policies: [
       { key: 'preventWorkloadUpdates', enabled: true },

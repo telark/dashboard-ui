@@ -16,6 +16,8 @@ export const PROTECTION_PLANS_POLICY_KEYS: ProtectionPlanPolicyKey[] = [
   'rollbackPrevention',
 ];
 
+export type ProtectionPlanLevel = 'low' | 'medium' | 'high';
+
 export const PROTECTION_PLANS_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Protection Plans',
@@ -78,6 +80,11 @@ export const PROTECTION_PLANS_CONSTANTS = {
       versionRestriction: 'Version restriction',
       rollbackPrevention: 'Rollback prevention',
     } as Record<ProtectionPlanPolicyKey, string>,
+      PROTECTION_LEVELS: {
+      low: 'Low',
+      medium: 'Medium',
+      high: 'High',
+    } as Record<ProtectionPlanLevel, string>,
   },
   KEYS: {
     NAME: 'name',
@@ -109,3 +116,22 @@ export const PROTECTION_PLANS_CONSTANTS = {
     },
   },
 } as const;
+
+export const PROTECTION_PLAN_LIFECYCLE_COLORS: Record<
+  ProtectionPlanLifecycle,
+  { background: string; color: string }
+> = {
+  draft: { background: '#e5e7eb', color: '#4b5563' },
+  scheduled: { background: '#dbeafe', color: '#1d4ed8' },
+  active: { background: '#dcfce7', color: '#166534' },
+  completed: { background: '#e5e7eb', color: '#4b5563' },
+  cancelled: { background: '#fee2e2', color: '#b91c1c' },
+};
+
+export const PROTECTION_PLAN_POLICY_SHORT_LABELS: Record<ProtectionPlanPolicyKey, string> = {
+  preventWorkloadUpdates: 'Update Block',
+  preventResourceDeletion: 'Delete Block',
+  configurationFreeze: 'Config Freeze',
+  versionRestriction: 'Version Restriction',
+  rollbackPrevention: 'Rollback Prevention',
+};
