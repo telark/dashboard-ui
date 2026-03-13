@@ -12,6 +12,7 @@ import {
   PlayCircleOutlined,
   StopOutlined,
 } from '@ant-design/icons';
+import dayjs from 'dayjs';
 
 interface ProtectionPlanCardHeaderProps {
   plan: ProtectionPlan;
@@ -19,6 +20,17 @@ interface ProtectionPlanCardHeaderProps {
 
 const ProtectionPlanCardHeader: React.FC<ProtectionPlanCardHeaderProps> = memo(({ plan }) => {
   const lifecycleLabel = PPC.LABELS.LIFECYCLE_LABELS[plan.lifecycle];
+
+  const startAt = dayjs(plan.schedule.startAt);
+  const endAt = dayjs(plan.schedule.endAt);
+  const totalMinutes = endAt.diff(startAt, 'minute');
+  const durationLabel = (() => {
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    if (hours === 0) return `${minutes}m`;
+    if (minutes === 0) return `${hours}h`;
+    return `${hours}h ${minutes}m`;
+  })();
 
   return (
     <div
@@ -60,10 +72,18 @@ const ProtectionPlanCardHeader: React.FC<ProtectionPlanCardHeaderProps> = memo((
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: 6,
+          gap: 8,
           flexShrink: 0,
         }}
       >
+        <span
+          style={{
+            fontSize: 12,
+            color: DEFAULT_COLORS.TEXT_MUTED,
+          }}
+        >
+          Duration: {durationLabel}
+        </span>
         <span
           style={{
             padding: '2px 10px',

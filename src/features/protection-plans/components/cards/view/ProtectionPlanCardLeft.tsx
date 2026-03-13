@@ -80,17 +80,6 @@ const ProtectionPlanCardLeft: React.FC<ProtectionPlanCardLeftProps> = memo(({ pl
             {remainingText}
           </div>
         )}
-        <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12, marginTop: 2 }}>
-          Duration:{' '}
-          {(() => {
-            const totalMinutes = endAt.diff(startAt, 'minute');
-            const hours = Math.floor(totalMinutes / 60);
-            const minutes = totalMinutes % 60;
-            if (hours === 0) return `${minutes}m`;
-            if (minutes === 0) return `${hours}h`;
-            return `${hours}h ${minutes}m`;
-          })()}
-        </div>
       </div>
     </div>
   );
