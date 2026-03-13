@@ -1,26 +1,25 @@
 import React, { memo, useMemo } from 'react';
-import { Form } from 'antd';
-import { LabeledSelect } from '../../../../components/display/inputs';
+import { Form, Select, Typography } from 'antd';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import SectionCard from './SectionCard';
 
 const { SCOPE_TITLE, SCOPE_DESCRIPTION } = PPC.CREATE_PAGE.SECTIONS;
-const {
-  SCOPE_TYPE_LABEL,
-  SCOPE_TYPE_NAMESPACE,
-  SCOPE_TYPE_RESOURCE,
-  SCOPE_TYPE_PLACEHOLDER,
-  NAMESPACE_LABEL,
-  NAMESPACE_PLACEHOLDER,
-  RESOURCE_NAME_LABEL,
-  RESOURCE_NAME_PLACEHOLDER,
-} = PPC.CREATE_PAGE.FORM;
+const FORM = PPC.CREATE_PAGE.FORM;
 const { NAMESPACE_OPTIONS, RESOURCE_NAME_OPTIONS } = PPC.CREATE_PAGE;
 
 const SCOPE_TYPE_OPTIONS = [
-  { value: 'namespace', label: SCOPE_TYPE_NAMESPACE },
-  { value: 'resource', label: SCOPE_TYPE_RESOURCE },
+  { value: 'full_namespace', label: FORM.SCOPE_TYPE_FULL_NAMESPACE },
+  { value: 'namespace_with_exclusions', label: FORM.SCOPE_TYPE_NAMESPACE_WITH_EXCLUSIONS },
+  { value: 'selected_resources_only', label: FORM.SCOPE_TYPE_SELECTED_RESOURCES },
 ];
+
+const SCOPE_TYPE_HINTS: Record<string, string> = {
+  full_namespace: FORM.SCOPE_TYPE_FULL_NAMESPACE_HINT,
+  namespace_with_exclusions: FORM.SCOPE_TYPE_NAMESPACE_WITH_EXCLUSIONS_HINT,
+  selected_resources_only: FORM.SCOPE_TYPE_SELECTED_RESOURCES_HINT,
+};
+
+const FORM_ITEM_CLASS = 'form-item-compact no-asterisk';
 
 const ScopeSection: React.FC = memo(() => {
   const scopeTypeOptions = useMemo(() => SCOPE_TYPE_OPTIONS, []);
@@ -31,38 +30,103 @@ const ScopeSection: React.FC = memo(() => {
         <Form.Item noStyle dependencies={['scope.scopeType']}>
           {({ getFieldValue }) => {
             const scopeType = getFieldValue('scope.scopeType');
-            const isResource = scopeType === 'resource';
+            const showExclusions = scopeType === 'namespace_with_exclusions';
+            const showIncludedOnly = scopeType === 'selected_resources_only';
+            const hint = scopeType ? SCOPE_TYPE_HINTS[scopeType] : null;
 
             return (
               <>
-                <LabeledSelect
+                <Form.Item
                   name="scope.scopeType"
-                  label={SCOPE_TYPE_LABEL}
-                  options={scopeTypeOptions}
-                  placeholder={SCOPE_TYPE_PLACEHOLDER}
+                  label={FORM.SCOPE_TYPE_LABEL}
+                  rules={[
+                    {
+                      required: true,
+                      message: `Please select ${FORM.SCOPE_TYPE_LABEL.toLowerCase()}`,
+                    },
+                  ]}
                   required
-                  marginBottom={12}
-                  allowClear={false}
-                />
-                <LabeledSelect
-                  name="scope.namespace"
-                  label={NAMESPACE_LABEL}
-                  options={NAMESPACE_OPTIONS}
-                  placeholder={NAMESPACE_PLACEHOLDER}
-                  required
-                  marginBottom={isResource ? 12 : 0}
-                  allowClear={false}
-                />
-                {isResource && (
-                  <LabeledSelect
-                    name="scope.resourceName"
-                    label={RESOURCE_NAME_LABEL}
-                    options={RESOURCE_NAME_OPTIONS}
-                    placeholder={RESOURCE_NAME_PLACEHOLDER}
-                    required
-                    marginBottom={0}
+                  style={{ marginBottom: hint ? 4 : 12 }}
+                  className={FORM_ITEM_CLASS}
+                >
+                  <Select
+                    placeholder={FORM.SCOPE_TYPE_PLACEHOLDER}
+                    options={scopeTypeOptions}
                     allowClear={false}
+                    style={{ width: '100%' }}
+                    getPopupContainer={(node) => node.parentElement ?? document.body}
                   />
+                </Form.Item>
+                {hint && (
+                  <Typography.Text
+                    type="secondary"
+                    style={{ display: 'block', fontSize: 12, marginBottom: 12 }}
+                  >
+                    {hint}
+                  </Typography.Text>
+                )}
+                <Form.Item
+                  name="scope.namespaces"
+                  label={FORM.NAMESPACE_LABEL}
+                  rules={[
+                    {
+                      required: true,
+                      message: `Please select ${FORM.NAMESPACE_LABEL.toLowerCase()}`,
+                    },
+                  ]}
+                  required
+                  style={{ marginBottom: showExclusions || showIncludedOnly ? 12 : 0 }}
+                  className={FORM_ITEM_CLASS}
+                >
+                  <Select
+                    placeholder={FORM.NAMESPACE_PLACEHOLDER}
+                    options={NAMESPACE_OPTIONS}
+                    allowClear={false}
+                    mode="multiple"
+                    style={{ width: '100%' }}
+                    getPopupContainer={(node) => node.parentElement ?? document.body}
+                  />
+                </Form.Item>
+                {showExclusions && (
+                  <Form.Item
+                    name="scope.excludedResources"
+                    label={FORM.EXCLUDED_RESOURCES_LABEL}
+                    style={{ marginBottom: 0 }}
+                    className={FORM_ITEM_CLASS}
+                  >
+                    <Select
+                      placeholder={FORM.EXCLUDED_RESOURCES_PLACEHOLDER}
+                      options={RESOURCE_NAME_OPTIONS}
+                      allowClear
+                      mode="multiple"
+                      style={{ width: '100%' }}
+                      getPopupContainer={(node) => node.parentElement ?? document.body}
+                    />
+                  </Form.Item>
+                )}
+                {showIncludedOnly && (
+                  <Form.Item
+                    name="scope.includedResources"
+                    label={FORM.INCLUDED_RESOURCES_LABEL}
+                    rules={[
+                      {
+                        required: true,
+                        message: `Please select ${FORM.INCLUDED_RESOURCES_LABEL.toLowerCase()}`,
+                      },
+                    ]}
+                    required
+                    style={{ marginBottom: 0 }}
+                    className={FORM_ITEM_CLASS}
+                  >
+                    <Select
+                      placeholder={FORM.INCLUDED_RESOURCES_PLACEHOLDER}
+                      options={RESOURCE_NAME_OPTIONS}
+                      allowClear={false}
+                      mode="multiple"
+                      style={{ width: '100%' }}
+                      getPopupContainer={(node) => node.parentElement ?? document.body}
+                    />
+                  </Form.Item>
                 )}
               </>
             );
