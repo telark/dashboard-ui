@@ -1,11 +1,11 @@
 import React, { memo, useMemo } from 'react';
-import { Form, Select, Typography } from 'antd';
+import { Form, Select, Tag, Typography } from 'antd';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
+import { useScopeOptions } from '../../hooks/useScopeOptions';
 import SectionCard from './SectionCard';
 
 const { SCOPE_TITLE, SCOPE_DESCRIPTION } = PPC.CREATE_PAGE.SECTIONS;
 const FORM = PPC.CREATE_PAGE.FORM;
-const { NAMESPACE_OPTIONS, RESOURCE_NAME_OPTIONS } = PPC.CREATE_PAGE;
 
 const SCOPE_TYPE_OPTIONS = [
   { value: 'full_namespace', label: FORM.SCOPE_TYPE_FULL_NAMESPACE },
@@ -21,8 +21,23 @@ const SCOPE_TYPE_HINTS: Record<string, string> = {
 
 const FORM_ITEM_CLASS = 'form-item-compact no-asterisk';
 
+interface ResourceOptionRenderProps {
+  option: { label?: React.ReactNode; data?: { namespace?: string }; namespace?: string };
+}
+
+const ResourceOptionRender: React.FC<ResourceOptionRenderProps> = ({ option }) => {
+  const ns = option.data?.namespace ?? option.namespace;
+  return (
+    <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+      <span>{option.label}</span>
+      {ns != null && ns !== '' && <Tag>{ns}</Tag>}
+    </span>
+  );
+};
+
 const ScopeSection: React.FC = memo(() => {
   const scopeTypeOptions = useMemo(() => SCOPE_TYPE_OPTIONS, []);
+  const { namespaceOptions, resourceOptions, loading } = useScopeOptions();
 
   return (
     <SectionCard title={SCOPE_TITLE} description={SCOPE_DESCRIPTION}>
@@ -80,11 +95,12 @@ const ScopeSection: React.FC = memo(() => {
                 >
                   <Select
                     placeholder={FORM.NAMESPACE_PLACEHOLDER}
-                    options={NAMESPACE_OPTIONS}
+                    options={namespaceOptions}
                     allowClear={false}
                     mode="multiple"
                     style={{ width: '100%' }}
                     getPopupContainer={(node) => node.parentElement ?? document.body}
+                    loading={loading}
                   />
                 </Form.Item>
                 {showExclusions && (
@@ -96,11 +112,21 @@ const ScopeSection: React.FC = memo(() => {
                   >
                     <Select
                       placeholder={FORM.EXCLUDED_RESOURCES_PLACEHOLDER}
-                      options={RESOURCE_NAME_OPTIONS}
+                      options={resourceOptions}
+                      optionRender={(opt) => (
+                        <ResourceOptionRender
+                          option={{
+                            label: opt.label,
+                            data: opt.data as { namespace?: string } | undefined,
+                            namespace: (opt as { namespace?: string }).namespace,
+                          }}
+                        />
+                      )}
                       allowClear
                       mode="multiple"
                       style={{ width: '100%' }}
                       getPopupContainer={(node) => node.parentElement ?? document.body}
+                      loading={loading}
                     />
                   </Form.Item>
                 )}
@@ -120,11 +146,21 @@ const ScopeSection: React.FC = memo(() => {
                   >
                     <Select
                       placeholder={FORM.INCLUDED_RESOURCES_PLACEHOLDER}
-                      options={RESOURCE_NAME_OPTIONS}
+                      options={resourceOptions}
+                      optionRender={(opt) => (
+                        <ResourceOptionRender
+                          option={{
+                            label: opt.label,
+                            data: opt.data as { namespace?: string } | undefined,
+                            namespace: (opt as { namespace?: string }).namespace,
+                          }}
+                        />
+                      )}
                       allowClear={false}
                       mode="multiple"
                       style={{ width: '100%' }}
                       getPopupContainer={(node) => node.parentElement ?? document.body}
+                      loading={loading}
                     />
                   </Form.Item>
                 )}
