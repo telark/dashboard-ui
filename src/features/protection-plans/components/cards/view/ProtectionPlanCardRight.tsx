@@ -2,21 +2,26 @@ import React, { memo, useMemo } from 'react';
 import { Avatar, Tooltip } from 'antd';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import type { ProtectionPlan } from '../../../models';
-import {
-  PROTECTION_PLANS_CONSTANTS as PPC,
-  PROTECTION_PLANS_POLICY_KEYS,
-  PROTECTION_PLAN_POLICY_SHORT_LABELS,
-} from '../../../constants/protectionPlans';
-import { getProtectionLevel, renderPolicyIcon } from '../../../utils';
+import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../../constants/protectionPlans';
+import { getProtectionLevel } from '../../../utils';
+import dayjs from 'dayjs';
 
 interface ProtectionPlanCardRightProps {
   plan: ProtectionPlan;
 }
 
 const ProtectionPlanCardRight: React.FC<ProtectionPlanCardRightProps> = memo(({ plan }) => {
-  const enabledPolicies = plan.policies.filter(
-    (p) => p.enabled && PROTECTION_PLANS_POLICY_KEYS.includes(p.key),
-  );
+  const startAt = dayjs(plan.schedule.startAt);
+  const endAt = dayjs(plan.schedule.endAt);
+  const remainingText = (() => {
+    const totalMinutesRemaining = endAt.diff(dayjs(), 'minute');
+    if (totalMinutesRemaining <= 0) return null;
+    const hours = Math.floor(totalMinutesRemaining / 60);
+    const minutes = totalMinutesRemaining % 60;
+    if (hours === 0) return `Ends in ${minutes}m`;
+    if (minutes === 0) return `Ends in ${hours}h`;
+    return `Ends in ${hours}h ${minutes}m`;
+  })();
 
   const owner = useMemo(
     () => plan.participants.find((participant) => participant.id === plan.ownerId),
@@ -49,59 +54,7 @@ const ProtectionPlanCardRight: React.FC<ProtectionPlanCardRightProps> = memo(({ 
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      {owner && (
-        <div>
-          <div
-            style={{
-              color: DEFAULT_COLORS.TEXT_MUTED,
-              marginBottom: 0,
-              lineHeight: 1.2,
-            }}
-          >
-            Owner
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            {(() => {
-              const name = owner.displayName || '';
-              const initials = name
-                .split(' ')
-                .filter(Boolean)
-                .slice(0, 2)
-                .map((part) => part.charAt(0).toUpperCase())
-                .join('');
-
-              return (
-                <>
-                  <Avatar
-                    size={26}
-                    style={{
-                      backgroundColor: '#0f172a',
-                      color: '#e5e7eb',
-                      fontSize: 12,
-                      fontWeight: 600,
-                      border: '2px solid #ffffff',
-                      boxShadow: '0 0 0 1px rgba(15,23,42,0.08)',
-                    }}
-                  >
-                    {initials || '?'}
-                  </Avatar>
-                  <span
-                    style={{
-                      fontSize: 13,
-                      color: DEFAULT_COLORS.TEXT_PRIMARY,
-                      fontWeight: 600,
-                    }}
-                  >
-                    {name}
-                  </span>
-                </>
-              );
-            })()}
-          </div>
-        </div>
-      )}
-
-      <div style={{ marginTop: owner ? 4 : 0 }}>
+      <div>
         <div
           style={{
             color: DEFAULT_COLORS.TEXT_MUTED,
@@ -148,51 +101,64 @@ const ProtectionPlanCardRight: React.FC<ProtectionPlanCardRightProps> = memo(({ 
             lineHeight: 1.2,
           }}
         >
-          {PPC.LABELS.COLUMNS.POLICIES}
+          {PPC.LABELS.COLUMNS.WINDOW}
         </div>
-        {enabledPolicies.length === 0 ? (
-          <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>No policies enabled</div>
-        ) : (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-            {enabledPolicies.slice(0, 3).map((policy) => (
-              <span
-                key={policy.key}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  padding: '2px 8px',
-                  borderRadius: 999,
-                  background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
-                  color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
-                  fontSize: 12,
-                  fontWeight: 500,
-                }}
-              >
-                <span>{renderPolicyIcon(policy.key)}</span>
-                <span>{PROTECTION_PLAN_POLICY_SHORT_LABELS[policy.key]}</span>
-              </span>
-            ))}
-            {enabledPolicies.length > 3 && (
-              <Tooltip
-                title={
-                  <div style={{ maxWidth: 260 }}>
-                    {enabledPolicies.map((policy) => (
-                      <div key={policy.key} style={{ fontSize: 12, marginBottom: 2 }}>
-                        {PPC.LABELS.POLICY_LABELS[policy.key]}
-                      </div>
-                    ))}
-                  </div>
-                }
-              >
-                <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12 }}>
-                  +{enabledPolicies.length - 3} more
-                </span>
-              </Tooltip>
-            )}
-          </div>
-        )}
+        <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+          {startAt.format('MMM D HH:mm')} → {endAt.format('MMM D HH:mm')}
+          {remainingText && (
+            <span
+              style={{
+                marginLeft: 6,
+                fontSize: 12,
+                color: DEFAULT_COLORS.TEXT_MUTED,
+              }}
+            >
+              ({remainingText})
+            </span>
+          )}
+        </div>
       </div>
+
+      {owner && (
+        <div>
+          <div
+            style={{
+              color: DEFAULT_COLORS.TEXT_MUTED,
+              marginBottom: 0,
+              lineHeight: 1.2,
+            }}
+          >
+            Owner
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+            {(() => {
+              const name = owner.displayName || '';
+              const initials = name
+                .split(' ')
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((part) => part.charAt(0).toUpperCase())
+                .join('');
+
+              return (
+                <Avatar
+                  size={26}
+                  style={{
+                    backgroundColor: '#0f172a',
+                    color: '#e5e7eb',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    border: '2px solid #ffffff',
+                    boxShadow: '0 0 0 1px rgba(15,23,42,0.08)',
+                  }}
+                >
+                  {initials || '?'}
+                </Avatar>
+              );
+            })()}
+          </div>
+        </div>
+      )}
 
       <div>
         <div

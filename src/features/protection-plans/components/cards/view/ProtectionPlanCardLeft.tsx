@@ -1,9 +1,14 @@
 import React, { memo } from 'react';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import type { ProtectionPlan } from '../../../models';
-import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../../constants/protectionPlans';
+import {
+  PROTECTION_PLANS_CONSTANTS as PPC,
+  PROTECTION_PLANS_POLICY_KEYS,
+  PROTECTION_PLAN_POLICY_SHORT_LABELS,
+} from '../../../constants/protectionPlans';
 import dayjs from 'dayjs';
-import { formatRemainingTime } from '../../../utils';
+import { formatRemainingTime, renderPolicyIcon } from '../../../utils';
+import { Tooltip } from 'antd';
 
 interface ProtectionPlanCardLeftProps {
   plan: ProtectionPlan;
@@ -13,6 +18,9 @@ const ProtectionPlanCardLeft: React.FC<ProtectionPlanCardLeftProps> = memo(({ pl
   const startAt = dayjs(plan.schedule.startAt);
   const endAt = dayjs(plan.schedule.endAt);
   const remainingText = formatRemainingTime(plan.schedule.endAt, plan.lifecycle);
+  const enabledPolicies = plan.policies.filter(
+    (p) => p.enabled && PROTECTION_PLANS_POLICY_KEYS.includes(p.key),
+  );
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -70,14 +78,48 @@ const ProtectionPlanCardLeft: React.FC<ProtectionPlanCardLeftProps> = memo(({ pl
             lineHeight: 1.2,
           }}
         >
-          {PPC.LABELS.COLUMNS.WINDOW}
+          Enforced Policies
         </div>
-        <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-          {startAt.format('MMM D HH:mm')} → {endAt.format('MMM D HH:mm')}
-        </div>
-        {remainingText && (
-          <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12, marginTop: 2 }}>
-            {remainingText}
+        {enabledPolicies.length === 0 ? (
+          <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>No policies enabled</div>
+        ) : (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            {enabledPolicies.slice(0, 3).map((policy) => (
+              <span
+                key={policy.key}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '2px 8px',
+                  borderRadius: 999,
+                  background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
+                  color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
+                  fontSize: 12,
+                  fontWeight: 500,
+                }}
+              >
+                <span>{renderPolicyIcon(policy.key)}</span>
+                <span>{PROTECTION_PLAN_POLICY_SHORT_LABELS[policy.key]}</span>
+              </span>
+            ))}
+            {enabledPolicies.length > 3 && (
+              <Tooltip
+                title={
+                  <div style={{ maxWidth: 260 }}>
+                    {enabledPolicies.map((policy) => (
+                      <div key={policy.key} style={{ fontSize: 12, marginBottom: 2 }}>
+                        {PPC.LABELS.POLICY_LABELS[policy.key]}
+                      </div>
+                    ))}
+                  </div>
+                }
+              >
+                <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12 }}>
+                  +{enabledPolicies.length - 3} more
+                </span>
+              </Tooltip>
+            )}
           </div>
         )}
       </div>
