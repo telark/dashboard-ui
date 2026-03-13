@@ -14,7 +14,9 @@ export interface ScopeOption {
 
 interface UseScopeOptionsResult {
   namespaceOptions: ScopeOption[];
+  workloadOptions: ScopeOption[];
   resourceOptions: ScopeOption[];
+  excludedOptions: ScopeOption[];
   loading: boolean;
 }
 
@@ -42,25 +44,33 @@ export const useScopeOptions = (): UseScopeOptionsResult => {
     return groupers.map((g) => ({ value: g.name, label: g.name }));
   }, [groupers]);
 
-  const resourceOptions = useMemo<ScopeOption[]>(() => {
-    const fromApps = apps.map((a) => ({
+  const workloadOptions = useMemo<ScopeOption[]>(() => {
+    return apps.map((a) => ({
       value: `workload:${a.grouper}:${a.name}`,
       label: `${APP_LABEL} — ${a.name}`,
       namespace: a.grouper,
     }));
-    const fromBridges = bridges.map((b) => ({
+  }, [apps]);
+
+  const resourceOptions = useMemo<ScopeOption[]>(() => {
+    return bridges.map((b) => ({
       value: `bridge:${b.grouper}:${b.name}`,
       label: `${SERVICE_LABEL} — ${b.name}`,
       namespace: b.grouper,
     }));
-    return [...fromApps, ...fromBridges];
-  }, [apps, bridges]);
+  }, [bridges]);
+
+  const excludedOptions = useMemo<ScopeOption[]>(() => {
+    return [...workloadOptions, ...resourceOptions];
+  }, [workloadOptions, resourceOptions]);
 
   const loading = grouperLoading || workloadLoading || bridgeLoading;
 
   return {
     namespaceOptions,
+    workloadOptions,
     resourceOptions,
+    excludedOptions,
     loading,
   };
 };

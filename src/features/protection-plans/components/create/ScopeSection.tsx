@@ -6,26 +6,27 @@ import SectionCard from './SectionCard';
 
 const { SCOPE_TITLE, SCOPE_DESCRIPTION } = PPC.CREATE_PAGE.SECTIONS;
 const FORM = PPC.CREATE_PAGE.FORM;
+const { WORKLOAD_KIND_OPTIONS, RESOURCE_KIND_OPTIONS } = PPC.CREATE_PAGE;
 
 const SCOPE_TYPE_OPTIONS = [
-  { value: 'full_namespace', label: FORM.SCOPE_TYPE_FULL_NAMESPACE },
-  { value: 'namespace_with_exclusions', label: FORM.SCOPE_TYPE_NAMESPACE_WITH_EXCLUSIONS },
-  { value: 'selected_resources_only', label: FORM.SCOPE_TYPE_SELECTED_RESOURCES },
+  { value: 'namespace', label: FORM.SCOPE_TYPE_NAMESPACE },
+  { value: 'workload', label: FORM.SCOPE_TYPE_WORKLOAD },
+  { value: 'resource', label: FORM.SCOPE_TYPE_RESOURCE },
 ];
 
 const SCOPE_TYPE_HINTS: Record<string, string> = {
-  full_namespace: FORM.SCOPE_TYPE_FULL_NAMESPACE_HINT,
-  namespace_with_exclusions: FORM.SCOPE_TYPE_NAMESPACE_WITH_EXCLUSIONS_HINT,
-  selected_resources_only: FORM.SCOPE_TYPE_SELECTED_RESOURCES_HINT,
+  namespace: FORM.SCOPE_TYPE_NAMESPACE_HINT,
+  workload: FORM.SCOPE_TYPE_WORKLOAD_HINT,
+  resource: FORM.SCOPE_TYPE_RESOURCE_HINT,
 };
 
 const FORM_ITEM_CLASS = 'form-item-compact no-asterisk';
 
-interface ResourceOptionRenderProps {
+interface OptionWithNamespaceRenderProps {
   option: { label?: React.ReactNode; data?: { namespace?: string }; namespace?: string };
 }
 
-const ResourceOptionRender: React.FC<ResourceOptionRenderProps> = ({ option }) => {
+const OptionWithNamespaceRender: React.FC<OptionWithNamespaceRenderProps> = ({ option }) => {
   const ns = option.data?.namespace ?? option.namespace;
   return (
     <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
@@ -37,7 +38,21 @@ const ResourceOptionRender: React.FC<ResourceOptionRenderProps> = ({ option }) =
 
 const ScopeSection: React.FC = memo(() => {
   const scopeTypeOptions = useMemo(() => SCOPE_TYPE_OPTIONS, []);
-  const { namespaceOptions, resourceOptions, loading } = useScopeOptions();
+  const { namespaceOptions, workloadOptions, resourceOptions, excludedOptions, loading } =
+    useScopeOptions();
+
+  const renderOptionWithNs = (opt: unknown) => {
+    const o = opt as { label?: React.ReactNode; data?: { namespace?: string }; namespace?: string };
+    return (
+      <OptionWithNamespaceRender
+        option={{
+          label: o.label,
+          data: o.data,
+          namespace: o.namespace,
+        }}
+      />
+    );
+  };
 
   return (
     <SectionCard title={SCOPE_TITLE} description={SCOPE_DESCRIPTION}>
@@ -45,9 +60,16 @@ const ScopeSection: React.FC = memo(() => {
         <Form.Item noStyle dependencies={['scope.scopeType']}>
           {({ getFieldValue }) => {
             const scopeType = getFieldValue('scope.scopeType');
-            const showExclusions = scopeType === 'namespace_with_exclusions';
-            const showIncludedOnly = scopeType === 'selected_resources_only';
+            const isNamespace = scopeType === 'namespace';
+            const isWorkload = scopeType === 'workload';
+            const isResource = scopeType === 'resource';
             const hint = scopeType ? SCOPE_TYPE_HINTS[scopeType] : null;
+            const showExclusions = isNamespace;
+            const showWorkloadFields = isWorkload;
+            const showResourceFields = isResource;
+
+            const marginAfterNamespaces =
+              showExclusions || showWorkloadFields || showResourceFields ? 12 : 0;
 
             return (
               <>
@@ -90,7 +112,7 @@ const ScopeSection: React.FC = memo(() => {
                     },
                   ]}
                   required
-                  style={{ marginBottom: showExclusions || showIncludedOnly ? 12 : 0 }}
+                  style={{ marginBottom: marginAfterNamespaces }}
                   className={FORM_ITEM_CLASS}
                 >
                   <Select
@@ -112,16 +134,8 @@ const ScopeSection: React.FC = memo(() => {
                   >
                     <Select
                       placeholder={FORM.EXCLUDED_RESOURCES_PLACEHOLDER}
-                      options={resourceOptions}
-                      optionRender={(opt) => (
-                        <ResourceOptionRender
-                          option={{
-                            label: opt.label,
-                            data: opt.data as { namespace?: string } | undefined,
-                            namespace: (opt as { namespace?: string }).namespace,
-                          }}
-                        />
-                      )}
+                      options={excludedOptions}
+                      optionRender={(opt) => renderOptionWithNs(opt)}
                       allowClear
                       mode="multiple"
                       style={{ width: '100%' }}
@@ -130,39 +144,103 @@ const ScopeSection: React.FC = memo(() => {
                     />
                   </Form.Item>
                 )}
-                {showIncludedOnly && (
-                  <Form.Item
-                    name="scope.includedResources"
-                    label={FORM.INCLUDED_RESOURCES_LABEL}
-                    rules={[
-                      {
-                        required: true,
-                        message: `Please select ${FORM.INCLUDED_RESOURCES_LABEL.toLowerCase()}`,
-                      },
-                    ]}
-                    required
-                    style={{ marginBottom: 0 }}
-                    className={FORM_ITEM_CLASS}
-                  >
-                    <Select
-                      placeholder={FORM.INCLUDED_RESOURCES_PLACEHOLDER}
-                      options={resourceOptions}
-                      optionRender={(opt) => (
-                        <ResourceOptionRender
-                          option={{
-                            label: opt.label,
-                            data: opt.data as { namespace?: string } | undefined,
-                            namespace: (opt as { namespace?: string }).namespace,
-                          }}
-                        />
-                      )}
-                      allowClear={false}
-                      mode="multiple"
-                      style={{ width: '100%' }}
-                      getPopupContainer={(node) => node.parentElement ?? document.body}
-                      loading={loading}
-                    />
-                  </Form.Item>
+                {showWorkloadFields && (
+                  <>
+                    <Form.Item
+                      name="scope.workloadKind"
+                      label={FORM.WORKLOAD_KIND_LABEL}
+                      rules={[
+                        {
+                          required: true,
+                          message: `Please select ${FORM.WORKLOAD_KIND_LABEL.toLowerCase()}`,
+                        },
+                      ]}
+                      required
+                      style={{ marginBottom: 12 }}
+                      className={FORM_ITEM_CLASS}
+                    >
+                      <Select
+                        placeholder={FORM.WORKLOAD_KIND_PLACEHOLDER}
+                        options={WORKLOAD_KIND_OPTIONS}
+                        allowClear={false}
+                        style={{ width: '100%' }}
+                        getPopupContainer={(node) => node.parentElement ?? document.body}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="scope.workloads"
+                      label={FORM.WORKLOADS_LABEL}
+                      rules={[
+                        {
+                          required: true,
+                          message: `Please select ${FORM.WORKLOADS_LABEL.toLowerCase()}`,
+                        },
+                      ]}
+                      required
+                      style={{ marginBottom: 0 }}
+                      className={FORM_ITEM_CLASS}
+                    >
+                      <Select
+                        placeholder={FORM.WORKLOADS_PLACEHOLDER}
+                        options={workloadOptions}
+                        optionRender={(opt) => renderOptionWithNs(opt)}
+                        allowClear={false}
+                        mode="multiple"
+                        style={{ width: '100%' }}
+                        getPopupContainer={(node) => node.parentElement ?? document.body}
+                        loading={loading}
+                      />
+                    </Form.Item>
+                  </>
+                )}
+                {showResourceFields && (
+                  <>
+                    <Form.Item
+                      name="scope.resourceKind"
+                      label={FORM.RESOURCE_KIND_LABEL}
+                      rules={[
+                        {
+                          required: true,
+                          message: `Please select ${FORM.RESOURCE_KIND_LABEL.toLowerCase()}`,
+                        },
+                      ]}
+                      required
+                      style={{ marginBottom: 12 }}
+                      className={FORM_ITEM_CLASS}
+                    >
+                      <Select
+                        placeholder={FORM.RESOURCE_KIND_PLACEHOLDER}
+                        options={RESOURCE_KIND_OPTIONS}
+                        allowClear={false}
+                        style={{ width: '100%' }}
+                        getPopupContainer={(node) => node.parentElement ?? document.body}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="scope.resources"
+                      label={FORM.RESOURCES_LABEL}
+                      rules={[
+                        {
+                          required: true,
+                          message: `Please select ${FORM.RESOURCES_LABEL.toLowerCase()}`,
+                        },
+                      ]}
+                      required
+                      style={{ marginBottom: 0 }}
+                      className={FORM_ITEM_CLASS}
+                    >
+                      <Select
+                        placeholder={FORM.RESOURCES_PLACEHOLDER}
+                        options={resourceOptions}
+                        optionRender={(opt) => renderOptionWithNs(opt)}
+                        allowClear={false}
+                        mode="multiple"
+                        style={{ width: '100%' }}
+                        getPopupContainer={(node) => node.parentElement ?? document.body}
+                        loading={loading}
+                      />
+                    </Form.Item>
+                  </>
                 )}
               </>
             );
