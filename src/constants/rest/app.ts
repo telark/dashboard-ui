@@ -27,10 +27,13 @@ export const APP_ROUTES = {
   APP_WORKLOAD_DETAILS: '/workloads/apps/:name/details',
   BRIDGES: '/bridges',
   BRIDGE_DETAILS: '/bridges/:name/details',
-  ROLES: '/roles',
+  // access-and-permissions
+  ROLES: '/management/roles',
   USERS: '/management/users',
   GROUPS: '/management/groups',
+  // settings
   SETTINGS: '/settings',
+  // governance
   PROTECTION_PLANS: '/governance/protection-plans',
   PROTECTION_PLANS_CREATE: '/governance/protection-plans/create',
 } as const;
