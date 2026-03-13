@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
-import { Button } from 'antd';
+import { Button, Form } from 'antd';
+import type { FormInstance } from 'antd';
 import { DEFAULT_COLORS } from '../../../../constants';
 import { PAGE_CONTENT_LAYOUT } from '../../../../constants/shared/pages';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
@@ -18,6 +19,7 @@ interface CreatePlanLayoutProps {
   submitLabel: string;
   onSubmit: () => void;
   submitting?: boolean;
+  form?: FormInstance;
 }
 
 const BREADCRUMB_LINK_STYLE: React.CSSProperties = {
@@ -33,7 +35,7 @@ const BREADCRUMB_LINK_STYLE: React.CSSProperties = {
 };
 
 const CreatePlanLayout: React.FC<CreatePlanLayoutProps> = memo(
-  ({ breadcrumbItems, subtitle, children, submitLabel, onSubmit, submitting }) => {
+  ({ breadcrumbItems, subtitle, children, submitLabel, onSubmit, submitting, form }) => {
     const titleContent = (
       <>
         {breadcrumbItems.map((b, index) => (
@@ -94,22 +96,33 @@ const CreatePlanLayout: React.FC<CreatePlanLayoutProps> = memo(
             </p>
           </div>
 
-          <div
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={onSubmit}
             style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: GAP_BETWEEN_CARDS,
-              marginTop: 24,
+              gap: 0,
             }}
           >
-            {children}
-          </div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: GAP_BETWEEN_CARDS,
+                marginTop: 24,
+              }}
+            >
+              {children}
+            </div>
 
-          <div style={{ marginTop: 32 }}>
-            <Button type="primary" onClick={onSubmit} loading={submitting}>
-              {submitLabel}
-            </Button>
-          </div>
+            <div style={{ marginTop: 32 }}>
+              <Button type="primary" htmlType="submit" loading={submitting}>
+                {submitLabel}
+              </Button>
+            </div>
+          </Form>
         </div>
       </div>
     );

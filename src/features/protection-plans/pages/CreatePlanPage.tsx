@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
+import { Form } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { APP_ROUTES } from '../../../constants';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
@@ -12,6 +13,7 @@ import {
 
 const CreatePlanPage: React.FC = () => {
   const navigate = useNavigate();
+  const [form] = Form.useForm();
 
   const breadcrumbItems = useMemo(
     () => [
@@ -21,8 +23,8 @@ const CreatePlanPage: React.FC = () => {
     [navigate],
   );
 
-  const handleSubmit = useCallback(() => {
-    // TODO: submit form and navigate back or to list
+  const handleFinish = useCallback(() => {
+    // TODO: submit form values and navigate back or to list
     navigate(APP_ROUTES.PROTECTION_PLANS);
   }, [navigate]);
 
@@ -31,7 +33,8 @@ const CreatePlanPage: React.FC = () => {
       breadcrumbItems={breadcrumbItems}
       subtitle={PPC.LABELS.CREATE_SUBTITLE}
       submitLabel={PPC.LABELS.CREATE_BUTTON_TEXT}
-      onSubmit={handleSubmit}
+      onSubmit={handleFinish}
+      form={form}
     >
       <BasicInfoSection />
       <ScopeSection />
