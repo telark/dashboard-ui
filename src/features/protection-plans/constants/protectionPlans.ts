@@ -80,7 +80,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       versionRestriction: 'Version restriction',
       rollbackPrevention: 'Rollback prevention',
     } as Record<ProtectionPlanPolicyKey, string>,
-      PROTECTION_LEVELS: {
+    PROTECTION_LEVELS: {
       low: 'Low',
       medium: 'Medium',
       high: 'High',
