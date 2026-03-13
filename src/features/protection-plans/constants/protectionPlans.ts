@@ -147,12 +147,12 @@ export const PROTECTION_PLANS_CONSTANTS = {
       NAMESPACE_PLACEHOLDER: 'Select namespace(s)',
       EXCLUDED_RESOURCES_LABEL: 'Excluded resources',
       EXCLUDED_RESOURCES_PLACEHOLDER: 'Select workloads or resources to exclude from protection',
-      WORKLOAD_KIND_LABEL: 'Workload kind',
-      WORKLOAD_KIND_PLACEHOLDER: 'Select workload kind',
+      WORKLOAD_KIND_LABEL: 'Workload kinds',
+      WORKLOAD_KIND_PLACEHOLDER: 'Select workload kind(s)',
       WORKLOADS_LABEL: 'Workloads',
       WORKLOADS_PLACEHOLDER: 'Select workload(s)',
-      RESOURCE_KIND_LABEL: 'Resource kind',
-      RESOURCE_KIND_PLACEHOLDER: 'Select resource kind',
+      RESOURCE_KIND_LABEL: 'Resource kinds',
+      RESOURCE_KIND_PLACEHOLDER: 'Select resource kind(s)',
       RESOURCES_LABEL: 'Resources',
       RESOURCES_PLACEHOLDER: 'Select resource(s)',
       SCOPE_RESOURCE_TYPE_APP: 'App',
@@ -169,10 +169,15 @@ export const PROTECTION_PLANS_CONSTANTS = {
       { value: 'Job', label: 'Job' },
       { value: 'CronJob', label: 'CronJob' },
     ] as Array<{ value: string; label: string }>,
-    RESOURCE_KIND_OPTIONS: [{ value: 'Service', label: 'Service' }] as Array<{
-      value: string;
-      label: string;
-    }>,
+    RESOURCE_KIND_OPTIONS: [
+      { value: 'ConfigMap', label: 'ConfigMap' },
+      { value: 'Secret', label: 'Secret' },
+      { value: 'Service', label: 'Service' },
+      { value: 'Ingress', label: 'Ingress' },
+      { value: 'NetworkPolicy', label: 'NetworkPolicy' },
+      { value: 'PersistentVolumeClaim', label: 'PersistentVolumeClaim' },
+      { value: 'HorizontalPodAutoscaler', label: 'HorizontalPodAutoscaler' },
+    ] as Array<{ value: string; label: string }>,
   },
   SIZES: {
     ROW_HEIGHT: 32,

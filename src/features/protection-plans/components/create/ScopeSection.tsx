@@ -147,7 +147,7 @@ const ScopeSection: React.FC = memo(() => {
                 {showWorkloadFields && (
                   <>
                     <Form.Item
-                      name="scope.workloadKind"
+                      name="scope.workloadKinds"
                       label={FORM.WORKLOAD_KIND_LABEL}
                       rules={[
                         {
@@ -163,6 +163,7 @@ const ScopeSection: React.FC = memo(() => {
                         placeholder={FORM.WORKLOAD_KIND_PLACEHOLDER}
                         options={WORKLOAD_KIND_OPTIONS}
                         allowClear={false}
+                        mode="multiple"
                         style={{ width: '100%' }}
                         getPopupContainer={(node) => node.parentElement ?? document.body}
                       />
@@ -196,7 +197,7 @@ const ScopeSection: React.FC = memo(() => {
                 {showResourceFields && (
                   <>
                     <Form.Item
-                      name="scope.resourceKind"
+                      name="scope.resourceKinds"
                       label={FORM.RESOURCE_KIND_LABEL}
                       rules={[
                         {
@@ -212,6 +213,7 @@ const ScopeSection: React.FC = memo(() => {
                         placeholder={FORM.RESOURCE_KIND_PLACEHOLDER}
                         options={RESOURCE_KIND_OPTIONS}
                         allowClear={false}
+                        mode="multiple"
                         style={{ width: '100%' }}
                         getPopupContainer={(node) => node.parentElement ?? document.body}
                       />
