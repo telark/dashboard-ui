@@ -17,10 +17,7 @@ const comingSoonRowStyle = {
 } as const;
 
 const FontSizeOptionCard: React.FC = memo(() => (
-  <SettingsCard
-    title={LABELS.FONT_SIZE_CARD_TITLE}
-    description={LABELS.FONT_SIZE_CARD_DESCRIPTION}
-  >
+  <SettingsCard title={LABELS.FONT_SIZE_CARD_TITLE} description={LABELS.FONT_SIZE_CARD_DESCRIPTION}>
     <div style={comingSoonRowStyle}>{LABELS.COMING_SOON}</div>
   </SettingsCard>
 ));

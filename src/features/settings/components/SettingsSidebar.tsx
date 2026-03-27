@@ -136,7 +136,15 @@ const SettingsSidebarItem: React.FC<ItemProps> = memo(({ section, isActive, onSe
           flexShrink: 0,
         }}
       />
-      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1, minWidth: 0 }}>
+      <span
+        style={{
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          flex: 1,
+          minWidth: 0,
+        }}
+      >
         {section.label}
       </span>
       {section.rowTag && (
