@@ -41,6 +41,10 @@ const PasskeysMainPage = lazy(() => import('../features/auth/pages/passkeys/Main
 const SettingsPage = lazy(() =>
   import('../features/settings').then((m) => ({ default: m.SettingsPage })),
 );
+const ProtectionPlansMainPage = lazy(() => import('../features/protection-plans/pages/MainPage'));
+const ProtectionPlansCreatePage = lazy(
+  () => import('../features/protection-plans/pages/CreatePlanPage'),
+);
 
 const PageLoader: React.FC = () => (
   <div
@@ -178,6 +182,26 @@ const AppRoutes: React.FC = () => {
             <ProtectedRoute>
               <FeatureErrorBoundary key={APP_ROUTES.GROUPS} featureName="Groups">
                 <GroupsMainPage />
+              </FeatureErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={APP_ROUTES.PROTECTION_PLANS}
+          element={
+            <ProtectedRoute>
+              <FeatureErrorBoundary featureName="Protection Plans">
+                <ProtectionPlansMainPage />
+              </FeatureErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={APP_ROUTES.PROTECTION_PLANS_CREATE}
+          element={
+            <ProtectedRoute>
+              <FeatureErrorBoundary featureName="Protection Plans">
+                <ProtectionPlansCreatePage />
               </FeatureErrorBoundary>
             </ProtectedRoute>
           }
