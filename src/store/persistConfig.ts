@@ -9,7 +9,7 @@ import type { PersistConfig } from 'redux-persist';
 export const rootPersistConfig: PersistConfig<any> = {
   key: 'root',
   storage,
-  whitelist: ['grouper', 'workload', 'bridge', 'insights'],
+  whitelist: ['grouper', 'workload', 'bridge', 'insights', 'applications'],
 };
 
 export const grouperPersistConfig: PersistConfig<any> = {
@@ -28,6 +28,12 @@ export const bridgePersistConfig: PersistConfig<any> = {
   key: 'bridge',
   storage,
   whitelist: ['bridges'],
+};
+
+export const applicationsPersistConfig: PersistConfig<any> = {
+  key: 'applications',
+  storage,
+  whitelist: ['applications'],
 };
 
 export const insightsPersistConfig: PersistConfig<any> = {

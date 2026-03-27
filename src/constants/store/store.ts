@@ -19,6 +19,11 @@ export const STORE_ACTIONS = {
     REFRESH_AUTO_GROUPERS: 'groupers/refreshAuto',
     FETCH_DETAILS: 'groupers/fetchDetails',
   },
+  APPLICATIONS: {
+    FETCH: 'applications/fetch',
+    FETCH_SILENT: 'applications/fetchSilent',
+    FETCH_DETAILS: 'applications/fetchDetails',
+  },
   GROUPER: {
     UPDATE_SYNC: 'grouper/updateGrouperSync',
     CHECK_MAINTENANCE: 'grouper/checkMaintenanceMode',
@@ -86,6 +91,7 @@ export const SYNC_MODES = COMMON_VALUES.SYNC_MODES;
 
 export const STORE_ERRORS = {
   FETCH_GROUPERS: 'Failed to fetch groupers',
+  FETCH_APPLICATIONS: 'Failed to fetch applications',
   TRIGGER_GROUPER_SYNC: 'Failed to trigger groupers sync',
   REFRESH_AUTO_GROUPERS: 'Failed to refresh auto groupers',
   UPDATE_SYNC: 'Failed to update sync settings.',
@@ -94,6 +100,7 @@ export const STORE_ERRORS = {
   UPDATE_MAINTENANCE: 'Failed to update maintenance mode.',
   REMOVE_MAINTENANCE: 'Failed to delete maintenance mode.',
   FETCH_DETAILS: 'Failed to fetch grouper details',
+  FETCH_APPLICATION_DETAILS: 'Failed to fetch application details',
   CHECK_INSIGHTS: 'Failed to check cluster insights',
   FETCH_APPS: 'Failed to fetch apps workloads',
   FETCH_BATCHES: 'Failed to fetch batches workloads',
@@ -134,6 +141,8 @@ export const STORE_MESSAGES = {
   FETCH_MAINTENANCE_FAILED: 'Failed to fetch maintenance data:',
   ERROR_FETCHING_GROUPERS: 'Error fetching groupers:',
   ERROR_FETCHING_GROUPER_DETAILS: 'Error fetching grouper details:',
+  ERROR_FETCHING_APPLICATIONS: 'Error fetching applications:',
+  ERROR_FETCHING_APPLICATION_DETAILS: 'Error fetching application details:',
   TRIGGERING_SYNC: 'Triggering SyncGrouper for:',
   ERROR_UPDATING_SYNC: 'Error updating sync settings:',
   ERROR_HANDLING_MAINTENANCE_UPDATE: 'Failed to handle maintenance mode update',

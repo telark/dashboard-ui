@@ -20,6 +20,7 @@ export const Icons = {
   Role: AiOutlineSafety,
   Grouper: AiOutlineCluster,
   Workload: AiOutlineAppstore,
+  Application: AiOutlineAppstore,
   Bridge: AiOutlineApi,
   User: AiOutlineUser,
   Group: AiOutlineTeam,

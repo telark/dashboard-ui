@@ -1,6 +1,7 @@
 export const API_PATHS = {
   RESOURCES: {
     GROUPERS: 'resources/groupers',
+    APPLICATIONS: 'resources/applications',
     INSIGHTS: 'resources/insights',
     WORKLOADS: 'resources/workloads',
     BRIDGES: 'resources/bridges',

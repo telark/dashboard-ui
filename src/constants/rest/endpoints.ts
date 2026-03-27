@@ -27,6 +27,16 @@ export const Endpoints = {
       method: 'PATCH',
     }),
   },
+  APPLICATIONS: {
+    GET_ALL: {
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.GET_ALL}`,
+      method: 'GET',
+    },
+    GET_DETAILS: (name: string) => ({
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.GET_DETAILS(name)}`,
+      method: 'GET',
+    }),
+  },
   INSIGHTS: {
     CLUSTER_GET: {
       path: `${API_PATHS.RESOURCES.INSIGHTS}/${INSIGHT_PATHS.CLUSTER_GET}`,

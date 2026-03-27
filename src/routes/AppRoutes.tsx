@@ -20,6 +20,12 @@ const GroupersGlobalView = lazy(
 const GrouperDetailsView = lazy(
   () => import('../features/resources/groupers/pages/details/DetailsView'),
 );
+const ApplicationsGlobalView = lazy(
+  () => import('../features/resources/applications/pages/main/GlobalView'),
+);
+const ApplicationDetailsView = lazy(
+  () => import('../features/resources/applications/pages/details/DetailsView'),
+);
 const BridgesGlobalView = lazy(() => import('../features/resources/bridges/pages/main/GlobalView'));
 const BridgeDetailsView = lazy(
   () => import('../features/resources/bridges/pages/details/DetailsView'),
@@ -107,6 +113,28 @@ const AppRoutes: React.FC = () => {
               <FeatureErrorBoundary featureName="Grouper Details">
                 <AnimatedPageWrapper>
                   <GrouperDetailsView />
+                </AnimatedPageWrapper>
+              </FeatureErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={APP_ROUTES.APPLICATIONS}
+          element={
+            <ProtectedRoute>
+              <FeatureErrorBoundary featureName="Applications">
+                <ApplicationsGlobalView />
+              </FeatureErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={APP_ROUTES.APPLICATION_DETAILS}
+          element={
+            <ProtectedRoute>
+              <FeatureErrorBoundary featureName="Application Details">
+                <AnimatedPageWrapper>
+                  <ApplicationDetailsView />
                 </AnimatedPageWrapper>
               </FeatureErrorBoundary>
             </ProtectedRoute>

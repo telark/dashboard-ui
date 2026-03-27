@@ -3,6 +3,7 @@ import { persistReducer } from 'redux-persist';
 import { grouperReducer } from '../features/resources/groupers/store';
 import { workloadReducer } from '../features/resources/workloads/store';
 import { bridgeReducer } from '../features/resources/bridges/store';
+import { applicationsReducer } from '../features/resources/applications/store';
 import { insightsReducer } from '../features/insights/store';
 import { groupReducer as groupsReducer } from '../features/access-and-permissions/groups/store';
 import { userReducer as usersReducer } from '../features/access-and-permissions/users/store';
@@ -14,6 +15,7 @@ import {
   insightsPersistConfig,
   workloadPersistConfig,
   bridgePersistConfig,
+  applicationsPersistConfig,
   groupsPersistConfig,
   usersPersistConfig,
 } from './persistConfig';
@@ -22,6 +24,7 @@ const persistedGrouperReducer = persistReducer(grouperPersistConfig, grouperRedu
 const persistedInsightsReducer = persistReducer(insightsPersistConfig, insightsReducer);
 const persistedWorkloadReducer = persistReducer(workloadPersistConfig, workloadReducer);
 const persistedBridgeReducer = persistReducer(bridgePersistConfig, bridgeReducer);
+const persistedApplicationsReducer = persistReducer(applicationsPersistConfig, applicationsReducer);
 const persistedGroupsReducer = persistReducer(groupsPersistConfig, groupsReducer);
 const persistedUsersReducer = persistReducer(usersPersistConfig, usersReducer);
 
@@ -31,6 +34,7 @@ const store = configureStore({
     insights: persistedInsightsReducer,
     workload: persistedWorkloadReducer,
     bridge: persistedBridgeReducer,
+    applications: persistedApplicationsReducer,
     groups: persistedGroupsReducer,
     users: persistedUsersReducer,
     categories: categoriesReducer,

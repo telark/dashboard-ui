@@ -23,6 +23,8 @@ export const APP_ROUTES = {
   PASSKEYS: '/passkeys',
   GROUPERS: '/groupers',
   GROUPER_DETAILS: '/groupers/:name/details',
+  APPLICATIONS: '/applications',
+  APPLICATION_DETAILS: '/applications/:name/details',
   WORKLOADS: '/workloads',
   APP_WORKLOAD_DETAILS: '/workloads/apps/:name/details',
   BRIDGES: '/bridges',

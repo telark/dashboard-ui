@@ -7,6 +7,7 @@ const HomeIcon = Icons.Home;
 const RoleIcon = Icons.Role;
 const GrouperIcon = Icons.Grouper;
 const WorkloadIcon = Icons.Workload;
+const ApplicationIcon = Icons.Application;
 const BridgeIcon = Icons.Bridge;
 const UserIcon = Icons.User;
 const GroupIcon = Icons.Group;
@@ -83,6 +84,23 @@ export const WorkloadsMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapse
 });
 
 WorkloadsMenuButton.displayName = 'WorkloadsMenuButton';
+
+export const ApplicationsMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
+  const location = useLocation();
+  const pathname = location.pathname;
+
+  return (
+    <SidebarButton
+      text={MENU_LABELS.APPLICATIONS}
+      icon={<ApplicationIcon />}
+      active={pathname.startsWith(APP_ROUTES.APPLICATIONS)}
+      route={APP_ROUTES.APPLICATIONS}
+      isCollapsed={isCollapsed}
+    />
+  );
+});
+
+ApplicationsMenuButton.displayName = 'ApplicationsMenuButton';
 
 export const UsersMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
   const location = useLocation();
