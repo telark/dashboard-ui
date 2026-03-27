@@ -1,10 +1,10 @@
 import React, { memo, useMemo } from 'react';
-import { Tag } from 'antd';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type { Application } from '../../models';
 import { APPLICATIONS_UI } from '../../constants';
+import RowTag from '../../../../../components/display/table/RowTag';
 
 interface ApplicationDetailsContentProps {
   application: Application;
@@ -66,6 +66,30 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         description={APPLICATIONS_UI.SECTIONS.OVERVIEW.DESCRIPTION}
       >
         <KeyValueGrid rows={sections.overviewRows} />
+        <div style={{ marginTop: 12 }}>
+          <KeyValueGrid
+            rows={[
+              { k: 'managedChart', label: 'Managed chart', value: application.managed?.chart || APPLICATIONS_UI.FALLBACKS.EMPTY },
+              { k: 'managedVersion', label: 'Managed version', value: application.managed?.version || APPLICATIONS_UI.FALLBACKS.EMPTY },
+              { k: 'historyGeneration', label: 'History generation', value: application.history?.generation ?? 0 },
+              { k: 'historyDrift', label: 'Has drift', value: application.history?.hasDrift ? 'Yes' : 'No' },
+              {
+                k: 'lastModifiedBy',
+                label: 'Last modified by',
+                value: application.history?.lastModifiedBy || APPLICATIONS_UI.FALLBACKS.EMPTY,
+              },
+              {
+                k: 'lastModifiedAt',
+                label: 'Last modified at',
+                value: application.history?.lastModifiedAt ? (
+                  <TimeAgo date={application.history.lastModifiedAt} />
+                ) : (
+                  APPLICATIONS_UI.FALLBACKS.EMPTY
+                ),
+              },
+            ]}
+          />
+        </div>
         {application.health?.reason ? (
           <div style={{ marginTop: 12, color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 13, lineHeight: 1.5 }}>
             {application.health.reason}
@@ -118,9 +142,12 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         ) : (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {sections.namespaces.map((ns) => (
-              <Tag key={ns.name} color="blue">
-                {ns.name} ({ns.resourceCount})
-              </Tag>
+              <RowTag
+                key={ns.name}
+                text={`${ns.name} (${ns.resourceCount})`}
+                background={DEFAULT_COLORS.CHIP_BLUE_BG}
+                color={DEFAULT_COLORS.CHIP_BLUE_TEXT}
+              />
             ))}
           </div>
         )}
@@ -187,12 +214,22 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                     APPLICATIONS_UI.FALLBACKS.EMPTY
                   ),
                 },
+                {
+                  k: 'promptVersion',
+                  label: 'Prompt version',
+                  value: sections.insights.promptVersion || APPLICATIONS_UI.FALLBACKS.EMPTY,
+                },
               ]}
             />
             {sections.insights.techStack?.length ? (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                 {sections.insights.techStack.map((t) => (
-                  <Tag key={t}>{t}</Tag>
+                  <RowTag
+                    key={t}
+                    text={t}
+                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                    color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                  />
                 ))}
               </div>
             ) : null}
@@ -204,7 +241,12 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {sections.insights.dependencies.map((d) => (
-                    <Tag key={d}>{d}</Tag>
+                    <RowTag
+                      key={d}
+                      text={d}
+                      background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                      color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                    />
                   ))}
                 </div>
               </div>
@@ -322,6 +364,46 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
             },
           ]}
         />
+        <div style={{ marginTop: 12, display: 'grid', rowGap: 12 }}>
+          <div>
+            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12, fontWeight: 700, marginBottom: 8 }}>
+              Changes by class
+            </div>
+            {Object.keys(sections.metrics?.derived?.changesByClass || {}).length === 0 ? (
+              <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
+            ) : (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {Object.entries(sections.metrics.derived.changesByClass).map(([key, value]) => (
+                  <RowTag
+                    key={key}
+                    text={`${key}: ${value}`}
+                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                    color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+          <div>
+            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12, fontWeight: 700, marginBottom: 8 }}>
+              Changes by severity
+            </div>
+            {Object.keys(sections.metrics?.derived?.changesBySeverity || {}).length === 0 ? (
+              <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
+            ) : (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {Object.entries(sections.metrics.derived.changesBySeverity).map(([key, value]) => (
+                  <RowTag
+                    key={key}
+                    text={`${key}: ${value}`}
+                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                    color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </SettingsCard>
 
       <SettingsCard title="Workload metrics" description="Per-workload baseline and usage (when available).">
@@ -477,6 +559,53 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
             },
           ]}
         />
+        <div style={{ marginTop: 12, display: 'grid', rowGap: 10 }}>
+          <div>
+            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12, fontWeight: 700, marginBottom: 6 }}>
+              Images
+            </div>
+            {sections.images.length === 0 ? (
+              <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
+            ) : (
+              <div style={{ display: 'grid', rowGap: 5 }}>
+                {sections.images.slice(0, 8).map((img) => (
+                  <div key={img} style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_PRIMARY, wordBreak: 'break-word' }}>
+                    {img}
+                  </div>
+                ))}
+                {sections.images.length > 8 ? (
+                  <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+                    Showing first 8 of {sections.images.length}.
+                  </div>
+                ) : null}
+              </div>
+            )}
+          </div>
+          <div>
+            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12, fontWeight: 700, marginBottom: 6 }}>
+              Env var keys
+            </div>
+            {sections.envVarKeys.length === 0 ? (
+              <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
+            ) : (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {sections.envVarKeys.slice(0, 20).map((key) => (
+                  <RowTag
+                    key={key}
+                    text={key}
+                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                    color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                  />
+                ))}
+                {sections.envVarKeys.length > 20 ? (
+                  <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12 }}>
+                    +{sections.envVarKeys.length - 20} more
+                  </span>
+                ) : null}
+              </div>
+            )}
+          </div>
+        </div>
       </SettingsCard>
 
       <SettingsCard
@@ -539,11 +668,46 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                     <TimeAgo date={entry.detectedAt} />
                   </div>
                 </div>
+                <div style={{ marginTop: 6, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  <RowTag
+                    text={`Fingerprint: ${entry.fingerprint || APPLICATIONS_UI.FALLBACKS.EMPTY}`}
+                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                    color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                  />
+                  {entry.changedBy ? (
+                    <RowTag
+                      text={`Changed by: ${entry.changedBy}`}
+                      background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                      color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                    />
+                  ) : null}
+                  {entry.isIncident ? (
+                    <RowTag text="Incident" background="#fee2e2" color="#b91c1c" />
+                  ) : null}
+                  {entry.isRecovery ? (
+                    <RowTag text="Recovery" background="#dcfce7" color="#166534" />
+                  ) : null}
+                  {entry.isLastOne ? (
+                    <RowTag text="Latest" background="#dbeafe" color="#1d4ed8" />
+                  ) : null}
+                </div>
                 {entry.changes?.length ? (
                   <div style={{ marginTop: 8, display: 'grid', rowGap: 6 }}>
                     {entry.changes.slice(0, 5).map((c, idx) => (
-                      <div key={`${entry.fingerprint}:${idx}`} style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-                        <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{c.changeType}</span> · {c.field} — {c.description}
+                      <div
+                        key={`${entry.fingerprint}:${idx}`}
+                        style={{
+                          fontSize: 12,
+                          color: DEFAULT_COLORS.TEXT_PRIMARY,
+                          border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+                          borderRadius: 8,
+                          padding: 8,
+                        }}
+                      >
+                        <div style={{ marginBottom: 4 }}>
+                          <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{c.changeType}</span> · {c.field}
+                        </div>
+                        <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>{c.description}</div>
                       </div>
                     ))}
                     {entry.changes.length > 5 ? (

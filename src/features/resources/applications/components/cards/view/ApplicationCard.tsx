@@ -6,6 +6,7 @@ import { APPLICATIONS_UI } from '../../../constants';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../../constants/pages/connectivity';
 import FieldLabel from '../../../../../protection-plans/components/shared/FieldLabel';
+import RowTag from '../../../../../../components/display/table/RowTag';
 
 interface ApplicationCardProps {
   application: Application;
@@ -21,6 +22,14 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(({ application }) =
     if (status === 'down') return DEFAULT_COLORS.ERROR;
     return DEFAULT_COLORS.TEXT_MUTED;
   }, [application.health?.status]);
+
+  const topKinds = useMemo(() => {
+    const entries = Object.entries(application.resourceSummary || {}).filter(([, count]) => Number(count) > 0);
+    return entries
+      .sort((a, b) => Number(b[1]) - Number(a[1]))
+      .slice(0, 3)
+      .map(([kind, count]) => ({ kind, count: Number(count) }));
+  }, [application.resourceSummary]);
 
   return (
     <div
@@ -73,6 +82,29 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(({ application }) =
           >
             {application.name}
           </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
+            {application.insights?.category ? (
+              <RowTag
+                text={application.insights.category}
+                background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+              />
+            ) : null}
+            {application.insights?.role ? (
+              <RowTag
+                text={application.insights.role}
+                background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+              />
+            ) : null}
+            {application.managed?.chart ? (
+              <RowTag
+                text={`${application.managed.chart}${application.managed.version ? `@${application.managed.version}` : ''}`}
+                background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+              />
+            ) : null}
+          </div>
         </div>
         <div
           style={{
@@ -92,11 +124,11 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(({ application }) =
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1.4fr) minmax(0, 1.2fr)',
-          columnGap: 24,
-          rowGap: 12,
+          gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
+          columnGap: 16,
+          rowGap: 10,
           fontSize: 13,
-          paddingTop: 10,
+          paddingTop: 8,
           borderTop: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
         }}
       >
@@ -115,6 +147,21 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(({ application }) =
             <FieldLabel>{APPLICATIONS_UI.CARD.LABELS.RESOURCES}</FieldLabel>
             <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>{application.resourceCount ?? 0}</div>
           </div>
+          {topKinds.length ? (
+            <div>
+              <FieldLabel>Top kinds</FieldLabel>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {topKinds.map((k) => (
+                  <RowTag
+                    key={k.kind}
+                    text={`${k.kind} ${k.count}`}
+                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                    color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <div>
@@ -145,6 +192,13 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(({ application }) =
               <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>{application.crStatus}</div>
             </div>
           ) : null}
+          <div>
+            <FieldLabel>Runtime</FieldLabel>
+            <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY, fontSize: 12 }}>
+              {application.ports?.length || 0} ports · {application.images?.length || 0} images ·{' '}
+              {application.envVarKeys?.length || 0} env keys
+            </div>
+          </div>
         </div>
       </div>
     </div>
