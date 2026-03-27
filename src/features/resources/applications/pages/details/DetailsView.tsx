@@ -16,7 +16,9 @@ const ApplicationDetailsView: React.FC = memo(() => {
   }
 
   if (error) {
-    return <ErrorView error={error} errorMessagePrefix={APPLICATION_DETAILS_CONSTANTS.MESSAGES.ERROR} />;
+    return (
+      <ErrorView error={error} errorMessagePrefix={APPLICATION_DETAILS_CONSTANTS.MESSAGES.ERROR} />
+    );
   }
 
   if (!details) {
@@ -31,9 +33,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
         minHeight: '100vh',
       }}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16, background: '#ffffff' }}>
-        <ApplicationDetailsContent application={details} />
-      </div>
+      <ApplicationDetailsContent application={details} />
     </div>
   );
 });
@@ -41,4 +41,3 @@ const ApplicationDetailsView: React.FC = memo(() => {
 ApplicationDetailsView.displayName = 'ApplicationDetailsView';
 
 export default ApplicationDetailsView;
-

@@ -17,6 +17,7 @@ export const APPLICATIONS_UI = {
     RESOURCE_SUMMARY: {
       TITLE: 'Resource summary',
       DESCRIPTION: 'Resource kind counts detected for this application.',
+      EMPTY: 'No resources attached.',
     },
     NAMESPACES: {
       TITLE: 'Namespaces',
@@ -75,6 +76,7 @@ export const APPLICATIONS_UI = {
       LAST_UPDATED: 'Last updated',
       CREATED_AT: 'Created at',
       CR_STATUS: 'CR status',
+      RUNTIME: 'Runtime',
     },
   },
 } as const;

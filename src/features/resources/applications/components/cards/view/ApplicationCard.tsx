@@ -12,24 +12,61 @@ interface ApplicationCardProps {
   application: Application;
 }
 
+const GRID_STYLE: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'minmax(0, 1.7fr) minmax(0, 1.5fr)',
+  columnGap: 24,
+  rowGap: 12,
+  fontSize: 13,
+  paddingTop: 10,
+  borderTop: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+};
+
+const COLUMN_STYLE: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 10,
+  minWidth: 0,
+};
+
+function FieldBlock(props: {
+  label: string;
+  children: React.ReactNode;
+  valueWeight?: number;
+}): React.ReactElement {
+  const { label, children, valueWeight = 400 } = props;
+  return (
+    <div style={{ minWidth: 0 }}>
+      <FieldLabel>{label}</FieldLabel>
+      <div
+        style={{
+          color: DEFAULT_COLORS.TEXT_PRIMARY,
+          fontWeight: valueWeight,
+          lineHeight: 1.35,
+          marginTop: 2,
+          wordBreak: 'break-word',
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
 const ApplicationCard: React.FC<ApplicationCardProps> = memo(({ application }) => {
   const navigate = useNavigate();
 
-  const healthColor = useMemo(() => {
+  const healthBackground = useMemo(() => {
     const status = (application.health?.status || '').toLowerCase();
     if (status === 'healthy') return DEFAULT_COLORS.SUCCESS;
     if (status === 'degraded') return CONNECTIVITY_CONSTANTS.COLORS.WARNING;
-    if (status === 'down') return DEFAULT_COLORS.ERROR;
+    if (status === 'down') return DEFAULT_COLORS.DANGER;
     return DEFAULT_COLORS.TEXT_MUTED;
   }, [application.health?.status]);
 
-  const topKinds = useMemo(() => {
-    const entries = Object.entries(application.resourceSummary || {}).filter(([, count]) => Number(count) > 0);
-    return entries
-      .sort((a, b) => Number(b[1]) - Number(a[1]))
-      .slice(0, 3)
-      .map(([kind, count]) => ({ kind, count: Number(count) }));
-  }, [application.resourceSummary]);
+  const runtimeSummary = `${application.ports?.length || 0} ports · ${application.images?.length || 0} images · ${
+    application.envVarKeys?.length || 0
+  } env keys`;
 
   return (
     <div
@@ -47,6 +84,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(({ application }) =
         border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
         padding: 12,
         cursor: 'pointer',
+        boxSizing: 'border-box',
       }}
     >
       <div
@@ -55,7 +93,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(({ application }) =
           alignItems: 'center',
           justifyContent: 'space-between',
           gap: 8,
-          marginBottom: 12,
+          marginBottom: application.insights?.category || application.insights?.role || application.managed?.chart ? 12 : 16,
         }}
       >
         <div style={{ minWidth: 0, flex: 1 }}>
@@ -82,123 +120,73 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(({ application }) =
           >
             {application.name}
           </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
-            {application.insights?.category ? (
-              <RowTag
-                text={application.insights.category}
-                background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-              />
-            ) : null}
-            {application.insights?.role ? (
-              <RowTag
-                text={application.insights.role}
-                background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-              />
-            ) : null}
-            {application.managed?.chart ? (
-              <RowTag
-                text={`${application.managed.chart}${application.managed.version ? `@${application.managed.version}` : ''}`}
-                background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-              />
-            ) : null}
-          </div>
+          {application.insights?.category || application.insights?.role || application.managed?.chart ? (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
+              {application.insights?.category ? (
+                <RowTag
+                  text={application.insights.category}
+                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                  color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                />
+              ) : null}
+              {application.insights?.role ? (
+                <RowTag
+                  text={application.insights.role}
+                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                  color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                />
+              ) : null}
+              {application.managed?.chart ? (
+                <RowTag
+                  text={`${application.managed.chart}${
+                    application.managed.version ? `@${application.managed.version}` : ''
+                  }`}
+                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                  color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                />
+              ) : null}
+            </div>
+          ) : null}
         </div>
-        <div
+        <span
           style={{
             flexShrink: 0,
             padding: '2px 10px',
             borderRadius: 999,
             fontSize: 12,
             fontWeight: 600,
-            background: healthColor,
+            background: healthBackground,
             color: '#ffffff',
           }}
         >
           {application.health?.status || APPLICATIONS_UI.FALLBACKS.UNKNOWN}
-        </div>
+        </span>
       </div>
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
-          columnGap: 16,
-          rowGap: 10,
-          fontSize: 13,
-          paddingTop: 8,
-          borderTop: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-        }}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <div>
-            <FieldLabel>{APPLICATIONS_UI.CARD.LABELS.HEALTH}</FieldLabel>
-            <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY, fontWeight: 600 }}>
-              {application.health?.status || APPLICATIONS_UI.FALLBACKS.UNKNOWN}
-            </div>
-          </div>
-          <div>
-            <FieldLabel>{APPLICATIONS_UI.CARD.LABELS.NAMESPACES}</FieldLabel>
-            <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>{application.namespaces?.total ?? 0}</div>
-          </div>
-          <div>
-            <FieldLabel>{APPLICATIONS_UI.CARD.LABELS.RESOURCES}</FieldLabel>
-            <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>{application.resourceCount ?? 0}</div>
-          </div>
-          {topKinds.length ? (
-            <div>
-              <FieldLabel>Top kinds</FieldLabel>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                {topKinds.map((k) => (
-                  <RowTag
-                    key={k.kind}
-                    text={`${k.kind} ${k.count}`}
-                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                    color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                  />
-                ))}
-              </div>
-            </div>
-          ) : null}
+      <div style={GRID_STYLE}>
+        <div style={COLUMN_STYLE}>
+          <FieldBlock label={APPLICATIONS_UI.CARD.LABELS.HEALTH} valueWeight={600}>
+            {application.health?.status || APPLICATIONS_UI.FALLBACKS.UNKNOWN}
+          </FieldBlock>
+          <FieldBlock label={APPLICATIONS_UI.CARD.LABELS.NAMESPACES}>{application.namespaces?.total ?? 0}</FieldBlock>
+          <FieldBlock label={APPLICATIONS_UI.CARD.LABELS.RESOURCES}>{application.resourceCount ?? 0}</FieldBlock>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <div>
-            <FieldLabel>{APPLICATIONS_UI.CARD.LABELS.MANAGED_BY}</FieldLabel>
-            <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-              {application.managed?.by || APPLICATIONS_UI.FALLBACKS.EMPTY}
-            </div>
-          </div>
-          <div>
-            <FieldLabel>{APPLICATIONS_UI.CARD.LABELS.LAST_UPDATED}</FieldLabel>
-            <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-              {application.lastUpdated ? (
-                <TimeAgo date={application.lastUpdated} />
-              ) : (
-                APPLICATIONS_UI.FALLBACKS.EMPTY
-              )}
-            </div>
-          </div>
-          <div>
-            <FieldLabel>{APPLICATIONS_UI.CARD.LABELS.CREATED_AT}</FieldLabel>
-            <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-              {application.createdAt ? <TimeAgo date={application.createdAt} /> : APPLICATIONS_UI.FALLBACKS.EMPTY}
-            </div>
-          </div>
+        <div style={COLUMN_STYLE}>
+          <FieldBlock label={APPLICATIONS_UI.CARD.LABELS.MANAGED_BY}>
+            {application.managed?.by || APPLICATIONS_UI.FALLBACKS.EMPTY}
+          </FieldBlock>
+          <FieldBlock label={APPLICATIONS_UI.CARD.LABELS.LAST_UPDATED}>
+            {application.lastUpdated ? <TimeAgo date={application.lastUpdated} /> : APPLICATIONS_UI.FALLBACKS.EMPTY}
+          </FieldBlock>
+          <FieldBlock label={APPLICATIONS_UI.CARD.LABELS.CREATED_AT}>
+            {application.createdAt ? <TimeAgo date={application.createdAt} /> : APPLICATIONS_UI.FALLBACKS.EMPTY}
+          </FieldBlock>
           {application.crStatus ? (
-            <div>
-              <FieldLabel>{APPLICATIONS_UI.CARD.LABELS.CR_STATUS}</FieldLabel>
-              <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>{application.crStatus}</div>
-            </div>
+            <FieldBlock label={APPLICATIONS_UI.CARD.LABELS.CR_STATUS}>{application.crStatus}</FieldBlock>
           ) : null}
-          <div>
-            <FieldLabel>Runtime</FieldLabel>
-            <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY, fontSize: 12 }}>
-              {application.ports?.length || 0} ports · {application.images?.length || 0} images ·{' '}
-              {application.envVarKeys?.length || 0} env keys
-            </div>
-          </div>
+          <FieldBlock label={APPLICATIONS_UI.CARD.LABELS.RUNTIME}>
+            <span style={{ fontSize: 13 }}>{runtimeSummary}</span>
+          </FieldBlock>
         </div>
       </div>
     </div>
@@ -208,4 +196,3 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(({ application }) =
 ApplicationCard.displayName = 'ApplicationCard';
 
 export default ApplicationCard;
-
