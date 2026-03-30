@@ -2,8 +2,8 @@ export {
   deleteApplication,
   fetchApplications,
   fetchApplicationDetails,
-  getSnapshotManifest,
-  getSnapshotsByApplicationId,
   updateApplication,
-} from './fetch';
+} from './application';
+
+export { getSnapshotManifest, getSnapshotsByApplicationId } from './snapshots';
 
