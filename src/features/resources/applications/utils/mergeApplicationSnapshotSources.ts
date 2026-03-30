@@ -27,6 +27,7 @@ function pickFromPool(
     ...row,
     path: row.path ?? d.path,
     severity: row.severity ?? d.severity,
+    takenAt: row.takenAt ?? d.takenAt,
   };
 }
 
@@ -100,6 +101,7 @@ export function mergeApplicationSnapshotSources(
         consumed: APPLICATIONS_UI.FALLBACKS.EMPTY,
         path: d.path,
         severity: d.severity,
+        takenAt: d.takenAt,
       });
     }
   }

@@ -113,6 +113,8 @@ export interface ApplicationSnapshotSummary {
   /** Storage path; unique per snapshot when id is shared (e.g. application name). */
   path?: string;
   severity?: string;
+  /** ISO timestamp from application details or exporter when available. */
+  takenAt?: string;
   pvcTotal?: string;
   pvcAvailable?: string;
 }

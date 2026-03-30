@@ -62,6 +62,9 @@ function mapExporterRowToSummary(row: unknown): ApplicationSnapshotSummary | nul
   const pvcAvailable = typeof o.pvcAvailable === 'string' ? o.pvcAvailable : undefined;
   const severity = typeof o.severity === 'string' ? o.severity : undefined;
   const path = typeof o.path === 'string' && o.path.length > 0 ? o.path : undefined;
+  const takenAtRaw = o.takenAt ?? o.taken_at;
+  const takenAt =
+    typeof takenAtRaw === 'string' && takenAtRaw.length > 0 ? takenAtRaw : undefined;
 
   return {
     id,
@@ -72,6 +75,7 @@ function mapExporterRowToSummary(row: unknown): ApplicationSnapshotSummary | nul
     consumed,
     path,
     severity,
+    takenAt,
     pvcTotal,
     pvcAvailable,
   };
@@ -87,6 +91,7 @@ function detailToPlaceholderSummary(ref: ApplicationSnapshot): ApplicationSnapsh
     consumed: '',
     path: ref.path,
     severity: ref.severity,
+    takenAt: ref.takenAt,
   };
 }
 
@@ -103,6 +108,7 @@ function enrichSummaryFromDetail(
     generation: gen,
     path: api.path ?? d.path,
     severity: api.severity ?? d.severity,
+    takenAt: api.takenAt ?? d.takenAt,
   };
 }
 

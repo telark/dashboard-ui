@@ -241,49 +241,60 @@ function renderYamlHighlighted(code: string): React.ReactNode {
 export interface IdeManifestCodeBlockProps {
   code: string;
   language: 'json' | 'yaml';
+  /** Override outer scroll container max-height (default fits modal-sized viewers). */
+  containerMaxHeight?: string;
+  /** When false, the block does not scroll; an outer panel scrolls instead. */
+  scrollInside?: boolean;
 }
 
-const IdeManifestCodeBlock: React.FC<IdeManifestCodeBlockProps> = memo(({ code, language }) => {
-  const highlighted = useMemo(() => {
-    if (language === 'json') {
-      return tokenizeJson(code).map((tok, idx) => (
-        <span key={`j-${idx}`} style={{ color: colorForJsonToken(tok.t) }}>
-          {tok.s}
-        </span>
-      ));
-    }
-    return renderYamlHighlighted(code);
-  }, [code, language]);
+const IdeManifestCodeBlock: React.FC<IdeManifestCodeBlockProps> = memo(
+  ({
+    code,
+    language,
+    containerMaxHeight = 'min(60vh, 480px)',
+    scrollInside = true,
+  }) => {
+    const highlighted = useMemo(() => {
+      if (language === 'json') {
+        return tokenizeJson(code).map((tok, idx) => (
+          <span key={`j-${idx}`} style={{ color: colorForJsonToken(tok.t) }}>
+            {tok.s}
+          </span>
+        ));
+      }
+      return renderYamlHighlighted(code);
+    }, [code, language]);
 
-  return (
-    <div
-      style={{
-        background: IDE.bg,
-        border: `1px solid ${IDE.border}`,
-        borderRadius: 8,
-        padding: '32px 72px 10px 12px',
-        maxHeight: 'min(60vh, 480px)',
-        overflow: 'auto',
-        fontFamily:
-          'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace',
-        fontSize: 12,
-        lineHeight: 1.45,
-        letterSpacing: 0.015,
-      }}
-    >
-      <pre
+    return (
+      <div
         style={{
-          margin: 0,
-          whiteSpace: 'pre-wrap',
-          wordBreak: 'break-word',
-          color: IDE.text,
+          background: IDE.bg,
+          border: `1px solid ${IDE.border}`,
+          borderRadius: 8,
+          padding: '32px 72px 10px 12px',
+          maxHeight: scrollInside ? containerMaxHeight : 'none',
+          overflow: scrollInside ? 'auto' : 'visible',
+          fontFamily:
+            'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace',
+          fontSize: 12,
+          lineHeight: 1.45,
+          letterSpacing: 0.015,
         }}
       >
-        {highlighted}
-      </pre>
-    </div>
-  );
-});
+        <pre
+          style={{
+            margin: 0,
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            color: IDE.text,
+          }}
+        >
+          {highlighted}
+        </pre>
+      </div>
+    );
+  },
+);
 
 IdeManifestCodeBlock.displayName = 'IdeManifestCodeBlock';
 

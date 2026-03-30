@@ -1,13 +1,19 @@
 import React, { memo } from 'react';
 import { EyeOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
+import { Button, Tooltip } from 'antd';
 import { DEFAULT_COLORS, Icons } from '../../../../../constants';
+import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { APPLICATION_DETAILS_CONSTANTS, APPLICATIONS_UI } from '../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import type { ApplicationSnapshotSummary } from '../../models';
 
 const SNAPSHOT_TAG = APPLICATION_DETAILS_CONSTANTS.OVERVIEW_TAG_SUCCESS;
+
+const ICON_BTN: React.CSSProperties = {
+  borderColor: DEFAULT_COLORS.BORDER_LIGHT,
+  color: DEFAULT_COLORS.TEXT_PRIMARY,
+};
 
 export interface ApplicationSnapshotRowProps {
   snapshot: ApplicationSnapshotSummary;
@@ -22,6 +28,18 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
       s.severity && s.severity.trim().length > 0
         ? s.severity
         : APPLICATIONS_UI.FALLBACKS.EMPTY;
+
+    const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
+    const takenAtLine =
+      s.takenAt && s.takenAt.trim().length > 0 ? (
+        <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 500 }}>
+          {ui.TAKEN_AT}: <TimeAgo date={s.takenAt} />
+        </span>
+      ) : (
+        <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 500 }}>
+          {ui.TAKEN_AT}: {APPLICATIONS_UI.FALLBACKS.EMPTY}
+        </span>
+      );
 
     return (
       <div
@@ -43,7 +61,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
         <div
           style={{
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             justifyContent: 'space-between',
             gap: 12,
             flexWrap: 'wrap',
@@ -52,7 +70,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
           <div
             style={{
               display: 'flex',
-              alignItems: 'center',
+              alignItems: 'flex-start',
               gap: 10,
               minWidth: 0,
               flex: 1,
@@ -64,63 +82,66 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                 height: 8,
                 borderRadius: '50%',
                 flexShrink: 0,
+                marginTop: 5,
                 background: DEFAULT_COLORS.SUCCESS,
               }}
               aria-hidden
             />
-            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
-              <RowTag
-                text={`${APPLICATIONS_UI.SECTIONS.SNAPSHOTS.GENERATION}: ${s.generation}`}
-                background={SNAPSHOT_TAG.background}
-                color={SNAPSHOT_TAG.color}
-                fontSize={11}
-              />
-              <RowTag
-                text={`${APPLICATIONS_UI.SECTIONS.SNAPSHOTS.SEVERITY}: ${severityLabel}`}
-                background={SNAPSHOT_TAG.background}
-                color={SNAPSHOT_TAG.color}
-                fontSize={11}
-              />
-              <RowTag
-                text={`${APPLICATIONS_UI.SECTIONS.SNAPSHOTS.SIZE}: ${s.size}`}
-                background={SNAPSHOT_TAG.background}
-                color={SNAPSHOT_TAG.color}
-                fontSize={11}
-              />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0 }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
+                <RowTag
+                  text={`${ui.GENERATION}: ${s.generation}`}
+                  background={SNAPSHOT_TAG.background}
+                  color={SNAPSHOT_TAG.color}
+                  fontSize={11}
+                />
+                <RowTag
+                  text={`${ui.SEVERITY}: ${severityLabel}`}
+                  background={SNAPSHOT_TAG.background}
+                  color={SNAPSHOT_TAG.color}
+                  fontSize={11}
+                />
+                <RowTag
+                  text={`${ui.SIZE}: ${s.size}`}
+                  background={SNAPSHOT_TAG.background}
+                  color={SNAPSHOT_TAG.color}
+                  fontSize={11}
+                />
+              </div>
+              {takenAtLine}
             </div>
           </div>
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 8,
+              gap: 6,
               flexShrink: 0,
               flexWrap: 'wrap',
               justifyContent: 'flex-end',
+              alignSelf: 'flex-start',
             }}
           >
-            <Button
-              size="small"
-              icon={<EyeOutlined />}
-              onClick={() => onViewManifest(s)}
-              style={{
-                borderColor: DEFAULT_COLORS.BORDER_LIGHT,
-                color: DEFAULT_COLORS.TEXT_PRIMARY,
-              }}
-            >
-              {APPLICATIONS_UI.SECTIONS.SNAPSHOTS.VIEW_MANIFEST}
-            </Button>
-            <Button
-              size="small"
-              icon={<Icons.SnapshotRestore size={14} />}
-              onClick={() => onRollback?.(s.id)}
-              style={{
-                borderColor: DEFAULT_COLORS.BORDER_LIGHT,
-                color: DEFAULT_COLORS.TEXT_PRIMARY,
-              }}
-            >
-              {APPLICATIONS_UI.SECTIONS.SNAPSHOTS.ROLLBACK}
-            </Button>
+            <Tooltip title={ui.VIEW_MANIFEST}>
+              <Button
+                size="small"
+                type="default"
+                icon={<EyeOutlined />}
+                onClick={() => onViewManifest(s)}
+                style={ICON_BTN}
+                aria-label={ui.VIEW_MANIFEST}
+              />
+            </Tooltip>
+            <Tooltip title={ui.ROLLBACK}>
+              <Button
+                size="small"
+                type="default"
+                icon={<Icons.SnapshotRestore size={14} />}
+                onClick={() => onRollback?.(s.id)}
+                style={ICON_BTN}
+                aria-label={ui.ROLLBACK}
+              />
+            </Tooltip>
           </div>
         </div>
       </div>

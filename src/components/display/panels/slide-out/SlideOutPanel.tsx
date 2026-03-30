@@ -16,9 +16,10 @@ const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
     sectionTitle,
     sectionSubtitle,
     formContent,
-    onSubmit,
-    onCancel,
-    submitButtonText,
+    contentOnly = false,
+    onSubmit = async () => {},
+    onCancel = () => {},
+    submitButtonText = '',
     submitButtonIcon,
     loading = false,
     disabled = false,
@@ -39,6 +40,22 @@ const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
       onCancel,
       form: externalForm,
     });
+
+    if (contentOnly) {
+      return (
+        <AnimationWrapper
+          open={open}
+          onClose={onClose}
+          title={title}
+          subtitle={subtitle}
+          width={width}
+          offsetX={offsetX}
+          headerExtra={headerExtra}
+        >
+          {formContent}
+        </AnimationWrapper>
+      );
+    }
 
     return (
       <AnimationWrapper

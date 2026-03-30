@@ -1,12 +1,6 @@
 import React, { memo, useMemo, useState } from 'react';
-import {
-  CameraOutlined,
-  CopyOutlined,
-  HistoryOutlined,
-  InfoCircleOutlined,
-  LoadingOutlined,
-} from '@ant-design/icons';
-import { Button, Modal, Tooltip } from 'antd';
+import { CameraOutlined, HistoryOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 import { format } from 'date-fns';
 import { DEFAULT_COLORS, Icons } from '../../../../../constants';
 import { SHARED_PAGE_CONSTANTS } from '../../../../../constants/shared/pages';
@@ -22,19 +16,12 @@ import { APPLICATION_DETAILS_CONSTANTS, APPLICATIONS_UI } from '../../constants'
 import RowTag from '../../../../../components/display/table/RowTag';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import ApplicationSectionEmptyState from '../../components/display/ApplicationSectionEmptyState';
-import TabButton from '../../../../../components/display/buttons/TabButton';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../../../store';
 import { fetchSnapshotManifestThunk } from '../../store';
-import yaml from 'js-yaml';
-import {
-  getManifestViewPayload,
-  isManifestDocumentArray,
-} from '../../components/details/manifestDisplay';
-import IdeManifestCodeBlock from '../../components/details/IdeManifestCodeBlock';
-import { IDE_MANIFEST_THEME } from '../../components/details/ideManifestTheme';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import { getResourceKindVisual } from '../../utils/resourceKindVisual';
+import ApplicationSnapshotManifestSlideOut from '../../components/snapshots/ApplicationSnapshotManifestSlideOut';
 import ApplicationSnapshotRow from '../../components/snapshots/ApplicationSnapshotRow';
 import SnapshotAggregateStorageBar from '../../components/snapshots/SnapshotAggregateStorageBar';
 import {
@@ -1688,7 +1675,6 @@ function SnapshotsSection(props: {
     (s: RootState) => s.applications,
   );
   const [activeManifestKey, setActiveManifestKey] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'json' | 'yaml'>('json');
 
   const mergedSnapshots = useMemo(
     () => mergeApplicationSnapshotSources(detailSnapshots, snapshots),
@@ -1697,43 +1683,17 @@ function SnapshotsSection(props: {
 
   const manifestState = activeManifestKey ? snapshotManifests[activeManifestKey] : undefined;
 
-  const viewPayload = manifestState?.data ? getManifestViewPayload(manifestState.data) : undefined;
-
-  const jsonText = (() => {
-    if (viewPayload === undefined) return '';
-    try {
-      return JSON.stringify(viewPayload, null, 2);
-    } catch {
-      return String(viewPayload);
-    }
-  })();
-
-  const yamlText = (() => {
-    if (viewPayload === undefined) return '';
-    try {
-      if (isManifestDocumentArray(viewPayload)) {
-        const docs = viewPayload
-          .map((doc) => yaml.dump(doc, { noRefs: true }).trimEnd())
-          .filter((s) => s.length > 0);
-        if (docs.length === 0) return '';
-        return `${docs.join('\n---\n')}\n`;
-      }
-      return yaml.dump(viewPayload, { noRefs: true });
-    } catch {
-      return '';
-    }
-  })();
-
-  const handleCopy = async () => {
-    const text = activeTab === 'json' ? jsonText : yamlText;
-    if (!text) return;
-    await navigator.clipboard.writeText(text);
-  };
+  const activeRowTitle = useMemo(() => {
+    if (!activeManifestKey) return '';
+    const row = mergedSnapshots.find(
+      (s) => applicationSnapshotStableKey(s) === activeManifestKey,
+    );
+    return row?.id ?? '';
+  }, [activeManifestKey, mergedSnapshots]);
 
   const openManifest = (summary: ApplicationSnapshotSummary) => {
     const manifestKey = applicationSnapshotStableKey(summary);
     setActiveManifestKey(manifestKey);
-    setActiveTab('json');
     void dispatch(
       fetchSnapshotManifestThunk({
         manifestKey,
@@ -1793,144 +1753,13 @@ function SnapshotsSection(props: {
         )}
       </SettingsCard>
 
-      <Modal
+      <ApplicationSnapshotManifestSlideOut
         open={activeManifestKey != null}
-        title={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.MANIFEST_MODAL_TITLE}
-        footer={null}
-        onCancel={() => setActiveManifestKey(null)}
-        width={760}
-      >
-        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-          <TabButton
-            label="JSON"
-            active={activeTab === 'json'}
-            onClick={() => setActiveTab('json')}
-          />
-          <TabButton
-            label="YAML"
-            active={activeTab === 'yaml'}
-            onClick={() => setActiveTab('yaml')}
-          />
-        </div>
-        <div style={{ position: 'relative' }}>
-          <Button
-            type="text"
-            size="small"
-            icon={<CopyOutlined />}
-            onClick={() => void handleCopy()}
-            style={{
-              position: 'absolute',
-              top: 8,
-              right: 12,
-              zIndex: 2,
-              color: activeTab === 'yaml' ? IDE_MANIFEST_THEME.copyButton : undefined,
-            }}
-            disabled={!activeManifestKey || !(activeTab === 'json' ? jsonText : yamlText)}
-          >
-            Copy
-          </Button>
-          {!activeManifestKey ? null : manifestState?.loading ? (
-            activeTab === 'yaml' ? (
-              <div
-                style={{
-                  color: DEFAULT_COLORS.TEXT_MUTED,
-                  fontSize: 13,
-                  display: 'flex',
-                  gap: 8,
-                  padding: '36px 12px 12px',
-                  background: IDE_MANIFEST_THEME.bg,
-                  borderRadius: 8,
-                  border: `1px solid ${IDE_MANIFEST_THEME.border}`,
-                }}
-              >
-                <LoadingOutlined /> Loading…
-              </div>
-            ) : (
-              <div
-                style={{
-                  color: DEFAULT_COLORS.TEXT_MUTED,
-                  fontSize: 13,
-                  display: 'flex',
-                  gap: 8,
-                  padding: '36px 12px 12px',
-                  borderRadius: 10,
-                  border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-                  background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-                }}
-              >
-                <LoadingOutlined /> Loading…
-              </div>
-            )
-          ) : manifestState?.error ? (
-            activeTab === 'yaml' ? (
-              <div
-                style={{
-                  color: DEFAULT_COLORS.DANGER,
-                  fontSize: 13,
-                  padding: '36px 12px 12px',
-                  background: IDE_MANIFEST_THEME.bg,
-                  borderRadius: 8,
-                  border: `1px solid ${IDE_MANIFEST_THEME.border}`,
-                }}
-              >
-                {manifestState.error}
-              </div>
-            ) : (
-              <div
-                style={{
-                  color: DEFAULT_COLORS.DANGER,
-                  fontSize: 13,
-                  padding: '36px 12px 12px',
-                  borderRadius: 10,
-                  border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-                  background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-                }}
-              >
-                {manifestState.error}
-              </div>
-            )
-          ) : activeTab === 'yaml' && !yamlText ? (
-            <div
-              style={{
-                padding: '36px 12px 12px',
-                background: IDE_MANIFEST_THEME.bg,
-                borderRadius: 8,
-                border: `1px solid ${IDE_MANIFEST_THEME.border}`,
-              }}
-            >
-              <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
-            </div>
-          ) : (
-            activeTab === 'yaml' ? (
-              <IdeManifestCodeBlock code={yamlText} language="yaml" />
-            ) : (
-              <div
-                style={{
-                  border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-                  borderRadius: 10,
-                  background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-                  padding: 12,
-                }}
-              >
-                <pre
-                  style={{
-                    margin: 0,
-                    fontSize: 12,
-                    lineHeight: 1.5,
-                    color: DEFAULT_COLORS.TEXT_PRIMARY,
-                    whiteSpace: 'pre-wrap',
-                    wordBreak: 'break-word',
-                    fontFamily: 'monospace',
-                    paddingTop: 28,
-                  }}
-                >
-                  {jsonText}
-                </pre>
-              </div>
-            )
-          )}
-        </div>
-      </Modal>
+        manifestKey={activeManifestKey}
+        onClose={() => setActiveManifestKey(null)}
+        title={activeRowTitle}
+        manifestState={manifestState}
+      />
     </>
   );
 }
