@@ -1,2 +1,2 @@
-export { fetchApplications, fetchApplicationDetails } from './fetch';
+export { deleteApplication, fetchApplications, fetchApplicationDetails, updateApplication } from './fetch';
 

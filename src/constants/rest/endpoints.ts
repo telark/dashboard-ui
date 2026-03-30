@@ -36,6 +36,14 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.GET_DETAILS(name)}`,
       method: 'GET',
     }),
+    UPDATE: (name: string) => ({
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.UPDATE_SYNC(name)}`,
+      method: 'PATCH',
+    }),
+    DELETE: (name: string) => ({
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.DELETE_DETAILS(name)}`,
+      method: 'DELETE',
+    }),
   },
   INSIGHTS: {
     CLUSTER_GET: {

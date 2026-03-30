@@ -4,6 +4,8 @@ import {
   fetchAllApplicationsThunk,
   fetchAllApplicationsSilentThunk,
   fetchApplicationDetailsThunk,
+  updateApplicationThunk,
+  deleteApplicationThunk,
 } from '../thunks/fetchThunks';
 import {
   handleFetchApplicationsPending,
@@ -14,12 +16,16 @@ import {
   handleFetchApplicationDetailsPending,
   handleFetchApplicationDetailsFulfilled,
   handleFetchApplicationDetailsRejected,
+  handleUpdateApplicationFulfilled,
+  handleDeleteApplicationFulfilled,
 } from '../reducers/fetchReducers';
 
 export {
   fetchAllApplicationsThunk,
   fetchAllApplicationsSilentThunk,
   fetchApplicationDetailsThunk,
+  updateApplicationThunk,
+  deleteApplicationThunk,
 } from '../thunks/fetchThunks';
 
 const initialState: ApplicationsState = {
@@ -47,7 +53,9 @@ const applicationsSlice = createSlice({
       .addCase(fetchAllApplicationsSilentThunk.rejected, handleFetchApplicationsSilentRejected)
       .addCase(fetchApplicationDetailsThunk.pending, handleFetchApplicationDetailsPending)
       .addCase(fetchApplicationDetailsThunk.fulfilled, handleFetchApplicationDetailsFulfilled)
-      .addCase(fetchApplicationDetailsThunk.rejected, handleFetchApplicationDetailsRejected);
+      .addCase(fetchApplicationDetailsThunk.rejected, handleFetchApplicationDetailsRejected)
+      .addCase(updateApplicationThunk.fulfilled, handleUpdateApplicationFulfilled)
+      .addCase(deleteApplicationThunk.fulfilled, handleDeleteApplicationFulfilled);
   },
 });
 

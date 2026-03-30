@@ -5,6 +5,8 @@ export {
   fetchAllApplicationsThunk,
   fetchAllApplicationsSilentThunk,
   fetchApplicationDetailsThunk,
+  updateApplicationThunk,
+  deleteApplicationThunk,
 } from './thunks/fetchThunks';
 
 export {

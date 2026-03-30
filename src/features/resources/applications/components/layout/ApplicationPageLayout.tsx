@@ -1,25 +1,11 @@
 import React, { memo } from 'react';
-import { Button, Form } from 'antd';
-import type { FormInstance } from 'antd';
-import { DEFAULT_COLORS } from '../../../../constants';
-import { PAGE_CONTENT_LAYOUT } from '../../../../constants/shared/pages';
-import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
+import { DEFAULT_COLORS } from '../../../../../constants';
+import { PAGE_CONTENT_LAYOUT } from '../../../../../constants/shared/pages';
 
-const { GAP_BETWEEN_CARDS } = PPC.CREATE_PAGE;
-
-export interface CreatePlanBreadcrumbItem {
+/** Mirrors ProtectionPlan `CreatePlanLayout` breadcrumb + title + subtitle structure. */
+export interface ApplicationBreadcrumbItem {
   label: string;
   onClick?: () => void;
-}
-
-interface CreatePlanLayoutProps {
-  breadcrumbItems: CreatePlanBreadcrumbItem[];
-  subtitle: string;
-  children: React.ReactNode;
-  submitLabel: string;
-  onSubmit: (values?: unknown) => void | Promise<void>;
-  submitting?: boolean;
-  form?: FormInstance;
 }
 
 const BREADCRUMB_LINK_STYLE: React.CSSProperties = {
@@ -34,12 +20,18 @@ const BREADCRUMB_LINK_STYLE: React.CSSProperties = {
   textDecoration: 'none',
 };
 
-const CreatePlanLayout: React.FC<CreatePlanLayoutProps> = memo(
-  ({ breadcrumbItems, subtitle, children, submitLabel, onSubmit, submitting, form }) => {
+interface ApplicationPageLayoutProps {
+  breadcrumbItems: ApplicationBreadcrumbItem[];
+  subtitle: string;
+  children: React.ReactNode;
+}
+
+const ApplicationPageLayout: React.FC<ApplicationPageLayoutProps> = memo(
+  ({ breadcrumbItems, subtitle, children }) => {
     const titleContent = (
       <>
         {breadcrumbItems.map((b, index) => (
-          <React.Fragment key={index}>
+          <React.Fragment key={`${b.label}-${index}`}>
             {index > 0 && <span style={{ color: '#64748b' }}> / </span>}
             {b.onClick ? (
               <button type="button" onClick={b.onClick} style={BREADCRUMB_LINK_STYLE}>
@@ -95,40 +87,13 @@ const CreatePlanLayout: React.FC<CreatePlanLayoutProps> = memo(
               {subtitle}
             </p>
           </div>
-
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={onSubmit}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 0,
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: GAP_BETWEEN_CARDS,
-                marginTop: 24,
-              }}
-            >
-              {children}
-            </div>
-
-            <div style={{ marginTop: 32 }}>
-              <Button type="primary" htmlType="submit" loading={submitting}>
-                {submitLabel}
-              </Button>
-            </div>
-          </Form>
+          {children}
         </div>
       </div>
     );
   },
 );
 
-CreatePlanLayout.displayName = 'CreatePlanLayout';
+ApplicationPageLayout.displayName = 'ApplicationPageLayout';
 
-export default CreatePlanLayout;
+export default ApplicationPageLayout;

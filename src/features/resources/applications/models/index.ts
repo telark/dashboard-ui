@@ -1,4 +1,4 @@
-export type { Application, ApplicationsState } from './application';
+export type { Application, ApplicationUpdatePayload, ApplicationsState } from './application';
 export type {
   ApplicationHealth,
   ApplicationNamespaces,

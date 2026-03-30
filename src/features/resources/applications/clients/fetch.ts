@@ -2,7 +2,7 @@ import { Client, exporterApiClient } from '../../../../api/index';
 import logger from '../../../../logging';
 import { Endpoints, HTTP_HEADERS, HEADER_VALUES } from '../../../../constants';
 import type { ResourceDetailsResponse, ResourceListResponse } from '../../../../interfaces/http';
-import type { Application } from '../models';
+import type { Application, ApplicationUpdatePayload } from '../models';
 import { APPLICATIONS_ERROR_MESSAGES } from '../constants';
 
 export const fetchApplications = async (silent = false) => {
@@ -30,6 +30,29 @@ export const fetchApplicationDetails = async (name: string) => {
     );
   } catch (error) {
     logger.error(`${APPLICATIONS_ERROR_MESSAGES.CLIENT.FETCH_APPLICATION_DETAILS_FAILED} "${name}":`, error);
+    throw error;
+  }
+};
+
+export const updateApplication = async (name: string, payload: ApplicationUpdatePayload) => {
+  try {
+    return await Client<ResourceDetailsResponse<Application>>(exporterApiClient, Endpoints.APPLICATIONS.UPDATE(name).path, {
+      method: 'PATCH',
+      data: payload,
+    });
+  } catch (error) {
+    logger.error(`${APPLICATIONS_ERROR_MESSAGES.CLIENT.UPDATE_APPLICATION_FAILED} "${name}":`, error);
+    throw error;
+  }
+};
+
+export const deleteApplication = async (name: string) => {
+  try {
+    return await Client<ResourceDetailsResponse<unknown>>(exporterApiClient, Endpoints.APPLICATIONS.DELETE(name).path, {
+      method: 'DELETE',
+    });
+  } catch (error) {
+    logger.error(`${APPLICATIONS_ERROR_MESSAGES.CLIENT.DELETE_APPLICATION_FAILED} "${name}":`, error);
     throw error;
   }
 };

@@ -26,6 +26,9 @@ const ApplicationsGlobalView = lazy(
 const ApplicationDetailsView = lazy(
   () => import('../features/resources/applications/pages/details/DetailsView'),
 );
+const ApplicationEditPage = lazy(
+  () => import('../features/resources/applications/pages/edit/EditApplicationPage'),
+);
 const BridgesGlobalView = lazy(() => import('../features/resources/bridges/pages/main/GlobalView'));
 const BridgeDetailsView = lazy(
   () => import('../features/resources/bridges/pages/details/DetailsView'),
@@ -135,6 +138,18 @@ const AppRoutes: React.FC = () => {
               <FeatureErrorBoundary featureName="Application Details">
                 <AnimatedPageWrapper>
                   <ApplicationDetailsView />
+                </AnimatedPageWrapper>
+              </FeatureErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={APP_ROUTES.APPLICATION_EDIT}
+          element={
+            <ProtectedRoute>
+              <FeatureErrorBoundary featureName="Edit Application">
+                <AnimatedPageWrapper>
+                  <ApplicationEditPage />
                 </AnimatedPageWrapper>
               </FeatureErrorBoundary>
             </ProtectedRoute>

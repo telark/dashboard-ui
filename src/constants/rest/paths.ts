@@ -21,6 +21,7 @@ export const API_PATHS = {
 export const RESOURCE_PATHS = {
   GET_ALL: 'get',
   GET_DETAILS: (name: string) => `${name}/get`,
+  DELETE_DETAILS: (name: string) => `${name}/delete`,
   FIND_USER_BY_ID: (id: string) => `findbyid/${id}/get`,
   UPDATE_SYNC: (name: string) => `${name}/patch`,
   SYNC: 'sync',

@@ -1,4 +1,5 @@
 import React, { memo, useMemo } from 'react';
+import { CameraOutlined, HistoryOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
@@ -6,6 +7,7 @@ import type { Application } from '../../models';
 import { APPLICATIONS_UI } from '../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
+import ApplicationSectionEmptyState from '../../components/display/ApplicationSectionEmptyState';
 
 interface ApplicationDetailsContentProps {
   application: Application;
@@ -80,11 +82,6 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
             label: APPLICATIONS_UI.CARD.LABELS.RESOURCES,
             value: application.resourceCount ?? 0,
           },
-          {
-            k: 'namespaces',
-            label: APPLICATIONS_UI.CARD.LABELS.NAMESPACES,
-            value: application.namespaces?.total ?? 0,
-          },
           { k: 'createdAt', label: APPLICATIONS_UI.CARD.LABELS.CREATED_AT, value: created },
           { k: 'lastUpdated', label: APPLICATIONS_UI.CARD.LABELS.LAST_UPDATED, value: updated },
           ...(application.crStatus
@@ -141,9 +138,29 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
               <div style={OVERVIEW_RESOURCE_COLUMN_LABEL_STYLE}>
                 {APPLICATIONS_UI.SECTIONS.OVERVIEW.TITLE}
               </div>
-              <KeyValueGrid rows={sections.overviewRows} />
+              <KeyValueGrid compact rows={sections.overviewRows} />
+              <div style={{ marginTop: 10 }}>
+                <div style={OVERVIEW_RESOURCE_COLUMN_LABEL_STYLE}>
+                  {APPLICATIONS_UI.SECTIONS.NAMESPACES.TITLE}
+                </div>
+                {sections.namespaces.length === 0 ? (
+                  <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
+                ) : (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {sections.namespaces.map((ns) => (
+                      <RowTag
+                        key={ns.name}
+                        text={`${ns.name} (${ns.resourceCount})`}
+                        background={DEFAULT_COLORS.CHIP_BLUE_BG}
+                        color={DEFAULT_COLORS.CHIP_BLUE_TEXT}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
               <div style={{ marginTop: 12 }}>
                 <KeyValueGrid
+                  compact
                   rows={[
                     {
                       k: 'managedChart',
@@ -203,6 +220,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                 <MutedText value={APPLICATIONS_UI.SECTIONS.RESOURCE_SUMMARY.EMPTY} />
               ) : (
                 <KeyValueGrid
+                  compact
                   rows={resourceSummaryRows.map((r) => ({
                     k: r.k,
                     label: r.label,
@@ -216,6 +234,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                 {APPLICATIONS_UI.SECTIONS.RUNTIME.TITLE}
               </div>
               <KeyValueGrid
+                compact
                 rows={[
                   {
                     k: 'ports',
@@ -311,26 +330,6 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
               </div>
             </div>
           </div>
-        </SettingsCard>
-
-        <SettingsCard
-          title={APPLICATIONS_UI.SECTIONS.NAMESPACES.TITLE}
-          description={APPLICATIONS_UI.SECTIONS.NAMESPACES.DESCRIPTION}
-        >
-          {sections.namespaces.length === 0 ? (
-            <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
-          ) : (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {sections.namespaces.map((ns) => (
-                <RowTag
-                  key={ns.name}
-                  text={`${ns.name} (${ns.resourceCount})`}
-                  background={DEFAULT_COLORS.CHIP_BLUE_BG}
-                  color={DEFAULT_COLORS.CHIP_BLUE_TEXT}
-                />
-              ))}
-            </div>
-          )}
         </SettingsCard>
 
         <SettingsCard
@@ -557,6 +556,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           description={APPLICATIONS_UI.SECTIONS.METRICS.DESCRIPTION}
         >
           <KeyValueGrid
+            compact
             rows={[
               {
                 k: 'totalChanges',
@@ -618,7 +618,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                   marginBottom: 8,
                 }}
               >
-                Changes by class
+                {APPLICATIONS_UI.SECTIONS.METRICS.CHANGES_BY_CLASS}
               </div>
               {Object.keys(sections.metrics?.derived?.changesByClass || {}).length === 0 ? (
                 <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
@@ -644,7 +644,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                   marginBottom: 8,
                 }}
               >
-                Changes by severity
+                {APPLICATIONS_UI.SECTIONS.METRICS.CHANGES_BY_SEVERITY}
               </div>
               {Object.keys(sections.metrics?.derived?.changesBySeverity || {}).length === 0 ? (
                 <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
@@ -667,176 +667,208 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         </SettingsCard>
 
         <SettingsCard
-          title="Workload metrics"
-          description="Per-workload baseline and usage (when available)."
+          title={APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.TITLE}
+          description={APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.DESCRIPTION}
         >
           {!sections.metrics?.workloads?.length ? (
             <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
           ) : (
-            <div style={{ display: 'grid', rowGap: 10 }}>
-              {sections.metrics.workloads.slice(0, 25).map((w) => (
-                <div
-                  key={`${w.namespace}:${w.resourceKind}:${w.resourceName}`}
-                  style={{
-                    border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-                    borderRadius: 10,
-                    padding: 10,
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
-                    <div style={{ minWidth: 0 }}>
-                      <div
-                        style={{
-                          fontSize: 13,
-                          fontWeight: 700,
-                          color: DEFAULT_COLORS.TEXT_PRIMARY,
-                        }}
-                      >
-                        {w.resourceName}
-                      </div>
-                      <div style={{ marginTop: 2, fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                        {w.namespace} · {w.resourceKind}
-                      </div>
-                    </div>
-                    <div style={{ flexShrink: 0, fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                      {w.usage?.timestamp ? (
-                        <TimeAgo date={w.usage.timestamp} />
-                      ) : (
-                        APPLICATIONS_UI.FALLBACKS.EMPTY
-                      )}
-                    </div>
-                  </div>
-
+            <div>
+              {sections.metrics.workloads.slice(0, 25).map((w, wIdx) => {
+                const showDivider = wIdx < Math.min(sections.metrics.workloads.length, 25) - 1;
+                return (
                   <div
+                    key={`${w.namespace}:${w.resourceKind}:${w.resourceName}`}
                     style={{
-                      marginTop: 10,
-                      display: 'grid',
-                      gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
-                      gap: 12,
+                      paddingTop: wIdx === 0 ? 0 : 10,
+                      paddingBottom: 10,
+                      borderBottom: showDivider ? `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}` : 'none',
                     }}
                   >
-                    <div>
+                    <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                       <div
                         style={{
-                          color: DEFAULT_COLORS.TEXT_MUTED,
-                          fontSize: 12,
-                          fontWeight: 700,
-                          marginBottom: 6,
+                          width: 8,
+                          height: 8,
+                          borderRadius: '50%',
+                          marginTop: 5,
+                          flexShrink: 0,
+                          background: DEFAULT_COLORS.TEXT_MUTED,
                         }}
-                      >
-                        Baseline
-                      </div>
-                      <KeyValueGrid
-                        rows={[
-                          {
-                            k: 'fingerprint',
-                            label: 'Fingerprint',
-                            value: w.baseline?.fingerprint || APPLICATIONS_UI.FALLBACKS.EMPTY,
-                          },
-                          { k: 'replicas', label: 'Replicas', value: w.baseline?.replicas ?? 0 },
-                          {
-                            k: 'requests',
-                            label: 'Requests',
-                            value: `${w.baseline?.requests?.cpu ?? '—'} CPU · ${w.baseline?.requests?.memory ?? '—'} Mem`,
-                          },
-                          {
-                            k: 'limits',
-                            label: 'Limits',
-                            value: `${w.baseline?.limits?.cpu ?? '—'} CPU · ${w.baseline?.limits?.memory ?? '—'} Mem`,
-                          },
-                        ]}
                       />
-                    </div>
-
-                    <div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            color: DEFAULT_COLORS.TEXT_PRIMARY,
+                            lineHeight: 1.4,
+                          }}
+                        >
+                          {w.resourceName}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 12,
+                            color: DEFAULT_COLORS.TEXT_MUTED,
+                            marginTop: 2,
+                            lineHeight: 1.35,
+                          }}
+                        >
+                          {w.namespace} · {w.resourceKind}
+                        </div>
+                        <div
+                          style={{
+                            marginTop: 10,
+                            display: 'grid',
+                            gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
+                            gap: 16,
+                          }}
+                        >
+                          <div>
+                            <div
+                              style={{
+                                color: DEFAULT_COLORS.TEXT_MUTED,
+                                fontSize: 12,
+                                fontWeight: 700,
+                                marginBottom: 6,
+                              }}
+                            >
+                              {APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.BASELINE}
+                            </div>
+                            <KeyValueGrid
+                              compact
+                              rows={[
+                                {
+                                  k: 'fingerprint',
+                                  label: APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.FINGERPRINT,
+                                  value: w.baseline?.fingerprint || APPLICATIONS_UI.FALLBACKS.EMPTY,
+                                },
+                                {
+                                  k: 'replicas',
+                                  label: APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.REPLICAS,
+                                  value: w.baseline?.replicas ?? 0,
+                                },
+                                {
+                                  k: 'requests',
+                                  label: APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.REQUESTS,
+                                  value: `${w.baseline?.requests?.cpu ?? '—'} CPU · ${w.baseline?.requests?.memory ?? '—'} Mem`,
+                                },
+                                {
+                                  k: 'limits',
+                                  label: APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.LIMITS,
+                                  value: `${w.baseline?.limits?.cpu ?? '—'} CPU · ${w.baseline?.limits?.memory ?? '—'} Mem`,
+                                },
+                              ]}
+                            />
+                          </div>
+                          <div>
+                            <div
+                              style={{
+                                color: DEFAULT_COLORS.TEXT_MUTED,
+                                fontSize: 12,
+                                fontWeight: 700,
+                                marginBottom: 6,
+                              }}
+                            >
+                              {APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.USAGE}
+                            </div>
+                            {!w.usage?.available ? (
+                              <MutedText value={APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.NOT_AVAILABLE} />
+                            ) : (
+                              <>
+                                <KeyValueGrid
+                                  compact
+                                  rows={[
+                                    {
+                                      k: 'qos',
+                                      label: APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.QOS,
+                                      value: w.usage?.qos || APPLICATIONS_UI.FALLBACKS.EMPTY,
+                                    },
+                                    {
+                                      k: 'totalCpu',
+                                      label: APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.TOTAL_CPU,
+                                      value:
+                                        w.usage?.resources?.totalCpu || APPLICATIONS_UI.FALLBACKS.EMPTY,
+                                    },
+                                    {
+                                      k: 'totalMemory',
+                                      label: APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.TOTAL_MEMORY,
+                                      value:
+                                        w.usage?.resources?.totalMemory ||
+                                        APPLICATIONS_UI.FALLBACKS.EMPTY,
+                                    },
+                                  ]}
+                                />
+                                {w.usage?.resources?.usagePerInstance?.length ? (
+                                  <div style={{ marginTop: 8, display: 'grid', rowGap: 8 }}>
+                                    {w.usage.resources.usagePerInstance.slice(0, 3).map((i) => (
+                                      <div
+                                        key={i.name}
+                                        style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_PRIMARY }}
+                                      >
+                                        <div style={{ fontWeight: 700 }}>
+                                          {i.name}{' '}
+                                          <span
+                                            style={{ fontWeight: 500, color: DEFAULT_COLORS.TEXT_MUTED }}
+                                          >
+                                            ({i.totalCpu} CPU · {i.totalMemory} Mem)
+                                          </span>
+                                        </div>
+                                        {i.containers?.length ? (
+                                          <div style={{ marginTop: 4, display: 'grid', rowGap: 3 }}>
+                                            {i.containers.slice(0, 4).map((c) => (
+                                              <div
+                                                key={c.name}
+                                                style={{ color: DEFAULT_COLORS.TEXT_MUTED }}
+                                              >
+                                                {c.name}: {c.cpu} CPU · {c.memory} Mem
+                                              </div>
+                                            ))}
+                                            {i.containers.length > 4 ? (
+                                              <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
+                                                +{i.containers.length - 4} more containers
+                                              </div>
+                                            ) : null}
+                                          </div>
+                                        ) : null}
+                                      </div>
+                                    ))}
+                                    {w.usage.resources.usagePerInstance.length > 3 ? (
+                                      <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+                                        {APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.SHOWING_FIRST_INSTANCES}{' '}
+                                        {w.usage.resources.usagePerInstance.length}.
+                                      </div>
+                                    ) : null}
+                                  </div>
+                                ) : null}
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
                       <div
                         style={{
-                          color: DEFAULT_COLORS.TEXT_MUTED,
                           fontSize: 12,
-                          fontWeight: 700,
-                          marginBottom: 6,
+                          color: DEFAULT_COLORS.TEXT_MUTED,
+                          flexShrink: 0,
+                          textAlign: 'right',
+                          lineHeight: 1.35,
                         }}
                       >
-                        Usage
+                        {w.usage?.timestamp ? (
+                          <TimeAgo date={w.usage.timestamp} />
+                        ) : (
+                          APPLICATIONS_UI.FALLBACKS.EMPTY
+                        )}
                       </div>
-                      {!w.usage?.available ? (
-                        <MutedText value="Not available." />
-                      ) : (
-                        <>
-                          <KeyValueGrid
-                            rows={[
-                              {
-                                k: 'qos',
-                                label: 'QoS',
-                                value: w.usage?.qos || APPLICATIONS_UI.FALLBACKS.EMPTY,
-                              },
-                              {
-                                k: 'totalCpu',
-                                label: 'Total CPU',
-                                value:
-                                  w.usage?.resources?.totalCpu || APPLICATIONS_UI.FALLBACKS.EMPTY,
-                              },
-                              {
-                                k: 'totalMemory',
-                                label: 'Total memory',
-                                value:
-                                  w.usage?.resources?.totalMemory ||
-                                  APPLICATIONS_UI.FALLBACKS.EMPTY,
-                              },
-                            ]}
-                          />
-
-                          {w.usage?.resources?.usagePerInstance?.length ? (
-                            <div style={{ marginTop: 8, display: 'grid', rowGap: 8 }}>
-                              {w.usage.resources.usagePerInstance.slice(0, 3).map((i) => (
-                                <div
-                                  key={i.name}
-                                  style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_PRIMARY }}
-                                >
-                                  <div style={{ fontWeight: 700 }}>
-                                    {i.name}{' '}
-                                    <span
-                                      style={{ fontWeight: 500, color: DEFAULT_COLORS.TEXT_MUTED }}
-                                    >
-                                      ({i.totalCpu} CPU · {i.totalMemory} Mem)
-                                    </span>
-                                  </div>
-                                  {i.containers?.length ? (
-                                    <div style={{ marginTop: 4, display: 'grid', rowGap: 3 }}>
-                                      {i.containers.slice(0, 4).map((c) => (
-                                        <div
-                                          key={c.name}
-                                          style={{ color: DEFAULT_COLORS.TEXT_MUTED }}
-                                        >
-                                          {c.name}: {c.cpu} CPU · {c.memory} Mem
-                                        </div>
-                                      ))}
-                                      {i.containers.length > 4 ? (
-                                        <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
-                                          +{i.containers.length - 4} more containers
-                                        </div>
-                                      ) : null}
-                                    </div>
-                                  ) : null}
-                                </div>
-                              ))}
-                              {w.usage.resources.usagePerInstance.length > 3 ? (
-                                <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                                  Showing first 3 instances of{' '}
-                                  {w.usage.resources.usagePerInstance.length}.
-                                </div>
-                              ) : null}
-                            </div>
-                          ) : null}
-                        </>
-                      )}
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               {sections.metrics.workloads.length > 25 ? (
-                <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                  Showing first 25 of {sections.metrics.workloads.length}.
+                <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, paddingTop: 4 }}>
+                  {APPLICATIONS_UI.SECTIONS.RESOURCES.SHOWING_FIRST} 25 of {sections.metrics.workloads.length}.
                 </div>
               ) : null}
             </div>
@@ -848,7 +880,11 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           description={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.DESCRIPTION}
         >
           {sections.snapshots.length === 0 ? (
-            <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
+            <ApplicationSectionEmptyState
+              icon={<CameraOutlined style={{ fontSize: 24 }} />}
+              title={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.EMPTY_TITLE}
+              description={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.EMPTY_DESCRIPTION}
+            />
           ) : (
             <div style={{ display: 'grid', rowGap: 10 }}>
               {sections.snapshots.slice(0, 20).map((s) => (
@@ -897,7 +933,11 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           description={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DESCRIPTION}
         >
           {sections.changeLog.length === 0 ? (
-            <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
+            <ApplicationSectionEmptyState
+              icon={<HistoryOutlined style={{ fontSize: 24 }} />}
+              title={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.EMPTY_TITLE}
+              description={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.EMPTY_DESCRIPTION}
+            />
           ) : (
             <div>
               {sections.changeLog.slice(0, 20).map((entry, entryIndex) => {
@@ -1029,13 +1069,20 @@ function MutedText({ value }: { value: string }) {
 
 function KeyValueGrid({
   rows,
+  compact = false,
 }: {
   rows: Array<{ k: string; label: string; value: React.ReactNode }>;
+  compact?: boolean;
 }) {
+  const rowGap = compact ? 6 : 10;
+  const labelWidth = compact ? 'minmax(0, 140px)' : '180px';
   return (
-    <div style={{ display: 'grid', rowGap: 10 }}>
+    <div style={{ display: 'grid', rowGap }}>
       {rows.map((r) => (
-        <div key={r.k} style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: 12 }}>
+        <div
+          key={r.k}
+          style={{ display: 'grid', gridTemplateColumns: `${labelWidth} minmax(0, 1fr)`, gap: 12 }}
+        >
           <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12, fontWeight: 700 }}>
             {r.label}
           </div>

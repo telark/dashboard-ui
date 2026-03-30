@@ -1,15 +1,30 @@
-import React, { memo } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { memo, useMemo } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import LoadingDetailsView from '../../../../../components/display/views/LoadingDetailsView';
 import ErrorView from '../../../../../components/display/views/ErrorView';
 import { APPLICATION_DETAILS_CONSTANTS } from '../../constants';
 import { useApplicationDetails } from '../../hooks';
 import ApplicationsDetailsEmpty from './Empty';
 import ApplicationDetailsContent from './Content';
+import ApplicationPageLayout from '../../components/layout/ApplicationPageLayout';
+import { APPLICATIONS_UI } from '../../constants/texts';
+import { APP_ROUTES } from '../../../../../constants';
 
 const ApplicationDetailsView: React.FC = memo(() => {
   const { name } = useParams<{ name: string }>();
+  const navigate = useNavigate();
   const { details, loading, error } = useApplicationDetails(name);
+
+  const breadcrumbItems = useMemo(
+    () => [
+      {
+        label: APPLICATIONS_UI.BREADCRUMBS.ROOT,
+        onClick: () => navigate(APP_ROUTES.APPLICATIONS),
+      },
+      { label: details?.displayName || details?.name || name || '' },
+    ],
+    [details?.displayName, details?.name, name, navigate],
+  );
 
   if (loading) {
     return <LoadingDetailsView />;
@@ -26,15 +41,14 @@ const ApplicationDetailsView: React.FC = memo(() => {
   }
 
   return (
-    <div
-      style={{
-        ...APPLICATION_DETAILS_CONSTANTS.LAYOUT.PAGE_CONTAINER,
-        background: '#ffffff',
-        minHeight: '100vh',
-      }}
+    <ApplicationPageLayout
+      breadcrumbItems={breadcrumbItems}
+      subtitle={APPLICATIONS_UI.DETAIL_PAGE.SUBTITLE}
     >
-      <ApplicationDetailsContent application={details} />
-    </div>
+      <div style={{ marginTop: 24 }}>
+        <ApplicationDetailsContent application={details} />
+      </div>
+    </ApplicationPageLayout>
   );
 });
 

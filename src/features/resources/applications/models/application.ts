@@ -167,9 +167,17 @@ export interface ApplicationWorkloadContainerUsage {
   memory: string;
 }
 
+export interface ApplicationUpdatePayload {
+  displayName?: string;
+  description?: string;
+  primaryNamespace?: string;
+  workloadConfig?: string;
+}
+
 export interface Application {
   name: string;
   displayName: string;
+  description?: string | null;
   health: ApplicationHealth;
   resourceCount: number;
   namespaces: ApplicationNamespaces;

@@ -88,6 +88,7 @@ const mapApplication = (item: Application): Application => {
     ...item,
     name: item.name || UTILS_TEXTS.DEFAULTS.EMPTY_STRING,
     displayName: item.displayName || UTILS_TEXTS.DEFAULTS.EMPTY_STRING,
+    description: item.description ?? null,
     createdAt: item.createdAt || UTILS_TEXTS.DEFAULTS.EMPTY_STRING,
     lastUpdated: item.lastUpdated || UTILS_TEXTS.DEFAULTS.EMPTY_STRING,
     images: Array.isArray(item.images) ? item.images : [],
