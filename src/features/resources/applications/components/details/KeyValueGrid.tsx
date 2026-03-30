@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { DEFAULT_COLORS } from '../../../../../../constants';
+import { DEFAULT_COLORS } from '../../../../../constants';
 
 export interface KeyValueGridRow {
   k: string;

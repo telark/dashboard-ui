@@ -12,7 +12,7 @@ import SettingsCard from '../../../../settings/components/SettingsCard';
 import { APPLICATIONS_UI } from '../../constants';
 import TabButton from '../../../../../components/display/buttons/TabButton';
 import ApplicationSectionEmptyState from '../../components/display/ApplicationSectionEmptyState';
-import MutedText from './components/MutedText';
+import MutedText from '../../components/details/MutedText';
 import type { ApplicationSnapshotSummary, SnapshotManifestState } from '../../models';
 
 export interface ApplicationSnapshotsProps {
