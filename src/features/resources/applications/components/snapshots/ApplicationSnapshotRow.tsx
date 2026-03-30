@@ -3,12 +3,10 @@ import { EyeOutlined } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
 import { DEFAULT_COLORS, Icons } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
-import { APPLICATION_DETAILS_CONSTANTS, APPLICATIONS_UI } from '../../constants';
+import { APPLICATIONS_UI } from '../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import type { ApplicationSnapshotSummary } from '../../models';
-
-const SNAPSHOT_TAG = APPLICATION_DETAILS_CONSTANTS.OVERVIEW_TAG_SUCCESS;
 
 const ICON_BTN: React.CSSProperties = {
   borderColor: DEFAULT_COLORS.BORDER_LIGHT,
@@ -25,9 +23,7 @@ export interface ApplicationSnapshotRowProps {
 const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
   ({ snapshot: s, showMarginBottom, onViewManifest, onRollback }) => {
     const severityLabel =
-      s.severity && s.severity.trim().length > 0
-        ? s.severity
-        : APPLICATIONS_UI.FALLBACKS.EMPTY;
+      s.severity && s.severity.trim().length > 0 ? s.severity : APPLICATIONS_UI.FALLBACKS.EMPTY;
 
     const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
     const takenAtLine =
@@ -76,36 +72,19 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
               flex: 1,
             }}
           >
-            <div
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                flexShrink: 0,
-                marginTop: 5,
-                background: DEFAULT_COLORS.SUCCESS,
-              }}
-              aria-hidden
-            />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0 }}>
               <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
                 <RowTag
                   text={`${ui.GENERATION}: ${s.generation}`}
-                  background={SNAPSHOT_TAG.background}
-                  color={SNAPSHOT_TAG.color}
-                  fontSize={11}
+                  {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                 />
                 <RowTag
                   text={`${ui.SEVERITY}: ${severityLabel}`}
-                  background={SNAPSHOT_TAG.background}
-                  color={SNAPSHOT_TAG.color}
-                  fontSize={11}
+                  {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                 />
                 <RowTag
                   text={`${ui.SIZE}: ${s.size}`}
-                  background={SNAPSHOT_TAG.background}
-                  color={SNAPSHOT_TAG.color}
-                  fontSize={11}
+                  {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                 />
               </div>
               {takenAtLine}

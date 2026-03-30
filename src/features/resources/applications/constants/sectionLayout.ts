@@ -14,4 +14,10 @@ export const APPLICATION_SECTION_LAYOUT = {
   COLUMN_INNER_RADIUS: SETTINGS_CONSTANTS.CONTENT.CARD_BORDER_RADIUS,
   TAG_CLOUD_MAX_HEIGHT_PX: 120,
   STAT_MIN_WIDTH_PX: 120,
+  /** RowTag display for runtime list values (ports, env keys, snapshot field tags). */
+  RUNTIME_VALUE_ROW_TAG: {
+    background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
+    color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
+    fontSize: 11,
+  },
 } as const;

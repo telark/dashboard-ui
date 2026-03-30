@@ -140,6 +140,12 @@ export const APPLICATIONS_UI = {
       TOTAL_MEMORY: 'Total memory',
       NOT_AVAILABLE: 'Not available.',
       SHOWING_FIRST_INSTANCES: 'Showing first 3 instances of',
+      CPU_ABBREV: 'CPU',
+      MEMORY_ABBREV: 'Mem',
+      MID_DOT: '·',
+      MORE_CONTAINERS_SUFFIX: 'more containers',
+      RESOURCE_CPU_LABEL: 'CPU',
+      RESOURCE_MEMORY_LABEL: 'Memory',
     },
     CHANGE_LOG: {
       TITLE: 'History Changes',

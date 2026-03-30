@@ -1,8 +1,8 @@
 import React, { memo, useMemo, useState } from 'react';
 import { CameraOutlined, HistoryOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { Tooltip } from 'antd';
+import { Collapse, Tooltip } from 'antd';
 import { format } from 'date-fns';
-import { DEFAULT_COLORS, Icons } from '../../../../../constants';
+import { DEFAULT_COLORS } from '../../../../../constants';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type {
@@ -10,8 +10,9 @@ import type {
   ApplicationChangeLogEntry,
   ApplicationResourceRef,
   ApplicationSnapshotSummary,
+  ApplicationWorkloadUsage,
 } from '../../models';
-import { APPLICATION_DETAILS_CONSTANTS, APPLICATIONS_UI } from '../../constants';
+import { APPLICATIONS_UI } from '../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import ApplicationSectionEmptyState from '../../components/display/ApplicationSectionEmptyState';
@@ -42,38 +43,109 @@ const APPLICATION_SUMMARY_SUBHEADING_STYLE: React.CSSProperties = {
   letterSpacing: '0.03em',
 };
 
-/** Same chip treatment as metrics RowTags when count is zero (e.g. Total incidents). */
-const RUNTIME_VALUE_CHIP_ROW_TAG = {
-  background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
-  color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
-  fontSize: 11,
-} as const;
+/** Same as Application summary column titles (e.g. Status & metadata). */
+const APPLICATION_SUMMARY_COLUMN_TITLE_STYLE: React.CSSProperties = {
+  fontSize: APPLICATION_SECTION_LAYOUT.COLUMN_HEADER_FONT_SIZE,
+  fontWeight: 700,
+  color: DEFAULT_COLORS.TEXT_PRIMARY,
+  marginBottom: 8,
+};
 
-function WorkloadResourceMetricChip(props: {
-  Icon: React.ComponentType<{ size?: number; color?: string }>;
-  iconBackground: string;
-  iconColor: string;
-  value: string;
-}): React.ReactElement {
-  const { Icon, iconBackground, iconColor, value } = props;
+const WORKLOAD_METRICS_BASELINE_LABEL_STYLE: React.CSSProperties = {
+  fontSize: 11,
+  color: DEFAULT_COLORS.TEXT_MUTED,
+  fontWeight: 600,
+};
+
+function WorkloadBaselineValueFirst(props: { w: ApplicationWorkloadUsage }): React.ReactElement {
+  const { w } = props;
+  const WM = APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS;
+  const cpuReq = w.baseline?.requests?.cpu ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
+  const memReq = w.baseline?.requests?.memory ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
+  const cpuLim = w.baseline?.limits?.cpu ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
+  const memLim = w.baseline?.limits?.memory ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
+  const fp = w.baseline?.fingerprint || APPLICATIONS_UI.FALLBACKS.EMPTY;
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-      <div
-        style={{
-          width: 28,
-          height: 28,
-          borderRadius: 6,
-          background: iconBackground,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Icon size={14} color={iconColor} />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 8 }}>
+        <code
+          style={{
+            fontSize: 12,
+            fontFamily: 'monospace',
+            color: DEFAULT_COLORS.TEXT_PRIMARY,
+            background: DEFAULT_COLORS.BACKGROUND_LIGHT,
+            border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+            borderRadius: 6,
+            padding: '4px 8px',
+            wordBreak: 'break-all',
+          }}
+        >
+          {fp}
+        </code>
+        <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.FINGERPRINT}</span>
       </div>
-      <span style={{ fontSize: 12, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-        {value}
-      </span>
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 8 }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+          {String(w.baseline?.replicas ?? 0)}
+        </span>
+        <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.REPLICAS}</span>
+      </div>
+      <div>
+        <div
+          style={{
+            fontSize: 11,
+            color: DEFAULT_COLORS.TEXT_MUTED,
+            fontWeight: 700,
+            marginBottom: 6,
+            textTransform: 'uppercase',
+            letterSpacing: '0.03em',
+          }}
+        >
+          {WM.REQUESTS}
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'baseline' }}>
+          <span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+              {cpuReq}
+            </span>{' '}
+            <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.RESOURCE_CPU_LABEL}</span>
+          </span>
+          <span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+              {memReq}
+            </span>{' '}
+            <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.RESOURCE_MEMORY_LABEL}</span>
+          </span>
+        </div>
+      </div>
+      <div>
+        <div
+          style={{
+            fontSize: 11,
+            color: DEFAULT_COLORS.TEXT_MUTED,
+            fontWeight: 700,
+            marginBottom: 6,
+            textTransform: 'uppercase',
+            letterSpacing: '0.03em',
+          }}
+        >
+          {WM.LIMITS}
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'baseline' }}>
+          <span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+              {cpuLim}
+            </span>{' '}
+            <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.RESOURCE_CPU_LABEL}</span>
+          </span>
+          <span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+              {memLim}
+            </span>{' '}
+            <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.RESOURCE_MEMORY_LABEL}</span>
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
@@ -89,16 +161,7 @@ function ColumnShell(props: { title: string; children: React.ReactNode }): React
   const { title, children } = props;
   return (
     <div style={{ minWidth: 0 }}>
-      <div
-        style={{
-          fontSize: APPLICATION_SECTION_LAYOUT.COLUMN_HEADER_FONT_SIZE,
-          fontWeight: 700,
-          color: DEFAULT_COLORS.TEXT_PRIMARY,
-          marginBottom: 8,
-        }}
-      >
-        {title}
-      </div>
+      <div style={APPLICATION_SUMMARY_COLUMN_TITLE_STYLE}>{title}</div>
       <div>{children}</div>
     </div>
   );
@@ -302,7 +365,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                   margin: '12px 0',
                 }}
               />
-              <div style={APPLICATION_SUMMARY_SUBHEADING_STYLE}>
+              <div style={APPLICATION_SUMMARY_COLUMN_TITLE_STYLE}>
                 {APPLICATIONS_UI.SECTIONS.OVERVIEW.GROUP_HISTORY_META}
               </div>
               <KeyValueGrid compact rows={sections.overviewGroup2Rows} />
@@ -327,12 +390,16 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                 {sections.ports.length === 0 ? (
                   <RowTag
                     text={APPLICATIONS_UI.FALLBACKS.EMPTY}
-                    {...RUNTIME_VALUE_CHIP_ROW_TAG}
+                    {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                   />
                 ) : (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                     {sections.ports.map((p) => (
-                      <RowTag key={p} text={String(p)} {...RUNTIME_VALUE_CHIP_ROW_TAG} />
+                      <RowTag
+                        key={p}
+                        text={String(p)}
+                        {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+                      />
                     ))}
                   </div>
                 )}
@@ -364,7 +431,8 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                     ))}
                     {sections.images.length > 8 ? (
                       <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                        {APPLICATIONS_UI.SECTIONS.RESOURCES.SHOWING_FIRST} 8 of {sections.images.length}.
+                        {APPLICATIONS_UI.SECTIONS.RESOURCES.SHOWING_FIRST} 8 of{' '}
+                        {sections.images.length}.
                       </div>
                     ) : null}
                   </div>
@@ -377,7 +445,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                 {sections.envVarKeys.length === 0 ? (
                   <RowTag
                     text={APPLICATIONS_UI.FALLBACKS.EMPTY}
-                    {...RUNTIME_VALUE_CHIP_ROW_TAG}
+                    {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                   />
                 ) : (
                   <div
@@ -390,7 +458,11 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                     }}
                   >
                     {sections.envVarKeys.map((key) => (
-                      <RowTag key={key} text={key} {...RUNTIME_VALUE_CHIP_ROW_TAG} />
+                      <RowTag
+                        key={key}
+                        text={key}
+                        {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+                      />
                     ))}
                   </div>
                 )}
@@ -431,7 +503,9 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                           background: DEFAULT_COLORS.SUCCESS,
                         }}
                       >
-                        <IconKind style={{ fontSize: 13, color: DEFAULT_COLORS.BACKGROUND_WHITE }} />
+                        <IconKind
+                          style={{ fontSize: 13, color: DEFAULT_COLORS.BACKGROUND_WHITE }}
+                        />
                       </span>
                       <span
                         style={{
@@ -489,7 +563,8 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
               })}
               {sections.resources.length > 50 ? (
                 <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                  {APPLICATIONS_UI.SECTIONS.RESOURCES.SHOWING_FIRST} 50 of {sections.resources.length}.
+                  {APPLICATIONS_UI.SECTIONS.RESOURCES.SHOWING_FIRST} 50 of{' '}
+                  {sections.resources.length}.
                 </div>
               ) : null}
             </div>
@@ -724,6 +799,16 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
               value={sections.metrics?.derived?.uniqueFingerprints ?? 0}
             />
             <StatMiniCard
+              label={APPLICATIONS_UI.SECTIONS.METRICS.LAST_CHANGE}
+              value={
+                sections.metrics?.derived?.lastChangeDetectedAt ? (
+                  <TimeAgo date={sections.metrics.derived.lastChangeDetectedAt} />
+                ) : (
+                  APPLICATIONS_UI.FALLBACKS.EMPTY
+                )
+              }
+            />
+            <StatMiniCard
               label={APPLICATIONS_UI.SECTIONS.METRICS.CHANGE_VELOCITY}
               value={sections.metrics?.derived?.changeVelocityPerDay ?? 0}
             />
@@ -764,60 +849,6 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
               }
               fontSize={11}
             />
-          </div>
-          <div
-            style={{
-              border: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
-              borderRadius: APPLICATION_SECTION_LAYOUT.COLUMN_INNER_RADIUS,
-              padding: 10,
-              background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-              marginBottom: 12,
-            }}
-          >
-            <div
-              style={{
-                fontSize: 11,
-                color: DEFAULT_COLORS.TEXT_MUTED,
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.03em',
-                marginBottom: 8,
-              }}
-            >
-              {APPLICATIONS_UI.SECTIONS.METRICS.TIMELINE}
-            </div>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-                gap: 12,
-              }}
-            >
-              <div>
-                <div style={{ fontSize: 11, color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 600 }}>
-                  {APPLICATIONS_UI.SECTIONS.METRICS.FIRST_CHANGE}
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-                  {sections.metrics?.derived?.firstChangeDetectedAt ? (
-                    <TimeAgo date={sections.metrics.derived.firstChangeDetectedAt} />
-                  ) : (
-                    APPLICATIONS_UI.FALLBACKS.EMPTY
-                  )}
-                </div>
-              </div>
-              <div>
-                <div style={{ fontSize: 11, color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 600 }}>
-                  {APPLICATIONS_UI.SECTIONS.METRICS.LAST_CHANGE}
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-                  {sections.metrics?.derived?.lastChangeDetectedAt ? (
-                    <TimeAgo date={sections.metrics.derived.lastChangeDetectedAt} />
-                  ) : (
-                    APPLICATIONS_UI.FALLBACKS.EMPTY
-                  )}
-                </div>
-              </div>
-            </div>
           </div>
           <div>
             <div
@@ -882,338 +913,171 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           {!sections.metrics?.workloads?.length ? (
             <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {sections.metrics.workloads.slice(0, 25).map((w) => {
-                const kindVisual = getResourceKindVisual(w.resourceKind);
-                const KindIcon = kindVisual.Icon;
-                const cpuReq = w.baseline?.requests?.cpu ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
-                const memReq = w.baseline?.requests?.memory ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
-                const cpuLim = w.baseline?.limits?.cpu ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
-                const memLim = w.baseline?.limits?.memory ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
-                const fp = w.baseline?.fingerprint || APPLICATIONS_UI.FALLBACKS.EMPTY;
-                return (
-                  <div
-                    key={`${w.namespace}:${w.resourceKind}:${w.resourceName}`}
-                    style={{
-                      border: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
-                      borderRadius: APPLICATION_SECTION_LAYOUT.COLUMN_INNER_RADIUS,
-                      padding: 12,
-                      background: DEFAULT_COLORS.BACKGROUND_WHITE,
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        justifyContent: 'space-between',
-                        gap: 12,
-                        marginBottom: 10,
-                      }}
-                    >
-                      <div style={{ minWidth: 0 }}>
-                        <div
-                          style={{
-                            fontSize: 16,
-                            fontWeight: 700,
-                            color: DEFAULT_COLORS.TEXT_PRIMARY,
-                            lineHeight: 1.25,
-                          }}
-                        >
-                          {w.resourceName}
-                        </div>
-                        <div
-                          style={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            gap: 6,
-                            marginTop: 8,
-                            alignItems: 'center',
-                          }}
-                        >
-                          <KindIcon style={{ fontSize: 14, color: kindVisual.color }} aria-hidden />
-                          <RowTag
-                            text={w.namespace}
-                            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                            fontSize={11}
-                          />
-                          <RowTag
-                            text={w.resourceKind}
-                            background={kindVisual.background}
-                            color={kindVisual.color}
-                            fontSize={11}
-                          />
-                        </div>
-                      </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <Collapse
+                bordered
+                expandIconPosition="end"
+                style={{ background: 'transparent' }}
+                items={sections.metrics.workloads.slice(0, 25).map((w) => {
+                  const WM = APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS;
+                  const kindVisual = getResourceKindVisual(w.resourceKind);
+                  return {
+                    key: `${w.namespace}:${w.resourceKind}:${w.resourceName}`,
+                    label: (
                       <div
                         style={{
-                          fontSize: 12,
-                          color: DEFAULT_COLORS.TEXT_MUTED,
-                          flexShrink: 0,
-                          lineHeight: 1.35,
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: 12,
+                          width: '100%',
+                          paddingRight: 8,
+                          minWidth: 0,
                         }}
                       >
-                        {w.usage?.timestamp ? (
-                          <TimeAgo date={w.usage.timestamp} />
-                        ) : (
-                          APPLICATIONS_UI.FALLBACKS.EMPTY
-                        )}
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
-                        gap: 12,
-                        alignItems: 'start',
-                      }}
-                    >
-                      <div>
-                        <div
-                          style={{
-                            color: DEFAULT_COLORS.TEXT_MUTED,
-                            fontSize: 11,
-                            fontWeight: 700,
-                            marginBottom: 8,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.03em',
-                          }}
-                        >
-                          {APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.BASELINE}
-                        </div>
-                        <div style={{ display: 'grid', rowGap: 10 }}>
-                          <div>
-                            <div
-                              style={{
-                                fontSize: 11,
-                                color: DEFAULT_COLORS.TEXT_MUTED,
-                                fontWeight: 600,
-                                marginBottom: 4,
-                              }}
-                            >
-                              {APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.FINGERPRINT}
-                            </div>
-                            <code
-                              style={{
-                                display: 'inline-block',
-                                fontSize: 12,
-                                fontFamily: 'monospace',
-                                color: DEFAULT_COLORS.TEXT_PRIMARY,
-                                background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-                                border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-                                borderRadius: 6,
-                                padding: '4px 8px',
-                                wordBreak: 'break-all',
-                              }}
-                            >
-                              {fp}
-                            </code>
+                        <div style={{ minWidth: 0, flex: 1 }}>
+                          <div
+                            style={{
+                              fontSize: 15,
+                              fontWeight: 700,
+                              color: DEFAULT_COLORS.TEXT_PRIMARY,
+                              lineHeight: 1.25,
+                            }}
+                          >
+                            {w.resourceName}
                           </div>
-                          <div>
-                            <div
-                              style={{
-                                fontSize: 11,
-                                color: DEFAULT_COLORS.TEXT_MUTED,
-                                fontWeight: 600,
-                                marginBottom: 4,
-                              }}
-                            >
-                              {APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.REPLICAS}
-                            </div>
+                          <div
+                            style={{
+                              display: 'flex',
+                              flexWrap: 'wrap',
+                              gap: 6,
+                              marginTop: 6,
+                              alignItems: 'center',
+                            }}
+                          >
                             <RowTag
-                              text={String(w.baseline?.replicas ?? 0)}
-                              background={DEFAULT_COLORS.CHIP_BLUE_BG}
-                              color={DEFAULT_COLORS.CHIP_BLUE_TEXT}
+                              text={w.resourceKind}
+                              background={kindVisual.background}
+                              color={kindVisual.color}
+                              fontSize={11}
+                            />
+                            <RowTag
+                              text={w.namespace}
+                              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
                               fontSize={11}
                             />
                           </div>
-                          <div>
-                            <div
-                              style={{
-                                fontSize: 11,
-                                color: DEFAULT_COLORS.TEXT_MUTED,
-                                fontWeight: 600,
-                                marginBottom: 4,
-                              }}
-                            >
-                              {APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.REQUESTS}
-                            </div>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-                              <WorkloadResourceMetricChip
-                                Icon={Icons.Cpu}
-                                iconBackground={
-                                  APPLICATION_DETAILS_CONSTANTS.WORKLOAD_RESOURCE_METRICS.CPU_ICON_BG
-                                }
-                                iconColor={
-                                  APPLICATION_DETAILS_CONSTANTS.WORKLOAD_RESOURCE_METRICS.CPU_ICON_COLOR
-                                }
-                                value={cpuReq}
-                              />
-                              <WorkloadResourceMetricChip
-                                Icon={Icons.Memory}
-                                iconBackground={
-                                  APPLICATION_DETAILS_CONSTANTS.WORKLOAD_RESOURCE_METRICS
-                                    .MEMORY_ICON_BG
-                                }
-                                iconColor={
-                                  APPLICATION_DETAILS_CONSTANTS.WORKLOAD_RESOURCE_METRICS
-                                    .MEMORY_ICON_COLOR
-                                }
-                                value={memReq}
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <div
-                              style={{
-                                fontSize: 11,
-                                color: DEFAULT_COLORS.TEXT_MUTED,
-                                fontWeight: 600,
-                                marginBottom: 4,
-                              }}
-                            >
-                              {APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.LIMITS}
-                            </div>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-                              <WorkloadResourceMetricChip
-                                Icon={Icons.Cpu}
-                                iconBackground={
-                                  APPLICATION_DETAILS_CONSTANTS.WORKLOAD_RESOURCE_METRICS.CPU_ICON_BG
-                                }
-                                iconColor={
-                                  APPLICATION_DETAILS_CONSTANTS.WORKLOAD_RESOURCE_METRICS.CPU_ICON_COLOR
-                                }
-                                value={cpuLim}
-                              />
-                              <WorkloadResourceMetricChip
-                                Icon={Icons.Memory}
-                                iconBackground={
-                                  APPLICATION_DETAILS_CONSTANTS.WORKLOAD_RESOURCE_METRICS
-                                    .MEMORY_ICON_BG
-                                }
-                                iconColor={
-                                  APPLICATION_DETAILS_CONSTANTS.WORKLOAD_RESOURCE_METRICS
-                                    .MEMORY_ICON_COLOR
-                                }
-                                value={memLim}
-                              />
-                            </div>
-                          </div>
                         </div>
                       </div>
-                      <div>
-                        <div
-                          style={{
-                            color: DEFAULT_COLORS.TEXT_MUTED,
-                            fontSize: 11,
-                            fontWeight: 700,
-                            marginBottom: 8,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.03em',
-                          }}
-                        >
-                          {APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.USAGE}
-                        </div>
-                        {!w.usage?.available ? (
-                          <Tooltip title={APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.USAGE_EMPTY}>
-                            <div
-                              style={{
-                                border: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
-                                borderRadius: 6,
-                                padding: '12px 10px',
-                                background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-                                textAlign: 'center',
-                                color: DEFAULT_COLORS.TEXT_MUTED,
-                                fontSize: 13,
-                                cursor: 'help',
-                              }}
-                            >
-                              {APPLICATIONS_UI.FALLBACKS.EMPTY}
-                            </div>
-                          </Tooltip>
-                        ) : (
-                              <>
-                                <KeyValueGrid
-                                  compact
-                                  rows={[
-                                    {
-                                      k: 'qos',
-                                      label: APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.QOS,
-                                      value: w.usage?.qos || APPLICATIONS_UI.FALLBACKS.EMPTY,
-                                    },
-                                    {
-                                      k: 'totalCpu',
-                                      label: APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.TOTAL_CPU,
-                                      value:
-                                        w.usage?.resources?.totalCpu ||
-                                        APPLICATIONS_UI.FALLBACKS.EMPTY,
-                                    },
-                                    {
-                                      k: 'totalMemory',
-                                      label: APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.TOTAL_MEMORY,
-                                      value:
-                                        w.usage?.resources?.totalMemory ||
-                                        APPLICATIONS_UI.FALLBACKS.EMPTY,
-                                    },
-                                  ]}
-                                />
-                                {w.usage?.resources?.usagePerInstance?.length ? (
-                                  <div style={{ marginTop: 8, display: 'grid', rowGap: 8 }}>
-                                    {w.usage.resources.usagePerInstance.slice(0, 3).map((i) => (
-                                      <div
-                                        key={i.name}
-                                        style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_PRIMARY }}
-                                      >
-                                        <div style={{ fontWeight: 700 }}>
-                                          {i.name}{' '}
-                                          <span
-                                            style={{
-                                              fontWeight: 500,
-                                              color: DEFAULT_COLORS.TEXT_MUTED,
-                                            }}
-                                          >
-                                            ({i.totalCpu} CPU · {i.totalMemory} Mem)
-                                          </span>
+                    ),
+                    children: (
+                      <div
+                        style={{
+                          display: 'grid',
+                          gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
+                          gap: 12,
+                          alignItems: 'start',
+                        }}
+                      >
+                        <ColumnShell title={WM.BASELINE}>
+                          <WorkloadBaselineValueFirst w={w} />
+                        </ColumnShell>
+                        <ColumnShell title={WM.USAGE}>
+                          {!w.usage?.available ? (
+                            <MutedText value={WM.USAGE_EMPTY} />
+                          ) : (
+                            <>
+                              {w.usage?.timestamp ? (
+                                <div
+                                  style={{
+                                    fontSize: 11,
+                                    color: DEFAULT_COLORS.TEXT_MUTED,
+                                    marginBottom: 8,
+                                  }}
+                                >
+                                  <TimeAgo date={w.usage.timestamp} />
+                                </div>
+                              ) : null}
+                              <KeyValueGrid
+                                compact
+                                rows={[
+                                  {
+                                    k: 'qos',
+                                    label: WM.QOS,
+                                    value: w.usage?.qos || APPLICATIONS_UI.FALLBACKS.EMPTY,
+                                  },
+                                  {
+                                    k: 'totalCpu',
+                                    label: WM.TOTAL_CPU,
+                                    value:
+                                      w.usage?.resources?.totalCpu ||
+                                      APPLICATIONS_UI.FALLBACKS.EMPTY,
+                                  },
+                                  {
+                                    k: 'totalMemory',
+                                    label: WM.TOTAL_MEMORY,
+                                    value:
+                                      w.usage?.resources?.totalMemory ||
+                                      APPLICATIONS_UI.FALLBACKS.EMPTY,
+                                  },
+                                ]}
+                              />
+                              {w.usage?.resources?.usagePerInstance?.length ? (
+                                <div style={{ marginTop: 8, display: 'grid', rowGap: 8 }}>
+                                  {w.usage.resources.usagePerInstance.slice(0, 3).map((inst) => (
+                                    <div
+                                      key={inst.name}
+                                      style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_PRIMARY }}
+                                    >
+                                      <div style={{ fontWeight: 700 }}>
+                                        {inst.name}{' '}
+                                        <span
+                                          style={{
+                                            fontWeight: 500,
+                                            color: DEFAULT_COLORS.TEXT_MUTED,
+                                          }}
+                                        >
+                                          ({inst.totalCpu} {WM.CPU_ABBREV} {WM.MID_DOT}{' '}
+                                          {inst.totalMemory} {WM.MEMORY_ABBREV})
+                                        </span>
+                                      </div>
+                                      {inst.containers?.length ? (
+                                        <div style={{ marginTop: 4, display: 'grid', rowGap: 3 }}>
+                                          {inst.containers.slice(0, 4).map((c) => (
+                                            <div
+                                              key={c.name}
+                                              style={{ color: DEFAULT_COLORS.TEXT_MUTED }}
+                                            >
+                                              {c.name}: {c.cpu} {WM.CPU_ABBREV} {WM.MID_DOT}{' '}
+                                              {c.memory} {WM.MEMORY_ABBREV}
+                                            </div>
+                                          ))}
+                                          {inst.containers.length > 4 ? (
+                                            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
+                                              +{inst.containers.length - 4}{' '}
+                                              {WM.MORE_CONTAINERS_SUFFIX}
+                                            </div>
+                                          ) : null}
                                         </div>
-                                        {i.containers?.length ? (
-                                          <div style={{ marginTop: 4, display: 'grid', rowGap: 3 }}>
-                                            {i.containers.slice(0, 4).map((c) => (
-                                              <div
-                                                key={c.name}
-                                                style={{ color: DEFAULT_COLORS.TEXT_MUTED }}
-                                              >
-                                                {c.name}: {c.cpu} CPU · {c.memory} Mem
-                                              </div>
-                                            ))}
-                                            {i.containers.length > 4 ? (
-                                              <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
-                                                +{i.containers.length - 4} more containers
-                                              </div>
-                                            ) : null}
-                                          </div>
-                                        ) : null}
-                                      </div>
-                                    ))}
-                                    {w.usage.resources.usagePerInstance.length > 3 ? (
-                                      <div
-                                        style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}
-                                      >
-                                        {
-                                          APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS
-                                            .SHOWING_FIRST_INSTANCES
-                                        }{' '}
-                                        {w.usage.resources.usagePerInstance.length}.
-                                      </div>
-                                    ) : null}
-                                  </div>
-                                ) : null}
-                              </>
-                            )}
+                                      ) : null}
+                                    </div>
+                                  ))}
+                                  {w.usage.resources.usagePerInstance.length > 3 ? (
+                                    <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+                                      {WM.SHOWING_FIRST_INSTANCES}{' '}
+                                      {w.usage.resources.usagePerInstance.length}.
+                                    </div>
+                                  ) : null}
+                                </div>
+                              ) : null}
+                            </>
+                          )}
+                        </ColumnShell>
                       </div>
-                    </div>
-                  </div>
-                );
-              })}
+                    ),
+                  };
+                })}
+              />
               {sections.metrics.workloads.length > 25 ? (
                 <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, paddingTop: 4 }}>
                   {APPLICATIONS_UI.SECTIONS.RESOURCES.SHOWING_FIRST} 25 of{' '}
@@ -1224,7 +1088,10 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           )}
         </SettingsCard>
 
-        <SnapshotsSection applicationId={application.name} detailSnapshots={application.snapshots} />
+        <SnapshotsSection
+          applicationId={application.name}
+          detailSnapshots={application.snapshots}
+        />
 
         <SettingsCard
           title={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.TITLE}
@@ -1317,9 +1184,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                                 fontSize={11}
                               />
                               {suffix ? (
-                                <span
-                                  style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}
-                                >
+                                <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
                                   {suffix.trim()}
                                 </span>
                               ) : null}
@@ -1390,7 +1255,12 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                                     String(c.oldValue).length > 0 &&
                                     c.newValue != null &&
                                     String(c.newValue).length > 0 ? (
-                                      <span style={{ margin: '0 6px', color: DEFAULT_COLORS.TEXT_MUTED }}>
+                                      <span
+                                        style={{
+                                          margin: '0 6px',
+                                          color: DEFAULT_COLORS.TEXT_MUTED,
+                                        }}
+                                      >
                                         {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DIFF_ARROW}
                                       </span>
                                     ) : null}
@@ -1473,9 +1343,7 @@ function SnapshotsSection(props: {
 
   const activeRowTitle = useMemo(() => {
     if (!activeManifestKey) return '';
-    const row = mergedSnapshots.find(
-      (s) => applicationSnapshotStableKey(s) === activeManifestKey,
-    );
+    const row = mergedSnapshots.find((s) => applicationSnapshotStableKey(s) === activeManifestKey);
     return row?.id ?? '';
   }, [activeManifestKey, mergedSnapshots]);
 
