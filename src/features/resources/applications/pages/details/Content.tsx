@@ -28,6 +28,7 @@ import {
   applicationSnapshotStableKey,
   mergeApplicationSnapshotSources,
 } from '../../utils/mergeApplicationSnapshotSources';
+import KeyValueGrid from '../../components/details/KeyValueGrid';
 
 interface ApplicationDetailsContentProps {
   application: Application;
@@ -57,96 +58,62 @@ const WORKLOAD_METRICS_BASELINE_LABEL_STYLE: React.CSSProperties = {
   fontWeight: 600,
 };
 
-function WorkloadBaselineValueFirst(props: { w: ApplicationWorkloadUsage }): React.ReactElement {
+function WorkloadBaselineRows(props: { w: ApplicationWorkloadUsage }): React.ReactElement {
   const { w } = props;
   const WM = APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS;
   const cpuReq = w.baseline?.requests?.cpu ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
   const memReq = w.baseline?.requests?.memory ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
   const cpuLim = w.baseline?.limits?.cpu ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
   const memLim = w.baseline?.limits?.memory ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
-  const fp = w.baseline?.fingerprint || APPLICATIONS_UI.FALLBACKS.EMPTY;
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 8 }}>
-        <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.FINGERPRINT}</span>
-        <code
-          style={{
-            fontSize: 12,
-            fontFamily: 'monospace',
-            color: DEFAULT_COLORS.TEXT_PRIMARY,
-            background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-            border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-            borderRadius: 6,
-            padding: '4px 8px',
-            wordBreak: 'break-all',
-          }}
-        >
-          {fp}
-        </code>
-      </div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 8 }}>
-        <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.REPLICAS}</span>
-        <span style={{ fontSize: 13, fontWeight: 700, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-          {String(w.baseline?.replicas ?? 0)}
-        </span>
-      </div>
-      <div>
-        <div
-          style={{
-            fontSize: 11,
-            color: DEFAULT_COLORS.TEXT_MUTED,
-            fontWeight: 700,
-            marginBottom: 6,
-            textTransform: 'uppercase',
-            letterSpacing: '0.03em',
-          }}
-        >
-          {WM.REQUESTS}
-        </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'baseline' }}>
-          <span>
-            <span style={{ fontSize: 13, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-              {cpuReq}
-            </span>{' '}
-            <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.RESOURCE_CPU_LABEL}</span>
-          </span>
-          <span>
-            <span style={{ fontSize: 13, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-              {memReq}
-            </span>{' '}
-            <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.RESOURCE_MEMORY_LABEL}</span>
-          </span>
-        </div>
-      </div>
-      <div>
-        <div
-          style={{
-            fontSize: 11,
-            color: DEFAULT_COLORS.TEXT_MUTED,
-            fontWeight: 700,
-            marginBottom: 6,
-            textTransform: 'uppercase',
-            letterSpacing: '0.03em',
-          }}
-        >
-          {WM.LIMITS}
-        </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'baseline' }}>
-          <span>
-            <span style={{ fontSize: 13, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-              {cpuLim}
-            </span>{' '}
-            <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.RESOURCE_CPU_LABEL}</span>
-          </span>
-          <span>
-            <span style={{ fontSize: 13, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-              {memLim}
-            </span>{' '}
-            <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.RESOURCE_MEMORY_LABEL}</span>
-          </span>
-        </div>
-      </div>
+  const resourcePair = (cpu: string, mem: string): React.ReactElement => (
+    <div
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'baseline',
+        columnGap: 12,
+        rowGap: 4,
+      }}
+    >
+      <span>
+        <span style={{ fontSize: 13, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+          {cpu}
+        </span>{' '}
+        <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.RESOURCE_CPU_LABEL}</span>
+      </span>
+      <span>
+        <span style={{ fontSize: 13, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+          {mem}
+        </span>{' '}
+        <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.RESOURCE_MEMORY_LABEL}</span>
+      </span>
     </div>
+  );
+  return (
+    <KeyValueGrid
+      compact
+      rows={[
+        {
+          k: 'replicas',
+          label: WM.REPLICAS,
+          value: (
+            <span style={{ fontWeight: 700, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+              {String(w.baseline?.replicas ?? 0)}
+            </span>
+          ),
+        },
+        {
+          k: 'requests',
+          label: WM.REQUESTS,
+          value: resourcePair(cpuReq, memReq),
+        },
+        {
+          k: 'limits',
+          label: WM.LIMITS,
+          value: resourcePair(cpuLim, memLim),
+        },
+      ]}
+    />
   );
 }
 
@@ -980,7 +947,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                         }}
                       >
                         <ColumnShell title={WM.BASELINE}>
-                          <WorkloadBaselineValueFirst w={w} />
+                          <WorkloadBaselineRows w={w} />
                         </ColumnShell>
                         <ColumnShell title={WM.USAGE}>
                           {!w.usage?.available ? (
@@ -1422,32 +1389,4 @@ function SnapshotsSection(props: {
 
 function MutedText({ value }: { value: string }) {
   return <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>{value}</div>;
-}
-
-function KeyValueGrid({
-  rows,
-  compact = false,
-}: {
-  rows: Array<{ k: string; label: string; value: React.ReactNode }>;
-  compact?: boolean;
-}) {
-  const rowGap = compact ? 6 : 10;
-  const labelWidth = compact ? 'minmax(0, 140px)' : '180px';
-  return (
-    <div style={{ display: 'grid', rowGap }}>
-      {rows.map((r) => (
-        <div
-          key={r.k}
-          style={{ display: 'grid', gridTemplateColumns: `${labelWidth} minmax(0, 1fr)`, gap: 12 }}
-        >
-          <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12, fontWeight: 700 }}>
-            {r.label}
-          </div>
-          <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY, fontSize: 13, minWidth: 0 }}>
-            {r.value}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
 }

@@ -131,7 +131,6 @@ export const APPLICATIONS_UI = {
       USAGE_EMPTY: 'Usage data is not available for this workload yet.',
       BASELINE: 'Baseline',
       USAGE: 'Usage',
-      FINGERPRINT: 'Fingerprint',
       REPLICAS: 'Replicas',
       REQUESTS: 'Requests',
       LIMITS: 'Limits',

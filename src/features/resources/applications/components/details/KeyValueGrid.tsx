@@ -38,4 +38,3 @@ const KeyValueGrid: React.FC<KeyValueGridProps> = memo(({ rows, compact = false 
 KeyValueGrid.displayName = 'KeyValueGrid';
 
 export default KeyValueGrid;
-
