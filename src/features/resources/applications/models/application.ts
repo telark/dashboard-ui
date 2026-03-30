@@ -110,6 +110,7 @@ export interface ApplicationSnapshotSummary {
   generation: number;
   size: string;
   consumed: string;
+  severity?: string;
   pvcTotal?: string;
   pvcAvailable?: string;
 }

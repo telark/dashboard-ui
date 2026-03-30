@@ -18,7 +18,10 @@ export function mergeApplicationSnapshotSources(
   for (const d of details) {
     const enriched = byExporterId.get(d.id);
     if (enriched) {
-      ordered.push(enriched);
+      ordered.push({
+        ...enriched,
+        severity: enriched.severity ?? d.severity,
+      });
     } else {
       ordered.push({
         id: d.id,
@@ -27,6 +30,7 @@ export function mergeApplicationSnapshotSources(
         generation: d.generation,
         size: APPLICATIONS_UI.FALLBACKS.EMPTY,
         consumed: APPLICATIONS_UI.FALLBACKS.EMPTY,
+        severity: d.severity,
       });
     }
     seen.add(d.id);

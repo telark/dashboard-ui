@@ -20,6 +20,11 @@ export const APPLICATIONS_CONSTANTS = {
 } as const;
 
 export const APPLICATION_DETAILS_CONSTANTS = {
+  /** Overview/runtime tags only (success fill, white text)—not row backgrounds. */
+  OVERVIEW_TAG_SUCCESS: {
+    background: DEFAULT_COLORS.SUCCESS,
+    color: DEFAULT_COLORS.BACKGROUND_WHITE,
+  },
   /** Matches workload app details metric tiles (CPU / memory). */
   WORKLOAD_RESOURCE_METRICS: {
     CPU_ICON_BG: 'rgba(32,201,151,0.12)',

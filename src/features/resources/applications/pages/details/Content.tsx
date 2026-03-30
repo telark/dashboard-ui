@@ -38,6 +38,8 @@ interface ApplicationDetailsContentProps {
   application: Application;
 }
 
+const OV_TAG = APPLICATION_DETAILS_CONSTANTS.OVERVIEW_TAG_SUCCESS;
+
 const RESOURCE_SUMMARY_KEY_ORDER: (keyof Application['resourceSummary'])[] = [
   'Deployment',
   'StatefulSet',
@@ -350,8 +352,8 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
             <RowTag
               key={ns.name}
               text={`${ns.name} (${ns.resourceCount})`}
-              background={DEFAULT_COLORS.CHIP_BLUE_BG}
-              color={DEFAULT_COLORS.CHIP_BLUE_TEXT}
+              background={OV_TAG.background}
+              color={OV_TAG.color}
               fontSize={11}
             />
           ))}
@@ -469,11 +471,11 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              background: visual.background,
+                              background: DEFAULT_COLORS.SUCCESS,
                               flexShrink: 0,
                             }}
                           >
-                            <IconCmp style={{ fontSize: 14, color: visual.color }} />
+                            <IconCmp style={{ fontSize: 14, color: DEFAULT_COLORS.BACKGROUND_WHITE }} />
                           </span>
                           <span
                             style={{
@@ -487,8 +489,8 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                         </div>
                         <RowTag
                           text={String(r.value)}
-                          background={DEFAULT_COLORS.CHIP_BLUE_BG}
-                          color={DEFAULT_COLORS.CHIP_BLUE_TEXT}
+                          background={OV_TAG.background}
+                          color={OV_TAG.color}
                           fontSize={11}
                         />
                       </div>
@@ -519,8 +521,8 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                       <RowTag
                         key={p}
                         text={String(p)}
-                        background={DEFAULT_COLORS.CHIP_BLUE_BG}
-                        color={DEFAULT_COLORS.CHIP_BLUE_TEXT}
+                        background={OV_TAG.background}
+                        color={OV_TAG.color}
                         fontSize={11}
                       />
                     ))}
@@ -602,8 +604,8 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                       <RowTag
                         key={key}
                         text={key}
-                        background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                        color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                        background={OV_TAG.background}
+                        color={OV_TAG.color}
                         fontSize={11}
                       />
                     ))}
@@ -643,10 +645,10 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          background: visual.background,
+                          background: DEFAULT_COLORS.SUCCESS,
                         }}
                       >
-                        <IconKind style={{ fontSize: 13, color: visual.color }} />
+                        <IconKind style={{ fontSize: 13, color: DEFAULT_COLORS.BACKGROUND_WHITE }} />
                       </span>
                       <span
                         style={{

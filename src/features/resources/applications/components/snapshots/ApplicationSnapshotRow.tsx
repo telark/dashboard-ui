@@ -1,11 +1,13 @@
 import React, { memo } from 'react';
 import { EyeOutlined } from '@ant-design/icons';
-import { Button, Tooltip } from 'antd';
+import { Button } from 'antd';
 import { DEFAULT_COLORS, Icons } from '../../../../../constants';
-import { APPLICATIONS_UI } from '../../constants';
+import { APPLICATION_DETAILS_CONSTANTS, APPLICATIONS_UI } from '../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import type { ApplicationSnapshotSummary } from '../../models';
+
+const SNAPSHOT_TAG = APPLICATION_DETAILS_CONSTANTS.OVERVIEW_TAG_SUCCESS;
 
 export interface ApplicationSnapshotRowProps {
   snapshot: ApplicationSnapshotSummary;
@@ -16,7 +18,10 @@ export interface ApplicationSnapshotRowProps {
 
 const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
   ({ snapshot: s, showMarginBottom, onViewManifest, onRollback }) => {
-    const truncatedId = s.id.length > 24 ? `${s.id.slice(0, 10)}…${s.id.slice(-10)}` : s.id;
+    const severityLabel =
+      s.severity && s.severity.trim().length > 0
+        ? s.severity
+        : APPLICATIONS_UI.FALLBACKS.EMPTY;
 
     return (
       <div
@@ -47,7 +52,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
           <div
             style={{
               display: 'flex',
-              alignItems: 'flex-start',
+              alignItems: 'center',
               gap: 10,
               minWidth: 0,
               flex: 1,
@@ -58,48 +63,30 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                 width: 8,
                 height: 8,
                 borderRadius: '50%',
-                marginTop: 6,
                 flexShrink: 0,
                 background: DEFAULT_COLORS.SUCCESS,
               }}
               aria-hidden
             />
-            <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
-                <span
-                  style={{
-                    fontSize: 11,
-                    color: DEFAULT_COLORS.TEXT_MUTED,
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.03em',
-                  }}
-                >
-                  {APPLICATIONS_UI.SECTIONS.SNAPSHOTS.SNAPSHOT_ID}
-                </span>
-                <Tooltip title={s.id}>
-                  <code
-                    style={{
-                      fontSize: 12,
-                      fontFamily: 'monospace',
-                      fontWeight: 600,
-                      color: DEFAULT_COLORS.TEXT_PRIMARY,
-                      background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-                      padding: '2px 8px',
-                      borderRadius: 6,
-                      border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-                    }}
-                  >
-                    {truncatedId}
-                  </code>
-                </Tooltip>
-                <RowTag
-                  text={`${APPLICATIONS_UI.SECTIONS.SNAPSHOTS.SIZE}: ${s.size}`}
-                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                  color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                  fontSize={11}
-                />
-              </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
+              <RowTag
+                text={`${APPLICATIONS_UI.SECTIONS.SNAPSHOTS.GENERATION}: ${s.generation}`}
+                background={SNAPSHOT_TAG.background}
+                color={SNAPSHOT_TAG.color}
+                fontSize={11}
+              />
+              <RowTag
+                text={`${APPLICATIONS_UI.SECTIONS.SNAPSHOTS.SEVERITY}: ${severityLabel}`}
+                background={SNAPSHOT_TAG.background}
+                color={SNAPSHOT_TAG.color}
+                fontSize={11}
+              />
+              <RowTag
+                text={`${APPLICATIONS_UI.SECTIONS.SNAPSHOTS.SIZE}: ${s.size}`}
+                background={SNAPSHOT_TAG.background}
+                color={SNAPSHOT_TAG.color}
+                fontSize={11}
+              />
             </div>
           </div>
           <div

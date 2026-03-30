@@ -42,6 +42,7 @@ function mapExporterRowToSummary(row: unknown): ApplicationSnapshotSummary | nul
 
   const pvcTotal = typeof o.pvcTotal === 'string' ? o.pvcTotal : undefined;
   const pvcAvailable = typeof o.pvcAvailable === 'string' ? o.pvcAvailable : undefined;
+  const severity = typeof o.severity === 'string' ? o.severity : undefined;
 
   return {
     id,
@@ -50,6 +51,7 @@ function mapExporterRowToSummary(row: unknown): ApplicationSnapshotSummary | nul
     generation,
     size,
     consumed,
+    severity,
     pvcTotal,
     pvcAvailable,
   };
