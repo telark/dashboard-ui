@@ -1,17 +1,13 @@
 import React, { memo, useState } from 'react';
-import {
-  CameraOutlined,
-  CopyOutlined,
-  EyeOutlined,
-  LoadingOutlined,
-} from '@ant-design/icons';
-import { Button, Modal, Tooltip } from 'antd';
+import { CameraOutlined, CopyOutlined, LoadingOutlined } from '@ant-design/icons';
+import { Button, Modal } from 'antd';
 import yaml from 'js-yaml';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import { APPLICATIONS_UI } from '../../constants';
 import TabButton from '../../../../../components/display/buttons/TabButton';
 import ApplicationSectionEmptyState from '../../components/display/ApplicationSectionEmptyState';
+import ApplicationSnapshotRow from '../../components/snapshots/ApplicationSnapshotRow';
 import MutedText from '../../components/details/MutedText';
 import {
   getManifestViewPayload,
@@ -104,71 +100,20 @@ const ApplicationSnapshots: React.FC<ApplicationSnapshotsProps> = memo(
           />
         ) : (
           <div>
-            {snapshots.map((s, idx) => {
-              const showDivider = idx < snapshots.length - 1;
-              const truncatedId =
-                s.id.length > 24 ? `${s.id.slice(0, 10)}…${s.id.slice(-10)}` : s.id;
-              return (
-                <div
-                  key={s.id}
-                  style={{
-                    paddingTop: idx === 0 ? 0 : 10,
-                    paddingBottom: 10,
-                    borderBottom: showDivider ? `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}` : 'none',
-                  }}
-                >
-                  <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                    <div
-                      style={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: '50%',
-                        marginTop: 5,
-                        flexShrink: 0,
-                        background: DEFAULT_COLORS.TEXT_MUTED,
-                      }}
-                    />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_PRIMARY, lineHeight: 1.4 }}>
-                        <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12, fontWeight: 700 }}>
-                          ID
-                        </span>{' '}
-                        <Tooltip title={s.id}>
-                          <span style={{ fontWeight: 700 }}>{truncatedId}</span>
-                        </Tooltip>
-                        <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}> · </span>
-                        <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>Size</span>{' '}
-                        <span style={{ fontWeight: 600 }}>{s.size}</span>
-                        <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}> · </span>
-                        <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>Consumed</span>{' '}
-                        <span style={{ fontWeight: 600 }}>{s.consumed}</span>
-                      </div>
-                      {(s.pvcTotal || s.pvcAvailable) && (
-                        <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, marginTop: 4 }}>
-                          {s.pvcAvailable ? `Available ${s.pvcAvailable}` : null}
-                          {s.pvcAvailable && s.pvcTotal ? ' · ' : null}
-                          {s.pvcTotal ? `Total ${s.pvcTotal}` : null}
-                        </div>
-                      )}
-                    </div>
-                    <Button
-                      type="text"
-                      size="small"
-                      icon={<EyeOutlined />}
-                      onClick={() => openManifest(s.id)}
-                    >
-                      View Manifest
-                    </Button>
-                  </div>
-                </div>
-              );
-            })}
+            {snapshots.map((s, idx) => (
+              <ApplicationSnapshotRow
+                key={s.id}
+                snapshot={s}
+                showMarginBottom={idx < snapshots.length - 1}
+                onViewManifest={openManifest}
+              />
+            ))}
           </div>
         )}
 
         <Modal
           open={activeSnapshotId != null}
-          title="Manifest"
+          title={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.MANIFEST_MODAL_TITLE}
           footer={null}
           onCancel={() => setActiveSnapshotId(null)}
           width={760}
