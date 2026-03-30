@@ -2,7 +2,6 @@ import React, { memo } from 'react';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import SettingsCard from '../../../../settings/components/SettingsCard';
-import { APPLICATIONS_UI } from '../../constants';
 
 export interface ApplicationOverviewRow {
   k: string;
@@ -19,7 +18,6 @@ export interface ApplicationOverviewProps {
   title: string;
   description: string;
   overviewTitle: string;
-  overviewRows: ApplicationOverviewRow[];
   namespacesTitle: string;
   namespaces: ApplicationNamespaceRow[];
   onEmptyNamespacesLabel: string;
@@ -40,7 +38,6 @@ const ApplicationOverview: React.FC<ApplicationOverviewProps> = memo(
     title,
     description,
     overviewTitle,
-    overviewRows,
     namespacesTitle,
     namespaces,
     onEmptyNamespacesLabel,
@@ -88,4 +85,3 @@ const ApplicationOverview: React.FC<ApplicationOverviewProps> = memo(
 ApplicationOverview.displayName = 'ApplicationOverview';
 
 export default ApplicationOverview;
-
