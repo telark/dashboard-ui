@@ -3,7 +3,6 @@ import { CameraOutlined, HistoryOutlined, InfoCircleOutlined } from '@ant-design
 import { Tooltip } from 'antd';
 import { format } from 'date-fns';
 import { DEFAULT_COLORS, Icons } from '../../../../../constants';
-import { SHARED_PAGE_CONSTANTS } from '../../../../../constants/shared/pages';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type {
@@ -33,24 +32,22 @@ interface ApplicationDetailsContentProps {
   application: Application;
 }
 
-const OV_TAG = APPLICATION_DETAILS_CONSTANTS.OVERVIEW_TAG_SUCCESS;
+/** Matches Runtime sub-labels (ports, images, …) inside Application summary. */
+const APPLICATION_SUMMARY_SUBHEADING_STYLE: React.CSSProperties = {
+  fontSize: 11,
+  color: DEFAULT_COLORS.TEXT_MUTED,
+  fontWeight: 700,
+  marginBottom: 6,
+  textTransform: 'uppercase',
+  letterSpacing: '0.03em',
+};
 
-const RESOURCE_SUMMARY_KEY_ORDER: (keyof Application['resourceSummary'])[] = [
-  'Deployment',
-  'StatefulSet',
-  'DaemonSet',
-  'Job',
-  'CronJob',
-  'Service',
-  'Ingress',
-  'NetworkPolicy',
-  'ServiceAccount',
-  'ConfigMap',
-  'Secret',
-  'PersistentVolumeClaim',
-  'HorizontalPodAutoscaler',
-  'VerticalPodAutoscaler',
-];
+/** Same chip treatment as metrics RowTags when count is zero (e.g. Total incidents). */
+const RUNTIME_VALUE_CHIP_ROW_TAG = {
+  background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
+  color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
+  fontSize: 11,
+} as const;
 
 function WorkloadResourceMetricChip(props: {
   Icon: React.ComponentType<{ size?: number; color?: string }>;
@@ -91,27 +88,18 @@ function getChangeLogDotColor(severity: string): string {
 function ColumnShell(props: { title: string; children: React.ReactNode }): React.ReactElement {
   const { title, children } = props;
   return (
-    <div
-      style={{
-        minWidth: 0,
-        border: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
-        borderRadius: APPLICATION_SECTION_LAYOUT.COLUMN_INNER_RADIUS,
-        overflow: 'hidden',
-      }}
-    >
+    <div style={{ minWidth: 0 }}>
       <div
         style={{
-          background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-          padding: '8px 10px',
-          borderBottom: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
           fontSize: APPLICATION_SECTION_LAYOUT.COLUMN_HEADER_FONT_SIZE,
           fontWeight: 700,
           color: DEFAULT_COLORS.TEXT_PRIMARY,
+          marginBottom: 8,
         }}
       >
         {title}
       </div>
-      <div style={{ padding: 10 }}>{children}</div>
+      <div>{children}</div>
     </div>
   );
 }
@@ -156,60 +144,6 @@ function StatMiniCard(props: { label: string; value: React.ReactNode }): React.R
   );
 }
 
-function ReplicasReadyBar(props: { ready: number; total: number }): React.ReactElement {
-  const { ready, total } = props;
-  const pct = total > 0 ? Math.min(100, Math.round((ready / total) * 100)) : 0;
-  const barH = SHARED_PAGE_CONSTANTS.UI.PROGRESS_BAR_HEIGHT;
-  const barR = SHARED_PAGE_CONSTANTS.UI.PROGRESS_BAR_BORDER_RADIUS;
-  const fill =
-    total > 0 && ready >= total ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.CHIP_BLUE_TEXT;
-  return (
-    <div style={{ marginTop: 10 }}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'baseline',
-          marginBottom: 4,
-        }}
-      >
-        <span
-          style={{
-            fontSize: 11,
-            color: DEFAULT_COLORS.TEXT_MUTED,
-            fontWeight: 600,
-            textTransform: 'uppercase',
-            letterSpacing: '0.03em',
-          }}
-        >
-          {APPLICATIONS_UI.SECTIONS.OVERVIEW.REPLICAS_READY}
-        </span>
-        <span style={{ fontSize: 12, fontWeight: 700, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-          {ready}/{total}
-        </span>
-      </div>
-      <div
-        style={{
-          height: barH,
-          borderRadius: barR,
-          background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-          border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-          overflow: 'hidden',
-        }}
-      >
-        <div
-          style={{
-            height: '100%',
-            width: `${pct}%`,
-            background: fill,
-            transition: 'width 0.2s ease',
-          }}
-        />
-      </div>
-    </div>
-  );
-}
-
 const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo(
   ({ application }) => {
     const sections = useMemo(() => {
@@ -224,6 +158,12 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         APPLICATIONS_UI.FALLBACKS.EMPTY
       );
 
+      const namespaceItems = application.namespaces?.items ?? [];
+      const deployedInDisplay =
+        namespaceItems.length === 0
+          ? APPLICATIONS_UI.FALLBACKS.EMPTY
+          : namespaceItems.map((n) => n.name).join(', ');
+
       return {
         overviewGroup1Rows: [
           {
@@ -232,14 +172,19 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
             value: application.health?.status || APPLICATIONS_UI.FALLBACKS.UNKNOWN,
           },
           {
+            k: 'replicas',
+            label: APPLICATIONS_UI.SECTIONS.OVERVIEW.REPLICAS,
+            value: `${application.health?.readyReplicas ?? 0}/${application.health?.totalReplicas ?? 0}`,
+          },
+          {
             k: 'managedBy',
             label: APPLICATIONS_UI.CARD.LABELS.MANAGED_BY,
             value: application.managed?.by || APPLICATIONS_UI.FALLBACKS.EMPTY,
           },
           {
-            k: 'resources',
-            label: APPLICATIONS_UI.CARD.LABELS.RESOURCES,
-            value: application.resourceCount ?? 0,
+            k: 'deployedIn',
+            label: APPLICATIONS_UI.SECTIONS.OVERVIEW.DEPLOYED_IN,
+            value: deployedInDisplay,
           },
           { k: 'createdAt', label: APPLICATIONS_UI.CARD.LABELS.CREATED_AT, value: created },
           { k: 'lastUpdated', label: APPLICATIONS_UI.CARD.LABELS.LAST_UPDATED, value: updated },
@@ -290,9 +235,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           },
         ],
         insights: application.insights,
-        namespaces: application.namespaces?.items || [],
         resources: application.resources || [],
-        resourceSummary: application.resourceSummary,
         images: application.images || [],
         ports: application.ports || [],
         envVarKeys: application.envVarKeys || [],
@@ -301,16 +244,6 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         changeLog: application.history?.changeLog || [],
       };
     }, [application]);
-
-    const resourceSummaryRows = useMemo(() => {
-      const rs = application.resourceSummary;
-      if (!rs) return [];
-      return RESOURCE_SUMMARY_KEY_ORDER.filter((k) => (rs[k] ?? 0) >= 1).map((k) => ({
-        k: String(k),
-        label: String(k),
-        value: rs[k] as number,
-      }));
-    }, [application.resourceSummary]);
 
     const resourcesByKind = useMemo(() => {
       const list = application.resources || [];
@@ -340,21 +273,6 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
       return groups;
     }, [application.history?.changeLog]);
 
-    const namespaceHeaderTags =
-      sections.namespaces.length > 0 ? (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, maxWidth: 440 }}>
-          {sections.namespaces.map((ns) => (
-            <RowTag
-              key={ns.name}
-              text={`${ns.name} (${ns.resourceCount})`}
-              background={OV_TAG.background}
-              color={OV_TAG.color}
-              fontSize={11}
-            />
-          ))}
-        </div>
-      ) : null;
-
     return (
       <div
         style={{
@@ -366,7 +284,6 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         <SettingsCard
           title={APPLICATIONS_UI.SECTIONS.OVERVIEW.TITLE}
           description={APPLICATIONS_UI.SECTIONS.OVERVIEW.COMBINED_SUBTITLE}
-          headerStart={namespaceHeaderTags}
         >
           <div
             style={{
@@ -377,23 +294,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
             }}
           >
             <ColumnShell title={APPLICATIONS_UI.SECTIONS.OVERVIEW.COLUMN_PRIMARY}>
-              <div
-                style={{
-                  fontSize: 11,
-                  color: DEFAULT_COLORS.TEXT_MUTED,
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.03em',
-                  marginBottom: 6,
-                }}
-              >
-                {APPLICATIONS_UI.SECTIONS.OVERVIEW.GROUP_PRIMARY_META}
-              </div>
               <KeyValueGrid compact rows={sections.overviewGroup1Rows} />
-              <ReplicasReadyBar
-                ready={application.health?.readyReplicas ?? 0}
-                total={application.health?.totalReplicas ?? 0}
-              />
               <div
                 style={{
                   height: 1,
@@ -401,16 +302,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                   margin: '12px 0',
                 }}
               />
-              <div
-                style={{
-                  fontSize: 11,
-                  color: DEFAULT_COLORS.TEXT_MUTED,
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.03em',
-                  marginBottom: 6,
-                }}
-              >
+              <div style={APPLICATION_SUMMARY_SUBHEADING_STYLE}>
                 {APPLICATIONS_UI.SECTIONS.OVERVIEW.GROUP_HISTORY_META}
               </div>
               <KeyValueGrid compact rows={sections.overviewGroup2Rows} />
@@ -427,114 +319,26 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                 </div>
               ) : null}
             </ColumnShell>
-            <ColumnShell title={APPLICATIONS_UI.SECTIONS.OVERVIEW.COLUMN_RESOURCES}>
-              {resourceSummaryRows.length === 0 ? (
-                <MutedText value={APPLICATIONS_UI.SECTIONS.RESOURCE_SUMMARY.EMPTY} />
-              ) : (
-                <div>
-                  {resourceSummaryRows.map((r, idx) => {
-                    const visual = getResourceKindVisual(r.label);
-                    const IconCmp = visual.Icon;
-                    const showRule = idx < resourceSummaryRows.length - 1;
-                    return (
-                      <div
-                        key={r.k}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          gap: 8,
-                          padding: '6px 0',
-                          borderBottom: showRule
-                            ? APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER
-                            : 'none',
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 8,
-                            minWidth: 0,
-                          }}
-                        >
-                          <span
-                            style={{
-                              width: 26,
-                              height: 26,
-                              borderRadius: 6,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              background: DEFAULT_COLORS.SUCCESS,
-                              flexShrink: 0,
-                            }}
-                          >
-                            <IconCmp style={{ fontSize: 14, color: DEFAULT_COLORS.BACKGROUND_WHITE }} />
-                          </span>
-                          <span
-                            style={{
-                              fontSize: 12,
-                              color: DEFAULT_COLORS.TEXT_MUTED,
-                              fontWeight: 600,
-                            }}
-                          >
-                            {r.label}
-                          </span>
-                        </div>
-                        <RowTag
-                          text={String(r.value)}
-                          background={OV_TAG.background}
-                          color={OV_TAG.color}
-                          fontSize={11}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </ColumnShell>
             <ColumnShell title={APPLICATIONS_UI.SECTIONS.OVERVIEW.COLUMN_RUNTIME}>
               <div style={{ marginBottom: 8 }}>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: DEFAULT_COLORS.TEXT_MUTED,
-                    fontWeight: 700,
-                    marginBottom: 6,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.03em',
-                  }}
-                >
+                <div style={APPLICATION_SUMMARY_SUBHEADING_STYLE}>
                   {APPLICATIONS_UI.SECTIONS.RUNTIME.PORTS}
                 </div>
                 {sections.ports.length === 0 ? (
-                  <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
+                  <RowTag
+                    text={APPLICATIONS_UI.FALLBACKS.EMPTY}
+                    {...RUNTIME_VALUE_CHIP_ROW_TAG}
+                  />
                 ) : (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                     {sections.ports.map((p) => (
-                      <RowTag
-                        key={p}
-                        text={String(p)}
-                        background={OV_TAG.background}
-                        color={OV_TAG.color}
-                        fontSize={11}
-                      />
+                      <RowTag key={p} text={String(p)} {...RUNTIME_VALUE_CHIP_ROW_TAG} />
                     ))}
                   </div>
                 )}
               </div>
               <div style={{ marginBottom: 8 }}>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: DEFAULT_COLORS.TEXT_MUTED,
-                    fontWeight: 700,
-                    marginBottom: 6,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.03em',
-                  }}
-                >
+                <div style={APPLICATION_SUMMARY_SUBHEADING_STYLE}>
                   {APPLICATIONS_UI.SECTIONS.RUNTIME.IMAGES}
                 </div>
                 {sections.images.length === 0 ? (
@@ -567,20 +371,14 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                 )}
               </div>
               <div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: DEFAULT_COLORS.TEXT_MUTED,
-                    fontWeight: 700,
-                    marginBottom: 6,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.03em',
-                  }}
-                >
+                <div style={APPLICATION_SUMMARY_SUBHEADING_STYLE}>
                   {APPLICATIONS_UI.SECTIONS.RUNTIME.ENV_VAR_KEYS}
                 </div>
                 {sections.envVarKeys.length === 0 ? (
-                  <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
+                  <RowTag
+                    text={APPLICATIONS_UI.FALLBACKS.EMPTY}
+                    {...RUNTIME_VALUE_CHIP_ROW_TAG}
+                  />
                 ) : (
                   <div
                     style={{
@@ -589,20 +387,10 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                       gap: 6,
                       maxHeight: APPLICATION_SECTION_LAYOUT.TAG_CLOUD_MAX_HEIGHT_PX,
                       overflowY: 'auto',
-                      padding: 6,
-                      background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-                      borderRadius: APPLICATION_SECTION_LAYOUT.COLUMN_INNER_RADIUS,
-                      border: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
                     }}
                   >
                     {sections.envVarKeys.map((key) => (
-                      <RowTag
-                        key={key}
-                        text={key}
-                        background={OV_TAG.background}
-                        color={OV_TAG.color}
-                        fontSize={11}
-                      />
+                      <RowTag key={key} text={key} {...RUNTIME_VALUE_CHIP_ROW_TAG} />
                     ))}
                   </div>
                 )}
