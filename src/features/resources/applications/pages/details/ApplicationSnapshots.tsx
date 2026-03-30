@@ -13,6 +13,9 @@ import { APPLICATIONS_UI } from '../../constants';
 import TabButton from '../../../../../components/display/buttons/TabButton';
 import ApplicationSectionEmptyState from '../../components/display/ApplicationSectionEmptyState';
 import MutedText from '../../components/details/MutedText';
+import { getManifestViewPayload } from '../../components/details/manifestDisplay';
+import IdeManifestCodeBlock from '../../components/details/IdeManifestCodeBlock';
+import { IDE_MANIFEST_THEME } from '../../components/details/ideManifestTheme';
 import type { ApplicationSnapshotSummary, SnapshotManifestState } from '../../models';
 
 export interface ApplicationSnapshotsProps {
@@ -30,19 +33,21 @@ const ApplicationSnapshots: React.FC<ApplicationSnapshotsProps> = memo(
 
     const manifestState = activeSnapshotId ? snapshotManifests[activeSnapshotId] : undefined;
 
+    const viewPayload = manifestState?.data ? getManifestViewPayload(manifestState.data) : undefined;
+
     const jsonText = (() => {
-      if (!manifestState?.data) return '';
+      if (viewPayload === undefined) return '';
       try {
-        return JSON.stringify(manifestState.data, null, 2);
+        return JSON.stringify(viewPayload, null, 2);
       } catch {
-        return String(manifestState.data);
+        return String(viewPayload);
       }
     })();
 
     const yamlText = (() => {
-      if (!manifestState?.data) return '';
+      if (viewPayload === undefined) return '';
       try {
-        return yaml.dump(manifestState.data, { noRefs: true });
+        return yaml.dump(viewPayload, { noRefs: true });
       } catch {
         return '';
       }
@@ -162,48 +167,122 @@ const ApplicationSnapshots: React.FC<ApplicationSnapshotsProps> = memo(
             <TabButton label="JSON" active={activeTab === 'json'} onClick={() => setActiveTab('json')} />
             <TabButton label="YAML" active={activeTab === 'yaml'} onClick={() => setActiveTab('yaml')} />
           </div>
-          <div
-            style={{
-              border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-              borderRadius: 10,
-              background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-              padding: 12,
-              position: 'relative',
-            }}
-          >
+          <div style={{ position: 'relative' }}>
             <Button
               type="text"
               size="small"
               icon={<CopyOutlined />}
               onClick={() => void handleCopy()}
-              style={{ position: 'absolute', top: 8, right: 8 }}
+              style={{
+                position: 'absolute',
+                top: 8,
+                right: 12,
+                zIndex: 2,
+                color: activeTab === 'yaml' ? IDE_MANIFEST_THEME.copyButton : undefined,
+              }}
               disabled={!activeSnapshotId || !(activeTab === 'json' ? jsonText : yamlText)}
             >
               Copy
             </Button>
             {!activeSnapshotId ? null : manifestState?.loading ? (
-              <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 13, display: 'flex', gap: 8 }}>
-                <LoadingOutlined /> Loading…
-              </div>
+              activeTab === 'yaml' ? (
+                <div
+                  style={{
+                    color: DEFAULT_COLORS.TEXT_MUTED,
+                    fontSize: 13,
+                    display: 'flex',
+                    gap: 8,
+                    padding: '36px 12px 12px',
+                    background: IDE_MANIFEST_THEME.bg,
+                    borderRadius: 8,
+                    border: `1px solid ${IDE_MANIFEST_THEME.border}`,
+                  }}
+                >
+                  <LoadingOutlined /> Loading…
+                </div>
+              ) : (
+                <div
+                  style={{
+                    color: DEFAULT_COLORS.TEXT_MUTED,
+                    fontSize: 13,
+                    display: 'flex',
+                    gap: 8,
+                    padding: '36px 12px 12px',
+                    borderRadius: 10,
+                    border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+                    background: DEFAULT_COLORS.BACKGROUND_LIGHT,
+                  }}
+                >
+                  <LoadingOutlined /> Loading…
+                </div>
+              )
             ) : manifestState?.error ? (
-              <div style={{ color: DEFAULT_COLORS.DANGER, fontSize: 13 }}>{manifestState.error}</div>
+              activeTab === 'yaml' ? (
+                <div
+                  style={{
+                    color: DEFAULT_COLORS.DANGER,
+                    fontSize: 13,
+                    padding: '36px 12px 12px',
+                    background: IDE_MANIFEST_THEME.bg,
+                    borderRadius: 8,
+                    border: `1px solid ${IDE_MANIFEST_THEME.border}`,
+                  }}
+                >
+                  {manifestState.error}
+                </div>
+              ) : (
+                <div
+                  style={{
+                    color: DEFAULT_COLORS.DANGER,
+                    fontSize: 13,
+                    padding: '36px 12px 12px',
+                    borderRadius: 10,
+                    border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+                    background: DEFAULT_COLORS.BACKGROUND_LIGHT,
+                  }}
+                >
+                  {manifestState.error}
+                </div>
+              )
             ) : activeTab === 'yaml' && !yamlText ? (
-              <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
-            ) : (
-              <pre
+              <div
                 style={{
-                  margin: 0,
-                  fontSize: 12,
-                  lineHeight: 1.5,
-                  color: DEFAULT_COLORS.TEXT_PRIMARY,
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-word',
-                  fontFamily: 'monospace',
-                  paddingTop: 28,
+                  padding: '36px 12px 12px',
+                  background: IDE_MANIFEST_THEME.bg,
+                  borderRadius: 8,
+                  border: `1px solid ${IDE_MANIFEST_THEME.border}`,
                 }}
               >
-                {activeTab === 'json' ? jsonText : yamlText}
-              </pre>
+                <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
+              </div>
+            ) : (
+              activeTab === 'yaml' ? (
+                <IdeManifestCodeBlock code={yamlText} language="yaml" />
+              ) : (
+                <div
+                  style={{
+                    border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+                    borderRadius: 10,
+                    background: DEFAULT_COLORS.BACKGROUND_LIGHT,
+                    padding: 12,
+                  }}
+                >
+                  <pre
+                    style={{
+                      margin: 0,
+                      fontSize: 12,
+                      lineHeight: 1.5,
+                      color: DEFAULT_COLORS.TEXT_PRIMARY,
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                      fontFamily: 'monospace',
+                      paddingTop: 28,
+                    }}
+                  >
+                    {jsonText}
+                  </pre>
+                </div>
+              )
             )}
           </div>
         </Modal>
