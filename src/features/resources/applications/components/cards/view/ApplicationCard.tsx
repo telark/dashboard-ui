@@ -7,7 +7,6 @@ import FieldLabel from '../../../../../protection-plans/components/shared/FieldL
 import ApplicationCardHeader from './ApplicationCardHeader';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { APPLICATION_SECTION_LAYOUT } from '../../../constants/sectionLayout';
-import { getApplicationHealthAccentColor } from '../../../utils/healthVisual';
 
 interface ApplicationCardProps {
   application: Application;
@@ -57,8 +56,6 @@ function CompactFieldBlock(props: {
 }
 
 const ApplicationCard: React.FC<ApplicationCardProps> = memo(({ application }) => {
-  const accent = getApplicationHealthAccentColor(application.health?.status);
-
   const namespacePreview = useMemo(() => {
     const items = application.namespaces?.items || [];
     if (items.length === 0) return APPLICATIONS_UI.FALLBACKS.EMPTY;
@@ -82,7 +79,6 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(({ application }) =
         background: DEFAULT_COLORS.BACKGROUND_WHITE,
         borderRadius: APPLICATION_SECTION_LAYOUT.CARD_RADIUS,
         border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-        borderLeft: `${APPLICATION_SECTION_LAYOUT.CARD_LEFT_ACCENT_WIDTH_PX}px solid ${accent}`,
         padding: APPLICATION_SECTION_LAYOUT.CARD_PADDING,
         boxSizing: 'border-box',
       }}

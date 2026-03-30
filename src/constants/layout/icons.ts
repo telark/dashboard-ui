@@ -14,6 +14,7 @@ import {
   AiOutlineFileProtect,
 } from 'react-icons/ai';
 import { BsFillCpuFill, BsMemory, BsKey } from 'react-icons/bs';
+import { MdOutlineSettingsBackupRestore } from 'react-icons/md';
 
 export const Icons = {
   Home: AiOutlineDashboard,
@@ -33,4 +34,6 @@ export const Icons = {
   Memory: BsMemory,
   Qos: AiOutlineCheckCircle,
   Container: AiOutlineContainer,
+  /** Restore / rollback to saved snapshot (backup-restore metaphor). */
+  SnapshotRestore: MdOutlineSettingsBackupRestore,
 } as const;

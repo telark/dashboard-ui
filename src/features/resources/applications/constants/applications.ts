@@ -1,3 +1,4 @@
+import { DEFAULT_COLORS } from '../../../../constants';
 import { SHARED_PAGE_CONSTANTS } from '../../../../constants/shared/pages';
 import { SHARED_DETAILS_CONSTANTS } from '../../../../constants/shared/details';
 
@@ -19,6 +20,13 @@ export const APPLICATIONS_CONSTANTS = {
 } as const;
 
 export const APPLICATION_DETAILS_CONSTANTS = {
+  /** Matches workload app details metric tiles (CPU / memory). */
+  WORKLOAD_RESOURCE_METRICS: {
+    CPU_ICON_BG: 'rgba(32,201,151,0.12)',
+    CPU_ICON_COLOR: DEFAULT_COLORS.SUCCESS,
+    MEMORY_ICON_BG: 'rgba(59,130,246,0.12)',
+    MEMORY_ICON_COLOR: '#3B82F6',
+  },
   TAB_KEYS: {
     OVERVIEW: 'overview',
     RESOURCES: 'resources',

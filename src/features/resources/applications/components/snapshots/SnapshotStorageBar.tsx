@@ -4,20 +4,23 @@ import { SHARED_PAGE_CONSTANTS } from '../../../../../constants/shared/pages';
 import { parseConsumedPercent } from './snapshotStorageUtils';
 
 export interface SnapshotStorageBarProps {
-  consumedLabel: string;
-  availableLabel?: string;
-  totalLabel?: string;
+  /** When set (0–100), drives bar width; otherwise parses `consumedLabel`. */
+  percentUsed?: number | null;
+  consumedLabel?: string;
+  /** Combined caption: used/total and available on one line. */
+  metricsLine?: string;
 }
 
 const SnapshotStorageBar: React.FC<SnapshotStorageBarProps> = memo(
-  ({ consumedLabel, availableLabel, totalLabel }) => {
-    const pct = parseConsumedPercent(consumedLabel);
-    const widthPct = pct ?? 0;
+  ({ percentUsed, consumedLabel, metricsLine }) => {
+    const parsed = consumedLabel != null ? parseConsumedPercent(consumedLabel) : null;
+    const pct = percentUsed != null ? percentUsed : parsed;
+    const widthPct = pct != null ? Math.min(100, Math.max(0, pct)) : 0;
     const barH = SHARED_PAGE_CONSTANTS.UI.PROGRESS_BAR_HEIGHT;
     const barR = SHARED_PAGE_CONSTANTS.UI.PROGRESS_BAR_BORDER_RADIUS;
 
     return (
-      <div style={{ minWidth: 120, maxWidth: 200 }}>
+      <div style={{ width: '100%', minWidth: 120 }}>
         <div
           style={{
             height: barH,
@@ -37,20 +40,18 @@ const SnapshotStorageBar: React.FC<SnapshotStorageBarProps> = memo(
             }}
           />
         </div>
-        {(availableLabel || totalLabel) && (
+        {metricsLine ? (
           <div
             style={{
               marginTop: 4,
               fontSize: 11,
               color: DEFAULT_COLORS.TEXT_MUTED,
-              lineHeight: 1.3,
+              lineHeight: 1.35,
             }}
           >
-            {availableLabel && totalLabel
-              ? `${availableLabel} / ${totalLabel}`
-              : availableLabel || totalLabel}
+            {metricsLine}
           </div>
-        )}
+        ) : null}
       </div>
     );
   },

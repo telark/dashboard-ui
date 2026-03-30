@@ -8,6 +8,7 @@ import { APPLICATIONS_UI } from '../../constants';
 import TabButton from '../../../../../components/display/buttons/TabButton';
 import ApplicationSectionEmptyState from '../../components/display/ApplicationSectionEmptyState';
 import ApplicationSnapshotRow from '../../components/snapshots/ApplicationSnapshotRow';
+import SnapshotAggregateStorageBar from '../../components/snapshots/SnapshotAggregateStorageBar';
 import MutedText from '../../components/details/MutedText';
 import {
   getManifestViewPayload,
@@ -75,6 +76,11 @@ const ApplicationSnapshots: React.FC<ApplicationSnapshotsProps> = memo(
       <SettingsCard
         title={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.TITLE}
         description={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.DESCRIPTION}
+        headerAction={
+          !loading && snapshots.length > 0 ? (
+            <SnapshotAggregateStorageBar snapshots={snapshots} />
+          ) : null
+        }
       >
         {loading ? (
           <div style={{ display: 'grid', rowGap: 10 }}>

@@ -8,12 +8,12 @@ import {
 } from '@ant-design/icons';
 import { Button, Modal, Tooltip } from 'antd';
 import { format } from 'date-fns';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, Icons } from '../../../../../constants';
 import { SHARED_PAGE_CONSTANTS } from '../../../../../constants/shared/pages';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type { Application, ApplicationChangeLogEntry, ApplicationResourceRef } from '../../models';
-import { APPLICATIONS_UI } from '../../constants';
+import { APPLICATION_DETAILS_CONSTANTS, APPLICATIONS_UI } from '../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import ApplicationSectionEmptyState from '../../components/display/ApplicationSectionEmptyState';
@@ -31,6 +31,8 @@ import { IDE_MANIFEST_THEME } from '../../components/details/ideManifestTheme';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import { getResourceKindVisual } from '../../utils/resourceKindVisual';
 import ApplicationSnapshotRow from '../../components/snapshots/ApplicationSnapshotRow';
+import SnapshotAggregateStorageBar from '../../components/snapshots/SnapshotAggregateStorageBar';
+import { mergeApplicationSnapshotSources } from '../../utils/mergeApplicationSnapshotSources';
 
 interface ApplicationDetailsContentProps {
   application: Application;
@@ -52,6 +54,35 @@ const RESOURCE_SUMMARY_KEY_ORDER: (keyof Application['resourceSummary'])[] = [
   'HorizontalPodAutoscaler',
   'VerticalPodAutoscaler',
 ];
+
+function WorkloadResourceMetricChip(props: {
+  Icon: React.ComponentType<{ size?: number; color?: string }>;
+  iconBackground: string;
+  iconColor: string;
+  value: string;
+}): React.ReactElement {
+  const { Icon, iconBackground, iconColor, value } = props;
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+      <div
+        style={{
+          width: 28,
+          height: 28,
+          borderRadius: 6,
+          background: iconBackground,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Icon size={14} color={iconColor} />
+      </div>
+      <span style={{ fontSize: 12, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+        {value}
+      </span>
+    </div>
+  );
+}
 
 function getChangeLogDotColor(severity: string): string {
   const s = severity.toLowerCase();
@@ -655,12 +686,6 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                             color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
                             fontSize={11}
                           />
-                          <RowTag
-                            text={r.kind}
-                            background={visual.background}
-                            color={visual.color}
-                            fontSize={11}
-                          />
                           <span
                             style={{
                               fontSize: 13,
@@ -1228,18 +1253,28 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                             >
                               {APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.REQUESTS}
                             </div>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                              <RowTag
-                                text={`CPU ${cpuReq}`}
-                                background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                                color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                                fontSize={11}
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                              <WorkloadResourceMetricChip
+                                Icon={Icons.Cpu}
+                                iconBackground={
+                                  APPLICATION_DETAILS_CONSTANTS.WORKLOAD_RESOURCE_METRICS.CPU_ICON_BG
+                                }
+                                iconColor={
+                                  APPLICATION_DETAILS_CONSTANTS.WORKLOAD_RESOURCE_METRICS.CPU_ICON_COLOR
+                                }
+                                value={cpuReq}
                               />
-                              <RowTag
-                                text={`Mem ${memReq}`}
-                                background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                                color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                                fontSize={11}
+                              <WorkloadResourceMetricChip
+                                Icon={Icons.Memory}
+                                iconBackground={
+                                  APPLICATION_DETAILS_CONSTANTS.WORKLOAD_RESOURCE_METRICS
+                                    .MEMORY_ICON_BG
+                                }
+                                iconColor={
+                                  APPLICATION_DETAILS_CONSTANTS.WORKLOAD_RESOURCE_METRICS
+                                    .MEMORY_ICON_COLOR
+                                }
+                                value={memReq}
                               />
                             </div>
                           </div>
@@ -1254,18 +1289,28 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                             >
                               {APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.LIMITS}
                             </div>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                              <RowTag
-                                text={`CPU ${cpuLim}`}
-                                background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                                color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                                fontSize={11}
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                              <WorkloadResourceMetricChip
+                                Icon={Icons.Cpu}
+                                iconBackground={
+                                  APPLICATION_DETAILS_CONSTANTS.WORKLOAD_RESOURCE_METRICS.CPU_ICON_BG
+                                }
+                                iconColor={
+                                  APPLICATION_DETAILS_CONSTANTS.WORKLOAD_RESOURCE_METRICS.CPU_ICON_COLOR
+                                }
+                                value={cpuLim}
                               />
-                              <RowTag
-                                text={`Mem ${memLim}`}
-                                background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                                color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                                fontSize={11}
+                              <WorkloadResourceMetricChip
+                                Icon={Icons.Memory}
+                                iconBackground={
+                                  APPLICATION_DETAILS_CONSTANTS.WORKLOAD_RESOURCE_METRICS
+                                    .MEMORY_ICON_BG
+                                }
+                                iconColor={
+                                  APPLICATION_DETAILS_CONSTANTS.WORKLOAD_RESOURCE_METRICS
+                                    .MEMORY_ICON_COLOR
+                                }
+                                value={memLim}
                               />
                             </div>
                           </div>
@@ -1394,12 +1439,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           )}
         </SettingsCard>
 
-        <SettingsCard
-          title={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.TITLE}
-          description={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.DESCRIPTION}
-        >
-          <SnapshotsSection />
-        </SettingsCard>
+        <SnapshotsSection detailSnapshots={application.snapshots} />
 
         <SettingsCard
           title={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.TITLE}
@@ -1628,13 +1668,21 @@ ApplicationDetailsContent.displayName = 'ApplicationDetailsContent';
 
 export default ApplicationDetailsContent;
 
-function SnapshotsSection(): React.ReactElement {
+function SnapshotsSection(props: {
+  detailSnapshots: Application['snapshots'];
+}): React.ReactElement {
+  const { detailSnapshots } = props;
   const dispatch: AppDispatch = useDispatch();
   const { snapshots, snapshotsLoading, snapshotsError, snapshotManifests } = useSelector(
     (s: RootState) => s.applications,
   );
   const [activeSnapshotId, setActiveSnapshotId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'json' | 'yaml'>('json');
+
+  const mergedSnapshots = useMemo(
+    () => mergeApplicationSnapshotSources(detailSnapshots, snapshots),
+    [detailSnapshots, snapshots],
+  );
 
   const manifestState = activeSnapshotId ? snapshotManifests[activeSnapshotId] : undefined;
 
@@ -1679,40 +1727,52 @@ function SnapshotsSection(): React.ReactElement {
 
   return (
     <>
-      {snapshotsLoading ? (
-        <div style={{ display: 'grid', rowGap: 10 }}>
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              style={{
-                height: 44,
-                borderRadius: 8,
-                border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-                background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-              }}
+      <SettingsCard
+        title={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.TITLE}
+        description={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.DESCRIPTION}
+        headerAction={
+          !snapshotsLoading && mergedSnapshots.length > 0 ? (
+            <SnapshotAggregateStorageBar snapshots={mergedSnapshots} />
+          ) : null
+        }
+      >
+        {snapshotsLoading ? (
+          <div style={{ display: 'grid', rowGap: 10 }}>
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                style={{
+                  height: 44,
+                  borderRadius: 8,
+                  border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+                  background: DEFAULT_COLORS.BACKGROUND_LIGHT,
+                }}
+              />
+            ))}
+          </div>
+        ) : mergedSnapshots.length === 0 ? (
+          snapshotsError ? (
+            <div style={{ fontSize: 13, color: DEFAULT_COLORS.DANGER }}>{snapshotsError}</div>
+          ) : (
+            <ApplicationSectionEmptyState
+              icon={<CameraOutlined style={{ fontSize: 24 }} />}
+              title={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.EMPTY_TITLE}
+              description={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.EMPTY_DESCRIPTION}
             />
-          ))}
-        </div>
-      ) : snapshotsError ? (
-        <div style={{ fontSize: 13, color: DEFAULT_COLORS.DANGER }}>{snapshotsError}</div>
-      ) : snapshots.length === 0 ? (
-        <ApplicationSectionEmptyState
-          icon={<CameraOutlined style={{ fontSize: 24 }} />}
-          title={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.EMPTY_TITLE}
-          description={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.EMPTY_DESCRIPTION}
-        />
-      ) : (
-        <div>
-          {snapshots.map((s, idx) => (
-            <ApplicationSnapshotRow
-              key={s.id}
-              snapshot={s}
-              showMarginBottom={idx < snapshots.length - 1}
-              onViewManifest={openManifest}
-            />
-          ))}
-        </div>
-      )}
+          )
+        ) : (
+          <div>
+            {mergedSnapshots.map((s, idx) => (
+              <ApplicationSnapshotRow
+                key={s.id}
+                snapshot={s}
+                showMarginBottom={idx < mergedSnapshots.length - 1}
+                onViewManifest={openManifest}
+              />
+            ))}
+          </div>
+        )}
+      </SettingsCard>
 
       <Modal
         open={activeSnapshotId != null}

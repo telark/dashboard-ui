@@ -1,28 +1,22 @@
 import React, { memo } from 'react';
 import { EyeOutlined } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, Icons } from '../../../../../constants';
 import { APPLICATIONS_UI } from '../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import type { ApplicationSnapshotSummary } from '../../models';
-import SnapshotStorageBar from './SnapshotStorageBar';
 
 export interface ApplicationSnapshotRowProps {
   snapshot: ApplicationSnapshotSummary;
   showMarginBottom: boolean;
   onViewManifest: (snapshotId: string) => void;
+  onRollback?: (snapshotId: string) => void;
 }
 
 const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
-  ({ snapshot: s, showMarginBottom, onViewManifest }) => {
+  ({ snapshot: s, showMarginBottom, onViewManifest, onRollback }) => {
     const truncatedId = s.id.length > 24 ? `${s.id.slice(0, 10)}…${s.id.slice(-10)}` : s.id;
-    const availLabel = s.pvcAvailable
-      ? `${APPLICATIONS_UI.SECTIONS.SNAPSHOTS.STORAGE_AVAILABLE} ${s.pvcAvailable}`
-      : undefined;
-    const totalLabel = s.pvcTotal
-      ? `${APPLICATIONS_UI.SECTIONS.SNAPSHOTS.STORAGE_TOTAL} ${s.pvcTotal}`
-      : undefined;
 
     return (
       <div
@@ -105,12 +99,6 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                   color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
                   fontSize={11}
                 />
-                <RowTag
-                  text={`${APPLICATIONS_UI.SECTIONS.SNAPSHOTS.CONSUMED}: ${s.consumed}`}
-                  background={DEFAULT_COLORS.CHIP_BLUE_BG}
-                  color={DEFAULT_COLORS.CHIP_BLUE_TEXT}
-                  fontSize={11}
-                />
               </div>
             </div>
           </div>
@@ -118,17 +106,12 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 12,
+              gap: 8,
               flexShrink: 0,
               flexWrap: 'wrap',
               justifyContent: 'flex-end',
             }}
           >
-            <SnapshotStorageBar
-              consumedLabel={s.consumed}
-              availableLabel={availLabel}
-              totalLabel={totalLabel}
-            />
             <Button
               size="small"
               icon={<EyeOutlined />}
@@ -139,6 +122,17 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
               }}
             >
               {APPLICATIONS_UI.SECTIONS.SNAPSHOTS.VIEW_MANIFEST}
+            </Button>
+            <Button
+              size="small"
+              icon={<Icons.SnapshotRestore size={14} />}
+              onClick={() => onRollback?.(s.id)}
+              style={{
+                borderColor: DEFAULT_COLORS.BORDER_LIGHT,
+                color: DEFAULT_COLORS.TEXT_PRIMARY,
+              }}
+            >
+              {APPLICATIONS_UI.SECTIONS.SNAPSHOTS.ROLLBACK}
             </Button>
           </div>
         </div>

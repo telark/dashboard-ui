@@ -96,11 +96,11 @@ export const APPLICATIONS_UI = {
       EMPTY_DESCRIPTION: 'No snapshots available yet for this application.',
       SNAPSHOT_ID: 'Snapshot ID',
       SIZE: 'Size',
-      CONSUMED: 'Consumed',
-      STORAGE: 'Storage',
       STORAGE_AVAILABLE: 'Available',
       STORAGE_TOTAL: 'Total',
+      STORAGE_METRICS_JOINER: ' · ',
       VIEW_MANIFEST: 'View Manifest',
+      ROLLBACK: 'Rollback',
       MANIFEST_MODAL_TITLE: 'Manifest',
     },
     METRICS: {
