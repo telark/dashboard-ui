@@ -21,9 +21,12 @@ const ApplicationDetailsView: React.FC = memo(() => {
 
   useEffect(() => {
     if (!details?.name) return;
-    // fetch snapshots based on the application ID (exporter-service uses snapshot ID as the scope ID)
-    void dispatch(fetchApplicationSnapshotsThunk(details.name));
-  }, [details?.name, dispatch]);
+    const refs =
+      details.snapshots != null && details.snapshots.length > 0 ? details.snapshots : undefined;
+    void dispatch(
+      fetchApplicationSnapshotsThunk({ applicationId: details.name, snapshotRefs: refs }),
+    );
+  }, [details?.name, details?.snapshots, dispatch]);
 
   const breadcrumbItems = useMemo(
     () => [

@@ -76,16 +76,16 @@ const applicationsSlice = createSlice({
         state.snapshotsError = String(action.payload || '');
       })
       .addCase(fetchSnapshotManifestThunk.pending, (state, action) => {
-        const id = action.meta.arg.snapshotId;
-        state.snapshotManifests[id] = { loading: true, error: null, data: null };
+        const { manifestKey } = action.meta.arg;
+        state.snapshotManifests[manifestKey] = { loading: true, error: null, data: null };
       })
       .addCase(fetchSnapshotManifestThunk.fulfilled, (state, action) => {
-        const { snapshotId, data } = action.payload;
-        state.snapshotManifests[snapshotId] = { loading: false, error: null, data };
+        const { manifestKey, data } = action.payload;
+        state.snapshotManifests[manifestKey] = { loading: false, error: null, data };
       })
       .addCase(fetchSnapshotManifestThunk.rejected, (state, action) => {
-        const id = action.meta.arg.snapshotId;
-        state.snapshotManifests[id] = {
+        const { manifestKey } = action.meta.arg;
+        state.snapshotManifests[manifestKey] = {
           loading: false,
           error: String(action.payload || ''),
           data: null,

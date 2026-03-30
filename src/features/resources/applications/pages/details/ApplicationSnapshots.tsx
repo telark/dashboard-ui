@@ -24,15 +24,15 @@ export interface ApplicationSnapshotsProps {
   loading: boolean;
   error: string | null;
   snapshotManifests: Record<string, SnapshotManifestState>;
-  onViewManifest: (snapshotId: string) => void;
+  onViewManifest: (summary: ApplicationSnapshotSummary) => void;
 }
 
 const ApplicationSnapshots: React.FC<ApplicationSnapshotsProps> = memo(
   ({ snapshots, loading, error, snapshotManifests, onViewManifest }) => {
-    const [activeSnapshotId, setActiveSnapshotId] = useState<string | null>(null);
+    const [activeManifestKey, setActiveManifestKey] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'json' | 'yaml'>('json');
 
-    const manifestState = activeSnapshotId ? snapshotManifests[activeSnapshotId] : undefined;
+    const manifestState = activeManifestKey ? snapshotManifests[activeManifestKey] : undefined;
 
     const viewPayload = manifestState?.data ? getManifestViewPayload(manifestState.data) : undefined;
 
@@ -61,10 +61,10 @@ const ApplicationSnapshots: React.FC<ApplicationSnapshotsProps> = memo(
       }
     })();
 
-    const openManifest = (snapshotId: string) => {
-      setActiveSnapshotId(snapshotId);
+    const openManifest = (summary: ApplicationSnapshotSummary) => {
+      setActiveManifestKey(applicationSnapshotStableKey(summary));
       setActiveTab('json');
-      onViewManifest(snapshotId);
+      onViewManifest(summary);
     };
 
     const handleCopy = async () => {
@@ -119,10 +119,10 @@ const ApplicationSnapshots: React.FC<ApplicationSnapshotsProps> = memo(
         )}
 
         <Modal
-          open={activeSnapshotId != null}
+          open={activeManifestKey != null}
           title={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.MANIFEST_MODAL_TITLE}
           footer={null}
-          onCancel={() => setActiveSnapshotId(null)}
+          onCancel={() => setActiveManifestKey(null)}
           width={760}
         >
           <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
@@ -142,11 +142,11 @@ const ApplicationSnapshots: React.FC<ApplicationSnapshotsProps> = memo(
                 zIndex: 2,
                 color: activeTab === 'yaml' ? IDE_MANIFEST_THEME.copyButton : undefined,
               }}
-              disabled={!activeSnapshotId || !(activeTab === 'json' ? jsonText : yamlText)}
+              disabled={!activeManifestKey || !(activeTab === 'json' ? jsonText : yamlText)}
             >
               Copy
             </Button>
-            {!activeSnapshotId ? null : manifestState?.loading ? (
+            {!activeManifestKey ? null : manifestState?.loading ? (
               activeTab === 'yaml' ? (
                 <div
                   style={{

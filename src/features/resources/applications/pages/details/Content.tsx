@@ -12,7 +12,12 @@ import { DEFAULT_COLORS, Icons } from '../../../../../constants';
 import { SHARED_PAGE_CONSTANTS } from '../../../../../constants/shared/pages';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
-import type { Application, ApplicationChangeLogEntry, ApplicationResourceRef } from '../../models';
+import type {
+  Application,
+  ApplicationChangeLogEntry,
+  ApplicationResourceRef,
+  ApplicationSnapshotSummary,
+} from '../../models';
 import { APPLICATION_DETAILS_CONSTANTS, APPLICATIONS_UI } from '../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
@@ -1444,7 +1449,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           )}
         </SettingsCard>
 
-        <SnapshotsSection detailSnapshots={application.snapshots} />
+        <SnapshotsSection applicationId={application.name} detailSnapshots={application.snapshots} />
 
         <SettingsCard
           title={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.TITLE}
@@ -1674,14 +1679,15 @@ ApplicationDetailsContent.displayName = 'ApplicationDetailsContent';
 export default ApplicationDetailsContent;
 
 function SnapshotsSection(props: {
+  applicationId: string;
   detailSnapshots: Application['snapshots'];
 }): React.ReactElement {
-  const { detailSnapshots } = props;
+  const { applicationId, detailSnapshots } = props;
   const dispatch: AppDispatch = useDispatch();
   const { snapshots, snapshotsLoading, snapshotsError, snapshotManifests } = useSelector(
     (s: RootState) => s.applications,
   );
-  const [activeSnapshotId, setActiveSnapshotId] = useState<string | null>(null);
+  const [activeManifestKey, setActiveManifestKey] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'json' | 'yaml'>('json');
 
   const mergedSnapshots = useMemo(
@@ -1689,7 +1695,7 @@ function SnapshotsSection(props: {
     [detailSnapshots, snapshots],
   );
 
-  const manifestState = activeSnapshotId ? snapshotManifests[activeSnapshotId] : undefined;
+  const manifestState = activeManifestKey ? snapshotManifests[activeManifestKey] : undefined;
 
   const viewPayload = manifestState?.data ? getManifestViewPayload(manifestState.data) : undefined;
 
@@ -1724,10 +1730,18 @@ function SnapshotsSection(props: {
     await navigator.clipboard.writeText(text);
   };
 
-  const openManifest = (snapshotId: string) => {
-    setActiveSnapshotId(snapshotId);
+  const openManifest = (summary: ApplicationSnapshotSummary) => {
+    const manifestKey = applicationSnapshotStableKey(summary);
+    setActiveManifestKey(manifestKey);
     setActiveTab('json');
-    void dispatch(fetchSnapshotManifestThunk({ snapshotId }));
+    void dispatch(
+      fetchSnapshotManifestThunk({
+        manifestKey,
+        applicationId,
+        namespace: summary.namespace,
+        generation: summary.generation,
+      }),
+    );
   };
 
   return (
@@ -1780,10 +1794,10 @@ function SnapshotsSection(props: {
       </SettingsCard>
 
       <Modal
-        open={activeSnapshotId != null}
+        open={activeManifestKey != null}
         title={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.MANIFEST_MODAL_TITLE}
         footer={null}
-        onCancel={() => setActiveSnapshotId(null)}
+        onCancel={() => setActiveManifestKey(null)}
         width={760}
       >
         <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
@@ -1811,11 +1825,11 @@ function SnapshotsSection(props: {
               zIndex: 2,
               color: activeTab === 'yaml' ? IDE_MANIFEST_THEME.copyButton : undefined,
             }}
-            disabled={!activeSnapshotId || !(activeTab === 'json' ? jsonText : yamlText)}
+            disabled={!activeManifestKey || !(activeTab === 'json' ? jsonText : yamlText)}
           >
             Copy
           </Button>
-          {!activeSnapshotId ? null : manifestState?.loading ? (
+          {!activeManifestKey ? null : manifestState?.loading ? (
             activeTab === 'yaml' ? (
               <div
                 style={{

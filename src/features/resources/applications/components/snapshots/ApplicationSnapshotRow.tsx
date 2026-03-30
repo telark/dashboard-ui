@@ -12,7 +12,7 @@ const SNAPSHOT_TAG = APPLICATION_DETAILS_CONSTANTS.OVERVIEW_TAG_SUCCESS;
 export interface ApplicationSnapshotRowProps {
   snapshot: ApplicationSnapshotSummary;
   showMarginBottom: boolean;
-  onViewManifest: (snapshotId: string) => void;
+  onViewManifest: (summary: ApplicationSnapshotSummary) => void;
   onRollback?: (snapshotId: string) => void;
 }
 
@@ -102,7 +102,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
             <Button
               size="small"
               icon={<EyeOutlined />}
-              onClick={() => onViewManifest(s.id)}
+              onClick={() => onViewManifest(s)}
               style={{
                 borderColor: DEFAULT_COLORS.BORDER_LIGHT,
                 color: DEFAULT_COLORS.TEXT_PRIMARY,

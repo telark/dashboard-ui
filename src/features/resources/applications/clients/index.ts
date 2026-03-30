@@ -5,5 +5,9 @@ export {
   updateApplication,
 } from './application';
 
-export { getSnapshotManifest, getSnapshotsByApplicationId } from './snapshots';
+export {
+  getApplicationSnapshotSummaries,
+  getSnapshotManifest,
+  getSnapshotsByApplicationId,
+} from './snapshots';
 

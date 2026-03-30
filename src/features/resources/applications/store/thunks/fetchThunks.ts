@@ -4,14 +4,14 @@ import {
   deleteApplication,
   fetchApplications,
   fetchApplicationDetails,
+  getApplicationSnapshotSummaries,
   getSnapshotManifest,
-  getSnapshotsByApplicationId,
   updateApplication,
 } from '../../clients';
 import { extractErrorMessage } from '../../../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../../constants/store/store';
 import { mapApplicationsData, mapSingleApplicationData } from '../../utils/mappers/applicationMapper';
-import type { ApplicationUpdatePayload } from '../../models';
+import type { ApplicationSnapshot, ApplicationUpdatePayload } from '../../models';
 
 export const fetchAllApplicationsThunk = createAsyncThunk(
   STORE_ACTIONS.APPLICATIONS.FETCH,
@@ -80,12 +80,17 @@ export const deleteApplicationThunk = createAsyncThunk(
   },
 );
 
+export interface FetchApplicationSnapshotsPayload {
+  applicationId: string;
+  /** From CR `spec.snapshots`: one GET per item with namespace+generation query params. */
+  snapshotRefs?: ApplicationSnapshot[];
+}
+
 export const fetchApplicationSnapshotsThunk = createAsyncThunk(
   STORE_ACTIONS.APPLICATIONS.FETCH_SNAPSHOTS,
-  async (applicationId: string, { rejectWithValue }) => {
+  async (payload: FetchApplicationSnapshotsPayload, { rejectWithValue }) => {
     try {
-      const resp = await getSnapshotsByApplicationId(applicationId);
-      return resp;
+      return await getApplicationSnapshotSummaries(payload.applicationId, payload.snapshotRefs);
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_FETCHING_APPLICATION_SNAPSHOTS, error);
       return rejectWithValue(
@@ -95,15 +100,22 @@ export const fetchApplicationSnapshotsThunk = createAsyncThunk(
   },
 );
 
+export interface FetchSnapshotManifestPayload {
+  manifestKey: string;
+  applicationId: string;
+  namespace: string;
+  generation: number;
+}
+
 export const fetchSnapshotManifestThunk = createAsyncThunk(
   STORE_ACTIONS.APPLICATIONS.FETCH_SNAPSHOT_MANIFEST,
-  async (
-    { snapshotId }: { snapshotId: string },
-    { rejectWithValue },
-  ) => {
+  async (payload: FetchSnapshotManifestPayload, { rejectWithValue }) => {
     try {
-      const data = await getSnapshotManifest(snapshotId);
-      return { snapshotId, data };
+      const data = await getSnapshotManifest(payload.applicationId, {
+        namespace: payload.namespace,
+        generation: payload.generation,
+      });
+      return { manifestKey: payload.manifestKey, data };
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_FETCHING_SNAPSHOT_MANIFEST, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_SNAPSHOT_MANIFEST));
