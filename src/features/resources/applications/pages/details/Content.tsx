@@ -68,6 +68,7 @@ function WorkloadBaselineValueFirst(props: { w: ApplicationWorkloadUsage }): Rea
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 8 }}>
+        <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.FINGERPRINT}</span>
         <code
           style={{
             fontSize: 12,
@@ -82,13 +83,12 @@ function WorkloadBaselineValueFirst(props: { w: ApplicationWorkloadUsage }): Rea
         >
           {fp}
         </code>
-        <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.FINGERPRINT}</span>
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 8 }}>
+        <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.REPLICAS}</span>
         <span style={{ fontSize: 13, fontWeight: 700, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
           {String(w.baseline?.replicas ?? 0)}
         </span>
-        <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.REPLICAS}</span>
       </div>
       <div>
         <div
@@ -927,46 +927,46 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                       <div
                         style={{
                           display: 'flex',
-                          alignItems: 'flex-start',
-                          gap: 12,
+                          alignItems: 'center',
+                          flexWrap: 'wrap',
+                          gap: 8,
                           width: '100%',
                           paddingRight: 8,
                           minWidth: 0,
                         }}
                       >
-                        <div style={{ minWidth: 0, flex: 1 }}>
-                          <div
-                            style={{
-                              fontSize: 15,
-                              fontWeight: 700,
-                              color: DEFAULT_COLORS.TEXT_PRIMARY,
-                              lineHeight: 1.25,
-                            }}
-                          >
-                            {w.resourceName}
-                          </div>
-                          <div
-                            style={{
-                              display: 'flex',
-                              flexWrap: 'wrap',
-                              gap: 6,
-                              marginTop: 6,
-                              alignItems: 'center',
-                            }}
-                          >
-                            <RowTag
-                              text={w.resourceKind}
-                              background={kindVisual.background}
-                              color={kindVisual.color}
-                              fontSize={11}
-                            />
-                            <RowTag
-                              text={w.namespace}
-                              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                              fontSize={11}
-                            />
-                          </div>
+                        <div
+                          style={{
+                            fontSize: 15,
+                            fontWeight: 700,
+                            color: DEFAULT_COLORS.TEXT_PRIMARY,
+                            lineHeight: 1.25,
+                            minWidth: 0,
+                          }}
+                        >
+                          {w.resourceName}
+                        </div>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: 6,
+                            alignItems: 'center',
+                            flexShrink: 0,
+                          }}
+                        >
+                          <RowTag
+                            text={w.resourceKind}
+                            background={kindVisual.background}
+                            color={kindVisual.color}
+                            fontSize={11}
+                          />
+                          <RowTag
+                            text={w.namespace}
+                            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                            fontSize={11}
+                          />
                         </div>
                       </div>
                     ),

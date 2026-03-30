@@ -91,6 +91,8 @@ export const SETTINGS_CONSTANTS = {
     MAX_WIDTH: 640,
     CARD_BORDER_RADIUS: 8,
     CARD_PADDING: 20,
+    /** Vertical space between card title (h3) and description line. */
+    CARD_TITLE_TO_DESCRIPTION_GAP_PX: 2,
     SECTION_TITLE_FONT_SIZE: 20,
     GAP_BETWEEN_CARDS: 20,
   },
