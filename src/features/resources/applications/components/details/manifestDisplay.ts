@@ -13,3 +13,7 @@ export function getManifestViewPayload(data: unknown): unknown {
     Object.entries(record).filter(([key]) => key !== 'apiVersion' && key !== 'kind'),
   );
 }
+
+export function isManifestDocumentArray(payload: unknown): payload is unknown[] {
+  return Array.isArray(payload);
+}

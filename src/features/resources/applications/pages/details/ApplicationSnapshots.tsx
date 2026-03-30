@@ -13,7 +13,10 @@ import { APPLICATIONS_UI } from '../../constants';
 import TabButton from '../../../../../components/display/buttons/TabButton';
 import ApplicationSectionEmptyState from '../../components/display/ApplicationSectionEmptyState';
 import MutedText from '../../components/details/MutedText';
-import { getManifestViewPayload } from '../../components/details/manifestDisplay';
+import {
+  getManifestViewPayload,
+  isManifestDocumentArray,
+} from '../../components/details/manifestDisplay';
 import IdeManifestCodeBlock from '../../components/details/IdeManifestCodeBlock';
 import { IDE_MANIFEST_THEME } from '../../components/details/ideManifestTheme';
 import type { ApplicationSnapshotSummary, SnapshotManifestState } from '../../models';
@@ -47,6 +50,13 @@ const ApplicationSnapshots: React.FC<ApplicationSnapshotsProps> = memo(
     const yamlText = (() => {
       if (viewPayload === undefined) return '';
       try {
+        if (isManifestDocumentArray(viewPayload)) {
+          const docs = viewPayload
+            .map((doc) => yaml.dump(doc, { noRefs: true }).trimEnd())
+            .filter((s) => s.length > 0);
+          if (docs.length === 0) return '';
+          return `${docs.join('\n---\n')}\n`;
+        }
         return yaml.dump(viewPayload, { noRefs: true });
       } catch {
         return '';

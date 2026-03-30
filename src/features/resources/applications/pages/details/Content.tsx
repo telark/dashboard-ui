@@ -20,7 +20,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../../../store';
 import { fetchSnapshotManifestThunk } from '../../store';
 import yaml from 'js-yaml';
-import { getManifestViewPayload } from '../../components/details/manifestDisplay';
+import {
+  getManifestViewPayload,
+  isManifestDocumentArray,
+} from '../../components/details/manifestDisplay';
 import IdeManifestCodeBlock from '../../components/details/IdeManifestCodeBlock';
 import { IDE_MANIFEST_THEME } from '../../components/details/ideManifestTheme';
 
@@ -1070,6 +1073,13 @@ function SnapshotsSection(): React.ReactElement {
   const yamlText = (() => {
     if (viewPayload === undefined) return '';
     try {
+      if (isManifestDocumentArray(viewPayload)) {
+        const docs = viewPayload
+          .map((doc) => yaml.dump(doc, { noRefs: true }).trimEnd())
+          .filter((s) => s.length > 0);
+        if (docs.length === 0) return '';
+        return `${docs.join('\n---\n')}\n`;
+      }
       return yaml.dump(viewPayload, { noRefs: true });
     } catch {
       return '';
