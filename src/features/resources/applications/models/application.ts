@@ -103,6 +103,23 @@ export interface ApplicationSnapshot {
   path: string;
 }
 
+export interface ApplicationSnapshotSummary {
+  id: string;
+  scope: string;
+  namespace: string;
+  generation: number;
+  size: string;
+  consumed: string;
+  pvcTotal?: string;
+  pvcAvailable?: string;
+}
+
+export interface SnapshotManifestState {
+  loading: boolean;
+  error: string | null;
+  data: unknown | null;
+}
+
 export interface ApplicationMetricsDerived {
   totalChanges: number;
   changesByClass: Record<string, number>;
@@ -201,5 +218,9 @@ export interface ApplicationsState {
   details: Application | null;
   loading: boolean;
   error: string | null;
+  snapshots: ApplicationSnapshotSummary[];
+  snapshotsLoading: boolean;
+  snapshotsError: string | null;
+  snapshotManifests: Record<string, SnapshotManifestState>;
 }
 

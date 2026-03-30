@@ -1,5 +1,12 @@
-import React, { memo, useMemo } from 'react';
-import { CameraOutlined, HistoryOutlined } from '@ant-design/icons';
+import React, { memo, useMemo, useState } from 'react';
+import {
+  CameraOutlined,
+  CopyOutlined,
+  EyeOutlined,
+  HistoryOutlined,
+  LoadingOutlined,
+} from '@ant-design/icons';
+import { Button, Modal, Tooltip } from 'antd';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
@@ -8,6 +15,11 @@ import { APPLICATIONS_UI } from '../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import ApplicationSectionEmptyState from '../../components/display/ApplicationSectionEmptyState';
+import TabButton from '../../../../../components/display/buttons/TabButton';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../../../../../store';
+import { fetchSnapshotManifestThunk } from '../../store';
+import yaml from 'js-yaml';
 
 interface ApplicationDetailsContentProps {
   application: Application;
@@ -682,7 +694,9 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                     style={{
                       paddingTop: wIdx === 0 ? 0 : 10,
                       paddingBottom: 10,
-                      borderBottom: showDivider ? `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}` : 'none',
+                      borderBottom: showDivider
+                        ? `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`
+                        : 'none',
                     }}
                   >
                     <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
@@ -774,7 +788,9 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                               {APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.USAGE}
                             </div>
                             {!w.usage?.available ? (
-                              <MutedText value={APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.NOT_AVAILABLE} />
+                              <MutedText
+                                value={APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.NOT_AVAILABLE}
+                              />
                             ) : (
                               <>
                                 <KeyValueGrid
@@ -789,7 +805,8 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                                       k: 'totalCpu',
                                       label: APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.TOTAL_CPU,
                                       value:
-                                        w.usage?.resources?.totalCpu || APPLICATIONS_UI.FALLBACKS.EMPTY,
+                                        w.usage?.resources?.totalCpu ||
+                                        APPLICATIONS_UI.FALLBACKS.EMPTY,
                                     },
                                     {
                                       k: 'totalMemory',
@@ -810,7 +827,10 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                                         <div style={{ fontWeight: 700 }}>
                                           {i.name}{' '}
                                           <span
-                                            style={{ fontWeight: 500, color: DEFAULT_COLORS.TEXT_MUTED }}
+                                            style={{
+                                              fontWeight: 500,
+                                              color: DEFAULT_COLORS.TEXT_MUTED,
+                                            }}
                                           >
                                             ({i.totalCpu} CPU · {i.totalMemory} Mem)
                                           </span>
@@ -835,8 +855,13 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                                       </div>
                                     ))}
                                     {w.usage.resources.usagePerInstance.length > 3 ? (
-                                      <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                                        {APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.SHOWING_FIRST_INSTANCES}{' '}
+                                      <div
+                                        style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}
+                                      >
+                                        {
+                                          APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS
+                                            .SHOWING_FIRST_INSTANCES
+                                        }{' '}
                                         {w.usage.resources.usagePerInstance.length}.
                                       </div>
                                     ) : null}
@@ -868,7 +893,8 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
               })}
               {sections.metrics.workloads.length > 25 ? (
                 <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, paddingTop: 4 }}>
-                  {APPLICATIONS_UI.SECTIONS.RESOURCES.SHOWING_FIRST} 25 of {sections.metrics.workloads.length}.
+                  {APPLICATIONS_UI.SECTIONS.RESOURCES.SHOWING_FIRST} 25 of{' '}
+                  {sections.metrics.workloads.length}.
                 </div>
               ) : null}
             </div>
@@ -879,53 +905,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           title={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.TITLE}
           description={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.DESCRIPTION}
         >
-          {sections.snapshots.length === 0 ? (
-            <ApplicationSectionEmptyState
-              icon={<CameraOutlined style={{ fontSize: 24 }} />}
-              title={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.EMPTY_TITLE}
-              description={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.EMPTY_DESCRIPTION}
-            />
-          ) : (
-            <div style={{ display: 'grid', rowGap: 10 }}>
-              {sections.snapshots.slice(0, 20).map((s) => (
-                <div
-                  key={s.id}
-                  style={{
-                    border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-                    borderRadius: 10,
-                    padding: 10,
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
-                    <div
-                      style={{ fontSize: 13, fontWeight: 700, color: DEFAULT_COLORS.TEXT_PRIMARY }}
-                    >
-                      {s.namespace} · {s.changeClass} · {s.severity}
-                    </div>
-                    <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                      <TimeAgo date={s.takenAt} />
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      marginTop: 6,
-                      fontSize: 12,
-                      color: DEFAULT_COLORS.TEXT_MUTED,
-                      wordBreak: 'break-word',
-                    }}
-                  >
-                    {s.path}
-                  </div>
-                </div>
-              ))}
-              {sections.snapshots.length > 20 ? (
-                <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                  {APPLICATIONS_UI.SECTIONS.SNAPSHOTS.SHOWING_FIRST} 20 of{' '}
-                  {sections.snapshots.length}.
-                </div>
-              ) : null}
-            </div>
-          )}
+          <SnapshotsSection />
         </SettingsCard>
 
         <SettingsCard
@@ -1062,6 +1042,205 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
 ApplicationDetailsContent.displayName = 'ApplicationDetailsContent';
 
 export default ApplicationDetailsContent;
+
+function SnapshotsSection(): React.ReactElement {
+  const dispatch: AppDispatch = useDispatch();
+  const { snapshots, snapshotsLoading, snapshotsError, snapshotManifests } = useSelector(
+    (s: RootState) => s.applications,
+  );
+  const [activeSnapshotId, setActiveSnapshotId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'json' | 'yaml'>('json');
+
+  const manifestState = activeSnapshotId ? snapshotManifests[activeSnapshotId] : undefined;
+
+  const jsonText = (() => {
+    if (!manifestState?.data) return '';
+    try {
+      return JSON.stringify(manifestState.data, null, 2);
+    } catch {
+      return String(manifestState.data);
+    }
+  })();
+
+  const yamlText = (() => {
+    if (!manifestState?.data) return '';
+    try {
+      return yaml.dump(manifestState.data, { noRefs: true });
+    } catch {
+      return '';
+    }
+  })();
+
+  const handleCopy = async () => {
+    const text = activeTab === 'json' ? jsonText : yamlText;
+    if (!text) return;
+    await navigator.clipboard.writeText(text);
+  };
+
+  const openManifest = (snapshotId: string) => {
+    setActiveSnapshotId(snapshotId);
+    setActiveTab('json');
+    void dispatch(fetchSnapshotManifestThunk({ snapshotId }));
+  };
+
+  return (
+    <>
+      {snapshotsLoading ? (
+        <div style={{ display: 'grid', rowGap: 10 }}>
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              style={{
+                height: 44,
+                borderRadius: 8,
+                border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+                background: DEFAULT_COLORS.BACKGROUND_LIGHT,
+              }}
+            />
+          ))}
+        </div>
+      ) : snapshotsError ? (
+        <div style={{ fontSize: 13, color: DEFAULT_COLORS.DANGER }}>{snapshotsError}</div>
+      ) : snapshots.length === 0 ? (
+        <ApplicationSectionEmptyState
+          icon={<CameraOutlined style={{ fontSize: 24 }} />}
+          title={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.EMPTY_TITLE}
+          description={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.EMPTY_DESCRIPTION}
+        />
+      ) : (
+        <div>
+          {snapshots.map((s, idx) => {
+            const showDivider = idx < snapshots.length - 1;
+            const truncatedId = s.id.length > 24 ? `${s.id.slice(0, 10)}…${s.id.slice(-10)}` : s.id;
+            return (
+              <div
+                key={s.id}
+                style={{
+                  paddingTop: idx === 0 ? 0 : 10,
+                  paddingBottom: 10,
+                  borderBottom: showDivider ? `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}` : 'none',
+                }}
+              >
+                <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                  <div
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: '50%',
+                      marginTop: 5,
+                      flexShrink: 0,
+                      background: DEFAULT_COLORS.TEXT_MUTED,
+                    }}
+                  />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div
+                      style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_PRIMARY, lineHeight: 1.4 }}
+                    >
+                      <span
+                        style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12, fontWeight: 700 }}
+                      >
+                        ID
+                      </span>{' '}
+                      <Tooltip title={s.id}>
+                        <span style={{ fontWeight: 700 }}>{truncatedId}</span>
+                      </Tooltip>
+                      <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}> · </span>
+                      <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>Size</span>{' '}
+                      <span style={{ fontWeight: 600 }}>{s.size}</span>
+                      <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}> · </span>
+                      <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>Consumed</span>{' '}
+                      <span style={{ fontWeight: 600 }}>{s.consumed}</span>
+                    </div>
+                    {(s.pvcTotal || s.pvcAvailable) && (
+                      <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, marginTop: 4 }}>
+                        {s.pvcAvailable ? `Available ${s.pvcAvailable}` : null}
+                        {s.pvcAvailable && s.pvcTotal ? ' · ' : null}
+                        {s.pvcTotal ? `Total ${s.pvcTotal}` : null}
+                      </div>
+                    )}
+                  </div>
+                  <Button
+                    type="text"
+                    size="small"
+                    icon={<EyeOutlined />}
+                    onClick={() => openManifest(s.id)}
+                  >
+                    View Manifest
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <Modal
+        open={activeSnapshotId != null}
+        title="Manifest"
+        footer={null}
+        onCancel={() => setActiveSnapshotId(null)}
+        width={760}
+      >
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+          <TabButton
+            label="JSON"
+            active={activeTab === 'json'}
+            onClick={() => setActiveTab('json')}
+          />
+          <TabButton
+            label="YAML"
+            active={activeTab === 'yaml'}
+            onClick={() => setActiveTab('yaml')}
+          />
+        </div>
+        <div
+          style={{
+            border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+            borderRadius: 10,
+            background: DEFAULT_COLORS.BACKGROUND_LIGHT,
+            padding: 12,
+            position: 'relative',
+          }}
+        >
+          <Button
+            type="text"
+            size="small"
+            icon={<CopyOutlined />}
+            onClick={() => void handleCopy()}
+            style={{ position: 'absolute', top: 8, right: 8 }}
+            disabled={!activeSnapshotId || !(activeTab === 'json' ? jsonText : yamlText)}
+          >
+            Copy
+          </Button>
+          {!activeSnapshotId ? null : manifestState?.loading ? (
+            <div
+              style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 13, display: 'flex', gap: 8 }}
+            >
+              <LoadingOutlined /> Loading…
+            </div>
+          ) : manifestState?.error ? (
+            <div style={{ color: DEFAULT_COLORS.DANGER, fontSize: 13 }}>{manifestState.error}</div>
+          ) : (
+            <pre
+              style={{
+                margin: 0,
+                fontSize: 12,
+                lineHeight: 1.5,
+                color: DEFAULT_COLORS.TEXT_PRIMARY,
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
+                fontFamily: 'monospace',
+                paddingTop: 28,
+              }}
+            >
+              {activeTab === 'json' ? jsonText : yamlText}
+            </pre>
+          )}
+        </div>
+      </Modal>
+    </>
+  );
+}
 
 function MutedText({ value }: { value: string }) {
   return <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>{value}</div>;

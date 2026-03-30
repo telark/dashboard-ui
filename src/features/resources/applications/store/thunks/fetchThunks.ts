@@ -1,6 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import logger from '../../../../../logging';
-import { deleteApplication, fetchApplications, fetchApplicationDetails, updateApplication } from '../../clients';
+import {
+  deleteApplication,
+  fetchApplications,
+  fetchApplicationDetails,
+  getSnapshotManifest,
+  getSnapshotsByApplicationId,
+  updateApplication,
+} from '../../clients';
 import { extractErrorMessage } from '../../../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../../constants/store/store';
 import { mapApplicationsData, mapSingleApplicationData } from '../../utils/mappers/applicationMapper';
@@ -69,6 +76,37 @@ export const deleteApplicationThunk = createAsyncThunk(
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_DELETING_APPLICATION, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.DELETE_APPLICATION));
+    }
+  },
+);
+
+export const fetchApplicationSnapshotsThunk = createAsyncThunk(
+  STORE_ACTIONS.APPLICATIONS.FETCH_SNAPSHOTS,
+  async (applicationId: string, { rejectWithValue }) => {
+    try {
+      const resp = await getSnapshotsByApplicationId(applicationId);
+      return resp;
+    } catch (error: unknown) {
+      logger.error(STORE_MESSAGES.ERROR_FETCHING_APPLICATION_SNAPSHOTS, error);
+      return rejectWithValue(
+        extractErrorMessage(error, STORE_ERRORS.FETCH_APPLICATION_SNAPSHOTS),
+      );
+    }
+  },
+);
+
+export const fetchSnapshotManifestThunk = createAsyncThunk(
+  STORE_ACTIONS.APPLICATIONS.FETCH_SNAPSHOT_MANIFEST,
+  async (
+    { snapshotId }: { snapshotId: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      const data = await getSnapshotManifest(snapshotId);
+      return { snapshotId, data };
+    } catch (error: unknown) {
+      logger.error(STORE_MESSAGES.ERROR_FETCHING_SNAPSHOT_MANIFEST, error);
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_SNAPSHOT_MANIFEST));
     }
   },
 );

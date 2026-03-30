@@ -45,6 +45,16 @@ export const Endpoints = {
       method: 'DELETE',
     }),
   },
+  SNAPSHOTS: {
+    GET_BY_ID: (id: string) => ({
+      path: `snapshots/${id}/get`,
+      method: 'GET',
+    }),
+    GET_MANIFEST: (id: string) => ({
+      path: `snapshots/${id}/manifest`,
+      method: 'GET',
+    }),
+  },
   INSIGHTS: {
     CLUSTER_GET: {
       path: `${API_PATHS.RESOURCES.INSIGHTS}/${INSIGHT_PATHS.CLUSTER_GET}`,

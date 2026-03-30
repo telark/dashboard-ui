@@ -4,6 +4,8 @@ import {
   fetchAllApplicationsThunk,
   fetchAllApplicationsSilentThunk,
   fetchApplicationDetailsThunk,
+  fetchApplicationSnapshotsThunk,
+  fetchSnapshotManifestThunk,
   updateApplicationThunk,
   deleteApplicationThunk,
 } from '../thunks/fetchThunks';
@@ -24,6 +26,8 @@ export {
   fetchAllApplicationsThunk,
   fetchAllApplicationsSilentThunk,
   fetchApplicationDetailsThunk,
+  fetchApplicationSnapshotsThunk,
+  fetchSnapshotManifestThunk,
   updateApplicationThunk,
   deleteApplicationThunk,
 } from '../thunks/fetchThunks';
@@ -33,6 +37,10 @@ const initialState: ApplicationsState = {
   details: null,
   loading: false,
   error: null,
+  snapshots: [],
+  snapshotsLoading: false,
+  snapshotsError: null,
+  snapshotManifests: {},
 };
 
 const applicationsSlice = createSlice({
@@ -54,6 +62,35 @@ const applicationsSlice = createSlice({
       .addCase(fetchApplicationDetailsThunk.pending, handleFetchApplicationDetailsPending)
       .addCase(fetchApplicationDetailsThunk.fulfilled, handleFetchApplicationDetailsFulfilled)
       .addCase(fetchApplicationDetailsThunk.rejected, handleFetchApplicationDetailsRejected)
+      .addCase(fetchApplicationSnapshotsThunk.pending, (state) => {
+        state.snapshotsLoading = true;
+        state.snapshotsError = null;
+      })
+      .addCase(fetchApplicationSnapshotsThunk.fulfilled, (state, action) => {
+        state.snapshotsLoading = false;
+        state.snapshots = action.payload;
+        state.snapshotsError = null;
+      })
+      .addCase(fetchApplicationSnapshotsThunk.rejected, (state, action) => {
+        state.snapshotsLoading = false;
+        state.snapshotsError = String(action.payload || '');
+      })
+      .addCase(fetchSnapshotManifestThunk.pending, (state, action) => {
+        const id = action.meta.arg.snapshotId;
+        state.snapshotManifests[id] = { loading: true, error: null, data: null };
+      })
+      .addCase(fetchSnapshotManifestThunk.fulfilled, (state, action) => {
+        const { snapshotId, data } = action.payload;
+        state.snapshotManifests[snapshotId] = { loading: false, error: null, data };
+      })
+      .addCase(fetchSnapshotManifestThunk.rejected, (state, action) => {
+        const id = action.meta.arg.snapshotId;
+        state.snapshotManifests[id] = {
+          loading: false,
+          error: String(action.payload || ''),
+          data: null,
+        };
+      })
       .addCase(updateApplicationThunk.fulfilled, handleUpdateApplicationFulfilled)
       .addCase(deleteApplicationThunk.fulfilled, handleDeleteApplicationFulfilled);
   },

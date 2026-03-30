@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import LoadingDetailsView from '../../../../../components/display/views/LoadingDetailsView';
 import ErrorView from '../../../../../components/display/views/ErrorView';
@@ -9,11 +9,21 @@ import ApplicationDetailsContent from './Content';
 import ApplicationPageLayout from '../../components/layout/ApplicationPageLayout';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import { APP_ROUTES } from '../../../../../constants';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '../../../../../store';
+import { fetchApplicationSnapshotsThunk } from '../../store';
 
 const ApplicationDetailsView: React.FC = memo(() => {
   const { name } = useParams<{ name: string }>();
   const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
   const { details, loading, error } = useApplicationDetails(name);
+
+  useEffect(() => {
+    if (!details?.name) return;
+    // fetch snapshots based on the application ID (exporter-service uses snapshot ID as the scope ID)
+    void dispatch(fetchApplicationSnapshotsThunk(details.name));
+  }, [details?.name, dispatch]);
 
   const breadcrumbItems = useMemo(
     () => [
