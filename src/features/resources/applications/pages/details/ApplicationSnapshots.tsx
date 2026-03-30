@@ -17,6 +17,7 @@ import {
 import IdeManifestCodeBlock from '../../components/details/IdeManifestCodeBlock';
 import { IDE_MANIFEST_THEME } from '../../components/details/ideManifestTheme';
 import type { ApplicationSnapshotSummary, SnapshotManifestState } from '../../models';
+import { applicationSnapshotStableKey } from '../../utils/mergeApplicationSnapshotSources';
 
 export interface ApplicationSnapshotsProps {
   snapshots: ApplicationSnapshotSummary[];
@@ -108,7 +109,7 @@ const ApplicationSnapshots: React.FC<ApplicationSnapshotsProps> = memo(
           <div>
             {snapshots.map((s, idx) => (
               <ApplicationSnapshotRow
-                key={s.id}
+                key={applicationSnapshotStableKey(s)}
                 snapshot={s}
                 showMarginBottom={idx < snapshots.length - 1}
                 onViewManifest={openManifest}

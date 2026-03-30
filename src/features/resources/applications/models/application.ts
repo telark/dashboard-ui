@@ -110,6 +110,8 @@ export interface ApplicationSnapshotSummary {
   generation: number;
   size: string;
   consumed: string;
+  /** Storage path; unique per snapshot when id is shared (e.g. application name). */
+  path?: string;
   severity?: string;
   pvcTotal?: string;
   pvcAvailable?: string;

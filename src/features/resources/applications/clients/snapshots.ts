@@ -23,12 +23,21 @@ function extractRawSnapshotRows(data: unknown): unknown[] {
 function mapExporterRowToSummary(row: unknown): ApplicationSnapshotSummary | null {
   if (row == null || typeof row !== 'object') return null;
   const o = row as Record<string, unknown>;
-  const id = o.id;
-  if (typeof id !== 'string' || id.length === 0) return null;
+  const rawId = o.id;
+  let id: string;
+  if (typeof rawId === 'string' && rawId.length > 0) id = rawId;
+  else if (rawId != null && String(rawId).length > 0) id = String(rawId);
+  else return null;
 
   const scope = typeof o.scope === 'string' ? o.scope : SNAPSHOT_SCOPE_APPS;
   const namespace = typeof o.namespace === 'string' ? o.namespace : '';
-  const generation = typeof o.generation === 'number' ? o.generation : 0;
+  const rawGen = o.generation;
+  let generation = 0;
+  if (typeof rawGen === 'number' && !Number.isNaN(rawGen)) generation = rawGen;
+  else if (rawGen != null) {
+    const n = Number(rawGen);
+    if (!Number.isNaN(n)) generation = n;
+  }
 
   const fileSize = o.fileSize ?? o.size;
   let size = '';
@@ -43,6 +52,7 @@ function mapExporterRowToSummary(row: unknown): ApplicationSnapshotSummary | nul
   const pvcTotal = typeof o.pvcTotal === 'string' ? o.pvcTotal : undefined;
   const pvcAvailable = typeof o.pvcAvailable === 'string' ? o.pvcAvailable : undefined;
   const severity = typeof o.severity === 'string' ? o.severity : undefined;
+  const path = typeof o.path === 'string' && o.path.length > 0 ? o.path : undefined;
 
   return {
     id,
@@ -51,6 +61,7 @@ function mapExporterRowToSummary(row: unknown): ApplicationSnapshotSummary | nul
     generation,
     size,
     consumed,
+    path,
     severity,
     pvcTotal,
     pvcAvailable,

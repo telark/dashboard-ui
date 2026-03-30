@@ -32,7 +32,10 @@ import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import { getResourceKindVisual } from '../../utils/resourceKindVisual';
 import ApplicationSnapshotRow from '../../components/snapshots/ApplicationSnapshotRow';
 import SnapshotAggregateStorageBar from '../../components/snapshots/SnapshotAggregateStorageBar';
-import { mergeApplicationSnapshotSources } from '../../utils/mergeApplicationSnapshotSources';
+import {
+  applicationSnapshotStableKey,
+  mergeApplicationSnapshotSources,
+} from '../../utils/mergeApplicationSnapshotSources';
 
 interface ApplicationDetailsContentProps {
   application: Application;
@@ -1766,7 +1769,7 @@ function SnapshotsSection(props: {
           <div>
             {mergedSnapshots.map((s, idx) => (
               <ApplicationSnapshotRow
-                key={s.id}
+                key={applicationSnapshotStableKey(s)}
                 snapshot={s}
                 showMarginBottom={idx < mergedSnapshots.length - 1}
                 onViewManifest={openManifest}
