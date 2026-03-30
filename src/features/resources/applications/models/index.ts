@@ -14,5 +14,7 @@ export type {
   ApplicationHistory,
   ApplicationChangeLogEntry,
   ApplicationSnapshot,
+  ApplicationSnapshotSummary,
+  SnapshotManifestState,
 } from './application';
 
