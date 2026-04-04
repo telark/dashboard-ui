@@ -19,9 +19,11 @@ import { getApplicationHealthAccentColor } from '../../../utils/healthVisual';
 
 interface ApplicationCardHeaderProps {
   application: Application;
+  onEditApplication: (application: Application) => void;
 }
 
-const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(({ application }) => {
+const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
+  ({ application, onEditApplication }) => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -30,7 +32,6 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(({ appl
   const statusText = application.health?.status || APPLICATIONS_UI.FALLBACKS.UNKNOWN;
 
   const detailsPath = APP_ROUTES.APPLICATION_DETAILS.replace(':name', application.name);
-  const editPath = APP_ROUTES.APPLICATION_EDIT.replace(':name', application.name);
 
   const handleMenuClick = useCallback(
     (info: { key: string; domEvent: React.MouseEvent | React.KeyboardEvent }) => {
@@ -40,7 +41,8 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(({ appl
         return;
       }
       if (info.key === 'edit') {
-        navigate(editPath);
+        setMenuOpen(false);
+        onEditApplication(application);
         return;
       }
       if (info.key === 'rollbacks') {
@@ -64,7 +66,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(({ appl
         });
       }
     },
-    [application.name, dispatch, detailsPath, editPath, navigate],
+    [application, dispatch, detailsPath, navigate, onEditApplication],
   );
 
   const hasInsightRow = Boolean(application.insights?.category || application.insights?.role);

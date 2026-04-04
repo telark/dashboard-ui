@@ -5,12 +5,12 @@ export const APPLICATIONS_UI = {
   TOOLBAR_SEARCH_BUTTON: 'Search',
   BREADCRUMBS: {
     ROOT: 'Applications',
-    EDIT: 'Edit',
   },
   DETAIL_PAGE: {
     SUBTITLE: 'Application details, resources, metrics, and change history.',
   },
   EDIT_PAGE: {
+    PANEL_TITLE: 'Edit application',
     SUBTITLE: 'Update application display name and description.',
     SUCCESS_MESSAGE: 'Application updated successfully.',
     SECTION_BASIC: 'Basic information',

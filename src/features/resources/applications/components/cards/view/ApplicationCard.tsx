@@ -10,6 +10,7 @@ import { APPLICATION_SECTION_LAYOUT } from '../../../constants/sectionLayout';
 
 interface ApplicationCardProps {
   application: Application;
+  onEditApplication: (application: Application) => void;
 }
 
 const FIELD_LABEL_WRAP: React.CSSProperties = {
@@ -55,7 +56,7 @@ function CompactFieldBlock(props: {
   );
 }
 
-const ApplicationCard: React.FC<ApplicationCardProps> = memo(({ application }) => {
+const ApplicationCard: React.FC<ApplicationCardProps> = memo(({ application, onEditApplication }) => {
   const namespacePreview = useMemo(() => {
     const items = application.namespaces?.items || [];
     if (items.length === 0) return APPLICATIONS_UI.FALLBACKS.EMPTY;
@@ -83,7 +84,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(({ application }) =
         boxSizing: 'border-box',
       }}
     >
-      <ApplicationCardHeader application={application} />
+      <ApplicationCardHeader application={application} onEditApplication={onEditApplication} />
 
       <div style={GRID_STYLE}>
         <CompactFieldBlock label={APPLICATIONS_UI.CARD.LABELS.NAME}>{application.name}</CompactFieldBlock>

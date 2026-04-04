@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useCallback, useRef, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { message } from 'antd';
+import { Form, message } from 'antd';
 import type { RootState, AppDispatch } from '../../../../../store';
 import { loadApplications, loadApplicationsSilent } from '../../utils/management/state';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../../utils/shared/retry';
@@ -11,6 +11,8 @@ import ReachabilityErrorView from '../../../../../components/display/views/Reach
 import ApplicationsMainEmpty from './Empty';
 import ApplicationsSuccess from './Success';
 import { filterApplications, useApplications } from '../../hooks';
+import type { Application } from '../../models';
+import { EditApplicationPanel } from '../../components/panels';
 
 const ApplicationsGlobalView: React.FC = memo(() => {
   const dispatch: AppDispatch = useDispatch();
@@ -18,6 +20,26 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   const hasTriggeredInitialLoad = useRef(false);
 
   const { searchValue, onSearchChange } = useApplications();
+  const [editForm] = Form.useForm();
+  const [editTarget, setEditTarget] = useState<Application | null>(null);
+
+  const openEditPanel = useCallback(
+    (app: Application) => {
+      editForm.setFieldsValue({
+        name: app.name,
+        displayName: app.displayName,
+        description: app.description ?? '',
+      });
+      setEditTarget(app);
+    },
+    [editForm],
+  );
+
+  const closeEditPanel = useCallback(() => {
+    editForm.resetFields();
+    setEditTarget(null);
+  }, [editForm]);
+
   const filteredApplications = useMemo(
     () => filterApplications(applications, searchValue),
     [applications, searchValue],
@@ -98,11 +120,20 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   }
 
   return (
-    <ApplicationsSuccess
-      applications={filteredApplications}
-      searchValue={searchValue}
-      onSearchChange={onSearchChange}
-    />
+    <>
+      <ApplicationsSuccess
+        applications={filteredApplications}
+        searchValue={searchValue}
+        onSearchChange={onSearchChange}
+        onEditApplication={openEditPanel}
+      />
+      <EditApplicationPanel
+        open={editTarget != null}
+        onClose={closeEditPanel}
+        application={editTarget}
+        form={editForm}
+      />
+    </>
   );
 });
 

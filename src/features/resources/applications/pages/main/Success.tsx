@@ -9,10 +9,11 @@ interface ApplicationsSuccessProps {
   applications: Application[];
   searchValue: string;
   onSearchChange: (value: string) => void;
+  onEditApplication: (application: Application) => void;
 }
 
 const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
-  ({ applications, searchValue, onSearchChange }) => {
+  ({ applications, searchValue, onSearchChange, onEditApplication }) => {
     const { contentGap } = useAppearance();
     const hasApps = applications.length > 0;
 
@@ -21,11 +22,15 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
       return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {applications.map((application) => (
-            <ApplicationCard key={application.name} application={application} />
+            <ApplicationCard
+              key={application.name}
+              application={application}
+              onEditApplication={onEditApplication}
+            />
           ))}
         </div>
       );
-    }, [applications, hasApps]);
+    }, [applications, hasApps, onEditApplication]);
 
     return (
       <div
