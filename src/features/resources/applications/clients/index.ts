@@ -2,7 +2,6 @@ export {
   deleteApplication,
   fetchApplications,
   fetchApplicationDetails,
-  triggerApplicationRollback,
   updateApplication,
 } from './application';
 
@@ -12,3 +11,7 @@ export {
   getSnapshotsByApplicationId,
 } from './snapshots';
 
+
+export {
+  triggerApplicationRollback,
+} from './rollback';

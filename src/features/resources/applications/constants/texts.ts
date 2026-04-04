@@ -101,6 +101,8 @@ export const APPLICATIONS_UI = {
       ROLLBACK_CONFIRM_OK: 'Start rollback',
       ROLLBACK_SUCCESS: 'Rollback request submitted.',
       ROLLBACK_FAILED: 'Rollback could not be started. Please try again.',
+      ROLLBACK_USER_REQUIRED:
+        'Sign in with a user account to start a rollback (username is required for the request).',
       TAKEN_AT: 'Taken at',
       MANIFEST_MODAL_TITLE: 'Manifest',
       MANIFEST_PANEL_SUBTITLE: 'Snapshot manifest',

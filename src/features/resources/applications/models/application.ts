@@ -211,7 +211,8 @@ export interface ApplicationUpdatePayload {
 }
 
 export interface ApplicationRollbackTriggerPayload {
-  targetSnapshotId: string;
+  snapshotGeneration: number;
+  triggeredBy: string;
 }
 
 export interface Application {

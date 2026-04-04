@@ -32,6 +32,7 @@ import {
   applicationSnapshotStableKey,
   mergeApplicationSnapshotSources,
 } from '../../utils/mergeApplicationSnapshotSources';
+import { getCurrentUser } from '../../../../auth/utils';
 import KeyValueGrid from '../../components/details/KeyValueGrid';
 
 interface ApplicationDetailsContentProps {
@@ -1334,19 +1335,26 @@ function SnapshotsSection(props: {
   };
 
   const handleRollbackRequest = useCallback(
-    (snapshotId: string) => {
+    (summary: ApplicationSnapshotSummary) => {
       Modal.confirm({
         title: snapUi.ROLLBACK_CONFIRM_TITLE,
         content: snapUi.ROLLBACK_CONFIRM_CONTENT,
         okText: snapUi.ROLLBACK_CONFIRM_OK,
         cancelText: APPLICATIONS_UI.CARD.ACTIONS.CANCEL,
         onOk: async () => {
-          setRollbackBusyId(snapshotId);
+          const triggeredBy = getCurrentUser()?.username?.trim();
+          if (!triggeredBy) {
+            message.error(snapUi.ROLLBACK_USER_REQUIRED);
+            return;
+          }
+          const busyKey = applicationSnapshotStableKey(summary);
+          setRollbackBusyId(busyKey);
           try {
             await dispatch(
               triggerApplicationRollbackThunk({
                 name: applicationId,
-                targetSnapshotId: snapshotId,
+                snapshotGeneration: summary.generation,
+                triggeredBy,
               }),
             ).unwrap();
             message.success(snapUi.ROLLBACK_SUCCESS);
@@ -1411,7 +1419,7 @@ function SnapshotsSection(props: {
                 showMarginBottom={idx < mergedSnapshots.length - 1}
                 onViewManifest={openManifest}
                 onRollback={handleRollbackRequest}
-                rollbackLoading={rollbackBusyId === s.id}
+                rollbackLoading={rollbackBusyId === applicationSnapshotStableKey(s)}
               />
             ))}
           </div>

@@ -82,25 +82,3 @@ export const deleteApplication = async (name: string) => {
   }
 };
 
-export const triggerApplicationRollback = async (
-  name: string,
-  payload: ApplicationRollbackTriggerPayload,
-) => {
-  try {
-    return await Client<ResourceDetailsResponse<Application>>(
-      syncManagerApiClient,
-      Endpoints.APPLICATIONS.TRIGGER_ROLLBACK(name).path,
-      {
-        method: 'POST',
-        data: payload,
-      },
-    );
-  } catch (error) {
-    logger.error(
-      `${APPLICATIONS_ERROR_MESSAGES.CLIENT.TRIGGER_APPLICATION_ROLLBACK_FAILED} "${name}":`,
-      error,
-    );
-    throw error;
-  }
-};
-

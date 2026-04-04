@@ -17,7 +17,7 @@ export interface ApplicationSnapshotRowProps {
   snapshot: ApplicationSnapshotSummary;
   showMarginBottom: boolean;
   onViewManifest: (summary: ApplicationSnapshotSummary) => void;
-  onRollback?: (snapshotId: string) => void;
+  onRollback?: (summary: ApplicationSnapshotSummary) => void;
   rollbackLoading?: boolean;
 }
 
@@ -117,7 +117,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                 size="small"
                 type="default"
                 icon={<Icons.SnapshotRestore size={14} />}
-                onClick={() => onRollback?.(s.id)}
+                onClick={() => onRollback?.(s)}
                 style={ICON_BTN}
                 aria-label={ui.ROLLBACK}
                 loading={rollbackLoading}

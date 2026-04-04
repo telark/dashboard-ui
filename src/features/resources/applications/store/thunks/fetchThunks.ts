@@ -126,14 +126,21 @@ export const fetchSnapshotManifestThunk = createAsyncThunk(
 
 export interface TriggerApplicationRollbackArgs {
   name: string;
-  targetSnapshotId: string;
+  snapshotGeneration: number;
+  triggeredBy: string;
 }
 
 export const triggerApplicationRollbackThunk = createAsyncThunk(
   STORE_ACTIONS.APPLICATIONS.TRIGGER_ROLLBACK,
-  async ({ name, targetSnapshotId }: TriggerApplicationRollbackArgs, { rejectWithValue }) => {
+  async (
+    { name, snapshotGeneration, triggeredBy }: TriggerApplicationRollbackArgs,
+    { rejectWithValue },
+  ) => {
     try {
-      const response = await triggerApplicationRollback(name, { targetSnapshotId });
+      const response = await triggerApplicationRollback(name, {
+        snapshotGeneration,
+        triggeredBy,
+      });
       const raw = response.data;
       if (raw != null && typeof raw === 'object' && typeof (raw as Application).name === 'string') {
         return mapSingleApplicationData(raw);
