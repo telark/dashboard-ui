@@ -44,6 +44,10 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.DELETE_DETAILS(name)}`,
       method: 'DELETE',
     }),
+    TRIGGER_ROLLBACK: (name: string) => ({
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}`,
+      method: 'POST',
+    }),
   },
   SNAPSHOTS: {
     GET_BY_ID: (id: string) => ({

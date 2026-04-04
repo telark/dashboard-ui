@@ -96,6 +96,7 @@ const mapApplication = (item: Application): Application => {
     envVarKeys: Array.isArray(item.envVarKeys) ? item.envVarKeys : [],
     resources: Array.isArray(item.resources) ? item.resources : [],
     snapshots: Array.isArray(item.snapshots) ? item.snapshots : [],
+    rollbacks: Array.isArray(item.rollbacks) ? item.rollbacks : [],
     namespaces: item.namespaces || { total: UTILS_TEXTS.DEFAULTS.ZERO, items: [] },
     resourceCount: typeof item.resourceCount === 'number' ? item.resourceCount : UTILS_TEXTS.DEFAULTS.ZERO,
     resourceSummary: item.resourceSummary || DEFAULT_RESOURCE_SUMMARY,

@@ -147,7 +147,6 @@ async function fetchSnapshotSummariesPerRef(
   return out;
 }
 
-/** Single GET (no generation); backend may return one or many rows. */
 export const getSnapshotsByApplicationId = async (
   applicationId: string,
 ): Promise<ApplicationSnapshotSummary[]> => {
@@ -169,10 +168,6 @@ export const getSnapshotsByApplicationId = async (
   }
 };
 
-/**
- * When the CR lists snapshots (same `id`, different `generation`), call get once per ref
- * with `namespace` + `generation` query params (same as manifest).
- */
 export const getApplicationSnapshotSummaries = async (
   applicationId: string,
   snapshotRefs?: ApplicationSnapshot[],

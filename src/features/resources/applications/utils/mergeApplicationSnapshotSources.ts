@@ -7,7 +7,6 @@ function snapshotDedupKey(s: ApplicationSnapshotSummary): string {
   return `${s.namespace}|${s.generation}|${s.id}`;
 }
 
-/** Stable React key; prefer path when the same application id is used for every snapshot. */
 export function applicationSnapshotStableKey(s: ApplicationSnapshotSummary): string {
   return snapshotDedupKey(s);
 }
@@ -31,10 +30,6 @@ function pickFromPool(
   };
 }
 
-/**
- * Match one exporter row to an application snapshot. Same `id` (e.g. app name) is expected for all
- * rows; pairing is by path, then namespace+generation, never id-only (that would steal the wrong row).
- */
 function takeMatchingExporterRow(
   d: ApplicationSnapshot,
   pool: ApplicationSnapshotSummary[],
@@ -74,11 +69,6 @@ function appendUniquePoolRows(
   }
 }
 
-/**
- * Prefer snapshots from application details (full list), enrich with exporter summary
- * rows. Each exporter row is consumed at most once. Rows with the same `id` are distinguished by
- * `generation` and `path`.
- */
 export function mergeApplicationSnapshotSources(
   fromDetails: ApplicationSnapshot[] | undefined,
   fromExporter: ApplicationSnapshotSummary[],

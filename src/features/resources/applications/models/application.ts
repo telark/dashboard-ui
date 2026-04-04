@@ -103,6 +103,20 @@ export interface ApplicationSnapshot {
   path: string;
 }
 
+export interface ApplicationRollbackEntry {
+  id: string;
+  targetSnapshotId: string;
+  targetGeneration: number;
+  targetPath: string;
+  triggeredBy: string;
+  triggeredAt: string;
+  completedAt?: string | null;
+  status: string;
+  error?: string;
+  restoredGeneration?: number | null;
+  namespace: string;
+}
+
 export interface ApplicationSnapshotSummary {
   id: string;
   scope: string;
@@ -196,6 +210,10 @@ export interface ApplicationUpdatePayload {
   workloadConfig?: string;
 }
 
+export interface ApplicationRollbackTriggerPayload {
+  targetSnapshotId: string;
+}
+
 export interface Application {
   name: string;
   displayName: string;
@@ -213,6 +231,7 @@ export interface Application {
   ports: number[];
   envVarKeys: string[];
   snapshots: ApplicationSnapshot[];
+  rollbacks?: ApplicationRollbackEntry[];
   metrics: ApplicationMetrics;
   crStatus?: string | null;
   history: ApplicationHistory;

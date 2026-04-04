@@ -24,6 +24,8 @@ export const RESOURCE_PATHS = {
   DELETE_DETAILS: (name: string) => `${name}/delete`,
   FIND_USER_BY_ID: (id: string) => `findbyid/${id}/get`,
   UPDATE_SYNC: (name: string) => `${name}/patch`,
+  /** Application rollback: POST to trigger; GET to list (API contract from exporter). */
+  APPLICATION_ROLLBACKS: (name: string) => `${name}/rollbacks`,
   SYNC: 'sync',
   SYNC_GROUPER: (name: string) => `${name}/sync`,
   SYNC_APP: (name: string) => `${name}/sync`,

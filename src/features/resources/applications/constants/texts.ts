@@ -95,6 +95,12 @@ export const APPLICATIONS_UI = {
       STORAGE_METRICS_JOINER: ' · ',
       VIEW_MANIFEST: 'View Manifest',
       ROLLBACK: 'Rollback',
+      ROLLBACK_CONFIRM_TITLE: 'Rollback to this snapshot?',
+      ROLLBACK_CONFIRM_CONTENT:
+        'This starts a rollback to the selected snapshot. The application may be updated when the operation completes.',
+      ROLLBACK_CONFIRM_OK: 'Start rollback',
+      ROLLBACK_SUCCESS: 'Rollback request submitted.',
+      ROLLBACK_FAILED: 'Rollback could not be started. Please try again.',
       TAKEN_AT: 'Taken at',
       MANIFEST_MODAL_TITLE: 'Manifest',
       MANIFEST_PANEL_SUBTITLE: 'Snapshot manifest',

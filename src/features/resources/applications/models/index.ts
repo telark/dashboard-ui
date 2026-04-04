@@ -1,4 +1,10 @@
-export type { Application, ApplicationUpdatePayload, ApplicationsState } from './application';
+export type {
+  Application,
+  ApplicationRollbackEntry,
+  ApplicationRollbackTriggerPayload,
+  ApplicationUpdatePayload,
+  ApplicationsState,
+} from './application';
 export type {
   ApplicationHealth,
   ApplicationNamespaces,

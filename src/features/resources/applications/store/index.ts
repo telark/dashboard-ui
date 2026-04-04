@@ -9,6 +9,7 @@ export {
   fetchSnapshotManifestThunk,
   updateApplicationThunk,
   deleteApplicationThunk,
+  triggerApplicationRollbackThunk,
 } from './thunks/fetchThunks';
 
 export {

@@ -2,6 +2,7 @@ export {
   deleteApplication,
   fetchApplications,
   fetchApplicationDetails,
+  triggerApplicationRollback,
   updateApplication,
 } from './application';
 

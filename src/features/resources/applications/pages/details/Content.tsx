@@ -1,6 +1,6 @@
-import React, { memo, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { CameraOutlined, HistoryOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { Collapse, Tooltip } from 'antd';
+import { Collapse, Modal, Tooltip, message } from 'antd';
 import { format } from 'date-fns';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import SettingsCard from '../../../../settings/components/SettingsCard';
@@ -18,7 +18,11 @@ import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectiv
 import ApplicationSectionEmptyState from '../../components/display/ApplicationSectionEmptyState';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../../../store';
-import { fetchSnapshotManifestThunk } from '../../store';
+import {
+  fetchApplicationSnapshotsThunk,
+  fetchSnapshotManifestThunk,
+  triggerApplicationRollbackThunk,
+} from '../../store';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import { getResourceKindVisual } from '../../utils/resourceKindVisual';
 import ApplicationSnapshotManifestSlideOut from '../../components/snapshots/ApplicationSnapshotManifestSlideOut';
@@ -1300,6 +1304,8 @@ function SnapshotsSection(props: {
     (s: RootState) => s.applications,
   );
   const [activeManifestKey, setActiveManifestKey] = useState<string | null>(null);
+  const [rollbackBusyId, setRollbackBusyId] = useState<string | null>(null);
+  const snapUi = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
 
   const mergedSnapshots = useMemo(
     () => mergeApplicationSnapshotSources(detailSnapshots, snapshots),
@@ -1326,6 +1332,40 @@ function SnapshotsSection(props: {
       }),
     );
   };
+
+  const handleRollbackRequest = useCallback(
+    (snapshotId: string) => {
+      Modal.confirm({
+        title: snapUi.ROLLBACK_CONFIRM_TITLE,
+        content: snapUi.ROLLBACK_CONFIRM_CONTENT,
+        okText: snapUi.ROLLBACK_CONFIRM_OK,
+        cancelText: APPLICATIONS_UI.CARD.ACTIONS.CANCEL,
+        onOk: async () => {
+          setRollbackBusyId(snapshotId);
+          try {
+            await dispatch(
+              triggerApplicationRollbackThunk({
+                name: applicationId,
+                targetSnapshotId: snapshotId,
+              }),
+            ).unwrap();
+            message.success(snapUi.ROLLBACK_SUCCESS);
+            void dispatch(
+              fetchApplicationSnapshotsThunk({
+                applicationId,
+                snapshotRefs: detailSnapshots.length > 0 ? detailSnapshots : undefined,
+              }),
+            );
+          } catch {
+            message.error(snapUi.ROLLBACK_FAILED);
+          } finally {
+            setRollbackBusyId(null);
+          }
+        },
+      });
+    },
+    [applicationId, detailSnapshots, dispatch, snapUi],
+  );
 
   return (
     <>
@@ -1370,6 +1410,8 @@ function SnapshotsSection(props: {
                 snapshot={s}
                 showMarginBottom={idx < mergedSnapshots.length - 1}
                 onViewManifest={openManifest}
+                onRollback={handleRollbackRequest}
+                rollbackLoading={rollbackBusyId === s.id}
               />
             ))}
           </div>

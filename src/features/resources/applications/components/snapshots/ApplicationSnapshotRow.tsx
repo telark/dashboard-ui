@@ -18,10 +18,11 @@ export interface ApplicationSnapshotRowProps {
   showMarginBottom: boolean;
   onViewManifest: (summary: ApplicationSnapshotSummary) => void;
   onRollback?: (snapshotId: string) => void;
+  rollbackLoading?: boolean;
 }
 
 const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
-  ({ snapshot: s, showMarginBottom, onViewManifest, onRollback }) => {
+  ({ snapshot: s, showMarginBottom, onViewManifest, onRollback, rollbackLoading = false }) => {
     const severityLabel =
       s.severity && s.severity.trim().length > 0 ? s.severity : APPLICATIONS_UI.FALLBACKS.EMPTY;
 
@@ -119,6 +120,8 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                 onClick={() => onRollback?.(s.id)}
                 style={ICON_BTN}
                 aria-label={ui.ROLLBACK}
+                loading={rollbackLoading}
+                disabled={!onRollback}
               />
             </Tooltip>
           </div>

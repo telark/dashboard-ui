@@ -27,6 +27,7 @@ export const STORE_ACTIONS = {
     FETCH_SNAPSHOT_MANIFEST: 'applications/fetchSnapshotManifest',
     UPDATE: 'applications/update',
     DELETE: 'applications/delete',
+    TRIGGER_ROLLBACK: 'applications/triggerRollback',
   },
   GROUPER: {
     UPDATE_SYNC: 'grouper/updateGrouperSync',
@@ -109,6 +110,7 @@ export const STORE_ERRORS = {
   DELETE_APPLICATION: 'Failed to delete application',
   FETCH_APPLICATION_SNAPSHOTS: 'Failed to fetch application snapshots',
   FETCH_SNAPSHOT_MANIFEST: 'Failed to fetch snapshot manifest',
+  TRIGGER_APPLICATION_ROLLBACK: 'Failed to trigger application rollback',
   CHECK_INSIGHTS: 'Failed to check cluster insights',
   FETCH_APPS: 'Failed to fetch apps workloads',
   FETCH_BATCHES: 'Failed to fetch batches workloads',
@@ -155,6 +157,7 @@ export const STORE_MESSAGES = {
   ERROR_DELETING_APPLICATION: 'Error deleting application:',
   ERROR_FETCHING_APPLICATION_SNAPSHOTS: 'Error fetching application snapshots:',
   ERROR_FETCHING_SNAPSHOT_MANIFEST: 'Error fetching snapshot manifest:',
+  ERROR_TRIGGERING_APPLICATION_ROLLBACK: 'Error triggering application rollback:',
   TRIGGERING_SYNC: 'Triggering SyncGrouper for:',
   ERROR_UPDATING_SYNC: 'Error updating sync settings:',
   ERROR_HANDLING_MAINTENANCE_UPDATE: 'Failed to handle maintenance mode update',

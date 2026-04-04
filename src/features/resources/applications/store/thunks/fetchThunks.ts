@@ -6,12 +6,13 @@ import {
   fetchApplicationDetails,
   getApplicationSnapshotSummaries,
   getSnapshotManifest,
+  triggerApplicationRollback,
   updateApplication,
 } from '../../clients';
 import { extractErrorMessage } from '../../../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../../constants/store/store';
 import { mapApplicationsData, mapSingleApplicationData } from '../../utils/mappers/applicationMapper';
-import type { ApplicationSnapshot, ApplicationUpdatePayload } from '../../models';
+import type { Application, ApplicationSnapshot, ApplicationUpdatePayload } from '../../models';
 
 export const fetchAllApplicationsThunk = createAsyncThunk(
   STORE_ACTIONS.APPLICATIONS.FETCH,
@@ -119,6 +120,31 @@ export const fetchSnapshotManifestThunk = createAsyncThunk(
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_FETCHING_SNAPSHOT_MANIFEST, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_SNAPSHOT_MANIFEST));
+    }
+  },
+);
+
+export interface TriggerApplicationRollbackArgs {
+  name: string;
+  targetSnapshotId: string;
+}
+
+export const triggerApplicationRollbackThunk = createAsyncThunk(
+  STORE_ACTIONS.APPLICATIONS.TRIGGER_ROLLBACK,
+  async ({ name, targetSnapshotId }: TriggerApplicationRollbackArgs, { rejectWithValue }) => {
+    try {
+      const response = await triggerApplicationRollback(name, { targetSnapshotId });
+      const raw = response.data;
+      if (raw != null && typeof raw === 'object' && typeof (raw as Application).name === 'string') {
+        return mapSingleApplicationData(raw);
+      }
+      const refreshed = await fetchApplicationDetails(name);
+      return mapSingleApplicationData(refreshed.data);
+    } catch (error: unknown) {
+      logger.error(STORE_MESSAGES.ERROR_TRIGGERING_APPLICATION_ROLLBACK, error);
+      return rejectWithValue(
+        extractErrorMessage(error, STORE_ERRORS.TRIGGER_APPLICATION_ROLLBACK),
+      );
     }
   },
 );
