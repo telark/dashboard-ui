@@ -1,4 +1,4 @@
-import { Client, exporterApiClient } from '../../../../api/index';
+import { Client, exporterApiClient, syncManagerApiClient } from '../../../../api/index';
 import logger from '../../../../logging';
 import { Endpoints, HTTP_HEADERS, HEADER_VALUES } from '../../../../constants';
 import type { ResourceDetailsResponse, ResourceListResponse } from '../../../../interfaces/http';
@@ -88,7 +88,7 @@ export const triggerApplicationRollback = async (
 ) => {
   try {
     return await Client<ResourceDetailsResponse<Application>>(
-      exporterApiClient,
+      syncManagerApiClient,
       Endpoints.APPLICATIONS.TRIGGER_ROLLBACK(name).path,
       {
         method: 'POST',
