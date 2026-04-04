@@ -7,7 +7,7 @@ export const API_CONFIG = {
 export const API_PORTS = {
   CONFIGURATOR: 8001,
   EXPORTER: 8002,
-  SYNC_MANAGER: 8004,
+  DISCOVERY: 8004,
   AUTH: 8006,
 } as const;
 

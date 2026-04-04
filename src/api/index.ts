@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } f
 import {
   EXPORTER_API,
   CONFIGURATOR_API,
-  SYNC_MANAGER_API,
+  DISCOVERY_API,
   AUTH_API,
   API_TIMEOUT,
   HTTP_HEADERS,
@@ -34,8 +34,8 @@ const configuratorApiClient: AxiosInstance = axios.create({
   headers: REQUEST_CONFIG.DEFAULT_HEADERS,
 });
 
-const syncManagerApiClient: AxiosInstance = axios.create({
-  baseURL: SYNC_MANAGER_API.BASE_URL,
+const discoveryApiClient: AxiosInstance = axios.create({
+  baseURL: DISCOVERY_API.BASE_URL,
   timeout: API_TIMEOUT,
   headers: REQUEST_CONFIG.DEFAULT_HEADERS,
 });
@@ -129,7 +129,7 @@ const createErrorInterceptor = (options: ErrorInterceptorOptions = {}) => {
 
 exporterApiClient.interceptors.response.use(...createErrorInterceptor({ silent404: true }));
 configuratorApiClient.interceptors.response.use(...createErrorInterceptor());
-syncManagerApiClient.interceptors.response.use(...createErrorInterceptor());
+discoveryApiClient.interceptors.response.use(...createErrorInterceptor());
 authApiClient.interceptors.response.use(...createErrorInterceptor());
 
 const DEFAULT_CLIENT_CONFIG: AxiosRequestConfig = {
@@ -145,4 +145,4 @@ export const Client = async <T>(
   return response.data;
 };
 
-export { exporterApiClient, configuratorApiClient, syncManagerApiClient, authApiClient };
+export { exporterApiClient, configuratorApiClient, discoveryApiClient, authApiClient };

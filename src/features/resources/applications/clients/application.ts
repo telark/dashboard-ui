@@ -1,10 +1,9 @@
-import { Client, exporterApiClient, syncManagerApiClient } from '../../../../api/index';
+import { Client, exporterApiClient } from '../../../../api/index';
 import logger from '../../../../logging';
 import { Endpoints, HTTP_HEADERS, HEADER_VALUES } from '../../../../constants';
 import type { ResourceDetailsResponse, ResourceListResponse } from '../../../../interfaces/http';
 import type {
   Application,
-  ApplicationRollbackTriggerPayload,
   ApplicationUpdatePayload,
 } from '../models';
 import { APPLICATIONS_ERROR_MESSAGES } from '../constants';

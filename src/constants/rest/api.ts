@@ -16,8 +16,8 @@ export const EXPORTER_API = {
   },
 };
 
-export const SYNC_MANAGER_API = {
-  PORT: API_PORTS.SYNC_MANAGER,
+export const DISCOVERY_API = {
+  PORT: API_PORTS.DISCOVERY,
   get BASE_URL() {
     return buildApiUrl(this.PORT);
   },

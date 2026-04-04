@@ -1,4 +1,4 @@
-import { Client, exporterApiClient, syncManagerApiClient } from '../../../../api/index';
+import { Client, exporterApiClient, discoveryApiClient } from '../../../../api/index';
 import logger from '../../../../logging';
 import { Endpoints, ERROR_MESSAGES } from '../../../../constants';
 import type { StandardApiResponse } from '../../../../interfaces/http';
@@ -19,10 +19,10 @@ export const updateGrouperSyncMode = async (name: string, syncMode: string) => {
 
 export const triggerGroupersSync = async () => {
   const { path, method } = Endpoints.SYNC.GROUPERS;
-  return Client<SyncWithEffectResponse>(syncManagerApiClient, path, { method });
+  return Client<SyncWithEffectResponse>(discoveryApiClient, path, { method });
 };
 
 export const triggerSingleGrouperSync = async (name: string) => {
   const { path, method } = Endpoints.SYNC.GROUPER(name);
-  return Client<SyncWithEffectResponse>(syncManagerApiClient, path, { method });
+  return Client<SyncWithEffectResponse>(discoveryApiClient, path, { method });
 };
