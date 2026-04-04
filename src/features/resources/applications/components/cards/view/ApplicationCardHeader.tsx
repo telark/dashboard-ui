@@ -67,8 +67,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(({ appl
     [application.name, dispatch, detailsPath, editPath, navigate],
   );
 
-  const hasInsightRow =
-    Boolean(application.insights?.category || application.insights?.role || application.managed?.chart);
+  const hasInsightRow = Boolean(application.insights?.category || application.insights?.role);
 
   return (
     <div
@@ -150,16 +149,6 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(({ appl
                 fontSize={11}
               />
             ) : null}
-            {application.managed?.chart ? (
-              <RowTag
-                text={`${application.managed.chart}${
-                  application.managed.version ? `@${application.managed.version}` : ''
-                }`}
-                background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                fontSize={11}
-              />
-            ) : null}
           </div>
         ) : null}
       </div>
@@ -172,9 +161,18 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(({ appl
           items: [
             { key: 'view', label: APPLICATIONS_UI.CARD.ACTIONS.VIEW, icon: <EyeOutlined /> },
             { key: 'edit', label: APPLICATIONS_UI.CARD.ACTIONS.EDIT, icon: <EditOutlined /> },
-            { key: 'rollbacks', label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS, icon: <HistoryOutlined /> },
+            {
+              key: 'rollbacks',
+              label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS,
+              icon: <HistoryOutlined />,
+            },
             { type: 'divider' },
-            { key: 'delete', label: APPLICATIONS_UI.CARD.ACTIONS.DELETE, icon: <DeleteOutlined />, danger: true },
+            {
+              key: 'delete',
+              label: APPLICATIONS_UI.CARD.ACTIONS.DELETE,
+              icon: <DeleteOutlined />,
+              danger: true,
+            },
           ],
           onClick: handleMenuClick,
         }}

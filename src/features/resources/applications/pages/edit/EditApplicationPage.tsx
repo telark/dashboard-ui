@@ -26,13 +26,10 @@ const EditApplicationPage: React.FC = () => {
 
   useEffect(() => {
     if (!details || details.name !== name) return;
-    const primaryNs = details.namespaces?.items?.[0]?.name ?? '';
     form.setFieldsValue({
       name: details.name,
       displayName: details.displayName,
       description: details.description ?? '',
-      primaryNamespace: primaryNs,
-      workloadConfig: '',
     });
   }, [details, form, name]);
 
@@ -53,17 +50,10 @@ const EditApplicationPage: React.FC = () => {
 
   const handleFinish = useCallback(
     async (values: unknown) => {
-      const v = values as {
-        displayName: string;
-        description?: string;
-        primaryNamespace?: string;
-        workloadConfig?: string;
-      };
+      const v = values as { displayName: string; description?: string };
       const payload: ApplicationUpdatePayload = {
         displayName: v.displayName,
         description: v.description,
-        primaryNamespace: v.primaryNamespace,
-        workloadConfig: v.workloadConfig,
       };
       setSubmitting(true);
       try {
@@ -102,7 +92,10 @@ const EditApplicationPage: React.FC = () => {
       form={form}
       submitting={submitting}
     >
-      <SectionCard title={APPLICATIONS_UI.EDIT_PAGE.SECTION_BASIC} description={APPLICATIONS_UI.EDIT_PAGE.SECTION_BASIC_DESC}>
+      <SectionCard
+        title={APPLICATIONS_UI.EDIT_PAGE.SECTION_BASIC}
+        description={APPLICATIONS_UI.EDIT_PAGE.SECTION_BASIC_DESC}
+      >
         <Form.Item
           name="name"
           label={APPLICATIONS_UI.EDIT_PAGE.NAME_LABEL}
@@ -117,27 +110,12 @@ const EditApplicationPage: React.FC = () => {
           required
           marginBottom={12}
         />
-        <Form.Item
+        <LabeledInput
           name="description"
           label={APPLICATIONS_UI.EDIT_PAGE.DESCRIPTION_LABEL}
-          style={{ marginBottom: 12 }}
-        >
-          <Input.TextArea rows={3} placeholder={APPLICATIONS_UI.EDIT_PAGE.DESCRIPTION_LABEL} allowClear />
-        </Form.Item>
-        <LabeledInput
-          name="primaryNamespace"
-          label={APPLICATIONS_UI.EDIT_PAGE.NAMESPACE_LABEL}
-          placeholder={APPLICATIONS_UI.EDIT_PAGE.NAMESPACE_LABEL}
+          placeholder={APPLICATIONS_UI.EDIT_PAGE.DESCRIPTION_LABEL}
           marginBottom={0}
         />
-      </SectionCard>
-      <SectionCard
-        title={APPLICATIONS_UI.EDIT_PAGE.SECTION_WORKLOAD}
-        description={APPLICATIONS_UI.EDIT_PAGE.SECTION_WORKLOAD_DESC}
-      >
-        <Form.Item name="workloadConfig" label={APPLICATIONS_UI.EDIT_PAGE.WORKLOAD_CONFIG_LABEL}>
-          <Input.TextArea rows={4} placeholder={APPLICATIONS_UI.EDIT_PAGE.WORKLOAD_CONFIG_PLACEHOLDER} allowClear />
-        </Form.Item>
       </SectionCard>
     </CreatePlanLayout>
   );
