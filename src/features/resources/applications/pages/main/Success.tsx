@@ -78,4 +78,3 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
 ApplicationsSuccess.displayName = 'ApplicationsSuccess';
 
 export default ApplicationsSuccess;
-

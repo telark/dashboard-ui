@@ -8,10 +8,7 @@ import { DEFAULT_COLORS } from '../../../../../constants';
 import { APPLICATIONS_UI } from '../../constants';
 import IdeManifestCodeBlock from '../details/IdeManifestCodeBlock';
 import { IDE_MANIFEST_THEME } from '../details/ideManifestTheme';
-import {
-  getManifestViewPayload,
-  isManifestDocumentArray,
-} from '../details/manifestDisplay';
+import { getManifestViewPayload, isManifestDocumentArray } from '../details/manifestDisplay';
 import MutedText from '../details/MutedText';
 import type { SnapshotManifestState } from '../../models';
 
@@ -65,17 +62,9 @@ function ManifestSlideOutInner(props: {
   manifestState: SnapshotManifestState | undefined;
   onCopy: () => void;
 }) {
-  const {
-    activeTab,
-    onTabChange,
-    jsonText,
-    yamlText,
-    manifestState,
-    onCopy,
-  } = props;
+  const { activeTab, onTabChange, jsonText, yamlText, manifestState, onCopy } = props;
   const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
-  const canCopy =
-    activeTab === 'json' ? jsonText.length > 0 : yamlText.length > 0;
+  const canCopy = activeTab === 'json' ? jsonText.length > 0 : yamlText.length > 0;
 
   let body: React.ReactElement;
   if (manifestState?.loading) {
@@ -188,8 +177,7 @@ function ManifestSlideOutInner(props: {
               top: 8,
               right: 10,
               zIndex: 2,
-              color:
-                activeTab === 'yaml' ? IDE_MANIFEST_THEME.copyButton : undefined,
+              color: activeTab === 'yaml' ? IDE_MANIFEST_THEME.copyButton : undefined,
             }}
           />
         </Tooltip>
@@ -199,8 +187,8 @@ function ManifestSlideOutInner(props: {
   );
 }
 
-const ApplicationSnapshotManifestSlideOut: React.FC<ApplicationSnapshotManifestSlideOutProps> = memo(
-  ({ open, manifestKey, onClose, title, manifestState }) => {
+const ApplicationSnapshotManifestSlideOut: React.FC<ApplicationSnapshotManifestSlideOutProps> =
+  memo(({ open, manifestKey, onClose, title, manifestState }) => {
     const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
 
     return (
@@ -212,19 +200,13 @@ const ApplicationSnapshotManifestSlideOut: React.FC<ApplicationSnapshotManifestS
         width={MANIFEST_PANEL_WIDTH}
         contentOnly
         formContent={
-          <ManifestSlideOutWithTabs
-            key={manifestKey ?? 'closed'}
-            manifestState={manifestState}
-          />
+          <ManifestSlideOutWithTabs key={manifestKey ?? 'closed'} manifestState={manifestState} />
         }
       />
     );
-  },
-);
+  });
 
-function ManifestSlideOutWithTabs(props: {
-  manifestState: SnapshotManifestState | undefined;
-}) {
+function ManifestSlideOutWithTabs(props: { manifestState: SnapshotManifestState | undefined }) {
   const [activeTab, setActiveTab] = useState<'json' | 'yaml'>('json');
   const { jsonText, yamlText } = useManifestTexts(props.manifestState?.data ?? null);
 

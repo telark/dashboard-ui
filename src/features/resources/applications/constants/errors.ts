@@ -9,4 +9,3 @@ export const APPLICATIONS_ERROR_MESSAGES = {
     TRIGGER_APPLICATION_ROLLBACK_FAILED: 'Failed to trigger application rollback',
   },
 } as const;
-

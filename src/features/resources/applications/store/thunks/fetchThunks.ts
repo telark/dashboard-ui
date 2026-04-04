@@ -11,7 +11,10 @@ import {
 } from '../../clients';
 import { extractErrorMessage } from '../../../../../utils/helpers/format';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../../constants/store/store';
-import { mapApplicationsData, mapSingleApplicationData } from '../../utils/mappers/applicationMapper';
+import {
+  mapApplicationsData,
+  mapSingleApplicationData,
+} from '../../utils/mappers/applicationMapper';
 import type { Application, ApplicationSnapshot, ApplicationUpdatePayload } from '../../models';
 
 export const fetchAllApplicationsThunk = createAsyncThunk(
@@ -94,9 +97,7 @@ export const fetchApplicationSnapshotsThunk = createAsyncThunk(
       return await getApplicationSnapshotSummaries(payload.applicationId, payload.snapshotRefs);
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_FETCHING_APPLICATION_SNAPSHOTS, error);
-      return rejectWithValue(
-        extractErrorMessage(error, STORE_ERRORS.FETCH_APPLICATION_SNAPSHOTS),
-      );
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_APPLICATION_SNAPSHOTS));
     }
   },
 );
@@ -149,10 +150,7 @@ export const triggerApplicationRollbackThunk = createAsyncThunk(
       return mapSingleApplicationData(refreshed.data);
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_TRIGGERING_APPLICATION_ROLLBACK, error);
-      return rejectWithValue(
-        extractErrorMessage(error, STORE_ERRORS.TRIGGER_APPLICATION_ROLLBACK),
-      );
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.TRIGGER_APPLICATION_ROLLBACK));
     }
   },
 );
-

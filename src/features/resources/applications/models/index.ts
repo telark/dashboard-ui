@@ -23,4 +23,3 @@ export type {
   ApplicationSnapshotSummary,
   SnapshotManifestState,
 } from './application';
-

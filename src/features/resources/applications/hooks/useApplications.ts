@@ -23,4 +23,3 @@ export function filterApplications(applications: Application[], searchValue: str
     );
   });
 }
-

@@ -49,4 +49,3 @@ const ApplicationsMainEmpty: React.FC<EmptyProps> = React.memo(({ onRefresh }) =
 ApplicationsMainEmpty.displayName = 'ApplicationsMainEmpty';
 
 export default ApplicationsMainEmpty;
-

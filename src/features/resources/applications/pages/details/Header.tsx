@@ -13,7 +13,10 @@ interface ApplicationHeaderProps {
 
 const ApplicationHeader: React.FC<ApplicationHeaderProps> = React.memo(
   ({ name, displayName, lastUpdated }) => {
-    const breadcrumbs = [{ label: MENU_LABELS.APPLICATIONS, to: APP_ROUTES.APPLICATIONS }, { label: name }];
+    const breadcrumbs = [
+      { label: MENU_LABELS.APPLICATIONS, to: APP_ROUTES.APPLICATIONS },
+      { label: name },
+    ];
 
     return (
       <Header
@@ -35,4 +38,3 @@ const ApplicationHeader: React.FC<ApplicationHeaderProps> = React.memo(
 ApplicationHeader.displayName = 'ApplicationHeader';
 
 export default ApplicationHeader;
-

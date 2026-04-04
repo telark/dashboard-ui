@@ -11,7 +11,4 @@ export {
   getSnapshotsByApplicationId,
 } from './snapshots';
 
-
-export {
-  triggerApplicationRollback,
-} from './rollback';
+export { triggerApplicationRollback } from './rollback';

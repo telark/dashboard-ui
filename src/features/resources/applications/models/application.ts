@@ -248,4 +248,3 @@ export interface ApplicationsState {
   snapshotsError: string | null;
   snapshotManifests: Record<string, SnapshotManifestState>;
 }
-

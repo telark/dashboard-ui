@@ -16,7 +16,10 @@ export const handleFetchApplicationsFulfilled = (
   state.error = null;
 };
 
-export const handleFetchApplicationsRejected = (state: ApplicationsState, action: PayloadAction<unknown>) => {
+export const handleFetchApplicationsRejected = (
+  state: ApplicationsState,
+  action: PayloadAction<unknown>,
+) => {
   state.loading = false;
   state.error = String(action.payload || STORE_ERRORS.FETCH_APPLICATIONS);
 };
@@ -25,7 +28,10 @@ export const handleFetchApplicationsSilentPending = (state: ApplicationsState) =
   state.error = null;
 };
 
-export const handleFetchApplicationsSilentRejected = (state: ApplicationsState, action: PayloadAction<unknown>) => {
+export const handleFetchApplicationsSilentRejected = (
+  state: ApplicationsState,
+  action: PayloadAction<unknown>,
+) => {
   state.error = String(action.payload || STORE_ERRORS.FETCH_APPLICATIONS);
 };
 
@@ -43,7 +49,10 @@ export const handleFetchApplicationDetailsFulfilled = (
   state.error = null;
 };
 
-export const handleFetchApplicationDetailsRejected = (state: ApplicationsState, action: PayloadAction<unknown>) => {
+export const handleFetchApplicationDetailsRejected = (
+  state: ApplicationsState,
+  action: PayloadAction<unknown>,
+) => {
   state.loading = false;
   state.error = String(action.payload || STORE_ERRORS.FETCH_APPLICATION_DETAILS);
 };
@@ -63,7 +72,10 @@ export const handleUpdateApplicationFulfilled = (
   state.error = null;
 };
 
-export const handleDeleteApplicationFulfilled = (state: ApplicationsState, action: PayloadAction<string>) => {
+export const handleDeleteApplicationFulfilled = (
+  state: ApplicationsState,
+  action: PayloadAction<string>,
+) => {
   const name = action.payload;
   state.applications = state.applications.filter((a) => a.name !== name);
   if (state.details?.name === name) {
@@ -71,4 +83,3 @@ export const handleDeleteApplicationFulfilled = (state: ApplicationsState, actio
   }
   state.error = null;
 };
-

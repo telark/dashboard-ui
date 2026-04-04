@@ -21,4 +21,3 @@ const ApplicationDetailsHeader: React.FC<ApplicationDetailsHeaderProps> = memo(
 ApplicationDetailsHeader.displayName = 'ApplicationDetailsHeader';
 
 export default ApplicationDetailsHeader;
-

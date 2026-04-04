@@ -12,4 +12,3 @@ const MutedText: React.FC<MutedTextProps> = memo(({ value }) => (
 MutedText.displayName = 'MutedText';
 
 export default MutedText;
-

@@ -38,4 +38,3 @@ const ApplicationsHeader: React.FC = () => (
 );
 
 export default ApplicationsHeader;
-

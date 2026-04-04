@@ -23,4 +23,3 @@ export function useApplicationDetails(name?: string) {
 
   return { details, loading, error, refresh };
 }
-

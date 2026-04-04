@@ -79,10 +79,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
 
   const handleRetry = useCallback(async () => {
     if (isRetrying || isInCooldown) return;
-    const retryHandler = createRetryHandler(
-      () => loadApplicationsSilent(dispatch),
-      retryCallbacks,
-    );
+    const retryHandler = createRetryHandler(() => loadApplicationsSilent(dispatch), retryCallbacks);
     await retryHandler();
   }, [dispatch, isRetrying, isInCooldown, retryCallbacks]);
 
@@ -140,4 +137,3 @@ const ApplicationsGlobalView: React.FC = memo(() => {
 ApplicationsGlobalView.displayName = 'ApplicationsGlobalView';
 
 export default ApplicationsGlobalView;
-

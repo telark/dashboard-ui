@@ -248,12 +248,7 @@ export interface IdeManifestCodeBlockProps {
 }
 
 const IdeManifestCodeBlock: React.FC<IdeManifestCodeBlockProps> = memo(
-  ({
-    code,
-    language,
-    containerMaxHeight = 'min(60vh, 480px)',
-    scrollInside = true,
-  }) => {
+  ({ code, language, containerMaxHeight = 'min(60vh, 480px)', scrollInside = true }) => {
     const highlighted = useMemo(() => {
       if (language === 'json') {
         return tokenizeJson(code).map((tok, idx) => (

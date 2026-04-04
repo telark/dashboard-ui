@@ -9,7 +9,10 @@ interface ApplicationsToolbarProps {
   onSearchChange: (value: string) => void;
 }
 
-const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({ searchValue, onSearchChange }) => {
+const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
+  searchValue,
+  onSearchChange,
+}) => {
   const toolbarConfig: ToolbarConfig = useMemo(
     () => ({
       search: {
@@ -37,4 +40,3 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({ searchValue, 
 };
 
 export default ApplicationsToolbar;
-

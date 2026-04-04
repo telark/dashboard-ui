@@ -63,8 +63,7 @@ function mapExporterRowToSummary(row: unknown): ApplicationSnapshotSummary | nul
   const severity = typeof o.severity === 'string' ? o.severity : undefined;
   const path = typeof o.path === 'string' && o.path.length > 0 ? o.path : undefined;
   const takenAtRaw = o.takenAt ?? o.taken_at;
-  const takenAt =
-    typeof takenAtRaw === 'string' && takenAtRaw.length > 0 ? takenAtRaw : undefined;
+  const takenAt = typeof takenAtRaw === 'string' && takenAtRaw.length > 0 ? takenAtRaw : undefined;
 
   return {
     id,
@@ -99,8 +98,7 @@ function enrichSummaryFromDetail(
   d: ApplicationSnapshot,
   api: ApplicationSnapshotSummary,
 ): ApplicationSnapshotSummary {
-  const gen =
-    api.generation !== 0 && !Number.isNaN(api.generation) ? api.generation : d.generation;
+  const gen = api.generation !== 0 && !Number.isNaN(api.generation) ? api.generation : d.generation;
   return {
     ...api,
     id: api.id || d.id,

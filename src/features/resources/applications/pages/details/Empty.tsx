@@ -38,4 +38,3 @@ const ApplicationsDetailsEmpty: React.FC = () => {
 };
 
 export default ApplicationsDetailsEmpty;
-

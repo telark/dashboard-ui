@@ -20,4 +20,3 @@ export {
   selectApplicationsError,
   selectApplicationDetailsData,
 } from './selectors/applicationsSelectors';
-

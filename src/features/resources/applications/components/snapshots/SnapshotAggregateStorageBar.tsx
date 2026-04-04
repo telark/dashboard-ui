@@ -2,10 +2,7 @@ import React, { memo, useMemo } from 'react';
 import { APPLICATIONS_UI } from '../../constants';
 import type { ApplicationSnapshotSummary } from '../../models';
 import SnapshotStorageBar from './SnapshotStorageBar';
-import {
-  buildAggregateSnapshotStorage,
-  formatBytesCompact,
-} from './snapshotStorageUtils';
+import { buildAggregateSnapshotStorage, formatBytesCompact } from './snapshotStorageUtils';
 
 export interface SnapshotAggregateStorageBarProps {
   snapshots: ApplicationSnapshotSummary[];

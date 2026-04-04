@@ -81,4 +81,3 @@ export const deleteApplication = async (name: string) => {
     throw error;
   }
 };
-

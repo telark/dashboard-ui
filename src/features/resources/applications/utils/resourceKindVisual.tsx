@@ -100,7 +100,9 @@ const KIND_VISUAL: Record<string, ResourceKindVisual> = {
 };
 
 export function getResourceKindVisual(kind: string): ResourceKindVisual {
-  return KIND_VISUAL[kind] ?? {
-    ...FALLBACK,
-  };
+  return (
+    KIND_VISUAL[kind] ?? {
+      ...FALLBACK,
+    }
+  );
 }

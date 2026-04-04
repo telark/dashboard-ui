@@ -98,7 +98,8 @@ const mapApplication = (item: Application): Application => {
     snapshots: Array.isArray(item.snapshots) ? item.snapshots : [],
     rollbacks: Array.isArray(item.rollbacks) ? item.rollbacks : [],
     namespaces: item.namespaces || { total: UTILS_TEXTS.DEFAULTS.ZERO, items: [] },
-    resourceCount: typeof item.resourceCount === 'number' ? item.resourceCount : UTILS_TEXTS.DEFAULTS.ZERO,
+    resourceCount:
+      typeof item.resourceCount === 'number' ? item.resourceCount : UTILS_TEXTS.DEFAULTS.ZERO,
     resourceSummary: item.resourceSummary || DEFAULT_RESOURCE_SUMMARY,
     health: item.health || DEFAULT_HEALTH,
     insights: item.insights || DEFAULT_INSIGHTS,
@@ -107,4 +108,3 @@ const mapApplication = (item: Application): Application => {
     history: item.history || DEFAULT_HISTORY,
   };
 };
-

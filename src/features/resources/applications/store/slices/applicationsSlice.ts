@@ -101,4 +101,3 @@ const applicationsSlice = createSlice({
 
 export const { clearDetails } = applicationsSlice.actions;
 export default applicationsSlice.reducer;
-

@@ -42,9 +42,7 @@ function takeMatchingExporterRow(
 
   const strictIdx = pool.findIndex(
     (s) =>
-      s.id === d.id &&
-      s.namespace === d.namespace &&
-      sameGeneration(s.generation, d.generation),
+      s.id === d.id && s.namespace === d.namespace && sameGeneration(s.generation, d.generation),
   );
   const strict = pickFromPool(pool, strictIdx, d);
   if (strict) return strict;
