@@ -97,8 +97,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
       <ManageRollbacksPanel
         open={rollbacksOpen}
         onClose={() => setRollbacksOpen(false)}
-        applicationId={details.name}
-        detailSnapshots={details.snapshots}
+        detailRollbacks={details.rollbacks}
       />
     </>
   );

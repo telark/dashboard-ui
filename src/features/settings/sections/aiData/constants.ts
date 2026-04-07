@@ -36,4 +36,3 @@ export const AI_DATA_CONSTANTS = {
     SUCCESS_TEXT: '#15803d',
   },
 } as const;
-

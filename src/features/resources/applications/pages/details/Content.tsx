@@ -3,6 +3,7 @@ import { CameraOutlined, HistoryOutlined, InfoCircleOutlined } from '@ant-design
 import { Collapse, Modal, Tooltip, message } from 'antd';
 import { format } from 'date-fns';
 import { DEFAULT_COLORS } from '../../../../../constants';
+import { PAGE_CONTENT_LAYOUT } from '../../../../../constants/shared/pages';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type {
@@ -319,6 +320,69 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           gap: APPLICATION_SECTION_LAYOUT.STACK_GAP_PX,
         }}
       >
+        <div
+          style={{
+            position: 'sticky',
+            top: PAGE_CONTENT_LAYOUT.HEADER_OFFSET_PX,
+            zIndex: 5,
+            display: 'flex',
+            gap: 10,
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            padding: '10px 12px',
+            background: DEFAULT_COLORS.BACKGROUND_WHITE,
+            border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+            borderRadius: 12,
+            boxShadow: '0 6px 18px rgba(0,0,0,0.06)',
+          }}
+        >
+          <button
+            type="button"
+            onClick={onEdit}
+            style={{
+              borderRadius: 10,
+              padding: '8px 12px',
+              border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+              background: DEFAULT_COLORS.BACKGROUND_WHITE,
+              color: DEFAULT_COLORS.TEXT_PRIMARY,
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            onClick={onManageRollbacks}
+            style={{
+              borderRadius: 10,
+              padding: '8px 12px',
+              border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+              background: DEFAULT_COLORS.BACKGROUND_WHITE,
+              color: DEFAULT_COLORS.TEXT_PRIMARY,
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            Manage Rollbacks
+          </button>
+          <button
+            type="button"
+            onClick={onDelete}
+            style={{
+              borderRadius: 10,
+              padding: '8px 12px',
+              border: `1px solid ${DEFAULT_COLORS.DANGER}`,
+              background: DEFAULT_COLORS.DANGER,
+              color: DEFAULT_COLORS.BACKGROUND_WHITE,
+              fontWeight: 800,
+              cursor: 'pointer',
+            }}
+          >
+            Delete
+          </button>
+        </div>
+
         <SettingsCard
           title={APPLICATIONS_UI.SECTIONS.OVERVIEW.TITLE}
           description={APPLICATIONS_UI.SECTIONS.OVERVIEW.COMBINED_SUBTITLE}
@@ -880,69 +944,6 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
             )}
           </div>
         </SettingsCard>
-
-        <div
-          style={{
-            position: 'sticky',
-            top: 12,
-            zIndex: 5,
-            display: 'flex',
-            gap: 10,
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            padding: '10px 12px',
-            background: DEFAULT_COLORS.BACKGROUND_WHITE,
-            border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-            borderRadius: 12,
-            boxShadow: '0 6px 18px rgba(0,0,0,0.06)',
-          }}
-        >
-          <button
-            type="button"
-            onClick={onEdit}
-            style={{
-              borderRadius: 10,
-              padding: '8px 12px',
-              border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-              background: DEFAULT_COLORS.BACKGROUND_WHITE,
-              color: DEFAULT_COLORS.TEXT_PRIMARY,
-              fontWeight: 700,
-              cursor: 'pointer',
-            }}
-          >
-            Edit
-          </button>
-          <button
-            type="button"
-            onClick={onManageRollbacks}
-            style={{
-              borderRadius: 10,
-              padding: '8px 12px',
-              border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-              background: DEFAULT_COLORS.BACKGROUND_WHITE,
-              color: DEFAULT_COLORS.TEXT_PRIMARY,
-              fontWeight: 700,
-              cursor: 'pointer',
-            }}
-          >
-            Manage Rollbacks
-          </button>
-          <button
-            type="button"
-            onClick={onDelete}
-            style={{
-              borderRadius: 10,
-              padding: '8px 12px',
-              border: `1px solid ${DEFAULT_COLORS.DANGER}`,
-              background: DEFAULT_COLORS.DANGER,
-              color: DEFAULT_COLORS.BACKGROUND_WHITE,
-              fontWeight: 800,
-              cursor: 'pointer',
-            }}
-          >
-            Delete
-          </button>
-        </div>
 
         <SettingsCard
           title={APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.TITLE}

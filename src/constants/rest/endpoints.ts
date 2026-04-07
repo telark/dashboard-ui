@@ -48,6 +48,14 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}`,
       method: 'POST',
     }),
+    GET_ROLLBACKS: (name: string) => ({
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}`,
+      method: 'GET',
+    }),
+    GET_ROLLBACK: (name: string, rollbackId: string) => ({
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}/${rollbackId}`,
+      method: 'GET',
+    }),
   },
   GLOBALCONFIG: {
     GET: {

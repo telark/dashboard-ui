@@ -12,3 +12,4 @@ export {
 } from './snapshots';
 
 export { triggerApplicationRollback } from './rollback';
+export { fetchApplicationRollbacks } from './rollbacks';
