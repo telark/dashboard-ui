@@ -4,29 +4,20 @@ import SettingsCard from '../../components/SettingsCard';
 import { SETTINGS_CONSTANTS } from '../../constants';
 import { Client, enrichmentApiClient, exporterApiClient } from '../../../../api';
 import { Endpoints } from '../../../../constants';
-
-type ProviderKey = 'ollama' | 'gemini' | 'grok' | 'claude' | 'chatgpt';
-
-const PROVIDER_OPTIONS: { value: ProviderKey; label: string }[] = [
-  { value: 'ollama', label: 'Ollama' },
-  { value: 'gemini', label: 'Gemini' },
-  { value: 'grok', label: 'Grok' },
-  { value: 'claude', label: 'Claude' },
-  { value: 'chatgpt', label: 'ChatGPT' },
-];
+import { AI_DATA_CONSTANTS as C, ProviderKey } from './constants';
 
 const { CONTENT } = SETTINGS_CONSTANTS;
 
 const AIDataSectionContent: React.FC = memo(() => {
   const [aiEnabled, setAIEnabled] = useState(false);
-  const [provider, setProvider] = useState<ProviderKey>('ollama');
+  const [provider, setProvider] = useState<ProviderKey>(C.PROVIDERS.DEFAULT);
   const [apiKey, setApiKey] = useState('');
   const [validating, setValidating] = useState(false);
   const [isKeyValid, setIsKeyValid] = useState(false);
   const [validationReason, setValidationReason] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const requiresKey = provider !== 'ollama';
+  const requiresKey = provider !== C.PROVIDERS.DEFAULT;
 
   const canEnable = useMemo(() => {
     if (!aiEnabled) return true;
@@ -43,7 +34,7 @@ const AIDataSectionContent: React.FC = memo(() => {
     const trimmed = apiKey.trim();
     if (!trimmed) {
       setIsKeyValid(false);
-      setValidationReason('API key is required.');
+      setValidationReason(C.MESSAGES.API_KEY_REQUIRED);
       return;
     }
     setValidating(true);
@@ -52,26 +43,26 @@ const AIDataSectionContent: React.FC = memo(() => {
     try {
       const resp = await Client<{ ok: boolean; reason?: string }>(
         enrichmentApiClient,
-        'provider/validate-api-key',
+        Endpoints.PROVIDERS.VALIDATE_API_KEY.path,
         {
-          method: 'POST',
+          method: Endpoints.PROVIDERS.VALIDATE_API_KEY.method,
           data: { provider, api_key: trimmed },
         },
       );
       if (resp?.ok) {
         setIsKeyValid(true);
         setValidationReason(null);
-        message.success('API key validated.');
+        message.success(C.MESSAGES.VALIDATION_SUCCESS);
       } else {
         setIsKeyValid(false);
-        const reason = resp?.reason || 'Validation failed.';
+        const reason = resp?.reason || C.MESSAGES.VALIDATION_FAILED;
         setValidationReason(reason);
         message.error(reason);
       }
     } catch (e) {
       setIsKeyValid(false);
-      setValidationReason('Validation failed.');
-      message.error('Validation failed.');
+      setValidationReason(C.MESSAGES.VALIDATION_FAILED);
+      message.error(C.MESSAGES.VALIDATION_FAILED);
       throw e;
     } finally {
       setValidating(false);
@@ -95,9 +86,9 @@ const AIDataSectionContent: React.FC = memo(() => {
         method: Endpoints.GLOBALCONFIG.PATCH.method,
         data: patch,
       });
-      message.success('Settings saved.');
+      message.success(C.MESSAGES.SAVE_SUCCESS);
     } catch {
-      message.error('Failed to save settings.');
+      message.error(C.MESSAGES.SAVE_FAILED);
     } finally {
       setSubmitting(false);
     }
@@ -113,21 +104,24 @@ const AIDataSectionContent: React.FC = memo(() => {
   return (
     <>
       <SettingsCard
-        title="AI Insights"
-        description="Enable AI enrichment and validate provider keys."
+        title={C.LABELS.AI_INSIGHTS_TITLE}
+        description={C.LABELS.AI_INSIGHTS_DESCRIPTION}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ fontWeight: 700 }}>Enable AI insights</div>
+          <div style={{ fontWeight: 700 }}>{C.LABELS.ENABLE_AI_LABEL}</div>
           <Switch checked={aiEnabled} onChange={setAIEnabled} />
         </div>
       </SettingsCard>
 
       <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
-        <SettingsCard title="Provider" description="Choose your AI provider.">
+        <SettingsCard
+          title={C.LABELS.PROVIDER_CARD_TITLE}
+          description={C.LABELS.PROVIDER_CARD_DESCRIPTION}
+        >
           <div style={{ display: 'grid', rowGap: 10 }}>
             <Select
               value={provider}
-              options={PROVIDER_OPTIONS}
+              options={[...C.PROVIDERS.OPTIONS]}
               style={{ width: '100%' }}
               onChange={onProviderChange}
             />
@@ -141,18 +135,18 @@ const AIDataSectionContent: React.FC = memo(() => {
                     setIsKeyValid(false);
                     setValidationReason(null);
                   }}
-                  placeholder="API key"
+                  placeholder={C.LABELS.API_KEY_PLACEHOLDER}
                 />
                 <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
                   <Button onClick={validateKey} loading={validating} disabled={!apiKey.trim()}>
-                    Validate
+                    {C.LABELS.VALIDATE_BUTTON}
                   </Button>
                 </div>
                 {validationReason && (
-                  <div style={{ fontSize: 12, color: '#b91c1c' }}>{validationReason}</div>
+                  <div style={{ fontSize: 12, color: C.COLORS.ERROR_TEXT }}>{validationReason}</div>
                 )}
                 {isKeyValid && !validationReason && (
-                  <div style={{ fontSize: 12, color: '#15803d' }}>Key is valid.</div>
+                  <div style={{ fontSize: 12, color: C.COLORS.SUCCESS_TEXT }}>{C.LABELS.KEY_VALID}</div>
                 )}
               </div>
             )}
@@ -161,7 +155,7 @@ const AIDataSectionContent: React.FC = memo(() => {
       </div>
 
       <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
-        <SettingsCard title="Save" description="Apply changes to the cluster-wide GlobalConfig.">
+        <SettingsCard title={C.LABELS.SAVE_TITLE} description={C.LABELS.SAVE_DESCRIPTION}>
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Button
               type="primary"
@@ -169,7 +163,7 @@ const AIDataSectionContent: React.FC = memo(() => {
               loading={submitting}
               disabled={requiresKey && aiEnabled && !isKeyValid}
             >
-              Enable
+              {C.LABELS.ENABLE_BUTTON}
             </Button>
           </div>
         </SettingsCard>

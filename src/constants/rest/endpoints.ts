@@ -59,6 +59,12 @@ export const Endpoints = {
       method: 'PATCH',
     },
   },
+  PROVIDERS: {
+    VALIDATE_API_KEY: {
+      path: 'provider/validate-api-key',
+      method: 'POST',
+    },
+  },
   SNAPSHOTS: {
     GET_BY_ID: (id: string) => ({
       path: `snapshots/${id}/get`,
