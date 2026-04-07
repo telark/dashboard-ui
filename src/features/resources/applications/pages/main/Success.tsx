@@ -10,17 +10,24 @@ interface ApplicationsSuccessProps {
   searchValue: string;
   onSearchChange: (value: string) => void;
   onEditApplication: (application: Application) => void;
+  onOpenFilters: () => void;
 }
 
 const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
-  ({ applications, searchValue, onSearchChange, onEditApplication }) => {
+  ({ applications, searchValue, onSearchChange, onEditApplication, onOpenFilters }) => {
     const { contentGap } = useAppearance();
     const hasApps = applications.length > 0;
 
     const content = useMemo(() => {
       if (!hasApps) return null;
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+            gap: 16,
+          }}
+        >
           {applications.map((application) => (
             <ApplicationCard
               key={application.name}
@@ -64,7 +71,11 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
                 minHeight: '60px',
               }}
             >
-              <ApplicationsToolbar searchValue={searchValue} onSearchChange={onSearchChange} />
+              <ApplicationsToolbar
+                searchValue={searchValue}
+                onSearchChange={onSearchChange}
+                onOpenFilters={onOpenFilters}
+              />
             </div>
           </div>
 

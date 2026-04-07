@@ -13,6 +13,8 @@ import ApplicationsSuccess from './Success';
 import { filterApplications, useApplications } from '../../hooks';
 import type { Application } from '../../models';
 import { EditApplicationPanel } from '../../components/panels';
+import { FilterPanel } from '../../../../../components/display/panels/filter';
+import type { FilterField } from '../../../../../components/display/panels/filter/FilterPanel';
 
 const ApplicationsGlobalView: React.FC = memo(() => {
   const dispatch: AppDispatch = useDispatch();
@@ -40,10 +42,34 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     setEditTarget(null);
   }, [editForm]);
 
-  const filteredApplications = useMemo(
-    () => filterApplications(applications, searchValue),
-    [applications, searchValue],
-  );
+  const [filterPanelOpen, setFilterPanelOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
+
+  const filterFields: FilterField[] = useMemo(() => {
+    const statusOptions = uniqOptions(applications, (a) => a.health?.status);
+    const managedByOptions = uniqOptions(applications, (a) => a.managed?.by);
+    const namespaceOptions = uniqNamespaceOptions(applications);
+    return [
+      { key: 'status', label: 'STATUS', type: 'multiSelect', multiSelectOptions: statusOptions },
+      {
+        key: 'managedBy',
+        label: 'MANAGED BY',
+        type: 'multiSelect',
+        multiSelectOptions: managedByOptions,
+      },
+      {
+        key: 'namespaces',
+        label: 'NAMESPACES',
+        type: 'multiSelect',
+        multiSelectOptions: namespaceOptions,
+      },
+    ];
+  }, [applications]);
+
+  const filteredApplications = useMemo(() => {
+    const base = filterApplications(applications, searchValue);
+    return applyApplicationFilters(base, appliedFilters);
+  }, [applications, appliedFilters, searchValue]);
 
   const [isRetrying, setIsRetrying] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
@@ -123,12 +149,24 @@ const ApplicationsGlobalView: React.FC = memo(() => {
         searchValue={searchValue}
         onSearchChange={onSearchChange}
         onEditApplication={openEditPanel}
+        onOpenFilters={() => setFilterPanelOpen(true)}
       />
       <EditApplicationPanel
         open={editTarget != null}
         onClose={closeEditPanel}
         application={editTarget}
         form={editForm}
+      />
+      <FilterPanel
+        open={filterPanelOpen}
+        onClose={() => setFilterPanelOpen(false)}
+        fields={filterFields}
+        onFilterChange={setAppliedFilters}
+        onApply={(filters) => {
+          setAppliedFilters(filters);
+          setFilterPanelOpen(false);
+        }}
+        onReset={() => setAppliedFilters({})}
       />
     </>
   );
@@ -137,3 +175,58 @@ const ApplicationsGlobalView: React.FC = memo(() => {
 ApplicationsGlobalView.displayName = 'ApplicationsGlobalView';
 
 export default ApplicationsGlobalView;
+
+function uniqOptions(
+  apps: Application[],
+  getValue: (a: Application) => string | undefined | null,
+): { value: string; label: string }[] {
+  const set = new Set<string>();
+  for (const a of apps) {
+    const v = (getValue(a) ?? '').trim();
+    if (v) set.add(v);
+  }
+  return [...set].sort().map((v) => ({ value: v, label: v }));
+}
+
+function uniqNamespaceOptions(apps: Application[]): { value: string; label: string }[] {
+  const set = new Set<string>();
+  for (const a of apps) {
+    const items = a.namespaces?.items ?? [];
+    for (const n of items) {
+      const v = (n.name ?? '').trim();
+      if (v) set.add(v);
+    }
+  }
+  return [...set].sort().map((v) => ({ value: v, label: v }));
+}
+
+function applyApplicationFilters(
+  apps: Application[],
+  filters: Record<string, unknown>,
+): Application[] {
+  const status = (filters.status as string[]) || [];
+  const managedBy = (filters.managedBy as string[]) || [];
+  const namespaces = (filters.namespaces as string[]) || [];
+
+  const has = (arr: string[]) => arr.length > 0;
+  if (!has(status) && !has(managedBy) && !has(namespaces)) {
+    return apps;
+  }
+
+  return apps.filter((a) => {
+    if (has(status) && !status.includes(a.health?.status ?? '')) return false;
+    if (has(managedBy) && !managedBy.includes(a.managed?.by ?? '')) return false;
+    if (has(namespaces)) {
+      const ns = new Set((a.namespaces?.items ?? []).map((n) => n.name));
+      let ok = false;
+      for (const want of namespaces) {
+        if (ns.has(want)) {
+          ok = true;
+          break;
+        }
+      }
+      if (!ok) return false;
+    }
+    return true;
+  });
+}

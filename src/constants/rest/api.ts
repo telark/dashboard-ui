@@ -29,3 +29,10 @@ export const AUTH_API = {
     return buildApiUrl(this.PORT);
   },
 };
+
+export const ENRICHMENT_API = {
+  PORT: API_PORTS.ENRICHMENT,
+  get BASE_URL() {
+    return buildApiUrl(this.PORT);
+  },
+};

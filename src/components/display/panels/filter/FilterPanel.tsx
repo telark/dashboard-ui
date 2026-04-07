@@ -4,7 +4,7 @@ import FilterPanelHeader from './FilterPanelHeader';
 import FilterPanelFooter from './FilterPanelFooter';
 import FilterFieldRenderer from './FilterFieldRenderer';
 
-export type FilterFieldType = 'dateRange' | 'buttonGroup' | 'dropdown';
+export type FilterFieldType = 'dateRange' | 'buttonGroup' | 'dropdown' | 'multiSelect';
 
 export interface FilterButtonOption {
   key: string;
@@ -24,6 +24,7 @@ export interface FilterField {
   toLabel?: string;
   options?: FilterButtonOption[];
   dropdownOptions?: FilterDropdownOption[];
+  multiSelectOptions?: FilterDropdownOption[];
   defaultValue?: string | { from?: string; to?: string };
 }
 
@@ -57,6 +58,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         initial[field.key] = field.options[0]?.key || '';
       } else if (field.type === 'dropdown' && field.dropdownOptions) {
         initial[field.key] = field.dropdownOptions[0]?.value || '';
+      } else if (field.type === 'multiSelect' && field.multiSelectOptions) {
+        initial[field.key] = [];
       } else if (field.type === 'dateRange') {
         initial[field.key] = { from: undefined, to: undefined };
       }
@@ -83,6 +86,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         resetFilters[field.key] = field.options[0]?.key || '';
       } else if (field.type === 'dropdown' && field.dropdownOptions) {
         resetFilters[field.key] = field.dropdownOptions[0]?.value || '';
+      } else if (field.type === 'multiSelect' && field.multiSelectOptions) {
+        resetFilters[field.key] = [];
       } else if (field.type === 'dateRange') {
         resetFilters[field.key] = { from: undefined, to: undefined };
       }

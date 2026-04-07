@@ -9,6 +9,7 @@ export const API_PORTS = {
   EXPORTER: 8002,
   DISCOVERY: 8004,
   AUTH: 8006,
+  ENRICHMENT: 8007,
 } as const;
 
 export const buildApiUrl = (port: number): string => {

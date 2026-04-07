@@ -4,10 +4,17 @@ import {
   SafetyOutlined,
   ControlOutlined,
   InfoCircleOutlined,
+  DatabaseOutlined,
 } from '@ant-design/icons';
 import type { ComponentType, CSSProperties } from 'react';
 
-export type SettingsSectionKey = 'profile' | 'appearance' | 'security' | 'preferences' | 'about';
+export type SettingsSectionKey =
+  | 'profile'
+  | 'appearance'
+  | 'security'
+  | 'aiData'
+  | 'preferences'
+  | 'about';
 
 const ROW_TAG_DEFAULTS = {
   COMING_SOON_TEXT: 'Coming soon',
@@ -56,6 +63,12 @@ export const SETTINGS_CONSTANTS = {
       description: 'Password, sessions, and two-factor auth',
       icon: SafetyOutlined,
     },
+    AI_DATA: {
+      key: 'aiData' as const,
+      label: 'AI & Data',
+      description: 'AI insights provider and key validation',
+      icon: DatabaseOutlined,
+    },
     PREFERENCES: {
       key: 'preferences' as const,
       label: 'Preferences',
@@ -102,6 +115,7 @@ export const SETTINGS_SECTIONS_LIST: SettingsSectionConfig[] = [
   SETTINGS_CONSTANTS.SECTIONS.PROFILE,
   SETTINGS_CONSTANTS.SECTIONS.APPEARANCE,
   SETTINGS_CONSTANTS.SECTIONS.SECURITY,
+  SETTINGS_CONSTANTS.SECTIONS.AI_DATA,
   SETTINGS_CONSTANTS.SECTIONS.PREFERENCES,
   SETTINGS_CONSTANTS.SECTIONS.ABOUT,
 ];

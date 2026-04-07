@@ -12,11 +12,17 @@ import { APP_ROUTES } from '../../../../../constants';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../../../../store';
 import { fetchApplicationSnapshotsThunk } from '../../store';
+import { EditApplicationPanel, ManageRollbacksPanel } from '../../components/panels';
+import { Form, Modal } from 'antd';
+import { deleteApplicationThunk } from '../../store';
 
 const ApplicationDetailsView: React.FC = memo(() => {
   const { name } = useParams<{ name: string }>();
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
+  const [editForm] = Form.useForm();
+  const [editOpen, setEditOpen] = React.useState(false);
+  const [rollbacksOpen, setRollbacksOpen] = React.useState(false);
   const { details, loading, error } = useApplicationDetails(name);
 
   useEffect(() => {
@@ -54,14 +60,47 @@ const ApplicationDetailsView: React.FC = memo(() => {
   }
 
   return (
-    <ApplicationPageLayout
-      breadcrumbItems={breadcrumbItems}
-      subtitle={APPLICATIONS_UI.DETAIL_PAGE.SUBTITLE}
-    >
-      <div style={{ marginTop: 24 }}>
-        <ApplicationDetailsContent application={details} />
-      </div>
-    </ApplicationPageLayout>
+    <>
+      <ApplicationPageLayout
+        breadcrumbItems={breadcrumbItems}
+        subtitle={APPLICATIONS_UI.DETAIL_PAGE.SUBTITLE}
+      >
+        <div style={{ marginTop: 24 }}>
+          <ApplicationDetailsContent
+            application={details}
+            onEdit={() => setEditOpen(true)}
+            onManageRollbacks={() => setRollbacksOpen(true)}
+            onDelete={() => {
+              Modal.confirm({
+                title: APPLICATIONS_UI.CARD.ACTIONS.DELETE_CONFIRM_TITLE,
+                content: APPLICATIONS_UI.CARD.ACTIONS.DELETE_CONFIRM_CONTENT,
+                okText: APPLICATIONS_UI.CARD.ACTIONS.DELETE,
+                okType: 'danger',
+                cancelText: APPLICATIONS_UI.CARD.ACTIONS.CANCEL,
+                onOk: () =>
+                  dispatch(deleteApplicationThunk(details.name))
+                    .unwrap()
+                    .then(() => navigate(APP_ROUTES.APPLICATIONS))
+                    .catch(() => undefined),
+              });
+            }}
+          />
+        </div>
+      </ApplicationPageLayout>
+
+      <EditApplicationPanel
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        application={details}
+        form={editForm}
+      />
+      <ManageRollbacksPanel
+        open={rollbacksOpen}
+        onClose={() => setRollbacksOpen(false)}
+        applicationId={details.name}
+        detailSnapshots={details.snapshots}
+      />
+    </>
   );
 });
 

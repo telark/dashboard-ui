@@ -49,6 +49,16 @@ export const Endpoints = {
       method: 'POST',
     }),
   },
+  GLOBALCONFIG: {
+    GET: {
+      path: `${API_PATHS.RESOURCES.GLOBALCONFIG}/get`,
+      method: 'GET',
+    },
+    PATCH: {
+      path: `${API_PATHS.RESOURCES.GLOBALCONFIG}/patch`,
+      method: 'PATCH',
+    },
+  },
   SNAPSHOTS: {
     GET_BY_ID: (id: string) => ({
       path: `snapshots/${id}/get`,

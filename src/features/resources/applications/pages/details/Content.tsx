@@ -37,6 +37,9 @@ import KeyValueGrid from '../../components/details/KeyValueGrid';
 
 interface ApplicationDetailsContentProps {
   application: Application;
+  onEdit: () => void;
+  onManageRollbacks: () => void;
+  onDelete: () => void;
 }
 
 /** Matches Runtime sub-labels (ports, images, …) inside Application summary. */
@@ -180,7 +183,7 @@ function StatMiniCard(props: { label: string; value: React.ReactNode }): React.R
 }
 
 const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo(
-  ({ application }) => {
+  ({ application, onEdit, onManageRollbacks, onDelete }) => {
     const sections = useMemo(() => {
       const created = application.createdAt ? (
         <TimeAgo date={application.createdAt} />
@@ -877,6 +880,69 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
             )}
           </div>
         </SettingsCard>
+
+        <div
+          style={{
+            position: 'sticky',
+            top: 12,
+            zIndex: 5,
+            display: 'flex',
+            gap: 10,
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            padding: '10px 12px',
+            background: DEFAULT_COLORS.BACKGROUND_WHITE,
+            border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+            borderRadius: 12,
+            boxShadow: '0 6px 18px rgba(0,0,0,0.06)',
+          }}
+        >
+          <button
+            type="button"
+            onClick={onEdit}
+            style={{
+              borderRadius: 10,
+              padding: '8px 12px',
+              border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+              background: DEFAULT_COLORS.BACKGROUND_WHITE,
+              color: DEFAULT_COLORS.TEXT_PRIMARY,
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            onClick={onManageRollbacks}
+            style={{
+              borderRadius: 10,
+              padding: '8px 12px',
+              border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+              background: DEFAULT_COLORS.BACKGROUND_WHITE,
+              color: DEFAULT_COLORS.TEXT_PRIMARY,
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            Manage Rollbacks
+          </button>
+          <button
+            type="button"
+            onClick={onDelete}
+            style={{
+              borderRadius: 10,
+              padding: '8px 12px',
+              border: `1px solid ${DEFAULT_COLORS.DANGER}`,
+              background: DEFAULT_COLORS.DANGER,
+              color: DEFAULT_COLORS.BACKGROUND_WHITE,
+              fontWeight: 800,
+              cursor: 'pointer',
+            }}
+          >
+            Delete
+          </button>
+        </div>
 
         <SettingsCard
           title={APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.TITLE}

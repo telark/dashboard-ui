@@ -86,10 +86,29 @@ const FilterFieldRenderer: React.FC<FilterFieldRendererProps> = ({ field, value,
     );
   };
 
+  const renderMultiSelect = () => {
+    const selectedValues = (value as string[]) || [];
+    return (
+      <div key={field.key} style={FILTER_PANEL.SECTION}>
+        <div style={FILTER_PANEL.SECTION_TITLE}>{field.label}</div>
+        <Select
+          mode="multiple"
+          value={selectedValues}
+          onChange={(vals) => onChange(vals)}
+          style={FILTER_PANEL.DROPDOWN}
+          options={field.multiSelectOptions}
+          placeholder="Select..."
+          allowClear
+        />
+      </div>
+    );
+  };
+
   const renderers: Record<FilterFieldType, () => React.ReactNode> = {
     dateRange: renderDateRange,
     buttonGroup: renderButtonGroup,
     dropdown: renderDropdown,
+    multiSelect: renderMultiSelect,
   };
 
   return <>{renderers[field.type]?.()}</>;

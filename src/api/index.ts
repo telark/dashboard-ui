@@ -4,6 +4,7 @@ import {
   CONFIGURATOR_API,
   DISCOVERY_API,
   AUTH_API,
+  ENRICHMENT_API,
   API_TIMEOUT,
   HTTP_HEADERS,
   HEADER_VALUES,
@@ -42,6 +43,12 @@ const discoveryApiClient: AxiosInstance = axios.create({
 
 const authApiClient: AxiosInstance = axios.create({
   baseURL: AUTH_API.BASE_URL,
+  timeout: API_TIMEOUT,
+  headers: REQUEST_CONFIG.DEFAULT_HEADERS,
+});
+
+const enrichmentApiClient: AxiosInstance = axios.create({
+  baseURL: ENRICHMENT_API.BASE_URL,
   timeout: API_TIMEOUT,
   headers: REQUEST_CONFIG.DEFAULT_HEADERS,
 });
@@ -131,6 +138,7 @@ exporterApiClient.interceptors.response.use(...createErrorInterceptor({ silent40
 configuratorApiClient.interceptors.response.use(...createErrorInterceptor());
 discoveryApiClient.interceptors.response.use(...createErrorInterceptor());
 authApiClient.interceptors.response.use(...createErrorInterceptor());
+enrichmentApiClient.interceptors.response.use(...createErrorInterceptor());
 
 const DEFAULT_CLIENT_CONFIG: AxiosRequestConfig = {
   method: REQUEST_CONFIG.DEFAULT_METHOD,
@@ -145,4 +153,10 @@ export const Client = async <T>(
   return response.data;
 };
 
-export { exporterApiClient, configuratorApiClient, discoveryApiClient, authApiClient };
+export {
+  exporterApiClient,
+  configuratorApiClient,
+  discoveryApiClient,
+  authApiClient,
+  enrichmentApiClient,
+};

@@ -5,6 +5,7 @@ export const API_PATHS = {
     INSIGHTS: 'resources/insights',
     WORKLOADS: 'resources/workloads',
     BRIDGES: 'resources/bridges',
+    GLOBALCONFIG: 'resources/globalconfig',
     USERS: 'resources/users',
     GROUPS: 'resources/groups',
     ROLES: 'resources/roles',

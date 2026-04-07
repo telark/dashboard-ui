@@ -19,11 +19,12 @@ import { getApplicationHealthAccentColor } from '../../../utils/healthVisual';
 
 interface ApplicationCardHeaderProps {
   application: Application;
+  primaryNamespace: string;
   onEditApplication: (application: Application) => void;
 }
 
 const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
-  ({ application, onEditApplication }) => {
+  ({ application, primaryNamespace, onEditApplication }) => {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const [menuOpen, setMenuOpen] = useState(false);
@@ -125,7 +126,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
           </div>
           <p
             style={{
-              margin: '4px 0 0',
+              margin: '2px 0 0',
               fontSize: 12,
               fontWeight: 500,
               color: DEFAULT_COLORS.TEXT_MUTED,
@@ -136,7 +137,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
             {application.name}
           </p>
           {hasInsightRow ? (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
               {application.insights?.category ? (
                 <RowTag
                   text={application.insights.category}
@@ -156,45 +157,53 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
             </div>
           ) : null}
         </div>
-        <Dropdown
-          trigger={['click']}
-          placement="bottomRight"
-          open={menuOpen}
-          onOpenChange={setMenuOpen}
-          menu={{
-            items: [
-              { key: 'view', label: APPLICATIONS_UI.CARD.ACTIONS.VIEW, icon: <EyeOutlined /> },
-              { key: 'edit', label: APPLICATIONS_UI.CARD.ACTIONS.EDIT, icon: <EditOutlined /> },
-              {
-                key: 'rollbacks',
-                label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS,
-                icon: <HistoryOutlined />,
-              },
-              { type: 'divider' },
-              {
-                key: 'delete',
-                label: APPLICATIONS_UI.CARD.ACTIONS.DELETE,
-                icon: <DeleteOutlined />,
-                danger: true,
-              },
-            ],
-            onClick: handleMenuClick,
-          }}
-        >
-          <Button
-            type="text"
-            shape="circle"
-            icon={<MoreOutlined rotate={90} />}
-            size="small"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            style={{
-              color: menuOpen ? DEFAULT_COLORS.TEXT_PRIMARY : DEFAULT_COLORS.ICON_SECONDARY,
-              flexShrink: 0,
-            }}
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          <RowTag
+            text={primaryNamespace}
+            background={DEFAULT_COLORS.CHIP_BLUE_BG}
+            color={DEFAULT_COLORS.CHIP_BLUE_TEXT}
+            fontSize={11}
           />
-        </Dropdown>
+          <Dropdown
+            trigger={['click']}
+            placement="bottomRight"
+            open={menuOpen}
+            onOpenChange={setMenuOpen}
+            menu={{
+              items: [
+                { key: 'view', label: APPLICATIONS_UI.CARD.ACTIONS.VIEW, icon: <EyeOutlined /> },
+                { key: 'edit', label: APPLICATIONS_UI.CARD.ACTIONS.EDIT, icon: <EditOutlined /> },
+                {
+                  key: 'rollbacks',
+                  label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS,
+                  icon: <HistoryOutlined />,
+                },
+                { type: 'divider' },
+                {
+                  key: 'delete',
+                  label: APPLICATIONS_UI.CARD.ACTIONS.DELETE,
+                  icon: <DeleteOutlined />,
+                  danger: true,
+                },
+              ],
+              onClick: handleMenuClick,
+            }}
+          >
+            <Button
+              type="text"
+              shape="circle"
+              icon={<MoreOutlined rotate={90} />}
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              style={{
+                color: menuOpen ? DEFAULT_COLORS.TEXT_PRIMARY : DEFAULT_COLORS.ICON_SECONDARY,
+                flexShrink: 0,
+              }}
+            />
+          </Dropdown>
+        </div>
       </div>
     );
   },
