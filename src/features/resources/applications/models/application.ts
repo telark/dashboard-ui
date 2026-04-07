@@ -206,8 +206,6 @@ export interface ApplicationWorkloadContainerUsage {
 export interface ApplicationUpdatePayload {
   displayName?: string;
   description?: string;
-  primaryNamespace?: string;
-  workloadConfig?: string;
 }
 
 export interface ApplicationRollbackTriggerPayload {

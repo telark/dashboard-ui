@@ -48,7 +48,7 @@ export const updateApplication = async (name: string, payload: ApplicationUpdate
       Endpoints.APPLICATIONS.UPDATE(name).path,
       {
         method: 'PATCH',
-        data: payload,
+        data: { spec: payload },
       },
     );
   } catch (error) {

@@ -68,7 +68,14 @@ const ApplicationDetailsView: React.FC = memo(() => {
         <div style={{ marginTop: 24 }}>
           <ApplicationDetailsContent
             application={details}
-            onEdit={() => setEditOpen(true)}
+            onEdit={() => {
+              editForm.setFieldsValue({
+                name: details.name,
+                displayName: details.displayName,
+                description: details.description ?? '',
+              });
+              setEditOpen(true);
+            }}
             onManageRollbacks={() => setRollbacksOpen(true)}
             onDelete={() => {
               Modal.confirm({
@@ -90,7 +97,10 @@ const ApplicationDetailsView: React.FC = memo(() => {
 
       <EditApplicationPanel
         open={editOpen}
-        onClose={() => setEditOpen(false)}
+        onClose={() => {
+          editForm.resetFields();
+          setEditOpen(false);
+        }}
         application={details}
         form={editForm}
       />
