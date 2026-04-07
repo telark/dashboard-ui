@@ -1,12 +1,37 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
-import { Button, Input, Select, Switch, message } from 'antd';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { Button, Input, Select, message } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import { SETTINGS_CONSTANTS } from '../../constants';
 import { Client, enrichmentApiClient, exporterApiClient } from '../../../../api';
 import { Endpoints } from '../../../../constants';
 import { AI_DATA_CONSTANTS as C, ProviderKey } from './constants';
+import { DEFAULT_COLORS } from '../../../../constants';
+import { Switch } from '../../../../components/display/inputs';
 
 const { CONTENT } = SETTINGS_CONSTANTS;
+
+type ValidationApiResponse = { ok: boolean; reason?: string };
+type GlobalConfigResponse = { ai?: { enabled?: boolean; provider?: unknown; apiKey?: unknown } };
+
+function getFriendlyValidationError(err: unknown): string {
+  if (err && typeof err === 'object') {
+    const anyErr = err as {
+      response?: { data?: unknown };
+      normalized?: { message?: string };
+      message?: string;
+    };
+    const data = anyErr.response?.data;
+    if (data && typeof data === 'object' && 'reason' in data) {
+      const reason = String((data as { reason?: unknown }).reason || '').trim();
+      if (reason) return reason;
+    }
+    const normalizedMsg = String(anyErr.normalized?.message || '').trim();
+    if (normalizedMsg) return normalizedMsg;
+    const msg = String(anyErr.message || '').trim();
+    if (msg) return msg;
+  }
+  return C.MESSAGES.VALIDATION_FAILED;
+}
 
 const AIDataSectionContent: React.FC = memo(() => {
   const [aiEnabled, setAIEnabled] = useState(false);
@@ -15,15 +40,55 @@ const AIDataSectionContent: React.FC = memo(() => {
   const [validating, setValidating] = useState(false);
   const [isKeyValid, setIsKeyValid] = useState(false);
   const [validationReason, setValidationReason] = useState<string | null>(null);
+  const [lastValidatedKey, setLastValidatedKey] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
+
+  const normalizeProvider = useCallback((raw: unknown): ProviderKey => {
+    const val = String(raw || '').trim().toLowerCase();
+    const allowed = C.PROVIDERS.OPTIONS.map((o) => o.value);
+    return (allowed.includes(val as ProviderKey) ? (val as ProviderKey) : C.PROVIDERS.DEFAULT);
+  }, []);
+
+  const loadFromGlobalConfig = useCallback(async () => {
+    try {
+      const resp = await Client<{ data: GlobalConfigResponse }>(
+        exporterApiClient,
+        Endpoints.GLOBALCONFIG.GET.path,
+        { method: Endpoints.GLOBALCONFIG.GET.method },
+      );
+      const ai = resp?.data?.ai;
+      if (!ai || typeof ai !== 'object') return;
+
+      const hydratedEnabled = Boolean(ai.enabled);
+      const hydratedProvider = normalizeProvider(ai.provider);
+      const key = typeof ai.apiKey === 'string' ? ai.apiKey.trim() : '';
+      const hydratedRequiresKey = hydratedProvider !== C.PROVIDERS.DEFAULT;
+
+      setAIEnabled(hydratedEnabled);
+      setProvider(hydratedProvider);
+      setApiKey(key);
+
+      setValidationReason(null);
+      setLastValidatedKey(key);
+      setIsKeyValid(!hydratedRequiresKey || key.length > 0);
+    } catch (e) {
+      message.error(getFriendlyValidationError(e));
+    }
+  }, [normalizeProvider]);
+
+  useEffect(() => {
+    void loadFromGlobalConfig();
+  }, [loadFromGlobalConfig]);
 
   const requiresKey = provider !== C.PROVIDERS.DEFAULT;
 
   const canEnable = useMemo(() => {
     if (!aiEnabled) return true;
     if (!requiresKey) return true;
-    return isKeyValid;
-  }, [aiEnabled, isKeyValid, requiresKey]);
+    const trimmed = apiKey.trim();
+    const isSavedKey = lastValidatedKey.length > 0 && trimmed === lastValidatedKey;
+    return isSavedKey || isKeyValid;
+  }, [aiEnabled, apiKey, isKeyValid, lastValidatedKey, requiresKey]);
 
   const validateKey = useCallback(async () => {
     if (!requiresKey) {
@@ -41,7 +106,7 @@ const AIDataSectionContent: React.FC = memo(() => {
     setIsKeyValid(false);
     setValidationReason(null);
     try {
-      const resp = await Client<{ ok: boolean; reason?: string }>(
+      const resp = await Client<ValidationApiResponse>(
         enrichmentApiClient,
         Endpoints.PROVIDERS.VALIDATE_API_KEY.path,
         {
@@ -52,6 +117,7 @@ const AIDataSectionContent: React.FC = memo(() => {
       if (resp?.ok) {
         setIsKeyValid(true);
         setValidationReason(null);
+        setLastValidatedKey(trimmed);
         message.success(C.MESSAGES.VALIDATION_SUCCESS);
       } else {
         setIsKeyValid(false);
@@ -61,9 +127,9 @@ const AIDataSectionContent: React.FC = memo(() => {
       }
     } catch (e) {
       setIsKeyValid(false);
-      setValidationReason(C.MESSAGES.VALIDATION_FAILED);
-      message.error(C.MESSAGES.VALIDATION_FAILED);
-      throw e;
+      const friendly = getFriendlyValidationError(e);
+      setValidationReason(friendly);
+      message.error(friendly);
     } finally {
       setValidating(false);
     }
@@ -74,12 +140,10 @@ const AIDataSectionContent: React.FC = memo(() => {
     setSubmitting(true);
     try {
       const patch = {
-        spec: {
-          ai: {
-            enabled: aiEnabled,
-            provider,
-            apiKey: requiresKey ? apiKey.trim() : '',
-          },
+        ai: {
+          enabled: aiEnabled,
+          provider,
+          apiKey: requiresKey ? apiKey.trim() : '',
         },
       };
       await Client(exporterApiClient, Endpoints.GLOBALCONFIG.PATCH.path, {
@@ -87,8 +151,8 @@ const AIDataSectionContent: React.FC = memo(() => {
         data: patch,
       });
       message.success(C.MESSAGES.SAVE_SUCCESS);
-    } catch {
-      message.error(C.MESSAGES.SAVE_FAILED);
+    } catch (e) {
+      message.error(getFriendlyValidationError(e) || C.MESSAGES.SAVE_FAILED);
     } finally {
       setSubmitting(false);
     }
@@ -99,7 +163,16 @@ const AIDataSectionContent: React.FC = memo(() => {
     setApiKey('');
     setIsKeyValid(false);
     setValidationReason(null);
+    setLastValidatedKey('');
   }, []);
+
+  const validateDisabled = useMemo(() => {
+    const trimmed = apiKey.trim();
+    if (!trimmed) return true;
+    // Keep Validate disabled as long as the input matches the last validated/saved key.
+    if (lastValidatedKey.length > 0 && trimmed === lastValidatedKey) return true;
+    return false;
+  }, [apiKey, lastValidatedKey]);
 
   return (
     <>
@@ -113,46 +186,52 @@ const AIDataSectionContent: React.FC = memo(() => {
         </div>
       </SettingsCard>
 
-      <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
-        <SettingsCard
-          title={C.LABELS.PROVIDER_CARD_TITLE}
-          description={C.LABELS.PROVIDER_CARD_DESCRIPTION}
-        >
-          <div style={{ display: 'grid', rowGap: 10 }}>
-            <Select
-              value={provider}
-              options={[...C.PROVIDERS.OPTIONS]}
-              style={{ width: '100%' }}
-              onChange={onProviderChange}
-            />
+      {aiEnabled ? (
+        <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
+          <SettingsCard
+            title={C.LABELS.PROVIDER_CARD_TITLE}
+            description={C.LABELS.PROVIDER_CARD_DESCRIPTION}
+          >
+            <div style={{ display: 'grid', rowGap: 10 }}>
+              <Select
+                value={provider}
+                options={[...C.PROVIDERS.OPTIONS]}
+                style={{ width: '100%' }}
+                onChange={onProviderChange}
+              />
 
-            {requiresKey && (
-              <div style={{ display: 'grid', rowGap: 8 }}>
-                <Input.Password
-                  value={apiKey}
-                  onChange={(e) => {
-                    setApiKey(e.target.value);
-                    setIsKeyValid(false);
-                    setValidationReason(null);
-                  }}
-                  placeholder={C.LABELS.API_KEY_PLACEHOLDER}
-                />
-                <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                  <Button onClick={validateKey} loading={validating} disabled={!apiKey.trim()}>
-                    {C.LABELS.VALIDATE_BUTTON}
-                  </Button>
+              {requiresKey && (
+                <div style={{ display: 'grid', rowGap: 8 }}>
+                  <Input.Password
+                    value={apiKey}
+                    onChange={(e) => {
+                      setApiKey(e.target.value);
+                      setIsKeyValid(false);
+                      setValidationReason(null);
+                    }}
+                    placeholder={C.LABELS.API_KEY_PLACEHOLDER}
+                  />
+                  <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                    <Button onClick={validateKey} loading={validating} disabled={validateDisabled}>
+                      {C.LABELS.VALIDATE_BUTTON}
+                    </Button>
+                  </div>
+                  {validationReason && (
+                    <div style={{ fontSize: 12, color: C.COLORS.ERROR_TEXT }}>
+                      {validationReason}
+                    </div>
+                  )}
+                  {isKeyValid && !validationReason && (
+                    <div style={{ fontSize: 12, color: C.COLORS.SUCCESS_TEXT }}>
+                      {C.LABELS.KEY_VALID}
+                    </div>
+                  )}
                 </div>
-                {validationReason && (
-                  <div style={{ fontSize: 12, color: C.COLORS.ERROR_TEXT }}>{validationReason}</div>
-                )}
-                {isKeyValid && !validationReason && (
-                  <div style={{ fontSize: 12, color: C.COLORS.SUCCESS_TEXT }}>{C.LABELS.KEY_VALID}</div>
-                )}
-              </div>
-            )}
-          </div>
-        </SettingsCard>
-      </div>
+              )}
+            </div>
+          </SettingsCard>
+        </div>
+      ) : null}
 
       <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
         <SettingsCard title={C.LABELS.SAVE_TITLE} description={C.LABELS.SAVE_DESCRIPTION}>
@@ -162,6 +241,10 @@ const AIDataSectionContent: React.FC = memo(() => {
               onClick={handleEnable}
               loading={submitting}
               disabled={requiresKey && aiEnabled && !isKeyValid}
+              style={{
+                background: DEFAULT_COLORS.SUCCESS,
+                borderColor: DEFAULT_COLORS.SUCCESS,
+              }}
             >
               {C.LABELS.ENABLE_BUTTON}
             </Button>

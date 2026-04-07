@@ -1,4 +1,4 @@
-export type ProviderKey = 'ollama' | 'gemini' | 'grok' | 'claude' | 'chatgpt';
+export type ProviderKey = 'ollama' | 'gemini' | 'groq' | 'claude' | 'chatgpt';
 
 export const AI_DATA_CONSTANTS = {
   PROVIDERS: {
@@ -6,7 +6,7 @@ export const AI_DATA_CONSTANTS = {
     OPTIONS: [
       { value: 'ollama' as ProviderKey, label: 'Ollama' },
       { value: 'gemini' as ProviderKey, label: 'Gemini' },
-      { value: 'grok' as ProviderKey, label: 'Grok' },
+      { value: 'groq' as ProviderKey, label: 'Groq' },
       { value: 'claude' as ProviderKey, label: 'Claude' },
       { value: 'chatgpt' as ProviderKey, label: 'ChatGPT' },
     ],
