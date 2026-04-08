@@ -9,6 +9,7 @@ export const BRIDGES_SYNC_THROTTLE_MS = 5 * 60 * 1000; // 5 minutes
 export const BRIDGES_SYNC_LS_KEY = 'last_bridges_sync_ts';
 export const SYNC_CONSTANTS = {
   MESSAGE_KEY_PREFIX: 'sync-',
+  TIMEOUT_MESSAGE: 'Taking a bit longer than usual. Please try again in a moment.',
 
   POLLING: {
     INTERVAL_MS: 250,

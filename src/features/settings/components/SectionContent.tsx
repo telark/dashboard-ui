@@ -6,7 +6,7 @@ import type { SettingsSectionKey } from '../constants';
 import { ProfileSectionContent } from '../sections/profile';
 import { AppearanceSectionContent } from '../sections/appearance';
 import { SecuritySectionContent } from '../sections/security';
-import { AIDataSectionContent } from '../sections/aiData';
+import { InsightsGovernanceSectionContent } from '../sections/insightsGovernance';
 
 const { CONTENT } = SETTINGS_CONSTANTS;
 
@@ -32,8 +32,8 @@ const SectionContent: React.FC<SectionContentProps> = memo(
             onManagePasskeysClick={securitySectionProps?.onManagePasskeysClick}
           />
         );
-      case 'aiData':
-        return <AIDataSectionContent />;
+      case 'insightsGovernance':
+        return <InsightsGovernanceSectionContent />;
       case 'preferences':
         return (
           <>

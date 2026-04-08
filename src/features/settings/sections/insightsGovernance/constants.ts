@@ -1,6 +1,6 @@
 export type ProviderKey = 'ollama' | 'gemini' | 'groq' | 'claude' | 'chatgpt';
 
-export const AI_DATA_CONSTANTS = {
+export const INSIGHTS_GOVERNANCE_CONSTANTS = {
   PROVIDERS: {
     DEFAULT: 'ollama' as ProviderKey,
     OPTIONS: [
@@ -54,3 +54,4 @@ export const AI_DATA_CONSTANTS = {
     SUCCESS_TEXT: '#15803d',
   },
 } as const;
+

@@ -12,7 +12,7 @@ export type SettingsSectionKey =
   | 'profile'
   | 'appearance'
   | 'security'
-  | 'aiData'
+  | 'insightsGovernance'
   | 'preferences'
   | 'about';
 
@@ -64,7 +64,7 @@ export const SETTINGS_CONSTANTS = {
       icon: SafetyOutlined,
     },
     AI_DATA: {
-      key: 'aiData' as const,
+      key: 'insightsGovernance' as const,
       label: 'Insights & Governance',
       description: 'AI insights, excluded namespaces, and platform behavior',
       icon: AuditOutlined,
