@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { Spin } from 'antd';
 import {
   SlideOutPanel,
   ExpandPanelButton,
@@ -10,6 +9,8 @@ import { APPLICATIONS_UI } from '../../constants/texts';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
+import { FancySpinner } from '../../../../../components/animation';
+import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 
 const PANEL_WIDTH = 650;
 const PANEL_WIDTH_EXPANDED = 960;
@@ -72,29 +73,10 @@ export default ManageRollbacksPanel;
 
 function RollbackRow(props: { entry: ApplicationRollbackEntry }): React.ReactElement {
   const { entry } = props;
-  const statusText = entry.status || 'unknown';
-  const status = statusText.toLowerCase();
-  const isFailed = status.includes('fail') || status.includes('error');
-  const isCompleted = status.includes('success') || status.includes('complete');
-  const isInProgress =
-    !isFailed &&
-    !isCompleted &&
-    (status.includes('progress') ||
-      status.includes('running') ||
-      status.includes('pending') ||
-      status.includes('started'));
-
-  const statusTag = (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-      <RowTag
-        text={statusText}
-        background={isFailed ? DEFAULT_COLORS.CHIP_CUSTOM_BG : DEFAULT_COLORS.CHIP_CUSTOM_BG}
-        color={isFailed ? DEFAULT_COLORS.DANGER : DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-        fontSize={11}
-      />
-      {isInProgress ? <Spin size="small" /> : null}
-    </span>
-  );
+  const statusKey = String(entry.status || '').trim();
+  const statusLabel = formatStatusLabel(statusKey || 'unknown');
+  const statusState = classifyStatus(statusKey);
+  const statusColors = getStatusColors(statusState);
 
   return (
     <div
@@ -124,11 +106,11 @@ function RollbackRow(props: { entry: ApplicationRollbackEntry }): React.ReactEle
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0, flex: 1 }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
             <RowTag
-              text={`Gen: ${entry.targetGeneration}`}
+              text={formatSnapshotRef(entry)}
               {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
             />
             <RowTag
-              text={`NS: ${entry.namespace || APPLICATIONS_UI.FALLBACKS.EMPTY}`}
+              text={formatNamespaceRef(entry.namespace)}
               {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
             />
             {entry.restoredGeneration != null ? (
@@ -137,7 +119,6 @@ function RollbackRow(props: { entry: ApplicationRollbackEntry }): React.ReactEle
                 {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
               />
             ) : null}
-            {statusTag}
           </div>
           <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 500 }}>
             Triggered: <TimeAgo date={entry.triggeredAt} />
@@ -153,7 +134,102 @@ function RollbackRow(props: { entry: ApplicationRollbackEntry }): React.ReactEle
             <span style={{ fontSize: 12, color: DEFAULT_COLORS.DANGER }}>{entry.error}</span>
           ) : null}
         </div>
+        <StatusBadge
+          label={statusLabel}
+          state={statusState}
+          background={statusColors.background}
+          color={statusColors.color}
+        />
       </div>
     </div>
+  );
+}
+
+type RollbackStatusState = 'success' | 'failed' | 'inProgress' | 'unknown';
+
+function classifyStatus(raw: string): RollbackStatusState {
+  const s = raw.trim().toLowerCase();
+  if (!s) return 'unknown';
+  if (s.includes('fail') || s.includes('error')) return 'failed';
+  if (s.includes('success') || s.includes('complete')) return 'success';
+  if (
+    s.includes('progress') ||
+    s.includes('running') ||
+    s.includes('pending') ||
+    s.includes('started')
+  ) {
+    return 'inProgress';
+  }
+  return 'unknown';
+}
+
+function getStatusColors(state: RollbackStatusState): { background: string; color: string } {
+  if (state === 'success')
+    return { background: DEFAULT_COLORS.CHIP_CUSTOM_BG, color: DEFAULT_COLORS.SUCCESS };
+  if (state === 'failed')
+    return { background: DEFAULT_COLORS.CHIP_CUSTOM_BG, color: DEFAULT_COLORS.DANGER };
+  if (state === 'inProgress') {
+    return {
+      background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
+      color: CONNECTIVITY_CONSTANTS.COLORS.WARNING,
+    };
+  }
+  return { background: DEFAULT_COLORS.CHIP_CUSTOM_BG, color: DEFAULT_COLORS.TEXT_MUTED };
+}
+
+function formatStatusLabel(raw: string): string {
+  const cleaned = raw.trim().replace(/[_-]+/g, ' ').replace(/\s+/g, ' ');
+  if (!cleaned) return 'Unknown';
+  return cleaned
+    .split(' ')
+    .map((w) => (w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : ''))
+    .join(' ');
+}
+
+function formatNamespaceRef(namespace: string | undefined | null): string {
+  const ns = String(namespace || '').trim();
+  return `ns/${ns || APPLICATIONS_UI.FALLBACKS.EMPTY}`;
+}
+
+function formatSnapshotRef(entry: ApplicationRollbackEntry): string {
+  const snap = String(entry.targetSnapshotId || '').trim();
+  const gen = entry.targetGeneration;
+  if (snap) return `${snap} · gen ${gen}`;
+  return `gen ${gen}`;
+}
+
+function StatusBadge(props: {
+  label: string;
+  state: RollbackStatusState;
+  background: string;
+  color: string;
+}): React.ReactElement {
+  const { label, state, background, color } = props;
+  const showSpinner = state === 'inProgress';
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 8,
+        background,
+        color,
+        padding: '2px 10px',
+        borderRadius: 999,
+        fontWeight: 700,
+        fontSize: 11,
+        textTransform: 'capitalize',
+        whiteSpace: 'nowrap',
+        flexShrink: 0,
+        marginLeft: 'auto',
+      }}
+    >
+      {showSpinner ? (
+        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+          <FancySpinner size={14} ringThickness={2} color={color} />
+        </span>
+      ) : null}
+      <span>{label}</span>
+    </span>
   );
 }

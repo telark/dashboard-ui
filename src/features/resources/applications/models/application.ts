@@ -245,4 +245,5 @@ export interface ApplicationsState {
   snapshotsLoading: boolean;
   snapshotsError: string | null;
   snapshotManifests: Record<string, SnapshotManifestState>;
+  syncing: Record<string, boolean>;
 }

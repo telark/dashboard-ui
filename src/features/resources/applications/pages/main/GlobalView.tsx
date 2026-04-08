@@ -19,6 +19,11 @@ import type { FilterField } from '../../../../../components/display/panels/filte
 const ApplicationsGlobalView: React.FC = memo(() => {
   const dispatch: AppDispatch = useDispatch();
   const { applications, loading, error } = useSelector((s: RootState) => s.applications);
+  const fetchIntervalSeconds = useSelector((s: RootState) =>
+    s.globalconfig.data?.userSettings?.fetchIntervalSeconds != null
+      ? Number(s.globalconfig.data.userSettings.fetchIntervalSeconds)
+      : 60,
+  );
   const hasTriggeredInitialLoad = useRef(false);
 
   const { searchValue, onSearchChange } = useApplications();
@@ -89,6 +94,15 @@ const ApplicationsGlobalView: React.FC = memo(() => {
       await handleLoadApplications();
     })();
   }, [handleLoadApplications]);
+
+  useEffect(() => {
+    const intervalSec = Number.isFinite(fetchIntervalSeconds) ? fetchIntervalSeconds : 60;
+    const intervalMs = Math.max(5, intervalSec) * 1000;
+    const interval = setInterval(() => {
+      void loadApplicationsSilent(dispatch);
+    }, intervalMs);
+    return () => clearInterval(interval);
+  }, [dispatch, fetchIntervalSeconds]);
 
   const retryCallbacks: RetryCallbacks = useMemo(
     () => ({

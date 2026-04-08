@@ -2,16 +2,21 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Input, Select, message } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import { SETTINGS_CONSTANTS } from '../../constants';
-import { Client, enrichmentApiClient, exporterApiClient } from '../../../../api';
+import { Client, discoveryApiClient, enrichmentApiClient, exporterApiClient } from '../../../../api';
 import { Endpoints } from '../../../../constants';
 import { AI_DATA_CONSTANTS as C, ProviderKey } from './constants';
 import { DEFAULT_COLORS } from '../../../../constants';
 import { Switch } from '../../../../components/display/inputs';
+import type { ResourceDetailsResponse } from '../../../../interfaces/http';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectGlobalConfigState } from '../../../globalconfig/store';
+import type { AppDispatch } from '../../../../store';
+import { fetchGlobalConfigThunk } from '../../../globalconfig/store';
 
 const { CONTENT } = SETTINGS_CONSTANTS;
 
 type ValidationApiResponse = { ok: boolean; reason?: string };
-type GlobalConfigResponse = { ai?: { enabled?: boolean; provider?: unknown; apiKey?: unknown } };
+type NamespacesApiData = { allowed: string[]; excluded: string[] };
 
 function getFriendlyValidationError(err: unknown): string {
   if (err && typeof err === 'object') {
@@ -34,6 +39,8 @@ function getFriendlyValidationError(err: unknown): string {
 }
 
 const AIDataSectionContent: React.FC = memo(() => {
+  const globalConfig = useSelector(selectGlobalConfigState);
+  const dispatch: AppDispatch = useDispatch();
   const [aiEnabled, setAIEnabled] = useState(false);
   const [provider, setProvider] = useState<ProviderKey>(C.PROVIDERS.DEFAULT);
   const [apiKey, setApiKey] = useState('');
@@ -42,6 +49,15 @@ const AIDataSectionContent: React.FC = memo(() => {
   const [validationReason, setValidationReason] = useState<string | null>(null);
   const [lastValidatedKey, setLastValidatedKey] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
+  const [namespacesLoading, setNamespacesLoading] = useState(false);
+  const [namespacesSaving, setNamespacesSaving] = useState(false);
+  const [namespaceOptions, setNamespaceOptions] = useState<string[]>([]);
+  const [defaultExcludedNamespaces, setDefaultExcludedNamespaces] = useState<string[]>([]);
+  const [excludedNamespaces, setExcludedNamespaces] = useState<string[]>([]);
+  const [fetchIntervalMinutes, setFetchIntervalMinutes] = useState<number>(1);
+  const [snapshotsMaxPerApp, setSnapshotsMaxPerApp] = useState<number>(5);
+  const [savingInterval, setSavingInterval] = useState(false);
+  const [savingSnapshots, setSavingSnapshots] = useState(false);
 
   const normalizeProvider = useCallback((raw: unknown): ProviderKey => {
     const val = String(raw || '').trim().toLowerCase();
@@ -49,36 +65,70 @@ const AIDataSectionContent: React.FC = memo(() => {
     return (allowed.includes(val as ProviderKey) ? (val as ProviderKey) : C.PROVIDERS.DEFAULT);
   }, []);
 
-  const loadFromGlobalConfig = useCallback(async () => {
+  const loadNamespaces = useCallback(async () => {
+    setNamespacesLoading(true);
     try {
-      const resp = await Client<{ data: GlobalConfigResponse }>(
-        exporterApiClient,
-        Endpoints.GLOBALCONFIG.GET.path,
-        { method: Endpoints.GLOBALCONFIG.GET.method },
+      const resp = await Client<ResourceDetailsResponse<NamespacesApiData>>(
+        discoveryApiClient,
+        Endpoints.NAMESPACES.GET.path,
+        { method: Endpoints.NAMESPACES.GET.method },
       );
-      const ai = resp?.data?.ai;
-      if (!ai || typeof ai !== 'object') return;
+      const data = resp?.data;
+      const allowed = Array.isArray(data?.allowed) ? data.allowed : [];
+      const excluded = Array.isArray(data?.excluded) ? data.excluded : [];
+      const all = [...allowed, ...excluded].map((n) => String(n)).filter(Boolean);
 
-      const hydratedEnabled = Boolean(ai.enabled);
-      const hydratedProvider = normalizeProvider(ai.provider);
-      const key = typeof ai.apiKey === 'string' ? ai.apiKey.trim() : '';
-      const hydratedRequiresKey = hydratedProvider !== C.PROVIDERS.DEFAULT;
-
-      setAIEnabled(hydratedEnabled);
-      setProvider(hydratedProvider);
-      setApiKey(key);
-
-      setValidationReason(null);
-      setLastValidatedKey(key);
-      setIsKeyValid(!hydratedRequiresKey || key.length > 0);
+      setNamespaceOptions(Array.from(new Set(all)).sort((a, b) => a.localeCompare(b)));
+      setDefaultExcludedNamespaces(excluded.map((n) => String(n)).filter(Boolean));
     } catch (e) {
-      message.error(getFriendlyValidationError(e));
+      message.error(getFriendlyValidationError(e) || C.MESSAGES.NAMESPACES_LOAD_FAILED);
+    } finally {
+      setNamespacesLoading(false);
     }
-  }, [normalizeProvider]);
+  }, []);
 
   useEffect(() => {
-    void loadFromGlobalConfig();
-  }, [loadFromGlobalConfig]);
+    void loadNamespaces();
+  }, [loadNamespaces]);
+
+  useEffect(() => {
+    if (globalConfig.error) {
+      message.error(globalConfig.error);
+    }
+  }, [globalConfig.error]);
+
+  useEffect(() => {
+    const cfg = globalConfig.data;
+    if (!cfg) return;
+
+    const ai = cfg.ai;
+    const hydratedEnabled = Boolean(ai?.enabled);
+    const hydratedProvider = normalizeProvider(ai?.provider);
+    const key = typeof ai?.apiKey === 'string' ? ai.apiKey.trim() : '';
+    const hydratedRequiresKey = hydratedProvider !== C.PROVIDERS.DEFAULT;
+
+    setAIEnabled(hydratedEnabled);
+    setProvider(hydratedProvider);
+    setApiKey(key);
+
+    setValidationReason(null);
+    setLastValidatedKey(key);
+    setIsKeyValid(!hydratedRequiresKey || key.length > 0);
+
+    if (Array.isArray(cfg.excludedNamespaces)) {
+      setExcludedNamespaces(cfg.excludedNamespaces.map((x) => String(x)).filter(Boolean));
+    }
+    const seconds = Number(cfg.userSettings?.fetchIntervalSeconds || 60);
+    setFetchIntervalMinutes(Math.max(1, Math.round(seconds / 60)));
+    const maxPerApp = Number(cfg.snapshots?.maxPerApp || 5);
+    setSnapshotsMaxPerApp(Math.max(1, maxPerApp));
+  }, [globalConfig.data, normalizeProvider]);
+
+  useEffect(() => {
+    if (excludedNamespaces.length > 0) return;
+    if (defaultExcludedNamespaces.length === 0) return;
+    setExcludedNamespaces(defaultExcludedNamespaces);
+  }, [defaultExcludedNamespaces, excludedNamespaces.length]);
 
   const requiresKey = provider !== C.PROVIDERS.DEFAULT;
 
@@ -158,6 +208,58 @@ const AIDataSectionContent: React.FC = memo(() => {
     }
   }, [aiEnabled, apiKey, canEnable, provider, requiresKey]);
 
+  const saveExcludedNamespaces = useCallback(async () => {
+    setNamespacesSaving(true);
+    try {
+      await Client(exporterApiClient, Endpoints.GLOBALCONFIG.PATCH.path, {
+        method: Endpoints.GLOBALCONFIG.PATCH.method,
+        data: { excludedNamespaces },
+      });
+      message.success(C.MESSAGES.NAMESPACES_SAVE_SUCCESS);
+      dispatch(fetchGlobalConfigThunk());
+    } catch (e) {
+      message.error(getFriendlyValidationError(e) || C.MESSAGES.NAMESPACES_SAVE_FAILED);
+    } finally {
+      setNamespacesSaving(false);
+    }
+  }, [dispatch, excludedNamespaces]);
+
+  const saveFetchInterval = useCallback(async () => {
+    const minutes = Number(fetchIntervalMinutes);
+    if (!Number.isFinite(minutes) || minutes <= 0) return;
+    setSavingInterval(true);
+    try {
+      await Client(exporterApiClient, Endpoints.GLOBALCONFIG.PATCH.path, {
+        method: Endpoints.GLOBALCONFIG.PATCH.method,
+        data: { userSettings: { fetchIntervalSeconds: Math.round(minutes * 60) } },
+      });
+      message.success(C.MESSAGES.PLATFORM_SAVE_INTERVAL_SUCCESS);
+      dispatch(fetchGlobalConfigThunk());
+    } catch (e) {
+      message.error(getFriendlyValidationError(e) || C.MESSAGES.PLATFORM_SAVE_INTERVAL_FAILED);
+    } finally {
+      setSavingInterval(false);
+    }
+  }, [dispatch, fetchIntervalMinutes]);
+
+  const saveSnapshotsMax = useCallback(async () => {
+    const v = Number(snapshotsMaxPerApp);
+    if (!Number.isFinite(v) || v <= 0) return;
+    setSavingSnapshots(true);
+    try {
+      await Client(exporterApiClient, Endpoints.GLOBALCONFIG.PATCH.path, {
+        method: Endpoints.GLOBALCONFIG.PATCH.method,
+        data: { snapshots: { maxPerApp: Math.round(v) } },
+      });
+      message.success(C.MESSAGES.PLATFORM_SAVE_SNAPSHOTS_SUCCESS);
+      dispatch(fetchGlobalConfigThunk());
+    } catch (e) {
+      message.error(getFriendlyValidationError(e) || C.MESSAGES.PLATFORM_SAVE_SNAPSHOTS_FAILED);
+    } finally {
+      setSavingSnapshots(false);
+    }
+  }, [dispatch, snapshotsMaxPerApp]);
+
   const onProviderChange = useCallback((next: ProviderKey) => {
     setProvider(next);
     setApiKey('');
@@ -232,6 +334,76 @@ const AIDataSectionContent: React.FC = memo(() => {
           </SettingsCard>
         </div>
       ) : null}
+
+      <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
+        <SettingsCard title={C.LABELS.NAMESPACES_TITLE} description={C.LABELS.NAMESPACES_DESCRIPTION}>
+          <div style={{ display: 'grid', rowGap: 10 }}>
+            <Select
+              mode="multiple"
+              value={excludedNamespaces}
+              placeholder={C.LABELS.NAMESPACES_SELECTOR_PLACEHOLDER}
+              options={namespaceOptions.map((n) => ({ value: n, label: n }))}
+              style={{ width: '100%' }}
+              loading={namespacesLoading}
+              onChange={(vals) => setExcludedNamespaces(vals.map((v) => String(v)))}
+            />
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button
+                type="primary"
+                onClick={saveExcludedNamespaces}
+                loading={namespacesSaving}
+                style={{ background: DEFAULT_COLORS.SUCCESS, borderColor: DEFAULT_COLORS.SUCCESS }}
+              >
+                {C.LABELS.NAMESPACES_SAVE_BUTTON}
+              </Button>
+            </div>
+          </div>
+        </SettingsCard>
+      </div>
+
+      <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
+        <SettingsCard title={C.LABELS.PLATFORM_TITLE} description={C.LABELS.PLATFORM_DESCRIPTION}>
+          <div style={{ display: 'grid', rowGap: 12 }}>
+            <div style={{ display: 'grid', rowGap: 6 }}>
+              <div style={{ fontWeight: 700 }}>{C.LABELS.FETCH_INTERVAL_MINUTES_LABEL}</div>
+              <Input
+                value={String(fetchIntervalMinutes)}
+                inputMode="numeric"
+                onChange={(e) => setFetchIntervalMinutes(Number(e.target.value))}
+              />
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button
+                  type="primary"
+                  onClick={saveFetchInterval}
+                  loading={savingInterval}
+                  style={{ background: DEFAULT_COLORS.SUCCESS, borderColor: DEFAULT_COLORS.SUCCESS }}
+                >
+                  {C.LABELS.PLATFORM_SAVE_INTERVAL_BUTTON}
+                </Button>
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', rowGap: 6 }}>
+              <div style={{ fontWeight: 700 }}>{C.LABELS.SNAPSHOTS_MAX_PER_APP_LABEL}</div>
+              <Input
+                value={String(snapshotsMaxPerApp)}
+                inputMode="numeric"
+                onChange={(e) => setSnapshotsMaxPerApp(Number(e.target.value))}
+              />
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button
+                  type="primary"
+                  onClick={saveSnapshotsMax}
+                  loading={savingSnapshots}
+                  style={{ background: DEFAULT_COLORS.SUCCESS, borderColor: DEFAULT_COLORS.SUCCESS }}
+                >
+                  {C.LABELS.PLATFORM_SAVE_SNAPSHOTS_BUTTON}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </SettingsCard>
+      </div>
 
       <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
         <SettingsCard title={C.LABELS.SAVE_TITLE} description={C.LABELS.SAVE_DESCRIPTION}>

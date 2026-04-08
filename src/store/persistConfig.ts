@@ -33,7 +33,7 @@ export const bridgePersistConfig: PersistConfig<any> = {
 export const applicationsPersistConfig: PersistConfig<any> = {
   key: 'applications',
   storage,
-  whitelist: ['applications'],
+  whitelist: ['applications', 'syncing'],
 };
 
 export const insightsPersistConfig: PersistConfig<any> = {

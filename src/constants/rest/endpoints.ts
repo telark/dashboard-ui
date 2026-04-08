@@ -120,6 +120,16 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.BRIDGES}/${RESOURCE_PATHS.SYNC_BRIDGE(name)}`,
       method: 'POST',
     }),
+    APPLICATION: (name: string) => ({
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.SYNC_APP(name)}`,
+      method: 'POST',
+    }),
+  },
+  NAMESPACES: {
+    GET: {
+      path: 'namespaces/get',
+      method: 'GET',
+    },
   },
   BRIDGES: {
     GET_ALL: {

@@ -6,6 +6,7 @@ import {
   EyeOutlined,
   HistoryOutlined,
   MoreOutlined,
+  SyncOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES } from '../../../../../../constants';
@@ -13,9 +14,11 @@ import type { Application } from '../../../models';
 import { APPLICATIONS_UI } from '../../../constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '../../../../../../store';
+import { useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../../../../../../store';
 import { deleteApplicationThunk } from '../../../store';
 import { getApplicationHealthAccentColor } from '../../../utils/healthVisual';
+import { forceSyncApplication } from '../../../utils/management/sync';
 
 interface ApplicationCardHeaderProps {
   application: Application;
@@ -27,6 +30,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
   ({ application, primaryNamespace, onEditApplication }) => {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
+    const isSyncing = useSelector((s: RootState) => Boolean(s.applications.syncing?.[application.name]));
     const [menuOpen, setMenuOpen] = useState(false);
 
     const accent = getApplicationHealthAccentColor(application.health?.status);
@@ -37,6 +41,9 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
     const handleMenuClick = useCallback(
       (info: { key: string; domEvent: React.MouseEvent | React.KeyboardEvent }) => {
         info.domEvent.stopPropagation();
+        if (isSyncing && (info.key === 'edit' || info.key === 'delete' || info.key === 'forceSync')) {
+          return;
+        }
         if (info.key === 'view') {
           navigate(detailsPath);
           return;
@@ -46,8 +53,13 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
           onEditApplication(application);
           return;
         }
+        if (info.key === 'forceSync') {
+          setMenuOpen(false);
+          forceSyncApplication(application.name).catch(() => undefined);
+          return;
+        }
         if (info.key === 'rollbacks') {
-          navigate(`${detailsPath}#snapshots`);
+          navigate(detailsPath);
           return;
         }
         if (info.key === 'delete') {
@@ -67,7 +79,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
           });
         }
       },
-      [application, dispatch, detailsPath, navigate, onEditApplication],
+      [application, dispatch, detailsPath, isSyncing, navigate, onEditApplication],
     );
 
     const hasInsightRow = Boolean(application.insights?.category || application.insights?.role);
@@ -172,7 +184,18 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
             menu={{
               items: [
                 { key: 'view', label: APPLICATIONS_UI.CARD.ACTIONS.VIEW, icon: <EyeOutlined /> },
-                { key: 'edit', label: APPLICATIONS_UI.CARD.ACTIONS.EDIT, icon: <EditOutlined /> },
+                {
+                  key: 'forceSync',
+                  label: APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC,
+                  icon: <SyncOutlined />,
+                  disabled: isSyncing,
+                },
+                {
+                  key: 'edit',
+                  label: APPLICATIONS_UI.CARD.ACTIONS.EDIT,
+                  icon: <EditOutlined />,
+                  disabled: isSyncing,
+                },
                 {
                   key: 'rollbacks',
                   label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS,
@@ -184,6 +207,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                   label: APPLICATIONS_UI.CARD.ACTIONS.DELETE,
                   icon: <DeleteOutlined />,
                   danger: true,
+                  disabled: isSyncing,
                 },
               ],
               onClick: handleMenuClick,

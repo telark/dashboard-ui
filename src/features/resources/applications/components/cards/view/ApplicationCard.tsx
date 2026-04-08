@@ -23,11 +23,11 @@ const FIELD_LABEL_WRAP: React.CSSProperties = {
 const GRID_STYLE: React.CSSProperties = {
   display: 'grid',
   gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-  columnGap: 12,
-  rowGap: 8,
-  paddingTop: 10,
-  borderTop: `2px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-  marginTop: 10,
+  columnGap: 10,
+  rowGap: 6,
+  paddingTop: 8,
+  borderTop: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+  marginTop: 8,
 };
 
 function isActivateKey(e: React.KeyboardEvent<HTMLDivElement>): boolean {

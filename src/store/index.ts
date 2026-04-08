@@ -5,6 +5,7 @@ import { workloadReducer } from '../features/resources/workloads/store';
 import { bridgeReducer } from '../features/resources/bridges/store';
 import { applicationsReducer } from '../features/resources/applications/store';
 import { insightsReducer } from '../features/insights/store';
+import { globalConfigReducer } from '../features/globalconfig/store';
 import { groupReducer as groupsReducer } from '../features/access-and-permissions/groups/store';
 import { userReducer as usersReducer } from '../features/access-and-permissions/users/store';
 import { categoryReducer as categoriesReducer } from '../features/access-and-permissions/categories/store';
@@ -35,6 +36,7 @@ const store = configureStore({
     workload: persistedWorkloadReducer,
     bridge: persistedBridgeReducer,
     applications: persistedApplicationsReducer,
+    globalconfig: globalConfigReducer,
     groups: persistedGroupsReducer,
     users: persistedUsersReducer,
     categories: categoriesReducer,

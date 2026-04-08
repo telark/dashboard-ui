@@ -16,6 +16,10 @@ import {
 } from '../features/resources/bridges/store/thunks/fetchThunks';
 import { GROUPER_DETAILS_CONSTANTS } from '../features/resources/groupers/constants';
 import { GROUPER_CARD_TEXTS, BRIDGE_CARD_TEXTS } from '../constants/layout/cards';
+import {
+  fetchAllApplicationsThunk,
+  fetchApplicationDetailsThunk,
+} from '../features/resources/applications/store/thunks/fetchThunks';
 
 export const WORKLOAD_SYNC_CONFIG: SyncConfig = {
   cardConstants: {
@@ -110,4 +114,25 @@ export const GROUPER_SYNC_CONFIG: SyncConfig = {
   getNameFromResource: (resource: any) => resource?.name,
   fetchAllResourcesThunk: fetchAllGroupersThunk,
   fetchResourceDetailsThunk: fetchGrouperDetailsThunk,
+};
+
+export const APPLICATION_SYNC_CONFIG: SyncConfig = {
+  cardConstants: {
+    POLLING_EFFECTS: SYNC_CONSTANTS.POLLING_EFFECTS,
+    POLLING: {
+      INTERVAL_MS: SYNC_CONSTANTS.POLLING.INTERVAL_MS,
+      MAX_WAIT_MS: SYNC_CONSTANTS.POLLING.MAX_WAIT_MS,
+    },
+    MESSAGE_DURATIONS: {
+      SUCCESS: SYNC_CONSTANTS.MESSAGE_DURATIONS.SUCCESS,
+      ERROR: SYNC_CONSTANTS.MESSAGE_DURATIONS.ERROR,
+    },
+    DEFAULT_SYNC_EFFECT: SYNC_CONSTANTS.DEFAULT_SYNC_EFFECT,
+    ERROR_KEY: SYNC_CONSTANTS.ERROR_KEY,
+  },
+  cardTimeoutMessage: 'Taking a bit longer than usual. Please try again in a moment.',
+  getResourceList: (state: RootState) => state.applications.applications,
+  getNameFromResource: (resource: any) => resource?.name,
+  fetchAllResourcesThunk: fetchAllApplicationsThunk,
+  fetchResourceDetailsThunk: fetchApplicationDetailsThunk,
 };

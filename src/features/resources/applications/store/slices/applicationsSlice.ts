@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { ApplicationsState } from '../../models';
 import {
   fetchAllApplicationsThunk,
@@ -43,6 +43,7 @@ const initialState: ApplicationsState = {
   snapshotsLoading: false,
   snapshotsError: null,
   snapshotManifests: {},
+  syncing: {},
 };
 
 const applicationsSlice = createSlice({
@@ -51,6 +52,23 @@ const applicationsSlice = createSlice({
   reducers: {
     clearDetails(state) {
       state.details = null;
+    },
+    startSync: (state, action: PayloadAction<string>) => {
+      const name = action.payload;
+      if (!state.syncing) state.syncing = {};
+      if (name) state.syncing[name] = true;
+    },
+    endSync: (state, action: PayloadAction<string>) => {
+      const name = action.payload;
+      if (!state.syncing) state.syncing = {};
+      if (name && state.syncing[name]) delete state.syncing[name];
+    },
+    clearOrphanedSyncing: (state, action: PayloadAction<string[]>) => {
+      const live = new Set(action.payload || []);
+      if (!state.syncing) state.syncing = {};
+      Object.keys(state.syncing).forEach((name) => {
+        if (!live.has(name)) delete state.syncing[name];
+      });
     },
   },
   extraReducers: (builder) => {
@@ -99,5 +117,6 @@ const applicationsSlice = createSlice({
   },
 });
 
-export const { clearDetails } = applicationsSlice.actions;
+export const { clearDetails, startSync, endSync, clearOrphanedSyncing } =
+  applicationsSlice.actions;
 export default applicationsSlice.reducer;

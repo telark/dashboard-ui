@@ -12,7 +12,7 @@ import { APP_ROUTES } from '../../../../../constants';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../../../../store';
 import { fetchApplicationSnapshotsThunk } from '../../store';
-import { EditApplicationPanel, ManageRollbacksPanel } from '../../components/panels';
+import { EditApplicationPanel, ManageRollbacksPanel, ManageSnapshotsPanel } from '../../components/panels';
 import { Form, Modal } from 'antd';
 import { deleteApplicationThunk } from '../../store';
 
@@ -23,6 +23,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
   const [editForm] = Form.useForm();
   const [editOpen, setEditOpen] = React.useState(false);
   const [rollbacksOpen, setRollbacksOpen] = React.useState(false);
+  const [snapshotsOpen, setSnapshotsOpen] = React.useState(false);
   const { details, loading, error } = useApplicationDetails(name);
 
   useEffect(() => {
@@ -77,6 +78,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
               setEditOpen(true);
             }}
             onManageRollbacks={() => setRollbacksOpen(true)}
+            onManageSnapshots={() => setSnapshotsOpen(true)}
             onDelete={() => {
               Modal.confirm({
                 title: APPLICATIONS_UI.CARD.ACTIONS.DELETE_CONFIRM_TITLE,
@@ -108,6 +110,12 @@ const ApplicationDetailsView: React.FC = memo(() => {
         open={rollbacksOpen}
         onClose={() => setRollbacksOpen(false)}
         detailRollbacks={details.rollbacks}
+      />
+      <ManageSnapshotsPanel
+        open={snapshotsOpen}
+        onClose={() => setSnapshotsOpen(false)}
+        applicationId={details.name}
+        detailSnapshots={details.snapshots}
       />
     </>
   );

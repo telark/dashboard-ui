@@ -4,7 +4,7 @@ import {
   SafetyOutlined,
   ControlOutlined,
   InfoCircleOutlined,
-  DatabaseOutlined,
+  AuditOutlined,
 } from '@ant-design/icons';
 import type { ComponentType, CSSProperties } from 'react';
 
@@ -65,9 +65,9 @@ export const SETTINGS_CONSTANTS = {
     },
     AI_DATA: {
       key: 'aiData' as const,
-      label: 'AI & Data',
-      description: 'AI insights provider and key validation',
-      icon: DatabaseOutlined,
+      label: 'Insights & Governance',
+      description: 'AI insights, excluded namespaces, and platform behavior',
+      icon: AuditOutlined,
     },
     PREFERENCES: {
       key: 'preferences' as const,

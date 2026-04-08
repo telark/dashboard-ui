@@ -13,3 +13,4 @@ export {
 
 export { triggerApplicationRollback } from './rollback';
 export { fetchApplicationRollbacks } from './rollbacks';
+export { triggerApplicationSync } from './sync';

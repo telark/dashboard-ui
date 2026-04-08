@@ -185,6 +185,8 @@ export const APPLICATIONS_UI = {
     ACTIONS: {
       VIEW: 'View',
       EDIT: 'Edit',
+      FORCE_SYNC: 'Force Sync',
+      MANAGE_SNAPSHOTS: 'Manage Snapshots',
       MANAGE_ROLLBACKS: 'Manage Rollbacks',
       CANCEL: 'Cancel',
       DELETE: 'Delete',

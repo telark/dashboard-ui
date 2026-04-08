@@ -3,7 +3,7 @@ import { DEFAULT_COLORS } from '../../../../../constants';
 import { SHARED_PAGE_CONSTANTS } from '../../../../../constants/shared/pages';
 
 interface ApplicationSectionEmptyStateProps {
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   title: string;
   description: string;
 }
@@ -17,7 +17,7 @@ const ApplicationSectionEmptyState: React.FC<ApplicationSectionEmptyStateProps> 
         padding: '24px 16px',
       }}
     >
-      <div style={SHARED_PAGE_CONSTANTS.LAYOUT.EMPTY_ICON}>{icon}</div>
+      {icon ? <div style={SHARED_PAGE_CONSTANTS.LAYOUT.EMPTY_ICON}>{icon}</div> : null}
       <h4
         style={{
           margin: 0,

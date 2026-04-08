@@ -1,6 +1,6 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
-import { CameraOutlined, HistoryOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { Collapse, Modal, Tooltip, message } from 'antd';
+import React, { memo, useMemo } from 'react';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { Collapse, Tooltip } from 'antd';
 import { format } from 'date-fns';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import { PAGE_CONTENT_LAYOUT } from '../../../../../constants/shared/pages';
@@ -10,35 +10,20 @@ import type {
   Application,
   ApplicationChangeLogEntry,
   ApplicationResourceRef,
-  ApplicationSnapshotSummary,
   ApplicationWorkloadUsage,
 } from '../../models';
 import { APPLICATIONS_UI } from '../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import ApplicationSectionEmptyState from '../../components/display/ApplicationSectionEmptyState';
-import { useDispatch, useSelector } from 'react-redux';
-import type { AppDispatch, RootState } from '../../../../../store';
-import {
-  fetchApplicationSnapshotsThunk,
-  fetchSnapshotManifestThunk,
-  triggerApplicationRollbackThunk,
-} from '../../store';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import { getResourceKindVisual } from '../../utils/resourceKindVisual';
-import ApplicationSnapshotManifestSlideOut from '../../components/snapshots/ApplicationSnapshotManifestSlideOut';
-import ApplicationSnapshotRow from '../../components/snapshots/ApplicationSnapshotRow';
-import SnapshotAggregateStorageBar from '../../components/snapshots/SnapshotAggregateStorageBar';
-import {
-  applicationSnapshotStableKey,
-  mergeApplicationSnapshotSources,
-} from '../../utils/mergeApplicationSnapshotSources';
-import { getCurrentUser } from '../../../../auth/utils';
 import KeyValueGrid from '../../components/details/KeyValueGrid';
 
 interface ApplicationDetailsContentProps {
   application: Application;
   onEdit: () => void;
+  onManageSnapshots: () => void;
   onManageRollbacks: () => void;
   onDelete: () => void;
 }
@@ -184,7 +169,7 @@ function StatMiniCard(props: { label: string; value: React.ReactNode }): React.R
 }
 
 const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo(
-  ({ application, onEdit, onManageRollbacks, onDelete }) => {
+  ({ application, onEdit, onManageSnapshots, onManageRollbacks, onDelete }) => {
     const sections = useMemo(() => {
       const created = application.createdAt ? (
         <TimeAgo date={application.createdAt} />
@@ -353,6 +338,21 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           </button>
           <button
             type="button"
+            onClick={onManageSnapshots}
+            style={{
+              borderRadius: 10,
+              padding: '8px 12px',
+              border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+              background: DEFAULT_COLORS.BACKGROUND_WHITE,
+              color: DEFAULT_COLORS.TEXT_PRIMARY,
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            {APPLICATIONS_UI.CARD.ACTIONS.MANAGE_SNAPSHOTS}
+          </button>
+          <button
+            type="button"
             onClick={onManageRollbacks}
             style={{
               borderRadius: 10,
@@ -364,7 +364,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
               cursor: 'pointer',
             }}
           >
-            Manage Rollbacks
+            {APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS}
           </button>
           <button
             type="button"
@@ -517,7 +517,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           {sections.resources.length === 0 ? (
             <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {resourcesByKind.map(([kind, rows]) => {
                 const visual = getResourceKindVisual(kind);
                 const IconKind = visual.Icon;
@@ -528,13 +528,13 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                         display: 'flex',
                         alignItems: 'center',
                         gap: 8,
-                        marginBottom: 6,
+                        marginBottom: 4,
                       }}
                     >
                       <span
                         style={{
-                          width: 24,
-                          height: 24,
+                          width: 22,
+                          height: 22,
                           borderRadius: 6,
                           display: 'flex',
                           alignItems: 'center',
@@ -565,7 +565,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                             alignItems: 'center',
                             flexWrap: 'wrap',
                             gap: 8,
-                            padding: '8px 10px',
+                            padding: '6px 10px',
                             borderRadius: APPLICATION_SECTION_LAYOUT.COLUMN_INNER_RADIUS,
                             border: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
                             background: DEFAULT_COLORS.BACKGROUND_WHITE,
@@ -580,9 +580,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                         >
                           <RowTag
                             text={r.namespace}
-                            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                            fontSize={11}
+                            {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                           />
                           <span
                             style={{
@@ -1127,18 +1125,12 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           )}
         </SettingsCard>
 
-        <SnapshotsSection
-          applicationId={application.name}
-          detailSnapshots={application.snapshots}
-        />
-
         <SettingsCard
           title={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.TITLE}
           description={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DESCRIPTION}
         >
           {sections.changeLog.length === 0 ? (
             <ApplicationSectionEmptyState
-              icon={<HistoryOutlined style={{ fontSize: 24 }} />}
               title={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.EMPTY_TITLE}
               description={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.EMPTY_DESCRIPTION}
             />
@@ -1361,148 +1353,6 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
 ApplicationDetailsContent.displayName = 'ApplicationDetailsContent';
 
 export default ApplicationDetailsContent;
-
-function SnapshotsSection(props: {
-  applicationId: string;
-  detailSnapshots: Application['snapshots'];
-}): React.ReactElement {
-  const { applicationId, detailSnapshots } = props;
-  const dispatch: AppDispatch = useDispatch();
-  const { snapshots, snapshotsLoading, snapshotsError, snapshotManifests } = useSelector(
-    (s: RootState) => s.applications,
-  );
-  const [activeManifestKey, setActiveManifestKey] = useState<string | null>(null);
-  const [rollbackBusyId, setRollbackBusyId] = useState<string | null>(null);
-  const snapUi = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
-
-  const mergedSnapshots = useMemo(
-    () => mergeApplicationSnapshotSources(detailSnapshots, snapshots),
-    [detailSnapshots, snapshots],
-  );
-
-  const manifestState = activeManifestKey ? snapshotManifests[activeManifestKey] : undefined;
-
-  const activeRowTitle = useMemo(() => {
-    if (!activeManifestKey) return '';
-    const row = mergedSnapshots.find((s) => applicationSnapshotStableKey(s) === activeManifestKey);
-    return row?.id ?? '';
-  }, [activeManifestKey, mergedSnapshots]);
-
-  const openManifest = (summary: ApplicationSnapshotSummary) => {
-    const manifestKey = applicationSnapshotStableKey(summary);
-    setActiveManifestKey(manifestKey);
-    void dispatch(
-      fetchSnapshotManifestThunk({
-        manifestKey,
-        applicationId,
-        namespace: summary.namespace,
-        generation: summary.generation,
-      }),
-    );
-  };
-
-  const handleRollbackRequest = useCallback(
-    (summary: ApplicationSnapshotSummary) => {
-      Modal.confirm({
-        title: snapUi.ROLLBACK_CONFIRM_TITLE,
-        content: snapUi.ROLLBACK_CONFIRM_CONTENT,
-        okText: snapUi.ROLLBACK_CONFIRM_OK,
-        cancelText: APPLICATIONS_UI.CARD.ACTIONS.CANCEL,
-        onOk: async () => {
-          const triggeredBy = getCurrentUser()?.username?.trim();
-          if (!triggeredBy) {
-            message.error(snapUi.ROLLBACK_USER_REQUIRED);
-            return;
-          }
-          const busyKey = applicationSnapshotStableKey(summary);
-          setRollbackBusyId(busyKey);
-          try {
-            await dispatch(
-              triggerApplicationRollbackThunk({
-                name: applicationId,
-                snapshotGeneration: summary.generation,
-                triggeredBy,
-              }),
-            ).unwrap();
-            message.success(snapUi.ROLLBACK_SUCCESS);
-            void dispatch(
-              fetchApplicationSnapshotsThunk({
-                applicationId,
-                snapshotRefs: detailSnapshots.length > 0 ? detailSnapshots : undefined,
-              }),
-            );
-          } catch {
-            message.error(snapUi.ROLLBACK_FAILED);
-          } finally {
-            setRollbackBusyId(null);
-          }
-        },
-      });
-    },
-    [applicationId, detailSnapshots, dispatch, snapUi],
-  );
-
-  return (
-    <>
-      <SettingsCard
-        title={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.TITLE}
-        description={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.DESCRIPTION}
-        headerAction={
-          !snapshotsLoading && mergedSnapshots.length > 0 ? (
-            <SnapshotAggregateStorageBar snapshots={mergedSnapshots} />
-          ) : null
-        }
-      >
-        {snapshotsLoading ? (
-          <div style={{ display: 'grid', rowGap: 10 }}>
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                style={{
-                  height: 44,
-                  borderRadius: 8,
-                  border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-                  background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-                }}
-              />
-            ))}
-          </div>
-        ) : mergedSnapshots.length === 0 ? (
-          snapshotsError ? (
-            <div style={{ fontSize: 13, color: DEFAULT_COLORS.DANGER }}>{snapshotsError}</div>
-          ) : (
-            <ApplicationSectionEmptyState
-              icon={<CameraOutlined style={{ fontSize: 24 }} />}
-              title={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.EMPTY_TITLE}
-              description={APPLICATIONS_UI.SECTIONS.SNAPSHOTS.EMPTY_DESCRIPTION}
-            />
-          )
-        ) : (
-          <div>
-            {mergedSnapshots.map((s, idx) => (
-              <ApplicationSnapshotRow
-                key={applicationSnapshotStableKey(s)}
-                snapshot={s}
-                showMarginBottom={idx < mergedSnapshots.length - 1}
-                onViewManifest={openManifest}
-                onRollback={handleRollbackRequest}
-                rollbackLoading={rollbackBusyId === applicationSnapshotStableKey(s)}
-              />
-            ))}
-          </div>
-        )}
-      </SettingsCard>
-
-      <ApplicationSnapshotManifestSlideOut
-        open={activeManifestKey != null}
-        manifestKey={activeManifestKey}
-        onClose={() => setActiveManifestKey(null)}
-        title={activeRowTitle}
-        manifestState={manifestState}
-      />
-    </>
-  );
-}
 
 function MutedText({ value }: { value: string }) {
   return <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>{value}</div>;
