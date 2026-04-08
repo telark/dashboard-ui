@@ -26,6 +26,7 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
             display: 'grid',
             gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
             gap: 16,
+            alignItems: 'stretch',
           }}
         >
           {applications.map((application) => (

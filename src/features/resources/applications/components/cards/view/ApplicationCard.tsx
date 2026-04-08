@@ -24,10 +24,10 @@ const GRID_STYLE: React.CSSProperties = {
   display: 'grid',
   gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
   columnGap: 10,
-  rowGap: 6,
-  paddingTop: 8,
+  rowGap: 4,
+  paddingTop: 6,
   borderTop: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-  marginTop: 8,
+  marginTop: 6,
 };
 
 function isActivateKey(e: React.KeyboardEvent<HTMLDivElement>): boolean {
@@ -49,8 +49,8 @@ function CompactFieldBlock(props: {
           color: DEFAULT_COLORS.TEXT_PRIMARY,
           fontWeight: 700,
           fontSize: APPLICATION_SECTION_LAYOUT.FIELD_VALUE_FONT_SIZE,
-          lineHeight: 1.35,
-          marginTop: 2,
+          lineHeight: 1.25,
+          marginTop: 1,
           wordBreak: 'break-word',
         }}
       >
@@ -83,9 +83,12 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
           background: DEFAULT_COLORS.BACKGROUND_WHITE,
           borderRadius: APPLICATION_SECTION_LAYOUT.CARD_RADIUS,
           border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-          padding: APPLICATION_SECTION_LAYOUT.CARD_PADDING,
+          padding: 16,
           boxSizing: 'border-box',
           cursor: 'pointer',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <ApplicationCardHeader

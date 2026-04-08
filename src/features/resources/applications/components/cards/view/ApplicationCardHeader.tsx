@@ -138,7 +138,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
           </div>
           <p
             style={{
-              margin: '2px 0 0',
+              margin: '1px 0 0',
               fontSize: 12,
               fontWeight: 500,
               color: DEFAULT_COLORS.TEXT_MUTED,

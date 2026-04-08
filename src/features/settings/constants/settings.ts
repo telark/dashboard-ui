@@ -18,9 +18,9 @@ export type SettingsSectionKey =
 
 const ROW_TAG_DEFAULTS = {
   COMING_SOON_TEXT: 'Coming soon',
-  BACKGROUND: '#F0F5FF',
-  COLOR: '#000',
-  FONT_SIZE: 11,
+  BACKGROUND: '#F1F5F9',
+  COLOR: '#64748B',
+  FONT_SIZE: 10,
 } as const;
 
 export interface SettingsSectionRowTag {

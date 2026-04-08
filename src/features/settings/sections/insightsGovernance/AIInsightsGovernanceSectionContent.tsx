@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Input, Select, message } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
-import { SETTINGS_CONSTANTS } from '../../constants';
 import { Client, discoveryApiClient, enrichmentApiClient, exporterApiClient } from '../../../../api';
 import { Endpoints } from '../../../../constants';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as C, ProviderKey } from './constants';
@@ -13,7 +12,8 @@ import { selectGlobalConfigState } from '../../../globalconfig/store';
 import type { AppDispatch } from '../../../../store';
 import { fetchGlobalConfigThunk } from '../../../globalconfig/store';
 
-const { CONTENT } = SETTINGS_CONSTANTS;
+const SECTION_GAP_PX = 12;
+const PLATFORM_INPUT_WIDTH_PX = 160;
 
 type ValidationApiResponse = { ok: boolean; reason?: string };
 type NamespacesApiData = { allowed: string[]; excluded: string[] };
@@ -54,6 +54,7 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
   const [namespacesOptions, setNamespacesOptions] = useState<string[]>([]);
   const [excludedNamespaces, setExcludedNamespaces] = useState<string[]>([]);
   const [savingNamespaces, setSavingNamespaces] = useState(false);
+  const [excludedHydratedFromGlobalConfig, setExcludedHydratedFromGlobalConfig] = useState(false);
 
   const [fetchIntervalMinutes, setFetchIntervalMinutes] = useState<number>(1);
   const [snapshotsMaxPerApp, setSnapshotsMaxPerApp] = useState<number>(5);
@@ -77,6 +78,7 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
     setLastValidatedKey(key ? key.trim() : null);
 
     setExcludedNamespaces(Array.isArray(cfg?.excludedNamespaces) ? cfg.excludedNamespaces : []);
+    setExcludedHydratedFromGlobalConfig(true);
 
     const seconds = Number(cfg?.userSettings?.fetchIntervalSeconds ?? 60);
     setFetchIntervalMinutes(Math.max(1, Math.round(seconds / 60)));
@@ -84,6 +86,11 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
     const maxPerApp = Number(cfg?.snapshots?.maxPerApp ?? 5);
     setSnapshotsMaxPerApp(Number.isFinite(maxPerApp) ? maxPerApp : 5);
   }, [globalConfig?.data]);
+
+  const excludedFromGlobalConfig = useMemo(
+    () => (Array.isArray(globalConfig?.data?.excludedNamespaces) ? globalConfig.data.excludedNamespaces : []),
+    [globalConfig?.data?.excludedNamespaces],
+  );
 
   const validateDisabled = useMemo(() => {
     const trimmed = apiKey.trim();
@@ -164,13 +171,22 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
       const excluded = res?.data?.excluded ?? [];
       const all = [...allowed, ...excluded].filter(Boolean);
       setNamespacesOptions(all);
-      if (excludedNamespaces.length === 0 && excluded.length > 0) {
+      if (
+        excludedHydratedFromGlobalConfig &&
+        excludedFromGlobalConfig.length === 0 &&
+        excludedNamespaces.length === 0 &&
+        excluded.length > 0
+      ) {
         setExcludedNamespaces(excluded);
       }
     } catch {
       message.error(C.MESSAGES.NAMESPACES_LOAD_FAILED);
     }
-  }, [excludedNamespaces.length]);
+  }, [
+    excludedFromGlobalConfig.length,
+    excludedHydratedFromGlobalConfig,
+    excludedNamespaces.length,
+  ]);
 
   useEffect(() => {
     loadNamespaces();
@@ -232,14 +248,22 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
   return (
     <>
       <SettingsCard title={C.LABELS.AI_INSIGHTS_TITLE} description={C.LABELS.AI_INSIGHTS_DESCRIPTION}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 10,
+            padding: '2px 0',
+          }}
+        >
           <div style={{ fontWeight: 700 }}>{C.LABELS.ENABLE_AI_LABEL}</div>
           <Switch checked={aiEnabled} onChange={setAiEnabled} />
         </div>
       </SettingsCard>
 
       {aiEnabled ? (
-        <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
+        <div style={{ marginTop: SECTION_GAP_PX }}>
           <SettingsCard title={C.LABELS.PROVIDER_CARD_TITLE} description={C.LABELS.PROVIDER_CARD_DESCRIPTION}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <Select
@@ -276,7 +300,7 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
         </div>
       ) : null}
 
-      <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
+      <div style={{ marginTop: SECTION_GAP_PX }}>
         <SettingsCard
           title={C.LABELS.NAMESPACES_TITLE}
           description={C.LABELS.NAMESPACES_DESCRIPTION}
@@ -297,7 +321,7 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
         </SettingsCard>
       </div>
 
-      <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
+      <div style={{ marginTop: SECTION_GAP_PX }}>
         <SettingsCard title={C.LABELS.PLATFORM_TITLE} description={C.LABELS.PLATFORM_DESCRIPTION}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
@@ -305,9 +329,9 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
               <Input
                 value={String(fetchIntervalMinutes)}
                 onChange={(e) => setFetchIntervalMinutes(Number(e.target.value || 0))}
-                style={{ width: 160 }}
+                style={{ width: PLATFORM_INPUT_WIDTH_PX }}
               />
-              <Button loading={savingInterval} onClick={saveFetchInterval}>
+              <Button loading={savingInterval} onClick={saveFetchInterval} style={{ minWidth: 120 }}>
                 {C.LABELS.PLATFORM_SAVE_INTERVAL_BUTTON}
               </Button>
             </div>
@@ -316,9 +340,9 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
               <Input
                 value={String(snapshotsMaxPerApp)}
                 onChange={(e) => setSnapshotsMaxPerApp(Number(e.target.value || 0))}
-                style={{ width: 160 }}
+                style={{ width: PLATFORM_INPUT_WIDTH_PX }}
               />
-              <Button loading={savingSnapshotsMax} onClick={saveSnapshotsMax}>
+              <Button loading={savingSnapshotsMax} onClick={saveSnapshotsMax} style={{ minWidth: 120 }}>
                 {C.LABELS.PLATFORM_SAVE_SNAPSHOTS_BUTTON}
               </Button>
             </div>
@@ -326,7 +350,7 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
         </SettingsCard>
       </div>
 
-      <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
+      <div style={{ marginTop: SECTION_GAP_PX }}>
         <SettingsCard title={C.LABELS.SAVE_TITLE} description={C.LABELS.SAVE_DESCRIPTION}>
           <Button
             type="primary"
