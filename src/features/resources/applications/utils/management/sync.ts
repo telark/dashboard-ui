@@ -2,7 +2,7 @@ import { message } from 'antd';
 import store from '../../../../../store';
 import { SYNC_MESSAGES } from '../../../../../constants/layout/modes';
 import { SYNC_CONSTANTS } from '../../../../../constants/config/sync';
-import { handleSyncEffect, handleSyncError } from '../../../../../utils/shared/sync';
+import { handleSyncError } from '../../../../../utils/shared/sync';
 import { buildCardSyncKey, destroySyncMessage } from '../../../../../utils/helpers/sync';
 import { APPLICATION_SYNC_CONFIG } from '../../../../../config/syncConfig';
 import { triggerApplicationSync } from '../../clients';
@@ -33,14 +33,26 @@ export const forceSyncApplication = async (name: string): Promise<void> => {
     });
 
     const res = await triggerApplicationSync(name);
-    const effect = res?.data?.syncEffect ?? SYNC_CONSTANTS.DEFAULT_SYNC_EFFECT;
+    const status = String(res?.data?.status || '').trim();
+    if (status && status !== 'pending' && status !== 'in_progress' && status !== 'success') {
+      destroySyncMessage(message, key);
+      message.open({
+        type: 'error',
+        content: res?.data?.error || `Sync failed: ${status}`,
+        key,
+        duration: SYNC_CONSTANTS.MESSAGE_DURATIONS.ERROR,
+      });
+      return;
+    }
 
-    await handleSyncEffect({
-      effect,
-      name,
+    // Non-blocking: the backend only queues the sync now.
+    store.dispatch(APPLICATION_SYNC_CONFIG.fetchAllResourcesThunk());
+    destroySyncMessage(message, key);
+    message.open({
+      type: 'success',
+      content: `Sync queued for ${name}.`,
       key,
-      message,
-      config: APPLICATION_SYNC_CONFIG,
+      duration: SYNC_CONSTANTS.MESSAGE_DURATIONS.SUCCESS,
     });
   } catch (err: unknown) {
     destroySyncMessage(message, key);
