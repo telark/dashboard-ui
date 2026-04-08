@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { Button, Dropdown, Modal } from 'antd';
 import {
   DeleteOutlined,
@@ -82,7 +82,24 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
       [application, dispatch, detailsPath, isSyncing, navigate, onEditApplication],
     );
 
+    const menuButtonStyle = useMemo(
+      () => ({
+        color: menuOpen ? DEFAULT_COLORS.TEXT_PRIMARY : DEFAULT_COLORS.ICON_SECONDARY,
+        flexShrink: 0,
+        width: 30,
+        height: 30,
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 10,
+        background: menuOpen ? DEFAULT_COLORS.BACKGROUND_HOVER : 'transparent',
+        transition: 'background 120ms ease, color 120ms ease',
+      }),
+      [menuOpen],
+    );
+
     const hasInsightRow = Boolean(application.insights?.category || application.insights?.role);
+    const descriptionText = String(application.description || '').trim();
 
     return (
       <div
@@ -108,32 +125,29 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
             >
               {application.displayName || application.name}
             </h3>
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 5,
-                padding: '1px 8px',
-                borderRadius: 999,
-                fontSize: 11,
-                fontWeight: 600,
-                background: accent,
-                color: DEFAULT_COLORS.BACKGROUND_WHITE,
-                lineHeight: 1.45,
-              }}
-            >
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
               <span
+                aria-hidden
                 style={{
-                  width: 6,
-                  height: 6,
+                  width: 8,
+                  height: 8,
                   borderRadius: '50%',
-                  background: DEFAULT_COLORS.BACKGROUND_WHITE,
-                  opacity: 0.95,
+                  background: accent,
+                  boxShadow: `0 0 0 3px ${DEFAULT_COLORS.CHIP_CUSTOM_BG}`,
                   flexShrink: 0,
                 }}
-                aria-hidden
               />
-              {statusText}
+              <span
+                style={{
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: DEFAULT_COLORS.TEXT_MUTED,
+                  lineHeight: 1.2,
+                  textTransform: 'capitalize',
+                }}
+              >
+                {statusText}
+              </span>
             </span>
           </div>
           <p
@@ -146,7 +160,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
               wordBreak: 'break-word',
             }}
           >
-            {application.name}
+            {descriptionText || application.name}
           </p>
           {hasInsightRow ? (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
@@ -172,8 +186,8 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
           <RowTag
             text={primaryNamespace}
-            background={DEFAULT_COLORS.CHIP_BLUE_BG}
-            color={DEFAULT_COLORS.CHIP_BLUE_TEXT}
+            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+            color={DEFAULT_COLORS.TEXT_MUTED}
             fontSize={11}
           />
           <Dropdown
@@ -221,10 +235,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
               onClick={(e) => {
                 e.stopPropagation();
               }}
-              style={{
-                color: menuOpen ? DEFAULT_COLORS.TEXT_PRIMARY : DEFAULT_COLORS.ICON_SECONDARY,
-                flexShrink: 0,
-              }}
+              style={menuButtonStyle}
             />
           </Dropdown>
         </div>

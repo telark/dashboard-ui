@@ -24,7 +24,7 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+            gridTemplateColumns: '1fr',
             gap: 16,
             alignItems: 'stretch',
           }}
