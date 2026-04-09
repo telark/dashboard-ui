@@ -24,6 +24,14 @@ const ApplicationsGlobalView: React.FC = memo(() => {
       ? Number(s.globalconfig.data.userSettings.fetchIntervalSeconds)
       : 60,
   );
+  const excludedNamespaces = useSelector(
+    (s: RootState) => s.globalconfig.data?.excludedNamespaces ?? [],
+  );
+
+  const visibleApplications = useMemo(
+    () => filterByExcludedNamespaces(applications, excludedNamespaces),
+    [applications, excludedNamespaces],
+  );
   const hasTriggeredInitialLoad = useRef(false);
 
   const { searchValue, onSearchChange } = useApplications();
@@ -51,9 +59,9 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
 
   const filterFields: FilterField[] = useMemo(() => {
-    const statusOptions = uniqOptions(applications, (a) => a.health?.status);
-    const managedByOptions = uniqOptions(applications, (a) => a.managed?.by);
-    const namespaceOptions = uniqNamespaceOptions(applications);
+    const statusOptions = uniqOptions(visibleApplications, (a) => a.health?.status);
+    const managedByOptions = uniqOptions(visibleApplications, (a) => a.managed?.by);
+    const namespaceOptions = uniqNamespaceOptions(visibleApplications);
     return [
       { key: 'status', label: 'STATUS', type: 'multiSelect', multiSelectOptions: statusOptions },
       {
@@ -69,12 +77,12 @@ const ApplicationsGlobalView: React.FC = memo(() => {
         multiSelectOptions: namespaceOptions,
       },
     ];
-  }, [applications]);
+  }, [visibleApplications]);
 
   const filteredApplications = useMemo(() => {
-    const base = filterApplications(applications, searchValue);
+    const base = filterApplications(visibleApplications, searchValue);
     return applyApplicationFilters(base, appliedFilters);
-  }, [applications, appliedFilters, searchValue]);
+  }, [visibleApplications, appliedFilters, searchValue]);
 
   const [isRetrying, setIsRetrying] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
@@ -152,7 +160,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     );
   }
 
-  if (!loading && applications.length === 0) {
+  if (!loading && visibleApplications.length === 0) {
     return <ApplicationsMainEmpty onRefresh={handleLoadApplications} />;
   }
 
@@ -189,6 +197,14 @@ const ApplicationsGlobalView: React.FC = memo(() => {
 ApplicationsGlobalView.displayName = 'ApplicationsGlobalView';
 
 export default ApplicationsGlobalView;
+
+function filterByExcludedNamespaces(apps: Application[], excluded: string[]): Application[] {
+  if (excluded.length === 0) return apps;
+  const excludedSet = new Set(excluded);
+  return apps.filter((a) =>
+    (a.namespaces?.items ?? []).some((n) => !excludedSet.has(n.name ?? '')),
+  );
+}
 
 function uniqOptions(
   apps: Application[],
