@@ -201,9 +201,10 @@ export default ApplicationsGlobalView;
 function filterByExcludedNamespaces(apps: Application[], excluded: string[]): Application[] {
   if (excluded.length === 0) return apps;
   const excludedSet = new Set(excluded);
-  return apps.filter((a) =>
-    (a.namespaces?.items ?? []).some((n) => !excludedSet.has(n.name ?? '')),
-  );
+  return apps.filter((a) => {
+    const primaryNs = (a.namespaces?.items ?? [])[0]?.name ?? '';
+    return primaryNs === '' || !excludedSet.has(primaryNs);
+  });
 }
 
 function uniqOptions(
