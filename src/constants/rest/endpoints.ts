@@ -127,7 +127,7 @@ export const Endpoints = {
   },
   NAMESPACES: {
     GET: {
-      path: 'namespaces/get',
+      path: 'analyze/namespaces/get',
       method: 'GET',
     },
   },
