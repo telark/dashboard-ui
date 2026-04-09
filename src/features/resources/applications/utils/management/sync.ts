@@ -34,23 +34,22 @@ export const forceSyncApplication = async (name: string): Promise<void> => {
 
     const res = await triggerApplicationSync(name);
     const status = String(res?.data?.status || '').trim();
-    if (status && status !== 'pending' && status !== 'in_progress' && status !== 'success') {
-      destroySyncMessage(message, key);
+    destroySyncMessage(message, key);
+
+    if (status !== 'success') {
       message.open({
         type: 'error',
-        content: res?.data?.error || `Sync failed: ${status}`,
+        content: res?.data?.error || `Sync failed for ${name}.`,
         key,
         duration: SYNC_CONSTANTS.MESSAGE_DURATIONS.ERROR,
       });
       return;
     }
 
-    // Non-blocking: the backend only queues the sync now.
     store.dispatch(APPLICATION_SYNC_CONFIG.fetchAllResourcesThunk());
-    destroySyncMessage(message, key);
     message.open({
       type: 'success',
-      content: `Sync queued for ${name}.`,
+      content: `Sync complete for ${name}.`,
       key,
       duration: SYNC_CONSTANTS.MESSAGE_DURATIONS.SUCCESS,
     });

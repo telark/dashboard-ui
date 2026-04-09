@@ -3,7 +3,6 @@ import { InfoCircleOutlined } from '@ant-design/icons';
 import { Collapse, Tooltip } from 'antd';
 import { format } from 'date-fns';
 import { DEFAULT_COLORS } from '../../../../../constants';
-import { PAGE_CONTENT_LAYOUT } from '../../../../../constants/shared/pages';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type {
@@ -18,6 +17,7 @@ import ApplicationSectionEmptyState from '../../components/display/ApplicationSe
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import { getResourceKindVisual } from '../../utils/resourceKindVisual';
 import KeyValueGrid from '../../components/details/KeyValueGrid';
+import ApplicationDetailsToolbar from '../../components/layout/ApplicationDetailsToolbar';
 import {
   APPLICATION_SUMMARY_COLUMN_TITLE_STYLE,
   APPLICATION_SUMMARY_SUBHEADING_STYLE,
@@ -175,79 +175,22 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         <div
           style={{
             position: 'sticky',
-            top: PAGE_CONTENT_LAYOUT.HEADER_OFFSET_PX,
+            top: 60,
             zIndex: 5,
             display: 'flex',
-            gap: 10,
             alignItems: 'center',
             justifyContent: 'flex-end',
-            padding: '10px 12px',
+            padding: '8px 0',
             background: DEFAULT_COLORS.BACKGROUND_WHITE,
-            border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-            borderRadius: 12,
-            boxShadow: '0 6px 18px rgba(0,0,0,0.06)',
+            borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
           }}
         >
-          <button
-            type="button"
-            onClick={onEdit}
-            style={{
-              borderRadius: 10,
-              padding: '8px 12px',
-              border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-              background: DEFAULT_COLORS.BACKGROUND_WHITE,
-              color: DEFAULT_COLORS.TEXT_PRIMARY,
-              fontWeight: 700,
-              cursor: 'pointer',
-            }}
-          >
-            Edit
-          </button>
-          <button
-            type="button"
-            onClick={onManageSnapshots}
-            style={{
-              borderRadius: 10,
-              padding: '8px 12px',
-              border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-              background: DEFAULT_COLORS.BACKGROUND_WHITE,
-              color: DEFAULT_COLORS.TEXT_PRIMARY,
-              fontWeight: 700,
-              cursor: 'pointer',
-            }}
-          >
-            {APPLICATIONS_UI.CARD.ACTIONS.MANAGE_SNAPSHOTS}
-          </button>
-          <button
-            type="button"
-            onClick={onManageRollbacks}
-            style={{
-              borderRadius: 10,
-              padding: '8px 12px',
-              border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-              background: DEFAULT_COLORS.BACKGROUND_WHITE,
-              color: DEFAULT_COLORS.TEXT_PRIMARY,
-              fontWeight: 700,
-              cursor: 'pointer',
-            }}
-          >
-            {APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS}
-          </button>
-          <button
-            type="button"
-            onClick={onDelete}
-            style={{
-              borderRadius: 10,
-              padding: '8px 12px',
-              border: `1px solid ${DEFAULT_COLORS.DANGER}`,
-              background: DEFAULT_COLORS.DANGER,
-              color: DEFAULT_COLORS.BACKGROUND_WHITE,
-              fontWeight: 800,
-              cursor: 'pointer',
-            }}
-          >
-            Delete
-          </button>
+          <ApplicationDetailsToolbar
+            onEdit={onEdit}
+            onManageSnapshots={onManageSnapshots}
+            onManageRollbacks={onManageRollbacks}
+            onDelete={onDelete}
+          />
         </div>
 
         <SettingsCard
@@ -488,7 +431,6 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         >
           {!sections.insights || !sections.insights.enriched ? (
             <ApplicationSectionEmptyState
-              icon={<InfoCircleOutlined style={{ fontSize: 24 }} />}
               title={APPLICATIONS_UI.SECTIONS.INSIGHTS.EMPTY_TITLE}
               description={APPLICATIONS_UI.SECTIONS.INSIGHTS.EMPTY_DESCRIPTION}
             />
