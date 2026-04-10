@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { ApplicationsState } from '../../models';
+import type { ApplicationsState, SyncStatusValue } from '../../models';
 import {
   fetchAllApplicationsThunk,
   fetchAllApplicationsSilentThunk,
@@ -44,6 +44,7 @@ const initialState: ApplicationsState = {
   snapshotsError: null,
   snapshotManifests: {},
   syncing: {},
+  syncStatus: {},
 };
 
 const applicationsSlice = createSlice({
@@ -69,6 +70,20 @@ const applicationsSlice = createSlice({
       Object.keys(state.syncing).forEach((name) => {
         if (!live.has(name)) delete state.syncing[name];
       });
+    },
+    setSyncStatus: (state, action: PayloadAction<{ name: string; status: SyncStatusValue }>) => {
+      if (!state.syncStatus) state.syncStatus = {};
+      const { name, status } = action.payload;
+      if (name) state.syncStatus[name] = status;
+    },
+    downgradeOrphanedSyncStatus: (state, action: PayloadAction<string[]>) => {
+      if (!state.syncStatus) return;
+      const live = new Set(action.payload || []);
+      for (const name of Object.keys(state.syncStatus)) {
+        if (state.syncStatus[name] === 'syncing' && !live.has(name)) {
+          state.syncStatus[name] = 'failed';
+        }
+      }
     },
   },
   extraReducers: (builder) => {
@@ -117,6 +132,12 @@ const applicationsSlice = createSlice({
   },
 });
 
-export const { clearDetails, startSync, endSync, clearOrphanedSyncing } =
-  applicationsSlice.actions;
+export const {
+  clearDetails,
+  startSync,
+  endSync,
+  clearOrphanedSyncing,
+  setSyncStatus,
+  downgradeOrphanedSyncStatus,
+} = applicationsSlice.actions;
 export default applicationsSlice.reducer;

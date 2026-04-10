@@ -1,6 +1,8 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { Button, Dropdown, Modal } from 'antd';
 import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
   DeleteOutlined,
   EditOutlined,
   EyeOutlined,
@@ -10,9 +12,10 @@ import {
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES } from '../../../../../../constants';
-import type { Application } from '../../../models';
+import type { Application, SyncStatusValue } from '../../../models';
 import { APPLICATIONS_UI } from '../../../constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
+import FancySpinner from '../../../../../../components/animation/FancySpinner';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../../../../store';
@@ -26,11 +29,33 @@ interface ApplicationCardHeaderProps {
   onEditApplication: (application: Application) => void;
 }
 
+const SYNC_TAG_CONFIG: Record<SyncStatusValue, { bg: string; color: string; icon: React.ReactNode; label: string }> = {
+  syncing: {
+    bg: DEFAULT_COLORS.CHIP_CUSTOM_BG,
+    color: DEFAULT_COLORS.TEXT_MUTED,
+    icon: <FancySpinner size={12} ringThickness={2} color={DEFAULT_COLORS.TEXT_MUTED} />,
+    label: APPLICATIONS_UI.CARD.SYNC_STATUS.SYNCING,
+  },
+  success: {
+    bg: '#dcfce7',
+    color: '#166534',
+    icon: <CheckCircleOutlined style={{ fontSize: 11 }} />,
+    label: APPLICATIONS_UI.CARD.SYNC_STATUS.SUCCESS,
+  },
+  failed: {
+    bg: '#fee2e2',
+    color: '#991b1b',
+    icon: <CloseCircleOutlined style={{ fontSize: 11 }} />,
+    label: APPLICATIONS_UI.CARD.SYNC_STATUS.FAILED,
+  },
+};
+
 const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
   ({ application, primaryNamespace, onEditApplication }) => {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const isSyncing = useSelector((s: RootState) => Boolean(s.applications.syncing?.[application.name]));
+    const syncStatus = useSelector((s: RootState) => s.applications.syncStatus?.[application.name] as SyncStatusValue | undefined);
     const [menuOpen, setMenuOpen] = useState(false);
 
     const accent = getApplicationHealthAccentColor(application.health?.status);
@@ -184,6 +209,24 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
           ) : null}
         </div>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          {syncStatus ? (
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 5,
+                background: SYNC_TAG_CONFIG[syncStatus].bg,
+                color: SYNC_TAG_CONFIG[syncStatus].color,
+                padding: '2px 10px',
+                borderRadius: 999,
+                fontWeight: 700,
+                fontSize: 11,
+              }}
+            >
+              {SYNC_TAG_CONFIG[syncStatus].icon}
+              <span>{SYNC_TAG_CONFIG[syncStatus].label}</span>
+            </span>
+          ) : null}
           <RowTag
             text={primaryNamespace}
             background={DEFAULT_COLORS.CHIP_CUSTOM_BG}

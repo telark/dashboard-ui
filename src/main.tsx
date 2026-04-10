@@ -8,7 +8,10 @@ import store from './store';
 import App from './App';
 import { FancySpinner } from './components/animation';
 import { SHARED_DETAILS_CONSTANTS } from './constants';
-import { clearOrphanedSyncing } from './features/resources/applications/store/slices/applicationsSlice';
+import {
+  clearOrphanedSyncing,
+  downgradeOrphanedSyncStatus,
+} from './features/resources/applications/store/slices/applicationsSlice';
 import { listApplicationSyncInFlight } from './features/resources/applications/utils/management/syncInFlight';
 import { fetchGlobalConfigThunk } from './features/globalconfig/store';
 import { AppearanceProvider } from './features/settings/sections/appearance';
@@ -31,6 +34,7 @@ startTransition(() => {
           onBeforeLift={() => {
             const live = listApplicationSyncInFlight();
             store.dispatch(clearOrphanedSyncing(live));
+            store.dispatch(downgradeOrphanedSyncStatus(live));
             store.dispatch(fetchGlobalConfigThunk());
           }}
         >

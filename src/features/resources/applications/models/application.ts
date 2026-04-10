@@ -236,6 +236,8 @@ export interface Application {
   history: ApplicationHistory;
 }
 
+export type SyncStatusValue = 'syncing' | 'success' | 'failed';
+
 export interface ApplicationsState {
   applications: Application[];
   details: Application | null;
@@ -246,4 +248,5 @@ export interface ApplicationsState {
   snapshotsError: string | null;
   snapshotManifests: Record<string, SnapshotManifestState>;
   syncing: Record<string, boolean>;
+  syncStatus: Record<string, SyncStatusValue>;
 }

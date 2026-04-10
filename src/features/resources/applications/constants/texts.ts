@@ -194,5 +194,10 @@ export const APPLICATIONS_UI = {
       DELETE_CONFIRM_CONTENT: 'This action cannot be undone.',
       ROLLBACKS_PLACEHOLDER: 'Rollbacks are managed from the snapshots section.',
     },
+    SYNC_STATUS: {
+      SYNCING: 'Syncing',
+      SUCCESS: 'Synced',
+      FAILED: 'Sync failed',
+    },
   },
 } as const;
