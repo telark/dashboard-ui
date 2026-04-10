@@ -8,11 +8,9 @@ import store from './store';
 import App from './App';
 import { FancySpinner } from './components/animation';
 import { SHARED_DETAILS_CONSTANTS } from './constants';
-import {
-  clearOrphanedSyncing,
-  downgradeOrphanedSyncStatus,
-} from './features/resources/applications/store/slices/applicationsSlice';
+import { clearOrphanedSyncing } from './features/resources/applications/store/slices/applicationsSlice';
 import { listApplicationSyncInFlight } from './features/resources/applications/utils/management/syncInFlight';
+import { forceSyncApplication } from './features/resources/applications/utils/management/sync';
 import { fetchGlobalConfigThunk } from './features/globalconfig/store';
 import { AppearanceProvider } from './features/settings/sections/appearance';
 import './styles/index.css';
@@ -34,7 +32,17 @@ startTransition(() => {
           onBeforeLift={() => {
             const live = listApplicationSyncInFlight();
             store.dispatch(clearOrphanedSyncing(live));
-            store.dispatch(downgradeOrphanedSyncStatus(live));
+
+            const { syncStatus } = store.getState().applications;
+            if (syncStatus) {
+              const liveSet = new Set(live);
+              for (const name of Object.keys(syncStatus)) {
+                if (syncStatus[name] === 'syncing' && !liveSet.has(name)) {
+                  forceSyncApplication(name);
+                }
+              }
+            }
+
             store.dispatch(fetchGlobalConfigThunk());
           }}
         >

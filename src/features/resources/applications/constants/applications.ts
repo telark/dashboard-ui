@@ -2,6 +2,8 @@ import { DEFAULT_COLORS } from '../../../../constants';
 import { SHARED_PAGE_CONSTANTS } from '../../../../constants/shared/pages';
 import { SHARED_DETAILS_CONSTANTS } from '../../../../constants/shared/details';
 
+export const APPLICATIONS_PERSIST_KEY = 'persist:applications';
+
 export const APPLICATIONS_CONSTANTS = {
   UI: {
     EMPTY_STATE_MAX_WIDTH: SHARED_PAGE_CONSTANTS.UI.EMPTY_STATE_MAX_WIDTH,
