@@ -65,34 +65,13 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
         <div style={{ display: 'flex', flexDirection: 'column', gap: contentGap }}>
           <ApplicationsHeader />
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr auto',
-              alignItems: 'flex-end',
-              gap: 16,
-              minHeight: '60px',
-              width: '100%',
-            }}
-          >
-            <div style={{ minHeight: '60px' }} />
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'flex-end',
-                justifyContent: 'flex-end',
-                minHeight: '60px',
-              }}
-            >
-              <ApplicationsToolbar
-                searchValue={searchValue}
-                onSearchChange={onSearchChange}
-                onOpenFilters={onOpenFilters}
-                layoutMode={layoutMode}
-                onLayoutModeChange={(mode) => dispatch(setLayoutMode(mode))}
-              />
-            </div>
-          </div>
+          <ApplicationsToolbar
+            searchValue={searchValue}
+            onSearchChange={onSearchChange}
+            onOpenFilters={onOpenFilters}
+            layoutMode={layoutMode}
+            onLayoutModeChange={(mode) => dispatch(setLayoutMode(mode))}
+          />
 
           {content}
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
