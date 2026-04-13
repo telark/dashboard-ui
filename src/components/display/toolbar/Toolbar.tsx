@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown } from 'antd';
+import { Dropdown, Tooltip } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../constants';
 import type { ToolbarConfig } from '../../../interfaces/layout/toolbar';
@@ -21,6 +21,15 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
   }, [search]);
 
   if (!config) return null;
+
+  const withTooltip = (node: React.ReactNode, tooltip?: string, key?: string) => {
+    if (!tooltip) return <React.Fragment key={key}>{node}</React.Fragment>;
+    return (
+      <Tooltip key={key} title={tooltip}>
+        <span style={{ display: 'inline-flex' }}>{node}</span>
+      </Tooltip>
+    );
+  };
 
   return (
     <div
@@ -69,19 +78,21 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
         };
 
         if (isSearchButton) {
-          return (
+          return withTooltip(
             <SearchButton
               key={button.key}
               onClick={handleButtonClick}
               label={buttonLabel}
               disabled={isDisabled}
               active={showSearch}
-            />
+            />,
+            isDisabled ? button.tooltip : undefined,
+            button.key,
           );
         }
 
         if (button.dropdown) {
-          return (
+          const dropdownNode = (
             <Dropdown
               key={button.key}
               menu={{
@@ -176,9 +187,10 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
               </button>
             </Dropdown>
           );
+          return withTooltip(dropdownNode, isDisabled ? button.tooltip : undefined, button.key);
         }
 
-        return (
+        const buttonNode = (
           <button
             key={button.key}
             onClick={handleButtonClick}
@@ -257,6 +269,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
             <span>{buttonLabel}</span>
           </button>
         );
+        return withTooltip(buttonNode, isDisabled ? button.tooltip : undefined, button.key);
       })}
     </div>
   );

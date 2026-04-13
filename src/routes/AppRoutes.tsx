@@ -5,6 +5,11 @@ import { FancySpinner, AnimatedPageWrapper } from '../components/animation';
 import { FeatureErrorBoundary } from '../components/error-boundary';
 import { APP_ROUTES } from '../constants';
 import { hasSessionToken } from '../features/auth/utils';
+import store from '../store';
+import {
+  stopAllSyncRetries,
+  syncRetryFromState,
+} from '../features/resources/applications/utils/management/syncRetry';
 
 // home
 const Dashboard = lazy(() => import('../features/home/pages/Dashboard'));
@@ -75,6 +80,19 @@ const AppRoutes: React.FC = () => {
     startTransition(() => {
       window.scrollTo({ top: 0, behavior: 'instant' });
     });
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isApplicationsRoute(location.pathname)) {
+      stopAllSyncRetries();
+      return;
+    }
+    syncRetryFromState();
+    const unsubscribe = store.subscribe(syncRetryFromState);
+    return () => {
+      unsubscribe();
+      stopAllSyncRetries();
+    };
   }, [location.pathname]);
 
   return (
@@ -274,3 +292,10 @@ const AppRoutes: React.FC = () => {
 };
 
 export default AppRoutes;
+
+function isApplicationsRoute(pathname: string): boolean {
+  return (
+    pathname === APP_ROUTES.APPLICATIONS ||
+    pathname.startsWith(`${APP_ROUTES.APPLICATIONS}/`)
+  );
+}

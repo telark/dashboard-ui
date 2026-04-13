@@ -5,6 +5,7 @@ import { APPLICATIONS_UI } from '../../constants';
 
 interface ApplicationDetailsToolbarProps {
   onEdit: () => void;
+  editDisabled?: boolean;
   onManageSnapshots: () => void;
   onManageRollbacks: () => void;
   onDelete: () => void;
@@ -12,6 +13,7 @@ interface ApplicationDetailsToolbarProps {
 
 const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
   onEdit,
+  editDisabled = false,
   onManageSnapshots,
   onManageRollbacks,
   onDelete,
@@ -24,6 +26,8 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
           label: APPLICATIONS_UI.CARD.ACTIONS.EDIT,
           variant: 'default',
           onClick: onEdit,
+          disabled: editDisabled,
+          tooltip: editDisabled ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP : undefined,
         },
         {
           key: 'snapshots',
@@ -45,7 +49,7 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
         },
       ],
     }),
-    [onDelete, onEdit, onManageRollbacks, onManageSnapshots],
+    [editDisabled, onDelete, onEdit, onManageRollbacks, onManageSnapshots],
   );
 
   return <Toolbar config={toolbarConfig} />;

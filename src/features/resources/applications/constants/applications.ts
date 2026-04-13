@@ -3,6 +3,8 @@ import { SHARED_PAGE_CONSTANTS } from '../../../../constants/shared/pages';
 import { SHARED_DETAILS_CONSTANTS } from '../../../../constants/shared/details';
 
 export const APPLICATIONS_PERSIST_KEY = 'persist:applications';
+export const APPLICATIONS_SYNC_RETRY_INTERVAL_MS = 60000;
+export const APPLICATIONS_PAGE_SIZE = 10;
 
 export const APPLICATIONS_CONSTANTS = {
   UI: {

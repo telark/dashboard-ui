@@ -4,7 +4,7 @@ import { Form, message } from 'antd';
 import type { RootState, AppDispatch } from '../../../../../store';
 import { loadApplications, loadApplicationsSilent } from '../../utils/management/state';
 import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../../utils/shared/retry';
-import { APPLICATIONS_CONSTANTS } from '../../constants';
+import { APPLICATIONS_CONSTANTS, APPLICATIONS_PAGE_SIZE, APPLICATIONS_UI } from '../../constants';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import LoadingView from '../../../../../components/display/views/LoadingView';
 import ReachabilityErrorView from '../../../../../components/display/views/ReachabilityErrorView';
@@ -15,6 +15,8 @@ import type { Application } from '../../models';
 import { EditApplicationPanel } from '../../components/panels';
 import { FilterPanel } from '../../../../../components/display/panels/filter';
 import type { FilterField } from '../../../../../components/display/panels/filter/FilterPanel';
+import type { DateRangeFilter } from '../../../../../interfaces/date/filter';
+import { filterByDateRange } from '../../../../access-and-permissions/groups/utils/filter/dateRangeUtils';
 
 const ApplicationsGlobalView: React.FC = memo(() => {
   const dispatch: AppDispatch = useDispatch();
@@ -57,24 +59,74 @@ const ApplicationsGlobalView: React.FC = memo(() => {
 
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filterFields: FilterField[] = useMemo(() => {
     const statusOptions = uniqOptions(visibleApplications, (a) => a.health?.status);
     const managedByOptions = uniqOptions(visibleApplications, (a) => a.managed?.by);
+    const managedChartOptions = uniqOptions(visibleApplications, (a) => a.managed?.chart || '');
     const namespaceOptions = uniqNamespaceOptions(visibleApplications);
+    const insightCategoryOptions = uniqOptions(visibleApplications, (a) => a.insights?.category || '');
+    const insightRoleOptions = uniqOptions(visibleApplications, (a) => a.insights?.role || '');
+    const crStatusOptions = uniqOptions(visibleApplications, (a) => a.crStatus || '');
     return [
-      { key: 'status', label: 'STATUS', type: 'multiSelect', multiSelectOptions: statusOptions },
+      {
+        key: 'dateRange',
+        label: APPLICATIONS_UI.FILTER.BY_CREATION_DATE,
+        type: 'dateRange',
+        fromLabel: APPLICATIONS_UI.FILTER.FROM,
+        toLabel: APPLICATIONS_UI.FILTER.TO,
+      },
+      {
+        key: 'status',
+        label: APPLICATIONS_UI.FILTER.BY_STATUS,
+        type: 'multiSelect',
+        multiSelectOptions: statusOptions,
+      },
       {
         key: 'managedBy',
-        label: 'MANAGED BY',
+        label: APPLICATIONS_UI.FILTER.BY_MANAGED_BY,
         type: 'multiSelect',
         multiSelectOptions: managedByOptions,
       },
       {
+        key: 'managedChart',
+        label: APPLICATIONS_UI.FILTER.BY_MANAGED_CHART,
+        type: 'multiSelect',
+        multiSelectOptions: managedChartOptions,
+      },
+      {
         key: 'namespaces',
-        label: 'NAMESPACES',
+        label: APPLICATIONS_UI.FILTER.BY_NAMESPACE,
         type: 'multiSelect',
         multiSelectOptions: namespaceOptions,
+      },
+      {
+        key: 'insightCategory',
+        label: APPLICATIONS_UI.FILTER.BY_INSIGHT_CATEGORY,
+        type: 'multiSelect',
+        multiSelectOptions: insightCategoryOptions,
+      },
+      {
+        key: 'insightRole',
+        label: APPLICATIONS_UI.FILTER.BY_INSIGHT_ROLE,
+        type: 'multiSelect',
+        multiSelectOptions: insightRoleOptions,
+      },
+      {
+        key: 'crStatus',
+        label: APPLICATIONS_UI.FILTER.BY_CR_STATUS,
+        type: 'multiSelect',
+        multiSelectOptions: crStatusOptions,
+      },
+      {
+        key: 'hasDrift',
+        label: APPLICATIONS_UI.FILTER.BY_HAS_DRIFT,
+        type: 'multiSelect',
+        multiSelectOptions: [
+          { value: 'true', label: APPLICATIONS_UI.FILTER.OPTION_YES },
+          { value: 'false', label: APPLICATIONS_UI.FILTER.OPTION_NO },
+        ],
       },
     ];
   }, [visibleApplications]);
@@ -83,6 +135,14 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     const base = filterApplications(visibleApplications, searchValue);
     return applyApplicationFilters(base, appliedFilters);
   }, [visibleApplications, appliedFilters, searchValue]);
+
+  const totalFiltered = filteredApplications.length;
+  const totalPages = Math.max(1, Math.ceil(totalFiltered / APPLICATIONS_PAGE_SIZE));
+  const effectivePage = Math.min(currentPage, totalPages);
+  const paginatedApplications = useMemo(() => {
+    const start = (effectivePage - 1) * APPLICATIONS_PAGE_SIZE;
+    return filteredApplications.slice(start, start + APPLICATIONS_PAGE_SIZE);
+  }, [effectivePage, filteredApplications]);
 
   const [isRetrying, setIsRetrying] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
@@ -167,11 +227,17 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   return (
     <>
       <ApplicationsSuccess
-        applications={filteredApplications}
+        applications={paginatedApplications}
         searchValue={searchValue}
         onSearchChange={onSearchChange}
         onEditApplication={openEditPanel}
         onOpenFilters={() => setFilterPanelOpen(true)}
+        pagination={{
+          currentPage: effectivePage,
+          pageSize: APPLICATIONS_PAGE_SIZE,
+          total: totalFiltered,
+          onPageChange: setCurrentPage,
+        }}
       />
       <EditApplicationPanel
         open={editTarget != null}
@@ -183,12 +249,19 @@ const ApplicationsGlobalView: React.FC = memo(() => {
         open={filterPanelOpen}
         onClose={() => setFilterPanelOpen(false)}
         fields={filterFields}
-        onFilterChange={setAppliedFilters}
+        onFilterChange={(filters) => {
+          setCurrentPage(1);
+          setAppliedFilters(filters);
+        }}
         onApply={(filters) => {
+          setCurrentPage(1);
           setAppliedFilters(filters);
           setFilterPanelOpen(false);
         }}
-        onReset={() => setAppliedFilters({})}
+        onReset={() => {
+          setCurrentPage(1);
+          setAppliedFilters({});
+        }}
       />
     </>
   );
@@ -235,18 +308,40 @@ function applyApplicationFilters(
   apps: Application[],
   filters: Record<string, unknown>,
 ): Application[] {
+  const dateRange = (filters.dateRange as DateRangeFilter | undefined) || undefined;
   const status = (filters.status as string[]) || [];
   const managedBy = (filters.managedBy as string[]) || [];
+  const managedChart = (filters.managedChart as string[]) || [];
   const namespaces = (filters.namespaces as string[]) || [];
+  const insightCategory = (filters.insightCategory as string[]) || [];
+  const insightRole = (filters.insightRole as string[]) || [];
+  const crStatus = (filters.crStatus as string[]) || [];
+  const hasDrift = (filters.hasDrift as string[]) || [];
 
   const has = (arr: string[]) => arr.length > 0;
-  if (!has(status) && !has(managedBy) && !has(namespaces)) {
+  if (
+    !has(status) &&
+    !has(managedBy) &&
+    !has(managedChart) &&
+    !has(namespaces) &&
+    !has(insightCategory) &&
+    !has(insightRole) &&
+    !has(crStatus) &&
+    !has(hasDrift) &&
+    !dateRange?.from &&
+    !dateRange?.to
+  ) {
     return apps;
   }
-
-  return apps.filter((a) => {
+  const filteredByDate = filterByDateRange(apps, dateRange, (a) => a.createdAt);
+  return filteredByDate.filter((a) => {
     if (has(status) && !status.includes(a.health?.status ?? '')) return false;
     if (has(managedBy) && !managedBy.includes(a.managed?.by ?? '')) return false;
+    if (has(managedChart) && !managedChart.includes(a.managed?.chart ?? '')) return false;
+    if (has(insightCategory) && !insightCategory.includes(a.insights?.category ?? '')) return false;
+    if (has(insightRole) && !insightRole.includes(a.insights?.role ?? '')) return false;
+    if (has(crStatus) && !crStatus.includes(a.crStatus ?? '')) return false;
+    if (has(hasDrift) && !hasDrift.includes(String(Boolean(a.history?.hasDrift)))) return false;
     if (has(namespaces)) {
       const ns = new Set((a.namespaces?.items ?? []).map((n) => n.name));
       let ok = false;

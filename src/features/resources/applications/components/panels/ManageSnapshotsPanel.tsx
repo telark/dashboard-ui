@@ -29,6 +29,7 @@ export interface ManageSnapshotsPanelProps {
   onClose: () => void;
   applicationId: string;
   detailSnapshots: Application['snapshots'];
+  rollbackDisabled?: boolean;
 }
 
 const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
@@ -36,6 +37,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
   onClose,
   applicationId,
   detailSnapshots,
+  rollbackDisabled = false,
 }) => {
   const dispatch: AppDispatch = useDispatch();
   const { snapshots, snapshotsLoading, snapshotsError, snapshotManifests } = useSelector(
@@ -173,6 +175,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
                     onViewManifest={openManifest}
                     onRollback={handleRollbackRequest}
                     rollbackLoading={rollbackBusyId === applicationSnapshotStableKey(s)}
+                    rollbackDisabled={rollbackDisabled}
                   />
                 ))}
               </div>

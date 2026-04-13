@@ -1,5 +1,6 @@
 import React, { memo, useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import LoadingDetailsView from '../../../../../components/display/views/LoadingDetailsView';
 import ErrorView from '../../../../../components/display/views/ErrorView';
 import { APPLICATION_DETAILS_CONSTANTS } from '../../constants';
@@ -10,7 +11,7 @@ import ApplicationPageLayout from '../../components/layout/ApplicationPageLayout
 import { APPLICATIONS_UI } from '../../constants/texts';
 import { APP_ROUTES } from '../../../../../constants';
 import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '../../../../../store';
+import type { AppDispatch, RootState } from '../../../../../store';
 import { fetchApplicationSnapshotsThunk } from '../../store';
 import { EditApplicationPanel, ManageRollbacksPanel, ManageSnapshotsPanel } from '../../components/panels';
 import { Form, Modal } from 'antd';
@@ -25,6 +26,9 @@ const ApplicationDetailsView: React.FC = memo(() => {
   const [rollbacksOpen, setRollbacksOpen] = React.useState(false);
   const [snapshotsOpen, setSnapshotsOpen] = React.useState(false);
   const { details, loading, error } = useApplicationDetails(name);
+  const isSyncing = useSelector(
+    (s: RootState) => (details?.name ? !!s.applications.syncing?.[details.name] : false),
+  );
 
   useEffect(() => {
     if (!details?.name) return;
@@ -69,6 +73,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
         <div style={{ marginTop: 24 }}>
           <ApplicationDetailsContent
             application={details}
+            editDisabled={isSyncing}
             onEdit={() => {
               editForm.setFieldsValue({
                 name: details.name,
@@ -116,6 +121,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
         onClose={() => setSnapshotsOpen(false)}
         applicationId={details.name}
         detailSnapshots={details.snapshots}
+        rollbackDisabled={isSyncing}
       />
     </>
   );

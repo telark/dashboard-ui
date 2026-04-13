@@ -45,6 +45,7 @@ const initialState: ApplicationsState = {
   snapshotManifests: {},
   syncing: {},
   syncStatus: {},
+  layoutMode: 'single',
 };
 
 const applicationsSlice = createSlice({
@@ -84,6 +85,9 @@ const applicationsSlice = createSlice({
           state.syncStatus[name] = 'failed';
         }
       }
+    },
+    setLayoutMode: (state, action: PayloadAction<'single' | 'double'>) => {
+      state.layoutMode = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -139,5 +143,6 @@ export const {
   clearOrphanedSyncing,
   setSyncStatus,
   downgradeOrphanedSyncStatus,
+  setLayoutMode,
 } = applicationsSlice.actions;
 export default applicationsSlice.reducer;

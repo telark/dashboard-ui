@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import { Button, Dropdown, Modal } from 'antd';
+import { Button, Dropdown, Modal, Tooltip } from 'antd';
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -125,6 +125,14 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
 
     const hasInsightRow = Boolean(application.insights?.category || application.insights?.role);
     const descriptionText = String(application.description || '').trim();
+    const disabledLabel = (text: string, disabled: boolean) =>
+      disabled ? (
+        <Tooltip title={APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP}>
+          <span>{text}</span>
+        </Tooltip>
+      ) : (
+        text
+      );
 
     return (
       <div
@@ -243,13 +251,13 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                 { key: 'view', label: APPLICATIONS_UI.CARD.ACTIONS.VIEW, icon: <EyeOutlined /> },
                 {
                   key: 'forceSync',
-                  label: APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC,
+                  label: disabledLabel(APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC, isSyncing),
                   icon: <SyncOutlined />,
                   disabled: isSyncing,
                 },
                 {
                   key: 'edit',
-                  label: APPLICATIONS_UI.CARD.ACTIONS.EDIT,
+                  label: disabledLabel(APPLICATIONS_UI.CARD.ACTIONS.EDIT, isSyncing),
                   icon: <EditOutlined />,
                   disabled: isSyncing,
                 },
@@ -261,7 +269,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                 { type: 'divider' },
                 {
                   key: 'delete',
-                  label: APPLICATIONS_UI.CARD.ACTIONS.DELETE,
+                  label: disabledLabel(APPLICATIONS_UI.CARD.ACTIONS.DELETE, isSyncing),
                   icon: <DeleteOutlined />,
                   danger: true,
                   disabled: isSyncing,

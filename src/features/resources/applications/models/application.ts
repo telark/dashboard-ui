@@ -237,6 +237,7 @@ export interface Application {
 }
 
 export type SyncStatusValue = 'syncing' | 'success' | 'failed';
+export type ApplicationLayoutMode = 'single' | 'double';
 
 export interface ApplicationsState {
   applications: Application[];
@@ -249,4 +250,5 @@ export interface ApplicationsState {
   snapshotManifests: Record<string, SnapshotManifestState>;
   syncing: Record<string, boolean>;
   syncStatus: Record<string, SyncStatusValue>;
+  layoutMode: ApplicationLayoutMode;
 }

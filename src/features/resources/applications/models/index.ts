@@ -4,6 +4,7 @@ export type {
   ApplicationRollbackTriggerPayload,
   ApplicationUpdatePayload,
   ApplicationsState,
+  ApplicationLayoutMode,
   SyncStatusValue,
 } from './application';
 export type {
