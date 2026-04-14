@@ -1,5 +1,11 @@
 import React, { useMemo } from 'react';
-import { SyncOutlined } from '@ant-design/icons';
+import {
+  DatabaseOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  HistoryOutlined,
+  SyncOutlined,
+} from '@ant-design/icons';
 import Toolbar from '../../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import { APPLICATIONS_UI } from '../../constants';
@@ -25,37 +31,41 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
     () => ({
       buttons: [
         {
-          key: 'forceSync',
-          label: APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC,
-          icon: <SyncOutlined />,
-          variant: 'primary',
-          onClick: onForceSync,
-          disabled: syncDisabled,
-          tooltip: syncDisabled ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP : undefined,
-        },
-        {
           key: 'edit',
           label: APPLICATIONS_UI.CARD.ACTIONS.EDIT,
+          icon: <EditOutlined />,
           variant: 'default',
           onClick: onEdit,
           disabled: syncDisabled,
           tooltip: syncDisabled ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP : undefined,
         },
         {
+          key: 'forceSync',
+          label: APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC,
+          icon: <SyncOutlined />,
+          variant: 'default',
+          onClick: onForceSync,
+          disabled: syncDisabled,
+          tooltip: syncDisabled ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP : undefined,
+        },
+        {
           key: 'snapshots',
           label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_SNAPSHOTS,
+          icon: <DatabaseOutlined />,
           variant: 'default',
           onClick: onManageSnapshots,
         },
         {
           key: 'rollbacks',
           label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS,
+          icon: <HistoryOutlined />,
           variant: 'default',
           onClick: onManageRollbacks,
         },
         {
           key: 'delete',
           label: APPLICATIONS_UI.CARD.ACTIONS.DELETE,
+          icon: <DeleteOutlined />,
           variant: 'danger',
           onClick: onDelete,
           disabled: syncDisabled,
