@@ -11,12 +11,14 @@ import { userReducer as usersReducer } from '../features/access-and-permissions/
 import { categoryReducer as categoriesReducer } from '../features/access-and-permissions/categories/store';
 import { roleReducer as rolesReducer } from '../features/access-and-permissions/roles/store';
 import { passkeyReducer } from '../features/auth/store';
+import { retryReducer } from '../features/shared/retry';
 import {
   grouperPersistConfig,
   insightsPersistConfig,
   workloadPersistConfig,
   bridgePersistConfig,
   applicationsPersistConfig,
+  retryPersistConfig,
   groupsPersistConfig,
   usersPersistConfig,
 } from './persistConfig';
@@ -26,6 +28,7 @@ const persistedInsightsReducer = persistReducer(insightsPersistConfig, insightsR
 const persistedWorkloadReducer = persistReducer(workloadPersistConfig, workloadReducer);
 const persistedBridgeReducer = persistReducer(bridgePersistConfig, bridgeReducer);
 const persistedApplicationsReducer = persistReducer(applicationsPersistConfig, applicationsReducer);
+const persistedRetryReducer = persistReducer(retryPersistConfig, retryReducer);
 const persistedGroupsReducer = persistReducer(groupsPersistConfig, groupsReducer);
 const persistedUsersReducer = persistReducer(usersPersistConfig, usersReducer);
 
@@ -36,6 +39,7 @@ const store = configureStore({
     workload: persistedWorkloadReducer,
     bridge: persistedBridgeReducer,
     applications: persistedApplicationsReducer,
+    retry: persistedRetryReducer,
     globalconfig: globalConfigReducer,
     groups: persistedGroupsReducer,
     users: persistedUsersReducer,
@@ -50,7 +54,6 @@ const store = configureStore({
         warnAfter: 128, // default: 32ms
       },
       immutableCheck: {
-        // Increase threshold since we have large state objects
         warnAfter: 128, // default: 32ms
       },
     }),

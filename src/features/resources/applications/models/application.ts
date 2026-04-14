@@ -250,5 +250,9 @@ export interface ApplicationsState {
   snapshotManifests: Record<string, SnapshotManifestState>;
   syncing: Record<string, boolean>;
   syncStatus: Record<string, SyncStatusValue>;
+  syncCompletedAt: Record<string, string>;
+  searchValue: string;
+  currentPage: number;
+  appliedFilters: Record<string, unknown>;
   layoutMode: ApplicationLayoutMode;
 }

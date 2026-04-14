@@ -16,7 +16,6 @@ const SECTION_GAP_PX = 12;
 const PLATFORM_INPUT_WIDTH_PX = 160;
 
 type ValidationApiResponse = { ok: boolean; reason?: string };
-type NamespacesApiData = { allowed: string[]; excluded: string[] };
 
 function getFriendlyValidationError(err: unknown): string {
   if (err && typeof err === 'object') {
@@ -54,7 +53,6 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
   const [namespacesOptions, setNamespacesOptions] = useState<string[]>([]);
   const [excludedNamespaces, setExcludedNamespaces] = useState<string[]>([]);
   const [savingNamespaces, setSavingNamespaces] = useState(false);
-  const [excludedHydratedFromGlobalConfig, setExcludedHydratedFromGlobalConfig] = useState(false);
 
   const [fetchIntervalMinutes, setFetchIntervalMinutes] = useState<number>(1);
   const [snapshotsMaxPerApp, setSnapshotsMaxPerApp] = useState<number>(5);
@@ -78,7 +76,6 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
     setLastValidatedKey(key ? key.trim() : null);
 
     setExcludedNamespaces(Array.isArray(cfg?.excludedNamespaces) ? cfg.excludedNamespaces : []);
-    setExcludedHydratedFromGlobalConfig(true);
 
     const seconds = Number(cfg?.userSettings?.fetchIntervalSeconds ?? 60);
     setFetchIntervalMinutes(Math.max(1, Math.round(seconds / 60)));
@@ -86,11 +83,6 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
     const maxPerApp = Number(cfg?.snapshots?.maxPerApp ?? 5);
     setSnapshotsMaxPerApp(Number.isFinite(maxPerApp) ? maxPerApp : 5);
   }, [globalConfig?.data]);
-
-  const excludedFromGlobalConfig = useMemo(
-    () => (Array.isArray(globalConfig?.data?.excludedNamespaces) ? globalConfig.data.excludedNamespaces : []),
-    [globalConfig?.data?.excludedNamespaces],
-  );
 
   const validateDisabled = useMemo(() => {
     const trimmed = apiKey.trim();
@@ -164,29 +156,15 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
   const loadNamespaces = useCallback(async () => {
     try {
       const { path, method } = Endpoints.NAMESPACES.GET;
-      const res = await Client<ResourceDetailsResponse<NamespacesApiData>>(discoveryApiClient, path, {
+      const res = await Client<ResourceDetailsResponse<string[]>>(discoveryApiClient, path, {
         method,
       });
-      const allowed = res?.data?.allowed ?? [];
-      const excluded = res?.data?.excluded ?? [];
-      const all = [...allowed, ...excluded].filter(Boolean);
+      const all = (res?.data ?? []).filter(Boolean);
       setNamespacesOptions(all);
-      if (
-        excludedHydratedFromGlobalConfig &&
-        excludedFromGlobalConfig.length === 0 &&
-        excludedNamespaces.length === 0 &&
-        excluded.length > 0
-      ) {
-        setExcludedNamespaces(excluded);
-      }
     } catch {
       message.error(C.MESSAGES.NAMESPACES_LOAD_FAILED);
     }
-  }, [
-    excludedFromGlobalConfig.length,
-    excludedHydratedFromGlobalConfig,
-    excludedNamespaces.length,
-  ]);
+  }, []);
 
   useEffect(() => {
     loadNamespaces();

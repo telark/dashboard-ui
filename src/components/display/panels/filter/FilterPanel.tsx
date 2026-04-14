@@ -33,6 +33,7 @@ export interface FilterPanelProps {
   onClose: () => void;
   subtitle?: string;
   fields: FilterField[];
+  value?: Record<string, unknown>;
   onFilterChange?: (filters: Record<string, unknown>) => void;
   onApply?: (filters: Record<string, unknown>) => void;
   onReset?: () => void;
@@ -44,6 +45,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   onClose,
   subtitle = 'Adjust filters to refine results',
   fields,
+  value,
   onFilterChange,
   onApply,
   onReset,
@@ -67,20 +69,25 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
     return initial;
   });
 
-  const handleFilterChange = (key: string, value: unknown) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
+  const currentFilters = value ?? filters;
+  const isControlled = value !== undefined;
+
+  const handleFilterChange = (key: string, nextValue: unknown) => {
+    const newFilters = { ...currentFilters, [key]: nextValue };
+    if (!isControlled) {
+      setFilters(newFilters);
+    }
     onFilterChange?.(newFilters);
   };
 
   const handleApply = () => {
-    onApply?.(filters);
+    onApply?.(currentFilters);
   };
 
   const handleReset = () => {
     const resetFilters: Record<string, unknown> = {};
     fields.forEach((field) => {
-      if (field.defaultValue) {
+      if (field.defaultValue !== undefined) {
         resetFilters[field.key] = field.defaultValue;
       } else if (field.type === 'buttonGroup' && field.options) {
         resetFilters[field.key] = field.options[0]?.key || '';
@@ -92,7 +99,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         resetFilters[field.key] = { from: undefined, to: undefined };
       }
     });
-    setFilters(resetFilters);
+    if (!isControlled) {
+      setFilters(resetFilters);
+    }
     onFilterChange?.(resetFilters);
     onReset?.();
   };
@@ -117,7 +126,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
                 <FilterFieldRenderer
                   key={field.key}
                   field={field}
-                  value={filters[field.key]}
+                  value={currentFilters[field.key]}
                   onChange={(val) => handleFilterChange(field.key, val)}
                 />
               ))}

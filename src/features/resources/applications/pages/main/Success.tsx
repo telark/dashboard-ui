@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import { Pagination } from 'antd';
+import { Button, Pagination } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import { PAGE_CONTENT_LAYOUT } from '../../../../../constants/shared/pages';
@@ -15,6 +15,12 @@ interface ApplicationsSuccessProps {
   onSearchChange: (value: string) => void;
   onEditApplication: (application: Application) => void;
   onOpenFilters: () => void;
+  onClearAllFilters: () => void;
+  filterChips: { key: string; value: string; label: string }[];
+  overflowChipsCount: number;
+  onRemoveFilterChip: (key: string, value: string) => void;
+  totalFiltered: number;
+  hasActiveFilters: boolean;
   pagination: {
     currentPage: number;
     pageSize: number;
@@ -24,7 +30,20 @@ interface ApplicationsSuccessProps {
 }
 
 const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
-  ({ applications, searchValue, onSearchChange, onEditApplication, onOpenFilters, pagination }) => {
+  ({
+    applications,
+    searchValue,
+    onSearchChange,
+    onEditApplication,
+    onOpenFilters,
+    onClearAllFilters,
+    filterChips,
+    overflowChipsCount,
+    onRemoveFilterChip,
+    totalFiltered,
+    hasActiveFilters,
+    pagination,
+  }) => {
     const dispatch: AppDispatch = useDispatch();
     const layoutMode = useSelector((s: RootState) => s.applications.layoutMode);
     const { contentGap } = useAppearance();
@@ -69,12 +88,37 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
             searchValue={searchValue}
             onSearchChange={onSearchChange}
             onOpenFilters={onOpenFilters}
+            totalCount={totalFiltered}
+            filterChips={filterChips}
+            overflowCount={overflowChipsCount}
+            onRemoveFilterChip={onRemoveFilterChip}
             layoutMode={layoutMode}
             onLayoutModeChange={(mode) => dispatch(setLayoutMode(mode))}
           />
 
-          {content}
+          <div style={{ marginTop: -8 }}>
+            {!hasApps && hasActiveFilters ? (
+              <div style={{ textAlign: 'center', padding: '48px 24px' }}>
+                <p style={{ marginBottom: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+                  No applications match the current filters.
+                </p>
+                <Button type="link" onClick={onClearAllFilters}>
+                  Clear all filters
+                </Button>
+              </div>
+            ) : (
+              content
+            )}
+          </div>
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <span style={{ alignSelf: 'center', marginRight: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+              {pagination.total === 0
+                ? '0-0 of 0'
+                : `${(pagination.currentPage - 1) * pagination.pageSize + 1}-${Math.min(
+                    pagination.currentPage * pagination.pageSize,
+                    pagination.total,
+                  )} of ${pagination.total}`}
+            </span>
             <Pagination
               className="applications-pagination"
               current={pagination.currentPage}

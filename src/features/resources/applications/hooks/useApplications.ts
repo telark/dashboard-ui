@@ -1,10 +1,19 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../../../../store';
+import { setSearchValue } from '../store/slices/applicationsSlice';
 import type { Application } from '../models';
 
 export function useApplications() {
-  const [searchValue, setSearchValue] = useState('');
+  const dispatch: AppDispatch = useDispatch();
+  const searchValue = useSelector((s: RootState) => s.applications.searchValue);
 
-  const onSearchChange = useCallback((value: string) => setSearchValue(value), []);
+  const onSearchChange = useCallback(
+    (value: string) => {
+      dispatch(setSearchValue(value));
+    },
+    [dispatch],
+  );
 
   return {
     searchValue,

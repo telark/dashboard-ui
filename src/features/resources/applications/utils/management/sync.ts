@@ -2,7 +2,7 @@ import store from '../../../../../store';
 import { APPLICATION_SYNC_CONFIG } from '../../../../../config/syncConfig';
 import { triggerApplicationSync } from '../../clients';
 import { APPLICATIONS_PERSIST_KEY } from '../../constants';
-import { startSync, endSync, setSyncStatus } from '../../store/slices/applicationsSlice';
+import { startSync, endSync, setSyncCompletedAt, setSyncStatus } from '../../store/slices/applicationsSlice';
 import {
   clearApplicationSyncInFlight,
   isApplicationSyncInFlight,
@@ -34,6 +34,7 @@ export const forceSyncApplication = async (name: string): Promise<void> => {
   try {
     store.dispatch(startSync(name));
     store.dispatch(setSyncStatus({ name, status: 'syncing' }));
+    store.dispatch(setSyncCompletedAt({ name }));
     persistSyncStateImmediately(name);
     markApplicationSyncInFlight(name);
 
@@ -42,13 +43,16 @@ export const forceSyncApplication = async (name: string): Promise<void> => {
 
     if (status !== 'success') {
       store.dispatch(setSyncStatus({ name, status: 'failed' }));
+      store.dispatch(setSyncCompletedAt({ name, completedAt: new Date().toISOString() }));
       return;
     }
 
     store.dispatch(APPLICATION_SYNC_CONFIG.fetchAllResourcesThunk());
     store.dispatch(setSyncStatus({ name, status: 'success' }));
+    store.dispatch(setSyncCompletedAt({ name, completedAt: new Date().toISOString() }));
   } catch {
     store.dispatch(setSyncStatus({ name, status: 'failed' }));
+    store.dispatch(setSyncCompletedAt({ name, completedAt: new Date().toISOString() }));
   } finally {
     clearApplicationSyncInFlight(name);
     store.dispatch(endSync(name));
@@ -69,13 +73,16 @@ export const retryFailedSyncApplication = async (name: string): Promise<void> =>
 
     if (status !== 'success') {
       store.dispatch(setSyncStatus({ name, status: 'failed' }));
+      store.dispatch(setSyncCompletedAt({ name, completedAt: new Date().toISOString() }));
       return;
     }
 
     store.dispatch(APPLICATION_SYNC_CONFIG.fetchAllResourcesThunk());
     store.dispatch(setSyncStatus({ name, status: 'success' }));
+    store.dispatch(setSyncCompletedAt({ name, completedAt: new Date().toISOString() }));
   } catch {
     store.dispatch(setSyncStatus({ name, status: 'failed' }));
+    store.dispatch(setSyncCompletedAt({ name, completedAt: new Date().toISOString() }));
   } finally {
     clearApplicationSyncInFlight(name);
   }

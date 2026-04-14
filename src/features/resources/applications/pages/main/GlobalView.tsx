@@ -3,9 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Form, message } from 'antd';
 import type { RootState, AppDispatch } from '../../../../../store';
 import { loadApplications, loadApplicationsSilent } from '../../utils/management/state';
-import { createRetryHandler, cancelRetry, RetryCallbacks } from '../../../../../utils/shared/retry';
+import logger from '../../../../../logging';
 import { APPLICATIONS_CONSTANTS, APPLICATIONS_PAGE_SIZE, APPLICATIONS_UI } from '../../constants';
-import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
+import { executeRetryWithBackoff, RETRY_STATUS } from '../../../../shared/retry';
 import LoadingView from '../../../../../components/display/views/LoadingView';
 import ReachabilityErrorView from '../../../../../components/display/views/ReachabilityErrorView';
 import ApplicationsMainEmpty from './Empty';
@@ -17,10 +17,18 @@ import { FilterPanel } from '../../../../../components/display/panels/filter';
 import type { FilterField } from '../../../../../components/display/panels/filter/FilterPanel';
 import type { DateRangeFilter } from '../../../../../interfaces/date/filter';
 import { filterByDateRange } from '../../../../access-and-permissions/groups/utils/filter/dateRangeUtils';
+import {
+  clearAllFilters,
+  removeFilterValue,
+  setAppliedFilters,
+  setCurrentPage,
+} from '../../store/slices/applicationsSlice';
 
 const ApplicationsGlobalView: React.FC = memo(() => {
   const dispatch: AppDispatch = useDispatch();
-  const { applications, loading, error } = useSelector((s: RootState) => s.applications);
+  const { applications, loading, error, appliedFilters, currentPage } = useSelector(
+    (s: RootState) => s.applications,
+  );
   const fetchIntervalSeconds = useSelector((s: RootState) =>
     s.globalconfig.data?.userSettings?.fetchIntervalSeconds != null
       ? Number(s.globalconfig.data.userSettings.fetchIntervalSeconds)
@@ -29,6 +37,10 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   const excludedNamespaces = useSelector(
     (s: RootState) => s.globalconfig.data?.excludedNamespaces ?? [],
   );
+  const retryState = useSelector((s: RootState) => s.retry.byKey[APPLICATIONS_CONSTANTS.RETRY.KEY]);
+  const [messageApi, messageContextHolder] = message.useMessage();
+  const [retryTickMs, setRetryTickMs] = useState(0);
+  const retryInFlightRef = useRef(false);
 
   const visibleApplications = useMemo(
     () => filterByExcludedNamespaces(applications, excludedNamespaces),
@@ -58,8 +70,6 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   }, [editForm]);
 
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
-  const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
-  const [currentPage, setCurrentPage] = useState(1);
 
   const filterFields: FilterField[] = useMemo(() => {
     const statusOptions = uniqOptions(visibleApplications, (a) => a.health?.status);
@@ -135,6 +145,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     const base = filterApplications(visibleApplications, searchValue);
     return applyApplicationFilters(base, appliedFilters);
   }, [visibleApplications, appliedFilters, searchValue]);
+  const hasActiveFilters = useMemo(() => hasAnyAppliedFilter(appliedFilters), [appliedFilters]);
 
   const totalFiltered = filteredApplications.length;
   const totalPages = Math.max(1, Math.ceil(totalFiltered / APPLICATIONS_PAGE_SIZE));
@@ -143,17 +154,32 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     const start = (effectivePage - 1) * APPLICATIONS_PAGE_SIZE;
     return filteredApplications.slice(start, start + APPLICATIONS_PAGE_SIZE);
   }, [effectivePage, filteredApplications]);
-
-  const [isRetrying, setIsRetrying] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
-  const [nextRetryIn, setNextRetryIn] = useState(0);
-  const [isInCooldown, setIsInCooldown] = useState(false);
-  const [cooldownTime, setCooldownTime] = useState(0);
-  const timeoutRefs = useRef<{ current: ReturnType<typeof setTimeout> | null }[]>([]);
+  const allFilterChips = useMemo(() => buildFilterChips(appliedFilters), [appliedFilters]);
+  const visibleFilterChips = allFilterChips.slice(0, 3);
+  const overflowChipsCount = Math.max(0, allFilterChips.length - visibleFilterChips.length);
 
   const handleLoadApplications = useCallback(async () => {
-    await loadApplications(dispatch);
-  }, [dispatch]);
+    const success = await loadApplications(dispatch);
+    if (!success) {
+      await executeRetryWithBackoff({
+        key: APPLICATIONS_CONSTANTS.RETRY.KEY,
+        execute: () => loadApplicationsSilent(dispatch),
+        isContextActive: () => document.visibilityState === 'visible',
+        onAttemptFailed: (attempt, error) => {
+          logger.error(APPLICATIONS_CONSTANTS.MESSAGES.RETRY_ATTEMPT_LOG, {
+            key: APPLICATIONS_CONSTANTS.RETRY.KEY,
+            attempt,
+            error,
+          });
+          messageApi.open({
+            key: APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY,
+            type: 'error',
+            content: APPLICATIONS_CONSTANTS.MESSAGES.RETRY_FAILED_ATTEMPT,
+          });
+        },
+      });
+    }
+  }, [dispatch, messageApi]);
 
   useEffect(() => {
     (async () => {
@@ -172,37 +198,71 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     return () => clearInterval(interval);
   }, [dispatch, fetchIntervalSeconds]);
 
-  const retryCallbacks: RetryCallbacks = useMemo(
-    () => ({
-      setRetrying: setIsRetrying,
-      setRetryCount: setRetryCount,
-      setNextRetryIn: setNextRetryIn,
-      setInCooldown: setIsInCooldown,
-      setCooldownTime: setCooldownTime,
-      onSuccess: () => message.success(APPLICATIONS_CONSTANTS.MESSAGES.SUCCESS),
-      onError: () => message.error(CONNECTIVITY_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
-    }),
-    [],
-  );
-
-  const handleRetry = useCallback(async () => {
-    if (isRetrying || isInCooldown) return;
-    const retryHandler = createRetryHandler(() => loadApplicationsSilent(dispatch), retryCallbacks);
-    await retryHandler();
-  }, [dispatch, isRetrying, isInCooldown, retryCallbacks]);
-
-  const handleCancelRetry = useCallback(() => {
-    cancelRetry(timeoutRefs.current, retryCallbacks);
-  }, [retryCallbacks]);
+  useEffect(() => {
+    if (!error || retryInFlightRef.current) {
+      return;
+    }
+    retryInFlightRef.current = true;
+    void executeRetryWithBackoff({
+      key: APPLICATIONS_CONSTANTS.RETRY.KEY,
+      execute: () => loadApplicationsSilent(dispatch),
+      isContextActive: () => document.visibilityState === 'visible',
+      onAttemptFailed: (attempt, retryError) => {
+        logger.error(APPLICATIONS_CONSTANTS.MESSAGES.RETRY_ATTEMPT_LOG, {
+          key: APPLICATIONS_CONSTANTS.RETRY.KEY,
+          attempt,
+          error: retryError,
+        });
+        messageApi.open({
+          key: APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY,
+          type: 'error',
+          content: APPLICATIONS_CONSTANTS.MESSAGES.RETRY_FAILED_ATTEMPT,
+        });
+      },
+    }).finally(() => {
+      retryInFlightRef.current = false;
+    });
+  }, [dispatch, error, messageApi]);
 
   useEffect(() => {
-    if (error) {
-      message.error(error);
-      if (!isRetrying) {
-        void handleRetry();
-      }
+    const timer = setInterval(() => setRetryTickMs(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!retryState) {
+      messageApi.destroy(APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY);
+      return;
     }
-  }, [error, isRetrying, handleRetry]);
+    if (retryState.status === RETRY_STATUS.RETRYING) {
+      return;
+    }
+    messageApi.destroy(APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY);
+    if (retryState.status === RETRY_STATUS.FAILED) {
+      messageApi.open({
+        key: APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY,
+        type: 'error',
+        content: APPLICATIONS_CONSTANTS.MESSAGES.RETRY_FAILED_FINAL,
+      });
+      return;
+    }
+    if (retryState.status === RETRY_STATUS.SUCCESS) {
+      messageApi.open({
+        key: APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY,
+        type: 'success',
+        content: APPLICATIONS_CONSTANTS.MESSAGES.SUCCESS,
+      });
+    }
+  }, [messageApi, retryState]);
+
+  const retryCount = retryState?.attempt ?? 0;
+  const nextRetryIn = Math.max(0, (retryState?.nextAttemptAt ?? 0) - retryTickMs);
+  const isInCooldown = retryState?.status === RETRY_STATUS.FAILED;
+  const cooldownTime = 0;
+
+  const handleCancelRetry = useCallback(() => {
+    messageApi.destroy(APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY);
+  }, [messageApi]);
 
   if (loading) {
     return <LoadingView label={APPLICATIONS_CONSTANTS.MESSAGES.LOADING} />;
@@ -226,17 +286,24 @@ const ApplicationsGlobalView: React.FC = memo(() => {
 
   return (
     <>
+      {messageContextHolder}
       <ApplicationsSuccess
         applications={paginatedApplications}
         searchValue={searchValue}
         onSearchChange={onSearchChange}
         onEditApplication={openEditPanel}
         onOpenFilters={() => setFilterPanelOpen(true)}
+        onClearAllFilters={() => dispatch(clearAllFilters())}
+        filterChips={visibleFilterChips}
+        overflowChipsCount={overflowChipsCount}
+        onRemoveFilterChip={(key, value) => dispatch(removeFilterValue({ key, value }))}
+        totalFiltered={totalFiltered}
+        hasActiveFilters={hasActiveFilters}
         pagination={{
           currentPage: effectivePage,
           pageSize: APPLICATIONS_PAGE_SIZE,
           total: totalFiltered,
-          onPageChange: setCurrentPage,
+          onPageChange: (page) => dispatch(setCurrentPage(page)),
         }}
       />
       <EditApplicationPanel
@@ -249,18 +316,16 @@ const ApplicationsGlobalView: React.FC = memo(() => {
         open={filterPanelOpen}
         onClose={() => setFilterPanelOpen(false)}
         fields={filterFields}
+        value={appliedFilters}
         onFilterChange={(filters) => {
-          setCurrentPage(1);
-          setAppliedFilters(filters);
+          dispatch(setAppliedFilters(filters));
         }}
         onApply={(filters) => {
-          setCurrentPage(1);
-          setAppliedFilters(filters);
+          dispatch(setAppliedFilters(filters));
           setFilterPanelOpen(false);
         }}
         onReset={() => {
-          setCurrentPage(1);
-          setAppliedFilters({});
+          dispatch(clearAllFilters());
         }}
       />
     </>
@@ -355,4 +420,42 @@ function applyApplicationFilters(
     }
     return true;
   });
+}
+
+function hasAnyAppliedFilter(filters: Record<string, unknown>): boolean {
+  for (const value of Object.values(filters)) {
+    if (Array.isArray(value) && value.length > 0) {
+      return true;
+    }
+    if (value && typeof value === 'object') {
+      const obj = value as Record<string, unknown>;
+      if (obj.from || obj.to) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function buildFilterChips(filters: Record<string, unknown>): { key: string; value: string; label: string }[] {
+  const chips: { key: string; value: string; label: string }[] = [];
+  for (const [key, value] of Object.entries(filters)) {
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        const raw = String(item);
+        if (raw.trim()) {
+          chips.push({ key, value: raw, label: raw });
+        }
+      }
+      continue;
+    }
+    if (value && typeof value === 'object' && key === 'dateRange') {
+      const range = value as DateRangeFilter;
+      if (range.from || range.to) {
+        const label = `${range.from || 'Any'} to ${range.to || 'Any'}`;
+        chips.push({ key, value: label, label });
+      }
+    }
+  }
+  return chips;
 }

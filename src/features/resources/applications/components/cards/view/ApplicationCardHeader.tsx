@@ -16,6 +16,7 @@ import type { Application, SyncStatusValue } from '../../../models';
 import { APPLICATIONS_UI } from '../../../constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import FancySpinner from '../../../../../../components/animation/FancySpinner';
+import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../../../../store';
@@ -55,7 +56,10 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const isSyncing = useSelector((s: RootState) => Boolean(s.applications.syncing?.[application.name]));
-    const syncStatus = useSelector((s: RootState) => s.applications.syncStatus?.[application.name] as SyncStatusValue | undefined);
+    const syncStatus = useSelector(
+      (s: RootState) => s.applications.syncStatus?.[application.name] as SyncStatusValue | undefined,
+    );
+    const syncCompletedAt = useSelector((s: RootState) => s.applications.syncCompletedAt?.[application.name]);
     const [menuOpen, setMenuOpen] = useState(false);
 
     const accent = getApplicationHealthAccentColor(application.health?.status);
@@ -233,6 +237,11 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
             >
               {SYNC_TAG_CONFIG[syncStatus].icon}
               <span>{SYNC_TAG_CONFIG[syncStatus].label}</span>
+              {!isSyncing && syncCompletedAt ? (
+                <span style={{ fontWeight: 500 }}>
+                  · <TimeAgo date={syncCompletedAt} />
+                </span>
+              ) : null}
             </span>
           ) : null}
           <RowTag

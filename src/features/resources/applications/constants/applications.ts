@@ -13,9 +13,16 @@ export const APPLICATIONS_CONSTANTS = {
   MESSAGES: {
     LOADING: 'Loading applications…',
     SUCCESS: 'Applications loaded successfully!',
+    RETRY_FAILED_ATTEMPT: 'Failed to fetch applications. Retrying...',
+    RETRY_FAILED_FINAL: 'Unable to fetch applications after all retry attempts.',
+    RETRY_ATTEMPT_LOG: 'applications fetch retry attempt failed',
     NO_APPLICATIONS_TITLE: 'No applications yet',
     NO_APPLICATIONS_DESCRIPTION:
       'When your cluster is connected, applications represent logical app groupings. Try syncing your cluster resources to pull the latest.',
+  },
+  RETRY: {
+    KEY: 'applications.fetch',
+    MESSAGE_KEY: 'applications.fetch.retry',
   },
   LAYOUT: {
     EMPTY_STATE_CONTAINER: SHARED_PAGE_CONSTANTS.LAYOUT.EMPTY_STATE_CONTAINER,

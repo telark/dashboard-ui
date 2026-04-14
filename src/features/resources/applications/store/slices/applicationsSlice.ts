@@ -45,6 +45,10 @@ const initialState: ApplicationsState = {
   snapshotManifests: {},
   syncing: {},
   syncStatus: {},
+  syncCompletedAt: {},
+  searchValue: '',
+  currentPage: 1,
+  appliedFilters: {},
   layoutMode: 'single',
 };
 
@@ -76,6 +80,51 @@ const applicationsSlice = createSlice({
       if (!state.syncStatus) state.syncStatus = {};
       const { name, status } = action.payload;
       if (name) state.syncStatus[name] = status;
+    },
+    setSyncCompletedAt: (state, action: PayloadAction<{ name: string; completedAt?: string }>) => {
+      if (!state.syncCompletedAt) state.syncCompletedAt = {};
+      const { name, completedAt } = action.payload;
+      if (!name) return;
+      if (!completedAt) {
+        delete state.syncCompletedAt[name];
+        return;
+      }
+      state.syncCompletedAt[name] = completedAt;
+    },
+    setSearchValue: (state, action: PayloadAction<string>) => {
+      state.searchValue = action.payload;
+      state.currentPage = 1;
+    },
+    setCurrentPage: (state, action: PayloadAction<number>) => {
+      state.currentPage = action.payload;
+    },
+    setAppliedFilters: (state, action: PayloadAction<Record<string, unknown>>) => {
+      state.appliedFilters = action.payload;
+      state.currentPage = 1;
+    },
+    clearAllFilters: (state) => {
+      state.appliedFilters = {};
+      state.currentPage = 1;
+    },
+    removeFilterValue: (
+      state,
+      action: PayloadAction<{ key: string; value?: string; clearAll?: boolean }>,
+    ) => {
+      const { key, value, clearAll } = action.payload;
+      if (clearAll) {
+        state.appliedFilters = {};
+        state.currentPage = 1;
+        return;
+      }
+      const current = state.appliedFilters[key];
+      if (Array.isArray(current)) {
+        state.appliedFilters[key] = current.filter((item) => String(item) !== String(value));
+      } else if (current && typeof current === 'object' && key === 'dateRange') {
+        state.appliedFilters[key] = {};
+      } else {
+        delete state.appliedFilters[key];
+      }
+      state.currentPage = 1;
     },
     downgradeOrphanedSyncStatus: (state, action: PayloadAction<string[]>) => {
       if (!state.syncStatus) return;
@@ -142,6 +191,12 @@ export const {
   endSync,
   clearOrphanedSyncing,
   setSyncStatus,
+  setSyncCompletedAt,
+  setSearchValue,
+  setCurrentPage,
+  setAppliedFilters,
+  clearAllFilters,
+  removeFilterValue,
   downgradeOrphanedSyncStatus,
   setLayoutMode,
 } = applicationsSlice.actions;
