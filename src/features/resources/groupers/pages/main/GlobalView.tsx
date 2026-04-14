@@ -25,8 +25,6 @@ const GroupersGlobalView: React.FC = memo(function GroupersGlobalView() {
   const [isRetrying, setIsRetrying] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [nextRetryIn, setNextRetryIn] = useState(0);
-  const [isInCooldown, setIsInCooldown] = useState(false);
-  const [cooldownTime, setCooldownTime] = useState(0);
   const timeoutRefs = useRef<{ current: ReturnType<typeof setTimeout> | null }[]>([]);
 
   const handleLoadGroupers = useCallback(async () => {
@@ -63,22 +61,20 @@ const GroupersGlobalView: React.FC = memo(function GroupersGlobalView() {
       setRetrying: setIsRetrying,
       setRetryCount: setRetryCount,
       setNextRetryIn: setNextRetryIn,
-      setInCooldown: setIsInCooldown,
-      setCooldownTime: setCooldownTime,
       onSuccess: () => message.success(GROUPERS_CONSTANTS.MESSAGES.SUCCESS),
-      onError: () => message.error(CONNECTIVITY_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
+      onError: () => message.error(CONNECTIVITY_CONSTANTS.MESSAGES.ERROR_RETRYING),
     }),
     [],
   );
 
   // Create retry handler
   const handleRetry = useCallback(async () => {
-    if (isRetrying || isInCooldown) return;
+    if (isRetrying) return;
 
     const retryHandler = createRetryHandler(() => loadGroupersSilent(dispatch), retryCallbacks);
 
     await retryHandler();
-  }, [dispatch, isRetrying, isInCooldown, retryCallbacks]);
+  }, [dispatch, isRetrying, retryCallbacks]);
 
   const handleCancelRetry = useCallback(() => {
     cancelRetry(timeoutRefs.current, retryCallbacks);
@@ -108,8 +104,6 @@ const GroupersGlobalView: React.FC = memo(function GroupersGlobalView() {
   if (error) {
     return (
       <ReachabilityErrorView
-        isInCooldown={isInCooldown}
-        cooldownTime={cooldownTime}
         retryCount={retryCount}
         nextRetryIn={nextRetryIn}
         onCancel={handleCancelRetry}

@@ -103,11 +103,11 @@ export const executeRetryWithBackoff = async ({
 
     attempt = attemptNumber;
     if (attempt >= maxAttempts) {
-      upsertState(key, attempt, RETRY_STATUS.FAILED, 0, nowMs());
+      store.dispatch(removeRetryState(key));
       return false;
     }
   }
 
-  upsertState(key, attempt, RETRY_STATUS.FAILED, 0, nowMs());
+  store.dispatch(removeRetryState(key));
   return false;
 };

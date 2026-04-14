@@ -4,8 +4,6 @@ export interface RetryCallbacks {
   setRetrying: (retrying: boolean) => void;
   setRetryCount: (count: number) => void;
   setNextRetryIn: (time: number) => void;
-  setInCooldown: (inCooldown: boolean) => void;
-  setCooldownTime: (time: number) => void;
   onSuccess: () => void;
   onError: () => void;
 }
@@ -14,7 +12,6 @@ export interface RetryConfig {
   maxAttempts: number;
   baseDelayMs: number;
   maxDelayMs: number;
-  cooldownDurationMs: number;
   countdownIntervalMs: number;
 }
 
@@ -91,42 +88,10 @@ const attemptRetry = async (
   return false;
 };
 
-const startCooldown = (
-  config: RetryConfig,
-  callbacks: RetryCallbacks,
-  retryFunction: () => Promise<boolean>,
-  timeoutRefs: { current: ReturnType<typeof setTimeout> | null }[],
-): void => {
-  resetRetryState(callbacks);
-  callbacks.setInCooldown?.(true);
-  callbacks.setCooldownTime?.(config.cooldownDurationMs);
-
-  let remainingCooldown = config.cooldownDurationMs;
-  const cooldownInterval = setInterval(() => {
-    remainingCooldown -= config.countdownIntervalMs;
-    callbacks.setCooldownTime?.(Math.max(0, remainingCooldown));
-
-    if (remainingCooldown <= 0) {
-      clearInterval(cooldownInterval);
-      callbacks.setInCooldown?.(false);
-      callbacks.setCooldownTime?.(0);
-      setTimeout(() => {
-        createRetryHandler(retryFunction, callbacks, config)();
-      }, CONNECTIVITY_CONSTANTS.COOLDOWN.AUTO_RETRY_DELAY_MS);
-    }
-  }, config.countdownIntervalMs);
-
-  const cooldownTimeout = setTimeout(() => {
-    clearInterval(cooldownInterval);
-  }, config.cooldownDurationMs);
-  timeoutRefs.push({ current: cooldownTimeout });
-};
-
 const DEFAULT_RETRY_CONFIG: RetryConfig = {
   maxAttempts: CONNECTIVITY_CONSTANTS.RETRY.MAX_ATTEMPTS,
   baseDelayMs: CONNECTIVITY_CONSTANTS.RETRY.BASE_DELAY_MS,
   maxDelayMs: CONNECTIVITY_CONSTANTS.RETRY.MAX_DELAY_MS,
-  cooldownDurationMs: CONNECTIVITY_CONSTANTS.COOLDOWN.DURATION_MS,
   countdownIntervalMs: CONNECTIVITY_CONSTANTS.RETRY.COUNTDOWN_INTERVAL_MS,
 };
 
@@ -148,7 +113,7 @@ export const createRetryHandler = (
       }
     }
 
-    startCooldown(config, callbacks, retryFunction, timeoutRefs);
+    resetRetryState(callbacks);
     callbacks.onError?.();
   };
 };
@@ -164,19 +129,5 @@ export const cancelRetry = (
     }
   }
 
-  if (callbacks.setRetrying) {
-    callbacks.setRetrying(false);
-  }
-  if (callbacks.setRetryCount) {
-    callbacks.setRetryCount(0);
-  }
-  if (callbacks.setNextRetryIn) {
-    callbacks.setNextRetryIn(0);
-  }
-  if (callbacks.setInCooldown) {
-    callbacks.setInCooldown(false);
-  }
-  if (callbacks.setCooldownTime) {
-    callbacks.setCooldownTime(0);
-  }
+  resetRetryState(callbacks);
 };

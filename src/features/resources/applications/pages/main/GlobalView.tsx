@@ -238,14 +238,6 @@ const ApplicationsGlobalView: React.FC = memo(() => {
       return;
     }
     messageApi.destroy(APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY);
-    if (retryState.status === RETRY_STATUS.FAILED) {
-      messageApi.open({
-        key: APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY,
-        type: 'error',
-        content: APPLICATIONS_CONSTANTS.MESSAGES.RETRY_FAILED_FINAL,
-      });
-      return;
-    }
     if (retryState.status === RETRY_STATUS.SUCCESS) {
       messageApi.open({
         key: APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY,
@@ -257,8 +249,6 @@ const ApplicationsGlobalView: React.FC = memo(() => {
 
   const retryCount = retryState?.attempt ?? 0;
   const nextRetryIn = Math.max(0, (retryState?.nextAttemptAt ?? 0) - retryTickMs);
-  const isInCooldown = retryState?.status === RETRY_STATUS.FAILED;
-  const cooldownTime = 0;
 
   const handleCancelRetry = useCallback(() => {
     messageApi.destroy(APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY);
@@ -271,8 +261,6 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   if (error) {
     return (
       <ReachabilityErrorView
-        isInCooldown={isInCooldown}
-        cooldownTime={cooldownTime}
         retryCount={retryCount}
         nextRetryIn={nextRetryIn}
         onCancel={handleCancelRetry}

@@ -14,7 +14,6 @@ export const APPLICATIONS_CONSTANTS = {
     LOADING: 'Loading applications…',
     SUCCESS: 'Applications loaded successfully!',
     RETRY_FAILED_ATTEMPT: 'Failed to fetch applications. Retrying...',
-    RETRY_FAILED_FINAL: 'Unable to fetch applications after all retry attempts.',
     RETRY_ATTEMPT_LOG: 'applications fetch retry attempt failed',
     NO_APPLICATIONS_TITLE: 'No applications yet',
     NO_APPLICATIONS_DESCRIPTION:

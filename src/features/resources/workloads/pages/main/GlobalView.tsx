@@ -28,8 +28,6 @@ const WorkloadsGlobalView: React.FC = memo(() => {
   const [isRetrying, setIsRetrying] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [nextRetryIn, setNextRetryIn] = useState(0);
-  const [isInCooldown, setIsInCooldown] = useState(false);
-  const [cooldownTime, setCooldownTime] = useState(0);
   const timeoutRefs = useRef<{ current: ReturnType<typeof setTimeout> | null }[]>([]);
 
   const handleLoadWorkloads = useCallback(async () => {
@@ -68,22 +66,20 @@ const WorkloadsGlobalView: React.FC = memo(() => {
       setRetrying: setIsRetrying,
       setRetryCount: setRetryCount,
       setNextRetryIn: setNextRetryIn,
-      setInCooldown: setIsInCooldown,
-      setCooldownTime: setCooldownTime,
       onSuccess: () => message.success(WORKLOADS_CONSTANTS.MESSAGES.SUCCESS),
-      onError: () => message.error(CONNECTIVITY_CONSTANTS.MESSAGES.ERROR_RETRYING_COOLDOWN),
+      onError: () => message.error(CONNECTIVITY_CONSTANTS.MESSAGES.ERROR_RETRYING),
     }),
     [],
   );
 
   // Create retry handler
   const handleRetry = useCallback(async () => {
-    if (isRetrying || isInCooldown) return;
+    if (isRetrying) return;
 
     const retryHandler = createRetryHandler(() => loadWorkloadsSilent(dispatch), retryCallbacks);
 
     await retryHandler();
-  }, [dispatch, isRetrying, isInCooldown, retryCallbacks]);
+  }, [dispatch, isRetrying, retryCallbacks]);
 
   useEffect(() => {
     if (appError || batchError) {
@@ -113,8 +109,6 @@ const WorkloadsGlobalView: React.FC = memo(() => {
   if (error) {
     return (
       <ReachabilityErrorView
-        isInCooldown={isInCooldown}
-        cooldownTime={cooldownTime}
         retryCount={retryCount}
         nextRetryIn={nextRetryIn}
         onCancel={handleCancelRetry}
