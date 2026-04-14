@@ -772,9 +772,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                   <RowTag
                     key={key}
                     text={`${key}: ${value}`}
-                    background={DEFAULT_COLORS.CHIP_BLUE_BG}
-                    color={DEFAULT_COLORS.CHIP_BLUE_TEXT}
-                    fontSize={11}
+                    {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                   />
                 ))}
               </div>
@@ -821,7 +819,6 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                 style={{ background: 'transparent' }}
                 items={sections.metrics.workloads.slice(0, 25).map((w) => {
                   const WM = APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS;
-                  const kindVisual = getResourceKindVisual(w.resourceKind);
                   return {
                     key: `${w.namespace}:${w.resourceKind}:${w.resourceName}`,
                     label: (
@@ -858,15 +855,11 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                         >
                           <RowTag
                             text={w.resourceKind}
-                            background={kindVisual.background}
-                            color={kindVisual.color}
-                            fontSize={11}
+                            {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                           />
                           <RowTag
                             text={w.namespace}
-                            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                            fontSize={11}
+                            {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                           />
                         </div>
                       </div>
@@ -1067,9 +1060,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                               />
                               <RowTag
                                 text={entry.changeClass}
-                                background={DEFAULT_COLORS.CHIP_BLUE_BG}
-                                color={DEFAULT_COLORS.CHIP_BLUE_TEXT}
-                                fontSize={11}
+                                {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                               />
                               <RowTag
                                 text={entry.severity}
