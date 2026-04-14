@@ -5,6 +5,7 @@ export const APPLICATIONS_UI = {
   TOOLBAR_SEARCH_BUTTON: 'Search',
   TOOLBAR_LAYOUT_SINGLE: 'Single column',
   TOOLBAR_LAYOUT_DOUBLE: 'Two columns',
+  TOOLBAR_COUNT_SUFFIX: 'applications',
   FILTER: {
     BY_STATUS: 'STATUS',
     BY_MANAGED_BY: 'MANAGED BY',

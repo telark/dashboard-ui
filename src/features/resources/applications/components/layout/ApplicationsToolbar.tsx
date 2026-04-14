@@ -61,7 +61,6 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
   return (
     <div
       style={{
-        position: 'relative',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'flex-end',
@@ -69,7 +68,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
         minHeight: '60px',
       }}
     >
-      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
         <Tooltip title={nextLayoutTooltip}>
           <button
             type="button"
@@ -102,74 +101,60 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
             <span style={{ fontSize: 14, lineHeight: 1 }}>{nextLayoutIcon}</span>
           </button>
         </Tooltip>
-        <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>{totalCount}</span>
+        <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+          {totalCount} {APPLICATIONS_UI.TOOLBAR_COUNT_SUFFIX}
+        </span>
+        {filterChips.map((chip) => (
+          <span
+            key={`${chip.key}:${chip.value}`}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '2px 8px',
+              borderRadius: 999,
+              background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
+              color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
+              fontSize: 11,
+              fontWeight: 600,
+            }}
+          >
+            {chip.label}
+            <button
+              type="button"
+              onClick={() => onRemoveFilterChip(chip.key, chip.value)}
+              style={{
+                all: 'unset',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
+              }}
+            >
+              <CloseOutlined />
+            </button>
+          </span>
+        ))}
+        {overflowCount > 0 ? (
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              padding: '2px 8px',
+              borderRadius: 999,
+              background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
+              color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
+              fontSize: 11,
+              fontWeight: 600,
+            }}
+          >
+            +{overflowCount} more
+          </span>
+        ) : null}
       </div>
       <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
         <Toolbar config={toolbarConfig} />
         <FilterButton onClick={onOpenFilters} />
       </div>
-      {filterChips.length > 0 ? (
-        <div
-          style={{
-            position: 'absolute',
-            right: 0,
-            top: 64,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            flexWrap: 'wrap',
-            maxWidth: '60%',
-            justifyContent: 'flex-end',
-          }}
-        >
-          {filterChips.map((chip) => (
-            <span
-              key={`${chip.key}:${chip.value}`}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                padding: '2px 8px',
-                borderRadius: 999,
-                background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
-                color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
-                fontSize: 11,
-                fontWeight: 600,
-              }}
-            >
-              {chip.label}
-              <button
-                type="button"
-                onClick={() => onRemoveFilterChip(chip.key, chip.value)}
-                style={{
-                  all: 'unset',
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
-                }}
-              >
-                <CloseOutlined />
-              </button>
-            </span>
-          ))}
-          {overflowCount > 0 ? (
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                padding: '2px 8px',
-                borderRadius: 999,
-                background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
-                color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
-                fontSize: 11,
-                fontWeight: 600,
-              }}
-            >
-              +{overflowCount} more
-            </span>
-          ) : null}
-        </div>
-      ) : null}
     </div>
   );
 };
