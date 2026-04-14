@@ -755,22 +755,20 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
               fontSize={11}
             />
           </div>
-          <div>
-            <div
-              style={{
-                color: DEFAULT_COLORS.TEXT_MUTED,
-                fontSize: 12,
-                fontWeight: 700,
-                marginBottom: 8,
-              }}
-            >
-              {APPLICATIONS_UI.SECTIONS.METRICS.CHANGES_BY_CLASS}
-            </div>
-            {Object.keys(sections.metrics?.derived?.changesByClass || {}).length === 0 ? (
-              <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
-            ) : (
+          {filterMetricEntries(sections.metrics?.derived?.changesByClass).length > 0 ? (
+            <div>
+              <div
+                style={{
+                  color: DEFAULT_COLORS.TEXT_MUTED,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  marginBottom: 8,
+                }}
+              >
+                {APPLICATIONS_UI.SECTIONS.METRICS.CHANGES_BY_CLASS}
+              </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                {Object.entries(sections.metrics.derived.changesByClass).map(([key, value]) => (
+                {filterMetricEntries(sections.metrics?.derived?.changesByClass).map(([key, value]) => (
                   <RowTag
                     key={key}
                     text={`${key}: ${value}`}
@@ -780,24 +778,22 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                   />
                 ))}
               </div>
-            )}
-          </div>
-          <div style={{ marginTop: 12 }}>
-            <div
-              style={{
-                color: DEFAULT_COLORS.TEXT_MUTED,
-                fontSize: 12,
-                fontWeight: 700,
-                marginBottom: 8,
-              }}
-            >
-              {APPLICATIONS_UI.SECTIONS.METRICS.CHANGES_BY_SEVERITY}
             </div>
-            {Object.keys(sections.metrics?.derived?.changesBySeverity || {}).length === 0 ? (
-              <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
-            ) : (
+          ) : null}
+          {filterMetricEntries(sections.metrics?.derived?.changesBySeverity).length > 0 ? (
+            <div style={{ marginTop: 12 }}>
+              <div
+                style={{
+                  color: DEFAULT_COLORS.TEXT_MUTED,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  marginBottom: 8,
+                }}
+              >
+                {APPLICATIONS_UI.SECTIONS.METRICS.CHANGES_BY_SEVERITY}
+              </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                {Object.entries(sections.metrics.derived.changesBySeverity).map(([key, value]) => (
+                {filterMetricEntries(sections.metrics?.derived?.changesBySeverity).map(([key, value]) => (
                   <RowTag
                     key={key}
                     text={`${key}: ${value}`}
@@ -807,8 +803,8 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                   />
                 ))}
               </div>
-            )}
-          </div>
+            </div>
+          ) : null}
         </SettingsCard>
 
         <SettingsCard
@@ -1223,4 +1219,12 @@ export default ApplicationDetailsContent;
 
 function MutedText({ value }: { value: string }) {
   return <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>{value}</div>;
+}
+
+function filterMetricEntries(
+  values: Record<string, number | string> | undefined | null,
+): [string, number | string][] {
+  return Object.entries(values || {}).filter(([key, value]) => {
+    return key.trim() !== '-' && String(value).trim() !== '-';
+  });
 }
