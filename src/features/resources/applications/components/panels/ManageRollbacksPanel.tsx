@@ -1,9 +1,11 @@
 import React, { useMemo, useState } from 'react';
+import { CheckCircleOutlined } from '@ant-design/icons';
 import {
   SlideOutPanel,
   ExpandPanelButton,
 } from '../../../../../components/display/panels/slide-out';
 import { DEFAULT_COLORS } from '../../../../../constants';
+import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import type { Application, ApplicationRollbackEntry } from '../../models';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
@@ -13,7 +15,6 @@ import { FancySpinner } from '../../../../../components/animation';
 import {
   classifyRollbackStatus,
   formatRollbackNamespaceRef,
-  formatRollbackSnapshotRef,
   formatRollbackStatusLabel,
   getRollbackStatusColors,
   type RollbackStatusState,
@@ -92,13 +93,6 @@ function RollbackRow(props: { entry: ApplicationRollbackEntry }): React.ReactEle
         borderRadius: APPLICATION_SECTION_LAYOUT.COLUMN_INNER_RADIUS,
         padding: 10,
         background: DEFAULT_COLORS.BACKGROUND_WHITE,
-        transition: 'background 0.15s ease',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = DEFAULT_COLORS.BACKGROUND_HOVER;
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = DEFAULT_COLORS.BACKGROUND_WHITE;
       }}
     >
       <div
@@ -113,11 +107,17 @@ function RollbackRow(props: { entry: ApplicationRollbackEntry }): React.ReactEle
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0, flex: 1 }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
             <RowTag
-              text={formatRollbackSnapshotRef(entry)}
+              text={
+                String(entry.targetSnapshotId || '').trim() || APPLICATIONS_UI.FALLBACKS.EMPTY
+              }
               {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
             />
             <RowTag
-              text={formatRollbackNamespaceRef(entry.namespace)}
+              text={`Generation: ${entry.targetGeneration}`}
+              {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+            />
+            <RowTag
+              text={formatRollbackNamespaceRef(entry.namespace).replace(/^ns\//, '')}
               {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
             />
             {entry.restoredGeneration != null ? (
@@ -159,7 +159,10 @@ function StatusBadge(props: {
   color: string;
 }): React.ReactElement {
   const { label, state, background, color } = props;
-  const showSpinner = state === 'inProgress';
+  const showSpinner = state === 'inProgress' || state === 'pending';
+  const showSuccessIcon = state === 'success';
+  const borderColor =
+    state === 'pending' ? CONNECTIVITY_CONSTANTS.COLORS.WARNING : DEFAULT_COLORS.BORDER_LIGHT;
   return (
     <span
       style={{
@@ -168,6 +171,7 @@ function StatusBadge(props: {
         gap: 8,
         background,
         color,
+        border: `1px solid ${borderColor}`,
         padding: '2px 10px',
         borderRadius: 999,
         fontWeight: 700,
@@ -183,6 +187,7 @@ function StatusBadge(props: {
           <FancySpinner size={14} ringThickness={2} color={color} />
         </span>
       ) : null}
+      {showSuccessIcon ? <CheckCircleOutlined style={{ fontSize: 12 }} /> : null}
       <span>{label}</span>
     </span>
   );

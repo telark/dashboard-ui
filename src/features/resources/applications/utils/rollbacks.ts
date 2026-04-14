@@ -3,14 +3,15 @@ import type { ApplicationRollbackEntry } from '../models';
 import { APPLICATIONS_UI } from '../constants/texts';
 import { CONNECTIVITY_CONSTANTS } from '../../../../constants/pages/connectivity';
 
-export type RollbackStatusState = 'success' | 'failed' | 'inProgress' | 'unknown';
+export type RollbackStatusState = 'success' | 'failed' | 'inProgress' | 'pending' | 'unknown';
 
 export function classifyRollbackStatus(raw: string): RollbackStatusState {
   const s = raw.trim().toLowerCase();
   if (!s) return 'unknown';
   if (s.includes('fail') || s.includes('error')) return 'failed';
   if (s.includes('success') || s.includes('complete')) return 'success';
-  if (s.includes('progress') || s.includes('running') || s.includes('pending') || s.includes('started')) {
+  if (s.includes('pending')) return 'pending';
+  if (s.includes('progress') || s.includes('running') || s.includes('started')) {
     return 'inProgress';
   }
   return 'unknown';
@@ -20,13 +21,22 @@ export function getRollbackStatusColors(
   state: RollbackStatusState,
 ): { background: string; color: string } {
   if (state === 'success') {
-    return { background: DEFAULT_COLORS.CHIP_CUSTOM_BG, color: DEFAULT_COLORS.SUCCESS };
+    return { background: DEFAULT_COLORS.SUCCESS, color: DEFAULT_COLORS.BACKGROUND_WHITE };
   }
   if (state === 'failed') {
     return { background: DEFAULT_COLORS.CHIP_CUSTOM_BG, color: DEFAULT_COLORS.DANGER };
   }
   if (state === 'inProgress') {
-    return { background: DEFAULT_COLORS.CHIP_CUSTOM_BG, color: CONNECTIVITY_CONSTANTS.COLORS.WARNING };
+    return {
+      background: CONNECTIVITY_CONSTANTS.COLORS.WARNING,
+      color: DEFAULT_COLORS.BACKGROUND_WHITE,
+    };
+  }
+  if (state === 'pending') {
+    return {
+      background: DEFAULT_COLORS.BACKGROUND_WHITE,
+      color: CONNECTIVITY_CONSTANTS.COLORS.WARNING,
+    };
   }
   return { background: DEFAULT_COLORS.CHIP_CUSTOM_BG, color: DEFAULT_COLORS.TEXT_MUTED };
 }

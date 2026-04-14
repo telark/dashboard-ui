@@ -1053,7 +1053,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                               }}
                             >
                               <RowTag
-                                text={`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.GEN} ${entry.generation}`}
+                                text={`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.GEN}: ${entry.generation}`}
                                 background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
                                 color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
                                 fontSize={11}
@@ -1063,7 +1063,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                                 {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                               />
                               <RowTag
-                                text={entry.severity}
+                                text={`severity: ${entry.severity}`}
                                 background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
                                 color={DEFAULT_COLORS.TEXT_SECONDARY}
                                 fontSize={11}
