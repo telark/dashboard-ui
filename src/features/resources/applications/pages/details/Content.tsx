@@ -1121,6 +1121,10 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                             {entry.changes?.length ? (
                               <div style={{ marginTop: 8 }}>
                                 {entry.changes.slice(0, 5).map((c, idx) => (
+                                  (() => {
+                                    const hasOldValue = c.oldValue != null && String(c.oldValue).length > 0;
+                                    const hasNewValue = c.newValue != null && String(c.newValue).length > 0;
+                                    return (
                                   <div
                                     key={`${entry.fingerprint}:${idx}`}
                                     style={{
@@ -1135,7 +1139,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                                     </span>{' '}
                                     <span style={{ fontWeight: 700 }}>{c.field}</span>
                                     {': '}
-                                    {c.oldValue != null && String(c.oldValue).length > 0 ? (
+                                    {hasOldValue ? (
                                       <span
                                         style={{
                                           color: DEFAULT_COLORS.TEXT_MUTED,
@@ -1145,10 +1149,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                                         {String(c.oldValue)}
                                       </span>
                                     ) : null}
-                                    {c.oldValue != null &&
-                                    String(c.oldValue).length > 0 &&
-                                    c.newValue != null &&
-                                    String(c.newValue).length > 0 ? (
+                                    {hasOldValue && hasNewValue ? (
                                       <span
                                         style={{
                                           margin: '0 6px',
@@ -1158,14 +1159,16 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                                         {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DIFF_ARROW}
                                       </span>
                                     ) : null}
-                                    {c.newValue != null && String(c.newValue).length > 0 ? (
+                                    {hasNewValue ? (
                                       <span style={{ fontWeight: 700 }}>{String(c.newValue)}</span>
-                                    ) : (
+                                    ) : !hasOldValue ? (
                                       <span style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
                                         {c.description}
                                       </span>
-                                    )}
+                                    ) : null}
                                   </div>
+                                    );
+                                  })()
                                 ))}
                                 {entry.changes.length > 5 ? (
                                   <div
