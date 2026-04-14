@@ -54,13 +54,6 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
           padding: 10,
           marginBottom: showMarginBottom ? 8 : 0,
           background: DEFAULT_COLORS.BACKGROUND_WHITE,
-          transition: 'background 0.15s ease',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = DEFAULT_COLORS.BACKGROUND_HOVER;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = DEFAULT_COLORS.BACKGROUND_WHITE;
         }}
       >
         <div

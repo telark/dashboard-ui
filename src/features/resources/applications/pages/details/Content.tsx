@@ -266,21 +266,27 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6 }}>
                     {sections.images.slice(0, 8).map((img) => (
-                      <code
-                        key={img}
-                        style={{
-                          fontSize: 11,
-                          fontFamily: 'monospace',
-                          color: DEFAULT_COLORS.TEXT_PRIMARY,
-                          background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-                          border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-                          borderRadius: 6,
-                          padding: '2px 8px',
-                          wordBreak: 'break-all',
-                        }}
-                      >
-                        {img}
-                      </code>
+                      <Tooltip key={img} title={img}>
+                        <span
+                          style={{
+                            display: 'inline-block',
+                            maxWidth: '100%',
+                            background: APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG.background,
+                            color: APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG.color,
+                            padding: '2px 10px',
+                            borderRadius: 999,
+                            fontWeight: 700,
+                            fontSize: APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG.fontSize,
+                            textTransform: 'none',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            boxSizing: 'border-box',
+                          }}
+                        >
+                          {img}
+                        </span>
+                      </Tooltip>
                     ))}
                     {sections.images.length > 8 ? (
                       <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
@@ -301,23 +307,73 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                     {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                   />
                 ) : (
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: 6,
-                      maxHeight: APPLICATION_SECTION_LAYOUT.TAG_CLOUD_MAX_HEIGHT_PX,
-                      overflowY: 'auto',
-                    }}
-                  >
-                    {sections.envVarKeys.map((key) => (
-                      <RowTag
-                        key={key}
-                        text={key}
-                        {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-                      />
-                    ))}
-                  </div>
+                  (() => {
+                    const maxRows = 3;
+                    const perRow = 3;
+                    const maxSlots = maxRows * perRow;
+                    const hasHidden = sections.envVarKeys.length > maxSlots;
+                    const visibleKeys = hasHidden
+                      ? sections.envVarKeys.slice(0, maxSlots - 1)
+                      : sections.envVarKeys.slice(0, maxSlots);
+                    const hiddenKeys = hasHidden
+                      ? sections.envVarKeys.slice(maxSlots - 1)
+                      : [];
+
+                    return (
+                      <div
+                        style={{
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+                          alignItems: 'start',
+                          gap: 6,
+                          width: '100%',
+                          overflowX: 'hidden',
+                        }}
+                      >
+                        {visibleKeys.map((key) => (
+                          <Tooltip key={key} title={key}>
+                            <span
+                              style={{
+                                display: 'inline-block',
+                                maxWidth: '100%',
+                                background: APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG.background,
+                                color: APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG.color,
+                                padding: '2px 10px',
+                                borderRadius: 999,
+                                fontWeight: 700,
+                                fontSize: APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG.fontSize,
+                                textTransform: 'none',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                boxSizing: 'border-box',
+                              }}
+                            >
+                              {key}
+                            </span>
+                          </Tooltip>
+                        ))}
+                        {hiddenKeys.length > 0 ? (
+                          <Tooltip
+                            title={
+                              <div style={{ display: 'grid', rowGap: 4 }}>
+                                {hiddenKeys.map((key) => (
+                                  <span key={key}>{key}</span>
+                                ))}
+                              </div>
+                            }
+                          >
+                            <span>
+                              <RowTag
+                                text={`+${hiddenKeys.length}`}
+                                {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+                              />
+                            </span>
+                          </Tooltip>
+                        ) : null}
+                      </div>
+                    );
+                  })()
                 )}
               </div>
             </ColumnShell>
