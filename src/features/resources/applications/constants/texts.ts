@@ -171,7 +171,7 @@ export const APPLICATIONS_UI = {
       TITLE: 'History Changes',
       DESCRIPTION: 'Detected changes and incidents.',
       SHOWING_FIRST: 'Showing first',
-      GEN: 'Gen',
+      GEN: 'Generation',
       BY_PREFIX: 'By',
       DIFF_ARROW: '→',
       EMPTY_TITLE: 'No history yet',
