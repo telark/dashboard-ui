@@ -12,7 +12,6 @@ import { APPLICATIONS_UI } from '../../constants/texts';
 import type { Application, ApplicationSnapshotSummary } from '../../models';
 import { applicationSnapshotStableKey } from '../../utils/mergeApplicationSnapshotSources';
 import { mergeApplicationSnapshotSources } from '../../utils/mergeApplicationSnapshotSources';
-import SettingsCard from '../../../../settings/components/SettingsCard';
 import SnapshotAggregateStorageBar from '../snapshots/SnapshotAggregateStorageBar';
 import ApplicationSectionEmptyState from '../display/ApplicationSectionEmptyState';
 import ApplicationSnapshotRow from '../snapshots/ApplicationSnapshotRow';
@@ -132,55 +131,56 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
       }
       formContent={
         <>
-          <SettingsCard
-            title={snapUi.TITLE}
-            description={snapUi.DESCRIPTION}
-            headerAction={
-              !snapshotsLoading && mergedSnapshots.length > 0 ? (
-                <SnapshotAggregateStorageBar snapshots={mergedSnapshots} />
-              ) : null
-            }
-          >
-            {snapshotsLoading ? (
-              <div style={{ display: 'grid', rowGap: 10 }}>
-                {[0, 1, 2].map((i) => (
-                  <div
-                    key={i}
-                    style={{
-                      height: 44,
-                      borderRadius: 8,
-                      border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-                      background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-                    }}
-                  />
-                ))}
-              </div>
-            ) : mergedSnapshots.length === 0 ? (
-              snapshotsError ? (
-                <div style={{ fontSize: 13, color: DEFAULT_COLORS.DANGER }}>{snapshotsError}</div>
-              ) : (
-                <ApplicationSectionEmptyState
-                  icon={<CameraOutlined style={{ fontSize: 24 }} />}
-                  title={snapUi.EMPTY_TITLE}
-                  description={snapUi.EMPTY_DESCRIPTION}
+          {!snapshotsLoading && mergedSnapshots.length > 0 ? (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                marginBottom: 8,
+              }}
+            >
+              <SnapshotAggregateStorageBar snapshots={mergedSnapshots} />
+            </div>
+          ) : null}
+          {snapshotsLoading ? (
+            <div style={{ display: 'grid', rowGap: 10 }}>
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  style={{
+                    height: 44,
+                    borderRadius: 8,
+                    border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+                    background: DEFAULT_COLORS.BACKGROUND_LIGHT,
+                  }}
                 />
-              )
+              ))}
+            </div>
+          ) : mergedSnapshots.length === 0 ? (
+            snapshotsError ? (
+              <div style={{ fontSize: 13, color: DEFAULT_COLORS.DANGER }}>{snapshotsError}</div>
             ) : (
-              <div>
-                {mergedSnapshots.map((s, idx) => (
-                  <ApplicationSnapshotRow
-                    key={applicationSnapshotStableKey(s)}
-                    snapshot={s}
-                    showMarginBottom={idx < mergedSnapshots.length - 1}
-                    onViewManifest={openManifest}
-                    onRollback={handleRollbackRequest}
-                    rollbackLoading={rollbackBusyId === applicationSnapshotStableKey(s)}
-                    rollbackDisabled={rollbackDisabled}
-                  />
-                ))}
-              </div>
-            )}
-          </SettingsCard>
+              <ApplicationSectionEmptyState
+                icon={<CameraOutlined style={{ fontSize: 24 }} />}
+                title={snapUi.EMPTY_TITLE}
+                description={snapUi.EMPTY_DESCRIPTION}
+              />
+            )
+          ) : (
+            <div>
+              {mergedSnapshots.map((s, idx) => (
+                <ApplicationSnapshotRow
+                  key={applicationSnapshotStableKey(s)}
+                  snapshot={s}
+                  showMarginBottom={idx < mergedSnapshots.length - 1}
+                  onViewManifest={openManifest}
+                  onRollback={handleRollbackRequest}
+                  rollbackLoading={rollbackBusyId === applicationSnapshotStableKey(s)}
+                  rollbackDisabled={rollbackDisabled}
+                />
+              ))}
+            </div>
+          )}
 
           <ApplicationSnapshotManifestSlideOut
             open={activeManifestKey != null}
