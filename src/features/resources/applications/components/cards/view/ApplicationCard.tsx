@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES } from '../../../../../../constants';
 import type { Application } from '../../../models';
@@ -42,8 +42,6 @@ function MetricMini(props: { value: React.ReactNode; label: string }): React.Rea
 const ApplicationCard: React.FC<ApplicationCardProps> = memo(
   ({ application, onEditApplication }) => {
     const navigate = useNavigate();
-    const [hovered, setHovered] = useState(false);
-
     const primaryNamespace =
       application.namespaces?.items?.[0]?.name ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
     const detailsPath = APP_ROUTES.APPLICATION_DETAILS.replace(':name', application.name);
@@ -53,8 +51,6 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
         role="button"
         tabIndex={0}
         onClick={() => navigate(detailsPath)}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
         onKeyDown={(e) => {
           if (!isActivateKey(e)) return;
           e.preventDefault();
@@ -71,10 +67,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: hovered ? '0 10px 24px rgba(15, 23, 42, 0.10)' : '0 2px 10px rgba(15, 23, 42, 0.06)',
-          transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
-          transition: 'box-shadow 140ms ease, transform 140ms ease, border-color 140ms ease',
-          borderColor: hovered ? DEFAULT_COLORS.BORDER_LIGHT : DEFAULT_COLORS.BORDER_LIGHT,
+          boxShadow: '0 2px 10px rgba(15, 23, 42, 0.06)',
         }}
       >
         <ApplicationCardHeader

@@ -97,7 +97,7 @@ export const APPLICATIONS_UI = {
       DESCRIPTION: 'Ports, images, and environment variable keys.',
       PORTS: 'Ports',
       IMAGES: 'Images',
-      ENV_VAR_KEYS: 'Env var keys',
+      ENV_VAR_KEYS: 'Environment variables',
     },
     SNAPSHOTS: {
       TITLE: 'Snapshots',
