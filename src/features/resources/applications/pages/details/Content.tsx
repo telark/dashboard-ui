@@ -29,7 +29,8 @@ import {
 
 interface ApplicationDetailsContentProps {
   application: Application;
-  editDisabled?: boolean;
+  syncDisabled?: boolean;
+  onForceSync: () => void;
   onEdit: () => void;
   onManageSnapshots: () => void;
   onManageRollbacks: () => void;
@@ -37,7 +38,7 @@ interface ApplicationDetailsContentProps {
 }
 
 const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo(
-  ({ application, editDisabled = false, onEdit, onManageSnapshots, onManageRollbacks, onDelete }) => {
+  ({ application, syncDisabled = false, onForceSync, onEdit, onManageSnapshots, onManageRollbacks, onDelete }) => {
     const sections = useMemo(() => {
       const created = application.createdAt ? (
         <TimeAgo date={application.createdAt} />
@@ -187,8 +188,9 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           }}
         >
           <ApplicationDetailsToolbar
+            onForceSync={onForceSync}
+            syncDisabled={syncDisabled}
             onEdit={onEdit}
-            editDisabled={editDisabled}
             onManageSnapshots={onManageSnapshots}
             onManageRollbacks={onManageRollbacks}
             onDelete={onDelete}

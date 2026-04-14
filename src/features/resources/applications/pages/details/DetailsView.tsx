@@ -16,6 +16,7 @@ import { fetchApplicationSnapshotsThunk } from '../../store';
 import { EditApplicationPanel, ManageRollbacksPanel, ManageSnapshotsPanel } from '../../components/panels';
 import { Form, Modal } from 'antd';
 import { deleteApplicationThunk } from '../../store';
+import { forceSyncApplication } from '../../utils/management/sync';
 
 const ApplicationDetailsView: React.FC = memo(() => {
   const { name } = useParams<{ name: string }>();
@@ -73,7 +74,10 @@ const ApplicationDetailsView: React.FC = memo(() => {
         <div style={{ marginTop: 24 }}>
           <ApplicationDetailsContent
             application={details}
-            editDisabled={isSyncing}
+            syncDisabled={isSyncing}
+            onForceSync={() => {
+              forceSyncApplication(details.name).catch(() => undefined);
+            }}
             onEdit={() => {
               editForm.setFieldsValue({
                 name: details.name,

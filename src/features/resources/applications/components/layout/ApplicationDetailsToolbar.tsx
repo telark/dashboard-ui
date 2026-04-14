@@ -1,19 +1,22 @@
 import React, { useMemo } from 'react';
+import { SyncOutlined } from '@ant-design/icons';
 import Toolbar from '../../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import { APPLICATIONS_UI } from '../../constants';
 
 interface ApplicationDetailsToolbarProps {
+  onForceSync: () => void;
+  syncDisabled?: boolean;
   onEdit: () => void;
-  editDisabled?: boolean;
   onManageSnapshots: () => void;
   onManageRollbacks: () => void;
   onDelete: () => void;
 }
 
 const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
+  onForceSync,
+  syncDisabled = false,
   onEdit,
-  editDisabled = false,
   onManageSnapshots,
   onManageRollbacks,
   onDelete,
@@ -22,12 +25,21 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
     () => ({
       buttons: [
         {
+          key: 'forceSync',
+          label: APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC,
+          icon: <SyncOutlined />,
+          variant: 'primary',
+          onClick: onForceSync,
+          disabled: syncDisabled,
+          tooltip: syncDisabled ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP : undefined,
+        },
+        {
           key: 'edit',
           label: APPLICATIONS_UI.CARD.ACTIONS.EDIT,
           variant: 'default',
           onClick: onEdit,
-          disabled: editDisabled,
-          tooltip: editDisabled ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP : undefined,
+          disabled: syncDisabled,
+          tooltip: syncDisabled ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP : undefined,
         },
         {
           key: 'snapshots',
@@ -46,10 +58,12 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
           label: APPLICATIONS_UI.CARD.ACTIONS.DELETE,
           variant: 'danger',
           onClick: onDelete,
+          disabled: syncDisabled,
+          tooltip: syncDisabled ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP : undefined,
         },
       ],
     }),
-    [editDisabled, onDelete, onEdit, onManageRollbacks, onManageSnapshots],
+    [syncDisabled, onDelete, onEdit, onForceSync, onManageRollbacks, onManageSnapshots],
   );
 
   return <Toolbar config={toolbarConfig} />;
