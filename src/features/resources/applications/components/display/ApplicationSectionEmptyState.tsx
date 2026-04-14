@@ -4,7 +4,7 @@ import { SHARED_PAGE_CONSTANTS } from '../../../../../constants/shared/pages';
 
 interface ApplicationSectionEmptyStateProps {
   icon?: React.ReactNode;
-  title: string;
+  title?: string;
   description: string;
 }
 
@@ -13,22 +13,24 @@ const ApplicationSectionEmptyState: React.FC<ApplicationSectionEmptyStateProps> 
     <div
       style={{
         ...SHARED_PAGE_CONSTANTS.LAYOUT.EMPTY_STATE_CONTAINER,
-        minHeight: 140,
-        padding: '24px 16px',
+        minHeight: 96,
+        padding: '14px 12px',
       }}
     >
       {icon ? <div style={SHARED_PAGE_CONSTANTS.LAYOUT.EMPTY_ICON}>{icon}</div> : null}
-      <h4
-        style={{
-          margin: 0,
-          marginBottom: 8,
-          fontSize: 15,
-          fontWeight: 600,
-          color: DEFAULT_COLORS.TEXT_PRIMARY,
-        }}
-      >
-        {title}
-      </h4>
+      {title ? (
+        <h4
+          style={{
+            margin: 0,
+            marginBottom: 8,
+            fontSize: 15,
+            fontWeight: 600,
+            color: DEFAULT_COLORS.TEXT_PRIMARY,
+          }}
+        >
+          {title}
+        </h4>
+      ) : null}
       <p
         style={{
           margin: 0,

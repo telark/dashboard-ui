@@ -264,7 +264,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                 {sections.images.length === 0 ? (
                   <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
                 ) : (
-                  <div style={{ display: 'grid', rowGap: 6 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6 }}>
                     {sections.images.slice(0, 8).map((img) => (
                       <code
                         key={img}
@@ -275,7 +275,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                           background: DEFAULT_COLORS.BACKGROUND_LIGHT,
                           border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
                           borderRadius: 6,
-                          padding: '4px 8px',
+                          padding: '2px 8px',
                           wordBreak: 'break-all',
                         }}
                       >
@@ -435,7 +435,6 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         >
           {!sections.insights || !sections.insights.enriched ? (
             <ApplicationSectionEmptyState
-              title={APPLICATIONS_UI.SECTIONS.INSIGHTS.EMPTY_TITLE}
               description={APPLICATIONS_UI.SECTIONS.INSIGHTS.EMPTY_DESCRIPTION}
             />
           ) : (
@@ -944,7 +943,6 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         >
           {sections.changeLog.length === 0 ? (
             <ApplicationSectionEmptyState
-              title={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.EMPTY_TITLE}
               description={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.EMPTY_DESCRIPTION}
             />
           ) : (
