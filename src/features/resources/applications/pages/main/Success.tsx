@@ -96,7 +96,7 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
             onLayoutModeChange={(mode) => dispatch(setLayoutMode(mode))}
           />
 
-          <div style={{ marginTop: -8 }}>
+          <div style={{ marginTop: -20 }}>
             {!hasApps && hasActiveFilters ? (
               <div style={{ textAlign: 'center', padding: '48px 24px' }}>
                 <p style={{ marginBottom: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
