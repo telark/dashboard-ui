@@ -40,7 +40,6 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   const retryState = useSelector((s: RootState) => s.retry.byKey[APPLICATIONS_CONSTANTS.RETRY.KEY]);
   const [messageApi, messageContextHolder] = message.useMessage();
   const [retryTickMs, setRetryTickMs] = useState(0);
-  const retryInFlightRef = useRef(false);
 
   const visibleApplications = useMemo(
     () => filterByExcludedNamespaces(applications, excludedNamespaces),
@@ -159,27 +158,8 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   const overflowChipsCount = Math.max(0, allFilterChips.length - visibleFilterChips.length);
 
   const handleLoadApplications = useCallback(async () => {
-    const success = await loadApplications(dispatch);
-    if (!success) {
-      await executeRetryWithBackoff({
-        key: APPLICATIONS_CONSTANTS.RETRY.KEY,
-        execute: () => loadApplicationsSilent(dispatch),
-        isContextActive: () => document.visibilityState === 'visible',
-        onAttemptFailed: (attempt, error) => {
-          logger.error(APPLICATIONS_CONSTANTS.MESSAGES.RETRY_ATTEMPT_LOG, {
-            key: APPLICATIONS_CONSTANTS.RETRY.KEY,
-            attempt,
-            error,
-          });
-          messageApi.open({
-            key: APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY,
-            type: 'error',
-            content: APPLICATIONS_CONSTANTS.MESSAGES.RETRY_FAILED_ATTEMPT,
-          });
-        },
-      });
-    }
-  }, [dispatch, messageApi]);
+    await loadApplications(dispatch);
+  }, [dispatch]);
 
   useEffect(() => {
     (async () => {
@@ -199,10 +179,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   }, [dispatch, fetchIntervalSeconds]);
 
   useEffect(() => {
-    if (!error || retryInFlightRef.current) {
-      return;
-    }
-    retryInFlightRef.current = true;
+    if (!error || retryState) return;
     void executeRetryWithBackoff({
       key: APPLICATIONS_CONSTANTS.RETRY.KEY,
       execute: () => loadApplicationsSilent(dispatch),
@@ -219,10 +196,8 @@ const ApplicationsGlobalView: React.FC = memo(() => {
           content: APPLICATIONS_CONSTANTS.MESSAGES.RETRY_FAILED_ATTEMPT,
         });
       },
-    }).finally(() => {
-      retryInFlightRef.current = false;
     });
-  }, [dispatch, error, messageApi]);
+  }, [dispatch, error, retryState, messageApi]);
 
   useEffect(() => {
     const timer = setInterval(() => setRetryTickMs(Date.now()), 1000);
@@ -258,7 +233,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     return <LoadingView label={APPLICATIONS_CONSTANTS.MESSAGES.LOADING} />;
   }
 
-  if (error) {
+  if (error || retryState) {
     return (
       <ReachabilityErrorView
         retryCount={retryCount}
