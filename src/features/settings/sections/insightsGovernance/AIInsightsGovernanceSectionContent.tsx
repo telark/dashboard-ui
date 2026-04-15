@@ -30,6 +30,35 @@ type SnapshotInfosResponse = {
   totalSnapshots: number;
 };
 
+const EMPTY_SNAPSHOT_METRIC: SnapshotMetric = { bytes: 0, kb: 0, mb: 0, percent: 0 };
+
+function normalizeSnapshotMetric(input: unknown): SnapshotMetric {
+  if (!input || typeof input !== 'object') return EMPTY_SNAPSHOT_METRIC;
+  const metric = input as Partial<SnapshotMetric>;
+  return {
+    bytes: Number.isFinite(Number(metric.bytes)) ? Number(metric.bytes) : 0,
+    kb: Number.isFinite(Number(metric.kb)) ? Number(metric.kb) : 0,
+    mb: Number.isFinite(Number(metric.mb)) ? Number(metric.mb) : 0,
+    percent: Number.isFinite(Number(metric.percent)) ? Number(metric.percent) : 0,
+  };
+}
+
+function normalizeSnapshotInfos(input: unknown): SnapshotInfosResponse | null {
+  if (!input || typeof input !== 'object') return null;
+  const payload =
+    'data' in (input as Record<string, unknown>)
+      ? (input as { data?: unknown }).data
+      : input;
+  if (!payload || typeof payload !== 'object') return null;
+  const raw = payload as Record<string, unknown>;
+  return {
+    totalPVCSpace: normalizeSnapshotMetric(raw.totalPVCSpace),
+    consumedSpace: normalizeSnapshotMetric(raw.consumedSpace),
+    availableSpace: normalizeSnapshotMetric(raw.availableSpace),
+    totalSnapshots: Number.isFinite(Number(raw.totalSnapshots)) ? Number(raw.totalSnapshots) : 0,
+  };
+}
+
 function getFriendlyValidationError(err: unknown): string {
   if (err && typeof err === 'object') {
     const anyErr = err as {
@@ -191,10 +220,14 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
     setSnapshotInfosLoading(true);
     try {
       const { path, method } = Endpoints.SNAPSHOTS.GET_INFOS;
-      const res = await Client<SnapshotInfosResponse>(exporterApiClient, path, {
+      const res = await Client<SnapshotInfosResponse | ResourceDetailsResponse<SnapshotInfosResponse>>(
+        exporterApiClient,
+        path,
+        {
         method,
-      });
-      setSnapshotInfos(res ?? null);
+        },
+      );
+      setSnapshotInfos(normalizeSnapshotInfos(res));
     } catch {
       setSnapshotInfos(null);
       message.error(C.MESSAGES.SNAPSHOT_STORAGE_LOAD_FAILED);
