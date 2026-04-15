@@ -137,12 +137,15 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
     >
       <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
         {pageCount > 0 ? (
-          <Checkbox
-            checked={allPageSelected}
-            onChange={(e) => onToggleSelectAllPage(e.target.checked)}
-          >
-            {APPLICATIONS_UI.TOOLBAR_SELECT_ALL}
-          </Checkbox>
+          <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+            <Checkbox
+              checked={allPageSelected}
+              onChange={(e) => onToggleSelectAllPage(e.target.checked)}
+              style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12 }}
+            >
+              {APPLICATIONS_UI.TOOLBAR_SELECT_ALL}
+            </Checkbox>
+          </span>
         ) : null}
         {selectedCount > 0 ? <Toolbar config={bulkActionsToolbarConfig} /> : null}
         <Tooltip title={nextLayoutTooltip}>
