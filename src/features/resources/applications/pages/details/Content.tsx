@@ -5,11 +5,7 @@ import { format } from 'date-fns';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
-import type {
-  Application,
-  ApplicationChangeLogEntry,
-  ApplicationResourceRef,
-} from '../../models';
+import type { Application, ApplicationChangeLogEntry, ApplicationResourceRef } from '../../models';
 import { APPLICATIONS_UI } from '../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
@@ -38,7 +34,15 @@ interface ApplicationDetailsContentProps {
 }
 
 const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo(
-  ({ application, syncDisabled = false, onForceSync, onEdit, onManageSnapshots, onManageRollbacks, onDelete }) => {
+  ({
+    application,
+    syncDisabled = false,
+    onForceSync,
+    onEdit,
+    onManageSnapshots,
+    onManageRollbacks,
+    onDelete,
+  }) => {
     const sections = useMemo(() => {
       const created = application.createdAt ? (
         <TimeAgo date={application.createdAt} />
@@ -264,7 +268,14 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                 {sections.images.length === 0 ? (
                   <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
                 ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6 }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-start',
+                      gap: 6,
+                    }}
+                  >
                     {sections.images.slice(0, 8).map((img) => (
                       <Tooltip key={img} title={img}>
                         <span
@@ -315,9 +326,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                     const visibleKeys = hasHidden
                       ? sections.envVarKeys.slice(0, maxSlots - 1)
                       : sections.envVarKeys.slice(0, maxSlots);
-                    const hiddenKeys = hasHidden
-                      ? sections.envVarKeys.slice(maxSlots - 1)
-                      : [];
+                    const hiddenKeys = hasHidden ? sections.envVarKeys.slice(maxSlots - 1) : [];
 
                     return (
                       <div
@@ -336,7 +345,8 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                               style={{
                                 display: 'inline-block',
                                 maxWidth: '100%',
-                                background: APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG.background,
+                                background:
+                                  APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG.background,
                                 color: APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG.color,
                                 padding: '2px 10px',
                                 borderRadius: 999,
@@ -768,13 +778,15 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                 {APPLICATIONS_UI.SECTIONS.METRICS.CHANGES_BY_CLASS}
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                {filterMetricEntries(sections.metrics?.derived?.changesByClass).map(([key, value]) => (
-                  <RowTag
-                    key={key}
-                    text={`${key}: ${value}`}
-                    {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-                  />
-                ))}
+                {filterMetricEntries(sections.metrics?.derived?.changesByClass).map(
+                  ([key, value]) => (
+                    <RowTag
+                      key={key}
+                      text={`${key}: ${value}`}
+                      {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+                    />
+                  ),
+                )}
               </div>
             </div>
           ) : null}
@@ -791,15 +803,17 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                 {APPLICATIONS_UI.SECTIONS.METRICS.CHANGES_BY_SEVERITY}
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                {filterMetricEntries(sections.metrics?.derived?.changesBySeverity).map(([key, value]) => (
-                  <RowTag
-                    key={key}
-                    text={`${key}: ${value}`}
-                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                    color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                    fontSize={11}
-                  />
-                ))}
+                {filterMetricEntries(sections.metrics?.derived?.changesBySeverity).map(
+                  ([key, value]) => (
+                    <RowTag
+                      key={key}
+                      text={`${key}: ${value}`}
+                      background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                      color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                      fontSize={11}
+                    />
+                  ),
+                )}
               </div>
             </div>
           ) : null}
@@ -1111,56 +1125,60 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                             )}
                             {entry.changes?.length ? (
                               <div style={{ marginTop: 8 }}>
-                                {entry.changes.slice(0, 5).map((c, idx) => (
+                                {entry.changes.slice(0, 5).map((c, idx) =>
                                   (() => {
-                                    const hasOldValue = c.oldValue != null && String(c.oldValue).length > 0;
-                                    const hasNewValue = c.newValue != null && String(c.newValue).length > 0;
+                                    const hasOldValue =
+                                      c.oldValue != null && String(c.oldValue).length > 0;
+                                    const hasNewValue =
+                                      c.newValue != null && String(c.newValue).length > 0;
                                     return (
-                                  <div
-                                    key={`${entry.fingerprint}:${idx}`}
-                                    style={{
-                                      fontSize: 12,
-                                      color: DEFAULT_COLORS.TEXT_PRIMARY,
-                                      lineHeight: 1.5,
-                                      marginTop: idx === 0 ? 0 : 6,
-                                    }}
-                                  >
-                                    <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
-                                      {c.changeType}
-                                    </span>{' '}
-                                    <span style={{ fontWeight: 700 }}>{c.field}</span>
-                                    {': '}
-                                    {hasOldValue ? (
-                                      <span
+                                      <div
+                                        key={`${entry.fingerprint}:${idx}`}
                                         style={{
-                                          color: DEFAULT_COLORS.TEXT_MUTED,
-                                          textDecoration: 'line-through',
+                                          fontSize: 12,
+                                          color: DEFAULT_COLORS.TEXT_PRIMARY,
+                                          lineHeight: 1.5,
+                                          marginTop: idx === 0 ? 0 : 6,
                                         }}
                                       >
-                                        {String(c.oldValue)}
-                                      </span>
-                                    ) : null}
-                                    {hasOldValue && hasNewValue ? (
-                                      <span
-                                        style={{
-                                          margin: '0 6px',
-                                          color: DEFAULT_COLORS.TEXT_MUTED,
-                                        }}
-                                      >
-                                        {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DIFF_ARROW}
-                                      </span>
-                                    ) : null}
-                                    {hasNewValue ? (
-                                      <span style={{ fontWeight: 700 }}>{String(c.newValue)}</span>
-                                    ) : !hasOldValue ? (
-                                      <span style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-                                        {c.description}
-                                      </span>
-                                    ) : null}
-                                  </div>
+                                        <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
+                                          {c.changeType}
+                                        </span>{' '}
+                                        <span style={{ fontWeight: 700 }}>{c.field}</span>
+                                        {': '}
+                                        {hasOldValue ? (
+                                          <span
+                                            style={{
+                                              color: DEFAULT_COLORS.TEXT_MUTED,
+                                              textDecoration: 'line-through',
+                                            }}
+                                          >
+                                            {String(c.oldValue)}
+                                          </span>
+                                        ) : null}
+                                        {hasOldValue && hasNewValue ? (
+                                          <span
+                                            style={{
+                                              margin: '0 6px',
+                                              color: DEFAULT_COLORS.TEXT_MUTED,
+                                            }}
+                                          >
+                                            {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DIFF_ARROW}
+                                          </span>
+                                        ) : null}
+                                        {hasNewValue ? (
+                                          <span style={{ fontWeight: 700 }}>
+                                            {String(c.newValue)}
+                                          </span>
+                                        ) : !hasOldValue ? (
+                                          <span style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+                                            {c.description}
+                                          </span>
+                                        ) : null}
+                                      </div>
                                     );
-                                  })()
-                                ))}
+                                  })(),
+                                )}
                                 {entry.changes.length > 5 ? (
                                   <div
                                     style={{

@@ -62,4 +62,3 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     SUCCESS_TEXT: '#15803d',
   },
 } as const;
-

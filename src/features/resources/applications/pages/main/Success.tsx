@@ -111,7 +111,9 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
             )}
           </div>
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <span style={{ alignSelf: 'center', marginRight: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+            <span
+              style={{ alignSelf: 'center', marginRight: 12, color: DEFAULT_COLORS.TEXT_MUTED }}
+            >
               {pagination.total === 0
                 ? '0-0 of 0'
                 : `${(pagination.currentPage - 1) * pagination.pageSize + 1}-${Math.min(

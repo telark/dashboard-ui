@@ -18,4 +18,3 @@ export function isApplicationSyncInFlight(name: string): boolean {
 export function listApplicationSyncInFlight(): string[] {
   return Array.from(inFlight);
 }
-

@@ -17,4 +17,3 @@ export const triggerApplicationSync = async (name: string) => {
     timeout: SYNC_CONSTANTS.APPLICATION_FORCE_SYNC_TIMEOUT_MS,
   });
 };
-

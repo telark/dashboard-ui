@@ -72,4 +72,3 @@ export const { setGlobalConfig } = globalConfigSlice.actions;
 export default globalConfigSlice.reducer;
 
 export const selectGlobalConfigState = (s: RootState) => s.globalconfig;
-

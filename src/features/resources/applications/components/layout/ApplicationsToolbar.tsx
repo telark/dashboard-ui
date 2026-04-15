@@ -36,8 +36,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
     nextLayoutMode === 'double'
       ? APPLICATIONS_UI.TOOLBAR_LAYOUT_DOUBLE
       : APPLICATIONS_UI.TOOLBAR_LAYOUT_SINGLE;
-  const nextLayoutIcon =
-    nextLayoutMode === 'double' ? <AppstoreOutlined /> : <BarsOutlined />;
+  const nextLayoutIcon = nextLayoutMode === 'double' ? <AppstoreOutlined /> : <BarsOutlined />;
 
   const toolbarConfig: ToolbarConfig = useMemo(
     () => ({

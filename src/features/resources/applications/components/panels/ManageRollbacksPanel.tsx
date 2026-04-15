@@ -106,9 +106,7 @@ function RollbackRow(props: { entry: ApplicationRollbackEntry }): React.ReactEle
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0, flex: 1 }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
             <RowTag
-              text={
-                String(entry.targetSnapshotId || '').trim() || APPLICATIONS_UI.FALLBACKS.EMPTY
-              }
+              text={String(entry.targetSnapshotId || '').trim() || APPLICATIONS_UI.FALLBACKS.EMPTY}
               {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
             />
             <RowTag

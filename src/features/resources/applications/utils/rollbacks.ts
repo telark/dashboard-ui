@@ -17,9 +17,10 @@ export function classifyRollbackStatus(raw: string): RollbackStatusState {
   return 'unknown';
 }
 
-export function getRollbackStatusColors(
-  state: RollbackStatusState,
-): { background: string; color: string } {
+export function getRollbackStatusColors(state: RollbackStatusState): {
+  background: string;
+  color: string;
+} {
   if (state === 'success') {
     return { background: DEFAULT_COLORS.SUCCESS, color: DEFAULT_COLORS.BACKGROUND_WHITE };
   }
@@ -61,4 +62,3 @@ export function formatRollbackSnapshotRef(entry: ApplicationRollbackEntry): stri
   if (snap) return `${snap} · gen ${gen}`;
   return `gen ${gen}`;
 }
-

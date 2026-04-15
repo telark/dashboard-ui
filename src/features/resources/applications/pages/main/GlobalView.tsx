@@ -75,7 +75,10 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     const managedByOptions = uniqOptions(visibleApplications, (a) => a.managed?.by);
     const managedChartOptions = uniqOptions(visibleApplications, (a) => a.managed?.chart || '');
     const namespaceOptions = uniqNamespaceOptions(visibleApplications);
-    const insightCategoryOptions = uniqOptions(visibleApplications, (a) => a.insights?.category || '');
+    const insightCategoryOptions = uniqOptions(
+      visibleApplications,
+      (a) => a.insights?.category || '',
+    );
     const insightRoleOptions = uniqOptions(visibleApplications, (a) => a.insights?.role || '');
     const crStatusOptions = uniqOptions(visibleApplications, (a) => a.crStatus || '');
     return [
@@ -400,7 +403,9 @@ function hasAnyAppliedFilter(filters: Record<string, unknown>): boolean {
   return false;
 }
 
-function buildFilterChips(filters: Record<string, unknown>): { key: string; value: string; label: string }[] {
+function buildFilterChips(
+  filters: Record<string, unknown>,
+): { key: string; value: string; label: string }[] {
   const chips: { key: string; value: string; label: string }[] = [];
   for (const [key, value] of Object.entries(filters)) {
     if (Array.isArray(value)) {

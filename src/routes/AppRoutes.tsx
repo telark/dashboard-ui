@@ -294,8 +294,5 @@ const AppRoutes: React.FC = () => {
 export default AppRoutes;
 
 function isApplicationsRoute(pathname: string): boolean {
-  return (
-    pathname === APP_ROUTES.APPLICATIONS ||
-    pathname.startsWith(`${APP_ROUTES.APPLICATIONS}/`)
-  );
+  return pathname === APP_ROUTES.APPLICATIONS || pathname.startsWith(`${APP_ROUTES.APPLICATIONS}/`);
 }

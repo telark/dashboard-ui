@@ -1,7 +1,12 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Input, Select, message } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
-import { Client, discoveryApiClient, enrichmentApiClient, exporterApiClient } from '../../../../api';
+import {
+  Client,
+  discoveryApiClient,
+  enrichmentApiClient,
+  exporterApiClient,
+} from '../../../../api';
 import { Endpoints } from '../../../../constants';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as C, ProviderKey } from './constants';
 import { DEFAULT_COLORS } from '../../../../constants';
@@ -78,7 +83,9 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
 
     const allowed = C.PROVIDERS.OPTIONS.map((o) => o.value);
     const p = String(cfg?.ai?.provider || '').trim();
-    const normalizedProvider = allowed.includes(p as ProviderKey) ? (p as ProviderKey) : C.PROVIDERS.DEFAULT;
+    const normalizedProvider = allowed.includes(p as ProviderKey)
+      ? (p as ProviderKey)
+      : C.PROVIDERS.DEFAULT;
     setProvider(normalizedProvider);
 
     const key = String(cfg?.ai?.apiKey || '');
@@ -266,7 +273,10 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
 
   return (
     <>
-      <SettingsCard title={C.LABELS.AI_INSIGHTS_TITLE} description={C.LABELS.AI_INSIGHTS_DESCRIPTION}>
+      <SettingsCard
+        title={C.LABELS.AI_INSIGHTS_TITLE}
+        description={C.LABELS.AI_INSIGHTS_DESCRIPTION}
+      >
         <div
           style={{
             display: 'flex',
@@ -283,7 +293,10 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
 
       {aiEnabled ? (
         <div style={{ marginTop: SECTION_GAP_PX }}>
-          <SettingsCard title={C.LABELS.PROVIDER_CARD_TITLE} description={C.LABELS.PROVIDER_CARD_DESCRIPTION}>
+          <SettingsCard
+            title={C.LABELS.PROVIDER_CARD_TITLE}
+            description={C.LABELS.PROVIDER_CARD_DESCRIPTION}
+          >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <Select
                 value={provider}
@@ -344,13 +357,19 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
         <SettingsCard title={C.LABELS.PLATFORM_TITLE} description={C.LABELS.PLATFORM_DESCRIPTION}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-              <div style={{ width: 180, fontWeight: 700 }}>{C.LABELS.FETCH_INTERVAL_MINUTES_LABEL}</div>
+              <div style={{ width: 180, fontWeight: 700 }}>
+                {C.LABELS.FETCH_INTERVAL_MINUTES_LABEL}
+              </div>
               <Input
                 value={String(fetchIntervalMinutes)}
                 onChange={(e) => setFetchIntervalMinutes(Number(e.target.value || 0))}
                 style={{ width: PLATFORM_INPUT_WIDTH_PX }}
               />
-              <Button loading={savingInterval} onClick={saveFetchInterval} style={{ minWidth: 120 }}>
+              <Button
+                loading={savingInterval}
+                onClick={saveFetchInterval}
+                style={{ minWidth: 120 }}
+              >
                 {C.LABELS.PLATFORM_SAVE_INTERVAL_BUTTON}
               </Button>
             </div>
@@ -390,13 +409,19 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
               </>
             ) : null}
             <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-              <div style={{ width: 180, fontWeight: 700 }}>{C.LABELS.SNAPSHOTS_MAX_PER_APP_LABEL}</div>
+              <div style={{ width: 180, fontWeight: 700 }}>
+                {C.LABELS.SNAPSHOTS_MAX_PER_APP_LABEL}
+              </div>
               <Input
                 value={String(snapshotsMaxPerApp)}
                 onChange={(e) => setSnapshotsMaxPerApp(Number(e.target.value || 0))}
                 style={{ width: PLATFORM_INPUT_WIDTH_PX }}
               />
-              <Button loading={savingSnapshotsMax} onClick={saveSnapshotsMax} style={{ minWidth: 120 }}>
+              <Button
+                loading={savingSnapshotsMax}
+                onClick={saveSnapshotsMax}
+                style={{ minWidth: 120 }}
+              >
                 {C.LABELS.PLATFORM_SAVE_SNAPSHOTS_BUTTON}
               </Button>
             </div>
@@ -427,4 +452,3 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
 AIInsightsGovernanceSectionContent.displayName = 'AIInsightsGovernanceSectionContent';
 
 export default AIInsightsGovernanceSectionContent;
-

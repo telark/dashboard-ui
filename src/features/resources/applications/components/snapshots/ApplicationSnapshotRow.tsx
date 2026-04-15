@@ -115,9 +115,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
             </Tooltip>
             <Tooltip
               title={
-                rollbackDisabled
-                  ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
-                  : ui.ROLLBACK
+                rollbackDisabled ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP : ui.ROLLBACK
               }
             >
               <Button

@@ -197,4 +197,3 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
 ManageSnapshotsPanel.displayName = 'ManageSnapshotsPanel';
 
 export default ManageSnapshotsPanel;
-

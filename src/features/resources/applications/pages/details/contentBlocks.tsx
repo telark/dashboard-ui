@@ -86,7 +86,10 @@ export function getChangeLogDotColor(severity: string): string {
   return DEFAULT_COLORS.TEXT_MUTED;
 }
 
-export function ColumnShell(props: { title: string; children: React.ReactNode }): React.ReactElement {
+export function ColumnShell(props: {
+  title: string;
+  children: React.ReactNode;
+}): React.ReactElement {
   const { title, children } = props;
   return (
     <div style={{ minWidth: 0 }}>
@@ -96,10 +99,7 @@ export function ColumnShell(props: { title: string; children: React.ReactNode })
   );
 }
 
-export function StatMiniCard(props: {
-  label: string;
-  value: React.ReactNode;
-}): React.ReactElement {
+export function StatMiniCard(props: { label: string; value: React.ReactNode }): React.ReactElement {
   const { label, value } = props;
   return (
     <div
@@ -138,4 +138,3 @@ export function StatMiniCard(props: {
     </div>
   );
 }
-

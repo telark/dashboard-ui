@@ -31,8 +31,15 @@ function MetricMini(props: { value: React.ReactNode; label: string }): React.Rea
   const { value, label } = props;
   return (
     <div style={{ minWidth: 0 }}>
-      <div style={{ fontSize: 14, fontWeight: 700, color: DEFAULT_COLORS.TEXT_PRIMARY, lineHeight: 1.1 }}>
-          {value}
+      <div
+        style={{
+          fontSize: 14,
+          fontWeight: 700,
+          color: DEFAULT_COLORS.TEXT_PRIMARY,
+          lineHeight: 1.1,
+        }}
+      >
+        {value}
       </div>
       <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, lineHeight: 1.1 }}>{label}</div>
     </div>
@@ -77,7 +84,10 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
         />
 
         <div style={METRICS_ROW_STYLE}>
-          <MetricMini value={application.resourceCount ?? 0} label={APPLICATIONS_UI.CARD.LABELS.RESOURCES} />
+          <MetricMini
+            value={application.resourceCount ?? 0}
+            label={APPLICATIONS_UI.CARD.LABELS.RESOURCES}
+          />
           <MetricMini
             value={application.metrics?.derived?.totalIncidents ?? 0}
             label="Total incidents"
@@ -92,13 +102,21 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
           />
           <MetricMini
             value={
-              application.createdAt ? <TimeAgo date={application.createdAt} /> : APPLICATIONS_UI.FALLBACKS.EMPTY
+              application.createdAt ? (
+                <TimeAgo date={application.createdAt} />
+              ) : (
+                APPLICATIONS_UI.FALLBACKS.EMPTY
+              )
             }
             label={APPLICATIONS_UI.CARD.LABELS.CREATED_AT}
           />
           <MetricMini
             value={
-              application.lastUpdated ? <TimeAgo date={application.lastUpdated} /> : APPLICATIONS_UI.FALLBACKS.EMPTY
+              application.lastUpdated ? (
+                <TimeAgo date={application.lastUpdated} />
+              ) : (
+                APPLICATIONS_UI.FALLBACKS.EMPTY
+              )
             }
             label={APPLICATIONS_UI.CARD.LABELS.LAST_UPDATED}
           />

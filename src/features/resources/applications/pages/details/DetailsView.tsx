@@ -13,7 +13,11 @@ import { APP_ROUTES } from '../../../../../constants';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../../../store';
 import { fetchApplicationSnapshotsThunk } from '../../store';
-import { EditApplicationPanel, ManageRollbacksPanel, ManageSnapshotsPanel } from '../../components/panels';
+import {
+  EditApplicationPanel,
+  ManageRollbacksPanel,
+  ManageSnapshotsPanel,
+} from '../../components/panels';
 import { Form } from 'antd';
 import { deleteApplicationThunk } from '../../store';
 import { forceSyncApplication } from '../../utils/management/sync';
@@ -30,8 +34,8 @@ const ApplicationDetailsView: React.FC = memo(() => {
   const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
   const [deleteLoading, setDeleteLoading] = React.useState(false);
   const { details, loading, error } = useApplicationDetails(name);
-  const isSyncing = useSelector(
-    (s: RootState) => (details?.name ? !!s.applications.syncing?.[details.name] : false),
+  const isSyncing = useSelector((s: RootState) =>
+    details?.name ? !!s.applications.syncing?.[details.name] : false,
   );
 
   useEffect(() => {
