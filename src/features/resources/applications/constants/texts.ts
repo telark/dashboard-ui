@@ -10,8 +10,8 @@ export const APPLICATIONS_UI = {
   TOOLBAR_BULK_DELETE_CONFIRM_TITLE: 'Delete selected applications?',
   TOOLBAR_BULK_DELETE_CONFIRM_MESSAGE:
     'Deleting selected applications removes only their platform definitions. Kubernetes resources in your cluster are not deleted.',
-  TOOLBAR_LAYOUT_SINGLE: 'Single column',
-  TOOLBAR_LAYOUT_DOUBLE: 'Two columns',
+  TOOLBAR_LAYOUT_SINGLE: 'Focus view',
+  TOOLBAR_LAYOUT_DOUBLE: 'Compare view',
   TOOLBAR_COUNT_SUFFIX: 'applications',
   FILTER: {
     BY_STATUS: 'STATUS',

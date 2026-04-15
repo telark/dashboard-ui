@@ -148,38 +148,6 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
           </span>
         ) : null}
         {selectedCount > 0 ? <Toolbar config={bulkActionsToolbarConfig} /> : null}
-        <Tooltip title={nextLayoutTooltip}>
-          <button
-            type="button"
-            onClick={() => onLayoutModeChange(nextLayoutMode)}
-            style={{
-              all: 'unset',
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '6px 12px',
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: 500,
-              border: 'none',
-              backgroundColor: 'transparent',
-              color: '#64748b',
-              fontFamily: "'Roboto Condensed', sans-serif",
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = DEFAULT_COLORS.HOVER_BG;
-              e.currentTarget.style.color = DEFAULT_COLORS.SUCCESS;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.color = '#64748b';
-            }}
-          >
-            <span style={{ fontSize: 14, lineHeight: 1 }}>{nextLayoutIcon}</span>
-          </button>
-        </Tooltip>
         <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
           {totalCount} {APPLICATIONS_UI.TOOLBAR_COUNT_SUFFIX}
         </span>
@@ -234,6 +202,39 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
       <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
         <Toolbar config={toolbarConfig} />
         <FilterButton onClick={onOpenFilters} />
+        <Tooltip title={nextLayoutTooltip}>
+          <button
+            type="button"
+            onClick={() => onLayoutModeChange(nextLayoutMode)}
+            style={{
+              all: 'unset',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '6px 12px',
+              borderRadius: 6,
+              fontSize: 13,
+              fontWeight: 500,
+              border: 'none',
+              backgroundColor: 'transparent',
+              color: '#64748b',
+              fontFamily: "'Roboto Condensed', sans-serif",
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = DEFAULT_COLORS.HOVER_BG;
+              e.currentTarget.style.color = DEFAULT_COLORS.SUCCESS;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.color = '#64748b';
+            }}
+          >
+            <span style={{ fontSize: 14, lineHeight: 1 }}>{nextLayoutIcon}</span>
+            <span>{nextLayoutTooltip}</span>
+          </button>
+        </Tooltip>
       </div>
     </div>
   );
