@@ -46,6 +46,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     [applications, excludedNamespaces],
   );
   const hasTriggeredInitialLoad = useRef(false);
+  const retryInFlightRef = useRef(false);
 
   const { searchValue, onSearchChange } = useApplications();
   const [editForm] = Form.useForm();
@@ -182,7 +183,8 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   }, [dispatch, fetchIntervalSeconds]);
 
   useEffect(() => {
-    if (!error || retryState) return;
+    if ((!error && !retryState) || retryInFlightRef.current) return;
+    retryInFlightRef.current = true;
     void executeRetryWithBackoff({
       key: APPLICATIONS_CONSTANTS.RETRY.KEY,
       execute: () => loadApplicationsSilent(dispatch),
@@ -199,8 +201,10 @@ const ApplicationsGlobalView: React.FC = memo(() => {
           content: APPLICATIONS_CONSTANTS.MESSAGES.RETRY_FAILED_ATTEMPT,
         });
       },
+    }).finally(() => {
+      retryInFlightRef.current = false;
     });
-  }, [dispatch, error, retryState, messageApi]);
+  }, [dispatch, error, messageApi, retryState]);
 
   useEffect(() => {
     const timer = setInterval(() => setRetryTickMs(Date.now()), 1000);
