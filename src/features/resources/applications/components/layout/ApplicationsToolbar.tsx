@@ -1,6 +1,13 @@
 import React, { useMemo } from 'react';
-import { AppstoreOutlined, BarsOutlined, CloseOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Tooltip } from 'antd';
+import {
+  AppstoreOutlined,
+  BarsOutlined,
+  CloseOutlined,
+  DeleteOutlined,
+  SearchOutlined,
+  SyncOutlined,
+} from '@ant-design/icons';
+import { Checkbox, Tooltip } from 'antd';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import Toolbar from '../../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
@@ -74,6 +81,49 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
     }),
     [onSearchChange, searchValue],
   );
+  const bulkActionsToolbarConfig: ToolbarConfig | undefined = useMemo(() => {
+    if (selectedCount <= 0) {
+      return undefined;
+    }
+    return {
+      buttons: [
+        {
+          key: 'bulkForceSync',
+          label: APPLICATIONS_UI.TOOLBAR_BULK_FORCE_SYNC,
+          icon: <SyncOutlined />,
+          variant: 'default',
+          onClick: onBulkForceSync,
+          disabled: bulkForceSyncDisabled,
+          tooltip: bulkForceSyncDisabled
+            ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
+            : undefined,
+        },
+        {
+          key: 'bulkDelete',
+          label: APPLICATIONS_UI.TOOLBAR_BULK_DELETE,
+          icon: <DeleteOutlined />,
+          variant: 'danger',
+          onClick: onBulkDelete,
+        },
+      ],
+    };
+  }, [bulkForceSyncDisabled, onBulkDelete, onBulkForceSync, selectedCount]);
+  const clearAllToolbarConfig: ToolbarConfig | undefined = useMemo(() => {
+    if (!hasActiveFilters) {
+      return undefined;
+    }
+    return {
+      buttons: [
+        {
+          key: 'clearAll',
+          label: APPLICATIONS_UI.TOOLBAR_CLEAR_ALL,
+          icon: <CloseOutlined />,
+          variant: 'default',
+          onClick: onClearAllFilters,
+        },
+      ],
+    };
+  }, [hasActiveFilters, onClearAllFilters]);
 
   return (
     <div
@@ -94,29 +144,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
             {APPLICATIONS_UI.TOOLBAR_SELECT_ALL}
           </Checkbox>
         ) : null}
-        {selectedCount > 0 ? (
-          <>
-            <Tooltip
-              title={
-                bulkForceSyncDisabled
-                  ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
-                  : undefined
-              }
-            >
-              <Button
-                type="default"
-                size="small"
-                onClick={onBulkForceSync}
-                disabled={bulkForceSyncDisabled}
-              >
-                {APPLICATIONS_UI.TOOLBAR_BULK_FORCE_SYNC}
-              </Button>
-            </Tooltip>
-            <Button type="default" size="small" danger onClick={onBulkDelete}>
-              {APPLICATIONS_UI.TOOLBAR_BULK_DELETE}
-            </Button>
-          </>
-        ) : null}
+        {selectedCount > 0 ? <Toolbar config={bulkActionsToolbarConfig} /> : null}
         <Tooltip title={nextLayoutTooltip}>
           <button
             type="button"
@@ -198,11 +226,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
             +{overflowCount} more
           </span>
         ) : null}
-        {hasActiveFilters ? (
-          <Button size="small" onClick={onClearAllFilters}>
-            {APPLICATIONS_UI.TOOLBAR_CLEAR_ALL}
-          </Button>
-        ) : null}
+        <Toolbar config={clearAllToolbarConfig} />
       </div>
       <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
         <Toolbar config={toolbarConfig} />
