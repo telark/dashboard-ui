@@ -8,6 +8,10 @@ import type { AppDispatch, RootState } from '../../../../../store';
 import { useAppearance } from '../../../../settings/sections/appearance';
 import { ApplicationCard, ApplicationsHeader, ApplicationsToolbar } from '../../components';
 import { setLayoutMode } from '../../store/slices/applicationsSlice';
+import ApplicationDeleteModal from '../../components/delete/ApplicationDeleteModal';
+import { deleteApplicationThunk } from '../../store';
+import { forceSyncApplication } from '../../utils/management/sync';
+import { APPLICATIONS_UI } from '../../constants';
 
 interface ApplicationsSuccessProps {
   applications: Application[];
@@ -27,6 +31,12 @@ interface ApplicationsSuccessProps {
     total: number;
     onPageChange: (page: number) => void;
   };
+  selectedNames: string[];
+  onToggleSelect: (name: string, checked: boolean) => void;
+  onToggleSelectAllPage: (checked: boolean) => void;
+  allPageSelected: boolean;
+  anySelectedSyncing: boolean;
+  onClearSelection: () => void;
 }
 
 const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
@@ -43,11 +53,21 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
     totalFiltered,
     hasActiveFilters,
     pagination,
+    selectedNames,
+    onToggleSelect,
+    onToggleSelectAllPage,
+    allPageSelected,
+    anySelectedSyncing,
+    onClearSelection,
   }) => {
     const dispatch: AppDispatch = useDispatch();
     const layoutMode = useSelector((s: RootState) => s.applications.layoutMode);
     const { contentGap } = useAppearance();
     const hasApps = applications.length > 0;
+    const selectedSet = useMemo(() => new Set(selectedNames), [selectedNames]);
+    const selectedCount = selectedNames.length;
+    const [bulkDeleteOpen, setBulkDeleteOpen] = React.useState(false);
+    const [bulkDeleteLoading, setBulkDeleteLoading] = React.useState(false);
 
     const content = useMemo(() => {
       if (!hasApps) return null;
@@ -65,11 +85,33 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
               key={application.name}
               application={application}
               onEditApplication={onEditApplication}
+              selectable
+              selected={selectedSet.has(application.name)}
+              onToggleSelect={onToggleSelect}
             />
           ))}
         </div>
       );
-    }, [applications, hasApps, layoutMode, onEditApplication]);
+    }, [applications, hasApps, layoutMode, onEditApplication, onToggleSelect, selectedSet]);
+
+    const handleBulkForceSync = React.useCallback(() => {
+      selectedNames.forEach((name) => {
+        forceSyncApplication(name).catch(() => undefined);
+      });
+    }, [selectedNames]);
+
+    const handleConfirmBulkDelete = React.useCallback(async () => {
+      setBulkDeleteLoading(true);
+      try {
+        await Promise.all(
+          selectedNames.map((name) => dispatch(deleteApplicationThunk(name)).unwrap()),
+        );
+        onClearSelection();
+        setBulkDeleteOpen(false);
+      } finally {
+        setBulkDeleteLoading(false);
+      }
+    }, [dispatch, onClearSelection, selectedNames]);
 
     return (
       <div
@@ -94,6 +136,15 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
             onRemoveFilterChip={onRemoveFilterChip}
             layoutMode={layoutMode}
             onLayoutModeChange={(mode) => dispatch(setLayoutMode(mode))}
+            hasActiveFilters={hasActiveFilters}
+            onClearAllFilters={onClearAllFilters}
+            selectedCount={selectedCount}
+            pageCount={applications.length}
+            allPageSelected={allPageSelected}
+            onToggleSelectAllPage={onToggleSelectAllPage}
+            onBulkForceSync={handleBulkForceSync}
+            onBulkDelete={() => setBulkDeleteOpen(true)}
+            bulkForceSyncDisabled={anySelectedSyncing}
           />
 
           <div style={{ marginTop: -20 }}>
@@ -150,6 +201,26 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
             color: ${DEFAULT_COLORS.SUCCESS};
           }
         `}</style>
+        <ApplicationDeleteModal
+          open={bulkDeleteOpen}
+          onClose={() => setBulkDeleteOpen(false)}
+          onConfirm={handleConfirmBulkDelete}
+          applicationNames={selectedNames}
+          loading={bulkDeleteLoading}
+          title={APPLICATIONS_UI.TOOLBAR_BULK_DELETE_CONFIRM_TITLE}
+          message={
+            <div style={{ display: 'grid', rowGap: 8 }}>
+              <div>{APPLICATIONS_UI.TOOLBAR_BULK_DELETE_CONFIRM_MESSAGE}</div>
+              <div style={{ maxHeight: 180, overflowY: 'auto', textAlign: 'left' }}>
+                <ul style={{ margin: 0, paddingLeft: 18 }}>
+                  {selectedNames.map((name) => (
+                    <li key={name}>{name}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          }
+        />
       </div>
     );
   },

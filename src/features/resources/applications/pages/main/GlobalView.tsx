@@ -29,6 +29,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   const { applications, loading, error, appliedFilters, currentPage } = useSelector(
     (s: RootState) => s.applications,
   );
+  const syncing = useSelector((s: RootState) => s.applications.syncing);
   const fetchIntervalSeconds = useSelector((s: RootState) =>
     s.globalconfig.data?.userSettings?.fetchIntervalSeconds != null
       ? Number(s.globalconfig.data.userSettings.fetchIntervalSeconds)
@@ -51,6 +52,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   const { searchValue, onSearchChange } = useApplications();
   const [editForm] = Form.useForm();
   const [editTarget, setEditTarget] = useState<Application | null>(null);
+  const [selectedNames, setSelectedNames] = useState<string[]>([]);
 
   const openEditPanel = useCallback(
     (app: Application) => {
@@ -160,6 +162,18 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   const allFilterChips = useMemo(() => buildFilterChips(appliedFilters), [appliedFilters]);
   const visibleFilterChips = allFilterChips.slice(0, 3);
   const overflowChipsCount = Math.max(0, allFilterChips.length - visibleFilterChips.length);
+  const paginatedNames = useMemo(
+    () => paginatedApplications.map((application) => application.name),
+    [paginatedApplications],
+  );
+  const allPageSelected = useMemo(
+    () => paginatedNames.length > 0 && paginatedNames.every((name) => selectedNames.includes(name)),
+    [paginatedNames, selectedNames],
+  );
+  const anySelectedSyncing = useMemo(() => {
+    const activeSyncNames = new Set(Object.keys(syncing || {}));
+    return selectedNames.some((name) => activeSyncNames.has(name));
+  }, [selectedNames, syncing]);
 
   const handleLoadApplications = useCallback(async () => {
     await loadApplications(dispatch);
@@ -275,6 +289,29 @@ const ApplicationsGlobalView: React.FC = memo(() => {
           total: totalFiltered,
           onPageChange: (page) => dispatch(setCurrentPage(page)),
         }}
+        selectedNames={selectedNames}
+        onToggleSelect={(name, checked) => {
+          setSelectedNames((prev) => {
+            if (checked) {
+              if (prev.includes(name)) return prev;
+              return [...prev, name];
+            }
+            return prev.filter((item) => item !== name);
+          });
+        }}
+        onToggleSelectAllPage={(checked) => {
+          setSelectedNames((prev) => {
+            if (!checked) {
+              return prev.filter((name) => !paginatedNames.includes(name));
+            }
+            const set = new Set(prev);
+            paginatedNames.forEach((name) => set.add(name));
+            return Array.from(set);
+          });
+        }}
+        allPageSelected={allPageSelected}
+        anySelectedSyncing={anySelectedSyncing}
+        onClearSelection={() => setSelectedNames([])}
       />
       <EditApplicationPanel
         open={editTarget != null}

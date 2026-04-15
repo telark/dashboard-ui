@@ -141,7 +141,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
         open={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
-        applicationName={details.name}
+        applicationNames={[details.name]}
         loading={deleteLoading}
       />
     </>

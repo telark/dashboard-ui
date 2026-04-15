@@ -6,7 +6,7 @@ interface ActionMessageProps {
   action: string;
   resourceName: string;
   resourceType?: string;
-  customMessage?: string;
+  customMessage?: React.ReactNode;
 }
 
 const ActionMessage: React.FC<ActionMessageProps> = ({

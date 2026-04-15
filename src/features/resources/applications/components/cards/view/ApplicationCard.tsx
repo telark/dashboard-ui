@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Checkbox } from 'antd';
 import { DEFAULT_COLORS, APP_ROUTES } from '../../../../../../constants';
 import type { Application } from '../../../models';
 import { APPLICATIONS_UI } from '../../../constants';
@@ -10,6 +11,9 @@ import { APPLICATION_SECTION_LAYOUT } from '../../../constants/sectionLayout';
 interface ApplicationCardProps {
   application: Application;
   onEditApplication: (application: Application) => void;
+  selectable?: boolean;
+  selected?: boolean;
+  onToggleSelect?: (name: string, checked: boolean) => void;
 }
 
 const METRICS_ROW_STYLE: React.CSSProperties = {
@@ -47,7 +51,7 @@ function MetricMini(props: { value: React.ReactNode; label: string }): React.Rea
 }
 
 const ApplicationCard: React.FC<ApplicationCardProps> = memo(
-  ({ application, onEditApplication }) => {
+  ({ application, onEditApplication, selectable = false, selected = false, onToggleSelect }) => {
     const navigate = useNavigate();
     const primaryNamespace =
       application.namespaces?.items?.[0]?.name ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
@@ -82,6 +86,27 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
           primaryNamespace={primaryNamespace}
           onEditApplication={onEditApplication}
         />
+        {selectable ? (
+          <div
+            style={{
+              position: 'absolute',
+              top: 10,
+              left: 10,
+              zIndex: 2,
+              background: DEFAULT_COLORS.BACKGROUND_WHITE,
+              borderRadius: 6,
+              padding: '2px 6px',
+              border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+            }}
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+          >
+            <Checkbox
+              checked={selected}
+              onChange={(e) => onToggleSelect?.(application.name, e.target.checked)}
+            />
+          </div>
+        ) : null}
 
         <div style={METRICS_ROW_STYLE}>
           <MetricMini

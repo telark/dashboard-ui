@@ -110,7 +110,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
           setDeleteModalOpen(true);
         }
       },
-      [application, dispatch, detailsPath, isSyncing, navigate, onEditApplication],
+      [application, detailsPath, isSyncing, navigate, onEditApplication],
     );
 
     const handleConfirmDelete = useCallback(async () => {
@@ -320,7 +320,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
           open={deleteModalOpen}
           onClose={() => setDeleteModalOpen(false)}
           onConfirm={handleConfirmDelete}
-          applicationName={application.name}
+          applicationNames={[application.name]}
           loading={deleteLoading}
         />
       </>
