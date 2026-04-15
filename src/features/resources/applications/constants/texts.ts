@@ -211,6 +211,8 @@ export const APPLICATIONS_UI = {
       DELETE: 'Delete',
       DELETE_CONFIRM_TITLE: 'Delete application?',
       DELETE_CONFIRM_CONTENT: 'This action cannot be undone.',
+      DELETE_CONFIRM_MESSAGE:
+        'Deleting this application removes only its definition from the platform. Kubernetes resources in your cluster are not deleted.',
       ROLLBACKS_PLACEHOLDER: 'Rollbacks are managed from the snapshots section.',
     },
     SYNC_STATUS: {

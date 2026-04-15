@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import { Button, Dropdown, Modal, Tooltip } from 'antd';
+import { Button, Dropdown, Tooltip } from 'antd';
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -23,6 +23,7 @@ import type { AppDispatch, RootState } from '../../../../../../store';
 import { deleteApplicationThunk } from '../../../store';
 import { getApplicationHealthAccentColor } from '../../../utils/healthVisual';
 import { forceSyncApplication } from '../../../utils/management/sync';
+import ApplicationDeleteModal from '../../delete/ApplicationDeleteModal';
 
 interface ApplicationCardHeaderProps {
   application: Application;
@@ -61,6 +62,8 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
     );
     const syncCompletedAt = useSelector((s: RootState) => s.applications.syncCompletedAt?.[application.name]);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState(false);
 
     const accent = getApplicationHealthAccentColor(application.health?.status);
     const statusText = application.health?.status || APPLICATIONS_UI.FALLBACKS.UNKNOWN;
@@ -92,24 +95,25 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
           return;
         }
         if (info.key === 'delete') {
-          Modal.confirm({
-            title: APPLICATIONS_UI.CARD.ACTIONS.DELETE_CONFIRM_TITLE,
-            content: APPLICATIONS_UI.CARD.ACTIONS.DELETE_CONFIRM_CONTENT,
-            okText: APPLICATIONS_UI.CARD.ACTIONS.DELETE,
-            okType: 'danger',
-            cancelText: APPLICATIONS_UI.CARD.ACTIONS.CANCEL,
-            onOk: () =>
-              dispatch(deleteApplicationThunk(application.name))
-                .unwrap()
-                .then(() => {
-                  navigate(APP_ROUTES.APPLICATIONS);
-                })
-                .catch(() => undefined),
-          });
+          setMenuOpen(false);
+          setDeleteModalOpen(true);
         }
       },
       [application, dispatch, detailsPath, isSyncing, navigate, onEditApplication],
     );
+
+    const handleConfirmDelete = useCallback(async () => {
+      setDeleteLoading(true);
+      try {
+        await dispatch(deleteApplicationThunk(application.name)).unwrap();
+        setDeleteModalOpen(false);
+        navigate(APP_ROUTES.APPLICATIONS);
+      } catch {
+        return;
+      } finally {
+        setDeleteLoading(false);
+      }
+    }, [application.name, dispatch, navigate]);
 
     const menuButtonStyle = useMemo(
       () => ({
@@ -139,14 +143,15 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
       );
 
     return (
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          justifyContent: 'space-between',
-          gap: 10,
-        }}
-      >
+      <>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            gap: 10,
+          }}
+        >
         <div style={{ minWidth: 0, flex: 1 }}>
           <div
             style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 8, rowGap: 6 }}
@@ -299,7 +304,15 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
             />
           </Dropdown>
         </div>
-      </div>
+        </div>
+        <ApplicationDeleteModal
+          open={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          onConfirm={handleConfirmDelete}
+          applicationName={application.name}
+          loading={deleteLoading}
+        />
+      </>
     );
   },
 );

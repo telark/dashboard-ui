@@ -11,11 +11,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectGlobalConfigState } from '../../../globalconfig/store';
 import type { AppDispatch } from '../../../../store';
 import { fetchGlobalConfigThunk } from '../../../globalconfig/store';
+import SnapshotStorageBar from '../../../resources/applications/components/snapshots/SnapshotStorageBar';
 
 const SECTION_GAP_PX = 12;
 const PLATFORM_INPUT_WIDTH_PX = 160;
 
 type ValidationApiResponse = { ok: boolean; reason?: string };
+type SnapshotMetric = { bytes: number; kb: number; mb: number; percent?: number };
+type SnapshotInfosResponse = {
+  totalPVCSpace: SnapshotMetric;
+  consumedSpace: SnapshotMetric;
+  availableSpace: SnapshotMetric;
+  totalSnapshots: number;
+};
 
 function getFriendlyValidationError(err: unknown): string {
   if (err && typeof err === 'object') {
@@ -58,6 +66,8 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
   const [snapshotsMaxPerApp, setSnapshotsMaxPerApp] = useState<number>(5);
   const [savingInterval, setSavingInterval] = useState(false);
   const [savingSnapshotsMax, setSavingSnapshotsMax] = useState(false);
+  const [snapshotInfos, setSnapshotInfos] = useState<SnapshotInfosResponse | null>(null);
+  const [snapshotInfosLoading, setSnapshotInfosLoading] = useState(false);
 
   useEffect(() => {
     if (!globalConfig?.data) return;
@@ -170,6 +180,26 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
     loadNamespaces();
   }, [loadNamespaces]);
 
+  const loadSnapshotInfos = useCallback(async () => {
+    setSnapshotInfosLoading(true);
+    try {
+      const { path, method } = Endpoints.SNAPSHOTS.GET_INFOS;
+      const res = await Client<SnapshotInfosResponse>(exporterApiClient, path, {
+        method,
+      });
+      setSnapshotInfos(res ?? null);
+    } catch {
+      setSnapshotInfos(null);
+      message.error(C.MESSAGES.SNAPSHOT_STORAGE_LOAD_FAILED);
+    } finally {
+      setSnapshotInfosLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadSnapshotInfos();
+  }, [loadSnapshotInfos]);
+
   const saveNamespaces = useCallback(async () => {
     setSavingNamespaces(true);
     try {
@@ -216,12 +246,23 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
       });
       message.success(C.MESSAGES.PLATFORM_SAVE_SNAPSHOTS_SUCCESS);
       dispatch(fetchGlobalConfigThunk());
+      void loadSnapshotInfos();
     } catch {
       message.error(C.MESSAGES.PLATFORM_SAVE_SNAPSHOTS_FAILED);
     } finally {
       setSavingSnapshotsMax(false);
     }
-  }, [dispatch, snapshotsMaxPerApp]);
+  }, [dispatch, loadSnapshotInfos, snapshotsMaxPerApp]);
+
+  const consumedLine = useMemo(() => {
+    if (!snapshotInfos) return null;
+    return `${snapshotInfos.consumedSpace.mb.toFixed(2)} MB (${snapshotInfos.consumedSpace.percent?.toFixed(2) ?? '0.00'}%)`;
+  }, [snapshotInfos]);
+
+  const availableLine = useMemo(() => {
+    if (!snapshotInfos) return null;
+    return `${snapshotInfos.availableSpace.mb.toFixed(2)} MB (${snapshotInfos.availableSpace.percent?.toFixed(2) ?? '0.00'}%)`;
+  }, [snapshotInfos]);
 
   return (
     <>
@@ -313,6 +354,41 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
                 {C.LABELS.PLATFORM_SAVE_INTERVAL_BUTTON}
               </Button>
             </div>
+          </div>
+        </SettingsCard>
+      </div>
+      <div style={{ marginTop: SECTION_GAP_PX }}>
+        <SettingsCard
+          title={C.LABELS.SNAPSHOT_STORAGE_TITLE}
+          description={C.LABELS.SNAPSHOT_STORAGE_DESCRIPTION}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {snapshotInfosLoading ? (
+              <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+                {C.LABELS.SNAPSHOT_STORAGE_LOADING}
+              </div>
+            ) : snapshotInfos ? (
+              <>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <div style={{ fontWeight: 700 }}>{C.LABELS.SNAPSHOT_STORAGE_USAGE_LABEL}</div>
+                  <SnapshotStorageBar
+                    percentUsed={snapshotInfos.consumedSpace.percent ?? 0}
+                    metricsLine={`${snapshotInfos.consumedSpace.mb.toFixed(2)} MB / ${snapshotInfos.totalPVCSpace.mb.toFixed(2)} MB`}
+                  />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+                    {C.LABELS.SNAPSHOT_STORAGE_CONSUMED}: {consumedLine}
+                  </div>
+                  <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+                    {C.LABELS.SNAPSHOT_STORAGE_AVAILABLE}: {availableLine}
+                  </div>
+                  <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+                    {C.LABELS.SNAPSHOT_STORAGE_TOTAL_SNAPSHOTS}: {snapshotInfos.totalSnapshots}
+                  </div>
+                </div>
+              </>
+            ) : null}
             <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
               <div style={{ width: 180, fontWeight: 700 }}>{C.LABELS.SNAPSHOTS_MAX_PER_APP_LABEL}</div>
               <Input

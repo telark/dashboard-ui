@@ -123,7 +123,6 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
       open={open}
       onClose={onClose}
       title={APPLICATIONS_UI.CARD.ACTIONS.MANAGE_SNAPSHOTS}
-      subtitle={snapUi.DESCRIPTION}
       width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
       contentOnly
       headerExtra={

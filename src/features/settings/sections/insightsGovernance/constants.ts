@@ -34,6 +34,13 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     SNAPSHOTS_MAX_PER_APP_LABEL: 'Snapshots max per app',
     PLATFORM_SAVE_INTERVAL_BUTTON: 'Save interval',
     PLATFORM_SAVE_SNAPSHOTS_BUTTON: 'Save snapshots',
+    SNAPSHOT_STORAGE_TITLE: 'Snapshot storage',
+    SNAPSHOT_STORAGE_DESCRIPTION: 'Storage usage and retention controls for snapshots.',
+    SNAPSHOT_STORAGE_LOADING: 'Loading snapshot storage...',
+    SNAPSHOT_STORAGE_CONSUMED: 'Consumed',
+    SNAPSHOT_STORAGE_AVAILABLE: 'Available',
+    SNAPSHOT_STORAGE_USAGE_LABEL: 'Usage',
+    SNAPSHOT_STORAGE_TOTAL_SNAPSHOTS: 'Total snapshots',
   },
   MESSAGES: {
     API_KEY_REQUIRED: 'API key is required.',
@@ -48,6 +55,7 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     PLATFORM_SAVE_INTERVAL_FAILED: 'Failed to save interval.',
     PLATFORM_SAVE_SNAPSHOTS_SUCCESS: 'Snapshots saved.',
     PLATFORM_SAVE_SNAPSHOTS_FAILED: 'Failed to save snapshots.',
+    SNAPSHOT_STORAGE_LOAD_FAILED: 'Failed to load snapshot storage.',
   },
   COLORS: {
     ERROR_TEXT: '#b91c1c',

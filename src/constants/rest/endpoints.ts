@@ -74,6 +74,10 @@ export const Endpoints = {
     },
   },
   SNAPSHOTS: {
+    GET_INFOS: {
+      path: 'snapshots/infos',
+      method: 'GET',
+    },
     GET_BY_ID: (id: string) => ({
       path: `snapshots/${id}/get`,
       method: 'GET',

@@ -46,7 +46,6 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
         open={open}
         onClose={onClose}
         title={APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS}
-        subtitle="Rollback timeline and status"
         width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
         contentOnly
         headerExtra={

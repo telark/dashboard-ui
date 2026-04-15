@@ -14,9 +14,10 @@ import { useDispatch } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../../../store';
 import { fetchApplicationSnapshotsThunk } from '../../store';
 import { EditApplicationPanel, ManageRollbacksPanel, ManageSnapshotsPanel } from '../../components/panels';
-import { Form, Modal } from 'antd';
+import { Form } from 'antd';
 import { deleteApplicationThunk } from '../../store';
 import { forceSyncApplication } from '../../utils/management/sync';
+import ApplicationDeleteModal from '../../components/delete/ApplicationDeleteModal';
 
 const ApplicationDetailsView: React.FC = memo(() => {
   const { name } = useParams<{ name: string }>();
@@ -26,6 +27,8 @@ const ApplicationDetailsView: React.FC = memo(() => {
   const [editOpen, setEditOpen] = React.useState(false);
   const [rollbacksOpen, setRollbacksOpen] = React.useState(false);
   const [snapshotsOpen, setSnapshotsOpen] = React.useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
+  const [deleteLoading, setDeleteLoading] = React.useState(false);
   const { details, loading, error } = useApplicationDetails(name);
   const isSyncing = useSelector(
     (s: RootState) => (details?.name ? !!s.applications.syncing?.[details.name] : false),
@@ -50,6 +53,20 @@ const ApplicationDetailsView: React.FC = memo(() => {
     ],
     [details?.displayName, details?.name, name, navigate],
   );
+
+  const handleConfirmDelete = React.useCallback(async () => {
+    if (!details?.name) return;
+    setDeleteLoading(true);
+    try {
+      await dispatch(deleteApplicationThunk(details.name)).unwrap();
+      setDeleteModalOpen(false);
+      navigate(APP_ROUTES.APPLICATIONS);
+    } catch {
+      return;
+    } finally {
+      setDeleteLoading(false);
+    }
+  }, [details?.name, dispatch, navigate]);
 
   if (loading) {
     return <LoadingDetailsView />;
@@ -89,18 +106,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
             onManageRollbacks={() => setRollbacksOpen(true)}
             onManageSnapshots={() => setSnapshotsOpen(true)}
             onDelete={() => {
-              Modal.confirm({
-                title: APPLICATIONS_UI.CARD.ACTIONS.DELETE_CONFIRM_TITLE,
-                content: APPLICATIONS_UI.CARD.ACTIONS.DELETE_CONFIRM_CONTENT,
-                okText: APPLICATIONS_UI.CARD.ACTIONS.DELETE,
-                okType: 'danger',
-                cancelText: APPLICATIONS_UI.CARD.ACTIONS.CANCEL,
-                onOk: () =>
-                  dispatch(deleteApplicationThunk(details.name))
-                    .unwrap()
-                    .then(() => navigate(APP_ROUTES.APPLICATIONS))
-                    .catch(() => undefined),
-              });
+              setDeleteModalOpen(true);
             }}
           />
         </div>
@@ -126,6 +132,13 @@ const ApplicationDetailsView: React.FC = memo(() => {
         applicationId={details.name}
         detailSnapshots={details.snapshots}
         rollbackDisabled={isSyncing}
+      />
+      <ApplicationDeleteModal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        applicationName={details.name}
+        loading={deleteLoading}
       />
     </>
   );
