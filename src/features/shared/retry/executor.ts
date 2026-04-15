@@ -63,6 +63,20 @@ const upsertState = (
   );
 };
 
+const notifyAttemptFailed = (
+  onAttemptFailed: RetryExecutorConfig['onAttemptFailed'],
+  attempt: number,
+  error: unknown,
+  nextDelayMs: number,
+) => {
+  if (!onAttemptFailed) return;
+  try {
+    onAttemptFailed(attempt, error, nextDelayMs);
+  } catch {
+    return;
+  }
+};
+
 export const executeRetryWithBackoff = async ({
   key,
   execute,
@@ -96,9 +110,14 @@ export const executeRetryWithBackoff = async ({
         store.dispatch(removeRetryState(key));
         return true;
       }
-      onAttemptFailed?.(attemptNumber, new Error('retry attempt returned unsuccessful result'), nextDelayMs);
+      notifyAttemptFailed(
+        onAttemptFailed,
+        attemptNumber,
+        new Error('retry attempt returned unsuccessful result'),
+        nextDelayMs,
+      );
     } catch (error) {
-      onAttemptFailed?.(attemptNumber, error, nextDelayMs);
+      notifyAttemptFailed(onAttemptFailed, attemptNumber, error, nextDelayMs);
     }
 
     attempt = attemptNumber;
