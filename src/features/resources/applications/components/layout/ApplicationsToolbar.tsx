@@ -59,6 +59,10 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
   const nextLayoutMode: ApplicationLayoutMode = layoutMode === 'single' ? 'double' : 'single';
   const nextLayoutTooltip =
     nextLayoutMode === 'double'
+      ? APPLICATIONS_UI.TOOLBAR_LAYOUT_DOUBLE_TOOLTIP
+      : APPLICATIONS_UI.TOOLBAR_LAYOUT_SINGLE_TOOLTIP;
+  const nextLayoutLabel =
+    nextLayoutMode === 'double'
       ? APPLICATIONS_UI.TOOLBAR_LAYOUT_DOUBLE
       : APPLICATIONS_UI.TOOLBAR_LAYOUT_SINGLE;
   const nextLayoutIcon = nextLayoutMode === 'double' ? <AppstoreOutlined /> : <BarsOutlined />;
@@ -232,7 +236,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
             }}
           >
             <span style={{ fontSize: 14, lineHeight: 1 }}>{nextLayoutIcon}</span>
-            <span>{nextLayoutTooltip}</span>
+            <span>{nextLayoutLabel}</span>
           </button>
         </Tooltip>
       </div>
