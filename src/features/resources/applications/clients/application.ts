@@ -1,4 +1,4 @@
-import { Client, exporterApiClient } from '../../../../api/index';
+import { Client, discoveryApiClient, exporterApiClient } from '../../../../api/index';
 import logger from '../../../../logging';
 import { Endpoints, HTTP_HEADERS, HEADER_VALUES } from '../../../../constants';
 import type { ResourceDetailsResponse, ResourceListResponse } from '../../../../interfaces/http';
@@ -63,8 +63,8 @@ export const updateApplication = async (name: string, payload: ApplicationUpdate
 export const deleteApplication = async (name: string) => {
   try {
     return await Client<ResourceDetailsResponse<unknown>>(
-      exporterApiClient,
-      Endpoints.APPLICATIONS.DELETE(name).path,
+      discoveryApiClient,
+      Endpoints.APPLICATIONS.CLEANUP(name).path,
       {
         method: 'DELETE',
       },

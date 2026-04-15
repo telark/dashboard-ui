@@ -23,6 +23,7 @@ export const RESOURCE_PATHS = {
   GET_ALL: 'get',
   GET_DETAILS: (name: string) => `${name}/get`,
   DELETE_DETAILS: (name: string) => `${name}/delete`,
+  CLEANUP_DETAILS: (name: string) => `${name}/cleanup`,
   FIND_USER_BY_ID: (id: string) => `findbyid/${id}/get`,
   UPDATE_SYNC: (name: string) => `${name}/patch`,
   /** Application rollback: POST to trigger; GET to list (API contract from exporter). */
