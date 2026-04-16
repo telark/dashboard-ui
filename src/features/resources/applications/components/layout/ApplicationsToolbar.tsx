@@ -191,7 +191,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
               onChange={(e) => onToggleSelectAllPage(e.target.checked)}
               style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12 }}
             >
-              {APPLICATIONS_UI.TOOLBAR_SELECT_ALL}
+              {APPLICATIONS_UI.TOOLBAR_SELECT_ALL} · {selectedCount} selected
             </Checkbox>
           </span>
         ) : null}
