@@ -14,9 +14,10 @@ import { Switch } from '../../../../components/display/inputs';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectGlobalConfigState } from '../../../globalconfig/store';
-import type { AppDispatch } from '../../../../store';
+import type { AppDispatch, RootState } from '../../../../store';
 import { fetchGlobalConfigThunk } from '../../../globalconfig/store';
 import SnapshotStorageBar from '../../../resources/applications/components/snapshots/SnapshotStorageBar';
+import { CONNECTIVITY_CONSTANTS } from '../../../../constants/pages/connectivity';
 
 const SECTION_GAP_PX = 12;
 const PLATFORM_INPUT_WIDTH_PX = 160;
@@ -46,9 +47,7 @@ function normalizeSnapshotMetric(input: unknown): SnapshotMetric {
 function normalizeSnapshotInfos(input: unknown): SnapshotInfosResponse | null {
   if (!input || typeof input !== 'object') return null;
   const payload =
-    'data' in (input as Record<string, unknown>)
-      ? (input as { data?: unknown }).data
-      : input;
+    'data' in (input as Record<string, unknown>) ? (input as { data?: unknown }).data : input;
   if (!payload || typeof payload !== 'object') return null;
   const raw = payload as Record<string, unknown>;
   return {
@@ -82,6 +81,7 @@ function getFriendlyValidationError(err: unknown): string {
 const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
+  const applications = useSelector((s: RootState) => s.applications.applications);
 
   const [aiEnabled, setAiEnabled] = useState(false);
   const [provider, setProvider] = useState<ProviderKey>(C.PROVIDERS.DEFAULT);
@@ -220,13 +220,9 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
     setSnapshotInfosLoading(true);
     try {
       const { path, method } = Endpoints.SNAPSHOTS.GET_INFOS;
-      const res = await Client<SnapshotInfosResponse | ResourceDetailsResponse<SnapshotInfosResponse>>(
-        exporterApiClient,
-        path,
-        {
-        method,
-        },
-      );
+      const res = await Client<
+        SnapshotInfosResponse | ResourceDetailsResponse<SnapshotInfosResponse>
+      >(exporterApiClient, path, { method });
       setSnapshotInfos(normalizeSnapshotInfos(res));
     } catch {
       setSnapshotInfos(null);
@@ -304,6 +300,48 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
     return `${snapshotInfos.availableSpace.mb.toFixed(2)} MB (${snapshotInfos.availableSpace.percent?.toFixed(2) ?? '0.00'}%)`;
   }, [snapshotInfos]);
 
+  const namespacesImpactPreview = useMemo(() => {
+    const saved = Array.isArray(globalConfig?.data?.excludedNamespaces)
+      ? globalConfig.data.excludedNamespaces
+      : [];
+    const current = excludedNamespaces || [];
+    const savedSet = new Set(saved);
+    const currentSet = new Set(current);
+
+    if (saved.length === current.length) {
+      let same = true;
+      for (const v of saved) {
+        if (!currentSet.has(v)) {
+          same = false;
+          break;
+        }
+      }
+      if (same) return null;
+    }
+
+    const added = new Set<string>();
+    const removed = new Set<string>();
+    for (const ns of currentSet) {
+      if (!savedSet.has(ns)) added.add(ns);
+    }
+    for (const ns of savedSet) {
+      if (!currentSet.has(ns)) removed.add(ns);
+    }
+    if (added.size === 0 && removed.size === 0) return null;
+
+    let hidden = 0;
+    let revealed = 0;
+    for (const a of applications || []) {
+      const primary = a.namespaces?.items?.[0]?.name ?? '';
+      if (!primary) continue;
+      if (added.has(primary)) hidden++;
+      if (removed.has(primary)) revealed++;
+    }
+
+    if (hidden === 0 && revealed === 0) return null;
+    return { hidden, revealed };
+  }, [applications, excludedNamespaces, globalConfig?.data?.excludedNamespaces]);
+
   return (
     <>
       <SettingsCard
@@ -379,6 +417,25 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
               placeholder={C.LABELS.NAMESPACES_SELECTOR_PLACEHOLDER}
               style={{ width: '100%' }}
             />
+            {namespacesImpactPreview ? (
+              <div style={{ fontSize: 12, fontWeight: 700 }}>
+                {namespacesImpactPreview.hidden > 0 ? (
+                  <span style={{ color: CONNECTIVITY_CONSTANTS.COLORS.WARNING }}>
+                    {namespacesImpactPreview.hidden} application
+                    {namespacesImpactPreview.hidden === 1 ? '' : 's'} will be hidden
+                  </span>
+                ) : null}
+                {namespacesImpactPreview.hidden > 0 && namespacesImpactPreview.revealed > 0 ? (
+                  <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 600 }}> · </span>
+                ) : null}
+                {namespacesImpactPreview.revealed > 0 ? (
+                  <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
+                    {namespacesImpactPreview.revealed} application
+                    {namespacesImpactPreview.revealed === 1 ? '' : 's'} will be revealed
+                  </span>
+                ) : null}
+              </div>
+            ) : null}
             <Button loading={savingNamespaces} onClick={saveNamespaces}>
               {C.LABELS.NAMESPACES_SAVE_BUTTON}
             </Button>
