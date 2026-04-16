@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { EyeOutlined } from '@ant-design/icons';
-import { Button, Tooltip } from 'antd';
+import { Button, Checkbox, Tooltip } from 'antd';
 import { DEFAULT_COLORS, Icons } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { APPLICATIONS_UI } from '../../constants';
@@ -20,6 +20,10 @@ export interface ApplicationSnapshotRowProps {
   onRollback?: (summary: ApplicationSnapshotSummary) => void;
   rollbackLoading?: boolean;
   rollbackDisabled?: boolean;
+  compareMode?: boolean;
+  compareChecked?: boolean;
+  compareDisabled?: boolean;
+  onToggleCompare?: (summary: ApplicationSnapshotSummary, checked: boolean) => void;
 }
 
 const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
@@ -30,6 +34,10 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
     onRollback,
     rollbackLoading = false,
     rollbackDisabled = false,
+    compareMode = false,
+    compareChecked = false,
+    compareDisabled = false,
+    onToggleCompare,
   }) => {
     const severityLabel =
       s.severity && s.severity.trim().length > 0 ? s.severity : APPLICATIONS_UI.FALLBACKS.EMPTY;
@@ -74,6 +82,24 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
               flex: 1,
             }}
           >
+            {compareMode ? (
+              <span
+                className="applications-bulk-select"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                  height: '100%',
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Checkbox
+                  checked={compareChecked}
+                  disabled={compareDisabled}
+                  onChange={(e) => onToggleCompare?.(s, e.target.checked)}
+                />
+              </span>
+            ) : null}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0 }}>
               <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
                 <RowTag

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CameraOutlined } from '@ant-design/icons';
-import { Modal, message } from 'antd';
+import { Button, Modal, message } from 'antd';
 import type { AppDispatch, RootState } from '../../../../../store';
 import {
   SlideOutPanel,
@@ -15,6 +15,7 @@ import { mergeApplicationSnapshotSources } from '../../utils/mergeApplicationSna
 import ApplicationSectionEmptyState from '../display/ApplicationSectionEmptyState';
 import ApplicationSnapshotRow from '../snapshots/ApplicationSnapshotRow';
 import ApplicationSnapshotManifestSlideOut from '../snapshots/ApplicationSnapshotManifestSlideOut';
+import SnapshotCompareView from '../snapshots/SnapshotCompareView';
 import { fetchSnapshotManifestThunk, fetchApplicationSnapshotsThunk } from '../../store';
 import { getCurrentUser } from '../../../../auth/utils';
 import { triggerApplicationRollbackThunk } from '../../store';
@@ -45,6 +46,9 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
   const [expanded, setExpanded] = useState(false);
   const [activeManifestKey, setActiveManifestKey] = useState<string | null>(null);
   const [rollbackBusyId, setRollbackBusyId] = useState<string | null>(null);
+  const [compareMode, setCompareMode] = useState(false);
+  const [compareKeys, setCompareKeys] = useState<string[]>([]);
+  const [compareViewOpen, setCompareViewOpen] = useState(false);
   const snapUi = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
 
   const mergedSnapshots = useMemo(
@@ -74,6 +78,76 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
       );
     },
     [applicationId, dispatch],
+  );
+
+  const selectedCompareSnapshots = useMemo(() => {
+    if (compareKeys.length !== 2) return null;
+    const a = mergedSnapshots.find((s) => applicationSnapshotStableKey(s) === compareKeys[0]);
+    const b = mergedSnapshots.find((s) => applicationSnapshotStableKey(s) === compareKeys[1]);
+    if (!a || !b) return null;
+    return [a, b] as const;
+  }, [compareKeys, mergedSnapshots]);
+
+  const comparePair = useMemo(() => {
+    if (!selectedCompareSnapshots) return null;
+    const [a, b] = selectedCompareSnapshots;
+    return a.generation <= b.generation ? ([a, b] as const) : ([b, a] as const);
+  }, [selectedCompareSnapshots]);
+
+  const handleCompareClick = useCallback(() => {
+    if (!compareMode) {
+      setCompareMode(true);
+      setCompareKeys([]);
+      setCompareViewOpen(false);
+      return;
+    }
+    if (!compareViewOpen && compareKeys.length === 2 && comparePair) {
+      const [older, newer] = comparePair;
+      void dispatch(
+        fetchSnapshotManifestThunk({
+          manifestKey: applicationSnapshotStableKey(older),
+          applicationId,
+          namespace: older.namespace,
+          generation: older.generation,
+        }),
+      );
+      void dispatch(
+        fetchSnapshotManifestThunk({
+          manifestKey: applicationSnapshotStableKey(newer),
+          applicationId,
+          namespace: newer.namespace,
+          generation: newer.generation,
+        }),
+      );
+      setCompareViewOpen(true);
+      return;
+    }
+    setCompareMode(false);
+    setCompareKeys([]);
+    setCompareViewOpen(false);
+  }, [applicationId, compareKeys.length, compareMode, comparePair, compareViewOpen, dispatch]);
+
+  const handleBackFromCompare = useCallback(() => {
+    setCompareViewOpen(false);
+    setCompareMode(false);
+    setCompareKeys([]);
+  }, []);
+
+  const handleToggleCompareRow = useCallback(
+    (summary: ApplicationSnapshotSummary, checked: boolean) => {
+      const key = applicationSnapshotStableKey(summary);
+      setCompareKeys((prev) => {
+        const set = new Set(prev);
+        if (checked) {
+          if (set.size >= 2) return Array.from(set);
+          set.add(key);
+        } else {
+          set.delete(key);
+        }
+        return Array.from(set);
+      });
+    },
+    [],
   );
 
   const handleRollbackRequest = useCallback(
@@ -117,6 +191,8 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
     [applicationId, detailSnapshots, dispatch, snapUi],
   );
 
+  const compareButtonDisabled = compareMode && compareKeys.length === 1;
+
   return (
     <SlideOutPanel
       open={open}
@@ -125,11 +201,24 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
       width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
       contentOnly
       headerExtra={
-        <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((p) => !p)} />
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          <Button type="default" onClick={handleCompareClick} disabled={compareButtonDisabled}>
+            Compare
+          </Button>
+          <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((p) => !p)} />
+        </div>
       }
       formContent={
         <>
-          {snapshotsLoading ? (
+          {compareViewOpen && comparePair ? (
+            <SnapshotCompareView
+              left={comparePair[0]}
+              right={comparePair[1]}
+              leftState={snapshotManifests[applicationSnapshotStableKey(comparePair[0])]}
+              rightState={snapshotManifests[applicationSnapshotStableKey(comparePair[1])]}
+              onBack={handleBackFromCompare}
+            />
+          ) : snapshotsLoading ? (
             <div style={{ display: 'grid', rowGap: 10 }}>
               {[0, 1, 2].map((i) => (
                 <div
@@ -154,7 +243,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
               />
             )
           ) : (
-            <div>
+            <div className={compareMode ? 'applications-bulk-select' : undefined}>
               {mergedSnapshots.map((s, idx) => (
                 <ApplicationSnapshotRow
                   key={applicationSnapshotStableKey(s)}
@@ -164,6 +253,14 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
                   onRollback={handleRollbackRequest}
                   rollbackLoading={rollbackBusyId === applicationSnapshotStableKey(s)}
                   rollbackDisabled={rollbackDisabled}
+                  compareMode={compareMode}
+                  compareChecked={compareKeys.includes(applicationSnapshotStableKey(s))}
+                  compareDisabled={
+                    compareMode &&
+                    compareKeys.length >= 2 &&
+                    !compareKeys.includes(applicationSnapshotStableKey(s))
+                  }
+                  onToggleCompare={handleToggleCompareRow}
                 />
               ))}
             </div>
