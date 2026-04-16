@@ -1,13 +1,15 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { CameraOutlined } from '@ant-design/icons';
-import { Button, Modal, message } from 'antd';
+import { CameraOutlined, DiffOutlined } from '@ant-design/icons';
+import { Modal, message } from 'antd';
 import type { AppDispatch, RootState } from '../../../../../store';
 import {
   SlideOutPanel,
   ExpandPanelButton,
 } from '../../../../../components/display/panels/slide-out';
 import { DEFAULT_COLORS } from '../../../../../constants';
+import Toolbar from '../../../../../components/display/toolbar/Toolbar';
+import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import type { Application, ApplicationSnapshotSummary } from '../../models';
 import { applicationSnapshotStableKey } from '../../utils/mergeApplicationSnapshotSources';
@@ -192,6 +194,27 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
   );
 
   const compareButtonDisabled = compareMode && compareKeys.length === 1;
+  const headerToolbarConfig: ToolbarConfig = useMemo(() => {
+    const buttons: ToolbarConfig['buttons'] = [];
+    if (compareViewOpen) {
+      buttons.push({
+        key: 'snapshots',
+        label: 'Snapshots',
+        icon: <CameraOutlined />,
+        variant: 'default',
+        onClick: handleBackFromCompare,
+      });
+    }
+    buttons.push({
+      key: 'compare',
+      label: 'Compare',
+      icon: <DiffOutlined />,
+      variant: 'default',
+      onClick: handleCompareClick,
+      disabled: compareButtonDisabled,
+    });
+    return { buttons };
+  }, [compareButtonDisabled, compareViewOpen, handleBackFromCompare, handleCompareClick]);
 
   return (
     <SlideOutPanel
@@ -202,9 +225,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
       contentOnly
       headerExtra={
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-          <Button type="default" onClick={handleCompareClick} disabled={compareButtonDisabled}>
-            Compare
-          </Button>
+          <Toolbar config={headerToolbarConfig} />
           <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((p) => !p)} />
         </div>
       }
