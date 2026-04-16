@@ -220,9 +220,10 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
 
   const canEnable = useMemo(() => {
     if (!aiEnabled) return true;
+    if (provider === 'ollama') return true;
     const trimmed = apiKey.trim();
     return Boolean(trimmed && trimmed === lastValidatedKey);
-  }, [aiEnabled, apiKey, lastValidatedKey]);
+  }, [aiEnabled, apiKey, lastValidatedKey, provider]);
 
   const onProviderChange = useCallback((val: ProviderKey) => {
     setProvider(val);
