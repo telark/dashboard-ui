@@ -20,7 +20,7 @@ import SnapshotStorageBar from '../../../resources/applications/components/snaps
 
 const SECTION_GAP_PX = 12;
 const FETCH_INTERVAL_PRESET_MINUTES = [1, 2, 5, 10, 15, 30, 60] as const;
-const SNAPSHOTS_MAX_PRESET = [3, 5, 10, 15, 20, 30] as const;
+const SNAPSHOTS_MAX_PRESET = [3, 5, 10, 15, 20] as const;
 
 function snapDownToPreset(value: number, presets: readonly number[]): number {
   const v = Math.floor(value);
@@ -244,7 +244,7 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
       const { path, method } = Endpoints.PROVIDERS.VALIDATE_API_KEY;
       const res = await Client<ValidationApiResponse>(enrichmentApiClient, path, {
         method,
-        data: { provider, apiKey: trimmed },
+        data: { provider, api_key: trimmed },
       });
       const ok = Boolean(res?.ok);
       if (!ok) {
@@ -453,21 +453,23 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
                 onChange={onProviderChange}
                 style={{ width: 240 }}
               />
-              <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                <Input
-                  placeholder={C.LABELS.API_KEY_PLACEHOLDER}
-                  value={apiKey}
-                  onChange={(e) => {
-                    setApiKey(e.target.value);
-                    setValidMessage(null);
-                    setErrorMessage(null);
-                  }}
-                  style={{ flex: 1 }}
-                />
-                <Button loading={validating} disabled={validateDisabled} onClick={validateKey}>
-                  {C.LABELS.VALIDATE_BUTTON}
-                </Button>
-              </div>
+              {provider !== 'ollama' ? (
+                <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                  <Input
+                    placeholder={C.LABELS.API_KEY_PLACEHOLDER}
+                    value={apiKey}
+                    onChange={(e) => {
+                      setApiKey(e.target.value);
+                      setValidMessage(null);
+                      setErrorMessage(null);
+                    }}
+                    style={{ flex: 1 }}
+                  />
+                  <Button loading={validating} disabled={validateDisabled} onClick={validateKey}>
+                    {C.LABELS.VALIDATE_BUTTON}
+                  </Button>
+                </div>
+              ) : null}
 
               {validMessage ? (
                 <div style={{ color: C.COLORS.SUCCESS_TEXT, fontWeight: 700 }}>{validMessage}</div>
@@ -540,12 +542,19 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
                 size="small"
                 value={fetchIntervalSelection}
                 onChange={(val) => {
-                  setFetchIntervalSelection(val);
-                  if (val === 'custom') {
+                  const raw = String(val);
+                  if (raw === 'custom') {
+                    setFetchIntervalSelection('custom');
                     setFetchIntervalMinutes(customFetchIntervalMinutes);
                     return;
                   }
-                  const minutes = Number(val);
+                  const parsed = Number(raw);
+                  const minutes = FETCH_INTERVAL_PRESET_MINUTES.includes(
+                    parsed as (typeof FETCH_INTERVAL_PRESET_MINUTES)[number],
+                  )
+                    ? parsed
+                    : snapDownToPreset(parsed, FETCH_INTERVAL_PRESET_MINUTES);
+                  setFetchIntervalSelection(String(minutes));
                   setCustomFetchIntervalMinutes(minutes);
                   setFetchIntervalMinutes(minutes);
                 }}
