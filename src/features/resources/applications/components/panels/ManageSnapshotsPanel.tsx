@@ -12,7 +12,6 @@ import { APPLICATIONS_UI } from '../../constants/texts';
 import type { Application, ApplicationSnapshotSummary } from '../../models';
 import { applicationSnapshotStableKey } from '../../utils/mergeApplicationSnapshotSources';
 import { mergeApplicationSnapshotSources } from '../../utils/mergeApplicationSnapshotSources';
-import SnapshotAggregateStorageBar from '../snapshots/SnapshotAggregateStorageBar';
 import ApplicationSectionEmptyState from '../display/ApplicationSectionEmptyState';
 import ApplicationSnapshotRow from '../snapshots/ApplicationSnapshotRow';
 import ApplicationSnapshotManifestSlideOut from '../snapshots/ApplicationSnapshotManifestSlideOut';
@@ -130,17 +129,6 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
       }
       formContent={
         <>
-          {!snapshotsLoading && mergedSnapshots.length > 0 ? (
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                marginBottom: 8,
-              }}
-            >
-              <SnapshotAggregateStorageBar snapshots={mergedSnapshots} />
-            </div>
-          ) : null}
           {snapshotsLoading ? (
             <div style={{ display: 'grid', rowGap: 10 }}>
               {[0, 1, 2].map((i) => (
