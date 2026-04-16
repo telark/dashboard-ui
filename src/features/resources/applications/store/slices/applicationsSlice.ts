@@ -51,6 +51,7 @@ const initialState: ApplicationsState = {
   appliedFilters: {},
   layoutMode: 'single',
   bulkMode: false,
+  selectedNames: [],
 };
 
 const applicationsSlice = createSlice({
@@ -142,6 +143,20 @@ const applicationsSlice = createSlice({
     setBulkMode: (state, action: PayloadAction<boolean>) => {
       state.bulkMode = action.payload;
     },
+    setSelectedNames: (state, action: PayloadAction<string[]>) => {
+      state.selectedNames = action.payload || [];
+    },
+    toggleSelectedName: (state, action: PayloadAction<{ name: string; checked: boolean }>) => {
+      const { name, checked } = action.payload;
+      if (!name) return;
+      const current = new Set(state.selectedNames || []);
+      if (checked) {
+        current.add(name);
+      } else {
+        current.delete(name);
+      }
+      state.selectedNames = Array.from(current);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -204,5 +219,7 @@ export const {
   downgradeOrphanedSyncStatus,
   setLayoutMode,
   setBulkMode,
+  setSelectedNames,
+  toggleSelectedName,
 } = applicationsSlice.actions;
 export default applicationsSlice.reducer;

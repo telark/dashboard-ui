@@ -23,6 +23,7 @@ import {
   setAppliedFilters,
   setBulkMode,
   setCurrentPage,
+  setSelectedNames,
 } from '../../store/slices/applicationsSlice';
 
 const ApplicationsGlobalView: React.FC = memo(() => {
@@ -53,8 +54,8 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   const { searchValue, onSearchChange } = useApplications();
   const [editForm] = Form.useForm();
   const [editTarget, setEditTarget] = useState<Application | null>(null);
-  const [selectedNames, setSelectedNames] = useState<string[]>([]);
   const bulkMode = useSelector((s: RootState) => Boolean(s.applications.bulkMode));
+  const selectedNames = useSelector((s: RootState) => s.applications.selectedNames || []);
 
   const openEditPanel = useCallback(
     (app: Application) => {
@@ -296,32 +297,33 @@ const ApplicationsGlobalView: React.FC = memo(() => {
           const next = !bulkMode;
           dispatch(setBulkMode(next));
           if (!next) {
-            setSelectedNames([]);
+            dispatch(setSelectedNames([]));
           }
         }}
         selectedNames={selectedNames}
         onToggleSelect={(name, checked) => {
-          setSelectedNames((prev) => {
-            if (checked) {
-              if (prev.includes(name)) return prev;
-              return [...prev, name];
-            }
-            return prev.filter((item) => item !== name);
-          });
+          const set = new Set(selectedNames);
+          if (checked) {
+            set.add(name);
+          } else {
+            set.delete(name);
+          }
+          dispatch(setSelectedNames(Array.from(set)));
         }}
         onToggleSelectAllPage={(checked) => {
-          setSelectedNames((prev) => {
-            if (!checked) {
-              return prev.filter((name) => !paginatedNames.includes(name));
-            }
-            const set = new Set(prev);
-            paginatedNames.forEach((name) => set.add(name));
-            return Array.from(set);
-          });
+          if (!checked) {
+            const set = new Set(selectedNames);
+            paginatedNames.forEach((name) => set.delete(name));
+            dispatch(setSelectedNames(Array.from(set)));
+            return;
+          }
+          const set = new Set(selectedNames);
+          paginatedNames.forEach((name) => set.add(name));
+          dispatch(setSelectedNames(Array.from(set)));
         }}
         allPageSelected={allPageSelected}
         anySelectedSyncing={anySelectedSyncing}
-        onClearSelection={() => setSelectedNames([])}
+        onClearSelection={() => dispatch(setSelectedNames([]))}
       />
       <EditApplicationPanel
         open={editTarget != null}

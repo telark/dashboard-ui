@@ -256,4 +256,5 @@ export interface ApplicationsState {
   appliedFilters: Record<string, unknown>;
   layoutMode: ApplicationLayoutMode;
   bulkMode: boolean;
+  selectedNames: string[];
 }
