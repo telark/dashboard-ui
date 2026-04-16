@@ -64,7 +64,10 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = memo(
           <SettingsSidebarGroup
             title="Platform"
             sections={SETTINGS_SECTIONS_LIST.filter(
-              (section) => section.key === 'security' || section.key === 'insightsGovernance',
+              (section) =>
+                section.key === 'security' ||
+                section.key === 'aiInsights' ||
+                section.key === 'insightsGovernance',
             )}
             activeSection={activeSection}
             onSectionChange={onSectionChange}
@@ -197,7 +200,11 @@ const SettingsSidebarItem: React.FC<ItemProps> = memo(({ section, isActive, onSe
           minWidth: 0,
         }}
       >
-        {section.key === 'insightsGovernance' ? 'Governance' : section.label}
+        {section.key === 'insightsGovernance'
+          ? 'Governance'
+          : section.key === 'aiInsights'
+            ? 'AI Insights'
+            : section.label}
       </span>
     </button>
   );

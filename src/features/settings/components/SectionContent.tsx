@@ -3,6 +3,7 @@ import type { SettingsSectionKey } from '../constants';
 import { ProfileSectionContent } from '../sections/profile';
 import { AppearanceSectionContent } from '../sections/appearance';
 import { SecuritySectionContent } from '../sections/security';
+import { AIInsightsSectionContent } from '../sections/aiInsights';
 import { InsightsGovernanceSectionContent } from '../sections/insightsGovernance';
 
 export interface SecuritySectionProps {
@@ -27,6 +28,8 @@ const SectionContent: React.FC<SectionContentProps> = memo(
             onManagePasskeysClick={securitySectionProps?.onManagePasskeysClick}
           />
         );
+      case 'aiInsights':
+        return <AIInsightsSectionContent />;
       case 'insightsGovernance':
         return <InsightsGovernanceSectionContent />;
       default:

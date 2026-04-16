@@ -1,7 +1,18 @@
-import { UserOutlined, BulbOutlined, SafetyOutlined, AuditOutlined } from '@ant-design/icons';
+import {
+  UserOutlined,
+  BulbOutlined,
+  SafetyOutlined,
+  AuditOutlined,
+  RobotOutlined,
+} from '@ant-design/icons';
 import type { ComponentType, CSSProperties } from 'react';
 
-export type SettingsSectionKey = 'profile' | 'appearance' | 'security' | 'insightsGovernance';
+export type SettingsSectionKey =
+  | 'profile'
+  | 'appearance'
+  | 'security'
+  | 'aiInsights'
+  | 'insightsGovernance';
 
 export interface SettingsSectionConfig {
   key: SettingsSectionKey;
@@ -34,10 +45,16 @@ export const SETTINGS_CONSTANTS = {
       description: 'Password, sessions, and two-factor auth',
       icon: SafetyOutlined,
     },
+    AI_INSIGHTS: {
+      key: 'aiInsights' as const,
+      label: 'AI Insights',
+      description: 'Configure AI providers, key validation, and enrichment behavior.',
+      icon: RobotOutlined,
+    },
     AI_DATA: {
       key: 'insightsGovernance' as const,
       label: 'Insights & Governance',
-      description: 'AI insights, excluded namespaces, and platform behavior',
+      description: 'Configure discovery scope, fetch interval, and snapshot storage behavior.',
       icon: AuditOutlined,
     },
   },
@@ -61,5 +78,6 @@ export const SETTINGS_SECTIONS_LIST: SettingsSectionConfig[] = [
   SETTINGS_CONSTANTS.SECTIONS.PROFILE,
   SETTINGS_CONSTANTS.SECTIONS.APPEARANCE,
   SETTINGS_CONSTANTS.SECTIONS.SECURITY,
+  SETTINGS_CONSTANTS.SECTIONS.AI_INSIGHTS,
   SETTINGS_CONSTANTS.SECTIONS.AI_DATA,
 ];
