@@ -1,42 +1,13 @@
-import {
-  UserOutlined,
-  BulbOutlined,
-  SafetyOutlined,
-  ControlOutlined,
-  InfoCircleOutlined,
-  AuditOutlined,
-} from '@ant-design/icons';
+import { UserOutlined, BulbOutlined, SafetyOutlined, AuditOutlined } from '@ant-design/icons';
 import type { ComponentType, CSSProperties } from 'react';
 
-export type SettingsSectionKey =
-  | 'profile'
-  | 'appearance'
-  | 'security'
-  | 'insightsGovernance'
-  | 'preferences'
-  | 'about';
-
-const ROW_TAG_DEFAULTS = {
-  COMING_SOON_TEXT: 'Coming soon',
-  BACKGROUND: '#F1F5F9',
-  COLOR: '#64748B',
-  FONT_SIZE: 10,
-} as const;
-
-export interface SettingsSectionRowTag {
-  text: string;
-  background?: string;
-  color?: string;
-  fontSize?: number;
-}
+export type SettingsSectionKey = 'profile' | 'appearance' | 'security' | 'insightsGovernance';
 
 export interface SettingsSectionConfig {
   key: SettingsSectionKey;
   label: string;
   description: string;
   icon: ComponentType<{ style?: CSSProperties }>;
-  /** Optional tag shown next to the menu item (e.g. "Coming soon"). */
-  rowTag?: SettingsSectionRowTag;
 }
 
 export const SETTINGS_CONSTANTS = {
@@ -69,33 +40,9 @@ export const SETTINGS_CONSTANTS = {
       description: 'AI insights, excluded namespaces, and platform behavior',
       icon: AuditOutlined,
     },
-    PREFERENCES: {
-      key: 'preferences' as const,
-      label: 'Preferences',
-      description: 'Language, timezone, and defaults',
-      icon: ControlOutlined,
-      rowTag: {
-        text: ROW_TAG_DEFAULTS.COMING_SOON_TEXT,
-        background: ROW_TAG_DEFAULTS.BACKGROUND,
-        color: ROW_TAG_DEFAULTS.COLOR,
-        fontSize: ROW_TAG_DEFAULTS.FONT_SIZE,
-      },
-    },
-    ABOUT: {
-      key: 'about' as const,
-      label: 'About',
-      description: 'Version, license, and support',
-      icon: InfoCircleOutlined,
-      rowTag: {
-        text: ROW_TAG_DEFAULTS.COMING_SOON_TEXT,
-        background: ROW_TAG_DEFAULTS.BACKGROUND,
-        color: ROW_TAG_DEFAULTS.COLOR,
-        fontSize: ROW_TAG_DEFAULTS.FONT_SIZE,
-      },
-    },
   },
   SIDEBAR: {
-    WIDTH: 260,
+    WIDTH: 240,
     /** Icon-only width for settings sidebar (labels in tooltips). */
     WIDTH_COLLAPSED: 56,
     BORDER_RIGHT: '0.5px solid #e2e8f0',
@@ -115,6 +62,4 @@ export const SETTINGS_SECTIONS_LIST: SettingsSectionConfig[] = [
   SETTINGS_CONSTANTS.SECTIONS.APPEARANCE,
   SETTINGS_CONSTANTS.SECTIONS.SECURITY,
   SETTINGS_CONSTANTS.SECTIONS.AI_DATA,
-  SETTINGS_CONSTANTS.SECTIONS.PREFERENCES,
-  SETTINGS_CONSTANTS.SECTIONS.ABOUT,
 ];
