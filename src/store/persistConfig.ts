@@ -39,6 +39,7 @@ export const applicationsPersistConfig: PersistConfig<any> = {
     'syncStatus',
     'syncCompletedAt',
     'layoutMode',
+    'bulkMode',
     'searchValue',
     'currentPage',
     'appliedFilters',

@@ -50,6 +50,7 @@ const initialState: ApplicationsState = {
   currentPage: 1,
   appliedFilters: {},
   layoutMode: 'single',
+  bulkMode: false,
 };
 
 const applicationsSlice = createSlice({
@@ -138,6 +139,9 @@ const applicationsSlice = createSlice({
     setLayoutMode: (state, action: PayloadAction<'single' | 'double'>) => {
       state.layoutMode = action.payload;
     },
+    setBulkMode: (state, action: PayloadAction<boolean>) => {
+      state.bulkMode = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -199,5 +203,6 @@ export const {
   removeFilterValue,
   downgradeOrphanedSyncStatus,
   setLayoutMode,
+  setBulkMode,
 } = applicationsSlice.actions;
 export default applicationsSlice.reducer;

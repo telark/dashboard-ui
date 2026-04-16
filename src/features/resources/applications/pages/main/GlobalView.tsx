@@ -21,6 +21,7 @@ import {
   clearAllFilters,
   removeFilterValue,
   setAppliedFilters,
+  setBulkMode,
   setCurrentPage,
 } from '../../store/slices/applicationsSlice';
 
@@ -52,8 +53,8 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   const { searchValue, onSearchChange } = useApplications();
   const [editForm] = Form.useForm();
   const [editTarget, setEditTarget] = useState<Application | null>(null);
-  const [bulkMode, setBulkMode] = useState(false);
   const [selectedNames, setSelectedNames] = useState<string[]>([]);
+  const bulkMode = useSelector((s: RootState) => Boolean(s.applications.bulkMode));
 
   const openEditPanel = useCallback(
     (app: Application) => {
@@ -292,13 +293,11 @@ const ApplicationsGlobalView: React.FC = memo(() => {
         }}
         bulkMode={bulkMode}
         onToggleBulkMode={() => {
-          setBulkMode((prev) => {
-            const next = !prev;
-            if (!next) {
-              setSelectedNames([]);
-            }
-            return next;
-          });
+          const next = !bulkMode;
+          dispatch(setBulkMode(next));
+          if (!next) {
+            setSelectedNames([]);
+          }
         }}
         selectedNames={selectedNames}
         onToggleSelect={(name, checked) => {
