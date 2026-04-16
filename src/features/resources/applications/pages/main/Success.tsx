@@ -31,6 +31,8 @@ interface ApplicationsSuccessProps {
     total: number;
     onPageChange: (page: number) => void;
   };
+  bulkMode: boolean;
+  onToggleBulkMode: () => void;
   selectedNames: string[];
   onToggleSelect: (name: string, checked: boolean) => void;
   onToggleSelectAllPage: (checked: boolean) => void;
@@ -53,6 +55,8 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
     totalFiltered,
     hasActiveFilters,
     pagination,
+    bulkMode,
+    onToggleBulkMode,
     selectedNames,
     onToggleSelect,
     onToggleSelectAllPage,
@@ -79,20 +83,29 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
             gap: 16,
             alignItems: 'stretch',
           }}
+          className={bulkMode ? 'applications-bulk-select' : undefined}
         >
           {applications.map((application) => (
             <ApplicationCard
               key={application.name}
               application={application}
               onEditApplication={onEditApplication}
-              selectable
+              bulkMode={bulkMode}
               selected={selectedSet.has(application.name)}
               onToggleSelect={onToggleSelect}
             />
           ))}
         </div>
       );
-    }, [applications, hasApps, layoutMode, onEditApplication, onToggleSelect, selectedSet]);
+    }, [
+      applications,
+      bulkMode,
+      hasApps,
+      layoutMode,
+      onEditApplication,
+      onToggleSelect,
+      selectedSet,
+    ]);
 
     const handleBulkForceSync = React.useCallback(() => {
       selectedNames.forEach((name) => {
@@ -138,6 +151,13 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
             onLayoutModeChange={(mode) => dispatch(setLayoutMode(mode))}
             hasActiveFilters={hasActiveFilters}
             onClearAllFilters={onClearAllFilters}
+            bulkMode={bulkMode}
+            onToggleBulkMode={() => {
+              onToggleBulkMode();
+              if (bulkMode) {
+                onClearSelection();
+              }
+            }}
             selectedCount={selectedCount}
             pageCount={applications.length}
             allPageSelected={allPageSelected}

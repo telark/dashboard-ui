@@ -52,6 +52,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   const { searchValue, onSearchChange } = useApplications();
   const [editForm] = Form.useForm();
   const [editTarget, setEditTarget] = useState<Application | null>(null);
+  const [bulkMode, setBulkMode] = useState(false);
   const [selectedNames, setSelectedNames] = useState<string[]>([]);
 
   const openEditPanel = useCallback(
@@ -288,6 +289,16 @@ const ApplicationsGlobalView: React.FC = memo(() => {
           pageSize: APPLICATIONS_PAGE_SIZE,
           total: totalFiltered,
           onPageChange: (page) => dispatch(setCurrentPage(page)),
+        }}
+        bulkMode={bulkMode}
+        onToggleBulkMode={() => {
+          setBulkMode((prev) => {
+            const next = !prev;
+            if (!next) {
+              setSelectedNames([]);
+            }
+            return next;
+          });
         }}
         selectedNames={selectedNames}
         onToggleSelect={(name, checked) => {

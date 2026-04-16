@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Checkbox } from 'antd';
 import { DEFAULT_COLORS, APP_ROUTES } from '../../../../../../constants';
 import type { Application } from '../../../models';
 import { APPLICATIONS_UI } from '../../../constants';
@@ -11,7 +10,7 @@ import { APPLICATION_SECTION_LAYOUT } from '../../../constants/sectionLayout';
 interface ApplicationCardProps {
   application: Application;
   onEditApplication: (application: Application) => void;
-  selectable?: boolean;
+  bulkMode?: boolean;
   selected?: boolean;
   onToggleSelect?: (name: string, checked: boolean) => void;
 }
@@ -51,7 +50,7 @@ function MetricMini(props: { value: React.ReactNode; label: string }): React.Rea
 }
 
 const ApplicationCard: React.FC<ApplicationCardProps> = memo(
-  ({ application, onEditApplication, selectable = false, selected = false, onToggleSelect }) => {
+  ({ application, onEditApplication, bulkMode = false, selected = false, onToggleSelect }) => {
     const navigate = useNavigate();
     const primaryNamespace =
       application.namespaces?.items?.[0]?.name ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
@@ -61,10 +60,21 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
       <div
         role="button"
         tabIndex={0}
-        onClick={() => navigate(detailsPath)}
+        className={bulkMode ? 'applications-bulk-select' : undefined}
+        onClick={() => {
+          if (bulkMode) {
+            onToggleSelect?.(application.name, !selected);
+            return;
+          }
+          navigate(detailsPath);
+        }}
         onKeyDown={(e) => {
           if (!isActivateKey(e)) return;
           e.preventDefault();
+          if (bulkMode) {
+            onToggleSelect?.(application.name, !selected);
+            return;
+          }
           navigate(detailsPath);
         }}
         style={{
@@ -85,28 +95,10 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
           application={application}
           primaryNamespace={primaryNamespace}
           onEditApplication={onEditApplication}
+          bulkMode={bulkMode}
+          selected={selected}
+          onToggleSelect={onToggleSelect}
         />
-        {selectable ? (
-          <div
-            style={{
-              position: 'absolute',
-              top: 10,
-              left: 10,
-              zIndex: 2,
-              background: DEFAULT_COLORS.BACKGROUND_WHITE,
-              borderRadius: 6,
-              padding: '2px 6px',
-              border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-            }}
-            onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => e.stopPropagation()}
-          >
-            <Checkbox
-              checked={selected}
-              onChange={(e) => onToggleSelect?.(application.name, e.target.checked)}
-            />
-          </div>
-        ) : null}
 
         <div style={METRICS_ROW_STYLE}>
           <MetricMini

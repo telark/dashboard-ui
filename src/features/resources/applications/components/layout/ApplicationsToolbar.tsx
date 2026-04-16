@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import {
   AppstoreOutlined,
   BarsOutlined,
+  CheckSquareOutlined,
   CloseOutlined,
   DeleteOutlined,
   SearchOutlined,
@@ -27,6 +28,8 @@ interface ApplicationsToolbarProps {
   onLayoutModeChange: (mode: ApplicationLayoutMode) => void;
   hasActiveFilters: boolean;
   onClearAllFilters: () => void;
+  bulkMode: boolean;
+  onToggleBulkMode: () => void;
   selectedCount: number;
   pageCount: number;
   allPageSelected: boolean;
@@ -48,6 +51,8 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
   onLayoutModeChange,
   hasActiveFilters,
   onClearAllFilters,
+  bulkMode,
+  onToggleBulkMode,
   selectedCount,
   pageCount,
   allPageSelected,
@@ -86,9 +91,10 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
     [onSearchChange, searchValue],
   );
   const bulkActionsToolbarConfig: ToolbarConfig | undefined = useMemo(() => {
-    if (selectedCount <= 0) {
+    if (!bulkMode) {
       return undefined;
     }
+    const disabledNoSelection = selectedCount <= 0;
     return {
       buttons: [
         {
@@ -97,7 +103,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
           icon: <SyncOutlined />,
           variant: 'default',
           onClick: onBulkForceSync,
-          disabled: bulkForceSyncDisabled,
+          disabled: disabledNoSelection || bulkForceSyncDisabled,
           tooltip: bulkForceSyncDisabled
             ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
             : undefined,
@@ -108,10 +114,28 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
           icon: <DeleteOutlined />,
           variant: 'danger',
           onClick: onBulkDelete,
+          disabled: disabledNoSelection,
         },
       ],
     };
-  }, [bulkForceSyncDisabled, onBulkDelete, onBulkForceSync, selectedCount]);
+  }, [bulkForceSyncDisabled, bulkMode, onBulkDelete, onBulkForceSync, selectedCount]);
+  const bulkModeToolbarConfig: ToolbarConfig = useMemo(
+    () => ({
+      buttons: [
+        {
+          key: 'bulkMode',
+          label: bulkMode
+            ? APPLICATIONS_UI.TOOLBAR_BULK_SELECT_ACTIVE
+            : APPLICATIONS_UI.TOOLBAR_BULK_SELECT,
+          icon: <CheckSquareOutlined />,
+          variant: bulkMode ? 'primary' : 'default',
+          onClick: onToggleBulkMode,
+          active: bulkMode,
+        },
+      ],
+    }),
+    [bulkMode, onToggleBulkMode],
+  );
   const clearAllToolbarConfig: ToolbarConfig | undefined = useMemo(() => {
     if (!hasActiveFilters) {
       return undefined;
@@ -131,6 +155,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
 
   return (
     <div
+      className="applications-bulk-select"
       style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -140,8 +165,8 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
       }}
     >
       <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-        {pageCount > 0 ? (
-          <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+        {bulkMode && pageCount > 0 ? (
+          <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, paddingLeft: 16 }}>
             <Checkbox
               checked={allPageSelected}
               onChange={(e) => onToggleSelectAllPage(e.target.checked)}
@@ -151,7 +176,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
             </Checkbox>
           </span>
         ) : null}
-        {selectedCount > 0 ? <Toolbar config={bulkActionsToolbarConfig} /> : null}
+        <Toolbar config={bulkActionsToolbarConfig} />
         <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
           {totalCount} {APPLICATIONS_UI.TOOLBAR_COUNT_SUFFIX}
         </span>
@@ -206,6 +231,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
       <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
         <Toolbar config={toolbarConfig} />
         <FilterButton onClick={onOpenFilters} />
+        <Toolbar config={bulkModeToolbarConfig} />
         <Tooltip title={nextLayoutTooltip}>
           <button
             type="button"

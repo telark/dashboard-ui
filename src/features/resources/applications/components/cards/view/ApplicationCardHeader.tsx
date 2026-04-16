@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import { Button, Dropdown, Tooltip } from 'antd';
+import { Button, Checkbox, Dropdown, Tooltip } from 'antd';
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -29,6 +29,9 @@ interface ApplicationCardHeaderProps {
   application: Application;
   primaryNamespace: string;
   onEditApplication: (application: Application) => void;
+  bulkMode?: boolean;
+  selected?: boolean;
+  onToggleSelect?: (name: string, checked: boolean) => void;
 }
 
 const SYNC_TAG_CONFIG: Record<
@@ -56,7 +59,14 @@ const SYNC_TAG_CONFIG: Record<
 };
 
 const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
-  ({ application, primaryNamespace, onEditApplication }) => {
+  ({
+    application,
+    primaryNamespace,
+    onEditApplication,
+    bulkMode = false,
+    selected = false,
+    onToggleSelect,
+  }) => {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const isSyncing = useSelector((s: RootState) =>
@@ -152,6 +162,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
       ) : (
         text
       );
+    const bulkTextIndent = 22;
 
     return (
       <>
@@ -165,8 +176,26 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
         >
           <div style={{ minWidth: 0, flex: 1 }}>
             <div
-              style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 8, rowGap: 6 }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: bulkMode ? 6 : 8,
+                rowGap: 6,
+              }}
             >
+              {bulkMode ? (
+                <span
+                  style={{ display: 'inline-flex', alignItems: 'center' }}
+                  onClick={(e) => e.stopPropagation()}
+                  onKeyDown={(e) => e.stopPropagation()}
+                >
+                  <Checkbox
+                    checked={selected}
+                    onChange={(e) => onToggleSelect?.(application.name, e.target.checked)}
+                  />
+                </span>
+              ) : null}
               <h3
                 style={{
                   margin: 0,
@@ -206,6 +235,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
             <p
               style={{
                 margin: '1px 0 0',
+                paddingLeft: bulkMode ? bulkTextIndent : 0,
                 fontSize: 12,
                 fontWeight: 500,
                 color: DEFAULT_COLORS.TEXT_MUTED,
@@ -216,7 +246,15 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
               {descriptionText || application.name}
             </p>
             {hasInsightRow ? (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: 6,
+                  marginTop: 6,
+                  paddingLeft: bulkMode ? bulkTextIndent : 0,
+                }}
+              >
                 {application.insights?.category ? (
                   <RowTag
                     text={application.insights.category}

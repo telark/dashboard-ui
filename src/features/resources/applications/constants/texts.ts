@@ -4,6 +4,8 @@ export const APPLICATIONS_UI = {
   TOOLBAR_SEARCH_PLACEHOLDER: 'Search applications by name, status, or display name...',
   TOOLBAR_SEARCH_BUTTON: 'Search',
   TOOLBAR_CLEAR_ALL: 'Clear All',
+  TOOLBAR_BULK_SELECT: 'Bulk mode',
+  TOOLBAR_BULK_SELECT_ACTIVE: 'Exit bulk mode',
   TOOLBAR_SELECT_ALL: 'Select all on page',
   TOOLBAR_BULK_FORCE_SYNC: 'Force Sync All',
   TOOLBAR_BULK_DELETE: 'Delete All',
