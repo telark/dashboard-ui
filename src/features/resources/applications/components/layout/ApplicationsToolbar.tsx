@@ -159,14 +159,33 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
       style={{
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'flex-end',
+        alignItems: 'center',
         width: '100%',
         minHeight: '60px',
       }}
     >
-      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+      <div
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 8,
+          flexWrap: 'nowrap',
+          overflowX: 'auto',
+          minWidth: 0,
+        }}
+      >
         {bulkMode && pageCount > 0 ? (
-          <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, paddingLeft: 16 }}>
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              fontSize: 12,
+              color: DEFAULT_COLORS.TEXT_MUTED,
+              paddingLeft: 16,
+              lineHeight: 1,
+              flexShrink: 0,
+            }}
+          >
             <Checkbox
               checked={allPageSelected}
               onChange={(e) => onToggleSelectAllPage(e.target.checked)}
@@ -177,7 +196,9 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
           </span>
         ) : null}
         <Toolbar config={bulkActionsToolbarConfig} />
-        <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+        <span
+          style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, lineHeight: 1, flexShrink: 0 }}
+        >
           {totalCount} {APPLICATIONS_UI.TOOLBAR_COUNT_SUFFIX}
         </span>
         {filterChips.map((chip) => (
@@ -228,7 +249,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
         ) : null}
         <Toolbar config={clearAllToolbarConfig} />
       </div>
-      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <Toolbar config={toolbarConfig} />
         <FilterButton onClick={onOpenFilters} />
         <Toolbar config={bulkModeToolbarConfig} />

@@ -167,7 +167,7 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
             bulkForceSyncDisabled={anySelectedSyncing}
           />
 
-          <div style={{ marginTop: -10 }}>
+          <div style={{ marginTop: -20 }}>
             {!hasApps && hasActiveFilters ? (
               <div style={{ textAlign: 'center', padding: '48px 24px' }}>
                 <p style={{ marginBottom: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
