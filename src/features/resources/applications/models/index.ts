@@ -5,6 +5,7 @@ export type {
   ApplicationUpdatePayload,
   ApplicationsState,
   ApplicationLayoutMode,
+  ApplicationHealthQuickFilter,
   SyncStatusValue,
 } from './application';
 export type {

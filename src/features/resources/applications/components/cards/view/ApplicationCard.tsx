@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES } from '../../../../../../constants';
+import { CONNECTIVITY_CONSTANTS } from '../../../../../../constants/pages/connectivity';
 import type { Application } from '../../../models';
 import { APPLICATIONS_UI } from '../../../constants';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
@@ -55,6 +56,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
     const primaryNamespace =
       application.namespaces?.items?.[0]?.name ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
     const detailsPath = APP_ROUTES.APPLICATION_DETAILS.replace(':name', application.name);
+    const hasDrift = Boolean(application.history?.hasDrift);
 
     return (
       <div
@@ -82,6 +84,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
           background: DEFAULT_COLORS.BACKGROUND_WHITE,
           borderRadius: APPLICATION_SECTION_LAYOUT.CARD_RADIUS,
           border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+          borderLeft: hasDrift ? `4px solid ${CONNECTIVITY_CONSTANTS.COLORS.WARNING}` : undefined,
           padding: 16,
           boxSizing: 'border-box',
           cursor: 'pointer',

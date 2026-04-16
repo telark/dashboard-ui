@@ -39,6 +39,8 @@ interface ApplicationsSuccessProps {
   allPageSelected: boolean;
   anySelectedSyncing: boolean;
   onClearSelection: () => void;
+  healthQuickFilter: 'all' | 'healthy' | 'degraded' | 'unhealthy';
+  onHealthQuickFilterChange: (next: 'all' | 'healthy' | 'degraded' | 'unhealthy') => void;
 }
 
 const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
@@ -63,6 +65,8 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
     allPageSelected,
     anySelectedSyncing,
     onClearSelection,
+    healthQuickFilter,
+    onHealthQuickFilterChange,
   }) => {
     const dispatch: AppDispatch = useDispatch();
     const layoutMode = useSelector((s: RootState) => s.applications.layoutMode);
@@ -165,6 +169,8 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
             onBulkForceSync={handleBulkForceSync}
             onBulkDelete={() => setBulkDeleteOpen(true)}
             bulkForceSyncDisabled={anySelectedSyncing}
+            healthQuickFilter={healthQuickFilter}
+            onHealthQuickFilterChange={onHealthQuickFilterChange}
           />
 
           <div style={{ marginTop: -20 }}>

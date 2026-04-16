@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { ApplicationsState, SyncStatusValue } from '../../models';
+import type {
+  ApplicationHealthQuickFilter,
+  ApplicationsState,
+  SyncStatusValue,
+} from '../../models';
 import {
   fetchAllApplicationsThunk,
   fetchAllApplicationsSilentThunk,
@@ -13,6 +17,7 @@ import {
 import {
   handleFetchApplicationsPending,
   handleFetchApplicationsFulfilled,
+  handleFetchApplicationsSilentFulfilled,
   handleFetchApplicationsRejected,
   handleFetchApplicationsSilentPending,
   handleFetchApplicationsSilentRejected,
@@ -52,6 +57,7 @@ const initialState: ApplicationsState = {
   layoutMode: 'single',
   bulkMode: false,
   selectedNames: [],
+  healthQuickFilter: 'all',
 };
 
 const applicationsSlice = createSlice({
@@ -157,6 +163,10 @@ const applicationsSlice = createSlice({
       }
       state.selectedNames = Array.from(current);
     },
+    setHealthQuickFilter: (state, action: PayloadAction<ApplicationHealthQuickFilter>) => {
+      state.healthQuickFilter = action.payload;
+      state.currentPage = 1;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -164,7 +174,7 @@ const applicationsSlice = createSlice({
       .addCase(fetchAllApplicationsThunk.fulfilled, handleFetchApplicationsFulfilled)
       .addCase(fetchAllApplicationsThunk.rejected, handleFetchApplicationsRejected)
       .addCase(fetchAllApplicationsSilentThunk.pending, handleFetchApplicationsSilentPending)
-      .addCase(fetchAllApplicationsSilentThunk.fulfilled, handleFetchApplicationsFulfilled)
+      .addCase(fetchAllApplicationsSilentThunk.fulfilled, handleFetchApplicationsSilentFulfilled)
       .addCase(fetchAllApplicationsSilentThunk.rejected, handleFetchApplicationsSilentRejected)
       .addCase(fetchApplicationDetailsThunk.pending, handleFetchApplicationDetailsPending)
       .addCase(fetchApplicationDetailsThunk.fulfilled, handleFetchApplicationDetailsFulfilled)
@@ -221,5 +231,6 @@ export const {
   setBulkMode,
   setSelectedNames,
   toggleSelectedName,
+  setHealthQuickFilter,
 } = applicationsSlice.actions;
 export default applicationsSlice.reducer;

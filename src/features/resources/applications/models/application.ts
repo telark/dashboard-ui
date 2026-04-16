@@ -238,6 +238,7 @@ export interface Application {
 
 export type SyncStatusValue = 'syncing' | 'success' | 'failed';
 export type ApplicationLayoutMode = 'single' | 'double';
+export type ApplicationHealthQuickFilter = 'all' | 'healthy' | 'degraded' | 'unhealthy';
 
 export interface ApplicationsState {
   applications: Application[];
@@ -257,4 +258,5 @@ export interface ApplicationsState {
   layoutMode: ApplicationLayoutMode;
   bulkMode: boolean;
   selectedNames: string[];
+  healthQuickFilter: ApplicationHealthQuickFilter;
 }

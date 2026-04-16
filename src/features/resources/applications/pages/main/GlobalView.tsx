@@ -23,6 +23,7 @@ import {
   setAppliedFilters,
   setBulkMode,
   setCurrentPage,
+  setHealthQuickFilter,
   setSelectedNames,
 } from '../../store/slices/applicationsSlice';
 
@@ -56,6 +57,9 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   const [editTarget, setEditTarget] = useState<Application | null>(null);
   const bulkMode = useSelector((s: RootState) => Boolean(s.applications.bulkMode));
   const selectedNames = useSelector((s: RootState) => s.applications.selectedNames || []);
+  const healthQuickFilter = useSelector(
+    (s: RootState) => s.applications.healthQuickFilter || 'all',
+  );
 
   const openEditPanel = useCallback(
     (app: Application) => {
@@ -151,8 +155,9 @@ const ApplicationsGlobalView: React.FC = memo(() => {
 
   const filteredApplications = useMemo(() => {
     const base = filterApplications(visibleApplications, searchValue);
-    return applyApplicationFilters(base, appliedFilters);
-  }, [visibleApplications, appliedFilters, searchValue]);
+    const withPanelFilters = applyApplicationFilters(base, appliedFilters);
+    return applyHealthQuickFilter(withPanelFilters, healthQuickFilter);
+  }, [visibleApplications, appliedFilters, healthQuickFilter, searchValue]);
   const hasActiveFilters = useMemo(() => hasAnyAppliedFilter(appliedFilters), [appliedFilters]);
 
   const totalFiltered = filteredApplications.length;
@@ -324,6 +329,8 @@ const ApplicationsGlobalView: React.FC = memo(() => {
         allPageSelected={allPageSelected}
         anySelectedSyncing={anySelectedSyncing}
         onClearSelection={() => dispatch(setSelectedNames([]))}
+        healthQuickFilter={healthQuickFilter}
+        onHealthQuickFilterChange={(next) => dispatch(setHealthQuickFilter(next))}
       />
       <EditApplicationPanel
         open={editTarget != null}
@@ -439,6 +446,16 @@ function applyApplicationFilters(
     }
     return true;
   });
+}
+
+function applyHealthQuickFilter(
+  apps: Application[],
+  quickFilter: 'all' | 'healthy' | 'degraded' | 'unhealthy',
+): Application[] {
+  const q = String(quickFilter || 'all').toLowerCase();
+  if (q === 'all') return apps;
+  const wanted = q === 'unhealthy' ? 'down' : q;
+  return apps.filter((a) => String(a.health?.status || '').toLowerCase() === wanted);
 }
 
 function hasAnyAppliedFilter(filters: Record<string, unknown>): boolean {

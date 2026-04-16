@@ -41,6 +41,7 @@ export const applicationsPersistConfig: PersistConfig<any> = {
     'layoutMode',
     'bulkMode',
     'selectedNames',
+    'healthQuickFilter',
     'searchValue',
     'currentPage',
     'appliedFilters',

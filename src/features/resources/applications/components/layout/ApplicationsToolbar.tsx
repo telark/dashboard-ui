@@ -15,6 +15,7 @@ import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import { APPLICATIONS_UI } from '../../constants';
 import type { ApplicationLayoutMode } from '../../models';
 import { FilterButton } from '../../../../../components/display/buttons';
+import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 
 interface ApplicationsToolbarProps {
   searchValue: string;
@@ -37,6 +38,8 @@ interface ApplicationsToolbarProps {
   onBulkForceSync: () => void;
   onBulkDelete: () => void;
   bulkForceSyncDisabled: boolean;
+  healthQuickFilter: 'all' | 'healthy' | 'degraded' | 'unhealthy';
+  onHealthQuickFilterChange: (next: 'all' | 'healthy' | 'degraded' | 'unhealthy') => void;
 }
 
 const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
@@ -60,6 +63,8 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
   onBulkForceSync,
   onBulkDelete,
   bulkForceSyncDisabled,
+  healthQuickFilter,
+  onHealthQuickFilterChange,
 }) => {
   const nextLayoutMode: ApplicationLayoutMode = layoutMode === 'single' ? 'double' : 'single';
   const nextLayoutTooltip =
@@ -167,6 +172,63 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
     e.currentTarget.style.backgroundColor = 'transparent';
     e.currentTarget.style.color = '#64748b';
   }, []);
+
+  const healthPills = useMemo(
+    () =>
+      [
+        { key: 'all', label: 'All' },
+        { key: 'healthy', label: 'Healthy' },
+        { key: 'degraded', label: 'Degraded' },
+        { key: 'unhealthy', label: 'Unhealthy' },
+      ] as const,
+    [],
+  );
+
+  const getPillAccent = useCallback((key: string) => {
+    if (key === 'healthy') return DEFAULT_COLORS.SUCCESS;
+    if (key === 'degraded') return CONNECTIVITY_CONSTANTS.COLORS.WARNING;
+    if (key === 'unhealthy') return DEFAULT_COLORS.DANGER;
+    return DEFAULT_COLORS.TEXT_MUTED;
+  }, []);
+
+  const pillsNode = useMemo(() => {
+    return (
+      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: '100%' }}>
+        {healthPills.map((pill) => {
+          const active = (healthQuickFilter || 'all') === pill.key;
+          const accent = getPillAccent(pill.key);
+          const background = active ? `${accent}18` : DEFAULT_COLORS.CHIP_CUSTOM_BG;
+          const borderColor = active ? accent : 'transparent';
+          const color = active ? accent : DEFAULT_COLORS.TEXT_MUTED;
+          return (
+            <button
+              key={pill.key}
+              type="button"
+              onClick={() => onHealthQuickFilterChange(pill.key)}
+              style={{
+                all: 'unset',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                height: 26,
+                padding: '0 10px',
+                borderRadius: 999,
+                background,
+                border: `1px solid ${borderColor}`,
+                color,
+                fontSize: 12,
+                fontWeight: 700,
+                lineHeight: 1,
+                userSelect: 'none',
+              }}
+            >
+              {pill.label}
+            </button>
+          );
+        })}
+      </div>
+    );
+  }, [getPillAccent, healthPills, healthQuickFilter, onHealthQuickFilterChange]);
 
   return (
     <div
@@ -276,7 +338,6 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
         <Toolbar config={clearAllToolbarConfig} />
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, height: '100%' }}>
-        <Toolbar config={toolbarConfig} />
         <FilterButton onClick={onOpenFilters} />
         {!bulkMode ? (
           <span
@@ -293,6 +354,8 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
             {totalCount} {APPLICATIONS_UI.TOOLBAR_COUNT_SUFFIX}
           </span>
         ) : null}
+        {pillsNode}
+        <Toolbar config={toolbarConfig} />
         <Toolbar config={bulkModeToolbarConfig} />
         <Tooltip title={nextLayoutTooltip}>
           <button

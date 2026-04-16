@@ -16,6 +16,22 @@ export const handleFetchApplicationsFulfilled = (
   state.error = null;
 };
 
+export const handleFetchApplicationsSilentFulfilled = (
+  state: ApplicationsState,
+  action: PayloadAction<Application[]>,
+) => {
+  state.loading = false;
+  state.applications = action.payload;
+  state.error = null;
+  const now = new Date().toISOString();
+  if (!state.syncCompletedAt) state.syncCompletedAt = {};
+  for (const app of action.payload || []) {
+    if (app?.name) {
+      state.syncCompletedAt[app.name] = now;
+    }
+  }
+};
+
 export const handleFetchApplicationsRejected = (
   state: ApplicationsState,
   action: PayloadAction<unknown>,
