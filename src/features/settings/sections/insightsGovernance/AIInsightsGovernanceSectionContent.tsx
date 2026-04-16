@@ -19,8 +19,17 @@ import { fetchGlobalConfigThunk } from '../../../globalconfig/store';
 import SnapshotStorageBar from '../../../resources/applications/components/snapshots/SnapshotStorageBar';
 
 const SECTION_GAP_PX = 12;
-const PLATFORM_INPUT_WIDTH_PX = 160;
 const FETCH_INTERVAL_PRESET_MINUTES = [1, 2, 5, 10, 15, 30, 60] as const;
+const SNAPSHOTS_MAX_PRESET = [3, 5, 10, 15, 20, 30] as const;
+
+function snapDownToPreset(value: number, presets: readonly number[]): number {
+  const v = Math.floor(value);
+  let best = presets[0] ?? 1;
+  for (const p of presets) {
+    if (p <= v) best = p;
+  }
+  return best;
+}
 
 type ValidationApiResponse = { ok: boolean; reason?: string };
 type SnapshotMetric = { bytes: number; kb: number; mb: number; percent?: number };
@@ -83,6 +92,17 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
   const globalConfig = useSelector(selectGlobalConfigState);
   const applications = useSelector((s: RootState) => s.applications.applications);
 
+  const saveButtonStyle = useCallback(
+    (disabled: boolean): React.CSSProperties => ({
+      background: DEFAULT_COLORS.SUCCESS,
+      borderColor: DEFAULT_COLORS.SUCCESS,
+      color: '#fff',
+      opacity: disabled ? 0.6 : 1,
+      cursor: disabled ? 'not-allowed' : 'pointer',
+    }),
+    [],
+  );
+
   const [initialAi, setInitialAi] = useState<{
     enabled: boolean;
     provider: ProviderKey;
@@ -111,6 +131,8 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
   const [fetchIntervalSelection, setFetchIntervalSelection] = useState<string>('1');
   const [customFetchIntervalMinutes, setCustomFetchIntervalMinutes] = useState<number>(1);
   const [snapshotsMaxPerApp, setSnapshotsMaxPerApp] = useState<number>(5);
+  const [snapshotsMaxSelection, setSnapshotsMaxSelection] = useState<string>('5');
+  const [customSnapshotsMaxPerApp, setCustomSnapshotsMaxPerApp] = useState<number>(5);
   const [savingSnapshotsMax, setSavingSnapshotsMax] = useState(false);
   const [snapshotInfos, setSnapshotInfos] = useState<SnapshotInfosResponse | null>(null);
   const [snapshotInfosLoading, setSnapshotInfosLoading] = useState(false);
@@ -137,23 +159,26 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
     setExcludedNamespaces(savedExcluded);
 
     const seconds = Number(cfg?.userSettings?.fetchIntervalSeconds ?? 60);
-    const minutes = Math.max(1, Math.floor(seconds / 60));
+    const rawMinutes = Math.max(1, Math.floor(seconds / 60));
+    const minutes = FETCH_INTERVAL_PRESET_MINUTES.includes(
+      rawMinutes as (typeof FETCH_INTERVAL_PRESET_MINUTES)[number],
+    )
+      ? rawMinutes
+      : snapDownToPreset(rawMinutes, FETCH_INTERVAL_PRESET_MINUTES);
     setFetchIntervalMinutes(minutes);
-    if (
-      FETCH_INTERVAL_PRESET_MINUTES.includes(
-        minutes as (typeof FETCH_INTERVAL_PRESET_MINUTES)[number],
-      )
-    ) {
-      setFetchIntervalSelection(String(minutes));
-      setCustomFetchIntervalMinutes(minutes);
-    } else {
-      setFetchIntervalSelection('custom');
-      setCustomFetchIntervalMinutes(minutes);
-    }
+    setFetchIntervalSelection(String(minutes));
+    setCustomFetchIntervalMinutes(minutes);
 
     const maxPerApp = Number(cfg?.snapshots?.maxPerApp ?? 5);
     const normalizedMax = Number.isFinite(maxPerApp) ? maxPerApp : 5;
     setSnapshotsMaxPerApp(normalizedMax);
+    if (SNAPSHOTS_MAX_PRESET.includes(normalizedMax as (typeof SNAPSHOTS_MAX_PRESET)[number])) {
+      setSnapshotsMaxSelection(String(normalizedMax));
+      setCustomSnapshotsMaxPerApp(normalizedMax);
+    } else {
+      setSnapshotsMaxSelection('custom');
+      setCustomSnapshotsMaxPerApp(normalizedMax);
+    }
 
     setInitialAi({ enabled, provider: normalizedProvider, apiKey: key });
     setInitialDiscovery({
@@ -319,7 +344,7 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
   const saveSnapshotsMax = useCallback(async () => {
     setSavingSnapshotsMax(true);
     try {
-      const maxPerApp = Math.max(1, Math.round(snapshotsMaxPerApp));
+      const maxPerApp = Math.max(1, Math.floor(snapshotsMaxPerApp));
       const { path, method } = Endpoints.GLOBALCONFIG.PATCH;
       await Client<ResourceDetailsResponse<unknown>>(exporterApiClient, path, {
         method,
@@ -393,24 +418,11 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
     if (hidden.length === 0) return null;
     return (
       <Tooltip title={hidden.join(', ')}>
-        <span
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: 24,
-            padding: '0 10px',
-            borderRadius: 6,
-            background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-            border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-            color: DEFAULT_COLORS.TEXT_MUTED,
-            fontSize: 12,
-            fontWeight: 700,
-            lineHeight: 1,
-            cursor: 'default',
-          }}
-        >
-          +{hidden.length}
+        <span className="ant-select-selection-item" title={`+${hidden.length}`}>
+          <span className="ant-select-selection-item-content">+{hidden.length}</span>
+          <span className="ant-select-selection-item-remove" style={{ visibility: 'hidden' }}>
+            ×
+          </span>
         </span>
       </Tooltip>
     );
@@ -471,11 +483,7 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
               onClick={handleEnable}
               loading={saving}
               disabled={!aiHasChanges || !canEnable}
-              style={{
-                background: DEFAULT_COLORS.SUCCESS,
-                borderColor: DEFAULT_COLORS.SUCCESS,
-                color: '#fff',
-              }}
+              style={saveButtonStyle(!aiHasChanges || !canEnable)}
             >
               Save
             </Button>
@@ -572,12 +580,8 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
               <Button
                 loading={savingDiscoveryBehavior}
                 onClick={saveDiscoveryAndBehavior}
-                style={{
-                  background: DEFAULT_COLORS.SUCCESS,
-                  borderColor: DEFAULT_COLORS.SUCCESS,
-                  color: '#fff',
-                }}
                 disabled={!discoveryHasChanges}
+                style={saveButtonStyle(!discoveryHasChanges)}
               >
                 Save
               </Button>
@@ -654,26 +658,50 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
                 </div>
               </>
             ) : null}
-            <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-              <div style={{ width: 180, fontWeight: 700 }}>
-                {C.LABELS.SNAPSHOTS_MAX_PER_APP_LABEL}
-              </div>
-              <Input
-                value={String(snapshotsMaxPerApp)}
-                onChange={(e) => setSnapshotsMaxPerApp(Number(e.target.value || 0))}
-                style={{ width: PLATFORM_INPUT_WIDTH_PX }}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ fontWeight: 700 }}>{C.LABELS.SNAPSHOTS_MAX_PER_APP_LABEL}</div>
+              <Select
+                size="small"
+                value={snapshotsMaxSelection}
+                onChange={(val) => {
+                  setSnapshotsMaxSelection(val);
+                  if (val === 'custom') {
+                    setSnapshotsMaxPerApp(customSnapshotsMaxPerApp);
+                    return;
+                  }
+                  const n = Number(val);
+                  setCustomSnapshotsMaxPerApp(n);
+                  setSnapshotsMaxPerApp(n);
+                }}
+                options={[
+                  ...SNAPSHOTS_MAX_PRESET.map((n) => ({ value: String(n), label: String(n) })),
+                  { value: 'custom', label: 'Custom' },
+                ]}
+                style={{ width: '100%' }}
               />
+              {snapshotsMaxSelection === 'custom' ? (
+                <InputNumber
+                  size="small"
+                  min={1}
+                  precision={0}
+                  value={customSnapshotsMaxPerApp}
+                  onChange={(v) => {
+                    const n = Number(v);
+                    if (!Number.isFinite(n) || n <= 0) return;
+                    const next = Math.floor(n);
+                    setCustomSnapshotsMaxPerApp(next);
+                    setSnapshotsMaxPerApp(next);
+                  }}
+                  style={{ width: '100%' }}
+                />
+              ) : null}
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Button
                 loading={savingSnapshotsMax}
                 onClick={saveSnapshotsMax}
-                style={{
-                  background: DEFAULT_COLORS.SUCCESS,
-                  borderColor: DEFAULT_COLORS.SUCCESS,
-                  color: '#fff',
-                }}
                 disabled={!snapshotsHasChanges}
+                style={saveButtonStyle(!snapshotsHasChanges)}
               >
                 Save
               </Button>
