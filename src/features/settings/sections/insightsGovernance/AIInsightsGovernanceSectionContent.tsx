@@ -267,14 +267,15 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
     setSaving(true);
     setErrorMessage(null);
     setValidMessage(null);
+    const apiKeyForSave = provider === 'ollama' ? '' : apiKey.trim();
     try {
       const { path, method } = Endpoints.GLOBALCONFIG.PATCH;
       await Client<ResourceDetailsResponse<unknown>>(exporterApiClient, path, {
         method,
-        data: { ai: { enabled: aiEnabled, provider, apiKey: apiKey.trim() } },
+        data: { ai: { enabled: aiEnabled, provider, apiKey: apiKeyForSave } },
       });
       message.success(C.MESSAGES.SAVE_SUCCESS);
-      setInitialAi({ enabled: aiEnabled, provider, apiKey });
+      setInitialAi({ enabled: aiEnabled, provider, apiKey: apiKeyForSave });
       dispatch(fetchGlobalConfigThunk());
     } catch (err: unknown) {
       message.error(getFriendlyValidationError(err) || C.MESSAGES.SAVE_FAILED);
