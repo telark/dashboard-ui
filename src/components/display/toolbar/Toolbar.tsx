@@ -35,7 +35,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
     <div
       style={{
         display: 'flex',
-        alignItems: 'flex-end',
+        alignItems: 'center',
         gap: 12,
       }}
     >

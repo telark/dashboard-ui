@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   AppstoreOutlined,
   BarsOutlined,
@@ -95,6 +95,11 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
       return undefined;
     }
     const disabledNoSelection = selectedCount <= 0;
+    const handleBulkForceSyncClick = () => {
+      if (disabledNoSelection) return;
+      if (bulkForceSyncDisabled) return;
+      onBulkForceSync();
+    };
     return {
       buttons: [
         {
@@ -102,8 +107,8 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
           label: APPLICATIONS_UI.TOOLBAR_BULK_FORCE_SYNC,
           icon: <SyncOutlined />,
           variant: 'default',
-          onClick: onBulkForceSync,
-          disabled: disabledNoSelection || bulkForceSyncDisabled,
+          onClick: handleBulkForceSyncClick,
+          disabled: disabledNoSelection,
           tooltip: bulkForceSyncDisabled
             ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
             : undefined,
@@ -153,6 +158,16 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
     };
   }, [hasActiveFilters, onClearAllFilters]);
 
+  const handleLayoutButtonMouseEnter = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    e.currentTarget.style.backgroundColor = DEFAULT_COLORS.HOVER_BG;
+    e.currentTarget.style.color = DEFAULT_COLORS.SUCCESS;
+  }, []);
+
+  const handleLayoutButtonMouseLeave = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    e.currentTarget.style.backgroundColor = 'transparent';
+    e.currentTarget.style.color = '#64748b';
+  }, []);
+
   return (
     <div
       className="applications-bulk-select"
@@ -161,7 +176,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
-        minHeight: '60px',
+        height: 60,
       }}
     >
       <div
@@ -172,6 +187,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
           flexWrap: 'nowrap',
           overflowX: 'auto',
           minWidth: 0,
+          height: '100%',
         }}
       >
         {bulkMode && pageCount > 0 ? (
@@ -196,11 +212,21 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
           </span>
         ) : null}
         <Toolbar config={bulkActionsToolbarConfig} />
-        <span
-          style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, lineHeight: 1, flexShrink: 0 }}
-        >
-          {totalCount} {APPLICATIONS_UI.TOOLBAR_COUNT_SUFFIX}
-        </span>
+        {bulkMode ? (
+          <span
+            style={{
+              fontSize: 12,
+              color: DEFAULT_COLORS.TEXT_MUTED,
+              lineHeight: 1,
+              flexShrink: 0,
+              display: 'inline-flex',
+              alignItems: 'center',
+              height: '100%',
+            }}
+          >
+            {totalCount} {APPLICATIONS_UI.TOOLBAR_COUNT_SUFFIX}
+          </span>
+        ) : null}
         {filterChips.map((chip) => (
           <span
             key={`${chip.key}:${chip.value}`}
@@ -249,9 +275,24 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
         ) : null}
         <Toolbar config={clearAllToolbarConfig} />
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, height: '100%' }}>
         <Toolbar config={toolbarConfig} />
         <FilterButton onClick={onOpenFilters} />
+        {!bulkMode ? (
+          <span
+            style={{
+              fontSize: 12,
+              color: DEFAULT_COLORS.TEXT_MUTED,
+              lineHeight: 1,
+              flexShrink: 0,
+              display: 'inline-flex',
+              alignItems: 'center',
+              height: '100%',
+            }}
+          >
+            {totalCount} {APPLICATIONS_UI.TOOLBAR_COUNT_SUFFIX}
+          </span>
+        ) : null}
         <Toolbar config={bulkModeToolbarConfig} />
         <Tooltip title={nextLayoutTooltip}>
           <button
@@ -272,15 +313,10 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
               color: '#64748b',
               fontFamily: "'Roboto Condensed', sans-serif",
               transition: 'all 0.2s',
+              height: 32,
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = DEFAULT_COLORS.HOVER_BG;
-              e.currentTarget.style.color = DEFAULT_COLORS.SUCCESS;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.color = '#64748b';
-            }}
+            onMouseEnter={handleLayoutButtonMouseEnter}
+            onMouseLeave={handleLayoutButtonMouseLeave}
           >
             <span style={{ fontSize: 14, lineHeight: 1 }}>{nextLayoutIcon}</span>
             <span>{nextLayoutLabel}</span>
