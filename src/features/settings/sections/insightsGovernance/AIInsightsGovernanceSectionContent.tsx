@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Input, Select, Tooltip, message } from 'antd';
+import { Button, Input, InputNumber, Select, Tooltip, message } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import {
   Client,
@@ -20,6 +20,7 @@ import SnapshotStorageBar from '../../../resources/applications/components/snaps
 
 const SECTION_GAP_PX = 12;
 const PLATFORM_INPUT_WIDTH_PX = 160;
+const FETCH_INTERVAL_PRESET_MINUTES = [1, 2, 5, 10, 15, 30, 60] as const;
 
 type ValidationApiResponse = { ok: boolean; reason?: string };
 type SnapshotMetric = { bytes: number; kb: number; mb: number; percent?: number };
@@ -107,6 +108,8 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
   const [savingDiscoveryBehavior, setSavingDiscoveryBehavior] = useState(false);
 
   const [fetchIntervalMinutes, setFetchIntervalMinutes] = useState<number>(1);
+  const [fetchIntervalSelection, setFetchIntervalSelection] = useState<string>('1');
+  const [customFetchIntervalMinutes, setCustomFetchIntervalMinutes] = useState<number>(1);
   const [snapshotsMaxPerApp, setSnapshotsMaxPerApp] = useState<number>(5);
   const [savingSnapshotsMax, setSavingSnapshotsMax] = useState(false);
   const [snapshotInfos, setSnapshotInfos] = useState<SnapshotInfosResponse | null>(null);
@@ -134,8 +137,19 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
     setExcludedNamespaces(savedExcluded);
 
     const seconds = Number(cfg?.userSettings?.fetchIntervalSeconds ?? 60);
-    const minutes = Math.max(1, Math.round(seconds / 60));
+    const minutes = Math.max(1, Math.floor(seconds / 60));
     setFetchIntervalMinutes(minutes);
+    if (
+      FETCH_INTERVAL_PRESET_MINUTES.includes(
+        minutes as (typeof FETCH_INTERVAL_PRESET_MINUTES)[number],
+      )
+    ) {
+      setFetchIntervalSelection(String(minutes));
+      setCustomFetchIntervalMinutes(minutes);
+    } else {
+      setFetchIntervalSelection('custom');
+      setCustomFetchIntervalMinutes(minutes);
+    }
 
     const maxPerApp = Number(cfg?.snapshots?.maxPerApp ?? 5);
     const normalizedMax = Number.isFinite(maxPerApp) ? maxPerApp : 5;
@@ -383,13 +397,16 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
           style={{
             display: 'inline-flex',
             alignItems: 'center',
+            justifyContent: 'center',
             height: 24,
             padding: '0 10px',
             borderRadius: 6,
-            background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
-            color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
+            background: DEFAULT_COLORS.BACKGROUND_LIGHT,
+            border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+            color: DEFAULT_COLORS.TEXT_MUTED,
             fontSize: 12,
             fontWeight: 700,
+            lineHeight: 1,
             cursor: 'default',
           }}
         >
@@ -455,7 +472,6 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
               loading={saving}
               disabled={!aiHasChanges || !canEnable}
               style={{
-                minWidth: 120,
                 background: DEFAULT_COLORS.SUCCESS,
                 borderColor: DEFAULT_COLORS.SUCCESS,
                 color: '#fff',
@@ -475,6 +491,7 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <Select
               mode="multiple"
+              size="small"
               value={excludedNamespaces}
               onChange={(vals) => setExcludedNamespaces(vals)}
               options={namespacesOptions.map((n) => ({ value: n, label: n }))}
@@ -505,20 +522,50 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
 
             <div
               style={{
-                borderTop: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-                paddingTop: 12,
-                marginTop: 4,
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 10,
               }}
             >
               <div style={{ fontWeight: 700 }}>{C.LABELS.FETCH_INTERVAL_MINUTES_LABEL}</div>
-              <Input
-                value={String(fetchIntervalMinutes)}
-                onChange={(e) => setFetchIntervalMinutes(Number(e.target.value || 0))}
+              <Select
+                size="small"
+                value={fetchIntervalSelection}
+                onChange={(val) => {
+                  setFetchIntervalSelection(val);
+                  if (val === 'custom') {
+                    setFetchIntervalMinutes(customFetchIntervalMinutes);
+                    return;
+                  }
+                  const minutes = Number(val);
+                  setCustomFetchIntervalMinutes(minutes);
+                  setFetchIntervalMinutes(minutes);
+                }}
+                options={[
+                  ...FETCH_INTERVAL_PRESET_MINUTES.map((m) => ({
+                    value: String(m),
+                    label: m === 60 ? '1 hour' : `${m} minute${m === 1 ? '' : 's'}`,
+                  })),
+                  { value: 'custom', label: 'Custom' },
+                ]}
                 style={{ width: '100%' }}
               />
+              {fetchIntervalSelection === 'custom' ? (
+                <InputNumber
+                  size="small"
+                  min={1}
+                  precision={0}
+                  value={customFetchIntervalMinutes}
+                  onChange={(v) => {
+                    const n = Number(v);
+                    if (!Number.isFinite(n) || n <= 0) return;
+                    const next = Math.floor(n);
+                    setCustomFetchIntervalMinutes(next);
+                    setFetchIntervalMinutes(next);
+                  }}
+                  style={{ width: '100%' }}
+                />
+              ) : null}
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -526,7 +573,6 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
                 loading={savingDiscoveryBehavior}
                 onClick={saveDiscoveryAndBehavior}
                 style={{
-                  minWidth: 120,
                   background: DEFAULT_COLORS.SUCCESS,
                   borderColor: DEFAULT_COLORS.SUCCESS,
                   color: '#fff',
@@ -623,7 +669,6 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
                 loading={savingSnapshotsMax}
                 onClick={saveSnapshotsMax}
                 style={{
-                  minWidth: 120,
                   background: DEFAULT_COLORS.SUCCESS,
                   borderColor: DEFAULT_COLORS.SUCCESS,
                   color: '#fff',
