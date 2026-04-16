@@ -31,7 +31,7 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     PLATFORM_TITLE: 'Platform behavior',
     PLATFORM_DESCRIPTION: 'Polling and snapshot retention settings.',
     FETCH_INTERVAL_MINUTES_LABEL: 'Fetch interval (minutes)',
-    SNAPSHOTS_MAX_PER_APP_LABEL: 'Snapshots max per app',
+    SNAPSHOTS_MAX_PER_APP_LABEL: 'Maximum Snapshots per application',
     PLATFORM_SAVE_INTERVAL_BUTTON: 'Save interval',
     PLATFORM_SAVE_SNAPSHOTS_BUTTON: 'Save snapshots',
     SNAPSHOT_STORAGE_TITLE: 'Snapshot storage',

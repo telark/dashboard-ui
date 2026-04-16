@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { DEFAULT_COLORS } from '../../../../../constants';
+import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import { SHARED_PAGE_CONSTANTS } from '../../../../../constants/shared/pages';
 import { parseConsumedPercent } from './snapshotStorageUtils';
 
@@ -16,8 +17,14 @@ const SnapshotStorageBar: React.FC<SnapshotStorageBarProps> = memo(
     const parsed = consumedLabel != null ? parseConsumedPercent(consumedLabel) : null;
     const pct = percentUsed != null ? percentUsed : parsed;
     const widthPct = pct != null ? Math.min(100, Math.max(0, pct)) : 0;
-    const barH = SHARED_PAGE_CONSTANTS.UI.PROGRESS_BAR_HEIGHT;
+    const barH = Math.max(12, SHARED_PAGE_CONSTANTS.UI.PROGRESS_BAR_HEIGHT);
     const barR = SHARED_PAGE_CONSTANTS.UI.PROGRESS_BAR_BORDER_RADIUS;
+    const fill =
+      widthPct >= 90
+        ? DEFAULT_COLORS.DANGER
+        : widthPct >= 75
+          ? CONNECTIVITY_CONSTANTS.COLORS.WARNING
+          : DEFAULT_COLORS.SUCCESS;
 
     return (
       <div style={{ width: '100%', minWidth: 120 }}>
@@ -34,7 +41,7 @@ const SnapshotStorageBar: React.FC<SnapshotStorageBarProps> = memo(
             style={{
               height: '100%',
               width: `${widthPct}%`,
-              background: DEFAULT_COLORS.SUCCESS,
+              background: fill,
               borderRadius: barR,
               transition: 'width 0.2s ease',
             }}

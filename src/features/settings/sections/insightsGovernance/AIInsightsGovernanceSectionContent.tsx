@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Input, Select, message } from 'antd';
+import { Button, Input, Select, Tooltip, message } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import {
   Client,
@@ -17,7 +17,6 @@ import { selectGlobalConfigState } from '../../../globalconfig/store';
 import type { AppDispatch, RootState } from '../../../../store';
 import { fetchGlobalConfigThunk } from '../../../globalconfig/store';
 import SnapshotStorageBar from '../../../resources/applications/components/snapshots/SnapshotStorageBar';
-import { CONNECTIVITY_CONSTANTS } from '../../../../constants/pages/connectivity';
 
 const SECTION_GAP_PX = 12;
 const PLATFORM_INPUT_WIDTH_PX = 160;
@@ -83,6 +82,17 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
   const globalConfig = useSelector(selectGlobalConfigState);
   const applications = useSelector((s: RootState) => s.applications.applications);
 
+  const [initialAi, setInitialAi] = useState<{
+    enabled: boolean;
+    provider: ProviderKey;
+    apiKey: string;
+  } | null>(null);
+  const [initialDiscovery, setInitialDiscovery] = useState<{
+    excludedNamespaces: string[];
+    fetchIntervalMinutes: number;
+  } | null>(null);
+  const [initialSnapshots, setInitialSnapshots] = useState<{ maxPerApp: number } | null>(null);
+
   const [aiEnabled, setAiEnabled] = useState(false);
   const [provider, setProvider] = useState<ProviderKey>(C.PROVIDERS.DEFAULT);
   const [apiKey, setApiKey] = useState('');
@@ -94,11 +104,10 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
 
   const [namespacesOptions, setNamespacesOptions] = useState<string[]>([]);
   const [excludedNamespaces, setExcludedNamespaces] = useState<string[]>([]);
-  const [savingNamespaces, setSavingNamespaces] = useState(false);
+  const [savingDiscoveryBehavior, setSavingDiscoveryBehavior] = useState(false);
 
   const [fetchIntervalMinutes, setFetchIntervalMinutes] = useState<number>(1);
   const [snapshotsMaxPerApp, setSnapshotsMaxPerApp] = useState<number>(5);
-  const [savingInterval, setSavingInterval] = useState(false);
   const [savingSnapshotsMax, setSavingSnapshotsMax] = useState(false);
   const [snapshotInfos, setSnapshotInfos] = useState<SnapshotInfosResponse | null>(null);
   const [snapshotInfosLoading, setSnapshotInfosLoading] = useState(false);
@@ -121,14 +130,48 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
     setApiKey(key);
     setLastValidatedKey(key ? key.trim() : null);
 
-    setExcludedNamespaces(Array.isArray(cfg?.excludedNamespaces) ? cfg.excludedNamespaces : []);
+    const savedExcluded = Array.isArray(cfg?.excludedNamespaces) ? cfg.excludedNamespaces : [];
+    setExcludedNamespaces(savedExcluded);
 
     const seconds = Number(cfg?.userSettings?.fetchIntervalSeconds ?? 60);
-    setFetchIntervalMinutes(Math.max(1, Math.round(seconds / 60)));
+    const minutes = Math.max(1, Math.round(seconds / 60));
+    setFetchIntervalMinutes(minutes);
 
     const maxPerApp = Number(cfg?.snapshots?.maxPerApp ?? 5);
-    setSnapshotsMaxPerApp(Number.isFinite(maxPerApp) ? maxPerApp : 5);
+    const normalizedMax = Number.isFinite(maxPerApp) ? maxPerApp : 5;
+    setSnapshotsMaxPerApp(normalizedMax);
+
+    setInitialAi({ enabled, provider: normalizedProvider, apiKey: key });
+    setInitialDiscovery({
+      excludedNamespaces: [...savedExcluded].sort(),
+      fetchIntervalMinutes: minutes,
+    });
+    setInitialSnapshots({ maxPerApp: normalizedMax });
   }, [globalConfig?.data]);
+
+  const aiHasChanges = useMemo(() => {
+    if (!initialAi) return false;
+    if (aiEnabled !== initialAi.enabled) return true;
+    if (!aiEnabled && !initialAi.enabled) return false;
+    if (provider !== initialAi.provider) return true;
+    return apiKey !== initialAi.apiKey;
+  }, [aiEnabled, apiKey, initialAi, provider]);
+
+  const discoveryHasChanges = useMemo(() => {
+    if (!initialDiscovery) return false;
+    const current = [...(excludedNamespaces || [])].sort();
+    const initial = initialDiscovery.excludedNamespaces;
+    if (current.length !== initial.length) return true;
+    for (let i = 0; i < current.length; i++) {
+      if (current[i] !== initial[i]) return true;
+    }
+    return fetchIntervalMinutes !== initialDiscovery.fetchIntervalMinutes;
+  }, [excludedNamespaces, fetchIntervalMinutes, initialDiscovery]);
+
+  const snapshotsHasChanges = useMemo(() => {
+    if (!initialSnapshots) return false;
+    return snapshotsMaxPerApp !== initialSnapshots.maxPerApp;
+  }, [initialSnapshots, snapshotsMaxPerApp]);
 
   const validateDisabled = useMemo(() => {
     const trimmed = apiKey.trim();
@@ -191,6 +234,7 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
         data: { ai: { enabled: aiEnabled, provider, apiKey: apiKey.trim() } },
       });
       message.success(C.MESSAGES.SAVE_SUCCESS);
+      setInitialAi({ enabled: aiEnabled, provider, apiKey });
       dispatch(fetchGlobalConfigThunk());
     } catch (err: unknown) {
       message.error(getFriendlyValidationError(err) || C.MESSAGES.SAVE_FAILED);
@@ -236,40 +280,27 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
     loadSnapshotInfos();
   }, [loadSnapshotInfos]);
 
-  const saveNamespaces = useCallback(async () => {
-    setSavingNamespaces(true);
-    try {
-      const { path, method } = Endpoints.GLOBALCONFIG.PATCH;
-      await Client<ResourceDetailsResponse<unknown>>(exporterApiClient, path, {
-        method,
-        data: { excludedNamespaces },
-      });
-      message.success(C.MESSAGES.NAMESPACES_SAVE_SUCCESS);
-      dispatch(fetchGlobalConfigThunk());
-    } catch {
-      message.error(C.MESSAGES.NAMESPACES_SAVE_FAILED);
-    } finally {
-      setSavingNamespaces(false);
-    }
-  }, [dispatch, excludedNamespaces]);
-
-  const saveFetchInterval = useCallback(async () => {
-    setSavingInterval(true);
+  const saveDiscoveryAndBehavior = useCallback(async () => {
+    setSavingDiscoveryBehavior(true);
     try {
       const seconds = Math.max(1, Math.round(fetchIntervalMinutes)) * 60;
       const { path, method } = Endpoints.GLOBALCONFIG.PATCH;
       await Client<ResourceDetailsResponse<unknown>>(exporterApiClient, path, {
         method,
-        data: { userSettings: { fetchIntervalSeconds: seconds } },
+        data: { excludedNamespaces, userSettings: { fetchIntervalSeconds: seconds } },
       });
-      message.success(C.MESSAGES.PLATFORM_SAVE_INTERVAL_SUCCESS);
+      message.success(C.MESSAGES.SAVE_SUCCESS);
+      setInitialDiscovery({
+        excludedNamespaces: [...(excludedNamespaces || [])].sort(),
+        fetchIntervalMinutes,
+      });
       dispatch(fetchGlobalConfigThunk());
     } catch {
-      message.error(C.MESSAGES.PLATFORM_SAVE_INTERVAL_FAILED);
+      message.error(C.MESSAGES.SAVE_FAILED);
     } finally {
-      setSavingInterval(false);
+      setSavingDiscoveryBehavior(false);
     }
-  }, [dispatch, fetchIntervalMinutes]);
+  }, [dispatch, excludedNamespaces, fetchIntervalMinutes]);
 
   const saveSnapshotsMax = useCallback(async () => {
     setSavingSnapshotsMax(true);
@@ -281,6 +312,7 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
         data: { snapshots: { maxPerApp } },
       });
       message.success(C.MESSAGES.PLATFORM_SAVE_SNAPSHOTS_SUCCESS);
+      setInitialSnapshots({ maxPerApp });
       dispatch(fetchGlobalConfigThunk());
       void loadSnapshotInfos();
     } catch {
@@ -342,32 +374,49 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
     return { hidden, revealed };
   }, [applications, excludedNamespaces, globalConfig?.data?.excludedNamespaces]);
 
-  return (
-    <>
-      <SettingsCard
-        title={C.LABELS.AI_INSIGHTS_TITLE}
-        description={C.LABELS.AI_INSIGHTS_DESCRIPTION}
-      >
-        <div
+  const maxNamespaceTagPlaceholder = useCallback((omitted: Array<{ value?: unknown }>) => {
+    const hidden = omitted.map((v) => String(v.value ?? '')).filter(Boolean);
+    if (hidden.length === 0) return null;
+    return (
+      <Tooltip title={hidden.join(', ')}>
+        <span
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
+            display: 'inline-flex',
             alignItems: 'center',
-            gap: 10,
-            padding: '2px 0',
+            height: 24,
+            padding: '0 10px',
+            borderRadius: 6,
+            background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
+            color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
+            fontSize: 12,
+            fontWeight: 700,
+            cursor: 'default',
           }}
         >
-          <div style={{ fontWeight: 700 }}>{C.LABELS.ENABLE_AI_LABEL}</div>
-          <Switch checked={aiEnabled} onChange={setAiEnabled} />
-        </div>
-      </SettingsCard>
+          +{hidden.length}
+        </span>
+      </Tooltip>
+    );
+  }, []);
 
-      {aiEnabled ? (
-        <div style={{ marginTop: SECTION_GAP_PX }}>
-          <SettingsCard
-            title={C.LABELS.PROVIDER_CARD_TITLE}
-            description={C.LABELS.PROVIDER_CARD_DESCRIPTION}
+  return (
+    <>
+      <SettingsCard title="AI Insights" description={C.LABELS.AI_INSIGHTS_DESCRIPTION}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              gap: 10,
+              padding: '2px 0',
+            }}
           >
+            <div style={{ fontWeight: 700 }}>{C.LABELS.ENABLE_AI_LABEL}</div>
+            <Switch checked={aiEnabled} onChange={setAiEnabled} />
+          </div>
+
+          {aiEnabled ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <Select
                 value={provider}
@@ -375,7 +424,6 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
                 onChange={onProviderChange}
                 style={{ width: 240 }}
               />
-
               <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                 <Input
                   placeholder={C.LABELS.API_KEY_PLACEHOLDER}
@@ -399,14 +447,30 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
                 <div style={{ color: C.COLORS.ERROR_TEXT, fontWeight: 700 }}>{errorMessage}</div>
               ) : null}
             </div>
-          </SettingsCard>
+          ) : null}
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              onClick={handleEnable}
+              loading={saving}
+              disabled={!aiHasChanges || !canEnable}
+              style={{
+                minWidth: 120,
+                background: DEFAULT_COLORS.SUCCESS,
+                borderColor: DEFAULT_COLORS.SUCCESS,
+                color: '#fff',
+              }}
+            >
+              Save
+            </Button>
+          </div>
         </div>
-      ) : null}
+      </SettingsCard>
 
       <div style={{ marginTop: SECTION_GAP_PX }}>
         <SettingsCard
-          title={C.LABELS.NAMESPACES_TITLE}
-          description={C.LABELS.NAMESPACES_DESCRIPTION}
+          title="Discovery & Behavior"
+          description="Scope discovery and insights by namespace, and control the fetch interval."
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <Select
@@ -416,61 +480,68 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
               options={namespacesOptions.map((n) => ({ value: n, label: n }))}
               placeholder={C.LABELS.NAMESPACES_SELECTOR_PLACEHOLDER}
               style={{ width: '100%' }}
+              maxTagCount={5}
+              maxTagPlaceholder={maxNamespaceTagPlaceholder}
             />
             {namespacesImpactPreview ? (
-              <div style={{ fontSize: 12, fontWeight: 700 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: DEFAULT_COLORS.TEXT_MUTED }}>
                 {namespacesImpactPreview.hidden > 0 ? (
-                  <span style={{ color: CONNECTIVITY_CONSTANTS.COLORS.WARNING }}>
+                  <span>
                     {namespacesImpactPreview.hidden} application
                     {namespacesImpactPreview.hidden === 1 ? '' : 's'} will be hidden
                   </span>
                 ) : null}
                 {namespacesImpactPreview.hidden > 0 && namespacesImpactPreview.revealed > 0 ? (
-                  <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 600 }}> · </span>
+                  <span style={{ fontWeight: 600 }}> · </span>
                 ) : null}
                 {namespacesImpactPreview.revealed > 0 ? (
-                  <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
+                  <span>
                     {namespacesImpactPreview.revealed} application
                     {namespacesImpactPreview.revealed === 1 ? '' : 's'} will be revealed
                   </span>
                 ) : null}
               </div>
             ) : null}
-            <Button loading={savingNamespaces} onClick={saveNamespaces}>
-              {C.LABELS.NAMESPACES_SAVE_BUTTON}
-            </Button>
-          </div>
-        </SettingsCard>
-      </div>
 
-      <div style={{ marginTop: SECTION_GAP_PX }}>
-        <SettingsCard title={C.LABELS.PLATFORM_TITLE} description={C.LABELS.PLATFORM_DESCRIPTION}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-              <div style={{ width: 180, fontWeight: 700 }}>
-                {C.LABELS.FETCH_INTERVAL_MINUTES_LABEL}
-              </div>
+            <div
+              style={{
+                borderTop: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+                paddingTop: 12,
+                marginTop: 4,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 10,
+              }}
+            >
+              <div style={{ fontWeight: 700 }}>{C.LABELS.FETCH_INTERVAL_MINUTES_LABEL}</div>
               <Input
                 value={String(fetchIntervalMinutes)}
                 onChange={(e) => setFetchIntervalMinutes(Number(e.target.value || 0))}
-                style={{ width: PLATFORM_INPUT_WIDTH_PX }}
+                style={{ width: '100%' }}
               />
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Button
-                loading={savingInterval}
-                onClick={saveFetchInterval}
-                style={{ minWidth: 120 }}
+                loading={savingDiscoveryBehavior}
+                onClick={saveDiscoveryAndBehavior}
+                style={{
+                  minWidth: 120,
+                  background: DEFAULT_COLORS.SUCCESS,
+                  borderColor: DEFAULT_COLORS.SUCCESS,
+                  color: '#fff',
+                }}
+                disabled={!discoveryHasChanges}
               >
-                {C.LABELS.PLATFORM_SAVE_INTERVAL_BUTTON}
+                Save
               </Button>
             </div>
           </div>
         </SettingsCard>
       </div>
+
       <div style={{ marginTop: SECTION_GAP_PX }}>
-        <SettingsCard
-          title={C.LABELS.SNAPSHOT_STORAGE_TITLE}
-          description={C.LABELS.SNAPSHOT_STORAGE_DESCRIPTION}
-        >
+        <SettingsCard title="Snapshot Storage" description={C.LABELS.SNAPSHOT_STORAGE_DESCRIPTION}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {snapshotInfosLoading ? (
               <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
@@ -485,15 +556,54 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
                     metricsLine={`${snapshotInfos.consumedSpace.mb.toFixed(2)} MB / ${snapshotInfos.totalPVCSpace.mb.toFixed(2)} MB`}
                   />
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                    {C.LABELS.SNAPSHOT_STORAGE_CONSUMED}: {consumedLine}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
+                    <span
+                      style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 600 }}
+                    >
+                      {C.LABELS.SNAPSHOT_STORAGE_CONSUMED}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 12,
+                        color: DEFAULT_COLORS.TEXT_PRIMARY,
+                        fontWeight: 700,
+                      }}
+                    >
+                      {consumedLine}
+                    </span>
                   </div>
-                  <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                    {C.LABELS.SNAPSHOT_STORAGE_AVAILABLE}: {availableLine}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
+                    <span
+                      style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 600 }}
+                    >
+                      {C.LABELS.SNAPSHOT_STORAGE_AVAILABLE}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 12,
+                        color: DEFAULT_COLORS.TEXT_PRIMARY,
+                        fontWeight: 700,
+                      }}
+                    >
+                      {availableLine}
+                    </span>
                   </div>
-                  <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                    {C.LABELS.SNAPSHOT_STORAGE_TOTAL_SNAPSHOTS}: {snapshotInfos.totalSnapshots}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
+                    <span
+                      style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 600 }}
+                    >
+                      {C.LABELS.SNAPSHOT_STORAGE_TOTAL_SNAPSHOTS}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 12,
+                        color: DEFAULT_COLORS.TEXT_PRIMARY,
+                        fontWeight: 700,
+                      }}
+                    >
+                      {snapshotInfos.totalSnapshots}
+                    </span>
                   </div>
                 </div>
               </>
@@ -507,32 +617,23 @@ const AIInsightsGovernanceSectionContent: React.FC = memo(() => {
                 onChange={(e) => setSnapshotsMaxPerApp(Number(e.target.value || 0))}
                 style={{ width: PLATFORM_INPUT_WIDTH_PX }}
               />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Button
                 loading={savingSnapshotsMax}
                 onClick={saveSnapshotsMax}
-                style={{ minWidth: 120 }}
+                style={{
+                  minWidth: 120,
+                  background: DEFAULT_COLORS.SUCCESS,
+                  borderColor: DEFAULT_COLORS.SUCCESS,
+                  color: '#fff',
+                }}
+                disabled={!snapshotsHasChanges}
               >
-                {C.LABELS.PLATFORM_SAVE_SNAPSHOTS_BUTTON}
+                Save
               </Button>
             </div>
           </div>
-        </SettingsCard>
-      </div>
-
-      <div style={{ marginTop: SECTION_GAP_PX }}>
-        <SettingsCard title={C.LABELS.SAVE_TITLE} description={C.LABELS.SAVE_DESCRIPTION}>
-          <Button
-            type="primary"
-            onClick={handleEnable}
-            loading={saving}
-            disabled={!canEnable}
-            style={{
-              background: DEFAULT_COLORS.SUCCESS,
-              borderColor: DEFAULT_COLORS.SUCCESS,
-            }}
-          >
-            {C.LABELS.ENABLE_BUTTON}
-          </Button>
         </SettingsCard>
       </div>
     </>
