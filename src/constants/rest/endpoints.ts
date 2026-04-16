@@ -45,15 +45,15 @@ export const Endpoints = {
       method: 'DELETE',
     }),
     TRIGGER_ROLLBACK: (name: string) => ({
-      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}`,
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}/trigger`,
       method: 'POST',
     }),
     GET_ROLLBACKS: (name: string) => ({
-      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}`,
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}/get`,
       method: 'GET',
     }),
     GET_ROLLBACK: (name: string, rollbackId: string) => ({
-      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}/${rollbackId}`,
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}/${rollbackId}/get`,
       method: 'GET',
     }),
   },
