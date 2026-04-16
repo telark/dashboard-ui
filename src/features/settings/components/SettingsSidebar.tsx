@@ -200,11 +200,7 @@ const SettingsSidebarItem: React.FC<ItemProps> = memo(({ section, isActive, onSe
           minWidth: 0,
         }}
       >
-        {section.key === 'insightsGovernance'
-          ? 'Governance'
-          : section.key === 'aiInsights'
-            ? 'AI Insights'
-            : section.label}
+        {section.label}
       </span>
     </button>
   );

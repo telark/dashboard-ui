@@ -263,7 +263,7 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path={APP_ROUTES.SETTINGS}
+          path={`${APP_ROUTES.SETTINGS}/*`}
           element={
             <ProtectedRoute>
               <FeatureErrorBoundary featureName="Settings">

@@ -53,7 +53,7 @@ export const SETTINGS_CONSTANTS = {
     },
     AI_DATA: {
       key: 'insightsGovernance' as const,
-      label: 'Insights & Governance',
+      label: 'Governance',
       description: 'Configure discovery scope, fetch interval, and snapshot storage behavior.',
       icon: AuditOutlined,
     },
