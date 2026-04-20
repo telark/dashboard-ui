@@ -42,9 +42,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
     if (!details?.name) return;
     const refs =
       details.snapshots != null && details.snapshots.length > 0 ? details.snapshots : undefined;
-    void dispatch(
-      fetchApplicationSnapshotsThunk({ snapshotRefs: refs }),
-    );
+    void dispatch(fetchApplicationSnapshotsThunk({ snapshotRefs: refs }));
   }, [details?.name, details?.snapshots, dispatch]);
 
   const breadcrumbItems = useMemo(

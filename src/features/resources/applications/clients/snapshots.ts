@@ -127,9 +127,7 @@ async function fetchSingleSnapshotStorage(
 async function fetchSnapshotSummariesPerRef(
   refs: ApplicationSnapshot[],
 ): Promise<ApplicationSnapshotSummary[]> {
-  const settled = await Promise.allSettled(
-    refs.map((ref) => fetchSingleSnapshotStorage(ref)),
-  );
+  const settled = await Promise.allSettled(refs.map((ref) => fetchSingleSnapshotStorage(ref)));
   const out: ApplicationSnapshotSummary[] = [];
   for (let i = 0; i < settled.length; i++) {
     const res = settled[i];

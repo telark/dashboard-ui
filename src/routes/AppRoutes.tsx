@@ -107,10 +107,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.REGISTER}
           element={isAuthenticated ? <Navigate to={APP_ROUTES.HOME} replace /> : <Register />}
         />
-        <Route
-          path={APP_ROUTES.GOOGLE_CALLBACK}
-          element={<GoogleCallback />}
-        />
+        <Route path={APP_ROUTES.GOOGLE_CALLBACK} element={<GoogleCallback />} />
         <Route
           path={APP_ROUTES.HOME}
           element={
