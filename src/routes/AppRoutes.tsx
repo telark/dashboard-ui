@@ -17,6 +17,7 @@ const Dashboard = lazy(() => import('../features/home/pages/Dashboard'));
 // auth
 const Login = lazy(() => import('../features/auth/pages/flow/Login'));
 const Register = lazy(() => import('../features/auth/pages/flow/Register'));
+const GoogleCallback = lazy(() => import('../features/auth/pages/flow/GoogleCallback'));
 
 // resources
 const GroupersGlobalView = lazy(
@@ -105,6 +106,10 @@ const AppRoutes: React.FC = () => {
         <Route
           path={APP_ROUTES.REGISTER}
           element={isAuthenticated ? <Navigate to={APP_ROUTES.HOME} replace /> : <Register />}
+        />
+        <Route
+          path={APP_ROUTES.GOOGLE_CALLBACK}
+          element={<GoogleCallback />}
         />
         <Route
           path={APP_ROUTES.HOME}

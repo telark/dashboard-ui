@@ -7,6 +7,11 @@ import type {
   LoginFinishResponse,
 } from '../models';
 
+export interface OIDCCallbackResponse {
+  sessionToken: string;
+  email: string;
+}
+
 export const loginStart = async (request: LoginStartRequest): Promise<LoginStartResponse> => {
   const { path, method } = Endpoints.AUTH.LOGIN.START;
   return await Client<LoginStartResponse>(authApiClient, path, {
@@ -20,5 +25,13 @@ export const loginFinish = async (request: LoginFinishRequest): Promise<LoginFin
   return await Client<LoginFinishResponse>(authApiClient, path, {
     method,
     data: request,
+  });
+};
+
+export const oidcGoogleCallback = async (idToken: string): Promise<OIDCCallbackResponse> => {
+  const { path, method } = Endpoints.AUTH.OIDC.GOOGLE.CALLBACK;
+  return await Client<OIDCCallbackResponse>(authApiClient, path, {
+    method,
+    data: { idToken },
   });
 };

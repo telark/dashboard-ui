@@ -35,6 +35,7 @@ export const APP_ROUTES = {
   GROUPS: '/management/groups',
   // settings
   SETTINGS: '/settings',
+  GOOGLE_CALLBACK: '/auth/google/callback',
   // governance
   PROTECTION_PLANS: '/governance/protection-plans',
   PROTECTION_PLANS_CREATE: '/governance/protection-plans/create',

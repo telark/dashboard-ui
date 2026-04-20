@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Form, App as AntdApp } from 'antd';
-import { LoginOutlined } from '@ant-design/icons';
+import { Form, App as AntdApp, Button, Divider } from 'antd';
+import { LoginOutlined, GoogleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import {
   performLogin,
   cleanupOrphanedPasskeys,
   type OrphanedPasskeysInfo,
 } from '../../utils/flow/login';
+import { redirectToGoogle } from '../../utils/flow/google';
 import { APP_ROUTES } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import {
@@ -18,9 +19,12 @@ import {
   OrphanedPasskeysModal,
 } from '../../components';
 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
+
 const Login: React.FC = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [orphanedInfo, setOrphanedInfo] = useState<OrphanedPasskeysInfo | null>(null);
@@ -106,6 +110,12 @@ const Login: React.FC = () => {
     setOrphanedInfo(null);
   };
 
+  const handleGoogleLogin = () => {
+    if (!GOOGLE_CLIENT_ID) return;
+    setGoogleLoading(true);
+    redirectToGoogle(GOOGLE_CLIENT_ID);
+  };
+
   return (
     <>
       <AuthContainer>
@@ -116,6 +126,22 @@ const Login: React.FC = () => {
             subtitle={LOGIN_CONSTANTS.UI.SUBTITLE}
           />
           <LoginForm form={form} loading={loading} onFinish={handleLogin} />
+          {GOOGLE_CLIENT_ID && (
+            <>
+              <Divider plain>{LOGIN_CONSTANTS.UI.GOOGLE_OR_SEPARATOR}</Divider>
+              <Button
+                icon={<GoogleOutlined />}
+                onClick={handleGoogleLogin}
+                loading={googleLoading}
+                block
+                size="large"
+              >
+                {googleLoading
+                  ? LOGIN_CONSTANTS.UI.GOOGLE_BUTTON_LOADING
+                  : LOGIN_CONSTANTS.UI.GOOGLE_BUTTON_TEXT}
+              </Button>
+            </>
+          )}
           <AuthFooter
             text={LOGIN_CONSTANTS.UI.FOOTER_TEXT}
             linkText={LOGIN_CONSTANTS.UI.FOOTER_LINK}

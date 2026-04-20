@@ -80,6 +80,17 @@ export const LOGIN_CONSTANTS = {
     BUTTON_TEXT: 'Login with Passkey',
     FOOTER_TEXT: "Don't have a passkey?",
     FOOTER_LINK: 'Register now',
+    GOOGLE_BUTTON_TEXT: 'Continue with Google',
+    GOOGLE_BUTTON_LOADING: 'Redirecting to Google...',
+    GOOGLE_OR_SEPARATOR: 'or',
+  },
+  OIDC: {
+    GOOGLE_SCOPE: 'openid email',
+    GOOGLE_RESPONSE_TYPE: 'id_token',
+    GOOGLE_AUTH_URL: 'https://accounts.google.com/o/oauth2/v2/auth',
+    CALLBACK_ERROR: 'Google login failed. Please try again.',
+    CALLBACK_SUCCESS: 'Signed in with Google successfully.',
+    NONCE_BYTE_LENGTH: 16,
   },
   LOGS: {
     AUTH_ERROR: 'Authentication error:',

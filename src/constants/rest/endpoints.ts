@@ -218,6 +218,14 @@ export const Endpoints = {
       path: AUTH_PATHS.LOGOUT,
       method: 'POST',
     },
+    OIDC: {
+      GOOGLE: {
+        CALLBACK: {
+          path: AUTH_PATHS.OIDC.GOOGLE_CALLBACK,
+          method: 'POST',
+        },
+      },
+    },
     PASSKEYS: {
       GET_ALL: {
         path: AUTH_PATHS.PASSKEYS.PROXY.GET,

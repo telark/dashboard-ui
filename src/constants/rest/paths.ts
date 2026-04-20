@@ -72,6 +72,9 @@ export const AUTH_PATHS = {
       DELETE: 'auth/passkeys/proxy/delete',
     },
   },
+  OIDC: {
+    GOOGLE_CALLBACK: 'auth/oidc/google/callback',
+  },
 } as const;
 
 export const CATEGORY_PATHS = {
