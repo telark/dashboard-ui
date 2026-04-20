@@ -85,7 +85,6 @@ export const deleteApplicationThunk = createAsyncThunk(
 );
 
 export interface FetchApplicationSnapshotsPayload {
-  applicationId: string;
   /** From CR `spec.snapshots`: one GET per item with namespace+generation query params. */
   snapshotRefs?: ApplicationSnapshot[];
 }
@@ -94,7 +93,7 @@ export const fetchApplicationSnapshotsThunk = createAsyncThunk(
   STORE_ACTIONS.APPLICATIONS.FETCH_SNAPSHOTS,
   async (payload: FetchApplicationSnapshotsPayload, { rejectWithValue }) => {
     try {
-      return await getApplicationSnapshotSummaries(payload.applicationId, payload.snapshotRefs);
+      return await getApplicationSnapshotSummaries(payload.snapshotRefs);
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_FETCHING_APPLICATION_SNAPSHOTS, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_APPLICATION_SNAPSHOTS));
@@ -104,7 +103,7 @@ export const fetchApplicationSnapshotsThunk = createAsyncThunk(
 
 export interface FetchSnapshotManifestPayload {
   manifestKey: string;
-  applicationId: string;
+  snapshotId: string;
   namespace: string;
   generation: number;
 }
@@ -113,7 +112,7 @@ export const fetchSnapshotManifestThunk = createAsyncThunk(
   STORE_ACTIONS.APPLICATIONS.FETCH_SNAPSHOT_MANIFEST,
   async (payload: FetchSnapshotManifestPayload, { rejectWithValue }) => {
     try {
-      const data = await getSnapshotManifest(payload.applicationId, {
+      const data = await getSnapshotManifest(payload.snapshotId, {
         namespace: payload.namespace,
         generation: payload.generation,
       });

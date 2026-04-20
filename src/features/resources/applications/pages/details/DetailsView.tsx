@@ -43,7 +43,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
     const refs =
       details.snapshots != null && details.snapshots.length > 0 ? details.snapshots : undefined;
     void dispatch(
-      fetchApplicationSnapshotsThunk({ applicationId: details.name, snapshotRefs: refs }),
+      fetchApplicationSnapshotsThunk({ snapshotRefs: refs }),
     );
   }, [details?.name, details?.snapshots, dispatch]);
 
@@ -133,7 +133,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
       <ManageSnapshotsPanel
         open={snapshotsOpen}
         onClose={() => setSnapshotsOpen(false)}
-        applicationId={details.name}
+        applicationName={details.name}
         detailSnapshots={details.snapshots}
         rollbackDisabled={isSyncing}
       />

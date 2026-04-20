@@ -111,11 +111,10 @@ function enrichSummaryFromDetail(
 }
 
 async function fetchSingleSnapshotStorage(
-  applicationId: string,
   ref: ApplicationSnapshot,
 ): Promise<ApplicationSnapshotSummary | null> {
   const qs = buildSnapshotQueryString(ref.namespace, ref.generation);
-  const urlPath = `${Endpoints.SNAPSHOTS.GET_BY_ID(applicationId).path}?${qs}`;
+  const urlPath = `${Endpoints.SNAPSHOTS.GET_BY_ID(ref.id).path}?${qs}`;
   const resp = await Client<ResourceDetailsResponse<unknown>>(exporterApiClient, urlPath);
   const rows = extractRawSnapshotRows(resp.data);
   for (const row of rows) {
@@ -126,11 +125,10 @@ async function fetchSingleSnapshotStorage(
 }
 
 async function fetchSnapshotSummariesPerRef(
-  applicationId: string,
   refs: ApplicationSnapshot[],
 ): Promise<ApplicationSnapshotSummary[]> {
   const settled = await Promise.allSettled(
-    refs.map((ref) => fetchSingleSnapshotStorage(applicationId, ref)),
+    refs.map((ref) => fetchSingleSnapshotStorage(ref)),
   );
   const out: ApplicationSnapshotSummary[] = [];
   for (let i = 0; i < settled.length; i++) {
@@ -167,34 +165,33 @@ export const getSnapshotsByApplicationId = async (
 };
 
 export const getApplicationSnapshotSummaries = async (
-  applicationId: string,
   snapshotRefs?: ApplicationSnapshot[],
 ): Promise<ApplicationSnapshotSummary[]> => {
   if (snapshotRefs != null && snapshotRefs.length > 0) {
     try {
-      return await fetchSnapshotSummariesPerRef(applicationId, snapshotRefs);
+      return await fetchSnapshotSummariesPerRef(snapshotRefs);
     } catch (error) {
       logger.error(
-        `${APPLICATIONS_ERROR_MESSAGES.CLIENT.FETCH_APPLICATION_SNAPSHOTS_FAILED} "${applicationId}" (per-gen):`,
+        `${APPLICATIONS_ERROR_MESSAGES.CLIENT.FETCH_APPLICATION_SNAPSHOTS_FAILED} (per-gen):`,
         error,
       );
       throw error;
     }
   }
-  return getSnapshotsByApplicationId(applicationId);
+  return [];
 };
 
 export const getSnapshotManifest = async (
-  applicationId: string,
+  snapshotId: string,
   params: { namespace: string; generation: number },
 ): Promise<unknown> => {
   try {
     const qs = buildSnapshotQueryString(params.namespace, params.generation);
-    const path = `${Endpoints.SNAPSHOTS.GET_MANIFEST(applicationId).path}?${qs}`;
+    const path = `${Endpoints.SNAPSHOTS.GET_MANIFEST(snapshotId).path}?${qs}`;
     return await Client<unknown>(exporterApiClient, path);
   } catch (error) {
     logger.error(
-      `${APPLICATIONS_ERROR_MESSAGES.CLIENT.FETCH_SNAPSHOT_MANIFEST_FAILED} "${applicationId}" gen=${params.generation}:`,
+      `${APPLICATIONS_ERROR_MESSAGES.CLIENT.FETCH_SNAPSHOT_MANIFEST_FAILED} "${snapshotId}" gen=${params.generation}:`,
       error,
     );
     throw error;

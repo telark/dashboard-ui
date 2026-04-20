@@ -28,7 +28,7 @@ const PANEL_WIDTH_EXPANDED = 960;
 export interface ManageSnapshotsPanelProps {
   open: boolean;
   onClose: () => void;
-  applicationId: string;
+  applicationName: string;
   detailSnapshots: Application['snapshots'];
   rollbackDisabled?: boolean;
 }
@@ -36,7 +36,7 @@ export interface ManageSnapshotsPanelProps {
 const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
   open,
   onClose,
-  applicationId,
+  applicationName,
   detailSnapshots,
   rollbackDisabled = false,
 }) => {
@@ -73,13 +73,13 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
       void dispatch(
         fetchSnapshotManifestThunk({
           manifestKey,
-          applicationId,
+          snapshotId: summary.id,
           namespace: summary.namespace,
           generation: summary.generation,
         }),
       );
     },
-    [applicationId, dispatch],
+    [dispatch],
   );
 
   const selectedCompareSnapshots = useMemo(() => {
@@ -108,7 +108,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
       void dispatch(
         fetchSnapshotManifestThunk({
           manifestKey: applicationSnapshotStableKey(older),
-          applicationId,
+          snapshotId: older.id,
           namespace: older.namespace,
           generation: older.generation,
         }),
@@ -116,7 +116,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
       void dispatch(
         fetchSnapshotManifestThunk({
           manifestKey: applicationSnapshotStableKey(newer),
-          applicationId,
+          snapshotId: newer.id,
           namespace: newer.namespace,
           generation: newer.generation,
         }),
@@ -127,7 +127,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
     setCompareMode(false);
     setCompareKeys([]);
     setCompareViewOpen(false);
-  }, [applicationId, compareKeys.length, compareMode, comparePair, compareViewOpen, dispatch]);
+  }, [compareKeys.length, compareMode, comparePair, compareViewOpen, dispatch]);
 
   const handleBackFromCompare = useCallback(() => {
     setCompareViewOpen(false);
@@ -170,7 +170,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
           try {
             await dispatch(
               triggerApplicationRollbackThunk({
-                name: applicationId,
+                name: applicationName,
                 snapshotGeneration: summary.generation,
                 triggeredBy,
               }),
@@ -178,7 +178,6 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
             message.success(snapUi.ROLLBACK_SUCCESS);
             void dispatch(
               fetchApplicationSnapshotsThunk({
-                applicationId,
                 snapshotRefs: detailSnapshots.length > 0 ? detailSnapshots : undefined,
               }),
             );
@@ -190,7 +189,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
         },
       });
     },
-    [applicationId, detailSnapshots, dispatch, snapUi],
+    [applicationName, detailSnapshots, dispatch, snapUi],
   );
 
   const compareButtonDisabled = compareMode && compareKeys.length === 1;
