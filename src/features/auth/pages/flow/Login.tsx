@@ -31,7 +31,7 @@ const Login: React.FC = () => {
   const [orphanedInfo, setOrphanedInfo] = useState<OrphanedPasskeysInfo | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
-  const googleClientId = globalConfig.data?.oidc?.googleClientId;
+  const googleClientID = globalConfig.data?.oidc?.googleClientID;
   const navigate = useNavigate();
   const { message } = AntdApp.useApp();
 
@@ -121,9 +121,9 @@ const Login: React.FC = () => {
   };
 
   const handleGoogleLogin = () => {
-    if (!googleClientId) return;
+    if (!googleClientID) return;
     setGoogleLoading(true);
-    redirectToGoogle(googleClientId);
+    redirectToGoogle(googleClientID);
   };
 
   return (
@@ -136,7 +136,7 @@ const Login: React.FC = () => {
             subtitle={LOGIN_CONSTANTS.UI.SUBTITLE}
           />
           <LoginForm form={form} loading={loading} onFinish={handleLogin} />
-          {googleClientId && (
+          {googleClientID && (
             <>
               <Divider plain>{LOGIN_CONSTANTS.UI.GOOGLE_OR_SEPARATOR}</Divider>
               <Button

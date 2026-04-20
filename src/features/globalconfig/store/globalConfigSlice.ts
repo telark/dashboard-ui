@@ -6,7 +6,7 @@ import type { ResourceDetailsResponse } from '../../../interfaces/http';
 
 export type GlobalConfigModel = {
   ai?: { enabled?: boolean; provider?: string; apiKey?: string };
-  oidc?: { enabled?: boolean; googleClientId?: string };
+  oidc?: { enabled?: boolean; googleClientID?: string };
   excludedNamespaces?: string[];
   userSettings?: { fetchIntervalSeconds?: number };
   snapshots?: { maxPerApp?: number };
