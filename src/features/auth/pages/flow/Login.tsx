@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, App as AntdApp, Button, Divider } from 'antd';
 import { LoginOutlined, GoogleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   performLogin,
   cleanupOrphanedPasskeys,
@@ -18,8 +19,8 @@ import {
   AuthFooter,
   OrphanedPasskeysModal,
 } from '../../components';
-
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
+import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
+import type { AppDispatch } from '../../../../store';
 
 const Login: React.FC = () => {
   const [form] = Form.useForm();
@@ -28,8 +29,17 @@ const Login: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [orphanedInfo, setOrphanedInfo] = useState<OrphanedPasskeysInfo | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
+  const globalConfig = useSelector(selectGlobalConfigState);
+  const googleClientId = globalConfig.data?.oidc?.googleClientId;
   const navigate = useNavigate();
   const { message } = AntdApp.useApp();
+
+  useEffect(() => {
+    if (!globalConfig.initialized && !globalConfig.loading) {
+      dispatch(fetchGlobalConfigThunk());
+    }
+  }, [dispatch, globalConfig.initialized, globalConfig.loading]);
 
   const handleLogin = async (values: { username: string }) => {
     setLoading(true);
@@ -111,9 +121,9 @@ const Login: React.FC = () => {
   };
 
   const handleGoogleLogin = () => {
-    if (!GOOGLE_CLIENT_ID) return;
+    if (!googleClientId) return;
     setGoogleLoading(true);
-    redirectToGoogle(GOOGLE_CLIENT_ID);
+    redirectToGoogle(googleClientId);
   };
 
   return (
@@ -126,7 +136,7 @@ const Login: React.FC = () => {
             subtitle={LOGIN_CONSTANTS.UI.SUBTITLE}
           />
           <LoginForm form={form} loading={loading} onFinish={handleLogin} />
-          {GOOGLE_CLIENT_ID && (
+          {googleClientId && (
             <>
               <Divider plain>{LOGIN_CONSTANTS.UI.GOOGLE_OR_SEPARATOR}</Divider>
               <Button
