@@ -7,7 +7,7 @@ import type { SessionDetails } from '../../../../../features/auth/models/session
 
 const { LABELS } = SECURITY_SECTION_CONSTANTS;
 
-const SESSION_GRID_COLUMNS = '1fr 140px 140px 100px';
+const SESSION_GRID_COLUMNS = '2fr 1fr 140px 140px 100px';
 
 const tableHeaderStyle: React.CSSProperties = {
   display: 'grid',
@@ -65,6 +65,7 @@ const SessionsTable: React.FC<SessionsTableProps> = memo(
     <div>
       <div style={tableHeaderStyle}>
         <span>{LABELS.ACTIVE_SESSIONS_HEADER_DEVICE}</span>
+        <span>{LABELS.ACTIVE_SESSIONS_HEADER_BROWSER}</span>
         <span>{LABELS.ACTIVE_SESSIONS_HEADER_CREATED}</span>
         <span>{LABELS.ACTIVE_SESSIONS_HEADER_EXPIRES}</span>
         <span />
@@ -82,7 +83,19 @@ const SessionsTable: React.FC<SessionsTableProps> = memo(
           const isCurrent = session.sessionToken === currentToken;
           return (
             <div key={session.sessionToken} style={rowStyle}>
-              <span>{isCurrent ? LABELS.SESSIONS_THIS_DEVICE : LABELS.SESSIONS_OTHER_SESSION}</span>
+              <span>
+                <div style={{ fontWeight: isCurrent ? 600 : undefined }}>
+                  {session.device || (isCurrent ? LABELS.SESSIONS_THIS_DEVICE : LABELS.SESSIONS_OTHER_SESSION)}
+                </div>
+                {session.os && (
+                  <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, marginTop: 2 }}>
+                    {session.os}
+                  </div>
+                )}
+              </span>
+              <span style={{ fontSize: 13 }}>
+                {session.browser || '—'}
+              </span>
               <span>
                 <TimeAgo date={session.createdTimestamp} />
               </span>

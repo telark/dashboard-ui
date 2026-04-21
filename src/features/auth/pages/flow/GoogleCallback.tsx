@@ -6,6 +6,7 @@ import { setSessionToken } from '../../utils/session/token';
 import { setCurrentUser } from '../../utils/session/user';
 import { validateSession } from '../../utils/session/validation';
 import { fetchUserById } from '../../../access-and-permissions/users/clients/fetch';
+import { getClientMetadata } from '../../utils/device/metadata';
 import { APP_ROUTES } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 
@@ -28,7 +29,8 @@ const GoogleCallback: React.FC = () => {
       return;
     }
 
-    oidcGoogleCallback(idToken)
+    const { browser, device, os, userAgent } = getClientMetadata();
+    oidcGoogleCallback({ idToken, browser, device, os, userAgent })
       .then(async (res) => {
         const wrapped = res as unknown as { data: { sessionToken: string; email: string } };
         const token = wrapped?.data?.sessionToken;

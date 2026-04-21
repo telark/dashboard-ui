@@ -1,3 +1,5 @@
+import type { DeviceMetadata } from './device';
+
 export interface Session {
   token: string;
   userId: string;
@@ -5,11 +7,12 @@ export interface Session {
   expiresAt: string;
 }
 
-export interface SessionDetails {
+export interface SessionDetails extends DeviceMetadata {
   createdTimestamp: string;
   expiresTimestamp: string;
   sessionToken: string;
   userId: string;
+  ipAddress?: string;
 }
 
 export interface SessionDetailsResponse {

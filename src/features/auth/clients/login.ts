@@ -5,6 +5,7 @@ import type {
   LoginStartResponse,
   LoginFinishRequest,
   LoginFinishResponse,
+  DeviceMetadata,
 } from '../models';
 
 export interface OIDCCallbackResponse {
@@ -28,10 +29,14 @@ export const loginFinish = async (request: LoginFinishRequest): Promise<LoginFin
   });
 };
 
-export const oidcGoogleCallback = async (idToken: string): Promise<OIDCCallbackResponse> => {
+export interface OIDCCallbackRequest extends DeviceMetadata {
+  idToken: string;
+}
+
+export const oidcGoogleCallback = async (request: OIDCCallbackRequest): Promise<OIDCCallbackResponse> => {
   const { path, method } = Endpoints.AUTH.OIDC.GOOGLE.CALLBACK;
   return await Client<OIDCCallbackResponse>(authApiClient, path, {
     method,
-    data: { idToken },
+    data: request,
   });
 };

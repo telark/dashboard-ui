@@ -1,5 +1,5 @@
 export { loginStart, loginFinish, oidcGoogleCallback } from './login';
-export type { OIDCCallbackResponse } from './login';
+export type { OIDCCallbackResponse, OIDCCallbackRequest } from './login';
 export { registerStart, registerFinish } from './register';
 export { logout } from './logout';
 export { getSessionsList, getSessionDetails, deleteSession } from './session';
