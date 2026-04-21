@@ -22,7 +22,9 @@ message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX
 const AppContent: React.FC = () => {
   const location = useLocation();
   const isAuthRoute =
-    location.pathname === APP_ROUTES.LOGIN || location.pathname === APP_ROUTES.REGISTER;
+    location.pathname === APP_ROUTES.LOGIN ||
+    location.pathname === APP_ROUTES.REGISTER ||
+    location.pathname === APP_ROUTES.GOOGLE_CALLBACK;
   const isAuthenticated = hasSessionToken();
   const dispatch: AppDispatch = useDispatch();
   const hasClusterInsight = useSelector((s: RootState) => s.insights.hasClusterInsight);
