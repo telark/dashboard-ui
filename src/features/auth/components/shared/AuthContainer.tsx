@@ -33,7 +33,7 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({ children, leftPane
               width: '320px',
               height: '320px',
               borderRadius: '50%',
-              background: 'rgba(32, 201, 151, 0.06)',
+              background: 'rgba(255, 255, 255, 0.03)',
               pointerEvents: 'none',
             }}
           />
@@ -45,7 +45,7 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({ children, leftPane
               width: '240px',
               height: '240px',
               borderRadius: '50%',
-              background: 'rgba(32, 201, 151, 0.04)',
+              background: 'rgba(255, 255, 255, 0.02)',
               pointerEvents: 'none',
             }}
           />

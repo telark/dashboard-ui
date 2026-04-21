@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Form, App as AntdApp, Button, Divider } from 'antd';
-import { GoogleOutlined, LockOutlined } from '@ant-design/icons';
+import { GoogleOutlined, KeyOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -11,7 +11,6 @@ import {
 import { redirectToGoogle } from '../../utils/flow/google';
 import { APP_ROUTES } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
-import { DEFAULT_COLORS } from '../../../../constants';
 import {
   LoginForm,
   AuthContainer,
@@ -31,27 +30,28 @@ const BrandPanel: React.FC = () => (
           width: '38px',
           height: '38px',
           borderRadius: '10px',
-          background: DEFAULT_COLORS.SUCCESS,
+          background: 'rgba(255,255,255,0.12)',
+          border: '1px solid rgba(255,255,255,0.15)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           flexShrink: 0,
         }}
       >
-        <LockOutlined style={{ fontSize: '18px', color: '#fff' }} />
+        <LockOutlined style={{ fontSize: '16px', color: '#e2e8f0' }} />
       </div>
-      <span style={{ fontSize: '18px', fontWeight: 700, letterSpacing: '-0.3px', color: '#f1f5f9' }}>
+      <span style={{ fontSize: '17px', fontWeight: 700, letterSpacing: '-0.2px', color: '#f1f5f9' }}>
         {LOGIN_CONSTANTS.UI.BRAND_NAME}
       </span>
     </div>
 
     <h2
       style={{
-        fontSize: '34px',
+        fontSize: '32px',
         fontWeight: 700,
-        lineHeight: 1.2,
-        margin: '0 0 20px',
-        color: '#f1f5f9',
+        lineHeight: 1.25,
+        margin: '0 0 16px',
+        color: '#f8fafc',
         letterSpacing: '-0.8px',
       }}
     >
@@ -78,14 +78,16 @@ const BrandPanel: React.FC = () => (
         <div key={feature} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div
             style={{
-              width: '6px',
-              height: '6px',
+              width: '5px',
+              height: '5px',
               borderRadius: '50%',
-              background: DEFAULT_COLORS.SUCCESS,
+              background: 'rgba(255,255,255,0.35)',
               flexShrink: 0,
             }}
           />
-          <span style={{ fontSize: '13px', color: '#94a3b8' }}>{feature}</span>
+          <span style={{ fontSize: '13px', color: '#94a3b8', letterSpacing: '0.1px' }}>
+            {feature}
+          </span>
         </div>
       ))}
     </div>
@@ -99,6 +101,7 @@ const Login: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [orphanedInfo, setOrphanedInfo] = useState<OrphanedPasskeysInfo | null>(null);
+  const [showPasskeyForm, setShowPasskeyForm] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
   const googleClientID = globalConfig.data?.oidc?.googleClientID;
@@ -194,6 +197,8 @@ const Login: React.FC = () => {
     redirectToGoogle(googleClientID);
   };
 
+  const isAnyLoading = loading || googleLoading;
+
   return (
     <>
       <AuthContainer leftPanel={<BrandPanel />}>
@@ -205,7 +210,6 @@ const Login: React.FC = () => {
 
           {googleClientID && (
             <Button
-              type="primary"
               icon={<GoogleOutlined />}
               onClick={handleGoogleLogin}
               loading={googleLoading}
@@ -215,12 +219,12 @@ const Login: React.FC = () => {
               style={{
                 height: '44px',
                 borderRadius: '10px',
-                fontSize: '15px',
-                fontWeight: 600,
-                background: DEFAULT_COLORS.SUCCESS,
-                borderColor: DEFAULT_COLORS.SUCCESS,
-                boxShadow: '0 2px 8px rgba(32, 201, 151, 0.25)',
-                marginBottom: '4px',
+                fontSize: '14px',
+                fontWeight: 500,
+                background: '#ffffff',
+                borderColor: '#d1d5db',
+                color: '#374151',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
               }}
             >
               {googleLoading
@@ -233,17 +237,50 @@ const Login: React.FC = () => {
             <Divider
               plain
               style={{
-                color: '#94a3b8',
-                fontSize: '12px',
+                color: '#cbd5e1',
+                fontSize: '11px',
                 margin: '20px 0',
-                borderColor: '#e2e8f0',
+                borderColor: '#f1f5f9',
               }}
             >
               {LOGIN_CONSTANTS.UI.GOOGLE_OR_SEPARATOR}
             </Divider>
           )}
 
-          <LoginForm form={form} loading={loading} onFinish={handleLogin} />
+          {!showPasskeyForm ? (
+            <Button
+              icon={<KeyOutlined />}
+              onClick={() => setShowPasskeyForm(true)}
+              disabled={isAnyLoading}
+              block
+              size="large"
+              style={{
+                height: '44px',
+                borderRadius: '10px',
+                fontSize: '14px',
+                fontWeight: 500,
+                background: '#f8fafc',
+                borderColor: '#e2e8f0',
+                color: '#475569',
+              }}
+            >
+              {LOGIN_CONSTANTS.UI.BUTTON_TEXT}
+            </Button>
+          ) : (
+            <LoginForm form={form} loading={loading} onFinish={handleLogin} />
+          )}
+
+          <p
+            style={{
+              textAlign: 'center',
+              fontSize: '11px',
+              color: '#94a3b8',
+              margin: '20px 0 0',
+              lineHeight: 1.5,
+            }}
+          >
+            Secure authentication via passkeys and OIDC · No passwords stored
+          </p>
 
           <AuthFooter
             text={LOGIN_CONSTANTS.UI.FOOTER_TEXT}

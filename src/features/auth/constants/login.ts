@@ -84,8 +84,8 @@ export const LOGIN_CONSTANTS = {
     GOOGLE_BUTTON_LOADING: 'Redirecting to Google...',
     GOOGLE_OR_SEPARATOR: 'or',
     BRAND_NAME: 'Platform',
-    BRAND_HEADLINE: 'Secure access for your workspace',
-    BRAND_TAGLINE: 'Passwordless, fast, and built for teams.',
+    BRAND_HEADLINE: 'Identity layer for your Kubernetes workloads',
+    BRAND_TAGLINE: 'Passwordless access. No credentials to leak.',
   },
   OIDC: {
     GOOGLE_SCOPE: 'openid email',
