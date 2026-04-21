@@ -25,6 +25,26 @@ export const fetchUsers = async (silent = false) => {
   }
 };
 
+export const fetchUserByEmail = async (email: string, silent = false) => {
+  try {
+    const config = silent
+      ? {
+          headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK },
+        }
+      : {};
+    return await Client<ResourceDetailsResponse<User>>(
+      exporterApiClient,
+      Endpoints.USERS.GET_BY_EMAIL(email).path,
+      config,
+    );
+  } catch (error) {
+    if (!silent) {
+      logger.error(USER_ERROR_MESSAGES.CLIENT.FETCH_USER_DETAILS_FAILED, error);
+    }
+    throw error;
+  }
+};
+
 export const fetchUserById = async (userId: string, silent = false) => {
   try {
     const config = silent

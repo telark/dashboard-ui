@@ -6,8 +6,10 @@ import {
   CURRENT_USER_UPDATED_EVENT,
   handleUserLogout,
   hasSessionToken,
+  validateSession,
 } from '../../../../auth/utils';
 import { fetchCurrentUserDetails } from '../../utils';
+import { fetchUserById } from '../../clients/fetch';
 import { createUserMenuItems } from './UserMenuItems';
 import UserAvatar from './UserAvatar';
 import { APP_ROUTES, HEADER_CONSTANTS } from '../../../../../constants';
@@ -27,9 +29,17 @@ const UserAvatarDropdown: React.FC = memo(() => {
       if (isDevelopment()) {
         logger.warn(HEADER_CONSTANTS.USER.WARNINGS.MISSING_USER_DATA);
       }
-    }
-
-    if (initialUser?.id) {
+      // Self-heal: token exists but user not in localStorage (e.g. after OIDC login)
+      validateSession()
+        .then((result) => {
+          if (result.isValid && result.sessionDetails?.userId) {
+            return fetchUserById(result.sessionDetails.userId, true).then((res) => {
+              if (res?.data) setCurrentUser(res.data);
+            });
+          }
+        })
+        .catch(() => {});
+    } else if (initialUser?.id) {
       fetchCurrentUserDetails((user) => {
         setCurrentUser(user);
       });

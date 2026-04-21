@@ -105,7 +105,8 @@ export const ROLE_PATHS = {
 export const USER_PATHS = {
   CREATE: 'create',
   GET_ALL: 'get',
-  GET_BY_ID: (id: string) => `${id}/get`,
+  GET_BY_ID: (id: string) => `findbyid/${id}/get`,
+  GET_BY_EMAIL: (email: string) => `findbyemail/${email}/get`,
   PATCH_BY_ID: (id: string) => `${id}/patch`,
   DELETE_BY_ID: (id: string) => `${id}/delete`,
 } as const;
