@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import { Tooltip } from 'antd';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { isSessionExpired } from '../../../../../features/auth/utils/session/validation';
@@ -6,6 +7,22 @@ import { SECURITY_SECTION_CONSTANTS } from '../constants';
 import type { SessionDetails } from '../../../../../features/auth/models/session';
 
 const { LABELS } = SECURITY_SECTION_CONSTANTS;
+
+const formatBrowser = (browser: string): string =>
+  browser.replace(/\s+[\d][\d.]*.*$/, '').trim() || browser;
+
+const formatDevice = (device: string): string => {
+  if (/^mac/i.test(device)) return 'Mac';
+  if (/^win/i.test(device)) return 'Windows';
+  if (/^linux/i.test(device)) return 'Linux';
+  return device;
+};
+
+const formatOS = (os: string): string => {
+  if (os.toLowerCase().startsWith('macos')) return 'macOS';
+  const stripped = os.replace(/\s+\d+\.\d+(\.\d+)*$/, '').trim();
+  return stripped || os;
+};
 
 const SESSION_GRID_COLUMNS = '2fr 1fr 140px 140px 100px';
 
@@ -85,16 +102,29 @@ const SessionsTable: React.FC<SessionsTableProps> = memo(
             <div key={session.sessionToken} style={rowStyle}>
               <span>
                 <div style={{ fontWeight: isCurrent ? 600 : undefined }}>
-                  {session.deviceMetadata?.device || (isCurrent ? LABELS.SESSIONS_THIS_DEVICE : LABELS.SESSIONS_OTHER_SESSION)}
+                  {session.deviceMetadata?.device
+                    ? formatDevice(session.deviceMetadata.device)
+                    : isCurrent ? LABELS.SESSIONS_THIS_DEVICE : LABELS.SESSIONS_OTHER_SESSION}
                 </div>
                 {session.deviceMetadata?.os && (
                   <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, marginTop: 2 }}>
-                    {session.deviceMetadata.os}
+                    {formatOS(session.deviceMetadata.os)}
                   </div>
                 )}
               </span>
               <span style={{ fontSize: 13 }}>
-                {session.deviceMetadata?.browser || '—'}
+                {session.deviceMetadata?.browser ? (
+                  <Tooltip
+                    title={session.deviceMetadata.userAgent || undefined}
+                    placement="topLeft"
+                  >
+                    <span style={{ cursor: session.deviceMetadata.userAgent ? 'help' : undefined }}>
+                      {formatBrowser(session.deviceMetadata.browser)}
+                    </span>
+                  </Tooltip>
+                ) : (
+                  '—'
+                )}
               </span>
               <span>
                 <TimeAgo date={session.createdTimestamp} />
