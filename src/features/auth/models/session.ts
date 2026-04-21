@@ -7,12 +7,13 @@ export interface Session {
   expiresAt: string;
 }
 
-export interface SessionDetails extends DeviceMetadata {
+export interface SessionDetails {
   createdTimestamp: string;
   expiresTimestamp: string;
   sessionToken: string;
   userId: string;
   ipAddress?: string;
+  deviceMetadata?: DeviceMetadata;
 }
 
 export interface SessionDetailsResponse {

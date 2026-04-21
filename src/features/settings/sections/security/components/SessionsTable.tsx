@@ -85,16 +85,16 @@ const SessionsTable: React.FC<SessionsTableProps> = memo(
             <div key={session.sessionToken} style={rowStyle}>
               <span>
                 <div style={{ fontWeight: isCurrent ? 600 : undefined }}>
-                  {session.device || (isCurrent ? LABELS.SESSIONS_THIS_DEVICE : LABELS.SESSIONS_OTHER_SESSION)}
+                  {session.deviceMetadata?.device || (isCurrent ? LABELS.SESSIONS_THIS_DEVICE : LABELS.SESSIONS_OTHER_SESSION)}
                 </div>
-                {session.os && (
+                {session.deviceMetadata?.os && (
                   <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, marginTop: 2 }}>
-                    {session.os}
+                    {session.deviceMetadata.os}
                   </div>
                 )}
               </span>
               <span style={{ fontSize: 13 }}>
-                {session.browser || '—'}
+                {session.deviceMetadata?.browser || '—'}
               </span>
               <span>
                 <TimeAgo date={session.createdTimestamp} />
