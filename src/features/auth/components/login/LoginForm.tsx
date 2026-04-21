@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Button, FormInstance } from 'antd';
-import { LoginOutlined, UserOutlined } from '@ant-design/icons';
+import { KeyOutlined, UserOutlined } from '@ant-design/icons';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { DEFAULT_COLORS } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
@@ -18,34 +18,35 @@ export const LoginForm: React.FC<LoginFormProps> = ({ form, loading, onFinish })
       <Form.Item
         name="username"
         rules={[{ required: true, message: AUTH_ERROR_MESSAGES.MISSING_USERNAME }]}
-        style={{ marginBottom: '24px' }}
+        style={{ marginBottom: '16px' }}
       >
         <Input
-          prefix={<UserOutlined style={{ color: '#999' }} />}
+          prefix={<UserOutlined style={{ color: '#94a3b8' }} />}
           placeholder={LOGIN_CONSTANTS.UI.USERNAME_PLACEHOLDER}
           style={{
-            height: '48px',
-            borderRadius: '8px',
+            height: '44px',
+            borderRadius: '10px',
             fontSize: '15px',
+            borderColor: '#e2e8f0',
           }}
         />
       </Form.Item>
 
       <Form.Item style={{ marginBottom: 0 }}>
         <Button
-          type="primary"
           htmlType="submit"
           loading={loading}
           block
-          icon={<LoginOutlined />}
+          icon={<KeyOutlined />}
+          size="large"
           style={{
-            height: '48px',
-            borderRadius: '8px',
-            fontSize: '15px',
+            height: '44px',
+            borderRadius: '10px',
+            fontSize: '14px',
             fontWeight: 500,
-            background: DEFAULT_COLORS.SUCCESS,
-            border: 'none',
-            boxShadow: '0 4px 12px rgba(32, 201, 151, 0.3)',
+            color: DEFAULT_COLORS.SUCCESS,
+            borderColor: DEFAULT_COLORS.SUCCESS,
+            background: 'transparent',
           }}
         >
           {loading ? LOGIN_CONSTANTS.UI.BUTTON_LOADING : LOGIN_CONSTANTS.UI.BUTTON_TEXT}
