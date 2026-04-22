@@ -9,6 +9,7 @@ export interface ToolbarButtonConfig {
   variant?: 'default' | 'primary' | 'ghost' | 'danger';
   active?: boolean;
   disabled?: boolean;
+  tooltip?: string;
   dropdown?: {
     items: MenuProps['items'];
     onItemClick?: (key: string) => void;

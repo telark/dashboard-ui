@@ -3,11 +3,6 @@ export const APP_CONFIGS = {
     TOP: 72,
     MAX_COUNT: 3,
   },
-  WELCOME: {
-    DURATION: 3000, // 3 seconds
-    STORAGE_KEY: 'WELCOME_PENDING',
-    STORAGE_VALUE: '1',
-  },
   LAYOUT: {
     MIN_HEIGHT: '100vh',
     HEIGHT: '100vh',
@@ -18,15 +13,14 @@ export const APP_CONFIGS = {
 
 export const APP_ROUTES = {
   HOME: '/',
+  // auth
   LOGIN: '/login',
   REGISTER: '/register',
   PASSKEYS: '/passkeys',
-  GROUPERS: '/groupers',
-  GROUPER_DETAILS: '/groupers/:name/details',
-  WORKLOADS: '/workloads',
-  APP_WORKLOAD_DETAILS: '/workloads/apps/:name/details',
-  BRIDGES: '/bridges',
-  BRIDGE_DETAILS: '/bridges/:name/details',
+  GOOGLE_CALLBACK: '/auth/google/callback',
+  // resources
+  APPLICATIONS: '/applications',
+  APPLICATION_DETAILS: '/applications/:name/details',
   // access-and-permissions
   ROLES: '/management/roles',
   USERS: '/management/users',

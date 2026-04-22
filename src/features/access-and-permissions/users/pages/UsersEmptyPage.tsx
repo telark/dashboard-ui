@@ -17,10 +17,12 @@ const UsersEmptyPage: React.FC<UsersEmptyPageProps> = memo(({ onCreateUserClick 
     <EmptyState
       title={UC.LABELS.MESSAGES.NO_USERS_TITLE}
       description={UC.LABELS.MESSAGES.NO_USERS_DESCRIPTION}
-      buttonText={UC.LABELS.TOOLBAR.CREATE.BUTTON_LABEL}
-      buttonIcon={buttonIcon}
-      onButtonClick={onCreateUserClick}
       icon={icon}
+      primaryAction={{
+        label: UC.LABELS.TOOLBAR.CREATE.BUTTON_LABEL,
+        icon: buttonIcon,
+        onClick: onCreateUserClick,
+      }}
     />
   );
 });

@@ -1,98 +1,141 @@
+// Used by: users, groups, roles
+// Primary color and button shape mirrored from login page (see audit)
+// Zero hardcoded values except where login page itself uses hardcoded values
 import React, { memo } from 'react';
-import { PrimaryButton } from '../buttons';
-import { BUTTON_TEXTS } from '../../../constants';
+import { Button, Typography, theme } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+
+const { useToken } = theme;
+const { Title, Text } = Typography;
 
 export interface EmptyStateProps {
+  icon: React.ReactNode;
   title: string;
   description: string;
-  buttonText: string;
-  buttonIcon?: React.ReactNode;
-  onButtonClick: () => void;
-  buttonLoading?: boolean;
-  buttonDisabled?: boolean;
-  icon?: React.ReactNode;
-  iconColor?: string;
-  iconBackground?: string;
+  primaryAction: {
+    label: string;
+    icon?: React.ReactNode;
+    onClick: () => void;
+  };
+  secondaryAction?: {
+    label: string;
+    onClick: () => void;
+  };
+  className?: string;
 }
 
 const EmptyState: React.FC<EmptyStateProps> = memo(
-  ({
-    title,
-    description,
-    buttonText,
-    buttonIcon,
-    onButtonClick,
-    buttonLoading = false,
-    buttonDisabled = false,
-    icon,
-    iconColor = '#10b981',
-  }) => {
+  ({ icon, title, description, primaryAction, secondaryAction, className }) => {
+    const { token } = useToken();
+
+    // Mirrors LoginForm.tsx passkey button exactly — CSS var with same fallback
+    const buttonStyle: React.CSSProperties = {
+      height: '44px',
+      borderRadius: '10px',
+      fontSize: '14px',
+      fontWeight: 600,
+      background: 'var(--color-primary, #1e293b)',
+      borderColor: 'var(--color-primary, #1e293b)',
+      color: '#ffffff',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '8px',
+      boxShadow: 'none',
+    };
+
     return (
       <div
+        className={className}
         style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: '100vh',
-          padding: '48px 24px',
+          height: '100%',
+          paddingLeft: token.marginLG,
+          paddingRight: token.marginLG,
           textAlign: 'center',
-          background: 'transparent',
           width: '100%',
         }}
       >
-        {icon && (
+        <div
+          style={{
+            maxWidth: 400,
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
           <div
             style={{
-              width: 64,
-              height: 64,
+              width: 72,
+              height: 72,
               borderRadius: '50%',
-              background: '#fff',
+              background: token.colorFillAlter,
+              border: `1.5px dashed ${token.colorBorderSecondary}`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: iconColor,
-              border: '2px solid rgba(32, 201, 151, 0.35)',
-              marginBottom: 12,
+              color: token.colorTextSecondary,
+              marginBottom: token.marginLG,
+              flexShrink: 0,
             }}
           >
             {icon}
           </div>
-        )}
 
-        <h2
-          style={{
-            fontSize: 24,
-            fontWeight: 700,
-            color: '#0B1F33',
-            margin: 0,
-            marginBottom: 4,
-          }}
-        >
-          {title}
-        </h2>
+          <Title
+            level={4}
+            style={{
+              color: token.colorTextHeading,
+              fontWeight: 600,
+              marginBottom: token.marginXS,
+              marginTop: 0,
+            }}
+          >
+            {title}
+          </Title>
 
-        <p
-          style={{
-            fontSize: 14,
-            color: '#5B6B7C',
-            margin: 0,
-            marginBottom: 16,
-            maxWidth: 480,
-            lineHeight: 1.6,
-          }}
-        >
-          {description}
-        </p>
+          <Text
+            style={{
+              color: token.colorTextDescription,
+              maxWidth: 320,
+              display: 'block',
+              textAlign: 'center',
+              lineHeight: 1.65,
+              fontSize: 14, // mirrors login page LoginForm.tsx hardcoded value
+              marginBottom: token.marginLG,
+            }}
+          >
+            {description}
+          </Text>
 
-        <PrimaryButton
-          action={buttonText}
-          onClick={onButtonClick}
-          icon={buttonIcon}
-          loading={buttonLoading}
-          loadingLabel={BUTTON_TEXTS.LOADING}
-          disabled={buttonDisabled}
-        />
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              gap: token.marginSM,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={primaryAction.onClick}
+              style={buttonStyle}
+            >
+              {primaryAction.label}
+            </Button>
+            {secondaryAction && (
+              <Button type="default" onClick={secondaryAction.onClick} style={buttonStyle}>
+                {secondaryAction.label}
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
     );
   },

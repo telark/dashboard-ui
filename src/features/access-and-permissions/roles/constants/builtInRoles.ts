@@ -11,18 +11,6 @@ export const BUILT_IN_ROLES: Omit<RoleFormData, 'id' | 'creationDate' | 'lastUpd
     categoryID: '', // Will be set during initialization with platform category ID
     scopesAndPermissions: [
       {
-        scope: 'Workloads',
-        level: PERMISSION_LEVEL.READ_ONLY,
-      },
-      {
-        scope: 'Groupers',
-        level: PERMISSION_LEVEL.READ_ONLY,
-      },
-      {
-        scope: 'Bridges',
-        level: PERMISSION_LEVEL.READ_ONLY,
-      },
-      {
         scope: 'Users',
         level: PERMISSION_LEVEL.READ_ONLY,
       },
@@ -63,18 +51,6 @@ export const BUILT_IN_ROLES: Omit<RoleFormData, 'id' | 'creationDate' | 'lastUpd
     categoryID: '', // Will be set during initialization with platform category ID
     scopesAndPermissions: [
       {
-        scope: 'Workloads',
-        level: PERMISSION_LEVEL.CONTRIBUTOR,
-      },
-      {
-        scope: 'Groupers',
-        level: PERMISSION_LEVEL.CONTRIBUTOR,
-      },
-      {
-        scope: 'Bridges',
-        level: PERMISSION_LEVEL.CONTRIBUTOR,
-      },
-      {
         scope: 'Users',
         level: PERMISSION_LEVEL.READ_ONLY,
       },
@@ -114,18 +90,6 @@ export const BUILT_IN_ROLES: Omit<RoleFormData, 'id' | 'creationDate' | 'lastUpd
     type: VALUES.ROLE_TYPE_BUILT_IN,
     categoryID: '', // Will be set during initialization with platform category ID
     scopesAndPermissions: [
-      {
-        scope: 'Workloads',
-        level: PERMISSION_LEVEL.OWNER,
-      },
-      {
-        scope: 'Groupers',
-        level: PERMISSION_LEVEL.OWNER,
-      },
-      {
-        scope: 'Bridges',
-        level: PERMISSION_LEVEL.OWNER,
-      },
       {
         scope: 'Users',
         level: PERMISSION_LEVEL.OWNER,

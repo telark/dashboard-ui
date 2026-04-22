@@ -1,8 +1,6 @@
 export const MENU_LABELS = {
   HOME: 'Home',
-  GROUPERS: 'Groupers',
-  BRIDGES: 'Bridges',
-  WORKLOADS: 'Workloads',
+  APPLICATIONS: 'Applications',
   USERS: 'Members',
   GROUPS: 'Groups',
   ROLES: 'Roles',

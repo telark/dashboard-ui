@@ -52,16 +52,19 @@ export const validateSession = async (): Promise<SessionValidationResult> => {
     const axiosError = error as AxiosError & { normalized?: { status: number; message: string } };
 
     // Check if the error is a 410 Gone (session expired) response
+    const unknownError = error as { status?: number; message?: string };
     const status =
-      axiosError.normalized?.status || axiosError.response?.status || (error as any)?.status;
+      axiosError.normalized?.status || axiosError.response?.status || unknownError?.status;
     const isExpiredStatus = status === HTTP_STATUS.GONE;
+    // 404 = session CRD deleted (revoked or logged out from another device) — treat as terminal
+    const isDeletedStatus = status === HTTP_STATUS.NOT_FOUND;
     const errorMessage =
-      axiosError.normalized?.message || axiosError.message || (error as any)?.message || '';
+      axiosError.normalized?.message || axiosError.message || unknownError?.message || '';
     const isExpiredMessage =
       errorMessage.toLowerCase().includes('session') &&
       errorMessage.toLowerCase().includes('expired');
 
-    if (isExpiredStatus || isExpiredMessage) {
+    if (isExpiredStatus || isDeletedStatus || isExpiredMessage) {
       return {
         isValid: false,
         isExpired: true,

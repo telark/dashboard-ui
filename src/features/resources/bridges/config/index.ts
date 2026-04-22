@@ -1,1 +1,0 @@
-export { createBridgeViewConfig } from './bridgeViewConfig';

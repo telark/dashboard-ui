@@ -20,6 +20,7 @@ export interface ActionConfirmModalProps {
   loading?: boolean;
   danger?: boolean;
   icon?: React.ReactNode;
+  customMessage?: React.ReactNode;
   /** Shifts the modal's centering leftward by this many px (useful when a side panel is open) */
   offsetRight?: number;
   /** Override the portal container; defaults to false (inline). Pass () => document.body for viewport centering. */
@@ -39,6 +40,7 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
   loading = false,
   danger = true,
   icon,
+  customMessage,
   offsetRight,
   getContainer = false,
 }) => {
@@ -89,7 +91,12 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
       >
         <ActionIcon icon={actionIcon} />
         <ActionTitle title={title} />
-        <ActionMessage action={action} resourceName={resourceName} resourceType={resourceType} />
+        <ActionMessage
+          action={action}
+          resourceName={resourceName}
+          resourceType={resourceType}
+          customMessage={customMessage}
+        />
         <ActionButtons
           cancelText={cancelText}
           confirmText={confirmText || ''}

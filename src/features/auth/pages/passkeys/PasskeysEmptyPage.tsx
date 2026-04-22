@@ -17,10 +17,12 @@ const PasskeysEmptyPage: React.FC<PasskeysEmptyPageProps> = memo(({ onCreatePass
     <EmptyState
       title={PPC.LABELS.EMPTY.TITLE}
       description={PPC.LABELS.EMPTY.DESCRIPTION}
-      buttonText={PPC.LABELS.EMPTY.BUTTON}
-      buttonIcon={buttonIcon}
-      onButtonClick={onCreatePasskeyClick}
       icon={icon}
+      primaryAction={{
+        label: PPC.LABELS.EMPTY.BUTTON,
+        icon: buttonIcon,
+        onClick: onCreatePasskeyClick,
+      }}
     />
   );
 });

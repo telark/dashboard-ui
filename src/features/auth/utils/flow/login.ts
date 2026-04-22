@@ -12,6 +12,7 @@ import { AUTH_SUCCESS_MESSAGES, AUTH_ERROR_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { HTTP_STATUS } from '../../../../constants/rest/http';
 import { handleAuthError } from '../shared/errors';
+import { getClientMetadata } from '../device/metadata';
 import type { LoginStartResponse, AuthenticatorAssertionResponse } from '../../models';
 import type { MessageInstance } from 'antd/es/message/interface';
 
@@ -19,6 +20,7 @@ export const prepareLoginFinishRequest = (
   username: string,
   credential: { id: string; rawId: string; response: AuthenticatorAssertionResponse; type: string },
 ) => {
+  const { browser, device, os, userAgent } = getClientMetadata();
   return {
     username,
     id: credential.id,
@@ -30,6 +32,10 @@ export const prepareLoginFinishRequest = (
       userHandle: credential.response.userHandle || null,
     },
     type: credential.type,
+    browser,
+    device,
+    os,
+    userAgent,
   };
 };
 

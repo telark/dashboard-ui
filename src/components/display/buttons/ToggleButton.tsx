@@ -2,6 +2,8 @@ import React from 'react';
 import { Tooltip } from 'antd';
 import { DEFAULT_COLORS } from '../../../constants';
 
+type ToggleButtonVariant = 'success' | 'neutral';
+
 interface ToggleButtonProps {
   active: boolean;
   onClick: () => void;
@@ -9,9 +11,28 @@ interface ToggleButtonProps {
   icon?: React.ReactNode;
   disabled?: boolean;
   tooltip?: string;
+  /** `success` matches manage-role toggles; `neutral` uses grey active state. */
+  variant?: ToggleButtonVariant;
 }
 
-const ACTIVE_COLOR = DEFAULT_COLORS.SUCCESS;
+function paletteForVariant(variant: ToggleButtonVariant) {
+  if (variant === 'neutral') {
+    return {
+      activeBg: `${DEFAULT_COLORS.TEXT_MUTED}22`,
+      activeColor: DEFAULT_COLORS.TEXT_PRIMARY,
+      activeBorder: `${DEFAULT_COLORS.BORDER_HOVER}`,
+      inactiveColor: DEFAULT_COLORS.TEXT_MUTED,
+      hoverAccent: DEFAULT_COLORS.TEXT_PRIMARY,
+    };
+  }
+  return {
+    activeBg: `${DEFAULT_COLORS.SUCCESS}18`,
+    activeColor: DEFAULT_COLORS.SUCCESS,
+    activeBorder: `${DEFAULT_COLORS.SUCCESS}40`,
+    inactiveColor: '#64748b',
+    hoverAccent: DEFAULT_COLORS.SUCCESS,
+  };
+}
 
 const ToggleButton: React.FC<ToggleButtonProps> = ({
   active,
@@ -20,7 +41,9 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
   icon,
   disabled = false,
   tooltip,
+  variant = 'success',
 }) => {
+  const p = paletteForVariant(variant);
   const baseStyle: React.CSSProperties = {
     all: 'unset',
     cursor: disabled ? 'not-allowed' : 'pointer',
@@ -34,22 +57,22 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
     fontFamily: "'Roboto Condensed', sans-serif",
     transition: 'all 0.2s',
     opacity: disabled ? 0.6 : 1,
-    backgroundColor: active ? `${ACTIVE_COLOR}18` : 'transparent',
-    color: active ? ACTIVE_COLOR : '#64748b',
-    border: active ? `1px solid ${ACTIVE_COLOR}40` : '1px solid transparent',
+    backgroundColor: active ? p.activeBg : 'transparent',
+    color: active ? p.activeColor : p.inactiveColor,
+    border: active ? `1px solid ${p.activeBorder}` : '1px solid transparent',
     boxSizing: 'border-box',
   };
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled || active) return;
     e.currentTarget.style.backgroundColor = DEFAULT_COLORS.HOVER_BG;
-    e.currentTarget.style.color = ACTIVE_COLOR;
+    e.currentTarget.style.color = p.hoverAccent;
   };
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled || active) return;
     e.currentTarget.style.backgroundColor = 'transparent';
-    e.currentTarget.style.color = '#64748b';
+    e.currentTarget.style.color = p.inactiveColor;
   };
 
   return (

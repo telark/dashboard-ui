@@ -5,6 +5,11 @@ import { FancySpinner, AnimatedPageWrapper } from '../components/animation';
 import { FeatureErrorBoundary } from '../components/error-boundary';
 import { APP_ROUTES } from '../constants';
 import { hasSessionToken } from '../features/auth/utils';
+import store from '../store';
+import {
+  stopAllSyncRetries,
+  syncRetryFromState,
+} from '../features/resources/applications/utils/management/syncRetry';
 
 // home
 const Dashboard = lazy(() => import('../features/home/pages/Dashboard'));
@@ -12,23 +17,14 @@ const Dashboard = lazy(() => import('../features/home/pages/Dashboard'));
 // auth
 const Login = lazy(() => import('../features/auth/pages/flow/Login'));
 const Register = lazy(() => import('../features/auth/pages/flow/Register'));
+const GoogleCallback = lazy(() => import('../features/auth/pages/flow/GoogleCallback'));
 
 // resources
-const GroupersGlobalView = lazy(
-  () => import('../features/resources/groupers/pages/main/GlobalView'),
+const ApplicationsGlobalView = lazy(
+  () => import('../features/resources/applications/pages/main/GlobalView'),
 );
-const GrouperDetailsView = lazy(
-  () => import('../features/resources/groupers/pages/details/DetailsView'),
-);
-const BridgesGlobalView = lazy(() => import('../features/resources/bridges/pages/main/GlobalView'));
-const BridgeDetailsView = lazy(
-  () => import('../features/resources/bridges/pages/details/DetailsView'),
-);
-const WorkloadsGlobalView = lazy(
-  () => import('../features/resources/workloads/pages/main/GlobalView'),
-);
-const AppWorkloadDetailsView = lazy(
-  () => import('../features/resources/workloads/pages/details/apps/DetailsView'),
+const ApplicationDetailsView = lazy(
+  () => import('../features/resources/applications/pages/details/DetailsView'),
 );
 
 // access-and-permissions
@@ -71,6 +67,19 @@ const AppRoutes: React.FC = () => {
     });
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (!isApplicationsRoute(location.pathname)) {
+      stopAllSyncRetries();
+      return;
+    }
+    syncRetryFromState();
+    const unsubscribe = store.subscribe(syncRetryFromState);
+    return () => {
+      unsubscribe();
+      stopAllSyncRetries();
+    };
+  }, [location.pathname]);
+
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes location={location}>
@@ -82,6 +91,7 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.REGISTER}
           element={isAuthenticated ? <Navigate to={APP_ROUTES.HOME} replace /> : <Register />}
         />
+        <Route path={APP_ROUTES.GOOGLE_CALLBACK} element={<GoogleCallback />} />
         <Route
           path={APP_ROUTES.HOME}
           element={
@@ -91,66 +101,22 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path={APP_ROUTES.GROUPERS}
+          path={APP_ROUTES.APPLICATIONS}
           element={
             <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Groupers">
-                <GroupersGlobalView />
+              <FeatureErrorBoundary featureName="Applications">
+                <ApplicationsGlobalView />
               </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />
         <Route
-          path={APP_ROUTES.GROUPER_DETAILS}
+          path={APP_ROUTES.APPLICATION_DETAILS}
           element={
             <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Grouper Details">
+              <FeatureErrorBoundary featureName="Application Details">
                 <AnimatedPageWrapper>
-                  <GrouperDetailsView />
-                </AnimatedPageWrapper>
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.BRIDGES}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Bridges">
-                <BridgesGlobalView />
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.BRIDGE_DETAILS}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Bridge Details">
-                <AnimatedPageWrapper>
-                  <BridgeDetailsView />
-                </AnimatedPageWrapper>
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.WORKLOADS}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Workloads">
-                <WorkloadsGlobalView />
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.APP_WORKLOAD_DETAILS}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Workload Details">
-                <AnimatedPageWrapper>
-                  <AppWorkloadDetailsView />
+                  <ApplicationDetailsView />
                 </AnimatedPageWrapper>
               </FeatureErrorBoundary>
             </ProtectedRoute>
@@ -217,7 +183,7 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path={APP_ROUTES.SETTINGS}
+          path={`${APP_ROUTES.SETTINGS}/*`}
           element={
             <ProtectedRoute>
               <FeatureErrorBoundary featureName="Settings">
@@ -246,3 +212,7 @@ const AppRoutes: React.FC = () => {
 };
 
 export default AppRoutes;
+
+function isApplicationsRoute(pathname: string): boolean {
+  return pathname === APP_ROUTES.APPLICATIONS || pathname.startsWith(`${APP_ROUTES.APPLICATIONS}/`);
+}

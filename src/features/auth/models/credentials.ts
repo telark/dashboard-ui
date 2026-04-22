@@ -5,6 +5,7 @@ import type {
   AttestationConveyancePreference,
   AuthenticatorTransport,
 } from './types';
+import type { DeviceMetadata } from './device';
 import type { User } from '../../access-and-permissions/users/models';
 
 export interface PublicKeyCredentialRequestOptions {
@@ -86,7 +87,7 @@ export interface LoginStartResponse {
   userId?: string;
 }
 
-export interface LoginFinishRequest {
+export interface LoginFinishRequest extends DeviceMetadata {
   username: string;
   id: string;
   rawId: string;

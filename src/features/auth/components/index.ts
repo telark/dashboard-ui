@@ -23,6 +23,7 @@ export { RegisterForm } from './register/RegisterForm';
 export { default as ProtectedRoute } from './routes/ProtectedRoute';
 
 // Shared
+export { PasskeyIcon } from './shared/PasskeyIcon';
 export { AuthContainer } from './shared/AuthContainer';
 export { AuthCard } from './shared/AuthCard';
 export { AuthHeader } from './shared/AuthHeader';

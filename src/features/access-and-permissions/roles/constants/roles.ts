@@ -196,9 +196,6 @@ export const ROLES_CONSTANTS = {
     SUBTITLE: 'Define what areas this role can access and at what level.',
     LOCKED_MESSAGE: 'Scopes and permissions are locked for this role.',
     DEFAULT_AREAS: [
-      { key: 'groupers', label: 'Groupers' },
-      { key: 'workloads', label: 'Workloads' },
-      { key: 'bridges', label: 'Bridges' },
       { key: 'groups', label: 'Groups' },
       { key: 'users', label: 'Users' },
       { key: 'roles', label: 'Roles' },

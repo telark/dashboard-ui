@@ -4,20 +4,19 @@ interface AuthCardProps {
   children: React.ReactNode;
 }
 
-export const AuthCard: React.FC<AuthCardProps> = ({ children }) => {
-  return (
-    <div
-      style={{
-        background: '#ffffff',
-        padding: '40px',
-        borderRadius: '16px',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-        width: '100%',
-        maxWidth: '420px',
-        border: '1px solid #e5e7eb',
-      }}
-    >
-      {children}
-    </div>
-  );
-};
+export const AuthCard: React.FC<AuthCardProps> = ({ children }) => (
+  <div
+    style={{
+      background: 'var(--auth-card-bg, #ffffff)',
+      padding: '32px 28px',
+      borderRadius: '14px',
+      boxShadow:
+        'var(--auth-card-shadow, 0 20px 60px rgba(15,23,42,0.10), 0 4px 16px rgba(15,23,42,0.06))',
+      width: '100%',
+      maxWidth: '420px',
+      border: '1px solid var(--auth-card-border, #e2e8f0)',
+    }}
+  >
+    {children}
+  </div>
+);
