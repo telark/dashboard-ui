@@ -3,6 +3,18 @@ export const UI = {
     MAX_CONTENT_WIDTH: 980,
     PAGE_PADDING: 24,
   },
+  HEADER: {
+    LAST_UPDATE_PREFIX: 'Last update was',
+  },
+  HISTORY: {
+    FULL_TITLE: 'Full History',
+    RECORDING: 'Recording…',
+    TIMELINE: {
+      HALO_SIZE_LAST: 20,
+      MARKER_SIZE: 16,
+      RAIL_WIDTH: 1,
+    },
+  },
 } as const;
 
 // Component-specific styles for better performance
@@ -254,6 +266,35 @@ export const COMPONENT_STYLES = {
         display: 'flex',
         flexDirection: 'column',
         gap: 12,
+      },
+    },
+  },
+  // Page styles
+  PAGES: {
+    GROUPERS: {
+      pageStyle: {
+        background: '#f8fafc', // DEFAULT_COLORS.PAGE_BG
+        minHeight: 'calc(100vh - 60px)',
+        padding: '48px 24px 24px',
+        marginTop: '60px',
+      },
+      gridStyle: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+      },
+    },
+    BRIDGES: {
+      pageStyle: {
+        background: '#f8fafc', // DEFAULT_COLORS.PAGE_BG
+        minHeight: 'calc(100vh - 60px)',
+        padding: '48px 24px 24px',
+        marginTop: '60px',
+      },
+      gridStyle: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
       },
     },
   },

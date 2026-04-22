@@ -19,8 +19,7 @@ const Dashboard: React.FC = () => {
           gap: 16,
           alignItems: 'stretch',
         }}
-      >
-      </div>
+      ></div>
     </div>
   );
 };

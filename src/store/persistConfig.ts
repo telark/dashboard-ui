@@ -4,7 +4,7 @@ import type { PersistConfig } from 'redux-persist';
 export const rootPersistConfig: PersistConfig<any> = {
   key: 'root',
   storage,
-  whitelist: ['insights', 'applications', 'retry'],
+  whitelist: ['applications', 'retry'],
 };
 
 export const applicationsPersistConfig: PersistConfig<any> = {
@@ -23,12 +23,6 @@ export const applicationsPersistConfig: PersistConfig<any> = {
     'currentPage',
     'appliedFilters',
   ],
-};
-
-export const insightsPersistConfig: PersistConfig<any> = {
-  key: 'insights',
-  storage,
-  whitelist: ['hasClusterInsight', 'initialized'],
 };
 
 export const retryPersistConfig: PersistConfig<any> = {

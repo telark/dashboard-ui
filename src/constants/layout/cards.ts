@@ -95,7 +95,6 @@ export const CARD_STATES = {
   },
 } as const;
 
-
 export const CARD_TRANSITIONS = {
   HOVER: 'all 180ms ease',
   CARD: 'transform 0.2s ease-in-out',
