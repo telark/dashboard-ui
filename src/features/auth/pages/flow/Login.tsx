@@ -320,15 +320,10 @@ const Login: React.FC = () => {
       border-color: var(--auth-card-border, #e2e8f0) !important;
       box-shadow: none !important;
     }
+    .auth-root .ant-btn,
     .auth-root .ant-btn:focus,
     .auth-root .ant-btn:hover,
-    .auth-root .ant-btn:active,
-    .auth-root .ant-btn-primary:focus,
-    .auth-root .ant-btn-primary:hover,
-    .auth-root .ant-btn-primary:active,
-    .auth-root .ant-btn-default:focus,
-    .auth-root .ant-btn-default:hover,
-    .auth-root .ant-btn-default:active {
+    .auth-root .ant-btn:active {
       box-shadow: none !important;
     }
   `;
