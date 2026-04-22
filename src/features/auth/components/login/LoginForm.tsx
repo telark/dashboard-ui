@@ -1,6 +1,5 @@
 import React from 'react';
 import { Form, Input, Button, Alert, FormInstance } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { PasskeyIcon } from '../shared/PasskeyIcon';
@@ -28,7 +27,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       style={{ marginBottom: '12px' }}
     >
       <Input
-        prefix={<UserOutlined style={{ color: '#94a3b8' }} />}
         placeholder={LOGIN_CONSTANTS.UI.USERNAME_PLACEHOLDER}
         autoFocus
         style={{
@@ -62,11 +60,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           justifyContent: 'center',
           gap: '8px',
         }}
-        icon={
-          !loading ? (
-            <PasskeyIcon size={16} color="#ffffff" />
-          ) : undefined
-        }
+        icon={!loading ? <PasskeyIcon size={16} color="#ffffff" /> : undefined}
       >
         {loading ? LOGIN_CONSTANTS.UI.BUTTON_LOADING : 'Authenticate'}
       </Button>

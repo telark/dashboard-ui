@@ -311,6 +311,28 @@ const Login: React.FC = () => {
       }
     `;
 
+  const inputOverrideCSS = `
+    .auth-root .ant-input:hover,
+    .auth-root .ant-input:focus,
+    .auth-root .ant-input-outlined:hover,
+    .auth-root .ant-input-outlined:focus,
+    .auth-root .ant-input-outlined:focus-within {
+      border-color: var(--auth-card-border, #e2e8f0) !important;
+      box-shadow: none !important;
+    }
+    .auth-root .ant-btn:focus,
+    .auth-root .ant-btn:hover,
+    .auth-root .ant-btn:active,
+    .auth-root .ant-btn-primary:focus,
+    .auth-root .ant-btn-primary:hover,
+    .auth-root .ant-btn-primary:active,
+    .auth-root .ant-btn-default:focus,
+    .auth-root .ant-btn-default:hover,
+    .auth-root .ant-btn-default:active {
+      box-shadow: none !important;
+    }
+  `;
+
   const terminalAnimCSS = `
     .auth-terminal-line-2 { opacity: 0; animation: authFadeUp 0.4s ease 0.9s forwards; }
     .auth-terminal-line-3 { opacity: 0; animation: authFadeUp 0.4s ease 1.9s forwards; }
@@ -325,9 +347,11 @@ const Login: React.FC = () => {
   return (
     <>
       <style>{cssVars}</style>
+      <style>{inputOverrideCSS}</style>
       <style>{terminalAnimCSS}</style>
 
       <ConfigProvider
+        wave={{ disabled: true }}
         theme={{
           algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
           token: isDark ? DARK_TOKENS : LIGHT_TOKENS,
@@ -433,8 +457,7 @@ const Login: React.FC = () => {
                     background: '#ffffff',
                     borderColor: '#dadce0',
                     color: '#3c4043',
-                    boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
-                    display: 'flex',
+                      display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '8px',
