@@ -5,8 +5,7 @@ import type { Plugin } from 'vite';
 import { visualizer } from 'rollup-plugin-visualizer';
 
 const VENDOR_CHUNK_MAPPINGS: Array<{ patterns: string[]; chunkName: string }> = [
-  { patterns: ['react', 'react-dom', 'scheduler'], chunkName: 'react-vendor' },
-  { patterns: ['antd', '@ant-design'], chunkName: 'antd-vendor' },
+  { patterns: ['react', 'react-dom', 'scheduler', 'antd', '@ant-design'], chunkName: 'ui-vendor' },
   { patterns: ['redux', '@reduxjs'], chunkName: 'redux-vendor' },
   { patterns: ['react-router'], chunkName: 'router-vendor' },
   { patterns: ['react-icons'], chunkName: 'icons-vendor' },
@@ -14,7 +13,6 @@ const VENDOR_CHUNK_MAPPINGS: Array<{ patterns: string[]; chunkName: string }> = 
   { patterns: ['framer-motion'], chunkName: 'animation-vendor' },
   { patterns: ['axios'], chunkName: 'http-vendor' },
 ];
-
 const getVendorChunkName = (id: string): string => {
   for (const { patterns, chunkName } of VENDOR_CHUNK_MAPPINGS) {
     if (patterns.some((pattern) => id.includes(pattern))) {

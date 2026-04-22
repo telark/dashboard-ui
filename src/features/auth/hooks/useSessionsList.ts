@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { getSessionsList, getSessionDetails, deleteSession } from '../clients';
+import { getSessionsList, getSessionDetails, deleteSession } from '../clients/session';
 import { getSessionToken } from '../utils/session/token';
 import { getCurrentUser } from '../utils/session/user';
 import type { SessionDetails } from '../models/session';
