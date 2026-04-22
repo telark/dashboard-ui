@@ -2,7 +2,7 @@ import React from 'react';
 import { DatePicker as AntDatePicker } from 'antd';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
-import '../../../styles/DatePicker.css';
+import '../../../styles/datePicker.css';
 import { getDisabledTimeForFutureDates } from '../../../utils/layout';
 
 export interface DatePickerProps {
