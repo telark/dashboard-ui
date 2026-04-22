@@ -1,13 +1,16 @@
+# syntax=docker/dockerfile:1
+
 # Stage 1: build cluster bundle
-FROM node:25.9.0-alpine3.23 AS builder
+FROM node:24-alpine3.23 AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci --prefer-offline
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci
 COPY . .
 RUN npm run build:cluster
 
 # Stage 2: serve via nginx
-FROM nginx:1.29-alpine3.23
+FROM nginx:1.30-alpine3.23
 
 LABEL org.opencontainers.image.title="plsyro-ui" \
       org.opencontainers.image.licenses="proprietary" \
