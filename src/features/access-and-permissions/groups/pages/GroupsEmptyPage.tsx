@@ -24,10 +24,12 @@ const GroupsEmptyPage: React.FC<GroupsEmptyPageProps> = memo(
         <EmptyState
           title={GC.LABELS.MESSAGES.NO_GROUPS_TITLE}
           description={GC.LABELS.MESSAGES.NO_GROUPS_DESCRIPTION}
-          buttonText={GC.LABELS.FORM.BUTTON_TEXT}
-          buttonIcon={buttonIcon}
-          onButtonClick={onCreateGroupClick}
           icon={icon}
+          primaryAction={{
+            label: GC.LABELS.FORM.BUTTON_TEXT,
+            icon: buttonIcon,
+            onClick: onCreateGroupClick,
+          }}
         />
         {createPanelOpen && (
           <CreateGroupPanel open={createPanelOpen} onClose={onCloseCreatePanel} form={createForm} />
