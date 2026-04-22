@@ -59,6 +59,7 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV || 'development'),
       __DEV__: env.NODE_ENV !== 'production',
+      __IN_CLUSTER__: JSON.stringify(mode === 'cluster'),
     },
     resolve: {
       alias: {
@@ -101,7 +102,7 @@ export default defineConfig(({ mode }) => {
       ],
       exclude: ['@dicebear/core'],
     },
-    base: './',
+    base: mode === 'cluster' ? '/' : './',
     server: {
       open: '/',
       hmr: true,
