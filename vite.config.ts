@@ -13,6 +13,7 @@ const VENDOR_CHUNK_MAPPINGS: Array<{ patterns: string[]; chunkName: string }> = 
   { patterns: ['framer-motion'], chunkName: 'animation-vendor' },
   { patterns: ['axios'], chunkName: 'http-vendor' },
 ];
+
 const getVendorChunkName = (id: string): string => {
   for (const { patterns, chunkName } of VENDOR_CHUNK_MAPPINGS) {
     if (patterns.some((pattern) => id.includes(pattern))) {
@@ -80,14 +81,10 @@ export default defineConfig(({ mode }) => {
           entryFileNames: 'assets/[name]-[hash].js',
           assetFileNames: 'assets/[name]-[hash].[ext]',
           manualChunks: (id) => {
-            if (!id.includes('node_modules')) return undefined;
-            if (id.includes('@dicebear')) return undefined;
-            if (id.includes('redux') || id.includes('@reduxjs')) return 'redux-vendor';
-            if (id.includes('react-router')) return 'router-vendor';
-            if (id.includes('date-fns') || id.includes('react-timeago')) return 'date-vendor';
-            if (id.includes('framer-motion')) return 'animation-vendor';
-            if (id.includes('axios')) return 'http-vendor';
-            return 'vendor';
+            if (id.includes('node_modules')) {
+              if (id.includes('@dicebear')) return undefined;
+              return getVendorChunkName(id);
+            }
           },
         },
       },
