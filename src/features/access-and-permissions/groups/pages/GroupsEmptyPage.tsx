@@ -10,7 +10,7 @@ const GroupIcon = Icons.Group;
 interface GroupsEmptyPageProps {
   createPanelOpen: boolean;
   onCloseCreatePanel: () => void;
-  onCreateGroupClick: () => void;
+  onCreateGroupClick?: () => void;
   createForm: FormInstance;
 }
 
@@ -25,11 +25,15 @@ const GroupsEmptyPage: React.FC<GroupsEmptyPageProps> = memo(
           title={GC.LABELS.MESSAGES.NO_GROUPS_TITLE}
           description={GC.LABELS.MESSAGES.NO_GROUPS_DESCRIPTION}
           icon={icon}
-          primaryAction={{
-            label: GC.LABELS.FORM.BUTTON_TEXT,
-            icon: buttonIcon,
-            onClick: onCreateGroupClick,
-          }}
+          primaryAction={
+            onCreateGroupClick
+              ? {
+                  label: GC.LABELS.FORM.BUTTON_TEXT,
+                  icon: buttonIcon,
+                  onClick: onCreateGroupClick,
+                }
+              : undefined
+          }
         />
         {createPanelOpen && (
           <CreateGroupPanel open={createPanelOpen} onClose={onCloseCreatePanel} form={createForm} />

@@ -38,6 +38,7 @@ interface UseRoleListPageConfigOptions {
   handleViewRole: (role: Role) => void;
   handleEditRole: (role: Role) => void;
   onCreateRoleClick: () => void;
+  canCreateRole?: boolean;
   onFilterClick?: () => void;
   onAddCategoryClick?: () => void;
   onEditCategory?: (category: Category) => void;
@@ -64,6 +65,7 @@ export const useRoleListPageConfig = ({
   handleViewRole,
   handleEditRole,
   onCreateRoleClick,
+  canCreateRole = true,
   onFilterClick,
   onAddCategoryClick,
   onEditCategory,
@@ -92,6 +94,7 @@ export const useRoleListPageConfig = ({
     onSearchChange,
     onSearchSubmit,
     onCreateRoleClick,
+    canCreateRole,
     onFilterClick,
     onAddCategoryClick,
   });

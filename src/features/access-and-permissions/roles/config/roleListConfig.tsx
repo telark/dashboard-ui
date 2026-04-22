@@ -17,6 +17,7 @@ interface UseRoleListConfigProps {
   onSearchChange: (value: string) => void;
   onSearchSubmit?: () => void;
   onCreateRoleClick: () => void;
+  canCreateRole?: boolean;
   onFilterClick?: () => void;
   onAddCategoryClick?: () => void;
 }
@@ -28,6 +29,7 @@ export const useRoleListConfig = ({
   onSearchChange,
   onSearchSubmit,
   onCreateRoleClick,
+  canCreateRole = true,
   onFilterClick,
   onAddCategoryClick,
 }: UseRoleListConfigProps) => {
@@ -77,6 +79,7 @@ export const useRoleListConfig = ({
               icon: <RoleIcon size={14} />,
               variant: 'primary' as const,
               onClick: onCreateRoleClick,
+              disabled: !canCreateRole,
             },
           ],
     };
@@ -86,6 +89,7 @@ export const useRoleListConfig = ({
     onSearchChange,
     onSearchSubmit,
     onCreateRoleClick,
+    canCreateRole,
     onFilterClick,
     onViewModeChange,
     onAddCategoryClick,

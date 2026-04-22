@@ -20,6 +20,7 @@ interface UseGroupListConfigProps {
   viewMode?: 'groups' | 'categories';
   onViewModeChange?: (mode: 'groups' | 'categories') => void;
   onCreateGroupClick?: () => void;
+  canCreateGroup?: boolean;
   onAddCategoryClick?: () => void;
   selectedGroupsCount?: number;
   onBulkDeleteClick?: () => void;
@@ -35,6 +36,7 @@ export const useGroupListConfig = ({
   viewMode = 'groups',
   onViewModeChange,
   onCreateGroupClick,
+  canCreateGroup = true,
   onAddCategoryClick,
   selectedGroupsCount = 0,
   onBulkDeleteClick,
@@ -127,6 +129,7 @@ export const useGroupListConfig = ({
               icon: <GroupIcon size={14} />,
               variant: 'primary' as const,
               onClick: () => onCreateGroupClick?.(),
+              disabled: !canCreateGroup,
             },
           ],
     };
@@ -134,6 +137,7 @@ export const useGroupListConfig = ({
     viewMode,
     onViewModeChange,
     onCreateGroupClick,
+    canCreateGroup,
     onAddCategoryClick,
     selectedGroupsCount,
     onBulkDeleteClick,

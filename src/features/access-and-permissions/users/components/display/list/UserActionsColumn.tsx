@@ -1,7 +1,10 @@
 import React from 'react';
+import { Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../../../../constants';
+import { useHasPermission } from '../../../../../auth/hooks';
 import { useUserDeleteModal, UserDeleteModal } from '../../delete';
+import { USERS_CONSTANTS as UC } from '../../../constants';
 import type { User } from '../../../models';
 
 interface UserActionsColumnProps {
@@ -10,19 +13,32 @@ interface UserActionsColumnProps {
   onDelete?: (record: User) => void;
 }
 
-const actionButtonStyle: React.CSSProperties = {
+const ACTION_SIZE = 28;
+
+const actionButtonStyle = (disabled: boolean): React.CSSProperties => ({
   all: 'unset',
-  cursor: 'pointer',
+  cursor: disabled ? 'not-allowed' : 'pointer',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  color: DEFAULT_COLORS.TEXT_MUTED,
+  color: disabled ? DEFAULT_COLORS.ICON_MUTED : DEFAULT_COLORS.TEXT_MUTED,
   fontSize: 16,
-  width: 28,
-  height: 28,
+  width: ACTION_SIZE,
+  height: ACTION_SIZE,
   borderRadius: 4,
-  transition: 'all 0.2s',
+  transition: 'color 0.2s, opacity 0.2s',
   outline: 'none',
+  opacity: disabled ? 0.6 : 1,
+  pointerEvents: disabled ? 'none' : 'auto',
+});
+
+const actionWrapperStyle: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: ACTION_SIZE,
+  height: ACTION_SIZE,
+  flexShrink: 0,
 };
 
 export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
@@ -30,12 +46,24 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
   onEdit,
   onDelete,
 }) => {
+  const hasEditPermission = useHasPermission('users', 'Contributor', 'users.edituser.deny');
+  const hasDeletePermission = useHasPermission('users', 'Contributor', 'users.deleteuser.deny');
+  const canEdit = hasEditPermission && !!onEdit;
+  const canDelete = hasDeletePermission;
+
   const { deleteModalOpen, isDeleting, openDeleteModal, closeDeleteModal, handleConfirmDelete } =
     useUserDeleteModal(record);
+
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!canEdit) return;
+    onEdit?.(record);
+  };
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
+    if (!canDelete) return;
     if (onDelete) {
       onDelete(record);
     } else {
@@ -52,33 +80,50 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
         gap: 8,
       }}
     >
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onEdit?.(record);
-        }}
-        style={actionButtonStyle}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'transparent';
-        }}
+      <Tooltip
+        title={canEdit ? UC.LABELS.ACTIONS.EDIT : UC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP}
+        placement="left"
       >
-        <EditOutlined />
-      </button>
-      <button
-        onClick={handleDeleteClick}
-        style={actionButtonStyle}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'transparent';
-        }}
+        <span style={actionWrapperStyle}>
+          <button
+            type="button"
+            onClick={handleEditClick}
+            style={actionButtonStyle(!canEdit)}
+            disabled={!canEdit}
+            onMouseEnter={(e) => {
+              if (canEdit) e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent';
+            }}
+            aria-label={UC.LABELS.ACTIONS.EDIT}
+          >
+            <EditOutlined />
+          </button>
+        </span>
+      </Tooltip>
+      <Tooltip
+        title={canDelete ? UC.LABELS.ACTIONS.DELETE : UC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP}
+        placement="left"
       >
-        <DeleteOutlined />
-      </button>
+        <span style={actionWrapperStyle}>
+          <button
+            type="button"
+            onClick={handleDeleteClick}
+            style={actionButtonStyle(!canDelete)}
+            disabled={!canDelete}
+            onMouseEnter={(e) => {
+              if (canDelete) e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent';
+            }}
+            aria-label={UC.LABELS.ACTIONS.DELETE}
+          >
+            <DeleteOutlined />
+          </button>
+        </span>
+      </Tooltip>
       {!onDelete && (
         <UserDeleteModal
           open={deleteModalOpen}

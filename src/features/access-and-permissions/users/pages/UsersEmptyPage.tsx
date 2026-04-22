@@ -6,7 +6,7 @@ import { Icons } from '../../../../constants';
 const UserIcon = Icons.User;
 
 interface UsersEmptyPageProps {
-  onCreateUserClick: () => void;
+  onCreateUserClick?: () => void;
 }
 
 const UsersEmptyPage: React.FC<UsersEmptyPageProps> = memo(({ onCreateUserClick }) => {
@@ -18,11 +18,15 @@ const UsersEmptyPage: React.FC<UsersEmptyPageProps> = memo(({ onCreateUserClick 
       title={UC.LABELS.MESSAGES.NO_USERS_TITLE}
       description={UC.LABELS.MESSAGES.NO_USERS_DESCRIPTION}
       icon={icon}
-      primaryAction={{
-        label: UC.LABELS.TOOLBAR.CREATE.BUTTON_LABEL,
-        icon: buttonIcon,
-        onClick: onCreateUserClick,
-      }}
+      primaryAction={
+        onCreateUserClick
+          ? {
+              label: UC.LABELS.TOOLBAR.CREATE.BUTTON_LABEL,
+              icon: buttonIcon,
+              onClick: onCreateUserClick,
+            }
+          : undefined
+      }
     />
   );
 });

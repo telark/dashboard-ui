@@ -6,7 +6,7 @@ import { groupReducer as groupsReducer } from '../features/access-and-permission
 import { userReducer as usersReducer } from '../features/access-and-permissions/users/store';
 import { categoryReducer as categoriesReducer } from '../features/access-and-permissions/categories/store';
 import { roleReducer as rolesReducer } from '../features/access-and-permissions/roles/store';
-import { passkeyReducer } from '../features/auth/store';
+import { passkeyReducer, permissionsReducer } from '../features/auth/store';
 import { retryReducer } from '../features/shared/retry';
 import {
   applicationsPersistConfig,
@@ -30,6 +30,7 @@ const store = configureStore({
     categories: categoriesReducer,
     roles: rolesReducer,
     passkeys: passkeyReducer,
+    permissions: permissionsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

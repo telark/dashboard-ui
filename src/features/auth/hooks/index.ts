@@ -1,3 +1,7 @@
+// Permissions
+export { useHasPermission } from './permissions/useHasPermission';
+export { useInitializePermissions } from './permissions/useInitializePermissions';
+
 // Session
 export { useSessionsList, type UseSessionsListResult } from './useSessionsList';
 

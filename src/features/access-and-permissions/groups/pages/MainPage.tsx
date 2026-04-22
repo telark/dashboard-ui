@@ -8,6 +8,7 @@ import {
   useBulkDeleteGroups,
   useGroupFilters,
 } from '../hooks';
+import { useHasPermission } from '../../../auth/hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { applyGroupFilters, mapCategoriesToFilterOptions } from '../utils';
@@ -21,6 +22,8 @@ import GroupsListPage from './GroupsListPage';
 type ViewMode = 'groups' | 'categories';
 
 const MainPage: React.FC = () => {
+  const canCreateGroup = useHasPermission('groups', 'Contributor', 'groups.creategroup.deny');
+  const canEditGroup = useHasPermission('groups', 'Contributor', 'groups.editgroup.deny');
   const [viewMode, setViewMode] = useState<ViewMode>('groups');
   const [addCategoryPanelOpen, setAddCategoryPanelOpen] = useState(false);
   const [editCategoryPanelOpen, setEditCategoryPanelOpen] = useState(false);
@@ -187,8 +190,9 @@ const MainPage: React.FC = () => {
     paginatedGroups,
     hasSelection,
     handleViewGroup,
-    handleEditClick: openEditPanel,
+    handleEditClick: canEditGroup ? openEditPanel : () => undefined,
     onCreateGroupClick: openCreatePanel,
+    canCreateGroup,
     onAddCategoryClick,
     onEditCategory: openEditCategoryPanel,
     selectedGroupsCount: selectedCount,
@@ -210,7 +214,7 @@ const MainPage: React.FC = () => {
       <GroupsEmptyPage
         createPanelOpen={createPanelOpen}
         onCloseCreatePanel={closeCreatePanel}
-        onCreateGroupClick={openCreatePanel}
+        onCreateGroupClick={canCreateGroup ? openCreatePanel : undefined}
         createForm={createForm}
       />
     );

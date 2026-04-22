@@ -39,6 +39,7 @@ interface UseGroupListPageConfigOptions {
   handleViewGroup: (group: Group) => void;
   handleEditClick: (group: Group) => void;
   onCreateGroupClick: () => void;
+  canCreateGroup?: boolean;
   onAddCategoryClick?: () => void;
   onEditCategory?: (category: Category) => void;
   categories: Category[] | undefined;
@@ -70,6 +71,7 @@ export const useGroupListPageConfig = ({
   handleViewGroup,
   handleEditClick,
   onCreateGroupClick,
+  canCreateGroup = true,
   onAddCategoryClick,
   onEditCategory,
   selectedGroupsCount = 0,
@@ -111,6 +113,7 @@ export const useGroupListPageConfig = ({
     viewMode,
     onViewModeChange: setViewMode,
     onCreateGroupClick,
+    canCreateGroup,
     onAddCategoryClick,
     selectedGroupsCount,
     onBulkDeleteClick,

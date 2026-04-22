@@ -66,7 +66,9 @@ export const USERS_CONSTANTS = {
     ACTIONS: {
       VIEW: 'View',
       EDIT: 'Edit',
+      EDIT_DISABLED_TOOLTIP: 'You do not have permission to edit users',
       DELETE: 'Delete',
+      DELETE_DISABLED_TOOLTIP: 'You do not have permission to delete users',
       MANAGE_ROLES: 'Manage Roles',
       MANAGE_GROUPS: 'Manage Groups',
       DELETE_MODAL_TITLE: 'Delete User',

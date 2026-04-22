@@ -9,6 +9,7 @@ import 'antd/dist/reset.css';
 import { DEFAULT_COLORS, APP_CONFIGS, APP_ROUTES } from './constants';
 import AppRoutes from './routes/AppRoutes';
 import { hasSessionToken, useSessionExpirationCheck } from './features/auth/utils';
+import { useInitializePermissions } from './features/auth/hooks';
 import { useInitializeCategories } from './features/access-and-permissions/categories/hooks';
 import { useInitializeRoles } from './features/access-and-permissions/roles/hooks';
 
@@ -30,9 +31,10 @@ const AppContent: React.FC = () => {
     onSessionExpired: () => setShowSessionExpiredModal(true),
   });
 
-  // Initialize built-in categories and roles when authenticated
+  // Initialize built-in categories, roles, and user permissions when authenticated
   useInitializeCategories(isAuthenticated);
   useInitializeRoles(isAuthenticated);
+  useInitializePermissions(isAuthenticated);
 
   const renderMainContent = () => {
     if (isAuthRoute) {

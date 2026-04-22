@@ -13,6 +13,7 @@ interface UseUserListConfigProps {
   onSearchChange: (value: string) => void;
   onSearchSubmit?: () => void;
   onCreateUserClick: () => void;
+  canCreateUser?: boolean;
   selectedUsersCount?: number;
   onFilterClick?: () => void;
   onBulkDeleteClick?: () => void;
@@ -25,6 +26,7 @@ export const useUserListConfig = ({
   onSearchChange,
   onSearchSubmit,
   onCreateUserClick,
+  canCreateUser = true,
   selectedUsersCount = 0,
   onFilterClick,
   onBulkDeleteClick,
@@ -95,6 +97,7 @@ export const useUserListConfig = ({
           icon: <UserIcon size={14} />,
           variant: 'primary',
           onClick: onCreateUserClick,
+          disabled: !canCreateUser,
         },
       ],
     }),
@@ -103,6 +106,7 @@ export const useUserListConfig = ({
       onSearchChange,
       onSearchSubmit,
       onCreateUserClick,
+      canCreateUser,
       selectedUsersCount,
       onFilterClick,
       onBulkDeleteClick,

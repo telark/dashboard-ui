@@ -50,6 +50,7 @@ export const AUTH_PATHS = {
   OIDC: {
     GOOGLE_CALLBACK: 'auth/oidc/google/callback',
   },
+  PERMISSIONS: 'auth/permissions',
 } as const;
 
 export const CATEGORY_PATHS = {

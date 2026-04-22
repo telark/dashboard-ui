@@ -125,7 +125,7 @@ const AppRoutes: React.FC = () => {
         <Route
           path={APP_ROUTES.ROLES}
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredScope="roles" minimumLevel="ReadOnly">
               <FeatureErrorBoundary featureName="Roles">
                 <RolesMainPage />
               </FeatureErrorBoundary>
@@ -135,7 +135,7 @@ const AppRoutes: React.FC = () => {
         <Route
           path={APP_ROUTES.USERS}
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredScope="users" minimumLevel="ReadOnly">
               <FeatureErrorBoundary key={APP_ROUTES.USERS} featureName="Users">
                 <UsersMainPage />
               </FeatureErrorBoundary>
@@ -145,7 +145,7 @@ const AppRoutes: React.FC = () => {
         <Route
           path={APP_ROUTES.GROUPS}
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredScope="groups" minimumLevel="ReadOnly">
               <FeatureErrorBoundary key={APP_ROUTES.GROUPS} featureName="Groups">
                 <GroupsMainPage />
               </FeatureErrorBoundary>

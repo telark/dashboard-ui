@@ -7,6 +7,8 @@ import { setCurrentUser } from '../../utils/session/user';
 import { validateSession } from '../../utils/session/validation';
 import { fetchUserById } from '../../../access-and-permissions/users/clients/fetch';
 import { getClientMetadata } from '../../utils/device/metadata';
+import { fetchMyPermissionsThunk } from '../../store/thunks/fetchThunks';
+import store from '../../../../store';
 import { APP_ROUTES } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 
@@ -52,6 +54,8 @@ const GoogleCallback: React.FC = () => {
         } catch {
           // non-fatal — avatar self-heals in UserAvatarDropdown
         }
+
+        await store.dispatch(fetchMyPermissionsThunk());
 
         message.success(LOGIN_CONSTANTS.OIDC.CALLBACK_SUCCESS);
         navigate(APP_ROUTES.HOME, { replace: true });

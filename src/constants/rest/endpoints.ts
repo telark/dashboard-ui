@@ -111,6 +111,12 @@ export const Endpoints = {
         },
       },
     },
+    PERMISSIONS: {
+      GET: {
+        path: AUTH_PATHS.PERMISSIONS,
+        method: 'GET',
+      },
+    },
     PASSKEYS: {
       GET_ALL: {
         path: AUTH_PATHS.PASSKEYS.PROXY.GET,

@@ -29,6 +29,7 @@ interface UseUserListPageConfigOptions {
   handleViewUser: (user: User) => void;
   handleEditUser: (user: User) => void;
   onCreateUserClick: () => void;
+  canCreateUser?: boolean;
   onFilterClick?: () => void;
   onBulkDeleteClick?: () => void;
   onManageRoleClick?: () => void;
@@ -52,6 +53,7 @@ export const useUserListPageConfig = ({
   handleViewUser,
   handleEditUser,
   onCreateUserClick,
+  canCreateUser,
   onFilterClick,
   onBulkDeleteClick,
   onManageRoleClick,
@@ -66,6 +68,7 @@ export const useUserListPageConfig = ({
     onSearchChange,
     onSearchSubmit,
     onCreateUserClick,
+    canCreateUser,
     selectedUsersCount: selectedUsers.length,
     onFilterClick,
     onBulkDeleteClick,

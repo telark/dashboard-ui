@@ -6,6 +6,7 @@ import { DEFAULT_COLORS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../constants';
 import { deleteRoleThunk } from '../../../store';
 import { canDeleteRole, canModifyRole } from '../../../utils';
+import { useHasPermission } from '../../../../../auth/hooks';
 import type { AppDispatch } from '../../../../../../store';
 import type { Role } from '../../../models';
 
@@ -49,8 +50,10 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
   onDelete,
 }) => {
   const dispatch: AppDispatch = useDispatch();
-  const canEdit = canModifyRole(record);
-  const canDelete = canDeleteRole(record);
+  const hasEditPermission = useHasPermission('roles', 'Contributor', 'roles.editrole.deny');
+  const hasDeletePermission = useHasPermission('roles', 'Owner', 'roles.deleterole.deny');
+  const canEdit = hasEditPermission && canModifyRole(record);
+  const canDelete = hasDeletePermission && canDeleteRole(record);
 
   const handleEditClick = (e: React.MouseEvent) => {
     e.stopPropagation();

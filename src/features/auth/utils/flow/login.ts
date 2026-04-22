@@ -8,6 +8,8 @@ import {
 } from '../webauthn/extraction';
 import { setSessionToken } from '../session/token';
 import { setCurrentUser } from '../session/user';
+import { fetchMyPermissionsThunk } from '../../store/thunks/fetchThunks';
+import store from '../../../../store';
 import { AUTH_SUCCESS_MESSAGES, AUTH_ERROR_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { HTTP_STATUS } from '../../../../constants/rest/http';
@@ -136,6 +138,8 @@ export const performLogin = async (
       }
       throw error;
     }
+
+    await store.dispatch(fetchMyPermissionsThunk());
 
     messageApi.open({
       type: 'success',

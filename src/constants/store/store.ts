@@ -58,6 +58,9 @@ export const STORE_ACTIONS = {
     UPDATE: 'passkeys/update',
     DELETE: 'passkeys/delete',
   },
+  PERMISSIONS: {
+    FETCH: 'permissions/fetch',
+  },
 } as const;
 
 export const SYNC_MODES = COMMON_VALUES.SYNC_MODES;
@@ -92,6 +95,7 @@ export const STORE_ERRORS = {
   UPDATE_ROLE: 'Failed to update role',
   DELETE_ROLE: 'Failed to delete role',
   FETCH_CATEGORIES: 'Failed to fetch categories',
+  FETCH_PERMISSIONS: 'Failed to fetch permissions',
 } as const;
 
 export const STORE_MESSAGES = {
@@ -124,4 +128,5 @@ export const STORE_MESSAGES = {
   ERROR_UPDATING_ROLE: 'Error updating role:',
   ERROR_DELETING_ROLE: 'Error deleting role:',
   ERROR_FETCHING_CATEGORIES: 'Error fetching categories:',
+  ERROR_FETCHING_PERMISSIONS: 'Error fetching permissions:',
 } as const;

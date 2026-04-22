@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { getCurrentUser } from '../../../auth/utils';
+import { useHasPermission } from '../../../auth/hooks';
 import { useUsers, useUserFilters, useBulkDeleteUsers, useUserListState } from '../hooks';
 import { useUserListPageConfig } from '../hooks/list/useUserListPageConfig';
 import { useUserPanelState } from '../hooks/panels/user/useUserPanelState';
@@ -13,6 +14,8 @@ import UsersListPage from './UsersListPage';
 
 const MainPage: React.FC = () => {
   const { users, loading, error } = useUsers();
+  const canCreateUser = useHasPermission('users', 'Contributor', 'users.createuser.deny');
+  const canEditUser = useHasPermission('users', 'Contributor', 'users.edituser.deny');
   const [searchTerm, setSearchTerm] = useState('');
   const [bulkDeleteModalOpen, setBulkDeleteModalOpen] = useState(false);
 
@@ -131,8 +134,9 @@ const MainPage: React.FC = () => {
     paginatedUsers,
     hasSelection: selectedUsers.length > 0,
     handleViewUser,
-    handleEditUser,
+    handleEditUser: canEditUser ? handleEditUser : () => undefined,
     onCreateUserClick: openCreatePanel,
+    canCreateUser,
     onFilterClick: openFilterPanel,
     onBulkDeleteClick: handleBulkDeleteClick,
     onManageRoleClick: handleManageRolesClick,
@@ -157,7 +161,7 @@ const MainPage: React.FC = () => {
   if (shouldShowEmpty) {
     return (
       <>
-        <UsersEmptyPage onCreateUserClick={openCreatePanel} />
+        <UsersEmptyPage onCreateUserClick={canCreateUser ? openCreatePanel : undefined} />
         {createPanelOpen && (
           <CreateUserPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />
         )}

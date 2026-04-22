@@ -50,7 +50,9 @@ export const GROUPS_CONSTANTS = {
     ACTIONS: {
       VIEW: 'View',
       EDIT: 'Edit',
+      EDIT_DISABLED_TOOLTIP: 'You do not have permission to edit groups',
       DELETE: 'Delete',
+      DELETE_DISABLED_TOOLTIP: 'You do not have permission to delete groups',
       BULK_DELETE: 'Bulk Delete',
       ATTACH_ROLE: 'Attach Role',
       MANAGE_ROLES: 'Manage Roles',
