@@ -22,13 +22,6 @@ export const STORE_ACTIONS = {
     DELETE: 'applications/delete',
     TRIGGER_ROLLBACK: 'applications/triggerRollback',
   },
-  GROUPER: {
-    UPDATE_SYNC: 'grouper/updateGrouperSync',
-    CHECK_MAINTENANCE: 'grouper/checkMaintenanceMode',
-    ENABLE_MAINTENANCE: 'grouper/enableMaintenanceMode',
-    UPDATE_MAINTENANCE: 'grouper/updateMaintenanceMode',
-    REMOVE_MAINTENANCE: 'grouper/removeMaintenanceMode',
-  },
   USERS: {
     FETCH: 'users/fetch',
     FETCH_SILENT: 'users/fetchSilent',

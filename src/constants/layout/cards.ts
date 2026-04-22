@@ -95,22 +95,6 @@ export const CARD_STATES = {
   },
 } as const;
 
-export const CARD_DEFAULTS = {
-  GROUPER: {
-    NAME: 'Unknown',
-    STATUS: CARD_STATES.STATUS.INACTIVE,
-    WORKLOADS: 0,
-    BRIDGES: 0,
-    LAST_UPDATE: '',
-  },
-  BRIDGE: {
-    NAME: 'Unknown',
-    STATUS: CARD_STATES.STATUS.INACTIVE,
-    WORKLOADS: 0,
-    PORTS: 0,
-    LAST_UPDATE: '',
-  },
-} as const;
 
 export const CARD_TRANSITIONS = {
   HOVER: 'all 180ms ease',
