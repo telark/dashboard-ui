@@ -14,6 +14,7 @@ export const SECURITY_SECTION_CONSTANTS = {
       'Devices where you’re currently signed in. You can revoke sessions you don’t recognize.',
     ACTIVE_SESSIONS_EMPTY: 'No other active sessions.',
     ACTIVE_SESSIONS_HEADER_DEVICE: 'Device',
+    ACTIVE_SESSIONS_HEADER_BROWSER: 'Browser',
     ACTIVE_SESSIONS_HEADER_CREATED: 'Created',
     ACTIVE_SESSIONS_HEADER_EXPIRES: 'Expires',
     SESSIONS_THIS_DEVICE: 'This device',

@@ -1,60 +1,5 @@
 import { COMMON_VALUES } from '../shared/common';
 
-export const GROUPER_CARD_TEXTS = {
-  DELETE: {
-    TITLE: 'Delete Grouper',
-    MESSAGE: 'Are you sure you want to delete this grouper? This action cannot be undone.',
-  },
-  BUTTONS: {
-    CONFIRM: 'Confirm',
-    CANCEL: 'Cancel',
-  },
-  POPOVER: {
-    VIEW: 'View Details',
-    SYNC: 'Sync Grouper',
-    DELETE: 'Delete Grouper',
-    INFO: 'Grouper Information',
-  },
-  MAINTENANCE_BADGE: 'Maintenance Mode',
-  LAST_UPDATE_PREFIX: 'Last updated',
-  METRICS: {
-    WORKLOADS: 'Workloads',
-    BRIDGES: 'Bridges',
-  },
-  SYNC: {
-    LOADING: 'Syncing',
-    TIMEOUT_MESSAGE: 'Taking a bit longer than usual. Please try again in a moment.',
-    SUCCESS_DELETE: 'Grouper deleted successfully.',
-  },
-} as const;
-
-export const BRIDGE_CARD_TEXTS = {
-  DELETE: {
-    TITLE: 'Delete Bridge',
-    MESSAGE: 'Are you sure you want to delete this bridge? This action cannot be undone.',
-  },
-  BUTTONS: {
-    CONFIRM: 'Confirm',
-    CANCEL: 'Cancel',
-  },
-  POPOVER: {
-    VIEW: 'View Details',
-    SYNC: 'Sync Bridge',
-    DELETE: 'Delete Bridge',
-    INFO: 'Bridge Information',
-  },
-  LAST_UPDATE_PREFIX: 'Last updated',
-  METRICS: {
-    WORKLOADS: 'Workloads',
-    PORTS: 'Ports',
-  },
-  SYNC: {
-    LOADING: 'Syncing',
-    TIMEOUT_MESSAGE: 'Taking a bit longer than usual. Please try again in a moment.',
-    SUCCESS_DELETE: 'Bridge deleted successfully.',
-  },
-} as const;
-
 export const CARD_CONFIGS = {
   ACTION_CARD: {
     PADDING: '12px 16px',
@@ -147,23 +92,6 @@ export const CARD_STATES = {
   STATUS: COMMON_VALUES.STATUS,
   MAINTENANCE: {
     ACTIVE: 'Active',
-  },
-} as const;
-
-export const CARD_DEFAULTS = {
-  GROUPER: {
-    NAME: 'Unknown',
-    STATUS: CARD_STATES.STATUS.INACTIVE,
-    WORKLOADS: 0,
-    BRIDGES: 0,
-    LAST_UPDATE: '',
-  },
-  BRIDGE: {
-    NAME: 'Unknown',
-    STATUS: CARD_STATES.STATUS.INACTIVE,
-    WORKLOADS: 0,
-    PORTS: 0,
-    LAST_UPDATE: '',
   },
 } as const;
 

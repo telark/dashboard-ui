@@ -22,9 +22,11 @@ export interface SlideOutPanelProps extends Omit<AnimationWrapperProps, 'childre
   sectionTitle?: string;
   sectionSubtitle?: string;
   formContent: React.ReactNode;
-  onSubmit: (values: Record<string, unknown>) => Promise<void> | void;
-  onCancel: () => void;
-  submitButtonText: string;
+  /** Header + scrollable body only; no form wrapper or footer (e.g. read-only viewers). */
+  contentOnly?: boolean;
+  onSubmit?: (values: Record<string, unknown>) => Promise<void> | void;
+  onCancel?: () => void;
+  submitButtonText?: string;
   submitButtonIcon?: React.ReactNode;
   loading?: boolean;
   disabled?: boolean;

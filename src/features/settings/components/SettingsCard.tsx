@@ -50,7 +50,8 @@ const SettingsCard: React.FC<SettingsCardProps> = memo(
             {hasDescription && (
               <p
                 style={{
-                  margin: title.length > 0 ? '4px 0 0' : 0,
+                  margin:
+                    title.length > 0 ? `${CONTENT.CARD_TITLE_TO_DESCRIPTION_GAP_PX}px 0 0` : 0,
                   fontSize: 13,
                   color: DEFAULT_COLORS.TEXT_MUTED,
                   lineHeight: 1.5,

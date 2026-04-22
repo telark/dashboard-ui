@@ -5,9 +5,7 @@ import { Icons, APP_ROUTES, MENU_LABELS } from '../../../constants';
 
 const HomeIcon = Icons.Home;
 const RoleIcon = Icons.Role;
-const GrouperIcon = Icons.Grouper;
-const WorkloadIcon = Icons.Workload;
-const BridgeIcon = Icons.Bridge;
+const ApplicationIcon = Icons.Application;
 const UserIcon = Icons.User;
 const GroupIcon = Icons.Group;
 const ProtectionPlansIcon = Icons.ProtectionPlans;
@@ -32,57 +30,22 @@ export const HomeMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = f
 });
 
 HomeMenuButton.displayName = 'HomeMenuButton';
-
-export const GroupersMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
+export const ApplicationsMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
   const location = useLocation();
   const pathname = location.pathname;
 
   return (
     <SidebarButton
-      text={MENU_LABELS.GROUPERS}
-      icon={<GrouperIcon />}
-      active={pathname.startsWith(APP_ROUTES.GROUPERS)}
-      route={APP_ROUTES.GROUPERS}
+      text={MENU_LABELS.APPLICATIONS}
+      icon={<ApplicationIcon />}
+      active={pathname.startsWith(APP_ROUTES.APPLICATIONS)}
+      route={APP_ROUTES.APPLICATIONS}
       isCollapsed={isCollapsed}
     />
   );
 });
 
-GroupersMenuButton.displayName = 'GroupersMenuButton';
-
-export const BridgesMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
-  const location = useLocation();
-  const pathname = location.pathname;
-
-  return (
-    <SidebarButton
-      text={MENU_LABELS.BRIDGES}
-      icon={<BridgeIcon />}
-      active={pathname.startsWith(APP_ROUTES.BRIDGES)}
-      route={APP_ROUTES.BRIDGES}
-      isCollapsed={isCollapsed}
-    />
-  );
-});
-
-BridgesMenuButton.displayName = 'BridgesMenuButton';
-
-export const WorkloadsMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
-  const location = useLocation();
-  const pathname = location.pathname;
-
-  return (
-    <SidebarButton
-      text={MENU_LABELS.WORKLOADS}
-      icon={<WorkloadIcon />}
-      active={pathname.startsWith(APP_ROUTES.WORKLOADS)}
-      route={APP_ROUTES.WORKLOADS}
-      isCollapsed={isCollapsed}
-    />
-  );
-});
-
-WorkloadsMenuButton.displayName = 'WorkloadsMenuButton';
+ApplicationsMenuButton.displayName = 'ApplicationsMenuButton';
 
 export const UsersMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
   const location = useLocation();

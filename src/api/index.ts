@@ -1,9 +1,9 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import {
   EXPORTER_API,
-  CONFIGURATOR_API,
-  SYNC_MANAGER_API,
+  DISCOVERY_API,
   AUTH_API,
+  ENRICHMENT_API,
   API_TIMEOUT,
   HTTP_HEADERS,
   HEADER_VALUES,
@@ -28,20 +28,20 @@ const exporterApiClient: AxiosInstance = axios.create({
   headers: REQUEST_CONFIG.DEFAULT_HEADERS,
 });
 
-const configuratorApiClient: AxiosInstance = axios.create({
-  baseURL: CONFIGURATOR_API.BASE_URL,
-  timeout: API_TIMEOUT,
-  headers: REQUEST_CONFIG.DEFAULT_HEADERS,
-});
-
-const syncManagerApiClient: AxiosInstance = axios.create({
-  baseURL: SYNC_MANAGER_API.BASE_URL,
+const discoveryApiClient: AxiosInstance = axios.create({
+  baseURL: DISCOVERY_API.BASE_URL,
   timeout: API_TIMEOUT,
   headers: REQUEST_CONFIG.DEFAULT_HEADERS,
 });
 
 const authApiClient: AxiosInstance = axios.create({
   baseURL: AUTH_API.BASE_URL,
+  timeout: API_TIMEOUT,
+  headers: REQUEST_CONFIG.DEFAULT_HEADERS,
+});
+
+const enrichmentApiClient: AxiosInstance = axios.create({
+  baseURL: ENRICHMENT_API.BASE_URL,
   timeout: API_TIMEOUT,
   headers: REQUEST_CONFIG.DEFAULT_HEADERS,
 });
@@ -128,9 +128,9 @@ const createErrorInterceptor = (options: ErrorInterceptorOptions = {}) => {
 };
 
 exporterApiClient.interceptors.response.use(...createErrorInterceptor({ silent404: true }));
-configuratorApiClient.interceptors.response.use(...createErrorInterceptor());
-syncManagerApiClient.interceptors.response.use(...createErrorInterceptor());
+discoveryApiClient.interceptors.response.use(...createErrorInterceptor());
 authApiClient.interceptors.response.use(...createErrorInterceptor());
+enrichmentApiClient.interceptors.response.use(...createErrorInterceptor());
 
 const DEFAULT_CLIENT_CONFIG: AxiosRequestConfig = {
   method: REQUEST_CONFIG.DEFAULT_METHOD,
@@ -145,4 +145,4 @@ export const Client = async <T>(
   return response.data;
 };
 
-export { exporterApiClient, configuratorApiClient, syncManagerApiClient, authApiClient };
+export { exporterApiClient, discoveryApiClient, authApiClient, enrichmentApiClient };

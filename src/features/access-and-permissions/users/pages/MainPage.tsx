@@ -142,7 +142,8 @@ const MainPage: React.FC = () => {
     onSearchSubmit: undefined,
   });
 
-  const isFetching = useMemo(() => users.length === 0 && loading, [users.length, loading]);
+  // Fix: guard empty state render until data is confirmed loaded
+  const isFetching = useMemo(() => loading, [loading]);
 
   const shouldShowEmpty = useMemo(
     () => Array.isArray(users) && usersExcludingSelf.length === 0 && !loading && !error,

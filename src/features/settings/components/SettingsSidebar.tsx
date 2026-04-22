@@ -3,7 +3,6 @@ import { SETTINGS_CONSTANTS, SETTINGS_SECTIONS_LIST } from '../constants';
 import type { SettingsSectionKey } from '../constants';
 import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_COLORS } from '../../../constants';
 import { PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
-import RowTag from '../../../components/display/table/RowTag';
 
 const { SIDEBAR } = SETTINGS_CONSTANTS;
 const SB = BUTTON_CONFIGS.SIDEBAR_BUTTON;
@@ -47,14 +46,32 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = memo(
     return (
       <aside style={wrapperStyle}>
         <nav style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-          {SETTINGS_SECTIONS_LIST.map((section) => (
-            <SettingsSidebarItem
-              key={section.key}
-              section={section}
-              isActive={activeSection === section.key}
-              onSelect={() => onSectionChange(section.key)}
-            />
-          ))}
+          <SettingsSidebarGroup
+            title="Personal"
+            sections={SETTINGS_SECTIONS_LIST.filter(
+              (section) => section.key === 'profile' || section.key === 'appearance',
+            )}
+            activeSection={activeSection}
+            onSectionChange={onSectionChange}
+          />
+          <div
+            style={{
+              margin: '4px 0 12px 9.5px',
+              borderTop: '1px solid #e2e8f0',
+              width: `calc(100% - 9.5px)`,
+            }}
+          />
+          <SettingsSidebarGroup
+            title="Platform"
+            sections={SETTINGS_SECTIONS_LIST.filter(
+              (section) =>
+                section.key === 'security' ||
+                section.key === 'aiInsights' ||
+                section.key === 'insightsGovernance',
+            )}
+            activeSection={activeSection}
+            onSectionChange={onSectionChange}
+          />
         </nav>
       </aside>
     );
@@ -62,6 +79,44 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = memo(
 );
 
 SettingsSidebar.displayName = 'SettingsSidebar';
+
+interface GroupProps {
+  title: string;
+  sections: (typeof SETTINGS_SECTIONS_LIST)[number][];
+  activeSection: SettingsSectionKey;
+  onSectionChange: (key: SettingsSectionKey) => void;
+}
+
+const SettingsSidebarGroup: React.FC<GroupProps> = memo(
+  ({ title, sections, activeSection, onSectionChange }) => {
+    return (
+      <div>
+        <div
+          style={{
+            paddingLeft: SB.BORDER_WIDTH + BAR_TO_CONTENT_GAP,
+            marginLeft: 0,
+            marginBottom: 4,
+            color: DEFAULT_COLORS.TEXT_MUTED,
+            fontSize: 14,
+            fontWeight: 500,
+          }}
+        >
+          {title}
+        </div>
+        {sections.map((section) => (
+          <SettingsSidebarItem
+            key={section.key}
+            section={section}
+            isActive={activeSection === section.key}
+            onSelect={() => onSectionChange(section.key)}
+          />
+        ))}
+      </div>
+    );
+  },
+);
+
+SettingsSidebarGroup.displayName = 'SettingsSidebarGroup';
 
 interface ItemProps {
   section: (typeof SETTINGS_SECTIONS_LIST)[number];
@@ -147,14 +202,6 @@ const SettingsSidebarItem: React.FC<ItemProps> = memo(({ section, isActive, onSe
       >
         {section.label}
       </span>
-      {section.rowTag && (
-        <RowTag
-          text={section.rowTag.text}
-          background={section.rowTag.background ?? '#F0F5FF'}
-          color={section.rowTag.color ?? '#2F54EB'}
-          fontSize={section.rowTag.fontSize}
-        />
-      )}
     </button>
   );
 });

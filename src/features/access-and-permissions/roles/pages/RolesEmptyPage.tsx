@@ -17,10 +17,12 @@ const RolesEmptyPage: React.FC<RolesEmptyPageProps> = memo(({ onCreateRoleClick 
     <EmptyState
       title={RC.LABELS.NO_ROLES_TITLE}
       description={RC.LABELS.NO_ROLES_DESCRIPTION}
-      buttonText={RC.LABELS.TOOLBAR.CREATE.BUTTON_LABEL}
-      buttonIcon={buttonIcon}
-      onButtonClick={onCreateRoleClick}
       icon={icon}
+      primaryAction={{
+        label: RC.LABELS.TOOLBAR.CREATE.BUTTON_LABEL,
+        icon: buttonIcon,
+        onClick: onCreateRoleClick,
+      }}
     />
   );
 });

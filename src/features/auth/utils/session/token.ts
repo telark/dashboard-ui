@@ -6,9 +6,18 @@ import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 import { removeCurrentUser } from './user';
 
+const INVALID_TOKEN_VALUES = new Set(['undefined', 'null', '']);
+
 export const getSessionToken = (): string | null => {
   try {
-    return globalThis.localStorage.getItem(STORAGE_KEYS.SESSION_TOKEN);
+    const token = globalThis.localStorage.getItem(STORAGE_KEYS.SESSION_TOKEN);
+    if (token === null || INVALID_TOKEN_VALUES.has(token)) {
+      if (token !== null) {
+        globalThis.localStorage.removeItem(STORAGE_KEYS.SESSION_TOKEN);
+      }
+      return null;
+    }
+    return token;
   } catch (error) {
     if (isDevelopment()) {
       logger.error(LOGIN_CONSTANTS.LOGS.SESSION_GET_ERROR, error);
@@ -18,6 +27,9 @@ export const getSessionToken = (): string | null => {
 };
 
 export const setSessionToken = (token: string): void => {
+  if (!token || INVALID_TOKEN_VALUES.has(token)) {
+    throw new Error(LOGIN_CONSTANTS.SESSION.SET_FAILED);
+  }
   try {
     globalThis.localStorage.setItem(STORAGE_KEYS.SESSION_TOKEN, token);
   } catch (error) {

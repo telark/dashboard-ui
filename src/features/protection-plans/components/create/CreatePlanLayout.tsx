@@ -17,7 +17,7 @@ interface CreatePlanLayoutProps {
   subtitle: string;
   children: React.ReactNode;
   submitLabel: string;
-  onSubmit: () => void;
+  onSubmit: (values?: unknown) => void | Promise<void>;
   submitting?: boolean;
   form?: FormInstance;
 }

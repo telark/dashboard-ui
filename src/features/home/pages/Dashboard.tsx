@@ -1,6 +1,4 @@
 import React from 'react';
-import { AppstoreOutlined, DeploymentUnitOutlined, BranchesOutlined } from '@ant-design/icons';
-import ActionCard from '../components/cards/ActionCard';
 import { DEFAULT_COLORS } from '../../../constants';
 
 const Dashboard: React.FC = () => {
@@ -21,26 +19,7 @@ const Dashboard: React.FC = () => {
           gap: 16,
           alignItems: 'stretch',
         }}
-      >
-        <ActionCard
-          title="See Groupers"
-          icon={<AppstoreOutlined />}
-          rightLabel="5 collected"
-          footerTag="Last Sync was 5m ago"
-        />
-        <ActionCard
-          title="See Workloads"
-          icon={<DeploymentUnitOutlined />}
-          rightLabel="5 collected"
-          footerTag="Last Sync was 5m ago"
-        />
-        <ActionCard
-          title="See Bridges"
-          icon={<BranchesOutlined />}
-          rightLabel="5 collected"
-          footerTag="Last Sync was 5m ago"
-        />
-      </div>
+      ></div>
     </div>
   );
 };

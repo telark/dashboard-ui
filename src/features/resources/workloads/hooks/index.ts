@@ -1,1 +1,0 @@
-export { useWorkloadDetails } from './workloadDetails';

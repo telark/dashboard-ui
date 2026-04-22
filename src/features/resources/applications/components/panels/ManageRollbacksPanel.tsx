@@ -1,0 +1,191 @@
+import React, { useMemo, useState } from 'react';
+import { CheckCircleOutlined } from '@ant-design/icons';
+import {
+  SlideOutPanel,
+  ExpandPanelButton,
+} from '../../../../../components/display/panels/slide-out';
+import { DEFAULT_COLORS } from '../../../../../constants';
+import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
+import type { Application, ApplicationRollbackEntry } from '../../models';
+import { APPLICATIONS_UI } from '../../constants/texts';
+import TimeAgo from '../../../../../components/display/time/TimeAgo';
+import RowTag from '../../../../../components/display/table/RowTag';
+import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
+import { FancySpinner } from '../../../../../components/animation';
+import {
+  classifyRollbackStatus,
+  formatRollbackNamespaceRef,
+  formatRollbackStatusLabel,
+  getRollbackStatusColors,
+  type RollbackStatusState,
+} from '../../utils/rollbacks';
+
+const PANEL_WIDTH = 650;
+const PANEL_WIDTH_EXPANDED = 960;
+
+export interface ManageRollbacksPanelProps {
+  open: boolean;
+  onClose: () => void;
+  detailRollbacks: Application['rollbacks'];
+}
+
+const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
+  open,
+  onClose,
+  detailRollbacks,
+}) => {
+  const [expanded, setExpanded] = useState(false);
+  const rollbacks = useMemo<ApplicationRollbackEntry[]>(
+    () => (Array.isArray(detailRollbacks) ? detailRollbacks : []),
+    [detailRollbacks],
+  );
+
+  return (
+    <>
+      <SlideOutPanel
+        open={open}
+        onClose={onClose}
+        title={APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS}
+        width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
+        contentOnly
+        headerExtra={
+          <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((p) => !p)} />
+        }
+        formContent={
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {rollbacks.length === 0 ? (
+              <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>
+                No rollbacks recorded for this application yet.
+              </div>
+            ) : (
+              <div style={{ display: 'grid', rowGap: 10 }}>
+                {rollbacks
+                  .slice()
+                  .sort((a, b) => String(b.triggeredAt).localeCompare(String(a.triggeredAt)))
+                  .map((rb) => (
+                    <RollbackRow key={rb.id} entry={rb} />
+                  ))}
+              </div>
+            )}
+          </div>
+        }
+      />
+    </>
+  );
+};
+
+ManageRollbacksPanel.displayName = 'ManageRollbacksPanel';
+
+export default ManageRollbacksPanel;
+
+function RollbackRow(props: { entry: ApplicationRollbackEntry }): React.ReactElement {
+  const { entry } = props;
+  const statusKey = String(entry.status || '').trim();
+  const statusLabel = formatRollbackStatusLabel(statusKey || 'unknown');
+  const statusState = classifyRollbackStatus(statusKey);
+  const statusColors = getRollbackStatusColors(statusState);
+
+  return (
+    <div
+      style={{
+        border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+        borderRadius: APPLICATION_SECTION_LAYOUT.COLUMN_INNER_RADIUS,
+        padding: 10,
+        background: DEFAULT_COLORS.BACKGROUND_WHITE,
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          gap: 12,
+          flexWrap: 'wrap',
+        }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0, flex: 1 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
+            <RowTag
+              text={String(entry.targetSnapshotId || '').trim() || APPLICATIONS_UI.FALLBACKS.EMPTY}
+              {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+            />
+            <RowTag
+              text={`Generation: ${entry.targetGeneration}`}
+              {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+            />
+            <RowTag
+              text={formatRollbackNamespaceRef(entry.namespace).replace(/^ns\//, '')}
+              {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+            />
+            {entry.restoredGeneration != null ? (
+              <RowTag
+                text={`Restored: ${entry.restoredGeneration}`}
+                {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+              />
+            ) : null}
+          </div>
+          <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 500 }}>
+            Triggered: <TimeAgo date={entry.triggeredAt} />
+            {entry.triggeredBy ? ` · ${entry.triggeredBy}` : ''}
+            {entry.completedAt ? (
+              <>
+                {' '}
+                · Completed: <TimeAgo date={entry.completedAt} />
+              </>
+            ) : null}
+          </span>
+          {entry.error ? (
+            <span style={{ fontSize: 12, color: DEFAULT_COLORS.DANGER }}>{entry.error}</span>
+          ) : null}
+        </div>
+        <StatusBadge
+          label={statusLabel}
+          state={statusState}
+          background={statusColors.background}
+          color={statusColors.color}
+        />
+      </div>
+    </div>
+  );
+}
+
+function StatusBadge(props: {
+  label: string;
+  state: RollbackStatusState;
+  background: string;
+  color: string;
+}): React.ReactElement {
+  const { label, state, background, color } = props;
+  const showSpinner = state === 'inProgress' || state === 'pending';
+  const showSuccessIcon = state === 'success';
+  const borderColor =
+    state === 'pending' ? CONNECTIVITY_CONSTANTS.COLORS.WARNING : DEFAULT_COLORS.BORDER_LIGHT;
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 8,
+        background,
+        color,
+        border: `1px solid ${borderColor}`,
+        padding: '2px 10px',
+        borderRadius: 999,
+        fontWeight: 700,
+        fontSize: 11,
+        textTransform: 'capitalize',
+        whiteSpace: 'nowrap',
+        flexShrink: 0,
+        marginLeft: 'auto',
+      }}
+    >
+      {showSpinner ? (
+        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+          <FancySpinner size={14} ringThickness={2} color={color} />
+        </span>
+      ) : null}
+      {showSuccessIcon ? <CheckCircleOutlined style={{ fontSize: 12 }} /> : null}
+      <span>{label}</span>
+    </span>
+  );
+}
