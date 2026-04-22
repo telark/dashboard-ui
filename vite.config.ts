@@ -56,12 +56,10 @@ export default defineConfig(({ mode }) => {
         }),
     ].filter(Boolean),
     define: {
-      'process.env.NODE_ENV': JSON.stringify(
-        mode === 'cluster' || mode === 'production'
-          ? 'production'
-          : (env.NODE_ENV || 'development'),
-      ),
-      __DEV__: JSON.stringify(mode !== 'cluster' && mode !== 'production'),
+      'process.env.NODE_ENV': JSON.stringify('production'),
+      'process.env': '{}',
+      'process': '{"env":{"NODE_ENV":"production"}}',
+      __DEV__: JSON.stringify(false),
       __IN_CLUSTER__: JSON.stringify(mode === 'cluster'),
     },
     resolve: {
