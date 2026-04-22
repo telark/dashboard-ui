@@ -56,8 +56,12 @@ export default defineConfig(({ mode }) => {
         }),
     ].filter(Boolean),
     define: {
-      'process.env.NODE_ENV': JSON.stringify(mode === 'cluster' ? 'production' : (env.NODE_ENV || 'development')),
-      __DEV__: mode !== 'cluster' && env.NODE_ENV !== 'production',
+      'process.env.NODE_ENV': JSON.stringify(
+        mode === 'cluster' || mode === 'production'
+          ? 'production'
+          : (env.NODE_ENV || 'development'),
+      ),
+      __DEV__: JSON.stringify(mode !== 'cluster' && mode !== 'production'),
       __IN_CLUSTER__: JSON.stringify(mode === 'cluster'),
     },
     resolve: {
@@ -107,7 +111,7 @@ export default defineConfig(({ mode }) => {
       hmr: true,
     },
     esbuild: {
-      drop: env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
+      drop: mode === 'cluster' || mode === 'production' ? ['console', 'debugger'] : [],
       legalComments: 'none',
     },
   };
