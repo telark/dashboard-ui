@@ -2,7 +2,6 @@ import {
   API_PATHS,
   RESOURCE_PATHS,
   INSIGHT_PATHS,
-  MAINTENANCE_PATHS,
   ANALYZE_PATHS,
   AUTH_PATHS,
   SESSION_PATHS,
@@ -13,20 +12,6 @@ import {
 } from '../rest/paths';
 
 export const Endpoints = {
-  GROUPERS: {
-    GET_ALL: {
-      path: `${API_PATHS.RESOURCES.GROUPERS}/${RESOURCE_PATHS.GET_ALL}`,
-      method: 'GET',
-    },
-    GET_DETAILS: (name: string) => ({
-      path: `${API_PATHS.RESOURCES.GROUPERS}/${RESOURCE_PATHS.GET_DETAILS(name)}`,
-      method: 'GET',
-    }),
-    UPDATE_SYNC: (name: string) => ({
-      path: `${API_PATHS.RESOURCES.GROUPERS}/${RESOURCE_PATHS.UPDATE_SYNC(name)}`,
-      method: 'PATCH',
-    }),
-  },
   APPLICATIONS: {
     GET_ALL: {
       path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.GET_ALL}`,
@@ -100,32 +85,8 @@ export const Endpoints = {
     },
   },
   SYNC: {
-    GROUPERS: {
-      path: `${API_PATHS.RESOURCES.GROUPERS}/${RESOURCE_PATHS.SYNC}`,
-      method: 'POST',
-    },
-    GROUPER: (name: string) => ({
-      path: `${API_PATHS.RESOURCES.GROUPERS}/${RESOURCE_PATHS.SYNC_GROUPER(name)}`,
-      method: 'POST',
-    }),
-    APPS: {
-      path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.SYNC}`,
-      method: 'POST',
-    },
-    APP: (name: string) => ({
-      path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.SYNC_APP(name)}`,
-      method: 'POST',
-    }),
-    BRIDGES: {
-      path: `${API_PATHS.RESOURCES.BRIDGES}/${RESOURCE_PATHS.SYNC}`,
-      method: 'POST',
-    },
-    BRIDGE: (name: string) => ({
-      path: `${API_PATHS.RESOURCES.BRIDGES}/${RESOURCE_PATHS.SYNC_BRIDGE(name)}`,
-      method: 'POST',
-    }),
     APPLICATION: (name: string) => ({
-      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.SYNC_APP(name)}`,
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.SYNC_PATH(name)}`,
       method: 'POST',
     }),
   },
@@ -133,68 +94,6 @@ export const Endpoints = {
     GET: {
       path: 'analyze/namespaces/get',
       method: 'GET',
-    },
-  },
-  BRIDGES: {
-    GET_ALL: {
-      path: `${API_PATHS.RESOURCES.BRIDGES}/${RESOURCE_PATHS.GET_ALL}`,
-      method: 'GET',
-    },
-    GET_DETAILS: (name: string) => ({
-      path: `${API_PATHS.RESOURCES.BRIDGES}/${RESOURCE_PATHS.GET_DETAILS(name)}`,
-      method: 'GET',
-    }),
-    UPDATE_SYNC: (name: string) => ({
-      path: `${API_PATHS.RESOURCES.BRIDGES}/${RESOURCE_PATHS.UPDATE_SYNC(name)}`,
-      method: 'PATCH',
-    }),
-  },
-  GROUPER_MAINTENANCE: {
-    CHECK: (name: string) => ({
-      path: `${API_PATHS.FEATS.MAINTENANCE}/${MAINTENANCE_PATHS.CHECK(name)}`,
-      method: 'GET',
-    }),
-    ENABLE: {
-      path: `${API_PATHS.FEATS.MAINTENANCE}/${MAINTENANCE_PATHS.ENABLE}`,
-      method: 'POST',
-    },
-    UPDATE: {
-      path: `${API_PATHS.FEATS.MAINTENANCE}/${MAINTENANCE_PATHS.UPDATE}`,
-      method: 'PUT',
-    },
-    REMOVE: {
-      path: `${API_PATHS.FEATS.MAINTENANCE}/${MAINTENANCE_PATHS.REMOVE}`,
-      method: 'DELETE',
-    },
-  },
-  WORKLOADS: {
-    APPS: {
-      GET_ALL_APPS: {
-        path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.GET_ALL}`,
-        method: 'GET',
-      },
-      GET_APP_DETAILS: (name: string) => ({
-        path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.GET_DETAILS(name)}`,
-        method: 'GET',
-      }),
-      UPDATE_APP_SYNC: (name: string) => ({
-        path: `${API_PATHS.RESOURCES.WORKLOADS}/apps/${RESOURCE_PATHS.UPDATE_SYNC(name)}`,
-        method: 'PATCH',
-      }),
-    },
-    BATCHES: {
-      GET_ALL_BATCHES: {
-        path: `${API_PATHS.RESOURCES.WORKLOADS}/batches/${RESOURCE_PATHS.GET_ALL}`,
-        method: 'GET',
-      },
-      GET_BATCH_DETAILS: (name: string) => ({
-        path: `${API_PATHS.RESOURCES.WORKLOADS}/batches/${RESOURCE_PATHS.GET_DETAILS(name)}`,
-        method: 'GET',
-      }),
-      UPDATE_BATCH_SYNC: (name: string) => ({
-        path: `${API_PATHS.RESOURCES.WORKLOADS}/batches/${RESOURCE_PATHS.UPDATE_SYNC(name)}`,
-        method: 'PATCH',
-      }),
     },
   },
   AUTH: {

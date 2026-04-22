@@ -1,1 +1,0 @@
-export { useBridgeDetails } from './bridgeDetails';

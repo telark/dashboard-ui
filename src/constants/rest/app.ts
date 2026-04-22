@@ -18,24 +18,20 @@ export const APP_CONFIGS = {
 
 export const APP_ROUTES = {
   HOME: '/',
+  // auth
   LOGIN: '/login',
   REGISTER: '/register',
   PASSKEYS: '/passkeys',
-  GROUPERS: '/groupers',
-  GROUPER_DETAILS: '/groupers/:name/details',
+  GOOGLE_CALLBACK: '/auth/google/callback',
+  // resources
   APPLICATIONS: '/applications',
   APPLICATION_DETAILS: '/applications/:name/details',
-  WORKLOADS: '/workloads',
-  APP_WORKLOAD_DETAILS: '/workloads/apps/:name/details',
-  BRIDGES: '/bridges',
-  BRIDGE_DETAILS: '/bridges/:name/details',
   // access-and-permissions
   ROLES: '/management/roles',
   USERS: '/management/users',
   GROUPS: '/management/groups',
   // settings
   SETTINGS: '/settings',
-  GOOGLE_CALLBACK: '/auth/google/callback',
   // governance
   PROTECTION_PLANS: '/governance/protection-plans',
   PROTECTION_PLANS_CREATE: '/governance/protection-plans/create',

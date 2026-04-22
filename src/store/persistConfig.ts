@@ -1,33 +1,10 @@
 import storage from 'redux-persist/lib/storage';
 import type { PersistConfig } from 'redux-persist';
 
-/**
- * We only persist the data, not the loading/error/syncing/details
- * using default localStorage
- */
-
 export const rootPersistConfig: PersistConfig<any> = {
   key: 'root',
   storage,
-  whitelist: ['grouper', 'workload', 'bridge', 'insights', 'applications', 'retry'],
-};
-
-export const grouperPersistConfig: PersistConfig<any> = {
-  key: 'grouper',
-  storage,
-  whitelist: ['groupers'],
-};
-
-export const workloadPersistConfig: PersistConfig<any> = {
-  key: 'workload',
-  storage,
-  whitelist: ['apps', 'batches'],
-};
-
-export const bridgePersistConfig: PersistConfig<any> = {
-  key: 'bridge',
-  storage,
-  whitelist: ['bridges'],
+  whitelist: ['insights', 'applications', 'retry'],
 };
 
 export const applicationsPersistConfig: PersistConfig<any> = {

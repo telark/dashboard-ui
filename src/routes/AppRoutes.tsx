@@ -20,27 +20,11 @@ const Register = lazy(() => import('../features/auth/pages/flow/Register'));
 const GoogleCallback = lazy(() => import('../features/auth/pages/flow/GoogleCallback'));
 
 // resources
-const GroupersGlobalView = lazy(
-  () => import('../features/resources/groupers/pages/main/GlobalView'),
-);
-const GrouperDetailsView = lazy(
-  () => import('../features/resources/groupers/pages/details/DetailsView'),
-);
 const ApplicationsGlobalView = lazy(
   () => import('../features/resources/applications/pages/main/GlobalView'),
 );
 const ApplicationDetailsView = lazy(
   () => import('../features/resources/applications/pages/details/DetailsView'),
-);
-const BridgesGlobalView = lazy(() => import('../features/resources/bridges/pages/main/GlobalView'));
-const BridgeDetailsView = lazy(
-  () => import('../features/resources/bridges/pages/details/DetailsView'),
-);
-const WorkloadsGlobalView = lazy(
-  () => import('../features/resources/workloads/pages/main/GlobalView'),
-);
-const AppWorkloadDetailsView = lazy(
-  () => import('../features/resources/workloads/pages/details/apps/DetailsView'),
 );
 
 // access-and-permissions
@@ -117,28 +101,6 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path={APP_ROUTES.GROUPERS}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Groupers">
-                <GroupersGlobalView />
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.GROUPER_DETAILS}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Grouper Details">
-                <AnimatedPageWrapper>
-                  <GrouperDetailsView />
-                </AnimatedPageWrapper>
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path={APP_ROUTES.APPLICATIONS}
           element={
             <ProtectedRoute>
@@ -155,50 +117,6 @@ const AppRoutes: React.FC = () => {
               <FeatureErrorBoundary featureName="Application Details">
                 <AnimatedPageWrapper>
                   <ApplicationDetailsView />
-                </AnimatedPageWrapper>
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.BRIDGES}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Bridges">
-                <BridgesGlobalView />
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.BRIDGE_DETAILS}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Bridge Details">
-                <AnimatedPageWrapper>
-                  <BridgeDetailsView />
-                </AnimatedPageWrapper>
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.WORKLOADS}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Workloads">
-                <WorkloadsGlobalView />
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.APP_WORKLOAD_DETAILS}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Workload Details">
-                <AnimatedPageWrapper>
-                  <AppWorkloadDetailsView />
                 </AnimatedPageWrapper>
               </FeatureErrorBoundary>
             </ProtectedRoute>

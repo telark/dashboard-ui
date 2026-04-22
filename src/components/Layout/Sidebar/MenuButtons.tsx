@@ -5,10 +5,7 @@ import { Icons, APP_ROUTES, MENU_LABELS } from '../../../constants';
 
 const HomeIcon = Icons.Home;
 const RoleIcon = Icons.Role;
-const GrouperIcon = Icons.Grouper;
-const WorkloadIcon = Icons.Workload;
 const ApplicationIcon = Icons.Application;
-const BridgeIcon = Icons.Bridge;
 const UserIcon = Icons.User;
 const GroupIcon = Icons.Group;
 const ProtectionPlansIcon = Icons.ProtectionPlans;
@@ -33,58 +30,6 @@ export const HomeMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = f
 });
 
 HomeMenuButton.displayName = 'HomeMenuButton';
-
-export const GroupersMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
-  const location = useLocation();
-  const pathname = location.pathname;
-
-  return (
-    <SidebarButton
-      text={MENU_LABELS.GROUPERS}
-      icon={<GrouperIcon />}
-      active={pathname.startsWith(APP_ROUTES.GROUPERS)}
-      route={APP_ROUTES.GROUPERS}
-      isCollapsed={isCollapsed}
-    />
-  );
-});
-
-GroupersMenuButton.displayName = 'GroupersMenuButton';
-
-export const BridgesMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
-  const location = useLocation();
-  const pathname = location.pathname;
-
-  return (
-    <SidebarButton
-      text={MENU_LABELS.BRIDGES}
-      icon={<BridgeIcon />}
-      active={pathname.startsWith(APP_ROUTES.BRIDGES)}
-      route={APP_ROUTES.BRIDGES}
-      isCollapsed={isCollapsed}
-    />
-  );
-});
-
-BridgesMenuButton.displayName = 'BridgesMenuButton';
-
-export const WorkloadsMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
-  const location = useLocation();
-  const pathname = location.pathname;
-
-  return (
-    <SidebarButton
-      text={MENU_LABELS.WORKLOADS}
-      icon={<WorkloadIcon />}
-      active={pathname.startsWith(APP_ROUTES.WORKLOADS)}
-      route={APP_ROUTES.WORKLOADS}
-      isCollapsed={isCollapsed}
-    />
-  );
-});
-
-WorkloadsMenuButton.displayName = 'WorkloadsMenuButton';
-
 export const ApplicationsMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
   const location = useLocation();
   const pathname = location.pathname;

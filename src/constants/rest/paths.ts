@@ -1,17 +1,11 @@
 export const API_PATHS = {
   RESOURCES: {
-    GROUPERS: 'resources/groupers',
     APPLICATIONS: 'resources/applications',
     INSIGHTS: 'resources/insights',
-    WORKLOADS: 'resources/workloads',
-    BRIDGES: 'resources/bridges',
     GLOBALCONFIG: 'resources/globalconfig',
     USERS: 'resources/users',
     GROUPS: 'resources/groups',
     ROLES: 'resources/roles',
-  },
-  FEATS: {
-    MAINTENANCE: 'feats/maintenance',
   },
   ANALYZE: 'analyze',
   CLASSIFICATION: {
@@ -25,12 +19,8 @@ export const RESOURCE_PATHS = {
   CLEANUP_DETAILS: (name: string) => `${name}/cleanup`,
   FIND_USER_BY_ID: (id: string) => `findbyid/${id}/get`,
   UPDATE_SYNC: (name: string) => `${name}/patch`,
-  /** Application rollback: POST to trigger; GET to list (API contract from exporter). */
   APPLICATION_ROLLBACKS: (name: string) => `${name}/rollbacks`,
-  SYNC: 'sync',
-  SYNC_GROUPER: (name: string) => `${name}/sync`,
-  SYNC_APP: (name: string) => `${name}/sync`,
-  SYNC_BRIDGE: (name: string) => `${name}/sync`,
+  SYNC_PATH: (name: string) => `${name}/sync`,
 } as const;
 
 export const SESSION_PATHS = {
@@ -41,13 +31,6 @@ export const SESSION_PATHS = {
 
 export const INSIGHT_PATHS = {
   CLUSTER_GET: 'cluster/get',
-} as const;
-
-export const MAINTENANCE_PATHS = {
-  CHECK: (name: string) => `${name}/get`,
-  ENABLE: 'grouper/enable',
-  UPDATE: 'grouper/update',
-  REMOVE: 'grouper/remove',
 } as const;
 
 export const ANALYZE_PATHS = {

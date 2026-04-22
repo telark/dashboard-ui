@@ -1,1 +1,0 @@
-export { createGrouperViewConfig } from './grouperViewConfig';

@@ -3,10 +3,7 @@ import { useState, useEffect, startTransition, memo, useMemo } from 'react';
 import { MENU_LABELS, MENU_KEYS } from '../../../constants';
 import {
   HomeMenuButton,
-  GroupersMenuButton,
   ApplicationsMenuButton,
-  BridgesMenuButton,
-  WorkloadsMenuButton,
   UsersMenuButton,
   GroupsMenuButton,
   RolesMenuButton,
@@ -52,10 +49,7 @@ const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
   const collapsedMenuItems = useMemo(
     () => (
       <>
-        <GroupersMenuButton isCollapsed={isCollapsed} />
         <ApplicationsMenuButton isCollapsed={isCollapsed} />
-        <BridgesMenuButton isCollapsed={isCollapsed} />
-        <WorkloadsMenuButton isCollapsed={isCollapsed} />
         <UsersMenuButton isCollapsed={isCollapsed} />
         <GroupsMenuButton isCollapsed={isCollapsed} />
         <RolesMenuButton isCollapsed={isCollapsed} />
@@ -69,10 +63,7 @@ const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
     () => (
       <>
         <Menu.SubMenu key={MENU_KEYS.RESOURCES} title={MENU_LABELS.RESOURCES} style={submenuStyle}>
-          <GroupersMenuButton isCollapsed={isCollapsed} />
           <ApplicationsMenuButton isCollapsed={isCollapsed} />
-          <BridgesMenuButton isCollapsed={isCollapsed} />
-          <WorkloadsMenuButton isCollapsed={isCollapsed} />
         </Menu.SubMenu>
         <Menu.SubMenu
           key={MENU_KEYS.USERS_AND_GROUPS}
