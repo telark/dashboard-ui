@@ -79,7 +79,7 @@ export const LOGIN_CONSTANTS = {
     BUTTON_LOADING: 'Authenticating...',
     BUTTON_TEXT: 'Continue with Passkey',
     FOOTER_TEXT: "Don't have an account?",
-    FOOTER_LINK: 'Register now',
+    FOOTER_LINK: 'Create an account',
     GOOGLE_BUTTON_TEXT: 'Continue with Google',
     GOOGLE_BUTTON_LOADING: 'Redirecting to Google...',
     GOOGLE_OR_SEPARATOR: 'or',
