@@ -1,8 +1,6 @@
 import {
   API_PATHS,
   RESOURCE_PATHS,
-  INSIGHT_PATHS,
-  ANALYZE_PATHS,
   AUTH_PATHS,
   SESSION_PATHS,
   CATEGORY_PATHS,
@@ -71,18 +69,6 @@ export const Endpoints = {
       path: `snapshots/${id}/manifest`,
       method: 'GET',
     }),
-  },
-  INSIGHTS: {
-    CLUSTER_GET: {
-      path: `${API_PATHS.RESOURCES.INSIGHTS}/${INSIGHT_PATHS.CLUSTER_GET}`,
-      method: 'GET',
-    },
-  },
-  ANALYZE: {
-    START: {
-      path: `${API_PATHS.ANALYZE}/${ANALYZE_PATHS.START}`,
-      method: 'POST',
-    },
   },
   SYNC: {
     APPLICATION: (name: string) => ({

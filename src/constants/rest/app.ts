@@ -3,11 +3,6 @@ export const APP_CONFIGS = {
     TOP: 72,
     MAX_COUNT: 3,
   },
-  WELCOME: {
-    DURATION: 3000, // 3 seconds
-    STORAGE_KEY: 'WELCOME_PENDING',
-    STORAGE_VALUE: '1',
-  },
   LAYOUT: {
     MIN_HEIGHT: '100vh',
     HEIGHT: '100vh',

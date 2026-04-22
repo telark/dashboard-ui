@@ -29,14 +29,6 @@ export const SESSION_PATHS = {
   DELETE_BY_TOKEN: (sessionToken: string) => `auth/sessions/tokens/${sessionToken}/delete`,
 } as const;
 
-export const INSIGHT_PATHS = {
-  CLUSTER_GET: 'cluster/get',
-} as const;
-
-export const ANALYZE_PATHS = {
-  START: 'start',
-} as const;
-
 export const AUTH_PATHS = {
   LOGIN: {
     START: 'auth/login/start',

@@ -1,7 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import {
   EXPORTER_API,
-  CONFIGURATOR_API,
   DISCOVERY_API,
   AUTH_API,
   ENRICHMENT_API,
@@ -25,12 +24,6 @@ interface ExtendedAxiosError extends AxiosError {
 
 const exporterApiClient: AxiosInstance = axios.create({
   baseURL: EXPORTER_API.BASE_URL,
-  timeout: API_TIMEOUT,
-  headers: REQUEST_CONFIG.DEFAULT_HEADERS,
-});
-
-const configuratorApiClient: AxiosInstance = axios.create({
-  baseURL: CONFIGURATOR_API.BASE_URL,
   timeout: API_TIMEOUT,
   headers: REQUEST_CONFIG.DEFAULT_HEADERS,
 });
@@ -135,7 +128,6 @@ const createErrorInterceptor = (options: ErrorInterceptorOptions = {}) => {
 };
 
 exporterApiClient.interceptors.response.use(...createErrorInterceptor({ silent404: true }));
-configuratorApiClient.interceptors.response.use(...createErrorInterceptor());
 discoveryApiClient.interceptors.response.use(...createErrorInterceptor());
 authApiClient.interceptors.response.use(...createErrorInterceptor());
 enrichmentApiClient.interceptors.response.use(...createErrorInterceptor());
@@ -153,10 +145,4 @@ export const Client = async <T>(
   return response.data;
 };
 
-export {
-  exporterApiClient,
-  configuratorApiClient,
-  discoveryApiClient,
-  authApiClient,
-  enrichmentApiClient,
-};
+export { exporterApiClient, discoveryApiClient, authApiClient, enrichmentApiClient };
