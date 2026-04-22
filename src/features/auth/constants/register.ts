@@ -3,7 +3,7 @@ export const REGISTER_CONSTANTS = {
     TITLE: 'Create Passkey',
     SUBTITLE: 'Register a new passkey for your account',
     USERNAME_PLACEHOLDER: 'Enter your username',
-    DEVICE_NAME_PLACEHOLDER: 'e.g. My Laptop, iPhone 13',
+    DEVICE_NAME_PLACEHOLDER: 'Enter Device Name (e.g. My Laptop)',
     DEVICE_NAME_LABEL: 'Device Name',
     USERNAME_LABEL: 'Username',
     BUTTON_LOADING: 'Registering...',
