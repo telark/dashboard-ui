@@ -83,10 +83,14 @@ export default defineConfig(({ mode }) => {
           entryFileNames: 'assets/[name]-[hash].js',
           assetFileNames: 'assets/[name]-[hash].[ext]',
           manualChunks: (id) => {
-            if (id.includes('node_modules')) {
-              if (id.includes('@dicebear')) return undefined;
-              return getVendorChunkName(id);
-            }
+            if (!id.includes('node_modules')) return undefined;
+            if (id.includes('@dicebear')) return undefined;
+            if (id.includes('redux') || id.includes('@reduxjs')) return 'redux-vendor';
+            if (id.includes('react-router')) return 'router-vendor';
+            if (id.includes('date-fns') || id.includes('react-timeago')) return 'date-vendor';
+            if (id.includes('framer-motion')) return 'animation-vendor';
+            if (id.includes('axios')) return 'http-vendor';
+            return 'vendor';
           },
         },
       },
