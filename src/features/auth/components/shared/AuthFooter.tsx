@@ -35,7 +35,14 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({
   return (
     <div style={{ marginTop: '20px' }}>
       {/* Register link */}
-      <div style={{ textAlign: 'center', fontSize: '13px', color: 'var(--auth-text-muted, #64748b)', marginBottom: '16px' }}>
+      <div
+        style={{
+          textAlign: 'center',
+          fontSize: '13px',
+          color: 'var(--auth-text-muted, #64748b)',
+          marginBottom: '16px',
+        }}
+      >
         {text}{' '}
         <button
           type="button"
@@ -52,8 +59,12 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({
             textDecoration: 'underline',
             textDecorationColor: 'var(--auth-card-border, #e2e8f0)',
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.textDecorationColor = 'var(--auth-text-muted, #475569)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.textDecorationColor = 'var(--auth-card-border, #e2e8f0)'; }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.textDecorationColor = 'var(--auth-text-muted, #475569)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.textDecorationColor = 'var(--auth-card-border, #e2e8f0)';
+          }}
         >
           {linkText}
         </button>
@@ -65,16 +76,24 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({
       {/* Terms */}
       <p style={{ ...mutedStyle, textAlign: 'center', margin: '0 0 10px', lineHeight: 1.5 }}>
         By continuing you agree to our{' '}
-        <a href={termsHref} style={{ ...mutedStyle, textDecoration: 'underline' }}>Terms</a>
-        {' '}and{' '}
-        <a href={privacyHref} style={{ ...mutedStyle, textDecoration: 'underline' }}>Privacy Policy</a>
+        <a href={termsHref} style={{ ...mutedStyle, textDecoration: 'underline' }}>
+          Terms
+        </a>{' '}
+        and{' '}
+        <a href={privacyHref} style={{ ...mutedStyle, textDecoration: 'underline' }}>
+          Privacy Policy
+        </a>
       </p>
 
       {/* Language switcher */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-        <button type="button" style={{ ...linkStyle, fontWeight: 600 }}>EN</button>
+        <button type="button" style={{ ...linkStyle, fontWeight: 600 }}>
+          EN
+        </button>
         <span style={{ ...mutedStyle, opacity: 0.4 }}>|</span>
-        <button type="button" style={linkStyle}>FR</button>
+        <button type="button" style={linkStyle}>
+          FR
+        </button>
       </div>
     </div>
   );

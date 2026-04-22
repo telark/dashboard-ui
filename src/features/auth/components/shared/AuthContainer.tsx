@@ -31,7 +31,14 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({
 
   if (leftPanel) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--auth-right-bg, #f8fafc)' }}>
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          background: 'var(--auth-right-bg, #f8fafc)',
+        }}
+      >
         {showBanner && (
           <div
             style={{

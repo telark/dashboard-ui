@@ -27,10 +27,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ form, loading, onFin
       rules={[{ required: true, message: AUTH_ERROR_MESSAGES.MISSING_USERNAME }]}
       style={{ marginBottom: '12px' }}
     >
-      <Input
-        placeholder={REGISTER_CONSTANTS.UI.USERNAME_PLACEHOLDER}
-        style={inputStyle}
-      />
+      <Input placeholder={REGISTER_CONSTANTS.UI.USERNAME_PLACEHOLDER} style={inputStyle} />
     </Form.Item>
 
     <Form.Item
@@ -38,10 +35,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ form, loading, onFin
       rules={[{ required: true, message: AUTH_ERROR_MESSAGES.MISSING_DEVICE_NAME }]}
       style={{ marginBottom: '16px' }}
     >
-      <Input
-        placeholder={REGISTER_CONSTANTS.UI.DEVICE_NAME_PLACEHOLDER}
-        style={inputStyle}
-      />
+      <Input placeholder={REGISTER_CONSTANTS.UI.DEVICE_NAME_PLACEHOLDER} style={inputStyle} />
     </Form.Item>
 
     <Form.Item style={{ marginBottom: 0 }}>

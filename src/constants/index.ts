@@ -6,7 +6,6 @@ export * from './layout/icons';
 export * from './layout/indicators';
 export * from './layout/menu';
 export * from './layout/messages';
-export * from './layout/modes';
 export * from './layout/panels';
 export * from './layout/timeline';
 export * from './layout/ui';

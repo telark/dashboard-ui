@@ -130,11 +130,7 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
               {primaryAction.label}
             </Button>
             {secondaryAction && (
-              <Button
-                type="default"
-                onClick={secondaryAction.onClick}
-                style={buttonStyle}
-              >
+              <Button type="default" onClick={secondaryAction.onClick} style={buttonStyle}>
                 {secondaryAction.label}
               </Button>
             )}

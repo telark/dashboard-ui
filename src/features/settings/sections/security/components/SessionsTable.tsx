@@ -104,7 +104,9 @@ const SessionsTable: React.FC<SessionsTableProps> = memo(
                 <div style={{ fontWeight: isCurrent ? 600 : undefined }}>
                   {session.deviceMetadata?.device
                     ? formatDevice(session.deviceMetadata.device)
-                    : isCurrent ? LABELS.SESSIONS_THIS_DEVICE : LABELS.SESSIONS_OTHER_SESSION}
+                    : isCurrent
+                      ? LABELS.SESSIONS_THIS_DEVICE
+                      : LABELS.SESSIONS_OTHER_SESSION}
                 </div>
                 {session.deviceMetadata?.os && (
                   <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, marginTop: 2 }}>

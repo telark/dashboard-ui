@@ -33,7 +33,9 @@ export interface OIDCCallbackRequest extends DeviceMetadata {
   idToken: string;
 }
 
-export const oidcGoogleCallback = async (request: OIDCCallbackRequest): Promise<OIDCCallbackResponse> => {
+export const oidcGoogleCallback = async (
+  request: OIDCCallbackRequest,
+): Promise<OIDCCallbackResponse> => {
   const { path, method } = Endpoints.AUTH.OIDC.GOOGLE.CALLBACK;
   return await Client<OIDCCallbackResponse>(authApiClient, path, {
     method,

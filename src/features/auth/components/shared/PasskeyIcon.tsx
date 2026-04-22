@@ -32,17 +32,7 @@ export const PasskeyIcon: React.FC<PasskeyIconProps> = ({
       fill="none"
     />
     <circle cx="18.5" cy="13" r="2.5" stroke={color} strokeWidth="1.8" />
-    <path
-      d="M16.5 15l-3 3"
-      stroke={color}
-      strokeWidth="1.8"
-      strokeLinecap="round"
-    />
-    <path
-      d="M14.5 16.5l1 1M13 18l1 1"
-      stroke={color}
-      strokeWidth="1.4"
-      strokeLinecap="round"
-    />
+    <path d="M16.5 15l-3 3" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+    <path d="M14.5 16.5l1 1M13 18l1 1" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
   </svg>
 );
