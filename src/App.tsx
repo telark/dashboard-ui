@@ -12,7 +12,7 @@ import 'antd/dist/reset.css';
 import { DEFAULT_COLORS, APP_CONFIGS, APP_ROUTES } from './constants';
 import AppRoutes from './routes/AppRoutes';
 import { hasSessionToken, useSessionExpirationCheck } from './features/auth/utils';
-import { useInitializePermissions, useCanAccess, ACTION_PERMISSIONS } from './features/auth/hooks';
+import { useInitializePermissions } from './features/auth/hooks';
 import { selectPermissionsState } from './features/auth/store/selectors/permissionsSelectors';
 import { AUTH_PERMISSIONS_LABELS } from './features/auth/constants';
 import { useInitializeCategories } from './features/access-and-permissions/categories/hooks';
@@ -28,13 +28,11 @@ const AppContent: React.FC = () => {
     location.pathname === APP_ROUTES.GOOGLE_CALLBACK;
   const isAuthenticated = hasSessionToken();
   const [showSessionExpiredModal, setShowSessionExpiredModal] = useState(false);
-  const { loading: permissionsLoading, userID } = useSelector(selectPermissionsState);
-  const hasAnyPermission = useCanAccess([
-    ACTION_PERMISSIONS.users.create,
-    ACTION_PERMISSIONS.groups.create,
-    ACTION_PERMISSIONS.roles.create,
-  ]);
-  const noPermissions = !permissionsLoading && userID !== null && !hasAnyPermission;
+  const { loading: permissionsLoading, userID, roles } = useSelector(selectPermissionsState);
+  const noPermissions =
+    !permissionsLoading &&
+    userID !== null &&
+    (roles.length === 0 || roles.every((r) => r.isExpired));
 
   // Check session expiration as background task when authenticated
   useSessionExpirationCheck({
