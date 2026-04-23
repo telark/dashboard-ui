@@ -73,7 +73,11 @@ const MemberList: React.FC<MemberListProps> = ({ users, loading, allUsers, canSe
                       e.currentTarget.style.borderColor = AMC.LIST.ITEM.BASE.border;
                     }}
                   >
-                    <Checkbox value={user.id} style={{ margin: 0, width: '100%' }} disabled={!canSelect}>
+                    <Checkbox
+                      value={user.id}
+                      style={{ margin: 0, width: '100%' }}
+                      disabled={!canSelect}
+                    >
                       <div style={AMC.LIST.MEMBER_CONTENT}>
                         <div style={AMC.LIST.MEMBER_AVATAR_CONTAINER}>
                           <UserAvatar avatar={user.avatar} username={user.username} size={32} />
