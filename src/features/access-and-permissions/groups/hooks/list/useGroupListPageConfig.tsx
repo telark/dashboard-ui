@@ -120,6 +120,11 @@ export const useGroupListPageConfig = ({
     ACTION_PERMISSIONS.groups.attachMember.level,
     ACTION_PERMISSIONS.groups.attachMember.deny,
   );
+  const canViewGroupCategories = usePermission(
+    ACTION_PERMISSIONS.groups.viewCategories.scope,
+    ACTION_PERMISSIONS.groups.viewCategories.level,
+    ACTION_PERMISSIONS.groups.viewCategories.deny,
+  );
   const { toolbarConfig } = useGroupListConfig({
     viewMode,
     onViewModeChange: setViewMode,
@@ -132,6 +137,7 @@ export const useGroupListPageConfig = ({
     onAttachMemberClick,
     canAttachRole,
     canAttachMember,
+    canViewGroupCategories,
     onFilterClick,
     searchValue,
     onSearchChange,

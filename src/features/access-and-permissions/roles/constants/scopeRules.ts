@@ -59,8 +59,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
     scope: 'users',
     rules: {
       ReadOnly: [
-        { key: 'viewalluserscategories', label: 'ViewAllUsersCategories' },
-        { key: 'viewusercategory', label: 'ViewUserCategory' },
+        { key: 'viewuserscategories', label: 'ViewUsersCategories' },
         { key: 'viewuserattachedroles', label: 'ViewUserAttachedRoles' },
       ],
       Contributor: [

@@ -154,6 +154,7 @@ export const useGroupListConfig = ({
     onAttachMemberClick,
     canAttachRole,
     canAttachMember,
+    canViewGroupCategories,
     onFilterClick,
     searchValue,
     onSearchChange,
