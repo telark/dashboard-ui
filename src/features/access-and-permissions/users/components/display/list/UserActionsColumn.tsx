@@ -2,7 +2,7 @@ import React from 'react';
 import { Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../../../../constants';
-import { useHasPermission } from '../../../../../auth/hooks';
+import { usePermission, ACTION_PERMISSIONS } from '../../../../../auth/hooks';
 import { useUserDeleteModal, UserDeleteModal } from '../../delete';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import type { User } from '../../../models';
@@ -46,8 +46,14 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const hasEditPermission = useHasPermission('users', 'Contributor', 'users.edituser.deny');
-  const hasDeletePermission = useHasPermission('users', 'Contributor', 'users.deleteuser.deny');
+  const hasEditPermission = usePermission(
+    ACTION_PERMISSIONS.users.edit.scope,
+    ACTION_PERMISSIONS.users.edit.level,
+  );
+  const hasDeletePermission = usePermission(
+    ACTION_PERMISSIONS.users.delete.scope,
+    ACTION_PERMISSIONS.users.delete.level,
+  );
   const canEdit = hasEditPermission && !!onEdit;
   const canDelete = hasDeletePermission;
 

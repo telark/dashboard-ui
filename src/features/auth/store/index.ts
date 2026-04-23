@@ -33,6 +33,4 @@ export {
   selectPermissionsLoading,
   selectPermissionsError,
   selectResolvedRoles,
-  selectScopeIndex,
-  makeSelectHasPermission,
 } from './selectors/permissionsSelectors';

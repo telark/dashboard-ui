@@ -1,5 +1,10 @@
 // Permissions
-export { useHasPermission } from './permissions/useHasPermission';
+export {
+  usePermission,
+  useCanAccess,
+  PermissionGate,
+  ACTION_PERMISSIONS,
+} from './permissions/permissionEngine';
 export { useInitializePermissions } from './permissions/useInitializePermissions';
 
 // Session

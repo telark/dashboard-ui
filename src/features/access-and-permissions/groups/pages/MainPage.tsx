@@ -8,7 +8,7 @@ import {
   useBulkDeleteGroups,
   useGroupFilters,
 } from '../hooks';
-import { useHasPermission } from '../../../auth/hooks';
+import { usePermission, ACTION_PERMISSIONS } from '../../../auth/hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { applyGroupFilters, mapCategoriesToFilterOptions } from '../utils';
@@ -22,8 +22,14 @@ import GroupsListPage from './GroupsListPage';
 type ViewMode = 'groups' | 'categories';
 
 const MainPage: React.FC = () => {
-  const canCreateGroup = useHasPermission('groups', 'Admin');
-  const canEditGroup = useHasPermission('groups', 'Contributor', 'groups.editgroup.deny');
+  const canCreateGroup = usePermission(
+    ACTION_PERMISSIONS.groups.create.scope,
+    ACTION_PERMISSIONS.groups.create.level,
+  );
+  const canEditGroup = usePermission(
+    ACTION_PERMISSIONS.groups.edit.scope,
+    ACTION_PERMISSIONS.groups.edit.level,
+  );
   const [viewMode, setViewMode] = useState<ViewMode>('groups');
   const [addCategoryPanelOpen, setAddCategoryPanelOpen] = useState(false);
   const [editCategoryPanelOpen, setEditCategoryPanelOpen] = useState(false);

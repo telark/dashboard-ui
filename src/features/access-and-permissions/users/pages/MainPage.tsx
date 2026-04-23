@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { getCurrentUser } from '../../../auth/utils';
-import { useHasPermission } from '../../../auth/hooks';
+import { usePermission, ACTION_PERMISSIONS } from '../../../auth/hooks';
 import { useUsers, useUserFilters, useBulkDeleteUsers, useUserListState } from '../hooks';
 import { useUserListPageConfig } from '../hooks/list/useUserListPageConfig';
 import { useUserPanelState } from '../hooks/panels/user/useUserPanelState';
@@ -14,8 +14,14 @@ import UsersListPage from './UsersListPage';
 
 const MainPage: React.FC = () => {
   const { users, loading, error } = useUsers();
-  const canCreateUser = useHasPermission('users', 'Admin');
-  const canEditUser = useHasPermission('users', 'Contributor', 'users.edituser.deny');
+  const canCreateUser = usePermission(
+    ACTION_PERMISSIONS.users.create.scope,
+    ACTION_PERMISSIONS.users.create.level,
+  );
+  const canEditUser = usePermission(
+    ACTION_PERMISSIONS.users.edit.scope,
+    ACTION_PERMISSIONS.users.edit.level,
+  );
   const [searchTerm, setSearchTerm] = useState('');
   const [bulkDeleteModalOpen, setBulkDeleteModalOpen] = useState(false);
 

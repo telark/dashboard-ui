@@ -6,7 +6,7 @@ import {
   useRoleListPageConfig,
   useRoleFilters,
 } from '../hooks';
-import { useHasPermission } from '../../../auth/hooks';
+import { usePermission, ACTION_PERMISSIONS } from '../../../auth/hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { deduplicateCategoriesByName } from '../../categories/utils/helpers';
@@ -24,8 +24,14 @@ type ViewMode = 'roles' | 'categories';
 
 const MainPage: React.FC = () => {
   const { roles, loading, error } = useRoles();
-  const canCreateRole = useHasPermission('roles', 'Admin');
-  const canEditRole = useHasPermission('roles', 'Contributor', 'roles.editrole.deny');
+  const canCreateRole = usePermission(
+    ACTION_PERMISSIONS.roles.create.scope,
+    ACTION_PERMISSIONS.roles.create.level,
+  );
+  const canEditRole = usePermission(
+    ACTION_PERMISSIONS.roles.edit.scope,
+    ACTION_PERMISSIONS.roles.edit.level,
+  );
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<ViewMode>('roles');
   const [addCategoryPanelOpen, setAddCategoryPanelOpen] = useState(false);

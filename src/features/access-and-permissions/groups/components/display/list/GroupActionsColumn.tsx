@@ -2,7 +2,7 @@ import React from 'react';
 import { Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../../../../constants';
-import { useHasPermission } from '../../../../../auth/hooks';
+import { usePermission, ACTION_PERMISSIONS } from '../../../../../auth/hooks';
 import { useGroupDeleteModal, GroupDeleteModal } from '../../delete';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import type { Group } from '../../../models';
@@ -46,8 +46,14 @@ export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const hasEditPermission = useHasPermission('groups', 'Contributor', 'groups.editgroup.deny');
-  const hasDeletePermission = useHasPermission('groups', 'Contributor', 'groups.deletegroup.deny');
+  const hasEditPermission = usePermission(
+    ACTION_PERMISSIONS.groups.edit.scope,
+    ACTION_PERMISSIONS.groups.edit.level,
+  );
+  const hasDeletePermission = usePermission(
+    ACTION_PERMISSIONS.groups.delete.scope,
+    ACTION_PERMISSIONS.groups.delete.level,
+  );
   const canEdit = hasEditPermission && !!onEdit;
   const canDelete = hasDeletePermission;
 
