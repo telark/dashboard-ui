@@ -19,6 +19,8 @@ interface UseUserListConfigProps {
   onBulkDeleteClick?: () => void;
   onManageRoleClick?: () => void;
   onManageGroupClick?: () => void;
+  canManageRole?: boolean;
+  canManageGroup?: boolean;
 }
 
 export const useUserListConfig = ({
@@ -32,6 +34,8 @@ export const useUserListConfig = ({
   onBulkDeleteClick,
   onManageRoleClick,
   onManageGroupClick,
+  canManageRole = true,
+  canManageGroup = true,
 }: UseUserListConfigProps) => {
   const toolbarConfig: ToolbarConfig = React.useMemo(
     () => ({
@@ -75,11 +79,13 @@ export const useUserListConfig = ({
                 key: 'manage-roles',
                 label: UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_ROLES,
                 icon: <RoleIcon size={14} />,
+                disabled: !canManageRole,
               },
               {
                 key: 'manage-groups',
                 label: UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_GROUPS,
                 icon: <GroupIcon size={14} />,
+                disabled: !canManageGroup,
               },
             ],
             onItemClick: (key: string) => {
@@ -112,6 +118,8 @@ export const useUserListConfig = ({
       onBulkDeleteClick,
       onManageRoleClick,
       onManageGroupClick,
+      canManageRole,
+      canManageGroup,
     ],
   );
 

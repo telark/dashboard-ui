@@ -10,6 +10,7 @@ import { useFetchGroups } from '../../../groups/hooks';
 import Columns from '../../components/display/list/Columns';
 import { UserActionsColumn } from '../../components/display/list/UserActionsColumn';
 import { useUserListConfig } from '../../config/userListConfig';
+import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import type { User } from '../../models';
 
 const UserIcon = Icons.User;
@@ -63,6 +64,16 @@ export const useUserListPageConfig = ({
   onSearchSubmit,
 }: UseUserListPageConfigOptions): PageLayoutConfig<User> => {
   const { rowHeight } = useAppearance();
+  const canManageRole = usePermission(
+    ACTION_PERMISSIONS.users.manageRoles.scope,
+    ACTION_PERMISSIONS.users.manageRoles.level,
+    ACTION_PERMISSIONS.users.manageRoles.deny,
+  );
+  const canManageGroup = usePermission(
+    ACTION_PERMISSIONS.users.manageGroups.scope,
+    ACTION_PERMISSIONS.users.manageGroups.level,
+    ACTION_PERMISSIONS.users.manageGroups.deny,
+  );
   const { toolbarConfig } = useUserListConfig({
     searchValue,
     onSearchChange,
@@ -74,6 +85,8 @@ export const useUserListPageConfig = ({
     onBulkDeleteClick,
     onManageRoleClick,
     onManageGroupClick,
+    canManageRole,
+    canManageGroup,
   });
 
   useFetchGroups();

@@ -9,19 +9,75 @@ import { PERMISSION_LEVEL_RANK } from '../../models/permissions';
 // deny: the formatRuleKey(scope, actionKey) string; if present in the scope entry's rules array, access is denied.
 export const ACTION_PERMISSIONS = {
   users: {
-    create: { scope: 'users' as const, level: 'Contributor' as PermissionLevel, deny: 'users.createuser.deny' },
-    edit: { scope: 'users' as const, level: 'Contributor' as PermissionLevel, deny: 'users.edituser.deny' },
-    delete: { scope: 'users' as const, level: 'Contributor' as PermissionLevel, deny: 'users.deleteuser.deny' },
+    create: {
+      scope: 'users' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'users.createuser.deny',
+    },
+    edit: {
+      scope: 'users' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'users.edituser.deny',
+    },
+    delete: {
+      scope: 'users' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'users.deleteuser.deny',
+    },
+    manageRoles: {
+      scope: 'users' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'users.attachroletouser.deny',
+    },
+    manageGroups: {
+      scope: 'users' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'users.addusertogroup.deny',
+    },
   },
   groups: {
-    create: { scope: 'groups' as const, level: 'Contributor' as PermissionLevel, deny: 'groups.creategroup.deny' },
-    edit: { scope: 'groups' as const, level: 'Contributor' as PermissionLevel, deny: 'groups.editgroup.deny' },
-    delete: { scope: 'groups' as const, level: 'Contributor' as PermissionLevel, deny: 'groups.deletegroup.deny' },
+    create: {
+      scope: 'groups' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'groups.creategroup.deny',
+    },
+    edit: {
+      scope: 'groups' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'groups.editgroup.deny',
+    },
+    delete: {
+      scope: 'groups' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'groups.deletegroup.deny',
+    },
+    attachRole: {
+      scope: 'groups' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'groups.attachroletogroup.deny',
+    },
+    attachMember: {
+      scope: 'groups' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'groups.addusertogroup.deny',
+    },
   },
   roles: {
-    create: { scope: 'roles' as const, level: 'Contributor' as PermissionLevel, deny: 'roles.createrole.deny' },
-    edit: { scope: 'roles' as const, level: 'Contributor' as PermissionLevel, deny: 'roles.editrole.deny' },
-    delete: { scope: 'roles' as const, level: 'Owner' as PermissionLevel, deny: 'roles.deleterole.deny' },
+    create: {
+      scope: 'roles' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'roles.createrole.deny',
+    },
+    edit: {
+      scope: 'roles' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'roles.editrole.deny',
+    },
+    delete: {
+      scope: 'roles' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'roles.deleterole.deny',
+    },
   },
 } as const;
 

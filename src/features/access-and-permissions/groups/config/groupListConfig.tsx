@@ -26,6 +26,8 @@ interface UseGroupListConfigProps {
   onBulkDeleteClick?: () => void;
   onAttachRoleClick?: () => void;
   onAttachMemberClick?: () => void;
+  canAttachRole?: boolean;
+  canAttachMember?: boolean;
   onFilterClick?: () => void;
   searchValue: string;
   onSearchChange: (value: string) => void;
@@ -42,6 +44,8 @@ export const useGroupListConfig = ({
   onBulkDeleteClick,
   onAttachRoleClick,
   onAttachMemberClick,
+  canAttachRole = true,
+  canAttachMember = true,
   onFilterClick,
   searchValue,
   onSearchChange,
@@ -107,11 +111,13 @@ export const useGroupListConfig = ({
                     key: 'manage-roles',
                     label: GC.LABELS.ACTIONS.MANAGE_ROLES,
                     icon: <RoleIcon size={14} />,
+                    disabled: !canAttachRole,
                   },
                   {
                     key: 'manage-members',
                     label: GC.LABELS.ACTIONS.MANAGE_MEMBERS,
                     icon: <UserIcon size={14} />,
+                    disabled: !canAttachMember,
                   },
                 ],
                 onItemClick: (key: string) => {
@@ -143,6 +149,8 @@ export const useGroupListConfig = ({
     onBulkDeleteClick,
     onAttachRoleClick,
     onAttachMemberClick,
+    canAttachRole,
+    canAttachMember,
     onFilterClick,
     searchValue,
     onSearchChange,

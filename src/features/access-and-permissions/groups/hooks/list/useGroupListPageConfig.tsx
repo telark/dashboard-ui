@@ -12,6 +12,7 @@ import CategoryColumns from '../../../categories/components/display/list/Categor
 import { CategoryActionsColumn } from '../../../categories/components/display/list/CategoryActionsColumn';
 import { GroupActionsColumn } from '../../components/display/list/GroupActionsColumn';
 import { useGroupListConfig } from '../../config/groupListConfig';
+import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import { useCategoryListView } from '../../../categories/hooks';
 import { deduplicateCategoriesByName } from '../../../categories/utils/helpers';
 import { useUsers } from '../../../users/hooks';
@@ -109,6 +110,16 @@ export const useGroupListPageConfig = ({
     paginatedCategories,
   } = useCategoryListView({ categories: uniqueCategories });
 
+  const canAttachRole = usePermission(
+    ACTION_PERMISSIONS.groups.attachRole.scope,
+    ACTION_PERMISSIONS.groups.attachRole.level,
+    ACTION_PERMISSIONS.groups.attachRole.deny,
+  );
+  const canAttachMember = usePermission(
+    ACTION_PERMISSIONS.groups.attachMember.scope,
+    ACTION_PERMISSIONS.groups.attachMember.level,
+    ACTION_PERMISSIONS.groups.attachMember.deny,
+  );
   const { toolbarConfig } = useGroupListConfig({
     viewMode,
     onViewModeChange: setViewMode,
@@ -119,6 +130,8 @@ export const useGroupListPageConfig = ({
     onBulkDeleteClick,
     onAttachRoleClick,
     onAttachMemberClick,
+    canAttachRole,
+    canAttachMember,
     onFilterClick,
     searchValue,
     onSearchChange,
