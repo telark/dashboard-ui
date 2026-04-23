@@ -160,7 +160,12 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
                   onDeassignClick={canRemoveMember ? openDeassignModal : undefined}
                 />
               ) : (
-                <MemberList users={filteredUsers} loading={usersLoading} allUsers={allUsers} />
+                <MemberList
+                  users={filteredUsers}
+                  loading={usersLoading}
+                  allUsers={allUsers}
+                  canSelect={canRemoveMember}
+                />
               )}
             </div>
           </div>

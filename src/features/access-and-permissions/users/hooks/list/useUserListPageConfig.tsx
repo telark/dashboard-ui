@@ -74,6 +74,11 @@ export const useUserListPageConfig = ({
     ACTION_PERMISSIONS.users.manageGroups.level,
     ACTION_PERMISSIONS.users.manageGroups.deny,
   );
+  const canBulkDeleteUser = usePermission(
+    ACTION_PERMISSIONS.users.delete.scope,
+    ACTION_PERMISSIONS.users.delete.level,
+    ACTION_PERMISSIONS.users.delete.deny,
+  );
   const { toolbarConfig } = useUserListConfig({
     searchValue,
     onSearchChange,
@@ -87,6 +92,7 @@ export const useUserListPageConfig = ({
     onManageGroupClick,
     canManageRole,
     canManageGroup,
+    canBulkDeleteUser,
   });
 
   useFetchGroups();

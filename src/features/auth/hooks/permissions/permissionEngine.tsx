@@ -119,7 +119,7 @@ export const ACTION_PERMISSIONS = {
     },
     addCategory: {
       scope: 'groups' as const,
-      level: 'Owner' as PermissionLevel,
+      level: 'Contributor' as PermissionLevel,
       deny: 'groups.addgroupcategory.deny',
     },
     removeRole: {

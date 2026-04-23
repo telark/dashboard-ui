@@ -41,11 +41,11 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
       Contributor: [
         { key: 'creategroup', label: 'CreateGroup' },
         { key: 'editgroup', label: 'EditGroup' },
+        { key: 'addgroupcategory', label: 'AddGroupCategory' },
       ],
       Owner: [
         { key: 'addusertogroup', label: 'AddUserToGroup' },
         { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
-        { key: 'addgroupcategory', label: 'AddGroupCategory' },
         { key: 'deletegroup', label: 'DeleteGroup' },
         { key: 'attachroletogroup', label: 'AttachRoleToGroup' },
         { key: 'removerolefromgroup', label: 'RemoveRoleFromGroup' },

@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { Checkbox, Form } from 'antd';
+import { Checkbox, Form, Tooltip } from 'antd';
 import { GROUPS_CONSTANTS as GC, ATTACHED_MEMBERS_CONSTANTS as AMC } from '../../../constants';
 import UserAvatar from '../../../../../../components/display/avatars/UserAvatar';
 import type { User } from '../../../../users/models';
@@ -8,9 +8,10 @@ interface MemberListProps {
   users: User[] | undefined;
   loading: boolean;
   allUsers?: User[] | undefined;
+  canSelect?: boolean;
 }
 
-const MemberList: React.FC<MemberListProps> = ({ users, loading, allUsers }) => {
+const MemberList: React.FC<MemberListProps> = ({ users, loading, allUsers, canSelect = true }) => {
   const form = Form.useFormInstance();
   const watchedSelectedUsers = Form.useWatch('assignedUsersIDs', form);
   const currentSelectedUsers = useMemo(
@@ -50,43 +51,47 @@ const MemberList: React.FC<MemberListProps> = ({ users, loading, allUsers }) => 
   );
 
   return (
-    <Form.Item name="assignedUsersIDs" style={{ margin: 0, width: '100%' }}>
-      <Checkbox.Group
-        style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
-        value={filteredSelectedUsers}
-        onChange={handleChange}
-      >
-        <div className="role-list-container" style={AMC.LIST.CONTAINER}>
-          {users.map((user) => {
-            return (
-              <div
-                key={user.id}
-                style={AMC.LIST.ITEM.BASE}
-                onMouseEnter={(e) => {
-                  Object.assign(e.currentTarget.style, AMC.LIST.ITEM.HOVER);
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = AMC.LIST.ITEM.BASE.background;
-                  e.currentTarget.style.borderColor = AMC.LIST.ITEM.BASE.border;
-                }}
-              >
-                <Checkbox value={user.id} style={{ margin: 0, width: '100%' }}>
-                  <div style={AMC.LIST.MEMBER_CONTENT}>
-                    <div style={AMC.LIST.MEMBER_AVATAR_CONTAINER}>
-                      <UserAvatar avatar={user.avatar} username={user.username} size={32} />
-                    </div>
-                    <div style={AMC.LIST.MEMBER_INFO}>
-                      <div style={AMC.LIST.MEMBER_NAME}>{user.username}</div>
-                      {user.email && <div style={AMC.LIST.MEMBER_EMAIL}>{user.email}</div>}
-                    </div>
+    <Tooltip title={!canSelect ? GC.LABELS.ACTIONS.REMOVE_MEMBER_DISABLED_TOOLTIP : undefined}>
+      <div style={{ width: '100%' }}>
+        <Form.Item name="assignedUsersIDs" style={{ margin: 0, width: '100%' }}>
+          <Checkbox.Group
+            style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
+            value={filteredSelectedUsers}
+            onChange={handleChange}
+          >
+            <div className="role-list-container" style={AMC.LIST.CONTAINER}>
+              {users.map((user) => {
+                return (
+                  <div
+                    key={user.id}
+                    style={AMC.LIST.ITEM.BASE}
+                    onMouseEnter={(e) => {
+                      if (canSelect) Object.assign(e.currentTarget.style, AMC.LIST.ITEM.HOVER);
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = AMC.LIST.ITEM.BASE.background;
+                      e.currentTarget.style.borderColor = AMC.LIST.ITEM.BASE.border;
+                    }}
+                  >
+                    <Checkbox value={user.id} style={{ margin: 0, width: '100%' }} disabled={!canSelect}>
+                      <div style={AMC.LIST.MEMBER_CONTENT}>
+                        <div style={AMC.LIST.MEMBER_AVATAR_CONTAINER}>
+                          <UserAvatar avatar={user.avatar} username={user.username} size={32} />
+                        </div>
+                        <div style={AMC.LIST.MEMBER_INFO}>
+                          <div style={AMC.LIST.MEMBER_NAME}>{user.username}</div>
+                          {user.email && <div style={AMC.LIST.MEMBER_EMAIL}>{user.email}</div>}
+                        </div>
+                      </div>
+                    </Checkbox>
                   </div>
-                </Checkbox>
-              </div>
-            );
-          })}
-        </div>
-      </Checkbox.Group>
-    </Form.Item>
+                );
+              })}
+            </div>
+          </Checkbox.Group>
+        </Form.Item>
+      </div>
+    </Tooltip>
   );
 };
 

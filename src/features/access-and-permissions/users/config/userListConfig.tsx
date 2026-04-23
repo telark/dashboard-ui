@@ -21,6 +21,7 @@ interface UseUserListConfigProps {
   onManageGroupClick?: () => void;
   canManageRole?: boolean;
   canManageGroup?: boolean;
+  canBulkDeleteUser?: boolean;
 }
 
 export const useUserListConfig = ({
@@ -36,6 +37,7 @@ export const useUserListConfig = ({
   onManageGroupClick,
   canManageRole = true,
   canManageGroup = true,
+  canBulkDeleteUser = true,
 }: UseUserListConfigProps) => {
   const toolbarConfig: ToolbarConfig = React.useMemo(
     () => ({
@@ -64,7 +66,8 @@ export const useUserListConfig = ({
           label: UC.LABELS.ACTIONS.BULK_DELETE,
           icon: <DeleteOutlined />,
           variant: 'danger',
-          disabled: selectedUsersCount < 2,
+          disabled: selectedUsersCount < 2 || !canBulkDeleteUser,
+          tooltip: !canBulkDeleteUser ? UC.LABELS.ACTIONS.BULK_DELETE_DISABLED_TOOLTIP : undefined,
           onClick: () => onBulkDeleteClick?.(),
         },
         {
@@ -120,6 +123,7 @@ export const useUserListConfig = ({
       onManageGroupClick,
       canManageRole,
       canManageGroup,
+      canBulkDeleteUser,
     ],
   );
 

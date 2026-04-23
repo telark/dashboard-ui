@@ -59,6 +59,8 @@ export const CATEGORIES_CONSTANTS = {
         BUTTON_LABEL: 'Manage Categories',
         VIEW_CATEGORIES: 'View Categories',
         ADD_CATEGORY: 'Add Category',
+        VIEW_CATEGORIES_DISABLED_TOOLTIP: 'You do not have permission to view categories',
+        ADD_CATEGORY_DISABLED_TOOLTIP: 'You do not have permission to add categories',
       },
     },
   },

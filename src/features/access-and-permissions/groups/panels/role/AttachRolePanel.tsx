@@ -73,6 +73,11 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
     ACTION_PERMISSIONS.groups.removeRole.level,
     ACTION_PERMISSIONS.groups.removeRole.deny,
   );
+  const canAttachRole = usePermission(
+    ACTION_PERMISSIONS.groups.attachRole.scope,
+    ACTION_PERMISSIONS.groups.attachRole.level,
+    ACTION_PERMISSIONS.groups.attachRole.deny,
+  );
 
   const {
     deassignModalOpen,
@@ -183,7 +188,12 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                 />
               )}
               {activeView === 'select' && (
-                <RoleList roles={filteredRoles} loading={rolesLoading} allRoles={allRoles} />
+                <RoleList
+                  roles={filteredRoles}
+                  loading={rolesLoading}
+                  allRoles={allRoles}
+                  canSelect={canAttachRole}
+                />
               )}
             </div>
           </div>

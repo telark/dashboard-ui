@@ -143,6 +143,7 @@ export const useGroupListConfig = ({
               variant: 'primary' as const,
               onClick: () => onCreateGroupClick?.(),
               disabled: !canCreateGroup,
+              tooltip: !canCreateGroup ? GC.LABELS.ACTIONS.CREATE_DISABLED_TOOLTIP : undefined,
             },
           ],
     };

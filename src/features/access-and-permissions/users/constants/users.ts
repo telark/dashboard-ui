@@ -83,6 +83,7 @@ export const USERS_CONSTANTS = {
       DEASSIGN_GROUP_MODAL_CONFIRM: 'Remove',
       DEASSIGN_GROUP_RESOURCE_TYPE: 'group',
       BULK_DELETE: 'Bulk Delete',
+      BULK_DELETE_DISABLED_TOOLTIP: 'You do not have permission to delete users',
       BULK_DELETE_MODAL_TITLE: 'Delete Users',
       BULK_DELETE_LOADING: (count: number) => `Deleting ${count} user${count > 1 ? 's' : ''}...`,
       BULK_DELETE_SUCCESS: (count: number) =>

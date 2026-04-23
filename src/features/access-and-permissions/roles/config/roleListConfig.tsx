@@ -87,6 +87,7 @@ export const useRoleListConfig = ({
               variant: 'primary' as const,
               onClick: onCreateRoleClick,
               disabled: !canCreateRole,
+              tooltip: !canCreateRole ? RC.LABELS.ACTIONS.CREATE_DISABLED_TOOLTIP : undefined,
             },
           ],
     };
