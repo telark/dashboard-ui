@@ -1,3 +1,9 @@
+export const AUTH_PERMISSIONS_LABELS = {
+  NO_PERMISSIONS_TITLE: 'No permissions',
+  NO_PERMISSIONS_DESCRIPTION:
+    'Your account has no roles assigned. Contact your administrator to request access.',
+};
+
 export const AUTH_ERROR_MESSAGES = {
   LOGIN_START_FAILED: 'Failed to start login',
   LOGIN_FINISH_FAILED: 'Failed to complete login',

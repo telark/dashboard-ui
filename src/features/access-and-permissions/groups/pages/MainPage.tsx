@@ -22,7 +22,7 @@ import GroupsListPage from './GroupsListPage';
 type ViewMode = 'groups' | 'categories';
 
 const MainPage: React.FC = () => {
-  const canCreateGroup = useHasPermission('groups', 'Contributor', 'groups.creategroup.deny');
+  const canCreateGroup = useHasPermission('groups', 'Admin');
   const canEditGroup = useHasPermission('groups', 'Contributor', 'groups.editgroup.deny');
   const [viewMode, setViewMode] = useState<ViewMode>('groups');
   const [addCategoryPanelOpen, setAddCategoryPanelOpen] = useState(false);

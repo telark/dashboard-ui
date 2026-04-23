@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import { Layout, message, App as AntdApp } from 'antd';
 import { BrowserRouter as Router, useLocation, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { AiOutlineSafety } from 'react-icons/ai';
 import Sidebar from './components/layout/sidebar/Sidebar';
 import Header from './components/layout/header/Header';
 import ErrorBoundary from './ErrorBoundary';
 import { SessionExpiredModal } from './features/auth/components';
+import EmptyState from './components/display/views/EmptyState';
 import 'antd/dist/reset.css';
 import { DEFAULT_COLORS, APP_CONFIGS, APP_ROUTES } from './constants';
 import AppRoutes from './routes/AppRoutes';
 import { hasSessionToken, useSessionExpirationCheck } from './features/auth/utils';
 import { useInitializePermissions } from './features/auth/hooks';
+import { selectPermissionsState } from './features/auth/store/selectors/permissionsSelectors';
+import { AUTH_PERMISSIONS_LABELS } from './features/auth/constants';
 import { useInitializeCategories } from './features/access-and-permissions/categories/hooks';
 import { useInitializeRoles } from './features/access-and-permissions/roles/hooks';
 
@@ -23,6 +28,9 @@ const AppContent: React.FC = () => {
     location.pathname === APP_ROUTES.GOOGLE_CALLBACK;
   const isAuthenticated = hasSessionToken();
   const [showSessionExpiredModal, setShowSessionExpiredModal] = useState(false);
+  const permissions = useSelector(selectPermissionsState);
+  const noPermissions =
+    !permissions.loading && permissions.userID !== null && permissions.roles.length === 0;
 
   // Check session expiration as background task when authenticated
   useSessionExpirationCheck({
@@ -54,7 +62,17 @@ const AppContent: React.FC = () => {
             }}
           >
             <Header />
-            <AppRoutes />
+            {noPermissions ? (
+              <EmptyState
+                icon={
+                  <AiOutlineSafety size={32} style={{ color: DEFAULT_COLORS.ICON_MUTED }} />
+                }
+                title={AUTH_PERMISSIONS_LABELS.NO_PERMISSIONS_TITLE}
+                description={AUTH_PERMISSIONS_LABELS.NO_PERMISSIONS_DESCRIPTION}
+              />
+            ) : (
+              <AppRoutes />
+            )}
           </Layout>
         </Layout>
       );

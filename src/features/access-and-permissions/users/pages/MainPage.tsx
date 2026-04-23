@@ -14,7 +14,7 @@ import UsersListPage from './UsersListPage';
 
 const MainPage: React.FC = () => {
   const { users, loading, error } = useUsers();
-  const canCreateUser = useHasPermission('users', 'Contributor', 'users.createuser.deny');
+  const canCreateUser = useHasPermission('users', 'Admin');
   const canEditUser = useHasPermission('users', 'Contributor', 'users.edituser.deny');
   const [searchTerm, setSearchTerm] = useState('');
   const [bulkDeleteModalOpen, setBulkDeleteModalOpen] = useState(false);

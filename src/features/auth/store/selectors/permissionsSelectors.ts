@@ -20,7 +20,7 @@ export const makeSelectHasPermission = (
   denyRule?: string,
 ) =>
   createSelector([selectScopeIndex], (index) => {
-    const entry = index[scope];
+    const entry = index[scope] ?? index['ALL'];
     if (!entry) return false;
     if (PERMISSION_LEVEL_RANK[entry.level] < PERMISSION_LEVEL_RANK[minimumLevel]) return false;
     if (denyRule && entry.rules.includes(denyRule)) return false;

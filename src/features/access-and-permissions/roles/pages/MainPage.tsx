@@ -24,7 +24,7 @@ type ViewMode = 'roles' | 'categories';
 
 const MainPage: React.FC = () => {
   const { roles, loading, error } = useRoles();
-  const canCreateRole = useHasPermission('roles', 'Contributor', 'roles.createrole.deny');
+  const canCreateRole = useHasPermission('roles', 'Admin');
   const canEditRole = useHasPermission('roles', 'Contributor', 'roles.editrole.deny');
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<ViewMode>('roles');
