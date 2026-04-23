@@ -5,8 +5,6 @@ import type { PermissionLevel } from '../../models/permissions';
 import { PERMISSION_LEVEL_RANK } from '../../models/permissions';
 
 // Minimum level per action derived from scopeRules.ts: lowest level at which the action rule first appears.
-// roles.delete requires Owner because "deleterole" is absent from the Contributor rule set.
-// deny: the formatRuleKey(scope, actionKey) string; if present in the scope entry's rules array, access is denied.
 export const ACTION_PERMISSIONS = {
   applications: {
     viewRollbacks: {
@@ -36,7 +34,7 @@ export const ACTION_PERMISSIONS = {
     },
     delete: {
       scope: 'applications' as const,
-      level: 'Contributor' as PermissionLevel,
+      level: 'Owner' as PermissionLevel,
       deny: 'applications.deleteapplication.deny',
     },
     rollback: {
@@ -58,18 +56,34 @@ export const ACTION_PERMISSIONS = {
     },
     delete: {
       scope: 'users' as const,
-      level: 'Contributor' as PermissionLevel,
+      level: 'Owner' as PermissionLevel,
       deny: 'users.deleteuser.deny',
     },
     manageRoles: {
       scope: 'users' as const,
-      level: 'Contributor' as PermissionLevel,
+      level: 'Owner' as PermissionLevel,
       deny: 'users.attachroletouser.deny',
     },
     manageGroups: {
       scope: 'users' as const,
-      level: 'Contributor' as PermissionLevel,
+      level: 'Owner' as PermissionLevel,
       deny: 'users.addusertogroup.deny',
+    },
+    removeRole: {
+      scope: 'users' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'users.removerolefromuser.deny',
+    },
+    removeFromGroup: {
+      scope: 'users' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'users.removeuserfromgroup.deny',
+    },
+    // todo: wire viewAttachedRoles to component when supported
+    viewAttachedRoles: {
+      scope: 'users' as const,
+      level: 'ReadOnly' as PermissionLevel,
+      deny: 'users.viewuserattachedroles.deny',
     },
   },
   groups: {
@@ -85,17 +99,17 @@ export const ACTION_PERMISSIONS = {
     },
     delete: {
       scope: 'groups' as const,
-      level: 'Contributor' as PermissionLevel,
+      level: 'Owner' as PermissionLevel,
       deny: 'groups.deletegroup.deny',
     },
     attachRole: {
       scope: 'groups' as const,
-      level: 'Contributor' as PermissionLevel,
+      level: 'Owner' as PermissionLevel,
       deny: 'groups.attachroletogroup.deny',
     },
     attachMember: {
       scope: 'groups' as const,
-      level: 'Contributor' as PermissionLevel,
+      level: 'Owner' as PermissionLevel,
       deny: 'groups.addusertogroup.deny',
     },
     viewCategories: {
@@ -105,8 +119,24 @@ export const ACTION_PERMISSIONS = {
     },
     addCategory: {
       scope: 'groups' as const,
-      level: 'Contributor' as PermissionLevel,
+      level: 'Owner' as PermissionLevel,
       deny: 'groups.addgroupcategory.deny',
+    },
+    removeRole: {
+      scope: 'groups' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'groups.removerolefromgroup.deny',
+    },
+    removeMember: {
+      scope: 'groups' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'groups.removeuserfromgroup.deny',
+    },
+    // todo: wire viewAttachedRoles to component when supported
+    viewAttachedRoles: {
+      scope: 'groups' as const,
+      level: 'ReadOnly' as PermissionLevel,
+      deny: 'groups.viewgroupattachedroles.deny',
     },
   },
   roles: {

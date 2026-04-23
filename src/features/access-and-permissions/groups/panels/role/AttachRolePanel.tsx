@@ -10,6 +10,10 @@ import { SearchInput } from '../../../../../components/display/inputs';
 import ActionConfirmModal from '../../../../../components/display/modal/confirm/ActionConfirmModal';
 import { Icons, DEFAULT_COLORS } from '../../../../../constants';
 import { useAttachRolePanel, useDeassignGroupRole } from '../../hooks';
+import {
+  usePermission,
+  ACTION_PERMISSIONS,
+} from '../../../../../features/auth/hooks/permissions/permissionEngine';
 import RoleList from '../../components/display/role/RoleList';
 import GroupAssignedRolesView from '../../components/display/role/GroupAssignedRolesView';
 import type { Group } from '../../models';
@@ -63,6 +67,12 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
     onClose,
     currentSelectedRoles,
   });
+
+  const canRemoveRole = usePermission(
+    ACTION_PERMISSIONS.groups.removeRole.scope,
+    ACTION_PERMISSIONS.groups.removeRole.level,
+    ACTION_PERMISSIONS.groups.removeRole.deny,
+  );
 
   const {
     deassignModalOpen,
@@ -169,7 +179,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                   assignedRoleIds={filteredAssignedRoleIds}
                   allRoles={allRoles}
                   loading={rolesLoading}
-                  onDeassignClick={openDeassignModal}
+                  onDeassignClick={canRemoveRole ? openDeassignModal : undefined}
                 />
               )}
               {activeView === 'select' && (

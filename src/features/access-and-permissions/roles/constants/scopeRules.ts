@@ -27,9 +27,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'forceapplicationsync', label: 'ForceApplicationSync' },
         { key: 'rollbackapplication', label: 'RollbackApplication' },
       ],
-      Owner: [
-        { key: 'deleteapplication', label: 'DeleteApplication' },
-      ],
+      Owner: [{ key: 'deleteapplication', label: 'DeleteApplication' }],
       Admin: [],
     },
   },
@@ -58,9 +56,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
   {
     scope: 'users',
     rules: {
-      ReadOnly: [
-        { key: 'viewuserattachedroles', label: 'ViewUserAttachedRoles' },
-      ],
+      ReadOnly: [{ key: 'viewuserattachedroles', label: 'ViewUserAttachedRoles' }],
       Contributor: [
         { key: 'createuser', label: 'CreateUser' },
         { key: 'edituser', label: 'EditUser' },
@@ -78,17 +74,13 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
   {
     scope: 'roles',
     rules: {
-      ReadOnly: [
-        { key: 'viewrolescategories', label: 'ViewRolesCategories' },
-      ],
+      ReadOnly: [{ key: 'viewrolescategories', label: 'ViewRolesCategories' }],
       Contributor: [
         { key: 'createrole', label: 'CreateRole' },
         { key: 'editrole', label: 'EditRole' },
         { key: 'addrolecategory', label: 'AddRoleCategory' },
       ],
-      Owner: [
-        { key: 'deleterole', label: 'DeleteRole' },
-      ],
+      Owner: [{ key: 'deleterole', label: 'DeleteRole' }],
       Admin: [],
     },
   },

@@ -13,6 +13,10 @@ import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { useManageUserRolePanel } from '../../../hooks/panels/role/useManageUserRolePanel';
 import { useDeassignUserRole } from '../../../hooks/panels/role/useDeassignUserRole';
+import {
+  usePermission,
+  ACTION_PERMISSIONS,
+} from '../../../../../../features/auth/hooks/permissions/permissionEngine';
 import { useGroupInheritedRoles } from '../../../hooks/panels/role/useGroupInheritedRoles';
 import { useFetchGroups } from '../../../../groups/hooks/data/useFetchGroups';
 import UserRoleSelectList from '../../../components/display/manage/role/UserRoleSelectList';
@@ -70,6 +74,12 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     submitting,
     handleSubmit,
   } = useManageUserRolePanel({ open, user, form, onClose, currentSelectedRoles });
+
+  const canRemoveRole = usePermission(
+    ACTION_PERMISSIONS.users.removeRole.scope,
+    ACTION_PERMISSIONS.users.removeRole.level,
+    ACTION_PERMISSIONS.users.removeRole.deny,
+  );
 
   const handleDeassignSuccess = useCallback((updatedRoles: string[]) => {
     setLocalAssignedIds(updatedRoles);
@@ -225,7 +235,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                   assignedRoleIds={filteredAssignedRoleIds}
                   allRoles={allRoles}
                   loading={rolesLoading}
-                  onDeassignClick={openDeassignModal}
+                  onDeassignClick={canRemoveRole ? openDeassignModal : undefined}
                   inheritedRoleIds={inheritedRoleIds}
                   inheritedGroupsByRoleId={inheritedGroupsByRoleId}
                 />

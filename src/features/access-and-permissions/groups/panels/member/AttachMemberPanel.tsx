@@ -10,6 +10,10 @@ import { ToggleButton } from '../../../../../components/display/buttons';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
 import { Icons, DEFAULT_COLORS } from '../../../../../constants';
 import { useAttachMemberPanel, useDeassignGroupMember } from '../../hooks';
+import {
+  usePermission,
+  ACTION_PERMISSIONS,
+} from '../../../../../features/auth/hooks/permissions/permissionEngine';
 import MemberList from '../../components/display/member/MemberList';
 import GroupAssignedMembersView from '../../components/display/member/GroupAssignedMembersView';
 import type { Group } from '../../models';
@@ -59,6 +63,12 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
     onClose,
     currentSelectedUsers,
   });
+
+  const canRemoveMember = usePermission(
+    ACTION_PERMISSIONS.groups.removeMember.scope,
+    ACTION_PERMISSIONS.groups.removeMember.level,
+    ACTION_PERMISSIONS.groups.removeMember.deny,
+  );
 
   const handleDeassignSuccess = useCallback((updatedUserIds: string[]) => {
     setLocalAssignedIds(updatedUserIds);
@@ -147,7 +157,7 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
                   assignedUserIds={filteredAssignedUserIds}
                   allUsers={allUsers}
                   loading={usersLoading}
-                  onDeassignClick={openDeassignModal}
+                  onDeassignClick={canRemoveMember ? openDeassignModal : undefined}
                 />
               ) : (
                 <MemberList users={filteredUsers} loading={usersLoading} allUsers={allUsers} />
