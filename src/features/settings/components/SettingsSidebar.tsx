@@ -49,7 +49,10 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = memo(
           <SettingsSidebarGroup
             title="Personal"
             sections={SETTINGS_SECTIONS_LIST.filter(
-              (section) => section.key === 'profile' || section.key === 'appearance',
+              (section) =>
+                section.key === 'profile' ||
+                section.key === 'appearance' ||
+                section.key === 'myPermissions',
             )}
             activeSection={activeSection}
             onSectionChange={onSectionChange}

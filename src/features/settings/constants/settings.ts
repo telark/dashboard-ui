@@ -4,6 +4,7 @@ import {
   SafetyOutlined,
   AuditOutlined,
   RobotOutlined,
+  KeyOutlined,
 } from '@ant-design/icons';
 import type { ComponentType, CSSProperties } from 'react';
 
@@ -12,7 +13,8 @@ export type SettingsSectionKey =
   | 'appearance'
   | 'security'
   | 'aiInsights'
-  | 'insightsGovernance';
+  | 'insightsGovernance'
+  | 'myPermissions';
 
 export interface SettingsSectionConfig {
   key: SettingsSectionKey;
@@ -57,6 +59,12 @@ export const SETTINGS_CONSTANTS = {
       description: 'Configure discovery scope, fetch interval, and snapshot storage behavior.',
       icon: AuditOutlined,
     },
+    MY_PERMISSIONS: {
+      key: 'myPermissions' as const,
+      label: 'My Permissions',
+      description: 'Your effective permissions resolved across all assigned roles.',
+      icon: KeyOutlined,
+    },
   },
   SIDEBAR: {
     WIDTH: 240,
@@ -77,6 +85,7 @@ export const SETTINGS_CONSTANTS = {
 export const SETTINGS_SECTIONS_LIST: SettingsSectionConfig[] = [
   SETTINGS_CONSTANTS.SECTIONS.PROFILE,
   SETTINGS_CONSTANTS.SECTIONS.APPEARANCE,
+  SETTINGS_CONSTANTS.SECTIONS.MY_PERMISSIONS,
   SETTINGS_CONSTANTS.SECTIONS.SECURITY,
   SETTINGS_CONSTANTS.SECTIONS.AI_INSIGHTS,
   SETTINGS_CONSTANTS.SECTIONS.AI_DATA,
