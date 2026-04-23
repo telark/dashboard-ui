@@ -199,6 +199,7 @@ export const ROLES_CONSTANTS = {
       { key: 'groups', label: 'Groups' },
       { key: 'users', label: 'Users' },
       { key: 'roles', label: 'Roles' },
+      { key: 'applications', label: 'Applications' },
     ] as const,
     PERMISSION_LEVEL_TOOLTIP: {
       ReadOnly: 'Read-only access to view data and settings.',
