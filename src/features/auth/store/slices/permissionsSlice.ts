@@ -14,25 +14,30 @@ const initialState: PermissionsState = {
 function buildScopeIndex(
   roles: ResolvedRole[],
 ): Record<string, { level: PermissionLevel; rules: string[] }> {
-  const index: Record<string, { level: PermissionLevel; rules: string[] }> = {};
+  const index: Record<string, { level: PermissionLevel; rules: string[]; priority: number }> = {};
 
-  // Sort by priority descending so highest-priority role is processed first
-  const sorted = [...roles].sort((a, b) => b.priority - a.priority);
-
-  for (const role of sorted) {
+  for (const role of roles) {
     if (role.isExpired) continue;
     for (const sp of role.scopes) {
       const existing = index[sp.scope];
-      if (!existing || PERMISSION_LEVEL_RANK[sp.level] > PERMISSION_LEVEL_RANK[existing.level]) {
-        index[sp.scope] = {
-          level: sp.level,
-          rules: sp.rules ?? [],
-        };
+      if (!existing) {
+        index[sp.scope] = { level: sp.level, rules: sp.rules ?? [], priority: role.priority };
+      } else {
+        const incomingRank = PERMISSION_LEVEL_RANK[sp.level];
+        const existingRank = PERMISSION_LEVEL_RANK[existing.level];
+        if (
+          incomingRank > existingRank ||
+          (incomingRank === existingRank && role.priority > existing.priority)
+        ) {
+          index[sp.scope] = { level: sp.level, rules: sp.rules ?? [], priority: role.priority };
+        }
       }
     }
   }
 
-  return index;
+  return Object.fromEntries(
+    Object.entries(index).map(([scope, { level, rules }]) => [scope, { level, rules }]),
+  );
 }
 
 const permissionsSlice = createSlice({
