@@ -28,6 +28,7 @@ interface UseGroupListConfigProps {
   onAttachMemberClick?: () => void;
   canAttachRole?: boolean;
   canAttachMember?: boolean;
+  canViewGroupCategories?: boolean;
   onFilterClick?: () => void;
   searchValue: string;
   onSearchChange: (value: string) => void;
@@ -46,6 +47,7 @@ export const useGroupListConfig = ({
   onAttachMemberClick,
   canAttachRole = true,
   canAttachMember = true,
+  canViewGroupCategories = true,
   onFilterClick,
   searchValue,
   onSearchChange,
@@ -98,6 +100,7 @@ export const useGroupListConfig = ({
             getManageCategoriesButtonConfig({
               onViewCategories: () => onViewModeChange?.('categories'),
               onAddCategory: () => onAddCategoryClick?.(),
+              canViewCategories: canViewGroupCategories,
             }),
             {
               key: 'manage-assignments',

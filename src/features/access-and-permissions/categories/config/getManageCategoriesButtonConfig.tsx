@@ -8,6 +8,7 @@ const LABELS = CATEGORIES_CONSTANTS.LABELS.TOOLBAR.MANAGE_CATEGORIES;
 export interface ManageCategoriesButtonConfigParams {
   onViewCategories: () => void;
   onAddCategory: () => void;
+  canViewCategories?: boolean;
 }
 
 /**
@@ -17,6 +18,7 @@ export interface ManageCategoriesButtonConfigParams {
 export function getManageCategoriesButtonConfig({
   onViewCategories,
   onAddCategory,
+  canViewCategories = true,
 }: ManageCategoriesButtonConfigParams): ToolbarButtonConfig {
   return {
     key: 'manage-categories',
@@ -29,6 +31,7 @@ export function getManageCategoriesButtonConfig({
           key: 'view-categories',
           label: LABELS.VIEW_CATEGORIES,
           icon: <EyeOutlined />,
+          disabled: !canViewCategories,
         },
         {
           key: 'add-category',

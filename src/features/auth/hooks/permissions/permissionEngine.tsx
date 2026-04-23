@@ -61,6 +61,11 @@ export const ACTION_PERMISSIONS = {
       level: 'Contributor' as PermissionLevel,
       deny: 'groups.addusertogroup.deny',
     },
+    viewCategories: {
+      scope: 'groups' as const,
+      level: 'ReadOnly' as PermissionLevel,
+      deny: 'groups.viewgroupscategories.deny',
+    },
   },
   roles: {
     create: {
