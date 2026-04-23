@@ -1,5 +1,5 @@
 import { fetchCategoriesByScope, createCategory } from '../../../categories/clients';
-import { createRole, fetchRoles } from '../../clients';
+import { createRole, fetchRoles, updateRole } from '../../clients';
 import { CATEGORIES_CONSTANTS } from '../../../categories/constants';
 import { BUILT_IN_ROLES, ROLES_CONSTANTS } from '../../constants';
 import logger from '../../../../../logging';
@@ -89,18 +89,31 @@ const ensurePlatformCategory = async (): Promise<string | null> => {
   }
 };
 
-const getExistingBuiltInRoleNames = async (): Promise<Set<string>> => {
+const getExistingBuiltInRoles = async (): Promise<Map<string, Role>> => {
   const existingRoles = await fetchRoles(true);
-  const roleNames = new Set<string>();
+  const roleMap = new Map<string, Role>();
 
   const roles = existingRoles?.data?.items || [];
   roles.forEach((role: Role) => {
     if (role.type === ROLES_CONSTANTS.VALUES.ROLE_TYPE_BUILT_IN) {
-      roleNames.add(role.name.toLowerCase());
+      roleMap.set(role.name.toLowerCase(), role);
     }
   });
 
-  return roleNames;
+  return roleMap;
+};
+
+const scopesMatch = (
+  stored: Role['scopesAndPermissions'],
+  canonical: RoleFormData['scopesAndPermissions'],
+): boolean => {
+  if (stored.length !== canonical.length) return false;
+  const storedSorted = [...stored].sort((a, b) => a.scope.localeCompare(b.scope));
+  const canonicalSorted = [...canonical].sort((a, b) => a.scope.localeCompare(b.scope));
+  return storedSorted.every(
+    (entry, i) =>
+      entry.scope === canonicalSorted[i].scope && entry.level === canonicalSorted[i].level,
+  );
 };
 
 const createRoleSafely = async (role: RoleFormData): Promise<void> => {
@@ -116,6 +129,14 @@ const createRoleSafely = async (role: RoleFormData): Promise<void> => {
   }
 };
 
+const updateRoleSafely = async (roleId: string, scopesAndPermissions: RoleFormData['scopesAndPermissions']): Promise<void> => {
+  try {
+    await updateRole(roleId, { scopesAndPermissions });
+  } catch (error) {
+    logger.error(ROLES_CONSTANTS.LOGS.ROLE_CREATE_FAILED(roleId), error);
+  }
+};
+
 const performInitialization = async (): Promise<void> => {
   const platformCategoryId = await ensurePlatformCategory();
   if (!platformCategoryId) {
@@ -123,20 +144,21 @@ const performInitialization = async (): Promise<void> => {
     return;
   }
 
-  const existingRoleNames = await getExistingBuiltInRoleNames();
-  const rolesToCreate = BUILT_IN_ROLES.filter(
-    (role) => !existingRoleNames.has(role.name.toLowerCase()),
-  ).map((role) => ({
-    ...role,
-    categoryID: platformCategoryId,
-  }));
+  const existingRoles = await getExistingBuiltInRoles();
 
-  if (rolesToCreate.length === 0) {
-    return;
+  const createPromises: Promise<void>[] = [];
+  const updatePromises: Promise<void>[] = [];
+
+  for (const canonical of BUILT_IN_ROLES) {
+    const existing = existingRoles.get(canonical.name.toLowerCase());
+    if (!existing) {
+      createPromises.push(createRoleSafely({ ...canonical, categoryID: platformCategoryId }));
+    } else if (!scopesMatch(existing.scopesAndPermissions, canonical.scopesAndPermissions)) {
+      updatePromises.push(updateRoleSafely(existing.id, canonical.scopesAndPermissions));
+    }
   }
 
-  const createPromises = rolesToCreate.map((role) => createRoleSafely(role));
-  await Promise.allSettled(createPromises);
+  await Promise.allSettled([...createPromises, ...updatePromises]);
 };
 
 export const initializeBuiltInRoles = async (): Promise<void> => {

@@ -11,19 +11,19 @@ export const BUILT_IN_ROLES: Omit<RoleFormData, 'id' | 'creationDate' | 'lastUpd
     categoryID: '', // Will be set during initialization with platform category ID
     scopesAndPermissions: [
       {
-        scope: 'Users',
+        scope: 'users',
         level: PERMISSION_LEVEL.READ_ONLY,
       },
       {
-        scope: 'Groups',
+        scope: 'groups',
         level: PERMISSION_LEVEL.READ_ONLY,
       },
       {
-        scope: 'Roles',
+        scope: 'roles',
         level: PERMISSION_LEVEL.READ_ONLY,
       },
       {
-        scope: 'Policies',
+        scope: 'applications',
         level: PERMISSION_LEVEL.READ_ONLY,
       },
     ],
@@ -51,19 +51,19 @@ export const BUILT_IN_ROLES: Omit<RoleFormData, 'id' | 'creationDate' | 'lastUpd
     categoryID: '', // Will be set during initialization with platform category ID
     scopesAndPermissions: [
       {
-        scope: 'Users',
+        scope: 'users',
         level: PERMISSION_LEVEL.READ_ONLY,
       },
       {
-        scope: 'Groups',
+        scope: 'groups',
         level: PERMISSION_LEVEL.READ_ONLY,
       },
       {
-        scope: 'Roles',
+        scope: 'roles',
         level: PERMISSION_LEVEL.READ_ONLY,
       },
       {
-        scope: 'Policies',
+        scope: 'applications',
         level: PERMISSION_LEVEL.CONTRIBUTOR,
       },
     ],
@@ -91,19 +91,19 @@ export const BUILT_IN_ROLES: Omit<RoleFormData, 'id' | 'creationDate' | 'lastUpd
     categoryID: '', // Will be set during initialization with platform category ID
     scopesAndPermissions: [
       {
-        scope: 'Users',
+        scope: 'users',
         level: PERMISSION_LEVEL.OWNER,
       },
       {
-        scope: 'Groups',
+        scope: 'groups',
         level: PERMISSION_LEVEL.OWNER,
       },
       {
-        scope: 'Roles',
+        scope: 'roles',
         level: PERMISSION_LEVEL.OWNER,
       },
       {
-        scope: 'Policies',
+        scope: 'applications',
         level: PERMISSION_LEVEL.OWNER,
       },
     ],

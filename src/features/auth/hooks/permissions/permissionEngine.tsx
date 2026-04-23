@@ -172,7 +172,7 @@ function resolveEntry(
   scopeIndex: Record<string, { level: PermissionLevel; rules: string[] }>,
   scope: string,
 ): { level: PermissionLevel; rules: string[] } | undefined {
-  return scopeIndex[scope] ?? scopeIndex['ALL'];
+  return scopeIndex[scope];
 }
 
 export function usePermission(
