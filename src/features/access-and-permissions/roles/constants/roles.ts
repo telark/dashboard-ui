@@ -45,6 +45,7 @@ export const ROLES_CONSTANTS = {
       EDIT: 'Edit',
       DELETE: 'Delete',
       EDIT_DISABLED_TOOLTIP: 'Edit is disabled due to protection',
+      EDIT_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to edit roles',
       DELETE_DISABLED_TOOLTIP: 'Delete is disabled due to protection',
       DELETE_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to delete roles',
       CREATE_DISABLED_TOOLTIP: 'You do not have permission to create roles',

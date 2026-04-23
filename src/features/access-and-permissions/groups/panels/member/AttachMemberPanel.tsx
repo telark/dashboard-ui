@@ -64,11 +64,17 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
     currentSelectedUsers,
   });
 
-  const canRemoveMember = usePermission(
+  const canRemoveMemberFromGroup = usePermission(
     ACTION_PERMISSIONS.groups.removeMember.scope,
     ACTION_PERMISSIONS.groups.removeMember.level,
     ACTION_PERMISSIONS.groups.removeMember.deny,
   );
+  const canRemoveUserFromGroup = usePermission(
+    ACTION_PERMISSIONS.users.removeFromGroup.scope,
+    ACTION_PERMISSIONS.users.removeFromGroup.level,
+    ACTION_PERMISSIONS.users.removeFromGroup.deny,
+  );
+  const canRemoveMember = canRemoveMemberFromGroup && canRemoveUserFromGroup;
 
   const handleDeassignSuccess = useCallback((updatedUserIds: string[]) => {
     setLocalAssignedIds(updatedUserIds);

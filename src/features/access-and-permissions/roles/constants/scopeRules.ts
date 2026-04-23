@@ -65,8 +65,6 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'deleteuser', label: 'DeleteUser' },
         { key: 'attachroletouser', label: 'AttachRoleToUser' },
         { key: 'removerolefromuser', label: 'RemoveRoleFromUser' },
-        { key: 'addusertogroup', label: 'AddUserToGroup' },
-        { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
       ],
       Admin: [],
     },

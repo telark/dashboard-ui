@@ -65,9 +65,9 @@ export const ACTION_PERMISSIONS = {
       deny: 'users.attachroletouser.deny',
     },
     manageGroups: {
-      scope: 'users' as const,
+      scope: 'groups' as const,
       level: 'Owner' as PermissionLevel,
-      deny: 'users.addusertogroup.deny',
+      deny: 'groups.addusertogroup.deny',
     },
     removeRole: {
       scope: 'users' as const,
@@ -75,9 +75,9 @@ export const ACTION_PERMISSIONS = {
       deny: 'users.removerolefromuser.deny',
     },
     removeFromGroup: {
-      scope: 'users' as const,
+      scope: 'groups' as const,
       level: 'Owner' as PermissionLevel,
-      deny: 'users.removeuserfromgroup.deny',
+      deny: 'groups.removeuserfromgroup.deny',
     },
     // todo: wire viewAttachedRoles to component when supported
     viewAttachedRoles: {

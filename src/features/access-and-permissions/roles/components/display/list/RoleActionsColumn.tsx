@@ -104,7 +104,13 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
       }}
     >
       <Tooltip
-        title={canEdit ? RC.LABELS.ACTIONS.EDIT : RC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP}
+        title={
+          canEdit
+            ? RC.LABELS.ACTIONS.EDIT
+            : !hasEditPermission
+              ? RC.LABELS.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP
+              : RC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP
+        }
         placement="left"
       >
         <span style={actionWrapperStyle}>
