@@ -91,7 +91,6 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
     scope: 'users',
     rules: {
       ReadOnly: [
-        { key: 'viewuserscategories', label: 'ViewUsersCategories' },
         { key: 'viewuserattachedroles', label: 'ViewUserAttachedRoles' },
       ],
       Contributor: [
@@ -104,7 +103,6 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'removerolefromuser', label: 'RemoveRoleFromUser' },
         { key: 'addusertogroup', label: 'AddUserToGroup' },
         { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
-        { key: 'addusercategory', label: 'AddUserCategory' },
       ],
       Owner: [
         { key: 'createuser', label: 'CreateUser' },
@@ -116,7 +114,6 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'removerolefromuser', label: 'RemoveRoleFromUser' },
         { key: 'addusertogroup', label: 'AddUserToGroup' },
         { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
-        { key: 'addusercategory', label: 'AddUserCategory' },
       ],
       Admin: [
         { key: 'createuser', label: 'CreateUser' },
@@ -128,7 +125,6 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'removerolefromuser', label: 'RemoveRoleFromUser' },
         { key: 'addusertogroup', label: 'AddUserToGroup' },
         { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
-        { key: 'addusercategory', label: 'AddUserCategory' },
       ],
     },
   },
@@ -145,7 +141,6 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'editrole', label: 'EditRole' },
         { key: 'viewrole', label: 'ViewRole' },
         { key: 'listallroles', label: 'ListAllRoles' },
-        { key: 'viewrolescategories', label: 'ViewRolesCategories' },
         { key: 'addrolecategory', label: 'AddRoleCategory' },
       ],
       Owner: [
@@ -156,7 +151,6 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'listallroles', label: 'ListAllRoles' },
         { key: 'assignroletogroup', label: 'AssignRoleToGroup' },
         { key: 'assignroletouser', label: 'AssignRoleToUser' },
-        { key: 'viewrolescategories', label: 'ViewRolesCategories' },
         { key: 'addrolecategory', label: 'AddRoleCategory' },
       ],
       Admin: [
@@ -168,7 +162,6 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'assignroletogroup', label: 'AssignRoleToGroup' },
         { key: 'assignroletouser', label: 'AssignRoleToUser' },
         { key: 'managerolepermissions', label: 'ManageRolePermissions' },
-        { key: 'viewrolescategories', label: 'ViewRolesCategories' },
         { key: 'addrolecategory', label: 'AddRoleCategory' },
       ],
     },
