@@ -12,6 +12,7 @@ import { CategoryActionsColumn } from '../../../categories/components/display/li
 import { Columns } from '../../components/display/list/Columns';
 import { RoleActionsColumn } from '../../components/display/list/RoleActionsColumn';
 import { useRoleListConfig } from '../../config/roleListConfig';
+import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import type { Role } from '../../models';
 import type { Category } from '../../../categories/models';
 import { useUsers } from '../../../users/hooks';
@@ -87,6 +88,11 @@ export const useRoleListPageConfig = ({
     paginatedCategories,
   } = useCategoryListView({ categories: roleCategories });
 
+  const canViewRoleCategories = usePermission(
+    ACTION_PERMISSIONS.roles.viewCategories.scope,
+    ACTION_PERMISSIONS.roles.viewCategories.level,
+    ACTION_PERMISSIONS.roles.viewCategories.deny,
+  );
   const { toolbarConfig } = useRoleListConfig({
     viewMode,
     onViewModeChange: setViewMode,
@@ -97,6 +103,7 @@ export const useRoleListPageConfig = ({
     canCreateRole,
     onFilterClick,
     onAddCategoryClick,
+    canViewRoleCategories,
   });
 
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.ROLES);

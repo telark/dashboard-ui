@@ -88,6 +88,11 @@ export const ACTION_PERMISSIONS = {
       level: 'Owner' as PermissionLevel,
       deny: 'roles.deleterole.deny',
     },
+    viewCategories: {
+      scope: 'roles' as const,
+      level: 'ReadOnly' as PermissionLevel,
+      deny: 'roles.viewrolescategories.deny',
+    },
   },
 } as const;
 

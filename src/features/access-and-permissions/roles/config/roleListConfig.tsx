@@ -20,6 +20,7 @@ interface UseRoleListConfigProps {
   canCreateRole?: boolean;
   onFilterClick?: () => void;
   onAddCategoryClick?: () => void;
+  canViewRoleCategories?: boolean;
 }
 
 export const useRoleListConfig = ({
@@ -32,6 +33,7 @@ export const useRoleListConfig = ({
   canCreateRole = true,
   onFilterClick,
   onAddCategoryClick,
+  canViewRoleCategories = true,
 }: UseRoleListConfigProps) => {
   const toolbarConfig: ToolbarConfig = React.useMemo(() => {
     const isCategoriesView = viewMode === 'categories';
@@ -72,6 +74,7 @@ export const useRoleListConfig = ({
             getManageCategoriesButtonConfig({
               onViewCategories: () => onViewModeChange?.('categories'),
               onAddCategory: () => onAddCategoryClick?.(),
+              canViewCategories: canViewRoleCategories,
             }),
             {
               key: 'create-role',
@@ -93,6 +96,7 @@ export const useRoleListConfig = ({
     onFilterClick,
     onViewModeChange,
     onAddCategoryClick,
+    canViewRoleCategories,
   ]);
 
   return { toolbarConfig };
