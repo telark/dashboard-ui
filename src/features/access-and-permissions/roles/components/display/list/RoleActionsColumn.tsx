@@ -53,10 +53,12 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
   const hasEditPermission = usePermission(
     ACTION_PERMISSIONS.roles.edit.scope,
     ACTION_PERMISSIONS.roles.edit.level,
+    ACTION_PERMISSIONS.roles.edit.deny,
   );
   const hasDeletePermission = usePermission(
     ACTION_PERMISSIONS.roles.delete.scope,
     ACTION_PERMISSIONS.roles.delete.level,
+    ACTION_PERMISSIONS.roles.delete.deny,
   );
   const canEdit = hasEditPermission && canModifyRole(record);
   const canDelete = hasDeletePermission && canDeleteRole(record);

@@ -25,10 +25,12 @@ const MainPage: React.FC = () => {
   const canCreateGroup = usePermission(
     ACTION_PERMISSIONS.groups.create.scope,
     ACTION_PERMISSIONS.groups.create.level,
+    ACTION_PERMISSIONS.groups.create.deny,
   );
   const canEditGroup = usePermission(
     ACTION_PERMISSIONS.groups.edit.scope,
     ACTION_PERMISSIONS.groups.edit.level,
+    ACTION_PERMISSIONS.groups.edit.deny,
   );
   const [viewMode, setViewMode] = useState<ViewMode>('groups');
   const [addCategoryPanelOpen, setAddCategoryPanelOpen] = useState(false);

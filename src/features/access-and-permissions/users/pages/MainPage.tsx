@@ -17,10 +17,12 @@ const MainPage: React.FC = () => {
   const canCreateUser = usePermission(
     ACTION_PERMISSIONS.users.create.scope,
     ACTION_PERMISSIONS.users.create.level,
+    ACTION_PERMISSIONS.users.create.deny,
   );
   const canEditUser = usePermission(
     ACTION_PERMISSIONS.users.edit.scope,
     ACTION_PERMISSIONS.users.edit.level,
+    ACTION_PERMISSIONS.users.edit.deny,
   );
   const [searchTerm, setSearchTerm] = useState('');
   const [bulkDeleteModalOpen, setBulkDeleteModalOpen] = useState(false);

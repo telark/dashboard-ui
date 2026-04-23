@@ -49,10 +49,12 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
   const hasEditPermission = usePermission(
     ACTION_PERMISSIONS.users.edit.scope,
     ACTION_PERMISSIONS.users.edit.level,
+    ACTION_PERMISSIONS.users.edit.deny,
   );
   const hasDeletePermission = usePermission(
     ACTION_PERMISSIONS.users.delete.scope,
     ACTION_PERMISSIONS.users.delete.level,
+    ACTION_PERMISSIONS.users.delete.deny,
   );
   const canEdit = hasEditPermission && !!onEdit;
   const canDelete = hasDeletePermission;

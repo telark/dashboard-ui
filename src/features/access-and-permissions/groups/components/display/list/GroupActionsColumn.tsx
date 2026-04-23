@@ -49,10 +49,12 @@ export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({
   const hasEditPermission = usePermission(
     ACTION_PERMISSIONS.groups.edit.scope,
     ACTION_PERMISSIONS.groups.edit.level,
+    ACTION_PERMISSIONS.groups.edit.deny,
   );
   const hasDeletePermission = usePermission(
     ACTION_PERMISSIONS.groups.delete.scope,
     ACTION_PERMISSIONS.groups.delete.level,
+    ACTION_PERMISSIONS.groups.delete.deny,
   );
   const canEdit = hasEditPermission && !!onEdit;
   const canDelete = hasDeletePermission;

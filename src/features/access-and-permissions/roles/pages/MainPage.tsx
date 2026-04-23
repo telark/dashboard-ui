@@ -27,10 +27,12 @@ const MainPage: React.FC = () => {
   const canCreateRole = usePermission(
     ACTION_PERMISSIONS.roles.create.scope,
     ACTION_PERMISSIONS.roles.create.level,
+    ACTION_PERMISSIONS.roles.create.deny,
   );
   const canEditRole = usePermission(
     ACTION_PERMISSIONS.roles.edit.scope,
     ACTION_PERMISSIONS.roles.edit.level,
+    ACTION_PERMISSIONS.roles.edit.deny,
   );
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<ViewMode>('roles');

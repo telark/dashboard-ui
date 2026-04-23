@@ -6,21 +6,22 @@ import { PERMISSION_LEVEL_RANK } from '../../models/permissions';
 
 // Minimum level per action derived from scopeRules.ts: lowest level at which the action rule first appears.
 // roles.delete requires Owner because "deleterole" is absent from the Contributor rule set.
+// deny: the formatRuleKey(scope, actionKey) string; if present in the scope entry's rules array, access is denied.
 export const ACTION_PERMISSIONS = {
   users: {
-    create: { scope: 'users' as const, level: 'Contributor' as PermissionLevel },
-    edit: { scope: 'users' as const, level: 'Contributor' as PermissionLevel },
-    delete: { scope: 'users' as const, level: 'Contributor' as PermissionLevel },
+    create: { scope: 'users' as const, level: 'Contributor' as PermissionLevel, deny: 'users.createuser.deny' },
+    edit: { scope: 'users' as const, level: 'Contributor' as PermissionLevel, deny: 'users.edituser.deny' },
+    delete: { scope: 'users' as const, level: 'Contributor' as PermissionLevel, deny: 'users.deleteuser.deny' },
   },
   groups: {
-    create: { scope: 'groups' as const, level: 'Contributor' as PermissionLevel },
-    edit: { scope: 'groups' as const, level: 'Contributor' as PermissionLevel },
-    delete: { scope: 'groups' as const, level: 'Contributor' as PermissionLevel },
+    create: { scope: 'groups' as const, level: 'Contributor' as PermissionLevel, deny: 'groups.creategroup.deny' },
+    edit: { scope: 'groups' as const, level: 'Contributor' as PermissionLevel, deny: 'groups.editgroup.deny' },
+    delete: { scope: 'groups' as const, level: 'Contributor' as PermissionLevel, deny: 'groups.deletegroup.deny' },
   },
   roles: {
-    create: { scope: 'roles' as const, level: 'Contributor' as PermissionLevel },
-    edit: { scope: 'roles' as const, level: 'Contributor' as PermissionLevel },
-    delete: { scope: 'roles' as const, level: 'Owner' as PermissionLevel },
+    create: { scope: 'roles' as const, level: 'Contributor' as PermissionLevel, deny: 'roles.createrole.deny' },
+    edit: { scope: 'roles' as const, level: 'Contributor' as PermissionLevel, deny: 'roles.editrole.deny' },
+    delete: { scope: 'roles' as const, level: 'Owner' as PermissionLevel, deny: 'roles.deleterole.deny' },
   },
 } as const;
 
@@ -31,14 +32,20 @@ function resolveEntry(
   return scopeIndex[scope] ?? scopeIndex['ALL'];
 }
 
-export function usePermission(requiredScope: string, requiredLevel: PermissionLevel): boolean {
+export function usePermission(
+  requiredScope: string,
+  requiredLevel: PermissionLevel,
+  action?: string,
+): boolean {
   const { loading, roles, scopeIndex } = useSelector(selectPermissionsState);
   return useMemo(() => {
     if (loading || roles.length === 0) return false;
     const entry = resolveEntry(scopeIndex, requiredScope);
     if (!entry) return false;
-    return PERMISSION_LEVEL_RANK[entry.level] >= PERMISSION_LEVEL_RANK[requiredLevel];
-  }, [loading, roles.length, scopeIndex, requiredScope, requiredLevel]);
+    if (PERMISSION_LEVEL_RANK[entry.level] < PERMISSION_LEVEL_RANK[requiredLevel]) return false;
+    if (action && entry.rules.includes(action)) return false;
+    return true;
+  }, [loading, roles.length, scopeIndex, requiredScope, requiredLevel, action]);
 }
 
 export function useCanAccess(
