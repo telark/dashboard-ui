@@ -30,6 +30,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'removerolefromgroup', label: 'RemoveRoleFromGroup' },
         { key: 'addusertogroup', label: 'AddUserToGroup' },
         { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
+        { key: 'addgroupcategory', label: 'AddGroupCategory' },
       ],
       Owner: [
         { key: 'creategroup', label: 'CreateGroup' },
@@ -41,6 +42,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'removerolefromgroup', label: 'RemoveRoleFromGroup' },
         { key: 'addusertogroup', label: 'AddUserToGroup' },
         { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
+        { key: 'addgroupcategory', label: 'AddGroupCategory' },
       ],
       Admin: [
         { key: 'creategroup', label: 'CreateGroup' },
@@ -52,6 +54,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'removerolefromgroup', label: 'RemoveRoleFromGroup' },
         { key: 'addusertogroup', label: 'AddUserToGroup' },
         { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
+        { key: 'addgroupcategory', label: 'AddGroupCategory' },
       ],
     },
   },
@@ -72,6 +75,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'removerolefromuser', label: 'RemoveRoleFromUser' },
         { key: 'addusertogroup', label: 'AddUserToGroup' },
         { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
+        { key: 'addusercategory', label: 'AddUserCategory' },
       ],
       Owner: [
         { key: 'createuser', label: 'CreateUser' },
@@ -83,6 +87,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'removerolefromuser', label: 'RemoveRoleFromUser' },
         { key: 'addusertogroup', label: 'AddUserToGroup' },
         { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
+        { key: 'addusercategory', label: 'AddUserCategory' },
       ],
       Admin: [
         { key: 'createuser', label: 'CreateUser' },
@@ -94,6 +99,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'removerolefromuser', label: 'RemoveRoleFromUser' },
         { key: 'addusertogroup', label: 'AddUserToGroup' },
         { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
+        { key: 'addusercategory', label: 'AddUserCategory' },
       ],
     },
   },
@@ -111,6 +117,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'viewrole', label: 'ViewRole' },
         { key: 'listallroles', label: 'ListAllRoles' },
         { key: 'viewrolescategories', label: 'ViewRolesCategories' },
+        { key: 'addrolecategory', label: 'AddRoleCategory' },
       ],
       Owner: [
         { key: 'createrole', label: 'CreateRole' },
@@ -121,6 +128,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'assignroletogroup', label: 'AssignRoleToGroup' },
         { key: 'assignroletouser', label: 'AssignRoleToUser' },
         { key: 'viewrolescategories', label: 'ViewRolesCategories' },
+        { key: 'addrolecategory', label: 'AddRoleCategory' },
       ],
       Admin: [
         { key: 'createrole', label: 'CreateRole' },
@@ -132,6 +140,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'assignroletouser', label: 'AssignRoleToUser' },
         { key: 'managerolepermissions', label: 'ManageRolePermissions' },
         { key: 'viewrolescategories', label: 'ViewRolesCategories' },
+        { key: 'addrolecategory', label: 'AddRoleCategory' },
       ],
     },
   },

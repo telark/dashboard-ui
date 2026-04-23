@@ -39,6 +39,11 @@ export const ACTION_PERMISSIONS = {
       level: 'ReadOnly' as PermissionLevel,
       deny: 'users.viewuserscategories.deny',
     },
+    addCategory: {
+      scope: 'users' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'users.addusercategory.deny',
+    },
   },
   groups: {
     create: {
@@ -71,6 +76,11 @@ export const ACTION_PERMISSIONS = {
       level: 'ReadOnly' as PermissionLevel,
       deny: 'groups.viewgroupscategories.deny',
     },
+    addCategory: {
+      scope: 'groups' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'groups.addgroupcategory.deny',
+    },
   },
   roles: {
     create: {
@@ -92,6 +102,11 @@ export const ACTION_PERMISSIONS = {
       scope: 'roles' as const,
       level: 'ReadOnly' as PermissionLevel,
       deny: 'roles.viewrolescategories.deny',
+    },
+    addCategory: {
+      scope: 'roles' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'roles.addrolecategory.deny',
     },
   },
 } as const;

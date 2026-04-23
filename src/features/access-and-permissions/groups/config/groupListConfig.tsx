@@ -29,6 +29,7 @@ interface UseGroupListConfigProps {
   canAttachRole?: boolean;
   canAttachMember?: boolean;
   canViewGroupCategories?: boolean;
+  canAddGroupCategory?: boolean;
   onFilterClick?: () => void;
   searchValue: string;
   onSearchChange: (value: string) => void;
@@ -48,6 +49,7 @@ export const useGroupListConfig = ({
   canAttachRole = true,
   canAttachMember = true,
   canViewGroupCategories = true,
+  canAddGroupCategory = true,
   onFilterClick,
   searchValue,
   onSearchChange,
@@ -73,6 +75,7 @@ export const useGroupListConfig = ({
               icon: <PlusOutlined />,
               variant: 'primary' as const,
               onClick: () => onAddCategoryClick?.(),
+              disabled: !canAddGroupCategory,
             },
           ]
         : [
@@ -101,6 +104,7 @@ export const useGroupListConfig = ({
               onViewCategories: () => onViewModeChange?.('categories'),
               onAddCategory: () => onAddCategoryClick?.(),
               canViewCategories: canViewGroupCategories,
+              canAddCategory: canAddGroupCategory,
             }),
             {
               key: 'manage-assignments',
@@ -155,6 +159,7 @@ export const useGroupListConfig = ({
     canAttachRole,
     canAttachMember,
     canViewGroupCategories,
+    canAddGroupCategory,
     onFilterClick,
     searchValue,
     onSearchChange,

@@ -9,6 +9,7 @@ export interface ManageCategoriesButtonConfigParams {
   onViewCategories: () => void;
   onAddCategory: () => void;
   canViewCategories?: boolean;
+  canAddCategory?: boolean;
 }
 
 /**
@@ -19,6 +20,7 @@ export function getManageCategoriesButtonConfig({
   onViewCategories,
   onAddCategory,
   canViewCategories = true,
+  canAddCategory = true,
 }: ManageCategoriesButtonConfigParams): ToolbarButtonConfig {
   return {
     key: 'manage-categories',
@@ -37,6 +39,7 @@ export function getManageCategoriesButtonConfig({
           key: 'add-category',
           label: LABELS.ADD_CATEGORY,
           icon: <PlusOutlined />,
+          disabled: !canAddCategory,
         },
       ],
       onItemClick: (key: string) => {

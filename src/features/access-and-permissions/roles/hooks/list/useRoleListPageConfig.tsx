@@ -93,6 +93,11 @@ export const useRoleListPageConfig = ({
     ACTION_PERMISSIONS.roles.viewCategories.level,
     ACTION_PERMISSIONS.roles.viewCategories.deny,
   );
+  const canAddRoleCategory = usePermission(
+    ACTION_PERMISSIONS.roles.addCategory.scope,
+    ACTION_PERMISSIONS.roles.addCategory.level,
+    ACTION_PERMISSIONS.roles.addCategory.deny,
+  );
   const { toolbarConfig } = useRoleListConfig({
     viewMode,
     onViewModeChange: setViewMode,
@@ -104,6 +109,7 @@ export const useRoleListPageConfig = ({
     onFilterClick,
     onAddCategoryClick,
     canViewRoleCategories,
+    canAddRoleCategory,
   });
 
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.ROLES);
