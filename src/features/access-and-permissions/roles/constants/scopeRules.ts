@@ -1,4 +1,5 @@
 import type { PermissionLevel } from '../models/types';
+import { PERMISSION_LEVEL_RANK } from '../../../auth/models/permissions';
 
 export interface ScopeRule {
   key: string;
@@ -174,10 +175,27 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
   },
 ];
 
+const ORDERED_LEVELS: PermissionLevel[] = ['ReadOnly', 'Contributor', 'Owner', 'Admin'];
+
 export const getScopeRules = (scope: string, level: PermissionLevel): ScopeRule[] => {
   const scopeConfig = SCOPE_RULES.find((config) => config.scope === scope.toLowerCase());
   if (!scopeConfig) return [];
-  return scopeConfig.rules[level] || [];
+
+  const requestedRank = PERMISSION_LEVEL_RANK[level];
+  const seen = new Set<string>();
+  const merged: ScopeRule[] = [];
+
+  for (const l of ORDERED_LEVELS) {
+    if (PERMISSION_LEVEL_RANK[l] > requestedRank) break;
+    for (const rule of scopeConfig.rules[l] ?? []) {
+      if (!seen.has(rule.key)) {
+        seen.add(rule.key);
+        merged.push(rule);
+      }
+    }
+  }
+
+  return merged;
 };
 
 export const formatRuleKey = (scope: string, ruleKey: string): string => {
