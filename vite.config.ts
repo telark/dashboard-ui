@@ -2,7 +2,6 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import type { Plugin } from 'vite';
-import { visualizer } from 'rollup-plugin-visualizer';
 
 const performancePlugin = (): Plugin => ({
   name: 'performance-hints',
@@ -18,9 +17,10 @@ const performancePlugin = (): Plugin => ({
   },
 });
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(async ({ mode }) => {
   const isAnalyze = mode === 'analyze';
   const isProd = mode === 'cluster' || mode === 'production';
+  const { visualizer } = isAnalyze ? await import('rollup-plugin-visualizer') : { visualizer: null };
 
   return {
     plugins: [
@@ -28,7 +28,7 @@ export default defineConfig(({ mode }) => {
         jsxRuntime: 'automatic',
       }),
       performancePlugin(),
-      isAnalyze &&
+      isAnalyze && visualizer &&
         visualizer({
           open: true,
           filename: 'dist/stats.html',
@@ -58,7 +58,7 @@ export default defineConfig(({ mode }) => {
           chunkFileNames: 'assets/[name]-[hash].js',
           entryFileNames: 'assets/[name]-[hash].js',
           assetFileNames: 'assets/[name]-[hash].[ext]',
-          manualChunks: (id) => {
+          manualChunks: (id: string) => {
             if (!id.includes('node_modules')) return undefined;
             if (id.includes('@dicebear')) return undefined;
             if (id.includes('redux') || id.includes('@reduxjs')) return 'redux-vendor';
