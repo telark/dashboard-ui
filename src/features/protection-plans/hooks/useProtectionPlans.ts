@@ -11,15 +11,14 @@ interface UseProtectionPlansResult {
 
 export const useProtectionPlans = (): UseProtectionPlansResult => {
   const [plans, setPlans] = useState<ProtectionPlan[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const loadPlans = useCallback(async () => {
     try {
-      setLoading(true);
-      setError(null);
       const data = await fetchProtectionPlans();
       setPlans(data);
+      setError(null);
     } catch {
       setError('Failed to load Protection Plans');
     } finally {
@@ -27,14 +26,28 @@ export const useProtectionPlans = (): UseProtectionPlansResult => {
     }
   }, []);
 
-  useEffect(() => {
-    void loadPlans();
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    await loadPlans();
   }, [loadPlans]);
+
+  useEffect(() => {
+    fetchProtectionPlans()
+      .then((data) => {
+        setPlans(data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError('Failed to load Protection Plans');
+        setLoading(false);
+      });
+  }, []);
 
   return {
     plans,
     loading,
     error,
-    refresh: loadPlans,
+    refresh,
   };
 };

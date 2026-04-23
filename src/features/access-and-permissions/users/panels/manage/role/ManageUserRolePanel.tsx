@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Form } from 'antd';
 import { CheckCircleOutlined, MinusCircleOutlined, TeamOutlined } from '@ant-design/icons';
 import {
@@ -52,9 +52,11 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     () => user?.assignedRolesIDs ?? [],
   );
 
-  useEffect(() => {
+  const [prevUser, setPrevUser] = useState(user);
+  if (prevUser !== user) {
+    setPrevUser(user);
     setLocalAssignedIds(user?.assignedRolesIDs ?? []);
-  }, [user]);
+  }
 
   const { categoryOptions } = useRoleCategoryOptions();
   const { groups, loading: groupsLoading } = useFetchGroups();

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Form } from 'antd';
 import { CheckCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import {
@@ -39,9 +39,11 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
     () => user?.assignedGroupsIDs ?? [],
   );
 
-  useEffect(() => {
+  const [prevUser, setPrevUser] = useState(user);
+  if (prevUser !== user) {
+    setPrevUser(user);
     setLocalAssignedIds(user?.assignedGroupsIDs ?? []);
-  }, [user]);
+  }
 
   const { initialSelectedGroups, hasChanges, groups, groupsLoading, submitting, handleSubmit } =
     useManageUserGroupPanel({ open, user, form, onClose, currentSelectedGroups });
