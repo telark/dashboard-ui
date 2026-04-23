@@ -20,6 +20,7 @@ const performancePlugin = (): Plugin => ({
 
 export default defineConfig(({ mode }) => {
   const isAnalyze = mode === 'analyze';
+  const isProd = mode === 'cluster' || mode === 'production';
 
   return {
     plugins: [
@@ -48,16 +49,11 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      minify: 'esbuild',
       cssCodeSplit: false,
       chunkSizeWarningLimit: 1000,
       sourcemap: false,
       reportCompressedSize: false,
-      commonjsOptions: {
-        include: [/node_modules/],
-        transformMixedEsModules: true,
-      },
-      rollupOptions: {
+      rolldownOptions: {
         output: {
           chunkFileNames: 'assets/[name]-[hash].js',
           entryFileNames: 'assets/[name]-[hash].js',
@@ -72,6 +68,14 @@ export default defineConfig(({ mode }) => {
             if (id.includes('axios')) return 'http-vendor';
             return 'vendor';
           },
+          ...(isProd && {
+            minify: {
+              compress: {
+                dropConsole: true,
+                dropDebugger: true,
+              },
+            },
+          }),
         },
       },
     },
@@ -91,10 +95,6 @@ export default defineConfig(({ mode }) => {
     server: {
       open: '/',
       hmr: true,
-    },
-    esbuild: {
-      drop: mode === 'cluster' || mode === 'production' ? ['console', 'debugger'] : [],
-      legalComments: 'none',
     },
   };
 });
