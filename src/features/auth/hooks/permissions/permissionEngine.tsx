@@ -8,6 +8,43 @@ import { PERMISSION_LEVEL_RANK } from '../../models/permissions';
 // roles.delete requires Owner because "deleterole" is absent from the Contributor rule set.
 // deny: the formatRuleKey(scope, actionKey) string; if present in the scope entry's rules array, access is denied.
 export const ACTION_PERMISSIONS = {
+  applications: {
+    viewRollbacks: {
+      scope: 'applications' as const,
+      level: 'ReadOnly' as PermissionLevel,
+      deny: 'applications.viewapplicationsrollbacks.deny',
+    },
+    viewSnapshots: {
+      scope: 'applications' as const,
+      level: 'ReadOnly' as PermissionLevel,
+      deny: 'applications.viewapplicationssnapshots.deny',
+    },
+    viewSnapshotManifest: {
+      scope: 'applications' as const,
+      level: 'ReadOnly' as PermissionLevel,
+      deny: 'applications.viewapplicationsnapshotmanifest.deny',
+    },
+    edit: {
+      scope: 'applications' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'applications.editapplication.deny',
+    },
+    forceSync: {
+      scope: 'applications' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'applications.forceapplicationsync.deny',
+    },
+    delete: {
+      scope: 'applications' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'applications.deleteapplication.deny',
+    },
+    rollback: {
+      scope: 'applications' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'applications.rollbackapplication.deny',
+    },
+  },
   users: {
     create: {
       scope: 'users' as const,

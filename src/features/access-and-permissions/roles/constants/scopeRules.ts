@@ -14,6 +14,34 @@ export interface ScopeRulesConfig {
 
 export const SCOPE_RULES: ScopeRulesConfig[] = [
   {
+    scope: 'applications',
+    rules: {
+      ReadOnly: [
+        { key: 'viewapplicationsrollbacks', label: 'ViewApplicationsRollbacks' },
+        { key: 'viewapplicationssnapshots', label: 'ViewApplicationsSnapshots' },
+        { key: 'viewapplicationsnapshotmanifest', label: 'ViewApplicationsSnapshotManifest' },
+      ],
+      Contributor: [
+        { key: 'editapplication', label: 'EditApplication' },
+        { key: 'forceapplicationsync', label: 'ForceApplicationSync' },
+        { key: 'rollbackapplication', label: 'RollbackApplication' },
+        { key: 'deleteapplication', label: 'DeleteApplication' },
+      ],
+      Owner: [
+        { key: 'editapplication', label: 'EditApplication' },
+        { key: 'forceapplicationsync', label: 'ForceApplicationSync' },
+        { key: 'rollbackapplication', label: 'RollbackApplication' },
+        { key: 'deleteapplication', label: 'DeleteApplication' },
+      ],
+      Admin: [
+        { key: 'editapplication', label: 'EditApplication' },
+        { key: 'forceapplicationsync', label: 'ForceApplicationSync' },
+        { key: 'rollbackapplication', label: 'RollbackApplication' },
+        { key: 'deleteapplication', label: 'DeleteApplication' },
+      ],
+    },
+  },
+  {
     scope: 'groups',
     rules: {
       ReadOnly: [

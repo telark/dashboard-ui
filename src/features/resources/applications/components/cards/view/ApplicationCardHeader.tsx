@@ -24,6 +24,10 @@ import { deleteApplicationThunk } from '../../../store';
 import { getApplicationHealthAccentColor } from '../../../utils/healthVisual';
 import { forceSyncApplication } from '../../../utils/management/sync';
 import ApplicationDeleteModal from '../../delete/ApplicationDeleteModal';
+import {
+  usePermission,
+  ACTION_PERMISSIONS,
+} from '../../../../../../features/auth/hooks/permissions/permissionEngine';
 
 interface ApplicationCardHeaderProps {
   application: Application;
@@ -82,6 +86,22 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
     const [menuOpen, setMenuOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
+
+    const canEdit = usePermission(
+      ACTION_PERMISSIONS.applications.edit.scope,
+      ACTION_PERMISSIONS.applications.edit.level,
+      ACTION_PERMISSIONS.applications.edit.deny,
+    );
+    const canForceSync = usePermission(
+      ACTION_PERMISSIONS.applications.forceSync.scope,
+      ACTION_PERMISSIONS.applications.forceSync.level,
+      ACTION_PERMISSIONS.applications.forceSync.deny,
+    );
+    const canDelete = usePermission(
+      ACTION_PERMISSIONS.applications.delete.scope,
+      ACTION_PERMISSIONS.applications.delete.level,
+      ACTION_PERMISSIONS.applications.delete.deny,
+    );
 
     const accent = getApplicationHealthAccentColor(application.health?.status);
     const statusText = application.health?.status || APPLICATIONS_UI.FALLBACKS.UNKNOWN;
@@ -312,31 +332,43 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
               menu={{
                 items: [
                   { key: 'view', label: APPLICATIONS_UI.CARD.ACTIONS.VIEW, icon: <EyeOutlined /> },
-                  {
-                    key: 'forceSync',
-                    label: disabledLabel(APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC, isSyncing),
-                    icon: <SyncOutlined />,
-                    disabled: isSyncing,
-                  },
-                  {
-                    key: 'edit',
-                    label: disabledLabel(APPLICATIONS_UI.CARD.ACTIONS.EDIT, isSyncing),
-                    icon: <EditOutlined />,
-                    disabled: isSyncing,
-                  },
+                  ...(canForceSync
+                    ? [
+                        {
+                          key: 'forceSync',
+                          label: disabledLabel(APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC, isSyncing),
+                          icon: <SyncOutlined />,
+                          disabled: isSyncing,
+                        },
+                      ]
+                    : []),
+                  ...(canEdit
+                    ? [
+                        {
+                          key: 'edit',
+                          label: disabledLabel(APPLICATIONS_UI.CARD.ACTIONS.EDIT, isSyncing),
+                          icon: <EditOutlined />,
+                          disabled: isSyncing,
+                        },
+                      ]
+                    : []),
                   {
                     key: 'rollbacks',
                     label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS,
                     icon: <HistoryOutlined />,
                   },
-                  { type: 'divider' },
-                  {
-                    key: 'delete',
-                    label: disabledLabel(APPLICATIONS_UI.CARD.ACTIONS.DELETE, isSyncing),
-                    icon: <DeleteOutlined />,
-                    danger: true,
-                    disabled: isSyncing,
-                  },
+                  ...(canDelete
+                    ? [
+                        { type: 'divider' as const },
+                        {
+                          key: 'delete',
+                          label: disabledLabel(APPLICATIONS_UI.CARD.ACTIONS.DELETE, isSyncing),
+                          icon: <DeleteOutlined />,
+                          danger: true,
+                          disabled: isSyncing,
+                        },
+                      ]
+                    : []),
                 ],
                 onClick: handleMenuClick,
               }}
