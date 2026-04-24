@@ -144,38 +144,41 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
               alignSelf: 'flex-start',
             }}
           >
-            {canViewManifest && (
-              <Tooltip title={ui.VIEW_MANIFEST}>
-                <Button
-                  size="small"
-                  type="default"
-                  icon={<EyeOutlined />}
-                  onClick={() => onViewManifest(s)}
-                  style={ICON_BTN}
-                  aria-label={ui.VIEW_MANIFEST}
-                />
-              </Tooltip>
-            )}
-            {canRollback && (
-              <Tooltip
-                title={
-                  rollbackDisabled
+            <Tooltip
+              title={
+                !canViewManifest ? ui.VIEW_MANIFEST_PERMISSION_DENIED_TOOLTIP : ui.VIEW_MANIFEST
+              }
+            >
+              <Button
+                size="small"
+                type="default"
+                icon={<EyeOutlined />}
+                onClick={() => onViewManifest(s)}
+                style={ICON_BTN}
+                aria-label={ui.VIEW_MANIFEST}
+                disabled={!canViewManifest}
+              />
+            </Tooltip>
+            <Tooltip
+              title={
+                !canRollback
+                  ? ui.ROLLBACK_PERMISSION_DENIED_TOOLTIP
+                  : rollbackDisabled
                     ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
                     : ui.ROLLBACK
-                }
-              >
-                <Button
-                  size="small"
-                  type="default"
-                  icon={<Icons.SnapshotRestore size={14} />}
-                  onClick={() => onRollback?.(s)}
-                  style={ICON_BTN}
-                  aria-label={ui.ROLLBACK}
-                  loading={rollbackLoading}
-                  disabled={!onRollback || rollbackDisabled}
-                />
-              </Tooltip>
-            )}
+              }
+            >
+              <Button
+                size="small"
+                type="default"
+                icon={<Icons.SnapshotRestore size={14} />}
+                onClick={() => onRollback?.(s)}
+                style={ICON_BTN}
+                aria-label={ui.ROLLBACK}
+                loading={rollbackLoading}
+                disabled={!canRollback || !onRollback || rollbackDisabled}
+              />
+            </Tooltip>
           </div>
         </div>
       </div>

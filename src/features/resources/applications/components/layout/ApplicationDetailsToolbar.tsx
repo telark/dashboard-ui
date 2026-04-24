@@ -58,58 +58,69 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
   );
 
   const toolbarConfig: ToolbarConfig = useMemo(() => {
-    const buttons: ToolbarConfig['buttons'] = [];
-    if (canEdit) {
-      buttons.push({
+    const buttons: ToolbarConfig['buttons'] = [
+      {
         key: 'edit',
         label: APPLICATIONS_UI.CARD.ACTIONS.EDIT,
         icon: <EditOutlined />,
         variant: 'default',
         onClick: onEdit,
-        disabled: syncDisabled,
-        tooltip: syncDisabled ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP : undefined,
-      });
-    }
-    if (canForceSync) {
-      buttons.push({
+        disabled: !canEdit || syncDisabled,
+        tooltip: !canEdit
+          ? APPLICATIONS_UI.CARD.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP
+          : syncDisabled
+            ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
+            : undefined,
+      },
+      {
         key: 'forceSync',
         label: APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC,
         icon: <SyncOutlined />,
         variant: 'default',
         onClick: onForceSync,
-        disabled: syncDisabled,
-        tooltip: syncDisabled ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP : undefined,
-      });
-    }
-    if (canViewSnapshots) {
-      buttons.push({
+        disabled: !canForceSync || syncDisabled,
+        tooltip: !canForceSync
+          ? APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC_PERMISSION_DENIED_TOOLTIP
+          : syncDisabled
+            ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
+            : undefined,
+      },
+      {
         key: 'snapshots',
         label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_SNAPSHOTS,
         icon: <DatabaseOutlined />,
         variant: 'default',
         onClick: onManageSnapshots,
-      });
-    }
-    if (canViewRollbacks) {
-      buttons.push({
+        disabled: !canViewSnapshots,
+        tooltip: !canViewSnapshots
+          ? APPLICATIONS_UI.CARD.ACTIONS.VIEW_SNAPSHOTS_PERMISSION_DENIED_TOOLTIP
+          : undefined,
+      },
+      {
         key: 'rollbacks',
         label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS,
         icon: <HistoryOutlined />,
         variant: 'default',
         onClick: onManageRollbacks,
-      });
-    }
-    if (canDelete) {
-      buttons.push({
+        disabled: !canViewRollbacks,
+        tooltip: !canViewRollbacks
+          ? APPLICATIONS_UI.CARD.ACTIONS.VIEW_ROLLBACKS_PERMISSION_DENIED_TOOLTIP
+          : undefined,
+      },
+      {
         key: 'delete',
         label: APPLICATIONS_UI.CARD.ACTIONS.DELETE,
         icon: <DeleteOutlined />,
         variant: 'danger',
         onClick: onDelete,
-        disabled: syncDisabled,
-        tooltip: syncDisabled ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP : undefined,
-      });
-    }
+        disabled: !canDelete || syncDisabled,
+        tooltip: !canDelete
+          ? APPLICATIONS_UI.CARD.ACTIONS.DELETE_PERMISSION_DENIED_TOOLTIP
+          : syncDisabled
+            ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
+            : undefined,
+      },
+    ];
     return { buttons };
   }, [
     syncDisabled,

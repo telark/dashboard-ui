@@ -174,9 +174,9 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
 
     const hasInsightRow = Boolean(application.insights?.category || application.insights?.role);
     const descriptionText = String(application.description || '').trim();
-    const disabledLabel = (text: string, disabled: boolean) =>
-      disabled ? (
-        <Tooltip title={APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP}>
+    const labelWithTooltip = (text: string, tooltip: string | undefined) =>
+      tooltip ? (
+        <Tooltip title={tooltip}>
           <span>{text}</span>
         </Tooltip>
       ) : (
@@ -332,43 +332,52 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
               menu={{
                 items: [
                   { key: 'view', label: APPLICATIONS_UI.CARD.ACTIONS.VIEW, icon: <EyeOutlined /> },
-                  ...(canForceSync
-                    ? [
-                        {
-                          key: 'forceSync',
-                          label: disabledLabel(APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC, isSyncing),
-                          icon: <SyncOutlined />,
-                          disabled: isSyncing,
-                        },
-                      ]
-                    : []),
-                  ...(canEdit
-                    ? [
-                        {
-                          key: 'edit',
-                          label: disabledLabel(APPLICATIONS_UI.CARD.ACTIONS.EDIT, isSyncing),
-                          icon: <EditOutlined />,
-                          disabled: isSyncing,
-                        },
-                      ]
-                    : []),
+                  {
+                    key: 'forceSync',
+                    label: labelWithTooltip(
+                      APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC,
+                      !canForceSync
+                        ? APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC_PERMISSION_DENIED_TOOLTIP
+                        : isSyncing
+                          ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
+                          : undefined,
+                    ),
+                    icon: <SyncOutlined />,
+                    disabled: !canForceSync || isSyncing,
+                  },
+                  {
+                    key: 'edit',
+                    label: labelWithTooltip(
+                      APPLICATIONS_UI.CARD.ACTIONS.EDIT,
+                      !canEdit
+                        ? APPLICATIONS_UI.CARD.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP
+                        : isSyncing
+                          ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
+                          : undefined,
+                    ),
+                    icon: <EditOutlined />,
+                    disabled: !canEdit || isSyncing,
+                  },
                   {
                     key: 'rollbacks',
                     label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS,
                     icon: <HistoryOutlined />,
                   },
-                  ...(canDelete
-                    ? [
-                        { type: 'divider' as const },
-                        {
-                          key: 'delete',
-                          label: disabledLabel(APPLICATIONS_UI.CARD.ACTIONS.DELETE, isSyncing),
-                          icon: <DeleteOutlined />,
-                          danger: true,
-                          disabled: isSyncing,
-                        },
-                      ]
-                    : []),
+                  { type: 'divider' as const },
+                  {
+                    key: 'delete',
+                    label: labelWithTooltip(
+                      APPLICATIONS_UI.CARD.ACTIONS.DELETE,
+                      !canDelete
+                        ? APPLICATIONS_UI.CARD.ACTIONS.DELETE_PERMISSION_DENIED_TOOLTIP
+                        : isSyncing
+                          ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
+                          : undefined,
+                    ),
+                    icon: <DeleteOutlined />,
+                    danger: true,
+                    disabled: !canDelete || isSyncing,
+                  },
                 ],
                 onClick: handleMenuClick,
               }}
