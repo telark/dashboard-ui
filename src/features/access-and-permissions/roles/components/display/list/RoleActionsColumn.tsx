@@ -8,6 +8,8 @@ import { deleteRoleThunk } from '../../../store';
 import { canDeleteRole, canModifyRole } from '../../../utils';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../../auth/hooks';
 import type { AppDispatch } from '../../../../../../store';
+import store from '../../../../../../store';
+import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
 import type { Role } from '../../../models';
 
 interface RoleActionsColumnProps {
@@ -90,6 +92,7 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
       okButtonProps: { danger: true },
       onOk: async () => {
         await dispatch(deleteRoleThunk(record.id)).unwrap();
+        store.dispatch(fetchMyPermissionsThunk());
       },
     });
   };

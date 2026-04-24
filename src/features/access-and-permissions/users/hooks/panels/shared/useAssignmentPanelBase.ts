@@ -5,6 +5,8 @@ import type { FormInstance } from 'antd';
 import { updateUserThunk } from '../../../store';
 import { arraysEqual } from '../../../utils/assignment/arrays';
 import type { AppDispatch } from '../../../../../../store';
+import store from '../../../../../../store';
+import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
 import type { User } from '../../../models';
 
 type AssignmentField = 'assignedRolesIDs' | 'assignedGroupsIDs';
@@ -70,6 +72,7 @@ export const useAssignmentPanelBase = ({
           user: { [fieldName]: newIds },
         }),
       ).unwrap();
+      store.dispatch(fetchMyPermissionsThunk());
       await onSuccess?.(newIds);
       message.success(successMessage(user.fullname || user.username));
       form.resetFields();

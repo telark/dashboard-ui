@@ -4,6 +4,8 @@ import type { FormInstance } from 'antd';
 import { useDeassignModal } from '../../../../shared';
 import { useGroupMutations } from '../../data/useGroupMutations';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
+import store from '../../../../../../store';
+import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
 import type { Group } from '../../../models';
 import type { Role } from '../../../../roles/models';
 
@@ -35,6 +37,7 @@ export const useDeassignGroupRole = ({
       const current = (form.getFieldValue('assignedRolesIDs') as string[]) ?? [];
       const updated = current.filter((id) => id !== role.id);
       await handleUpdate(group.id, { assignedRolesIDs: updated });
+      store.dispatch(fetchMyPermissionsThunk());
       form.setFieldsValue({ assignedRolesIDs: updated });
       message.success(GC.LABELS.MESSAGES.ROLE_DEASSIGNED(role.name));
     },
