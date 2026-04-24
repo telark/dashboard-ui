@@ -9,15 +9,8 @@ const PERMISSIONS_POLL_INTERVAL_MS = 15_000;
 
 export const useInitializePermissions = (isAuthenticated: boolean, pathname?: string): void => {
   const initializedRef = useRef(false);
-  const routeChangeRef = useRef(false);
+  const prevPathnameRef = useRef<string | undefined>(undefined);
   const permissions = useSelector(selectPermissionsState);
-
-  const isAuthenticatedRef = useRef(isAuthenticated);
-  isAuthenticatedRef.current = isAuthenticated;
-  const userIDRef = useRef(permissions.userID);
-  userIDRef.current = permissions.userID;
-  const loadingRef = useRef(permissions.loading);
-  loadingRef.current = permissions.loading;
 
   useEffect(() => {
     if (!isAuthenticated || initializedRef.current || permissions.userID !== null) {
@@ -41,11 +34,11 @@ export const useInitializePermissions = (isAuthenticated: boolean, pathname?: st
   // Re-fetch immediately on route change; skip initial mount and in-flight fetches
   useEffect(() => {
     if (pathname === undefined) return;
-    if (!routeChangeRef.current) {
-      routeChangeRef.current = true;
-      return;
-    }
-    if (!isAuthenticatedRef.current || userIDRef.current === null || loadingRef.current) return;
+    if (prevPathnameRef.current === pathname) return;
+    const isRouteChange = prevPathnameRef.current !== undefined;
+    prevPathnameRef.current = pathname;
+    if (!isRouteChange) return;
+    if (!isAuthenticated || permissions.userID === null || permissions.loading) return;
     store.dispatch(fetchMyPermissionsThunk());
-  }, [pathname]);
+  }, [pathname, isAuthenticated, permissions.userID, permissions.loading]);
 };
