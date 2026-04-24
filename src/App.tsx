@@ -44,7 +44,7 @@ const AppContent: React.FC = () => {
   // Initialize built-in categories, roles, and user permissions when authenticated
   useInitializeCategories(isAuthenticated);
   useInitializeRoles(isAuthenticated);
-  useInitializePermissions(isAuthenticated);
+  useInitializePermissions(isAuthenticated, location.pathname);
 
   const renderMainContent = () => {
     if (isAuthRoute) {
