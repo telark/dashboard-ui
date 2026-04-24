@@ -179,7 +179,7 @@ export const useRoleListPageConfig = ({
                 width: 120,
                 onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
                 render: (_: unknown, record: Role | Category) => (
-                  <CategoryActionsColumn record={record as Category} onEdit={onEditCategory} />
+                  <CategoryActionsColumn record={record as Category} onEdit={onEditCategory} scope="roles" />
                 ),
               },
             ],

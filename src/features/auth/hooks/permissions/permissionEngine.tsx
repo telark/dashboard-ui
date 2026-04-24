@@ -122,6 +122,16 @@ export const ACTION_PERMISSIONS = {
       level: 'Contributor' as PermissionLevel,
       deny: 'groups.addgroupcategory.deny',
     },
+    editCategory: {
+      scope: 'groups' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'groups.editgroupcategory.deny',
+    },
+    deleteCategory: {
+      scope: 'groups' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'groups.deletegroupcategory.deny',
+    },
     removeRole: {
       scope: 'groups' as const,
       level: 'Owner' as PermissionLevel,
@@ -164,6 +174,16 @@ export const ACTION_PERMISSIONS = {
       scope: 'roles' as const,
       level: 'Contributor' as PermissionLevel,
       deny: 'roles.addrolecategory.deny',
+    },
+    editCategory: {
+      scope: 'roles' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'roles.editrolecategory.deny',
+    },
+    deleteCategory: {
+      scope: 'roles' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'roles.deleterolecategory.deny',
     },
   },
 } as const;

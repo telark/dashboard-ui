@@ -19,6 +19,10 @@ export const CATEGORIES_CONSTANTS = {
       CREATED: 'Creation Date',
     },
     ACTIONS: {
+      EDIT: 'Edit',
+      DELETE: 'Delete',
+      EDIT_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to edit categories',
+      DELETE_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to delete categories',
       DELETE_MODAL_TITLE: 'Delete Category',
       DELETE_MODAL_OK: 'Delete',
     },
