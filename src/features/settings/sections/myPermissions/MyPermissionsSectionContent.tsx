@@ -57,7 +57,13 @@ function getWinningAllEntry(
       rank > winner.levelRank ||
       (rank === winner.levelRank && role.priority > winner.priority)
     ) {
-      winner = { level: entry.level, rules: entry.rules ?? [], role, levelRank: rank, priority: role.priority };
+      winner = {
+        level: entry.level,
+        rules: entry.rules ?? [],
+        role,
+        levelRank: rank,
+        priority: role.priority,
+      };
     }
   }
   return winner ? { level: winner.level, rules: winner.rules, role: winner.role } : null;

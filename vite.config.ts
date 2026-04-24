@@ -20,7 +20,9 @@ const performancePlugin = (): Plugin => ({
 export default defineConfig(async ({ mode }) => {
   const isAnalyze = mode === 'analyze';
   const isProd = mode === 'cluster' || mode === 'production';
-  const { visualizer } = isAnalyze ? await import('rollup-plugin-visualizer') : { visualizer: null };
+  const { visualizer } = isAnalyze
+    ? await import('rollup-plugin-visualizer')
+    : { visualizer: null };
 
   return {
     plugins: [
@@ -28,7 +30,8 @@ export default defineConfig(async ({ mode }) => {
         jsxRuntime: 'automatic',
       }),
       performancePlugin(),
-      isAnalyze && visualizer &&
+      isAnalyze &&
+        visualizer &&
         visualizer({
           open: true,
           filename: 'dist/stats.html',

@@ -129,7 +129,10 @@ const createRoleSafely = async (role: RoleFormData): Promise<void> => {
   }
 };
 
-const updateRoleSafely = async (roleId: string, scopesAndPermissions: RoleFormData['scopesAndPermissions']): Promise<void> => {
+const updateRoleSafely = async (
+  roleId: string,
+  scopesAndPermissions: RoleFormData['scopesAndPermissions'],
+): Promise<void> => {
   try {
     await updateRole(roleId, { scopesAndPermissions });
   } catch (error) {

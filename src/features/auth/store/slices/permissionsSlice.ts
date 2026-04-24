@@ -32,7 +32,10 @@ function buildScopeIndex(
     }
     const incomingRank = PERMISSION_LEVEL_RANK[level];
     const existingRank = PERMISSION_LEVEL_RANK[existing.level];
-    if (incomingRank > existingRank || (incomingRank === existingRank && priority > existing.priority)) {
+    if (
+      incomingRank > existingRank ||
+      (incomingRank === existingRank && priority > existing.priority)
+    ) {
       index[scopeName] = { level, rules, priority };
     }
   };

@@ -141,7 +141,8 @@ export const APPLICATIONS_UI = {
       MANIFEST_COPIED: 'Copied',
       MANIFEST_COPY_FAILED: 'Failed to copy',
       MANIFEST_LOADING: 'Loading manifest…',
-      VIEW_MANIFEST_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to view snapshot manifests',
+      VIEW_MANIFEST_PERMISSION_DENIED_TOOLTIP:
+        'You do not have permission to view snapshot manifests',
       ROLLBACK_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to roll back applications',
     },
     METRICS: {
