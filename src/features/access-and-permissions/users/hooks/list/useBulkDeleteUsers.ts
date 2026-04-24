@@ -5,6 +5,8 @@ import { message } from 'antd';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import { deleteUserThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
+import store from '../../../../../store';
+import { fetchMyPermissionsThunk } from '../../../../auth/store/thunks/fetchThunks';
 
 interface UseBulkDeleteUsersProps {
   selectedUsers: React.Key[];
@@ -40,6 +42,7 @@ export const useBulkDeleteUsers = ({
 
       const deletePromises = selectedIds.map((id) => dispatch(deleteUserThunk(id)).unwrap());
       await Promise.all(deletePromises);
+      store.dispatch(fetchMyPermissionsThunk());
 
       message.success({
         content: UC.LABELS.ACTIONS.BULK_DELETE_SUCCESS(deleteCount),

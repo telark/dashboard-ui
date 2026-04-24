@@ -4,6 +4,8 @@ import { message } from 'antd';
 import type { FormInstance } from 'antd';
 import { updateUserThunk } from '../../../store';
 import type { AppDispatch, RootState } from '../../../../../../store';
+import store from '../../../../../../store';
+import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
 import type { User, CreateUserFormValues, UserAvatar } from '../../../models';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { makeUsernameUniqueRule, makeEmailFormatRule, makeFullnameCharsRule } from '../../../utils';
@@ -81,6 +83,7 @@ export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUs
           avatar: (values.avatar as UserAvatar | undefined) ?? editingUser.avatar,
         };
         await dispatch(updateUserThunk({ id: editingUser.id, user: updated })).unwrap();
+        store.dispatch(fetchMyPermissionsThunk());
         message.success(UC.LABELS.MESSAGES.UPDATED(values.fullname as string));
         form.resetFields();
         onClose();
