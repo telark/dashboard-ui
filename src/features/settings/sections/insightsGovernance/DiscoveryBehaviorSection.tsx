@@ -190,6 +190,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
           style={{ width: '100%' }}
           maxTagCount={5}
           maxTagPlaceholder={maxNamespaceTagPlaceholder}
+          disabled={!canEditDiscoveryConfig}
         />
         {namespacesImpactPreview ? (
           <div style={{ fontSize: 12, fontWeight: 700, color: DEFAULT_COLORS.TEXT_MUTED }}>
@@ -222,6 +223,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
           <Select
             size="small"
             value={fetchIntervalSelection}
+            disabled={!canEditDiscoveryConfig}
             onChange={(val) => {
               const raw = String(val);
               if (raw === 'custom') {
@@ -254,6 +256,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
               min={1}
               precision={0}
               value={customFetchIntervalMinutes}
+              disabled={!canEditDiscoveryConfig}
               onChange={(v) => {
                 const n = Number(v);
                 if (!Number.isFinite(n) || n <= 0) return;

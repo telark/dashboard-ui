@@ -188,6 +188,7 @@ const AIInsightsSection: React.FC = memo(() => {
               value={provider}
               options={C.PROVIDERS.OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
               onChange={onProviderChange}
+              disabled={!canControlAiInsights}
               style={{ width: 240 }}
             />
             {provider !== 'ollama' ? (
@@ -195,6 +196,7 @@ const AIInsightsSection: React.FC = memo(() => {
                 <Input
                   placeholder={C.LABELS.API_KEY_PLACEHOLDER}
                   value={apiKey}
+                  disabled={!canControlAiInsights}
                   onChange={(e) => {
                     setApiKey(e.target.value);
                     setValidMessage(null);

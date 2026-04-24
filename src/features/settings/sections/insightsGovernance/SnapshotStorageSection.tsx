@@ -210,6 +210,7 @@ const SnapshotStorageSection: React.FC = memo(() => {
           <Select
             size="small"
             value={snapshotsMaxSelection}
+            disabled={!canEditSnapshotStorage}
             onChange={(val) => {
               setSnapshotsMaxSelection(val);
               if (val === 'custom') {
@@ -232,6 +233,7 @@ const SnapshotStorageSection: React.FC = memo(() => {
               min={1}
               precision={0}
               value={customSnapshotsMaxPerApp}
+              disabled={!canEditSnapshotStorage}
               onChange={(v) => {
                 const n = Number(v);
                 if (!Number.isFinite(n) || n <= 0) return;
