@@ -26,6 +26,10 @@ export const BUILT_IN_ROLES: Omit<RoleFormData, 'id' | 'creationDate' | 'lastUpd
         scope: 'applications',
         level: PERMISSION_LEVEL.READ_ONLY,
       },
+      {
+        scope: 'settings',
+        level: PERMISSION_LEVEL.READ_ONLY,
+      },
     ],
     protection: {
       preventDeletion: true,
@@ -66,6 +70,10 @@ export const BUILT_IN_ROLES: Omit<RoleFormData, 'id' | 'creationDate' | 'lastUpd
         scope: 'applications',
         level: PERMISSION_LEVEL.CONTRIBUTOR,
       },
+      {
+        scope: 'settings',
+        level: PERMISSION_LEVEL.CONTRIBUTOR,
+      },
     ],
     protection: {
       preventDeletion: true,
@@ -104,6 +112,10 @@ export const BUILT_IN_ROLES: Omit<RoleFormData, 'id' | 'creationDate' | 'lastUpd
       },
       {
         scope: 'applications',
+        level: PERMISSION_LEVEL.OWNER,
+      },
+      {
+        scope: 'settings',
         level: PERMISSION_LEVEL.OWNER,
       },
     ],

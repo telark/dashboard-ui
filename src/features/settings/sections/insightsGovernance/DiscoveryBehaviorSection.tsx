@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
 import type { AppDispatch, RootState } from '../../../../store';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as C } from './constants';
+import { usePermission } from '../../../auth/hooks/permissions/permissionEngine';
 
 const FETCH_INTERVAL_PRESET_MINUTES = [1, 2, 5, 10, 15, 30, 60] as const;
 
@@ -24,6 +25,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
   const applications = useSelector((s: RootState) => s.applications.applications);
+  const canEditDiscoveryConfig = usePermission('settings', 'Contributor');
 
   const saveButtonStyle = useCallback(
     (disabled: boolean): React.CSSProperties => ({
@@ -265,14 +267,18 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button
-            loading={savingDiscoveryBehavior}
-            onClick={saveDiscoveryAndBehavior}
-            disabled={!discoveryHasChanges}
-            style={saveButtonStyle(!discoveryHasChanges)}
-          >
-            Save
-          </Button>
+          <Tooltip title={!canEditDiscoveryConfig ? C.LABELS.EDIT_DISCOVERY_CONFIG_PERMISSION_DENIED : undefined}>
+            <span style={!canEditDiscoveryConfig ? { display: 'inline-block', cursor: 'not-allowed' } : {}}>
+              <Button
+                loading={savingDiscoveryBehavior}
+                onClick={saveDiscoveryAndBehavior}
+                disabled={!discoveryHasChanges || !canEditDiscoveryConfig}
+                style={saveButtonStyle(!discoveryHasChanges || !canEditDiscoveryConfig)}
+              >
+                Save
+              </Button>
+            </span>
+          </Tooltip>
         </div>
       </div>
     </SettingsCard>

@@ -56,6 +56,8 @@ export const GROUPS_CONSTANTS = {
       CREATE_DISABLED_TOOLTIP: 'You do not have permission to create groups',
       ATTACH_ROLE_DISABLED_TOOLTIP: 'You do not have permission to attach roles',
       REMOVE_MEMBER_DISABLED_TOOLTIP: 'You do not have permission to remove members',
+      MANAGE_ROLES_DISABLED_TOOLTIP: 'You do not have permission to manage roles',
+      MANAGE_MEMBERS_DISABLED_TOOLTIP: 'You do not have permission to manage members',
       BULK_DELETE: 'Bulk Delete',
       ATTACH_ROLE: 'Attach Role',
       MANAGE_ROLES: 'Manage Roles',

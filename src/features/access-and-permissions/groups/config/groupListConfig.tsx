@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tooltip } from 'antd';
 import { Icons } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import { getManageCategoriesButtonConfig } from '../../categories/config';
@@ -116,13 +117,21 @@ export const useGroupListConfig = ({
                 items: [
                   {
                     key: 'manage-roles',
-                    label: GC.LABELS.ACTIONS.MANAGE_ROLES,
+                    label: !canAttachRole ? (
+                      <Tooltip title={GC.LABELS.ACTIONS.MANAGE_ROLES_DISABLED_TOOLTIP}>
+                        <span style={{ pointerEvents: 'all' }}>{GC.LABELS.ACTIONS.MANAGE_ROLES}</span>
+                      </Tooltip>
+                    ) : GC.LABELS.ACTIONS.MANAGE_ROLES,
                     icon: <RoleIcon size={14} />,
                     disabled: !canAttachRole,
                   },
                   {
                     key: 'manage-members',
-                    label: GC.LABELS.ACTIONS.MANAGE_MEMBERS,
+                    label: !canAttachMember ? (
+                      <Tooltip title={GC.LABELS.ACTIONS.MANAGE_MEMBERS_DISABLED_TOOLTIP}>
+                        <span style={{ pointerEvents: 'all' }}>{GC.LABELS.ACTIONS.MANAGE_MEMBERS}</span>
+                      </Tooltip>
+                    ) : GC.LABELS.ACTIONS.MANAGE_MEMBERS,
                     icon: <UserIcon size={14} />,
                     disabled: !canAttachMember,
                   },

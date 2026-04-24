@@ -88,6 +88,18 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
       Admin: [],
     },
   },
+  {
+    scope: 'settings',
+    rules: {
+      ReadOnly: [],
+      Contributor: [
+        { key: 'editdiscoveryconfig', label: 'EditDiscoveryConfig' },
+        { key: 'editsnapshotstorage', label: 'EditSnapshotStorage' },
+      ],
+      Owner: [{ key: 'controlainsights', label: 'ControlAiInsights' }],
+      Admin: [],
+    },
+  },
 ];
 
 const ORDERED_LEVELS: PermissionLevel[] = ['ReadOnly', 'Contributor', 'Owner', 'Admin'];

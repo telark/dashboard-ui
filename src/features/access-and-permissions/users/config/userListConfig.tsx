@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tooltip } from 'antd';
 import { USERS_CONSTANTS as UC } from '../constants';
 import { Icons } from '../../../../constants';
 import { SearchOutlined, SettingOutlined, FilterOutlined, DeleteOutlined } from '@ant-design/icons';
@@ -80,13 +81,21 @@ export const useUserListConfig = ({
             items: [
               {
                 key: 'manage-roles',
-                label: UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_ROLES,
+                label: !canManageRole ? (
+                  <Tooltip title={UC.LABELS.ACTIONS.MANAGE_ROLES_DISABLED_TOOLTIP}>
+                    <span style={{ pointerEvents: 'all' }}>{UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_ROLES}</span>
+                  </Tooltip>
+                ) : UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_ROLES,
                 icon: <RoleIcon size={14} />,
                 disabled: !canManageRole,
               },
               {
                 key: 'manage-groups',
-                label: UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_GROUPS,
+                label: !canManageGroup ? (
+                  <Tooltip title={UC.LABELS.ACTIONS.MANAGE_GROUPS_DISABLED_TOOLTIP}>
+                    <span style={{ pointerEvents: 'all' }}>{UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_GROUPS}</span>
+                  </Tooltip>
+                ) : UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_GROUPS,
                 icon: <GroupIcon size={14} />,
                 disabled: !canManageGroup,
               },

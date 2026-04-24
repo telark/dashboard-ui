@@ -186,6 +186,23 @@ export const ACTION_PERMISSIONS = {
       deny: 'roles.deleterolecategory.deny',
     },
   },
+  settings: {
+    editDiscoveryConfig: {
+      scope: 'settings' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'settings.editdiscoveryconfig.deny',
+    },
+    editSnapshotStorage: {
+      scope: 'settings' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'settings.editsnapshotstorage.deny',
+    },
+    controlAiInsights: {
+      scope: 'settings' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'settings.controlainsights.deny',
+    },
+  },
 } as const;
 
 function resolveEntry(

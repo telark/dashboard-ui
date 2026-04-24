@@ -71,6 +71,8 @@ export const USERS_CONSTANTS = {
       DELETE_DISABLED_TOOLTIP: 'You do not have permission to delete users',
       MANAGE_ROLES: 'Manage Roles',
       MANAGE_GROUPS: 'Manage Groups',
+      MANAGE_ROLES_DISABLED_TOOLTIP: 'You do not have permission to manage roles',
+      MANAGE_GROUPS_DISABLED_TOOLTIP: 'You do not have permission to manage groups',
       DELETE_MODAL_TITLE: 'Delete User',
       DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
       DELETE_MODAL_OK: 'Delete',
