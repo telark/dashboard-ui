@@ -47,9 +47,12 @@ const enrichmentApiClient: AxiosInstance = axios.create({
 });
 
 // Add session token interceptor for auth client
+// synchronous: true ensures the interceptor reads localStorage before any microtask yields,
+// which matters for fire-and-forget logout (token removed synchronously right after the call)
 authApiClient.interceptors.request.use(
   createSessionTokenInterceptor(),
   createRequestErrorHandler(),
+  { synchronous: true },
 );
 
 const normalizeError = (error: AxiosError) => {

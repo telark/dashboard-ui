@@ -139,8 +139,6 @@ export const performLogin = async (
       throw error;
     }
 
-    await store.dispatch(fetchMyPermissionsThunk());
-
     messageApi.open({
       type: 'success',
       content: AUTH_SUCCESS_MESSAGES.LOGIN_SUCCESS,
@@ -149,6 +147,7 @@ export const performLogin = async (
     if (onSuccess) {
       onSuccess();
     }
+    void store.dispatch(fetchMyPermissionsThunk());
   } catch (error) {
     // On authentication failure, show modal if backend has passkeys
     // User must explicitly confirm before cleanup

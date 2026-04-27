@@ -15,7 +15,6 @@ import { hasSessionToken, useSessionExpirationCheck } from './features/auth/util
 import { useInitializePermissions } from './features/auth/hooks';
 import { selectPermissionsState } from './features/auth/store/selectors/permissionsSelectors';
 import { AUTH_PERMISSIONS_LABELS, PERMISSION_GATE_BYPASS_PATHS } from './features/auth/constants';
-import { useInitializeCategories } from './features/access-and-permissions/categories/hooks';
 import { useInitializeRoles } from './features/access-and-permissions/roles/hooks';
 
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
@@ -43,8 +42,7 @@ const AppContent: React.FC = () => {
     onSessionExpired: () => setShowSessionExpiredModal(true),
   });
 
-  // Initialize built-in categories, roles, and user permissions when authenticated
-  useInitializeCategories(isAuthenticated);
+  // Initialize built-in roles and user permissions when authenticated
   useInitializeRoles(isAuthenticated);
   useInitializePermissions(isAuthenticated, location.pathname);
 

@@ -9,6 +9,9 @@ import { APP_ROUTES } from '../../../../constants';
 
 export const handleUserLogout = async (navigate: (path: string) => void): Promise<void> => {
   stopPermissionsPolling();
+  void logout().catch(() => {
+    // Server-side invalidation runs best-effort; ignore failures
+  });
   try {
     removeSessionToken();
   } catch {
@@ -17,7 +20,4 @@ export const handleUserLogout = async (navigate: (path: string) => void): Promis
   store.dispatch(clearPermissions());
   navigate(APP_ROUTES.LOGIN);
   message.success(AUTH_SUCCESS_MESSAGES.LOGOUT_SUCCESS);
-  void logout().catch(() => {
-    // Server-side invalidation runs best-effort after redirect
-  });
 };
