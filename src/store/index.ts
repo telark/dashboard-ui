@@ -13,18 +13,20 @@ import {
   retryPersistConfig,
   groupsPersistConfig,
   usersPersistConfig,
+  globalConfigPersistConfig,
 } from './persistConfig';
 
 const persistedApplicationsReducer = persistReducer(applicationsPersistConfig, applicationsReducer);
 const persistedRetryReducer = persistReducer(retryPersistConfig, retryReducer);
 const persistedGroupsReducer = persistReducer(groupsPersistConfig, groupsReducer);
 const persistedUsersReducer = persistReducer(usersPersistConfig, usersReducer);
+const persistedGlobalConfigReducer = persistReducer(globalConfigPersistConfig, globalConfigReducer);
 
 const store = configureStore({
   reducer: {
     applications: persistedApplicationsReducer,
     retry: persistedRetryReducer,
-    globalconfig: globalConfigReducer,
+    globalconfig: persistedGlobalConfigReducer,
     groups: persistedGroupsReducer,
     users: persistedUsersReducer,
     categories: categoriesReducer,

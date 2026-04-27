@@ -7,10 +7,12 @@ import type {
   LoginFinishResponse,
   DeviceMetadata,
 } from '../models';
+import type { User } from '../../access-and-permissions/users/models';
 
 export interface OIDCCallbackResponse {
   sessionToken: string;
   email: string;
+  user?: User;
 }
 
 export const loginStart = async (request: LoginStartRequest): Promise<LoginStartResponse> => {

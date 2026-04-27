@@ -11,7 +11,7 @@ import { SHARED_DETAILS_CONSTANTS } from './constants';
 import { clearOrphanedSyncing } from './features/resources/applications/store/slices/applicationsSlice';
 import { listApplicationSyncInFlight } from './features/resources/applications/utils/management/syncInFlight';
 import { forceSyncApplication } from './features/resources/applications/utils/management/sync';
-import { fetchGlobalConfigThunk } from './features/globalconfig/store';
+import { ensureGlobalConfigThunk } from './features/globalconfig/store';
 import { AppearanceProvider } from './features/settings/sections/appearance';
 import './styles/index.css';
 import './styles/antd.css';
@@ -43,7 +43,7 @@ startTransition(() => {
               }
             }
 
-            store.dispatch(fetchGlobalConfigThunk());
+            store.dispatch(ensureGlobalConfigThunk());
           }}
         >
           <AppearanceProvider>

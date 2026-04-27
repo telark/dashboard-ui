@@ -38,7 +38,7 @@ import {
   AuthFooter,
   OrphanedPasskeysModal,
 } from '../../components';
-import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
+import { ensureGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
 import type { AppDispatch } from '../../../../store';
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
@@ -214,10 +214,8 @@ const Login: React.FC = () => {
 
   // ── Preserved effect ──
   useEffect(() => {
-    if (!globalConfig.initialized && !globalConfig.loading) {
-      dispatch(fetchGlobalConfigThunk());
-    }
-  }, [dispatch, globalConfig.initialized, globalConfig.loading]);
+    dispatch(ensureGlobalConfigThunk());
+  }, [dispatch]);
 
   // ── Preserved handlers (auth logic untouched) ──
   const handleLogin = async (values: { username: string }) => {

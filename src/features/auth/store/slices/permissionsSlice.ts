@@ -12,6 +12,7 @@ const initialState: PermissionsState = {
   scopeIndex: {},
   loading: false,
   error: null,
+  ready: false,
 };
 
 function buildScopeIndex(
@@ -68,6 +69,7 @@ const permissionsSlice = createSlice({
       state.scopeIndex = {};
       state.loading = false;
       state.error = null;
+      state.ready = false;
     },
   },
   extraReducers: (builder) => {
@@ -81,6 +83,7 @@ const permissionsSlice = createSlice({
         state.userID = action.payload.userID;
         state.roles = action.payload.roles;
         state.scopeIndex = buildScopeIndex(action.payload.roles);
+        state.ready = true;
       })
       .addCase(fetchMyPermissionsThunk.rejected, (state, action) => {
         state.loading = false;

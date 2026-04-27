@@ -5,7 +5,10 @@ export {
   PermissionGate,
   ACTION_PERMISSIONS,
 } from './permissions/permissionEngine';
-export { useInitializePermissions } from './permissions/useInitializePermissions';
+export {
+  useInitializePermissions,
+  stopPermissionsPolling,
+} from './permissions/useInitializePermissions';
 
 // Session
 export { useSessionsList, type UseSessionsListResult } from './useSessionsList';

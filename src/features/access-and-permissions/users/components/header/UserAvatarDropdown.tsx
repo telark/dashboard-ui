@@ -76,7 +76,7 @@ const UserAvatarDropdown: React.FC = memo(() => {
   const menuItems = createUserMenuItems({
     currentUser,
     onLogout: handleLogoutWrapper,
-    onSettings: () => navigate(APP_ROUTES.SETTINGS),
+    onSettings: () => navigate(`${APP_ROUTES.SETTINGS}/profile`),
     loggingOut,
   });
 

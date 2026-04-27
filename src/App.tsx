@@ -14,7 +14,7 @@ import AppRoutes from './routes/AppRoutes';
 import { hasSessionToken, useSessionExpirationCheck } from './features/auth/utils';
 import { useInitializePermissions } from './features/auth/hooks';
 import { selectPermissionsState } from './features/auth/store/selectors/permissionsSelectors';
-import { AUTH_PERMISSIONS_LABELS } from './features/auth/constants';
+import { AUTH_PERMISSIONS_LABELS, PERMISSION_GATE_BYPASS_PATHS } from './features/auth/constants';
 import { useInitializeCategories } from './features/access-and-permissions/categories/hooks';
 import { useInitializeRoles } from './features/access-and-permissions/roles/hooks';
 
@@ -28,10 +28,12 @@ const AppContent: React.FC = () => {
     location.pathname === APP_ROUTES.GOOGLE_CALLBACK;
   const isAuthenticated = hasSessionToken();
   const [showSessionExpiredModal, setShowSessionExpiredModal] = useState(false);
-  const { loading: permissionsLoading, userID, roles } = useSelector(selectPermissionsState);
+  const { ready: permissionsReady, userID, roles } = useSelector(selectPermissionsState);
+  const isBypassPath = PERMISSION_GATE_BYPASS_PATHS.includes(location.pathname);
   const noPermissions =
-    !permissionsLoading &&
+    permissionsReady &&
     userID !== null &&
+    !isBypassPath &&
     (roles.length === 0 || roles.every((r) => r.isExpired));
 
   // Check session expiration as background task when authenticated

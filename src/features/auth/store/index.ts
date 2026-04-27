@@ -33,4 +33,5 @@ export {
   selectPermissionsLoading,
   selectPermissionsError,
   selectResolvedRoles,
+  selectPermissionsReady,
 } from './selectors/permissionsSelectors';

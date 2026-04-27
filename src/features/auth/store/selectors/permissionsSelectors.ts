@@ -8,3 +8,5 @@ export const selectPermissionsLoading = createSelector([selectPermissionsState],
 export const selectPermissionsError = createSelector([selectPermissionsState], (p) => p.error);
 
 export const selectResolvedRoles = createSelector([selectPermissionsState], (p) => p.roles);
+
+export const selectPermissionsReady = createSelector([selectPermissionsState], (p) => p.ready);

@@ -3,9 +3,19 @@ import { useSelector } from 'react-redux';
 import store from '../../../../store';
 import { fetchMyPermissionsThunk } from '../../store/thunks/fetchThunks';
 import { selectPermissionsState } from '../../store/selectors/permissionsSelectors';
+import { hasSessionToken } from '../../utils/session/token';
 import logger from '../../../../logging';
 
 const PERMISSIONS_POLL_INTERVAL_MS = 15_000;
+
+let pollingIntervalId: ReturnType<typeof setInterval> | null = null;
+
+export const stopPermissionsPolling = (): void => {
+  if (pollingIntervalId !== null) {
+    clearInterval(pollingIntervalId);
+    pollingIntervalId = null;
+  }
+};
 
 export const useInitializePermissions = (isAuthenticated: boolean, pathname?: string): void => {
   const initializedRef = useRef(false);
@@ -25,10 +35,13 @@ export const useInitializePermissions = (isAuthenticated: boolean, pathname?: st
 
   useEffect(() => {
     if (!isAuthenticated || permissions.userID === null) return;
-    const id = setInterval(() => {
+    stopPermissionsPolling();
+    pollingIntervalId = setInterval(() => {
       store.dispatch(fetchMyPermissionsThunk());
     }, PERMISSIONS_POLL_INTERVAL_MS);
-    return () => clearInterval(id);
+    return () => {
+      stopPermissionsPolling();
+    };
   }, [isAuthenticated, permissions.userID]);
 
   // Re-fetch immediately on route change; skip initial mount and in-flight fetches
@@ -38,7 +51,8 @@ export const useInitializePermissions = (isAuthenticated: boolean, pathname?: st
     const isRouteChange = prevPathnameRef.current !== undefined;
     prevPathnameRef.current = pathname;
     if (!isRouteChange) return;
-    if (!isAuthenticated || permissions.userID === null || permissions.loading) return;
+    if (!isAuthenticated || !hasSessionToken()) return;
+    if (permissions.userID === null || permissions.loading || !permissions.ready) return;
     store.dispatch(fetchMyPermissionsThunk());
-  }, [pathname, isAuthenticated, permissions.userID, permissions.loading]);
+  }, [pathname, isAuthenticated, permissions.userID, permissions.loading, permissions.ready]);
 };

@@ -35,6 +35,8 @@ export interface PermissionsState {
   scopeIndex: Record<string, { level: PermissionLevel; rules: string[] }>;
   loading: boolean;
   error: string | null;
+  /** True after first successful fetch resolves; never flips back on subsequent fetches */
+  ready: boolean;
 }
 
 export const PERMISSION_LEVEL_RANK: Record<PermissionLevel, number> = {
