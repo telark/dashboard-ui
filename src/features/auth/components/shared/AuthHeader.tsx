@@ -38,7 +38,7 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({ icon, title, subtitle })
     </h1>
     <p
       style={{
-        margin: '8px 0 0',
+        margin: '6px 0 0',
         fontSize: '14px',
         color: 'var(--auth-text-muted, #64748b)',
         lineHeight: 1.5,

@@ -19,7 +19,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import { Form, App as AntdApp, Button, Divider, ConfigProvider, theme as antdTheme } from 'antd';
-import { LockOutlined, MoonOutlined, SunOutlined } from '@ant-design/icons';
+import { LockOutlined, MoonOutlined, SunOutlined, KeyOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -37,7 +37,6 @@ import {
   AuthHeader,
   AuthFooter,
   OrphanedPasskeysModal,
-  PasskeyIcon,
 } from '../../components';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
 import type { AppDispatch } from '../../../../store';
@@ -433,7 +432,7 @@ const Login: React.FC = () => {
                     gap: '8px',
                   }}
                 >
-                  <PasskeyIcon size={16} color={isDark ? '#0f172a' : '#ffffff'} />
+                  <KeyOutlined />
                   {LOGIN_CONSTANTS.UI.BUTTON_TEXT}
                 </Button>
               ) : (
@@ -489,19 +488,6 @@ const Login: React.FC = () => {
                     : LOGIN_CONSTANTS.UI.GOOGLE_BUTTON_TEXT}
                 </Button>
               )}
-
-              {/* Trust signal */}
-              <p
-                style={{
-                  textAlign: 'center',
-                  fontSize: '11px',
-                  color: 'var(--auth-text-muted, #94a3b8)',
-                  margin: '16px 0 0',
-                  lineHeight: 1.5,
-                }}
-              >
-                Secure authentication via passkeys and OIDC · No passwords stored
-              </p>
 
               <AuthFooter
                 text={LOGIN_CONSTANTS.UI.FOOTER_TEXT}
