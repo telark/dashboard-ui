@@ -74,8 +74,10 @@ const permissionsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchMyPermissionsThunk.pending, (state) => {
-        state.loading = true;
+      .addCase(fetchMyPermissionsThunk.pending, (state, action) => {
+        if (!action.meta.arg?.silent) {
+          state.loading = true;
+        }
         state.error = null;
       })
       .addCase(fetchMyPermissionsThunk.fulfilled, (state, action) => {

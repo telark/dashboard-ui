@@ -45,7 +45,7 @@ export const fetchPasskeyDetailsThunk = createAsyncThunk(
 
 export const fetchMyPermissionsThunk = createAsyncThunk(
   STORE_ACTIONS.PERMISSIONS.FETCH,
-  async (_, { rejectWithValue }) => {
+  async (_arg: { silent?: boolean } | void, { rejectWithValue }) => {
     try {
       return await getMyPermissions();
     } catch (error: unknown) {
