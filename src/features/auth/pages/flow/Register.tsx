@@ -31,10 +31,10 @@ const Register: React.FC = () => {
   const navigate = useNavigate();
   const { message } = AntdApp.useApp();
 
-  const handleRegister = async (values: { username: string; deviceName: string }) => {
+  const handleRegister = async (values: { email: string; deviceName: string }) => {
     setLoading(true);
     try {
-      await performRegister(values.username, values.deviceName, message, () =>
+      await performRegister(values.email, values.deviceName, message, () =>
         navigate(APP_ROUTES.LOGIN),
       );
     } catch (error) {

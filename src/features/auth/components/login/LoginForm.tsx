@@ -8,7 +8,7 @@ import { AuthForm } from '../shared/AuthForm';
 interface LoginFormProps {
   form: FormInstance;
   loading: boolean;
-  onFinish: (values: { username: string }) => void;
+  onFinish: (values: { email: string }) => void;
   error?: string | null;
   onClearError?: () => void;
 }
@@ -22,12 +22,16 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 }) => (
   <AuthForm form={form} onFinish={onFinish}>
     <Form.Item
-      name="username"
-      rules={[{ required: true, message: AUTH_ERROR_MESSAGES.MISSING_USERNAME }]}
+      name="email"
+      rules={[
+        { required: true, message: AUTH_ERROR_MESSAGES.MISSING_EMAIL },
+        { type: 'email', message: 'Please enter a valid email address' },
+      ]}
       style={{ marginBottom: '12px' }}
     >
       <Input
-        placeholder={LOGIN_CONSTANTS.UI.USERNAME_PLACEHOLDER}
+        type="email"
+        placeholder={LOGIN_CONSTANTS.UI.EMAIL_PLACEHOLDER}
         autoFocus
         style={{
           height: '44px',

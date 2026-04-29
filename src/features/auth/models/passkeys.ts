@@ -55,7 +55,7 @@ export interface CreatePasskeyParams {
   credential: PublicKeyCredential;
   deviceName: string;
   deviceType: PasskeyDeviceType;
-  username?: string;
+  email?: string;
 }
 
 // Hook interfaces

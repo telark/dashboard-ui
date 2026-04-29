@@ -25,7 +25,7 @@ export const AUTH_ERROR_MESSAGES = {
   WEBAUTHN_ERROR: 'WebAuthn operation failed',
   MISSING_CREDENTIAL_ID: 'Credential ID is required',
   MISSING_DEVICE_NAME: 'Device name is required',
-  MISSING_USERNAME: 'Username is required',
+  MISSING_EMAIL: 'Email is required',
   LAST_PASSKEY_DELETE: 'Cannot delete last passkey',
   PASSKEY_ALREADY_EXISTS: 'A passkey with this name already exists',
   ORPHANED_PASSKEY_DETECTED: 'Found passkey in backend but not in browser. Cleaning up...',

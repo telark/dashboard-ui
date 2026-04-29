@@ -218,12 +218,12 @@ const Login: React.FC = () => {
   }, [dispatch]);
 
   // ── Preserved handlers (auth logic untouched) ──
-  const handleLogin = async (values: { username: string }) => {
+  const handleLogin = async (values: { email: string }) => {
     setPasskeyError(null);
     setLoading(true);
     try {
       await performLogin(
-        values.username,
+        values.email,
         message,
         () => navigate(APP_ROUTES.HOME),
         () => navigate(APP_ROUTES.REGISTER),
@@ -246,7 +246,7 @@ const Login: React.FC = () => {
     try {
       const values = form.getFieldsValue();
       await performLogin(
-        values.username,
+        values.email,
         message,
         () => navigate(APP_ROUTES.HOME),
         () => navigate(APP_ROUTES.REGISTER),
