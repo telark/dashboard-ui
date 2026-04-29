@@ -246,8 +246,16 @@ const SnapshotStorageSection: React.FC = memo(() => {
           ) : null}
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Tooltip title={!canEditSnapshotStorage ? C.LABELS.EDIT_SNAPSHOT_STORAGE_PERMISSION_DENIED : undefined}>
-            <span style={!canEditSnapshotStorage ? { display: 'inline-block', cursor: 'not-allowed' } : {}}>
+          <Tooltip
+            title={
+              !canEditSnapshotStorage ? C.LABELS.EDIT_SNAPSHOT_STORAGE_PERMISSION_DENIED : undefined
+            }
+          >
+            <span
+              style={
+                !canEditSnapshotStorage ? { display: 'inline-block', cursor: 'not-allowed' } : {}
+              }
+            >
               <Button
                 loading={savingSnapshotsMax}
                 onClick={saveSnapshotsMax}

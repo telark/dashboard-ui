@@ -72,7 +72,6 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({
           Privacy Policy
         </a>
       </p>
-
     </div>
   );
 };

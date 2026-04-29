@@ -270,8 +270,16 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Tooltip title={!canEditDiscoveryConfig ? C.LABELS.EDIT_DISCOVERY_CONFIG_PERMISSION_DENIED : undefined}>
-            <span style={!canEditDiscoveryConfig ? { display: 'inline-block', cursor: 'not-allowed' } : {}}>
+          <Tooltip
+            title={
+              !canEditDiscoveryConfig ? C.LABELS.EDIT_DISCOVERY_CONFIG_PERMISSION_DENIED : undefined
+            }
+          >
+            <span
+              style={
+                !canEditDiscoveryConfig ? { display: 'inline-block', cursor: 'not-allowed' } : {}
+              }
+            >
               <Button
                 loading={savingDiscoveryBehavior}
                 onClick={saveDiscoveryAndBehavior}

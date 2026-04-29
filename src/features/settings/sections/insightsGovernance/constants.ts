@@ -34,9 +34,12 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     SNAPSHOTS_MAX_PER_APP_LABEL: 'Maximum Snapshots per application',
     PLATFORM_SAVE_INTERVAL_BUTTON: 'Save interval',
     PLATFORM_SAVE_SNAPSHOTS_BUTTON: 'Save snapshots',
-    EDIT_DISCOVERY_CONFIG_PERMISSION_DENIED: 'You do not have permission to edit discovery & behavior settings',
-    EDIT_SNAPSHOT_STORAGE_PERMISSION_DENIED: 'You do not have permission to edit snapshot storage settings',
-    CONTROL_AI_INSIGHTS_PERMISSION_DENIED: 'You do not have permission to manage AI insights settings',
+    EDIT_DISCOVERY_CONFIG_PERMISSION_DENIED:
+      'You do not have permission to edit discovery & behavior settings',
+    EDIT_SNAPSHOT_STORAGE_PERMISSION_DENIED:
+      'You do not have permission to edit snapshot storage settings',
+    CONTROL_AI_INSIGHTS_PERMISSION_DENIED:
+      'You do not have permission to manage AI insights settings',
     SNAPSHOT_STORAGE_TITLE: 'Snapshot storage',
     SNAPSHOT_STORAGE_DESCRIPTION: 'Storage usage and retention controls for snapshots.',
     SNAPSHOT_STORAGE_LOADING: 'Loading snapshot storage...',

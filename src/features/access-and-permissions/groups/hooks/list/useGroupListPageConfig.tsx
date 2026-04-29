@@ -211,7 +211,11 @@ export const useGroupListPageConfig = ({
                 width: 120,
                 onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
                 render: (_: unknown, record: Group | Category) => (
-                  <CategoryActionsColumn record={record as Category} onEdit={onEditCategory} scope="groups" />
+                  <CategoryActionsColumn
+                    record={record as Category}
+                    onEdit={onEditCategory}
+                    scope="groups"
+                  />
                 ),
               },
             ],

@@ -83,9 +83,13 @@ export const useUserListConfig = ({
                 key: 'manage-roles',
                 label: !canManageRole ? (
                   <Tooltip title={UC.LABELS.ACTIONS.MANAGE_ROLES_DISABLED_TOOLTIP}>
-                    <span style={{ pointerEvents: 'all' }}>{UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_ROLES}</span>
+                    <span style={{ pointerEvents: 'all' }}>
+                      {UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_ROLES}
+                    </span>
                   </Tooltip>
-                ) : UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_ROLES,
+                ) : (
+                  UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_ROLES
+                ),
                 icon: <RoleIcon size={14} />,
                 disabled: !canManageRole,
               },
@@ -93,9 +97,13 @@ export const useUserListConfig = ({
                 key: 'manage-groups',
                 label: !canManageGroup ? (
                   <Tooltip title={UC.LABELS.ACTIONS.MANAGE_GROUPS_DISABLED_TOOLTIP}>
-                    <span style={{ pointerEvents: 'all' }}>{UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_GROUPS}</span>
+                    <span style={{ pointerEvents: 'all' }}>
+                      {UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_GROUPS}
+                    </span>
                   </Tooltip>
-                ) : UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_GROUPS,
+                ) : (
+                  UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_GROUPS
+                ),
                 icon: <GroupIcon size={14} />,
                 disabled: !canManageGroup,
               },

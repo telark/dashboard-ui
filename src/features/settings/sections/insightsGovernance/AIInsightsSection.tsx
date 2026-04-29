@@ -175,9 +175,21 @@ const AIInsightsSection: React.FC = memo(() => {
           }}
         >
           <div style={{ fontWeight: 700 }}>{C.LABELS.ENABLE_AI_LABEL}</div>
-          <Tooltip title={!canControlAiInsights ? C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED : undefined}>
-            <span style={!canControlAiInsights ? { display: 'inline-block', cursor: 'not-allowed' } : {}}>
-              <Switch checked={aiEnabled} onChange={canControlAiInsights ? setAiEnabled : undefined} disabled={!canControlAiInsights} />
+          <Tooltip
+            title={
+              !canControlAiInsights ? C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED : undefined
+            }
+          >
+            <span
+              style={
+                !canControlAiInsights ? { display: 'inline-block', cursor: 'not-allowed' } : {}
+              }
+            >
+              <Switch
+                checked={aiEnabled}
+                onChange={canControlAiInsights ? setAiEnabled : undefined}
+                disabled={!canControlAiInsights}
+              />
             </span>
           </Tooltip>
         </div>
@@ -204,9 +216,25 @@ const AIInsightsSection: React.FC = memo(() => {
                   }}
                   style={{ flex: 1 }}
                 />
-                <Tooltip title={!canControlAiInsights ? C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED : undefined}>
-                  <span style={!canControlAiInsights ? { display: 'inline-block', cursor: 'not-allowed' } : {}}>
-                    <Button loading={validating} disabled={validateDisabled || !canControlAiInsights} onClick={validateKey}>
+                <Tooltip
+                  title={
+                    !canControlAiInsights
+                      ? C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED
+                      : undefined
+                  }
+                >
+                  <span
+                    style={
+                      !canControlAiInsights
+                        ? { display: 'inline-block', cursor: 'not-allowed' }
+                        : {}
+                    }
+                  >
+                    <Button
+                      loading={validating}
+                      disabled={validateDisabled || !canControlAiInsights}
+                      onClick={validateKey}
+                    >
                       {C.LABELS.VALIDATE_BUTTON}
                     </Button>
                   </span>
@@ -224,8 +252,16 @@ const AIInsightsSection: React.FC = memo(() => {
         ) : null}
 
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Tooltip title={!canControlAiInsights ? C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED : undefined}>
-            <span style={!canControlAiInsights ? { display: 'inline-block', cursor: 'not-allowed' } : {}}>
+          <Tooltip
+            title={
+              !canControlAiInsights ? C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED : undefined
+            }
+          >
+            <span
+              style={
+                !canControlAiInsights ? { display: 'inline-block', cursor: 'not-allowed' } : {}
+              }
+            >
               <Button
                 onClick={handleEnable}
                 loading={saving}

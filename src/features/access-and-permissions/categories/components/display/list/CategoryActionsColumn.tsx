@@ -155,8 +155,7 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
               style={actionButtonStyle(!hasDeletePermission)}
               disabled={!hasDeletePermission}
               onMouseEnter={(e) => {
-                if (hasDeletePermission)
-                  e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
+                if (hasDeletePermission) e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = 'transparent';

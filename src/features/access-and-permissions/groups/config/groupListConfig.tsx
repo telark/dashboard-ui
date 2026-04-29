@@ -119,9 +119,13 @@ export const useGroupListConfig = ({
                     key: 'manage-roles',
                     label: !canAttachRole ? (
                       <Tooltip title={GC.LABELS.ACTIONS.MANAGE_ROLES_DISABLED_TOOLTIP}>
-                        <span style={{ pointerEvents: 'all' }}>{GC.LABELS.ACTIONS.MANAGE_ROLES}</span>
+                        <span style={{ pointerEvents: 'all' }}>
+                          {GC.LABELS.ACTIONS.MANAGE_ROLES}
+                        </span>
                       </Tooltip>
-                    ) : GC.LABELS.ACTIONS.MANAGE_ROLES,
+                    ) : (
+                      GC.LABELS.ACTIONS.MANAGE_ROLES
+                    ),
                     icon: <RoleIcon size={14} />,
                     disabled: !canAttachRole,
                   },
@@ -129,9 +133,13 @@ export const useGroupListConfig = ({
                     key: 'manage-members',
                     label: !canAttachMember ? (
                       <Tooltip title={GC.LABELS.ACTIONS.MANAGE_MEMBERS_DISABLED_TOOLTIP}>
-                        <span style={{ pointerEvents: 'all' }}>{GC.LABELS.ACTIONS.MANAGE_MEMBERS}</span>
+                        <span style={{ pointerEvents: 'all' }}>
+                          {GC.LABELS.ACTIONS.MANAGE_MEMBERS}
+                        </span>
                       </Tooltip>
-                    ) : GC.LABELS.ACTIONS.MANAGE_MEMBERS,
+                    ) : (
+                      GC.LABELS.ACTIONS.MANAGE_MEMBERS
+                    ),
                     icon: <UserIcon size={14} />,
                     disabled: !canAttachMember,
                   },
