@@ -6,7 +6,7 @@ import { loadApplications, loadApplicationsSilent } from '../../utils/management
 import logger from '../../../../../logging';
 import { APPLICATIONS_CONSTANTS, APPLICATIONS_PAGE_SIZE, APPLICATIONS_UI } from '../../constants';
 import { executeRetryWithBackoff, RETRY_STATUS } from '../../../../shared/retry';
-import LoadingView from '../../../../../components/display/views/LoadingView';
+import ApplicationsLoadingPage from './LoadingPage';
 import ReachabilityErrorView from '../../../../../components/display/views/ReachabilityErrorView';
 import ApplicationsMainEmpty from './Empty';
 import ApplicationsSuccess from './Success';
@@ -259,7 +259,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   }, [messageApi]);
 
   if (loading) {
-    return <LoadingView label={APPLICATIONS_CONSTANTS.MESSAGES.LOADING} />;
+    return <ApplicationsLoadingPage />;
   }
 
   if (error || retryState) {

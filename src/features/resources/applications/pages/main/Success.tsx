@@ -143,35 +143,46 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
         <div style={{ display: 'flex', flexDirection: 'column', gap: contentGap }}>
           <ApplicationsHeader />
 
-          <ApplicationsToolbar
-            searchValue={searchValue}
-            onSearchChange={onSearchChange}
-            onOpenFilters={onOpenFilters}
-            totalCount={totalFiltered}
-            filterChips={filterChips}
-            overflowCount={overflowChipsCount}
-            onRemoveFilterChip={onRemoveFilterChip}
-            layoutMode={layoutMode}
-            onLayoutModeChange={(mode) => dispatch(setLayoutMode(mode))}
-            hasActiveFilters={hasActiveFilters}
-            onClearAllFilters={onClearAllFilters}
-            bulkMode={bulkMode}
-            onToggleBulkMode={() => {
-              onToggleBulkMode();
-              if (bulkMode) {
-                onClearSelection();
-              }
+          <div
+            style={{
+              position: 'sticky',
+              top: PAGE_CONTENT_LAYOUT.HEADER_OFFSET_PX,
+              zIndex: 5,
+              background: DEFAULT_COLORS.BACKGROUND_WHITE,
+              borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+              padding: '8px 0',
             }}
-            selectedCount={selectedCount}
-            pageCount={applications.length}
-            allPageSelected={allPageSelected}
-            onToggleSelectAllPage={onToggleSelectAllPage}
-            onBulkForceSync={handleBulkForceSync}
-            onBulkDelete={() => setBulkDeleteOpen(true)}
-            bulkForceSyncDisabled={anySelectedSyncing}
-            healthQuickFilter={healthQuickFilter}
-            onHealthQuickFilterChange={onHealthQuickFilterChange}
-          />
+          >
+            <ApplicationsToolbar
+              searchValue={searchValue}
+              onSearchChange={onSearchChange}
+              onOpenFilters={onOpenFilters}
+              totalCount={totalFiltered}
+              filterChips={filterChips}
+              overflowCount={overflowChipsCount}
+              onRemoveFilterChip={onRemoveFilterChip}
+              layoutMode={layoutMode}
+              onLayoutModeChange={(mode) => dispatch(setLayoutMode(mode))}
+              hasActiveFilters={hasActiveFilters}
+              onClearAllFilters={onClearAllFilters}
+              bulkMode={bulkMode}
+              onToggleBulkMode={() => {
+                onToggleBulkMode();
+                if (bulkMode) {
+                  onClearSelection();
+                }
+              }}
+              selectedCount={selectedCount}
+              pageCount={applications.length}
+              allPageSelected={allPageSelected}
+              onToggleSelectAllPage={onToggleSelectAllPage}
+              onBulkForceSync={handleBulkForceSync}
+              onBulkDelete={() => setBulkDeleteOpen(true)}
+              bulkForceSyncDisabled={anySelectedSyncing}
+              healthQuickFilter={healthQuickFilter}
+              onHealthQuickFilterChange={onHealthQuickFilterChange}
+            />
+          </div>
 
           <div style={{ marginTop: -20 }}>
             {!hasApps && hasActiveFilters ? (
