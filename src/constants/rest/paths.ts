@@ -49,6 +49,7 @@ export const AUTH_PATHS = {
   },
   OIDC: {
     GOOGLE_CALLBACK: 'auth/oidc/google/callback',
+    GOOGLE_NONCE: 'auth/oidc/google/nonce',
   },
   PERMISSIONS: 'auth/permissions',
 } as const;

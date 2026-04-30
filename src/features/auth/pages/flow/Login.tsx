@@ -297,7 +297,9 @@ const Login: React.FC = () => {
   const handleGoogleLogin = () => {
     if (!googleClientID) return;
     setGoogleLoading(true);
-    redirectToGoogle(googleClientID);
+    redirectToGoogle(googleClientID).catch(() => {
+      setGoogleLoading(false);
+    });
   };
 
   // ── Theme helpers ──

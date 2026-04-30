@@ -109,6 +109,10 @@ export const Endpoints = {
           path: AUTH_PATHS.OIDC.GOOGLE_CALLBACK,
           method: 'POST',
         },
+        NONCE: {
+          path: AUTH_PATHS.OIDC.GOOGLE_NONCE,
+          method: 'POST',
+        },
       },
     },
     PERMISSIONS: {

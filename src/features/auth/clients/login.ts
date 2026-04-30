@@ -44,3 +44,12 @@ export const oidcGoogleCallback = async (
     data: request,
   });
 };
+
+export interface OIDCNonceResponse {
+  nonce: string;
+}
+
+export const oidcGetNonce = async (): Promise<OIDCNonceResponse> => {
+  const { path, method } = Endpoints.AUTH.OIDC.GOOGLE.NONCE;
+  return await Client<OIDCNonceResponse>(authApiClient, path, { method });
+};
