@@ -1,23 +1,4 @@
-/*
- * Login page layout breakpoints:
- *   1440px — 2-col split, left panel shows terminal demo
- *   1024px — 2-col split, left panel visible (lg threshold ≥992px)
- *   768px  — compact top banner; auth card full width
- *   375px  — banner hidden; auth card centered, full-screen padding
- *
- * Preserved state/handlers (auth logic untouched):
- *   form, loading, googleLoading, modalOpen, removing, orphanedInfo,
- *   showPasskeyForm, handleLogin, handleRetry, handleRemove,
- *   handleCancel, handleGoogleLogin, fetchGlobalConfigThunk effect.
- *
- * New UI-only state: isDark (theme toggle), passkeyError (inline alert).
- *
- * Left panel: animated terminal — chosen over logo wall / SVG diagram
- * because it's developer-centric (target audience: k8s platform teams),
- * concretely shows the product value prop, and mirrors the Vercel/
- * PlanetScale aesthetic of showing real CLI output.
- */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Form, App as AntdApp, Button, Divider, ConfigProvider, theme as antdTheme } from 'antd';
 import { LockOutlined, MoonOutlined, SunOutlined, KeyOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -207,17 +188,20 @@ const Login: React.FC = () => {
   const googleClientID = globalConfig.data?.oidc?.googleClientID;
   const navigate = useNavigate();
   const { message } = AntdApp.useApp();
-
-  // ── New UI-only state ──
   const [isDark, setIsDark] = useState(() => localStorage.getItem('auth-theme') === 'dark');
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
 
-  // ── Preserved effect ──
+  const isMountedRef = useRef(true);
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
   useEffect(() => {
     dispatch(ensureGlobalConfigThunk());
   }, [dispatch]);
 
-  // ── Preserved handlers (auth logic untouched) ──
   const handleLogin = async (values: { email: string }) => {
     setPasskeyError(null);
     setLoading(true);
@@ -229,14 +213,15 @@ const Login: React.FC = () => {
         () => navigate(APP_ROUTES.REGISTER),
         undefined,
         (info) => {
+          if (!isMountedRef.current) return;
           setOrphanedInfo(info);
           setModalOpen(true);
         },
       );
     } catch {
-      setPasskeyError('Authentication failed. Please try again.');
+      if (isMountedRef.current) setPasskeyError('Authentication failed. Please try again.');
     } finally {
-      setLoading(false);
+      if (isMountedRef.current) setLoading(false);
     }
   };
 
@@ -252,6 +237,7 @@ const Login: React.FC = () => {
         () => navigate(APP_ROUTES.REGISTER),
         undefined,
         (info) => {
+          if (!isMountedRef.current) return;
           setOrphanedInfo(info);
           setModalOpen(true);
         },
@@ -259,7 +245,7 @@ const Login: React.FC = () => {
     } catch {
       // Error handling is done in performLogin
     } finally {
-      setLoading(false);
+      if (isMountedRef.current) setLoading(false);
     }
   };
 
@@ -272,6 +258,7 @@ const Login: React.FC = () => {
         orphanedInfo.userId,
         message,
       );
+      if (!isMountedRef.current) return;
       if (requiresAuth) {
         message.open({
           type: 'info',
@@ -285,7 +272,7 @@ const Login: React.FC = () => {
     } catch {
       // Error is already handled in cleanupOrphanedPasskeys
     } finally {
-      setRemoving(false);
+      if (isMountedRef.current) setRemoving(false);
     }
   };
 
@@ -298,7 +285,7 @@ const Login: React.FC = () => {
     if (!googleClientID) return;
     setGoogleLoading(true);
     redirectToGoogle(googleClientID).catch(() => {
-      setGoogleLoading(false);
+      if (isMountedRef.current) setGoogleLoading(false);
     });
   };
 
