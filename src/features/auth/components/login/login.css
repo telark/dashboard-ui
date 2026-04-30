@@ -1,0 +1,72 @@
+.auth-root[data-theme="light"] {
+  --color-primary: #1e293b;
+  --auth-right-bg: #f8fafc;
+  --auth-card-bg: #ffffff;
+  --auth-card-border: #e2e8f0;
+  --auth-card-shadow: 0 20px 60px rgba(15, 23, 42, 0.1), 0 4px 16px rgba(15, 23, 42, 0.06);
+  --auth-text-primary: #0b1f33;
+  --auth-text-muted: #64748b;
+  --auth-divider: #f1f5f9;
+  --auth-input-bg: #ffffff;
+  --color-border: #e2e8f0;
+}
+
+.auth-root[data-theme="dark"] {
+  --color-primary: #f8fafc;
+  --auth-right-bg: #020617;
+  --auth-card-bg: #0f172a;
+  --auth-card-border: #1e293b;
+  --auth-card-shadow: 0 20px 60px rgba(0, 0, 0, 0.45), 0 4px 16px rgba(0, 0, 0, 0.25);
+  --auth-text-primary: #f8fafc;
+  --auth-text-muted: #94a3b8;
+  --auth-divider: #1e293b;
+  --auth-input-bg: #1e293b;
+  --color-border: #1e293b;
+}
+
+.auth-root .ant-input:hover,
+.auth-root .ant-input:focus,
+.auth-root .ant-input-outlined:hover,
+.auth-root .ant-input-outlined:focus,
+.auth-root .ant-input-outlined:focus-within {
+  border-color: var(--auth-card-border, #e2e8f0) !important;
+  box-shadow: none !important;
+}
+
+.auth-root .ant-btn,
+.auth-root .ant-btn:focus,
+.auth-root .ant-btn:hover,
+.auth-root .ant-btn:active {
+  box-shadow: none !important;
+}
+
+.auth-terminal-line-2 {
+  opacity: 0;
+  animation: authFadeUp 0.4s ease 0.9s forwards;
+}
+
+.auth-terminal-line-3 {
+  opacity: 0;
+  animation: authFadeUp 0.4s ease 1.9s forwards;
+}
+
+.auth-terminal-cursor {
+  animation: authBlink 1.1s step-start infinite;
+}
+
+@keyframes authFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes authBlink {
+  50% {
+    opacity: 0;
+  }
+}
