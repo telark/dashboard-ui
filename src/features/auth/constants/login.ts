@@ -93,7 +93,6 @@ export const LOGIN_CONSTANTS = {
     GOOGLE_AUTH_URL: 'https://accounts.google.com/o/oauth2/v2/auth',
     CALLBACK_ERROR: 'Google login failed. Please try again.',
     CALLBACK_SUCCESS: 'Signed in with Google successfully.',
-    NONCE_BYTE_LENGTH: 16,
   },
   LOGS: {
     AUTH_ERROR: 'Authentication error:',
