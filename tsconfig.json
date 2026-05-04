@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true, // Enforce consistent file casing
     "noFallthroughCasesInSwitch": true, // Prevent fallthrough in switch statements
     "module": "ESNext", // Use modern ES modules
-    "moduleResolution": "node", // Resolve modules as Node.js does
+    "moduleResolution": "bundler", // Resolve modules via bundler (Vite)
     "resolveJsonModule": true, // Allow importing JSON files
     "isolatedModules": true, // Ensure each file is treated as a separate module
     "noEmit": true, // Disable emitting files, let Vite handle the building

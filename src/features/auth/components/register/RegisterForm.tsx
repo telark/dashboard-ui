@@ -30,7 +30,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ form, loading, onFin
       ]}
       style={{ marginBottom: '12px' }}
     >
-      <Input type="email" placeholder={REGISTER_CONSTANTS.UI.EMAIL_PLACEHOLDER} style={inputStyle} />
+      <Input
+        type="email"
+        placeholder={REGISTER_CONSTANTS.UI.EMAIL_PLACEHOLDER}
+        style={inputStyle}
+      />
     </Form.Item>
 
     <Form.Item
