@@ -15,6 +15,7 @@ const buildGoogleOAuthUrl = (clientId: string, nonce: string): string => {
 };
 
 export const redirectToGoogle = async (clientId: string): Promise<void> => {
-  const { nonce } = await oidcGetNonce();
+  const res = await oidcGetNonce();
+  const nonce = (res as unknown as { data: { nonce: string } }).data.nonce;
   window.location.href = buildGoogleOAuthUrl(clientId, nonce);
 };
