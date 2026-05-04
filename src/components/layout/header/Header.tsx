@@ -1,5 +1,6 @@
 import React from 'react';
 import { UserAvatarDropdown } from '../../../features/access-and-permissions/users/components';
+import { NotificationBell } from '../../../features/notifications/components';
 
 const Header: React.FC = () => {
   return (
@@ -21,6 +22,9 @@ const Header: React.FC = () => {
       }}
     >
       {/* Action Buttons */}
+      <div style={{ marginRight: '20px' }}>
+        <NotificationBell />
+      </div>
       <div style={{ marginRight: '20px' }}>
         <UserAvatarDropdown />
       </div>

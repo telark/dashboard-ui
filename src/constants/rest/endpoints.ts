@@ -232,6 +232,28 @@ export const Endpoints = {
       method: 'DELETE',
     }),
   },
+  NOTIFICATIONS: {
+    EMIT: {
+      path: 'notifications/emit',
+      method: 'POST',
+    },
+    LIST: {
+      path: 'notifications/get',
+      method: 'GET',
+    },
+    MARK_READ: (id: string) => ({
+      path: `notifications/${id}/markasread`,
+      method: 'PATCH',
+    }),
+    MARK_ALL_READ: {
+      path: 'notifications/markallread',
+      method: 'POST',
+    },
+    CLEAR: {
+      path: 'notifications/clear',
+      method: 'DELETE',
+    },
+  },
   ROLES: {
     CREATE: {
       path: `${API_PATHS.RESOURCES.ROLES}/${ROLE_PATHS.CREATE}`,
