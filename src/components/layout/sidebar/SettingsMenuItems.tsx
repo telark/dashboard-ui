@@ -2,10 +2,10 @@ import { memo, useCallback, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { HiChevronLeft } from 'react-icons/hi';
+import { AiOutlineSafety } from 'react-icons/ai';
 import {
   UserOutlined,
   BulbOutlined,
-  KeyOutlined,
   SafetyOutlined,
   RobotOutlined,
   AuditOutlined,
@@ -113,7 +113,7 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
       />
       <SidebarButton
         text="My Permissions"
-        icon={<KeyOutlined />}
+        icon={<AiOutlineSafety />}
         active={pathname === SETTINGS_ROUTES.myPermissions}
         route={SETTINGS_ROUTES.myPermissions}
         isCollapsed={isCollapsed}

@@ -1,21 +1,14 @@
 import React, { memo, useMemo } from 'react';
+import { Tooltip } from 'antd';
 import { useSelector } from 'react-redux';
 import { selectPermissionsState } from '../../../auth/store/selectors/permissionsSelectors';
 import { PERMISSION_LEVEL_RANK } from '../../../auth/models/permissions';
 import type { PermissionLevel, ResolvedRole } from '../../../auth/models/permissions';
 import { AUTH_PERMISSIONS_LABELS } from '../../../auth/constants';
 import SettingsCard from '../../components/SettingsCard';
-import { SETTINGS_CONSTANTS } from '../../constants';
 import { DEFAULT_COLORS } from '../../../../constants';
 
-const { CONTENT } = SETTINGS_CONSTANTS;
-
-const LEVEL_COLOR: Record<PermissionLevel, string> = {
-  ReadOnly: DEFAULT_COLORS.TEXT_MUTED,
-  Contributor: '#3b82f6',
-  Owner: DEFAULT_COLORS.SUCCESS,
-  Admin: '#f97316',
-};
+const LEVEL_COLOR = DEFAULT_COLORS.TEXT_MUTED;
 
 function getWinningRoleForScope(roles: ResolvedRole[], scopeName: string): ResolvedRole | null {
   let winner: { role: ResolvedRole; levelRank: number; priority: number } | null = null;
@@ -76,47 +69,62 @@ function formatSources(role: ResolvedRole): string {
     .join(', ');
 }
 
-interface ScopeBlockProps {
+interface ScopeRowProps {
   title: string;
   level: PermissionLevel;
   rules: string[];
   sourceText: string;
 }
 
-const ScopeBlock: React.FC<ScopeBlockProps> = memo(({ title, level, rules, sourceText }) => (
-  <SettingsCard
-    title={title}
-    headerAction={
-      <span
-        style={{
-          fontSize: 12,
-          fontWeight: 600,
-          color: LEVEL_COLOR[level],
-          background: `${LEVEL_COLOR[level]}1a`,
-          borderRadius: 4,
-          padding: '2px 8px',
-        }}
-      >
-        {level}
+const ScopeRow: React.FC<ScopeRowProps> = memo(({ title, level, rules, sourceText }) => (
+  <div style={{ marginBottom: 8 }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+      <span style={{ fontSize: 13, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+        {title}
       </span>
-    }
-  >
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      {rules.length > 0 && (
-        <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>
-          <span style={{ fontWeight: 500, color: DEFAULT_COLORS.TEXT_SECONDARY }}>Deny: </span>
-          {rules.join(', ')}
-        </div>
-      )}
-      <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>
-        <span style={{ fontWeight: 500, color: DEFAULT_COLORS.TEXT_SECONDARY }}>Source: </span>
-        {sourceText}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+        <span
+          style={{
+            fontSize: 11,
+            fontWeight: 600,
+            color: LEVEL_COLOR,
+            background: `${LEVEL_COLOR}1a`,
+            borderRadius: 4,
+            padding: '2px 7px',
+          }}
+        >
+          {level}
+        </span>
+        <Tooltip
+          title={
+            sourceText === 'Direct'
+              ? 'Role was assigned directly to your account'
+              : `Role was inherited through a group membership: ${sourceText.replace('Inherited from ', '')}`
+          }
+          placement="top"
+        >
+          <span
+            style={{
+              fontSize: 12,
+              color: DEFAULT_COLORS.TEXT_MUTED,
+              cursor: 'help',
+            }}
+          >
+            {sourceText}
+          </span>
+        </Tooltip>
       </div>
     </div>
-  </SettingsCard>
+    {rules.length > 0 && (
+      <div style={{ marginTop: 4, fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+        <span style={{ fontWeight: 500, color: DEFAULT_COLORS.TEXT_SECONDARY }}>Deny: </span>
+        {rules.join(', ')}
+      </div>
+    )}
+  </div>
 ));
 
-ScopeBlock.displayName = 'ScopeBlock';
+ScopeRow.displayName = 'ScopeRow';
 
 const MyPermissionsSectionContent: React.FC = memo(() => {
   const { roles, scopeIndex } = useSelector(selectPermissionsState);
@@ -128,7 +136,7 @@ const MyPermissionsSectionContent: React.FC = memo(() => {
 
   const allEntry = useMemo(() => getWinningAllEntry(roles), [roles]);
 
-  const scopeBlocks = useMemo(
+  const scopeRows = useMemo(
     () =>
       Object.entries(scopeIndex).map(([scope, { level, rules }]) => {
         const winningRole = getWinningRoleForScope(roles, scope);
@@ -152,32 +160,37 @@ const MyPermissionsSectionContent: React.FC = memo(() => {
     );
   }
 
+  const allRows: { title: string; level: PermissionLevel; rules: string[]; sourceText: string }[] =
+    [];
+  if (allEntry != null) {
+    allRows.push({
+      title: 'All Scopes',
+      level: allEntry.level,
+      rules: allEntry.rules,
+      sourceText: formatSources(allEntry.role),
+    });
+  }
+  for (const { scope, level, rules, sourceText } of scopeRows) {
+    allRows.push({
+      title: scope.charAt(0).toUpperCase() + scope.slice(1),
+      level,
+      rules,
+      sourceText,
+    });
+  }
+
   return (
-    <>
-      {allEntry != null && (
-        <ScopeBlock
-          title="All Scopes"
-          level={allEntry.level}
-          rules={allEntry.rules}
-          sourceText={formatSources(allEntry.role)}
+    <SettingsCard title="Effective Permissions">
+      {allRows.map((row) => (
+        <ScopeRow
+          key={row.title}
+          title={row.title}
+          level={row.level}
+          rules={row.rules}
+          sourceText={row.sourceText}
         />
-      )}
-      {scopeBlocks.map(({ scope, level, rules, sourceText }, index) => (
-        <div
-          key={scope}
-          style={
-            index > 0 || allEntry != null ? { marginTop: CONTENT.GAP_BETWEEN_CARDS } : undefined
-          }
-        >
-          <ScopeBlock
-            title={scope.charAt(0).toUpperCase() + scope.slice(1)}
-            level={level}
-            rules={rules}
-            sourceText={sourceText}
-          />
-        </div>
       ))}
-    </>
+    </SettingsCard>
   );
 });
 
