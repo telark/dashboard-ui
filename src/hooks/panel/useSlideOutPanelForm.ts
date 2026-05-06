@@ -10,6 +10,7 @@ interface UseSlideOutPanelFormOptions {
   onClose: () => void;
   onCancel: () => void;
   form?: FormInstance;
+  skip?: boolean;
 }
 
 interface UseSlideOutPanelFormReturn {
@@ -25,6 +26,7 @@ export const useSlideOutPanelForm = ({
   onClose,
   onCancel,
   form: externalForm,
+  skip = false,
 }: UseSlideOutPanelFormOptions): UseSlideOutPanelFormReturn => {
   const [internalForm] = Form.useForm();
   const form = externalForm || internalForm;
@@ -48,6 +50,7 @@ export const useSlideOutPanelForm = ({
   };
 
   useEffect(() => {
+    if (skip) return;
     const isOpening = open && !previousOpenRef.current;
 
     if (isOpening) {
@@ -60,7 +63,7 @@ export const useSlideOutPanelForm = ({
     }
 
     previousOpenRef.current = open;
-  }, [open, form, hasExternalForm, initialValues]);
+  }, [open, form, hasExternalForm, initialValues, skip]);
 
   return {
     form,

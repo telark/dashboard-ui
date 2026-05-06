@@ -39,6 +39,7 @@ const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
       onClose,
       onCancel,
       form: externalForm,
+      skip: contentOnly,
     });
 
     if (contentOnly) {
