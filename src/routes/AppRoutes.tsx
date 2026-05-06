@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useTransition, useEffect } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ProtectedRoute } from '../features/auth/components';
 import { FancySpinner, AnimatedPageWrapper } from '../components/animation';
@@ -59,12 +59,8 @@ const PageLoader: React.FC = () => (
 const AppRoutes: React.FC = () => {
   const isAuthenticated = hasSessionToken();
   const location = useLocation();
-  const [isPending, startTransition] = useTransition();
-
   useEffect(() => {
-    startTransition(() => {
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    });
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }, [location.pathname]);
 
   useEffect(() => {
@@ -193,20 +189,6 @@ const AppRoutes: React.FC = () => {
           }
         />
       </Routes>
-      {isPending && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: '2px',
-            background: 'linear-gradient(90deg, #20c997, #10b981)',
-            zIndex: 9999,
-            animation: 'slideIn 0.3s ease-out',
-          }}
-        />
-      )}
     </Suspense>
   );
 };
