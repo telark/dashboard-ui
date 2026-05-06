@@ -1,4 +1,5 @@
 import React, { useState, useCallback, memo } from 'react';
+import { Tooltip } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_COLORS } from '../../../constants';
 import { ButtonInterface } from '../../../interfaces/shared';
@@ -32,7 +33,7 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = mem
     const handleMouseEnter = useCallback(() => setIsHovered(true), []);
     const handleMouseLeave = useCallback(() => setIsHovered(false), []);
 
-    return (
+    const button = (
       <button
         type="button"
         onClick={handleClick}
@@ -40,7 +41,6 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = mem
         onMouseLeave={handleMouseLeave}
         aria-current={isActive ? 'page' : undefined}
         aria-label={isCollapsed ? String(text) : undefined}
-        title={isCollapsed ? String(text) : undefined}
         style={{
           display: 'flex',
           flexDirection: 'row',
@@ -86,6 +86,16 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = mem
         )}
       </button>
     );
+
+    if (isCollapsed) {
+      return (
+        <Tooltip title={text} placement="right" mouseEnterDelay={0.3}>
+          {button}
+        </Tooltip>
+      );
+    }
+
+    return button;
   },
 );
 

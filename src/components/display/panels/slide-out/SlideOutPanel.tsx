@@ -58,23 +58,22 @@ const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
     }
 
     return (
-      <AnimationWrapper
-        open={open}
-        onClose={onClose}
-        title={title}
-        subtitle={subtitle}
-        width={width}
-        offsetX={offsetX}
-        headerExtra={headerExtra}
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleFinish}
+        initialValues={initialValues}
+        onValuesChange={onValuesChange}
+        onFieldsChange={onFieldsChange}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleFinish}
-          initialValues={initialValues}
-          onValuesChange={onValuesChange}
-          onFieldsChange={onFieldsChange}
-          style={SLIDE_OUT.FORM}
+        <AnimationWrapper
+          open={open}
+          onClose={onClose}
+          title={title}
+          subtitle={subtitle}
+          width={width}
+          offsetX={offsetX}
+          headerExtra={headerExtra}
         >
           <div style={SLIDE_OUT.FORM_CONTENT}>
             {sectionTitle ? (
@@ -94,8 +93,8 @@ const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
             primaryDisabled={disabled || loading}
             primaryIcon={submitButtonIcon}
           />
-        </Form>
-      </AnimationWrapper>
+        </AnimationWrapper>
+      </Form>
     );
   },
 );
