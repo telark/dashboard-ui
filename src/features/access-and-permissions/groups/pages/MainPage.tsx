@@ -32,6 +32,11 @@ const MainPage: React.FC = () => {
     ACTION_PERMISSIONS.groups.edit.level,
     ACTION_PERMISSIONS.groups.edit.deny,
   );
+  const canDeleteGroup = usePermission(
+    ACTION_PERMISSIONS.groups.delete.scope,
+    ACTION_PERMISSIONS.groups.delete.level,
+    ACTION_PERMISSIONS.groups.delete.deny,
+  );
   const [viewMode, setViewMode] = useState<ViewMode>('groups');
   const [addCategoryPanelOpen, setAddCategoryPanelOpen] = useState(false);
   const [editCategoryPanelOpen, setEditCategoryPanelOpen] = useState(false);
@@ -264,7 +269,8 @@ const MainPage: React.FC = () => {
       onCloseEditCategoryPanel={closeEditCategoryPanel}
       onCloseBulkDeleteModal={handleCloseBulkDeleteModal}
       onConfirmBulkDelete={handleConfirmBulkDelete}
-      onViewPanelEdit={handleViewPanelEdit}
+      onViewPanelEdit={canEditGroup ? handleViewPanelEdit : undefined}
+      canDeleteGroup={canDeleteGroup}
       handleFilterChange={handleFilterChange}
       handleFilterApply={handleFilterApply}
       handleFilterReset={handleFilterReset}

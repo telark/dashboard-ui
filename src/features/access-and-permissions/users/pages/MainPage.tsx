@@ -24,6 +24,11 @@ const MainPage: React.FC = () => {
     ACTION_PERMISSIONS.users.edit.level,
     ACTION_PERMISSIONS.users.edit.deny,
   );
+  const canDeleteUser = usePermission(
+    ACTION_PERMISSIONS.users.delete.scope,
+    ACTION_PERMISSIONS.users.delete.level,
+    ACTION_PERMISSIONS.users.delete.deny,
+  );
   const [searchTerm, setSearchTerm] = useState('');
   const [bulkDeleteModalOpen, setBulkDeleteModalOpen] = useState(false);
 
@@ -210,7 +215,8 @@ const MainPage: React.FC = () => {
       onCloseViewPanel={closeViewPanel}
       onCloseManageRolePanel={closeManageRolePanel}
       onCloseManageGroupPanel={closeManageGroupPanel}
-      onViewPanelEdit={handleViewPanelEdit}
+      onViewPanelEdit={canEditUser ? handleViewPanelEdit : undefined}
+      canDeleteUser={canDeleteUser}
     />
   );
 };

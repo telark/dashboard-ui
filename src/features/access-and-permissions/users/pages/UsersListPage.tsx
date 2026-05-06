@@ -44,7 +44,8 @@ interface UsersListPageProps {
   handleFilterChange: (filters: Record<string, unknown>) => void;
   handleFilterApply: (filters: Record<string, unknown>) => void;
   handleFilterReset: () => void;
-  onViewPanelEdit: () => void;
+  onViewPanelEdit?: () => void;
+  canDeleteUser?: boolean;
 }
 
 const filterFields = buildUserFilterFields();
@@ -79,9 +80,10 @@ const UsersListPage: React.FC<UsersListPageProps> = memo(
     handleFilterApply,
     handleFilterReset,
     onViewPanelEdit,
+    canDeleteUser,
   }) => {
     const handleViewPanelEditClick = useMemo(
-      () => (viewingUser ? onViewPanelEdit : undefined),
+      () => (viewingUser && onViewPanelEdit ? onViewPanelEdit : undefined),
       [viewingUser, onViewPanelEdit],
     );
 
@@ -110,6 +112,7 @@ const UsersListPage: React.FC<UsersListPageProps> = memo(
             onClose={onCloseViewPanel}
             user={viewingUser}
             onEdit={handleViewPanelEditClick}
+            canDelete={canDeleteUser}
           />
         )}
         {manageRolePanelOpen && managingRoleUser && (

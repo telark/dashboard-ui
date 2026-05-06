@@ -189,7 +189,7 @@ const MainPage: React.FC = () => {
       handleFilterChange={handleFilterChange}
       handleFilterApply={handleFilterApply}
       handleFilterReset={handleFilterReset}
-      onViewPanelEdit={handleViewPanelEdit}
+      onViewPanelEdit={canEditRole ? handleViewPanelEdit : undefined}
     />
   );
 };

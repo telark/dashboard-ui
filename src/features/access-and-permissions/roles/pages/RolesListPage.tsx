@@ -34,7 +34,7 @@ interface RolesListPageProps {
   handleFilterChange: (filters: Record<string, unknown>) => void;
   handleFilterApply: (filters: Record<string, unknown>) => void;
   handleFilterReset: () => void;
-  onViewPanelEdit: () => void;
+  onViewPanelEdit?: () => void;
 }
 
 const RolesListPage: React.FC<RolesListPageProps> = memo(
@@ -69,7 +69,7 @@ const RolesListPage: React.FC<RolesListPageProps> = memo(
     );
 
     const handleViewPanelEditClick = useMemo(
-      () => (viewingRole ? onViewPanelEdit : undefined),
+      () => (viewingRole && onViewPanelEdit ? onViewPanelEdit : undefined),
       [viewingRole, onViewPanelEdit],
     );
 

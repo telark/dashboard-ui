@@ -50,7 +50,8 @@ interface GroupsListPageProps {
   onCloseFilterPanel: () => void;
   onCloseBulkDeleteModal: () => void;
   onConfirmBulkDelete: () => Promise<void>;
-  onViewPanelEdit: (group: Group) => void;
+  onViewPanelEdit?: (group: Group) => void;
+  canDeleteGroup?: boolean;
   handleFilterChange: (filters: Record<string, unknown>) => void;
   handleFilterApply: (filters: Record<string, unknown>) => void;
   handleFilterReset: () => void;
@@ -89,6 +90,7 @@ const GroupsListPage: React.FC<GroupsListPageProps> = memo(
     onCloseBulkDeleteModal,
     onConfirmBulkDelete,
     onViewPanelEdit,
+    canDeleteGroup,
     handleFilterChange,
     handleFilterApply,
     handleFilterReset,
@@ -101,7 +103,7 @@ const GroupsListPage: React.FC<GroupsListPageProps> = memo(
     );
 
     const handleViewPanelEditClick = useMemo(
-      () => (viewingGroup ? () => onViewPanelEdit(viewingGroup) : undefined),
+      () => (viewingGroup && onViewPanelEdit ? () => onViewPanelEdit(viewingGroup) : undefined),
       [viewingGroup, onViewPanelEdit],
     );
 
@@ -139,6 +141,7 @@ const GroupsListPage: React.FC<GroupsListPageProps> = memo(
             onClose={onCloseViewPanel}
             group={viewingGroup}
             onEdit={handleViewPanelEditClick}
+            canDelete={canDeleteGroup}
           />
         )}
         {attachRolePanelOpen && attachingRoleGroup && (
