@@ -2,6 +2,7 @@ export { loginStart, loginFinish, oidcGoogleCallback, oidcGetNonce } from './log
 export type { OIDCCallbackResponse, OIDCCallbackRequest, OIDCNonceResponse } from './login';
 export { registerStart, registerFinish } from './register';
 export { logout } from './logout';
+export { getAuthConfig } from './config';
 export { getSessionsList, getSessionDetails, deleteSession } from './session';
 export {
   getAllPasskeys,

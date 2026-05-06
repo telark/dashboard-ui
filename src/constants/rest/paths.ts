@@ -37,6 +37,7 @@ export const AUTH_PATHS = {
   REGISTER: {
     START: 'auth/register/start',
   },
+  CONFIG: 'auth/config',
   LOGOUT: 'auth/logout',
   PASSKEYS: {
     PROXY: {

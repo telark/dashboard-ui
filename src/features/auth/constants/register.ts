@@ -10,5 +10,9 @@ export const REGISTER_CONSTANTS = {
     BUTTON_TEXT: 'Register Passkey',
     FOOTER_TEXT: 'Already have an account?',
     FOOTER_LINK: 'Login',
+    DISABLED_TITLE: 'Registration disabled',
+    DISABLED_MESSAGE:
+      'Self-registration is disabled on this instance. Please contact your administrator to request an account.',
+    BACK_TO_LOGIN: 'Back to login',
   },
 } as const;

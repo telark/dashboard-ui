@@ -103,6 +103,12 @@ export const Endpoints = {
       path: AUTH_PATHS.LOGOUT,
       method: 'POST',
     },
+    CONFIG: {
+      GET: {
+        path: AUTH_PATHS.CONFIG,
+        method: 'GET',
+      },
+    },
     OIDC: {
       GOOGLE: {
         CALLBACK: {

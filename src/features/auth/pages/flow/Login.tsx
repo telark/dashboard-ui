@@ -25,6 +25,7 @@ import {
   ThemeToggle,
 } from '../../components';
 import { ensureGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
+import { ensureAuthConfigThunk, selectSelfRegistrationEnabled } from '../../store';
 import type { AppDispatch } from '../../../../store';
 import '../../components/login/login.css';
 
@@ -42,6 +43,7 @@ const Login: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
   const googleClientID = globalConfig.data?.oidc?.googleClientID;
+  const selfRegEnabled = useSelector(selectSelfRegistrationEnabled);
   const navigate = useNavigate();
   const { message } = AntdApp.useApp();
 
@@ -54,6 +56,7 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     dispatch(ensureGlobalConfigThunk());
+    dispatch(ensureAuthConfigThunk());
   }, [dispatch]);
 
   const handleLogin = async (values: { email: string }) => {
@@ -244,11 +247,13 @@ const Login: React.FC = () => {
                 </Button>
               )}
 
-              <AuthFooter
-                text={LOGIN_CONSTANTS.UI.FOOTER_TEXT}
-                linkText={LOGIN_CONSTANTS.UI.FOOTER_LINK}
-                onLinkClick={() => navigate(APP_ROUTES.REGISTER)}
-              />
+              {selfRegEnabled && (
+                <AuthFooter
+                  text={LOGIN_CONSTANTS.UI.FOOTER_TEXT}
+                  linkText={LOGIN_CONSTANTS.UI.FOOTER_LINK}
+                  onLinkClick={() => navigate(APP_ROUTES.REGISTER)}
+                />
+              )}
             </AuthCard>
           </AuthContainer>
         </div>

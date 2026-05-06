@@ -1,3 +1,4 @@
+export * from './authConfig';
 export * from './credentials';
 export * from './device';
 export * from './passkeys';

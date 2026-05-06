@@ -61,6 +61,10 @@ export const STORE_ACTIONS = {
   PERMISSIONS: {
     FETCH: 'permissions/fetch',
   },
+  AUTH_CONFIG: {
+    FETCH: 'authConfig/fetch',
+    ENSURE: 'authConfig/ensure',
+  },
 } as const;
 
 export const SYNC_MODES = COMMON_VALUES.SYNC_MODES;
@@ -96,6 +100,7 @@ export const STORE_ERRORS = {
   DELETE_ROLE: 'Failed to delete role',
   FETCH_CATEGORIES: 'Failed to fetch categories',
   FETCH_PERMISSIONS: 'Failed to fetch permissions',
+  FETCH_AUTH_CONFIG: 'Failed to fetch auth config',
 } as const;
 
 export const STORE_MESSAGES = {
@@ -129,4 +134,5 @@ export const STORE_MESSAGES = {
   ERROR_DELETING_ROLE: 'Error deleting role:',
   ERROR_FETCHING_CATEGORIES: 'Error fetching categories:',
   ERROR_FETCHING_PERMISSIONS: 'Error fetching permissions:',
+  ERROR_FETCHING_AUTH_CONFIG: 'Error fetching auth config:',
 } as const;

@@ -6,7 +6,7 @@ import { groupReducer as groupsReducer } from '../features/access-and-permission
 import { userReducer as usersReducer } from '../features/access-and-permissions/users/store';
 import { categoryReducer as categoriesReducer } from '../features/access-and-permissions/categories/store';
 import { roleReducer as rolesReducer } from '../features/access-and-permissions/roles/store';
-import { passkeyReducer, permissionsReducer } from '../features/auth/store';
+import { authConfigReducer, passkeyReducer, permissionsReducer } from '../features/auth/store';
 import { notificationsReducer } from '../features/notifications/store';
 import { retryReducer } from '../features/shared/retry';
 import {
@@ -34,6 +34,7 @@ const store = configureStore({
     roles: rolesReducer,
     passkeys: passkeyReducer,
     permissions: permissionsReducer,
+    authConfig: authConfigReducer,
     notifications: notificationsReducer,
   },
   middleware: (getDefaultMiddleware) =>

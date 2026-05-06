@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
-import { Form, App as AntdApp, ConfigProvider, theme as antdTheme } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Form, App as AntdApp, Button, ConfigProvider, theme as antdTheme } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { MoonOutlined, SunOutlined } from '@ant-design/icons';
 import { performRegister } from '../../utils/flow/register';
 import { handleAuthError } from '../../utils/shared/errors';
 import { APP_ROUTES } from '../../../../constants';
 import { REGISTER_CONSTANTS } from '../../constants/register';
 import { RegisterForm, AuthContainer, AuthCard, AuthHeader, AuthFooter } from '../../components';
+import {
+  ensureAuthConfigThunk,
+  selectAuthConfigState,
+  selectSelfRegistrationEnabled,
+} from '../../store';
+import type { AppDispatch } from '../../../../store';
 
 const LIGHT_TOKENS = {
   colorPrimary: '#1e293b',
@@ -30,6 +37,13 @@ const Register: React.FC = () => {
   const [isDark, setIsDark] = useState(() => localStorage.getItem('auth-theme') === 'dark');
   const navigate = useNavigate();
   const { message } = AntdApp.useApp();
+  const dispatch = useDispatch<AppDispatch>();
+  const authConfig = useSelector(selectAuthConfigState);
+  const selfRegEnabled = useSelector(selectSelfRegistrationEnabled);
+
+  useEffect(() => {
+    dispatch(ensureAuthConfigThunk());
+  }, [dispatch]);
 
   const handleRegister = async (values: { email: string; deviceName: string }) => {
     setLoading(true);
@@ -134,16 +148,35 @@ const Register: React.FC = () => {
             </div>
 
             <AuthCard>
-              <AuthHeader
-                title={REGISTER_CONSTANTS.UI.TITLE}
-                subtitle={REGISTER_CONSTANTS.UI.SUBTITLE}
-              />
-              <RegisterForm form={form} loading={loading} onFinish={handleRegister} />
-              <AuthFooter
-                text={REGISTER_CONSTANTS.UI.FOOTER_TEXT}
-                linkText={REGISTER_CONSTANTS.UI.FOOTER_LINK}
-                onLinkClick={() => navigate(APP_ROUTES.LOGIN)}
-              />
+              {authConfig.initialized && !selfRegEnabled ? (
+                <>
+                  <AuthHeader
+                    title={REGISTER_CONSTANTS.UI.DISABLED_TITLE}
+                    subtitle={REGISTER_CONSTANTS.UI.DISABLED_MESSAGE}
+                  />
+                  <Button
+                    block
+                    size="large"
+                    onClick={() => navigate(APP_ROUTES.LOGIN)}
+                    style={{ height: '44px', borderRadius: '10px' }}
+                  >
+                    {REGISTER_CONSTANTS.UI.BACK_TO_LOGIN}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <AuthHeader
+                    title={REGISTER_CONSTANTS.UI.TITLE}
+                    subtitle={REGISTER_CONSTANTS.UI.SUBTITLE}
+                  />
+                  <RegisterForm form={form} loading={loading} onFinish={handleRegister} />
+                  <AuthFooter
+                    text={REGISTER_CONSTANTS.UI.FOOTER_TEXT}
+                    linkText={REGISTER_CONSTANTS.UI.FOOTER_LINK}
+                    onLinkClick={() => navigate(APP_ROUTES.LOGIN)}
+                  />
+                </>
+              )}
             </AuthCard>
           </AuthContainer>
         </div>

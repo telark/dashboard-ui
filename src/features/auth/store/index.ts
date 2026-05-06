@@ -5,6 +5,16 @@ export { clearDetails, addPasskey, updatePasskey, deletePasskey } from './slices
 export { default as permissionsReducer } from './slices/permissionsSlice';
 export { clearPermissions } from './slices/permissionsSlice';
 
+export { default as authConfigReducer } from './slices/authConfigSlice';
+export {
+  fetchAuthConfigThunk,
+  ensureAuthConfigThunk,
+  selectAuthConfigState,
+  selectSelfRegistrationEnabled,
+  setAuthConfig,
+  AUTH_CONFIG_CACHE_TTL_MS,
+} from './slices/authConfigSlice';
+
 // Thunks
 export {
   fetchAllPasskeysThunk,
