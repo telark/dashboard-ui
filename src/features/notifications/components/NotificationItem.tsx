@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import TimeAgo from 'react-timeago';
 import { useNavigate } from 'react-router-dom';
 import { NOTIFICATION_SEVERITY_COLORS } from '../constants';
@@ -8,24 +8,35 @@ import type { Notification } from '../models';
 export interface NotificationItemProps {
   notification: Notification;
   onMarkRead: (id: string) => void;
+  onClose: () => void;
 }
 
-const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onMarkRead }) => {
+const NotificationItem: React.FC<NotificationItemProps> = ({
+  notification,
+  onMarkRead,
+  onClose,
+}) => {
   const navigate = useNavigate();
   const isUnread = !notification.readAt;
   const config = getTypeConfig(notification.type);
   const Icon = config.icon;
   const accentColor = NOTIFICATION_SEVERITY_COLORS[notification.severity] ?? '#1890ff';
 
+  const renderedMessage = useMemo(() => {
+    const parts = notification.message.split(/\*\*(.+?)\*\*/g);
+    return parts.map((part, i) => (i % 2 === 1 ? <strong key={i}>{part}</strong> : part));
+  }, [notification.message]);
+
   const handleClick = useCallback(() => {
     const target = config.navigateTo(notification.metadata);
     if (isUnread) {
       onMarkRead(notification.id);
     }
+    onClose();
     if (target) {
       navigate(target);
     }
-  }, [config, navigate, notification.id, notification.metadata, isUnread, onMarkRead]);
+  }, [config, navigate, notification.id, notification.metadata, isUnread, onMarkRead, onClose]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -47,8 +58,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onMar
         display: 'flex',
         alignItems: 'flex-start',
         gap: 12,
-        padding: '12px 16px',
-        borderLeft: `3px solid ${accentColor}`,
+        padding: '8px 24px',
         borderBottom: '1px solid #f0f0f0',
         cursor: 'pointer',
         background: isUnread ? '#fafcff' : '#ffffff',
@@ -70,16 +80,29 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onMar
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            fontWeight: isUnread ? 600 : 400,
-            fontSize: 13,
-            color: '#262626',
+            display: 'flex',
+            alignItems: 'baseline',
+            justifyContent: 'space-between',
+            gap: 8,
             marginBottom: 2,
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
           }}
         >
-          {notification.title}
+          <div
+            style={{
+              fontWeight: isUnread ? 600 : 400,
+              fontSize: 13,
+              color: '#262626',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              minWidth: 0,
+            }}
+          >
+            {notification.title}
+          </div>
+          <div style={{ fontSize: 11, color: '#8c8c8c', flexShrink: 0 }}>
+            <TimeAgo date={notification.createdAt} />
+          </div>
         </div>
         <div
           style={{
@@ -88,13 +111,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onMar
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            marginBottom: 4,
           }}
         >
-          {notification.message}
-        </div>
-        <div style={{ fontSize: 11, color: '#8c8c8c' }}>
-          <TimeAgo date={notification.createdAt} />
+          {renderedMessage}
         </div>
       </div>
 

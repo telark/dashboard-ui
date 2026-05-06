@@ -22,7 +22,15 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose }) 
   const content = (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
       {hasNotifications && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            flexShrink: 0,
+            justifyContent: 'flex-end',
+          }}
+        >
           <ToggleButton
             active={false}
             onClick={() => void markAllRead()}
@@ -40,7 +48,16 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose }) 
           />
         </div>
       )}
-      <div style={{ overflowY: 'auto', background: '#ffffff' }}>
+      <div
+        style={{
+          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 4,
+          padding: '4px 0',
+          margin: '0 -24px',
+        }}
+      >
         {isLoading && !hasNotifications ? (
           <div style={{ padding: 32, display: 'flex', justifyContent: 'center' }}>
             <Spin />
@@ -49,7 +66,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose }) 
           <EmptyNotifications />
         ) : (
           notifications.map((n) => (
-            <NotificationItem key={n.id} notification={n} onMarkRead={markRead} />
+            <NotificationItem key={n.id} notification={n} onMarkRead={markRead} onClose={onClose} />
           ))
         )}
       </div>

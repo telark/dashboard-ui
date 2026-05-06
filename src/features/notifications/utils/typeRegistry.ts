@@ -1,10 +1,11 @@
 import React from 'react';
 import {
   BellOutlined,
-  RollbackOutlined,
+  HistoryOutlined,
   SafetyCertificateOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
+import { APP_ROUTES } from '../../../constants';
 import { NOTIFICATION_TYPES } from '../constants';
 
 export interface TypeConfig {
@@ -14,10 +15,12 @@ export interface TypeConfig {
 
 export const TYPE_REGISTRY: Record<string, TypeConfig> = {
   [NOTIFICATION_TYPES.ROLLBACK_COMPLETED]: {
-    icon: RollbackOutlined,
+    icon: HistoryOutlined,
     navigateTo: (m) => {
-      const id = m?.applicationId;
-      return typeof id === 'string' ? `/applications/${id}` : null;
+      const name = m?.applicationName;
+      return typeof name === 'string'
+        ? APP_ROUTES.APPLICATION_DETAILS.replace(':name', name)
+        : null;
     },
   },
   [NOTIFICATION_TYPES.ROLE_CHANGED]: {
@@ -29,10 +32,7 @@ export const TYPE_REGISTRY: Record<string, TypeConfig> = {
   },
   [NOTIFICATION_TYPES.GROUP_MEMBERSHIP_CHANGED]: {
     icon: TeamOutlined,
-    navigateTo: (m) => {
-      const id = m?.groupId;
-      return typeof id === 'string' ? `/groups/${id}` : null;
-    },
+    navigateTo: () => APP_ROUTES.GROUPS,
   },
 };
 
