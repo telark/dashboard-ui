@@ -31,9 +31,7 @@ const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
       <HomeMenuButton isCollapsed={isCollapsed} />
       {!isCollapsed && <div style={sectionLabelStyle}>{MENU_LABELS.RESOURCES}</div>}
       <ApplicationsMenuButton isCollapsed={isCollapsed} />
-      {!isCollapsed && (
-        <div style={sectionLabelStyle}>{MENU_LABELS.ACCESS_AND_PERMISSIONS}</div>
-      )}
+      {!isCollapsed && <div style={sectionLabelStyle}>{MENU_LABELS.ACCESS_AND_PERMISSIONS}</div>}
       <UsersMenuButton isCollapsed={isCollapsed} />
       <GroupsMenuButton isCollapsed={isCollapsed} />
       <RolesMenuButton isCollapsed={isCollapsed} />

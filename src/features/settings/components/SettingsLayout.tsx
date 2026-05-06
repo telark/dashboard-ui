@@ -1,18 +1,15 @@
 import React, { memo } from 'react';
 import { DEFAULT_COLORS } from '../../../constants';
 import { PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
-import { SETTINGS_CONSTANTS } from '../constants';
 
 const { HEADER_OFFSET_PX, PADDING_TOP_PX, PADDING_HORIZONTAL_AND_BOTTOM_PX } = PAGE_CONTENT_LAYOUT;
 const CONTENT_PADDING = `${PADDING_TOP_PX - HEADER_OFFSET_PX}px ${PADDING_HORIZONTAL_AND_BOTTOM_PX}px ${PADDING_HORIZONTAL_AND_BOTTOM_PX}px`;
-const { SIDEBAR } = SETTINGS_CONSTANTS;
 
 interface SettingsLayoutProps {
-  sidebar: React.ReactNode;
   children: React.ReactNode;
 }
 
-const SettingsLayout: React.FC<SettingsLayoutProps> = memo(({ sidebar, children }) => (
+const SettingsLayout: React.FC<SettingsLayoutProps> = memo(({ children }) => (
   <div
     style={{
       minHeight: '100vh',
@@ -28,7 +25,6 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = memo(({ sidebar, children 
           flex: 1,
           minWidth: 0,
           overflow: 'auto',
-          marginRight: SIDEBAR.WIDTH,
         }}
       >
         <div
@@ -42,7 +38,6 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = memo(({ sidebar, children 
           {children}
         </div>
       </main>
-      {sidebar}
     </div>
   </div>
 ));

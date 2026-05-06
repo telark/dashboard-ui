@@ -66,7 +66,9 @@ const authConfigSlice = createSlice({
       })
       .addCase(fetchAuthConfigThunk.rejected, (state, action) => {
         state.loading = false;
-        state.error = String(action.payload ?? action.error?.message ?? STORE_ERRORS.FETCH_AUTH_CONFIG);
+        state.error = String(
+          action.payload ?? action.error?.message ?? STORE_ERRORS.FETCH_AUTH_CONFIG,
+        );
         state.initialized = true;
       });
   },

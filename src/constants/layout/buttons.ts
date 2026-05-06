@@ -21,7 +21,8 @@ export const BUTTON_CONFIGS = {
     HEIGHT: 36,
     FONT_WEIGHT: 500,
     FONT_SIZE: 13,
-    TRANSITION: 'background-color 150ms ease, color 150ms ease, border-right-color 150ms ease, opacity 150ms ease',
+    TRANSITION:
+      'background-color 150ms ease, color 150ms ease, border-right-color 150ms ease, opacity 150ms ease',
     BORDER_WIDTH: 2,
     COLLAPSED_MARGIN: '0',
     EXPANDED_MARGIN: '0',

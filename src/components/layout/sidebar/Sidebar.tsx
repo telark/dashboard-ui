@@ -1,13 +1,25 @@
-import { useEffect, useState, memo, useCallback } from 'react';
+import { useEffect, useRef, useState, memo, useCallback } from 'react';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
+import { useLocation } from 'react-router-dom';
 import MenuItems from './MenuItems';
-import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../constants';
+import SettingsMenuItems from './SettingsMenuItems';
+import { DEFAULT_COLORS, HEADER_LAYOUT, APP_ROUTES } from '../../../constants';
 
 const SIDEBAR_WIDTH_EXPANDED = 220;
 const SIDEBAR_WIDTH_COLLAPSED = 52;
 const STORAGE_KEY = 'sidebar_collapsed';
 
 const Sidebar = memo(() => {
+  const location = useLocation();
+  const isSettingsRoute = location.pathname.startsWith(APP_ROUTES.SETTINGS);
+  const lastNonSettingsPath = useRef('/');
+
+  useEffect(() => {
+    if (!isSettingsRoute) {
+      lastNonSettingsPath.current = location.pathname;
+    }
+  }, [location.pathname, isSettingsRoute]);
+
   const [isCollapsed, setIsCollapsed] = useState(
     () => localStorage.getItem(STORAGE_KEY) === 'true',
   );
@@ -44,8 +56,31 @@ const Sidebar = memo(() => {
         transition: 'width 200ms ease',
       }}
     >
-      <div style={{ flexGrow: 1, overflowY: 'auto', overflowX: 'hidden' }}>
-        <MenuItems isCollapsed={isCollapsed} />
+      <div style={{ flexGrow: 1, overflowX: 'hidden', position: 'relative' }}>
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            overflowY: 'auto',
+            opacity: isSettingsRoute ? 0 : 1,
+            transition: 'opacity 150ms ease',
+            pointerEvents: isSettingsRoute ? 'none' : 'auto',
+          }}
+        >
+          <MenuItems isCollapsed={isCollapsed} />
+        </div>
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            overflowY: 'auto',
+            opacity: isSettingsRoute ? 1 : 0,
+            transition: 'opacity 150ms ease',
+            pointerEvents: isSettingsRoute ? 'auto' : 'none',
+          }}
+        >
+          <SettingsMenuItems isCollapsed={isCollapsed} backPath={lastNonSettingsPath.current} />
+        </div>
       </div>
 
       <div

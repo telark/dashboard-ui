@@ -17,7 +17,14 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = mem
 
     const coloredIcon = React.isValidElement(icon)
       ? React.cloneElement(icon, {
-          style: { color: iconColor, fontSize: 16, width: 16, height: 16, flexShrink: 0, transition: 'color 150ms ease' },
+          style: {
+            color: iconColor,
+            fontSize: 16,
+            width: 16,
+            height: 16,
+            flexShrink: 0,
+            transition: 'color 150ms ease',
+          },
         } as React.Attributes)
       : icon;
 
