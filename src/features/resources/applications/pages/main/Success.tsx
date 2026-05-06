@@ -149,7 +149,6 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
               top: PAGE_CONTENT_LAYOUT.HEADER_OFFSET_PX,
               zIndex: 5,
               background: DEFAULT_COLORS.BACKGROUND_WHITE,
-              borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
               padding: '8px 0',
             }}
           >
