@@ -173,6 +173,7 @@ export const USERS_CONSTANTS = {
       },
       CREATE: {
         BUTTON_LABEL: 'Add New Member',
+        DISABLED_TOOLTIP: 'You do not have permission to create users',
       },
       MANAGE: {
         BUTTON_LABEL: 'Manage',

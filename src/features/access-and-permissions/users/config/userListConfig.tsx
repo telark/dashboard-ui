@@ -124,6 +124,7 @@ export const useUserListConfig = ({
           variant: 'primary',
           onClick: onCreateUserClick,
           disabled: !canCreateUser,
+          tooltip: !canCreateUser ? UC.LABELS.TOOLBAR.CREATE.DISABLED_TOOLTIP : undefined,
         },
       ],
     }),
