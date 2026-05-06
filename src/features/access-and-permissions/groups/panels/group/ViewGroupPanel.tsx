@@ -16,7 +16,13 @@ interface ViewGroupPanelProps {
   canDelete?: boolean;
 }
 
-const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({ open, onClose, group, onEdit, canDelete }) => {
+const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({
+  open,
+  onClose,
+  group,
+  onEdit,
+  canDelete,
+}) => {
   const {
     avatars,
     overflowItems,

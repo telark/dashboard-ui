@@ -20,7 +20,14 @@ interface ViewUserPanelProps {
 
 const UserIcon = Icons.User;
 
-const ViewUserPanel: React.FC<ViewUserPanelProps> = ({ open, onClose, user, onEdit, onDelete, canDelete }) => {
+const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
+  open,
+  onClose,
+  user,
+  onEdit,
+  onDelete,
+  canDelete,
+}) => {
   const { deleteModalOpen, isDeleting, openDeleteModal, closeDeleteModal, handleConfirmDelete } =
     useUserDeleteModal(user);
 

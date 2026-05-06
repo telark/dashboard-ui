@@ -78,7 +78,9 @@ interface ScopeRowProps {
 
 const ScopeRow: React.FC<ScopeRowProps> = memo(({ title, level, rules, sourceText }) => (
   <div style={{ marginBottom: 8 }}>
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+    <div
+      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}
+    >
       <span style={{ fontSize: 13, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
         {title}
       </span>

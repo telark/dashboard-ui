@@ -34,7 +34,9 @@ export function getManageCategoriesButtonConfig({
           key: 'view-categories',
           label: !canViewCategories ? (
             <Tooltip title={LABELS.VIEW_CATEGORIES_DISABLED_TOOLTIP}>
-              <span style={{ display: 'block', width: '100%', pointerEvents: 'all' }}>{LABELS.VIEW_CATEGORIES}</span>
+              <span style={{ display: 'block', width: '100%', pointerEvents: 'all' }}>
+                {LABELS.VIEW_CATEGORIES}
+              </span>
             </Tooltip>
           ) : (
             LABELS.VIEW_CATEGORIES
@@ -46,7 +48,9 @@ export function getManageCategoriesButtonConfig({
           key: 'add-category',
           label: !canAddCategory ? (
             <Tooltip title={LABELS.ADD_CATEGORY_DISABLED_TOOLTIP}>
-              <span style={{ display: 'block', width: '100%', pointerEvents: 'all' }}>{LABELS.ADD_CATEGORY}</span>
+              <span style={{ display: 'block', width: '100%', pointerEvents: 'all' }}>
+                {LABELS.ADD_CATEGORY}
+              </span>
             </Tooltip>
           ) : (
             LABELS.ADD_CATEGORY

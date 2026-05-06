@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spin } from 'antd';
+import { FancySpinner } from '../../../components/animation';
 import { CheckOutlined, DeleteOutlined } from '@ant-design/icons';
 import { SlideOutPanel } from '../../../components/display/panels/slide-out';
 import { ToggleButton } from '../../../components/display/buttons';
@@ -60,7 +60,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose }) 
       >
         {isLoading && !hasNotifications ? (
           <div style={{ padding: 32, display: 'flex', justifyContent: 'center' }}>
-            <Spin />
+            <FancySpinner />
           </div>
         ) : !hasNotifications ? (
           <EmptyNotifications />
