@@ -85,12 +85,6 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     const managedByOptions = uniqOptions(visibleApplications, (a) => a.managed?.by);
     const managedChartOptions = uniqOptions(visibleApplications, (a) => a.managed?.chart || '');
     const namespaceOptions = uniqNamespaceOptions(visibleApplications);
-    const insightCategoryOptions = uniqOptions(
-      visibleApplications,
-      (a) => a.insights?.category || '',
-    );
-    const insightRoleOptions = uniqOptions(visibleApplications, (a) => a.insights?.role || '');
-    const crStatusOptions = uniqOptions(visibleApplications, (a) => a.crStatus || '');
     return [
       {
         key: 'dateRange',
@@ -123,24 +117,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
         type: 'multiSelect',
         multiSelectOptions: namespaceOptions,
       },
-      {
-        key: 'insightCategory',
-        label: APPLICATIONS_UI.FILTER.BY_INSIGHT_CATEGORY,
-        type: 'multiSelect',
-        multiSelectOptions: insightCategoryOptions,
-      },
-      {
-        key: 'insightRole',
-        label: APPLICATIONS_UI.FILTER.BY_INSIGHT_ROLE,
-        type: 'multiSelect',
-        multiSelectOptions: insightRoleOptions,
-      },
-      {
-        key: 'crStatus',
-        label: APPLICATIONS_UI.FILTER.BY_CR_STATUS,
-        type: 'multiSelect',
-        multiSelectOptions: crStatusOptions,
-      },
+
       {
         key: 'hasDrift',
         label: APPLICATIONS_UI.FILTER.BY_HAS_DRIFT,
@@ -404,9 +381,6 @@ function applyApplicationFilters(
   const managedBy = (filters.managedBy as string[]) || [];
   const managedChart = (filters.managedChart as string[]) || [];
   const namespaces = (filters.namespaces as string[]) || [];
-  const insightCategory = (filters.insightCategory as string[]) || [];
-  const insightRole = (filters.insightRole as string[]) || [];
-  const crStatus = (filters.crStatus as string[]) || [];
   const hasDrift = (filters.hasDrift as string[]) || [];
 
   const has = (arr: string[]) => arr.length > 0;
@@ -415,9 +389,6 @@ function applyApplicationFilters(
     !has(managedBy) &&
     !has(managedChart) &&
     !has(namespaces) &&
-    !has(insightCategory) &&
-    !has(insightRole) &&
-    !has(crStatus) &&
     !has(hasDrift) &&
     !dateRange?.from &&
     !dateRange?.to
@@ -429,9 +400,7 @@ function applyApplicationFilters(
     if (has(status) && !status.includes(a.health?.status ?? '')) return false;
     if (has(managedBy) && !managedBy.includes(a.managed?.by ?? '')) return false;
     if (has(managedChart) && !managedChart.includes(a.managed?.chart ?? '')) return false;
-    if (has(insightCategory) && !insightCategory.includes(a.insights?.category ?? '')) return false;
-    if (has(insightRole) && !insightRole.includes(a.insights?.role ?? '')) return false;
-    if (has(crStatus) && !crStatus.includes(a.crStatus ?? '')) return false;
+
     if (has(hasDrift) && !hasDrift.includes(String(Boolean(a.history?.hasDrift)))) return false;
     if (has(namespaces)) {
       const ns = new Set((a.namespaces?.items ?? []).map((n) => n.name));
