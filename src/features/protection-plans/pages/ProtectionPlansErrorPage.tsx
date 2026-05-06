@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { DEFAULT_COLORS } from '../../../constants';
+import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../constants';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
 
 interface ProtectionPlansErrorPageProps {
@@ -11,9 +11,9 @@ const ProtectionPlansErrorPage: React.FC<ProtectionPlansErrorPageProps> = memo((
     <div
       style={{
         background: DEFAULT_COLORS.BACKGROUND_WHITE,
-        minHeight: 'calc(100vh - 60px)',
+        minHeight: HEADER_LAYOUT.MIN_HEIGHT,
         padding: '48px 32px 32px',
-        marginTop: '60px',
+        marginTop: HEADER_LAYOUT.HEIGHT,
       }}
     >
       <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY, fontSize: 16, fontWeight: 500 }}>

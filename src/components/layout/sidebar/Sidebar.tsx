@@ -1,11 +1,10 @@
 import { useEffect, useState, memo, useCallback } from 'react';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import MenuItems from './MenuItems';
-import { DEFAULT_COLORS } from '../../../constants';
+import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../constants';
 
 const SIDEBAR_WIDTH_EXPANDED = 220;
 const SIDEBAR_WIDTH_COLLAPSED = 52;
-const HEADER_HEIGHT = 60;
 const STORAGE_KEY = 'sidebar_collapsed';
 
 const Sidebar = memo(() => {
@@ -33,9 +32,9 @@ const Sidebar = memo(() => {
       style={{
         position: 'fixed',
         left: 0,
-        top: HEADER_HEIGHT,
+        top: HEADER_LAYOUT.HEIGHT_PX,
         width: isCollapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED,
-        height: `calc(100vh - ${HEADER_HEIGHT}px)`,
+        height: `calc(100vh - ${HEADER_LAYOUT.HEIGHT_PX}px)`,
         backgroundColor: DEFAULT_COLORS.BACKGROUND_WHITE,
         borderRight: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
         zIndex: 1,
