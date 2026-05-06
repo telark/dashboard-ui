@@ -19,7 +19,7 @@ import ApplicationSnapshotRow from '../snapshots/ApplicationSnapshotRow';
 import ApplicationSnapshotManifestSlideOut from '../snapshots/ApplicationSnapshotManifestSlideOut';
 import SnapshotCompareView from '../snapshots/SnapshotCompareView';
 import { fetchSnapshotManifestThunk, fetchApplicationSnapshotsThunk } from '../../store';
-import { getCurrentUser } from '../../../../auth/utils';
+import { selectPermissionsState } from '../../../../auth/store/selectors/permissionsSelectors';
 import { triggerApplicationRollbackThunk } from '../../store';
 
 const PANEL_WIDTH = 650;
@@ -44,6 +44,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
   const { snapshots, snapshotsLoading, snapshotsError, snapshotManifests } = useSelector(
     (s: RootState) => s.applications,
   );
+  const { userID } = useSelector(selectPermissionsState);
 
   const [expanded, setExpanded] = useState(false);
   const [activeManifestKey, setActiveManifestKey] = useState<string | null>(null);
@@ -160,7 +161,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
         okText: snapUi.ROLLBACK_CONFIRM_OK,
         cancelText: APPLICATIONS_UI.CARD.ACTIONS.CANCEL,
         onOk: async () => {
-          const triggeredBy = getCurrentUser()?.username?.trim();
+          const triggeredBy = userID;
           if (!triggeredBy) {
             message.error(snapUi.ROLLBACK_USER_REQUIRED);
             return;

@@ -3,7 +3,7 @@ import {
   AiOutlineCluster,
   AiOutlineAppstore,
   AiOutlineApi,
-  AiOutlineDashboard,
+  AiOutlineHome,
   AiOutlineUser,
   AiOutlineTeam,
   AiFillTag,
@@ -17,7 +17,7 @@ import { BsFillCpuFill, BsMemory, BsKey } from 'react-icons/bs';
 import { MdOutlineSettingsBackupRestore } from 'react-icons/md';
 
 export const Icons = {
-  Home: AiOutlineDashboard,
+  Home: AiOutlineHome,
   Role: AiOutlineSafety,
   Grouper: AiOutlineCluster,
   Workload: AiOutlineAppstore,
