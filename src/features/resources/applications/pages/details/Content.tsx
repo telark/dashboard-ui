@@ -2,7 +2,7 @@ import React, { memo, useMemo } from 'react';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { Collapse, Tooltip } from 'antd';
 import { format } from 'date-fns';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../../../constants';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type { Application, ApplicationChangeLogEntry, ApplicationResourceRef } from '../../models';
@@ -181,7 +181,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         <div
           style={{
             position: 'sticky',
-            top: 48,
+            top: HEADER_LAYOUT.HEIGHT_PX,
             zIndex: 5,
             display: 'flex',
             alignItems: 'center',
