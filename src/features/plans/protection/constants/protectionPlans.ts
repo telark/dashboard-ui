@@ -60,7 +60,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       APPLICATIONS_PLACEHOLDER: 'Select applications',
       NAMESPACES_LABEL: 'Namespaces',
       NAMESPACES_PLACEHOLDER: 'Enter namespace names',
-      TIME_MODE_LABEL: 'Time mode',
+      TIME_MODE_LABEL: 'Mode',
       START_AT_LABEL: 'Start',
       END_AT_LABEL: 'End',
       PARTICIPANTS_LABEL: 'Participants',

@@ -6,19 +6,17 @@ import {
   Radio,
   Button,
   Space,
-  Tag,
   Typography,
   Spin,
   Alert,
   ConfigProvider,
 } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { APP_ROUTES } from '../../../../constants';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, FILTER_PANEL } from '../../../../constants';
 import { PAGE_CONTENT_LAYOUT } from '../../../../constants/shared/pages';
 import { Icons } from '../../../../constants';
 import type { AppDispatch } from '../../../../store';
@@ -42,7 +40,8 @@ import SectionCard from '../components/create/SectionCard';
 import DatePicker from '../../../../components/display/inputs/DatePicker';
 import { PrimaryButton } from '../../../../components/display/buttons';
 import { useUsers } from '../../../access-and-permissions/users/hooks/user/useUsers';
-import MemberList from '../../../access-and-permissions/groups/components/display/member/MemberList';
+import UserAvatar from '../../../../components/display/avatars/UserAvatar';
+import { ATTACHED_MEMBERS_CONSTANTS as AMC } from '../../../access-and-permissions/groups/constants';
 
 const ProtectionPlansIcon = Icons.ProtectionPlans;
 
@@ -114,7 +113,11 @@ const CreatePlanPage: React.FC = () => {
     return templates.filter((t) => t.supportedScopes.includes(scopeType));
   }, [templates, scopeType]);
 
-  const usedTemplateIDs = useMemo(() => new Set(policies.map((p) => p.templateID)), [policies]);
+  const userOptions = useMemo(
+    () => (users ?? []).map((u) => ({ value: u.id, label: u.username })),
+    [users],
+  );
+  const userMap = useMemo(() => new Map((users ?? []).map((u) => [u.id, u])), [users]);
 
   const applicationOptions = useMemo(
     () =>
@@ -127,23 +130,6 @@ const CreatePlanPage: React.FC = () => {
       }),
     [applications],
   );
-
-  const addPolicy = useCallback(
-    (templateID: string) => {
-      const tpl = templates.find((t) => t.id === templateID);
-      if (!tpl) return;
-      const initialParams: Record<string, string[]> = {};
-      tpl.params.forEach((p) => {
-        initialParams[p.key] = [];
-      });
-      setPolicies((prev) => [...prev, { templateID, params: initialParams }]);
-    },
-    [templates],
-  );
-
-  const removePolicy = useCallback((index: number) => {
-    setPolicies((prev) => prev.filter((_, i) => i !== index));
-  }, []);
 
   const updatePolicyParam = useCallback((index: number, key: string, values: string[]) => {
     setPolicies((prev) =>
@@ -170,7 +156,10 @@ const CreatePlanPage: React.FC = () => {
           name: values.name,
           description: values.description,
           severity: values.severity,
-          priority: values.priority,
+          priority:
+            values.priority != null && values.priority !== ('' as unknown)
+              ? parseInt(String(values.priority), 10)
+              : undefined,
           mode: values.mode,
           timeMode: values.timeMode,
           scope: {
@@ -416,117 +405,94 @@ const CreatePlanPage: React.FC = () => {
                 <Spin size="small" />
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  {policies.map((entry, index) => {
-                    const tpl = templates.find((t) => t.id === entry.templateID);
-                    if (!tpl) return null;
-                    return (
-                      <div
-                        key={index}
-                        style={{
-                          border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-                          borderRadius: 8,
-                          padding: 12,
-                        }}
-                      >
+                  <Select
+                    mode="multiple"
+                    placeholder={FORM.ADD_POLICY_BUTTON}
+                    style={{ width: '100%' }}
+                    value={policies.map((p) => p.templateID)}
+                    options={availableTemplates.map((t) => ({ value: t.id, label: t.name }))}
+                    onChange={(selectedIds: string[]) => {
+                      setPolicies((prev) =>
+                        selectedIds.map((id) => {
+                          const existing = prev.find((p) => p.templateID === id);
+                          if (existing) return existing;
+                          const tpl = templates.find((t) => t.id === id);
+                          const initialParams: Record<string, string[]> = {};
+                          tpl?.params?.forEach((p) => {
+                            initialParams[p.key] = [];
+                          });
+                          return { templateID: id, params: initialParams };
+                        }),
+                      );
+                    }}
+                    filterOption={(input, option) =>
+                      String(option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                    }
+                  />
+
+                  {policies
+                    .filter((entry) => {
+                      const tpl = templates.find((t) => t.id === entry.templateID);
+                      return (tpl?.params?.length ?? 0) > 0;
+                    })
+                    .map((entry) => {
+                      const tpl = templates.find((t) => t.id === entry.templateID);
+                      if (!tpl) return null;
+                      const policyIndex = policies.findIndex(
+                        (p) => p.templateID === entry.templateID,
+                      );
+                      return (
                         <div
+                          key={entry.templateID}
                           style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            marginBottom: tpl.params.length > 0 ? 10 : 0,
+                            border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+                            borderRadius: 8,
+                            padding: 12,
                           }}
                         >
-                          <div>
-                            <span style={{ fontWeight: 600, fontSize: 13 }}>{tpl.name}</span>
-                            {tpl.description && (
+                          <span style={{ fontWeight: 600, fontSize: 13, display: 'block', marginBottom: 8 }}>
+                            {tpl.name}
+                          </span>
+                          {(tpl.params ?? []).map((param) => (
+                            <div key={param.key} style={{ marginTop: 8 }}>
                               <Typography.Text
-                                type="secondary"
-                                style={{ display: 'block', fontSize: 12 }}
+                                style={{
+                                  fontSize: 12,
+                                  fontWeight: 500,
+                                  display: 'block',
+                                  marginBottom: 4,
+                                }}
                               >
-                                {tpl.description}
+                                {param.label}
+                                {param.required && (
+                                  <span style={{ color: '#ef4444', marginLeft: 2 }}>*</span>
+                                )}
                               </Typography.Text>
-                            )}
-                          </div>
-                          <Button
-                            type="text"
-                            danger
-                            size="small"
-                            icon={<DeleteOutlined />}
-                            onClick={() => removePolicy(index)}
-                          />
-                        </div>
-                        {tpl.params.map((param) => (
-                          <div key={param.key} style={{ marginTop: 8 }}>
-                            <Typography.Text
-                              style={{
-                                fontSize: 12,
-                                fontWeight: 500,
-                                display: 'block',
-                                marginBottom: 4,
-                              }}
-                            >
-                              {param.label}
-                              {param.required && (
-                                <span style={{ color: '#ef4444', marginLeft: 2 }}>*</span>
+                              <Select
+                                mode="tags"
+                                placeholder={
+                                  param.placeholder ?? `Enter ${param.label.toLowerCase()}`
+                                }
+                                value={entry.params[param.key] ?? []}
+                                onChange={(vals: string[]) =>
+                                  updatePolicyParam(policyIndex, param.key, vals)
+                                }
+                                style={{ width: '100%' }}
+                                tokenSeparators={[',']}
+                              />
+                              {param.description && (
+                                <Typography.Text
+                                  type="secondary"
+                                  style={{ fontSize: 11, display: 'block', marginTop: 2 }}
+                                >
+                                  {param.description}
+                                </Typography.Text>
                               )}
-                            </Typography.Text>
-                            <Select
-                              mode="tags"
-                              placeholder={
-                                param.placeholder ?? `Enter ${param.label.toLowerCase()}`
-                              }
-                              value={entry.params[param.key] ?? []}
-                              onChange={(vals: string[]) =>
-                                updatePolicyParam(index, param.key, vals)
-                              }
-                              style={{ width: '100%' }}
-                              tokenSeparators={[',']}
-                            />
-                            {param.description && (
-                              <Typography.Text
-                                type="secondary"
-                                style={{ fontSize: 11, display: 'block', marginTop: 2 }}
-                              >
-                                {param.description}
-                              </Typography.Text>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    );
-                  })}
-
-                  {/* Add policy dropdown */}
-                  {availableTemplates.filter((t) => !usedTemplateIDs.has(t.id)).length > 0 && (
-                    <Select
-                      placeholder={FORM.ADD_POLICY_BUTTON}
-                      style={{ width: '100%' }}
-                      value={null}
-                      onChange={(id: string) => addPolicy(id)}
-                      suffixIcon={null}
-                      options={availableTemplates
-                        .filter((t) => !usedTemplateIDs.has(t.id))
-                        .map((t) => ({ value: t.id, label: t.name }))}
-                    />
-                  )}
-
-                  {policies.length > 0 && (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                      {policies.map((p, i) => {
-                        const tpl = templates.find((t) => t.id === p.templateID);
-                        return (
-                          <Tag
-                            key={i}
-                            closable
-                            onClose={() => removePolicy(i)}
-                            style={{ fontSize: 12 }}
-                          >
-                            {tpl?.name ?? p.templateID}
-                          </Tag>
-                        );
-                      })}
-                    </div>
-                  )}
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })}
                 </div>
               )}
             </SectionCard>
@@ -543,56 +509,57 @@ const CreatePlanPage: React.FC = () => {
                   style={{ marginBottom: 0 }}
                   className={FORM_ITEM_CLASS}
                 >
-                  <Radio.Group>
-                    <Space>
-                      {PPC.CREATE_PAGE.TIME_MODE_OPTIONS.map((o) => (
-                        <Radio.Button key={o.value} value={o.value}>
-                          {o.label}
-                        </Radio.Button>
-                      ))}
-                    </Space>
-                  </Radio.Group>
+                  <Select
+                    options={PPC.CREATE_PAGE.TIME_MODE_OPTIONS}
+                    style={{ width: 200 }}
+                  />
                 </Form.Item>
 
                 {timeMode === 'time_range' && (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                    <Form.Item
-                      name="startAt"
-                      label={FORM.START_AT_LABEL}
-                      style={{ marginBottom: 0 }}
-                      className={FORM_ITEM_CLASS}
-                      rules={[{ required: true, message: 'Start time is required' }]}
-                    >
-                      <DatePicker
-                        showTime
-                        format="YYYY-MM-DD HH:mm"
-                        style={{ width: '100%' }}
-                        disabledDate={(d) => d.isBefore(dayjs(), 'day')}
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      name="endAt"
-                      label={FORM.END_AT_LABEL}
-                      style={{ marginBottom: 0 }}
-                      className={FORM_ITEM_CLASS}
-                      rules={[
-                        { required: true, message: 'End time is required' },
-                        ({ getFieldValue }) => ({
-                          validator(_, value) {
-                            const start = getFieldValue('startAt') as dayjs.Dayjs | undefined;
-                            if (!value || !start || value.isAfter(start)) return Promise.resolve();
-                            return Promise.reject(new Error('End must be after start'));
-                          },
-                        }),
-                      ]}
-                    >
-                      <DatePicker
-                        showTime
-                        format="YYYY-MM-DD HH:mm"
-                        style={{ width: '100%' }}
-                        disabledDate={(d) => d.isBefore(dayjs(), 'day')}
-                      />
-                    </Form.Item>
+                  <div style={{ ...FILTER_PANEL.DATE_RANGE_CONTAINER, alignItems: 'flex-end' }}>
+                    <div style={FILTER_PANEL.DATE_INPUT_WRAPPER}>
+                      <Form.Item
+                        name="startAt"
+                        label={FORM.START_AT_LABEL}
+                        style={{ marginBottom: 0 }}
+                        className={FORM_ITEM_CLASS}
+                        rules={[{ required: true, message: 'Start time is required' }]}
+                      >
+                        <DatePicker
+                          showTime
+                          format="YYYY-MM-DD HH:mm"
+                          style={FILTER_PANEL.DATE_INPUT}
+                          disabledDate={(d) => d.isBefore(dayjs(), 'day')}
+                        />
+                      </Form.Item>
+                    </div>
+                    <div style={{ ...FILTER_PANEL.DATE_ARROW, marginBottom: 4 }}>→</div>
+                    <div style={FILTER_PANEL.DATE_INPUT_WRAPPER}>
+                      <Form.Item
+                        name="endAt"
+                        label={FORM.END_AT_LABEL}
+                        style={{ marginBottom: 0 }}
+                        className={FORM_ITEM_CLASS}
+                        rules={[
+                          { required: true, message: 'End time is required' },
+                          ({ getFieldValue }) => ({
+                            validator(_, value) {
+                              const start = getFieldValue('startAt') as dayjs.Dayjs | undefined;
+                              if (!value || !start || value.isAfter(start))
+                                return Promise.resolve();
+                              return Promise.reject(new Error('End must be after start'));
+                            },
+                          }),
+                        ]}
+                      >
+                        <DatePicker
+                          showTime
+                          format="YYYY-MM-DD HH:mm"
+                          style={FILTER_PANEL.DATE_INPUT}
+                          disabledDate={(d) => d.isBefore(dayjs(), 'day')}
+                        />
+                      </Form.Item>
+                    </div>
                   </div>
                 )}
               </div>
@@ -603,12 +570,37 @@ const CreatePlanPage: React.FC = () => {
               title="Participants"
               description="Select users to associate with this plan."
             >
-              <MemberList
-                users={users}
-                loading={usersLoading}
-                allUsers={users}
-                fieldName="participantsIDs"
-              />
+              <Form.Item
+                name="participantsIDs"
+                label={FORM.PARTICIPANTS_LABEL}
+                style={{ marginBottom: 0 }}
+                className={FORM_ITEM_CLASS}
+              >
+                <Select
+                  mode="multiple"
+                  loading={usersLoading}
+                  placeholder={FORM.PARTICIPANTS_PLACEHOLDER}
+                  style={{ width: '100%' }}
+                  options={userOptions}
+                  optionRender={(option) => {
+                    const u = userMap.get(String(option.value));
+                    return (
+                      <div style={AMC.LIST.MEMBER_CONTENT}>
+                        <div style={AMC.LIST.MEMBER_AVATAR_CONTAINER}>
+                          <UserAvatar avatar={u?.avatar} username={u?.username} size={32} />
+                        </div>
+                        <div style={AMC.LIST.MEMBER_INFO}>
+                          <div style={AMC.LIST.MEMBER_NAME}>{u?.username}</div>
+                          {u?.email && <div style={AMC.LIST.MEMBER_EMAIL}>{u.email}</div>}
+                        </div>
+                      </div>
+                    );
+                  }}
+                  filterOption={(input, option) =>
+                    String(option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                  }
+                />
+              </Form.Item>
             </SectionCard>
           </div>
 
