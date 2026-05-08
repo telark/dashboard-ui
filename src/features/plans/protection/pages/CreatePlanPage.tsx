@@ -313,8 +313,8 @@ const CreatePlanPage: React.FC = () => {
                     style={{ marginBottom: 0 }}
                     className={FORM_ITEM_CLASS}
                   >
-                    <ConfigProvider theme={{ token: { colorPrimary: DEFAULT_COLORS.SUCCESS } }}>
-                      <Radio.Group>
+                    <Radio.Group>
+                      <ConfigProvider theme={{ token: { colorPrimary: DEFAULT_COLORS.SUCCESS } }}>
                         <Space direction="vertical" size={4}>
                           {PPC.CREATE_PAGE.MODE_OPTIONS.map((o) => (
                             <Radio key={o.value} value={o.value} style={{ fontSize: 13 }}>
@@ -322,8 +322,8 @@ const CreatePlanPage: React.FC = () => {
                             </Radio>
                           ))}
                         </Space>
-                      </Radio.Group>
-                    </ConfigProvider>
+                      </ConfigProvider>
+                    </Radio.Group>
                   </Form.Item>
                 </div>
               </div>

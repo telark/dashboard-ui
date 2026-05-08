@@ -30,6 +30,6 @@ export const APP_ROUTES = {
   // settings
   SETTINGS: '/settings',
   // governance
-  PROTECTION_PLANS: '/governance/protection-plans',
-  PROTECTION_PLANS_CREATE: '/governance/protection-plans/create',
+  PROTECTION_PLANS: '/governance/plans/protection',
+  PROTECTION_PLANS_CREATE: '/governance/plans/protection/create',
 } as const;
