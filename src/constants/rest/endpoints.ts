@@ -7,6 +7,7 @@ import {
   GROUP_PATHS,
   ROLE_PATHS,
   USER_PATHS,
+  PLANS_PATHS,
 } from '../rest/paths';
 
 export const Endpoints = {
@@ -237,6 +238,13 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.GROUPS}/${GROUP_PATHS.DELETE_BY_ID(id)}`,
       method: 'DELETE',
     }),
+  },
+  PROTECTION_PLANS: {
+    LIST: { path: PLANS_PATHS.PROTECTION.GET_ALL, method: 'GET' },
+    GET_BY_ID: (id: string) => ({ path: PLANS_PATHS.PROTECTION.GET_BY_ID(id), method: 'GET' }),
+    TEMPLATES: { path: PLANS_PATHS.PROTECTION.TEMPLATES, method: 'GET' },
+    PREPARE: { path: PLANS_PATHS.PROTECTION.PREPARE, method: 'POST' },
+    CANCEL: (id: string) => ({ path: PLANS_PATHS.PROTECTION.CANCEL(id), method: 'POST' }),
   },
   NOTIFICATIONS: {
     EMIT: {

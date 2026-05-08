@@ -65,6 +65,12 @@ export const STORE_ACTIONS = {
     FETCH: 'authConfig/fetch',
     ENSURE: 'authConfig/ensure',
   },
+  PROTECTION_PLANS: {
+    FETCH: 'protectionPlans/fetch',
+    FETCH_TEMPLATES: 'protectionPlans/fetchTemplates',
+    PREPARE: 'protectionPlans/prepare',
+    CANCEL: 'protectionPlans/cancel',
+  },
 } as const;
 
 export const SYNC_MODES = COMMON_VALUES.SYNC_MODES;
@@ -101,6 +107,10 @@ export const STORE_ERRORS = {
   FETCH_CATEGORIES: 'Failed to fetch categories',
   FETCH_PERMISSIONS: 'Failed to fetch permissions',
   FETCH_AUTH_CONFIG: 'Failed to fetch auth config',
+  FETCH_PROTECTION_PLANS: 'Failed to fetch protection plans',
+  FETCH_PROTECTION_PLAN_TEMPLATES: 'Failed to fetch protection plan templates',
+  PREPARE_PROTECTION_PLAN: 'Failed to prepare protection plan',
+  CANCEL_PROTECTION_PLAN: 'Failed to cancel protection plan',
 } as const;
 
 export const STORE_MESSAGES = {
@@ -135,4 +145,8 @@ export const STORE_MESSAGES = {
   ERROR_FETCHING_CATEGORIES: 'Error fetching categories:',
   ERROR_FETCHING_PERMISSIONS: 'Error fetching permissions:',
   ERROR_FETCHING_AUTH_CONFIG: 'Error fetching auth config:',
+  ERROR_FETCHING_PROTECTION_PLANS: 'Error fetching protection plans:',
+  ERROR_FETCHING_PROTECTION_PLAN_TEMPLATES: 'Error fetching protection plan templates:',
+  ERROR_PREPARING_PROTECTION_PLAN: 'Error preparing protection plan:',
+  ERROR_CANCELLING_PROTECTION_PLAN: 'Error cancelling protection plan:',
 } as const;

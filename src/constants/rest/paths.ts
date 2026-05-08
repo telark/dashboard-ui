@@ -88,3 +88,13 @@ export const USER_PATHS = {
   PATCH_BY_ID: (id: string) => `${id}/patch`,
   DELETE_BY_ID: (id: string) => `${id}/delete`,
 } as const;
+
+export const PLANS_PATHS = {
+  PROTECTION: {
+    GET_ALL: 'plans/protection/get',
+    GET_BY_ID: (id: string) => `plans/protection/${id}/get`,
+    TEMPLATES: 'plans/protection/templates',
+    PREPARE: 'plans/protection/prepare',
+    CANCEL: (id: string) => `plans/protection/${id}/cancel`,
+  },
+} as const;
