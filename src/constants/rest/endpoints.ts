@@ -245,7 +245,7 @@ export const Endpoints = {
     TEMPLATES: { path: PLANS_PATHS.PROTECTION.TEMPLATES, method: 'GET' },
     PREPARE: { path: PLANS_PATHS.PROTECTION.PREPARE, method: 'POST' },
     CANCEL: (id: string) => ({ path: PLANS_PATHS.PROTECTION.CANCEL(id), method: 'POST' }),
-    DELETE: (id: string) => ({ path: PLANS_PATHS.PROTECTION.DELETE(id), method: 'DELETE' }),
+    CLEAR: (id: string) => ({ path: PLANS_PATHS.PROTECTION.CLEAR(id), method: 'DELETE' }),
   },
   NOTIFICATIONS: {
     EMIT: {

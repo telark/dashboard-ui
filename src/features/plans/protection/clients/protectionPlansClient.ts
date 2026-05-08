@@ -85,8 +85,8 @@ export const cancelPlan = async (
 
 export const deletePlan = async (userId: string, planId: string): Promise<void> => {
   await Client<ApiResponse<null>>(
-    exporterApiClient,
-    Endpoints.PROTECTION_PLANS.DELETE(planId).path,
+    discoveryApiClient,
+    Endpoints.PROTECTION_PLANS.CLEAR(planId).path,
     {
       method: 'DELETE',
       headers: { [HTTP_HEADERS.CUSTOM.USER_ID]: userId },
