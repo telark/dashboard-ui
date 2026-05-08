@@ -82,3 +82,14 @@ export const cancelPlan = async (
   );
   return res.data;
 };
+
+export const deletePlan = async (userId: string, planId: string): Promise<void> => {
+  await Client<ApiResponse<null>>(
+    exporterApiClient,
+    Endpoints.PROTECTION_PLANS.DELETE(planId).path,
+    {
+      method: 'DELETE',
+      headers: { [HTTP_HEADERS.CUSTOM.USER_ID]: userId },
+    },
+  );
+};

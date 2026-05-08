@@ -96,5 +96,6 @@ export const PLANS_PATHS = {
     TEMPLATES: 'plans/protection/templates',
     PREPARE: 'plans/protection/prepare',
     CANCEL: (id: string) => `plans/protection/${id}/cancel`,
+    DELETE: (id: string) => `plans/protection/${id}/delete`,
   },
 } as const;

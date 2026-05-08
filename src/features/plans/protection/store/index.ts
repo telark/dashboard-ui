@@ -4,6 +4,7 @@ export {
   fetchProtectionPlanTemplatesThunk,
   preparePlanThunk,
   cancelPlanThunk,
+  deletePlanThunk,
 } from './thunks/protectionPlansThunks';
 export {
   selectProtectionPlans,

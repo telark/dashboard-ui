@@ -70,6 +70,7 @@ export const STORE_ACTIONS = {
     FETCH_TEMPLATES: 'protectionPlans/fetchTemplates',
     PREPARE: 'protectionPlans/prepare',
     CANCEL: 'protectionPlans/cancel',
+    DELETE: 'protectionPlans/delete',
   },
 } as const;
 
@@ -111,6 +112,7 @@ export const STORE_ERRORS = {
   FETCH_PROTECTION_PLAN_TEMPLATES: 'Failed to fetch protection plan templates',
   PREPARE_PROTECTION_PLAN: 'Failed to prepare protection plan',
   CANCEL_PROTECTION_PLAN: 'Failed to cancel protection plan',
+  DELETE_PROTECTION_PLAN: 'Failed to delete protection plan',
 } as const;
 
 export const STORE_MESSAGES = {
@@ -149,4 +151,5 @@ export const STORE_MESSAGES = {
   ERROR_FETCHING_PROTECTION_PLAN_TEMPLATES: 'Error fetching protection plan templates:',
   ERROR_PREPARING_PROTECTION_PLAN: 'Error preparing protection plan:',
   ERROR_CANCELLING_PROTECTION_PLAN: 'Error cancelling protection plan:',
+  ERROR_DELETING_PROTECTION_PLAN: 'Error deleting protection plan:',
 } as const;

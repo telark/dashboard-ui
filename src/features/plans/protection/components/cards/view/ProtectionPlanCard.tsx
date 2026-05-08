@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
 import { Button, Dropdown } from 'antd';
-import { MoreOutlined, StopOutlined } from '@ant-design/icons';
+import { DeleteOutlined, MoreOutlined, StopOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import { APPLICATION_SECTION_LAYOUT } from '../../../../../resources/applications/constants/sectionLayout';
@@ -12,7 +12,7 @@ import {
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import type { AppDispatch, RootState } from '../../../../../../store';
-import { cancelPlanThunk } from '../../../store';
+import { cancelPlanThunk, deletePlanThunk } from '../../../store';
 import { getCurrentUser } from '../../../../../auth/utils';
 
 interface ProtectionPlanCardProps {
@@ -45,6 +45,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
   const dispatch: AppDispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const users = useSelector((state: RootState) => state.users.users);
   const createdByLabel = users.find((u) => u.id === plan.createdBy)?.username ?? plan.createdBy;
@@ -79,6 +80,17 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     }
   }, [dispatch, plan.id]);
 
+  const handleDelete = useCallback(async () => {
+    const userId = getCurrentUser()?.id;
+    if (!userId) return;
+    setDeleting(true);
+    try {
+      await dispatch(deletePlanThunk({ userId, planId: plan.id })).unwrap();
+    } finally {
+      setDeleting(false);
+    }
+  }, [dispatch, plan.id]);
+
   const menuItems = [
     ...(canCancel
       ? [
@@ -91,6 +103,14 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           },
         ]
       : []),
+    { type: 'divider' as const },
+    {
+      key: 'delete',
+      label: PPC.LABELS.ACTIONS.DELETE,
+      icon: <DeleteOutlined />,
+      danger: true,
+      disabled: deleting,
+    },
   ];
 
   return (
@@ -196,6 +216,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
                 onClick: ({ key, domEvent }) => {
                   domEvent.stopPropagation();
                   if (key === 'cancel') void handleCancel();
+                  if (key === 'delete') void handleDelete();
                 },
               }}
             >
