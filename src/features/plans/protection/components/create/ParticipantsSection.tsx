@@ -48,7 +48,9 @@ const ParticipantsSection: React.FC<ParticipantsSectionProps> = ({
           );
         }}
         filterOption={(input, option) =>
-          String(option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+          String(option?.label ?? '')
+            .toLowerCase()
+            .includes(input.toLowerCase())
         }
       />
     </Form.Item>

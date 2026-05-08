@@ -14,6 +14,7 @@ import RowTag from '../../../../../../components/display/table/RowTag';
 import type { AppDispatch, RootState } from '../../../../../../store';
 import { cancelPlanThunk, deletePlanThunk } from '../../../store';
 import { getCurrentUser } from '../../../../../auth/utils';
+import { ActionConfirmModal } from '../../../../../../components/display/modal';
 
 interface ProtectionPlanCardProps {
   plan: ProtectionPlan;
@@ -46,6 +47,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
   const [menuOpen, setMenuOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const users = useSelector((state: RootState) => state.users.users);
   const createdByLabel = users.find((u) => u.id === plan.createdBy)?.username ?? plan.createdBy;
@@ -86,6 +88,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     setDeleting(true);
     try {
       await dispatch(deletePlanThunk({ userId, planId: plan.id })).unwrap();
+      setDeleteModalOpen(false);
     } finally {
       setDeleting(false);
     }
@@ -116,6 +119,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
   return (
     <div
       style={{
+        position: 'relative',
         background: DEFAULT_COLORS.BACKGROUND_WHITE,
         borderRadius: APPLICATION_SECTION_LAYOUT.CARD_RADIUS,
         border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
@@ -216,7 +220,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
                 onClick: ({ key, domEvent }) => {
                   domEvent.stopPropagation();
                   if (key === 'cancel') void handleCancel();
-                  if (key === 'delete') void handleDelete();
+                  if (key === 'delete') setDeleteModalOpen(true);
                 },
               }}
             >
@@ -258,6 +262,20 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
         <MetricMini
           value={plan.lastUpdatedAt ? <TimeAgo date={plan.lastUpdatedAt} /> : '—'}
           label="Last updated"
+        />
+      </div>
+      <div style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
+        <ActionConfirmModal
+          open={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          onConfirm={handleDelete}
+          title={PPC.LABELS.ACTIONS.DELETE_MODAL_TITLE}
+          action="delete"
+          resourceName={plan.name}
+          resourceType="protection plan"
+          confirmText={PPC.LABELS.ACTIONS.DELETE_MODAL_OK}
+          loading={deleting}
+          getContainer={() => document.body}
         />
       </div>
     </div>

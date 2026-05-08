@@ -25,6 +25,8 @@ export const PROTECTION_PLANS_CONSTANTS = {
     ACTIONS: {
       CANCEL: 'Cancel plan',
       DELETE: 'Delete plan',
+      DELETE_MODAL_TITLE: 'Delete Protection Plan',
+      DELETE_MODAL_OK: 'Delete',
     },
     PHASE_LABELS: {
       active: 'Active',

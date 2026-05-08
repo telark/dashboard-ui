@@ -51,7 +51,9 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
             );
           }}
           filterOption={(input, option) =>
-            String(option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            String(option?.label ?? '')
+              .toLowerCase()
+              .includes(input.toLowerCase())
           }
         />
 
@@ -73,9 +75,7 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
                   padding: 12,
                 }}
               >
-                <span
-                  style={{ fontWeight: 600, fontSize: 13, display: 'block', marginBottom: 8 }}
-                >
+                <span style={{ fontWeight: 600, fontSize: 13, display: 'block', marginBottom: 8 }}>
                   {tpl.name}
                 </span>
                 {(tpl.params ?? []).map((param) => (
@@ -84,15 +84,15 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
                       style={{ fontSize: 12, fontWeight: 500, display: 'block', marginBottom: 4 }}
                     >
                       {param.label}
-                      {param.required && (
-                        <span style={{ color: '#ef4444', marginLeft: 2 }}>*</span>
-                      )}
+                      {param.required && <span style={{ color: '#ef4444', marginLeft: 2 }}>*</span>}
                     </Typography.Text>
                     <Select
                       mode="tags"
                       placeholder={param.placeholder ?? `Enter ${param.label.toLowerCase()}`}
                       value={entry.params[param.key] ?? []}
-                      onChange={(vals: string[]) => onPolicyParamChange(policyIndex, param.key, vals)}
+                      onChange={(vals: string[]) =>
+                        onPolicyParamChange(policyIndex, param.key, vals)
+                      }
                       style={{ width: '100%' }}
                       tokenSeparators={[',']}
                     />
