@@ -1,18 +1,17 @@
 import React, { memo, useCallback, useState } from 'react';
 import { Button, Dropdown } from 'antd';
 import { MoreOutlined, StopOutlined } from '@ant-design/icons';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import { APPLICATION_SECTION_LAYOUT } from '../../../../../resources/applications/constants/sectionLayout';
 import type { ProtectionPlan, PlanPhase } from '../../../models';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
-  PHASE_BADGE_CONFIG,
   PHASE_DOT_COLOR,
 } from '../../../constants/protectionPlans';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../../components/display/table/RowTag';
-import type { AppDispatch } from '../../../../../../store';
+import type { AppDispatch, RootState } from '../../../../../../store';
 import { cancelPlanThunk } from '../../../store';
 import { getCurrentUser } from '../../../../../auth/utils';
 
@@ -47,15 +46,14 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
   const [menuOpen, setMenuOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
 
+  const users = useSelector((state: RootState) => state.users.users);
+  const createdByLabel = users.find((u) => u.id === plan.createdBy)?.username ?? plan.createdBy;
+
   const phaseLabel = PPC.LABELS.PHASE_LABELS[plan.phase] ?? plan.phase;
-  const badgeColors = PHASE_BADGE_CONFIG[plan.phase] ?? PHASE_BADGE_CONFIG.draft;
   const dotColor = PHASE_DOT_COLOR[plan.phase] ?? PHASE_DOT_COLOR.draft;
   const canCancel = CANCELLABLE.includes(plan.phase);
 
-  const scopeSummary =
-    plan.scope.type === 'applications'
-      ? plan.scope.applicationIds?.join(', ') || '—'
-      : plan.scope.namespaces?.join(', ') || '—';
+  const namespaceTags = plan.scope.type === 'namespaces' ? (plan.scope.namespaces ?? []) : [];
 
   const menuButtonStyle: React.CSSProperties = {
     color: menuOpen ? DEFAULT_COLORS.TEXT_PRIMARY : DEFAULT_COLORS.ICON_SECONDARY,
@@ -175,50 +173,18 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           >
             {plan.description || plan.name}
           </p>
-          {(plan.severity || plan.mode) && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
-              {plan.severity && (
-                <RowTag
-                  text={plan.severity}
-                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                  color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                  fontSize={11}
-                />
-              )}
-              {plan.mode && (
-                <RowTag
-                  text={plan.mode}
-                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                  color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                  fontSize={11}
-                />
-              )}
-            </div>
-          )}
         </div>
 
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 5,
-              background: badgeColors.background,
-              color: badgeColors.color,
-              padding: '2px 10px',
-              borderRadius: 999,
-              fontWeight: 700,
-              fontSize: 11,
-            }}
-          >
-            {phaseLabel}
-          </span>
-          <RowTag
-            text={plan.scope.type}
-            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-            color={DEFAULT_COLORS.TEXT_MUTED}
-            fontSize={11}
-          />
+          {namespaceTags.map((ns) => (
+            <RowTag
+              key={ns}
+              text={ns}
+              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+              color={DEFAULT_COLORS.TEXT_MUTED}
+              fontSize={11}
+            />
+          ))}
           {menuItems.length > 0 && (
             <Dropdown
               trigger={['click']}
@@ -260,11 +226,10 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
         }}
       >
         <MetricMini value={plan.policies?.length ?? 0} label="Policies" />
-        <MetricMini
-          value={scopeSummary}
-          label={plan.scope.type === 'applications' ? 'Applications' : 'Namespaces'}
-        />
-        <MetricMini value={plan.createdBy} label="Created by" />
+        <MetricMini value={plan.scope.type} label="Scope" />
+        {plan.mode && <MetricMini value={plan.mode} label={PPC.LABELS.MODE_ENFORCEMENT_LABEL} />}
+        {plan.severity && <MetricMini value={plan.severity} label={PPC.LABELS.SEVERITY_LABEL} />}
+        <MetricMini value={createdByLabel} label="Created by" />
         <MetricMini
           value={plan.createdAt ? <TimeAgo date={plan.createdAt} /> : '—'}
           label="Created"

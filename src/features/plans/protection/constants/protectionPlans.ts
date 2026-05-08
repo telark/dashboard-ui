@@ -34,6 +34,8 @@ export const PROTECTION_PLANS_CONSTANTS = {
       cancelled: 'Cancelled',
       draft: 'Draft',
     } as Record<PlanPhase, string>,
+    SEVERITY_LABEL: 'Severity',
+    MODE_ENFORCEMENT_LABEL: 'Policy Enforcement Mode',
   },
   CREATE_PAGE: {
     GAP_BETWEEN_CARDS: 20,
