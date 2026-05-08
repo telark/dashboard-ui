@@ -4,15 +4,15 @@ import {
   Input,
   Select,
   Radio,
-  DatePicker,
   Button,
   Space,
   Tag,
   Typography,
   Spin,
   Alert,
+  ConfigProvider,
 } from 'antd';
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import dayjs from 'dayjs';
@@ -20,6 +20,7 @@ import { APP_ROUTES } from '../../../../constants';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
 import { DEFAULT_COLORS } from '../../../../constants';
 import { PAGE_CONTENT_LAYOUT } from '../../../../constants/shared/pages';
+import { Icons } from '../../../../constants';
 import type { AppDispatch } from '../../../../store';
 import {
   fetchProtectionPlanTemplatesThunk,
@@ -27,9 +28,23 @@ import {
   selectProtectionPlanTemplates,
   selectProtectionPlanTemplatesLoading,
 } from '../store';
+import {
+  selectApplications,
+  selectApplicationsLoading,
+  fetchAllApplicationsThunk,
+} from '../../../resources/applications/store';
+import { Client, discoveryApiClient } from '../../../../api/index';
+import { Endpoints } from '../../../../constants';
+import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import { getCurrentUser } from '../../../auth/utils';
 import type { ScopeType } from '../models';
 import SectionCard from '../components/create/SectionCard';
+import DatePicker from '../../../../components/display/inputs/DatePicker';
+import { PrimaryButton } from '../../../../components/display/buttons';
+import { useUsers } from '../../../access-and-permissions/users/hooks/user/useUsers';
+import MemberList from '../../../access-and-permissions/groups/components/display/member/MemberList';
+
+const ProtectionPlansIcon = Icons.ProtectionPlans;
 
 interface PolicyEntry {
   templateID: string;
@@ -60,15 +75,39 @@ const CreatePlanPage: React.FC = () => {
   const [form] = Form.useForm<FormValues>();
   const templates = useSelector(selectProtectionPlanTemplates);
   const templatesLoading = useSelector(selectProtectionPlanTemplatesLoading);
+  const applications = useSelector(selectApplications);
+  const applicationsLoading = useSelector(selectApplicationsLoading);
   const [policies, setPolicies] = useState<PolicyEntry[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [namespaceOptions, setNamespaceOptions] = useState<string[]>([]);
+  const [namespacesLoading, setNamespacesLoading] = useState(false);
   const scopeType = Form.useWatch('scopeType', form);
   const timeMode = Form.useWatch('timeMode', form);
+  const { users, loading: usersLoading } = useUsers();
 
   useEffect(() => {
     void dispatch(fetchProtectionPlanTemplatesThunk());
+    void dispatch(fetchAllApplicationsThunk());
   }, [dispatch]);
+
+  useEffect(() => {
+    const load = async () => {
+      setNamespacesLoading(true);
+      try {
+        const { path, method } = Endpoints.NAMESPACES.GET;
+        const res = await Client<ResourceDetailsResponse<string[]>>(discoveryApiClient, path, {
+          method,
+        });
+        setNamespaceOptions((res?.data ?? []).filter(Boolean));
+      } catch {
+        // silent
+      } finally {
+        setNamespacesLoading(false);
+      }
+    };
+    void load();
+  }, []);
 
   const availableTemplates = useMemo(() => {
     if (!scopeType) return templates;
@@ -76,6 +115,18 @@ const CreatePlanPage: React.FC = () => {
   }, [templates, scopeType]);
 
   const usedTemplateIDs = useMemo(() => new Set(policies.map((p) => p.templateID)), [policies]);
+
+  const applicationOptions = useMemo(
+    () =>
+      applications.map((app) => {
+        const primaryNs = app.namespaces?.items?.[0]?.name;
+        const label = primaryNs
+          ? `${app.displayName || app.name} (${primaryNs})`
+          : (app.displayName || app.name);
+        return { value: app.name, label };
+      }),
+    [applications],
+  );
 
   const addPolicy = useCallback(
     (templateID: string) => {
@@ -244,7 +295,7 @@ const CreatePlanPage: React.FC = () => {
                   style={{ marginBottom: 12 }}
                   className={FORM_ITEM_CLASS}
                 >
-                  <Input.TextArea rows={2} placeholder={FORM.DESCRIPTION_PLACEHOLDER} />
+                  <Input placeholder={FORM.DESCRIPTION_PLACEHOLDER} />
                 </Form.Item>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
                   <Form.Item
@@ -273,15 +324,17 @@ const CreatePlanPage: React.FC = () => {
                     style={{ marginBottom: 0 }}
                     className={FORM_ITEM_CLASS}
                   >
-                    <Radio.Group>
-                      <Space direction="vertical" size={4}>
-                        {PPC.CREATE_PAGE.MODE_OPTIONS.map((o) => (
-                          <Radio key={o.value} value={o.value} style={{ fontSize: 13 }}>
-                            {o.label}
-                          </Radio>
-                        ))}
-                      </Space>
-                    </Radio.Group>
+                    <ConfigProvider theme={{ token: { colorPrimary: DEFAULT_COLORS.SUCCESS } }}>
+                      <Radio.Group>
+                        <Space direction="vertical" size={4}>
+                          {PPC.CREATE_PAGE.MODE_OPTIONS.map((o) => (
+                            <Radio key={o.value} value={o.value} style={{ fontSize: 13 }}>
+                              {o.label}
+                            </Radio>
+                          ))}
+                        </Space>
+                      </Radio.Group>
+                    </ConfigProvider>
                   </Form.Item>
                 </div>
               </div>
@@ -296,20 +349,14 @@ const CreatePlanPage: React.FC = () => {
                   style={{ marginBottom: 12 }}
                   className={FORM_ITEM_CLASS}
                 >
-                  <Radio.Group
+                  <Select
+                    options={PPC.CREATE_PAGE.SCOPE_TYPE_OPTIONS}
+                    style={{ width: 200 }}
                     onChange={() => {
                       form.resetFields(['applicationIds', 'namespaces']);
                       setPolicies([]);
                     }}
-                  >
-                    <Space>
-                      {PPC.CREATE_PAGE.SCOPE_TYPE_OPTIONS.map((o) => (
-                        <Radio.Button key={o.value} value={o.value}>
-                          {o.label}
-                        </Radio.Button>
-                      ))}
-                    </Space>
-                  </Radio.Group>
+                  />
                 </Form.Item>
 
                 {scopeType === 'applications' && (
@@ -321,10 +368,16 @@ const CreatePlanPage: React.FC = () => {
                     className={FORM_ITEM_CLASS}
                   >
                     <Select
-                      mode="tags"
+                      mode="multiple"
                       placeholder={FORM.APPLICATIONS_PLACEHOLDER}
                       style={{ width: '100%' }}
-                      tokenSeparators={[',']}
+                      loading={applicationsLoading}
+                      options={applicationOptions}
+                      filterOption={(input, option) =>
+                        String(option?.label ?? '')
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
                     />
                   </Form.Item>
                 )}
@@ -333,15 +386,21 @@ const CreatePlanPage: React.FC = () => {
                   <Form.Item
                     name="namespaces"
                     label={FORM.NAMESPACES_LABEL}
-                    rules={[{ required: true, message: 'Enter at least one namespace' }]}
+                    rules={[{ required: true, message: 'Select at least one namespace' }]}
                     style={{ marginBottom: 0 }}
                     className={FORM_ITEM_CLASS}
                   >
                     <Select
-                      mode="tags"
+                      mode="multiple"
                       placeholder={FORM.NAMESPACES_PLACEHOLDER}
                       style={{ width: '100%' }}
-                      tokenSeparators={[',']}
+                      loading={namespacesLoading}
+                      options={namespaceOptions.map((n) => ({ value: n, label: n }))}
+                      filterOption={(input, option) =>
+                        String(option?.label ?? '')
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
                     />
                   </Form.Item>
                 )}
@@ -444,7 +503,7 @@ const CreatePlanPage: React.FC = () => {
                       style={{ width: '100%' }}
                       value={null}
                       onChange={(id: string) => addPolicy(id)}
-                      suffixIcon={<PlusOutlined />}
+                      suffixIcon={null}
                       options={availableTemplates
                         .filter((t) => !usedTemplateIDs.has(t.id))
                         .map((t) => ({ value: t.id, label: t.name }))}
@@ -542,21 +601,14 @@ const CreatePlanPage: React.FC = () => {
             {/* Participants */}
             <SectionCard
               title="Participants"
-              description="Optional user IDs to associate with this plan."
+              description="Select users to associate with this plan."
             >
-              <Form.Item
-                name="participantsIDs"
-                label={FORM.PARTICIPANTS_LABEL}
-                style={{ marginBottom: 0 }}
-                className={FORM_ITEM_CLASS}
-              >
-                <Select
-                  mode="tags"
-                  placeholder={FORM.PARTICIPANTS_PLACEHOLDER}
-                  style={{ width: '100%' }}
-                  tokenSeparators={[',']}
-                />
-              </Form.Item>
+              <MemberList
+                users={users}
+                loading={usersLoading}
+                allUsers={users}
+                fieldName="participantsIDs"
+              />
             </SectionCard>
           </div>
 
@@ -571,11 +623,15 @@ const CreatePlanPage: React.FC = () => {
             />
           )}
 
-          <div style={{ marginTop: 32, display: 'flex', gap: 12 }}>
-            <Button type="primary" htmlType="submit" loading={submitting}>
-              {PPC.LABELS.CREATE_BUTTON_TEXT}
-            </Button>
+          <div style={{ marginTop: 32, display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
             <Button onClick={() => navigate(APP_ROUTES.PROTECTION_PLANS)}>Cancel</Button>
+            <PrimaryButton
+              action={PPC.LABELS.CREATE_BUTTON_TEXT}
+              onClick={() => form.submit()}
+              loading={submitting}
+              loadingLabel="Creating..."
+              icon={<ProtectionPlansIcon size={16} />}
+            />
           </div>
         </Form>
       </div>

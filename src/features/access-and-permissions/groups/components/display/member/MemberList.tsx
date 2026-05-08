@@ -9,11 +9,18 @@ interface MemberListProps {
   loading: boolean;
   allUsers?: User[] | undefined;
   canSelect?: boolean;
+  fieldName?: string;
 }
 
-const MemberList: React.FC<MemberListProps> = ({ users, loading, allUsers, canSelect = true }) => {
+const MemberList: React.FC<MemberListProps> = ({
+  users,
+  loading,
+  allUsers,
+  canSelect = true,
+  fieldName = 'assignedUsersIDs',
+}) => {
   const form = Form.useFormInstance();
-  const watchedSelectedUsers = Form.useWatch('assignedUsersIDs', form);
+  const watchedSelectedUsers = Form.useWatch(fieldName, form);
   const currentSelectedUsers = useMemo(
     () => (watchedSelectedUsers as string[]) || [],
     [watchedSelectedUsers],
@@ -22,7 +29,7 @@ const MemberList: React.FC<MemberListProps> = ({ users, loading, allUsers, canSe
   const handleChange = useCallback(
     (checkedValues: string[]) => {
       if (!allUsers) {
-        form.setFieldsValue({ assignedUsersIDs: checkedValues });
+        form.setFieldsValue({ [fieldName]: checkedValues });
         return;
       }
 
@@ -33,9 +40,9 @@ const MemberList: React.FC<MemberListProps> = ({ users, loading, allUsers, canSe
 
       const mergedSelections = [...preservedSelections, ...checkedValues];
       const uniqueSelections = Array.from(new Set(mergedSelections));
-      form.setFieldsValue({ assignedUsersIDs: uniqueSelections });
+      form.setFieldsValue({ [fieldName]: uniqueSelections });
     },
-    [form, allUsers, users, currentSelectedUsers],
+    [form, allUsers, users, currentSelectedUsers, fieldName],
   );
 
   if (loading) {
@@ -53,7 +60,7 @@ const MemberList: React.FC<MemberListProps> = ({ users, loading, allUsers, canSe
   return (
     <Tooltip title={!canSelect ? GC.LABELS.ACTIONS.REMOVE_MEMBER_DISABLED_TOOLTIP : undefined}>
       <div style={{ width: '100%' }}>
-        <Form.Item name="assignedUsersIDs" style={{ margin: 0, width: '100%' }}>
+        <Form.Item name={fieldName} style={{ margin: 0, width: '100%' }}>
           <Checkbox.Group
             style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
             value={filteredSelectedUsers}
