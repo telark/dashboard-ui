@@ -11,6 +11,7 @@ import {
   PHASE_DOT_COLOR,
 } from '../../../constants/protectionPlans';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
+import TimeRemaining from '../../../../../../components/display/time/TimeRemaining';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import type { AppDispatch, RootState } from '../../../../../../store';
 import { cancelPlanThunk, deletePlanThunk } from '../../../store';
@@ -220,15 +221,26 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
             </span>
             {plan.phase === 'scheduled' && plan.timeRange && (
               <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                Starts <TimeAgo date={plan.timeRange.startAt} />
+                {PPC.LABELS.PHASE_INFO.STARTS_PREFIX} <TimeAgo date={plan.timeRange.startAt} />
                 {plan.timeMode === 'time_range' && plan.timeRange.endAt && (
                   <>
-                    {' · '}Ends <TimeAgo date={plan.timeRange.endAt} />
+                    {' · '}
+                    {PPC.LABELS.PHASE_INFO.ENDS_PREFIX} <TimeAgo date={plan.timeRange.endAt} />
                   </>
                 )}
               </span>
             )}
             {plan.phase === 'active' && plan.health && <HealthBadge health={plan.health} />}
+            {plan.phase === 'active' && plan.timeMode === 'time_range' && plan.timeRange?.endAt && (
+              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+                {PPC.LABELS.PHASE_INFO.ENDS_IN_PREFIX} <TimeRemaining date={plan.timeRange.endAt} />
+              </span>
+            )}
+            {plan.phase === 'terminated' && plan.terminatedAt && (
+              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+                {PPC.LABELS.PHASE_INFO.TERMINATED_PREFIX} <TimeAgo date={plan.terminatedAt} />
+              </span>
+            )}
           </div>
           <p
             style={{

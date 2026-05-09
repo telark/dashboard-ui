@@ -134,6 +134,12 @@ export const PROTECTION_PLANS_CONSTANTS = {
       cancelled: 'Cancelled',
       draft: 'Draft',
     } as Record<PlanPhase, string>,
+    PHASE_INFO: {
+      STARTS_PREFIX: 'Starts',
+      ENDS_PREFIX: 'Ends',
+      ENDS_IN_PREFIX: 'Ends in',
+      TERMINATED_PREFIX: 'Terminated',
+    },
     SEVERITY_LABEL: 'Severity',
     MODE_ENFORCEMENT_LABEL: 'Policy Enforcement Mode',
   },
