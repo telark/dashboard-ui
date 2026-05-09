@@ -52,9 +52,7 @@ const protectionPlansSlice = createSlice({
       .addCase(fetchProtectionPlanDetailsThunk.fulfilled, (state, action) => {
         state.detailsLoading = false;
         state.details = action.payload;
-        state.plans = state.plans.map((p) =>
-          p.id === action.payload.id ? action.payload : p,
-        );
+        state.plans = state.plans.map((p) => (p.id === action.payload.id ? action.payload : p));
       })
       .addCase(fetchProtectionPlanDetailsThunk.rejected, (state, action) => {
         state.detailsLoading = false;

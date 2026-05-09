@@ -36,12 +36,7 @@ const AvatarRing: React.FC<{
   size: number;
 }> = ({ avatar, username, size }) => (
   <span style={AVATAR_RING_STYLE}>
-    <UserAvatar
-      avatar={avatar}
-      username={username}
-      size={size}
-      style={AVATAR_INNER_STYLE}
-    />
+    <UserAvatar avatar={avatar} username={username} size={size} style={AVATAR_INNER_STYLE} />
   </span>
 );
 import { ColumnShell } from '../../../../resources/applications/pages/details/contentBlocks';
@@ -268,15 +263,8 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {participants.map(({ id, user }) => (
-                    <div
-                      key={id}
-                      style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
-                    >
-                      <AvatarRing
-                        avatar={user?.avatar}
-                        username={user?.username ?? id}
-                        size={20}
-                      />
+                    <div key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                      <AvatarRing avatar={user?.avatar} username={user?.username ?? id} size={20} />
                       <span style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
                         {user?.username ?? id}
                       </span>
@@ -398,8 +386,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                 <HealthBadge health={health.status?.health ?? plan.health} />
                 {plan.healthCheckedAt && (
                   <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                    {PPC.LABELS.HEALTH_DETAIL.CHECKED_AT}:{' '}
-                    <TimeAgo date={plan.healthCheckedAt} />
+                    {PPC.LABELS.HEALTH_DETAIL.CHECKED_AT}: <TimeAgo date={plan.healthCheckedAt} />
                   </span>
                 )}
                 <Tooltip title={PPC.LABELS.HEALTH_DETAIL.REFRESH_BUTTON}>
