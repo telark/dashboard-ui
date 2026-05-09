@@ -4,6 +4,7 @@ import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../../cons
 import { extractErrorMessage } from '../../../../../utils/helpers/format';
 import {
   fetchProtectionPlans,
+  fetchProtectionPlanById,
   fetchProtectionPlanTemplates,
   preparePlan,
   cancelPlan,
@@ -20,6 +21,20 @@ export const fetchProtectionPlansThunk = createAsyncThunk<ProtectionPlan[]>(
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_FETCHING_PROTECTION_PLANS, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_PROTECTION_PLANS));
+    }
+  },
+);
+
+export const fetchProtectionPlanDetailsThunk = createAsyncThunk<ProtectionPlan, string>(
+  STORE_ACTIONS.PROTECTION_PLANS.FETCH_DETAILS,
+  async (planId, { rejectWithValue }) => {
+    try {
+      return await fetchProtectionPlanById(planId);
+    } catch (error: unknown) {
+      logger.error(STORE_MESSAGES.ERROR_FETCHING_PROTECTION_PLAN_DETAILS, error);
+      return rejectWithValue(
+        extractErrorMessage(error, STORE_ERRORS.FETCH_PROTECTION_PLAN_DETAILS),
+      );
     }
   },
 );

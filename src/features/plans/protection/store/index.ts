@@ -1,6 +1,7 @@
-export { protectionPlansReducer } from './slices/protectionPlansSlice';
+export { protectionPlansReducer, clearPlanDetails } from './slices/protectionPlansSlice';
 export {
   fetchProtectionPlansThunk,
+  fetchProtectionPlanDetailsThunk,
   fetchProtectionPlanTemplatesThunk,
   preparePlanThunk,
   cancelPlanThunk,
@@ -13,4 +14,8 @@ export {
   selectProtectionPlansError,
   selectProtectionPlanTemplates,
   selectProtectionPlanTemplatesLoading,
+  selectProtectionPlanDetails,
+  selectProtectionPlanDetailsLoading,
+  selectProtectionPlanDetailsError,
+  selectProtectionPlanByName,
 } from './selectors/protectionPlansSelectors';

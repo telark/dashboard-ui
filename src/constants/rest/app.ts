@@ -32,4 +32,5 @@ export const APP_ROUTES = {
   // governance
   PROTECTION_PLANS: '/governance/plans/protection',
   PROTECTION_PLANS_CREATE: '/governance/plans/protection/create',
+  PROTECTION_PLAN_DETAILS: '/governance/plans/protection/:name/details',
 } as const;

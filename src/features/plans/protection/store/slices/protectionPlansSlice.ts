@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { ProtectionPlansState } from '../../models';
 import {
   fetchProtectionPlansThunk,
+  fetchProtectionPlanDetailsThunk,
   fetchProtectionPlanTemplatesThunk,
   preparePlanThunk,
   cancelPlanThunk,
@@ -15,12 +16,21 @@ const initialState: ProtectionPlansState = {
   loading: false,
   templatesLoading: false,
   error: null,
+  details: null,
+  detailsLoading: false,
+  detailsError: null,
 };
 
 const protectionPlansSlice = createSlice({
   name: 'protectionPlans',
   initialState,
-  reducers: {},
+  reducers: {
+    clearPlanDetails: (state) => {
+      state.details = null;
+      state.detailsLoading = false;
+      state.detailsError = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProtectionPlansThunk.pending, (state) => {
@@ -34,6 +44,21 @@ const protectionPlansSlice = createSlice({
       .addCase(fetchProtectionPlansThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(fetchProtectionPlanDetailsThunk.pending, (state) => {
+        state.detailsLoading = true;
+        state.detailsError = null;
+      })
+      .addCase(fetchProtectionPlanDetailsThunk.fulfilled, (state, action) => {
+        state.detailsLoading = false;
+        state.details = action.payload;
+        state.plans = state.plans.map((p) =>
+          p.id === action.payload.id ? action.payload : p,
+        );
+      })
+      .addCase(fetchProtectionPlanDetailsThunk.rejected, (state, action) => {
+        state.detailsLoading = false;
+        state.detailsError = action.payload as string;
       })
       .addCase(fetchProtectionPlanTemplatesThunk.pending, (state) => {
         state.templatesLoading = true;
@@ -50,6 +75,9 @@ const protectionPlansSlice = createSlice({
       })
       .addCase(cancelPlanThunk.fulfilled, (state, action) => {
         state.plans = state.plans.map((p) => (p.id === action.payload.id ? action.payload : p));
+        if (state.details?.id === action.payload.id) {
+          state.details = action.payload;
+        }
       })
       .addCase(deletePlanThunk.fulfilled, (state, action) => {
         state.plans = state.plans.filter((p) => p.id !== action.payload);
@@ -60,4 +88,5 @@ const protectionPlansSlice = createSlice({
   },
 });
 
+export const { clearPlanDetails } = protectionPlansSlice.actions;
 export const protectionPlansReducer = protectionPlansSlice.reducer;

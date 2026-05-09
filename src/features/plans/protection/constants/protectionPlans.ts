@@ -1,3 +1,4 @@
+import { DEFAULT_COLORS } from '../../../../constants';
 import type { PlanPhase, PlanHealth, ViolationResult } from '../models';
 
 export const PROTECTION_PLANS_CONSTANTS = {
@@ -12,6 +13,54 @@ export const PROTECTION_PLANS_CONSTANTS = {
     BREADCRUMBS: {
       ROOT: 'Protection Plans',
       CREATE: 'Create Plan',
+    },
+    DETAIL_PAGE: {
+      SUBTITLE: 'Inspect plan configuration, health, and recent violations.',
+      LOADING_ERROR: 'Failed to load plan details.',
+      NOT_FOUND: 'Protection plan not found.',
+      SECTIONS: {
+        OVERVIEW_TITLE: 'Overview',
+        OVERVIEW_DESCRIPTION: 'Identity, mode, and lifecycle metadata.',
+        OVERVIEW_COLUMN_PRIMARY: 'Details',
+        OVERVIEW_COLUMN_PARTICIPANTS: 'Participants',
+        SCOPE_TITLE: 'Scope',
+        SCOPE_DESCRIPTION: 'What this plan protects.',
+        POLICIES_TITLE: 'Policies',
+        POLICIES_DESCRIPTION: 'Configured Kyverno policy templates.',
+        PARTICIPANTS_TITLE: 'Participants',
+        PARTICIPANTS_DESCRIPTION: 'Users associated with this plan.',
+        HEALTH_TITLE: 'Health',
+        HEALTH_DESCRIPTION: 'Drift detection across deployed Kyverno policies.',
+        VIOLATIONS_TITLE: 'Violations',
+        VIOLATIONS_DESCRIPTION: 'Recent policy admission decisions.',
+      },
+      FIELDS: {
+        ID: 'ID',
+        NAME: 'Name',
+        DESCRIPTION: 'Description',
+        SEVERITY: 'Severity',
+        PRIORITY: 'Priority',
+        MODE: 'Mode',
+        TIME_MODE: 'Time mode',
+        TIME_RANGE: 'Time range',
+        PERMANENT: 'Permanent',
+        CREATED: 'Created By',
+        UPDATED: 'Last updated',
+        STARTED: 'Started By',
+        TERMINATED: 'Terminated',
+        REASON: 'Reason',
+        SCOPE_TYPE: 'Scope type',
+        APPLICATIONS: 'Applications',
+        NAMESPACES: 'Namespaces',
+      },
+      ACTIONS: {
+        DUPLICATE: 'Duplicate',
+        CANCEL: 'Cancel',
+        REFRESH_HEALTH: 'Refresh health',
+        CANCEL_MODAL_TITLE: 'Cancel Protection Plan',
+        CANCEL_MODAL_OK: 'Cancel plan',
+      },
+      EMPTY_VALUE: '—',
     },
     EMPTY: {
       TITLE: 'No protection plans yet',
@@ -47,6 +96,8 @@ export const PROTECTION_PLANS_CONSTANTS = {
     VIOLATIONS: {
       TAB_LABEL: 'Violations',
       TABLE_RESOURCE: 'Resource',
+      TABLE_RESOURCE_KIND: 'Kind',
+      TABLE_RESOURCE_NAME: 'Resource',
       TABLE_NAMESPACE: 'Namespace',
       TABLE_RULE: 'Rule',
       TABLE_RESULT: 'Result',
@@ -177,4 +228,12 @@ export const VIOLATION_RESULT_BADGE: Record<
   warn: { background: '#fef3c7', color: '#92400e' },
   error: { background: '#fecaca', color: '#7f1d1d' },
   skip: { background: '#e5e7eb', color: '#4b5563' },
+};
+
+export const VIOLATION_RESULT_DOT: Record<ViolationResult, string> = {
+  pass: DEFAULT_COLORS.SUCCESS,
+  fail: DEFAULT_COLORS.DANGER,
+  warn: DEFAULT_COLORS.WARNING,
+  error: DEFAULT_COLORS.ERROR,
+  skip: DEFAULT_COLORS.DEFAULT,
 };

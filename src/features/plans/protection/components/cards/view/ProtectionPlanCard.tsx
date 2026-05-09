@@ -1,8 +1,9 @@
 import React, { memo, useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Dropdown, message as antdMessage } from 'antd';
 import { CopyOutlined, DeleteOutlined, MoreOutlined, StopOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { DEFAULT_COLORS } from '../../../../../../constants';
+import { APP_ROUTES, DEFAULT_COLORS } from '../../../../../../constants';
 import { APPLICATION_SECTION_LAYOUT } from '../../../../../resources/applications/constants/sectionLayout';
 import type { ProtectionPlan, PlanPhase } from '../../../models';
 import {
@@ -16,7 +17,6 @@ import { cancelPlanThunk, deletePlanThunk, duplicatePlanThunk } from '../../../s
 import { getCurrentUser } from '../../../../../auth/utils';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
 import HealthBadge from '../../shared/HealthBadge';
-import PlanDetailsDrawer from '../../details/PlanDetailsDrawer';
 
 interface ProtectionPlanCardProps {
   plan: ProtectionPlan;
@@ -46,12 +46,17 @@ const CANCELLABLE: PlanPhase[] = ['active', 'scheduled', 'failed'];
 
 const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) => {
   const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [duplicating, setDuplicating] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [detailsOpen, setDetailsOpen] = useState(false);
+
+  const detailsPath = APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(
+    ':name',
+    encodeURIComponent(plan.name),
+  );
 
   const users = useSelector((state: RootState) => state.users.users);
   const createdByLabel = users.find((u) => u.id === plan.createdBy)?.username ?? plan.createdBy;
@@ -145,11 +150,11 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     <div
       role="button"
       tabIndex={0}
-      onClick={() => setDetailsOpen(true)}
+      onClick={() => navigate(detailsPath)}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          setDetailsOpen(true);
+          navigate(detailsPath);
         }
       }}
       style={{
@@ -315,7 +320,6 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           getContainer={() => document.body}
         />
       </div>
-      <PlanDetailsDrawer plan={plan} open={detailsOpen} onClose={() => setDetailsOpen(false)} />
     </div>
   );
 });

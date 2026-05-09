@@ -125,4 +125,7 @@ export interface ProtectionPlansState {
   loading: boolean;
   templatesLoading: boolean;
   error: string | null;
+  details: ProtectionPlan | null;
+  detailsLoading: boolean;
+  detailsError: string | null;
 }
