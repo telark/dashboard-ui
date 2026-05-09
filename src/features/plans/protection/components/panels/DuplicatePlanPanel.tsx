@@ -37,18 +37,18 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
   const plans = useSelector((s: RootState) => selectProtectionPlans(s));
   const [form] = Form.useForm();
   const watchedName = Form.useWatch('name', form);
+  const watchedStartAt = Form.useWatch('startAt', form) as Dayjs | undefined;
+  const watchedEndAt = Form.useWatch('endAt', form) as Dayjs | undefined;
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [timeMode, setTimeMode] = useState<string>(plan?.timeMode ?? 'permanent');
 
   const initialValues = useMemo<Record<string, unknown>>(() => {
-    const startAt = plan?.timeRange?.startAt ? dayjs(plan.timeRange.startAt) : undefined;
-    const endAt = plan?.timeRange?.endAt ? dayjs(plan.timeRange.endAt) : undefined;
     return {
       name: plan ? `Copy of ${plan.name}` : '',
       timeMode: plan?.timeMode ?? 'permanent',
-      startAt,
-      endAt,
+      startAt: undefined,
+      endAt: undefined,
     };
   }, [plan]);
 
@@ -61,6 +61,9 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
     [plans, trimmedName],
   );
   const isNameInvalid = trimmedName.length === 0 || isDuplicate;
+  const isTimeRangeIncomplete =
+    timeMode === 'time_range' && (!watchedStartAt || !watchedEndAt);
+  const submitDisabled = isNameInvalid || isTimeRangeIncomplete;
 
   const nameValidationConfig = useMemo(
     () => ({
@@ -216,7 +219,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
       submitButtonText={PPC.LABELS.DETAIL_PAGE.ACTIONS.DUPLICATE}
       submitButtonIcon={<CopyOutlined />}
       loading={submitting}
-      disabled={isNameInvalid}
+      disabled={submitDisabled}
       form={form}
       initialValues={initialValues}
       onValuesChange={handleValuesChange}

@@ -1,4 +1,5 @@
 import React, { memo, useCallback, useMemo } from 'react';
+import dayjs from 'dayjs';
 import { Button, Tooltip } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
@@ -152,7 +153,8 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           value:
             plan.timeMode === 'time_range' && plan.timeRange ? (
               <span>
-                {plan.timeRange.startAt} → {plan.timeRange.endAt}
+                {dayjs(plan.timeRange.startAt).format('MMM D, YYYY h:mm A')} →{' '}
+                {dayjs(plan.timeRange.endAt).format('MMM D, YYYY h:mm A')}
               </span>
             ) : (
               PPC.LABELS.DETAIL_PAGE.FIELDS.PERMANENT
