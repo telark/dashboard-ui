@@ -73,9 +73,11 @@ const COMPACT_REFRESH_BUTTON_STYLE: React.CSSProperties = {
 interface ProtectionPlanDetailsContentProps {
   plan: ProtectionPlan;
   duplicating: boolean;
+  editing: boolean;
   cancelling: boolean;
   refreshingHealth: boolean;
   onDuplicate: () => void;
+  onEdit: () => void;
   onCancel: () => void;
   onRefreshHealth: () => void;
 }
@@ -83,7 +85,17 @@ interface ProtectionPlanDetailsContentProps {
 const EMPTY = PPC.LABELS.DETAIL_PAGE.EMPTY_VALUE;
 
 const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> = memo(
-  ({ plan, duplicating, cancelling, refreshingHealth, onDuplicate, onCancel, onRefreshHealth }) => {
+  ({
+    plan,
+    duplicating,
+    editing,
+    cancelling,
+    refreshingHealth,
+    onDuplicate,
+    onEdit,
+    onCancel,
+    onRefreshHealth,
+  }) => {
     const phaseLabel = PPC.LABELS.PHASE_LABELS[plan.phase] ?? plan.phase;
     const dotColor = PHASE_DOT_COLOR[plan.phase] ?? PHASE_DOT_COLOR.draft;
     const health = usePlanHealth(plan.id);
@@ -273,9 +285,11 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           <ProtectionPlanDetailsToolbar
             phase={plan.phase}
             duplicating={duplicating}
+            editing={editing}
             cancelling={cancelling}
             refreshingHealth={refreshingHealth}
             onDuplicate={onDuplicate}
+            onEdit={onEdit}
             onCancel={onCancel}
             onRefreshHealth={onRefreshHealth}
           />

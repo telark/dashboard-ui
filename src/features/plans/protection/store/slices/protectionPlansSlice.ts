@@ -8,6 +8,7 @@ import {
   cancelPlanThunk,
   deletePlanThunk,
   duplicatePlanThunk,
+  patchPlanThunk,
 } from '../thunks/protectionPlansThunks';
 
 const initialState: ProtectionPlansState = {
@@ -82,6 +83,12 @@ const protectionPlansSlice = createSlice({
       })
       .addCase(duplicatePlanThunk.fulfilled, (state, action) => {
         state.plans = [action.payload, ...state.plans];
+      })
+      .addCase(patchPlanThunk.fulfilled, (state, action) => {
+        state.plans = state.plans.map((p) => (p.id === action.payload.id ? action.payload : p));
+        if (state.details?.id === action.payload.id) {
+          state.details = action.payload;
+        }
       });
   },
 });

@@ -14,6 +14,7 @@ interface ScopeSectionProps {
   namespaceOptions: string[];
   namespacesLoading: boolean;
   onScopeTypeChange: () => void;
+  scopeTypeDisabled?: boolean;
 }
 
 const ScopeSection: React.FC<ScopeSectionProps> = ({
@@ -23,6 +24,7 @@ const ScopeSection: React.FC<ScopeSectionProps> = ({
   namespaceOptions,
   namespacesLoading,
   onScopeTypeChange,
+  scopeTypeDisabled = false,
 }) => (
   <SectionCard title={SECTIONS.SCOPE_TITLE} description={SECTIONS.SCOPE_DESCRIPTION}>
     <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
@@ -36,6 +38,7 @@ const ScopeSection: React.FC<ScopeSectionProps> = ({
           options={PPC.CREATE_PAGE.SCOPE_TYPE_OPTIONS}
           style={{ width: 200 }}
           onChange={onScopeTypeChange}
+          disabled={scopeTypeDisabled}
         />
       </Form.Item>
 

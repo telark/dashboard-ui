@@ -38,9 +38,6 @@ const SettingsPage = lazy(() =>
   import('../features/settings').then((m) => ({ default: m.SettingsPage })),
 );
 const ProtectionPlansMainPage = lazy(() => import('../features/plans/protection/pages/MainPage'));
-const ProtectionPlansCreatePage = lazy(
-  () => import('../features/plans/protection/pages/CreatePlanPage'),
-);
 const ProtectionPlanDetailsView = lazy(
   () => import('../features/plans/protection/pages/details/DetailsView'),
 );
@@ -167,16 +164,6 @@ const AppRoutes: React.FC = () => {
             <ProtectedRoute>
               <FeatureErrorBoundary featureName="Protection Plan Details">
                 <ProtectionPlanDetailsView />
-              </FeatureErrorBoundary>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.PROTECTION_PLANS_CREATE}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Protection Plans">
-                <ProtectionPlansCreatePage />
               </FeatureErrorBoundary>
             </ProtectedRoute>
           }

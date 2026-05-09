@@ -73,6 +73,7 @@ export const STORE_ACTIONS = {
     CANCEL: 'protectionPlans/cancel',
     DELETE: 'protectionPlans/delete',
     DUPLICATE: 'protectionPlans/duplicate',
+    PATCH: 'protectionPlans/patch',
   },
 } as const;
 
@@ -116,6 +117,7 @@ export const STORE_ERRORS = {
   CANCEL_PROTECTION_PLAN: 'Failed to cancel protection plan',
   DELETE_PROTECTION_PLAN: 'Failed to delete protection plan',
   DUPLICATE_PROTECTION_PLAN: 'Failed to duplicate protection plan',
+  PATCH_PROTECTION_PLAN: 'Failed to update protection plan',
   FETCH_PROTECTION_PLAN_DETAILS: 'Failed to fetch protection plan details',
 } as const;
 
@@ -157,5 +159,6 @@ export const STORE_MESSAGES = {
   ERROR_CANCELLING_PROTECTION_PLAN: 'Error cancelling protection plan:',
   ERROR_DELETING_PROTECTION_PLAN: 'Error deleting protection plan:',
   ERROR_DUPLICATING_PROTECTION_PLAN: 'Error duplicating protection plan:',
+  ERROR_PATCHING_PROTECTION_PLAN: 'Error updating protection plan:',
   ERROR_FETCHING_PROTECTION_PLAN_DETAILS: 'Error fetching protection plan details:',
 } as const;

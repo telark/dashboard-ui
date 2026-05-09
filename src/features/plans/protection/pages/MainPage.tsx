@@ -1,20 +1,16 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { APP_ROUTES } from '../../../../constants';
+import React, { useMemo, useState } from 'react';
 import { useProtectionPlans } from '../hooks/useProtectionPlans';
+import { usePlanPanelState } from '../hooks/usePlanPanelState';
+import CreatePlanPanel from '../components/panels/CreatePlanPanel';
 import ProtectionPlansEmptyPage from './ProtectionPlansEmptyPage';
 import ProtectionPlansLoadingPage from './ProtectionPlansLoadingPage';
 import ProtectionPlansErrorPage from './ProtectionPlansErrorPage';
 import ProtectionPlansListPage from './ProtectionPlansListPage';
 
 const MainPage: React.FC = () => {
-  const navigate = useNavigate();
   const { plans, loading, error } = useProtectionPlans();
   const [searchTerm, setSearchTerm] = useState('');
-
-  const onCreatePlanClick = useCallback(() => {
-    navigate(APP_ROUTES.PROTECTION_PLANS_CREATE);
-  }, [navigate]);
+  const { createPanelOpen, createForm, openCreatePanel, closeCreatePanel } = usePlanPanelState();
 
   const isFetching = useMemo(() => plans.length === 0 && loading, [plans.length, loading]);
 
@@ -28,7 +24,12 @@ const MainPage: React.FC = () => {
   }
 
   if (shouldShowEmpty) {
-    return <ProtectionPlansEmptyPage onCreatePlanClick={onCreatePlanClick} />;
+    return (
+      <>
+        <ProtectionPlansEmptyPage onCreatePlanClick={openCreatePanel} />
+        <CreatePlanPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />
+      </>
+    );
   }
 
   if (isFetching) {
@@ -36,12 +37,15 @@ const MainPage: React.FC = () => {
   }
 
   return (
-    <ProtectionPlansListPage
-      plans={plans}
-      searchValue={searchTerm}
-      onSearchChange={setSearchTerm}
-      onCreatePlanClick={onCreatePlanClick}
-    />
+    <>
+      <ProtectionPlansListPage
+        plans={plans}
+        searchValue={searchTerm}
+        onSearchChange={setSearchTerm}
+        onCreatePlanClick={openCreatePanel}
+      />
+      <CreatePlanPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />
+    </>
   );
 };
 

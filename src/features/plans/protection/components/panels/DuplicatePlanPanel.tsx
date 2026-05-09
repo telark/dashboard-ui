@@ -52,8 +52,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
     };
   }, [plan]);
 
-  const fallbackName =
-    typeof initialValues.name === 'string' ? (initialValues.name as string) : '';
+  const fallbackName = typeof initialValues.name === 'string' ? (initialValues.name as string) : '';
   const effectiveName = typeof watchedName === 'string' ? watchedName : fallbackName;
   const trimmedName = effectiveName.trim();
   const isDuplicate = useMemo(
@@ -61,8 +60,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
     [plans, trimmedName],
   );
   const isNameInvalid = trimmedName.length === 0 || isDuplicate;
-  const isTimeRangeIncomplete =
-    timeMode === 'time_range' && (!watchedStartAt || !watchedEndAt);
+  const isTimeRangeIncomplete = timeMode === 'time_range' && (!watchedStartAt || !watchedEndAt);
   const submitDisabled = isNameInvalid || isTimeRangeIncomplete;
 
   const nameValidationConfig = useMemo(
@@ -144,10 +142,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
         name="name"
         label={FORM.NAME_LABEL}
         validateTrigger={['onChange', 'onBlur']}
-        rules={[
-          { required: true, message: 'Plan name is required' },
-          { validator: nameValidator },
-        ]}
+        rules={[{ required: true, message: 'Plan name is required' }, { validator: nameValidator }]}
         style={{ marginBottom: 0 }}
       >
         <Input placeholder={FORM.NAME_PLACEHOLDER} />

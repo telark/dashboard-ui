@@ -10,6 +10,8 @@ import {
   cancelPlan,
   deletePlan,
   duplicatePlan,
+  patchPlan,
+  type PatchPlanPayload,
 } from '../../clients/protectionPlansClient';
 import type { ProtectionPlan, PlanTemplate } from '../../models';
 
@@ -135,6 +137,24 @@ export const duplicatePlanThunk = createAsyncThunk<ProtectionPlan, DuplicatePlan
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_DUPLICATING_PROTECTION_PLAN, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.DUPLICATE_PROTECTION_PLAN));
+    }
+  },
+);
+
+export interface PatchPlanArgs {
+  userId: string;
+  planId: string;
+  payload: PatchPlanPayload;
+}
+
+export const patchPlanThunk = createAsyncThunk<ProtectionPlan, PatchPlanArgs>(
+  STORE_ACTIONS.PROTECTION_PLANS.PATCH,
+  async ({ userId, planId, payload }, { rejectWithValue }) => {
+    try {
+      return await patchPlan(userId, planId, payload);
+    } catch (error: unknown) {
+      logger.error(STORE_MESSAGES.ERROR_PATCHING_PROTECTION_PLAN, error);
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.PATCH_PROTECTION_PLAN));
     }
   },
 );

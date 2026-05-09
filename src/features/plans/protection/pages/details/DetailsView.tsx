@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { Form } from 'antd';
 import LoadingDetailsView from '../../../../../components/display/views/LoadingDetailsView';
 import ErrorView from '../../../../../components/display/views/ErrorView';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
@@ -13,6 +14,8 @@ import { getCurrentUser } from '../../../../auth/utils';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import type { AppDispatch } from '../../../../../store';
 import DuplicatePlanPanel from '../../components/panels/DuplicatePlanPanel';
+import EditPlanPanel from '../../components/panels/EditPlanPanel';
+import type { FormValues } from '../../components/create';
 import ProtectionPlanDetailsEmpty from './Empty';
 import ProtectionPlanDetailsContent from './Content';
 
@@ -22,8 +25,10 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const { details, loading, error, notFound } = usePlanDetails(decodedName);
+  const [editForm] = Form.useForm<FormValues>();
 
   const [duplicatePanelOpen, setDuplicatePanelOpen] = useState(false);
+  const [editPanelOpen, setEditPanelOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [refreshingHealth, setRefreshingHealth] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
@@ -42,6 +47,15 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
   const handleOpenDuplicate = useCallback(() => {
     setDuplicatePanelOpen(true);
   }, []);
+
+  const handleOpenEdit = useCallback(() => {
+    setEditPanelOpen(true);
+  }, []);
+
+  const handleCloseEdit = useCallback(() => {
+    setEditPanelOpen(false);
+    editForm.resetFields();
+  }, [editForm]);
 
   const handleConfirmCancel = useCallback(async () => {
     if (!details) return;
@@ -87,9 +101,11 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
           <ProtectionPlanDetailsContent
             plan={details}
             duplicating={duplicatePanelOpen}
+            editing={editPanelOpen}
             cancelling={cancelling}
             refreshingHealth={refreshingHealth}
             onDuplicate={handleOpenDuplicate}
+            onEdit={handleOpenEdit}
             onCancel={() => setCancelModalOpen(true)}
             onRefreshHealth={handleRefreshHealth}
           />
@@ -109,11 +125,20 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
         getContainer={() => document.body}
       />
       <DuplicatePlanPanel
-        key={details.id}
+        key={`duplicate-${details.id}`}
         open={duplicatePanelOpen}
         onClose={() => setDuplicatePanelOpen(false)}
         plan={details}
       />
+      {editPanelOpen && (
+        <EditPlanPanel
+          key={`edit-${details.id}`}
+          open={editPanelOpen}
+          onClose={handleCloseEdit}
+          plan={details}
+          form={editForm}
+        />
+      )}
     </>
   );
 });

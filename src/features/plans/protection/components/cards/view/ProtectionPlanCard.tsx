@@ -1,11 +1,18 @@
 import React, { memo, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Dropdown } from 'antd';
-import { CopyOutlined, DeleteOutlined, MoreOutlined, StopOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Form } from 'antd';
+import {
+  CopyOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  MoreOutlined,
+  StopOutlined,
+} from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { APP_ROUTES, DEFAULT_COLORS } from '../../../../../../constants';
 import { APPLICATION_SECTION_LAYOUT } from '../../../../../resources/applications/constants/sectionLayout';
 import type { ProtectionPlan, PlanPhase } from '../../../models';
+import type { FormValues } from '../../create';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
   PHASE_DOT_COLOR,
@@ -19,6 +26,7 @@ import { getCurrentUser } from '../../../../../auth/utils';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
 import HealthBadge from '../../shared/HealthBadge';
 import DuplicatePlanPanel from '../../panels/DuplicatePlanPanel';
+import EditPlanPanel from '../../panels/EditPlanPanel';
 
 interface ProtectionPlanCardProps {
   plan: ProtectionPlan;
@@ -46,6 +54,8 @@ function MetricMini(props: { value: React.ReactNode; label: string }): React.Rea
 
 const CANCELLABLE: PlanPhase[] = ['active', 'scheduled', 'failed'];
 
+const NON_EDITABLE_PHASES: PlanPhase[] = ['terminated', 'cancelled'];
+
 const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
@@ -53,7 +63,10 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
   const [cancelling, setCancelling] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [duplicatePanelOpen, setDuplicatePanelOpen] = useState(false);
+  const [editPanelOpen, setEditPanelOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [editForm] = Form.useForm<FormValues>();
+  const editDisabled = NON_EDITABLE_PHASES.includes(plan.phase);
 
   const detailsPath = APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(
     ':name',
@@ -109,7 +122,22 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     setDuplicatePanelOpen(true);
   }, []);
 
+  const handleEdit = useCallback(() => {
+    setEditPanelOpen(true);
+  }, []);
+
+  const handleCloseEdit = useCallback(() => {
+    setEditPanelOpen(false);
+    editForm.resetFields();
+  }, [editForm]);
+
   const menuItems = [
+    {
+      key: 'edit',
+      label: PPC.LABELS.DETAIL_PAGE.ACTIONS.EDIT,
+      icon: <EditOutlined />,
+      disabled: editDisabled || editPanelOpen,
+    },
     {
       key: 'duplicate',
       label: PPC.LABELS.ACTIONS.DUPLICATE,
@@ -142,12 +170,12 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
       role="button"
       tabIndex={0}
       onClick={() => {
-        if (duplicatePanelOpen || deleteModalOpen) return;
+        if (duplicatePanelOpen || deleteModalOpen || editPanelOpen) return;
         navigate(detailsPath);
       }}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          if (duplicatePanelOpen || deleteModalOpen) return;
+          if (duplicatePanelOpen || deleteModalOpen || editPanelOpen) return;
           e.preventDefault();
           navigate(detailsPath);
         }
@@ -279,6 +307,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
                 items: menuItems,
                 onClick: ({ key, domEvent }) => {
                   domEvent.stopPropagation();
+                  if (key === 'edit') handleEdit();
                   if (key === 'cancel') void handleCancel();
                   if (key === 'delete') setDeleteModalOpen(true);
                   if (key === 'duplicate') handleDuplicate();
@@ -340,11 +369,20 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
         />
       </div>
       <DuplicatePlanPanel
-        key={plan.id}
+        key={`duplicate-${plan.id}`}
         open={duplicatePanelOpen}
         onClose={() => setDuplicatePanelOpen(false)}
         plan={plan}
       />
+      {editPanelOpen && (
+        <EditPlanPanel
+          key={`edit-${plan.id}`}
+          open={editPanelOpen}
+          onClose={handleCloseEdit}
+          plan={plan}
+          form={editForm}
+        />
+      )}
     </div>
   );
 });

@@ -137,6 +137,36 @@ interface DuplicatePlanPayload {
   timeRange?: { startAt: string; endAt: string };
 }
 
+export interface PatchPlanPayload {
+  name?: string;
+  description?: string;
+  severity?: string;
+  priority?: number;
+  mode?: string;
+  timeMode?: string;
+  timeRange?: { startAt: string; endAt: string } | null;
+  scope?: { applicationIds?: string[]; namespaces?: string[] };
+  policies?: { templateID: string; params: Record<string, string[]> }[];
+  participantsIDs?: string[];
+}
+
+export const patchPlan = async (
+  userId: string,
+  planId: string,
+  payload: PatchPlanPayload,
+): Promise<ProtectionPlan> => {
+  const res = await Client<ApiResponse<ProtectionPlan>>(
+    exporterApiClient,
+    Endpoints.PROTECTION_PLANS.PATCH(planId).path,
+    {
+      method: 'PATCH',
+      data: payload,
+      headers: { [HTTP_HEADERS.CUSTOM.USER_ID]: userId },
+    },
+  );
+  return res.data;
+};
+
 export const duplicatePlan = async (
   userId: string,
   planId: string,

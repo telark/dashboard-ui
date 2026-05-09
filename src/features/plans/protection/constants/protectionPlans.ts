@@ -58,6 +58,8 @@ export const PROTECTION_PLANS_CONSTANTS = {
         DUPLICATE: 'Duplicate',
         DUPLICATE_PANEL_TITLE: 'Duplicate Plan',
         CANCEL: 'Cancel',
+        EDIT: 'Edit',
+        EDIT_DISABLED_TOOLTIP: 'Cannot edit a terminated or cancelled plan.',
         REFRESH_HEALTH: 'Refresh health',
         CANCEL_MODAL_TITLE: 'Cancel Protection Plan',
         CANCEL_MODAL_OK: 'Cancel plan',
@@ -81,6 +83,10 @@ export const PROTECTION_PLANS_CONSTANTS = {
       DELETE_MODAL_OK: 'Delete',
       DUPLICATE_SUCCESS: 'Plan duplicated successfully.',
       DUPLICATE_ERROR: 'Failed to duplicate plan.',
+      CREATE_SUCCESS: (name: string) => `Plan "${name}" created.`,
+      CREATE_ERROR: 'Failed to create plan.',
+      UPDATE_SUCCESS: (name: string) => `Plan "${name}" updated.`,
+      UPDATE_ERROR: 'Failed to update plan.',
     },
     HEALTH_LABELS: {
       unknown: 'Unknown',
@@ -143,6 +149,23 @@ export const PROTECTION_PLANS_CONSTANTS = {
     SEVERITY_LABEL: 'Severity',
     MODE_ENFORCEMENT_LABEL: 'Policy Enforcement Mode',
   },
+  PANELS: {
+    CREATE: {
+      TITLE: 'Create Protection Plan',
+      SUBTITLE: 'Define a new protection window for your workloads.',
+      SUBMIT_BUTTON: 'Create Plan',
+      LOADING_LABEL: 'Creating...',
+    },
+    EDIT: {
+      TITLE: 'Edit Protection Plan',
+      SUBTITLE: (name: string) => `Update configuration of "${name}".`,
+      SUBMIT_BUTTON: 'Save changes',
+      LOADING_LABEL: 'Saving...',
+      ACTIVE_SCOPE_WARNING:
+        'Saving changes to scope will re-render and re-deploy this plan’s policies.',
+      NO_CHANGES_HINT: 'No changes to save.',
+    },
+  },
   CREATE_PAGE: {
     GAP_BETWEEN_CARDS: 20,
     SECTIONS: {
@@ -172,7 +195,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       START_AT_LABEL: 'Start',
       END_AT_LABEL: 'End',
       PARTICIPANTS_LABEL: 'Participants',
-      PARTICIPANTS_PLACEHOLDER: 'Enter participant user IDs',
+      PARTICIPANTS_PLACEHOLDER: 'Select participants',
       ADD_POLICY_BUTTON: 'Add policy',
     },
     SEVERITY_OPTIONS: [

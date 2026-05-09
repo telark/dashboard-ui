@@ -1,10 +1,11 @@
 import React from 'react';
-import { Select, Spin, Typography } from 'antd';
+import { Form, Select, Spin, Typography } from 'antd';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import type { PlanTemplate } from '../../models';
 import SectionCard from './SectionCard';
 import type { PolicyEntry } from './types';
+import { FORM_ITEM_CLASS } from './types';
 
 const { SECTIONS, FORM } = PPC.CREATE_PAGE;
 
@@ -30,6 +31,14 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
       <Spin size="small" />
     ) : (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <Form.Item
+          name="mode"
+          label={FORM.MODE_LABEL}
+          style={{ marginBottom: 0 }}
+          className={FORM_ITEM_CLASS}
+        >
+          <Select options={PPC.CREATE_PAGE.MODE_OPTIONS} style={{ width: '100%' }} />
+        </Form.Item>
         <Select
           mode="multiple"
           placeholder={FORM.ADD_POLICY_BUTTON}
