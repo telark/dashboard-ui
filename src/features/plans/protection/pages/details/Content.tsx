@@ -243,6 +243,16 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                 {phaseLabel}
               </span>
             </span>
+            {plan.phase === 'scheduled' && plan.timeRange && (
+              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+                Starts <TimeAgo date={plan.timeRange.startAt} />
+                {plan.timeMode === 'time_range' && plan.timeRange.endAt && (
+                  <>
+                    {' · '}Ends <TimeAgo date={plan.timeRange.endAt} />
+                  </>
+                )}
+              </span>
+            )}
             {plan.phase === 'active' && plan.health && <HealthBadge health={plan.health} />}
           </div>
           <ProtectionPlanDetailsToolbar
