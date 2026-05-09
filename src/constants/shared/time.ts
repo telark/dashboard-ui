@@ -18,7 +18,6 @@ export const TIME_TEXTS = {
 
 export const TIME_REMAINING = {
   ENDED: 'Ended',
-  SUFFIX: ' left',
   UNIT_DAY: 'd',
   UNIT_HOUR: 'h',
   UNIT_MINUTE: 'm',

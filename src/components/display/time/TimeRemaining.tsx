@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { format } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 import { Popover } from 'antd';
 
 import { TIME_FORMATS, TIME_REMAINING, TIME_TEXTS } from '../../../constants';
 
 interface TimeRemainingProps {
   date: string | Date;
+  prefix?: string;
+  endedPrefix?: string;
   formatString?: string;
 }
 
@@ -15,22 +17,21 @@ const HOUR = 60 * MIN;
 const DAY = 24 * HOUR;
 
 function formatRemaining(msLeft: number): string {
-  if (msLeft <= 0) return TIME_REMAINING.ENDED;
   const sec = Math.ceil(msLeft / SEC);
   if (sec <= TIME_REMAINING.FAST_THRESHOLD_SEC) {
-    return `${sec}${TIME_REMAINING.UNIT_SECOND}${TIME_REMAINING.SUFFIX}`;
+    return `${sec}${TIME_REMAINING.UNIT_SECOND}`;
   }
   if (msLeft < HOUR) {
-    return `${Math.ceil(msLeft / MIN)}${TIME_REMAINING.UNIT_MINUTE}${TIME_REMAINING.SUFFIX}`;
+    return `${Math.ceil(msLeft / MIN)}${TIME_REMAINING.UNIT_MINUTE}`;
   }
   if (msLeft < DAY) {
-    return `${Math.floor(msLeft / HOUR)}${TIME_REMAINING.UNIT_HOUR}${TIME_REMAINING.SUFFIX}`;
+    return `${Math.floor(msLeft / HOUR)}${TIME_REMAINING.UNIT_HOUR}`;
   }
-  return `${Math.floor(msLeft / DAY)}${TIME_REMAINING.UNIT_DAY}${TIME_REMAINING.SUFFIX}`;
+  return `${Math.floor(msLeft / DAY)}${TIME_REMAINING.UNIT_DAY}`;
 }
 
 const TimeRemaining: React.FC<TimeRemainingProps> = React.memo(
-  ({ date, formatString = TIME_FORMATS.DATE_TIME }) => {
+  ({ date, prefix, endedPrefix = TIME_REMAINING.ENDED, formatString = TIME_FORMATS.DATE_TIME }) => {
     const parsedDate = useMemo(() => new Date(date), [date]);
     const isValidDate = useMemo(() => !Number.isNaN(parsedDate.getTime()), [parsedDate]);
 
@@ -56,11 +57,17 @@ const TimeRemaining: React.FC<TimeRemainingProps> = React.memo(
 
     if (!isValidDate) return <>{TIME_TEXTS.INVALID_DATE}</>;
 
-    const msLeft = parsedDate.getTime() - now;
-    const label = formatRemaining(msLeft);
     const exact = format(parsedDate, formatString);
+    const msLeft = parsedDate.getTime() - now;
 
-    return <Popover content={exact}>{label}</Popover>;
+    if (msLeft <= 0) {
+      const ago = formatDistanceToNow(parsedDate, { addSuffix: true });
+      return <Popover content={exact}>{`${endedPrefix} ${ago}`}</Popover>;
+    }
+
+    const label = formatRemaining(msLeft);
+    const text = prefix ? `${prefix} ${label}` : label;
+    return <Popover content={exact}>{text}</Popover>;
   },
 );
 

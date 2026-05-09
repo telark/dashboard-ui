@@ -233,7 +233,10 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
             {plan.phase === 'active' && plan.health && <HealthBadge health={plan.health} />}
             {plan.phase === 'active' && plan.timeMode === 'time_range' && plan.timeRange?.endAt && (
               <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                {PPC.LABELS.PHASE_INFO.ENDS_IN_PREFIX} <TimeRemaining date={plan.timeRange.endAt} />
+                <TimeRemaining
+                  date={plan.timeRange.endAt}
+                  prefix={PPC.LABELS.PHASE_INFO.ENDS_IN_PREFIX}
+                />
               </span>
             )}
             {plan.phase === 'terminated' && plan.terminatedAt && (
