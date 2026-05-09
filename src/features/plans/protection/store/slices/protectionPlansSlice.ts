@@ -6,6 +6,7 @@ import {
   preparePlanThunk,
   cancelPlanThunk,
   deletePlanThunk,
+  duplicatePlanThunk,
 } from '../thunks/protectionPlansThunks';
 
 const initialState: ProtectionPlansState = {
@@ -52,6 +53,9 @@ const protectionPlansSlice = createSlice({
       })
       .addCase(deletePlanThunk.fulfilled, (state, action) => {
         state.plans = state.plans.filter((p) => p.id !== action.payload);
+      })
+      .addCase(duplicatePlanThunk.fulfilled, (state, action) => {
+        state.plans = [action.payload, ...state.plans];
       });
   },
 });

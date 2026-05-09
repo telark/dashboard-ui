@@ -71,6 +71,7 @@ export const STORE_ACTIONS = {
     PREPARE: 'protectionPlans/prepare',
     CANCEL: 'protectionPlans/cancel',
     DELETE: 'protectionPlans/delete',
+    DUPLICATE: 'protectionPlans/duplicate',
   },
 } as const;
 
@@ -113,6 +114,7 @@ export const STORE_ERRORS = {
   PREPARE_PROTECTION_PLAN: 'Failed to prepare protection plan',
   CANCEL_PROTECTION_PLAN: 'Failed to cancel protection plan',
   DELETE_PROTECTION_PLAN: 'Failed to delete protection plan',
+  DUPLICATE_PROTECTION_PLAN: 'Failed to duplicate protection plan',
 } as const;
 
 export const STORE_MESSAGES = {
@@ -152,4 +154,5 @@ export const STORE_MESSAGES = {
   ERROR_PREPARING_PROTECTION_PLAN: 'Error preparing protection plan:',
   ERROR_CANCELLING_PROTECTION_PLAN: 'Error cancelling protection plan:',
   ERROR_DELETING_PROTECTION_PLAN: 'Error deleting protection plan:',
+  ERROR_DUPLICATING_PROTECTION_PLAN: 'Error duplicating protection plan:',
 } as const;

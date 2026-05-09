@@ -97,5 +97,8 @@ export const PLANS_PATHS = {
     PREPARE: 'plans/protection/prepare',
     CANCEL: (id: string) => `plans/protection/${id}/cancel`,
     CLEAR: (id: string) => `plans/protection/${id}/clear`,
+    STATUS: (id: string) => `plans/protection/${id}/status`,
+    VIOLATIONS: (id: string) => `plans/protection/${id}/violations`,
+    DUPLICATE: (id: string) => `plans/protection/${id}/duplicate`,
   },
 } as const;

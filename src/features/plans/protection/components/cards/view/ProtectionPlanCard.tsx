@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
-import { Button, Dropdown } from 'antd';
-import { DeleteOutlined, MoreOutlined, StopOutlined } from '@ant-design/icons';
+import { Button, Dropdown, message as antdMessage } from 'antd';
+import { CopyOutlined, DeleteOutlined, MoreOutlined, StopOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import { APPLICATION_SECTION_LAYOUT } from '../../../../../resources/applications/constants/sectionLayout';
@@ -12,9 +12,11 @@ import {
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import type { AppDispatch, RootState } from '../../../../../../store';
-import { cancelPlanThunk, deletePlanThunk } from '../../../store';
+import { cancelPlanThunk, deletePlanThunk, duplicatePlanThunk } from '../../../store';
 import { getCurrentUser } from '../../../../../auth/utils';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
+import HealthBadge from '../../shared/HealthBadge';
+import PlanDetailsDrawer from '../../details/PlanDetailsDrawer';
 
 interface ProtectionPlanCardProps {
   plan: ProtectionPlan;
@@ -47,7 +49,9 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
   const [menuOpen, setMenuOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [duplicating, setDuplicating] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   const users = useSelector((state: RootState) => state.users.users);
   const createdByLabel = users.find((u) => u.id === plan.createdBy)?.username ?? plan.createdBy;
@@ -94,7 +98,28 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     }
   }, [dispatch, plan.id]);
 
+  const handleDuplicate = useCallback(async () => {
+    const userId = getCurrentUser()?.id;
+    if (!userId) return;
+    setDuplicating(true);
+    try {
+      await dispatch(duplicatePlanThunk({ userId, planId: plan.id })).unwrap();
+      void antdMessage.success(PPC.LABELS.ACTIONS.DUPLICATE_SUCCESS);
+    } catch (err: unknown) {
+      const text = err instanceof Error ? err.message : PPC.LABELS.ACTIONS.DUPLICATE_ERROR;
+      void antdMessage.error(text);
+    } finally {
+      setDuplicating(false);
+    }
+  }, [dispatch, plan.id]);
+
   const menuItems = [
+    {
+      key: 'duplicate',
+      label: PPC.LABELS.ACTIONS.DUPLICATE,
+      icon: <CopyOutlined />,
+      disabled: duplicating,
+    },
     ...(canCancel
       ? [
           {
@@ -118,6 +143,15 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      onClick={() => setDetailsOpen(true)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          setDetailsOpen(true);
+        }
+      }}
       style={{
         position: 'relative',
         background: DEFAULT_COLORS.BACKGROUND_WHITE,
@@ -128,6 +162,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
         boxShadow: '0 2px 10px rgba(15, 23, 42, 0.06)',
         display: 'flex',
         flexDirection: 'column',
+        cursor: 'pointer',
       }}
     >
       {/* Header row */}
@@ -184,6 +219,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
                 {phaseLabel}
               </span>
             </span>
+            {plan.phase === 'active' && plan.health && <HealthBadge health={plan.health} />}
           </div>
           <p
             style={{
@@ -221,6 +257,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
                   domEvent.stopPropagation();
                   if (key === 'cancel') void handleCancel();
                   if (key === 'delete') setDeleteModalOpen(true);
+                  if (key === 'duplicate') void handleDuplicate();
                 },
               }}
             >
@@ -278,6 +315,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           getContainer={() => document.body}
         />
       </div>
+      <PlanDetailsDrawer plan={plan} open={detailsOpen} onClose={() => setDetailsOpen(false)} />
     </div>
   );
 });

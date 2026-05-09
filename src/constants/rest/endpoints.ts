@@ -246,6 +246,9 @@ export const Endpoints = {
     PREPARE: { path: PLANS_PATHS.PROTECTION.PREPARE, method: 'POST' },
     CANCEL: (id: string) => ({ path: PLANS_PATHS.PROTECTION.CANCEL(id), method: 'POST' }),
     CLEAR: (id: string) => ({ path: PLANS_PATHS.PROTECTION.CLEAR(id), method: 'DELETE' }),
+    STATUS: (id: string) => ({ path: PLANS_PATHS.PROTECTION.STATUS(id), method: 'GET' }),
+    VIOLATIONS: (id: string) => ({ path: PLANS_PATHS.PROTECTION.VIOLATIONS(id), method: 'GET' }),
+    DUPLICATE: (id: string) => ({ path: PLANS_PATHS.PROTECTION.DUPLICATE(id), method: 'POST' }),
   },
   NOTIFICATIONS: {
     EMIT: {

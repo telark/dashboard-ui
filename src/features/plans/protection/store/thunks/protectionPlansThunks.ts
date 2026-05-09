@@ -8,6 +8,7 @@ import {
   preparePlan,
   cancelPlan,
   deletePlan,
+  duplicatePlan,
 } from '../../clients/protectionPlansClient';
 import type { ProtectionPlan, PlanTemplate } from '../../models';
 
@@ -97,6 +98,24 @@ export const deletePlanThunk = createAsyncThunk<string, DeletePlanArgs>(
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_DELETING_PROTECTION_PLAN, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.DELETE_PROTECTION_PLAN));
+    }
+  },
+);
+
+export interface DuplicatePlanArgs {
+  userId: string;
+  planId: string;
+  overrides?: { name?: string; timeMode?: string };
+}
+
+export const duplicatePlanThunk = createAsyncThunk<ProtectionPlan, DuplicatePlanArgs>(
+  STORE_ACTIONS.PROTECTION_PLANS.DUPLICATE,
+  async ({ userId, planId, overrides }, { rejectWithValue }) => {
+    try {
+      return await duplicatePlan(userId, planId, overrides);
+    } catch (error: unknown) {
+      logger.error(STORE_MESSAGES.ERROR_DUPLICATING_PROTECTION_PLAN, error);
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.DUPLICATE_PROTECTION_PLAN));
     }
   },
 );

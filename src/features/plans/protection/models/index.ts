@@ -2,6 +2,59 @@ export type PlanPhase = 'active' | 'scheduled' | 'failed' | 'terminated' | 'canc
 export type ScopeType = 'applications' | 'namespaces';
 export type PlanMode = 'audit' | 'enforce';
 export type PlanTimeMode = 'permanent' | 'time_range';
+export type PlanHealth = 'unknown' | 'healthy' | 'drifted' | 'degraded';
+export type ViolationResult = 'pass' | 'fail' | 'warn' | 'error' | 'skip';
+
+export interface PlanHealthDetail {
+  policyName: string;
+  namespace: string;
+  present: boolean;
+  ready: boolean;
+  failureAction: string;
+}
+
+export interface PlanPolicyStatus {
+  name: string;
+  namespace: string;
+  present: boolean;
+  ready: boolean;
+  failureAction: string;
+}
+
+export interface PlanDrift {
+  missing: string[];
+  unexpected: string[];
+}
+
+export interface PlanStatusResponse {
+  planId: string;
+  phase: PlanPhase;
+  health: PlanHealth;
+  policies: PlanPolicyStatus[];
+  drift: PlanDrift;
+}
+
+export interface PlanViolationResource {
+  kind: string;
+  name: string;
+  namespace: string;
+}
+
+export interface PlanViolation {
+  policy: string;
+  rule: string;
+  namespace: string;
+  resource: PlanViolationResource;
+  result: ViolationResult;
+  message: string;
+  timestamp: string;
+}
+
+export interface PlanViolationsResponse {
+  planId: string;
+  total: number;
+  violations: PlanViolation[];
+}
 
 export interface PlanScope {
   type: ScopeType;
@@ -42,6 +95,9 @@ export interface ProtectionPlan {
   terminatedAt?: string;
   terminatedBy?: string;
   participantsIDs?: string[];
+  health?: PlanHealth;
+  healthCheckedAt?: string;
+  healthDetail?: PlanHealthDetail[];
 }
 
 export type ParamType = 'string-array';

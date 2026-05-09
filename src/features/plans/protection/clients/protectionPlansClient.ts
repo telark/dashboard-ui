@@ -1,6 +1,12 @@
 import { Client, exporterApiClient, discoveryApiClient } from '../../../../api/index';
 import { Endpoints, HTTP_HEADERS } from '../../../../constants';
-import type { ProtectionPlan, PlanTemplate } from '../models';
+import type {
+  ProtectionPlan,
+  PlanTemplate,
+  PlanStatusResponse,
+  PlanViolationsResponse,
+  ViolationResult,
+} from '../models';
 
 interface ApiResponse<T> {
   status: string;
@@ -92,4 +98,52 @@ export const deletePlan = async (userId: string, planId: string): Promise<void> 
       headers: { [HTTP_HEADERS.CUSTOM.USER_ID]: userId },
     },
   );
+};
+
+export const fetchPlanStatus = async (planId: string): Promise<PlanStatusResponse> => {
+  const res = await Client<ApiResponse<PlanStatusResponse>>(
+    discoveryApiClient,
+    Endpoints.PROTECTION_PLANS.STATUS(planId).path,
+  );
+  return res.data;
+};
+
+interface ViolationsQuery {
+  limit?: number;
+  result?: ViolationResult;
+}
+
+export const fetchPlanViolations = async (
+  planId: string,
+  query?: ViolationsQuery,
+): Promise<PlanViolationsResponse> => {
+  const params = new URLSearchParams();
+  if (query?.limit) params.set('limit', String(query.limit));
+  if (query?.result) params.set('result', query.result);
+  const qs = params.toString();
+  const path = Endpoints.PROTECTION_PLANS.VIOLATIONS(planId).path + (qs ? `?${qs}` : '');
+  const res = await Client<ApiResponse<PlanViolationsResponse>>(discoveryApiClient, path);
+  return res.data;
+};
+
+interface DuplicatePlanPayload {
+  name?: string;
+  timeMode?: string;
+}
+
+export const duplicatePlan = async (
+  userId: string,
+  planId: string,
+  payload?: DuplicatePlanPayload,
+): Promise<ProtectionPlan> => {
+  const res = await Client<ApiResponse<ProtectionPlan>>(
+    discoveryApiClient,
+    Endpoints.PROTECTION_PLANS.DUPLICATE(planId).path,
+    {
+      method: 'POST',
+      data: payload ?? {},
+      headers: { [HTTP_HEADERS.CUSTOM.USER_ID]: userId },
+    },
+  );
+  return res.data;
 };

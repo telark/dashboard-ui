@@ -1,4 +1,4 @@
-import type { PlanPhase } from '../models';
+import type { PlanPhase, PlanHealth, ViolationResult } from '../models';
 
 export const PROTECTION_PLANS_CONSTANTS = {
   LABELS: {
@@ -25,8 +25,52 @@ export const PROTECTION_PLANS_CONSTANTS = {
     ACTIONS: {
       CANCEL: 'Cancel plan',
       DELETE: 'Delete plan',
+      DUPLICATE: 'Duplicate plan',
       DELETE_MODAL_TITLE: 'Delete Protection Plan',
       DELETE_MODAL_OK: 'Delete',
+      DUPLICATE_SUCCESS: 'Plan duplicated successfully.',
+      DUPLICATE_ERROR: 'Failed to duplicate plan.',
+    },
+    HEALTH_LABELS: {
+      unknown: 'Unknown',
+      healthy: 'Healthy',
+      drifted: 'Drifted',
+      degraded: 'Degraded',
+    } as Record<PlanHealth, string>,
+    VIOLATION_RESULT_LABELS: {
+      pass: 'Pass',
+      fail: 'Fail',
+      warn: 'Warn',
+      error: 'Error',
+      skip: 'Skip',
+    } as Record<ViolationResult, string>,
+    VIOLATIONS: {
+      TAB_LABEL: 'Violations',
+      TABLE_RESOURCE: 'Resource',
+      TABLE_NAMESPACE: 'Namespace',
+      TABLE_RULE: 'Rule',
+      TABLE_RESULT: 'Result',
+      TABLE_TIMESTAMP: 'Timestamp',
+      TABLE_MESSAGE: 'Message',
+      EMPTY:
+        'No violations recorded yet. In audit mode, Kyverno logs what would have been blocked.',
+      LOAD_ERROR: 'Failed to load violations.',
+      REFRESH: 'Refresh',
+      FILTER_PLACEHOLDER: 'Filter by result',
+      FILTER_ALL: 'All',
+    },
+    HEALTH_DETAIL: {
+      TITLE: 'Health',
+      CHECKED_AT: 'Last checked',
+      REFRESH_BUTTON: 'Refresh health',
+      MISSING: 'Missing policies',
+      UNEXPECTED: 'Unexpected policies',
+      POLICY_NAME: 'Policy',
+      NAMESPACE: 'Namespace',
+      PRESENT: 'Present',
+      READY: 'Ready',
+      FAILURE_ACTION: 'Failure action',
+      LOAD_ERROR: 'Failed to load health status.',
     },
     PHASE_LABELS: {
       active: 'Active',
@@ -108,4 +152,29 @@ export const PHASE_DOT_COLOR: Record<PlanPhase, string> = {
   terminated: '#9ca3af',
   cancelled: '#9ca3af',
   draft: '#d1d5db',
+};
+
+export const HEALTH_DOT_COLOR: Record<PlanHealth, string> = {
+  unknown: '#9ca3af',
+  healthy: '#22c55e',
+  drifted: '#f59e0b',
+  degraded: '#ef4444',
+};
+
+export const HEALTH_BADGE_CONFIG: Record<PlanHealth, { background: string; color: string }> = {
+  unknown: { background: '#f3f4f6', color: '#6b7280' },
+  healthy: { background: '#dcfce7', color: '#166534' },
+  drifted: { background: '#fef3c7', color: '#92400e' },
+  degraded: { background: '#fee2e2', color: '#991b1b' },
+};
+
+export const VIOLATION_RESULT_BADGE: Record<
+  ViolationResult,
+  { background: string; color: string }
+> = {
+  pass: { background: '#dcfce7', color: '#166534' },
+  fail: { background: '#fee2e2', color: '#991b1b' },
+  warn: { background: '#fef3c7', color: '#92400e' },
+  error: { background: '#fecaca', color: '#7f1d1d' },
+  skip: { background: '#e5e7eb', color: '#4b5563' },
 };

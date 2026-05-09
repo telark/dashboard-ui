@@ -5,6 +5,7 @@ export {
   preparePlanThunk,
   cancelPlanThunk,
   deletePlanThunk,
+  duplicatePlanThunk,
 } from './thunks/protectionPlansThunks';
 export {
   selectProtectionPlans,
