@@ -45,6 +45,9 @@ import HealthSection from '../../components/details/HealthSection';
 import ViolationsSection from '../../components/details/ViolationsSection';
 import ProtectionPlanDetailsToolbar from '../../components/layout/ProtectionPlanDetailsToolbar';
 import { usePlanHealth } from '../../hooks/usePlanHealth';
+import { usePlanViolations } from '../../hooks/usePlanViolations';
+import type { ViolationsResultFilter } from '../../hooks/usePlanViolations';
+import { Select } from 'antd';
 import type { RootState } from '../../../../../store';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
@@ -82,6 +85,15 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     const phaseLabel = PPC.LABELS.PHASE_LABELS[plan.phase] ?? plan.phase;
     const dotColor = PHASE_DOT_COLOR[plan.phase] ?? PHASE_DOT_COLOR.draft;
     const health = usePlanHealth(plan.id);
+    const violations = usePlanViolations(plan.id);
+    const violationsFilterOptions: Array<{ value: ViolationsResultFilter; label: string }> = [
+      { value: 'all', label: PPC.LABELS.VIOLATIONS.FILTER_ALL },
+      { value: 'fail', label: PPC.LABELS.VIOLATION_RESULT_LABELS.fail },
+      { value: 'pass', label: PPC.LABELS.VIOLATION_RESULT_LABELS.pass },
+      { value: 'warn', label: PPC.LABELS.VIOLATION_RESULT_LABELS.warn },
+      { value: 'error', label: PPC.LABELS.VIOLATION_RESULT_LABELS.error },
+      { value: 'skip', label: PPC.LABELS.VIOLATION_RESULT_LABELS.skip },
+    ];
     const users = useSelector((s: RootState) => s.users.users);
     const participants = useMemo(() => {
       const ids = plan.participantsIDs ?? [];
@@ -415,8 +427,36 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
         <SettingsCard
           title={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_TITLE}
           description={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_DESCRIPTION}
+          headerAction={
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Select
+                value={violations.resultFilter}
+                onChange={(v) => violations.setResultFilter(v)}
+                options={violationsFilterOptions}
+                size="small"
+                style={{ width: 140 }}
+                placeholder={PPC.LABELS.VIOLATIONS.FILTER_PLACEHOLDER}
+              />
+              <Tooltip title={PPC.LABELS.VIOLATIONS.REFRESH}>
+                <Button
+                  type="text"
+                  shape="circle"
+                  size="small"
+                  icon={<ReloadOutlined />}
+                  onClick={violations.refresh}
+                  style={COMPACT_REFRESH_BUTTON_STYLE}
+                  aria-label={PPC.LABELS.VIOLATIONS.REFRESH}
+                />
+              </Tooltip>
+            </div>
+          }
         >
-          <ViolationsSection planId={plan.id} />
+          <ViolationsSection
+            data={violations.data}
+            loading={violations.loading}
+            error={violations.error}
+            mode={plan.mode}
+          />
         </SettingsCard>
       </div>
     );

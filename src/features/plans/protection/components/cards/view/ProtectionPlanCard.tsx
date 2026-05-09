@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Dropdown, message as antdMessage } from 'antd';
+import { Button, Dropdown } from 'antd';
 import { CopyOutlined, DeleteOutlined, MoreOutlined, StopOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { APP_ROUTES, DEFAULT_COLORS } from '../../../../../../constants';
@@ -13,10 +13,11 @@ import {
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import type { AppDispatch, RootState } from '../../../../../../store';
-import { cancelPlanThunk, deletePlanThunk, duplicatePlanThunk } from '../../../store';
+import { cancelPlanThunk, deletePlanThunk } from '../../../store';
 import { getCurrentUser } from '../../../../../auth/utils';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
 import HealthBadge from '../../shared/HealthBadge';
+import DuplicatePlanPanel from '../../panels/DuplicatePlanPanel';
 
 interface ProtectionPlanCardProps {
   plan: ProtectionPlan;
@@ -50,7 +51,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
   const [menuOpen, setMenuOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [duplicating, setDuplicating] = useState(false);
+  const [duplicatePanelOpen, setDuplicatePanelOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const detailsPath = APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(
@@ -103,27 +104,16 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     }
   }, [dispatch, plan.id]);
 
-  const handleDuplicate = useCallback(async () => {
-    const userId = getCurrentUser()?.id;
-    if (!userId) return;
-    setDuplicating(true);
-    try {
-      await dispatch(duplicatePlanThunk({ userId, planId: plan.id })).unwrap();
-      void antdMessage.success(PPC.LABELS.ACTIONS.DUPLICATE_SUCCESS);
-    } catch (err: unknown) {
-      const text = err instanceof Error ? err.message : PPC.LABELS.ACTIONS.DUPLICATE_ERROR;
-      void antdMessage.error(text);
-    } finally {
-      setDuplicating(false);
-    }
-  }, [dispatch, plan.id]);
+  const handleDuplicate = useCallback(() => {
+    setDuplicatePanelOpen(true);
+  }, []);
 
   const menuItems = [
     {
       key: 'duplicate',
       label: PPC.LABELS.ACTIONS.DUPLICATE,
       icon: <CopyOutlined />,
-      disabled: duplicating,
+      disabled: duplicatePanelOpen,
     },
     ...(canCancel
       ? [
@@ -150,9 +140,13 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     <div
       role="button"
       tabIndex={0}
-      onClick={() => navigate(detailsPath)}
+      onClick={() => {
+        if (duplicatePanelOpen || deleteModalOpen) return;
+        navigate(detailsPath);
+      }}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
+          if (duplicatePanelOpen || deleteModalOpen) return;
           e.preventDefault();
           navigate(detailsPath);
         }
@@ -262,7 +256,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
                   domEvent.stopPropagation();
                   if (key === 'cancel') void handleCancel();
                   if (key === 'delete') setDeleteModalOpen(true);
-                  if (key === 'duplicate') void handleDuplicate();
+                  if (key === 'duplicate') handleDuplicate();
                 },
               }}
             >
@@ -320,6 +314,12 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           getContainer={() => document.body}
         />
       </div>
+      <DuplicatePlanPanel
+        key={plan.id}
+        open={duplicatePanelOpen}
+        onClose={() => setDuplicatePanelOpen(false)}
+        plan={plan}
+      />
     </div>
   );
 });

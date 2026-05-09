@@ -120,7 +120,11 @@ export const deletePlanThunk = createAsyncThunk<string, DeletePlanArgs>(
 export interface DuplicatePlanArgs {
   userId: string;
   planId: string;
-  overrides?: { name?: string; timeMode?: string };
+  overrides?: {
+    name?: string;
+    timeMode?: string;
+    timeRange?: { startAt: string; endAt: string };
+  };
 }
 
 export const duplicatePlanThunk = createAsyncThunk<ProtectionPlan, DuplicatePlanArgs>(

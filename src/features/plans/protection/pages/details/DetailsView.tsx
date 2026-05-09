@@ -1,18 +1,18 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { message as antdMessage } from 'antd';
 import LoadingDetailsView from '../../../../../components/display/views/LoadingDetailsView';
 import ErrorView from '../../../../../components/display/views/ErrorView';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
 import { APP_ROUTES } from '../../../../../constants';
 import ApplicationPageLayout from '../../../../resources/applications/components/layout/ApplicationPageLayout';
 import { usePlanDetails } from '../../hooks/usePlanDetails';
-import { cancelPlanThunk, duplicatePlanThunk, fetchProtectionPlanDetailsThunk } from '../../store';
+import { cancelPlanThunk, fetchProtectionPlanDetailsThunk } from '../../store';
 import { fetchPlanStatus } from '../../clients/protectionPlansClient';
 import { getCurrentUser } from '../../../../auth/utils';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import type { AppDispatch } from '../../../../../store';
+import DuplicatePlanPanel from '../../components/panels/DuplicatePlanPanel';
 import ProtectionPlanDetailsEmpty from './Empty';
 import ProtectionPlanDetailsContent from './Content';
 
@@ -23,7 +23,7 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
   const dispatch: AppDispatch = useDispatch();
   const { details, loading, error, notFound } = usePlanDetails(decodedName);
 
-  const [duplicating, setDuplicating] = useState(false);
+  const [duplicatePanelOpen, setDuplicatePanelOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [refreshingHealth, setRefreshingHealth] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
@@ -39,26 +39,9 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
     [details?.name, decodedName, navigate],
   );
 
-  const handleDuplicate = useCallback(async () => {
-    if (!details) return;
-    const userId = getCurrentUser()?.id;
-    if (!userId) return;
-    setDuplicating(true);
-    try {
-      const created = await dispatch(duplicatePlanThunk({ userId, planId: details.id })).unwrap();
-      void antdMessage.success(PPC.LABELS.ACTIONS.DUPLICATE_SUCCESS);
-      const target = APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(
-        ':name',
-        encodeURIComponent(created.name),
-      );
-      navigate(target);
-    } catch (err: unknown) {
-      const text = err instanceof Error ? err.message : PPC.LABELS.ACTIONS.DUPLICATE_ERROR;
-      void antdMessage.error(text);
-    } finally {
-      setDuplicating(false);
-    }
-  }, [details, dispatch, navigate]);
+  const handleOpenDuplicate = useCallback(() => {
+    setDuplicatePanelOpen(true);
+  }, []);
 
   const handleConfirmCancel = useCallback(async () => {
     if (!details) return;
@@ -103,10 +86,10 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
         <div style={{ marginTop: 24 }}>
           <ProtectionPlanDetailsContent
             plan={details}
-            duplicating={duplicating}
+            duplicating={duplicatePanelOpen}
             cancelling={cancelling}
             refreshingHealth={refreshingHealth}
-            onDuplicate={handleDuplicate}
+            onDuplicate={handleOpenDuplicate}
             onCancel={() => setCancelModalOpen(true)}
             onRefreshHealth={handleRefreshHealth}
           />
@@ -124,6 +107,12 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
         confirmText={PPC.LABELS.DETAIL_PAGE.ACTIONS.CANCEL_MODAL_OK}
         loading={cancelling}
         getContainer={() => document.body}
+      />
+      <DuplicatePlanPanel
+        key={details.id}
+        open={duplicatePanelOpen}
+        onClose={() => setDuplicatePanelOpen(false)}
+        plan={details}
       />
     </>
   );

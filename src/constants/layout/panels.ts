@@ -88,6 +88,8 @@ export const SLIDE_OUT = {
     flex: 1,
     overflowY: 'auto' as const,
     padding: '24px',
+    display: 'flex' as const,
+    flexDirection: 'column' as const,
   },
   FORM: {
     height: '100%',

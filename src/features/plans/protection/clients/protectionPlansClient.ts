@@ -113,6 +113,8 @@ interface ViolationsQuery {
   result?: ViolationResult;
 }
 
+const VIOLATIONS_REQUEST_TIMEOUT_MS = 10_000;
+
 export const fetchPlanViolations = async (
   planId: string,
   query?: ViolationsQuery,
@@ -122,13 +124,17 @@ export const fetchPlanViolations = async (
   if (query?.result) params.set('result', query.result);
   const qs = params.toString();
   const path = Endpoints.PROTECTION_PLANS.VIOLATIONS(planId).path + (qs ? `?${qs}` : '');
-  const res = await Client<ApiResponse<PlanViolationsResponse>>(discoveryApiClient, path);
+  const res = await Client<ApiResponse<PlanViolationsResponse>>(discoveryApiClient, path, {
+    method: 'GET',
+    timeout: VIOLATIONS_REQUEST_TIMEOUT_MS,
+  });
   return res.data;
 };
 
 interface DuplicatePlanPayload {
   name?: string;
   timeMode?: string;
+  timeRange?: { startAt: string; endAt: string };
 }
 
 export const duplicatePlan = async (
