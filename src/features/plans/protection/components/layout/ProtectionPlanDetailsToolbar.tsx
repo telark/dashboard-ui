@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import {
   CopyOutlined,
+  DeleteOutlined,
   EditOutlined,
   PlayCircleOutlined,
   ReloadOutlined,
@@ -17,11 +18,13 @@ interface ProtectionPlanDetailsToolbarProps {
   editing: boolean;
   cancelling: boolean;
   reactivating: boolean;
+  deleting: boolean;
   refreshingHealth: boolean;
   onDuplicate: () => void;
   onEdit: () => void;
   onCancel: () => void;
   onReactivate: () => void;
+  onDelete: () => void;
   onRefreshHealth: () => void;
 }
 
@@ -40,11 +43,13 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
   editing,
   cancelling,
   reactivating,
+  deleting,
   refreshingHealth,
   onDuplicate,
   onEdit,
   onCancel,
   onReactivate,
+  onDelete,
   onRefreshHealth,
 }) => {
   const toolbarConfig: ToolbarConfig = useMemo(() => {
@@ -103,6 +108,14 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
         disabled: cancelling,
       });
     }
+    buttons.push({
+      key: 'delete',
+      label: PPC.LABELS.ACTIONS.DELETE,
+      icon: <DeleteOutlined />,
+      variant: 'danger',
+      onClick: onDelete,
+      disabled: deleting,
+    });
     return { buttons };
   }, [
     plan,
@@ -110,11 +123,13 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
     editing,
     cancelling,
     reactivating,
+    deleting,
     refreshingHealth,
     onDuplicate,
     onEdit,
     onCancel,
     onReactivate,
+    onDelete,
     onRefreshHealth,
   ]);
 

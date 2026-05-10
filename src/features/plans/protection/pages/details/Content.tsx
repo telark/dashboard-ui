@@ -76,11 +76,13 @@ interface ProtectionPlanDetailsContentProps {
   editing: boolean;
   cancelling: boolean;
   reactivating: boolean;
+  deleting: boolean;
   refreshingHealth: boolean;
   onDuplicate: () => void;
   onEdit: () => void;
   onCancel: () => void;
   onReactivate: () => void;
+  onDelete: () => void;
   onRefreshHealth: () => void;
 }
 
@@ -93,11 +95,13 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     editing,
     cancelling,
     reactivating,
+    deleting,
     refreshingHealth,
     onDuplicate,
     onEdit,
     onCancel,
     onReactivate,
+    onDelete,
     onRefreshHealth,
   }) => {
     const phaseLabel = PPC.LABELS.PHASE_LABELS[plan.phase] ?? plan.phase;
@@ -292,11 +296,13 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             editing={editing}
             cancelling={cancelling}
             reactivating={reactivating}
+            deleting={deleting}
             refreshingHealth={refreshingHealth}
             onDuplicate={onDuplicate}
             onEdit={onEdit}
             onCancel={onCancel}
             onReactivate={onReactivate}
+            onDelete={onDelete}
             onRefreshHealth={onRefreshHealth}
           />
         </div>

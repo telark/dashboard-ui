@@ -11,6 +11,7 @@ import ApplicationPageLayout from '../../../../resources/applications/components
 import { usePlanDetails } from '../../hooks/usePlanDetails';
 import {
   cancelPlanThunk,
+  deletePlanThunk,
   fetchProtectionPlanDetailsThunk,
   reactivatePlanThunk,
 } from '../../store';
@@ -36,9 +37,11 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
   const [editPanelOpen, setEditPanelOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [reactivating, setReactivating] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [refreshingHealth, setRefreshingHealth] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [reactivateModalOpen, setReactivateModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const breadcrumbItems = useMemo(
     () => [
@@ -76,6 +79,20 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
       setCancelling(false);
     }
   }, [details, dispatch]);
+
+  const handleConfirmDelete = useCallback(async () => {
+    if (!details) return;
+    const userId = getCurrentUser()?.id;
+    if (!userId) return;
+    setDeleting(true);
+    try {
+      await dispatch(deletePlanThunk({ userId, planId: details.id })).unwrap();
+      setDeleteModalOpen(false);
+      navigate(APP_ROUTES.PROTECTION_PLANS);
+    } finally {
+      setDeleting(false);
+    }
+  }, [details, dispatch, navigate]);
 
   const handleConfirmReactivate = useCallback(async () => {
     if (!details) return;
@@ -130,11 +147,13 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
             editing={editPanelOpen}
             cancelling={cancelling}
             reactivating={reactivating}
+            deleting={deleting}
             refreshingHealth={refreshingHealth}
             onDuplicate={handleOpenDuplicate}
             onEdit={handleOpenEdit}
             onCancel={() => setCancelModalOpen(true)}
             onReactivate={() => setReactivateModalOpen(true)}
+            onDelete={() => setDeleteModalOpen(true)}
             onRefreshHealth={handleRefreshHealth}
           />
         </div>
@@ -150,6 +169,18 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
         resourceType="protection plan"
         confirmText={PPC.LABELS.DETAIL_PAGE.ACTIONS.CANCEL_MODAL_OK}
         loading={cancelling}
+        getContainer={() => document.body}
+      />
+      <ActionConfirmModal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title={PPC.LABELS.ACTIONS.DELETE_MODAL_TITLE}
+        action="delete"
+        resourceName={details.name}
+        resourceType="protection plan"
+        confirmText={PPC.LABELS.ACTIONS.DELETE_MODAL_OK}
+        loading={deleting}
         getContainer={() => document.body}
       />
       <ActionConfirmModal
