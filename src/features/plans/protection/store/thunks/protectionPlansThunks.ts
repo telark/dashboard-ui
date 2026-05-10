@@ -11,6 +11,7 @@ import {
   deletePlan,
   duplicatePlan,
   patchPlan,
+  reactivatePlan,
   type PatchPlanPayload,
 } from '../../clients/protectionPlansClient';
 import type { ProtectionPlan, PlanTemplate } from '../../models';
@@ -155,6 +156,23 @@ export const patchPlanThunk = createAsyncThunk<ProtectionPlan, PatchPlanArgs>(
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_PATCHING_PROTECTION_PLAN, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.PATCH_PROTECTION_PLAN));
+    }
+  },
+);
+
+export interface ReactivatePlanArgs {
+  userId: string;
+  planId: string;
+}
+
+export const reactivatePlanThunk = createAsyncThunk<ProtectionPlan, ReactivatePlanArgs>(
+  STORE_ACTIONS.PROTECTION_PLANS.REACTIVATE,
+  async ({ userId, planId }, { rejectWithValue }) => {
+    try {
+      return await reactivatePlan(userId, planId);
+    } catch (error: unknown) {
+      logger.error(STORE_MESSAGES.ERROR_REACTIVATING_PROTECTION_PLAN, error);
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.REACTIVATE_PROTECTION_PLAN));
     }
   },
 );

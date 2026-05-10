@@ -59,10 +59,17 @@ export const PROTECTION_PLANS_CONSTANTS = {
         DUPLICATE_PANEL_TITLE: 'Duplicate Plan',
         CANCEL: 'Cancel',
         EDIT: 'Edit',
-        EDIT_DISABLED_TOOLTIP: 'Cannot edit a terminated or cancelled plan.',
+        EDIT_DISABLED_TOOLTIP: 'Cannot edit a terminated or canceled plan.',
         REFRESH_HEALTH: 'Refresh health',
         CANCEL_MODAL_TITLE: 'Cancel Protection Plan',
         CANCEL_MODAL_OK: 'Cancel plan',
+        REACTIVATE: 'Reactivate',
+        REACTIVATE_MODAL_TITLE: 'Reactivate Protection Plan',
+        REACTIVATE_MODAL_BODY:
+          "Reactivate this protection plan? Its policies will be re-deployed to the cluster.",
+        REACTIVATE_MODAL_OK: 'Reactivate',
+        REACTIVATE_DISABLED_EXPIRED_TOOLTIP:
+          "The plan's time range has expired. Edit the plan to set new dates before reactivating.",
       },
       EMPTY_VALUE: '—',
     },
@@ -87,6 +94,8 @@ export const PROTECTION_PLANS_CONSTANTS = {
       CREATE_ERROR: 'Failed to create plan.',
       UPDATE_SUCCESS: (name: string) => `Plan "${name}" updated.`,
       UPDATE_ERROR: 'Failed to update plan.',
+      REACTIVATE_SUCCESS: (name: string) => `Plan "${name}" reactivated.`,
+      REACTIVATE_ERROR: 'Failed to reactivate plan.',
     },
     HEALTH_LABELS: {
       unknown: 'Unknown',
@@ -137,7 +146,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       scheduled: 'Scheduled',
       failed: 'Failed',
       terminated: 'Terminated',
-      cancelled: 'Cancelled',
+      canceled: 'Canceled',
       draft: 'Draft',
     } as Record<PlanPhase, string>,
     PHASE_INFO: {
@@ -224,7 +233,7 @@ export const PHASE_BADGE_CONFIG: Record<PlanPhase, { background: string; color: 
   scheduled: { background: '#dbeafe', color: '#1d4ed8' },
   failed: { background: '#fee2e2', color: '#991b1b' },
   terminated: { background: '#e5e7eb', color: '#4b5563' },
-  cancelled: { background: '#e5e7eb', color: '#4b5563' },
+  canceled: { background: '#e5e7eb', color: '#4b5563' },
   draft: { background: '#f3f4f6', color: '#6b7280' },
 };
 
@@ -233,7 +242,7 @@ export const PHASE_DOT_COLOR: Record<PlanPhase, string> = {
   scheduled: '#3b82f6',
   failed: '#ef4444',
   terminated: '#9ca3af',
-  cancelled: '#9ca3af',
+  canceled: '#9ca3af',
   draft: '#d1d5db',
 };
 

@@ -1,4 +1,4 @@
-export type PlanPhase = 'active' | 'scheduled' | 'failed' | 'terminated' | 'cancelled' | 'draft';
+export type PlanPhase = 'active' | 'scheduled' | 'failed' | 'terminated' | 'canceled' | 'draft';
 export type ScopeType = 'applications' | 'namespaces';
 export type PlanMode = 'audit' | 'enforce';
 export type PlanTimeMode = 'permanent' | 'time_range';

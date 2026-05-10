@@ -101,5 +101,6 @@ export const PLANS_PATHS = {
     VIOLATIONS: (id: string) => `plans/protection/${id}/violations`,
     DUPLICATE: (id: string) => `plans/protection/${id}/duplicate`,
     PATCH: (id: string) => `plans/protection/${id}/patch`,
+    REACTIVATE: (id: string) => `plans/protection/${id}/reactivate`,
   },
 } as const;

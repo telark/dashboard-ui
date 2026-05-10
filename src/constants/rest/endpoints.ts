@@ -250,6 +250,10 @@ export const Endpoints = {
     VIOLATIONS: (id: string) => ({ path: PLANS_PATHS.PROTECTION.VIOLATIONS(id), method: 'GET' }),
     DUPLICATE: (id: string) => ({ path: PLANS_PATHS.PROTECTION.DUPLICATE(id), method: 'POST' }),
     PATCH: (id: string) => ({ path: PLANS_PATHS.PROTECTION.PATCH(id), method: 'PATCH' }),
+    REACTIVATE: (id: string) => ({
+      path: PLANS_PATHS.PROTECTION.REACTIVATE(id),
+      method: 'POST',
+    }),
   },
   NOTIFICATIONS: {
     EMIT: {

@@ -54,7 +54,7 @@ function MetricMini(props: { value: React.ReactNode; label: string }): React.Rea
 
 const CANCELLABLE: PlanPhase[] = ['active', 'scheduled', 'failed'];
 
-const NON_EDITABLE_PHASES: PlanPhase[] = ['terminated', 'cancelled'];
+const NON_EDITABLE_PHASES: PlanPhase[] = ['terminated', 'canceled'];
 
 const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) => {
   const dispatch: AppDispatch = useDispatch();

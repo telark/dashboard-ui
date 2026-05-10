@@ -75,10 +75,12 @@ interface ProtectionPlanDetailsContentProps {
   duplicating: boolean;
   editing: boolean;
   cancelling: boolean;
+  reactivating: boolean;
   refreshingHealth: boolean;
   onDuplicate: () => void;
   onEdit: () => void;
   onCancel: () => void;
+  onReactivate: () => void;
   onRefreshHealth: () => void;
 }
 
@@ -90,10 +92,12 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     duplicating,
     editing,
     cancelling,
+    reactivating,
     refreshingHealth,
     onDuplicate,
     onEdit,
     onCancel,
+    onReactivate,
     onRefreshHealth,
   }) => {
     const phaseLabel = PPC.LABELS.PHASE_LABELS[plan.phase] ?? plan.phase;
@@ -201,7 +205,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
               },
             ]
           : []),
-        ...(plan.reason && (plan.phase === 'failed' || plan.phase === 'cancelled')
+        ...(plan.reason && (plan.phase === 'failed' || plan.phase === 'canceled')
           ? [
               {
                 k: 'reason',
@@ -283,14 +287,16 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             )}
           </div>
           <ProtectionPlanDetailsToolbar
-            phase={plan.phase}
+            plan={plan}
             duplicating={duplicating}
             editing={editing}
             cancelling={cancelling}
+            reactivating={reactivating}
             refreshingHealth={refreshingHealth}
             onDuplicate={onDuplicate}
             onEdit={onEdit}
             onCancel={onCancel}
+            onReactivate={onReactivate}
             onRefreshHealth={onRefreshHealth}
           />
         </div>

@@ -167,6 +167,19 @@ export const patchPlan = async (
   return res.data;
 };
 
+export const reactivatePlan = async (userId: string, planId: string): Promise<ProtectionPlan> => {
+  const res = await Client<ApiResponse<ProtectionPlan>>(
+    discoveryApiClient,
+    Endpoints.PROTECTION_PLANS.REACTIVATE(planId).path,
+    {
+      method: 'POST',
+      data: {},
+      headers: { [HTTP_HEADERS.CUSTOM.USER_ID]: userId },
+    },
+  );
+  return res.data;
+};
+
 export const duplicatePlan = async (
   userId: string,
   planId: string,

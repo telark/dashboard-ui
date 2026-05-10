@@ -8,6 +8,7 @@ export {
   deletePlanThunk,
   duplicatePlanThunk,
   patchPlanThunk,
+  reactivatePlanThunk,
 } from './thunks/protectionPlansThunks';
 export {
   selectProtectionPlans,

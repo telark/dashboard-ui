@@ -1,37 +1,54 @@
 import React, { useMemo } from 'react';
-import { CopyOutlined, EditOutlined, ReloadOutlined, StopOutlined } from '@ant-design/icons';
+import {
+  CopyOutlined,
+  EditOutlined,
+  PlayCircleOutlined,
+  ReloadOutlined,
+  StopOutlined,
+} from '@ant-design/icons';
 import Toolbar from '../../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
-import type { PlanPhase } from '../../models';
+import type { PlanPhase, ProtectionPlan } from '../../models';
 
 interface ProtectionPlanDetailsToolbarProps {
-  phase: PlanPhase;
+  plan: ProtectionPlan;
   duplicating: boolean;
   editing: boolean;
   cancelling: boolean;
+  reactivating: boolean;
   refreshingHealth: boolean;
   onDuplicate: () => void;
   onEdit: () => void;
   onCancel: () => void;
+  onReactivate: () => void;
   onRefreshHealth: () => void;
 }
 
 const CANCELLABLE: PlanPhase[] = ['active', 'scheduled', 'failed'];
-const NON_EDITABLE: PlanPhase[] = ['terminated', 'cancelled'];
+const NON_EDITABLE: PlanPhase[] = ['terminated', 'canceled'];
+const REACTIVATABLE: PlanPhase[] = ['canceled', 'terminated', 'failed'];
+
+const isReactivateExpired = (plan: ProtectionPlan): boolean => {
+  if (plan.timeMode !== 'time_range' || !plan.timeRange?.endAt) return false;
+  return new Date(plan.timeRange.endAt).getTime() <= Date.now();
+};
 
 const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> = ({
-  phase,
+  plan,
   duplicating,
   editing,
   cancelling,
+  reactivating,
   refreshingHealth,
   onDuplicate,
   onEdit,
   onCancel,
+  onReactivate,
   onRefreshHealth,
 }) => {
   const toolbarConfig: ToolbarConfig = useMemo(() => {
+    const phase = plan.phase;
     const editDisabled = NON_EDITABLE.includes(phase);
     const buttons: ToolbarConfig['buttons'] = [
       {
@@ -52,6 +69,20 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
         disabled: duplicating,
       },
     ];
+    if (REACTIVATABLE.includes(phase)) {
+      const expired = isReactivateExpired(plan);
+      buttons.push({
+        key: 'reactivate',
+        label: PPC.LABELS.DETAIL_PAGE.ACTIONS.REACTIVATE,
+        icon: <PlayCircleOutlined />,
+        variant: 'primary',
+        onClick: onReactivate,
+        disabled: reactivating || expired,
+        tooltip: expired
+          ? PPC.LABELS.DETAIL_PAGE.ACTIONS.REACTIVATE_DISABLED_EXPIRED_TOOLTIP
+          : undefined,
+      });
+    }
     if (phase === 'active') {
       buttons.push({
         key: 'refreshHealth',
@@ -74,14 +105,16 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
     }
     return { buttons };
   }, [
-    phase,
+    plan,
     duplicating,
     editing,
     cancelling,
+    reactivating,
     refreshingHealth,
     onDuplicate,
     onEdit,
     onCancel,
+    onReactivate,
     onRefreshHealth,
   ]);
 
