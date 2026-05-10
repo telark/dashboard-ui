@@ -43,6 +43,7 @@ export interface PlanFormProps {
   usersLoading: boolean;
   submitError?: string | null;
   onSubmitErrorClose?: () => void;
+  validateTrigger?: string | string[];
 }
 
 const PlanForm: React.FC<PlanFormProps> = ({
@@ -70,6 +71,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
   usersLoading,
   submitError,
   onSubmitErrorClose,
+  validateTrigger,
 }) => {
   const isEditMode = mode === 'edit';
   const scopeType = Form.useWatch('scopeType', form) ?? initialValues.scopeType;
@@ -98,6 +100,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
       layout="vertical"
       onFinish={onSubmit}
       initialValues={initialValues}
+      validateTrigger={validateTrigger}
       style={{ display: 'flex', flexDirection: 'column', gap: 0 }}
     >
       <div

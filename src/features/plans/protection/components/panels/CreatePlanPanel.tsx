@@ -28,7 +28,13 @@ const INITIAL_POLICIES: PolicyEntry[] = [];
 const CreatePlanPanel: React.FC<CreatePlanPanelProps> = ({ open, onClose, form }) => {
   const [expanded, setExpanded] = useState(false);
   const [policies, setPolicies] = useState<PolicyEntry[]>(() => INITIAL_POLICIES);
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const data = usePlanFormData(open);
+
+  const handleClose = useCallback(() => {
+    setAttemptedSubmit(false);
+    onClose();
+  }, [onClose]);
   const { submitting, handleCreate } = usePlanActions();
 
   const initialValues = useMemo<FormValues>(() => DEFAULT_FORM_VALUES, []);
@@ -39,6 +45,7 @@ const CreatePlanPanel: React.FC<CreatePlanPanelProps> = ({ open, onClose, form }
     initialValues,
     initialPolicies: INITIAL_POLICIES,
     policies,
+    enabled: open,
   });
 
   const handlePolicyParamChange = useCallback((index: number, key: string, values: string[]) => {
@@ -52,20 +59,25 @@ const CreatePlanPanel: React.FC<CreatePlanPanelProps> = ({ open, onClose, form }
       const payload = buildPreparePayload({ values, policies });
       try {
         await handleCreate(payload);
-        onClose();
+        handleClose();
       } catch {
         // surfaced via message in hook
       }
     },
-    [handleCreate, onClose, policies],
+    [handleCreate, handleClose, policies],
   );
 
-  const submitDisabled = hasFormErrors || policies.length === 0;
+  const submitDisabled = policies.length === 0 || (attemptedSubmit && hasFormErrors);
+
+  const handleSubmitClick = () => {
+    setAttemptedSubmit(true);
+    form.submit();
+  };
 
   return (
     <AnimationWrapper
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       title={PPC.PANELS.CREATE.TITLE}
       subtitle={PPC.PANELS.CREATE.SUBTITLE}
       width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
@@ -86,12 +98,13 @@ const CreatePlanPanel: React.FC<CreatePlanPanelProps> = ({ open, onClose, form }
           hideSubmitButton
           submitLabel={PPC.PANELS.CREATE.SUBMIT_BUTTON}
           loadingLabel={PPC.PANELS.CREATE.LOADING_LABEL}
+          validateTrigger={attemptedSubmit ? 'onChange' : 'onSubmit'}
           {...data}
         />
       </div>
       <PanelFooter
-        onCancel={onClose}
-        onPrimary={() => form.submit()}
+        onCancel={handleClose}
+        onPrimary={handleSubmitClick}
         cancelLabel="Cancel"
         primaryLabel={PPC.PANELS.CREATE.SUBMIT_BUTTON}
         primaryLoading={submitting}

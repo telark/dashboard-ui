@@ -31,7 +31,14 @@ interface EditPlanPanelProps {
 
 const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form }) => {
   const [expanded, setExpanded] = useState(false);
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const data = usePlanFormData(open);
+
+  const handleClose = useCallback(() => {
+    setAttemptedSubmit(false);
+    onClose();
+  }, [onClose]);
+
   const { submitting, handleUpdate } = usePlanActions();
 
   const initialValues = useMemo<FormValues>(() => planToFormValues(plan), [plan]);
@@ -39,8 +46,9 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
   const [policies, setPolicies] = useState<PolicyEntry[]>(() => initialPolicies);
 
   useEffect(() => {
+    if (!open) return;
     form.setFieldsValue(initialValues);
-  }, [form, initialValues]);
+  }, [open, form, initialValues]);
 
   const { hasFormErrors, hasChanges } = usePlanFormState({
     form,
@@ -48,6 +56,7 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
     initialValues,
     initialPolicies,
     policies,
+    enabled: open,
   });
 
   const handlePolicyParamChange = useCallback((index: number, key: string, values: string[]) => {
@@ -61,20 +70,26 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
       const payload = buildPreparePayload({ values, policies });
       try {
         await handleUpdate(plan.id, payload);
-        onClose();
+        handleClose();
       } catch {
         // surfaced via message in hook
       }
     },
-    [handleUpdate, onClose, plan, policies],
+    [handleUpdate, handleClose, plan, policies],
   );
 
-  const submitDisabled = !hasChanges || hasFormErrors || policies.length === 0;
+  const submitDisabled =
+    !hasChanges || policies.length === 0 || (attemptedSubmit && hasFormErrors);
+
+  const handleSubmitClick = () => {
+    setAttemptedSubmit(true);
+    form.submit();
+  };
 
   return (
     <AnimationWrapper
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       title={PPC.PANELS.EDIT.TITLE}
       subtitle={PPC.PANELS.EDIT.SUBTITLE(plan.name)}
       width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
@@ -96,12 +111,13 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
           hideSubmitButton
           submitLabel={PPC.PANELS.EDIT.SUBMIT_BUTTON}
           loadingLabel={PPC.PANELS.EDIT.LOADING_LABEL}
+          validateTrigger={attemptedSubmit ? 'onChange' : 'onSubmit'}
           {...data}
         />
       </div>
       <PanelFooter
-        onCancel={onClose}
-        onPrimary={() => form.submit()}
+        onCancel={handleClose}
+        onPrimary={handleSubmitClick}
         cancelLabel="Cancel"
         primaryLabel={PPC.PANELS.EDIT.SUBMIT_BUTTON}
         primaryLoading={submitting}

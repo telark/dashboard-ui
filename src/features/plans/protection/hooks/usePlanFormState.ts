@@ -9,6 +9,7 @@ interface UsePlanFormStateOptions {
   initialValues: FormValues | null;
   initialPolicies: PolicyEntry[];
   policies: PolicyEntry[];
+  enabled: boolean;
 }
 
 const stableStringify = (value: unknown): string => {
@@ -51,6 +52,7 @@ export const usePlanFormState = ({
   initialValues,
   initialPolicies,
   policies,
+  enabled,
 }: UsePlanFormStateOptions) => {
   const watched = Form.useWatch([], form) as FormValues | undefined;
 
@@ -60,16 +62,17 @@ export const usePlanFormState = ({
   }, [isEditMode, initialValues, initialPolicies]);
 
   const hasChanges = useMemo(() => {
-    if (!isEditMode || !initialValues) return false;
+    if (!enabled || !isEditMode || !initialValues) return false;
     const current = (watched ?? form.getFieldsValue(true)) as FormValues;
     if (!current) return false;
     return stableStringify(normalizeFormSnapshot(current, policies)) !== initialSnapshot;
-  }, [isEditMode, initialValues, watched, form, policies, initialSnapshot]);
+  }, [enabled, isEditMode, initialValues, watched, form, policies, initialSnapshot]);
 
   const hasFormErrors = useMemo(() => {
     void watched;
+    if (!enabled) return false;
     return form.getFieldsError().some((f) => f.errors.length > 0);
-  }, [form, watched]);
+  }, [enabled, form, watched]);
 
   return { hasChanges, hasFormErrors };
 };
