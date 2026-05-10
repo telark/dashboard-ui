@@ -3,8 +3,8 @@ import { message } from 'antd';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../../../store';
 import { getCurrentUser } from '../../../auth/utils';
-import { preparePlanThunk, patchPlanThunk } from '../store';
-import type { PatchPlanPayload } from '../clients/protectionPlansClient';
+import { preparePlanThunk, updatePlanThunk } from '../store';
+import type { UpdatePlanPayload } from '../clients';
 import type { ProtectionPlan } from '../models';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
 
@@ -45,13 +45,13 @@ export const usePlanActions = () => {
     [dispatch],
   );
 
-  const handlePatch = useCallback(
-    async (planId: string, payload: PatchPlanPayload): Promise<ProtectionPlan> => {
+  const handleUpdate = useCallback(
+    async (planId: string, payload: UpdatePlanPayload): Promise<ProtectionPlan> => {
       const userId = getCurrentUser()?.id;
       if (!userId) throw new Error(PPC.LABELS.ACTIONS.UPDATE_ERROR);
       setSubmitting(true);
       try {
-        const updated = await dispatch(patchPlanThunk({ userId, planId, payload })).unwrap();
+        const updated = await dispatch(updatePlanThunk({ userId, planId, payload })).unwrap();
         message.success(PPC.LABELS.ACTIONS.UPDATE_SUCCESS(updated.name));
         return updated;
       } catch (err) {
@@ -65,5 +65,5 @@ export const usePlanActions = () => {
     [dispatch],
   );
 
-  return { submitting, handleCreate, handlePatch };
+  return { submitting, handleCreate, handleUpdate };
 };

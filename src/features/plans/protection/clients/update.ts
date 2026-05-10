@@ -1,0 +1,34 @@
+import { Client, discoveryApiClient } from '../../../../api/index';
+import { Endpoints, HTTP_HEADERS } from '../../../../constants';
+import type { ProtectionPlan } from '../models';
+import type { ApiResponse } from './shared';
+
+export interface UpdatePlanPayload {
+  name: string;
+  description?: string;
+  severity?: string;
+  priority?: number;
+  scope: { type: string; applicationIds: string[]; namespaces: string[] };
+  policies: { templateID: string; params: Record<string, string[]> }[];
+  mode: string;
+  timeMode: string;
+  timeRange?: { startAt: string; endAt: string };
+  participantsIDs?: string[];
+}
+
+export const updatePlan = async (
+  userId: string,
+  planId: string,
+  payload: UpdatePlanPayload,
+): Promise<ProtectionPlan> => {
+  const res = await Client<ApiResponse<ProtectionPlan>>(
+    discoveryApiClient,
+    Endpoints.PROTECTION_PLANS.UPDATE(planId).path,
+    {
+      method: 'POST',
+      data: payload,
+      headers: { [HTTP_HEADERS.CUSTOM.USER_ID]: userId },
+    },
+  );
+  return res.data;
+};

@@ -59,7 +59,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
         DUPLICATE_PANEL_TITLE: 'Duplicate Plan',
         CANCEL: 'Cancel',
         EDIT: 'Edit',
-        EDIT_DISABLED_TOOLTIP: 'Cannot edit a terminated or canceled plan.',
+        EDIT_DISABLED_TOOLTIP: 'Reactivate this plan before editing it.',
         REFRESH_HEALTH: 'Refresh health',
         CANCEL_MODAL_TITLE: 'Cancel Protection Plan',
         CANCEL_MODAL_OK: 'Cancel plan',

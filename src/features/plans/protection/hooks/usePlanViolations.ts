@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchPlanViolations } from '../clients/protectionPlansClient';
+import { fetchPlanViolations } from '../clients';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
 import type { PlanViolationsResponse, ViolationResult } from '../models';
 

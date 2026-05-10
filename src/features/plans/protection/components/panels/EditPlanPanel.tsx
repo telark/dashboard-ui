@@ -12,8 +12,7 @@ import { usePlanFormData } from '../../hooks/usePlanFormData';
 import { usePlanActions } from '../../hooks/usePlanActions';
 import { usePlanFormState } from '../../hooks/usePlanFormState';
 import {
-  buildPatchPayload,
-  isPatchEmpty,
+  buildPreparePayload,
   planToFormValues,
   planToPolicies,
 } from '../../utils/planFormValues';
@@ -33,7 +32,7 @@ interface EditPlanPanelProps {
 const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form }) => {
   const [expanded, setExpanded] = useState(false);
   const data = usePlanFormData(open);
-  const { submitting, handlePatch } = usePlanActions();
+  const { submitting, handleUpdate } = usePlanActions();
 
   const initialValues = useMemo<FormValues>(() => planToFormValues(plan), [plan]);
   const initialPolicies = useMemo<PolicyEntry[]>(() => planToPolicies(plan), [plan]);
@@ -59,16 +58,15 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
 
   const handleFinish = useCallback(
     async (values: FormValues) => {
-      const patch = buildPatchPayload({ plan, values, policies });
-      if (isPatchEmpty(patch)) return;
+      const payload = buildPreparePayload({ values, policies });
       try {
-        await handlePatch(plan.id, patch);
+        await handleUpdate(plan.id, payload);
         onClose();
       } catch {
         // surfaced via message in hook
       }
     },
-    [handlePatch, onClose, plan, policies],
+    [handleUpdate, onClose, plan, policies],
   );
 
   const submitDisabled = !hasChanges || hasFormErrors;

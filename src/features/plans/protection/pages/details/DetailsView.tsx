@@ -15,7 +15,7 @@ import {
   fetchProtectionPlanDetailsThunk,
   reactivatePlanThunk,
 } from '../../store';
-import { fetchPlanStatus } from '../../clients/protectionPlansClient';
+import { fetchPlanStatus } from '../../clients';
 import { getCurrentUser } from '../../../../auth/utils';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import type { AppDispatch } from '../../../../../store';
