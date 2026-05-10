@@ -209,6 +209,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       POLICIES_REQUIRED_ERROR: 'Add at least one policy to continue.',
       START_REQUIRED_ERROR: 'Start time is required',
       END_REQUIRED_ERROR: 'End time is required',
+      SEVERITY_REQUIRED_ERROR: 'Severity is required',
     },
     SEVERITY_OPTIONS: [
       { value: 'low', label: 'Low' },

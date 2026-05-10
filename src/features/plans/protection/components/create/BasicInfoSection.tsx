@@ -32,6 +32,7 @@ const BasicInfoSection: React.FC = () => (
           label={FORM.SEVERITY_LABEL}
           style={{ marginBottom: 0 }}
           className={FORM_ITEM_CLASS}
+          rules={[{ required: true, message: FORM.SEVERITY_REQUIRED_ERROR }]}
         >
           <Select
             placeholder="Select severity"
