@@ -60,7 +60,7 @@ const CreatePlanPanel: React.FC<CreatePlanPanelProps> = ({ open, onClose, form }
     [handleCreate, onClose, policies],
   );
 
-  const submitDisabled = hasFormErrors;
+  const submitDisabled = hasFormErrors || policies.length === 0;
 
   return (
     <AnimationWrapper

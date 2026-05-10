@@ -206,6 +206,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       PARTICIPANTS_LABEL: 'Participants',
       PARTICIPANTS_PLACEHOLDER: 'Select participants',
       ADD_POLICY_BUTTON: 'Add policy',
+      POLICIES_REQUIRED_ERROR: 'Add at least one policy to continue.',
     },
     SEVERITY_OPTIONS: [
       { value: 'low', label: 'Low' },

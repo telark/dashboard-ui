@@ -69,7 +69,7 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
     [handleUpdate, onClose, plan, policies],
   );
 
-  const submitDisabled = !hasChanges || hasFormErrors;
+  const submitDisabled = !hasChanges || hasFormErrors || policies.length === 0;
 
   return (
     <AnimationWrapper

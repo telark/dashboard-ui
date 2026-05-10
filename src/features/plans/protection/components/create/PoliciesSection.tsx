@@ -39,32 +39,40 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
         >
           <Select options={PPC.CREATE_PAGE.MODE_OPTIONS} style={{ width: '100%' }} />
         </Form.Item>
-        <Select
-          mode="multiple"
-          placeholder={FORM.ADD_POLICY_BUTTON}
-          style={{ width: '100%' }}
-          value={policies.map((p) => p.templateID)}
-          options={availableTemplates.map((t) => ({ value: t.id, label: t.name }))}
-          onChange={(selectedIds: string[]) => {
-            onPoliciesChange(
-              selectedIds.map((id) => {
-                const existing = policies.find((p) => p.templateID === id);
-                if (existing) return existing;
-                const tpl = templates.find((t) => t.id === id);
-                const initialParams: Record<string, string[]> = {};
-                tpl?.params?.forEach((p) => {
-                  initialParams[p.key] = [];
-                });
-                return { templateID: id, params: initialParams };
-              }),
-            );
-          }}
-          filterOption={(input, option) =>
-            String(option?.label ?? '')
-              .toLowerCase()
-              .includes(input.toLowerCase())
-          }
-        />
+        <Form.Item
+          style={{ marginBottom: 0 }}
+          className={FORM_ITEM_CLASS}
+          validateStatus={policies.length === 0 ? 'error' : ''}
+          help={policies.length === 0 ? FORM.POLICIES_REQUIRED_ERROR : undefined}
+          required
+        >
+          <Select
+            mode="multiple"
+            placeholder={FORM.ADD_POLICY_BUTTON}
+            style={{ width: '100%' }}
+            value={policies.map((p) => p.templateID)}
+            options={availableTemplates.map((t) => ({ value: t.id, label: t.name }))}
+            onChange={(selectedIds: string[]) => {
+              onPoliciesChange(
+                selectedIds.map((id) => {
+                  const existing = policies.find((p) => p.templateID === id);
+                  if (existing) return existing;
+                  const tpl = templates.find((t) => t.id === id);
+                  const initialParams: Record<string, string[]> = {};
+                  tpl?.params?.forEach((p) => {
+                    initialParams[p.key] = [];
+                  });
+                  return { templateID: id, params: initialParams };
+                }),
+              );
+            }}
+            filterOption={(input, option) =>
+              String(option?.label ?? '')
+                .toLowerCase()
+                .includes(input.toLowerCase())
+            }
+          />
+        </Form.Item>
 
         {policies
           .filter((entry) => {
