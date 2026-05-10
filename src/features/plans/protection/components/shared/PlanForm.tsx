@@ -125,7 +125,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
           onPoliciesChange={onPoliciesChange}
           onPolicyParamChange={onPolicyParamChange}
         />
-        <ScheduleSection timeMode={timeMode} />
+        <ScheduleSection timeMode={timeMode} isCreateMode={!isEditMode} />
         <ParticipantsSection
           userOptions={userOptions}
           userMap={userMap}

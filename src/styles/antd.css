@@ -550,3 +550,19 @@
 .role-assignment-select .rc-virtual-list-holder-inner > div > div {
   padding-left: 0 !important;
 }
+
+.plan-date-range {
+  position: relative;
+  padding-bottom: 22px;
+}
+.plan-date-range .ant-form-item {
+  position: relative;
+}
+.plan-date-range .ant-form-item .ant-form-item-explain {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 2px;
+  min-height: 0;
+}
