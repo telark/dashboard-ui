@@ -9,17 +9,37 @@ import {
   ProtectionPlansToolbar,
   NoProtectionPlansState,
 } from '../components';
+import { DATA_VIEW_ERROR_CONSTANTS as DVE, DataViewError } from '../../../../components/shared';
+import { FancySpinner } from '../../../../components/animation';
+import { useLoadingTimeout } from '../../../../hooks/layout/useLoadingTimeout';
+import { userFacingMessage } from '../../../../api';
 
 interface ProtectionPlansListPageProps {
   plans: ProtectionPlan[];
   searchValue: string;
   onSearchChange: (value: string) => void;
   onCreatePlanClick: () => void;
+  loading: boolean;
+  error: string | null;
+  onRetry: () => void;
 }
 
+const buildErrorMessage = (error: string | null, timedOut: boolean): string => {
+  if (timedOut) return DVE.LABELS.TIMEOUT_MESSAGE;
+  if (!error) return DVE.LABELS.GENERIC_MESSAGE;
+  try {
+    return userFacingMessage(new Error(error));
+  } catch {
+    return DVE.LABELS.GENERIC_MESSAGE;
+  }
+};
+
 const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
-  ({ plans, searchValue, onSearchChange, onCreatePlanClick }) => {
+  ({ plans, searchValue, onSearchChange, onCreatePlanClick, loading, error, onRetry }) => {
     const { contentGap } = useAppearance();
+    const hasData = plans.length > 0;
+    const timedOut = useLoadingTimeout({ isLoading: loading, hasError: Boolean(error), hasData });
+
     const filteredPlans = useMemo(() => {
       if (!searchValue) return plans;
       const lower = searchValue.toLowerCase();
@@ -35,6 +55,40 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
         );
       });
     }, [plans, searchValue]);
+
+    let dataRegion: React.ReactNode;
+    if (error || timedOut) {
+      dataRegion = (
+        <DataViewError
+          variant="card"
+          message={buildErrorMessage(error, timedOut)}
+          onRetry={onRetry}
+        />
+      );
+    } else if (loading && !hasData) {
+      dataRegion = (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: 240,
+          }}
+        >
+          <FancySpinner size={40} showLabel />
+        </div>
+      );
+    } else if (filteredPlans.length === 0) {
+      dataRegion = <NoProtectionPlansState />;
+    } else {
+      dataRegion = (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {filteredPlans.map((plan) => (
+            <ProtectionPlanCard key={plan.id} plan={plan} />
+          ))}
+        </div>
+      );
+    }
 
     return (
       <div
@@ -76,15 +130,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
             </div>
           </div>
 
-          {filteredPlans.length === 0 ? (
-            <NoProtectionPlansState />
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              {filteredPlans.map((plan) => (
-                <ProtectionPlanCard key={plan.id} plan={plan} />
-              ))}
-            </div>
-          )}
+          {dataRegion}
         </div>
       </div>
     );

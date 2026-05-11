@@ -11,9 +11,14 @@ export const useUsers = () => {
     dispatch(fetchAllUsersThunk());
   }, [dispatch]);
 
+  const refetch = (): void => {
+    dispatch(fetchAllUsersThunk());
+  };
+
   return {
     users,
     loading,
     error,
+    refetch,
   };
 };

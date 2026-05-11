@@ -14,8 +14,6 @@ import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { applyGroupFilters, mapCategoriesToFilterOptions } from '../utils';
 import type { Group } from '../models';
 import type { Category } from '../../categories/models';
-import GroupsErrorPage from './GroupsErrorPage';
-import GroupsLoadingPage from './GroupsLoadingPage';
 import GroupsEmptyPage from './GroupsEmptyPage';
 import GroupsListPage from './GroupsListPage';
 
@@ -41,7 +39,7 @@ const MainPage: React.FC = () => {
   const [addCategoryPanelOpen, setAddCategoryPanelOpen] = useState(false);
   const [editCategoryPanelOpen, setEditCategoryPanelOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const { groups, loading, error } = useFetchGroups();
+  const { groups, loading, error, refetch } = useFetchGroups();
   const { categories, loading: categoriesLoading } = useCategories(
     CATEGORIES_CONSTANTS.SCOPES.GROUPS,
   );
@@ -177,14 +175,9 @@ const MainPage: React.FC = () => {
     setEditingCategory(null);
   }, []);
 
-  const isFetching = useMemo(
-    () => groups === undefined || loading || categoriesLoading,
-    [groups, loading, categoriesLoading],
-  );
-
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(groups) && groups.length === 0 && !error,
-    [groups, error],
+    () => Array.isArray(groups) && groups.length === 0 && !error && !loading && !categoriesLoading,
+    [groups, error, loading, categoriesLoading],
   );
 
   const pageConfig = useGroupListPageConfig({
@@ -218,10 +211,6 @@ const MainPage: React.FC = () => {
     onSearchSubmit: undefined,
   });
 
-  if (error) {
-    return <GroupsErrorPage error={error} />;
-  }
-
   if (shouldShowEmpty && viewMode === 'groups') {
     return (
       <GroupsEmptyPage
@@ -233,13 +222,16 @@ const MainPage: React.FC = () => {
     );
   }
 
-  if (isFetching) {
-    return <GroupsLoadingPage />;
-  }
+  const augmentedPageConfig = {
+    ...pageConfig,
+    loading: loading || categoriesLoading,
+    error,
+    onRetry: refetch,
+  };
 
   return (
     <GroupsListPage
-      pageConfig={pageConfig}
+      pageConfig={augmentedPageConfig}
       createPanelOpen={createPanelOpen}
       editPanelOpen={editPanelOpen}
       viewPanelOpen={viewPanelOpen}

@@ -7,13 +7,11 @@ import { useUserPanelState } from '../hooks/panels/user/useUserPanelState';
 import { applyUserFilters } from '../utils/filter/applyUserFilters';
 import { CreateUserPanel } from '../panels';
 import type { User } from '../models';
-import UsersErrorPage from './UsersErrorPage';
-import UsersLoadingPage from './UsersLoadingPage';
 import UsersEmptyPage from './UsersEmptyPage';
 import UsersListPage from './UsersListPage';
 
 const MainPage: React.FC = () => {
-  const { users, loading, error } = useUsers();
+  const { users, loading, error, refetch } = useUsers();
   const canCreateUser = usePermission(
     ACTION_PERMISSIONS.users.create.scope,
     ACTION_PERMISSIONS.users.create.level,
@@ -159,17 +157,10 @@ const MainPage: React.FC = () => {
     onSearchSubmit: undefined,
   });
 
-  // Fix: guard empty state render until data is confirmed loaded
-  const isFetching = useMemo(() => loading, [loading]);
-
   const shouldShowEmpty = useMemo(
     () => Array.isArray(users) && usersExcludingSelf.length === 0 && !loading && !error,
     [users, usersExcludingSelf.length, loading, error],
   );
-
-  if (error) {
-    return <UsersErrorPage error={error} />;
-  }
 
   if (shouldShowEmpty) {
     return (
@@ -182,13 +173,11 @@ const MainPage: React.FC = () => {
     );
   }
 
-  if (isFetching) {
-    return <UsersLoadingPage />;
-  }
+  const augmentedPageConfig = { ...pageConfig, loading, error, onRetry: refetch };
 
   return (
     <UsersListPage
-      pageConfig={pageConfig}
+      pageConfig={augmentedPageConfig}
       createPanelOpen={createPanelOpen}
       editPanelOpen={editPanelOpen}
       viewPanelOpen={viewPanelOpen}

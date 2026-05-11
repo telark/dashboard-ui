@@ -18,5 +18,9 @@ export const useProtectionPlans = () => {
     void dispatch(fetchProtectionPlansThunk());
   }, [dispatch]);
 
-  return { plans, loading, error };
+  const refetch = (): void => {
+    void dispatch(fetchProtectionPlansThunk());
+  };
+
+  return { plans, loading, error, refetch };
 };

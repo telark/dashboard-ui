@@ -10,6 +10,7 @@ import { roleReducer as rolesReducer } from '../features/access-and-permissions/
 import { authConfigReducer, passkeyReducer, permissionsReducer } from '../features/auth/store';
 import { notificationsReducer } from '../features/notifications/store';
 import { retryReducer } from '../features/shared/retry';
+import { apiHealthReducer } from '../api/store';
 import {
   applicationsPersistConfig,
   retryPersistConfig,
@@ -38,6 +39,7 @@ const store = configureStore({
     authConfig: authConfigReducer,
     notifications: notificationsReducer,
     protectionPlans: protectionPlansReducer,
+    apiHealth: apiHealthReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

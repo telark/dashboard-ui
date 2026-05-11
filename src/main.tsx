@@ -13,9 +13,15 @@ import { listApplicationSyncInFlight } from './features/resources/applications/u
 import { forceSyncApplication } from './features/resources/applications/utils/management/sync';
 import { ensureGlobalConfigThunk } from './features/globalconfig/store';
 import { AppearanceProvider } from './features/settings/sections/appearance';
+import { registerHealthInterceptors, selectServiceHealth } from './api';
 import './styles/index.css';
 import './styles/antd.css';
 import './styles/actionConfirmModal.css';
+
+registerHealthInterceptors({
+  getServiceHealth: (name) => selectServiceHealth(store.getState(), name),
+  dispatch: (action) => store.dispatch(action),
+});
 
 const persistor = persistStore(store);
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);

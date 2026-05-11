@@ -66,7 +66,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
         REACTIVATE: 'Reactivate',
         REACTIVATE_MODAL_TITLE: 'Reactivate Protection Plan',
         REACTIVATE_MODAL_BODY:
-          "Reactivate this protection plan? Its policies will be re-deployed to the cluster.",
+          'Reactivate this protection plan? Its policies will be re-deployed to the cluster.',
         REACTIVATE_MODAL_OK: 'Reactivate',
         REACTIVATE_DISABLED_EXPIRED_TOOLTIP:
           "The plan's time range has expired. Edit the plan to set new dates before reactivating.",

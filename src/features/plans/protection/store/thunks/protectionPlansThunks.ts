@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import logger from '../../../../../logging';
+import logger, { logErrorOnce } from '../../../../../logging';
 import { STORE_ACTIONS, STORE_ERRORS, STORE_MESSAGES } from '../../../../../constants/store/store';
 import { extractErrorMessage } from '../../../../../utils/helpers/format';
 import {
@@ -22,7 +22,11 @@ export const fetchProtectionPlansThunk = createAsyncThunk<ProtectionPlan[]>(
     try {
       return await fetchProtectionPlans();
     } catch (error: unknown) {
-      logger.error(STORE_MESSAGES.ERROR_FETCHING_PROTECTION_PLANS, error);
+      logErrorOnce(
+        'protectionPlans/fetchAll',
+        STORE_MESSAGES.ERROR_FETCHING_PROTECTION_PLANS,
+        error,
+      );
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_PROTECTION_PLANS));
     }
   },
@@ -34,7 +38,11 @@ export const fetchProtectionPlanDetailsThunk = createAsyncThunk<ProtectionPlan, 
     try {
       return await fetchProtectionPlanById(planId);
     } catch (error: unknown) {
-      logger.error(STORE_MESSAGES.ERROR_FETCHING_PROTECTION_PLAN_DETAILS, error);
+      logErrorOnce(
+        `protectionPlans/fetchDetails:${planId}`,
+        STORE_MESSAGES.ERROR_FETCHING_PROTECTION_PLAN_DETAILS,
+        error,
+      );
       return rejectWithValue(
         extractErrorMessage(error, STORE_ERRORS.FETCH_PROTECTION_PLAN_DETAILS),
       );

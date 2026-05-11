@@ -16,8 +16,6 @@ import { usePasskeyPanelState, usePasskeyActions } from '../../hooks';
 import { usePasskeyListPageConfig } from '../../hooks/passkeys/usePasskeyListPageConfig';
 import { sortPasskeys } from '../../components/passkeys/list/utils';
 import type { Passkey } from '../../models/passkeys';
-import PasskeysErrorPage from './PasskeysErrorPage';
-import PasskeysLoadingPage from './PasskeysLoadingPage';
 import PasskeysEmptyPage from './PasskeysEmptyPage';
 import PasskeysListPage from './PasskeysListPage';
 import type { PasskeyBreadcrumbItem } from './PasskeysListPage';
@@ -137,16 +135,10 @@ const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSet
     onCreatePasskeyClick: openCreatePanel,
   });
 
-  const isFetching = useMemo(() => passkeys.length === 0 && loading, [passkeys.length, loading]);
-
   const shouldShowEmpty = useMemo(
     () => Array.isArray(passkeys) && passkeys.length === 0 && !loading && !error,
     [passkeys, loading, error],
   );
-
-  if (error) {
-    return <PasskeysErrorPage error={error} />;
-  }
 
   if (shouldShowEmpty) {
     return (
@@ -169,13 +161,20 @@ const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSet
     );
   }
 
-  if (isFetching) {
-    return <PasskeysLoadingPage />;
-  }
+  const refetchPasskeys = (): void => {
+    dispatch(fetchAllPasskeysThunk());
+  };
+
+  const augmentedPageConfig = {
+    ...pageConfig,
+    loading,
+    error,
+    onRetry: refetchPasskeys,
+  };
 
   return (
     <PasskeysListPage
-      pageConfig={pageConfig}
+      pageConfig={augmentedPageConfig}
       passkeys={filteredAndSortedPasskeys}
       allPasskeys={passkeys}
       searchTerm={searchTerm}

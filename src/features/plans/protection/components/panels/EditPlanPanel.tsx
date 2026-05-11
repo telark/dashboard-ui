@@ -11,11 +11,7 @@ import type { ProtectionPlan } from '../../models';
 import { usePlanFormData } from '../../hooks/usePlanFormData';
 import { usePlanActions } from '../../hooks/usePlanActions';
 import { usePlanFormState } from '../../hooks/usePlanFormState';
-import {
-  buildPreparePayload,
-  planToFormValues,
-  planToPolicies,
-} from '../../utils/planFormValues';
+import { buildPreparePayload, planToFormValues, planToPolicies } from '../../utils/planFormValues';
 
 const PANEL_WIDTH = 720;
 const PANEL_WIDTH_EXPANDED = 1400;
@@ -78,8 +74,7 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
     [handleUpdate, handleClose, plan, policies],
   );
 
-  const submitDisabled =
-    !hasChanges || policies.length === 0 || (attemptedSubmit && hasFormErrors);
+  const submitDisabled = !hasChanges || policies.length === 0 || (attemptedSubmit && hasFormErrors);
 
   const handleSubmitClick = () => {
     setAttemptedSubmit(true);

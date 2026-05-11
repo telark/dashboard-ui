@@ -100,9 +100,7 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
     if (!userId) return;
     setReactivating(true);
     try {
-      const updated = await dispatch(
-        reactivatePlanThunk({ userId, planId: details.id }),
-      ).unwrap();
+      const updated = await dispatch(reactivatePlanThunk({ userId, planId: details.id })).unwrap();
       message.success(PPC.LABELS.ACTIONS.REACTIVATE_SUCCESS(updated.name));
       setReactivateModalOpen(false);
     } catch (err) {

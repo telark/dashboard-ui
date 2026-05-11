@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { validateSession } from './validation';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
@@ -16,10 +16,17 @@ export const useSessionExpirationCheck = ({
   isAuthRoute,
   onSessionExpired,
 }: UseSessionExpirationCheckOptions): void => {
+  const lastErrorSignatureRef = useRef<string | null>(null);
+
   useEffect(() => {
     if (!isAuthenticated || isAuthRoute) {
       return;
     }
+
+    const errorSignature = (error: unknown): string => {
+      if (error instanceof Error) return `${error.name}:${error.message}`;
+      return String(error);
+    };
 
     const checkSessionExpiration = async () => {
       try {
@@ -27,15 +34,19 @@ export const useSessionExpirationCheck = ({
         if (validationResult.isExpired) {
           onSessionExpired();
         }
+        lastErrorSignatureRef.current = null;
       } catch (error) {
-        // Only log unexpected errors, not session expiration (410) responses
         const axiosError = error as { normalized?: { status: number } };
         const isSessionExpiredError =
           axiosError.normalized?.status === HTTP_STATUS.GONE ||
           (error as { response?: { status: number } })?.response?.status === HTTP_STATUS.GONE;
-        if (!isSessionExpiredError && isDevelopment()) {
-          logger.error('Error checking session expiration:', error);
+        if (isSessionExpiredError || !isDevelopment()) {
+          return;
         }
+        const signature = errorSignature(error);
+        if (signature === lastErrorSignatureRef.current) return;
+        lastErrorSignatureRef.current = signature;
+        logger.error('Error checking session expiration:', error);
       }
     };
 
