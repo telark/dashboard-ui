@@ -1,6 +1,6 @@
 export const DATA_VIEW_ERROR_CONSTANTS = {
   LABELS: {
-    DEFAULT_TITLE: "Couldn't load this list",
+    DEFAULT_TITLE: "Couldn't load this content",
     GENERIC_MESSAGE: 'Something went wrong while loading. Please try again.',
     TIMEOUT_MESSAGE: 'Taking longer than expected. Try again.',
     RETRY_BUTTON: 'Retry',

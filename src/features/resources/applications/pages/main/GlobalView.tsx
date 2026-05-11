@@ -1,13 +1,9 @@
 import React, { memo, useEffect, useCallback, useRef, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Form, message } from 'antd';
+import { Form } from 'antd';
 import type { RootState, AppDispatch } from '../../../../../store';
 import { loadApplications, loadApplicationsSilent } from '../../utils/management/state';
-import logger from '../../../../../logging';
-import { APPLICATIONS_CONSTANTS, APPLICATIONS_PAGE_SIZE, APPLICATIONS_UI } from '../../constants';
-import { executeRetryWithBackoff, RETRY_STATUS } from '../../../../shared/retry';
-import ApplicationsLoadingPage from './LoadingPage';
-import ReachabilityErrorView from '../../../../../components/display/views/ReachabilityErrorView';
+import { APPLICATIONS_PAGE_SIZE, APPLICATIONS_UI } from '../../constants';
 import ApplicationsMainEmpty from './Empty';
 import ApplicationsSuccess from './Success';
 import { filterApplications, useApplications } from '../../hooks';
@@ -41,16 +37,11 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   const excludedNamespaces = useSelector(
     (s: RootState) => s.globalconfig.data?.excludedNamespaces ?? [],
   );
-  const retryState = useSelector((s: RootState) => s.retry.byKey[APPLICATIONS_CONSTANTS.RETRY.KEY]);
-  const [messageApi, messageContextHolder] = message.useMessage();
-  const [retryTickMs, setRetryTickMs] = useState(0);
-
   const visibleApplications = useMemo(
     () => filterByExcludedNamespaces(applications, excludedNamespaces),
     [applications, excludedNamespaces],
   );
   const hasTriggeredInitialLoad = useRef(false);
-  const retryInFlightRef = useRef(false);
 
   const { searchValue, onSearchChange } = useApplications();
   const [editForm] = Form.useForm();
@@ -181,81 +172,12 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     return () => clearInterval(interval);
   }, [dispatch, fetchIntervalSeconds]);
 
-  useEffect(() => {
-    if ((!error && !retryState) || retryInFlightRef.current) return;
-    retryInFlightRef.current = true;
-    void executeRetryWithBackoff({
-      key: APPLICATIONS_CONSTANTS.RETRY.KEY,
-      execute: () => loadApplicationsSilent(dispatch),
-      isContextActive: () => document.visibilityState === 'visible',
-      onAttemptFailed: (attempt, retryError) => {
-        logger.error(APPLICATIONS_CONSTANTS.MESSAGES.RETRY_ATTEMPT_LOG, {
-          key: APPLICATIONS_CONSTANTS.RETRY.KEY,
-          attempt,
-          error: retryError,
-        });
-        messageApi.open({
-          key: APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY,
-          type: 'error',
-          content: APPLICATIONS_CONSTANTS.MESSAGES.RETRY_FAILED_ATTEMPT,
-        });
-      },
-    }).finally(() => {
-      retryInFlightRef.current = false;
-    });
-  }, [dispatch, error, messageApi, retryState]);
-
-  useEffect(() => {
-    const timer = setInterval(() => setRetryTickMs(Date.now()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    if (!retryState) {
-      messageApi.destroy(APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY);
-      return;
-    }
-    if (retryState.status === RETRY_STATUS.RETRYING) {
-      return;
-    }
-    messageApi.destroy(APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY);
-    if (retryState.status === RETRY_STATUS.SUCCESS) {
-      messageApi.open({
-        key: APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY,
-        type: 'success',
-        content: APPLICATIONS_CONSTANTS.MESSAGES.SUCCESS,
-      });
-    }
-  }, [messageApi, retryState]);
-
-  const retryCount = retryState?.attempt ?? 0;
-  const nextRetryIn = Math.max(0, (retryState?.nextAttemptAt ?? 0) - retryTickMs);
-
-  const handleCancelRetry = useCallback(() => {
-    messageApi.destroy(APPLICATIONS_CONSTANTS.RETRY.MESSAGE_KEY);
-  }, [messageApi]);
-
-  if (loading) {
-    return <ApplicationsLoadingPage />;
-  }
-
-  if (error || retryState) {
-    return (
-      <ReachabilityErrorView
-        retryCount={retryCount}
-        nextRetryIn={nextRetryIn}
-        onCancel={handleCancelRetry}
-      />
-    );
-  }
-
-  if (!loading && visibleApplications.length === 0) {
+  if (!loading && !error && visibleApplications.length === 0) {
     return <ApplicationsMainEmpty onRefresh={handleLoadApplications} />;
   }
 
   return (
     <>
-      {messageContextHolder}
       <ApplicationsSuccess
         applications={paginatedApplications}
         searchValue={searchValue}
@@ -308,6 +230,9 @@ const ApplicationsGlobalView: React.FC = memo(() => {
         onClearSelection={() => dispatch(setSelectedNames([]))}
         healthQuickFilter={healthQuickFilter}
         onHealthQuickFilterChange={(next) => dispatch(setHealthQuickFilter(next))}
+        loading={loading}
+        error={error}
+        onRetry={handleLoadApplications}
       />
       <EditApplicationPanel
         open={editTarget != null}

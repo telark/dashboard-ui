@@ -219,19 +219,8 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
   );
 };
 
-const PageLayout = memo(PageLayoutComponent, (prevProps, nextProps) => {
-  const columnsChanged = prevProps.config.columns !== nextProps.config.columns;
-  const dataChanged = prevProps.config.data !== nextProps.config.data;
-
-  return (
-    !columnsChanged &&
-    !dataChanged &&
-    prevProps.config.title === nextProps.config.title &&
-    prevProps.config.subtitle === nextProps.config.subtitle &&
-    prevProps.config.data.length === nextProps.config.data.length &&
-    prevProps.config.columns.length === nextProps.config.columns.length &&
-    JSON.stringify(prevProps.config.breadcrumbs) === JSON.stringify(nextProps.config.breadcrumbs)
-  );
-}) as <T = unknown>(props: { config: PageLayoutConfig<T> }) => React.ReactElement;
+const PageLayout = memo(PageLayoutComponent) as <T = unknown>(props: {
+  config: PageLayoutConfig<T>;
+}) => React.ReactElement;
 
 export default PageLayout;

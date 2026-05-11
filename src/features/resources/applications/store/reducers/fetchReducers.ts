@@ -41,14 +41,20 @@ export const handleFetchApplicationsRejected = (
 };
 
 export const handleFetchApplicationsSilentPending = (state: ApplicationsState) => {
-  state.error = null;
+  // Silent polling must not clobber visible error state; the visible fetchAll
+  // thunk owns loading/error transitions. Touch state to satisfy reducer shape.
+  void state;
 };
 
 export const handleFetchApplicationsSilentRejected = (
   state: ApplicationsState,
   action: PayloadAction<unknown>,
 ) => {
-  state.error = String(action.payload || STORE_ERRORS.FETCH_APPLICATIONS);
+  // Only surface error when there's no successful data already; otherwise the
+  // visible list stays and the silent refresh failure is suppressed.
+  if (!state.applications || state.applications.length === 0) {
+    state.error = String(action.payload || STORE_ERRORS.FETCH_APPLICATIONS);
+  }
 };
 
 export const handleFetchApplicationDetailsPending = (state: ApplicationsState) => {

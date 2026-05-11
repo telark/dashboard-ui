@@ -12,6 +12,9 @@ import ApplicationDeleteModal from '../../components/delete/ApplicationDeleteMod
 import { deleteApplicationThunk } from '../../store';
 import { forceSyncApplication } from '../../utils/management/sync';
 import { APPLICATIONS_UI } from '../../constants';
+import { DataViewError } from '../../../../../components/shared';
+import { FancySpinner } from '../../../../../components/animation';
+import { useDataViewState } from '../../../../../hooks/layout/useDataViewState';
 
 interface ApplicationsSuccessProps {
   applications: Application[];
@@ -41,6 +44,9 @@ interface ApplicationsSuccessProps {
   onClearSelection: () => void;
   healthQuickFilter: 'all' | 'healthy' | 'degraded' | 'unhealthy';
   onHealthQuickFilterChange: (next: 'all' | 'healthy' | 'degraded' | 'unhealthy') => void;
+  loading: boolean;
+  error: string | null;
+  onRetry: () => void;
 }
 
 const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
@@ -67,11 +73,15 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
     onClearSelection,
     healthQuickFilter,
     onHealthQuickFilterChange,
+    loading,
+    error,
+    onRetry,
   }) => {
     const dispatch: AppDispatch = useDispatch();
     const layoutMode = useSelector((s: RootState) => s.applications.layoutMode);
     const { contentGap } = useAppearance();
     const hasApps = applications.length > 0;
+    const dataState = useDataViewState({ loading, error, hasData: hasApps });
     const selectedSet = useMemo(() => new Set(selectedNames), [selectedNames]);
     const selectedCount = selectedNames.length;
     const [bulkDeleteOpen, setBulkDeleteOpen] = React.useState(false);
@@ -184,7 +194,20 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
           </div>
 
           <div style={{ marginTop: -20 }}>
-            {!hasApps && hasActiveFilters ? (
+            {dataState.phase === 'error' ? (
+              <DataViewError variant="card" message={dataState.errorMessage} onRetry={onRetry} />
+            ) : dataState.phase === 'loading' ? (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  minHeight: 240,
+                }}
+              >
+                <FancySpinner size={40} showLabel />
+              </div>
+            ) : !hasApps && hasActiveFilters ? (
               <div style={{ textAlign: 'center', padding: '48px 24px' }}>
                 <p style={{ marginBottom: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
                   No applications match the current filters.
