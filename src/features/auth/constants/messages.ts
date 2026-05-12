@@ -98,5 +98,6 @@ export const AUTH_CONSTANTS = {
     LOGS: {
       SERVER_ERROR: 'Server logout returned error; local session cleared regardless',
     },
+    URL_TAG: 'auth/logout',
   },
 } as const;

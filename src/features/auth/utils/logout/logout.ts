@@ -1,5 +1,5 @@
 import { logout } from '../../clients/logout';
-import { removeSessionToken } from '../session/token';
+import { getSessionToken, removeSessionToken } from '../session/token';
 import { clearPermissions } from '../../store/slices/permissionsSlice';
 import { stopPermissionsPolling } from '../../hooks/permissions/useInitializePermissions';
 import store from '../../../../store';
@@ -15,16 +15,19 @@ export const handleUserLogout = async (
   navigate: (path: string) => void,
   message?: LogoutMessageApi,
 ): Promise<void> => {
+  const sessionToken = getSessionToken();
   stopPermissionsPolling();
-  void logout().catch((error: unknown) => {
+  try {
+    await logout(sessionToken);
+  } catch (error: unknown) {
     logger.warn(AUTH_CONSTANTS.LOGOUT.LOGS.SERVER_ERROR, { error });
-  });
+  }
   try {
     removeSessionToken();
   } catch {
     // Ignore session removal errors during logout
   }
   store.dispatch(clearPermissions());
-  navigate(APP_ROUTES.LOGIN);
   message?.success(AUTH_SUCCESS_MESSAGES.LOGOUT_SUCCESS);
+  navigate(APP_ROUTES.LOGIN);
 };
