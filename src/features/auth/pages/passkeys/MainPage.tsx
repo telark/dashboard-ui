@@ -136,8 +136,8 @@ const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSet
   });
 
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(passkeys) && passkeys.length === 0 && !loading && !error,
-    [passkeys, loading, error],
+    () => Array.isArray(passkeys) && passkeys.length === 0 && !error,
+    [passkeys, error],
   );
 
   if (shouldShowEmpty) {

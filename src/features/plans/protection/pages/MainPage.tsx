@@ -10,12 +10,14 @@ const MainPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const { createPanelOpen, createForm, openCreatePanel, closeCreatePanel } = usePlanPanelState();
 
+  const hasData = Array.isArray(plans) && plans.length > 0;
+
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(plans) && plans.length === 0 && !loading && !error,
-    [plans, loading, error],
+    () => Array.isArray(plans) && plans.length === 0 && !error,
+    [plans, error],
   );
 
-  if (shouldShowEmpty) {
+  if (!hasData && shouldShowEmpty) {
     return (
       <>
         <ProtectionPlansEmptyPage onCreatePlanClick={openCreatePanel} />

@@ -137,14 +137,9 @@ const MainPage: React.FC = () => {
     onSearchChange: setSearchTerm,
   });
 
-  const hasFetchedRoles = Array.isArray(roles) && roles.length > 0;
   const shouldShowEmpty = useMemo(
-    () =>
-      Array.isArray(roles) &&
-      customRoles.length === 0 &&
-      !error &&
-      (hasFetchedRoles || !loading),
-    [roles, customRoles.length, error, hasFetchedRoles, loading],
+    () => Array.isArray(roles) && customRoles.length === 0 && !error,
+    [roles, customRoles.length, error],
   );
 
   const augmentedPageConfig = { ...pageConfig, loading, error, onRetry: refetch };
@@ -156,6 +151,7 @@ const MainPage: React.FC = () => {
       form={createForm as FormInstance<RoleFormValues>}
     />
   ) : null;
+
 
   if (shouldShowEmpty) {
     return (

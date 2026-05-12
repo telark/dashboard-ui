@@ -176,8 +176,8 @@ const MainPage: React.FC = () => {
   }, []);
 
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(groups) && groups.length === 0 && !error && !loading && !categoriesLoading,
-    [groups, error, loading, categoriesLoading],
+    () => Array.isArray(groups) && groups.length === 0 && !error,
+    [groups, error],
   );
 
   const pageConfig = useGroupListPageConfig({
