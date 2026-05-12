@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from 'react';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import { SETTINGS_CONSTANTS } from '../../constants';
 import { useProfileUser } from './hooks/useProfileUser';
 import { useEditProfile } from './hooks/useEditProfile';
@@ -15,6 +15,7 @@ const { CONTENT } = SETTINGS_CONSTANTS;
 const { LABELS } = PROFILE_SECTION_CONSTANTS;
 
 const ProfileSectionContent: React.FC = memo(() => {
+  const { message } = AntdApp.useApp();
   const { currentUser, refetch } = useProfileUser();
   const handleAvatarChange = useCallback(
     async (avatar: UserAvatar) => {
@@ -32,7 +33,7 @@ const ProfileSectionContent: React.FC = memo(() => {
         message.error(LABELS.AVATAR_UPDATE_ERROR);
       }
     },
-    [currentUser, refetch],
+    [currentUser, refetch, message],
   );
   const {
     panelOpen,

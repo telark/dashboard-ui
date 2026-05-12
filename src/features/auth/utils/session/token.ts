@@ -1,6 +1,7 @@
 import type { InternalAxiosRequestConfig } from 'axios';
 import { STORAGE_KEYS } from '../../../../constants/store/store';
 import { LOGIN_CONSTANTS } from '../../constants/login';
+import { AUTH_CONSTANTS } from '../../constants';
 import { HTTP_HEADERS } from '../../../../constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
@@ -65,6 +66,12 @@ export const hasSessionToken = (): boolean => {
 
 export const createSessionTokenInterceptor = () => {
   return (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+    if (config.url?.includes(AUTH_CONSTANTS.LOGOUT.URL_TAG)) {
+      return config;
+    }
+    if (config.headers?.[HTTP_HEADERS.CUSTOM.SESSION_TOKEN]) {
+      return config;
+    }
     const sessionToken = getSessionToken();
     if (sessionToken && config.headers) {
       config.headers[HTTP_HEADERS.CUSTOM.SESSION_TOKEN] = sessionToken;

@@ -12,7 +12,7 @@ export interface DisabledTimeConfig {
 
 export interface DatePickerProps {
   value?: Dayjs | string;
-  onChange?: (date: Dayjs | null, dateString: string | string[]) => void;
+  onChange?: (date: Dayjs | null, dateString: string | null) => void;
   placeholder?: string;
   format?: string;
   showTime?: boolean;
@@ -37,7 +37,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   className,
   allowClear = true,
 }) => {
-  const handleChange = (date: Dayjs | null, dateString: string | string[]) => {
+  const handleChange = (date: Dayjs | null, dateString: string | null) => {
     if (onChange && date) {
       // Always set seconds to 00
       const dateWithZeroSeconds = date.second(0).millisecond(0);

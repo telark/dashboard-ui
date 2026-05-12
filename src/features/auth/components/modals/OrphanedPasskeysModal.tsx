@@ -44,7 +44,7 @@ const OrphanedPasskeysModal: React.FC<OrphanedPasskeysModalProps> = ({
       destroyOnHidden
       styles={{
         body: { padding: '24px', minHeight: 'auto' },
-        content: { borderRadius: 16, overflow: 'hidden' },
+        container: { borderRadius: 16, overflow: 'hidden' },
       }}
       closeIcon={
         <span style={{ display: 'inline-flex', alignItems: 'center', padding: '0 20px' }}>

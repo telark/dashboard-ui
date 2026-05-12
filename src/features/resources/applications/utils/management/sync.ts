@@ -1,5 +1,4 @@
 import store from '../../../../../store';
-import { APPLICATION_SYNC_CONFIG } from '../../../../../config/syncConfig';
 import { triggerApplicationSync } from '../../clients';
 import { APPLICATIONS_PERSIST_KEY } from '../../constants';
 import {
@@ -7,6 +6,7 @@ import {
   endSync,
   setSyncCompletedAt,
   setSyncStatus,
+  setSyncLastError,
 } from '../../store/slices/applicationsSlice';
 import {
   clearApplicationSyncInFlight,
@@ -30,6 +30,12 @@ function persistSyncStateImmediately(name: string): void {
   }
 }
 
+function extractErrorMessage(err: unknown): string {
+  if (err instanceof Error && err.message) return err.message;
+  if (typeof err === 'string' && err.length > 0) return err;
+  return 'Force sync request failed.';
+}
+
 export const forceSyncApplication = async (name: string): Promise<void> => {
   if (!name) return;
 
@@ -40,24 +46,15 @@ export const forceSyncApplication = async (name: string): Promise<void> => {
     store.dispatch(startSync(name));
     store.dispatch(setSyncStatus({ name, status: 'syncing' }));
     store.dispatch(setSyncCompletedAt({ name }));
+    store.dispatch(setSyncLastError({ name }));
     persistSyncStateImmediately(name);
     markApplicationSyncInFlight(name);
 
-    const res = await triggerApplicationSync(name);
-    const status = String(res?.data?.status || '').trim();
-
-    if (status !== 'success') {
-      store.dispatch(setSyncStatus({ name, status: 'failed' }));
-      store.dispatch(setSyncCompletedAt({ name, completedAt: new Date().toISOString() }));
-      return;
-    }
-
-    store.dispatch(APPLICATION_SYNC_CONFIG.fetchAllResourcesThunk());
-    store.dispatch(setSyncStatus({ name, status: 'success' }));
-    store.dispatch(setSyncCompletedAt({ name, completedAt: new Date().toISOString() }));
-  } catch {
+    await triggerApplicationSync(name);
+  } catch (err) {
     store.dispatch(setSyncStatus({ name, status: 'failed' }));
     store.dispatch(setSyncCompletedAt({ name, completedAt: new Date().toISOString() }));
+    store.dispatch(setSyncLastError({ name, error: extractErrorMessage(err) }));
   } finally {
     clearApplicationSyncInFlight(name);
     store.dispatch(endSync(name));
@@ -73,21 +70,13 @@ export const retryFailedSyncApplication = async (name: string): Promise<void> =>
 
   try {
     markApplicationSyncInFlight(name);
-    const res = await triggerApplicationSync(name);
-    const status = String(res?.data?.status || '').trim();
-
-    if (status !== 'success') {
-      store.dispatch(setSyncStatus({ name, status: 'failed' }));
-      store.dispatch(setSyncCompletedAt({ name, completedAt: new Date().toISOString() }));
-      return;
-    }
-
-    store.dispatch(APPLICATION_SYNC_CONFIG.fetchAllResourcesThunk());
-    store.dispatch(setSyncStatus({ name, status: 'success' }));
-    store.dispatch(setSyncCompletedAt({ name, completedAt: new Date().toISOString() }));
-  } catch {
+    await triggerApplicationSync(name);
+    store.dispatch(setSyncStatus({ name, status: 'syncing' }));
+    store.dispatch(setSyncLastError({ name }));
+  } catch (err) {
     store.dispatch(setSyncStatus({ name, status: 'failed' }));
     store.dispatch(setSyncCompletedAt({ name, completedAt: new Date().toISOString() }));
+    store.dispatch(setSyncLastError({ name, error: extractErrorMessage(err) }));
   } finally {
     clearApplicationSyncInFlight(name);
   }

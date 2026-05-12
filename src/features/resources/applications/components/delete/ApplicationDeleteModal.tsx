@@ -4,7 +4,7 @@ import { APPLICATIONS_UI } from '../../constants';
 
 interface ApplicationDeleteModalProps {
   open: boolean;
-  onClose: (e?: React.MouseEvent) => void;
+  onClose: (e?: React.MouseEvent | React.KeyboardEvent) => void;
   onConfirm: () => Promise<void>;
   applicationNames: string[];
   loading: boolean;

@@ -57,7 +57,7 @@ export const AUTH_ERROR_MESSAGES = {
 export const AUTH_SUCCESS_MESSAGES = {
   LOGIN_SUCCESS: 'Login successful',
   REGISTER_SUCCESS: 'Passkey registered successfully',
-  LOGOUT_SUCCESS: 'Logged out successfully',
+  LOGOUT_SUCCESS: 'You have been signed out.',
   PASSKEY_CREATED: 'Passkey created successfully',
   PASSKEY_UPDATED: 'Passkey updated successfully',
   PASSKEY_DELETED: 'Passkey deleted successfully',
@@ -93,5 +93,11 @@ export const AUTH_CONSTANTS = {
         HANDLE_LOGIN_ERROR: 'Error in handleGoToLogin:',
       },
     },
+  },
+  LOGOUT: {
+    LOGS: {
+      SERVER_ERROR: 'Server logout returned error; local session cleared regardless',
+    },
+    URL_TAG: 'auth/logout',
   },
 } as const;

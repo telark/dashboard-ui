@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { Form, message } from 'antd';
+import { Form, App as AntdApp } from 'antd';
 import { updateUser } from '../../../../access-and-permissions/users/clients';
 import { setCurrentUser } from '../../../../auth/utils/session/user';
 import {
@@ -45,6 +45,7 @@ export function useEditProfile({
   currentUser,
   refetch,
 }: UseEditProfileOptions): UseEditProfileResult {
+  const { message } = AntdApp.useApp();
   const [form] = Form.useForm<EditProfileFormValues>();
   const [panelOpen, setPanelOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -116,7 +117,7 @@ export function useEditProfile({
         setSubmitting(false);
       }
     },
-    [currentUser, refetch],
+    [currentUser, refetch, message],
   );
 
   const handleValuesChange = useCallback(() => {

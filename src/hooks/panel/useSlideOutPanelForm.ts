@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Form } from 'antd';
-import type { FormInstance } from 'antd/es/form';
+import type { FormInstance } from 'antd';
 import logger from '../../logging';
 
 interface UseSlideOutPanelFormOptions {

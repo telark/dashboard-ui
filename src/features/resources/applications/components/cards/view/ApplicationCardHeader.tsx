@@ -83,6 +83,9 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
     const syncCompletedAt = useSelector(
       (s: RootState) => s.applications.syncCompletedAt?.[application.name],
     );
+    const syncLastError = useSelector(
+      (s: RootState) => s.applications.syncLastError?.[application.name],
+    );
     const [menuOpen, setMenuOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
@@ -296,27 +299,31 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
           </div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
             {syncStatus ? (
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 5,
-                  background: SYNC_TAG_CONFIG[syncStatus].bg,
-                  color: SYNC_TAG_CONFIG[syncStatus].color,
-                  padding: '2px 10px',
-                  borderRadius: 999,
-                  fontWeight: 700,
-                  fontSize: 11,
-                }}
+              <Tooltip
+                title={syncStatus === 'failed' && syncLastError ? syncLastError : undefined}
               >
-                {SYNC_TAG_CONFIG[syncStatus].icon}
-                <span>{SYNC_TAG_CONFIG[syncStatus].label}</span>
-                {!isSyncing && syncCompletedAt ? (
-                  <span style={{ fontWeight: 500 }}>
-                    · <TimeAgo date={syncCompletedAt} />
-                  </span>
-                ) : null}
-              </span>
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 5,
+                    background: SYNC_TAG_CONFIG[syncStatus].bg,
+                    color: SYNC_TAG_CONFIG[syncStatus].color,
+                    padding: '2px 10px',
+                    borderRadius: 999,
+                    fontWeight: 700,
+                    fontSize: 11,
+                  }}
+                >
+                  {SYNC_TAG_CONFIG[syncStatus].icon}
+                  <span>{SYNC_TAG_CONFIG[syncStatus].label}</span>
+                  {!isSyncing && syncCompletedAt ? (
+                    <span style={{ fontWeight: 500 }}>
+                      · <TimeAgo date={syncCompletedAt} />
+                    </span>
+                  ) : null}
+                </span>
+              </Tooltip>
             ) : null}
             <RowTag
               text={primaryNamespace}

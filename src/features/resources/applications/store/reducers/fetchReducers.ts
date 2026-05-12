@@ -1,6 +1,40 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { ApplicationsState, Application } from '../../models';
+import type { Application, ApplicationsState, SyncStatusValue } from '../../models';
+import { FORCE_SYNC_PHASE } from '../../constants';
 import { STORE_ERRORS } from '../../../../../constants/store/store';
+
+function applyForceSyncStateFromApplications(state: ApplicationsState, apps: Application[]): void {
+  if (!state.syncStatus) state.syncStatus = {};
+  if (!state.syncCompletedAt) state.syncCompletedAt = {};
+  if (!state.syncLastError) state.syncLastError = {};
+  for (const app of apps || []) {
+    const block = app?.lastForceSync;
+    if (!app?.name || !block?.phase) continue;
+    const mapped: SyncStatusValue | null = mapPhaseToSyncStatus(block.phase);
+    if (!mapped) continue;
+    state.syncStatus[app.name] = mapped;
+    if (block.completedAt) state.syncCompletedAt[app.name] = block.completedAt;
+    if (block.phase === FORCE_SYNC_PHASE.FAILED && block.error) {
+      state.syncLastError[app.name] = block.error;
+    } else if (block.phase === FORCE_SYNC_PHASE.COMPLETED) {
+      delete state.syncLastError[app.name];
+    }
+  }
+}
+
+function mapPhaseToSyncStatus(phase: string): SyncStatusValue | null {
+  switch (phase) {
+    case FORCE_SYNC_PHASE.QUEUED:
+    case FORCE_SYNC_PHASE.RUNNING:
+      return 'syncing';
+    case FORCE_SYNC_PHASE.COMPLETED:
+      return 'success';
+    case FORCE_SYNC_PHASE.FAILED:
+      return 'failed';
+    default:
+      return null;
+  }
+}
 
 export const handleFetchApplicationsPending = (state: ApplicationsState) => {
   state.loading = true;
@@ -14,6 +48,7 @@ export const handleFetchApplicationsFulfilled = (
   state.loading = false;
   state.applications = action.payload;
   state.error = null;
+  applyForceSyncStateFromApplications(state, action.payload);
 };
 
 export const handleFetchApplicationsSilentFulfilled = (
@@ -23,13 +58,7 @@ export const handleFetchApplicationsSilentFulfilled = (
   state.loading = false;
   state.applications = action.payload;
   state.error = null;
-  const now = new Date().toISOString();
-  if (!state.syncCompletedAt) state.syncCompletedAt = {};
-  for (const app of action.payload || []) {
-    if (app?.name) {
-      state.syncCompletedAt[app.name] = now;
-    }
-  }
+  applyForceSyncStateFromApplications(state, action.payload);
 };
 
 export const handleFetchApplicationsRejected = (
@@ -41,8 +70,6 @@ export const handleFetchApplicationsRejected = (
 };
 
 export const handleFetchApplicationsSilentPending = (state: ApplicationsState) => {
-  // Silent polling must not clobber visible error state; the visible fetchAll
-  // thunk owns loading/error transitions. Touch state to satisfy reducer shape.
   void state;
 };
 
@@ -50,8 +77,6 @@ export const handleFetchApplicationsSilentRejected = (
   state: ApplicationsState,
   action: PayloadAction<unknown>,
 ) => {
-  // Only surface error when there's no successful data already; otherwise the
-  // visible list stays and the silent refresh failure is suppressed.
   if (!state.applications || state.applications.length === 0) {
     state.error = String(action.payload || STORE_ERRORS.FETCH_APPLICATIONS);
   }
@@ -69,6 +94,9 @@ export const handleFetchApplicationDetailsFulfilled = (
   state.loading = false;
   state.details = action.payload;
   state.error = null;
+  if (action.payload) {
+    applyForceSyncStateFromApplications(state, [action.payload]);
+  }
 };
 
 export const handleFetchApplicationDetailsRejected = (

@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, InputNumber, Select, Tooltip, message } from 'antd';
+import { Button, InputNumber, Select, Tooltip, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import { Client, discoveryApiClient, exporterApiClient } from '../../../../api';
 import { DEFAULT_COLORS, Endpoints } from '../../../../constants';
@@ -26,6 +26,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
   const globalConfig = useSelector(selectGlobalConfigState);
   const applications = useSelector((s: RootState) => s.applications.applications);
   const canEditDiscoveryConfig = usePermission('settings', 'Contributor');
+  const { message } = AntdApp.useApp();
 
   const saveButtonStyle = useCallback(
     (disabled: boolean): React.CSSProperties => ({

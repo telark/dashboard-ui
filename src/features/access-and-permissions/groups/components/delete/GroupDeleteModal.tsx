@@ -4,7 +4,7 @@ import { GROUPS_CONSTANTS as GC } from '../../constants';
 
 interface GroupDeleteModalProps {
   open: boolean;
-  onClose: (e?: React.MouseEvent) => void;
+  onClose: (e?: React.MouseEvent | React.KeyboardEvent) => void;
   onConfirm: () => Promise<void>;
   groupName: string;
   loading: boolean;

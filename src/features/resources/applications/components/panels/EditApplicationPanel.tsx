@@ -1,7 +1,7 @@
 import React from 'react';
 import { EditOutlined } from '@ant-design/icons';
 import { Form, Input } from 'antd';
-import type { FormInstance } from 'antd/es/form';
+import type { FormInstance } from 'antd';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
 import LabeledInput from '../../../../../components/display/inputs/LabeledInput';
 import { APPLICATIONS_UI } from '../../constants/texts';

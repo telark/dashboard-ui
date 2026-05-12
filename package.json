@@ -5,7 +5,6 @@
   "proxy": "http://localhost:56085",
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
-    "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@dicebear/adventurer": "^9.2.4",
     "@dicebear/avataaars": "^9.2.4",
     "@dicebear/big-smile": "^9.2.4",
@@ -28,7 +27,7 @@
     "@types/node": "^22.18.8",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.1",
-    "antd": "5.28.1",
+    "antd": "^6.3.7",
     "axios": "^1.13.2",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.22",

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CameraOutlined, DiffOutlined } from '@ant-design/icons';
-import { Modal, message } from 'antd';
+import { App as AntdApp } from 'antd';
 import type { AppDispatch, RootState } from '../../../../../store';
 import {
   SlideOutPanel,
@@ -41,6 +41,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
   rollbackDisabled = false,
 }) => {
   const dispatch: AppDispatch = useDispatch();
+  const { modal, message } = AntdApp.useApp();
   const { snapshots, snapshotsLoading, snapshotsError, snapshotManifests } = useSelector(
     (s: RootState) => s.applications,
   );
@@ -155,7 +156,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
 
   const handleRollbackRequest = useCallback(
     (summary: ApplicationSnapshotSummary) => {
-      Modal.confirm({
+      modal.confirm({
         title: snapUi.ROLLBACK_CONFIRM_TITLE,
         content: snapUi.ROLLBACK_CONFIRM_CONTENT,
         okText: snapUi.ROLLBACK_CONFIRM_OK,
@@ -190,7 +191,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
         },
       });
     },
-    [applicationName, detailSnapshots, dispatch, snapUi],
+    [applicationName, detailSnapshots, dispatch, message, modal, snapUi, userID],
   );
 
   const compareButtonDisabled = compareMode && compareKeys.length === 1;
