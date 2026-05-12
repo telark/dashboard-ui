@@ -3,8 +3,9 @@ import { removeSessionToken } from '../session/token';
 import { clearPermissions } from '../../store/slices/permissionsSlice';
 import { stopPermissionsPolling } from '../../hooks/permissions/useInitializePermissions';
 import store from '../../../../store';
-import { AUTH_SUCCESS_MESSAGES } from '../../constants';
+import { AUTH_CONSTANTS, AUTH_SUCCESS_MESSAGES } from '../../constants';
 import { APP_ROUTES } from '../../../../constants';
+import logger from '../../../../logging';
 
 export interface LogoutMessageApi {
   success: (content: string) => void;
@@ -15,8 +16,8 @@ export const handleUserLogout = async (
   message?: LogoutMessageApi,
 ): Promise<void> => {
   stopPermissionsPolling();
-  void logout().catch(() => {
-    // Server-side invalidation runs best-effort; ignore failures
+  void logout().catch((error: unknown) => {
+    logger.warn(AUTH_CONSTANTS.LOGOUT.LOGS.SERVER_ERROR, { error });
   });
   try {
     removeSessionToken();
