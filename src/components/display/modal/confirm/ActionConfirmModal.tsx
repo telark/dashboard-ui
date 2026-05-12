@@ -64,7 +64,7 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
       title={null}
       width={ACTION_CONFIRM_MODAL.MODAL.WIDTH}
       footer={null}
-      maskClosable={true}
+      mask={{ closable: true }}
       getContainer={getContainer}
       closeIcon={<ActionCloseIcon onClick={handleCloseIconClick} />}
       className={ACTION_CONFIRM_MODAL.MODAL.CLASS_NAME}

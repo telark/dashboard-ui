@@ -1,4 +1,3 @@
-import { message } from 'antd';
 import { logout } from '../../clients/logout';
 import { removeSessionToken } from '../session/token';
 import { clearPermissions } from '../../store/slices/permissionsSlice';
@@ -7,7 +6,14 @@ import store from '../../../../store';
 import { AUTH_SUCCESS_MESSAGES } from '../../constants';
 import { APP_ROUTES } from '../../../../constants';
 
-export const handleUserLogout = async (navigate: (path: string) => void): Promise<void> => {
+export interface LogoutMessageApi {
+  success: (content: string) => void;
+}
+
+export const handleUserLogout = async (
+  navigate: (path: string) => void,
+  message?: LogoutMessageApi,
+): Promise<void> => {
   stopPermissionsPolling();
   void logout().catch(() => {
     // Server-side invalidation runs best-effort; ignore failures
@@ -19,5 +25,5 @@ export const handleUserLogout = async (navigate: (path: string) => void): Promis
   }
   store.dispatch(clearPermissions());
   navigate(APP_ROUTES.LOGIN);
-  message.success(AUTH_SUCCESS_MESSAGES.LOGOUT_SUCCESS);
+  message?.success(AUTH_SUCCESS_MESSAGES.LOGOUT_SUCCESS);
 };

@@ -1,4 +1,3 @@
-import { message } from 'antd';
 import { registerStart } from '../../clients/register';
 import { registerPasskey } from '../webauthn/core';
 import { extractRegisterOptions } from '../flow/register';
@@ -21,6 +20,7 @@ export const handleCreatePasskey = async ({
   deviceName,
   dispatch,
   setSubmitting,
+  message,
 }: CreatePasskeyHandlerParams): Promise<void> => {
   if (!deviceName) {
     throw new Error(PPC.ERRORS.DEVICE_NAME_REQUIRED);
@@ -75,6 +75,7 @@ export const handleUpdatePasskey = async ({
   deviceName,
   dispatch,
   setSubmitting,
+  message,
 }: UpdatePasskeyHandlerParams): Promise<void> => {
   if (!deviceName) {
     throw new Error(PPC.ERRORS.DEVICE_NAME_REQUIRED);
@@ -113,6 +114,7 @@ export const handleDeletePasskey = async ({
   passkey,
   forceLastDelete,
   dispatch,
+  message,
 }: DeletePasskeyHandlerParams): Promise<void> => {
   try {
     const result = await dispatch(

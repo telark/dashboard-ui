@@ -68,10 +68,16 @@ export interface PasskeyActionsReturn {
 }
 
 // Handler function interfaces
+export interface PasskeyMessageApi {
+  success: (content: string) => void;
+  error: (content: string) => void;
+}
+
 export interface CreatePasskeyHandlerParams {
   deviceName: string;
   dispatch: AppDispatch;
   setSubmitting: (value: boolean) => void;
+  message: PasskeyMessageApi;
 }
 
 export interface UpdatePasskeyHandlerParams {
@@ -79,12 +85,14 @@ export interface UpdatePasskeyHandlerParams {
   deviceName: string;
   dispatch: AppDispatch;
   setSubmitting: (value: boolean) => void;
+  message: PasskeyMessageApi;
 }
 
 export interface DeletePasskeyHandlerParams {
   passkey: Passkey;
   forceLastDelete: boolean;
   dispatch: AppDispatch;
+  message: PasskeyMessageApi;
 }
 
 // Validation interfaces

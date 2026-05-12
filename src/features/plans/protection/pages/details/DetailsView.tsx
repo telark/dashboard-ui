@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { Form, message } from 'antd';
+import { Form, App as AntdApp } from 'antd';
 import { PlayCircleOutlined } from '@ant-design/icons';
 import LoadingDetailsView from '../../../../../components/display/views/LoadingDetailsView';
 import ErrorView from '../../../../../components/display/views/ErrorView';
@@ -30,6 +30,7 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
   const decodedName = name ? decodeURIComponent(name) : undefined;
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
   const { details, loading, error, notFound } = usePlanDetails(decodedName);
   const [editForm] = Form.useForm<FormValues>();
 
@@ -109,7 +110,7 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
     } finally {
       setReactivating(false);
     }
-  }, [details, dispatch]);
+  }, [details, dispatch, message]);
 
   const handleRefreshHealth = useCallback(async () => {
     if (!details) return;
