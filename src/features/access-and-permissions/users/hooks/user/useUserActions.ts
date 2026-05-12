@@ -6,6 +6,8 @@ import { APP_ROUTES } from '../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import { createUserThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
+import store from '../../../../../store';
+import { fetchMyPermissionsThunk } from '../../../../auth/store/thunks/fetchThunks';
 import type { CreateUserFormValues } from '../../models';
 
 export const useUserActions = () => {
@@ -18,6 +20,7 @@ export const useUserActions = () => {
       setSubmitting(true);
       try {
         const result = await dispatch(createUserThunk(data)).unwrap();
+        store.dispatch(fetchMyPermissionsThunk());
         message.success(UC.LABELS.MESSAGES.CREATED(data.fullname));
         navigate(`${APP_ROUTES.USERS}/${result.id}/view`);
         return result;

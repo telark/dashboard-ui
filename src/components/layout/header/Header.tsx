@@ -1,5 +1,7 @@
 import React from 'react';
 import { UserAvatarDropdown } from '../../../features/access-and-permissions/users/components';
+import { NotificationBell } from '../../../features/notifications/components';
+import { HEADER_LAYOUT } from '../../../constants';
 
 const Header: React.FC = () => {
   return (
@@ -7,7 +9,7 @@ const Header: React.FC = () => {
       style={{
         width: '100%', // Full screen width
         backgroundColor: 'white',
-        height: '60px',
+        height: HEADER_LAYOUT.HEIGHT,
         display: 'flex',
         justifyContent: 'flex-end', // Align icons to the right
         alignItems: 'center',
@@ -21,6 +23,9 @@ const Header: React.FC = () => {
       }}
     >
       {/* Action Buttons */}
+      <div style={{ marginRight: '20px' }}>
+        <NotificationBell />
+      </div>
       <div style={{ marginRight: '20px' }}>
         <UserAvatarDropdown />
       </div>

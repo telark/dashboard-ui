@@ -1,7 +1,13 @@
 import React from 'react';
 import type { RowTagProps } from '../../../interfaces/layout/table';
 
-const RowTag: React.FC<RowTagProps> = ({ text, background, color, fontSize = 12 }) => {
+const RowTag: React.FC<RowTagProps> = ({
+  text,
+  background,
+  color,
+  fontSize = 12,
+  capitalize = true,
+}) => {
   return (
     <span
       style={{
@@ -12,7 +18,7 @@ const RowTag: React.FC<RowTagProps> = ({ text, background, color, fontSize = 12 
         borderRadius: 999,
         fontWeight: 700,
         fontSize,
-        textTransform: 'capitalize',
+        textTransform: capitalize ? 'capitalize' : 'none',
       }}
     >
       {text}

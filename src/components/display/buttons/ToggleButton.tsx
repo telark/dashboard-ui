@@ -2,7 +2,7 @@ import React from 'react';
 import { Tooltip } from 'antd';
 import { DEFAULT_COLORS } from '../../../constants';
 
-type ToggleButtonVariant = 'success' | 'neutral';
+type ToggleButtonVariant = 'success' | 'neutral' | 'danger';
 
 interface ToggleButtonProps {
   active: boolean;
@@ -23,6 +23,15 @@ function paletteForVariant(variant: ToggleButtonVariant) {
       activeBorder: `${DEFAULT_COLORS.BORDER_HOVER}`,
       inactiveColor: DEFAULT_COLORS.TEXT_MUTED,
       hoverAccent: DEFAULT_COLORS.TEXT_PRIMARY,
+    };
+  }
+  if (variant === 'danger') {
+    return {
+      activeBg: `${DEFAULT_COLORS.ERROR}18`,
+      activeColor: DEFAULT_COLORS.ERROR,
+      activeBorder: `${DEFAULT_COLORS.ERROR}40`,
+      inactiveColor: DEFAULT_COLORS.ERROR,
+      hoverAccent: DEFAULT_COLORS.ERROR,
     };
   }
   return {

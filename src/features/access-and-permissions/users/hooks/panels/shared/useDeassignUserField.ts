@@ -5,6 +5,8 @@ import type { FormInstance } from 'antd';
 import { useDeassignModal } from '../../../../shared';
 import { updateUserThunk } from '../../../store';
 import type { AppDispatch } from '../../../../../../store';
+import store from '../../../../../../store';
+import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
 import type { User } from '../../../models';
 
 type AssignmentField = 'assignedRolesIDs' | 'assignedGroupsIDs';
@@ -40,6 +42,7 @@ export const useDeassignUserField = <T extends { id: string; name: string }>({
       const updated = current.filter((id) => id !== item.id);
       try {
         await dispatch(updateUserThunk({ id: user.id, user: { [fieldName]: updated } })).unwrap();
+        store.dispatch(fetchMyPermissionsThunk());
         form.setFieldsValue({ [fieldName]: updated });
         await onAfterDeassign?.(item, updated);
         message.success(successMessage(item.name));

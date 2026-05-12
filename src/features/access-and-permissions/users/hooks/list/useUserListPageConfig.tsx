@@ -10,6 +10,7 @@ import { useFetchGroups } from '../../../groups/hooks';
 import Columns from '../../components/display/list/Columns';
 import { UserActionsColumn } from '../../components/display/list/UserActionsColumn';
 import { useUserListConfig } from '../../config/userListConfig';
+import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import type { User } from '../../models';
 
 const UserIcon = Icons.User;
@@ -29,6 +30,7 @@ interface UseUserListPageConfigOptions {
   handleViewUser: (user: User) => void;
   handleEditUser: (user: User) => void;
   onCreateUserClick: () => void;
+  canCreateUser?: boolean;
   onFilterClick?: () => void;
   onBulkDeleteClick?: () => void;
   onManageRoleClick?: () => void;
@@ -52,6 +54,7 @@ export const useUserListPageConfig = ({
   handleViewUser,
   handleEditUser,
   onCreateUserClick,
+  canCreateUser,
   onFilterClick,
   onBulkDeleteClick,
   onManageRoleClick,
@@ -61,16 +64,35 @@ export const useUserListPageConfig = ({
   onSearchSubmit,
 }: UseUserListPageConfigOptions): PageLayoutConfig<User> => {
   const { rowHeight } = useAppearance();
+  const canManageRole = usePermission(
+    ACTION_PERMISSIONS.users.manageRoles.scope,
+    ACTION_PERMISSIONS.users.manageRoles.level,
+    ACTION_PERMISSIONS.users.manageRoles.deny,
+  );
+  const canManageGroup = usePermission(
+    ACTION_PERMISSIONS.users.manageGroups.scope,
+    ACTION_PERMISSIONS.users.manageGroups.level,
+    ACTION_PERMISSIONS.users.manageGroups.deny,
+  );
+  const canBulkDeleteUser = usePermission(
+    ACTION_PERMISSIONS.users.delete.scope,
+    ACTION_PERMISSIONS.users.delete.level,
+    ACTION_PERMISSIONS.users.delete.deny,
+  );
   const { toolbarConfig } = useUserListConfig({
     searchValue,
     onSearchChange,
     onSearchSubmit,
     onCreateUserClick,
+    canCreateUser,
     selectedUsersCount: selectedUsers.length,
     onFilterClick,
     onBulkDeleteClick,
     onManageRoleClick,
     onManageGroupClick,
+    canManageRole,
+    canManageGroup,
+    canBulkDeleteUser,
   });
 
   useFetchGroups();

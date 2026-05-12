@@ -33,13 +33,14 @@ const EditCategoryPanel: React.FC<EditCategoryPanelProps> = ({
 
   const scope = editingCategory?.scope ?? CATEGORIES_CONSTANTS.SCOPES.ROLES;
   const { categories } = useCategories(scope);
+  const editingCategoryName = editingCategory?.name;
   const existingNamesExcludingCurrent = useMemo(() => {
     const set = new Set((categories ?? []).map((c) => c.name.toLowerCase()));
-    if (editingCategory?.name) {
-      set.delete(editingCategory.name.toLowerCase());
+    if (editingCategoryName) {
+      set.delete(editingCategoryName.toLowerCase());
     }
     return set;
-  }, [categories, editingCategory?.name]);
+  }, [categories, editingCategoryName]);
 
   const nameValue = Form.useWatch('name', form);
   const trimmedName = nameValue?.trim() ?? '';

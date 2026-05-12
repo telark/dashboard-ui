@@ -1,27 +1,7 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import type { Plugin } from 'vite';
-import { visualizer } from 'rollup-plugin-visualizer';
-
-const VENDOR_CHUNK_MAPPINGS: Array<{ patterns: string[]; chunkName: string }> = [
-  { patterns: ['react', 'react-dom', 'scheduler', 'antd', '@ant-design'], chunkName: 'ui-vendor' },
-  { patterns: ['redux', '@reduxjs'], chunkName: 'redux-vendor' },
-  { patterns: ['react-router'], chunkName: 'router-vendor' },
-  { patterns: ['react-icons'], chunkName: 'icons-vendor' },
-  { patterns: ['date-fns', 'react-timeago'], chunkName: 'date-vendor' },
-  { patterns: ['framer-motion'], chunkName: 'animation-vendor' },
-  { patterns: ['axios'], chunkName: 'http-vendor' },
-];
-
-const getVendorChunkName = (id: string): string => {
-  for (const { patterns, chunkName } of VENDOR_CHUNK_MAPPINGS) {
-    if (patterns.some((pattern) => id.includes(pattern))) {
-      return chunkName;
-    }
-  }
-  return 'vendor';
-};
 
 const performancePlugin = (): Plugin => ({
   name: 'performance-hints',
@@ -37,9 +17,12 @@ const performancePlugin = (): Plugin => ({
   },
 });
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
+export default defineConfig(async ({ mode }) => {
   const isAnalyze = mode === 'analyze';
+  const isProd = mode === 'cluster' || mode === 'production';
+  const { visualizer } = isAnalyze
+    ? await import('rollup-plugin-visualizer')
+    : { visualizer: null };
 
   return {
     plugins: [
@@ -48,6 +31,7 @@ export default defineConfig(({ mode }) => {
       }),
       performancePlugin(),
       isAnalyze &&
+        visualizer &&
         visualizer({
           open: true,
           filename: 'dist/stats.html',
@@ -58,7 +42,7 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env.NODE_ENV': JSON.stringify('production'),
       'process.env': '{}',
-      'process': '{"env":{"NODE_ENV":"production"}}',
+      process: '{"env":{"NODE_ENV":"production"}}',
       __DEV__: JSON.stringify(false),
       __IN_CLUSTER__: JSON.stringify(mode === 'cluster'),
     },
@@ -68,21 +52,16 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      minify: 'esbuild',
       cssCodeSplit: false,
       chunkSizeWarningLimit: 1000,
       sourcemap: false,
       reportCompressedSize: false,
-      commonjsOptions: {
-        include: [/node_modules/],
-        transformMixedEsModules: true,
-      },
-      rollupOptions: {
+      rolldownOptions: {
         output: {
           chunkFileNames: 'assets/[name]-[hash].js',
           entryFileNames: 'assets/[name]-[hash].js',
           assetFileNames: 'assets/[name]-[hash].[ext]',
-          manualChunks: (id) => {
+          manualChunks: (id: string) => {
             if (!id.includes('node_modules')) return undefined;
             if (id.includes('@dicebear')) return undefined;
             if (id.includes('redux') || id.includes('@reduxjs')) return 'redux-vendor';
@@ -92,6 +71,14 @@ export default defineConfig(({ mode }) => {
             if (id.includes('axios')) return 'http-vendor';
             return 'vendor';
           },
+          ...(isProd && {
+            minify: {
+              compress: {
+                dropConsole: true,
+                dropDebugger: true,
+              },
+            },
+          }),
         },
       },
     },
@@ -111,10 +98,6 @@ export default defineConfig(({ mode }) => {
     server: {
       open: '/',
       hmr: true,
-    },
-    esbuild: {
-      drop: mode === 'cluster' || mode === 'production' ? ['console', 'debugger'] : [],
-      legalComments: 'none',
     },
   };
 });

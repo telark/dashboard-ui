@@ -58,6 +58,24 @@ export const STORE_ACTIONS = {
     UPDATE: 'passkeys/update',
     DELETE: 'passkeys/delete',
   },
+  PERMISSIONS: {
+    FETCH: 'permissions/fetch',
+  },
+  AUTH_CONFIG: {
+    FETCH: 'authConfig/fetch',
+    ENSURE: 'authConfig/ensure',
+  },
+  PROTECTION_PLANS: {
+    FETCH: 'protectionPlans/fetch',
+    FETCH_TEMPLATES: 'protectionPlans/fetchTemplates',
+    FETCH_DETAILS: 'protectionPlans/fetchDetails',
+    PREPARE: 'protectionPlans/prepare',
+    CANCEL: 'protectionPlans/cancel',
+    DELETE: 'protectionPlans/delete',
+    DUPLICATE: 'protectionPlans/duplicate',
+    REACTIVATE: 'protectionPlans/reactivate',
+    UPDATE: 'protectionPlans/update',
+  },
 } as const;
 
 export const SYNC_MODES = COMMON_VALUES.SYNC_MODES;
@@ -92,6 +110,17 @@ export const STORE_ERRORS = {
   UPDATE_ROLE: 'Failed to update role',
   DELETE_ROLE: 'Failed to delete role',
   FETCH_CATEGORIES: 'Failed to fetch categories',
+  FETCH_PERMISSIONS: 'Failed to fetch permissions',
+  FETCH_AUTH_CONFIG: 'Failed to fetch auth config',
+  FETCH_PROTECTION_PLANS: 'Failed to fetch protection plans',
+  FETCH_PROTECTION_PLAN_TEMPLATES: 'Failed to fetch protection plan templates',
+  PREPARE_PROTECTION_PLAN: 'Failed to prepare protection plan',
+  CANCEL_PROTECTION_PLAN: 'Failed to cancel protection plan',
+  DELETE_PROTECTION_PLAN: 'Failed to delete protection plan',
+  DUPLICATE_PROTECTION_PLAN: 'Failed to duplicate protection plan',
+  REACTIVATE_PROTECTION_PLAN: 'Failed to reactivate protection plan',
+  UPDATE_PROTECTION_PLAN: 'Failed to update protection plan',
+  FETCH_PROTECTION_PLAN_DETAILS: 'Failed to fetch protection plan details',
 } as const;
 
 export const STORE_MESSAGES = {
@@ -124,4 +153,15 @@ export const STORE_MESSAGES = {
   ERROR_UPDATING_ROLE: 'Error updating role:',
   ERROR_DELETING_ROLE: 'Error deleting role:',
   ERROR_FETCHING_CATEGORIES: 'Error fetching categories:',
+  ERROR_FETCHING_PERMISSIONS: 'Error fetching permissions:',
+  ERROR_FETCHING_AUTH_CONFIG: 'Error fetching auth config:',
+  ERROR_FETCHING_PROTECTION_PLANS: 'Error fetching protection plans:',
+  ERROR_FETCHING_PROTECTION_PLAN_TEMPLATES: 'Error fetching protection plan templates:',
+  ERROR_PREPARING_PROTECTION_PLAN: 'Error preparing protection plan:',
+  ERROR_CANCELLING_PROTECTION_PLAN: 'Error cancelling protection plan:',
+  ERROR_DELETING_PROTECTION_PLAN: 'Error deleting protection plan:',
+  ERROR_DUPLICATING_PROTECTION_PLAN: 'Error duplicating protection plan:',
+  ERROR_REACTIVATING_PROTECTION_PLAN: 'Error reactivating protection plan:',
+  ERROR_UPDATING_PROTECTION_PLAN: 'Error updating protection plan:',
+  ERROR_FETCHING_PROTECTION_PLAN_DETAILS: 'Error fetching protection plan details:',
 } as const;

@@ -1,6 +1,5 @@
 import React from 'react';
 import SettingsLayout from '../components/SettingsLayout';
-import SettingsSidebar from '../components/SettingsSidebar';
 import SettingsMainContent from '../components/SettingsMainContent';
 import { useSettingsNavigation } from '../hooks';
 
@@ -9,15 +8,12 @@ const SettingsPage: React.FC = () => {
     activeSection,
     activeSectionConfig,
     isPasskeysView,
-    onSectionChange,
     onManagePasskeysClick,
     passkeysBreadcrumbItems,
   } = useSettingsNavigation();
 
   return (
-    <SettingsLayout
-      sidebar={<SettingsSidebar activeSection={activeSection} onSectionChange={onSectionChange} />}
-    >
+    <SettingsLayout>
       <SettingsMainContent
         activeSection={activeSection}
         activeSectionConfig={activeSectionConfig}

@@ -7,6 +7,10 @@ import { APPLICATIONS_UI } from '../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import type { ApplicationSnapshotSummary } from '../../models';
+import {
+  usePermission,
+  ACTION_PERMISSIONS,
+} from '../../../../../features/auth/hooks/permissions/permissionEngine';
 
 const ICON_BTN: React.CSSProperties = {
   borderColor: DEFAULT_COLORS.BORDER_LIGHT,
@@ -39,6 +43,17 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
     compareDisabled = false,
     onToggleCompare,
   }) => {
+    const canViewManifest = usePermission(
+      ACTION_PERMISSIONS.applications.viewSnapshotManifest.scope,
+      ACTION_PERMISSIONS.applications.viewSnapshotManifest.level,
+      ACTION_PERMISSIONS.applications.viewSnapshotManifest.deny,
+    );
+    const canRollback = usePermission(
+      ACTION_PERMISSIONS.applications.rollback.scope,
+      ACTION_PERMISSIONS.applications.rollback.level,
+      ACTION_PERMISSIONS.applications.rollback.deny,
+    );
+
     const severityLabel =
       s.severity && s.severity.trim().length > 0 ? s.severity : APPLICATIONS_UI.FALLBACKS.EMPTY;
 
@@ -129,7 +144,11 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
               alignSelf: 'flex-start',
             }}
           >
-            <Tooltip title={ui.VIEW_MANIFEST}>
+            <Tooltip
+              title={
+                !canViewManifest ? ui.VIEW_MANIFEST_PERMISSION_DENIED_TOOLTIP : ui.VIEW_MANIFEST
+              }
+            >
               <Button
                 size="small"
                 type="default"
@@ -137,11 +156,16 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                 onClick={() => onViewManifest(s)}
                 style={ICON_BTN}
                 aria-label={ui.VIEW_MANIFEST}
+                disabled={!canViewManifest}
               />
             </Tooltip>
             <Tooltip
               title={
-                rollbackDisabled ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP : ui.ROLLBACK
+                !canRollback
+                  ? ui.ROLLBACK_PERMISSION_DENIED_TOOLTIP
+                  : rollbackDisabled
+                    ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
+                    : ui.ROLLBACK
               }
             >
               <Button
@@ -152,7 +176,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                 style={ICON_BTN}
                 aria-label={ui.ROLLBACK}
                 loading={rollbackLoading}
-                disabled={!onRollback || rollbackDisabled}
+                disabled={!canRollback || !onRollback || rollbackDisabled}
               />
             </Tooltip>
           </div>

@@ -24,6 +24,10 @@ import { deleteApplicationThunk } from '../../../store';
 import { getApplicationHealthAccentColor } from '../../../utils/healthVisual';
 import { forceSyncApplication } from '../../../utils/management/sync';
 import ApplicationDeleteModal from '../../delete/ApplicationDeleteModal';
+import {
+  usePermission,
+  ACTION_PERMISSIONS,
+} from '../../../../../../features/auth/hooks/permissions/permissionEngine';
 
 interface ApplicationCardHeaderProps {
   application: Application;
@@ -82,6 +86,22 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
     const [menuOpen, setMenuOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
+
+    const canEdit = usePermission(
+      ACTION_PERMISSIONS.applications.edit.scope,
+      ACTION_PERMISSIONS.applications.edit.level,
+      ACTION_PERMISSIONS.applications.edit.deny,
+    );
+    const canForceSync = usePermission(
+      ACTION_PERMISSIONS.applications.forceSync.scope,
+      ACTION_PERMISSIONS.applications.forceSync.level,
+      ACTION_PERMISSIONS.applications.forceSync.deny,
+    );
+    const canDelete = usePermission(
+      ACTION_PERMISSIONS.applications.delete.scope,
+      ACTION_PERMISSIONS.applications.delete.level,
+      ACTION_PERMISSIONS.applications.delete.deny,
+    );
 
     const accent = getApplicationHealthAccentColor(application.health?.status);
     const statusText = application.health?.status || APPLICATIONS_UI.FALLBACKS.UNKNOWN;
@@ -154,9 +174,9 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
 
     const hasInsightRow = Boolean(application.insights?.category || application.insights?.role);
     const descriptionText = String(application.description || '').trim();
-    const disabledLabel = (text: string, disabled: boolean) =>
-      disabled ? (
-        <Tooltip title={APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP}>
+    const labelWithTooltip = (text: string, tooltip: string | undefined) =>
+      tooltip ? (
+        <Tooltip title={tooltip}>
           <span>{text}</span>
         </Tooltip>
       ) : (
@@ -314,28 +334,49 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                   { key: 'view', label: APPLICATIONS_UI.CARD.ACTIONS.VIEW, icon: <EyeOutlined /> },
                   {
                     key: 'forceSync',
-                    label: disabledLabel(APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC, isSyncing),
+                    label: labelWithTooltip(
+                      APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC,
+                      !canForceSync
+                        ? APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC_PERMISSION_DENIED_TOOLTIP
+                        : isSyncing
+                          ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
+                          : undefined,
+                    ),
                     icon: <SyncOutlined />,
-                    disabled: isSyncing,
+                    disabled: !canForceSync || isSyncing,
                   },
                   {
                     key: 'edit',
-                    label: disabledLabel(APPLICATIONS_UI.CARD.ACTIONS.EDIT, isSyncing),
+                    label: labelWithTooltip(
+                      APPLICATIONS_UI.CARD.ACTIONS.EDIT,
+                      !canEdit
+                        ? APPLICATIONS_UI.CARD.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP
+                        : isSyncing
+                          ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
+                          : undefined,
+                    ),
                     icon: <EditOutlined />,
-                    disabled: isSyncing,
+                    disabled: !canEdit || isSyncing,
                   },
                   {
                     key: 'rollbacks',
                     label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS,
                     icon: <HistoryOutlined />,
                   },
-                  { type: 'divider' },
+                  { type: 'divider' as const },
                   {
                     key: 'delete',
-                    label: disabledLabel(APPLICATIONS_UI.CARD.ACTIONS.DELETE, isSyncing),
+                    label: labelWithTooltip(
+                      APPLICATIONS_UI.CARD.ACTIONS.DELETE,
+                      !canDelete
+                        ? APPLICATIONS_UI.CARD.ACTIONS.DELETE_PERMISSION_DENIED_TOOLTIP
+                        : isSyncing
+                          ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
+                          : undefined,
+                    ),
                     icon: <DeleteOutlined />,
                     danger: true,
-                    disabled: isSyncing,
+                    disabled: !canDelete || isSyncing,
                   },
                 ],
                 onClick: handleMenuClick,

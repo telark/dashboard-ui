@@ -12,6 +12,7 @@ import { CategoryActionsColumn } from '../../../categories/components/display/li
 import { Columns } from '../../components/display/list/Columns';
 import { RoleActionsColumn } from '../../components/display/list/RoleActionsColumn';
 import { useRoleListConfig } from '../../config/roleListConfig';
+import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import type { Role } from '../../models';
 import type { Category } from '../../../categories/models';
 import { useUsers } from '../../../users/hooks';
@@ -38,6 +39,7 @@ interface UseRoleListPageConfigOptions {
   handleViewRole: (role: Role) => void;
   handleEditRole: (role: Role) => void;
   onCreateRoleClick: () => void;
+  canCreateRole?: boolean;
   onFilterClick?: () => void;
   onAddCategoryClick?: () => void;
   onEditCategory?: (category: Category) => void;
@@ -64,6 +66,7 @@ export const useRoleListPageConfig = ({
   handleViewRole,
   handleEditRole,
   onCreateRoleClick,
+  canCreateRole = true,
   onFilterClick,
   onAddCategoryClick,
   onEditCategory,
@@ -85,6 +88,16 @@ export const useRoleListPageConfig = ({
     paginatedCategories,
   } = useCategoryListView({ categories: roleCategories });
 
+  const canViewRoleCategories = usePermission(
+    ACTION_PERMISSIONS.roles.viewCategories.scope,
+    ACTION_PERMISSIONS.roles.viewCategories.level,
+    ACTION_PERMISSIONS.roles.viewCategories.deny,
+  );
+  const canAddRoleCategory = usePermission(
+    ACTION_PERMISSIONS.roles.addCategory.scope,
+    ACTION_PERMISSIONS.roles.addCategory.level,
+    ACTION_PERMISSIONS.roles.addCategory.deny,
+  );
   const { toolbarConfig } = useRoleListConfig({
     viewMode,
     onViewModeChange: setViewMode,
@@ -92,8 +105,11 @@ export const useRoleListPageConfig = ({
     onSearchChange,
     onSearchSubmit,
     onCreateRoleClick,
+    canCreateRole,
     onFilterClick,
     onAddCategoryClick,
+    canViewRoleCategories,
+    canAddRoleCategory,
   });
 
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.ROLES);
@@ -163,7 +179,11 @@ export const useRoleListPageConfig = ({
                 width: 120,
                 onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
                 render: (_: unknown, record: Role | Category) => (
-                  <CategoryActionsColumn record={record as Category} onEdit={onEditCategory} />
+                  <CategoryActionsColumn
+                    record={record as Category}
+                    onEdit={onEditCategory}
+                    scope="roles"
+                  />
                 ),
               },
             ],

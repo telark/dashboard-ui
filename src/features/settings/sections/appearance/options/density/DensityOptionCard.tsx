@@ -25,11 +25,13 @@ const DensityOptionCard: React.FC = memo(() => {
           mouseEnterDelay={0.25}
           mouseLeaveDelay={0.15}
           getPopupContainer={() => cardRef.current ?? document.body}
-          overlayInnerStyle={{
-            padding: 0,
-            borderRadius: 10,
-            boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
-            maxWidth: 340,
+          styles={{
+            body: {
+              padding: 0,
+              borderRadius: 10,
+              boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
+              maxWidth: 340,
+            },
           }}
         >
           <div

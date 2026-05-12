@@ -6,13 +6,13 @@ import type {
   RegisterFinishResponse,
 } from '../models';
 
-export const registerStart = async (username?: string): Promise<RegisterStartResponse> => {
+export const registerStart = async (email?: string): Promise<RegisterStartResponse> => {
   const { path, method } = Endpoints.AUTH.REGISTER.START;
   const config: any = {
     method,
   };
-  if (username) {
-    config.data = { username };
+  if (email) {
+    config.data = { email };
   }
 
   return await Client<RegisterStartResponse>(authApiClient, path, config);

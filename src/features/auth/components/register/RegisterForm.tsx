@@ -8,7 +8,7 @@ import { AuthForm } from '../shared/AuthForm';
 interface RegisterFormProps {
   form: FormInstance;
   loading: boolean;
-  onFinish: (values: { username: string; deviceName: string }) => void;
+  onFinish: (values: { email: string; deviceName: string }) => void;
 }
 
 const inputStyle: React.CSSProperties = {
@@ -23,11 +23,18 @@ const inputStyle: React.CSSProperties = {
 export const RegisterForm: React.FC<RegisterFormProps> = ({ form, loading, onFinish }) => (
   <AuthForm form={form} onFinish={onFinish}>
     <Form.Item
-      name="username"
-      rules={[{ required: true, message: AUTH_ERROR_MESSAGES.MISSING_USERNAME }]}
+      name="email"
+      rules={[
+        { required: true, message: AUTH_ERROR_MESSAGES.MISSING_EMAIL },
+        { type: 'email', message: 'Please enter a valid email address' },
+      ]}
       style={{ marginBottom: '12px' }}
     >
-      <Input placeholder={REGISTER_CONSTANTS.UI.USERNAME_PLACEHOLDER} style={inputStyle} />
+      <Input
+        type="email"
+        placeholder={REGISTER_CONSTANTS.UI.EMAIL_PLACEHOLDER}
+        style={inputStyle}
+      />
     </Form.Item>
 
     <Form.Item

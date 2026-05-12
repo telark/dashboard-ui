@@ -8,24 +8,38 @@ import {
   useBulkDeleteGroups,
   useGroupFilters,
 } from '../hooks';
+import { usePermission, ACTION_PERMISSIONS } from '../../../auth/hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { applyGroupFilters, mapCategoriesToFilterOptions } from '../utils';
 import type { Group } from '../models';
 import type { Category } from '../../categories/models';
-import GroupsErrorPage from './GroupsErrorPage';
-import GroupsLoadingPage from './GroupsLoadingPage';
 import GroupsEmptyPage from './GroupsEmptyPage';
 import GroupsListPage from './GroupsListPage';
 
 type ViewMode = 'groups' | 'categories';
 
 const MainPage: React.FC = () => {
+  const canCreateGroup = usePermission(
+    ACTION_PERMISSIONS.groups.create.scope,
+    ACTION_PERMISSIONS.groups.create.level,
+    ACTION_PERMISSIONS.groups.create.deny,
+  );
+  const canEditGroup = usePermission(
+    ACTION_PERMISSIONS.groups.edit.scope,
+    ACTION_PERMISSIONS.groups.edit.level,
+    ACTION_PERMISSIONS.groups.edit.deny,
+  );
+  const canDeleteGroup = usePermission(
+    ACTION_PERMISSIONS.groups.delete.scope,
+    ACTION_PERMISSIONS.groups.delete.level,
+    ACTION_PERMISSIONS.groups.delete.deny,
+  );
   const [viewMode, setViewMode] = useState<ViewMode>('groups');
   const [addCategoryPanelOpen, setAddCategoryPanelOpen] = useState(false);
   const [editCategoryPanelOpen, setEditCategoryPanelOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const { groups, loading, error } = useFetchGroups();
+  const { groups, loading, error, refetch } = useFetchGroups();
   const { categories, loading: categoriesLoading } = useCategories(
     CATEGORIES_CONSTANTS.SCOPES.GROUPS,
   );
@@ -161,14 +175,9 @@ const MainPage: React.FC = () => {
     setEditingCategory(null);
   }, []);
 
-  const isFetching = useMemo(
-    () => groups === undefined || loading || categoriesLoading,
-    [groups, loading, categoriesLoading],
-  );
-
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(groups) && groups.length === 0 && !error,
-    [groups, error],
+    () => Array.isArray(groups) && groups.length === 0 && !error && !loading && !categoriesLoading,
+    [groups, error, loading, categoriesLoading],
   );
 
   const pageConfig = useGroupListPageConfig({
@@ -187,8 +196,9 @@ const MainPage: React.FC = () => {
     paginatedGroups,
     hasSelection,
     handleViewGroup,
-    handleEditClick: openEditPanel,
+    handleEditClick: canEditGroup ? openEditPanel : () => undefined,
     onCreateGroupClick: openCreatePanel,
+    canCreateGroup,
     onAddCategoryClick,
     onEditCategory: openEditCategoryPanel,
     selectedGroupsCount: selectedCount,
@@ -201,28 +211,27 @@ const MainPage: React.FC = () => {
     onSearchSubmit: undefined,
   });
 
-  if (error) {
-    return <GroupsErrorPage error={error} />;
-  }
-
   if (shouldShowEmpty && viewMode === 'groups') {
     return (
       <GroupsEmptyPage
         createPanelOpen={createPanelOpen}
         onCloseCreatePanel={closeCreatePanel}
-        onCreateGroupClick={openCreatePanel}
+        onCreateGroupClick={canCreateGroup ? openCreatePanel : undefined}
         createForm={createForm}
       />
     );
   }
 
-  if (isFetching) {
-    return <GroupsLoadingPage />;
-  }
+  const augmentedPageConfig = {
+    ...pageConfig,
+    loading: loading || categoriesLoading,
+    error,
+    onRetry: refetch,
+  };
 
   return (
     <GroupsListPage
-      pageConfig={pageConfig}
+      pageConfig={augmentedPageConfig}
       createPanelOpen={createPanelOpen}
       editPanelOpen={editPanelOpen}
       viewPanelOpen={viewPanelOpen}
@@ -252,7 +261,8 @@ const MainPage: React.FC = () => {
       onCloseEditCategoryPanel={closeEditCategoryPanel}
       onCloseBulkDeleteModal={handleCloseBulkDeleteModal}
       onConfirmBulkDelete={handleConfirmBulkDelete}
-      onViewPanelEdit={handleViewPanelEdit}
+      onViewPanelEdit={canEditGroup ? handleViewPanelEdit : undefined}
+      canDeleteGroup={canDeleteGroup}
       handleFilterChange={handleFilterChange}
       handleFilterApply={handleFilterApply}
       handleFilterReset={handleFilterReset}

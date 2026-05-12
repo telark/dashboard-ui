@@ -190,46 +190,40 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({
   const openModal = useCallback(() => setIsModalOpen(true), []);
   const [selectedStyle, setSelectedStyle] = useState<string | null>(value?.style || null);
   const [avatarStyles, setAvatarStyles] = useState<AvatarStyle[]>([]);
-  const [isLoadingStyles, setIsLoadingStyles] = useState(false);
+  const [stylesLoadFailed, setStylesLoadFailed] = useState(false);
+  const isLoadingStyles = isModalOpen && avatarStyles.length === 0 && !stylesLoadFailed;
+
+  const [prevIsModalOpen, setPrevIsModalOpen] = useState(isModalOpen);
+  if (prevIsModalOpen !== isModalOpen) {
+    setPrevIsModalOpen(isModalOpen);
+    if (isModalOpen) {
+      setSelectedStyle(value?.style || null);
+      setStylesLoadFailed(false);
+    }
+  }
 
   // Use ref to store preview URLs - they never change once generated
   const previewUrlsRef = useRef<Record<string, string>>({});
   // Store preview URLs in state to avoid accessing ref during render
   const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
 
-  const handleLoadStyles = useCallback(async () => {
-    startTransition(() => {
-      setIsLoadingStyles(true);
-    });
-
-    try {
-      const styles = await loadAvatarStyles();
-      setAvatarStyles(styles);
-      const newPreviewUrls = generatePreviewUrls(styles, previewUrlsRef);
-      startTransition(() => {
-        setPreviewUrls((prev) => ({ ...prev, ...newPreviewUrls }));
-      });
-    } catch (error) {
-      logger.error('Failed to load avatar styles:', error);
-    } finally {
-      setIsLoadingStyles(false);
-    }
-  }, []);
-
   useEffect(() => {
     if (!isModalOpen || avatarStyles.length > 0) {
       return;
     }
-    handleLoadStyles();
-  }, [isModalOpen, avatarStyles.length, handleLoadStyles]);
-
-  // Reset selectedStyle when modal opens to current value
-  useEffect(() => {
-    if (isModalOpen) {
-      setSelectedStyle(value?.style || null);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isModalOpen]);
+    loadAvatarStyles()
+      .then((styles) => {
+        setAvatarStyles(styles);
+        const newPreviewUrls = generatePreviewUrls(styles, previewUrlsRef);
+        startTransition(() => {
+          setPreviewUrls((prev) => ({ ...prev, ...newPreviewUrls }));
+        });
+      })
+      .catch((error) => {
+        logger.error('Failed to load avatar styles:', error);
+        setStylesLoadFailed(true);
+      });
+  }, [isModalOpen, avatarStyles.length]);
 
   const handleStyleSelect = (styleName: string) => {
     setSelectedStyle(styleName);

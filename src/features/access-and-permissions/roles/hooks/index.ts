@@ -1,5 +1,4 @@
 export { useRoles } from './data/useRoles';
-export { useInitializeRoles } from './data/useInitializeRoles';
 export { useRoleActions, type UseRoleActionsOptions } from './actions/useRoleActions';
 export { useRoleFormState, type UseRoleFormStateOptions } from './form/useRoleFormState';
 export { useNameValidation } from './form/useNameValidation';

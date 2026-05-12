@@ -1,83 +1,121 @@
-import { Layout } from 'antd';
-import { useEffect, useState, memo, useCallback, useMemo } from 'react';
+import { useEffect, useRef, useState, memo, useCallback } from 'react';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
+import { useLocation } from 'react-router-dom';
 import MenuItems from './MenuItems';
+import SettingsMenuItems from './SettingsMenuItems';
+import { DEFAULT_COLORS, HEADER_LAYOUT, APP_ROUTES } from '../../../constants';
 
-const { Sider } = Layout;
+const SIDEBAR_WIDTH_EXPANDED = 220;
+const SIDEBAR_WIDTH_COLLAPSED = 52;
+const STORAGE_KEY = 'sidebar_collapsed';
 
 const Sidebar = memo(() => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const widthExpanded = 260;
-  const widthCollapsed = 64;
-  const headerHeight = 60;
+  const location = useLocation();
+  const isSettingsRoute = location.pathname.startsWith(APP_ROUTES.SETTINGS);
+  const lastNonSettingsPath = useRef('/');
 
   useEffect(() => {
-    const root = document.documentElement;
-    root.style.setProperty('--sidebar-width', `${isCollapsed ? widthCollapsed : widthExpanded}px`);
-  }, [isCollapsed, widthCollapsed, widthExpanded]);
+    if (!isSettingsRoute) {
+      lastNonSettingsPath.current = location.pathname;
+    }
+  }, [location.pathname, isSettingsRoute]);
 
-  const siderStyle = useMemo(
-    () => ({
-      height: `calc(100vh - ${headerHeight}px)`,
-      backgroundColor: 'white',
-      position: 'fixed' as const,
-      left: 0,
-      top: `${headerHeight}px`,
-      zIndex: 1,
-      paddingTop: 0,
-      paddingLeft: isCollapsed ? '0px' : '12px',
-      paddingRight: 0,
-      overflow: 'hidden' as const,
-      display: 'flex',
-      flexDirection: 'column' as const,
-      justifyContent: 'space-between' as const,
-      transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-    }),
-    [isCollapsed, headerHeight],
+  const [isCollapsed, setIsCollapsed] = useState(
+    () => localStorage.getItem(STORAGE_KEY) === 'true',
   );
 
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      '--sidebar-width',
+      `${isCollapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED}px`,
+    );
+  }, [isCollapsed]);
+
   const handleToggle = useCallback(() => {
-    setIsCollapsed((prev) => !prev);
+    setIsCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem(STORAGE_KEY, String(next));
+      return next;
+    });
   }, []);
 
   return (
-    <Sider
-      width={isCollapsed ? widthCollapsed : widthExpanded}
-      collapsed={isCollapsed}
-      style={siderStyle}
+    <div
+      style={{
+        position: 'fixed',
+        left: 0,
+        top: HEADER_LAYOUT.HEIGHT_PX,
+        width: isCollapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED,
+        height: `calc(100vh - ${HEADER_LAYOUT.HEIGHT_PX}px)`,
+        backgroundColor: DEFAULT_COLORS.BACKGROUND_WHITE,
+        borderRight: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+        zIndex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        transition: 'width 200ms ease',
+      }}
     >
-      <div style={{ flexGrow: 1 }}>
-        <MenuItems isCollapsed={isCollapsed} />
+      <div style={{ flexGrow: 1, overflowX: 'hidden', position: 'relative' }}>
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            overflowY: 'auto',
+            opacity: isSettingsRoute ? 0 : 1,
+            transition: 'opacity 150ms ease',
+            pointerEvents: isSettingsRoute ? 'none' : 'auto',
+          }}
+        >
+          <MenuItems isCollapsed={isCollapsed} />
+        </div>
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            overflowY: 'auto',
+            opacity: isSettingsRoute ? 1 : 0,
+            transition: 'opacity 150ms ease',
+            pointerEvents: isSettingsRoute ? 'auto' : 'none',
+          }}
+        >
+          <SettingsMenuItems isCollapsed={isCollapsed} backPath={lastNonSettingsPath.current} />
+        </div>
       </div>
 
-      <button
-        onClick={handleToggle}
-        style={useMemo(
-          () => ({
-            position: isCollapsed ? 'absolute' : 'fixed',
-            bottom: '20px',
-            left: isCollapsed ? '50%' : `${widthExpanded - 16}px`,
+      <div
+        style={{
+          borderTop: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+          padding: '8px 0',
+          flexShrink: 0,
+          display: 'flex',
+          justifyContent: isCollapsed ? 'center' : 'flex-end',
+          paddingRight: isCollapsed ? 0 : 8,
+        }}
+      >
+        <button
+          type="button"
+          onClick={handleToggle}
+          aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          style={{
+            background: 'transparent',
             border: 'none',
-            background: 'white',
-            color: '#5B6B7C',
-            fontSize: 18,
+            color: DEFAULT_COLORS.TEXT_MUTED,
             cursor: 'pointer',
-            width: '32px',
-            height: '32px',
-            borderRadius: '50%',
+            width: 28,
+            height: 28,
+            borderRadius: 6,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transition: 'all 0.3s ease',
-            zIndex: 10,
-            transform: isCollapsed ? 'translateX(-50%)' : 'none',
-          }),
-          [isCollapsed, widthExpanded],
-        )}
-      >
-        {isCollapsed ? <HiChevronRight /> : <HiChevronLeft />}
-      </button>
-    </Sider>
+            fontSize: 14,
+            transition: 'background 150ms ease',
+          }}
+        >
+          {isCollapsed ? <HiChevronRight /> : <HiChevronLeft />}
+        </button>
+      </div>
+    </div>
   );
 });
 

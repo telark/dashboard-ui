@@ -22,4 +22,7 @@ export interface PageLayoutConfig<T = unknown> {
   containerStyle?: React.CSSProperties;
   rowHeight?: number;
   empty?: React.ReactNode;
+  loading?: boolean;
+  error?: string | null;
+  onRetry?: () => void;
 }

@@ -7,6 +7,7 @@ import {
   GROUP_PATHS,
   ROLE_PATHS,
   USER_PATHS,
+  PLANS_PATHS,
 } from '../rest/paths';
 
 export const Endpoints = {
@@ -103,12 +104,28 @@ export const Endpoints = {
       path: AUTH_PATHS.LOGOUT,
       method: 'POST',
     },
+    CONFIG: {
+      GET: {
+        path: AUTH_PATHS.CONFIG,
+        method: 'GET',
+      },
+    },
     OIDC: {
       GOOGLE: {
         CALLBACK: {
           path: AUTH_PATHS.OIDC.GOOGLE_CALLBACK,
           method: 'POST',
         },
+        NONCE: {
+          path: AUTH_PATHS.OIDC.GOOGLE_NONCE,
+          method: 'POST',
+        },
+      },
+    },
+    PERMISSIONS: {
+      GET: {
+        path: AUTH_PATHS.PERMISSIONS,
+        method: 'GET',
       },
     },
     PASSKEYS: {
@@ -221,6 +238,47 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.GROUPS}/${GROUP_PATHS.DELETE_BY_ID(id)}`,
       method: 'DELETE',
     }),
+  },
+  PROTECTION_PLANS: {
+    LIST: { path: PLANS_PATHS.PROTECTION.GET_ALL, method: 'GET' },
+    GET_BY_ID: (id: string) => ({ path: PLANS_PATHS.PROTECTION.GET_BY_ID(id), method: 'GET' }),
+    TEMPLATES: { path: PLANS_PATHS.PROTECTION.TEMPLATES, method: 'GET' },
+    PREPARE: { path: PLANS_PATHS.PROTECTION.PREPARE, method: 'POST' },
+    CANCEL: (id: string) => ({ path: PLANS_PATHS.PROTECTION.CANCEL(id), method: 'POST' }),
+    CLEAR: (id: string) => ({ path: PLANS_PATHS.PROTECTION.CLEAR(id), method: 'DELETE' }),
+    STATUS: (id: string) => ({ path: PLANS_PATHS.PROTECTION.STATUS(id), method: 'GET' }),
+    VIOLATIONS: (id: string) => ({ path: PLANS_PATHS.PROTECTION.VIOLATIONS(id), method: 'GET' }),
+    DUPLICATE: (id: string) => ({ path: PLANS_PATHS.PROTECTION.DUPLICATE(id), method: 'POST' }),
+    REACTIVATE: (id: string) => ({
+      path: PLANS_PATHS.PROTECTION.REACTIVATE(id),
+      method: 'POST',
+    }),
+    UPDATE: (id: string) => ({
+      path: PLANS_PATHS.PROTECTION.UPDATE(id),
+      method: 'POST',
+    }),
+  },
+  NOTIFICATIONS: {
+    EMIT: {
+      path: 'notifications/emit',
+      method: 'POST',
+    },
+    LIST: {
+      path: 'notifications/get',
+      method: 'GET',
+    },
+    MARK_READ: (id: string) => ({
+      path: `notifications/${id}/markasread`,
+      method: 'PATCH',
+    }),
+    MARK_ALL_READ: {
+      path: 'notifications/markallread',
+      method: 'POST',
+    },
+    CLEAR: {
+      path: 'notifications/clear',
+      method: 'DELETE',
+    },
   },
   ROLES: {
     CREATE: {

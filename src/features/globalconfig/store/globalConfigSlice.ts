@@ -4,6 +4,8 @@ import { Endpoints } from '../../../constants';
 import type { RootState } from '../../../store';
 import type { ResourceDetailsResponse } from '../../../interfaces/http';
 
+export const GLOBAL_CONFIG_CACHE_TTL_MS = 5 * 60 * 1000;
+
 export type GlobalConfigModel = {
   ai?: { enabled?: boolean; provider?: string; apiKey?: string };
   oidc?: { enabled?: boolean; googleClientID?: string };
@@ -18,6 +20,7 @@ export type GlobalConfigState = {
   loading: boolean;
   error: string | null;
   data: GlobalConfigModel | null;
+  lastFetchedAt: number | null;
 };
 
 const initialState: GlobalConfigState = {
@@ -25,7 +28,11 @@ const initialState: GlobalConfigState = {
   loading: false,
   error: null,
   data: null,
+  lastFetchedAt: null,
 };
+
+const isFresh = (lastFetchedAt: number | null): boolean =>
+  lastFetchedAt !== null && Date.now() - lastFetchedAt < GLOBAL_CONFIG_CACHE_TTL_MS;
 
 export const fetchGlobalConfigThunk = createAsyncThunk<GlobalConfigModel>(
   'globalconfig/fetch',
@@ -35,7 +42,16 @@ export const fetchGlobalConfigThunk = createAsyncThunk<GlobalConfigModel>(
       Endpoints.GLOBALCONFIG.GET.path,
       { method: Endpoints.GLOBALCONFIG.GET.method },
     );
-    return resp.data ?? {};
+    return resp?.data ?? {};
+  },
+);
+
+export const ensureGlobalConfigThunk = createAsyncThunk<void, void, { state: RootState }>(
+  'globalconfig/ensure',
+  async (_, { dispatch, getState }) => {
+    const { lastFetchedAt, loading } = getState().globalconfig;
+    if (loading || isFresh(lastFetchedAt)) return;
+    await dispatch(fetchGlobalConfigThunk());
   },
 );
 
@@ -47,6 +63,7 @@ const globalConfigSlice = createSlice({
       state.data = action.payload;
       state.error = null;
       state.initialized = true;
+      state.lastFetchedAt = Date.now();
     },
   },
   extraReducers: (builder) => {
@@ -60,6 +77,7 @@ const globalConfigSlice = createSlice({
         state.data = action.payload;
         state.error = null;
         state.initialized = true;
+        state.lastFetchedAt = Date.now();
       })
       .addCase(fetchGlobalConfigThunk.rejected, (state, action) => {
         state.loading = false;

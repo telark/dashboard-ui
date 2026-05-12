@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tooltip } from 'antd';
 import { Icons } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import { getManageCategoriesButtonConfig } from '../../categories/config';
@@ -20,11 +21,16 @@ interface UseGroupListConfigProps {
   viewMode?: 'groups' | 'categories';
   onViewModeChange?: (mode: 'groups' | 'categories') => void;
   onCreateGroupClick?: () => void;
+  canCreateGroup?: boolean;
   onAddCategoryClick?: () => void;
   selectedGroupsCount?: number;
   onBulkDeleteClick?: () => void;
   onAttachRoleClick?: () => void;
   onAttachMemberClick?: () => void;
+  canAttachRole?: boolean;
+  canAttachMember?: boolean;
+  canViewGroupCategories?: boolean;
+  canAddGroupCategory?: boolean;
   onFilterClick?: () => void;
   searchValue: string;
   onSearchChange: (value: string) => void;
@@ -35,11 +41,16 @@ export const useGroupListConfig = ({
   viewMode = 'groups',
   onViewModeChange,
   onCreateGroupClick,
+  canCreateGroup = true,
   onAddCategoryClick,
   selectedGroupsCount = 0,
   onBulkDeleteClick,
   onAttachRoleClick,
   onAttachMemberClick,
+  canAttachRole = true,
+  canAttachMember = true,
+  canViewGroupCategories = true,
+  canAddGroupCategory = true,
   onFilterClick,
   searchValue,
   onSearchChange,
@@ -65,6 +76,7 @@ export const useGroupListConfig = ({
               icon: <PlusOutlined />,
               variant: 'primary' as const,
               onClick: () => onAddCategoryClick?.(),
+              disabled: !canAddGroupCategory,
             },
           ]
         : [
@@ -92,6 +104,8 @@ export const useGroupListConfig = ({
             getManageCategoriesButtonConfig({
               onViewCategories: () => onViewModeChange?.('categories'),
               onAddCategory: () => onAddCategoryClick?.(),
+              canViewCategories: canViewGroupCategories,
+              canAddCategory: canAddGroupCategory,
             }),
             {
               key: 'manage-assignments',
@@ -103,13 +117,31 @@ export const useGroupListConfig = ({
                 items: [
                   {
                     key: 'manage-roles',
-                    label: GC.LABELS.ACTIONS.MANAGE_ROLES,
+                    label: !canAttachRole ? (
+                      <Tooltip title={GC.LABELS.ACTIONS.MANAGE_ROLES_DISABLED_TOOLTIP}>
+                        <span style={{ pointerEvents: 'all' }}>
+                          {GC.LABELS.ACTIONS.MANAGE_ROLES}
+                        </span>
+                      </Tooltip>
+                    ) : (
+                      GC.LABELS.ACTIONS.MANAGE_ROLES
+                    ),
                     icon: <RoleIcon size={14} />,
+                    disabled: !canAttachRole,
                   },
                   {
                     key: 'manage-members',
-                    label: GC.LABELS.ACTIONS.MANAGE_MEMBERS,
+                    label: !canAttachMember ? (
+                      <Tooltip title={GC.LABELS.ACTIONS.MANAGE_MEMBERS_DISABLED_TOOLTIP}>
+                        <span style={{ pointerEvents: 'all' }}>
+                          {GC.LABELS.ACTIONS.MANAGE_MEMBERS}
+                        </span>
+                      </Tooltip>
+                    ) : (
+                      GC.LABELS.ACTIONS.MANAGE_MEMBERS
+                    ),
                     icon: <UserIcon size={14} />,
+                    disabled: !canAttachMember,
                   },
                 ],
                 onItemClick: (key: string) => {
@@ -127,6 +159,8 @@ export const useGroupListConfig = ({
               icon: <GroupIcon size={14} />,
               variant: 'primary' as const,
               onClick: () => onCreateGroupClick?.(),
+              disabled: !canCreateGroup,
+              tooltip: !canCreateGroup ? GC.LABELS.ACTIONS.CREATE_DISABLED_TOOLTIP : undefined,
             },
           ],
     };
@@ -134,11 +168,16 @@ export const useGroupListConfig = ({
     viewMode,
     onViewModeChange,
     onCreateGroupClick,
+    canCreateGroup,
     onAddCategoryClick,
     selectedGroupsCount,
     onBulkDeleteClick,
     onAttachRoleClick,
     onAttachMemberClick,
+    canAttachRole,
+    canAttachMember,
+    canViewGroupCategories,
+    canAddGroupCategory,
     onFilterClick,
     searchValue,
     onSearchChange,

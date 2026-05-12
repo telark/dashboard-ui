@@ -15,6 +15,17 @@ export interface UseSessionsListResult {
   ) => Promise<void>;
 }
 
+const resolveSessionsFromToken = async (): Promise<SessionDetails[]> => {
+  const currentToken = getSessionToken();
+  if (!currentToken) return [];
+  try {
+    const single = await getSessionDetails(currentToken);
+    return single?.data ? [single.data] : [];
+  } catch {
+    return [];
+  }
+};
+
 export const useSessionsList = (): UseSessionsListResult => {
   const [sessions, setSessions] = useState<SessionDetails[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,12 +34,11 @@ export const useSessionsList = (): UseSessionsListResult => {
   const fetchSessions = useCallback(async () => {
     setLoading(true);
     setError(null);
-    const currentUser = getCurrentUser();
-    const userId = currentUser?.id;
+    const userId = getCurrentUser()?.id;
     if (!userId) {
       setSessions([]);
-      setLoading(false);
       setError('Failed to load sessions.');
+      setLoading(false);
       return;
     }
     try {
@@ -37,45 +47,49 @@ export const useSessionsList = (): UseSessionsListResult => {
       if (Array.isArray(items)) {
         setSessions(items);
       } else {
-        const currentToken = getSessionToken();
-        if (currentToken) {
-          const single = await getSessionDetails(currentToken);
-          if (single?.data) {
-            setSessions([single.data]);
-          } else {
-            setSessions([]);
-          }
-        } else {
-          setSessions([]);
-        }
+        setSessions(await resolveSessionsFromToken());
       }
     } catch {
-      const currentToken = getSessionToken();
-      if (currentToken) {
-        try {
-          const single = await getSessionDetails(currentToken);
-          if (single?.data) {
-            setSessions([single.data]);
-          } else {
-            setSessions([]);
-            setError('Failed to load sessions.');
-          }
-        } catch {
-          setSessions([]);
-          setError('Failed to load sessions.');
-        }
-      } else {
-        setSessions([]);
-        setError('Failed to load sessions.');
-      }
+      const fallback = await resolveSessionsFromToken();
+      setSessions(fallback);
+      if (fallback.length === 0) setError('Failed to load sessions.');
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchSessions();
-  }, [fetchSessions]);
+    let cancelled = false;
+    const userId = getCurrentUser()?.id;
+
+    const load: Promise<{ s: SessionDetails[]; e: string | null }> = userId
+      ? getSessionsList(userId)
+          .then(async (response) => {
+            const items = response?.data?.items;
+            const s = Array.isArray(items) ? items : await resolveSessionsFromToken();
+            return { s, e: null };
+          })
+          .catch(async () => {
+            const s = await resolveSessionsFromToken();
+            return { s, e: s.length === 0 ? 'Failed to load sessions.' : null };
+          })
+      : Promise.resolve({ s: [] as SessionDetails[], e: 'Failed to load sessions.' });
+
+    load
+      .then(({ s, e }) => {
+        if (!cancelled) {
+          setSessions(s);
+          setError(e);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const revokeSession = useCallback(
     async (

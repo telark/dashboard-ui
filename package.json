@@ -73,7 +73,7 @@
     "@types/loglevel": "^1.5.4",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",
-    "@vitejs/plugin-react": "^5.1.1",
+    "@vitejs/plugin-react": "^6.0.1",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
@@ -82,9 +82,9 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "globals": "^15.15.0",
     "prettier": "^3.6.2",
-    "rollup-plugin-visualizer": "^5.14.0",
+    "rollup-plugin-visualizer": "^7.0.1",
     "terser": "^5.44.0",
     "typescript": "^5.9.3",
-    "vite": "^7.2.2"
+    "vite": "8.0.9"
   }
 }

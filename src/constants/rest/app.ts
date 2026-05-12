@@ -1,6 +1,8 @@
+import { HEADER_LAYOUT } from '../layout/header';
+
 export const APP_CONFIGS = {
   MESSAGE: {
-    TOP: 72,
+    TOP: HEADER_LAYOUT.HEIGHT_PX + 12,
     MAX_COUNT: 3,
   },
   LAYOUT: {
@@ -28,6 +30,6 @@ export const APP_ROUTES = {
   // settings
   SETTINGS: '/settings',
   // governance
-  PROTECTION_PLANS: '/governance/protection-plans',
-  PROTECTION_PLANS_CREATE: '/governance/protection-plans/create',
+  PROTECTION_PLANS: '/governance/plans/protection',
+  PROTECTION_PLAN_DETAILS: '/governance/plans/protection/:name/details',
 } as const;

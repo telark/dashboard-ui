@@ -4,6 +4,8 @@ import { message } from 'antd';
 import type { FormInstance } from 'antd';
 import { createUserThunk } from '../../../store';
 import type { AppDispatch, RootState } from '../../../../../../store';
+import store from '../../../../../../store';
+import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
 import type { CreateUserFormValues, UserAvatar } from '../../../models';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { makeUsernameUniqueRule, makeEmailFormatRule, makeFullnameCharsRule } from '../../../utils';
@@ -43,6 +45,7 @@ export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions)
           avatar: values.avatar as UserAvatar | undefined,
         };
         await dispatch(createUserThunk(userData)).unwrap();
+        store.dispatch(fetchMyPermissionsThunk());
         message.success(UC.LABELS.MESSAGES.CREATED(userData.fullname));
         form.resetFields();
         onClose();

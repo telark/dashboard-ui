@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import logger from '../../../../../logging';
+import logger, { logErrorOnce } from '../../../../../logging';
 import {
   deleteApplication,
   fetchApplications,
@@ -24,7 +24,7 @@ export const fetchAllApplicationsThunk = createAsyncThunk(
       const raw = await fetchApplications();
       return mapApplicationsData(raw);
     } catch (error: unknown) {
-      logger.error(STORE_MESSAGES.ERROR_FETCHING_APPLICATIONS, error);
+      logErrorOnce('applications/fetchAll', STORE_MESSAGES.ERROR_FETCHING_APPLICATIONS, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_APPLICATIONS));
     }
   },
@@ -49,7 +49,11 @@ export const fetchApplicationDetailsThunk = createAsyncThunk(
       const response = await fetchApplicationDetails(name);
       return mapSingleApplicationData(response.data);
     } catch (error: unknown) {
-      logger.error(STORE_MESSAGES.ERROR_FETCHING_APPLICATION_DETAILS, error);
+      logErrorOnce(
+        `applications/fetchDetails:${name}`,
+        STORE_MESSAGES.ERROR_FETCHING_APPLICATION_DETAILS,
+        error,
+      );
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_APPLICATION_DETAILS));
     }
   },

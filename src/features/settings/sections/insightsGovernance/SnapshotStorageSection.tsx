@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, InputNumber, Select, message } from 'antd';
+import { Button, InputNumber, Select, Tooltip, message } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import { Client, exporterApiClient } from '../../../../api';
 import { DEFAULT_COLORS, Endpoints } from '../../../../constants';
@@ -9,6 +9,7 @@ import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../global
 import type { AppDispatch } from '../../../../store';
 import SnapshotStorageBar from '../../../resources/applications/components/snapshots/SnapshotStorageBar';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as C } from './constants';
+import { usePermission } from '../../../auth/hooks/permissions/permissionEngine';
 
 const SNAPSHOTS_MAX_PRESET = [3, 5, 10, 15, 20] as const;
 
@@ -50,6 +51,7 @@ function normalizeSnapshotInfos(input: unknown): SnapshotInfosResponse | null {
 const SnapshotStorageSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
+  const canEditSnapshotStorage = usePermission('settings', 'Contributor');
 
   const saveButtonStyle = useCallback(
     (disabled: boolean): React.CSSProperties => ({
@@ -208,6 +210,7 @@ const SnapshotStorageSection: React.FC = memo(() => {
           <Select
             size="small"
             value={snapshotsMaxSelection}
+            disabled={!canEditSnapshotStorage}
             onChange={(val) => {
               setSnapshotsMaxSelection(val);
               if (val === 'custom') {
@@ -230,6 +233,7 @@ const SnapshotStorageSection: React.FC = memo(() => {
               min={1}
               precision={0}
               value={customSnapshotsMaxPerApp}
+              disabled={!canEditSnapshotStorage}
               onChange={(v) => {
                 const n = Number(v);
                 if (!Number.isFinite(n) || n <= 0) return;
@@ -242,14 +246,26 @@ const SnapshotStorageSection: React.FC = memo(() => {
           ) : null}
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button
-            loading={savingSnapshotsMax}
-            onClick={saveSnapshotsMax}
-            disabled={!snapshotsHasChanges}
-            style={saveButtonStyle(!snapshotsHasChanges)}
+          <Tooltip
+            title={
+              !canEditSnapshotStorage ? C.LABELS.EDIT_SNAPSHOT_STORAGE_PERMISSION_DENIED : undefined
+            }
           >
-            Save
-          </Button>
+            <span
+              style={
+                !canEditSnapshotStorage ? { display: 'inline-block', cursor: 'not-allowed' } : {}
+              }
+            >
+              <Button
+                loading={savingSnapshotsMax}
+                onClick={saveSnapshotsMax}
+                disabled={!snapshotsHasChanges || !canEditSnapshotStorage}
+                style={saveButtonStyle(!snapshotsHasChanges || !canEditSnapshotStorage)}
+              >
+                Save
+              </Button>
+            </span>
+          </Tooltip>
         </div>
       </div>
     </SettingsCard>

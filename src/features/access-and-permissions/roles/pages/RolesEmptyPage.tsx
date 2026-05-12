@@ -6,7 +6,7 @@ import { Icons } from '../../../../constants';
 const RoleIcon = Icons.Role;
 
 interface RolesEmptyPageProps {
-  onCreateRoleClick: () => void;
+  onCreateRoleClick?: () => void;
 }
 
 const RolesEmptyPage: React.FC<RolesEmptyPageProps> = memo(({ onCreateRoleClick }) => {
@@ -18,11 +18,15 @@ const RolesEmptyPage: React.FC<RolesEmptyPageProps> = memo(({ onCreateRoleClick 
       title={RC.LABELS.NO_ROLES_TITLE}
       description={RC.LABELS.NO_ROLES_DESCRIPTION}
       icon={icon}
-      primaryAction={{
-        label: RC.LABELS.TOOLBAR.CREATE.BUTTON_LABEL,
-        icon: buttonIcon,
-        onClick: onCreateRoleClick,
-      }}
+      primaryAction={
+        onCreateRoleClick
+          ? {
+              label: RC.LABELS.TOOLBAR.CREATE.BUTTON_LABEL,
+              icon: buttonIcon,
+              onClick: onCreateRoleClick,
+            }
+          : undefined
+      }
     />
   );
 });

@@ -72,7 +72,7 @@ export interface PublicKeyCredential {
 }
 
 export interface LoginStartRequest {
-  username: string;
+  email: string;
 }
 
 export interface LoginStartResponse {
@@ -88,7 +88,7 @@ export interface LoginStartResponse {
 }
 
 export interface LoginFinishRequest extends DeviceMetadata {
-  username: string;
+  email: string;
   id: string;
   rawId: string;
   response: AuthenticatorAssertionResponse;

@@ -5,6 +5,11 @@ import dayjs from 'dayjs';
 import '../../../styles/datePicker.css';
 import { getDisabledTimeForFutureDates } from '../../../utils/layout';
 
+export interface DisabledTimeConfig {
+  disabledHours?: () => number[];
+  disabledMinutes?: (selectedHour: number) => number[];
+}
+
 export interface DatePickerProps {
   value?: Dayjs | string;
   onChange?: (date: Dayjs | null, dateString: string | string[]) => void;
@@ -13,6 +18,7 @@ export interface DatePickerProps {
   showTime?: boolean;
   disabled?: boolean;
   disabledDate?: (current: Dayjs) => boolean;
+  disabledTime?: (current: Dayjs | null) => DisabledTimeConfig;
   style?: React.CSSProperties;
   className?: string;
   allowClear?: boolean;
@@ -26,6 +32,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   showTime = true,
   disabled = false,
   disabledDate,
+  disabledTime,
   style,
   className,
   allowClear = true,
@@ -52,7 +59,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
             ? {
                 format: 'HH:mm',
                 showSecond: false,
-                disabledTime: getDisabledTimeForFutureDates(),
+                disabledTime: disabledTime ?? getDisabledTimeForFutureDates(),
               }
             : false
         }

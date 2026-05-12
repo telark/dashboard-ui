@@ -1,5 +1,5 @@
 import React from 'react';
-import { SHARED_DETAILS_CONSTANTS, DEFAULT_COLORS } from '../../../../constants';
+import { SHARED_DETAILS_CONSTANTS, DEFAULT_COLORS, HEADER_LAYOUT } from '../../../../constants';
 import { FancySpinner } from '../../../../components/animation';
 
 const UsersLoadingPage: React.FC = () => {
@@ -7,9 +7,9 @@ const UsersLoadingPage: React.FC = () => {
     <div
       style={{
         background: DEFAULT_COLORS.BACKGROUND_WHITE,
-        minHeight: 'calc(100vh - 60px)',
+        minHeight: HEADER_LAYOUT.MIN_HEIGHT,
         padding: '48px 32px 32px',
-        marginTop: '60px',
+        marginTop: HEADER_LAYOUT.HEIGHT,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

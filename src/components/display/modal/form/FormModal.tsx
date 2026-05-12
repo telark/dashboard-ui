@@ -31,6 +31,14 @@ const FormModal: React.FC<FormModalProps> = ({
   const [submitting, setSubmitting] = useState(false);
   const [hasValidationErrors, setHasValidationErrors] = useState(false);
 
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (prevOpen !== open) {
+    setPrevOpen(open);
+    if (open) {
+      setHasValidationErrors(false);
+    }
+  }
+
   const handleFinish = async (values: Record<string, any>) => {
     setSubmitting(true);
     try {
@@ -55,10 +63,9 @@ const FormModal: React.FC<FormModalProps> = ({
     onCancel();
   };
 
-  // Reset form and validation state when modal opens
+  // Reset form when modal opens
   useEffect(() => {
     if (open) {
-      setHasValidationErrors(false);
       form.resetFields();
       form.setFieldsValue(initialValues);
     }

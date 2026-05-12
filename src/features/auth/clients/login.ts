@@ -7,10 +7,12 @@ import type {
   LoginFinishResponse,
   DeviceMetadata,
 } from '../models';
+import type { User } from '../../access-and-permissions/users/models';
 
 export interface OIDCCallbackResponse {
   sessionToken: string;
   email: string;
+  user?: User;
 }
 
 export const loginStart = async (request: LoginStartRequest): Promise<LoginStartResponse> => {
@@ -41,4 +43,13 @@ export const oidcGoogleCallback = async (
     method,
     data: request,
   });
+};
+
+export interface OIDCNonceResponse {
+  nonce: string;
+}
+
+export const oidcGetNonce = async (): Promise<OIDCNonceResponse> => {
+  const { path, method } = Endpoints.AUTH.OIDC.GOOGLE.NONCE;
+  return await Client<OIDCNonceResponse>(authApiClient, path, { method });
 };

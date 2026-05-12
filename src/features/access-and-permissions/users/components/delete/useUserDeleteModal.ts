@@ -3,6 +3,8 @@ import { useDispatch } from 'react-redux';
 import { message } from 'antd';
 import { deleteUserThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
+import store from '../../../../../store';
+import { fetchMyPermissionsThunk } from '../../../../auth/store/thunks/fetchThunks';
 import type { User } from '../../models';
 import { USERS_CONSTANTS as UC } from '../../constants';
 
@@ -37,6 +39,7 @@ export const useUserDeleteModal = (user: User | null): UseUserDeleteModalReturn 
     setIsDeleting(true);
     try {
       await dispatch(deleteUserThunk(user.id)).unwrap();
+      store.dispatch(fetchMyPermissionsThunk());
       message.success(UC.LABELS.MESSAGES.DELETED(user.fullname || user.username));
       setDeleteModalOpen(false);
     } catch {

@@ -37,6 +37,7 @@ export const AUTH_PATHS = {
   REGISTER: {
     START: 'auth/register/start',
   },
+  CONFIG: 'auth/config',
   LOGOUT: 'auth/logout',
   PASSKEYS: {
     PROXY: {
@@ -49,7 +50,9 @@ export const AUTH_PATHS = {
   },
   OIDC: {
     GOOGLE_CALLBACK: 'auth/oidc/google/callback',
+    GOOGLE_NONCE: 'auth/oidc/google/nonce',
   },
+  PERMISSIONS: 'auth/permissions',
 } as const;
 
 export const CATEGORY_PATHS = {
@@ -84,4 +87,20 @@ export const USER_PATHS = {
   GET_BY_EMAIL: (email: string) => `findbyemail/${email}/get`,
   PATCH_BY_ID: (id: string) => `${id}/patch`,
   DELETE_BY_ID: (id: string) => `${id}/delete`,
+} as const;
+
+export const PLANS_PATHS = {
+  PROTECTION: {
+    GET_ALL: 'plans/protection/get',
+    GET_BY_ID: (id: string) => `plans/protection/${id}/get`,
+    TEMPLATES: 'plans/protection/templates',
+    PREPARE: 'plans/protection/prepare',
+    CANCEL: (id: string) => `plans/protection/${id}/cancel`,
+    CLEAR: (id: string) => `plans/protection/${id}/clear`,
+    STATUS: (id: string) => `plans/protection/${id}/status`,
+    VIOLATIONS: (id: string) => `plans/protection/${id}/violations`,
+    DUPLICATE: (id: string) => `plans/protection/${id}/duplicate`,
+    REACTIVATE: (id: string) => `plans/protection/${id}/reactivate`,
+    UPDATE: (id: string) => `plans/protection/${id}/update`,
+  },
 } as const;

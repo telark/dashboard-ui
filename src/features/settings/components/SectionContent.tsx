@@ -5,6 +5,7 @@ import { AppearanceSectionContent } from '../sections/appearance';
 import { SecuritySectionContent } from '../sections/security';
 import { AIInsightsSectionContent } from '../sections/aiInsights';
 import { InsightsGovernanceSectionContent } from '../sections/insightsGovernance';
+import { MyPermissionsSectionContent } from '../sections/myPermissions';
 
 export interface SecuritySectionProps {
   onManagePasskeysClick: () => void;
@@ -32,6 +33,8 @@ const SectionContent: React.FC<SectionContentProps> = memo(
         return <AIInsightsSectionContent />;
       case 'insightsGovernance':
         return <InsightsGovernanceSectionContent />;
+      case 'myPermissions':
+        return <MyPermissionsSectionContent />;
       default:
         return null;
     }

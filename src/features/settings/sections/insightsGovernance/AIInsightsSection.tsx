@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Input, Select, message } from 'antd';
+import { Button, Input, Select, Tooltip, message } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import { Client, enrichmentApiClient, exporterApiClient } from '../../../../api';
 import { Endpoints, DEFAULT_COLORS } from '../../../../constants';
@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
 import type { AppDispatch } from '../../../../store';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as C, ProviderKey } from './constants';
+import { usePermission } from '../../../auth/hooks/permissions/permissionEngine';
 
 type ValidationApiResponse = { ok: boolean; reason?: string };
 
@@ -35,6 +36,7 @@ function getFriendlyValidationError(err: unknown): string {
 const AIInsightsSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
+  const canControlAiInsights = usePermission('settings', 'Owner');
 
   const saveButtonStyle = useCallback(
     (disabled: boolean): React.CSSProperties => ({
@@ -173,7 +175,23 @@ const AIInsightsSection: React.FC = memo(() => {
           }}
         >
           <div style={{ fontWeight: 700 }}>{C.LABELS.ENABLE_AI_LABEL}</div>
-          <Switch checked={aiEnabled} onChange={setAiEnabled} />
+          <Tooltip
+            title={
+              !canControlAiInsights ? C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED : undefined
+            }
+          >
+            <span
+              style={
+                !canControlAiInsights ? { display: 'inline-block', cursor: 'not-allowed' } : {}
+              }
+            >
+              <Switch
+                checked={aiEnabled}
+                onChange={canControlAiInsights ? setAiEnabled : undefined}
+                disabled={!canControlAiInsights}
+              />
+            </span>
+          </Tooltip>
         </div>
 
         {aiEnabled ? (
@@ -182,6 +200,7 @@ const AIInsightsSection: React.FC = memo(() => {
               value={provider}
               options={C.PROVIDERS.OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
               onChange={onProviderChange}
+              disabled={!canControlAiInsights}
               style={{ width: 240 }}
             />
             {provider !== 'ollama' ? (
@@ -189,6 +208,7 @@ const AIInsightsSection: React.FC = memo(() => {
                 <Input
                   placeholder={C.LABELS.API_KEY_PLACEHOLDER}
                   value={apiKey}
+                  disabled={!canControlAiInsights}
                   onChange={(e) => {
                     setApiKey(e.target.value);
                     setValidMessage(null);
@@ -196,9 +216,29 @@ const AIInsightsSection: React.FC = memo(() => {
                   }}
                   style={{ flex: 1 }}
                 />
-                <Button loading={validating} disabled={validateDisabled} onClick={validateKey}>
-                  {C.LABELS.VALIDATE_BUTTON}
-                </Button>
+                <Tooltip
+                  title={
+                    !canControlAiInsights
+                      ? C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED
+                      : undefined
+                  }
+                >
+                  <span
+                    style={
+                      !canControlAiInsights
+                        ? { display: 'inline-block', cursor: 'not-allowed' }
+                        : {}
+                    }
+                  >
+                    <Button
+                      loading={validating}
+                      disabled={validateDisabled || !canControlAiInsights}
+                      onClick={validateKey}
+                    >
+                      {C.LABELS.VALIDATE_BUTTON}
+                    </Button>
+                  </span>
+                </Tooltip>
               </div>
             ) : null}
 
@@ -212,14 +252,26 @@ const AIInsightsSection: React.FC = memo(() => {
         ) : null}
 
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button
-            onClick={handleEnable}
-            loading={saving}
-            disabled={!aiHasChanges || !canEnable}
-            style={saveButtonStyle(!aiHasChanges || !canEnable)}
+          <Tooltip
+            title={
+              !canControlAiInsights ? C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED : undefined
+            }
           >
-            Save
-          </Button>
+            <span
+              style={
+                !canControlAiInsights ? { display: 'inline-block', cursor: 'not-allowed' } : {}
+              }
+            >
+              <Button
+                onClick={handleEnable}
+                loading={saving}
+                disabled={!aiHasChanges || !canEnable || !canControlAiInsights}
+                style={saveButtonStyle(!aiHasChanges || !canEnable || !canControlAiInsights)}
+              >
+                Save
+              </Button>
+            </span>
+          </Tooltip>
         </div>
       </div>
     </SettingsCard>

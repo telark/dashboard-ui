@@ -6,7 +6,10 @@ import { DEFAULT_COLORS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../constants';
 import { deleteRoleThunk } from '../../../store';
 import { canDeleteRole, canModifyRole } from '../../../utils';
+import { usePermission, ACTION_PERMISSIONS } from '../../../../../auth/hooks';
 import type { AppDispatch } from '../../../../../../store';
+import store from '../../../../../../store';
+import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
 import type { Role } from '../../../models';
 
 interface RoleActionsColumnProps {
@@ -49,8 +52,19 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
   onDelete,
 }) => {
   const dispatch: AppDispatch = useDispatch();
-  const canEdit = canModifyRole(record);
-  const canDelete = canDeleteRole(record);
+  const hasEditPermission = usePermission(
+    ACTION_PERMISSIONS.roles.edit.scope,
+    ACTION_PERMISSIONS.roles.edit.level,
+    ACTION_PERMISSIONS.roles.edit.deny,
+  );
+  const hasDeletePermission = usePermission(
+    ACTION_PERMISSIONS.roles.delete.scope,
+    ACTION_PERMISSIONS.roles.delete.level,
+    ACTION_PERMISSIONS.roles.delete.deny,
+  );
+  const canEdit = hasEditPermission && canModifyRole(record);
+  const isRoleProtectedFromDeletion = !canDeleteRole(record);
+  const canDelete = hasDeletePermission && !isRoleProtectedFromDeletion;
 
   const handleEditClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -78,6 +92,7 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
       okButtonProps: { danger: true },
       onOk: async () => {
         await dispatch(deleteRoleThunk(record.id)).unwrap();
+        store.dispatch(fetchMyPermissionsThunk());
       },
     });
   };
@@ -92,7 +107,13 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
       }}
     >
       <Tooltip
-        title={canEdit ? RC.LABELS.ACTIONS.EDIT : RC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP}
+        title={
+          canEdit
+            ? RC.LABELS.ACTIONS.EDIT
+            : !hasEditPermission
+              ? RC.LABELS.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP
+              : RC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP
+        }
         placement="left"
       >
         <span style={actionWrapperStyle}>
@@ -114,7 +135,13 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
         </span>
       </Tooltip>
       <Tooltip
-        title={canDelete ? RC.LABELS.ACTIONS.DELETE : RC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP}
+        title={
+          canDelete
+            ? RC.LABELS.ACTIONS.DELETE
+            : !hasDeletePermission
+              ? RC.LABELS.ACTIONS.DELETE_PERMISSION_DENIED_TOOLTIP
+              : RC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP
+        }
         placement="left"
       >
         <span style={actionWrapperStyle}>

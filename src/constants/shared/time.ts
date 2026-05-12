@@ -15,3 +15,14 @@ export const TIME_CONFIGS = {
 export const TIME_TEXTS = {
   INVALID_DATE: COMMON_VALUES.DATES.INVALID,
 } as const;
+
+export const TIME_REMAINING = {
+  ENDED: 'Ended',
+  UNIT_DAY: 'd',
+  UNIT_HOUR: 'h',
+  UNIT_MINUTE: 'm',
+  UNIT_SECOND: 's',
+  TICK_SLOW_MS: 30000,
+  TICK_FAST_MS: 1000,
+  FAST_THRESHOLD_SEC: 60,
+} as const;

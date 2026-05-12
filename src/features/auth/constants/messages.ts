@@ -1,3 +1,9 @@
+export const AUTH_PERMISSIONS_LABELS = {
+  NO_PERMISSIONS_TITLE: 'No permissions',
+  NO_PERMISSIONS_DESCRIPTION:
+    'Your account has no roles assigned. Contact your administrator to request access.',
+};
+
 export const AUTH_ERROR_MESSAGES = {
   LOGIN_START_FAILED: 'Failed to start login',
   LOGIN_FINISH_FAILED: 'Failed to complete login',
@@ -19,7 +25,7 @@ export const AUTH_ERROR_MESSAGES = {
   WEBAUTHN_ERROR: 'WebAuthn operation failed',
   MISSING_CREDENTIAL_ID: 'Credential ID is required',
   MISSING_DEVICE_NAME: 'Device name is required',
-  MISSING_USERNAME: 'Username is required',
+  MISSING_EMAIL: 'Email is required',
   LAST_PASSKEY_DELETE: 'Cannot delete last passkey',
   PASSKEY_ALREADY_EXISTS: 'A passkey with this name already exists',
   ORPHANED_PASSKEY_DETECTED: 'Found passkey in backend but not in browser. Cleaning up...',

@@ -11,9 +11,14 @@ export const useFetchGroups = () => {
     dispatch(fetchAllGroupsThunk());
   }, [dispatch]);
 
+  const refetch = (): void => {
+    dispatch(fetchAllGroupsThunk());
+  };
+
   return {
     groups,
     loading,
     error,
+    refetch,
   };
 };
