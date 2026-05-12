@@ -13,9 +13,16 @@ interface ViewGroupPanelProps {
   onClose: () => void;
   group: Group | null;
   onEdit?: () => void;
+  canDelete?: boolean;
 }
 
-const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({ open, onClose, group, onEdit }) => {
+const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({
+  open,
+  onClose,
+  group,
+  onEdit,
+  canDelete,
+}) => {
   const {
     avatars,
     overflowItems,
@@ -48,7 +55,7 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({ open, onClose, group, o
         width={520}
         actions={{
           onEdit,
-          onDelete: openDeleteModal,
+          onDelete: canDelete ? openDeleteModal : undefined,
         }}
       />
       <GroupDeleteModal

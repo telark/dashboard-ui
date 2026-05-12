@@ -20,18 +20,6 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({
     color: 'var(--auth-text-muted, #94a3b8)',
   };
 
-  const linkStyle: React.CSSProperties = {
-    ...mutedStyle,
-    background: 'none',
-    border: 'none',
-    padding: 0,
-    cursor: 'pointer',
-    fontFamily: 'inherit',
-    textDecoration: 'underline',
-    textDecorationColor: 'transparent',
-    transition: 'text-decoration-color 0.15s',
-  };
-
   return (
     <div style={{ marginTop: '20px' }}>
       {/* Register link */}
@@ -84,17 +72,6 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({
           Privacy Policy
         </a>
       </p>
-
-      {/* Language switcher */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-        <button type="button" style={{ ...linkStyle, fontWeight: 600 }}>
-          EN
-        </button>
-        <span style={{ ...mutedStyle, opacity: 0.4 }}>|</span>
-        <button type="button" style={linkStyle}>
-          FR
-        </button>
-      </div>
     </div>
   );
 };

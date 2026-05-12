@@ -1,3 +1,9 @@
+export const HEADER_LAYOUT = {
+  HEIGHT_PX: 48,
+  HEIGHT: '48px',
+  MIN_HEIGHT: 'calc(100vh - 48px)',
+} as const;
+
 export const HEADER_CONSTANTS = {
   USER: {
     AVATAR: {

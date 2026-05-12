@@ -45,7 +45,10 @@ export const ROLES_CONSTANTS = {
       EDIT: 'Edit',
       DELETE: 'Delete',
       EDIT_DISABLED_TOOLTIP: 'Edit is disabled due to protection',
+      EDIT_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to edit roles',
       DELETE_DISABLED_TOOLTIP: 'Delete is disabled due to protection',
+      DELETE_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to delete roles',
+      CREATE_DISABLED_TOOLTIP: 'You do not have permission to create roles',
       CANNOT_DELETE_TITLE: 'Cannot delete',
     },
     PERMISSIONS_SUFFIX: 'permissions',
@@ -199,6 +202,8 @@ export const ROLES_CONSTANTS = {
       { key: 'groups', label: 'Groups' },
       { key: 'users', label: 'Users' },
       { key: 'roles', label: 'Roles' },
+      { key: 'applications', label: 'Applications' },
+      { key: 'settings', label: 'Settings' },
     ] as const,
     PERMISSION_LEVEL_TOOLTIP: {
       ReadOnly: 'Read-only access to view data and settings.',
@@ -234,24 +239,6 @@ export const ROLES_CONSTANTS = {
     SOFT_DELETE_LABEL: 'Soft Delete',
     SOFT_DELETE_DISABLED_NOTE: 'Soft delete is disabled because deletion is prevented.',
   },
-  LOGS: {
-    INITIALIZING_ROLES: 'Initializing built-in roles...',
-    INITIALIZATION_SUCCESS: 'Successfully initialized built-in roles',
-    INITIALIZATION_FAILED: 'Failed to initialize built-in roles',
-    ROLES_ALREADY_EXIST: 'Built-in roles already exist. Skipping initialization.',
-    PLATFORM_CATEGORY_ALREADY_EXISTS: (id: string) =>
-      `Platform category already exists with ID: ${id}`,
-    CREATING_PLATFORM_CATEGORY: 'Creating platform category...',
-    PLATFORM_CATEGORY_CREATED: (id: string) => `Platform category created with ID: ${id}`,
-    PLATFORM_CATEGORY_CREATE_FAILED: 'Failed to create platform category: No ID returned',
-    PLATFORM_CATEGORY_FETCH_FAILED: 'Failed to fetch existing platform category',
-    PLATFORM_CATEGORY_ENSURE_FAILED: 'Failed to ensure platform category exists',
-    PLATFORM_CATEGORY_ID_MISSING:
-      'Failed to get platform category ID. Cannot initialize built-in roles.',
-    ROLE_ALREADY_EXISTS: (name: string) => `Built-in role "${name}" already exists. Skipping.`,
-    ROLE_CREATE_FAILED: (name: string) => `Failed to create built-in role "${name}"`,
-    PLATFORM_CATEGORY_ALREADY_EXISTS_FETCHING: 'Platform category already exists. Fetching...',
-  },
   ERROR_MESSAGES: {
     CLIENT: {
       FETCH_ROLES_FAILED: '[APIClient] Failed to fetch roles:',
@@ -262,7 +249,6 @@ export const ROLES_CONSTANTS = {
       DELETE_ROLE_FAILED: (id: string) => `[APIClient] Failed to delete role: ${id}`,
     },
   },
-  PLATFORM_CATEGORY_NAME: 'Platform',
 } as const;
 
 export const ROLES_ERROR_MESSAGES = ROLES_CONSTANTS.ERROR_MESSAGES;

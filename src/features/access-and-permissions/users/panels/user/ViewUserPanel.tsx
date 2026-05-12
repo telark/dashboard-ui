@@ -15,21 +15,25 @@ interface ViewUserPanelProps {
   user: User | null;
   onEdit?: () => void;
   onDelete?: () => void;
+  canDelete?: boolean;
 }
 
 const UserIcon = Icons.User;
 
-const ViewUserPanel: React.FC<ViewUserPanelProps> = ({ open, onClose, user, onEdit, onDelete }) => {
+const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
+  open,
+  onClose,
+  user,
+  onEdit,
+  onDelete,
+  canDelete,
+}) => {
   const { deleteModalOpen, isDeleting, openDeleteModal, closeDeleteModal, handleConfirmDelete } =
     useUserDeleteModal(user);
 
   const handleDeleteAction = useMemo(
-    () =>
-      onDelete ??
-      (() => {
-        openDeleteModal();
-      }),
-    [onDelete, openDeleteModal],
+    () => (canDelete ? (onDelete ?? openDeleteModal) : undefined),
+    [canDelete, onDelete, openDeleteModal],
   );
 
   const icon = useMemo(() => {

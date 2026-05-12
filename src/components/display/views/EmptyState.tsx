@@ -12,7 +12,7 @@ export interface EmptyStateProps {
   icon: React.ReactNode;
   title: string;
   description: string;
-  primaryAction: {
+  primaryAction?: {
     label: string;
     icon?: React.ReactNode;
     onClick: () => void;
@@ -121,14 +121,16 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
               justifyContent: 'center',
             }}
           >
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={primaryAction.onClick}
-              style={buttonStyle}
-            >
-              {primaryAction.label}
-            </Button>
+            {primaryAction && (
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={primaryAction.onClick}
+                style={buttonStyle}
+              >
+                {primaryAction.label}
+              </Button>
+            )}
             {secondaryAction && (
               <Button type="default" onClick={secondaryAction.onClick} style={buttonStyle}>
                 {secondaryAction.label}

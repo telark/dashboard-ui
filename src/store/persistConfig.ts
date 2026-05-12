@@ -42,3 +42,9 @@ export const usersPersistConfig: PersistConfig<any> = {
   storage,
   whitelist: ['users'],
 };
+
+export const globalConfigPersistConfig: PersistConfig<any> = {
+  key: 'globalconfig',
+  storage,
+  whitelist: ['data', 'initialized', 'lastFetchedAt'],
+};

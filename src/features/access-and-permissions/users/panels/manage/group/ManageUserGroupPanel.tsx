@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Form } from 'antd';
 import { CheckCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import {
@@ -12,6 +12,10 @@ import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { useManageUserGroupPanel } from '../../../hooks/panels/group/useManageUserGroupPanel';
 import { useDeassignUserGroup } from '../../../hooks/panels/group/useDeassignUserGroup';
+import {
+  usePermission,
+  ACTION_PERMISSIONS,
+} from '../../../../../../features/auth/hooks/permissions/permissionEngine';
 import UserGroupSelectList from '../../../components/display/manage/group/UserGroupSelectList';
 import UserAssignedGroupsView from '../../../components/display/manage/group/UserAssignedGroupsView';
 import { CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
@@ -39,12 +43,20 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
     () => user?.assignedGroupsIDs ?? [],
   );
 
-  useEffect(() => {
+  const [prevUser, setPrevUser] = useState(user);
+  if (prevUser !== user) {
+    setPrevUser(user);
     setLocalAssignedIds(user?.assignedGroupsIDs ?? []);
-  }, [user]);
+  }
 
   const { initialSelectedGroups, hasChanges, groups, groupsLoading, submitting, handleSubmit } =
     useManageUserGroupPanel({ open, user, form, onClose, currentSelectedGroups });
+
+  const canRemoveFromGroup = usePermission(
+    ACTION_PERMISSIONS.users.removeFromGroup.scope,
+    ACTION_PERMISSIONS.users.removeFromGroup.level,
+    ACTION_PERMISSIONS.users.removeFromGroup.deny,
+  );
 
   const handleDeassignSuccess = useCallback((updatedGroups: string[]) => {
     setLocalAssignedIds(updatedGroups);
@@ -128,7 +140,7 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
                   assignedGroupIds={filteredAssignedGroupIds}
                   allGroups={groups}
                   loading={groupsLoading}
-                  onDeassignClick={openDeassignModal}
+                  onDeassignClick={canRemoveFromGroup ? openDeassignModal : undefined}
                 />
               ) : (
                 <UserGroupSelectList

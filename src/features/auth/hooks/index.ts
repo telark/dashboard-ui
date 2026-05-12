@@ -1,3 +1,15 @@
+// Permissions
+export {
+  usePermission,
+  useCanAccess,
+  PermissionGate,
+  ACTION_PERMISSIONS,
+} from './permissions/permissionEngine';
+export {
+  useInitializePermissions,
+  stopPermissionsPolling,
+} from './permissions/useInitializePermissions';
+
 // Session
 export { useSessionsList, type UseSessionsListResult } from './useSessionsList';
 

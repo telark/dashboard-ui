@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tooltip } from 'antd';
 import { USERS_CONSTANTS as UC } from '../constants';
 import { Icons } from '../../../../constants';
 import { SearchOutlined, SettingOutlined, FilterOutlined, DeleteOutlined } from '@ant-design/icons';
@@ -13,11 +14,15 @@ interface UseUserListConfigProps {
   onSearchChange: (value: string) => void;
   onSearchSubmit?: () => void;
   onCreateUserClick: () => void;
+  canCreateUser?: boolean;
   selectedUsersCount?: number;
   onFilterClick?: () => void;
   onBulkDeleteClick?: () => void;
   onManageRoleClick?: () => void;
   onManageGroupClick?: () => void;
+  canManageRole?: boolean;
+  canManageGroup?: boolean;
+  canBulkDeleteUser?: boolean;
 }
 
 export const useUserListConfig = ({
@@ -25,11 +30,15 @@ export const useUserListConfig = ({
   onSearchChange,
   onSearchSubmit,
   onCreateUserClick,
+  canCreateUser = true,
   selectedUsersCount = 0,
   onFilterClick,
   onBulkDeleteClick,
   onManageRoleClick,
   onManageGroupClick,
+  canManageRole = true,
+  canManageGroup = true,
+  canBulkDeleteUser = true,
 }: UseUserListConfigProps) => {
   const toolbarConfig: ToolbarConfig = React.useMemo(
     () => ({
@@ -58,7 +67,8 @@ export const useUserListConfig = ({
           label: UC.LABELS.ACTIONS.BULK_DELETE,
           icon: <DeleteOutlined />,
           variant: 'danger',
-          disabled: selectedUsersCount < 2,
+          disabled: selectedUsersCount < 2 || !canBulkDeleteUser,
+          tooltip: !canBulkDeleteUser ? UC.LABELS.ACTIONS.BULK_DELETE_DISABLED_TOOLTIP : undefined,
           onClick: () => onBulkDeleteClick?.(),
         },
         {
@@ -71,13 +81,31 @@ export const useUserListConfig = ({
             items: [
               {
                 key: 'manage-roles',
-                label: UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_ROLES,
+                label: !canManageRole ? (
+                  <Tooltip title={UC.LABELS.ACTIONS.MANAGE_ROLES_DISABLED_TOOLTIP}>
+                    <span style={{ pointerEvents: 'all' }}>
+                      {UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_ROLES}
+                    </span>
+                  </Tooltip>
+                ) : (
+                  UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_ROLES
+                ),
                 icon: <RoleIcon size={14} />,
+                disabled: !canManageRole,
               },
               {
                 key: 'manage-groups',
-                label: UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_GROUPS,
+                label: !canManageGroup ? (
+                  <Tooltip title={UC.LABELS.ACTIONS.MANAGE_GROUPS_DISABLED_TOOLTIP}>
+                    <span style={{ pointerEvents: 'all' }}>
+                      {UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_GROUPS}
+                    </span>
+                  </Tooltip>
+                ) : (
+                  UC.LABELS.TOOLBAR.MANAGE.ITEMS.MANAGE_GROUPS
+                ),
                 icon: <GroupIcon size={14} />,
+                disabled: !canManageGroup,
               },
             ],
             onItemClick: (key: string) => {
@@ -95,6 +123,8 @@ export const useUserListConfig = ({
           icon: <UserIcon size={14} />,
           variant: 'primary',
           onClick: onCreateUserClick,
+          disabled: !canCreateUser,
+          tooltip: !canCreateUser ? UC.LABELS.TOOLBAR.CREATE.DISABLED_TOOLTIP : undefined,
         },
       ],
     }),
@@ -103,11 +133,15 @@ export const useUserListConfig = ({
       onSearchChange,
       onSearchSubmit,
       onCreateUserClick,
+      canCreateUser,
       selectedUsersCount,
       onFilterClick,
       onBulkDeleteClick,
       onManageRoleClick,
       onManageGroupClick,
+      canManageRole,
+      canManageGroup,
+      canBulkDeleteUser,
     ],
   );
 

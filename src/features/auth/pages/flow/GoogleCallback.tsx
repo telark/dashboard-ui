@@ -4,11 +4,12 @@ import { App as AntdApp } from 'antd';
 import { oidcGoogleCallback } from '../../clients';
 import { setSessionToken } from '../../utils/session/token';
 import { setCurrentUser } from '../../utils/session/user';
-import { validateSession } from '../../utils/session/validation';
-import { fetchUserById } from '../../../access-and-permissions/users/clients/fetch';
 import { getClientMetadata } from '../../utils/device/metadata';
+import { fetchMyPermissionsThunk } from '../../store/thunks/fetchThunks';
+import store from '../../../../store';
 import { APP_ROUTES } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
+import type { User } from '../../../access-and-permissions/users/models';
 
 const GoogleCallback: React.FC = () => {
   const navigate = useNavigate();
@@ -29,32 +30,27 @@ const GoogleCallback: React.FC = () => {
       return;
     }
 
-    const { browser, device, os, userAgent } = getClientMetadata();
-    oidcGoogleCallback({ idToken, browser, device, os, userAgent })
-      .then(async (res) => {
-        const wrapped = res as unknown as { data: { sessionToken: string; email: string } };
-        const token = wrapped?.data?.sessionToken;
-        if (!token) {
-          message.error(LOGIN_CONSTANTS.OIDC.CALLBACK_ERROR);
-          navigate(APP_ROUTES.LOGIN, { replace: true });
-          return;
-        }
-        setSessionToken(token);
+    const completeLogin = async (): Promise<void> => {
+      const { browser, device, os, userAgent } = getClientMetadata();
+      const res = await oidcGoogleCallback({ idToken, browser, device, os, userAgent });
+      const wrapped = res as unknown as {
+        data: { sessionToken: string; email: string; user?: User };
+      };
+      const token = wrapped?.data?.sessionToken;
+      if (!token) {
+        throw new Error(LOGIN_CONSTANTS.OIDC.CALLBACK_ERROR);
+      }
+      setSessionToken(token);
+      if (wrapped.data.user) {
+        setCurrentUser(wrapped.data.user);
+      }
+    };
 
-        try {
-          const validation = await validateSession();
-          if (validation.isValid && validation.sessionDetails?.userId) {
-            const userResponse = await fetchUserById(validation.sessionDetails.userId, true);
-            if (userResponse?.data) {
-              setCurrentUser(userResponse.data);
-            }
-          }
-        } catch {
-          // non-fatal — avatar self-heals in UserAvatarDropdown
-        }
-
-        message.success(LOGIN_CONSTANTS.OIDC.CALLBACK_SUCCESS);
+    completeLogin()
+      .then(() => {
         navigate(APP_ROUTES.HOME, { replace: true });
+        message.success(LOGIN_CONSTANTS.OIDC.CALLBACK_SUCCESS);
+        void store.dispatch(fetchMyPermissionsThunk());
       })
       .catch(() => {
         message.error(LOGIN_CONSTANTS.OIDC.CALLBACK_ERROR);

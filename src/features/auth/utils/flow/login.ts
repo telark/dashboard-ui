@@ -8,6 +8,8 @@ import {
 } from '../webauthn/extraction';
 import { setSessionToken } from '../session/token';
 import { setCurrentUser } from '../session/user';
+import { fetchMyPermissionsThunk } from '../../store/thunks/fetchThunks';
+import store from '../../../../store';
 import { AUTH_SUCCESS_MESSAGES, AUTH_ERROR_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { HTTP_STATUS } from '../../../../constants/rest/http';
@@ -17,12 +19,12 @@ import type { LoginStartResponse, AuthenticatorAssertionResponse } from '../../m
 import type { MessageInstance } from 'antd/es/message/interface';
 
 export const prepareLoginFinishRequest = (
-  username: string,
+  email: string,
   credential: { id: string; rawId: string; response: AuthenticatorAssertionResponse; type: string },
 ) => {
   const { browser, device, os, userAgent } = getClientMetadata();
   return {
-    username,
+    email,
     id: credential.id,
     rawId: credential.rawId,
     response: {
@@ -94,7 +96,7 @@ export interface OrphanedPasskeysInfo {
 }
 
 export const performLogin = async (
-  username: string,
+  email: string,
   messageApi: MessageInstance,
   onSuccess?: () => void,
   onNoPasskeys?: () => void,
@@ -103,7 +105,7 @@ export const performLogin = async (
 ): Promise<void> => {
   let loginStartResponse: LoginStartResponse | null = null;
   try {
-    loginStartResponse = await loginStart({ username });
+    loginStartResponse = await loginStart({ email });
 
     // Call authentication normally - one attempt only
     const options = extractLoginOptions(loginStartResponse);
@@ -117,7 +119,7 @@ export const performLogin = async (
 
     const assertionResponse = credential.response as AuthenticatorAssertionResponse;
     const loginFinishResponse = await loginFinish(
-      prepareLoginFinishRequest(username, {
+      prepareLoginFinishRequest(email, {
         id: credential.id,
         rawId: credential.rawId,
         response: assertionResponse,
@@ -145,6 +147,7 @@ export const performLogin = async (
     if (onSuccess) {
       onSuccess();
     }
+    void store.dispatch(fetchMyPermissionsThunk());
   } catch (error) {
     // On authentication failure, show modal if backend has passkeys
     // User must explicitly confirm before cleanup

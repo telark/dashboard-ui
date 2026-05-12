@@ -36,7 +36,7 @@ const handleOrphanedPasskeyCleanup = async (
       params.credential,
       params.deviceName,
       params.deviceType,
-      params.username,
+      params.email,
     );
     return mapResponseToPasskey(retryResponse);
   } catch (cleanupError) {
@@ -77,7 +77,7 @@ export const createPasskeyThunk = createAsyncThunk(
         params.credential,
         params.deviceName,
         params.deviceType,
-        params.username,
+        params.email,
       );
       return mapResponseToPasskey(response);
     } catch (error: unknown) {

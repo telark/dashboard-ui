@@ -2,7 +2,6 @@ import React, { memo } from 'react';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import { PAGE_CONTENT_LAYOUT } from '../../../../../constants/shared/pages';
 
-/** Mirrors ProtectionPlan `CreatePlanLayout` breadcrumb + title + subtitle structure. */
 export interface ApplicationBreadcrumbItem {
   label: string;
   onClick?: () => void;

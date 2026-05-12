@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../../constants';
 
 interface RolesErrorPageProps {
   error: string;
@@ -10,9 +10,9 @@ const RolesErrorPage: React.FC<RolesErrorPageProps> = memo(({ error }) => {
     <div
       style={{
         background: DEFAULT_COLORS.BACKGROUND_WHITE,
-        minHeight: 'calc(100vh - 60px)',
+        minHeight: HEADER_LAYOUT.MIN_HEIGHT,
         padding: '48px 32px 32px',
-        marginTop: '60px',
+        marginTop: HEADER_LAYOUT.HEIGHT,
       }}
     >
       <div>Error: {error}</div>

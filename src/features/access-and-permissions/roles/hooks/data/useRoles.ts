@@ -11,9 +11,14 @@ export const useRoles = () => {
     dispatch(fetchAllRolesThunk());
   }, [dispatch]);
 
+  const refetch = (): void => {
+    dispatch(fetchAllRolesThunk());
+  };
+
   return {
     roles,
     loading,
     error,
+    refetch,
   };
 };

@@ -55,12 +55,12 @@ export const extractRegisterOptions = (
 };
 
 export const performRegister = async (
-  username: string,
+  email: string,
   deviceName: string,
   messageApi: MessageInstance,
   onSuccess?: () => void,
 ): Promise<void> => {
-  const registerStartResponse = await registerStart(username);
+  const registerStartResponse = await registerStart(email);
   const options = extractRegisterOptions(registerStartResponse);
 
   // Override user.name and user.displayName with device name so browser shows device name in selection popup
@@ -82,7 +82,7 @@ export const performRegister = async (
   });
 
   const deviceType: PasskeyDeviceType = 'platform';
-  await createPasskey(credential, deviceName, deviceType, username);
+  await createPasskey(credential, deviceName, deviceType, email);
 
   messageApi.open({
     type: 'success',

@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useTransition, useEffect } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ProtectedRoute } from '../features/auth/components';
 import { FancySpinner, AnimatedPageWrapper } from '../components/animation';
@@ -37,9 +37,9 @@ const PasskeysMainPage = lazy(() => import('../features/auth/pages/passkeys/Main
 const SettingsPage = lazy(() =>
   import('../features/settings').then((m) => ({ default: m.SettingsPage })),
 );
-const ProtectionPlansMainPage = lazy(() => import('../features/protection-plans/pages/MainPage'));
-const ProtectionPlansCreatePage = lazy(
-  () => import('../features/protection-plans/pages/CreatePlanPage'),
+const ProtectionPlansMainPage = lazy(() => import('../features/plans/protection/pages/MainPage'));
+const ProtectionPlanDetailsView = lazy(
+  () => import('../features/plans/protection/pages/details/DetailsView'),
 );
 
 const PageLoader: React.FC = () => (
@@ -59,12 +59,8 @@ const PageLoader: React.FC = () => (
 const AppRoutes: React.FC = () => {
   const isAuthenticated = hasSessionToken();
   const location = useLocation();
-  const [isPending, startTransition] = useTransition();
-
   useEffect(() => {
-    startTransition(() => {
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    });
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }, [location.pathname]);
 
   useEffect(() => {
@@ -125,7 +121,7 @@ const AppRoutes: React.FC = () => {
         <Route
           path={APP_ROUTES.ROLES}
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredScope="roles" minimumLevel="ReadOnly">
               <FeatureErrorBoundary featureName="Roles">
                 <RolesMainPage />
               </FeatureErrorBoundary>
@@ -135,7 +131,7 @@ const AppRoutes: React.FC = () => {
         <Route
           path={APP_ROUTES.USERS}
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredScope="users" minimumLevel="ReadOnly">
               <FeatureErrorBoundary key={APP_ROUTES.USERS} featureName="Users">
                 <UsersMainPage />
               </FeatureErrorBoundary>
@@ -145,7 +141,7 @@ const AppRoutes: React.FC = () => {
         <Route
           path={APP_ROUTES.GROUPS}
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredScope="groups" minimumLevel="ReadOnly">
               <FeatureErrorBoundary key={APP_ROUTES.GROUPS} featureName="Groups">
                 <GroupsMainPage />
               </FeatureErrorBoundary>
@@ -163,11 +159,11 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path={APP_ROUTES.PROTECTION_PLANS_CREATE}
+          path={APP_ROUTES.PROTECTION_PLAN_DETAILS}
           element={
             <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Protection Plans">
-                <ProtectionPlansCreatePage />
+              <FeatureErrorBoundary featureName="Protection Plan Details">
+                <ProtectionPlanDetailsView />
               </FeatureErrorBoundary>
             </ProtectedRoute>
           }
@@ -193,20 +189,6 @@ const AppRoutes: React.FC = () => {
           }
         />
       </Routes>
-      {isPending && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: '2px',
-            background: 'linear-gradient(90deg, #20c997, #10b981)',
-            zIndex: 9999,
-            animation: 'slideIn 0.3s ease-out',
-          }}
-        />
-      )}
     </Suspense>
   );
 };

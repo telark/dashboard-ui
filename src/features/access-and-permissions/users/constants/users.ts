@@ -66,9 +66,13 @@ export const USERS_CONSTANTS = {
     ACTIONS: {
       VIEW: 'View',
       EDIT: 'Edit',
+      EDIT_DISABLED_TOOLTIP: 'You do not have permission to edit users',
       DELETE: 'Delete',
+      DELETE_DISABLED_TOOLTIP: 'You do not have permission to delete users',
       MANAGE_ROLES: 'Manage Roles',
       MANAGE_GROUPS: 'Manage Groups',
+      MANAGE_ROLES_DISABLED_TOOLTIP: 'You do not have permission to manage roles',
+      MANAGE_GROUPS_DISABLED_TOOLTIP: 'You do not have permission to manage groups',
       DELETE_MODAL_TITLE: 'Delete User',
       DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
       DELETE_MODAL_OK: 'Delete',
@@ -81,6 +85,7 @@ export const USERS_CONSTANTS = {
       DEASSIGN_GROUP_MODAL_CONFIRM: 'Remove',
       DEASSIGN_GROUP_RESOURCE_TYPE: 'group',
       BULK_DELETE: 'Bulk Delete',
+      BULK_DELETE_DISABLED_TOOLTIP: 'You do not have permission to delete users',
       BULK_DELETE_MODAL_TITLE: 'Delete Users',
       BULK_DELETE_LOADING: (count: number) => `Deleting ${count} user${count > 1 ? 's' : ''}...`,
       BULK_DELETE_SUCCESS: (count: number) =>
@@ -168,6 +173,7 @@ export const USERS_CONSTANTS = {
       },
       CREATE: {
         BUTTON_LABEL: 'Add New Member',
+        DISABLED_TOOLTIP: 'You do not have permission to create users',
       },
       MANAGE: {
         BUTTON_LABEL: 'Manage',

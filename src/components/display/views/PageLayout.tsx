@@ -8,6 +8,9 @@ import { FilterSection } from '../filters';
 import { Toolbar } from '../toolbar';
 import { TablePagination } from '../table';
 import type { PageLayoutConfig } from '../../../interfaces/layout/page';
+import { DataViewError } from '../../shared';
+import { FancySpinner } from '../../animation';
+import { useDataViewState } from '../../../hooks/layout/useDataViewState';
 
 const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfig<T> }) => {
   const navigate = useNavigate();
@@ -27,8 +30,16 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
     containerStyle,
     rowHeight: configRowHeight,
     empty,
+    loading = false,
+    error = null,
+    onRetry,
   } = config;
   const rowHeight = configRowHeight ?? densityRowHeight;
+  const dataState = useDataViewState({
+    loading,
+    error,
+    hasData: Array.isArray(data) && data.length > 0,
+  });
 
   return (
     <div
@@ -150,54 +161,66 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-          <DataTable<T>
-            columns={columns}
-            data={data}
-            rowKey={rowKey}
-            className="app-table"
-            rowHeight={rowHeight}
-            empty={empty}
-            tableProps={{
-              rowSelection: rowSelection
-                ? {
-                    selectedRowKeys: rowSelection.selectedRowKeys,
-                    onChange: rowSelection.onChange,
-                  }
-                : undefined,
-              onRow: onRowClick
-                ? (record: T) => ({
-                    onClick: () => onRowClick(record),
-                    style: { cursor: 'pointer' },
-                  })
-                : undefined,
-            }}
-            containerStyle={{
-              background: 'transparent',
-              borderRadius: 0,
-              boxShadow: 'none',
-              padding: 0,
-            }}
-          />
-          <TablePagination config={pagination} />
+          {dataState.phase === 'error' && (
+            <DataViewError
+              variant="table"
+              message={dataState.errorMessage}
+              onRetry={onRetry ?? (() => undefined)}
+            />
+          )}
+          {dataState.phase === 'loading' && (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: 220,
+              }}
+            >
+              <FancySpinner size={40} showLabel />
+            </div>
+          )}
+          {(dataState.phase === 'empty' || dataState.phase === 'ready') && (
+            <>
+              <DataTable<T>
+                columns={columns}
+                data={data}
+                rowKey={rowKey}
+                className="app-table"
+                rowHeight={rowHeight}
+                empty={empty}
+                tableProps={{
+                  rowSelection: rowSelection
+                    ? {
+                        selectedRowKeys: rowSelection.selectedRowKeys,
+                        onChange: rowSelection.onChange,
+                      }
+                    : undefined,
+                  onRow: onRowClick
+                    ? (record: T) => ({
+                        onClick: () => onRowClick(record),
+                        style: { cursor: 'pointer' },
+                      })
+                    : undefined,
+                }}
+                containerStyle={{
+                  background: 'transparent',
+                  borderRadius: 0,
+                  boxShadow: 'none',
+                  padding: 0,
+                }}
+              />
+              <TablePagination config={pagination} />
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-const PageLayout = memo(PageLayoutComponent, (prevProps, nextProps) => {
-  const columnsChanged = prevProps.config.columns !== nextProps.config.columns;
-  const dataChanged = prevProps.config.data !== nextProps.config.data;
-
-  return (
-    !columnsChanged &&
-    !dataChanged &&
-    prevProps.config.title === nextProps.config.title &&
-    prevProps.config.subtitle === nextProps.config.subtitle &&
-    prevProps.config.data.length === nextProps.config.data.length &&
-    prevProps.config.columns.length === nextProps.config.columns.length &&
-    JSON.stringify(prevProps.config.breadcrumbs) === JSON.stringify(nextProps.config.breadcrumbs)
-  );
-}) as <T = unknown>(props: { config: PageLayoutConfig<T> }) => React.ReactElement;
+const PageLayout = memo(PageLayoutComponent) as <T = unknown>(props: {
+  config: PageLayoutConfig<T>;
+}) => React.ReactElement;
 
 export default PageLayout;

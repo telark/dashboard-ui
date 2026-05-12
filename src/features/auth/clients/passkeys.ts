@@ -32,7 +32,7 @@ export const createPasskey = async (
   credential: PublicKeyCredential,
   deviceName: string,
   deviceType: PasskeyDeviceType,
-  username?: string,
+  email?: string,
 ): Promise<CreatePasskeyResponse> => {
   const { path, method } = Endpoints.AUTH.PASSKEYS.CREATE;
   const headers: Record<string, string> = {
@@ -40,8 +40,8 @@ export const createPasskey = async (
     [HTTP_HEADERS.CUSTOM.DEVICE_TYPE]: deviceType,
   };
 
-  if (username) {
-    headers[HTTP_HEADERS.CUSTOM.USERNAME] = username;
+  if (email) {
+    headers[HTTP_HEADERS.CUSTOM.EMAIL] = email;
   }
 
   return await Client<CreatePasskeyResponse>(authApiClient, path, {

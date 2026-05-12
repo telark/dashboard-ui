@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { Checkbox, Form } from 'antd';
+import { Checkbox, Form, Tooltip } from 'antd';
 import { ScrollIndicator } from '../../../../../../components/display/indicators';
 import { SelectableListItem } from '../../../../../../components/display/list';
 import { GROUPS_CONSTANTS as GC, ATTACHED_ROLES_CONSTANTS as ARC } from '../../../constants';
@@ -21,9 +21,10 @@ interface RoleListProps {
   roles?: Role[];
   loading: boolean;
   allRoles?: Role[];
+  canSelect?: boolean;
 }
 
-const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
+const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles, canSelect = true }) => {
   const form = Form.useFormInstance();
   const watchedSelectedRoles = Form.useWatch('assignedRolesIDs', form);
   const currentSelectedRoles = useMemo(
@@ -70,66 +71,71 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles }) => {
   }
 
   return (
-    <Form.Item name="assignedRolesIDs" style={{ margin: 0, width: '100%' }}>
-      <Checkbox.Group
-        value={currentSelectedRoles}
-        onChange={handleChange}
-        style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
-      >
-        <div style={wrapperStyle}>
-          <div
-            ref={scrollContainerRef}
-            className={containerClassName}
-            style={{
-              ...ARC.LIST.CONTAINER,
-              ...containerStyle,
-            }}
+    <Tooltip title={!canSelect ? GC.LABELS.ACTIONS.ATTACH_ROLE_DISABLED_TOOLTIP : undefined}>
+      <div style={{ width: '100%' }}>
+        <Form.Item name="assignedRolesIDs" style={{ margin: 0, width: '100%' }}>
+          <Checkbox.Group
+            value={currentSelectedRoles}
+            onChange={handleChange}
+            style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
           >
-            {roles.map((role) => {
-              const isProtected = isRoleProtected(role);
+            <div style={wrapperStyle}>
+              <div
+                ref={scrollContainerRef}
+                className={containerClassName}
+                style={{
+                  ...ARC.LIST.CONTAINER,
+                  ...containerStyle,
+                }}
+              >
+                {roles.map((role) => {
+                  const isProtected = isRoleProtected(role);
 
-              const scopesContent = getRoleScopesContent(role, {
-                scopesAndPermissions: role.scopesAndPermissions || [],
-                getScopeLabel,
-                scopesContainerStyle: ARC.LIST.ROLE_SCOPES,
-                scopeItemStyle: ARC.LIST.SCOPE_ITEM,
-              });
+                  const scopesContent = getRoleScopesContent(role, {
+                    scopesAndPermissions: role.scopesAndPermissions || [],
+                    getScopeLabel,
+                    scopesContainerStyle: ARC.LIST.ROLE_SCOPES,
+                    scopeItemStyle: ARC.LIST.SCOPE_ITEM,
+                  });
 
-              return (
-                <SelectableListItem
-                  key={role.id}
-                  value={role.id}
-                  name={CapitalizeFirstLetter(role.name)}
-                  description={
-                    role.description
-                      ? CapitalizeFirstLetter(truncateText(role.description, 100))
-                      : undefined
-                  }
-                  customContent={scopesContent}
-                  isProtected={isProtected}
-                  protectionIcon={<RoleIcon />}
-                  protectionTooltip={ARC.TOOLTIPS.PROTECTED_ROLE}
-                  protectionIconColor={DEFAULT_COLORS.SUCCESS}
-                  protectionIconSize={18}
-                  itemStyles={{
-                    base: ARC.LIST.ITEM.BASE,
-                    hover: ARC.LIST.ITEM.HOVER,
-                  }}
-                  contentStyles={ARC.LIST.ROLE_CONTENT}
-                  nameStyles={ARC.LIST.ROLE_NAME}
-                  descriptionStyles={ARC.LIST.ROLE_DESCRIPTION}
-                />
-              );
-            })}
-          </div>
-          <ScrollIndicator
-            containerRef={scrollContainerRef}
-            isScrollable={isScrollable}
-            onVisibilityChange={setShowScrollIndicator}
-          />
-        </div>
-      </Checkbox.Group>
-    </Form.Item>
+                  return (
+                    <SelectableListItem
+                      key={role.id}
+                      value={role.id}
+                      name={CapitalizeFirstLetter(role.name)}
+                      description={
+                        role.description
+                          ? CapitalizeFirstLetter(truncateText(role.description, 100))
+                          : undefined
+                      }
+                      customContent={scopesContent}
+                      isProtected={isProtected}
+                      protectionIcon={<RoleIcon />}
+                      protectionTooltip={ARC.TOOLTIPS.PROTECTED_ROLE}
+                      protectionIconColor={DEFAULT_COLORS.SUCCESS}
+                      protectionIconSize={18}
+                      itemStyles={{
+                        base: ARC.LIST.ITEM.BASE,
+                        hover: ARC.LIST.ITEM.HOVER,
+                      }}
+                      contentStyles={ARC.LIST.ROLE_CONTENT}
+                      nameStyles={ARC.LIST.ROLE_NAME}
+                      descriptionStyles={ARC.LIST.ROLE_DESCRIPTION}
+                      disabled={!canSelect}
+                    />
+                  );
+                })}
+              </div>
+              <ScrollIndicator
+                containerRef={scrollContainerRef}
+                isScrollable={isScrollable}
+                onVisibilityChange={setShowScrollIndicator}
+              />
+            </div>
+          </Checkbox.Group>
+        </Form.Item>
+      </div>
+    </Tooltip>
   );
 };
 

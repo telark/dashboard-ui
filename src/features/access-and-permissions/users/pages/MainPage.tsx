@@ -1,18 +1,32 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { getCurrentUser } from '../../../auth/utils';
+import { usePermission, ACTION_PERMISSIONS } from '../../../auth/hooks';
 import { useUsers, useUserFilters, useBulkDeleteUsers, useUserListState } from '../hooks';
 import { useUserListPageConfig } from '../hooks/list/useUserListPageConfig';
 import { useUserPanelState } from '../hooks/panels/user/useUserPanelState';
 import { applyUserFilters } from '../utils/filter/applyUserFilters';
 import { CreateUserPanel } from '../panels';
 import type { User } from '../models';
-import UsersErrorPage from './UsersErrorPage';
-import UsersLoadingPage from './UsersLoadingPage';
 import UsersEmptyPage from './UsersEmptyPage';
 import UsersListPage from './UsersListPage';
 
 const MainPage: React.FC = () => {
-  const { users, loading, error } = useUsers();
+  const { users, loading, error, refetch } = useUsers();
+  const canCreateUser = usePermission(
+    ACTION_PERMISSIONS.users.create.scope,
+    ACTION_PERMISSIONS.users.create.level,
+    ACTION_PERMISSIONS.users.create.deny,
+  );
+  const canEditUser = usePermission(
+    ACTION_PERMISSIONS.users.edit.scope,
+    ACTION_PERMISSIONS.users.edit.level,
+    ACTION_PERMISSIONS.users.edit.deny,
+  );
+  const canDeleteUser = usePermission(
+    ACTION_PERMISSIONS.users.delete.scope,
+    ACTION_PERMISSIONS.users.delete.level,
+    ACTION_PERMISSIONS.users.delete.deny,
+  );
   const [searchTerm, setSearchTerm] = useState('');
   const [bulkDeleteModalOpen, setBulkDeleteModalOpen] = useState(false);
 
@@ -131,8 +145,9 @@ const MainPage: React.FC = () => {
     paginatedUsers,
     hasSelection: selectedUsers.length > 0,
     handleViewUser,
-    handleEditUser,
+    handleEditUser: canEditUser ? handleEditUser : () => undefined,
     onCreateUserClick: openCreatePanel,
+    canCreateUser,
     onFilterClick: openFilterPanel,
     onBulkDeleteClick: handleBulkDeleteClick,
     onManageRoleClick: handleManageRolesClick,
@@ -142,22 +157,15 @@ const MainPage: React.FC = () => {
     onSearchSubmit: undefined,
   });
 
-  // Fix: guard empty state render until data is confirmed loaded
-  const isFetching = useMemo(() => loading, [loading]);
-
   const shouldShowEmpty = useMemo(
     () => Array.isArray(users) && usersExcludingSelf.length === 0 && !loading && !error,
     [users, usersExcludingSelf.length, loading, error],
   );
 
-  if (error) {
-    return <UsersErrorPage error={error} />;
-  }
-
   if (shouldShowEmpty) {
     return (
       <>
-        <UsersEmptyPage onCreateUserClick={openCreatePanel} />
+        <UsersEmptyPage onCreateUserClick={canCreateUser ? openCreatePanel : undefined} />
         {createPanelOpen && (
           <CreateUserPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />
         )}
@@ -165,13 +173,11 @@ const MainPage: React.FC = () => {
     );
   }
 
-  if (isFetching) {
-    return <UsersLoadingPage />;
-  }
+  const augmentedPageConfig = { ...pageConfig, loading, error, onRetry: refetch };
 
   return (
     <UsersListPage
-      pageConfig={pageConfig}
+      pageConfig={augmentedPageConfig}
       createPanelOpen={createPanelOpen}
       editPanelOpen={editPanelOpen}
       viewPanelOpen={viewPanelOpen}
@@ -198,7 +204,8 @@ const MainPage: React.FC = () => {
       onCloseViewPanel={closeViewPanel}
       onCloseManageRolePanel={closeManageRolePanel}
       onCloseManageGroupPanel={closeManageGroupPanel}
-      onViewPanelEdit={handleViewPanelEdit}
+      onViewPanelEdit={canEditUser ? handleViewPanelEdit : undefined}
+      canDeleteUser={canDeleteUser}
     />
   );
 };

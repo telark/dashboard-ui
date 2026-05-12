@@ -6,6 +6,7 @@ import {
   useRoleListPageConfig,
   useRoleFilters,
 } from '../hooks';
+import { usePermission, ACTION_PERMISSIONS } from '../../../auth/hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { deduplicateCategoriesByName } from '../../categories/utils/helpers';
@@ -14,15 +15,23 @@ import { CreateRolePanel } from '../panels';
 import type { Role, RoleFormValues } from '../models';
 import type { Category } from '../../categories/models';
 import type { FormInstance } from 'antd';
-import RolesErrorPage from './RolesErrorPage';
-import RolesLoadingPage from './RolesLoadingPage';
 import RolesEmptyPage from './RolesEmptyPage';
 import RolesListPage from './RolesListPage';
 
 type ViewMode = 'roles' | 'categories';
 
 const MainPage: React.FC = () => {
-  const { roles, loading, error } = useRoles();
+  const { roles, loading, error, refetch } = useRoles();
+  const canCreateRole = usePermission(
+    ACTION_PERMISSIONS.roles.create.scope,
+    ACTION_PERMISSIONS.roles.create.level,
+    ACTION_PERMISSIONS.roles.create.deny,
+  );
+  const canEditRole = usePermission(
+    ACTION_PERMISSIONS.roles.edit.scope,
+    ACTION_PERMISSIONS.roles.edit.level,
+    ACTION_PERMISSIONS.roles.edit.deny,
+  );
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<ViewMode>('roles');
   const [addCategoryPanelOpen, setAddCategoryPanelOpen] = useState(false);
@@ -115,30 +124,25 @@ const MainPage: React.FC = () => {
     sortedRoles,
     paginatedRoles,
     handleViewRole,
-    handleEditRole,
+    handleEditRole: canEditRole ? handleEditRole : () => undefined,
     onEditCategory: openEditCategoryPanel,
     onCreateRoleClick: openCreatePanel,
+    canCreateRole,
     onFilterClick: openFilterPanel,
     onAddCategoryClick: () => setAddCategoryPanelOpen(true),
     searchValue: searchTerm,
     onSearchChange: setSearchTerm,
   });
 
-  const isFetching = useMemo(() => roles.length === 0 && loading, [roles.length, loading]);
-
   const shouldShowEmpty = useMemo(
     () => Array.isArray(roles) && roles.length === 0 && !loading && !error,
     [roles, loading, error],
   );
 
-  if (error) {
-    return <RolesErrorPage error={error} />;
-  }
-
   if (shouldShowEmpty) {
     return (
       <>
-        <RolesEmptyPage onCreateRoleClick={openCreatePanel} />
+        <RolesEmptyPage onCreateRoleClick={canCreateRole ? openCreatePanel : undefined} />
         {createPanelOpen && (
           <CreateRolePanel
             open={createPanelOpen}
@@ -150,13 +154,11 @@ const MainPage: React.FC = () => {
     );
   }
 
-  if (isFetching) {
-    return <RolesLoadingPage />;
-  }
+  const augmentedPageConfig = { ...pageConfig, loading, error, onRetry: refetch };
 
   return (
     <RolesListPage
-      pageConfig={pageConfig}
+      pageConfig={augmentedPageConfig}
       createPanelOpen={createPanelOpen}
       editPanelOpen={editPanelOpen}
       viewPanelOpen={viewPanelOpen}
@@ -177,7 +179,7 @@ const MainPage: React.FC = () => {
       handleFilterChange={handleFilterChange}
       handleFilterApply={handleFilterApply}
       handleFilterReset={handleFilterReset}
-      onViewPanelEdit={handleViewPanelEdit}
+      onViewPanelEdit={canEditRole ? handleViewPanelEdit : undefined}
     />
   );
 };

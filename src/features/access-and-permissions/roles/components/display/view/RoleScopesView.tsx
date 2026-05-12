@@ -108,7 +108,7 @@ const RoleScopesView: React.FC<ScopesPermissionsProps> = ({ scopes }) => {
                   trigger="click"
                   title={RC.SCOPE.RULES.DENY_LABEL}
                   content={<DeniedRulesPopover rules={scopeValue.rules ?? []} />}
-                  overlayInnerStyle={RULES_POPOVER_STYLE.content}
+                  styles={{ body: RULES_POPOVER_STYLE.content }}
                 >
                   <Tooltip title={RC.SCOPE.RULES.VIEW_DENIED_TOOLTIP}>
                     <span

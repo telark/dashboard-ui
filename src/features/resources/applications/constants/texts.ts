@@ -141,6 +141,9 @@ export const APPLICATIONS_UI = {
       MANIFEST_COPIED: 'Copied',
       MANIFEST_COPY_FAILED: 'Failed to copy',
       MANIFEST_LOADING: 'Loading manifest…',
+      VIEW_MANIFEST_PERMISSION_DENIED_TOOLTIP:
+        'You do not have permission to view snapshot manifests',
+      ROLLBACK_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to roll back applications',
     },
     METRICS: {
       TITLE: 'Metrics',
@@ -218,6 +221,11 @@ export const APPLICATIONS_UI = {
       MANAGE_SNAPSHOTS: 'Manage Snapshots',
       MANAGE_ROLLBACKS: 'Manage Rollbacks',
       SYNC_DISABLED_TOOLTIP: 'Action is unavailable while sync is in progress.',
+      EDIT_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to edit applications',
+      FORCE_SYNC_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to sync applications',
+      VIEW_SNAPSHOTS_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to view snapshots',
+      VIEW_ROLLBACKS_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to view rollbacks',
+      DELETE_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to delete applications',
       CANCEL: 'Cancel',
       DELETE: 'Delete',
       DELETE_CONFIRM_TITLE: 'Delete application?',

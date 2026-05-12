@@ -1,11 +1,12 @@
 import { DEFAULT_COLORS } from './colors';
+import { HEADER_LAYOUT } from '../layout/header';
 
 export const SHARED_DETAILS_CONSTANTS = {
   LAYOUT: {
     PAGE_CONTAINER: {
       background: DEFAULT_COLORS.PAGE_BG,
-      minHeight: 'calc(100vh - 60px)',
-      marginTop: '60px',
+      minHeight: HEADER_LAYOUT.MIN_HEIGHT,
+      marginTop: HEADER_LAYOUT.HEIGHT,
       padding: '48px 24px 48px',
     },
     HEADER_CONTAINER: {
@@ -40,15 +41,15 @@ export const SHARED_DETAILS_CONSTANTS = {
   },
   STATES: {
     LOADING_CONTAINER: {
-      marginTop: 60,
+      marginTop: HEADER_LAYOUT.HEIGHT_PX,
       padding: 24,
     },
     ERROR_CONTAINER: {
-      marginTop: 60,
+      marginTop: HEADER_LAYOUT.HEIGHT_PX,
       padding: 24,
     },
     EMPTY_CONTAINER: {
-      marginTop: 60,
+      marginTop: HEADER_LAYOUT.HEIGHT_PX,
       padding: 24,
     },
   },

@@ -1,3 +1,5 @@
+import { HEADER_LAYOUT } from './header';
+
 export const UI = {
   LAYOUT: {
     MAX_CONTENT_WIDTH: 980,
@@ -274,9 +276,9 @@ export const COMPONENT_STYLES = {
     GROUPERS: {
       pageStyle: {
         background: '#f8fafc', // DEFAULT_COLORS.PAGE_BG
-        minHeight: 'calc(100vh - 60px)',
+        minHeight: HEADER_LAYOUT.MIN_HEIGHT,
         padding: '48px 24px 24px',
-        marginTop: '60px',
+        marginTop: HEADER_LAYOUT.HEIGHT,
       },
       gridStyle: {
         display: 'flex',
@@ -287,9 +289,9 @@ export const COMPONENT_STYLES = {
     BRIDGES: {
       pageStyle: {
         background: '#f8fafc', // DEFAULT_COLORS.PAGE_BG
-        minHeight: 'calc(100vh - 60px)',
+        minHeight: HEADER_LAYOUT.MIN_HEIGHT,
         padding: '48px 24px 24px',
-        marginTop: '60px',
+        marginTop: HEADER_LAYOUT.HEIGHT,
       },
       gridStyle: {
         display: 'flex',

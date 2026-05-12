@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tooltip } from 'antd';
 import { TagOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { CATEGORIES_CONSTANTS } from '../constants';
 import type { ToolbarButtonConfig } from '../../../../interfaces/layout/toolbar';
@@ -8,6 +9,8 @@ const LABELS = CATEGORIES_CONSTANTS.LABELS.TOOLBAR.MANAGE_CATEGORIES;
 export interface ManageCategoriesButtonConfigParams {
   onViewCategories: () => void;
   onAddCategory: () => void;
+  canViewCategories?: boolean;
+  canAddCategory?: boolean;
 }
 
 /**
@@ -17,6 +20,8 @@ export interface ManageCategoriesButtonConfigParams {
 export function getManageCategoriesButtonConfig({
   onViewCategories,
   onAddCategory,
+  canViewCategories = true,
+  canAddCategory = true,
 }: ManageCategoriesButtonConfigParams): ToolbarButtonConfig {
   return {
     key: 'manage-categories',
@@ -27,13 +32,31 @@ export function getManageCategoriesButtonConfig({
       items: [
         {
           key: 'view-categories',
-          label: LABELS.VIEW_CATEGORIES,
+          label: !canViewCategories ? (
+            <Tooltip title={LABELS.VIEW_CATEGORIES_DISABLED_TOOLTIP}>
+              <span style={{ display: 'block', width: '100%', pointerEvents: 'all' }}>
+                {LABELS.VIEW_CATEGORIES}
+              </span>
+            </Tooltip>
+          ) : (
+            LABELS.VIEW_CATEGORIES
+          ),
           icon: <EyeOutlined />,
+          disabled: !canViewCategories,
         },
         {
           key: 'add-category',
-          label: LABELS.ADD_CATEGORY,
+          label: !canAddCategory ? (
+            <Tooltip title={LABELS.ADD_CATEGORY_DISABLED_TOOLTIP}>
+              <span style={{ display: 'block', width: '100%', pointerEvents: 'all' }}>
+                {LABELS.ADD_CATEGORY}
+              </span>
+            </Tooltip>
+          ) : (
+            LABELS.ADD_CATEGORY
+          ),
           icon: <PlusOutlined />,
+          disabled: !canAddCategory,
         },
       ],
       onItemClick: (key: string) => {

@@ -1,3 +1,5 @@
+import { HEADER_LAYOUT } from '../layout/header';
+
 export const CONNECTIVITY_CONSTANTS = {
   RETRY: {
     MAX_ATTEMPTS: 5,
@@ -25,8 +27,8 @@ export const CONNECTIVITY_CONSTANTS = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: 'calc(100vh - 60px)',
-      marginTop: '60px',
+      minHeight: HEADER_LAYOUT.MIN_HEIGHT,
+      marginTop: HEADER_LAYOUT.HEIGHT,
       width: '100%',
       padding: '20px',
     },

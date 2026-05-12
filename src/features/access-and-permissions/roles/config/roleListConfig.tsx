@@ -17,8 +17,11 @@ interface UseRoleListConfigProps {
   onSearchChange: (value: string) => void;
   onSearchSubmit?: () => void;
   onCreateRoleClick: () => void;
+  canCreateRole?: boolean;
   onFilterClick?: () => void;
   onAddCategoryClick?: () => void;
+  canViewRoleCategories?: boolean;
+  canAddRoleCategory?: boolean;
 }
 
 export const useRoleListConfig = ({
@@ -28,8 +31,11 @@ export const useRoleListConfig = ({
   onSearchChange,
   onSearchSubmit,
   onCreateRoleClick,
+  canCreateRole = true,
   onFilterClick,
   onAddCategoryClick,
+  canViewRoleCategories = true,
+  canAddRoleCategory = true,
 }: UseRoleListConfigProps) => {
   const toolbarConfig: ToolbarConfig = React.useMemo(() => {
     const isCategoriesView = viewMode === 'categories';
@@ -51,6 +57,7 @@ export const useRoleListConfig = ({
               icon: <PlusOutlined />,
               variant: 'primary' as const,
               onClick: () => onAddCategoryClick?.(),
+              disabled: !canAddRoleCategory,
             },
           ]
         : [
@@ -70,6 +77,8 @@ export const useRoleListConfig = ({
             getManageCategoriesButtonConfig({
               onViewCategories: () => onViewModeChange?.('categories'),
               onAddCategory: () => onAddCategoryClick?.(),
+              canViewCategories: canViewRoleCategories,
+              canAddCategory: canAddRoleCategory,
             }),
             {
               key: 'create-role',
@@ -77,6 +86,8 @@ export const useRoleListConfig = ({
               icon: <RoleIcon size={14} />,
               variant: 'primary' as const,
               onClick: onCreateRoleClick,
+              disabled: !canCreateRole,
+              tooltip: !canCreateRole ? RC.LABELS.ACTIONS.CREATE_DISABLED_TOOLTIP : undefined,
             },
           ],
     };
@@ -86,9 +97,12 @@ export const useRoleListConfig = ({
     onSearchChange,
     onSearchSubmit,
     onCreateRoleClick,
+    canCreateRole,
     onFilterClick,
     onViewModeChange,
     onAddCategoryClick,
+    canViewRoleCategories,
+    canAddRoleCategory,
   ]);
 
   return { toolbarConfig };

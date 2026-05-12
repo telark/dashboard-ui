@@ -17,6 +17,7 @@ export interface RowTagProps {
   background: string;
   color: string;
   fontSize?: number;
+  capitalize?: boolean;
 }
 
 export interface SortHeaderProps {

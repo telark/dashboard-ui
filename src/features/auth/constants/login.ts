@@ -4,7 +4,7 @@ export const LOGIN_CONSTANTS = {
     NO_PASSKEYS: ['no passkeys found', 'no passkey found', 'no passkeys', 'no passkey'],
   },
   MESSAGES: {
-    USER_NOT_FOUND: 'User not found. Please check your username and try again.',
+    USER_NOT_FOUND: 'User not found. Please check your email and try again.',
     NO_PASSKEYS: 'User has no passkeys and must register to login',
     NETWORK_ERROR: 'Network error. Please check your connection and try again.',
     TIMEOUT_ERROR: 'Request timed out. Please try again.',
@@ -75,7 +75,7 @@ export const LOGIN_CONSTANTS = {
   UI: {
     TITLE: 'Sign in to your account',
     SUBTITLE: 'Welcome back — choose your preferred method',
-    USERNAME_PLACEHOLDER: 'Enter your username',
+    EMAIL_PLACEHOLDER: 'Enter your email',
     BUTTON_LOADING: 'Authenticating...',
     BUTTON_TEXT: 'Continue with Passkey',
     FOOTER_TEXT: "Don't have an account?",
@@ -93,7 +93,6 @@ export const LOGIN_CONSTANTS = {
     GOOGLE_AUTH_URL: 'https://accounts.google.com/o/oauth2/v2/auth',
     CALLBACK_ERROR: 'Google login failed. Please try again.',
     CALLBACK_SUCCESS: 'Signed in with Google successfully.',
-    NONCE_BYTE_LENGTH: 16,
   },
   LOGS: {
     AUTH_ERROR: 'Authentication error:',

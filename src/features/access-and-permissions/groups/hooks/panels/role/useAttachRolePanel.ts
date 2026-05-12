@@ -2,6 +2,8 @@ import { useMemo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import type { FormInstance } from 'antd';
 import { RootState } from '../../../../../../store';
+import store from '../../../../../../store';
+import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
 import { useGroupMutations } from '../../';
 import { useRoles } from '../../../../roles/hooks';
 import type { Group } from '../../../models';
@@ -73,6 +75,7 @@ export const useAttachRolePanel = ({
     if (!currentGroup) return;
     const assignedRolesIDs = (values.assignedRolesIDs as string[]) || [];
     await handleUpdate(currentGroup.id, { assignedRolesIDs });
+    store.dispatch(fetchMyPermissionsThunk());
     form.resetFields();
     onClose();
   };

@@ -6,6 +6,8 @@ import { APP_ROUTES } from '../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import { createRoleThunk, updateRoleThunk, deleteRoleThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
+import store from '../../../../../store';
+import { fetchMyPermissionsThunk } from '../../../../auth/store/thunks/fetchThunks';
 import type { RoleFormData } from '../../models';
 
 export interface UseRoleActionsOptions {
@@ -49,6 +51,7 @@ export const useRoleActions = (options?: UseRoleActionsOptions) => {
             role: data,
           }),
         ).unwrap();
+        store.dispatch(fetchMyPermissionsThunk());
         if (!options?.silent) {
           message.success(RC.LABELS.MESSAGES.UPDATED(result.name));
           if (!skipNavigate) {
@@ -72,6 +75,7 @@ export const useRoleActions = (options?: UseRoleActionsOptions) => {
     async (roleId: string) => {
       try {
         await dispatch(deleteRoleThunk(roleId)).unwrap();
+        store.dispatch(fetchMyPermissionsThunk());
         message.success(RC.LABELS.MESSAGES.DELETED);
       } catch {
         message.error(RC.LABELS.MESSAGES.DELETE_FAILED);

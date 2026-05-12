@@ -1,26 +1,23 @@
 import { message } from 'antd';
 import { logout } from '../../clients/logout';
 import { removeSessionToken } from '../session/token';
-import { AUTH_ERROR_MESSAGES, AUTH_SUCCESS_MESSAGES } from '../../constants';
+import { clearPermissions } from '../../store/slices/permissionsSlice';
+import { stopPermissionsPolling } from '../../hooks/permissions/useInitializePermissions';
+import store from '../../../../store';
+import { AUTH_SUCCESS_MESSAGES } from '../../constants';
 import { APP_ROUTES } from '../../../../constants';
 
 export const handleUserLogout = async (navigate: (path: string) => void): Promise<void> => {
+  stopPermissionsPolling();
+  void logout().catch(() => {
+    // Server-side invalidation runs best-effort; ignore failures
+  });
   try {
-    await logout();
-    try {
-      removeSessionToken();
-    } catch {
-      // Ignore session removal errors during successful logout
-    }
-    message.success(AUTH_SUCCESS_MESSAGES.LOGOUT_SUCCESS);
-    navigate(APP_ROUTES.LOGIN);
+    removeSessionToken();
   } catch {
-    try {
-      removeSessionToken();
-    } catch {
-      // Even if session removal fails, proceed with logout
-    }
-    message.error(AUTH_ERROR_MESSAGES.LOGOUT_FAILED);
-    navigate(APP_ROUTES.LOGIN);
+    // Ignore session removal errors during logout
   }
+  store.dispatch(clearPermissions());
+  navigate(APP_ROUTES.LOGIN);
+  message.success(AUTH_SUCCESS_MESSAGES.LOGOUT_SUCCESS);
 };

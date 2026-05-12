@@ -1,4 +1,5 @@
 import type { PermissionLevel } from '../models/types';
+import { PERMISSION_LEVEL_RANK } from '../../../auth/models/permissions';
 
 export interface ScopeRule {
   key: string;
@@ -14,135 +15,114 @@ export interface ScopeRulesConfig {
 
 export const SCOPE_RULES: ScopeRulesConfig[] = [
   {
+    scope: 'applications',
+    rules: {
+      ReadOnly: [
+        { key: 'viewapplicationsrollbacks', label: 'View Rollbacks' },
+        { key: 'viewapplicationssnapshots', label: 'View Snapshots' },
+        { key: 'viewapplicationsnapshotmanifest', label: 'View Snapshot Manifest' },
+      ],
+      Contributor: [
+        { key: 'editapplication', label: 'Edit Application' },
+        { key: 'forceapplicationsync', label: 'Force Sync' },
+        { key: 'rollbackapplication', label: 'Rollback Application' },
+      ],
+      Owner: [{ key: 'deleteapplication', label: 'Delete Application' }],
+      Admin: [],
+    },
+  },
+  {
     scope: 'groups',
     rules: {
       ReadOnly: [
-        { key: 'viewallgroupscategories', label: 'ViewAllGroupsCategories' },
-        { key: 'viewgroupcategory', label: 'ViewGroupCategory' },
-        { key: 'viewgroupattachedroles', label: 'ViewGroupAttachedRoles' },
+        { key: 'viewgroupscategories', label: 'View Categories' },
+        { key: 'viewgroupattachedroles', label: 'View Attached Roles' },
       ],
       Contributor: [
-        { key: 'creategroup', label: 'CreateGroup' },
-        { key: 'editgroup', label: 'EditGroup' },
-        { key: 'viewgroup', label: 'ViewGroup' },
-        { key: 'deletegroup', label: 'DeleteGroup' },
-        { key: 'listallgroups', label: 'ListAllGroups' },
-        { key: 'attachroletogroup', label: 'AttachRoleToGroup' },
-        { key: 'removerolefromgroup', label: 'RemoveRoleFromGroup' },
-        { key: 'addusertogroup', label: 'AddUserToGroup' },
-        { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
+        { key: 'creategroup', label: 'Create Group' },
+        { key: 'editgroup', label: 'Edit Group' },
+        { key: 'addgroupcategory', label: 'Add Category' },
       ],
       Owner: [
-        { key: 'creategroup', label: 'CreateGroup' },
-        { key: 'editgroup', label: 'EditGroup' },
-        { key: 'viewgroup', label: 'ViewGroup' },
-        { key: 'deletegroup', label: 'DeleteGroup' },
-        { key: 'listallgroups', label: 'ListAllGroups' },
-        { key: 'attachroletogroup', label: 'AttachRoleToGroup' },
-        { key: 'removerolefromgroup', label: 'RemoveRoleFromGroup' },
-        { key: 'addusertogroup', label: 'AddUserToGroup' },
-        { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
+        { key: 'addusertogroup', label: 'Add Member' },
+        { key: 'removeuserfromgroup', label: 'Remove Member' },
+        { key: 'deletegroup', label: 'Delete Group' },
+        { key: 'attachroletogroup', label: 'Attach Role' },
+        { key: 'removerolefromgroup', label: 'Remove Role' },
+        { key: 'editgroupcategory', label: 'Edit Category' },
+        { key: 'deletegroupcategory', label: 'Delete Category' },
       ],
-      Admin: [
-        { key: 'creategroup', label: 'CreateGroup' },
-        { key: 'editgroup', label: 'EditGroup' },
-        { key: 'viewgroup', label: 'ViewGroup' },
-        { key: 'deletegroup', label: 'DeleteGroup' },
-        { key: 'listallgroups', label: 'ListAllGroups' },
-        { key: 'attachroletogroup', label: 'AttachRoleToGroup' },
-        { key: 'removerolefromgroup', label: 'RemoveRoleFromGroup' },
-        { key: 'addusertogroup', label: 'AddUserToGroup' },
-        { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
-      ],
+      Admin: [],
     },
   },
   {
     scope: 'users',
     rules: {
-      ReadOnly: [
-        { key: 'viewalluserscategories', label: 'ViewAllUsersCategories' },
-        { key: 'viewusercategory', label: 'ViewUserCategory' },
-        { key: 'viewuserattachedroles', label: 'ViewUserAttachedRoles' },
-      ],
+      ReadOnly: [{ key: 'viewuserattachedroles', label: 'View Attached Roles' }],
       Contributor: [
-        { key: 'createuser', label: 'CreateUser' },
-        { key: 'edituser', label: 'EditUser' },
-        { key: 'viewuser', label: 'ViewUser' },
-        { key: 'deleteuser', label: 'DeleteUser' },
-        { key: 'listallusers', label: 'ListAllUsers' },
-        { key: 'attachroletouser', label: 'AttachRoleToUser' },
-        { key: 'removerolefromuser', label: 'RemoveRoleFromUser' },
-        { key: 'addusertogroup', label: 'AddUserToGroup' },
-        { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
+        { key: 'createuser', label: 'Create User' },
+        { key: 'edituser', label: 'Edit User' },
       ],
       Owner: [
-        { key: 'createuser', label: 'CreateUser' },
-        { key: 'edituser', label: 'EditUser' },
-        { key: 'viewuser', label: 'ViewUser' },
-        { key: 'deleteuser', label: 'DeleteUser' },
-        { key: 'listallusers', label: 'ListAllUsers' },
-        { key: 'attachroletouser', label: 'AttachRoleToUser' },
-        { key: 'removerolefromuser', label: 'RemoveRoleFromUser' },
-        { key: 'addusertogroup', label: 'AddUserToGroup' },
-        { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
+        { key: 'deleteuser', label: 'Delete User' },
+        { key: 'attachroletouser', label: 'Attach Role' },
+        { key: 'removerolefromuser', label: 'Remove Role' },
       ],
-      Admin: [
-        { key: 'createuser', label: 'CreateUser' },
-        { key: 'edituser', label: 'EditUser' },
-        { key: 'viewuser', label: 'ViewUser' },
-        { key: 'deleteuser', label: 'DeleteUser' },
-        { key: 'listallusers', label: 'ListAllUsers' },
-        { key: 'attachroletouser', label: 'AttachRoleToUser' },
-        { key: 'removerolefromuser', label: 'RemoveRoleFromUser' },
-        { key: 'addusertogroup', label: 'AddUserToGroup' },
-        { key: 'removeuserfromgroup', label: 'RemoveUserFromGroup' },
-      ],
+      Admin: [],
     },
   },
   {
     scope: 'roles',
     rules: {
-      ReadOnly: [
-        { key: 'viewrole', label: 'ViewRole' },
-        { key: 'listallroles', label: 'ListAllRoles' },
-        { key: 'viewrolecategory', label: 'ViewRoleCategory' },
-      ],
+      ReadOnly: [{ key: 'viewrolescategories', label: 'View Categories' }],
       Contributor: [
-        { key: 'createrole', label: 'CreateRole' },
-        { key: 'editrole', label: 'EditRole' },
-        { key: 'viewrole', label: 'ViewRole' },
-        { key: 'listallroles', label: 'ListAllRoles' },
-        { key: 'viewrolecategory', label: 'ViewRoleCategory' },
+        { key: 'createrole', label: 'Create Role' },
+        { key: 'editrole', label: 'Edit Role' },
+        { key: 'addrolecategory', label: 'Add Category' },
       ],
       Owner: [
-        { key: 'createrole', label: 'CreateRole' },
-        { key: 'editrole', label: 'EditRole' },
-        { key: 'viewrole', label: 'ViewRole' },
-        { key: 'deleterole', label: 'DeleteRole' },
-        { key: 'listallroles', label: 'ListAllRoles' },
-        { key: 'viewrolecategory', label: 'ViewRoleCategory' },
-        { key: 'assignroletogroup', label: 'AssignRoleToGroup' },
-        { key: 'assignroletouser', label: 'AssignRoleToUser' },
+        { key: 'deleterole', label: 'Delete Role' },
+        { key: 'editrolecategory', label: 'Edit Category' },
+        { key: 'deleterolecategory', label: 'Delete Category' },
       ],
-      Admin: [
-        { key: 'createrole', label: 'CreateRole' },
-        { key: 'editrole', label: 'EditRole' },
-        { key: 'viewrole', label: 'ViewRole' },
-        { key: 'deleterole', label: 'DeleteRole' },
-        { key: 'listallroles', label: 'ListAllRoles' },
-        { key: 'viewrolecategory', label: 'ViewRoleCategory' },
-        { key: 'assignroletogroup', label: 'AssignRoleToGroup' },
-        { key: 'assignroletouser', label: 'AssignRoleToUser' },
-        { key: 'managerolepermissions', label: 'ManageRolePermissions' },
+      Admin: [],
+    },
+  },
+  {
+    scope: 'settings',
+    rules: {
+      ReadOnly: [],
+      Contributor: [
+        { key: 'editdiscoveryconfig', label: 'Edit Discovery Config' },
+        { key: 'editsnapshotstorage', label: 'Edit Snapshot Storage' },
       ],
+      Owner: [{ key: 'controlainsights', label: 'Control AI Insights' }],
+      Admin: [],
     },
   },
 ];
 
+const ORDERED_LEVELS: PermissionLevel[] = ['ReadOnly', 'Contributor', 'Owner', 'Admin'];
+
 export const getScopeRules = (scope: string, level: PermissionLevel): ScopeRule[] => {
   const scopeConfig = SCOPE_RULES.find((config) => config.scope === scope.toLowerCase());
   if (!scopeConfig) return [];
-  return scopeConfig.rules[level] || [];
+
+  const requestedRank = PERMISSION_LEVEL_RANK[level];
+  const seen = new Set<string>();
+  const merged: ScopeRule[] = [];
+
+  for (const l of ORDERED_LEVELS) {
+    if (PERMISSION_LEVEL_RANK[l] > requestedRank) break;
+    for (const rule of scopeConfig.rules[l] ?? []) {
+      if (!seen.has(rule.key)) {
+        seen.add(rule.key);
+        merged.push(rule);
+      }
+    }
+  }
+
+  return merged;
 };
 
 export const formatRuleKey = (scope: string, ruleKey: string): string => {

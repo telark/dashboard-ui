@@ -43,8 +43,14 @@ export default [
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'no-console': 'error',
       'prettier/prettier': 'warn',
+    },
+  },
+  {
+    files: ['src/logging/**/*.{ts,tsx}'],
+    rules: {
+      'no-console': 'off',
     },
   },
 ];
