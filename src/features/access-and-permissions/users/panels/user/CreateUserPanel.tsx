@@ -21,7 +21,6 @@ const CreateUserPanel: React.FC<CreateUserPanelProps> = ({ open, onClose, form }
     hasFormErrors,
     usernameRules,
     emailRules,
-    fullnameRules,
     handleValuesChange,
     handleFieldsChange,
     handleSubmit,
@@ -33,11 +32,7 @@ const CreateUserPanel: React.FC<CreateUserPanelProps> = ({ open, onClose, form }
       onClose={onClose}
       title={UC.LABELS.PANELS.CREATE.TITLE}
       formContent={
-        <UserFormFields
-          usernameRules={usernameRules}
-          emailRules={emailRules}
-          fullnameRules={fullnameRules}
-        />
+        <UserFormFields usernameRules={usernameRules} emailRules={emailRules} />
       }
       onSubmit={handleSubmit}
       onCancel={onClose}
@@ -46,7 +41,7 @@ const CreateUserPanel: React.FC<CreateUserPanelProps> = ({ open, onClose, form }
       loading={submitting}
       disabled={hasFormErrors}
       form={form}
-      initialValues={{ username: '', fullname: '', email: '' }}
+      initialValues={{ username: '', email: '' }}
       onValuesChange={handleValuesChange}
       onFieldsChange={handleFieldsChange}
     />

@@ -6,9 +6,9 @@ import { createUserThunk } from '../../../store';
 import type { AppDispatch, RootState } from '../../../../../../store';
 import store from '../../../../../../store';
 import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
-import type { CreateUserFormValues, UserAvatar } from '../../../models';
+import type { CreateUserFormValues } from '../../../models';
 import { USERS_CONSTANTS as UC } from '../../../constants';
-import { makeUsernameUniqueRule, makeEmailFormatRule, makeFullnameCharsRule } from '../../../utils';
+import { makeUsernameUniqueRule, makeEmailFormatRule } from '../../../utils';
 
 interface UseCreateUserPanelOptions {
   form: FormInstance<CreateUserFormValues>;
@@ -25,8 +25,6 @@ export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions)
 
   const emailRules = useMemo(() => [makeEmailFormatRule()], []);
 
-  const fullnameRules = useMemo(() => [makeFullnameCharsRule()], []);
-
   const checkFormState = useCallback(() => {
     const errors = form.getFieldsError();
     setHasFormErrors(errors.some((f) => f.errors.length > 0));
@@ -38,15 +36,14 @@ export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions)
       try {
         const userData: CreateUserFormValues = {
           username: values.username as string,
-          fullname: values.fullname as string,
+          fullname: values.username as string,
           email: values.email as string,
           assignedRolesIDs: [],
           assignedGroupsIDs: [],
-          avatar: values.avatar as UserAvatar | undefined,
         };
         await dispatch(createUserThunk(userData)).unwrap();
         store.dispatch(fetchMyPermissionsThunk());
-        message.success(UC.LABELS.MESSAGES.CREATED(userData.fullname));
+        message.success(UC.LABELS.MESSAGES.CREATED(userData.username));
         form.resetFields();
         onClose();
       } catch {
@@ -63,7 +60,6 @@ export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions)
     hasFormErrors,
     usernameRules,
     emailRules,
-    fullnameRules,
     handleValuesChange: checkFormState,
     handleFieldsChange: checkFormState,
     handleSubmit,
