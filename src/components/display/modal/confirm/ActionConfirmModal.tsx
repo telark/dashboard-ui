@@ -9,7 +9,7 @@ import ActionButtons from '../../buttons/ActionButtons';
 
 export interface ActionConfirmModalProps {
   open: boolean;
-  onClose: (e?: React.MouseEvent) => void;
+  onClose: (e?: React.MouseEvent | React.KeyboardEvent) => void;
   onConfirm: () => void | Promise<void>;
   title: string;
   action: string;
@@ -69,7 +69,7 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
       closeIcon={<ActionCloseIcon onClick={handleCloseIconClick} />}
       className={ACTION_CONFIRM_MODAL.MODAL.CLASS_NAME}
       styles={{
-        content: {
+        container: {
           borderRadius: ACTION_CONFIRM_MODAL.MODAL.BORDER_RADIUS,
           overflow: 'hidden',
           position: 'relative',

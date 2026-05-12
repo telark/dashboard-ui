@@ -4,7 +4,7 @@ import { USERS_CONSTANTS as UC } from '../../constants';
 
 interface UserDeleteModalProps {
   open: boolean;
-  onClose: (e?: React.MouseEvent) => void;
+  onClose: (e?: React.MouseEvent | React.KeyboardEvent) => void;
   onConfirm: () => Promise<void>;
   userName: string;
   loading: boolean;

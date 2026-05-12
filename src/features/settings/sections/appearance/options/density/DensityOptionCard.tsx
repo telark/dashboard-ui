@@ -26,7 +26,7 @@ const DensityOptionCard: React.FC = memo(() => {
           mouseLeaveDelay={0.15}
           getPopupContainer={() => cardRef.current ?? document.body}
           styles={{
-            body: {
+            container: {
               padding: 0,
               borderRadius: 10,
               boxShadow: '0 4px 16px rgba(0,0,0,0.08)',

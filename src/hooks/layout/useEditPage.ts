@@ -32,7 +32,7 @@ export const useEditPage = <T, F extends Record<string, any>>({
   useEffect(() => {
     if (item) {
       const formValues = getFormValues(item);
-      form.setFieldsValue(formValues);
+      form.setFieldsValue(formValues as Parameters<typeof form.setFieldsValue>[0]);
     }
   }, [item, form, getFormValues]);
 

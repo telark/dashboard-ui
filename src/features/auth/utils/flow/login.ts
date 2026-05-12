@@ -16,7 +16,7 @@ import { HTTP_STATUS } from '../../../../constants/rest/http';
 import { handleAuthError } from '../shared/errors';
 import { getClientMetadata } from '../device/metadata';
 import type { LoginStartResponse, AuthenticatorAssertionResponse } from '../../models';
-import type { MessageInstance } from 'antd/es/message/interface';
+import type { MessageInstance } from 'antd/lib/message/interface';
 
 export const prepareLoginFinishRequest = (
   email: string,

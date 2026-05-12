@@ -1,5 +1,5 @@
 import type React from 'react';
-import type { FormInstance } from 'antd/es/form';
+import type { FormInstance } from 'antd';
 
 export interface TopPanelToolbarActions {
   onEdit?: () => void;

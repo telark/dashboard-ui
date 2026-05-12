@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, message, App as AntdApp } from 'antd';
+import { Layout, message, App as AntdApp, ConfigProvider } from 'antd';
 import { BrowserRouter as Router, useLocation, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AiOutlineSafety } from 'react-icons/ai';
@@ -92,9 +92,11 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
-      <Router>
-        <AppContent />
-      </Router>
+      <ConfigProvider theme={{ cssVar: { key: 'plsyro' }, hashed: false }}>
+        <Router>
+          <AppContent />
+        </Router>
+      </ConfigProvider>
     </ErrorBoundary>
   );
 };
