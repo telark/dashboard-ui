@@ -213,6 +213,19 @@ export interface ApplicationRollbackTriggerPayload {
   triggeredBy: string;
 }
 
+export type ForceSyncPhase = 'queued' | 'running' | 'completed' | 'failed';
+
+export interface ApplicationLastForceSync {
+  jobId?: string;
+  phase?: ForceSyncPhase;
+  requestedAt?: string;
+  startedAt?: string;
+  completedAt?: string;
+  requestedBy?: string;
+  reason?: string;
+  error?: string;
+}
+
 export interface Application {
   name: string;
   displayName: string;
@@ -234,9 +247,14 @@ export interface Application {
   metrics: ApplicationMetrics;
   crStatus?: string | null;
   history: ApplicationHistory;
+  lastForceSync?: ApplicationLastForceSync;
 }
 
 export type SyncStatusValue = 'syncing' | 'success' | 'failed';
+
+export interface ApplicationsLastErrorMap {
+  [name: string]: string;
+}
 export type ApplicationLayoutMode = 'single' | 'double';
 export type ApplicationHealthQuickFilter = 'all' | 'healthy' | 'degraded' | 'unhealthy';
 
@@ -252,6 +270,7 @@ export interface ApplicationsState {
   syncing: Record<string, boolean>;
   syncStatus: Record<string, SyncStatusValue>;
   syncCompletedAt: Record<string, string>;
+  syncLastError: Record<string, string>;
   searchValue: string;
   currentPage: number;
   appliedFilters: Record<string, unknown>;
