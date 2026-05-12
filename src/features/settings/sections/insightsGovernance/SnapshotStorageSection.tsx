@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, InputNumber, Select, Tooltip, message } from 'antd';
+import { Button, InputNumber, Select, Tooltip, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import { Client, exporterApiClient } from '../../../../api';
 import { DEFAULT_COLORS, Endpoints } from '../../../../constants';
@@ -52,6 +52,7 @@ const SnapshotStorageSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
   const canEditSnapshotStorage = usePermission('settings', 'Contributor');
+  const { message } = AntdApp.useApp();
 
   const saveButtonStyle = useCallback(
     (disabled: boolean): React.CSSProperties => ({

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo } from 'react';
-import { Dropdown } from 'antd';
+import { Dropdown, App as AntdApp } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import {
   getCurrentUser,
@@ -21,6 +21,7 @@ const UserAvatarDropdown: React.FC = memo(() => {
   const [currentUser, setCurrentUser] = useState<User | null>(() => getCurrentUser());
   const [loggingOut, setLoggingOut] = useState(false);
   const navigate = useNavigate();
+  const { message } = AntdApp.useApp();
 
   useEffect(() => {
     const initialUser = getCurrentUser();
@@ -58,7 +59,7 @@ const UserAvatarDropdown: React.FC = memo(() => {
   const handleLogout = async () => {
     setLoggingOut(true);
     try {
-      await handleUserLogout(navigate);
+      await handleUserLogout(navigate, message);
     } finally {
       setLoggingOut(false);
     }
@@ -85,7 +86,7 @@ const UserAvatarDropdown: React.FC = memo(() => {
       menu={{ items: menuItems }}
       placement={HEADER_CONSTANTS.USER.MENU.PLACEMENT}
       trigger={['click']}
-      overlayStyle={{ minWidth: HEADER_CONSTANTS.USER.MENU.MIN_WIDTH }}
+      styles={{ root: { minWidth: HEADER_CONSTANTS.USER.MENU.MIN_WIDTH } }}
     >
       <div>
         <UserAvatar

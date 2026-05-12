@@ -12,7 +12,7 @@ interface UseUserDeleteModalReturn {
   deleteModalOpen: boolean;
   isDeleting: boolean;
   openDeleteModal: () => void;
-  closeDeleteModal: (e?: React.MouseEvent) => void;
+  closeDeleteModal: (e?: React.MouseEvent | React.KeyboardEvent) => void;
   handleConfirmDelete: () => Promise<void>;
   userName: string;
 }
@@ -26,7 +26,7 @@ export const useUserDeleteModal = (user: User | null): UseUserDeleteModalReturn 
     setDeleteModalOpen(true);
   }, []);
 
-  const closeDeleteModal = useCallback((e?: React.MouseEvent) => {
+  const closeDeleteModal = useCallback((e?: React.MouseEvent | React.KeyboardEvent) => {
     if (e) {
       e.stopPropagation();
       e.preventDefault();

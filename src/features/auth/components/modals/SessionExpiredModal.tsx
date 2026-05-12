@@ -87,7 +87,7 @@ const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({ open, onClose
         },
       }}
       closable={false}
-      maskClosable={false}
+      mask={{ closable: false }}
       centered
       destroyOnHidden
     >

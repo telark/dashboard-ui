@@ -159,6 +159,8 @@ const Login: React.FC = () => {
       <ConfigProvider
         wave={{ disabled: true }}
         theme={{
+          cssVar: { key: 'plsyro-auth' },
+          hashed: false,
           algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
           token: isDark ? DARK_TOKENS : LIGHT_TOKENS,
         }}

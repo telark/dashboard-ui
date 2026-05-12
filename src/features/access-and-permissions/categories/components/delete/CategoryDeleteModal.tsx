@@ -4,7 +4,7 @@ import { CATEGORIES_CONSTANTS as CC } from '../../constants';
 
 interface CategoryDeleteModalProps {
   open: boolean;
-  onClose: (e?: React.MouseEvent) => void;
+  onClose: (e?: React.MouseEvent | React.KeyboardEvent) => void;
   onConfirm: () => Promise<void>;
   categoryName: string;
   loading: boolean;

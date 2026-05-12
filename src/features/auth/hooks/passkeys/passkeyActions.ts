@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { App as AntdApp } from 'antd';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
@@ -11,6 +12,7 @@ export const usePasskeyActions = (
   openEditModal: (passkey: Passkey) => void,
 ): PasskeyActionsReturn => {
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
   const [submitting, setSubmitting] = useState(false);
 
   const handleEdit = useCallback(
@@ -32,9 +34,10 @@ export const usePasskeyActions = (
         passkey: record,
         forceLastDelete,
         dispatch,
+        message,
       });
     },
-    [dispatch],
+    [dispatch, message],
   );
 
   const handleCreate = useCallback(
@@ -43,9 +46,10 @@ export const usePasskeyActions = (
         deviceName: values.deviceName as string,
         dispatch,
         setSubmitting,
+        message,
       });
     },
-    [dispatch],
+    [dispatch, message],
   );
 
   const handleUpdate = useCallback(
@@ -58,9 +62,10 @@ export const usePasskeyActions = (
         deviceName: values.deviceName as string,
         dispatch,
         setSubmitting,
+        message,
       });
     },
-    [dispatch],
+    [dispatch, message],
   );
 
   return {

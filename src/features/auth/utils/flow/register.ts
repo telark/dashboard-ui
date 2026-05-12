@@ -10,7 +10,7 @@ import type {
   PublicKeyCredentialCreationOptions,
   PasskeyDeviceType,
 } from '../../models';
-import type { MessageInstance } from 'antd/es/message/interface';
+import type { MessageInstance } from 'antd/lib/message/interface';
 
 export const extractRegisterOptions = (
   registerStartResponse: RegisterStartResponse,

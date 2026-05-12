@@ -51,6 +51,7 @@ const initialState: ApplicationsState = {
   syncing: {},
   syncStatus: {},
   syncCompletedAt: {},
+  syncLastError: {},
   searchValue: '',
   currentPage: 1,
   appliedFilters: {},
@@ -98,6 +99,16 @@ const applicationsSlice = createSlice({
         return;
       }
       state.syncCompletedAt[name] = completedAt;
+    },
+    setSyncLastError: (state, action: PayloadAction<{ name: string; error?: string }>) => {
+      if (!state.syncLastError) state.syncLastError = {};
+      const { name, error } = action.payload;
+      if (!name) return;
+      if (!error) {
+        delete state.syncLastError[name];
+        return;
+      }
+      state.syncLastError[name] = error;
     },
     setSearchValue: (state, action: PayloadAction<string>) => {
       state.searchValue = action.payload;
@@ -221,6 +232,7 @@ export const {
   clearOrphanedSyncing,
   setSyncStatus,
   setSyncCompletedAt,
+  setSyncLastError,
   setSearchValue,
   setCurrentPage,
   setAppliedFilters,

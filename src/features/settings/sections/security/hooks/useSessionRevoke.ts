@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import { getSessionToken } from '../../../../../features/auth/utils/session/token';
 import { handleUserLogout } from '../../../../../features/auth/utils/logout/logout';
 import { SECURITY_SECTION_CONSTANTS } from '../constants';
@@ -29,6 +29,7 @@ export const useSessionRevoke = ({
   revokeSession,
 }: UseSessionRevokeOptions): UseSessionRevokeResult => {
   const navigate = useNavigate();
+  const { message } = AntdApp.useApp();
   const [revokingToken, setRevokingToken] = useState<string | null>(null);
   const [sessionToRevoke, setSessionToRevoke] = useState<SessionDetails | null>(null);
   const currentToken = getSessionToken();
@@ -48,7 +49,7 @@ export const useSessionRevoke = ({
     setSessionToRevoke(null);
     try {
       if (isCurrent) {
-        await handleUserLogout(navigate);
+        await handleUserLogout(navigate, message);
       } else {
         await revokeSession(sessionToRevoke.sessionToken, {});
         message.success(LABELS.SESSIONS_REVOKE_SUCCESS);
@@ -60,7 +61,7 @@ export const useSessionRevoke = ({
     } finally {
       setRevokingToken(null);
     }
-  }, [sessionToRevoke, currentToken, revokeSession, navigate]);
+  }, [sessionToRevoke, currentToken, revokeSession, navigate, message]);
 
   const revokeModalMessage =
     sessionToRevoke?.sessionToken === currentToken

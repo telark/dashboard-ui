@@ -6,6 +6,9 @@ export type {
   ApplicationsState,
   ApplicationLayoutMode,
   ApplicationHealthQuickFilter,
+  ApplicationLastForceSync,
+  ApplicationsLastErrorMap,
+  ForceSyncPhase,
   SyncStatusValue,
 } from './application';
 export type {

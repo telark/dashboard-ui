@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
 
 interface UseActionConfirmHandlersProps {
-  onClose: (e?: React.MouseEvent) => void;
+  onClose: (e?: React.MouseEvent | React.KeyboardEvent) => void;
   onConfirm: () => void | Promise<void>;
 }
 
 export const useActionConfirmHandlers = ({ onClose, onConfirm }: UseActionConfirmHandlersProps) => {
   const handleClose = useCallback(
-    (e?: React.MouseEvent) => {
+    (e?: React.MouseEvent | React.KeyboardEvent) => {
       if (e) {
         e.stopPropagation();
         e.preventDefault();
@@ -23,7 +23,7 @@ export const useActionConfirmHandlers = ({ onClose, onConfirm }: UseActionConfir
   }, [onConfirm, handleClose]);
 
   const handleModalCancel = useCallback(
-    (e?: React.MouseEvent) => {
+    (e?: React.MouseEvent | React.KeyboardEvent) => {
       if (e) {
         e.stopPropagation();
         e.preventDefault();

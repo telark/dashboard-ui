@@ -22,7 +22,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
       destroyOnHidden
       styles={{
         body: { padding: 0, minHeight: 'auto', ...styles?.body },
-        content: { borderRadius: 16, overflow: 'hidden', ...styles?.content },
+        container: { borderRadius: 16, overflow: 'hidden', ...styles?.content },
       }}
       closeIcon={
         showCloseIcon ? (

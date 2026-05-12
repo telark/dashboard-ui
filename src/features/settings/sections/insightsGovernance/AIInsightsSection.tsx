@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Input, Select, Tooltip, message } from 'antd';
+import { Button, Input, Select, Tooltip, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import { Client, enrichmentApiClient, exporterApiClient } from '../../../../api';
 import { Endpoints, DEFAULT_COLORS } from '../../../../constants';
@@ -37,6 +37,7 @@ const AIInsightsSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
   const canControlAiInsights = usePermission('settings', 'Owner');
+  const { message } = AntdApp.useApp();
 
   const saveButtonStyle = useCallback(
     (disabled: boolean): React.CSSProperties => ({
