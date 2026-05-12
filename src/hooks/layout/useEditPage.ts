@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Form, message } from 'antd';
+import { Form, App as AntdApp } from 'antd';
 
 interface UseEditPageOptions<T, F> {
   data: T[];
@@ -19,6 +19,7 @@ export const useEditPage = <T, F extends Record<string, any>>({
   successMessage,
   viewRoute,
 }: UseEditPageOptions<T, F>) => {
+  const { message } = AntdApp.useApp();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [form] = Form.useForm<F>();

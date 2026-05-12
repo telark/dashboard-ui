@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../../../../store';
 import { updateApplicationThunk } from '../../store';
@@ -19,6 +19,7 @@ export function useEditApplicationPanel({
   application,
 }: UseEditApplicationPanelOptions): UseEditApplicationPanelReturn {
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = useCallback(
@@ -40,7 +41,7 @@ export function useEditApplicationPanel({
         setSubmitting(false);
       }
     },
-    [application, dispatch],
+    [application, dispatch, message],
   );
 
   return { submitting, handleSubmit };

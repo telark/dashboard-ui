@@ -152,7 +152,6 @@ const MainPage: React.FC = () => {
     />
   ) : null;
 
-
   if (shouldShowEmpty) {
     return (
       <>

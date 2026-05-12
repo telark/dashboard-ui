@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import type { FormInstance } from 'antd';
 import { createUserThunk } from '../../../store';
 import type { AppDispatch, RootState } from '../../../../../../store';
@@ -17,6 +17,7 @@ interface UseCreateUserPanelOptions {
 
 export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions) => {
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
   const existingUsers = useSelector((state: RootState) => state.users.users);
   const [submitting, setSubmitting] = useState(false);
   const [hasFormErrors, setHasFormErrors] = useState(false);
@@ -52,7 +53,7 @@ export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions)
         setSubmitting(false);
       }
     },
-    [dispatch, form, onClose],
+    [dispatch, form, onClose, message],
   );
 
   return {

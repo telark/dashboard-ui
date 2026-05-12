@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Form, App as AntdApp } from 'antd';
 import { updateUser } from '../../../../access-and-permissions/users/clients';
 import { setCurrentUser } from '../../../../auth/utils/session/user';
@@ -57,8 +57,11 @@ export function useEditProfile({
   const fullnameRules = [makeFullnameCharsRule()];
   const emailRules = [makeEmailFormatRule()];
 
-  const initialValues: EditProfileFormValues | null =
-    currentUser != null ? { fullname: currentUser.fullname, email: currentUser.email } : null;
+  const initialValues = useMemo<EditProfileFormValues | null>(
+    () =>
+      currentUser != null ? { fullname: currentUser.fullname, email: currentUser.email } : null,
+    [currentUser],
+  );
 
   const checkFormState = useCallback(() => {
     const errors = form.getFieldsError();

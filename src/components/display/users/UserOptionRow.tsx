@@ -9,11 +9,7 @@ interface UserOptionRowProps {
   avatarSize?: number;
 }
 
-const UserOptionRow: React.FC<UserOptionRowProps> = ({
-  user,
-  displayName,
-  avatarSize = 32,
-}) => {
+const UserOptionRow: React.FC<UserOptionRowProps> = ({ user, displayName, avatarSize = 32 }) => {
   const name = displayName ?? user?.username ?? '';
   return (
     <div style={AMC.LIST.MEMBER_CONTENT}>

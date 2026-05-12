@@ -146,7 +146,7 @@ export const useRoleListPageConfig = ({
       ];
     }
     return [];
-  }, [viewMode]);
+  }, [viewMode, setViewMode]);
 
   return useMemo(
     () => ({
@@ -253,7 +253,6 @@ export const useRoleListPageConfig = ({
       categoryPageSize,
       sortedCategories.length,
       selectedRoles,
-      setViewMode,
       handleViewRole,
       handleEditRole,
       setCurrentPage,
@@ -262,6 +261,7 @@ export const useRoleListPageConfig = ({
       setCategoryCurrentPage,
       setCategoryPageSize,
       rowHeight,
+      onEditCategory,
     ],
   );
 };

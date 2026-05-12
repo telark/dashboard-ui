@@ -2,11 +2,7 @@ import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_COLORS } from '../../../../constants';
 import { PAGE_CONTENT_LAYOUT } from '../../../../constants/shared/pages';
-import type {
-  PlanPhase,
-  PlanPhaseQuickFilter,
-  ProtectionPlan,
-} from '../models';
+import type { PlanPhase, PlanPhaseQuickFilter, ProtectionPlan } from '../models';
 import { useAppearance } from '../../../settings/sections/appearance';
 import {
   ProtectionPlanCard,
@@ -82,12 +78,8 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
     const timedOut = useLoadingTimeout({ isLoading: loading, hasError: Boolean(error), hasData });
     const dispatch: AppDispatch = useDispatch();
 
-    const phaseQuickFilter = useSelector(
-      (s: RootState) => s.protectionPlans.phaseQuickFilter,
-    );
-    const appliedFilters = useSelector(
-      (s: RootState) => s.protectionPlans.appliedFilters,
-    );
+    const phaseQuickFilter = useSelector((s: RootState) => s.protectionPlans.phaseQuickFilter);
+    const appliedFilters = useSelector((s: RootState) => s.protectionPlans.appliedFilters);
     const allUsers = useSelector((s: RootState) => s.users.users);
     const userMap = useMemo(() => {
       const m = new Map<string, (typeof allUsers)[number]>();

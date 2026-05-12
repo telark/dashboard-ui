@@ -7,10 +7,7 @@ interface UserFormFieldsProps {
   emailRules?: any[];
 }
 
-const UserFormFields: React.FC<UserFormFieldsProps> = ({
-  usernameRules = [],
-  emailRules = [],
-}) => {
+const UserFormFields: React.FC<UserFormFieldsProps> = ({ usernameRules = [], emailRules = [] }) => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
       <LabeledInput

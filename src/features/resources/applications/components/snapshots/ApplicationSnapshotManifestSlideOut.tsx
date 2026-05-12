@@ -1,6 +1,6 @@
 import React, { memo, useMemo, useState } from 'react';
 import { CodeOutlined, CopyOutlined, FileTextOutlined, LoadingOutlined } from '@ant-design/icons';
-import { Button, Tooltip, message } from 'antd';
+import { Button, Tooltip, App as AntdApp } from 'antd';
 import yaml from 'js-yaml';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
 import { ToggleButton } from '../../../../../components/display/buttons';
@@ -207,6 +207,7 @@ const ApplicationSnapshotManifestSlideOut: React.FC<ApplicationSnapshotManifestS
   });
 
 function ManifestSlideOutWithTabs(props: { manifestState: SnapshotManifestState | undefined }) {
+  const { message } = AntdApp.useApp();
   const [activeTab, setActiveTab] = useState<'json' | 'yaml'>('json');
   const { jsonText, yamlText } = useManifestTexts(props.manifestState?.data ?? null);
 

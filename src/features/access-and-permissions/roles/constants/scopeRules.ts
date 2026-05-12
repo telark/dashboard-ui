@@ -59,9 +59,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
     scope: 'users',
     rules: {
       ReadOnly: [{ key: 'viewuserattachedroles', label: 'View Attached Roles' }],
-      Contributor: [
-        { key: 'createuser', label: 'Create User' },
-      ],
+      Contributor: [{ key: 'createuser', label: 'Create User' }],
       Owner: [
         { key: 'deleteuser', label: 'Delete User' },
         { key: 'attachroletouser', label: 'Attach Role' },

@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import type { FormInstance } from 'antd';
 import { updateUserThunk } from '../../../store';
 import type { AppDispatch } from '../../../../../../store';
@@ -23,6 +23,7 @@ export const useManageUserStatePanel = ({
   onClose,
 }: UseManageUserStatePanelOptions) => {
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
   const [submitting, setSubmitting] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const previousOpenRef = useRef(false);
@@ -70,7 +71,7 @@ export const useManageUserStatePanel = ({
         setSubmitting(false);
       }
     },
-    [dispatch, editingUser, form, onClose],
+    [dispatch, editingUser, form, onClose, message],
   );
 
   return {

@@ -31,9 +31,7 @@ const CreateUserPanel: React.FC<CreateUserPanelProps> = ({ open, onClose, form }
       open={open}
       onClose={onClose}
       title={UC.LABELS.PANELS.CREATE.TITLE}
-      formContent={
-        <UserFormFields usernameRules={usernameRules} emailRules={emailRules} />
-      }
+      formContent={<UserFormFields usernameRules={usernameRules} emailRules={emailRules} />}
       onSubmit={handleSubmit}
       onCancel={onClose}
       submitButtonText={UC.LABELS.PANELS.CREATE.SUBMIT_BUTTON}

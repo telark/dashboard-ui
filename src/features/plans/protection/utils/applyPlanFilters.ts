@@ -9,7 +9,8 @@ export function applyPlanFilters(
   plans: ProtectionPlan[],
   filters: Record<string, unknown>,
 ): ProtectionPlan[] {
-  const dateRange = (filters[PPC.FILTER_KEYS.DATE_RANGE] as DateRangeFilter | undefined) || undefined;
+  const dateRange =
+    (filters[PPC.FILTER_KEYS.DATE_RANGE] as DateRangeFilter | undefined) || undefined;
   const scopeType = (filters[PPC.FILTER_KEYS.SCOPE_TYPE] as string[]) || [];
   const createdBy = (filters[PPC.FILTER_KEYS.CREATED_BY] as string[]) || [];
   const templates = (filters[PPC.FILTER_KEYS.TEMPLATES] as string[]) || [];
@@ -36,9 +37,7 @@ export function applyPlanFilters(
     }
     if (has(targets)) {
       const planTargets =
-        p.scope.type === 'namespaces'
-          ? (p.scope.namespaces ?? [])
-          : (p.scope.applicationIds ?? []);
+        p.scope.type === 'namespaces' ? (p.scope.namespaces ?? []) : (p.scope.applicationIds ?? []);
       if (!planTargets.some((t) => targets.includes(t))) return false;
     }
     return true;

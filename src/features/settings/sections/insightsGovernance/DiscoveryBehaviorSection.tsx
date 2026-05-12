@@ -93,7 +93,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
     } catch {
       message.error(C.MESSAGES.NAMESPACES_LOAD_FAILED);
     }
-  }, []);
+  }, [message]);
 
   useEffect(() => {
     loadNamespaces();
@@ -119,7 +119,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
     } finally {
       setSavingDiscoveryBehavior(false);
     }
-  }, [dispatch, excludedNamespaces, fetchIntervalMinutes]);
+  }, [dispatch, excludedNamespaces, fetchIntervalMinutes, message]);
 
   const namespacesImpactPreview = useMemo(() => {
     const saved = Array.isArray(globalConfig?.data?.excludedNamespaces)

@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import { deleteUserThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
@@ -23,6 +23,7 @@ export const useBulkDeleteUsers = ({
   setSelectedUsers,
 }: UseBulkDeleteUsersProps): UseBulkDeleteUsersReturn => {
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleBulkDelete = useCallback(async () => {
@@ -60,7 +61,7 @@ export const useBulkDeleteUsers = ({
     } finally {
       setIsDeleting(false);
     }
-  }, [selectedUsers, dispatch, setSelectedUsers]);
+  }, [selectedUsers, dispatch, setSelectedUsers, message]);
 
   return {
     isDeleting,

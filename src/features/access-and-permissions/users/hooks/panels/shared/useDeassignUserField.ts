@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import type { FormInstance } from 'antd';
 import { useDeassignModal } from '../../../../shared';
 import { updateUserThunk } from '../../../store';
@@ -34,6 +34,7 @@ export const useDeassignUserField = <T extends { id: string; name: string }>({
   onAfterDeassign,
 }: UseDeassignUserFieldOptions) => {
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
 
   const performDeassign = useCallback(
     async (item: T) => {
@@ -51,7 +52,7 @@ export const useDeassignUserField = <T extends { id: string; name: string }>({
         throw new Error(failMessage);
       }
     },
-    [user, form, dispatch, fieldName, successMessage, failMessage, onAfterDeassign],
+    [user, form, dispatch, fieldName, successMessage, failMessage, onAfterDeassign, message],
   );
 
   const handleDeassignSuccess = useCallback(() => {

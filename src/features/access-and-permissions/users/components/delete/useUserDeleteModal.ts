@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import { deleteUserThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
 import store from '../../../../../store';
@@ -19,6 +19,7 @@ interface UseUserDeleteModalReturn {
 
 export const useUserDeleteModal = (user: User | null): UseUserDeleteModalReturn => {
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -47,7 +48,7 @@ export const useUserDeleteModal = (user: User | null): UseUserDeleteModalReturn 
     } finally {
       setIsDeleting(false);
     }
-  }, [user, dispatch]);
+  }, [user, dispatch, message]);
 
   return {
     deleteModalOpen,
