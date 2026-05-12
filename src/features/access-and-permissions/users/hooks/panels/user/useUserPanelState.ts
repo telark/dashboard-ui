@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Form } from 'antd';
-import type { User, CreateUserFormValues } from '../../../models';
+import type { CreateUserFormValues, ManageUserStateFormValues, User } from '../../../models';
 
 interface UseUserPanelStateReturn {
   createPanelOpen: boolean;
@@ -13,7 +13,7 @@ interface UseUserPanelStateReturn {
   managingRoleUser: User | null;
   managingGroupUser: User | null;
   createForm: ReturnType<typeof Form.useForm<CreateUserFormValues>>[0];
-  editForm: ReturnType<typeof Form.useForm<CreateUserFormValues>>[0];
+  editForm: ReturnType<typeof Form.useForm<ManageUserStateFormValues>>[0];
   openCreatePanel: () => void;
   closeCreatePanel: () => void;
   openEditPanel: (user: User) => void;
@@ -37,7 +37,7 @@ export const useUserPanelState = (): UseUserPanelStateReturn => {
   const [managingRoleUser, setManagingRoleUser] = useState<User | null>(null);
   const [managingGroupUser, setManagingGroupUser] = useState<User | null>(null);
   const [createForm] = Form.useForm<CreateUserFormValues>();
-  const [editForm] = Form.useForm<CreateUserFormValues>();
+  const [editForm] = Form.useForm<ManageUserStateFormValues>();
 
   const openCreatePanel = useCallback(() => setCreatePanelOpen(true), []);
 

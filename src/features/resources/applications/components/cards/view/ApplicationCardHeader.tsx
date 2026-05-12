@@ -299,9 +299,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
           </div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
             {syncStatus ? (
-              <Tooltip
-                title={syncStatus === 'failed' && syncLastError ? syncLastError : undefined}
-              >
+              <Tooltip title={syncStatus === 'failed' && syncLastError ? syncLastError : undefined}>
                 <span
                   style={{
                     display: 'inline-flex',

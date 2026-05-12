@@ -61,14 +61,13 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
       ReadOnly: [{ key: 'viewuserattachedroles', label: 'View Attached Roles' }],
       Contributor: [
         { key: 'createuser', label: 'Create User' },
-        { key: 'edituser', label: 'Edit User' },
       ],
       Owner: [
         { key: 'deleteuser', label: 'Delete User' },
         { key: 'attachroletouser', label: 'Attach Role' },
         { key: 'removerolefromuser', label: 'Remove Role' },
       ],
-      Admin: [],
+      Admin: [{ key: 'suspenduser', label: 'Suspend User' }],
     },
   },
   {

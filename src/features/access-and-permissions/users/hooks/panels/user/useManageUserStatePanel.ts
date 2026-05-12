@@ -1,48 +1,36 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { message } from 'antd';
 import type { FormInstance } from 'antd';
 import { updateUserThunk } from '../../../store';
-import type { AppDispatch, RootState } from '../../../../../../store';
+import type { AppDispatch } from '../../../../../../store';
 import store from '../../../../../../store';
 import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
-import type { User, CreateUserFormValues, UserAvatar } from '../../../models';
+import type { ManageUserStateFormValues, User, UserAccountState } from '../../../models';
 import { USERS_CONSTANTS as UC } from '../../../constants';
-import { makeUsernameUniqueRule, makeEmailFormatRule, makeFullnameCharsRule } from '../../../utils';
 
-interface UseEditUserPanelOptions {
+interface UseManageUserStatePanelOptions {
   open: boolean;
   editingUser: User | null;
-  form: FormInstance<CreateUserFormValues>;
+  form: FormInstance<ManageUserStateFormValues>;
   onClose: () => void;
 }
 
-export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUserPanelOptions) => {
+export const useManageUserStatePanel = ({
+  open,
+  editingUser,
+  form,
+  onClose,
+}: UseManageUserStatePanelOptions) => {
   const dispatch: AppDispatch = useDispatch();
-  const existingUsers = useSelector((state: RootState) => state.users.users);
   const [submitting, setSubmitting] = useState(false);
-  const [hasFormErrors, setHasFormErrors] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
-
-  const usernameRules = useMemo(
-    () => [makeUsernameUniqueRule(existingUsers, editingUser?.id)],
-    [existingUsers, editingUser?.id],
-  );
-
-  const emailRules = useMemo(() => [makeEmailFormatRule()], []);
-
-  const fullnameRules = useMemo(() => [makeFullnameCharsRule()], []);
   const previousOpenRef = useRef(false);
   const previousUserIdRef = useRef<string | null>(null);
 
-  const initialValues = useMemo<CreateUserFormValues | null>(() => {
+  const initialValues = useMemo<ManageUserStateFormValues | null>(() => {
     if (!editingUser) return null;
-    return {
-      username: editingUser.username,
-      fullname: editingUser.fullname,
-      email: editingUser.email,
-      avatar: editingUser.avatar,
-    };
+    return { phase: editingUser.status.phase };
   }, [editingUser]);
 
   useEffect(() => {
@@ -57,18 +45,9 @@ export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUs
   }, [open, editingUser?.id, initialValues, form]);
 
   const checkFormState = useCallback(() => {
-    const errors = form.getFieldsError();
-    setHasFormErrors(errors.some((f) => f.errors.length > 0));
-
     if (!initialValues) return;
-    const current = form.getFieldsValue() as CreateUserFormValues;
-    setHasChanges(
-      current.username !== initialValues.username ||
-        current.fullname !== initialValues.fullname ||
-        current.email !== initialValues.email ||
-        current.avatar?.style !== initialValues.avatar?.style ||
-        current.avatar?.seed !== initialValues.avatar?.seed,
-    );
+    const current = form.getFieldsValue() as ManageUserStateFormValues;
+    setHasChanges(current.phase !== initialValues.phase);
   }, [form, initialValues]);
 
   const handleSubmit = useCallback(
@@ -76,15 +55,13 @@ export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUs
       if (!editingUser) return;
       setSubmitting(true);
       try {
+        const phase = values.phase as UserAccountState;
         const updated: Partial<User> = {
-          username: values.username as string,
-          fullname: values.fullname as string,
-          email: values.email as string,
-          avatar: (values.avatar as UserAvatar | undefined) ?? editingUser.avatar,
+          status: { ...editingUser.status, phase },
         };
         await dispatch(updateUserThunk({ id: editingUser.id, user: updated })).unwrap();
         store.dispatch(fetchMyPermissionsThunk());
-        message.success(UC.LABELS.MESSAGES.UPDATED(values.fullname as string));
+        message.success(UC.LABELS.MESSAGES.UPDATED(editingUser.fullname));
         form.resetFields();
         onClose();
       } catch {
@@ -99,11 +76,7 @@ export const useEditUserPanel = ({ open, editingUser, form, onClose }: UseEditUs
   return {
     initialValues,
     submitting,
-    hasFormErrors,
     hasChanges,
-    usernameRules,
-    emailRules,
-    fullnameRules,
     handleValuesChange: checkFormState,
     handleFieldsChange: checkFormState,
     handleSubmit,

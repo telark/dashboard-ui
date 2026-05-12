@@ -21,6 +21,7 @@ export const updateUser = async (userId: string, user: Partial<User>) => {
         ? user.assignedGroupsIDs
         : [];
     }
+    if (user.status !== undefined) userData.status = user.status;
 
     return await Client<ResourceDetailsResponse<User>>(
       exporterApiClient,

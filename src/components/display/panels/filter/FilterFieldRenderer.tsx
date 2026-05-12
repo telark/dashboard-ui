@@ -88,6 +88,7 @@ const FilterFieldRenderer: React.FC<FilterFieldRendererProps> = ({ field, value,
 
   const renderMultiSelect = () => {
     const selectedValues = (value as string[]) || [];
+    const fieldOptionRender = field.optionRender;
     return (
       <div key={field.key} style={FILTER_PANEL.SECTION}>
         <div style={FILTER_PANEL.SECTION_TITLE}>{field.label}</div>
@@ -99,6 +100,20 @@ const FilterFieldRenderer: React.FC<FilterFieldRendererProps> = ({ field, value,
           options={field.multiSelectOptions}
           placeholder="Select..."
           allowClear
+          optionRender={
+            fieldOptionRender
+              ? (option) =>
+                  fieldOptionRender({
+                    value: String(option.value),
+                    label: String(option.label ?? ''),
+                  })
+              : undefined
+          }
+          filterOption={(input, option) =>
+            String(option?.label ?? '')
+              .toLowerCase()
+              .includes(input.toLowerCase())
+          }
         />
       </div>
     );

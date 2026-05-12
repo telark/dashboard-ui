@@ -12,6 +12,7 @@ import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { deduplicateCategoriesByName } from '../../categories/utils/helpers';
 import { applyRoleFilters } from '../../groups/utils';
 import { CreateRolePanel } from '../panels';
+import { ROLES_CONSTANTS as RPC } from '../constants';
 import type { Role, RoleFormValues } from '../models';
 import type { Category } from '../../categories/models';
 import type { FormInstance } from 'antd';
@@ -70,9 +71,11 @@ const MainPage: React.FC = () => {
     closeViewPanel,
   } = useRolePanelState();
 
+  const customRoles = useMemo(() => roles.filter((r) => r.type !== RPC.TYPE.BUILT_IN), [roles]);
+
   const filteredRoles = useMemo(
-    () => applyRoleFilters(roles, appliedFilters, searchTerm),
-    [roles, appliedFilters, searchTerm],
+    () => applyRoleFilters(customRoles, appliedFilters, searchTerm),
+    [customRoles, appliedFilters, searchTerm],
   );
 
   const {
@@ -134,27 +137,34 @@ const MainPage: React.FC = () => {
     onSearchChange: setSearchTerm,
   });
 
+  const hasFetchedRoles = Array.isArray(roles) && roles.length > 0;
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(roles) && roles.length === 0 && !loading && !error,
-    [roles, loading, error],
+    () =>
+      Array.isArray(roles) &&
+      customRoles.length === 0 &&
+      !error &&
+      (hasFetchedRoles || !loading),
+    [roles, customRoles.length, error, hasFetchedRoles, loading],
   );
+
+  const augmentedPageConfig = { ...pageConfig, loading, error, onRetry: refetch };
+
+  const createPanelNode = createPanelOpen ? (
+    <CreateRolePanel
+      open={createPanelOpen}
+      onClose={closeCreatePanel}
+      form={createForm as FormInstance<RoleFormValues>}
+    />
+  ) : null;
 
   if (shouldShowEmpty) {
     return (
       <>
         <RolesEmptyPage onCreateRoleClick={canCreateRole ? openCreatePanel : undefined} />
-        {createPanelOpen && (
-          <CreateRolePanel
-            open={createPanelOpen}
-            onClose={closeCreatePanel}
-            form={createForm as FormInstance<RoleFormValues>}
-          />
-        )}
+        {createPanelNode}
       </>
     );
   }
-
-  const augmentedPageConfig = { ...pageConfig, loading, error, onRetry: refetch };
 
   return (
     <RolesListPage

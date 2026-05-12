@@ -17,10 +17,10 @@ const MainPage: React.FC = () => {
     ACTION_PERMISSIONS.users.create.level,
     ACTION_PERMISSIONS.users.create.deny,
   );
-  const canEditUser = usePermission(
-    ACTION_PERMISSIONS.users.edit.scope,
-    ACTION_PERMISSIONS.users.edit.level,
-    ACTION_PERMISSIONS.users.edit.deny,
+  const canSuspendUser = usePermission(
+    ACTION_PERMISSIONS.users.suspend.scope,
+    ACTION_PERMISSIONS.users.suspend.level,
+    ACTION_PERMISSIONS.users.suspend.deny,
   );
   const canDeleteUser = usePermission(
     ACTION_PERMISSIONS.users.delete.scope,
@@ -145,7 +145,7 @@ const MainPage: React.FC = () => {
     paginatedUsers,
     hasSelection: selectedUsers.length > 0,
     handleViewUser,
-    handleEditUser: canEditUser ? handleEditUser : () => undefined,
+    handleEditUser: canSuspendUser ? handleEditUser : () => undefined,
     onCreateUserClick: openCreatePanel,
     canCreateUser,
     onFilterClick: openFilterPanel,
@@ -204,7 +204,7 @@ const MainPage: React.FC = () => {
       onCloseViewPanel={closeViewPanel}
       onCloseManageRolePanel={closeManageRolePanel}
       onCloseManageGroupPanel={closeManageGroupPanel}
-      onViewPanelEdit={canEditUser ? handleViewPanelEdit : undefined}
+      onViewPanelEdit={canSuspendUser ? handleViewPanelEdit : undefined}
       canDeleteUser={canDeleteUser}
     />
   );

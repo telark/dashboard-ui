@@ -117,9 +117,9 @@ export const ROLES_CONSTANTS = {
     COLUMNS: {
       ROLE_TITLE: 110,
       TYPE: 80,
-      CREATED: 90,
+      CREATED: 140,
       CREATED_BY: 90,
-      LAST_UPDATE: 90,
+      LAST_UPDATE: 140,
       VALIDITY: 80,
       CATEGORY: 80,
       VERSION: 80,

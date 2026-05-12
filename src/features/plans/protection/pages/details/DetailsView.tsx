@@ -2,10 +2,10 @@ import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Form, App as AntdApp } from 'antd';
-import { PlayCircleOutlined } from '@ant-design/icons';
 import LoadingDetailsView from '../../../../../components/display/views/LoadingDetailsView';
 import ErrorView from '../../../../../components/display/views/ErrorView';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
+import ReactivatePlanModal from '../../components/shared/ReactivatePlanModal';
 import { APP_ROUTES } from '../../../../../constants';
 import ApplicationPageLayout from '../../../../resources/applications/components/layout/ApplicationPageLayout';
 import { usePlanDetails } from '../../hooks/usePlanDetails';
@@ -182,20 +182,12 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
         loading={deleting}
         getContainer={() => document.body}
       />
-      <ActionConfirmModal
+      <ReactivatePlanModal
         open={reactivateModalOpen}
+        planName={details.name}
+        loading={reactivating}
         onClose={() => setReactivateModalOpen(false)}
         onConfirm={handleConfirmReactivate}
-        title={PPC.LABELS.DETAIL_PAGE.ACTIONS.REACTIVATE_MODAL_TITLE}
-        action="reactivate"
-        resourceName={details.name}
-        resourceType="protection plan"
-        confirmText={PPC.LABELS.DETAIL_PAGE.ACTIONS.REACTIVATE_MODAL_OK}
-        loading={reactivating}
-        danger={false}
-        icon={<PlayCircleOutlined />}
-        customMessage={PPC.LABELS.DETAIL_PAGE.ACTIONS.REACTIVATE_MODAL_BODY}
-        getContainer={() => document.body}
       />
       <DuplicatePlanPanel
         key={`duplicate-${details.id}`}

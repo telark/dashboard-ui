@@ -1,9 +1,8 @@
 import React from 'react';
 import { Form, Select } from 'antd';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
-import { ATTACHED_MEMBERS_CONSTANTS as AMC } from '../../../../access-and-permissions/groups/constants';
 import type { User } from '../../../../access-and-permissions/users/models';
-import UserAvatar from '../../../../../components/display/avatars/UserAvatar';
+import { UserOptionRow } from '../../../../../components/display/users';
 import SectionCard from './SectionCard';
 import { FORM_ITEM_CLASS } from './types';
 
@@ -33,20 +32,12 @@ const ParticipantsSection: React.FC<ParticipantsSectionProps> = ({
         placeholder={FORM.PARTICIPANTS_PLACEHOLDER}
         style={{ width: '100%' }}
         options={userOptions}
-        optionRender={(option) => {
-          const u = userMap.get(String(option.value));
-          return (
-            <div style={AMC.LIST.MEMBER_CONTENT}>
-              <div style={AMC.LIST.MEMBER_AVATAR_CONTAINER}>
-                <UserAvatar avatar={u?.avatar} username={u?.username} size={32} />
-              </div>
-              <div style={AMC.LIST.MEMBER_INFO}>
-                <div style={AMC.LIST.MEMBER_NAME}>{u?.username}</div>
-                {u?.email && <div style={AMC.LIST.MEMBER_EMAIL}>{u.email}</div>}
-              </div>
-            </div>
-          );
-        }}
+        optionRender={(option) => (
+          <UserOptionRow
+            user={userMap.get(String(option.value))}
+            displayName={String(option.label ?? '')}
+          />
+        )}
         filterOption={(input, option) =>
           String(option?.label ?? '')
             .toLowerCase()

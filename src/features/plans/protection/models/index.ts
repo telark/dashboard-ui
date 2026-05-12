@@ -119,6 +119,8 @@ export interface PlanTemplate {
   params: ParamSpec[];
 }
 
+export type PlanPhaseQuickFilter = PlanPhase | 'all';
+
 export interface ProtectionPlansState {
   plans: ProtectionPlan[];
   templates: PlanTemplate[];
@@ -128,4 +130,6 @@ export interface ProtectionPlansState {
   details: ProtectionPlan | null;
   detailsLoading: boolean;
   detailsError: string | null;
+  phaseQuickFilter: PlanPhaseQuickFilter;
+  appliedFilters: Record<string, unknown>;
 }
