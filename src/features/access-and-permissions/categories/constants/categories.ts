@@ -77,10 +77,10 @@ export const CATEGORIES_CONSTANTS = {
   } as const,
   SIZES: {
     COLUMNS: {
-      NAME: 200,
-      TYPE: 200,
-      SCOPE: 200,
-      CREATED: 200,
+      NAME: 320,
+      TYPE: 160,
+      SCOPE: 160,
+      CREATED: 180,
       ACTIONS: 120,
     },
   },

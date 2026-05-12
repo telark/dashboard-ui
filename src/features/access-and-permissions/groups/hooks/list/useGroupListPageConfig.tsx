@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Empty } from 'antd';
 import type { PageLayoutConfig } from '../../../../../interfaces/layout/page';
@@ -84,7 +84,6 @@ export const useGroupListPageConfig = ({
   onSearchChange,
   onSearchSubmit,
 }: UseGroupListPageConfigOptions): PageLayoutConfig<Group | Category> => {
-  const [selectedCategories, setSelectedCategories] = useState<React.Key[]>([]);
   const { rowHeight } = useAppearance();
   const reduxCategories = useSelector(selectGroupsCategories);
   const { users } = useUsers();
@@ -261,12 +260,7 @@ export const useGroupListPageConfig = ({
                 setSelectedGroups(keys);
               },
             }
-          : {
-              selectedRowKeys: selectedCategories,
-              onChange: (keys: React.Key[]) => {
-                setSelectedCategories(keys);
-              },
-            },
+          : undefined,
       onRowClick:
         viewMode === 'groups'
           ? (record: Group | Category) => handleViewGroup(record as Group)
@@ -312,8 +306,6 @@ export const useGroupListPageConfig = ({
       setCategoryCurrentPage,
       setCategoryPageSize,
       setSelectedGroups,
-      selectedCategories,
-      setSelectedCategories,
       onEditCategory,
       rowHeight,
     ],

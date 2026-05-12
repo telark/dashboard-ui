@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Empty } from 'antd';
 import type { PageLayoutConfig } from '../../../../../interfaces/layout/page';
 import { ROLES_CONSTANTS as RC } from '../../constants';
@@ -74,7 +74,6 @@ export const useRoleListPageConfig = ({
   onSearchChange,
   onSearchSubmit,
 }: UseRoleListPageConfigOptions): PageLayoutConfig<Role | Category> => {
-  const [selectedCategories, setSelectedCategories] = useState<React.Key[]>([]);
   const { rowHeight } = useAppearance();
 
   const {
@@ -222,10 +221,7 @@ export const useRoleListPageConfig = ({
               selectedRowKeys: selectedRoles,
               onChange: (keys: React.Key[]) => setSelectedRoles(keys),
             }
-          : {
-              selectedRowKeys: selectedCategories,
-              onChange: (keys: React.Key[]) => setSelectedCategories(keys),
-            },
+          : undefined,
       onRowClick:
         viewMode === 'roles'
           ? (record: Role | Category) => handleViewRole(record as Role)
@@ -257,7 +253,6 @@ export const useRoleListPageConfig = ({
       categoryPageSize,
       sortedCategories.length,
       selectedRoles,
-      selectedCategories,
       setViewMode,
       handleViewRole,
       handleEditRole,
