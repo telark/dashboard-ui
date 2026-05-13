@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import LoadingDetailsView from '../../../../../components/display/views/LoadingDetailsView';
 import ErrorView from '../../../../../components/display/views/ErrorView';
-import { APPLICATION_DETAILS_CONSTANTS } from '../../constants';
+import { APPLICATION_DETAILS_CONSTANTS, SYNC_STATUS_VALUE } from '../../constants';
 import { useApplicationDetails } from '../../hooks';
 import ApplicationsDetailsEmpty from './Empty';
 import ApplicationDetailsContent from './Content';
@@ -34,9 +34,13 @@ const ApplicationDetailsView: React.FC = memo(() => {
   const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
   const [deleteLoading, setDeleteLoading] = React.useState(false);
   const { details, loading, error } = useApplicationDetails(name);
-  const isSyncing = useSelector((s: RootState) =>
+  const syncingFlag = useSelector((s: RootState) =>
     details?.name ? !!s.applications.syncing?.[details.name] : false,
   );
+  const syncStatus = useSelector((s: RootState) =>
+    details?.name ? s.applications.syncStatus?.[details.name] : undefined,
+  );
+  const isSyncing = syncingFlag || syncStatus === SYNC_STATUS_VALUE.SYNCING;
 
   useEffect(() => {
     if (!details?.name) return;
