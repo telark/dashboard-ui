@@ -60,4 +60,5 @@ export interface RolesState {
   details: Role | null;
   loading: boolean;
   error: string | null;
+  deletingIds: string[];
 }

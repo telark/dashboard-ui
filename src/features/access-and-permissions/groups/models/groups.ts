@@ -16,6 +16,7 @@ export interface GroupsState {
   details: Group | null;
   loading: boolean;
   error: string | null;
+  deletingIds: string[];
 }
 
 export interface GroupsTableProps {

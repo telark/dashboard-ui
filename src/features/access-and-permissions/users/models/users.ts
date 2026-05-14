@@ -39,6 +39,7 @@ export interface UsersState {
   details: User | null;
   loading: boolean;
   error: string | null;
+  deletingIds: string[];
 }
 
 export interface UsersTableProps {
