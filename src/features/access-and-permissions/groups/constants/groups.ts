@@ -227,6 +227,7 @@ export const GROUPS_CONSTANTS = {
       CREATE_GROUP_FAILED: (name: string) => `[APIClient] Failed to create group: ${name}`,
       UPDATE_GROUP_FAILED: (id: string) => `[APIClient] Failed to update group: ${id}`,
       DELETE_GROUP_FAILED: (id: string) => `[APIClient] Failed to delete group: ${id}`,
+      DELETE_GROUP_MISSING_ID: '[APIClient] Cannot delete group: missing id',
     },
   },
 } as const;

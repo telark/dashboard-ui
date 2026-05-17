@@ -247,6 +247,7 @@ export const ROLES_CONSTANTS = {
       CREATE_ROLE_FAILED: (name: string) => `[APIClient] Failed to create role: ${name}`,
       UPDATE_ROLE_FAILED: (id: string) => `[APIClient] Failed to update role: ${id}`,
       DELETE_ROLE_FAILED: (id: string) => `[APIClient] Failed to delete role: ${id}`,
+      DELETE_ROLE_MISSING_ID: '[APIClient] Cannot delete role: missing id',
     },
   },
 } as const;
