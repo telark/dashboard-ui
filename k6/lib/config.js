@@ -10,8 +10,20 @@ const intEnv = (k, d) => {
   return Number.isFinite(n) ? n : d;
 };
 
+const stripTrailingSlash = (s) => s.replace(/\/+$/, '');
+
+const DEFAULTS = {
+  exporter: 'http://plsyro-exporter-service.plsyro.svc.cluster.local:8080',
+  discovery: 'http://plsyro-discovery-service.plsyro.svc.cluster.local:8080',
+  auth: 'http://plsyro-auth-service.plsyro.svc.cluster.local:8080',
+  enrichment: 'http://plsyro-enrichment-service.plsyro.svc.cluster.local:8080',
+};
+
 export const cfg = {
-  baseUrl: env('BASE_URL', 'http://localhost:3000').replace(/\/+$/, ''),
+  exporterUrl: stripTrailingSlash(env('EXPORTER_BASE_URL', DEFAULTS.exporter)),
+  discoveryUrl: stripTrailingSlash(env('DISCOVERY_BASE_URL', DEFAULTS.discovery)),
+  authUrl: stripTrailingSlash(env('AUTH_BASE_URL', DEFAULTS.auth)),
+  enrichmentUrl: stripTrailingSlash(env('ENRICHMENT_BASE_URL', DEFAULTS.enrichment)),
   sessionToken: env('SESSION_TOKEN', ''),
   userId: env('USER_ID', ''),
   testEmail: env('TEST_EMAIL', 'k6-test@example.com'),
@@ -20,15 +32,17 @@ export const cfg = {
   testPlanTemplateId: env('TEST_PLAN_TEMPLATE_ID', ''),
   forceSyncPollTimeoutSec: intEnv('FORCE_SYNC_POLL_TIMEOUT_SEC', 90),
   planStatusPollTimeoutSec: intEnv('PLAN_STATUS_POLL_TIMEOUT_SEC', 60),
-  outputDir: env('OUTPUT_DIR', './results'),
-  runId: env('RUN_ID', String(Date.now())),
+  resultsDir: stripTrailingSlash(env('RESULTS_DIR', './results')),
+  runTag: env('RUN_TAG', String(Date.now())),
 };
 
+const buildPath = (base, p) => `${base}/api/v1/${p.replace(/^\//, '')}`;
+
 export const path = {
-  exporter: (p) => `${cfg.baseUrl}/api/exporter/api/v1/${p.replace(/^\//, '')}`,
-  discovery: (p) => `${cfg.baseUrl}/api/discovery/api/v1/${p.replace(/^\//, '')}`,
-  auth: (p) => `${cfg.baseUrl}/api/auth/api/v1/${p.replace(/^\//, '')}`,
-  enrichment: (p) => `${cfg.baseUrl}/api/enrichment/${p.replace(/^\//, '')}`,
+  exporter: (p) => buildPath(cfg.exporterUrl, p),
+  discovery: (p) => buildPath(cfg.discoveryUrl, p),
+  auth: (p) => buildPath(cfg.authUrl, p),
+  enrichment: (p) => `${cfg.enrichmentUrl}/${p.replace(/^\//, '')}`,
 };
 
 export const requireToken = () => {

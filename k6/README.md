@@ -1,95 +1,124 @@
-# Plsyro dashboard k6 suite
+# Plsyro dashboard k6 tests
 
-End-to-end functional + performance test suite that exercises the same APIs the dashboard UI calls. The goal is **not** stress testing — it is single-user / small-team realistic flow validation, with timing baselines per endpoint.
+Tests that check the dashboard's APIs work and measure how fast they are. Each test walks a real user flow (login session reuse, browse apps, create a protection plan, etc.) and reports per-step timings.
 
-## What this suite does
+Same shape as `exporter-service/k6/`: each run is one Kubernetes Job inside the cluster, runs once, cleans itself up.
 
-Every scenario walks a real user journey:
-
-- Issues the same HTTP calls the React UI issues, in the same order.
-- Validates each response has a 2xx status and a sane body shape.
-- Records per-endpoint timings as named k6 trend metrics.
-- Asserts pass/fail thresholds tuned per endpoint type (not generic ceilings).
-- Emits a human-readable HTML report per run plus raw JSON.
-
-## What this suite does NOT do
-
-- It does **not** test the React UI itself (rendering, JS errors, navigation correctness). Use Playwright/Cypress for that.
-- It does **not** test WebAuthn login flow — k6 cannot drive a real authenticator. The suite assumes a pre-issued `SESSION_TOKEN`.
-- It does **not** stress-test. VU counts are 1–2, iterations are bounded. To regress under load, fork a scenario and raise `vus`/`duration`.
-- It does **not** attribute slow exporter latency to a specific backend cause. k6 is black-box: when a scenario is slow, correlate with backend traces/logs (Grafana / loki / OpenTelemetry / kubectl logs).
-
-## High-level structure
+## Folder layout
 
 ```
 k6/
-├── lib/                     # shared helpers — every scenario imports from here
-│   ├── config.js            # env-var loader, BASE_URL + per-service path builders
-│   ├── http.js              # k6 http wrapper, metric+log+assert in one call
-│   ├── auth.js              # X-Session-Token + X-User-ID header injection
-│   ├── assert.js            # consistent 2xx + body-shape assertions
-│   ├── metrics.js           # central metric names + threshold table
-│   ├── fixtures.js          # per-run test data names (k6-user-<runId>, ...)
-│   └── report.js            # handleSummary → html + json + txt
-├── scenarios/               # one file per user journey
-├── results/                 # html / json / txt per run (gitignored)
-├── PLAN.md                  # Phase 1 discovery + design doc
-└── USAGE.md                 # operator reference (commands, env vars)
+├── README.md             this file — what + why
+├── USAGE.md              how to run (copy-paste commands)
+├── PLAN.md               design doc (read if you want the full picture)
+├── lib/                  shared helpers — every test imports from here
+├── scenarios/            one file per user flow (7 total)
+├── cluster/
+│   ├── job.yaml          K8s Job template
+│   └── run.sh            run one test in-cluster; cleans up after
+└── results/              logs + JSON summaries (gitignored)
 ```
 
-Adding a new scenario = create one file under `scenarios/`, import from `lib/`. No copy-paste.
+## The 7 tests
 
-## UI endpoint → backend service mapping
+| Test | What it does |
+|---|---|
+| `bootstrap_flow` | Page load: auth config, permissions, global config, apps list, notifications, plans list |
+| `auth_session_lifecycle` | List your sessions, view one, delete a non-current one |
+| `rbac_crud` | Create + read + update + delete one of each: user, group, role, category |
+| `applications_browse` | List apps, open one, fetch all its snapshot summaries and one manifest |
+| `application_force_sync` | Trigger a force-sync on one app, poll until it finishes |
+| `protection_plan_lifecycle` | Create a plan, poll status, view violations, duplicate, cancel, reactivate, update, clear |
+| `notifications_flow` | List notifications (with cursor pagination), mark read, mark all, clear |
 
-| UI client | nginx proxy_pass | Routes |
-|---|---|---|
-| `authApiClient` | `/api/auth/` → `plsyro-auth-service:8080` | login start/finish, logout, register/start, oidc google callback/nonce, config, permissions, passkeys (CRUD via proxy), user/group/role async cleanup |
-| `discoveryApiClient` | `/api/discovery/` → `plsyro-discovery-service:8080` | analyze namespaces/workloads/resources, application enrich/rollback/sync/cleanup, protection plans (templates/prepare/cancel/clear/status/violations/duplicate/reactivate/update) |
-| `exporterApiClient` | `/api/exporter/` → `plsyro-exporter-service:8080` | applications, globalconfig, users, groups, roles, categories, sessions, internal passkeys, snapshots, notifications, protection plans (list/get), cleanup finalizers |
-| `enrichmentApiClient` | `/api/enrichment/` → `plsyro-enrichment-service:8080` | provider/validate-api-key (out of suite scope) |
+## How to run one test
 
-UI builds URLs as `/api/{service}/api/v1/{path}` in-cluster; the suite uses the same pattern via `lib/config.js#path.*`.
+```sh
+cd /Users/houssem/Desktop/dashboard-ui
 
-## Flow map covered
+# get a session token from the browser (Application → Storage)
+export SESSION_TOKEN=<your-token>
+export USER_ID=<your-user-id>
 
-Each scenario maps to one or more of the end-to-end flows analyzed in `PLAN.md` §B.2.
+k6/cluster/run.sh bootstrap_flow
+```
 
-| Scenario | Flow(s) | Hot path covered |
-|---|---|---|
-| `bootstrap_flow` | F1 page bootstrap | none specifically |
-| `auth_session_lifecycle` | F3 session lifecycle | none |
-| `rbac_crud` | F4 user/group/role/category CRUD | RBAC delete cascade (auth → exporter finalizers) |
-| `applications_browse` | F5 apps + snapshot inspection | snapshot summary fan-out (bound by exporter K8s QPS 50) |
-| `application_force_sync` | F6 force sync | Redis Stream enqueue + worker round-trip |
-| `protection_plan_lifecycle` | F7 plan full lifecycle | discovery↔exporter inter-service writes, plan violations engine |
-| `notifications_flow` | F8 notifications | cursor pagination |
+The script creates a K8s Job in the `plsyro` namespace, runs the test, streams logs, copies result files, then deletes the Job and ConfigMap. **Nothing stays in the cluster between runs.**
 
-F2 (WebAuthn login) and F9 (AI provider validation) are intentionally out of scope — see `PLAN.md` §G.
+Full command reference: see [`USAGE.md`](./USAGE.md).
 
-## What each scenario reveals
+## What you get back
 
-| Scenario | Pass means | Fail likely means |
-|---|---|---|
-| `bootstrap_flow` | Bootstrap calls all under their thresholds, all 2xx | Auth config publication broken; permissions handler regression; globalconfig schema drift; exporter cache cold-start slowness |
-| `auth_session_lifecycle` | Session list/get/delete contract intact | Session-token header rename; sessions CRD shape change; exporter delete path broken |
-| `rbac_crud` | Per-kind CRUD round trips OK, async delete cascade completes | Finalizer cascade regression (auth ↔ exporter add/remove-finalizer); cache invalidation broken; lock contention on writes |
-| `applications_browse` | Snapshot fan-out stays under 5s; per-snapshot under 1.5s | Exporter K8s QPS ceiling reached; PVC IO slow; informer cache miss storms |
-| `application_force_sync` | App reaches a terminal phase within 90s | Redis Stream backed up; workers starved; exporter cache fails to invalidate after worker writes through |
-| `protection_plan_lifecycle` | Plan prepare under 3.5s; status reaches a terminal state; mutations all OK | discovery↔exporter contract drift; per-ID lock contention; violations engine slow; state-machine transition bug |
-| `notifications_flow` | Cursor pagination works, mutate calls under 800ms | Cursor handling regression; mark-all batch slow; clear endpoint broken |
+After a run finishes:
 
-## Black-box note (important)
+```
+k6/results/
+├── bootstrap_flow-20260517-145322.log         # full pod log (raw k6 output)
+└── bootstrap_flow-20260517-145322-json/       # k6 summary files
+    ├── bootstrap_flow_20260517-145322.json    # raw summary JSON
+    └── bootstrap_flow_20260517-145322.txt     # human-readable summary
+```
 
-k6 sees only HTTP from the UI's perspective. If `application_force_sync` is slow it could be: discovery enqueue slow, Redis IO slow, workers slow, exporter cache invalidation slow, K8s apiserver slow. The suite says **what** is slow, not **why**. To attribute:
+Open the `.txt` to see pass/fail and per-endpoint timings. Use the `.json` for trend analysis later.
 
-1. Note the failing metric and the time window from the HTML report.
-2. Pull discovery + exporter logs for that window.
-3. Cross-reference with K8s apiserver metrics if available.
+## What each test catches when it fails
 
-## Usage
+| Test | Fail likely means |
+|---|---|
+| `bootstrap_flow` | Auth config or permissions handler broke; global config schema drifted; apps list slow |
+| `auth_session_lifecycle` | Session-token header rename; session storage shape changed; delete path broken |
+| `rbac_crud` | Async delete cascade broken (auth → exporter finalizers); write-path lock contention |
+| `applications_browse` | Snapshot fan-out hit exporter's K8s rate limit; PVC slow; cache miss storm |
+| `application_force_sync` | Redis stream backed up; force-sync workers starved; cache failed to invalidate |
+| `protection_plan_lifecycle` | discovery → exporter contract drift; plan validation broke; state machine stuck |
+| `notifications_flow` | Cursor pagination regression; mark-all batch slow; clear endpoint broken |
 
-See `USAGE.md` for installation, environment variables, and copy-pasteable commands.
+## How the test talks to services
 
-## Threshold table
+Tests target the four backend services directly via their in-cluster DNS names (NOT through the UI's nginx). One env var per service, overridable:
 
-See `lib/metrics.js#THRESHOLDS` for the full table with the reasoning in `PLAN.md` §E.
+| Service | Default URL |
+|---|---|
+| exporter | `http://plsyro-exporter-service.plsyro.svc.cluster.local:8080` |
+| discovery | `http://plsyro-discovery-service.plsyro.svc.cluster.local:8080` |
+| auth | `http://plsyro-auth-service.plsyro.svc.cluster.local:8080` |
+| enrichment | `http://plsyro-enrichment-service.plsyro.svc.cluster.local:8080` |
+
+Each test calls the same paths the UI's React code calls — see the per-service mapping table in `PLAN.md` §A.
+
+## What this suite does NOT do
+
+- Does NOT test the React UI itself (rendering, JS errors, navigation). Use Playwright/Cypress for that.
+- Does NOT do real WebAuthn login (passkey signing needs a browser). Suite uses a pre-issued `SESSION_TOKEN`.
+- Does NOT stress-test. VU counts are 1–2. To check load behavior, fork a scenario and raise `vus`.
+- Does NOT say WHY a backend is slow — k6 sees only HTTP. When a test is slow, cross-reference backend logs / traces.
+
+## Add a new test
+
+Create `scenarios/<name>.js`:
+
+```js
+import { path, requireToken, requireUserId } from '../lib/config.js';
+import { get } from '../lib/http.js';
+import { METRICS, pickThresholds } from '../lib/metrics.js';
+import { buildSummary } from '../lib/report.js';
+
+export const options = {
+  vus: 1,
+  iterations: 1,
+  thresholds: pickThresholds([METRICS.CACHED_LIST]),
+};
+
+export const setup = () => { requireToken(); requireUserId(); };
+
+export default function () {
+  get(path.exporter('resources/applications/get'), {
+    name: 'apps.list',
+    metric: METRICS.CACHED_LIST,
+  });
+}
+
+export const handleSummary = buildSummary('<name>');
+```
+
+Then add `<name>` to `VALID_SCENARIOS` in `cluster/run.sh`. Done — no other wiring needed.

@@ -1,181 +1,177 @@
-# USAGE — Plsyro dashboard k6 suite
+# How to run the k6 tests
 
-Operator reference. No narrative. Copy-paste commands below.
+Copy-paste commands. Each test runs as a one-time Kubernetes Job that cleans itself up.
 
-## Cheat sheet (3 most common)
+## Before you start
 
-```bash
-# 1. smoke check that all scenarios parse
-for f in k6/scenarios/*.js; do k6 inspect "$f" >/dev/null && echo "OK $f" || echo "FAIL $f"; done
+You need:
 
-# 2. run one scenario against localhost
-BASE_URL=http://localhost:3000 \
-SESSION_TOKEN=<token> \
-USER_ID=<userId> \
-k6 run k6/scenarios/bootstrap_flow.js
+1. `kubectl` configured for the cluster running Plsyro (try `kubectl get pods -n plsyro` — should list pods).
+2. A **session token** and your **user id**:
+   - Log into the dashboard in a browser.
+   - Open DevTools → **Application** tab → **Local Storage** (or Session Storage).
+   - Find the key holding the auth state. Copy `sessionToken` and `user.id`.
 
-# 3. run all scenarios in sequence
-for f in k6/scenarios/*.js; do \
-  BASE_URL=http://localhost:3000 SESSION_TOKEN=<token> USER_ID=<userId> \
-  k6 run "$f"; \
+That's it. No local k6 install needed (the Job runs `grafana/k6:latest` inside the cluster).
+
+## Cheat sheet
+
+```sh
+cd /Users/houssem/Desktop/dashboard-ui
+
+export SESSION_TOKEN=<paste-from-browser>
+export USER_ID=<paste-from-browser>
+
+# run one test
+k6/cluster/run.sh bootstrap_flow
+
+# run all 7 tests one after the other
+for s in bootstrap_flow auth_session_lifecycle rbac_crud applications_browse \
+         protection_plan_lifecycle notifications_flow; do
+  k6/cluster/run.sh "$s"
 done
+
+# results land in k6/results/
+ls k6/results/
 ```
 
-## Prerequisites
+`application_force_sync` is intentionally omitted from the loop — it needs `TEST_APP_NAME` (see below).
 
-### Install k6
+## Run each test
 
-| OS | Command |
+All seven commands assume `SESSION_TOKEN` + `USER_ID` are exported.
+
+```sh
+k6/cluster/run.sh bootstrap_flow
+k6/cluster/run.sh auth_session_lifecycle
+k6/cluster/run.sh rbac_crud
+k6/cluster/run.sh applications_browse
+k6/cluster/run.sh protection_plan_lifecycle
+k6/cluster/run.sh notifications_flow
+
+# this one needs an existing app name
+TEST_APP_NAME=my-app k6/cluster/run.sh application_force_sync
+```
+
+## What happens when you run
+
+1. The script flattens `lib/` + `scenarios/` into a temp dir and uploads them as a per-run ConfigMap.
+2. It renders `cluster/job.yaml` with your env values and applies the Job.
+3. It waits for the pod, streams logs live (also saved to `k6/results/<run>.log`).
+4. After the Job finishes it copies the JSON + TXT summary out of the pod into `k6/results/<run>-json/`.
+5. It deletes the Job and ConfigMap (guaranteed by an `EXIT` trap — even if you Ctrl-C).
+
+You'll see lines like:
+
+```
+[build] flattening k6 scripts into /tmp/k6-flat-...
+[build] creating configmap plsyro/k6-scripts-bootstrap_flow-...
+[apply] scenario=bootstrap_flow run=bootstrap_flow-... ns=plsyro
+[wait]  pod scheduling (up to 60s)
+[pod]   k6-bootstrap_flow-...-abcde
+[logs]  streaming to k6/results/bootstrap_flow-...log
+... (k6 output) ...
+[status] complete
+[copy]  pod:/tmp/results/. → k6/results/bootstrap_flow-...-json
+[done]  scenario=bootstrap_flow run=... status=complete
+[cleanup] deleting job plsyro/k6-bootstrap_flow-...
+[cleanup] deleting configmap plsyro/k6-scripts-bootstrap_flow-...
+```
+
+## Env vars
+
+### Required (always)
+
+| Var | What |
 |---|---|
-| macOS (Homebrew) | `brew install k6` |
-| Linux (Debian/Ubuntu) | `sudo gpg -k && sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69 && echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list && sudo apt-get update && sudo apt-get install k6` |
-| Linux (Fedora/CentOS) | `sudo dnf install https://dl.k6.io/rpm/repo.rpm && sudo dnf install k6` |
-| Windows | `winget install k6 --source winget` |
+| `SESSION_TOKEN` | Pre-issued session token from the browser |
+| `USER_ID` | User id matching that token |
 
-Verify: `k6 version`.
+### Required (one test only)
 
-### Obtain a session token
+| Var | What | Needed for |
+|---|---|---|
+| `TEST_APP_NAME` | Name of an existing application in the cluster | `application_force_sync` |
 
-Log into the dashboard in a browser. The token lives in browser storage (dev tools → Application → Local Storage / Session Storage, look for the key the app stores `sessionToken` under). Copy the string.
+### Optional (have defaults)
 
-Also note your `userId` from the same source (the auth response contains `user.id`).
+| Var | Default | When to override |
+|---|---|---|
+| `EXPORTER_BASE_URL` | `http://plsyro-exporter-service.plsyro.svc.cluster.local:8080` | Service runs in a different namespace |
+| `DISCOVERY_BASE_URL` | `http://plsyro-discovery-service.plsyro.svc.cluster.local:8080` | Same |
+| `AUTH_BASE_URL` | `http://plsyro-auth-service.plsyro.svc.cluster.local:8080` | Same |
+| `ENRICHMENT_BASE_URL` | `http://plsyro-enrichment-service.plsyro.svc.cluster.local:8080` | Same |
+| `TEST_PLAN_TEMPLATE_ID` | (auto-pick first available) | Pin to a specific plan template |
+| `FORCE_SYNC_POLL_TIMEOUT_SEC` | `90` | Force-sync takes longer than 90s on your cluster |
+| `PLAN_STATUS_POLL_TIMEOUT_SEC` | `60` | Same idea, for plan state machine |
+| `DELETE_OWN_SESSION` | `false` | Set `true` to allow the test to delete the session it's using (will log you out) |
+| `WAIT_TIMEOUT` | `15m` | Cluster is slow and the Job needs longer |
+| `IMAGE` | `grafana/k6:latest` | Use a private registry mirror |
 
-## Environment variables
+## Target a different namespace
 
-| Var | Default | Used by | Notes |
-|---|---|---|---|
-| `BASE_URL` | `http://localhost:3000` | all | Origin only, no trailing slash; the suite appends `/api/{service}/api/v1/...` |
-| `SESSION_TOKEN` | _(required for all)_ | all | Value of the `X-Session-Token` header |
-| `USER_ID` | _(required for most)_ | bootstrap, sessions, rbac, force_sync, plan, notifications | Value of the `X-User-ID` header |
-| `TEST_APP_NAME` | _(required for S5)_ | `application_force_sync` | Must be an existing app in the target cluster |
-| `TEST_NAMESPACE` | `k6-test` | rbac, plan | Reserved namespace for test resources |
-| `TEST_PLAN_TEMPLATE_ID` | (auto-pick first available) | `protection_plan_lifecycle` | Skip auto-pick by setting explicitly |
-| `TEST_EMAIL` | `k6-test@example.com` | rbac | Email for created test user |
-| `FORCE_SYNC_POLL_TIMEOUT_SEC` | `90` | `application_force_sync` | Cap on how long to wait for sync completion |
-| `PLAN_STATUS_POLL_TIMEOUT_SEC` | `60` | `protection_plan_lifecycle` | Cap on plan-state poll |
-| `DELETE_OWN_SESSION` | `false` | `auth_session_lifecycle` | Set `true` to allow deleting the SESSION_TOKEN's own session |
-| `RUN_ID` | `Date.now()` | rbac, plan | Used in created-resource names to avoid collisions |
-| `OUTPUT_DIR` | `./results` | report | Where to write HTML/JSON/TXT |
+```sh
+k6/cluster/run.sh bootstrap_flow my-other-namespace
+```
 
-## Per-scenario commands (copy-pasteable)
+Make sure the dashboard service DNS names also match — override `*_BASE_URL` env vars accordingly.
 
-Each command assumes you have exported `BASE_URL`, `SESSION_TOKEN`, `USER_ID` already (`export VAR=val` in your shell).
+## See the results
 
-### S1 — bootstrap_flow
+After a run:
 
-```bash
+```sh
+ls k6/results/
+# bootstrap_flow-20260517-145322.log
+# bootstrap_flow-20260517-145322-json/
+
+# read the human summary
+cat k6/results/bootstrap_flow-*-json/bootstrap_flow_*.txt
+
+# full pod log
+cat k6/results/bootstrap_flow-*.log
+```
+
+The TXT file shows: per-metric p50/p95/p99, threshold pass/fail, total checks passed.
+
+## Abort a run
+
+`Ctrl-C` the script. The `EXIT` trap deletes the Job + ConfigMap for you. If something is really stuck:
+
+```sh
+kubectl -n plsyro get jobs -l app=k6-dashboard
+kubectl -n plsyro delete job <name>
+kubectl -n plsyro get configmap -l app=k6-dashboard 2>/dev/null  # rare; usually auto-cleaned
+```
+
+## Run from your laptop (no cluster)
+
+Only useful for editing tests + checking syntax. Real timings need the in-cluster Job.
+
+```sh
+brew install k6                                              # macOS, one time
+
+kubectl -n plsyro port-forward svc/plsyro-exporter-service 8002:8080 &
+kubectl -n plsyro port-forward svc/plsyro-discovery-service 8004:8080 &
+kubectl -n plsyro port-forward svc/plsyro-auth-service 8006:8080 &
+kubectl -n plsyro port-forward svc/plsyro-enrichment-service 8007:8080 &
+
+EXPORTER_BASE_URL=http://localhost:8002 \
+DISCOVERY_BASE_URL=http://localhost:8004 \
+AUTH_BASE_URL=http://localhost:8006 \
+ENRICHMENT_BASE_URL=http://localhost:8007 \
+SESSION_TOKEN=<token> USER_ID=<id> \
 k6 run k6/scenarios/bootstrap_flow.js
 ```
-
-### S2 — auth_session_lifecycle
-
-```bash
-# safe (does not delete own session)
-k6 run k6/scenarios/auth_session_lifecycle.js
-
-# explicitly opt in to deleting the calling session (will log you out)
-DELETE_OWN_SESSION=true k6 run k6/scenarios/auth_session_lifecycle.js
-```
-
-### S3 — rbac_crud
-
-```bash
-k6 run k6/scenarios/rbac_crud.js
-```
-
-### S4 — applications_browse
-
-```bash
-k6 run k6/scenarios/applications_browse.js
-```
-
-If the cluster has no applications, the scenario logs `[info] no applications returned` and exits cleanly.
-
-### S5 — application_force_sync
-
-```bash
-TEST_APP_NAME=my-app k6 run k6/scenarios/application_force_sync.js
-```
-
-### S6 — protection_plan_lifecycle
-
-```bash
-# auto-picks the first template returned by the discovery service
-k6 run k6/scenarios/protection_plan_lifecycle.js
-
-# pin a specific template
-TEST_PLAN_TEMPLATE_ID=my-template-id k6 run k6/scenarios/protection_plan_lifecycle.js
-```
-
-### S7 — notifications_flow
-
-```bash
-k6 run k6/scenarios/notifications_flow.js
-```
-
-## Run all scenarios in sequence
-
-```bash
-export BASE_URL=http://localhost:3000
-export SESSION_TOKEN=<token>
-export USER_ID=<userId>
-export TEST_APP_NAME=<app-name>
-
-for f in k6/scenarios/*.js; do
-  echo "=== $f ==="
-  k6 run "$f"
-done
-```
-
-## Different environments
-
-```bash
-# local dev (Vite dev server proxy or nginx pod port-forward)
-BASE_URL=http://localhost:3000 k6 run ...
-
-# kubectl port-forward to UI pod
-kubectl -n plsyro port-forward svc/plsyro-ui-service 8080:8080
-BASE_URL=http://localhost:8080 k6 run ...
-
-# deployed dev cluster (real ingress)
-BASE_URL=https://dashboard.dev.example.com k6 run ...
-```
-
-## Output formats
-
-By default each scenario writes 3 files into `results/`:
-
-- `<scenario>_<ts>.html` — primary human report (open in browser)
-- `<scenario>_<ts>.json` — raw k6 summary (CI gates, trend tracking)
-- `<scenario>_<ts>.txt` — same text summary that printed to console
-
-Console also shows step-by-step output during the run (`[01] step.name 200 142ms`).
-
-Override output dir: `OUTPUT_DIR=/tmp/k6-out k6 run ...`.
-
-## Interpreting results
-
-1. Open the latest HTML in `results/`.
-2. Look at the **Checks** table — every assertion is listed with ✓/✗.
-3. Look at the **Thresholds** table — every named metric is shown with its p50/p95/p99 and the configured threshold. Anything red breached its threshold.
-4. The **What to look at** section (in the report) flags the slowest endpoint of the run.
-5. For failures, search the console output for `[FAIL]` lines — each includes the response status and the first 300 chars of the body.
 
 ## Troubleshooting
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| `connection refused` | `BASE_URL` wrong, or UI service not reachable | `curl $BASE_URL/api/v1/status/ready` from the same machine |
-| 401 on every call | `SESSION_TOKEN` empty / expired | Re-issue token from browser, export again |
-| 403 on plan/sync writes | `USER_ID` missing or doesn't match token | Re-export both vars |
-| 503 on force-sync | Redis stream queue down or back-pressured (returns `retryAfterSec`) | Check Redis + discovery logs; verify ingress hasn't trimmed at 5000 |
-| Snapshot fan-out times out | Exporter QPS 50 ceiling hit | Lower iterations, or raise EXPORTER_K8S_CLIENT_QPS in release-manager |
-| Threshold breached but only on first run | Cold cache | Warm up the app: hit the endpoint once via curl, then re-run k6 |
-| `cannot resolve plsyro-...-service` from outside cluster | You ran against in-cluster service DNS from outside | Use `kubectl port-forward` or the public ingress URL |
-| `TypeError: cannot read property '...' of null` in scenario logs | Backend returned an unexpected body shape (likely 5xx HTML page) | Check console for `[FAIL]` line with body excerpt |
-
-## Notes
-
-- The suite uses k6 HTTP only — no extensions, no browser module.
-- `lib/report.js` pulls `k6-reporter` from a CDN URL at runtime; first run on a fresh machine needs internet access. To run offline, vendor that script and rewrite the import to a local path.
-- Default VU count is 1 per scenario. To simulate small-team concurrent usage, override with `-i <iterations> --vus <n>` on the `k6 run` line (do not edit scenario files for ad-hoc tuning).
+| `ERROR: SESSION_TOKEN env var is required` | You forgot to export it | `export SESSION_TOKEN=<token>` |
+| `pod did not appear within 60s` | Cluster can't pull `grafana/k6:latest`, or namespace lacks permission | Check `kubectl describe job k6-... -n plsyro`; pre-pull the image or set `IMAGE=` |
+| All requests return 401 | Token expired | Re-copy from the browser |
+| All plan/sync writes return 403 | `USER_ID` doesn't match the token's user | Re-export both vars from the same browser session |
+| `503` on force-sync | Redis queue down or back-pressured | Check `kubectl logs deploy/plsyro-discovery-service -n plsyro` |
+| Job stuck `unknown` after 15m | Test scenario hung (likely a long poll) | Raise `WAIT_TIMEOUT=30m`, or check pod logs while it runs |
+| `unknown scenario 'foo'` | Typo in test name | List valid names: `head -50 k6/cluster/run.sh \| grep VALID_SCENARIOS -A 8` |

@@ -1,0 +1,80 @@
+# In-cluster k6 Job template for the Plsyro dashboard suite.
+# Placeholders: __RUN__, __SCENARIO__, __NAMESPACE__, __CONFIGMAP__,
+#               __EXPORTER_URL__, __DISCOVERY_URL__, __AUTH_URL__, __ENRICHMENT_URL__,
+#               __SESSION_TOKEN__, __USER_ID__, __TEST_APP_NAME__, __TEST_PLAN_TEMPLATE_ID__,
+#               __FORCE_SYNC_POLL_TIMEOUT_SEC__, __PLAN_STATUS_POLL_TIMEOUT_SEC__,
+#               __DELETE_OWN_SESSION__, __RUN_TAG__
+# Rendered + applied by k6/cluster/run.sh.
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: k6-__RUN__
+  namespace: __NAMESPACE__
+  labels:
+    app: k6-dashboard
+    run: "__RUN__"
+    scenario: "__SCENARIO__"
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: k6-dashboard
+        run: "__RUN__"
+        scenario: "__SCENARIO__"
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: k6
+          image: grafana/k6:latest
+          command:
+            - k6
+            - run
+            - --quiet
+            - /scripts/__SCENARIO__.js
+          env:
+            - name: EXPORTER_BASE_URL
+              value: "__EXPORTER_URL__"
+            - name: DISCOVERY_BASE_URL
+              value: "__DISCOVERY_URL__"
+            - name: AUTH_BASE_URL
+              value: "__AUTH_URL__"
+            - name: ENRICHMENT_BASE_URL
+              value: "__ENRICHMENT_URL__"
+            - name: SESSION_TOKEN
+              value: "__SESSION_TOKEN__"
+            - name: USER_ID
+              value: "__USER_ID__"
+            - name: TEST_APP_NAME
+              value: "__TEST_APP_NAME__"
+            - name: TEST_PLAN_TEMPLATE_ID
+              value: "__TEST_PLAN_TEMPLATE_ID__"
+            - name: FORCE_SYNC_POLL_TIMEOUT_SEC
+              value: "__FORCE_SYNC_POLL_TIMEOUT_SEC__"
+            - name: PLAN_STATUS_POLL_TIMEOUT_SEC
+              value: "__PLAN_STATUS_POLL_TIMEOUT_SEC__"
+            - name: DELETE_OWN_SESSION
+              value: "__DELETE_OWN_SESSION__"
+            - name: RUN_TAG
+              value: "__RUN_TAG__"
+            - name: RESULTS_DIR
+              value: "/tmp/results"
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+            - name: results
+              mountPath: /tmp/results
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+      volumes:
+        - name: scripts
+          configMap:
+            name: __CONFIGMAP__
+        - name: results
+          emptyDir: {}
