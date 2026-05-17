@@ -131,7 +131,7 @@ apply_env_defaults() {
 compute_run_identifiers() {
   RUN_TAG="${SCENARIO}-$(date +%Y%m%d-%H%M%S)"
   JOB_NAME="k6-${RUN_TAG}"
-  CONFIGMAP_NAME="k6-scripts-${RUN_TAG}"
+  CONFIGMAP_NAME="k6-ui-scripts-cm"
 }
 
 compute_paths() {
