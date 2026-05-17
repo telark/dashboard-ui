@@ -9,9 +9,7 @@ export const assertOk = (res, name, extraChecks = {}) => {
   const all = { ...baseChecks, ...extraChecks };
   const passed = check(res, all);
   if (!passed) {
-    console.error(
-      `[FAIL] ${name} :: status=${res?.status} body=${truncate(res?.body)}`,
-    );
+    console.error(`[FAIL] ${name} :: status=${res?.status} body=${truncate(res?.body)}`);
   }
   return passed;
 };
@@ -20,7 +18,7 @@ export const assertShape = (res, name, shapeCheck) => {
   let body = null;
   try {
     body = res.json();
-  } catch (_e) {
+  } catch {
     console.error(`[FAIL] ${name} :: body not JSON`);
     return false;
   }

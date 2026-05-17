@@ -42,11 +42,13 @@ export default function () {
     metric: METRICS.PLAN_TEMPLATES,
   });
   const templates = extractItems(parseJson(templatesRes));
-  assertShape(templatesRes, 'plan.templates', (_b) => Array.isArray(templates));
+  assertShape(templatesRes, 'plan.templates', () => Array.isArray(templates));
 
   const templateId = cfg.testPlanTemplateId || pickFirstTemplateId(templates);
   if (!templateId) {
-    console.error('[FAIL] no plan template available (set TEST_PLAN_TEMPLATE_ID or seed templates)');
+    console.error(
+      '[FAIL] no plan template available (set TEST_PLAN_TEMPLATE_ID or seed templates)',
+    );
     return;
   }
 
@@ -148,7 +150,9 @@ const pollStatus = (planId) => {
     console.log(`[info] plan ${planId} state=${state}`);
     if (state && TERMINAL_PLAN_STATES.has(state)) return;
   }
-  console.log(`[info] plan ${planId} did not reach terminal state within ${cfg.planStatusPollTimeoutSec}s — continuing`);
+  console.log(
+    `[info] plan ${planId} did not reach terminal state within ${cfg.planStatusPollTimeoutSec}s — continuing`,
+  );
 };
 
 const extractItems = (body) => {

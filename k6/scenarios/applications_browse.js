@@ -34,7 +34,7 @@ export default function () {
     metric: METRICS.CACHED_LIST,
   });
   const apps = extractItems(parseJson(listRes));
-  assertShape(listRes, 'applications.list', (_b) => Array.isArray(apps));
+  assertShape(listRes, 'applications.list', () => Array.isArray(apps));
 
   if (apps.length === 0) {
     console.log('[info] no applications returned, scenario exits early');

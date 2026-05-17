@@ -69,7 +69,7 @@ export const del = (url, opts = {}) => {
 export const parseJson = (res) => {
   try {
     return res.json();
-  } catch (_e) {
+  } catch {
     return null;
   }
 };

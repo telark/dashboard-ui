@@ -12,10 +12,7 @@ import { buildSummary } from '../lib/report.js';
 export const options = {
   vus: 1,
   iterations: 1,
-  thresholds: pickThresholds([
-    METRICS.NOTIF_LIST,
-    METRICS.NOTIF_MUTATE,
-  ]),
+  thresholds: pickThresholds([METRICS.NOTIF_LIST, METRICS.NOTIF_MUTATE]),
 };
 
 export const setup = () => {
@@ -36,10 +33,13 @@ export default function () {
   const cursor = extractCursor(first);
 
   if (cursor) {
-    get(`${path.exporter('notifications/get')}?${userQ}&limit=50&cursor=${encodeURIComponent(cursor)}`, {
-      name: 'notifications.list.page2',
-      metric: METRICS.NOTIF_LIST,
-    });
+    get(
+      `${path.exporter('notifications/get')}?${userQ}&limit=50&cursor=${encodeURIComponent(cursor)}`,
+      {
+        name: 'notifications.list.page2',
+        metric: METRICS.NOTIF_LIST,
+      },
+    );
   }
 
   if (items.length > 0) {
@@ -56,10 +56,14 @@ export default function () {
     }
   }
 
-  post(`${path.exporter('notifications/markallread')}?${userQ}`, {}, {
-    name: 'notifications.markallread',
-    metric: METRICS.NOTIF_MUTATE,
-  });
+  post(
+    `${path.exporter('notifications/markallread')}?${userQ}`,
+    {},
+    {
+      name: 'notifications.markallread',
+      metric: METRICS.NOTIF_MUTATE,
+    },
+  );
 
   del(`${path.exporter('notifications/clear')}?${userQ}`, {
     name: 'notifications.clear',

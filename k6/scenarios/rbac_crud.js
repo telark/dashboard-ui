@@ -6,7 +6,6 @@
 
 import { path, requireToken, requireUserId } from '../lib/config.js';
 import { get, post, patch, del, parseJson, resetStepCounter } from '../lib/http.js';
-import { assertShape } from '../lib/assert.js';
 import { METRICS, pickThresholds } from '../lib/metrics.js';
 import { fixtures } from '../lib/fixtures.js';
 import { buildSummary } from '../lib/report.js';

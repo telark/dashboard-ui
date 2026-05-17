@@ -50,12 +50,14 @@ export default function () {
   const enqBody = parseJson(enqRes);
   console.log(`[info] enqueue body: ${JSON.stringify(enqBody)}`);
 
-  const baselinePhase = readPhase(parseJson(
-    get(path.exporter(`resources/applications/${encodeURIComponent(name)}/get`), {
-      name: 'app.read.baseline',
-      metric: METRICS.CACHED_GET,
-    }),
-  ));
+  const baselinePhase = readPhase(
+    parseJson(
+      get(path.exporter(`resources/applications/${encodeURIComponent(name)}/get`), {
+        name: 'app.read.baseline',
+        metric: METRICS.CACHED_GET,
+      }),
+    ),
+  );
   console.log(`[info] baseline app phase: ${baselinePhase}`);
 
   const deadline = Date.now() + cfg.forceSyncPollTimeoutSec * 1000;
@@ -83,7 +85,9 @@ export default function () {
   trend(METRICS.FORCE_SYNC_COMPLETION).add(totalMs);
 
   if (!terminal) {
-    console.error(`[FAIL] force_sync did not reach a terminal phase within ${cfg.forceSyncPollTimeoutSec}s`);
+    console.error(
+      `[FAIL] force_sync did not reach a terminal phase within ${cfg.forceSyncPollTimeoutSec}s`,
+    );
   } else {
     console.log(`[ok] force_sync completed in ${totalMs}ms`);
   }
@@ -92,13 +96,7 @@ export default function () {
 const readPhase = (body) => {
   if (!body) return null;
   const root = body.data || body;
-  return (
-    root.phase ||
-    root.status?.phase ||
-    root.spec?.phase ||
-    root.forceSyncPhase ||
-    null
-  );
+  return root.phase || root.status?.phase || root.spec?.phase || root.forceSyncPhase || null;
 };
 
 export const handleSummary = buildSummary('application_force_sync');

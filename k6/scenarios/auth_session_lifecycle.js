@@ -16,10 +16,7 @@ const DELETE_OWN_SESSION = __ENV.DELETE_OWN_SESSION === 'true';
 export const options = {
   vus: 1,
   iterations: 3,
-  thresholds: pickThresholds([
-    METRICS.SESSION_READ,
-    METRICS.SESSION_DELETE,
-  ]),
+  thresholds: pickThresholds([METRICS.SESSION_READ, METRICS.SESSION_DELETE]),
 };
 
 export const setup = () => {
@@ -30,15 +27,12 @@ export const setup = () => {
 export default function () {
   resetStepCounter();
 
-  const listRes = get(
-    path.exporter(`auth/sessions/${encodeURIComponent(cfg.userId)}/get`),
-    {
-      name: 'sessions.list',
-      metric: METRICS.SESSION_READ,
-    },
-  );
+  const listRes = get(path.exporter(`auth/sessions/${encodeURIComponent(cfg.userId)}/get`), {
+    name: 'sessions.list',
+    metric: METRICS.SESSION_READ,
+  });
   const list = parseJson(listRes);
-  assertShape(listRes, 'sessions.list', (_b) => list !== null);
+  assertShape(listRes, 'sessions.list', () => list !== null);
 
   const sessions = extractSessions(list);
   if (sessions.length === 0) {
@@ -48,7 +42,9 @@ export default function () {
 
   const target = pickNonCurrent(sessions, cfg.sessionToken);
   if (!target) {
-    console.log('[info] only own session present, skipping detail/delete unless DELETE_OWN_SESSION=true');
+    console.log(
+      '[info] only own session present, skipping detail/delete unless DELETE_OWN_SESSION=true',
+    );
     if (!DELETE_OWN_SESSION) return;
   }
 
@@ -68,13 +64,10 @@ export default function () {
   assertShape(detailRes, 'sessions.details', (b) => b !== null);
 
   if (target || DELETE_OWN_SESSION) {
-    del(
-      path.exporter(`auth/sessions/tokens/${encodeURIComponent(tokenForDetails)}/delete`),
-      {
-        name: 'sessions.delete',
-        metric: METRICS.SESSION_DELETE,
-      },
-    );
+    del(path.exporter(`auth/sessions/tokens/${encodeURIComponent(tokenForDetails)}/delete`), {
+      name: 'sessions.delete',
+      metric: METRICS.SESSION_DELETE,
+    });
   }
 }
 

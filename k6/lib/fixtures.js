@@ -1,6 +1,10 @@
 import { cfg } from './config.js';
 
-const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/(^-|-$)/g, '');
+const slug = (s) =>
+  String(s)
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, '-')
+    .replace(/(^-|-$)/g, '');
 
 export const fixtures = {
   user: () => ({
