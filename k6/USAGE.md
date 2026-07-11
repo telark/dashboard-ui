@@ -6,7 +6,7 @@ Copy-paste commands. Each test runs as a one-time Kubernetes Job that cleans its
 
 You need:
 
-1. `kubectl` configured for the cluster running Plsyro (try `kubectl get pods -n plsyro` — should list pods).
+1. `kubectl` configured for the cluster running telark (try `kubectl get pods -n telark` — should list pods).
 2. A **session token** and your **user id**:
    - Log into the dashboard in a browser.
    - Open DevTools → **Application** tab → **Local Storage** (or Session Storage).
@@ -65,8 +65,8 @@ You'll see lines like:
 
 ```
 [build] flattening k6 scripts into /tmp/k6-flat-...
-[build] creating configmap plsyro/k6-scripts-bootstrap_flow-...
-[apply] scenario=bootstrap_flow run=bootstrap_flow-... ns=plsyro
+[build] creating configmap telark/k6-scripts-bootstrap_flow-...
+[apply] scenario=bootstrap_flow run=bootstrap_flow-... ns=telark
 [wait]  pod scheduling (up to 60s)
 [pod]   k6-bootstrap_flow-...-abcde
 [logs]  streaming to k6/results/bootstrap_flow-...log
@@ -74,8 +74,8 @@ You'll see lines like:
 [status] complete
 [copy]  pod:/tmp/results/. → k6/results/bootstrap_flow-...-json
 [done]  scenario=bootstrap_flow run=... status=complete
-[cleanup] deleting job plsyro/k6-bootstrap_flow-...
-[cleanup] deleting configmap plsyro/k6-scripts-bootstrap_flow-...
+[cleanup] deleting job telark/k6-bootstrap_flow-...
+[cleanup] deleting configmap telark/k6-scripts-bootstrap_flow-...
 ```
 
 ## Env vars
@@ -97,10 +97,10 @@ You'll see lines like:
 
 | Var | Default | When to override |
 |---|---|---|
-| `EXPORTER_BASE_URL` | `http://plsyro-exporter-service.plsyro.svc.cluster.local:8080` | Service runs in a different namespace |
-| `DISCOVERY_BASE_URL` | `http://plsyro-discovery-service.plsyro.svc.cluster.local:8080` | Same |
-| `AUTH_BASE_URL` | `http://plsyro-auth-service.plsyro.svc.cluster.local:8080` | Same |
-| `ENRICHMENT_BASE_URL` | `http://plsyro-enrichment-service.plsyro.svc.cluster.local:8080` | Same |
+| `EXPORTER_BASE_URL` | `http://telark-exporter-service.telark.svc.cluster.local:8080` | Service runs in a different namespace |
+| `DISCOVERY_BASE_URL` | `http://telark-discovery-service.telark.svc.cluster.local:8080` | Same |
+| `AUTH_BASE_URL` | `http://telark-auth-service.telark.svc.cluster.local:8080` | Same |
+| `ENRICHMENT_BASE_URL` | `http://telark-enrichment-service.telark.svc.cluster.local:8080` | Same |
 | `TEST_PLAN_TEMPLATE_ID` | (auto-pick first available) | Pin to a specific plan template |
 | `FORCE_SYNC_POLL_TIMEOUT_SEC` | `90` | Force-sync takes longer than 90s on your cluster |
 | `PLAN_STATUS_POLL_TIMEOUT_SEC` | `60` | Same idea, for plan state machine |
@@ -139,9 +139,9 @@ The TXT file shows: per-metric p50/p95/p99, threshold pass/fail, total checks pa
 `Ctrl-C` the script. The `EXIT` trap deletes the Job + ConfigMap for you. If something is really stuck:
 
 ```sh
-kubectl -n plsyro get jobs -l app=k6-dashboard
-kubectl -n plsyro delete job <name>
-kubectl -n plsyro get configmap -l app=k6-dashboard 2>/dev/null  # rare; usually auto-cleaned
+kubectl -n telark get jobs -l app=k6-dashboard
+kubectl -n telark delete job <name>
+kubectl -n telark get configmap -l app=k6-dashboard 2>/dev/null  # rare; usually auto-cleaned
 ```
 
 ## Run from your laptop (no cluster)
@@ -151,10 +151,10 @@ Only useful for editing tests + checking syntax. Real timings need the in-cluste
 ```sh
 brew install k6                                              # macOS, one time
 
-kubectl -n plsyro port-forward svc/plsyro-exporter-service 8002:8080 &
-kubectl -n plsyro port-forward svc/plsyro-discovery-service 8004:8080 &
-kubectl -n plsyro port-forward svc/plsyro-auth-service 8006:8080 &
-kubectl -n plsyro port-forward svc/plsyro-enrichment-service 8007:8080 &
+kubectl -n telark port-forward svc/telark-exporter-service 8002:8080 &
+kubectl -n telark port-forward svc/telark-discovery-service 8004:8080 &
+kubectl -n telark port-forward svc/telark-auth-service 8006:8080 &
+kubectl -n telark port-forward svc/telark-enrichment-service 8007:8080 &
 
 EXPORTER_BASE_URL=http://localhost:8002 \
 DISCOVERY_BASE_URL=http://localhost:8004 \
@@ -169,9 +169,9 @@ k6 run k6/scenarios/bootstrap_flow.js
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | `ERROR: SESSION_TOKEN env var is required` | You forgot to export it | `export SESSION_TOKEN=<token>` |
-| `pod did not appear within 60s` | Cluster can't pull `grafana/k6:latest`, or namespace lacks permission | Check `kubectl describe job k6-... -n plsyro`; pre-pull the image or set `IMAGE=` |
+| `pod did not appear within 60s` | Cluster can't pull `grafana/k6:latest`, or namespace lacks permission | Check `kubectl describe job k6-... -n telark`; pre-pull the image or set `IMAGE=` |
 | All requests return 401 | Token expired | Re-copy from the browser |
 | All plan/sync writes return 403 | `USER_ID` doesn't match the token's user | Re-export both vars from the same browser session |
-| `503` on force-sync | Redis queue down or back-pressured | Check `kubectl logs deploy/plsyro-discovery-service -n plsyro` |
+| `503` on force-sync | Redis queue down or back-pressured | Check `kubectl logs deploy/telark-discovery-service -n telark` |
 | Job stuck `unknown` after 15m | Test scenario hung (likely a long poll) | Raise `WAIT_TIMEOUT=30m`, or check pod logs while it runs |
 | `unknown scenario 'foo'` | Typo in test name | List valid names: `head -50 k6/cluster/run.sh \| grep VALID_SCENARIOS -A 8` |

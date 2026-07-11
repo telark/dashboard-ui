@@ -1,4 +1,4 @@
-# PLAN.md — k6 functional + performance suite for the Plsyro dashboard
+# PLAN.md — k6 functional + performance suite for the telark dashboard
 
 > Phase 1 deliverable. Approved before Phase 2 implementation.
 
@@ -72,10 +72,10 @@ Snapshots are stored on a PVC mounted at `/snapshots`. Snapshot reads can fan-ou
 
 - All services run as `ClusterIP` on port 8080. `replicas: exporter=1, discovery=2, enrichment=1, auth=1, ui=…`.
 - **There is no separate Ingress yaml in `release-manager`**. Public access is via the **UI pod's nginx**, which reverse-proxies:
-  - `/api/exporter/ → http://plsyro-exporter-service:8080/`
-  - `/api/discovery/ → http://plsyro-discovery-service:8080/`
-  - `/api/auth/ → http://plsyro-auth-service:8080/`
-  - `/api/enrichment/ → http://plsyro-enrichment-service:8080/`
+  - `/api/exporter/ → http://telark-exporter-service:8080/`
+  - `/api/discovery/ → http://telark-discovery-service:8080/`
+  - `/api/auth/ → http://telark-auth-service:8080/`
+  - `/api/enrichment/ → http://telark-enrichment-service:8080/`
   - `proxy_read_timeout 60s` and `proxy_send_timeout 60s` (so any UI-facing request taking > 60s will be cut by nginx — relevant for plan prepare/force-sync).
 - Health probes: `/api/v1/status/{live,ready}` on each service, 15s period, 15s timeout, threshold 3.
 - Discovery env (relevant to perf): K8s QPS 100 / burst 200, informer resync 600s ± 20% jitter, snapshot fetch deadline 5s, force-sync workers 4, job timeout 300s, coordination lock TTL 120s.

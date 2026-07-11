@@ -119,7 +119,7 @@ const Register: React.FC = () => {
       <ConfigProvider
         wave={{ disabled: true }}
         theme={{
-          cssVar: { key: 'plsyro-auth' },
+          cssVar: { key: 'telark-auth' },
           hashed: false,
           algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
           token: isDark ? DARK_TOKENS : LIGHT_TOKENS,

@@ -12,9 +12,9 @@ RUN npm run build:cluster
 # Stage 2: serve via nginx
 FROM nginx:1.30-alpine3.23
 
-LABEL org.opencontainers.image.title="plsyro-ui" \
+LABEL org.opencontainers.image.title="telark-ui" \
       org.opencontainers.image.licenses="proprietary" \
-      org.opencontainers.image.source="https://github.com/plsyro/dashboard-ui"
+      org.opencontainers.image.source="https://github.com/telark/dashboard-ui"
 
 RUN chown -R nginx:nginx /var/cache/nginx
 

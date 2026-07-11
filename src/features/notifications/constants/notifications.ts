@@ -1,7 +1,7 @@
 import { DEFAULT_COLORS } from '../../../constants/shared/colors';
 
 export const NOTIFICATIONS_POLL_INTERVAL_MS = 30000;
-export const NOTIFICATIONS_CACHE_KEY = 'plsyro:notifications:cache';
+export const NOTIFICATIONS_CACHE_KEY = 'telark:notifications:cache';
 export const NOTIFICATIONS_CACHE_MAX_ITEMS = 200;
 export const NOTIFICATIONS_PANEL_WIDTH = 420;
 

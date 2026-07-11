@@ -13,10 +13,10 @@ const intEnv = (k, d) => {
 const stripTrailingSlash = (s) => s.replace(/\/+$/, '');
 
 const DEFAULTS = {
-  exporter: 'http://plsyro-exporter-service.plsyro.svc.cluster.local:8080',
-  discovery: 'http://plsyro-discovery-service.plsyro.svc.cluster.local:8080',
-  auth: 'http://plsyro-auth-service.plsyro.svc.cluster.local:8080',
-  enrichment: 'http://plsyro-enrichment-service.plsyro.svc.cluster.local:8080',
+  exporter: 'http://telark-exporter-service.telark.svc.cluster.local:8080',
+  discovery: 'http://telark-discovery-service.telark.svc.cluster.local:8080',
+  auth: 'http://telark-auth-service.telark.svc.cluster.local:8080',
+  enrichment: 'http://telark-enrichment-service.telark.svc.cluster.local:8080',
 };
 
 export const cfg = {

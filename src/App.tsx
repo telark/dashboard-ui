@@ -94,7 +94,7 @@ const App: React.FC = () => {
     <ErrorBoundary>
       <ConfigProvider
         theme={{
-          cssVar: { key: 'plsyro' },
+          cssVar: { key: 'telark' },
           hashed: false,
           components: {
             Checkbox: {
