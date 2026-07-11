@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { APP_ROUTES } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../constants';
@@ -37,6 +37,7 @@ export const useEditRoleSubmit = ({
   skipNavigate = false,
   onSuccess,
 }: UseEditRoleSubmitOptions) => {
+  const { message } = AntdApp.useApp();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -79,7 +80,7 @@ export const useEditRoleSubmit = ({
         onSuccess?.();
       }
     },
-    [id, role, initialValues, form, handleUpdate, navigate, skipNavigate, onSuccess],
+    [id, role, initialValues, form, handleUpdate, navigate, skipNavigate, onSuccess, message],
   );
 
   return {

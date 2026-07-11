@@ -133,10 +133,13 @@ export const USERS_CONSTANTS = {
       VIEW: {
         TITLE: 'User Details',
       },
-      EDIT: {
-        TITLE: 'Edit User',
-        SUBTITLE: (name: string) => `Edit information for ${name}`,
-        SUBMIT_BUTTON: 'Update User',
+      MANAGE_STATE: {
+        TITLE: 'Manage account state',
+        SUBTITLE: (name: string) => `Activate or suspend ${name}`,
+        SUBMIT_BUTTON: 'Update state',
+        FIELD_LABEL: 'Account state',
+        OPTION_ACTIVE: 'Active',
+        OPTION_SUSPENDED: 'Suspended',
       },
       CREATE: {
         TITLE: 'Add New Member',

@@ -16,6 +16,7 @@ import { applicationSnapshotStableKey } from '../../utils/mergeApplicationSnapsh
 import { mergeApplicationSnapshotSources } from '../../utils/mergeApplicationSnapshotSources';
 import ApplicationSectionEmptyState from '../display/ApplicationSectionEmptyState';
 import ApplicationSnapshotRow from '../snapshots/ApplicationSnapshotRow';
+import type { RollbackDisabledReason } from '../snapshots/ApplicationSnapshotRow';
 import ApplicationSnapshotManifestSlideOut from '../snapshots/ApplicationSnapshotManifestSlideOut';
 import SnapshotCompareView from '../snapshots/SnapshotCompareView';
 import { fetchSnapshotManifestThunk, fetchApplicationSnapshotsThunk } from '../../store';
@@ -31,6 +32,8 @@ export interface ManageSnapshotsPanelProps {
   applicationName: string;
   detailSnapshots: Application['snapshots'];
   rollbackDisabled?: boolean;
+  rollbackDisabledReason?: RollbackDisabledReason;
+  onAfterRollback?: () => void;
 }
 
 const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
@@ -39,6 +42,8 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
   applicationName,
   detailSnapshots,
   rollbackDisabled = false,
+  rollbackDisabledReason = null,
+  onAfterRollback,
 }) => {
   const dispatch: AppDispatch = useDispatch();
   const { modal, message } = AntdApp.useApp();
@@ -183,6 +188,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
                 snapshotRefs: detailSnapshots.length > 0 ? detailSnapshots : undefined,
               }),
             );
+            onAfterRollback?.();
           } catch {
             message.error(snapUi.ROLLBACK_FAILED);
           } finally {
@@ -191,7 +197,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
         },
       });
     },
-    [applicationName, detailSnapshots, dispatch, message, modal, snapUi, userID],
+    [applicationName, detailSnapshots, dispatch, message, modal, onAfterRollback, snapUi, userID],
   );
 
   const compareButtonDisabled = compareMode && compareKeys.length === 1;
@@ -275,6 +281,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
                   onRollback={handleRollbackRequest}
                   rollbackLoading={rollbackBusyId === applicationSnapshotStableKey(s)}
                   rollbackDisabled={rollbackDisabled}
+                  rollbackDisabledReason={rollbackDisabledReason}
                   compareMode={compareMode}
                   compareChecked={compareKeys.includes(applicationSnapshotStableKey(s))}
                   compareDisabled={

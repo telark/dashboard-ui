@@ -140,7 +140,7 @@ const AIInsightsSection: React.FC = memo(() => {
     } finally {
       setValidating(false);
     }
-  }, [apiKey, provider]);
+  }, [apiKey, provider, message]);
 
   const handleEnable = useCallback(async () => {
     setSaving(true);
@@ -161,7 +161,7 @@ const AIInsightsSection: React.FC = memo(() => {
     } finally {
       setSaving(false);
     }
-  }, [aiEnabled, apiKey, dispatch, provider]);
+  }, [aiEnabled, apiKey, dispatch, provider, message]);
 
   return (
     <SettingsCard title="AI Insights" description={C.LABELS.AI_INSIGHTS_DESCRIPTION}>

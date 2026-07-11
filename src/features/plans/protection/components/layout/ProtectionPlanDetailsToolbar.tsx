@@ -10,7 +10,13 @@ import {
 import Toolbar from '../../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
-import type { PlanPhase, ProtectionPlan } from '../../models';
+import type { ProtectionPlan } from '../../models';
+import {
+  CANCELLABLE_PHASES,
+  NON_EDITABLE_PHASES,
+  REACTIVATABLE_PHASES,
+  isReactivateExpired,
+} from '../../utils/phaseRules';
 
 interface ProtectionPlanDetailsToolbarProps {
   plan: ProtectionPlan;
@@ -27,15 +33,6 @@ interface ProtectionPlanDetailsToolbarProps {
   onDelete: () => void;
   onRefreshHealth: () => void;
 }
-
-const CANCELLABLE: PlanPhase[] = ['active', 'scheduled', 'failed'];
-const NON_EDITABLE: PlanPhase[] = ['terminated', 'canceled'];
-const REACTIVATABLE: PlanPhase[] = ['canceled', 'terminated', 'failed'];
-
-const isReactivateExpired = (plan: ProtectionPlan): boolean => {
-  if (plan.timeMode !== 'time_range' || !plan.timeRange?.endAt) return false;
-  return new Date(plan.timeRange.endAt).getTime() <= Date.now();
-};
 
 const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> = ({
   plan,
@@ -54,7 +51,7 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
 }) => {
   const toolbarConfig: ToolbarConfig = useMemo(() => {
     const phase = plan.phase;
-    const editDisabled = NON_EDITABLE.includes(phase);
+    const editDisabled = NON_EDITABLE_PHASES.includes(phase);
     const buttons: ToolbarConfig['buttons'] = [
       {
         key: 'edit',
@@ -74,7 +71,7 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
         disabled: duplicating,
       },
     ];
-    if (REACTIVATABLE.includes(phase)) {
+    if (REACTIVATABLE_PHASES.includes(phase)) {
       const expired = isReactivateExpired(plan);
       buttons.push({
         key: 'reactivate',
@@ -98,7 +95,7 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
         disabled: refreshingHealth,
       });
     }
-    if (CANCELLABLE.includes(phase)) {
+    if (CANCELLABLE_PHASES.includes(phase)) {
       buttons.push({
         key: 'cancel',
         label: PPC.LABELS.DETAIL_PAGE.ACTIONS.CANCEL,

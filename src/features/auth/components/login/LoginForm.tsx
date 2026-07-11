@@ -85,11 +85,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
     {error && (
       <Alert
-        message={error}
+        title={error}
         type="error"
         showIcon
-        closable
-        onClose={onClearError}
+        closable={{ onClose: onClearError }}
         style={{
           marginTop: '10px',
           borderRadius: '8px',

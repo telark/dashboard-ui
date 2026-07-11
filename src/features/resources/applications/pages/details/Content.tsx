@@ -829,7 +829,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <Collapse
                 bordered
-                expandIconPosition="end"
+                expandIconPlacement="end"
                 style={{ background: 'transparent' }}
                 items={sections.metrics.workloads.slice(0, 25).map((w) => {
                   const WM = APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS;

@@ -92,7 +92,19 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <ErrorBoundary>
-      <ConfigProvider theme={{ cssVar: { key: 'plsyro' }, hashed: false }}>
+      <ConfigProvider
+        theme={{
+          cssVar: { key: 'plsyro' },
+          hashed: false,
+          components: {
+            Checkbox: {
+              colorPrimary: DEFAULT_COLORS.SUCCESS,
+              colorPrimaryHover: DEFAULT_COLORS.SUCCESS,
+              colorPrimaryBorder: DEFAULT_COLORS.SUCCESS,
+            },
+          },
+        }}
+      >
         <Router>
           <AppContent />
         </Router>

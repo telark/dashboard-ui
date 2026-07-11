@@ -26,14 +26,24 @@ export const handleUpdateUserRejected = (state: UsersState, action: PayloadActio
   state.error = action.payload as string;
 };
 
+export const handleDeleteUserPending = (state: UsersState, action: { meta: { arg: string } }) => {
+  const id = action.meta.arg;
+  if (id && !state.deletingIds.includes(id)) {
+    state.deletingIds.push(id);
+  }
+};
+
 export const handleDeleteUserFulfilled = (state: UsersState, action: PayloadAction<string>) => {
-  state.users = state.users.filter((u) => u.id !== action.payload);
   if (state.details?.id === action.payload) {
     state.details = null;
   }
   state.error = null;
 };
 
-export const handleDeleteUserRejected = (state: UsersState, action: PayloadAction<unknown>) => {
+export const handleDeleteUserRejected = (
+  state: UsersState,
+  action: PayloadAction<unknown, string, { arg: string }>,
+) => {
+  state.deletingIds = state.deletingIds.filter((id) => id !== action.meta.arg);
   state.error = action.payload as string;
 };

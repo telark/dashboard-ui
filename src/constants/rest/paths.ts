@@ -53,6 +53,11 @@ export const AUTH_PATHS = {
     GOOGLE_NONCE: 'auth/oidc/google/nonce',
   },
   PERMISSIONS: 'auth/permissions',
+  CLEANUP: {
+    DELETE_USER: (id: string) => `auth/users/${id}/cleanup`,
+    DELETE_GROUP: (id: string) => `auth/groups/${id}/cleanup`,
+    DELETE_ROLE: (id: string) => `auth/roles/${id}/cleanup`,
+  },
 } as const;
 
 export const CATEGORY_PATHS = {
@@ -69,7 +74,6 @@ export const GROUP_PATHS = {
   GET_ALL: 'get',
   GET_BY_ID: (id: string) => `${id}/get`,
   PATCH_BY_ID: (id: string) => `${id}/patch`,
-  DELETE_BY_ID: (id: string) => `${id}/delete`,
 } as const;
 
 export const ROLE_PATHS = {
@@ -77,7 +81,6 @@ export const ROLE_PATHS = {
   GET_ALL: 'get',
   GET_BY_ID: (id: string) => `${id}/get`,
   PATCH_BY_ID: (id: string) => `${id}/patch`,
-  DELETE_BY_ID: (id: string) => `${id}/delete`,
 } as const;
 
 export const USER_PATHS = {
@@ -86,7 +89,6 @@ export const USER_PATHS = {
   GET_BY_ID: (id: string) => `findbyid/${id}/get`,
   GET_BY_EMAIL: (email: string) => `findbyemail/${email}/get`,
   PATCH_BY_ID: (id: string) => `${id}/patch`,
-  DELETE_BY_ID: (id: string) => `${id}/delete`,
 } as const;
 
 export const PLANS_PATHS = {

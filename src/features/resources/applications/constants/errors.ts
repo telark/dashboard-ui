@@ -7,5 +7,6 @@ export const APPLICATIONS_ERROR_MESSAGES = {
     FETCH_APPLICATION_SNAPSHOTS_FAILED: 'Failed to fetch application snapshots',
     FETCH_SNAPSHOT_MANIFEST_FAILED: 'Failed to fetch snapshot manifest',
     TRIGGER_APPLICATION_ROLLBACK_FAILED: 'Failed to trigger application rollback',
+    ABORT_APPLICATION_ROLLBACK_FAILED: 'Failed to abort application rollback',
   },
 } as const;

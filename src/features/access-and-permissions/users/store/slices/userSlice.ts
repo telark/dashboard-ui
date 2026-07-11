@@ -19,6 +19,7 @@ import {
   handleCreateUserRejected,
   handleUpdateUserFulfilled,
   handleUpdateUserRejected,
+  handleDeleteUserPending,
   handleDeleteUserFulfilled,
   handleDeleteUserRejected,
 } from '../reducers/mutationReducers';
@@ -36,6 +37,7 @@ const initialState: UsersState = {
   details: null,
   loading: false,
   error: null,
+  deletingIds: [],
 };
 
 const userSlice = createSlice({
@@ -59,6 +61,7 @@ const userSlice = createSlice({
       .addCase(createUserThunk.rejected, handleCreateUserRejected)
       .addCase(updateUserThunk.fulfilled, handleUpdateUserFulfilled)
       .addCase(updateUserThunk.rejected, handleUpdateUserRejected)
+      .addCase(deleteUserThunk.pending, handleDeleteUserPending)
       .addCase(deleteUserThunk.fulfilled, handleDeleteUserFulfilled)
       .addCase(deleteUserThunk.rejected, handleDeleteUserRejected);
   },

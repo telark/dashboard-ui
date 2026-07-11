@@ -140,7 +140,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
         <Alert
           type="warning"
           showIcon
-          message={PPC.PANELS.EDIT.ACTIVE_SCOPE_WARNING}
+          title={PPC.PANELS.EDIT.ACTIVE_SCOPE_WARNING}
           style={{ marginTop: 16 }}
         />
       )}
@@ -148,7 +148,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
       {submitError && (
         <Alert
           type="error"
-          message={submitError}
+          title={submitError}
           style={{ marginTop: 16 }}
           showIcon
           closable={Boolean(onSubmitErrorClose)}

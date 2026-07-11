@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import type { FormInstance } from 'antd';
 import { useDeassignModal } from '../../../../shared';
 import { useGroupMutations } from '../../data/useGroupMutations';
@@ -30,6 +30,7 @@ export const useDeassignGroupRole = ({
   onSuccess,
 }: UseDeassignGroupRoleOptions): UseDeassignGroupRoleReturn => {
   const { handleUpdate } = useGroupMutations();
+  const { message } = AntdApp.useApp();
 
   const performDeassign = useCallback(
     async (role: Role) => {
@@ -41,7 +42,7 @@ export const useDeassignGroupRole = ({
       form.setFieldsValue({ assignedRolesIDs: updated });
       message.success(GC.LABELS.MESSAGES.ROLE_DEASSIGNED(role.name));
     },
-    [group, form, handleUpdate],
+    [group, form, handleUpdate, message],
   );
 
   const handleDeassignSuccess = useCallback(() => {

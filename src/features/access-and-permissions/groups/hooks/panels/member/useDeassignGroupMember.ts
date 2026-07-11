@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import type { FormInstance } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useDeassignModal } from '../../../../shared';
@@ -47,6 +47,7 @@ export const useDeassignGroupMember = ({
   onSuccess,
 }: UseDeassignGroupMemberOptions): UseDeassignGroupMemberReturn => {
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
 
   const performDeassign = useCallback(
     async (user: User) => {
@@ -65,7 +66,7 @@ export const useDeassignGroupMember = ({
         throw new Error(GC.LABELS.MESSAGES.MEMBER_DEASSIGN_FAILED);
       }
     },
-    [group, form, dispatch],
+    [group, form, dispatch, message],
   );
 
   const handleDeassignSuccess = useCallback(

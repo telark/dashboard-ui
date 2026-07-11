@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import { deleteCategory } from '../../clients';
 import { fetchCategoriesByScopeThunk } from '../../store';
 import { CATEGORIES_CONSTANTS as CC } from '../../constants';
@@ -19,6 +19,7 @@ interface UseCategoryDeleteModalReturn {
 
 export const useCategoryDeleteModal = (category: Category | null): UseCategoryDeleteModalReturn => {
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -47,7 +48,7 @@ export const useCategoryDeleteModal = (category: Category | null): UseCategoryDe
     } finally {
       setIsDeleting(false);
     }
-  }, [category, dispatch]);
+  }, [category, dispatch, message]);
 
   return {
     deleteModalOpen,

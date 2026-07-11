@@ -15,6 +15,7 @@ import {
   fetchAllApplicationsThunk,
 } from '../../../resources/applications/store';
 import { useUsers } from '../../../access-and-permissions/users/hooks/user/useUsers';
+import { getCurrentUser } from '../../../auth/utils';
 import type { User } from '../../../access-and-permissions/users/models';
 
 export const usePlanFormData = (enabled: boolean) => {
@@ -59,14 +60,21 @@ export const usePlanFormData = (enabled: boolean) => {
     };
   }, [enabled]);
 
+  const currentUserId = getCurrentUser()?.id;
+
+  const selectableUsers = useMemo(
+    () => (users ?? []).filter((u) => u.id !== currentUserId),
+    [users, currentUserId],
+  );
+
   const userOptions = useMemo(
-    () => (users ?? []).map((u) => ({ value: u.id, label: u.username })),
-    [users],
+    () => selectableUsers.map((u) => ({ value: u.id, label: u.username })),
+    [selectableUsers],
   );
 
   const userMap = useMemo<Map<string, User>>(
-    () => new Map((users ?? []).map((u) => [u.id, u])),
-    [users],
+    () => new Map(selectableUsers.map((u) => [u.id, u])),
+    [selectableUsers],
   );
 
   const applicationOptions = useMemo(

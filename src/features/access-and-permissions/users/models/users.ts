@@ -3,9 +3,15 @@ export interface UserAvatar {
   seed: string;
 }
 
+export type UserAccountState = 'active' | 'suspended';
+
 export interface UserStatus {
-  phase: string;
+  phase: UserAccountState;
   lastLoginAt?: string;
+}
+
+export interface ManageUserStateFormValues {
+  phase: UserAccountState;
 }
 
 export interface User {
@@ -33,6 +39,7 @@ export interface UsersState {
   details: User | null;
   loading: boolean;
   error: string | null;
+  deletingIds: string[];
 }
 
 export interface UsersTableProps {

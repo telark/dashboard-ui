@@ -6,6 +6,6 @@ export { useUserFilters } from './filter/useUserFilters';
 export { useBulkDeleteUsers } from './list/useBulkDeleteUsers';
 export { useUserPanelState } from './panels/user/useUserPanelState';
 export { useCreateUserPanel } from './panels/user/useCreateUserPanel';
-export { useEditUserPanel } from './panels/user/useEditUserPanel';
+export { useManageUserStatePanel } from './panels/user/useManageUserStatePanel';
 export { useManageUserRolePanel } from './panels/role/useManageUserRolePanel';
 export { useManageUserGroupPanel } from './panels/group/useManageUserGroupPanel';

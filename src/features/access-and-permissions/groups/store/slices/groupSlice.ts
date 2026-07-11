@@ -19,6 +19,7 @@ import {
   handleCreateGroupRejected,
   handleUpdateGroupFulfilled,
   handleUpdateGroupRejected,
+  handleDeleteGroupPending,
   handleDeleteGroupFulfilled,
   handleDeleteGroupRejected,
 } from '../reducers/mutationReducers';
@@ -28,6 +29,7 @@ const initialState: GroupsState = {
   details: null,
   loading: false,
   error: null,
+  deletingIds: [],
 };
 
 const groupSlice = createSlice({
@@ -53,6 +55,7 @@ const groupSlice = createSlice({
       .addCase(createGroupThunk.rejected, handleCreateGroupRejected)
       .addCase(updateGroupThunk.fulfilled, handleUpdateGroupFulfilled)
       .addCase(updateGroupThunk.rejected, handleUpdateGroupRejected)
+      .addCase(deleteGroupThunk.pending, handleDeleteGroupPending)
       .addCase(deleteGroupThunk.fulfilled, handleDeleteGroupFulfilled)
       .addCase(deleteGroupThunk.rejected, handleDeleteGroupRejected);
   },

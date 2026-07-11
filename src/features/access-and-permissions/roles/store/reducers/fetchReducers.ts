@@ -10,6 +10,8 @@ export const handleFetchRolesFulfilled = (state: RolesState, action: PayloadActi
   state.loading = false;
   state.roles = action.payload;
   state.error = null;
+  const liveIds = new Set(action.payload.map((r) => r.id));
+  state.deletingIds = state.deletingIds.filter((id) => liveIds.has(id));
 };
 
 export const handleFetchRolesRejected = (state: RolesState, action: PayloadAction<unknown>) => {

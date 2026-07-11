@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
 import {
   createGroupThunk,
@@ -13,6 +13,7 @@ import type { GroupFormData } from '../../models';
 
 export const useGroupMutations = () => {
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
   const [submitting, setSubmitting] = useState(false);
 
   const handleCreate = useCallback(
@@ -30,7 +31,7 @@ export const useGroupMutations = () => {
         setSubmitting(false);
       }
     },
-    [dispatch],
+    [dispatch, message],
   );
 
   const handleUpdate = useCallback(
@@ -53,7 +54,7 @@ export const useGroupMutations = () => {
         setSubmitting(false);
       }
     },
-    [dispatch],
+    [dispatch, message],
   );
 
   const handleDelete = useCallback(
@@ -66,7 +67,7 @@ export const useGroupMutations = () => {
         throw new Error(GC.LABELS.MESSAGES.DELETE_FAILED);
       }
     },
-    [dispatch],
+    [dispatch, message],
   );
 
   return {

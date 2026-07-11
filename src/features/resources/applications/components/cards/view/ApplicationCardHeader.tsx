@@ -13,7 +13,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES } from '../../../../../../constants';
 import type { Application, SyncStatusValue } from '../../../models';
-import { APPLICATIONS_UI } from '../../../constants';
+import { APPLICATIONS_UI, SYNC_STATUS_VALUE } from '../../../constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import FancySpinner from '../../../../../../components/animation/FancySpinner';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
@@ -73,13 +73,14 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
   }) => {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
-    const isSyncing = useSelector((s: RootState) =>
+    const syncingFlag = useSelector((s: RootState) =>
       Boolean(s.applications.syncing?.[application.name]),
     );
     const syncStatus = useSelector(
       (s: RootState) =>
         s.applications.syncStatus?.[application.name] as SyncStatusValue | undefined,
     );
+    const isSyncing = syncingFlag || syncStatus === SYNC_STATUS_VALUE.SYNCING;
     const syncCompletedAt = useSelector(
       (s: RootState) => s.applications.syncCompletedAt?.[application.name],
     );
@@ -299,9 +300,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
           </div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
             {syncStatus ? (
-              <Tooltip
-                title={syncStatus === 'failed' && syncLastError ? syncLastError : undefined}
-              >
+              <Tooltip title={syncStatus === 'failed' && syncLastError ? syncLastError : undefined}>
                 <span
                   style={{
                     display: 'inline-flex',

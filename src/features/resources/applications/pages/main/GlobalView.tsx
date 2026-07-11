@@ -172,7 +172,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     return () => clearInterval(interval);
   }, [dispatch, fetchIntervalSeconds]);
 
-  if (!loading && !error && visibleApplications.length === 0) {
+  if (!error && visibleApplications.length === 0) {
     return <ApplicationsMainEmpty onRefresh={handleLoadApplications} />;
   }
 

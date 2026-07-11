@@ -11,6 +11,6 @@ export {
   getSnapshotsByApplicationId,
 } from './snapshots';
 
-export { triggerApplicationRollback } from './rollback';
+export { triggerApplicationRollback, abortApplicationRollback } from './rollback';
 export { fetchApplicationRollbacks } from './rollbacks';
 export { triggerApplicationSync } from './sync';

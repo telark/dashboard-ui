@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import LoadingDetailsView from '../../../../../components/display/views/LoadingDetailsView';
 import ErrorView from '../../../../../components/display/views/ErrorView';
-import { APPLICATION_DETAILS_CONSTANTS } from '../../constants';
+import { APPLICATION_DETAILS_CONSTANTS, SYNC_STATUS_VALUE } from '../../constants';
 import { useApplicationDetails } from '../../hooks';
 import ApplicationsDetailsEmpty from './Empty';
 import ApplicationDetailsContent from './Content';
@@ -21,6 +21,7 @@ import {
 import { Form } from 'antd';
 import { deleteApplicationThunk } from '../../store';
 import { forceSyncApplication } from '../../utils/management/sync';
+import { hasActiveRollback } from '../../utils/rollbacks';
 import ApplicationDeleteModal from '../../components/delete/ApplicationDeleteModal';
 
 const ApplicationDetailsView: React.FC = memo(() => {
@@ -33,10 +34,21 @@ const ApplicationDetailsView: React.FC = memo(() => {
   const [snapshotsOpen, setSnapshotsOpen] = React.useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
   const [deleteLoading, setDeleteLoading] = React.useState(false);
-  const { details, loading, error } = useApplicationDetails(name);
-  const isSyncing = useSelector((s: RootState) =>
+  const { details, loading, error, refresh } = useApplicationDetails(name);
+  const syncingFlag = useSelector((s: RootState) =>
     details?.name ? !!s.applications.syncing?.[details.name] : false,
   );
+  const syncStatus = useSelector((s: RootState) =>
+    details?.name ? s.applications.syncStatus?.[details.name] : undefined,
+  );
+  const isSyncing = syncingFlag || syncStatus === SYNC_STATUS_VALUE.SYNCING;
+  const activeRollback = hasActiveRollback(details?.rollbacks);
+  const rollbackDisabled = isSyncing || activeRollback;
+  const rollbackDisabledReason: 'sync' | 'activeRollback' | null = isSyncing
+    ? 'sync'
+    : activeRollback
+      ? 'activeRollback'
+      : null;
 
   useEffect(() => {
     if (!details?.name) return;
@@ -126,14 +138,18 @@ const ApplicationDetailsView: React.FC = memo(() => {
       <ManageRollbacksPanel
         open={rollbacksOpen}
         onClose={() => setRollbacksOpen(false)}
+        applicationName={details.name}
         detailRollbacks={details.rollbacks}
+        onAfterAbort={refresh}
       />
       <ManageSnapshotsPanel
         open={snapshotsOpen}
         onClose={() => setSnapshotsOpen(false)}
         applicationName={details.name}
         detailSnapshots={details.snapshots}
-        rollbackDisabled={isSyncing}
+        rollbackDisabled={rollbackDisabled}
+        rollbackDisabledReason={rollbackDisabledReason}
+        onAfterRollback={refresh}
       />
       <ApplicationDeleteModal
         open={deleteModalOpen}

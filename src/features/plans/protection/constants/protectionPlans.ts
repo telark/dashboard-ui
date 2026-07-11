@@ -157,7 +157,26 @@ export const PROTECTION_PLANS_CONSTANTS = {
     },
     SEVERITY_LABEL: 'Severity',
     MODE_ENFORCEMENT_LABEL: 'Policy Enforcement Mode',
+    QUICK_FILTERS: {
+      ALL: 'All',
+    },
+    FILTER: {
+      BY_CREATION_DATE: 'CREATED DATE',
+      BY_SCOPE_TYPE: 'SCOPE TYPE',
+      BY_CREATED_BY: 'CREATED BY',
+      BY_TEMPLATES: 'TEMPLATES',
+      BY_TARGETS: 'TARGETS',
+      FROM: 'From',
+      TO: 'To',
+    },
   },
+  FILTER_KEYS: {
+    DATE_RANGE: 'dateRange',
+    SCOPE_TYPE: 'scopeType',
+    CREATED_BY: 'createdBy',
+    TEMPLATES: 'templates',
+    TARGETS: 'targets',
+  } as const,
   PANELS: {
     CREATE: {
       TITLE: 'Create Protection Plan',

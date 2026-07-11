@@ -27,15 +27,25 @@ export const handleUpdateGroupRejected = (state: GroupsState, action: PayloadAct
   state.error = action.payload as string;
 };
 
+export const handleDeleteGroupPending = (state: GroupsState, action: { meta: { arg: string } }) => {
+  const id = action.meta.arg;
+  if (id && !state.deletingIds.includes(id)) {
+    state.deletingIds.push(id);
+  }
+};
+
 export const handleDeleteGroupFulfilled = (state: GroupsState, action: PayloadAction<string>) => {
   const deletedId = action.payload;
-  state.groups = state.groups.filter((group) => group.id !== deletedId);
   if (state.details?.id === deletedId) {
     state.details = null;
   }
   state.error = null;
 };
 
-export const handleDeleteGroupRejected = (state: GroupsState, action: PayloadAction<unknown>) => {
+export const handleDeleteGroupRejected = (
+  state: GroupsState,
+  action: PayloadAction<unknown, string, { arg: string }>,
+) => {
+  state.deletingIds = state.deletingIds.filter((id) => id !== action.meta.arg);
   state.error = action.payload as string;
 };

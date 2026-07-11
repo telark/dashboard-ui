@@ -13,6 +13,7 @@ import {
   updateApplicationThunk,
   deleteApplicationThunk,
   triggerApplicationRollbackThunk,
+  abortApplicationRollbackThunk,
 } from '../thunks/fetchThunks';
 import {
   handleFetchApplicationsPending,
@@ -37,6 +38,7 @@ export {
   updateApplicationThunk,
   deleteApplicationThunk,
   triggerApplicationRollbackThunk,
+  abortApplicationRollbackThunk,
 } from '../thunks/fetchThunks';
 
 const initialState: ApplicationsState = {
@@ -221,7 +223,8 @@ const applicationsSlice = createSlice({
       })
       .addCase(updateApplicationThunk.fulfilled, handleUpdateApplicationFulfilled)
       .addCase(deleteApplicationThunk.fulfilled, handleDeleteApplicationFulfilled)
-      .addCase(triggerApplicationRollbackThunk.fulfilled, handleUpdateApplicationFulfilled);
+      .addCase(triggerApplicationRollbackThunk.fulfilled, handleUpdateApplicationFulfilled)
+      .addCase(abortApplicationRollbackThunk.fulfilled, handleUpdateApplicationFulfilled);
   },
 });
 

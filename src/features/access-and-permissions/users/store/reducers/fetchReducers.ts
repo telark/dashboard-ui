@@ -10,6 +10,8 @@ export const handleFetchUsersFulfilled = (state: UsersState, action: PayloadActi
   state.loading = false;
   state.users = action.payload;
   state.error = null;
+  const liveIds = new Set(action.payload.map((u) => u.id));
+  state.deletingIds = state.deletingIds.filter((id) => liveIds.has(id));
 };
 
 export const handleFetchUsersRejected = (state: UsersState, action: PayloadAction<any>) => {
