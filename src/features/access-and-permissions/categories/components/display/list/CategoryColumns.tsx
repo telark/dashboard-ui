@@ -25,7 +25,21 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
         align: 'left',
         width: CC.SIZES.COLUMNS.NAME,
         render: (_: unknown, record: Category) => (
-          <span style={{ fontWeight: 700, color: DEFAULT_COLORS.TEXT_PRIMARY }}>{record.name}</span>
+          <span
+            style={{
+              fontWeight: 600,
+              fontSize: 14,
+              color: DEFAULT_COLORS.TEXT_PRIMARY,
+              display: 'inline-block',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              maxWidth: '100%',
+            }}
+            title={record.name}
+          >
+            {record.name}
+          </span>
         ),
       },
       ctx,

@@ -21,6 +21,7 @@ export const STORE_ACTIONS = {
     UPDATE: 'applications/update',
     DELETE: 'applications/delete',
     TRIGGER_ROLLBACK: 'applications/triggerRollback',
+    ABORT_ROLLBACK: 'applications/abortRollback',
   },
   USERS: {
     FETCH: 'users/fetch',
@@ -88,6 +89,7 @@ export const STORE_ERRORS = {
   FETCH_APPLICATION_SNAPSHOTS: 'Failed to fetch application snapshots',
   FETCH_SNAPSHOT_MANIFEST: 'Failed to fetch snapshot manifest',
   TRIGGER_APPLICATION_ROLLBACK: 'Failed to trigger application rollback',
+  ABORT_APPLICATION_ROLLBACK: 'Failed to abort application rollback',
   CHECK_INSIGHTS: 'Failed to check cluster insights',
   FETCH_USERS: 'Failed to fetch users',
   FETCH_USER_DETAILS: 'Failed to fetch user details',
@@ -131,6 +133,7 @@ export const STORE_MESSAGES = {
   ERROR_FETCHING_APPLICATION_SNAPSHOTS: 'Error fetching application snapshots:',
   ERROR_FETCHING_SNAPSHOT_MANIFEST: 'Error fetching snapshot manifest:',
   ERROR_TRIGGERING_APPLICATION_ROLLBACK: 'Error triggering application rollback:',
+  ERROR_ABORTING_APPLICATION_ROLLBACK: 'Error aborting application rollback:',
   ERROR_BOUNDARY: 'Error caught in boundary:',
   ERROR_FETCHING_USERS: 'Error fetching users:',
   ERROR_FETCHING_USER_DETAILS: 'Error fetching user details:',

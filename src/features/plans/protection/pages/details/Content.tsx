@@ -219,7 +219,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             ]
           : []),
       ],
-      [plan, users, renderUserAndTime],
+      [plan, renderUserAndTime],
     );
 
     const scopeItems =

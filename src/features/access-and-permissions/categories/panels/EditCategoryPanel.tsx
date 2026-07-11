@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { Form, Input, message } from 'antd';
+import { Form, Input, App as AntdApp } from 'antd';
 import { useDispatch } from 'react-redux';
 import AnimationWrapper from '../../../../components/display/panels/slide-out/AnimationWrapper';
 import { PanelFooter } from '../../../../components/display/panels/shared';
@@ -29,6 +29,7 @@ const EditCategoryPanel: React.FC<EditCategoryPanelProps> = ({
 }) => {
   const [form] = Form.useForm<FormValues>();
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
   const [submitting, setSubmitting] = useState(false);
 
   const scope = editingCategory?.scope ?? CATEGORIES_CONSTANTS.SCOPES.ROLES;
@@ -73,7 +74,7 @@ const EditCategoryPanel: React.FC<EditCategoryPanelProps> = ({
     } finally {
       setSubmitting(false);
     }
-  }, [editingCategory, form, onClose, dispatch]);
+  }, [editingCategory, form, onClose, dispatch, message]);
 
   const handleCancel = useCallback(() => {
     form.resetFields();

@@ -49,10 +49,10 @@ export const ACTION_PERMISSIONS = {
       level: 'Contributor' as PermissionLevel,
       deny: 'users.createuser.deny',
     },
-    edit: {
+    suspend: {
       scope: 'users' as const,
-      level: 'Contributor' as PermissionLevel,
-      deny: 'users.edituser.deny',
+      level: 'Admin' as PermissionLevel,
+      deny: 'users.suspenduser.deny',
     },
     delete: {
       scope: 'users' as const,

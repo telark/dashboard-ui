@@ -27,15 +27,25 @@ export const handleUpdateRoleRejected = (state: RolesState, action: PayloadActio
   state.error = action.payload as string;
 };
 
+export const handleDeleteRolePending = (state: RolesState, action: { meta: { arg: string } }) => {
+  const id = action.meta.arg;
+  if (id && !state.deletingIds.includes(id)) {
+    state.deletingIds.push(id);
+  }
+};
+
 export const handleDeleteRoleFulfilled = (state: RolesState, action: PayloadAction<string>) => {
   const deletedId = action.payload;
-  state.roles = state.roles.filter((role) => role.id !== deletedId);
   if (state.details?.id === deletedId) {
     state.details = null;
   }
   state.error = null;
 };
 
-export const handleDeleteRoleRejected = (state: RolesState, action: PayloadAction<unknown>) => {
+export const handleDeleteRoleRejected = (
+  state: RolesState,
+  action: PayloadAction<unknown, string, { arg: string }>,
+) => {
+  state.deletingIds = state.deletingIds.filter((id) => id !== action.meta.arg);
   state.error = action.payload as string;
 };

@@ -144,6 +144,19 @@ export const APPLICATIONS_UI = {
       VIEW_MANIFEST_PERMISSION_DENIED_TOOLTIP:
         'You do not have permission to view snapshot manifests',
       ROLLBACK_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to roll back applications',
+      ROLLBACK_IN_PROGRESS_TOOLTIP:
+        'Action unavailable while a rollback is pending or in progress for this application.',
+      ABORT_ROLLBACK: 'Abort rollback',
+      ABORT_ROLLBACK_TOOLTIP: 'Abort this pending rollback',
+      ABORT_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to abort rollbacks',
+      ABORT_CONFIRM_TITLE: 'Abort rollback?',
+      ABORT_CONFIRM_CONTENT:
+        'This rollback has not started yet. Aborting will cancel it permanently. Continue?',
+      ABORT_CONFIRM_OK: 'Abort rollback',
+      ABORT_SUCCESS: 'Rollback aborted.',
+      ABORT_FAILED: 'Could not abort rollback. Please try again.',
+      ABORT_USER_REQUIRED:
+        'Sign in with a user account to abort a rollback (username is required for the request).',
     },
     METRICS: {
       TITLE: 'Metrics',

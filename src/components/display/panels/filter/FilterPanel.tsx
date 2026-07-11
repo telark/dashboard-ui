@@ -26,6 +26,7 @@ export interface FilterField {
   dropdownOptions?: FilterDropdownOption[];
   multiSelectOptions?: FilterDropdownOption[];
   defaultValue?: string | { from?: string; to?: string };
+  optionRender?: (option: FilterDropdownOption) => React.ReactNode;
 }
 
 export interface FilterPanelProps {

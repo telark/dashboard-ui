@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { ProtectionPlansState } from '../../models';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { PlanPhaseQuickFilter, ProtectionPlansState } from '../../models';
 import {
   fetchProtectionPlansThunk,
   fetchProtectionPlanDetailsThunk,
@@ -21,6 +21,8 @@ const initialState: ProtectionPlansState = {
   details: null,
   detailsLoading: false,
   detailsError: null,
+  phaseQuickFilter: 'all',
+  appliedFilters: {},
 };
 
 const protectionPlansSlice = createSlice({
@@ -31,6 +33,15 @@ const protectionPlansSlice = createSlice({
       state.details = null;
       state.detailsLoading = false;
       state.detailsError = null;
+    },
+    setPhaseQuickFilter: (state, action: PayloadAction<PlanPhaseQuickFilter>) => {
+      state.phaseQuickFilter = action.payload;
+    },
+    setAppliedPlanFilters: (state, action: PayloadAction<Record<string, unknown>>) => {
+      state.appliedFilters = action.payload;
+    },
+    clearAppliedPlanFilters: (state) => {
+      state.appliedFilters = {};
     },
   },
   extraReducers: (builder) => {
@@ -100,5 +111,10 @@ const protectionPlansSlice = createSlice({
   },
 });
 
-export const { clearPlanDetails } = protectionPlansSlice.actions;
+export const {
+  clearPlanDetails,
+  setPhaseQuickFilter,
+  setAppliedPlanFilters,
+  clearAppliedPlanFilters,
+} = protectionPlansSlice.actions;
 export const protectionPlansReducer = protectionPlansSlice.reducer;

@@ -1,5 +1,5 @@
 import React, { useCallback, memo } from 'react';
-import { Tooltip, message, Popover } from 'antd';
+import { Tooltip, Popover, App as AntdApp } from 'antd';
 import { KeyOutlined, EditOutlined, DeleteOutlined, CopyOutlined } from '@ant-design/icons';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
@@ -38,6 +38,7 @@ interface PasskeyCardProps {
 }
 
 const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelete }) => {
+  const { message } = AntdApp.useApp();
   const displayKey = passkey.publicKey ?? passkey.credentialId ?? null;
   const deviceTypeLabel =
     passkey.deviceType === PPC.VALUES.DEVICE_TYPE_PLATFORM
@@ -50,7 +51,7 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
       () => message.success(PPC.LABELS.COPIED),
       () => message.error('Failed to copy'),
     );
-  }, [displayKey]);
+  }, [displayKey, message]);
 
   const publicKeyPopoverContent = displayKey ? (
     <div style={{ position: 'relative', maxWidth: 320, paddingRight: 32 }}>

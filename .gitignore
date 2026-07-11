@@ -24,3 +24,6 @@ yarn-debug.log*
 yarn-error.log*
 
 CLAUDE.md
+
+# k6 test run output
+k6/results/

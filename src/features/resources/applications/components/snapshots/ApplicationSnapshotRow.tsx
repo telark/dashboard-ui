@@ -17,6 +17,8 @@ const ICON_BTN: React.CSSProperties = {
   color: DEFAULT_COLORS.TEXT_PRIMARY,
 };
 
+export type RollbackDisabledReason = 'sync' | 'activeRollback' | null;
+
 export interface ApplicationSnapshotRowProps {
   snapshot: ApplicationSnapshotSummary;
   showMarginBottom: boolean;
@@ -24,6 +26,7 @@ export interface ApplicationSnapshotRowProps {
   onRollback?: (summary: ApplicationSnapshotSummary) => void;
   rollbackLoading?: boolean;
   rollbackDisabled?: boolean;
+  rollbackDisabledReason?: RollbackDisabledReason;
   compareMode?: boolean;
   compareChecked?: boolean;
   compareDisabled?: boolean;
@@ -38,6 +41,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
     onRollback,
     rollbackLoading = false,
     rollbackDisabled = false,
+    rollbackDisabledReason = null,
     compareMode = false,
     compareChecked = false,
     compareDisabled = false,
@@ -164,7 +168,9 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                 !canRollback
                   ? ui.ROLLBACK_PERMISSION_DENIED_TOOLTIP
                   : rollbackDisabled
-                    ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
+                    ? rollbackDisabledReason === 'activeRollback'
+                      ? ui.ROLLBACK_IN_PROGRESS_TOOLTIP
+                      : APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
                     : ui.ROLLBACK
               }
             >

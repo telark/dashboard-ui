@@ -10,6 +10,7 @@ export {
   updateApplicationThunk,
   deleteApplicationThunk,
   triggerApplicationRollbackThunk,
+  abortApplicationRollbackThunk,
 } from './thunks/fetchThunks';
 
 export {

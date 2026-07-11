@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback, startTransition } from 'react';
-import { App, message } from 'antd';
+import { App } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
@@ -29,7 +29,7 @@ export interface PasskeysMainPageProps {
 }
 
 const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSettings }) => {
-  const { modal } = App.useApp();
+  const { modal, message } = App.useApp();
   const dispatch: AppDispatch = useDispatch();
   const passkeys = useSelector(selectPasskeys);
   const loading = useSelector(selectPasskeyLoading);
@@ -74,7 +74,7 @@ const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSet
         });
       }
     }
-  }, [error, loading, lastFetchError]);
+  }, [error, loading, lastFetchError, message]);
 
   const handlePanelSubmit = useCallback(
     async (values: Record<string, unknown>) => {
@@ -136,8 +136,8 @@ const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSet
   });
 
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(passkeys) && passkeys.length === 0 && !loading && !error,
-    [passkeys, loading, error],
+    () => Array.isArray(passkeys) && passkeys.length === 0 && !error,
+    [passkeys, error],
   );
 
   if (shouldShowEmpty) {

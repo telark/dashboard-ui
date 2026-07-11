@@ -32,6 +32,10 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}/trigger`,
       method: 'POST',
     }),
+    ABORT_ROLLBACK: (name: string, rollbackId: string) => ({
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}/${rollbackId}/abort`,
+      method: 'POST',
+    }),
     GET_ROLLBACKS: (name: string) => ({
       path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}/get`,
       method: 'GET',
@@ -172,8 +176,8 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.USERS}/${USER_PATHS.PATCH_BY_ID(userId)}`,
       method: 'PATCH',
     }),
-    DELETE_BY_ID: (userId: string) => ({
-      path: `${API_PATHS.RESOURCES.USERS}/${USER_PATHS.DELETE_BY_ID(userId)}`,
+    CLEANUP: (userId: string) => ({
+      path: AUTH_PATHS.CLEANUP.DELETE_USER(userId),
       method: 'DELETE',
     }),
   },
@@ -234,8 +238,8 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.GROUPS}/${GROUP_PATHS.PATCH_BY_ID(id)}`,
       method: 'PATCH',
     }),
-    DELETE_BY_ID: (id: string) => ({
-      path: `${API_PATHS.RESOURCES.GROUPS}/${GROUP_PATHS.DELETE_BY_ID(id)}`,
+    CLEANUP: (id: string) => ({
+      path: AUTH_PATHS.CLEANUP.DELETE_GROUP(id),
       method: 'DELETE',
     }),
   },
@@ -297,8 +301,8 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.ROLES}/${ROLE_PATHS.PATCH_BY_ID(id)}`,
       method: 'PATCH',
     }),
-    DELETE_BY_ID: (id: string) => ({
-      path: `${API_PATHS.RESOURCES.ROLES}/${ROLE_PATHS.DELETE_BY_ID(id)}`,
+    CLEANUP: (id: string) => ({
+      path: AUTH_PATHS.CLEANUP.DELETE_ROLE(id),
       method: 'DELETE',
     }),
   },

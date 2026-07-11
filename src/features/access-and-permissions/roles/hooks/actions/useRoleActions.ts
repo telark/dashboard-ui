@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import { APP_ROUTES } from '../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import { createRoleThunk, updateRoleThunk, deleteRoleThunk } from '../../store';
@@ -18,6 +18,7 @@ export interface UseRoleActionsOptions {
 export const useRoleActions = (options?: UseRoleActionsOptions) => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
   const [submitting, setSubmitting] = useState(false);
   const skipNavigate = Boolean(options?.skipNavigate);
 
@@ -38,7 +39,7 @@ export const useRoleActions = (options?: UseRoleActionsOptions) => {
         setSubmitting(false);
       }
     },
-    [dispatch, navigate, skipNavigate],
+    [dispatch, navigate, skipNavigate, message],
   );
 
   const handleUpdate = useCallback(
@@ -68,7 +69,7 @@ export const useRoleActions = (options?: UseRoleActionsOptions) => {
         setSubmitting(false);
       }
     },
-    [dispatch, navigate, skipNavigate],
+    [dispatch, navigate, skipNavigate, message],
   );
 
   const handleDelete = useCallback(
@@ -82,7 +83,7 @@ export const useRoleActions = (options?: UseRoleActionsOptions) => {
         throw new Error(RC.LABELS.MESSAGES.DELETE_FAILED);
       }
     },
-    [dispatch],
+    [dispatch, message],
   );
 
   return {

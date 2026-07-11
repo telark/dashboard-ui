@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import type { FormInstance } from 'antd';
 import { updateUserThunk } from '../../../store';
 import { arraysEqual } from '../../../utils/assignment/arrays';
@@ -46,6 +46,7 @@ export const useAssignmentPanelBase = ({
   onSuccess,
 }: UseAssignmentPanelBaseOptions): UseAssignmentPanelBaseReturn => {
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
   const [submitting, setSubmitting] = useState(false);
 
   const initialSelectedIds = useMemo(() => user?.[fieldName] ?? [], [user, fieldName]);

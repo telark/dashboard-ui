@@ -108,7 +108,7 @@ const SnapshotStorageSection: React.FC = memo(() => {
     } finally {
       setSnapshotInfosLoading(false);
     }
-  }, []);
+  }, [message]);
 
   useEffect(() => {
     loadSnapshotInfos();
@@ -132,7 +132,7 @@ const SnapshotStorageSection: React.FC = memo(() => {
     } finally {
       setSavingSnapshotsMax(false);
     }
-  }, [dispatch, loadSnapshotInfos, snapshotsMaxPerApp]);
+  }, [dispatch, loadSnapshotInfos, snapshotsMaxPerApp, message]);
 
   const consumedLine = useMemo(() => {
     if (!snapshotInfos) return null;

@@ -7,13 +7,13 @@ import { buildUserFilterFields } from '../config/userFilterConfig';
 import { USERS_CONSTANTS as UC } from '../constants';
 import {
   CreateUserPanel,
-  EditUserPanel,
+  ManageUserStatePanel,
   ViewUserPanel,
   ManageUserRolePanel,
   ManageUserGroupPanel,
 } from '../panels';
 import type { PageLayoutConfig } from '../../../../interfaces/layout/page';
-import type { User, CreateUserFormValues } from '../models';
+import type { CreateUserFormValues, ManageUserStateFormValues, User } from '../models';
 import type { FormInstance } from 'antd';
 
 interface UsersListPageProps {
@@ -28,7 +28,7 @@ interface UsersListPageProps {
   managingRoleUser: User | null;
   managingGroupUser: User | null;
   createForm: FormInstance<CreateUserFormValues>;
-  editForm: FormInstance<CreateUserFormValues>;
+  editForm: FormInstance<ManageUserStateFormValues>;
   filterPanelOpen: boolean;
   bulkDeleteModalOpen: boolean;
   bulkDeleteSelectedCount: number;
@@ -99,7 +99,7 @@ const UsersListPage: React.FC<UsersListPageProps> = memo(
           <CreateUserPanel open={createPanelOpen} onClose={onCloseCreatePanel} form={createForm} />
         )}
         {editPanelOpen && editingUser && (
-          <EditUserPanel
+          <ManageUserStatePanel
             open={editPanelOpen}
             onClose={onCloseEditPanel}
             editingUser={editingUser}

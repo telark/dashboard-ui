@@ -3,11 +3,18 @@ import type { ApplicationRollbackEntry } from '../models';
 import { APPLICATIONS_UI } from '../constants/texts';
 import { CONNECTIVITY_CONSTANTS } from '../../../../constants/pages/connectivity';
 
-export type RollbackStatusState = 'success' | 'failed' | 'inProgress' | 'pending' | 'unknown';
+export type RollbackStatusState =
+  | 'success'
+  | 'failed'
+  | 'inProgress'
+  | 'pending'
+  | 'aborted'
+  | 'unknown';
 
 export function classifyRollbackStatus(raw: string): RollbackStatusState {
   const s = raw.trim().toLowerCase();
   if (!s) return 'unknown';
+  if (s.includes('abort') || s.includes('cancel')) return 'aborted';
   if (s.includes('fail') || s.includes('error')) return 'failed';
   if (s.includes('success') || s.includes('complete')) return 'success';
   if (s.includes('pending')) return 'pending';
@@ -15,6 +22,16 @@ export function classifyRollbackStatus(raw: string): RollbackStatusState {
     return 'inProgress';
   }
   return 'unknown';
+}
+
+export function hasActiveRollback(
+  rollbacks: ApplicationRollbackEntry[] | undefined | null,
+): boolean {
+  if (!rollbacks?.length) return false;
+  return rollbacks.some((r) => {
+    const s = classifyRollbackStatus(r.status);
+    return s === 'pending' || s === 'inProgress';
+  });
 }
 
 export function getRollbackStatusColors(state: RollbackStatusState): {
@@ -38,6 +55,9 @@ export function getRollbackStatusColors(state: RollbackStatusState): {
       background: DEFAULT_COLORS.BACKGROUND_WHITE,
       color: CONNECTIVITY_CONSTANTS.COLORS.WARNING,
     };
+  }
+  if (state === 'aborted') {
+    return { background: DEFAULT_COLORS.CHIP_CUSTOM_BG, color: DEFAULT_COLORS.TEXT_MUTED };
   }
   return { background: DEFAULT_COLORS.CHIP_CUSTOM_BG, color: DEFAULT_COLORS.TEXT_MUTED };
 }

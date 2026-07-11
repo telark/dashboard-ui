@@ -19,6 +19,7 @@ import {
   handleCreateRoleRejected,
   handleUpdateRoleFulfilled,
   handleUpdateRoleRejected,
+  handleDeleteRolePending,
   handleDeleteRoleFulfilled,
   handleDeleteRoleRejected,
 } from '../reducers/mutationReducers';
@@ -28,6 +29,7 @@ const initialState: RolesState = {
   details: null,
   loading: false,
   error: null,
+  deletingIds: [],
 };
 
 const roleSlice = createSlice({
@@ -53,6 +55,7 @@ const roleSlice = createSlice({
       .addCase(createRoleThunk.rejected, handleCreateRoleRejected)
       .addCase(updateRoleThunk.fulfilled, handleUpdateRoleFulfilled)
       .addCase(updateRoleThunk.rejected, handleUpdateRoleRejected)
+      .addCase(deleteRoleThunk.pending, handleDeleteRolePending)
       .addCase(deleteRoleThunk.fulfilled, handleDeleteRoleFulfilled)
       .addCase(deleteRoleThunk.rejected, handleDeleteRoleRejected);
   },

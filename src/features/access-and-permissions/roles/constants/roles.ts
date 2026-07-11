@@ -117,9 +117,9 @@ export const ROLES_CONSTANTS = {
     COLUMNS: {
       ROLE_TITLE: 110,
       TYPE: 80,
-      CREATED: 90,
+      CREATED: 140,
       CREATED_BY: 90,
-      LAST_UPDATE: 90,
+      LAST_UPDATE: 140,
       VALIDITY: 80,
       CATEGORY: 80,
       VERSION: 80,
@@ -247,6 +247,7 @@ export const ROLES_CONSTANTS = {
       CREATE_ROLE_FAILED: (name: string) => `[APIClient] Failed to create role: ${name}`,
       UPDATE_ROLE_FAILED: (id: string) => `[APIClient] Failed to update role: ${id}`,
       DELETE_ROLE_FAILED: (id: string) => `[APIClient] Failed to delete role: ${id}`,
+      DELETE_ROLE_MISSING_ID: '[APIClient] Cannot delete role: missing id',
     },
   },
 } as const;

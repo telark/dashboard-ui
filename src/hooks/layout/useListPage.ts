@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 
 interface UseListPageOptions<T> {
   initialData: T[];
@@ -12,6 +12,7 @@ export const useListPage = <T>({
   onCreate,
   successMessage,
 }: UseListPageOptions<T>) => {
+  const { message } = AntdApp.useApp();
   const [items, setItems] = useState<T[]>(initialData);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 

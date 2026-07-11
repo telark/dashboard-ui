@@ -37,7 +37,6 @@ function DataTable<T>({
         dataSource={filteredData as any}
         pagination={false}
         size="small"
-        tableLayout="fixed"
         onRow={(record) => ({
           style: { height: rowHeight, cursor: onRowClick ? 'pointer' : 'default' },
           onClick: onRowClick ? () => onRowClick(record as T) : undefined,

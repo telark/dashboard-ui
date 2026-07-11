@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { Form, Input, message } from 'antd';
+import { Form, Input, App as AntdApp } from 'antd';
 import { useDispatch } from 'react-redux';
 import AnimationWrapper from '../../../../components/display/panels/slide-out/AnimationWrapper';
 import { PanelFooter } from '../../../../components/display/panels/shared';
@@ -26,6 +26,7 @@ interface FormValues {
 const AddCategoryPanel: React.FC<AddCategoryPanelProps> = ({ open, onClose, scope }) => {
   const [form] = Form.useForm<FormValues>();
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
   const [submitting, setSubmitting] = useState(false);
 
   const { categories } = useCategories(scope);
@@ -58,7 +59,7 @@ const AddCategoryPanel: React.FC<AddCategoryPanelProps> = ({ open, onClose, scop
     } finally {
       setSubmitting(false);
     }
-  }, [form, onClose, dispatch, scope]);
+  }, [form, onClose, dispatch, scope, message]);
 
   const handleCancel = useCallback(() => {
     form.resetFields();

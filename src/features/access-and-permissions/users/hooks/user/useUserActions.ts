@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import { APP_ROUTES } from '../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import { createUserThunk } from '../../store';
@@ -13,6 +13,7 @@ import type { CreateUserFormValues } from '../../models';
 export const useUserActions = () => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
   const [submitting, setSubmitting] = useState(false);
 
   const handleCreate = useCallback(
@@ -31,7 +32,7 @@ export const useUserActions = () => {
         setSubmitting(false);
       }
     },
-    [dispatch, navigate],
+    [dispatch, navigate, message],
   );
 
   return {

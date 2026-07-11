@@ -6,12 +6,13 @@ import {
   DeleteOutlined,
   EditOutlined,
   MoreOutlined,
+  PlayCircleOutlined,
   StopOutlined,
 } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { APP_ROUTES, DEFAULT_COLORS } from '../../../../../../constants';
 import { APPLICATION_SECTION_LAYOUT } from '../../../../../resources/applications/constants/sectionLayout';
-import type { ProtectionPlan, PlanPhase } from '../../../models';
+import type { ProtectionPlan } from '../../../models';
 import type { FormValues } from '../../create';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
@@ -21,12 +22,19 @@ import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import TimeRemaining from '../../../../../../components/display/time/TimeRemaining';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import type { AppDispatch, RootState } from '../../../../../../store';
-import { cancelPlanThunk, deletePlanThunk } from '../../../store';
+import { cancelPlanThunk, deletePlanThunk, reactivatePlanThunk } from '../../../store';
 import { getCurrentUser } from '../../../../../auth/utils';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
 import HealthBadge from '../../shared/HealthBadge';
+import ReactivatePlanModal from '../../shared/ReactivatePlanModal';
 import DuplicatePlanPanel from '../../panels/DuplicatePlanPanel';
 import EditPlanPanel from '../../panels/EditPlanPanel';
+import {
+  CANCELLABLE_PHASES,
+  NON_EDITABLE_PHASES,
+  REACTIVATABLE_PHASES,
+  isReactivateExpired,
+} from '../../../utils/phaseRules';
 
 interface ProtectionPlanCardProps {
   plan: ProtectionPlan;
@@ -52,21 +60,21 @@ function MetricMini(props: { value: React.ReactNode; label: string }): React.Rea
   );
 }
 
-const CANCELLABLE: PlanPhase[] = ['active', 'scheduled', 'failed'];
-
-const NON_EDITABLE_PHASES: PlanPhase[] = ['terminated', 'canceled'];
-
 const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [reactivating, setReactivating] = useState(false);
   const [duplicatePanelOpen, setDuplicatePanelOpen] = useState(false);
   const [editPanelOpen, setEditPanelOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [reactivateModalOpen, setReactivateModalOpen] = useState(false);
   const [editForm] = Form.useForm<FormValues>();
   const editDisabled = NON_EDITABLE_PHASES.includes(plan.phase);
+  const canReactivate = REACTIVATABLE_PHASES.includes(plan.phase);
+  const reactivateExpired = isReactivateExpired(plan);
 
   const detailsPath = APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(
     ':name',
@@ -78,7 +86,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
 
   const phaseLabel = PPC.LABELS.PHASE_LABELS[plan.phase] ?? plan.phase;
   const dotColor = PHASE_DOT_COLOR[plan.phase] ?? PHASE_DOT_COLOR.draft;
-  const canCancel = CANCELLABLE.includes(plan.phase);
+  const canCancel = CANCELLABLE_PHASES.includes(plan.phase);
 
   const namespaceTags = plan.scope.type === 'namespaces' ? (plan.scope.namespaces ?? []) : [];
 
@@ -103,6 +111,18 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
       await dispatch(cancelPlanThunk({ userId, planId: plan.id })).unwrap();
     } finally {
       setCancelling(false);
+    }
+  }, [dispatch, plan.id]);
+
+  const handleReactivate = useCallback(async () => {
+    const userId = getCurrentUser()?.id;
+    if (!userId) return;
+    setReactivating(true);
+    try {
+      await dispatch(reactivatePlanThunk({ userId, planId: plan.id })).unwrap();
+      setReactivateModalOpen(false);
+    } finally {
+      setReactivating(false);
     }
   }, [dispatch, plan.id]);
 
@@ -144,6 +164,16 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
       icon: <CopyOutlined />,
       disabled: duplicatePanelOpen,
     },
+    ...(canReactivate
+      ? [
+          {
+            key: 'reactivate',
+            label: PPC.LABELS.DETAIL_PAGE.ACTIONS.REACTIVATE,
+            icon: <PlayCircleOutlined />,
+            disabled: reactivating || reactivateExpired,
+          },
+        ]
+      : []),
     ...(canCancel
       ? [
           {
@@ -311,6 +341,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
                   if (key === 'cancel') void handleCancel();
                   if (key === 'delete') setDeleteModalOpen(true);
                   if (key === 'duplicate') handleDuplicate();
+                  if (key === 'reactivate') setReactivateModalOpen(true);
                 },
               }}
             >
@@ -366,6 +397,13 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           confirmText={PPC.LABELS.ACTIONS.DELETE_MODAL_OK}
           loading={deleting}
           getContainer={() => document.body}
+        />
+        <ReactivatePlanModal
+          open={reactivateModalOpen}
+          planName={plan.name}
+          loading={reactivating}
+          onClose={() => setReactivateModalOpen(false)}
+          onConfirm={handleReactivate}
         />
       </div>
       <DuplicatePlanPanel

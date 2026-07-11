@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import logger from '../../../../logging';
-import { Form, message, Button } from 'antd';
+import { Form, Button, App as AntdApp } from 'antd';
 import { PrimaryButton } from '../../buttons';
 import { BUTTON_TEXTS } from '../../../../constants';
 import BaseModal from '../base/BaseModal';
@@ -27,6 +27,7 @@ const FormModal: React.FC<FormModalProps> = ({
   contentWrapperStyle,
   buttonDisabled,
 }) => {
+  const { message } = AntdApp.useApp();
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
   const [hasValidationErrors, setHasValidationErrors] = useState(false);

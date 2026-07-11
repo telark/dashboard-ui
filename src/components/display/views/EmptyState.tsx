@@ -1,9 +1,7 @@
-// Used by: users, groups, roles
-// Primary color and button shape mirrored from login page (see audit)
-// Zero hardcoded values except where login page itself uses hardcoded values
 import React, { memo } from 'react';
 import { Button, Typography, theme } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { DEFAULT_COLORS } from '../../../constants';
 
 const { useToken } = theme;
 const { Title, Text } = Typography;
@@ -28,19 +26,17 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
   ({ icon, title, description, primaryAction, secondaryAction, className }) => {
     const { token } = useToken();
 
-    // Mirrors LoginForm.tsx passkey button exactly — CSS var with same fallback
     const buttonStyle: React.CSSProperties = {
-      height: '44px',
-      borderRadius: '10px',
-      fontSize: '14px',
+      padding: '6px 16px',
+      fontSize: 13,
       fontWeight: 600,
-      background: 'var(--color-primary, #1e293b)',
-      borderColor: 'var(--color-primary, #1e293b)',
-      color: '#ffffff',
-      display: 'flex',
+      background: DEFAULT_COLORS.SUCCESS,
+      borderColor: DEFAULT_COLORS.SUCCESS,
+      color: DEFAULT_COLORS.BACKGROUND_WHITE,
+      display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: '8px',
+      gap: 8,
       boxShadow: 'none',
     };
 
@@ -57,6 +53,7 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
           paddingRight: token.marginLG,
           textAlign: 'center',
           width: '100%',
+          background: DEFAULT_COLORS.BACKGROUND_WHITE,
         }}
       >
         <div
@@ -70,17 +67,11 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
         >
           <div
             style={{
-              width: 72,
-              height: 72,
-              borderRadius: '50%',
-              background: token.colorFillAlter,
-              border: `1.5px dashed ${token.colorBorderSecondary}`,
+              color: token.colorTextSecondary,
+              marginBottom: token.marginLG,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: token.colorTextSecondary,
-              marginBottom: token.marginLG,
-              flexShrink: 0,
             }}
           >
             {icon}
@@ -105,7 +96,7 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
               display: 'block',
               textAlign: 'center',
               lineHeight: 1.65,
-              fontSize: 14, // mirrors login page LoginForm.tsx hardcoded value
+              fontSize: 14,
               marginBottom: token.marginLG,
             }}
           >
@@ -124,7 +115,7 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
             {primaryAction && (
               <Button
                 type="primary"
-                icon={<PlusOutlined />}
+                icon={primaryAction.icon ?? <PlusOutlined />}
                 onClick={primaryAction.onClick}
                 style={buttonStyle}
               >

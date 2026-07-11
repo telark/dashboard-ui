@@ -13,6 +13,12 @@ export const FORCE_SYNC_PHASE = {
   FAILED: 'failed',
 } as const;
 
+export const SYNC_STATUS_VALUE = {
+  SYNCING: 'syncing',
+  SUCCESS: 'success',
+  FAILED: 'failed',
+} as const;
+
 export const FORCE_SYNC_RESPONSE_STATUS = {
   ENQUEUED: 'enqueued',
   ALREADY_IN_FLIGHT: 'already_in_flight',

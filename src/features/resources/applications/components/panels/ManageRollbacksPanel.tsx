@@ -1,5 +1,7 @@
-import React, { useMemo, useState } from 'react';
-import { CheckCircleOutlined } from '@ant-design/icons';
+import React, { useCallback, useMemo, useState } from 'react';
+import { CheckCircleOutlined, StopOutlined } from '@ant-design/icons';
+import { App as AntdApp, Button, Tooltip } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   SlideOutPanel,
   ExpandPanelButton,
@@ -12,6 +14,8 @@ import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import { FancySpinner } from '../../../../../components/animation';
+import type { AppDispatch } from '../../../../../store';
+import { abortApplicationRollbackThunk } from '../../store';
 import {
   classifyRollbackStatus,
   formatRollbackNamespaceRef,
@@ -19,25 +23,85 @@ import {
   getRollbackStatusColors,
   type RollbackStatusState,
 } from '../../utils/rollbacks';
+import {
+  usePermission,
+  ACTION_PERMISSIONS,
+} from '../../../../../features/auth/hooks/permissions/permissionEngine';
+import { selectPermissionsState } from '../../../../auth/store/selectors/permissionsSelectors';
 
 const PANEL_WIDTH = 650;
 const PANEL_WIDTH_EXPANDED = 960;
 
+const ICON_BTN: React.CSSProperties = {
+  borderColor: DEFAULT_COLORS.BORDER_LIGHT,
+  color: DEFAULT_COLORS.TEXT_PRIMARY,
+};
+
 export interface ManageRollbacksPanelProps {
   open: boolean;
   onClose: () => void;
+  applicationName: string;
   detailRollbacks: Application['rollbacks'];
+  onAfterAbort?: () => void;
 }
 
 const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
   open,
   onClose,
+  applicationName,
   detailRollbacks,
+  onAfterAbort,
 }) => {
   const [expanded, setExpanded] = useState(false);
+  const [abortBusyId, setAbortBusyId] = useState<string | null>(null);
+  const dispatch: AppDispatch = useDispatch();
+  const { modal, message } = AntdApp.useApp();
+  const { userID } = useSelector(selectPermissionsState);
+  const canAbort = usePermission(
+    ACTION_PERMISSIONS.applications.rollback.scope,
+    ACTION_PERMISSIONS.applications.rollback.level,
+    ACTION_PERMISSIONS.applications.rollback.deny,
+  );
+  const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
+
   const rollbacks = useMemo<ApplicationRollbackEntry[]>(
     () => (Array.isArray(detailRollbacks) ? detailRollbacks : []),
     [detailRollbacks],
+  );
+
+  const handleAbort = useCallback(
+    (entry: ApplicationRollbackEntry) => {
+      modal.confirm({
+        title: ui.ABORT_CONFIRM_TITLE,
+        content: ui.ABORT_CONFIRM_CONTENT,
+        okText: ui.ABORT_CONFIRM_OK,
+        okType: 'danger',
+        cancelText: APPLICATIONS_UI.CARD.ACTIONS.CANCEL,
+        onOk: async () => {
+          if (!userID) {
+            message.error(ui.ABORT_USER_REQUIRED);
+            return;
+          }
+          setAbortBusyId(entry.id);
+          try {
+            await dispatch(
+              abortApplicationRollbackThunk({
+                name: applicationName,
+                rollbackId: entry.id,
+                userID,
+              }),
+            ).unwrap();
+            message.success(ui.ABORT_SUCCESS);
+            onAfterAbort?.();
+          } catch {
+            message.error(ui.ABORT_FAILED);
+          } finally {
+            setAbortBusyId(null);
+          }
+        },
+      });
+    },
+    [applicationName, dispatch, message, modal, onAfterAbort, ui, userID],
   );
 
   return (
@@ -63,7 +127,13 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
                   .slice()
                   .sort((a, b) => String(b.triggeredAt).localeCompare(String(a.triggeredAt)))
                   .map((rb) => (
-                    <RollbackRow key={rb.id} entry={rb} />
+                    <RollbackRow
+                      key={rb.id}
+                      entry={rb}
+                      canAbort={canAbort}
+                      abortLoading={abortBusyId === rb.id}
+                      onAbort={handleAbort}
+                    />
                   ))}
               </div>
             )}
@@ -78,12 +148,19 @@ ManageRollbacksPanel.displayName = 'ManageRollbacksPanel';
 
 export default ManageRollbacksPanel;
 
-function RollbackRow(props: { entry: ApplicationRollbackEntry }): React.ReactElement {
-  const { entry } = props;
+function RollbackRow(props: {
+  entry: ApplicationRollbackEntry;
+  canAbort: boolean;
+  abortLoading: boolean;
+  onAbort: (entry: ApplicationRollbackEntry) => void;
+}): React.ReactElement {
+  const { entry, canAbort, abortLoading, onAbort } = props;
   const statusKey = String(entry.status || '').trim();
   const statusLabel = formatRollbackStatusLabel(statusKey || 'unknown');
   const statusState = classifyRollbackStatus(statusKey);
   const statusColors = getRollbackStatusColors(statusState);
+  const isPending = statusState === 'pending';
+  const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
 
   return (
     <div
@@ -138,12 +215,31 @@ function RollbackRow(props: { entry: ApplicationRollbackEntry }): React.ReactEle
             <span style={{ fontSize: 12, color: DEFAULT_COLORS.DANGER }}>{entry.error}</span>
           ) : null}
         </div>
-        <StatusBadge
-          label={statusLabel}
-          state={statusState}
-          background={statusColors.background}
-          color={statusColors.color}
-        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {isPending ? (
+            <Tooltip
+              title={canAbort ? ui.ABORT_ROLLBACK_TOOLTIP : ui.ABORT_PERMISSION_DENIED_TOOLTIP}
+            >
+              <Button
+                size="small"
+                type="default"
+                danger
+                icon={<StopOutlined />}
+                onClick={() => onAbort(entry)}
+                style={ICON_BTN}
+                aria-label={ui.ABORT_ROLLBACK}
+                disabled={!canAbort}
+                loading={abortLoading}
+              />
+            </Tooltip>
+          ) : null}
+          <StatusBadge
+            label={statusLabel}
+            state={statusState}
+            background={statusColors.background}
+            color={statusColors.color}
+          />
+        </div>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { message } from 'antd';
+import { App as AntdApp } from 'antd';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
 import { deleteGroupThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
@@ -23,6 +23,7 @@ export const useBulkDeleteGroups = ({
   setSelectedGroups,
 }: UseBulkDeleteGroupsProps): UseBulkDeleteGroupsReturn => {
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleBulkDelete = useCallback(async () => {
@@ -59,7 +60,7 @@ export const useBulkDeleteGroups = ({
     } finally {
       setIsDeleting(false);
     }
-  }, [selectedGroups, dispatch, setSelectedGroups]);
+  }, [selectedGroups, dispatch, setSelectedGroups, message]);
 
   return {
     isDeleting,

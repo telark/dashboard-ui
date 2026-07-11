@@ -10,6 +10,8 @@ export const handleFetchGroupsFulfilled = (state: GroupsState, action: PayloadAc
   state.loading = false;
   state.groups = action.payload;
   state.error = null;
+  const liveIds = new Set(action.payload.map((g) => g.id));
+  state.deletingIds = state.deletingIds.filter((id) => liveIds.has(id));
 };
 
 export const handleFetchGroupsRejected = (state: GroupsState, action: PayloadAction<unknown>) => {
