@@ -32,6 +32,10 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}/trigger`,
       method: 'POST',
     }),
+    ABORT_ROLLBACK: (name: string, rollbackId: string) => ({
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}/${rollbackId}/abort`,
+      method: 'POST',
+    }),
     GET_ROLLBACKS: (name: string) => ({
       path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}/get`,
       method: 'GET',

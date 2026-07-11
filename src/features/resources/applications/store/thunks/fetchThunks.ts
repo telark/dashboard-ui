@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import logger, { logErrorOnce } from '../../../../../logging';
 import {
+  abortApplicationRollback,
   deleteApplication,
   fetchApplications,
   fetchApplicationDetails,
@@ -154,6 +155,30 @@ export const triggerApplicationRollbackThunk = createAsyncThunk(
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_TRIGGERING_APPLICATION_ROLLBACK, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.TRIGGER_APPLICATION_ROLLBACK));
+    }
+  },
+);
+
+export interface AbortApplicationRollbackArgs {
+  name: string;
+  rollbackId: string;
+  userID: string;
+}
+
+export const abortApplicationRollbackThunk = createAsyncThunk(
+  STORE_ACTIONS.APPLICATIONS.ABORT_ROLLBACK,
+  async ({ name, rollbackId, userID }: AbortApplicationRollbackArgs, { rejectWithValue }) => {
+    try {
+      const response = await abortApplicationRollback(name, rollbackId, userID);
+      const raw = response.data;
+      if (raw != null && typeof raw === 'object' && typeof (raw as Application).name === 'string') {
+        return mapSingleApplicationData(raw);
+      }
+      const refreshed = await fetchApplicationDetails(name);
+      return mapSingleApplicationData(refreshed.data);
+    } catch (error: unknown) {
+      logger.error(STORE_MESSAGES.ERROR_ABORTING_APPLICATION_ROLLBACK, error);
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.ABORT_APPLICATION_ROLLBACK));
     }
   },
 );

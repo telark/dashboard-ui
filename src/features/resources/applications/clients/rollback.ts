@@ -1,5 +1,5 @@
 import { Client, discoveryApiClient } from '../../../../api';
-import { Endpoints } from '../../../../constants';
+import { Endpoints, HTTP_HEADERS } from '../../../../constants';
 import logger from '../../../../logging';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import type { Application, ApplicationRollbackTriggerPayload } from '../models';
@@ -21,6 +21,29 @@ export const triggerApplicationRollback = async (
   } catch (error) {
     logger.error(
       `${APPLICATIONS_ERROR_MESSAGES.CLIENT.TRIGGER_APPLICATION_ROLLBACK_FAILED} "${name}":`,
+      error,
+    );
+    throw error;
+  }
+};
+
+export const abortApplicationRollback = async (
+  name: string,
+  rollbackId: string,
+  userID: string,
+) => {
+  try {
+    return await Client<ResourceDetailsResponse<Application>>(
+      discoveryApiClient,
+      Endpoints.APPLICATIONS.ABORT_ROLLBACK(name, rollbackId).path,
+      {
+        method: 'POST',
+        headers: { [HTTP_HEADERS.CUSTOM.USER_ID]: userID },
+      },
+    );
+  } catch (error) {
+    logger.error(
+      `${APPLICATIONS_ERROR_MESSAGES.CLIENT.ABORT_APPLICATION_ROLLBACK_FAILED} "${name}" / "${rollbackId}":`,
       error,
     );
     throw error;
