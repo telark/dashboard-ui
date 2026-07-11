@@ -1,4 +1,4 @@
-# In-cluster k6 Job template for the Plsyro dashboard suite.
+# In-cluster k6 Job template for the telark dashboard suite.
 # Placeholders: __RUN__, __SCENARIO__, __NAMESPACE__, __CONFIGMAP__,
 #               __EXPORTER_URL__, __DISCOVERY_URL__, __AUTH_URL__, __ENRICHMENT_URL__,
 #               __SESSION_TOKEN__, __USER_ID__, __TEST_APP_NAME__, __TEST_PLAN_TEMPLATE_ID__,

@@ -1,4 +1,4 @@
-# Plsyro dashboard k6 tests
+# telark dashboard k6 tests
 
 Tests that check the dashboard's APIs work and measure how fast they are. Each test walks a real user flow (login session reuse, browse apps, create a protection plan, etc.) and reports per-step timings.
 
@@ -43,7 +43,7 @@ export USER_ID=<your-user-id>
 k6/cluster/run.sh bootstrap_flow
 ```
 
-The script creates a K8s Job in the `plsyro` namespace, runs the test, streams logs, copies result files, then deletes the Job and ConfigMap. **Nothing stays in the cluster between runs.**
+The script creates a K8s Job in the `telark` namespace, runs the test, streams logs, copies result files, then deletes the Job and ConfigMap. **Nothing stays in the cluster between runs.**
 
 Full command reference: see [`USAGE.md`](./USAGE.md).
 
@@ -79,10 +79,10 @@ Tests target the four backend services directly via their in-cluster DNS names (
 
 | Service | Default URL |
 |---|---|
-| exporter | `http://plsyro-exporter-service.plsyro.svc.cluster.local:8080` |
-| discovery | `http://plsyro-discovery-service.plsyro.svc.cluster.local:8080` |
-| auth | `http://plsyro-auth-service.plsyro.svc.cluster.local:8080` |
-| enrichment | `http://plsyro-enrichment-service.plsyro.svc.cluster.local:8080` |
+| exporter | `http://telark-exporter-service.telark.svc.cluster.local:8080` |
+| discovery | `http://telark-discovery-service.telark.svc.cluster.local:8080` |
+| auth | `http://telark-auth-service.telark.svc.cluster.local:8080` |
+| enrichment | `http://telark-enrichment-service.telark.svc.cluster.local:8080` |
 
 Each test calls the same paths the UI's React code calls — see the per-service mapping table in `PLAN.md` §A.
 

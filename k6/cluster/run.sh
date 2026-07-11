@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Run one k6 scenario for the Plsyro dashboard as a K8s Job.
+# Run one k6 scenario for the telark dashboard as a K8s Job.
 #
 # Lifecycle per invocation:
 #   1. Flatten k6 scripts to a temp dir (ConfigMap mount needs flat layout).
@@ -27,10 +27,10 @@
 #                   (only needed for: application_force_sync)
 #
 # Optional env (sensible defaults):
-#   EXPORTER_BASE_URL              http://plsyro-exporter-service.plsyro.svc.cluster.local:8080
-#   DISCOVERY_BASE_URL             http://plsyro-discovery-service.plsyro.svc.cluster.local:8080
-#   AUTH_BASE_URL                  http://plsyro-auth-service.plsyro.svc.cluster.local:8080
-#   ENRICHMENT_BASE_URL            http://plsyro-enrichment-service.plsyro.svc.cluster.local:8080
+#   EXPORTER_BASE_URL              http://telark-exporter-service.telark.svc.cluster.local:8080
+#   DISCOVERY_BASE_URL             http://telark-discovery-service.telark.svc.cluster.local:8080
+#   AUTH_BASE_URL                  http://telark-auth-service.telark.svc.cluster.local:8080
+#   ENRICHMENT_BASE_URL            http://telark-enrichment-service.telark.svc.cluster.local:8080
 #   TEST_PLAN_TEMPLATE_ID          auto-pick first template if empty
 #   FORCE_SYNC_POLL_TIMEOUT_SEC    90
 #   PLAN_STATUS_POLL_TIMEOUT_SEC   60
@@ -53,11 +53,11 @@ readonly VALID_SCENARIOS=(
   protection_plan_lifecycle
   notifications_flow
 )
-readonly DEFAULT_NAMESPACE="plsyro"
-readonly DEFAULT_EXPORTER_URL="http://plsyro-exporter-service.plsyro.svc.cluster.local:8080"
-readonly DEFAULT_DISCOVERY_URL="http://plsyro-discovery-service.plsyro.svc.cluster.local:8080"
-readonly DEFAULT_AUTH_URL="http://plsyro-auth-service.plsyro.svc.cluster.local:8080"
-readonly DEFAULT_ENRICHMENT_URL="http://plsyro-enrichment-service.plsyro.svc.cluster.local:8080"
+readonly DEFAULT_NAMESPACE="telark"
+readonly DEFAULT_EXPORTER_URL="http://telark-exporter-service.telark.svc.cluster.local:8080"
+readonly DEFAULT_DISCOVERY_URL="http://telark-discovery-service.telark.svc.cluster.local:8080"
+readonly DEFAULT_AUTH_URL="http://telark-auth-service.telark.svc.cluster.local:8080"
+readonly DEFAULT_ENRICHMENT_URL="http://telark-enrichment-service.telark.svc.cluster.local:8080"
 readonly DEFAULT_FORCE_SYNC_POLL_TIMEOUT_SEC="90"
 readonly DEFAULT_PLAN_STATUS_POLL_TIMEOUT_SEC="60"
 readonly DEFAULT_DELETE_OWN_SESSION="false"
