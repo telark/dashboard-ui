@@ -49,14 +49,14 @@ const SYNC_TAG_CONFIG: Record<
     label: APPLICATIONS_UI.CARD.SYNC_STATUS.SYNCING,
   },
   success: {
-    bg: '#dcfce7',
-    color: '#166534',
+    bg: DEFAULT_COLORS.SUCCESS_TINT,
+    color: DEFAULT_COLORS.SUCCESS,
     icon: <CheckCircleOutlined style={{ fontSize: 11 }} />,
     label: APPLICATIONS_UI.CARD.SYNC_STATUS.SUCCESS,
   },
   failed: {
-    bg: '#fee2e2',
-    color: '#991b1b',
+    bg: DEFAULT_COLORS.DANGER_TINT,
+    color: DEFAULT_COLORS.DANGER,
     icon: <CloseCircleOutlined style={{ fontSize: 11 }} />,
     label: APPLICATIONS_UI.CARD.SYNC_STATUS.FAILED,
   },

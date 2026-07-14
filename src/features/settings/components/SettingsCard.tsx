@@ -26,10 +26,10 @@ const SettingsCard: React.FC<SettingsCardProps> = memo(
     return (
       <div
         style={{
-          background: DEFAULT_COLORS.BACKGROUND_WHITE,
+          background: DEFAULT_COLORS.SURFACE_ELEVATED,
           borderRadius: CONTENT.CARD_BORDER_RADIUS,
           padding: CONTENT.CARD_PADDING,
-          border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+          border: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
         }}
       >
         <div style={headerStyle}>

@@ -109,7 +109,7 @@ export function StatMiniCard(props: { label: string; value: React.ReactNode }): 
         border: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
         borderRadius: APPLICATION_SECTION_LAYOUT.COLUMN_INNER_RADIUS,
         padding: 10,
-        background: DEFAULT_COLORS.BACKGROUND_WHITE,
+        background: DEFAULT_COLORS.SURFACE_ELEVATED,
         boxSizing: 'border-box',
       }}
     >
