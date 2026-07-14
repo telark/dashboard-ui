@@ -85,6 +85,10 @@ export const APPLICATIONS_UI = {
       TITLE: 'Resources',
       DESCRIPTION: 'Resources discovered for this application.',
       SHOWING_FIRST: 'Showing first',
+      VIEW_GRAPH: 'Graph',
+      VIEW_TREE: 'Tree',
+      VIEW_GRAPH_TOOLTIP: 'Radial view',
+      VIEW_TREE_TOOLTIP: 'Structure view',
     },
     INSIGHTS: {
       TITLE: 'Insights',
