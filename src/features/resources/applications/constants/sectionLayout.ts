@@ -31,6 +31,17 @@ export const APPLICATION_SECTION_LAYOUT = {
   },
 } as const;
 
+/** Sticky details toolbar: identity on the left, actions on the right. */
+export const APPLICATION_DETAILS_TOOLBAR = {
+  IDENTITY_GAP_PX: 8,
+  NAME_FONT_SIZE_PX: 13,
+  META_FONT_SIZE_PX: 12,
+  HEALTH_DOT_SIZE_PX: 7,
+  /** The identity strip only appears once the page header has scrolled away. */
+  REVEAL_OFFSET_PX: 48,
+  REVEAL_DURATION_S: 0.18,
+} as const;
+
 /** Workload metrics: usage-vs-baseline meters, one row per workload. */
 export const APPLICATION_WORKLOAD_METRICS = {
   ROW_GAP_PX: 6,

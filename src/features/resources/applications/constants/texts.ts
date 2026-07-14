@@ -81,6 +81,13 @@ export const APPLICATIONS_UI = {
       TITLE: 'Namespaces',
       DESCRIPTION: 'Namespaces associated with this application.',
     },
+    DETAILS_TOOLBAR: {
+      MORE_LABEL: 'More',
+      MORE_TOOLTIP: 'More actions',
+      SYNCED_PREFIX: 'synced',
+      NEVER_SYNCED: 'never synced',
+      SEPARATOR: '·',
+    },
     RESOURCES: {
       TITLE: 'Resources',
       DESCRIPTION: 'Resources discovered for this application.',
