@@ -19,6 +19,16 @@ body,
   font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
 }
 
+/* The page background must live on the document, not only on the layout element:
+   the layout is only as tall as its content, so scrolling past it (or rubber-band
+   overscroll) would otherwise expose the browser's white default. */
+html,
+body {
+  background-color: var(--page-bg);
+  /* Makes scrollbars and overscroll render dark instead of light. */
+  color-scheme: dark;
+}
+
 body {
   font-weight: 400;
 }
