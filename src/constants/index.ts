@@ -7,6 +7,7 @@ export * from './layout/indicators';
 export * from './layout/menu';
 export * from './layout/messages';
 export * from './layout/panels';
+export * from './layout/sidebar';
 export * from './layout/timeline';
 export * from './layout/ui';
 export * from './rest/api';

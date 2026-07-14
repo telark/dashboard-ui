@@ -254,8 +254,8 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
                   style={{
                     height: 44,
                     borderRadius: 8,
-                    border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-                    background: DEFAULT_COLORS.BACKGROUND_LIGHT,
+                    border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
+                    background: DEFAULT_COLORS.SURFACE_HOVER,
                   }}
                 />
               ))}

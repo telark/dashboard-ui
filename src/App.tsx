@@ -106,6 +106,25 @@ const App: React.FC = () => {
             colorBorder: DEFAULT_COLORS.BORDER_DEFAULT,
           },
           components: {
+            Dropdown: {
+              colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
+              colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
+              controlItemBgHover: DEFAULT_COLORS.SURFACE_HOVER,
+            },
+            Select: {
+              colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
+              colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
+              optionSelectedBg: DEFAULT_COLORS.SURFACE_HOVER,
+              controlItemBgHover: DEFAULT_COLORS.SURFACE_HOVER,
+            },
+            DatePicker: {
+              colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
+              colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
+            },
+            Tooltip: {
+              colorBgSpotlight: DEFAULT_COLORS.SURFACE_WHITE,
+              colorTextLightSolid: DEFAULT_COLORS.TEXT_ON_SURFACE,
+            },
             Checkbox: {
               colorPrimary: DEFAULT_COLORS.SUCCESS,
               colorPrimaryHover: DEFAULT_COLORS.SUCCESS,

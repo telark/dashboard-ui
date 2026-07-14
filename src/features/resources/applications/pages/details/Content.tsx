@@ -188,7 +188,6 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
             justifyContent: 'flex-end',
             padding: '8px 0',
             background: DEFAULT_COLORS.BACKGROUND_WHITE,
-            borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
           }}
         >
           <ApplicationDetailsToolbar

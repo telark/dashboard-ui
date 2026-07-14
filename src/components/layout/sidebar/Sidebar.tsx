@@ -1,13 +1,11 @@
-import { useEffect, useRef, useState, memo, useCallback } from 'react';
-import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
+import { useEffect, useRef, useState, memo } from 'react';
 import { useLocation } from 'react-router-dom';
 import MenuItems from './MenuItems';
 import SettingsMenuItems from './SettingsMenuItems';
-import { DEFAULT_COLORS, HEADER_LAYOUT, APP_ROUTES } from '../../../constants';
-
-const SIDEBAR_WIDTH_EXPANDED = 220;
-const SIDEBAR_WIDTH_COLLAPSED = 52;
-const STORAGE_KEY = 'sidebar_collapsed';
+import SidebarResizeHandle from './SidebarResizeHandle';
+import { UserAvatarDropdown } from '../../../features/access-and-permissions/users/components';
+import { useSidebarCollapse } from '../../../hooks/layout';
+import { DEFAULT_COLORS, HEADER_LAYOUT, SIDEBAR_LAYOUT, APP_ROUTES } from '../../../constants';
 
 const Sidebar = memo(() => {
   const location = useLocation();
@@ -20,24 +18,8 @@ const Sidebar = memo(() => {
     }
   }, [location.pathname, isSettingsRoute]);
 
-  const [isCollapsed, setIsCollapsed] = useState(
-    () => localStorage.getItem(STORAGE_KEY) === 'true',
-  );
-
-  useEffect(() => {
-    document.documentElement.style.setProperty(
-      '--sidebar-width',
-      `${isCollapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED}px`,
-    );
-  }, [isCollapsed]);
-
-  const handleToggle = useCallback(() => {
-    setIsCollapsed((prev) => {
-      const next = !prev;
-      localStorage.setItem(STORAGE_KEY, String(next));
-      return next;
-    });
-  }, []);
+  const { isCollapsed, width, applyDraggedWidth } = useSidebarCollapse();
+  const [isDragging, setIsDragging] = useState(false);
 
   return (
     <div
@@ -45,7 +27,7 @@ const Sidebar = memo(() => {
         position: 'fixed',
         left: 0,
         top: HEADER_LAYOUT.HEIGHT_PX,
-        width: isCollapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED,
+        width: isCollapsed ? SIDEBAR_LAYOUT.WIDTH_COLLAPSED : width,
         height: `calc(100vh - ${HEADER_LAYOUT.HEIGHT_PX}px)`,
         backgroundColor: DEFAULT_COLORS.BACKGROUND_WHITE,
         borderRight: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
@@ -53,15 +35,19 @@ const Sidebar = memo(() => {
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        transition: 'width 200ms ease',
+        transition: isDragging ? 'none' : SIDEBAR_LAYOUT.WIDTH_TRANSITION,
       }}
     >
+      {!isCollapsed && (
+        <SidebarResizeHandle onResize={applyDraggedWidth} onDraggingChange={setIsDragging} />
+      )}
       <div style={{ flexGrow: 1, overflowX: 'hidden', position: 'relative' }}>
         <div
           style={{
             position: 'absolute',
             inset: 0,
             overflowY: 'auto',
+            paddingTop: SIDEBAR_LAYOUT.CONTENT_TOP_PADDING,
             opacity: isSettingsRoute ? 0 : 1,
             transition: 'opacity 150ms ease',
             pointerEvents: isSettingsRoute ? 'none' : 'auto',
@@ -74,6 +60,7 @@ const Sidebar = memo(() => {
             position: 'absolute',
             inset: 0,
             overflowY: 'auto',
+            paddingTop: SIDEBAR_LAYOUT.CONTENT_TOP_PADDING,
             opacity: isSettingsRoute ? 1 : 0,
             transition: 'opacity 150ms ease',
             pointerEvents: isSettingsRoute ? 'auto' : 'none',
@@ -86,34 +73,13 @@ const Sidebar = memo(() => {
       <div
         style={{
           borderTop: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-          padding: '8px 0',
+          padding: '6px 0',
           flexShrink: 0,
           display: 'flex',
-          justifyContent: isCollapsed ? 'center' : 'flex-end',
-          paddingRight: isCollapsed ? 0 : 8,
+          flexDirection: 'column',
         }}
       >
-        <button
-          type="button"
-          onClick={handleToggle}
-          aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: DEFAULT_COLORS.TEXT_MUTED,
-            cursor: 'pointer',
-            width: 28,
-            height: 28,
-            borderRadius: 6,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 14,
-            transition: 'background 150ms ease',
-          }}
-        >
-          {isCollapsed ? <HiChevronRight /> : <HiChevronLeft />}
-        </button>
+        <UserAvatarDropdown variant="sidebar" isCollapsed={isCollapsed} />
       </div>
     </div>
   );

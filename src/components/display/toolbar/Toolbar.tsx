@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dropdown, Tooltip } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../constants';
+import { BUTTON_COLORS, DEFAULT_COLORS } from '../../../constants';
 import type { ToolbarConfig } from '../../../interfaces/layout/toolbar';
 import { SearchButton } from '../buttons';
 import { SearchInput } from '../inputs';
@@ -138,7 +138,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                       ? '#fff'
                       : isDanger
                         ? DEFAULT_COLORS.DANGER
-                        : '#64748b',
+                        : BUTTON_COLORS.TOOLBAR_TEXT,
                   opacity: isDisabled ? 0.6 : 1,
                   fontFamily: "'Roboto Condensed', sans-serif",
                   transition: 'all 0.2s',
@@ -170,7 +170,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                       : 'transparent';
                     if (!isGhost) {
                       e.currentTarget.style.borderColor = '#d9d9d9';
-                      e.currentTarget.style.color = '#64748b';
+                      e.currentTarget.style.color = BUTTON_COLORS.TOOLBAR_TEXT;
                     }
                   }
                 }}
@@ -227,7 +227,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                   ? '#fff'
                   : isDanger
                     ? DEFAULT_COLORS.DANGER
-                    : '#64748b',
+                    : BUTTON_COLORS.TOOLBAR_TEXT,
               opacity: isDisabled ? 0.6 : 1,
               fontFamily: "'Roboto Condensed', sans-serif",
               transition: 'all 0.2s',
@@ -256,7 +256,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                 e.currentTarget.style.backgroundColor = button.active ? '#e6f7ff' : 'transparent';
                 if (!isGhost) {
                   e.currentTarget.style.borderColor = '#d9d9d9';
-                  e.currentTarget.style.color = '#64748b';
+                  e.currentTarget.style.color = BUTTON_COLORS.TOOLBAR_TEXT;
                 }
               }
             }}

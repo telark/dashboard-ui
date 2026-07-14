@@ -37,7 +37,7 @@ const ApplicationPageLayout: React.FC<ApplicationPageLayoutProps> = memo(
                 {b.label}
               </button>
             ) : (
-              <span style={{ color: '#0B1F33' }}>{b.label}</span>
+              <span style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>{b.label}</span>
             )}
           </React.Fragment>
         ))}

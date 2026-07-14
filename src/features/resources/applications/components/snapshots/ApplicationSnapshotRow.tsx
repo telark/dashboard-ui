@@ -13,8 +13,9 @@ import {
 } from '../../../../../features/auth/hooks/permissions/permissionEngine';
 
 const ICON_BTN: React.CSSProperties = {
-  borderColor: DEFAULT_COLORS.BORDER_LIGHT,
-  color: DEFAULT_COLORS.TEXT_PRIMARY,
+  borderColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  background: DEFAULT_COLORS.SURFACE_WHITE,
 };
 
 export type RollbackDisabledReason = 'sync' | 'activeRollback' | null;
@@ -64,11 +65,11 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
     const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
     const takenAtLine =
       s.takenAt && s.takenAt.trim().length > 0 ? (
-        <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 500 }}>
+        <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_ON_SURFACE, fontWeight: 500 }}>
           {ui.TAKEN_AT}: <TimeAgo date={s.takenAt} />
         </span>
       ) : (
-        <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 500 }}>
+        <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_ON_SURFACE, fontWeight: 500 }}>
           {ui.TAKEN_AT}: {APPLICATIONS_UI.FALLBACKS.EMPTY}
         </span>
       );
@@ -76,11 +77,11 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
     return (
       <div
         style={{
-          border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+          border: `1px solid ${DEFAULT_COLORS.TEXT_ON_SURFACE}`,
           borderRadius: APPLICATION_SECTION_LAYOUT.COLUMN_INNER_RADIUS,
           padding: 10,
           marginBottom: showMarginBottom ? 8 : 0,
-          background: DEFAULT_COLORS.BACKGROUND_WHITE,
+          background: DEFAULT_COLORS.SURFACE_WHITE,
         }}
       >
         <div

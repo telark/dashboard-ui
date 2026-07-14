@@ -1,7 +1,8 @@
 import React from 'react';
+import { ConfigProvider, theme } from 'antd';
 import type { AnimationWrapperProps } from '../../../../interfaces/layout/panels';
 import { useBodyOverflow } from '../../../../hooks/panel';
-import { SLIDE_OUT } from '../../../../constants';
+import { PANEL_SURFACE_CLASS, PANEL_THEME_TOKENS, SLIDE_OUT } from '../../../../constants';
 import TopPanelToolbar from './TopPanelToolbar';
 import { PanelHeader } from '../shared';
 
@@ -22,11 +23,12 @@ const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
     if (!open) return null;
 
     return (
-      <>
+      <ConfigProvider theme={{ algorithm: theme.defaultAlgorithm, token: PANEL_THEME_TOKENS }}>
         {/* Backdrop */}
         <div onClick={onClose} style={SLIDE_OUT.BACKDROP} />
         {/* Panel */}
         <div
+          className={PANEL_SURFACE_CLASS}
           style={{
             ...SLIDE_OUT.PANEL,
             width: width,
@@ -55,7 +57,7 @@ const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
           {SLIDE_OUT.KEYFRAMES.SLIDE_IN_RIGHT}
           {SLIDE_OUT.KEYFRAMES.FADE_IN}
         </style>
-      </>
+      </ConfigProvider>
     );
   },
 );

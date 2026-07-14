@@ -1,5 +1,20 @@
 import { DEFAULT_COLORS } from '../shared/colors';
 
+// Panels keep the light surface they had before the dark theme; these tokens
+// re-light the antd controls rendered inside them.
+export const PANEL_SURFACE_CLASS = 'app-panel-surface';
+
+export const PANEL_THEME_TOKENS = {
+  colorBgBase: DEFAULT_COLORS.SURFACE_WHITE,
+  colorTextBase: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  colorBgContainer: DEFAULT_COLORS.SURFACE_WHITE,
+  colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
+  colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  colorTextPlaceholder: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  colorIcon: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  colorBorder: DEFAULT_COLORS.SURFACE_BORDER,
+} as const;
+
 export const SLIDE_OUT = {
   BACKDROP: {
     position: 'fixed' as const,
@@ -16,18 +31,18 @@ export const SLIDE_OUT = {
     top: 0,
     right: 0,
     bottom: 0,
-    background: '#fff',
+    background: DEFAULT_COLORS.SURFACE_WHITE,
     zIndex: 1001,
     display: 'flex' as const,
     flexDirection: 'column' as const,
-    borderRight: '0.5px solid #e5e7eb',
+    borderRight: `0.5px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
     animation: 'slideInRight 0.3s ease-out',
     transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     willChange: 'transform',
   },
   HEADER: {
     padding: '16px 24px',
-    borderBottom: '1px solid #f0f0f0',
+    borderBottom: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
     display: 'flex' as const,
     flexDirection: 'column' as const,
     gap: 4,
@@ -50,20 +65,20 @@ export const SLIDE_OUT = {
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
-    color: '#64748b',
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     fontSize: 16,
     transition: 'color 0.2s',
     borderRadius: 4,
   },
-  TOOLBAR_BUTTON_HOVER_COLOR: '#0B1F33',
-  TOOLBAR_BUTTON_DEFAULT_COLOR: '#64748b',
+  TOOLBAR_BUTTON_HOVER_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  TOOLBAR_BUTTON_DEFAULT_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   TITLE_CONTAINER: {
     flex: 1,
   },
   TITLE: {
     fontSize: 24,
     fontWeight: 700,
-    color: '#0B1F33',
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
     margin: 0,
     padding: 0,
     lineHeight: 1.2,
@@ -76,12 +91,12 @@ export const SLIDE_OUT = {
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
-    color: '#64748b',
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     fontSize: 18,
     transition: 'color 0.2s',
   },
-  CLOSE_BUTTON_HOVER_COLOR: '#0B1F33',
-  CLOSE_BUTTON_DEFAULT_COLOR: '#64748b',
+  CLOSE_BUTTON_HOVER_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  CLOSE_BUTTON_DEFAULT_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   EXPAND_TOOLTIP: 'Expand panel for a wider layout',
   COLLAPSE_TOOLTIP: 'Collapse panel to default width',
   CONTENT: {
@@ -105,7 +120,7 @@ export const SLIDE_OUT = {
   FOOTER: {
     paddingTop: 6,
     paddingBottom: 6,
-    borderTop: '1px solid #f0f0f0',
+    borderTop: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
     display: 'flex' as const,
     flexDirection: 'row' as const,
     justifyContent: 'space-between' as const,
@@ -116,7 +131,7 @@ export const SLIDE_OUT = {
   CANCEL_BUTTON: {
     background: 'none',
     border: 'none',
-    color: '#64748b',
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     fontSize: 14,
     fontWeight: 500,
     cursor: 'pointer' as const,
@@ -124,8 +139,10 @@ export const SLIDE_OUT = {
     borderRadius: 6,
     transition: 'all 0.2s',
   },
-  CANCEL_BUTTON_HOVER_BACKGROUND: DEFAULT_COLORS.HOVER_BG,
+  CANCEL_BUTTON_HOVER_BACKGROUND: DEFAULT_COLORS.TEXT_ON_SURFACE,
   CANCEL_BUTTON_DEFAULT_BACKGROUND: 'none',
+  CANCEL_BUTTON_HOVER_COLOR: DEFAULT_COLORS.SURFACE_WHITE,
+  CANCEL_BUTTON_DEFAULT_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   KEYFRAMES: {
     SLIDE_IN_RIGHT: `
       @keyframes slideInRight {
@@ -166,11 +183,11 @@ export const FILTER_PANEL = {
     top: 0,
     right: 0,
     bottom: 0,
-    background: '#fff',
+    background: DEFAULT_COLORS.SURFACE_WHITE,
     zIndex: 1003,
     display: 'flex' as const,
     flexDirection: 'column' as const,
-    borderRight: '0.5px solid #e5e7eb',
+    borderRight: `0.5px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
     animation: 'slideInRight 0.3s ease-out',
   },
   CONTENT: {
@@ -189,10 +206,10 @@ export const FILTER_PANEL = {
   SECTION_TITLE: {
     fontSize: 12,
     fontWeight: 600,
-    color: '#64748b',
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     textTransform: 'uppercase' as const,
     letterSpacing: 0.5,
-    fontFamily: "'Roboto Condensed', sans-serif",
+    fontFamily: "'Geist', sans-serif",
   },
   DATE_RANGE_CONTAINER: {
     display: 'flex' as const,
@@ -208,7 +225,7 @@ export const FILTER_PANEL = {
   DATE_LABEL: {
     fontSize: 13,
     fontWeight: 500,
-    color: '#64748b',
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     lineHeight: '20px',
   },
   DATE_INPUT: {
@@ -216,7 +233,7 @@ export const FILTER_PANEL = {
   },
   DATE_ARROW: {
     fontSize: 18,
-    color: '#64748b',
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
@@ -230,7 +247,7 @@ export const FILTER_PANEL = {
     height: 32,
     padding: '0 16px',
     fontSize: 13,
-    fontFamily: "'Roboto Condensed', sans-serif",
+    fontFamily: "'Geist', sans-serif",
     transition: 'all 0.2s',
     fontWeight: 500,
   },
@@ -241,9 +258,9 @@ export const FILTER_PANEL = {
     color: '#fff',
   },
   BUTTON_INACTIVE: {
-    border: '1px solid #d9d9d9',
-    backgroundColor: '#fff',
-    color: '#64748b',
+    border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
+    backgroundColor: DEFAULT_COLORS.SURFACE_WHITE,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   },
   DROPDOWN: {
     width: '100%',
@@ -274,7 +291,7 @@ export const VIEW = {
     width: 64,
     height: 64,
     borderRadius: '50%',
-    background: '#fff',
+    background: DEFAULT_COLORS.SURFACE_WHITE,
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
@@ -291,14 +308,14 @@ export const VIEW = {
     margin: 0,
     fontSize: 28,
     fontWeight: 700,
-    color: '#0B1F33',
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
     letterSpacing: '-0.02em',
     textTransform: 'capitalize' as const,
   },
   DESCRIPTION: {
     margin: '0 0 4px 0',
     fontSize: 13,
-    color: '#64748b',
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     textAlign: 'center' as const,
     maxWidth: '360px',
     lineHeight: 1.4,
@@ -312,7 +329,7 @@ export const VIEW = {
   AVATAR: {
     border: '1.5px solid #20C997',
     padding: 1.5,
-    background: '#fff',
+    background: DEFAULT_COLORS.SURFACE_WHITE,
     boxSizing: 'border-box' as const,
     boxShadow: '0 0 0 2px #fff',
   },
@@ -363,7 +380,7 @@ export const VIEW = {
     LABEL: {
       fontSize: 12,
       fontWeight: 700,
-      color: '#6b7280',
+      color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
       textTransform: 'uppercase' as const,
       letterSpacing: 0.6,
     },

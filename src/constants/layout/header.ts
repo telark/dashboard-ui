@@ -7,6 +7,10 @@ export const HEADER_LAYOUT = {
     ALT: 'telark',
     WIDTH: 80,
     HEIGHT: 18,
+    // Matches the left padding of BUTTON_CONFIGS.SIDEBAR_BUTTON so the logo
+    // lines up with the sidebar menu items.
+    LEFT_PX: 20,
+    TOGGLE_GAP: 16,
   },
 } as const;
 
@@ -22,9 +26,12 @@ export const HEADER_CONSTANTS = {
       MIN_WIDTH: '200px',
       PLACEMENT: 'bottomRight' as const,
       TRIGGER: ['click'] as const,
+      ROOT_CLASS: 'user-menu-dropdown',
     },
     USER_INFO: {
-      PADDING: '8px 0',
+      // No bottom padding: the divider below relies on symmetric menu-item
+      // padding to sit centred between the user block and the actions.
+      PADDING: '8px 0 0',
       USERNAME: {
         FONT_WEIGHT: 500,
         FONT_SIZE: '14px',
@@ -33,7 +40,7 @@ export const HEADER_CONSTANTS = {
       EMAIL: {
         FONT_SIZE: '12px',
         COLOR: '#999',
-        MARGIN_TOP: '4px',
+        MARGIN_TOP: '0px',
       },
     },
     MENU_ITEM: {

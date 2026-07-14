@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { SLIDE_OUT } from '../../../../constants';
+import { ConfigProvider, theme } from 'antd';
+import { PANEL_SURFACE_CLASS, PANEL_THEME_TOKENS, SLIDE_OUT } from '../../../../constants';
 import FilterPanelHeader from './FilterPanelHeader';
 import FilterPanelFooter from './FilterPanelFooter';
 import FilterFieldRenderer from './FilterFieldRenderer';
@@ -110,9 +111,10 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   if (!open) return null;
 
   return (
-    <>
+    <ConfigProvider theme={{ algorithm: theme.defaultAlgorithm, token: PANEL_THEME_TOKENS }}>
       <div onClick={onClose} style={SLIDE_OUT.BACKDROP} />
       <div
+        className={PANEL_SURFACE_CLASS}
         style={{
           ...SLIDE_OUT.PANEL,
           width: width,
@@ -142,7 +144,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         {SLIDE_OUT.KEYFRAMES.SLIDE_IN_RIGHT}
         {SLIDE_OUT.KEYFRAMES.FADE_IN}
       </style>
-    </>
+    </ConfigProvider>
   );
 };
 

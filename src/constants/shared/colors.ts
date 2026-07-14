@@ -27,4 +27,11 @@ export const DEFAULT_COLORS = {
   ICON_MUTED: '#4b5563',
   ICON_SECONDARY: '#6b7280',
   ERROR: '#ef4444',
+  // Light surfaces (dropdown/popover panels reversed against the dark theme)
+  SURFACE_WHITE: '#ffffff',
+  SURFACE_HOVER: '#f1f5f9',
+  SURFACE_BORDER: '#d9d9d9',
+  SURFACE_BORDER_LIGHT: '#f0f0f0',
+  TEXT_ON_SURFACE: '#111827',
+  TEXT_ON_SURFACE_MUTED: '#64748b',
 } as const;
