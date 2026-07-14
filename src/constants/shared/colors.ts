@@ -42,4 +42,7 @@ export const DEFAULT_COLORS = {
   TEXT_ON_SURFACE: '#111827',
   TEXT_ON_SURFACE_MUTED: '#64748b',
   TEXT_ON_SURFACE_DISABLED: '#94a3b8',
+  /** Chips on light surfaces; CHIP_CUSTOM_* is the dark-theme counterpart. */
+  CHIP_ON_SURFACE_BG: '#f1f5f9',
+  CHIP_ON_SURFACE_TEXT: '#334155',
 } as const;

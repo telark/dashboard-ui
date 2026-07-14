@@ -254,7 +254,7 @@
 
 /* Ensure modal close icon is visible */
 .ant-modal-close {
-  color: #ffffff !important;
+  color: #111827 !important;
   top: 12px !important;
   right: 3px !important;
   width: auto !important;
@@ -265,8 +265,8 @@
 
 .ant-modal-close svg,
 .ant-modal-close * {
-  color: #ffffff !important;
-  fill: #ffffff !important;
+  color: #111827 !important;
+  fill: #111827 !important;
 }
 
 .ant-modal-close-x {

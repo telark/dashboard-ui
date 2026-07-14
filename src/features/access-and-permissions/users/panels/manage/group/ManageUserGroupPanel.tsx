@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { Form } from 'antd';
-import { CheckCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined } from '@ant-design/icons';
 import {
   SlideOutPanel,
   ExpandPanelButton,
@@ -8,7 +8,7 @@ import {
 import { SearchInput } from '../../../../../../components/display/inputs';
 import { ToggleButton } from '../../../../../../components/display/buttons';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
-import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
+import { Icons } from '../../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { useManageUserGroupPanel } from '../../../hooks/panels/group/useManageUserGroupPanel';
 import { useDeassignUserGroup } from '../../../hooks/panels/group/useDeassignUserGroup';
@@ -171,7 +171,6 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
         resourceType={UC.LABELS.ACTIONS.DEASSIGN_GROUP_RESOURCE_TYPE}
         confirmText={UC.LABELS.ACTIONS.DEASSIGN_GROUP_MODAL_CONFIRM}
         loading={isDeassigning}
-        icon={<MinusCircleOutlined style={{ fontSize: 28, color: DEFAULT_COLORS.ERROR }} />}
         getContainer={() => document.body}
         offsetRight={panelWidth}
       />

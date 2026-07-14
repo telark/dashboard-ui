@@ -1,9 +1,8 @@
 import React from 'react';
 import { Modal } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
 import { ACTION_CONFIRM_MODAL } from '../../../../constants';
 import { useActionConfirmHandlers } from '../../../../hooks/layout/useActionConfirmHandlers';
-import { ActionIcon, ActionCloseIcon } from '../../icons';
+import { ActionCloseIcon } from '../../icons';
 import { ActionTitle, ActionMessage } from '../../text';
 import ActionButtons from '../../buttons/ActionButtons';
 
@@ -19,7 +18,6 @@ export interface ActionConfirmModalProps {
   cancelText?: string;
   loading?: boolean;
   danger?: boolean;
-  icon?: React.ReactNode;
   customMessage?: React.ReactNode;
   /** Shifts the modal's centering leftward by this many px (useful when a side panel is open) */
   offsetRight?: number;
@@ -39,7 +37,6 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
   cancelText = 'Cancel',
   loading = false,
   danger = true,
-  icon,
   customMessage,
   offsetRight,
   getContainer = false,
@@ -47,22 +44,13 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
   const { handleModalCancel, handleCloseIconClick, handleCancelClick, handleConfirmClick } =
     useActionConfirmHandlers({ onClose, onConfirm });
 
-  const defaultIcon = (
-    <DeleteOutlined
-      style={{
-        fontSize: ACTION_CONFIRM_MODAL.DEFAULT_ICON.FONT_SIZE,
-        color: ACTION_CONFIRM_MODAL.DEFAULT_ICON.COLOR,
-      }}
-    />
-  );
-  const actionIcon = icon || defaultIcon;
-
   return (
     <Modal
       open={open}
       onCancel={handleModalCancel}
       title={null}
       width={ACTION_CONFIRM_MODAL.MODAL.WIDTH}
+      zIndex={ACTION_CONFIRM_MODAL.MODAL.Z_INDEX}
       footer={null}
       mask={{ closable: true }}
       getContainer={getContainer}
@@ -89,7 +77,6 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
           gap: ACTION_CONFIRM_MODAL.CONTENT.GAP,
         }}
       >
-        <ActionIcon icon={actionIcon} />
         <ActionTitle title={title} />
         <ActionMessage
           action={action}

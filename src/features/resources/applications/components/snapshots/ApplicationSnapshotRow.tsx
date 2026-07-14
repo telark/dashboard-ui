@@ -1,21 +1,25 @@
-import React, { memo } from 'react';
-import { EyeOutlined } from '@ant-design/icons';
+import React, { memo, useState } from 'react';
+import { EyeOutlined, HistoryOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Tooltip } from 'antd';
-import { DEFAULT_COLORS, Icons } from '../../../../../constants';
+import { DEFAULT_COLORS } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { APPLICATIONS_UI } from '../../constants';
-import RowTag from '../../../../../components/display/table/RowTag';
-import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
+import { APPLICATION_SNAPSHOT_ROW } from '../../constants/sectionLayout';
+import { getApplicationSeverityAccentColor } from '../../utils/healthVisual';
+import SnapshotMetaChip from './SnapshotMetaChip';
 import type { ApplicationSnapshotSummary } from '../../models';
 import {
   usePermission,
   ACTION_PERMISSIONS,
 } from '../../../../../features/auth/hooks/permissions/permissionEngine';
 
+const R = APPLICATION_SNAPSHOT_ROW;
+
+/** Borderless: two outlined boxes per row read as clutter against the list. */
 const ICON_BTN: React.CSSProperties = {
-  borderColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
-  color: DEFAULT_COLORS.TEXT_ON_SURFACE,
-  background: DEFAULT_COLORS.SURFACE_WHITE,
+  width: R.ICON_BUTTON_SIZE_PX,
+  height: R.ICON_BUTTON_SIZE_PX,
+  color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
 };
 
 export type RollbackDisabledReason = 'sync' | 'activeRollback' | null;
@@ -48,6 +52,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
     compareDisabled = false,
     onToggleCompare,
   }) => {
+    const [hovered, setHovered] = useState(false);
     const canViewManifest = usePermission(
       ACTION_PERMISSIONS.applications.viewSnapshotManifest.scope,
       ACTION_PERMISSIONS.applications.viewSnapshotManifest.level,
@@ -63,40 +68,32 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
       s.severity && s.severity.trim().length > 0 ? s.severity : APPLICATIONS_UI.FALLBACKS.EMPTY;
 
     const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
-    const takenAtLine =
-      s.takenAt && s.takenAt.trim().length > 0 ? (
-        <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_ON_SURFACE, fontWeight: 500 }}>
-          {ui.TAKEN_AT}: <TimeAgo date={s.takenAt} />
-        </span>
-      ) : (
-        <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_ON_SURFACE, fontWeight: 500 }}>
-          {ui.TAKEN_AT}: {APPLICATIONS_UI.FALLBACKS.EMPTY}
-        </span>
-      );
 
     return (
       <div
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
         style={{
-          border: `1px solid ${DEFAULT_COLORS.TEXT_ON_SURFACE}`,
-          borderRadius: APPLICATION_SECTION_LAYOUT.COLUMN_INNER_RADIUS,
-          padding: 10,
-          marginBottom: showMarginBottom ? 8 : 0,
-          background: DEFAULT_COLORS.SURFACE_WHITE,
+          border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+          borderRadius: R.RADIUS_PX,
+          padding: R.PADDING,
+          marginBottom: showMarginBottom ? R.ROW_SPACING_PX : 0,
+          background: hovered ? DEFAULT_COLORS.SURFACE_HOVER : DEFAULT_COLORS.SURFACE_WHITE,
+          transition: R.TRANSITION,
         }}
       >
         <div
           style={{
             display: 'flex',
-            alignItems: 'flex-start',
+            alignItems: 'center',
             justifyContent: 'space-between',
             gap: 12,
-            flexWrap: 'wrap',
           }}
         >
           <div
             style={{
               display: 'flex',
-              alignItems: 'flex-start',
+              alignItems: 'center',
               gap: 10,
               minWidth: 0,
               flex: 1,
@@ -105,12 +102,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
             {compareMode ? (
               <span
                 className="applications-bulk-select"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  alignSelf: 'center',
-                  height: '100%',
-                }}
+                style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0 }}
                 onClick={(e) => e.stopPropagation()}
               >
                 <Checkbox
@@ -120,22 +112,50 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                 />
               </span>
             ) : null}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0 }}>
-              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
-                <RowTag
-                  text={`${ui.GENERATION}: ${s.generation}`}
-                  {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-                />
-                <RowTag
-                  text={`${ui.SEVERITY}: ${severityLabel}`}
-                  {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-                />
-                <RowTag
-                  text={`${ui.SIZE}: ${s.size}`}
-                  {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-                />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
+              {/* Generation is the identity of a snapshot, so it leads instead of
+                  being one chip among three. */}
+              <span
+                style={{
+                  fontSize: R.TITLE_FONT_SIZE_PX,
+                  fontWeight: 700,
+                  color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {ui.GENERATION} {s.generation}
+              </span>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: R.GAP_PX,
+                  fontSize: R.META_FONT_SIZE_PX,
+                  color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+                }}
+              >
+                <SnapshotMetaChip>
+                  <span
+                    style={{
+                      width: R.SEVERITY_DOT_SIZE_PX,
+                      height: R.SEVERITY_DOT_SIZE_PX,
+                      borderRadius: '50%',
+                      background: getApplicationSeverityAccentColor(s.severity),
+                    }}
+                  />
+                  {severityLabel}
+                </SnapshotMetaChip>
+                <span>{s.size}</span>
+                <span>{APPLICATIONS_UI.SECTIONS.SNAPSHOTS.STORAGE_METRICS_JOINER.trim()}</span>
+                <span>
+                  {s.takenAt && s.takenAt.trim().length > 0 ? (
+                    <TimeAgo date={s.takenAt} />
+                  ) : (
+                    APPLICATIONS_UI.FALLBACKS.EMPTY
+                  )}
+                </span>
               </div>
-              {takenAtLine}
             </div>
           </div>
           <div
@@ -144,9 +164,6 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
               alignItems: 'center',
               gap: 6,
               flexShrink: 0,
-              flexWrap: 'wrap',
-              justifyContent: 'flex-end',
-              alignSelf: 'flex-start',
             }}
           >
             <Tooltip
@@ -156,7 +173,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
             >
               <Button
                 size="small"
-                type="default"
+                type="text"
                 icon={<EyeOutlined />}
                 onClick={() => onViewManifest(s)}
                 style={ICON_BTN}
@@ -177,8 +194,8 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
             >
               <Button
                 size="small"
-                type="default"
-                icon={<Icons.SnapshotRestore size={14} />}
+                type="text"
+                icon={<HistoryOutlined />}
                 onClick={() => onRollback?.(s)}
                 style={ICON_BTN}
                 aria-label={ui.ROLLBACK}

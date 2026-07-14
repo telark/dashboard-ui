@@ -3,6 +3,8 @@ export const ACTION_CONFIRM_MODAL = {
     WIDTH: 360,
     BORDER_RADIUS: 12,
     CLASS_NAME: 'action-confirm-modal',
+    /** Above SLIDE_OUT.PANEL (1001) so a confirm raised from a panel is not buried. */
+    Z_INDEX: 1100,
   },
   CLOSE_ICON: {
     SIZE: 20,
@@ -18,11 +20,6 @@ export const ACTION_CONFIRM_MODAL = {
   CONTENT: {
     GAP: 6,
     PADDING: '16px 20px 8px',
-  },
-  ICON_CONTAINER: {
-    SIZE: 50,
-    BORDER_RADIUS: 10,
-    BACKGROUND: '#fff1f0',
   },
   TITLE: {
     FONT_SIZE: 18,
@@ -48,9 +45,5 @@ export const ACTION_CONFIRM_MODAL = {
       HEIGHT: 36,
       PADDING: '0 16px',
     },
-  },
-  DEFAULT_ICON: {
-    FONT_SIZE: 24,
-    COLOR: '#ff4d4f',
   },
 } as const;

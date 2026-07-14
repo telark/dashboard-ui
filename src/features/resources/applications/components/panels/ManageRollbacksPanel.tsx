@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { CheckCircleOutlined, StopOutlined } from '@ant-design/icons';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { CheckCircleOutlined, DownOutlined, RightOutlined, StopOutlined } from '@ant-design/icons';
 import { App as AntdApp, Button, Tooltip } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -7,15 +7,15 @@ import {
   ExpandPanelButton,
 } from '../../../../../components/display/panels/slide-out';
 import { DEFAULT_COLORS } from '../../../../../constants';
-import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import type { Application, ApplicationRollbackEntry } from '../../models';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
-import RowTag from '../../../../../components/display/table/RowTag';
-import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
+import SnapshotMetaChip from '../snapshots/SnapshotMetaChip';
+import { APPLICATION_SNAPSHOT_ROW } from '../../constants/sectionLayout';
 import { FancySpinner } from '../../../../../components/animation';
 import type { AppDispatch } from '../../../../../store';
 import { abortApplicationRollbackThunk } from '../../store';
+import { fetchUserById } from '../../../../access-and-permissions/users/clients/fetch';
 import {
   classifyRollbackStatus,
   formatRollbackNamespaceRef,
@@ -32,9 +32,12 @@ import { selectPermissionsState } from '../../../../auth/store/selectors/permiss
 const PANEL_WIDTH = 650;
 const PANEL_WIDTH_EXPANDED = 960;
 
+const R = APPLICATION_SNAPSHOT_ROW;
+
+/** Matches the borderless action buttons on the snapshot rows. */
 const ICON_BTN: React.CSSProperties = {
-  borderColor: DEFAULT_COLORS.BORDER_LIGHT,
-  color: DEFAULT_COLORS.TEXT_PRIMARY,
+  width: R.ICON_BUTTON_SIZE_PX,
+  height: R.ICON_BUTTON_SIZE_PX,
 };
 
 export interface ManageRollbacksPanelProps {
@@ -68,6 +71,41 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
     () => (Array.isArray(detailRollbacks) ? detailRollbacks : []),
     [detailRollbacks],
   );
+
+  // The API records who triggered a rollback as a user ID; resolve each one to a
+  // username so rows read "by alice" instead of "by u-ac247-c2a5-0334".
+  const [usernamesById, setUsernamesById] = useState<Record<string, string>>({});
+  const requestedUserIdsRef = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!open) return;
+    const pending = rollbacks
+      .map((entry) => entry.triggeredBy)
+      .filter((id): id is string => Boolean(id) && !requestedUserIdsRef.current.has(id));
+    if (pending.length === 0) return;
+
+    const uniqueIds = [...new Set(pending)];
+    uniqueIds.forEach((id) => requestedUserIdsRef.current.add(id));
+
+    let cancelled = false;
+    void Promise.all(
+      uniqueIds.map(async (id) => {
+        try {
+          const response = await fetchUserById(id, true);
+          return [id, response?.data?.username || id] as const;
+        } catch {
+          // Deleted or unreadable user: keep showing the raw ID rather than nothing.
+          return [id, id] as const;
+        }
+      }),
+    ).then((pairs) => {
+      if (!cancelled) setUsernamesById((prev) => ({ ...prev, ...Object.fromEntries(pairs) }));
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [open, rollbacks]);
 
   const handleAbort = useCallback(
     (entry: ApplicationRollbackEntry) => {
@@ -130,6 +168,9 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
                     <RollbackRow
                       key={rb.id}
                       entry={rb}
+                      triggeredByName={
+                        rb.triggeredBy ? usernamesById[rb.triggeredBy] || rb.triggeredBy : ''
+                      }
                       canAbort={canAbort}
                       abortLoading={abortBusyId === rb.id}
                       onAbort={handleAbort}
@@ -150,11 +191,15 @@ export default ManageRollbacksPanel;
 
 function RollbackRow(props: {
   entry: ApplicationRollbackEntry;
+  /** Resolved username; falls back to the raw ID while loading or if unknown. */
+  triggeredByName: string;
   canAbort: boolean;
   abortLoading: boolean;
   onAbort: (entry: ApplicationRollbackEntry) => void;
 }): React.ReactElement {
-  const { entry, canAbort, abortLoading, onAbort } = props;
+  const { entry, triggeredByName, canAbort, abortLoading, onAbort } = props;
+  const [hovered, setHovered] = useState(false);
+  const [errorOpen, setErrorOpen] = useState(false);
   const statusKey = String(entry.status || '').trim();
   const statusLabel = formatRollbackStatusLabel(statusKey || 'unknown');
   const statusState = classifyRollbackStatus(statusKey);
@@ -164,65 +209,116 @@ function RollbackRow(props: {
 
   return (
     <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
-        border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-        borderRadius: APPLICATION_SECTION_LAYOUT.COLUMN_INNER_RADIUS,
-        padding: 10,
-        background: DEFAULT_COLORS.BACKGROUND_WHITE,
+        border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+        borderRadius: R.RADIUS_PX,
+        padding: R.PADDING,
+        background: hovered ? DEFAULT_COLORS.SURFACE_HOVER : DEFAULT_COLORS.SURFACE_WHITE,
+        transition: R.TRANSITION,
       }}
     >
       <div
         style={{
           display: 'flex',
-          alignItems: 'flex-start',
+          alignItems: 'center',
           justifyContent: 'space-between',
           gap: 12,
-          flexWrap: 'wrap',
         }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0, flex: 1 }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
-            <RowTag
-              text={String(entry.targetSnapshotId || '').trim() || APPLICATIONS_UI.FALLBACKS.EMPTY}
-              {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-            />
-            <RowTag
-              text={`Generation: ${entry.targetGeneration}`}
-              {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-            />
-            <RowTag
-              text={formatRollbackNamespaceRef(entry.namespace).replace(/^ns\//, '')}
-              {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-            />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0, flex: 1 }}>
+          {/* Target generation leads, matching the snapshot rows. */}
+          <span
+            style={{
+              fontSize: R.TITLE_FONT_SIZE_PX,
+              fontWeight: 700,
+              color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {ui.GENERATION} {entry.targetGeneration}
+          </span>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              gap: R.GAP_PX,
+              minWidth: 0,
+              fontSize: R.META_FONT_SIZE_PX,
+              color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+            }}
+          >
+            <SnapshotMetaChip>
+              {formatRollbackNamespaceRef(entry.namespace).replace(/^ns\//, '')}
+            </SnapshotMetaChip>
             {entry.restoredGeneration != null ? (
-              <RowTag
-                text={`Restored: ${entry.restoredGeneration}`}
-                {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-              />
+              <SnapshotMetaChip>
+                {ui.RESTORED_PREFIX} {entry.restoredGeneration}
+              </SnapshotMetaChip>
+            ) : null}
+            <span>
+              {ui.TRIGGERED_PREFIX} <TimeAgo date={entry.triggeredAt} />
+              {triggeredByName ? ` ${ui.META_SEPARATOR} ${triggeredByName}` : ''}
+            </span>
+            {entry.completedAt ? (
+              <span>
+                {ui.META_SEPARATOR} {ui.COMPLETED_PREFIX} <TimeAgo date={entry.completedAt} />
+              </span>
             ) : null}
           </div>
-          <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 500 }}>
-            Triggered: <TimeAgo date={entry.triggeredAt} />
-            {entry.triggeredBy ? ` · ${entry.triggeredBy}` : ''}
-            {entry.completedAt ? (
-              <>
-                {' '}
-                · Completed: <TimeAgo date={entry.completedAt} />
-              </>
-            ) : null}
-          </span>
+          {/* The raw engine error is long and only matters when digging in, so the
+              row states that it failed and lets the user ask for the detail. */}
           {entry.error ? (
-            <span style={{ fontSize: 12, color: DEFAULT_COLORS.DANGER }}>{entry.error}</span>
+            <div style={{ display: 'grid', rowGap: 4, minWidth: 0 }}>
+              <button
+                type="button"
+                onClick={() => setErrorOpen((prev) => !prev)}
+                aria-expanded={errorOpen}
+                style={{
+                  all: 'unset',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  alignSelf: 'start',
+                  fontSize: R.META_FONT_SIZE_PX,
+                  fontWeight: 600,
+                  color: DEFAULT_COLORS.DANGER,
+                }}
+              >
+                {errorOpen ? <DownOutlined /> : <RightOutlined />}
+                <span>{errorOpen ? ui.HIDE_ERROR : ui.SHOW_ERROR}</span>
+              </button>
+              {errorOpen ? (
+                <div
+                  style={{
+                    padding: R.ERROR_PADDING,
+                    borderRadius: R.ERROR_RADIUS_PX,
+                    background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
+                    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+                    fontSize: R.ERROR_FONT_SIZE_PX,
+                    fontFamily: 'monospace',
+                    maxHeight: R.ERROR_MAX_HEIGHT_PX,
+                    overflow: 'auto',
+                    overflowWrap: 'anywhere',
+                  }}
+                >
+                  {entry.error}
+                </div>
+              ) : null}
+            </div>
           ) : null}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
           {isPending ? (
             <Tooltip
               title={canAbort ? ui.ABORT_ROLLBACK_TOOLTIP : ui.ABORT_PERMISSION_DENIED_TOOLTIP}
             >
               <Button
                 size="small"
-                type="default"
+                type="text"
                 danger
                 icon={<StopOutlined />}
                 onClick={() => onAbort(entry)}
@@ -254,8 +350,6 @@ function StatusBadge(props: {
   const { label, state, background, color } = props;
   const showSpinner = state === 'inProgress' || state === 'pending';
   const showSuccessIcon = state === 'success';
-  const borderColor =
-    state === 'pending' ? CONNECTIVITY_CONSTANTS.COLORS.WARNING : DEFAULT_COLORS.BORDER_LIGHT;
   return (
     <span
       style={{
@@ -264,7 +358,6 @@ function StatusBadge(props: {
         gap: 8,
         background,
         color,
-        border: `1px solid ${borderColor}`,
         padding: '2px 10px',
         borderRadius: 999,
         fontWeight: 700,
