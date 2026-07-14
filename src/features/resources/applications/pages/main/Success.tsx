@@ -241,25 +241,6 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
             />
           </div>
         </div>
-        <style>{`
-          .applications-pagination .ant-pagination-item-active {
-            border-color: ${DEFAULT_COLORS.SUCCESS};
-          }
-          .applications-pagination .ant-pagination-item-active a {
-            color: ${DEFAULT_COLORS.SUCCESS};
-          }
-          .applications-pagination .ant-pagination-item:hover,
-          .applications-pagination .ant-pagination-prev:hover .ant-pagination-item-link,
-          .applications-pagination .ant-pagination-next:hover .ant-pagination-item-link {
-            border-color: ${DEFAULT_COLORS.SUCCESS};
-            color: ${DEFAULT_COLORS.SUCCESS};
-          }
-          .applications-pagination .ant-pagination-item:hover a,
-          .applications-pagination .ant-pagination-prev:hover .ant-pagination-item-link,
-          .applications-pagination .ant-pagination-next:hover .ant-pagination-item-link {
-            color: ${DEFAULT_COLORS.SUCCESS};
-          }
-        `}</style>
         <ApplicationDeleteModal
           open={bulkDeleteOpen}
           onClose={() => setBulkDeleteOpen(false)}

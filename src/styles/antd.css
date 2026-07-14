@@ -567,6 +567,24 @@
   min-height: 0;
 }
 
+/* Pagination accent, shared by the applications list and the workload metrics
+   section. Global so it does not depend on which page mounted it. */
+.applications-pagination .ant-pagination-item-active {
+  border-color: #20C997;
+}
+.applications-pagination .ant-pagination-item-active a {
+  color: #20C997;
+}
+.applications-pagination .ant-pagination-item:hover,
+.applications-pagination .ant-pagination-prev:hover .ant-pagination-item-link,
+.applications-pagination .ant-pagination-next:hover .ant-pagination-item-link {
+  border-color: #20C997;
+  color: #20C997;
+}
+.applications-pagination .ant-pagination-item:hover a {
+  color: #20C997;
+}
+
 /* Side panels keep the light surface they had before the dark theme, so the
    global dark-text rules above must not reach inside them. */
 .app-panel-surface {
