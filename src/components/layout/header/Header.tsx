@@ -22,6 +22,27 @@ const Header: React.FC = () => {
         borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
       }}
     >
+      {/* Logo centered over the sidebar column */}
+      <div
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          height: '100%',
+          width: 'var(--sidebar-width)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'width 200ms ease',
+        }}
+      >
+        <img
+          src={HEADER_LAYOUT.LOGO.SRC}
+          alt={HEADER_LAYOUT.LOGO.ALT}
+          width={HEADER_LAYOUT.LOGO.WIDTH}
+          height={HEADER_LAYOUT.LOGO.HEIGHT}
+        />
+      </div>
       {/* Action Buttons */}
       <div style={{ marginRight: '20px' }}>
         <NotificationBell />

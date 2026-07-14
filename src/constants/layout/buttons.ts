@@ -35,8 +35,8 @@ export const BUTTON_CONFIGS = {
 } as const;
 
 export const BUTTON_COLORS = {
-  ICON_DEFAULT: '#5B6B7C',
-  TEXT_DEFAULT: '#0B1F33',
+  ICON_DEFAULT: '#9ca3af',
+  TEXT_DEFAULT: '#ffffff',
   DISABLED: '#d9d9d9',
 } as const;
 
