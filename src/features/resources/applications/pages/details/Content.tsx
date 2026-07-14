@@ -1,6 +1,6 @@
 import React, { memo, useMemo, useState } from 'react';
 import { ApartmentOutlined, InfoCircleOutlined, ShareAltOutlined } from '@ant-design/icons';
-import { Collapse, Segmented, Tooltip } from 'antd';
+import { Segmented, Tooltip } from 'antd';
 import { format } from 'date-fns';
 import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../../../constants';
 import SettingsCard from '../../../../settings/components/SettingsCard';
@@ -18,6 +18,7 @@ import {
 import KeyValueGrid from '../../components/details/KeyValueGrid';
 import ApplicationResourceGraph from '../../components/details/ApplicationResourceGraph';
 import ApplicationResourceTree from '../../components/details/ApplicationResourceTree';
+import ApplicationWorkloadMetrics from '../../components/details/ApplicationWorkloadMetrics';
 import ApplicationDetailsToolbar from '../../components/layout/ApplicationDetailsToolbar';
 import {
   APPLICATION_SUMMARY_COLUMN_TITLE_STYLE,
@@ -25,7 +26,6 @@ import {
   ColumnShell,
   getChangeLogDotColor,
   StatMiniCard,
-  WorkloadBaselineRows,
 } from './contentBlocks';
 
 interface ApplicationDetailsContentProps {
@@ -792,173 +792,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           {!sections.metrics?.workloads?.length ? (
             <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <Collapse
-                bordered
-                expandIconPlacement="end"
-                style={{ background: 'transparent' }}
-                items={sections.metrics.workloads.slice(0, 25).map((w) => {
-                  const WM = APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS;
-                  return {
-                    key: `${w.namespace}:${w.resourceKind}:${w.resourceName}`,
-                    label: (
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          flexWrap: 'wrap',
-                          gap: 8,
-                          width: '100%',
-                          paddingRight: 8,
-                          minWidth: 0,
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: 15,
-                            fontWeight: 700,
-                            color: DEFAULT_COLORS.TEXT_PRIMARY,
-                            lineHeight: 1.25,
-                            minWidth: 0,
-                          }}
-                        >
-                          {w.resourceName}
-                        </div>
-                        <div
-                          style={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            gap: 6,
-                            alignItems: 'center',
-                            flexShrink: 0,
-                          }}
-                        >
-                          <RowTag
-                            text={w.resourceKind}
-                            {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-                          />
-                          <RowTag
-                            text={w.namespace}
-                            {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-                          />
-                        </div>
-                      </div>
-                    ),
-                    children: (
-                      <div
-                        style={{
-                          display: 'grid',
-                          gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
-                          gap: 12,
-                          alignItems: 'start',
-                        }}
-                      >
-                        <ColumnShell title={WM.BASELINE}>
-                          <WorkloadBaselineRows w={w} />
-                        </ColumnShell>
-                        <ColumnShell title={WM.USAGE}>
-                          {!w.usage?.available ? (
-                            <MutedText value={WM.USAGE_EMPTY} />
-                          ) : (
-                            <>
-                              {w.usage?.timestamp ? (
-                                <div
-                                  style={{
-                                    fontSize: 11,
-                                    color: DEFAULT_COLORS.TEXT_MUTED,
-                                    marginBottom: 8,
-                                  }}
-                                >
-                                  <TimeAgo date={w.usage.timestamp} />
-                                </div>
-                              ) : null}
-                              <KeyValueGrid
-                                compact
-                                rows={[
-                                  {
-                                    k: 'qos',
-                                    label: WM.QOS,
-                                    value: w.usage?.qos || APPLICATIONS_UI.FALLBACKS.EMPTY,
-                                  },
-                                  {
-                                    k: 'totalCpu',
-                                    label: WM.TOTAL_CPU,
-                                    value:
-                                      w.usage?.resources?.totalCpu ||
-                                      APPLICATIONS_UI.FALLBACKS.EMPTY,
-                                  },
-                                  {
-                                    k: 'totalMemory',
-                                    label: WM.TOTAL_MEMORY,
-                                    value:
-                                      w.usage?.resources?.totalMemory ||
-                                      APPLICATIONS_UI.FALLBACKS.EMPTY,
-                                  },
-                                ]}
-                              />
-                              {w.usage?.resources?.usagePerInstance?.length ? (
-                                <div style={{ marginTop: 8, display: 'grid', rowGap: 8 }}>
-                                  {w.usage.resources.usagePerInstance.slice(0, 3).map((inst) => (
-                                    <div
-                                      key={inst.name}
-                                      style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_PRIMARY }}
-                                    >
-                                      <div style={{ fontWeight: 700 }}>
-                                        {inst.name}{' '}
-                                        <span
-                                          style={{
-                                            fontWeight: 500,
-                                            color: DEFAULT_COLORS.TEXT_MUTED,
-                                          }}
-                                        >
-                                          ({inst.totalCpu} {WM.CPU_ABBREV} {WM.MID_DOT}{' '}
-                                          {inst.totalMemory} {WM.MEMORY_ABBREV})
-                                        </span>
-                                      </div>
-                                      {inst.containers?.length ? (
-                                        <div style={{ marginTop: 4, display: 'grid', rowGap: 3 }}>
-                                          {inst.containers.slice(0, 4).map((c) => (
-                                            <div
-                                              key={c.name}
-                                              style={{ color: DEFAULT_COLORS.TEXT_MUTED }}
-                                            >
-                                              {c.name}: {c.cpu} {WM.CPU_ABBREV} {WM.MID_DOT}{' '}
-                                              {c.memory} {WM.MEMORY_ABBREV}
-                                            </div>
-                                          ))}
-                                          {inst.containers.length > 4 ? (
-                                            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
-                                              +{inst.containers.length - 4}{' '}
-                                              {WM.MORE_CONTAINERS_SUFFIX}
-                                            </div>
-                                          ) : null}
-                                        </div>
-                                      ) : null}
-                                    </div>
-                                  ))}
-                                  {w.usage.resources.usagePerInstance.length > 3 ? (
-                                    <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                                      {WM.SHOWING_FIRST_INSTANCES}{' '}
-                                      {w.usage.resources.usagePerInstance.length}.
-                                    </div>
-                                  ) : null}
-                                </div>
-                              ) : null}
-                            </>
-                          )}
-                        </ColumnShell>
-                      </div>
-                    ),
-                  };
-                })}
-              />
-              {sections.metrics.workloads.length > 25 ? (
-                <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, paddingTop: 4 }}>
-                  {APPLICATIONS_UI.SECTIONS.RESOURCES.SHOWING_FIRST} 25 of{' '}
-                  {sections.metrics.workloads.length}.
-                </div>
-              ) : null}
-            </div>
+            <ApplicationWorkloadMetrics workloads={sections.metrics.workloads} />
           )}
         </SettingsCard>
 

@@ -131,6 +131,12 @@ const App: React.FC = () => {
               colorBgSpotlight: DEFAULT_COLORS.SURFACE_WHITE,
               colorTextLightSolid: DEFAULT_COLORS.TEXT_ON_SURFACE,
             },
+            // Date hovers (TimeAgo) render as Popovers, not Tooltips.
+            Popover: {
+              colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
+              colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
+              colorTextHeading: DEFAULT_COLORS.TEXT_ON_SURFACE,
+            },
             Checkbox: {
               colorPrimary: DEFAULT_COLORS.SUCCESS,
               colorPrimaryHover: DEFAULT_COLORS.SUCCESS,

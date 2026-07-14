@@ -2,9 +2,6 @@ import React from 'react';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
-import { APPLICATIONS_UI } from '../../constants';
-import KeyValueGrid from '../../components/details/KeyValueGrid';
-import type { ApplicationWorkloadUsage } from '../../models';
 
 export const APPLICATION_SUMMARY_SUBHEADING_STYLE: React.CSSProperties = {
   fontSize: 11,
@@ -21,63 +18,6 @@ export const APPLICATION_SUMMARY_COLUMN_TITLE_STYLE: React.CSSProperties = {
   color: DEFAULT_COLORS.TEXT_PRIMARY,
   marginBottom: 8,
 };
-
-const WORKLOAD_METRICS_BASELINE_LABEL_STYLE: React.CSSProperties = {
-  fontSize: 11,
-  color: DEFAULT_COLORS.TEXT_MUTED,
-  fontWeight: 600,
-};
-
-export function WorkloadBaselineRows(props: { w: ApplicationWorkloadUsage }): React.ReactElement {
-  const { w } = props;
-  const WM = APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS;
-  const cpuReq = w.baseline?.requests?.cpu ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
-  const memReq = w.baseline?.requests?.memory ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
-  const cpuLim = w.baseline?.limits?.cpu ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
-  const memLim = w.baseline?.limits?.memory ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
-  const resourcePair = (cpu: string, mem: string): React.ReactElement => (
-    <div
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        alignItems: 'baseline',
-        columnGap: 12,
-        rowGap: 4,
-      }}
-    >
-      <span>
-        <span style={{ fontSize: 13, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-          {cpu}
-        </span>{' '}
-        <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.RESOURCE_CPU_LABEL}</span>
-      </span>
-      <span>
-        <span style={{ fontSize: 13, fontWeight: 600, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-          {mem}
-        </span>{' '}
-        <span style={WORKLOAD_METRICS_BASELINE_LABEL_STYLE}>{WM.RESOURCE_MEMORY_LABEL}</span>
-      </span>
-    </div>
-  );
-  return (
-    <KeyValueGrid
-      compact
-      rows={[
-        {
-          k: 'replicas',
-          label: WM.REPLICAS,
-          value: (
-            <span style={{ fontWeight: 700, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-              {String(w.baseline?.replicas ?? 0)}
-            </span>
-          ),
-        },
-        { k: 'requests', label: WM.REQUESTS, value: resourcePair(cpuReq, memReq) },
-        { k: 'limits', label: WM.LIMITS, value: resourcePair(cpuLim, memLim) },
-      ]}
-    />
-  );
-}
 
 export function getChangeLogDotColor(severity: string): string {
   const s = severity.toLowerCase();
