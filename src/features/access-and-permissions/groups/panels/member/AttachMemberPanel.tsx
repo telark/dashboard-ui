@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { Form } from 'antd';
-import { CheckCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined } from '@ant-design/icons';
 import {
   SlideOutPanel,
   ExpandPanelButton,
@@ -8,7 +8,7 @@ import {
 import { SearchInput } from '../../../../../components/display/inputs';
 import { ToggleButton } from '../../../../../components/display/buttons';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
-import { Icons, DEFAULT_COLORS } from '../../../../../constants';
+import { Icons } from '../../../../../constants';
 import { useAttachMemberPanel, useDeassignGroupMember } from '../../hooks';
 import {
   usePermission,
@@ -195,7 +195,6 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
         resourceType={GC.LABELS.ACTIONS.DEASSIGN_MEMBER_RESOURCE_TYPE}
         confirmText={GC.LABELS.ACTIONS.DEASSIGN_MEMBER_MODAL_CONFIRM}
         loading={isDeassigning}
-        icon={<MinusCircleOutlined style={{ fontSize: 28, color: DEFAULT_COLORS.ERROR }} />}
         getContainer={() => document.body}
         offsetRight={panelWidth}
       />

@@ -14,6 +14,7 @@ import { APPLICATIONS_UI } from '../../constants/texts';
 import type { Application, ApplicationSnapshotSummary } from '../../models';
 import { applicationSnapshotStableKey } from '../../utils/mergeApplicationSnapshotSources';
 import { mergeApplicationSnapshotSources } from '../../utils/mergeApplicationSnapshotSources';
+import { ActionConfirmModal } from '../../../../../components/display/modal';
 import ApplicationSectionEmptyState from '../display/ApplicationSectionEmptyState';
 import ApplicationSnapshotRow from '../snapshots/ApplicationSnapshotRow';
 import type { RollbackDisabledReason } from '../snapshots/ApplicationSnapshotRow';
@@ -46,7 +47,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
   onAfterRollback,
 }) => {
   const dispatch: AppDispatch = useDispatch();
-  const { modal, message } = AntdApp.useApp();
+  const { message } = AntdApp.useApp();
   const { snapshots, snapshotsLoading, snapshotsError, snapshotManifests } = useSelector(
     (s: RootState) => s.applications,
   );
@@ -55,6 +56,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
   const [expanded, setExpanded] = useState(false);
   const [activeManifestKey, setActiveManifestKey] = useState<string | null>(null);
   const [rollbackBusyId, setRollbackBusyId] = useState<string | null>(null);
+  const [rollbackTarget, setRollbackTarget] = useState<ApplicationSnapshotSummary | null>(null);
   const [compareMode, setCompareMode] = useState(false);
   const [compareKeys, setCompareKeys] = useState<string[]>([]);
   const [compareViewOpen, setCompareViewOpen] = useState(false);
@@ -159,46 +161,51 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
     [],
   );
 
-  const handleRollbackRequest = useCallback(
-    (summary: ApplicationSnapshotSummary) => {
-      modal.confirm({
-        title: snapUi.ROLLBACK_CONFIRM_TITLE,
-        content: snapUi.ROLLBACK_CONFIRM_CONTENT,
-        okText: snapUi.ROLLBACK_CONFIRM_OK,
-        cancelText: APPLICATIONS_UI.CARD.ACTIONS.CANCEL,
-        onOk: async () => {
-          const triggeredBy = userID;
-          if (!triggeredBy) {
-            message.error(snapUi.ROLLBACK_USER_REQUIRED);
-            return;
-          }
-          const busyKey = applicationSnapshotStableKey(summary);
-          setRollbackBusyId(busyKey);
-          try {
-            await dispatch(
-              triggerApplicationRollbackThunk({
-                name: applicationName,
-                snapshotGeneration: summary.generation,
-                triggeredBy,
-              }),
-            ).unwrap();
-            message.success(snapUi.ROLLBACK_SUCCESS);
-            void dispatch(
-              fetchApplicationSnapshotsThunk({
-                snapshotRefs: detailSnapshots.length > 0 ? detailSnapshots : undefined,
-              }),
-            );
-            onAfterRollback?.();
-          } catch {
-            message.error(snapUi.ROLLBACK_FAILED);
-          } finally {
-            setRollbackBusyId(null);
-          }
-        },
-      });
-    },
-    [applicationName, detailSnapshots, dispatch, message, modal, onAfterRollback, snapUi, userID],
-  );
+  // Uses the shared ActionConfirmModal rather than antd's modal.confirm, so the
+  // rollback prompt matches every other confirm in the app.
+  const handleRollbackRequest = useCallback((summary: ApplicationSnapshotSummary) => {
+    setRollbackTarget(summary);
+  }, []);
+
+  const handleRollbackConfirm = useCallback(async () => {
+    if (!rollbackTarget) return;
+    const triggeredBy = userID;
+    if (!triggeredBy) {
+      message.error(snapUi.ROLLBACK_USER_REQUIRED);
+      return;
+    }
+    setRollbackBusyId(applicationSnapshotStableKey(rollbackTarget));
+    try {
+      await dispatch(
+        triggerApplicationRollbackThunk({
+          name: applicationName,
+          snapshotGeneration: rollbackTarget.generation,
+          triggeredBy,
+        }),
+      ).unwrap();
+      message.success(snapUi.ROLLBACK_SUCCESS);
+      void dispatch(
+        fetchApplicationSnapshotsThunk({
+          snapshotRefs: detailSnapshots.length > 0 ? detailSnapshots : undefined,
+        }),
+      );
+      onAfterRollback?.();
+      setRollbackTarget(null);
+    } catch {
+      message.error(snapUi.ROLLBACK_FAILED);
+    } finally {
+      setRollbackBusyId(null);
+    }
+  }, [
+    applicationName,
+    detailSnapshots,
+    dispatch,
+    message,
+    onAfterRollback,
+    rollbackTarget,
+    snapUi,
+    userID,
+  ]);
 
   const compareButtonDisabled = compareMode && compareKeys.length === 1;
   const headerToolbarConfig: ToolbarConfig = useMemo(() => {
@@ -301,6 +308,22 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
             onClose={() => setActiveManifestKey(null)}
             title={activeRowTitle}
             manifestState={manifestState}
+          />
+
+          <ActionConfirmModal
+            open={rollbackTarget != null}
+            onClose={() => setRollbackTarget(null)}
+            onConfirm={handleRollbackConfirm}
+            title={snapUi.ROLLBACK_CONFIRM_TITLE}
+            action={snapUi.ROLLBACK}
+            resourceName={rollbackTarget ? `${snapUi.GENERATION} ${rollbackTarget.generation}` : ''}
+            confirmText={snapUi.ROLLBACK_CONFIRM_OK}
+            cancelText={APPLICATIONS_UI.CARD.ACTIONS.CANCEL}
+            customMessage={snapUi.ROLLBACK_CONFIRM_CONTENT}
+            loading={rollbackBusyId != null}
+            getContainer={() => document.body}
+            // Centre it over the page rather than under the open panel.
+            offsetRight={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
           />
         </>
       }

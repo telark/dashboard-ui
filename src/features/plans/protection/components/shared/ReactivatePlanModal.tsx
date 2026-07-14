@@ -1,5 +1,4 @@
 import React from 'react';
-import { PlayCircleOutlined } from '@ant-design/icons';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 
@@ -32,7 +31,6 @@ const ReactivatePlanModal: React.FC<ReactivatePlanModalProps> = ({
     confirmText={PPC.LABELS.DETAIL_PAGE.ACTIONS.REACTIVATE_MODAL_OK}
     loading={loading}
     danger={false}
-    icon={<PlayCircleOutlined />}
     customMessage={PPC.LABELS.DETAIL_PAGE.ACTIONS.REACTIVATE_MODAL_BODY}
     getContainer={() => document.body}
   />

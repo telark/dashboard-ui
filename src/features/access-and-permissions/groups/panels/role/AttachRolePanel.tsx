@@ -8,7 +8,7 @@ import { FilterPanel } from '../../../../../components/display/panels/filter';
 import { FilterButton, ToggleButton } from '../../../../../components/display/buttons';
 import { SearchInput } from '../../../../../components/display/inputs';
 import ActionConfirmModal from '../../../../../components/display/modal/confirm/ActionConfirmModal';
-import { Icons, DEFAULT_COLORS } from '../../../../../constants';
+import { Icons } from '../../../../../constants';
 import { useAttachRolePanel, useDeassignGroupRole } from '../../hooks';
 import {
   usePermission,
@@ -23,7 +23,7 @@ import { useRoleCategoryOptions } from '../../hooks/categories/useRoleCategoryOp
 import { GROUPS_CONSTANTS as GC } from '../../constants';
 import { filterBySearchTerm } from '../../../users/utils/search/filter';
 import { CapitalizeFirstLetter } from '../../../../../utils/helpers/format';
-import { CheckCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined } from '@ant-design/icons';
 
 const RoleIcon = Icons.Role;
 
@@ -227,7 +227,6 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         confirmText={GC.LABELS.ACTIONS.DEASSIGN_ROLE_MODAL_CONFIRM}
         cancelText={GC.LABELS.MODAL.CANCEL}
         loading={isDeassigning}
-        icon={<MinusCircleOutlined style={{ fontSize: 28, color: DEFAULT_COLORS.ERROR }} />}
         getContainer={() => document.body}
         offsetRight={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
       />

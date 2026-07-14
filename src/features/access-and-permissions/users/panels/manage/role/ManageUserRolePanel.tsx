@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { Form } from 'antd';
-import { CheckCircleOutlined, MinusCircleOutlined, TeamOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, TeamOutlined } from '@ant-design/icons';
 import {
   SlideOutPanel,
   ExpandPanelButton,
@@ -9,7 +9,7 @@ import { FilterPanel } from '../../../../../../components/display/panels/filter'
 import { FilterButton, ToggleButton } from '../../../../../../components/display/buttons';
 import { SearchInput } from '../../../../../../components/display/inputs';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
-import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
+import { Icons } from '../../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { useManageUserRolePanel } from '../../../hooks/panels/role/useManageUserRolePanel';
 import { useDeassignUserRole } from '../../../hooks/panels/role/useDeassignUserRole';
@@ -285,7 +285,6 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
         resourceType={UC.LABELS.ACTIONS.DEASSIGN_ROLE_RESOURCE_TYPE}
         confirmText={UC.LABELS.ACTIONS.DEASSIGN_ROLE_MODAL_CONFIRM}
         loading={isDeassigning}
-        icon={<MinusCircleOutlined style={{ fontSize: 28, color: DEFAULT_COLORS.ERROR }} />}
         getContainer={() => document.body}
         offsetRight={PANEL_WIDTH}
       />

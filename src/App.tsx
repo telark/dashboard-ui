@@ -131,11 +131,29 @@ const App: React.FC = () => {
               colorBgSpotlight: DEFAULT_COLORS.SURFACE_WHITE,
               colorTextLightSolid: DEFAULT_COLORS.TEXT_ON_SURFACE,
             },
+            // Modals join the light overlay family (panels, dropdowns, popovers)
+            // rather than blending into the dark page behind them.
+            Modal: {
+              contentBg: DEFAULT_COLORS.SURFACE_WHITE,
+              headerBg: DEFAULT_COLORS.SURFACE_WHITE,
+              footerBg: DEFAULT_COLORS.SURFACE_WHITE,
+              titleColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+              colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
+              colorIcon: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+              colorIconHover: DEFAULT_COLORS.TEXT_ON_SURFACE,
+              colorTextDescription: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+              colorSplit: DEFAULT_COLORS.SURFACE_BORDER_LIGHT,
+            },
             // Date hovers (TimeAgo) render as Popovers, not Tooltips.
             Popover: {
               colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
               colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
               colorTextHeading: DEFAULT_COLORS.TEXT_ON_SURFACE,
+            },
+            Button: {
+              primaryShadow: 'none',
+              dangerShadow: 'none',
+              defaultShadow: 'none',
             },
             Checkbox: {
               colorPrimary: DEFAULT_COLORS.SUCCESS,

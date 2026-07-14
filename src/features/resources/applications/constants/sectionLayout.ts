@@ -31,6 +31,27 @@ export const APPLICATION_SECTION_LAYOUT = {
   },
 } as const;
 
+/** Snapshot rows inside the (light-surfaced) manage-snapshots panel. */
+export const APPLICATION_SNAPSHOT_ROW = {
+  PADDING: '10px 12px',
+  RADIUS_PX: 10,
+  GAP_PX: 8,
+  ROW_SPACING_PX: 6,
+  TITLE_FONT_SIZE_PX: 13,
+  META_FONT_SIZE_PX: 12,
+  CHIP_FONT_SIZE_PX: 11,
+  CHIP_PADDING: '1px 8px',
+  CHIP_RADIUS_PX: 999,
+  SEVERITY_DOT_SIZE_PX: 6,
+  ICON_BUTTON_SIZE_PX: 28,
+  TRANSITION: 'background 150ms ease, border-color 150ms ease',
+  /** Raw engine errors are opt-in: they are long and only useful when debugging. */
+  ERROR_PADDING: '6px 8px',
+  ERROR_RADIUS_PX: 6,
+  ERROR_MAX_HEIGHT_PX: 120,
+  ERROR_FONT_SIZE_PX: 11,
+} as const;
+
 /** Sticky details toolbar: identity on the left, actions on the right. */
 export const APPLICATION_DETAILS_TOOLBAR = {
   IDENTITY_GAP_PX: 8,

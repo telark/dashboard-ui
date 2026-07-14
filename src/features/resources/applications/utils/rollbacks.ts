@@ -38,28 +38,24 @@ export function getRollbackStatusColors(state: RollbackStatusState): {
   background: string;
   color: string;
 } {
+  // These badges live on the light-surfaced rollbacks panel: every active state is
+  // a filled pill with a white label; inert states fall back to a neutral chip.
   if (state === 'success') {
-    return { background: DEFAULT_COLORS.SUCCESS, color: DEFAULT_COLORS.BACKGROUND_WHITE };
+    return { background: DEFAULT_COLORS.SUCCESS, color: DEFAULT_COLORS.SURFACE_WHITE };
   }
   if (state === 'failed') {
-    return { background: DEFAULT_COLORS.CHIP_CUSTOM_BG, color: DEFAULT_COLORS.DANGER };
+    return { background: DEFAULT_COLORS.DANGER, color: DEFAULT_COLORS.SURFACE_WHITE };
   }
-  if (state === 'inProgress') {
+  if (state === 'inProgress' || state === 'pending') {
     return {
       background: CONNECTIVITY_CONSTANTS.COLORS.WARNING,
-      color: DEFAULT_COLORS.BACKGROUND_WHITE,
+      color: DEFAULT_COLORS.SURFACE_WHITE,
     };
   }
-  if (state === 'pending') {
-    return {
-      background: DEFAULT_COLORS.BACKGROUND_WHITE,
-      color: CONNECTIVITY_CONSTANTS.COLORS.WARNING,
-    };
-  }
-  if (state === 'aborted') {
-    return { background: DEFAULT_COLORS.CHIP_CUSTOM_BG, color: DEFAULT_COLORS.TEXT_MUTED };
-  }
-  return { background: DEFAULT_COLORS.CHIP_CUSTOM_BG, color: DEFAULT_COLORS.TEXT_MUTED };
+  return {
+    background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  };
 }
 
 export function formatRollbackStatusLabel(raw: string): string {
