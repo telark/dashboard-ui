@@ -17,7 +17,7 @@ import {
 } from '../../utils/k8sQuantity';
 import MutedText from './MutedText';
 import WorkloadUsageMeter from './WorkloadUsageMeter';
-import type { ApplicationWorkloadUsage } from '../../models';
+import type { ApplicationWorkloadUsage, ApplicationWorkloadUsagePerInstance } from '../../models';
 
 const M = APPLICATION_WORKLOAD_METRICS;
 const WM = APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS;
@@ -41,68 +41,68 @@ const UsageValue: React.FC<{ cpu: string; memory: string; strong?: boolean }> = 
   </span>
 );
 
-const InstanceDetail: React.FC<{ workload: ApplicationWorkloadUsage }> = ({ workload }) => {
-  const instances = workload.usage?.resources?.usagePerInstance ?? [];
-  if (instances.length === 0) return null;
+const PodBlock: React.FC<{ instance: ApplicationWorkloadUsagePerInstance }> = ({ instance }) => {
+  const [containersOpen, setContainersOpen] = useState(true);
+  const hasContainers = Boolean(instance.containers?.length);
 
   return (
-    <div
-      style={{
-        marginTop: M.METER_ROW_GAP_PX,
-        paddingLeft: M.DETAIL_INDENT_PX,
-        borderLeft: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
-        display: 'grid',
-        rowGap: M.POD_BLOCK_GAP_PX,
-      }}
-    >
-      {instances.slice(0, M.MAX_INSTANCES).map((instance) => (
-        <div key={instance.name} style={{ display: 'grid', rowGap: M.DETAIL_ROW_GAP_PX }}>
-          {/* Pod line: labelled, with its total called out as a sum of the containers below. */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: M.HEADER_GAP_PX, minWidth: 0 }}>
-            <RowTag text={WM.POD_LABEL} {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
-            <span
-              style={{
-                fontSize: M.LABEL_FONT_SIZE_PX,
-                fontWeight: 700,
-                color: DEFAULT_COLORS.TEXT_PRIMARY,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {instance.name}
+    <div style={{ display: 'grid', rowGap: M.DETAIL_ROW_GAP_PX }}>
+      {/* Pod line: labelled, with its total called out as a sum of the containers below. */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: M.HEADER_GAP_PX, minWidth: 0 }}>
+        <RowTag text={WM.POD_LABEL} {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
+        <span
+          style={{
+            fontSize: M.LABEL_FONT_SIZE_PX,
+            fontWeight: 700,
+            color: DEFAULT_COLORS.TEXT_PRIMARY,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {instance.name}
+        </span>
+        <span style={{ flex: 1 }} />
+        <Tooltip title={WM.POD_TOTAL_TOOLTIP}>
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              cursor: 'help',
+              flexShrink: 0,
+            }}
+          >
+            <span style={{ fontSize: M.LABEL_FONT_SIZE_PX, color: DEFAULT_COLORS.TEXT_MUTED }}>
+              {WM.POD_TOTAL_LABEL}
             </span>
-            <span style={{ flex: 1 }} />
-            <Tooltip title={WM.POD_TOTAL_TOOLTIP}>
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  cursor: 'help',
-                  flexShrink: 0,
-                }}
-              >
-                <span style={{ fontSize: M.LABEL_FONT_SIZE_PX, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                  {WM.POD_TOTAL_LABEL}
-                </span>
-                <UsageValue cpu={instance.totalCpu} memory={instance.totalMemory} strong />
-              </span>
-            </Tooltip>
-          </div>
+            <UsageValue cpu={instance.totalCpu} memory={instance.totalMemory} strong />
+          </span>
+        </Tooltip>
+      </div>
 
-          {instance.containers?.length ? (
-            <div style={{ paddingLeft: M.CONTAINER_INDENT_PX, display: 'grid', rowGap: 2 }}>
-              <span
-                style={{
-                  fontSize: M.LABEL_FONT_SIZE_PX,
-                  color: DEFAULT_COLORS.TEXT_MUTED,
-                  marginBottom: 2,
-                }}
-              >
-                {WM.CONTAINERS_LABEL}
-              </span>
-              {instance.containers.slice(0, M.MAX_CONTAINERS).map((container) => (
+      {hasContainers ? (
+        <div style={{ paddingLeft: M.CONTAINER_INDENT_PX, display: 'grid', rowGap: 2 }}>
+          <button
+            type="button"
+            onClick={() => setContainersOpen((prev) => !prev)}
+            aria-expanded={containersOpen}
+            style={{
+              all: 'unset',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              marginBottom: 2,
+              fontSize: M.LABEL_FONT_SIZE_PX,
+              color: DEFAULT_COLORS.TEXT_MUTED,
+            }}
+          >
+            {containersOpen ? <DownOutlined /> : <RightOutlined />}
+            <span>{WM.CONTAINERS_LABEL}</span>
+          </button>
+          {containersOpen
+            ? instance.containers?.slice(0, M.MAX_CONTAINERS).map((container) => (
                 <div
                   key={container.name}
                   style={{
@@ -135,15 +135,35 @@ const InstanceDetail: React.FC<{ workload: ApplicationWorkloadUsage }> = ({ work
                   <span style={{ flex: 1 }} />
                   <UsageValue cpu={container.cpu} memory={container.memory} />
                 </div>
-              ))}
-              {instance.containers.length > M.MAX_CONTAINERS ? (
-                <span style={{ fontSize: M.LABEL_FONT_SIZE_PX, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                  +{instance.containers.length - M.MAX_CONTAINERS} {WM.MORE_CONTAINERS_SUFFIX}
-                </span>
-              ) : null}
-            </div>
+              ))
+            : null}
+          {containersOpen && (instance.containers?.length ?? 0) > M.MAX_CONTAINERS ? (
+            <span style={{ fontSize: M.LABEL_FONT_SIZE_PX, color: DEFAULT_COLORS.TEXT_MUTED }}>
+              +{(instance.containers?.length ?? 0) - M.MAX_CONTAINERS} {WM.MORE_CONTAINERS_SUFFIX}
+            </span>
           ) : null}
         </div>
+      ) : null}
+    </div>
+  );
+};
+
+const InstanceDetail: React.FC<{ workload: ApplicationWorkloadUsage }> = ({ workload }) => {
+  const instances = workload.usage?.resources?.usagePerInstance ?? [];
+  if (instances.length === 0) return null;
+
+  return (
+    <div
+      style={{
+        marginTop: M.METER_ROW_GAP_PX,
+        paddingLeft: M.DETAIL_INDENT_PX,
+        borderLeft: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
+        display: 'grid',
+        rowGap: M.POD_BLOCK_GAP_PX,
+      }}
+    >
+      {instances.slice(0, M.MAX_INSTANCES).map((instance) => (
+        <PodBlock key={instance.name} instance={instance} />
       ))}
       {instances.length > M.MAX_INSTANCES ? (
         <div style={{ fontSize: M.LABEL_FONT_SIZE_PX, color: DEFAULT_COLORS.TEXT_MUTED }}>

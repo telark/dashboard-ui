@@ -210,6 +210,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         </div>
 
         <SettingsCard
+          collapsible
           title={APPLICATIONS_UI.SECTIONS.OVERVIEW.TITLE}
           description={APPLICATIONS_UI.SECTIONS.OVERVIEW.COMBINED_SUBTITLE}
         >
@@ -327,9 +328,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                   />
                 ) : (
                   (() => {
-                    const maxRows = 3;
-                    const perRow = 3;
-                    const maxSlots = maxRows * perRow;
+                    const maxSlots = APPLICATION_SECTION_LAYOUT.ENV_CHIP_MAX_VISIBLE;
                     const hasHidden = sections.envVarKeys.length > maxSlots;
                     const visibleKeys = hasHidden
                       ? sections.envVarKeys.slice(0, maxSlots - 1)
@@ -339,12 +338,11 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                     return (
                       <div
                         style={{
-                          display: 'grid',
-                          gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-                          alignItems: 'start',
-                          gap: 6,
-                          width: '100%',
-                          overflowX: 'hidden',
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          alignItems: 'center',
+                          gap: APPLICATION_SECTION_LAYOUT.ENV_CHIP_GAP_PX,
+                          minWidth: 0,
                         }}
                       >
                         {visibleKeys.map((key) => (
@@ -352,7 +350,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                             <span
                               style={{
                                 display: 'inline-block',
-                                maxWidth: '100%',
+                                maxWidth: APPLICATION_SECTION_LAYOUT.ENV_CHIP_MAX_WIDTH_PX,
                                 background:
                                   APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG.background,
                                 color: APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG.color,
@@ -373,10 +371,30 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                         ))}
                         {hiddenKeys.length > 0 ? (
                           <Tooltip
+                            styles={{
+                              root: {
+                                maxWidth: APPLICATION_SECTION_LAYOUT.ENV_TOOLTIP_MAX_WIDTH_PX,
+                              },
+                            }}
                             title={
-                              <div style={{ display: 'grid', rowGap: 4 }}>
+                              <div
+                                style={{
+                                  display: 'grid',
+                                  rowGap: APPLICATION_SECTION_LAYOUT.ENV_TOOLTIP_ROW_GAP_PX,
+                                }}
+                              >
                                 {hiddenKeys.map((key) => (
-                                  <span key={key}>{key}</span>
+                                  <span
+                                    key={key}
+                                    style={{
+                                      fontSize: APPLICATION_SECTION_LAYOUT.ENV_TOOLTIP_FONT_SIZE_PX,
+                                      whiteSpace: 'nowrap',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                    }}
+                                  >
+                                    {key}
+                                  </span>
                                 ))}
                               </div>
                             }
@@ -399,6 +417,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         </SettingsCard>
 
         <SettingsCard
+          collapsible
           title={APPLICATIONS_UI.SECTIONS.RESOURCES.TITLE}
           description={APPLICATIONS_UI.SECTIONS.RESOURCES.DESCRIPTION}
           headerAction={
@@ -455,6 +474,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         </SettingsCard>
 
         <SettingsCard
+          collapsible
           title={APPLICATIONS_UI.SECTIONS.INSIGHTS.TITLE}
           description={APPLICATIONS_UI.SECTIONS.INSIGHTS.DESCRIPTION}
           headerAction={
@@ -656,6 +676,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         </SettingsCard>
 
         <SettingsCard
+          collapsible
           title={APPLICATIONS_UI.SECTIONS.METRICS.TITLE}
           description={APPLICATIONS_UI.SECTIONS.METRICS.DESCRIPTION}
         >
@@ -786,6 +807,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         </SettingsCard>
 
         <SettingsCard
+          collapsible
           title={APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.TITLE}
           description={APPLICATIONS_UI.SECTIONS.WORKLOAD_METRICS.DESCRIPTION}
         >
@@ -797,6 +819,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         </SettingsCard>
 
         <SettingsCard
+          collapsible
           title={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.TITLE}
           description={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DESCRIPTION}
         >

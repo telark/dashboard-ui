@@ -13,6 +13,15 @@ export const APPLICATION_SECTION_LAYOUT = {
   SUBTLE_DIVIDER: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
   COLUMN_INNER_RADIUS: SETTINGS_CONSTANTS.CONTENT.CARD_BORDER_RADIUS,
   TAG_CLOUD_MAX_HEIGHT_PX: 120,
+  /** Env chips size to their text; this only caps the outliers so a single long
+   *  key cannot stretch the row. */
+  ENV_CHIP_MAX_WIDTH_PX: 260,
+  ENV_CHIP_GAP_PX: 6,
+  ENV_CHIP_MAX_VISIBLE: 9,
+  /** Overflow tooltip: keys ellipsize at this width rather than escaping the bubble. */
+  ENV_TOOLTIP_MAX_WIDTH_PX: 320,
+  ENV_TOOLTIP_FONT_SIZE_PX: 12,
+  ENV_TOOLTIP_ROW_GAP_PX: 4,
   STAT_MIN_WIDTH_PX: 120,
   /** RowTag display for runtime list values (ports, env keys, snapshot field tags). */
   RUNTIME_VALUE_ROW_TAG: {
