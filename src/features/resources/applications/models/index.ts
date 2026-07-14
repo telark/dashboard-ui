@@ -23,6 +23,7 @@ export type {
   ApplicationMetrics,
   ApplicationMetricsDerived,
   ApplicationWorkloadUsage,
+  ApplicationWorkloadUsagePerInstance,
   ApplicationHistory,
   ApplicationChangeLogEntry,
   ApplicationSnapshot,

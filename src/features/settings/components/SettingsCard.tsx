@@ -1,26 +1,38 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
+import { UpOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
+import { AnimatePresence, motion } from 'framer-motion';
 import { SETTINGS_CONSTANTS } from '../constants';
 import { DEFAULT_COLORS } from '../../../constants';
 
 const { CONTENT } = SETTINGS_CONSTANTS;
+const COLLAPSE = CONTENT.CARD_COLLAPSE;
 
 interface SettingsCardProps {
   title: string;
   description?: string;
   headerStart?: React.ReactNode;
   headerAction?: React.ReactNode;
+  /** Opt-in: existing callers keep a always-open card. */
+  collapsible?: boolean;
   children: React.ReactNode;
 }
 
 const SettingsCard: React.FC<SettingsCardProps> = memo(
-  ({ title, description, headerStart, headerAction, children }) => {
+  ({ title, description, headerStart, headerAction, collapsible = false, children }) => {
+    const [collapsed, setCollapsed] = useState(false);
+    const [hovered, setHovered] = useState(false);
     const hasDescription = description != null && description.length > 0;
+    const showBody = !collapsible || !collapsed;
+    const bodyGap = hasDescription || children ? (hasDescription ? 12 : 16) : 0;
     const headerStyle: React.CSSProperties = {
       display: 'flex',
       alignItems: 'flex-start',
       justifyContent: 'space-between',
       gap: 12,
-      marginBottom: hasDescription || children ? (hasDescription ? 12 : 16) : 0,
+      // Collapsible cards carry this gap inside the animated body instead, so it
+      // collapses with the content rather than snapping to zero.
+      marginBottom: collapsible ? 0 : bodyGap,
     };
 
     return (
@@ -61,9 +73,70 @@ const SettingsCard: React.FC<SettingsCardProps> = memo(
               </p>
             )}
           </div>
-          {headerAction != null ? <div style={{ flexShrink: 0 }}>{headerAction}</div> : null}
+          {headerAction != null || collapsible ? (
+            <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+              {headerAction}
+              {collapsible ? (
+                <Tooltip title={collapsed ? COLLAPSE.EXPAND_LABEL : COLLAPSE.COLLAPSE_LABEL}>
+                  <button
+                    type="button"
+                    onClick={() => setCollapsed((prev) => !prev)}
+                    onMouseEnter={() => setHovered(true)}
+                    onMouseLeave={() => setHovered(false)}
+                    aria-expanded={!collapsed}
+                    aria-label={collapsed ? COLLAPSE.EXPAND_LABEL : COLLAPSE.COLLAPSE_LABEL}
+                    style={{
+                      all: 'unset',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: COLLAPSE.BUTTON_SIZE,
+                      height: COLLAPSE.BUTTON_SIZE,
+                      borderRadius: COLLAPSE.BORDER_RADIUS,
+                      fontSize: COLLAPSE.ICON_SIZE,
+                      color: hovered ? DEFAULT_COLORS.TEXT_PRIMARY : DEFAULT_COLORS.TEXT_MUTED,
+                      transition: COLLAPSE.TRANSITION,
+                    }}
+                  >
+                    <motion.span
+                      style={{ display: 'inline-flex' }}
+                      animate={{ rotate: collapsed ? COLLAPSE.ICON_ROTATION_DEG : 0 }}
+                      transition={{
+                        duration: COLLAPSE.ANIMATION_DURATION_S,
+                        ease: COLLAPSE.ANIMATION_EASE,
+                      }}
+                    >
+                      <UpOutlined />
+                    </motion.span>
+                  </button>
+                </Tooltip>
+              ) : null}
+            </div>
+          ) : null}
         </div>
-        {children}
+        {collapsible ? (
+          <AnimatePresence initial={false}>
+            {showBody ? (
+              <motion.div
+                key="body"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{
+                  duration: COLLAPSE.ANIMATION_DURATION_S,
+                  ease: COLLAPSE.ANIMATION_EASE,
+                }}
+                // Children must clip while the height animates, or they spill past the card.
+                style={{ overflow: 'hidden' }}
+              >
+                <div style={{ paddingTop: bodyGap }}>{children}</div>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
+        ) : (
+          children
+        )}
       </div>
     );
   },
