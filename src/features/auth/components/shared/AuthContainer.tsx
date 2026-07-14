@@ -6,13 +6,9 @@
  */
 import React from 'react';
 import { Row, Col, Grid } from 'antd';
+import { DEFAULT_COLORS } from '../../../../constants';
 
 const { useBreakpoint } = Grid;
-
-const DOT_GRID_BG = `
-  radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px),
-  linear-gradient(145deg, #0f172a 0%, #1a2744 55%, #0c1f3a 100%)
-`.trim();
 
 interface AuthContainerProps {
   children: React.ReactNode;
@@ -42,7 +38,7 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({
         {showBanner && (
           <div
             style={{
-              background: 'linear-gradient(90deg, #0f172a 0%, #1a2744 100%)',
+              background: DEFAULT_COLORS.PAGE_BG,
               padding: '14px 24px',
               display: 'flex',
               alignItems: 'center',
@@ -56,8 +52,7 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({
             <Col
               lg={11}
               style={{
-                backgroundImage: DOT_GRID_BG,
-                backgroundSize: '20px 20px, 100% 100%',
+                background: DEFAULT_COLORS.PAGE_BG,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
