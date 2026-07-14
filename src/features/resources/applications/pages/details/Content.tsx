@@ -1,6 +1,6 @@
-import React, { memo, useMemo } from 'react';
-import { InfoCircleOutlined } from '@ant-design/icons';
-import { Collapse, Tooltip } from 'antd';
+import React, { memo, useMemo, useState } from 'react';
+import { ApartmentOutlined, InfoCircleOutlined, ShareAltOutlined } from '@ant-design/icons';
+import { Collapse, Segmented, Tooltip } from 'antd';
 import { format } from 'date-fns';
 import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../../../constants';
 import SettingsCard from '../../../../settings/components/SettingsCard';
@@ -10,9 +10,14 @@ import { APPLICATIONS_UI } from '../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import ApplicationSectionEmptyState from '../../components/display/ApplicationSectionEmptyState';
-import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
-import { getResourceKindVisual } from '../../utils/resourceKindVisual';
+import {
+  APPLICATION_RESOURCE_VIEW,
+  APPLICATION_SECTION_LAYOUT,
+  type ApplicationResourceView,
+} from '../../constants/sectionLayout';
 import KeyValueGrid from '../../components/details/KeyValueGrid';
+import ApplicationResourceGraph from '../../components/details/ApplicationResourceGraph';
+import ApplicationResourceTree from '../../components/details/ApplicationResourceTree';
 import ApplicationDetailsToolbar from '../../components/layout/ApplicationDetailsToolbar';
 import {
   APPLICATION_SUMMARY_COLUMN_TITLE_STYLE,
@@ -43,6 +48,10 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
     onManageRollbacks,
     onDelete,
   }) => {
+    const [resourceView, setResourceView] = useState<ApplicationResourceView>(
+      APPLICATION_RESOURCE_VIEW.GRAPH,
+    );
+
     const sections = useMemo(() => {
       const created = application.createdAt ? (
         <TimeAgo date={application.createdAt} />
@@ -392,90 +401,49 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         <SettingsCard
           title={APPLICATIONS_UI.SECTIONS.RESOURCES.TITLE}
           description={APPLICATIONS_UI.SECTIONS.RESOURCES.DESCRIPTION}
+          headerAction={
+            sections.resources.length > 0 ? (
+              <Segmented<ApplicationResourceView>
+                size="small"
+                value={resourceView}
+                onChange={setResourceView}
+                options={[
+                  {
+                    value: APPLICATION_RESOURCE_VIEW.GRAPH,
+                    icon: (
+                      <Tooltip title={APPLICATIONS_UI.SECTIONS.RESOURCES.VIEW_GRAPH_TOOLTIP}>
+                        <ShareAltOutlined />
+                      </Tooltip>
+                    ),
+                  },
+                  {
+                    value: APPLICATION_RESOURCE_VIEW.TREE,
+                    icon: (
+                      <Tooltip title={APPLICATIONS_UI.SECTIONS.RESOURCES.VIEW_TREE_TOOLTIP}>
+                        <ApartmentOutlined />
+                      </Tooltip>
+                    ),
+                  },
+                ]}
+              />
+            ) : null
+          }
         >
           {sections.resources.length === 0 ? (
             <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {resourcesByKind.map(([kind, rows]) => {
-                const visual = getResourceKindVisual(kind);
-                const IconKind = visual.Icon;
-                return (
-                  <div key={kind}>
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 8,
-                        marginBottom: 4,
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: 22,
-                          height: 22,
-                          borderRadius: 6,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          background: DEFAULT_COLORS.SUCCESS,
-                        }}
-                      >
-                        <IconKind style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_ON_SURFACE }} />
-                      </span>
-                      <span
-                        style={{
-                          fontSize: 12,
-                          fontWeight: 700,
-                          color: DEFAULT_COLORS.TEXT_PRIMARY,
-                        }}
-                      >
-                        {kind}
-                      </span>
-                    </div>
-                    <div style={{ display: 'grid', rowGap: 4 }}>
-                      {rows.map((r) => (
-                        <div
-                          key={`${r.namespace}:${r.kind}:${r.name}`}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            flexWrap: 'wrap',
-                            gap: 8,
-                            padding: '6px 10px',
-                            borderRadius: APPLICATION_SECTION_LAYOUT.COLUMN_INNER_RADIUS,
-                            border: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
-                            background: DEFAULT_COLORS.SURFACE_ELEVATED,
-                            transition: 'background 0.15s ease',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background =
-                              DEFAULT_COLORS.SURFACE_ELEVATED_HOVER;
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = DEFAULT_COLORS.SURFACE_ELEVATED;
-                          }}
-                        >
-                          <RowTag
-                            text={r.namespace}
-                            {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-                          />
-                          <span
-                            style={{
-                              fontSize: 13,
-                              fontWeight: 700,
-                              color: DEFAULT_COLORS.TEXT_PRIMARY,
-                              wordBreak: 'break-word',
-                            }}
-                          >
-                            {r.name}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
+              {resourceView === APPLICATION_RESOURCE_VIEW.GRAPH ? (
+                <ApplicationResourceGraph
+                  applicationName={application.name}
+                  groups={resourcesByKind}
+                />
+              ) : (
+                <ApplicationResourceTree
+                  applicationName={application.name}
+                  groups={resourcesByKind}
+                />
+              )}
               {sections.resources.length > 50 ? (
                 <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
                   {APPLICATIONS_UI.SECTIONS.RESOURCES.SHOWING_FIRST} 50 of{' '}

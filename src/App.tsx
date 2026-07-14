@@ -106,20 +106,26 @@ const App: React.FC = () => {
             colorBorder: DEFAULT_COLORS.BORDER_DEFAULT,
           },
           components: {
+            // The dark algorithm derives a near-white disabled text colour, which
+            // vanishes on these white surfaces, so it is pinned to a grey instead.
             Dropdown: {
               colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
               colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
               controlItemBgHover: DEFAULT_COLORS.SURFACE_HOVER,
+              colorTextDisabled: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
+              controlItemBgActiveDisabled: DEFAULT_COLORS.SURFACE_WHITE,
             },
             Select: {
               colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
               colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
               optionSelectedBg: DEFAULT_COLORS.SURFACE_HOVER,
               controlItemBgHover: DEFAULT_COLORS.SURFACE_HOVER,
+              colorTextDisabled: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
             },
             DatePicker: {
               colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
               colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
+              colorTextDisabled: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
             },
             Tooltip: {
               colorBgSpotlight: DEFAULT_COLORS.SURFACE_WHITE,
@@ -129,6 +135,11 @@ const App: React.FC = () => {
               colorPrimary: DEFAULT_COLORS.SUCCESS,
               colorPrimaryHover: DEFAULT_COLORS.SUCCESS,
               colorPrimaryBorder: DEFAULT_COLORS.SUCCESS,
+            },
+            Segmented: {
+              itemSelectedBg: DEFAULT_COLORS.SUCCESS,
+              itemSelectedColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+              itemHoverColor: DEFAULT_COLORS.SUCCESS,
             },
           },
         }}
