@@ -1,6 +1,6 @@
 import type { MenuProps } from 'antd';
 import { LogoutOutlined, SettingOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, HEADER_CONSTANTS } from '../../../../../constants';
+import { HEADER_CONSTANTS } from '../../../../../constants';
 import type { User } from '../../models';
 
 interface UserMenuItemsProps {
@@ -72,11 +72,10 @@ export const createUserMenuItems = ({
             display: 'flex',
             alignItems: 'center',
             gap: HEADER_CONSTANTS.USER.MENU_ITEM.GAP,
-            color: DEFAULT_COLORS.SUCCESS,
           }}
         >
-          <LogoutOutlined style={{ color: DEFAULT_COLORS.SUCCESS }} />
-          <span style={{ color: DEFAULT_COLORS.SUCCESS }}>Logout</span>
+          <LogoutOutlined />
+          <span>Logout</span>
         </div>
       ),
       onClick: onLogout,

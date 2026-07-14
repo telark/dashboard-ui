@@ -33,7 +33,7 @@ const sectionLabelStyle: CSSProperties = {
   letterSpacing: '0.06em',
   textTransform: 'uppercase',
   color: DEFAULT_COLORS.ICON_SECONDARY,
-  padding: '4px 12px 2px 14px',
+  padding: '4px 12px 2px 22px',
   marginTop: 20,
   userSelect: 'none',
 };
@@ -62,7 +62,7 @@ const BackButton = memo(
           gap: 6,
           width: '100%',
           height: 36,
-          padding: isCollapsed ? 0 : '0 10px 0 12px',
+          padding: isCollapsed ? 0 : '0 10px 0 20px',
           marginBottom: 12,
           border: 'none',
           background: 'transparent',

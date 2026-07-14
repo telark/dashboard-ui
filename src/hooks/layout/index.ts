@@ -7,4 +7,5 @@ export { useDelayedMount } from './useDelayedMount';
 export { useBodyOverflow, useSlideOutPanelForm } from '../panel';
 export { useActionConfirmHandlers } from './useActionConfirmHandlers';
 export { useScrollIndicator } from './useScrollIndicator';
+export { useSidebarCollapse } from './useSidebarCollapse';
 export type { UseScrollIndicatorOptions, UseScrollIndicatorReturn } from './useScrollIndicator';

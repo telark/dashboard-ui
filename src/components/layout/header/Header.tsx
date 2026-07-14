@@ -1,7 +1,8 @@
 import React from 'react';
-import { UserAvatarDropdown } from '../../../features/access-and-permissions/users/components';
+import { Link } from 'react-router-dom';
 import { NotificationBell } from '../../../features/notifications/components';
-import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../constants';
+import SidebarToggleButton from './SidebarToggleButton';
+import { APP_ROUTES, DEFAULT_COLORS, HEADER_LAYOUT } from '../../../constants';
 
 const Header: React.FC = () => {
   return (
@@ -22,33 +23,35 @@ const Header: React.FC = () => {
         borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
       }}
     >
-      {/* Logo centered over the sidebar column */}
+      {/* Logo pinned to the sidebar menu items' left edge, toggle beside it */}
       <div
         style={{
           position: 'absolute',
-          left: 0,
+          left: HEADER_LAYOUT.LOGO.LEFT_PX,
           top: 0,
           height: '100%',
-          width: 'var(--sidebar-width)',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'width 200ms ease',
+          gap: HEADER_LAYOUT.LOGO.TOGGLE_GAP,
         }}
       >
-        <img
-          src={HEADER_LAYOUT.LOGO.SRC}
-          alt={HEADER_LAYOUT.LOGO.ALT}
-          width={HEADER_LAYOUT.LOGO.WIDTH}
-          height={HEADER_LAYOUT.LOGO.HEIGHT}
-        />
+        <Link
+          to={APP_ROUTES.HOME}
+          aria-label={HEADER_LAYOUT.LOGO.ALT}
+          style={{ display: 'flex', alignItems: 'center' }}
+        >
+          <img
+            src={HEADER_LAYOUT.LOGO.SRC}
+            alt={HEADER_LAYOUT.LOGO.ALT}
+            width={HEADER_LAYOUT.LOGO.WIDTH}
+            height={HEADER_LAYOUT.LOGO.HEIGHT}
+          />
+        </Link>
+        <SidebarToggleButton />
       </div>
       {/* Action Buttons */}
       <div style={{ marginRight: '20px' }}>
         <NotificationBell />
-      </div>
-      <div style={{ marginRight: '20px' }}>
-        <UserAvatarDropdown />
       </div>
     </div>
   );

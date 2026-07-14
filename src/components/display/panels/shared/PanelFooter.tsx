@@ -41,9 +41,11 @@ const PanelFooter: React.FC<PanelFooterProps> = ({
         style={SLIDE_OUT.CANCEL_BUTTON}
         onMouseEnter={(e) => {
           e.currentTarget.style.background = SLIDE_OUT.CANCEL_BUTTON_HOVER_BACKGROUND;
+          e.currentTarget.style.color = SLIDE_OUT.CANCEL_BUTTON_HOVER_COLOR;
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.background = SLIDE_OUT.CANCEL_BUTTON_DEFAULT_BACKGROUND;
+          e.currentTarget.style.color = SLIDE_OUT.CANCEL_BUTTON_DEFAULT_COLOR;
         }}
       >
         {cancelLabel}

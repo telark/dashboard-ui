@@ -566,3 +566,49 @@
   margin-top: 2px;
   min-height: 0;
 }
+
+/* Side panels keep the light surface they had before the dark theme, so the
+   global dark-text rules above must not reach inside them. */
+.app-panel-surface {
+  --app-toolbar-text-color: #111827;
+}
+
+.user-menu-dropdown .ant-dropdown-menu-item-divider {
+  background-color: #111827 !important;
+  height: 0.1px !important;
+  margin: 4px 0 !important;
+}
+
+.app-panel-surface .ant-form-item-label > label,
+.app-panel-surface .ant-input,
+.app-panel-surface .ant-input-number-input,
+.app-panel-surface textarea.ant-input,
+.app-panel-surface .ant-select-selection-item,
+.app-panel-surface .ant-select-selection-item-content,
+.app-panel-surface .ant-select-selection-search-input,
+.app-panel-surface .ant-select-item-option-content,
+.app-panel-surface .ant-picker-input > input,
+.app-panel-surface .ant-checkbox-wrapper,
+.app-panel-surface .ant-radio-wrapper,
+.app-panel-surface .ant-select-selection-item-remove,
+.app-panel-surface .ant-select-arrow,
+.app-panel-surface .ant-picker-suffix,
+.app-panel-surface .ant-input-suffix .anticon,
+.app-panel-surface .ant-input-prefix .anticon {
+  color: #111827 !important;
+}
+
+.app-panel-surface .ant-input::placeholder,
+.app-panel-surface .ant-picker-input > input::placeholder,
+.app-panel-surface .ant-select-selection-placeholder {
+  color: #64748b !important;
+}
+
+.app-panel-surface .ant-select-selector,
+.app-panel-surface .ant-input,
+.app-panel-surface .ant-input-affix-wrapper,
+.app-panel-surface .ant-picker,
+.app-panel-surface .ant-input-number {
+  background-color: #ffffff !important;
+  border-color: #d9d9d9 !important;
+}
