@@ -83,9 +83,11 @@ export const LOGIN_CONSTANTS = {
     GOOGLE_BUTTON_TEXT: 'Continue with Google',
     GOOGLE_BUTTON_LOADING: 'Redirecting to Google...',
     GOOGLE_OR_SEPARATOR: 'or',
-    BRAND_NAME: 'Platform',
-    BRAND_HEADLINE: 'Identity layer for your Kubernetes workloads',
-    BRAND_TAGLINE: 'Passwordless access. No credentials to leak.',
+    BRAND_NAME: 'telark',
+    BRAND_LOGO_SRC: '/telark-logo.svg',
+    BRAND_HEADLINE: 'Your command center for protection windows',
+    BRAND_TAGLINE:
+      'Sign in to the control plane that guards your Kubernetes workloads through maintenance windows, test runs, and risky changes — passwordless, with nothing to leak.',
   },
   OIDC: {
     GOOGLE_SCOPE: 'openid email',

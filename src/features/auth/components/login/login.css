@@ -1,5 +1,5 @@
 .auth-root[data-theme="light"] {
-  --color-primary: #1e293b;
+  --color-primary: #20C997;
   --auth-right-bg: #f8fafc;
   --auth-card-bg: #ffffff;
   --auth-card-border: #e2e8f0;
@@ -12,7 +12,7 @@
 }
 
 .auth-root[data-theme="dark"] {
-  --color-primary: #f8fafc;
+  --color-primary: #20C997;
   --auth-right-bg: #020617;
   --auth-card-bg: #0f172a;
   --auth-card-border: #1e293b;

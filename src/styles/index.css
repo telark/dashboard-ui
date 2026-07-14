@@ -1,6 +1,6 @@
 :root {
   --sidebar-width: 220px;
-  --page-bg: #F3F6FA;
+  --page-bg: #111827;
   /* Appearance settings: set by Settings > Appearance (e.g. 0.9375, 1, 1.0625). */
   --app-font-size-scale: 1;
 }
@@ -15,11 +15,17 @@ body,
 .ant-app *,
 .app-root,
 .app-root * {
-  font-family: 'Roboto Condensed', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+
+body {
+  font-weight: 400;
 }
 
 h1, h2, h3 {
   text-rendering: optimizeSpeed;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 /* Hide asterisks from required form fields but keep validation */
@@ -33,7 +39,7 @@ h1, h2, h3 {
   height: 36px !important;
   min-height: 36px !important;
   border-radius: 8px !important;
-  border: 1px solid #d9d9d9 !important;
+  border: 1px solid #374151 !important;
   font-size: 14px !important;
   display: flex !important;
   align-items: center !important;
