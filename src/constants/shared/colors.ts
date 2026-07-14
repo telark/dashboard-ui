@@ -27,6 +27,13 @@ export const DEFAULT_COLORS = {
   ICON_MUTED: '#4b5563',
   ICON_SECONDARY: '#6b7280',
   ERROR: '#ef4444',
+  // Elevated surfaces: one step above PAGE_BG so cards read as raised without
+  // shadows, and still sit below CHIP_CUSTOM_BG used inside them.
+  SUCCESS_TINT: 'rgba(32, 201, 151, 0.12)',
+  DANGER_TINT: 'rgba(255, 77, 79, 0.12)',
+  SURFACE_ELEVATED: '#161f2e',
+  SURFACE_ELEVATED_HOVER: '#1c2738',
+  BORDER_ELEVATED: '#2a3648',
   // Light surfaces (dropdown/popover panels reversed against the dark theme)
   SURFACE_WHITE: '#ffffff',
   SURFACE_HOVER: '#f1f5f9',

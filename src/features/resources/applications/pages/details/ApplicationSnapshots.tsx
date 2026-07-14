@@ -54,8 +54,8 @@ const ApplicationSnapshots: React.FC<ApplicationSnapshotsProps> = memo(
                   style={{
                     height: 44,
                     borderRadius: 8,
-                    border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-                    background: DEFAULT_COLORS.BACKGROUND_LIGHT,
+                    border: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
+                    background: DEFAULT_COLORS.SURFACE_ELEVATED_HOVER,
                   }}
                 />
               ))}

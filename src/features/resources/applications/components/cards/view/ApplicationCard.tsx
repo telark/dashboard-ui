@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, APP_ROUTES } from '../../../../../../constants';
 import type { Application } from '../../../models';
@@ -22,7 +22,7 @@ const METRICS_ROW_STYLE: React.CSSProperties = {
   gap: 18,
   paddingTop: 10,
   marginTop: 10,
-  borderTop: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+  borderTop: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
   flexWrap: 'wrap',
 };
 
@@ -52,6 +52,7 @@ function MetricMini(props: { value: React.ReactNode; label: string }): React.Rea
 const ApplicationCard: React.FC<ApplicationCardProps> = memo(
   ({ application, onEditApplication, bulkMode = false, selected = false, onToggleSelect }) => {
     const navigate = useNavigate();
+    const [hovered, setHovered] = useState(false);
     const primaryNamespace =
       application.namespaces?.items?.[0]?.name ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
     const detailsPath = APP_ROUTES.APPLICATION_DETAILS.replace(':name', application.name);
@@ -61,6 +62,8 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
         role="button"
         tabIndex={0}
         className={bulkMode ? 'applications-bulk-select' : undefined}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
         onClick={() => {
           if (bulkMode) {
             onToggleSelect?.(application.name, !selected);
@@ -79,16 +82,18 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
         }}
         style={{
           position: 'relative',
-          background: DEFAULT_COLORS.BACKGROUND_WHITE,
+          background: hovered
+            ? DEFAULT_COLORS.SURFACE_ELEVATED_HOVER
+            : DEFAULT_COLORS.SURFACE_ELEVATED,
           borderRadius: APPLICATION_SECTION_LAYOUT.CARD_RADIUS,
-          border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+          border: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
           padding: 16,
           boxSizing: 'border-box',
           cursor: 'pointer',
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 2px 10px rgba(15, 23, 42, 0.06)',
+          transition: 'background-color 150ms ease',
         }}
       >
         <ApplicationCardHeader

@@ -217,7 +217,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
               <div
                 style={{
                   height: 1,
-                  background: DEFAULT_COLORS.BORDER_LIGHT,
+                  background: DEFAULT_COLORS.BORDER_ELEVATED,
                   margin: '12px 0',
                 }}
               />
@@ -421,9 +421,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                           background: DEFAULT_COLORS.SUCCESS,
                         }}
                       >
-                        <IconKind
-                          style={{ fontSize: 13, color: DEFAULT_COLORS.BACKGROUND_WHITE }}
-                        />
+                        <IconKind style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_ON_SURFACE }} />
                       </span>
                       <span
                         style={{
@@ -447,14 +445,15 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                             padding: '6px 10px',
                             borderRadius: APPLICATION_SECTION_LAYOUT.COLUMN_INNER_RADIUS,
                             border: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
-                            background: DEFAULT_COLORS.BACKGROUND_WHITE,
+                            background: DEFAULT_COLORS.SURFACE_ELEVATED,
                             transition: 'background 0.15s ease',
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.background = DEFAULT_COLORS.BACKGROUND_HOVER;
+                            e.currentTarget.style.background =
+                              DEFAULT_COLORS.SURFACE_ELEVATED_HOVER;
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.background = DEFAULT_COLORS.BACKGROUND_WHITE;
+                            e.currentTarget.style.background = DEFAULT_COLORS.SURFACE_ELEVATED;
                           }}
                         >
                           <RowTag
@@ -655,7 +654,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                       <div
                         key={`${a.name}:${a.reason}`}
                         style={{
-                          border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+                          border: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
                           borderRadius: 10,
                           padding: 10,
                         }}
@@ -744,7 +743,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
               }
               color={
                 (sections.metrics?.derived?.totalIncidents ?? 0) > 0
-                  ? DEFAULT_COLORS.BACKGROUND_WHITE
+                  ? DEFAULT_COLORS.TEXT_ON_SURFACE
                   : DEFAULT_COLORS.CHIP_CUSTOM_TEXT
               }
               fontSize={11}
@@ -758,7 +757,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
               }
               color={
                 (sections.metrics?.derived?.totalRecoveries ?? 0) > 0
-                  ? DEFAULT_COLORS.BACKGROUND_WHITE
+                  ? DEFAULT_COLORS.TEXT_ON_SURFACE
                   : DEFAULT_COLORS.CHIP_CUSTOM_TEXT
               }
               fontSize={11}
@@ -1111,8 +1110,8 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                                       fontSize: 11,
                                       fontFamily: 'monospace',
                                       color: DEFAULT_COLORS.TEXT_PRIMARY,
-                                      background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-                                      border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+                                      background: DEFAULT_COLORS.SURFACE_ELEVATED_HOVER,
+                                      border: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
                                       borderRadius: 6,
                                       padding: '2px 6px',
                                     }}
