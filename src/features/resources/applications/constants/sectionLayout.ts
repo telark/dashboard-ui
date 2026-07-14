@@ -22,6 +22,35 @@ export const APPLICATION_SECTION_LAYOUT = {
   },
 } as const;
 
+/** Workload metrics: usage-vs-baseline meters, one row per workload. */
+export const APPLICATION_WORKLOAD_METRICS = {
+  ROW_GAP_PX: 6,
+  ROW_PADDING: '10px 12px',
+  ROW_RADIUS_PX: 10,
+  HEADER_GAP_PX: 8,
+  METER_LABEL_WIDTH_PX: 34,
+  METER_HEIGHT_PX: 6,
+  METER_RADIUS_PX: 999,
+  METER_GAP_PX: 10,
+  METER_ROW_GAP_PX: 6,
+  METER_VALUE_FONT_SIZE_PX: 11,
+  /** Limit marker drawn on the meter track. */
+  LIMIT_TICK_WIDTH_PX: 2,
+  NAME_FONT_SIZE_PX: 13,
+  LABEL_FONT_SIZE_PX: 11,
+  /** Fraction of the limit above which usage turns amber, then red at 1. */
+  WARN_RATIO: 0.85,
+  MAX_WORKLOADS: 25,
+  MAX_INSTANCES: 3,
+  MAX_CONTAINERS: 4,
+  DETAIL_INDENT_PX: 12,
+  /** Containers are indented under their pod so the ownership is visible. */
+  CONTAINER_INDENT_PX: 16,
+  CONTAINER_DOT_SIZE_PX: 4,
+  POD_BLOCK_GAP_PX: 10,
+  DETAIL_ROW_GAP_PX: 4,
+} as const;
+
 /** Resource section view modes; the choice is per-session, not persisted. */
 export const APPLICATION_RESOURCE_VIEW = {
   GRAPH: 'graph',
