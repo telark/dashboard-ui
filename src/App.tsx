@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, message, App as AntdApp, ConfigProvider } from 'antd';
+import { Layout, message, App as AntdApp, ConfigProvider, theme } from 'antd';
 import { BrowserRouter as Router, useLocation, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AiOutlineSafety } from 'react-icons/ai';
@@ -96,6 +96,15 @@ const App: React.FC = () => {
         theme={{
           cssVar: { key: 'telark' },
           hashed: false,
+          algorithm: theme.darkAlgorithm,
+          token: {
+            colorPrimary: DEFAULT_COLORS.SUCCESS,
+            colorBgBase: DEFAULT_COLORS.PAGE_BG,
+            colorTextBase: DEFAULT_COLORS.TEXT_PRIMARY,
+            colorBgContainer: DEFAULT_COLORS.BACKGROUND_WHITE,
+            colorBgLayout: DEFAULT_COLORS.PAGE_BG,
+            colorBorder: DEFAULT_COLORS.BORDER_DEFAULT,
+          },
           components: {
             Checkbox: {
               colorPrimary: DEFAULT_COLORS.SUCCESS,

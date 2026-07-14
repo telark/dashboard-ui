@@ -1,5 +1,5 @@
 export const LIGHT_TOKENS = {
-  colorPrimary: '#1e293b',
+  colorPrimary: '#20C997',
   colorBgContainer: '#ffffff',
   colorBorder: '#e2e8f0',
   borderRadius: 10,
@@ -7,7 +7,7 @@ export const LIGHT_TOKENS = {
 } as const;
 
 export const DARK_TOKENS = {
-  colorPrimary: '#f8fafc',
+  colorPrimary: '#20C997',
   colorBgContainer: '#0f172a',
   colorBorder: '#1e293b',
   borderRadius: 10,

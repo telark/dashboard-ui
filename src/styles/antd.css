@@ -4,7 +4,7 @@
 
 /* Generic app table overrides */
 .app-table .ant-table-thead > tr > th.ant-table-selection-column {
-  background: #fff !important;
+  background: #111827 !important;
 }
 .app-table .ant-table-thead > tr > th,
 .app-table .ant-table-tbody > tr > td {
@@ -198,7 +198,7 @@
 /* Form label typography to match pages */
 .ant-form-item-label > label {
   font-weight: 400 !important;
-  color: #0B1F33 !important;
+  color: #ffffff !important;
   font-size: 13px !important;
   line-height: 1.5 !important;
 }
@@ -249,12 +249,12 @@
 /* Permissions label text style */
 .permission-label {
   font-weight: 500 !important;
-  color: #5B6B7C !important;
+  color: #9ca3af !important;
 }
 
 /* Ensure modal close icon is visible */
 .ant-modal-close {
-  color: #000 !important;
+  color: #ffffff !important;
   top: 12px !important;
   right: 3px !important;
   width: auto !important;
@@ -265,8 +265,8 @@
 
 .ant-modal-close svg,
 .ant-modal-close * {
-  color: #000 !important;
-  fill: #000 !important;
+  color: #ffffff !important;
+  fill: #ffffff !important;
 }
 
 .ant-modal-close-x {
@@ -278,7 +278,7 @@
 /* Ant Design modals are rendered in a portal outside #root, so they need explicit targeting */
 .ant-modal,
 .ant-modal * {
-  font-family: 'Roboto Condensed', sans-serif !important;
+  font-family: 'Geist', sans-serif !important;
 }
 
 /* Button icon vertical alignment */
@@ -461,13 +461,13 @@
   background-color: transparent !important;
   padding-left: 10px !important;
   margin-left: 9.5px !important;
-  color: #0B1F33 !important;
+  color: #ffffff !important;
 }
 
 .compact-menu .ant-menu-submenu-active > .ant-menu-submenu-title,
 .compact-menu .ant-menu-submenu-open > .ant-menu-submenu-title,
 .compact-menu .ant-menu-submenu-selected > .ant-menu-submenu-title {
-  color: #0B1F33 !important;
+  color: #ffffff !important;
 }
 
 .compact-menu .ant-menu-submenu-inner {
@@ -502,7 +502,7 @@
 
 /* Role Assignment Select Styles */
 .role-assignment-select .ant-select-selector {
-  border-color: #d9d9d9 !important;
+  border-color: #374151 !important;
 }
 
 .role-assignment-select.ant-select-focused .ant-select-selector {
@@ -512,8 +512,8 @@
 
 .role-assignment-select .ant-select-selection-item {
   background-color: transparent !important;
-  border-color: #d9d9d9 !important;
-  color: #0B1F33 !important;
+  border-color: #374151 !important;
+  color: #ffffff !important;
   display: inline-flex !important;
   align-items: center !important;
   line-height: 1.5 !important;
@@ -526,7 +526,7 @@
 }
 
 .role-assignment-select .ant-select-selection-item-remove {
-  color: #0B1F33 !important;
+  color: #ffffff !important;
   display: inline-flex !important;
   align-items: center !important;
   line-height: 1.5 !important;

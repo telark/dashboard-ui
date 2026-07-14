@@ -1,14 +1,14 @@
 import React from 'react';
 import { UserAvatarDropdown } from '../../../features/access-and-permissions/users/components';
 import { NotificationBell } from '../../../features/notifications/components';
-import { HEADER_LAYOUT } from '../../../constants';
+import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../constants';
 
 const Header: React.FC = () => {
   return (
     <div
       style={{
         width: '100%', // Full screen width
-        backgroundColor: 'white',
+        backgroundColor: DEFAULT_COLORS.BACKGROUND_WHITE,
         height: HEADER_LAYOUT.HEIGHT,
         display: 'flex',
         justifyContent: 'flex-end', // Align icons to the right
@@ -19,7 +19,7 @@ const Header: React.FC = () => {
         top: '0',
         zIndex: 1000,
         transition: 'width 0.3s ease',
-        borderBottom: '1px solid #f0f0f0',
+        borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
       }}
     >
       {/* Action Buttons */}

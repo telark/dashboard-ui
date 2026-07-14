@@ -1,31 +1,15 @@
 import React from 'react';
-import { LockOutlined } from '@ant-design/icons';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { TerminalDemo } from './TerminalDemo';
 
 export const BrandPanel: React.FC = () => (
   <div style={{ maxWidth: '340px', width: '100%' }}>
-    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '52px' }}>
-      <div
-        style={{
-          width: '34px',
-          height: '34px',
-          borderRadius: '8px',
-          background: 'rgba(255,255,255,0.1)',
-          border: '1px solid rgba(255,255,255,0.12)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-        }}
-      >
-        <LockOutlined style={{ fontSize: '15px', color: '#e2e8f0' }} />
-      </div>
-      <span
-        style={{ fontSize: '16px', fontWeight: 700, color: '#f1f5f9', letterSpacing: '-0.2px' }}
-      >
-        {LOGIN_CONSTANTS.UI.BRAND_NAME}
-      </span>
+    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '52px' }}>
+      <img
+        src={LOGIN_CONSTANTS.UI.BRAND_LOGO_SRC}
+        alt={LOGIN_CONSTANTS.UI.BRAND_NAME}
+        style={{ height: '30px' }}
+      />
     </div>
 
     <h2
