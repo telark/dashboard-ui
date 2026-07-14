@@ -151,10 +151,11 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                   } else if (isDanger && !button.active) {
                     e.currentTarget.style.backgroundColor = '#fff1f0';
                   } else if (!button.active) {
-                    e.currentTarget.style.backgroundColor = DEFAULT_COLORS.HOVER_BG;
+                    // Ghost buttons invert on hover: white surface, dark label.
+                    e.currentTarget.style.backgroundColor = DEFAULT_COLORS.SURFACE_WHITE;
+                    e.currentTarget.style.color = DEFAULT_COLORS.TEXT_ON_SURFACE;
                     if (!isGhost) {
-                      e.currentTarget.style.borderColor = DEFAULT_COLORS.SUCCESS;
-                      e.currentTarget.style.color = DEFAULT_COLORS.SUCCESS;
+                      e.currentTarget.style.borderColor = DEFAULT_COLORS.TEXT_ON_SURFACE;
                     }
                   }
                 }}
@@ -168,9 +169,9 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                     e.currentTarget.style.backgroundColor = button.active
                       ? '#e6f7ff'
                       : 'transparent';
+                    e.currentTarget.style.color = BUTTON_COLORS.TOOLBAR_TEXT;
                     if (!isGhost) {
                       e.currentTarget.style.borderColor = '#d9d9d9';
-                      e.currentTarget.style.color = BUTTON_COLORS.TOOLBAR_TEXT;
                     }
                   }
                 }}
@@ -239,10 +240,11 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
               } else if (isDanger && !button.active) {
                 e.currentTarget.style.backgroundColor = '#fff1f0';
               } else if (!button.active) {
-                e.currentTarget.style.backgroundColor = isGhost ? '#f5f5f5' : '#f5f5f5';
+                // Ghost buttons invert on hover: white surface, dark label.
+                e.currentTarget.style.backgroundColor = DEFAULT_COLORS.SURFACE_WHITE;
+                e.currentTarget.style.color = DEFAULT_COLORS.TEXT_ON_SURFACE;
                 if (!isGhost) {
-                  e.currentTarget.style.borderColor = DEFAULT_COLORS.SUCCESS;
-                  e.currentTarget.style.color = DEFAULT_COLORS.SUCCESS;
+                  e.currentTarget.style.borderColor = DEFAULT_COLORS.TEXT_ON_SURFACE;
                 }
               }
             }}
@@ -254,9 +256,9 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                 e.currentTarget.style.backgroundColor = 'transparent';
               } else {
                 e.currentTarget.style.backgroundColor = button.active ? '#e6f7ff' : 'transparent';
+                e.currentTarget.style.color = BUTTON_COLORS.TOOLBAR_TEXT;
                 if (!isGhost) {
                   e.currentTarget.style.borderColor = '#d9d9d9';
-                  e.currentTarget.style.color = BUTTON_COLORS.TOOLBAR_TEXT;
                 }
               }
             }}

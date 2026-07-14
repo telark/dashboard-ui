@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   DatabaseOutlined,
   DeleteOutlined,
   EditOutlined,
+  EllipsisOutlined,
   HistoryOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
@@ -13,6 +14,9 @@ import {
   usePermission,
   ACTION_PERMISSIONS,
 } from '../../../../../features/auth/hooks/permissions/permissionEngine';
+
+const TOOLBAR_LABELS = APPLICATIONS_UI.SECTIONS.DETAILS_TOOLBAR;
+const DELETE_MENU_KEY = 'delete';
 
 interface ApplicationDetailsToolbarProps {
   onForceSync: () => void;
@@ -57,26 +61,21 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
     ACTION_PERMISSIONS.applications.delete.deny,
   );
 
+  const handleMenuClick = useCallback(
+    (key: string) => {
+      if (key === DELETE_MENU_KEY) onDelete();
+    },
+    [onDelete],
+  );
+
   const toolbarConfig: ToolbarConfig = useMemo(() => {
     const buttons: ToolbarConfig['buttons'] = [
-      {
-        key: 'edit',
-        label: APPLICATIONS_UI.CARD.ACTIONS.EDIT,
-        icon: <EditOutlined />,
-        variant: 'default',
-        onClick: onEdit,
-        disabled: !canEdit || syncDisabled,
-        tooltip: !canEdit
-          ? APPLICATIONS_UI.CARD.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP
-          : syncDisabled
-            ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
-            : undefined,
-      },
+      // Primary action first: force sync is the verb people come here for.
       {
         key: 'forceSync',
         label: APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC,
         icon: <SyncOutlined />,
-        variant: 'default',
+        variant: 'primary',
         onClick: onForceSync,
         disabled: !canForceSync || syncDisabled,
         tooltip: !canForceSync
@@ -86,10 +85,24 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
             : undefined,
       },
       {
+        key: 'edit',
+        label: APPLICATIONS_UI.CARD.ACTIONS.EDIT,
+        icon: <EditOutlined />,
+        variant: 'ghost',
+        onClick: onEdit,
+        disabled: !canEdit || syncDisabled,
+        tooltip: !canEdit
+          ? APPLICATIONS_UI.CARD.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP
+          : syncDisabled
+            ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
+            : undefined,
+      },
+      // These open panels rather than acting on the app, so they stay quiet.
+      {
         key: 'snapshots',
         label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_SNAPSHOTS,
         icon: <DatabaseOutlined />,
-        variant: 'default',
+        variant: 'ghost',
         onClick: onManageSnapshots,
         disabled: !canViewSnapshots,
         tooltip: !canViewSnapshots
@@ -100,31 +113,38 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
         key: 'rollbacks',
         label: APPLICATIONS_UI.CARD.ACTIONS.MANAGE_ROLLBACKS,
         icon: <HistoryOutlined />,
-        variant: 'default',
+        variant: 'ghost',
         onClick: onManageRollbacks,
         disabled: !canViewRollbacks,
         tooltip: !canViewRollbacks
           ? APPLICATIONS_UI.CARD.ACTIONS.VIEW_ROLLBACKS_PERMISSION_DENIED_TOOLTIP
           : undefined,
       },
+      // Delete lives behind the overflow: it is irreversible and was one slip
+      // away from "Manage rollbacks" when it sat inline.
       {
-        key: 'delete',
-        label: APPLICATIONS_UI.CARD.ACTIONS.DELETE,
-        icon: <DeleteOutlined />,
-        variant: 'danger',
-        onClick: onDelete,
-        disabled: !canDelete || syncDisabled,
-        tooltip: !canDelete
-          ? APPLICATIONS_UI.CARD.ACTIONS.DELETE_PERMISSION_DENIED_TOOLTIP
-          : syncDisabled
-            ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
-            : undefined,
+        key: 'more',
+        label: TOOLBAR_LABELS.MORE_LABEL,
+        icon: <EllipsisOutlined />,
+        variant: 'ghost',
+        dropdown: {
+          items: [
+            {
+              key: DELETE_MENU_KEY,
+              danger: true,
+              icon: <DeleteOutlined />,
+              label: APPLICATIONS_UI.CARD.ACTIONS.DELETE,
+              disabled: !canDelete || syncDisabled,
+            },
+          ],
+          onItemClick: handleMenuClick,
+        },
       },
     ];
     return { buttons };
   }, [
+    handleMenuClick,
     syncDisabled,
-    onDelete,
     onEdit,
     onForceSync,
     onManageRollbacks,

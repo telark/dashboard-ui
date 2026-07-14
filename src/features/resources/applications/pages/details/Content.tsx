@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { ApartmentOutlined, InfoCircleOutlined, ShareAltOutlined } from '@ant-design/icons';
 import { Segmented, Tooltip } from 'antd';
 import { format } from 'date-fns';
@@ -11,6 +11,7 @@ import RowTag from '../../../../../components/display/table/RowTag';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import ApplicationSectionEmptyState from '../../components/display/ApplicationSectionEmptyState';
 import {
+  APPLICATION_DETAILS_TOOLBAR,
   APPLICATION_RESOURCE_VIEW,
   APPLICATION_SECTION_LAYOUT,
   type ApplicationResourceView,
@@ -20,6 +21,7 @@ import ApplicationResourceGraph from '../../components/details/ApplicationResour
 import ApplicationResourceTree from '../../components/details/ApplicationResourceTree';
 import ApplicationWorkloadMetrics from '../../components/details/ApplicationWorkloadMetrics';
 import ApplicationDetailsToolbar from '../../components/layout/ApplicationDetailsToolbar';
+import ApplicationDetailsIdentity from '../../components/layout/ApplicationDetailsIdentity';
 import {
   APPLICATION_SUMMARY_COLUMN_TITLE_STYLE,
   APPLICATION_SUMMARY_SUBHEADING_STYLE,
@@ -51,6 +53,24 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
     const [resourceView, setResourceView] = useState<ApplicationResourceView>(
       APPLICATION_RESOURCE_VIEW.GRAPH,
     );
+
+    // The identity strip only earns its space once the page header is gone. A
+    // sentinel + observer works whichever ancestor owns the scroll.
+    const revealSentinelRef = useRef<HTMLDivElement>(null);
+    const [identityVisible, setIdentityVisible] = useState(false);
+
+    useEffect(() => {
+      const sentinel = revealSentinelRef.current;
+      if (!sentinel) return;
+      const observer = new IntersectionObserver(
+        ([entry]) => setIdentityVisible(!entry.isIntersecting),
+        {
+          rootMargin: `-${HEADER_LAYOUT.HEIGHT_PX + APPLICATION_DETAILS_TOOLBAR.REVEAL_OFFSET_PX}px 0px 0px 0px`,
+        },
+      );
+      observer.observe(sentinel);
+      return () => observer.disconnect();
+    }, []);
 
     const sections = useMemo(() => {
       const created = application.createdAt ? (
@@ -187,6 +207,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           gap: APPLICATION_SECTION_LAYOUT.STACK_GAP_PX,
         }}
       >
+        <div ref={revealSentinelRef} />
         <div
           style={{
             position: 'sticky',
@@ -195,10 +216,14 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'flex-end',
+            gap: 12,
             padding: '8px 0',
             background: DEFAULT_COLORS.BACKGROUND_WHITE,
           }}
         >
+          <ApplicationDetailsIdentity application={application} visible={identityVisible} />
+          {/* Spacer keeps the actions right-aligned whether or not the identity shows. */}
+          <span style={{ flex: 1 }} />
           <ApplicationDetailsToolbar
             onForceSync={onForceSync}
             syncDisabled={syncDisabled}
