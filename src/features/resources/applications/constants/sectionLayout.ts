@@ -40,7 +40,9 @@ export const APPLICATION_WORKLOAD_METRICS = {
   LABEL_FONT_SIZE_PX: 11,
   /** Fraction of the limit above which usage turns amber, then red at 1. */
   WARN_RATIO: 0.85,
-  MAX_WORKLOADS: 25,
+  PAGE_SIZE: 5,
+  PAGINATION_CLASS: 'applications-pagination',
+  PAGINATION_GAP_PX: 12,
   MAX_INSTANCES: 3,
   MAX_CONTAINERS: 4,
   DETAIL_INDENT_PX: 12,

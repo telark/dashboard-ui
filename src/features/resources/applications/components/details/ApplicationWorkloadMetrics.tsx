@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
-import { Tooltip } from 'antd';
+import { Pagination, Tooltip } from 'antd';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
@@ -267,22 +267,48 @@ interface ApplicationWorkloadMetricsProps {
 }
 
 const ApplicationWorkloadMetrics: React.FC<ApplicationWorkloadMetricsProps> = memo(
-  ({ workloads }) => (
-    <div style={{ display: 'grid', rowGap: M.ROW_GAP_PX }}>
-      {workloads.slice(0, M.MAX_WORKLOADS).map((workload) => (
-        <WorkloadRow
-          key={`${workload.namespace}:${workload.resourceKind}:${workload.resourceName}`}
-          workload={workload}
-        />
-      ))}
-      {workloads.length > M.MAX_WORKLOADS ? (
-        <div style={{ fontSize: M.LABEL_FONT_SIZE_PX, color: DEFAULT_COLORS.TEXT_MUTED }}>
-          {APPLICATIONS_UI.SECTIONS.RESOURCES.SHOWING_FIRST} {M.MAX_WORKLOADS} of {workloads.length}
-          .
-        </div>
-      ) : null}
-    </div>
-  ),
+  ({ workloads }) => {
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const pageStart = (currentPage - 1) * M.PAGE_SIZE;
+    const pageWorkloads = workloads.slice(pageStart, pageStart + M.PAGE_SIZE);
+    const rangeEnd = Math.min(pageStart + M.PAGE_SIZE, workloads.length);
+
+    return (
+      <div style={{ display: 'grid', rowGap: M.ROW_GAP_PX }}>
+        {pageWorkloads.map((workload) => (
+          <WorkloadRow
+            key={`${workload.namespace}:${workload.resourceKind}:${workload.resourceName}`}
+            workload={workload}
+          />
+        ))}
+        {workloads.length > M.PAGE_SIZE ? (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              gap: M.PAGINATION_GAP_PX,
+              paddingTop: M.METER_ROW_GAP_PX,
+            }}
+          >
+            <span style={{ fontSize: M.LABEL_FONT_SIZE_PX, color: DEFAULT_COLORS.TEXT_MUTED }}>
+              {pageStart + 1}-{rangeEnd} of {workloads.length}
+            </span>
+            <Pagination
+              className={M.PAGINATION_CLASS}
+              size="small"
+              current={currentPage}
+              pageSize={M.PAGE_SIZE}
+              total={workloads.length}
+              onChange={setCurrentPage}
+              showSizeChanger={false}
+            />
+          </div>
+        ) : null}
+      </div>
+    );
+  },
 );
 
 ApplicationWorkloadMetrics.displayName = 'ApplicationWorkloadMetrics';
