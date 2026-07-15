@@ -1,22 +1,21 @@
 export const APPLICATIONS_UI = {
   HEADER_TITLE: 'Applications',
-  HEADER_SUBTITLE: 'Inspect application health, resources, insights, and change history.',
+  HEADER_SUBTITLE: 'Inspect application health, resources, snapshots, and more.',
   TOOLBAR_SEARCH_PLACEHOLDER: 'Search applications by name, status, or display name...',
   TOOLBAR_SEARCH_BUTTON: 'Search',
   TOOLBAR_CLEAR_ALL: 'Clear All',
-  TOOLBAR_BULK_SELECT: 'Bulk mode',
-  TOOLBAR_BULK_SELECT_ACTIVE: 'Exit bulk mode',
+  TOOLBAR_BULK_SELECT: 'Bulk',
+  TOOLBAR_BULK_SELECT_ACTIVE: 'Exit bulk',
   TOOLBAR_SELECT_ALL: 'Select all on page',
-  TOOLBAR_BULK_FORCE_SYNC: 'Force Sync All',
-  TOOLBAR_BULK_DELETE: 'Delete All',
+  TOOLBAR_BULK_FORCE_SYNC: 'Force Sync',
+  TOOLBAR_BULK_DELETE: 'Delete',
   TOOLBAR_BULK_DELETE_CONFIRM_TITLE: 'Delete selected applications?',
   TOOLBAR_BULK_DELETE_CONFIRM_MESSAGE:
     'Deleting selected applications removes only their platform definitions. Kubernetes resources in your cluster are not deleted.',
   TOOLBAR_LAYOUT_SINGLE: 'Focus view',
   TOOLBAR_LAYOUT_DOUBLE: 'Compare view',
-  TOOLBAR_LAYOUT_SINGLE_TOOLTIP: 'One card per row for easier reading.',
-  TOOLBAR_LAYOUT_DOUBLE_TOOLTIP: 'Two cards per row for side-by-side scanning.',
-  TOOLBAR_COUNT_SUFFIX: 'applications',
+  TOOLBAR_COUNT_SUFFIX: 'apps',
+  TOOLBAR_MORE_LABEL: 'More',
   FILTER: {
     BY_STATUS: 'STATUS',
     BY_MANAGED_BY: 'MANAGED BY',
@@ -36,7 +35,7 @@ export const APPLICATIONS_UI = {
     ROOT: 'Applications',
   },
   DETAIL_PAGE: {
-    SUBTITLE: 'Application details, resources, metrics, and change history.',
+    SUBTITLE: 'Inspect application health, resources, snapshots, and more.',
   },
   EDIT_PAGE: {
     PANEL_TITLE: 'Edit application',
@@ -131,6 +130,10 @@ export const APPLICATIONS_UI = {
       SEVERITY: 'Severity',
       SIZE: 'Size',
       RESTORED_PREFIX: 'Restored',
+      // "Generation N" alone reads as the rollback's own generation. This says
+      // which snapshot it went back to.
+      ROLLBACK_TARGET_PREFIX: 'Rolled back to generation',
+      BY_PREFIX: 'by',
       TRIGGERED_PREFIX: 'Triggered',
       COMPLETED_PREFIX: 'Completed',
       META_SEPARATOR: '·',
@@ -229,6 +232,10 @@ export const APPLICATIONS_UI = {
       SHOWING_FIRST: 'Showing first',
       GEN: 'Generation',
       BY_PREFIX: 'By',
+      // The API appends the target snapshot id to the rollback description
+      // ("... generation 1 snapshot snap-3415eeaa"). The id is already the
+      // change's newValue and adds nothing to the sentence.
+      ROLLBACK_SNAPSHOT_JOINER: ' snapshot ',
       DIFF_ARROW: '→',
       EMPTY_TITLE: 'No history yet',
       EMPTY_DESCRIPTION: 'No history recorded for this application yet.',

@@ -29,6 +29,25 @@ body {
   color-scheme: dark;
 }
 
+/* Under color-scheme: dark the UA paints autofilled fields with its own blue
+   background. Nothing but an inset shadow overrides it, so the field keeps the
+   surface its component defines. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px transparent inset;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* The UA selection highlight is blue under color-scheme: dark. Slate reads on
+   both the dark page and the white panel surfaces. */
+::selection {
+  background: rgba(148, 163, 184, 0.35);
+}
+
 /* Manifests are code: they must stay monospace. The `#root *` Geist rule above is
    !important AND id-scoped, so this must be id-scoped too to out-specify it. */
 #root .manifest-code,

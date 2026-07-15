@@ -1,6 +1,6 @@
 import React from 'react';
 import { SearchOutlined, CloseOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../constants';
+import { DEFAULT_COLORS, TOOLBAR_CONTROL } from '../../../constants';
 
 interface SearchButtonProps {
   onClick?: () => void;
@@ -22,13 +22,20 @@ const SearchButton: React.FC<SearchButtonProps> = ({
     display: 'flex',
     alignItems: 'center',
     gap: 6,
-    padding: '6px 12px',
+    height: TOOLBAR_CONTROL.HEIGHT,
+    boxSizing: 'border-box',
+    padding: TOOLBAR_CONTROL.PADDING,
+    lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
     borderRadius: 6,
     fontSize: 13,
     fontWeight: 500,
     border: 'none',
-    backgroundColor: active ? '#e6f7ff' : 'transparent',
-    color: disabled ? '#d1d5db' : active ? DEFAULT_COLORS.SUCCESS : '#64748b',
+    backgroundColor: active ? DEFAULT_COLORS.SURFACE_WHITE : 'transparent',
+    color: disabled
+      ? '#d1d5db'
+      : active
+        ? DEFAULT_COLORS.TEXT_ON_SURFACE
+        : DEFAULT_COLORS.TEXT_MUTED,
     fontFamily: "'Roboto Condensed', sans-serif",
     transition: 'all 0.2s',
     opacity: disabled ? 0.6 : 1,
@@ -36,14 +43,16 @@ const SearchButton: React.FC<SearchButtonProps> = ({
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled) return;
-    e.currentTarget.style.backgroundColor = DEFAULT_COLORS.HOVER_BG;
-    e.currentTarget.style.color = DEFAULT_COLORS.SUCCESS;
+    e.currentTarget.style.backgroundColor = DEFAULT_COLORS.SURFACE_WHITE;
+    e.currentTarget.style.color = DEFAULT_COLORS.TEXT_ON_SURFACE;
   };
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled) return;
-    e.currentTarget.style.backgroundColor = active ? '#e6f7ff' : 'transparent';
-    e.currentTarget.style.color = active ? DEFAULT_COLORS.SUCCESS : '#64748b';
+    e.currentTarget.style.backgroundColor = active ? DEFAULT_COLORS.SURFACE_WHITE : 'transparent';
+    e.currentTarget.style.color = active
+      ? DEFAULT_COLORS.TEXT_ON_SURFACE
+      : DEFAULT_COLORS.TEXT_MUTED;
   };
 
   return (

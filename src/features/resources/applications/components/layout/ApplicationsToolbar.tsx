@@ -5,17 +5,23 @@ import {
   CheckSquareOutlined,
   CloseOutlined,
   DeleteOutlined,
+  EllipsisOutlined,
   SearchOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
-import { Checkbox, Tooltip } from 'antd';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { Checkbox } from 'antd';
+import { DEFAULT_COLORS, TOOLBAR_CONTROL, TOOLBAR_ITEM_GAP } from '../../../../../constants';
 import Toolbar from '../../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import { APPLICATIONS_UI } from '../../constants';
 import type { ApplicationLayoutMode } from '../../models';
 import { FilterButton } from '../../../../../components/display/buttons';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
+
+const MORE_MENU_KEYS = {
+  LAYOUT: 'layout',
+  BULK: 'bulk',
+} as const;
 
 interface ApplicationsToolbarProps {
   searchValue: string;
@@ -67,15 +73,10 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
   onHealthQuickFilterChange,
 }) => {
   const nextLayoutMode: ApplicationLayoutMode = layoutMode === 'single' ? 'double' : 'single';
-  const nextLayoutTooltip =
-    nextLayoutMode === 'double'
-      ? APPLICATIONS_UI.TOOLBAR_LAYOUT_DOUBLE_TOOLTIP
-      : APPLICATIONS_UI.TOOLBAR_LAYOUT_SINGLE_TOOLTIP;
   const nextLayoutLabel =
     nextLayoutMode === 'double'
       ? APPLICATIONS_UI.TOOLBAR_LAYOUT_DOUBLE
       : APPLICATIONS_UI.TOOLBAR_LAYOUT_SINGLE;
-  const nextLayoutIcon = nextLayoutMode === 'double' ? <AppstoreOutlined /> : <BarsOutlined />;
 
   const toolbarConfig: ToolbarConfig = useMemo(
     () => ({
@@ -138,13 +139,61 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
             ? APPLICATIONS_UI.TOOLBAR_BULK_SELECT_ACTIVE
             : APPLICATIONS_UI.TOOLBAR_BULK_SELECT,
           icon: <CheckSquareOutlined />,
-          variant: bulkMode ? 'primary' : 'default',
+          variant: 'default',
           onClick: onToggleBulkMode,
           active: bulkMode,
         },
       ],
     }),
     [bulkMode, onToggleBulkMode],
+  );
+  const handleMoreMenuClick = useCallback(
+    (key: string) => {
+      if (key === MORE_MENU_KEYS.LAYOUT) {
+        onLayoutModeChange(nextLayoutMode);
+        return;
+      }
+      if (key === MORE_MENU_KEYS.BULK) {
+        onToggleBulkMode();
+      }
+    },
+    [nextLayoutMode, onLayoutModeChange, onToggleBulkMode],
+  );
+
+  // Layout is a set-once display preference and bulk is an occasional mode, so
+  // both sit behind the overflow to leave the toolbar for per-scan controls.
+  // Exiting bulk stays inline: it must never be buried behind a menu.
+  const moreToolbarConfig: ToolbarConfig = useMemo(
+    () => ({
+      buttons: [
+        {
+          key: 'more',
+          label: APPLICATIONS_UI.TOOLBAR_MORE_LABEL,
+          icon: <EllipsisOutlined />,
+          variant: 'ghost',
+          dropdown: {
+            items: [
+              {
+                key: MORE_MENU_KEYS.LAYOUT,
+                icon: nextLayoutMode === 'double' ? <AppstoreOutlined /> : <BarsOutlined />,
+                label: nextLayoutLabel,
+              },
+              ...(bulkMode
+                ? []
+                : [
+                    {
+                      key: MORE_MENU_KEYS.BULK,
+                      icon: <CheckSquareOutlined />,
+                      label: APPLICATIONS_UI.TOOLBAR_BULK_SELECT,
+                    },
+                  ]),
+            ],
+            onItemClick: handleMoreMenuClick,
+          },
+        },
+      ],
+    }),
+    [bulkMode, handleMoreMenuClick, nextLayoutLabel, nextLayoutMode],
   );
   const clearAllToolbarConfig: ToolbarConfig | undefined = useMemo(() => {
     if (!hasActiveFilters) {
@@ -162,16 +211,6 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
       ],
     };
   }, [hasActiveFilters, onClearAllFilters]);
-
-  const handleLayoutButtonMouseEnter = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    e.currentTarget.style.backgroundColor = DEFAULT_COLORS.HOVER_BG;
-    e.currentTarget.style.color = DEFAULT_COLORS.SUCCESS;
-  }, []);
-
-  const handleLayoutButtonMouseLeave = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    e.currentTarget.style.backgroundColor = 'transparent';
-    e.currentTarget.style.color = '#64748b';
-  }, []);
 
   const healthPills = useMemo(
     () =>
@@ -210,15 +249,16 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
-                height: 26,
-                padding: '0 10px',
+                height: TOOLBAR_CONTROL.HEIGHT,
+                boxSizing: 'border-box',
+                padding: TOOLBAR_CONTROL.PADDING,
                 borderRadius: 999,
                 background,
                 border: `1px solid ${borderColor}`,
                 color,
                 fontSize: 12,
                 fontWeight: 700,
-                lineHeight: 1,
+                lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
                 userSelect: 'none',
               }}
             >
@@ -337,8 +377,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
         ) : null}
         <Toolbar config={clearAllToolbarConfig} />
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, height: '100%' }}>
-        <FilterButton onClick={onOpenFilters} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: TOOLBAR_ITEM_GAP, height: '100%' }}>
         {!bulkMode ? (
           <span
             style={{
@@ -355,36 +394,10 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
           </span>
         ) : null}
         {pillsNode}
+        <FilterButton onClick={onOpenFilters} />
         <Toolbar config={toolbarConfig} />
-        <Toolbar config={bulkModeToolbarConfig} />
-        <Tooltip title={nextLayoutTooltip}>
-          <button
-            type="button"
-            onClick={() => onLayoutModeChange(nextLayoutMode)}
-            style={{
-              all: 'unset',
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '6px 12px',
-              borderRadius: 6,
-              fontSize: 13,
-              fontWeight: 500,
-              border: 'none',
-              backgroundColor: 'transparent',
-              color: '#64748b',
-              fontFamily: "'Roboto Condensed', sans-serif",
-              transition: 'all 0.2s',
-              height: 32,
-            }}
-            onMouseEnter={handleLayoutButtonMouseEnter}
-            onMouseLeave={handleLayoutButtonMouseLeave}
-          >
-            <span style={{ fontSize: 14, lineHeight: 1 }}>{nextLayoutIcon}</span>
-            <span>{nextLayoutLabel}</span>
-          </button>
-        </Tooltip>
+        {bulkMode ? <Toolbar config={bulkModeToolbarConfig} /> : null}
+        <Toolbar config={moreToolbarConfig} />
       </div>
     </div>
   );

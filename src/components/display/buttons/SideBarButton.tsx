@@ -12,7 +12,7 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = mem
 
     const isActive = Boolean(active);
     const isActiveOrHovered = isActive || isHovered;
-    const accentColor = DEFAULT_COLORS.SUCCESS;
+    const accentColor = DEFAULT_COLORS.TEXT_MUTED;
     const iconColor = isActiveOrHovered ? accentColor : BUTTON_COLORS.ICON_DEFAULT;
     const textColor = isActiveOrHovered ? accentColor : BUTTON_COLORS.TEXT_DEFAULT;
 
