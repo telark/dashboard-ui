@@ -131,6 +131,8 @@ export interface ApplicationSnapshotSummary {
   takenAt?: string;
   pvcTotal?: string;
   pvcAvailable?: string;
+  /** The CR still references this snapshot but the exporter has no file for it. */
+  unavailable?: boolean;
 }
 
 export interface SnapshotManifestState {

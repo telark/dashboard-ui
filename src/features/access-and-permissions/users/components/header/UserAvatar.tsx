@@ -1,15 +1,15 @@
 import React, { memo } from 'react';
-import { DEFAULT_COLORS, HEADER_CONSTANTS } from '../../../../../constants';
+import { HEADER_CONSTANTS } from '../../../../../constants';
 import UserAvatarComponent from '../../../../../components/display/avatars/UserAvatar';
+import { avatarRingStyle } from '../../../../../components/display/avatars/avatarRing';
 import type { User } from '../../models';
 
 interface UserAvatarProps {
   currentUser: User | null;
   size: number;
-  borderWidth: number;
 }
 
-const UserAvatar: React.FC<UserAvatarProps> = memo(({ currentUser, size, borderWidth }) => {
+const UserAvatar: React.FC<UserAvatarProps> = memo(({ currentUser, size }) => {
   if (!currentUser) {
     return null;
   }
@@ -19,15 +19,8 @@ const UserAvatar: React.FC<UserAvatarProps> = memo(({ currentUser, size, borderW
       type="button"
       aria-label="User avatar"
       style={{
+        ...avatarRingStyle(size),
         cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: size + borderWidth * 2,
-        height: size + borderWidth * 2,
-        borderRadius: '50%',
-        border: `${borderWidth}px solid ${DEFAULT_COLORS.SUCCESS}`,
-        padding: borderWidth,
         transition: HEADER_CONSTANTS.USER.AVATAR.TRANSITION,
         background: 'transparent',
         outline: 'none',

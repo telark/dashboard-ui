@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dropdown, Tooltip } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, LoadingOutlined } from '@ant-design/icons';
 import {
   BUTTON_COLORS,
   DEFAULT_COLORS,
@@ -75,11 +75,13 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
           const isDanger = button.variant === 'danger';
           const isGhost = button.variant === 'ghost';
           const isDisabled = button.disabled ?? false;
+          const isLoading = button.loading ?? false;
           const isSearchButton = search && button.key === 'search';
           const buttonLabel = isSearchButton && showSearch ? 'Hide' : button.label;
 
           const handleButtonClick = () => {
-            if (isDisabled) return;
+            // A button left enabled while its action is in flight would re-fire it.
+            if (isDisabled || isLoading) return;
             if (search && button.key === 'search') {
               handleSearchToggle();
             }
@@ -154,7 +156,6 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                             ? DEFAULT_COLORS.TEXT_ON_SURFACE
                             : BUTTON_COLORS.TOOLBAR_TEXT,
                     opacity: isDisabled ? 0.6 : 1,
-                    fontFamily: "'Roboto Condensed', sans-serif",
                     transition: 'all 0.2s',
                   }}
                   onClick={isDisabled ? undefined : handleButtonClick}
@@ -214,7 +215,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
               disabled={isDisabled}
               style={{
                 all: 'unset',
-                cursor: isDisabled ? 'not-allowed' : 'pointer',
+                cursor: isDisabled ? 'not-allowed' : isLoading ? 'default' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 6,
@@ -253,7 +254,6 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                         ? DEFAULT_COLORS.TEXT_ON_SURFACE
                         : BUTTON_COLORS.TOOLBAR_TEXT,
                 opacity: isDisabled ? 0.6 : 1,
-                fontFamily: "'Roboto Condensed', sans-serif",
                 transition: 'all 0.2s',
               }}
               onMouseEnter={(e) => {
@@ -292,12 +292,18 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                 }
               }}
             >
-              {button.icon && (
-                <span
+              {isLoading ? (
+                <LoadingOutlined
                   style={{ fontSize: 14, display: 'flex', alignItems: 'center', lineHeight: 1 }}
-                >
-                  {button.icon}
-                </span>
+                />
+              ) : (
+                button.icon && (
+                  <span
+                    style={{ fontSize: 14, display: 'flex', alignItems: 'center', lineHeight: 1 }}
+                  >
+                    {button.icon}
+                  </span>
+                )
               )}
               <span>{buttonLabel}</span>
             </button>

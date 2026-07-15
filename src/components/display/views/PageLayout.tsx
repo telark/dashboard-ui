@@ -117,7 +117,6 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
                 marginTop: 0,
                 padding: 0,
                 lineHeight: 1.2,
-                fontFamily: "'Roboto Condensed', sans-serif",
               }}
             >
               {subtitle}

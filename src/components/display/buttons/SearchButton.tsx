@@ -36,7 +36,6 @@ const SearchButton: React.FC<SearchButtonProps> = ({
       : active
         ? DEFAULT_COLORS.TEXT_ON_SURFACE
         : DEFAULT_COLORS.TEXT_MUTED,
-    fontFamily: "'Roboto Condensed', sans-serif",
     transition: 'all 0.2s',
     opacity: disabled ? 0.6 : 1,
   };

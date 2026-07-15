@@ -2,6 +2,7 @@ import { Client, exporterApiClient } from '../../../../api/index';
 import logger from '../../../../logging';
 import { Endpoints } from '../../../../constants';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
+import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 import { APPLICATIONS_ERROR_MESSAGES } from '../constants';
 import { APPLICATIONS_UI } from '../constants/texts';
 import type { ApplicationSnapshot, ApplicationSnapshotSummary } from '../models';
@@ -80,7 +81,10 @@ function mapExporterRowToSummary(row: unknown): ApplicationSnapshotSummary | nul
   };
 }
 
-function detailToPlaceholderSummary(ref: ApplicationSnapshot): ApplicationSnapshotSummary {
+function detailToPlaceholderSummary(
+  ref: ApplicationSnapshot,
+  unavailable: boolean,
+): ApplicationSnapshotSummary {
   return {
     id: ref.id,
     scope: SNAPSHOT_SCOPE_APPS,
@@ -91,7 +95,14 @@ function detailToPlaceholderSummary(ref: ApplicationSnapshot): ApplicationSnapsh
     path: ref.path,
     severity: ref.severity,
     takenAt: ref.takenAt,
+    unavailable,
   };
+}
+
+// Only a not-found answer proves the file is gone: a transient failure must not
+// mark a healthy snapshot unavailable and disable its rollback.
+function isSnapshotFileMissing(error: unknown): boolean {
+  return (error as ExtendedAxiosError)?.normalized?.isNotFound === true;
 }
 
 function enrichSummaryFromDetail(
@@ -115,13 +126,18 @@ async function fetchSingleSnapshotStorage(
 ): Promise<ApplicationSnapshotSummary | null> {
   const qs = buildSnapshotQueryString(ref.namespace, ref.generation);
   const urlPath = `${Endpoints.SNAPSHOTS.GET_BY_ID(ref.id).path}?${qs}`;
-  const resp = await Client<ResourceDetailsResponse<unknown>>(exporterApiClient, urlPath);
-  const rows = extractRawSnapshotRows(resp.data);
-  for (const row of rows) {
-    const mapped = mapExporterRowToSummary(row);
-    if (mapped) return enrichSummaryFromDetail(ref, mapped);
+  try {
+    const resp = await Client<ResourceDetailsResponse<unknown>>(exporterApiClient, urlPath);
+    const rows = extractRawSnapshotRows(resp.data);
+    for (const row of rows) {
+      const mapped = mapExporterRowToSummary(row);
+      if (mapped) return enrichSummaryFromDetail(ref, mapped);
+    }
+    return null;
+  } catch (error) {
+    if (isSnapshotFileMissing(error)) return null;
+    throw error;
   }
-  return null;
 }
 
 async function fetchSnapshotSummariesPerRef(
@@ -135,7 +151,9 @@ async function fetchSnapshotSummariesPerRef(
     if (res.status === 'fulfilled' && res.value != null) {
       out.push(res.value);
     } else {
-      out.push(detailToPlaceholderSummary(ref));
+      // Resolved with no row means the exporter answered and has no file for the
+      // ref; a rejection is a transient failure, which says nothing about it.
+      out.push(detailToPlaceholderSummary(ref, res.status === 'fulfilled'));
     }
   }
   return out;

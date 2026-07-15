@@ -14,6 +14,7 @@ import { fetchUserById } from '../../clients/fetch';
 import { createUserMenuItems } from './UserMenuItems';
 import UserAvatar from './UserAvatar';
 import UserAvatarComponent from '../../../../../components/display/avatars/UserAvatar';
+import { avatarRingStyle } from '../../../../../components/display/avatars/avatarRing';
 import {
   APP_ROUTES,
   BUTTON_CONFIGS,
@@ -130,12 +131,14 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(
               boxSizing: 'border-box',
             }}
           >
-            <UserAvatarComponent
-              avatar={currentUser.avatar}
-              username={currentUser.username}
-              size={SIDEBAR_USER_MENU.AVATAR.SIZE}
-              style={{ border: 'none', flexShrink: 0, borderRadius: '50%' }}
-            />
+            <div style={avatarRingStyle(SIDEBAR_USER_MENU.AVATAR.SIZE)}>
+              <UserAvatarComponent
+                avatar={currentUser.avatar}
+                username={currentUser.username}
+                size={SIDEBAR_USER_MENU.AVATAR.SIZE}
+                style={{ border: 'none' }}
+              />
+            </div>
             {!isCollapsed && (
               <>
                 <span
@@ -165,11 +168,7 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(
           </button>
         ) : (
           <div>
-            <UserAvatar
-              currentUser={currentUser}
-              size={HEADER_CONSTANTS.USER.AVATAR.SIZE}
-              borderWidth={HEADER_CONSTANTS.USER.AVATAR.BORDER_WIDTH}
-            />
+            <UserAvatar currentUser={currentUser} size={HEADER_CONSTANTS.USER.AVATAR.SIZE} />
           </div>
         )}
       </Dropdown>

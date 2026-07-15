@@ -1,8 +1,10 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Input, Select, Tooltip, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
+import Toolbar from '../../../../components/display/toolbar/Toolbar';
+import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, enrichmentApiClient, exporterApiClient } from '../../../../api';
-import { Endpoints, DEFAULT_COLORS } from '../../../../constants';
+import { Endpoints } from '../../../../constants';
 import { Switch } from '../../../../components/display/inputs';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import { useDispatch, useSelector } from 'react-redux';
@@ -38,17 +40,6 @@ const AIInsightsSection: React.FC = memo(() => {
   const globalConfig = useSelector(selectGlobalConfigState);
   const canControlAiInsights = usePermission('settings', 'Owner');
   const { message } = AntdApp.useApp();
-
-  const saveButtonStyle = useCallback(
-    (disabled: boolean): React.CSSProperties => ({
-      background: DEFAULT_COLORS.SUCCESS,
-      borderColor: DEFAULT_COLORS.SUCCESS,
-      color: '#fff',
-      opacity: disabled ? 0.6 : 1,
-      cursor: disabled ? 'not-allowed' : 'pointer',
-    }),
-    [],
-  );
 
   const [initialAi, setInitialAi] = useState<{
     enabled: boolean;
@@ -163,6 +154,25 @@ const AIInsightsSection: React.FC = memo(() => {
     }
   }, [aiEnabled, apiKey, dispatch, provider, message]);
 
+  const saveToolbarConfig: ToolbarConfig = useMemo(
+    () => ({
+      buttons: [
+        {
+          key: 'save',
+          label: C.LABELS.SAVE_BUTTON,
+          variant: 'default',
+          loading: saving,
+          disabled: !aiHasChanges || !canEnable || !canControlAiInsights,
+          tooltip: canControlAiInsights
+            ? undefined
+            : C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED,
+          onClick: handleEnable,
+        },
+      ],
+    }),
+    [saving, aiHasChanges, canEnable, canControlAiInsights, handleEnable],
+  );
+
   return (
     <SettingsCard title="AI Insights" description={C.LABELS.AI_INSIGHTS_DESCRIPTION}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -253,26 +263,7 @@ const AIInsightsSection: React.FC = memo(() => {
         ) : null}
 
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Tooltip
-            title={
-              !canControlAiInsights ? C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED : undefined
-            }
-          >
-            <span
-              style={
-                !canControlAiInsights ? { display: 'inline-block', cursor: 'not-allowed' } : {}
-              }
-            >
-              <Button
-                onClick={handleEnable}
-                loading={saving}
-                disabled={!aiHasChanges || !canEnable || !canControlAiInsights}
-                style={saveButtonStyle(!aiHasChanges || !canEnable || !canControlAiInsights)}
-              >
-                Save
-              </Button>
-            </span>
-          </Tooltip>
+          <Toolbar config={saveToolbarConfig} />
         </div>
       </div>
     </SettingsCard>

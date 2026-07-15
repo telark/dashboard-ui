@@ -63,7 +63,6 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
     borderRadius: 6,
     fontSize: 13,
     fontWeight: 500,
-    fontFamily: "'Roboto Condensed', sans-serif",
     transition: 'all 0.2s',
     opacity: disabled ? 0.6 : 1,
     backgroundColor: active ? p.activeBg : 'transparent',

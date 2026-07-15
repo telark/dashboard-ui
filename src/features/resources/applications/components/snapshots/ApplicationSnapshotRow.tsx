@@ -24,6 +24,27 @@ const ICON_BTN: React.CSSProperties = {
 
 export type RollbackDisabledReason = 'sync' | 'activeRollback' | null;
 
+function manifestTooltip(canViewManifest: boolean, fileMissing: boolean): string {
+  const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
+  if (!canViewManifest) return ui.VIEW_MANIFEST_PERMISSION_DENIED_TOOLTIP;
+  if (fileMissing) return ui.VIEW_MANIFEST_FILE_MISSING_TOOLTIP;
+  return ui.VIEW_MANIFEST;
+}
+
+function rollbackTooltip(
+  canRollback: boolean,
+  fileMissing: boolean,
+  rollbackDisabled: boolean,
+  reason: RollbackDisabledReason,
+): string {
+  const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
+  if (!canRollback) return ui.ROLLBACK_PERMISSION_DENIED_TOOLTIP;
+  if (fileMissing) return ui.ROLLBACK_FILE_MISSING_TOOLTIP;
+  if (!rollbackDisabled) return ui.ROLLBACK;
+  if (reason === 'activeRollback') return ui.ROLLBACK_IN_PROGRESS_TOOLTIP;
+  return APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP;
+}
+
 export interface ApplicationSnapshotRowProps {
   snapshot: ApplicationSnapshotSummary;
   showMarginBottom: boolean;
@@ -68,6 +89,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
       s.severity && s.severity.trim().length > 0 ? s.severity : APPLICATIONS_UI.FALLBACKS.EMPTY;
 
     const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
+    const fileMissing = s.unavailable === true;
 
     return (
       <div
@@ -167,11 +189,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
               flexShrink: 0,
             }}
           >
-            <Tooltip
-              title={
-                !canViewManifest ? ui.VIEW_MANIFEST_PERMISSION_DENIED_TOOLTIP : ui.VIEW_MANIFEST
-              }
-            >
+            <Tooltip title={manifestTooltip(canViewManifest, fileMissing)}>
               <Button
                 size="small"
                 type="text"
@@ -179,19 +197,16 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                 onClick={() => onViewManifest(s)}
                 style={ICON_BTN}
                 aria-label={ui.VIEW_MANIFEST}
-                disabled={!canViewManifest}
+                disabled={!canViewManifest || fileMissing}
               />
             </Tooltip>
             <Tooltip
-              title={
-                !canRollback
-                  ? ui.ROLLBACK_PERMISSION_DENIED_TOOLTIP
-                  : rollbackDisabled
-                    ? rollbackDisabledReason === 'activeRollback'
-                      ? ui.ROLLBACK_IN_PROGRESS_TOOLTIP
-                      : APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
-                    : ui.ROLLBACK
-              }
+              title={rollbackTooltip(
+                canRollback,
+                fileMissing,
+                rollbackDisabled,
+                rollbackDisabledReason,
+              )}
             >
               <Button
                 size="small"
@@ -201,7 +216,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                 style={ICON_BTN}
                 aria-label={ui.ROLLBACK}
                 loading={rollbackLoading}
-                disabled={!canRollback || !onRollback || rollbackDisabled}
+                disabled={!canRollback || !onRollback || rollbackDisabled || fileMissing}
               />
             </Tooltip>
           </div>

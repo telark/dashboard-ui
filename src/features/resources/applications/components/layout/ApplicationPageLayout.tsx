@@ -80,7 +80,6 @@ const ApplicationPageLayout: React.FC<ApplicationPageLayoutProps> = memo(
                 marginTop: 0,
                 padding: 0,
                 lineHeight: 1.2,
-                fontFamily: "'Roboto Condensed', sans-serif",
               }}
             >
               {subtitle}

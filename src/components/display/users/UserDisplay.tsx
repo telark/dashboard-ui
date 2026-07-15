@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import UserAvatar from '../avatars/UserAvatar';
 import { DEFAULT_COLORS } from '../../../constants/shared/colors';
+import { AVATAR_RING } from '../../../constants/layout/avatars';
 import type { User } from '../../../features/access-and-permissions/users/models';
 
 interface UserDisplayProps {
@@ -36,8 +37,10 @@ const UserDisplay: React.FC<UserDisplayProps> = memo(
               width: config.container,
               height: config.container,
               borderRadius: '50%',
-              border: `1.5px solid ${DEFAULT_COLORS.SUCCESS}`,
-              padding: 1.5,
+              // Container sizes are deliberately wider than the shared ring
+              // formula, so only the ring itself is shared here.
+              border: `${AVATAR_RING.BORDER_WIDTH}px solid ${DEFAULT_COLORS.SUCCESS}`,
+              padding: AVATAR_RING.BORDER_WIDTH,
               background: 'transparent',
             }}
           >

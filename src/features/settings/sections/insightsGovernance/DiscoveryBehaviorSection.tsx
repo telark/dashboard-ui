@@ -1,6 +1,8 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, InputNumber, Select, Tooltip, App as AntdApp } from 'antd';
+import { InputNumber, Select, Tooltip, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
+import Toolbar from '../../../../components/display/toolbar/Toolbar';
+import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, discoveryApiClient, exporterApiClient } from '../../../../api';
 import { DEFAULT_COLORS, Endpoints } from '../../../../constants';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
@@ -27,17 +29,6 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
   const applications = useSelector((s: RootState) => s.applications.applications);
   const canEditDiscoveryConfig = usePermission('settings', 'Contributor');
   const { message } = AntdApp.useApp();
-
-  const saveButtonStyle = useCallback(
-    (disabled: boolean): React.CSSProperties => ({
-      background: DEFAULT_COLORS.SUCCESS,
-      borderColor: DEFAULT_COLORS.SUCCESS,
-      color: '#fff',
-      opacity: disabled ? 0.6 : 1,
-      cursor: disabled ? 'not-allowed' : 'pointer',
-    }),
-    [],
-  );
 
   const [initialDiscovery, setInitialDiscovery] = useState<{
     excludedNamespaces: string[];
@@ -175,6 +166,30 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
     );
   }, []);
 
+  const saveToolbarConfig: ToolbarConfig = useMemo(
+    () => ({
+      buttons: [
+        {
+          key: 'save',
+          label: C.LABELS.SAVE_BUTTON,
+          variant: 'default',
+          loading: savingDiscoveryBehavior,
+          disabled: !discoveryHasChanges || !canEditDiscoveryConfig,
+          tooltip: canEditDiscoveryConfig
+            ? undefined
+            : C.LABELS.EDIT_DISCOVERY_CONFIG_PERMISSION_DENIED,
+          onClick: saveDiscoveryAndBehavior,
+        },
+      ],
+    }),
+    [
+      savingDiscoveryBehavior,
+      discoveryHasChanges,
+      canEditDiscoveryConfig,
+      saveDiscoveryAndBehavior,
+    ],
+  );
+
   return (
     <SettingsCard
       title="Discovery & Behavior"
@@ -271,26 +286,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Tooltip
-            title={
-              !canEditDiscoveryConfig ? C.LABELS.EDIT_DISCOVERY_CONFIG_PERMISSION_DENIED : undefined
-            }
-          >
-            <span
-              style={
-                !canEditDiscoveryConfig ? { display: 'inline-block', cursor: 'not-allowed' } : {}
-              }
-            >
-              <Button
-                loading={savingDiscoveryBehavior}
-                onClick={saveDiscoveryAndBehavior}
-                disabled={!discoveryHasChanges || !canEditDiscoveryConfig}
-                style={saveButtonStyle(!discoveryHasChanges || !canEditDiscoveryConfig)}
-              >
-                Save
-              </Button>
-            </span>
-          </Tooltip>
+          <Toolbar config={saveToolbarConfig} />
         </div>
       </div>
     </SettingsCard>

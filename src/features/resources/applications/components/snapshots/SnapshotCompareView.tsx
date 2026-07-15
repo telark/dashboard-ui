@@ -6,9 +6,6 @@ import { APPLICATIONS_UI } from '../../constants';
 import MutedText from '../details/MutedText';
 import SnapshotMetaChip from './SnapshotMetaChip';
 
-const COMPARE_ARROW = '→';
-const EMPTY_VALUE = '—';
-
 type DiffType = 'add' | 'remove' | 'change';
 type Path = string[];
 
@@ -27,7 +24,7 @@ function isRecord(v: unknown): v is Record<string, unknown> {
 }
 
 function stringifyValue(v: unknown): string {
-  if (v == null) return EMPTY_VALUE;
+  if (v == null) return APPLICATIONS_UI.FALLBACKS.EMPTY;
   if (typeof v === 'string') return v;
   if (typeof v === 'number' || typeof v === 'boolean') return String(v);
   try {
@@ -214,7 +211,11 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
             flexShrink: 0,
           }}
         >
-          {snap.takenAt ? <TimeAgo date={snap.takenAt} /> : <MutedText value={EMPTY_VALUE} />}
+          {snap.takenAt ? (
+            <TimeAgo date={snap.takenAt} />
+          ) : (
+            <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
+          )}
         </span>
       </div>
     );
@@ -246,7 +247,7 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
             style={{ fontSize: 14, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED, flexShrink: 0 }}
             aria-hidden
           >
-            {COMPARE_ARROW}
+            {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DIFF_ARROW}
           </span>
           {side(right)}
         </div>
@@ -255,10 +256,11 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
         {totalChanges > 0 ? (
           <div style={{ alignSelf: 'flex-start' }}>
             <SnapshotMetaChip>
-              {totalChanges} {totalChanges === 1 ? ui.COMPARE_CHANGE_ONE : ui.COMPARE_CHANGE_MANY}
+              {totalChanges} {ui.COMPARE_CHANGE}
+              {totalChanges === 1 ? '' : 's'}
               {ui.STORAGE_METRICS_JOINER}
-              {groups.length}{' '}
-              {groups.length === 1 ? ui.COMPARE_RESOURCE_ONE : ui.COMPARE_RESOURCE_MANY}
+              {groups.length} {ui.COMPARE_RESOURCE}
+              {groups.length === 1 ? '' : 's'}
             </SnapshotMetaChip>
           </div>
         ) : null}
@@ -343,8 +345,8 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
                   {g.meta.name}
                 </span>
                 <SnapshotMetaChip>
-                  {g.rows.length}{' '}
-                  {g.rows.length === 1 ? ui.COMPARE_CHANGE_ONE : ui.COMPARE_CHANGE_MANY}
+                  {g.rows.length} {ui.COMPARE_CHANGE}
+                  {g.rows.length === 1 ? '' : 's'}
                 </SnapshotMetaChip>
               </div>
               <div style={{ display: 'grid', rowGap: 4, padding: '6px 10px' }}>
@@ -379,7 +381,7 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
                     ) : null}
                     {r.type === 'change' ? (
                       <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }} aria-hidden>
-                        {COMPARE_ARROW}
+                        {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DIFF_ARROW}
                       </span>
                     ) : null}
                     {r.type !== 'remove' ? (
@@ -393,13 +395,6 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
                         {stringifyValue(r.newValue)}
                       </span>
                     ) : null}
-                    <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED, fontSize: 11 }}>
-                      {r.type === 'add'
-                        ? ui.COMPARE_ADDED
-                        : r.type === 'remove'
-                          ? ui.COMPARE_REMOVED
-                          : ''}
-                    </span>
                   </div>
                 ))}
               </div>

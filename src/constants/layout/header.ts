@@ -18,14 +18,12 @@ export const HEADER_CONSTANTS = {
   USER: {
     AVATAR: {
       SIZE: 22,
-      BORDER_WIDTH: 1.5,
       HOVER_SCALE: 1.05,
       TRANSITION: 'all 0.2s ease',
     },
     MENU: {
       MIN_WIDTH: '200px',
       PLACEMENT: 'bottomRight' as const,
-      TRIGGER: ['click'] as const,
       ROOT_CLASS: 'user-menu-dropdown',
     },
     USER_INFO: {
@@ -45,9 +43,6 @@ export const HEADER_CONSTANTS = {
     },
     MENU_ITEM: {
       GAP: '8px',
-    },
-    SETTINGS: {
-      MESSAGE: 'Settings feature coming soon',
     },
     WARNINGS: {
       MISSING_USER_DATA:
