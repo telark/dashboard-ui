@@ -3,6 +3,7 @@ import { CameraOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import UserAvatar from '../../../../../components/display/avatars/UserAvatar';
 import AvatarPicker from '../../../../../components/display/avatars/AvatarPicker';
+import { avatarRingStyle } from '../../../../../components/display/avatars/avatarRing';
 import SettingsCard from '../../../components/SettingsCard';
 import { PROFILE_SECTION_CONSTANTS } from '../constants';
 import type {
@@ -22,19 +23,7 @@ export interface ProfilePhotoCardProps {
 
 const ProfilePhotoCard: React.FC<ProfilePhotoCardProps> = memo(({ user, onAvatarChange }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const avatarWrapperSize = LAYOUT.AVATAR_SIZE + LAYOUT.AVATAR_BORDER_WIDTH * 2;
-  const avatarWrapperStyle: React.CSSProperties = {
-    width: avatarWrapperSize,
-    height: avatarWrapperSize,
-    flexShrink: 0,
-    borderRadius: '50%',
-    border: `${LAYOUT.AVATAR_BORDER_WIDTH}px solid ${DEFAULT_COLORS.SUCCESS}`,
-    padding: LAYOUT.AVATAR_BORDER_WIDTH,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxSizing: 'border-box',
-  };
+  const avatarWrapperStyle = avatarRingStyle(LAYOUT.AVATAR_SIZE);
 
   const handleAvatarChange = useCallback(
     (avatar: UserAvatarType) => {

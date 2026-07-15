@@ -14,7 +14,6 @@ export const ATTACHED_ROLES_CONSTANTS = {
       color: DEFAULT_COLORS.TEXT_MUTED,
       textTransform: 'uppercase' as const,
       letterSpacing: 0.5,
-      fontFamily: "'Roboto Condensed', sans-serif",
     },
     BUTTON: {
       BASE: {
@@ -24,7 +23,6 @@ export const ATTACHED_ROLES_CONSTANTS = {
         height: 28,
         padding: '0 16px',
         fontSize: 13,
-        fontFamily: "'Roboto Condensed', sans-serif",
         transition: 'all 0.2s',
       },
       ACTIVE: {

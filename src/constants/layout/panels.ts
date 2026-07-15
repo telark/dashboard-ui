@@ -1,4 +1,5 @@
 import { DEFAULT_COLORS } from '../shared/colors';
+import { AVATAR_RING } from './avatars';
 
 // Panels keep the light surface they had before the dark theme; these tokens
 // re-light the antd controls rendered inside them.
@@ -327,8 +328,8 @@ export const VIEW = {
     marginTop: 4,
   },
   AVATAR: {
-    border: '1.5px solid #20C997',
-    padding: 1.5,
+    border: `${AVATAR_RING.BORDER_WIDTH}px solid ${DEFAULT_COLORS.SUCCESS}`,
+    padding: AVATAR_RING.BORDER_WIDTH,
     background: DEFAULT_COLORS.SURFACE_WHITE,
     boxSizing: 'border-box' as const,
     boxShadow: '0 0 0 2px #fff',

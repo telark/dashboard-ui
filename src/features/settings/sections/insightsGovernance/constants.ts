@@ -19,6 +19,7 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     PROVIDER_CARD_DESCRIPTION: 'Choose your AI provider.',
     API_KEY_PLACEHOLDER: 'API key',
     VALIDATE_BUTTON: 'Validate',
+    SAVE_BUTTON: 'Save',
     KEY_VALID: 'Key is valid.',
     SAVE_TITLE: 'Save',
     SAVE_DESCRIPTION: 'Apply changes to the cluster-wide GlobalConfig.',

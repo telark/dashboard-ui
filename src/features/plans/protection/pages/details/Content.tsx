@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { Button, Tooltip } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
-import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../../../constants';
+import { AVATAR_RING, DEFAULT_COLORS, HEADER_LAYOUT } from '../../../../../constants';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import KeyValueGrid from '../../../../resources/applications/components/details/KeyValueGrid';
 import RowTag from '../../../../../components/display/table/RowTag';
@@ -16,8 +16,8 @@ const AVATAR_RING_STYLE: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: 1.5,
-  border: '1.5px solid #20C997',
+  padding: AVATAR_RING.BORDER_WIDTH,
+  border: `${AVATAR_RING.BORDER_WIDTH}px solid ${DEFAULT_COLORS.SUCCESS}`,
   borderRadius: '50%',
   background: '#fff',
   boxSizing: 'border-box',

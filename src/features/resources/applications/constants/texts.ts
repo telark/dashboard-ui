@@ -144,12 +144,8 @@ export const APPLICATIONS_UI = {
       STORAGE_METRICS_JOINER: ' · ',
       COMPARE_LOADING: 'Loading manifest…',
       COMPARE_IDENTICAL: 'These two snapshots are identical.',
-      COMPARE_CHANGE_ONE: 'change',
-      COMPARE_CHANGE_MANY: 'changes',
-      COMPARE_RESOURCE_ONE: 'resource',
-      COMPARE_RESOURCE_MANY: 'resources',
-      COMPARE_ADDED: 'added',
-      COMPARE_REMOVED: 'removed',
+      COMPARE_CHANGE: 'change',
+      COMPARE_RESOURCE: 'resource',
       VIEW_MANIFEST: 'View Manifest',
       ROLLBACK: 'Rollback',
       ROLLBACK_CONFIRM_TITLE: 'Rollback to this snapshot?',
@@ -182,6 +178,10 @@ export const APPLICATIONS_UI = {
       MANIFEST_HIDE_DETAILS: 'Hide details',
       VIEW_MANIFEST_PERMISSION_DENIED_TOOLTIP:
         'You do not have permission to view snapshot manifests',
+      ROLLBACK_FILE_MISSING_TOOLTIP:
+        'The stored snapshot for this entry is no longer available, so it cannot be rolled back to.',
+      VIEW_MANIFEST_FILE_MISSING_TOOLTIP:
+        'The stored snapshot for this entry is no longer available, so its manifest cannot be shown.',
       ROLLBACK_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to roll back applications',
       ROLLBACK_IN_PROGRESS_TOOLTIP:
         'Action unavailable while a rollback is pending or in progress for this application.',

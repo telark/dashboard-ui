@@ -1,7 +1,6 @@
 export const PROFILE_SECTION_CONSTANTS = {
   LAYOUT: {
     AVATAR_SIZE: 40,
-    AVATAR_BORDER_WIDTH: 1.5,
     ROW_GAP: 12,
   },
   LABELS: {

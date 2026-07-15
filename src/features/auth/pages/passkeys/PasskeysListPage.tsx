@@ -52,7 +52,6 @@ const SUBTITLE_STYLE: React.CSSProperties = {
   marginTop: 0,
   padding: 0,
   lineHeight: 1.2,
-  fontFamily: "'Roboto Condensed', sans-serif",
 };
 
 const TOOLBAR_ROW_STYLE: React.CSSProperties = {

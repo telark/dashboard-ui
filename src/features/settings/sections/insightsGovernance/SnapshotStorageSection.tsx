@@ -1,6 +1,8 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, InputNumber, Select, Tooltip, App as AntdApp } from 'antd';
+import { InputNumber, Select, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
+import Toolbar from '../../../../components/display/toolbar/Toolbar';
+import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, exporterApiClient } from '../../../../api';
 import { DEFAULT_COLORS, Endpoints } from '../../../../constants';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
@@ -53,17 +55,6 @@ const SnapshotStorageSection: React.FC = memo(() => {
   const globalConfig = useSelector(selectGlobalConfigState);
   const canEditSnapshotStorage = usePermission('settings', 'Contributor');
   const { message } = AntdApp.useApp();
-
-  const saveButtonStyle = useCallback(
-    (disabled: boolean): React.CSSProperties => ({
-      background: DEFAULT_COLORS.SUCCESS,
-      borderColor: DEFAULT_COLORS.SUCCESS,
-      color: '#fff',
-      opacity: disabled ? 0.6 : 1,
-      cursor: disabled ? 'not-allowed' : 'pointer',
-    }),
-    [],
-  );
 
   const [initialSnapshots, setInitialSnapshots] = useState<{ maxPerApp: number } | null>(null);
   const [snapshotsMaxPerApp, setSnapshotsMaxPerApp] = useState<number>(5);
@@ -143,6 +134,25 @@ const SnapshotStorageSection: React.FC = memo(() => {
     if (!snapshotInfos) return null;
     return `${snapshotInfos.availableSpace.mb.toFixed(2)} MB (${snapshotInfos.availableSpace.percent?.toFixed(2) ?? '0.00'}%)`;
   }, [snapshotInfos]);
+
+  const saveToolbarConfig: ToolbarConfig = useMemo(
+    () => ({
+      buttons: [
+        {
+          key: 'save',
+          label: C.LABELS.SAVE_BUTTON,
+          variant: 'default',
+          loading: savingSnapshotsMax,
+          disabled: !snapshotsHasChanges || !canEditSnapshotStorage,
+          tooltip: canEditSnapshotStorage
+            ? undefined
+            : C.LABELS.EDIT_SNAPSHOT_STORAGE_PERMISSION_DENIED,
+          onClick: saveSnapshotsMax,
+        },
+      ],
+    }),
+    [savingSnapshotsMax, snapshotsHasChanges, canEditSnapshotStorage, saveSnapshotsMax],
+  );
 
   return (
     <SettingsCard title="Snapshot Storage" description={C.LABELS.SNAPSHOT_STORAGE_DESCRIPTION}>
@@ -247,26 +257,7 @@ const SnapshotStorageSection: React.FC = memo(() => {
           ) : null}
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Tooltip
-            title={
-              !canEditSnapshotStorage ? C.LABELS.EDIT_SNAPSHOT_STORAGE_PERMISSION_DENIED : undefined
-            }
-          >
-            <span
-              style={
-                !canEditSnapshotStorage ? { display: 'inline-block', cursor: 'not-allowed' } : {}
-              }
-            >
-              <Button
-                loading={savingSnapshotsMax}
-                onClick={saveSnapshotsMax}
-                disabled={!snapshotsHasChanges || !canEditSnapshotStorage}
-                style={saveButtonStyle(!snapshotsHasChanges || !canEditSnapshotStorage)}
-              >
-                Save
-              </Button>
-            </span>
-          </Tooltip>
+          <Toolbar config={saveToolbarConfig} />
         </div>
       </div>
     </SettingsCard>

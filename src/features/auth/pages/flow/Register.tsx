@@ -20,7 +20,6 @@ const LIGHT_TOKENS = {
   colorBgContainer: '#ffffff',
   colorBorder: '#e2e8f0',
   borderRadius: 10,
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
 };
 
 const DARK_TOKENS = {
@@ -28,7 +27,6 @@ const DARK_TOKENS = {
   colorBgContainer: '#0f172a',
   colorBorder: '#1e293b',
   borderRadius: 10,
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
 };
 
 const Register: React.FC = () => {

@@ -28,7 +28,6 @@ const ProtectionPlansHeader: React.FC = () => (
         color: DEFAULT_COLORS.TEXT_MUTED,
         padding: 0,
         lineHeight: 1.2,
-        fontFamily: "'Roboto Condensed', sans-serif",
         maxWidth: 560,
       }}
     >

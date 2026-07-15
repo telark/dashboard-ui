@@ -33,7 +33,6 @@ const TablePagination: React.FC<TablePaginationProps> = ({ config }) => {
           style={{
             color: '#64748b',
             fontSize: 14,
-            fontFamily: "'Roboto Condensed', sans-serif",
           }}
         >
           {showRowsLabel}
@@ -62,7 +61,6 @@ const TablePagination: React.FC<TablePaginationProps> = ({ config }) => {
             style={{
               color: '#64748b',
               fontSize: 14,
-              fontFamily: "'Roboto Condensed', sans-serif",
               marginRight: 16,
             }}
           >

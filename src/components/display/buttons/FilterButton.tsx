@@ -29,7 +29,6 @@ const FilterButton: React.FC<FilterButtonProps> = ({
     border: 'none',
     backgroundColor: 'transparent',
     color: disabled ? '#d1d5db' : DEFAULT_COLORS.TEXT_MUTED,
-    fontFamily: "'Roboto Condensed', sans-serif",
     transition: 'all 0.2s',
     opacity: disabled ? 0.6 : 1,
   };

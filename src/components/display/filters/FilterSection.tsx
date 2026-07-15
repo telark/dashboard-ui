@@ -21,7 +21,6 @@ const FilterSection: React.FC<FilterSectionProps> = ({ config }) => {
           color: '#64748b',
           textTransform: 'uppercase',
           letterSpacing: 0.5,
-          fontFamily: "'Roboto Condensed', sans-serif",
         }}
       >
         {label}
@@ -44,7 +43,6 @@ const FilterSection: React.FC<FilterSectionProps> = ({ config }) => {
                 border: `1px solid ${isActive ? DEFAULT_COLORS.SUCCESS : '#d9d9d9'}`,
                 backgroundColor: isActive ? DEFAULT_COLORS.SUCCESS : '#fff',
                 color: isActive ? '#fff' : '#64748b',
-                fontFamily: "'Roboto Condensed', sans-serif",
                 transition: 'all 0.2s',
               }}
             >
