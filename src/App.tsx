@@ -117,10 +117,15 @@ const App: React.FC = () => {
             },
             Select: {
               colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
-              colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
-              optionSelectedBg: DEFAULT_COLORS.SURFACE_HOVER,
+              optionSelectedBg: DEFAULT_COLORS.SURFACE_WHITE,
               controlItemBgHover: DEFAULT_COLORS.SURFACE_HOVER,
               colorTextDisabled: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
+              multipleItemBg: DEFAULT_COLORS.SURFACE_WHITE,
+              multipleItemBorderColor: DEFAULT_COLORS.SURFACE_BORDER,
+              optionSelectedColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+              activeBorderColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+              hoverBorderColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+              activeOutlineColor: 'transparent',
             },
             DatePicker: {
               colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
