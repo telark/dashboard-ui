@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { CheckCircleOutlined, DownOutlined, RightOutlined, StopOutlined } from '@ant-design/icons';
 import { App as AntdApp, Button, Tooltip } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,7 +15,7 @@ import { APPLICATION_SNAPSHOT_ROW } from '../../constants/sectionLayout';
 import { FancySpinner } from '../../../../../components/animation';
 import type { AppDispatch } from '../../../../../store';
 import { abortApplicationRollbackThunk } from '../../store';
-import { fetchUserById } from '../../../../access-and-permissions/users/clients/fetch';
+import { useUsernamesByIds } from '../../hooks/useUsernamesByIds';
 import {
   classifyRollbackStatus,
   formatRollbackNamespaceRef,
@@ -72,40 +72,11 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
     [detailRollbacks],
   );
 
-  // The API records who triggered a rollback as a user ID; resolve each one to a
-  // username so rows read "by alice" instead of "by u-ac247-c2a5-0334".
-  const [usernamesById, setUsernamesById] = useState<Record<string, string>>({});
-  const requestedUserIdsRef = useRef<Set<string>>(new Set());
-
-  useEffect(() => {
-    if (!open) return;
-    const pending = rollbacks
-      .map((entry) => entry.triggeredBy)
-      .filter((id): id is string => Boolean(id) && !requestedUserIdsRef.current.has(id));
-    if (pending.length === 0) return;
-
-    const uniqueIds = [...new Set(pending)];
-    uniqueIds.forEach((id) => requestedUserIdsRef.current.add(id));
-
-    let cancelled = false;
-    void Promise.all(
-      uniqueIds.map(async (id) => {
-        try {
-          const response = await fetchUserById(id, true);
-          return [id, response?.data?.username || id] as const;
-        } catch {
-          // Deleted or unreadable user: keep showing the raw ID rather than nothing.
-          return [id, id] as const;
-        }
-      }),
-    ).then((pairs) => {
-      if (!cancelled) setUsernamesById((prev) => ({ ...prev, ...Object.fromEntries(pairs) }));
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [open, rollbacks]);
+  const triggeredByIds = useMemo(
+    () => rollbacks.map((entry) => entry.triggeredBy).filter((id): id is string => Boolean(id)),
+    [rollbacks],
+  );
+  const usernamesById = useUsernamesByIds(triggeredByIds, open);
 
   const handleAbort = useCallback(
     (entry: ApplicationRollbackEntry) => {
@@ -168,9 +139,7 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
                     <RollbackRow
                       key={rb.id}
                       entry={rb}
-                      triggeredByName={
-                        rb.triggeredBy ? usernamesById[rb.triggeredBy] || rb.triggeredBy : ''
-                      }
+                      triggeredByName={rb.triggeredBy ? usernamesById[rb.triggeredBy] || '' : ''}
                       canAbort={canAbort}
                       abortLoading={abortBusyId === rb.id}
                       onAbort={handleAbort}
@@ -228,7 +197,7 @@ function RollbackRow(props: {
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0, flex: 1 }}>
-          {/* Target generation leads, matching the snapshot rows. */}
+          {/* Names the snapshot the rollback went back to, not its own generation. */}
           <span
             style={{
               fontSize: R.TITLE_FONT_SIZE_PX,
@@ -237,7 +206,7 @@ function RollbackRow(props: {
               whiteSpace: 'nowrap',
             }}
           >
-            {ui.GENERATION} {entry.targetGeneration}
+            {ui.ROLLBACK_TARGET_PREFIX} {entry.targetGeneration}
           </span>
           <div
             style={{
@@ -260,7 +229,7 @@ function RollbackRow(props: {
             ) : null}
             <span>
               {ui.TRIGGERED_PREFIX} <TimeAgo date={entry.triggeredAt} />
-              {triggeredByName ? ` ${ui.META_SEPARATOR} ${triggeredByName}` : ''}
+              {triggeredByName ? ` ${ui.META_SEPARATOR} ${ui.BY_PREFIX} ${triggeredByName}` : ''}
             </span>
             {entry.completedAt ? (
               <span>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { DEFAULT_COLORS } from '../../../../../constants';
-import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
+import { APPLICATION_CHANGE_CLASS } from '../../constants';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 
 export const APPLICATION_SUMMARY_SUBHEADING_STYLE: React.CSSProperties = {
@@ -19,11 +19,11 @@ export const APPLICATION_SUMMARY_COLUMN_TITLE_STYLE: React.CSSProperties = {
   marginBottom: 8,
 };
 
-export function getChangeLogDotColor(severity: string): string {
-  const s = severity.toLowerCase();
-  if (s.includes('critical')) return DEFAULT_COLORS.DANGER;
-  if (s.includes('high')) return CONNECTIVITY_CONSTANTS.COLORS.WARNING;
-  return DEFAULT_COLORS.TEXT_MUTED;
+export function getChangeLogDotColor(changeClass: string): string {
+  if (changeClass.toLowerCase() === APPLICATION_CHANGE_CLASS.ROLLBACK) {
+    return DEFAULT_COLORS.DANGER;
+  }
+  return DEFAULT_COLORS.SUCCESS;
 }
 
 export function ColumnShell(props: {

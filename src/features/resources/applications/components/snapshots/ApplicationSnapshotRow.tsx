@@ -146,6 +146,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                   />
                   {severityLabel}
                 </SnapshotMetaChip>
+                {s.id ? <SnapshotMetaChip>{s.id}</SnapshotMetaChip> : null}
                 <span>{s.size}</span>
                 <span>{APPLICATIONS_UI.SECTIONS.SNAPSHOTS.STORAGE_METRICS_JOINER.trim()}</span>
                 <span>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { SearchOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../constants';
+import { DEFAULT_COLORS, TOOLBAR_CONTROL } from '../../../constants';
 
 export interface SearchInputProps {
   value: string;
@@ -41,26 +41,26 @@ const SearchInput: React.FC<SearchInputProps> = ({
           }
         }}
         style={{
-          height: 32,
+          height: TOOLBAR_CONTROL.HEIGHT,
+          boxSizing: 'border-box',
           minWidth,
-          padding: '6px 12px 6px 36px',
+          padding: '0 12px 0 36px',
           borderRadius: 6,
           border: '1px solid #d9d9d9',
           fontSize: 13,
           lineHeight: '20px',
-          color: '#0f172a',
+          color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+          backgroundColor: DEFAULT_COLORS.SURFACE_WHITE,
           outline: 'none',
           boxShadow: 'none',
-          transition: 'border-color 0.2s, box-shadow 0.2s',
+          transition: 'border-color 0.2s',
           WebkitAppearance: 'searchfield',
         }}
         onFocus={(e) => {
-          e.currentTarget.style.borderColor = DEFAULT_COLORS.SUCCESS;
-          e.currentTarget.style.boxShadow = `0 0 0 2px ${DEFAULT_COLORS.SUCCESS}22`;
+          e.currentTarget.style.borderColor = DEFAULT_COLORS.TEXT_ON_SURFACE;
         }}
         onBlur={(e) => {
           e.currentTarget.style.borderColor = '#d9d9d9';
-          e.currentTarget.style.boxShadow = 'none';
         }}
       />
     </div>

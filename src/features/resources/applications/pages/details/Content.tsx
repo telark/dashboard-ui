@@ -6,7 +6,7 @@ import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../../../constants';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type { Application, ApplicationChangeLogEntry, ApplicationResourceRef } from '../../models';
-import { APPLICATIONS_UI } from '../../constants';
+import { APPLICATION_CHANGE_CLASS, APPLICATIONS_UI } from '../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
 import ApplicationSectionEmptyState from '../../components/display/ApplicationSectionEmptyState';
@@ -29,6 +29,7 @@ import {
   getChangeLogDotColor,
   StatMiniCard,
 } from './contentBlocks';
+import { useUsernamesByIds } from '../../hooks/useUsernamesByIds';
 
 interface ApplicationDetailsContentProps {
   application: Application;
@@ -198,6 +199,15 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
       }
       return groups;
     }, [application.history?.changeLog]);
+
+    const changeLogActorIds = useMemo(
+      () =>
+        (application.history?.changeLog || [])
+          .map((entry) => entry.changedBy)
+          .filter((id): id is string => Boolean(id)),
+      [application.history?.changeLog],
+    );
+    const usernamesById = useUsernamesByIds(changeLogActorIds, true);
 
     return (
       <div
@@ -872,7 +882,11 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                     {format(new Date(`${group.dayKey}T12:00:00`), 'MMMM d, yyyy')}
                   </div>
                   {group.entries.map((entry) => {
-                    const dotColor = getChangeLogDotColor(entry.severity);
+                    const dotColor = getChangeLogDotColor(entry.changeClass);
+                    // changedBy is a user id; the resolved username may not have
+                    // arrived yet, so fall back to showing the id alone.
+                    const actorId = entry.changedBy || '';
+                    const actorName = actorId ? usernamesById[actorId] : '';
                     const suffixParts: string[] = [];
                     if (entry.isIncident) suffixParts.push('Incident');
                     if (entry.isRecovery) suffixParts.push('Recovery');
@@ -936,7 +950,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                                 </span>
                               ) : null}
                             </div>
-                            {(entry.changedBy || entry.fingerprint) && (
+                            {(actorId || entry.fingerprint) && (
                               <div
                                 style={{
                                   display: 'flex',
@@ -946,12 +960,13 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                                   alignItems: 'center',
                                 }}
                               >
-                                {entry.changedBy ? (
+                                {actorName ? (
                                   <RowTag
-                                    text={`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.BY_PREFIX} ${entry.changedBy}`}
+                                    text={`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.BY_PREFIX} ${actorName}`}
                                     background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
                                     color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
                                     fontSize={11}
+                                    capitalize={false}
                                   />
                                 ) : null}
                                 {entry.fingerprint ? (
@@ -979,6 +994,20 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                                       c.oldValue != null && String(c.oldValue).length > 0;
                                     const hasNewValue =
                                       c.newValue != null && String(c.newValue).length > 0;
+                                    // A rollback has no old value to diff against, so the
+                                    // generic "field: value" form renders as
+                                    // "snapshot: snap-3415eeaa" and drops the generation it
+                                    // restored. The description already states both.
+                                    const preferDescription =
+                                      c.changeType === APPLICATION_CHANGE_CLASS.ROLLBACK &&
+                                      Boolean(c.description);
+                                    const rollbackText =
+                                      preferDescription && hasNewValue
+                                        ? c.description.replace(
+                                            `${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.ROLLBACK_SNAPSHOT_JOINER}${String(c.newValue)}`,
+                                            '',
+                                          )
+                                        : c.description;
                                     return (
                                       <div
                                         key={`${entry.fingerprint}:${idx}`}
@@ -989,40 +1018,46 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
                                           marginTop: idx === 0 ? 0 : 6,
                                         }}
                                       >
-                                        <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
-                                          {c.changeType}
-                                        </span>{' '}
-                                        <span style={{ fontWeight: 700 }}>{c.field}</span>
-                                        {': '}
-                                        {hasOldValue ? (
-                                          <span
-                                            style={{
-                                              color: DEFAULT_COLORS.TEXT_MUTED,
-                                              textDecoration: 'line-through',
-                                            }}
-                                          >
-                                            {String(c.oldValue)}
-                                          </span>
-                                        ) : null}
-                                        {hasOldValue && hasNewValue ? (
-                                          <span
-                                            style={{
-                                              margin: '0 6px',
-                                              color: DEFAULT_COLORS.TEXT_MUTED,
-                                            }}
-                                          >
-                                            {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DIFF_ARROW}
-                                          </span>
-                                        ) : null}
-                                        {hasNewValue ? (
-                                          <span style={{ fontWeight: 700 }}>
-                                            {String(c.newValue)}
-                                          </span>
-                                        ) : !hasOldValue ? (
-                                          <span style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-                                            {c.description}
-                                          </span>
-                                        ) : null}
+                                        {preferDescription ? (
+                                          rollbackText
+                                        ) : (
+                                          <>
+                                            <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
+                                              {c.changeType}
+                                            </span>{' '}
+                                            <span style={{ fontWeight: 700 }}>{c.field}</span>
+                                            {': '}
+                                            {hasOldValue ? (
+                                              <span
+                                                style={{
+                                                  color: DEFAULT_COLORS.TEXT_MUTED,
+                                                  textDecoration: 'line-through',
+                                                }}
+                                              >
+                                                {String(c.oldValue)}
+                                              </span>
+                                            ) : null}
+                                            {hasOldValue && hasNewValue ? (
+                                              <span
+                                                style={{
+                                                  margin: '0 6px',
+                                                  color: DEFAULT_COLORS.TEXT_MUTED,
+                                                }}
+                                              >
+                                                {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DIFF_ARROW}
+                                              </span>
+                                            ) : null}
+                                            {hasNewValue ? (
+                                              <span style={{ fontWeight: 700 }}>
+                                                {String(c.newValue)}
+                                              </span>
+                                            ) : !hasOldValue ? (
+                                              <span style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+                                                {c.description}
+                                              </span>
+                                            ) : null}
+                                          </>
+                                        )}
                                       </div>
                                     );
                                   })(),

@@ -76,3 +76,7 @@ export const APPLICATION_DETAILS_CONSTANTS = {
 
 export type TabKey =
   (typeof APPLICATION_DETAILS_CONSTANTS.TAB_KEYS)[keyof typeof APPLICATION_DETAILS_CONSTANTS.TAB_KEYS];
+
+export const APPLICATION_CHANGE_CLASS = {
+  ROLLBACK: 'rollback',
+} as const;

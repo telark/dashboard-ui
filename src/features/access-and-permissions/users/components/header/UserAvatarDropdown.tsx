@@ -134,7 +134,7 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(
               avatar={currentUser.avatar}
               username={currentUser.username}
               size={SIDEBAR_USER_MENU.AVATAR.SIZE}
-              style={{ border: 'none', flexShrink: 0 }}
+              style={{ border: 'none', flexShrink: 0, borderRadius: '50%' }}
             />
             {!isCollapsed && (
               <>

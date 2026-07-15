@@ -1,6 +1,6 @@
 import React from 'react';
 import { FilterOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../constants';
+import { DEFAULT_COLORS, TOOLBAR_CONTROL } from '../../../constants';
 
 interface FilterButtonProps {
   onClick?: () => void;
@@ -19,13 +19,16 @@ const FilterButton: React.FC<FilterButtonProps> = ({
     display: 'flex',
     alignItems: 'center',
     gap: 6,
-    padding: '6px 12px',
+    height: TOOLBAR_CONTROL.HEIGHT,
+    boxSizing: 'border-box',
+    padding: TOOLBAR_CONTROL.PADDING,
+    lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
     borderRadius: 6,
     fontSize: 13,
     fontWeight: 500,
     border: 'none',
     backgroundColor: 'transparent',
-    color: disabled ? '#d1d5db' : '#64748b',
+    color: disabled ? '#d1d5db' : DEFAULT_COLORS.TEXT_MUTED,
     fontFamily: "'Roboto Condensed', sans-serif",
     transition: 'all 0.2s',
     opacity: disabled ? 0.6 : 1,
@@ -33,14 +36,14 @@ const FilterButton: React.FC<FilterButtonProps> = ({
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled) return;
-    e.currentTarget.style.backgroundColor = DEFAULT_COLORS.HOVER_BG;
-    e.currentTarget.style.color = DEFAULT_COLORS.SUCCESS;
+    e.currentTarget.style.backgroundColor = DEFAULT_COLORS.SURFACE_WHITE;
+    e.currentTarget.style.color = DEFAULT_COLORS.TEXT_ON_SURFACE;
   };
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled) return;
     e.currentTarget.style.backgroundColor = 'transparent';
-    e.currentTarget.style.color = '#64748b';
+    e.currentTarget.style.color = DEFAULT_COLORS.TEXT_MUTED;
   };
 
   return (
