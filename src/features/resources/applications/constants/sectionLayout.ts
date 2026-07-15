@@ -31,6 +31,35 @@ export const APPLICATION_SECTION_LAYOUT = {
   },
 } as const;
 
+/** Inline manifest reader shown inside the manage-snapshots panel. */
+export const APPLICATION_MANIFEST_VIEW = {
+  /** Scoped class so the reader can opt out of the global Geist !important rule. */
+  CODE_CLASS: 'manifest-code',
+  RADIUS_PX: 10,
+  HEADER_PADDING: '6px 6px 6px 10px',
+  HEADER_GAP_PX: 8,
+  TITLE_FONT_SIZE_PX: 12,
+  SUBTITLE_FONT_SIZE_PX: 11,
+  CODE_PADDING: '10px 12px',
+  CODE_FONT_SIZE_PX: 12,
+  CODE_LINE_HEIGHT: 1.5,
+  /** Leaves the panel header and the reader's own header visible while scrolling. */
+  CODE_MAX_HEIGHT: 'calc(100vh - 260px)',
+  CODE_MIN_HEIGHT_PX: 200,
+  STATE_PADDING: '28px 20px',
+  STATE_GAP_PX: 8,
+  STATE_ICON_SIZE_PX: 26,
+  STATE_TITLE_FONT_SIZE_PX: 13,
+  STATE_TEXT_FONT_SIZE_PX: 12,
+  STATE_MAX_WIDTH_PX: 340,
+  DETAIL_MAX_HEIGHT_PX: 96,
+  DETAIL_PADDING: '6px 8px',
+  DETAIL_RADIUS_PX: 6,
+} as const;
+
+/** A comparison needs two snapshots, so the action is pointless below this. */
+export const MIN_SNAPSHOTS_FOR_COMPARE = 2;
+
 /** Snapshot rows inside the (light-surfaced) manage-snapshots panel. */
 export const APPLICATION_SNAPSHOT_ROW = {
   PADDING: '10px 12px',
