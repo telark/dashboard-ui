@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { CameraOutlined, DiffOutlined } from '@ant-design/icons';
+import { CameraOutlined, DatabaseOutlined, DiffOutlined } from '@ant-design/icons';
 import { App as AntdApp } from 'antd';
 import type { AppDispatch, RootState } from '../../../../../store';
 import {
@@ -11,6 +11,7 @@ import { DEFAULT_COLORS } from '../../../../../constants';
 import Toolbar from '../../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import { APPLICATIONS_UI } from '../../constants/texts';
+import { MIN_SNAPSHOTS_FOR_COMPARE } from '../../constants/sectionLayout';
 import type { Application, ApplicationSnapshotSummary } from '../../models';
 import { applicationSnapshotStableKey } from '../../utils/mergeApplicationSnapshotSources';
 import { mergeApplicationSnapshotSources } from '../../utils/mergeApplicationSnapshotSources';
@@ -18,7 +19,7 @@ import { ActionConfirmModal } from '../../../../../components/display/modal';
 import ApplicationSectionEmptyState from '../display/ApplicationSectionEmptyState';
 import ApplicationSnapshotRow from '../snapshots/ApplicationSnapshotRow';
 import type { RollbackDisabledReason } from '../snapshots/ApplicationSnapshotRow';
-import ApplicationSnapshotManifestSlideOut from '../snapshots/ApplicationSnapshotManifestSlideOut';
+import SnapshotManifestView from '../snapshots/SnapshotManifestView';
 import SnapshotCompareView from '../snapshots/SnapshotCompareView';
 import { fetchSnapshotManifestThunk, fetchApplicationSnapshotsThunk } from '../../store';
 import { selectPermissionsState } from '../../../../auth/store/selectors/permissionsSelectors';
@@ -207,28 +208,53 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
     userID,
   ]);
 
+  const manifestViewOpen = activeManifestKey != null;
+  const canCompare = mergedSnapshots.length >= MIN_SNAPSHOTS_FOR_COMPARE;
   const compareButtonDisabled = compareMode && compareKeys.length === 1;
   const headerToolbarConfig: ToolbarConfig = useMemo(() => {
     const buttons: ToolbarConfig['buttons'] = [];
+    // The manifest reader replaces the list in place, so it needs a way back.
+    if (manifestViewOpen) {
+      buttons.push({
+        key: 'backToSnapshots',
+        label: snapUi.MANIFEST_BACK,
+        icon: <DatabaseOutlined />,
+        variant: 'ghost',
+        onClick: () => setActiveManifestKey(null),
+      });
+      return { buttons };
+    }
     if (compareViewOpen) {
       buttons.push({
         key: 'snapshots',
-        label: 'Snapshots',
-        icon: <CameraOutlined />,
-        variant: 'default',
+        label: snapUi.MANIFEST_BACK,
+        icon: <DatabaseOutlined />,
+        variant: 'ghost',
         onClick: handleBackFromCompare,
       });
     }
-    buttons.push({
-      key: 'compare',
-      label: 'Compare',
-      icon: <DiffOutlined />,
-      variant: 'default',
-      onClick: handleCompareClick,
-      disabled: compareButtonDisabled,
-    });
+    // Nothing to compare against with a single snapshot, so the action is hidden
+    // rather than shown disabled with no way to satisfy it.
+    if (canCompare) {
+      buttons.push({
+        key: 'compare',
+        label: 'Compare',
+        icon: <DiffOutlined />,
+        variant: 'default',
+        onClick: handleCompareClick,
+        disabled: compareButtonDisabled,
+      });
+    }
     return { buttons };
-  }, [compareButtonDisabled, compareViewOpen, handleBackFromCompare, handleCompareClick]);
+  }, [
+    canCompare,
+    compareButtonDisabled,
+    compareViewOpen,
+    handleBackFromCompare,
+    handleCompareClick,
+    manifestViewOpen,
+    snapUi,
+  ]);
 
   return (
     <SlideOutPanel
@@ -245,7 +271,9 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
       }
       formContent={
         <>
-          {compareViewOpen && comparePair ? (
+          {manifestViewOpen ? (
+            <SnapshotManifestView title={activeRowTitle} manifestState={manifestState} />
+          ) : compareViewOpen && comparePair ? (
             <SnapshotCompareView
               left={comparePair[0]}
               right={comparePair[1]}
@@ -301,14 +329,6 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
               ))}
             </div>
           )}
-
-          <ApplicationSnapshotManifestSlideOut
-            open={activeManifestKey != null}
-            manifestKey={activeManifestKey}
-            onClose={() => setActiveManifestKey(null)}
-            title={activeRowTitle}
-            manifestState={manifestState}
-          />
 
           <ActionConfirmModal
             open={rollbackTarget != null}

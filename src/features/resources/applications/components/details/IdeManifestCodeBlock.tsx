@@ -1,4 +1,5 @@
 import React, { memo, useMemo } from 'react';
+import { APPLICATION_MANIFEST_VIEW } from '../../constants/sectionLayout';
 import { IDE_MANIFEST_THEME as IDE } from './ideManifestTheme';
 
 function readJsonStringEnd(input: string, start: number): number {
@@ -247,6 +248,8 @@ export interface IdeManifestCodeBlockProps {
   scrollInside?: boolean;
   lineStyles?: Record<number, React.CSSProperties>;
   lineDimmed?: Record<number, boolean>;
+  /** Squares off the top when the block sits under its own header strip. */
+  flatTop?: boolean;
 }
 
 const IdeManifestCodeBlock: React.FC<IdeManifestCodeBlockProps> = memo(
@@ -257,6 +260,7 @@ const IdeManifestCodeBlock: React.FC<IdeManifestCodeBlockProps> = memo(
     scrollInside = true,
     lineStyles,
     lineDimmed,
+    flatTop = false,
   }) => {
     const highlighted = useMemo(() => {
       if (language === 'json') {
@@ -305,17 +309,21 @@ const IdeManifestCodeBlock: React.FC<IdeManifestCodeBlockProps> = memo(
 
     return (
       <div
+        // The class carries the monospace family: a global `#root *` rule sets
+        // Geist with !important, which would otherwise win over an inline style.
+        className={APPLICATION_MANIFEST_VIEW.CODE_CLASS}
         style={{
           background: IDE.bg,
           border: `1px solid ${IDE.border}`,
-          borderRadius: 8,
-          padding: '32px 72px 10px 12px',
+          borderRadius: APPLICATION_MANIFEST_VIEW.RADIUS_PX,
+          borderTopLeftRadius: flatTop ? 0 : undefined,
+          borderTopRightRadius: flatTop ? 0 : undefined,
+          borderTop: flatTop ? 'none' : undefined,
+          padding: APPLICATION_MANIFEST_VIEW.CODE_PADDING,
           maxHeight: scrollInside ? containerMaxHeight : 'none',
           overflow: scrollInside ? 'auto' : 'visible',
-          fontFamily:
-            'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace',
-          fontSize: 12,
-          lineHeight: 1.45,
+          fontSize: APPLICATION_MANIFEST_VIEW.CODE_FONT_SIZE_PX,
+          lineHeight: APPLICATION_MANIFEST_VIEW.CODE_LINE_HEIGHT,
           letterSpacing: 0.015,
         }}
       >

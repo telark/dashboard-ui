@@ -1,7 +1,13 @@
-/** Dark editor chrome for manifest JSON/YAML (VS Code Dark Modern–inspired). */
+/**
+ * Editor chrome for manifest JSON/YAML. The shell (bg/border/gutter) follows the
+ * app's dark surfaces so the reader belongs to this product; only the syntax
+ * tokens stay VS Code Dark Modern–inspired, since those hues carry meaning.
+ */
 export const IDE_MANIFEST_THEME = {
-  bg: '#1e1e1e',
-  border: '#3c3c3c',
+  bg: '#111827',
+  border: '#2a3648',
+  gutterText: '#4b5563',
+  headerBg: '#161f2e',
   text: '#d4d4d4',
   key: '#9cdcfe',
   string: '#ce9178',

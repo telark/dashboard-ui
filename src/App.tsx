@@ -160,10 +160,13 @@ const App: React.FC = () => {
               colorPrimaryHover: DEFAULT_COLORS.SUCCESS,
               colorPrimaryBorder: DEFAULT_COLORS.SUCCESS,
             },
+            // Selected option reads as a white box with dark text; unselected labels
+            // stay white so they hold up on the dark surfaces behind them.
             Segmented: {
-              itemSelectedBg: DEFAULT_COLORS.SUCCESS,
+              itemSelectedBg: DEFAULT_COLORS.SURFACE_WHITE,
               itemSelectedColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
-              itemHoverColor: DEFAULT_COLORS.SUCCESS,
+              itemColor: DEFAULT_COLORS.TEXT_PRIMARY,
+              itemHoverColor: DEFAULT_COLORS.TEXT_PRIMARY,
             },
           },
         }}
