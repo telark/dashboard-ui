@@ -224,6 +224,8 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
       });
       return { buttons };
     }
+    // The compare view replaces the list, so only the way back applies here:
+    // comparing again from inside a comparison has nothing to act on.
     if (compareViewOpen) {
       buttons.push({
         key: 'snapshots',
@@ -232,6 +234,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
         variant: 'ghost',
         onClick: handleBackFromCompare,
       });
+      return { buttons };
     }
     // Nothing to compare against with a single snapshot, so the action is hidden
     // rather than shown disabled with no way to satisfy it.

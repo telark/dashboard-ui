@@ -11,11 +11,12 @@ export function useUsernamesByIds(ids: string[], enabled: boolean): Record<strin
 
   useEffect(() => {
     if (!enabled) return;
-    const pending = ids.filter((id) => Boolean(id) && !requestedUserIdsRef.current.has(id));
+    const requested = requestedUserIdsRef.current;
+    const pending = ids.filter((id) => Boolean(id) && !requested.has(id));
     if (pending.length === 0) return;
 
     const uniqueIds = [...new Set(pending)];
-    uniqueIds.forEach((id) => requestedUserIdsRef.current.add(id));
+    uniqueIds.forEach((id) => requested.add(id));
 
     let cancelled = false;
     void Promise.all(
@@ -38,7 +39,7 @@ export function useUsernamesByIds(ids: string[], enabled: boolean): Record<strin
       // already marked and skip the fetch, while this run's result is discarded
       // as cancelled, leaving the name unresolved forever. Release them so the
       // re-run fetches again; resolved ids stay marked and are never refetched.
-      uniqueIds.forEach((id) => requestedUserIdsRef.current.delete(id));
+      uniqueIds.forEach((id) => requested.delete(id));
     };
   }, [enabled, ids]);
 

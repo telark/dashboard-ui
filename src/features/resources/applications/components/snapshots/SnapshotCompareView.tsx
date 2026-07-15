@@ -2,7 +2,12 @@ import React, { memo, useMemo } from 'react';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type { ApplicationSnapshotSummary, SnapshotManifestState } from '../../models';
+import { APPLICATIONS_UI } from '../../constants';
 import MutedText from '../details/MutedText';
+import SnapshotMetaChip from './SnapshotMetaChip';
+
+const COMPARE_ARROW = '→';
+const EMPTY_VALUE = '—';
 
 type DiffType = 'add' | 'remove' | 'change';
 type Path = string[];
@@ -22,7 +27,7 @@ function isRecord(v: unknown): v is Record<string, unknown> {
 }
 
 function stringifyValue(v: unknown): string {
-  if (v == null) return '—';
+  if (v == null) return EMPTY_VALUE;
   if (typeof v === 'string') return v;
   if (typeof v === 'number' || typeof v === 'boolean') return String(v);
   try {
@@ -163,31 +168,7 @@ export interface SnapshotCompareViewProps {
 
 const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
   ({ left, right, leftState, rightState }) => {
-    const headerRow = (
-      <div
-        style={{
-          fontSize: 12,
-          fontWeight: 600,
-          color: DEFAULT_COLORS.TEXT_MUTED,
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          gap: 6,
-        }}
-      >
-        <span style={{ fontWeight: 800, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-          Generation {left.generation}
-        </span>
-        <span style={{ fontWeight: 500 }}>·</span>
-        {left.takenAt ? <TimeAgo date={left.takenAt} /> : <MutedText value="—" />}
-        <span style={{ fontWeight: 500 }}>→</span>
-        <span style={{ fontWeight: 800, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-          Generation {right.generation}
-        </span>
-        <span style={{ fontWeight: 500 }}>·</span>
-        {right.takenAt ? <TimeAgo date={right.takenAt} /> : <MutedText value="—" />}
-      </div>
-    );
+    const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
 
     const loading = Boolean(leftState?.loading || rightState?.loading);
     const error = leftState?.error || rightState?.error || null;
@@ -199,11 +180,96 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
       return buildDiffByResource(leftData, rightData);
     }, [leftData, rightData]);
 
+    const totalChanges = useMemo(() => groups.reduce((sum, g) => sum + g.rows.length, 0), [groups]);
+
+    // One line per snapshot: generation, id and age read left to right, and
+    // nothing wraps. The generation identifies the comparison so it leads.
+    const side = (snap: ApplicationSnapshotSummary) => (
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'nowrap',
+          alignItems: 'center',
+          gap: 6,
+          minWidth: 0,
+          whiteSpace: 'nowrap',
+        }}
+      >
+        <span
+          style={{
+            fontSize: 13,
+            fontWeight: 800,
+            color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+            flexShrink: 0,
+          }}
+        >
+          {ui.GENERATION} {snap.generation}
+        </span>
+        <SnapshotMetaChip>{snap.id}</SnapshotMetaChip>
+        <span
+          style={{
+            fontSize: 11,
+            fontWeight: 600,
+            color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+            flexShrink: 0,
+          }}
+        >
+          {snap.takenAt ? <TimeAgo date={snap.takenAt} /> : <MutedText value={EMPTY_VALUE} />}
+        </span>
+      </div>
+    );
+
+    const headerRow = (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 6,
+        }}
+      >
+        {/* nowrap keeps the pair side by side; a narrow panel scrolls the row
+            rather than breaking it back onto two lines. */}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'nowrap',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 12,
+            maxWidth: '100%',
+            overflowX: 'auto',
+          }}
+        >
+          {side(left)}
+          <span
+            style={{ fontSize: 14, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED, flexShrink: 0 }}
+            aria-hidden
+          >
+            {COMPARE_ARROW}
+          </span>
+          {side(right)}
+        </div>
+        {/* The summary belongs to the diff below, so it lines up with the
+            resource cards rather than centring under the snapshot pair. */}
+        {totalChanges > 0 ? (
+          <div style={{ alignSelf: 'flex-start' }}>
+            <SnapshotMetaChip>
+              {totalChanges} {totalChanges === 1 ? ui.COMPARE_CHANGE_ONE : ui.COMPARE_CHANGE_MANY}
+              {ui.STORAGE_METRICS_JOINER}
+              {groups.length}{' '}
+              {groups.length === 1 ? ui.COMPARE_RESOURCE_ONE : ui.COMPARE_RESOURCE_MANY}
+            </SnapshotMetaChip>
+          </div>
+        ) : null}
+      </div>
+    );
+
     if (loading) {
       return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {headerRow}
-          <MutedText value="Loading manifest…" />
+          <MutedText value={ui.COMPARE_LOADING} />
         </div>
       );
     }
@@ -224,15 +290,15 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
           <div
             style={{
               padding: '16px 12px',
-              border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+              border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
               borderRadius: 10,
-              background: DEFAULT_COLORS.BACKGROUND_WHITE,
-              color: DEFAULT_COLORS.TEXT_MUTED,
+              background: DEFAULT_COLORS.SURFACE_WHITE,
+              color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
               fontSize: 13,
               fontWeight: 600,
             }}
           >
-            These two snapshots are identical.
+            {ui.COMPARE_IDENTICAL}
           </div>
         </div>
       );
@@ -255,64 +321,85 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
             <div
               key={`${g.meta.kind}/${g.meta.name}`}
               style={{
-                border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+                border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
                 borderRadius: 10,
-                background: DEFAULT_COLORS.BACKGROUND_WHITE,
+                background: DEFAULT_COLORS.SURFACE_WHITE,
               }}
             >
               <div
                 style={{
-                  padding: '10px 12px',
-                  borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+                  padding: '6px 10px',
+                  borderBottom: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 8,
+                  gap: 6,
+                  fontSize: 12,
                   fontWeight: 800,
-                  color: DEFAULT_COLORS.TEXT_PRIMARY,
+                  color: DEFAULT_COLORS.TEXT_ON_SURFACE,
                 }}
               >
                 <span>{g.meta.kind}</span>
-                <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 700 }}>
+                <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED, fontWeight: 700 }}>
                   {g.meta.name}
                 </span>
+                <SnapshotMetaChip>
+                  {g.rows.length}{' '}
+                  {g.rows.length === 1 ? ui.COMPARE_CHANGE_ONE : ui.COMPARE_CHANGE_MANY}
+                </SnapshotMetaChip>
               </div>
-              <div style={{ display: 'grid', rowGap: 6, padding: '10px 12px' }}>
+              <div style={{ display: 'grid', rowGap: 4, padding: '6px 10px' }}>
                 {g.rows.map((r, idx) => (
                   <div
                     key={`${g.meta.kind}/${g.meta.name}:${idx}:${formatPath(r.path)}`}
+                    // One flowing line: a fixed 3-column grid has no room in the
+                    // panel and drops each cell onto its own row, which reads as
+                    // "replicas / 2 / 1" instead of "replicas 2 → 1".
                     style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'minmax(180px, 1.1fr) minmax(0, 1fr) minmax(0, 1fr)',
-                      gap: 12,
-                      alignItems: 'start',
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      alignItems: 'baseline',
+                      gap: 6,
                       fontSize: 12,
                       lineHeight: 1.35,
                     }}
                   >
-                    <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY, fontWeight: 700 }}>
+                    <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE, fontWeight: 700 }}>
                       {formatPath(r.path)}
-                    </div>
-                    <div
-                      style={{
-                        color: r.type === 'add' ? DEFAULT_COLORS.TEXT_MUTED : DEFAULT_COLORS.DANGER,
-                        textDecoration: r.type === 'add' ? 'none' : 'line-through',
-                        opacity: r.type === 'add' ? 0.6 : 0.95,
-                        wordBreak: 'break-word',
-                      }}
-                    >
-                      {r.type === 'add' ? '—' : stringifyValue(r.oldValue)}
-                    </div>
-                    <div
-                      style={{
-                        color:
-                          r.type === 'remove' ? DEFAULT_COLORS.TEXT_MUTED : DEFAULT_COLORS.SUCCESS,
-                        opacity: r.type === 'remove' ? 0.6 : 0.95,
-                        wordBreak: 'break-word',
-                        fontWeight: r.type === 'remove' ? 500 : 700,
-                      }}
-                    >
-                      {r.type === 'remove' ? '—' : stringifyValue(r.newValue)}
-                    </div>
+                    </span>
+                    {r.type !== 'add' ? (
+                      <span
+                        style={{
+                          color: DEFAULT_COLORS.DANGER,
+                          textDecoration: 'line-through',
+                          wordBreak: 'break-word',
+                        }}
+                      >
+                        {stringifyValue(r.oldValue)}
+                      </span>
+                    ) : null}
+                    {r.type === 'change' ? (
+                      <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }} aria-hidden>
+                        {COMPARE_ARROW}
+                      </span>
+                    ) : null}
+                    {r.type !== 'remove' ? (
+                      <span
+                        style={{
+                          color: DEFAULT_COLORS.SUCCESS,
+                          fontWeight: 700,
+                          wordBreak: 'break-word',
+                        }}
+                      >
+                        {stringifyValue(r.newValue)}
+                      </span>
+                    ) : null}
+                    <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED, fontSize: 11 }}>
+                      {r.type === 'add'
+                        ? ui.COMPARE_ADDED
+                        : r.type === 'remove'
+                          ? ui.COMPARE_REMOVED
+                          : ''}
+                    </span>
                   </div>
                 ))}
               </div>

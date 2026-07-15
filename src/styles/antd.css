@@ -597,6 +597,25 @@
   margin: 4px 0 !important;
 }
 
+/* Select.colorText is unset on purpose: it would drive the closed control and
+   the dropdown alike, and those sit on opposite surfaces. The control inherits
+   its surface, and the dropdown is always a white panel rendered in a portal
+   (so outside .app-panel-surface), which is what this pins. */
+.ant-select-dropdown .ant-select-item-option-content,
+.ant-select-dropdown .ant-select-item-option,
+.ant-select-dropdown .ant-select-item-empty,
+.ant-select-dropdown .ant-empty-description {
+  color: #111827 !important;
+}
+
+/* Multi-select tags are white pills (multipleItemBg), so their label and remove
+   icon need the dark ink: antd has no token for an enabled tag's text, and it
+   would otherwise inherit the page's white and vanish against the pill. */
+.ant-select-multiple .ant-select-selection-item-content,
+.ant-select-multiple .ant-select-selection-item-remove {
+  color: #111827 !important;
+}
+
 .app-panel-surface .ant-form-item-label > label,
 .app-panel-surface .ant-input,
 .app-panel-surface .ant-input-number-input,
