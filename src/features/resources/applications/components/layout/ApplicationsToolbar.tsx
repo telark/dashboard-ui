@@ -151,7 +151,9 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
             ? APPLICATIONS_UI.TOOLBAR_BULK_SELECT_ACTIVE
             : APPLICATIONS_UI.TOOLBAR_BULK_SELECT,
           icon: <CheckSquareOutlined />,
-          variant: 'default',
+          // Ghost like Search and Filter beside it: a bordered pill reads heavier
+          // than its neighbours even at the same 30px height.
+          variant: 'ghost',
           onClick: onToggleBulkMode,
           active: bulkMode,
         },

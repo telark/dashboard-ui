@@ -1,7 +1,7 @@
 export const HEADER_LAYOUT = {
-  HEIGHT_PX: 48,
-  HEIGHT: '48px',
-  MIN_HEIGHT: 'calc(100vh - 48px)',
+  HEIGHT_PX: 55,
+  HEIGHT: '55px', //old 48px
+  MIN_HEIGHT: 'calc(100vh - 55px)',
   LOGO: {
     SRC: '/telark-logo.svg',
     ALT: 'telark',
