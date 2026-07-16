@@ -1,8 +1,8 @@
 /*
  * Responsive layout breakpoints:
- *   ≥992px  (lg) — 2-column split: 45% brand panel | 55% auth
- *   768–992px (md) — compact top banner + full-width auth card
- *   <768px (sm/xs) — banner hidden; auth card centered, full width
+ *   ≥992px  (lg) — 2-column split: even halves, brand panel | auth
+ *   <992px  (md and below) — compact top banner + full-width auth card; the
+ *                            banner keeps the logo down to the smallest screen
  */
 import React from 'react';
 import { Row, Col, Grid } from 'antd';
@@ -23,7 +23,7 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({
 }) => {
   const screens = useBreakpoint();
   const showLeftPanel = !!leftPanel && !!screens.lg;
-  const showBanner = !!compactBanner && !!screens.md && !screens.lg;
+  const showBanner = !!compactBanner && !screens.lg;
 
   if (leftPanel) {
     return (
@@ -50,7 +50,7 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({
         <Row style={{ flex: 1 }}>
           {showLeftPanel && (
             <Col
-              lg={11}
+              lg={12}
               style={{
                 background: DEFAULT_COLORS.PAGE_BG,
                 display: 'flex',
@@ -67,7 +67,7 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({
           )}
           <Col
             xs={24}
-            lg={showLeftPanel ? 13 : 24}
+            lg={showLeftPanel ? 12 : 24}
             style={{
               display: 'flex',
               alignItems: 'center',

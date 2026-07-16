@@ -5,11 +5,13 @@ import {
   CheckSquareOutlined,
   CloseOutlined,
   DeleteOutlined,
+  DownOutlined,
   EllipsisOutlined,
+  HeartOutlined,
   SearchOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
-import { Checkbox } from 'antd';
+import { Checkbox, Dropdown, Tooltip } from 'antd';
 import { DEFAULT_COLORS, TOOLBAR_CONTROL, TOOLBAR_ITEM_GAP } from '../../../../../constants';
 import Toolbar from '../../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
@@ -17,6 +19,7 @@ import { APPLICATIONS_UI } from '../../constants';
 import type { ApplicationLayoutMode } from '../../models';
 import { FilterButton } from '../../../../../components/display/buttons';
 import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
+import { useElementWidth } from '../../../../../hooks/layout';
 
 const MORE_MENU_KEYS = {
   LAYOUT: 'layout',
@@ -72,6 +75,13 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
   healthQuickFilter,
   onHealthQuickFilterChange,
 }) => {
+  const { ref: rowRef, width: rowWidth } = useElementWidth<HTMLDivElement>();
+  // Bulk mode adds the select-all cluster and two actions, so it runs out of room
+  // far earlier than the default toolbar.
+  const compactThreshold = bulkMode
+    ? APPLICATIONS_UI.TOOLBAR_COMPACT_WIDTH.BULK
+    : APPLICATIONS_UI.TOOLBAR_COMPACT_WIDTH.DEFAULT;
+  const isCompact = rowWidth > 0 && rowWidth < compactThreshold;
   const nextLayoutMode: ApplicationLayoutMode = layoutMode === 'single' ? 'double' : 'single';
   const nextLayoutLabel =
     nextLayoutMode === 'double'
@@ -113,6 +123,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
           label: APPLICATIONS_UI.TOOLBAR_BULK_FORCE_SYNC,
           icon: <SyncOutlined />,
           variant: 'default',
+          iconOnly: true,
           onClick: handleBulkForceSyncClick,
           disabled: disabledNoSelection,
           tooltip: bulkForceSyncDisabled
@@ -124,6 +135,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
           label: APPLICATIONS_UI.TOOLBAR_BULK_DELETE,
           icon: <DeleteOutlined />,
           variant: 'danger',
+          iconOnly: true,
           onClick: onBulkDelete,
           disabled: disabledNoSelection,
         },
@@ -215,10 +227,10 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
   const healthPills = useMemo(
     () =>
       [
-        { key: 'all', label: 'All' },
-        { key: 'healthy', label: 'Healthy' },
-        { key: 'degraded', label: 'Degraded' },
-        { key: 'unhealthy', label: 'Unhealthy' },
+        { key: 'all', label: APPLICATIONS_UI.TOOLBAR_HEALTH_OPTIONS.ALL },
+        { key: 'healthy', label: APPLICATIONS_UI.TOOLBAR_HEALTH_OPTIONS.HEALTHY },
+        { key: 'degraded', label: APPLICATIONS_UI.TOOLBAR_HEALTH_OPTIONS.DEGRADED },
+        { key: 'unhealthy', label: APPLICATIONS_UI.TOOLBAR_HEALTH_OPTIONS.UNHEALTHY },
       ] as const,
     [],
   );
@@ -231,6 +243,66 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
   }, []);
 
   const pillsNode = useMemo(() => {
+    const activeKey = healthQuickFilter || 'all';
+    // Four pills do not fit beside a full-width sidebar, so they fold into one
+    // control whose dot keeps the active filter readable without its label.
+    if (isCompact) {
+      const activePill = healthPills.find((pill) => pill.key === activeKey) ?? healthPills[0];
+      const activeAccent = getPillAccent(activeKey);
+      return (
+        <Dropdown
+          trigger={['click']}
+          menu={{
+            selectedKeys: [activeKey],
+            items: healthPills.map((pill) => ({
+              key: pill.key,
+              label: pill.label,
+              icon: (
+                <span
+                  style={{
+                    display: 'inline-block',
+                    width: 8,
+                    height: 8,
+                    // The menu's icon slot would otherwise stretch the dot into an oval.
+                    minWidth: 8,
+                    flexShrink: 0,
+                    borderRadius: '50%',
+                    background: getPillAccent(pill.key),
+                  }}
+                />
+              ),
+            })),
+            onClick: ({ key }) =>
+              onHealthQuickFilterChange(key as ApplicationsToolbarProps['healthQuickFilter']),
+          }}
+        >
+          <Tooltip title={`${APPLICATIONS_UI.TOOLBAR_HEALTH_FILTER}: ${activePill.label}`}>
+            <button
+              type="button"
+              aria-label={`${APPLICATIONS_UI.TOOLBAR_HEALTH_FILTER}: ${activePill.label}`}
+              style={{
+                all: 'unset',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 5,
+                height: TOOLBAR_CONTROL.HEIGHT,
+                boxSizing: 'border-box',
+                padding: '0 8px',
+                borderRadius: 999,
+                background: `${activeAccent}18`,
+                border: `1px solid ${activeAccent}`,
+                color: activeAccent,
+              }}
+            >
+              <HeartOutlined style={{ fontSize: 13 }} />
+              <DownOutlined style={{ fontSize: 9 }} />
+            </button>
+          </Tooltip>
+        </Dropdown>
+      );
+    }
     return (
       <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: '100%' }}>
         {healthPills.map((pill) => {
@@ -268,10 +340,11 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
         })}
       </div>
     );
-  }, [getPillAccent, healthPills, healthQuickFilter, onHealthQuickFilterChange]);
+  }, [getPillAccent, healthPills, healthQuickFilter, isCompact, onHealthQuickFilterChange]);
 
   return (
     <div
+      ref={rowRef}
       className="applications-bulk-select"
       style={{
         display: 'flex',
@@ -313,7 +386,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
             </Checkbox>
           </span>
         ) : null}
-        <Toolbar config={bulkActionsToolbarConfig} />
+        <Toolbar config={bulkActionsToolbarConfig} compact={isCompact} />
         {bulkMode ? (
           <span
             style={{
@@ -375,7 +448,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
             +{overflowCount} more
           </span>
         ) : null}
-        <Toolbar config={clearAllToolbarConfig} />
+        <Toolbar config={clearAllToolbarConfig} compact={isCompact} />
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: TOOLBAR_ITEM_GAP, height: '100%' }}>
         {!bulkMode ? (
@@ -394,10 +467,10 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
           </span>
         ) : null}
         {pillsNode}
-        <FilterButton onClick={onOpenFilters} />
-        <Toolbar config={toolbarConfig} />
-        {bulkMode ? <Toolbar config={bulkModeToolbarConfig} /> : null}
-        <Toolbar config={moreToolbarConfig} />
+        <FilterButton onClick={onOpenFilters} compact={isCompact} />
+        <Toolbar config={toolbarConfig} compact={isCompact} />
+        {bulkMode ? <Toolbar config={bulkModeToolbarConfig} compact={isCompact} /> : null}
+        <Toolbar config={moreToolbarConfig} compact={isCompact} />
       </div>
     </div>
   );

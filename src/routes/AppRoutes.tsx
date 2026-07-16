@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { ProtectedRoute } from '../features/auth/components';
+import { ProtectedRoute, AuthLayout } from '../features/auth/components';
 import { FancySpinner, AnimatedPageWrapper } from '../components/animation';
 import { FeatureErrorBoundary } from '../components/error-boundary';
 import { APP_ROUTES } from '../constants';
@@ -79,14 +79,14 @@ const AppRoutes: React.FC = () => {
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes location={location}>
+        {/* One layout instance spans both auth routes, so the brand panel is not
+            remounted when navigating between login and register. */}
         <Route
-          path={APP_ROUTES.LOGIN}
-          element={isAuthenticated ? <Navigate to={APP_ROUTES.HOME} replace /> : <Login />}
-        />
-        <Route
-          path={APP_ROUTES.REGISTER}
-          element={isAuthenticated ? <Navigate to={APP_ROUTES.HOME} replace /> : <Register />}
-        />
+          element={isAuthenticated ? <Navigate to={APP_ROUTES.HOME} replace /> : <AuthLayout />}
+        >
+          <Route path={APP_ROUTES.LOGIN} element={<Login />} />
+          <Route path={APP_ROUTES.REGISTER} element={<Register />} />
+        </Route>
         <Route path={APP_ROUTES.GOOGLE_CALLBACK} element={<GoogleCallback />} />
         <Route
           path={APP_ROUTES.HOME}

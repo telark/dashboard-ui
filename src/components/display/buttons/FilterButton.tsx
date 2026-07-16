@@ -1,27 +1,36 @@
 import React from 'react';
+import { Tooltip } from 'antd';
 import { FilterOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS, TOOLBAR_CONTROL } from '../../../constants';
+import { useMediaQuery } from '../../../hooks/layout';
 
 interface FilterButtonProps {
   onClick?: () => void;
   label?: string;
   disabled?: boolean;
+  /** Set by a parent that measures its own width; falls back to the viewport. */
+  compact?: boolean;
 }
 
 const FilterButton: React.FC<FilterButtonProps> = ({
   onClick,
   label = 'Filter',
   disabled = false,
+  compact,
 }) => {
+  const isViewportCompact = useMediaQuery(TOOLBAR_CONTROL.COMPACT_QUERY);
+  const isCompact = compact ?? isViewportCompact;
   const filterButtonStyle: React.CSSProperties = {
     all: 'unset',
     cursor: disabled ? 'not-allowed' : 'pointer',
     display: 'flex',
     alignItems: 'center',
-    gap: 6,
+    justifyContent: isCompact ? 'center' : undefined,
+    gap: isCompact ? 0 : 6,
     height: TOOLBAR_CONTROL.HEIGHT,
+    width: isCompact ? TOOLBAR_CONTROL.HEIGHT : undefined,
     boxSizing: 'border-box',
-    padding: TOOLBAR_CONTROL.PADDING,
+    padding: isCompact ? 0 : TOOLBAR_CONTROL.PADDING,
     lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
     borderRadius: 6,
     fontSize: 13,
@@ -45,19 +54,23 @@ const FilterButton: React.FC<FilterButtonProps> = ({
     e.currentTarget.style.color = DEFAULT_COLORS.TEXT_MUTED;
   };
 
-  return (
+  const button = (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
+      aria-label={isCompact ? label : undefined}
       style={filterButtonStyle}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <FilterOutlined style={{ fontSize: 14, lineHeight: 1 }} />
-      <span>{label}</span>
+      {!isCompact && <span>{label}</span>}
     </button>
   );
+
+  // Without the label the icon alone has to carry the meaning.
+  return isCompact ? <Tooltip title={label}>{button}</Tooltip> : button;
 };
 
 export default FilterButton;

@@ -11,6 +11,8 @@ export interface ToolbarButtonConfig {
   disabled?: boolean;
   loading?: boolean;
   tooltip?: string;
+  /** Renders the icon alone; the label becomes the tooltip and the accessible name. */
+  iconOnly?: boolean;
   dropdown?: {
     items: MenuProps['items'];
     onItemClick?: (key: string) => void;

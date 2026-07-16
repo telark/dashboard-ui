@@ -7,6 +7,20 @@ export const APPLICATIONS_UI = {
   TOOLBAR_BULK_SELECT: 'Bulk',
   TOOLBAR_BULK_SELECT_ACTIVE: 'Exit bulk',
   TOOLBAR_SELECT_ALL: 'Select all on page',
+  // Measured natural widths of the toolbar row: ~984px in bulk mode (select-all
+  // cluster + pills + actions) and ~585px otherwise. Below these the controls
+  // fall back to icons instead of overflowing into a scroll.
+  TOOLBAR_COMPACT_WIDTH: {
+    BULK: 1040,
+    DEFAULT: 640,
+  },
+  TOOLBAR_HEALTH_FILTER: 'Filter by health',
+  TOOLBAR_HEALTH_OPTIONS: {
+    ALL: 'All',
+    HEALTHY: 'Healthy',
+    DEGRADED: 'Degraded',
+    UNHEALTHY: 'Unhealthy',
+  },
   TOOLBAR_BULK_FORCE_SYNC: 'Force Sync',
   TOOLBAR_BULK_DELETE: 'Delete',
   TOOLBAR_BULK_DELETE_CONFIRM_TITLE: 'Delete selected applications?',

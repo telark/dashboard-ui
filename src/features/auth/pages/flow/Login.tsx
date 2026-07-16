@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Form, App as AntdApp, Button, Divider, ConfigProvider, theme as antdTheme } from 'antd';
+import { Form, App as AntdApp, Button, Divider } from 'antd';
 import { KeyOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,23 +11,17 @@ import {
 import { redirectToGoogle } from '../../utils/flow/google';
 import { APP_ROUTES } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
-import { LIGHT_TOKENS, DARK_TOKENS } from '../../constants/theme';
 import { GoogleIcon } from '../../../../components/display/icons/GoogleIcon';
 import {
   LoginForm,
-  AuthContainer,
   AuthCard,
   AuthHeader,
   AuthFooter,
   OrphanedPasskeysModal,
-  BrandPanel,
-  CompactBanner,
-  ThemeToggle,
 } from '../../components';
 import { ensureGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
 import { ensureAuthConfigThunk, selectSelfRegistrationEnabled } from '../../store';
 import type { AppDispatch } from '../../../../store';
-import '../../components/login/login.css';
 
 const Login: React.FC = () => {
   const [form] = Form.useForm();
@@ -37,7 +31,6 @@ const Login: React.FC = () => {
   const [removing, setRemoving] = useState(false);
   const [orphanedInfo, setOrphanedInfo] = useState<OrphanedPasskeysInfo | null>(null);
   const [showPasskeyForm, setShowPasskeyForm] = useState(false);
-  const [isDark, setIsDark] = useState(() => localStorage.getItem('auth-theme') === 'dark');
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -146,112 +139,88 @@ const Login: React.FC = () => {
     });
   };
 
-  const toggleTheme = () => {
-    const next = !isDark;
-    setIsDark(next);
-    localStorage.setItem('auth-theme', next ? 'dark' : 'light');
-  };
-
   const isAnyLoading = loading || googleLoading;
 
   return (
     <>
-      <ConfigProvider
-        wave={{ disabled: true }}
-        theme={{
-          cssVar: { key: 'telark-auth' },
-          hashed: false,
-          algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
-          token: isDark ? DARK_TOKENS : LIGHT_TOKENS,
-        }}
-      >
-        <div className="auth-root" data-theme={isDark ? 'dark' : 'light'}>
-          <AuthContainer leftPanel={<BrandPanel />} compactBanner={<CompactBanner />}>
-            <div style={{ position: 'absolute', top: 16, right: 16, zIndex: 10 }}>
-              <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
-            </div>
+      <AuthCard>
+        <AuthHeader title={LOGIN_CONSTANTS.UI.TITLE} subtitle={LOGIN_CONSTANTS.UI.SUBTITLE} />
 
-            <AuthCard>
-              <AuthHeader title={LOGIN_CONSTANTS.UI.TITLE} subtitle={LOGIN_CONSTANTS.UI.SUBTITLE} />
+        {!showPasskeyForm ? (
+          <Button
+            block
+            onClick={() => setShowPasskeyForm(true)}
+            disabled={isAnyLoading}
+            style={{
+              fontWeight: 600,
+              background: 'var(--color-primary)',
+              borderColor: 'var(--color-primary)',
+              color: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+            }}
+          >
+            <KeyOutlined />
+            {LOGIN_CONSTANTS.UI.BUTTON_TEXT}
+          </Button>
+        ) : (
+          <LoginForm
+            form={form}
+            loading={loading}
+            onFinish={handleLogin}
+            error={passkeyError}
+            onClearError={() => setPasskeyError(null)}
+          />
+        )}
 
-              {!showPasskeyForm ? (
-                <Button
-                  block
-                  onClick={() => setShowPasskeyForm(true)}
-                  disabled={isAnyLoading}
-                  style={{
-                    fontWeight: 600,
-                    background: 'var(--color-primary, #111827)',
-                    borderColor: 'var(--color-primary, #111827)',
-                    color: '#ffffff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                  }}
-                >
-                  <KeyOutlined />
-                  {LOGIN_CONSTANTS.UI.BUTTON_TEXT}
-                </Button>
-              ) : (
-                <LoginForm
-                  form={form}
-                  loading={loading}
-                  onFinish={handleLogin}
-                  error={passkeyError}
-                  onClearError={() => setPasskeyError(null)}
-                />
-              )}
+        {googleClientID && (
+          <Divider
+            plain
+            style={{
+              color: 'var(--auth-text-muted, #94a3b8)',
+              fontSize: '11px',
+              margin: '14px 0',
+              borderColor: 'var(--auth-divider, #f1f5f9)',
+            }}
+          >
+            {LOGIN_CONSTANTS.UI.GOOGLE_OR_SEPARATOR}
+          </Divider>
+        )}
 
-              {googleClientID && (
-                <Divider
-                  plain
-                  style={{
-                    color: 'var(--auth-text-muted, #94a3b8)',
-                    fontSize: '11px',
-                    margin: '14px 0',
-                    borderColor: 'var(--auth-divider, #f1f5f9)',
-                  }}
-                >
-                  {LOGIN_CONSTANTS.UI.GOOGLE_OR_SEPARATOR}
-                </Divider>
-              )}
+        {googleClientID && (
+          <Button
+            block
+            onClick={handleGoogleLogin}
+            loading={googleLoading}
+            disabled={loading}
+            style={{
+              fontWeight: 500,
+              background: '#ffffff',
+              borderColor: '#dadce0',
+              color: '#3c4043',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+            }}
+            icon={!googleLoading ? <GoogleIcon /> : undefined}
+          >
+            {googleLoading
+              ? LOGIN_CONSTANTS.UI.GOOGLE_BUTTON_LOADING
+              : LOGIN_CONSTANTS.UI.GOOGLE_BUTTON_TEXT}
+          </Button>
+        )}
 
-              {googleClientID && (
-                <Button
-                  block
-                  onClick={handleGoogleLogin}
-                  loading={googleLoading}
-                  disabled={loading}
-                  style={{
-                    fontWeight: 500,
-                    background: '#ffffff',
-                    borderColor: '#dadce0',
-                    color: '#3c4043',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                  }}
-                  icon={!googleLoading ? <GoogleIcon /> : undefined}
-                >
-                  {googleLoading
-                    ? LOGIN_CONSTANTS.UI.GOOGLE_BUTTON_LOADING
-                    : LOGIN_CONSTANTS.UI.GOOGLE_BUTTON_TEXT}
-                </Button>
-              )}
-
-              {selfRegEnabled && (
-                <AuthFooter
-                  text={LOGIN_CONSTANTS.UI.FOOTER_TEXT}
-                  linkText={LOGIN_CONSTANTS.UI.FOOTER_LINK}
-                  onLinkClick={() => navigate(APP_ROUTES.REGISTER)}
-                />
-              )}
-            </AuthCard>
-          </AuthContainer>
-        </div>
-      </ConfigProvider>
+        {selfRegEnabled && (
+          <AuthFooter
+            text={LOGIN_CONSTANTS.UI.FOOTER_TEXT}
+            linkText={LOGIN_CONSTANTS.UI.FOOTER_LINK}
+            onLinkClick={() => navigate(APP_ROUTES.REGISTER)}
+          />
+        )}
+      </AuthCard>
 
       <OrphanedPasskeysModal
         open={modalOpen}

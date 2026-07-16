@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { SIDEBAR_LAYOUT } from '../../constants';
+import { useMediaQuery } from './useMediaQuery';
 
 const TRUE_VALUE = 'true';
 
@@ -31,15 +32,22 @@ interface UseSidebarCollapseOptions {
   withShortcut?: boolean;
 }
 
+const NARROW_QUERY = `(max-width: ${SIDEBAR_LAYOUT.FORCE_COLLAPSE_BELOW - 1}px)`;
+
 export const useSidebarCollapse = ({ withShortcut = false }: UseSidebarCollapseOptions = {}) => {
   const [state, setState] = useState<SidebarState>(readStoredState);
+  const isNarrow = useMediaQuery(NARROW_QUERY);
+
+  // A narrow viewport wins over the stored preference, which is left untouched so
+  // the sidebar returns to it once there is room again.
+  const collapsed = state.collapsed || isNarrow;
 
   useEffect(() => {
     document.documentElement.style.setProperty(
       SIDEBAR_LAYOUT.CSS_VAR,
-      `${state.collapsed ? SIDEBAR_LAYOUT.WIDTH_COLLAPSED : state.width}px`,
+      `${collapsed ? SIDEBAR_LAYOUT.WIDTH_COLLAPSED : state.width}px`,
     );
-  }, [state]);
+  }, [collapsed, state.width]);
 
   useEffect(() => {
     const handleStateChanged = (e: Event) => {
@@ -52,19 +60,24 @@ export const useSidebarCollapse = ({ withShortcut = false }: UseSidebarCollapseO
   }, []);
 
   const toggle = useCallback(() => {
+    if (isNarrow) return;
     const stored = readStoredState();
     publishState({ ...stored, collapsed: !stored.collapsed });
-  }, []);
+  }, [isNarrow]);
 
   // Width below the threshold snaps shut; anything above reopens the sidebar.
-  const applyDraggedWidth = useCallback((draggedWidth: number) => {
-    const stored = readStoredState();
-    if (draggedWidth < SIDEBAR_LAYOUT.COLLAPSE_THRESHOLD) {
-      publishState({ ...stored, collapsed: true });
-      return;
-    }
-    publishState({ collapsed: false, width: clampWidth(draggedWidth) });
-  }, []);
+  const applyDraggedWidth = useCallback(
+    (draggedWidth: number) => {
+      if (isNarrow) return;
+      const stored = readStoredState();
+      if (draggedWidth < SIDEBAR_LAYOUT.COLLAPSE_THRESHOLD) {
+        publishState({ ...stored, collapsed: true });
+        return;
+      }
+      publishState({ collapsed: false, width: clampWidth(draggedWidth) });
+    },
+    [isNarrow],
+  );
 
   useEffect(() => {
     if (!withShortcut) return;
@@ -80,5 +93,11 @@ export const useSidebarCollapse = ({ withShortcut = false }: UseSidebarCollapseO
     };
   }, [toggle, withShortcut]);
 
-  return { isCollapsed: state.collapsed, width: state.width, toggle, applyDraggedWidth };
+  return {
+    isCollapsed: collapsed,
+    width: state.width,
+    toggle,
+    applyDraggedWidth,
+    canToggle: !isNarrow,
+  };
 };

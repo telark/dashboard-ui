@@ -49,8 +49,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         block
         style={{
           fontWeight: 600,
-          background: 'var(--color-primary, #111827)',
-          borderColor: 'var(--color-primary, #111827)',
+          background: 'var(--color-primary)',
+          borderColor: 'var(--color-primary)',
           color: '#ffffff',
           display: 'flex',
           alignItems: 'center',
