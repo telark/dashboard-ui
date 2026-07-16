@@ -1,0 +1,115 @@
+/* Same in both themes: the brand dark, matching DEFAULT_COLORS.PAGE_BG. */
+.auth-root {
+  --color-primary: #111827;
+}
+
+/* Auth fills the viewport exactly and never scrolls, so any rubber-band bounce
+   only exposes the dark document background behind these light surfaces. The
+   viewport takes overscroll-behavior from the root element, not from body. */
+html:has(.auth-root) {
+  overscroll-behavior: none;
+}
+
+/* The bounce still paints the document background on some platforms, so give it
+   the auth surface to paint instead of the dark page default. */
+html:has(.auth-root[data-theme='light']),
+html:has(.auth-root[data-theme='light']) body {
+  background-color: #f8fafc;
+}
+
+html:has(.auth-root[data-theme='dark']),
+html:has(.auth-root[data-theme='dark']) body {
+  background-color: #020617;
+}
+
+.auth-root[data-theme='light'] {
+  --auth-right-bg: #f8fafc;
+  --auth-card-bg: #ffffff;
+  --auth-card-border: #e2e8f0;
+  --auth-text-primary: #0b1f33;
+  --auth-text-muted: #64748b;
+  --auth-divider: #f1f5f9;
+  --auth-input-bg: #ffffff;
+  --color-border: #e2e8f0;
+}
+
+.auth-root[data-theme='dark'] {
+  --auth-right-bg: #020617;
+  --auth-card-bg: #0f172a;
+  --auth-card-border: #1e293b;
+  --auth-text-primary: #f8fafc;
+  --auth-text-muted: #94a3b8;
+  --auth-divider: #1e293b;
+  --auth-input-bg: #1e293b;
+  --color-border: #1e293b;
+}
+
+/* The global label rule paints labels white for the dark page surfaces; the auth
+   card is its own surface and needs its own text colour. */
+.auth-root .ant-form-item-label > label {
+  color: var(--auth-text-primary, #0b1f33) !important;
+}
+
+.auth-root .ant-input:hover,
+.auth-root .ant-input:focus,
+.auth-root .ant-input-outlined:hover,
+.auth-root .ant-input-outlined:focus,
+.auth-root .ant-input-outlined:focus-within {
+  border-color: var(--auth-card-border, #e2e8f0) !important;
+  box-shadow: none !important;
+}
+
+.auth-root .ant-btn,
+.auth-root .ant-btn:focus,
+.auth-root .ant-btn:hover,
+.auth-root .ant-btn:active {
+  box-shadow: none !important;
+}
+
+/* The panel outlives navigation between login and register, so this reveal runs
+   once on arrival rather than on every route change. */
+.auth-brand > * {
+  opacity: 0;
+  animation: authFadeUp 0.5s ease forwards;
+}
+
+.auth-brand > *:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.auth-brand > *:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.auth-brand > *:nth-child(3) {
+  animation-delay: 0.25s;
+}
+
+.auth-brand > *:nth-child(4) {
+  animation-delay: 0.35s;
+}
+
+@keyframes authFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Below md the bar keeps the logo only; the tagline would swamp it. */
+@media (max-width: 767px) {
+  .auth-banner-note {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-brand > * {
+    animation: none;
+    opacity: 1;
+  }
+}

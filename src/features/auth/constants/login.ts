@@ -85,9 +85,10 @@ export const LOGIN_CONSTANTS = {
     GOOGLE_OR_SEPARATOR: 'or',
     BRAND_NAME: 'telark',
     BRAND_LOGO_SRC: '/telark-logo.svg',
-    BRAND_HEADLINE: 'Your command center for protection windows',
+    BRAND_HEADLINE: 'Your command center for workload protection',
     BRAND_TAGLINE:
-      'Sign in to the control plane that guards your Kubernetes workloads through maintenance windows, test runs, and risky changes — passwordless, with nothing to leak.',
+      "Sign in to the control plane that guards your Kubernetes workloads through planned maintenance, unproven releases, and everything you'd rather be able to undo.",
+    BRAND_TAGLINE_ACCENT: 'Passwordless, with nothing to leak.',
   },
   OIDC: {
     GOOGLE_SCOPE: 'openid email',

@@ -5,6 +5,9 @@ export const SIDEBAR_LAYOUT = {
   WIDTH_MAX: 330,
   // Dragging the edge narrower than this snaps the sidebar shut.
   COLLAPSE_THRESHOLD: 150,
+  // Below this viewport width an expanded sidebar leaves too little room for the
+  // content, so it stays collapsed and the toggle is unavailable.
+  FORCE_COLLAPSE_BELOW: 768,
   CONTENT_TOP_PADDING: 10,
   CSS_VAR: '--sidebar-width',
   STORAGE_KEY: 'sidebar_collapsed',

@@ -28,6 +28,7 @@ export { default as ProtectedRoute } from './routes/ProtectedRoute';
 // Shared
 export { PasskeyIcon } from './shared/PasskeyIcon';
 export { AuthContainer } from './shared/AuthContainer';
+export { AuthLayout } from './shared/AuthLayout';
 export { AuthCard } from './shared/AuthCard';
 export { AuthHeader } from './shared/AuthHeader';
 export { AuthFooter } from './shared/AuthFooter';

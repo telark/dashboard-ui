@@ -10,15 +10,20 @@ import {
 import type { ToolbarConfig } from '../../../interfaces/layout/toolbar';
 import { SearchButton } from '../buttons';
 import { SearchInput } from '../inputs';
+import { useMediaQuery } from '../../../hooks/layout';
 
 interface ToolbarProps {
   config: ToolbarConfig | undefined;
+  /** Set by a parent that measures its own width; falls back to the viewport. */
+  compact?: boolean;
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
   const buttons = config?.buttons ?? [];
   const search = config?.search;
   const [showSearch, setShowSearch] = React.useState(false);
+  const isViewportCompact = useMediaQuery(TOOLBAR_CONTROL.COMPACT_QUERY);
+  const isCompact = compact ?? isViewportCompact;
 
   const handleSearchToggle = React.useCallback(() => {
     if (!search) return;
@@ -78,6 +83,8 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
           const isLoading = button.loading ?? false;
           const isSearchButton = search && button.key === 'search';
           const buttonLabel = isSearchButton && showSearch ? 'Hide' : button.label;
+          // A label with no icon to fall back on would leave an empty button.
+          const iconOnly = (button.iconOnly ?? false) || (isCompact && Boolean(button.icon));
 
           const handleButtonClick = () => {
             // A button left enabled while its action is in flight would re-fire it.
@@ -96,6 +103,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                 label={buttonLabel}
                 disabled={isDisabled}
                 active={showSearch}
+                compact={isCompact}
               />,
               isDisabled ? button.tooltip : undefined,
               button.key,
@@ -117,15 +125,18 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
               >
                 <button
                   disabled={isDisabled}
+                  aria-label={iconOnly ? buttonLabel : undefined}
                   style={{
                     all: 'unset',
                     cursor: isDisabled ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 6,
+                    justifyContent: iconOnly ? 'center' : undefined,
+                    gap: iconOnly ? 0 : 6,
                     height: TOOLBAR_CONTROL.HEIGHT,
+                    width: iconOnly ? TOOLBAR_CONTROL.HEIGHT : undefined,
                     boxSizing: 'border-box',
-                    padding: TOOLBAR_CONTROL.PADDING,
+                    padding: iconOnly ? 0 : TOOLBAR_CONTROL.PADDING,
                     lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
                     borderRadius: 6,
                     fontSize: 13,
@@ -200,12 +211,20 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                       {button.icon}
                     </span>
                   )}
-                  <span>{buttonLabel}</span>
-                  <DownOutlined style={{ fontSize: 10 }} />
+                  {!iconOnly && (
+                    <>
+                      <span>{buttonLabel}</span>
+                      <DownOutlined style={{ fontSize: 10 }} />
+                    </>
+                  )}
                 </button>
               </Dropdown>
             );
-            return withTooltip(dropdownNode, isDisabled ? button.tooltip : undefined, button.key);
+            return withTooltip(
+              dropdownNode,
+              iconOnly ? (button.tooltip ?? buttonLabel) : isDisabled ? button.tooltip : undefined,
+              button.key,
+            );
           }
 
           const buttonNode = (
@@ -213,15 +232,18 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
               key={button.key}
               onClick={handleButtonClick}
               disabled={isDisabled}
+              aria-label={iconOnly ? buttonLabel : undefined}
               style={{
                 all: 'unset',
                 cursor: isDisabled ? 'not-allowed' : isLoading ? 'default' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: 6,
+                justifyContent: iconOnly ? 'center' : undefined,
+                gap: iconOnly ? 0 : 6,
                 height: TOOLBAR_CONTROL.HEIGHT,
+                width: iconOnly ? TOOLBAR_CONTROL.HEIGHT : undefined,
                 boxSizing: 'border-box',
-                padding: TOOLBAR_CONTROL.PADDING,
+                padding: iconOnly ? 0 : TOOLBAR_CONTROL.PADDING,
                 lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
                 borderRadius: 6,
                 fontSize: 13,
@@ -305,10 +327,17 @@ const Toolbar: React.FC<ToolbarProps> = ({ config }) => {
                   </span>
                 )
               )}
-              <span>{buttonLabel}</span>
+              {!iconOnly && <span>{buttonLabel}</span>}
             </button>
           );
-          return withTooltip(buttonNode, isDisabled ? button.tooltip : undefined, button.key);
+          // An icon-only button carries no visible text, so it always needs the
+          // tooltip, not just the disabled-state explanation.
+          const tooltipTitle = iconOnly
+            ? (button.tooltip ?? buttonLabel)
+            : isDisabled
+              ? button.tooltip
+              : undefined;
+          return withTooltip(buttonNode, tooltipTitle, button.key);
         })}
       </div>
     </div>

@@ -1,12 +1,16 @@
 import React from 'react';
+import { Tooltip } from 'antd';
 import { SearchOutlined, CloseOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS, TOOLBAR_CONTROL } from '../../../constants';
+import { useMediaQuery } from '../../../hooks/layout';
 
 interface SearchButtonProps {
   onClick?: () => void;
   label?: string;
   disabled?: boolean;
   active?: boolean;
+  /** Set by a parent that measures its own width; falls back to the viewport. */
+  compact?: boolean;
 }
 
 const SearchButton: React.FC<SearchButtonProps> = ({
@@ -14,17 +18,22 @@ const SearchButton: React.FC<SearchButtonProps> = ({
   label = 'Search',
   disabled = false,
   active = false,
+  compact,
 }) => {
+  const isViewportCompact = useMediaQuery(TOOLBAR_CONTROL.COMPACT_QUERY);
+  const isCompact = compact ?? isViewportCompact;
   const Icon = active ? CloseOutlined : SearchOutlined;
   const baseStyle: React.CSSProperties = {
     all: 'unset',
     cursor: disabled ? 'not-allowed' : 'pointer',
     display: 'flex',
     alignItems: 'center',
-    gap: 6,
+    justifyContent: isCompact ? 'center' : undefined,
+    gap: isCompact ? 0 : 6,
     height: TOOLBAR_CONTROL.HEIGHT,
+    width: isCompact ? TOOLBAR_CONTROL.HEIGHT : undefined,
     boxSizing: 'border-box',
-    padding: TOOLBAR_CONTROL.PADDING,
+    padding: isCompact ? 0 : TOOLBAR_CONTROL.PADDING,
     lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
     borderRadius: 6,
     fontSize: 13,
@@ -54,19 +63,23 @@ const SearchButton: React.FC<SearchButtonProps> = ({
       : DEFAULT_COLORS.TEXT_MUTED;
   };
 
-  return (
+  const button = (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
+      aria-label={isCompact ? label : undefined}
       style={baseStyle}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <Icon style={{ fontSize: 14, lineHeight: 1 }} />
-      <span>{label}</span>
+      {!isCompact && <span>{label}</span>}
     </button>
   );
+
+  // Without the label the icon alone has to carry the meaning.
+  return isCompact ? <Tooltip title={label}>{button}</Tooltip> : button;
 };
 
 export default SearchButton;

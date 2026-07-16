@@ -9,11 +9,12 @@ const isMacPlatform = (): boolean => navigator.userAgent.toLowerCase().includes(
 // Only rendered while the sidebar is shut; an open sidebar is closed by dragging
 // its edge, so the header stays clear.
 const SidebarToggleButton: React.FC = memo(() => {
-  const { isCollapsed, toggle } = useSidebarCollapse({ withShortcut: true });
+  const { isCollapsed, toggle, canToggle } = useSidebarCollapse({ withShortcut: true });
   const [hovered, setHovered] = useState(false);
   const config = SIDEBAR_LAYOUT.TOGGLE;
 
-  if (!isCollapsed) {
+  // Narrow viewports keep the sidebar shut, so the button would do nothing.
+  if (!isCollapsed || !canToggle) {
     return null;
   }
 

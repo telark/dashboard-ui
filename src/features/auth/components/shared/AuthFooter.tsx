@@ -62,7 +62,7 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({
       <div style={{ borderTop: '1px solid var(--auth-divider, #f1f5f9)', marginBottom: '14px' }} />
 
       {/* Terms */}
-      <p style={{ ...mutedStyle, textAlign: 'center', margin: '0 0 10px', lineHeight: 1.5 }}>
+      <p style={{ ...mutedStyle, textAlign: 'center', margin: 0, lineHeight: 1.5 }}>
         By continuing you agree to our{' '}
         <a href={termsHref} style={{ ...mutedStyle, textDecoration: 'underline' }}>
           Terms

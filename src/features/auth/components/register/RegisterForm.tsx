@@ -53,8 +53,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ form, loading, onFin
         icon={<UserAddOutlined />}
         style={{
           fontWeight: 600,
-          background: 'var(--color-primary, #1e293b)',
-          borderColor: 'var(--color-primary, #1e293b)',
+          background: 'var(--color-primary)',
+          borderColor: 'var(--color-primary)',
           color: '#ffffff',
         }}
       >

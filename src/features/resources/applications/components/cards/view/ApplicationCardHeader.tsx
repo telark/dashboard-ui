@@ -196,9 +196,10 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
             alignItems: 'flex-start',
             justifyContent: 'space-between',
             gap: 10,
+            flexWrap: 'wrap',
           }}
         >
-          <div style={{ minWidth: 0, flex: 1 }}>
+          <div style={{ minWidth: 0, flex: '1 1 180px' }}>
             <div
               style={{
                 display: 'flex',
@@ -298,7 +299,17 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
               </div>
             ) : null}
           </div>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          {/* Holds its size and drops to its own line rather than being squeezed
+              over the title. */}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              flexShrink: 0,
+              marginLeft: 'auto',
+            }}
+          >
             {syncStatus ? (
               <Tooltip title={syncStatus === 'failed' && syncLastError ? syncLastError : undefined}>
                 <span
@@ -312,6 +323,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                     borderRadius: 999,
                     fontWeight: 700,
                     fontSize: 11,
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   {SYNC_TAG_CONFIG[syncStatus].icon}
