@@ -55,7 +55,9 @@ export const validateSession = async (): Promise<SessionValidationResult> => {
     const unknownError = error as { status?: number; message?: string };
     const status =
       axiosError.normalized?.status || axiosError.response?.status || unknownError?.status;
-    const isExpiredStatus = status === HTTP_STATUS.GONE;
+    // 401 = the session was rejected by the API's own check, which is now the
+    // usual answer for an expired or unknown token.
+    const isExpiredStatus = status === HTTP_STATUS.GONE || status === HTTP_STATUS.UNAUTHORIZED;
     // 404 = session CRD deleted (revoked or logged out from another device) — treat as terminal
     const isDeletedStatus = status === HTTP_STATUS.NOT_FOUND;
     const errorMessage =

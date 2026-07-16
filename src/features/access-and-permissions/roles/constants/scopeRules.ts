@@ -97,6 +97,21 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
       Admin: [],
     },
   },
+  {
+    scope: 'protection-plans',
+    rules: {
+      ReadOnly: [{ key: 'viewprotectionplanviolations', label: 'View Violations' }],
+      Contributor: [
+        { key: 'createprotectionplan', label: 'Create Protection Plan' },
+        { key: 'editprotectionplan', label: 'Edit Protection Plan' },
+        { key: 'cancelprotectionplan', label: 'Cancel Protection Plan' },
+        { key: 'duplicateprotectionplan', label: 'Duplicate Protection Plan' },
+        { key: 'reactivateprotectionplan', label: 'Reactivate Protection Plan' },
+      ],
+      Owner: [{ key: 'deleteprotectionplan', label: 'Delete Protection Plan' }],
+      Admin: [],
+    },
+  },
 ];
 
 const ORDERED_LEVELS: PermissionLevel[] = ['ReadOnly', 'Contributor', 'Owner', 'Admin'];

@@ -25,12 +25,6 @@ export const discoveryApiClient: AxiosInstance = buildInstance(DISCOVERY_API.BAS
 export const authApiClient: AxiosInstance = buildInstance(AUTH_API.BASE_URL);
 export const enrichmentApiClient: AxiosInstance = buildInstance(ENRICHMENT_API.BASE_URL);
 
-authApiClient.interceptors.request.use(
-  createSessionTokenInterceptor(),
-  createRequestErrorHandler(),
-  { synchronous: true },
-);
-
 exporterApiClient.interceptors.response.use(...createErrorInterceptor({ silent404: true }));
 discoveryApiClient.interceptors.response.use(...createErrorInterceptor());
 authApiClient.interceptors.response.use(...createErrorInterceptor());
@@ -47,6 +41,14 @@ const SERVICE_INSTANCES: readonly ServiceInstance[] = [
   { name: SERVICE_NAMES.AUTH, instance: authApiClient },
   { name: SERVICE_NAMES.ENRICHMENT, instance: enrichmentApiClient },
 ];
+
+// Every service authorizes its own requests, so all of them need the session
+// token. Attaching it to one client only would leave the rest answering 401.
+for (const { instance } of SERVICE_INSTANCES) {
+  instance.interceptors.request.use(createSessionTokenInterceptor(), createRequestErrorHandler(), {
+    synchronous: true,
+  });
+}
 
 let healthRegistered = false;
 

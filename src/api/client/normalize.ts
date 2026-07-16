@@ -7,6 +7,8 @@ export interface NormalizedAxiosErrorMeta {
   url: string;
   method: string;
   isNotFound: boolean;
+  isUnauthenticated: boolean;
+  isForbidden: boolean;
   isClient: boolean;
   isServer: boolean;
   isNetwork: boolean;
@@ -35,6 +37,8 @@ export const normalizeError = (error: AxiosError): NormalizedAxiosErrorMeta => {
   const url = error?.config?.url ?? '';
   const method = error?.config?.method ?? '';
   const isNotFound = status === HTTP_STATUS.NOT_FOUND;
+  const isUnauthenticated = status === HTTP_STATUS.UNAUTHORIZED;
+  const isForbidden = status === HTTP_STATUS.FORBIDDEN;
   const isClient =
     status != null &&
     status >= HTTP_STATUS.BAD_REQUEST &&
@@ -42,5 +46,17 @@ export const normalizeError = (error: AxiosError): NormalizedAxiosErrorMeta => {
   const isServer = status != null && status >= HTTP_STATUS.INTERNAL_SERVER_ERROR;
   const isNetwork = !status && error?.code === ERROR_CODES.NETWORK;
   const isTimeout = error?.code === ERROR_CODES.TIMEOUT || /timeout/i.test(String(message));
-  return { status, message, url, method, isNotFound, isClient, isServer, isNetwork, isTimeout };
+  return {
+    status,
+    message,
+    url,
+    method,
+    isNotFound,
+    isUnauthenticated,
+    isForbidden,
+    isClient,
+    isServer,
+    isNetwork,
+    isTimeout,
+  };
 };

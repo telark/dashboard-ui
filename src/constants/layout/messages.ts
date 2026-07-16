@@ -3,6 +3,7 @@ export const ERROR_MESSAGES = {
     NETWORK_ERROR: 'API Network Error:',
     TIMEOUT_ERROR: 'API Timeout:',
     NOT_FOUND_WARNING: 'API Warning (404):',
+    FORBIDDEN_WARNING: 'API Warning (403):',
     GENERIC_ERROR: 'API Error:',
     UNKNOWN_ERROR: 'Unknown error',
   },
