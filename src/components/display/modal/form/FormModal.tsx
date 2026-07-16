@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { DEFAULT_COLORS } from '../../../../constants';
 import logger from '../../../../logging';
 import { Form, Button, App as AntdApp } from 'antd';
 import { PrimaryButton } from '../../buttons';
@@ -180,7 +181,7 @@ const FormModal: React.FC<FormModalProps> = ({
               onClick={handleCancel}
               style={{
                 width: buttonWrapperStyle?.width === '100%' ? '100%' : 'auto',
-                color: '#64748b',
+                color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
                 padding: '4px 8px',
               }}
             >

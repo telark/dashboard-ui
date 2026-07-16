@@ -1,4 +1,5 @@
 import { HEADER_LAYOUT } from './header';
+import { DEFAULT_COLORS } from '../../constants';
 
 export const UI = {
   LAYOUT: {
@@ -114,7 +115,7 @@ export const COMPONENT_STYLES = {
     textLabel: {
       fontSize: 13,
       fontWeight: 600,
-      color: '#64748b',
+      color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
     },
@@ -125,7 +126,7 @@ export const COMPONENT_STYLES = {
     },
     textSmall: {
       fontSize: 11,
-      color: '#64748b',
+      color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     },
     // Layout styles
     flexCenter: {
@@ -178,7 +179,7 @@ export const COMPONENT_STYLES = {
     // Badge styles
     badge: {
       fontSize: 11,
-      color: '#64748b',
+      color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
       background: '#f1f5f9',
       padding: '2px 6px',
       borderRadius: 4,

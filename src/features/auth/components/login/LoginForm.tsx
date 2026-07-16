@@ -34,9 +34,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         placeholder={LOGIN_CONSTANTS.UI.EMAIL_PLACEHOLDER}
         autoFocus
         style={{
-          height: '44px',
-          borderRadius: '10px',
-          fontSize: '15px',
           borderColor: 'var(--auth-card-border, #e2e8f0)',
           background: 'var(--auth-input-bg, #ffffff)',
           color: 'var(--auth-text-primary, #0B1F33)',
@@ -50,11 +47,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         htmlType="submit"
         loading={loading}
         block
-        size="large"
         style={{
-          height: '44px',
-          borderRadius: '10px',
-          fontSize: '14px',
           fontWeight: 600,
           background: 'var(--color-primary, #111827)',
           borderColor: 'var(--color-primary, #111827)',

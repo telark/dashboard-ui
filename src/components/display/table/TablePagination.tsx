@@ -31,7 +31,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({ config }) => {
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <span
           style={{
-            color: '#64748b',
+            color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
             fontSize: 14,
           }}
         >
@@ -59,7 +59,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({ config }) => {
         showTotal={(total, range) => (
           <span
             style={{
-              color: '#64748b',
+              color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
               fontSize: 14,
               marginRight: 16,
             }}

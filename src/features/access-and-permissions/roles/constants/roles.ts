@@ -1,4 +1,5 @@
 import type { PermissionLevel, ValidityType } from '../models/types';
+import { DEFAULT_COLORS } from '../../../../constants';
 
 export const SCOPE_PERMISSIONS = ['View', 'Edit', 'Delete'] as const;
 export const PERMISSION_LEVELS = ['ReadOnly', 'Contributor', 'Owner', 'Admin'] as const;
@@ -139,9 +140,9 @@ export const ROLES_CONSTANTS = {
     STATUS_INACTIVE_BG: '#fca5a530',
     STATUS_INACTIVE_TEXT: '#b91c1c',
     TEXT_PRIMARY: '#0B1F33',
-    TEXT_MUTED: '#64748b',
+    TEXT_MUTED: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     SORT_ACTIVE: '#0ea5e9',
-    SORT_MUTED: '#94a3b8',
+    SORT_MUTED: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
   },
   VALUES: {
     ROLE_TYPE_BUILT_IN: 'built-in',

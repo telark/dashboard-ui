@@ -219,7 +219,6 @@ const SnapshotStorageSection: React.FC = memo(() => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <div style={{ fontWeight: 700 }}>{C.LABELS.SNAPSHOTS_MAX_PER_APP_LABEL}</div>
           <Select
-            size="small"
             value={snapshotsMaxSelection}
             disabled={!canEditSnapshotStorage}
             onChange={(val) => {
@@ -240,7 +239,6 @@ const SnapshotStorageSection: React.FC = memo(() => {
           />
           {snapshotsMaxSelection === 'custom' ? (
             <InputNumber
-              size="small"
               min={1}
               precision={0}
               value={customSnapshotsMaxPerApp}

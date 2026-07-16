@@ -1,3 +1,5 @@
+import { CONTROL_HEIGHT } from '../../../../constants';
+
 const STORAGE_KEY_PREFIX = 'appearance';
 
 export const APPEARANCE_SECTION_CONSTANTS = {
@@ -7,8 +9,7 @@ export const APPEARANCE_SECTION_CONSTANTS = {
     FONT_SIZE: `${STORAGE_KEY_PREFIX}-font-size`,
   },
   LAYOUT: {
-    /** Match Ant Design middle/small primary button size. */
-    OPTION_BUTTON_HEIGHT: 32,
+    OPTION_BUTTON_HEIGHT: CONTROL_HEIGHT,
     OPTION_BUTTON_BORDER_RADIUS: 6,
     OPTION_BUTTON_PADDING: '4px 15px',
     OPTION_BUTTON_GAP: 8,

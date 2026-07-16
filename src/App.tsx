@@ -9,7 +9,14 @@ import ErrorBoundary from './ErrorBoundary';
 import { SessionExpiredModal } from './features/auth/components';
 import EmptyState from './components/display/views/EmptyState';
 import 'antd/dist/reset.css';
-import { DEFAULT_COLORS, APP_CONFIGS, APP_ROUTES } from './constants';
+import {
+  DEFAULT_COLORS,
+  APP_CONFIGS,
+  APP_ROUTES,
+  CONTROL_HEIGHT,
+  CONTROL_RADIUS,
+  CONTROL_FONT_SIZE,
+} from './constants';
 import AppRoutes from './routes/AppRoutes';
 import { hasSessionToken, useSessionExpirationCheck } from './features/auth/utils';
 import { useInitializePermissions } from './features/auth/hooks';
@@ -98,6 +105,12 @@ const App: React.FC = () => {
           hashed: false,
           algorithm: theme.darkAlgorithm,
           token: {
+            // The single control box style: height, radius and font for every antd
+            // Button/Input/Select/InputNumber/DatePicker. TOOLBAR_CONTROL feeds the
+            // app's own buttons from the same constants. Do not restyle these locally.
+            controlHeight: CONTROL_HEIGHT,
+            borderRadius: CONTROL_RADIUS,
+            fontSize: CONTROL_FONT_SIZE,
             colorPrimary: DEFAULT_COLORS.SUCCESS,
             colorBgBase: DEFAULT_COLORS.PAGE_BG,
             colorTextBase: DEFAULT_COLORS.TEXT_PRIMARY,
@@ -126,6 +139,18 @@ const App: React.FC = () => {
               activeBorderColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
               hoverBorderColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
               activeOutlineColor: 'transparent',
+            },
+            // Focus ring matches Select: colorPrimary is the app green, which antd
+            // would otherwise use for the active border and shadow.
+            Input: {
+              activeBorderColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+              hoverBorderColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+              activeShadow: 'none',
+            },
+            InputNumber: {
+              activeBorderColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+              hoverBorderColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+              activeShadow: 'none',
             },
             DatePicker: {
               colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,

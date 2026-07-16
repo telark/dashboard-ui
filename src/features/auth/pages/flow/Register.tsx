@@ -5,7 +5,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { MoonOutlined, SunOutlined } from '@ant-design/icons';
 import { performRegister } from '../../utils/flow/register';
 import { handleAuthError } from '../../utils/shared/errors';
-import { APP_ROUTES } from '../../../../constants';
+import {
+  APP_ROUTES,
+  AUTH_CONTROL_HEIGHT,
+  CONTROL_RADIUS,
+  CONTROL_FONT_SIZE,
+  DEFAULT_COLORS,
+} from '../../../../constants';
 import { REGISTER_CONSTANTS } from '../../constants/register';
 import { RegisterForm, AuthContainer, AuthCard, AuthHeader, AuthFooter } from '../../components';
 import {
@@ -15,18 +21,26 @@ import {
 } from '../../store';
 import type { AppDispatch } from '../../../../store';
 
+const CONTROL_GEOMETRY = {
+  controlHeight: AUTH_CONTROL_HEIGHT,
+  borderRadius: CONTROL_RADIUS,
+  fontSize: CONTROL_FONT_SIZE,
+};
+
 const LIGHT_TOKENS = {
+  ...CONTROL_GEOMETRY,
   colorPrimary: '#1e293b',
   colorBgContainer: '#ffffff',
   colorBorder: '#e2e8f0',
-  borderRadius: 10,
+  colorTextPlaceholder: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
 };
 
 const DARK_TOKENS = {
+  ...CONTROL_GEOMETRY,
   colorPrimary: '#f8fafc',
   colorBgContainer: '#0f172a',
   colorBorder: '#1e293b',
-  borderRadius: 10,
+  colorTextPlaceholder: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
 };
 
 const Register: React.FC = () => {
@@ -93,6 +107,9 @@ const Register: React.FC = () => {
     `;
 
   const overrideCSS = `
+    .auth-root .ant-form-item-label > label {
+      color: var(--auth-text-primary, #0B1F33) !important;
+    }
     .auth-root .ant-input:hover,
     .auth-root .ant-input:focus,
     .auth-root .ant-input-outlined:hover,
@@ -123,7 +140,7 @@ const Register: React.FC = () => {
           token: isDark ? DARK_TOKENS : LIGHT_TOKENS,
         }}
       >
-        <div className="auth-root">
+        <div className="auth-root" data-theme={isDark ? 'dark' : 'light'}>
           <AuthContainer>
             <div style={{ position: 'absolute', top: 16, right: 16, zIndex: 10 }}>
               <button
@@ -154,12 +171,7 @@ const Register: React.FC = () => {
                     title={REGISTER_CONSTANTS.UI.DISABLED_TITLE}
                     subtitle={REGISTER_CONSTANTS.UI.DISABLED_MESSAGE}
                   />
-                  <Button
-                    block
-                    size="large"
-                    onClick={() => navigate(APP_ROUTES.LOGIN)}
-                    style={{ height: '44px', borderRadius: '10px' }}
-                  >
+                  <Button block onClick={() => navigate(APP_ROUTES.LOGIN)}>
                     {REGISTER_CONSTANTS.UI.BACK_TO_LOGIN}
                   </Button>
                 </>

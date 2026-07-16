@@ -1,5 +1,6 @@
 import { DEFAULT_COLORS } from '../shared/colors';
 import { AVATAR_RING } from './avatars';
+import { CONTROL_HEIGHT } from './controls';
 
 // Panels keep the light surface they had before the dark theme; these tokens
 // re-light the antd controls rendered inside them.
@@ -245,7 +246,7 @@ export const FILTER_PANEL = {
     all: 'unset' as const,
     cursor: 'pointer' as const,
     borderRadius: 20,
-    height: 32,
+    height: CONTROL_HEIGHT,
     padding: '0 16px',
     fontSize: 13,
     fontFamily: "'Geist', sans-serif",

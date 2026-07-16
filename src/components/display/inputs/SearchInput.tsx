@@ -26,7 +26,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
           top: '50%',
           transform: 'translateY(-50%)',
           fontSize: 14,
-          color: '#94a3b8',
+          color: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
           pointerEvents: 'none',
         }}
       />

@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Input, Select, Tooltip, App as AntdApp } from 'antd';
+import { Input, Select, Tooltip, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
@@ -34,6 +34,15 @@ function getFriendlyValidationError(err: unknown): string {
   }
   return C.MESSAGES.VALIDATION_FAILED;
 }
+
+// The Validate button sizes column 2; the fields share column 1 and so share a width.
+const AI_FIELD_GRID: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: '1fr auto',
+  columnGap: C.LAYOUT.FIELD_COLUMN_GAP,
+  rowGap: C.LAYOUT.FIELD_ROW_GAP,
+  alignItems: 'center',
+};
 
 const AIInsightsSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
@@ -154,6 +163,25 @@ const AIInsightsSection: React.FC = memo(() => {
     }
   }, [aiEnabled, apiKey, dispatch, provider, message]);
 
+  const validateToolbarConfig: ToolbarConfig = useMemo(
+    () => ({
+      buttons: [
+        {
+          key: 'validate',
+          label: C.LABELS.VALIDATE_BUTTON,
+          variant: 'default',
+          loading: validating,
+          disabled: validateDisabled || !canControlAiInsights,
+          tooltip: canControlAiInsights
+            ? undefined
+            : C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED,
+          onClick: validateKey,
+        },
+      ],
+    }),
+    [validating, validateDisabled, canControlAiInsights, validateKey],
+  );
+
   const saveToolbarConfig: ToolbarConfig = useMemo(
     () => ({
       buttons: [
@@ -207,51 +235,35 @@ const AIInsightsSection: React.FC = memo(() => {
 
         {aiEnabled ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <Select
-              value={provider}
-              options={C.PROVIDERS.OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
-              onChange={onProviderChange}
-              disabled={!canControlAiInsights}
-              style={{ width: 240 }}
-            />
-            {provider !== 'ollama' ? (
-              <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                <Input
-                  placeholder={C.LABELS.API_KEY_PLACEHOLDER}
-                  value={apiKey}
-                  disabled={!canControlAiInsights}
-                  onChange={(e) => {
-                    setApiKey(e.target.value);
-                    setValidMessage(null);
-                    setErrorMessage(null);
-                  }}
-                  style={{ flex: 1 }}
-                />
-                <Tooltip
-                  title={
-                    !canControlAiInsights
-                      ? C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED
-                      : undefined
-                  }
-                >
-                  <span
-                    style={
-                      !canControlAiInsights
-                        ? { display: 'inline-block', cursor: 'not-allowed' }
-                        : {}
-                    }
-                  >
-                    <Button
-                      loading={validating}
-                      disabled={validateDisabled || !canControlAiInsights}
-                      onClick={validateKey}
-                    >
-                      {C.LABELS.VALIDATE_BUTTON}
-                    </Button>
-                  </span>
-                </Tooltip>
-              </div>
-            ) : null}
+            {/* One grid for both fields: the shared columns are what make the
+                provider select and the key input resolve to the same width. */}
+            <div style={AI_FIELD_GRID}>
+              <Select
+                value={provider}
+                options={C.PROVIDERS.OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
+                onChange={onProviderChange}
+                disabled={!canControlAiInsights}
+                style={{ gridRow: 1, gridColumn: 1, width: '100%' }}
+              />
+              {provider !== 'ollama' ? (
+                <>
+                  <Input
+                    placeholder={C.LABELS.API_KEY_PLACEHOLDER}
+                    value={apiKey}
+                    disabled={!canControlAiInsights}
+                    onChange={(e) => {
+                      setApiKey(e.target.value);
+                      setValidMessage(null);
+                      setErrorMessage(null);
+                    }}
+                    style={{ gridRow: 2, gridColumn: 1, width: '100%' }}
+                  />
+                  <div style={{ gridRow: 2, gridColumn: 2 }}>
+                    <Toolbar config={validateToolbarConfig} />
+                  </div>
+                </>
+              ) : null}
+            </div>
 
             {validMessage ? (
               <div style={{ color: C.COLORS.SUCCESS_TEXT, fontWeight: 700 }}>{validMessage}</div>

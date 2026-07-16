@@ -1,3 +1,6 @@
+import { CONTROL_HEIGHT } from './controls';
+import { DEFAULT_COLORS } from '../shared/colors';
+
 export const ACTION_CONFIRM_MODAL = {
   MODAL: {
     WIDTH: 360,
@@ -30,7 +33,7 @@ export const ACTION_CONFIRM_MODAL = {
   MESSAGE: {
     FONT_SIZE: 14,
     LINE_HEIGHT: 1.6,
-    COLOR: '#64748b',
+    COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     MARGIN_TOP: -7,
     RESOURCE_NAME_COLOR: '#0B1F33',
     RESOURCE_NAME_FONT_WEIGHT: 700,
@@ -42,7 +45,7 @@ export const ACTION_CONFIRM_MODAL = {
     CONFIRM: {
       BORDER_RADIUS: 6,
       FONT_WEIGHT: 500,
-      HEIGHT: 36,
+      HEIGHT: CONTROL_HEIGHT,
       PADDING: '0 16px',
     },
   },

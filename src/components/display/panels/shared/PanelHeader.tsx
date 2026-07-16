@@ -1,4 +1,5 @@
 import React from 'react';
+import { DEFAULT_COLORS } from '../../../../constants';
 import { CloseOutlined } from '@ant-design/icons';
 import { SLIDE_OUT } from '../../../../constants';
 
@@ -20,7 +21,7 @@ const PanelHeader: React.FC<PanelHeaderProps> = ({ title = 'Panel', subtitle, ex
               style={{
                 margin: '4px 0 0 0',
                 fontSize: 14,
-                color: '#64748b',
+                color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
                 fontWeight: 400,
               }}
             >

@@ -68,4 +68,8 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     ERROR_TEXT: '#b91c1c',
     SUCCESS_TEXT: '#15803d',
   },
+  LAYOUT: {
+    FIELD_COLUMN_GAP: 10,
+    FIELD_ROW_GAP: 12,
+  },
 } as const;

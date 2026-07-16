@@ -20,7 +20,7 @@ const SIZE_CONFIG = {
 const UserDisplay: React.FC<UserDisplayProps> = memo(
   ({ user, size = 'small', showBorder = true, className }) => {
     if (!user) {
-      return <span style={{ color: '#64748b' }}>—</span>;
+      return <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>—</span>;
     }
 
     const displayName = user.fullname || user.username;

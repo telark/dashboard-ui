@@ -29,6 +29,15 @@ body {
   color-scheme: dark;
 }
 
+/* Chrome paints autofilled text via a UA !important rule, which outranks every
+   author rule, and picks its colour from color-scheme — so under the dark root
+   above it goes white. Light surfaces must declare their own scheme or their
+   autofilled fields render white-on-white. */
+.auth-root[data-theme='light'],
+.app-panel-surface {
+  color-scheme: light;
+}
+
 /* Under color-scheme: dark the UA paints autofilled fields with its own blue
    background. Nothing but an inset shadow overrides it, so the field keeps the
    surface its component defines. */
@@ -126,39 +135,6 @@ h1, h2, h3 {
   transform: translateY(-50%) !important;
   right: 12px !important;
   line-height: 1 !important;
-}
-
-/* Ensure all inputs in panel have consistent height and left-aligned text */
-.ant-input {
-  min-height: 36px !important;
-  height: 36px !important;
-  display: flex !important;
-  align-items: center !important;
-  padding: 0 12px !important;
-  text-align: left !important;
-  line-height: 1.5 !important;
-  box-sizing: border-box !important;
-}
-
-.ant-input::placeholder {
-  text-align: left !important;
-  line-height: 1.5 !important;
-}
-
-/* Fix input alignment issues */
-.ant-input-affix-wrapper {
-  min-height: 36px !important;
-  height: 36px !important;
-  display: flex !important;
-  align-items: center !important;
-  padding: 0 12px !important;
-  box-sizing: border-box !important;
-}
-
-.ant-input-affix-wrapper .ant-input {
-  padding: 0 !important;
-  height: auto !important;
-  min-height: auto !important;
 }
 
 .role-list-scroll {

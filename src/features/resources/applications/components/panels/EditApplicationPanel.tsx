@@ -40,7 +40,7 @@ const EditApplicationPanel: React.FC<EditApplicationPanelProps> = ({
             label={APPLICATIONS_UI.EDIT_PAGE.NAME_LABEL}
             style={{ marginBottom: 12 }}
           >
-            <Input disabled size="small" style={{ height: 36, borderRadius: 8, fontSize: 14 }} />
+            <Input disabled />
           </Form.Item>
           <LabeledInput
             name="displayName"

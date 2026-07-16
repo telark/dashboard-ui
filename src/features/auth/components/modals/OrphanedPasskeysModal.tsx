@@ -74,8 +74,6 @@ const OrphanedPasskeysModal: React.FC<OrphanedPasskeysModalProps> = ({
             onClick={onRetry}
             disabled={isRemoving}
             style={{
-              height: 36,
-              fontSize: 13,
               backgroundColor: DEFAULT_COLORS.SUCCESS,
               borderColor: DEFAULT_COLORS.SUCCESS,
             }}
@@ -89,7 +87,6 @@ const OrphanedPasskeysModal: React.FC<OrphanedPasskeysModalProps> = ({
             onClick={onRemove}
             loading={isRemoving}
             disabled={isRemoving}
-            style={{ height: 36, fontSize: 13 }}
           >
             {isRemoving
               ? AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.BUTTONS.REMOVING
