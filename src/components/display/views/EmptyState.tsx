@@ -7,7 +7,7 @@ const { useToken } = theme;
 const { Title, Text } = Typography;
 
 export interface EmptyStateProps {
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   title: string;
   description: string;
   primaryAction?: {
@@ -53,7 +53,8 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
           paddingRight: token.marginLG,
           textAlign: 'center',
           width: '100%',
-          background: DEFAULT_COLORS.BACKGROUND_WHITE,
+          // No background of its own: DEFAULT_COLORS.BACKGROUND_WHITE is actually
+          // dark navy, and this must read the light or dark surface it sits in.
         }}
       >
         <div
@@ -65,24 +66,26 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
             alignItems: 'center',
           }}
         >
-          <div
-            style={{
-              color: token.colorTextSecondary,
-              marginBottom: token.marginLG,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {icon}
-          </div>
+          {icon && (
+            <div
+              style={{
+                color: token.colorTextSecondary,
+                marginBottom: token.marginLG,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {icon}
+            </div>
+          )}
 
           <Title
-            level={4}
+            level={3}
             style={{
               color: token.colorTextHeading,
-              fontWeight: 600,
-              marginBottom: token.marginXS,
+              fontWeight: 700,
+              marginBottom: token.marginSM,
               marginTop: 0,
             }}
           >
@@ -92,11 +95,11 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
           <Text
             style={{
               color: token.colorTextDescription,
-              maxWidth: 320,
+              maxWidth: 360,
               display: 'block',
               textAlign: 'center',
               lineHeight: 1.65,
-              fontSize: 14,
+              fontSize: 15,
               marginBottom: token.marginLG,
             }}
           >

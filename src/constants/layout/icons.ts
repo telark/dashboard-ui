@@ -13,14 +13,15 @@ import {
   AiOutlineContainer,
   AiOutlineFileProtect,
 } from 'react-icons/ai';
-import { BsFillCpuFill, BsMemory, BsKey } from 'react-icons/bs';
+import { BsFillCpuFill, BsMemory, BsKey, BsIntersect } from 'react-icons/bs';
+
 
 export const Icons = {
   Home: AiOutlineHome,
   Role: AiOutlineSafety,
   Grouper: AiOutlineCluster,
   Workload: AiOutlineAppstore,
-  Application: AiOutlineAppstore,
+  Application: BsIntersect,
   Bridge: AiOutlineApi,
   User: AiOutlineUser,
   Group: AiOutlineTeam,

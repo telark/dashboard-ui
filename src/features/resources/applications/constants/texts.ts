@@ -140,6 +140,8 @@ export const APPLICATIONS_UI = {
       SHOWING_FIRST: 'Showing first',
       EMPTY_TITLE: 'No snapshots yet',
       EMPTY_DESCRIPTION: 'No snapshots have been taken yet for this application.',
+      ROLLBACKS_EMPTY_TITLE: 'No rollbacks yet',
+      ROLLBACKS_EMPTY_DESCRIPTION: 'No rollbacks have been triggered yet for this application.',
       GENERATION: 'Generation',
       SEVERITY: 'Severity',
       SIZE: 'Size',

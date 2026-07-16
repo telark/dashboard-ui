@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { CameraOutlined, DatabaseOutlined, DiffOutlined } from '@ant-design/icons';
+import { DatabaseOutlined, DiffOutlined } from '@ant-design/icons';
 import { App as AntdApp } from 'antd';
 import type { AppDispatch, RootState } from '../../../../../store';
 import {
@@ -16,7 +16,7 @@ import type { Application, ApplicationSnapshotSummary } from '../../models';
 import { applicationSnapshotStableKey } from '../../utils/mergeApplicationSnapshotSources';
 import { mergeApplicationSnapshotSources } from '../../utils/mergeApplicationSnapshotSources';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
-import ApplicationSectionEmptyState from '../display/ApplicationSectionEmptyState';
+import EmptyState from '../../../../../components/display/views/EmptyState';
 import ApplicationSnapshotRow from '../snapshots/ApplicationSnapshotRow';
 import type { RollbackDisabledReason } from '../snapshots/ApplicationSnapshotRow';
 import SnapshotManifestView from '../snapshots/SnapshotManifestView';
@@ -302,11 +302,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
             snapshotsError ? (
               <div style={{ fontSize: 13, color: DEFAULT_COLORS.DANGER }}>{snapshotsError}</div>
             ) : (
-              <ApplicationSectionEmptyState
-                icon={<CameraOutlined style={{ fontSize: 24 }} />}
-                title={snapUi.EMPTY_TITLE}
-                description={snapUi.EMPTY_DESCRIPTION}
-              />
+              <EmptyState title={snapUi.EMPTY_TITLE} description={snapUi.EMPTY_DESCRIPTION} />
             )
           ) : (
             <div className={compareMode ? 'applications-bulk-select' : undefined}>

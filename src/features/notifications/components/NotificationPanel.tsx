@@ -6,7 +6,7 @@ import { ToggleButton } from '../../../components/display/buttons';
 import { useNotifications } from '../hooks';
 import { NOTIFICATIONS_PANEL_WIDTH, NOTIFICATIONS_TEXTS } from '../constants';
 import NotificationItem from './NotificationItem';
-import EmptyNotifications from './EmptyNotifications';
+import EmptyState from '../../../components/display/views/EmptyState';
 
 export interface NotificationPanelProps {
   open: boolean;
@@ -20,7 +20,9 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose }) 
   const hasNotifications = notifications.length > 0;
 
   const content = (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
+    <div
+      style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%', height: '100%' }}
+    >
       {hasNotifications && (
         <div
           style={{
@@ -53,6 +55,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose }) 
           overflowY: 'auto',
           display: 'flex',
           flexDirection: 'column',
+          flex: 1,
           gap: 4,
           padding: '4px 0',
           margin: '0 -24px',
@@ -63,7 +66,10 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose }) 
             <FancySpinner />
           </div>
         ) : !hasNotifications ? (
-          <EmptyNotifications />
+          <EmptyState
+            title={NOTIFICATIONS_TEXTS.EMPTY_TITLE}
+            description={NOTIFICATIONS_TEXTS.EMPTY_DESCRIPTION}
+          />
         ) : (
           notifications.map((n) => (
             <NotificationItem key={n.id} notification={n} onMarkRead={markRead} onClose={onClose} />

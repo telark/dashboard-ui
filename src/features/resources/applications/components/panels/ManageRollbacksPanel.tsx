@@ -7,6 +7,7 @@ import {
   ExpandPanelButton,
 } from '../../../../../components/display/panels/slide-out';
 import { DEFAULT_COLORS } from '../../../../../constants';
+import EmptyState from '../../../../../components/display/views/EmptyState';
 import type { Application, ApplicationRollbackEntry } from '../../models';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
@@ -125,11 +126,12 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
           <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((p) => !p)} />
         }
         formContent={
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
             {rollbacks.length === 0 ? (
-              <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                No rollbacks recorded for this application yet.
-              </div>
+              <EmptyState
+                title={ui.ROLLBACKS_EMPTY_TITLE}
+                description={ui.ROLLBACKS_EMPTY_DESCRIPTION}
+              />
             ) : (
               <div style={{ display: 'grid', rowGap: 10 }}>
                 {rollbacks
