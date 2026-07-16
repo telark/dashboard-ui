@@ -4,7 +4,7 @@ import { useNavigate, type NavigateFunction } from 'react-router-dom';
 import { getSessionToken, removeSessionToken, removeCurrentUser } from '../../utils';
 import { deleteSession } from '../../clients';
 import { AUTH_CONSTANTS } from '../../constants/messages';
-import { APP_ROUTES, DEFAULT_COLORS } from '../../../../constants';
+import { ACTION_CONFIRM_MODAL, APP_ROUTES, DEFAULT_COLORS } from '../../../../constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 
@@ -84,6 +84,11 @@ const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({ open, onClose
         style: {
           backgroundColor: DEFAULT_COLORS.SUCCESS,
           borderColor: DEFAULT_COLORS.SUCCESS,
+          // Matches the confirm button in ActionConfirmModal (e.g. rollback).
+          borderRadius: ACTION_CONFIRM_MODAL.BUTTONS.CONFIRM.BORDER_RADIUS,
+          fontWeight: ACTION_CONFIRM_MODAL.BUTTONS.CONFIRM.FONT_WEIGHT,
+          height: ACTION_CONFIRM_MODAL.BUTTONS.CONFIRM.HEIGHT,
+          padding: ACTION_CONFIRM_MODAL.BUTTONS.CONFIRM.PADDING,
         },
       }}
       closable={false}

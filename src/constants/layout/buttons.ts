@@ -44,6 +44,9 @@ export const BUTTON_CONFIGS = {
     BORDER_RADIUS: '6px',
     HEIGHT: 36,
     GAP: 10,
+    // Vertical space between consecutive items in the nav list; without it their
+    // hover/active backgrounds touch edge-to-edge and read as one solid block.
+    ITEM_GAP_PX: 4,
     FONT_WEIGHT: 500,
     FONT_SIZE: 13,
     TRANSITION: 'background-color 150ms ease, color 150ms ease, opacity 150ms ease',

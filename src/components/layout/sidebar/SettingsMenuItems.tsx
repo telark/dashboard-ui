@@ -2,7 +2,7 @@ import { memo, useCallback, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { HiChevronLeft } from 'react-icons/hi';
-import { AiOutlineSafety } from 'react-icons/ai';
+import { BsLockFill } from 'react-icons/bs';
 import {
   UserOutlined,
   BulbOutlined,
@@ -11,7 +11,7 @@ import {
   AuditOutlined,
 } from '@ant-design/icons';
 import SidebarButton from '../../display/buttons/SideBarButton';
-import { DEFAULT_COLORS, APP_ROUTES } from '../../../constants';
+import { BUTTON_CONFIGS, DEFAULT_COLORS, APP_ROUTES } from '../../../constants';
 
 interface SettingsMenuItemsProps {
   isCollapsed: boolean;
@@ -93,7 +93,14 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
   }, [navigate, backPath]);
 
   return (
-    <nav style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+    <nav
+      style={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: BUTTON_CONFIGS.SIDEBAR_BUTTON.ITEM_GAP_PX,
+      }}
+    >
       <BackButton isCollapsed={isCollapsed} onClick={handleBack} />
 
       {!isCollapsed && <div style={firstSectionLabelStyle}>Personal</div>}
@@ -113,7 +120,7 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
       />
       <SidebarButton
         text="My Permissions"
-        icon={<AiOutlineSafety />}
+        icon={<BsLockFill />}
         active={pathname === SETTINGS_ROUTES.myPermissions}
         route={SETTINGS_ROUTES.myPermissions}
         isCollapsed={isCollapsed}

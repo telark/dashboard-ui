@@ -4,8 +4,8 @@ import {
   SafetyOutlined,
   AuditOutlined,
   RobotOutlined,
-  KeyOutlined,
 } from '@ant-design/icons';
+import { BsLockFill } from 'react-icons/bs';
 import type { ComponentType, CSSProperties } from 'react';
 
 export type SettingsSectionKey =
@@ -63,7 +63,7 @@ export const SETTINGS_CONSTANTS = {
       key: 'myPermissions' as const,
       label: 'My Permissions',
       description: 'Your effective permissions resolved across all assigned roles.',
-      icon: KeyOutlined,
+      icon: BsLockFill,
     },
   },
   SIDEBAR: {

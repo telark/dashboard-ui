@@ -180,6 +180,13 @@ const App: React.FC = () => {
               colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
               colorTextHeading: DEFAULT_COLORS.TEXT_ON_SURFACE,
             },
+            // Status icons (success/error/etc.) key off colorSuccess/colorError and
+            // are untouched by this — only the toast surface and its text join the
+            // light-surface family.
+            Message: {
+              contentBg: DEFAULT_COLORS.SURFACE_WHITE,
+              colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
+            },
             Button: {
               primaryShadow: 'none',
               dangerShadow: 'none',

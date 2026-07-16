@@ -196,6 +196,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
       description="Scope discovery and insights by namespace, and control the fetch interval."
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ fontWeight: 700 }}>{C.LABELS.NAMESPACES_TITLE}</div>
         <Select
           mode="multiple"
           value={excludedNamespaces}
