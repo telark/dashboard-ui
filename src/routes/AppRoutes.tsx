@@ -1,8 +1,9 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ProtectedRoute, AuthLayout } from '../features/auth/components';
-import { FancySpinner, AnimatedPageWrapper } from '../components/animation';
+import { AnimatedPageWrapper } from '../components/animation';
 import { FeatureErrorBoundary } from '../components/error-boundary';
+import FullPageLoader from '../components/display/views/FullPageLoader';
 import { APP_ROUTES } from '../constants';
 import { hasSessionToken } from '../features/auth/utils';
 import store from '../store';
@@ -42,20 +43,6 @@ const ProtectionPlanDetailsView = lazy(
   () => import('../features/plans/protection/pages/details/DetailsView'),
 );
 
-const PageLoader: React.FC = () => (
-  <div
-    style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: '40px',
-      minHeight: '200px',
-    }}
-  >
-    <FancySpinner showLabel={false} size={24} />
-  </div>
-);
-
 const AppRoutes: React.FC = () => {
   const isAuthenticated = hasSessionToken();
   const location = useLocation();
@@ -77,7 +64,7 @@ const AppRoutes: React.FC = () => {
   }, [location.pathname]);
 
   return (
-    <Suspense fallback={<PageLoader />}>
+    <Suspense fallback={<FullPageLoader minHeight="100vh" />}>
       <Routes location={location}>
         {/* One layout instance spans both auth routes, so the brand panel is not
             remounted when navigating between login and register. */}
