@@ -39,36 +39,42 @@ export function ColumnShell(props: {
   );
 }
 
-export function StatMiniCard(props: { label: string; value: React.ReactNode }): React.ReactElement {
-  const { label, value } = props;
+export function StatMiniCard(props: {
+  label: string;
+  value: React.ReactNode;
+  /** Left accent stripe for metrics that carry a state (e.g. incidents, recoveries). */
+  accent?: string;
+}): React.ReactElement {
+  const { label, value, accent } = props;
   return (
     <div
       style={{
         minWidth: APPLICATION_SECTION_LAYOUT.STAT_MIN_WIDTH_PX,
-        flex: '1 1 120px',
+        flex: '1 1 108px',
         border: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
+        borderLeft: accent ? `3px solid ${accent}` : APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
         borderRadius: APPLICATION_SECTION_LAYOUT.COLUMN_INNER_RADIUS,
-        padding: 10,
+        padding: '6px 10px',
         background: DEFAULT_COLORS.SURFACE_ELEVATED,
         boxSizing: 'border-box',
       }}
     >
       <div
         style={{
-          fontSize: 20,
+          fontSize: 16,
           fontWeight: 700,
           color: DEFAULT_COLORS.TEXT_PRIMARY,
-          lineHeight: 1.2,
+          lineHeight: 1.15,
         }}
       >
         {value}
       </div>
       <div
         style={{
-          fontSize: 11,
+          fontSize: 10,
           color: DEFAULT_COLORS.TEXT_MUTED,
           fontWeight: 600,
-          marginTop: 4,
+          marginTop: 2,
           textTransform: 'uppercase',
           letterSpacing: '0.03em',
         }}

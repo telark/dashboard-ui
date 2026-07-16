@@ -714,12 +714,27 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
           collapsible
           title={APPLICATIONS_UI.SECTIONS.METRICS.TITLE}
           description={APPLICATIONS_UI.SECTIONS.METRICS.DESCRIPTION}
+          headerAction={
+            sections.metrics?.derived?.lastChangeDetectedAt ? (
+              <span
+                style={{
+                  fontSize: 12,
+                  color: DEFAULT_COLORS.TEXT_MUTED,
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                }}
+              >
+                {APPLICATIONS_UI.SECTIONS.METRICS.LAST_CHANGE}{' '}
+                <TimeAgo date={sections.metrics.derived.lastChangeDetectedAt} />
+              </span>
+            ) : undefined
+          }
         >
           <div
             style={{
               display: 'flex',
               flexWrap: 'wrap',
-              gap: 10,
+              gap: 8,
               marginBottom: 12,
             }}
           >
@@ -736,55 +751,24 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
               value={sections.metrics?.derived?.uniqueFingerprints ?? 0}
             />
             <StatMiniCard
-              label={APPLICATIONS_UI.SECTIONS.METRICS.LAST_CHANGE}
-              value={
-                sections.metrics?.derived?.lastChangeDetectedAt ? (
-                  <TimeAgo date={sections.metrics.derived.lastChangeDetectedAt} />
-                ) : (
-                  APPLICATIONS_UI.FALLBACKS.EMPTY
-                )
-              }
-            />
-            <StatMiniCard
               label={APPLICATIONS_UI.SECTIONS.METRICS.CHANGE_VELOCITY}
               value={sections.metrics?.derived?.changeVelocityPerDay ?? 0}
             />
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 10,
-              marginBottom: 12,
-            }}
-          >
-            <RowTag
-              text={`${APPLICATIONS_UI.SECTIONS.METRICS.TOTAL_INCIDENTS}: ${sections.metrics?.derived?.totalIncidents ?? 0}`}
-              background={
+            {/* Incidents/recoveries join the same tile grid as the other headline
+                stats rather than sitting apart as chips; the accent stripe is the
+                only thing that marks them as carrying a state. */}
+            <StatMiniCard
+              label={APPLICATIONS_UI.SECTIONS.METRICS.TOTAL_INCIDENTS}
+              value={sections.metrics?.derived?.totalIncidents ?? 0}
+              accent={
                 (sections.metrics?.derived?.totalIncidents ?? 0) > 0
                   ? CONNECTIVITY_CONSTANTS.COLORS.WARNING
-                  : DEFAULT_COLORS.CHIP_CUSTOM_BG
+                  : undefined
               }
-              color={
-                (sections.metrics?.derived?.totalIncidents ?? 0) > 0
-                  ? DEFAULT_COLORS.TEXT_ON_SURFACE
-                  : DEFAULT_COLORS.CHIP_CUSTOM_TEXT
-              }
-              fontSize={11}
             />
-            <RowTag
-              text={`${APPLICATIONS_UI.SECTIONS.METRICS.TOTAL_RECOVERIES}: ${sections.metrics?.derived?.totalRecoveries ?? 0}`}
-              background={
-                (sections.metrics?.derived?.totalRecoveries ?? 0) > 0
-                  ? DEFAULT_COLORS.SUCCESS
-                  : DEFAULT_COLORS.CHIP_CUSTOM_BG
-              }
-              color={
-                (sections.metrics?.derived?.totalRecoveries ?? 0) > 0
-                  ? DEFAULT_COLORS.TEXT_ON_SURFACE
-                  : DEFAULT_COLORS.CHIP_CUSTOM_TEXT
-              }
-              fontSize={11}
+            <StatMiniCard
+              label={APPLICATIONS_UI.SECTIONS.METRICS.TOTAL_RECOVERIES}
+              value={sections.metrics?.derived?.totalRecoveries ?? 0}
             />
           </div>
           {filterMetricEntries(sections.metrics?.derived?.changesByClass).length > 0 ? (

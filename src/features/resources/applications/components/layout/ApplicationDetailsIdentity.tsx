@@ -10,6 +10,12 @@ import type { Application } from '../../models';
 const T = APPLICATION_DETAILS_TOOLBAR;
 const LABELS = APPLICATIONS_UI.SECTIONS.DETAILS_TOOLBAR;
 
+// A flex item's shrink amount is proportional to flex-basis × flex-shrink, so an
+// enormous shrink factor makes the meta text absorb virtually all the deficit
+// before the name gives up any width — no pixel threshold to calibrate, and it
+// reacts correctly to any width (a docked half-screen browser included).
+const META_SHRINK_PRIORITY = 100000;
+
 interface ApplicationDetailsIdentityProps {
   application: Application;
   /** True once the page header has scrolled away; the strip is redundant before that. */
@@ -18,7 +24,10 @@ interface ApplicationDetailsIdentityProps {
 
 /**
  * Keeps the application's name, health and sync age visible in the sticky
- * toolbar once the page header has scrolled out of view.
+ * toolbar once the page header has scrolled out of view. The meta text (health
+ * status, sync age) is the first thing to give up space when it gets tight —
+ * the dot already carries health — and disappears entirely before the name
+ * loses any of its own width.
  */
 const ApplicationDetailsIdentity: React.FC<ApplicationDetailsIdentityProps> = memo(
   ({ application, visible }) => {
@@ -58,6 +67,11 @@ const ApplicationDetailsIdentity: React.FC<ApplicationDetailsIdentityProps> = me
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
+                // A flex item's default min-width is its content's, which for
+                // nowrap text is the full unwrapped width — so without this the
+                // name never actually shrinks and the ellipsis never engages.
+                minWidth: 0,
+                flexShrink: 1,
               }}
             >
               {application.name}
@@ -67,7 +81,10 @@ const ApplicationDetailsIdentity: React.FC<ApplicationDetailsIdentityProps> = me
                 fontSize: T.META_FONT_SIZE_PX,
                 color: DEFAULT_COLORS.TEXT_MUTED,
                 whiteSpace: 'nowrap',
-                flexShrink: 0,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                minWidth: 0,
+                flexShrink: META_SHRINK_PRIORITY,
               }}
             >
               {LABELS.SEPARATOR} {healthStatus} {LABELS.SEPARATOR}{' '}

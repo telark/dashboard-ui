@@ -83,7 +83,12 @@ export const handleFetchApplicationsSilentRejected = (
 };
 
 export const handleFetchApplicationDetailsPending = (state: ApplicationsState) => {
-  state.loading = true;
+  // Only the first load (or a genuine navigation, which clears details first) shows
+  // the full-page skeleton. A same-app refetch (poll interval, post-rollback
+  // refresh) must not flip this, or the page unmounts and closes any open panel.
+  if (!state.details) {
+    state.loading = true;
+  }
   state.error = null;
 };
 
