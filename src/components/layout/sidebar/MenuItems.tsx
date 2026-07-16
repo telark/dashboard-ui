@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import type { CSSProperties } from 'react';
-import { DEFAULT_COLORS, MENU_LABELS } from '../../../constants';
+import { BUTTON_CONFIGS, DEFAULT_COLORS, MENU_LABELS } from '../../../constants';
 import {
   HomeMenuButton,
   ApplicationsMenuButton,
@@ -27,7 +27,14 @@ const sectionLabelStyle: CSSProperties = {
 
 const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
   return (
-    <nav style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+    <nav
+      style={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: BUTTON_CONFIGS.SIDEBAR_BUTTON.ITEM_GAP_PX,
+      }}
+    >
       <HomeMenuButton isCollapsed={isCollapsed} />
       {!isCollapsed && <div style={sectionLabelStyle}>{MENU_LABELS.RESOURCES}</div>}
       <ApplicationsMenuButton isCollapsed={isCollapsed} />

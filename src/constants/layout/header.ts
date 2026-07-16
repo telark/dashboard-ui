@@ -5,8 +5,8 @@ export const HEADER_LAYOUT = {
   LOGO: {
     SRC: '/telark-logo.svg',
     ALT: 'telark',
-    WIDTH: 80,
-    HEIGHT: 18,
+    WIDTH: 96,
+    HEIGHT: 22,
     // Matches the left padding of BUTTON_CONFIGS.SIDEBAR_BUTTON so the logo
     // lines up with the sidebar menu items.
     LEFT_PX: 20,

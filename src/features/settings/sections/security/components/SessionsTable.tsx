@@ -24,7 +24,14 @@ const formatOS = (os: string): string => {
   return stripped || os;
 };
 
-const SESSION_GRID_COLUMNS = '2fr 1fr 140px 140px 100px';
+// minmax(0, ...) rather than bare track sizes: a grid track's implicit
+// min-width is otherwise its content's, so long device/browser text refuses to
+// shrink and forces real overlap once the container gets narrow.
+const SESSION_GRID_COLUMNS =
+  'minmax(0, 2fr) minmax(0, 1fr) minmax(0, 140px) minmax(0, 140px) minmax(0, 100px)';
+// Below this the columns have no room left to give; the table scrolls
+// horizontally instead of continuing to squeeze into an unreadable mess.
+const SESSION_TABLE_MIN_WIDTH = 640;
 
 const tableHeaderStyle: React.CSSProperties = {
   display: 'grid',
@@ -57,6 +64,15 @@ const emptyRowStyle: React.CSSProperties = {
   textAlign: 'center',
 };
 
+// A grid item's implicit min-width is its content's, same as a flex item's —
+// without this the device/browser text refuses to shrink inside its track.
+const truncateCellStyle: React.CSSProperties = {
+  minWidth: 0,
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+};
+
 const revokeButtonStyle: React.CSSProperties = {
   fontSize: 14,
   fontWeight: 500,
@@ -79,80 +95,95 @@ export interface SessionsTableProps {
 
 const SessionsTable: React.FC<SessionsTableProps> = memo(
   ({ sessions, loading, error, currentToken, revokingToken, onRevokeClick }) => (
-    <div>
-      <div style={tableHeaderStyle}>
-        <span>{LABELS.ACTIVE_SESSIONS_HEADER_DEVICE}</span>
-        <span>{LABELS.ACTIVE_SESSIONS_HEADER_BROWSER}</span>
-        <span>{LABELS.ACTIVE_SESSIONS_HEADER_CREATED}</span>
-        <span>{LABELS.ACTIVE_SESSIONS_HEADER_EXPIRES}</span>
-        <span />
-      </div>
-      {loading && <div style={emptyRowStyle}>{LABELS.SESSIONS_LOADING}</div>}
-      {!loading && error && <div style={emptyRowStyle}>{LABELS.SESSIONS_ERROR}</div>}
-      {!loading && !error && sessions.length === 0 && (
-        <div style={emptyRowStyle}>{LABELS.ACTIVE_SESSIONS_EMPTY}</div>
-      )}
-      {!loading &&
-        !error &&
-        sessions.length > 0 &&
-        sessions.map((session) => {
-          const expired = isSessionExpired(session.expiresTimestamp);
-          const isCurrent = session.sessionToken === currentToken;
-          return (
-            <div key={session.sessionToken} style={rowStyle}>
-              <span>
-                <div style={{ fontWeight: isCurrent ? 600 : undefined }}>
-                  {session.deviceMetadata?.device
-                    ? formatDevice(session.deviceMetadata.device)
-                    : isCurrent
-                      ? LABELS.SESSIONS_THIS_DEVICE
-                      : LABELS.SESSIONS_OTHER_SESSION}
-                </div>
-                {session.deviceMetadata?.os && (
-                  <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, marginTop: 2 }}>
-                    {formatOS(session.deviceMetadata.os)}
+    <div style={{ overflowX: 'auto' }}>
+      <div style={{ minWidth: SESSION_TABLE_MIN_WIDTH }}>
+        <div style={tableHeaderStyle}>
+          <span>{LABELS.ACTIVE_SESSIONS_HEADER_DEVICE}</span>
+          <span>{LABELS.ACTIVE_SESSIONS_HEADER_BROWSER}</span>
+          <span>{LABELS.ACTIVE_SESSIONS_HEADER_CREATED}</span>
+          <span>{LABELS.ACTIVE_SESSIONS_HEADER_EXPIRES}</span>
+          <span />
+        </div>
+        {loading && <div style={emptyRowStyle}>{LABELS.SESSIONS_LOADING}</div>}
+        {!loading && error && <div style={emptyRowStyle}>{LABELS.SESSIONS_ERROR}</div>}
+        {!loading && !error && sessions.length === 0 && (
+          <div style={emptyRowStyle}>{LABELS.ACTIVE_SESSIONS_EMPTY}</div>
+        )}
+        {!loading &&
+          !error &&
+          sessions.length > 0 &&
+          sessions.map((session) => {
+            const expired = isSessionExpired(session.expiresTimestamp);
+            const isCurrent = session.sessionToken === currentToken;
+            return (
+              <div key={session.sessionToken} style={rowStyle}>
+                <span style={{ minWidth: 0 }}>
+                  <div style={{ fontWeight: isCurrent ? 600 : undefined, ...truncateCellStyle }}>
+                    {session.deviceMetadata?.device
+                      ? formatDevice(session.deviceMetadata.device)
+                      : isCurrent
+                        ? LABELS.SESSIONS_THIS_DEVICE
+                        : LABELS.SESSIONS_OTHER_SESSION}
                   </div>
-                )}
-              </span>
-              <span style={{ fontSize: 13 }}>
-                {session.deviceMetadata?.browser ? (
-                  <Tooltip
-                    title={session.deviceMetadata.userAgent || undefined}
-                    placement="topLeft"
-                  >
-                    <span style={{ cursor: session.deviceMetadata.userAgent ? 'help' : undefined }}>
-                      {formatBrowser(session.deviceMetadata.browser)}
+                  {session.deviceMetadata?.os && (
+                    <div
+                      style={{
+                        fontSize: 12,
+                        color: DEFAULT_COLORS.TEXT_MUTED,
+                        marginTop: 2,
+                        ...truncateCellStyle,
+                      }}
+                    >
+                      {formatOS(session.deviceMetadata.os)}
+                    </div>
+                  )}
+                </span>
+                <span style={{ fontSize: 13, minWidth: 0 }}>
+                  {session.deviceMetadata?.browser ? (
+                    <Tooltip
+                      title={session.deviceMetadata.userAgent || undefined}
+                      placement="topLeft"
+                    >
+                      <span
+                        style={{
+                          cursor: session.deviceMetadata.userAgent ? 'help' : undefined,
+                          display: 'block',
+                          ...truncateCellStyle,
+                        }}
+                      >
+                        {formatBrowser(session.deviceMetadata.browser)}
+                      </span>
+                    </Tooltip>
+                  ) : (
+                    '—'
+                  )}
+                </span>
+                <span>
+                  <TimeAgo date={session.createdTimestamp} />
+                </span>
+                <span style={expired ? { color: DEFAULT_COLORS.TEXT_MUTED } : undefined}>
+                  <TimeAgo date={session.expiresTimestamp} />
+                </span>
+                <span>
+                  {expired ? (
+                    <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
+                      {LABELS.SESSIONS_EXPIRED}
                     </span>
-                  </Tooltip>
-                ) : (
-                  '—'
-                )}
-              </span>
-              <span>
-                <TimeAgo date={session.createdTimestamp} />
-              </span>
-              <span style={expired ? { color: DEFAULT_COLORS.TEXT_MUTED } : undefined}>
-                <TimeAgo date={session.expiresTimestamp} />
-              </span>
-              <span>
-                {expired ? (
-                  <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
-                    {LABELS.SESSIONS_EXPIRED}
-                  </span>
-                ) : (
-                  <button
-                    type="button"
-                    style={revokeButtonStyle}
-                    onClick={() => onRevokeClick(session)}
-                    disabled={revokingToken === session.sessionToken}
-                  >
-                    {LABELS.SESSIONS_REVOKE}
-                  </button>
-                )}
-              </span>
-            </div>
-          );
-        })}
+                  ) : (
+                    <button
+                      type="button"
+                      style={revokeButtonStyle}
+                      onClick={() => onRevokeClick(session)}
+                      disabled={revokingToken === session.sessionToken}
+                    >
+                      {LABELS.SESSIONS_REVOKE}
+                    </button>
+                  )}
+                </span>
+              </div>
+            );
+          })}
+      </div>
     </div>
   ),
 );
