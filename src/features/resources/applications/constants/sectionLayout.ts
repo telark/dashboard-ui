@@ -22,7 +22,7 @@ export const APPLICATION_SECTION_LAYOUT = {
   ENV_TOOLTIP_MAX_WIDTH_PX: 320,
   ENV_TOOLTIP_FONT_SIZE_PX: 12,
   ENV_TOOLTIP_ROW_GAP_PX: 4,
-  STAT_MIN_WIDTH_PX: 120,
+  STAT_MIN_WIDTH_PX: 96,
   /** RowTag display for runtime list values (ports, env keys, snapshot field tags). */
   RUNTIME_VALUE_ROW_TAG: {
     background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
