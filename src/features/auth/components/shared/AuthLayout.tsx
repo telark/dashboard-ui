@@ -1,19 +1,12 @@
-import React, { Suspense, useState } from 'react';
+import React, { useState } from 'react';
 import { useLocation, useOutlet } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ConfigProvider, theme as antdTheme } from 'antd';
 import { LIGHT_TOKENS, DARK_TOKENS } from '../../constants/theme';
-import { FancySpinner } from '../../../../components/animation';
 import { BrandPanel } from '../login/BrandPanel';
 import { CompactBanner } from '../login/CompactBanner';
 import { AuthContainer } from './AuthContainer';
 import './auth.css';
-
-const CardLoader: React.FC = () => (
-  <div style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}>
-    <FancySpinner showLabel={false} size={24} />
-  </div>
-);
 
 const CARD_TRANSITION = {
   initial: { opacity: 0, y: 10, scale: 0.98 },
@@ -49,9 +42,12 @@ export const AuthLayout: React.FC = () => {
               {...CARD_TRANSITION}
               style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
             >
-              {/* Suspense sits inside the layout so a lazy child chunk never
-                  unmounts the brand panel and replays its animation. */}
-              <Suspense fallback={<CardLoader />}>{outlet}</Suspense>
+              {/* No Suspense boundary here: the route-level one in AppRoutes
+                  already covers this exact lazy(Login/Register) chunk. A second
+                  boundary around the same async wait doesn't protect against
+                  anything extra — it just flashes a second, different-looking
+                  spinner right after the first one on a cold load. */}
+              {outlet}
             </motion.div>
           </AnimatePresence>
         </AuthContainer>
