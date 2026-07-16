@@ -203,6 +203,43 @@ export const ACTION_PERMISSIONS = {
       deny: 'settings.controlainsights.deny',
     },
   },
+  protectionPlans: {
+    viewViolations: {
+      scope: 'protection-plans' as const,
+      level: 'ReadOnly' as PermissionLevel,
+      deny: 'protection-plans.viewprotectionplanviolations.deny',
+    },
+    create: {
+      scope: 'protection-plans' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'protection-plans.createprotectionplan.deny',
+    },
+    edit: {
+      scope: 'protection-plans' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'protection-plans.editprotectionplan.deny',
+    },
+    cancel: {
+      scope: 'protection-plans' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'protection-plans.cancelprotectionplan.deny',
+    },
+    duplicate: {
+      scope: 'protection-plans' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'protection-plans.duplicateprotectionplan.deny',
+    },
+    reactivate: {
+      scope: 'protection-plans' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'protection-plans.reactivateprotectionplan.deny',
+    },
+    delete: {
+      scope: 'protection-plans' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'protection-plans.deleteprotectionplan.deny',
+    },
+  },
 } as const;
 
 function resolveEntry(

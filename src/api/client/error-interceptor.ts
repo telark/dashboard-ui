@@ -50,11 +50,15 @@ export const createErrorInterceptor = (
     if (isSilentNetwork) {
       return Promise.reject(error);
     }
-    const isSessionExpired = meta.status === HTTP_STATUS.GONE;
+    // A rejected session is the caller's to react to, not something to log as
+    // an API fault: it is the normal end of every session.
+    const isSessionExpired = meta.status === HTTP_STATUS.GONE || meta.isUnauthenticated;
     if (isSessionExpired) {
       return Promise.reject(error);
     }
-    if (meta.isNotFound) {
+    if (meta.isForbidden) {
+      logger.warn(ERROR_MESSAGES.API.FORBIDDEN_WARNING, meta);
+    } else if (meta.isNotFound) {
       logger.warn(ERROR_MESSAGES.API.NOT_FOUND_WARNING, meta);
     } else if (meta.isNetwork) {
       logger.error(ERROR_MESSAGES.API.NETWORK_ERROR, meta);
