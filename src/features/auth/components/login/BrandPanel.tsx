@@ -1,5 +1,6 @@
 import React from 'react';
 import { LOGIN_CONSTANTS } from '../../constants/login';
+import { DEFAULT_COLORS } from '../../../../constants';
 import { TerminalDemo } from './TerminalDemo';
 
 export const BrandPanel: React.FC = () => (
@@ -25,7 +26,14 @@ export const BrandPanel: React.FC = () => (
       {LOGIN_CONSTANTS.UI.BRAND_HEADLINE}
     </h2>
 
-    <p style={{ fontSize: '14px', color: '#94a3b8', margin: '0 0 36px', lineHeight: 1.65 }}>
+    <p
+      style={{
+        fontSize: '14px',
+        color: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
+        margin: '0 0 36px',
+        lineHeight: 1.65,
+      }}
+    >
       {LOGIN_CONSTANTS.UI.BRAND_TAGLINE}
     </p>
 

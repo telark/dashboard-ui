@@ -198,7 +198,6 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <Select
           mode="multiple"
-          size="small"
           value={excludedNamespaces}
           onChange={(vals) => setExcludedNamespaces(vals)}
           options={namespacesOptions.map((n) => ({ value: n, label: n }))}
@@ -237,7 +236,6 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
         >
           <div style={{ fontWeight: 700 }}>{C.LABELS.FETCH_INTERVAL_MINUTES_LABEL}</div>
           <Select
-            size="small"
             value={fetchIntervalSelection}
             disabled={!canEditDiscoveryConfig}
             onChange={(val) => {
@@ -268,7 +266,6 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
           />
           {fetchIntervalSelection === 'custom' ? (
             <InputNumber
-              size="small"
               min={1}
               precision={0}
               value={customFetchIntervalMinutes}

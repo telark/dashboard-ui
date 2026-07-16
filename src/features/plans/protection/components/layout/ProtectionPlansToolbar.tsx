@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, Icons } from '../../../../../constants';
+import { CONTROL_HEIGHT, DEFAULT_COLORS, Icons } from '../../../../../constants';
 import Toolbar from '../../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import {
@@ -96,7 +96,7 @@ const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: 6,
-                height: 26,
+                height: CONTROL_HEIGHT,
                 padding: '0 10px',
                 borderRadius: 999,
                 background,

@@ -177,13 +177,9 @@ const Login: React.FC = () => {
               {!showPasskeyForm ? (
                 <Button
                   block
-                  size="large"
                   onClick={() => setShowPasskeyForm(true)}
                   disabled={isAnyLoading}
                   style={{
-                    height: '44px',
-                    borderRadius: '10px',
-                    fontSize: '14px',
                     fontWeight: 600,
                     background: 'var(--color-primary, #111827)',
                     borderColor: 'var(--color-primary, #111827)',
@@ -224,14 +220,10 @@ const Login: React.FC = () => {
               {googleClientID && (
                 <Button
                   block
-                  size="large"
                   onClick={handleGoogleLogin}
                   loading={googleLoading}
                   disabled={loading}
                   style={{
-                    height: '44px',
-                    borderRadius: '10px',
-                    fontSize: '14px',
                     fontWeight: 500,
                     background: '#ffffff',
                     borderColor: '#dadce0',

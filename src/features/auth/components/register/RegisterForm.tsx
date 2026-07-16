@@ -12,9 +12,6 @@ interface RegisterFormProps {
 }
 
 const inputStyle: React.CSSProperties = {
-  height: '44px',
-  borderRadius: '10px',
-  fontSize: '15px',
   borderColor: 'var(--auth-card-border, #e2e8f0)',
   background: 'var(--auth-input-bg, #ffffff)',
   color: 'var(--auth-text-primary, #0B1F33)',
@@ -24,6 +21,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ form, loading, onFin
   <AuthForm form={form} onFinish={onFinish}>
     <Form.Item
       name="email"
+      label={REGISTER_CONSTANTS.UI.EMAIL_LABEL}
       rules={[
         { required: true, message: AUTH_ERROR_MESSAGES.MISSING_EMAIL },
         { type: 'email', message: 'Please enter a valid email address' },
@@ -39,6 +37,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ form, loading, onFin
 
     <Form.Item
       name="deviceName"
+      label={REGISTER_CONSTANTS.UI.DEVICE_NAME_LABEL}
       rules={[{ required: true, message: AUTH_ERROR_MESSAGES.MISSING_DEVICE_NAME }]}
       style={{ marginBottom: '16px' }}
     >
@@ -52,11 +51,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ form, loading, onFin
         loading={loading}
         block
         icon={<UserAddOutlined />}
-        size="large"
         style={{
-          height: '44px',
-          borderRadius: '10px',
-          fontSize: '14px',
           fontWeight: 600,
           background: 'var(--color-primary, #1e293b)',
           borderColor: 'var(--color-primary, #1e293b)',

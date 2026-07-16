@@ -1,4 +1,5 @@
 import React from 'react';
+import { DEFAULT_COLORS } from '../../../constants';
 import { Checkbox, Tooltip } from 'antd';
 import type { SelectableListItemProps } from '../../../interfaces/layout/list';
 
@@ -66,7 +67,7 @@ const SelectableListItem: React.FC<SelectableListItemProps> = ({
 
   const defaultDescriptionStyles = {
     fontSize: 12,
-    color: '#64748b',
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     marginTop: 2,
     lineHeight: 1.3,
     overflow: 'hidden' as const,

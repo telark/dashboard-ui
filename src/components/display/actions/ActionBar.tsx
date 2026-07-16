@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { DEFAULT_COLORS } from '../../../constants';
 import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 
@@ -52,7 +53,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
 
     return {
       cursor: 'pointer',
-      color: isHovered ? '#20C997' : '#64748b',
+      color: isHovered ? '#20C997' : DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
       background: isHovered ? '#f0fdfa' : 'transparent',
       border: 'none',
       boxShadow: isHovered ? '0 2px 8px rgba(32, 201, 151, 0.15)' : 'none',

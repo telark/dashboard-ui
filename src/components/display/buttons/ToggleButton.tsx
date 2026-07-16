@@ -38,7 +38,7 @@ function paletteForVariant(variant: ToggleButtonVariant) {
     activeBg: `${DEFAULT_COLORS.SUCCESS}18`,
     activeColor: DEFAULT_COLORS.SUCCESS,
     activeBorder: `${DEFAULT_COLORS.SUCCESS}40`,
-    inactiveColor: '#64748b',
+    inactiveColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     hoverAccent: DEFAULT_COLORS.SUCCESS,
   };
 }

@@ -1,4 +1,5 @@
 import { Activity, memo } from 'react';
+import { DEFAULT_COLORS } from '../../../constants';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
@@ -72,7 +73,9 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
               <>
                 {breadcrumbs.map((b, index) => (
                   <React.Fragment key={index}>
-                    {index > 0 && <span style={{ color: '#64748b' }}>/</span>}
+                    {index > 0 && (
+                      <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>/</span>
+                    )}
                     {b.onClick || b.to ? (
                       <button
                         type="button"
@@ -88,7 +91,7 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
                           border: 'none',
                           padding: 0,
                           cursor: 'pointer',
-                          color: '#64748b',
+                          color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
                           fontSize: 28,
                           fontWeight: 700,
                           fontFamily: 'inherit',
@@ -112,7 +115,7 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
               style={{
                 fontSize: 14,
                 fontWeight: 400,
-                color: '#64748b',
+                color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
                 margin: 0,
                 marginTop: 0,
                 padding: 0,

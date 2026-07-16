@@ -1,4 +1,5 @@
 import React from 'react';
+import { DEFAULT_COLORS } from '../../../constants';
 import { Typography } from 'antd';
 
 interface SectionProps {
@@ -21,7 +22,12 @@ const Section: React.FC<SectionProps> = ({ title, subtitle, content, className, 
         <Typography.Paragraph
           className="app-section-subtitle"
           type="secondary"
-          style={{ margin: 0, marginBottom: 1, fontSize: 13, color: '#64748b' }}
+          style={{
+            margin: 0,
+            marginBottom: 1,
+            fontSize: 13,
+            color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+          }}
         >
           {subtitle}
         </Typography.Paragraph>

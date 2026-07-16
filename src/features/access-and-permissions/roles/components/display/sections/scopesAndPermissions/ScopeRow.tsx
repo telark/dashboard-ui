@@ -4,6 +4,7 @@ import { AiOutlineDown, AiOutlineRight } from 'react-icons/ai';
 import type { ScopeFormValue, PermissionLevel } from '../../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import { getScopeRules, formatRuleKey } from '../../../../constants/scopeRules';
+import { DEFAULT_COLORS } from '../../../../../../../constants';
 import LevelSelector from './LevelSelector';
 import RulesList from './RulesList';
 import type { ScopeRowProps } from '../../../../models';
@@ -140,7 +141,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                         cursor: 'pointer',
                         fontFamily: 'inherit',
                         fontSize: 12,
-                        color: '#64748b',
+                        color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
                         fontWeight: 400,
                         alignSelf: 'flex-start',
                         transition: 'color 0.15s ease',
@@ -149,7 +150,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                         e.currentTarget.style.color = '#0B1F33';
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.color = '#64748b';
+                        e.currentTarget.style.color = DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED;
                       }}
                     >
                       {isExpanded ? (

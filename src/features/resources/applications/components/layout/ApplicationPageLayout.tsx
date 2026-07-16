@@ -12,7 +12,7 @@ const BREADCRUMB_LINK_STYLE: React.CSSProperties = {
   border: 'none',
   padding: 0,
   cursor: 'pointer',
-  color: '#64748b',
+  color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   fontSize: 28,
   fontWeight: 700,
   fontFamily: 'inherit',
@@ -31,7 +31,7 @@ const ApplicationPageLayout: React.FC<ApplicationPageLayoutProps> = memo(
       <>
         {breadcrumbItems.map((b, index) => (
           <React.Fragment key={`${b.label}-${index}`}>
-            {index > 0 && <span style={{ color: '#64748b' }}> / </span>}
+            {index > 0 && <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}> / </span>}
             {b.onClick ? (
               <button type="button" onClick={b.onClick} style={BREADCRUMB_LINK_STYLE}>
                 {b.label}
@@ -75,7 +75,7 @@ const ApplicationPageLayout: React.FC<ApplicationPageLayoutProps> = memo(
               style={{
                 fontSize: 14,
                 fontWeight: 400,
-                color: '#64748b',
+                color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
                 margin: 0,
                 marginTop: 0,
                 padding: 0,

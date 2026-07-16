@@ -1,6 +1,6 @@
 import React from 'react';
 import { Space } from 'antd';
-import { DEFAULT_COLORS } from '../../../constants';
+import { CONTROL_HEIGHT, DEFAULT_COLORS } from '../../../constants';
 import type { FilterSectionConfig } from '../../../interfaces/layout/filters';
 
 interface FilterSectionProps {
@@ -18,7 +18,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({ config }) => {
         style={{
           fontSize: 13,
           fontWeight: 600,
-          color: '#64748b',
+          color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
           textTransform: 'uppercase',
           letterSpacing: 0.5,
         }}
@@ -36,13 +36,13 @@ const FilterSection: React.FC<FilterSectionProps> = ({ config }) => {
                 all: 'unset',
                 cursor: 'pointer',
                 borderRadius: 20,
-                height: 28,
+                height: CONTROL_HEIGHT,
                 padding: '0 16px',
                 fontSize: 13,
                 fontWeight: isActive ? 600 : 500,
                 border: `1px solid ${isActive ? DEFAULT_COLORS.SUCCESS : '#d9d9d9'}`,
                 backgroundColor: isActive ? DEFAULT_COLORS.SUCCESS : '#fff',
-                color: isActive ? '#fff' : '#64748b',
+                color: isActive ? '#fff' : DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
                 transition: 'all 0.2s',
               }}
             >

@@ -1,4 +1,4 @@
-import { DEFAULT_COLORS } from '../../../../constants';
+import { CONTROL_HEIGHT, DEFAULT_COLORS } from '../../../../constants';
 
 export const ATTACHED_ROLES_CONSTANTS = {
   FILTER: {
@@ -20,7 +20,7 @@ export const ATTACHED_ROLES_CONSTANTS = {
         all: 'unset' as const,
         cursor: 'pointer' as const,
         borderRadius: 20,
-        height: 28,
+        height: CONTROL_HEIGHT,
         padding: '0 16px',
         fontSize: 13,
         transition: 'all 0.2s',

@@ -124,17 +124,13 @@ class ErrorBoundary extends Component<Props, State> {
             >
               <Button
                 type="primary"
-                size="large"
                 icon={<ReloadOutlined />}
                 onClick={this.handleReload}
                 style={{
                   background: DEFAULT_COLORS.SUCCESS,
                   border: 'none',
-                  borderRadius: 8,
-                  height: 44,
                   padding: '0 24px',
                   fontWeight: 600,
-                  boxShadow: '0 4px 12px rgba(102,126,234,0.3)',
                 }}
               >
                 Reload Page

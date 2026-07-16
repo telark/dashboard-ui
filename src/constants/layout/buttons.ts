@@ -1,4 +1,5 @@
 import { COMMON_VALUES } from '../shared/common';
+import { CONTROL_HEIGHT } from './controls';
 
 export const BUTTON_TEXTS = {
   LOADING: 'In Progress...',
@@ -11,7 +12,7 @@ export const TOOLBAR_ITEM_GAP = 6;
 // Every toolbar control sizes from here: the health pills set the row height,
 // and buttons that pick their own padding drift out of line with them.
 export const TOOLBAR_CONTROL = {
-  HEIGHT: 28,
+  HEIGHT: CONTROL_HEIGHT,
   PADDING: '0 10px',
   // Without this the label box keeps its half-leading, so centring the box
   // leaves the glyphs off-centre against icons, which set their own.

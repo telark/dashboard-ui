@@ -1,5 +1,6 @@
 import React from 'react';
 import { generateDeviceNameSuggestions } from '../../../utils';
+import { DEFAULT_COLORS } from '../../../../../constants';
 import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
 import type { Passkey } from '../../../models/passkeys';
 
@@ -31,7 +32,7 @@ const DeviceNameSuggestions: React.FC<DeviceNameSuggestionsProps> = ({
       <div
         style={{
           fontSize: 11,
-          color: '#64748b',
+          color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
           marginBottom: 8,
           fontWeight: 500,
           textTransform: 'uppercase',

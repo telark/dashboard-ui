@@ -39,18 +39,7 @@ const LabeledInput: React.FC<LabeledInputProps> = ({
       normalize={normalize}
       validateTrigger={validateTrigger}
     >
-      <Input
-        size="small"
-        placeholder={placeholder}
-        allowClear={allowClear}
-        disabled={disabled}
-        style={{
-          height: 36,
-          borderRadius: 8,
-          border: '1px solid #d9d9d9',
-          fontSize: 14,
-        }}
-      />
+      <Input placeholder={placeholder} allowClear={allowClear} disabled={disabled} />
     </Form.Item>
   );
 };
