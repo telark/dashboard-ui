@@ -9,6 +9,7 @@ import {
 } from '@ant-design/icons';
 import Toolbar from '../../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
+import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import type { ProtectionPlan } from '../../models';
 import {
@@ -49,11 +50,38 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
   onDelete,
   onRefreshHealth,
 }) => {
+  const canEdit = usePermission(
+    ACTION_PERMISSIONS.protectionPlans.edit.scope,
+    ACTION_PERMISSIONS.protectionPlans.edit.level,
+    ACTION_PERMISSIONS.protectionPlans.edit.deny,
+  );
+  const canDuplicate = usePermission(
+    ACTION_PERMISSIONS.protectionPlans.duplicate.scope,
+    ACTION_PERMISSIONS.protectionPlans.duplicate.level,
+    ACTION_PERMISSIONS.protectionPlans.duplicate.deny,
+  );
+  const canCancel = usePermission(
+    ACTION_PERMISSIONS.protectionPlans.cancel.scope,
+    ACTION_PERMISSIONS.protectionPlans.cancel.level,
+    ACTION_PERMISSIONS.protectionPlans.cancel.deny,
+  );
+  const canReactivate = usePermission(
+    ACTION_PERMISSIONS.protectionPlans.reactivate.scope,
+    ACTION_PERMISSIONS.protectionPlans.reactivate.level,
+    ACTION_PERMISSIONS.protectionPlans.reactivate.deny,
+  );
+  const canDelete = usePermission(
+    ACTION_PERMISSIONS.protectionPlans.delete.scope,
+    ACTION_PERMISSIONS.protectionPlans.delete.level,
+    ACTION_PERMISSIONS.protectionPlans.delete.deny,
+  );
+
   const toolbarConfig: ToolbarConfig = useMemo(() => {
     const phase = plan.phase;
     const editDisabled = NON_EDITABLE_PHASES.includes(phase);
-    const buttons: ToolbarConfig['buttons'] = [
-      {
+    const buttons: ToolbarConfig['buttons'] = [];
+    if (canEdit) {
+      buttons.push({
         key: 'edit',
         label: PPC.LABELS.DETAIL_PAGE.ACTIONS.EDIT,
         icon: <EditOutlined />,
@@ -61,17 +89,19 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
         onClick: onEdit,
         disabled: editing || editDisabled,
         tooltip: editDisabled ? PPC.LABELS.DETAIL_PAGE.ACTIONS.EDIT_DISABLED_TOOLTIP : undefined,
-      },
-      {
+      });
+    }
+    if (canDuplicate) {
+      buttons.push({
         key: 'duplicate',
         label: PPC.LABELS.DETAIL_PAGE.ACTIONS.DUPLICATE,
         icon: <CopyOutlined />,
         variant: 'default',
         onClick: onDuplicate,
         disabled: duplicating,
-      },
-    ];
-    if (REACTIVATABLE_PHASES.includes(phase)) {
+      });
+    }
+    if (canReactivate && REACTIVATABLE_PHASES.includes(phase)) {
       const expired = isReactivateExpired(plan);
       buttons.push({
         key: 'reactivate',
@@ -95,7 +125,7 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
         disabled: refreshingHealth,
       });
     }
-    if (CANCELLABLE_PHASES.includes(phase)) {
+    if (canCancel && CANCELLABLE_PHASES.includes(phase)) {
       buttons.push({
         key: 'cancel',
         label: PPC.LABELS.DETAIL_PAGE.ACTIONS.CANCEL,
@@ -105,14 +135,16 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
         disabled: cancelling,
       });
     }
-    buttons.push({
-      key: 'delete',
-      label: PPC.LABELS.ACTIONS.DELETE,
-      icon: <DeleteOutlined />,
-      variant: 'danger',
-      onClick: onDelete,
-      disabled: deleting,
-    });
+    if (canDelete) {
+      buttons.push({
+        key: 'delete',
+        label: PPC.LABELS.ACTIONS.DELETE,
+        icon: <DeleteOutlined />,
+        variant: 'danger',
+        onClick: onDelete,
+        disabled: deleting,
+      });
+    }
     return { buttons };
   }, [
     plan,
@@ -128,6 +160,11 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
     onReactivate,
     onDelete,
     onRefreshHealth,
+    canEdit,
+    canDuplicate,
+    canCancel,
+    canReactivate,
+    canDelete,
   ]);
 
   return <Toolbar config={toolbarConfig} />;

@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
 import { CONTROL_HEIGHT, DEFAULT_COLORS, Icons } from '../../../../../constants';
 import Toolbar from '../../../../../components/display/toolbar/Toolbar';
+import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
@@ -42,38 +43,46 @@ const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
   onPhaseQuickFilterChange,
   phaseCounts,
 }) => {
-  const toolbarConfig: ToolbarConfig = useMemo(
-    () => ({
+  const canCreate = usePermission(
+    ACTION_PERMISSIONS.protectionPlans.create.scope,
+    ACTION_PERMISSIONS.protectionPlans.create.level,
+    ACTION_PERMISSIONS.protectionPlans.create.deny,
+  );
+
+  const toolbarConfig: ToolbarConfig = useMemo(() => {
+    const buttons: ToolbarConfig['buttons'] = [
+      {
+        key: 'search',
+        label: 'Search',
+        icon: <SearchOutlined />,
+        variant: 'ghost',
+      },
+      {
+        key: 'filter',
+        label: 'Filter',
+        icon: <FilterOutlined />,
+        variant: 'ghost',
+        onClick: onOpenFilters,
+      },
+    ];
+    if (canCreate) {
+      buttons.push({
+        key: 'create-plan',
+        label: PPC.LABELS.CREATE_BUTTON,
+        icon: <Icons.ProtectionPlans size={14} />,
+        variant: 'primary',
+        onClick: onCreatePlanClick,
+      });
+    }
+    return {
       search: {
         placeholder: 'Search plans by name, type, or scope...',
         value: searchValue,
         onChange: onSearchChange,
       },
-      buttons: [
-        {
-          key: 'search',
-          label: 'Search',
-          icon: <SearchOutlined />,
-          variant: 'ghost',
-        },
-        {
-          key: 'filter',
-          label: 'Filter',
-          icon: <FilterOutlined />,
-          variant: 'ghost',
-          onClick: onOpenFilters,
-        },
-        {
-          key: 'create-plan',
-          label: PPC.LABELS.CREATE_BUTTON,
-          icon: <Icons.ProtectionPlans size={14} />,
-          variant: 'primary',
-          onClick: onCreatePlanClick,
-        },
-      ],
-    }),
-    [onCreatePlanClick, onOpenFilters, onSearchChange, searchValue],
-  );
+      buttons,
+    };
+  }, [canCreate, onCreatePlanClick, onOpenFilters, onSearchChange, searchValue]);
 
   const pillsNode = useMemo(() => {
     return (
