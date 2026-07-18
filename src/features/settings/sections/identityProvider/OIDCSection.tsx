@@ -1,0 +1,214 @@
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { Input, Tooltip, App as AntdApp } from 'antd';
+import SettingsCard from '../../components/SettingsCard';
+import Toolbar from '../../../../components/display/toolbar/Toolbar';
+import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
+import { Client, authApiClient } from '../../../../api';
+import { Endpoints } from '../../../../constants';
+import { Switch } from '../../../../components/display/inputs';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
+import type { AppDispatch } from '../../../../store';
+import { extractErrorMessage } from '../../../../utils/helpers/format';
+import { IDENTITY_PROVIDER_CONSTANTS as C } from './constants';
+import { usePermission } from '../../../auth/hooks/permissions/permissionEngine';
+
+interface OIDCForm {
+  enabled: boolean;
+  googleClientID: string;
+  egressAllowed: boolean;
+  googleJwkJson: string;
+}
+
+const EMPTY_FORM: OIDCForm = {
+  enabled: false,
+  googleClientID: '',
+  egressAllowed: true,
+  googleJwkJson: '',
+};
+
+const trimmed = (form: OIDCForm): OIDCForm => ({
+  enabled: form.enabled,
+  googleClientID: form.googleClientID.trim(),
+  egressAllowed: form.egressAllowed,
+  googleJwkJson: form.googleJwkJson.trim(),
+});
+
+// Mirrors the server's own check so the admin sees the problem before saving. The
+// server still re-checks: this is convenience, not a trust boundary.
+function validate(form: OIDCForm): string | null {
+  if (!form.enabled) return null;
+  if (!form.googleClientID.trim()) return C.MESSAGES.CLIENT_ID_REQUIRED;
+  if (!form.egressAllowed && !form.googleJwkJson.trim()) return C.MESSAGES.TRUST_SOURCE_REQUIRED;
+  if (form.googleJwkJson.trim()) {
+    try {
+      JSON.parse(form.googleJwkJson);
+    } catch {
+      return C.MESSAGES.JWK_INVALID;
+    }
+  }
+  return null;
+}
+
+const OIDCSection: React.FC = memo(() => {
+  const dispatch = useDispatch<AppDispatch>();
+  const globalConfig = useSelector(selectGlobalConfigState);
+  const canEdit = usePermission('settings', 'Admin', 'editoidcconfig');
+  const { message } = AntdApp.useApp();
+
+  const [form, setForm] = useState<OIDCForm>(EMPTY_FORM);
+  const [initial, setInitial] = useState<OIDCForm | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!globalConfig?.data) return;
+    const oidc = globalConfig.data.oidc;
+    const loaded: OIDCForm = {
+      enabled: Boolean(oidc?.enabled),
+      googleClientID: String(oidc?.googleClientID ?? ''),
+      egressAllowed: oidc?.egressAllowed ?? EMPTY_FORM.egressAllowed,
+      googleJwkJson: String(oidc?.googleJwkJson ?? ''),
+    };
+    setForm(loaded);
+    setInitial(loaded);
+  }, [globalConfig?.data]);
+
+  useEffect(() => {
+    dispatch(fetchGlobalConfigThunk());
+  }, [dispatch]);
+
+  const validationError = useMemo(() => validate(form), [form]);
+
+  const hasChanges = useMemo(() => {
+    if (!initial) return false;
+    const a = trimmed(form);
+    const b = trimmed(initial);
+    return (
+      a.enabled !== b.enabled ||
+      a.googleClientID !== b.googleClientID ||
+      a.egressAllowed !== b.egressAllowed ||
+      a.googleJwkJson !== b.googleJwkJson
+    );
+  }, [form, initial]);
+
+  const update = useCallback(<K extends keyof OIDCForm>(key: K, value: OIDCForm[K]) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  }, []);
+
+  const handleSave = useCallback(async () => {
+    const payload = trimmed(form);
+    setSaving(true);
+    try {
+      const { path, method } = Endpoints.AUTH.OIDC.CONFIG;
+      await Client<unknown>(authApiClient, path, { method, data: payload });
+      message.success(C.MESSAGES.SAVE_SUCCESS);
+      setInitial(payload);
+      dispatch(fetchGlobalConfigThunk());
+    } catch (err: unknown) {
+      message.error(extractErrorMessage(err, C.MESSAGES.SAVE_FAILED));
+    } finally {
+      setSaving(false);
+    }
+  }, [form, dispatch, message]);
+
+  const saveToolbarConfig: ToolbarConfig = useMemo(
+    () => ({
+      buttons: [
+        {
+          key: 'save',
+          label: C.LABELS.SAVE_BUTTON,
+          variant: 'default',
+          loading: saving,
+          disabled: !hasChanges || Boolean(validationError) || !canEdit,
+          tooltip: canEdit ? undefined : C.LABELS.PERMISSION_DENIED,
+          onClick: handleSave,
+        },
+      ],
+    }),
+    [saving, hasChanges, validationError, canEdit, handleSave],
+  );
+
+  return (
+    <SettingsCard title={C.LABELS.CARD_TITLE} description={C.LABELS.CARD_DESCRIPTION}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.FIELD_GAP }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: C.LAYOUT.ROW_GAP,
+          }}
+        >
+          <div style={{ fontWeight: 700 }}>{C.LABELS.ENABLE_LABEL}</div>
+          <Tooltip title={canEdit ? undefined : C.LABELS.PERMISSION_DENIED}>
+            <span style={canEdit ? {} : { display: 'inline-block', cursor: 'not-allowed' }}>
+              <Switch
+                checked={form.enabled}
+                onChange={canEdit ? (v: boolean) => update('enabled', v) : undefined}
+                disabled={!canEdit}
+              />
+            </span>
+          </Tooltip>
+        </div>
+
+        {form.enabled ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.FIELD_GAP }}>
+            <div>
+              <div style={{ fontWeight: 700, marginBottom: 4 }}>{C.LABELS.CLIENT_ID_LABEL}</div>
+              <Input
+                placeholder={C.LABELS.CLIENT_ID_PLACEHOLDER}
+                value={form.googleClientID}
+                disabled={!canEdit}
+                onChange={(e) => update('googleClientID', e.target.value)}
+              />
+            </div>
+
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: C.LAYOUT.ROW_GAP,
+              }}
+            >
+              <div>
+                <div style={{ fontWeight: 700 }}>{C.LABELS.EGRESS_LABEL}</div>
+                <div style={{ fontSize: 12 }}>{C.LABELS.EGRESS_HINT}</div>
+              </div>
+              <Switch
+                checked={form.egressAllowed}
+                onChange={canEdit ? (v: boolean) => update('egressAllowed', v) : undefined}
+                disabled={!canEdit}
+              />
+            </div>
+
+            {!form.egressAllowed ? (
+              <div>
+                <div style={{ fontWeight: 700, marginBottom: 4 }}>{C.LABELS.JWK_LABEL}</div>
+                <Input.TextArea
+                  placeholder={C.LABELS.JWK_PLACEHOLDER}
+                  value={form.googleJwkJson}
+                  disabled={!canEdit}
+                  rows={C.LAYOUT.JWK_ROWS}
+                  onChange={(e) => update('googleJwkJson', e.target.value)}
+                />
+              </div>
+            ) : null}
+
+            {validationError ? (
+              <div style={{ color: C.COLORS.ERROR_TEXT, fontWeight: 700 }}>{validationError}</div>
+            ) : null}
+          </div>
+        ) : null}
+
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Toolbar config={saveToolbarConfig} />
+        </div>
+      </div>
+    </SettingsCard>
+  );
+});
+
+OIDCSection.displayName = 'OIDCSection';
+
+export default OIDCSection;

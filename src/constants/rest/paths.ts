@@ -1,12 +1,14 @@
 export const API_PATHS = {
   RESOURCES: {
     APPLICATIONS: 'resources/applications',
-    INSIGHTS: 'resources/insights',
     GLOBALCONFIG: 'resources/globalconfig',
     USERS: 'resources/users',
     GROUPS: 'resources/groups',
     ROLES: 'resources/roles',
   },
+  // Insights are produced out of band and read windowed to the apps on screen,
+  // so they sit outside the resource CRUD paths.
+  INSIGHTS: 'insights',
   ANALYZE: 'analyze',
   CLASSIFICATION: {
     CATEGORIES: 'classification/categories',
@@ -51,6 +53,7 @@ export const AUTH_PATHS = {
   OIDC: {
     GOOGLE_CALLBACK: 'auth/oidc/google/callback',
     GOOGLE_NONCE: 'auth/oidc/google/nonce',
+    CONFIG: 'auth/oidc/config',
   },
   PERMISSIONS: 'auth/permissions',
   CLEANUP: {

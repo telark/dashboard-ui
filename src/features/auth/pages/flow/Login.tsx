@@ -19,8 +19,11 @@ import {
   AuthFooter,
   OrphanedPasskeysModal,
 } from '../../components';
-import { ensureGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
-import { ensureAuthConfigThunk, selectSelfRegistrationEnabled } from '../../store';
+import {
+  ensureAuthConfigThunk,
+  selectGoogleClientID,
+  selectSelfRegistrationEnabled,
+} from '../../store';
 import type { AppDispatch } from '../../../../store';
 
 const Login: React.FC = () => {
@@ -34,8 +37,7 @@ const Login: React.FC = () => {
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
 
   const dispatch = useDispatch<AppDispatch>();
-  const globalConfig = useSelector(selectGlobalConfigState);
-  const googleClientID = globalConfig.data?.oidc?.googleClientID;
+  const googleClientID = useSelector(selectGoogleClientID);
   const selfRegEnabled = useSelector(selectSelfRegistrationEnabled);
   const navigate = useNavigate();
   const { message } = AntdApp.useApp();
@@ -48,7 +50,6 @@ const Login: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(ensureGlobalConfigThunk());
     dispatch(ensureAuthConfigThunk());
   }, [dispatch]);
 

@@ -82,3 +82,8 @@ export const selectSelfRegistrationEnabled = (s: RootState): boolean => {
   const enabled = s.authConfig.data?.selfRegistrationEnabled;
   return enabled !== false;
 };
+
+// Absent unless the provider is enabled and actually usable, so the caller can gate
+// the sign-in button on this alone.
+export const selectGoogleClientID = (s: RootState): string | undefined =>
+  s.authConfig.data?.oidcEnabled ? s.authConfig.data.googleClientID : undefined;

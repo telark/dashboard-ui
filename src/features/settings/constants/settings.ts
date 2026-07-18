@@ -4,6 +4,7 @@ import {
   SafetyOutlined,
   AuditOutlined,
   RobotOutlined,
+  LoginOutlined,
 } from '@ant-design/icons';
 import { BsLockFill } from 'react-icons/bs';
 import type { ComponentType, CSSProperties } from 'react';
@@ -14,6 +15,7 @@ export type SettingsSectionKey =
   | 'security'
   | 'aiInsights'
   | 'insightsGovernance'
+  | 'identityProvider'
   | 'myPermissions';
 
 export interface SettingsSectionConfig {
@@ -59,6 +61,12 @@ export const SETTINGS_CONSTANTS = {
       description: 'Configure discovery scope, fetch interval, and snapshot storage behavior.',
       icon: AuditOutlined,
     },
+    IDENTITY_PROVIDER: {
+      key: 'identityProvider' as const,
+      label: 'Single Sign-On',
+      description: 'Configure the external identity provider users sign in with.',
+      icon: LoginOutlined,
+    },
     MY_PERMISSIONS: {
       key: 'myPermissions' as const,
       label: 'My Permissions',
@@ -102,4 +110,5 @@ export const SETTINGS_SECTIONS_LIST: SettingsSectionConfig[] = [
   SETTINGS_CONSTANTS.SECTIONS.SECURITY,
   SETTINGS_CONSTANTS.SECTIONS.AI_INSIGHTS,
   SETTINGS_CONSTANTS.SECTIONS.AI_DATA,
+  SETTINGS_CONSTANTS.SECTIONS.IDENTITY_PROVIDER,
 ];

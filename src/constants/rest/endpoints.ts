@@ -45,6 +45,12 @@ export const Endpoints = {
       method: 'GET',
     }),
   },
+  INSIGHTS: {
+    GET_APPLICATIONS: {
+      path: `${API_PATHS.INSIGHTS}/applications`,
+      method: 'GET',
+    },
+  },
   GLOBALCONFIG: {
     GET: {
       path: `${API_PATHS.RESOURCES.GLOBALCONFIG}/get`,
@@ -124,6 +130,10 @@ export const Endpoints = {
           path: AUTH_PATHS.OIDC.GOOGLE_NONCE,
           method: 'POST',
         },
+      },
+      CONFIG: {
+        path: AUTH_PATHS.OIDC.CONFIG,
+        method: 'PATCH',
       },
     },
     PERMISSIONS: {

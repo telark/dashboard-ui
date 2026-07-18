@@ -5,6 +5,7 @@ import { AppearanceSectionContent } from '../sections/appearance';
 import { SecuritySectionContent } from '../sections/security';
 import { AIInsightsSectionContent } from '../sections/aiInsights';
 import { InsightsGovernanceSectionContent } from '../sections/insightsGovernance';
+import { IdentityProviderSectionContent } from '../sections/identityProvider';
 import { MyPermissionsSectionContent } from '../sections/myPermissions';
 
 export interface SecuritySectionProps {
@@ -33,6 +34,8 @@ const SectionContent: React.FC<SectionContentProps> = memo(
         return <AIInsightsSectionContent />;
       case 'insightsGovernance':
         return <InsightsGovernanceSectionContent />;
+      case 'identityProvider':
+        return <IdentityProviderSectionContent />;
       case 'myPermissions':
         return <MyPermissionsSectionContent />;
       default:

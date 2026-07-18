@@ -14,6 +14,7 @@ const SECTION_TO_SLUG: Record<SettingsSectionKey, string> = {
   security: 'security',
   aiInsights: 'aiInsights',
   insightsGovernance: 'governance',
+  identityProvider: 'identity',
   myPermissions: 'permissions',
 };
 
@@ -23,6 +24,7 @@ const SLUG_TO_SECTION: Record<string, SettingsSectionKey> = {
   security: 'security',
   aiInsights: 'aiInsights',
   governance: 'insightsGovernance',
+  identity: 'identityProvider',
   permissions: 'myPermissions',
 };
 

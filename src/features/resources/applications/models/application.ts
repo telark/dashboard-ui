@@ -49,6 +49,26 @@ export interface ApplicationRelatedApp {
   reason: string;
 }
 
+export interface ApplicationInsightRisk {
+  severity: string; // high | medium | low
+  message: string;
+}
+
+export interface ApplicationInsightSuggestion {
+  priority: string; // high | medium | low
+  message: string;
+}
+
+export interface ApplicationResourceEfficiency {
+  status: string; // over | under | balanced | unknown
+  note: string;
+}
+
+export interface ApplicationCriticality {
+  level: string; // critical | high | medium | low
+  reason: string;
+}
+
 export interface ApplicationInsights {
   enriched: boolean;
   enrichedAt?: string | null;
@@ -58,8 +78,11 @@ export interface ApplicationInsights {
   role?: string | null;
   dependencies: string[];
   category?: string | null;
-  risks: string[];
-  suggestions: string[];
+  risks: ApplicationInsightRisk[];
+  suggestions: ApplicationInsightSuggestion[];
+  resourceEfficiency: ApplicationResourceEfficiency;
+  criticality: ApplicationCriticality;
+  tags: string[];
   relatedApps: ApplicationRelatedApp[];
   promptVersion?: string | null;
 }
