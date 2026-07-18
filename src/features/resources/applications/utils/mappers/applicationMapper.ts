@@ -9,24 +9,6 @@ const DEFAULT_HEALTH: Application['health'] = {
   totalReplicas: 0,
 };
 
-const DEFAULT_INSIGHTS: Application['insights'] = {
-  enriched: false,
-  enrichedAt: null,
-  confidence: null,
-  summary: null,
-  techStack: [],
-  role: null,
-  dependencies: [],
-  category: null,
-  risks: [],
-  suggestions: [],
-  resourceEfficiency: { status: 'unknown', note: '' },
-  criticality: { level: 'low', reason: '' },
-  tags: [],
-  relatedApps: [],
-  promptVersion: null,
-};
-
 const DEFAULT_MANAGED: Application['managed'] = {
   by: UTILS_TEXTS.DEFAULTS.EMPTY_STRING,
   chart: null,
@@ -105,7 +87,6 @@ const mapApplication = (item: Application): Application => {
       typeof item.resourceCount === 'number' ? item.resourceCount : UTILS_TEXTS.DEFAULTS.ZERO,
     resourceSummary: item.resourceSummary || DEFAULT_RESOURCE_SUMMARY,
     health: item.health || DEFAULT_HEALTH,
-    insights: item.insights || DEFAULT_INSIGHTS,
     managed: item.managed || DEFAULT_MANAGED,
     metrics: item.metrics || DEFAULT_METRICS,
     history: item.history || DEFAULT_HISTORY,
