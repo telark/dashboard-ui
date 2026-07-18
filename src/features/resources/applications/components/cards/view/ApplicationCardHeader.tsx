@@ -176,7 +176,6 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
       [menuOpen],
     );
 
-    const hasInsightRow = Boolean(application.insights?.category || application.insights?.role);
     const descriptionText = String(application.description || '').trim();
     const labelWithTooltip = (text: string, tooltip: string | undefined) =>
       tooltip ? (
@@ -270,34 +269,6 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
             >
               {descriptionText || application.name}
             </p>
-            {hasInsightRow ? (
-              <div
-                style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: 6,
-                  marginTop: 6,
-                  paddingLeft: bulkMode ? bulkTextIndent : 0,
-                }}
-              >
-                {application.insights?.category ? (
-                  <RowTag
-                    text={application.insights.category}
-                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                    color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                    fontSize={11}
-                  />
-                ) : null}
-                {application.insights?.role ? (
-                  <RowTag
-                    text={application.insights.role}
-                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                    color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                    fontSize={11}
-                  />
-                ) : null}
-              </div>
-            ) : null}
           </div>
           {/* Holds its size and drops to its own line rather than being squeezed
               over the title. */}

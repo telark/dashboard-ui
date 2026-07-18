@@ -263,7 +263,6 @@ export interface Application {
   lastUpdated: string;
   resourceSummary: ApplicationResourceSummary;
   resources: ApplicationResourceRef[];
-  insights: ApplicationInsights;
   images: string[];
   ports: number[];
   envVarKeys: string[];
