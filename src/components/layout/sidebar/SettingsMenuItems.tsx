@@ -9,6 +9,7 @@ import {
   SafetyOutlined,
   RobotOutlined,
   AuditOutlined,
+  LoginOutlined,
 } from '@ant-design/icons';
 import SidebarButton from '../../display/buttons/SideBarButton';
 import { BUTTON_CONFIGS, DEFAULT_COLORS, APP_ROUTES } from '../../../constants';
@@ -25,6 +26,7 @@ const SETTINGS_ROUTES = {
   security: `${APP_ROUTES.SETTINGS}/security`,
   aiInsights: `${APP_ROUTES.SETTINGS}/aiInsights`,
   governance: `${APP_ROUTES.SETTINGS}/governance`,
+  identityProvider: `${APP_ROUTES.SETTINGS}/identity`,
 } as const;
 
 const sectionLabelStyle: CSSProperties = {
@@ -146,6 +148,13 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
         icon={<AuditOutlined />}
         active={pathname === SETTINGS_ROUTES.governance}
         route={SETTINGS_ROUTES.governance}
+        isCollapsed={isCollapsed}
+      />
+      <SidebarButton
+        text="Single Sign-On"
+        icon={<LoginOutlined />}
+        active={pathname === SETTINGS_ROUTES.identityProvider}
+        route={SETTINGS_ROUTES.identityProvider}
         isCollapsed={isCollapsed}
       />
     </nav>

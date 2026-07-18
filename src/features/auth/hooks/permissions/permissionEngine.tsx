@@ -202,6 +202,11 @@ export const ACTION_PERMISSIONS = {
       level: 'Owner' as PermissionLevel,
       deny: 'settings.controlainsights.deny',
     },
+    editOidcConfig: {
+      scope: 'settings' as const,
+      level: 'Admin' as PermissionLevel,
+      deny: 'settings.editoidcconfig.deny',
+    },
   },
   protectionPlans: {
     viewViolations: {

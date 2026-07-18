@@ -94,7 +94,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
         { key: 'editsnapshotstorage', label: 'Edit Snapshot Storage' },
       ],
       Owner: [{ key: 'controlainsights', label: 'Control AI Insights' }],
-      Admin: [],
+      Admin: [{ key: 'editoidcconfig', label: 'Edit OIDC Config' }],
     },
   },
   {

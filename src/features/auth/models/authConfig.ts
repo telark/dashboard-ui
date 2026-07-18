@@ -1,5 +1,7 @@
 export interface AuthConfigData {
   selfRegistrationEnabled: boolean;
+  oidcEnabled: boolean;
+  googleClientID?: string;
 }
 
 export interface AuthConfigResponse {

@@ -20,6 +20,9 @@ const DEFAULT_INSIGHTS: Application['insights'] = {
   category: null,
   risks: [],
   suggestions: [],
+  resourceEfficiency: { status: 'unknown', note: '' },
+  criticality: { level: 'low', reason: '' },
+  tags: [],
   relatedApps: [],
   promptVersion: null,
 };
