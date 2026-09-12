@@ -31,6 +31,8 @@ export const SECURITY_SECTION_CONSTANTS = {
         'You are about to revoke this session. You will be logged out from this device and need to sign in again.',
       MESSAGE_OTHER:
         'You are about to revoke this session. That device will be signed out and will need to sign in again.',
+      MESSAGE_UNKNOWN:
+        'You are about to revoke this session. It may be the device you are using now, in which case you will be signed out here.',
       OK: 'Revoke',
       CANCEL: 'Cancel',
     },

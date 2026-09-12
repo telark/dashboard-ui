@@ -1,24 +1,45 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
-import { getSessionToken } from '../../../../../features/auth/utils/session/token';
+import { getCurrentSessionName } from '../../../../../features/auth/utils/session/token';
+import { validateSession } from '../../../../../features/auth/utils/session/validation';
 import { handleUserLogout } from '../../../../../features/auth/utils/logout/logout';
 import { SECURITY_SECTION_CONSTANTS } from '../constants';
 import type { SessionDetails } from '../../../../../features/auth/models/session';
 
 const { LABELS } = SECURITY_SECTION_CONSTANTS;
 
+// A listed session is addressed by its resource name; the current-token
+// fallback carries none and can only ever be this device.
+const revokesThisDevice = (
+  sessionName: string | null,
+  currentSessionName: string | null,
+): boolean => sessionName === null || sessionName === currentSessionName;
+
+const getRevokeModalMessage = (
+  sessionName: string | null,
+  currentSessionName: string | null,
+): string => {
+  if (revokesThisDevice(sessionName, currentSessionName)) {
+    return LABELS.REVOKE_CONFIRM_MODAL.MESSAGE_CURRENT;
+  }
+  if (currentSessionName === null) {
+    return LABELS.REVOKE_CONFIRM_MODAL.MESSAGE_UNKNOWN;
+  }
+  return LABELS.REVOKE_CONFIRM_MODAL.MESSAGE_OTHER;
+};
+
 export interface UseSessionRevokeOptions {
   revokeSession: (
-    sessionToken: string,
+    sessionName: string,
     options: { onRevokedCurrentSession?: () => void },
   ) => Promise<void>;
 }
 
 export interface UseSessionRevokeResult {
   sessionToRevoke: SessionDetails | null;
-  revokingToken: string | null;
-  currentToken: string | null;
+  revokingSessionName: string | null;
+  currentSessionName: string | null;
   handleRevokeClick: (session: SessionDetails) => void;
   handleRevokeConfirm: () => Promise<void>;
   closeRevokeModal: () => void;
@@ -30,9 +51,19 @@ export const useSessionRevoke = ({
 }: UseSessionRevokeOptions): UseSessionRevokeResult => {
   const navigate = useNavigate();
   const { message } = AntdApp.useApp();
-  const [revokingToken, setRevokingToken] = useState<string | null>(null);
+  const [revokingSessionName, setRevokingSessionName] = useState<string | null>(null);
   const [sessionToRevoke, setSessionToRevoke] = useState<SessionDetails | null>(null);
-  const currentToken = getSessionToken();
+  const [currentSessionName, setCurrentSessionName] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getCurrentSessionName().then((name) => {
+      if (!cancelled) setCurrentSessionName(name);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleRevokeClick = useCallback((session: SessionDetails) => {
     setSessionToRevoke(session);
@@ -42,36 +73,49 @@ export const useSessionRevoke = ({
     setSessionToRevoke(null);
   }, []);
 
+  // crypto.subtle only exists in a secure context, so the current session name
+  // can be unknown. The revoked device may then have been this one, and only
+  // the server can say whether this session survived. isExpired, not isValid:
+  // a transient network failure must not sign the user out.
+  const reportRevokeOutcome = useCallback(async () => {
+    if (currentSessionName === null && (await validateSession()).isExpired) {
+      await handleUserLogout(navigate, message);
+      return;
+    }
+    message.success(LABELS.SESSIONS_REVOKE_SUCCESS);
+  }, [currentSessionName, navigate, message]);
+
   const handleRevokeConfirm = useCallback(async () => {
     if (!sessionToRevoke) return;
-    const isCurrent = sessionToRevoke.sessionToken === currentToken;
-    setRevokingToken(sessionToRevoke.sessionToken);
+    const sessionName = sessionToRevoke.metadata?.name ?? null;
+    const isCurrent = revokesThisDevice(sessionName, currentSessionName);
+    setRevokingSessionName(sessionName);
     setSessionToRevoke(null);
     try {
-      if (isCurrent) {
+      if (sessionName === null || isCurrent) {
         await handleUserLogout(navigate, message);
       } else {
-        await revokeSession(sessionToRevoke.sessionToken, {});
-        message.success(LABELS.SESSIONS_REVOKE_SUCCESS);
+        await revokeSession(sessionName, {});
+        await reportRevokeOutcome();
       }
     } catch {
       if (!isCurrent) {
         message.error(LABELS.SESSIONS_REVOKE_ERROR);
       }
     } finally {
-      setRevokingToken(null);
+      setRevokingSessionName(null);
     }
-  }, [sessionToRevoke, currentToken, revokeSession, navigate, message]);
+  }, [sessionToRevoke, currentSessionName, revokeSession, navigate, message, reportRevokeOutcome]);
 
-  const revokeModalMessage =
-    sessionToRevoke?.sessionToken === currentToken
-      ? LABELS.REVOKE_CONFIRM_MODAL.MESSAGE_CURRENT
-      : LABELS.REVOKE_CONFIRM_MODAL.MESSAGE_OTHER;
+  const revokeModalMessage = getRevokeModalMessage(
+    sessionToRevoke?.metadata?.name ?? null,
+    currentSessionName,
+  );
 
   return {
     sessionToRevoke,
-    revokingToken,
-    currentToken,
+    revokingSessionName,
+    currentSessionName,
     handleRevokeClick,
     handleRevokeConfirm,
     closeRevokeModal,

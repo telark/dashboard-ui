@@ -103,5 +103,6 @@ export const LOGIN_CONSTANTS = {
     SESSION_GET_ERROR: 'Failed to get session token:',
     SESSION_SET_ERROR: 'Failed to set session token:',
     SESSION_REMOVE_ERROR: 'Failed to remove session token:',
+    SESSION_NAME_ERROR: 'Failed to derive session name:',
   },
 } as const;

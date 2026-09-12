@@ -7,13 +7,18 @@ export interface Session {
   expiresAt: string;
 }
 
+export interface SessionResourceMetadata {
+  name: string;
+}
+
 export interface SessionDetails {
   createdTimestamp: string;
   expiresTimestamp: string;
-  sessionToken: string;
   userId: string;
   ipAddress?: string;
   deviceMetadata?: DeviceMetadata;
+  // Absent on the single-session response, which returns the spec alone.
+  metadata?: SessionResourceMetadata;
 }
 
 export interface SessionDetailsResponse {
