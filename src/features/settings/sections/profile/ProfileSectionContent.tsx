@@ -47,6 +47,7 @@ const ProfileSectionContent: React.FC = memo(() => {
     handleValuesChange,
     handleFieldsChange,
     initialValues,
+    usernameRules,
     fullnameRules,
     emailRules,
   } = useEditProfile({ currentUser, refetch });
@@ -68,9 +69,9 @@ const ProfileSectionContent: React.FC = memo(() => {
         hasFormErrors={hasFormErrors}
         hasChanges={hasChanges}
         initialValues={initialValues}
+        usernameRules={usernameRules}
         fullnameRules={fullnameRules}
         emailRules={emailRules}
-        username={currentUser?.username ?? ''}
       />
     </>
   );

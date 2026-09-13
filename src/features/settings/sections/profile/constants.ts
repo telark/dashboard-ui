@@ -24,6 +24,7 @@ export const PROFILE_SECTION_CONSTANTS = {
       TITLE: 'Edit profile',
       SUBTITLE: 'Update your account details',
       USERNAME_LABEL: 'Username',
+      USERNAME_PLACEHOLDER: 'e.g. john_doe',
       FULLNAME_LABEL: 'Full name',
       FULLNAME_PLACEHOLDER: 'e.g. John Doe',
       EMAIL_LABEL: 'Email',

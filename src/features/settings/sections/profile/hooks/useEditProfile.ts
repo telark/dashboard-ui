@@ -1,18 +1,22 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Form, App as AntdApp } from 'antd';
+import { useSelector } from 'react-redux';
 import { updateUser } from '../../../../access-and-permissions/users/clients';
 import { setCurrentUser } from '../../../../auth/utils/session/user';
 import {
   makeEmailFormatRule,
   makeFullnameCharsRule,
+  makeUsernameUniqueRule,
 } from '../../../../access-and-permissions/users/utils';
 import { PROFILE_SECTION_CONSTANTS } from '../constants';
 import type { User } from '../../../../access-and-permissions/users/models';
+import type { RootState } from '../../../../../store';
 
 const { LABELS } = PROFILE_SECTION_CONSTANTS;
 const P = LABELS.EDIT_PROFILE_PANEL;
 
 export interface EditProfileFormValues {
+  username: string;
   fullname: string;
   email: string;
 }
@@ -37,6 +41,7 @@ export interface UseEditProfileResult {
   ) => void;
   handleFieldsChange: (changedFields: unknown[], allFields: unknown[]) => void;
   initialValues: EditProfileFormValues | null;
+  usernameRules: ReturnType<typeof makeUsernameUniqueRule>[];
   fullnameRules: ReturnType<typeof makeFullnameCharsRule>[];
   emailRules: ReturnType<typeof makeEmailFormatRule>[];
 }
@@ -53,13 +58,24 @@ export function useEditProfile({
   const [hasChanges, setHasChanges] = useState(false);
   const previousOpenRef = useRef(false);
   const previousUserIdRef = useRef<string | null>(null);
+  const existingUsers = useSelector((state: RootState) => state.users.users);
 
+  const usernameRules = useMemo(
+    () => [makeUsernameUniqueRule(existingUsers, currentUser?.id)],
+    [existingUsers, currentUser?.id],
+  );
   const fullnameRules = [makeFullnameCharsRule()];
   const emailRules = [makeEmailFormatRule()];
 
   const initialValues = useMemo<EditProfileFormValues | null>(
     () =>
-      currentUser != null ? { fullname: currentUser.fullname, email: currentUser.email } : null,
+      currentUser != null
+        ? {
+            username: currentUser.username,
+            fullname: currentUser.fullname,
+            email: currentUser.email,
+          }
+        : null,
     [currentUser],
   );
 
@@ -69,14 +85,19 @@ export function useEditProfile({
     if (!currentUser) return;
     const current = form.getFieldsValue();
     setHasChanges(
-      current.fullname?.trim() !== currentUser.fullname ||
+      current.username?.trim() !== currentUser.username ||
+        current.fullname?.trim() !== currentUser.fullname ||
         current.email?.trim() !== currentUser.email,
     );
   }, [form, currentUser]);
 
   const openEditPanel = useCallback(() => {
     if (currentUser) {
-      form.setFieldsValue({ fullname: currentUser.fullname, email: currentUser.email });
+      form.setFieldsValue({
+        username: currentUser.username,
+        fullname: currentUser.fullname,
+        email: currentUser.email,
+      });
       setHasChanges(false);
     }
     setPanelOpen(true);
@@ -104,6 +125,7 @@ export function useEditProfile({
       setSubmitting(true);
       try {
         const response = await updateUser(currentUser.id, {
+          username: String(values.username ?? '').trim(),
           fullname: String(values.fullname ?? '').trim(),
           email: String(values.email ?? '').trim(),
         });
@@ -143,6 +165,7 @@ export function useEditProfile({
     handleValuesChange,
     handleFieldsChange,
     initialValues,
+    usernameRules,
     fullnameRules,
     emailRules,
   };
