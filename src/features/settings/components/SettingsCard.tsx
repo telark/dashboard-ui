@@ -13,13 +13,23 @@ interface SettingsCardProps {
   description?: string;
   headerStart?: React.ReactNode;
   headerAction?: React.ReactNode;
+  /** Small tag rendered next to the title, e.g. an "Experimental" badge. */
+  titleBadge?: React.ReactNode;
   /** Opt-in: existing callers keep a always-open card. */
   collapsible?: boolean;
   children: React.ReactNode;
 }
 
 const SettingsCard: React.FC<SettingsCardProps> = memo(
-  ({ title, description, headerStart, headerAction, collapsible = false, children }) => {
+  ({
+    title,
+    description,
+    headerStart,
+    headerAction,
+    titleBadge,
+    collapsible = false,
+    children,
+  }) => {
     const [collapsed, setCollapsed] = useState(false);
     const [hovered, setHovered] = useState(false);
     const hasDescription = description != null && description.length > 0;
@@ -48,22 +58,37 @@ const SettingsCard: React.FC<SettingsCardProps> = memo(
           {headerStart != null ? <div style={{ flexShrink: 0 }}>{headerStart}</div> : null}
           <div style={{ minWidth: 0, flex: 1 }}>
             {title.length > 0 && (
-              <h3
-                style={{
-                  margin: 0,
-                  fontSize: 15,
-                  fontWeight: 600,
-                  color: DEFAULT_COLORS.TEXT_PRIMARY,
-                }}
-              >
-                {title}
-              </h3>
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 8 }}>
+                <h3
+                  style={{
+                    margin: 0,
+                    fontSize: 15,
+                    fontWeight: 600,
+                    color: DEFAULT_COLORS.TEXT_PRIMARY,
+                  }}
+                >
+                  {title}
+                </h3>
+                {titleBadge != null ? (
+                  <span style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center' }}>
+                    {titleBadge}
+                  </span>
+                ) : null}
+              </div>
             )}
             {hasDescription && (
               <p
                 style={{
+                  // The negative pull is tuned for a bare <h3>'s leading; a
+                  // titleBadge sits in the row as a real box with no such
+                  // leading, so it needs a normal positive gap instead or the
+                  // pull drags this text up under the badge.
                   margin:
-                    title.length > 0 ? `${CONTENT.CARD_TITLE_TO_DESCRIPTION_GAP_PX}px 0 0` : 0,
+                    title.length === 0
+                      ? 0
+                      : titleBadge != null
+                        ? '1px 0 0'
+                        : `${CONTENT.CARD_TITLE_TO_DESCRIPTION_GAP_PX}px 0 0`,
                   fontSize: 13,
                   color: DEFAULT_COLORS.TEXT_MUTED,
                   lineHeight: 1.5,

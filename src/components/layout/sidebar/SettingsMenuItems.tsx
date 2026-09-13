@@ -10,6 +10,7 @@ import {
   RobotOutlined,
   AuditOutlined,
   LoginOutlined,
+  InfoCircleOutlined,
 } from '@ant-design/icons';
 import SidebarButton from '../../display/buttons/SideBarButton';
 import { BUTTON_CONFIGS, DEFAULT_COLORS, APP_ROUTES } from '../../../constants';
@@ -27,6 +28,7 @@ const SETTINGS_ROUTES = {
   aiInsights: `${APP_ROUTES.SETTINGS}/aiInsights`,
   governance: `${APP_ROUTES.SETTINGS}/governance`,
   identityProvider: `${APP_ROUTES.SETTINGS}/identity`,
+  about: `${APP_ROUTES.SETTINGS}/about`,
 } as const;
 
 const sectionLabelStyle: CSSProperties = {
@@ -155,6 +157,13 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
         icon={<LoginOutlined />}
         active={pathname === SETTINGS_ROUTES.identityProvider}
         route={SETTINGS_ROUTES.identityProvider}
+        isCollapsed={isCollapsed}
+      />
+      <SidebarButton
+        text="About"
+        icon={<InfoCircleOutlined />}
+        active={pathname === SETTINGS_ROUTES.about}
+        route={SETTINGS_ROUTES.about}
         isCollapsed={isCollapsed}
       />
     </nav>

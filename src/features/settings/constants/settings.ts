@@ -5,6 +5,7 @@ import {
   AuditOutlined,
   RobotOutlined,
   LoginOutlined,
+  InfoCircleOutlined,
 } from '@ant-design/icons';
 import { BsLockFill } from 'react-icons/bs';
 import type { ComponentType, CSSProperties } from 'react';
@@ -16,7 +17,8 @@ export type SettingsSectionKey =
   | 'aiInsights'
   | 'insightsGovernance'
   | 'identityProvider'
-  | 'myPermissions';
+  | 'myPermissions'
+  | 'about';
 
 export interface SettingsSectionConfig {
   key: SettingsSectionKey;
@@ -73,6 +75,12 @@ export const SETTINGS_CONSTANTS = {
       description: 'Your effective permissions resolved across all assigned roles.',
       icon: BsLockFill,
     },
+    ABOUT: {
+      key: 'about' as const,
+      label: 'About',
+      description: 'Version, documentation, and third-party licenses.',
+      icon: InfoCircleOutlined,
+    },
   },
   SIDEBAR: {
     WIDTH: 240,
@@ -111,4 +119,5 @@ export const SETTINGS_SECTIONS_LIST: SettingsSectionConfig[] = [
   SETTINGS_CONSTANTS.SECTIONS.AI_INSIGHTS,
   SETTINGS_CONSTANTS.SECTIONS.AI_DATA,
   SETTINGS_CONSTANTS.SECTIONS.IDENTITY_PROVIDER,
+  SETTINGS_CONSTANTS.SECTIONS.ABOUT,
 ];

@@ -16,6 +16,7 @@ const SECTION_TO_SLUG: Record<SettingsSectionKey, string> = {
   insightsGovernance: 'governance',
   identityProvider: 'identity',
   myPermissions: 'permissions',
+  about: 'about',
 };
 
 const SLUG_TO_SECTION: Record<string, SettingsSectionKey> = {
@@ -26,6 +27,7 @@ const SLUG_TO_SECTION: Record<string, SettingsSectionKey> = {
   governance: 'insightsGovernance',
   identity: 'identityProvider',
   permissions: 'myPermissions',
+  about: 'about',
 };
 
 export function useSettingsNavigation(initialSection: SettingsSectionKey = 'profile') {
