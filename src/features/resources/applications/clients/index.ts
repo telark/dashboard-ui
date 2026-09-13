@@ -7,6 +7,7 @@ export {
 
 export {
   getApplicationSnapshotSummaries,
+  getSnapshotInfos,
   getSnapshotManifest,
   getSnapshotsByApplicationId,
 } from './snapshots';

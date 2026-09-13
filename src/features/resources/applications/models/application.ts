@@ -158,6 +158,20 @@ export interface ApplicationSnapshotSummary {
   unavailable?: boolean;
 }
 
+export interface SnapshotStorageMetric {
+  bytes: number;
+  kb: number;
+  mb: number;
+  percent?: number;
+}
+
+export interface SnapshotStorageInfos {
+  totalPVCSpace: SnapshotStorageMetric;
+  consumedSpace: SnapshotStorageMetric;
+  availableSpace: SnapshotStorageMetric;
+  totalSnapshots: number;
+}
+
 export interface SnapshotManifestState {
   loading: boolean;
   error: string | null;

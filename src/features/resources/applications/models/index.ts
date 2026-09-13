@@ -29,4 +29,6 @@ export type {
   ApplicationSnapshot,
   ApplicationSnapshotSummary,
   SnapshotManifestState,
+  SnapshotStorageInfos,
+  SnapshotStorageMetric,
 } from './application';
