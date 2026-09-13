@@ -29,6 +29,7 @@ export {
   setSessionToken,
   removeSessionToken,
   hasSessionToken,
+  getCurrentSessionName,
   createSessionTokenInterceptor,
 } from './session/token';
 

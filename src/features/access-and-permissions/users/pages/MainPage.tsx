@@ -37,6 +37,10 @@ const MainPage: React.FC = () => {
     handleFilterChange,
     handleFilterApply,
     handleFilterReset,
+    handleRemoveFilterChip,
+    filterChips,
+    overflowChipsCount,
+    hasActiveFilters,
     openFilterPanel,
   } = useUserFilters();
 
@@ -86,6 +90,8 @@ const MainPage: React.FC = () => {
     handleSort,
     sortedUsers,
     paginatedUsers,
+    bulkMode,
+    toggleBulkMode,
   } = useUserListState(filteredUsers);
 
   const { isDeleting, handleBulkDelete } = useBulkDeleteUsers({
@@ -155,6 +161,13 @@ const MainPage: React.FC = () => {
     searchValue: searchTerm,
     onSearchChange: setSearchTerm,
     onSearchSubmit: undefined,
+    bulkMode,
+    onToggleBulkMode: toggleBulkMode,
+    filterChips,
+    overflowChipsCount,
+    onRemoveFilterChip: handleRemoveFilterChip,
+    hasActiveFilters,
+    onClearAllFilters: handleFilterReset,
   });
 
   const shouldShowEmpty = useMemo(
@@ -190,6 +203,7 @@ const MainPage: React.FC = () => {
       createForm={createForm}
       editForm={editForm}
       filterPanelOpen={filterPanelOpen}
+      appliedFilters={appliedFilters}
       onCloseFilterPanel={closeFilterPanel}
       handleFilterChange={handleFilterChange}
       handleFilterApply={handleFilterApply}

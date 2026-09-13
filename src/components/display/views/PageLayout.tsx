@@ -1,223 +1,97 @@
-import { Activity, memo } from 'react';
-import { DEFAULT_COLORS } from '../../../constants';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
-import { useAppearance } from '../../../features/settings/sections/appearance';
+import React, { memo } from 'react';
+import { LIST_PAGE } from '../../../constants/shared/pages';
 import DataTable from '../table/DataTable';
-import { FilterSection } from '../filters';
-import { Toolbar } from '../toolbar';
+import { ListToolbar } from '../toolbar';
 import { TablePagination } from '../table';
 import type { PageLayoutConfig } from '../../../interfaces/layout/page';
-import { DataViewError } from '../../shared';
+import { DataViewError, PageContainer } from '../../shared';
 import { FancySpinner } from '../../animation';
 import { useDataViewState } from '../../../hooks/layout/useDataViewState';
 
 const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfig<T> }) => {
-  const navigate = useNavigate();
-  const { rowHeight: densityRowHeight, contentGap } = useAppearance();
   const {
     title,
     subtitle,
     breadcrumbs,
-    filterSection,
-    toolbar,
+    listToolbar,
     columns,
     data,
     rowKey,
     pagination,
     rowSelection,
     onRowClick,
-    containerStyle,
-    rowHeight: configRowHeight,
+    rowHeight,
     empty,
     loading = false,
     error = null,
     onRetry,
   } = config;
-  const rowHeight = configRowHeight ?? densityRowHeight;
   const dataState = useDataViewState({
     loading,
     error,
     hasData: Array.isArray(data) && data.length > 0,
   });
+  const isReady = dataState.phase === 'empty' || dataState.phase === 'ready';
 
   return (
-    <div
-      style={{
-        background: '#fff',
-        minHeight: '100vh',
-        padding: PAGE_CONTENT_LAYOUT.PADDING,
-        marginTop: `${PAGE_CONTENT_LAYOUT.HEADER_OFFSET_PX}px`,
-        width: '100%',
-        boxSizing: 'border-box',
-        ...containerStyle,
-      }}
+    <PageContainer
+      title={title}
+      breadcrumbs={breadcrumbs}
+      subtitle={subtitle}
+      gap={LIST_PAGE.CONTENT_GAP_PX}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: contentGap }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-          <h1
+      <ListToolbar {...listToolbar} />
+      <div style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>
+        {dataState.phase === 'error' ? (
+          <DataViewError
+            variant="table"
+            message={dataState.errorMessage}
+            onRetry={onRetry ?? (() => undefined)}
+          />
+        ) : null}
+        {dataState.phase === 'loading' ? (
+          <div
             style={{
-              fontSize: 28,
-              fontWeight: 700,
-              color: '#0B1F33',
-              margin: 0,
-              padding: 0,
-              lineHeight: 1.2,
               display: 'flex',
+              justifyContent: 'center',
               alignItems: 'center',
-              gap: 8,
+              minHeight: LIST_PAGE.LOADING_MIN_HEIGHT_PX,
             }}
           >
-            {breadcrumbs && breadcrumbs.length > 0 ? (
-              <>
-                {breadcrumbs.map((b, index) => (
-                  <React.Fragment key={index}>
-                    {index > 0 && (
-                      <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>/</span>
-                    )}
-                    {b.onClick || b.to ? (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (b.onClick) {
-                            b.onClick();
-                          } else if (b.to) {
-                            navigate(b.to);
-                          }
-                        }}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          padding: 0,
-                          cursor: 'pointer',
-                          color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-                          fontSize: 28,
-                          fontWeight: 700,
-                          fontFamily: 'inherit',
-                          textDecoration: 'none',
-                        }}
-                      >
-                        {b.label}
-                      </button>
-                    ) : (
-                      <span>{b.label}</span>
-                    )}
-                  </React.Fragment>
-                ))}
-              </>
-            ) : (
-              title
-            )}
-          </h1>
-          <Activity mode={subtitle ? 'visible' : 'hidden'}>
-            <p
-              style={{
-                fontSize: 14,
-                fontWeight: 400,
-                color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-                margin: 0,
-                marginTop: 0,
-                padding: 0,
-                lineHeight: 1.2,
-              }}
-            >
-              {subtitle}
-            </p>
-          </Activity>
-        </div>
-
-        {/* Filters and Toolbar */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr auto',
-            alignItems: 'flex-end',
-            gap: 16,
-            minHeight: '60px',
-            width: '100%',
-          }}
-        >
-          {/* FILTER COLUMN - Always rendered */}
-          <div
-            style={{
-              minHeight: '60px',
-              visibility: filterSection ? 'visible' : 'hidden',
-              pointerEvents: filterSection ? 'auto' : 'none',
-              display: 'flex',
-              alignItems: 'flex-end',
-            }}
-          >
-            {filterSection ? <FilterSection config={filterSection} /> : null}
+            <FancySpinner size={40} showLabel />
           </div>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'flex-end',
-              justifyContent: 'flex-end',
-              minHeight: '60px',
+        ) : null}
+        {isReady ? (
+          <DataTable<T>
+            columns={columns}
+            data={data}
+            rowKey={rowKey}
+            className="app-table"
+            rowHeight={rowHeight}
+            empty={empty}
+            tableProps={{
+              // Columns keep their widths and the table scrolls sideways once the
+              // page is narrower than they are, instead of clipping the last ones.
+              scroll: { x: 'max-content' },
+              rowSelection: rowSelection
+                ? {
+                    selectedRowKeys: rowSelection.selectedRowKeys,
+                    onChange: rowSelection.onChange,
+                  }
+                : undefined,
+              onRow: onRowClick
+                ? (record: T) => ({
+                    onClick: () => onRowClick(record),
+                    style: { cursor: 'pointer' },
+                  })
+                : undefined,
             }}
-          >
-            {toolbar ? <Toolbar config={toolbar} /> : null}
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-          {dataState.phase === 'error' && (
-            <DataViewError
-              variant="table"
-              message={dataState.errorMessage}
-              onRetry={onRetry ?? (() => undefined)}
-            />
-          )}
-          {dataState.phase === 'loading' && (
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                minHeight: 220,
-              }}
-            >
-              <FancySpinner size={40} showLabel />
-            </div>
-          )}
-          {(dataState.phase === 'empty' || dataState.phase === 'ready') && (
-            <>
-              <DataTable<T>
-                columns={columns}
-                data={data}
-                rowKey={rowKey}
-                className="app-table"
-                rowHeight={rowHeight}
-                empty={empty}
-                tableProps={{
-                  rowSelection: rowSelection
-                    ? {
-                        selectedRowKeys: rowSelection.selectedRowKeys,
-                        onChange: rowSelection.onChange,
-                      }
-                    : undefined,
-                  onRow: onRowClick
-                    ? (record: T) => ({
-                        onClick: () => onRowClick(record),
-                        style: { cursor: 'pointer' },
-                      })
-                    : undefined,
-                }}
-                containerStyle={{
-                  background: 'transparent',
-                  borderRadius: 0,
-                  boxShadow: 'none',
-                  padding: 0,
-                }}
-              />
-              <TablePagination config={pagination} />
-            </>
-          )}
-        </div>
+            containerStyle={{ background: 'transparent', borderRadius: 0, padding: 0 }}
+          />
+        ) : null}
       </div>
-    </div>
+      {isReady ? <TablePagination config={pagination} /> : null}
+    </PageContainer>
   );
 };
 

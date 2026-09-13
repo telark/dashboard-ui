@@ -2,10 +2,19 @@ import React from 'react';
 import { Select, Pagination } from 'antd';
 import { DEFAULT_COLORS } from '../../../constants';
 import type { TablePaginationConfig } from '../../../interfaces/layout/table';
+import { PAGINATION_DEFAULTS } from './constants';
 
 interface TablePaginationProps {
   config: TablePaginationConfig;
 }
+
+const mutedText: React.CSSProperties = { color: DEFAULT_COLORS.TEXT_MUTED };
+
+const rangeLabel = ({ currentPage, pageSize, total }: TablePaginationConfig): string => {
+  const first = total === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const last = Math.min(currentPage * pageSize, total);
+  return `${first}${PAGINATION_DEFAULTS.RANGE_SEPARATOR}${last} ${PAGINATION_DEFAULTS.RANGE_OF} ${total}`;
+};
 
 const TablePagination: React.FC<TablePaginationProps> = ({ config }) => {
   const {
@@ -15,81 +24,47 @@ const TablePagination: React.FC<TablePaginationProps> = ({ config }) => {
     onPageChange,
     onPageSizeChange,
     pageSizeOptions,
-    showRowsLabel = 'Show rows',
+    showRowsLabel = PAGINATION_DEFAULTS.SHOW_ROWS_LABEL,
   } = config;
+  const showSizeSelect = Boolean(onPageSizeChange && pageSizeOptions?.length);
 
   return (
     <div
       style={{
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: showSizeSelect ? 'space-between' : 'flex-end',
         alignItems: 'center',
-        paddingTop: 16,
-        borderTop: '1px solid #f0f0f0',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <span
-          style={{
-            color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-            fontSize: 14,
-          }}
+      {showSizeSelect ? (
+        <div
+          style={{ display: 'flex', alignItems: 'center', gap: PAGINATION_DEFAULTS.SIZE_GAP_PX }}
         >
-          {showRowsLabel}
+          <span style={mutedText}>{showRowsLabel}</span>
+          <Select
+            value={pageSize.toString()}
+            onChange={(value) => onPageSizeChange?.(Number(value))}
+            style={{ width: PAGINATION_DEFAULTS.SIZE_SELECT_WIDTH_PX }}
+            options={pageSizeOptions?.map((size) => ({
+              value: size.toString(),
+              label: size.toString(),
+            }))}
+          />
+        </div>
+      ) : null}
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <span style={{ ...mutedText, marginRight: PAGINATION_DEFAULTS.RANGE_GAP_PX }}>
+          {rangeLabel(config)}
         </span>
-        <Select
-          value={pageSize.toString()}
-          onChange={(value) => {
-            onPageSizeChange(Number(value));
-          }}
-          style={{ width: 80 }}
-          options={pageSizeOptions.map((size) => ({
-            value: size.toString(),
-            label: size.toString(),
-          }))}
+        <Pagination
+          className={PAGINATION_DEFAULTS.CLASS_NAME}
+          current={currentPage}
+          total={total}
+          pageSize={pageSize}
+          onChange={onPageChange}
+          showSizeChanger={false}
         />
       </div>
-      <Pagination
-        current={currentPage}
-        total={total}
-        pageSize={pageSize}
-        onChange={onPageChange}
-        showSizeChanger={false}
-        showQuickJumper={false}
-        showTotal={(total, range) => (
-          <span
-            style={{
-              color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-              fontSize: 14,
-              marginRight: 16,
-            }}
-          >
-            {`${range[0]}-${range[1]} of ${total}`}
-          </span>
-        )}
-        itemRender={(page, type, originalElement) => {
-          if (type === 'page' && page === currentPage) {
-            return (
-              <span
-                style={{
-                  display: 'inline-block',
-                  minWidth: 32,
-                  height: 32,
-                  lineHeight: '32px',
-                  textAlign: 'center',
-                  background: DEFAULT_COLORS.SUCCESS,
-                  color: '#fff',
-                  borderRadius: 4,
-                  fontWeight: 500,
-                }}
-              >
-                {page}
-              </span>
-            );
-          }
-          return originalElement;
-        }}
-      />
     </div>
   );
 };

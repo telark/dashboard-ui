@@ -5,6 +5,7 @@
 // Why: validates the session read contract every authenticated flow depends on
 // Note: by default does NOT delete the session that owns SESSION_TOKEN; set DELETE_OWN_SESSION=true to opt in
 
+import crypto from 'k6/crypto';
 import { path, cfg, requireToken, requireUserId } from '../lib/config.js';
 import { get, del, parseJson, resetStepCounter } from '../lib/http.js';
 import { assertShape } from '../lib/assert.js';
@@ -40,7 +41,8 @@ export default function () {
     return;
   }
 
-  const target = pickNonCurrent(sessions, cfg.sessionToken);
+  const ownName = sessionName(cfg.sessionToken);
+  const target = pickNonCurrent(sessions, ownName);
   if (!target) {
     console.log(
       '[info] only own session present, skipping detail/delete unless DELETE_OWN_SESSION=true',
@@ -48,23 +50,22 @@ export default function () {
     if (!DELETE_OWN_SESSION) return;
   }
 
-  const tokenForDetails = target?.sessionToken || target?.token || sessions[0]?.sessionToken;
-  if (!tokenForDetails) {
-    console.log('[info] no session token field in response, cannot continue');
+  // The list never returns session tokens; a session is addressed by its
+  // resource name, which these endpoints accept in place of a token.
+  const ref = target?.metadata?.name || sessions[0]?.metadata?.name;
+  if (!ref) {
+    console.log('[info] no session name field in response, cannot continue');
     return;
   }
 
-  const detailRes = get(
-    path.exporter(`auth/sessions/tokens/${encodeURIComponent(tokenForDetails)}/get`),
-    {
-      name: 'sessions.details',
-      metric: METRICS.SESSION_READ,
-    },
-  );
+  const detailRes = get(path.exporter(`auth/sessions/tokens/${encodeURIComponent(ref)}/get`), {
+    name: 'sessions.details',
+    metric: METRICS.SESSION_READ,
+  });
   assertShape(detailRes, 'sessions.details', (b) => b !== null);
 
   if (target || DELETE_OWN_SESSION) {
-    del(path.exporter(`auth/sessions/tokens/${encodeURIComponent(tokenForDetails)}/delete`), {
+    del(path.exporter(`auth/sessions/tokens/${encodeURIComponent(ref)}/delete`), {
       name: 'sessions.delete',
       metric: METRICS.SESSION_DELETE,
     });
@@ -80,10 +81,12 @@ const extractSessions = (body) => {
   return [];
 };
 
-const pickNonCurrent = (sessions, ownToken) => {
+const sessionName = (token) => `session-${crypto.sha256(token, 'hex')}`;
+
+const pickNonCurrent = (sessions, ownName) => {
   for (const s of sessions) {
-    const t = s?.sessionToken || s?.token;
-    if (t && t !== ownToken) return s;
+    const name = s?.metadata?.name;
+    if (name && name !== ownName) return s;
   }
   return null;
 };

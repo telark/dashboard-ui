@@ -15,7 +15,7 @@ const renderGroupContent = (group: Group): React.ReactNode => (
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: DEFAULT_COLORS.TEXT_MUTED,
+        color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
         flexShrink: 0,
       }}
     >

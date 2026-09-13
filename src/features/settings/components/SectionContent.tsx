@@ -2,11 +2,13 @@ import React, { memo } from 'react';
 import type { SettingsSectionKey } from '../constants';
 import { ProfileSectionContent } from '../sections/profile';
 import { AppearanceSectionContent } from '../sections/appearance';
+import { TimezoneSectionContent } from '../sections/timezone';
 import { SecuritySectionContent } from '../sections/security';
 import { AIInsightsSectionContent } from '../sections/aiInsights';
 import { InsightsGovernanceSectionContent } from '../sections/insightsGovernance';
 import { IdentityProviderSectionContent } from '../sections/identityProvider';
 import { MyPermissionsSectionContent } from '../sections/myPermissions';
+import { AboutSectionContent } from '../sections/about';
 
 export interface SecuritySectionProps {
   onManagePasskeysClick: () => void;
@@ -24,6 +26,8 @@ const SectionContent: React.FC<SectionContentProps> = memo(
         return <ProfileSectionContent />;
       case 'appearance':
         return <AppearanceSectionContent />;
+      case 'timezone':
+        return <TimezoneSectionContent />;
       case 'security':
         return (
           <SecuritySectionContent
@@ -38,6 +42,8 @@ const SectionContent: React.FC<SectionContentProps> = memo(
         return <IdentityProviderSectionContent />;
       case 'myPermissions':
         return <MyPermissionsSectionContent />;
+      case 'about':
+        return <AboutSectionContent />;
       default:
         return null;
     }

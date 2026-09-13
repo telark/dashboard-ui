@@ -25,7 +25,7 @@ interface UseViewRolePanelDataReturn {
 const valueStyle = {
   fontSize: 14,
   fontWeight: 500,
-  color: DEFAULT_COLORS.TEXT_PRIMARY,
+  color: DEFAULT_COLORS.TEXT_ON_SURFACE,
 } as const;
 
 export const useViewRolePanelData = ({
@@ -49,8 +49,8 @@ export const useViewRolePanelData = ({
 
     const categoryName = getCategoryName(role.categoryID, categories);
     const tagStyle = {
-      background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
-      color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
+      background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
+      color: DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT,
       fontSize: 12 as const,
     };
     const isBuiltIn = role.type === RC.TYPE.BUILT_IN;
@@ -119,23 +119,27 @@ export const useViewRolePanelData = ({
       {
         label: RC.LABELS.VIEW_LABELS.CREATED_BY,
         value: createdByUser ? (
-          <UserDisplay user={createdByUser} size="small" showBorder />
+          <span style={valueStyle}>
+            <UserDisplay user={createdByUser} size="small" showBorder />
+          </span>
         ) : (
-          <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>
+          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>—</span>
         ),
       },
       {
         label: RC.LABELS.VIEW_LABELS.LAST_UPDATED_BY,
         value: lastUpdatedByUser ? (
-          <UserDisplay user={lastUpdatedByUser} size="small" showBorder />
+          <span style={valueStyle}>
+            <UserDisplay user={lastUpdatedByUser} size="small" showBorder />
+          </span>
         ) : (
-          <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>
+          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>—</span>
         ),
       },
       {
         label: RC.LABELS.VIEW_LABELS.VALIDITY,
         value: isBuiltIn ? (
-          <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>
+          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>—</span>
         ) : (
           <span style={valueStyle}>
             <ValidityDisplay validity={role.validity} record={role} />

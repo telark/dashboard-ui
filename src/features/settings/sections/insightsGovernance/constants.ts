@@ -14,6 +14,7 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
   LABELS: {
     AI_INSIGHTS_TITLE: 'AI Insights',
     AI_INSIGHTS_DESCRIPTION: 'Enable AI enrichment and validate provider keys.',
+    EXPERIMENTAL_BADGE: 'Experimental',
     ENABLE_AI_LABEL: 'Enable AI insights',
     PROVIDER_CARD_TITLE: 'Provider',
     PROVIDER_CARD_DESCRIPTION: 'Choose your AI provider.',

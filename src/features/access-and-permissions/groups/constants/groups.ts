@@ -175,6 +175,13 @@ export const GROUPS_CONSTANTS = {
       MANAGE: {
         BUTTON_LABEL: 'Manage',
       },
+      COUNT_SUFFIX: 'groups',
+      CATEGORIES_COUNT_SUFFIX: 'categories',
+      MORE: 'More',
+      BULK: {
+        SELECT: 'Bulk',
+        EXIT: 'Exit bulk',
+      },
     },
     EMPTY: {
       NO_GROUPS_FOUND: 'No Groups Found',
@@ -201,6 +208,9 @@ export const GROUPS_CONSTANTS = {
     LAST_UPDATED_BY: 'lastUpdatedBy',
     MEMBERS: 'assignedUsersIDs',
     ACTIONS: 'actions',
+    MORE_MENU_BULK: 'bulk',
+    FILTER_CATEGORY: 'category',
+    FILTER_CATEGORY_ALL: 'all',
   } as const,
   SIZES: {
     ROW_HEIGHT: 32,
@@ -210,12 +220,19 @@ export const GROUPS_CONSTANTS = {
       NAME: 150,
       DESCRIPTION: 150,
       CATEGORY: 130,
-      CREATED: 150,
-      LAST_UPDATE: 140,
+      // Header label + icon + sort measured at ~158/157/180px; narrower wraps them.
+      CREATED: 160,
+      LAST_UPDATE: 160,
       CREATED_BY: 140,
-      LAST_UPDATED_BY: 140,
+      LAST_UPDATED_BY: 180,
       MEMBERS: 110,
       ACTIONS: 70,
+    },
+    // Measured natural widths of the toolbar row: ~448px by default and ~604px in
+    // bulk mode. Below these the controls fall back to icons.
+    TOOLBAR_COMPACT_WIDTH: {
+      DEFAULT: 500,
+      BULK: 660,
     },
     MODAL_WIDTH: 360,
   },

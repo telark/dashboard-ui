@@ -31,6 +31,7 @@ export const DEFAULT_COLORS = {
   // shadows, and still sit below CHIP_CUSTOM_BG used inside them.
   SUCCESS_TINT: 'rgba(32, 201, 151, 0.12)',
   DANGER_TINT: 'rgba(255, 77, 79, 0.12)',
+  WARNING_TINT: 'rgba(250, 173, 20, 0.12)',
   SURFACE_ELEVATED: '#161f2e',
   SURFACE_ELEVATED_HOVER: '#1c2738',
   BORDER_ELEVATED: '#2a3648',

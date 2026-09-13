@@ -1,9 +1,8 @@
 import React from 'react';
 import { DatePicker as AntDatePicker } from 'antd';
 import type { Dayjs } from 'dayjs';
-import dayjs from 'dayjs';
 import '../../../styles/datePicker.css';
-import { getDisabledTimeForFutureDates } from '../../../utils/layout';
+import { fromZonedDayjs, getDisabledTimeForFutureDates, toZonedDayjs } from '../../../utils/layout';
 
 export interface DisabledTimeConfig {
   disabledHours?: () => number[];
@@ -41,7 +40,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
     if (onChange && date) {
       // Always set seconds to 00
       const dateWithZeroSeconds = date.second(0).millisecond(0);
-      onChange(dateWithZeroSeconds, dateString);
+      onChange(fromZonedDayjs(dateWithZeroSeconds), dateString);
     } else if (onChange) {
       onChange(null, dateString);
     }
@@ -50,7 +49,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   return (
     <div className="custom-date-picker-wrapper">
       <AntDatePicker
-        value={typeof value === 'string' ? dayjs(value) : value}
+        value={value ? toZonedDayjs(value) : null}
         onChange={handleChange}
         placeholder={placeholder}
         format={format}

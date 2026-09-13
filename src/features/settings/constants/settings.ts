@@ -5,6 +5,8 @@ import {
   AuditOutlined,
   RobotOutlined,
   LoginOutlined,
+  InfoCircleOutlined,
+  GlobalOutlined,
 } from '@ant-design/icons';
 import { BsLockFill } from 'react-icons/bs';
 import type { ComponentType, CSSProperties } from 'react';
@@ -12,11 +14,13 @@ import type { ComponentType, CSSProperties } from 'react';
 export type SettingsSectionKey =
   | 'profile'
   | 'appearance'
+  | 'timezone'
   | 'security'
   | 'aiInsights'
   | 'insightsGovernance'
   | 'identityProvider'
-  | 'myPermissions';
+  | 'myPermissions'
+  | 'about';
 
 export interface SettingsSectionConfig {
   key: SettingsSectionKey;
@@ -40,8 +44,14 @@ export const SETTINGS_CONSTANTS = {
     APPEARANCE: {
       key: 'appearance' as const,
       label: 'Appearance',
-      description: 'Theme, layout, and display options',
+      description: 'Theme options',
       icon: BulbOutlined,
+    },
+    TIMEZONE: {
+      key: 'timezone' as const,
+      label: 'Timezone',
+      description: 'Time zone and region used to display dates and times.',
+      icon: GlobalOutlined,
     },
     SECURITY: {
       key: 'security' as const,
@@ -72,6 +82,12 @@ export const SETTINGS_CONSTANTS = {
       label: 'My Permissions',
       description: 'Your effective permissions resolved across all assigned roles.',
       icon: BsLockFill,
+    },
+    ABOUT: {
+      key: 'about' as const,
+      label: 'About',
+      description: 'Version, documentation, and third-party licenses.',
+      icon: InfoCircleOutlined,
     },
   },
   SIDEBAR: {
@@ -106,9 +122,11 @@ export const SETTINGS_CONSTANTS = {
 export const SETTINGS_SECTIONS_LIST: SettingsSectionConfig[] = [
   SETTINGS_CONSTANTS.SECTIONS.PROFILE,
   SETTINGS_CONSTANTS.SECTIONS.APPEARANCE,
+  SETTINGS_CONSTANTS.SECTIONS.TIMEZONE,
   SETTINGS_CONSTANTS.SECTIONS.MY_PERMISSIONS,
   SETTINGS_CONSTANTS.SECTIONS.SECURITY,
   SETTINGS_CONSTANTS.SECTIONS.AI_INSIGHTS,
   SETTINGS_CONSTANTS.SECTIONS.AI_DATA,
   SETTINGS_CONSTANTS.SECTIONS.IDENTITY_PROVIDER,
+  SETTINGS_CONSTANTS.SECTIONS.ABOUT,
 ];

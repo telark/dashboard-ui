@@ -16,6 +16,8 @@ import {
   retryPersistConfig,
   groupsPersistConfig,
   usersPersistConfig,
+  rolesPersistConfig,
+  protectionPlansPersistConfig,
   globalConfigPersistConfig,
 } from './persistConfig';
 
@@ -23,6 +25,11 @@ const persistedApplicationsReducer = persistReducer(applicationsPersistConfig, a
 const persistedRetryReducer = persistReducer(retryPersistConfig, retryReducer);
 const persistedGroupsReducer = persistReducer(groupsPersistConfig, groupsReducer);
 const persistedUsersReducer = persistReducer(usersPersistConfig, usersReducer);
+const persistedRolesReducer = persistReducer(rolesPersistConfig, rolesReducer);
+const persistedProtectionPlansReducer = persistReducer(
+  protectionPlansPersistConfig,
+  protectionPlansReducer,
+);
 const persistedGlobalConfigReducer = persistReducer(globalConfigPersistConfig, globalConfigReducer);
 
 const store = configureStore({
@@ -33,12 +40,12 @@ const store = configureStore({
     groups: persistedGroupsReducer,
     users: persistedUsersReducer,
     categories: categoriesReducer,
-    roles: rolesReducer,
+    roles: persistedRolesReducer,
     passkeys: passkeyReducer,
     permissions: permissionsReducer,
     authConfig: authConfigReducer,
     notifications: notificationsReducer,
-    protectionPlans: protectionPlansReducer,
+    protectionPlans: persistedProtectionPlansReducer,
     apiHealth: apiHealthReducer,
   },
   middleware: (getDefaultMiddleware) =>

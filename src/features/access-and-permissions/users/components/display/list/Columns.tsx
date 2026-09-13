@@ -1,5 +1,6 @@
 import { USERS_CONSTANTS as UC } from '../../../constants';
-import { DEFAULT_COLORS, Icons } from '../../../../../../constants';
+import { DEFAULT_COLORS, Icons, TIME_FORMATS } from '../../../../../../constants';
+import { formatDateTime } from '../../../../../../utils/shared/time';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
 import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
@@ -85,7 +86,7 @@ const Columns = (ctx: GenerateColumnCtx, groups: Group[] = []) => {
         label: UC.LABELS.COLUMNS.CREATED,
         icon: <AiOutlineCalendar />,
         width: UC.SIZES.COLUMNS.CREATED,
-        render: (value: string) => <span>{new Date(value).toLocaleDateString()}</span>,
+        render: (value: string) => <span>{formatDateTime(value, TIME_FORMATS.SHORT)}</span>,
       },
       ctx,
     ),

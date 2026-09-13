@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { Empty } from 'antd';
 import type { PageLayoutConfig } from '../../../../../interfaces/layout/page';
+import type { FilterChip } from '../../../../../interfaces/layout/toolbar';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import { DEFAULT_COLORS, Icons } from '../../../../../constants';
-import { useAppearance } from '../../../../../features/settings/sections/appearance';
 import { useCategories } from '../../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../../categories/constants';
 import { useCategoryListView } from '../../../categories/hooks';
@@ -13,6 +13,7 @@ import { Columns } from '../../components/display/list/Columns';
 import { RoleActionsColumn } from '../../components/display/list/RoleActionsColumn';
 import { useRoleListConfig } from '../../config/roleListConfig';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
+import { canDeleteRole } from '../../utils';
 import type { Role } from '../../models';
 import type { Category } from '../../../categories/models';
 import { useUsers } from '../../../users/hooks';
@@ -30,6 +31,9 @@ interface UseRoleListPageConfigOptions {
   sortOrder: 'asc' | 'desc';
   selectedRoles: React.Key[];
   setSelectedRoles: (keys: React.Key[]) => void;
+  bulkMode: boolean;
+  onToggleBulkMode: () => void;
+  onBulkDeleteClick: () => void;
   currentPage: number;
   setCurrentPage: (page: number) => void;
   pageSize: number;
@@ -46,6 +50,11 @@ interface UseRoleListPageConfigOptions {
   searchValue: string;
   onSearchChange: (value: string) => void;
   onSearchSubmit?: () => void;
+  filterChips: FilterChip[];
+  overflowChipsCount: number;
+  onRemoveFilterChip: (key: string, value: string) => void;
+  hasActiveFilters: boolean;
+  onClearAllFilters: () => void;
 }
 
 export const useRoleListPageConfig = ({
@@ -57,6 +66,9 @@ export const useRoleListPageConfig = ({
   sortOrder,
   selectedRoles,
   setSelectedRoles,
+  bulkMode,
+  onToggleBulkMode,
+  onBulkDeleteClick,
   currentPage,
   setCurrentPage,
   pageSize,
@@ -73,9 +85,12 @@ export const useRoleListPageConfig = ({
   searchValue,
   onSearchChange,
   onSearchSubmit,
+  filterChips,
+  overflowChipsCount,
+  onRemoveFilterChip,
+  hasActiveFilters,
+  onClearAllFilters,
 }: UseRoleListPageConfigOptions): PageLayoutConfig<Role | Category> => {
-  const { rowHeight } = useAppearance();
-
   const {
     sortKey: categorySortKey,
     currentPage: categoryCurrentPage,
@@ -97,7 +112,17 @@ export const useRoleListPageConfig = ({
     ACTION_PERMISSIONS.roles.addCategory.level,
     ACTION_PERMISSIONS.roles.addCategory.deny,
   );
-  const { toolbarConfig } = useRoleListConfig({
+  const canBulkDeleteRole = usePermission(
+    ACTION_PERMISSIONS.roles.delete.scope,
+    ACTION_PERMISSIONS.roles.delete.level,
+    ACTION_PERMISSIONS.roles.delete.deny,
+  );
+  const selectionHasProtectedRole = useMemo(() => {
+    const selected = new Set(selectedRoles);
+    return sortedRoles.some((role) => selected.has(role.id) && !canDeleteRole(role));
+  }, [selectedRoles, sortedRoles]);
+  const isRolesView = viewMode === 'roles';
+  const { listToolbar } = useRoleListConfig({
     viewMode,
     onViewModeChange: setViewMode,
     searchValue,
@@ -109,6 +134,19 @@ export const useRoleListPageConfig = ({
     onAddCategoryClick,
     canViewRoleCategories,
     canAddRoleCategory,
+    totalCount: isRolesView ? sortedRoles.length : sortedCategories.length,
+    pageCount: paginatedRoles.length,
+    selectedRolesCount: selectedRoles.length,
+    bulkMode,
+    onToggleBulkMode,
+    onBulkDeleteClick,
+    canBulkDeleteRole,
+    selectionHasProtectedRole,
+    filterChips,
+    overflowChipsCount,
+    onRemoveFilterChip,
+    hasActiveFilters,
+    onClearAllFilters,
   });
 
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.ROLES);
@@ -153,7 +191,7 @@ export const useRoleListPageConfig = ({
       title: RC.LABELS.HEADER_TITLE,
       subtitle: RC.LABELS.HEADER_SUBTITLE,
       breadcrumbs,
-      toolbar: toolbarConfig,
+      listToolbar,
       columns:
         viewMode === 'roles'
           ? [
@@ -188,7 +226,6 @@ export const useRoleListPageConfig = ({
             ],
       data: (viewMode === 'roles' ? paginatedRoles : paginatedCategories) as (Role | Category)[],
       rowKey: (record: Role | Category) => record.id,
-      containerStyle: { marginTop: '0', paddingBottom: '48px' },
       pagination:
         viewMode === 'roles'
           ? {
@@ -216,7 +253,7 @@ export const useRoleListPageConfig = ({
               showRowsLabel: RC.LABELS.PAGINATION.SHOW_ROWS,
             },
       rowSelection:
-        viewMode === 'roles'
+        isRolesView && bulkMode
           ? {
               selectedRowKeys: selectedRoles,
               onChange: (keys: React.Key[]) => setSelectedRoles(keys),
@@ -226,7 +263,6 @@ export const useRoleListPageConfig = ({
         viewMode === 'roles'
           ? (record: Role | Category) => handleViewRole(record as Role)
           : undefined,
-      rowHeight,
       empty: (
         <Empty
           description={
@@ -240,7 +276,11 @@ export const useRoleListPageConfig = ({
     }),
     [
       breadcrumbs,
-      toolbarConfig,
+      listToolbar,
+      isRolesView,
+      bulkMode,
+      selectedRoles,
+      setSelectedRoles,
       viewMode,
       roleColumns,
       categoryColumns,
@@ -252,15 +292,12 @@ export const useRoleListPageConfig = ({
       categoryCurrentPage,
       categoryPageSize,
       sortedCategories.length,
-      selectedRoles,
       handleViewRole,
       handleEditRole,
       setCurrentPage,
       setPageSize,
-      setSelectedRoles,
       setCategoryCurrentPage,
       setCategoryPageSize,
-      rowHeight,
       onEditCategory,
     ],
   );

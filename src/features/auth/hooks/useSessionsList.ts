@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { getSessionsList, getSessionDetails, deleteSession } from '../clients/session';
-import { getSessionToken } from '../utils/session/token';
+import { getSessionToken, getCurrentSessionName } from '../utils/session/token';
 import { getCurrentUser } from '../utils/session/user';
 import type { SessionDetails } from '../models/session';
 
@@ -10,7 +10,7 @@ export interface UseSessionsListResult {
   error: string | null;
   refetch: () => Promise<void>;
   revokeSession: (
-    sessionToken: string,
+    sessionName: string,
     options: { onRevokedCurrentSession?: () => void },
   ) => Promise<void>;
 }
@@ -20,7 +20,11 @@ const resolveSessionsFromToken = async (): Promise<SessionDetails[]> => {
   if (!currentToken) return [];
   try {
     const single = await getSessionDetails(currentToken);
-    return single?.data ? [single.data] : [];
+    if (!single?.data) return [];
+    // The single-session response carries no metadata, so name it here — the
+    // rest of the UI addresses a session by its resource name.
+    const name = await getCurrentSessionName();
+    return [name ? { ...single.data, metadata: { name } } : single.data];
   } catch {
     return [];
   }
@@ -93,13 +97,13 @@ export const useSessionsList = (): UseSessionsListResult => {
 
   const revokeSession = useCallback(
     async (
-      sessionToken: string,
+      sessionName: string,
       { onRevokedCurrentSession }: { onRevokedCurrentSession?: () => void },
     ) => {
       try {
-        await deleteSession(sessionToken);
-        const currentToken = getSessionToken();
-        if (currentToken === sessionToken && onRevokedCurrentSession) {
+        await deleteSession(sessionName);
+        const currentSessionName = await getCurrentSessionName();
+        if (currentSessionName === sessionName && onRevokedCurrentSession) {
           onRevokedCurrentSession();
         } else {
           await fetchSessions();

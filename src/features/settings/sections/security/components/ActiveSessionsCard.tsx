@@ -12,8 +12,8 @@ const ActiveSessionsCard: React.FC = memo(() => {
   const { sessions, loading, error, revokeSession } = useSessionsList();
   const {
     sessionToRevoke,
-    revokingToken,
-    currentToken,
+    revokingSessionName,
+    currentSessionName,
     handleRevokeClick,
     handleRevokeConfirm,
     closeRevokeModal,
@@ -21,11 +21,11 @@ const ActiveSessionsCard: React.FC = memo(() => {
   } = useSessionRevoke({ revokeSession });
 
   const sortedSessions = useMemo(() => {
-    if (!currentToken) return sessions;
-    const current = sessions.find((s) => s.sessionToken === currentToken);
-    const rest = sessions.filter((s) => s.sessionToken !== currentToken);
+    if (!currentSessionName) return sessions;
+    const current = sessions.find((s) => s.metadata?.name === currentSessionName);
+    const rest = sessions.filter((s) => s.metadata?.name !== currentSessionName);
     return current ? [current, ...rest] : sessions;
-  }, [sessions, currentToken]);
+  }, [sessions, currentSessionName]);
 
   return (
     <>
@@ -37,8 +37,8 @@ const ActiveSessionsCard: React.FC = memo(() => {
           sessions={sortedSessions}
           loading={loading}
           error={error}
-          currentToken={currentToken}
-          revokingToken={revokingToken}
+          currentSessionName={currentSessionName}
+          revokingSessionName={revokingSessionName}
           onRevokeClick={handleRevokeClick}
         />
       </SettingsCard>
@@ -47,7 +47,7 @@ const ActiveSessionsCard: React.FC = memo(() => {
         message={revokeModalMessage}
         onConfirm={handleRevokeConfirm}
         onCancel={closeRevokeModal}
-        confirming={revokingToken !== null}
+        confirming={revokingSessionName !== null}
       />
     </>
   );

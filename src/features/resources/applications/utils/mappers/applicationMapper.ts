@@ -58,7 +58,7 @@ const DEFAULT_RESOURCE_SUMMARY: Application['resourceSummary'] = {
 
 export const mapApplicationsData = (data: unknown): Application[] => {
   const items = extractItemsFromResponse<Application>(data);
-  return items.map(mapApplication);
+  return items.map(mapApplicationListItem);
 };
 
 export const mapSingleApplicationData = (data: unknown): Application => {
@@ -90,5 +90,26 @@ const mapApplication = (item: Application): Application => {
     managed: item.managed || DEFAULT_MANAGED,
     metrics: item.metrics || DEFAULT_METRICS,
     history: item.history || DEFAULT_HISTORY,
+  };
+};
+
+/**
+ * List rows (ApplicationCard, GlobalView) only read metrics.derived and
+ * history.hasDrift/generation/lastModifiedAt — never metrics.workloads,
+ * history.changeLog, resources, snapshots or rollbacks. Those are unbounded,
+ * detail-only arrays that would otherwise sit deeply nested in every list
+ * item, bloating the Redux `applications` array on every poll and slowing
+ * down ImmutableStateInvariantMiddleware / redux-persist on every dispatch.
+ * mapSingleApplicationData (details view) keeps the full payload.
+ */
+const mapApplicationListItem = (item: Application): Application => {
+  const mapped = mapApplication(item);
+  return {
+    ...mapped,
+    resources: [],
+    snapshots: [],
+    rollbacks: [],
+    metrics: { ...mapped.metrics, workloads: [] },
+    history: { ...mapped.history, changeLog: [] },
   };
 };

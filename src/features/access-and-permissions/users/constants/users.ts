@@ -185,6 +185,12 @@ export const USERS_CONSTANTS = {
           MANAGE_GROUPS: 'Manage Groups',
         },
       },
+      COUNT_SUFFIX: 'members',
+      MORE: 'More',
+      BULK: {
+        SELECT: 'Bulk',
+        EXIT: 'Exit bulk',
+      },
     },
     EMPTY: {
       NO_USERS_FOUND: 'No Users Found',
@@ -206,6 +212,9 @@ export const USERS_CONSTANTS = {
     ROLES: 'assignedRolesIDs',
     CREATION_DATE: 'creationDate',
     ACTIONS: 'actions',
+    MORE_MENU_BULK: 'bulk',
+    FILTER_STATUS: 'status',
+    FILTER_STATUS_ALL: 'all',
   } as const,
   SIZES: {
     ROW_HEIGHT: 32,
@@ -216,8 +225,16 @@ export const USERS_CONSTANTS = {
       FULLNAME: 180,
       EMAIL: 220,
       ROLE: 120,
-      CREATED: 120,
+      // Narrower wraps the "Creation Date" header onto two lines.
+      CREATED: 160,
       ACTIONS: 50,
+    },
+    // Measured natural widths of the toolbar row: ~475px by default and ~628px in
+    // bulk mode (selection count + actions). Below these the controls fall back to
+    // icons instead of overflowing into a scroll.
+    TOOLBAR_COMPACT_WIDTH: {
+      DEFAULT: 530,
+      BULK: 680,
     },
     MODAL_WIDTH: 360,
   },

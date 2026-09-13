@@ -1,5 +1,6 @@
 import type { Role, RolesSortKey } from '../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
+import { toTimestamp } from '../../../../../../utils/shared/time';
 
 export const getPermissionCount = (role: Role): number => {
   if (!role.scopesAndPermissions || role.scopesAndPermissions.length === 0) {
@@ -34,11 +35,7 @@ export const sortRoles = (
       case RPC.KEYS.TYPE:
         return (a, b) => compareStrings(a.type, b.type);
       case RPC.KEYS.CREATED_AT:
-        return (a, b) =>
-          compareNumbers(
-            new Date(a.creationDate || 0).getTime(),
-            new Date(b.creationDate || 0).getTime(),
-          );
+        return (a, b) => compareNumbers(toTimestamp(a.creationDate), toTimestamp(b.creationDate));
       case RPC.KEYS.STATUS: {
         const order = { [RPC.STATUS.INACTIVE]: 0, [RPC.STATUS.ACTIVE]: 1 } as const;
         return (a, b) => compareNumbers(order[a.status], order[b.status]);

@@ -88,13 +88,13 @@ export interface SessionsTableProps {
   sessions: SessionDetails[];
   loading: boolean;
   error: string | null;
-  currentToken: string | null;
-  revokingToken: string | null;
+  currentSessionName: string | null;
+  revokingSessionName: string | null;
   onRevokeClick: (session: SessionDetails) => void;
 }
 
 const SessionsTable: React.FC<SessionsTableProps> = memo(
-  ({ sessions, loading, error, currentToken, revokingToken, onRevokeClick }) => (
+  ({ sessions, loading, error, currentSessionName, revokingSessionName, onRevokeClick }) => (
     <div style={{ overflowX: 'auto' }}>
       <div style={{ minWidth: SESSION_TABLE_MIN_WIDTH }}>
         <div style={tableHeaderStyle}>
@@ -114,9 +114,10 @@ const SessionsTable: React.FC<SessionsTableProps> = memo(
           sessions.length > 0 &&
           sessions.map((session) => {
             const expired = isSessionExpired(session.expiresTimestamp);
-            const isCurrent = session.sessionToken === currentToken;
+            const sessionName = session.metadata?.name;
+            const isCurrent = sessionName === currentSessionName;
             return (
-              <div key={session.sessionToken} style={rowStyle}>
+              <div key={sessionName ?? session.createdTimestamp} style={rowStyle}>
                 <span style={{ minWidth: 0 }}>
                   <div style={{ fontWeight: isCurrent ? 600 : undefined, ...truncateCellStyle }}>
                     {session.deviceMetadata?.device
@@ -174,7 +175,7 @@ const SessionsTable: React.FC<SessionsTableProps> = memo(
                       type="button"
                       style={revokeButtonStyle}
                       onClick={() => onRevokeClick(session)}
-                      disabled={revokingToken === session.sessionToken}
+                      disabled={revokingSessionName === sessionName}
                     >
                       {LABELS.SESSIONS_REVOKE}
                     </button>

@@ -1,4 +1,14 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
+import {
+  buildFilterChips,
+  hasAnyAppliedFilter,
+  removeFilterChip,
+  splitFilterChips,
+} from '../../../../../utils/layout/filters';
+import { USERS_CONSTANTS as UC } from '../../constants';
+
+// The status filter starts on "all", which filters nothing.
+const FILTER_DEFAULTS = { [UC.KEYS.FILTER_STATUS]: UC.KEYS.FILTER_STATUS_ALL };
 
 export const useUserFilters = () => {
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
@@ -20,6 +30,19 @@ export const useUserFilters = () => {
     setAppliedFilters({});
   }, []);
 
+  const handleRemoveFilterChip = useCallback((key: string, value: string) => {
+    setAppliedFilters((current) => removeFilterChip(current, key, value));
+  }, []);
+
+  const { visible: filterChips, overflowCount: overflowChipsCount } = useMemo(
+    () => splitFilterChips(buildFilterChips(appliedFilters, FILTER_DEFAULTS)),
+    [appliedFilters],
+  );
+  const hasActiveFilters = useMemo(
+    () => hasAnyAppliedFilter(appliedFilters, FILTER_DEFAULTS),
+    [appliedFilters],
+  );
+
   return {
     filterPanelOpen,
     openFilterPanel,
@@ -28,5 +51,9 @@ export const useUserFilters = () => {
     handleFilterChange,
     handleFilterApply,
     handleFilterReset,
+    handleRemoveFilterChip,
+    filterChips,
+    overflowChipsCount,
+    hasActiveFilters,
   };
 };

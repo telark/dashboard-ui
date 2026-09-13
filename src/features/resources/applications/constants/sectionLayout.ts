@@ -111,7 +111,6 @@ export const APPLICATION_WORKLOAD_METRICS = {
   /** Fraction of the limit above which usage turns amber, then red at 1. */
   WARN_RATIO: 0.85,
   PAGE_SIZE: 5,
-  PAGINATION_CLASS: 'applications-pagination',
   PAGINATION_GAP_PX: 12,
   MAX_INSTANCES: 3,
   MAX_CONTAINERS: 4,

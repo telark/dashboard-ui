@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { format, formatDistanceToNow } from 'date-fns';
 import { Popover } from 'antd';
 
 import { TIME_FORMATS, TIME_REMAINING, TIME_TEXTS } from '../../../constants';
+import { formatDateTime, formatTimeAgo, parseDate } from '../../../utils/shared/time';
 
 interface TimeRemainingProps {
   date: string | Date;
@@ -32,13 +32,12 @@ function formatRemaining(msLeft: number): string {
 
 const TimeRemaining: React.FC<TimeRemainingProps> = React.memo(
   ({ date, prefix, endedPrefix = TIME_REMAINING.ENDED, formatString = TIME_FORMATS.DATE_TIME }) => {
-    const parsedDate = useMemo(() => new Date(date), [date]);
-    const isValidDate = useMemo(() => !Number.isNaN(parsedDate.getTime()), [parsedDate]);
+    const parsedDate = useMemo(() => parseDate(date), [date]);
 
     const [now, setNow] = useState(() => Date.now());
 
     useEffect(() => {
-      if (!isValidDate) return;
+      if (!parsedDate) return;
       let timeoutId: ReturnType<typeof setTimeout>;
       const schedule = () => {
         const msLeft = parsedDate.getTime() - Date.now();
@@ -53,15 +52,15 @@ const TimeRemaining: React.FC<TimeRemainingProps> = React.memo(
       };
       schedule();
       return () => clearTimeout(timeoutId);
-    }, [parsedDate, isValidDate]);
+    }, [parsedDate]);
 
-    if (!isValidDate) return <>{TIME_TEXTS.INVALID_DATE}</>;
+    if (!parsedDate) return <>{TIME_TEXTS.INVALID_DATE}</>;
 
-    const exact = format(parsedDate, formatString);
+    const exact = formatDateTime(parsedDate, formatString);
     const msLeft = parsedDate.getTime() - now;
 
     if (msLeft <= 0) {
-      const ago = formatDistanceToNow(parsedDate, { addSuffix: true });
+      const ago = formatTimeAgo(parsedDate);
       return <Popover content={exact}>{`${endedPrefix} ${ago}`}</Popover>;
     }
 

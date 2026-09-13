@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import type { DateRangeFilter } from '../../../../../interfaces/date/filter';
+import { endOfZonedDay, startOfZonedDay } from '../../../../../utils/layout';
 
 export const filterByDateRange = <T>(
   items: T[],
@@ -8,8 +9,8 @@ export const filterByDateRange = <T>(
 ): T[] => {
   if (!dateRange?.from && !dateRange?.to) return items;
 
-  const from = dateRange.from ? dayjs(dateRange.from).startOf('day') : null;
-  const to = dateRange.to ? dayjs(dateRange.to).endOf('day') : null;
+  const from = dateRange.from ? startOfZonedDay(dateRange.from) : null;
+  const to = dateRange.to ? endOfZonedDay(dateRange.to) : null;
 
   return items.filter((item) => {
     const value = getDate(item);

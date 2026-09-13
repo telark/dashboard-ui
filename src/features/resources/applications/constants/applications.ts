@@ -6,6 +6,11 @@ export const APPLICATIONS_PERSIST_KEY = 'persist:applications';
 export const APPLICATIONS_SYNC_RETRY_INTERVAL_MS = 60000;
 export const APPLICATIONS_PAGE_SIZE = 10;
 
+// Snapshot manifests can carry a full rendered YAML blob each; caching every
+// one ever opened this session would grow the store unbounded, so the cache
+// evicts the least-recently-opened entry once it's full.
+export const SNAPSHOT_MANIFEST_CACHE_LIMIT = 20;
+
 export const FORCE_SYNC_PHASE = {
   QUEUED: 'queued',
   RUNNING: 'running',

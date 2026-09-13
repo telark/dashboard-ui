@@ -1,7 +1,12 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
+import { readFileSync } from 'node:fs';
 import type { Plugin } from 'vite';
+
+const { version: appVersion } = JSON.parse(
+  readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8'),
+) as { version: string };
 
 const performancePlugin = (): Plugin => ({
   name: 'performance-hints',
@@ -45,6 +50,7 @@ export default defineConfig(async ({ mode }) => {
       process: '{"env":{"NODE_ENV":"production"}}',
       __DEV__: JSON.stringify(false),
       __IN_CLUSTER__: JSON.stringify(mode === 'cluster'),
+      __APP_VERSION__: JSON.stringify(appVersion),
     },
     resolve: {
       alias: {

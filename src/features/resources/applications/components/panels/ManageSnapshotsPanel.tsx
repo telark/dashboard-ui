@@ -7,7 +7,7 @@ import {
   SlideOutPanel,
   ExpandPanelButton,
 } from '../../../../../components/display/panels/slide-out';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, LIST_TOOLBAR } from '../../../../../constants';
 import Toolbar from '../../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import { APPLICATIONS_UI } from '../../constants/texts';
@@ -305,7 +305,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
               <EmptyState title={snapUi.EMPTY_TITLE} description={snapUi.EMPTY_DESCRIPTION} />
             )
           ) : (
-            <div className={compareMode ? 'applications-bulk-select' : undefined}>
+            <div className={compareMode ? LIST_TOOLBAR.BULK_SELECT_CLASS : undefined}>
               {mergedSnapshots.map((s, idx) => (
                 <ApplicationSnapshotRow
                   key={applicationSnapshotStableKey(s)}

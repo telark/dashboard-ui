@@ -41,7 +41,8 @@ export interface TablePaginationConfig {
   pageSize: number;
   total: number;
   onPageChange: (page: number) => void;
-  onPageSizeChange: (size: number) => void;
-  pageSizeOptions: number[];
+  /** Omit both to hide the page-size select. */
+  onPageSizeChange?: (size: number) => void;
+  pageSizeOptions?: number[];
   showRowsLabel?: string;
 }

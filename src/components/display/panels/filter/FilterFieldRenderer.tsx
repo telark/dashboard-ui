@@ -5,6 +5,7 @@ import { FILTER_PANEL, FILTER_PANEL_CONFIG } from '../../../../constants';
 import type { FilterField, FilterFieldType } from './FilterPanel';
 import type { Dayjs } from 'dayjs';
 import FilterButtonGroup from './FilterButtonGroup';
+import { toZonedDayjs } from '../../../../utils/layout';
 
 interface FilterFieldRendererProps {
   field: FilterField;
@@ -20,11 +21,11 @@ const FilterFieldRenderer: React.FC<FilterFieldRendererProps> = ({ field, value,
     };
     const disableFromDate = (current: Dayjs) => {
       if (!dateRange.to) return false;
-      return current.isAfter(dateRange.to, 'day');
+      return current.isAfter(toZonedDayjs(dateRange.to), 'day');
     };
     const disableToDate = (current: Dayjs) => {
       if (!dateRange.from) return false;
-      return current.isBefore(dateRange.from, 'day');
+      return current.isBefore(toZonedDayjs(dateRange.from), 'day');
     };
     return (
       <div key={field.key} style={FILTER_PANEL.SECTION}>

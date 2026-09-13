@@ -1,7 +1,27 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { Application, ApplicationsState, SyncStatusValue } from '../../models';
-import { FORCE_SYNC_PHASE } from '../../constants';
+import type {
+  Application,
+  ApplicationsState,
+  SnapshotManifestState,
+  SyncStatusValue,
+} from '../../models';
+import { FORCE_SYNC_PHASE, SNAPSHOT_MANIFEST_CACHE_LIMIT } from '../../constants';
 import { STORE_ERRORS } from '../../../../../constants/store/store';
+
+// Re-inserting the key on every open moves it to the end of the object's key
+// order, which is what lets "oldest key" == "least recently opened" below.
+function setSnapshotManifestEntry(
+  state: ApplicationsState,
+  manifestKey: string,
+  entry: SnapshotManifestState,
+): void {
+  delete state.snapshotManifests[manifestKey];
+  state.snapshotManifests[manifestKey] = entry;
+  const keys = Object.keys(state.snapshotManifests);
+  for (let i = 0; i < keys.length - SNAPSHOT_MANIFEST_CACHE_LIMIT; i += 1) {
+    delete state.snapshotManifests[keys[i]];
+  }
+}
 
 function applyForceSyncStateFromApplications(state: ApplicationsState, apps: Application[]): void {
   if (!state.syncStatus) state.syncStatus = {};
@@ -137,4 +157,32 @@ export const handleDeleteApplicationFulfilled = (
     state.details = null;
   }
   state.error = null;
+};
+
+export const handleFetchSnapshotManifestPending = (
+  state: ApplicationsState,
+  action: { meta: { arg: { manifestKey: string } } },
+) => {
+  const { manifestKey } = action.meta.arg;
+  setSnapshotManifestEntry(state, manifestKey, { loading: true, error: null, data: null });
+};
+
+export const handleFetchSnapshotManifestFulfilled = (
+  state: ApplicationsState,
+  action: PayloadAction<{ manifestKey: string; data: unknown }>,
+) => {
+  const { manifestKey, data } = action.payload;
+  setSnapshotManifestEntry(state, manifestKey, { loading: false, error: null, data });
+};
+
+export const handleFetchSnapshotManifestRejected = (
+  state: ApplicationsState,
+  action: PayloadAction<unknown, string, { arg: { manifestKey: string } }>,
+) => {
+  const { manifestKey } = action.meta.arg;
+  setSnapshotManifestEntry(state, manifestKey, {
+    loading: false,
+    error: String(action.payload || ''),
+    data: null,
+  });
 };

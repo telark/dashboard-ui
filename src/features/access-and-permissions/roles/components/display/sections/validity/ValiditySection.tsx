@@ -3,7 +3,7 @@ import { Form, Select } from 'antd';
 import Section from '../../../../../../../components/display/sections/Section';
 import { Switch, NumberInput, DatePicker } from '../../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
-import dayjs from 'dayjs';
+import { zonedNow } from '../../../../../../../utils/layout';
 
 const ValiditySection: React.FC = memo(() => {
   const validityTypeOptions = [
@@ -107,7 +107,7 @@ const ValiditySection: React.FC = memo(() => {
                                 placeholder={RPC.VALIDITY.EXPIRES_AT_PLACEHOLDER}
                                 style={{ width: '100%' }}
                                 disabledDate={(current) =>
-                                  current ? current < dayjs().startOf('day') : false
+                                  current ? current < zonedNow().startOf('day') : false
                                 }
                               />
                             </Form.Item>

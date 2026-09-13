@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useSortState, sortData } from '../../../../../utils/layout/sort';
 import type { SortFieldConfig, SortOrder } from '../../../../../utils/layout/sort';
 import type { Group } from '../../models';
@@ -38,6 +38,8 @@ interface UseGroupListStateReturn {
   paginatedGroups: Group[];
   selectedCount: number;
   hasSelection: boolean;
+  bulkMode: boolean;
+  toggleBulkMode: () => void;
 }
 
 export const useGroupListState = (groups: Group[] | undefined): UseGroupListStateReturn => {
@@ -72,7 +74,17 @@ export const useGroupListState = (groups: Group[] | undefined): UseGroupListStat
   const selectedCount = selectedGroups.length;
   const hasSelection = selectedCount > 0;
 
+  const [bulkMode, setBulkMode] = useState(false);
+  // Leaving bulk mode hides the selection column, so a selection kept behind it
+  // would act on rows the user can no longer see.
+  const toggleBulkMode = useCallback(() => {
+    if (bulkMode) setSelectedGroups([]);
+    setBulkMode(!bulkMode);
+  }, [bulkMode]);
+
   return {
+    bulkMode,
+    toggleBulkMode,
     sortKey,
     sortOrder,
     selectedGroups,

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, message, App as AntdApp, ConfigProvider, theme } from 'antd';
 import { BrowserRouter as Router, useLocation, Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineSafety } from 'react-icons/ai';
 import Sidebar from './components/layout/sidebar/Sidebar';
 import Header from './components/layout/header/Header';
@@ -22,6 +22,8 @@ import { hasSessionToken, useSessionExpirationCheck } from './features/auth/util
 import { useInitializePermissions } from './features/auth/hooks';
 import { selectPermissionsState } from './features/auth/store/selectors/permissionsSelectors';
 import { AUTH_PERMISSIONS_LABELS, PERMISSION_GATE_BYPASS_PATHS } from './features/auth/constants';
+import { ensureGlobalConfigThunk } from './features/globalconfig/store';
+import type { AppDispatch } from './store';
 
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
 
@@ -50,6 +52,15 @@ const AppContent: React.FC = () => {
 
   // Initialize user permissions when authenticated
   useInitializePermissions(isAuthenticated);
+
+  // GlobalConfig is a guarded resource: fetching it before a session exists only
+  // earns a 401 on the login page.
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(ensureGlobalConfigThunk());
+    }
+  }, [isAuthenticated, dispatch]);
 
   const renderMainContent = () => {
     if (isAuthRoute) {
@@ -186,6 +197,20 @@ const App: React.FC = () => {
             Message: {
               contentBg: DEFAULT_COLORS.SURFACE_WHITE,
               colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
+            },
+            // The dark algorithm tints row and header borders blue; rows take the
+            // same muted hairline the rest of the dark surface uses.
+            // Selection reads as the same green tint as a selected application card,
+            // not a solid primary fill.
+            Table: {
+              borderColor: DEFAULT_COLORS.BORDER_LIGHT,
+              rowSelectedBg: DEFAULT_COLORS.SUCCESS_TINT,
+              rowSelectedHoverBg: DEFAULT_COLORS.SUCCESS_TINT,
+              rowHoverBg: DEFAULT_COLORS.HOVER_BG,
+              // The horizontal scrollbar track is drawn from colorSplit, which the
+              // dark algorithm also derives as blue.
+              colorSplit: DEFAULT_COLORS.BORDER_LIGHT,
+              stickyScrollBarBg: DEFAULT_COLORS.BORDER_HOVER,
             },
             Button: {
               primaryShadow: 'none',

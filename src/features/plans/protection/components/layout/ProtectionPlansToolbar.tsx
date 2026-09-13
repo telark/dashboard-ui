@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
-import { CONTROL_HEIGHT, DEFAULT_COLORS, Icons } from '../../../../../constants';
-import Toolbar from '../../../../../components/display/toolbar/Toolbar';
+import { SearchOutlined } from '@ant-design/icons';
+import { DEFAULT_COLORS, Icons, LIST_TOOLBAR, TOOLBAR_CONTROL } from '../../../../../constants';
+import { ListToolbar } from '../../../../../components/display/toolbar';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import {
@@ -18,6 +18,7 @@ interface ProtectionPlansToolbarProps {
   phaseQuickFilter: PlanPhaseQuickFilter;
   onPhaseQuickFilterChange: (next: PlanPhaseQuickFilter) => void;
   phaseCounts: Record<PlanPhaseQuickFilter, number>;
+  totalCount: number;
 }
 
 const PHASE_PILLS: { key: PlanPhaseQuickFilter; label: string }[] = [
@@ -34,6 +35,50 @@ const getPillAccent = (key: PlanPhaseQuickFilter): string => {
   return PHASE_DOT_COLOR[key as PlanPhase] ?? DEFAULT_COLORS.TEXT_MUTED;
 };
 
+interface PhasePillsProps {
+  active: PlanPhaseQuickFilter;
+  counts: Record<PlanPhaseQuickFilter, number>;
+  onChange: (next: PlanPhaseQuickFilter) => void;
+}
+
+const PhasePills: React.FC<PhasePillsProps> = ({ active, counts, onChange }) => (
+  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: '100%' }}>
+    {PHASE_PILLS.map((pill) => {
+      const isActive = active === pill.key;
+      const accent = getPillAccent(pill.key);
+      const count = counts[pill.key] ?? 0;
+      return (
+        <button
+          key={pill.key}
+          type="button"
+          onClick={() => onChange(pill.key)}
+          style={{
+            all: 'unset',
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            height: TOOLBAR_CONTROL.HEIGHT,
+            boxSizing: 'border-box',
+            padding: TOOLBAR_CONTROL.PADDING,
+            borderRadius: LIST_TOOLBAR.PILL_RADIUS_PX,
+            background: isActive ? `${accent}18` : DEFAULT_COLORS.CHIP_CUSTOM_BG,
+            border: `1px solid ${isActive ? accent : 'transparent'}`,
+            color: isActive ? accent : DEFAULT_COLORS.TEXT_MUTED,
+            fontSize: 12,
+            fontWeight: 700,
+            lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
+            userSelect: 'none',
+          }}
+        >
+          <span>{pill.label}</span>
+          <span style={{ opacity: 0.85 }}>· {count}</span>
+        </button>
+      );
+    })}
+  </div>
+);
+
 const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
   searchValue,
   onSearchChange,
@@ -42,6 +87,7 @@ const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
   phaseQuickFilter,
   onPhaseQuickFilterChange,
   phaseCounts,
+  totalCount,
 }) => {
   const canCreate = usePermission(
     ACTION_PERMISSIONS.protectionPlans.create.scope,
@@ -49,96 +95,54 @@ const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
     ACTION_PERMISSIONS.protectionPlans.create.deny,
   );
 
-  const toolbarConfig: ToolbarConfig = useMemo(() => {
-    const buttons: ToolbarConfig['buttons'] = [
-      {
-        key: 'search',
-        label: 'Search',
-        icon: <SearchOutlined />,
-        variant: 'ghost',
-      },
-      {
-        key: 'filter',
-        label: 'Filter',
-        icon: <FilterOutlined />,
-        variant: 'ghost',
-        onClick: onOpenFilters,
-      },
-    ];
-    if (canCreate) {
-      buttons.push({
-        key: 'create-plan',
-        label: PPC.LABELS.CREATE_BUTTON,
-        icon: <Icons.ProtectionPlans size={14} />,
-        variant: 'primary',
-        onClick: onCreatePlanClick,
-      });
-    }
-    return {
+  const toolbars: ToolbarConfig[] = useMemo(() => {
+    const search: ToolbarConfig = {
       search: {
-        placeholder: 'Search plans by name, type, or scope...',
+        placeholder: PPC.LABELS.TOOLBAR_SEARCH_PLACEHOLDER,
         value: searchValue,
         onChange: onSearchChange,
       },
-      buttons,
+      buttons: [
+        {
+          key: 'search',
+          label: PPC.LABELS.TOOLBAR_SEARCH_BUTTON,
+          icon: <SearchOutlined />,
+          variant: 'ghost',
+        },
+      ],
     };
-  }, [canCreate, onCreatePlanClick, onOpenFilters, onSearchChange, searchValue]);
-
-  const pillsNode = useMemo(() => {
-    return (
-      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-        {PHASE_PILLS.map((pill) => {
-          const active = phaseQuickFilter === pill.key;
-          const accent = getPillAccent(pill.key);
-          const background = active ? `${accent}18` : DEFAULT_COLORS.CHIP_CUSTOM_BG;
-          const borderColor = active ? accent : 'transparent';
-          const color = active ? accent : DEFAULT_COLORS.TEXT_MUTED;
-          const count = phaseCounts[pill.key] ?? 0;
-          return (
-            <button
-              key={pill.key}
-              type="button"
-              onClick={() => onPhaseQuickFilterChange(pill.key)}
-              style={{
-                all: 'unset',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                height: CONTROL_HEIGHT,
-                padding: '0 10px',
-                borderRadius: 999,
-                background,
-                border: `1px solid ${borderColor}`,
-                color,
-                fontSize: 12,
-                fontWeight: 700,
-                lineHeight: 1,
-                userSelect: 'none',
-              }}
-            >
-              <span>{pill.label}</span>
-              <span style={{ opacity: 0.85 }}>· {count}</span>
-            </button>
-          );
-        })}
-      </div>
-    );
-  }, [phaseQuickFilter, phaseCounts, onPhaseQuickFilterChange]);
+    if (!canCreate) return [search];
+    return [
+      search,
+      {
+        buttons: [
+          {
+            key: 'create-plan',
+            label: PPC.LABELS.CREATE_BUTTON,
+            icon: <Icons.ProtectionPlans size={14} />,
+            variant: 'primary',
+            onClick: onCreatePlanClick,
+          },
+        ],
+      },
+    ];
+  }, [canCreate, onCreatePlanClick, onSearchChange, searchValue]);
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 12,
-        width: '100%',
-      }}
-    >
-      {pillsNode}
-      <Toolbar config={toolbarConfig} />
-    </div>
+    <ListToolbar
+      totalCount={totalCount}
+      countSuffix={PPC.LABELS.TOOLBAR_COUNT_SUFFIX}
+      compactWidth={PPC.LABELS.TOOLBAR_COMPACT_WIDTH}
+      onOpenFilters={onOpenFilters}
+      quickFilter={() => (
+        <PhasePills
+          active={phaseQuickFilter}
+          counts={phaseCounts}
+          onChange={onPhaseQuickFilterChange}
+        />
+      )}
+      toolbars={toolbars}
+    />
   );
 };
 
