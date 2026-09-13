@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, message, App as AntdApp, ConfigProvider, theme } from 'antd';
 import { BrowserRouter as Router, useLocation, Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineSafety } from 'react-icons/ai';
 import Sidebar from './components/layout/sidebar/Sidebar';
 import Header from './components/layout/header/Header';
@@ -22,6 +22,8 @@ import { hasSessionToken, useSessionExpirationCheck } from './features/auth/util
 import { useInitializePermissions } from './features/auth/hooks';
 import { selectPermissionsState } from './features/auth/store/selectors/permissionsSelectors';
 import { AUTH_PERMISSIONS_LABELS, PERMISSION_GATE_BYPASS_PATHS } from './features/auth/constants';
+import { ensureGlobalConfigThunk } from './features/globalconfig/store';
+import type { AppDispatch } from './store';
 
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
 
@@ -50,6 +52,15 @@ const AppContent: React.FC = () => {
 
   // Initialize user permissions when authenticated
   useInitializePermissions(isAuthenticated);
+
+  // GlobalConfig is a guarded resource: fetching it before a session exists only
+  // earns a 401 on the login page.
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(ensureGlobalConfigThunk());
+    }
+  }, [isAuthenticated, dispatch]);
 
   const renderMainContent = () => {
     if (isAuthRoute) {

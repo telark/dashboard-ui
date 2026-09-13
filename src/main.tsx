@@ -8,7 +8,6 @@ import App from './App';
 import FullPageLoader from './components/display/views/FullPageLoader';
 import { clearOrphanedSyncing } from './features/resources/applications/store/slices/applicationsSlice';
 import { listApplicationSyncInFlight } from './features/resources/applications/utils/management/syncInFlight';
-import { ensureGlobalConfigThunk } from './features/globalconfig/store';
 import { AppearanceProvider } from './features/settings/sections/appearance';
 import { registerHealthInterceptors, selectServiceHealth } from './api';
 import './styles/index.css';
@@ -35,7 +34,6 @@ startTransition(() => {
           persistor={persistor}
           onBeforeLift={() => {
             store.dispatch(clearOrphanedSyncing(listApplicationSyncInFlight()));
-            store.dispatch(ensureGlobalConfigThunk());
           }}
         >
           <AppearanceProvider>
