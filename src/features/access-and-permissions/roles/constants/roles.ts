@@ -222,7 +222,7 @@ export const ROLES_CONSTANTS = {
     },
   },
   SCOPE: {
-    TITLE: 'Scope & Permissions',
+    TITLE: 'Scopes & Permissions',
     SUBTITLE: 'Define what areas this role can access and at what level.',
     LOCKED_MESSAGE: 'Scopes and permissions are locked for this role.',
     DEFAULT_AREAS: [

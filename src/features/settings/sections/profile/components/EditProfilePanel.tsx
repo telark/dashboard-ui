@@ -23,9 +23,9 @@ export interface EditProfilePanelProps {
   hasFormErrors: boolean;
   hasChanges: boolean;
   initialValues: EditProfileFormValues | null;
+  usernameRules: Array<{ validator: (a: unknown, b: string) => Promise<void> }>;
   fullnameRules: Array<{ validator: (a: unknown, b: string) => Promise<void> }>;
   emailRules: Array<{ validator: (a: unknown, b: string) => Promise<void> }>;
-  username: string;
 }
 
 const EditProfilePanel: React.FC<EditProfilePanelProps> = memo(
@@ -40,9 +40,9 @@ const EditProfilePanel: React.FC<EditProfilePanelProps> = memo(
     hasFormErrors,
     hasChanges,
     initialValues,
+    usernameRules,
     fullnameRules,
     emailRules,
-    username,
   }) => (
     <SlideOutPanel
       open={open}
@@ -51,14 +51,15 @@ const EditProfilePanel: React.FC<EditProfilePanelProps> = memo(
       subtitle={P.SUBTITLE}
       formContent={
         <>
-          <div style={{ marginBottom: 16 }}>
-            <label
-              style={{ display: 'block', fontSize: 12, color: 'rgba(0,0,0,0.65)', marginBottom: 4 }}
-            >
-              {P.USERNAME_LABEL}
-            </label>
-            <span style={{ fontSize: 14, color: 'rgba(0,0,0,0.85)' }}>{username}</span>
-          </div>
+          <LabeledInput
+            name="username"
+            label={P.USERNAME_LABEL}
+            placeholder={P.USERNAME_PLACEHOLDER}
+            required
+            rules={usernameRules}
+            marginBottom={16}
+            validateTrigger="onChange"
+          />
           <LabeledInput
             name="fullname"
             label={P.FULLNAME_LABEL}
