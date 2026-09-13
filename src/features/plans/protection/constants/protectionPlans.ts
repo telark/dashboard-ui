@@ -11,6 +11,15 @@ export const PROTECTION_PLANS_CONSTANTS = {
     LOADING_PLANS: 'Loading Plans...',
     CREATE_BUTTON: 'Create Plan',
     CREATE_BUTTON_TEXT: 'Create Plan',
+    TOOLBAR_SEARCH_PLACEHOLDER: 'Search plans by name, type, or scope...',
+    TOOLBAR_SEARCH_BUTTON: 'Search',
+    TOOLBAR_COUNT_SUFFIX: 'plans',
+    // Measured natural width of the toolbar row: count + 6 phase pills + filter
+    // + search + create. Below this the controls fall back to icons.
+    TOOLBAR_COMPACT_WIDTH: {
+      DEFAULT: 760,
+      BULK: 760,
+    },
     BREADCRUMBS: {
       ROOT: 'Protection Plans',
       CREATE: 'Create Plan',
@@ -59,6 +68,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
         DUPLICATE_PANEL_TITLE: 'Duplicate Plan',
         CANCEL: 'Cancel',
         EDIT: 'Edit',
+        MORE_LABEL: 'More',
         EDIT_DISABLED_TOOLTIP: 'Reactivate this plan before editing it.',
         REFRESH_HEALTH: 'Refresh health',
         CANCEL_MODAL_TITLE: 'Cancel Protection Plan',

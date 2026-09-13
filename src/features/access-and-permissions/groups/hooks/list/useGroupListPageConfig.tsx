@@ -2,10 +2,10 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Empty } from 'antd';
 import type { PageLayoutConfig } from '../../../../../interfaces/layout/page';
+import type { FilterChip } from '../../../../../interfaces/layout/toolbar';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import { Icons } from '../../../../../constants';
-import { useAppearance } from '../../../../../features/settings/sections/appearance';
 import { selectGroupsCategories } from '../../../categories/store/selectors/categorySelectors';
 import Columns from '../../components/display/list/Columns';
 import CategoryColumns from '../../../categories/components/display/list/CategoryColumns';
@@ -36,7 +36,6 @@ interface UseGroupListPageConfigOptions {
   setPageSize: (size: number) => void;
   sortedGroups: Group[];
   paginatedGroups: Group[];
-  hasSelection: boolean;
   handleViewGroup: (group: Group) => void;
   handleEditClick: (group: Group) => void;
   onCreateGroupClick: () => void;
@@ -52,6 +51,13 @@ interface UseGroupListPageConfigOptions {
   searchValue: string;
   onSearchChange: (value: string) => void;
   onSearchSubmit?: () => void;
+  bulkMode: boolean;
+  onToggleBulkMode: () => void;
+  filterChips: FilterChip[];
+  overflowChipsCount: number;
+  onRemoveFilterChip: (key: string, value: string) => void;
+  hasActiveFilters: boolean;
+  onClearAllFilters: () => void;
 }
 
 export const useGroupListPageConfig = ({
@@ -68,7 +74,6 @@ export const useGroupListPageConfig = ({
   setPageSize,
   sortedGroups,
   paginatedGroups,
-  hasSelection,
   handleViewGroup,
   handleEditClick,
   onCreateGroupClick,
@@ -83,8 +88,14 @@ export const useGroupListPageConfig = ({
   searchValue,
   onSearchChange,
   onSearchSubmit,
+  bulkMode,
+  onToggleBulkMode,
+  filterChips,
+  overflowChipsCount,
+  onRemoveFilterChip,
+  hasActiveFilters,
+  onClearAllFilters,
 }: UseGroupListPageConfigOptions): PageLayoutConfig<Group | Category> => {
-  const { rowHeight } = useAppearance();
   const reduxCategories = useSelector(selectGroupsCategories);
   const { users } = useUsers();
 
@@ -129,7 +140,7 @@ export const useGroupListPageConfig = ({
     ACTION_PERMISSIONS.groups.addCategory.level,
     ACTION_PERMISSIONS.groups.addCategory.deny,
   );
-  const { toolbarConfig } = useGroupListConfig({
+  const { listToolbar } = useGroupListConfig({
     viewMode,
     onViewModeChange: setViewMode,
     onCreateGroupClick,
@@ -147,6 +158,16 @@ export const useGroupListPageConfig = ({
     searchValue,
     onSearchChange,
     onSearchSubmit,
+    totalCount: sortedGroups.length,
+    categoriesCount: sortedCategories.length,
+    pageCount: paginatedGroups.length,
+    bulkMode,
+    onToggleBulkMode,
+    filterChips,
+    overflowChipsCount,
+    onRemoveFilterChip,
+    hasActiveFilters,
+    onClearAllFilters,
   });
 
   const groupColumns = useMemo(
@@ -184,7 +205,7 @@ export const useGroupListPageConfig = ({
       title: GC.LABELS.HEADER_TITLE,
       subtitle: GC.LABELS.HEADER_SUBTITLE,
       breadcrumbs,
-      toolbar: toolbarConfig,
+      listToolbar,
       columns:
         viewMode === 'groups'
           ? [
@@ -222,10 +243,6 @@ export const useGroupListPageConfig = ({
         (item): item is Group | Category => item != null,
       ),
       rowKey: (record: Group | Category) => record.id,
-      containerStyle: {
-        marginTop: viewMode === 'groups' && hasSelection ? '0' : undefined,
-        paddingBottom: '48px',
-      },
       pagination:
         viewMode === 'groups'
           ? {
@@ -253,7 +270,7 @@ export const useGroupListPageConfig = ({
               showRowsLabel: GC.LABELS.PAGINATION.SHOW_ROWS,
             },
       rowSelection:
-        viewMode === 'groups'
+        viewMode === 'groups' && bulkMode
           ? {
               selectedRowKeys: selectedGroups,
               onChange: (keys: React.Key[]) => {
@@ -265,7 +282,6 @@ export const useGroupListPageConfig = ({
         viewMode === 'groups'
           ? (record: Group | Category) => handleViewGroup(record as Group)
           : undefined,
-      rowHeight,
       empty:
         viewMode === 'groups' ? (
           <Empty
@@ -285,7 +301,8 @@ export const useGroupListPageConfig = ({
     }),
     [
       breadcrumbs,
-      toolbarConfig,
+      listToolbar,
+      bulkMode,
       viewMode,
       groupColumns,
       categoryColumns,
@@ -298,7 +315,6 @@ export const useGroupListPageConfig = ({
       categoryPageSize,
       sortedCategories.length,
       selectedGroups,
-      hasSelection,
       handleViewGroup,
       handleEditClick,
       setCurrentPage,
@@ -307,7 +323,6 @@ export const useGroupListPageConfig = ({
       setCategoryPageSize,
       setSelectedGroups,
       onEditCategory,
-      rowHeight,
     ],
   );
 };

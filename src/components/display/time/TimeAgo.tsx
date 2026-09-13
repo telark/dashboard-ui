@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { formatDistanceToNow, format } from 'date-fns';
-
 import { Popover } from 'antd';
 
-import { TIME_FORMATS, TIME_CONFIGS, TIME_TEXTS } from '../../../constants';
+import { TIME_FORMATS, TIME_CONFIGS } from '../../../constants';
+import { formatDateTime, formatTimeAgo, parseDate } from '../../../utils/shared/time';
 
 interface TimeAgoProps {
   date: string | Date;
@@ -15,24 +14,19 @@ const TimeAgo: React.FC<TimeAgoProps> = React.memo(
     const [timeAgo, setTimeAgo] = useState('');
 
     // Memoize the parsed date
-    const parsedDate = useMemo(() => new Date(date), [date]);
-    const isValidDate = useMemo(() => !Number.isNaN(parsedDate.getTime()), [parsedDate]);
+    const parsedDate = useMemo(() => parseDate(date), [date]);
 
-    const formattedDate = isValidDate ? format(parsedDate, formatString) : TIME_TEXTS.INVALID_DATE;
+    const formattedDate = formatDateTime(parsedDate, formatString);
 
     // Update every minute
     useEffect(() => {
       const update = () => {
-        setTimeAgo(
-          isValidDate
-            ? formatDistanceToNow(parsedDate, { addSuffix: true })
-            : TIME_TEXTS.INVALID_DATE,
-        );
+        setTimeAgo(formatTimeAgo(parsedDate));
       };
       update();
       const interval = setInterval(update, TIME_CONFIGS.UPDATE_INTERVAL);
       return () => clearInterval(interval);
-    }, [parsedDate, isValidDate]);
+    }, [parsedDate]);
 
     return <Popover content={formattedDate}>{timeAgo}</Popover>;
   },

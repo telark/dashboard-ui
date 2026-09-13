@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   CopyOutlined,
   DeleteOutlined,
   EditOutlined,
+  EllipsisOutlined,
   PlayCircleOutlined,
   ReloadOutlined,
   StopOutlined,
@@ -34,6 +35,9 @@ interface ProtectionPlanDetailsToolbarProps {
   onDelete: () => void;
   onRefreshHealth: () => void;
 }
+
+const CANCEL_MENU_KEY = 'cancel';
+const DELETE_MENU_KEY = 'delete';
 
 const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> = ({
   plan,
@@ -76,31 +80,20 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
     ACTION_PERMISSIONS.protectionPlans.delete.deny,
   );
 
+  const handleMenuClick = useCallback(
+    (key: string) => {
+      if (key === CANCEL_MENU_KEY) onCancel();
+      else if (key === DELETE_MENU_KEY) onDelete();
+    },
+    [onCancel, onDelete],
+  );
+
   const toolbarConfig: ToolbarConfig = useMemo(() => {
     const phase = plan.phase;
     const editDisabled = NON_EDITABLE_PHASES.includes(phase);
     const buttons: ToolbarConfig['buttons'] = [];
-    if (canEdit) {
-      buttons.push({
-        key: 'edit',
-        label: PPC.LABELS.DETAIL_PAGE.ACTIONS.EDIT,
-        icon: <EditOutlined />,
-        variant: 'default',
-        onClick: onEdit,
-        disabled: editing || editDisabled,
-        tooltip: editDisabled ? PPC.LABELS.DETAIL_PAGE.ACTIONS.EDIT_DISABLED_TOOLTIP : undefined,
-      });
-    }
-    if (canDuplicate) {
-      buttons.push({
-        key: 'duplicate',
-        label: PPC.LABELS.DETAIL_PAGE.ACTIONS.DUPLICATE,
-        icon: <CopyOutlined />,
-        variant: 'default',
-        onClick: onDuplicate,
-        disabled: duplicating,
-      });
-    }
+    // Reactivate is the primary verb when it applies — same "main action first"
+    // placement as Applications' force-sync button.
     if (canReactivate && REACTIVATABLE_PHASES.includes(phase)) {
       const expired = isReactivateExpired(plan);
       buttons.push({
@@ -115,34 +108,73 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
           : undefined,
       });
     }
+    if (canEdit) {
+      buttons.push({
+        key: 'edit',
+        label: PPC.LABELS.DETAIL_PAGE.ACTIONS.EDIT,
+        icon: <EditOutlined />,
+        variant: 'ghost',
+        onClick: onEdit,
+        disabled: editing || editDisabled,
+        tooltip: editDisabled ? PPC.LABELS.DETAIL_PAGE.ACTIONS.EDIT_DISABLED_TOOLTIP : undefined,
+      });
+    }
+    if (canDuplicate) {
+      buttons.push({
+        key: 'duplicate',
+        label: PPC.LABELS.DETAIL_PAGE.ACTIONS.DUPLICATE,
+        icon: <CopyOutlined />,
+        variant: 'ghost',
+        onClick: onDuplicate,
+        disabled: duplicating,
+      });
+    }
     if (phase === 'active') {
       buttons.push({
         key: 'refreshHealth',
         label: PPC.LABELS.DETAIL_PAGE.ACTIONS.REFRESH_HEALTH,
         icon: <ReloadOutlined />,
-        variant: 'default',
+        variant: 'ghost',
         onClick: onRefreshHealth,
         disabled: refreshingHealth,
       });
     }
-    if (canCancel && CANCELLABLE_PHASES.includes(phase)) {
+    // Cancel and delete live behind the overflow, same as Applications' delete:
+    // both are consequential and one slip away from the buttons above.
+    const showCancel = canCancel && CANCELLABLE_PHASES.includes(phase);
+    if (showCancel || canDelete) {
       buttons.push({
-        key: 'cancel',
-        label: PPC.LABELS.DETAIL_PAGE.ACTIONS.CANCEL,
-        icon: <StopOutlined />,
-        variant: 'danger',
-        onClick: onCancel,
-        disabled: cancelling,
-      });
-    }
-    if (canDelete) {
-      buttons.push({
-        key: 'delete',
-        label: PPC.LABELS.ACTIONS.DELETE,
-        icon: <DeleteOutlined />,
-        variant: 'danger',
-        onClick: onDelete,
-        disabled: deleting,
+        key: 'more',
+        label: PPC.LABELS.DETAIL_PAGE.ACTIONS.MORE_LABEL,
+        icon: <EllipsisOutlined />,
+        variant: 'ghost',
+        dropdown: {
+          items: [
+            ...(showCancel
+              ? [
+                  {
+                    key: CANCEL_MENU_KEY,
+                    danger: true,
+                    icon: <StopOutlined />,
+                    label: PPC.LABELS.DETAIL_PAGE.ACTIONS.CANCEL,
+                    disabled: cancelling,
+                  },
+                ]
+              : []),
+            ...(canDelete
+              ? [
+                  {
+                    key: DELETE_MENU_KEY,
+                    danger: true,
+                    icon: <DeleteOutlined />,
+                    label: PPC.LABELS.ACTIONS.DELETE,
+                    disabled: deleting,
+                  },
+                ]
+              : []),
+          ],
+          onItemClick: handleMenuClick,
+        },
       });
     }
     return { buttons };
@@ -154,11 +186,10 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
     reactivating,
     deleting,
     refreshingHealth,
+    handleMenuClick,
     onDuplicate,
     onEdit,
-    onCancel,
     onReactivate,
-    onDelete,
     onRefreshHealth,
     canEdit,
     canDuplicate,

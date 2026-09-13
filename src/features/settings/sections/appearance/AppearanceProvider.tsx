@@ -1,38 +1,22 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { APPEARANCE_SECTION_CONSTANTS, type ThemeOption } from './constants';
+import { updateUser } from '../../../access-and-permissions/users/clients';
 import {
-  APPEARANCE_SECTION_CONSTANTS,
-  type DensityOption,
-  type ThemeOption,
-  type FontSizeOption,
-} from './constants';
+  CURRENT_USER_UPDATED_EVENT,
+  getCurrentUser,
+  setCurrentUser,
+} from '../../../auth/utils/session/user';
+import type { User } from '../../../access-and-permissions/users/models';
+import logger from '../../../../logging';
 
-const { STORAGE_KEYS, DENSITY_VALUES, FONT_SIZE_CSS_VAR, FONT_SIZE_SCALES } =
-  APPEARANCE_SECTION_CONSTANTS;
+const { DEFAULT_THEME, THEME_OPTIONS } = APPEARANCE_SECTION_CONSTANTS;
 
-function resolveTheme(theme: ThemeOption): 'light' | 'dark' {
-  if (theme === 'System' && typeof window !== 'undefined') {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
-  return theme === 'Dark' ? 'dark' : 'light';
-}
-
-function getStored<K extends keyof typeof STORAGE_KEYS>(
-  key: (typeof STORAGE_KEYS)[K],
-  fallback: string,
-): string {
-  if (typeof window === 'undefined') return fallback;
-  return localStorage.getItem(key) ?? fallback;
-}
+const toThemeOption = (value?: string): ThemeOption =>
+  THEME_OPTIONS.find((option) => option === value) ?? DEFAULT_THEME;
 
 export interface AppearanceContextValue {
   theme: ThemeOption;
   setTheme: (option: ThemeOption) => void;
-  density: DensityOption;
-  setDensity: (option: DensityOption) => void;
-  fontSize: FontSizeOption;
-  setFontSize: (option: FontSizeOption) => void;
-  rowHeight: number;
-  contentGap: number;
 }
 
 const AppearanceContext = createContext<AppearanceContextValue | null>(null);
@@ -50,14 +34,8 @@ interface AppearanceProviderProps {
 }
 
 export const AppearanceProvider: React.FC<AppearanceProviderProps> = ({ children }) => {
-  const [theme, setThemeState] = useState<ThemeOption>(
-    () => getStored(STORAGE_KEYS.THEME, 'Light') as ThemeOption,
-  );
-  const [density, setDensityState] = useState<DensityOption>(
-    () => getStored(STORAGE_KEYS.DENSITY, 'Comfortable') as DensityOption,
-  );
-  const [fontSize, setFontSizeState] = useState<FontSizeOption>(
-    () => getStored(STORAGE_KEYS.FONT_SIZE, 'Medium') as FontSizeOption,
+  const [theme, setThemeState] = useState<ThemeOption>(() =>
+    toThemeOption(getCurrentUser()?.settings?.theme),
   );
   const [systemPrefersDark, setSystemPrefersDark] = useState(
     () =>
@@ -66,20 +44,22 @@ export const AppearanceProvider: React.FC<AppearanceProviderProps> = ({ children
 
   const setTheme = useCallback((option: ThemeOption) => {
     setThemeState(option);
-    localStorage.setItem(STORAGE_KEYS.THEME, option);
+    const user = getCurrentUser();
+    if (!user?.id) return;
+    updateUser(user.id, { settings: { ...user.settings, theme: option } })
+      .then((response) => {
+        if (response?.data) setCurrentUser(response.data);
+      })
+      .catch((error) => logger.error(error));
   }, []);
 
-  const setDensity = useCallback((option: DensityOption) => {
-    setDensityState(option);
-    localStorage.setItem(STORAGE_KEYS.DENSITY, option);
+  useEffect(() => {
+    const handleUserUpdated = (e: Event) => {
+      setThemeState(toThemeOption((e as CustomEvent<User>).detail?.settings?.theme));
+    };
+    globalThis.addEventListener(CURRENT_USER_UPDATED_EVENT, handleUserUpdated);
+    return () => globalThis.removeEventListener(CURRENT_USER_UPDATED_EVENT, handleUserUpdated);
   }, []);
-
-  const setFontSize = useCallback((option: FontSizeOption) => {
-    setFontSizeState(option);
-    localStorage.setItem(STORAGE_KEYS.FONT_SIZE, option);
-  }, []);
-
-  const { rowHeight, contentGap } = DENSITY_VALUES[density];
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
@@ -89,33 +69,14 @@ export const AppearanceProvider: React.FC<AppearanceProviderProps> = ({ children
   }, []);
 
   useEffect(() => {
-    const resolved = resolveTheme(theme);
-    if (theme === 'System') {
-      document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
-    } else {
-      document.documentElement.setAttribute('data-theme', resolved);
-    }
+    const resolved = theme === 'Dark' ? 'dark' : 'light';
+    const dataTheme = theme === 'System' && systemPrefersDark ? 'dark' : resolved;
+    document.documentElement.setAttribute('data-theme', dataTheme);
   }, [theme, systemPrefersDark]);
 
-  useEffect(() => {
-    document.documentElement.style.setProperty(
-      FONT_SIZE_CSS_VAR,
-      String(FONT_SIZE_SCALES[fontSize]),
-    );
-  }, [fontSize]);
-
   const contextValue = useMemo<AppearanceContextValue>(
-    () => ({
-      theme,
-      setTheme,
-      density,
-      setDensity,
-      fontSize,
-      setFontSize,
-      rowHeight,
-      contentGap,
-    }),
-    [theme, setTheme, density, setDensity, fontSize, setFontSize, rowHeight, contentGap],
+    () => ({ theme, setTheme }),
+    [theme, setTheme],
   );
 
   return <AppearanceContext.Provider value={contextValue}>{children}</AppearanceContext.Provider>;

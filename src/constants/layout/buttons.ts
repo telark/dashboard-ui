@@ -23,6 +23,31 @@ export const TOOLBAR_CONTROL = {
   LINE_HEIGHT: 1,
 } as const;
 
+// The list-page toolbar row: selection, filter chips and count on the left,
+// quick filters and actions on the right.
+export const LIST_TOOLBAR = {
+  ROW_HEIGHT_PX: 60,
+  CLUSTER_GAP_PX: 8,
+  SELECTION_PADDING_LEFT_PX: 16,
+  META_FONT_SIZE_PX: 12,
+  CHIP_GAP_PX: 6,
+  CHIP_PADDING: '2px 8px',
+  CHIP_FONT_SIZE_PX: 11,
+  CHIP_FONT_WEIGHT: 600,
+  PILL_RADIUS_PX: 999,
+  // Also scopes the green checkbox styling in antd.css.
+  BULK_SELECT_CLASS: 'app-bulk-select',
+  CLEAR_ALL_LABEL: 'Clear All',
+  SELECTED_SUFFIX: 'selected',
+  OVERFLOW_SUFFIX: 'more',
+  REMOVE_CHIP_LABEL: 'Remove filter',
+  DATE_RANGE_KEY: 'dateRange',
+  DATE_RANGE_ANY: 'Any',
+  DATE_RANGE_SEPARATOR: 'to',
+  // Chips beyond this collapse into a "+N more" chip.
+  MAX_VISIBLE_CHIPS: 3,
+} as const;
+
 export const BUTTON_CONFIGS = {
   STATUS_BUTTON: {
     TYPE: 'default',

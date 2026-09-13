@@ -2,9 +2,10 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Input, Select, Tooltip, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
+import RowTag from '../../../../components/display/table/RowTag';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, enrichmentApiClient, exporterApiClient } from '../../../../api';
-import { Endpoints } from '../../../../constants';
+import { Endpoints, DEFAULT_COLORS } from '../../../../constants';
 import { Switch } from '../../../../components/display/inputs';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import { useDispatch, useSelector } from 'react-redux';
@@ -202,7 +203,18 @@ const AIInsightsSection: React.FC = memo(() => {
   );
 
   return (
-    <SettingsCard title="AI Insights" description={C.LABELS.AI_INSIGHTS_DESCRIPTION}>
+    <SettingsCard
+      title="AI Insights"
+      description={C.LABELS.AI_INSIGHTS_DESCRIPTION}
+      titleBadge={
+        <RowTag
+          text={C.LABELS.EXPERIMENTAL_BADGE}
+          background={DEFAULT_COLORS.WARNING_TINT}
+          color={DEFAULT_COLORS.WARNING}
+          fontSize={11}
+        />
+      }
+    >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <div
           style={{

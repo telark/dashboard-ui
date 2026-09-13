@@ -10,6 +10,8 @@ import {
   RobotOutlined,
   AuditOutlined,
   LoginOutlined,
+  InfoCircleOutlined,
+  GlobalOutlined,
 } from '@ant-design/icons';
 import SidebarButton from '../../display/buttons/SideBarButton';
 import { BUTTON_CONFIGS, DEFAULT_COLORS, APP_ROUTES } from '../../../constants';
@@ -22,11 +24,13 @@ interface SettingsMenuItemsProps {
 const SETTINGS_ROUTES = {
   profile: `${APP_ROUTES.SETTINGS}/profile`,
   appearance: `${APP_ROUTES.SETTINGS}/appearance`,
+  timezone: `${APP_ROUTES.SETTINGS}/timezone`,
   myPermissions: `${APP_ROUTES.SETTINGS}/permissions`,
   security: `${APP_ROUTES.SETTINGS}/security`,
   aiInsights: `${APP_ROUTES.SETTINGS}/aiInsights`,
   governance: `${APP_ROUTES.SETTINGS}/governance`,
   identityProvider: `${APP_ROUTES.SETTINGS}/identity`,
+  about: `${APP_ROUTES.SETTINGS}/about`,
 } as const;
 
 const sectionLabelStyle: CSSProperties = {
@@ -121,14 +125,19 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
         isCollapsed={isCollapsed}
       />
       <SidebarButton
+        text="Timezone"
+        icon={<GlobalOutlined />}
+        active={pathname === SETTINGS_ROUTES.timezone}
+        route={SETTINGS_ROUTES.timezone}
+        isCollapsed={isCollapsed}
+      />
+      <SidebarButton
         text="My Permissions"
         icon={<BsLockFill />}
         active={pathname === SETTINGS_ROUTES.myPermissions}
         route={SETTINGS_ROUTES.myPermissions}
         isCollapsed={isCollapsed}
       />
-
-      {!isCollapsed && <div style={sectionLabelStyle}>Platform</div>}
       <SidebarButton
         text="Security"
         icon={<SafetyOutlined />}
@@ -136,6 +145,8 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
         route={SETTINGS_ROUTES.security}
         isCollapsed={isCollapsed}
       />
+
+      {!isCollapsed && <div style={sectionLabelStyle}>Platform</div>}
       <SidebarButton
         text="AI Insights"
         icon={<RobotOutlined />}
@@ -155,6 +166,13 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
         icon={<LoginOutlined />}
         active={pathname === SETTINGS_ROUTES.identityProvider}
         route={SETTINGS_ROUTES.identityProvider}
+        isCollapsed={isCollapsed}
+      />
+      <SidebarButton
+        text="About"
+        icon={<InfoCircleOutlined />}
+        active={pathname === SETTINGS_ROUTES.about}
+        route={SETTINGS_ROUTES.about}
         isCollapsed={isCollapsed}
       />
     </nav>

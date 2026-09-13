@@ -1,18 +1,18 @@
 import React, { memo, useMemo } from 'react';
-import { Button, Pagination } from 'antd';
+import { Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { DEFAULT_COLORS } from '../../../../../constants';
-import { PAGE_CONTENT_LAYOUT } from '../../../../../constants/shared/pages';
+import { DEFAULT_COLORS, LIST_TOOLBAR } from '../../../../../constants';
+import { LIST_PAGE } from '../../../../../constants/shared/pages';
 import type { Application } from '../../models';
 import type { AppDispatch, RootState } from '../../../../../store';
-import { useAppearance } from '../../../../settings/sections/appearance';
-import { ApplicationCard, ApplicationsHeader, ApplicationsToolbar } from '../../components';
+import { ApplicationCard, ApplicationsToolbar } from '../../components';
 import { setLayoutMode } from '../../store/slices/applicationsSlice';
 import ApplicationDeleteModal from '../../components/delete/ApplicationDeleteModal';
 import { deleteApplicationThunk } from '../../store';
 import { forceSyncApplication } from '../../utils/management/sync';
 import { APPLICATIONS_UI } from '../../constants';
-import { DataViewError } from '../../../../../components/shared';
+import { DataViewError, PageContainer } from '../../../../../components/shared';
+import { TablePagination } from '../../../../../components/display/table';
 import { FancySpinner } from '../../../../../components/animation';
 import { useDataViewState } from '../../../../../hooks/layout/useDataViewState';
 
@@ -79,7 +79,6 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
   }) => {
     const dispatch: AppDispatch = useDispatch();
     const layoutMode = useSelector((s: RootState) => s.applications.layoutMode);
-    const { contentGap } = useAppearance();
     const hasApps = applications.length > 0;
     const dataState = useDataViewState({ loading, error, hasData: hasApps });
     const selectedSet = useMemo(() => new Set(selectedNames), [selectedNames]);
@@ -97,7 +96,7 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
             gap: 16,
             alignItems: 'stretch',
           }}
-          className={bulkMode ? 'applications-bulk-select' : undefined}
+          className={bulkMode ? LIST_TOOLBAR.BULK_SELECT_CLASS : undefined}
         >
           {applications.map((application) => (
             <ApplicationCard
@@ -141,106 +140,69 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
     }, [dispatch, onClearSelection, selectedNames]);
 
     return (
-      <div
-        style={{
-          minHeight: '100vh',
-          background: DEFAULT_COLORS.BACKGROUND_WHITE,
-          padding: PAGE_CONTENT_LAYOUT.PADDING,
-          marginTop: 0,
-          boxSizing: 'border-box',
-        }}
+      <PageContainer
+        title={APPLICATIONS_UI.HEADER_TITLE}
+        subtitle={APPLICATIONS_UI.HEADER_SUBTITLE}
+        gap={LIST_PAGE.CONTENT_GAP_PX}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: contentGap }}>
-          <ApplicationsHeader />
+        <ApplicationsToolbar
+          searchValue={searchValue}
+          onSearchChange={onSearchChange}
+          onOpenFilters={onOpenFilters}
+          totalCount={totalFiltered}
+          filterChips={filterChips}
+          overflowCount={overflowChipsCount}
+          onRemoveFilterChip={onRemoveFilterChip}
+          layoutMode={layoutMode}
+          onLayoutModeChange={(mode) => dispatch(setLayoutMode(mode))}
+          hasActiveFilters={hasActiveFilters}
+          onClearAllFilters={onClearAllFilters}
+          bulkMode={bulkMode}
+          onToggleBulkMode={() => {
+            onToggleBulkMode();
+            if (bulkMode) {
+              onClearSelection();
+            }
+          }}
+          selectedCount={selectedCount}
+          pageCount={applications.length}
+          allPageSelected={allPageSelected}
+          onToggleSelectAllPage={onToggleSelectAllPage}
+          onBulkForceSync={handleBulkForceSync}
+          onBulkDelete={() => setBulkDeleteOpen(true)}
+          bulkForceSyncDisabled={anySelectedSyncing}
+          healthQuickFilter={healthQuickFilter}
+          onHealthQuickFilterChange={onHealthQuickFilterChange}
+        />
 
-          <div
-            style={{
-              position: 'sticky',
-              top: PAGE_CONTENT_LAYOUT.HEADER_OFFSET_PX,
-              zIndex: 5,
-              background: DEFAULT_COLORS.BACKGROUND_WHITE,
-              padding: '8px 0',
-            }}
-          >
-            <ApplicationsToolbar
-              searchValue={searchValue}
-              onSearchChange={onSearchChange}
-              onOpenFilters={onOpenFilters}
-              totalCount={totalFiltered}
-              filterChips={filterChips}
-              overflowCount={overflowChipsCount}
-              onRemoveFilterChip={onRemoveFilterChip}
-              layoutMode={layoutMode}
-              onLayoutModeChange={(mode) => dispatch(setLayoutMode(mode))}
-              hasActiveFilters={hasActiveFilters}
-              onClearAllFilters={onClearAllFilters}
-              bulkMode={bulkMode}
-              onToggleBulkMode={() => {
-                onToggleBulkMode();
-                if (bulkMode) {
-                  onClearSelection();
-                }
+        <div style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>
+          {dataState.phase === 'error' ? (
+            <DataViewError variant="card" message={dataState.errorMessage} onRetry={onRetry} />
+          ) : dataState.phase === 'loading' ? (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: LIST_PAGE.LOADING_MIN_HEIGHT_PX,
               }}
-              selectedCount={selectedCount}
-              pageCount={applications.length}
-              allPageSelected={allPageSelected}
-              onToggleSelectAllPage={onToggleSelectAllPage}
-              onBulkForceSync={handleBulkForceSync}
-              onBulkDelete={() => setBulkDeleteOpen(true)}
-              bulkForceSyncDisabled={anySelectedSyncing}
-              healthQuickFilter={healthQuickFilter}
-              onHealthQuickFilterChange={onHealthQuickFilterChange}
-            />
-          </div>
-
-          <div style={{ marginTop: -20 }}>
-            {dataState.phase === 'error' ? (
-              <DataViewError variant="card" message={dataState.errorMessage} onRetry={onRetry} />
-            ) : dataState.phase === 'loading' ? (
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  minHeight: 240,
-                }}
-              >
-                <FancySpinner size={40} showLabel />
-              </div>
-            ) : !hasApps && hasActiveFilters ? (
-              <div style={{ textAlign: 'center', padding: '48px 24px' }}>
-                <p style={{ marginBottom: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                  No applications match the current filters.
-                </p>
-                <Button type="link" onClick={onClearAllFilters}>
-                  Clear all filters
-                </Button>
-              </div>
-            ) : (
-              content
-            )}
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <span
-              style={{ alignSelf: 'center', marginRight: 12, color: DEFAULT_COLORS.TEXT_MUTED }}
             >
-              {pagination.total === 0
-                ? '0-0 of 0'
-                : `${(pagination.currentPage - 1) * pagination.pageSize + 1}-${Math.min(
-                    pagination.currentPage * pagination.pageSize,
-                    pagination.total,
-                  )} of ${pagination.total}`}
-            </span>
-            <Pagination
-              className="applications-pagination"
-              current={pagination.currentPage}
-              pageSize={pagination.pageSize}
-              total={pagination.total}
-              onChange={pagination.onPageChange}
-              showSizeChanger={false}
-            />
-          </div>
+              <FancySpinner size={40} showLabel />
+            </div>
+          ) : !hasApps && hasActiveFilters ? (
+            <div style={{ textAlign: 'center', padding: '48px 24px' }}>
+              <p style={{ marginBottom: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+                No applications match the current filters.
+              </p>
+              <Button type="link" onClick={onClearAllFilters}>
+                Clear all filters
+              </Button>
+            </div>
+          ) : (
+            content
+          )}
         </div>
+        <TablePagination config={pagination} />
         <ApplicationDeleteModal
           open={bulkDeleteOpen}
           onClose={() => setBulkDeleteOpen(false)}
@@ -261,7 +223,7 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
             </div>
           }
         />
-      </div>
+      </PageContainer>
     );
   },
 );

@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, APP_ROUTES } from '../../../../../../constants';
+import { DEFAULT_COLORS, APP_ROUTES, LIST_TOOLBAR } from '../../../../../../constants';
 import type { Application } from '../../../models';
 import { APPLICATIONS_UI } from '../../../constants';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
@@ -61,7 +61,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
       <div
         role="button"
         tabIndex={0}
-        className={bulkMode ? 'applications-bulk-select' : undefined}
+        className={bulkMode ? LIST_TOOLBAR.BULK_SELECT_CLASS : undefined}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         onClick={() => {

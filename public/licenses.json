@@ -1,0 +1,187 @@
+[
+  {
+    "name": "@ant-design/icons",
+    "version": "6.1.1",
+    "license": "MIT"
+  },
+  {
+    "name": "@dicebear/adventurer",
+    "version": "9.4.2",
+    "license": "(MIT AND CC-BY-4.0)"
+  },
+  {
+    "name": "@dicebear/avataaars",
+    "version": "9.4.2",
+    "license": "See LICENSE file"
+  },
+  {
+    "name": "@dicebear/big-smile",
+    "version": "9.4.2",
+    "license": "(MIT AND CC-BY-4.0)"
+  },
+  {
+    "name": "@dicebear/bottts",
+    "version": "9.4.2",
+    "license": "See LICENSE file"
+  },
+  {
+    "name": "@dicebear/core",
+    "version": "9.4.2",
+    "license": "MIT"
+  },
+  {
+    "name": "@dicebear/fun-emoji",
+    "version": "9.4.2",
+    "license": "(MIT AND CC-BY-4.0)"
+  },
+  {
+    "name": "@dicebear/identicon",
+    "version": "9.4.2",
+    "license": "MIT"
+  },
+  {
+    "name": "@dicebear/lorelei",
+    "version": "9.4.2",
+    "license": "MIT"
+  },
+  {
+    "name": "@dicebear/micah",
+    "version": "9.4.2",
+    "license": "(MIT AND CC-BY-4.0)"
+  },
+  {
+    "name": "@dicebear/miniavs",
+    "version": "9.4.2",
+    "license": "(MIT AND CC-BY-4.0)"
+  },
+  {
+    "name": "@dicebear/open-peeps",
+    "version": "9.4.2",
+    "license": "MIT"
+  },
+  {
+    "name": "@dicebear/personas",
+    "version": "9.4.2",
+    "license": "(MIT AND CC-BY-4.0)"
+  },
+  {
+    "name": "@dicebear/pixel-art",
+    "version": "9.4.2",
+    "license": "MIT"
+  },
+  {
+    "name": "@reduxjs/toolkit",
+    "version": "2.11.2",
+    "license": "MIT"
+  },
+  {
+    "name": "@testing-library/jest-dom",
+    "version": "6.9.1",
+    "license": "MIT"
+  },
+  {
+    "name": "@testing-library/react",
+    "version": "16.3.2",
+    "license": "MIT"
+  },
+  {
+    "name": "@testing-library/user-event",
+    "version": "14.6.1",
+    "license": "MIT"
+  },
+  {
+    "name": "@types/jest",
+    "version": "29.5.14",
+    "license": "MIT"
+  },
+  {
+    "name": "@types/js-yaml",
+    "version": "4.0.9",
+    "license": "MIT"
+  },
+  {
+    "name": "@types/node",
+    "version": "22.19.17",
+    "license": "MIT"
+  },
+  {
+    "name": "@types/react",
+    "version": "19.2.14",
+    "license": "MIT"
+  },
+  {
+    "name": "@types/react-dom",
+    "version": "19.2.3",
+    "license": "MIT"
+  },
+  {
+    "name": "antd",
+    "version": "6.3.7",
+    "license": "MIT"
+  },
+  {
+    "name": "axios",
+    "version": "1.15.2",
+    "license": "MIT"
+  },
+  {
+    "name": "date-fns",
+    "version": "4.1.0",
+    "license": "MIT"
+  },
+  {
+    "name": "framer-motion",
+    "version": "12.38.0",
+    "license": "MIT"
+  },
+  {
+    "name": "js-yaml",
+    "version": "4.1.1",
+    "license": "MIT"
+  },
+  {
+    "name": "loglevel",
+    "version": "1.9.2",
+    "license": "MIT"
+  },
+  {
+    "name": "react",
+    "version": "19.2.5",
+    "license": "MIT"
+  },
+  {
+    "name": "react-dom",
+    "version": "19.2.5",
+    "license": "MIT"
+  },
+  {
+    "name": "react-icons",
+    "version": "5.6.0",
+    "license": "MIT"
+  },
+  {
+    "name": "react-redux",
+    "version": "9.2.0",
+    "license": "MIT"
+  },
+  {
+    "name": "react-router-dom",
+    "version": "7.14.2",
+    "license": "MIT"
+  },
+  {
+    "name": "react-timeago",
+    "version": "8.3.0",
+    "license": "MIT"
+  },
+  {
+    "name": "redux-persist",
+    "version": "6.0.0",
+    "license": "MIT"
+  },
+  {
+    "name": "web-vitals",
+    "version": "5.2.0",
+    "license": "Apache-2.0"
+  }
+]

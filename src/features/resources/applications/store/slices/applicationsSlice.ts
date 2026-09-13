@@ -25,6 +25,9 @@ import {
   handleFetchApplicationDetailsPending,
   handleFetchApplicationDetailsFulfilled,
   handleFetchApplicationDetailsRejected,
+  handleFetchSnapshotManifestPending,
+  handleFetchSnapshotManifestFulfilled,
+  handleFetchSnapshotManifestRejected,
   handleUpdateApplicationFulfilled,
   handleDeleteApplicationFulfilled,
 } from '../reducers/fetchReducers';
@@ -205,22 +208,9 @@ const applicationsSlice = createSlice({
         state.snapshotsLoading = false;
         state.snapshotsError = String(action.payload || '');
       })
-      .addCase(fetchSnapshotManifestThunk.pending, (state, action) => {
-        const { manifestKey } = action.meta.arg;
-        state.snapshotManifests[manifestKey] = { loading: true, error: null, data: null };
-      })
-      .addCase(fetchSnapshotManifestThunk.fulfilled, (state, action) => {
-        const { manifestKey, data } = action.payload;
-        state.snapshotManifests[manifestKey] = { loading: false, error: null, data };
-      })
-      .addCase(fetchSnapshotManifestThunk.rejected, (state, action) => {
-        const { manifestKey } = action.meta.arg;
-        state.snapshotManifests[manifestKey] = {
-          loading: false,
-          error: String(action.payload || ''),
-          data: null,
-        };
-      })
+      .addCase(fetchSnapshotManifestThunk.pending, handleFetchSnapshotManifestPending)
+      .addCase(fetchSnapshotManifestThunk.fulfilled, handleFetchSnapshotManifestFulfilled)
+      .addCase(fetchSnapshotManifestThunk.rejected, handleFetchSnapshotManifestRejected)
       .addCase(updateApplicationThunk.fulfilled, handleUpdateApplicationFulfilled)
       .addCase(deleteApplicationThunk.fulfilled, handleDeleteApplicationFulfilled)
       .addCase(triggerApplicationRollbackThunk.fulfilled, handleUpdateApplicationFulfilled)

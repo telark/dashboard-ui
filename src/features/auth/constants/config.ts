@@ -5,6 +5,8 @@ export const AUTH_CONFIG = {
     VALIDATION: {
       INTERVAL_SECONDS: 10,
     },
+    NAME_PREFIX: 'session-',
+    NAME_DIGEST_ALGORITHM: 'SHA-256',
   },
 } as const;
 
@@ -15,4 +17,5 @@ export const PERMISSION_GATE_BYPASS_PATHS: readonly string[] = [
   `${APP_ROUTES.SETTINGS}/appearance`,
   `${APP_ROUTES.SETTINGS}/permissions`,
   `${APP_ROUTES.SETTINGS}/security`,
+  `${APP_ROUTES.SETTINGS}/about`,
 ];

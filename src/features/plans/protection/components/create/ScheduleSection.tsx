@@ -5,6 +5,7 @@ import { FILTER_PANEL } from '../../../../../constants';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import SectionCard from './SectionCard';
 import DatePicker from '../../../../../components/display/inputs/DatePicker';
+import { toZonedDayjs, zonedNow } from '../../../../../utils/layout';
 import { FORM_ITEM_CLASS } from './types';
 
 const { SECTIONS, FORM } = PPC.CREATE_PAGE;
@@ -34,13 +35,15 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({ timeMode, isCreateMod
 
   const endDisabledDate = (current: dayjs.Dayjs) => {
     if (!startAt) return false;
-    return current.isBefore(startAt, 'day');
+    return current.isBefore(toZonedDayjs(startAt), 'day');
   };
 
   const endDisabledTime = (current: dayjs.Dayjs | null) => {
-    if (!startAt || !current || !current.isSame(startAt, 'day')) return {};
-    const startHour = startAt.hour();
-    const startMinute = startAt.minute();
+    if (!startAt || !current) return {};
+    const zonedStart = toZonedDayjs(startAt);
+    if (!current.isSame(zonedStart, 'day')) return {};
+    const startHour = zonedStart.hour();
+    const startMinute = zonedStart.minute();
     return {
       disabledHours: () => range(0, startHour),
       disabledMinutes: (selectedHour: number) =>
@@ -77,7 +80,7 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({ timeMode, isCreateMod
                   showTime
                   format="YYYY-MM-DD HH:mm"
                   style={FILTER_PANEL.DATE_INPUT}
-                  disabledDate={(d) => (isCreateMode ? d.isBefore(dayjs(), 'day') : false)}
+                  disabledDate={(d) => (isCreateMode ? d.isBefore(zonedNow(), 'day') : false)}
                 />
               </Form.Item>
             </div>

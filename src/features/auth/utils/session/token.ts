@@ -1,7 +1,7 @@
 import type { InternalAxiosRequestConfig } from 'axios';
 import { STORAGE_KEYS } from '../../../../constants/store/store';
 import { LOGIN_CONSTANTS } from '../../constants/login';
-import { AUTH_CONSTANTS } from '../../constants';
+import { AUTH_CONFIG, AUTH_CONSTANTS } from '../../constants';
 import { HTTP_HEADERS } from '../../../../constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
@@ -62,6 +62,33 @@ export const removeSessionToken = (): void => {
 
 export const hasSessionToken = (): boolean => {
   return getSessionToken() !== null;
+};
+
+const toHex = (buffer: ArrayBuffer): string =>
+  Array.from(new Uint8Array(buffer), (byte) => byte.toString(16).padStart(2, '0')).join('');
+
+// The API never hands back a session's token, so a session is identified by its
+// resource name: the prefixed SHA-256 digest of that token. Deriving it locally
+// is the only way to tell which listed session belongs to this device.
+// Returns null outside a secure context, where crypto.subtle is undefined —
+// callers must treat that as "unknown", never as "not this device".
+export const getCurrentSessionName = async (): Promise<string | null> => {
+  const token = getSessionToken();
+  if (!token) {
+    return null;
+  }
+  try {
+    const digest = await globalThis.crypto.subtle.digest(
+      AUTH_CONFIG.SESSION.NAME_DIGEST_ALGORITHM,
+      new TextEncoder().encode(token),
+    );
+    return `${AUTH_CONFIG.SESSION.NAME_PREFIX}${toHex(digest)}`;
+  } catch (error) {
+    if (isDevelopment()) {
+      logger.error(LOGIN_CONSTANTS.LOGS.SESSION_NAME_ERROR, error);
+    }
+    return null;
+  }
 };
 
 export const createSessionTokenInterceptor = () => {

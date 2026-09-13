@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useSortState, sortData } from '../../../../../utils/layout/sort';
 import type { SortFieldConfig, SortOrder } from '../../../../../utils/layout/sort';
 import type { Role } from '../../models';
@@ -15,15 +15,16 @@ export interface UseRoleListStateReturn {
   sortKey: string | null;
   sortOrder: SortOrder;
   selectedRoles: React.Key[];
+  setSelectedRoles: (keys: React.Key[]) => void;
   currentPage: number;
   pageSize: number;
-  setSelectedRoles: (keys: React.Key[]) => void;
   setCurrentPage: (page: number) => void;
   setPageSize: (size: number) => void;
   handleSort: (key: string) => void;
   sortedRoles: Role[];
   paginatedRoles: Role[];
-  hasSelection: boolean;
+  bulkMode: boolean;
+  toggleBulkMode: () => void;
 }
 
 export const useRoleListState = (roles: Role[]): UseRoleListStateReturn => {
@@ -35,6 +36,7 @@ export const useRoleListState = (roles: Role[]): UseRoleListStateReturn => {
   const [selectedRoles, setSelectedRoles] = useState<React.Key[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [bulkMode, setBulkMode] = useState(false);
 
   const sortedRoles = useMemo(
     () => sortData(roles, sortKey, sortOrder, ROLE_SORT_FIELDS),
@@ -46,20 +48,26 @@ export const useRoleListState = (roles: Role[]): UseRoleListStateReturn => {
     return sortedRoles.slice(start, start + pageSize);
   }, [sortedRoles, currentPage, pageSize]);
 
-  const hasSelection = selectedRoles.length > 0;
+  // Leaving bulk mode hides the selection column, so a selection kept behind it
+  // would act on rows the user can no longer see.
+  const toggleBulkMode = useCallback(() => {
+    if (bulkMode) setSelectedRoles([]);
+    setBulkMode(!bulkMode);
+  }, [bulkMode]);
 
   return {
     sortKey,
     sortOrder,
     selectedRoles,
+    setSelectedRoles,
     currentPage,
     pageSize,
-    setSelectedRoles,
     setCurrentPage,
     setPageSize,
     handleSort,
     sortedRoles,
     paginatedRoles,
-    hasSelection,
+    bulkMode,
+    toggleBulkMode,
   };
 };

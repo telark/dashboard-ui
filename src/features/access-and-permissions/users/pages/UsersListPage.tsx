@@ -30,6 +30,7 @@ interface UsersListPageProps {
   createForm: FormInstance<CreateUserFormValues>;
   editForm: FormInstance<ManageUserStateFormValues>;
   filterPanelOpen: boolean;
+  appliedFilters: Record<string, unknown>;
   bulkDeleteModalOpen: boolean;
   bulkDeleteSelectedCount: number;
   bulkDeleteIsDeleting: boolean;
@@ -65,6 +66,7 @@ const UsersListPage: React.FC<UsersListPageProps> = memo(
     createForm,
     editForm,
     filterPanelOpen,
+    appliedFilters,
     bulkDeleteModalOpen,
     bulkDeleteSelectedCount,
     bulkDeleteIsDeleting,
@@ -133,6 +135,7 @@ const UsersListPage: React.FC<UsersListPageProps> = memo(
           open={filterPanelOpen}
           onClose={onCloseFilterPanel}
           fields={filterFields}
+          value={appliedFilters}
           onFilterChange={handleFilterChange}
           onApply={handleFilterApply}
           onReset={handleFilterReset}

@@ -44,9 +44,10 @@
   },
   "scripts": {
     "dev": "BROWSER='Google Chrome' vite --port 3000 --open",
-    "build": "vite build",
-    "build:analyze": "vite build --mode analyze",
-    "build:cluster": "vite build --mode cluster",
+    "generate:licenses": "node scripts/generate-licenses.mjs",
+    "build": "npm run generate:licenses && vite build",
+    "build:analyze": "npm run generate:licenses && vite build --mode analyze",
+    "build:cluster": "npm run generate:licenses && vite build --mode cluster",
     "serve": "vite preview",
     "lint": "eslint .",
     "lint:f": "eslint . --fix",

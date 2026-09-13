@@ -1,4 +1,5 @@
 import type { Role } from '../../models';
+import { toTimestamp } from '../../../../../utils/shared/time';
 
 const formatTimeRemaining = (milliseconds: number): string => {
   if (milliseconds <= 0) {
@@ -41,7 +42,7 @@ export const formatValidity = (validity: Role['validity'], record: Role): Validi
     const now = new Date().getTime();
 
     if (validity.expiresAt) {
-      const expiresAt = new Date(validity.expiresAt).getTime();
+      const expiresAt = toTimestamp(validity.expiresAt);
       const remaining = expiresAt - now;
       const timeRemaining = formatTimeRemaining(remaining);
       return { label: 'Temporary', expiresIn: `(expires in ${timeRemaining})` };
@@ -49,10 +50,8 @@ export const formatValidity = (validity: Role['validity'], record: Role): Validi
 
     if (validity.durationHours) {
       // Calculate expiration time from creation date or last update date
-      const startDate = record.lastUpdateDate
-        ? new Date(record.lastUpdateDate)
-        : new Date(record.creationDate);
-      const expirationTime = startDate.getTime() + validity.durationHours * 60 * 60 * 1000;
+      const startTime = toTimestamp(record.lastUpdateDate || record.creationDate);
+      const expirationTime = startTime + validity.durationHours * 60 * 60 * 1000;
       const remaining = expirationTime - now;
       const timeRemaining = formatTimeRemaining(remaining);
       return { label: 'Temporary', expiresIn: `(expires in ${timeRemaining})` };

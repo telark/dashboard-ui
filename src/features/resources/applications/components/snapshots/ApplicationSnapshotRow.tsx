@@ -1,7 +1,7 @@
 import React, { memo, useState } from 'react';
 import { EyeOutlined, HistoryOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Tooltip } from 'antd';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, LIST_TOOLBAR } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { APPLICATIONS_UI } from '../../constants';
 import { APPLICATION_SNAPSHOT_ROW } from '../../constants/sectionLayout';
@@ -123,7 +123,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
           >
             {compareMode ? (
               <span
-                className="applications-bulk-select"
+                className={LIST_TOOLBAR.BULK_SELECT_CLASS}
                 style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0 }}
                 onClick={(e) => e.stopPropagation()}
               >

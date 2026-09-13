@@ -1,5 +1,6 @@
 export type {
   UserAvatar,
+  UserSettings,
   UserAccountState,
   UserStatus,
   User,

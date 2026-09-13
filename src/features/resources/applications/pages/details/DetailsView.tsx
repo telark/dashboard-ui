@@ -7,7 +7,7 @@ import { APPLICATION_DETAILS_CONSTANTS, SYNC_STATUS_VALUE } from '../../constant
 import { useApplicationDetails } from '../../hooks';
 import ApplicationsDetailsEmpty from './Empty';
 import ApplicationDetailsContent from './Content';
-import ApplicationPageLayout from '../../components/layout/ApplicationPageLayout';
+import { PageContainer } from '../../../../../components/shared';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import { APP_ROUTES } from '../../../../../constants';
 import { useDispatch } from 'react-redux';
@@ -98,10 +98,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
 
   return (
     <>
-      <ApplicationPageLayout
-        breadcrumbItems={breadcrumbItems}
-        subtitle={APPLICATIONS_UI.DETAIL_PAGE.SUBTITLE}
-      >
+      <PageContainer breadcrumbs={breadcrumbItems} subtitle={APPLICATIONS_UI.DETAIL_PAGE.SUBTITLE}>
         <div style={{ marginTop: 24 }}>
           <ApplicationDetailsContent
             application={details}
@@ -124,7 +121,7 @@ const ApplicationDetailsView: React.FC = memo(() => {
             }}
           />
         </div>
-      </ApplicationPageLayout>
+      </PageContainer>
 
       <EditApplicationPanel
         open={editOpen}

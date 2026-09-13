@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useSortState, sortData } from '../../../../../utils/layout/sort';
 import type { SortFieldConfig, SortOrder } from '../../../../../utils/layout/sort';
 import type { User } from '../../models';
@@ -23,6 +23,8 @@ interface UseUserListStateReturn {
   sortedUsers: User[];
   paginatedUsers: User[];
   hasSelection: boolean;
+  bulkMode: boolean;
+  toggleBulkMode: () => void;
 }
 
 export const useUserListState = (users: User[]): UseUserListStateReturn => {
@@ -47,7 +49,17 @@ export const useUserListState = (users: User[]): UseUserListStateReturn => {
 
   const hasSelection = selectedUsers.length > 0;
 
+  const [bulkMode, setBulkMode] = useState(false);
+  // Leaving bulk mode hides the selection column, so a selection kept behind it
+  // would act on rows the user can no longer see.
+  const toggleBulkMode = useCallback(() => {
+    if (bulkMode) setSelectedUsers([]);
+    setBulkMode(!bulkMode);
+  }, [bulkMode]);
+
   return {
+    bulkMode,
+    toggleBulkMode,
     sortKey,
     sortOrder,
     selectedUsers,

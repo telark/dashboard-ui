@@ -1,18 +1,15 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { DEFAULT_COLORS } from '../../../../constants';
-import { PAGE_CONTENT_LAYOUT } from '../../../../constants/shared/pages';
+import { LIST_PAGE } from '../../../../constants/shared/pages';
 import type { PlanPhase, PlanPhaseQuickFilter, ProtectionPlan } from '../models';
-import { useAppearance } from '../../../settings/sections/appearance';
-import {
-  ProtectionPlanCard,
-  ProtectionPlansHeader,
-  ProtectionPlansToolbar,
-  NoProtectionPlansState,
-} from '../components';
+import { ProtectionPlanCard, ProtectionPlansToolbar, NoProtectionPlansState } from '../components';
 import { FilterPanel } from '../../../../components/display/panels/filter';
 import type { FilterField } from '../../../../components/display/panels/filter/FilterPanel';
-import { DATA_VIEW_ERROR_CONSTANTS as DVE, DataViewError } from '../../../../components/shared';
+import {
+  DATA_VIEW_ERROR_CONSTANTS as DVE,
+  DataViewError,
+  PageContainer,
+} from '../../../../components/shared';
 import { FancySpinner } from '../../../../components/animation';
 import { useLoadingTimeout } from '../../../../hooks/layout/useLoadingTimeout';
 import { userFacingMessage } from '../../../../api';
@@ -73,7 +70,6 @@ const uniqueValues = (
 
 const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
   ({ plans, searchValue, onSearchChange, onCreatePlanClick, loading, error, onRetry }) => {
-    const { contentGap } = useAppearance();
     const hasData = plans.length > 0;
     const timedOut = useLoadingTimeout({ isLoading: loading, hasError: Boolean(error), hasData });
     const dispatch: AppDispatch = useDispatch();
@@ -225,30 +221,24 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
     }
 
     return (
-      <div
-        style={{
-          minHeight: '100vh',
-          background: DEFAULT_COLORS.BACKGROUND_WHITE,
-          padding: PAGE_CONTENT_LAYOUT.PADDING,
-          marginTop: 0,
-          boxSizing: 'border-box',
-        }}
+      <PageContainer
+        title={PPC.LABELS.HEADER_TITLE}
+        subtitle={PPC.LABELS.HEADER_SUBTITLE}
+        gap={LIST_PAGE.CONTENT_GAP_PX}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: contentGap }}>
-          <ProtectionPlansHeader />
+        <ProtectionPlansToolbar
+          searchValue={searchValue}
+          onSearchChange={onSearchChange}
+          onCreatePlanClick={onCreatePlanClick}
+          onOpenFilters={() => setFilterPanelOpen(true)}
+          phaseQuickFilter={phaseQuickFilter}
+          onPhaseQuickFilterChange={handlePhaseQuickFilterChange}
+          phaseCounts={phaseCounts}
+          totalCount={phaseCounts.all}
+        />
 
-          <ProtectionPlansToolbar
-            searchValue={searchValue}
-            onSearchChange={onSearchChange}
-            onCreatePlanClick={onCreatePlanClick}
-            onOpenFilters={() => setFilterPanelOpen(true)}
-            phaseQuickFilter={phaseQuickFilter}
-            onPhaseQuickFilterChange={handlePhaseQuickFilterChange}
-            phaseCounts={phaseCounts}
-          />
+        <div style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>{dataRegion}</div>
 
-          {dataRegion}
-        </div>
         <FilterPanel
           open={filterPanelOpen}
           onClose={() => setFilterPanelOpen(false)}
@@ -261,7 +251,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           }}
           onReset={() => dispatch(clearAppliedPlanFilters())}
         />
-      </div>
+      </PageContainer>
     );
   },
 );

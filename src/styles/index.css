@@ -2,8 +2,6 @@
   /* Initial value only; useSidebarCollapse keeps this in sync with SIDEBAR_LAYOUT. */
   --sidebar-width: 260px;
   --page-bg: #111827;
-  /* Appearance settings: set by Settings > Appearance (e.g. 0.9375, 1, 1.0625). */
-  --app-font-size-scale: 1;
 }
 
 /* Reserves the scrollbar's own width permanently, so a panel opening (which sets

@@ -18,8 +18,9 @@ export const getSessionDetails = async (sessionToken: string): Promise<SessionDe
   });
 };
 
-export const deleteSession = async (sessionToken: string): Promise<DeleteSessionResponse> => {
-  const { path, method } = Endpoints.SESSIONS.DELETE_BY_TOKEN(sessionToken);
+// Accepts either a session token or a session resource name.
+export const deleteSession = async (sessionRef: string): Promise<DeleteSessionResponse> => {
+  const { path, method } = Endpoints.SESSIONS.DELETE_BY_TOKEN(sessionRef);
   return await Client<DeleteSessionResponse>(exporterApiClient, path, {
     method,
   });

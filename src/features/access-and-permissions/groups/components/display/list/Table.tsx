@@ -8,6 +8,7 @@ import { deduplicateCategoriesByName } from '../../../../categories/utils/helper
 import ActionBar from '../../../../../../components/display/actions/ActionBar';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import { DEFAULT_COLORS } from '../../../../../../constants';
+import { toTimestamp } from '../../../../../../utils/shared/time';
 
 type SortKey = 'name' | 'categoryID' | 'creationDate';
 
@@ -35,7 +36,7 @@ const GroupsTable: React.FC<GroupsTableProps> = ({ groups, onView, onEdit }) => 
           return String(a.categoryID).localeCompare(String(b.categoryID));
         case 'creationDate':
         default:
-          return new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();
+          return toTimestamp(a.creationDate) - toTimestamp(b.creationDate);
       }
     };
     items.sort((a, b) => (sortOrder === 'asc' ? compare(a, b) : -compare(a, b)));

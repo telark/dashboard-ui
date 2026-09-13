@@ -1,4 +1,5 @@
 import type { SortFieldConfig, SortOrder } from './types';
+import { toTimestamp, type DateInput } from '../../shared/time';
 
 export const sortData = <T>(
   data: T[],
@@ -41,10 +42,7 @@ export const sortData = <T>(
       case 'number':
         return Number(valueA) - Number(valueB);
       case 'date':
-        return (
-          new Date(valueA as string | number | Date).getTime() -
-          new Date(valueB as string | number | Date).getTime()
-        );
+        return toTimestamp(valueA as DateInput) - toTimestamp(valueB as DateInput);
       case 'custom':
         if (valueA < valueB) return -1;
         if (valueA > valueB) return 1;

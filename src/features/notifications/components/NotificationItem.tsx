@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
-import TimeAgo from 'react-timeago';
 import { useNavigate } from 'react-router-dom';
+import TimeAgo from '../../../components/display/time/TimeAgo';
 import { NOTIFICATION_SEVERITY_COLORS } from '../constants';
 import { getTypeConfig } from '../utils';
 import type { Notification } from '../models';

@@ -43,6 +43,18 @@ export const usersPersistConfig: PersistConfig<any> = {
   whitelist: ['users'],
 };
 
+export const rolesPersistConfig: PersistConfig<any> = {
+  key: 'roles',
+  storage,
+  whitelist: ['roles'],
+};
+
+export const protectionPlansPersistConfig: PersistConfig<any> = {
+  key: 'protectionPlans',
+  storage,
+  whitelist: ['plans'],
+};
+
 export const globalConfigPersistConfig: PersistConfig<any> = {
   key: 'globalconfig',
   storage,

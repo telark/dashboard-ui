@@ -51,6 +51,15 @@ export const ROLES_CONSTANTS = {
       DELETE_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to delete roles',
       CREATE_DISABLED_TOOLTIP: 'You do not have permission to create roles',
       CANNOT_DELETE_TITLE: 'Cannot delete',
+      BULK_DELETE: 'Delete selected',
+      BULK_DELETE_PROTECTED_TOOLTIP: 'Some selected roles are protected from deletion',
+      BULK_DELETE_MODAL_TITLE: 'Delete Roles',
+      BULK_DELETE_RESOURCE: (count: number) => `${count} role${count > 1 ? 's' : ''}`,
+      BULK_DELETE_LOADING: (count: number) => `Deleting ${count} role${count > 1 ? 's' : ''}...`,
+      BULK_DELETE_SUCCESS: (count: number) =>
+        `${count} role${count > 1 ? 's' : ''} deleted successfully`,
+      BULK_DELETE_FAILED: 'Failed to delete some roles',
+      CANCEL: 'Cancel',
     },
     PERMISSIONS_SUFFIX: 'permissions',
     CUSTOM_TYPE: 'custom',
@@ -89,6 +98,13 @@ export const ROLES_CONSTANTS = {
       SEARCH: { PLACEHOLDER: 'Search roles by name...', BUTTON_LABEL: 'Search' },
       FILTER: { BUTTON_LABEL: 'Filter' },
       CREATE: { BUTTON_LABEL: 'Add Role' },
+      COUNT_SUFFIX: 'roles',
+      CATEGORIES_COUNT_SUFFIX: 'categories',
+      MORE: 'More',
+      BULK: {
+        SELECT: 'Bulk',
+        EXIT: 'Exit bulk',
+      },
     },
     EMPTY: {
       NO_ROLES_FOUND: 'No roles found',
@@ -110,6 +126,9 @@ export const ROLES_CONSTANTS = {
     VERSION: 'version',
     STATUS: 'status',
     ACTIONS: 'actions',
+    MORE_MENU_BULK: 'bulk',
+    FILTER_ROLE_TYPE: 'roleType',
+    FILTER_ALL: 'all',
   } as const,
   SIZES: {
     ROW_HEIGHT: 32,
@@ -118,13 +137,20 @@ export const ROLES_CONSTANTS = {
     COLUMNS: {
       ROLE_TITLE: 110,
       TYPE: 80,
-      CREATED: 140,
+      // Header label + icon + sort measured at ~158/147px; narrower wraps them.
+      CREATED: 160,
       CREATED_BY: 90,
-      LAST_UPDATE: 140,
+      LAST_UPDATE: 150,
       VALIDITY: 80,
       CATEGORY: 80,
       VERSION: 80,
       STATUS: 80,
+    },
+    // Measured natural widths of the toolbar row: ~397px by default and ~516px in
+    // bulk mode. Below these the controls fall back to icons.
+    TOOLBAR_COMPACT_WIDTH: {
+      DEFAULT: 450,
+      BULK: 570,
     },
   },
   COLORS: {

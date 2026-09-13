@@ -76,8 +76,8 @@ export const useViewGroupPanelData = ({
         value: (
           <RowTag
             text={categoryName}
-            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+            background={DEFAULT_COLORS.CHIP_ON_SURFACE_BG}
+            color={DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT}
             fontSize={12}
           />
         ),
@@ -85,7 +85,7 @@ export const useViewGroupPanelData = ({
       {
         label: 'Creation Date',
         value: (
-          <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+          <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
             {group.creationDate ? <TimeAgo date={group.creationDate} /> : '—'}
           </span>
         ),
@@ -93,7 +93,7 @@ export const useViewGroupPanelData = ({
       {
         label: GC.LABELS.VIEW_LABELS.LAST_UPDATE,
         value: (
-          <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+          <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
             {group.lastUpdateDate ? <TimeAgo date={group.lastUpdateDate} /> : '—'}
           </span>
         ),
@@ -101,17 +101,21 @@ export const useViewGroupPanelData = ({
       {
         label: GC.LABELS.VIEW_LABELS.CREATED_BY,
         value: createdByUser ? (
-          <UserDisplay user={createdByUser} size="small" showBorder />
+          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
+            <UserDisplay user={createdByUser} size="small" showBorder />
+          </span>
         ) : (
-          <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>
+          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>—</span>
         ),
       },
       {
         label: GC.LABELS.VIEW_LABELS.LAST_UPDATED_BY,
         value: lastUpdatedByUser ? (
-          <UserDisplay user={lastUpdatedByUser} size="small" showBorder />
+          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
+            <UserDisplay user={lastUpdatedByUser} size="small" showBorder />
+          </span>
         ) : (
-          <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>
+          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>—</span>
         ),
       },
     ];
