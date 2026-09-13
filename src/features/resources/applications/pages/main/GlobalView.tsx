@@ -14,6 +14,11 @@ import type { FilterField } from '../../../../../components/display/panels/filte
 import type { DateRangeFilter } from '../../../../../interfaces/date/filter';
 import { filterByDateRange } from '../../../../access-and-permissions/groups/utils/filter/dateRangeUtils';
 import {
+  buildFilterChips,
+  hasAnyAppliedFilter,
+  splitFilterChips,
+} from '../../../../../utils/layout/filters';
+import {
   clearAllFilters,
   removeFilterValue,
   setAppliedFilters,
@@ -135,9 +140,10 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     const start = (effectivePage - 1) * APPLICATIONS_PAGE_SIZE;
     return filteredApplications.slice(start, start + APPLICATIONS_PAGE_SIZE);
   }, [effectivePage, filteredApplications]);
-  const allFilterChips = useMemo(() => buildFilterChips(appliedFilters), [appliedFilters]);
-  const visibleFilterChips = allFilterChips.slice(0, 3);
-  const overflowChipsCount = Math.max(0, allFilterChips.length - visibleFilterChips.length);
+  const { visible: visibleFilterChips, overflowCount: overflowChipsCount } = useMemo(
+    () => splitFilterChips(buildFilterChips(appliedFilters)),
+    [appliedFilters],
+  );
   const paginatedNames = useMemo(
     () => paginatedApplications.map((application) => application.name),
     [paginatedApplications],
@@ -350,44 +356,4 @@ function applyHealthQuickFilter(
   if (q === 'all') return apps;
   const wanted = q === 'unhealthy' ? 'down' : q;
   return apps.filter((a) => String(a.health?.status || '').toLowerCase() === wanted);
-}
-
-function hasAnyAppliedFilter(filters: Record<string, unknown>): boolean {
-  for (const value of Object.values(filters)) {
-    if (Array.isArray(value) && value.length > 0) {
-      return true;
-    }
-    if (value && typeof value === 'object') {
-      const obj = value as Record<string, unknown>;
-      if (obj.from || obj.to) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-function buildFilterChips(
-  filters: Record<string, unknown>,
-): { key: string; value: string; label: string }[] {
-  const chips: { key: string; value: string; label: string }[] = [];
-  for (const [key, value] of Object.entries(filters)) {
-    if (Array.isArray(value)) {
-      for (const item of value) {
-        const raw = String(item);
-        if (raw.trim()) {
-          chips.push({ key, value: raw, label: raw });
-        }
-      }
-      continue;
-    }
-    if (value && typeof value === 'object' && key === 'dateRange') {
-      const range = value as DateRangeFilter;
-      if (range.from || range.to) {
-        const label = `${range.from || 'Any'} to ${range.to || 'Any'}`;
-        chips.push({ key, value: label, label });
-      }
-    }
-  }
-  return chips;
 }

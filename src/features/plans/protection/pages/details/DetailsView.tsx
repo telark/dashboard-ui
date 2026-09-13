@@ -7,7 +7,7 @@ import ErrorView from '../../../../../components/display/views/ErrorView';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
 import ReactivatePlanModal from '../../components/shared/ReactivatePlanModal';
 import { APP_ROUTES } from '../../../../../constants';
-import ApplicationPageLayout from '../../../../resources/applications/components/layout/ApplicationPageLayout';
+import { PageContainer } from '../../../../../components/shared';
 import { usePlanDetails } from '../../hooks/usePlanDetails';
 import {
   cancelPlanThunk,
@@ -135,10 +135,7 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
 
   return (
     <>
-      <ApplicationPageLayout
-        breadcrumbItems={breadcrumbItems}
-        subtitle={PPC.LABELS.DETAIL_PAGE.SUBTITLE}
-      >
+      <PageContainer breadcrumbs={breadcrumbItems} subtitle={PPC.LABELS.DETAIL_PAGE.SUBTITLE}>
         <div style={{ marginTop: 24 }}>
           <ProtectionPlanDetailsContent
             plan={details}
@@ -156,7 +153,7 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
             onRefreshHealth={handleRefreshHealth}
           />
         </div>
-      </ApplicationPageLayout>
+      </PageContainer>
 
       <ActionConfirmModal
         open={cancelModalOpen}

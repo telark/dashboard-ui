@@ -5,6 +5,7 @@ import {
   useRoleListState,
   useRoleListPageConfig,
   useRoleFilters,
+  useBulkDeleteRoles,
 } from '../hooks';
 import { usePermission, ACTION_PERMISSIONS } from '../../../auth/hooks';
 import { useCategories } from '../../categories/hooks';
@@ -53,7 +54,11 @@ const MainPage: React.FC = () => {
     handleFilterChange,
     handleFilterApply,
     handleFilterReset,
-  } = useRoleFilters();
+    handleRemoveFilterChip,
+    filterChips,
+    overflowChipsCount,
+    hasActiveFilters,
+  } = useRoleFilters(uniqueCategories);
 
   const {
     createPanelOpen,
@@ -82,15 +87,24 @@ const MainPage: React.FC = () => {
     sortKey,
     sortOrder,
     selectedRoles,
+    setSelectedRoles,
     currentPage,
     pageSize,
     setCurrentPage,
     setPageSize,
-    setSelectedRoles,
     handleSort,
     sortedRoles,
     paginatedRoles,
+    bulkMode,
+    toggleBulkMode,
   } = useRoleListState(filteredRoles);
+
+  const [bulkDeleteModalOpen, setBulkDeleteModalOpen] = useState(false);
+  const { isDeleting, handleBulkDelete } = useBulkDeleteRoles({ selectedRoles, setSelectedRoles });
+  const handleConfirmBulkDelete = useCallback(async () => {
+    await handleBulkDelete();
+    setBulkDeleteModalOpen(false);
+  }, [handleBulkDelete]);
 
   const handleViewRole = useCallback((role: Role) => openViewPanel(role), [openViewPanel]);
   const handleEditRole = useCallback((role: Role) => openEditPanel(role), [openEditPanel]);
@@ -120,6 +134,9 @@ const MainPage: React.FC = () => {
     sortOrder: sortOrder ?? 'desc',
     selectedRoles,
     setSelectedRoles,
+    bulkMode,
+    onToggleBulkMode: toggleBulkMode,
+    onBulkDeleteClick: () => setBulkDeleteModalOpen(true),
     currentPage,
     setCurrentPage,
     pageSize,
@@ -135,6 +152,11 @@ const MainPage: React.FC = () => {
     onAddCategoryClick: () => setAddCategoryPanelOpen(true),
     searchValue: searchTerm,
     onSearchChange: setSearchTerm,
+    filterChips,
+    overflowChipsCount,
+    onRemoveFilterChip: handleRemoveFilterChip,
+    hasActiveFilters,
+    onClearAllFilters: handleFilterReset,
   });
 
   const shouldShowEmpty = useMemo(
@@ -178,6 +200,7 @@ const MainPage: React.FC = () => {
       onCloseCreatePanel={closeCreatePanel}
       onCloseEditPanel={closeEditPanel}
       onCloseViewPanel={closeViewPanel}
+      appliedFilters={appliedFilters}
       onCloseFilterPanel={closeFilterPanel}
       onCloseAddCategoryPanel={() => setAddCategoryPanelOpen(false)}
       onCloseEditCategoryPanel={closeEditCategoryPanel}
@@ -185,6 +208,11 @@ const MainPage: React.FC = () => {
       handleFilterApply={handleFilterApply}
       handleFilterReset={handleFilterReset}
       onViewPanelEdit={canEditRole ? handleViewPanelEdit : undefined}
+      bulkDeleteModalOpen={bulkDeleteModalOpen}
+      bulkDeleteSelectedCount={selectedRoles.length}
+      bulkDeleteIsDeleting={isDeleting}
+      onCloseBulkDeleteModal={() => setBulkDeleteModalOpen(false)}
+      onConfirmBulkDelete={handleConfirmBulkDelete}
     />
   );
 };

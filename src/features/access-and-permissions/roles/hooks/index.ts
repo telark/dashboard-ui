@@ -9,4 +9,5 @@ export { useViewRolePanelData } from './panels/role/useViewRolePanelData';
 export { useEditRoleSubmit } from './panels/role/useEditRoleSubmit';
 export { useRoleFilters } from './filter/useRoleFilters';
 export { useRoleListState } from './list/useRoleListState';
+export { useBulkDeleteRoles } from './list/useBulkDeleteRoles';
 export { useRoleListPageConfig } from './list/useRoleListPageConfig';

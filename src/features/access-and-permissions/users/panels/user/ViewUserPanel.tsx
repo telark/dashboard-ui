@@ -50,7 +50,7 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
       {
         label: UC.LABELS.VIEW_LABELS.USERNAME,
         value: (
-          <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+          <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
             {user.username}
           </span>
         ),
@@ -60,8 +60,10 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
         value: (
           <RowTag
             text={user.status.phase}
-            background={isActive ? `${DEFAULT_COLORS.SUCCESS}18` : DEFAULT_COLORS.CHIP_CUSTOM_BG}
-            color={isActive ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+            background={
+              isActive ? `${DEFAULT_COLORS.SUCCESS}18` : DEFAULT_COLORS.CHIP_ON_SURFACE_BG
+            }
+            color={isActive ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT}
             fontSize={12}
           />
         ),
@@ -69,7 +71,7 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
       {
         label: UC.LABELS.VIEW_LABELS.CREATION_DATE,
         value: (
-          <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+          <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
             {user.creationDate ? <TimeAgo date={user.creationDate} /> : '—'}
           </span>
         ),

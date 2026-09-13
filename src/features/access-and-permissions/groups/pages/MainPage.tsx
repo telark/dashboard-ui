@@ -57,7 +57,11 @@ const MainPage: React.FC = () => {
     handleFilterChange,
     handleFilterApply,
     handleFilterReset,
-  } = useGroupFilters();
+    handleRemoveFilterChip,
+    filterChips,
+    overflowChipsCount,
+    hasActiveFilters,
+  } = useGroupFilters(categoryOptions);
 
   const filteredGroups = useMemo(
     () => applyGroupFilters(groups, appliedFilters, searchTerm),
@@ -76,7 +80,8 @@ const MainPage: React.FC = () => {
     sortedGroups,
     paginatedGroups,
     selectedCount,
-    hasSelection,
+    bulkMode,
+    toggleBulkMode,
   } = useGroupListState(filteredGroups);
 
   const {
@@ -194,7 +199,6 @@ const MainPage: React.FC = () => {
     setPageSize,
     sortedGroups,
     paginatedGroups,
-    hasSelection,
     handleViewGroup,
     handleEditClick: canEditGroup ? openEditPanel : () => undefined,
     onCreateGroupClick: openCreatePanel,
@@ -209,6 +213,13 @@ const MainPage: React.FC = () => {
     searchValue: searchTerm,
     onSearchChange: setSearchTerm,
     onSearchSubmit: undefined,
+    bulkMode,
+    onToggleBulkMode: toggleBulkMode,
+    filterChips,
+    overflowChipsCount,
+    onRemoveFilterChip: handleRemoveFilterChip,
+    hasActiveFilters,
+    onClearAllFilters: handleFilterReset,
   });
 
   if (shouldShowEmpty && viewMode === 'groups') {
@@ -244,6 +255,7 @@ const MainPage: React.FC = () => {
       createForm={createForm}
       editForm={editForm}
       filterPanelOpen={filterPanelOpen}
+      appliedFilters={appliedFilters}
       categoryOptions={categoryOptions}
       bulkDeleteModalOpen={bulkDeleteModalOpen}
       selectedCount={selectedCount}

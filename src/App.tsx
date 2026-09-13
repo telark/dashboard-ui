@@ -198,6 +198,20 @@ const App: React.FC = () => {
               contentBg: DEFAULT_COLORS.SURFACE_WHITE,
               colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
             },
+            // The dark algorithm tints row and header borders blue; rows take the
+            // same muted hairline the rest of the dark surface uses.
+            // Selection reads as the same green tint as a selected application card,
+            // not a solid primary fill.
+            Table: {
+              borderColor: DEFAULT_COLORS.BORDER_LIGHT,
+              rowSelectedBg: DEFAULT_COLORS.SUCCESS_TINT,
+              rowSelectedHoverBg: DEFAULT_COLORS.SUCCESS_TINT,
+              rowHoverBg: DEFAULT_COLORS.HOVER_BG,
+              // The horizontal scrollbar track is drawn from colorSplit, which the
+              // dark algorithm also derives as blue.
+              colorSplit: DEFAULT_COLORS.BORDER_LIGHT,
+              stickyScrollBarBg: DEFAULT_COLORS.BORDER_HOVER,
+            },
             Button: {
               primaryShadow: 'none',
               dangerShadow: 'none',

@@ -8,15 +8,15 @@ import type { Role } from '../../../models';
 const SECTION_TITLE_STYLE: React.CSSProperties = {
   fontSize: 13,
   fontWeight: 700,
-  color: DEFAULT_COLORS.TEXT_PRIMARY,
+  color: DEFAULT_COLORS.TEXT_ON_SURFACE,
   letterSpacing: 0.2,
   marginBottom: 4,
   display: 'block',
 };
 
 const tagStyle = {
-  background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
-  color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
+  background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
+  color: DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT,
   fontSize: 12 as const,
 };
 

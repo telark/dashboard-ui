@@ -2,6 +2,8 @@ import React, { memo, useMemo } from 'react';
 import { PageLayout } from '../../../../components/display/views';
 import { DEFAULT_COLORS } from '../../../../constants';
 import { FilterPanel } from '../../../../components/display/panels/filter';
+import ActionConfirmModal from '../../../../components/display/modal/confirm/ActionConfirmModal';
+import { ROLES_CONSTANTS as RC } from '../constants';
 import { buildAttachRoleFilterFields } from '../../groups/config/attachRoleFilterConfig';
 import { useRoleCategoryOptions } from '../../groups/hooks/categories/useRoleCategoryOptions';
 import { CreateRolePanel, EditRolePanel, ViewRolePanel } from '../panels';
@@ -22,6 +24,7 @@ interface RolesListPageProps {
   createForm: FormInstance<RoleFormValues>;
   editForm: FormInstance<RoleFormValues>;
   filterPanelOpen: boolean;
+  appliedFilters: Record<string, unknown>;
   addCategoryPanelOpen: boolean;
   editCategoryPanelOpen: boolean;
   editingCategory: Category | null;
@@ -35,6 +38,11 @@ interface RolesListPageProps {
   handleFilterApply: (filters: Record<string, unknown>) => void;
   handleFilterReset: () => void;
   onViewPanelEdit?: () => void;
+  bulkDeleteModalOpen: boolean;
+  bulkDeleteSelectedCount: number;
+  bulkDeleteIsDeleting: boolean;
+  onCloseBulkDeleteModal: () => void;
+  onConfirmBulkDelete: () => Promise<void>;
 }
 
 const RolesListPage: React.FC<RolesListPageProps> = memo(
@@ -48,6 +56,7 @@ const RolesListPage: React.FC<RolesListPageProps> = memo(
     createForm,
     editForm,
     filterPanelOpen,
+    appliedFilters,
     addCategoryPanelOpen,
     editCategoryPanelOpen,
     editingCategory,
@@ -61,6 +70,11 @@ const RolesListPage: React.FC<RolesListPageProps> = memo(
     handleFilterApply,
     handleFilterReset,
     onViewPanelEdit,
+    bulkDeleteModalOpen,
+    bulkDeleteSelectedCount,
+    bulkDeleteIsDeleting,
+    onCloseBulkDeleteModal,
+    onConfirmBulkDelete,
   }) => {
     const { categoryOptions } = useRoleCategoryOptions();
     const filterFields = useMemo(
@@ -99,6 +113,7 @@ const RolesListPage: React.FC<RolesListPageProps> = memo(
           open={filterPanelOpen}
           onClose={onCloseFilterPanel}
           fields={filterFields}
+          value={appliedFilters}
           onFilterChange={handleFilterChange}
           onApply={handleFilterApply}
           onReset={handleFilterReset}
@@ -115,6 +130,20 @@ const RolesListPage: React.FC<RolesListPageProps> = memo(
             open={editCategoryPanelOpen}
             onClose={onCloseEditCategoryPanel}
             editingCategory={editingCategory}
+          />
+        )}
+        {bulkDeleteModalOpen && (
+          <ActionConfirmModal
+            open={bulkDeleteModalOpen}
+            onClose={onCloseBulkDeleteModal}
+            onConfirm={onConfirmBulkDelete}
+            title={RC.LABELS.ACTIONS.BULK_DELETE_MODAL_TITLE}
+            action="delete"
+            resourceName={RC.LABELS.ACTIONS.BULK_DELETE_RESOURCE(bulkDeleteSelectedCount)}
+            confirmText={RC.LABELS.DELETE_MODAL_OK}
+            cancelText={RC.LABELS.ACTIONS.CANCEL}
+            loading={bulkDeleteIsDeleting}
+            danger
           />
         )}
       </div>

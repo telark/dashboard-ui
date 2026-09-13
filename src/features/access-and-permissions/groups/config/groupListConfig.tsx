@@ -1,21 +1,33 @@
 import React from 'react';
 import { Tooltip } from 'antd';
+import type { MenuProps } from 'antd';
 import { Icons } from '../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../constants';
 import { getManageCategoriesButtonConfig } from '../../categories/config';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import {
-  SearchOutlined,
-  PlusOutlined,
-  FilterOutlined,
+  CheckSquareOutlined,
   DeleteOutlined,
+  EllipsisOutlined,
+  PlusOutlined,
+  SearchOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
+import type {
+  FilterChip,
+  ListToolbarProps,
+  ToolbarButtonConfig,
+  ToolbarConfig,
+} from '../../../../interfaces/layout/toolbar';
 
 const GroupIcon = Icons.Group;
 const RoleIcon = Icons.Role;
 const UserIcon = Icons.User;
+
+const MANAGE_KEYS = {
+  ROLES: 'manage-roles',
+  MEMBERS: 'manage-members',
+} as const;
 
 interface UseGroupListConfigProps {
   viewMode?: 'groups' | 'categories';
@@ -35,7 +47,74 @@ interface UseGroupListConfigProps {
   searchValue: string;
   onSearchChange: (value: string) => void;
   onSearchSubmit?: () => void;
+  totalCount: number;
+  categoriesCount: number;
+  pageCount: number;
+  bulkMode: boolean;
+  onToggleBulkMode: () => void;
+  filterChips: FilterChip[];
+  overflowChipsCount: number;
+  onRemoveFilterChip: (key: string, value: string) => void;
+  hasActiveFilters: boolean;
+  onClearAllFilters: () => void;
 }
+
+const manageItemLabel = (label: string, allowed: boolean, deniedTooltip: string) =>
+  allowed ? (
+    label
+  ) : (
+    <Tooltip title={deniedTooltip}>
+      <span style={{ pointerEvents: 'all' }}>{label}</span>
+    </Tooltip>
+  );
+
+const buildManageItems = (canAttachRole: boolean, canAttachMember: boolean): MenuProps['items'] => [
+  {
+    key: MANAGE_KEYS.ROLES,
+    label: manageItemLabel(
+      GC.LABELS.ACTIONS.MANAGE_ROLES,
+      canAttachRole,
+      GC.LABELS.ACTIONS.MANAGE_ROLES_DISABLED_TOOLTIP,
+    ),
+    icon: <RoleIcon size={14} />,
+    disabled: !canAttachRole,
+  },
+  {
+    key: MANAGE_KEYS.MEMBERS,
+    label: manageItemLabel(
+      GC.LABELS.ACTIONS.MANAGE_MEMBERS,
+      canAttachMember,
+      GC.LABELS.ACTIONS.MANAGE_MEMBERS_DISABLED_TOOLTIP,
+    ),
+    icon: <UserIcon size={14} />,
+    disabled: !canAttachMember,
+  },
+];
+
+// The categories dropdown shares the More menu with the bulk toggle.
+const buildMoreButton = (
+  categoriesButton: ToolbarButtonConfig,
+  onToggleBulkMode: () => void,
+): ToolbarButtonConfig => ({
+  key: 'more',
+  label: GC.LABELS.TOOLBAR.MORE,
+  icon: <EllipsisOutlined />,
+  variant: 'ghost',
+  dropdown: {
+    items: [
+      {
+        key: GC.KEYS.MORE_MENU_BULK,
+        icon: <CheckSquareOutlined />,
+        label: GC.LABELS.TOOLBAR.BULK.SELECT,
+      },
+      ...(categoriesButton.dropdown?.items ?? []),
+    ],
+    onItemClick: (key: string) => {
+      if (key === GC.KEYS.MORE_MENU_BULK) onToggleBulkMode();
+      else categoriesButton.dropdown?.onItemClick?.(key);
+    },
+  },
+});
 
 export const useGroupListConfig = ({
   viewMode = 'groups',
@@ -55,136 +134,176 @@ export const useGroupListConfig = ({
   searchValue,
   onSearchChange,
   onSearchSubmit,
-}: UseGroupListConfigProps) => {
-  const toolbarConfig: ToolbarConfig = React.useMemo(() => {
-    const isCategoriesView = viewMode === 'categories';
-
-    return {
-      search: isCategoriesView
-        ? undefined
-        : {
-            placeholder: GC.LABELS.TOOLBAR.SEARCH.PLACEHOLDER,
-            value: searchValue,
-            onChange: onSearchChange,
-            onSubmit: onSearchSubmit,
+  totalCount,
+  categoriesCount,
+  pageCount,
+  bulkMode,
+  onToggleBulkMode,
+  filterChips,
+  overflowChipsCount,
+  onRemoveFilterChip,
+  hasActiveFilters,
+  onClearAllFilters,
+}: UseGroupListConfigProps): { listToolbar: ListToolbarProps } => {
+  const bulkActions: ToolbarConfig = React.useMemo(
+    () => ({
+      buttons: [
+        {
+          key: 'manage-assignments',
+          label: GC.LABELS.TOOLBAR.MANAGE.BUTTON_LABEL,
+          icon: <SettingOutlined />,
+          variant: 'default',
+          iconOnly: true,
+          disabled: selectedGroupsCount !== 1,
+          dropdown: {
+            items: buildManageItems(canAttachRole, canAttachMember),
+            onItemClick: (key: string) => {
+              if (key === MANAGE_KEYS.ROLES) onAttachRoleClick?.();
+              if (key === MANAGE_KEYS.MEMBERS) onAttachMemberClick?.();
+            },
           },
-      buttons: isCategoriesView
-        ? [
-            {
-              key: 'add-category',
-              label: CATEGORIES_CONSTANTS.LABELS.TOOLBAR.MANAGE_CATEGORIES.ADD_CATEGORY,
-              icon: <PlusOutlined />,
-              variant: 'primary' as const,
-              onClick: () => onAddCategoryClick?.(),
-              disabled: !canAddGroupCategory,
-            },
-          ]
-        : [
-            {
-              key: 'search',
-              label: GC.LABELS.TOOLBAR.SEARCH.BUTTON_LABEL,
-              icon: <SearchOutlined />,
-              variant: 'ghost' as const,
-            },
-            {
-              key: 'filter',
-              label: GC.LABELS.TOOLBAR.FILTER.BUTTON_LABEL,
-              icon: <FilterOutlined />,
-              variant: 'ghost' as const,
-              onClick: () => onFilterClick?.(),
-            },
-            {
-              key: 'bulk-delete',
-              label: GC.LABELS.ACTIONS.BULK_DELETE,
-              icon: <DeleteOutlined />,
-              variant: 'danger' as const,
-              disabled: selectedGroupsCount < 2,
-              onClick: () => onBulkDeleteClick?.(),
-            },
-            getManageCategoriesButtonConfig({
-              onViewCategories: () => onViewModeChange?.('categories'),
-              onAddCategory: () => onAddCategoryClick?.(),
-              canViewCategories: canViewGroupCategories,
-              canAddCategory: canAddGroupCategory,
-            }),
-            {
-              key: 'manage-assignments',
-              label: GC.LABELS.TOOLBAR.MANAGE.BUTTON_LABEL,
-              icon: <SettingOutlined />,
-              variant: 'default' as const,
-              disabled: selectedGroupsCount !== 1,
-              dropdown: {
-                items: [
-                  {
-                    key: 'manage-roles',
-                    label: !canAttachRole ? (
-                      <Tooltip title={GC.LABELS.ACTIONS.MANAGE_ROLES_DISABLED_TOOLTIP}>
-                        <span style={{ pointerEvents: 'all' }}>
-                          {GC.LABELS.ACTIONS.MANAGE_ROLES}
-                        </span>
-                      </Tooltip>
-                    ) : (
-                      GC.LABELS.ACTIONS.MANAGE_ROLES
-                    ),
-                    icon: <RoleIcon size={14} />,
-                    disabled: !canAttachRole,
-                  },
-                  {
-                    key: 'manage-members',
-                    label: !canAttachMember ? (
-                      <Tooltip title={GC.LABELS.ACTIONS.MANAGE_MEMBERS_DISABLED_TOOLTIP}>
-                        <span style={{ pointerEvents: 'all' }}>
-                          {GC.LABELS.ACTIONS.MANAGE_MEMBERS}
-                        </span>
-                      </Tooltip>
-                    ) : (
-                      GC.LABELS.ACTIONS.MANAGE_MEMBERS
-                    ),
-                    icon: <UserIcon size={14} />,
-                    disabled: !canAttachMember,
-                  },
-                ],
-                onItemClick: (key: string) => {
-                  if (key === 'manage-roles') {
-                    onAttachRoleClick?.();
-                  } else if (key === 'manage-members') {
-                    onAttachMemberClick?.();
-                  }
-                },
-              },
-            },
-            {
-              key: 'create-group',
-              label: GC.LABELS.FORM.BUTTON_TEXT,
-              icon: <GroupIcon size={14} />,
-              variant: 'primary' as const,
-              onClick: () => onCreateGroupClick?.(),
-              disabled: !canCreateGroup,
-              tooltip: !canCreateGroup ? GC.LABELS.ACTIONS.CREATE_DISABLED_TOOLTIP : undefined,
-            },
-          ],
+        },
+        {
+          key: 'bulk-delete',
+          label: GC.LABELS.ACTIONS.BULK_DELETE,
+          icon: <DeleteOutlined />,
+          variant: 'danger',
+          iconOnly: true,
+          disabled: selectedGroupsCount < 2,
+          onClick: () => onBulkDeleteClick?.(),
+        },
+      ],
+    }),
+    [
+      canAttachMember,
+      canAttachRole,
+      onAttachMemberClick,
+      onAttachRoleClick,
+      onBulkDeleteClick,
+      selectedGroupsCount,
+    ],
+  );
+
+  const groupToolbars: ToolbarConfig[] = React.useMemo(() => {
+    const search: ToolbarConfig = {
+      search: {
+        placeholder: GC.LABELS.TOOLBAR.SEARCH.PLACEHOLDER,
+        value: searchValue,
+        onChange: onSearchChange,
+        onSubmit: onSearchSubmit,
+      },
+      buttons: [
+        {
+          key: 'search',
+          label: GC.LABELS.TOOLBAR.SEARCH.BUTTON_LABEL,
+          icon: <SearchOutlined />,
+          variant: 'ghost',
+        },
+      ],
     };
+    // Exiting bulk stays inline: it must never be buried behind a menu.
+    const exitBulk: ToolbarConfig = {
+      buttons: [
+        {
+          key: 'bulk-exit',
+          label: GC.LABELS.TOOLBAR.BULK.EXIT,
+          icon: <CheckSquareOutlined />,
+          variant: 'ghost',
+          onClick: onToggleBulkMode,
+          active: true,
+        },
+      ],
+    };
+    const categoriesButton = getManageCategoriesButtonConfig({
+      onViewCategories: () => onViewModeChange?.('categories'),
+      onAddCategory: () => onAddCategoryClick?.(),
+      canViewCategories: canViewGroupCategories,
+      canAddCategory: canAddGroupCategory,
+    });
+    const more: ToolbarConfig = { buttons: [buildMoreButton(categoriesButton, onToggleBulkMode)] };
+    const create: ToolbarConfig = {
+      buttons: [
+        {
+          key: 'create-group',
+          label: GC.LABELS.FORM.BUTTON_TEXT,
+          icon: <GroupIcon size={14} />,
+          variant: 'primary',
+          onClick: () => onCreateGroupClick?.(),
+          disabled: !canCreateGroup,
+          tooltip: canCreateGroup ? undefined : GC.LABELS.ACTIONS.CREATE_DISABLED_TOOLTIP,
+        },
+      ],
+    };
+    return bulkMode ? [search, exitBulk, create] : [search, create, more];
   }, [
-    viewMode,
-    onViewModeChange,
-    onCreateGroupClick,
-    canCreateGroup,
-    onAddCategoryClick,
-    selectedGroupsCount,
-    onBulkDeleteClick,
-    onAttachRoleClick,
-    onAttachMemberClick,
-    canAttachRole,
-    canAttachMember,
-    canViewGroupCategories,
+    bulkMode,
     canAddGroupCategory,
-    onFilterClick,
-    searchValue,
+    canCreateGroup,
+    canViewGroupCategories,
+    onAddCategoryClick,
+    onCreateGroupClick,
     onSearchChange,
     onSearchSubmit,
+    onToggleBulkMode,
+    onViewModeChange,
+    searchValue,
   ]);
 
-  return {
-    toolbarConfig,
-  };
+  const listToolbar: ListToolbarProps = React.useMemo(() => {
+    if (viewMode === 'categories') {
+      return {
+        totalCount: categoriesCount,
+        countSuffix: GC.LABELS.TOOLBAR.CATEGORIES_COUNT_SUFFIX,
+        compactWidth: GC.SIZES.TOOLBAR_COMPACT_WIDTH,
+        toolbars: [
+          {
+            buttons: [
+              {
+                key: 'add-category',
+                label: CATEGORIES_CONSTANTS.LABELS.TOOLBAR.MANAGE_CATEGORIES.ADD_CATEGORY,
+                icon: <PlusOutlined />,
+                variant: 'primary',
+                onClick: () => onAddCategoryClick?.(),
+                disabled: !canAddGroupCategory,
+              },
+            ],
+          },
+        ],
+      };
+    }
+    return {
+      totalCount,
+      countSuffix: GC.LABELS.TOOLBAR.COUNT_SUFFIX,
+      compactWidth: GC.SIZES.TOOLBAR_COMPACT_WIDTH,
+      filterChips,
+      overflowChipsCount,
+      onRemoveFilterChip,
+      hasActiveFilters,
+      onClearAllFilters,
+      onOpenFilters: onFilterClick,
+      bulkMode,
+      selection: { pageCount, selectedCount: selectedGroupsCount },
+      bulkActions,
+      toolbars: groupToolbars,
+    };
+  }, [
+    bulkActions,
+    bulkMode,
+    canAddGroupCategory,
+    categoriesCount,
+    filterChips,
+    groupToolbars,
+    hasActiveFilters,
+    onAddCategoryClick,
+    onClearAllFilters,
+    onFilterClick,
+    onRemoveFilterChip,
+    overflowChipsCount,
+    pageCount,
+    selectedGroupsCount,
+    totalCount,
+    viewMode,
+  ]);
+
+  return { listToolbar };
 };

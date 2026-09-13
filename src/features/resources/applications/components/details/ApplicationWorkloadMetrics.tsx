@@ -2,6 +2,7 @@ import React, { memo, useState } from 'react';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
 import { Pagination, Tooltip } from 'antd';
 import { DEFAULT_COLORS } from '../../../../../constants';
+import { PAGINATION_DEFAULTS } from '../../../../../components/display/table/constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { APPLICATIONS_UI } from '../../constants';
@@ -316,7 +317,7 @@ const ApplicationWorkloadMetrics: React.FC<ApplicationWorkloadMetricsProps> = me
               {pageStart + 1}-{rangeEnd} of {workloads.length}
             </span>
             <Pagination
-              className={M.PAGINATION_CLASS}
+              className={PAGINATION_DEFAULTS.CLASS_NAME}
               size="small"
               current={currentPage}
               pageSize={M.PAGE_SIZE}

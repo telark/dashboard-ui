@@ -1,6 +1,17 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
+import {
+  buildFilterChips,
+  hasAnyAppliedFilter,
+  removeFilterChip,
+  splitFilterChips,
+} from '../../../../../utils/layout/filters';
+import type { FilterOption } from '../../../../../interfaces/layout/filters';
+import { GROUPS_CONSTANTS as GC } from '../../constants';
 
-export const useGroupFilters = () => {
+// The category filter starts on "all", which filters nothing.
+const FILTER_DEFAULTS = { [GC.KEYS.FILTER_CATEGORY]: GC.KEYS.FILTER_CATEGORY_ALL };
+
+export const useGroupFilters = (categoryOptions: FilterOption[]) => {
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
 
@@ -20,6 +31,27 @@ export const useGroupFilters = () => {
     setAppliedFilters({});
   }, []);
 
+  const handleRemoveFilterChip = useCallback((key: string, value: string) => {
+    setAppliedFilters((current) => removeFilterChip(current, key, value));
+  }, []);
+
+  // The category filter stores ids; the chip shows the category name.
+  const { visible: filterChips, overflowCount: overflowChipsCount } = useMemo(() => {
+    const chips = buildFilterChips(appliedFilters, FILTER_DEFAULTS).map((chip) =>
+      chip.key === GC.KEYS.FILTER_CATEGORY
+        ? {
+            ...chip,
+            label: categoryOptions.find((opt) => opt.value === chip.value)?.label ?? chip.label,
+          }
+        : chip,
+    );
+    return splitFilterChips(chips);
+  }, [appliedFilters, categoryOptions]);
+  const hasActiveFilters = useMemo(
+    () => hasAnyAppliedFilter(appliedFilters, FILTER_DEFAULTS),
+    [appliedFilters],
+  );
+
   return {
     filterPanelOpen,
     openFilterPanel,
@@ -28,5 +60,9 @@ export const useGroupFilters = () => {
     handleFilterChange,
     handleFilterApply,
     handleFilterReset,
+    handleRemoveFilterChip,
+    filterChips,
+    overflowChipsCount,
+    hasActiveFilters,
   };
 };

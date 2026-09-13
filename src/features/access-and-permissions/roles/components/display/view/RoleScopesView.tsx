@@ -20,7 +20,7 @@ const RULES_POPOVER_STYLE = {
   listItem: {
     fontSize: 12,
     fontWeight: 500,
-    color: DEFAULT_COLORS.TEXT_SECONDARY,
+    color: DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT,
     padding: '4px 8px',
     background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
     borderRadius: 8,
@@ -33,7 +33,7 @@ const RULES_POPOVER_STYLE = {
     width: 4,
     height: 4,
     borderRadius: '50%',
-    background: DEFAULT_COLORS.TEXT_MUTED,
+    background: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     flexShrink: 0,
   },
   rulesIcon: {
@@ -75,7 +75,7 @@ const RoleScopesView: React.FC<ScopesPermissionsProps> = ({ scopes }) => {
   const sectionTitleStyle: React.CSSProperties = {
     fontSize: 13,
     fontWeight: 700,
-    color: DEFAULT_COLORS.TEXT_PRIMARY,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
     letterSpacing: 0.2,
     marginBottom: 4,
     display: 'block',
@@ -99,8 +99,8 @@ const RoleScopesView: React.FC<ScopesPermissionsProps> = ({ scopes }) => {
             >
               <RowTag
                 text={scopeValue.level}
-                background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+                background={DEFAULT_COLORS.CHIP_ON_SURFACE_BG}
+                color={DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT}
                 fontSize={12}
               />
               {hasRules && (

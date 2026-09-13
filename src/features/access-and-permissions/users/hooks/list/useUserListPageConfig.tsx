@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Empty } from 'antd';
 import type { PageLayoutConfig } from '../../../../../interfaces/layout/page';
+import type { FilterChip } from '../../../../../interfaces/layout/toolbar';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import { DEFAULT_COLORS, Icons } from '../../../../../constants';
 import type { RootState } from '../../../../../store';
@@ -38,6 +39,13 @@ interface UseUserListPageConfigOptions {
   searchValue: string;
   onSearchChange: (value: string) => void;
   onSearchSubmit?: () => void;
+  bulkMode: boolean;
+  onToggleBulkMode: () => void;
+  filterChips: FilterChip[];
+  overflowChipsCount: number;
+  onRemoveFilterChip: (key: string, value: string) => void;
+  hasActiveFilters: boolean;
+  onClearAllFilters: () => void;
 }
 
 export const useUserListPageConfig = ({
@@ -62,6 +70,13 @@ export const useUserListPageConfig = ({
   searchValue,
   onSearchChange,
   onSearchSubmit,
+  bulkMode,
+  onToggleBulkMode,
+  filterChips,
+  overflowChipsCount,
+  onRemoveFilterChip,
+  hasActiveFilters,
+  onClearAllFilters,
 }: UseUserListPageConfigOptions): PageLayoutConfig<User> => {
   const { rowHeight } = useAppearance();
   const canManageRole = usePermission(
@@ -79,7 +94,7 @@ export const useUserListPageConfig = ({
     ACTION_PERMISSIONS.users.delete.level,
     ACTION_PERMISSIONS.users.delete.deny,
   );
-  const { toolbarConfig } = useUserListConfig({
+  const { listToolbar } = useUserListConfig({
     searchValue,
     onSearchChange,
     onSearchSubmit,
@@ -93,6 +108,15 @@ export const useUserListPageConfig = ({
     canManageRole,
     canManageGroup,
     canBulkDeleteUser,
+    totalCount: sortedUsers.length,
+    pageCount: paginatedUsers.length,
+    bulkMode,
+    onToggleBulkMode,
+    filterChips,
+    overflowChipsCount,
+    onRemoveFilterChip,
+    hasActiveFilters,
+    onClearAllFilters,
   });
 
   useFetchGroups();
@@ -110,7 +134,7 @@ export const useUserListPageConfig = ({
       title: UC.LABELS.HEADER_TITLE,
       subtitle: UC.LABELS.HEADER_SUBTITLE,
       breadcrumbs: [],
-      toolbar: toolbarConfig,
+      listToolbar,
       columns: [
         ...userColumns,
         {
@@ -126,7 +150,6 @@ export const useUserListPageConfig = ({
       ],
       data: paginatedUsers,
       rowKey: (record: User) => record.id,
-      containerStyle: { marginTop: '0', paddingBottom: '48px' },
       pagination: {
         currentPage,
         pageSize,
@@ -139,10 +162,12 @@ export const useUserListPageConfig = ({
         pageSizeOptions: [10, 20, 50, 100],
         showRowsLabel: UC.LABELS.PAGINATION.SHOW_ROWS,
       },
-      rowSelection: {
-        selectedRowKeys: selectedUsers,
-        onChange: (keys: React.Key[]) => setSelectedUsers(keys),
-      },
+      rowSelection: bulkMode
+        ? {
+            selectedRowKeys: selectedUsers,
+            onChange: (keys: React.Key[]) => setSelectedUsers(keys),
+          }
+        : undefined,
       onRowClick: (record: User) => handleViewUser(record),
       rowHeight,
       empty: (
@@ -153,7 +178,8 @@ export const useUserListPageConfig = ({
       ),
     }),
     [
-      toolbarConfig,
+      listToolbar,
+      bulkMode,
       userColumns,
       paginatedUsers,
       currentPage,

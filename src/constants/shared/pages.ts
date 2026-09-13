@@ -9,6 +9,26 @@ export const PAGE_CONTENT_LAYOUT = {
   PADDING_HORIZONTAL_AND_BOTTOM_PX: 48,
 } as const;
 
+/** Page title, breadcrumb trail and subtitle shared by every feature page. */
+export const PAGE_HEADER = {
+  TITLE_FONT_SIZE_PX: 28,
+  TITLE_FONT_WEIGHT: 700,
+  SUBTITLE_FONT_SIZE_PX: 14,
+  LINE_HEIGHT: 1.2,
+  TITLE_GAP_PX: 8,
+  BREADCRUMB_SEPARATOR: '/',
+} as const;
+
+/** List pages: the toolbar sticks under the app header while the list scrolls. */
+export const LIST_PAGE = {
+  TOOLBAR_Z_INDEX: 5,
+  TOOLBAR_PADDING: '8px 0',
+  // The sticky wrapper's padding plus the page gap leaves too much air above the
+  // list, so the content pulls back up by this much.
+  CONTENT_OFFSET_PX: -20,
+  LOADING_MIN_HEIGHT_PX: 240,
+} as const;
+
 export const SHARED_PAGE_CONSTANTS = {
   UI: {
     ICON_SIZE: 56,

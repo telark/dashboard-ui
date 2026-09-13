@@ -3,44 +3,15 @@ import dayjs from 'dayjs';
 import { Button, Tooltip } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
-import { AVATAR_RING, DEFAULT_COLORS, HEADER_LAYOUT } from '../../../../../constants';
+import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../../../constants';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import KeyValueGrid from '../../../../resources/applications/components/details/KeyValueGrid';
 import RowTag from '../../../../../components/display/table/RowTag';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import TimeRemaining from '../../../../../components/display/time/TimeRemaining';
 import UserAvatar from '../../../../../components/display/avatars/UserAvatar';
+import { avatarRingStyle } from '../../../../../components/display/avatars/avatarRing';
 import type { UserAvatar as UserAvatarModel } from '../../../../access-and-permissions/users/models';
-
-const AVATAR_RING_STYLE: React.CSSProperties = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: AVATAR_RING.BORDER_WIDTH,
-  border: `${AVATAR_RING.BORDER_WIDTH}px solid ${DEFAULT_COLORS.SUCCESS}`,
-  borderRadius: '50%',
-  background: '#fff',
-  boxSizing: 'border-box',
-  flexShrink: 0,
-};
-
-const AVATAR_INNER_STYLE: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  lineHeight: 1,
-  fontWeight: 600,
-};
-
-const AvatarRing: React.FC<{
-  avatar?: UserAvatarModel;
-  username?: string;
-  size: number;
-}> = ({ avatar, username, size }) => (
-  <span style={AVATAR_RING_STYLE}>
-    <UserAvatar avatar={avatar} username={username} size={size} style={AVATAR_INNER_STYLE} />
-  </span>
-);
 import { ColumnShell } from '../../../../resources/applications/pages/details/contentBlocks';
 import HealthBadge from '../../components/shared/HealthBadge';
 import HealthSection from '../../components/details/HealthSection';
@@ -56,6 +27,16 @@ import {
   PHASE_DOT_COLOR,
 } from '../../constants/protectionPlans';
 import type { ProtectionPlan } from '../../models';
+
+const AvatarRing: React.FC<{
+  avatar?: UserAvatarModel;
+  username?: string;
+  size: number;
+}> = ({ avatar, username, size }) => (
+  <span style={avatarRingStyle(size)}>
+    <UserAvatar avatar={avatar} username={username} size={size} style={{ border: 'none' }} />
+  </span>
+);
 
 const COMPACT_REFRESH_BUTTON_STYLE: React.CSSProperties = {
   color: DEFAULT_COLORS.ICON_SECONDARY,
@@ -238,7 +219,6 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             gap: 12,
             padding: '8px 0',
             background: DEFAULT_COLORS.BACKGROUND_WHITE,
-            borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>

@@ -1,5 +1,5 @@
-import React from 'react';
 import { Table, Empty } from 'antd';
+import { DEFAULT_COLORS } from '../../../constants';
 import type { DataTableProps } from '../../../interfaces/layout/table';
 
 function DataTable<T>({
@@ -23,9 +23,8 @@ function DataTable<T>({
     <div
       className={className}
       style={{
-        background: '#fff',
+        background: DEFAULT_COLORS.BACKGROUND_WHITE,
         borderRadius: 16,
-        boxShadow: '0 10px 24px rgba(0,0,0,0.06)',
         padding: 16,
         overflow: 'hidden',
         ...containerStyle,

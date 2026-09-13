@@ -53,8 +53,8 @@ const renderGroupTags = (item: GroupInheritedRole): React.ReactNode => (
       <RowTag
         key={group.id}
         text={CapitalizeFirstLetter(group.name)}
-        background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-        color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+        background={DEFAULT_COLORS.CHIP_ON_SURFACE_BG}
+        color={DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT}
         fontSize={12}
       />
     ))}

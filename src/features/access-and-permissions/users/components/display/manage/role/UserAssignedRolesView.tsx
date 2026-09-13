@@ -80,8 +80,8 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
             <RowTag
               key={name}
               text={name}
-              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
+              background={DEFAULT_COLORS.CHIP_ON_SURFACE_BG}
+              color={DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT}
               fontSize={12}
             />
           ))}

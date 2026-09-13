@@ -33,6 +33,7 @@ interface GroupsListPageProps {
   createForm: FormInstance;
   editForm: FormInstance;
   filterPanelOpen: boolean;
+  appliedFilters: Record<string, unknown>;
   categoryOptions: Array<{ label: string; value: string }>;
   bulkDeleteModalOpen: boolean;
   selectedCount: number;
@@ -72,6 +73,7 @@ const GroupsListPage: React.FC<GroupsListPageProps> = memo(
     createForm,
     editForm,
     filterPanelOpen,
+    appliedFilters,
     categoryOptions,
     bulkDeleteModalOpen,
     selectedCount,
@@ -162,6 +164,7 @@ const GroupsListPage: React.FC<GroupsListPageProps> = memo(
           open={filterPanelOpen}
           onClose={onCloseFilterPanel}
           fields={filterFields}
+          value={appliedFilters}
           onFilterChange={handleFilterChange}
           onApply={handleFilterApply}
           onReset={handleFilterReset}
