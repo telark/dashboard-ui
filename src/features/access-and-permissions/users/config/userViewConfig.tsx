@@ -3,7 +3,8 @@ import { AiOutlineTag } from 'react-icons/ai';
 import type { User } from '../models';
 import type { DetailsViewConfig } from '../../../../components/display/views/DetailsView';
 import { StatusTag } from '../../../../components/display/tags';
-import { DEFAULT_COLORS, Icons } from '../../../../constants';
+import { DEFAULT_COLORS, Icons, TIME_FORMATS } from '../../../../constants';
+import { formatDateTime } from '../../../../utils/shared/time';
 import { USERS_CONSTANTS as UC } from '../constants';
 
 export const createUserViewConfig = (user: User): DetailsViewConfig => {
@@ -76,13 +77,7 @@ export const createUserViewConfig = (user: User): DetailsViewConfig => {
       {
         key: 'creationDate',
         label: UC.LABELS.VIEW_LABELS.CREATION_DATE,
-        value: new Date(user.creationDate).toLocaleString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
+        value: formatDateTime(user.creationDate, TIME_FORMATS.LONG_DATE_TIME_12H),
         icon: <Icons.ViewFieldDate />,
         type: 'text',
       },

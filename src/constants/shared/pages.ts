@@ -27,6 +27,7 @@ export const LIST_PAGE = {
   // list, so the content pulls back up by this much.
   CONTENT_OFFSET_PX: -20,
   LOADING_MIN_HEIGHT_PX: 240,
+  CONTENT_GAP_PX: 32,
 } as const;
 
 export const SHARED_PAGE_CONSTANTS = {

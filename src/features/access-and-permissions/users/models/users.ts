@@ -3,6 +3,12 @@ export interface UserAvatar {
   seed: string;
 }
 
+export interface UserSettings {
+  timezone?: string;
+  region?: string;
+  theme?: string;
+}
+
 export type UserAccountState = 'active' | 'suspended';
 
 export interface UserStatus {
@@ -24,6 +30,7 @@ export interface User {
   creationDate: string;
   status: UserStatus;
   avatar?: UserAvatar;
+  settings?: UserSettings;
 }
 
 export type UserFormBaseFields = Pick<User, 'username' | 'fullname' | 'email'>;

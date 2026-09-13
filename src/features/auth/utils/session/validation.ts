@@ -4,14 +4,14 @@ import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 import { AUTH_CONSTANTS } from '../../constants/messages';
 import { HTTP_STATUS } from '../../../../constants';
+import { parseDate } from '../../../../utils/shared/time';
 import type { AxiosError } from 'axios';
 import type { SessionValidationResult } from '../../models/session';
 
 export const isSessionExpired = (expiresTimestamp: string): boolean => {
   try {
-    const expiresDate = new Date(expiresTimestamp);
-    const now = new Date();
-    return now >= expiresDate;
+    const expiresDate = parseDate(expiresTimestamp);
+    return expiresDate !== null && Date.now() >= expiresDate.getTime();
   } catch (error) {
     if (isDevelopment()) {
       logger.error(AUTH_CONSTANTS.SESSION.VALIDATION.INVALID_TIMESTAMP_ERROR, error);

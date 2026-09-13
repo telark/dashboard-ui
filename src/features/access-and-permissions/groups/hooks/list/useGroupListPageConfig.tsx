@@ -6,7 +6,6 @@ import type { FilterChip } from '../../../../../interfaces/layout/toolbar';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import { Icons } from '../../../../../constants';
-import { useAppearance } from '../../../../../features/settings/sections/appearance';
 import { selectGroupsCategories } from '../../../categories/store/selectors/categorySelectors';
 import Columns from '../../components/display/list/Columns';
 import CategoryColumns from '../../../categories/components/display/list/CategoryColumns';
@@ -97,7 +96,6 @@ export const useGroupListPageConfig = ({
   hasActiveFilters,
   onClearAllFilters,
 }: UseGroupListPageConfigOptions): PageLayoutConfig<Group | Category> => {
-  const { rowHeight } = useAppearance();
   const reduxCategories = useSelector(selectGroupsCategories);
   const { users } = useUsers();
 
@@ -284,7 +282,6 @@ export const useGroupListPageConfig = ({
         viewMode === 'groups'
           ? (record: Group | Category) => handleViewGroup(record as Group)
           : undefined,
-      rowHeight,
       empty:
         viewMode === 'groups' ? (
           <Empty
@@ -326,7 +323,6 @@ export const useGroupListPageConfig = ({
       setCategoryPageSize,
       setSelectedGroups,
       onEditCategory,
-      rowHeight,
     ],
   );
 };

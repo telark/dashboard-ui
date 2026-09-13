@@ -52,7 +52,8 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = memo(
               (section) =>
                 section.key === 'profile' ||
                 section.key === 'appearance' ||
-                section.key === 'myPermissions',
+                section.key === 'myPermissions' ||
+                section.key === 'security',
             )}
             activeSection={activeSection}
             onSectionChange={onSectionChange}
@@ -67,10 +68,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = memo(
           <SettingsSidebarGroup
             title="Platform"
             sections={SETTINGS_SECTIONS_LIST.filter(
-              (section) =>
-                section.key === 'security' ||
-                section.key === 'aiInsights' ||
-                section.key === 'insightsGovernance',
+              (section) => section.key === 'aiInsights' || section.key === 'insightsGovernance',
             )}
             activeSection={activeSection}
             onSectionChange={onSectionChange}

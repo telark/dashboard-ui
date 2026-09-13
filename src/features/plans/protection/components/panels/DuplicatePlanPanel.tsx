@@ -1,13 +1,13 @@
 import React, { useMemo, useState } from 'react';
 import { Form, Input, Select } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
-import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
 import { APP_ROUTES, DEFAULT_COLORS, FILTER_PANEL } from '../../../../../constants';
 import DatePicker from '../../../../../components/display/inputs/DatePicker';
+import { zonedNow } from '../../../../../utils/layout';
 import { createNameValidator } from '../../../../shared/utils/nameValidation';
 import { DEFAULT_NAME_VALIDATION_CONFIG } from '../../../../shared/constants/nameValidation';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
@@ -165,7 +165,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
                 showTime
                 format="YYYY-MM-DD HH:mm"
                 style={FILTER_PANEL.DATE_INPUT}
-                disabledDate={(d) => d.isBefore(dayjs(), 'day')}
+                disabledDate={(d) => d.isBefore(zonedNow(), 'day')}
               />
             </Form.Item>
           </div>
@@ -192,7 +192,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
                 showTime
                 format="YYYY-MM-DD HH:mm"
                 style={FILTER_PANEL.DATE_INPUT}
-                disabledDate={(d) => d.isBefore(dayjs(), 'day')}
+                disabledDate={(d) => d.isBefore(zonedNow(), 'day')}
               />
             </Form.Item>
           </div>

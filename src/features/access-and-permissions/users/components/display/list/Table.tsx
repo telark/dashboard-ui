@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import DataTable from '../../../../../../components/display/table/DataTable';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { DEFAULT_COLORS } from '../../../../../../constants';
+import { toTimestamp } from '../../../../../../utils/shared/time';
 import type { User, UsersTableProps } from '../../../models';
 import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
 import type { RootState } from '../../../../../../store';
@@ -38,7 +39,7 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onView, onEdit, onUsersC
           break;
         case 'creationDate':
         default:
-          cmp = new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();
+          cmp = toTimestamp(a.creationDate) - toTimestamp(b.creationDate);
       }
       return sortOrder === 'asc' ? cmp : -cmp;
     });

@@ -5,7 +5,6 @@ import { DEFAULT_COLORS, LIST_TOOLBAR } from '../../../../../constants';
 import { LIST_PAGE } from '../../../../../constants/shared/pages';
 import type { Application } from '../../models';
 import type { AppDispatch, RootState } from '../../../../../store';
-import { useAppearance } from '../../../../settings/sections/appearance';
 import { ApplicationCard, ApplicationsToolbar } from '../../components';
 import { setLayoutMode } from '../../store/slices/applicationsSlice';
 import ApplicationDeleteModal from '../../components/delete/ApplicationDeleteModal';
@@ -80,7 +79,6 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
   }) => {
     const dispatch: AppDispatch = useDispatch();
     const layoutMode = useSelector((s: RootState) => s.applications.layoutMode);
-    const { contentGap } = useAppearance();
     const hasApps = applications.length > 0;
     const dataState = useDataViewState({ loading, error, hasData: hasApps });
     const selectedSet = useMemo(() => new Set(selectedNames), [selectedNames]);
@@ -145,7 +143,7 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
       <PageContainer
         title={APPLICATIONS_UI.HEADER_TITLE}
         subtitle={APPLICATIONS_UI.HEADER_SUBTITLE}
-        gap={contentGap}
+        gap={LIST_PAGE.CONTENT_GAP_PX}
       >
         <ApplicationsToolbar
           searchValue={searchValue}

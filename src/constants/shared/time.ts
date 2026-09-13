@@ -6,6 +6,17 @@ export const TIME_FORMATS = {
   SHORT: 'MMM d, yyyy',
   TIME_ONLY: 'HH:mm:ss',
   DATE_TIME: 'MMM d, yyyy HH:mm',
+  DATE_TIME_12H: 'MMM d, yyyy h:mm a',
+  LONG_DATE_TIME_12H: 'MMMM d, yyyy h:mm a',
+  DAY_HEADER: 'MMMM d, yyyy',
+  DATE_KEY: 'yyyy-MM-dd',
+} as const;
+
+export const TIME_ZONE = {
+  FALLBACK: 'UTC',
+  PARTS_LOCALE: 'en-US',
+  HOUR_CYCLE: 'h23',
+  OFFSET_NAME: 'shortOffset',
 } as const;
 
 export const TIME_CONFIGS = {

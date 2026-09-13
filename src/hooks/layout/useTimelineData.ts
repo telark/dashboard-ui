@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import type { Record } from '../../interfaces/shared';
 import type { TimelineData } from '../../interfaces/layout/timeline';
+import { toTimestamp } from '../../utils/shared/time';
 
 const INITIAL_DISPLAY_COUNT = 5;
 
@@ -12,7 +13,7 @@ export const useTimelineData = (records: Record[] | undefined): TimelineData => 
 
     // Sort only once and cache the result
     const sortedItems = [...records].sort(
-      (a, b) => new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime(),
+      (a, b) => toTimestamp(a.creationTime) - toTimestamp(b.creationTime),
     );
 
     const hasMoreItems = sortedItems.length > INITIAL_DISPLAY_COUNT;

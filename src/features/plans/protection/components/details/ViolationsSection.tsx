@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafetyCertificateOutlined } from '@ant-design/icons';
-import { format } from 'date-fns';
 import { DEFAULT_COLORS } from '../../../../../constants';
+import { formatDateKey, toDateKey } from '../../../../../utils/shared/time';
 import { APPLICATION_SECTION_LAYOUT } from '../../../../resources/applications/constants/sectionLayout';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { FancySpinner } from '../../../../../components/animation';
@@ -37,7 +37,7 @@ const groupByDay = (
       else last.entries.push(v);
       continue;
     }
-    const dayKey = format(new Date(v.timestamp), 'yyyy-MM-dd');
+    const dayKey = toDateKey(v.timestamp);
     const last = groups[groups.length - 1];
     if (!last || last.dayKey !== dayKey) {
       groups.push({ dayKey, entries: [v] });
@@ -124,9 +124,7 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
               borderBottom: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
             }}
           >
-            {group.dayKey === 'unknown'
-              ? '—'
-              : format(new Date(`${group.dayKey}T12:00:00`), 'MMMM d, yyyy')}
+            {group.dayKey === 'unknown' ? '—' : formatDateKey(group.dayKey)}
           </div>
           {group.entries.map((entry, idx) => {
             const badge = VIOLATION_RESULT_BADGE[entry.result];

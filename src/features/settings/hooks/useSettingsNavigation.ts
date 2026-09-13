@@ -11,6 +11,7 @@ export type SecuritySubView = 'overview' | 'passkeys';
 const SECTION_TO_SLUG: Record<SettingsSectionKey, string> = {
   profile: 'profile',
   appearance: 'appearance',
+  timezone: 'timezone',
   security: 'security',
   aiInsights: 'aiInsights',
   insightsGovernance: 'governance',
@@ -22,6 +23,7 @@ const SECTION_TO_SLUG: Record<SettingsSectionKey, string> = {
 const SLUG_TO_SECTION: Record<string, SettingsSectionKey> = {
   profile: 'profile',
   appearance: 'appearance',
+  timezone: 'timezone',
   security: 'security',
   aiInsights: 'aiInsights',
   governance: 'insightsGovernance',

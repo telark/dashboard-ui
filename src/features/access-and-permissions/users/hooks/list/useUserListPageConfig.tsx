@@ -6,7 +6,6 @@ import type { FilterChip } from '../../../../../interfaces/layout/toolbar';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import { DEFAULT_COLORS, Icons } from '../../../../../constants';
 import type { RootState } from '../../../../../store';
-import { useAppearance } from '../../../../../features/settings/sections/appearance';
 import { useFetchGroups } from '../../../groups/hooks';
 import Columns from '../../components/display/list/Columns';
 import { UserActionsColumn } from '../../components/display/list/UserActionsColumn';
@@ -78,7 +77,6 @@ export const useUserListPageConfig = ({
   hasActiveFilters,
   onClearAllFilters,
 }: UseUserListPageConfigOptions): PageLayoutConfig<User> => {
-  const { rowHeight } = useAppearance();
   const canManageRole = usePermission(
     ACTION_PERMISSIONS.users.manageRoles.scope,
     ACTION_PERMISSIONS.users.manageRoles.level,
@@ -169,7 +167,6 @@ export const useUserListPageConfig = ({
           }
         : undefined,
       onRowClick: (record: User) => handleViewUser(record),
-      rowHeight,
       empty: (
         <Empty
           description={UC.LABELS.EMPTY.NO_USERS_FOUND}
@@ -191,7 +188,6 @@ export const useUserListPageConfig = ({
       setCurrentPage,
       setPageSize,
       setSelectedUsers,
-      rowHeight,
     ],
   );
 };

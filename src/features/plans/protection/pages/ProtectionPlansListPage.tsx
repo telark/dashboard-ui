@@ -2,7 +2,6 @@ import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
 import type { PlanPhase, PlanPhaseQuickFilter, ProtectionPlan } from '../models';
-import { useAppearance } from '../../../settings/sections/appearance';
 import { ProtectionPlanCard, ProtectionPlansToolbar, NoProtectionPlansState } from '../components';
 import { FilterPanel } from '../../../../components/display/panels/filter';
 import type { FilterField } from '../../../../components/display/panels/filter/FilterPanel';
@@ -71,7 +70,6 @@ const uniqueValues = (
 
 const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
   ({ plans, searchValue, onSearchChange, onCreatePlanClick, loading, error, onRetry }) => {
-    const { contentGap } = useAppearance();
     const hasData = plans.length > 0;
     const timedOut = useLoadingTimeout({ isLoading: loading, hasError: Boolean(error), hasData });
     const dispatch: AppDispatch = useDispatch();
@@ -226,7 +224,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
       <PageContainer
         title={PPC.LABELS.HEADER_TITLE}
         subtitle={PPC.LABELS.HEADER_SUBTITLE}
-        gap={contentGap}
+        gap={LIST_PAGE.CONTENT_GAP_PX}
       >
         <ProtectionPlansToolbar
           searchValue={searchValue}

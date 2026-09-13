@@ -4,7 +4,6 @@ import type { PageLayoutConfig } from '../../../../../interfaces/layout/page';
 import type { FilterChip } from '../../../../../interfaces/layout/toolbar';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import { DEFAULT_COLORS, Icons } from '../../../../../constants';
-import { useAppearance } from '../../../../../features/settings/sections/appearance';
 import { useCategories } from '../../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../../categories/constants';
 import { useCategoryListView } from '../../../categories/hooks';
@@ -92,8 +91,6 @@ export const useRoleListPageConfig = ({
   hasActiveFilters,
   onClearAllFilters,
 }: UseRoleListPageConfigOptions): PageLayoutConfig<Role | Category> => {
-  const { rowHeight } = useAppearance();
-
   const {
     sortKey: categorySortKey,
     currentPage: categoryCurrentPage,
@@ -266,7 +263,6 @@ export const useRoleListPageConfig = ({
         viewMode === 'roles'
           ? (record: Role | Category) => handleViewRole(record as Role)
           : undefined,
-      rowHeight,
       empty: (
         <Empty
           description={
@@ -302,7 +298,6 @@ export const useRoleListPageConfig = ({
       setPageSize,
       setCategoryCurrentPage,
       setCategoryPageSize,
-      rowHeight,
       onEditCategory,
     ],
   );

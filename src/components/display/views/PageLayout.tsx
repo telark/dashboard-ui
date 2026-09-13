@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import { LIST_PAGE } from '../../../constants/shared/pages';
-import { useAppearance } from '../../../features/settings/sections/appearance';
 import DataTable from '../table/DataTable';
 import { ListToolbar } from '../toolbar';
 import { TablePagination } from '../table';
@@ -10,7 +9,6 @@ import { FancySpinner } from '../../animation';
 import { useDataViewState } from '../../../hooks/layout/useDataViewState';
 
 const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfig<T> }) => {
-  const { rowHeight: densityRowHeight, contentGap } = useAppearance();
   const {
     title,
     subtitle,
@@ -22,7 +20,7 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
     pagination,
     rowSelection,
     onRowClick,
-    rowHeight: configRowHeight,
+    rowHeight,
     empty,
     loading = false,
     error = null,
@@ -36,7 +34,12 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
   const isReady = dataState.phase === 'empty' || dataState.phase === 'ready';
 
   return (
-    <PageContainer title={title} breadcrumbs={breadcrumbs} subtitle={subtitle} gap={contentGap}>
+    <PageContainer
+      title={title}
+      breadcrumbs={breadcrumbs}
+      subtitle={subtitle}
+      gap={LIST_PAGE.CONTENT_GAP_PX}
+    >
       <ListToolbar {...listToolbar} />
       <div style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>
         {dataState.phase === 'error' ? (
@@ -64,7 +67,7 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
             data={data}
             rowKey={rowKey}
             className="app-table"
-            rowHeight={configRowHeight ?? densityRowHeight}
+            rowHeight={rowHeight}
             empty={empty}
             tableProps={{
               // Columns keep their widths and the table scrolls sideways once the

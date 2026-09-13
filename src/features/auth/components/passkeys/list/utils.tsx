@@ -1,5 +1,6 @@
 import type { Passkey } from '../../../models/passkeys';
 import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
+import { toTimestamp } from '../../../../../utils/shared/time';
 
 export type PasskeysSortKey =
   | 'deviceName'
@@ -13,11 +14,8 @@ type SortOrder = 'asc' | 'desc';
 const compareStrings = (a: string | undefined, b: string | undefined) =>
   String(a || '').localeCompare(String(b || ''));
 
-const compareDates = (a: string | undefined, b: string | undefined) => {
-  const dateA = a ? new Date(a).getTime() : 0;
-  const dateB = b ? new Date(b).getTime() : 0;
-  return dateA - dateB;
-};
+const compareDates = (a: string | undefined, b: string | undefined) =>
+  toTimestamp(a) - toTimestamp(b);
 
 export const sortPasskeys = (
   passkeys: Passkey[],

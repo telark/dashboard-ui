@@ -1,9 +1,9 @@
 import React, { memo, useCallback, useMemo } from 'react';
-import dayjs from 'dayjs';
 import { Button, Tooltip } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
-import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../../../constants';
+import { DEFAULT_COLORS, HEADER_LAYOUT, TIME_FORMATS } from '../../../../../constants';
+import { formatDateTime } from '../../../../../utils/shared/time';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import KeyValueGrid from '../../../../resources/applications/components/details/KeyValueGrid';
 import RowTag from '../../../../../components/display/table/RowTag';
@@ -155,8 +155,8 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           value:
             plan.timeMode === 'time_range' && plan.timeRange ? (
               <span>
-                {dayjs(plan.timeRange.startAt).format('MMM D, YYYY h:mm A')} →{' '}
-                {dayjs(plan.timeRange.endAt).format('MMM D, YYYY h:mm A')}
+                {formatDateTime(plan.timeRange.startAt, TIME_FORMATS.DATE_TIME_12H)} →{' '}
+                {formatDateTime(plan.timeRange.endAt, TIME_FORMATS.DATE_TIME_12H)}
               </span>
             ) : (
               PPC.LABELS.DETAIL_PAGE.FIELDS.PERMANENT

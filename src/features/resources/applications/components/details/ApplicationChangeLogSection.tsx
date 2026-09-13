@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from 'react';
-import { format } from 'date-fns';
 import { DEFAULT_COLORS } from '../../../../../constants';
+import { formatDateKey, toDateKey } from '../../../../../utils/shared/time';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../components/display/table/RowTag';
@@ -206,7 +206,7 @@ const ApplicationChangeLogSection: React.FC<{ application: Application }> = memo
       const lim = changeLog.slice(0, MAX_ENTRIES);
       const groups: { dayKey: string; entries: ApplicationChangeLogEntry[] }[] = [];
       for (const e of lim) {
-        const dayKey = format(new Date(e.detectedAt), 'yyyy-MM-dd');
+        const dayKey = toDateKey(e.detectedAt);
         const last = groups[groups.length - 1];
         if (!last || last.dayKey !== dayKey) {
           groups.push({ dayKey, entries: [e] });
@@ -250,7 +250,7 @@ const ApplicationChangeLogSection: React.FC<{ application: Application }> = memo
                     borderBottom: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
                   }}
                 >
-                  {format(new Date(`${group.dayKey}T12:00:00`), 'MMMM d, yyyy')}
+                  {formatDateKey(group.dayKey)}
                 </div>
                 {group.entries.map((entry) => (
                   <ChangeRow
