@@ -2,7 +2,11 @@ import React, { memo, useEffect, useCallback, useRef, useState, useMemo } from '
 import { useSelector, useDispatch } from 'react-redux';
 import { Form } from 'antd';
 import type { RootState, AppDispatch } from '../../../../../store';
-import { loadApplications, loadApplicationsSilent } from '../../utils/management/state';
+import {
+  filterByExcludedNamespaces,
+  loadApplications,
+  loadApplicationsSilent,
+} from '../../utils/management/state';
 import { APPLICATIONS_PAGE_SIZE, APPLICATIONS_UI } from '../../constants';
 import ApplicationsMainEmpty from './Empty';
 import ApplicationsSuccess from './Success';
@@ -269,15 +273,6 @@ const ApplicationsGlobalView: React.FC = memo(() => {
 ApplicationsGlobalView.displayName = 'ApplicationsGlobalView';
 
 export default ApplicationsGlobalView;
-
-function filterByExcludedNamespaces(apps: Application[], excluded: string[]): Application[] {
-  if (excluded.length === 0) return apps;
-  const excludedSet = new Set(excluded);
-  return apps.filter((a) => {
-    const primaryNs = (a.namespaces?.items ?? [])[0]?.name ?? '';
-    return primaryNs === '' || !excludedSet.has(primaryNs);
-  });
-}
 
 function uniqOptions(
   apps: Application[],

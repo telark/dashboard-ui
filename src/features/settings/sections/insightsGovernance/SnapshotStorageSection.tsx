@@ -10,45 +10,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
 import type { AppDispatch } from '../../../../store';
 import SnapshotStorageBar from '../../../resources/applications/components/snapshots/SnapshotStorageBar';
+import { getSnapshotInfos } from '../../../resources/applications/clients';
+import type { SnapshotStorageInfos } from '../../../resources/applications/models';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as C } from './constants';
 import { usePermission } from '../../../auth/hooks/permissions/permissionEngine';
 
 const SNAPSHOTS_MAX_PRESET = [3, 5, 10, 15, 20] as const;
-
-type SnapshotMetric = { bytes: number; kb: number; mb: number; percent?: number };
-type SnapshotInfosResponse = {
-  totalPVCSpace: SnapshotMetric;
-  consumedSpace: SnapshotMetric;
-  availableSpace: SnapshotMetric;
-  totalSnapshots: number;
-};
-
-const EMPTY_SNAPSHOT_METRIC: SnapshotMetric = { bytes: 0, kb: 0, mb: 0, percent: 0 };
-
-function normalizeSnapshotMetric(input: unknown): SnapshotMetric {
-  if (!input || typeof input !== 'object') return EMPTY_SNAPSHOT_METRIC;
-  const metric = input as Partial<SnapshotMetric>;
-  return {
-    bytes: Number.isFinite(Number(metric.bytes)) ? Number(metric.bytes) : 0,
-    kb: Number.isFinite(Number(metric.kb)) ? Number(metric.kb) : 0,
-    mb: Number.isFinite(Number(metric.mb)) ? Number(metric.mb) : 0,
-    percent: Number.isFinite(Number(metric.percent)) ? Number(metric.percent) : 0,
-  };
-}
-
-function normalizeSnapshotInfos(input: unknown): SnapshotInfosResponse | null {
-  if (!input || typeof input !== 'object') return null;
-  const payload =
-    'data' in (input as Record<string, unknown>) ? (input as { data?: unknown }).data : input;
-  if (!payload || typeof payload !== 'object') return null;
-  const raw = payload as Record<string, unknown>;
-  return {
-    totalPVCSpace: normalizeSnapshotMetric(raw.totalPVCSpace),
-    consumedSpace: normalizeSnapshotMetric(raw.consumedSpace),
-    availableSpace: normalizeSnapshotMetric(raw.availableSpace),
-    totalSnapshots: Number.isFinite(Number(raw.totalSnapshots)) ? Number(raw.totalSnapshots) : 0,
-  };
-}
 
 const SnapshotStorageSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
@@ -61,7 +28,7 @@ const SnapshotStorageSection: React.FC = memo(() => {
   const [snapshotsMaxSelection, setSnapshotsMaxSelection] = useState<string>('5');
   const [customSnapshotsMaxPerApp, setCustomSnapshotsMaxPerApp] = useState<number>(5);
   const [savingSnapshotsMax, setSavingSnapshotsMax] = useState(false);
-  const [snapshotInfos, setSnapshotInfos] = useState<SnapshotInfosResponse | null>(null);
+  const [snapshotInfos, setSnapshotInfos] = useState<SnapshotStorageInfos | null>(null);
   const [snapshotInfosLoading, setSnapshotInfosLoading] = useState(false);
 
   useEffect(() => {
@@ -88,11 +55,7 @@ const SnapshotStorageSection: React.FC = memo(() => {
   const loadSnapshotInfos = useCallback(async () => {
     setSnapshotInfosLoading(true);
     try {
-      const { path, method } = Endpoints.SNAPSHOTS.GET_INFOS;
-      const res = await Client<
-        SnapshotInfosResponse | ResourceDetailsResponse<SnapshotInfosResponse>
-      >(exporterApiClient, path, { method });
-      setSnapshotInfos(normalizeSnapshotInfos(res));
+      setSnapshotInfos(await getSnapshotInfos());
     } catch {
       setSnapshotInfos(null);
       message.error(C.MESSAGES.SNAPSHOT_STORAGE_LOAD_FAILED);

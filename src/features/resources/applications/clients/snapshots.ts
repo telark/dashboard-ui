@@ -5,9 +5,54 @@ import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 import { APPLICATIONS_ERROR_MESSAGES } from '../constants';
 import { APPLICATIONS_UI } from '../constants/texts';
-import type { ApplicationSnapshot, ApplicationSnapshotSummary } from '../models';
+import type {
+  ApplicationSnapshot,
+  ApplicationSnapshotSummary,
+  SnapshotStorageInfos,
+  SnapshotStorageMetric,
+} from '../models';
 
 export const SNAPSHOT_SCOPE_APPS = 'apps';
+
+const EMPTY_SNAPSHOT_METRIC: SnapshotStorageMetric = { bytes: 0, kb: 0, mb: 0, percent: 0 };
+
+const finiteOrZero = (value: unknown): number =>
+  Number.isFinite(Number(value)) ? Number(value) : 0;
+
+function normalizeSnapshotMetric(input: unknown): SnapshotStorageMetric {
+  if (!input || typeof input !== 'object') return EMPTY_SNAPSHOT_METRIC;
+  const metric = input as Partial<SnapshotStorageMetric>;
+  return {
+    bytes: finiteOrZero(metric.bytes),
+    kb: finiteOrZero(metric.kb),
+    mb: finiteOrZero(metric.mb),
+    percent: finiteOrZero(metric.percent),
+  };
+}
+
+function normalizeSnapshotInfos(input: unknown): SnapshotStorageInfos | null {
+  if (!input || typeof input !== 'object') return null;
+  const payload =
+    'data' in (input as Record<string, unknown>) ? (input as { data?: unknown }).data : input;
+  if (!payload || typeof payload !== 'object') return null;
+  const raw = payload as Record<string, unknown>;
+  return {
+    totalPVCSpace: normalizeSnapshotMetric(raw.totalPVCSpace),
+    consumedSpace: normalizeSnapshotMetric(raw.consumedSpace),
+    availableSpace: normalizeSnapshotMetric(raw.availableSpace),
+    totalSnapshots: finiteOrZero(raw.totalSnapshots),
+  };
+}
+
+export const getSnapshotInfos = async (): Promise<SnapshotStorageInfos | null> => {
+  const { path, method } = Endpoints.SNAPSHOTS.GET_INFOS;
+  const res = await Client<SnapshotStorageInfos | ResourceDetailsResponse<SnapshotStorageInfos>>(
+    exporterApiClient,
+    path,
+    { method },
+  );
+  return normalizeSnapshotInfos(res);
+};
 
 function buildSnapshotQueryString(namespace: string, generation: number): string {
   return new URLSearchParams({
