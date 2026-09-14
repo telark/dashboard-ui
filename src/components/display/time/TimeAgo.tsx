@@ -2,7 +2,13 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { Popover } from 'antd';
 
 import { TIME_FORMATS, TIME_CONFIGS } from '../../../constants';
-import { formatDateTime, formatTimeAgo, parseDate } from '../../../utils/shared/time';
+import {
+  formatDateTime,
+  formatTimeAgo,
+  formatTimeZoneOffset,
+  getTimeZone,
+  parseDate,
+} from '../../../utils/shared/time';
 
 interface TimeAgoProps {
   date: string | Date;
@@ -17,6 +23,7 @@ const TimeAgo: React.FC<TimeAgoProps> = React.memo(
     const parsedDate = useMemo(() => parseDate(date), [date]);
 
     const formattedDate = formatDateTime(parsedDate, formatString);
+    const timeZoneLabel = formatTimeZoneOffset(getTimeZone());
 
     // Update every minute
     useEffect(() => {
@@ -28,7 +35,7 @@ const TimeAgo: React.FC<TimeAgoProps> = React.memo(
       return () => clearInterval(interval);
     }, [parsedDate]);
 
-    return <Popover content={formattedDate}>{timeAgo}</Popover>;
+    return <Popover content={`${formattedDate} (${timeZoneLabel})`}>{timeAgo}</Popover>;
   },
 );
 

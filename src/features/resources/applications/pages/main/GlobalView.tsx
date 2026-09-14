@@ -7,7 +7,7 @@ import {
   loadApplications,
   loadApplicationsSilent,
 } from '../../utils/management/state';
-import { APPLICATIONS_PAGE_SIZE, APPLICATIONS_UI } from '../../constants';
+import { APPLICATIONS_PAGE_SIZE, APPLICATIONS_UI, SYNC_STATUS_VALUE } from '../../constants';
 import ApplicationsMainEmpty from './Empty';
 import ApplicationsSuccess from './Success';
 import { filterApplications, useApplications } from '../../hooks';
@@ -38,6 +38,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     (s: RootState) => s.applications,
   );
   const syncing = useSelector((s: RootState) => s.applications.syncing);
+  const syncStatus = useSelector((s: RootState) => s.applications.syncStatus);
   const fetchIntervalSeconds = useSelector((s: RootState) =>
     s.globalconfig.data?.userSettings?.fetchIntervalSeconds != null
       ? Number(s.globalconfig.data.userSettings.fetchIntervalSeconds)
@@ -158,8 +159,10 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   );
   const anySelectedSyncing = useMemo(() => {
     const activeSyncNames = new Set(Object.keys(syncing || {}));
-    return selectedNames.some((name) => activeSyncNames.has(name));
-  }, [selectedNames, syncing]);
+    return selectedNames.some(
+      (name) => activeSyncNames.has(name) || syncStatus?.[name] === SYNC_STATUS_VALUE.SYNCING,
+    );
+  }, [selectedNames, syncing, syncStatus]);
 
   const handleLoadApplications = useCallback(async () => {
     await loadApplications(dispatch);
