@@ -5,6 +5,7 @@
   "proxy": "http://localhost:56085",
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
+    "@ant-design/plots": "^2.6.8",
     "@dicebear/adventurer": "^9.2.4",
     "@dicebear/avataaars": "^9.2.4",
     "@dicebear/big-smile": "^9.2.4",

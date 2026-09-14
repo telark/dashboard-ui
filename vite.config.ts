@@ -95,6 +95,7 @@ export default defineConfig(async ({ mode }) => {
         'react-router-dom',
         'antd',
         '@ant-design/icons',
+        '@ant-design/plots',
         '@reduxjs/toolkit',
         'react-redux',
       ],

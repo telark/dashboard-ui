@@ -19,6 +19,7 @@ export const summarizeApplications = (apps: Application[]): ApplicationsSummary 
   healthy: apps.filter((a) => healthStatus(a) === 'healthy').length,
   degraded: apps.filter((a) => healthStatus(a) === 'degraded').length,
   down: apps.filter((a) => healthStatus(a) === 'down').length,
+  unknown: apps.filter((a) => !['healthy', 'degraded', 'down'].includes(healthStatus(a))).length,
   drifted: apps.filter((a) => a.history?.hasDrift).length,
 });
 

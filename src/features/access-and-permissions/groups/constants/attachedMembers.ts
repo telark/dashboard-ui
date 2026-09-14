@@ -5,7 +5,7 @@ export const ATTACHED_MEMBERS_CONSTANTS = {
     EMPTY_STATE: {
       padding: '24px',
       textAlign: 'center' as const,
-      color: DEFAULT_COLORS.TEXT_MUTED,
+      color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     },
     CONTAINER: {
       display: 'flex',
@@ -23,8 +23,8 @@ export const ATTACHED_MEMBERS_CONSTANTS = {
         display: 'flex',
         alignItems: 'center' as const,
         padding: '5px 14px',
-        background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-        border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+        background: DEFAULT_COLORS.SURFACE_WHITE,
+        border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
         borderRadius: 8,
         transition: 'all 0.2s ease',
         cursor: 'pointer' as const,
@@ -34,8 +34,7 @@ export const ATTACHED_MEMBERS_CONSTANTS = {
         boxSizing: 'border-box' as const,
       },
       HOVER: {
-        background: DEFAULT_COLORS.BACKGROUND_HOVER,
-        borderColor: DEFAULT_COLORS.BORDER_HOVER,
+        background: DEFAULT_COLORS.SURFACE_HOVER,
       },
     },
     MEMBER_CONTENT: {
@@ -57,13 +56,13 @@ export const ATTACHED_MEMBERS_CONSTANTS = {
     },
     MEMBER_NAME: {
       fontSize: 14,
-      color: DEFAULT_COLORS.TEXT_PRIMARY,
+      color: DEFAULT_COLORS.TEXT_ON_SURFACE,
       fontWeight: 500,
       lineHeight: 1.4,
     },
     MEMBER_EMAIL: {
       fontSize: 12,
-      color: DEFAULT_COLORS.TEXT_MUTED,
+      color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
       lineHeight: 1.3,
     },
   },
