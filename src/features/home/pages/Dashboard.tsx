@@ -13,6 +13,7 @@ import {
   selectProtectionPlansError,
   selectProtectionPlansLoading,
 } from '../../plans/protection/store';
+import { selectGlobalConfigState } from '../../globalconfig/store';
 import {
   HOME_CHART_LAYOUT as C,
   HOME_CHART_TEXTS as CT,
@@ -21,7 +22,6 @@ import {
 } from '../constants/dashboard';
 import { useDashboardData } from '../hooks/useDashboardData';
 import {
-  applicationsNeedingAttention,
   plansNeedingAttention,
   recentlyChangedApplications,
   summarizeApplications,
@@ -29,14 +29,14 @@ import {
   toBoxState,
 } from '../utils/summary';
 import {
-  applicationAttentionRow,
   applicationsBreakdown,
   planAttentionRow,
   plansBreakdown,
   recentChangeRow,
 } from '../utils/rows';
 import { changeActivityData, planActivityData } from '../utils/charts';
-import { ChartBox, ListBox, StorageBox, SummaryBox } from '../components';
+import { parseClusterVersion } from '../utils/cluster';
+import { ChartBox, ClusterBox, ListBox, StorageBox, SummaryBox } from '../components';
 import ActivityChart from '../components/charts/ActivityChart';
 
 // Equal-width columns and fixed-height rows: every box is the same size wherever it lands.
@@ -65,6 +65,8 @@ const Dashboard: React.FC = () => {
   const appsLoading = useSelector((s: RootState) => s.applications.loading);
   const appsError = useSelector((s: RootState) => s.applications.error);
   const excludedNamespaces = useSelector((s: RootState) => s.globalconfig.data?.excludedNamespaces);
+  const clusterVersion = useSelector((s: RootState) => s.globalconfig.data?.cluster?.version);
+  const globalConfigState = useSelector(selectGlobalConfigState);
   const plans = useSelector(selectProtectionPlans);
   const plansLoading = useSelector(selectProtectionPlansLoading);
   const plansError = useSelector(selectProtectionPlansError);
@@ -79,7 +81,6 @@ const Dashboard: React.FC = () => {
       state: toBoxState(appsLoading, appsError, apps.length > 0),
       total: summary.total,
       breakdown: applicationsBreakdown(summary),
-      attentionRows: applicationsNeedingAttention(apps).map(applicationAttentionRow),
       recentRows: recentlyChangedApplications(apps).map(recentChangeRow),
       activity: changeActivityData(apps),
     };
@@ -120,15 +121,11 @@ const Dashboard: React.FC = () => {
             />
           )}
           {canViewSnapshots && <StorageBox storage={storage} />}
-          {canViewApplications && (
-            <ListBox
-              title={T.APPLICATIONS_ATTENTION.TITLE}
-              viewAllTo={APP_ROUTES.APPLICATIONS}
-              rows={appsView.attentionRows}
-              emptyText={T.APPLICATIONS_ATTENTION.EMPTY}
-              {...appsView.state}
-            />
-          )}
+          <ClusterBox
+            cluster={parseClusterVersion(clusterVersion)}
+            loading={globalConfigState.loading && !clusterVersion}
+            failed={Boolean(globalConfigState.error) && !clusterVersion}
+          />
           {canViewPlans && (
             <ListBox
               title={T.PLANS_ATTENTION.TITLE}

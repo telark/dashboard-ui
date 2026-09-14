@@ -8,6 +8,14 @@ export const HOME_DASHBOARD_TEXTS = {
   VIEW_ALL: 'View all',
   LOAD_FAILED: 'Could not load this data.',
   META_SEPARATOR: ' · ',
+  CLUSTER: {
+    TITLE: 'Cluster',
+    VERSION_LABEL: 'Version',
+    DISTRIBUTION_LABEL: 'Distribution',
+    FULL_LABEL: 'Full Version',
+    VANILLA: 'Vanilla',
+    UNKNOWN: '—',
+  },
   APPLICATIONS: {
     TITLE: 'Applications',
     HEALTHY: 'Healthy',
@@ -28,16 +36,6 @@ export const HOME_DASHBOARD_TEXTS = {
     SNAPSHOTS: 'snapshots',
     OF: 'of',
     MB: 'MB',
-  },
-  APPLICATIONS_ATTENTION: {
-    TITLE: 'Needs Attention',
-    EMPTY: 'All applications are healthy and in sync.',
-    REASONS: {
-      down: 'Down',
-      degraded: 'Degraded',
-      syncFailed: 'Sync failed',
-      drift: 'Drift',
-    },
   },
   PLANS_ATTENTION: {
     TITLE: 'Plans Needing Attention',

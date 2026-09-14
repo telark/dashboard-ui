@@ -1,16 +1,7 @@
 import { toTimestamp } from '../../../utils/shared/time';
 import type { Application } from '../../resources/applications/models';
 import type { ProtectionPlan } from '../../plans/protection/models';
-import type {
-  ApplicationAttention,
-  ApplicationsSummary,
-  AttentionReason,
-  BoxState,
-  PlansSummary,
-} from '../models';
-
-// Ordered worst-first: an application's first reason decides its rank.
-const ATTENTION_REASONS: AttentionReason[] = ['down', 'degraded', 'syncFailed', 'drift'];
+import type { ApplicationsSummary, BoxState, PlansSummary } from '../models';
 
 const healthStatus = (app: Application): string => (app.health?.status ?? '').toLowerCase();
 
@@ -22,26 +13,6 @@ export const summarizeApplications = (apps: Application[]): ApplicationsSummary 
   unknown: apps.filter((a) => !['healthy', 'degraded', 'down'].includes(healthStatus(a))).length,
   drifted: apps.filter((a) => a.history?.hasDrift).length,
 });
-
-const attentionReasons = (app: Application): AttentionReason[] => {
-  const matches: Record<AttentionReason, boolean> = {
-    down: healthStatus(app) === 'down',
-    degraded: healthStatus(app) === 'degraded',
-    syncFailed: app.lastForceSync?.phase === 'failed',
-    drift: Boolean(app.history?.hasDrift),
-  };
-  return ATTENTION_REASONS.filter((reason) => matches[reason]);
-};
-
-export const applicationsNeedingAttention = (apps: Application[]): ApplicationAttention[] =>
-  apps
-    .map((application) => ({ application, reasons: attentionReasons(application) }))
-    .filter(({ reasons }) => reasons.length > 0)
-    .sort(
-      (a, b) =>
-        ATTENTION_REASONS.indexOf(a.reasons[0]) - ATTENTION_REASONS.indexOf(b.reasons[0]) ||
-        toTimestamp(b.application.lastUpdated) - toTimestamp(a.application.lastUpdated),
-    );
 
 export const recentlyChangedApplications = (apps: Application[]): Application[] =>
   apps
