@@ -1,6 +1,6 @@
 import type React from 'react';
 import { DEFAULT_COLORS } from '../../../constants';
-import type { TagTone } from '../models';
+import type { PlanEventKey, SeverityKey, TagTone } from '../models';
 
 export const HOME_DASHBOARD_TEXTS = {
   TITLE: 'Home',
@@ -53,6 +53,30 @@ export const HOME_DASHBOARD_TEXTS = {
   },
 } as const;
 
+export const HOME_CHART_TEXTS = {
+  AXIS_DATE_FORMAT: 'MMM d',
+  PLAN_ACTIVITY: {
+    TITLE: 'Plan Activity · Last 30 Days',
+    EMPTY: 'No plans created, started, or terminated in the last 30 days.',
+    EVENTS: {
+      created: 'Created',
+      started: 'Started',
+      terminated: 'Terminated',
+    } as Record<PlanEventKey, string>,
+  },
+  CHANGE_ACTIVITY: {
+    TITLE: 'Change Activity · Last 30 Days',
+    EMPTY: 'No changes in the last 30 days.',
+    SEVERITIES: {
+      critical: 'Critical',
+      high: 'High',
+      medium: 'Medium',
+      low: 'Low',
+      other: 'Other',
+    } as Record<SeverityKey, string>,
+  },
+} as const;
+
 export const HOME_DASHBOARD_LAYOUT = {
   GRID_GAP_PX: 16,
   // Every box shares one track width and one row height so the grid reads as even rows.
@@ -76,6 +100,31 @@ export const HOME_DASHBOARD_LAYOUT = {
   SPINNER_SIZE_PX: 24,
   LIST_LIMIT: 2,
 } as const;
+
+export const HOME_CHART_LAYOUT = {
+  ROW_HEIGHT_PX: 260,
+  ACTIVITY_DAYS: 30,
+  AREA_FILL_OPACITY: 0.16,
+  LINE_WIDTH_PX: 2,
+  AXIS_FONT_SIZE_PX: 11,
+  LEGEND_FONT_SIZE_PX: 11,
+  GRID_DASH: [3, 3] as number[],
+  ANIMATION_MS: 450,
+} as const;
+
+export const HOME_SEVERITY_COLORS: Record<SeverityKey, string> = {
+  critical: DEFAULT_COLORS.DANGER,
+  high: DEFAULT_COLORS.WARNING,
+  medium: DEFAULT_COLORS.SUCCESS,
+  low: DEFAULT_COLORS.ICON_SECONDARY,
+  other: DEFAULT_COLORS.ICON_MUTED,
+};
+
+export const HOME_PLAN_EVENT_COLORS: Record<PlanEventKey, string> = {
+  created: DEFAULT_COLORS.CHIP_BLUE_TEXT,
+  started: DEFAULT_COLORS.SUCCESS,
+  terminated: DEFAULT_COLORS.ICON_SECONDARY,
+};
 
 export const HOME_DASHBOARD_POLLING = {
   DEFAULT_INTERVAL_SEC: 60,

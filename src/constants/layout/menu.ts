@@ -5,9 +5,8 @@ export const MENU_LABELS = {
   GROUPS: 'Groups',
   ROLES: 'Roles',
   PROTECTION_PLANS: 'Protection Plans',
-  RESOURCES: 'Resources',
+  DISCOVERY: 'Discovery',
   ACCESS_AND_PERMISSIONS: 'Access & Permissions',
-  GOVERNANCE: 'Governance',
 } as const;
 
 export const MENU_KEYS = {

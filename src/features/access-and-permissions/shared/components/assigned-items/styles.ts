@@ -7,8 +7,8 @@ export const ASSIGNED_CARD_STYLE: React.CSSProperties = {
   justifyContent: 'space-between',
   gap: 8,
   padding: '5px 14px',
-  background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-  border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+  background: DEFAULT_COLORS.SURFACE_WHITE,
+  border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
   borderRadius: 8,
   transition: 'all 0.2s ease',
   cursor: 'default',
@@ -32,5 +32,5 @@ export const ASSIGNED_LIST_CONTAINER_STYLE: React.CSSProperties = {
 export const ASSIGNED_EMPTY_STATE_STYLE: React.CSSProperties = {
   padding: '24px',
   textAlign: 'center',
-  color: DEFAULT_COLORS.TEXT_MUTED,
+  color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
 };

@@ -96,10 +96,12 @@ const mapApplication = (item: Application): Application => {
 /**
  * List rows (ApplicationCard, GlobalView) only read metrics.derived and
  * history.hasDrift/generation/lastModifiedAt — never metrics.workloads,
- * history.changeLog, resources, snapshots or rollbacks. Those are unbounded,
- * detail-only arrays that would otherwise sit deeply nested in every list
- * item, bloating the Redux `applications` array on every poll and slowing
- * down ImmutableStateInvariantMiddleware / redux-persist on every dispatch.
+ * resources, snapshots or rollbacks. Those are unbounded, detail-only arrays
+ * that would otherwise sit deeply nested in every list item, bloating the
+ * Redux `applications` array on every poll and slowing down
+ * ImmutableStateInvariantMiddleware / redux-persist on every dispatch.
+ * changeLog entries stay (the home change-activity chart plots them over time)
+ * but lose their nested `changes` diffs.
  * mapSingleApplicationData (details view) keeps the full payload.
  */
 const mapApplicationListItem = (item: Application): Application => {
@@ -110,6 +112,9 @@ const mapApplicationListItem = (item: Application): Application => {
     snapshots: [],
     rollbacks: [],
     metrics: { ...mapped.metrics, workloads: [] },
-    history: { ...mapped.history, changeLog: [] },
+    history: {
+      ...mapped.history,
+      changeLog: mapped.history.changeLog.map((entry) => ({ ...entry, changes: [] })),
+    },
   };
 };

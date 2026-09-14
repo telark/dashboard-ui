@@ -38,6 +38,7 @@ export interface ApplicationsSummary {
   healthy: number;
   degraded: number;
   down: number;
+  unknown: number;
   drifted: number;
 }
 
@@ -50,6 +51,32 @@ export interface PlansSummary {
 }
 
 export type AttentionReason = 'down' | 'degraded' | 'syncFailed' | 'drift';
+
+export type SeverityKey = 'critical' | 'high' | 'medium' | 'low' | 'other';
+
+export type PlanEventKey = 'created' | 'started' | 'terminated';
+
+export interface ActivityEvent<K extends string> {
+  at?: string;
+  key: K;
+}
+
+// Long format, one row per day × series, as G2 stacks it.
+export interface ActivityDatum {
+  date: Date;
+  series: string;
+  count: number;
+}
+
+export interface ColorScale {
+  domain: string[];
+  range: string[];
+}
+
+export interface ActivityChartData {
+  data: ActivityDatum[];
+  colors: ColorScale;
+}
 
 export interface ApplicationAttention {
   application: Application;
