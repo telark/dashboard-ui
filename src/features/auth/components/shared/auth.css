@@ -50,6 +50,11 @@ html:has(.auth-root[data-theme='dark']) body {
   color: var(--auth-text-primary, #0b1f33) !important;
 }
 
+/* Same white-on-light-surface leak as the label rule above, but for the error alert's text. */
+.auth-root .ant-alert-title {
+  color: var(--auth-text-primary, #0b1f33) !important;
+}
+
 .auth-root .ant-input:hover,
 .auth-root .ant-input:focus,
 .auth-root .ant-input-outlined:hover,

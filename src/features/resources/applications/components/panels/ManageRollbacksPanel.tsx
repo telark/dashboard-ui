@@ -199,17 +199,30 @@ function RollbackRow(props: {
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0, flex: 1 }}>
-          {/* Names the snapshot the rollback went back to, not its own generation. */}
-          <span
+          <div
             style={{
-              fontSize: R.TITLE_FONT_SIZE_PX,
-              fontWeight: 700,
-              color: DEFAULT_COLORS.TEXT_ON_SURFACE,
-              whiteSpace: 'nowrap',
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              gap: R.GAP_PX,
+              minWidth: 0,
             }}
           >
-            {ui.ROLLBACK_TARGET_PREFIX} {entry.targetGeneration}
-          </span>
+            {/* Names the snapshot the rollback went back to, not its own generation. */}
+            <span
+              style={{
+                fontSize: R.TITLE_FONT_SIZE_PX,
+                fontWeight: 700,
+                color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {ui.ROLLBACK_TARGET_PREFIX} {entry.targetGeneration}
+            </span>
+            <SnapshotMetaChip>
+              {formatRollbackNamespaceRef(entry.namespace).replace(/^ns\//, '')}
+            </SnapshotMetaChip>
+          </div>
           <div
             style={{
               display: 'flex',
@@ -221,9 +234,6 @@ function RollbackRow(props: {
               color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
             }}
           >
-            <SnapshotMetaChip>
-              {formatRollbackNamespaceRef(entry.namespace).replace(/^ns\//, '')}
-            </SnapshotMetaChip>
             {entry.restoredGeneration != null ? (
               <SnapshotMetaChip>
                 {ui.RESTORED_PREFIX} {entry.restoredGeneration}

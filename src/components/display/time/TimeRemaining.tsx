@@ -2,7 +2,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Popover } from 'antd';
 
 import { TIME_FORMATS, TIME_REMAINING, TIME_TEXTS } from '../../../constants';
-import { formatDateTime, formatTimeAgo, parseDate } from '../../../utils/shared/time';
+import {
+  formatDateTime,
+  formatTimeAgo,
+  formatTimeZoneOffset,
+  getTimeZone,
+  parseDate,
+} from '../../../utils/shared/time';
 
 interface TimeRemainingProps {
   date: string | Date;
@@ -56,7 +62,7 @@ const TimeRemaining: React.FC<TimeRemainingProps> = React.memo(
 
     if (!parsedDate) return <>{TIME_TEXTS.INVALID_DATE}</>;
 
-    const exact = formatDateTime(parsedDate, formatString);
+    const exact = `${formatDateTime(parsedDate, formatString)} (${formatTimeZoneOffset(getTimeZone())})`;
     const msLeft = parsedDate.getTime() - now;
 
     if (msLeft <= 0) {
