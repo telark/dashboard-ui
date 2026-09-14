@@ -1,4 +1,4 @@
-import type { Application, SnapshotStorageInfos } from '../../resources/applications/models';
+import type { SnapshotStorageInfos } from '../../resources/applications/models';
 
 export type TagTone = 'danger' | 'warning' | 'neutral';
 
@@ -50,8 +50,6 @@ export interface PlansSummary {
   failed: number;
 }
 
-export type AttentionReason = 'down' | 'degraded' | 'syncFailed' | 'drift';
-
 export type SeverityKey = 'critical' | 'high' | 'medium' | 'low' | 'other';
 
 export type PlanEventKey = 'created' | 'started' | 'terminated';
@@ -78,9 +76,10 @@ export interface ActivityChartData {
   colors: ColorScale;
 }
 
-export interface ApplicationAttention {
-  application: Application;
-  reasons: AttentionReason[];
+export interface ClusterVersionInfo {
+  version: string;
+  distribution: string;
+  full: string;
 }
 
 export interface DashboardAccess {

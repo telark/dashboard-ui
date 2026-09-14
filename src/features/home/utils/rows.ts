@@ -8,22 +8,7 @@ import {
   PROTECTION_PLANS_CONSTANTS as PPC,
 } from '../../plans/protection/constants/protectionPlans';
 import { HOME_DASHBOARD_TEXTS as T } from '../constants/dashboard';
-import type {
-  ApplicationAttention,
-  ApplicationsSummary,
-  AttentionReason,
-  BreakdownItem,
-  DashboardRowItem,
-  PlansSummary,
-  TagTone,
-} from '../models';
-
-const REASON_TONES: Record<AttentionReason, TagTone> = {
-  down: 'danger',
-  degraded: 'warning',
-  syncFailed: 'warning',
-  drift: 'neutral',
-};
+import type { ApplicationsSummary, BreakdownItem, DashboardRowItem, PlansSummary } from '../models';
 
 const applicationPath = (app: Application): string =>
   APP_ROUTES.APPLICATION_DETAILS.replace(':name', app.name);
@@ -62,19 +47,6 @@ export const plansBreakdown = (summary: PlansSummary): BreakdownItem[] => [
   { label: T.PLANS.DEGRADED, count: summary.degraded, color: HEALTH_DOT_COLOR.degraded },
   { label: T.PLANS.FAILED, count: summary.failed, color: PHASE_DOT_COLOR.failed },
 ];
-
-export const applicationAttentionRow = ({
-  application,
-  reasons,
-}: ApplicationAttention): DashboardRowItem => ({
-  key: application.name,
-  dotColor: getApplicationHealthAccentColor(application.health?.status),
-  title: application.displayName || application.name,
-  meta: application.namespaces?.items?.[0]?.name,
-  time: application.lastUpdated,
-  tag: { text: T.APPLICATIONS_ATTENTION.REASONS[reasons[0]], tone: REASON_TONES[reasons[0]] },
-  to: applicationPath(application),
-});
 
 export const recentChangeRow = (app: Application): DashboardRowItem => {
   const { totalChanges, totalIncidents, lastChangeDetectedAt } = app.metrics.derived;
