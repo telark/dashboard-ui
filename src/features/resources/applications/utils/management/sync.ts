@@ -1,6 +1,5 @@
 import store from '../../../../../store';
 import { triggerApplicationSync } from '../../clients';
-import { APPLICATIONS_PERSIST_KEY } from '../../constants';
 import {
   startSync,
   endSync,
@@ -13,22 +12,6 @@ import {
   isApplicationSyncInFlight,
   markApplicationSyncInFlight,
 } from './syncInFlight';
-
-function persistSyncStateImmediately(name: string): void {
-  try {
-    const raw = localStorage.getItem(APPLICATIONS_PERSIST_KEY);
-    const root = raw ? JSON.parse(raw) : {};
-    const status = root.syncStatus ? JSON.parse(root.syncStatus as string) : {};
-    status[name] = 'syncing';
-    root.syncStatus = JSON.stringify(status);
-    const syncing = root.syncing ? JSON.parse(root.syncing as string) : {};
-    syncing[name] = true;
-    root.syncing = JSON.stringify(syncing);
-    localStorage.setItem(APPLICATIONS_PERSIST_KEY, JSON.stringify(root));
-  } catch {
-    /* best-effort — redux-persist handles the normal path */
-  }
-}
 
 function extractErrorMessage(err: unknown): string {
   if (err instanceof Error && err.message) return err.message;
@@ -47,7 +30,6 @@ export const forceSyncApplication = async (name: string): Promise<void> => {
     store.dispatch(setSyncStatus({ name, status: 'syncing' }));
     store.dispatch(setSyncCompletedAt({ name }));
     store.dispatch(setSyncLastError({ name }));
-    persistSyncStateImmediately(name);
     markApplicationSyncInFlight(name);
 
     await triggerApplicationSync(name);

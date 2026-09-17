@@ -162,3 +162,13 @@ h3 {
   width: 0;
   height: 0;
 }
+
+/* Scrollable lists that must not show a scrollbar (change-log entries). */
+.tk-scroll-hidden {
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.tk-scroll-hidden::-webkit-scrollbar {
+  display: none;
+}

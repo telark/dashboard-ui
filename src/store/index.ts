@@ -49,14 +49,11 @@ const store = configureStore({
     apiHealth: apiHealthReducer,
   },
   middleware: (getDefaultMiddleware) =>
+    // Dev-only invariant checks walk the whole store per action; with a few
+    // applications of history they stall the main thread for 100–300ms each.
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE', 'persist/PURGE'],
-        warnAfter: 128, // default: 32ms
-      },
-      immutableCheck: {
-        warnAfter: 128, // default: 32ms
-      },
+      serializableCheck: false,
+      immutableCheck: false,
     }),
 });
 

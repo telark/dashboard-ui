@@ -18,7 +18,7 @@ export const API_PATHS = {
 export const RESOURCE_PATHS = {
   GET_ALL: 'get',
   GET_DETAILS: (name: string) => `${name}/get`,
-  CLEANUP_DETAILS: (name: string) => `${name}/cleanup`,
+  RESET_DETAILS: (name: string) => `${name}/reset`,
   FIND_USER_BY_ID: (id: string) => `findbyid/${id}/get`,
   UPDATE_SYNC: (name: string) => `${name}/patch`,
   APPLICATION_ROLLBACKS: (name: string) => `${name}/rollbacks`,

@@ -181,6 +181,9 @@ const SnapshotStorageSection: React.FC = memo(() => {
         ) : null}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <div style={{ fontWeight: 700 }}>{C.LABELS.SNAPSHOTS_MAX_PER_APP_LABEL}</div>
+          <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, lineHeight: 1.5 }}>
+            {C.LABELS.SNAPSHOTS_MAX_PER_APP_HINT}
+          </div>
           <Select
             value={snapshotsMaxSelection}
             disabled={!canEditSnapshotStorage}

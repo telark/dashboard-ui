@@ -30,6 +30,7 @@ function applyForceSyncStateFromApplications(state: ApplicationsState, apps: App
   for (const app of apps || []) {
     const block = app?.lastForceSync;
     if (!app?.name || !block?.phase) continue;
+    if (state.syncing?.[app.name]) continue;
     const mapped: SyncStatusValue | null = mapPhaseToSyncStatus(block.phase);
     if (!mapped) continue;
     state.syncStatus[app.name] = mapped;
@@ -147,7 +148,7 @@ export const handleUpdateApplicationFulfilled = (
   state.error = null;
 };
 
-export const handleDeleteApplicationFulfilled = (
+export const handleResetApplicationFulfilled = (
   state: ApplicationsState,
   action: PayloadAction<string>,
 ) => {

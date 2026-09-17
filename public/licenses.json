@@ -5,6 +5,11 @@
     "license": "MIT"
   },
   {
+    "name": "@ant-design/plots",
+    "version": "2.6.8",
+    "license": "MIT"
+  },
+  {
     "name": "@dicebear/adventurer",
     "version": "9.4.2",
     "license": "(MIT AND CC-BY-4.0)"

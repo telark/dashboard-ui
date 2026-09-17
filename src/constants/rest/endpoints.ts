@@ -24,9 +24,9 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.UPDATE_SYNC(name)}`,
       method: 'PATCH',
     }),
-    CLEANUP: (name: string) => ({
-      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.CLEANUP_DETAILS(name)}`,
-      method: 'DELETE',
+    RESET: (name: string) => ({
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.RESET_DETAILS(name)}`,
+      method: 'POST',
     }),
     TRIGGER_ROLLBACK: (name: string) => ({
       path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}/trigger`,
@@ -44,6 +44,10 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}/${rollbackId}/get`,
       method: 'GET',
     }),
+    DISCOVERY_STATUS: {
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/discovery/status`,
+      method: 'GET',
+    },
   },
   INSIGHTS: {
     GET_APPLICATIONS: {

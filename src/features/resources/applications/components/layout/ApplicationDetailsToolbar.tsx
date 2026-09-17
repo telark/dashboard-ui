@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import {
   DatabaseOutlined,
-  DeleteOutlined,
+  ClearOutlined,
   EditOutlined,
   EllipsisOutlined,
   HistoryOutlined,
@@ -16,7 +16,7 @@ import {
 } from '../../../../../features/auth/hooks/permissions/permissionEngine';
 
 const TOOLBAR_LABELS = APPLICATIONS_UI.SECTIONS.DETAILS_TOOLBAR;
-const DELETE_MENU_KEY = 'delete';
+const RESET_MENU_KEY = 'reset';
 
 interface ApplicationDetailsToolbarProps {
   onForceSync: () => void;
@@ -24,7 +24,7 @@ interface ApplicationDetailsToolbarProps {
   onEdit: () => void;
   onManageSnapshots: () => void;
   onManageRollbacks: () => void;
-  onDelete: () => void;
+  onReset: () => void;
 }
 
 const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
@@ -33,7 +33,7 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
   onEdit,
   onManageSnapshots,
   onManageRollbacks,
-  onDelete,
+  onReset,
 }) => {
   const canEdit = usePermission(
     ACTION_PERMISSIONS.applications.edit.scope,
@@ -55,7 +55,7 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
     ACTION_PERMISSIONS.applications.viewRollbacks.level,
     ACTION_PERMISSIONS.applications.viewRollbacks.deny,
   );
-  const canDelete = usePermission(
+  const canReset = usePermission(
     ACTION_PERMISSIONS.applications.delete.scope,
     ACTION_PERMISSIONS.applications.delete.level,
     ACTION_PERMISSIONS.applications.delete.deny,
@@ -63,9 +63,9 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
 
   const handleMenuClick = useCallback(
     (key: string) => {
-      if (key === DELETE_MENU_KEY) onDelete();
+      if (key === RESET_MENU_KEY) onReset();
     },
-    [onDelete],
+    [onReset],
   );
 
   const toolbarConfig: ToolbarConfig = useMemo(() => {
@@ -120,7 +120,7 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
           ? APPLICATIONS_UI.CARD.ACTIONS.VIEW_ROLLBACKS_PERMISSION_DENIED_TOOLTIP
           : undefined,
       },
-      // Delete lives behind the overflow: it is irreversible and was one slip
+      // Reset lives behind the overflow: it is irreversible and was one slip
       // away from "Manage rollbacks" when it sat inline.
       {
         key: 'more',
@@ -130,11 +130,11 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
         dropdown: {
           items: [
             {
-              key: DELETE_MENU_KEY,
+              key: RESET_MENU_KEY,
               danger: true,
-              icon: <DeleteOutlined />,
-              label: APPLICATIONS_UI.CARD.ACTIONS.DELETE,
-              disabled: !canDelete || syncDisabled,
+              icon: <ClearOutlined />,
+              label: APPLICATIONS_UI.CARD.ACTIONS.RESET,
+              disabled: !canReset || syncDisabled,
             },
           ],
           onItemClick: handleMenuClick,
@@ -153,7 +153,7 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
     canForceSync,
     canViewSnapshots,
     canViewRollbacks,
-    canDelete,
+    canReset,
   ]);
 
   return <Toolbar config={toolbarConfig} />;

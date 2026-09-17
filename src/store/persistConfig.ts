@@ -12,9 +12,6 @@ export const applicationsPersistConfig: PersistConfig<any> = {
   storage,
   whitelist: [
     'applications',
-    'syncing',
-    'syncStatus',
-    'syncCompletedAt',
     'layoutMode',
     'bulkMode',
     'selectedNames',

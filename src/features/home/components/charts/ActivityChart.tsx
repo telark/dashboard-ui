@@ -1,5 +1,5 @@
-import React, { memo, useEffect, useMemo, useRef } from 'react';
-import { Area } from '@ant-design/plots';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { Line } from '@ant-design/plots';
 import { format } from 'date-fns';
 import { DEFAULT_COLORS, TIME_FORMATS } from '../../../../constants';
 import { HOME_CHART_LAYOUT as C, HOME_CHART_TEXTS as CT } from '../../constants/dashboard';
@@ -13,12 +13,15 @@ type ChartHandle = { triggerResize: () => void } | null;
 
 const useContainerResize = (chartRef: React.RefObject<ChartHandle>) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return undefined;
     let frame = 0;
-    const observer = new ResizeObserver(() => {
+    const observer = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      setSize({ width, height });
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => chartRef.current?.triggerResize());
     });
@@ -29,13 +32,14 @@ const useContainerResize = (chartRef: React.RefObject<ChartHandle>) => {
     };
   }, [chartRef]);
 
-  return containerRef;
+  return { containerRef, size };
 };
 
-// Stacked smooth areas per day, one curve per series.
+// Overlaid smooth lines per series on one plot: no stacking, no fill, a distinct
+// dash per series so curves stay tellable apart where they overlap.
 const ActivityChart: React.FC<ActivityChartData> = memo(({ data, colors }) => {
   const chartRef = useRef<ChartHandle>(null);
-  const containerRef = useContainerResize(chartRef);
+  const { containerRef, size } = useContainerResize(chartRef);
 
   const config = useMemo(
     () => ({
@@ -46,10 +50,13 @@ const ActivityChart: React.FC<ActivityChartData> = memo(({ data, colors }) => {
       yField: 'count',
       colorField: 'series',
       shapeField: 'smooth',
-      stack: true,
       scale: { color: colors, y: { nice: true } },
-      style: { fillOpacity: C.AREA_FILL_OPACITY },
-      line: { style: { lineWidth: C.LINE_WIDTH_PX } },
+      style: {
+        lineWidth: C.LINE_WIDTH_PX,
+        lineDash: (d: ActivityDatum) =>
+          C.LINE_DASHES[colors.domain.indexOf(d.series) % C.LINE_DASHES.length],
+      },
+      point: { sizeField: C.POINT_SIZE_PX, style: { fill: DEFAULT_COLORS.SURFACE_ELEVATED } },
       axis: {
         x: {
           ...CHART_AXIS_LABEL,
@@ -69,15 +76,19 @@ const ActivityChart: React.FC<ActivityChartData> = memo(({ data, colors }) => {
         color: { ...CHART_LEGEND, position: 'top', layout: { justifyContent: 'flex-end' } },
       },
       tooltip: { title: (d: ActivityDatum) => format(d.date, TIME_FORMATS.SHORT) },
-      interaction: { tooltip: { css: CHART_TOOLTIP_CSS } },
+      // G2 flips the tooltip against `bounding` in canvas coordinates; its default
+      // bound is wider than the canvas, so the tooltip runs off the right edge.
+      interaction: {
+        tooltip: { css: CHART_TOOLTIP_CSS, bounding: { x: 0, y: 0, ...size } },
+      },
       animate: { enter: { type: 'pathIn', duration: C.ANIMATION_MS } },
     }),
-    [data, colors],
+    [data, colors, size],
   );
 
   return (
     <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
-      <Area {...config} ref={chartRef} />
+      <Line {...config} ref={chartRef} />
     </div>
   );
 });

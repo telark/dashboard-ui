@@ -1,5 +1,5 @@
 export {
-  deleteApplication,
+  resetApplication,
   fetchApplications,
   fetchApplicationDetails,
   updateApplication,
@@ -15,3 +15,4 @@ export {
 export { triggerApplicationRollback, abortApplicationRollback } from './rollback';
 export { fetchApplicationRollbacks } from './rollbacks';
 export { triggerApplicationSync } from './sync';
+export { fetchDiscoveryStatus } from './discoveryStatus';

@@ -5,7 +5,7 @@ import { fetchMyPermissionsThunk } from '../../store/thunks/fetchThunks';
 import { selectPermissionsState } from '../../store/selectors/permissionsSelectors';
 import logger from '../../../../logging';
 
-const PERMISSIONS_POLL_INTERVAL_MS = 10_000;
+const PERMISSIONS_POLL_INTERVAL_MS = 60_000;
 
 let pollingIntervalId: ReturnType<typeof setInterval> | null = null;
 

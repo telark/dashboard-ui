@@ -2,9 +2,16 @@ import { DEFAULT_COLORS } from '../../../../constants';
 import { SHARED_PAGE_CONSTANTS } from '../../../../constants/shared/pages';
 import { SHARED_DETAILS_CONSTANTS } from '../../../../constants/shared/details';
 
-export const APPLICATIONS_PERSIST_KEY = 'persist:applications';
 export const APPLICATIONS_SYNC_RETRY_INTERVAL_MS = 60000;
+export const APPLICATIONS_SYNC_ACTIVE_POLL_MS = 5000;
+export const APPLICATIONS_DISCOVERY_STATUS_POLL_MS = 5000;
 export const APPLICATIONS_PAGE_SIZE = 10;
+export const APPLICATION_CHANGE_LOG_PAGE_SIZE = 10;
+// A rollback cannot be aborted once the engine picks it up (~200ms after the
+// request), so the only real second chance is this delay before the request.
+export const ROLLBACK_UNDO_WINDOW_SECONDS = 5;
+export const APPLICATION_TRACKING_ANNOTATION_PREFIX =
+  'metadata.annotations.telark.io/last-modified';
 
 // Snapshot manifests can carry a full rendered YAML blob each; caching every
 // one ever opened this session would grow the store unbounded, so the cache

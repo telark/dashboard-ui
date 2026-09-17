@@ -2,7 +2,7 @@ import React from 'react';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
 import { APPLICATIONS_UI } from '../../constants';
 
-interface ApplicationDeleteModalProps {
+interface ApplicationResetModalProps {
   open: boolean;
   onClose: (e?: React.MouseEvent | React.KeyboardEvent) => void;
   onConfirm: () => Promise<void>;
@@ -12,7 +12,7 @@ interface ApplicationDeleteModalProps {
   message?: React.ReactNode;
 }
 
-const ApplicationDeleteModal: React.FC<ApplicationDeleteModalProps> = ({
+const ApplicationResetModal: React.FC<ApplicationResetModalProps> = ({
   open,
   onClose,
   onConfirm,
@@ -28,18 +28,18 @@ const ApplicationDeleteModal: React.FC<ApplicationDeleteModalProps> = ({
         open={open}
         onClose={onClose}
         onConfirm={onConfirm}
-        title={title ?? APPLICATIONS_UI.CARD.ACTIONS.DELETE_CONFIRM_TITLE}
-        action="delete"
+        title={title ?? APPLICATIONS_UI.CARD.ACTIONS.RESET_CONFIRM_TITLE}
+        action="reset"
         resourceName={primaryName}
         resourceType="application"
-        confirmText={APPLICATIONS_UI.CARD.ACTIONS.DELETE}
+        confirmText={APPLICATIONS_UI.CARD.ACTIONS.RESET}
         cancelText={APPLICATIONS_UI.CARD.ACTIONS.CANCEL}
         loading={loading}
         danger={true}
-        customMessage={message ?? APPLICATIONS_UI.CARD.ACTIONS.DELETE_CONFIRM_MESSAGE}
+        customMessage={message ?? APPLICATIONS_UI.CARD.ACTIONS.RESET_CONFIRM_MESSAGE}
       />
     </div>
   );
 };
 
-export default ApplicationDeleteModal;
+export default ApplicationResetModal;

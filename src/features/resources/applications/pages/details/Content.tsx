@@ -21,7 +21,7 @@ interface ApplicationDetailsContentProps {
   onEdit: () => void;
   onManageSnapshots: () => void;
   onManageRollbacks: () => void;
-  onDelete: () => void;
+  onReset: () => void;
 }
 
 // Thin orchestrator: each section owns its own data and rendering. This keeps the
@@ -35,7 +35,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
     onEdit,
     onManageSnapshots,
     onManageRollbacks,
-    onDelete,
+    onReset,
   }) => {
     // The identity strip only earns its space once the page header is gone. A
     // sentinel + observer works whichever ancestor owns the scroll.
@@ -88,7 +88,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
             onEdit={onEdit}
             onManageSnapshots={onManageSnapshots}
             onManageRollbacks={onManageRollbacks}
-            onDelete={onDelete}
+            onReset={onReset}
           />
         </div>
 
