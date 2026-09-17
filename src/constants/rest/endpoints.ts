@@ -13,7 +13,7 @@ import {
 export const Endpoints = {
   APPLICATIONS: {
     GET_ALL: {
-      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.GET_ALL}`,
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.GET_ALL}?view=summary`,
       method: 'GET',
     },
     GET_DETAILS: (name: string) => ({
