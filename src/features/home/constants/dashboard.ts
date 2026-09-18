@@ -21,6 +21,7 @@ export const HOME_DASHBOARD_TEXTS = {
     HEALTHY: 'Healthy',
     DEGRADED: 'Degraded',
     DOWN: 'Down',
+    UNKNOWN: 'Unknown',
     DRIFTED: 'Drifted',
   },
   PLANS: {
