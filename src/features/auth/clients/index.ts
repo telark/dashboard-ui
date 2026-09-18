@@ -3,7 +3,7 @@ export type { OIDCCallbackResponse, OIDCCallbackRequest, OIDCNonceResponse } fro
 export { registerStart, registerFinish } from './register';
 export { logout } from './logout';
 export { getAuthConfig } from './config';
-export { getSessionsList, getSessionDetails, deleteSession } from './session';
+export { getSessionsList, getCurrentSession, deleteSession } from './session';
 export {
   getAllPasskeys,
   getPasskey,

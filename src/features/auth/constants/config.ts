@@ -6,6 +6,7 @@ export const AUTH_CONFIG = {
       INTERVAL_SECONDS: 60,
     },
     NAME_PREFIX: 'session-',
+    SELF_REF: 'self',
     NAME_DIGEST_ALGORITHM: 'SHA-256',
   },
 } as const;
