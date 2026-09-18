@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DatabaseOutlined, DiffOutlined } from '@ant-design/icons';
 import { App as AntdApp } from 'antd';
@@ -12,6 +12,7 @@ import Toolbar from '../../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import { MIN_SNAPSHOTS_FOR_COMPARE } from '../../constants/sectionLayout';
+import { ROLLBACK_UNDO_WINDOW_SECONDS } from '../../constants/applications';
 import type { Application, ApplicationSnapshotSummary } from '../../models';
 import { applicationSnapshotStableKey } from '../../utils/mergeApplicationSnapshotSources';
 import { mergeApplicationSnapshotSources } from '../../utils/mergeApplicationSnapshotSources';
@@ -58,6 +59,10 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
   const [activeManifestKey, setActiveManifestKey] = useState<string | null>(null);
   const [rollbackBusyId, setRollbackBusyId] = useState<string | null>(null);
   const [rollbackTarget, setRollbackTarget] = useState<ApplicationSnapshotSummary | null>(null);
+  const [armedRollback, setArmedRollback] = useState<{
+    target: ApplicationSnapshotSummary;
+    secondsLeft: number;
+  } | null>(null);
   const [compareMode, setCompareMode] = useState(false);
   const [compareKeys, setCompareKeys] = useState<string[]>([]);
   const [compareViewOpen, setCompareViewOpen] = useState(false);
@@ -168,45 +173,62 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
     setRollbackTarget(summary);
   }, []);
 
-  const handleRollbackConfirm = useCallback(async () => {
+  const fireRollback = useCallback(
+    async (target: ApplicationSnapshotSummary) => {
+      if (!userID) return;
+      setRollbackBusyId(applicationSnapshotStableKey(target));
+      try {
+        await dispatch(
+          triggerApplicationRollbackThunk({
+            name: applicationName,
+            snapshotGeneration: target.generation,
+            triggeredBy: userID,
+          }),
+        ).unwrap();
+        message.success(snapUi.ROLLBACK_SUCCESS);
+        void dispatch(
+          fetchApplicationSnapshotsThunk({
+            snapshotRefs: detailSnapshots.length > 0 ? detailSnapshots : undefined,
+          }),
+        );
+        onAfterRollback?.();
+      } catch {
+        message.error(snapUi.ROLLBACK_FAILED);
+      } finally {
+        setRollbackBusyId(null);
+      }
+    },
+    [applicationName, detailSnapshots, dispatch, message, onAfterRollback, snapUi, userID],
+  );
+
+  // Confirming only arms a countdown: the engine picks a rollback up within
+  // ~200ms of the request and cannot abort it after that, so the undo window
+  // has to live here, before anything is sent.
+  const handleRollbackConfirm = useCallback(() => {
     if (!rollbackTarget) return;
-    const triggeredBy = userID;
-    if (!triggeredBy) {
+    if (!userID) {
       message.error(snapUi.ROLLBACK_USER_REQUIRED);
       return;
     }
-    setRollbackBusyId(applicationSnapshotStableKey(rollbackTarget));
-    try {
-      await dispatch(
-        triggerApplicationRollbackThunk({
-          name: applicationName,
-          snapshotGeneration: rollbackTarget.generation,
-          triggeredBy,
-        }),
-      ).unwrap();
-      message.success(snapUi.ROLLBACK_SUCCESS);
-      void dispatch(
-        fetchApplicationSnapshotsThunk({
-          snapshotRefs: detailSnapshots.length > 0 ? detailSnapshots : undefined,
-        }),
-      );
-      onAfterRollback?.();
-      setRollbackTarget(null);
-    } catch {
-      message.error(snapUi.ROLLBACK_FAILED);
-    } finally {
-      setRollbackBusyId(null);
-    }
-  }, [
-    applicationName,
-    detailSnapshots,
-    dispatch,
-    message,
-    onAfterRollback,
-    rollbackTarget,
-    snapUi,
-    userID,
-  ]);
+    setArmedRollback({ target: rollbackTarget, secondsLeft: ROLLBACK_UNDO_WINDOW_SECONDS });
+  }, [message, rollbackTarget, snapUi, userID]);
+
+  const cancelArmedRollback = useCallback(() => setArmedRollback(null), []);
+
+  useEffect(() => {
+    if (!armedRollback) return undefined;
+    const id = window.setTimeout(() => {
+      if (armedRollback.secondsLeft > 1) {
+        setArmedRollback({ ...armedRollback, secondsLeft: armedRollback.secondsLeft - 1 });
+        return;
+      }
+      setArmedRollback(null);
+      void fireRollback(armedRollback.target);
+    }, 1000);
+    return () => window.clearTimeout(id);
+  }, [armedRollback, fireRollback]);
+
+  const rollbackModalTarget = armedRollback?.target ?? rollbackTarget;
 
   const manifestViewOpen = activeManifestKey != null;
   const canCompare = mergedSnapshots.length >= MIN_SNAPSHOTS_FOR_COMPARE;
@@ -329,16 +351,29 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
             </div>
           )}
 
+          {/* Same modal, two phases: confirm, then a countdown whose primary
+              button is Undo. The confirm handler closes via the onClose it
+              captured at click time, which is the phase-one one, so arming
+              survives that close. */}
           <ActionConfirmModal
-            open={rollbackTarget != null}
-            onClose={() => setRollbackTarget(null)}
-            onConfirm={handleRollbackConfirm}
+            open={rollbackModalTarget != null}
+            onClose={armedRollback ? cancelArmedRollback : () => setRollbackTarget(null)}
+            onConfirm={armedRollback ? cancelArmedRollback : handleRollbackConfirm}
             title={snapUi.ROLLBACK_CONFIRM_TITLE}
             action={snapUi.ROLLBACK}
-            resourceName={rollbackTarget ? `${snapUi.GENERATION} ${rollbackTarget.generation}` : ''}
-            confirmText={snapUi.ROLLBACK_CONFIRM_OK}
+            resourceName={
+              rollbackModalTarget ? `${snapUi.GENERATION} ${rollbackModalTarget.generation}` : ''
+            }
+            confirmText={
+              armedRollback
+                ? `${snapUi.ROLLBACK_UNDO} (${armedRollback.secondsLeft}s)`
+                : snapUi.ROLLBACK_CONFIRM_OK
+            }
             cancelText={APPLICATIONS_UI.CARD.ACTIONS.CANCEL}
-            customMessage={snapUi.ROLLBACK_CONFIRM_CONTENT}
+            customMessage={
+              armedRollback ? snapUi.ROLLBACK_COUNTDOWN_CONTENT : snapUi.ROLLBACK_CONFIRM_CONTENT
+            }
+            danger={armedRollback == null}
             loading={rollbackBusyId != null}
             getContainer={() => document.body}
             // Centre it over the page rather than under the open panel.

@@ -11,7 +11,7 @@ import {
   fetchApplicationSnapshotsThunk,
   fetchSnapshotManifestThunk,
   updateApplicationThunk,
-  deleteApplicationThunk,
+  resetApplicationThunk,
   triggerApplicationRollbackThunk,
   abortApplicationRollbackThunk,
 } from '../thunks/fetchThunks';
@@ -29,7 +29,7 @@ import {
   handleFetchSnapshotManifestFulfilled,
   handleFetchSnapshotManifestRejected,
   handleUpdateApplicationFulfilled,
-  handleDeleteApplicationFulfilled,
+  handleResetApplicationFulfilled,
 } from '../reducers/fetchReducers';
 
 export {
@@ -39,7 +39,7 @@ export {
   fetchApplicationSnapshotsThunk,
   fetchSnapshotManifestThunk,
   updateApplicationThunk,
-  deleteApplicationThunk,
+  resetApplicationThunk,
   triggerApplicationRollbackThunk,
   abortApplicationRollbackThunk,
 } from '../thunks/fetchThunks';
@@ -82,13 +82,6 @@ const applicationsSlice = createSlice({
       const name = action.payload;
       if (!state.syncing) state.syncing = {};
       if (name && state.syncing[name]) delete state.syncing[name];
-    },
-    clearOrphanedSyncing: (state, action: PayloadAction<string[]>) => {
-      const live = new Set(action.payload || []);
-      if (!state.syncing) state.syncing = {};
-      Object.keys(state.syncing).forEach((name) => {
-        if (!live.has(name)) delete state.syncing[name];
-      });
     },
     setSyncStatus: (state, action: PayloadAction<{ name: string; status: SyncStatusValue }>) => {
       if (!state.syncStatus) state.syncStatus = {};
@@ -212,7 +205,7 @@ const applicationsSlice = createSlice({
       .addCase(fetchSnapshotManifestThunk.fulfilled, handleFetchSnapshotManifestFulfilled)
       .addCase(fetchSnapshotManifestThunk.rejected, handleFetchSnapshotManifestRejected)
       .addCase(updateApplicationThunk.fulfilled, handleUpdateApplicationFulfilled)
-      .addCase(deleteApplicationThunk.fulfilled, handleDeleteApplicationFulfilled)
+      .addCase(resetApplicationThunk.fulfilled, handleResetApplicationFulfilled)
       .addCase(triggerApplicationRollbackThunk.fulfilled, handleUpdateApplicationFulfilled)
       .addCase(abortApplicationRollbackThunk.fulfilled, handleUpdateApplicationFulfilled);
   },
@@ -222,7 +215,6 @@ export const {
   clearDetails,
   startSync,
   endSync,
-  clearOrphanedSyncing,
   setSyncStatus,
   setSyncCompletedAt,
   setSyncLastError,

@@ -1,6 +1,5 @@
 // Data hooks
 export { useFetchGroups } from './data/useFetchGroups';
-export { useFetchGroupDetails } from './data/useFetchGroupDetails';
 export { useGroupMutations } from './data/useGroupMutations';
 
 // List hooks
@@ -30,7 +29,6 @@ export { useGroupCategoryOptions } from './categories/useGroupCategoryOptions';
 export { useRoleCategoryOptions } from './categories/useRoleCategoryOptions';
 
 // Filter hooks
-export { useRoleTypeFilter } from './filter/useRoleTypeFilter';
 export { useGroupFilters } from './filter/useGroupFilters';
 
 // Scroll hooks

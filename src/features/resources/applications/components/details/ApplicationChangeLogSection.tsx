@@ -1,23 +1,89 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useRef, useState } from 'react';
+import { Tooltip } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import { formatDateKey, toDateKey } from '../../../../../utils/shared/time';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../components/display/table/RowTag';
+import TablePagination from '../../../../../components/display/table/TablePagination';
 import ApplicationSectionEmptyState from '../display/ApplicationSectionEmptyState';
 import { APPLICATION_CHANGE_CLASS, APPLICATIONS_UI } from '../../constants';
+import {
+  APPLICATION_CHANGE_LOG_PAGE_SIZE,
+  APPLICATION_TRACKING_ANNOTATION_PREFIX,
+} from '../../constants/applications';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import { getChangeLogDotColor } from '../../pages/details/contentBlocks';
 import { useUsernamesByIds } from '../../hooks/useUsernamesByIds';
 import type { Application, ApplicationChangeLogEntry } from '../../models';
 
-const MAX_ENTRIES = 20;
-const MAX_CHANGES = 5;
+// The tracking annotations the policy engine stamps on every write are the
+// source of "last modified"; as change rows they are noise.
+const visibleChanges = (entry: ApplicationChangeLogEntry) =>
+  (entry.changes ?? []).filter((c) => !c.field.includes(APPLICATION_TRACKING_ANNOTATION_PREFIX));
+
+const CHANGE_LIST_VISIBLE_ROWS = 5;
+const CHANGE_ROW_HEIGHT_PX = 26;
+const SCROLL_HIDDEN_CLASS = 'tk-scroll-hidden';
+
+// Shows five changes; the rest scroll under an invisible scrollbar, with a
+// "more" affordance until the reader reaches the end.
+const ChangeList: React.FC<{ count: number; children: React.ReactNode }> = ({
+  count,
+  children,
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [atEnd, setAtEnd] = useState(false);
+  const scrollable = count > CHANGE_LIST_VISIBLE_ROWS;
+  const maxHeight = CHANGE_LIST_VISIBLE_ROWS * CHANGE_ROW_HEIGHT_PX;
+  const onScroll = () => {
+    const el = ref.current;
+    if (!el) return;
+    setAtEnd(el.scrollTop + el.clientHeight >= el.scrollHeight - 1);
+  };
+  return (
+    <div>
+      <div
+        ref={ref}
+        onScroll={onScroll}
+        className={scrollable ? SCROLL_HIDDEN_CLASS : undefined}
+        style={{ maxHeight: scrollable ? maxHeight : undefined }}
+      >
+        {children}
+      </div>
+      {scrollable && !atEnd ? (
+        <Tooltip title={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SCROLL_FOR_MORE_TOOLTIP}>
+          <button
+            type="button"
+            onClick={() => ref.current?.scrollBy({ top: maxHeight, behavior: 'smooth' })}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              marginTop: 4,
+              padding: 0,
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: 12,
+              color: DEFAULT_COLORS.TEXT_MUTED,
+            }}
+          >
+            <DownOutlined />
+            {count - CHANGE_LIST_VISIBLE_ROWS} {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.MORE_CHANGES}
+          </button>
+        </Tooltip>
+      ) : null}
+    </div>
+  );
+};
 
 const ChangeRow: React.FC<{
   entry: ApplicationChangeLogEntry;
   usernamesById: Record<string, string>;
-}> = ({ entry, usernamesById }) => {
+  hasSnapshot: boolean;
+}> = ({ entry, usernamesById, hasSnapshot }) => {
   const dotColor = getChangeLogDotColor(entry.changeClass);
   const actorId = entry.changedBy || '';
   const actorName = actorId ? usernamesById[actorId] : '';
@@ -65,6 +131,28 @@ const ChangeRow: React.FC<{
               color={DEFAULT_COLORS.TEXT_SECONDARY}
               fontSize={11}
             />
+            <Tooltip
+              title={
+                hasSnapshot
+                  ? APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SNAPSHOT_AVAILABLE_TOOLTIP
+                  : APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SNAPSHOT_MISSING_TOOLTIP
+              }
+            >
+              <span>
+                <RowTag
+                  text={
+                    hasSnapshot
+                      ? APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SNAPSHOT_AVAILABLE
+                      : APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SNAPSHOT_MISSING
+                  }
+                  background={
+                    hasSnapshot ? DEFAULT_COLORS.SUCCESS_TINT : DEFAULT_COLORS.CHIP_CUSTOM_BG
+                  }
+                  color={hasSnapshot ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.TEXT_MUTED}
+                  fontSize={11}
+                />
+              </span>
+            </Tooltip>
             {suffix ? (
               <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
                 {suffix.trim()}
@@ -109,73 +197,69 @@ const ChangeRow: React.FC<{
             </div>
           ) : null}
 
-          {entry.changes?.length ? (
+          {visibleChanges(entry).length ? (
             <div style={{ marginTop: 8 }}>
-              {entry.changes.slice(0, MAX_CHANGES).map((c, idx) => {
-                const hasOldValue = c.oldValue != null && String(c.oldValue).length > 0;
-                const hasNewValue = c.newValue != null && String(c.newValue).length > 0;
-                // A rollback has no old value to diff against, so the generic
-                // "field: value" form renders as "snapshot: snap-3415eeaa" and drops
-                // the generation it restored. The description already states both.
-                const preferDescription =
-                  c.changeType === APPLICATION_CHANGE_CLASS.ROLLBACK && Boolean(c.description);
-                const rollbackText =
-                  preferDescription && hasNewValue
-                    ? c.description.replace(
-                        `${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.ROLLBACK_SNAPSHOT_JOINER}${String(c.newValue)}`,
-                        '',
-                      )
-                    : c.description;
-                return (
-                  <div
-                    key={`${entry.fingerprint}:${idx}`}
-                    style={{
-                      fontSize: 12,
-                      color: DEFAULT_COLORS.TEXT_PRIMARY,
-                      lineHeight: 1.5,
-                      marginTop: idx === 0 ? 0 : 6,
-                    }}
-                  >
-                    {preferDescription ? (
-                      rollbackText
-                    ) : (
-                      <>
-                        <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{c.changeType}</span>{' '}
-                        <span style={{ fontWeight: 700 }}>{c.field}</span>
-                        {': '}
-                        {hasOldValue ? (
-                          <span
-                            style={{
-                              color: DEFAULT_COLORS.TEXT_MUTED,
-                              textDecoration: 'line-through',
-                            }}
-                          >
-                            {String(c.oldValue)}
-                          </span>
-                        ) : null}
-                        {hasOldValue && hasNewValue ? (
-                          <span style={{ margin: '0 6px', color: DEFAULT_COLORS.TEXT_MUTED }}>
-                            {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DIFF_ARROW}
-                          </span>
-                        ) : null}
-                        {hasNewValue ? (
-                          <span style={{ fontWeight: 700 }}>{String(c.newValue)}</span>
-                        ) : !hasOldValue ? (
-                          <span style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-                            {c.description}
-                          </span>
-                        ) : null}
-                      </>
-                    )}
-                  </div>
-                );
-              })}
-              {entry.changes.length > MAX_CHANGES ? (
-                <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, marginTop: 4 }}>
-                  {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SHOWING_FIRST} {MAX_CHANGES} of{' '}
-                  {entry.changes.length} changes.
-                </div>
-              ) : null}
+              <ChangeList count={visibleChanges(entry).length}>
+                {visibleChanges(entry).map((c, idx) => {
+                  const hasOldValue = c.oldValue != null && String(c.oldValue).length > 0;
+                  const hasNewValue = c.newValue != null && String(c.newValue).length > 0;
+                  // A rollback has no old value to diff against, so the generic
+                  // "field: value" form renders as "snapshot: snap-3415eeaa" and drops
+                  // the generation it restored. The description already states both.
+                  const preferDescription =
+                    c.changeType === APPLICATION_CHANGE_CLASS.ROLLBACK && Boolean(c.description);
+                  const rollbackText =
+                    preferDescription && hasNewValue
+                      ? c.description.replace(
+                          `${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.ROLLBACK_SNAPSHOT_JOINER}${String(c.newValue)}`,
+                          '',
+                        )
+                      : c.description;
+                  return (
+                    <div
+                      key={`${entry.fingerprint}:${idx}`}
+                      style={{
+                        fontSize: 12,
+                        color: DEFAULT_COLORS.TEXT_PRIMARY,
+                        lineHeight: 1.5,
+                        marginTop: idx === 0 ? 0 : 6,
+                      }}
+                    >
+                      {preferDescription ? (
+                        rollbackText
+                      ) : (
+                        <>
+                          <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{c.changeType}</span>{' '}
+                          <span style={{ fontWeight: 700 }}>{c.field}</span>
+                          {': '}
+                          {hasOldValue ? (
+                            <span
+                              style={{
+                                color: DEFAULT_COLORS.TEXT_MUTED,
+                                textDecoration: 'line-through',
+                              }}
+                            >
+                              {String(c.oldValue)}
+                            </span>
+                          ) : null}
+                          {hasOldValue && hasNewValue ? (
+                            <span style={{ margin: '0 6px', color: DEFAULT_COLORS.TEXT_MUTED }}>
+                              {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DIFF_ARROW}
+                            </span>
+                          ) : null}
+                          {hasNewValue ? (
+                            <span style={{ fontWeight: 700 }}>{String(c.newValue)}</span>
+                          ) : !hasOldValue ? (
+                            <span style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+                              {c.description}
+                            </span>
+                          ) : null}
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
+              </ChangeList>
             </div>
           ) : null}
         </div>
@@ -197,13 +281,22 @@ const ChangeRow: React.FC<{
 
 const ApplicationChangeLogSection: React.FC<{ application: Application }> = memo(
   ({ application }) => {
+    // Newest first: the CR appends, so the interesting entries sit at the end.
     const changeLog = useMemo(
-      () => application.history?.changeLog || [],
+      () => [...(application.history?.changeLog || [])].reverse(),
       [application.history?.changeLog],
     );
+    const [page, setPage] = useState(1);
+    const snapshotGenerations = useMemo(
+      () => new Set((application.snapshots ?? []).map((s) => s.generation)),
+      [application.snapshots],
+    );
+    const pageCount = Math.max(1, Math.ceil(changeLog.length / APPLICATION_CHANGE_LOG_PAGE_SIZE));
+    const currentPage = Math.min(page, pageCount);
 
     const grouped = useMemo(() => {
-      const lim = changeLog.slice(0, MAX_ENTRIES);
+      const start = (currentPage - 1) * APPLICATION_CHANGE_LOG_PAGE_SIZE;
+      const lim = changeLog.slice(start, start + APPLICATION_CHANGE_LOG_PAGE_SIZE);
       const groups: { dayKey: string; entries: ApplicationChangeLogEntry[] }[] = [];
       for (const e of lim) {
         const dayKey = toDateKey(e.detectedAt);
@@ -215,7 +308,7 @@ const ApplicationChangeLogSection: React.FC<{ application: Application }> = memo
         }
       }
       return groups;
-    }, [changeLog]);
+    }, [changeLog, currentPage]);
 
     const actorIds = useMemo(
       () => changeLog.map((entry) => entry.changedBy).filter((id): id is string => Boolean(id)),
@@ -257,14 +350,21 @@ const ApplicationChangeLogSection: React.FC<{ application: Application }> = memo
                     key={`${entry.generation}:${entry.fingerprint}`}
                     entry={entry}
                     usernamesById={usernamesById}
+                    hasSnapshot={snapshotGenerations.has(entry.generation)}
                   />
                 ))}
               </div>
             ))}
-            {changeLog.length > MAX_ENTRIES ? (
-              <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, paddingTop: 4 }}>
-                {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SHOWING_FIRST} {MAX_ENTRIES} of{' '}
-                {changeLog.length} entries.
+            {changeLog.length > APPLICATION_CHANGE_LOG_PAGE_SIZE ? (
+              <div style={{ paddingTop: 12 }}>
+                <TablePagination
+                  config={{
+                    currentPage,
+                    pageSize: APPLICATION_CHANGE_LOG_PAGE_SIZE,
+                    total: changeLog.length,
+                    onPageChange: setPage,
+                  }}
+                />
               </div>
             ) : null}
           </div>

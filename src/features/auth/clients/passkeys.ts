@@ -9,6 +9,7 @@ import type {
   DeletePasskeyResponse,
   PublicKeyCredential,
   PasskeyDeviceType,
+  EnrollLinkResponse,
 } from '../models';
 
 export const getAllPasskeys = async (): Promise<Passkey[]> => {
@@ -49,6 +50,11 @@ export const createPasskey = async (
     data: credential,
     headers,
   });
+};
+
+export const createEnrollLink = async (): Promise<EnrollLinkResponse> => {
+  const { path, method } = Endpoints.AUTH.PASSKEYS.ENROLL_LINK;
+  return await Client<EnrollLinkResponse>(authApiClient, path, { method });
 };
 
 export const updatePasskey = async (

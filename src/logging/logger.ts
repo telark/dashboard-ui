@@ -44,13 +44,11 @@ class EnhancedLogger {
     const config = getLoggerConfig();
     let formattedMessage = message;
 
-    // Add timestamp if enabled
     if (config.formatting.includeTimestamp) {
       const timestamp = new Date().toISOString();
       formattedMessage = `[${timestamp}] ${formattedMessage}`;
     }
 
-    // Truncate message if max length is set
     if (
       config.formatting.maxMessageLength > 0 &&
       formattedMessage.length > config.formatting.maxMessageLength
@@ -81,7 +79,6 @@ class EnhancedLogger {
     const config = getLoggerConfig();
     let errorMessage = this.formatMessage(message);
 
-    // Include stack trace if enabled and error is provided
     if (error) {
       if (error instanceof Error) {
         if (config.formatting.includeStackTrace && error.stack) {

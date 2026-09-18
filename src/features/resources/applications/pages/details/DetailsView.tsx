@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo } from 'react';
+import React, { memo, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import LoadingDetailsView from '../../../../../components/display/views/LoadingDetailsView';
@@ -19,10 +19,10 @@ import {
   ManageSnapshotsPanel,
 } from '../../components/panels';
 import { Form } from 'antd';
-import { deleteApplicationThunk } from '../../store';
+import { resetApplicationThunk } from '../../store';
 import { forceSyncApplication } from '../../utils/management/sync';
 import { hasActiveRollback } from '../../utils/rollbacks';
-import ApplicationDeleteModal from '../../components/delete/ApplicationDeleteModal';
+import ApplicationResetModal from '../../components/reset/ApplicationResetModal';
 
 const ApplicationDetailsView: React.FC = memo(() => {
   const { name } = useParams<{ name: string }>();
@@ -32,8 +32,8 @@ const ApplicationDetailsView: React.FC = memo(() => {
   const [editOpen, setEditOpen] = React.useState(false);
   const [rollbacksOpen, setRollbacksOpen] = React.useState(false);
   const [snapshotsOpen, setSnapshotsOpen] = React.useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [resetModalOpen, setResetModalOpen] = React.useState(false);
+  const [resetLoading, setResetLoading] = React.useState(false);
   const { details, loading, error, refresh } = useApplicationDetails(name);
   const syncingFlag = useSelector((s: RootState) =>
     details?.name ? !!s.applications.syncing?.[details.name] : false,
@@ -50,12 +50,15 @@ const ApplicationDetailsView: React.FC = memo(() => {
       ? 'activeRollback'
       : null;
 
+  const latestSnapshots = useRef(details?.snapshots);
+  latestSnapshots.current = details?.snapshots;
+  const snapshotsKey = (details?.snapshots ?? []).map((s) => s.path).join('|');
   useEffect(() => {
     if (!details?.name) return;
-    const refs =
-      details.snapshots != null && details.snapshots.length > 0 ? details.snapshots : undefined;
+    const snaps = latestSnapshots.current;
+    const refs = snaps != null && snaps.length > 0 ? snaps : undefined;
     void dispatch(fetchApplicationSnapshotsThunk({ snapshotRefs: refs }));
-  }, [details?.name, details?.snapshots, dispatch]);
+  }, [details?.name, snapshotsKey, dispatch]);
 
   const breadcrumbItems = useMemo(
     () => [
@@ -68,17 +71,17 @@ const ApplicationDetailsView: React.FC = memo(() => {
     [details?.displayName, details?.name, name, navigate],
   );
 
-  const handleConfirmDelete = React.useCallback(async () => {
+  const handleConfirmReset = React.useCallback(async () => {
     if (!details?.name) return;
-    setDeleteLoading(true);
+    setResetLoading(true);
     try {
-      await dispatch(deleteApplicationThunk(details.name)).unwrap();
-      setDeleteModalOpen(false);
+      await dispatch(resetApplicationThunk(details.name)).unwrap();
+      setResetModalOpen(false);
       navigate(APP_ROUTES.APPLICATIONS);
     } catch {
       return;
     } finally {
-      setDeleteLoading(false);
+      setResetLoading(false);
     }
   }, [details?.name, dispatch, navigate]);
 
@@ -114,10 +117,16 @@ const ApplicationDetailsView: React.FC = memo(() => {
               });
               setEditOpen(true);
             }}
-            onManageRollbacks={() => setRollbacksOpen(true)}
-            onManageSnapshots={() => setSnapshotsOpen(true)}
-            onDelete={() => {
-              setDeleteModalOpen(true);
+            onManageRollbacks={() => {
+              setSnapshotsOpen(false);
+              setRollbacksOpen(true);
+            }}
+            onManageSnapshots={() => {
+              setRollbacksOpen(false);
+              setSnapshotsOpen(true);
+            }}
+            onReset={() => {
+              setResetModalOpen(true);
             }}
           />
         </div>
@@ -148,12 +157,12 @@ const ApplicationDetailsView: React.FC = memo(() => {
         rollbackDisabledReason={rollbackDisabledReason}
         onAfterRollback={refresh}
       />
-      <ApplicationDeleteModal
-        open={deleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)}
-        onConfirm={handleConfirmDelete}
+      <ApplicationResetModal
+        open={resetModalOpen}
+        onClose={() => setResetModalOpen(false)}
+        onConfirm={handleConfirmReset}
         applicationNames={[details.name]}
-        loading={deleteLoading}
+        loading={resetLoading}
       />
     </>
   );

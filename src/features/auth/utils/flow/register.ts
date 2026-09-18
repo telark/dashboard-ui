@@ -59,8 +59,9 @@ export const performRegister = async (
   deviceName: string,
   messageApi: MessageInstance,
   onSuccess?: () => void,
+  enrollToken?: string,
 ): Promise<void> => {
-  const registerStartResponse = await registerStart(email);
+  const registerStartResponse = await registerStart(email, enrollToken);
   const options = extractRegisterOptions(registerStartResponse);
 
   // Override user.name and user.displayName with device name so browser shows device name in selection popup

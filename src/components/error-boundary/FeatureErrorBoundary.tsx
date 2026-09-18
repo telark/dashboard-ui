@@ -63,7 +63,6 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
           }}
         >
           <div style={{ textAlign: 'center', maxWidth: 500, width: '100%' }}>
-            {/* Error Icon */}
             <div
               style={{
                 width: 64,
@@ -85,7 +84,6 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
               />
             </div>
 
-            {/* Error Title */}
             <Title
               level={3}
               style={{
@@ -111,7 +109,6 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
               dashboard.
             </Text>
 
-            {/* Error Details (Development) */}
             {isDevelopment() && this.state.error && (
               <div
                 style={{
@@ -137,7 +134,6 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
               </div>
             )}
 
-            {/* Action Buttons */}
             <div
               style={{
                 display: 'flex',

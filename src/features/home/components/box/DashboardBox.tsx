@@ -9,12 +9,14 @@ export interface DashboardBoxProps extends BoxState {
   title: string;
   count?: number;
   viewAllTo?: string;
+  // Charts need their tooltip to escape the body; lists keep the clip.
+  bodyOverflow?: 'hidden' | 'visible';
   children: React.ReactNode;
 }
 
 // Fills its grid cell; the body clips so every box keeps the row's height.
 const DashboardBox: React.FC<DashboardBoxProps> = memo(
-  ({ title, count, viewAllTo, loading, failed, children }) => (
+  ({ title, count, viewAllTo, loading, failed, bodyOverflow = 'hidden', children }) => (
     <section
       style={{
         height: '100%',
@@ -57,7 +59,7 @@ const DashboardBox: React.FC<DashboardBoxProps> = memo(
         style={{
           flex: 1,
           minHeight: 0,
-          overflow: 'hidden',
+          overflow: bodyOverflow,
           display: 'flex',
           flexDirection: 'column',
           gap: L.SECTION_GAP_PX,

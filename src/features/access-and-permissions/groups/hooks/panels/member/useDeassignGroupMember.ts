@@ -70,8 +70,8 @@ export const useDeassignGroupMember = ({
   );
 
   const handleDeassignSuccess = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- signature required by useDeassignModal; we read ids from form
-    (_user: User) => {
+    // The removed user is not needed: the form already holds the resulting id list.
+    () => {
       const updatedIds = (form.getFieldValue('assignedUsersIDs') as string[]) ?? [];
       onSuccess?.(updatedIds);
     },

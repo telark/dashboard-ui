@@ -4,7 +4,7 @@ export const LOGIN_CONSTANTS = {
     NO_PASSKEYS: ['no passkeys found', 'no passkey found', 'no passkeys', 'no passkey'],
   },
   MESSAGES: {
-    USER_NOT_FOUND: 'User not found. Please check your email and try again.',
+    USER_NOT_FOUND: 'No account for this email yet. Register first, or check the address.',
     NO_PASSKEYS: 'User has no passkeys and must register to login',
     NETWORK_ERROR: 'Network error. Please check your connection and try again.',
     TIMEOUT_ERROR: 'Request timed out. Please try again.',

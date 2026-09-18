@@ -14,5 +14,10 @@ export const REGISTER_CONSTANTS = {
     DISABLED_MESSAGE:
       'Self-registration is disabled on this instance. Please contact your administrator to request an account.',
     BACK_TO_LOGIN: 'Back to login',
+    ENROLL_TITLE: 'Add a passkey on this device',
+    ENROLL_SUBTITLE: 'Confirm your email and name this device to finish enrollment',
+  },
+  QUERY: {
+    ENROLL: 'enroll',
   },
 } as const;

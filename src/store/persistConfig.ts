@@ -1,20 +1,11 @@
 import storage from 'redux-persist/lib/storage';
 import type { PersistConfig } from 'redux-persist';
 
-export const rootPersistConfig: PersistConfig<any> = {
-  key: 'root',
-  storage,
-  whitelist: ['applications', 'retry'],
-};
-
 export const applicationsPersistConfig: PersistConfig<any> = {
   key: 'applications',
   storage,
   whitelist: [
     'applications',
-    'syncing',
-    'syncStatus',
-    'syncCompletedAt',
     'layoutMode',
     'bulkMode',
     'selectedNames',

@@ -5,11 +5,12 @@ import { DEFAULT_COLORS, LIST_TOOLBAR } from '../../../../../constants';
 import { LIST_PAGE } from '../../../../../constants/shared/pages';
 import type { Application } from '../../models';
 import type { AppDispatch, RootState } from '../../../../../store';
-import { ApplicationCard, ApplicationsToolbar } from '../../components';
+import { ApplicationCard, ApplicationsToolbar, DiscoveryStatusBar } from '../../components';
 import { setLayoutMode } from '../../store/slices/applicationsSlice';
-import ApplicationDeleteModal from '../../components/delete/ApplicationDeleteModal';
-import { deleteApplicationThunk } from '../../store';
+import ApplicationResetModal from '../../components/reset/ApplicationResetModal';
+import { resetApplicationThunk } from '../../store';
 import { forceSyncApplication } from '../../utils/management/sync';
+import { loadApplicationsSilent } from '../../utils/management/state';
 import { APPLICATIONS_UI } from '../../constants';
 import { DataViewError, PageContainer } from '../../../../../components/shared';
 import { TablePagination } from '../../../../../components/display/table';
@@ -83,8 +84,8 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
     const dataState = useDataViewState({ loading, error, hasData: hasApps });
     const selectedSet = useMemo(() => new Set(selectedNames), [selectedNames]);
     const selectedCount = selectedNames.length;
-    const [bulkDeleteOpen, setBulkDeleteOpen] = React.useState(false);
-    const [bulkDeleteLoading, setBulkDeleteLoading] = React.useState(false);
+    const [bulkResetOpen, setBulkResetOpen] = React.useState(false);
+    const [bulkResetLoading, setBulkResetLoading] = React.useState(false);
 
     const content = useMemo(() => {
       if (!hasApps) return null;
@@ -126,18 +127,22 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
       });
     }, [selectedNames]);
 
-    const handleConfirmBulkDelete = React.useCallback(async () => {
-      setBulkDeleteLoading(true);
+    const handleConfirmBulkReset = React.useCallback(async () => {
+      setBulkResetLoading(true);
       try {
         await Promise.all(
-          selectedNames.map((name) => dispatch(deleteApplicationThunk(name)).unwrap()),
+          selectedNames.map((name) => dispatch(resetApplicationThunk(name)).unwrap()),
         );
         onClearSelection();
-        setBulkDeleteOpen(false);
+        setBulkResetOpen(false);
       } finally {
-        setBulkDeleteLoading(false);
+        setBulkResetLoading(false);
       }
     }, [dispatch, onClearSelection, selectedNames]);
+
+    const handleCycleComplete = React.useCallback(() => {
+      void loadApplicationsSilent(dispatch);
+    }, [dispatch]);
 
     return (
       <PageContainer
@@ -145,6 +150,7 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
         subtitle={APPLICATIONS_UI.HEADER_SUBTITLE}
         gap={LIST_PAGE.CONTENT_GAP_PX}
       >
+        <DiscoveryStatusBar onCycleComplete={handleCycleComplete} />
         <ApplicationsToolbar
           searchValue={searchValue}
           onSearchChange={onSearchChange}
@@ -169,7 +175,7 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
           allPageSelected={allPageSelected}
           onToggleSelectAllPage={onToggleSelectAllPage}
           onBulkForceSync={handleBulkForceSync}
-          onBulkDelete={() => setBulkDeleteOpen(true)}
+          onBulkReset={() => setBulkResetOpen(true)}
           bulkForceSyncDisabled={anySelectedSyncing}
           healthQuickFilter={healthQuickFilter}
           onHealthQuickFilterChange={onHealthQuickFilterChange}
@@ -203,16 +209,16 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
           )}
         </div>
         <TablePagination config={pagination} />
-        <ApplicationDeleteModal
-          open={bulkDeleteOpen}
-          onClose={() => setBulkDeleteOpen(false)}
-          onConfirm={handleConfirmBulkDelete}
+        <ApplicationResetModal
+          open={bulkResetOpen}
+          onClose={() => setBulkResetOpen(false)}
+          onConfirm={handleConfirmBulkReset}
           applicationNames={selectedNames}
-          loading={bulkDeleteLoading}
-          title={APPLICATIONS_UI.TOOLBAR_BULK_DELETE_CONFIRM_TITLE}
+          loading={bulkResetLoading}
+          title={APPLICATIONS_UI.TOOLBAR_BULK_RESET_CONFIRM_TITLE}
           message={
             <div style={{ display: 'grid', rowGap: 8 }}>
-              <div>{APPLICATIONS_UI.TOOLBAR_BULK_DELETE_CONFIRM_MESSAGE}</div>
+              <div>{APPLICATIONS_UI.TOOLBAR_BULK_RESET_CONFIRM_MESSAGE}</div>
               <div style={{ maxHeight: 180, overflowY: 'auto', textAlign: 'left' }}>
                 <ul style={{ margin: 0, paddingLeft: 18 }}>
                   {selectedNames.map((name) => (

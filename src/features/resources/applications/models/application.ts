@@ -254,6 +254,15 @@ export interface ApplicationRollbackTriggerPayload {
 
 export type ForceSyncPhase = 'queued' | 'running' | 'completed' | 'failed';
 
+export interface DiscoveryCycleStatus {
+  inProgress: boolean;
+  remaining: number;
+  enqueued: number;
+  startedAt: string;
+  finishedAt: string;
+  intervalSeconds: number;
+}
+
 export interface ApplicationLastForceSync {
   jobId?: string;
   phase?: ForceSyncPhase;

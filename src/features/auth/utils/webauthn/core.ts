@@ -149,6 +149,7 @@ const convertCredential = (credential: globalThis.PublicKeyCredential): PublicKe
 
 export const isWebAuthnSupported = (): boolean => {
   return (
+    globalThis.isSecureContext &&
     globalThis.PublicKeyCredential !== undefined &&
     typeof globalThis.navigator?.credentials?.create === 'function' &&
     typeof globalThis.navigator?.credentials?.get === 'function'

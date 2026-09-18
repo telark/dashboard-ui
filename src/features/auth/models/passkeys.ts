@@ -15,16 +15,17 @@ export interface Passkey {
   userId?: string;
 }
 
-export interface CreatePasskeyRequest {
-  credential: PublicKeyCredential;
-}
-
 export interface CreatePasskeyResponse {
   id: string;
   credentialId: string;
   deviceName: string;
   deviceType: PasskeyDeviceType;
   creationTimestamp: string;
+}
+
+export interface EnrollLinkResponse {
+  token: string;
+  expiresAt: string;
 }
 
 export interface UpdatePasskeyRequest {

@@ -3,7 +3,7 @@ import {
   AppstoreOutlined,
   BarsOutlined,
   CheckSquareOutlined,
-  DeleteOutlined,
+  ClearOutlined,
   DownOutlined,
   EllipsisOutlined,
   HeartOutlined,
@@ -44,7 +44,7 @@ interface ApplicationsToolbarProps {
   allPageSelected: boolean;
   onToggleSelectAllPage: (checked: boolean) => void;
   onBulkForceSync: () => void;
-  onBulkDelete: () => void;
+  onBulkReset: () => void;
   bulkForceSyncDisabled: boolean;
   healthQuickFilter: HealthQuickFilter;
   onHealthQuickFilterChange: (next: HealthQuickFilter) => void;
@@ -189,7 +189,7 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
   allPageSelected,
   onToggleSelectAllPage,
   onBulkForceSync,
-  onBulkDelete,
+  onBulkReset,
   bulkForceSyncDisabled,
   healthQuickFilter,
   onHealthQuickFilterChange,
@@ -213,23 +213,23 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
           onClick: () => {
             if (!disabledNoSelection && !bulkForceSyncDisabled) onBulkForceSync();
           },
-          disabled: disabledNoSelection,
+          disabled: disabledNoSelection || bulkForceSyncDisabled,
           tooltip: bulkForceSyncDisabled
             ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
             : undefined,
         },
         {
-          key: 'bulkDelete',
-          label: APPLICATIONS_UI.TOOLBAR_BULK_DELETE,
-          icon: <DeleteOutlined />,
+          key: 'bulkReset',
+          label: APPLICATIONS_UI.TOOLBAR_BULK_RESET,
+          icon: <ClearOutlined />,
           variant: 'danger',
           iconOnly: true,
-          onClick: onBulkDelete,
+          onClick: onBulkReset,
           disabled: disabledNoSelection,
         },
       ],
     };
-  }, [bulkForceSyncDisabled, onBulkDelete, onBulkForceSync, selectedCount]);
+  }, [bulkForceSyncDisabled, onBulkReset, onBulkForceSync, selectedCount]);
 
   const handleMoreMenuClick = useCallback(
     (key: string) => {

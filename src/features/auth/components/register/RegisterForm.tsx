@@ -9,6 +9,7 @@ interface RegisterFormProps {
   form: FormInstance;
   loading: boolean;
   onFinish: (values: { email: string; deviceName: string }) => void;
+  disabled?: boolean;
 }
 
 const inputStyle: React.CSSProperties = {
@@ -17,7 +18,12 @@ const inputStyle: React.CSSProperties = {
   color: 'var(--auth-text-primary, #0B1F33)',
 };
 
-export const RegisterForm: React.FC<RegisterFormProps> = ({ form, loading, onFinish }) => (
+export const RegisterForm: React.FC<RegisterFormProps> = ({
+  form,
+  loading,
+  onFinish,
+  disabled,
+}) => (
   <AuthForm form={form} onFinish={onFinish}>
     <Form.Item
       name="email"
@@ -49,6 +55,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ form, loading, onFin
         type="primary"
         htmlType="submit"
         loading={loading}
+        disabled={disabled}
         block
         icon={<UserAddOutlined />}
         style={{

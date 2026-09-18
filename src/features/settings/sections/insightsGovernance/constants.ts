@@ -34,6 +34,8 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     PLATFORM_DESCRIPTION: 'Polling and snapshot retention settings.',
     FETCH_INTERVAL_MINUTES_LABEL: 'Fetch interval (minutes)',
     SNAPSHOTS_MAX_PER_APP_LABEL: 'Maximum Snapshots per application',
+    SNAPSHOTS_MAX_PER_APP_HINT:
+      'Telark stores one pre-change snapshot per recorded change and keeps the most recent ones up to this limit (counted per namespace for multi-namespace applications). Older snapshots are deleted automatically; their history entries remain visible but can no longer be compared or rolled back to. A new value applies from the next recorded change.',
     PLATFORM_SAVE_INTERVAL_BUTTON: 'Save interval',
     PLATFORM_SAVE_SNAPSHOTS_BUTTON: 'Save snapshots',
     EDIT_DISCOVERY_CONFIG_PERMISSION_DENIED:

@@ -12,14 +12,14 @@ import {
   selectPasskeyLoading,
   selectPasskeyError,
 } from '../../store/selectors/passkeySelectors';
-import { usePasskeyPanelState, usePasskeyActions } from '../../hooks';
+import { usePasskeyPanelState, usePasskeyActions, useEnrollLink } from '../../hooks';
 import { usePasskeyListPageConfig } from '../../hooks/passkeys/usePasskeyListPageConfig';
 import { sortPasskeys } from '../../components/passkeys/list/utils';
 import type { Passkey } from '../../models/passkeys';
 import PasskeysEmptyPage from './PasskeysEmptyPage';
 import PasskeysListPage from './PasskeysListPage';
 import type { PasskeyBreadcrumbItem } from './PasskeysListPage';
-import { PasskeyPanel } from '../../components';
+import { PasskeyPanel, EnrollLinkModal } from '../../components';
 
 export interface PasskeysMainPageProps {
   /** When provided (e.g. embedded in Settings), show breadcrumb in title. */
@@ -51,6 +51,7 @@ const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSet
   } = usePasskeyPanelState();
 
   const { submitting, handleDelete, handleCreate, handleUpdate } = usePasskeyActions(openEditPanel);
+  const { enrollUrl, enrollLoading, createLink, clearLink } = useEnrollLink();
 
   useEffect(() => {
     dispatch(fetchAllPasskeysThunk());
@@ -133,6 +134,8 @@ const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSet
     searchValue: searchTerm,
     onSearchChange: setSearchTerm,
     onCreatePasskeyClick: openCreatePanel,
+    onEnrollLinkClick: createLink,
+    enrollLinkLoading: enrollLoading,
   });
 
   const shouldShowEmpty = useMemo(
@@ -173,24 +176,27 @@ const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSet
   };
 
   return (
-    <PasskeysListPage
-      pageConfig={augmentedPageConfig}
-      passkeys={filteredAndSortedPasskeys}
-      allPasskeys={passkeys}
-      searchTerm={searchTerm}
-      onEdit={openEditPanel}
-      onConfirmDelete={confirmDelete}
-      panelOpen={isPanelOpen}
-      isEditMode={isEditMode}
-      selectedPasskey={selectedPasskey}
-      onClosePanel={closePanel}
-      form={form}
-      formSyncKey={formSyncKey}
-      submitting={submitting}
-      onSubmit={handlePanelSubmit}
-      breadcrumbItems={embedInSettings ? undefined : breadcrumbItems}
-      hideTitle={embedInSettings}
-    />
+    <>
+      <PasskeysListPage
+        pageConfig={augmentedPageConfig}
+        passkeys={filteredAndSortedPasskeys}
+        allPasskeys={passkeys}
+        searchTerm={searchTerm}
+        onEdit={openEditPanel}
+        onConfirmDelete={confirmDelete}
+        panelOpen={isPanelOpen}
+        isEditMode={isEditMode}
+        selectedPasskey={selectedPasskey}
+        onClosePanel={closePanel}
+        form={form}
+        formSyncKey={formSyncKey}
+        submitting={submitting}
+        onSubmit={handlePanelSubmit}
+        breadcrumbItems={embedInSettings ? undefined : breadcrumbItems}
+        hideTitle={embedInSettings}
+      />
+      <EnrollLinkModal url={enrollUrl} onClose={clearLink} />
+    </>
   );
 };
 

@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { getSessionsList, getSessionDetails, deleteSession } from '../clients/session';
+import { getSessionsList, getCurrentSession, deleteSession } from '../clients/session';
 import { getSessionToken, getCurrentSessionName } from '../utils/session/token';
 import { getCurrentUser } from '../utils/session/user';
 import type { SessionDetails } from '../models/session';
@@ -19,7 +19,7 @@ const resolveSessionsFromToken = async (): Promise<SessionDetails[]> => {
   const currentToken = getSessionToken();
   if (!currentToken) return [];
   try {
-    const single = await getSessionDetails(currentToken);
+    const single = await getCurrentSession();
     if (!single?.data) return [];
     // The single-session response carries no metadata, so name it here — the
     // rest of the UI addresses a session by its resource name.

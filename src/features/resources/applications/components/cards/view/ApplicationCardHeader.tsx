@@ -3,7 +3,7 @@ import { Button, Checkbox, Dropdown, Tooltip } from 'antd';
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
-  DeleteOutlined,
+  ClearOutlined,
   EditOutlined,
   EyeOutlined,
   HistoryOutlined,
@@ -20,10 +20,10 @@ import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../../../../store';
-import { deleteApplicationThunk } from '../../../store';
+import { resetApplicationThunk } from '../../../store';
 import { getApplicationHealthAccentColor } from '../../../utils/healthVisual';
 import { forceSyncApplication } from '../../../utils/management/sync';
-import ApplicationDeleteModal from '../../delete/ApplicationDeleteModal';
+import ApplicationResetModal from '../../reset/ApplicationResetModal';
 import {
   usePermission,
   ACTION_PERMISSIONS,
@@ -88,8 +88,8 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
       (s: RootState) => s.applications.syncLastError?.[application.name],
     );
     const [menuOpen, setMenuOpen] = useState(false);
-    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [deleteLoading, setDeleteLoading] = useState(false);
+    const [resetModalOpen, setResetModalOpen] = useState(false);
+    const [resetLoading, setResetLoading] = useState(false);
 
     const canEdit = usePermission(
       ACTION_PERMISSIONS.applications.edit.scope,
@@ -101,7 +101,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
       ACTION_PERMISSIONS.applications.forceSync.level,
       ACTION_PERMISSIONS.applications.forceSync.deny,
     );
-    const canDelete = usePermission(
+    const canReset = usePermission(
       ACTION_PERMISSIONS.applications.delete.scope,
       ACTION_PERMISSIONS.applications.delete.level,
       ACTION_PERMISSIONS.applications.delete.deny,
@@ -117,7 +117,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
         info.domEvent.stopPropagation();
         if (
           isSyncing &&
-          (info.key === 'edit' || info.key === 'delete' || info.key === 'forceSync')
+          (info.key === 'edit' || info.key === 'reset' || info.key === 'forceSync')
         ) {
           return;
         }
@@ -139,24 +139,24 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
           navigate(detailsPath);
           return;
         }
-        if (info.key === 'delete') {
+        if (info.key === 'reset') {
           setMenuOpen(false);
-          setDeleteModalOpen(true);
+          setResetModalOpen(true);
         }
       },
       [application, detailsPath, isSyncing, navigate, onEditApplication],
     );
 
-    const handleConfirmDelete = useCallback(async () => {
-      setDeleteLoading(true);
+    const handleConfirmReset = useCallback(async () => {
+      setResetLoading(true);
       try {
-        await dispatch(deleteApplicationThunk(application.name)).unwrap();
-        setDeleteModalOpen(false);
+        await dispatch(resetApplicationThunk(application.name)).unwrap();
+        setResetModalOpen(false);
         navigate(APP_ROUTES.APPLICATIONS);
       } catch {
         return;
       } finally {
-        setDeleteLoading(false);
+        setResetLoading(false);
       }
     }, [application.name, dispatch, navigate]);
 
@@ -354,18 +354,18 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                   },
                   { type: 'divider' as const },
                   {
-                    key: 'delete',
+                    key: 'reset',
                     label: labelWithTooltip(
-                      APPLICATIONS_UI.CARD.ACTIONS.DELETE,
-                      !canDelete
-                        ? APPLICATIONS_UI.CARD.ACTIONS.DELETE_PERMISSION_DENIED_TOOLTIP
+                      APPLICATIONS_UI.CARD.ACTIONS.RESET,
+                      !canReset
+                        ? APPLICATIONS_UI.CARD.ACTIONS.RESET_PERMISSION_DENIED_TOOLTIP
                         : isSyncing
                           ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
                           : undefined,
                     ),
-                    icon: <DeleteOutlined />,
+                    icon: <ClearOutlined />,
                     danger: true,
-                    disabled: !canDelete || isSyncing,
+                    disabled: !canReset || isSyncing,
                   },
                 ],
                 onClick: handleMenuClick,
@@ -384,12 +384,12 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
             </Dropdown>
           </div>
         </div>
-        <ApplicationDeleteModal
-          open={deleteModalOpen}
-          onClose={() => setDeleteModalOpen(false)}
-          onConfirm={handleConfirmDelete}
+        <ApplicationResetModal
+          open={resetModalOpen}
+          onClose={() => setResetModalOpen(false)}
+          onConfirm={handleConfirmReset}
           applicationNames={[application.name]}
-          loading={deleteLoading}
+          loading={resetLoading}
         />
       </>
     );

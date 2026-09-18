@@ -14,7 +14,3 @@ export function isApplicationSyncInFlight(name: string): boolean {
   if (!name) return false;
   return inFlight.has(name);
 }
-
-export function listApplicationSyncInFlight(): string[] {
-  return Array.from(inFlight);
-}
