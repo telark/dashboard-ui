@@ -12,13 +12,6 @@ export interface RolesGeneralSectionProps {
   onManualChange?: () => void;
 }
 
-export interface ActionsProps {
-  record: Role;
-  onView: (r: Role) => void;
-  onEdit?: (r: Role) => void;
-  onDelete: (r: Role) => void;
-}
-
 export interface ScopesPermissionsProps {
   scopes: Record<string, { level: string; rules?: string[] }>;
 }
@@ -126,14 +119,4 @@ export interface GroupsSelectProps {
   onChange?: (value: string[]) => void;
   allOptionsMap?: Map<string, string>;
   onOptionsMapUpdate?: (map: Map<string, string>) => void;
-}
-
-export interface RolesActionBarProps {
-  selectedCount: number;
-  hasSelection: boolean;
-  canEdit: boolean;
-  canDelete: boolean;
-  onView: () => void;
-  onEdit: () => void;
-  onDelete: () => void;
 }

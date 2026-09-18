@@ -31,7 +31,6 @@ const NumberInput: React.FC<NumberInputProps> = ({
   step,
 }) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Allow: backspace, delete, tab, escape, enter
     if (
       [
         'Backspace',
@@ -49,23 +48,18 @@ const NumberInput: React.FC<NumberInputProps> = ({
     ) {
       return;
     }
-    // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
     if (e.ctrlKey && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) {
       return;
     }
-    // Allow: numbers (0-9) on main keyboard and numpad
     if (/^[0-9]$/.test(e.key)) {
       return;
     }
-    // Allow: decimal point (only if precision is not 0)
     if (e.key === '.' && precision !== 0) {
       return;
     }
-    // Allow: minus sign (only if min is negative or not set)
     if (e.key === '-' && (min === undefined || min < 0)) {
       return;
     }
-    // Block everything else
     e.preventDefault();
   };
 

@@ -52,19 +52,16 @@ export const useGroupListState = (groups: Group[] | undefined): UseGroupListStat
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
 
-  // Filter by category
   const filteredGroups = useMemo(() => {
     if (!groups) return [];
     if (selectedCategory === 'all') return groups;
     return groups.filter((group) => group.categoryID === selectedCategory);
   }, [groups, selectedCategory]);
 
-  // Sort groups
   const sortedGroups = useMemo(() => {
     return sortData(filteredGroups, sortKey, sortOrder, GROUP_SORT_FIELDS);
   }, [filteredGroups, sortKey, sortOrder]);
 
-  // Paginate groups
   const paginatedGroups = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
     const end = start + pageSize;

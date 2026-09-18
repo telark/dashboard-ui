@@ -2,7 +2,6 @@
 export { LoginForm } from './login/LoginForm';
 export { BrandPanel } from './login/BrandPanel';
 export { CompactBanner } from './login/CompactBanner';
-export { ThemeToggle } from './login/ThemeToggle';
 
 // Modals
 export { default as OrphanedPasskeysModal } from './modals/OrphanedPasskeysModal';

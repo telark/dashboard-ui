@@ -71,10 +71,3 @@ export function formatRollbackNamespaceRef(namespace: string | undefined | null)
   const ns = String(namespace || '').trim();
   return `ns/${ns || APPLICATIONS_UI.FALLBACKS.EMPTY}`;
 }
-
-export function formatRollbackSnapshotRef(entry: ApplicationRollbackEntry): string {
-  const snap = String(entry.targetSnapshotId || '').trim();
-  const gen = entry.targetGeneration;
-  if (snap) return `${snap} · gen ${gen}`;
-  return `gen ${gen}`;
-}

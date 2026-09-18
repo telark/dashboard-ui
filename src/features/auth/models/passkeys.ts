@@ -15,10 +15,6 @@ export interface Passkey {
   userId?: string;
 }
 
-export interface CreatePasskeyRequest {
-  credential: PublicKeyCredential;
-}
-
 export interface CreatePasskeyResponse {
   id: string;
   credentialId: string;

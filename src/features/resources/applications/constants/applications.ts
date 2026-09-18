@@ -31,11 +31,6 @@ export const SYNC_STATUS_VALUE = {
   FAILED: 'failed',
 } as const;
 
-export const FORCE_SYNC_RESPONSE_STATUS = {
-  ENQUEUED: 'enqueued',
-  ALREADY_IN_FLIGHT: 'already_in_flight',
-} as const;
-
 export const APPLICATIONS_CONSTANTS = {
   UI: {
     EMPTY_STATE_MAX_WIDTH: SHARED_PAGE_CONSTANTS.UI.EMPTY_STATE_MAX_WIDTH,
@@ -85,9 +80,6 @@ export const APPLICATION_DETAILS_CONSTANTS = {
     EMPTY: 'No details available for this application.',
   },
 } as const;
-
-export type TabKey =
-  (typeof APPLICATION_DETAILS_CONSTANTS.TAB_KEYS)[keyof typeof APPLICATION_DETAILS_CONSTANTS.TAB_KEYS];
 
 export const APPLICATION_CHANGE_CLASS = {
   ROLLBACK: 'rollback',

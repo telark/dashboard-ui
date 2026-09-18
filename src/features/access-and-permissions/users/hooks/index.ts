@@ -1,5 +1,4 @@
 export { useUsers } from './user/useUsers';
-export { useUserActions } from './user/useUserActions';
 export { useUserListState } from './list/useUserListState';
 export { useUserListPageConfig } from './list/useUserListPageConfig';
 export { useUserFilters } from './filter/useUserFilters';

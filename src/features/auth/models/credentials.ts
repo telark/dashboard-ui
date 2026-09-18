@@ -120,16 +120,6 @@ export interface RegisterStartResponse {
   excludeCredentials?: PublicKeyCredentialDescriptor[];
 }
 
-export type RegisterFinishRequest = PublicKeyCredential;
-
-export interface RegisterFinishResponse {
-  id: string;
-  credentialId: string;
-  deviceName: string;
-  deviceType: PasskeyDeviceType;
-  creationTimestamp: string;
-}
-
 export interface LogoutResponse {
   success: boolean;
   message: string;

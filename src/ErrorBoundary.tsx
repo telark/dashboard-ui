@@ -53,7 +53,6 @@ class ErrorBoundary extends Component<Props, State> {
           }}
         >
           <div style={{ textAlign: 'center', maxWidth: 600, width: '100%' }}>
-            {/* Error Icon */}
             <div
               style={{
                 width: 80,
@@ -75,7 +74,6 @@ class ErrorBoundary extends Component<Props, State> {
               />
             </div>
 
-            {/* Error Title */}
             <Title
               level={2}
               style={{
@@ -87,7 +85,6 @@ class ErrorBoundary extends Component<Props, State> {
               Oops! Something went wrong
             </Title>
 
-            {/* Error Details (Development) */}
             {isDevelopment() && this.state.error && (
               <div
                 style={{
@@ -113,7 +110,6 @@ class ErrorBoundary extends Component<Props, State> {
               </div>
             )}
 
-            {/* Action Buttons */}
             <div
               style={{
                 display: 'flex',

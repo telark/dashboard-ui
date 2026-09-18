@@ -10,7 +10,7 @@ dashboard-ui is a Vite + React 19 + TypeScript SPA (Redux Toolkit for state, Ant
 
 dashboard-ui is one node in the telark system: a static SPA that calls the backend services directly over HTTP. It never talks to Kubernetes, Redis, or NATS itself — that's the services' job.
 
-Real service names, as referenced in `src/api/health/constants.ts`, `src/api/types/registry.ts`, and `src/constants/rest/api.ts` (`ServiceName = 'exporter' | 'discovery' | 'auth' | 'enrichment'`):
+Real service names, as referenced in `src/api/health/constants.ts` and `src/constants/rest/api.ts` (`exporter`, `discovery`, `auth`, `enrichment`):
 
 | Service | Language | What the UI uses it for |
 |---|---|---|

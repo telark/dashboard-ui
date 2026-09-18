@@ -24,9 +24,7 @@ const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
 
     return (
       <ConfigProvider theme={{ algorithm: theme.defaultAlgorithm, token: PANEL_THEME_TOKENS }}>
-        {/* Backdrop */}
         <div onClick={onClose} style={SLIDE_OUT.BACKDROP} />
-        {/* Panel */}
         <div
           className={PANEL_SURFACE_CLASS}
           style={{
@@ -49,7 +47,6 @@ const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
             }
           />
 
-          {/* Content */}
           <div style={SLIDE_OUT.CONTENT}>{children}</div>
         </div>
 

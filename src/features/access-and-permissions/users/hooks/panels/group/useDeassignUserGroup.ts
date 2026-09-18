@@ -39,11 +39,7 @@ export const useDeassignUserGroup = ({
   const dispatch: AppDispatch = useDispatch();
 
   const onAfterDeassign = useCallback(
-    async (
-      item: { id: string; name: string; assignedUsersIDs?: string[] },
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- signature required by useDeassignUserField
-      _updatedGroupIds: string[],
-    ) => {
+    async (item: { id: string; name: string; assignedUsersIDs?: string[] }) => {
       if (!user) return;
       await syncGroupRemoveUser(dispatch, item as Group, user.id);
     },

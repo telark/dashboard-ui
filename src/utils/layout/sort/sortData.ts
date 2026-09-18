@@ -19,23 +19,19 @@ export const sortData = <T>(
   const items = [...data];
 
   const compare = (a: T, b: T): number => {
-    // Use custom comparator if provided
     if (fieldConfig.compare) {
       return fieldConfig.compare(a, b);
     }
 
-    // Get values using custom getValue or default to accessing by key
     const getValue =
       fieldConfig.getValue || ((item: T) => (item as Record<string, unknown>)[fieldConfig.key]);
     const valueA = getValue(a);
     const valueB = getValue(b);
 
-    // Handle null/undefined values
     if (valueA == null && valueB == null) return 0;
     if (valueA == null) return 1;
     if (valueB == null) return -1;
 
-    // Compare based on type
     switch (fieldConfig.type) {
       case 'string':
         return String(valueA).localeCompare(String(valueB));

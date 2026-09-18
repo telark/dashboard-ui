@@ -69,14 +69,6 @@ export const AUTH_SUCCESS_MESSAGES = {
   PASSKEY_DELETED: 'Passkey deleted successfully',
 } as const;
 
-export const AUTH_INFO_MESSAGES = {
-  LOGGING_IN: 'Authenticating...',
-  REGISTERING: 'Registering passkey...',
-  LOADING_PASSKEYS: 'Loading passkeys...',
-  DELETING_PASSKEY: 'Deleting passkey...',
-  UPDATING_PASSKEY: 'Updating passkey...',
-} as const;
-
 export const AUTH_CONSTANTS = {
   SESSION: {
     VALIDATION: {

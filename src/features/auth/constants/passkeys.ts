@@ -153,5 +153,3 @@ export const PASSKEYS_CONSTANTS = {
     FAILED_TO_CREATE_ENROLL_LINK: 'Failed to create enrollment link:',
   },
 } as const;
-
-export type PasskeysConstants = typeof PASSKEYS_CONSTANTS;

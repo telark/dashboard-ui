@@ -302,17 +302,3 @@ export const COMPONENT_STYLES = {
     },
   },
 } as const;
-
-// Component-specific constants for better organization
-export const COMPONENT_CONSTANTS = {
-  WORKLOAD_INSTANCES: {
-    PULL_POLICY_MAP: {
-      Always: 'Always pull',
-      IfNotPresent: 'Pull if needed',
-      Never: 'Local only',
-    },
-    INSTANCE_TYPE: 'Instance',
-  },
-} as const;
-
-export type UIConstants = typeof UI;

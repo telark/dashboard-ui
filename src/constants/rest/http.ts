@@ -16,17 +16,7 @@ export const HTTP_STATUS = {
   GATEWAY_TIMEOUT: 504,
 } as const;
 
-export const STATUS_RANGES = {
-  CLIENT_ERROR: { MIN: 400, MAX: 499 },
-  SERVER_ERROR: { MIN: 500, MAX: 599 },
-} as const;
-
 export const ERROR_CODES = {
   NETWORK: 'ERR_NETWORK',
   TIMEOUT: 'ECONNABORTED',
-} as const;
-
-export const RESPONSE_STATUS = {
-  NOT_FOUND: 'Not Found',
-  SUCCESS: 'OK',
 } as const;
