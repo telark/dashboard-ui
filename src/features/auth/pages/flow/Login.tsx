@@ -9,6 +9,7 @@ import {
   type OrphanedPasskeysInfo,
 } from '../../utils/flow/login';
 import { redirectToGoogle } from '../../utils/flow/google';
+import { isWebAuthnSupported } from '../../utils/webauthn/core';
 import { APP_ROUTES } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { GoogleIcon } from '../../../../components/display/icons/GoogleIcon';
@@ -18,6 +19,7 @@ import {
   AuthHeader,
   AuthFooter,
   OrphanedPasskeysModal,
+  InsecureContextAlert,
 } from '../../components';
 import {
   ensureAuthConfigThunk,
@@ -141,17 +143,19 @@ const Login: React.FC = () => {
   };
 
   const isAnyLoading = loading || googleLoading;
+  const passkeysAvailable = isWebAuthnSupported();
 
   return (
     <>
       <AuthCard>
         <AuthHeader title={LOGIN_CONSTANTS.UI.TITLE} subtitle={LOGIN_CONSTANTS.UI.SUBTITLE} />
+        {!passkeysAvailable && <InsecureContextAlert />}
 
         {!showPasskeyForm ? (
           <Button
             block
             onClick={() => setShowPasskeyForm(true)}
-            disabled={isAnyLoading}
+            disabled={isAnyLoading || !passkeysAvailable}
             style={{
               fontWeight: 600,
               background: 'var(--color-primary)',

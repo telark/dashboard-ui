@@ -1,29 +1,19 @@
 import { Client, authApiClient } from '../../../api/index';
 import { Endpoints } from '../../../constants';
-import type {
-  RegisterStartResponse,
-  RegisterFinishRequest,
-  RegisterFinishResponse,
-} from '../models';
+import type { RegisterStartRequest, RegisterStartResponse } from '../models';
 
-export const registerStart = async (email?: string): Promise<RegisterStartResponse> => {
+export const registerStart = async (
+  email?: string,
+  enrollToken?: string,
+): Promise<RegisterStartResponse> => {
   const { path, method } = Endpoints.AUTH.REGISTER.START;
-  const config: any = {
-    method,
-  };
+  const data: RegisterStartRequest = {};
   if (email) {
-    config.data = { email };
+    data.email = email;
+  }
+  if (enrollToken) {
+    data.enrollToken = enrollToken;
   }
 
-  return await Client<RegisterStartResponse>(authApiClient, path, config);
-};
-
-export const registerFinish = async (
-  request: RegisterFinishRequest,
-): Promise<RegisterFinishResponse> => {
-  const { path, method } = Endpoints.AUTH.PASSKEYS.CREATE;
-  return await Client<RegisterFinishResponse>(authApiClient, path, {
-    method,
-    data: request,
-  });
+  return await Client<RegisterStartResponse>(authApiClient, path, { method, data });
 };

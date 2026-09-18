@@ -8,11 +8,3 @@ export const MENU_LABELS = {
   DISCOVERY: 'Discovery',
   ACCESS_AND_PERMISSIONS: 'Access & Permissions',
 } as const;
-
-export const MENU_KEYS = {
-  RESOURCES: 'resources',
-  USERS_AND_GROUPS: 'users-and-groups',
-  GOVERNANCE: 'governance',
-  COLLAPSED: 'collapsed',
-  EXPANDED: 'expanded',
-} as const;

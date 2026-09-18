@@ -65,7 +65,6 @@ const FormModal: React.FC<FormModalProps> = ({
     onCancel();
   };
 
-  // Reset form when modal opens
   useEffect(() => {
     if (open) {
       form.resetFields();
@@ -129,7 +128,6 @@ const FormModal: React.FC<FormModalProps> = ({
           onFinish={handleFinish}
           initialValues={initialValues}
           onValuesChange={async () => {
-            // Trigger validation on value change and check for errors
             try {
               await form.validateFields();
               setHasValidationErrors(false);

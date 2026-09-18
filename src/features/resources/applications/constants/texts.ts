@@ -1,6 +1,11 @@
 export const APPLICATIONS_UI = {
   HEADER_TITLE: 'Applications',
   HEADER_SUBTITLE: 'Inspect application health, resources, snapshots, and more.',
+  DISCOVERY_IN_PROGRESS: (remaining: number) =>
+    remaining > 0
+      ? `Discovering applications: ${remaining} left to refresh. New applications appear as the scan completes.`
+      : 'Discovering applications. New applications appear as the scan completes.',
+  DISCOVERY_IDLE: 'Applications up to date.',
   TOOLBAR_SEARCH_PLACEHOLDER: 'Search applications by name, status, or display name...',
   TOOLBAR_SEARCH_BUTTON: 'Search',
   TOOLBAR_CLEAR_ALL: 'Clear All',
@@ -22,10 +27,10 @@ export const APPLICATIONS_UI = {
     UNHEALTHY: 'Unhealthy',
   },
   TOOLBAR_BULK_FORCE_SYNC: 'Force Sync',
-  TOOLBAR_BULK_DELETE: 'Delete',
-  TOOLBAR_BULK_DELETE_CONFIRM_TITLE: 'Delete selected applications?',
-  TOOLBAR_BULK_DELETE_CONFIRM_MESSAGE:
-    'Deleting selected applications removes only their platform definitions. Kubernetes resources in your cluster are not deleted.',
+  TOOLBAR_BULK_RESET: 'Reset',
+  TOOLBAR_BULK_RESET_CONFIRM_TITLE: 'Reset selected applications?',
+  TOOLBAR_BULK_RESET_CONFIRM_MESSAGE:
+    'Resetting clears the history, snapshots and rollbacks of the selected applications. Kubernetes resources in your cluster are not touched. The applications are rediscovered on the next scan.',
   TOOLBAR_LAYOUT_SINGLE: 'Focus view',
   TOOLBAR_LAYOUT_DOUBLE: 'Compare view',
   TOOLBAR_COUNT_SUFFIX: 'apps',
@@ -168,12 +173,31 @@ export const APPLICATIONS_UI = {
       COMPARE_IDENTICAL: 'These two snapshots are identical.',
       COMPARE_CHANGE: 'change',
       COMPARE_RESOURCE: 'resource',
+      COMPARE_FROM_LABEL: 'Baseline',
+      COMPARE_TO_LABEL: 'Compared with',
+      COMPARE_STAT_CHANGES: 'Changes',
+      COMPARE_STAT_RESOURCES: 'Resources',
+      COMPARE_STAT_ADDED: 'Added',
+      COMPARE_STAT_REMOVED: 'Removed',
+      COMPARE_STAT_MODIFIED: 'Modified',
+      COMPARE_BEFORE: 'Before',
+      COMPARE_AFTER: 'After',
+      COMPARE_ADDED_CHIP: 'added',
+      COMPARE_REMOVED_CHIP: 'removed',
+      COMPARE_IDENTICAL_TITLE: 'No differences',
+      COMPARE_ERROR_TITLE: 'Comparison unavailable',
+      COMPARE_RESOURCE_ADDED: 'Resource present only in the compared snapshot',
+      COMPARE_RESOURCE_REMOVED: 'Resource present only in the baseline snapshot',
+      COMPARE_REDACTED: '••••••',
       VIEW_MANIFEST: 'View Manifest',
       ROLLBACK: 'Rollback',
       ROLLBACK_CONFIRM_TITLE: 'Rollback to this snapshot?',
       ROLLBACK_CONFIRM_CONTENT:
-        'This starts a rollback to the selected snapshot. The application may be updated when the operation completes.',
+        'This starts a rollback to the selected snapshot. Once the rollback starts it cannot be aborted, so you get a short undo window before it is sent.',
       ROLLBACK_CONFIRM_OK: 'Start rollback',
+      ROLLBACK_COUNTDOWN_CONTENT:
+        'Undo now if you need more time. Once the rollback starts it cannot be aborted.',
+      ROLLBACK_UNDO: 'Undo',
       ROLLBACK_SUCCESS: 'Rollback request submitted.',
       ROLLBACK_FAILED: 'Rollback could not be started. Please try again.',
       ROLLBACK_USER_REQUIRED:
@@ -262,6 +286,14 @@ export const APPLICATIONS_UI = {
       SHOWING_FIRST: 'Showing first',
       GEN: 'Generation',
       BY_PREFIX: 'By',
+      SNAPSHOT_AVAILABLE: 'snapshot',
+      SNAPSHOT_MISSING: 'no snapshot',
+      SNAPSHOT_AVAILABLE_TOOLTIP:
+        'A pre-change snapshot is stored for this generation. It can be compared and rolled back to.',
+      SNAPSHOT_MISSING_TOOLTIP:
+        'Removed by the per-application snapshot limit. This entry stays in the history but can no longer be compared or rolled back to.',
+      MORE_CHANGES: 'more',
+      SCROLL_FOR_MORE_TOOLTIP: 'Scroll to see the remaining changes',
       // The API appends the target snapshot id to the rollback description
       // ("... generation 1 snapshot snap-3415eeaa"). The id is already the
       // change's newValue and adds nothing to the sentence.
@@ -304,13 +336,13 @@ export const APPLICATIONS_UI = {
       FORCE_SYNC_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to sync applications',
       VIEW_SNAPSHOTS_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to view snapshots',
       VIEW_ROLLBACKS_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to view rollbacks',
-      DELETE_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to delete applications',
+      RESET_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to reset applications',
       CANCEL: 'Cancel',
-      DELETE: 'Delete',
-      DELETE_CONFIRM_TITLE: 'Delete application?',
-      DELETE_CONFIRM_CONTENT: 'This action cannot be undone.',
-      DELETE_CONFIRM_MESSAGE:
-        'Deleting this application removes only its definition from the platform. Kubernetes resources in your cluster are not deleted.',
+      RESET: 'Reset',
+      RESET_CONFIRM_TITLE: 'Reset application?',
+      RESET_CONFIRM_CONTENT: 'This action cannot be undone.',
+      RESET_CONFIRM_MESSAGE:
+        'Resetting clears the history, snapshots and rollbacks of this application. Kubernetes resources in your cluster are not touched. The application is rediscovered on the next scan.',
       ROLLBACKS_PLACEHOLDER: 'Rollbacks are managed from the snapshots section.',
     },
     SYNC_STATUS: {

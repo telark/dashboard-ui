@@ -100,6 +100,11 @@ export interface LoginFinishResponse {
   user: User;
 }
 
+export interface RegisterStartRequest {
+  email?: string;
+  enrollToken?: string;
+}
+
 export interface RegisterStartResponse {
   options?: {
     publicKey?: PublicKeyCredentialCreationOptions;
@@ -113,16 +118,6 @@ export interface RegisterStartResponse {
   attestation?: AttestationConveyancePreference;
   authenticatorSelection?: AuthenticatorSelectionCriteria;
   excludeCredentials?: PublicKeyCredentialDescriptor[];
-}
-
-export type RegisterFinishRequest = PublicKeyCredential;
-
-export interface RegisterFinishResponse {
-  id: string;
-  credentialId: string;
-  deviceName: string;
-  deviceType: PasskeyDeviceType;
-  creationTimestamp: string;
 }
 
 export interface LogoutResponse {

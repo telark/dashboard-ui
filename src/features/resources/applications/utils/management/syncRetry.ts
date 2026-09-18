@@ -28,7 +28,6 @@ function scheduleFailedSyncRetry(name: string): void {
   }, APPLICATIONS_SYNC_RETRY_INTERVAL_MS);
 
   retryTimers.set(name, timer);
-  void retryFailedSyncApplication(name);
 }
 
 export function syncRetryFromState(): void {

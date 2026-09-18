@@ -11,13 +11,6 @@ export const NOTIFICATION_TYPES = {
   GROUP_MEMBERSHIP_CHANGED: 'group.membership.changed',
 } as const;
 
-export const NOTIFICATION_SEVERITY = {
-  INFO: 'info',
-  SUCCESS: 'success',
-  WARNING: 'warning',
-  ERROR: 'error',
-} as const;
-
 export const NOTIFICATION_SEVERITY_COLORS: Record<string, string> = {
   info: DEFAULT_COLORS.DEFAULT,
   success: DEFAULT_COLORS.SUCCESS,

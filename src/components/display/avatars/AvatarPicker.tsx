@@ -153,7 +153,6 @@ interface AvatarItemProps {
 const AvatarItem: React.FC<AvatarItemProps> = ({ option, isSelected, previewUrl, onSelect }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  // Clear hover state when selection changes
   useEffect(() => {
     if (isSelected) {
       startTransition(() => {

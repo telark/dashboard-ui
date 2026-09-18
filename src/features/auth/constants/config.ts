@@ -3,9 +3,10 @@ import { APP_ROUTES } from '../../../constants';
 export const AUTH_CONFIG = {
   SESSION: {
     VALIDATION: {
-      INTERVAL_SECONDS: 10,
+      INTERVAL_SECONDS: 60,
     },
     NAME_PREFIX: 'session-',
+    SELF_REF: 'self',
     NAME_DIGEST_ALGORITHM: 'SHA-256',
   },
 } as const;

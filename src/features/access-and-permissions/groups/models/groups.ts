@@ -19,12 +19,6 @@ export interface GroupsState {
   deletingIds: string[];
 }
 
-export interface GroupsTableProps {
-  groups: Group[];
-  onView?: (group: Group) => void;
-  onEdit?: (group: Group) => void;
-}
-
 export type GroupFormData = Omit<Group, 'id' | 'creationDate' | 'lastUpdateDate'> & {
   createdBy?: string;
   lastUpdatedBy?: string;

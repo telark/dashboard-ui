@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import logger, { logErrorOnce } from '../../../../../logging';
 import {
   abortApplicationRollback,
-  deleteApplication,
+  resetApplication,
   fetchApplications,
   fetchApplicationDetails,
   getApplicationSnapshotSummaries,
@@ -76,15 +76,15 @@ export const updateApplicationThunk = createAsyncThunk(
   },
 );
 
-export const deleteApplicationThunk = createAsyncThunk(
-  STORE_ACTIONS.APPLICATIONS.DELETE,
+export const resetApplicationThunk = createAsyncThunk(
+  STORE_ACTIONS.APPLICATIONS.RESET,
   async (name: string, { rejectWithValue }) => {
     try {
-      await deleteApplication(name);
+      await resetApplication(name);
       return name;
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_DELETING_APPLICATION, error);
-      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.DELETE_APPLICATION));
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.RESET_APPLICATION));
     }
   },
 );

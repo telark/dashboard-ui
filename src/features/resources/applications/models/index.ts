@@ -8,6 +8,7 @@ export type {
   ApplicationHealthQuickFilter,
   ApplicationLastForceSync,
   ApplicationsLastErrorMap,
+  DiscoveryCycleStatus,
   ForceSyncPhase,
   SyncStatusValue,
 } from './application';

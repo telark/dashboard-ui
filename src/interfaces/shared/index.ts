@@ -19,28 +19,6 @@ export interface NoLoadingButtonInterface {
   disabled?: boolean;
 }
 
-export interface ResourcesInterface {
-  resources: ResourceRowInterface[];
-}
-
-export interface ResourceRowInterface {
-  name: string;
-  lastSync: string;
-  type: string;
-  status: string;
-  sourceName?: string;
-  sourceType?: string;
-  syncName?: string;
-  creationTime?: string;
-}
-
-export interface GeneralInfoInterface {
-  name: string;
-  creationTime: string;
-  lastUpdateTime: string;
-  status: string;
-}
-
 export interface ButtonInterface {
   text: string;
   icon: ReactNode;
@@ -52,10 +30,6 @@ export interface ButtonInterface {
 export interface MetricInterface {
   label: string;
   value: number;
-}
-
-export interface HistoryInterface {
-  Records: Record[];
 }
 
 export interface Record {

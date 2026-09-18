@@ -10,7 +10,7 @@ interface ChartBoxProps extends DashboardBoxProps {
 // Charts measure their container, so the body gets all remaining height of the box.
 // Explicit height: the plots wrapper uses `height: inherit` and falls back to 480px on `auto`.
 const ChartBox: React.FC<ChartBoxProps> = memo(({ isEmpty, emptyText, children, ...boxProps }) => (
-  <DashboardBox {...boxProps}>
+  <DashboardBox bodyOverflow="visible" {...boxProps}>
     {isEmpty ? (
       <div style={S.MUTED_TEXT}>{emptyText}</div>
     ) : (

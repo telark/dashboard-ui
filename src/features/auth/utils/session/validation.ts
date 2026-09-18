@@ -1,5 +1,5 @@
 import { getSessionToken } from './token';
-import { getSessionDetails } from '../../clients';
+import { getCurrentSession } from '../../clients';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 import { AUTH_CONSTANTS } from '../../constants/messages';
@@ -31,7 +31,7 @@ export const validateSession = async (): Promise<SessionValidationResult> => {
       };
     }
 
-    const response = await getSessionDetails(sessionToken);
+    const response = await getCurrentSession();
     if (response.status !== 200 || !response.data) {
       return {
         isValid: false,

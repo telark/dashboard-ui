@@ -11,23 +11,6 @@ export interface StandardApiResponse {
   data?: unknown;
 }
 
-export interface MaintenanceModeResponse {
-  status: number;
-  message: string;
-  data?: {
-    name: string;
-    status: string;
-    delete: boolean;
-    update: boolean;
-  } | null;
-}
-
-export interface ClusterInsightsResponse {
-  data: unknown | null;
-  _status: number;
-  _network?: boolean;
-}
-
 export interface ResourceListResponse<T> {
   status: number;
   operation: string;

@@ -1,12 +1,3 @@
-export const LOG_LEVELS = {
-  TRACE: 0,
-  DEBUG: 1,
-  INFO: 2,
-  WARN: 3,
-  ERROR: 4,
-  SILENT: 5,
-} as const;
-export type LogLevel = (typeof LOG_LEVELS)[keyof typeof LOG_LEVELS];
 export const LOG_LEVEL_NAMES = {
   TRACE: 'trace',
   DEBUG: 'debug',

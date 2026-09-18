@@ -60,18 +60,18 @@ export const updateApplication = async (name: string, payload: ApplicationUpdate
   }
 };
 
-export const deleteApplication = async (name: string) => {
+export const resetApplication = async (name: string) => {
   try {
     return await Client<ResourceDetailsResponse<unknown>>(
       discoveryApiClient,
-      Endpoints.APPLICATIONS.CLEANUP(name).path,
+      Endpoints.APPLICATIONS.RESET(name).path,
       {
-        method: 'DELETE',
+        method: 'POST',
       },
     );
   } catch (error) {
     logger.error(
-      `${APPLICATIONS_ERROR_MESSAGES.CLIENT.DELETE_APPLICATION_FAILED} "${name}":`,
+      `${APPLICATIONS_ERROR_MESSAGES.CLIENT.RESET_APPLICATION_FAILED} "${name}":`,
       error,
     );
     throw error;

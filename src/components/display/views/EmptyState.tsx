@@ -14,6 +14,7 @@ export interface EmptyStateProps {
     label: string;
     icon?: React.ReactNode;
     onClick: () => void;
+    disabled?: boolean;
   };
   secondaryAction?: {
     label: string;
@@ -120,6 +121,7 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
                 type="primary"
                 icon={primaryAction.icon ?? <PlusOutlined />}
                 onClick={primaryAction.onClick}
+                disabled={primaryAction.disabled}
                 style={buttonStyle}
               >
                 {primaryAction.label}

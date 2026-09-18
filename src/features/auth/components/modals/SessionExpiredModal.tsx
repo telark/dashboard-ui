@@ -4,6 +4,7 @@ import { useNavigate, type NavigateFunction } from 'react-router-dom';
 import { getSessionToken, removeSessionToken, removeCurrentUser } from '../../utils';
 import { deleteSession } from '../../clients';
 import { AUTH_CONSTANTS } from '../../constants/messages';
+import { AUTH_CONFIG } from '../../constants';
 import { ACTION_CONFIRM_MODAL, APP_ROUTES, DEFAULT_COLORS } from '../../../../constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
@@ -13,9 +14,9 @@ interface SessionExpiredModalProps {
   onClose?: () => void;
 }
 
-const deleteServerSession = async (sessionToken: string): Promise<void> => {
+const deleteServerSession = async (): Promise<void> => {
   try {
-    const deleteResponse = await deleteSession(sessionToken);
+    const deleteResponse = await deleteSession(AUTH_CONFIG.SESSION.SELF_REF);
     if (deleteResponse.status !== 200 && isDevelopment()) {
       logger.warn(
         AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.DELETE_NON_200_STATUS,
@@ -54,9 +55,8 @@ const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({ open, onClose
   const handleGoToLogin = async () => {
     setLoading(true);
     try {
-      const sessionToken = getSessionToken();
-      if (sessionToken) {
-        await deleteServerSession(sessionToken);
+      if (getSessionToken()) {
+        await deleteServerSession();
       }
 
       cleanupLocalStorage();

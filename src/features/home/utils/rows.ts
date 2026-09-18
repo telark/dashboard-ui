@@ -38,6 +38,11 @@ export const applicationsBreakdown = (summary: ApplicationsSummary): BreakdownIt
     count: summary.down,
     color: getApplicationHealthAccentColor('down'),
   },
+  {
+    label: T.APPLICATIONS.UNKNOWN,
+    count: summary.unknown,
+    color: getApplicationHealthAccentColor('unknown'),
+  },
   { label: T.APPLICATIONS.DRIFTED, count: summary.drifted, color: DEFAULT_COLORS.WARNING },
 ];
 

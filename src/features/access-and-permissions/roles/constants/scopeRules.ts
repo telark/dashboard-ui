@@ -140,16 +140,3 @@ export const getScopeRules = (scope: string, level: PermissionLevel): ScopeRule[
 export const formatRuleKey = (scope: string, ruleKey: string): string => {
   return `${scope.toLowerCase()}.${ruleKey.toLowerCase()}.deny`;
 };
-
-export const parseRuleKey = (formattedKey: string): { scope: string; ruleKey: string } | null => {
-  const parts = formattedKey.split('.');
-  if (parts.length < 2) return null;
-  // Handle both old format (scope.rule) and new format (scope.rule.deny)
-  if (parts.length === 3 && parts[2] === 'deny') {
-    return { scope: parts[0], ruleKey: parts[1] };
-  }
-  if (parts.length === 2) {
-    return { scope: parts[0], ruleKey: parts[1] };
-  }
-  return null;
-};

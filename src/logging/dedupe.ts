@@ -28,7 +28,3 @@ export const logErrorOnce = (
   buckets.set(scope, { signature, loggedAt: now });
   logger.error(message, error);
 };
-
-export const resetErrorDedupe = (scope: string): void => {
-  buckets.delete(scope);
-};

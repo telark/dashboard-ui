@@ -13,7 +13,7 @@ import {
 export const Endpoints = {
   APPLICATIONS: {
     GET_ALL: {
-      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.GET_ALL}`,
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.GET_ALL}?view=summary`,
       method: 'GET',
     },
     GET_DETAILS: (name: string) => ({
@@ -24,9 +24,9 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.UPDATE_SYNC(name)}`,
       method: 'PATCH',
     }),
-    CLEANUP: (name: string) => ({
-      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.CLEANUP_DETAILS(name)}`,
-      method: 'DELETE',
+    RESET: (name: string) => ({
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.RESET_DETAILS(name)}`,
+      method: 'POST',
     }),
     TRIGGER_ROLLBACK: (name: string) => ({
       path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}/trigger`,
@@ -44,6 +44,10 @@ export const Endpoints = {
       path: `${API_PATHS.RESOURCES.APPLICATIONS}/${RESOURCE_PATHS.APPLICATION_ROLLBACKS(name)}/${rollbackId}/get`,
       method: 'GET',
     }),
+    DISCOVERY_STATUS: {
+      path: `${API_PATHS.RESOURCES.APPLICATIONS}/discovery/status`,
+      method: 'GET',
+    },
   },
   INSIGHTS: {
     GET_APPLICATIONS: {
@@ -162,6 +166,10 @@ export const Endpoints = {
       DELETE: {
         path: AUTH_PATHS.PASSKEYS.PROXY.DELETE,
         method: 'DELETE',
+      },
+      ENROLL_LINK: {
+        path: AUTH_PATHS.PASSKEYS.ENROLL_LINK,
+        method: 'POST',
       },
     },
   },

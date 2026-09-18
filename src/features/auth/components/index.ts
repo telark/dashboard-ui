@@ -2,11 +2,11 @@
 export { LoginForm } from './login/LoginForm';
 export { BrandPanel } from './login/BrandPanel';
 export { CompactBanner } from './login/CompactBanner';
-export { ThemeToggle } from './login/ThemeToggle';
 
 // Modals
 export { default as OrphanedPasskeysModal } from './modals/OrphanedPasskeysModal';
 export { default as SessionExpiredModal } from './modals/SessionExpiredModal';
+export { default as EnrollLinkModal } from './modals/EnrollLinkModal';
 
 // Passkeys List
 export { default as PasskeyCard } from './passkeys/list/PasskeyCard';
@@ -33,3 +33,4 @@ export { AuthCard } from './shared/AuthCard';
 export { AuthHeader } from './shared/AuthHeader';
 export { AuthFooter } from './shared/AuthFooter';
 export { AuthForm } from './shared/AuthForm';
+export { InsecureContextAlert } from './shared/InsecureContextAlert';

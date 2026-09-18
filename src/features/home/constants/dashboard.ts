@@ -21,6 +21,7 @@ export const HOME_DASHBOARD_TEXTS = {
     HEALTHY: 'Healthy',
     DEGRADED: 'Degraded',
     DOWN: 'Down',
+    UNKNOWN: 'Unknown',
     DRIFTED: 'Drifted',
   },
   PLANS: {
@@ -102,12 +103,18 @@ export const HOME_DASHBOARD_LAYOUT = {
 export const HOME_CHART_LAYOUT = {
   ROW_HEIGHT_PX: 260,
   ACTIVITY_DAYS: 30,
-  AREA_FILL_OPACITY: 0.16,
   LINE_WIDTH_PX: 2,
   AXIS_FONT_SIZE_PX: 11,
   LEGEND_FONT_SIZE_PX: 11,
   GRID_DASH: [3, 3] as number[],
   ANIMATION_MS: 450,
+  POINT_SIZE_PX: 2.5,
+  LINE_DASHES: [
+    [0, 0],
+    [6, 3],
+    [2, 3],
+    [8, 3, 2, 3],
+  ] as number[][],
 } as const;
 
 export const HOME_SEVERITY_COLORS: Record<SeverityKey, string> = {

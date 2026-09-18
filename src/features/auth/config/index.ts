@@ -1,1 +1,0 @@
-export { usePasskeyListConfig } from './passkeyListConfig';

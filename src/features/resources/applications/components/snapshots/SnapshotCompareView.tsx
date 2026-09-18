@@ -1,10 +1,13 @@
 import React, { memo, useMemo } from 'react';
+import { Skeleton } from 'antd';
+import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type { ApplicationSnapshotSummary, SnapshotManifestState } from '../../models';
 import { APPLICATIONS_UI } from '../../constants';
-import MutedText from '../details/MutedText';
+import { APPLICATION_TRACKING_ANNOTATION_PREFIX } from '../../constants/applications';
 import SnapshotMetaChip from './SnapshotMetaChip';
+import { getApplicationSeverityAccentColor } from '../../utils/healthVisual';
 
 type DiffType = 'add' | 'remove' | 'change';
 type Path = string[];
@@ -91,6 +94,7 @@ function normalizeManifestToResources(data: unknown): ResourceDoc[] {
 
 function diffUnknown(oldV: unknown, newV: unknown, path: Path, out: DiffRow[]): void {
   if (oldV === undefined && newV === undefined) return;
+  if (path.join('.').startsWith(APPLICATION_TRACKING_ANNOTATION_PREFIX)) return;
   if (oldV === undefined) {
     out.push({ path, type: 'add', newValue: newV });
     return;
@@ -163,6 +167,217 @@ export interface SnapshotCompareViewProps {
   onBack: () => void;
 }
 
+const CARD_STYLE: React.CSSProperties = {
+  border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
+  borderRadius: 12,
+  background: DEFAULT_COLORS.SURFACE_WHITE,
+};
+
+const LABEL_STYLE: React.CSSProperties = {
+  fontSize: 10,
+  fontWeight: 700,
+  letterSpacing: 0.6,
+  textTransform: 'uppercase',
+  color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+};
+
+const DIFF_TONE = {
+  add: { color: DEFAULT_COLORS.SUCCESS, background: DEFAULT_COLORS.SUCCESS_TINT },
+  remove: { color: DEFAULT_COLORS.DANGER, background: DEFAULT_COLORS.DANGER_TINT },
+  change: { color: DEFAULT_COLORS.WARNING, background: DEFAULT_COLORS.WARNING_TINT },
+} as const;
+
+const ValueChip: React.FC<{ tone: DiffType; children: React.ReactNode }> = ({ tone, children }) => (
+  <span
+    style={{
+      display: 'inline-block',
+      padding: '3px 8px',
+      borderRadius: 6,
+      background: DIFF_TONE[tone].background,
+      color: DIFF_TONE[tone].color,
+      fontSize: 12,
+      fontWeight: 700,
+      lineHeight: 1.4,
+      wordBreak: 'break-word',
+      maxWidth: '100%',
+    }}
+  >
+    {children}
+  </span>
+);
+
+const SnapshotSide: React.FC<{ label: string; snap: ApplicationSnapshotSummary }> = ({
+  label,
+  snap,
+}) => {
+  const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
+  return (
+    <div style={{ ...CARD_STYLE, padding: '12px 14px', minWidth: 0 }}>
+      <div style={LABEL_STYLE}>{label}</div>
+      <div
+        style={{
+          marginTop: 4,
+          fontSize: 16,
+          fontWeight: 800,
+          color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {ui.GENERATION} {snap.generation}
+      </div>
+      <div
+        style={{
+          marginTop: 8,
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          gap: 6,
+          minWidth: 0,
+        }}
+      >
+        <SnapshotMetaChip>{snap.id}</SnapshotMetaChip>
+        {snap.severity ? (
+          <SnapshotMetaChip>
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: '50%',
+                background: getApplicationSeverityAccentColor(snap.severity),
+              }}
+            />
+            {snap.severity}
+          </SnapshotMetaChip>
+        ) : null}
+        <span
+          style={{ fontSize: 11, fontWeight: 600, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}
+        >
+          {snap.takenAt ? <TimeAgo date={snap.takenAt} /> : APPLICATIONS_UI.FALLBACKS.EMPTY}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const StatTile: React.FC<{ value: number; label: string; accent?: string }> = ({
+  value,
+  label,
+  accent,
+}) => (
+  <div style={{ ...CARD_STYLE, padding: '10px 12px', minWidth: 0 }}>
+    <div
+      style={{
+        fontSize: 18,
+        fontWeight: 800,
+        lineHeight: 1.1,
+        color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+      }}
+    >
+      {value}
+    </div>
+    <div style={{ marginTop: 4, display: 'flex', alignItems: 'center', gap: 5, ...LABEL_STYLE }}>
+      {accent ? (
+        <span style={{ width: 6, height: 6, borderRadius: '50%', background: accent }} />
+      ) : null}
+      {label}
+    </div>
+  </div>
+);
+
+const StateCard: React.FC<{ icon: React.ReactNode; title: string; body: string }> = ({
+  icon,
+  title,
+  body,
+}) => (
+  <div
+    style={{
+      ...CARD_STYLE,
+      padding: '28px 16px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: 6,
+      textAlign: 'center',
+    }}
+  >
+    <span style={{ fontSize: 26, lineHeight: 1 }}>{icon}</span>
+    <div style={{ fontSize: 14, fontWeight: 800, color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
+      {title}
+    </div>
+    <div style={{ fontSize: 12, fontWeight: 600, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>
+      {body}
+    </div>
+  </div>
+);
+
+const SECRET_KIND = 'Secret';
+const SECRET_VALUE_ROOTS = ['data', 'stringData'];
+
+const DiffRowView: React.FC<{ row: DiffRow; kind: string }> = ({ row, kind }) => {
+  const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
+  const redacted = kind === SECRET_KIND && SECRET_VALUE_ROOTS.includes(row.path[0] ?? '');
+  const show = (v: unknown) => (redacted ? ui.COMPARE_REDACTED : stringifyValue(v));
+  if (row.path.length === 0 && row.type !== 'change') {
+    return (
+      <div
+        style={{
+          padding: '10px 12px',
+          borderTop: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+        }}
+      >
+        <ValueChip tone={row.type}>
+          {row.type === 'add' ? ui.COMPARE_RESOURCE_ADDED : ui.COMPARE_RESOURCE_REMOVED}
+        </ValueChip>
+      </div>
+    );
+  }
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'minmax(96px, 160px) minmax(0, 1fr)',
+        columnGap: 12,
+        rowGap: 6,
+        alignItems: 'start',
+        padding: '8px 12px',
+        borderTop: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+      }}
+    >
+      <span
+        style={{
+          fontSize: 12,
+          fontWeight: 700,
+          color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+          wordBreak: 'break-word',
+          paddingTop: 3,
+        }}
+      >
+        {formatPath(row.path)}
+      </span>
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, minWidth: 0 }}>
+        {row.type === 'add' ? (
+          <span style={LABEL_STYLE}>{ui.COMPARE_ADDED_CHIP}</span>
+        ) : (
+          <ValueChip tone="remove">{show(row.oldValue)}</ValueChip>
+        )}
+        {row.type === 'change' ? (
+          <span
+            style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED, fontSize: 13 }}
+            aria-hidden
+          >
+            {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DIFF_ARROW}
+          </span>
+        ) : null}
+        {row.type === 'remove' ? (
+          <span style={LABEL_STYLE}>{ui.COMPARE_REMOVED_CHIP}</span>
+        ) : (
+          <ValueChip tone="add">{show(row.newValue)}</ValueChip>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
   ({ left, right, leftState, rightState }) => {
     const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
@@ -177,138 +392,158 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
       return buildDiffByResource(leftData, rightData);
     }, [leftData, rightData]);
 
-    const totalChanges = useMemo(() => groups.reduce((sum, g) => sum + g.rows.length, 0), [groups]);
+    const stats = useMemo(() => {
+      const rows = groups.flatMap((g) => g.rows);
+      const count = (type: DiffType) => rows.filter((r) => r.type === type).length;
+      return {
+        changes: rows.length,
+        resources: groups.length,
+        added: count('add'),
+        removed: count('remove'),
+        modified: count('change'),
+      };
+    }, [groups]);
 
-    // One line per snapshot: generation, id and age read left to right, and
-    // nothing wraps. The generation identifies the comparison so it leads.
-    const side = (snap: ApplicationSnapshotSummary) => (
+    const header = (
       <div
         style={{
-          display: 'flex',
-          flexWrap: 'nowrap',
+          display: 'grid',
+          gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)',
           alignItems: 'center',
-          gap: 6,
-          minWidth: 0,
-          whiteSpace: 'nowrap',
+          gap: 10,
         }}
       >
+        <SnapshotSide label={ui.COMPARE_FROM_LABEL} snap={left} />
         <span
           style={{
-            fontSize: 13,
-            fontWeight: 800,
-            color: DEFAULT_COLORS.TEXT_ON_SURFACE,
-            flexShrink: 0,
-          }}
-        >
-          {ui.GENERATION} {snap.generation}
-        </span>
-        <SnapshotMetaChip>{snap.id}</SnapshotMetaChip>
-        <span
-          style={{
-            fontSize: 11,
-            fontWeight: 600,
-            color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-            flexShrink: 0,
-          }}
-        >
-          {snap.takenAt ? (
-            <TimeAgo date={snap.takenAt} />
-          ) : (
-            <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
-          )}
-        </span>
-      </div>
-    );
-
-    const headerRow = (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 6,
-        }}
-      >
-        {/* nowrap keeps the pair side by side; a narrow panel scrolls the row
-            rather than breaking it back onto two lines. */}
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'nowrap',
+            width: 28,
+            height: 28,
+            borderRadius: '50%',
+            display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: 12,
-            maxWidth: '100%',
-            overflowX: 'auto',
+            border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
+            color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+            fontSize: 14,
+            fontWeight: 700,
           }}
+          aria-hidden
         >
-          {side(left)}
-          <span
-            style={{ fontSize: 14, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED, flexShrink: 0 }}
-            aria-hidden
-          >
-            {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DIFF_ARROW}
-          </span>
-          {side(right)}
-        </div>
-        {/* The summary belongs to the diff below, so it lines up with the
-            resource cards rather than centring under the snapshot pair. */}
-        {totalChanges > 0 ? (
-          <div style={{ alignSelf: 'flex-start' }}>
-            <SnapshotMetaChip>
-              {totalChanges} {ui.COMPARE_CHANGE}
-              {totalChanges === 1 ? '' : 's'}
-              {ui.STORAGE_METRICS_JOINER}
-              {groups.length} {ui.COMPARE_RESOURCE}
-              {groups.length === 1 ? '' : 's'}
-            </SnapshotMetaChip>
-          </div>
-        ) : null}
+          {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DIFF_ARROW}
+        </span>
+        <SnapshotSide label={ui.COMPARE_TO_LABEL} snap={right} />
       </div>
     );
 
+    let body: React.ReactNode;
     if (loading) {
-      return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {headerRow}
-          <MutedText value={ui.COMPARE_LOADING} />
+      body = (
+        <div style={{ ...CARD_STYLE, padding: 16 }}>
+          <Skeleton active paragraph={{ rows: 3 }} title={false} />
         </div>
       );
-    }
-
-    if (error) {
-      return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {headerRow}
-          <div style={{ color: DEFAULT_COLORS.DANGER, fontSize: 13 }}>{error}</div>
-        </div>
+    } else if (error) {
+      body = (
+        <StateCard
+          icon={<CloseCircleFilled style={{ color: DEFAULT_COLORS.DANGER }} />}
+          title={ui.COMPARE_ERROR_TITLE}
+          body={error}
+        />
       );
-    }
-
-    if (groups.length === 0) {
-      return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {headerRow}
+    } else if (groups.length === 0) {
+      body = (
+        <StateCard
+          icon={<CheckCircleFilled style={{ color: DEFAULT_COLORS.SUCCESS }} />}
+          title={ui.COMPARE_IDENTICAL_TITLE}
+          body={ui.COMPARE_IDENTICAL}
+        />
+      );
+    } else {
+      body = (
+        <>
           <div
             style={{
-              padding: '16px 12px',
-              border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
-              borderRadius: 10,
-              background: DEFAULT_COLORS.SURFACE_WHITE,
-              color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-              fontSize: 13,
-              fontWeight: 600,
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 1fr))',
+              gap: 8,
             }}
           >
-            {ui.COMPARE_IDENTICAL}
+            <StatTile value={stats.changes} label={ui.COMPARE_STAT_CHANGES} />
+            <StatTile value={stats.resources} label={ui.COMPARE_STAT_RESOURCES} />
+            <StatTile
+              value={stats.modified}
+              label={ui.COMPARE_STAT_MODIFIED}
+              accent={DEFAULT_COLORS.WARNING}
+            />
+            <StatTile
+              value={stats.added}
+              label={ui.COMPARE_STAT_ADDED}
+              accent={DEFAULT_COLORS.SUCCESS}
+            />
+            <StatTile
+              value={stats.removed}
+              label={ui.COMPARE_STAT_REMOVED}
+              accent={DEFAULT_COLORS.DANGER}
+            />
           </div>
-        </div>
+          {groups.map((g) => (
+            <div key={`${g.meta.kind}/${g.meta.name}`} style={CARD_STYLE}>
+              <div
+                style={{
+                  padding: '10px 12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  minWidth: 0,
+                }}
+              >
+                <SnapshotMetaChip>{g.meta.kind}</SnapshotMetaChip>
+                <span
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 800,
+                    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    minWidth: 0,
+                    flex: 1,
+                  }}
+                >
+                  {g.meta.name}
+                </span>
+                <span style={{ ...LABEL_STYLE, whiteSpace: 'nowrap' }}>
+                  {g.rows.length} {ui.COMPARE_CHANGE}
+                  {g.rows.length === 1 ? '' : 's'}
+                </span>
+              </div>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'minmax(96px, 160px) minmax(0, 1fr)',
+                  columnGap: 12,
+                  padding: '0 12px 6px',
+                }}
+              >
+                <span style={LABEL_STYLE}>{ui.COMPARE_BEFORE}</span>
+                <span style={LABEL_STYLE}>{ui.COMPARE_AFTER}</span>
+              </div>
+              {g.rows.map((r, idx) => (
+                <DiffRowView
+                  key={`${g.meta.kind}/${g.meta.name}:${idx}:${formatPath(r.path)}`}
+                  row={r}
+                  kind={g.meta.kind}
+                />
+              ))}
+            </div>
+          ))}
+        </>
       );
     }
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, minHeight: 0 }}>
-        {headerRow}
+        {header}
         <div
           style={{
             display: 'flex',
@@ -319,87 +554,7 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
             paddingRight: 2,
           }}
         >
-          {groups.map((g) => (
-            <div
-              key={`${g.meta.kind}/${g.meta.name}`}
-              style={{
-                border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
-                borderRadius: 10,
-                background: DEFAULT_COLORS.SURFACE_WHITE,
-              }}
-            >
-              <div
-                style={{
-                  padding: '6px 10px',
-                  borderBottom: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  fontSize: 12,
-                  fontWeight: 800,
-                  color: DEFAULT_COLORS.TEXT_ON_SURFACE,
-                }}
-              >
-                <span>{g.meta.kind}</span>
-                <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED, fontWeight: 700 }}>
-                  {g.meta.name}
-                </span>
-                <SnapshotMetaChip>
-                  {g.rows.length} {ui.COMPARE_CHANGE}
-                  {g.rows.length === 1 ? '' : 's'}
-                </SnapshotMetaChip>
-              </div>
-              <div style={{ display: 'grid', rowGap: 4, padding: '6px 10px' }}>
-                {g.rows.map((r, idx) => (
-                  <div
-                    key={`${g.meta.kind}/${g.meta.name}:${idx}:${formatPath(r.path)}`}
-                    // One flowing line: a fixed 3-column grid has no room in the
-                    // panel and drops each cell onto its own row, which reads as
-                    // "replicas / 2 / 1" instead of "replicas 2 → 1".
-                    style={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      alignItems: 'baseline',
-                      gap: 6,
-                      fontSize: 12,
-                      lineHeight: 1.35,
-                    }}
-                  >
-                    <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE, fontWeight: 700 }}>
-                      {formatPath(r.path)}
-                    </span>
-                    {r.type !== 'add' ? (
-                      <span
-                        style={{
-                          color: DEFAULT_COLORS.DANGER,
-                          textDecoration: 'line-through',
-                          wordBreak: 'break-word',
-                        }}
-                      >
-                        {stringifyValue(r.oldValue)}
-                      </span>
-                    ) : null}
-                    {r.type === 'change' ? (
-                      <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }} aria-hidden>
-                        {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DIFF_ARROW}
-                      </span>
-                    ) : null}
-                    {r.type !== 'remove' ? (
-                      <span
-                        style={{
-                          color: DEFAULT_COLORS.SUCCESS,
-                          fontWeight: 700,
-                          wordBreak: 'break-word',
-                        }}
-                      >
-                        {stringifyValue(r.newValue)}
-                      </span>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+          {body}
         </div>
       </div>
     );

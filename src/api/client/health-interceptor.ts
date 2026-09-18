@@ -41,9 +41,6 @@ export class CircuitOpenError extends Error {
   }
 }
 
-export const isCircuitOpenError = (value: Error): value is CircuitOpenError =>
-  value instanceof CircuitOpenError;
-
 const onRequestFactory =
   (binding: HealthStoreBinding, serviceName: string) =>
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {

@@ -9,7 +9,7 @@ const buildRegistry = (): readonly ServiceRegistryEntry[] => [
   { name: SERVICE_NAMES.ENRICHMENT, baseURLPattern: ENRICHMENT_API.BASE_URL },
 ];
 
-export const getServiceRegistry = (): readonly ServiceRegistryEntry[] => buildRegistry();
+const getServiceRegistry = (): readonly ServiceRegistryEntry[] => buildRegistry();
 
 const matches = (pattern: string | RegExp, url: string): boolean => {
   if (typeof pattern === 'string') return url.startsWith(pattern);

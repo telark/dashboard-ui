@@ -9,13 +9,6 @@ export const UTILS_TEXTS = {
   },
 } as const;
 
-export const UTILS_CONFIGS = {
-  NAMING: {
-    GROUPER_SUFFIX: '-grouper',
-    MAINTENANCE_FEATURE_SUFFIX: '-maintenance-feat',
-  },
-} as const;
-
 export const ENV = {
   DEV: 'development',
   PROD: 'production',

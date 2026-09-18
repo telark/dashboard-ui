@@ -261,15 +261,6 @@ export const PROTECTION_PLANS_CONSTANTS = {
   },
 } as const;
 
-export const PHASE_BADGE_CONFIG: Record<PlanPhase, { background: string; color: string }> = {
-  active: { background: '#dcfce7', color: '#166534' },
-  scheduled: { background: '#dbeafe', color: '#1d4ed8' },
-  failed: { background: '#fee2e2', color: '#991b1b' },
-  terminated: { background: '#e5e7eb', color: '#4b5563' },
-  canceled: { background: '#e5e7eb', color: '#4b5563' },
-  draft: { background: '#f3f4f6', color: '#6b7280' },
-};
-
 export const PHASE_DOT_COLOR: Record<PlanPhase, string> = {
   active: '#22c55e',
   scheduled: '#3b82f6',
@@ -284,13 +275,6 @@ export const HEALTH_DOT_COLOR: Record<PlanHealth, string> = {
   healthy: '#22c55e',
   drifted: '#f59e0b',
   degraded: '#ef4444',
-};
-
-export const HEALTH_BADGE_CONFIG: Record<PlanHealth, { background: string; color: string }> = {
-  unknown: { background: '#f3f4f6', color: '#6b7280' },
-  healthy: { background: '#dcfce7', color: '#166534' },
-  drifted: { background: '#fef3c7', color: '#92400e' },
-  degraded: { background: '#fee2e2', color: '#991b1b' },
 };
 
 export const VIOLATION_RESULT_BADGE: Record<

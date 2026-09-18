@@ -23,7 +23,6 @@ export const generateDeviceNameSuggestions = (
   const suggestions: string[] = [];
   const nextNumber = existingCount + 1;
 
-  // Add browser-only suggestions (prioritize browser name)
   if (browser !== 'Unknown') {
     suggestions.push(
       formatSuggestion(browser, nextNumber),
@@ -31,14 +30,12 @@ export const generateDeviceNameSuggestions = (
     );
   }
 
-  // Add OS-based suggestions
   if (OS_SUGGESTIONS[os]) {
     OS_SUGGESTIONS[os].forEach((suggestion) => {
       suggestions.push(formatSuggestion(suggestion, nextNumber));
     });
   }
 
-  // Add browser-OS combination suggestions
   if (browser !== 'Unknown' && os !== 'Unknown') {
     suggestions.push(
       formatSuggestion(`${os}-${browser}`, nextNumber),
@@ -46,7 +43,6 @@ export const generateDeviceNameSuggestions = (
     );
   }
 
-  // Filter out existing names (case-insensitive)
   const existingLower = new Set(existingNames.map((name) => name.toLowerCase()));
   const unique = Array.from(new Set(suggestions)).filter(
     (suggestion) => !existingLower.has(suggestion.toLowerCase()),

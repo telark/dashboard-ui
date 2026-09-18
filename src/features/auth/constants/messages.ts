@@ -21,6 +21,12 @@ export const AUTH_ERROR_MESSAGES = {
   SESSION_EXPIRED: 'Session expired. Please login again',
   SESSION_INVALID: 'Invalid session. Please login again',
   WEBAUTHN_NOT_SUPPORTED: 'WebAuthn is not supported in this browser',
+  PASSKEYS_INSECURE_CONTEXT: {
+    TITLE: 'Passkeys need a secure connection',
+    DESCRIPTION:
+      'Browsers only allow passkeys on https:// pages or on http://localhost. Ask your administrator to enable TLS on the ingress or load balancer, then open the dashboard over https://.',
+    TAG: 'HTTPS required',
+  },
   WEBAUTHN_CANCELLED: 'Authentication cancelled by user',
   WEBAUTHN_ERROR: 'WebAuthn operation failed',
   MISSING_CREDENTIAL_ID: 'Credential ID is required',
@@ -61,14 +67,6 @@ export const AUTH_SUCCESS_MESSAGES = {
   PASSKEY_CREATED: 'Passkey created successfully',
   PASSKEY_UPDATED: 'Passkey updated successfully',
   PASSKEY_DELETED: 'Passkey deleted successfully',
-} as const;
-
-export const AUTH_INFO_MESSAGES = {
-  LOGGING_IN: 'Authenticating...',
-  REGISTERING: 'Registering passkey...',
-  LOADING_PASSKEYS: 'Loading passkeys...',
-  DELETING_PASSKEY: 'Deleting passkey...',
-  UPDATING_PASSKEY: 'Updating passkey...',
 } as const;
 
 export const AUTH_CONSTANTS = {

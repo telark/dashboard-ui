@@ -60,25 +60,20 @@ const passkeySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch all passkeys
       .addCase(fetchAllPasskeysThunk.pending, handleFetchPasskeysPending)
       .addCase(fetchAllPasskeysThunk.fulfilled, handleFetchPasskeysFulfilled)
       .addCase(fetchAllPasskeysThunk.rejected, handleFetchPasskeysRejected)
       // Fetch all passkeys (silent) - only handle fulfilled, skip pending/rejected to avoid UI updates
       .addCase(fetchAllPasskeysSilentThunk.fulfilled, handleFetchPasskeysFulfilled)
-      // Fetch passkey details
       .addCase(fetchPasskeyDetailsThunk.pending, handleFetchPasskeyDetailsPending)
       .addCase(fetchPasskeyDetailsThunk.fulfilled, handleFetchPasskeyDetailsFulfilled)
       .addCase(fetchPasskeyDetailsThunk.rejected, handleFetchPasskeyDetailsRejected)
-      // Create passkey
       .addCase(createPasskeyThunk.pending, handleCreatePasskeyPending)
       .addCase(createPasskeyThunk.fulfilled, handleCreatePasskeyFulfilled)
       .addCase(createPasskeyThunk.rejected, handleCreatePasskeyRejected)
-      // Update passkey
       .addCase(updatePasskeyThunk.pending, handleUpdatePasskeyPending)
       .addCase(updatePasskeyThunk.fulfilled, handleUpdatePasskeyFulfilled)
       .addCase(updatePasskeyThunk.rejected, handleUpdatePasskeyRejected)
-      // Delete passkey
       .addCase(deletePasskeyThunk.pending, handleDeletePasskeyPending)
       .addCase(deletePasskeyThunk.fulfilled, handleDeletePasskeyFulfilled)
       .addCase(deletePasskeyThunk.rejected, handleDeletePasskeyRejected);
