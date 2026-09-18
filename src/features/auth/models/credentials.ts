@@ -100,6 +100,11 @@ export interface LoginFinishResponse {
   user: User;
 }
 
+export interface RegisterStartRequest {
+  email?: string;
+  enrollToken?: string;
+}
+
 export interface RegisterStartResponse {
   options?: {
     publicKey?: PublicKeyCredentialCreationOptions;

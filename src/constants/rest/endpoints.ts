@@ -167,6 +167,10 @@ export const Endpoints = {
         path: AUTH_PATHS.PASSKEYS.PROXY.DELETE,
         method: 'DELETE',
       },
+      ENROLL_LINK: {
+        path: AUTH_PATHS.PASSKEYS.ENROLL_LINK,
+        method: 'POST',
+      },
     },
   },
   USERS: {

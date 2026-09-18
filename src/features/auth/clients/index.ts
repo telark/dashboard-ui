@@ -8,6 +8,7 @@ export {
   getAllPasskeys,
   getPasskey,
   createPasskey,
+  createEnrollLink,
   updatePasskey,
   deletePasskey,
 } from './passkeys';

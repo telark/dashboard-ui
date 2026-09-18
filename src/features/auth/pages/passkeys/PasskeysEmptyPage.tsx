@@ -2,6 +2,8 @@ import React, { memo, useMemo } from 'react';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
 import EmptyState from '../../../../components/display/views/EmptyState';
 import { Icons } from '../../../../constants';
+import { InsecureContextAlert } from '../../components';
+import { isWebAuthnSupported } from '../../utils/webauthn/core';
 
 const PasskeyIcon = Icons.Passkey;
 
@@ -12,18 +14,23 @@ interface PasskeysEmptyPageProps {
 const PasskeysEmptyPage: React.FC<PasskeysEmptyPageProps> = memo(({ onCreatePasskeyClick }) => {
   const buttonIcon = useMemo(() => <PasskeyIcon size={16} />, []);
   const icon = useMemo(() => <PasskeyIcon size={32} />, []);
+  const passkeysAvailable = isWebAuthnSupported();
 
   return (
-    <EmptyState
-      title={PPC.LABELS.EMPTY.TITLE}
-      description={PPC.LABELS.EMPTY.DESCRIPTION}
-      icon={icon}
-      primaryAction={{
-        label: PPC.LABELS.EMPTY.BUTTON,
-        icon: buttonIcon,
-        onClick: onCreatePasskeyClick,
-      }}
-    />
+    <>
+      {!passkeysAvailable && <InsecureContextAlert />}
+      <EmptyState
+        title={PPC.LABELS.EMPTY.TITLE}
+        description={PPC.LABELS.EMPTY.DESCRIPTION}
+        icon={icon}
+        primaryAction={{
+          label: PPC.LABELS.EMPTY.BUTTON,
+          icon: buttonIcon,
+          onClick: onCreatePasskeyClick,
+          disabled: !passkeysAvailable,
+        }}
+      />
+    </>
   );
 });
 

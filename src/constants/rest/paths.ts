@@ -49,6 +49,7 @@ export const AUTH_PATHS = {
       PATCH: 'auth/passkeys/proxy/patch',
       DELETE: 'auth/passkeys/proxy/delete',
     },
+    ENROLL_LINK: 'auth/passkeys/enroll-link',
   },
   OIDC: {
     GOOGLE_CALLBACK: 'auth/oidc/google/callback',

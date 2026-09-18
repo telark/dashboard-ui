@@ -59,6 +59,16 @@ export const PASSKEYS_CONSTANTS = {
     SEARCH_PLACEHOLDER: 'Search passkeys by name...',
     SEARCH_BUTTON_LABEL: 'Search',
   },
+  ENROLL: {
+    BUTTON: 'Add on another device',
+    MODAL_TITLE: 'Add a passkey on another device or host',
+    MODAL_DESCRIPTION:
+      'Open this link in the browser where you want the new passkey, then register it there. The link works once and expires in 10 minutes.',
+    COPY: 'Copy link',
+    COPIED: 'Link copied',
+    COPY_FAILED: 'Failed to copy link',
+    CREATE_FAILED: 'Failed to create enrollment link',
+  },
   KEYS: {
     DEVICE_NAME: 'deviceName',
     DEVICE_TYPE: 'deviceType',
@@ -140,6 +150,7 @@ export const PASSKEYS_CONSTANTS = {
     FAILED_TO_LOAD_PASSKEYS: 'Failed to load passkeys:',
     FAILED_TO_LOAD_PASSKEY: 'Failed to load passkey:',
     MISSING_DEVICE_NAME: 'Passkey record missing deviceName:',
+    FAILED_TO_CREATE_ENROLL_LINK: 'Failed to create enrollment link:',
   },
 } as const;
 

@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { Toolbar } from '../../../../components/display/toolbar';
-import { PasskeyPanel, PasskeyCard } from '../../components';
+import { PasskeyPanel, PasskeyCard, InsecureContextAlert } from '../../components';
+import { isWebAuthnSupported } from '../../utils/webauthn/core';
 import { DEFAULT_COLORS } from '../../../../constants';
 import type { PasskeyListPageConfig } from '../../hooks/passkeys/usePasskeyListPageConfig';
 import type { Passkey } from '../../models/passkeys';
@@ -168,6 +169,7 @@ const PasskeysListPage: React.FC<PasskeysListPageProps> = memo(
     return (
       <div style={wrapperStyle}>
         <div style={containerStyle}>
+          {!isWebAuthnSupported() && <InsecureContextAlert />}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
             {!hideTitle && (
               <div style={TITLE_BLOCK_STYLE}>

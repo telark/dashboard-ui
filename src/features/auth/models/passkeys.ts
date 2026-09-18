@@ -27,6 +27,11 @@ export interface CreatePasskeyResponse {
   creationTimestamp: string;
 }
 
+export interface EnrollLinkResponse {
+  token: string;
+  expiresAt: string;
+}
+
 export interface UpdatePasskeyRequest {
   deviceName?: string;
   lastUsedTimestamp?: string;
