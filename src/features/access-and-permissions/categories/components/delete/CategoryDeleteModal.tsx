@@ -1,6 +1,6 @@
 import React from 'react';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
-import { CATEGORIES_CONSTANTS as CC } from '../../constants';
+import { labelsFor } from '../../constants';
 
 interface CategoryDeleteModalProps {
   open: boolean;
@@ -8,6 +8,7 @@ interface CategoryDeleteModalProps {
   onConfirm: () => Promise<void>;
   categoryName: string;
   loading: boolean;
+  scope: string;
 }
 
 const CategoryDeleteModal: React.FC<CategoryDeleteModalProps> = ({
@@ -16,18 +17,20 @@ const CategoryDeleteModal: React.FC<CategoryDeleteModalProps> = ({
   onConfirm,
   categoryName,
   loading,
+  scope,
 }) => {
+  const L = labelsFor(scope);
   return (
     <div style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
       <ActionConfirmModal
         open={open}
         onClose={onClose}
         onConfirm={onConfirm}
-        title={CC.LABELS.ACTIONS.DELETE_MODAL_TITLE}
+        title={L.ACTIONS.DELETE_MODAL_TITLE}
         action="delete"
         resourceName={categoryName}
-        resourceType="category"
-        confirmText={CC.LABELS.ACTIONS.DELETE_MODAL_OK}
+        resourceType={L.RESOURCE_TYPE}
+        confirmText={L.ACTIONS.DELETE_MODAL_OK}
         loading={loading}
       />
     </div>

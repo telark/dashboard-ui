@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { Form, Input, Select } from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
+import { App as AntdApp, Form, Input, Select } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
 import type { Dayjs } from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +15,9 @@ import { duplicatePlanThunk, selectProtectionPlans } from '../../store';
 import { getCurrentUser } from '../../../../auth/utils';
 import type { AppDispatch, RootState } from '../../../../../store';
 import type { ProtectionPlan } from '../../models';
+import { mapCategoriesToOptions } from '../../../../access-and-permissions/categories/utils/helpers';
+import { usePlanTaxonomyLists } from '../../hooks/usePlanTaxonomies';
+import PlanTaxonomyFields from '../shared/PlanTaxonomyFields';
 
 const { FORM } = PPC.CREATE_PAGE;
 
@@ -29,13 +32,22 @@ interface DuplicateFormShape {
   timeMode?: string;
   startAt?: Dayjs;
   endAt?: Dayjs;
+  environmentID?: string;
+  tagIDs?: string[];
 }
 
 const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, plan }) => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
+  const { message } = AntdApp.useApp();
   const plans = useSelector((s: RootState) => selectProtectionPlans(s));
   const [form] = Form.useForm();
+  useEffect(() => {
+    if (open) form.resetFields();
+  }, [open, form]);
+  const { environments, tags } = usePlanTaxonomyLists();
+  const environmentOptions = useMemo(() => mapCategoriesToOptions(environments), [environments]);
+  const tagOptions = useMemo(() => mapCategoriesToOptions(tags), [tags]);
   const watchedName = Form.useWatch('name', form);
   const watchedStartAt = Form.useWatch('startAt', form) as Dayjs | undefined;
   const watchedEndAt = Form.useWatch('endAt', form) as Dayjs | undefined;
@@ -49,6 +61,8 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
       timeMode: plan?.timeMode ?? 'permanent',
       startAt: undefined,
       endAt: undefined,
+      environmentID: plan?.environmentID || undefined,
+      tagIDs: plan?.tagIDs ?? [],
     };
   }, [plan]);
 
@@ -106,10 +120,16 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
         name: string;
         timeMode: string;
         timeRange?: { startAt: string; endAt: string };
+        environmentID?: string;
+        tagIDs?: string[];
       } = {
         name: (v.name ?? '').trim(),
         timeMode: v.timeMode ?? 'permanent',
       };
+      if (form.isFieldsTouched(['environmentID', 'tagIDs'])) {
+        payload.environmentID = v.environmentID ?? '';
+        payload.tagIDs = v.tagIDs ?? [];
+      }
       if (payload.timeMode === 'time_range' && v.startAt && v.endAt) {
         payload.timeRange = {
           startAt: v.startAt.toISOString(),
@@ -119,6 +139,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
       const created = await dispatch(
         duplicatePlanThunk({ userId, planId: plan.id, overrides: payload }),
       ).unwrap();
+      message.success(PPC.LABELS.ACTIONS.DUPLICATE_SUCCESS);
       handleClose();
       navigate(
         APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(':name', encodeURIComponent(created.name)),
@@ -151,6 +172,8 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
       <Form.Item name="timeMode" label={FORM.TIME_MODE_LABEL} style={{ marginBottom: 0 }}>
         <Select options={PPC.CREATE_PAGE.TIME_MODE_OPTIONS} style={{ width: '100%' }} />
       </Form.Item>
+
+      <PlanTaxonomyFields environmentOptions={environmentOptions} tagOptions={tagOptions} />
 
       {timeMode === 'time_range' && (
         <div style={{ ...FILTER_PANEL.DATE_RANGE_CONTAINER, alignItems: 'flex-end' }}>

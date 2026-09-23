@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { App as AntdApp } from 'antd';
 import { deleteCategory } from '../../clients';
 import { fetchCategoriesByScopeThunk } from '../../store';
-import { CATEGORIES_CONSTANTS as CC } from '../../constants';
+import { labelsFor } from '../../constants';
 import type { Category } from '../../models';
 import type { AppDispatch } from '../../../../../store';
 
@@ -40,11 +40,11 @@ export const useCategoryDeleteModal = (category: Category | null): UseCategoryDe
     setIsDeleting(true);
     try {
       await deleteCategory(category.id);
-      message.success(CC.LABELS.MESSAGES.DELETED);
+      message.success(labelsFor(category.scope).MESSAGES.DELETED);
       setDeleteModalOpen(false);
       await dispatch(fetchCategoriesByScopeThunk(category.scope));
     } catch {
-      message.error(CC.LABELS.MESSAGES.DELETE_FAILED);
+      message.error(labelsFor(category.scope).MESSAGES.DELETE_FAILED);
     } finally {
       setIsDeleting(false);
     }

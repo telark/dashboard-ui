@@ -3,20 +3,46 @@ import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../../roles/constants';
-import { CATEGORIES_CONSTANTS as CC } from '../../../constants';
+import { CATEGORIES_CONSTANTS as CC, labelsFor } from '../../../constants';
+import type { CategoryScope } from '../../../constants';
 import { useCategoryDeleteModal, CategoryDeleteModal } from '../../delete';
 import type { Category } from '../../../models';
 import {
   usePermission,
   ACTION_PERMISSIONS,
 } from '../../../../../auth/hooks/permissions/permissionEngine';
+import type { PermissionLevel } from '../../../../../auth/models/permissions';
 
 interface CategoryActionsColumnProps {
   record: Category;
   onEdit?: (record: Category) => void;
   onDelete?: (record: Category) => void;
-  scope?: 'groups' | 'roles';
+  scope: CategoryScope;
 }
+
+type PermissionEntry = { scope: string; level: PermissionLevel; deny: string };
+
+const PERMISSIONS_BY_SCOPE: Record<
+  CategoryScope,
+  { edit: PermissionEntry; delete: PermissionEntry }
+> = {
+  [CC.SCOPES.GROUPS]: {
+    edit: ACTION_PERMISSIONS.groups.editCategory,
+    delete: ACTION_PERMISSIONS.groups.deleteCategory,
+  },
+  [CC.SCOPES.ROLES]: {
+    edit: ACTION_PERMISSIONS.roles.editCategory,
+    delete: ACTION_PERMISSIONS.roles.deleteCategory,
+  },
+  [CC.SCOPES.PLAN_ENVIRONMENTS]: {
+    edit: ACTION_PERMISSIONS.protectionPlans.editTaxonomy,
+    delete: ACTION_PERMISSIONS.protectionPlans.editTaxonomy,
+  },
+  [CC.SCOPES.PLAN_TAGS]: {
+    edit: ACTION_PERMISSIONS.protectionPlans.editTaxonomy,
+    delete: ACTION_PERMISSIONS.protectionPlans.editTaxonomy,
+  },
+};
 
 const ACTION_SIZE = 28;
 
@@ -56,31 +82,10 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
   const { deleteModalOpen, isDeleting, openDeleteModal, closeDeleteModal, handleConfirmDelete } =
     useCategoryDeleteModal(record);
 
-  const canEditGroups = usePermission(
-    ACTION_PERMISSIONS.groups.editCategory.scope,
-    ACTION_PERMISSIONS.groups.editCategory.level,
-    ACTION_PERMISSIONS.groups.editCategory.deny,
-  );
-  const canDeleteGroups = usePermission(
-    ACTION_PERMISSIONS.groups.deleteCategory.scope,
-    ACTION_PERMISSIONS.groups.deleteCategory.level,
-    ACTION_PERMISSIONS.groups.deleteCategory.deny,
-  );
-  const canEditRoles = usePermission(
-    ACTION_PERMISSIONS.roles.editCategory.scope,
-    ACTION_PERMISSIONS.roles.editCategory.level,
-    ACTION_PERMISSIONS.roles.editCategory.deny,
-  );
-  const canDeleteRoles = usePermission(
-    ACTION_PERMISSIONS.roles.deleteCategory.scope,
-    ACTION_PERMISSIONS.roles.deleteCategory.level,
-    ACTION_PERMISSIONS.roles.deleteCategory.deny,
-  );
-
-  const hasEditPermission =
-    scope === 'groups' ? canEditGroups : scope === 'roles' ? canEditRoles : true;
-  const hasDeletePermission =
-    scope === 'groups' ? canDeleteGroups : scope === 'roles' ? canDeleteRoles : true;
+  const { edit, delete: del } = PERMISSIONS_BY_SCOPE[scope];
+  const hasEditPermission = usePermission(edit.scope, edit.level, edit.deny);
+  const hasDeletePermission = usePermission(del.scope, del.level, del.deny);
+  const L = labelsFor(scope);
 
   const showEdit = !isBuiltIn && !!onEdit;
   const showDelete = !isBuiltIn;
@@ -114,9 +119,7 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
       {showEdit && (
         <Tooltip
           title={
-            hasEditPermission
-              ? RC.LABELS.ACTIONS.EDIT
-              : CC.LABELS.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP
+            hasEditPermission ? RC.LABELS.ACTIONS.EDIT : L.ACTIONS.EDIT_PERMISSION_DENIED_TOOLTIP
           }
           placement="left"
         >
@@ -144,7 +147,7 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
           title={
             hasDeletePermission
               ? RC.LABELS.ACTIONS.DELETE
-              : CC.LABELS.ACTIONS.DELETE_PERMISSION_DENIED_TOOLTIP
+              : L.ACTIONS.DELETE_PERMISSION_DENIED_TOOLTIP
           }
           placement="left"
         >
@@ -174,6 +177,7 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
           onConfirm={handleConfirmDelete}
           categoryName={record.name}
           loading={isDeleting}
+          scope={record.scope}
         />
       )}
     </div>

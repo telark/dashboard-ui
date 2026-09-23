@@ -183,7 +183,12 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
 
         <div style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>
           {dataState.phase === 'error' ? (
-            <DataViewError variant="card" message={dataState.errorMessage} onRetry={onRetry} />
+            <DataViewError
+              variant="card"
+              message={dataState.errorMessage}
+              onRetry={onRetry}
+              connectivity={dataState.connectivity}
+            />
           ) : dataState.phase === 'loading' ? (
             <div
               style={{

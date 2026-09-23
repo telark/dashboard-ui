@@ -185,8 +185,9 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                       }
                     }
                   }}
+                  // Never skipped while disabled: a button that disables itself on
+                  // click would keep the hover surface and render its label white on white.
                   onMouseLeave={(e) => {
-                    if (isDisabled) return;
                     if (isPrimary) {
                       e.currentTarget.style.opacity = '1';
                     } else if (isDanger) {
@@ -294,7 +295,6 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                 }
               }}
               onMouseLeave={(e) => {
-                if (isDisabled) return;
                 if (isPrimary) {
                   e.currentTarget.style.opacity = '1';
                 } else if (isDanger) {

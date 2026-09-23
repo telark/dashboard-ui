@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { Button, Tooltip } from 'antd';
-import { ReloadOutlined } from '@ant-design/icons';
+import { FileTextOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { DEFAULT_COLORS, HEADER_LAYOUT, TIME_FORMATS } from '../../../../../constants';
 import { formatDateTime } from '../../../../../utils/shared/time';
@@ -16,17 +16,24 @@ import { ColumnShell } from '../../../../resources/applications/pages/details/co
 import HealthBadge from '../../components/shared/HealthBadge';
 import HealthSection from '../../components/details/HealthSection';
 import ViolationsSection from '../../components/details/ViolationsSection';
+import ReportsSection from '../../components/details/ReportsSection';
 import ProtectionPlanDetailsToolbar from '../../components/layout/ProtectionPlanDetailsToolbar';
 import { usePlanHealth } from '../../hooks/usePlanHealth';
 import { usePlanViolations } from '../../hooks/usePlanViolations';
+import { usePlanReports } from '../../hooks/usePlanReports';
+import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
+import { getCurrentUser } from '../../../../auth/utils';
 import type { ViolationsResultFilter } from '../../hooks/usePlanViolations';
 import { Select } from 'antd';
 import type { RootState } from '../../../../../store';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
+  CARD_LAYOUT,
   PHASE_DOT_COLOR,
 } from '../../constants/protectionPlans';
 import type { ProtectionPlan } from '../../models';
+import { usePlanTaxonomies } from '../../hooks/usePlanTaxonomies';
+import { getCategoryName } from '../../../../access-and-permissions/categories/utils/helpers';
 
 const AvatarRing: React.FC<{
   avatar?: UserAvatarModel;
@@ -68,6 +75,7 @@ interface ProtectionPlanDetailsContentProps {
 }
 
 const EMPTY = PPC.LABELS.DETAIL_PAGE.EMPTY_VALUE;
+const { FORM } = PPC.CREATE_PAGE;
 
 const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> = memo(
   ({
@@ -87,8 +95,17 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
   }) => {
     const phaseLabel = PPC.LABELS.PHASE_LABELS[plan.phase] ?? plan.phase;
     const dotColor = PHASE_DOT_COLOR[plan.phase] ?? PHASE_DOT_COLOR.draft;
-    const health = usePlanHealth(plan.id);
+    const health = usePlanHealth(plan.id, `${plan.phase}:${plan.lastUpdatedAt ?? ''}`);
     const violations = usePlanViolations(plan.id);
+    const reports = usePlanReports(plan.id, `${plan.phase}:${plan.lastUpdatedAt ?? ''}`);
+    const canGenerateReport = usePermission(
+      ACTION_PERMISSIONS.protectionPlans.cancel.scope,
+      ACTION_PERMISSIONS.protectionPlans.cancel.level,
+      ACTION_PERMISSIONS.protectionPlans.cancel.deny,
+    );
+    const reportNotStarted =
+      plan.phase === 'draft' || plan.phase === 'scheduled' || !plan.startedAt;
+    const currentUserId = getCurrentUser()?.id;
     const violationsFilterOptions: Array<{ value: ViolationsResultFilter; label: string }> = [
       { value: 'all', label: PPC.LABELS.VIOLATIONS.FILTER_ALL },
       { value: 'fail', label: PPC.LABELS.VIOLATION_RESULT_LABELS.fail },
@@ -98,6 +115,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
       { value: 'skip', label: PPC.LABELS.VIOLATION_RESULT_LABELS.skip },
     ];
     const users = useSelector((s: RootState) => s.users.users);
+    const taxonomies = usePlanTaxonomies();
     const participants = useMemo(() => {
       const ids = plan.participantsIDs ?? [];
       return ids.map((id) => {
@@ -130,8 +148,11 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
       [users],
     );
 
-    const overviewRows = useMemo(
-      () => [
+    const overviewRows = useMemo(() => {
+      const tags = (plan.tagIDs ?? [])
+        .map((id) => ({ id, name: taxonomies.tags.find((c) => c.id === id)?.name }))
+        .filter((t): t is { id: string; name: string } => Boolean(t.name));
+      return [
         { k: 'name', label: PPC.LABELS.DETAIL_PAGE.FIELDS.NAME, value: plan.name },
         {
           k: 'description',
@@ -147,6 +168,32 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           k: 'priority',
           label: PPC.LABELS.DETAIL_PAGE.FIELDS.PRIORITY,
           value: plan.priority ?? EMPTY,
+        },
+        {
+          k: 'environment',
+          label: FORM.ENVIRONMENT_LABEL,
+          value: getCategoryName(plan.environmentID ?? '', taxonomies.environments),
+        },
+        {
+          k: 'tags',
+          label: FORM.TAGS_LABEL,
+          value:
+            tags.length === 0 ? (
+              EMPTY
+            ) : (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {tags.map(({ id, name }) => (
+                  <RowTag
+                    key={id}
+                    text={name}
+                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                    color={DEFAULT_COLORS.TEXT_MUTED}
+                    fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
+                    capitalize={false}
+                  />
+                ))}
+              </div>
+            ),
         },
         { k: 'mode', label: PPC.LABELS.DETAIL_PAGE.FIELDS.MODE, value: plan.mode },
         {
@@ -199,9 +246,8 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
               },
             ]
           : []),
-      ],
-      [plan, renderUserAndTime],
-    );
+      ];
+    }, [plan, renderUserAndTime, taxonomies.environments, taxonomies.tags]);
 
     const scopeItems =
       plan.scope.type === 'applications' ? plan.scope.applicationIds : plan.scope.namespaces;
@@ -489,6 +535,48 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             loading={violations.loading}
             error={violations.error}
             mode={plan.mode}
+          />
+        </SettingsCard>
+
+        <SettingsCard
+          title={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_TITLE}
+          description={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_DESCRIPTION}
+          headerAction={
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Tooltip title={reportNotStarted ? PPC.LABELS.REPORTS.NOT_STARTED_HINT : undefined}>
+                <Button
+                  type="primary"
+                  icon={<FileTextOutlined />}
+                  loading={reports.generating}
+                  disabled={reportNotStarted || !canGenerateReport || !currentUserId}
+                  onClick={() => currentUserId && reports.generate(currentUserId)}
+                >
+                  {PPC.LABELS.REPORTS.GENERATE}
+                </Button>
+              </Tooltip>
+              <Tooltip title={PPC.LABELS.REPORTS.REFRESH}>
+                <Button
+                  type="text"
+                  shape="circle"
+                  size="small"
+                  icon={<ReloadOutlined />}
+                  onClick={reports.refresh}
+                  style={COMPACT_REFRESH_BUTTON_STYLE}
+                  aria-label={PPC.LABELS.REPORTS.REFRESH}
+                />
+              </Tooltip>
+            </div>
+          }
+        >
+          <ReportsSection
+            data={reports.reports}
+            loading={reports.loading}
+            error={reports.error}
+            downloading={reports.downloading}
+            phase={plan.phase}
+            planName={plan.name}
+            users={users}
+            onDownload={reports.download}
           />
         </SettingsCard>
       </div>

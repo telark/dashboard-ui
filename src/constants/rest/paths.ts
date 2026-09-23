@@ -108,5 +108,13 @@ export const PLANS_PATHS = {
     DUPLICATE: (id: string) => `plans/protection/${id}/duplicate`,
     REACTIVATE: (id: string) => `plans/protection/${id}/reactivate`,
     UPDATE: (id: string) => `plans/protection/${id}/update`,
+    REPORTS_GENERATE: (id: string) => `plans/protection/${id}/reports/generate`,
+  },
+} as const;
+
+export const REPORTS_PATHS = {
+  PLANS: {
+    LIST: (id: string) => `reports/plans/${id}/get`,
+    DOWNLOAD: (id: string) => `reports/plans/${id}/download`,
   },
 } as const;

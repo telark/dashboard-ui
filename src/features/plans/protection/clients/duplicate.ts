@@ -7,6 +7,8 @@ export interface DuplicatePlanPayload {
   name?: string;
   timeMode?: string;
   timeRange?: { startAt: string; endAt: string };
+  environmentID?: string;
+  tagIDs?: string[];
 }
 
 export const duplicatePlan = async (

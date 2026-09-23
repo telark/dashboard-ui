@@ -1,20 +1,20 @@
 import { App as AntdApp } from 'antd';
-import { AxiosError } from 'axios';
+import type { NormalizedAxiosErrorMeta } from '../../../../api/client/normalize';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { HTTP_STATUS } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import logger from '../../../../logging';
 
-interface ExtendedAxiosError extends AxiosError {
-  normalized?: {
-    status: number | null;
-    message: string;
-    isNotFound: boolean;
-    isClient: boolean;
-    isServer: boolean;
-    isNetwork: boolean;
-    isTimeout: boolean;
-  };
+interface AuthErrorShape {
+  message?: string;
+  status?: number;
+  isNotFound?: boolean;
+  isClient?: boolean;
+  isServer?: boolean;
+  isNetwork?: boolean;
+  isTimeout?: boolean;
+  response?: { status?: number; data?: { message?: string } };
+  normalized?: NormalizedAxiosErrorMeta;
 }
 
 interface ErrorHandlingOptions {
@@ -25,11 +25,9 @@ interface ErrorHandlingOptions {
 
 type MessageApi = ReturnType<typeof AntdApp.useApp>['message'];
 
-const extractErrorMessage = (error: any): string => {
-  const axiosError = error as ExtendedAxiosError;
-
-  if (axiosError.normalized?.message) {
-    return String(axiosError.normalized.message);
+const extractErrorMessage = (error: AuthErrorShape): string => {
+  if (error.normalized?.message) {
+    return String(error.normalized.message);
   }
 
   if (error?.message && typeof error === 'object' && 'status' in error && !error.response) {
@@ -46,10 +44,9 @@ const checkErrorPattern = (errorMsg: string, patterns: readonly string[]): boole
   return patterns.some((pattern) => lowerMsg.includes(pattern));
 };
 
-const isUserNotFoundError = (error: any, errorMsg?: string): boolean => {
+const isUserNotFoundError = (error: AuthErrorShape, errorMsg?: string): boolean => {
   const msg = errorMsg || extractErrorMessage(error);
-  const axiosError = error as ExtendedAxiosError;
-  const normalized = axiosError.normalized;
+  const normalized = error.normalized;
 
   if (isNoPasskeysError(error, msg)) {
     return false;
@@ -78,12 +75,12 @@ const isUserNotFoundError = (error: any, errorMsg?: string): boolean => {
   );
 };
 
-const isNoPasskeysError = (error: any, errorMsg?: string): boolean => {
+const isNoPasskeysError = (error: AuthErrorShape, errorMsg?: string): boolean => {
   const msg = errorMsg || extractErrorMessage(error);
   return checkErrorPattern(msg, LOGIN_CONSTANTS.ERROR_PATTERNS.NO_PASSKEYS);
 };
 
-const getUserFriendlyErrorMessage = (error: any): string => {
+const getUserFriendlyErrorMessage = (error: AuthErrorShape): string => {
   const errorMsg = extractErrorMessage(error);
 
   if (isUserNotFoundError(error, errorMsg)) {
@@ -94,8 +91,7 @@ const getUserFriendlyErrorMessage = (error: any): string => {
     return LOGIN_CONSTANTS.MESSAGES.NO_PASSKEYS;
   }
 
-  const axiosError = error as ExtendedAxiosError;
-  const normalized = axiosError.normalized;
+  const normalized = error.normalized;
   const lowerMsg = errorMsg.toLowerCase();
 
   if (error?.isNetwork || normalized?.isNetwork) {
@@ -146,7 +142,7 @@ const showInfoMessage = (messageApi: MessageApi, content: string, callback?: () 
 };
 
 export const handleAuthError = (
-  error: any,
+  error: unknown,
   messageApi: MessageApi,
   options?: ErrorHandlingOptions,
 ): void => {
@@ -157,19 +153,20 @@ export const handleAuthError = (
     return;
   }
 
-  const errorMsg = extractErrorMessage(error);
+  const authError = error as AuthErrorShape;
+  const errorMsg = extractErrorMessage(authError);
 
-  if (isNoPasskeysError(error, errorMsg)) {
+  if (isNoPasskeysError(authError, errorMsg)) {
     showInfoMessage(messageApi, LOGIN_CONSTANTS.MESSAGES.NO_PASSKEYS, onNoPasskeys);
     return;
   }
 
-  if (isUserNotFoundError(error, errorMsg)) {
+  if (isUserNotFoundError(authError, errorMsg)) {
     showErrorMessage(messageApi, LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND, onUserNotFound);
     return;
   }
 
-  const friendlyMessage = getUserFriendlyErrorMessage(error);
+  const friendlyMessage = getUserFriendlyErrorMessage(authError);
   showErrorMessage(messageApi, friendlyMessage);
   logger.error(LOGIN_CONSTANTS.LOGS.AUTH_ERROR, error);
 };

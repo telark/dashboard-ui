@@ -1,13 +1,14 @@
 import type React from 'react';
+import type { TableColumnsType, TableProps } from 'antd';
 
 export interface DataTableProps<T> {
-  columns: any[];
+  columns: TableColumnsType<T>;
   data: T[];
   rowKey: string | ((record: T) => string);
   rowHeight?: number;
   className?: string;
   containerStyle?: React.CSSProperties;
-  tableProps?: Record<string, any>;
+  tableProps?: TableProps<T>;
   onRowClick?: (record: T) => void;
   empty?: React.ReactNode;
 }

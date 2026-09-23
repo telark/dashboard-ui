@@ -13,12 +13,11 @@ export const useCategories = (scope: string = CATEGORIES_CONSTANTS.SCOPES.GROUPS
   const categories = useSelector((state: RootState) => selectCategoriesByScope(state, scope));
   const loading = useSelector((state: RootState) => selectCategoriesState(state).loading);
   const error = useSelector((state: RootState) => selectCategoriesState(state).error);
+  const loaded = useSelector((state: RootState) => scope in state.categories.categoriesByScope);
 
   useEffect(() => {
-    if (categories.length === 0 && !loading) {
-      dispatch(fetchCategoriesByScopeThunk(scope));
-    }
-  }, [dispatch, scope, categories.length, loading]);
+    if (!loaded) dispatch(fetchCategoriesByScopeThunk(scope));
+  }, [dispatch, scope, loaded]);
 
   return {
     categories,

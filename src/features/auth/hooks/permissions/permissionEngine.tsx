@@ -224,6 +224,11 @@ export const ACTION_PERMISSIONS = {
       level: 'Contributor' as PermissionLevel,
       deny: 'protection-plans.editprotectionplan.deny',
     },
+    editTaxonomy: {
+      scope: 'protection-plans' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'protection-plans.editprotectionplan.deny',
+    },
     cancel: {
       scope: 'protection-plans' as const,
       level: 'Contributor' as PermissionLevel,

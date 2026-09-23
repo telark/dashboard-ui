@@ -11,3 +11,10 @@ export { cancelPlan } from './cancel';
 export { reactivatePlan } from './reactivate';
 export { duplicatePlan, type DuplicatePlanPayload } from './duplicate';
 export { deletePlan } from './delete';
+export {
+  fetchPlanReports,
+  generatePlanReport,
+  isReportBusy,
+  isReportFileMissing,
+  downloadPlanReport,
+} from './reports';

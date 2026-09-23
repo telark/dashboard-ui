@@ -8,6 +8,7 @@ import {
   ROLE_PATHS,
   USER_PATHS,
   PLANS_PATHS,
+  REPORTS_PATHS,
 } from '../rest/paths';
 
 export const Endpoints = {
@@ -279,6 +280,16 @@ export const Endpoints = {
       path: PLANS_PATHS.PROTECTION.UPDATE(id),
       method: 'POST',
     }),
+    REPORTS_GENERATE: (id: string) => ({
+      path: PLANS_PATHS.PROTECTION.REPORTS_GENERATE(id),
+      method: 'POST',
+    }),
+  },
+  REPORTS: {
+    PLANS: {
+      LIST: (id: string) => ({ path: REPORTS_PATHS.PLANS.LIST(id), method: 'GET' }),
+      DOWNLOAD: (id: string) => ({ path: REPORTS_PATHS.PLANS.DOWNLOAD(id), method: 'GET' }),
+    },
   },
   NOTIFICATIONS: {
     EMIT: {

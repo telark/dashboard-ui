@@ -19,6 +19,33 @@ export interface HealthStoreBinding {
 const SERVICE_UNAVAILABLE_MESSAGE = (name: string): string =>
   `Service '${name}' is temporarily unavailable. Please try again in a moment.`;
 
+// Thunks reject with a string, so the CircuitOpenError instance is gone by the
+// time a view decides how to render it. These survive that boundary.
+// Both the raw CircuitOpenError text and the userFacingMessage rewrite of it
+// reach views, depending on whether the thunk passed the message through.
+const SERVICE_UNAVAILABLE_MARKERS = [
+  'is temporarily unavailable',
+  'Service temporarily unavailable',
+];
+const NETWORK_MARKERS = ['Cannot reach', 'Network Error', 'Failed to fetch'];
+
+export interface ConnectivityIssue {
+  kind: 'service' | 'network';
+  serviceName?: string;
+}
+
+export const connectivityIssueFrom = (message: string | null): ConnectivityIssue | undefined => {
+  if (!message) return undefined;
+  if (SERVICE_UNAVAILABLE_MARKERS.some((marker) => message.includes(marker))) {
+    return {
+      kind: 'service',
+      serviceName: /Service '([^']+)' is temporarily unavailable/.exec(message)?.[1],
+    };
+  }
+  if (NETWORK_MARKERS.some((marker) => message.includes(marker))) return { kind: 'network' };
+  return undefined;
+};
+
 const TIMEOUT_STATUS = 408;
 const ABORT_CODE = 'ECONNABORTED';
 

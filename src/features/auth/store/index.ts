@@ -1,4 +1,3 @@
-// Slice
 export { default as passkeyReducer } from './slices/passkeySlice';
 export { clearDetails, addPasskey, updatePasskey, deletePasskey } from './slices/passkeySlice';
 
@@ -16,7 +15,6 @@ export {
   AUTH_CONFIG_CACHE_TTL_MS,
 } from './slices/authConfigSlice';
 
-// Thunks
 export {
   fetchAllPasskeysThunk,
   fetchAllPasskeysSilentThunk,
@@ -29,7 +27,6 @@ export {
   deletePasskeyThunk,
 } from './thunks/mutationThunks';
 
-// Selectors
 export {
   selectPasskeyState,
   selectPasskeys,

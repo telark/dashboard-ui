@@ -23,7 +23,6 @@ const OrphanedPasskeysModal: React.FC<OrphanedPasskeysModalProps> = ({
   onCancel,
   isRemoving = false,
 }) => {
-  // Log error for analytics
   if (errorName) {
     logger.info('[Login] Authentication failed:', {
       errorName,

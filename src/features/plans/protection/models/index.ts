@@ -3,7 +3,10 @@ export type ScopeType = 'applications' | 'namespaces';
 export type PlanMode = 'audit' | 'enforce';
 export type PlanTimeMode = 'permanent' | 'time_range';
 export type PlanHealth = 'unknown' | 'healthy' | 'drifted' | 'degraded';
+export type PlanViewMode = 'plans' | 'environments' | 'tags';
 export type ViolationResult = 'pass' | 'fail' | 'warn' | 'error' | 'skip';
+export type PlanReportFormat = 'html' | 'md' | 'json' | 'csv';
+export type PlanReportTrigger = 'end' | 'cancel' | 'manual';
 
 export interface PlanHealthDetail {
   policyName: string;
@@ -53,7 +56,18 @@ export interface PlanViolation {
 export interface PlanViolationsResponse {
   planId: string;
   total: number;
+  retentionWindow: string;
   violations: PlanViolation[];
+}
+
+export interface PlanReportMeta {
+  id: string;
+  planId: string;
+  trigger: PlanReportTrigger;
+  generatedAt: string;
+  generatedBy: string;
+  violationsTotal: number;
+  truncated: boolean;
 }
 
 export interface PlanScope {
@@ -95,6 +109,8 @@ export interface ProtectionPlan {
   terminatedAt?: string;
   terminatedBy?: string;
   participantsIDs?: string[];
+  environmentID?: string;
+  tagIDs?: string[];
   health?: PlanHealth;
   healthCheckedAt?: string;
   healthDetail?: PlanHealthDetail[];

@@ -31,14 +31,14 @@ function DataTable<T>({
       }}
     >
       <Table
-        rowKey={rowKey as any}
-        columns={columns as any}
-        dataSource={filteredData as any}
+        rowKey={rowKey}
+        columns={columns}
+        dataSource={filteredData}
         pagination={false}
         size="small"
         onRow={(record) => ({
           style: { height: rowHeight, cursor: onRowClick ? 'pointer' : 'default' },
-          onClick: onRowClick ? () => onRowClick(record as T) : undefined,
+          onClick: onRowClick ? () => onRowClick(record) : undefined,
         })}
         locale={{
           emptyText: emptyComponent,

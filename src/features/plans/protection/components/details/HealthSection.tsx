@@ -102,6 +102,7 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
                       {row.namespace && (
                         <RowTag
                           text={row.namespace}
+                          capitalize={false}
                           {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                         />
                       )}
