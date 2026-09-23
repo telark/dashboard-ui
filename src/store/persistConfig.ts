@@ -1,7 +1,6 @@
 import storage from 'redux-persist/lib/storage';
-import type { PersistConfig } from 'redux-persist';
 
-export const applicationsPersistConfig: PersistConfig<any> = {
+export const applicationsPersistConfig = {
   key: 'applications',
   storage,
   whitelist: [
@@ -16,37 +15,37 @@ export const applicationsPersistConfig: PersistConfig<any> = {
   ],
 };
 
-export const retryPersistConfig: PersistConfig<any> = {
+export const retryPersistConfig = {
   key: 'retry',
   storage,
   whitelist: ['byKey'],
 };
 
-export const groupsPersistConfig: PersistConfig<any> = {
+export const groupsPersistConfig = {
   key: 'groups',
   storage,
   whitelist: ['groups'],
 };
 
-export const usersPersistConfig: PersistConfig<any> = {
+export const usersPersistConfig = {
   key: 'users',
   storage,
   whitelist: ['users'],
 };
 
-export const rolesPersistConfig: PersistConfig<any> = {
+export const rolesPersistConfig = {
   key: 'roles',
   storage,
   whitelist: ['roles'],
 };
 
-export const protectionPlansPersistConfig: PersistConfig<any> = {
+export const protectionPlansPersistConfig = {
   key: 'protectionPlans',
   storage,
   whitelist: ['plans'],
 };
 
-export const globalConfigPersistConfig: PersistConfig<any> = {
+export const globalConfigPersistConfig = {
   key: 'globalconfig',
   storage,
   whitelist: ['data', 'initialized', 'lastFetchedAt'],

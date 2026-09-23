@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined, TagOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS, Icons, LIST_TOOLBAR, TOOLBAR_CONTROL } from '../../../../../constants';
 import { ListToolbar } from '../../../../../components/display/toolbar';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
@@ -8,7 +8,7 @@ import {
   PROTECTION_PLANS_CONSTANTS as PPC,
   PHASE_DOT_COLOR,
 } from '../../constants/protectionPlans';
-import type { PlanPhase, PlanPhaseQuickFilter } from '../../models';
+import type { PlanPhase, PlanPhaseQuickFilter, PlanViewMode } from '../../models';
 
 interface ProtectionPlansToolbarProps {
   searchValue: string;
@@ -19,6 +19,7 @@ interface ProtectionPlansToolbarProps {
   onPhaseQuickFilterChange: (next: PlanPhaseQuickFilter) => void;
   phaseCounts: Record<PlanPhaseQuickFilter, number>;
   totalCount: number;
+  onViewModeChange: (mode: Exclude<PlanViewMode, 'plans'>) => void;
 }
 
 const PHASE_PILLS: { key: PlanPhaseQuickFilter; label: string }[] = [
@@ -88,6 +89,7 @@ const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
   onPhaseQuickFilterChange,
   phaseCounts,
   totalCount,
+  onViewModeChange,
 }) => {
   const canCreate = usePermission(
     ACTION_PERMISSIONS.protectionPlans.create.scope,
@@ -109,6 +111,19 @@ const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
           icon: <SearchOutlined />,
           variant: 'ghost',
         },
+        {
+          key: 'organize',
+          label: PPC.LABELS.TAXONOMY.BUTTON,
+          icon: <TagOutlined />,
+          variant: 'default',
+          dropdown: {
+            items: [
+              { key: 'environments', label: PPC.LABELS.TAXONOMY.ENVIRONMENTS },
+              { key: 'tags', label: PPC.LABELS.TAXONOMY.TAGS },
+            ],
+            onItemClick: (key) => onViewModeChange(key as Exclude<PlanViewMode, 'plans'>),
+          },
+        },
       ],
     };
     if (!canCreate) return [search];
@@ -126,7 +141,7 @@ const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
         ],
       },
     ];
-  }, [canCreate, onCreatePlanClick, onSearchChange, searchValue]);
+  }, [canCreate, onCreatePlanClick, onSearchChange, onViewModeChange, searchValue]);
 
   return (
     <ListToolbar

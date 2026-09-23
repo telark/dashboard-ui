@@ -1,1 +1,2 @@
-export { CATEGORIES_CONSTANTS } from './categories';
+export { CATEGORIES_CONSTANTS, labelsFor } from './categories';
+export type { CategoryScope } from './categories';

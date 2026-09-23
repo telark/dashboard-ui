@@ -36,6 +36,8 @@ const normalizeFormSnapshot = (values: FormValues, policies: PolicyEntry[]) => (
   startAt: values.startAt ? values.startAt.toISOString() : null,
   endAt: values.endAt ? values.endAt.toISOString() : null,
   participantsIDs: [...(values.participantsIDs ?? [])].sort(),
+  environmentID: values.environmentID ?? '',
+  tagIDs: [...(values.tagIDs ?? [])].sort(),
   policies: policies.map((p) => ({
     templateID: p.templateID,
     params: Object.fromEntries(

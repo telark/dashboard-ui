@@ -1,9 +1,11 @@
+import type { Rule } from 'antd/es/form';
+
 export interface LabeledInputProps {
   name: string;
   label: string;
   placeholder?: string;
   required?: boolean;
-  rules?: any[];
+  rules?: Rule[];
   marginBottom?: number;
   allowClear?: boolean;
   className?: string;
@@ -19,7 +21,7 @@ export interface LabeledSelectProps {
   options: Array<{ label: string; value: string }>;
   placeholder?: string;
   required?: boolean;
-  rules?: any[];
+  rules?: Rule[];
   marginBottom?: number;
   allowClear?: boolean;
   mode?: 'multiple' | 'tags';

@@ -1,12 +1,15 @@
 import React, { memo, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Dropdown, Form } from 'antd';
+import { App as AntdApp, Button, Dropdown, Form } from 'antd';
+import type { MenuProps } from 'antd';
 import {
+  CloseOutlined,
   CopyOutlined,
   DeleteOutlined,
   EditOutlined,
   MoreOutlined,
   PlayCircleOutlined,
+  SafetyCertificateOutlined,
   StopOutlined,
 } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,16 +19,21 @@ import type { ProtectionPlan } from '../../../models';
 import type { FormValues } from '../../create';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
-  PHASE_DOT_COLOR,
+  ACCENT_TINT,
+  CARD_LAYOUT,
+  HEALTH_ACCENT,
+  PHASE_ACCENT,
+  POLICY_CHIP_LABEL,
 } from '../../../constants/protectionPlans';
+import RowTag from '../../../../../../components/display/table/RowTag';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import TimeRemaining from '../../../../../../components/display/time/TimeRemaining';
-import RowTag from '../../../../../../components/display/table/RowTag';
+import { formatDateTime, toTimestamp } from '../../../../../../utils/shared/time';
 import type { AppDispatch, RootState } from '../../../../../../store';
 import { cancelPlanThunk, deletePlanThunk, reactivatePlanThunk } from '../../../store';
 import { getCurrentUser } from '../../../../../auth/utils';
+import { usePermission, ACTION_PERMISSIONS } from '../../../../../auth/hooks';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
-import HealthBadge from '../../shared/HealthBadge';
 import ReactivatePlanModal from '../../shared/ReactivatePlanModal';
 import DuplicatePlanPanel from '../../panels/DuplicatePlanPanel';
 import EditPlanPanel from '../../panels/EditPlanPanel';
@@ -35,46 +43,198 @@ import {
   REACTIVATABLE_PHASES,
   isReactivateExpired,
 } from '../../../utils/phaseRules';
+import { usePlanTaxonomyLists } from '../../../hooks/usePlanTaxonomies';
 
 interface ProtectionPlanCardProps {
   plan: ProtectionPlan;
 }
 
-function MetricMini(props: { value: React.ReactNode; label: string }): React.ReactElement {
+const CARD_LABELS = PPC.LABELS.CARD;
+const EMPTY_VALUE = '';
+
+const MICRO_LABEL_STYLE: React.CSSProperties = {
+  fontSize: CARD_LAYOUT.MICRO_FONT_SIZE_PX,
+  fontWeight: 700,
+  letterSpacing: CARD_LAYOUT.MICRO_TRACKING,
+  textTransform: 'uppercase',
+  color: DEFAULT_COLORS.TEXT_MUTED,
+  lineHeight: 1.2,
+};
+
+const TRUNCATE_STYLE: React.CSSProperties = {
+  minWidth: 0,
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+};
+
+const DIVIDED_BLOCK_STYLE: React.CSSProperties = {
+  marginTop: CARD_LAYOUT.BLOCK_GAP_PX,
+  paddingTop: CARD_LAYOUT.DIVIDER_GAP_PX,
+  borderTop: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
+};
+
+interface PlanWindow {
+  range: string;
+  percent: number;
+  /** A permanent plan has no window to run down, so it never renders a rail. */
+  showRail: boolean;
+  remaining: React.ReactNode;
+}
+
+const buildWindow = (plan: ProtectionPlan): PlanWindow => {
+  const timeRange = plan.timeMode === 'time_range' ? plan.timeRange : undefined;
+  if (!timeRange?.startAt || !timeRange.endAt) {
+    const permanent = plan.timeMode === 'permanent';
+    // A permanent plan has no window, so the range slot stays empty rather than
+    // repeating "Always on" both beside the label and under it.
+    return {
+      range: permanent ? EMPTY_VALUE : CARD_LABELS.NO_SCHEDULE,
+      percent: 0,
+      showRail: false,
+      remaining: permanent ? CARD_LABELS.PERMANENT_RANGE : CARD_LABELS.NO_SCHEDULE,
+    };
+  }
+
+  const start = toTimestamp(timeRange.startAt);
+  const end = toTimestamp(timeRange.endAt);
+  const elapsed = end > start ? ((Date.now() - start) / (end - start)) * 100 : 100;
+
+  return {
+    range: `${formatDateTime(timeRange.startAt, CARD_LABELS.WINDOW_TIME_FORMAT)}${
+      CARD_LABELS.RANGE_SEPARATOR
+    }${formatDateTime(timeRange.endAt, CARD_LABELS.WINDOW_TIME_FORMAT)}`,
+    percent: Math.min(Math.max(elapsed, 0), 100),
+    showRail: true,
+    remaining:
+      Date.now() < start ? (
+        <TimeRemaining date={timeRange.startAt} prefix={PPC.LABELS.PHASE_INFO.STARTS_IN_PREFIX} />
+      ) : (
+        <TimeRemaining date={timeRange.endAt} prefix={PPC.LABELS.PHASE_INFO.ENDS_IN_PREFIX} />
+      ),
+  };
+};
+
+const buildScopeValue = (plan: ProtectionPlan): string =>
+  plan.scope.type === 'namespaces'
+    ? CARD_LABELS.NAMESPACES_COUNT(plan.scope.namespaces?.length ?? 0)
+    : CARD_LABELS.APPLICATIONS_COUNT(plan.scope.applicationIds?.length ?? 0);
+
+const buildTargets = (plan: ProtectionPlan): string[] =>
+  (plan.scope.type === 'namespaces' ? plan.scope.namespaces : plan.scope.applicationIds) ?? [];
+
+function StatCell(props: {
+  label: string;
+  value: React.ReactNode;
+  accent?: string;
+}): React.ReactElement {
   return (
-    <div style={{ minWidth: 0 }}>
-      <div
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
+      <span style={MICRO_LABEL_STYLE}>{props.label}</span>
+      <span
         style={{
-          fontSize: 14,
-          fontWeight: 700,
-          color: DEFAULT_COLORS.TEXT_PRIMARY,
-          lineHeight: 1.1,
+          ...TRUNCATE_STYLE,
+          fontSize: CARD_LAYOUT.VALUE_FONT_SIZE_PX,
+          fontWeight: 600,
+          color: props.accent ?? DEFAULT_COLORS.TEXT_PRIMARY,
+          lineHeight: 1.3,
         }}
       >
         {props.value}
-      </div>
-      <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, lineHeight: 1.1 }}>
-        {props.label}
-      </div>
+      </span>
     </div>
+  );
+}
+
+function BlockedRow(props: { label: string }): React.ReactElement {
+  return (
+    <li
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 6,
+        minWidth: 0,
+        background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
+        borderRadius: CARD_LAYOUT.PILL_RADIUS_PX,
+        padding: '3px 9px 3px 5px',
+      }}
+    >
+      <span
+        aria-hidden
+        style={{
+          width: CARD_LAYOUT.AVATAR_CHIP_SIZE_PX,
+          height: CARD_LAYOUT.AVATAR_CHIP_SIZE_PX,
+          borderRadius: '50%',
+          background: DEFAULT_COLORS.DANGER_TINT,
+          color: DEFAULT_COLORS.DANGER,
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 9,
+          flexShrink: 0,
+        }}
+      >
+        <CloseOutlined />
+      </span>
+      <span
+        title={props.label}
+        style={{
+          ...TRUNCATE_STYLE,
+          fontSize: CARD_LAYOUT.META_FONT_SIZE_PX,
+          color: DEFAULT_COLORS.TEXT_SECONDARY,
+          lineHeight: 1.4,
+        }}
+      >
+        {props.label}
+      </span>
+    </li>
   );
 }
 
 const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
+  const { message } = AntdApp.useApp();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [reactivating, setReactivating] = useState(false);
   const [duplicatePanelOpen, setDuplicatePanelOpen] = useState(false);
   const [editPanelOpen, setEditPanelOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [reactivateModalOpen, setReactivateModalOpen] = useState(false);
   const [editForm] = Form.useForm<FormValues>();
   const editDisabled = NON_EDITABLE_PHASES.includes(plan.phase);
   const canReactivate = REACTIVATABLE_PHASES.includes(plan.phase);
   const reactivateExpired = isReactivateExpired(plan);
+
+  const canEditPlan = usePermission(
+    ACTION_PERMISSIONS.protectionPlans.edit.scope,
+    ACTION_PERMISSIONS.protectionPlans.edit.level,
+    ACTION_PERMISSIONS.protectionPlans.edit.deny,
+  );
+  const canDuplicatePlan = usePermission(
+    ACTION_PERMISSIONS.protectionPlans.duplicate.scope,
+    ACTION_PERMISSIONS.protectionPlans.duplicate.level,
+    ACTION_PERMISSIONS.protectionPlans.duplicate.deny,
+  );
+  const canReactivatePlan = usePermission(
+    ACTION_PERMISSIONS.protectionPlans.reactivate.scope,
+    ACTION_PERMISSIONS.protectionPlans.reactivate.level,
+    ACTION_PERMISSIONS.protectionPlans.reactivate.deny,
+  );
+  const canCancelPlan = usePermission(
+    ACTION_PERMISSIONS.protectionPlans.cancel.scope,
+    ACTION_PERMISSIONS.protectionPlans.cancel.level,
+    ACTION_PERMISSIONS.protectionPlans.cancel.deny,
+  );
+  const canDeletePlan = usePermission(
+    ACTION_PERMISSIONS.protectionPlans.delete.scope,
+    ACTION_PERMISSIONS.protectionPlans.delete.level,
+    ACTION_PERMISSIONS.protectionPlans.delete.deny,
+  );
 
   const detailsPath = APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(
     ':name',
@@ -85,10 +245,33 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
   const createdByLabel = users.find((u) => u.id === plan.createdBy)?.username ?? plan.createdBy;
 
   const phaseLabel = PPC.LABELS.PHASE_LABELS[plan.phase] ?? plan.phase;
-  const dotColor = PHASE_DOT_COLOR[plan.phase] ?? PHASE_DOT_COLOR.draft;
   const canCancel = CANCELLABLE_PHASES.includes(plan.phase);
 
-  const namespaceTags = plan.scope.type === 'namespaces' ? (plan.scope.namespaces ?? []) : [];
+  const phaseAccent = PHASE_ACCENT[plan.phase] ?? DEFAULT_COLORS.DEFAULT;
+  const phaseTint = ACCENT_TINT[phaseAccent] ?? DEFAULT_COLORS.DEFAULT_TINT;
+  const health = plan.health ?? 'unknown';
+  // Health only speaks while the plan is running; a canceled plan's last known
+  // health would otherwise light the card up green.
+  const healthAccent =
+    plan.phase === 'active' && plan.health ? HEALTH_ACCENT[health] : DEFAULT_COLORS.TEXT_PRIMARY;
+
+  const isPermanent = plan.timeMode === 'permanent';
+  const planWindow = buildWindow(plan);
+  const targets = buildTargets(plan);
+  const shownTargets = targets.slice(0, CARD_LAYOUT.MAX_TARGET_TAGS);
+  const hiddenTargets = targets.length - shownTargets.length;
+  const { environments, tags } = usePlanTaxonomyLists();
+  const environmentName = environments.find((c) => c.id === plan.environmentID)?.name;
+  const planTags = (plan.tagIDs ?? [])
+    .map((id) => ({ id, name: tags.find((c) => c.id === id)?.name }))
+    .filter((t): t is { id: string; name: string } => Boolean(t.name));
+  const shownTags = planTags.slice(0, CARD_LAYOUT.MAX_TARGET_TAGS);
+  const hiddenTagNames = planTags.length - shownTags.length;
+  const policyLabels = (plan.policies ?? []).map(
+    (policy) => POLICY_CHIP_LABEL[policy.templateID] ?? policy.templateID,
+  );
+  const shownPolicies = policyLabels.slice(0, CARD_LAYOUT.MAX_POLICY_CHIPS);
+  const hiddenPolicies = policyLabels.length - shownPolicies.length;
 
   const menuButtonStyle: React.CSSProperties = {
     color: menuOpen ? DEFAULT_COLORS.TEXT_PRIMARY : DEFAULT_COLORS.ICON_SECONDARY,
@@ -98,7 +281,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 10,
+    borderRadius: CARD_LAYOUT.ICON_CHIP_RADIUS_PX,
     background: menuOpen ? DEFAULT_COLORS.BACKGROUND_HOVER : 'transparent',
     transition: 'background 120ms ease, color 120ms ease',
   };
@@ -109,10 +292,14 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     setCancelling(true);
     try {
       await dispatch(cancelPlanThunk({ userId, planId: plan.id })).unwrap();
+      message.success(PPC.LABELS.ACTIONS.CANCEL_SUCCESS(plan.name));
+      setCancelModalOpen(false);
+    } catch (err: unknown) {
+      message.error(typeof err === 'string' && err ? err : PPC.LABELS.ACTIONS.CANCEL_ERROR);
     } finally {
       setCancelling(false);
     }
-  }, [dispatch, plan.id]);
+  }, [dispatch, message, plan.id, plan.name]);
 
   const handleReactivate = useCallback(async () => {
     const userId = getCurrentUser()?.id;
@@ -120,11 +307,14 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     setReactivating(true);
     try {
       await dispatch(reactivatePlanThunk({ userId, planId: plan.id })).unwrap();
+      message.success(PPC.LABELS.ACTIONS.REACTIVATE_SUCCESS(plan.name));
       setReactivateModalOpen(false);
+    } catch (err: unknown) {
+      message.error(typeof err === 'string' && err ? err : PPC.LABELS.ACTIONS.REACTIVATE_ERROR);
     } finally {
       setReactivating(false);
     }
-  }, [dispatch, plan.id]);
+  }, [dispatch, message, plan.id, plan.name]);
 
   const handleDelete = useCallback(async () => {
     const userId = getCurrentUser()?.id;
@@ -132,11 +322,14 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     setDeleting(true);
     try {
       await dispatch(deletePlanThunk({ userId, planId: plan.id })).unwrap();
+      message.success(PPC.LABELS.ACTIONS.DELETE_SUCCESS(plan.name));
       setDeleteModalOpen(false);
+    } catch (err: unknown) {
+      message.error(typeof err === 'string' && err ? err : PPC.LABELS.ACTIONS.DELETE_ERROR);
     } finally {
       setDeleting(false);
     }
-  }, [dispatch, plan.id]);
+  }, [dispatch, message, plan.id, plan.name]);
 
   const handleDuplicate = useCallback(() => {
     setDuplicatePanelOpen(true);
@@ -151,20 +344,35 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     editForm.resetFields();
   }, [editForm]);
 
-  const menuItems = [
-    {
-      key: 'edit',
-      label: PPC.LABELS.DETAIL_PAGE.ACTIONS.EDIT,
-      icon: <EditOutlined />,
-      disabled: editDisabled || editPanelOpen,
-    },
-    {
-      key: 'duplicate',
-      label: PPC.LABELS.ACTIONS.DUPLICATE,
-      icon: <CopyOutlined />,
-      disabled: duplicatePanelOpen,
-    },
-    ...(canReactivate
+  const navigationBlocked =
+    duplicatePanelOpen ||
+    deleteModalOpen ||
+    cancelModalOpen ||
+    reactivateModalOpen ||
+    editPanelOpen;
+
+  const menuItems: NonNullable<MenuProps['items']> = [
+    ...(canEditPlan
+      ? [
+          {
+            key: 'edit',
+            label: PPC.LABELS.DETAIL_PAGE.ACTIONS.EDIT,
+            icon: <EditOutlined />,
+            disabled: editDisabled || editPanelOpen,
+          },
+        ]
+      : []),
+    ...(canDuplicatePlan
+      ? [
+          {
+            key: 'duplicate',
+            label: PPC.LABELS.ACTIONS.DUPLICATE,
+            icon: <CopyOutlined />,
+            disabled: duplicatePanelOpen,
+          },
+        ]
+      : []),
+    ...(canReactivatePlan && canReactivate
       ? [
           {
             key: 'reactivate',
@@ -174,7 +382,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           },
         ]
       : []),
-    ...(canCancel
+    ...(canCancelPlan && canCancel
       ? [
           {
             key: 'cancel',
@@ -185,148 +393,172 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           },
         ]
       : []),
-    { type: 'divider' as const },
-    {
+  ];
+  if (canDeletePlan) {
+    if (menuItems.length > 0) menuItems.push({ type: 'divider' });
+    menuItems.push({
       key: 'delete',
       label: PPC.LABELS.ACTIONS.DELETE,
       icon: <DeleteOutlined />,
       danger: true,
       disabled: deleting,
-    },
-  ];
+    });
+  }
 
   return (
     <div
       role="button"
       tabIndex={0}
       onClick={() => {
-        if (duplicatePanelOpen || deleteModalOpen || editPanelOpen) return;
+        if (navigationBlocked) return;
         navigate(detailsPath);
       }}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          if (duplicatePanelOpen || deleteModalOpen || editPanelOpen) return;
+          if (navigationBlocked) return;
           e.preventDefault();
           navigate(detailsPath);
         }
       }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
         position: 'relative',
-        background: DEFAULT_COLORS.BACKGROUND_WHITE,
+        background: hovered
+          ? DEFAULT_COLORS.SURFACE_ELEVATED_HOVER
+          : DEFAULT_COLORS.SURFACE_ELEVATED,
         borderRadius: APPLICATION_SECTION_LAYOUT.CARD_RADIUS,
-        border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-        padding: 16,
+        border: `1px solid ${hovered ? DEFAULT_COLORS.BORDER_HOVER : DEFAULT_COLORS.BORDER_ELEVATED}`,
+        padding: CARD_LAYOUT.PADDING_PX,
         boxSizing: 'border-box',
-        boxShadow: '0 2px 10px rgba(15, 23, 42, 0.06)',
-        display: 'flex',
-        flexDirection: 'column',
         cursor: 'pointer',
+        transition: 'background 140ms ease, border-color 140ms ease',
       }}
     >
-      {/* Header row */}
+      {/* Header: identity on the left, phase pill and actions on the right */}
       <div
         style={{
           display: 'flex',
           alignItems: 'flex-start',
           justifyContent: 'space-between',
-          gap: 10,
+          gap: 12,
         }}
       >
-        <div style={{ minWidth: 0, flex: 1 }}>
-          <div
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, minWidth: 0 }}>
+          <span
+            aria-hidden
             style={{
-              display: 'flex',
+              width: CARD_LAYOUT.ICON_CHIP_SIZE_PX,
+              height: CARD_LAYOUT.ICON_CHIP_SIZE_PX,
+              borderRadius: CARD_LAYOUT.ICON_CHIP_RADIUS_PX,
+              background: phaseTint,
+              color: phaseAccent,
+              display: 'inline-flex',
               alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: 8,
-              rowGap: 6,
+              justifyContent: 'center',
+              fontSize: 14,
+              flexShrink: 0,
             }}
           >
-            <h3
+            <SafetyCertificateOutlined />
+          </span>
+          <span style={{ display: 'flex', flexDirection: 'column', gap: 5, minWidth: 0 }}>
+            <span
+              title={plan.name}
               style={{
-                margin: 0,
-                fontSize: 17,
-                fontWeight: 700,
+                ...TRUNCATE_STYLE,
+                fontSize: CARD_LAYOUT.TITLE_FONT_SIZE_PX,
+                fontWeight: 600,
                 color: DEFAULT_COLORS.TEXT_PRIMARY,
-                lineHeight: 1.25,
+                lineHeight: 1.3,
               }}
             >
               {plan.name}
-            </h3>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-              <span
-                aria-hidden
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: '50%',
-                  background: dotColor,
-                  boxShadow: `0 0 0 3px ${DEFAULT_COLORS.CHIP_CUSTOM_BG}`,
-                  flexShrink: 0,
-                }}
-              />
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: DEFAULT_COLORS.TEXT_MUTED,
-                  lineHeight: 1.2,
-                  textTransform: 'capitalize',
-                }}
-              >
-                {phaseLabel}
-              </span>
             </span>
-            {plan.phase === 'scheduled' && plan.timeRange && (
-              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                {PPC.LABELS.PHASE_INFO.STARTS_PREFIX} <TimeAgo date={plan.timeRange.startAt} />
-                {plan.timeMode === 'time_range' && plan.timeRange.endAt && (
-                  <>
-                    {' · '}
-                    {PPC.LABELS.PHASE_INFO.ENDS_PREFIX} <TimeAgo date={plan.timeRange.endAt} />
-                  </>
+            <span style={{ display: 'flex', flexWrap: 'wrap', gap: 4, minWidth: 0 }}>
+              {shownTargets.map((target) => (
+                <RowTag
+                  key={target}
+                  text={target}
+                  capitalize={false}
+                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                  color={DEFAULT_COLORS.TEXT_SECONDARY}
+                  fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
+                />
+              ))}
+              {hiddenTargets > 0 && (
+                <RowTag
+                  text={CARD_LABELS.MORE_BLOCKED(hiddenTargets)}
+                  capitalize={false}
+                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                  color={DEFAULT_COLORS.TEXT_MUTED}
+                  fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
+                />
+              )}
+            </span>
+            {(environmentName || planTags.length > 0) && (
+              <span style={{ display: 'flex', flexWrap: 'wrap', gap: 4, minWidth: 0 }}>
+                {environmentName && (
+                  <RowTag
+                    text={environmentName}
+                    capitalize={false}
+                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                    color={DEFAULT_COLORS.TEXT_SECONDARY}
+                    fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
+                  />
+                )}
+                {shownTags.map(({ id, name }) => (
+                  <RowTag
+                    key={id}
+                    text={name}
+                    capitalize={false}
+                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                    color={DEFAULT_COLORS.TEXT_MUTED}
+                    fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
+                  />
+                ))}
+                {hiddenTagNames > 0 && (
+                  <RowTag
+                    text={CARD_LABELS.MORE_BLOCKED(hiddenTagNames)}
+                    capitalize={false}
+                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
+                    color={DEFAULT_COLORS.TEXT_MUTED}
+                    fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
+                  />
                 )}
               </span>
             )}
-            {plan.phase === 'active' && plan.health && <HealthBadge health={plan.health} />}
-            {plan.phase === 'active' && plan.timeMode === 'time_range' && plan.timeRange?.endAt && (
-              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                <TimeRemaining
-                  date={plan.timeRange.endAt}
-                  prefix={PPC.LABELS.PHASE_INFO.ENDS_IN_PREFIX}
-                />
-              </span>
-            )}
-            {plan.phase === 'terminated' && plan.terminatedAt && (
-              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                {PPC.LABELS.PHASE_INFO.TERMINATED_PREFIX} <TimeAgo date={plan.terminatedAt} />
-              </span>
-            )}
-          </div>
-          <p
-            style={{
-              margin: '1px 0 0',
-              fontSize: 12,
-              fontWeight: 500,
-              color: DEFAULT_COLORS.TEXT_MUTED,
-              lineHeight: 1.3,
-              wordBreak: 'break-word',
-            }}
-          >
-            {plan.description || plan.name}
-          </p>
+          </span>
         </div>
 
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-          {namespaceTags.map((ns) => (
-            <RowTag
-              key={ns}
-              text={ns}
-              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-              color={DEFAULT_COLORS.TEXT_MUTED}
-              fontSize={11}
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              borderRadius: CARD_LAYOUT.PILL_RADIUS_PX,
+              background: phaseTint,
+              color: phaseAccent,
+              padding: '3px 10px',
+              fontSize: CARD_LAYOUT.MICRO_FONT_SIZE_PX,
+              fontWeight: 700,
+              letterSpacing: CARD_LAYOUT.MICRO_TRACKING,
+              textTransform: 'uppercase',
+              lineHeight: 1.6,
+            }}
+          >
+            <span
+              aria-hidden
+              style={{
+                width: CARD_LAYOUT.DOT_SIZE_PX,
+                height: CARD_LAYOUT.DOT_SIZE_PX,
+                borderRadius: '50%',
+                background: phaseAccent,
+              }}
             />
-          ))}
+            {phaseLabel}
+          </span>
           {menuItems.length > 0 && (
             <Dropdown
               trigger={['click']}
@@ -338,7 +570,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
                 onClick: ({ key, domEvent }) => {
                   domEvent.stopPropagation();
                   if (key === 'edit') handleEdit();
-                  if (key === 'cancel') void handleCancel();
+                  if (key === 'cancel') setCancelModalOpen(true);
                   if (key === 'delete') setDeleteModalOpen(true);
                   if (key === 'duplicate') handleDuplicate();
                   if (key === 'reactivate') setReactivateModalOpen(true);
@@ -358,33 +590,142 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
         </div>
       </div>
 
-      {/* Metrics row */}
+      {/* Window: label and range, then the rail running the window down */}
+      <div style={{ marginTop: CARD_LAYOUT.BLOCK_GAP_PX }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'baseline',
+            justifyContent: 'space-between',
+            gap: 12,
+          }}
+        >
+          <span style={MICRO_LABEL_STYLE}>
+            {isPermanent ? CARD_LABELS.PERMANENT_LABEL : CARD_LABELS.WINDOW_LABEL}
+          </span>
+          <span
+            style={{
+              ...TRUNCATE_STYLE,
+              fontSize: CARD_LAYOUT.MONO_FONT_SIZE_PX,
+              fontVariantNumeric: 'tabular-nums',
+              color: DEFAULT_COLORS.TEXT_MUTED,
+            }}
+          >
+            {planWindow.range}
+          </span>
+        </div>
+        {planWindow.showRail && (
+          <div
+            aria-hidden
+            style={{
+              marginTop: 8,
+              height: CARD_LAYOUT.TRACK_HEIGHT_PX,
+              borderRadius: CARD_LAYOUT.PILL_RADIUS_PX,
+              background: DEFAULT_COLORS.BACKGROUND_HOVER,
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              style={{
+                height: '100%',
+                width: `${planWindow.percent}%`,
+                borderRadius: CARD_LAYOUT.PILL_RADIUS_PX,
+                background: phaseAccent,
+                transition: 'width 200ms ease',
+              }}
+            />
+          </div>
+        )}
+        <p
+          style={{
+            margin: '8px 0 0',
+            fontSize: CARD_LAYOUT.VALUE_FONT_SIZE_PX,
+            color: DEFAULT_COLORS.TEXT_PRIMARY,
+            lineHeight: 1.3,
+          }}
+        >
+          {planWindow.remaining}
+        </p>
+      </div>
+
+      {/* Stats: the four answers a plan is scanned for */}
       <div
         style={{
+          ...DIVIDED_BLOCK_STYLE,
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+          columnGap: CARD_LAYOUT.CHIPS_GAP_PX,
+        }}
+      >
+        <StatCell label={CARD_LABELS.STATS.SCOPE} value={buildScopeValue(plan)} />
+        <StatCell label={CARD_LABELS.STATS.MODE} value={PPC.LABELS.MODE_LABELS[plan.mode]} />
+        <StatCell
+          label={CARD_LABELS.STATS.TEMPLATES}
+          value={CARD_LABELS.TEMPLATES_COUNT(policyLabels.length)}
+        />
+        <StatCell
+          label={CARD_LABELS.STATS.HEALTH}
+          value={PPC.LABELS.HEALTH_LABELS[health]}
+          accent={healthAccent}
+        />
+      </div>
+
+      {/* What the plan refuses, in the operator's words rather than template ids */}
+      <div style={DIVIDED_BLOCK_STYLE}>
+        <span style={MICRO_LABEL_STYLE}>
+          {isPermanent ? CARD_LABELS.BLOCKED_LABEL_PERMANENT : CARD_LABELS.BLOCKED_LABEL}
+        </span>
+        {shownPolicies.length === 0 ? (
+          <p
+            style={{
+              margin: '10px 0 0',
+              fontSize: CARD_LAYOUT.META_FONT_SIZE_PX,
+              color: DEFAULT_COLORS.TEXT_MUTED,
+            }}
+          >
+            {CARD_LABELS.REFUSES_NONE}
+          </p>
+        ) : (
+          <ul
+            style={{
+              listStyle: 'none',
+              margin: '8px 0 0',
+              padding: 0,
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 6,
+            }}
+          >
+            {shownPolicies.map((label) => (
+              <BlockedRow key={label} label={label} />
+            ))}
+            {hiddenPolicies > 0 && (
+              <li style={{ ...MICRO_LABEL_STYLE, alignSelf: 'center' }}>
+                {CARD_LABELS.MORE_BLOCKED(hiddenPolicies)}
+              </li>
+            )}
+          </ul>
+        )}
+      </div>
+
+      {/* Provenance: who put this window in place and when it last moved */}
+      <div
+        style={{
+          ...DIVIDED_BLOCK_STYLE,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: 18,
-          paddingTop: 10,
-          marginTop: 10,
-          borderTop: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
-          flexWrap: 'wrap',
+          gap: 12,
+          fontSize: CARD_LAYOUT.META_FONT_SIZE_PX,
+          color: DEFAULT_COLORS.TEXT_MUTED,
         }}
       >
-        <MetricMini value={plan.policies?.length ?? 0} label="Policies" />
-        <MetricMini value={plan.scope.type} label="Scope" />
-        {plan.mode && <MetricMini value={plan.mode} label={PPC.LABELS.MODE_ENFORCEMENT_LABEL} />}
-        {plan.severity && <MetricMini value={plan.severity} label={PPC.LABELS.SEVERITY_LABEL} />}
-        <MetricMini value={createdByLabel} label="Created by" />
-        <MetricMini
-          value={plan.createdAt ? <TimeAgo date={plan.createdAt} /> : '—'}
-          label="Created"
-        />
-        <MetricMini
-          value={plan.lastUpdatedAt ? <TimeAgo date={plan.lastUpdatedAt} /> : '—'}
-          label="Last updated"
-        />
+        <span style={TRUNCATE_STYLE}>{`${CARD_LABELS.CREATED_BY_PREFIX} ${createdByLabel}`}</span>
+        <span style={{ flexShrink: 0 }}>
+          {CARD_LABELS.UPDATED_PREFIX} <TimeAgo date={plan.lastUpdatedAt || plan.createdAt} />
+        </span>
       </div>
+
       <div style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
         <ActionConfirmModal
           open={deleteModalOpen}
@@ -396,6 +737,18 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           resourceType="protection plan"
           confirmText={PPC.LABELS.ACTIONS.DELETE_MODAL_OK}
           loading={deleting}
+          getContainer={() => document.body}
+        />
+        <ActionConfirmModal
+          open={cancelModalOpen}
+          onClose={() => setCancelModalOpen(false)}
+          onConfirm={handleCancel}
+          title={PPC.LABELS.DETAIL_PAGE.ACTIONS.CANCEL_MODAL_TITLE}
+          action="cancel"
+          resourceName={plan.name}
+          resourceType="protection plan"
+          confirmText={PPC.LABELS.DETAIL_PAGE.ACTIONS.CANCEL_MODAL_OK}
+          loading={cancelling}
           getContainer={() => document.body}
         />
         <ReactivatePlanModal

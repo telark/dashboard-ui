@@ -47,7 +47,6 @@ export const validateName = <T>({
 
   const trimmed = value.trim();
 
-  // Validate format and length
   const formatError = validateNameFormat(trimmed, config);
   if (formatError) {
     return Promise.reject(new Error(formatError));

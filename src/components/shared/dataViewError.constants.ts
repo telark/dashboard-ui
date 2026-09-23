@@ -15,6 +15,7 @@ export const DATA_VIEW_ERROR_CONSTANTS = {
       PADDING: '32px 24px',
     },
     ICON_SIZE: 40,
+    BANNER_MAX_WIDTH: 720,
     GAP: 12,
   },
   TIMEOUT_MS: 15_000,

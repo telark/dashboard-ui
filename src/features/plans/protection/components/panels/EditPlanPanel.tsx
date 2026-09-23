@@ -41,10 +41,14 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
   const initialPolicies = useMemo<PolicyEntry[]>(() => planToPolicies(plan), [plan]);
   const [policies, setPolicies] = useState<PolicyEntry[]>(() => initialPolicies);
 
+  // Captured once, when the panel opens. The details page polls the plan, so
+  // seeding from the live `initialValues` would reset the form under the user.
+  const [openValues] = useState<FormValues>(() => initialValues);
+
   useEffect(() => {
     if (!open) return;
-    form.setFieldsValue(initialValues);
-  }, [open, form, initialValues]);
+    form.setFieldsValue(openValues);
+  }, [open, form, openValues]);
 
   const { hasFormErrors, hasChanges } = usePlanFormState({
     form,

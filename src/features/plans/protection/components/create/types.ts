@@ -19,6 +19,8 @@ export interface FormValues {
   startAt?: dayjs.Dayjs;
   endAt?: dayjs.Dayjs;
   participantsIDs?: string[];
+  environmentID?: string;
+  tagIDs?: string[];
 }
 
 export const FORM_ITEM_CLASS = 'form-item-compact no-asterisk';

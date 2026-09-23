@@ -3,10 +3,16 @@ import { Form, Input, Select } from 'antd';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import SectionCard from './SectionCard';
 import { FORM_ITEM_CLASS } from './types';
+import PlanTaxonomyFields from '../shared/PlanTaxonomyFields';
 
 const { SECTIONS, FORM } = PPC.CREATE_PAGE;
 
-const BasicInfoSection: React.FC = () => (
+interface BasicInfoSectionProps {
+  environmentOptions: { value: string; label: string }[];
+  tagOptions: { value: string; label: string }[];
+}
+
+const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ environmentOptions, tagOptions }) => (
   <SectionCard title={SECTIONS.BASIC_INFO_TITLE} description={SECTIONS.BASIC_INFO_DESCRIPTION}>
     <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
       <Form.Item
@@ -26,7 +32,7 @@ const BasicInfoSection: React.FC = () => (
       >
         <Input placeholder={FORM.DESCRIPTION_PLACEHOLDER} />
       </Form.Item>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
         <Form.Item
           name="severity"
           label={FORM.SEVERITY_LABEL}
@@ -49,6 +55,7 @@ const BasicInfoSection: React.FC = () => (
           <Input type="number" min={0} placeholder="e.g. 1" />
         </Form.Item>
       </div>
+      <PlanTaxonomyFields environmentOptions={environmentOptions} tagOptions={tagOptions} />
     </div>
   </SectionCard>
 );

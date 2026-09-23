@@ -75,11 +75,14 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
     setCancelling(true);
     try {
       await dispatch(cancelPlanThunk({ userId, planId: details.id })).unwrap();
+      message.success(PPC.LABELS.ACTIONS.CANCEL_SUCCESS(details.name));
       setCancelModalOpen(false);
+    } catch (err: unknown) {
+      message.error(typeof err === 'string' && err ? err : PPC.LABELS.ACTIONS.CANCEL_ERROR);
     } finally {
       setCancelling(false);
     }
-  }, [details, dispatch]);
+  }, [details, dispatch, message]);
 
   const handleConfirmDelete = useCallback(async () => {
     if (!details) return;
@@ -88,12 +91,15 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
     setDeleting(true);
     try {
       await dispatch(deletePlanThunk({ userId, planId: details.id })).unwrap();
+      message.success(PPC.LABELS.ACTIONS.DELETE_SUCCESS(details.name));
       setDeleteModalOpen(false);
       navigate(APP_ROUTES.PROTECTION_PLANS);
+    } catch (err: unknown) {
+      message.error(typeof err === 'string' && err ? err : PPC.LABELS.ACTIONS.DELETE_ERROR);
     } finally {
       setDeleting(false);
     }
-  }, [details, dispatch, navigate]);
+  }, [details, dispatch, message, navigate]);
 
   const handleConfirmReactivate = useCallback(async () => {
     if (!details) return;
@@ -104,9 +110,8 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
       const updated = await dispatch(reactivatePlanThunk({ userId, planId: details.id })).unwrap();
       message.success(PPC.LABELS.ACTIONS.REACTIVATE_SUCCESS(updated.name));
       setReactivateModalOpen(false);
-    } catch (err) {
-      const text = err instanceof Error ? err.message : PPC.LABELS.ACTIONS.REACTIVATE_ERROR;
-      message.error(text);
+    } catch (err: unknown) {
+      message.error(typeof err === 'string' && err ? err : PPC.LABELS.ACTIONS.REACTIVATE_ERROR);
     } finally {
       setReactivating(false);
     }
@@ -118,10 +123,13 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
     try {
       await fetchPlanStatus(details.id);
       await dispatch(fetchProtectionPlanDetailsThunk(details.id));
+    } catch (err: unknown) {
+      // fetchPlanStatus is a direct client call, so it rejects with an Error, not a thunk string.
+      message.error(err instanceof Error ? err.message : PPC.LABELS.ACTIONS.REFRESH_HEALTH_ERROR);
     } finally {
       setRefreshingHealth(false);
     }
-  }, [details, dispatch]);
+  }, [details, dispatch, message]);
 
   if (loading && !details) {
     return <LoadingDetailsView />;

@@ -15,6 +15,8 @@ export const DEFAULT_FORM_VALUES: FormValues = {
   startAt: undefined,
   endAt: undefined,
   participantsIDs: [],
+  environmentID: undefined,
+  tagIDs: [],
 };
 
 export const planToFormValues = (plan: ProtectionPlan): FormValues => ({
@@ -30,6 +32,8 @@ export const planToFormValues = (plan: ProtectionPlan): FormValues => ({
   startAt: plan.timeRange ? dayjs(plan.timeRange.startAt) : undefined,
   endAt: plan.timeRange ? dayjs(plan.timeRange.endAt) : undefined,
   participantsIDs: plan.participantsIDs ?? [],
+  environmentID: plan.environmentID || undefined,
+  tagIDs: plan.tagIDs ?? [],
 });
 
 export const planToPolicies = (plan: ProtectionPlan): PolicyEntry[] =>
@@ -70,6 +74,8 @@ export const buildPreparePayload = ({ values, policies }: BuildPreparePayloadInp
       ? { startAt: values.startAt.toISOString(), endAt: values.endAt.toISOString() }
       : undefined,
   participantsIDs: values.participantsIDs ?? [],
+  environmentID: values.environmentID ?? '',
+  tagIDs: values.tagIDs ?? [],
 });
 
 export const scopeItemsChanged = (plan: ProtectionPlan, values: FormValues): boolean => {

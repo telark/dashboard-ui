@@ -77,6 +77,8 @@ export interface PreparePlanArgs {
     timeMode: string;
     timeRange?: { startAt: string; endAt: string };
     participantsIDs?: string[];
+    environmentID?: string;
+    tagIDs?: string[];
   };
 }
 
@@ -135,6 +137,8 @@ export interface DuplicatePlanArgs {
     name?: string;
     timeMode?: string;
     timeRange?: { startAt: string; endAt: string };
+    environmentID?: string;
+    tagIDs?: string[];
   };
 }
 

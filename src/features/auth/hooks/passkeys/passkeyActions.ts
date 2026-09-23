@@ -41,7 +41,7 @@ export const usePasskeyActions = (
   );
 
   const handleCreate = useCallback(
-    async (values: Record<string, any>) => {
+    async (values: Record<string, unknown>) => {
       await handleCreatePasskey({
         deviceName: values.deviceName as string,
         dispatch,
@@ -53,7 +53,7 @@ export const usePasskeyActions = (
   );
 
   const handleUpdate = useCallback(
-    async (values: Record<string, any>, selectedPasskey: Passkey | null) => {
+    async (values: Record<string, unknown>, selectedPasskey: Passkey | null) => {
       if (!selectedPasskey) {
         throw new Error('No passkey selected for update');
       }

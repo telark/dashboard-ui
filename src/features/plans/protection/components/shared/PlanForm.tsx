@@ -41,6 +41,8 @@ export interface PlanFormProps {
   userOptions: { value: string; label: string }[];
   userMap: Map<string, User>;
   usersLoading: boolean;
+  environmentOptions: { value: string; label: string }[];
+  tagOptions: { value: string; label: string }[];
   submitError?: string | null;
   onSubmitErrorClose?: () => void;
   validateTrigger?: string | string[];
@@ -69,6 +71,8 @@ const PlanForm: React.FC<PlanFormProps> = ({
   userOptions,
   userMap,
   usersLoading,
+  environmentOptions,
+  tagOptions,
   submitError,
   onSubmitErrorClose,
   validateTrigger,
@@ -110,7 +114,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
           gap: PPC.CREATE_PAGE.GAP_BETWEEN_CARDS,
         }}
       >
-        <BasicInfoSection />
+        <BasicInfoSection environmentOptions={environmentOptions} tagOptions={tagOptions} />
         <ScopeSection
           scopeType={scopeType}
           applicationOptions={applicationOptions}

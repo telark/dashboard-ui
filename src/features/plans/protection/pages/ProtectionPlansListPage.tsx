@@ -1,8 +1,9 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
-import type { PlanPhase, PlanPhaseQuickFilter, ProtectionPlan } from '../models';
+import type { PlanPhase, PlanPhaseQuickFilter, PlanViewMode, ProtectionPlan } from '../models';
 import { ProtectionPlanCard, ProtectionPlansToolbar, NoProtectionPlansState } from '../components';
+import ProtectionPlansEmptyPage from './ProtectionPlansEmptyPage';
 import { FilterPanel } from '../../../../components/display/panels/filter';
 import type { FilterField } from '../../../../components/display/panels/filter/FilterPanel';
 import {
@@ -11,10 +12,10 @@ import {
   PageContainer,
 } from '../../../../components/shared';
 import { FancySpinner } from '../../../../components/animation';
+import { connectivityIssueFrom } from '../../../../api/client/health-interceptor';
 import { useLoadingTimeout } from '../../../../hooks/layout/useLoadingTimeout';
-import { userFacingMessage } from '../../../../api';
 import { applyPlanFilters } from '../utils/applyPlanFilters';
-import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
+import { PROTECTION_PLANS_CONSTANTS as PPC, CARD_LAYOUT } from '../constants/protectionPlans';
 import {
   setPhaseQuickFilter,
   setAppliedPlanFilters,
@@ -23,6 +24,8 @@ import {
 import type { AppDispatch, RootState } from '../../../../store';
 import { UserOptionRow } from '../../../../components/display/users';
 import { getCurrentUser } from '../../../auth/utils';
+import { mapCategoriesToOptions } from '../../../access-and-permissions/categories/utils/helpers';
+import { usePlanTaxonomies } from '../hooks/usePlanTaxonomies';
 
 const CURRENT_USER_LABEL = 'me';
 
@@ -34,6 +37,7 @@ interface ProtectionPlansListPageProps {
   loading: boolean;
   error: string | null;
   onRetry: () => void;
+  onViewModeChange: (mode: Exclude<PlanViewMode, 'plans'>) => void;
 }
 
 const QUICK_FILTER_KEYS: PlanPhaseQuickFilter[] = [
@@ -45,14 +49,11 @@ const QUICK_FILTER_KEYS: PlanPhaseQuickFilter[] = [
   'failed',
 ];
 
+// The thunk already rejected with the extracted server message; re-wrapping it
+// in an Error only hides it behind userFacingMessage's generic fallback.
 const buildErrorMessage = (error: string | null, timedOut: boolean): string => {
   if (timedOut) return DVE.LABELS.TIMEOUT_MESSAGE;
-  if (!error) return DVE.LABELS.GENERIC_MESSAGE;
-  try {
-    return userFacingMessage(new Error(error));
-  } catch {
-    return DVE.LABELS.GENERIC_MESSAGE;
-  }
+  return error || DVE.LABELS.GENERIC_MESSAGE;
 };
 
 const uniqueValues = (
@@ -69,7 +70,16 @@ const uniqueValues = (
 };
 
 const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
-  ({ plans, searchValue, onSearchChange, onCreatePlanClick, loading, error, onRetry }) => {
+  ({
+    plans,
+    searchValue,
+    onSearchChange,
+    onCreatePlanClick,
+    loading,
+    error,
+    onRetry,
+    onViewModeChange,
+  }) => {
     const hasData = plans.length > 0;
     const timedOut = useLoadingTimeout({ isLoading: loading, hasError: Boolean(error), hasData });
     const dispatch: AppDispatch = useDispatch();
@@ -77,6 +87,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
     const phaseQuickFilter = useSelector((s: RootState) => s.protectionPlans.phaseQuickFilter);
     const appliedFilters = useSelector((s: RootState) => s.protectionPlans.appliedFilters);
     const allUsers = useSelector((s: RootState) => s.users.users);
+    const taxonomies = usePlanTaxonomies();
     const userMap = useMemo(() => {
       const m = new Map<string, (typeof allUsers)[number]>();
       allUsers.forEach((u) => m.set(u.id, u));
@@ -183,8 +194,20 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           type: 'multiSelect',
           multiSelectOptions: targetOptions,
         },
+        {
+          key: PPC.FILTER_KEYS.ENVIRONMENT,
+          label: PPC.LABELS.FILTER.BY_ENVIRONMENT,
+          type: 'multiSelect',
+          multiSelectOptions: mapCategoriesToOptions(taxonomies.environments),
+        },
+        {
+          key: PPC.FILTER_KEYS.TAGS,
+          label: PPC.LABELS.FILTER.BY_TAGS,
+          type: 'multiSelect',
+          multiSelectOptions: mapCategoriesToOptions(taxonomies.tags),
+        },
       ];
-    }, [plans, allUsers, userMap, currentUserId]);
+    }, [plans, allUsers, userMap, currentUserId, taxonomies.environments, taxonomies.tags]);
 
     let dataRegion: React.ReactNode;
     if (error || timedOut) {
@@ -193,8 +216,11 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           variant="card"
           message={buildErrorMessage(error, timedOut)}
           onRetry={onRetry}
+          connectivity={connectivityIssueFrom(error)}
         />
       );
+    } else if (plans.length === 0) {
+      dataRegion = <ProtectionPlansEmptyPage onCreatePlanClick={onCreatePlanClick} />;
     } else if (loading && !hasData) {
       dataRegion = (
         <div
@@ -212,7 +238,14 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
       dataRegion = <NoProtectionPlansState />;
     } else {
       dataRegion = (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${CARD_LAYOUT.CARDS_PER_ROW}, minmax(0, 1fr))`,
+            gap: CARD_LAYOUT.GRID_GAP_PX,
+            alignItems: 'start',
+          }}
+        >
           {filteredPlans.map((plan) => (
             <ProtectionPlanCard key={plan.id} plan={plan} />
           ))}
@@ -235,6 +268,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           onPhaseQuickFilterChange={handlePhaseQuickFilterChange}
           phaseCounts={phaseCounts}
           totalCount={phaseCounts.all}
+          onViewModeChange={onViewModeChange}
         />
 
         <div style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>{dataRegion}</div>

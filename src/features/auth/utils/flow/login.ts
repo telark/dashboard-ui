@@ -17,6 +17,7 @@ import { handleAuthError } from '../shared/errors';
 import { getClientMetadata } from '../device/metadata';
 import type { LoginStartResponse, AuthenticatorAssertionResponse } from '../../models';
 import type { MessageInstance } from 'antd/lib/message/interface';
+import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 
 export const prepareLoginFinishRequest = (
   email: string,
@@ -42,13 +43,13 @@ export const prepareLoginFinishRequest = (
 };
 
 const isUnauthorizedError = (error: unknown): boolean => {
-  const axiosError = error as any;
+  const axiosError = error as ExtendedAxiosError;
   const status = axiosError?.response?.status || axiosError?.normalized?.status;
   return status === HTTP_STATUS.UNAUTHORIZED;
 };
 
 const isNotFoundError = (error: unknown): boolean => {
-  const axiosError = error as any;
+  const axiosError = error as ExtendedAxiosError;
   const status = axiosError?.response?.status || axiosError?.normalized?.status;
   return status === HTTP_STATUS.NOT_FOUND || status === HTTP_STATUS.BAD_REQUEST;
 };
@@ -169,7 +170,6 @@ export const performLogin = async (
       }
     }
 
-    // Handle other errors normally
     handleAuthError(error, messageApi, {
       onUserNotFound,
       onNoPasskeys,

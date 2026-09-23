@@ -14,6 +14,8 @@ export interface PreparePlanPayload {
   timeMode: string;
   timeRange?: { startAt: string; endAt: string };
   participantsIDs?: string[];
+  environmentID?: string;
+  tagIDs?: string[];
 }
 
 export const preparePlan = async (

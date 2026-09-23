@@ -19,7 +19,6 @@ const TimeAgo: React.FC<TimeAgoProps> = React.memo(
   ({ date, formatString = TIME_FORMATS.DEFAULT }) => {
     const [timeAgo, setTimeAgo] = useState('');
 
-    // Memoize the parsed date
     const parsedDate = useMemo(() => parseDate(date), [date]);
 
     const formattedDate = formatDateTime(parsedDate, formatString);

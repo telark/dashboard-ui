@@ -9,7 +9,7 @@ export const extractLoginOptions = (
   loginStartResponse: LoginStartResponse,
 ): PublicKeyCredentialRequestOptions => {
   if (loginStartResponse.options?.publicKey) {
-    const publicKey = (loginStartResponse.options as any).publicKey;
+    const publicKey = loginStartResponse.options.publicKey;
     return {
       challenge: publicKey.challenge,
       timeout: publicKey.timeout,

@@ -6,12 +6,11 @@ import { PanelFooter } from '../../../../components/display/panels/shared';
 import { createCategory } from '../clients';
 import { fetchCategoriesByScopeThunk } from '../store';
 import { useCategories } from '../hooks';
-import { CATEGORIES_CONSTANTS } from '../constants';
+import { CATEGORIES_CONSTANTS, labelsFor } from '../constants';
+import type { CategoryScope } from '../constants';
 import type { AppDispatch } from '../../../../store';
 
 const PANEL_WIDTH = 440;
-
-type CategoryScope = (typeof CATEGORIES_CONSTANTS.SCOPES)[keyof typeof CATEGORIES_CONSTANTS.SCOPES];
 
 interface AddCategoryPanelProps {
   open: boolean;
@@ -28,6 +27,7 @@ const AddCategoryPanel: React.FC<AddCategoryPanelProps> = ({ open, onClose, scop
   const dispatch: AppDispatch = useDispatch();
   const { message } = AntdApp.useApp();
   const [submitting, setSubmitting] = useState(false);
+  const L = labelsFor(scope);
 
   const { categories } = useCategories(scope);
   const existingNames = useMemo(
@@ -49,24 +49,24 @@ const AddCategoryPanel: React.FC<AddCategoryPanelProps> = ({ open, onClose, scop
         scope,
         type: CATEGORIES_CONSTANTS.TYPES.CUSTOM,
       });
-      message.success(CATEGORIES_CONSTANTS.LABELS.MESSAGES.CATEGORY_CREATED(values.name.trim()));
+      message.success(L.MESSAGES.CATEGORY_CREATED(values.name.trim()));
       form.resetFields();
       onClose();
       await dispatch(fetchCategoriesByScopeThunk(scope));
     } catch (err) {
       if (err && typeof err === 'object' && 'errorFields' in err) return;
-      message.error(CATEGORIES_CONSTANTS.LABELS.MESSAGES.CATEGORY_CREATE_FAILED);
+      message.error(L.MESSAGES.CATEGORY_CREATE_FAILED);
     } finally {
       setSubmitting(false);
     }
-  }, [form, onClose, dispatch, scope, message]);
+  }, [form, onClose, dispatch, scope, message, L]);
 
   const handleCancel = useCallback(() => {
     form.resetFields();
     onClose();
   }, [form, onClose]);
 
-  const labels = CATEGORIES_CONSTANTS.LABELS.PANELS.ADD_CATEGORY;
+  const labels = L.PANELS.ADD_CATEGORY;
 
   return (
     <AnimationWrapper open={open} onClose={handleCancel} title={labels.TITLE} width={PANEL_WIDTH}>

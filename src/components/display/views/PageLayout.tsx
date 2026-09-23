@@ -47,6 +47,7 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
             variant="table"
             message={dataState.errorMessage}
             onRetry={onRetry ?? (() => undefined)}
+            connectivity={dataState.connectivity}
           />
         ) : null}
         {dataState.phase === 'loading' ? (

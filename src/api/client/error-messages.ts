@@ -1,6 +1,6 @@
 import axios, { type AxiosError } from 'axios';
 import { ERROR_CODES, HTTP_STATUS } from '../../constants';
-import { CircuitOpenError } from './health-interceptor';
+import { CircuitOpenError, connectivityIssueFrom } from './health-interceptor';
 
 const TIMEOUT_STATUS = 408;
 const UNPROCESSABLE_ENTITY = 422;
@@ -59,6 +59,10 @@ const classifyAxios = (error: AxiosError): Classified => {
 const classify = (error: Error): Classified => {
   if (error instanceof CircuitOpenError) return { kind: 'circuit' };
   if (axios.isAxiosError(error)) return classifyAxios(error);
+  // Thunks reject with a string, so views rebuild a bare Error and lose the
+  // original type. Recover the connectivity kinds from the text itself.
+  const issue = connectivityIssueFrom(error.message);
+  if (issue) return { kind: issue.kind === 'service' ? 'circuit' : 'network' };
   return { kind: 'unknown' };
 };
 

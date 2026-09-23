@@ -192,8 +192,8 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
           }),
         );
         onAfterRollback?.();
-      } catch {
-        message.error(snapUi.ROLLBACK_FAILED);
+      } catch (error) {
+        message.error(typeof error === 'string' ? error : snapUi.ROLLBACK_FAILED);
       } finally {
         setRollbackBusyId(null);
       }
