@@ -23,6 +23,7 @@ export const APP_ROUTES = {
   // resources
   APPLICATIONS: '/applications',
   APPLICATION_DETAILS: '/applications/:name/details',
+  INSIGHTS: '/insights',
   // access-and-permissions
   ROLES: '/management/roles',
   USERS: '/management/users',

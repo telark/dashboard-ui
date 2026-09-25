@@ -39,7 +39,7 @@ const DEFAULT_HISTORY: Application['history'] = {
   changeLog: [],
 };
 
-const DEFAULT_RESOURCE_SUMMARY: Application['resourceSummary'] = {
+export const DEFAULT_RESOURCE_SUMMARY: Application['resourceSummary'] = {
   Deployment: 0,
   StatefulSet: 0,
   DaemonSet: 0,

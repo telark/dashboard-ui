@@ -7,7 +7,7 @@ const AIInsightsSectionContent: React.FC = () => {
   const canView = usePermission('settings', 'Owner');
   if (!canView) {
     return (
-      <SettingsNoPermissionsCard description="You do not have permission to manage AI Insights settings." />
+      <SettingsNoPermissionsCard description="You do not have permission to manage the local analyzer." />
     );
   }
   return <AIInsightsSection />;

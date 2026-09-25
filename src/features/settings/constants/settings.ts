@@ -32,7 +32,6 @@ export interface SettingsSectionConfig {
 export const SETTINGS_CONSTANTS = {
   PAGE: {
     TITLE: 'Settings',
-    SUBTITLE: 'Manage your account and preferences',
   },
   SECTIONS: {
     PROFILE: {
@@ -61,8 +60,8 @@ export const SETTINGS_CONSTANTS = {
     },
     AI_INSIGHTS: {
       key: 'aiInsights' as const,
-      label: 'AI Insights',
-      description: 'Configure AI providers, key validation, and enrichment behavior.',
+      label: 'Local analyzer',
+      description: 'Enable the analyzer, choose its model, and control automatic runs.',
       icon: RobotOutlined,
     },
     AI_DATA: {

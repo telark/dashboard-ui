@@ -13,14 +13,22 @@ import SnapshotStorageBar from '../../../resources/applications/components/snaps
 import { getSnapshotInfos } from '../../../resources/applications/clients';
 import type { SnapshotStorageInfos } from '../../../resources/applications/models';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as C } from './constants';
-import { usePermission } from '../../../auth/hooks/permissions/permissionEngine';
+import {
+  ACTION_PERMISSIONS,
+  usePermission,
+} from '../../../auth/hooks/permissions/permissionEngine';
 
+const EDIT_SNAPSHOT_STORAGE_PERMISSION = ACTION_PERMISSIONS.settings.editSnapshotStorage;
 const SNAPSHOTS_MAX_PRESET = [3, 5, 10, 15, 20] as const;
 
 const SnapshotStorageSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
-  const canEditSnapshotStorage = usePermission('settings', 'Contributor');
+  const canEditSnapshotStorage = usePermission(
+    EDIT_SNAPSHOT_STORAGE_PERMISSION.scope,
+    EDIT_SNAPSHOT_STORAGE_PERMISSION.level,
+    EDIT_SNAPSHOT_STORAGE_PERMISSION.deny,
+  );
   const { message } = AntdApp.useApp();
 
   const [initialSnapshots, setInitialSnapshots] = useState<{ maxPerApp: number } | null>(null);

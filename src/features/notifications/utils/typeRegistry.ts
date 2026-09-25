@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   BellOutlined,
+  CheckCircleOutlined,
   HistoryOutlined,
   SafetyCertificateOutlined,
   TeamOutlined,
@@ -12,6 +13,11 @@ export interface TypeConfig {
   icon: React.ComponentType<{ style?: React.CSSProperties }>;
   navigateTo: (metadata: Record<string, unknown> | undefined) => string | null;
 }
+
+const planDetailsRoute = (m: Record<string, unknown> | undefined): string | null =>
+  typeof m?.planName === 'string'
+    ? APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(':name', encodeURIComponent(m.planName))
+    : null;
 
 export const TYPE_REGISTRY: Record<string, TypeConfig> = {
   [NOTIFICATION_TYPES.ROLLBACK_COMPLETED]: {
@@ -33,6 +39,14 @@ export const TYPE_REGISTRY: Record<string, TypeConfig> = {
   [NOTIFICATION_TYPES.GROUP_MEMBERSHIP_CHANGED]: {
     icon: TeamOutlined,
     navigateTo: () => APP_ROUTES.GROUPS,
+  },
+  [NOTIFICATION_TYPES.PLAN_APPROVAL_REQUESTED]: {
+    icon: SafetyCertificateOutlined,
+    navigateTo: planDetailsRoute,
+  },
+  [NOTIFICATION_TYPES.PLAN_APPROVAL_DECIDED]: {
+    icon: CheckCircleOutlined,
+    navigateTo: planDetailsRoute,
   },
 };
 

@@ -4,24 +4,30 @@ import {
   BarsOutlined,
   CheckSquareOutlined,
   ClearOutlined,
-  DownOutlined,
   EllipsisOutlined,
   HeartOutlined,
   SearchOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
-import { Dropdown, Tooltip } from 'antd';
-import { DEFAULT_COLORS, LIST_TOOLBAR, TOOLBAR_CONTROL } from '../../../../../constants';
-import { ListToolbar } from '../../../../../components/display/toolbar';
+import {
+  DEFAULT_COLORS,
+  LIST_TOOLBAR,
+  TOOLBAR_CONTROL,
+  getQuickFilterPillColors,
+} from '../../../../../constants';
+import { CompactQuickFilter, ListToolbar } from '../../../../../components/display/toolbar';
 import type { FilterChip, ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
-import { APPLICATIONS_UI } from '../../constants';
-import type { ApplicationLayoutMode } from '../../models';
-import { CONNECTIVITY_CONSTANTS } from '../../../../../constants/pages/connectivity';
+import { APPLICATION_CARD, APPLICATION_VIEW_MODES, APPLICATIONS_UI } from '../../constants';
+import type { ApplicationViewMode } from '../../models';
 
 const MORE_MENU_KEYS = {
-  LAYOUT: 'layout',
   BULK: 'bulk',
 } as const;
+
+const VIEW_MODE_ICON: Record<ApplicationViewMode, React.ReactNode> = {
+  grid: <AppstoreOutlined />,
+  list: <BarsOutlined />,
+};
 
 type HealthQuickFilter = 'all' | 'healthy' | 'degraded' | 'unhealthy';
 
@@ -33,8 +39,9 @@ interface ApplicationsToolbarProps {
   filterChips: FilterChip[];
   overflowCount: number;
   onRemoveFilterChip: (key: string, value: string) => void;
-  layoutMode: ApplicationLayoutMode;
-  onLayoutModeChange: (mode: ApplicationLayoutMode) => void;
+  viewMode: ApplicationViewMode;
+  onViewModeChange: (mode: ApplicationViewMode) => void;
+  showViewMode: boolean;
   hasActiveFilters: boolean;
   onClearAllFilters: () => void;
   bulkMode: boolean;
@@ -59,7 +66,7 @@ const HEALTH_PILLS = [
 
 const getPillAccent = (key: string): string => {
   if (key === 'healthy') return DEFAULT_COLORS.SUCCESS;
-  if (key === 'degraded') return CONNECTIVITY_CONSTANTS.COLORS.WARNING;
+  if (key === 'degraded') return DEFAULT_COLORS.WARNING;
   if (key === 'unhealthy') return DEFAULT_COLORS.DANGER;
   return DEFAULT_COLORS.TEXT_MUTED;
 };
@@ -70,69 +77,17 @@ interface HealthPillsProps {
   onChange: (next: HealthQuickFilter) => void;
 }
 
-// Four pills do not fit beside a full-width sidebar, so they fold into one
-// control whose dot keeps the active filter readable without its label.
-const CompactHealthPills: React.FC<Omit<HealthPillsProps, 'compact'>> = ({ active, onChange }) => {
-  const activePill = HEALTH_PILLS.find((pill) => pill.key === active) ?? HEALTH_PILLS[0];
-  const activeAccent = getPillAccent(active);
-  const title = `${APPLICATIONS_UI.TOOLBAR_HEALTH_FILTER}: ${activePill.label}`;
-  return (
-    <Dropdown
-      trigger={['click']}
-      menu={{
-        selectedKeys: [active],
-        items: HEALTH_PILLS.map((pill) => ({
-          key: pill.key,
-          label: pill.label,
-          icon: (
-            <span
-              style={{
-                display: 'inline-block',
-                width: 8,
-                height: 8,
-                // The menu's icon slot would otherwise stretch the dot into an oval.
-                minWidth: 8,
-                flexShrink: 0,
-                borderRadius: '50%',
-                background: getPillAccent(pill.key),
-              }}
-            />
-          ),
-        })),
-        onClick: ({ key }) => onChange(key as HealthQuickFilter),
-      }}
-    >
-      <Tooltip title={title}>
-        <button
-          type="button"
-          aria-label={title}
-          style={{
-            all: 'unset',
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 5,
-            height: TOOLBAR_CONTROL.HEIGHT,
-            boxSizing: 'border-box',
-            padding: '0 8px',
-            borderRadius: LIST_TOOLBAR.PILL_RADIUS_PX,
-            background: `${activeAccent}18`,
-            border: `1px solid ${activeAccent}`,
-            color: activeAccent,
-          }}
-        >
-          <HeartOutlined style={{ fontSize: 13 }} />
-          <DownOutlined style={{ fontSize: 9 }} />
-        </button>
-      </Tooltip>
-    </Dropdown>
-  );
-};
-
 const HealthPills: React.FC<HealthPillsProps> = ({ active, compact, onChange }) => {
   if (compact) {
-    return <CompactHealthPills active={active} onChange={onChange} />;
+    return (
+      <CompactQuickFilter
+        options={HEALTH_PILLS.map((pill) => ({ ...pill, accent: getPillAccent(pill.key) }))}
+        active={active}
+        title={APPLICATIONS_UI.TOOLBAR_HEALTH_FILTER}
+        icon={<HeartOutlined />}
+        onChange={onChange}
+      />
+    );
   }
   return (
     <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: '100%' }}>
@@ -153,9 +108,7 @@ const HealthPills: React.FC<HealthPillsProps> = ({ active, compact, onChange }) 
               boxSizing: 'border-box',
               padding: TOOLBAR_CONTROL.PADDING,
               borderRadius: LIST_TOOLBAR.PILL_RADIUS_PX,
-              background: isActive ? `${accent}18` : DEFAULT_COLORS.CHIP_CUSTOM_BG,
-              border: `1px solid ${isActive ? accent : 'transparent'}`,
-              color: isActive ? accent : DEFAULT_COLORS.TEXT_MUTED,
+              ...getQuickFilterPillColors(accent, isActive),
               fontSize: 12,
               fontWeight: 700,
               lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
@@ -178,8 +131,9 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
   filterChips,
   overflowCount,
   onRemoveFilterChip,
-  layoutMode,
-  onLayoutModeChange,
+  viewMode,
+  onViewModeChange,
+  showViewMode,
   hasActiveFilters,
   onClearAllFilters,
   bulkMode,
@@ -194,12 +148,6 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
   healthQuickFilter,
   onHealthQuickFilterChange,
 }) => {
-  const nextLayoutMode: ApplicationLayoutMode = layoutMode === 'single' ? 'double' : 'single';
-  const nextLayoutLabel =
-    nextLayoutMode === 'double'
-      ? APPLICATIONS_UI.TOOLBAR_LAYOUT_DOUBLE
-      : APPLICATIONS_UI.TOOLBAR_LAYOUT_SINGLE;
-
   const bulkActions: ToolbarConfig = useMemo(() => {
     const disabledNoSelection = selectedCount <= 0;
     return {
@@ -233,15 +181,9 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
 
   const handleMoreMenuClick = useCallback(
     (key: string) => {
-      if (key === MORE_MENU_KEYS.LAYOUT) {
-        onLayoutModeChange(nextLayoutMode);
-        return;
-      }
-      if (key === MORE_MENU_KEYS.BULK) {
-        onToggleBulkMode();
-      }
+      if (key === MORE_MENU_KEYS.BULK) onToggleBulkMode();
     },
-    [nextLayoutMode, onLayoutModeChange, onToggleBulkMode],
+    [onToggleBulkMode],
   );
 
   const toolbars: ToolbarConfig[] = useMemo(() => {
@@ -273,8 +215,28 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
         },
       ],
     };
-    // Layout is a set-once display preference and bulk is an occasional mode, so
-    // both sit behind the overflow to leave the toolbar for per-scan controls.
+    const view: ToolbarConfig = {
+      buttons: [
+        {
+          key: 'viewMode',
+          label: APPLICATION_CARD.VIEW_MODE_LABEL,
+          icon: VIEW_MODE_ICON[viewMode],
+          variant: 'ghost',
+          iconOnly: true,
+          dropdown: {
+            items: APPLICATION_VIEW_MODES.map((mode) => ({
+              key: mode.key,
+              label: mode.label,
+              icon: VIEW_MODE_ICON[mode.key],
+            })),
+            selectedKeys: [viewMode],
+            onItemClick: (key) => onViewModeChange(key === 'list' ? 'list' : 'grid'),
+          },
+        },
+      ],
+    };
+    // Bulk is an occasional mode, so it sits behind the overflow to leave the
+    // toolbar for per-scan controls.
     const more: ToolbarConfig = {
       buttons: [
         {
@@ -285,34 +247,28 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
           dropdown: {
             items: [
               {
-                key: MORE_MENU_KEYS.LAYOUT,
-                icon: nextLayoutMode === 'double' ? <AppstoreOutlined /> : <BarsOutlined />,
-                label: nextLayoutLabel,
+                key: MORE_MENU_KEYS.BULK,
+                icon: <CheckSquareOutlined />,
+                label: APPLICATIONS_UI.TOOLBAR_BULK_SELECT,
               },
-              ...(bulkMode
-                ? []
-                : [
-                    {
-                      key: MORE_MENU_KEYS.BULK,
-                      icon: <CheckSquareOutlined />,
-                      label: APPLICATIONS_UI.TOOLBAR_BULK_SELECT,
-                    },
-                  ]),
             ],
             onItemClick: handleMoreMenuClick,
           },
         },
       ],
     };
-    return bulkMode ? [search, exitBulk, more] : [search, more];
+    // More would be empty in bulk mode: it only holds Bulk.
+    const views = showViewMode ? [view] : [];
+    return bulkMode ? [search, ...views, exitBulk] : [search, ...views, more];
   }, [
     bulkMode,
     handleMoreMenuClick,
-    nextLayoutLabel,
-    nextLayoutMode,
     onSearchChange,
     onToggleBulkMode,
+    onViewModeChange,
     searchValue,
+    showViewMode,
+    viewMode,
   ]);
 
   return (

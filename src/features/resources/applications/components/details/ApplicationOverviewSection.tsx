@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Tooltip } from 'antd';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, getPillSurface } from '../../../../../constants';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../components/display/table/RowTag';
@@ -20,8 +20,8 @@ const MAX_IMAGES = 8;
 const chipStyle: React.CSSProperties = {
   display: 'inline-block',
   maxWidth: '100%',
-  background: APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG.background,
-  color: APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG.color,
+  ...getPillSurface(),
+  color: DEFAULT_COLORS.PILL_TEXT,
   padding: '2px 10px',
   borderRadius: 999,
   fontWeight: 700,

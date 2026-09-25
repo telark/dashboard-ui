@@ -4,9 +4,6 @@ export const USERS_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Members',
     HEADER_SUBTITLE: 'Manage existing members',
-    VIEW_SUBTITLE: 'View user details',
-    EDIT_SUBTITLE: 'Edit user details',
-    CREATE_SUBTITLE: 'Create a new user',
     NOT_FOUND: 'User not found',
     UPDATE_BUTTON: 'Update User',
     CREATE_BUTTON: 'Add New Member',
@@ -107,9 +104,7 @@ export const USERS_CONSTANTS = {
     },
     FORM: {
       TITLE: 'Add New Member',
-      SUBTITLE: 'Add a new member',
       SECTION_TITLE: 'User Details',
-      SECTION_SUBTITLE: 'Provide the user information.',
       BUTTON_TEXT: 'Add New Member',
       SECTIONS: {
         USER_DETAILS: 'User Details',
@@ -135,7 +130,6 @@ export const USERS_CONSTANTS = {
       },
       MANAGE_STATE: {
         TITLE: 'Manage account state',
-        SUBTITLE: (name: string) => `Activate or suspend ${name}`,
         SUBMIT_BUTTON: 'Update state',
         FIELD_LABEL: 'Account state',
         OPTION_ACTIVE: 'Active',
@@ -143,12 +137,10 @@ export const USERS_CONSTANTS = {
       },
       CREATE: {
         TITLE: 'Add New Member',
-        SUBTITLE: 'Add a new member to the system',
         SUBMIT_BUTTON: 'Add New Member',
       },
       MANAGE_ROLE: {
         TITLE: 'Manage Roles',
-        SUBTITLE: (userName: string) => `View and manage roles for ${userName}`,
         SUBMIT_BUTTON: 'Update roles',
         SEARCH_PLACEHOLDER: 'Search roles by name or description...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
@@ -159,7 +151,6 @@ export const USERS_CONSTANTS = {
       },
       MANAGE_GROUP: {
         TITLE: 'Manage Groups',
-        SUBTITLE: (userName: string) => `View and manage groups for ${userName}`,
         SUBMIT_BUTTON: 'Update groups',
         SEARCH_PLACEHOLDER: 'Search groups by name or description...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
@@ -185,7 +176,7 @@ export const USERS_CONSTANTS = {
           MANAGE_GROUPS: 'Manage Groups',
         },
       },
-      COUNT_SUFFIX: 'members',
+      COUNT_SUFFIX: { one: 'member', other: 'members' },
       MORE: 'More',
       BULK: {
         SELECT: 'Bulk',

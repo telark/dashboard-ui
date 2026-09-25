@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal } from 'antd';
 import { AiOutlineClose } from 'react-icons/ai';
 import type { BaseModalProps } from '../../../../interfaces/layout/modal';
+import { useOpenedOnce } from '../../../../hooks/layout/useOpenedOnce';
 
 const BaseModal: React.FC<BaseModalProps> = ({
   open,
@@ -12,6 +13,9 @@ const BaseModal: React.FC<BaseModalProps> = ({
   showCloseIcon = true,
   styles,
 }) => {
+  const opened = useOpenedOnce(open);
+
+  if (!opened) return null;
   return (
     <Modal
       open={open}

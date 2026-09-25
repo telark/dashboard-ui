@@ -7,6 +7,7 @@ export {
 export {
   useInitializePermissions,
   stopPermissionsPolling,
+  dropForeignPermissions,
 } from './permissions/useInitializePermissions';
 
 export { useSessionsList, type UseSessionsListResult } from './useSessionsList';

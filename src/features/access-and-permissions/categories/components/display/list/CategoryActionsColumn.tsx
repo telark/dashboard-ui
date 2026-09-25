@@ -35,12 +35,12 @@ const PERMISSIONS_BY_SCOPE: Record<
     delete: ACTION_PERMISSIONS.roles.deleteCategory,
   },
   [CC.SCOPES.PLAN_ENVIRONMENTS]: {
-    edit: ACTION_PERMISSIONS.protectionPlans.editTaxonomy,
-    delete: ACTION_PERMISSIONS.protectionPlans.editTaxonomy,
+    edit: ACTION_PERMISSIONS.protectionPlans.editCategory,
+    delete: ACTION_PERMISSIONS.protectionPlans.deleteCategory,
   },
   [CC.SCOPES.PLAN_TAGS]: {
-    edit: ACTION_PERMISSIONS.protectionPlans.editTaxonomy,
-    delete: ACTION_PERMISSIONS.protectionPlans.editTaxonomy,
+    edit: ACTION_PERMISSIONS.protectionPlans.editCategory,
+    delete: ACTION_PERMISSIONS.protectionPlans.deleteCategory,
   },
 };
 

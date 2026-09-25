@@ -50,13 +50,7 @@ const renderGroupTags = (item: GroupInheritedRole): React.ReactNode => (
     }}
   >
     {item.fromGroups.map((group: Group) => (
-      <RowTag
-        key={group.id}
-        text={CapitalizeFirstLetter(group.name)}
-        background={DEFAULT_COLORS.CHIP_ON_SURFACE_BG}
-        color={DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT}
-        fontSize={12}
-      />
+      <RowTag key={group.id} text={CapitalizeFirstLetter(group.name)} fontSize={12} />
     ))}
   </div>
 );

@@ -73,14 +73,7 @@ export const useViewGroupPanelData = ({
     return [
       {
         label: GC.LABELS.VIEW_LABELS.CATEGORY,
-        value: (
-          <RowTag
-            text={categoryName}
-            background={DEFAULT_COLORS.CHIP_ON_SURFACE_BG}
-            color={DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT}
-            fontSize={12}
-          />
-        ),
+        value: <RowTag text={categoryName} fontSize={12} />,
       },
       {
         label: 'Creation Date',

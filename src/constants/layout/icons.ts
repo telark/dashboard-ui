@@ -12,6 +12,7 @@ import {
   AiOutlineCheckCircle,
   AiOutlineContainer,
   AiOutlineFileProtect,
+  AiOutlineBulb,
 } from 'react-icons/ai';
 import { BsFillCpuFill, BsMemory, BsKey, BsIntersect } from 'react-icons/bs';
 
@@ -21,6 +22,7 @@ export const Icons = {
   Grouper: AiOutlineCluster,
   Workload: AiOutlineAppstore,
   Application: BsIntersect,
+  Insights: AiOutlineBulb,
   Bridge: AiOutlineApi,
   User: AiOutlineUser,
   Group: AiOutlineTeam,

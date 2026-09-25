@@ -9,7 +9,7 @@ import { FilterPanel } from '../../../../../../components/display/panels/filter'
 import { FilterButton, ToggleButton } from '../../../../../../components/display/buttons';
 import { SearchInput } from '../../../../../../components/display/inputs';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
-import { Icons } from '../../../../../../constants';
+import { Icons, SLIDE_OUT } from '../../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { useManageUserRolePanel } from '../../../hooks/panels/role/useManageUserRolePanel';
 import { useDeassignUserRole } from '../../../hooks/panels/role/useDeassignUserRole';
@@ -179,8 +179,8 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
       <SlideOutPanel
         open={open}
         onClose={onClose}
-        title={UC.LABELS.PANELS.MANAGE_ROLE.TITLE}
-        subtitle={UC.LABELS.PANELS.MANAGE_ROLE.SUBTITLE(
+        title={SLIDE_OUT.ENTITY_TITLE(
+          UC.LABELS.PANELS.MANAGE_ROLE.TITLE,
           CapitalizeFirstLetter(user.fullname || user.username),
         )}
         width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}

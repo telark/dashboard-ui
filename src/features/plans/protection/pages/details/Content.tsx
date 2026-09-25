@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { Button, Tooltip } from 'antd';
-import { FileTextOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ReloadOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { DEFAULT_COLORS, HEADER_LAYOUT, TIME_FORMATS } from '../../../../../constants';
 import { formatDateTime } from '../../../../../utils/shared/time';
@@ -33,6 +33,8 @@ import {
 } from '../../constants/protectionPlans';
 import type { ProtectionPlan } from '../../models';
 import { usePlanTaxonomies } from '../../hooks/usePlanTaxonomies';
+import { isRejected } from '../../utils/phaseRules';
+import { encodeResourceKey } from '../../utils/planFormValues';
 import { getCategoryName } from '../../../../access-and-permissions/categories/utils/helpers';
 
 const AvatarRing: React.FC<{
@@ -64,12 +66,16 @@ interface ProtectionPlanDetailsContentProps {
   editing: boolean;
   cancelling: boolean;
   reactivating: boolean;
+  approving: boolean;
+  rejecting: boolean;
   deleting: boolean;
   refreshingHealth: boolean;
   onDuplicate: () => void;
   onEdit: () => void;
   onCancel: () => void;
   onReactivate: () => void;
+  onApprove: () => void;
+  onReject: () => void;
   onDelete: () => void;
   onRefreshHealth: () => void;
 }
@@ -84,28 +90,47 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     editing,
     cancelling,
     reactivating,
+    approving,
+    rejecting,
     deleting,
     refreshingHealth,
     onDuplicate,
     onEdit,
     onCancel,
     onReactivate,
+    onApprove,
+    onReject,
     onDelete,
     onRefreshHealth,
   }) => {
-    const phaseLabel = PPC.LABELS.PHASE_LABELS[plan.phase] ?? plan.phase;
+    const phaseLabel = isRejected(plan)
+      ? PPC.LABELS.PHASE_INFO.REJECTED_LABEL
+      : (PPC.LABELS.PHASE_LABELS[plan.phase] ?? plan.phase);
     const dotColor = PHASE_DOT_COLOR[plan.phase] ?? PHASE_DOT_COLOR.draft;
-    const health = usePlanHealth(plan.id, `${plan.phase}:${plan.lastUpdatedAt ?? ''}`);
-    const violations = usePlanViolations(plan.id);
-    const reports = usePlanReports(plan.id, `${plan.phase}:${plan.lastUpdatedAt ?? ''}`);
-    const canGenerateReport = usePermission(
-      ACTION_PERMISSIONS.protectionPlans.cancel.scope,
-      ACTION_PERMISSIONS.protectionPlans.cancel.level,
-      ACTION_PERMISSIONS.protectionPlans.cancel.deny,
+    const revision = `${plan.phase}:${plan.lastUpdatedAt ?? ''}`;
+    const health = usePlanHealth(plan.id, revision);
+    const canViewViolations = usePermission(
+      ACTION_PERMISSIONS.protectionPlans.viewViolations.scope,
+      ACTION_PERMISSIONS.protectionPlans.viewViolations.level,
+      ACTION_PERMISSIONS.protectionPlans.viewViolations.deny,
     );
-    const reportNotStarted =
-      plan.phase === 'draft' || plan.phase === 'scheduled' || !plan.startedAt;
-    const currentUserId = getCurrentUser()?.id;
+    const canViewReports = usePermission(
+      ACTION_PERMISSIONS.protectionPlans.viewReports.scope,
+      ACTION_PERMISSIONS.protectionPlans.viewReports.level,
+      ACTION_PERMISSIONS.protectionPlans.viewReports.deny,
+    );
+    const canDownloadReport = usePermission(
+      ACTION_PERMISSIONS.protectionPlans.downloadReport.scope,
+      ACTION_PERMISSIONS.protectionPlans.downloadReport.level,
+      ACTION_PERMISSIONS.protectionPlans.downloadReport.deny,
+    );
+    const violations = usePlanViolations(plan.id, canViewViolations);
+    const reports = usePlanReports(plan.id, revision, canViewReports);
+    const { generate: generateReport } = reports;
+    const handleGenerateReport = useCallback(() => {
+      const userId = getCurrentUser()?.id;
+      if (userId) void generateReport(userId);
+    }, [generateReport]);
     const violationsFilterOptions: Array<{ value: ViolationsResultFilter; label: string }> = [
       { value: 'all', label: PPC.LABELS.VIOLATIONS.FILTER_ALL },
       { value: 'fail', label: PPC.LABELS.VIOLATION_RESULT_LABELS.fail },
@@ -152,6 +177,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
       const tags = (plan.tagIDs ?? [])
         .map((id) => ({ id, name: taxonomies.tags.find((c) => c.id === id)?.name }))
         .filter((t): t is { id: string; name: string } => Boolean(t.name));
+      const approval = plan.approval;
       return [
         { k: 'name', label: PPC.LABELS.DETAIL_PAGE.FIELDS.NAME, value: plan.name },
         {
@@ -186,8 +212,6 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                   <RowTag
                     key={id}
                     text={name}
-                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                    color={DEFAULT_COLORS.TEXT_MUTED}
                     fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
                     capitalize={false}
                   />
@@ -195,6 +219,41 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
               </div>
             ),
         },
+        {
+          k: 'execution',
+          label: PPC.LABELS.DETAIL_PAGE.FIELDS.EXECUTION,
+          value: PPC.LABELS.EXECUTION_LABELS[plan.approvalMode ?? 'automatic'],
+        },
+        ...(approval
+          ? [
+              {
+                k: 'requested',
+                label: PPC.LABELS.DETAIL_PAGE.FIELDS.REQUESTED_BY,
+                value: renderUserAndTime(approval.requestedBy, approval.requestedAt),
+              },
+            ]
+          : []),
+        ...(approval?.decidedBy
+          ? [
+              {
+                k: 'decided',
+                label:
+                  approval.state === 'rejected'
+                    ? PPC.LABELS.DETAIL_PAGE.FIELDS.REJECTED_BY
+                    : PPC.LABELS.DETAIL_PAGE.FIELDS.APPROVED_BY,
+                value: renderUserAndTime(approval.decidedBy, approval.decidedAt),
+              },
+            ]
+          : []),
+        ...(approval?.comment
+          ? [
+              {
+                k: 'decisionComment',
+                label: PPC.LABELS.DETAIL_PAGE.FIELDS.DECISION_COMMENT,
+                value: approval.comment,
+              },
+            ]
+          : []),
         { k: 'mode', label: PPC.LABELS.DETAIL_PAGE.FIELDS.MODE, value: plan.mode },
         {
           k: 'timeMode',
@@ -251,6 +310,15 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
 
     const scopeItems =
       plan.scope.type === 'applications' ? plan.scope.applicationIds : plan.scope.namespaces;
+    const excludedKinds = plan.scope.exclusions?.kinds ?? [];
+    const excludedResources = plan.scope.exclusions?.resources ?? [];
+    const renderChips = (chips: { key: string; text: string }[]) => (
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+        {chips.map((chip) => (
+          <RowTag key={chip.key} text={chip.text} fontSize={11} capitalize={false} />
+        ))}
+      </div>
+    );
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -301,6 +369,12 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                 )}
               </span>
             )}
+            {plan.phase === 'pending_approval' && plan.approval && (
+              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+                {PPC.LABELS.PHASE_INFO.AWAITING_APPROVAL_PREFIX}{' '}
+                <TimeAgo date={plan.approval.requestedAt} />
+              </span>
+            )}
             {plan.phase === 'active' && plan.health && <HealthBadge health={plan.health} />}
             {plan.phase === 'active' && plan.timeMode === 'time_range' && plan.timeRange?.endAt && (
               <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
@@ -322,14 +396,20 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             editing={editing}
             cancelling={cancelling}
             reactivating={reactivating}
+            approving={approving}
+            rejecting={rejecting}
             deleting={deleting}
             refreshingHealth={refreshingHealth}
             onDuplicate={onDuplicate}
             onEdit={onEdit}
             onCancel={onCancel}
             onReactivate={onReactivate}
+            onApprove={onApprove}
+            onReject={onReject}
             onDelete={onDelete}
             onRefreshHealth={onRefreshHealth}
+            generatingReport={reports.generating}
+            onGenerateReport={handleGenerateReport}
           />
         </div>
 
@@ -396,8 +476,6 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                         <RowTag
                           key={item}
                           text={item.toLowerCase()}
-                          background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                          color={DEFAULT_COLORS.TEXT_MUTED}
                           fontSize={11}
                           capitalize={false}
                         />
@@ -405,6 +483,31 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                     </div>
                   ),
               },
+              ...(excludedKinds.length > 0
+                ? [
+                    {
+                      k: 'excludedKinds',
+                      label: PPC.LABELS.DETAIL_PAGE.FIELDS.EXCLUDED_KINDS,
+                      value: renderChips(
+                        excludedKinds.map((kind) => ({ key: kind, text: kind.toLowerCase() })),
+                      ),
+                    },
+                  ]
+                : []),
+              ...(excludedResources.length > 0
+                ? [
+                    {
+                      k: 'excludedResources',
+                      label: PPC.LABELS.DETAIL_PAGE.FIELDS.EXCLUDED_RESOURCES,
+                      value: renderChips(
+                        excludedResources.map((r) => ({
+                          key: encodeResourceKey(r),
+                          text: `${r.kind.toLowerCase()} \u00b7 ${r.name}`,
+                        })),
+                      ),
+                    },
+                  ]
+                : []),
             ]}
           />
         </SettingsCard>
@@ -455,8 +558,6 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                         <RowTag
                           key={key}
                           text={`${key}: ${Array.isArray(value) ? value.join(', ') : String(value)}`}
-                          background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                          color={DEFAULT_COLORS.TEXT_SECONDARY}
                           fontSize={11}
                         />
                       ))}
@@ -503,57 +604,48 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           </SettingsCard>
         )}
 
-        <SettingsCard
-          title={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_TITLE}
-          description={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_DESCRIPTION}
-          headerAction={
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Select
-                value={violations.resultFilter}
-                onChange={(v) => violations.setResultFilter(v)}
-                options={violationsFilterOptions}
-                size="small"
-                style={{ width: 140 }}
-                placeholder={PPC.LABELS.VIOLATIONS.FILTER_PLACEHOLDER}
-              />
-              <Tooltip title={PPC.LABELS.VIOLATIONS.REFRESH}>
-                <Button
-                  type="text"
-                  shape="circle"
+        {canViewViolations && (
+          <SettingsCard
+            title={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_TITLE}
+            description={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_DESCRIPTION}
+            headerAction={
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Select
+                  value={violations.resultFilter}
+                  onChange={(v) => violations.setResultFilter(v)}
+                  options={violationsFilterOptions}
                   size="small"
-                  icon={<ReloadOutlined />}
-                  onClick={violations.refresh}
-                  style={COMPACT_REFRESH_BUTTON_STYLE}
-                  aria-label={PPC.LABELS.VIOLATIONS.REFRESH}
+                  style={{ width: 140 }}
+                  placeholder={PPC.LABELS.VIOLATIONS.FILTER_PLACEHOLDER}
                 />
-              </Tooltip>
-            </div>
-          }
-        >
-          <ViolationsSection
-            data={violations.data}
-            loading={violations.loading}
-            error={violations.error}
-            mode={plan.mode}
-          />
-        </SettingsCard>
+                <Tooltip title={PPC.LABELS.VIOLATIONS.REFRESH}>
+                  <Button
+                    type="text"
+                    shape="circle"
+                    size="small"
+                    icon={<ReloadOutlined />}
+                    onClick={violations.refresh}
+                    style={COMPACT_REFRESH_BUTTON_STYLE}
+                    aria-label={PPC.LABELS.VIOLATIONS.REFRESH}
+                  />
+                </Tooltip>
+              </div>
+            }
+          >
+            <ViolationsSection
+              data={violations.data}
+              loading={violations.loading}
+              error={violations.error}
+              mode={plan.mode}
+            />
+          </SettingsCard>
+        )}
 
-        <SettingsCard
-          title={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_TITLE}
-          description={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_DESCRIPTION}
-          headerAction={
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Tooltip title={reportNotStarted ? PPC.LABELS.REPORTS.NOT_STARTED_HINT : undefined}>
-                <Button
-                  type="primary"
-                  icon={<FileTextOutlined />}
-                  loading={reports.generating}
-                  disabled={reportNotStarted || !canGenerateReport || !currentUserId}
-                  onClick={() => currentUserId && reports.generate(currentUserId)}
-                >
-                  {PPC.LABELS.REPORTS.GENERATE}
-                </Button>
-              </Tooltip>
+        {canViewReports && (
+          <SettingsCard
+            title={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_TITLE}
+            description={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_DESCRIPTION}
+            headerAction={
               <Tooltip title={PPC.LABELS.REPORTS.REFRESH}>
                 <Button
                   type="text"
@@ -565,20 +657,21 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                   aria-label={PPC.LABELS.REPORTS.REFRESH}
                 />
               </Tooltip>
-            </div>
-          }
-        >
-          <ReportsSection
-            data={reports.reports}
-            loading={reports.loading}
-            error={reports.error}
-            downloading={reports.downloading}
-            phase={plan.phase}
-            planName={plan.name}
-            users={users}
-            onDownload={reports.download}
-          />
-        </SettingsCard>
+            }
+          >
+            <ReportsSection
+              data={reports.reports}
+              loading={reports.loading}
+              error={reports.error}
+              downloading={reports.downloading}
+              phase={plan.phase}
+              planName={plan.name}
+              users={users}
+              canDownload={canDownloadReport}
+              onDownload={reports.download}
+            />
+          </SettingsCard>
+        )}
       </div>
     );
   },

@@ -3,10 +3,7 @@ import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
 import { toTimestamp } from '../../../../../utils/shared/time';
 
 export type PasskeysSortKey =
-  | 'deviceName'
-  | 'deviceType'
-  | 'creationTimestamp'
-  | 'lastUsedTimestamp';
+  'deviceName' | 'deviceType' | 'creationTimestamp' | 'lastUsedTimestamp';
 
 type Comparator<T> = (a: T, b: T) => number;
 type SortOrder = 'asc' | 'desc';

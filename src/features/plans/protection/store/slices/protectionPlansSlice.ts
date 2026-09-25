@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { keepUnchanged } from '../../../../../store/keepUnchanged';
 import type { PlanPhaseQuickFilter, ProtectionPlansState } from '../../models';
 import {
   fetchProtectionPlansThunk,
@@ -6,6 +7,7 @@ import {
   fetchProtectionPlanTemplatesThunk,
   preparePlanThunk,
   cancelPlanThunk,
+  decidePlanThunk,
   deletePlanThunk,
   duplicatePlanThunk,
   reactivatePlanThunk,
@@ -52,7 +54,7 @@ const protectionPlansSlice = createSlice({
       })
       .addCase(fetchProtectionPlansThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.plans = action.payload;
+        state.plans = keepUnchanged(state.plans, action.payload, (plan) => plan.id);
       })
       .addCase(fetchProtectionPlansThunk.rejected, (state, action) => {
         state.loading = false;
@@ -97,6 +99,12 @@ const protectionPlansSlice = createSlice({
         state.plans = [action.payload, ...state.plans];
       })
       .addCase(reactivatePlanThunk.fulfilled, (state, action) => {
+        state.plans = state.plans.map((p) => (p.id === action.payload.id ? action.payload : p));
+        if (state.details?.id === action.payload.id) {
+          state.details = action.payload;
+        }
+      })
+      .addCase(decidePlanThunk.fulfilled, (state, action) => {
         state.plans = state.plans.map((p) => (p.id === action.payload.id ? action.payload : p));
         if (state.details?.id === action.payload.id) {
           state.details = action.payload;

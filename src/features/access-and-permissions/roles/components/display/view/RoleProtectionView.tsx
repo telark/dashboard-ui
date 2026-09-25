@@ -15,8 +15,6 @@ const SECTION_TITLE_STYLE: React.CSSProperties = {
 };
 
 const tagStyle = {
-  background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
-  color: DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT,
   fontSize: 12 as const,
 };
 
@@ -51,12 +49,7 @@ const RoleProtectionView: React.FC<RoleProtectionViewProps> = ({ role }) => {
       {rows.map(({ label, enabled }) => (
         <div key={label} style={VIEW.DETAILS.ROW}>
           <span style={VIEW.DETAILS.LABEL}>{label}</span>
-          <RowTag
-            text={enabled ? 'Yes' : 'No'}
-            background={tagStyle.background}
-            color={tagStyle.color}
-            fontSize={tagStyle.fontSize}
-          />
+          <RowTag text={enabled ? 'Yes' : 'No'} fontSize={tagStyle.fontSize} />
         </div>
       ))}
     </div>

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { Button, Checkbox, Dropdown, Tooltip } from 'antd';
 import {
   CheckCircleOutlined,
@@ -11,17 +11,35 @@ import {
   SyncOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, APP_ROUTES } from '../../../../../../constants';
+import {
+  APP_ROUTES,
+  CARD_ASIDE_STYLE,
+  CARD_HEADER_STYLE,
+  CARD_IDENTITY_STYLE,
+  CARD_LAYOUT,
+  CARD_TAG_ROW_STYLE,
+  CARD_TITLE_COLUMN_STYLE,
+  CARD_TITLE_STYLE,
+  DEFAULT_COLORS,
+  Icons,
+  TRUNCATE_STYLE,
+  getCardMenuButtonStyle,
+  getPillSurface,
+} from '../../../../../../constants';
 import type { Application, SyncStatusValue } from '../../../models';
-import { APPLICATIONS_UI, SYNC_STATUS_VALUE } from '../../../constants';
+import {
+  APPLICATION_CARD,
+  APPLICATION_HEALTH_ACCENT,
+  APPLICATIONS_UI,
+  SYNC_STATUS_VALUE,
+} from '../../../constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
+import { CardIconChip, CardStatusPill } from '../../../../../../components/display/card';
 import FancySpinner from '../../../../../../components/animation/FancySpinner';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../../../../store';
 import { resetApplicationThunk } from '../../../store';
-import { getApplicationHealthAccentColor } from '../../../utils/healthVisual';
 import { forceSyncApplication } from '../../../utils/management/sync';
 import ApplicationResetModal from '../../reset/ApplicationResetModal';
 import {
@@ -31,7 +49,6 @@ import {
 
 interface ApplicationCardHeaderProps {
   application: Application;
-  primaryNamespace: string;
   onEditApplication: (application: Application) => void;
   bulkMode?: boolean;
   selected?: boolean;
@@ -40,37 +57,28 @@ interface ApplicationCardHeaderProps {
 
 const SYNC_TAG_CONFIG: Record<
   SyncStatusValue,
-  { bg: string; color: string; icon: React.ReactNode; label: string }
+  { accent?: string; icon: React.ReactNode; label: string }
 > = {
   syncing: {
-    bg: DEFAULT_COLORS.CHIP_CUSTOM_BG,
-    color: DEFAULT_COLORS.TEXT_MUTED,
-    icon: <FancySpinner size={12} ringThickness={2} color={DEFAULT_COLORS.TEXT_MUTED} />,
+    icon: <FancySpinner size={12} ringThickness={2} color={DEFAULT_COLORS.PILL_TEXT} />,
     label: APPLICATIONS_UI.CARD.SYNC_STATUS.SYNCING,
   },
   success: {
-    bg: DEFAULT_COLORS.SUCCESS_TINT,
-    color: DEFAULT_COLORS.SUCCESS,
+    accent: DEFAULT_COLORS.SUCCESS,
     icon: <CheckCircleOutlined style={{ fontSize: 11 }} />,
     label: APPLICATIONS_UI.CARD.SYNC_STATUS.SUCCESS,
   },
   failed: {
-    bg: DEFAULT_COLORS.DANGER_TINT,
-    color: DEFAULT_COLORS.DANGER,
+    accent: DEFAULT_COLORS.DANGER,
     icon: <CloseCircleOutlined style={{ fontSize: 11 }} />,
     label: APPLICATIONS_UI.CARD.SYNC_STATUS.FAILED,
   },
 };
 
+const ApplicationIcon = Icons.Application;
+
 const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
-  ({
-    application,
-    primaryNamespace,
-    onEditApplication,
-    bulkMode = false,
-    selected = false,
-    onToggleSelect,
-  }) => {
+  ({ application, onEditApplication, bulkMode = false, selected = false, onToggleSelect }) => {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const syncingFlag = useSelector((s: RootState) =>
@@ -107,7 +115,9 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
       ACTION_PERMISSIONS.applications.delete.deny,
     );
 
-    const accent = getApplicationHealthAccentColor(application.health?.status);
+    const accent =
+      APPLICATION_HEALTH_ACCENT[(application.health?.status ?? '').toLowerCase()] ??
+      DEFAULT_COLORS.DEFAULT;
     const statusText = application.health?.status || APPLICATIONS_UI.FALLBACKS.UNKNOWN;
 
     const detailsPath = APP_ROUTES.APPLICATION_DETAILS.replace(':name', application.name);
@@ -160,22 +170,6 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
       }
     }, [application.name, dispatch, navigate]);
 
-    const menuButtonStyle = useMemo(
-      () => ({
-        color: menuOpen ? DEFAULT_COLORS.TEXT_PRIMARY : DEFAULT_COLORS.ICON_SECONDARY,
-        flexShrink: 0,
-        width: 30,
-        height: 30,
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 10,
-        background: menuOpen ? DEFAULT_COLORS.BACKGROUND_HOVER : 'transparent',
-        transition: 'background 120ms ease, color 120ms ease',
-      }),
-      [menuOpen],
-    );
-
     const descriptionText = String(application.description || '').trim();
     const labelWithTooltip = (text: string, tooltip: string | undefined) =>
       tooltip ? (
@@ -185,134 +179,98 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
       ) : (
         text
       );
-    const bulkTextIndent = 22;
+    const title = application.displayName || application.name;
+    const namespaceNames = (application.namespaces?.items ?? []).map((item) => item.name);
+    const shownNamespaces = namespaceNames.slice(0, CARD_LAYOUT.MAX_TARGET_TAGS);
+    const hiddenNamespaces = namespaceNames.length - shownNamespaces.length;
 
     return (
       <>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            gap: 10,
-            flexWrap: 'wrap',
-          }}
-        >
-          <div style={{ minWidth: 0, flex: '1 1 180px' }}>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                gap: bulkMode ? 6 : 8,
-                rowGap: 6,
-              }}
-            >
-              {bulkMode ? (
-                <span
-                  style={{ display: 'inline-flex', alignItems: 'center' }}
-                  onClick={(e) => e.stopPropagation()}
-                  onKeyDown={(e) => e.stopPropagation()}
-                >
-                  <Checkbox
-                    checked={selected}
-                    onChange={(e) => onToggleSelect?.(application.name, e.target.checked)}
-                  />
-                </span>
-              ) : null}
-              <h3
-                style={{
-                  margin: 0,
-                  fontSize: 17,
-                  fontWeight: 700,
-                  color: DEFAULT_COLORS.TEXT_PRIMARY,
-                  lineHeight: 1.25,
-                }}
+        <div style={CARD_HEADER_STYLE}>
+          <div style={CARD_IDENTITY_STYLE}>
+            {bulkMode ? (
+              <span
+                style={{ display: 'inline-flex', alignItems: 'center' }}
+                onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => e.stopPropagation()}
               >
-                {application.displayName || application.name}
-              </h3>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <span
-                  aria-hidden
-                  style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: '50%',
-                    background: accent,
-                    boxShadow: `0 0 0 3px ${DEFAULT_COLORS.CHIP_CUSTOM_BG}`,
-                    flexShrink: 0,
-                  }}
+                <Checkbox
+                  checked={selected}
+                  onChange={(e) => onToggleSelect?.(application.name, e.target.checked)}
                 />
-                <span
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: DEFAULT_COLORS.TEXT_MUTED,
-                    lineHeight: 1.2,
-                    textTransform: 'capitalize',
-                  }}
-                >
-                  {statusText}
-                </span>
               </span>
-            </div>
-            <p
-              style={{
-                margin: '1px 0 0',
-                paddingLeft: bulkMode ? bulkTextIndent : 0,
-                fontSize: 12,
-                fontWeight: 500,
-                color: DEFAULT_COLORS.TEXT_MUTED,
-                lineHeight: 1.3,
-                wordBreak: 'break-word',
-              }}
-            >
-              {descriptionText || application.name}
-            </p>
-          </div>
-          {/* Holds its size and drops to its own line rather than being squeezed
-              over the title. */}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              flexShrink: 0,
-              marginLeft: 'auto',
-            }}
-          >
-            {syncStatus ? (
-              <Tooltip title={syncStatus === 'failed' && syncLastError ? syncLastError : undefined}>
+            ) : null}
+            <CardIconChip icon={<ApplicationIcon />} accent={accent} />
+            <span style={CARD_TITLE_COLUMN_STYLE}>
+              <span title={title} style={CARD_TITLE_STYLE}>
+                {title}
+              </span>
+              {descriptionText && (
                 <span
+                  title={descriptionText}
                   style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 5,
-                    background: SYNC_TAG_CONFIG[syncStatus].bg,
-                    color: SYNC_TAG_CONFIG[syncStatus].color,
-                    padding: '2px 10px',
-                    borderRadius: 999,
-                    fontWeight: 700,
-                    fontSize: 11,
-                    whiteSpace: 'nowrap',
+                    ...TRUNCATE_STYLE,
+                    fontSize: CARD_LAYOUT.META_FONT_SIZE_PX,
+                    color: DEFAULT_COLORS.TEXT_MUTED,
                   }}
                 >
-                  {SYNC_TAG_CONFIG[syncStatus].icon}
-                  <span>{SYNC_TAG_CONFIG[syncStatus].label}</span>
-                  {!isSyncing && syncCompletedAt ? (
-                    <span style={{ fontWeight: 500 }}>
-                      · <TimeAgo date={syncCompletedAt} />
-                    </span>
-                  ) : null}
+                  {descriptionText}
                 </span>
-              </Tooltip>
-            ) : null}
-            <RowTag
-              text={primaryNamespace}
-              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-              color={DEFAULT_COLORS.TEXT_MUTED}
-              fontSize={11}
-            />
+              )}
+              <span style={CARD_TAG_ROW_STYLE}>
+                {shownNamespaces.map((namespace) => (
+                  <RowTag
+                    key={namespace}
+                    text={namespace}
+                    capitalize={false}
+                    fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
+                    truncate
+                  />
+                ))}
+                {hiddenNamespaces > 0 && (
+                  <RowTag
+                    text={APPLICATION_CARD.MORE(hiddenNamespaces)}
+                    capitalize={false}
+                    fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
+                    truncate
+                  />
+                )}
+                {syncStatus ? (
+                  <Tooltip
+                    title={syncStatus === 'failed' && syncLastError ? syncLastError : undefined}
+                  >
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 5,
+                        ...getPillSurface(SYNC_TAG_CONFIG[syncStatus].accent),
+                        color: DEFAULT_COLORS.PILL_TEXT,
+                        padding: '2px 10px',
+                        borderRadius: 999,
+                        fontWeight: 700,
+                        fontSize: 11,
+                        whiteSpace: 'nowrap',
+                        maxWidth: '100%',
+                        boxSizing: 'border-box',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {SYNC_TAG_CONFIG[syncStatus].icon}
+                      <span>{SYNC_TAG_CONFIG[syncStatus].label}</span>
+                      {!isSyncing && syncCompletedAt ? (
+                        <span style={{ fontWeight: 500 }}>
+                          · <TimeAgo date={syncCompletedAt} />
+                        </span>
+                      ) : null}
+                    </span>
+                  </Tooltip>
+                ) : null}
+              </span>
+            </span>
+          </div>
+          <div style={CARD_ASIDE_STYLE}>
+            <CardStatusPill label={statusText} accent={accent} />
             <Dropdown
               trigger={['click']}
               placement="bottomRight"
@@ -379,7 +337,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
-                style={menuButtonStyle}
+                style={getCardMenuButtonStyle(menuOpen)}
               />
             </Dropdown>
           </div>

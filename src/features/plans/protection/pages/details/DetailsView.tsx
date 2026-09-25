@@ -6,11 +6,13 @@ import LoadingDetailsView from '../../../../../components/display/views/LoadingD
 import ErrorView from '../../../../../components/display/views/ErrorView';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
 import ReactivatePlanModal from '../../components/shared/ReactivatePlanModal';
+import ApprovalDecisionModal from '../../components/shared/ApprovalDecisionModal';
 import { APP_ROUTES } from '../../../../../constants';
 import { PageContainer } from '../../../../../components/shared';
 import { usePlanDetails } from '../../hooks/usePlanDetails';
 import {
   cancelPlanThunk,
+  decidePlanThunk,
   deletePlanThunk,
   fetchProtectionPlanDetailsThunk,
   reactivatePlanThunk,
@@ -19,6 +21,7 @@ import { fetchPlanStatus } from '../../clients';
 import { getCurrentUser } from '../../../../auth/utils';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import type { AppDispatch } from '../../../../../store';
+import type { PlanApprovalDecision } from '../../models';
 import DuplicatePlanPanel from '../../components/panels/DuplicatePlanPanel';
 import EditPlanPanel from '../../components/panels/EditPlanPanel';
 import type { FormValues } from '../../components/create';
@@ -43,6 +46,10 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [reactivateModalOpen, setReactivateModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [decisionModal, setDecisionModal] = useState<PlanApprovalDecision | null>(null);
+  // Kept after close so the fading modal does not flip between approve and reject copy.
+  const [lastDecision, setLastDecision] = useState<PlanApprovalDecision>('approved');
+  const [deciding, setDeciding] = useState<PlanApprovalDecision | null>(null);
 
   const breadcrumbItems = useMemo(
     () => [
@@ -117,6 +124,46 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
     }
   }, [details, dispatch, message]);
 
+  const openDecision = useCallback((decision: PlanApprovalDecision) => {
+    setLastDecision(decision);
+    setDecisionModal(decision);
+  }, []);
+
+  const handleDecide = useCallback(
+    async (comment: string) => {
+      if (!details || !decisionModal) return;
+      const userId = getCurrentUser()?.id;
+      if (!userId) return;
+      const approved = decisionModal === 'approved';
+      setDeciding(decisionModal);
+      try {
+        const updated = await dispatch(
+          decidePlanThunk({
+            userId,
+            planId: details.id,
+            decision: decisionModal,
+            comment: comment || undefined,
+            requestedAt: details.approval?.requestedAt ?? '',
+          }),
+        ).unwrap();
+        message.success(
+          approved
+            ? PPC.LABELS.ACTIONS.APPROVE_SUCCESS(updated.name)
+            : PPC.LABELS.ACTIONS.REJECT_SUCCESS(updated.name),
+        );
+        setDecisionModal(null);
+      } catch (err: unknown) {
+        const fallback = approved
+          ? PPC.LABELS.ACTIONS.APPROVE_ERROR
+          : PPC.LABELS.ACTIONS.REJECT_ERROR;
+        message.error(typeof err === 'string' && err ? err : fallback);
+      } finally {
+        setDeciding(null);
+      }
+    },
+    [decisionModal, details, dispatch, message],
+  );
+
   const handleRefreshHealth = useCallback(async () => {
     if (!details) return;
     setRefreshingHealth(true);
@@ -151,12 +198,16 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
             editing={editPanelOpen}
             cancelling={cancelling}
             reactivating={reactivating}
+            approving={deciding === 'approved'}
+            rejecting={deciding === 'rejected'}
             deleting={deleting}
             refreshingHealth={refreshingHealth}
             onDuplicate={handleOpenDuplicate}
             onEdit={handleOpenEdit}
             onCancel={() => setCancelModalOpen(true)}
             onReactivate={() => setReactivateModalOpen(true)}
+            onApprove={() => openDecision('approved')}
+            onReject={() => openDecision('rejected')}
             onDelete={() => setDeleteModalOpen(true)}
             onRefreshHealth={handleRefreshHealth}
           />
@@ -193,6 +244,14 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
         loading={reactivating}
         onClose={() => setReactivateModalOpen(false)}
         onConfirm={handleConfirmReactivate}
+      />
+      <ApprovalDecisionModal
+        open={decisionModal !== null}
+        decision={lastDecision}
+        plan={details}
+        loading={deciding !== null}
+        onClose={() => setDecisionModal(null)}
+        onConfirm={handleDecide}
       />
       <DuplicatePlanPanel
         key={`duplicate-${details.id}`}

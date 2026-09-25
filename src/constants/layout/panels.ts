@@ -1,6 +1,7 @@
 import { DEFAULT_COLORS } from '../shared/colors';
 import { AVATAR_RING } from './avatars';
 import { CONTROL_HEIGHT } from './controls';
+import { HEADER_LAYOUT } from './header';
 
 // Panels keep the light surface they had before the dark theme; these tokens
 // re-light the antd controls rendered inside them.
@@ -42,17 +43,21 @@ export const SLIDE_OUT = {
     transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     willChange: 'transform',
   },
+  // Exactly as tall as the app header (and follows it): the panel's top bar lines up with it.
   HEADER: {
-    padding: '16px 24px',
+    height: HEADER_LAYOUT.HEIGHT_PX,
+    flexShrink: 0,
+    boxSizing: 'border-box' as const,
+    padding: '0 24px',
     borderBottom: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
     display: 'flex' as const,
     flexDirection: 'column' as const,
-    gap: 4,
+    justifyContent: 'center' as const,
   },
   HEADER_CONTENT: {
     display: 'flex' as const,
     justifyContent: 'space-between' as const,
-    alignItems: 'flex-start' as const,
+    alignItems: 'center' as const,
   },
   TOOLBAR: {
     display: 'flex' as const,
@@ -76,15 +81,20 @@ export const SLIDE_OUT = {
   TOOLBAR_BUTTON_DEFAULT_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   TITLE_CONTAINER: {
     flex: 1,
+    minWidth: 0,
   },
   TITLE: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 700,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE,
     margin: 0,
     padding: 0,
     lineHeight: 1.2,
+    whiteSpace: 'nowrap' as const,
+    overflow: 'hidden' as const,
+    textOverflow: 'ellipsis' as const,
   },
+  ENTITY_TITLE: (title: string, name: string) => `${title} · ${name}`,
   CLOSE_BUTTON: {
     background: 'none',
     border: 'none',
@@ -108,10 +118,18 @@ export const SLIDE_OUT = {
     display: 'flex' as const,
     flexDirection: 'column' as const,
   },
-  FORM: {
-    height: '100%',
+  // Above the pinned footer (PanelFooter) the padded body still scrolls itself, so the scrollbar
+  // stays at the panel edge.
+  CONTENT_ABOVE_FOOTER: {
+    flex: 1,
+    overflowY: 'auto' as const,
+    padding: '24px 24px 0',
     display: 'flex' as const,
     flexDirection: 'column' as const,
+  },
+  PINNED_FOOTER: {
+    flexShrink: 0,
+    padding: '0 24px 24px',
   },
   FORM_CONTENT: {
     flex: 1,
@@ -200,19 +218,9 @@ export const FILTER_PANEL = {
     flexDirection: 'column' as const,
     gap: 32,
   },
-  SECTION: {
-    display: 'flex' as const,
-    flexDirection: 'column' as const,
-    gap: 8,
-  },
-  SECTION_TITLE: {
-    fontSize: 12,
-    fontWeight: 600,
-    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-    textTransform: 'uppercase' as const,
-    letterSpacing: 0.5,
-    fontFamily: "'Geist', sans-serif",
-  },
+  // A filter field is a form item like the panels' forms: compact label, 16px apart.
+  ITEM_CLASS: 'form-item-compact',
+  ITEM: { marginBottom: 16 },
   DATE_RANGE_CONTAINER: {
     display: 'flex' as const,
     alignItems: 'center' as const,

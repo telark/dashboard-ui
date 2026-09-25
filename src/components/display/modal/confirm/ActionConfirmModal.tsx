@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal } from 'antd';
 import { ACTION_CONFIRM_MODAL } from '../../../../constants';
 import { useActionConfirmHandlers } from '../../../../hooks/layout/useActionConfirmHandlers';
+import { useOpenedOnce } from '../../../../hooks/layout/useOpenedOnce';
 import { ActionCloseIcon } from '../../icons';
 import { ActionTitle, ActionMessage } from '../../text';
 import ActionButtons from '../../buttons/ActionButtons';
@@ -17,6 +18,7 @@ export interface ActionConfirmModalProps {
   confirmText?: string;
   cancelText?: string;
   loading?: boolean;
+  confirmDisabled?: boolean;
   danger?: boolean;
   customMessage?: React.ReactNode;
   /** Shifts the modal's centering leftward by this many px (useful when a side panel is open) */
@@ -36,6 +38,7 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
   confirmText,
   cancelText = 'Cancel',
   loading = false,
+  confirmDisabled = false,
   danger = true,
   customMessage,
   offsetRight,
@@ -43,7 +46,9 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
 }) => {
   const { handleModalCancel, handleCloseIconClick, handleCancelClick, handleConfirmClick } =
     useActionConfirmHandlers({ onClose, onConfirm });
+  const opened = useOpenedOnce(open);
 
+  if (!opened) return null;
   return (
     <Modal
       open={open}
@@ -89,6 +94,7 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
           confirmText={confirmText || ''}
           action={action}
           loading={loading}
+          confirmDisabled={confirmDisabled}
           danger={danger}
           onCancel={handleCancelClick}
           onConfirm={handleConfirmClick}

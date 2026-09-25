@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from 'react';
 import { Skeleton } from 'antd';
 import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, getPillSurface } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type { ApplicationSnapshotSummary, SnapshotManifestState } from '../../models';
 import { APPLICATIONS_UI } from '../../constants';
@@ -182,9 +182,9 @@ const LABEL_STYLE: React.CSSProperties = {
 };
 
 const DIFF_TONE = {
-  add: { color: DEFAULT_COLORS.SUCCESS, background: DEFAULT_COLORS.SUCCESS_TINT },
-  remove: { color: DEFAULT_COLORS.DANGER, background: DEFAULT_COLORS.DANGER_TINT },
-  change: { color: DEFAULT_COLORS.WARNING, background: DEFAULT_COLORS.WARNING_TINT },
+  add: DEFAULT_COLORS.SUCCESS,
+  remove: DEFAULT_COLORS.DANGER,
+  change: DEFAULT_COLORS.WARNING,
 } as const;
 
 const ValueChip: React.FC<{ tone: DiffType; children: React.ReactNode }> = ({ tone, children }) => (
@@ -193,8 +193,8 @@ const ValueChip: React.FC<{ tone: DiffType; children: React.ReactNode }> = ({ to
       display: 'inline-block',
       padding: '3px 8px',
       borderRadius: 6,
-      background: DIFF_TONE[tone].background,
-      color: DIFF_TONE[tone].color,
+      ...getPillSurface(DIFF_TONE[tone]),
+      color: DEFAULT_COLORS.PILL_TEXT,
       fontSize: 12,
       fontWeight: 700,
       lineHeight: 1.4,

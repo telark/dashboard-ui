@@ -1,5 +1,5 @@
 import type dayjs from 'dayjs';
-import type { ScopeType } from '../../models';
+import type { PlanApprovalMode, ScopeType } from '../../models';
 
 export interface PolicyEntry {
   templateID: string;
@@ -15,12 +15,15 @@ export interface FormValues {
   scopeType: ScopeType;
   applicationIds?: string[];
   namespaces?: string[];
+  excludedKinds?: string[];
+  excludedResources?: string[];
   timeMode: string;
   startAt?: dayjs.Dayjs;
   endAt?: dayjs.Dayjs;
   participantsIDs?: string[];
   environmentID?: string;
   tagIDs?: string[];
+  approvalMode?: PlanApprovalMode;
 }
 
 export const FORM_ITEM_CLASS = 'form-item-compact no-asterisk';

@@ -16,6 +16,7 @@ export interface ToolbarButtonConfig {
   dropdown?: {
     items: MenuProps['items'];
     onItemClick?: (key: string) => void;
+    selectedKeys?: string[];
   };
   component?: React.ReactNode;
 }
@@ -47,14 +48,23 @@ export interface ListToolbarSelection {
   label?: string;
 }
 
+export interface CountLabel {
+  one: string;
+  other: string;
+}
+
 export interface ListToolbarProps {
-  totalCount: number;
-  countSuffix: string;
+  // Undefined until the list first loads: no count renders rather than a placeholder that widens.
+  totalCount?: number;
+  countSuffix: CountLabel;
   /** Measured row widths below which every control falls back to its icon. */
-  compactWidth: { DEFAULT: number; BULK: number };
+  // QUICK_FILTER folds the quick filter earlier than the buttons lose their labels.
+  compactWidth: { DEFAULT: number; BULK: number; QUICK_FILTER?: number };
   filterChips?: FilterChip[];
   overflowChipsCount?: number;
   onRemoveFilterChip?: (key: string, value: string) => void;
+  /** Feature-owned muted text right after the filter chips. */
+  filterNote?: React.ReactNode;
   hasActiveFilters?: boolean;
   onClearAllFilters?: () => void;
   onOpenFilters?: () => void;

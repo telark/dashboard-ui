@@ -1,5 +1,6 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import type { UsersState, User } from '../../models';
+import { keepUnchanged } from '../../../../../store/keepUnchanged';
 
 export const handleFetchUsersPending = (state: UsersState) => {
   state.loading = true;
@@ -8,7 +9,7 @@ export const handleFetchUsersPending = (state: UsersState) => {
 
 export const handleFetchUsersFulfilled = (state: UsersState, action: PayloadAction<User[]>) => {
   state.loading = false;
-  state.users = action.payload;
+  state.users = keepUnchanged(state.users, action.payload, (item) => item.id);
   state.error = null;
   const liveIds = new Set(action.payload.map((u) => u.id));
   state.deletingIds = state.deletingIds.filter((id) => liveIds.has(id));

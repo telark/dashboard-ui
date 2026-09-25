@@ -197,6 +197,8 @@ const App: React.FC = () => {
             Message: {
               contentBg: DEFAULT_COLORS.SURFACE_WHITE,
               colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
+              // antd 6.6 renders the message text as the notice title.
+              colorTextHeading: DEFAULT_COLORS.TEXT_ON_SURFACE,
             },
             // The dark algorithm tints row and header borders blue; rows take the
             // same muted hairline the rest of the dark surface uses.

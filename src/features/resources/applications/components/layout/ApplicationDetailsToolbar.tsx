@@ -9,6 +9,7 @@ import {
 } from '@ant-design/icons';
 import Toolbar from '../../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
+import { Icons, MENU_LABELS } from '../../../../../constants';
 import { APPLICATIONS_UI } from '../../constants';
 import {
   usePermission,
@@ -24,6 +25,8 @@ interface ApplicationDetailsToolbarProps {
   onEdit: () => void;
   onManageSnapshots: () => void;
   onManageRollbacks: () => void;
+  // Undefined when the application has no namespace, so no insights document can exist.
+  onOpenInsights?: () => void;
   onReset: () => void;
 }
 
@@ -33,6 +36,7 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
   onEdit,
   onManageSnapshots,
   onManageRollbacks,
+  onOpenInsights,
   onReset,
 }) => {
   const canEdit = usePermission(
@@ -59,6 +63,10 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
     ACTION_PERMISSIONS.applications.delete.scope,
     ACTION_PERMISSIONS.applications.delete.level,
     ACTION_PERMISSIONS.applications.delete.deny,
+  );
+  const canViewInsights = usePermission(
+    ACTION_PERMISSIONS.insights.view.scope,
+    ACTION_PERMISSIONS.insights.view.level,
   );
 
   const handleMenuClick = useCallback(
@@ -120,6 +128,17 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
           ? APPLICATIONS_UI.CARD.ACTIONS.VIEW_ROLLBACKS_PERMISSION_DENIED_TOOLTIP
           : undefined,
       },
+      ...(onOpenInsights && canViewInsights
+        ? [
+            {
+              key: 'insights',
+              label: MENU_LABELS.INSIGHTS,
+              icon: <Icons.Insights />,
+              variant: 'ghost' as const,
+              onClick: onOpenInsights,
+            },
+          ]
+        : []),
       // Reset lives behind the overflow: it is irreversible and was one slip
       // away from "Manage rollbacks" when it sat inline.
       {
@@ -149,11 +168,13 @@ const ApplicationDetailsToolbar: React.FC<ApplicationDetailsToolbarProps> = ({
     onForceSync,
     onManageRollbacks,
     onManageSnapshots,
+    onOpenInsights,
     canEdit,
     canForceSync,
     canViewSnapshots,
     canViewRollbacks,
     canReset,
+    canViewInsights,
   ]);
 
   return <Toolbar config={toolbarConfig} />;

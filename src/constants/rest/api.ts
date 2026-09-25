@@ -1,4 +1,4 @@
-import { DEV_API_PORTS, buildApiUrl, buildBaseUrl } from '../rest/urls';
+import { DEV_API_PORTS, buildApiUrl } from '../rest/urls';
 
 export const API_TIMEOUT = 30000; //30 seconds
 
@@ -23,9 +23,9 @@ export const AUTH_API = {
   },
 };
 
-export const ENRICHMENT_API = {
-  PORT: DEV_API_PORTS.ENRICHMENT,
+export const ANALYZER_API = {
+  PORT: DEV_API_PORTS.ANALYZER,
   get BASE_URL() {
-    return buildBaseUrl(this.PORT);
+    return buildApiUrl(this.PORT);
   },
 };

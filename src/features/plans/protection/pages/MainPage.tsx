@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useProtectionPlans } from '../hooks/useProtectionPlans';
 import { usePlanPanelState } from '../hooks/usePlanPanelState';
 import CreatePlanPanel from '../components/panels/CreatePlanPanel';
+import ProtectionPlansTabs, { readPlansPageTab } from '../components/layout/ProtectionPlansTabs';
 import { CATEGORIES_CONSTANTS as CC } from '../../../access-and-permissions/categories/constants';
-import type { PlanViewMode } from '../models';
+import { usePermission, ACTION_PERMISSIONS } from '../../../auth/hooks';
+import type { PlansPageTab, PlanViewMode } from '../models';
 import ProtectionPlansListPage from './ProtectionPlansListPage';
+import ProtectionPlanReportsPage from './ProtectionPlanReportsPage';
 import PlanTaxonomyPage from './PlanTaxonomyPage';
 
 const MainPage: React.FC = () => {
@@ -12,26 +16,70 @@ const MainPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<PlanViewMode>('plans');
   const { createPanelOpen, createForm, openCreatePanel, closeCreatePanel } = usePlanPanelState();
+  const canViewReports = usePermission(
+    ACTION_PERMISSIONS.protectionPlans.viewReports.scope,
+    ACTION_PERMISSIONS.protectionPlans.viewReports.level,
+    ACTION_PERMISSIONS.protectionPlans.viewReports.deny,
+  );
+  const [searchParams] = useSearchParams();
+  const tab: PlansPageTab =
+    canViewReports && readPlansPageTab(searchParams) === 'reports' ? 'reports' : 'plans';
+  // Each tab stays mounted after its first visit: remounting 40+ plan cards or the
+  // reports table on every switch blocked the main thread for ~1 s. The tabs element
+  // is stable so a switch does not re-render the hidden page.
+  const [visited, setVisited] = useState<Set<PlansPageTab>>(() => new Set([tab]));
+  if (!visited.has(tab)) {
+    setVisited(new Set(visited).add(tab));
+  }
+  const tabs = useMemo(
+    () => (canViewReports ? <ProtectionPlansTabs /> : undefined),
+    [canViewReports],
+  );
+
+  let page: React.ReactNode;
+  if (viewMode !== 'plans') {
+    page = (
+      <PlanTaxonomyPage
+        scope={viewMode === 'environments' ? CC.SCOPES.PLAN_ENVIRONMENTS : CC.SCOPES.PLAN_TAGS}
+        onBack={() => setViewMode('plans')}
+      />
+    );
+  } else {
+    page = (
+      <>
+        {visited.has('plans') ? (
+          <div style={{ display: tab === 'plans' ? undefined : 'none' }}>
+            <ProtectionPlansListPage
+              plans={plans}
+              searchValue={searchTerm}
+              onSearchChange={setSearchTerm}
+              onCreatePlanClick={openCreatePanel}
+              loading={loading}
+              error={error}
+              onRetry={refetch}
+              onViewModeChange={setViewMode}
+              tabs={tabs}
+            />
+          </div>
+        ) : null}
+        {canViewReports && visited.has('reports') ? (
+          <div style={{ display: tab === 'reports' ? undefined : 'none' }}>
+            <ProtectionPlanReportsPage
+              plans={plans}
+              plansLoading={loading}
+              plansError={error}
+              onRetryPlans={refetch}
+              tabs={tabs}
+            />
+          </div>
+        ) : null}
+      </>
+    );
+  }
 
   return (
     <>
-      {viewMode !== 'plans' ? (
-        <PlanTaxonomyPage
-          scope={viewMode === 'environments' ? CC.SCOPES.PLAN_ENVIRONMENTS : CC.SCOPES.PLAN_TAGS}
-          onBack={() => setViewMode('plans')}
-        />
-      ) : (
-        <ProtectionPlansListPage
-          plans={plans}
-          searchValue={searchTerm}
-          onSearchChange={setSearchTerm}
-          onCreatePlanClick={openCreatePanel}
-          loading={loading}
-          error={error}
-          onRetry={refetch}
-          onViewModeChange={setViewMode}
-        />
-      )}
+      {page}
       <CreatePlanPanel open={createPanelOpen} onClose={closeCreatePanel} form={createForm} />
     </>
   );

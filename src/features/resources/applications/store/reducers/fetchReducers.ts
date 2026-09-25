@@ -7,6 +7,7 @@ import type {
 } from '../../models';
 import { FORCE_SYNC_PHASE, SNAPSHOT_MANIFEST_CACHE_LIMIT } from '../../constants';
 import { STORE_ERRORS } from '../../../../../constants/store/store';
+import { keepUnchanged } from '../../../../../store/keepUnchanged';
 
 // Re-inserting the key on every open moves it to the end of the object's key
 // order, which is what lets "oldest key" == "least recently opened" below.
@@ -67,7 +68,7 @@ export const handleFetchApplicationsFulfilled = (
   action: PayloadAction<Application[]>,
 ) => {
   state.loading = false;
-  state.applications = action.payload;
+  state.applications = keepUnchanged(state.applications, action.payload, (app) => app.name);
   state.error = null;
   applyForceSyncStateFromApplications(state, action.payload);
 };
@@ -77,7 +78,7 @@ export const handleFetchApplicationsSilentFulfilled = (
   action: PayloadAction<Application[]>,
 ) => {
   state.loading = false;
-  state.applications = action.payload;
+  state.applications = keepUnchanged(state.applications, action.payload, (app) => app.name);
   state.error = null;
   applyForceSyncStateFromApplications(state, action.payload);
 };

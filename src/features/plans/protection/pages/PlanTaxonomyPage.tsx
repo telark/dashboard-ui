@@ -52,9 +52,9 @@ const PlanTaxonomyPage: React.FC<PlanTaxonomyPageProps> = ({ scope, onBack }) =>
   } = useCategoryListView({ categories });
 
   const canAdd = usePermission(
-    ACTION_PERMISSIONS.protectionPlans.create.scope,
-    ACTION_PERMISSIONS.protectionPlans.create.level,
-    ACTION_PERMISSIONS.protectionPlans.create.deny,
+    ACTION_PERMISSIONS.protectionPlans.addCategory.scope,
+    ACTION_PERMISSIONS.protectionPlans.addCategory.level,
+    ACTION_PERMISSIONS.protectionPlans.addCategory.deny,
   );
 
   const openAdd = useCallback(() => setAddPanelOpen(true), []);
@@ -75,7 +75,7 @@ const PlanTaxonomyPage: React.FC<PlanTaxonomyPageProps> = ({ scope, onBack }) =>
       breadcrumbs: [{ label: PPC.LABELS.HEADER_TITLE, onClick: onBack }, { label: viewLabel }],
       listToolbar: {
         totalCount: sortedCategories.length,
-        countSuffix: L.PLURAL,
+        countSuffix: { one: L.RESOURCE_TYPE, other: L.PLURAL },
         compactWidth: PPC.LABELS.TOOLBAR_COMPACT_WIDTH,
         toolbars: [
           {

@@ -49,11 +49,12 @@ const gridStyle = (rowHeightPx: number): React.CSSProperties => ({
 });
 
 const { viewSnapshots } = ACTION_PERMISSIONS.applications;
+const { view: viewPlans } = ACTION_PERMISSIONS.protectionPlans;
 
 const Dashboard: React.FC = () => {
   const permissionsReady = useSelector(selectPermissionsReady);
   const canViewApplications = usePermission('applications', 'ReadOnly');
-  const canViewPlans = usePermission('protection-plans', 'ReadOnly');
+  const canViewPlans = usePermission(viewPlans.scope, viewPlans.level, viewPlans.deny);
   const canViewSnapshots = usePermission(
     viewSnapshots.scope,
     viewSnapshots.level,

@@ -6,7 +6,6 @@ import { useRoleActions, useRoles, useRoleCategories } from '../../hooks';
 import { convertFormValuesToRoleFormData } from '../../utils';
 import type { RoleFormValues, ScopeFormValue } from '../../models';
 import AnimationWrapper from '../../../../../components/display/panels/slide-out/AnimationWrapper';
-import { PanelFooter } from '../../../../../components/display/panels/shared';
 import { ExpandPanelButton } from '../../../../../components/display/panels/slide-out';
 import type { FormInstance } from 'antd';
 
@@ -87,34 +86,29 @@ const CreateRolePanel: React.FC<CreateRolePanelProps> = ({ open, onClose, form }
       open={open}
       onClose={onClose}
       title={RC.LABELS.PANELS.CREATE.TITLE}
-      subtitle={RC.LABELS.PANELS.CREATE.SUBTITLE}
       width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
       headerExtra={
         <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((prev) => !prev)} />
       }
+      footer={{
+        onCancel: onClose,
+        onPrimary: () => form.submit(),
+        primaryLabel: RC.LABELS.PANELS.CREATE.SUBMIT_BUTTON,
+        primaryLoading: submitting,
+        primaryIcon: <RoleIcon size={16} />,
+        primaryLoadingLabel: 'Creating...',
+      }}
     >
-      <div style={{ overflow: 'auto', flex: 1 }}>
-        <RoleForm
-          form={form}
-          initialValues={initialValues}
-          onSubmit={handleFinish}
-          buttonText={RC.LABELS.PANELS.CREATE.SUBMIT_BUTTON}
-          submitting={submitting}
-          roles={roles}
-          isEditMode={false}
-          hideSubmitButton
-          expanded={expanded}
-        />
-      </div>
-      <PanelFooter
-        onCancel={onClose}
-        onPrimary={() => form.submit()}
-        cancelLabel="Cancel"
-        primaryLabel={RC.LABELS.PANELS.CREATE.SUBMIT_BUTTON}
-        primaryLoading={submitting}
-        primaryIcon={<RoleIcon size={16} />}
-        primaryLoadingLabel="Creating..."
-        horizontalPadding={0}
+      <RoleForm
+        form={form}
+        initialValues={initialValues}
+        onSubmit={handleFinish}
+        buttonText={RC.LABELS.PANELS.CREATE.SUBMIT_BUTTON}
+        submitting={submitting}
+        roles={roles}
+        isEditMode={false}
+        hideSubmitButton
+        expanded={expanded}
       />
     </AnimationWrapper>
   );

@@ -7,7 +7,6 @@ import RowTag from '../../../../../components/display/table/RowTag';
 import { FancySpinner } from '../../../../../components/animation';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
-  VIOLATION_RESULT_BADGE,
   VIOLATION_RESULT_DOT,
 } from '../../constants/protectionPlans';
 import type {
@@ -139,7 +138,6 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
             {group.dayKey === 'unknown' ? '—' : formatDateKey(group.dayKey)}
           </div>
           {group.entries.map((entry, idx) => {
-            const badge = VIOLATION_RESULT_BADGE[entry.result];
             const resultLabel = PPC.LABELS.VIOLATION_RESULT_LABELS[entry.result];
             return (
               <div
@@ -178,8 +176,7 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
                     >
                       <RowTag
                         text={`${PPC.LABELS.VIOLATIONS.TABLE_RESULT}: ${resultLabel}`}
-                        background={badge.background}
-                        color={badge.color}
+                        accent={VIOLATION_RESULT_DOT[entry.result]}
                         fontSize={11}
                       />
                       {entry.resource.kind && (
@@ -206,8 +203,6 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
                         <RowTag
                           text={`${PPC.LABELS.VIOLATIONS.TABLE_RULE}: ${entry.rule}`}
                           capitalize={false}
-                          background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                          color={DEFAULT_COLORS.TEXT_SECONDARY}
                           fontSize={11}
                         />
                       )}

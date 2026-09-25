@@ -77,13 +77,7 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
       return (
         <div style={GROUP_TAGS_WRAPPER}>
           {groupNames.map((name) => (
-            <RowTag
-              key={name}
-              text={name}
-              background={DEFAULT_COLORS.CHIP_ON_SURFACE_BG}
-              color={DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT}
-              fontSize={12}
-            />
+            <RowTag key={name} text={name} fontSize={12} />
           ))}
         </div>
       );

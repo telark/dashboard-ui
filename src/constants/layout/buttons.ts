@@ -3,6 +3,10 @@ import { CONTROL_HEIGHT } from './controls';
 
 export const BUTTON_TEXTS = {
   LOADING: 'In Progress...',
+  CANCEL: 'Cancel',
+  SUBMIT: 'Submit',
+  RESET: 'Reset',
+  APPLY: 'Apply',
 } as const;
 
 // Spacing between toolbar items, and between a toolbar and its neighbours, so

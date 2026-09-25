@@ -55,6 +55,34 @@ export const Endpoints = {
       path: `${API_PATHS.INSIGHTS}/applications`,
       method: 'GET',
     },
+    ANALYZE: (ns: string, name: string) => ({
+      path: `${API_PATHS.INSIGHTS}/applications/${ns}/${name}/analyze`,
+      method: 'POST',
+    }),
+    EVENTS: {
+      path: `${API_PATHS.INSIGHTS}/events`,
+      method: 'GET',
+    },
+    RUNTIME: {
+      path: `${API_PATHS.INSIGHTS}/runtime`,
+      method: 'GET',
+    },
+    RUNTIME_VALIDATE: {
+      path: `${API_PATHS.INSIGHTS}/runtime/validate`,
+      method: 'POST',
+    },
+    RUNTIME_PULL: {
+      path: `${API_PATHS.INSIGHTS}/runtime/pull`,
+      method: 'POST',
+    },
+    TRIAGE: (ns: string, name: string, id: string) => ({
+      path: `${API_PATHS.INSIGHTS}/applications/${ns}/${name}/insights/${id}/triage`,
+      method: 'POST',
+    }),
+    LIST: {
+      path: `${API_PATHS.INSIGHTS}/get`,
+      method: 'GET',
+    },
   },
   GLOBALCONFIG: {
     GET: {
@@ -64,12 +92,6 @@ export const Endpoints = {
     PATCH: {
       path: `${API_PATHS.RESOURCES.GLOBALCONFIG}/patch`,
       method: 'PATCH',
-    },
-  },
-  PROVIDERS: {
-    VALIDATE_API_KEY: {
-      path: 'provider/validate-api-key',
-      method: 'POST',
     },
   },
   SNAPSHOTS: {
@@ -276,6 +298,10 @@ export const Endpoints = {
       path: PLANS_PATHS.PROTECTION.REACTIVATE(id),
       method: 'POST',
     }),
+    DECIDE: (id: string) => ({
+      path: PLANS_PATHS.PROTECTION.DECIDE(id),
+      method: 'POST',
+    }),
     UPDATE: (id: string) => ({
       path: PLANS_PATHS.PROTECTION.UPDATE(id),
       method: 'POST',
@@ -286,6 +312,7 @@ export const Endpoints = {
     }),
   },
   REPORTS: {
+    LIST_ALL: { path: REPORTS_PATHS.LIST_ALL, method: 'GET' },
     PLANS: {
       LIST: (id: string) => ({ path: REPORTS_PATHS.PLANS.LIST(id), method: 'GET' }),
       DOWNLOAD: (id: string) => ({ path: REPORTS_PATHS.PLANS.DOWNLOAD(id), method: 'GET' }),

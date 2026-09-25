@@ -14,10 +14,11 @@ import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPla
 import { duplicatePlanThunk, selectProtectionPlans } from '../../store';
 import { getCurrentUser } from '../../../../auth/utils';
 import type { AppDispatch, RootState } from '../../../../../store';
-import type { ProtectionPlan } from '../../models';
+import type { PlanApprovalMode, ProtectionPlan } from '../../models';
 import { mapCategoriesToOptions } from '../../../../access-and-permissions/categories/utils/helpers';
 import { usePlanTaxonomyLists } from '../../hooks/usePlanTaxonomies';
 import PlanTaxonomyFields from '../shared/PlanTaxonomyFields';
+import PlanApprovalModeField from '../shared/PlanApprovalModeField';
 
 const { FORM } = PPC.CREATE_PAGE;
 
@@ -34,6 +35,7 @@ interface DuplicateFormShape {
   endAt?: Dayjs;
   environmentID?: string;
   tagIDs?: string[];
+  approvalMode?: PlanApprovalMode;
 }
 
 const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, plan }) => {
@@ -63,6 +65,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
       endAt: undefined,
       environmentID: plan?.environmentID || undefined,
       tagIDs: plan?.tagIDs ?? [],
+      approvalMode: plan?.approvalMode ?? 'automatic',
     };
   }, [plan]);
 
@@ -122,6 +125,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
         timeRange?: { startAt: string; endAt: string };
         environmentID?: string;
         tagIDs?: string[];
+        approvalMode?: PlanApprovalMode;
       } = {
         name: (v.name ?? '').trim(),
         timeMode: v.timeMode ?? 'permanent',
@@ -129,6 +133,9 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
       if (form.isFieldsTouched(['environmentID', 'tagIDs'])) {
         payload.environmentID = v.environmentID ?? '';
         payload.tagIDs = v.tagIDs ?? [];
+      }
+      if (form.isFieldsTouched(['approvalMode'])) {
+        payload.approvalMode = v.approvalMode;
       }
       if (payload.timeMode === 'time_range' && v.startAt && v.endAt) {
         payload.timeRange = {
@@ -174,6 +181,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
       </Form.Item>
 
       <PlanTaxonomyFields environmentOptions={environmentOptions} tagOptions={tagOptions} />
+      <PlanApprovalModeField />
 
       {timeMode === 'time_range' && (
         <div style={{ ...FILTER_PANEL.DATE_RANGE_CONTAINER, alignItems: 'flex-end' }}>

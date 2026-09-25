@@ -4,24 +4,9 @@ import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../../../store';
 import { getCurrentUser } from '../../../auth/utils';
 import { preparePlanThunk, updatePlanThunk } from '../store';
-import type { UpdatePlanPayload } from '../clients';
+import type { PreparePlanPayload, UpdatePlanPayload } from '../clients';
 import type { ProtectionPlan } from '../models';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
-
-interface PreparePlanInput {
-  name: string;
-  description?: string;
-  severity?: string;
-  priority?: number;
-  scope: { type: string; applicationIds: string[]; namespaces: string[] };
-  policies: { templateID: string; params: Record<string, string[]> }[];
-  mode: string;
-  timeMode: string;
-  timeRange?: { startAt: string; endAt: string };
-  participantsIDs?: string[];
-  environmentID?: string;
-  tagIDs?: string[];
-}
 
 export const usePlanActions = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -29,7 +14,7 @@ export const usePlanActions = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const handleCreate = useCallback(
-    async (payload: PreparePlanInput): Promise<ProtectionPlan> => {
+    async (payload: PreparePlanPayload): Promise<ProtectionPlan> => {
       const userId = getCurrentUser()?.id;
       if (!userId) throw new Error(PPC.LABELS.ACTIONS.CREATE_ERROR);
       setSubmitting(true);
@@ -54,7 +39,9 @@ export const usePlanActions = () => {
       if (!userId) throw new Error(PPC.LABELS.ACTIONS.UPDATE_ERROR);
       setSubmitting(true);
       try {
-        const updated = await dispatch(updatePlanThunk({ userId, planId, payload })).unwrap();
+        const body = { ...payload };
+        delete body.approvalMode;
+        const updated = await dispatch(updatePlanThunk({ userId, planId, payload: body })).unwrap();
         message.success(PPC.LABELS.ACTIONS.UPDATE_SUCCESS(updated.name));
         return updated;
       } catch (err) {

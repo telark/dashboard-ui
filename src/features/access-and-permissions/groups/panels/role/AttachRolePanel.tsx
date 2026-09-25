@@ -8,7 +8,7 @@ import { FilterPanel } from '../../../../../components/display/panels/filter';
 import { FilterButton, ToggleButton } from '../../../../../components/display/buttons';
 import { SearchInput } from '../../../../../components/display/inputs';
 import ActionConfirmModal from '../../../../../components/display/modal/confirm/ActionConfirmModal';
-import { Icons } from '../../../../../constants';
+import { Icons, SLIDE_OUT } from '../../../../../constants';
 import { useAttachRolePanel, useDeassignGroupRole } from '../../hooks';
 import {
   usePermission,
@@ -137,8 +137,10 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
       <SlideOutPanel
         open={open}
         onClose={onClose}
-        title={GC.LABELS.PANELS.ATTACH_ROLES.TITLE}
-        subtitle={GC.LABELS.PANELS.ATTACH_ROLES.SUBTITLE(CapitalizeFirstLetter(currentGroup.name))}
+        title={SLIDE_OUT.ENTITY_TITLE(
+          GC.LABELS.PANELS.ATTACH_ROLES.TITLE,
+          CapitalizeFirstLetter(currentGroup.name),
+        )}
         width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
         offsetX={filterPanelOpen ? FILTER_PANEL_WIDTH : 0}
         headerExtra={

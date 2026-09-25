@@ -16,14 +16,14 @@ const DEFAULTS = {
   exporter: 'http://telark-exporter-service.telark.svc.cluster.local:8080',
   discovery: 'http://telark-discovery-service.telark.svc.cluster.local:8080',
   auth: 'http://telark-auth-service.telark.svc.cluster.local:8080',
-  enrichment: 'http://telark-enrichment-service.telark.svc.cluster.local:8080',
+  analyzer: 'http://telark-analyzer-service.telark.svc.cluster.local:8080',
 };
 
 export const cfg = {
   exporterUrl: stripTrailingSlash(env('EXPORTER_BASE_URL', DEFAULTS.exporter)),
   discoveryUrl: stripTrailingSlash(env('DISCOVERY_BASE_URL', DEFAULTS.discovery)),
   authUrl: stripTrailingSlash(env('AUTH_BASE_URL', DEFAULTS.auth)),
-  enrichmentUrl: stripTrailingSlash(env('ENRICHMENT_BASE_URL', DEFAULTS.enrichment)),
+  analyzerUrl: stripTrailingSlash(env('ANALYZER_BASE_URL', DEFAULTS.analyzer)),
   sessionToken: env('SESSION_TOKEN', ''),
   userId: env('USER_ID', ''),
   testEmail: env('TEST_EMAIL', 'k6-test@example.com'),
@@ -42,7 +42,7 @@ export const path = {
   exporter: (p) => buildPath(cfg.exporterUrl, p),
   discovery: (p) => buildPath(cfg.discoveryUrl, p),
   auth: (p) => buildPath(cfg.authUrl, p),
-  enrichment: (p) => `${cfg.enrichmentUrl}/${p.replace(/^\//, '')}`,
+  analyzer: (p) => `${cfg.analyzerUrl}/${p.replace(/^\//, '')}`,
 };
 
 export const requireToken = () => {

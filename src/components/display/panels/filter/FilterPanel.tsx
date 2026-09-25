@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
-import { ConfigProvider, theme } from 'antd';
-import { PANEL_SURFACE_CLASS, PANEL_THEME_TOKENS, SLIDE_OUT } from '../../../../constants';
+import { ConfigProvider, Form, theme } from 'antd';
+import {
+  BUTTON_TEXTS,
+  PANEL_SURFACE_CLASS,
+  PANEL_THEME_TOKENS,
+  SLIDE_OUT,
+} from '../../../../constants';
+import { useBodyOverflow } from '../../../../hooks/panel';
+import { PanelFooter } from '../shared';
 import FilterPanelHeader from './FilterPanelHeader';
-import FilterPanelFooter from './FilterPanelFooter';
 import FilterFieldRenderer from './FilterFieldRenderer';
 
 export type FilterFieldType = 'dateRange' | 'buttonGroup' | 'dropdown' | 'multiSelect';
@@ -33,7 +39,6 @@ export interface FilterField {
 export interface FilterPanelProps {
   open: boolean;
   onClose: () => void;
-  subtitle?: string;
   fields: FilterField[];
   value?: Record<string, unknown>;
   onFilterChange?: (filters: Record<string, unknown>) => void;
@@ -45,7 +50,6 @@ export interface FilterPanelProps {
 const FilterPanel: React.FC<FilterPanelProps> = ({
   open,
   onClose,
-  subtitle = 'Adjust filters to refine results',
   fields,
   value,
   onFilterChange,
@@ -53,6 +57,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   onReset,
   width = 480,
 }) => {
+  useBodyOverflow(open);
   const [filters, setFilters] = useState<Record<string, unknown>>(() => {
     const initial: Record<string, unknown> = {};
     fields.forEach((field) => {
@@ -120,11 +125,13 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           width: width,
         }}
       >
-        <FilterPanelHeader onClose={onClose} subtitle={subtitle} />
+        <FilterPanelHeader onClose={onClose} />
 
-        <div style={SLIDE_OUT.CONTENT}>
-          <div style={SLIDE_OUT.FORM}>
-            <div style={{ ...SLIDE_OUT.FORM_CONTENT, gap: 24 }}>
+        <div style={SLIDE_OUT.CONTENT_ABOVE_FOOTER}>
+          {/* A vertical form like the panels' forms: same labels, spacing and controls. No
+              <form> element, since a filter panel can open inside a form panel. */}
+          <Form layout="vertical" component={false}>
+            <div style={SLIDE_OUT.FORM_CONTENT}>
               {fields.map((field) => (
                 <FilterFieldRenderer
                   key={field.key}
@@ -134,10 +141,15 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
                 />
               ))}
             </div>
-
-            <FilterPanelFooter onReset={handleReset} onApply={handleApply} />
-          </div>
+          </Form>
         </div>
+
+        <PanelFooter
+          onCancel={handleReset}
+          onPrimary={handleApply}
+          cancelLabel={BUTTON_TEXTS.RESET}
+          primaryLabel={BUTTON_TEXTS.APPLY}
+        />
       </div>
 
       <style>

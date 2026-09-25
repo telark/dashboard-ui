@@ -8,6 +8,7 @@ interface ActionButtonsProps {
   confirmText: string;
   action: string;
   loading: boolean;
+  confirmDisabled?: boolean;
   danger: boolean;
   onCancel: (e: React.MouseEvent) => void;
   onConfirm: (e: React.MouseEvent) => void;
@@ -18,6 +19,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   confirmText,
   action,
   loading,
+  confirmDisabled = false,
   danger,
   onCancel,
   onConfirm,
@@ -54,6 +56,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
         type="primary"
         danger={danger}
         loading={loading}
+        disabled={confirmDisabled}
         onClick={onConfirm}
         style={{
           borderRadius: ACTION_CONFIRM_MODAL.BUTTONS.CONFIRM.BORDER_RADIUS,

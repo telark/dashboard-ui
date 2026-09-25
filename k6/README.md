@@ -82,7 +82,7 @@ Tests target the four backend services directly via their in-cluster DNS names (
 | exporter | `http://telark-exporter-service.telark.svc.cluster.local:8080` |
 | discovery | `http://telark-discovery-service.telark.svc.cluster.local:8080` |
 | auth | `http://telark-auth-service.telark.svc.cluster.local:8080` |
-| enrichment | `http://telark-enrichment-service.telark.svc.cluster.local:8080` |
+| analyzer | `http://telark-analyzer-service.telark.svc.cluster.local:8080` |
 
 Each test calls the same paths the UI's React code calls — see the per-service mapping table in `PLAN.md` §A.
 

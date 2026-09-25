@@ -11,7 +11,12 @@ import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../global
 import type { AppDispatch } from '../../../../store';
 import { extractErrorMessage } from '../../../../utils/helpers/format';
 import { IDENTITY_PROVIDER_CONSTANTS as C } from './constants';
-import { usePermission } from '../../../auth/hooks/permissions/permissionEngine';
+import {
+  ACTION_PERMISSIONS,
+  usePermission,
+} from '../../../auth/hooks/permissions/permissionEngine';
+
+const EDIT_OIDC_PERMISSION = ACTION_PERMISSIONS.settings.editOidcConfig;
 
 interface OIDCForm {
   enabled: boolean;
@@ -53,7 +58,11 @@ function validate(form: OIDCForm): string | null {
 const OIDCSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
-  const canEdit = usePermission('settings', 'Admin', 'editoidcconfig');
+  const canEdit = usePermission(
+    EDIT_OIDC_PERMISSION.scope,
+    EDIT_OIDC_PERMISSION.level,
+    EDIT_OIDC_PERMISSION.deny,
+  );
   const { message } = AntdApp.useApp();
 
   const [form, setForm] = useState<OIDCForm>(EMPTY_FORM);

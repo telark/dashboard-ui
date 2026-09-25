@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Select } from 'antd';
 import type { FormInstance } from 'antd';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
-import { Icons } from '../../../../../constants';
+import { Icons, SLIDE_OUT } from '../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import { useManageUserStatePanel } from '../../hooks/panels/user/useManageUserStatePanel';
 import type { ManageUserStateFormValues, User } from '../../models';
@@ -39,8 +39,10 @@ const ManageUserStatePanel: React.FC<ManageUserStatePanelProps> = ({
     <SlideOutPanel
       open={open}
       onClose={onClose}
-      title={UC.LABELS.PANELS.MANAGE_STATE.TITLE}
-      subtitle={UC.LABELS.PANELS.MANAGE_STATE.SUBTITLE(editingUser.fullname)}
+      title={SLIDE_OUT.ENTITY_TITLE(
+        UC.LABELS.PANELS.MANAGE_STATE.TITLE,
+        editingUser.fullname || editingUser.username,
+      )}
       formContent={
         <Form.Item
           name={STATE_FIELD_NAME}

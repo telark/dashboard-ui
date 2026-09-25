@@ -6,7 +6,7 @@
 
 ### UI side (`Desktop/dashboard-ui/`)
 
-- HTTP layer: `src/api/client/instances.ts` exports **four** axios instances — `exporterApiClient`, `discoveryApiClient`, `authApiClient`, `enrichmentApiClient`. (The task said "three backend services" — the UI in fact talks to a 4th, `enrichment-service`, see §G.)
+- HTTP layer: `src/api/client/instances.ts` exports **four** axios instances — `exporterApiClient`, `discoveryApiClient`, `authApiClient`, `analyzerApiClient`. (The task said "three backend services" — the UI in fact talks to a 4th, `analyzer-service`, see §G.)
 - Every endpoint string is centralized in `src/constants/rest/paths.ts` + `endpoints.ts`. Every feature client uses `Client(<instance>, Endpoints.X.Y.path, …)`. There are no scattered URL literals.
 - Auth-token interceptor: `createSessionTokenInterceptor()` attaches `X-Session-Token` to every `authApiClient` request. Other instances inherit the same via a shared store.
 - Per-service health interceptor with circuit-breaker — k6 traffic that fails repeatedly will trip it; need to keep VU counts low so we don't accidentally suppress further requests mid-scenario.
@@ -25,7 +25,7 @@
 | Globalconfig get/patch | `exporterApiClient` | `exporterApiClient` |
 | Snapshots get / manifest / infos | `exporterApiClient` | n/a |
 | Namespaces (analyze) | `discoveryApiClient` | n/a |
-| Validate AI provider key | `enrichmentApiClient` | n/a |
+| Validate AI provider key | `analyzerApiClient` | n/a |
 
 #### Notable UI-side behaviors
 
@@ -65,17 +65,17 @@ Exporter is the **read source of truth** and the **CRD writer**. It serves cache
 
 Snapshots are stored on a PVC mounted at `/snapshots`. Snapshot reads can fan-out per generation.
 
-#### `enrichment-service` (Python — discovered, not in original "three backends" list)
+#### `analyzer-service` (Python — discovered, not in original "three backends" list)
 - `api_server.py`, `enricher.py`, `providers/` (Groq default). UI hits it for **AI provider key validation** in the Insights/Governance settings page.
 
 ### Deployment topology (`release-manager/helm/app`)
 
-- All services run as `ClusterIP` on port 8080. `replicas: exporter=1, discovery=2, enrichment=1, auth=1, ui=…`.
+- All services run as `ClusterIP` on port 8080. `replicas: exporter=1, discovery=2, analyzer=1, auth=1, ui=…`.
 - **There is no separate Ingress yaml in `release-manager`**. Public access is via the **UI pod's nginx**, which reverse-proxies:
   - `/api/exporter/ → http://telark-exporter-service:8080/`
   - `/api/discovery/ → http://telark-discovery-service:8080/`
   - `/api/auth/ → http://telark-auth-service:8080/`
-  - `/api/enrichment/ → http://telark-enrichment-service:8080/`
+  - `/api/analyzer/ → http://telark-analyzer-service:8080/`
   - `proxy_read_timeout 60s` and `proxy_send_timeout 60s` (so any UI-facing request taking > 60s will be cut by nginx — relevant for plan prepare/force-sync).
 - Health probes: `/api/v1/status/{live,ready}` on each service, 15s period, 15s timeout, threshold 3.
 - Discovery env (relevant to perf): K8s QPS 100 / burst 200, informer resync 600s ± 20% jitter, snapshot fetch deadline 5s, force-sync workers 4, job timeout 300s, coordination lock TTL 120s.
@@ -92,7 +92,7 @@ Snapshots are stored on a PVC mounted at `/snapshots`. Snapshot reads can fan-ou
 | `auth-service` | `exporter-service` (passkey storage REST), external Google OIDC JWKS, `webauthn` external relying-party metadata | UI nginx (`/api/auth/*`) |
 | `discovery-service` | `exporter-service` (REST, via `internal/rest/clients/*` — plans/apps/notifications), Redis (force-sync streams, lock coordination, plan tick), NATS (event bus), Kubernetes API (LIST/WATCH/PATCH) | UI nginx (`/api/discovery/*`) |
 | `exporter-service` | Kubernetes API (CRD CRUD), local PVC (`/snapshots`) | UI nginx (`/api/exporter/*`), `discovery-service`, `auth-service` (passkey proxy), `notifier-service` (notifications emit) |
-| `enrichment-service` | External AI providers (Groq/Anthropic/Gemini), Redis | UI nginx (`/api/enrichment/*`), `discovery-service` (probable, see §G) |
+| `analyzer-service` | External AI providers (Groq/Anthropic/Gemini), Redis | UI nginx (`/api/analyzer/*`), `discovery-service` (probable, see §G) |
 
 Failure-propagation modes that matter for k6 interpretation:
 - Exporter unreachable → discovery plan/app writes return 5xx after 30s timeout.
@@ -118,7 +118,7 @@ Failure-propagation modes that matter for k6 interpretation:
 
 **F8 — Notifications.** `GET /api/exporter/api/v1/notifications/get?userId=…&limit=…&cursor=…` (cursor-paginated) → user opens notification → `PATCH .../{id}/markasread?userId=…` → "Mark all read" → `POST .../markallread?userId=…` → "Clear" → `DELETE .../clear?userId=…`.
 
-**F9 — Insights settings.** Validate AI key: `POST /api/enrichment/api/v1/provider/validate-api-key` (no auth header — public-ish dev) → set provider → `PATCH /api/exporter/api/v1/resources/globalconfig/patch`. Set excluded namespaces: `GET /api/discovery/api/v1/analyze/namespaces/get` (K8s LIST) → `PATCH globalconfig`. Snapshot storage: `GET /api/exporter/api/v1/snapshots/infos` → `PATCH globalconfig`.
+**F9 — Insights settings.** Validate AI key: `POST /api/analyzer/api/v1/provider/validate-api-key` (no auth header — public-ish dev) → set provider → `PATCH /api/exporter/api/v1/resources/globalconfig/patch`. Set excluded namespaces: `GET /api/discovery/api/v1/analyze/namespaces/get` (K8s LIST) → `PATCH globalconfig`. Snapshot storage: `GET /api/exporter/api/v1/snapshots/infos` → `PATCH globalconfig`.
 
 ### B.3 Hot paths flagged
 
@@ -286,7 +286,7 @@ Why this stack: lightest community option that already shows thresholds vs actua
 
 ## G. Open questions and risks
 
-1. **Enrichment service in scope?** UI talks to a 4th service the task didn't list. Recommendation: out of scope (external Groq quota). Documented in §A.
+1. **Analyzer service in scope?** UI talks to a 4th service the task didn't list. Recommendation: out of scope (external Groq quota). Documented in §A.
 2. **WebAuthn login untestable from k6.** Suite uses pre-issued `SESSION_TOKEN`. Confirmed acceptable.
 3. **BASE_URL default**: localhost via UI's nginx proxy. Cluster runs must override.
 4. **Mutating scenarios need test data**: documented in USAGE.md (test app must pre-exist for S5; namespace + run-id-based names for others).

@@ -107,12 +107,14 @@ export const PLANS_PATHS = {
     VIOLATIONS: (id: string) => `plans/protection/${id}/violations`,
     DUPLICATE: (id: string) => `plans/protection/${id}/duplicate`,
     REACTIVATE: (id: string) => `plans/protection/${id}/reactivate`,
+    DECIDE: (id: string) => `plans/protection/${id}/decide`,
     UPDATE: (id: string) => `plans/protection/${id}/update`,
     REPORTS_GENERATE: (id: string) => `plans/protection/${id}/reports/generate`,
   },
 } as const;
 
 export const REPORTS_PATHS = {
+  LIST_ALL: 'reports/get',
   PLANS: {
     LIST: (id: string) => `reports/plans/${id}/get`,
     DOWNLOAD: (id: string) => `reports/plans/${id}/download`,

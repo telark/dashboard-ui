@@ -15,10 +15,12 @@ export interface DataTableProps<T> {
 
 export interface RowTagProps {
   text: string;
-  background: string;
-  color: string;
+  /** Case colour (severity, status…); omitted means a neutral pill. */
+  accent?: string;
   fontSize?: number;
   capitalize?: boolean;
+  /** Ellipsizes to the container width instead of overflowing it. */
+  truncate?: boolean;
 }
 
 export interface SortHeaderProps {

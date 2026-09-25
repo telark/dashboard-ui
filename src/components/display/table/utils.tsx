@@ -14,6 +14,7 @@ export const generateColumn = (
     headerBg?: string;
     activeColor?: string;
     inactiveColor?: string;
+    sortable?: boolean;
   },
   ctx: GenerateColumnCtx,
 ) => {
@@ -27,6 +28,7 @@ export const generateColumn = (
     headerBg,
     activeColor,
     inactiveColor,
+    sortable = true,
   } = cfg;
   const { activeSortKey, onSort } = ctx;
   const HEADER_BG = headerBg ?? TABLE_DEFAULTS.HEADER_BG;
@@ -39,7 +41,7 @@ export const generateColumn = (
         label={label}
         align={align}
         leftIcon={icon}
-        sortable={true}
+        sortable={sortable}
         isActive={isActive}
         onSort={handleSort}
         activeColor={activeColor}

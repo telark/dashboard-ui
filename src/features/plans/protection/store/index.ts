@@ -5,6 +5,7 @@ export {
   fetchProtectionPlanTemplatesThunk,
   preparePlanThunk,
   cancelPlanThunk,
+  decidePlanThunk,
   deletePlanThunk,
   duplicatePlanThunk,
   reactivatePlanThunk,

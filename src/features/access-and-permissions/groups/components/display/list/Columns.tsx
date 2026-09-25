@@ -79,14 +79,7 @@ const Columns = (ctx: ColumnsContext): GeneratedColumn[] => {
         width: GC.SIZES.COLUMNS.CATEGORY,
         render: (value: string) => {
           const categoryName = getCategoryName(value, categories);
-          return (
-            <RowTag
-              text={categoryName}
-              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-              fontSize={RPC.SIZES.CHIP_FONT}
-            />
-          );
+          return <RowTag text={categoryName} fontSize={RPC.SIZES.CHIP_FONT} />;
         },
       },
       ctx,
@@ -100,14 +93,7 @@ const Columns = (ctx: ColumnsContext): GeneratedColumn[] => {
         render: (_: unknown, record: Group) => {
           const memberCount = record.assignedUsersIDs?.length || 0;
           const memberText = memberCount === 1 ? '1 member' : `${memberCount} members`;
-          return (
-            <RowTag
-              text={memberText}
-              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-              fontSize={RPC.SIZES.CHIP_FONT}
-            />
-          );
+          return <RowTag text={memberText} fontSize={RPC.SIZES.CHIP_FONT} />;
         },
       },
       ctx,

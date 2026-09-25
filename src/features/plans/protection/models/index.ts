@@ -1,4 +1,5 @@
-export type PlanPhase = 'active' | 'scheduled' | 'failed' | 'terminated' | 'canceled' | 'draft';
+export type PlanPhase =
+  'active' | 'scheduled' | 'failed' | 'terminated' | 'canceled' | 'draft' | 'pending_approval';
 export type ScopeType = 'applications' | 'namespaces';
 export type PlanMode = 'audit' | 'enforce';
 export type PlanTimeMode = 'permanent' | 'time_range';
@@ -7,6 +8,27 @@ export type PlanViewMode = 'plans' | 'environments' | 'tags';
 export type ViolationResult = 'pass' | 'fail' | 'warn' | 'error' | 'skip';
 export type PlanReportFormat = 'html' | 'md' | 'json' | 'csv';
 export type PlanReportTrigger = 'end' | 'cancel' | 'manual';
+export type PlansPageTab = 'plans' | 'reports';
+export type PlanApprovalMode = 'automatic' | 'required';
+export type PlanApprovalState = 'pending' | 'approved' | 'rejected';
+export type PlanApprovalDecision = 'approved' | 'rejected';
+
+export interface PlanApprovalEvent {
+  event: string;
+  by: string;
+  at: string;
+  comment?: string;
+}
+
+export interface PlanApproval {
+  state: PlanApprovalState;
+  requestedBy: string;
+  requestedAt: string;
+  decidedBy?: string;
+  decidedAt?: string;
+  comment?: string;
+  history?: PlanApprovalEvent[];
+}
 
 export interface PlanHealthDetail {
   policyName: string;
@@ -70,10 +92,22 @@ export interface PlanReportMeta {
   truncated: boolean;
 }
 
+export interface PlanExcludedResource {
+  kind: string;
+  name: string;
+  namespace: string;
+}
+
+export interface PlanScopeExclusions {
+  kinds: string[];
+  resources: PlanExcludedResource[];
+}
+
 export interface PlanScope {
   type: ScopeType;
   applicationIds: string[];
   namespaces: string[];
+  exclusions?: PlanScopeExclusions;
 }
 
 export interface PlanPolicy {
@@ -114,6 +148,8 @@ export interface ProtectionPlan {
   health?: PlanHealth;
   healthCheckedAt?: string;
   healthDetail?: PlanHealthDetail[];
+  approvalMode?: PlanApprovalMode;
+  approval?: PlanApproval;
 }
 
 export type ParamType = 'string-array';

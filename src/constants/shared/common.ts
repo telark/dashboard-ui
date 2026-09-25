@@ -10,7 +10,4 @@ export const COMMON_VALUES = {
   DATES: {
     INVALID: 'Invalid Date',
   },
-  LOADING: {
-    VERIFYING_CLUSTER_INSIGHTS: 'Verifying cluster insights...',
-  },
 } as const;

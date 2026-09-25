@@ -30,7 +30,7 @@
 #   EXPORTER_BASE_URL              http://telark-exporter-service.telark.svc.cluster.local:8080
 #   DISCOVERY_BASE_URL             http://telark-discovery-service.telark.svc.cluster.local:8080
 #   AUTH_BASE_URL                  http://telark-auth-service.telark.svc.cluster.local:8080
-#   ENRICHMENT_BASE_URL            http://telark-enrichment-service.telark.svc.cluster.local:8080
+#   ANALYZER_BASE_URL              http://telark-analyzer-service.telark.svc.cluster.local:8080
 #   TEST_PLAN_TEMPLATE_ID          auto-pick first template if empty
 #   FORCE_SYNC_POLL_TIMEOUT_SEC    90
 #   PLAN_STATUS_POLL_TIMEOUT_SEC   60
@@ -57,7 +57,7 @@ readonly DEFAULT_NAMESPACE="telark"
 readonly DEFAULT_EXPORTER_URL="http://telark-exporter-service.telark.svc.cluster.local:8080"
 readonly DEFAULT_DISCOVERY_URL="http://telark-discovery-service.telark.svc.cluster.local:8080"
 readonly DEFAULT_AUTH_URL="http://telark-auth-service.telark.svc.cluster.local:8080"
-readonly DEFAULT_ENRICHMENT_URL="http://telark-enrichment-service.telark.svc.cluster.local:8080"
+readonly DEFAULT_ANALYZER_URL="http://telark-analyzer-service.telark.svc.cluster.local:8080"
 readonly DEFAULT_FORCE_SYNC_POLL_TIMEOUT_SEC="90"
 readonly DEFAULT_PLAN_STATUS_POLL_TIMEOUT_SEC="60"
 readonly DEFAULT_DELETE_OWN_SESSION="false"
@@ -118,7 +118,7 @@ apply_env_defaults() {
   EXPORTER_URL="${EXPORTER_BASE_URL:-${DEFAULT_EXPORTER_URL}}"
   DISCOVERY_URL="${DISCOVERY_BASE_URL:-${DEFAULT_DISCOVERY_URL}}"
   AUTH_URL="${AUTH_BASE_URL:-${DEFAULT_AUTH_URL}}"
-  ENRICHMENT_URL="${ENRICHMENT_BASE_URL:-${DEFAULT_ENRICHMENT_URL}}"
+  ANALYZER_URL="${ANALYZER_BASE_URL:-${DEFAULT_ANALYZER_URL}}"
   TEST_APP_NAME="${TEST_APP_NAME:-}"
   TEST_PLAN_TEMPLATE_ID="${TEST_PLAN_TEMPLATE_ID:-}"
   FORCE_SYNC_POLL_TIMEOUT_SEC="${FORCE_SYNC_POLL_TIMEOUT_SEC:-${DEFAULT_FORCE_SYNC_POLL_TIMEOUT_SEC}}"
@@ -207,11 +207,11 @@ sed_escape() {
 }
 
 render_job_manifest() {
-  local exp_url disc_url auth_url enrich_url token user app tpl
+  local exp_url disc_url auth_url analyzer_url token user app tpl
   exp_url=$(sed_escape "${EXPORTER_URL}")
   disc_url=$(sed_escape "${DISCOVERY_URL}")
   auth_url=$(sed_escape "${AUTH_URL}")
-  enrich_url=$(sed_escape "${ENRICHMENT_URL}")
+  analyzer_url=$(sed_escape "${ANALYZER_URL}")
   token=$(sed_escape "${SESSION_TOKEN}")
   user=$(sed_escape "${USER_ID}")
   app=$(sed_escape "${TEST_APP_NAME}")
@@ -225,7 +225,7 @@ render_job_manifest() {
     -e "s|__EXPORTER_URL__|${exp_url}|g" \
     -e "s|__DISCOVERY_URL__|${disc_url}|g" \
     -e "s|__AUTH_URL__|${auth_url}|g" \
-    -e "s|__ENRICHMENT_URL__|${enrich_url}|g" \
+    -e "s|__ANALYZER_URL__|${analyzer_url}|g" \
     -e "s|__SESSION_TOKEN__|${token}|g" \
     -e "s|__USER_ID__|${user}|g" \
     -e "s|__TEST_APP_NAME__|${app}|g" \
@@ -246,7 +246,7 @@ print_run_banner() {
   echo "       EXPORTER_BASE_URL=${EXPORTER_URL}"
   echo "       DISCOVERY_BASE_URL=${DISCOVERY_URL}"
   echo "       AUTH_BASE_URL=${AUTH_URL}"
-  echo "       ENRICHMENT_BASE_URL=${ENRICHMENT_URL}"
+  echo "       ANALYZER_BASE_URL=${ANALYZER_URL}"
   echo "       USER_ID=${USER_ID}"
   [[ -n "${TEST_APP_NAME}" ]] && echo "       TEST_APP_NAME=${TEST_APP_NAME}"
   [[ -n "${TEST_PLAN_TEMPLATE_ID}" ]] && echo "       TEST_PLAN_TEMPLATE_ID=${TEST_PLAN_TEMPLATE_ID}"

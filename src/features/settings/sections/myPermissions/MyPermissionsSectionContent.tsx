@@ -6,7 +6,7 @@ import { PERMISSION_LEVEL_RANK } from '../../../auth/models/permissions';
 import type { PermissionLevel, ResolvedRole } from '../../../auth/models/permissions';
 import { AUTH_PERMISSIONS_LABELS } from '../../../auth/constants';
 import SettingsCard from '../../components/SettingsCard';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, getPillSurface } from '../../../../constants';
 
 const LEVEL_COLOR = DEFAULT_COLORS.TEXT_MUTED;
 
@@ -89,8 +89,8 @@ const ScopeRow: React.FC<ScopeRowProps> = memo(({ title, level, rules, sourceTex
           style={{
             fontSize: 11,
             fontWeight: 600,
-            color: LEVEL_COLOR,
-            background: `${LEVEL_COLOR}1a`,
+            color: DEFAULT_COLORS.PILL_TEXT,
+            ...getPillSurface(LEVEL_COLOR),
             borderRadius: 4,
             padding: '2px 7px',
           }}

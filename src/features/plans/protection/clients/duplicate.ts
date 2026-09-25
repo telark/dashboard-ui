@@ -1,6 +1,6 @@
 import { Client, discoveryApiClient } from '../../../../api/index';
 import { Endpoints, HTTP_HEADERS } from '../../../../constants';
-import type { ProtectionPlan } from '../models';
+import type { PlanApprovalMode, ProtectionPlan } from '../models';
 import type { ApiResponse } from './shared';
 
 export interface DuplicatePlanPayload {
@@ -9,6 +9,7 @@ export interface DuplicatePlanPayload {
   timeRange?: { startAt: string; endAt: string };
   environmentID?: string;
   tagIDs?: string[];
+  approvalMode?: PlanApprovalMode;
 }
 
 export const duplicatePlan = async (

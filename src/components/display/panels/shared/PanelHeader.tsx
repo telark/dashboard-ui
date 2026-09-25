@@ -1,33 +1,21 @@
 import React from 'react';
-import { DEFAULT_COLORS } from '../../../../constants';
 import { CloseOutlined } from '@ant-design/icons';
 import { SLIDE_OUT } from '../../../../constants';
 
 interface PanelHeaderProps {
   title?: string;
-  subtitle?: string;
   onClose: () => void;
   extra?: React.ReactNode;
 }
 
-const PanelHeader: React.FC<PanelHeaderProps> = ({ title = 'Panel', subtitle, extra, onClose }) => {
+const PanelHeader: React.FC<PanelHeaderProps> = ({ title = 'Panel', extra, onClose }) => {
   return (
     <div style={SLIDE_OUT.HEADER}>
       <div style={SLIDE_OUT.HEADER_CONTENT}>
         <div style={SLIDE_OUT.TITLE_CONTAINER}>
-          <h2 style={SLIDE_OUT.TITLE}>{title}</h2>
-          {subtitle && (
-            <p
-              style={{
-                margin: '4px 0 0 0',
-                fontSize: 14,
-                color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-                fontWeight: 400,
-              }}
-            >
-              {subtitle}
-            </p>
-          )}
+          <h2 style={SLIDE_OUT.TITLE} title={title}>
+            {title}
+          </h2>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {extra}
