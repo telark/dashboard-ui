@@ -3,7 +3,6 @@ import type { FormInstance } from 'antd';
 import { Icons } from '../../../../../constants';
 import AnimationWrapper from '../../../../../components/display/panels/slide-out/AnimationWrapper';
 import { ExpandPanelButton } from '../../../../../components/display/panels/slide-out';
-import { PanelFooter } from '../../../../../components/display/panels/shared';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import PlanForm from '../shared/PlanForm';
 import type { FormValues, PolicyEntry } from '../create';
@@ -79,39 +78,34 @@ const CreatePlanPanel: React.FC<CreatePlanPanelProps> = ({ open, onClose, form }
       open={open}
       onClose={handleClose}
       title={PPC.PANELS.CREATE.TITLE}
-      subtitle={PPC.PANELS.CREATE.SUBTITLE}
       width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
       headerExtra={
         <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((p) => !p)} />
       }
+      footer={{
+        onCancel: handleClose,
+        onPrimary: handleSubmitClick,
+        primaryLabel: PPC.PANELS.CREATE.SUBMIT_BUTTON,
+        primaryLoading: submitting,
+        primaryLoadingLabel: PPC.PANELS.CREATE.LOADING_LABEL,
+        primaryIcon: <ProtectionPlansIcon size={16} />,
+        primaryDisabled: submitDisabled || submitting,
+      }}
     >
-      <div style={{ overflow: 'auto', flex: 1 }}>
-        <PlanForm
-          form={form}
-          initialValues={initialValues}
-          policies={policies}
-          onPoliciesChange={setPolicies}
-          onPolicyParamChange={handlePolicyParamChange}
-          onSubmit={handleFinish}
-          submitting={submitting}
-          mode="create"
-          hideSubmitButton
-          submitLabel={PPC.PANELS.CREATE.SUBMIT_BUTTON}
-          loadingLabel={PPC.PANELS.CREATE.LOADING_LABEL}
-          validateTrigger={attemptedSubmit ? 'onChange' : 'onSubmit'}
-          {...data}
-        />
-      </div>
-      <PanelFooter
-        onCancel={handleClose}
-        onPrimary={handleSubmitClick}
-        cancelLabel="Cancel"
-        primaryLabel={PPC.PANELS.CREATE.SUBMIT_BUTTON}
-        primaryLoading={submitting}
-        primaryLoadingLabel={PPC.PANELS.CREATE.LOADING_LABEL}
-        primaryIcon={<ProtectionPlansIcon size={16} />}
-        primaryDisabled={submitDisabled || submitting}
-        horizontalPadding={0}
+      <PlanForm
+        form={form}
+        initialValues={initialValues}
+        policies={policies}
+        onPoliciesChange={setPolicies}
+        onPolicyParamChange={handlePolicyParamChange}
+        onSubmit={handleFinish}
+        submitting={submitting}
+        mode="create"
+        hideSubmitButton
+        submitLabel={PPC.PANELS.CREATE.SUBMIT_BUTTON}
+        loadingLabel={PPC.PANELS.CREATE.LOADING_LABEL}
+        validateTrigger={attemptedSubmit ? 'onChange' : 'onSubmit'}
+        {...data}
       />
     </AnimationWrapper>
   );

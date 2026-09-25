@@ -49,8 +49,6 @@ export const useViewRolePanelData = ({
 
     const categoryName = getCategoryName(role.categoryID, categories);
     const tagStyle = {
-      background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
-      color: DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT,
       fontSize: 12 as const,
     };
     const isBuiltIn = role.type === RC.TYPE.BUILT_IN;
@@ -58,47 +56,19 @@ export const useViewRolePanelData = ({
     return [
       {
         label: RC.LABELS.VIEW_LABELS.STATUS,
-        value: (
-          <RowTag
-            text={role.status}
-            background={tagStyle.background}
-            color={tagStyle.color}
-            fontSize={tagStyle.fontSize}
-          />
-        ),
+        value: <RowTag text={role.status} fontSize={tagStyle.fontSize} />,
       },
       {
         label: RC.LABELS.VIEW_LABELS.TYPE,
-        value: (
-          <RowTag
-            text={role.type}
-            background={tagStyle.background}
-            color={tagStyle.color}
-            fontSize={tagStyle.fontSize}
-          />
-        ),
+        value: <RowTag text={role.type} fontSize={tagStyle.fontSize} />,
       },
       {
         label: RC.LABELS.VIEW_LABELS.CATEGORY,
-        value: (
-          <RowTag
-            text={categoryName}
-            background={tagStyle.background}
-            color={tagStyle.color}
-            fontSize={tagStyle.fontSize}
-          />
-        ),
+        value: <RowTag text={categoryName} fontSize={tagStyle.fontSize} />,
       },
       {
         label: RC.LABELS.VIEW_LABELS.VERSION,
-        value: (
-          <RowTag
-            text={role.version || '—'}
-            background={tagStyle.background}
-            color={tagStyle.color}
-            fontSize={tagStyle.fontSize}
-          />
-        ),
+        value: <RowTag text={role.version || '—'} fontSize={tagStyle.fontSize} />,
       },
       {
         label: RC.LABELS.VIEW_LABELS.CREATION_DATE,

@@ -46,11 +46,12 @@ const GoogleCallback: React.FC = () => {
       }
     };
 
+    // Permissions before entering the app, like the passkey login: no sidebar entry pops in.
     completeLogin()
+      .then(() => store.dispatch(fetchMyPermissionsThunk()))
       .then(() => {
         navigate(APP_ROUTES.HOME, { replace: true });
         message.success(LOGIN_CONSTANTS.OIDC.CALLBACK_SUCCESS);
-        void store.dispatch(fetchMyPermissionsThunk());
       })
       .catch(() => {
         message.error(LOGIN_CONSTANTS.OIDC.CALLBACK_ERROR);

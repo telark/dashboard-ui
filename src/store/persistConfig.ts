@@ -1,11 +1,11 @@
-import storage from 'redux-persist/lib/storage';
+import storage from 'redux-persist/es/storage';
 
 export const applicationsPersistConfig = {
   key: 'applications',
   storage,
   whitelist: [
     'applications',
-    'layoutMode',
+    'viewMode',
     'bulkMode',
     'selectedNames',
     'healthQuickFilter',
@@ -49,4 +49,18 @@ export const globalConfigPersistConfig = {
   key: 'globalconfig',
   storage,
   whitelist: ['data', 'initialized', 'lastFetchedAt'],
+};
+
+// Restored on reload so the sidebar and the route gate render at once; the
+// startup fetch then revalidates them silently.
+export const permissionsPersistConfig = {
+  key: 'permissions',
+  storage,
+  whitelist: ['userID', 'roles', 'scopeIndex', 'ready'],
+};
+
+export const categoriesPersistConfig = {
+  key: 'categories',
+  storage,
+  whitelist: ['categoriesByScope'],
 };

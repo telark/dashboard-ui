@@ -4,9 +4,6 @@ export const PASSKEYS_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Passkeys',
     HEADER_SUBTITLE: 'Manage your passkeys',
-    VIEW_SUBTITLE: 'View passkey details',
-    EDIT_SUBTITLE: 'Edit passkey details',
-    CREATE_SUBTITLE: 'Register a new passkey',
     NOT_FOUND: 'Passkey not found',
     CREATE_BUTTON: 'Register New Passkey',
     UPDATE_BUTTON: 'Update Passkey',
@@ -106,10 +103,7 @@ export const PASSKEYS_CONSTANTS = {
   FORM: {
     TITLE: 'Register New Passkey',
     EDIT_TITLE: 'Edit Passkey',
-    SUBTITLE: 'Create a new passkey for your account',
-    EDIT_SUBTITLE: 'Update passkey information',
     SECTION_TITLE: 'Device Information',
-    SECTION_SUBTITLE: 'Provide a name for this device',
     BUTTON_TEXT: 'Register',
     EDIT_BUTTON_TEXT: 'Update',
     DEVICE_NAME_LABEL: 'Passkey Name',
@@ -117,7 +111,6 @@ export const PASSKEYS_CONSTANTS = {
     DEVICE_NAME_REQUIRED: 'Device name is required',
     DEVICE_NAME_DUPLICATE: 'A passkey with this name already exists',
     SUGGESTIONS_TITLE: 'Suggestions',
-    SUGGESTIONS_SUBTITLE: 'Tap to use',
     FIELDS: [
       {
         type: 'input',

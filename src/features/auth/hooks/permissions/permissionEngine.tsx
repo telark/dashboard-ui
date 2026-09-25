@@ -43,7 +43,27 @@ export const ACTION_PERMISSIONS = {
       deny: 'applications.rollbackapplication.deny',
     },
   },
+  insights: {
+    view: { scope: 'insights' as const, level: 'ReadOnly' as PermissionLevel },
+    triage: {
+      scope: 'insights' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'insights.triageinsights.deny',
+    },
+    analyze: {
+      scope: 'insights' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'insights.analyzeinsights.deny',
+    },
+    // Bulk actions are triage too, so the triage deny rule blocks them as well.
+    bulk: {
+      scope: 'insights' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'insights.triageinsights.deny',
+    },
+  },
   users: {
+    view: { scope: 'users' as const, level: 'ReadOnly' as PermissionLevel },
     create: {
       scope: 'users' as const,
       level: 'Contributor' as PermissionLevel,
@@ -87,6 +107,7 @@ export const ACTION_PERMISSIONS = {
     },
   },
   groups: {
+    view: { scope: 'groups' as const, level: 'ReadOnly' as PermissionLevel },
     create: {
       scope: 'groups' as const,
       level: 'Contributor' as PermissionLevel,
@@ -150,6 +171,7 @@ export const ACTION_PERMISSIONS = {
     },
   },
   roles: {
+    view: { scope: 'roles' as const, level: 'ReadOnly' as PermissionLevel },
     create: {
       scope: 'roles' as const,
       level: 'Contributor' as PermissionLevel,
@@ -224,11 +246,6 @@ export const ACTION_PERMISSIONS = {
       level: 'Contributor' as PermissionLevel,
       deny: 'protection-plans.editprotectionplan.deny',
     },
-    editTaxonomy: {
-      scope: 'protection-plans' as const,
-      level: 'Owner' as PermissionLevel,
-      deny: 'protection-plans.editprotectionplan.deny',
-    },
     cancel: {
       scope: 'protection-plans' as const,
       level: 'Contributor' as PermissionLevel,
@@ -248,6 +265,51 @@ export const ACTION_PERMISSIONS = {
       scope: 'protection-plans' as const,
       level: 'Owner' as PermissionLevel,
       deny: 'protection-plans.deleteprotectionplan.deny',
+    },
+    approve: {
+      scope: 'protection-plans' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'protection-plans.approveprotectionplan.deny',
+    },
+    view: {
+      scope: 'protection-plans' as const,
+      level: 'ReadOnly' as PermissionLevel,
+      deny: 'protection-plans.viewprotectionplans.deny',
+    },
+    viewReports: {
+      scope: 'protection-plans' as const,
+      level: 'ReadOnly' as PermissionLevel,
+      deny: 'protection-plans.viewprotectionplanreports.deny',
+    },
+    downloadReport: {
+      scope: 'protection-plans' as const,
+      level: 'ReadOnly' as PermissionLevel,
+      deny: 'protection-plans.downloadprotectionplanreport.deny',
+    },
+    generateReport: {
+      scope: 'protection-plans' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'protection-plans.generateprotectionplanreport.deny',
+    },
+    reject: {
+      scope: 'protection-plans' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'protection-plans.rejectprotectionplan.deny',
+    },
+    addCategory: {
+      scope: 'protection-plans' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'protection-plans.addprotectionplancategory.deny',
+    },
+    editCategory: {
+      scope: 'protection-plans' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'protection-plans.editprotectionplancategory.deny',
+    },
+    deleteCategory: {
+      scope: 'protection-plans' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'protection-plans.deleteprotectionplancategory.deny',
     },
   },
 } as const;
@@ -290,15 +352,18 @@ export function useCanAccess(
 interface PermissionGateProps {
   requiredScope: string;
   requiredLevel: PermissionLevel;
+  action?: string;
+  fallback?: React.ReactNode;
   children: React.ReactNode;
 }
 
 export const PermissionGate: React.FC<PermissionGateProps> = ({
   requiredScope,
   requiredLevel,
+  action,
+  fallback = null,
   children,
 }) => {
-  const allowed = usePermission(requiredScope, requiredLevel);
-  if (!allowed) return null;
-  return <>{children}</>;
+  const allowed = usePermission(requiredScope, requiredLevel, action);
+  return <>{allowed ? children : fallback}</>;
 };

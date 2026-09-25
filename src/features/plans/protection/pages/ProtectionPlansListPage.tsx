@@ -1,6 +1,9 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
+import { getCardGridColumns } from '../../../../constants';
+import { useElementWidth } from '../../../../hooks/layout';
 import type { PlanPhase, PlanPhaseQuickFilter, PlanViewMode, ProtectionPlan } from '../models';
 import { ProtectionPlanCard, ProtectionPlansToolbar, NoProtectionPlansState } from '../components';
 import ProtectionPlansEmptyPage from './ProtectionPlansEmptyPage';
@@ -38,12 +41,14 @@ interface ProtectionPlansListPageProps {
   error: string | null;
   onRetry: () => void;
   onViewModeChange: (mode: Exclude<PlanViewMode, 'plans'>) => void;
+  tabs?: React.ReactNode;
 }
 
 const QUICK_FILTER_KEYS: PlanPhaseQuickFilter[] = [
   'all',
   'active',
   'scheduled',
+  'pending_approval',
   'canceled',
   'terminated',
   'failed',
@@ -79,10 +84,15 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
     error,
     onRetry,
     onViewModeChange,
+    tabs,
   }) => {
     const hasData = plans.length > 0;
     const timedOut = useLoadingTimeout({ isLoading: loading, hasError: Boolean(error), hasData });
     const dispatch: AppDispatch = useDispatch();
+    const navigate = useNavigate();
+    const navigateRef = useRef(navigate);
+    navigateRef.current = navigate;
+    const openPlan = useCallback((path: string) => navigateRef.current(path), []);
 
     const phaseQuickFilter = useSelector((s: RootState) => s.protectionPlans.phaseQuickFilter);
     const appliedFilters = useSelector((s: RootState) => s.protectionPlans.appliedFilters);
@@ -95,6 +105,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
     }, [allUsers]);
     const currentUserId = useMemo(() => getCurrentUser()?.id, []);
     const [filterPanelOpen, setFilterPanelOpen] = useState(false);
+    const { ref: gridRef, width: gridWidth } = useElementWidth<HTMLDivElement>();
 
     const searchedPlans = useMemo(() => {
       if (!searchValue) return plans;
@@ -126,6 +137,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
         terminated: 0,
         failed: 0,
         draft: 0,
+        pending_approval: 0,
       };
       panelFilteredPlans.forEach((p) => {
         const k = p.phase as PlanPhase;
@@ -241,13 +253,13 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: `repeat(${CARD_LAYOUT.CARDS_PER_ROW}, minmax(0, 1fr))`,
+            gridTemplateColumns: `repeat(${getCardGridColumns(gridWidth)}, minmax(0, 1fr))`,
             gap: CARD_LAYOUT.GRID_GAP_PX,
             alignItems: 'start',
           }}
         >
           {filteredPlans.map((plan) => (
-            <ProtectionPlanCard key={plan.id} plan={plan} />
+            <ProtectionPlanCard key={plan.id} plan={plan} onOpen={openPlan} />
           ))}
         </div>
       );
@@ -259,6 +271,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
         subtitle={PPC.LABELS.HEADER_SUBTITLE}
         gap={LIST_PAGE.CONTENT_GAP_PX}
       >
+        {tabs}
         <ProtectionPlansToolbar
           searchValue={searchValue}
           onSearchChange={onSearchChange}
@@ -271,7 +284,9 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           onViewModeChange={onViewModeChange}
         />
 
-        <div style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>{dataRegion}</div>
+        <div ref={gridRef} style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>
+          {dataRegion}
+        </div>
 
         <FilterPanel
           open={filterPanelOpen}

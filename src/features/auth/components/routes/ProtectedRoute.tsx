@@ -16,12 +16,9 @@ import { DATA_VIEW_ERROR_CONSTANTS } from '../../../../components/shared/dataVie
 import type { AppDispatch } from '../../../../store';
 import { APP_ROUTES, DEFAULT_COLORS, HEADER_LAYOUT } from '../../../../constants';
 import { PERMISSION_GATE_BYPASS_PATHS } from '../../constants';
-import type { PermissionLevel } from '../../models';
 
 interface ProtectedRouteProps {
   children: React.ReactElement;
-  requiredScope?: string;
-  minimumLevel?: PermissionLevel;
 }
 
 const buildMessage = (error: string | null, timedOut: boolean): string => {

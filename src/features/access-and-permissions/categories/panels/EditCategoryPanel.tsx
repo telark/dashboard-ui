@@ -2,7 +2,6 @@ import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Form, Input, App as AntdApp } from 'antd';
 import { useDispatch } from 'react-redux';
 import AnimationWrapper from '../../../../components/display/panels/slide-out/AnimationWrapper';
-import { PanelFooter } from '../../../../components/display/panels/shared';
 import { updateCategory } from '../clients';
 import { fetchCategoriesByScopeThunk } from '../store';
 import { useCategories } from '../hooks';
@@ -87,50 +86,43 @@ const EditCategoryPanel: React.FC<EditCategoryPanelProps> = ({
   const labels = L.PANELS.EDIT_CATEGORY;
 
   return (
-    <AnimationWrapper open={open} onClose={handleCancel} title={labels.TITLE} width={PANEL_WIDTH}>
-      <div
-        style={{
-          height: '100%',
-          minHeight: 0,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <div style={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
-          <Form form={form} layout="vertical" initialValues={{ name: editingCategory.name }}>
-            <Form.Item
-              name="name"
-              label={labels.NAME_LABEL}
-              rules={[
-                { required: true, message: labels.NAME_REQUIRED_MESSAGE },
-                { whitespace: true, message: labels.NAME_EMPTY_MESSAGE },
-                {
-                  validator: (_, value) => {
-                    const trimmed = value?.trim();
-                    if (!trimmed) return Promise.resolve();
-                    if (existingNamesExcludingCurrent.has(trimmed.toLowerCase())) {
-                      return Promise.reject(new Error(labels.NAME_EXISTS_MESSAGE));
-                    }
-                    return Promise.resolve();
-                  },
-                  validateTrigger: 'onChange',
-                },
-              ]}
-            >
-              <Input placeholder={labels.NAME_PLACEHOLDER} allowClear />
-            </Form.Item>
-          </Form>
-        </div>
-        <PanelFooter
-          onCancel={handleCancel}
-          onPrimary={handleSubmit}
-          cancelLabel={labels.CANCEL}
-          primaryLabel={labels.SUBMIT_BUTTON}
-          primaryLoading={submitting}
-          primaryDisabled={submitting || !isNameValid || !hasChanges}
-          horizontalPadding={0}
-        />
-      </div>
+    <AnimationWrapper
+      open={open}
+      onClose={handleCancel}
+      title={labels.TITLE}
+      width={PANEL_WIDTH}
+      footer={{
+        onCancel: handleCancel,
+        onPrimary: handleSubmit,
+        cancelLabel: labels.CANCEL,
+        primaryLabel: labels.SUBMIT_BUTTON,
+        primaryLoading: submitting,
+        primaryDisabled: submitting || !isNameValid || !hasChanges,
+      }}
+    >
+      <Form form={form} layout="vertical" initialValues={{ name: editingCategory.name }}>
+        <Form.Item
+          name="name"
+          label={labels.NAME_LABEL}
+          rules={[
+            { required: true, message: labels.NAME_REQUIRED_MESSAGE },
+            { whitespace: true, message: labels.NAME_EMPTY_MESSAGE },
+            {
+              validator: (_, value) => {
+                const trimmed = value?.trim();
+                if (!trimmed) return Promise.resolve();
+                if (existingNamesExcludingCurrent.has(trimmed.toLowerCase())) {
+                  return Promise.reject(new Error(labels.NAME_EXISTS_MESSAGE));
+                }
+                return Promise.resolve();
+              },
+              validateTrigger: 'onChange',
+            },
+          ]}
+        >
+          <Input placeholder={labels.NAME_PLACEHOLDER} allowClear />
+        </Form.Item>
+      </Form>
     </AnimationWrapper>
   );
 };

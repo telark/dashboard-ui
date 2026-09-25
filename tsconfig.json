@@ -14,7 +14,8 @@
     "resolveJsonModule": true, // Allow importing JSON files
     "isolatedModules": true, // Ensure each file is treated as a separate module
     "noEmit": true, // Disable emitting files, let Vite handle the building
-    "jsx": "react-jsx" // Use the new JSX transform for React 17+
+    "jsx": "react-jsx", // Use the new JSX transform for React 17+
+    "types": ["node"] // TS 6 no longer auto-includes every @types package
   },
   "include": [
     "src" // Include the source directory

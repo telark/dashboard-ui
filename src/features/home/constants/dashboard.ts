@@ -136,10 +136,10 @@ export const HOME_DASHBOARD_POLLING = {
   MIN_INTERVAL_SEC: 5,
 } as const;
 
-export const HOME_TAG_TONE_COLORS: Record<TagTone, { background: string; color: string }> = {
-  danger: { background: DEFAULT_COLORS.DANGER_TINT, color: DEFAULT_COLORS.DANGER },
-  warning: { background: DEFAULT_COLORS.WARNING_TINT, color: DEFAULT_COLORS.WARNING },
-  neutral: { background: DEFAULT_COLORS.CHIP_CUSTOM_BG, color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT },
+export const HOME_TAG_TONE_COLORS: Record<TagTone, string | undefined> = {
+  danger: DEFAULT_COLORS.DANGER,
+  warning: DEFAULT_COLORS.WARNING,
+  neutral: undefined,
 };
 
 const ELLIPSIS: React.CSSProperties = {

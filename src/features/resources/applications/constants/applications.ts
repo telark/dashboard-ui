@@ -5,7 +5,8 @@ import { SHARED_DETAILS_CONSTANTS } from '../../../../constants/shared/details';
 export const APPLICATIONS_SYNC_RETRY_INTERVAL_MS = 60000;
 export const APPLICATIONS_SYNC_ACTIVE_POLL_MS = 5000;
 export const APPLICATIONS_DISCOVERY_STATUS_POLL_MS = 5000;
-export const APPLICATIONS_PAGE_SIZE = 10;
+// A multiple of CARD_LAYOUT.CARDS_PER_ROW, so the grid's last row is full.
+export const APPLICATIONS_PAGE_SIZE = 12;
 export const APPLICATION_CHANGE_LOG_PAGE_SIZE = 10;
 // A rollback cannot be aborted once the engine picks it up (~200ms after the
 // request), so the only real second chance is this delay before the request.
@@ -83,4 +84,9 @@ export const APPLICATION_DETAILS_CONSTANTS = {
 
 export const APPLICATION_CHANGE_CLASS = {
   ROLLBACK: 'rollback',
+} as const;
+
+// One line of secondary text; reserved before the first status poll so the list below does not jump.
+export const DISCOVERY_STATUS_BAR = {
+  MIN_HEIGHT_PX: 22,
 } as const;

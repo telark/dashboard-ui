@@ -7,6 +7,7 @@ import store from './store';
 import App from './App';
 import FullPageLoader from './components/display/views/FullPageLoader';
 import { AppearanceProvider } from './features/settings/sections/appearance';
+import { dropForeignPermissions } from './features/auth/hooks';
 import { registerHealthInterceptors, selectServiceHealth } from './api';
 import './styles/index.css';
 import './styles/antd.css';
@@ -30,6 +31,7 @@ startTransition(() => {
           // switch between them reads as two different spinners flashing.
           loading={<FullPageLoader minHeight="100vh" />}
           persistor={persistor}
+          onBeforeLift={dropForeignPermissions}
         >
           <AppearanceProvider>
             <App />

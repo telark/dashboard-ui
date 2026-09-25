@@ -97,12 +97,7 @@ const RoleScopesView: React.FC<ScopesPermissionsProps> = ({ scopes }) => {
                 gap: 0,
               }}
             >
-              <RowTag
-                text={scopeValue.level}
-                background={DEFAULT_COLORS.CHIP_ON_SURFACE_BG}
-                color={DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT}
-                fontSize={12}
-              />
+              <RowTag text={scopeValue.level} fontSize={12} />
               {hasRules && (
                 <Popover
                   trigger="click"

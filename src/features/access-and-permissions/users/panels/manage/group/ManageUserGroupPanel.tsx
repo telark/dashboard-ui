@@ -8,7 +8,7 @@ import {
 import { SearchInput } from '../../../../../../components/display/inputs';
 import { ToggleButton } from '../../../../../../components/display/buttons';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
-import { Icons } from '../../../../../../constants';
+import { Icons, SLIDE_OUT } from '../../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { useManageUserGroupPanel } from '../../../hooks/panels/group/useManageUserGroupPanel';
 import { useDeassignUserGroup } from '../../../hooks/panels/group/useDeassignUserGroup';
@@ -98,8 +98,8 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
       <SlideOutPanel
         open={open}
         onClose={onClose}
-        title={UC.LABELS.PANELS.MANAGE_GROUP.TITLE}
-        subtitle={UC.LABELS.PANELS.MANAGE_GROUP.SUBTITLE(
+        title={SLIDE_OUT.ENTITY_TITLE(
+          UC.LABELS.PANELS.MANAGE_GROUP.TITLE,
           CapitalizeFirstLetter(user.fullname || user.username),
         )}
         width={panelWidth}

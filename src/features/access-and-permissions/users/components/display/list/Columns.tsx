@@ -68,14 +68,7 @@ const Columns = (ctx: GenerateColumnCtx, groups: Group[] = []) => {
             return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12 }}>—</span>;
           }
           const text = total === 1 ? '1 role' : `${total} roles`;
-          return (
-            <RowTag
-              text={text}
-              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-              fontSize={UC.SIZES.CHIP_FONT}
-            />
-          );
+          return <RowTag text={text} fontSize={UC.SIZES.CHIP_FONT} />;
         },
       },
       ctx,

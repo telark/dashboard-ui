@@ -8,7 +8,7 @@ import {
 import { SearchInput } from '../../../../../components/display/inputs';
 import { ToggleButton } from '../../../../../components/display/buttons';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
-import { Icons } from '../../../../../constants';
+import { Icons, SLIDE_OUT } from '../../../../../constants';
 import { useAttachMemberPanel, useDeassignGroupMember } from '../../hooks';
 import {
   usePermission,
@@ -121,8 +121,8 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
       <SlideOutPanel
         open={open}
         onClose={onClose}
-        title={GC.LABELS.PANELS.ASSIGN_MEMBERS.TITLE}
-        subtitle={GC.LABELS.PANELS.ASSIGN_MEMBERS.SUBTITLE(
+        title={SLIDE_OUT.ENTITY_TITLE(
+          GC.LABELS.PANELS.ASSIGN_MEMBERS.TITLE,
           CapitalizeFirstLetter(currentGroup.name),
         )}
         width={panelWidth}

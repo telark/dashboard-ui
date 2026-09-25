@@ -2,13 +2,21 @@ import React, { memo } from 'react';
 import { useLocation } from 'react-router-dom';
 import SidebarButton from '../../display/buttons/SideBarButton';
 import { Icons, APP_ROUTES, MENU_LABELS } from '../../../constants';
+import { usePermission, ACTION_PERMISSIONS } from '../../../features/auth/hooks';
 
 const HomeIcon = Icons.Home;
 const RoleIcon = Icons.Role;
 const ApplicationIcon = Icons.Application;
+const InsightsIcon = Icons.Insights;
 const UserIcon = Icons.User;
 const GroupIcon = Icons.Group;
 const ProtectionPlansIcon = Icons.ProtectionPlans;
+
+const { view: viewPlans } = ACTION_PERMISSIONS.protectionPlans;
+const { view: viewInsights } = ACTION_PERMISSIONS.insights;
+const { view: viewUsers } = ACTION_PERMISSIONS.users;
+const { view: viewGroups } = ACTION_PERMISSIONS.groups;
+const { view: viewRoles } = ACTION_PERMISSIONS.roles;
 
 interface MenuButtonProps {
   isCollapsed?: boolean;
@@ -47,8 +55,28 @@ export const ApplicationsMenuButton: React.FC<MenuButtonProps> = memo(({ isColla
 
 ApplicationsMenuButton.displayName = 'ApplicationsMenuButton';
 
+export const InsightsMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
+  const location = useLocation();
+  const canView = usePermission(viewInsights.scope, viewInsights.level);
+  if (!canView) return null;
+
+  return (
+    <SidebarButton
+      text={MENU_LABELS.INSIGHTS}
+      icon={<InsightsIcon />}
+      active={location.pathname.startsWith(APP_ROUTES.INSIGHTS)}
+      route={APP_ROUTES.INSIGHTS}
+      isCollapsed={isCollapsed}
+    />
+  );
+});
+
+InsightsMenuButton.displayName = 'InsightsMenuButton';
+
 export const UsersMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
   const location = useLocation();
+  const canView = usePermission(viewUsers.scope, viewUsers.level);
+  if (!canView) return null;
   const pathname = location.pathname;
 
   return (
@@ -66,6 +94,8 @@ UsersMenuButton.displayName = 'UsersMenuButton';
 
 export const GroupsMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
   const location = useLocation();
+  const canView = usePermission(viewGroups.scope, viewGroups.level);
+  if (!canView) return null;
   const pathname = location.pathname;
 
   return (
@@ -83,6 +113,8 @@ GroupsMenuButton.displayName = 'GroupsMenuButton';
 
 export const RolesMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
   const location = useLocation();
+  const canView = usePermission(viewRoles.scope, viewRoles.level);
+  if (!canView) return null;
   const pathname = location.pathname;
 
   return (
@@ -101,6 +133,8 @@ RolesMenuButton.displayName = 'RolesMenuButton';
 export const ProtectionPlansMenuButton: React.FC<MenuButtonProps> = memo(
   ({ isCollapsed = false }) => {
     const location = useLocation();
+    const canView = usePermission(viewPlans.scope, viewPlans.level, viewPlans.deny);
+    if (!canView) return null;
     const pathname = location.pathname;
 
     return (

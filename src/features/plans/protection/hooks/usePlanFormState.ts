@@ -32,12 +32,15 @@ const normalizeFormSnapshot = (values: FormValues, policies: PolicyEntry[]) => (
   scopeType: values.scopeType,
   applicationIds: [...(values.applicationIds ?? [])].sort(),
   namespaces: [...(values.namespaces ?? [])].sort(),
+  excludedKinds: [...(values.excludedKinds ?? [])].sort(),
+  excludedResources: [...(values.excludedResources ?? [])].sort(),
   timeMode: values.timeMode,
   startAt: values.startAt ? values.startAt.toISOString() : null,
   endAt: values.endAt ? values.endAt.toISOString() : null,
   participantsIDs: [...(values.participantsIDs ?? [])].sort(),
   environmentID: values.environmentID ?? '',
   tagIDs: [...(values.tagIDs ?? [])].sort(),
+  approvalMode: values.approvalMode ?? '',
   policies: policies.map((p) => ({
     templateID: p.templateID,
     params: Object.fromEntries(

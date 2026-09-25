@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Card, Space, Tag } from 'antd';
+import { DEFAULT_COLORS, getPillSurface } from '../../../constants';
 import { COMPONENT_STYLES } from '../../../constants/layout/ui';
 import { Row } from '../../shared';
 import { SimpleLabel } from '../labels';
@@ -24,20 +25,22 @@ interface DetailsViewProps {
   config: DetailsViewConfig;
 }
 
+const pillStyle = (accent?: string): React.CSSProperties => ({
+  ...getPillSurface(accent),
+  color: DEFAULT_COLORS.PILL_TEXT,
+  border: 'none',
+});
+
 const DetailsView: React.FC<DetailsViewProps> = ({ config }) => {
   const renderValue = (field: DetailsViewField) => {
     switch (field.type) {
       case 'tag':
-        return (
-          <Tag color={field.tagColor || 'blue'} style={{ margin: 0 }}>
-            {field.value}
-          </Tag>
-        );
+        return <Tag style={{ ...pillStyle(field.tagColor), margin: 0 }}>{field.value}</Tag>;
       case 'tags':
         return (
           <Space wrap>
             {field.tags?.map((tag) => (
-              <Tag key={tag.label} color={tag.color || 'blue'}>
+              <Tag key={tag.label} style={pillStyle(tag.color)}>
                 {tag.label}
               </Tag>
             ))}

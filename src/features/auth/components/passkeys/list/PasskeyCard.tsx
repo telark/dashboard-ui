@@ -133,12 +133,7 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
           >
             {passkey.deviceName}
           </h3>
-          <RowTag
-            text={deviceTypeLabel}
-            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-            fontSize={PPC.SIZES.CHIP_FONT}
-          />
+          <RowTag text={deviceTypeLabel} fontSize={PPC.SIZES.CHIP_FONT} />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
           {displayKey ? (

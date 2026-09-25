@@ -32,7 +32,6 @@ const EditApplicationPanel: React.FC<EditApplicationPanelProps> = ({
       open={open}
       onClose={onClose}
       title={APPLICATIONS_UI.EDIT_PAGE.PANEL_TITLE}
-      subtitle={APPLICATIONS_UI.EDIT_PAGE.SUBTITLE}
       formContent={
         <>
           <Form.Item

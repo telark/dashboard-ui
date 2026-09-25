@@ -8,13 +8,15 @@ import {
   fetchProtectionPlanTemplates,
   preparePlan,
   cancelPlan,
+  decidePlan,
   deletePlan,
   duplicatePlan,
   reactivatePlan,
   updatePlan,
+  type PreparePlanPayload,
   type UpdatePlanPayload,
 } from '../../clients';
-import type { ProtectionPlan, PlanTemplate } from '../../models';
+import type { PlanApprovalDecision, ProtectionPlan, PlanTemplate } from '../../models';
 
 export const fetchProtectionPlansThunk = createAsyncThunk<ProtectionPlan[]>(
   STORE_ACTIONS.PROTECTION_PLANS.FETCH,
@@ -66,20 +68,7 @@ export const fetchProtectionPlanTemplatesThunk = createAsyncThunk<PlanTemplate[]
 
 export interface PreparePlanArgs {
   userId: string;
-  payload: {
-    name: string;
-    description?: string;
-    severity?: string;
-    priority?: number;
-    scope: { type: string; applicationIds: string[]; namespaces: string[] };
-    policies: { templateID: string; params: Record<string, string[]> }[];
-    mode: string;
-    timeMode: string;
-    timeRange?: { startAt: string; endAt: string };
-    participantsIDs?: string[];
-    environmentID?: string;
-    tagIDs?: string[];
-  };
+  payload: PreparePlanPayload;
 }
 
 export const preparePlanThunk = createAsyncThunk<ProtectionPlan, PreparePlanArgs>(
@@ -108,6 +97,26 @@ export const cancelPlanThunk = createAsyncThunk<ProtectionPlan, CancelPlanArgs>(
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_CANCELLING_PROTECTION_PLAN, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.CANCEL_PROTECTION_PLAN));
+    }
+  },
+);
+
+export interface DecidePlanArgs {
+  userId: string;
+  planId: string;
+  decision: PlanApprovalDecision;
+  comment?: string;
+  requestedAt: string;
+}
+
+export const decidePlanThunk = createAsyncThunk<ProtectionPlan, DecidePlanArgs>(
+  STORE_ACTIONS.PROTECTION_PLANS.DECIDE,
+  async ({ userId, planId, decision, comment, requestedAt }, { rejectWithValue }) => {
+    try {
+      return await decidePlan(userId, planId, { decision, comment, requestedAt });
+    } catch (error: unknown) {
+      logger.error(STORE_MESSAGES.ERROR_DECIDING_PROTECTION_PLAN, error);
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.DECIDE_PROTECTION_PLAN));
     }
   },
 );

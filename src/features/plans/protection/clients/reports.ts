@@ -6,6 +6,7 @@ import {
   REPORT_BUSY_STATUS,
   REPORT_DOWNLOAD_TIMEOUT_MS,
   REPORT_GENERATE_TIMEOUT_MS,
+  REPORTS_LIST,
 } from '../constants/protectionPlans';
 import type { PlanReportFormat, PlanReportMeta } from '../models';
 import type { ApiResponse } from './shared';
@@ -14,6 +15,17 @@ export const fetchPlanReports = async (planId: string): Promise<PlanReportMeta[]
   const res = await Client<ApiResponse<PlanReportMeta[]>>(
     exporterApiClient,
     Endpoints.REPORTS.PLANS.LIST(planId).path,
+    { method: 'GET' },
+  );
+  return res.data;
+};
+
+// Newest first across every plan; the list is truncated at REPORTS_LIST.LIMIT.
+export const fetchAllPlanReports = async (): Promise<PlanReportMeta[]> => {
+  const qs = new URLSearchParams({ limit: String(REPORTS_LIST.LIMIT) }).toString();
+  const res = await Client<ApiResponse<PlanReportMeta[]>>(
+    exporterApiClient,
+    `${Endpoints.REPORTS.LIST_ALL.path}?${qs}`,
     { method: 'GET' },
   );
   return res.data;

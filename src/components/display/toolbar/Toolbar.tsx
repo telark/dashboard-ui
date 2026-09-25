@@ -119,6 +119,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                   onClick: ({ key }) => {
                     button.dropdown?.onItemClick?.(key);
                   },
+                  selectedKeys: button.dropdown.selectedKeys,
                 }}
                 trigger={['click']}
                 disabled={isDisabled}

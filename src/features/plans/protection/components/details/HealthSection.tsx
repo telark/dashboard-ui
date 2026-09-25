@@ -108,14 +108,10 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
                       )}
                       <RowTag
                         text={`${PPC.LABELS.HEALTH_DETAIL.PRESENT}: ${row.present ? 'yes' : 'no'}`}
-                        background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                        color={DEFAULT_COLORS.TEXT_SECONDARY}
                         fontSize={11}
                       />
                       <RowTag
                         text={`${PPC.LABELS.HEALTH_DETAIL.READY}: ${row.ready ? 'yes' : 'no'}`}
-                        background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                        color={DEFAULT_COLORS.TEXT_SECONDARY}
                         fontSize={11}
                       />
                       {row.failureAction && (

@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import type { Plugin } from 'vite';
 
 const { version: appVersion } = JSON.parse(
-  readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8'),
+  readFileSync(path.resolve(import.meta.dirname, 'package.json'), 'utf-8'),
 ) as { version: string };
 
 const performancePlugin = (): Plugin => ({
@@ -54,7 +54,7 @@ export default defineConfig(async ({ mode }) => {
     },
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, 'src'),
+        '@': path.resolve(import.meta.dirname, 'src'),
       },
     },
     build: {

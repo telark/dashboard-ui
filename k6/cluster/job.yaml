@@ -1,6 +1,6 @@
 # In-cluster k6 Job template for the telark dashboard suite.
 # Placeholders: __RUN__, __SCENARIO__, __NAMESPACE__, __CONFIGMAP__,
-#               __EXPORTER_URL__, __DISCOVERY_URL__, __AUTH_URL__, __ENRICHMENT_URL__,
+#               __EXPORTER_URL__, __DISCOVERY_URL__, __AUTH_URL__, __ANALYZER_URL__,
 #               __SESSION_TOKEN__, __USER_ID__, __TEST_APP_NAME__, __TEST_PLAN_TEMPLATE_ID__,
 #               __FORCE_SYNC_POLL_TIMEOUT_SEC__, __PLAN_STATUS_POLL_TIMEOUT_SEC__,
 #               __DELETE_OWN_SESSION__, __RUN_TAG__
@@ -40,8 +40,8 @@ spec:
               value: "__DISCOVERY_URL__"
             - name: AUTH_BASE_URL
               value: "__AUTH_URL__"
-            - name: ENRICHMENT_BASE_URL
-              value: "__ENRICHMENT_URL__"
+            - name: ANALYZER_BASE_URL
+              value: "__ANALYZER_URL__"
             - name: SESSION_TOKEN
               value: "__SESSION_TOKEN__"
             - name: USER_ID

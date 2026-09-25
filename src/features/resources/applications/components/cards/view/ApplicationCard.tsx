@@ -1,11 +1,20 @@
 import React, { memo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, APP_ROUTES, LIST_TOOLBAR } from '../../../../../../constants';
-import type { Application } from '../../../models';
-import { APPLICATIONS_UI } from '../../../constants';
+import { ClockCircleOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
+import {
+  APP_ROUTES,
+  CARD_FOOTER_STYLE,
+  CARD_STATS_GRID_STYLE,
+  LIST_TOOLBAR,
+  TRUNCATE_STYLE,
+  getCardShellStyle,
+} from '../../../../../../constants';
+import type { Application, ApplicationCoverage, ApplicationCoverageState } from '../../../models';
+import { APPLICATION_CARD, APPLICATION_COVERAGE_ACCENT, APPLICATIONS_UI } from '../../../constants';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
+import { CardChipSection, StatCell } from '../../../../../../components/display/card';
+import type { CardChipItem } from '../../../../../../interfaces/layout/card';
 import ApplicationCardHeader from './ApplicationCardHeader';
-import { APPLICATION_SECTION_LAYOUT } from '../../../constants/sectionLayout';
 
 interface ApplicationCardProps {
   application: Application;
@@ -13,48 +22,38 @@ interface ApplicationCardProps {
   bulkMode?: boolean;
   selected?: boolean;
   onToggleSelect?: (name: string, checked: boolean) => void;
+  coverage?: ApplicationCoverage;
 }
-
-const METRICS_ROW_STYLE: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  gap: 18,
-  paddingTop: 10,
-  marginTop: 10,
-  borderTop: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
-  flexWrap: 'wrap',
-};
 
 function isActivateKey(e: React.KeyboardEvent<HTMLDivElement>): boolean {
   return e.key === 'Enter' || e.key === ' ';
 }
 
-function MetricMini(props: { value: React.ReactNode; label: string }): React.ReactElement {
-  const { value, label } = props;
-  return (
-    <div style={{ minWidth: 0 }}>
-      <div
-        style={{
-          fontSize: 14,
-          fontWeight: 700,
-          color: DEFAULT_COLORS.TEXT_PRIMARY,
-          lineHeight: 1.1,
-        }}
-      >
-        {value}
-      </div>
-      <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, lineHeight: 1.1 }}>{label}</div>
-    </div>
-  );
-}
+const COVERAGE_ICON: Record<ApplicationCoverageState, React.ReactNode> = {
+  active: <SafetyCertificateOutlined />,
+  upcoming: <ClockCircleOutlined />,
+};
+
+const coverageChip = (name: string, state: ApplicationCoverageState): CardChipItem => ({
+  key: name,
+  label: name,
+  icon: COVERAGE_ICON[state],
+  accent: APPLICATION_COVERAGE_ACCENT[state],
+  title: APPLICATION_CARD.COVERAGE.CHIP_TITLE(name, state),
+});
 
 const ApplicationCard: React.FC<ApplicationCardProps> = memo(
-  ({ application, onEditApplication, bulkMode = false, selected = false, onToggleSelect }) => {
+  ({
+    application,
+    onEditApplication,
+    bulkMode = false,
+    selected = false,
+    onToggleSelect,
+    coverage,
+  }) => {
     const navigate = useNavigate();
     const [hovered, setHovered] = useState(false);
-    const primaryNamespace =
-      application.namespaces?.items?.[0]?.name ?? APPLICATIONS_UI.FALLBACKS.EMPTY;
+    const { createdAt, lastUpdated } = application;
     const detailsPath = APP_ROUTES.APPLICATION_DETAILS.replace(':name', application.name);
 
     return (
@@ -81,67 +80,63 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
           navigate(detailsPath);
         }}
         style={{
-          position: 'relative',
-          background: hovered
-            ? DEFAULT_COLORS.SURFACE_ELEVATED_HOVER
-            : DEFAULT_COLORS.SURFACE_ELEVATED,
-          borderRadius: APPLICATION_SECTION_LAYOUT.CARD_RADIUS,
-          border: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
-          padding: 16,
-          boxSizing: 'border-box',
-          cursor: 'pointer',
+          ...getCardShellStyle(hovered),
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          transition: 'background-color 150ms ease',
         }}
       >
-        <ApplicationCardHeader
-          application={application}
-          primaryNamespace={primaryNamespace}
-          onEditApplication={onEditApplication}
-          bulkMode={bulkMode}
-          selected={selected}
-          onToggleSelect={onToggleSelect}
-        />
+        <div style={{ flex: 1 }}>
+          <ApplicationCardHeader
+            application={application}
+            onEditApplication={onEditApplication}
+            bulkMode={bulkMode}
+            selected={selected}
+            onToggleSelect={onToggleSelect}
+          />
 
-        <div style={METRICS_ROW_STYLE}>
-          <MetricMini
-            value={application.resourceCount ?? 0}
-            label={APPLICATIONS_UI.CARD.LABELS.RESOURCES}
-          />
-          <MetricMini
-            value={application.metrics?.derived?.totalIncidents ?? 0}
-            label="Total incidents"
-          />
-          <MetricMini
-            value={application.metrics?.derived?.totalRecoveries ?? 0}
-            label="Total recoveries"
-          />
-          <MetricMini
-            value={application.managed?.by || APPLICATIONS_UI.FALLBACKS.EMPTY}
-            label={APPLICATIONS_UI.CARD.LABELS.MANAGED_BY}
-          />
-          <MetricMini
-            value={
-              application.createdAt ? (
-                <TimeAgo date={application.createdAt} />
-              ) : (
-                APPLICATIONS_UI.FALLBACKS.EMPTY
-              )
-            }
-            label={APPLICATIONS_UI.CARD.LABELS.CREATED_AT}
-          />
-          <MetricMini
-            value={
-              application.lastUpdated ? (
-                <TimeAgo date={application.lastUpdated} />
-              ) : (
-                APPLICATIONS_UI.FALLBACKS.EMPTY
-              )
-            }
-            label={APPLICATIONS_UI.CARD.LABELS.LAST_UPDATED}
-          />
+          <div style={CARD_STATS_GRID_STYLE}>
+            <StatCell
+              label={APPLICATIONS_UI.CARD.LABELS.RESOURCES}
+              value={application.resourceCount ?? 0}
+            />
+            <StatCell
+              label={APPLICATION_CARD.STATS.INCIDENTS}
+              value={application.metrics?.derived?.totalIncidents ?? 0}
+            />
+            <StatCell
+              label={APPLICATION_CARD.STATS.RECOVERIES}
+              value={application.metrics?.derived?.totalRecoveries ?? 0}
+            />
+            <StatCell
+              label={APPLICATIONS_UI.CARD.LABELS.MANAGED_BY}
+              value={application.managed?.by || APPLICATIONS_UI.FALLBACKS.EMPTY}
+            />
+          </div>
+
+          {coverage && (
+            <CardChipSection
+              label={APPLICATION_CARD.COVERAGE.LABEL}
+              emptyText={
+                coverage.known ? APPLICATION_CARD.COVERAGE.NONE : APPLICATIONS_UI.FALLBACKS.EMPTY
+              }
+              items={[
+                ...coverage.active.map((name) => coverageChip(name, 'active')),
+                ...coverage.upcoming.map((name) => coverageChip(name, 'upcoming')),
+              ]}
+            />
+          )}
+        </div>
+
+        <div style={CARD_FOOTER_STYLE}>
+          <span style={TRUNCATE_STYLE}>
+            {APPLICATION_CARD.CREATED_PREFIX}{' '}
+            {createdAt ? <TimeAgo date={createdAt} /> : APPLICATIONS_UI.FALLBACKS.EMPTY}
+          </span>
+          <span style={TRUNCATE_STYLE}>
+            {APPLICATION_CARD.UPDATED_PREFIX}{' '}
+            {lastUpdated ? <TimeAgo date={lastUpdated} /> : APPLICATIONS_UI.FALLBACKS.EMPTY}
+          </span>
         </div>
       </div>
     );

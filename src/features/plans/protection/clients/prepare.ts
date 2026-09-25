@@ -1,6 +1,6 @@
 import { Client, discoveryApiClient } from '../../../../api/index';
 import { Endpoints, HTTP_HEADERS } from '../../../../constants';
-import type { ProtectionPlan } from '../models';
+import type { PlanApprovalMode, PlanScopeExclusions, ProtectionPlan } from '../models';
 import type { ApiResponse } from './shared';
 
 export interface PreparePlanPayload {
@@ -8,7 +8,12 @@ export interface PreparePlanPayload {
   description?: string;
   severity?: string;
   priority?: number;
-  scope: { type: string; applicationIds: string[]; namespaces: string[] };
+  scope: {
+    type: string;
+    applicationIds: string[];
+    namespaces: string[];
+    exclusions: PlanScopeExclusions;
+  };
   policies: { templateID: string; params: Record<string, string[]> }[];
   mode: string;
   timeMode: string;
@@ -16,6 +21,7 @@ export interface PreparePlanPayload {
   participantsIDs?: string[];
   environmentID?: string;
   tagIDs?: string[];
+  approvalMode?: PlanApprovalMode;
 }
 
 export const preparePlan = async (

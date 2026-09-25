@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../../store';
 import { PLAN_LIST_POLL } from '../constants/protectionPlans';
@@ -9,7 +9,7 @@ import {
   selectProtectionPlansError,
 } from '../store';
 
-export const useProtectionPlans = () => {
+export const useProtectionPlans = (enabled = true) => {
   const dispatch: AppDispatch = useDispatch();
   const plans = useSelector(selectProtectionPlans);
   const loading = useSelector(selectProtectionPlansLoading);
@@ -23,6 +23,7 @@ export const useProtectionPlans = () => {
   // A window starts and ends on its exact boundary, so a list fetched once on
   // mount shows a plan as scheduled long after it began enforcing.
   useEffect(() => {
+    if (!enabled) return undefined;
     void dispatch(fetchProtectionPlansThunk());
 
     const intervalSec = Number.isFinite(fetchIntervalSeconds)
@@ -36,11 +37,11 @@ export const useProtectionPlans = () => {
     );
 
     return () => clearInterval(interval);
-  }, [dispatch, fetchIntervalSeconds]);
+  }, [dispatch, enabled, fetchIntervalSeconds]);
 
-  const refetch = (): void => {
+  const refetch = useCallback((): void => {
     void dispatch(fetchProtectionPlansThunk());
-  };
+  }, [dispatch]);
 
   return { plans, loading, error, refetch };
 };

@@ -115,7 +115,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                   <Form.Item
                     name={['scopes', scopeKey, 'level']}
                     noStyle
-                    rules={[{ required: true, message: 'Please select a permission level' }]}
+                    rules={[{ required: !isLocked, message: 'Please select a permission level' }]}
                   >
                     <LevelSelector
                       value={selectedLevel}

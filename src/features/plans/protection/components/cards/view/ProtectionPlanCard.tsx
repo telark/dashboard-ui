@@ -1,78 +1,92 @@
 import React, { memo, useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { App as AntdApp, Button, Dropdown, Form } from 'antd';
 import type { MenuProps } from 'antd';
 import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
   CloseOutlined,
   CopyOutlined,
   DeleteOutlined,
   EditOutlined,
+  FileTextOutlined,
   MoreOutlined,
   PlayCircleOutlined,
   SafetyCertificateOutlined,
   StopOutlined,
 } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { APP_ROUTES, DEFAULT_COLORS } from '../../../../../../constants';
-import { APPLICATION_SECTION_LAYOUT } from '../../../../../resources/applications/constants/sectionLayout';
-import type { ProtectionPlan } from '../../../models';
+import {
+  APP_ROUTES,
+  CARD_ASIDE_STYLE,
+  CARD_FOOTER_STYLE,
+  CARD_HEADER_STYLE,
+  CARD_IDENTITY_STYLE,
+  CARD_LAYOUT,
+  CARD_STATS_GRID_STYLE,
+  CARD_TAG_ROW_STYLE,
+  CARD_TITLE_COLUMN_STYLE,
+  CARD_TITLE_STYLE,
+  DEFAULT_COLORS,
+  MICRO_LABEL_STYLE,
+  TRUNCATE_STYLE,
+  getCardMenuButtonStyle,
+  getCardShellStyle,
+} from '../../../../../../constants';
+import type { PlanApprovalDecision, ProtectionPlan } from '../../../models';
 import type { FormValues } from '../../create';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
-  ACCENT_TINT,
-  CARD_LAYOUT,
   HEALTH_ACCENT,
   PHASE_ACCENT,
   POLICY_CHIP_LABEL,
 } from '../../../constants/protectionPlans';
 import RowTag from '../../../../../../components/display/table/RowTag';
+import {
+  CardChipSection,
+  CardIconChip,
+  CardStatusPill,
+  StatCell,
+} from '../../../../../../components/display/card';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import TimeRemaining from '../../../../../../components/display/time/TimeRemaining';
 import { formatDateTime, toTimestamp } from '../../../../../../utils/shared/time';
 import type { AppDispatch, RootState } from '../../../../../../store';
-import { cancelPlanThunk, deletePlanThunk, reactivatePlanThunk } from '../../../store';
+import {
+  cancelPlanThunk,
+  decidePlanThunk,
+  deletePlanThunk,
+  reactivatePlanThunk,
+} from '../../../store';
 import { getCurrentUser } from '../../../../../auth/utils';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../../auth/hooks';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
 import ReactivatePlanModal from '../../shared/ReactivatePlanModal';
+import ApprovalDecisionModal from '../../shared/ApprovalDecisionModal';
 import DuplicatePlanPanel from '../../panels/DuplicatePlanPanel';
 import EditPlanPanel from '../../panels/EditPlanPanel';
 import {
+  APPROVABLE_PHASES,
   CANCELLABLE_PHASES,
   NON_EDITABLE_PHASES,
   REACTIVATABLE_PHASES,
+  getDecideBlockedTooltip,
+  getGenerateReportTooltip,
   isReactivateExpired,
+  isReportNotStarted,
+  permissionTooltip,
 } from '../../../utils/phaseRules';
 import { usePlanTaxonomyLists } from '../../../hooks/usePlanTaxonomies';
+import { useGeneratePlanReport } from '../../../hooks/usePlanReports';
 
 interface ProtectionPlanCardProps {
   plan: ProtectionPlan;
+  // Passed in rather than read from useNavigate: that hook re-renders on every URL
+  // change, which re-rendered every card when the page's tab query changed.
+  onOpen: (path: string) => void;
 }
 
 const CARD_LABELS = PPC.LABELS.CARD;
 const EMPTY_VALUE = '';
-
-const MICRO_LABEL_STYLE: React.CSSProperties = {
-  fontSize: CARD_LAYOUT.MICRO_FONT_SIZE_PX,
-  fontWeight: 700,
-  letterSpacing: CARD_LAYOUT.MICRO_TRACKING,
-  textTransform: 'uppercase',
-  color: DEFAULT_COLORS.TEXT_MUTED,
-  lineHeight: 1.2,
-};
-
-const TRUNCATE_STYLE: React.CSSProperties = {
-  minWidth: 0,
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-};
-
-const DIVIDED_BLOCK_STYLE: React.CSSProperties = {
-  marginTop: CARD_LAYOUT.BLOCK_GAP_PX,
-  paddingTop: CARD_LAYOUT.DIVIDER_GAP_PX,
-  borderTop: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
-};
 
 interface PlanWindow {
   range: string;
@@ -123,77 +137,8 @@ const buildScopeValue = (plan: ProtectionPlan): string =>
 const buildTargets = (plan: ProtectionPlan): string[] =>
   (plan.scope.type === 'namespaces' ? plan.scope.namespaces : plan.scope.applicationIds) ?? [];
 
-function StatCell(props: {
-  label: string;
-  value: React.ReactNode;
-  accent?: string;
-}): React.ReactElement {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
-      <span style={MICRO_LABEL_STYLE}>{props.label}</span>
-      <span
-        style={{
-          ...TRUNCATE_STYLE,
-          fontSize: CARD_LAYOUT.VALUE_FONT_SIZE_PX,
-          fontWeight: 600,
-          color: props.accent ?? DEFAULT_COLORS.TEXT_PRIMARY,
-          lineHeight: 1.3,
-        }}
-      >
-        {props.value}
-      </span>
-    </div>
-  );
-}
-
-function BlockedRow(props: { label: string }): React.ReactElement {
-  return (
-    <li
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 6,
-        minWidth: 0,
-        background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
-        borderRadius: CARD_LAYOUT.PILL_RADIUS_PX,
-        padding: '3px 9px 3px 5px',
-      }}
-    >
-      <span
-        aria-hidden
-        style={{
-          width: CARD_LAYOUT.AVATAR_CHIP_SIZE_PX,
-          height: CARD_LAYOUT.AVATAR_CHIP_SIZE_PX,
-          borderRadius: '50%',
-          background: DEFAULT_COLORS.DANGER_TINT,
-          color: DEFAULT_COLORS.DANGER,
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: 9,
-          flexShrink: 0,
-        }}
-      >
-        <CloseOutlined />
-      </span>
-      <span
-        title={props.label}
-        style={{
-          ...TRUNCATE_STYLE,
-          fontSize: CARD_LAYOUT.META_FONT_SIZE_PX,
-          color: DEFAULT_COLORS.TEXT_SECONDARY,
-          lineHeight: 1.4,
-        }}
-      >
-        {props.label}
-      </span>
-    </li>
-  );
-}
-
-const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) => {
+const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOpen }) => {
   const dispatch: AppDispatch = useDispatch();
-  const navigate = useNavigate();
   const { message } = AntdApp.useApp();
   const [menuOpen, setMenuOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -205,10 +150,17 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [reactivateModalOpen, setReactivateModalOpen] = useState(false);
+  const [decisionModal, setDecisionModal] = useState<PlanApprovalDecision | null>(null);
+  // Kept after close so the fading modal does not flip between approve and reject copy.
+  const [lastDecision, setLastDecision] = useState<PlanApprovalDecision>('approved');
+  const [deciding, setDeciding] = useState(false);
   const [editForm] = Form.useForm<FormValues>();
   const editDisabled = NON_EDITABLE_PHASES.includes(plan.phase);
   const canReactivate = REACTIVATABLE_PHASES.includes(plan.phase);
   const reactivateExpired = isReactivateExpired(plan);
+  const canDecide = APPROVABLE_PHASES.includes(plan.phase);
+  const decideBlockedTooltip = getDecideBlockedTooltip(plan, getCurrentUser()?.id ?? '');
+  const decideDisabled = deciding || decideBlockedTooltip !== undefined;
 
   const canEditPlan = usePermission(
     ACTION_PERMISSIONS.protectionPlans.edit.scope,
@@ -225,6 +177,16 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     ACTION_PERMISSIONS.protectionPlans.reactivate.level,
     ACTION_PERMISSIONS.protectionPlans.reactivate.deny,
   );
+  const canApprovePlan = usePermission(
+    ACTION_PERMISSIONS.protectionPlans.approve.scope,
+    ACTION_PERMISSIONS.protectionPlans.approve.level,
+    ACTION_PERMISSIONS.protectionPlans.approve.deny,
+  );
+  const canRejectPlan = usePermission(
+    ACTION_PERMISSIONS.protectionPlans.reject.scope,
+    ACTION_PERMISSIONS.protectionPlans.reject.level,
+    ACTION_PERMISSIONS.protectionPlans.reject.deny,
+  );
   const canCancelPlan = usePermission(
     ACTION_PERMISSIONS.protectionPlans.cancel.scope,
     ACTION_PERMISSIONS.protectionPlans.cancel.level,
@@ -235,6 +197,12 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     ACTION_PERMISSIONS.protectionPlans.delete.level,
     ACTION_PERMISSIONS.protectionPlans.delete.deny,
   );
+  const canGenerateReport = usePermission(
+    ACTION_PERMISSIONS.protectionPlans.generateReport.scope,
+    ACTION_PERMISSIONS.protectionPlans.generateReport.level,
+    ACTION_PERMISSIONS.protectionPlans.generateReport.deny,
+  );
+  const { generating: generatingReport, generate: generateReport } = useGeneratePlanReport(plan.id);
 
   const detailsPath = APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(
     ':name',
@@ -243,12 +211,17 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
 
   const users = useSelector((state: RootState) => state.users.users);
   const createdByLabel = users.find((u) => u.id === plan.createdBy)?.username ?? plan.createdBy;
+  const requesterId = plan.approval?.requestedBy;
+  const requestedByLabel = users.find((u) => u.id === requesterId)?.username ?? requesterId;
+  const provenanceLabel =
+    plan.phase === 'pending_approval' && requestedByLabel
+      ? `${CARD_LABELS.AWAITING_APPROVAL_BY_PREFIX} ${requestedByLabel}`
+      : `${CARD_LABELS.CREATED_BY_PREFIX} ${createdByLabel}`;
 
   const phaseLabel = PPC.LABELS.PHASE_LABELS[plan.phase] ?? plan.phase;
   const canCancel = CANCELLABLE_PHASES.includes(plan.phase);
 
   const phaseAccent = PHASE_ACCENT[plan.phase] ?? DEFAULT_COLORS.DEFAULT;
-  const phaseTint = ACCENT_TINT[phaseAccent] ?? DEFAULT_COLORS.DEFAULT_TINT;
   const health = plan.health ?? 'unknown';
   // Health only speaks while the plan is running; a canceled plan's last known
   // health would otherwise light the card up green.
@@ -270,21 +243,8 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
   const policyLabels = (plan.policies ?? []).map(
     (policy) => POLICY_CHIP_LABEL[policy.templateID] ?? policy.templateID,
   );
-  const shownPolicies = policyLabels.slice(0, CARD_LAYOUT.MAX_POLICY_CHIPS);
-  const hiddenPolicies = policyLabels.length - shownPolicies.length;
 
-  const menuButtonStyle: React.CSSProperties = {
-    color: menuOpen ? DEFAULT_COLORS.TEXT_PRIMARY : DEFAULT_COLORS.ICON_SECONDARY,
-    flexShrink: 0,
-    width: 30,
-    height: 30,
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: CARD_LAYOUT.ICON_CHIP_RADIUS_PX,
-    background: menuOpen ? DEFAULT_COLORS.BACKGROUND_HOVER : 'transparent',
-    transition: 'background 120ms ease, color 120ms ease',
-  };
+  const menuButtonStyle = getCardMenuButtonStyle(menuOpen);
 
   const handleCancel = useCallback(async () => {
     const userId = getCurrentUser()?.id;
@@ -315,6 +275,47 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
       setReactivating(false);
     }
   }, [dispatch, message, plan.id, plan.name]);
+
+  const openDecision = useCallback((decision: PlanApprovalDecision) => {
+    setLastDecision(decision);
+    setDecisionModal(decision);
+  }, []);
+
+  const requestedAt = plan.approval?.requestedAt ?? '';
+  const handleDecide = useCallback(
+    async (comment: string) => {
+      if (!decisionModal) return;
+      const userId = getCurrentUser()?.id;
+      if (!userId) return;
+      const approved = decisionModal === 'approved';
+      setDeciding(true);
+      try {
+        await dispatch(
+          decidePlanThunk({
+            userId,
+            planId: plan.id,
+            decision: decisionModal,
+            comment: comment || undefined,
+            requestedAt,
+          }),
+        ).unwrap();
+        message.success(
+          approved
+            ? PPC.LABELS.ACTIONS.APPROVE_SUCCESS(plan.name)
+            : PPC.LABELS.ACTIONS.REJECT_SUCCESS(plan.name),
+        );
+        setDecisionModal(null);
+      } catch (err: unknown) {
+        const fallback = approved
+          ? PPC.LABELS.ACTIONS.APPROVE_ERROR
+          : PPC.LABELS.ACTIONS.REJECT_ERROR;
+        message.error(typeof err === 'string' && err ? err : fallback);
+      } finally {
+        setDeciding(false);
+      }
+    },
+    [decisionModal, dispatch, message, requestedAt, plan.id, plan.name],
+  );
 
   const handleDelete = useCallback(async () => {
     const userId = getCurrentUser()?.id;
@@ -349,61 +350,95 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
     deleteModalOpen ||
     cancelModalOpen ||
     reactivateModalOpen ||
+    decisionModal !== null ||
     editPanelOpen;
 
+  const PD = PPC.LABELS.PERMISSION_DENIED;
   const menuItems: NonNullable<MenuProps['items']> = [
-    ...(canEditPlan
+    ...(canDecide
       ? [
           {
-            key: 'edit',
-            label: PPC.LABELS.DETAIL_PAGE.ACTIONS.EDIT,
-            icon: <EditOutlined />,
-            disabled: editDisabled || editPanelOpen,
+            key: 'approve',
+            label: PPC.LABELS.DETAIL_PAGE.ACTIONS.APPROVE,
+            icon: <CheckCircleOutlined />,
+            disabled: !canApprovePlan || decideDisabled,
+            title: permissionTooltip(canApprovePlan, PD.APPROVE, decideBlockedTooltip),
+          },
+          {
+            key: 'reject',
+            label: PPC.LABELS.DETAIL_PAGE.ACTIONS.REJECT,
+            icon: <CloseCircleOutlined />,
+            danger: true,
+            disabled: !canRejectPlan || decideDisabled,
+            title: permissionTooltip(canRejectPlan, PD.REJECT, decideBlockedTooltip),
           },
         ]
       : []),
-    ...(canDuplicatePlan
-      ? [
-          {
-            key: 'duplicate',
-            label: PPC.LABELS.ACTIONS.DUPLICATE,
-            icon: <CopyOutlined />,
-            disabled: duplicatePanelOpen,
-          },
-        ]
-      : []),
-    ...(canReactivatePlan && canReactivate
+    {
+      key: 'edit',
+      label: PPC.LABELS.DETAIL_PAGE.ACTIONS.EDIT,
+      icon: <EditOutlined />,
+      disabled: !canEditPlan || editDisabled || editPanelOpen,
+      title: permissionTooltip(
+        canEditPlan,
+        PD.EDIT,
+        editDisabled ? PPC.LABELS.DETAIL_PAGE.ACTIONS.EDIT_DISABLED_TOOLTIP : undefined,
+      ),
+    },
+    {
+      key: 'duplicate',
+      label: PPC.LABELS.ACTIONS.DUPLICATE,
+      icon: <CopyOutlined />,
+      disabled: !canDuplicatePlan || duplicatePanelOpen,
+      title: permissionTooltip(canDuplicatePlan, PD.DUPLICATE),
+    },
+    {
+      key: 'generateReport',
+      label: PPC.LABELS.REPORTS.GENERATE,
+      icon: <FileTextOutlined />,
+      disabled:
+        !canGenerateReport || generatingReport || isReportNotStarted(plan) || !getCurrentUser()?.id,
+      title: getGenerateReportTooltip(plan, canGenerateReport),
+    },
+    ...(canReactivate
       ? [
           {
             key: 'reactivate',
             label: PPC.LABELS.DETAIL_PAGE.ACTIONS.REACTIVATE,
             icon: <PlayCircleOutlined />,
-            disabled: reactivating || reactivateExpired,
+            disabled: !canReactivatePlan || reactivating || reactivateExpired,
+            title: permissionTooltip(
+              canReactivatePlan,
+              PD.REACTIVATE,
+              reactivateExpired
+                ? PPC.LABELS.DETAIL_PAGE.ACTIONS.REACTIVATE_DISABLED_EXPIRED_TOOLTIP
+                : undefined,
+            ),
           },
         ]
       : []),
-    ...(canCancelPlan && canCancel
+    ...(canCancel
       ? [
           {
             key: 'cancel',
             label: PPC.LABELS.ACTIONS.CANCEL,
             icon: <StopOutlined />,
             danger: true,
-            disabled: cancelling,
+            disabled: !canCancelPlan || cancelling,
+            title: permissionTooltip(canCancelPlan, PD.CANCEL),
           },
         ]
       : []),
-  ];
-  if (canDeletePlan) {
-    if (menuItems.length > 0) menuItems.push({ type: 'divider' });
-    menuItems.push({
+    { type: 'divider' },
+    {
       key: 'delete',
       label: PPC.LABELS.ACTIONS.DELETE,
       icon: <DeleteOutlined />,
       danger: true,
-      disabled: deleting,
-    });
-  }
+      disabled: !canDeletePlan || deleting,
+      title: permissionTooltip(canDeletePlan, PD.DELETE),
+    },
+  ];
 
   return (
     <div
@@ -411,100 +446,55 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
       tabIndex={0}
       onClick={() => {
         if (navigationBlocked) return;
-        navigate(detailsPath);
+        onOpen(detailsPath);
       }}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           if (navigationBlocked) return;
           e.preventDefault();
-          navigate(detailsPath);
+          onOpen(detailsPath);
         }
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{
-        position: 'relative',
-        background: hovered
-          ? DEFAULT_COLORS.SURFACE_ELEVATED_HOVER
-          : DEFAULT_COLORS.SURFACE_ELEVATED,
-        borderRadius: APPLICATION_SECTION_LAYOUT.CARD_RADIUS,
-        border: `1px solid ${hovered ? DEFAULT_COLORS.BORDER_HOVER : DEFAULT_COLORS.BORDER_ELEVATED}`,
-        padding: CARD_LAYOUT.PADDING_PX,
-        boxSizing: 'border-box',
-        cursor: 'pointer',
-        transition: 'background 140ms ease, border-color 140ms ease',
-      }}
+      style={getCardShellStyle(hovered)}
     >
       {/* Header: identity on the left, phase pill and actions on the right */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          justifyContent: 'space-between',
-          gap: 12,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, minWidth: 0 }}>
-          <span
-            aria-hidden
-            style={{
-              width: CARD_LAYOUT.ICON_CHIP_SIZE_PX,
-              height: CARD_LAYOUT.ICON_CHIP_SIZE_PX,
-              borderRadius: CARD_LAYOUT.ICON_CHIP_RADIUS_PX,
-              background: phaseTint,
-              color: phaseAccent,
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 14,
-              flexShrink: 0,
-            }}
-          >
-            <SafetyCertificateOutlined />
-          </span>
-          <span style={{ display: 'flex', flexDirection: 'column', gap: 5, minWidth: 0 }}>
-            <span
-              title={plan.name}
-              style={{
-                ...TRUNCATE_STYLE,
-                fontSize: CARD_LAYOUT.TITLE_FONT_SIZE_PX,
-                fontWeight: 600,
-                color: DEFAULT_COLORS.TEXT_PRIMARY,
-                lineHeight: 1.3,
-              }}
-            >
+      <div style={CARD_HEADER_STYLE}>
+        <div style={CARD_IDENTITY_STYLE}>
+          <CardIconChip icon={<SafetyCertificateOutlined />} accent={phaseAccent} />
+          <span style={CARD_TITLE_COLUMN_STYLE}>
+            <span title={plan.name} style={CARD_TITLE_STYLE}>
               {plan.name}
             </span>
-            <span style={{ display: 'flex', flexWrap: 'wrap', gap: 4, minWidth: 0 }}>
+            <span style={CARD_TAG_ROW_STYLE}>
               {shownTargets.map((target) => (
                 <RowTag
                   key={target}
                   text={target}
                   capitalize={false}
-                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                  color={DEFAULT_COLORS.TEXT_SECONDARY}
                   fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
+                  truncate
                 />
               ))}
               {hiddenTargets > 0 && (
                 <RowTag
                   text={CARD_LABELS.MORE_BLOCKED(hiddenTargets)}
                   capitalize={false}
-                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                  color={DEFAULT_COLORS.TEXT_MUTED}
                   fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
+                  truncate
                 />
               )}
             </span>
-            {(environmentName || planTags.length > 0) && (
-              <span style={{ display: 'flex', flexWrap: 'wrap', gap: 4, minWidth: 0 }}>
+            {/* Keyed on the plan's ids, not the resolved names, so the row does not pop in when the lists load. */}
+            {(plan.environmentID || (plan.tagIDs?.length ?? 0) > 0) && (
+              <span style={{ ...CARD_TAG_ROW_STYLE, minHeight: CARD_LAYOUT.TAG_ROW_MIN_HEIGHT_PX }}>
                 {environmentName && (
                   <RowTag
                     text={environmentName}
                     capitalize={false}
-                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                    color={DEFAULT_COLORS.TEXT_SECONDARY}
                     fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
+                    truncate
                   />
                 )}
                 {shownTags.map(({ id, name }) => (
@@ -512,18 +502,16 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
                     key={id}
                     text={name}
                     capitalize={false}
-                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                    color={DEFAULT_COLORS.TEXT_MUTED}
                     fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
+                    truncate
                   />
                 ))}
                 {hiddenTagNames > 0 && (
                   <RowTag
                     text={CARD_LABELS.MORE_BLOCKED(hiddenTagNames)}
                     capitalize={false}
-                    background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                    color={DEFAULT_COLORS.TEXT_MUTED}
                     fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
+                    truncate
                   />
                 )}
               </span>
@@ -531,34 +519,8 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           </span>
         </div>
 
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              borderRadius: CARD_LAYOUT.PILL_RADIUS_PX,
-              background: phaseTint,
-              color: phaseAccent,
-              padding: '3px 10px',
-              fontSize: CARD_LAYOUT.MICRO_FONT_SIZE_PX,
-              fontWeight: 700,
-              letterSpacing: CARD_LAYOUT.MICRO_TRACKING,
-              textTransform: 'uppercase',
-              lineHeight: 1.6,
-            }}
-          >
-            <span
-              aria-hidden
-              style={{
-                width: CARD_LAYOUT.DOT_SIZE_PX,
-                height: CARD_LAYOUT.DOT_SIZE_PX,
-                borderRadius: '50%',
-                background: phaseAccent,
-              }}
-            />
-            {phaseLabel}
-          </span>
+        <div style={CARD_ASIDE_STYLE}>
+          <CardStatusPill label={phaseLabel} accent={phaseAccent} />
           {menuItems.length > 0 && (
             <Dropdown
               trigger={['click']}
@@ -574,6 +536,12 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
                   if (key === 'delete') setDeleteModalOpen(true);
                   if (key === 'duplicate') handleDuplicate();
                   if (key === 'reactivate') setReactivateModalOpen(true);
+                  if (key === 'approve') openDecision('approved');
+                  if (key === 'reject') openDecision('rejected');
+                  if (key === 'generateReport') {
+                    const userId = getCurrentUser()?.id;
+                    if (userId) void generateReport(userId);
+                  }
                 },
               }}
             >
@@ -649,14 +617,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
       </div>
 
       {/* Stats: the four answers a plan is scanned for */}
-      <div
-        style={{
-          ...DIVIDED_BLOCK_STYLE,
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-          columnGap: CARD_LAYOUT.CHIPS_GAP_PX,
-        }}
-      >
+      <div style={CARD_STATS_GRID_STYLE}>
         <StatCell label={CARD_LABELS.STATS.SCOPE} value={buildScopeValue(plan)} />
         <StatCell label={CARD_LABELS.STATS.MODE} value={PPC.LABELS.MODE_LABELS[plan.mode]} />
         <StatCell
@@ -671,57 +632,21 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
       </div>
 
       {/* What the plan refuses, in the operator's words rather than template ids */}
-      <div style={DIVIDED_BLOCK_STYLE}>
-        <span style={MICRO_LABEL_STYLE}>
-          {isPermanent ? CARD_LABELS.BLOCKED_LABEL_PERMANENT : CARD_LABELS.BLOCKED_LABEL}
-        </span>
-        {shownPolicies.length === 0 ? (
-          <p
-            style={{
-              margin: '10px 0 0',
-              fontSize: CARD_LAYOUT.META_FONT_SIZE_PX,
-              color: DEFAULT_COLORS.TEXT_MUTED,
-            }}
-          >
-            {CARD_LABELS.REFUSES_NONE}
-          </p>
-        ) : (
-          <ul
-            style={{
-              listStyle: 'none',
-              margin: '8px 0 0',
-              padding: 0,
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 6,
-            }}
-          >
-            {shownPolicies.map((label) => (
-              <BlockedRow key={label} label={label} />
-            ))}
-            {hiddenPolicies > 0 && (
-              <li style={{ ...MICRO_LABEL_STYLE, alignSelf: 'center' }}>
-                {CARD_LABELS.MORE_BLOCKED(hiddenPolicies)}
-              </li>
-            )}
-          </ul>
-        )}
-      </div>
+      <CardChipSection
+        label={isPermanent ? CARD_LABELS.BLOCKED_LABEL_PERMANENT : CARD_LABELS.BLOCKED_LABEL}
+        emptyText={CARD_LABELS.REFUSES_NONE}
+        items={policyLabels.map((label) => ({
+          key: label,
+          label,
+          icon: <CloseOutlined />,
+          accent: DEFAULT_COLORS.DANGER,
+        }))}
+      />
 
       {/* Provenance: who put this window in place and when it last moved */}
-      <div
-        style={{
-          ...DIVIDED_BLOCK_STYLE,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 12,
-          fontSize: CARD_LAYOUT.META_FONT_SIZE_PX,
-          color: DEFAULT_COLORS.TEXT_MUTED,
-        }}
-      >
-        <span style={TRUNCATE_STYLE}>{`${CARD_LABELS.CREATED_BY_PREFIX} ${createdByLabel}`}</span>
-        <span style={{ flexShrink: 0 }}>
+      <div style={CARD_FOOTER_STYLE}>
+        <span style={TRUNCATE_STYLE}>{provenanceLabel}</span>
+        <span style={TRUNCATE_STYLE}>
           {CARD_LABELS.UPDATED_PREFIX} <TimeAgo date={plan.lastUpdatedAt || plan.createdAt} />
         </span>
       </div>
@@ -758,13 +683,23 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan }) =>
           onClose={() => setReactivateModalOpen(false)}
           onConfirm={handleReactivate}
         />
+        <ApprovalDecisionModal
+          open={decisionModal !== null}
+          decision={lastDecision}
+          plan={plan}
+          loading={deciding}
+          onClose={() => setDecisionModal(null)}
+          onConfirm={handleDecide}
+        />
       </div>
-      <DuplicatePlanPanel
-        key={`duplicate-${plan.id}`}
-        open={duplicatePanelOpen}
-        onClose={() => setDuplicatePanelOpen(false)}
-        plan={plan}
-      />
+      {duplicatePanelOpen && (
+        <DuplicatePlanPanel
+          key={`duplicate-${plan.id}`}
+          open={duplicatePanelOpen}
+          onClose={() => setDuplicatePanelOpen(false)}
+          plan={plan}
+        />
+      )}
       {editPanelOpen && (
         <EditPlanPanel
           key={`edit-${plan.id}`}

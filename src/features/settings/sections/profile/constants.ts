@@ -22,7 +22,6 @@ export const PROFILE_SECTION_CONSTANTS = {
     AVATAR_UPDATE_ERROR: 'Failed to update profile photo.',
     EDIT_PROFILE_PANEL: {
       TITLE: 'Edit profile',
-      SUBTITLE: 'Update your account details',
       USERNAME_LABEL: 'Username',
       USERNAME_PLACEHOLDER: 'e.g. john_doe',
       FULLNAME_LABEL: 'Full name',

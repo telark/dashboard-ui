@@ -2,9 +2,6 @@ export const GROUPS_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Groups',
     HEADER_SUBTITLE: 'Manage existing groups',
-    VIEW_SUBTITLE: 'View group details',
-    EDIT_SUBTITLE: 'Edit group details',
-    CREATE_SUBTITLE: 'Create a new group',
     NOT_FOUND: 'Group not found',
     UPDATE_BUTTON: 'Update Group',
     CREATE_BUTTON_TEXT: 'Add New Group',
@@ -83,9 +80,7 @@ export const GROUPS_CONSTANTS = {
     },
     FORM: {
       TITLE: 'Add New Group',
-      SUBTITLE: 'Add a new group',
       SECTION_TITLE: 'Group Details',
-      SECTION_SUBTITLE: 'Provide the group information.',
       BUTTON_TEXT: 'Add New Group',
       SECTIONS: {
         BASIC_DETAILS: 'Basic Details',
@@ -119,7 +114,6 @@ export const GROUPS_CONSTANTS = {
       },
       ATTACH_ROLES: {
         TITLE: 'Manage Roles',
-        SUBTITLE: (groupName: string) => `View and manage roles for ${groupName}`,
         SUBMIT_BUTTON: 'Update roles',
         SEARCH_PLACEHOLDER: 'Search roles by name, type, status, or validity...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
@@ -127,7 +121,6 @@ export const GROUPS_CONSTANTS = {
       },
       ASSIGN_MEMBERS: {
         TITLE: 'Manage Members',
-        SUBTITLE: (groupName: string) => `View and manage members for ${groupName}`,
         SUBMIT_BUTTON: 'Update members',
         SEARCH_PLACEHOLDER: 'Search members by username or email...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
@@ -145,11 +138,11 @@ export const GROUPS_CONSTANTS = {
     },
     FILTER: {
       LABELS: {
-        BY_CREATION_DATE: 'BY CREATION DATE',
-        BY_TYPE: 'BY TYPE',
-        BY_CATEGORY: 'BY CATEGORY',
-        BY_VALIDITY: 'BY VALIDITY',
-        BY_STATUS: 'BY STATUS',
+        BY_CREATION_DATE: 'By creation date',
+        BY_TYPE: 'By type',
+        BY_CATEGORY: 'By category',
+        BY_VALIDITY: 'By validity',
+        BY_STATUS: 'By status',
         FROM: 'From',
         TO: 'To',
       },
@@ -175,8 +168,8 @@ export const GROUPS_CONSTANTS = {
       MANAGE: {
         BUTTON_LABEL: 'Manage',
       },
-      COUNT_SUFFIX: 'groups',
-      CATEGORIES_COUNT_SUFFIX: 'categories',
+      COUNT_SUFFIX: { one: 'group', other: 'groups' },
+      CATEGORIES_COUNT_SUFFIX: { one: 'category', other: 'categories' },
       MORE: 'More',
       BULK: {
         SELECT: 'Bulk',

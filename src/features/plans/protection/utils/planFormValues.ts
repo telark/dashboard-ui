@@ -1,6 +1,18 @@
 import dayjs from 'dayjs';
 import type { PolicyEntry, FormValues } from '../components/create';
-import type { ProtectionPlan } from '../models';
+import type { PlanExcludedResource, ProtectionPlan } from '../models';
+
+export const RESOURCE_KEY_SEPARATOR = '/';
+
+export const encodeResourceKey = (r: PlanExcludedResource): string =>
+  [r.kind, r.namespace, r.name].join(RESOURCE_KEY_SEPARATOR);
+
+export const decodeResourceKey = (key: string): PlanExcludedResource | null => {
+  const parts = key.split(RESOURCE_KEY_SEPARATOR);
+  if (parts.length !== 3 || parts.some((p) => p === '')) return null;
+  const [kind, namespace, name] = parts;
+  return { kind, name, namespace };
+};
 
 export const DEFAULT_FORM_VALUES: FormValues = {
   name: '',
@@ -11,12 +23,15 @@ export const DEFAULT_FORM_VALUES: FormValues = {
   scopeType: 'namespaces',
   applicationIds: [],
   namespaces: [],
+  excludedKinds: [],
+  excludedResources: [],
   timeMode: 'permanent',
   startAt: undefined,
   endAt: undefined,
   participantsIDs: [],
   environmentID: undefined,
   tagIDs: [],
+  approvalMode: 'automatic',
 };
 
 export const planToFormValues = (plan: ProtectionPlan): FormValues => ({
@@ -28,12 +43,15 @@ export const planToFormValues = (plan: ProtectionPlan): FormValues => ({
   scopeType: plan.scope.type,
   applicationIds: plan.scope.applicationIds ?? [],
   namespaces: plan.scope.namespaces ?? [],
+  excludedKinds: plan.scope.exclusions?.kinds ?? [],
+  excludedResources: (plan.scope.exclusions?.resources ?? []).map(encodeResourceKey),
   timeMode: plan.timeMode,
   startAt: plan.timeRange ? dayjs(plan.timeRange.startAt) : undefined,
   endAt: plan.timeRange ? dayjs(plan.timeRange.endAt) : undefined,
   participantsIDs: plan.participantsIDs ?? [],
   environmentID: plan.environmentID || undefined,
   tagIDs: plan.tagIDs ?? [],
+  approvalMode: plan.approvalMode ?? 'automatic',
 });
 
 export const planToPolicies = (plan: ProtectionPlan): PolicyEntry[] =>
@@ -67,6 +85,15 @@ export const buildPreparePayload = ({ values, policies }: BuildPreparePayloadInp
     type: values.scopeType,
     applicationIds: values.scopeType === 'applications' ? (values.applicationIds ?? []) : [],
     namespaces: values.scopeType === 'namespaces' ? (values.namespaces ?? []) : [],
+    exclusions: {
+      kinds: values.excludedKinds ?? [],
+      resources:
+        values.scopeType === 'applications'
+          ? (values.excludedResources ?? [])
+              .map(decodeResourceKey)
+              .filter((r): r is PlanExcludedResource => r !== null)
+          : [],
+    },
   },
   policies: policies.map((p) => ({ templateID: p.templateID, params: p.params })),
   timeRange:
@@ -76,9 +103,18 @@ export const buildPreparePayload = ({ values, policies }: BuildPreparePayloadInp
   participantsIDs: values.participantsIDs ?? [],
   environmentID: values.environmentID ?? '',
   tagIDs: values.tagIDs ?? [],
+  approvalMode: values.approvalMode,
 });
 
+const exclusionsChanged = (plan: ProtectionPlan, values: FormValues): boolean =>
+  !arraysEqualUnordered(values.excludedKinds ?? [], plan.scope.exclusions?.kinds ?? []) ||
+  !arraysEqualUnordered(
+    values.excludedResources ?? [],
+    (plan.scope.exclusions?.resources ?? []).map(encodeResourceKey),
+  );
+
 export const scopeItemsChanged = (plan: ProtectionPlan, values: FormValues): boolean => {
+  if (exclusionsChanged(plan, values)) return true;
   if (plan.scope.type === 'applications') {
     return !arraysEqualUnordered(values.applicationIds ?? [], plan.scope.applicationIds ?? []);
   }

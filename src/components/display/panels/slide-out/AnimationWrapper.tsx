@@ -4,19 +4,19 @@ import type { AnimationWrapperProps } from '../../../../interfaces/layout/panels
 import { useBodyOverflow } from '../../../../hooks/panel';
 import { PANEL_SURFACE_CLASS, PANEL_THEME_TOKENS, SLIDE_OUT } from '../../../../constants';
 import TopPanelToolbar from './TopPanelToolbar';
-import { PanelHeader } from '../shared';
+import { PanelFooter, PanelHeader } from '../shared';
 
 const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
   ({
     open,
     onClose,
     title,
-    subtitle,
     children,
     width = 480,
     offsetX = 0,
     toolbarActions,
     headerExtra,
+    footer,
   }) => {
     useBodyOverflow(open);
 
@@ -37,7 +37,6 @@ const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
         >
           <PanelHeader
             title={title}
-            subtitle={subtitle}
             onClose={onClose}
             extra={
               <>
@@ -47,7 +46,8 @@ const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
             }
           />
 
-          <div style={SLIDE_OUT.CONTENT}>{children}</div>
+          <div style={footer ? SLIDE_OUT.CONTENT_ABOVE_FOOTER : SLIDE_OUT.CONTENT}>{children}</div>
+          {footer && <PanelFooter {...footer} />}
         </div>
 
         <style>

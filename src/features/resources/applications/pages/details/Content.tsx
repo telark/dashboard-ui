@@ -9,7 +9,6 @@ import ApplicationDetailsToolbar from '../../components/layout/ApplicationDetail
 import ApplicationDetailsIdentity from '../../components/layout/ApplicationDetailsIdentity';
 import ApplicationOverviewSection from '../../components/details/ApplicationOverviewSection';
 import ApplicationResourcesSection from '../../components/details/ApplicationResourcesSection';
-import ApplicationInsightsSection from '../../components/details/ApplicationInsightsSection';
 import ApplicationMetricsSection from '../../components/details/ApplicationMetricsSection';
 import ApplicationWorkloadMetricsSection from '../../components/details/ApplicationWorkloadMetricsSection';
 import ApplicationChangeLogSection from '../../components/details/ApplicationChangeLogSection';
@@ -21,12 +20,12 @@ interface ApplicationDetailsContentProps {
   onEdit: () => void;
   onManageSnapshots: () => void;
   onManageRollbacks: () => void;
+  onOpenInsights?: () => void;
   onReset: () => void;
 }
 
 // Thin orchestrator: each section owns its own data and rendering. This keeps the
-// details page a readable list of sections rather than a single monolith, and lets
-// a section like Insights fetch on its own cadence without coupling to the rest.
+// details page a readable list of sections rather than a single monolith.
 const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo(
   ({
     application,
@@ -35,6 +34,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
     onEdit,
     onManageSnapshots,
     onManageRollbacks,
+    onOpenInsights,
     onReset,
   }) => {
     // The identity strip only earns its space once the page header is gone. A
@@ -54,8 +54,6 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
       observer.observe(sentinel);
       return () => observer.disconnect();
     }, []);
-
-    const primaryNamespace = application.namespaces?.items?.[0]?.name ?? '';
 
     return (
       <div
@@ -88,13 +86,13 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
             onEdit={onEdit}
             onManageSnapshots={onManageSnapshots}
             onManageRollbacks={onManageRollbacks}
+            onOpenInsights={onOpenInsights}
             onReset={onReset}
           />
         </div>
 
         <ApplicationOverviewSection application={application} />
         <ApplicationResourcesSection application={application} />
-        <ApplicationInsightsSection namespace={primaryNamespace} name={application.name} />
         <ApplicationMetricsSection application={application} />
         <ApplicationWorkloadMetricsSection application={application} />
         <ApplicationChangeLogSection application={application} />

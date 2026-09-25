@@ -22,6 +22,7 @@ interface ReportsSectionProps {
   phase: PlanPhase;
   planName: string;
   users: RootState['users']['users'];
+  canDownload: boolean;
   onDownload: (report: PlanReportMeta, format: PlanReportFormat, filename: string) => void;
 }
 
@@ -57,6 +58,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
   phase,
   planName,
   users,
+  canDownload,
   onDownload,
 }) => {
   const reports = data ?? [];
@@ -105,8 +107,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
             <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 6 }}>
               <RowTag
                 text={LABELS.TRIGGER_LABELS[report.trigger]}
-                background={final ? DEFAULT_COLORS.SUCCESS_TINT : DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                color={final ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.TEXT_SECONDARY}
+                accent={final ? DEFAULT_COLORS.SUCCESS : undefined}
                 fontSize={11}
               />
               <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
@@ -118,13 +119,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
                 · {LABELS.DECISIONS}: {report.violationsTotal}
               </span>
               {report.truncated && (
-                <RowTag
-                  text={LABELS.TRUNCATED}
-                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                  color={DEFAULT_COLORS.TEXT_MUTED}
-                  fontSize={11}
-                  capitalize={false}
-                />
+                <RowTag text={LABELS.TRUNCATED} fontSize={11} capitalize={false} />
               )}
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
@@ -134,13 +129,19 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
                     key={key}
                     size="small"
                     loading={downloading === `${report.id}:${key}`}
+                    disabled={!canDownload}
                     onClick={() => onDownload(report, key, `${planName}-${report.id}.${key}`)}
                   >
                     {label}
                   </Button>
                 );
-                return key === 'html' ? (
-                  <Tooltip key={key} title={LABELS.PRINT_HINT}>
+                const title = !canDownload
+                  ? PPC.LABELS.PERMISSION_DENIED.DOWNLOAD_REPORT
+                  : key === 'html'
+                    ? LABELS.PRINT_HINT
+                    : undefined;
+                return title ? (
+                  <Tooltip key={key} title={title}>
                     {button}
                   </Tooltip>
                 ) : (

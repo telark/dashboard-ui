@@ -28,16 +28,20 @@ function buildScopeIndex(
   ) => {
     const existing = index[scopeName];
     if (!existing) {
-      index[scopeName] = { level, rules, priority };
+      index[scopeName] = { level, rules: [...rules], priority };
       return;
     }
+    // Deny rules add up across roles, as the backend applies every active role's rules.
+    const merged = Array.from(new Set([...existing.rules, ...rules]));
     const incomingRank = PERMISSION_LEVEL_RANK[level];
     const existingRank = PERMISSION_LEVEL_RANK[existing.level];
     if (
       incomingRank > existingRank ||
       (incomingRank === existingRank && priority > existing.priority)
     ) {
-      index[scopeName] = { level, rules, priority };
+      index[scopeName] = { level, rules: merged, priority };
+    } else {
+      existing.rules = merged;
     }
   };
 

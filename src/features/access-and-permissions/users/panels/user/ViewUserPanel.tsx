@@ -60,10 +60,7 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
         value: (
           <RowTag
             text={user.status.phase}
-            background={
-              isActive ? `${DEFAULT_COLORS.SUCCESS}18` : DEFAULT_COLORS.CHIP_ON_SURFACE_BG
-            }
-            color={isActive ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT}
+            accent={isActive ? DEFAULT_COLORS.SUCCESS : undefined}
             fontSize={12}
           />
         ),

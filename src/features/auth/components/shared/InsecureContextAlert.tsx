@@ -1,6 +1,6 @@
 import React from 'react';
 import { LockOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, getPillSurface } from '../../../../constants';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 
 const MESSAGE = AUTH_ERROR_MESSAGES.PASSKEYS_INSECURE_CONTEXT;
@@ -65,8 +65,8 @@ export const InsecureContextAlert: React.FC = () => (
           style={{
             padding: '2px 8px',
             borderRadius: 999,
-            background: DEFAULT_COLORS.WARNING_TINT,
-            color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+            ...getPillSurface(DEFAULT_COLORS.WARNING),
+            color: DEFAULT_COLORS.PILL_TEXT,
             fontSize: 11,
             fontWeight: 600,
             lineHeight: 1.4,

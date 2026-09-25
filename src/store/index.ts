@@ -19,6 +19,8 @@ import {
   rolesPersistConfig,
   protectionPlansPersistConfig,
   globalConfigPersistConfig,
+  permissionsPersistConfig,
+  categoriesPersistConfig,
 } from './persistConfig';
 
 const persistedApplicationsReducer = persistReducer(applicationsPersistConfig, applicationsReducer);
@@ -31,6 +33,8 @@ const persistedProtectionPlansReducer = persistReducer(
   protectionPlansReducer,
 );
 const persistedGlobalConfigReducer = persistReducer(globalConfigPersistConfig, globalConfigReducer);
+const persistedCategoriesReducer = persistReducer(categoriesPersistConfig, categoriesReducer);
+const persistedPermissionsReducer = persistReducer(permissionsPersistConfig, permissionsReducer);
 
 const store = configureStore({
   reducer: {
@@ -39,10 +43,10 @@ const store = configureStore({
     globalconfig: persistedGlobalConfigReducer,
     groups: persistedGroupsReducer,
     users: persistedUsersReducer,
-    categories: categoriesReducer,
+    categories: persistedCategoriesReducer,
     roles: persistedRolesReducer,
     passkeys: passkeyReducer,
-    permissions: permissionsReducer,
+    permissions: persistedPermissionsReducer,
     authConfig: authConfigReducer,
     notifications: notificationsReducer,
     protectionPlans: persistedProtectionPlansReducer,

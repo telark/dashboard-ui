@@ -9,6 +9,8 @@ export const NOTIFICATION_TYPES = {
   ROLLBACK_COMPLETED: 'rollback.completed',
   ROLE_CHANGED: 'role.changed',
   GROUP_MEMBERSHIP_CHANGED: 'group.membership.changed',
+  PLAN_APPROVAL_REQUESTED: 'plan.approval.requested',
+  PLAN_APPROVAL_DECIDED: 'plan.approval.decided',
 } as const;
 
 export const NOTIFICATION_SEVERITY_COLORS: Record<string, string> = {

@@ -1,4 +1,4 @@
-import { CONTROL_HEIGHT, DEFAULT_COLORS } from '../../../../constants';
+import { CONTROL_HEIGHT, DEFAULT_COLORS, getPillSurface } from '../../../../constants';
 
 export const ATTACHED_ROLES_CONSTANTS = {
   FILTER: {
@@ -102,11 +102,10 @@ export const ATTACHED_ROLES_CONSTANTS = {
     },
     SCOPE_ITEM: {
       fontSize: 11,
-      color: DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT,
+      color: DEFAULT_COLORS.PILL_TEXT,
       padding: '2px 6px',
-      background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
+      ...getPillSurface(),
       borderRadius: 4,
-      border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
       lineHeight: 1.4,
     },
   },

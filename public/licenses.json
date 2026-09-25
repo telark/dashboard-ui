@@ -1,7 +1,7 @@
 [
   {
     "name": "@ant-design/icons",
-    "version": "6.1.1",
+    "version": "6.3.4",
     "license": "MIT"
   },
   {
@@ -31,7 +31,7 @@
   },
   {
     "name": "@dicebear/core",
-    "version": "9.4.2",
+    "version": "9.4.3",
     "license": "MIT"
   },
   {
@@ -76,27 +76,27 @@
   },
   {
     "name": "@reduxjs/toolkit",
-    "version": "2.11.2",
+    "version": "2.12.0",
     "license": "MIT"
   },
   {
     "name": "@testing-library/jest-dom",
-    "version": "6.9.1",
+    "version": "7.0.1",
     "license": "MIT"
   },
   {
     "name": "@testing-library/react",
-    "version": "16.3.2",
+    "version": "16.3.3",
     "license": "MIT"
   },
   {
     "name": "@testing-library/user-event",
-    "version": "14.6.1",
+    "version": "14.6.7",
     "license": "MIT"
   },
   {
     "name": "@types/jest",
-    "version": "29.5.14",
+    "version": "30.0.0",
     "license": "MIT"
   },
   {
@@ -106,42 +106,42 @@
   },
   {
     "name": "@types/node",
-    "version": "22.19.17",
+    "version": "24.13.6",
     "license": "MIT"
   },
   {
     "name": "@types/react",
-    "version": "19.2.14",
+    "version": "19.3.0",
     "license": "MIT"
   },
   {
     "name": "@types/react-dom",
-    "version": "19.2.3",
+    "version": "19.3.0",
     "license": "MIT"
   },
   {
     "name": "antd",
-    "version": "6.3.7",
+    "version": "6.6.5",
     "license": "MIT"
   },
   {
     "name": "axios",
-    "version": "1.15.2",
+    "version": "1.20.0",
     "license": "MIT"
   },
   {
     "name": "date-fns",
-    "version": "4.1.0",
+    "version": "4.4.0",
     "license": "MIT"
   },
   {
     "name": "framer-motion",
-    "version": "12.38.0",
+    "version": "13.4.2",
     "license": "MIT"
   },
   {
     "name": "js-yaml",
-    "version": "4.1.1",
+    "version": "4.3.2",
     "license": "MIT"
   },
   {
@@ -151,27 +151,27 @@
   },
   {
     "name": "react",
-    "version": "19.2.5",
+    "version": "19.3.0",
     "license": "MIT"
   },
   {
     "name": "react-dom",
-    "version": "19.2.5",
+    "version": "19.3.0",
     "license": "MIT"
   },
   {
     "name": "react-icons",
-    "version": "5.6.0",
+    "version": "5.7.0",
     "license": "MIT"
   },
   {
     "name": "react-redux",
-    "version": "9.2.0",
+    "version": "9.3.0",
     "license": "MIT"
   },
   {
     "name": "react-router-dom",
-    "version": "7.14.2",
+    "version": "7.18.4",
     "license": "MIT"
   },
   {
@@ -186,7 +186,7 @@
   },
   {
     "name": "web-vitals",
-    "version": "5.2.0",
+    "version": "6.2.2",
     "license": "Apache-2.0"
   }
 ]

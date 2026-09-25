@@ -1,4 +1,3 @@
-export { default as SectionCard } from './SectionCard';
 export { default as BasicInfoSection } from './BasicInfoSection';
 export { default as ScopeSection } from './ScopeSection';
 export { default as PoliciesSection } from './PoliciesSection';

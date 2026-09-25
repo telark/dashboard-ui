@@ -135,16 +135,7 @@ const ProfileDetailsCard: React.FC<ProfileDetailsCardProps> = memo(({ user, onEd
           {user?.status?.phase ? (
             <RowTag
               text={user.status.phase}
-              background={
-                user.status.phase === 'active'
-                  ? `${DEFAULT_COLORS.SUCCESS}18`
-                  : DEFAULT_COLORS.CHIP_CUSTOM_BG
-              }
-              color={
-                user.status.phase === 'active'
-                  ? DEFAULT_COLORS.SUCCESS
-                  : DEFAULT_COLORS.CHIP_CUSTOM_TEXT
-              }
+              accent={user.status.phase === 'active' ? DEFAULT_COLORS.SUCCESS : undefined}
               fontSize={12}
             />
           ) : (

@@ -23,6 +23,7 @@ import { resetApplicationThunk } from '../../store';
 import { forceSyncApplication } from '../../utils/management/sync';
 import { hasActiveRollback } from '../../utils/rollbacks';
 import ApplicationResetModal from '../../components/reset/ApplicationResetModal';
+import { CLUSTER_INSIGHTS, insightsAppKey } from '../../../../insights';
 
 const ApplicationDetailsView: React.FC = memo(() => {
   const { name } = useParams<{ name: string }>();
@@ -99,6 +100,9 @@ const ApplicationDetailsView: React.FC = memo(() => {
     return <ApplicationsDetailsEmpty />;
   }
 
+  // The analyzer keys an app's insights document by its first namespace.
+  const insightsNamespace = details.namespaces?.items?.[0]?.name;
+
   return (
     <>
       <PageContainer breadcrumbs={breadcrumbItems} subtitle={APPLICATIONS_UI.DETAIL_PAGE.SUBTITLE}>
@@ -125,6 +129,14 @@ const ApplicationDetailsView: React.FC = memo(() => {
               setRollbacksOpen(false);
               setSnapshotsOpen(true);
             }}
+            onOpenInsights={
+              insightsNamespace
+                ? () =>
+                    navigate(
+                      `${APP_ROUTES.INSIGHTS}?${CLUSTER_INSIGHTS.APP_PARAM}=${insightsAppKey(insightsNamespace, details.name)}`,
+                    )
+                : undefined
+            }
             onReset={() => {
               setResetModalOpen(true);
             }}

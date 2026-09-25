@@ -108,13 +108,7 @@ const ApplicationMetricsSection: React.FC<{ application: Application }> = memo(
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {changesBySeverity.map(([key, value]) => (
-                <RowTag
-                  key={key}
-                  text={`${key}: ${value}`}
-                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                  color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-                  fontSize={11}
-                />
+                <RowTag key={key} text={`${key}: ${value}`} fontSize={11} />
               ))}
             </div>
           </div>

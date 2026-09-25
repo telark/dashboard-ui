@@ -19,6 +19,8 @@ export const HTTP_HEADERS = {
     AUTHORIZATION: 'Authorization',
     CONTENT_TYPE: 'Content-Type',
     ACCEPT: 'Accept',
+    IF_NONE_MATCH: 'If-None-Match',
+    ETAG: 'etag',
     ORIGIN: 'Origin',
     ACCESS_CONTROL_REQUEST_METHOD: 'Access-Control-Request-Method',
     ACCESS_CONTROL_REQUEST_HEADERS: 'Access-Control-Request-Headers',

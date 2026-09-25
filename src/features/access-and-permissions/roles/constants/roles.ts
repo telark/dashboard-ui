@@ -8,9 +8,6 @@ export const ROLES_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Roles',
     HEADER_SUBTITLE: 'Manage existing roles',
-    VIEW_SUBTITLE: 'View role details',
-    EDIT_SUBTITLE: 'Edit role details',
-    CREATE_SUBTITLE: 'Create a new role',
     NOT_FOUND: 'Role not found',
     CREATE_BUTTON: 'Add Role',
     UPDATE_BUTTON: 'Update Role',
@@ -85,12 +82,10 @@ export const ROLES_CONSTANTS = {
       VIEW: { TITLE: 'Role Details' },
       EDIT: {
         TITLE: 'Edit Role',
-        SUBTITLE: (name: string) => `Edit ${name}`,
         SUBMIT_BUTTON: 'Update Role',
       },
       CREATE: {
         TITLE: 'Create New Role',
-        SUBTITLE: '',
         SUBMIT_BUTTON: 'Create Role',
       },
     },
@@ -98,8 +93,8 @@ export const ROLES_CONSTANTS = {
       SEARCH: { PLACEHOLDER: 'Search roles by name...', BUTTON_LABEL: 'Search' },
       FILTER: { BUTTON_LABEL: 'Filter' },
       CREATE: { BUTTON_LABEL: 'Add Role' },
-      COUNT_SUFFIX: 'roles',
-      CATEGORIES_COUNT_SUFFIX: 'categories',
+      COUNT_SUFFIX: { one: 'role', other: 'roles' },
+      CATEGORIES_COUNT_SUFFIX: { one: 'category', other: 'categories' },
       MORE: 'More',
       BULK: {
         SELECT: 'Bulk',
@@ -230,7 +225,9 @@ export const ROLES_CONSTANTS = {
       { key: 'users', label: 'Users' },
       { key: 'roles', label: 'Roles' },
       { key: 'applications', label: 'Applications' },
+      { key: 'insights', label: 'Insights' },
       { key: 'settings', label: 'Settings' },
+      { key: 'protection-plans', label: 'Protection Plans' },
     ] as const,
     PERMISSION_LEVEL_TOOLTIP: {
       ReadOnly: 'Read-only access to view data and settings.',

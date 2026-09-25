@@ -14,7 +14,7 @@ export interface UsePlanViolationsResult {
   refresh: () => void;
 }
 
-export function usePlanViolations(planId: string): UsePlanViolationsResult {
+export function usePlanViolations(planId: string, enabled: boolean): UsePlanViolationsResult {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<PlanViolationsResponse | null>(null);
@@ -22,6 +22,7 @@ export function usePlanViolations(planId: string): UsePlanViolationsResult {
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
+    if (!enabled) return;
     let cancelled = false;
     fetchPlanViolations(planId, {
       result: resultFilter === 'all' ? undefined : resultFilter,
@@ -41,7 +42,7 @@ export function usePlanViolations(planId: string): UsePlanViolationsResult {
     return () => {
       cancelled = true;
     };
-  }, [planId, resultFilter, reloadKey]);
+  }, [enabled, planId, resultFilter, reloadKey]);
 
   return {
     data,

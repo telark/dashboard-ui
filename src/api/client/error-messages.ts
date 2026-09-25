@@ -24,11 +24,7 @@ interface ClassifiedUnknown {
 }
 
 type Classified =
-  | ClassifiedNetwork
-  | ClassifiedTimeout
-  | ClassifiedCircuit
-  | ClassifiedHttp
-  | ClassifiedUnknown;
+  ClassifiedNetwork | ClassifiedTimeout | ClassifiedCircuit | ClassifiedHttp | ClassifiedUnknown;
 
 interface ServerErrorPayload {
   message?: string;

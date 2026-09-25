@@ -6,11 +6,18 @@ import { FeatureErrorBoundary } from '../components/error-boundary';
 import FullPageLoader from '../components/display/views/FullPageLoader';
 import { APP_ROUTES } from '../constants';
 import { hasSessionToken } from '../features/auth/utils';
+import { PermissionGate, ACTION_PERMISSIONS } from '../features/auth/hooks';
 import store from '../store';
 import {
   stopAllSyncRetries,
   syncRetryFromState,
 } from '../features/resources/applications/utils/management/syncRetry';
+
+const { view: viewPlans } = ACTION_PERMISSIONS.protectionPlans;
+const { view: viewInsights } = ACTION_PERMISSIONS.insights;
+const { view: viewRoles } = ACTION_PERMISSIONS.roles;
+const { view: viewUsers } = ACTION_PERMISSIONS.users;
+const { view: viewGroups } = ACTION_PERMISSIONS.groups;
 
 // home
 const Dashboard = lazy(() => import('../features/home/pages/Dashboard'));
@@ -27,6 +34,7 @@ const ApplicationsGlobalView = lazy(
 const ApplicationDetailsView = lazy(
   () => import('../features/resources/applications/pages/details/DetailsView'),
 );
+const InsightsPage = lazy(() => import('../features/insights/pages/InsightsPage'));
 
 // access-and-permissions
 const RolesMainPage = lazy(() => import('../features/access-and-permissions/roles/pages/MainPage'));
@@ -106,32 +114,66 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
+          path={APP_ROUTES.INSIGHTS}
+          element={
+            <ProtectedRoute>
+              <PermissionGate
+                requiredScope={viewInsights.scope}
+                requiredLevel={viewInsights.level}
+                fallback={<Navigate to={APP_ROUTES.HOME} replace />}
+              >
+                <FeatureErrorBoundary featureName="Insights">
+                  <InsightsPage />
+                </FeatureErrorBoundary>
+              </PermissionGate>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path={APP_ROUTES.ROLES}
           element={
-            <ProtectedRoute requiredScope="roles" minimumLevel="ReadOnly">
-              <FeatureErrorBoundary featureName="Roles">
-                <RolesMainPage />
-              </FeatureErrorBoundary>
+            <ProtectedRoute>
+              <PermissionGate
+                requiredScope={viewRoles.scope}
+                requiredLevel={viewRoles.level}
+                fallback={<Navigate to={APP_ROUTES.HOME} replace />}
+              >
+                <FeatureErrorBoundary featureName="Roles">
+                  <RolesMainPage />
+                </FeatureErrorBoundary>
+              </PermissionGate>
             </ProtectedRoute>
           }
         />
         <Route
           path={APP_ROUTES.USERS}
           element={
-            <ProtectedRoute requiredScope="users" minimumLevel="ReadOnly">
-              <FeatureErrorBoundary key={APP_ROUTES.USERS} featureName="Users">
-                <UsersMainPage />
-              </FeatureErrorBoundary>
+            <ProtectedRoute>
+              <PermissionGate
+                requiredScope={viewUsers.scope}
+                requiredLevel={viewUsers.level}
+                fallback={<Navigate to={APP_ROUTES.HOME} replace />}
+              >
+                <FeatureErrorBoundary key={APP_ROUTES.USERS} featureName="Users">
+                  <UsersMainPage />
+                </FeatureErrorBoundary>
+              </PermissionGate>
             </ProtectedRoute>
           }
         />
         <Route
           path={APP_ROUTES.GROUPS}
           element={
-            <ProtectedRoute requiredScope="groups" minimumLevel="ReadOnly">
-              <FeatureErrorBoundary key={APP_ROUTES.GROUPS} featureName="Groups">
-                <GroupsMainPage />
-              </FeatureErrorBoundary>
+            <ProtectedRoute>
+              <PermissionGate
+                requiredScope={viewGroups.scope}
+                requiredLevel={viewGroups.level}
+                fallback={<Navigate to={APP_ROUTES.HOME} replace />}
+              >
+                <FeatureErrorBoundary key={APP_ROUTES.GROUPS} featureName="Groups">
+                  <GroupsMainPage />
+                </FeatureErrorBoundary>
+              </PermissionGate>
             </ProtectedRoute>
           }
         />
@@ -139,9 +181,16 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.PROTECTION_PLANS}
           element={
             <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Protection Plans">
-                <ProtectionPlansMainPage />
-              </FeatureErrorBoundary>
+              <PermissionGate
+                requiredScope={viewPlans.scope}
+                requiredLevel={viewPlans.level}
+                action={viewPlans.deny}
+                fallback={<Navigate to={APP_ROUTES.HOME} replace />}
+              >
+                <FeatureErrorBoundary featureName="Protection Plans">
+                  <ProtectionPlansMainPage />
+                </FeatureErrorBoundary>
+              </PermissionGate>
             </ProtectedRoute>
           }
         />
@@ -149,9 +198,16 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.PROTECTION_PLAN_DETAILS}
           element={
             <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Protection Plan Details">
-                <ProtectionPlanDetailsView />
-              </FeatureErrorBoundary>
+              <PermissionGate
+                requiredScope={viewPlans.scope}
+                requiredLevel={viewPlans.level}
+                action={viewPlans.deny}
+                fallback={<Navigate to={APP_ROUTES.HOME} replace />}
+              >
+                <FeatureErrorBoundary featureName="Protection Plan Details">
+                  <ProtectionPlanDetailsView />
+                </FeatureErrorBoundary>
+              </PermissionGate>
             </ProtectedRoute>
           }
         />

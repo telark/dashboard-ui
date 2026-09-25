@@ -5,16 +5,13 @@ import AnimationWrapper from './AnimationWrapper';
 import { BUTTON_TEXTS, SLIDE_OUT } from '../../../../constants';
 import type { SlideOutPanelProps } from '../../../../interfaces/layout/panels';
 import { useSlideOutPanelForm } from '../../../../hooks/panel';
-import { PanelFooter } from '../shared';
 
 const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
   ({
     open,
     onClose,
     title,
-    subtitle,
     sectionTitle,
-    sectionSubtitle,
     formContent,
     contentOnly = false,
     onSubmit = async () => {},
@@ -24,7 +21,7 @@ const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
     loading = false,
     disabled = false,
     initialValues = {},
-    cancelButtonText = 'Cancel',
+    cancelButtonText = BUTTON_TEXTS.CANCEL,
     width = 480,
     offsetX = 0,
     headerExtra,
@@ -48,7 +45,6 @@ const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
           open={open}
           onClose={onClose}
           title={title}
-          subtitle={subtitle}
           width={width}
           offsetX={offsetX}
           headerExtra={headerExtra}
@@ -71,29 +67,23 @@ const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
           open={open}
           onClose={onClose}
           title={title}
-          subtitle={subtitle}
           width={width}
           offsetX={offsetX}
           headerExtra={headerExtra}
+          footer={{
+            onCancel: handleCancel,
+            onPrimary: () => form.submit(),
+            cancelLabel: cancelButtonText,
+            primaryLabel: submitButtonText,
+            primaryLoading: loading,
+            primaryLoadingLabel: BUTTON_TEXTS.LOADING,
+            primaryDisabled: disabled || loading,
+            primaryIcon: submitButtonIcon,
+          }}
         >
           <div style={SLIDE_OUT.FORM_CONTENT}>
-            {sectionTitle ? (
-              <Section title={sectionTitle} subtitle={sectionSubtitle} content={formContent} />
-            ) : (
-              formContent
-            )}
+            {sectionTitle ? <Section title={sectionTitle} content={formContent} /> : formContent}
           </div>
-
-          <PanelFooter
-            onCancel={handleCancel}
-            onPrimary={() => form.submit()}
-            cancelLabel={cancelButtonText}
-            primaryLabel={submitButtonText}
-            primaryLoading={loading}
-            primaryLoadingLabel={BUTTON_TEXTS.LOADING}
-            primaryDisabled={disabled || loading}
-            primaryIcon={submitButtonIcon}
-          />
         </AnimationWrapper>
       </Form>
     );
