@@ -178,6 +178,8 @@ export interface AnalyzerRuntime {
   reason: string;
   mode: 'fast' | 'deep';
   autoPull: boolean;
+  // The analyzer's on/off switch; absent from analyzers that predate it.
+  enabled?: boolean;
   pull?: { model: string; status: string; completed: number; total: number };
 }
 
@@ -223,10 +225,11 @@ export type InsightEvent =
     }
   | {
       name: 'runtime.changed';
-      data: Pick<AnalyzerRuntime, 'state' | 'model' | 'reason' | 'mode' | 'autoPull'>;
+      data: Pick<AnalyzerRuntime, 'state' | 'model' | 'reason' | 'mode' | 'autoPull' | 'enabled'>;
     }
   | {
       name: 'runtime.pull';
       data: Pick<NonNullable<AnalyzerRuntime['pull']>, 'model' | 'completed' | 'total'>;
     }
+  | { name: 'review.finished'; data: AppEventData }
   | { name: 'resync'; data: Record<string, never> };

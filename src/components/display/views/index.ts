@@ -1,4 +1,3 @@
-export { default as DetailsView } from './DetailsView';
 export { default as EmptyState } from './EmptyState';
 export { default as ErrorView } from './ErrorView';
 export { default as LoadingDetailsView } from './LoadingDetailsView';

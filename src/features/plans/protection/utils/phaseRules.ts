@@ -9,7 +9,6 @@ export const CANCELLABLE_PHASES: PlanPhase[] = [
   'failed',
   'pending_approval',
 ];
-export const NON_EDITABLE_PHASES: PlanPhase[] = ['terminated', 'canceled'];
 export const REACTIVATABLE_PHASES: PlanPhase[] = ['canceled', 'terminated', 'failed'];
 
 export const isReactivateExpired = (plan: ProtectionPlan): boolean => {
@@ -38,6 +37,11 @@ export const permissionTooltip = (
 
 export const isRejected = (plan: ProtectionPlan): boolean =>
   plan.phase === 'canceled' && plan.approval?.state === 'rejected';
+
+export const planPhaseLabel = (plan: ProtectionPlan): string =>
+  isRejected(plan)
+    ? PPC.LABELS.PHASE_INFO.REJECTED_LABEL
+    : (PPC.LABELS.PHASE_LABELS[plan.phase] ?? plan.phase);
 
 export const isMaterialEditLocked = (plan: ProtectionPlan): boolean =>
   plan.approvalMode === 'required' && (plan.phase === 'active' || plan.phase === 'scheduled');

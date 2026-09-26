@@ -4,6 +4,9 @@ import type { FormInstance } from 'antd';
 export interface TopPanelToolbarActions {
   onEdit?: () => void;
   onDelete?: () => void;
+  /** When set, the button stays visible but disabled, with this reason as its tooltip. */
+  editDisabledReason?: string;
+  deleteDisabledReason?: string;
 }
 
 export interface AnimationWrapperProps {

@@ -74,6 +74,10 @@ export const ATTACHED_ROLES_CONSTANTS = {
       HOVER: {
         background: DEFAULT_COLORS.SURFACE_HOVER,
       },
+      DISABLED: {
+        opacity: 0.55,
+        cursor: 'not-allowed' as const,
+      },
     },
     ROLE_NAME: {
       fontSize: 14,
@@ -111,5 +115,6 @@ export const ATTACHED_ROLES_CONSTANTS = {
   },
   TOOLTIPS: {
     PROTECTED_ROLE: 'This role is protected from deletion and modification',
+    EXCEEDS_OWN_ACCESS: 'This role grants more access than you have, so you cannot assign it',
   },
 } as const;

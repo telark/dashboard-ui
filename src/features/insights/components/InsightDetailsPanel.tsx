@@ -308,7 +308,7 @@ interface BodyProps {
   app: string;
   id: string;
   row?: InsightRow;
-  onSelect: (id: string, namespace: string, app: string) => void;
+  onSelect: (id: string, namespace: string, app: string, category: InsightCategory) => void;
   onChanged: (triaged?: PanelTriage) => void;
 }
 
@@ -447,7 +447,7 @@ const PanelBody: React.FC<BodyProps> = ({ namespace, app, id, row, onSelect, onC
                     trailing={
                       other.status === 'resolved' ? INSIGHT_ROW_STATE_LABELS.resolved : undefined
                     }
-                    onClick={() => onSelect(other.id, namespace, app)}
+                    onClick={() => onSelect(other.id, namespace, app, other.category ?? 'incident')}
                   />
                 ))}
               </div>
@@ -491,11 +491,13 @@ export interface InsightTarget {
   namespace: string;
   app: string;
   row?: InsightRow;
+  // Set when the insight may belong to the other tab (opened from "Other findings").
+  category?: InsightCategory;
 }
 
 interface Props {
   target: InsightTarget | null;
-  // The tab's category: an insight of the other one opens on its own tab.
+  // The tab's category, for a target that does not carry its own.
   category: InsightCategory;
   // Position in the list on screen; null when the insight is not on this page.
   position: { index: number; total: number } | null;
@@ -558,7 +560,11 @@ const InsightDetailsPanel: React.FC<Props> = memo(
       <AnimationWrapper
         open={target !== null}
         onClose={onClose}
-        title={category === 'recommendation' ? P.TITLE_RECOMMENDATION : P.TITLE_INCIDENT}
+        title={
+          (target?.category ?? category) === 'recommendation'
+            ? P.TITLE_RECOMMENDATION
+            : P.TITLE_INCIDENT
+        }
         width={expanded ? CLUSTER_INSIGHTS.PANEL_WIDTH_EXPANDED : CLUSTER_INSIGHTS.PANEL_WIDTH}
         headerExtra={
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>

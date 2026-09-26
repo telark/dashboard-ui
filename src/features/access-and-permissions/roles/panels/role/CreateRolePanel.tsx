@@ -2,12 +2,12 @@ import React, { useMemo, useEffect, useCallback, useState } from 'react';
 import { Icons } from '../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import RoleForm from '../../components/display/shared/RoleForm';
-import { useRoleActions, useRoles, useRoleCategories } from '../../hooks';
+import { useRoleActions, useRoles, useRoleCategories, useNameValidation } from '../../hooks';
 import { convertFormValuesToRoleFormData } from '../../utils';
 import type { RoleFormValues, ScopeFormValue } from '../../models';
 import AnimationWrapper from '../../../../../components/display/panels/slide-out/AnimationWrapper';
 import { ExpandPanelButton } from '../../../../../components/display/panels/slide-out';
-import type { FormInstance } from 'antd';
+import { Form, type FormInstance } from 'antd';
 
 const PANEL_WIDTH = 720;
 const PANEL_WIDTH_EXPANDED = 1400;
@@ -24,6 +24,8 @@ const CreateRolePanel: React.FC<CreateRolePanelProps> = ({ open, onClose, form }
   const [expanded, setExpanded] = useState(false);
   const { handleCreate, submitting } = useRoleActions({ skipNavigate: true });
   const { roles } = useRoles();
+  const watchedName = Form.useWatch('name', form) as string | undefined;
+  const { isNameInvalid } = useNameValidation({ roles });
   const { defaultCategoryId } = useRoleCategories();
 
   const initialValues = useMemo<RoleFormValues>(() => {
@@ -95,6 +97,7 @@ const CreateRolePanel: React.FC<CreateRolePanelProps> = ({ open, onClose, form }
         onPrimary: () => form.submit(),
         primaryLabel: RC.LABELS.PANELS.CREATE.SUBMIT_BUTTON,
         primaryLoading: submitting,
+        primaryDisabled: isNameInvalid(watchedName),
         primaryIcon: <RoleIcon size={16} />,
         primaryLoadingLabel: 'Creating...',
       }}

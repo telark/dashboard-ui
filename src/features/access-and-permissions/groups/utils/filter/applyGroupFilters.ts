@@ -10,7 +10,6 @@ export const applyGroupFilters = (
 ): Group[] => {
   let result = baseGroups || [];
 
-  // Search filter (applied first for better performance)
   if (searchTerm) {
     result = applySearch(result, searchTerm, [(group) => group.name]);
   }

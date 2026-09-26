@@ -204,30 +204,14 @@ async function fetchSnapshotSummariesPerRef(
   return out;
 }
 
-export const getSnapshotsByApplicationId = async (
-  applicationId: string,
-): Promise<ApplicationSnapshotSummary[]> => {
-  try {
-    const path = `${Endpoints.SNAPSHOTS.GET_BY_ID(applicationId).path}?scope=${encodeURIComponent(
-      SNAPSHOT_SCOPE_APPS,
-    )}`;
-    const resp = await Client<ResourceDetailsResponse<unknown>>(exporterApiClient, path);
-    const rows = extractRawSnapshotRows(resp.data);
-    return rows
-      .map(mapExporterRowToSummary)
-      .filter((s): s is ApplicationSnapshotSummary => s != null);
-  } catch (error) {
-    logger.error(
-      `${APPLICATIONS_ERROR_MESSAGES.CLIENT.FETCH_APPLICATION_SNAPSHOTS_FAILED} "${applicationId}":`,
-      error,
-    );
-    throw error;
-  }
-};
-
 export const getApplicationSnapshotSummaries = async (
-  snapshotRefs?: ApplicationSnapshot[],
+  snapshotRefs: ApplicationSnapshot[] | undefined,
+  canReadFiles: boolean,
 ): Promise<ApplicationSnapshotSummary[]> => {
+  // The per-ref GET is refused under the manifest deny rule; a skipped read proves
+  // nothing about the file, so the refs stay listed and never show as missing.
+  if (!canReadFiles)
+    return (snapshotRefs ?? []).map((ref) => detailToPlaceholderSummary(ref, false));
   if (snapshotRefs != null && snapshotRefs.length > 0) {
     try {
       return await fetchSnapshotSummariesPerRef(snapshotRefs);

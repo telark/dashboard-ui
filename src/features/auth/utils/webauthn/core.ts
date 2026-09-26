@@ -47,19 +47,6 @@ const arrayBufferToBase64Url = (buffer: ArrayBuffer): string => {
     .replace(LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64_TO_BASE64URL.REPLACE_TRAILING_EQUALS, '');
 };
 
-export const base64UrlToBase64 = (base64url: string): string => {
-  const base64 = base64url
-    .replace(
-      LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64URL_TO_BASE64.REPLACE_DASH,
-      LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64URL_TO_BASE64.REPLACE_WITH_PLUS,
-    )
-    .replace(
-      LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64URL_TO_BASE64.REPLACE_UNDERSCORE,
-      LOGIN_CONSTANTS.WEBAUTHN.REGEX.BASE64URL_TO_BASE64.REPLACE_WITH_SLASH,
-    );
-  return addBase64Padding(base64);
-};
-
 const convertRequestOptions = (
   options: PublicKeyCredentialRequestOptions,
 ): globalThis.CredentialRequestOptions => {
@@ -70,8 +57,7 @@ const convertRequestOptions = (
     userVerification: options.userVerification || LOGIN_CONSTANTS.WEBAUTHN.USER_VERIFICATION,
   };
 
-  // Always include allowCredentials when provided to filter out deleted credentials
-  // This ensures deleted passkeys don't appear in the browser popup
+  // allowCredentials keeps deleted passkeys out of the browser's picker.
   if (options.allowCredentials && options.allowCredentials.length > 0) {
     const converted = convertCredentialDescriptors(
       options.allowCredentials,
@@ -240,14 +226,5 @@ export const registerPasskey = async (
   }
 };
 
-export {
-  browserHasCredential,
-  detectOrphanedPasskeys,
-  validateBackendPasskeysInBrowser,
-} from './validation';
+export { browserHasCredential } from './validation';
 export { extractLoginOptions, extractCredentialIds, hasBackendPasskeys } from './extraction';
-export {
-  isCancelledOrNoCredentialError,
-  isNoCredentialFoundError,
-  isUserCancelledError,
-} from './errors';

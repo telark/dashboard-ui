@@ -35,9 +35,8 @@ export const handleFetchPasskeyDetailsFulfilled = (
 ) => {
   state.loading = false;
   const updatedPasskey = action.payload;
-  state.details = updatedPasskey; // Populate details with fresh data
+  state.details = updatedPasskey;
 
-  // Also update the passkey in the list if it exists
   const index = state.passkeys.findIndex((p) => p.credentialId === updatedPasskey.credentialId);
   if (index !== -1) {
     state.passkeys[index] = updatedPasskey;

@@ -24,7 +24,6 @@ const TimeAgo: React.FC<TimeAgoProps> = React.memo(
     const formattedDate = formatDateTime(parsedDate, formatString);
     const timeZoneLabel = formatTimeZoneOffset(getTimeZone());
 
-    // Update every minute
     useEffect(() => {
       const update = () => {
         setTimeAgo(formatTimeAgo(parsedDate));

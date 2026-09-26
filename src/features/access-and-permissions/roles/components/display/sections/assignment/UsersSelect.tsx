@@ -28,7 +28,6 @@ const UsersSelect: React.FC<UsersSelectProps> = memo(
     }, [users]);
 
     useEffect(() => {
-      // Update the options map if callback provided
       if (onOptionsMapUpdate) {
         const map = new Map<string, string>();
         users.forEach((user: User) => {

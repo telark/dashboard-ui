@@ -42,6 +42,7 @@ export const USERS_CONSTANTS = {
     VALIDATION: {
       USERNAME_TAKEN: 'Username is already taken',
       INVALID_EMAIL: 'Please enter a valid email address',
+      EMAIL_TAKEN: 'Email is already used by another member',
       FULLNAME_SPECIAL_CHARS: 'Full name must not contain special characters',
     },
     COLUMNS: {
@@ -50,6 +51,10 @@ export const USERS_CONSTANTS = {
       EMAIL: 'Email',
       ROLES: 'Roles',
       CREATED: 'Creation Date',
+    },
+    BOOTSTRAP_PILL: {
+      LABEL: 'Bootstrap',
+      TOOLTIP: "Created by the chart; can't be deleted or changed here",
     },
     VIEW_LABELS: {
       USERNAME: 'Username',
@@ -70,6 +75,14 @@ export const USERS_CONSTANTS = {
       MANAGE_GROUPS: 'Manage Groups',
       MANAGE_ROLES_DISABLED_TOOLTIP: 'You do not have permission to manage roles',
       MANAGE_GROUPS_DISABLED_TOOLTIP: 'You do not have permission to manage groups',
+      ASSIGN_ROLE_DISABLED_TOOLTIP: 'You do not have permission to assign roles',
+      REMOVE_ROLE_DISABLED_TOOLTIP: 'You do not have permission to remove roles',
+      ADD_TO_GROUP_DISABLED_TOOLTIP: 'You do not have permission to add members to groups',
+      REMOVE_FROM_GROUP_DISABLED_TOOLTIP:
+        'You do not have permission to remove members from groups',
+      BOOTSTRAP_LOCKED_TOOLTIP: 'Managed by the chart',
+      ADMIN_LOCKED_TOOLTIP: 'Only a bootstrap administrator can remove administrators',
+      SELF_LOCKED_TOOLTIP: 'You cannot delete your own account',
       DELETE_MODAL_TITLE: 'Delete User',
       DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
       DELETE_MODAL_OK: 'Delete',

@@ -25,6 +25,7 @@ import SnapshotCompareView from '../snapshots/SnapshotCompareView';
 import { fetchSnapshotManifestThunk, fetchApplicationSnapshotsThunk } from '../../store';
 import { selectPermissionsState } from '../../../../auth/store/selectors/permissionsSelectors';
 import { triggerApplicationRollbackThunk } from '../../store';
+import { ACTION_PERMISSIONS, usePermission } from '../../../../auth/hooks';
 
 const PANEL_WIDTH = 650;
 const PANEL_WIDTH_EXPANDED = 960;
@@ -66,7 +67,25 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
   const [compareMode, setCompareMode] = useState(false);
   const [compareKeys, setCompareKeys] = useState<string[]>([]);
   const [compareViewOpen, setCompareViewOpen] = useState(false);
+  const [wasOpen, setWasOpen] = useState(open);
   const snapUi = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
+  const { viewSnapshotManifest } = ACTION_PERMISSIONS.applications;
+  const canViewManifest = usePermission(
+    viewSnapshotManifest.scope,
+    viewSnapshotManifest.level,
+    viewSnapshotManifest.deny,
+  );
+
+  // The panel stays mounted while closed, so each opening starts back on the list.
+  if (open !== wasOpen) {
+    setWasOpen(open);
+    if (open) {
+      setActiveManifestKey(null);
+      setCompareMode(false);
+      setCompareKeys([]);
+      setCompareViewOpen(false);
+    }
+  }
 
   const mergedSnapshots = useMemo(
     () => mergeApplicationSnapshotSources(detailSnapshots, snapshots),
@@ -189,6 +208,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
         void dispatch(
           fetchApplicationSnapshotsThunk({
             snapshotRefs: detailSnapshots.length > 0 ? detailSnapshots : undefined,
+            canReadFiles: canViewManifest,
           }),
         );
         onAfterRollback?.();
@@ -198,7 +218,16 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
         setRollbackBusyId(null);
       }
     },
-    [applicationName, detailSnapshots, dispatch, message, onAfterRollback, snapUi, userID],
+    [
+      applicationName,
+      canViewManifest,
+      detailSnapshots,
+      dispatch,
+      message,
+      onAfterRollback,
+      snapUi,
+      userID,
+    ],
   );
 
   // Confirming only arms a countdown: the engine picks a rollback up within
@@ -267,12 +296,14 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
         icon: <DiffOutlined />,
         variant: 'default',
         onClick: handleCompareClick,
-        disabled: compareButtonDisabled,
+        disabled: compareButtonDisabled || !canViewManifest,
+        tooltip: canViewManifest ? undefined : snapUi.VIEW_MANIFEST_PERMISSION_DENIED_TOOLTIP,
       });
     }
     return { buttons };
   }, [
     canCompare,
+    canViewManifest,
     compareButtonDisabled,
     compareViewOpen,
     handleBackFromCompare,

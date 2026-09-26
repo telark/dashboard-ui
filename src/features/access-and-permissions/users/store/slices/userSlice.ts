@@ -16,9 +16,7 @@ import {
 } from '../reducers/fetchReducers';
 import {
   handleCreateUserFulfilled,
-  handleCreateUserRejected,
   handleUpdateUserFulfilled,
-  handleUpdateUserRejected,
   handleDeleteUserPending,
   handleDeleteUserFulfilled,
   handleDeleteUserRejected,
@@ -58,9 +56,7 @@ const userSlice = createSlice({
       .addCase(fetchUserDetailsThunk.fulfilled, handleFetchUserDetailsFulfilled)
       .addCase(fetchUserDetailsThunk.rejected, handleFetchUserDetailsRejected)
       .addCase(createUserThunk.fulfilled, handleCreateUserFulfilled)
-      .addCase(createUserThunk.rejected, handleCreateUserRejected)
       .addCase(updateUserThunk.fulfilled, handleUpdateUserFulfilled)
-      .addCase(updateUserThunk.rejected, handleUpdateUserRejected)
       .addCase(deleteUserThunk.pending, handleDeleteUserPending)
       .addCase(deleteUserThunk.fulfilled, handleDeleteUserFulfilled)
       .addCase(deleteUserThunk.rejected, handleDeleteUserRejected);

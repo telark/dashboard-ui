@@ -13,6 +13,8 @@ export interface AssignedItemsListProps<T> {
   loadingMessage?: string;
   onDeassignClick?: (item: T) => void;
   deassignTooltip?: string;
+  /** A returned reason keeps the deassign button visible but disabled, with it as the tooltip. */
+  deassignDisabledReason?: (item: T) => string | undefined;
   /** Optional renderer for a custom element in the top-right slot of each card */
   renderRightContent?: (item: T) => React.ReactNode;
   /** When provided, controls per-item deassign button visibility. Defaults to always true. */
@@ -28,6 +30,7 @@ function AssignedItemsList<T>({
   loadingMessage = 'Loading...',
   onDeassignClick,
   deassignTooltip,
+  deassignDisabledReason,
   renderRightContent,
   canDeassign,
 }: AssignedItemsListProps<T>) {
@@ -64,6 +67,7 @@ function AssignedItemsList<T>({
                 onDeassignClick && deassignAllowed ? () => onDeassignClick(item) : undefined
               }
               deassignTooltip={deassignTooltip}
+              deassignDisabledReason={deassignDisabledReason?.(item)}
               rightContent={renderRightContent ? renderRightContent(item) : undefined}
             >
               {renderItemContent(item)}

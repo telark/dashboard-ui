@@ -5,6 +5,7 @@ import type { FormInstance } from 'antd';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
 import LabeledInput from '../../../../../components/display/inputs/LabeledInput';
 import { APPLICATIONS_UI } from '../../constants/texts';
+import { APPLICATION_EDIT_LIMITS } from '../../constants/applications';
 import type { Application } from '../../models';
 import { useEditApplicationPanel } from '../../hooks/panels/useEditApplicationPanel';
 
@@ -46,12 +47,28 @@ const EditApplicationPanel: React.FC<EditApplicationPanelProps> = ({
             label={APPLICATIONS_UI.EDIT_PAGE.DISPLAY_NAME_LABEL}
             placeholder={APPLICATIONS_UI.EDIT_PAGE.DISPLAY_NAME_LABEL}
             required
+            rules={[
+              {
+                max: APPLICATION_EDIT_LIMITS.DISPLAY_NAME_MAX,
+                message: APPLICATIONS_UI.EDIT_PAGE.TOO_LONG(
+                  APPLICATION_EDIT_LIMITS.DISPLAY_NAME_MAX,
+                ),
+              },
+            ]}
             marginBottom={12}
           />
           <LabeledInput
             name="description"
             label={APPLICATIONS_UI.EDIT_PAGE.DESCRIPTION_LABEL}
             placeholder={APPLICATIONS_UI.EDIT_PAGE.DESCRIPTION_LABEL}
+            rules={[
+              {
+                max: APPLICATION_EDIT_LIMITS.DESCRIPTION_MAX,
+                message: APPLICATIONS_UI.EDIT_PAGE.TOO_LONG(
+                  APPLICATION_EDIT_LIMITS.DESCRIPTION_MAX,
+                ),
+              },
+            ]}
             marginBottom={0}
           />
         </>

@@ -33,23 +33,23 @@ export interface ValidateNameOptions<T> {
   config: NameValidationConfig;
 }
 
-export const validateName = <T>({
+export const nameValidationError = <T>({
   value,
   existingItems,
   getName,
   isEditMode = false,
   currentName,
   config,
-}: ValidateNameOptions<T>): Promise<void> => {
+}: ValidateNameOptions<T>): string | null => {
   if (!value || value.trim() === '') {
-    return Promise.resolve();
+    return null;
   }
 
   const trimmed = value.trim();
 
   const formatError = validateNameFormat(trimmed, config);
   if (formatError) {
-    return Promise.reject(new Error(formatError));
+    return formatError;
   }
 
   // Check uniqueness (case-insensitive)
@@ -61,11 +61,12 @@ export const validateName = <T>({
     return itemName?.toLowerCase() === trimmed.toLowerCase();
   });
 
-  if (exists) {
-    return Promise.reject(new Error(config.duplicateErrorMessage));
-  }
+  return exists ? config.duplicateErrorMessage : null;
+};
 
-  return Promise.resolve();
+export const validateName = <T>(options: ValidateNameOptions<T>): Promise<void> => {
+  const error = nameValidationError(options);
+  return error ? Promise.reject(new Error(error)) : Promise.resolve();
 };
 
 export const createNameValidator = <T>(

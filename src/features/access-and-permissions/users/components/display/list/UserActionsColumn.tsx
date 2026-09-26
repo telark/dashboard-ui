@@ -6,6 +6,7 @@ import { usePermission, ACTION_PERMISSIONS } from '../../../../../auth/hooks';
 import { useUserDeleteModal, UserDeleteModal } from '../../delete';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import type { User } from '../../../models';
+import { useUserLockReason } from '../../../hooks/user/useUserLockReason';
 
 interface UserActionsColumnProps {
   record: User;
@@ -56,8 +57,9 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
     ACTION_PERMISSIONS.users.delete.level,
     ACTION_PERMISSIONS.users.delete.deny,
   );
-  const canEdit = hasSuspendPermission && !!onEdit;
-  const canDelete = hasDeletePermission;
+  const lockReason = useUserLockReason()(record);
+  const canEdit = hasSuspendPermission && !!onEdit && !lockReason;
+  const canDelete = hasDeletePermission && !lockReason;
 
   const { deleteModalOpen, isDeleting, openDeleteModal, closeDeleteModal, handleConfirmDelete } =
     useUserDeleteModal(record);
@@ -89,7 +91,9 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
       }}
     >
       <Tooltip
-        title={canEdit ? UC.LABELS.ACTIONS.EDIT : UC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP}
+        title={
+          canEdit ? UC.LABELS.ACTIONS.EDIT : (lockReason ?? UC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP)
+        }
         placement="left"
       >
         <span style={actionWrapperStyle}>
@@ -111,7 +115,11 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
         </span>
       </Tooltip>
       <Tooltip
-        title={canDelete ? UC.LABELS.ACTIONS.DELETE : UC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP}
+        title={
+          canDelete
+            ? UC.LABELS.ACTIONS.DELETE
+            : (lockReason ?? UC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP)
+        }
         placement="left"
       >
         <span style={actionWrapperStyle}>

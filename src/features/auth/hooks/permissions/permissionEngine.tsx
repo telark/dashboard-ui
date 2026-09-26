@@ -1,12 +1,14 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectPermissionsState } from '../../store/selectors/permissionsSelectors';
 import type { PermissionLevel } from '../../models/permissions';
 import { PERMISSION_LEVEL_RANK } from '../../models/permissions';
+import { ALL_SCOPE_NAME, ALL_SCOPE_NAMES } from '../../store/slices/permissionsSlice';
 
 // Minimum level per action derived from scopeRules.ts: lowest level at which the action rule first appears.
 export const ACTION_PERMISSIONS = {
   applications: {
+    view: { scope: 'applications' as const, level: 'ReadOnly' as PermissionLevel },
     viewRollbacks: {
       scope: 'applications' as const,
       level: 'ReadOnly' as PermissionLevel,
@@ -209,6 +211,7 @@ export const ACTION_PERMISSIONS = {
     },
   },
   settings: {
+    viewGovernance: { scope: 'settings' as const, level: 'Contributor' as PermissionLevel },
     editDiscoveryConfig: {
       scope: 'settings' as const,
       level: 'Contributor' as PermissionLevel,
@@ -337,16 +340,22 @@ export function usePermission(
   }, [loading, roles.length, scopeIndex, requiredScope, requiredLevel, action]);
 }
 
-export function useCanAccess(
-  checks: ReadonlyArray<{ scope: string; level: PermissionLevel }>,
-): boolean {
-  const { loading, roles, scopeIndex } = useSelector(selectPermissionsState);
-  if (loading || roles.length === 0) return false;
-  return checks.some(({ scope, level }) => {
-    const entry = resolveEntry(scopeIndex, scope);
-    if (!entry) return false;
-    return PERMISSION_LEVEL_RANK[entry.level] >= PERMISSION_LEVEL_RANK[level];
-  });
+// Whether the viewer may hand out these scope grants: the backend refuses any grant above
+// the caller's own level on that scope, and an ALL grant covers every scope. Deny rules don't count.
+export function useCanGrantScopes(): (
+  grants: ReadonlyArray<{ scope: string; level: PermissionLevel }>,
+) => boolean {
+  const { scopeIndex } = useSelector(selectPermissionsState);
+  return useCallback(
+    (grants) =>
+      grants.every(({ scope, level }) =>
+        (scope.toUpperCase() === ALL_SCOPE_NAME ? ALL_SCOPE_NAMES : [scope]).every((name) => {
+          const entry = resolveEntry(scopeIndex, name);
+          return !!entry && PERMISSION_LEVEL_RANK[entry.level] >= PERMISSION_LEVEL_RANK[level];
+        }),
+      ),
+    [scopeIndex],
+  );
 }
 
 interface PermissionGateProps {

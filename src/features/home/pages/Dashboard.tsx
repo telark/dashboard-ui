@@ -38,6 +38,7 @@ import { changeActivityData, planActivityData } from '../utils/charts';
 import { parseClusterVersion } from '../utils/cluster';
 import { ChartBox, ClusterBox, ListBox, StorageBox, SummaryBox } from '../components';
 import ActivityChart from '../components/charts/ActivityChart';
+import type { NoAccess } from '../models';
 
 // Equal-width columns and fixed-height rows: every box is the same size wherever it lands.
 // min() keeps a single column from overflowing on screens narrower than one track.
@@ -48,12 +49,18 @@ const gridStyle = (rowHeightPx: number): React.CSSProperties => ({
   gap: L.GRID_GAP_PX,
 });
 
-const { viewSnapshots } = ACTION_PERMISSIONS.applications;
+const { view: viewApplications, viewSnapshots } = ACTION_PERMISSIONS.applications;
 const { view: viewPlans } = ACTION_PERMISSIONS.protectionPlans;
+const APPS_NO_ACCESS: NoAccess = {
+  featureName: T.APPLICATIONS.TITLE,
+  permission: viewApplications,
+};
+const PLANS_NO_ACCESS: NoAccess = { featureName: T.PLANS.TITLE, permission: viewPlans };
+const SNAPSHOTS_NO_ACCESS: NoAccess = { featureName: T.STORAGE.TITLE, permission: viewSnapshots };
 
 const Dashboard: React.FC = () => {
   const permissionsReady = useSelector(selectPermissionsReady);
-  const canViewApplications = usePermission('applications', 'ReadOnly');
+  const canViewApplications = usePermission(viewApplications.scope, viewApplications.level);
   const canViewPlans = usePermission(viewPlans.scope, viewPlans.level, viewPlans.deny);
   const canViewSnapshots = usePermission(
     viewSnapshots.scope,
@@ -79,23 +86,27 @@ const Dashboard: React.FC = () => {
   const appsView = useMemo(() => {
     const summary = summarizeApplications(apps);
     return {
-      state: toBoxState(appsLoading, appsError, apps.length > 0),
+      state: canViewApplications
+        ? toBoxState(appsLoading, appsError, apps.length > 0)
+        : { noAccess: APPS_NO_ACCESS },
       total: summary.total,
       breakdown: applicationsBreakdown(summary),
       recentRows: recentlyChangedApplications(apps).map(recentChangeRow),
       activity: changeActivityData(apps),
     };
-  }, [apps, appsLoading, appsError]);
+  }, [apps, appsLoading, appsError, canViewApplications]);
   const plansView = useMemo(() => {
     const summary = summarizePlans(plans);
     return {
-      state: toBoxState(plansLoading, plansError, plans.length > 0),
+      state: canViewPlans
+        ? toBoxState(plansLoading, plansError, plans.length > 0)
+        : { noAccess: PLANS_NO_ACCESS },
       total: summary.total,
       breakdown: plansBreakdown(summary),
       attentionRows: plansNeedingAttention(plans).map(planAttentionRow),
       activity: planActivityData(plans),
     };
-  }, [plans, plansLoading, plansError]);
+  }, [plans, plansLoading, plansError, canViewPlans]);
 
   if (!permissionsReady) return <FullPageLoader minHeight="100vh" />;
 
@@ -103,70 +114,61 @@ const Dashboard: React.FC = () => {
     <PageContainer title={T.TITLE} subtitle={T.SUBTITLE} gap={LIST_PAGE.CONTENT_GAP_PX}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: L.GRID_GAP_PX }}>
         <div style={gridStyle(L.BOX_HEIGHT_PX)}>
-          {canViewApplications && (
-            <SummaryBox
-              title={T.APPLICATIONS.TITLE}
-              viewAllTo={APP_ROUTES.APPLICATIONS}
-              value={appsView.total}
-              breakdown={appsView.breakdown}
-              {...appsView.state}
-            />
-          )}
-          {canViewPlans && (
-            <SummaryBox
-              title={T.PLANS.TITLE}
-              viewAllTo={APP_ROUTES.PROTECTION_PLANS}
-              value={plansView.total}
-              breakdown={plansView.breakdown}
-              {...plansView.state}
-            />
-          )}
-          {canViewSnapshots && <StorageBox storage={storage} />}
+          <SummaryBox
+            title={T.APPLICATIONS.TITLE}
+            viewAllTo={APP_ROUTES.APPLICATIONS}
+            value={appsView.total}
+            breakdown={appsView.breakdown}
+            {...appsView.state}
+          />
+          <SummaryBox
+            title={T.PLANS.TITLE}
+            viewAllTo={APP_ROUTES.PROTECTION_PLANS}
+            value={plansView.total}
+            breakdown={plansView.breakdown}
+            {...plansView.state}
+          />
+          <StorageBox
+            storage={storage}
+            noAccess={canViewSnapshots ? undefined : SNAPSHOTS_NO_ACCESS}
+          />
           <ClusterBox
             cluster={parseClusterVersion(clusterVersion)}
             loading={globalConfigState.loading && !clusterVersion}
             failed={Boolean(globalConfigState.error) && !clusterVersion}
           />
-          {canViewPlans && (
-            <ListBox
-              title={T.PLANS_ATTENTION.TITLE}
-              viewAllTo={APP_ROUTES.PROTECTION_PLANS}
-              rows={plansView.attentionRows}
-              emptyText={T.PLANS_ATTENTION.EMPTY}
-              {...plansView.state}
-            />
-          )}
-          {canViewApplications && (
-            <ListBox
-              title={T.RECENT_CHANGES.TITLE}
-              viewAllTo={APP_ROUTES.APPLICATIONS}
-              rows={appsView.recentRows}
-              emptyText={T.RECENT_CHANGES.EMPTY}
-              {...appsView.state}
-            />
-          )}
+          <ListBox
+            title={T.PLANS_ATTENTION.TITLE}
+            viewAllTo={APP_ROUTES.PROTECTION_PLANS}
+            rows={plansView.attentionRows}
+            emptyText={T.PLANS_ATTENTION.EMPTY}
+            {...plansView.state}
+          />
+          <ListBox
+            title={T.RECENT_CHANGES.TITLE}
+            viewAllTo={APP_ROUTES.APPLICATIONS}
+            rows={appsView.recentRows}
+            emptyText={T.RECENT_CHANGES.EMPTY}
+            {...appsView.state}
+          />
         </div>
         <div style={{ display: 'grid', gridAutoRows: C.ROW_HEIGHT_PX, gap: L.GRID_GAP_PX }}>
-          {canViewApplications && (
-            <ChartBox
-              title={CT.CHANGE_ACTIVITY.TITLE}
-              isEmpty={appsView.activity.data.length === 0}
-              emptyText={CT.CHANGE_ACTIVITY.EMPTY}
-              {...appsView.state}
-            >
-              <ActivityChart {...appsView.activity} />
-            </ChartBox>
-          )}
-          {canViewPlans && (
-            <ChartBox
-              title={CT.PLAN_ACTIVITY.TITLE}
-              isEmpty={plansView.activity.data.length === 0}
-              emptyText={CT.PLAN_ACTIVITY.EMPTY}
-              {...plansView.state}
-            >
-              <ActivityChart {...plansView.activity} />
-            </ChartBox>
-          )}
+          <ChartBox
+            title={CT.CHANGE_ACTIVITY.TITLE}
+            isEmpty={appsView.activity.data.length === 0}
+            emptyText={CT.CHANGE_ACTIVITY.EMPTY}
+            {...appsView.state}
+          >
+            <ActivityChart {...appsView.activity} />
+          </ChartBox>
+          <ChartBox
+            title={CT.PLAN_ACTIVITY.TITLE}
+            isEmpty={plansView.activity.data.length === 0}
+            emptyText={CT.PLAN_ACTIVITY.EMPTY}
+            {...plansView.state}
+          >
+            <ActivityChart {...plansView.activity} />
+          </ChartBox>
         </div>
       </div>
     </PageContainer>

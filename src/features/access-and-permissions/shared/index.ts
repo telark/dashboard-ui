@@ -6,4 +6,5 @@ export type {
 } from './components';
 
 export { useDeassignModal } from './hooks';
+export { applySelectionChange } from './utils/assignment';
 export type { UseDeassignModalOptions, UseDeassignModalReturn } from './hooks';

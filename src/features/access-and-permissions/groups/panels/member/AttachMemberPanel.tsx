@@ -18,6 +18,7 @@ import MemberList from '../../components/display/member/MemberList';
 import GroupAssignedMembersView from '../../components/display/member/GroupAssignedMembersView';
 import type { Group } from '../../models';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
+import { USERS_CONSTANTS as UC } from '../../../users/constants';
 import { filterBySearchTerm } from '../../../users/utils/search/filter';
 import { CapitalizeFirstLetter } from '../../../../../utils/helpers/format';
 
@@ -64,17 +65,35 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
     currentSelectedUsers,
   });
 
-  const canRemoveMemberFromGroup = usePermission(
+  const canAddMember = usePermission(
+    ACTION_PERMISSIONS.groups.attachMember.scope,
+    ACTION_PERMISSIONS.groups.attachMember.level,
+    ACTION_PERMISSIONS.groups.attachMember.deny,
+  );
+  const canRemoveMember = usePermission(
     ACTION_PERMISSIONS.groups.removeMember.scope,
     ACTION_PERMISSIONS.groups.removeMember.level,
     ACTION_PERMISSIONS.groups.removeMember.deny,
   );
-  const canRemoveUserFromGroup = usePermission(
-    ACTION_PERMISSIONS.users.removeFromGroup.scope,
-    ACTION_PERMISSIONS.users.removeFromGroup.level,
-    ACTION_PERMISSIONS.users.removeFromGroup.deny,
+
+  // Unchecking a member is a removal, checking another user is an add: each has its own rule.
+  // Chart-managed (bootstrap) members can't be removed here at all.
+  const removeBlockedFor = useCallback(
+    (userId: string) => {
+      if (allUsers?.find((u) => u.id === userId)?.bootstrap) {
+        return UC.LABELS.ACTIONS.BOOTSTRAP_LOCKED_TOOLTIP;
+      }
+      return canRemoveMember ? undefined : GC.LABELS.ACTIONS.REMOVE_MEMBER_DISABLED_TOOLTIP;
+    },
+    [allUsers, canRemoveMember],
   );
-  const canRemoveMember = canRemoveMemberFromGroup && canRemoveUserFromGroup;
+  const blockedReason = useCallback(
+    (userId: string) => {
+      if (initialSelectedUsers.includes(userId)) return removeBlockedFor(userId);
+      return canAddMember ? undefined : GC.LABELS.ACTIONS.ADD_MEMBER_DISABLED_TOOLTIP;
+    },
+    [initialSelectedUsers, removeBlockedFor, canAddMember],
+  );
 
   const handleDeassignSuccess = useCallback((updatedUserIds: string[]) => {
     setLocalAssignedIds(updatedUserIds);
@@ -163,14 +182,15 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
                   assignedUserIds={filteredAssignedUserIds}
                   allUsers={allUsers}
                   loading={usersLoading}
-                  onDeassignClick={canRemoveMember ? openDeassignModal : undefined}
+                  onDeassignClick={openDeassignModal}
+                  deassignDisabledReason={(user) => removeBlockedFor(user.id)}
                 />
               ) : (
                 <MemberList
                   users={filteredUsers}
                   loading={usersLoading}
                   allUsers={allUsers}
-                  canSelect={canRemoveMember}
+                  blockedReason={blockedReason}
                 />
               )}
             </div>

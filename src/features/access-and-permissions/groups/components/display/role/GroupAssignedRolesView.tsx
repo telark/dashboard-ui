@@ -44,6 +44,7 @@ interface GroupAssignedRolesViewProps {
   allRoles?: Role[];
   loading: boolean;
   onDeassignClick?: (role: Role) => void;
+  deassignDisabledReason?: (role: Role) => string | undefined;
 }
 
 const GroupAssignedRolesView: React.FC<GroupAssignedRolesViewProps> = ({
@@ -51,6 +52,7 @@ const GroupAssignedRolesView: React.FC<GroupAssignedRolesViewProps> = ({
   allRoles,
   loading,
   onDeassignClick,
+  deassignDisabledReason,
 }) => {
   const assignedRoles = useMemo(() => {
     if (!allRoles) return [];
@@ -66,6 +68,7 @@ const GroupAssignedRolesView: React.FC<GroupAssignedRolesViewProps> = ({
       emptyMessage={GC.LABELS.MESSAGES.NO_ASSIGNED_ROLES}
       loadingMessage={GC.LABELS.MESSAGES.LOADING_ROLES}
       onDeassignClick={onDeassignClick}
+      deassignDisabledReason={deassignDisabledReason}
       deassignTooltip="Remove role"
     />
   );

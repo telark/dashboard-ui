@@ -4,7 +4,8 @@ import { PERMISSION_LEVEL_RANK } from '../../models/permissions';
 import { fetchMyPermissionsThunk } from '../thunks/fetchThunks';
 import { SCOPE_RULES } from '../../../access-and-permissions/roles/constants/scopeRules';
 
-const ALL_SCOPE_NAMES = SCOPE_RULES.map((s) => s.scope);
+export const ALL_SCOPE_NAME = 'ALL';
+export const ALL_SCOPE_NAMES = SCOPE_RULES.map((s) => s.scope);
 
 const initialState: PermissionsState = {
   userID: null,
@@ -46,9 +47,10 @@ function buildScopeIndex(
   };
 
   for (const role of roles) {
-    if (role.isExpired) continue;
+    // The backend ignores expired and non-Active roles entirely: no grants, no denies.
+    if (role.isExpired || role.status !== 'Active') continue;
     for (const sp of role.scopes) {
-      if (sp.scope.toUpperCase() === 'ALL') {
+      if (sp.scope.toUpperCase() === ALL_SCOPE_NAME) {
         for (const scopeName of ALL_SCOPE_NAMES) {
           tryWrite(scopeName, sp.level, sp.rules ?? [], role.priority);
         }

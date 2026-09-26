@@ -161,6 +161,8 @@ export interface ParamSpec {
   required: boolean;
   placeholder?: string;
   description?: string;
+  // Regex the backend enforces on every entry of a required param.
+  pattern?: string;
 }
 
 export interface PlanTemplate {

@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
 import type { PolicyEntry, FormValues } from '../components/create';
-import type { PlanExcludedResource, ProtectionPlan } from '../models';
+import type { ParamSpec, PlanExcludedResource, PlanTemplate, ProtectionPlan } from '../models';
+import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
+
+const { FORM } = PPC.CREATE_PAGE;
 
 export const RESOURCE_KEY_SEPARATOR = '/';
 
@@ -55,7 +58,33 @@ export const planToFormValues = (plan: ProtectionPlan): FormValues => ({
 });
 
 export const planToPolicies = (plan: ProtectionPlan): PolicyEntry[] =>
-  plan.policies.map((p) => ({ templateID: p.templateID, params: { ...(p.params ?? {}) } }));
+  (plan.policies ?? []).map((p) => ({ templateID: p.templateID, params: { ...(p.params ?? {}) } }));
+
+const matchesPattern = (pattern: string, value: string): boolean => {
+  try {
+    return new RegExp(pattern).test(value);
+  } catch {
+    // A pattern this browser cannot compile is left to the backend.
+    return true;
+  }
+};
+
+// Mirrors the backend's required-param checks: non-empty, and every entry matches the pattern.
+export const paramError = (entry: PolicyEntry, param: ParamSpec): string | undefined => {
+  if (!param.required) return undefined;
+  const values = entry.params[param.key] ?? [];
+  if (values.length === 0) return FORM.PARAM_REQUIRED_ERROR;
+  const { pattern } = param;
+  const invalid = pattern ? values.find((v) => !matchesPattern(pattern, v)) : undefined;
+  return invalid === undefined ? undefined : FORM.PARAM_PATTERN_ERROR(invalid);
+};
+
+export const hasInvalidParams = (policies: PolicyEntry[], templates: PlanTemplate[]): boolean =>
+  policies.some((entry) =>
+    (templates.find((t) => t.id === entry.templateID)?.params ?? []).some(
+      (param) => paramError(entry, param) !== undefined,
+    ),
+  );
 
 const normalizeStringArray = (arr: string[] | undefined): string[] => [...(arr ?? [])].sort();
 

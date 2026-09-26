@@ -108,6 +108,11 @@ export function useApplicationInsights(namespace: string, name: string): UseAppl
           setState((prev) => ({ ...prev, error: insightErrorMessage(e.data.error) }));
           void refetch();
           return;
+        case INSIGHT_EVENTS.ANALYSIS_FINISHED:
+        case INSIGHT_EVENTS.REVIEW_FINISHED:
+          // Read even without a version bump: the setup review's lastReviewAt must refresh.
+          void refetch();
+          return;
         default:
           if (e.name === INSIGHT_EVENTS.ANALYSIS_STARTED) {
             setState((prev) => ({ ...prev, error: null }));

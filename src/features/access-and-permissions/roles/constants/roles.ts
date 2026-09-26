@@ -1,7 +1,6 @@
 import type { PermissionLevel, ValidityType } from '../models/types';
 import { DEFAULT_COLORS } from '../../../../constants';
 
-export const SCOPE_PERMISSIONS = ['View', 'Edit', 'Delete'] as const;
 export const PERMISSION_LEVELS = ['ReadOnly', 'Contributor', 'Owner', 'Admin'] as const;
 export const VALIDITY_TYPES = ['permanent', 'temporary', 'sessionBased'] as const;
 export const ROLES_CONSTANTS = {
@@ -64,6 +63,8 @@ export const ROLES_CONSTANTS = {
     STATUS_INACTIVE: 'Inactive',
     DELETE_MODAL_TITLE: 'Delete Role',
     DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
+    DELETE_IMPACT: (users: number, groups: number) =>
+      `It is assigned to ${users} user${users === 1 ? '' : 's'} and ${groups} group${groups === 1 ? '' : 's'}, who lose the access it grants.`,
     DELETE_MODAL_OK: 'Delete',
     NO_ROLES_TITLE: 'No roles yet',
     NO_ROLES_DESCRIPTION: 'Get started by creating your first role.',

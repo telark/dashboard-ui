@@ -21,7 +21,6 @@ import type { ProtectionPlan } from '../../models';
 import {
   APPROVABLE_PHASES,
   CANCELLABLE_PHASES,
-  NON_EDITABLE_PHASES,
   REACTIVATABLE_PHASES,
   getDecideBlockedTooltip,
   getGenerateReportTooltip,
@@ -208,7 +207,6 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
 
   const toolbarConfig: ToolbarConfig = useMemo(() => {
     const phase = plan.phase;
-    const editDisabled = NON_EDITABLE_PHASES.includes(phase);
     const buttons: ToolbarConfig['buttons'] = [];
     if (APPROVABLE_PHASES.includes(phase)) {
       buttons.push(
@@ -248,12 +246,8 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
         icon: <EditOutlined />,
         variant: 'ghost',
         onClick: onEdit,
-        disabled: !canEdit || editing || editDisabled,
-        tooltip: permissionTooltip(
-          canEdit,
-          PD.EDIT,
-          editDisabled ? PPC.LABELS.DETAIL_PAGE.ACTIONS.EDIT_DISABLED_TOOLTIP : undefined,
-        ),
+        disabled: !canEdit || editing,
+        tooltip: permissionTooltip(canEdit, PD.EDIT),
       },
       {
         key: 'duplicate',

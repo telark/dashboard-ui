@@ -1,3 +1,4 @@
+import type { TableColumnType } from 'antd';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RPC } from '../../../../roles/constants';
@@ -29,9 +30,7 @@ interface ColumnsContext extends GenerateColumnCtx {
 
 const DESCRIPTION_PREVIEW_MAX = 40;
 
-type GeneratedColumn = ReturnType<typeof generateColumn>;
-
-const Columns = (ctx: ColumnsContext): GeneratedColumn[] => {
+const Columns = (ctx: ColumnsContext): TableColumnType<Group>[] => {
   const categories = ctx.categories || [];
   const users = ctx.users || [];
 
@@ -40,7 +39,7 @@ const Columns = (ctx: ColumnsContext): GeneratedColumn[] => {
     return users.find((u) => u.id === userId) || null;
   };
 
-  const cols: GeneratedColumn[] = [];
+  const cols: TableColumnType<Group>[] = [];
   cols.push(
     generateColumn(
       {

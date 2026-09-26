@@ -33,7 +33,7 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
         ]}
         style={{ marginBottom: 16 }}
         className="form-item-compact no-asterisk"
-        validateTrigger={['onBlur', 'onSubmit']}
+        validateTrigger="onChange"
       >
         <Input
           placeholder={GC.LABELS.FORM.FIELDS.NAME_PLACEHOLDER}

@@ -44,6 +44,8 @@ interface ProtectionPlanReportsPageProps {
   plansError: string | null;
   onRetryPlans: () => void;
   tabs: React.ReactNode;
+  // The tab stays mounted while hidden; each showing re-reads the reports (a card may have added one).
+  active: boolean;
 }
 
 type ColumnKey = keyof typeof REPORTS_LIST.COLUMN_WIDTHS;
@@ -147,7 +149,7 @@ const buildColumns = (
       : null,
     column('TRIGGER', L.COLUMNS.TRIGGER, (r) => (
       <RowTag
-        text={L.TRIGGER_LABELS[r.trigger]}
+        text={PPC.LABELS.REPORTS.TRIGGER_LABELS[r.trigger]}
         accent={r.trigger === 'manual' ? undefined : DEFAULT_COLORS.SUCCESS}
         capitalize={false}
       />
@@ -164,8 +166,8 @@ const buildColumns = (
   ].filter((c): c is TableColumnType<PlanReportMeta> => c !== null);
 
 const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo(
-  ({ plans, plansLoading, plansError, onRetryPlans, tabs }) => {
-    const { reports, loading, error, downloading, download, refresh } = useAllPlanReports(true);
+  ({ plans, plansLoading, plansError, onRetryPlans, tabs, active }) => {
+    const { reports, loading, error, downloading, download, refresh } = useAllPlanReports(active);
     const users = useSelector((s: RootState) => s.users.users);
     const { environments } = usePlanTaxonomies();
     const canDownload = usePermission(
@@ -234,7 +236,10 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
           key: PPC.FILTER_KEYS.TRIGGER,
           label: L.FILTER.BY_TRIGGER,
           type: 'multiSelect',
-          multiSelectOptions: TRIGGERS.map((t) => ({ value: t, label: L.TRIGGER_LABELS[t] })),
+          multiSelectOptions: TRIGGERS.map((t) => ({
+            value: t,
+            label: PPC.LABELS.REPORTS.TRIGGER_LABELS[t],
+          })),
         },
       ],
       [plans, environments],

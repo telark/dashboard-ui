@@ -7,6 +7,8 @@ import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import store from '../../../../../../store';
 import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
 import type { Group } from '../../../models';
+import { fetchFreshGroupIds } from '../../../utils';
+import { applySelectionChange } from '../../../../shared';
 import type { Role } from '../../../../roles/models';
 
 interface UseDeassignGroupRoleOptions {
@@ -36,10 +38,15 @@ export const useDeassignGroupRole = ({
     async (role: Role) => {
       if (!group) throw new Error('No group selected');
       const current = (form.getFieldValue('assignedRolesIDs') as string[]) ?? [];
-      const updated = current.filter((id) => id !== role.id);
-      await handleUpdate(group.id, { assignedRolesIDs: updated });
+      await handleUpdate(group.id, async () => ({
+        assignedRolesIDs: applySelectionChange(
+          await fetchFreshGroupIds(group.id, 'assignedRolesIDs'),
+          [role.id],
+          [],
+        ),
+      }));
       store.dispatch(fetchMyPermissionsThunk());
-      form.setFieldsValue({ assignedRolesIDs: updated });
+      form.setFieldsValue({ assignedRolesIDs: current.filter((id) => id !== role.id) });
       message.success(GC.LABELS.MESSAGES.ROLE_DEASSIGNED(role.name));
     },
     [group, form, handleUpdate, message],

@@ -231,8 +231,6 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           connectivity={connectivityIssueFrom(error)}
         />
       );
-    } else if (plans.length === 0) {
-      dataRegion = <ProtectionPlansEmptyPage onCreatePlanClick={onCreatePlanClick} />;
     } else if (loading && !hasData) {
       dataRegion = (
         <div
@@ -246,6 +244,8 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           <FancySpinner size={40} showLabel />
         </div>
       );
+    } else if (plans.length === 0) {
+      dataRegion = <ProtectionPlansEmptyPage onCreatePlanClick={onCreatePlanClick} />;
     } else if (filteredPlans.length === 0) {
       dataRegion = <NoProtectionPlansState />;
     } else {

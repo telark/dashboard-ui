@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { PasskeysState, Passkey } from '../../models/passkeys';
+import { createSlice } from '@reduxjs/toolkit';
+import type { PasskeysState } from '../../models/passkeys';
 import {
   fetchAllPasskeysThunk,
   fetchAllPasskeysSilentThunk,
@@ -40,24 +40,7 @@ const initialState: PasskeysState = {
 const passkeySlice = createSlice({
   name: 'passkeys',
   initialState,
-  reducers: {
-    clearDetails(state) {
-      state.details = null; // Clear previous details to avoid stale data
-    },
-    // Keep these actions for backward compatibility with existing code
-    addPasskey: (state, action: PayloadAction<Passkey>) => {
-      state.passkeys.push(action.payload);
-    },
-    updatePasskey: (state, action: PayloadAction<Passkey>) => {
-      const index = state.passkeys.findIndex((p) => p.credentialId === action.payload.credentialId);
-      if (index !== -1) {
-        state.passkeys[index] = action.payload;
-      }
-    },
-    deletePasskey: (state, action: PayloadAction<string>) => {
-      state.passkeys = state.passkeys.filter((p) => p.credentialId !== action.payload);
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllPasskeysThunk.pending, handleFetchPasskeysPending)
@@ -79,7 +62,5 @@ const passkeySlice = createSlice({
       .addCase(deletePasskeyThunk.rejected, handleDeletePasskeyRejected);
   },
 });
-
-export const { clearDetails, addPasskey, updatePasskey, deletePasskey } = passkeySlice.actions;
 
 export default passkeySlice.reducer;

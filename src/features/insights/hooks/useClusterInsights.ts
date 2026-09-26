@@ -3,6 +3,7 @@ import axios from 'axios';
 import logger from '../../../logging';
 import { HTTP_STATUS } from '../../../constants';
 import { keepUnchanged } from '../../../store/keepUnchanged';
+import { extractErrorMessage } from '../../../utils/helpers/format';
 import { fetchClusterInsights } from '../clients/insights';
 import { INSIGHTS_ERROR_MESSAGES } from '../constants/errors';
 import { CLUSTER_INSIGHTS } from '../constants/insights';
@@ -82,13 +83,16 @@ export function useClusterInsights(
       } catch (error) {
         if (cancelled) return;
         logger.error(INSIGHTS_ERROR_MESSAGES.CLIENT.FETCH_CLUSTER_INSIGHTS_FAILED, error);
-        // Without a first page there is nothing to keep showing, so any failure is reported.
+        // Without a first page there is nothing to keep showing, so any failure is reported. A 4xx
+        // carries the server's reason; the generic text reads as a network outage.
+        const definite = isDefiniteError(error);
+        const fallback = INSIGHTS_ERROR_MESSAGES.CLIENT.FETCH_CLUSTER_INSIGHTS_FAILED;
         setState((prev) =>
-          isDefiniteError(error) || !prev.page
+          definite || !prev.page
             ? {
                 ...prev,
                 loading: false,
-                error: INSIGHTS_ERROR_MESSAGES.CLIENT.FETCH_CLUSTER_INSIGHTS_FAILED,
+                error: definite ? extractErrorMessage(error, fallback) : fallback,
               }
             : prev,
         );

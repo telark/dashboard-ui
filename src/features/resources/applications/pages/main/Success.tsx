@@ -1,12 +1,8 @@
 import React, { memo, useMemo } from 'react';
-import { Button } from 'antd';
+import { App as AntdApp } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  CARD_LAYOUT,
-  DEFAULT_COLORS,
-  LIST_TOOLBAR,
-  getCardGridColumns,
-} from '../../../../../constants';
+import { CARD_LAYOUT, LIST_TOOLBAR, getCardGridColumns } from '../../../../../constants';
+import EmptyState from '../../../../../components/display/views/EmptyState';
 import { LIST_PAGE } from '../../../../../constants/shared/pages';
 import type { Application } from '../../models';
 import type { AppDispatch, RootState } from '../../../../../store';
@@ -88,6 +84,7 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
     const dispatch: AppDispatch = useDispatch();
     const viewMode = useSelector((s: RootState) => s.applications.viewMode);
     const coverageOf = useApplicationCoverage();
+    const { message } = AntdApp.useApp();
     const hasApps = applications.length > 0;
     const dataState = useDataViewState({ loading, error, hasData: hasApps });
     const selectedSet = useMemo(() => new Set(selectedNames), [selectedNames]);
@@ -135,24 +132,32 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
       selectedSet,
     ]);
 
-    const handleBulkForceSync = React.useCallback(() => {
-      selectedNames.forEach((name) => {
-        forceSyncApplication(name).catch(() => undefined);
-      });
-    }, [selectedNames]);
+    const handleBulkForceSync = React.useCallback(async () => {
+      const errors = await Promise.all(selectedNames.map((name) => forceSyncApplication(name)));
+      const firstError = errors.find(Boolean);
+      if (firstError) message.error(firstError);
+    }, [message, selectedNames]);
 
     const handleConfirmBulkReset = React.useCallback(async () => {
       setBulkResetLoading(true);
       try {
-        await Promise.all(
+        const results = await Promise.allSettled(
           selectedNames.map((name) => dispatch(resetApplicationThunk(name)).unwrap()),
         );
+        const failed = results.find((r): r is PromiseRejectedResult => r.status === 'rejected');
+        if (failed) {
+          const reason: unknown = failed.reason;
+          message.error(
+            typeof reason === 'string' ? reason : APPLICATIONS_UI.CARD.ACTIONS.RESET_FAILED,
+          );
+          return;
+        }
         onClearSelection();
         setBulkResetOpen(false);
       } finally {
         setBulkResetLoading(false);
       }
-    }, [dispatch, onClearSelection, selectedNames]);
+    }, [dispatch, message, onClearSelection, selectedNames]);
 
     const handleCycleComplete = React.useCallback(() => {
       void loadApplicationsSilent(dispatch);
@@ -215,20 +220,23 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
             >
               <FancySpinner size={40} showLabel />
             </div>
-          ) : !hasApps && hasActiveFilters ? (
-            <div style={{ textAlign: 'center', padding: '48px 24px' }}>
-              <p style={{ marginBottom: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                No applications match the current filters.
-              </p>
-              <Button type="link" onClick={onClearAllFilters}>
-                Clear all filters
-              </Button>
+          ) : !hasApps ? (
+            <div style={{ display: 'flex', minHeight: LIST_PAGE.LOADING_MIN_HEIGHT_PX }}>
+              <EmptyState
+                title={APPLICATIONS_UI.NO_MATCH_TITLE}
+                description={APPLICATIONS_UI.NO_MATCH_DESCRIPTION}
+                secondaryAction={
+                  hasActiveFilters
+                    ? { label: APPLICATIONS_UI.CLEAR_ALL_FILTERS, onClick: onClearAllFilters }
+                    : undefined
+                }
+              />
             </div>
           ) : (
             content
           )}
         </div>
-        <TablePagination config={pagination} />
+        {hasApps ? <TablePagination config={pagination} /> : null}
         <ApplicationResetModal
           open={bulkResetOpen}
           onClose={() => setBulkResetOpen(false)}

@@ -18,17 +18,21 @@ import {
   ManageRollbacksPanel,
   ManageSnapshotsPanel,
 } from '../../components/panels';
-import { Form } from 'antd';
+import { App as AntdApp, Form } from 'antd';
 import { resetApplicationThunk } from '../../store';
 import { forceSyncApplication } from '../../utils/management/sync';
 import { hasActiveRollback } from '../../utils/rollbacks';
 import ApplicationResetModal from '../../components/reset/ApplicationResetModal';
 import { CLUSTER_INSIGHTS, insightsAppKey } from '../../../../insights';
+import { ACTION_PERMISSIONS, usePermission } from '../../../../auth/hooks';
+
+const { viewSnapshotManifest } = ACTION_PERMISSIONS.applications;
 
 const ApplicationDetailsView: React.FC = memo(() => {
   const { name } = useParams<{ name: string }>();
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
+  const { message } = AntdApp.useApp();
   const [editForm] = Form.useForm();
   const [editOpen, setEditOpen] = React.useState(false);
   const [rollbacksOpen, setRollbacksOpen] = React.useState(false);
@@ -51,6 +55,11 @@ const ApplicationDetailsView: React.FC = memo(() => {
       ? 'activeRollback'
       : null;
 
+  const canReadSnapshotFiles = usePermission(
+    viewSnapshotManifest.scope,
+    viewSnapshotManifest.level,
+    viewSnapshotManifest.deny,
+  );
   const latestSnapshots = useRef(details?.snapshots);
   latestSnapshots.current = details?.snapshots;
   const snapshotsKey = (details?.snapshots ?? []).map((s) => s.path).join('|');
@@ -58,8 +67,10 @@ const ApplicationDetailsView: React.FC = memo(() => {
     if (!details?.name) return;
     const snaps = latestSnapshots.current;
     const refs = snaps != null && snaps.length > 0 ? snaps : undefined;
-    void dispatch(fetchApplicationSnapshotsThunk({ snapshotRefs: refs }));
-  }, [details?.name, snapshotsKey, dispatch]);
+    void dispatch(
+      fetchApplicationSnapshotsThunk({ snapshotRefs: refs, canReadFiles: canReadSnapshotFiles }),
+    );
+  }, [details?.name, snapshotsKey, canReadSnapshotFiles, dispatch]);
 
   const breadcrumbItems = useMemo(
     () => [
@@ -79,12 +90,12 @@ const ApplicationDetailsView: React.FC = memo(() => {
       await dispatch(resetApplicationThunk(details.name)).unwrap();
       setResetModalOpen(false);
       navigate(APP_ROUTES.APPLICATIONS);
-    } catch {
-      return;
+    } catch (err) {
+      message.error(typeof err === 'string' ? err : APPLICATIONS_UI.CARD.ACTIONS.RESET_FAILED);
     } finally {
       setResetLoading(false);
     }
-  }, [details?.name, dispatch, navigate]);
+  }, [details?.name, dispatch, message, navigate]);
 
   if (loading) {
     return <LoadingDetailsView />;
@@ -111,7 +122,9 @@ const ApplicationDetailsView: React.FC = memo(() => {
             application={details}
             syncDisabled={isSyncing}
             onForceSync={() => {
-              forceSyncApplication(details.name).catch(() => undefined);
+              void forceSyncApplication(details.name).then((err) => {
+                if (err) message.error(err);
+              });
             }}
             onEdit={() => {
               editForm.setFieldsValue({

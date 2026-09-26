@@ -24,7 +24,6 @@ const GroupsSelect: React.FC<GroupsSelectProps> = memo(
     }, [groups]);
 
     useEffect(() => {
-      // Update the options map if callback provided
       if (onOptionsMapUpdate) {
         const map = new Map<string, string>();
         groups.forEach((group: Group) => {

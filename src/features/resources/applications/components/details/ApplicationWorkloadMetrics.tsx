@@ -180,6 +180,7 @@ const WorkloadRow: React.FC<{ workload: ApplicationWorkloadUsage }> = ({ workloa
   const [hovered, setHovered] = useState(false);
 
   const { baseline, usage } = workload;
+  const replicas = baseline?.replicas ?? 0;
   const usageAvailable = Boolean(usage?.available);
   const hasInstances = (usage?.resources?.usagePerInstance?.length ?? 0) > 0;
 
@@ -218,9 +219,13 @@ const WorkloadRow: React.FC<{ workload: ApplicationWorkloadUsage }> = ({ workloa
           text={workload.resourceKind}
           {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
         />
-        <RowTag text={workload.namespace} {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
+        <RowTag
+          text={workload.namespace}
+          capitalize={false}
+          {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+        />
         <span style={{ fontSize: M.LABEL_FONT_SIZE_PX, color: DEFAULT_COLORS.TEXT_MUTED }}>
-          {baseline?.replicas ?? 0} {WM.REPLICAS_SUFFIX}
+          {replicas} {replicas === 1 ? WM.REPLICAS_SUFFIX.one : WM.REPLICAS_SUFFIX.other}
         </span>
         {usageAvailable && usage?.qos ? (
           <RowTag text={usage.qos} {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />

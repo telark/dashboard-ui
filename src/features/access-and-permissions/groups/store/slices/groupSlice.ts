@@ -16,9 +16,7 @@ import {
 } from '../reducers/fetchReducers';
 import {
   handleCreateGroupFulfilled,
-  handleCreateGroupRejected,
   handleUpdateGroupFulfilled,
-  handleUpdateGroupRejected,
   handleDeleteGroupPending,
   handleDeleteGroupFulfilled,
   handleDeleteGroupRejected,
@@ -52,9 +50,7 @@ const groupSlice = createSlice({
       .addCase(fetchGroupDetailsThunk.fulfilled, handleFetchGroupDetailsFulfilled)
       .addCase(fetchGroupDetailsThunk.rejected, handleFetchGroupDetailsRejected)
       .addCase(createGroupThunk.fulfilled, handleCreateGroupFulfilled)
-      .addCase(createGroupThunk.rejected, handleCreateGroupRejected)
       .addCase(updateGroupThunk.fulfilled, handleUpdateGroupFulfilled)
-      .addCase(updateGroupThunk.rejected, handleUpdateGroupRejected)
       .addCase(deleteGroupThunk.pending, handleDeleteGroupPending)
       .addCase(deleteGroupThunk.fulfilled, handleDeleteGroupFulfilled)
       .addCase(deleteGroupThunk.rejected, handleDeleteGroupRejected);

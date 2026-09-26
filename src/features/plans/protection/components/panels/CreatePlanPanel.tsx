@@ -7,9 +7,14 @@ import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPla
 import PlanForm from '../shared/PlanForm';
 import type { FormValues, PolicyEntry } from '../create';
 import { usePlanFormData } from '../../hooks/usePlanFormData';
+import { usePlanNameCheck } from '../../hooks/usePlanNameCheck';
 import { usePlanActions } from '../../hooks/usePlanActions';
 import { usePlanFormState } from '../../hooks/usePlanFormState';
-import { DEFAULT_FORM_VALUES, buildPreparePayload } from '../../utils/planFormValues';
+import {
+  DEFAULT_FORM_VALUES,
+  buildPreparePayload,
+  hasInvalidParams,
+} from '../../utils/planFormValues';
 
 const PANEL_WIDTH = 720;
 const PANEL_WIDTH_EXPANDED = 1400;
@@ -29,9 +34,11 @@ const CreatePlanPanel: React.FC<CreatePlanPanelProps> = ({ open, onClose, form }
   const [policies, setPolicies] = useState<PolicyEntry[]>(() => INITIAL_POLICIES);
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const data = usePlanFormData(open);
+  const { nameValidator, nameInvalid } = usePlanNameCheck(form, open);
 
   const handleClose = useCallback(() => {
     setAttemptedSubmit(false);
+    setPolicies(INITIAL_POLICIES);
     onClose();
   }, [onClose]);
   const { submitting, handleCreate } = usePlanActions();
@@ -66,7 +73,11 @@ const CreatePlanPanel: React.FC<CreatePlanPanelProps> = ({ open, onClose, form }
     [handleCreate, handleClose, policies],
   );
 
-  const submitDisabled = policies.length === 0 || (attemptedSubmit && hasFormErrors);
+  const submitDisabled =
+    nameInvalid ||
+    policies.length === 0 ||
+    hasInvalidParams(policies, data.templates) ||
+    (attemptedSubmit && hasFormErrors);
 
   const handleSubmitClick = () => {
     setAttemptedSubmit(true);
@@ -101,6 +112,7 @@ const CreatePlanPanel: React.FC<CreatePlanPanelProps> = ({ open, onClose, form }
         onSubmit={handleFinish}
         submitting={submitting}
         mode="create"
+        nameValidator={nameValidator}
         hideSubmitButton
         submitLabel={PPC.PANELS.CREATE.SUBMIT_BUTTON}
         loadingLabel={PPC.PANELS.CREATE.LOADING_LABEL}

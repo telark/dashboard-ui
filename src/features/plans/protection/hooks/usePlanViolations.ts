@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 import { fetchPlanViolations } from '../clients';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
 import type { PlanViolationsResponse, ViolationResult } from '../models';
@@ -32,9 +33,14 @@ export function usePlanViolations(planId: string, enabled: boolean): UsePlanViol
         setData(res);
         setError(null);
       })
-      .catch(() => {
+      .catch((err: unknown) => {
         if (cancelled) return;
-        setError(PPC.LABELS.VIOLATIONS.LOAD_ERROR);
+        const meta = (err as ExtendedAxiosError)?.normalized;
+        setError(
+          meta?.isTimeout
+            ? PPC.LABELS.VIOLATIONS.LOAD_TIMEOUT
+            : (meta?.message ?? PPC.LABELS.VIOLATIONS.LOAD_ERROR),
+        );
       })
       .finally(() => {
         if (!cancelled) setLoading(false);

@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useState } from 'react';
-import { Button, Checkbox, Dropdown, Tooltip } from 'antd';
+import { App as AntdApp, Button, Checkbox, Dropdown, Tooltip } from 'antd';
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -81,6 +81,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
   ({ application, onEditApplication, bulkMode = false, selected = false, onToggleSelect }) => {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
+    const { message } = AntdApp.useApp();
     const syncingFlag = useSelector((s: RootState) =>
       Boolean(s.applications.syncing?.[application.name]),
     );
@@ -142,7 +143,9 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
         }
         if (info.key === 'forceSync') {
           setMenuOpen(false);
-          forceSyncApplication(application.name).catch(() => undefined);
+          void forceSyncApplication(application.name).then((err) => {
+            if (err) message.error(err);
+          });
           return;
         }
         if (info.key === 'rollbacks') {
@@ -154,7 +157,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
           setResetModalOpen(true);
         }
       },
-      [application, detailsPath, isSyncing, navigate, onEditApplication],
+      [application, detailsPath, isSyncing, message, navigate, onEditApplication],
     );
 
     const handleConfirmReset = useCallback(async () => {
@@ -163,12 +166,12 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
         await dispatch(resetApplicationThunk(application.name)).unwrap();
         setResetModalOpen(false);
         navigate(APP_ROUTES.APPLICATIONS);
-      } catch {
-        return;
+      } catch (err) {
+        message.error(typeof err === 'string' ? err : APPLICATIONS_UI.CARD.ACTIONS.RESET_FAILED);
       } finally {
         setResetLoading(false);
       }
-    }, [application.name, dispatch, navigate]);
+    }, [application.name, dispatch, message, navigate]);
 
     const descriptionText = String(application.description || '').trim();
     const labelWithTooltip = (text: string, tooltip: string | undefined) =>
