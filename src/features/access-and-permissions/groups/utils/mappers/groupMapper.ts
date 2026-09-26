@@ -4,11 +4,11 @@ import type { ResourceDetailsResponse } from '../../../../../interfaces/http';
 export const mapGroupData = (apiGroup: Group): Group => {
   return {
     id: apiGroup.id,
-    assignedUsersIDs: apiGroup.assignedUsersIDs || [],
-    assignedRolesIDs: apiGroup.assignedRolesIDs || [],
+    userRefs: apiGroup.userRefs || [],
+    roleRefs: apiGroup.roleRefs || [],
     name: apiGroup.name,
     description: apiGroup.description,
-    categoryID: apiGroup.categoryID || '',
+    categoryRef: apiGroup.categoryRef || '',
     creationDate: apiGroup.creationDate || new Date().toISOString(),
     lastUpdateDate: apiGroup.lastUpdateDate,
     createdBy: apiGroup.createdBy,

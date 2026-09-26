@@ -52,7 +52,7 @@ const EditRolePanel: React.FC<EditRolePanelProps> = ({ open, onClose, editingRol
       version: '',
       type: RC.VALUES.ROLE_TYPE_CUSTOM,
       status: RC.STATUS.ACTIVE,
-      categoryID: '',
+      categoryRef: '',
       priority: 0,
       scopesAndPermissions: [],
       creationDate: '',

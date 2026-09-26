@@ -14,8 +14,8 @@ interface UseGroupDeleteModalReturn {
 }
 
 const groupDeleteImpact = (group: Group | null): string | undefined => {
-  const members = new Set(group?.assignedUsersIDs ?? []).size;
-  const roles = new Set(group?.assignedRolesIDs ?? []).size;
+  const members = new Set(group?.userRefs ?? []).size;
+  const roles = new Set(group?.roleRefs ?? []).size;
   return members + roles > 0 ? GC.LABELS.ACTIONS.DELETE_IMPACT(members, roles) : undefined;
 };
 

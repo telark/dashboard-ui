@@ -53,10 +53,10 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
               placeholder={RPC.GENERAL.DESCRIPTION_PLACEHOLDER}
               marginBottom={12}
             />
-            <FieldChangeWatcher fieldName="categoryID" onChange={onManualChange} />
+            <FieldChangeWatcher fieldName="categoryRef" onChange={onManualChange} />
             <Form.Item
               label={categoryLabel}
-              name="categoryID"
+              name="categoryRef"
               rules={[
                 {
                   required: true,

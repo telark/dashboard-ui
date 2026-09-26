@@ -31,8 +31,8 @@ interface DuplicateFormShape {
   timeMode?: string;
   startAt?: Dayjs;
   endAt?: Dayjs;
-  environmentID?: string;
-  tagIDs?: string[];
+  environmentRef?: string;
+  tagRefs?: string[];
   approvalMode?: PlanApprovalMode;
 }
 
@@ -60,8 +60,8 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
       timeMode: plan?.timeMode ?? 'permanent',
       startAt: undefined,
       endAt: undefined,
-      environmentID: plan?.environmentID || undefined,
-      tagIDs: plan?.tagIDs ?? [],
+      environmentRef: plan?.environmentRef || undefined,
+      tagRefs: plan?.tagRefs ?? [],
       approvalMode: plan?.approvalMode ?? 'automatic',
     };
   }, [plan]);
@@ -92,16 +92,16 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
         name: string;
         timeMode: string;
         timeRange?: { startAt: string; endAt: string };
-        environmentID?: string;
-        tagIDs?: string[];
+        environmentRef?: string;
+        tagRefs?: string[];
         approvalMode?: PlanApprovalMode;
       } = {
         name: (v.name ?? '').trim(),
         timeMode: v.timeMode ?? 'permanent',
       };
-      if (form.isFieldsTouched(['environmentID', 'tagIDs'])) {
-        payload.environmentID = v.environmentID ?? '';
-        payload.tagIDs = v.tagIDs ?? [];
+      if (form.isFieldsTouched(['environmentRef', 'tagRefs'])) {
+        payload.environmentRef = v.environmentRef ?? '';
+        payload.tagRefs = v.tagRefs ?? [];
       }
       if (form.isFieldsTouched(['approvalMode'])) {
         payload.approvalMode = v.approvalMode;

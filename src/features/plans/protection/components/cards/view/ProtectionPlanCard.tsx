@@ -132,10 +132,10 @@ const buildWindow = (plan: ProtectionPlan): PlanWindow => {
 const buildScopeValue = (plan: ProtectionPlan): string =>
   plan.scope.type === 'namespaces'
     ? CARD_LABELS.NAMESPACES_COUNT(plan.scope.namespaces?.length ?? 0)
-    : CARD_LABELS.APPLICATIONS_COUNT(plan.scope.applicationIds?.length ?? 0);
+    : CARD_LABELS.APPLICATIONS_COUNT(plan.scope.applicationRefs?.length ?? 0);
 
 const buildTargets = (plan: ProtectionPlan): string[] =>
-  (plan.scope.type === 'namespaces' ? plan.scope.namespaces : plan.scope.applicationIds) ?? [];
+  (plan.scope.type === 'namespaces' ? plan.scope.namespaces : plan.scope.applicationRefs) ?? [];
 
 const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOpen }) => {
   const dispatch: AppDispatch = useDispatch();
@@ -233,8 +233,8 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const shownTargets = targets.slice(0, CARD_LAYOUT.MAX_TARGET_TAGS);
   const hiddenTargets = targets.length - shownTargets.length;
   const { environments, tags } = usePlanTaxonomyLists();
-  const environmentName = environments.find((c) => c.id === plan.environmentID)?.name;
-  const planTags = (plan.tagIDs ?? [])
+  const environmentName = environments.find((c) => c.id === plan.environmentRef)?.name;
+  const planTags = (plan.tagRefs ?? [])
     .map((id) => ({ id, name: tags.find((c) => c.id === id)?.name }))
     .filter((t): t is { id: string; name: string } => Boolean(t.name));
   const shownTags = planTags.slice(0, CARD_LAYOUT.MAX_TARGET_TAGS);
@@ -472,7 +472,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
               )}
             </span>
             {/* Keyed on the plan's ids, not the resolved names, so the row does not pop in when the lists load. */}
-            {(plan.environmentID || (plan.tagIDs?.length ?? 0) > 0) && (
+            {(plan.environmentRef || (plan.tagRefs?.length ?? 0) > 0) && (
               <span style={{ ...CARD_TAG_ROW_STYLE, minHeight: CARD_LAYOUT.TAG_ROW_MIN_HEIGHT_PX }}>
                 {environmentName && (
                   <RowTag

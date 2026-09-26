@@ -288,7 +288,7 @@ export const APPLICATIONS_UI = {
       MANAGED_BY: 'Managed by',
       LAST_UPDATED: 'Last updated',
       CREATED_AT: 'Created at',
-      CR_STATUS: 'CR status',
+      PUBLISHED: 'Published',
       RUNTIME: 'Runtime',
       FOOTER_NAMESPACE: 'Namespace',
       FOOTER_MANAGED: 'Managed by',

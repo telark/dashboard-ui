@@ -13,16 +13,16 @@ export interface FormValues {
   priority?: number;
   mode: string;
   scopeType: ScopeType;
-  applicationIds?: string[];
+  applicationRefs?: string[];
   namespaces?: string[];
   excludedKinds?: string[];
   excludedResources?: string[];
   timeMode: string;
   startAt?: dayjs.Dayjs;
   endAt?: dayjs.Dayjs;
-  participantsIDs?: string[];
-  environmentID?: string;
-  tagIDs?: string[];
+  participantRefs?: string[];
+  environmentRef?: string;
+  tagRefs?: string[];
   approvalMode?: PlanApprovalMode;
 }
 

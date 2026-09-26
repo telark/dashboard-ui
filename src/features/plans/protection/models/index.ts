@@ -105,7 +105,7 @@ export interface PlanScopeExclusions {
 
 export interface PlanScope {
   type: ScopeType;
-  applicationIds: string[];
+  applicationRefs: string[];
   namespaces: string[];
   exclusions?: PlanScopeExclusions;
 }
@@ -142,9 +142,9 @@ export interface ProtectionPlan {
   startedBy?: string;
   terminatedAt?: string;
   terminatedBy?: string;
-  participantsIDs?: string[];
-  environmentID?: string;
-  tagIDs?: string[];
+  participantRefs?: string[];
+  environmentRef?: string;
+  tagRefs?: string[];
   health?: PlanHealth;
   healthCheckedAt?: string;
   healthDetail?: PlanHealthDetail[];

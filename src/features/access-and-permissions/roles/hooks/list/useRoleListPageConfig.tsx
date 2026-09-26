@@ -156,8 +156,8 @@ export const useRoleListPageConfig = ({
 
   const getUsage = useCallback(
     (roleId: string) => ({
-      users: users.filter((user) => user.assignedRolesIDs?.includes(roleId)).length,
-      groups: groups.filter((group) => group.assignedRolesIDs?.includes(roleId)).length,
+      users: users.filter((user) => user.roleRefs?.includes(roleId)).length,
+      groups: groups.filter((group) => group.roleRefs?.includes(roleId)).length,
     }),
     [users, groups],
   );

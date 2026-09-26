@@ -41,7 +41,7 @@ interface AttachRolePanelProps {
 
 const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group }) => {
   const [form] = Form.useForm();
-  const watchedRoles = Form.useWatch('assignedRolesIDs', form);
+  const watchedRoles = Form.useWatch('roleRefs', form);
   const currentSelectedRoles = useMemo(() => (watchedRoles as string[]) || [], [watchedRoles]);
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
@@ -108,8 +108,8 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
 
   const assignedRoleIdsForView = useMemo(() => {
     if (currentSelectedRoles.length > 0) return currentSelectedRoles;
-    return currentGroup?.assignedRolesIDs ?? [];
-  }, [currentSelectedRoles, currentGroup?.assignedRolesIDs]);
+    return currentGroup?.roleRefs ?? [];
+  }, [currentSelectedRoles, currentGroup?.roleRefs]);
 
   const filteredAssignedRoleIds = useMemo(() => {
     return filterBySearchTerm(assignedRoleIdsForView, searchTerm, (id) => {
@@ -216,7 +216,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         loading={submitting}
         disabled={!hasChanges || isReadOnlyView}
         form={form}
-        initialValues={{ assignedRolesIDs: initialSelectedRoles }}
+        initialValues={{ roleRefs: initialSelectedRoles }}
       />
       <FilterPanel
         open={filterPanelOpen}

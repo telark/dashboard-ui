@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { Modal } from 'antd';
 import { useNavigate, type NavigateFunction } from 'react-router-dom';
 import { getSessionToken, removeSessionToken, removeCurrentUser } from '../../utils';
-import { deleteSession } from '../../clients';
+import { deleteCurrentSession } from '../../clients';
 import { purgeLocalUserData } from '../../utils/session/cleanup';
 import { AUTH_CONSTANTS } from '../../constants/messages';
-import { AUTH_CONFIG } from '../../constants';
 import { ACTION_CONFIRM_MODAL, APP_ROUTES, DEFAULT_COLORS } from '../../../../constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
@@ -17,7 +16,7 @@ interface SessionExpiredModalProps {
 
 const deleteServerSession = async (): Promise<void> => {
   try {
-    const deleteResponse = await deleteSession(AUTH_CONFIG.SESSION.SELF_REF);
+    const deleteResponse = await deleteCurrentSession();
     if (deleteResponse.status !== 200 && isDevelopment()) {
       logger.warn(
         AUTH_CONSTANTS.SESSION.EXPIRATION.LOGS.DELETE_NON_200_STATUS,

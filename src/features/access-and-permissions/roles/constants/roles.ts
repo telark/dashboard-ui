@@ -231,14 +231,6 @@ export const ROLES_CONSTANTS = {
   },
   STATUS: { ACTIVE: 'Active', INACTIVE: 'Inactive' },
   TYPE: { BUILT_IN: 'built-in', CUSTOM: 'custom' },
-  ASSIGNMENT: {
-    TITLE: 'Assignment',
-    SUBTITLE: 'Assign this role to groups and users.',
-    LABEL: 'Assigned To',
-    PLACEHOLDER: 'Select groups and users',
-    GROUPS_LABEL: 'Groups',
-    USERS_LABEL: 'Users',
-  },
   PROTECTION: {
     TITLE: 'Protection',
     SUBTITLE: 'Configure protection flags to prevent unauthorized changes.',

@@ -6,7 +6,7 @@ export const buildUpdatePayload = (
   currentProtection: Record<string, boolean>,
   changes: ChangeDetectionResult,
 ): Partial<RoleFormData> => {
-  // status and assignedTo are not editable in this panel, so they are never sent: resending
+  // status is not editable in this panel, so it is never sent: resending
   // the loaded copy would revert changes made elsewhere.
   const roleData: Partial<RoleFormData> = {};
 
@@ -17,7 +17,7 @@ export const buildUpdatePayload = (
     roleData.description = fullRoleData.description;
   }
   if (!currentProtection.lockCategory && changes.categoryHasChanged) {
-    roleData.categoryID = fullRoleData.categoryID;
+    roleData.categoryRef = fullRoleData.categoryRef;
   }
   if (fullRoleData.type !== undefined) {
     roleData.type = fullRoleData.type;
@@ -48,7 +48,7 @@ export const buildFieldsUpdatePayload = (
     fieldsData.description = fullRoleData.description;
   }
   if (changes.categoryHasChanged) {
-    fieldsData.categoryID = fullRoleData.categoryID;
+    fieldsData.categoryRef = fullRoleData.categoryRef;
   }
   if (fullRoleData.type !== undefined) {
     fieldsData.type = fullRoleData.type;

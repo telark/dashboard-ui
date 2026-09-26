@@ -16,8 +16,8 @@ interface PlanTaxonomyFieldsProps {
   editMode?: boolean;
 }
 
-const deriveApprovalMode = (environmentID?: string): PlanApprovalMode =>
-  environmentID === PLAN_APPROVAL.PRODUCTION_ENVIRONMENT_ID ? 'required' : 'automatic';
+const deriveApprovalMode = (environmentRef?: string): PlanApprovalMode =>
+  environmentRef === PLAN_APPROVAL.PRODUCTION_ENVIRONMENT_ID ? 'required' : 'automatic';
 
 const PlanTaxonomyFields: React.FC<PlanTaxonomyFieldsProps> = ({
   environmentOptions,
@@ -35,7 +35,7 @@ const PlanTaxonomyFields: React.FC<PlanTaxonomyFieldsProps> = ({
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 }}>
       <Form.Item
-        name="environmentID"
+        name="environmentRef"
         label={FORM.ENVIRONMENT_LABEL}
         style={{ marginBottom: 0 }}
         className={FORM_ITEM_CLASS}
@@ -48,7 +48,7 @@ const PlanTaxonomyFields: React.FC<PlanTaxonomyFieldsProps> = ({
         />
       </Form.Item>
       <Form.Item
-        name="tagIDs"
+        name="tagRefs"
         label={FORM.TAGS_LABEL}
         style={{ marginBottom: 0 }}
         className={FORM_ITEM_CLASS}

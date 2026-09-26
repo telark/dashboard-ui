@@ -144,7 +144,7 @@ const buildColumns = (
     column('PLAN', L.COLUMNS.PLAN, (r) => <PlanCell plan={ctx.planById.get(r.planId)} />),
     visible.has('ENVIRONMENT')
       ? column('ENVIRONMENT', L.COLUMNS.ENVIRONMENT, (r) =>
-          getCategoryName(ctx.planById.get(r.planId)?.environmentID ?? '', ctx.environments),
+          getCategoryName(ctx.planById.get(r.planId)?.environmentRef ?? '', ctx.environments),
         )
       : null,
     column('TRIGGER', L.COLUMNS.TRIGGER, (r) => (

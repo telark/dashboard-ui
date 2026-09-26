@@ -47,7 +47,7 @@ export const useViewRolePanelData = ({
   const details = useMemo(() => {
     if (!role) return [];
 
-    const categoryName = getCategoryName(role.categoryID, categories);
+    const categoryName = getCategoryName(role.categoryRef, categories);
     const tagStyle = {
       fontSize: 12 as const,
     };

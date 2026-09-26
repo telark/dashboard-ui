@@ -21,7 +21,7 @@ const MemberList: React.FC<MemberListProps> = ({
   loading,
   allUsers,
   blockedReason,
-  fieldName = 'assignedUsersIDs',
+  fieldName = 'userRefs',
 }) => {
   const form = Form.useFormInstance();
   const watchedSelectedUsers = Form.useWatch(fieldName, form);

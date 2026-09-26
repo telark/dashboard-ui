@@ -12,7 +12,7 @@ import { rejectionMessage } from '../../../../../../utils/helpers/format';
 import { fetchFreshUserIds } from '../../../utils';
 import { applySelectionChange } from '../../../../shared';
 
-type AssignmentField = 'assignedRolesIDs' | 'assignedGroupsIDs';
+type AssignmentField = 'roleRefs' | 'groupRefs';
 
 export interface UseAssignmentPanelBaseOptions {
   open: boolean;

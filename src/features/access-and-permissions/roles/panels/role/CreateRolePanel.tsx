@@ -36,7 +36,7 @@ const CreateRolePanel: React.FC<CreateRolePanelProps> = ({ open, onClose, form }
     return {
       name: '',
       description: '',
-      categoryID: defaultCategoryId,
+      categoryRef: defaultCategoryId,
       type: RC.VALUES.ROLE_TYPE_CUSTOM,
       status: RC.STATUS.ACTIVE,
       scopes,
@@ -49,7 +49,6 @@ const CreateRolePanel: React.FC<CreateRolePanelProps> = ({ open, onClose, form }
         lockCategory: false,
         softDelete: false,
       },
-      assignedTo: [],
     };
   }, [defaultCategoryId]);
 

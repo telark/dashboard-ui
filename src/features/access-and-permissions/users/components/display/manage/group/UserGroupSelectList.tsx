@@ -25,7 +25,7 @@ const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({
   blockedReason,
 }) => {
   const form = Form.useFormInstance();
-  const watchedSelectedGroups = Form.useWatch('assignedGroupsIDs', form);
+  const watchedSelectedGroups = Form.useWatch('groupRefs', form);
   const currentSelectedGroups = useMemo(
     () => (watchedSelectedGroups as string[]) || [],
     [watchedSelectedGroups],
@@ -43,7 +43,7 @@ const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({
   const handleChange = useCallback(
     (checkedValues: string[]) => {
       if (!allGroups) {
-        form.setFieldsValue({ assignedGroupsIDs: checkedValues });
+        form.setFieldsValue({ groupRefs: checkedValues });
         return;
       }
 
@@ -53,7 +53,7 @@ const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({
       );
 
       form.setFieldsValue({
-        assignedGroupsIDs: Array.from(new Set([...preservedSelections, ...checkedValues])),
+        groupRefs: Array.from(new Set([...preservedSelections, ...checkedValues])),
       });
     },
     [form, allGroups, groups, currentSelectedGroups],
@@ -72,7 +72,7 @@ const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({
   );
 
   return (
-    <Form.Item name="assignedGroupsIDs" style={{ margin: 0, width: '100%' }}>
+    <Form.Item name="groupRefs" style={{ margin: 0, width: '100%' }}>
       <Checkbox.Group
         value={visibleSelectedGroups}
         onChange={handleChange}

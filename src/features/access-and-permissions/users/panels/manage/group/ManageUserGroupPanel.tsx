@@ -35,18 +35,16 @@ const PANEL_WIDTH_EXPANDED = 900;
 
 const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClose, user }) => {
   const [form] = Form.useForm();
-  const currentSelectedGroups = (Form.useWatch('assignedGroupsIDs', form) as string[]) || [];
+  const currentSelectedGroups = (Form.useWatch('groupRefs', form) as string[]) || [];
   const [searchTerm, setSearchTerm] = useState('');
   const [showAssignedOnly, setShowAssignedOnly] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [localAssignedIds, setLocalAssignedIds] = useState<string[]>(
-    () => user?.assignedGroupsIDs ?? [],
-  );
+  const [localAssignedIds, setLocalAssignedIds] = useState<string[]>(() => user?.groupRefs ?? []);
 
   const [prevUser, setPrevUser] = useState(user);
   if (prevUser !== user) {
     setPrevUser(user);
-    setLocalAssignedIds(user?.assignedGroupsIDs ?? []);
+    setLocalAssignedIds(user?.groupRefs ?? []);
   }
 
   const { initialSelectedGroups, hasChanges, groups, groupsLoading, submitting, handleSubmit } =
@@ -178,7 +176,7 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
         loading={submitting}
         disabled={!hasChanges || showAssignedOnly}
         form={form}
-        initialValues={{ assignedGroupsIDs: initialSelectedGroups }}
+        initialValues={{ groupRefs: initialSelectedGroups }}
       />
       <ActionConfirmModal
         open={deassignModalOpen}

@@ -113,7 +113,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
       return plans.filter((plan) => {
         const scope =
           plan.scope.type === 'applications'
-            ? (plan.scope.applicationIds?.join(' ') ?? '')
+            ? (plan.scope.applicationRefs?.join(' ') ?? '')
             : (plan.scope.namespaces?.join(' ') ?? '');
         return (
           plan.name.toLowerCase().includes(lower) ||
@@ -171,7 +171,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
         (p.policies ?? []).map((policy) => policy.templateID),
       );
       const targetOptions = uniqueValues(plans, (p) =>
-        p.scope.type === 'namespaces' ? p.scope.namespaces : p.scope.applicationIds,
+        p.scope.type === 'namespaces' ? p.scope.namespaces : p.scope.applicationRefs,
       );
       return [
         {

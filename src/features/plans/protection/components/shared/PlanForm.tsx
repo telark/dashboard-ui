@@ -88,10 +88,10 @@ const PlanForm: React.FC<PlanFormProps> = ({
   const materialLocked = isEditMode && plan !== undefined && isMaterialEditLocked(plan);
   const scopeType = Form.useWatch('scopeType', form) ?? initialValues.scopeType;
   const timeMode = Form.useWatch('timeMode', form) ?? initialValues.timeMode;
-  const applicationIds = Form.useWatch('applicationIds', form) ?? [];
+  const applicationRefs = Form.useWatch('applicationRefs', form) ?? [];
   const { kindOptions, resourceOptions, resourcesLoading } = useScopeExclusionOptions({
     scopeType,
-    applicationIds,
+    applicationRefs,
   });
 
   const availableTemplates = useMemo(
@@ -100,7 +100,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
   );
 
   const handleScopeTypeChange = () => {
-    form.resetFields(['applicationIds', 'namespaces', 'excludedKinds', 'excludedResources']);
+    form.resetFields(['applicationRefs', 'namespaces', 'excludedKinds', 'excludedResources']);
     onPoliciesChange([]);
   };
 
@@ -157,7 +157,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
           resourceOptions={resourceOptions}
           resourcesLoading={resourcesLoading}
           exclusionsHint={
-            applicationIds.length === 0
+            applicationRefs.length === 0
               ? PPC.CREATE_PAGE.FORM.EXCLUSIONS_SELECT_APPS_HINT
               : undefined
           }

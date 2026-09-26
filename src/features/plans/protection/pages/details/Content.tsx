@@ -136,12 +136,12 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     const users = useSelector((s: RootState) => s.users.users);
     const taxonomies = usePlanTaxonomies();
     const participants = useMemo(() => {
-      const ids = plan.participantsIDs ?? [];
+      const ids = plan.participantRefs ?? [];
       return ids.map((id) => {
         const user = users.find((u) => u.id === id);
         return { id, user };
       });
-    }, [plan.participantsIDs, users]);
+    }, [plan.participantRefs, users]);
 
     const renderUserAndTime = useCallback(
       (userId: string | undefined, when: string | undefined): React.ReactNode => {
@@ -168,7 +168,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     );
 
     const overviewRows = useMemo(() => {
-      const tags = (plan.tagIDs ?? [])
+      const tags = (plan.tagRefs ?? [])
         .map((id) => ({ id, name: taxonomies.tags.find((c) => c.id === id)?.name }))
         .filter((t): t is { id: string; name: string } => Boolean(t.name));
       const approval = plan.approval;
@@ -192,7 +192,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
         {
           k: 'environment',
           label: FORM.ENVIRONMENT_LABEL,
-          value: getCategoryName(plan.environmentID ?? '', taxonomies.environments),
+          value: getCategoryName(plan.environmentRef ?? '', taxonomies.environments),
         },
         {
           k: 'tags',
@@ -303,7 +303,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     }, [plan, renderUserAndTime, taxonomies.environments, taxonomies.tags]);
 
     const scopeItems =
-      (plan.scope.type === 'applications' ? plan.scope.applicationIds : plan.scope.namespaces) ??
+      (plan.scope.type === 'applications' ? plan.scope.applicationRefs : plan.scope.namespaces) ??
       [];
     const policies = plan.policies ?? [];
     const excludedKinds = plan.scope.exclusions?.kinds ?? [];

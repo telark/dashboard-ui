@@ -45,21 +45,19 @@ const FILTER_PANEL_WIDTH = 480;
 
 const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose, user }) => {
   const [form] = Form.useForm();
-  const currentSelectedRoles = (Form.useWatch('assignedRolesIDs', form) as string[]) || [];
+  const currentSelectedRoles = (Form.useWatch('roleRefs', form) as string[]) || [];
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
   const [searchTerm, setSearchTerm] = useState('');
   const [activeView, setActiveView] = useState<ActiveView>('select');
   const [expanded, setExpanded] = useState(false);
   // Local source of truth for assigned IDs — no timing dependency on roles loading
-  const [localAssignedIds, setLocalAssignedIds] = useState<string[]>(
-    () => user?.assignedRolesIDs ?? [],
-  );
+  const [localAssignedIds, setLocalAssignedIds] = useState<string[]>(() => user?.roleRefs ?? []);
 
   const [prevUser, setPrevUser] = useState(user);
   if (prevUser !== user) {
     setPrevUser(user);
-    setLocalAssignedIds(user?.assignedRolesIDs ?? []);
+    setLocalAssignedIds(user?.roleRefs ?? []);
   }
 
   const { categoryOptions } = useRoleCategoryOptions();
@@ -282,7 +280,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
         loading={submitting}
         disabled={!hasChanges || isReadOnlyView}
         form={form}
-        initialValues={{ assignedRolesIDs: initialSelectedRoles }}
+        initialValues={{ roleRefs: initialSelectedRoles }}
       />
       <FilterPanel
         open={filterPanelOpen}

@@ -35,18 +35,16 @@ interface AttachMemberPanelProps {
 
 const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, group }) => {
   const [form] = Form.useForm();
-  const currentSelectedUsers = (Form.useWatch('assignedUsersIDs', form) as string[]) || [];
+  const currentSelectedUsers = (Form.useWatch('userRefs', form) as string[]) || [];
   const [searchTerm, setSearchTerm] = useState('');
   const [showAssignedOnly, setShowAssignedOnly] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [localAssignedIds, setLocalAssignedIds] = useState<string[]>(
-    () => group?.assignedUsersIDs ?? [],
-  );
+  const [localAssignedIds, setLocalAssignedIds] = useState<string[]>(() => group?.userRefs ?? []);
 
   const [prevGroup, setPrevGroup] = useState(group);
   if (prevGroup !== group) {
     setPrevGroup(group);
-    setLocalAssignedIds(group?.assignedUsersIDs ?? []);
+    setLocalAssignedIds(group?.userRefs ?? []);
   }
 
   const {
@@ -203,7 +201,7 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
         loading={submitting}
         disabled={!hasChanges || showAssignedOnly}
         form={form}
-        initialValues={{ assignedUsersIDs: initialSelectedUsers }}
+        initialValues={{ userRefs: initialSelectedUsers }}
       />
       <ActionConfirmModal
         open={deassignModalOpen}

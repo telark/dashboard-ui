@@ -5,7 +5,7 @@
 // Why: only flow exercising cursor pagination in the UI
 
 import { path, cfg, requireToken, requireUserId } from '../lib/config.js';
-import { get, post, patch, del, parseJson, resetStepCounter } from '../lib/http.js';
+import { get, post, del, parseJson, resetStepCounter } from '../lib/http.js';
 import { METRICS, pickThresholds } from '../lib/metrics.js';
 import { buildSummary } from '../lib/report.js';
 
@@ -24,7 +24,7 @@ export default function () {
   resetStepCounter();
   const userQ = `userId=${encodeURIComponent(cfg.userId)}`;
 
-  const firstRes = get(`${path.exporter('notifications/get')}?${userQ}&limit=50`, {
+  const firstRes = get(`${path.exporter('notifications')}?${userQ}&limit=50`, {
     name: 'notifications.list.page1',
     metric: METRICS.NOTIF_LIST,
   });
@@ -34,7 +34,7 @@ export default function () {
 
   if (cursor) {
     get(
-      `${path.exporter('notifications/get')}?${userQ}&limit=50&cursor=${encodeURIComponent(cursor)}`,
+      `${path.exporter('notifications')}?${userQ}&limit=50&cursor=${encodeURIComponent(cursor)}`,
       {
         name: 'notifications.list.page2',
         metric: METRICS.NOTIF_LIST,
@@ -45,8 +45,8 @@ export default function () {
   if (items.length > 0) {
     const id = items[0]?.id;
     if (id) {
-      patch(
-        `${path.exporter(`notifications/${encodeURIComponent(id)}/markasread`)}?${userQ}`,
+      post(
+        `${path.exporter(`notifications/${encodeURIComponent(id)}/read`)}?${userQ}`,
         {},
         {
           name: 'notifications.markread',
@@ -57,15 +57,15 @@ export default function () {
   }
 
   post(
-    `${path.exporter('notifications/markallread')}?${userQ}`,
+    `${path.exporter('notifications/read')}?${userQ}`,
     {},
     {
-      name: 'notifications.markallread',
+      name: 'notifications.readall',
       metric: METRICS.NOTIF_MUTATE,
     },
   );
 
-  del(`${path.exporter('notifications/clear')}?${userQ}`, {
+  del(`${path.exporter('notifications')}?${userQ}`, {
     name: 'notifications.clear',
     metric: METRICS.NOTIF_MUTATE,
   });

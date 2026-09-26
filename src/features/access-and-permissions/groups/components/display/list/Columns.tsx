@@ -90,7 +90,7 @@ const Columns = (ctx: ColumnsContext): TableColumnType<Group>[] => {
         icon: <AiOutlineTeam />,
         width: GC.SIZES.COLUMNS.MEMBERS,
         render: (_: unknown, record: Group) => {
-          const memberCount = record.assignedUsersIDs?.length || 0;
+          const memberCount = record.userRefs?.length || 0;
           const memberText = memberCount === 1 ? '1 member' : `${memberCount} members`;
           return <RowTag text={memberText} fontSize={RPC.SIZES.CHIP_FONT} />;
         },

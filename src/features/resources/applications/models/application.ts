@@ -233,6 +233,14 @@ export interface ApplicationLastForceSync {
   error?: string;
 }
 
+export interface ApplicationCondition {
+  type: string;
+  status: 'True' | 'False' | 'Unknown';
+  reason?: string;
+  message?: string;
+  lastTransitionTime?: string;
+}
+
 export interface Application {
   name: string;
   displayName: string;
@@ -251,7 +259,7 @@ export interface Application {
   snapshots: ApplicationSnapshot[];
   rollbacks?: ApplicationRollbackEntry[];
   metrics: ApplicationMetrics;
-  crStatus?: string | null;
+  conditions?: ApplicationCondition[];
   history: ApplicationHistory;
   lastForceSync?: ApplicationLastForceSync;
 }

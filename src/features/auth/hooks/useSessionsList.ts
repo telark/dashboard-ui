@@ -1,5 +1,10 @@
 import { useState, useCallback, useEffect } from 'react';
-import { getSessionsList, getCurrentSession, deleteSession } from '../clients/session';
+import {
+  getSessionsList,
+  getCurrentSession,
+  deleteCurrentSession,
+  deleteSessionByName,
+} from '../clients/session';
 import { getSessionToken, getCurrentSessionName } from '../utils/session/token';
 import { getCurrentUser } from '../utils/session/user';
 import type { SessionDetails } from '../models/session';
@@ -101,9 +106,14 @@ export const useSessionsList = (): UseSessionsListResult => {
       { onRevokedCurrentSession }: { onRevokedCurrentSession?: () => void },
     ) => {
       try {
-        await deleteSession(sessionName);
         const currentSessionName = await getCurrentSessionName();
-        if (currentSessionName === sessionName && onRevokedCurrentSession) {
+        const isCurrent = currentSessionName === sessionName;
+        if (isCurrent) {
+          await deleteCurrentSession();
+        } else {
+          await deleteSessionByName(sessionName);
+        }
+        if (isCurrent && onRevokedCurrentSession) {
           onRevokedCurrentSession();
         } else {
           await fetchSessions();

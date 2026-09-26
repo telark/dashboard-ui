@@ -52,13 +52,13 @@ export const useAttachMemberPanel = ({
   }, [group, groups]);
 
   const initialSelectedUsers = useMemo(() => {
-    return currentGroup?.assignedUsersIDs || [];
+    return currentGroup?.userRefs || [];
   }, [currentGroup]);
 
   useEffect(() => {
     if (open && currentGroup && !usersLoading && users) {
-      const assignedUsers = currentGroup.assignedUsersIDs || [];
-      form.setFieldsValue({ assignedUsersIDs: assignedUsers });
+      const assignedUsers = currentGroup.userRefs || [];
+      form.setFieldsValue({ userRefs: assignedUsers });
     }
   }, [open, currentGroup, usersLoading, users, form]);
 
@@ -71,10 +71,10 @@ export const useAttachMemberPanel = ({
   const handleSubmit = useCallback(
     async (values: Record<string, unknown>) => {
       if (!currentGroup) return;
-      const selected = (values.assignedUsersIDs as string[]) || [];
+      const selected = (values.userRefs as string[]) || [];
       await handleUpdate(currentGroup.id, async () => ({
-        assignedUsersIDs: applySelectionChange(
-          await fetchFreshGroupIds(currentGroup.id, 'assignedUsersIDs'),
+        userRefs: applySelectionChange(
+          await fetchFreshGroupIds(currentGroup.id, 'userRefs'),
           initialSelectedUsers,
           selected,
         ),

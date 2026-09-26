@@ -41,11 +41,13 @@ export function applyPlanFilters(
     }
     if (has(targets)) {
       const planTargets =
-        p.scope.type === 'namespaces' ? (p.scope.namespaces ?? []) : (p.scope.applicationIds ?? []);
+        p.scope.type === 'namespaces'
+          ? (p.scope.namespaces ?? [])
+          : (p.scope.applicationRefs ?? []);
       if (!planTargets.some((t) => targets.includes(t))) return false;
     }
-    if (has(environment) && !environment.includes(p.environmentID ?? '')) return false;
-    if (has(tags) && !(p.tagIDs ?? []).some((t) => tags.includes(t))) return false;
+    if (has(environment) && !environment.includes(p.environmentRef ?? '')) return false;
+    if (has(tags) && !(p.tagRefs ?? []).some((t) => tags.includes(t))) return false;
     return true;
   });
 }

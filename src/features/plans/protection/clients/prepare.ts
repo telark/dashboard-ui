@@ -10,7 +10,7 @@ export interface PreparePlanPayload {
   priority?: number;
   scope: {
     type: string;
-    applicationIds: string[];
+    applicationRefs: string[];
     namespaces: string[];
     exclusions: PlanScopeExclusions;
   };
@@ -18,9 +18,9 @@ export interface PreparePlanPayload {
   mode: string;
   timeMode: string;
   timeRange?: { startAt: string; endAt: string };
-  participantsIDs?: string[];
-  environmentID?: string;
-  tagIDs?: string[];
+  participantRefs?: string[];
+  environmentRef?: string;
+  tagRefs?: string[];
   approvalMode?: PlanApprovalMode;
 }
 

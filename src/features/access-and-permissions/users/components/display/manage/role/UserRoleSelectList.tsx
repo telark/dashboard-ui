@@ -32,7 +32,7 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
 }) => {
   const form = Form.useFormInstance();
   const canGrant = useCanGrantScopes();
-  const watchedSelectedRoles = Form.useWatch('assignedRolesIDs', form);
+  const watchedSelectedRoles = Form.useWatch('roleRefs', form);
   const currentSelectedRoles = useMemo(
     () => (watchedSelectedRoles as string[]) || [],
     [watchedSelectedRoles],
@@ -50,7 +50,7 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
   const handleChange = useCallback(
     (checkedValues: string[]) => {
       if (!allRoles || !roles) {
-        form.setFieldsValue({ assignedRolesIDs: checkedValues });
+        form.setFieldsValue({ roleRefs: checkedValues });
         return;
       }
 
@@ -60,7 +60,7 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
       );
 
       form.setFieldsValue({
-        assignedRolesIDs: Array.from(new Set([...preservedSelections, ...checkedValues])),
+        roleRefs: Array.from(new Set([...preservedSelections, ...checkedValues])),
       });
     },
     [form, allRoles, roles, currentSelectedRoles],
@@ -75,7 +75,7 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
   }
 
   return (
-    <Form.Item name="assignedRolesIDs" style={{ margin: 0, width: '100%' }}>
+    <Form.Item name="roleRefs" style={{ margin: 0, width: '100%' }}>
       <Checkbox.Group
         value={currentSelectedRoles}
         onChange={handleChange}

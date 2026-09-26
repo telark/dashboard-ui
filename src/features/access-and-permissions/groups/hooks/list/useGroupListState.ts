@@ -7,11 +7,11 @@ import type { Group } from '../../models';
 const GROUP_SORT_FIELDS: SortFieldConfig<Group>[] = [
   { key: 'name', type: 'string' },
   { key: 'description', type: 'string' },
-  { key: 'categoryID', type: 'string' },
+  { key: 'categoryRef', type: 'string' },
   {
-    key: 'assignedUsersIDs',
+    key: 'userRefs',
     type: 'number',
-    getValue: (item) => item.assignedUsersIDs?.length || 0,
+    getValue: (item) => item.userRefs?.length || 0,
   },
   { key: 'creationDate', type: 'date' },
   { key: 'lastUpdateDate', type: 'date' },
@@ -55,7 +55,7 @@ export const useGroupListState = (groups: Group[] | undefined): UseGroupListStat
   const filteredGroups = useMemo(() => {
     if (!groups) return [];
     if (selectedCategory === 'all') return groups;
-    return groups.filter((group) => group.categoryID === selectedCategory);
+    return groups.filter((group) => group.categoryRef === selectedCategory);
   }, [groups, selectedCategory]);
 
   const sortedGroups = useMemo(() => {

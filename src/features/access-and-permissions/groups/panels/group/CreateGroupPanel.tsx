@@ -46,7 +46,7 @@ const CreateGroupPanel: React.FC<GroupPanelProps> = ({ open, onClose, form }) =>
       initialValues={{
         name: '',
         description: '',
-        categoryID: defaultCategoryId,
+        categoryRef: defaultCategoryId,
       }}
       onValuesChange={handleValuesChange}
       onFieldsChange={handleFieldsChange}

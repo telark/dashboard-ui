@@ -47,25 +47,23 @@ export const useRoleFormState = ({
     const normalizedCurrent = {
       name: currentValues.name || '',
       description: currentValues.description || '',
-      categoryID: currentValues.categoryID || '',
+      categoryRef: currentValues.categoryRef || '',
       type: currentValues.type || 'custom',
       status: currentValues.status || 'Active',
       scopes: normalizeValue(currentValues.scopes) || {},
       validity: normalizeValue(currentValues.validity),
       protection: normalizeValue(currentValues.protection),
-      assignedTo: normalizeValue(currentValues.assignedTo) || [],
     };
 
     const normalizedInitial = {
       name: initialValuesRef.current.name || '',
       description: initialValuesRef.current.description || '',
-      categoryID: initialValuesRef.current.categoryID || '',
+      categoryRef: initialValuesRef.current.categoryRef || '',
       type: initialValuesRef.current.type || 'custom',
       status: initialValuesRef.current.status || 'Active',
       scopes: normalizeValue(initialValuesRef.current.scopes) || {},
       validity: normalizeValue(initialValuesRef.current.validity),
       protection: normalizeValue(initialValuesRef.current.protection),
-      assignedTo: normalizeValue(initialValuesRef.current.assignedTo) || [],
     };
 
     const changed = !deepEqual(normalizedCurrent, normalizedInitial);

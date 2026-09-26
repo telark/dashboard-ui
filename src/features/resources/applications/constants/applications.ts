@@ -23,6 +23,10 @@ export const APPLICATION_TRACKING_ANNOTATION_PREFIX =
 // evicts the least-recently-opened entry once it's full.
 export const SNAPSHOT_MANIFEST_CACHE_LIMIT = 20;
 
+export const APPLICATION_CONDITION_TYPES = {
+  PUBLISHED: 'Published',
+} as const;
+
 export const FORCE_SYNC_PHASE = {
   QUEUED: 'queued',
   RUNNING: 'running',
