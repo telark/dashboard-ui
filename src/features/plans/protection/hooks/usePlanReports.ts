@@ -19,7 +19,7 @@ export interface UsePlanReportsResult {
   error: string | null;
   generating: boolean;
   downloading: string | null;
-  generate: (userId: string) => Promise<void>;
+  generate: () => Promise<void>;
   download: (report: PlanReportMeta, format: PlanReportFormat, filename: string) => Promise<void>;
   refresh: () => void;
 }
@@ -60,27 +60,24 @@ export function useGeneratePlanReport(
   const { message } = AntdApp.useApp();
   const [generating, setGenerating] = useState(false);
 
-  const generate = useCallback(
-    async (userId: string): Promise<void> => {
-      if (generating) return;
-      setGenerating(true);
-      try {
-        const meta = await generatePlanReport(planId, userId);
-        onGenerated?.(meta);
-        message.success(PPC.LABELS.REPORTS.GENERATE_SUCCESS);
-      } catch (err) {
-        if (isReportBusy(err)) {
-          message.warning(PPC.LABELS.REPORTS.GENERATE_BUSY);
-        } else {
-          const serverMessage = (err as ExtendedAxiosError)?.normalized?.message;
-          message.error(serverMessage ?? PPC.LABELS.REPORTS.GENERATE_ERROR);
-        }
-      } finally {
-        setGenerating(false);
+  const generate = useCallback(async (): Promise<void> => {
+    if (generating) return;
+    setGenerating(true);
+    try {
+      const meta = await generatePlanReport(planId);
+      onGenerated?.(meta);
+      message.success(PPC.LABELS.REPORTS.GENERATE_SUCCESS);
+    } catch (err) {
+      if (isReportBusy(err)) {
+        message.warning(PPC.LABELS.REPORTS.GENERATE_BUSY);
+      } else {
+        const serverMessage = (err as ExtendedAxiosError)?.normalized?.message;
+        message.error(serverMessage ?? PPC.LABELS.REPORTS.GENERATE_ERROR);
       }
-    },
-    [generating, planId, message, onGenerated],
-  );
+    } finally {
+      setGenerating(false);
+    }
+  }, [generating, planId, message, onGenerated]);
 
   return { generating, generate };
 }

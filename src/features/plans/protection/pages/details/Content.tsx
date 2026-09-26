@@ -23,7 +23,6 @@ import { usePlanViolations } from '../../hooks/usePlanViolations';
 import { usePlanReports } from '../../hooks/usePlanReports';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import { NoPermissionCard } from '../../../../../components/shared';
-import { getCurrentUser } from '../../../../auth/utils';
 import type { ViolationsResultFilter } from '../../hooks/usePlanViolations';
 import { Select } from 'antd';
 import type { RootState } from '../../../../../store';
@@ -124,8 +123,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     const reports = usePlanReports(plan.id, revision, canViewReports);
     const { generate: generateReport } = reports;
     const handleGenerateReport = useCallback(() => {
-      const userId = getCurrentUser()?.id;
-      if (userId) void generateReport(userId);
+      void generateReport();
     }, [generateReport]);
     const violationsFilterOptions: Array<{ value: ViolationsResultFilter; label: string }> = [
       { value: 'all', label: PPC.LABELS.VIOLATIONS.FILTER_ALL },

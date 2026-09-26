@@ -19,7 +19,7 @@ import {
 } from './constants';
 import AppRoutes from './routes/AppRoutes';
 import { hasSessionToken, useSessionExpirationCheck } from './features/auth/utils';
-import { useInitializePermissions } from './features/auth/hooks';
+import { useCrossTabLogout, useInitializePermissions } from './features/auth/hooks';
 import { selectPermissionsState } from './features/auth/store/selectors/permissionsSelectors';
 import { AUTH_PERMISSIONS_LABELS, PERMISSION_GATE_BYPASS_PATHS } from './features/auth/constants';
 import { ensureGlobalConfigThunk } from './features/globalconfig/store';
@@ -50,6 +50,7 @@ const AppContent: React.FC = () => {
   });
 
   useInitializePermissions(isAuthenticated);
+  useCrossTabLogout();
 
   // GlobalConfig is a guarded resource: fetching it before a session exists only
   // earns a 401 on the login page.

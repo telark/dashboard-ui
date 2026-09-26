@@ -18,7 +18,6 @@ export const createRole = async (role: RoleFormData) => {
       protection: role.protection,
       status: role.status,
       validity: role.validity,
-      assignedTo: role.assignedTo,
     };
 
     if (currentUser?.id) {

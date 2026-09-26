@@ -246,11 +246,9 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const menuButtonStyle = getCardMenuButtonStyle(menuOpen);
 
   const handleCancel = useCallback(async () => {
-    const userId = getCurrentUser()?.id;
-    if (!userId) return;
     setCancelling(true);
     try {
-      await dispatch(cancelPlanThunk({ userId, planId: plan.id })).unwrap();
+      await dispatch(cancelPlanThunk({ planId: plan.id })).unwrap();
       message.success(PPC.LABELS.ACTIONS.CANCEL_SUCCESS(plan.name));
       setCancelModalOpen(false);
     } catch (err: unknown) {
@@ -261,11 +259,9 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   }, [dispatch, message, plan.id, plan.name]);
 
   const handleReactivate = useCallback(async () => {
-    const userId = getCurrentUser()?.id;
-    if (!userId) return;
     setReactivating(true);
     try {
-      await dispatch(reactivatePlanThunk({ userId, planId: plan.id })).unwrap();
+      await dispatch(reactivatePlanThunk({ planId: plan.id })).unwrap();
       message.success(PPC.LABELS.ACTIONS.REACTIVATE_SUCCESS(plan.name));
       setReactivateModalOpen(false);
     } catch (err: unknown) {
@@ -284,14 +280,11 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const handleDecide = useCallback(
     async (comment: string) => {
       if (!decisionModal) return;
-      const userId = getCurrentUser()?.id;
-      if (!userId) return;
       const approved = decisionModal === 'approved';
       setDeciding(true);
       try {
         await dispatch(
           decidePlanThunk({
-            userId,
             planId: plan.id,
             decision: decisionModal,
             comment: comment || undefined,
@@ -317,11 +310,9 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   );
 
   const handleDelete = useCallback(async () => {
-    const userId = getCurrentUser()?.id;
-    if (!userId) return;
     setDeleting(true);
     try {
-      await dispatch(deletePlanThunk({ userId, planId: plan.id })).unwrap();
+      await dispatch(deletePlanThunk({ planId: plan.id })).unwrap();
       message.success(PPC.LABELS.ACTIONS.DELETE_SUCCESS(plan.name));
       setDeleteModalOpen(false);
     } catch (err: unknown) {
@@ -391,8 +382,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
       key: 'generateReport',
       label: PPC.LABELS.REPORTS.GENERATE,
       icon: <FileTextOutlined />,
-      disabled:
-        !canGenerateReport || generatingReport || isReportNotStarted(plan) || !getCurrentUser()?.id,
+      disabled: !canGenerateReport || generatingReport || isReportNotStarted(plan),
       title: getGenerateReportTooltip(plan, canGenerateReport),
     },
     ...(canReactivate
@@ -533,10 +523,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
                   if (key === 'reactivate') setReactivateModalOpen(true);
                   if (key === 'approve') openDecision('approved');
                   if (key === 'reject') openDecision('rejected');
-                  if (key === 'generateReport') {
-                    const userId = getCurrentUser()?.id;
-                    if (userId) void generateReport(userId);
-                  }
+                  if (key === 'generateReport') void generateReport();
                 },
               }}
             >

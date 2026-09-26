@@ -95,6 +95,7 @@ export const AUTH_CONSTANTS = {
   LOGOUT: {
     LOGS: {
       SERVER_ERROR: 'Server logout returned error; local session cleared regardless',
+      PURGE_ERROR: 'Failed to purge locally persisted data on logout',
     },
     URL_TAG: 'auth/logout',
   },

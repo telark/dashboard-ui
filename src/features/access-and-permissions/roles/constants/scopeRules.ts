@@ -46,10 +46,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
   {
     scope: 'groups',
     rules: {
-      ReadOnly: [
-        { key: 'viewgroupscategories', label: 'View Categories' },
-        { key: 'viewgroupattachedroles', label: 'View Attached Roles' },
-      ],
+      ReadOnly: [{ key: 'viewgroupscategories', label: 'View Categories' }],
       Contributor: [
         { key: 'creategroup', label: 'Create Group' },
         { key: 'editgroup', label: 'Edit Group' },
@@ -70,7 +67,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
   {
     scope: 'users',
     rules: {
-      ReadOnly: [{ key: 'viewuserattachedroles', label: 'View Attached Roles' }],
+      ReadOnly: [],
       Contributor: [{ key: 'createuser', label: 'Create User' }],
       Owner: [
         { key: 'deleteuser', label: 'Delete User' },

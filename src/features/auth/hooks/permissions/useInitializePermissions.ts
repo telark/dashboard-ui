@@ -5,6 +5,7 @@ import { fetchMyPermissionsThunk } from '../../store/thunks/fetchThunks';
 import { selectPermissionsState } from '../../store/selectors/permissionsSelectors';
 import { clearPermissions } from '../../store/slices/permissionsSlice';
 import { getCurrentUser } from '../../utils/session/user';
+import { purgeLocalUserData } from '../../utils/session/cleanup';
 import logger from '../../../../logging';
 
 const PERMISSIONS_POLL_INTERVAL_MS = 60_000;
@@ -18,12 +19,14 @@ export const stopPermissionsPolling = (): void => {
   }
 };
 
-// Runs between rehydration and the first render, so a copy left by another user
-// (a session that ended without logout) is never shown.
-export const dropForeignPermissions = (): void => {
+// Runs between rehydration and the first render, so data left by another user
+// (a session that ended without logout) is never shown: purge it, then reload clean.
+export const dropForeignPermissions = async (): Promise<void> => {
   const { userID } = store.getState().permissions;
   if (userID !== null && userID !== getCurrentUser()?.id) {
     store.dispatch(clearPermissions());
+    await purgeLocalUserData();
+    window.location.reload();
   }
 };
 

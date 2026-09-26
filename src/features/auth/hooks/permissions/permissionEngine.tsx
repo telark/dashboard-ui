@@ -101,12 +101,6 @@ export const ACTION_PERMISSIONS = {
       level: 'Owner' as PermissionLevel,
       deny: 'groups.removeuserfromgroup.deny',
     },
-    // todo: wire viewAttachedRoles to component when supported
-    viewAttachedRoles: {
-      scope: 'users' as const,
-      level: 'ReadOnly' as PermissionLevel,
-      deny: 'users.viewuserattachedroles.deny',
-    },
   },
   groups: {
     view: { scope: 'groups' as const, level: 'ReadOnly' as PermissionLevel },
@@ -164,12 +158,6 @@ export const ACTION_PERMISSIONS = {
       scope: 'groups' as const,
       level: 'Owner' as PermissionLevel,
       deny: 'groups.removeuserfromgroup.deny',
-    },
-    // todo: wire viewAttachedRoles to component when supported
-    viewAttachedRoles: {
-      scope: 'groups' as const,
-      level: 'ReadOnly' as PermissionLevel,
-      deny: 'groups.viewgroupattachedroles.deny',
     },
   },
   roles: {

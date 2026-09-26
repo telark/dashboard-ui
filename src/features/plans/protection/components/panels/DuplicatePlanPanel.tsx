@@ -11,7 +11,6 @@ import { zonedNow } from '../../../../../utils/layout';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import { duplicatePlanThunk } from '../../store';
 import { usePlanNameCheck } from '../../hooks/usePlanNameCheck';
-import { getCurrentUser } from '../../../../auth/utils';
 import type { AppDispatch } from '../../../../../store';
 import type { PlanApprovalMode, ProtectionPlan } from '../../models';
 import { mapCategoriesToOptions } from '../../../../access-and-permissions/categories/utils/helpers';
@@ -84,8 +83,6 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     if (!plan) return;
-    const userId = getCurrentUser()?.id;
-    if (!userId) return;
 
     const v = values as DuplicateFormShape;
     setSubmitting(true);
@@ -116,7 +113,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
         };
       }
       const created = await dispatch(
-        duplicatePlanThunk({ userId, planId: plan.id, overrides: payload }),
+        duplicatePlanThunk({ planId: plan.id, overrides: payload }),
       ).unwrap();
       message.success(PPC.LABELS.ACTIONS.DUPLICATE_SUCCESS);
       handleClose();

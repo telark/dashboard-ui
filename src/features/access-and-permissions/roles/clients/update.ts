@@ -19,7 +19,6 @@ export const updateRole = async (roleId: string, role: Partial<RoleFormData>) =>
     if (role.protection !== undefined) roleData.protection = role.protection;
     if (role.validity !== undefined) roleData.validity = role.validity;
     if (role.status !== undefined) roleData.status = role.status;
-    if (role.assignedTo !== undefined) roleData.assignedTo = role.assignedTo;
 
     if (currentUser?.id) {
       roleData.lastUpdatedBy = currentUser.id;

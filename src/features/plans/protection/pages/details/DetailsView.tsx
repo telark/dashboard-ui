@@ -18,7 +18,6 @@ import {
   reactivatePlanThunk,
 } from '../../store';
 import { fetchPlanStatus } from '../../clients';
-import { getCurrentUser } from '../../../../auth/utils';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import type { AppDispatch } from '../../../../../store';
 import type { PlanApprovalDecision } from '../../models';
@@ -77,11 +76,9 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
 
   const handleConfirmCancel = useCallback(async () => {
     if (!details) return;
-    const userId = getCurrentUser()?.id;
-    if (!userId) return;
     setCancelling(true);
     try {
-      await dispatch(cancelPlanThunk({ userId, planId: details.id })).unwrap();
+      await dispatch(cancelPlanThunk({ planId: details.id })).unwrap();
       message.success(PPC.LABELS.ACTIONS.CANCEL_SUCCESS(details.name));
       setCancelModalOpen(false);
     } catch (err: unknown) {
@@ -93,11 +90,9 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
 
   const handleConfirmDelete = useCallback(async () => {
     if (!details) return;
-    const userId = getCurrentUser()?.id;
-    if (!userId) return;
     setDeleting(true);
     try {
-      await dispatch(deletePlanThunk({ userId, planId: details.id })).unwrap();
+      await dispatch(deletePlanThunk({ planId: details.id })).unwrap();
       message.success(PPC.LABELS.ACTIONS.DELETE_SUCCESS(details.name));
       setDeleteModalOpen(false);
       navigate(APP_ROUTES.PROTECTION_PLANS);
@@ -110,11 +105,9 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
 
   const handleConfirmReactivate = useCallback(async () => {
     if (!details) return;
-    const userId = getCurrentUser()?.id;
-    if (!userId) return;
     setReactivating(true);
     try {
-      const updated = await dispatch(reactivatePlanThunk({ userId, planId: details.id })).unwrap();
+      const updated = await dispatch(reactivatePlanThunk({ planId: details.id })).unwrap();
       message.success(PPC.LABELS.ACTIONS.REACTIVATE_SUCCESS(updated.name));
       setReactivateModalOpen(false);
     } catch (err: unknown) {
@@ -132,14 +125,11 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
   const handleDecide = useCallback(
     async (comment: string) => {
       if (!details || !decisionModal) return;
-      const userId = getCurrentUser()?.id;
-      if (!userId) return;
       const approved = decisionModal === 'approved';
       setDeciding(decisionModal);
       try {
         const updated = await dispatch(
           decidePlanThunk({
-            userId,
             planId: details.id,
             decision: decisionModal,
             comment: comment || undefined,

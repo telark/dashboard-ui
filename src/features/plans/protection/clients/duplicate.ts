@@ -1,5 +1,5 @@
 import { Client, discoveryApiClient } from '../../../../api/index';
-import { Endpoints, HTTP_HEADERS } from '../../../../constants';
+import { Endpoints } from '../../../../constants';
 import type { PlanApprovalMode, ProtectionPlan } from '../models';
 import type { ApiResponse } from './shared';
 
@@ -13,7 +13,6 @@ export interface DuplicatePlanPayload {
 }
 
 export const duplicatePlan = async (
-  userId: string,
   planId: string,
   payload?: DuplicatePlanPayload,
 ): Promise<ProtectionPlan> => {
@@ -23,7 +22,6 @@ export const duplicatePlan = async (
     {
       method: 'POST',
       data: payload ?? {},
-      headers: { [HTTP_HEADERS.CUSTOM.USER_ID]: userId },
     },
   );
   return res.data;

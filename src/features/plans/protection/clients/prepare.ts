@@ -1,5 +1,5 @@
 import { Client, discoveryApiClient } from '../../../../api/index';
-import { Endpoints, HTTP_HEADERS } from '../../../../constants';
+import { Endpoints } from '../../../../constants';
 import type { PlanApprovalMode, PlanScopeExclusions, ProtectionPlan } from '../models';
 import type { ApiResponse } from './shared';
 
@@ -24,17 +24,13 @@ export interface PreparePlanPayload {
   approvalMode?: PlanApprovalMode;
 }
 
-export const preparePlan = async (
-  userId: string,
-  payload: PreparePlanPayload,
-): Promise<ProtectionPlan> => {
+export const preparePlan = async (payload: PreparePlanPayload): Promise<ProtectionPlan> => {
   const res = await Client<ApiResponse<ProtectionPlan>>(
     discoveryApiClient,
     Endpoints.PROTECTION_PLANS.PREPARE.path,
     {
       method: 'POST',
       data: payload,
-      headers: { [HTTP_HEADERS.CUSTOM.USER_ID]: userId },
     },
   );
   return res.data;

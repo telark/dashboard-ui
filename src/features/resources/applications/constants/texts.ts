@@ -215,8 +215,6 @@ export const APPLICATIONS_UI = {
       ABORT_CONFIRM_OK: 'Abort rollback',
       ABORT_SUCCESS: 'Rollback aborted.',
       ABORT_FAILED: 'Could not abort rollback. Please try again.',
-      ABORT_USER_REQUIRED:
-        'Sign in with a user account to abort a rollback (username is required for the request).',
     },
     METRICS: {
       TITLE: 'Metrics',

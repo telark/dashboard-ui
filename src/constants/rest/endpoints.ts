@@ -210,7 +210,7 @@ export const Endpoints = {
       method: 'GET',
     }),
     GET_BY_EMAIL: (email: string) => ({
-      path: `${API_PATHS.RESOURCES.USERS}/${USER_PATHS.GET_BY_EMAIL(encodeURIComponent(email))}`,
+      path: `${API_PATHS.RESOURCES.USERS}/${USER_PATHS.GET_BY_EMAIL(email)}`,
       method: 'GET',
     }),
     PATCH_BY_ID: (userId: string) => ({

@@ -104,6 +104,8 @@ Verify your setup with `npm run check-all` — not `npm run build`, which only p
 
 This repo's own `Dockerfile` only defines how the image is built; it is invoked by the telark workflow above, not by anything in this repo.
 
+**Security headers** (`nginx/nginx.conf`): the image sets `Content-Security-Policy` (`script-src 'self'`, so no inline scripts or event handlers; `style-src` keeps `'unsafe-inline'` for antd's CSS-in-JS and allows Google Fonts), `X-Frame-Options`, `nosniff`, `Referrer-Policy` and `Permissions-Policy`, and strips `X-Service-Token`, `X-User-ID`, `X-Username` and `X-Email` from browser requests before proxying to the backends. nginx serves plain HTTP on 8080, so `Strict-Transport-Security` is not set here: add it where TLS terminates (the ingress or load balancer), for example `max-age=31536000; includeSubDomains`.
+
 (Paths above are relative to a sibling checkout — `dashboard-ui/` and `telark/` side by side. If you don't have `telark` checked out locally, the same files are at `https://github.com/telark/telark/blob/main/.github/workflows/build-ui.yaml` etc.)
 
 ## Readiness / Production docs

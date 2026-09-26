@@ -3,6 +3,7 @@ import { Modal } from 'antd';
 import { useNavigate, type NavigateFunction } from 'react-router-dom';
 import { getSessionToken, removeSessionToken, removeCurrentUser } from '../../utils';
 import { deleteSession } from '../../clients';
+import { purgeLocalUserData } from '../../utils/session/cleanup';
 import { AUTH_CONSTANTS } from '../../constants/messages';
 import { AUTH_CONFIG } from '../../constants';
 import { ACTION_CONFIRM_MODAL, APP_ROUTES, DEFAULT_COLORS } from '../../../../constants';
@@ -60,6 +61,7 @@ const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({ open, onClose
       }
 
       cleanupLocalStorage();
+      await purgeLocalUserData();
       navigateToLogin(navigate, onClose);
     } catch (error) {
       if (isDevelopment()) {

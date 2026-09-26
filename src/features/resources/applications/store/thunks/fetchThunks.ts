@@ -163,14 +163,13 @@ export const triggerApplicationRollbackThunk = createAsyncThunk(
 export interface AbortApplicationRollbackArgs {
   name: string;
   rollbackId: string;
-  userID: string;
 }
 
 export const abortApplicationRollbackThunk = createAsyncThunk(
   STORE_ACTIONS.APPLICATIONS.ABORT_ROLLBACK,
-  async ({ name, rollbackId, userID }: AbortApplicationRollbackArgs, { rejectWithValue }) => {
+  async ({ name, rollbackId }: AbortApplicationRollbackArgs, { rejectWithValue }) => {
     try {
-      const response = await abortApplicationRollback(name, rollbackId, userID);
+      const response = await abortApplicationRollback(name, rollbackId);
       const raw = response.data;
       if (raw != null && typeof raw === 'object' && typeof (raw as Application).name === 'string') {
         return mapSingleApplicationData(raw);

@@ -2,8 +2,8 @@ import { StrictMode, startTransition } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { persistStore } from 'redux-persist';
 import store from './store';
+import { persistor } from './store/persistor';
 import App from './App';
 import FullPageLoader from './components/display/views/FullPageLoader';
 import { AppearanceProvider } from './features/settings/sections/appearance';
@@ -18,7 +18,6 @@ registerHealthInterceptors({
   dispatch: (action) => store.dispatch(action),
 });
 
-const persistor = persistStore(store);
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
 startTransition(() => {
