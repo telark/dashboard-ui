@@ -29,8 +29,8 @@ const Sidebar = memo(() => {
         top: HEADER_LAYOUT.HEIGHT_PX,
         width: isCollapsed ? SIDEBAR_LAYOUT.WIDTH_COLLAPSED : width,
         height: `calc(100vh - ${HEADER_LAYOUT.HEIGHT_PX}px)`,
-        backgroundColor: DEFAULT_COLORS.BACKGROUND_WHITE,
-        borderRight: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+        backgroundColor: DEFAULT_COLORS.PAGE_BG,
+        borderRight: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
         zIndex: 1,
         display: 'flex',
         flexDirection: 'column',
@@ -72,7 +72,7 @@ const Sidebar = memo(() => {
 
       <div
         style={{
-          borderTop: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+          borderTop: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
           padding: '6px 0',
           flexShrink: 0,
           display: 'flex',

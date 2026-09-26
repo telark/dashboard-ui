@@ -9,7 +9,7 @@ const BootstrapPill: React.FC = () => (
     <span style={{ display: 'inline-flex', flexShrink: 0 }}>
       <RowTag
         text={UC.LABELS.BOOTSTRAP_PILL.LABEL}
-        accent={DEFAULT_COLORS.CHIP_BLUE_TEXT}
+        accent={DEFAULT_COLORS.INFO}
         fontSize={UC.SIZES.CHIP_FONT}
       />
     </span>

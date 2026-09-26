@@ -13,7 +13,7 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = memo(({ children }) => (
   <div
     style={{
       minHeight: '100vh',
-      background: DEFAULT_COLORS.BACKGROUND_WHITE,
+      background: DEFAULT_COLORS.PAGE_BG,
       display: 'flex',
       flexDirection: 'column',
       paddingTop: HEADER_OFFSET_PX,
@@ -29,7 +29,7 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = memo(({ children }) => (
       >
         <div
           style={{
-            background: DEFAULT_COLORS.BACKGROUND_WHITE,
+            background: DEFAULT_COLORS.PAGE_BG,
             padding: CONTENT_PADDING,
             boxSizing: 'border-box',
             width: '100%',

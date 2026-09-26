@@ -211,7 +211,7 @@ export const useRoleListPageConfig = ({
                 key: RC.KEYS.ACTIONS,
                 align: 'right' as const,
                 width: 120,
-                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
+                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
                 render: (_: unknown, record: Role | Category) => (
                   <RoleActionsColumn
                     record={record as Role}
@@ -228,7 +228,7 @@ export const useRoleListPageConfig = ({
                 key: 'actions',
                 align: 'right' as const,
                 width: 120,
-                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
+                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
                 render: (_: unknown, record: Role | Category) => (
                   <CategoryActionsColumn
                     record={record as Category}

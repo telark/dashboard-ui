@@ -43,7 +43,7 @@ const AssignmentSelect: React.FC<AssignmentSelectProps> = memo(
                 height: '24px',
                 lineHeight: '24px',
                 backgroundColor: DEFAULT_COLORS.SUCCESS,
-                color: 'white',
+                color: DEFAULT_COLORS.PILL_TEXT,
                 borderRadius: '4px',
                 marginRight: '4px',
                 fontSize: '14px',

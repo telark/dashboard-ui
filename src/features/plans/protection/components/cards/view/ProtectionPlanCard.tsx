@@ -220,7 +220,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const phaseLabel = planPhaseLabel(plan);
   const canCancel = CANCELLABLE_PHASES.includes(plan.phase);
 
-  const phaseAccent = PHASE_ACCENT[plan.phase] ?? DEFAULT_COLORS.DEFAULT;
+  const phaseAccent = PHASE_ACCENT[plan.phase] ?? DEFAULT_COLORS.NEUTRAL;
   const health = plan.health ?? 'unknown';
   // Health only speaks while the plan is running; a canceled plan's last known
   // health would otherwise light the card up green.
@@ -571,7 +571,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
               marginTop: 8,
               height: CARD_LAYOUT.TRACK_HEIGHT_PX,
               borderRadius: CARD_LAYOUT.PILL_RADIUS_PX,
-              background: DEFAULT_COLORS.BACKGROUND_HOVER,
+              background: DEFAULT_COLORS.HOVER_BG,
               overflow: 'hidden',
             }}
           >

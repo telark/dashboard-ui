@@ -55,11 +55,11 @@ const ACCENT_TINT: Record<string, string> = {
   [DEFAULT_COLORS.SUCCESS]: DEFAULT_COLORS.SUCCESS_TINT,
   [DEFAULT_COLORS.WARNING]: DEFAULT_COLORS.WARNING_TINT,
   [DEFAULT_COLORS.DANGER]: DEFAULT_COLORS.DANGER_TINT,
-  [DEFAULT_COLORS.DEFAULT]: DEFAULT_COLORS.DEFAULT_TINT,
+  [DEFAULT_COLORS.NEUTRAL]: DEFAULT_COLORS.NEUTRAL_TINT,
 };
 
 export const getAccentTint = (accent: string): string =>
-  ACCENT_TINT[accent] ?? DEFAULT_COLORS.DEFAULT_TINT;
+  ACCENT_TINT[accent] ?? DEFAULT_COLORS.NEUTRAL_TINT;
 
 export const CARD_MORE_LABEL = (count: number): string => `+${count} more`;
 
@@ -173,6 +173,6 @@ export const getCardMenuButtonStyle = (open: boolean): CSSProperties => ({
   alignItems: 'center',
   justifyContent: 'center',
   borderRadius: CARD_LAYOUT.ICON_CHIP_RADIUS_PX,
-  background: open ? DEFAULT_COLORS.BACKGROUND_HOVER : 'transparent',
+  background: open ? DEFAULT_COLORS.HOVER_BG : 'transparent',
   transition: 'background 120ms ease, color 120ms ease',
 });

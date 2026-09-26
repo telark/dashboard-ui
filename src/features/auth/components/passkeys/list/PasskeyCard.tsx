@@ -8,8 +8,8 @@ import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type { Passkey } from '../../../models/passkeys';
 
 const CARD_STYLE: React.CSSProperties = {
-  background: '#fff',
-  border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+  background: DEFAULT_COLORS.SURFACE_WHITE,
+  border: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
   borderRadius: 12,
   padding: 20,
   display: 'flex',
@@ -73,7 +73,7 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
           type="button"
           onClick={handleCopy}
           style={{
-            ...iconButtonStyle(DEFAULT_COLORS.CHIP_CUSTOM_TEXT),
+            ...iconButtonStyle(DEFAULT_COLORS.TEXT_SECONDARY),
             position: 'absolute',
             top: 0,
             right: 0,
@@ -93,12 +93,12 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
     <div
       style={CARD_STYLE}
       onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)';
+        e.currentTarget.style.boxShadow = `0 4px 12px ${DEFAULT_COLORS.SHADOW}`;
         e.currentTarget.style.borderColor = DEFAULT_COLORS.BORDER_HOVER;
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.boxShadow = 'none';
-        e.currentTarget.style.borderColor = DEFAULT_COLORS.BORDER_LIGHT;
+        e.currentTarget.style.borderColor = DEFAULT_COLORS.BORDER_SUBTLE;
       }}
     >
       <div
@@ -163,7 +163,7 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
             <button
               type="button"
               onClick={() => onDelete(passkey)}
-              style={iconButtonStyle(DEFAULT_COLORS.ERROR)}
+              style={iconButtonStyle(DEFAULT_COLORS.DANGER)}
             >
               <DeleteOutlined />
             </button>

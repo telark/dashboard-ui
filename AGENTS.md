@@ -115,16 +115,17 @@ Verify each step against its success criterion before moving on. Strong success 
 
 ### Colours and surfaces
 
-- Colours come from `DEFAULT_COLORS` in `src/constants/shared/colors.ts`; don't write hex values in components. Map status meaning to `SUCCESS`, `DANGER`, `WARNING` or `ERROR`. If nothing fits, add a token there (or reuse a `CHIP_*` token) so the palette stays coherent.
+- Colours come from `DEFAULT_COLORS` in `src/constants/shared/colors.ts`, the only file where a colour literal may appear (ESLint `no-restricted-syntax` enforces it). Map status meaning to `SUCCESS`, `DANGER`, `WARNING`, `INFO` or `NEUTRAL`. Vary opacity with `withAlpha(token, alpha)` instead of writing `rgba()`. If nothing fits, add a token there so the palette stays coherent.
+- CSS files read the same tokens as `var(--color-<kebab-key>)` (for example `SUCCESS_HOVER` → `--color-success-hover`), set on `:root` by `applyColorVariables()` in `src/main.tsx`; for alpha in CSS use `color-mix(in srgb, var(--color-…) N%, transparent)`.
 - The page is dark and overlays are light, and some token names lie. Decide the surface first, then pick from its palette:
 
   | Surface | Tokens | Traps |
   |---|---|---|
-  | Dark: page, cards, settings cards | `PAGE_BG`, `SURFACE_ELEVATED*`, `BORDER_ELEVATED`, `TEXT_PRIMARY`, `TEXT_SECONDARY`, `TEXT_MUTED`, `CHIP_CUSTOM_*` | `TEXT_PRIMARY` is white; `BACKGROUND_WHITE` and `BORDER_LIGHT` are dark |
-  | Light: slide-out panels, modals, dropdowns, popovers, tooltips | `SURFACE_WHITE`, `SURFACE_HOVER`, `SURFACE_BORDER*`, `TEXT_ON_SURFACE`, `TEXT_ON_SURFACE_MUTED`, `TEXT_ON_SURFACE_DISABLED`, `CHIP_ON_SURFACE_*` | Dark-surface text tokens here render white on white |
+  | Dark: page, cards, settings cards | `PAGE_BG`, `SURFACE_ELEVATED*`, `BORDER_ELEVATED`, `TEXT_PRIMARY`, `TEXT_SECONDARY`, `TEXT_MUTED`, `TEXT_DISABLED`, `CHIP_CUSTOM_BG` | `TEXT_PRIMARY` is white; `BORDER_SUBTLE` is darker than `BORDER_DEFAULT` |
+  | Light: slide-out panels, modals, dropdowns, popovers, tooltips | `SURFACE_WHITE`, `SURFACE_SUBTLE`, `SURFACE_HOVER`, `SURFACE_BORDER*`, `TEXT_ON_SURFACE`, `TEXT_ON_SURFACE_MUTED`, `TEXT_ON_SURFACE_DISABLED`, `CHIP_ON_SURFACE_*` | Dark-surface text tokens here render white on white |
 
   The wrong palette fails silently: `check-all` passes and the text still copies, so it looks like missing data. When something "shows nothing", suspect white on white first.
-- Pills are a solid case colour with white text: spread `getPillSurface(accent)` and set `color: DEFAULT_COLORS.PILL_TEXT`. Pass the accent as a `DEFAULT_COLORS` value (`SUCCESS`, `DANGER`, `ERROR`, `WARNING`, `CHIP_BLUE_TEXT`, `DEFAULT`, `TEXT_MUTED`); any other value, or none, gives the neutral pill. The accents themselves are too light for white text, so each maps to a darker pill shade that keeps contrast. Quick-filter pills use `getQuickFilterPillColors`.
+- Pills are a solid case colour with white text: spread `getPillSurface(accent)` and set `color: DEFAULT_COLORS.PILL_TEXT`. Pass the accent as a `DEFAULT_COLORS` value (`SUCCESS`, `DANGER`, `WARNING`, `INFO`, `NEUTRAL`, `TEXT_MUTED`); any other value, or none, gives the neutral pill. The accents themselves are too light for white text, so each maps to a darker pill shade that keeps contrast. Quick-filter pills use `getQuickFilterPillColors`.
 - No box-shadow on buttons unless the user asks for it.
 
 ### Ant Design theme

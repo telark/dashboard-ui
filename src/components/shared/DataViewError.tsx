@@ -32,7 +32,7 @@ const layoutFor = (variant: DataViewErrorVariant): React.CSSProperties => {
 const containerStyle = (variant: DataViewErrorVariant): React.CSSProperties => {
   if (variant === 'fullPage') {
     return {
-      background: DEFAULT_COLORS.BACKGROUND_WHITE,
+      background: DEFAULT_COLORS.PAGE_BG,
       borderRadius: 0,
       border: 'none',
       width: '100%',
@@ -40,9 +40,9 @@ const containerStyle = (variant: DataViewErrorVariant): React.CSSProperties => {
     };
   }
   return {
-    background: DEFAULT_COLORS.BACKGROUND_WHITE,
+    background: DEFAULT_COLORS.PAGE_BG,
     borderRadius: 12,
-    border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+    border: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
   };
 };
 

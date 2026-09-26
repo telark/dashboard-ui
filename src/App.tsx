@@ -124,7 +124,7 @@ const App: React.FC = () => {
             colorPrimary: DEFAULT_COLORS.SUCCESS,
             colorBgBase: DEFAULT_COLORS.PAGE_BG,
             colorTextBase: DEFAULT_COLORS.TEXT_PRIMARY,
-            colorBgContainer: DEFAULT_COLORS.BACKGROUND_WHITE,
+            colorBgContainer: DEFAULT_COLORS.PAGE_BG,
             colorBgLayout: DEFAULT_COLORS.PAGE_BG,
             colorBorder: DEFAULT_COLORS.BORDER_DEFAULT,
           },
@@ -204,13 +204,13 @@ const App: React.FC = () => {
             // Selection reads as the same green tint as a selected application card,
             // not a solid primary fill.
             Table: {
-              borderColor: DEFAULT_COLORS.BORDER_LIGHT,
+              borderColor: DEFAULT_COLORS.BORDER_SUBTLE,
               rowSelectedBg: DEFAULT_COLORS.SUCCESS_TINT,
               rowSelectedHoverBg: DEFAULT_COLORS.SUCCESS_TINT,
               rowHoverBg: DEFAULT_COLORS.HOVER_BG,
               // The horizontal scrollbar track is drawn from colorSplit, which the
               // dark algorithm also derives as blue.
-              colorSplit: DEFAULT_COLORS.BORDER_LIGHT,
+              colorSplit: DEFAULT_COLORS.BORDER_SUBTLE,
               stickyScrollBarBg: DEFAULT_COLORS.BORDER_HOVER,
             },
             Button: {

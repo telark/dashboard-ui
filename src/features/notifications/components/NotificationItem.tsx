@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TimeAgo from '../../../components/display/time/TimeAgo';
+import { DEFAULT_COLORS } from '../../../constants';
 import { NOTIFICATION_SEVERITY_COLORS } from '../constants';
 import { getTypeConfig } from '../utils';
 import type { Notification } from '../models';
@@ -20,7 +21,8 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   const isUnread = !notification.readAt;
   const config = getTypeConfig(notification.type);
   const Icon = config.icon;
-  const accentColor = NOTIFICATION_SEVERITY_COLORS[notification.severity] ?? '#1890ff';
+  const accentColor =
+    NOTIFICATION_SEVERITY_COLORS[notification.severity] ?? NOTIFICATION_SEVERITY_COLORS.info;
 
   const renderedMessage = useMemo(() => {
     const parts = notification.message.split(/\*\*(.+?)\*\*/g);
@@ -59,9 +61,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         alignItems: 'flex-start',
         gap: 12,
         padding: '8px 24px',
-        borderBottom: '1px solid #f0f0f0',
+        borderBottom: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
         cursor: 'pointer',
-        background: isUnread ? '#fafcff' : '#ffffff',
+        background: isUnread ? DEFAULT_COLORS.SURFACE_SUBTLE : DEFAULT_COLORS.SURFACE_WHITE,
         transition: 'background 0.15s ease',
       }}
     >
@@ -91,7 +93,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
             style={{
               fontWeight: isUnread ? 600 : 400,
               fontSize: 13,
-              color: '#262626',
+              color: DEFAULT_COLORS.TEXT_ON_SURFACE,
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -100,14 +102,16 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           >
             {notification.title}
           </div>
-          <div style={{ fontSize: 11, color: '#8c8c8c', flexShrink: 0 }}>
+          <div
+            style={{ fontSize: 11, color: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED, flexShrink: 0 }}
+          >
             <TimeAgo date={notification.createdAt} />
           </div>
         </div>
         <div
           style={{
             fontSize: 12,
-            color: '#595959',
+            color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',

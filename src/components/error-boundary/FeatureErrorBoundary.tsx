@@ -3,7 +3,7 @@ import { Component, ErrorInfo, ReactNode } from 'react';
 import { Button, Typography } from 'antd';
 import { ReloadOutlined, BugOutlined, HomeOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { DEFAULT_COLORS, STORE_MESSAGES } from '../../constants';
+import { DEFAULT_COLORS, STORE_MESSAGES, withAlpha } from '../../constants';
 import { APP_ROUTES } from '../../constants';
 import { isDevelopment } from '../../utils/helpers/env';
 import logger from '../../logging';
@@ -57,7 +57,7 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
             alignItems: 'center',
             justifyContent: 'center',
             padding: '40px 20px',
-            background: '#ffffff',
+            background: DEFAULT_COLORS.SURFACE_WHITE,
             zIndex: 10,
             overflow: 'auto',
           }}
@@ -68,18 +68,18 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
                 width: 64,
                 height: 64,
                 borderRadius: '50%',
-                background: 'linear-gradient(135deg, #ff6b6b, #ee5a52)',
+                background: DEFAULT_COLORS.DANGER,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '0 auto 24px',
-                boxShadow: '0 4px 12px rgba(255,107,107,0.2)',
+                boxShadow: `0 4px 12px ${withAlpha(DEFAULT_COLORS.DANGER, 0.2)}`,
               }}
             >
               <BugOutlined
                 style={{
                   fontSize: 24,
-                  color: '#ffffff',
+                  color: DEFAULT_COLORS.PILL_TEXT,
                 }}
               />
             </div>
@@ -88,7 +88,7 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
               level={3}
               style={{
                 margin: '0 0 12px',
-                color: '#2c3e50',
+                color: DEFAULT_COLORS.TEXT_ON_SURFACE,
                 fontWeight: 600,
               }}
             >
@@ -112,8 +112,8 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
             {isDevelopment() && this.state.error && (
               <div
                 style={{
-                  background: '#f8f9fa',
-                  border: '1px solid #e9ecef',
+                  background: DEFAULT_COLORS.SURFACE_SUBTLE,
+                  border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
                   borderRadius: 8,
                   margin: '0 0 24px',
                   textAlign: 'left',
@@ -123,7 +123,7 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
                 <Text
                   style={{
                     fontSize: 11,
-                    color: '#6c757d',
+                    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
                     fontFamily: 'monospace',
                     whiteSpace: 'pre-wrap',
                     wordBreak: 'break-word',
@@ -175,7 +175,7 @@ const FeatureErrorBoundaryNavigateButton: React.FC = () => {
       icon={<HomeOutlined />}
       onClick={() => navigate(APP_ROUTES.HOME)}
       style={{
-        borderColor: '#d9d9d9',
+        borderColor: DEFAULT_COLORS.SURFACE_BORDER,
       }}
     >
       Go to Dashboard

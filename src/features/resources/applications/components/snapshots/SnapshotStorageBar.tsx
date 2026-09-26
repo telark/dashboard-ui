@@ -32,8 +32,8 @@ const SnapshotStorageBar: React.FC<SnapshotStorageBarProps> = memo(
           style={{
             height: barH,
             borderRadius: barR,
-            background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-            border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+            background: DEFAULT_COLORS.PAGE_BG,
+            border: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
             overflow: 'hidden',
           }}
         >

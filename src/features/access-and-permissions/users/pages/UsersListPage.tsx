@@ -95,7 +95,7 @@ const UsersListPage: React.FC<UsersListPageProps> = memo(
     );
 
     return (
-      <div style={{ background: DEFAULT_COLORS.BACKGROUND_WHITE, minHeight: '100vh' }}>
+      <div style={{ background: DEFAULT_COLORS.PAGE_BG, minHeight: '100vh' }}>
         <PageLayout config={pageConfig} />
         {createPanelOpen && (
           <CreateUserPanel open={createPanelOpen} onClose={onCloseCreatePanel} form={createForm} />

@@ -328,7 +328,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             justifyContent: 'space-between',
             gap: 12,
             padding: '8px 0',
-            background: DEFAULT_COLORS.BACKGROUND_WHITE,
+            background: DEFAULT_COLORS.PAGE_BG,
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
@@ -520,7 +520,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                 <div
                   key={`${p.templateID}-${idx}`}
                   style={{
-                    border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+                    border: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
                     borderRadius: 8,
                     padding: 10,
                     display: 'flex',

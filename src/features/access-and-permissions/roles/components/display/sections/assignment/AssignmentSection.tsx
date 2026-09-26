@@ -5,6 +5,7 @@ import { ROLES_CONSTANTS as RC } from '../../../../constants';
 import GroupsSelect from './GroupsSelect';
 import UsersSelect from './UsersSelect';
 import type { AssignmentSectionProps } from '../../../../models';
+import { DEFAULT_COLORS } from '../../../../../../../constants';
 
 const AssignmentSection: React.FC<AssignmentSectionProps> = memo(({ onManualChange }) => {
   const form = Form.useFormInstance();
@@ -86,7 +87,7 @@ const AssignmentSection: React.FC<AssignmentSectionProps> = memo(({ onManualChan
                     marginBottom: 8,
                     fontSize: 14,
                     fontWeight: 600,
-                    color: '#0B1F33',
+                    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
                   }}
                 >
                   {RC.ASSIGNMENT.GROUPS_LABEL}
@@ -105,7 +106,7 @@ const AssignmentSection: React.FC<AssignmentSectionProps> = memo(({ onManualChan
                     marginBottom: 8,
                     fontSize: 14,
                     fontWeight: 600,
-                    color: '#0B1F33',
+                    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
                   }}
                 >
                   {RC.ASSIGNMENT.USERS_LABEL}

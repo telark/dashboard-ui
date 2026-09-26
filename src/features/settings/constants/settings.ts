@@ -93,7 +93,6 @@ export const SETTINGS_CONSTANTS = {
     WIDTH: 240,
     /** Icon-only width for settings sidebar (labels in tooltips). */
     WIDTH_COLLAPSED: 56,
-    BORDER_RIGHT: '0.5px solid #e2e8f0',
   },
   CONTENT: {
     MAX_WIDTH: 640,

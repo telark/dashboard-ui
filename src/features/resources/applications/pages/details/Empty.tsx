@@ -12,7 +12,7 @@ const ApplicationsDetailsEmpty: React.FC = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: DEFAULT_COLORS.BACKGROUND_WHITE,
+        background: DEFAULT_COLORS.PAGE_BG,
       }}
     >
       <Empty

@@ -9,9 +9,12 @@ import FullPageLoader from './components/display/views/FullPageLoader';
 import { AppearanceProvider } from './features/settings/sections/appearance';
 import { dropForeignPermissions } from './features/auth/hooks';
 import { registerHealthInterceptors, selectServiceHealth } from './api';
+import { applyColorVariables } from './constants';
 import './styles/index.css';
 import './styles/antd.css';
 import './styles/actionConfirmModal.css';
+
+applyColorVariables();
 
 registerHealthInterceptors({
   getServiceHealth: (name) => selectServiceHealth(store.getState(), name),

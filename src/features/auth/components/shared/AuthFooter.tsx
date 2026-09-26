@@ -1,4 +1,5 @@
 import React from 'react';
+import { DEFAULT_COLORS } from '../../../../constants';
 
 interface AuthFooterProps {
   text: string;
@@ -17,7 +18,7 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({
 }) => {
   const mutedStyle: React.CSSProperties = {
     fontSize: '11px',
-    color: 'var(--auth-text-muted, #94a3b8)',
+    color: `var(--auth-text-muted, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED})`,
   };
 
   return (
@@ -26,7 +27,7 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({
         style={{
           textAlign: 'center',
           fontSize: '13px',
-          color: 'var(--auth-text-muted, #64748b)',
+          color: `var(--auth-text-muted, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED})`,
           marginBottom: '16px',
         }}
       >
@@ -35,7 +36,7 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({
           type="button"
           onClick={onLinkClick}
           style={{
-            color: 'var(--auth-text-muted, #475569)',
+            color: `var(--auth-text-muted, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED})`,
             fontWeight: 600,
             cursor: 'pointer',
             background: 'none',
@@ -44,20 +45,25 @@ export const AuthFooter: React.FC<AuthFooterProps> = ({
             font: 'inherit',
             fontSize: '13px',
             textDecoration: 'underline',
-            textDecorationColor: 'var(--auth-card-border, #e2e8f0)',
+            textDecorationColor: `var(--auth-card-border, ${DEFAULT_COLORS.AUTH_LIGHT_BORDER})`,
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.textDecorationColor = 'var(--auth-text-muted, #475569)';
+            e.currentTarget.style.textDecorationColor = `var(--auth-text-muted, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED})`;
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.textDecorationColor = 'var(--auth-card-border, #e2e8f0)';
+            e.currentTarget.style.textDecorationColor = `var(--auth-card-border, ${DEFAULT_COLORS.AUTH_LIGHT_BORDER})`;
           }}
         >
           {linkText}
         </button>
       </div>
 
-      <div style={{ borderTop: '1px solid var(--auth-divider, #f1f5f9)', marginBottom: '14px' }} />
+      <div
+        style={{
+          borderTop: `1px solid var(--auth-divider, ${DEFAULT_COLORS.AUTH_LIGHT_DIVIDER})`,
+          marginBottom: '14px',
+        }}
+      />
 
       <p style={{ ...mutedStyle, textAlign: 'center', margin: 0, lineHeight: 1.5 }}>
         By continuing you agree to our{' '}

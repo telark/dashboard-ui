@@ -98,7 +98,7 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
                 <div
                   key={entry.templateID}
                   style={{
-                    border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+                    border: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
                     borderRadius: 8,
                     padding: 12,
                   }}
@@ -122,7 +122,7 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
                         >
                           {param.label}
                           {param.required && (
-                            <span style={{ color: DEFAULT_COLORS.ERROR, marginLeft: 2 }}>*</span>
+                            <span style={{ color: DEFAULT_COLORS.DANGER, marginLeft: 2 }}>*</span>
                           )}
                         </Typography.Text>
                         <Select

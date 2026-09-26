@@ -18,7 +18,7 @@ const rowStyle: React.CSSProperties = {
   alignItems: 'center',
   gap: 12,
   padding: '8px 0',
-  borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+  borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
   fontSize: 13,
 };
 

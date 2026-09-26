@@ -1,4 +1,5 @@
 import { HEADER_LAYOUT } from '../layout/header';
+import { DEFAULT_COLORS, withAlpha } from './colors';
 
 /** Used by PageLayout and Settings so content (title + body) aligns across features. */
 export const PAGE_CONTENT_LAYOUT = {
@@ -59,13 +60,13 @@ export const SHARED_PAGE_CONSTANTS = {
       width: 56,
       height: 56,
       borderRadius: '50%',
-      background: 'rgba(32,201,151,0.12)',
-      boxShadow: 'inset 0 0 0 2px rgba(32,201,151,0.18)',
+      background: DEFAULT_COLORS.SUCCESS_TINT,
+      boxShadow: `inset 0 0 0 2px ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.18)}`,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       marginBottom: 12,
-      color: '#20C997',
+      color: DEFAULT_COLORS.SUCCESS,
       fontSize: 24,
     },
   },

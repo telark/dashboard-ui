@@ -202,7 +202,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
         </div>
       )}
 
-      {error && <div style={{ color: DEFAULT_COLORS.ERROR, fontSize: 13 }}>{error}</div>}
+      {error && <div style={{ color: DEFAULT_COLORS.DANGER, fontSize: 13 }}>{error}</div>}
     </div>
   );
 

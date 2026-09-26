@@ -234,7 +234,7 @@ export const useGroupListPageConfig = ({
                 key: 'actions',
                 align: 'right' as const,
                 width: 120,
-                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
+                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
                 render: (_: unknown, record: Group | Category) =>
                   viewMode === 'groups' ? (
                     <GroupActionsColumn record={record as Group} onEdit={handleEditClick} />
@@ -248,7 +248,7 @@ export const useGroupListPageConfig = ({
                 key: 'actions',
                 align: 'right' as const,
                 width: 120,
-                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
+                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
                 render: (_: unknown, record: Group | Category) => (
                   <CategoryActionsColumn
                     record={record as Category}
