@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect, useRef, useCallback, startTransition } from 'react';
 import { createAvatar, type Style } from '@dicebear/core';
 import { Avatar, Grid, Modal, Spin } from 'antd';
-import { DEFAULT_COLORS } from '../../../constants';
+import { DEFAULT_COLORS, withAlpha } from '../../../constants';
 import type { UserAvatar } from '../../../features/access-and-permissions/users/models';
 import logger from '../../../logging';
 
@@ -177,14 +177,14 @@ const AvatarItem: React.FC<AvatarItemProps> = ({ option, isSelected, previewUrl,
   } else if (isHovered) {
     borderColor = DEFAULT_COLORS.SUCCESS;
   } else {
-    borderColor = '#d9d9d9';
+    borderColor = DEFAULT_COLORS.SURFACE_BORDER;
   }
 
   let backgroundColor: string;
   if (isSelected) {
-    backgroundColor = 'rgba(32, 201, 151, 0.1)';
+    backgroundColor = withAlpha(DEFAULT_COLORS.SUCCESS, 0.1);
   } else if (isHovered) {
-    backgroundColor = 'rgba(32, 201, 151, 0.05)';
+    backgroundColor = withAlpha(DEFAULT_COLORS.SUCCESS, 0.05);
   } else {
     backgroundColor = 'transparent';
   }
@@ -338,23 +338,22 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({
             border: '2px solid transparent',
             padding: 3,
             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            background:
-              'linear-gradient(135deg, rgba(32, 201, 151, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)',
+            background: `linear-gradient(135deg, ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.1)} 0%, ${withAlpha(DEFAULT_COLORS.INFO_STRONG, 0.1)} 100%)`,
             outline: 'none',
             boxShadow: previewAvatar
-              ? '0 4px 12px rgba(32, 201, 151, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.1)'
-              : '0 2px 8px rgba(0, 0, 0, 0.08)',
+              ? `0 4px 12px ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.15)}, inset 0 0 0 1px ${withAlpha(DEFAULT_COLORS.SURFACE_WHITE, 0.1)}`
+              : `0 2px 8px ${DEFAULT_COLORS.SHADOW}`,
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.boxShadow = previewAvatar
-              ? '0 6px 16px rgba(32, 201, 151, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.2)'
-              : '0 4px 12px rgba(0, 0, 0, 0.12)';
+              ? `0 6px 16px ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.25)}, inset 0 0 0 1px ${withAlpha(DEFAULT_COLORS.SURFACE_WHITE, 0.2)}`
+              : `0 4px 12px ${withAlpha(DEFAULT_COLORS.SHADOW, 0.12)}`;
             e.currentTarget.style.transform = 'scale(1.05)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.boxShadow = previewAvatar
-              ? '0 4px 12px rgba(32, 201, 151, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.1)'
-              : '0 2px 8px rgba(0, 0, 0, 0.08)';
+              ? `0 4px 12px ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.15)}, inset 0 0 0 1px ${withAlpha(DEFAULT_COLORS.SURFACE_WHITE, 0.1)}`
+              : `0 2px 8px ${DEFAULT_COLORS.SHADOW}`;
             e.currentTarget.style.transform = 'scale(1)';
           }}
         >
@@ -364,9 +363,11 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({
             style={{
               border: 'none',
               boxShadow: previewAvatar
-                ? '0 2px 8px rgba(0, 0, 0, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.3)'
+                ? `0 2px 8px ${withAlpha(DEFAULT_COLORS.SHADOW, 0.1)}, inset 0 0 20px ${withAlpha(DEFAULT_COLORS.SURFACE_WHITE, 0.3)}`
                 : 'none',
-              filter: previewAvatar ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))' : 'none',
+              filter: previewAvatar
+                ? `drop-shadow(0 2px 4px ${withAlpha(DEFAULT_COLORS.SHADOW, 0.1)})`
+                : 'none',
             }}
           />
         </button>

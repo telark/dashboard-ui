@@ -25,10 +25,10 @@ k6/
 |---|---|
 | `bootstrap_flow` | Page load: auth config, permissions, global config, apps list, notifications, plans list |
 | `auth_session_lifecycle` | List your sessions, view one, delete a non-current one |
-| `rbac_crud` | Create + read + update + delete one of each: user, group, role, category |
+| `rbac_crud` | Create + read + update + delete one of each: user, group, access role, category |
 | `applications_browse` | List apps, open one, fetch all its snapshot summaries and one manifest |
 | `application_force_sync` | Trigger a force-sync on one app, poll until it finishes |
-| `protection_plan_lifecycle` | Create a plan, poll status, view violations, duplicate, cancel, reactivate, update, clear |
+| `protection_plan_lifecycle` | Create a plan, poll status, view violations, duplicate, cancel, reactivate, revise, clear |
 | `notifications_flow` | List notifications (with cursor pagination), mark read, mark all, clear |
 
 ## How to run one test
@@ -112,7 +112,7 @@ export const options = {
 export const setup = () => { requireToken(); requireUserId(); };
 
 export default function () {
-  get(path.exporter('resources/applications/get'), {
+  get(path.exporter('applications'), {
     name: 'apps.list',
     metric: METRICS.CACHED_LIST,
   });

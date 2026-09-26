@@ -6,11 +6,6 @@ export interface ScopeAndPermissions {
   rules?: string[];
 }
 
-export interface AssignedTo {
-  groupIDs?: string[];
-  userIDs?: string[];
-}
-
 export interface Role {
   id: string;
   name: string;
@@ -18,7 +13,7 @@ export interface Role {
   version: string;
   type: RoleType;
   priority: number;
-  categoryID: string;
+  categoryRef: string;
   scopesAndPermissions: ScopeAndPermissions[];
   protection?: {
     preventDeletion?: boolean;
@@ -35,7 +30,6 @@ export interface Role {
     durationHours?: number;
     autoRevoke?: boolean;
   };
-  assignedTo?: AssignedTo;
   creationDate: string;
   lastUpdateDate?: string;
   createdBy?: string;

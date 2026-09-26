@@ -28,7 +28,7 @@ export const setup = () => {
 export default function () {
   resetStepCounter();
 
-  const listRes = get(path.exporter(`auth/sessions/${encodeURIComponent(cfg.userId)}/get`), {
+  const listRes = get(path.exporter(`auth/sessions?user=${encodeURIComponent(cfg.userId)}`), {
     name: 'sessions.list',
     metric: METRICS.SESSION_READ,
   });
@@ -37,7 +37,7 @@ export default function () {
 
   const sessions = extractSessions(list);
   if (sessions.length === 0) {
-    console.log('[info] no sessions returned, skipping detail/delete steps');
+    console.log('[info] no sessions returned, skipping detail and delete steps');
     return;
   }
 
@@ -45,27 +45,25 @@ export default function () {
   const target = pickNonCurrent(sessions, ownName);
   if (!target) {
     console.log(
-      '[info] only own session present, skipping detail/delete unless DELETE_OWN_SESSION=true',
+      '[info] only own session present, skipping detail and delete unless DELETE_OWN_SESSION=true',
     );
     if (!DELETE_OWN_SESSION) return;
   }
 
-  // The list never returns session tokens; a session is addressed by its
-  // resource name, which these endpoints accept in place of a token.
-  const ref = target?.metadata?.name || sessions[0]?.metadata?.name;
-  if (!ref) {
-    console.log('[info] no session name field in response, cannot continue');
-    return;
-  }
-
-  const detailRes = get(path.exporter(`auth/sessions/tokens/${encodeURIComponent(ref)}/get`), {
+  // The current session is addressed as "self" (token in the header); any
+  // other session by its resource name, since the list never returns tokens.
+  const detailRes = get(path.exporter('auth/sessions/self'), {
     name: 'sessions.details',
     metric: METRICS.SESSION_READ,
   });
   assertShape(detailRes, 'sessions.details', (b) => b !== null);
 
-  if (target || DELETE_OWN_SESSION) {
-    del(path.exporter(`auth/sessions/tokens/${encodeURIComponent(ref)}/delete`), {
+  const targetName = target?.metadata?.name;
+  if (targetName || DELETE_OWN_SESSION) {
+    const deletePath = targetName
+      ? `auth/sessions/${encodeURIComponent(targetName)}`
+      : 'auth/sessions/self';
+    del(path.exporter(deletePath), {
       name: 'sessions.delete',
       metric: METRICS.SESSION_DELETE,
     });

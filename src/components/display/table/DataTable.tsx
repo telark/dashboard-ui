@@ -23,7 +23,7 @@ function DataTable<T>({
     <div
       className={className}
       style={{
-        background: DEFAULT_COLORS.BACKGROUND_WHITE,
+        background: DEFAULT_COLORS.PAGE_BG,
         borderRadius: 16,
         padding: 16,
         overflow: 'hidden',

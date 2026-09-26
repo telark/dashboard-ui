@@ -28,7 +28,7 @@ interface RoleListProps {
 const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles, blockedReason }) => {
   const form = Form.useFormInstance();
   const canGrant = useCanGrantScopes();
-  const watchedSelectedRoles = Form.useWatch('assignedRolesIDs', form);
+  const watchedSelectedRoles = Form.useWatch('roleRefs', form);
   const currentSelectedRoles = useMemo(
     () => (watchedSelectedRoles as string[]) || [],
     [watchedSelectedRoles],
@@ -48,7 +48,7 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles, blockedRe
   const handleChange = useCallback(
     (checkedValues: string[]) => {
       if (!allRoles || !roles) {
-        form.setFieldsValue({ assignedRolesIDs: checkedValues });
+        form.setFieldsValue({ roleRefs: checkedValues });
         return;
       }
 
@@ -58,7 +58,7 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles, blockedRe
       );
 
       form.setFieldsValue({
-        assignedRolesIDs: Array.from(new Set([...preservedSelections, ...checkedValues])),
+        roleRefs: Array.from(new Set([...preservedSelections, ...checkedValues])),
       });
     },
     [form, allRoles, roles, currentSelectedRoles],
@@ -74,7 +74,7 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles, blockedRe
 
   return (
     <div style={{ width: '100%' }}>
-      <Form.Item name="assignedRolesIDs" style={{ margin: 0, width: '100%' }}>
+      <Form.Item name="roleRefs" style={{ margin: 0, width: '100%' }}>
         <Checkbox.Group
           value={currentSelectedRoles}
           onChange={handleChange}

@@ -17,12 +17,12 @@
 | Domain | Read goes to | Write/mutation goes to |
 |---|---|---|
 | Auth — login/register/logout/oidc/passkeys/permissions/config | `authApiClient` | `authApiClient` |
-| Sessions list/details/delete | `exporterApiClient` | `exporterApiClient` |
+| Sessions list, details, delete | `exporterApiClient` | `exporterApiClient` |
 | Users / Groups / Roles / Categories | `exporterApiClient` | Create/Patch → `exporterApiClient`; **Delete → `authApiClient`** (async cleanup that adds finalizers, then auth-service kicks the cascading delete chain) |
 | Applications list/details/snapshots/rollbacks (list) | `exporterApiClient` | Update → `exporterApiClient`; **Delete/Sync/TriggerRollback → `discoveryApiClient`** |
-| Protection plans — list/get-by-id | `exporterApiClient` | **Templates/Status/Violations/Prepare/Cancel/Clear/Update/Duplicate/Reactivate → `discoveryApiClient`**, which writes through to exporter via REST |
+| Protection plans — list, get by id | `exporterApiClient` | **Templates/Status/Violations/Prepare/Cancel/Clear/Revise/Duplicate/Reactivate → `discoveryApiClient`**, which writes through to exporter via REST |
 | Notifications | `exporterApiClient` | `exporterApiClient` |
-| Globalconfig get/patch | `exporterApiClient` | `exporterApiClient` |
+| Config get and patch | `exporterApiClient` | `exporterApiClient` |
 | Snapshots get / manifest / infos | `exporterApiClient` | n/a |
 | Namespaces (analyze) | `discoveryApiClient` | n/a |
 | Validate AI provider key | `analyzerApiClient` | n/a |
@@ -41,25 +41,25 @@ Routes from `routes/routes.go`:
 - `POST auth/oidc/google/callback|nonce`
 - `GET auth/config` (public bootstrap), `GET auth/permissions`
 - Passkey CRUD via proxy (5 routes), all forward to exporter's internal passkey store
-- `DELETE auth/users/{id}/cleanup`, `DELETE auth/groups/{id}/cleanup`, `DELETE auth/roles/{id}/cleanup`
+- `DELETE auth/users/{id}`, `DELETE auth/groups/{id}`, `DELETE auth/accessroles/{id}`
 - Status: `/api/v1/status/{health,ready,live}`
 
 Login is **WebAuthn passkey** (`go-webauthn` lib). LoginStart returns `CredentialAssertion` options; LoginFinish requires a signed assertion from a real authenticator. **k6 cannot perform WebAuthn**.
 
 #### `discovery-service` (Go, port 8080, 2 replicas)
 Routes from `routes/routes.go`:
-- Analyze: `GET analyze/namespaces/get`, `analyze/workloads/...`, `analyze/resources/...`
+- Cluster: `GET cluster/namespaces`, `cluster/namespaces/{ns}/workloads`, `cluster/namespaces/{ns}/resources`
 - Applications: `GET enrich`, `POST trigger-rollback`, **`POST sync`** (async via Redis Stream `forcesync:queue`, group `forcesync-workers`, 4 workers × 2 replicas, 300s job timeout), `DELETE cleanup`
 - Protection plans: templates / prepare / cancel / clear / status / violations / duplicate / reactivate / update
 - Status liveness/readiness
 
-Discovery is the **write-side API for plans/apps**; it writes through to exporter via `internal/rest/clients/plans/protection` (30s timeout). Force-sync handler enqueues onto Redis Stream, returns **`202 Accepted`** with `jobId`. Status is observed via the read side later.
+Discovery is the **write-side API for plans/apps**; it writes through to exporter via the `rest` plans client (30s timeout). Force-sync handler enqueues onto Redis Stream, returns **`202 Accepted`** with `jobId`. Status is observed via the read side later.
 
 Dependencies: NATS (for service events), Redis (for force-sync queue + plan tick coordination), Kubernetes API (LIST QPS 100, burst 200).
 
 #### `exporter-service` (Go, port 8080, 1 replica)
 Routes from `routes/base.go`:
-- Applications, GlobalConfig, Users, Groups, Roles, Categories, Sessions, Passkeys (internal), Snapshots, Notifications, Protection Plans (list/get), Status, Cleanup (finalizer add/remove)
+- Applications, Config, Users, Groups, Access roles, Categories, Sessions, Passkeys (internal), Snapshots, Notifications, Protection Plans (list, get), Status, Cleanup (finalizer add/remove)
 
 Exporter is the **read source of truth** and the **CRD writer**. It serves cached LISTs (`performance.NewCachedListHandlerFunc`) backed by Kubernetes informers. PUT/PATCH/POST flow through `concurrency.GetLock(plan.ID)` per-resource locks, then `generics.GenericCreateCustomResource` writes the CRD to the cluster.
 
@@ -102,23 +102,23 @@ Failure-propagation modes that matter for k6 interpretation:
 
 ### B.2 End-to-end flow diagrams (prose)
 
-**F1 — Page bootstrap.** Browser loads `/` → UI fetches `GET /api/auth/api/v1/auth/config` (public, exporter not consulted) → if logged in, `GET /api/auth/api/v1/auth/permissions` → `GET /api/exporter/api/v1/resources/globalconfig/get` → page-specific reads (apps list, notifications, plans list).
+**F1 — Page bootstrap.** Browser loads `/` → UI fetches `GET /api/auth/api/v1/auth/config` (public, exporter not consulted) → if logged in, `GET /api/auth/api/v1/auth/permissions` → `GET /api/exporter/api/v1/config` → page-specific reads (apps list, notifications, plans list).
 
 **F2 — Login (WebAuthn).** UI `POST /api/auth/api/v1/auth/login/start {email}` → auth-service looks up user + passkeys in exporter, generates challenge, stores in Redis, returns `CredentialAssertion`. Browser invokes `navigator.credentials.get(...)` (native), then `POST /auth/login/finish {signed assertion}` → auth-service verifies, issues `sessionToken`, returns user. (**k6 cannot reproduce step 2 — see §C, scenario `auth_session_lifecycle` uses a pre-issued token.**)
 
-**F3 — Session lifecycle.** Logged-in user opens "My Sessions" → `GET /api/exporter/api/v1/auth/sessions/{userId}/get` → click a row → `GET /api/exporter/api/v1/auth/sessions/tokens/{token}/get` → "Revoke" → `DELETE /api/exporter/api/v1/auth/sessions/tokens/{token}/delete`. All exporter-only (sessions stored as CRDs).
+**F3 — Session lifecycle.** Logged-in user opens "My Sessions" → `GET /api/exporter/api/v1/auth/sessions?user={userId}` → current session `GET /api/exporter/api/v1/auth/sessions/self` (token in `X-Session-Token`) → "Revoke" → `DELETE /api/exporter/api/v1/auth/sessions/self` (current) or `DELETE .../auth/sessions/{name}` (another session). All exporter-only (sessions stored as CRDs).
 
-**F4 — RBAC create-then-use (users/groups/roles).** Click "Create user" → `POST /api/exporter/api/v1/resources/users/create` (CRD write under per-ID lock) → list refresh `GET .../get` → click user → `GET .../findbyid/{id}/get` → edit → `PATCH .../{id}/patch` → delete → **`DELETE /api/auth/api/v1/auth/users/{id}/cleanup`** which fans out: auth adds finalizers via exporter's cleanup routes (`PATCH /resources/{kind}/add-finalizer`), then orchestrates the cascade and finally removes finalizers. Same shape for groups/roles. Categories follow a simpler exporter-only delete (`DELETE classification/categories/{id}/delete`).
+**F4 — RBAC create-then-use (users/groups/roles).** Click "Create user" → `POST /api/exporter/api/v1/users` (CRD write under per-ID lock) → list refresh `GET .../users` → click user → `GET .../users/{id}` → edit → `PATCH .../users/{id}` → delete → **`DELETE /api/auth/api/v1/auth/users/{id}`** which fans out: auth adds finalizers via exporter's cleanup routes (`PUT cleanup/{type}/{id}/finalizer`), then orchestrates the cascade and finally removes finalizers. Same shape for groups/access roles. Categories follow a simpler exporter-only delete (`DELETE categories/{id}`).
 
-**F5 — Applications browse + snapshot inspection.** `GET /api/exporter/api/v1/resources/applications/get` (cached LIST from informers) → click app → `GET .../resources/applications/{name}/get` (cache + details) → UI calls `getApplicationSnapshotSummaries(refs[])` which performs **one `GET /api/exporter/api/v1/snapshots/{id}/get?scope=apps&namespace=…&generation=…` per snapshot ref in parallel via `Promise.allSettled`** → optional `GET .../snapshots/{id}/manifest?…` for selected snapshot → `GET .../applications/{name}/rollbacks/get`. **Highest fan-out on the read path.**
+**F5 — Applications browse + snapshot inspection.** `GET /api/exporter/api/v1/applications` (cached LIST from informers) → click app → `GET .../applications/{name}` (cache + details) → UI calls `getApplicationSnapshotSummaries(refs[])` which performs **one `GET /api/exporter/api/v1/snapshots/{id}?scope=apps&namespace=…&generation=…` per snapshot ref in parallel via `Promise.allSettled`** → optional `GET .../snapshots/{id}/manifest?…` for selected snapshot → `GET .../applications/{name}/rollbacks`. **Highest fan-out on the read path.**
 
-**F6 — Force sync app.** Click "Force sync" → `POST /api/discovery/api/v1/resources/applications/{name}/sync?reason=…` with `X-User-ID` header. Discovery handler: deadline 5s, builds `EnqueueRequest`, calls `ingress.Enqueue` → writes to Redis Stream `forcesync:queue` (dedup TTL 600s) → returns **`202 Accepted` `{jobId, appName, phase, status}`** or `503 {retryAfterSec}` if Redis is down. Async: one of the 4 workers × 2 replicas picks it up → does K8s LIST → writes snapshot via exporter PATCH → updates app phase. UI observes completion by re-fetching `GET /resources/applications/{name}/get` against the exporter (the cache is invalidated when the worker writes through). **No status endpoint** for force-sync per route inventory — UI polls the app's `phase` field.
+**F6 — Force sync app.** Click "Force sync" → `POST /api/discovery/api/v1/applications/{name}/sync?reason=…` with `X-User-ID` header. Discovery handler: deadline 5s, builds `EnqueueRequest`, calls `ingress.Enqueue` → writes to Redis Stream `forcesync:queue` (dedup TTL 600s) → returns **`202 Accepted` `{jobId, appName, phase, status}`** or `503 {retryAfterSec}` if Redis is down. Async: one of the 4 workers × 2 replicas picks it up → does K8s LIST → writes snapshot via exporter PATCH → updates app phase. UI observes completion by re-fetching `GET /applications/{name}` against the exporter (the cache is invalidated when the worker writes through). **No status endpoint** for force-sync per route inventory — UI polls the app's `phase` field.
 
-**F7 — Protection plan full lifecycle.** Open plans page → `GET /api/exporter/api/v1/plans/protection/get` → "New plan" wizard → `GET /api/discovery/api/v1/plans/protection/templates` + `GET /api/discovery/api/v1/analyze/namespaces/get` (K8s LIST via discovery) → submit → `POST /api/discovery/api/v1/plans/protection/prepare` with `X-User-ID` header → discovery validates, resolves participants, applies wire-up, then HTTPs to exporter `POST /plans/protection/create` (30s timeout, per-ID lock at exporter, CRD write). UI then polls `GET /api/discovery/api/v1/plans/protection/{id}/status` (state-machine progression) and `GET .../violations?limit=N` (engine output, 10s timeout). User actions: cancel → `POST .../{id}/cancel` (discovery → exporter PATCH); duplicate → `POST .../{id}/duplicate` (read source from exporter, validate, write new plan); reactivate → `POST .../{id}/reactivate`; update → `POST .../{id}/update`; clear → `DELETE .../{id}/clear` (discovery → exporter DELETE CRD).
+**F7 — Protection plan full lifecycle.** Open plans page → `GET /api/exporter/api/v1/protectionplans` → "New plan" wizard → `GET /api/discovery/api/v1/policytemplates` + `GET /api/discovery/api/v1/cluster/namespaces` (K8s LIST via discovery) → submit → `POST /api/discovery/api/v1/protectionplans/prepare` with `X-User-ID` header → discovery validates, resolves participants, applies wire-up, then HTTPs to exporter `POST /protectionplans` (30s timeout, per-ID lock at exporter, CRD write). UI then polls `GET /api/discovery/api/v1/protectionplans/{id}/status` (state-machine progression) and `GET .../violations?limit=N` (engine output, 10s timeout). User actions: cancel → `POST .../{id}/cancel` (discovery → exporter PATCH); duplicate → `POST .../{id}/duplicate` (read source from exporter, validate, write new plan); reactivate → `POST .../{id}/reactivate`; revise → `POST .../{id}/revise`; clear → `DELETE .../{id}/clear` (discovery → exporter DELETE CRD).
 
-**F8 — Notifications.** `GET /api/exporter/api/v1/notifications/get?userId=…&limit=…&cursor=…` (cursor-paginated) → user opens notification → `PATCH .../{id}/markasread?userId=…` → "Mark all read" → `POST .../markallread?userId=…` → "Clear" → `DELETE .../clear?userId=…`.
+**F8 — Notifications.** `GET /api/exporter/api/v1/notifications?userId=…&limit=…&cursor=…` (cursor-paginated) → user opens notification → `POST .../notifications/{id}/read?userId=…` → "Mark all read" → `POST .../notifications/read?userId=…` → "Clear" → `DELETE .../notifications?userId=…`.
 
-**F9 — Insights settings.** Validate AI key: `POST /api/analyzer/api/v1/provider/validate-api-key` (no auth header — public-ish dev) → set provider → `PATCH /api/exporter/api/v1/resources/globalconfig/patch`. Set excluded namespaces: `GET /api/discovery/api/v1/analyze/namespaces/get` (K8s LIST) → `PATCH globalconfig`. Snapshot storage: `GET /api/exporter/api/v1/snapshots/infos` → `PATCH globalconfig`.
+**F9 — Insights settings.** Validate AI key: `POST /api/analyzer/api/v1/provider/validate-api-key` (no auth header — public-ish dev) → set provider → `PATCH /api/exporter/api/v1/config`. Set excluded namespaces: `GET /api/discovery/api/v1/cluster/namespaces` (K8s LIST) → `PATCH config`. Snapshot storage: `GET /api/exporter/api/v1/snapshots` → `PATCH config`.
 
 ### B.3 Hot paths flagged
 
@@ -136,22 +136,22 @@ Failure-propagation modes that matter for k6 interpretation:
 
 ### S1 — `bootstrap_flow`
 - **Does**: simulates the first 2 seconds after a logged-in user loads the dashboard.
-- **Calls**: `GET auth/config` → `GET auth/permissions` → `GET resources/globalconfig/get` → `GET resources/applications/get` → `GET notifications/get?userId&limit=20` → `GET plans/protection/get`.
+- **Calls**: `GET auth/config` → `GET auth/permissions` → `GET config` → `GET applications` → `GET notifications?userId&limit=20` → `GET protectionplans`.
 - **Services**: auth, exporter (4x).
-- **Why**: highest-frequency real-world flow. Catches auth-config publication broken, permissions handler regression, globalconfig schema drift, exporter cache cold-start slowness, notifications cursor bug.
+- **Why**: highest-frequency real-world flow. Catches auth-config publication broken, permissions handler regression, config schema drift, exporter cache cold-start slowness, notifications cursor bug.
 - **Hot paths**: plan list + plan-by-id (light end), RBAC reads.
 - **Complexity**: simple.
 
 ### S2 — `auth_session_lifecycle`
 - **Does**: starts from a pre-issued `SESSION_TOKEN` env var, walks "My sessions" panel.
-- **Calls**: `GET auth/sessions/{userId}/get` → `GET auth/sessions/tokens/{firstReturnedToken}/get` → `DELETE auth/sessions/tokens/{firstReturnedToken}/delete` (or a designated non-current token).
+- **Calls**: `GET auth/sessions?user={userId}` → `GET auth/sessions/self` → `DELETE auth/sessions/{name}` for the first non-current session (or `DELETE auth/sessions/self` with `DELETE_OWN_SESSION=true`).
 - **Services**: exporter only.
 - **Why**: validates the session read/write contract every scenario depends on.
 - **Complexity**: simple.
 
 ### S3 — `rbac_crud`
 - **Does**: one journey covering users + groups + roles + categories.
-- **Calls** (per kind): `POST create` → `GET get` (list) → `GET .../{id}/get` → `PATCH .../{id}/patch` → `DELETE` (auth cleanup for users/groups/roles; categories direct).
+- **Calls** (per kind): `POST <kind>` → `GET <kind>` (list) → `GET <kind>/{id}` → `PATCH <kind>/{id}` → `DELETE` (auth cleanup for users/groups/accessroles; categories direct).
 - **Services**: exporter (writes), auth (deletes for users/groups/roles).
 - **Why**: only flow exercising cross-service async delete cascade.
 - **Hot paths**: RBAC delete cascade.
@@ -165,7 +165,7 @@ Failure-propagation modes that matter for k6 interpretation:
 - **Complexity**: heavy.
 
 ### S5 — `application_force_sync`
-- **Does**: POST sync for a designated test app → poll the app's phase via exporter `GET .../{name}/get` until Idle/Synced or 90s timeout.
+- **Does**: POST sync for a designated test app → poll the app's phase via exporter `GET applications/{name}` until Idle/Synced or 90s timeout.
 - **Services**: discovery (enqueue), exporter (status read), Redis + K8s (invisible).
 - **Why**: only end-to-end coverage of async work pipeline.
 - **Hot paths**: force-sync enqueue + completion.
@@ -250,9 +250,9 @@ See `lib/metrics.js#THRESHOLDS`. Reasoning per row:
 | `cached_list_duration` | `p(95)<400` | served from informer cache |
 | `cached_get_duration` | `p(95)<300` | same cache, smaller payload |
 | `rbac_write_duration` | `p(95)<1500` | CRD write + per-ID lock + informer roundtrip |
-| `rbac_cleanup_duration` | `p(95)<2500` | finalizer cascade (auth → exporter PATCH × 2 → DELETE) |
-| `globalconfig_get_duration` | `p(95)<250` | tiny CRD |
-| `globalconfig_patch_duration` | `p(95)<1200` | CRD write + apply lock |
+| `rbac_cleanup_duration` | `p(95)<2500` | finalizer cascade (auth → exporter finalizer PUT/DELETE → DELETE) |
+| `config_get_duration` | `p(95)<250` | tiny CRD |
+| `config_patch_duration` | `p(95)<1200` | CRD write + apply lock |
 | `namespaces_list_duration` | `p(95)<1500` | live K8s LIST, not cached |
 | `snapshot_summary_duration` | `p(95)<1500` | single-gen read; PVC IO bound |
 | `snapshot_fanout_total_duration` | `p(95)<5000` | bound by exporter QPS 50 |
@@ -304,7 +304,7 @@ Why this stack: lightest community option that already shows thresholds vs actua
 3. **Naming**: scenario names ≤30 chars; metrics use `<domain>_<verb>_duration`. **Confirmed**.
 4. **Threshold sanity**: each row anchored in code-observed behavior (lock pattern, QPS, UI timeouts). **Confirmed**.
 5. **Report clarity**: plain-English per metric, thresholds beside actuals, "what to look at" section. **Confirmed**.
-6. **Service relationship completeness**: verified both sides of every inter-service call (discovery `clients/protectionplans.go` + exporter `handlers/plans/protection/CreatePlan`; discovery force-sync handler + worker ingress; auth cleanup handlers + exporter finalizer routes; nginx config + each service.yaml). **Confirmed**.
+6. **Service relationship completeness**: verified both sides of every inter-service call (discovery `clients/protectionplans.go` + exporter plan create handler; discovery force-sync handler + worker ingress; auth cleanup handlers + exporter finalizer routes; nginx config + each service.yaml). **Confirmed**.
 7. **Open questions**: 10 listed, none silently assumed. **Confirmed**.
 
 **Changes made during self-review**:

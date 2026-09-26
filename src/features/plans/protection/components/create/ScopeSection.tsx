@@ -77,7 +77,7 @@ const ScopeSection: React.FC<ScopeSectionProps> = ({
           {scopeType === 'applications' && (
             <>
               <Form.Item
-                name="applicationIds"
+                name="applicationRefs"
                 label={FORM.APPLICATIONS_LABEL}
                 rules={[{ required: true, message: FORM.APPLICATIONS_REQUIRED_ERROR }]}
                 style={{ marginBottom: 12 }}

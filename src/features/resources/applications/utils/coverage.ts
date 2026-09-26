@@ -21,7 +21,7 @@ export const buildCoverageIndex = (plans: ProtectionPlan[]): ApplicationCoverage
     .filter((plan) => APPLICATION_COVERAGE_BY_PHASE[plan.phase] !== undefined)
     .forEach((plan) => {
       const byNamespace = plan.scope.type === 'namespaces';
-      const keys = (byNamespace ? plan.scope.namespaces : plan.scope.applicationIds) ?? [];
+      const keys = (byNamespace ? plan.scope.namespaces : plan.scope.applicationRefs) ?? [];
       const target = byNamespace ? index.byNamespace : index.byApplication;
       keys.forEach((key) => append(target, key, plan));
     });

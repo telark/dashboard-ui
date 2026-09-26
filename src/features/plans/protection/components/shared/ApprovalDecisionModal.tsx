@@ -24,7 +24,7 @@ const buildSummary = (plan: ProtectionPlan, environmentName: string | undefined)
   const targets =
     plan.scope.type === 'namespaces'
       ? CARD_LABELS.NAMESPACES_COUNT(plan.scope.namespaces?.length ?? 0)
-      : CARD_LABELS.APPLICATIONS_COUNT(plan.scope.applicationIds?.length ?? 0);
+      : CARD_LABELS.APPLICATIONS_COUNT(plan.scope.applicationRefs?.length ?? 0);
   const window =
     plan.timeMode === 'time_range' && plan.timeRange
       ? `${formatDateTime(plan.timeRange.startAt, CARD_LABELS.WINDOW_TIME_FORMAT)}${
@@ -53,7 +53,7 @@ const ApprovalDecisionModal: React.FC<ApprovalDecisionModalProps> = ({
   const [comment, setComment] = useState('');
   const trimmedComment = comment.trim();
   const { environments } = usePlanTaxonomyLists();
-  const environmentName = environments.find((c) => c.id === plan.environmentID)?.name;
+  const environmentName = environments.find((c) => c.id === plan.environmentRef)?.name;
   const rejecting = decision === 'rejected';
 
   const [wasOpen, setWasOpen] = useState(open);

@@ -13,16 +13,16 @@ const CONTROL_GEOMETRY = {
 
 export const LIGHT_TOKENS = {
   ...CONTROL_GEOMETRY,
-  colorPrimary: '#20C997',
-  colorBgContainer: '#ffffff',
-  colorBorder: '#e2e8f0',
+  colorPrimary: DEFAULT_COLORS.SUCCESS,
+  colorBgContainer: DEFAULT_COLORS.AUTH_LIGHT_CARD_BG,
+  colorBorder: DEFAULT_COLORS.AUTH_LIGHT_BORDER,
   colorTextPlaceholder: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
 } as const;
 
 export const DARK_TOKENS = {
   ...CONTROL_GEOMETRY,
-  colorPrimary: '#20C997',
-  colorBgContainer: '#0f172a',
-  colorBorder: '#1e293b',
+  colorPrimary: DEFAULT_COLORS.SUCCESS,
+  colorBgContainer: DEFAULT_COLORS.AUTH_DARK_CARD_BG,
+  colorBorder: DEFAULT_COLORS.AUTH_DARK_BORDER,
   colorTextPlaceholder: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
 } as const;

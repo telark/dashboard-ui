@@ -74,7 +74,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
             justifyContent: 'flex-end',
             gap: 12,
             padding: '8px 0',
-            background: DEFAULT_COLORS.BACKGROUND_WHITE,
+            background: DEFAULT_COLORS.PAGE_BG,
           }}
         >
           <ApplicationDetailsIdentity application={application} visible={identityVisible} />

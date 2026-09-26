@@ -65,7 +65,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
           width: '100%',
           height: HEADER_LAYOUT.MIN_HEIGHT,
           minHeight: HEADER_LAYOUT.MIN_HEIGHT,
-          background: DEFAULT_COLORS.BACKGROUND_WHITE,
+          background: DEFAULT_COLORS.PAGE_BG,
           boxSizing: 'border-box',
         }}
       >
@@ -89,7 +89,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
           width: '100%',
           height: HEADER_LAYOUT.MIN_HEIGHT,
           minHeight: HEADER_LAYOUT.MIN_HEIGHT,
-          background: DEFAULT_COLORS.BACKGROUND_WHITE,
+          background: DEFAULT_COLORS.PAGE_BG,
           boxSizing: 'border-box',
         }}
       >

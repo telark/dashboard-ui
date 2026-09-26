@@ -20,12 +20,9 @@ export const getAllPasskeys = async (): Promise<Passkey[]> => {
 };
 
 export const getPasskey = async (credentialId: string): Promise<Passkey> => {
-  const { path, method } = Endpoints.AUTH.PASSKEYS.GET_SINGLE;
+  const { path, method } = Endpoints.AUTH.PASSKEYS.GET_SINGLE(credentialId);
   return await Client<Passkey>(authApiClient, path, {
     method,
-    headers: {
-      [HTTP_HEADERS.CUSTOM.CREDENTIAL_ID]: credentialId,
-    },
   });
 };
 
@@ -61,13 +58,10 @@ export const updatePasskey = async (
   credentialId: string,
   request: UpdatePasskeyRequest,
 ): Promise<UpdatePasskeyResponse> => {
-  const { path, method } = Endpoints.AUTH.PASSKEYS.UPDATE;
+  const { path, method } = Endpoints.AUTH.PASSKEYS.UPDATE(credentialId);
   return await Client<UpdatePasskeyResponse>(authApiClient, path, {
     method,
     data: request,
-    headers: {
-      [HTTP_HEADERS.CUSTOM.CREDENTIAL_ID]: credentialId,
-    },
   });
 };
 
@@ -76,10 +70,8 @@ export const deletePasskey = async (
   request: DeletePasskeyRequest = {},
   userId?: string,
 ): Promise<DeletePasskeyResponse> => {
-  const { path, method } = Endpoints.AUTH.PASSKEYS.DELETE;
-  const headers: Record<string, string> = {
-    [HTTP_HEADERS.CUSTOM.CREDENTIAL_ID]: credentialId,
-  };
+  const { path, method } = Endpoints.AUTH.PASSKEYS.DELETE(credentialId);
+  const headers: Record<string, string> = {};
 
   if (request.cleanupOrphaned && userId) {
     headers[HTTP_HEADERS.CUSTOM.USER_ID] = userId;

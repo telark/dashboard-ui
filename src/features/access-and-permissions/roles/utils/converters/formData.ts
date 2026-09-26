@@ -1,6 +1,5 @@
 import type { Role, RoleFormData, RoleFormValues, RoleType, RoleStatus } from '../../models';
 import { convertScopesToAPI, convertScopesFromAPI } from './scopes';
-import { convertAssignedToToAPI, convertAssignedToFromAPI } from './assignment';
 import { buildValidityForAPI, buildValidityForForm } from '../validity/builders';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 
@@ -18,13 +17,11 @@ export const convertFormValuesToRoleFormData = (
   defaultType: RoleType = RC.VALUES.ROLE_TYPE_CUSTOM as RoleType,
   defaultStatus: RoleStatus = RC.STATUS.ACTIVE as RoleStatus,
 ): RoleFormData => {
-  const assignedTo = convertAssignedToToAPI(formValues.assignedTo);
-
   return {
     name: formValues.name,
     description: formValues.description || '',
     type: (formValues.type as RoleType) || defaultType,
-    categoryID: formValues.categoryID || '',
+    categoryRef: formValues.categoryRef || '',
     status: (formValues.status as RoleStatus) || defaultStatus,
     scopesAndPermissions: convertScopesToAPI(formValues.scopes),
     validity: buildValidityForAPI(formValues.validity),
@@ -36,7 +33,6 @@ export const convertFormValuesToRoleFormData = (
       lockCategory: Boolean(formValues.protection?.lockCategory),
       softDelete: Boolean(formValues.protection?.softDelete),
     },
-    assignedTo: { groupIDs: assignedTo.groupIDs, userIDs: assignedTo.userIDs },
   };
 };
 
@@ -45,25 +41,23 @@ export const convertRoleToFormValues = (role: Role | null): RoleFormValues => {
     return {
       name: '',
       description: '',
-      categoryID: '',
+      categoryRef: '',
       type: RC.VALUES.ROLE_TYPE_CUSTOM,
       status: RC.STATUS.ACTIVE,
       scopes: {},
       validity: { type: RC.VALIDITY_TYPES.PERMANENT },
       protection: DEFAULT_PROTECTION,
-      assignedTo: [],
     };
   }
 
   return {
     name: role.name,
     description: role.description || '',
-    categoryID: role.categoryID || '',
+    categoryRef: role.categoryRef || '',
     type: role.type,
     status: role.status,
     scopes: convertScopesFromAPI(role.scopesAndPermissions || []),
     validity: buildValidityForForm(role.validity),
     protection: role.protection || DEFAULT_PROTECTION,
-    assignedTo: convertAssignedToFromAPI(role.assignedTo),
   };
 };

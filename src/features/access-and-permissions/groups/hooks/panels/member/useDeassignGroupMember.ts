@@ -39,16 +39,16 @@ export const useDeassignGroupMember = ({
   const performDeassign = useCallback(
     async (user: User) => {
       if (!group) throw new Error('No group selected');
-      const current = (form.getFieldValue('assignedUsersIDs') as string[]) ?? [];
+      const current = (form.getFieldValue('userRefs') as string[]) ?? [];
       try {
-        const freshIds = await fetchFreshGroupIds(group.id, 'assignedUsersIDs');
+        const freshIds = await fetchFreshGroupIds(group.id, 'userRefs');
         await dispatch(
           updateGroupThunk({
             id: group.id,
-            group: { assignedUsersIDs: applySelectionChange(freshIds, [user.id], []) },
+            group: { userRefs: applySelectionChange(freshIds, [user.id], []) },
           }),
         ).unwrap();
-        form.setFieldsValue({ assignedUsersIDs: current.filter((id) => id !== user.id) });
+        form.setFieldsValue({ userRefs: current.filter((id) => id !== user.id) });
         dispatch(fetchAllUsersSilentThunk());
         message.success(GC.LABELS.MESSAGES.MEMBER_DEASSIGNED(user.username));
       } catch (rejection) {
@@ -62,7 +62,7 @@ export const useDeassignGroupMember = ({
   const handleDeassignSuccess = useCallback(
     // The removed user is not needed: the form already holds the resulting id list.
     () => {
-      const updatedIds = (form.getFieldValue('assignedUsersIDs') as string[]) ?? [];
+      const updatedIds = (form.getFieldValue('userRefs') as string[]) ?? [];
       onSuccess?.(updatedIds);
     },
     [form, onSuccess],

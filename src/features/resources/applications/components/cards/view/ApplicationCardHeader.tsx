@@ -118,7 +118,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
 
     const accent =
       APPLICATION_HEALTH_ACCENT[(application.health?.status ?? '').toLowerCase()] ??
-      DEFAULT_COLORS.DEFAULT;
+      DEFAULT_COLORS.NEUTRAL;
     const statusText = application.health?.status || APPLICATIONS_UI.FALLBACKS.UNKNOWN;
 
     const detailsPath = APP_ROUTES.APPLICATION_DETAILS.replace(':name', application.name);

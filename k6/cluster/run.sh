@@ -4,11 +4,11 @@
 #
 # Lifecycle per invocation:
 #   1. Flatten k6 scripts to a temp dir (ConfigMap mount needs flat layout).
-#   2. Create a per-run ConfigMap with the flattened scripts.
-#   3. Render Job manifest from job.yaml template.
+#   2. Create a per-run ConfigMap with the flattened scripts, and a Secret holding SESSION_TOKEN.
+#   3. Render Job manifest from job.yaml template (the token is referenced, never inlined).
 #   4. Apply Job. Wait for pod. Stream logs to results/<run>.log.
 #   5. Wait for Job completion. Copy result JSON/TXT out of the pod.
-#   6. Delete Job + ConfigMap (always, via EXIT trap).
+#   6. Delete Job + ConfigMap + Secret (always, via EXIT trap).
 #
 # Usage:
 #   k6/cluster/run.sh <scenario> [namespace]
@@ -132,6 +132,7 @@ compute_run_identifiers() {
   RUN_TAG="${SCENARIO}-$(date +%Y%m%d-%H%M%S)"
   JOB_NAME="k6-${RUN_TAG}"
   CONFIGMAP_NAME="k6-ui-scripts-cm"
+  SESSION_SECRET_NAME="k6-session-${RUN_TAG//_/-}"
 }
 
 compute_paths() {
@@ -160,6 +161,10 @@ cleanup_all() {
 
   log cleanup "deleting configmap ${NAMESPACE}/${CONFIGMAP_NAME}"
   kubectl -n "${NAMESPACE}" delete configmap "${CONFIGMAP_NAME}" \
+    --ignore-not-found --wait=false >/dev/null 2>&1 || true
+
+  log cleanup "deleting secret ${NAMESPACE}/${SESSION_SECRET_NAME}"
+  kubectl -n "${NAMESPACE}" delete secret "${SESSION_SECRET_NAME}" \
     --ignore-not-found --wait=false >/dev/null 2>&1 || true
 
   rm -rf "${FLAT_DIR}" "${RENDERED_JOB}" 2>/dev/null || true
@@ -197,6 +202,13 @@ create_configmap() {
     "${CM_FILE_ARGS[@]}" >/dev/null
 }
 
+# Token via stdin, so it never appears in a process list or in the Job spec.
+create_session_secret() {
+  log build "creating secret ${NAMESPACE}/${SESSION_SECRET_NAME}"
+  printf '%s' "${SESSION_TOKEN}" | kubectl -n "${NAMESPACE}" create secret generic \
+    "${SESSION_SECRET_NAME}" --from-file=SESSION_TOKEN=/dev/stdin >/dev/null
+}
+
 # ---------------------------------------------------------------------------
 # Job manifest rendering + apply
 # ---------------------------------------------------------------------------
@@ -207,12 +219,11 @@ sed_escape() {
 }
 
 render_job_manifest() {
-  local exp_url disc_url auth_url analyzer_url token user app tpl
+  local exp_url disc_url auth_url analyzer_url user app tpl
   exp_url=$(sed_escape "${EXPORTER_URL}")
   disc_url=$(sed_escape "${DISCOVERY_URL}")
   auth_url=$(sed_escape "${AUTH_URL}")
   analyzer_url=$(sed_escape "${ANALYZER_URL}")
-  token=$(sed_escape "${SESSION_TOKEN}")
   user=$(sed_escape "${USER_ID}")
   app=$(sed_escape "${TEST_APP_NAME}")
   tpl=$(sed_escape "${TEST_PLAN_TEMPLATE_ID}")
@@ -226,7 +237,7 @@ render_job_manifest() {
     -e "s|__DISCOVERY_URL__|${disc_url}|g" \
     -e "s|__AUTH_URL__|${auth_url}|g" \
     -e "s|__ANALYZER_URL__|${analyzer_url}|g" \
-    -e "s|__SESSION_TOKEN__|${token}|g" \
+    -e "s|__SESSION_SECRET__|${SESSION_SECRET_NAME}|g" \
     -e "s|__USER_ID__|${user}|g" \
     -e "s|__TEST_APP_NAME__|${app}|g" \
     -e "s|__TEST_PLAN_TEMPLATE_ID__|${tpl}|g" \
@@ -354,6 +365,7 @@ main() {
 
   flatten_k6_scripts
   create_configmap
+  create_session_secret
   render_job_manifest
   print_run_banner
   apply_job_manifest

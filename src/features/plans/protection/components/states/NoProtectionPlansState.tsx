@@ -1,5 +1,5 @@
 import React from 'react';
-import { DEFAULT_COLORS, Icons } from '../../../../../constants';
+import { DEFAULT_COLORS, Icons, withAlpha } from '../../../../../constants';
 const NoProtectionPlansState: React.FC = () => (
   <div
     style={{
@@ -16,13 +16,13 @@ const NoProtectionPlansState: React.FC = () => (
         width: 56,
         height: 56,
         borderRadius: '50%',
-        background: 'rgba(32,201,151,0.12)',
-        boxShadow: 'inset 0 0 0 2px rgba(32,201,151,0.18)',
+        background: DEFAULT_COLORS.SUCCESS_TINT,
+        boxShadow: `inset 0 0 0 2px ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.18)}`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 12,
-        color: '#20C997',
+        color: DEFAULT_COLORS.SUCCESS,
         fontSize: 24,
       }}
     >

@@ -559,14 +559,14 @@ export const PHASE_ACCENT: Record<PlanPhase, string> = {
   active: DEFAULT_COLORS.SUCCESS,
   scheduled: DEFAULT_COLORS.WARNING,
   failed: DEFAULT_COLORS.DANGER,
-  terminated: DEFAULT_COLORS.DEFAULT,
-  canceled: DEFAULT_COLORS.DEFAULT,
-  draft: DEFAULT_COLORS.DEFAULT,
+  terminated: DEFAULT_COLORS.NEUTRAL,
+  canceled: DEFAULT_COLORS.NEUTRAL,
+  draft: DEFAULT_COLORS.NEUTRAL,
   pending_approval: DEFAULT_COLORS.WARNING,
 };
 
 export const HEALTH_ACCENT: Record<PlanHealth, string> = {
-  unknown: DEFAULT_COLORS.DEFAULT,
+  unknown: DEFAULT_COLORS.NEUTRAL,
   healthy: DEFAULT_COLORS.SUCCESS,
   drifted: DEFAULT_COLORS.WARNING,
   degraded: DEFAULT_COLORS.DANGER,
@@ -593,27 +593,14 @@ export const SCOPE_TYPE_LABEL: Record<ScopeType, string> = {
   namespaces: PROTECTION_PLANS_CONSTANTS.LABELS.DETAIL_PAGE.FIELDS.NAMESPACES,
 };
 
-export const PHASE_DOT_COLOR: Record<PlanPhase, string> = {
-  active: '#22c55e',
-  scheduled: '#3b82f6',
-  failed: '#ef4444',
-  terminated: '#9ca3af',
-  canceled: '#9ca3af',
-  draft: '#d1d5db',
-  pending_approval: DEFAULT_COLORS.WARNING,
-};
+export const PHASE_DOT_COLOR: Record<PlanPhase, string> = PHASE_ACCENT;
 
-export const HEALTH_DOT_COLOR: Record<PlanHealth, string> = {
-  unknown: '#9ca3af',
-  healthy: '#22c55e',
-  drifted: '#f59e0b',
-  degraded: '#ef4444',
-};
+export const HEALTH_DOT_COLOR: Record<PlanHealth, string> = HEALTH_ACCENT;
 
 export const VIOLATION_RESULT_DOT: Record<ViolationResult, string> = {
   pass: DEFAULT_COLORS.SUCCESS,
   fail: DEFAULT_COLORS.DANGER,
   warn: DEFAULT_COLORS.WARNING,
-  error: DEFAULT_COLORS.ERROR,
-  skip: DEFAULT_COLORS.DEFAULT,
+  error: DEFAULT_COLORS.DANGER,
+  skip: DEFAULT_COLORS.NEUTRAL,
 };

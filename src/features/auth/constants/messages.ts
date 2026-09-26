@@ -29,7 +29,6 @@ export const AUTH_ERROR_MESSAGES = {
   },
   WEBAUTHN_CANCELLED: 'Authentication cancelled by user',
   WEBAUTHN_ERROR: 'WebAuthn operation failed',
-  MISSING_CREDENTIAL_ID: 'Credential ID is required',
   MISSING_DEVICE_NAME: 'Device name is required',
   MISSING_EMAIL: 'Email is required',
   LAST_PASSKEY_DELETE: 'Cannot delete last passkey',
@@ -95,6 +94,7 @@ export const AUTH_CONSTANTS = {
   LOGOUT: {
     LOGS: {
       SERVER_ERROR: 'Server logout returned error; local session cleared regardless',
+      PURGE_ERROR: 'Failed to purge locally persisted data on logout',
     },
     URL_TAG: 'auth/logout',
   },

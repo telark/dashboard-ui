@@ -3,6 +3,7 @@ import { Modal } from 'antd';
 import { AiOutlineClose } from 'react-icons/ai';
 import type { BaseModalProps } from '../../../../interfaces/layout/modal';
 import { useOpenedOnce } from '../../../../hooks/layout/useOpenedOnce';
+import { DEFAULT_COLORS } from '../../../../constants';
 
 const BaseModal: React.FC<BaseModalProps> = ({
   open,
@@ -31,7 +32,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
       closeIcon={
         showCloseIcon ? (
           <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-            <AiOutlineClose size={18} color="#000" />
+            <AiOutlineClose size={18} color={DEFAULT_COLORS.TEXT_ON_SURFACE} />
           </span>
         ) : (
           false

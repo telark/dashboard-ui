@@ -13,12 +13,11 @@ export const createRole = async (role: RoleFormData) => {
       name: role.name,
       description: role.description,
       type: role.type,
-      categoryID: role.categoryID,
+      categoryRef: role.categoryRef,
       scopesAndPermissions: role.scopesAndPermissions,
       protection: role.protection,
       status: role.status,
       validity: role.validity,
-      assignedTo: role.assignedTo,
     };
 
     if (currentUser?.id) {

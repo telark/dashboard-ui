@@ -37,23 +37,23 @@ export const useDeassignGroupRole = ({
   const performDeassign = useCallback(
     async (role: Role) => {
       if (!group) throw new Error('No group selected');
-      const current = (form.getFieldValue('assignedRolesIDs') as string[]) ?? [];
+      const current = (form.getFieldValue('roleRefs') as string[]) ?? [];
       await handleUpdate(group.id, async () => ({
-        assignedRolesIDs: applySelectionChange(
-          await fetchFreshGroupIds(group.id, 'assignedRolesIDs'),
+        roleRefs: applySelectionChange(
+          await fetchFreshGroupIds(group.id, 'roleRefs'),
           [role.id],
           [],
         ),
       }));
       store.dispatch(fetchMyPermissionsThunk());
-      form.setFieldsValue({ assignedRolesIDs: current.filter((id) => id !== role.id) });
+      form.setFieldsValue({ roleRefs: current.filter((id) => id !== role.id) });
       message.success(GC.LABELS.MESSAGES.ROLE_DEASSIGNED(role.name));
     },
     [group, form, handleUpdate, message],
   );
 
   const handleDeassignSuccess = useCallback(() => {
-    const updatedIds = (form.getFieldValue('assignedRolesIDs') as string[]) ?? [];
+    const updatedIds = (form.getFieldValue('roleRefs') as string[]) ?? [];
     onSuccess?.(updatedIds);
   }, [form, onSuccess]);
 

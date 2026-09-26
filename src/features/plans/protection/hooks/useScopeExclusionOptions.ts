@@ -21,7 +21,7 @@ export interface SelectOptionGroup {
 
 interface ScopeExclusionOptionsArgs {
   scopeType: ScopeType;
-  applicationIds: string[];
+  applicationRefs: string[];
 }
 
 const APP_KEY_SEPARATOR = ',';
@@ -33,15 +33,15 @@ const byName = (a: ApplicationResourceRef, b: ApplicationResourceRef) =>
 
 export const useScopeExclusionOptions = ({
   scopeType,
-  applicationIds,
+  applicationRefs,
 }: ScopeExclusionOptionsArgs) => {
   const applications = useSelector(selectApplications);
   const cache = useRef(new Map<string, ApplicationResourceRef[]>());
   const [cached, setCached] = useState<Map<string, ApplicationResourceRef[]>>(new Map());
   const [resourcesLoading, setResourcesLoading] = useState(false);
 
-  // applicationIds is a fresh array on every render; key the effect on its content.
-  const appsKey = applicationIds.join(APP_KEY_SEPARATOR);
+  // applicationRefs is a fresh array on every render; key the effect on its content.
+  const appsKey = applicationRefs.join(APP_KEY_SEPARATOR);
   const selected = useMemo(() => (appsKey ? appsKey.split(APP_KEY_SEPARATOR) : []), [appsKey]);
   const isApplications = scopeType === 'applications';
 

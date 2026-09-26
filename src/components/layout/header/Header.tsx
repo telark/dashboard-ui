@@ -11,7 +11,7 @@ const Header: React.FC = () => {
       style={{
         // Full width, less the gutter a panel's scroll lock turns into body padding.
         width: `calc(100% - var(${SCROLL_LOCK_GUTTER_VAR}, 0px))`,
-        backgroundColor: DEFAULT_COLORS.BACKGROUND_WHITE,
+        backgroundColor: DEFAULT_COLORS.PAGE_BG,
         height: HEADER_LAYOUT.HEIGHT,
         display: 'flex',
         justifyContent: 'flex-end', // Align icons to the right
@@ -22,7 +22,7 @@ const Header: React.FC = () => {
         top: '0',
         zIndex: 1000,
         transition: 'width 0.3s ease',
-        borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+        borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
       }}
     >
       {/* Logo pinned to the sidebar menu items' left edge, toggle beside it */}

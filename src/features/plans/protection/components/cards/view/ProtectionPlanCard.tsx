@@ -132,10 +132,10 @@ const buildWindow = (plan: ProtectionPlan): PlanWindow => {
 const buildScopeValue = (plan: ProtectionPlan): string =>
   plan.scope.type === 'namespaces'
     ? CARD_LABELS.NAMESPACES_COUNT(plan.scope.namespaces?.length ?? 0)
-    : CARD_LABELS.APPLICATIONS_COUNT(plan.scope.applicationIds?.length ?? 0);
+    : CARD_LABELS.APPLICATIONS_COUNT(plan.scope.applicationRefs?.length ?? 0);
 
 const buildTargets = (plan: ProtectionPlan): string[] =>
-  (plan.scope.type === 'namespaces' ? plan.scope.namespaces : plan.scope.applicationIds) ?? [];
+  (plan.scope.type === 'namespaces' ? plan.scope.namespaces : plan.scope.applicationRefs) ?? [];
 
 const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOpen }) => {
   const dispatch: AppDispatch = useDispatch();
@@ -220,7 +220,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const phaseLabel = planPhaseLabel(plan);
   const canCancel = CANCELLABLE_PHASES.includes(plan.phase);
 
-  const phaseAccent = PHASE_ACCENT[plan.phase] ?? DEFAULT_COLORS.DEFAULT;
+  const phaseAccent = PHASE_ACCENT[plan.phase] ?? DEFAULT_COLORS.NEUTRAL;
   const health = plan.health ?? 'unknown';
   // Health only speaks while the plan is running; a canceled plan's last known
   // health would otherwise light the card up green.
@@ -233,8 +233,8 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const shownTargets = targets.slice(0, CARD_LAYOUT.MAX_TARGET_TAGS);
   const hiddenTargets = targets.length - shownTargets.length;
   const { environments, tags } = usePlanTaxonomyLists();
-  const environmentName = environments.find((c) => c.id === plan.environmentID)?.name;
-  const planTags = (plan.tagIDs ?? [])
+  const environmentName = environments.find((c) => c.id === plan.environmentRef)?.name;
+  const planTags = (plan.tagRefs ?? [])
     .map((id) => ({ id, name: tags.find((c) => c.id === id)?.name }))
     .filter((t): t is { id: string; name: string } => Boolean(t.name));
   const shownTags = planTags.slice(0, CARD_LAYOUT.MAX_TARGET_TAGS);
@@ -246,11 +246,9 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const menuButtonStyle = getCardMenuButtonStyle(menuOpen);
 
   const handleCancel = useCallback(async () => {
-    const userId = getCurrentUser()?.id;
-    if (!userId) return;
     setCancelling(true);
     try {
-      await dispatch(cancelPlanThunk({ userId, planId: plan.id })).unwrap();
+      await dispatch(cancelPlanThunk({ planId: plan.id })).unwrap();
       message.success(PPC.LABELS.ACTIONS.CANCEL_SUCCESS(plan.name));
       setCancelModalOpen(false);
     } catch (err: unknown) {
@@ -261,11 +259,9 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   }, [dispatch, message, plan.id, plan.name]);
 
   const handleReactivate = useCallback(async () => {
-    const userId = getCurrentUser()?.id;
-    if (!userId) return;
     setReactivating(true);
     try {
-      await dispatch(reactivatePlanThunk({ userId, planId: plan.id })).unwrap();
+      await dispatch(reactivatePlanThunk({ planId: plan.id })).unwrap();
       message.success(PPC.LABELS.ACTIONS.REACTIVATE_SUCCESS(plan.name));
       setReactivateModalOpen(false);
     } catch (err: unknown) {
@@ -284,14 +280,11 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const handleDecide = useCallback(
     async (comment: string) => {
       if (!decisionModal) return;
-      const userId = getCurrentUser()?.id;
-      if (!userId) return;
       const approved = decisionModal === 'approved';
       setDeciding(true);
       try {
         await dispatch(
           decidePlanThunk({
-            userId,
             planId: plan.id,
             decision: decisionModal,
             comment: comment || undefined,
@@ -317,11 +310,9 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   );
 
   const handleDelete = useCallback(async () => {
-    const userId = getCurrentUser()?.id;
-    if (!userId) return;
     setDeleting(true);
     try {
-      await dispatch(deletePlanThunk({ userId, planId: plan.id })).unwrap();
+      await dispatch(deletePlanThunk({ planId: plan.id })).unwrap();
       message.success(PPC.LABELS.ACTIONS.DELETE_SUCCESS(plan.name));
       setDeleteModalOpen(false);
     } catch (err: unknown) {
@@ -391,8 +382,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
       key: 'generateReport',
       label: PPC.LABELS.REPORTS.GENERATE,
       icon: <FileTextOutlined />,
-      disabled:
-        !canGenerateReport || generatingReport || isReportNotStarted(plan) || !getCurrentUser()?.id,
+      disabled: !canGenerateReport || generatingReport || isReportNotStarted(plan),
       title: getGenerateReportTooltip(plan, canGenerateReport),
     },
     ...(canReactivate
@@ -482,7 +472,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
               )}
             </span>
             {/* Keyed on the plan's ids, not the resolved names, so the row does not pop in when the lists load. */}
-            {(plan.environmentID || (plan.tagIDs?.length ?? 0) > 0) && (
+            {(plan.environmentRef || (plan.tagRefs?.length ?? 0) > 0) && (
               <span style={{ ...CARD_TAG_ROW_STYLE, minHeight: CARD_LAYOUT.TAG_ROW_MIN_HEIGHT_PX }}>
                 {environmentName && (
                   <RowTag
@@ -533,10 +523,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
                   if (key === 'reactivate') setReactivateModalOpen(true);
                   if (key === 'approve') openDecision('approved');
                   if (key === 'reject') openDecision('rejected');
-                  if (key === 'generateReport') {
-                    const userId = getCurrentUser()?.id;
-                    if (userId) void generateReport(userId);
-                  }
+                  if (key === 'generateReport') void generateReport();
                 },
               }}
             >
@@ -584,7 +571,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
               marginTop: 8,
               height: CARD_LAYOUT.TRACK_HEIGHT_PX,
               borderRadius: CARD_LAYOUT.PILL_RADIUS_PX,
-              background: DEFAULT_COLORS.BACKGROUND_HOVER,
+              background: DEFAULT_COLORS.HOVER_BG,
               overflow: 'hidden',
             }}
           >

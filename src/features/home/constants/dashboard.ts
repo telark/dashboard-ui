@@ -126,7 +126,7 @@ export const HOME_SEVERITY_COLORS: Record<SeverityKey, string> = {
 };
 
 export const HOME_PLAN_EVENT_COLORS: Record<PlanEventKey, string> = {
-  created: DEFAULT_COLORS.CHIP_BLUE_TEXT,
+  created: DEFAULT_COLORS.INFO,
   started: DEFAULT_COLORS.SUCCESS,
   terminated: DEFAULT_COLORS.ICON_SECONDARY,
 };

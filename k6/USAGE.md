@@ -56,10 +56,10 @@ TEST_APP_NAME=my-app k6/cluster/run.sh application_force_sync
 ## What happens when you run
 
 1. The script flattens `lib/` + `scenarios/` into a temp dir and uploads them as a per-run ConfigMap.
-2. It renders `cluster/job.yaml` with your env values and applies the Job.
+2. It stores `SESSION_TOKEN` in a per-run Secret, renders `cluster/job.yaml` with your other env values (the Job references the Secret, so the token never appears in the Job spec) and applies the Job.
 3. It waits for the pod, streams logs live (also saved to `k6/results/<run>.log`).
 4. After the Job finishes it copies the JSON + TXT summary out of the pod into `k6/results/<run>-json/`.
-5. It deletes the Job and ConfigMap (guaranteed by an `EXIT` trap — even if you Ctrl-C).
+5. It deletes the Job, ConfigMap and Secret (guaranteed by an `EXIT` trap — even if you Ctrl-C).
 
 You'll see lines like:
 

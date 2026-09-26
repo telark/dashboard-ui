@@ -45,7 +45,7 @@ export const useManageUserGroupPanel = ({
     user,
     form,
     onClose,
-    fieldName: 'assignedGroupsIDs',
+    fieldName: 'groupRefs',
     currentSelected: currentSelectedGroups,
     dataReady: !groupsLoading && !!groups,
     successMessage: UC.LABELS.MESSAGES.GROUP_ASSIGNED,

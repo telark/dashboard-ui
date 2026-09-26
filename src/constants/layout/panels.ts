@@ -1,4 +1,4 @@
-import { DEFAULT_COLORS } from '../shared/colors';
+import { DEFAULT_COLORS, withAlpha } from '../shared/colors';
 import { AVATAR_RING } from './avatars';
 import { CONTROL_HEIGHT } from './controls';
 import { HEADER_LAYOUT } from './header';
@@ -25,7 +25,7 @@ export const SLIDE_OUT = {
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'rgba(0, 0, 0, 0.45)',
+    background: DEFAULT_COLORS.OVERLAY_BACKDROP,
     zIndex: 1000,
     animation: 'fadeIn 0.2s ease-in-out',
   },
@@ -200,7 +200,7 @@ export const FILTER_PANEL = {
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'rgba(0, 0, 0, 0.45)',
+    background: DEFAULT_COLORS.OVERLAY_BACKDROP,
     zIndex: 1002,
     animation: 'fadeIn 0.2s ease-in-out',
   },
@@ -271,7 +271,7 @@ export const FILTER_PANEL = {
     fontWeight: 600,
     border: `1px solid ${DEFAULT_COLORS.SUCCESS}`,
     backgroundColor: DEFAULT_COLORS.SUCCESS,
-    color: '#fff',
+    color: DEFAULT_COLORS.PILL_TEXT,
   },
   BUTTON_INACTIVE: {
     border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
@@ -300,7 +300,7 @@ export const VIEW = {
     alignItems: 'center' as const,
     gap: 8,
     paddingBottom: 20,
-    borderBottom: '1px solid #eef2f6',
+    borderBottom: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
     position: 'relative' as const,
   },
   ICON_WRAPPER: {
@@ -311,7 +311,7 @@ export const VIEW = {
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
-    border: '2px solid rgba(32, 201, 151, 0.35)',
+    border: `2px solid ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.35)}`,
   },
   NAME_STACK: {
     display: 'flex' as const,
@@ -346,21 +346,21 @@ export const VIEW = {
     padding: AVATAR_RING.BORDER_WIDTH,
     background: DEFAULT_COLORS.SURFACE_WHITE,
     boxSizing: 'border-box' as const,
-    boxShadow: '0 0 0 2px #fff',
+    boxShadow: `0 0 0 2px ${DEFAULT_COLORS.SURFACE_WHITE}`,
   },
   OVERFLOW_BADGE: {
     width: 32,
     height: 32,
     borderRadius: '50%',
-    background: '#20C997',
-    color: '#fff',
+    background: DEFAULT_COLORS.SUCCESS,
+    color: DEFAULT_COLORS.PILL_TEXT,
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
     fontWeight: 700,
     fontSize: 12,
     marginLeft: -6,
-    boxShadow: '0 0 0 3px #fff',
+    boxShadow: `0 0 0 3px ${DEFAULT_COLORS.SURFACE_WHITE}`,
     zIndex: 1,
     cursor: 'default' as const,
   },
@@ -377,7 +377,7 @@ export const VIEW = {
   OVERFLOW_USERNAME: {
     fontSize: 13,
     fontWeight: 600,
-    color: '#fff',
+    color: DEFAULT_COLORS.PILL_TEXT,
   },
   DETAILS: {
     CONTAINER: {

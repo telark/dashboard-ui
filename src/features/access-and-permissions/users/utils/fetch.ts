@@ -31,5 +31,5 @@ export const fetchCurrentUserDetails = async (
 
 export const fetchFreshUserIds = async (
   userId: string,
-  field: 'assignedRolesIDs' | 'assignedGroupsIDs',
+  field: 'roleRefs' | 'groupRefs',
 ): Promise<string[]> => (await fetchUserById(userId, true)).data?.[field] ?? [];

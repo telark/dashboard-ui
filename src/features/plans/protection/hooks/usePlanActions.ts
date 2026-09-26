@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react';
 import { App as AntdApp } from 'antd';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../../../store';
-import { getCurrentUser } from '../../../auth/utils';
 import { preparePlanThunk, updatePlanThunk } from '../store';
 import type { PreparePlanPayload, UpdatePlanPayload } from '../clients';
 import type { ProtectionPlan } from '../models';
@@ -15,11 +14,9 @@ export const usePlanActions = () => {
 
   const handleCreate = useCallback(
     async (payload: PreparePlanPayload): Promise<ProtectionPlan> => {
-      const userId = getCurrentUser()?.id;
-      if (!userId) throw new Error(PPC.LABELS.ACTIONS.CREATE_ERROR);
       setSubmitting(true);
       try {
-        const created = await dispatch(preparePlanThunk({ userId, payload })).unwrap();
+        const created = await dispatch(preparePlanThunk({ payload })).unwrap();
         message.success(PPC.LABELS.ACTIONS.CREATE_SUCCESS(created.name));
         return created;
       } catch (err) {
@@ -36,13 +33,11 @@ export const usePlanActions = () => {
 
   const handleUpdate = useCallback(
     async (planId: string, payload: UpdatePlanPayload): Promise<ProtectionPlan> => {
-      const userId = getCurrentUser()?.id;
-      if (!userId) throw new Error(PPC.LABELS.ACTIONS.UPDATE_ERROR);
       setSubmitting(true);
       try {
         const body = { ...payload };
         delete body.approvalMode;
-        const updated = await dispatch(updatePlanThunk({ userId, planId, payload: body })).unwrap();
+        const updated = await dispatch(updatePlanThunk({ planId, payload: body })).unwrap();
         message.success(PPC.LABELS.ACTIONS.UPDATE_SUCCESS(updated.name));
         return updated;
       } catch (err) {

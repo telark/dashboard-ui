@@ -33,7 +33,7 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
       fontWeight: 600,
       background: DEFAULT_COLORS.SUCCESS,
       borderColor: DEFAULT_COLORS.SUCCESS,
-      color: DEFAULT_COLORS.BACKGROUND_WHITE,
+      color: DEFAULT_COLORS.PAGE_BG,
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -54,7 +54,7 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
           paddingRight: token.marginLG,
           textAlign: 'center',
           width: '100%',
-          // No background of its own: DEFAULT_COLORS.BACKGROUND_WHITE is actually
+          // No background of its own: DEFAULT_COLORS.PAGE_BG is actually
           // dark navy, and this must read the light or dark surface it sits in.
         }}
       >

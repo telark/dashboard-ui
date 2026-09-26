@@ -52,10 +52,10 @@ export const useGroupFormState = ({
 
       const nameChanged = currentValues.name !== initial.name;
       const descriptionChanged = currentValues.description !== initial.description;
-      const categoryChanged = currentValues.categoryID !== initial.categoryID;
+      const categoryChanged = currentValues.categoryRef !== initial.categoryRef;
       const assignedUsersChanged = !arraysEqual(
-        currentValues.assignedUsersIDs || [],
-        initial.assignedUsersIDs || [],
+        currentValues.userRefs || [],
+        initial.userRefs || [],
       );
 
       const changed = nameChanged || descriptionChanged || categoryChanged || assignedUsersChanged;

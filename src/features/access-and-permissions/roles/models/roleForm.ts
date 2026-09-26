@@ -12,7 +12,7 @@ export interface ScopeFormValue {
 export interface RoleFormValues {
   name: string;
   description: string;
-  categoryID: string;
+  categoryRef: string;
   type?: string;
   status?: string;
   scopes: Record<string, ScopeFormValue>;
@@ -31,7 +31,6 @@ export interface RoleFormValues {
     lockCategory?: boolean;
     softDelete?: boolean;
   };
-  assignedTo?: string[];
 }
 
 export interface RoleFormProps {

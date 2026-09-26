@@ -11,7 +11,6 @@ import { zonedNow } from '../../../../../utils/layout';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import { duplicatePlanThunk } from '../../store';
 import { usePlanNameCheck } from '../../hooks/usePlanNameCheck';
-import { getCurrentUser } from '../../../../auth/utils';
 import type { AppDispatch } from '../../../../../store';
 import type { PlanApprovalMode, ProtectionPlan } from '../../models';
 import { mapCategoriesToOptions } from '../../../../access-and-permissions/categories/utils/helpers';
@@ -32,8 +31,8 @@ interface DuplicateFormShape {
   timeMode?: string;
   startAt?: Dayjs;
   endAt?: Dayjs;
-  environmentID?: string;
-  tagIDs?: string[];
+  environmentRef?: string;
+  tagRefs?: string[];
   approvalMode?: PlanApprovalMode;
 }
 
@@ -61,8 +60,8 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
       timeMode: plan?.timeMode ?? 'permanent',
       startAt: undefined,
       endAt: undefined,
-      environmentID: plan?.environmentID || undefined,
-      tagIDs: plan?.tagIDs ?? [],
+      environmentRef: plan?.environmentRef || undefined,
+      tagRefs: plan?.tagRefs ?? [],
       approvalMode: plan?.approvalMode ?? 'automatic',
     };
   }, [plan]);
@@ -84,8 +83,6 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     if (!plan) return;
-    const userId = getCurrentUser()?.id;
-    if (!userId) return;
 
     const v = values as DuplicateFormShape;
     setSubmitting(true);
@@ -95,16 +92,16 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
         name: string;
         timeMode: string;
         timeRange?: { startAt: string; endAt: string };
-        environmentID?: string;
-        tagIDs?: string[];
+        environmentRef?: string;
+        tagRefs?: string[];
         approvalMode?: PlanApprovalMode;
       } = {
         name: (v.name ?? '').trim(),
         timeMode: v.timeMode ?? 'permanent',
       };
-      if (form.isFieldsTouched(['environmentID', 'tagIDs'])) {
-        payload.environmentID = v.environmentID ?? '';
-        payload.tagIDs = v.tagIDs ?? [];
+      if (form.isFieldsTouched(['environmentRef', 'tagRefs'])) {
+        payload.environmentRef = v.environmentRef ?? '';
+        payload.tagRefs = v.tagRefs ?? [];
       }
       if (form.isFieldsTouched(['approvalMode'])) {
         payload.approvalMode = v.approvalMode;
@@ -116,7 +113,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
         };
       }
       const created = await dispatch(
-        duplicatePlanThunk({ userId, planId: plan.id, overrides: payload }),
+        duplicatePlanThunk({ planId: plan.id, overrides: payload }),
       ).unwrap();
       message.success(PPC.LABELS.ACTIONS.DUPLICATE_SUCCESS);
       handleClose();
@@ -205,7 +202,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
         </div>
       )}
 
-      {error && <div style={{ color: DEFAULT_COLORS.ERROR, fontSize: 13 }}>{error}</div>}
+      {error && <div style={{ color: DEFAULT_COLORS.DANGER, fontSize: 13 }}>{error}</div>}
     </div>
   );
 

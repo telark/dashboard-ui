@@ -215,8 +215,6 @@ export const APPLICATIONS_UI = {
       ABORT_CONFIRM_OK: 'Abort rollback',
       ABORT_SUCCESS: 'Rollback aborted.',
       ABORT_FAILED: 'Could not abort rollback. Please try again.',
-      ABORT_USER_REQUIRED:
-        'Sign in with a user account to abort a rollback (username is required for the request).',
     },
     METRICS: {
       TITLE: 'Metrics',
@@ -290,7 +288,7 @@ export const APPLICATIONS_UI = {
       MANAGED_BY: 'Managed by',
       LAST_UPDATED: 'Last updated',
       CREATED_AT: 'Created at',
-      CR_STATUS: 'CR status',
+      PUBLISHED: 'Published',
       RUNTIME: 'Runtime',
       FOOTER_NAMESPACE: 'Namespace',
       FOOTER_MANAGED: 'Managed by',

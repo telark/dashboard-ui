@@ -2,5 +2,5 @@ import { fetchGroupById } from '../clients';
 
 export const fetchFreshGroupIds = async (
   groupId: string,
-  field: 'assignedUsersIDs' | 'assignedRolesIDs',
+  field: 'userRefs' | 'roleRefs',
 ): Promise<string[]> => (await fetchGroupById(groupId, true)).data?.[field] ?? [];

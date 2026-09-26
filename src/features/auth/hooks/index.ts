@@ -10,6 +10,8 @@ export {
   dropForeignPermissions,
 } from './permissions/useInitializePermissions';
 
+export { useCrossTabLogout } from './useCrossTabLogout';
+
 export { useSessionsList, type UseSessionsListResult } from './useSessionsList';
 
 export { usePasskeyPanelState } from './passkeys/passkeyPanelState';

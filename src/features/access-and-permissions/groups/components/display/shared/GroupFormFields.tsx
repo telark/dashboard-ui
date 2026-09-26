@@ -55,7 +55,7 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
         marginBottom={16}
       />
       <Form.Item
-        name="categoryID"
+        name="categoryRef"
         label={GC.LABELS.FORM.FIELDS.CATEGORY_LABEL}
         required
         rules={[

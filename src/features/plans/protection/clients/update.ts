@@ -1,5 +1,5 @@
 import { Client, discoveryApiClient } from '../../../../api/index';
-import { Endpoints, HTTP_HEADERS } from '../../../../constants';
+import { Endpoints } from '../../../../constants';
 import type { PlanApprovalMode, PlanScopeExclusions, ProtectionPlan } from '../models';
 import type { ApiResponse } from './shared';
 
@@ -10,7 +10,7 @@ export interface UpdatePlanPayload {
   priority?: number;
   scope: {
     type: string;
-    applicationIds: string[];
+    applicationRefs: string[];
     namespaces: string[];
     exclusions: PlanScopeExclusions;
   };
@@ -18,14 +18,13 @@ export interface UpdatePlanPayload {
   mode: string;
   timeMode: string;
   timeRange?: { startAt: string; endAt: string };
-  participantsIDs?: string[];
-  environmentID?: string;
-  tagIDs?: string[];
+  participantRefs?: string[];
+  environmentRef?: string;
+  tagRefs?: string[];
   approvalMode?: PlanApprovalMode;
 }
 
 export const updatePlan = async (
-  userId: string,
   planId: string,
   payload: UpdatePlanPayload,
 ): Promise<ProtectionPlan> => {
@@ -35,7 +34,6 @@ export const updatePlan = async (
     {
       method: 'POST',
       data: payload,
-      headers: { [HTTP_HEADERS.CUSTOM.USER_ID]: userId },
     },
   );
   return res.data;

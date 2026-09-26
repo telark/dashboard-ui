@@ -133,7 +133,7 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
         position: 'sticky',
         top: PAGE_CONTENT_LAYOUT.HEADER_OFFSET_PX,
         zIndex: LIST_PAGE.TOOLBAR_Z_INDEX,
-        background: DEFAULT_COLORS.BACKGROUND_WHITE,
+        background: DEFAULT_COLORS.PAGE_BG,
         padding: LIST_PAGE.TOOLBAR_PADDING,
       }}
     >

@@ -167,7 +167,7 @@ export const useUserListPageConfig = ({
           key: UC.KEYS.ACTIONS,
           align: 'right' as const,
           width: 120,
-          onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
+          onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
           render: (_: unknown, record: User) => (
             <UserActionsColumn record={record} onEdit={handleEditUser} />
           ),

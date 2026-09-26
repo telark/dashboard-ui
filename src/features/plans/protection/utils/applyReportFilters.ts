@@ -24,7 +24,7 @@ export function applyReportFilters(
   return filterByDateRange(reports, dateRange, (r) => r.generatedAt).filter((report) => {
     const plan = planById.get(report.planId);
     if (excludes(planIds, report.planId)) return false;
-    if (excludes(environments, plan?.environmentID ?? '')) return false;
+    if (excludes(environments, plan?.environmentRef ?? '')) return false;
     if (excludes(triggers, report.trigger)) return false;
     return !query || (plan?.name ?? '').toLowerCase().includes(query);
   });

@@ -24,7 +24,7 @@ const ParticipantsSection: React.FC<ParticipantsSectionProps> = ({
     subtitle={SECTIONS.PARTICIPANTS_DESCRIPTION}
     content={
       <Form.Item
-        name="participantsIDs"
+        name="participantRefs"
         label={FORM.PARTICIPANTS_LABEL}
         style={{ marginBottom: 0 }}
         className={FORM_ITEM_CLASS}

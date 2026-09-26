@@ -22,14 +22,14 @@ export const useViewGroupPanel = (group: Group | null): UseViewGroupPanelReturn 
 
   const groupUsers = useMemo(() => {
     if (!group || !users) return [];
-    return group.assignedUsersIDs
+    return group.userRefs
       .map((userId) => users.find((u) => u.id === userId))
       .filter((user): user is NonNullable<typeof user> => user != null);
   }, [group, users]);
 
   const categoryName = useMemo(() => {
     if (!group || !categories) return '—';
-    return getCategoryName(group.categoryID, categories);
+    return getCategoryName(group.categoryRef, categories);
   }, [group, categories]);
 
   const createdByUser = useMemo(() => {

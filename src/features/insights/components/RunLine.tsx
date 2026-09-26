@@ -45,7 +45,7 @@ const RunLine: React.FC<{ run: LastRun | null; light?: boolean }> = ({ run, ligh
       </span>
       {run.finishedAt ? <TimeAgo date={run.finishedAt} /> : null}
       {run.status === 'failed' ? (
-        <span style={{ color: DEFAULT_COLORS.ERROR }}>{insightErrorMessage(run.error)}</span>
+        <span style={{ color: DEFAULT_COLORS.DANGER }}>{insightErrorMessage(run.error)}</span>
       ) : null}
     </div>
   );

@@ -23,6 +23,10 @@ export const APPLICATION_TRACKING_ANNOTATION_PREFIX =
 // evicts the least-recently-opened entry once it's full.
 export const SNAPSHOT_MANIFEST_CACHE_LIMIT = 20;
 
+export const APPLICATION_CONDITION_TYPES = {
+  PUBLISHED: 'Published',
+} as const;
+
 export const FORCE_SYNC_PHASE = {
   QUEUED: 'queued',
   RUNNING: 'running',
@@ -62,13 +66,7 @@ export const APPLICATIONS_CONSTANTS = {
 export const APPLICATION_DETAILS_CONSTANTS = {
   OVERVIEW_TAG_SUCCESS: {
     background: DEFAULT_COLORS.SUCCESS,
-    color: DEFAULT_COLORS.BACKGROUND_WHITE,
-  },
-  WORKLOAD_RESOURCE_METRICS: {
-    CPU_ICON_BG: 'rgba(32,201,151,0.12)',
-    CPU_ICON_COLOR: DEFAULT_COLORS.SUCCESS,
-    MEMORY_ICON_BG: 'rgba(59,130,246,0.12)',
-    MEMORY_ICON_COLOR: '#3B82F6',
+    color: DEFAULT_COLORS.PAGE_BG,
   },
   TAB_KEYS: {
     OVERVIEW: 'overview',

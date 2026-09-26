@@ -80,46 +80,6 @@
     "license": "MIT"
   },
   {
-    "name": "@testing-library/jest-dom",
-    "version": "7.0.1",
-    "license": "MIT"
-  },
-  {
-    "name": "@testing-library/react",
-    "version": "16.3.3",
-    "license": "MIT"
-  },
-  {
-    "name": "@testing-library/user-event",
-    "version": "14.6.7",
-    "license": "MIT"
-  },
-  {
-    "name": "@types/jest",
-    "version": "30.0.0",
-    "license": "MIT"
-  },
-  {
-    "name": "@types/js-yaml",
-    "version": "4.0.9",
-    "license": "MIT"
-  },
-  {
-    "name": "@types/node",
-    "version": "24.13.6",
-    "license": "MIT"
-  },
-  {
-    "name": "@types/react",
-    "version": "19.3.0",
-    "license": "MIT"
-  },
-  {
-    "name": "@types/react-dom",
-    "version": "19.3.0",
-    "license": "MIT"
-  },
-  {
     "name": "antd",
     "version": "6.6.5",
     "license": "MIT"

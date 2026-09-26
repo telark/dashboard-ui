@@ -28,7 +28,7 @@ export const useDeassignUserRole = ({
     useDeassignUserField<Role>({
       user,
       form,
-      fieldName: 'assignedRolesIDs',
+      fieldName: 'roleRefs',
       successMessage: UC.LABELS.MESSAGES.ROLE_DEASSIGNED,
       failMessage: UC.LABELS.MESSAGES.ROLE_DEASSIGN_FAILED,
       onSuccess,

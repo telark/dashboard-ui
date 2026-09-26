@@ -59,7 +59,7 @@ const SelectableListItem: React.FC<SelectableListItemProps> = ({
 
   const defaultNameStyles = {
     fontSize: 14,
-    color: '#0B1F33',
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
     fontWeight: 500,
     lineHeight: 1.4,
     ...nameStyles,

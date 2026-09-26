@@ -23,7 +23,6 @@ import { usePlanViolations } from '../../hooks/usePlanViolations';
 import { usePlanReports } from '../../hooks/usePlanReports';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import { NoPermissionCard } from '../../../../../components/shared';
-import { getCurrentUser } from '../../../../auth/utils';
 import type { ViolationsResultFilter } from '../../hooks/usePlanViolations';
 import { Select } from 'antd';
 import type { RootState } from '../../../../../store';
@@ -124,8 +123,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     const reports = usePlanReports(plan.id, revision, canViewReports);
     const { generate: generateReport } = reports;
     const handleGenerateReport = useCallback(() => {
-      const userId = getCurrentUser()?.id;
-      if (userId) void generateReport(userId);
+      void generateReport();
     }, [generateReport]);
     const violationsFilterOptions: Array<{ value: ViolationsResultFilter; label: string }> = [
       { value: 'all', label: PPC.LABELS.VIOLATIONS.FILTER_ALL },
@@ -138,12 +136,12 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     const users = useSelector((s: RootState) => s.users.users);
     const taxonomies = usePlanTaxonomies();
     const participants = useMemo(() => {
-      const ids = plan.participantsIDs ?? [];
+      const ids = plan.participantRefs ?? [];
       return ids.map((id) => {
         const user = users.find((u) => u.id === id);
         return { id, user };
       });
-    }, [plan.participantsIDs, users]);
+    }, [plan.participantRefs, users]);
 
     const renderUserAndTime = useCallback(
       (userId: string | undefined, when: string | undefined): React.ReactNode => {
@@ -170,7 +168,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     );
 
     const overviewRows = useMemo(() => {
-      const tags = (plan.tagIDs ?? [])
+      const tags = (plan.tagRefs ?? [])
         .map((id) => ({ id, name: taxonomies.tags.find((c) => c.id === id)?.name }))
         .filter((t): t is { id: string; name: string } => Boolean(t.name));
       const approval = plan.approval;
@@ -194,7 +192,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
         {
           k: 'environment',
           label: FORM.ENVIRONMENT_LABEL,
-          value: getCategoryName(plan.environmentID ?? '', taxonomies.environments),
+          value: getCategoryName(plan.environmentRef ?? '', taxonomies.environments),
         },
         {
           k: 'tags',
@@ -305,7 +303,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     }, [plan, renderUserAndTime, taxonomies.environments, taxonomies.tags]);
 
     const scopeItems =
-      (plan.scope.type === 'applications' ? plan.scope.applicationIds : plan.scope.namespaces) ??
+      (plan.scope.type === 'applications' ? plan.scope.applicationRefs : plan.scope.namespaces) ??
       [];
     const policies = plan.policies ?? [];
     const excludedKinds = plan.scope.exclusions?.kinds ?? [];
@@ -330,7 +328,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             justifyContent: 'space-between',
             gap: 12,
             padding: '8px 0',
-            background: DEFAULT_COLORS.BACKGROUND_WHITE,
+            background: DEFAULT_COLORS.PAGE_BG,
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
@@ -522,7 +520,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                 <div
                   key={`${p.templateID}-${idx}`}
                   style={{
-                    border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+                    border: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
                     borderRadius: 8,
                     padding: 10,
                     display: 'flex',

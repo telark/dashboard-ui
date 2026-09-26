@@ -6,7 +6,7 @@ import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../components/display/table/RowTag';
 import KeyValueGrid from './KeyValueGrid';
 import MutedText from './MutedText';
-import { APPLICATIONS_UI } from '../../constants';
+import { APPLICATIONS_UI, APPLICATION_CONDITION_TYPES } from '../../constants';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import {
   APPLICATION_SUMMARY_COLUMN_TITLE_STYLE,
@@ -49,6 +49,9 @@ function buildPrimaryRows(application: Application) {
     namespaceItems.length === 0
       ? APPLICATIONS_UI.FALLBACKS.EMPTY
       : namespaceItems.map((n) => n.name).join(', ');
+  const published = application.conditions?.find(
+    (c) => c.type === APPLICATION_CONDITION_TYPES.PUBLISHED,
+  );
 
   return [
     {
@@ -69,12 +72,14 @@ function buildPrimaryRows(application: Application) {
     { k: 'deployedIn', label: APPLICATIONS_UI.SECTIONS.OVERVIEW.DEPLOYED_IN, value: deployedIn },
     { k: 'createdAt', label: APPLICATIONS_UI.CARD.LABELS.CREATED_AT, value: created },
     { k: 'lastUpdated', label: APPLICATIONS_UI.CARD.LABELS.LAST_UPDATED, value: updated },
-    ...(application.crStatus
+    ...(published
       ? [
           {
-            k: 'crStatus',
-            label: APPLICATIONS_UI.CARD.LABELS.CR_STATUS,
-            value: application.crStatus,
+            k: 'published',
+            label: APPLICATIONS_UI.CARD.LABELS.PUBLISHED,
+            value: published.reason
+              ? `${published.status} (${published.reason})`
+              : published.status,
           },
         ]
       : []),

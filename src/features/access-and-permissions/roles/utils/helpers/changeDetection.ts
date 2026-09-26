@@ -41,7 +41,7 @@ export const detectChanges = (
   const scopesHaveChanged = !deepEqual(normalizedInitialScopes, normalizedCurrentScopes);
 
   const nameHasChanged = (initialValues.name || '') !== (finalValues.name || '');
-  const categoryHasChanged = (initialValues.categoryID || '') !== (finalValues.categoryID || '');
+  const categoryHasChanged = (initialValues.categoryRef || '') !== (finalValues.categoryRef || '');
 
   const needsTwoStepUpdate =
     protectionHasChanged &&

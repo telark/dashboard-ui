@@ -137,7 +137,7 @@ export const Columns = ({
         width: RPC.SIZES.COLUMNS.CATEGORY,
         render: (_: unknown, record: Role) => {
           if (isBuiltIn(record)) return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
-          const categoryName = getCategoryName(record.categoryID, categories);
+          const categoryName = getCategoryName(record.categoryRef, categories);
           return <RowTag text={categoryName} fontSize={RPC.SIZES.CHIP_FONT} />;
         },
       },

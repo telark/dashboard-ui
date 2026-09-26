@@ -12,7 +12,7 @@ interface PlanApprovalModeFieldProps {
 
 const PlanApprovalModeField: React.FC<PlanApprovalModeFieldProps> = ({ editMode = false }) => {
   const form = Form.useFormInstance();
-  const env = (Form.useWatch('environmentID', form) ?? form.getFieldValue('environmentID')) as
+  const env = (Form.useWatch('environmentRef', form) ?? form.getFieldValue('environmentRef')) as
     string | undefined;
   const approvalMode = (Form.useWatch('approvalMode', form) ??
     form.getFieldValue('approvalMode')) as PlanApprovalMode | undefined;

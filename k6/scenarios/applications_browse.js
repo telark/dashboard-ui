@@ -29,7 +29,7 @@ export const setup = () => {
 export default function () {
   resetStepCounter();
 
-  const listRes = get(path.exporter('resources/applications/get'), {
+  const listRes = get(path.exporter('applications'), {
     name: 'applications.list',
     metric: METRICS.CACHED_LIST,
   });
@@ -48,7 +48,7 @@ export default function () {
     return;
   }
 
-  const detailRes = get(path.exporter(`resources/applications/${encodeURIComponent(name)}/get`), {
+  const detailRes = get(path.exporter(`applications/${encodeURIComponent(name)}`), {
     name: 'applications.details',
     metric: METRICS.CACHED_GET,
   });
@@ -59,7 +59,7 @@ export default function () {
     const fanoutStart = Date.now();
     for (const ref of refs) {
       const qs = `scope=apps&namespace=${encodeURIComponent(ref.namespace)}&generation=${ref.generation}`;
-      get(path.exporter(`snapshots/${encodeURIComponent(ref.id)}/get?${qs}`), {
+      get(path.exporter(`snapshots/${encodeURIComponent(ref.id)}?${qs}`), {
         name: `snapshots.summary[${ref.generation}]`,
         metric: METRICS.SNAPSHOT_SUMMARY,
       });
@@ -76,7 +76,7 @@ export default function () {
     console.log('[info] selected app has no snapshot refs, fan-out skipped');
   }
 
-  get(path.exporter(`resources/applications/${encodeURIComponent(name)}/rollbacks/get`), {
+  get(path.exporter(`applications/${encodeURIComponent(name)}/rollbacks`), {
     name: 'applications.rollbacks',
     metric: METRICS.CACHED_LIST,
     skipAssert: false,

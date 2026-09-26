@@ -27,11 +27,11 @@ function paletteForVariant(variant: ToggleButtonVariant) {
   }
   if (variant === 'danger') {
     return {
-      activeBg: `${DEFAULT_COLORS.ERROR}18`,
-      activeColor: DEFAULT_COLORS.ERROR,
-      activeBorder: `${DEFAULT_COLORS.ERROR}40`,
-      inactiveColor: DEFAULT_COLORS.ERROR,
-      hoverAccent: DEFAULT_COLORS.ERROR,
+      activeBg: `${DEFAULT_COLORS.DANGER}18`,
+      activeColor: DEFAULT_COLORS.DANGER,
+      activeBorder: `${DEFAULT_COLORS.DANGER}40`,
+      inactiveColor: DEFAULT_COLORS.DANGER,
+      hoverAccent: DEFAULT_COLORS.DANGER,
     };
   }
   return {

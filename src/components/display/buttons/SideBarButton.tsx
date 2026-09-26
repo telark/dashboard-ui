@@ -54,7 +54,7 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = mem
           marginRight: isCollapsed ? SB.COLLAPSED_MARGIN_X : SB.MARGIN_RIGHT,
           border: 'none',
           borderRadius: SB.BORDER_RADIUS,
-          backgroundColor: isActiveOrHovered ? DEFAULT_COLORS.BACKGROUND_HOVER : 'transparent',
+          backgroundColor: isActiveOrHovered ? DEFAULT_COLORS.HOVER_BG : 'transparent',
           color: textColor,
           fontWeight: SB.FONT_WEIGHT,
           fontSize: SB.FONT_SIZE,

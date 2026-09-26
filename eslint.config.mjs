@@ -48,6 +48,26 @@ export default [
     },
   },
   {
+    // Colours live only in DEFAULT_COLORS (src/constants/shared/colors.ts).
+    files: ['**/*.{ts,tsx,js,jsx}'],
+    ignores: ['src/constants/shared/colors.ts'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'Literal[value=/#[0-9a-fA-F]{3,8}\\b|\\brgba?\\(|\\bhsla?\\(/]',
+          message:
+            'Use a DEFAULT_COLORS token (src/constants/shared/colors.ts) instead of a colour literal.',
+        },
+        {
+          selector: 'TemplateElement[value.raw=/#[0-9a-fA-F]{3,8}\\b|\\brgba?\\(|\\bhsla?\\(/]',
+          message:
+            'Use a DEFAULT_COLORS token (src/constants/shared/colors.ts) instead of a colour literal.',
+        },
+      ],
+    },
+  },
+  {
     files: ['src/logging/**/*.{ts,tsx}'],
     rules: {
       'no-console': 'off',

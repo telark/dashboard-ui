@@ -14,10 +14,10 @@ export const grantsAdminOnAll = (role: Role): boolean =>
 
 export const isAdminUser = (user: User, groups: Group[], adminRoleIds: Set<string>): boolean =>
   [
-    ...(user.assignedRolesIDs ?? []),
+    ...(user.roleRefs ?? []),
     ...groups
-      .filter((group) => user.assignedGroupsIDs?.includes(group.id))
-      .flatMap((group) => group.assignedRolesIDs ?? []),
+      .filter((group) => user.groupRefs?.includes(group.id))
+      .flatMap((group) => group.roleRefs ?? []),
   ].some((roleId) => adminRoleIds.has(roleId));
 
 // Why Delete and Suspend are off for this target, mirroring the backend refusals.

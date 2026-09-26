@@ -19,7 +19,7 @@ export const applyGroupFilters = (
 
   const category = appliedFilters.category as string | undefined;
   if (category && category !== 'all') {
-    result = result.filter((group) => group.categoryID === category);
+    result = result.filter((group) => group.categoryRef === category);
   }
 
   return result;

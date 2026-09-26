@@ -213,7 +213,7 @@ export const USERS_CONSTANTS = {
     USERNAME: 'username',
     FULLNAME: 'fullname',
     EMAIL: 'email',
-    ROLES: 'assignedRolesIDs',
+    ROLES: 'roleRefs',
     CREATION_DATE: 'creationDate',
     ACTIONS: 'actions',
     MORE_MENU_BULK: 'bulk',

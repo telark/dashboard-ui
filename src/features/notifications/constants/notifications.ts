@@ -14,7 +14,7 @@ export const NOTIFICATION_TYPES = {
 } as const;
 
 export const NOTIFICATION_SEVERITY_COLORS: Record<string, string> = {
-  info: DEFAULT_COLORS.DEFAULT,
+  info: DEFAULT_COLORS.NEUTRAL,
   success: DEFAULT_COLORS.SUCCESS,
   warning: DEFAULT_COLORS.WARNING,
   error: DEFAULT_COLORS.DANGER,

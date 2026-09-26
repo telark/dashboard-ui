@@ -58,7 +58,7 @@ export const INSIGHT_SEVERITY_LABELS: Record<InsightSeverity, string> = {
 };
 
 export const SEVERITY_COLORS: Record<InsightSeverity, string> = {
-  critical: DEFAULT_COLORS.ERROR,
+  critical: DEFAULT_COLORS.DANGER,
   warning: DEFAULT_COLORS.WARNING,
   info: DEFAULT_COLORS.TEXT_MUTED,
 };

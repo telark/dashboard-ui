@@ -10,7 +10,10 @@ export const CompactBanner: React.FC = () => (
       style={{ height: '16px' }}
     />
     {/* Tagline is a full sentence; it only earns bar space above 768px. */}
-    <span className="auth-banner-note" style={{ color: '#475569', fontSize: '13px' }}>
+    <span
+      className="auth-banner-note"
+      style={{ color: DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED, fontSize: '13px' }}
+    >
       ·
     </span>
     <span

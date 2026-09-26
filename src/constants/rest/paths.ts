@@ -1,34 +1,40 @@
+const seg = (value: string) => encodeURIComponent(value);
+
 export const API_PATHS = {
-  RESOURCES: {
-    APPLICATIONS: 'resources/applications',
-    GLOBALCONFIG: 'resources/globalconfig',
-    USERS: 'resources/users',
-    GROUPS: 'resources/groups',
-    ROLES: 'resources/roles',
-  },
+  APPLICATIONS: 'applications',
+  CONFIG: 'config',
+  USERS: 'users',
+  GROUPS: 'groups',
+  ACCESS_ROLES: 'accessroles',
   // Insights are produced out of band and read windowed to the apps on screen,
   // so they sit outside the resource CRUD paths.
   INSIGHTS: 'insights',
-  ANALYZE: 'analyze',
-  CLASSIFICATION: {
-    CATEGORIES: 'classification/categories',
-  },
+  CLUSTER_NAMESPACES: 'cluster/namespaces',
+  CATEGORIES: 'categories',
+  DISCOVERY_STATUS: 'discovery/status',
+  SNAPSHOTS: 'snapshots',
+  NOTIFICATIONS: 'notifications',
+  PROTECTION_PLANS: 'protectionplans',
+  POLICY_TEMPLATES: 'policytemplates',
+  REPORTS: 'reports',
 } as const;
 
-export const RESOURCE_PATHS = {
-  GET_ALL: 'get',
-  GET_DETAILS: (name: string) => `${name}/get`,
-  RESET_DETAILS: (name: string) => `${name}/reset`,
-  FIND_USER_BY_ID: (id: string) => `findbyid/${id}/get`,
-  UPDATE_SYNC: (name: string) => `${name}/patch`,
-  APPLICATION_ROLLBACKS: (name: string) => `${name}/rollbacks`,
-  SYNC_PATH: (name: string) => `${name}/sync`,
+export const byId = (base: string, id: string) => `${base}/${seg(id)}`;
+
+export const APPLICATION_PATHS = {
+  BY_NAME: (name: string) => byId(API_PATHS.APPLICATIONS, name),
+  RESET: (name: string) => `${byId(API_PATHS.APPLICATIONS, name)}/reset`,
+  SYNC: (name: string) => `${byId(API_PATHS.APPLICATIONS, name)}/sync`,
+  ROLLBACKS: (name: string) => `${byId(API_PATHS.APPLICATIONS, name)}/rollbacks`,
+  ROLLBACK: (name: string, rollbackId: string) =>
+    `${byId(API_PATHS.APPLICATIONS, name)}/rollbacks/${seg(rollbackId)}`,
 } as const;
 
 export const SESSION_PATHS = {
-  GET_ALL_BY_USER: (userId: string) => `auth/sessions/${userId}/get`,
-  GET_BY_TOKEN: (sessionToken: string) => `auth/sessions/tokens/${sessionToken}/get`,
-  DELETE_BY_TOKEN: (sessionToken: string) => `auth/sessions/tokens/${sessionToken}/delete`,
+  LIST: 'auth/sessions',
+  QUERY_USER: 'user',
+  SELF: 'auth/sessions/self',
+  BY_NAME: (name: string) => byId('auth/sessions', name),
 } as const;
 
 export const AUTH_PATHS = {
@@ -42,13 +48,8 @@ export const AUTH_PATHS = {
   CONFIG: 'auth/config',
   LOGOUT: 'auth/logout',
   PASSKEYS: {
-    PROXY: {
-      GET: 'auth/passkeys/proxy/get',
-      CREATE: 'auth/passkeys/proxy/create',
-      SINGLE_GET: 'auth/passkeys/proxy/single/get',
-      PATCH: 'auth/passkeys/proxy/patch',
-      DELETE: 'auth/passkeys/proxy/delete',
-    },
+    ROOT: 'auth/passkeys',
+    BY_CREDENTIAL: (credentialId: string) => byId('auth/passkeys', credentialId),
     ENROLL_LINK: 'auth/passkeys/enroll-link',
   },
   OIDC: {
@@ -58,65 +59,29 @@ export const AUTH_PATHS = {
   },
   PERMISSIONS: 'auth/permissions',
   CLEANUP: {
-    DELETE_USER: (id: string) => `auth/users/${id}/cleanup`,
-    DELETE_GROUP: (id: string) => `auth/groups/${id}/cleanup`,
-    DELETE_ROLE: (id: string) => `auth/roles/${id}/cleanup`,
+    DELETE_USER: (id: string) => byId('auth/users', id),
+    DELETE_GROUP: (id: string) => byId('auth/groups', id),
+    DELETE_ACCESS_ROLE: (id: string) => byId('auth/accessroles', id),
   },
 } as const;
 
 export const CATEGORY_PATHS = {
-  CREATE: 'create',
-  GET_ALL: 'get',
-  GET_BY_ID: (id: string) => `${id}/get`,
-  GET_BY_SCOPE: (scope: string) => `scope/${scope}/get`,
-  PATCH_BY_ID: (id: string) => `${id}/patch`,
-  DELETE_BY_ID: (id: string) => `${id}/delete`,
+  QUERY_SCOPE: 'scope',
 } as const;
 
-export const GROUP_PATHS = {
-  CREATE: 'create',
-  GET_ALL: 'get',
-  GET_BY_ID: (id: string) => `${id}/get`,
-  PATCH_BY_ID: (id: string) => `${id}/patch`,
-} as const;
-
-export const ROLE_PATHS = {
-  CREATE: 'create',
-  GET_ALL: 'get',
-  GET_BY_ID: (id: string) => `${id}/get`,
-  PATCH_BY_ID: (id: string) => `${id}/patch`,
-} as const;
-
-export const USER_PATHS = {
-  CREATE: 'create',
-  GET_ALL: 'get',
-  GET_BY_ID: (id: string) => `findbyid/${id}/get`,
-  GET_BY_EMAIL: (email: string) => `findbyemail/${email}/get`,
-  PATCH_BY_ID: (id: string) => `${id}/patch`,
-} as const;
-
-export const PLANS_PATHS = {
-  PROTECTION: {
-    GET_ALL: 'plans/protection/get',
-    GET_BY_ID: (id: string) => `plans/protection/${id}/get`,
-    TEMPLATES: 'plans/protection/templates',
-    PREPARE: 'plans/protection/prepare',
-    CANCEL: (id: string) => `plans/protection/${id}/cancel`,
-    CLEAR: (id: string) => `plans/protection/${id}/clear`,
-    STATUS: (id: string) => `plans/protection/${id}/status`,
-    VIOLATIONS: (id: string) => `plans/protection/${id}/violations`,
-    DUPLICATE: (id: string) => `plans/protection/${id}/duplicate`,
-    REACTIVATE: (id: string) => `plans/protection/${id}/reactivate`,
-    DECIDE: (id: string) => `plans/protection/${id}/decide`,
-    UPDATE: (id: string) => `plans/protection/${id}/update`,
-    REPORTS_GENERATE: (id: string) => `plans/protection/${id}/reports/generate`,
-  },
-} as const;
-
-export const REPORTS_PATHS = {
-  LIST_ALL: 'reports/get',
-  PLANS: {
-    LIST: (id: string) => `reports/plans/${id}/get`,
-    DOWNLOAD: (id: string) => `reports/plans/${id}/download`,
+export const PROTECTION_PLAN_PATHS = {
+  PREPARE: `${API_PATHS.PROTECTION_PLANS}/prepare`,
+  ACTION: (id: string, action: string) => `${byId(API_PATHS.PROTECTION_PLANS, id)}/${action}`,
+  ACTIONS: {
+    CANCEL: 'cancel',
+    CLEAR: 'clear',
+    STATUS: 'status',
+    VIOLATIONS: 'violations',
+    DUPLICATE: 'duplicate',
+    REACTIVATE: 'reactivate',
+    DECISION: 'decision',
+    REVISE: 'revise',
+    REPORTS: 'reports',
+    REPORTS_DOWNLOAD: 'reports/download',
   },
 } as const;

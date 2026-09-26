@@ -38,7 +38,7 @@ export const useDeassignUserGroup = ({
     useDeassignUserField<Group>({
       user,
       form,
-      fieldName: 'assignedGroupsIDs',
+      fieldName: 'groupRefs',
       successMessage: UC.LABELS.MESSAGES.GROUP_DEASSIGNED,
       failMessage: UC.LABELS.MESSAGES.GROUP_DEASSIGN_FAILED,
       onSuccess,

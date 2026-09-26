@@ -3,17 +3,19 @@
  * app's dark surfaces so the reader belongs to this product; only the syntax
  * tokens stay VS Code Dark Modern–inspired, since those hues carry meaning.
  */
+import { DEFAULT_COLORS } from '../../../../../constants';
+
 export const IDE_MANIFEST_THEME = {
-  bg: '#111827',
-  border: '#2a3648',
-  gutterText: '#4b5563',
-  headerBg: '#161f2e',
-  text: '#d4d4d4',
-  key: '#9cdcfe',
-  string: '#ce9178',
-  number: '#b5cea8',
-  keyword: '#569cd6',
-  punct: '#d4d4d4',
-  comment: '#6a9955',
-  copyButton: '#c8c8c8',
+  bg: DEFAULT_COLORS.PAGE_BG,
+  border: DEFAULT_COLORS.BORDER_ELEVATED,
+  gutterText: DEFAULT_COLORS.ICON_MUTED,
+  headerBg: DEFAULT_COLORS.SURFACE_ELEVATED,
+  text: DEFAULT_COLORS.IDE_SYNTAX_TEXT,
+  key: DEFAULT_COLORS.IDE_SYNTAX_KEY,
+  string: DEFAULT_COLORS.IDE_SYNTAX_STRING,
+  number: DEFAULT_COLORS.IDE_SYNTAX_NUMBER,
+  keyword: DEFAULT_COLORS.IDE_SYNTAX_KEYWORD,
+  punct: DEFAULT_COLORS.IDE_SYNTAX_TEXT,
+  comment: DEFAULT_COLORS.IDE_SYNTAX_COMMENT,
+  copyButton: DEFAULT_COLORS.IDE_SYNTAX_COPY_BUTTON,
 } as const;

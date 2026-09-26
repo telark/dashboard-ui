@@ -1,5 +1,5 @@
 import { Client, discoveryApiClient } from '../../../../api/index';
-import { Endpoints, HTTP_HEADERS } from '../../../../constants';
+import { Endpoints } from '../../../../constants';
 import type { PlanApprovalDecision, ProtectionPlan } from '../models';
 import type { ApiResponse } from './shared';
 
@@ -10,7 +10,6 @@ export interface DecidePlanPayload {
 }
 
 export const decidePlan = async (
-  userId: string,
   planId: string,
   body: DecidePlanPayload,
 ): Promise<ProtectionPlan> => {
@@ -20,7 +19,6 @@ export const decidePlan = async (
     {
       method: 'POST',
       data: body,
-      headers: { [HTTP_HEADERS.CUSTOM.USER_ID]: userId },
     },
   );
   return res.data;

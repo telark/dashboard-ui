@@ -53,7 +53,7 @@ export const useAttachRolePanel = ({
   }, [group, groups]);
 
   const initialSelectedRoles = useMemo(() => {
-    return currentGroup?.assignedRolesIDs || [];
+    return currentGroup?.roleRefs || [];
   }, [currentGroup]);
 
   const filteredRoles = useMemo(() => {
@@ -62,8 +62,8 @@ export const useAttachRolePanel = ({
 
   useEffect(() => {
     if (open && currentGroup && !rolesLoading && roles) {
-      const assignedRoles = currentGroup.assignedRolesIDs || [];
-      form.setFieldsValue({ assignedRolesIDs: assignedRoles });
+      const assignedRoles = currentGroup.roleRefs || [];
+      form.setFieldsValue({ roleRefs: assignedRoles });
     }
   }, [open, currentGroup, rolesLoading, roles, form]);
 
@@ -75,10 +75,10 @@ export const useAttachRolePanel = ({
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     if (!currentGroup) return;
-    const selected = (values.assignedRolesIDs as string[]) || [];
+    const selected = (values.roleRefs as string[]) || [];
     await handleUpdate(currentGroup.id, async () => ({
-      assignedRolesIDs: applySelectionChange(
-        await fetchFreshGroupIds(currentGroup.id, 'assignedRolesIDs'),
+      roleRefs: applySelectionChange(
+        await fetchFreshGroupIds(currentGroup.id, 'roleRefs'),
         initialSelectedRoles,
         selected,
       ),

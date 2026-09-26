@@ -41,7 +41,7 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
 
   return (
     <div>
-      {error && <div style={{ color: DEFAULT_COLORS.ERROR, marginBottom: 8 }}>{error}</div>}
+      {error && <div style={{ color: DEFAULT_COLORS.DANGER, marginBottom: 8 }}>{error}</div>}
 
       {loading && rows.length === 0 ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: 24 }}>

@@ -49,6 +49,7 @@ flowchart LR
 **Reaching the backend**: there is no Vite dev proxy. `src/constants/rest/urls.ts` builds each service's base URL from a compile-time `__IN_CLUSTER__` flag:
 - In local dev (`__IN_CLUSTER__` is `false`), it targets `http://localhost:<port>` directly using fixed dev ports (`DEV_API_PORTS`: exporter `8002`, discovery `8004`, auth `8006`, analyzer `8007`).
 - In a cluster build (`__IN_CLUSTER__` is `true`, set by `vite build --mode cluster`), it targets `/api/<service>/...` behind the ingress instead.
+- Paths under `/api/v1` are resource-oriented (`applications/{name}`, `protectionplans/{id}/revise`, `auth/sessions/self`, `categories?scope=`…); they are defined once in `src/constants/rest/paths.ts` and `endpoints.ts`.
 
 ## Local development setup
 
@@ -103,6 +104,8 @@ Verify your setup with `npm run check-all` — not `npm run build`, which only p
 - [`telark/docs/PUBLISHING.md`](../Github/telark/docs/PUBLISHING.md) documents the manual publish path for testing a chart/image release by hand.
 
 This repo's own `Dockerfile` only defines how the image is built; it is invoked by the telark workflow above, not by anything in this repo.
+
+**Security headers** (`nginx/nginx.conf`): the image sets `Content-Security-Policy` (`script-src 'self'`, so no inline scripts or event handlers; `style-src` keeps `'unsafe-inline'` for antd's CSS-in-JS and allows Google Fonts), `X-Frame-Options`, `nosniff`, `Referrer-Policy` and `Permissions-Policy`, and strips `X-Service-Token`, `X-User-ID`, `X-Username` and `X-Email` from browser requests before proxying to the backends. It also answers `404` for any `/api/<service>/api/v1/internal/...` path, so service-to-service routes are never reachable from a browser. nginx serves plain HTTP on 8080, so `Strict-Transport-Security` is not set here: add it where TLS terminates (the ingress or load balancer), for example `max-age=31536000; includeSubDomains`.
 
 (Paths above are relative to a sibling checkout — `dashboard-ui/` and `telark/` side by side. If you don't have `telark` checked out locally, the same files are at `https://github.com/telark/telark/blob/main/.github/workflows/build-ui.yaml` etc.)
 

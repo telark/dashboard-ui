@@ -104,7 +104,7 @@ const PlanTaxonomyPage: React.FC<PlanTaxonomyPageProps> = ({ scope, onBack }) =>
           key: CC.KEYS.ACTIONS,
           align: 'right' as const,
           width: CC.SIZES.COLUMNS.ACTIONS,
-          onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
+          onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
           render: (_: unknown, record: Category) => (
             <CategoryActionsColumn record={record} onEdit={openEdit} scope={scope} />
           ),

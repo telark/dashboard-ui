@@ -24,16 +24,16 @@ export const DEFAULT_FORM_VALUES: FormValues = {
   priority: undefined,
   mode: 'audit',
   scopeType: 'namespaces',
-  applicationIds: [],
+  applicationRefs: [],
   namespaces: [],
   excludedKinds: [],
   excludedResources: [],
   timeMode: 'permanent',
   startAt: undefined,
   endAt: undefined,
-  participantsIDs: [],
-  environmentID: undefined,
-  tagIDs: [],
+  participantRefs: [],
+  environmentRef: undefined,
+  tagRefs: [],
   approvalMode: 'automatic',
 };
 
@@ -44,16 +44,16 @@ export const planToFormValues = (plan: ProtectionPlan): FormValues => ({
   priority: plan.priority,
   mode: plan.mode,
   scopeType: plan.scope.type,
-  applicationIds: plan.scope.applicationIds ?? [],
+  applicationRefs: plan.scope.applicationRefs ?? [],
   namespaces: plan.scope.namespaces ?? [],
   excludedKinds: plan.scope.exclusions?.kinds ?? [],
   excludedResources: (plan.scope.exclusions?.resources ?? []).map(encodeResourceKey),
   timeMode: plan.timeMode,
   startAt: plan.timeRange ? dayjs(plan.timeRange.startAt) : undefined,
   endAt: plan.timeRange ? dayjs(plan.timeRange.endAt) : undefined,
-  participantsIDs: plan.participantsIDs ?? [],
-  environmentID: plan.environmentID || undefined,
-  tagIDs: plan.tagIDs ?? [],
+  participantRefs: plan.participantRefs ?? [],
+  environmentRef: plan.environmentRef || undefined,
+  tagRefs: plan.tagRefs ?? [],
   approvalMode: plan.approvalMode ?? 'automatic',
 });
 
@@ -112,7 +112,7 @@ export const buildPreparePayload = ({ values, policies }: BuildPreparePayloadInp
   timeMode: values.timeMode,
   scope: {
     type: values.scopeType,
-    applicationIds: values.scopeType === 'applications' ? (values.applicationIds ?? []) : [],
+    applicationRefs: values.scopeType === 'applications' ? (values.applicationRefs ?? []) : [],
     namespaces: values.scopeType === 'namespaces' ? (values.namespaces ?? []) : [],
     exclusions: {
       kinds: values.excludedKinds ?? [],
@@ -129,9 +129,9 @@ export const buildPreparePayload = ({ values, policies }: BuildPreparePayloadInp
     values.timeMode === 'time_range' && values.startAt && values.endAt
       ? { startAt: values.startAt.toISOString(), endAt: values.endAt.toISOString() }
       : undefined,
-  participantsIDs: values.participantsIDs ?? [],
-  environmentID: values.environmentID ?? '',
-  tagIDs: values.tagIDs ?? [],
+  participantRefs: values.participantRefs ?? [],
+  environmentRef: values.environmentRef ?? '',
+  tagRefs: values.tagRefs ?? [],
   approvalMode: values.approvalMode,
 });
 
@@ -145,7 +145,7 @@ const exclusionsChanged = (plan: ProtectionPlan, values: FormValues): boolean =>
 export const scopeItemsChanged = (plan: ProtectionPlan, values: FormValues): boolean => {
   if (exclusionsChanged(plan, values)) return true;
   if (plan.scope.type === 'applications') {
-    return !arraysEqualUnordered(values.applicationIds ?? [], plan.scope.applicationIds ?? []);
+    return !arraysEqualUnordered(values.applicationRefs ?? [], plan.scope.applicationRefs ?? []);
   }
   return !arraysEqualUnordered(values.namespaces ?? [], plan.scope.namespaces ?? []);
 };
