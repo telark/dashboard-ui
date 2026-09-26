@@ -19,6 +19,7 @@ import { CompactQuickFilter, ListToolbar } from '../../../../../components/displ
 import type { FilterChip, ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import { APPLICATION_CARD, APPLICATION_VIEW_MODES, APPLICATIONS_UI } from '../../constants';
 import type { ApplicationViewMode } from '../../models';
+import { ACTION_PERMISSIONS, usePermission } from '../../../../auth/hooks';
 
 const MORE_MENU_KEYS = {
   BULK: 'bulk',
@@ -148,8 +149,12 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
   healthQuickFilter,
   onHealthQuickFilterChange,
 }) => {
+  const { forceSync, delete: reset } = ACTION_PERMISSIONS.applications;
+  const canForceSync = usePermission(forceSync.scope, forceSync.level, forceSync.deny);
+  const canReset = usePermission(reset.scope, reset.level, reset.deny);
   const bulkActions: ToolbarConfig = useMemo(() => {
     const disabledNoSelection = selectedCount <= 0;
+    const syncBlocked = disabledNoSelection || bulkForceSyncDisabled || !canForceSync;
     return {
       buttons: [
         {
@@ -159,12 +164,14 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
           variant: 'default',
           iconOnly: true,
           onClick: () => {
-            if (!disabledNoSelection && !bulkForceSyncDisabled) onBulkForceSync();
+            if (!syncBlocked) onBulkForceSync();
           },
-          disabled: disabledNoSelection || bulkForceSyncDisabled,
-          tooltip: bulkForceSyncDisabled
-            ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
-            : undefined,
+          disabled: syncBlocked,
+          tooltip: !canForceSync
+            ? APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC_PERMISSION_DENIED_TOOLTIP
+            : bulkForceSyncDisabled
+              ? APPLICATIONS_UI.CARD.ACTIONS.SYNC_DISABLED_TOOLTIP
+              : undefined,
         },
         {
           key: 'bulkReset',
@@ -173,11 +180,14 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
           variant: 'danger',
           iconOnly: true,
           onClick: onBulkReset,
-          disabled: disabledNoSelection,
+          disabled: disabledNoSelection || !canReset,
+          tooltip: canReset
+            ? undefined
+            : APPLICATIONS_UI.CARD.ACTIONS.RESET_PERMISSION_DENIED_TOOLTIP,
         },
       ],
     };
-  }, [bulkForceSyncDisabled, onBulkReset, onBulkForceSync, selectedCount]);
+  }, [bulkForceSyncDisabled, canForceSync, canReset, onBulkReset, onBulkForceSync, selectedCount]);
 
   const handleMoreMenuClick = useCallback(
     (key: string) => {

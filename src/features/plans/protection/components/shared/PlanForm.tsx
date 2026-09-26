@@ -51,6 +51,7 @@ export interface PlanFormProps {
   submitError?: string | null;
   onSubmitErrorClose?: () => void;
   validateTrigger?: string | string[];
+  nameValidator: (rule: unknown, value: string | undefined) => Promise<void>;
 }
 
 const PlanForm: React.FC<PlanFormProps> = ({
@@ -81,6 +82,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
   submitError,
   onSubmitErrorClose,
   validateTrigger,
+  nameValidator,
 }) => {
   const isEditMode = mode === 'edit';
   const materialLocked = isEditMode && plan !== undefined && isMaterialEditLocked(plan);
@@ -125,7 +127,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
           gap: PPC.CREATE_PAGE.GAP_BETWEEN_CARDS,
         }}
       >
-        <BasicInfoSection />
+        <BasicInfoSection nameValidator={nameValidator} />
         <Section
           title={PPC.CREATE_PAGE.SECTIONS.CLASSIFICATION_TITLE}
           subtitle={PPC.CREATE_PAGE.SECTIONS.CLASSIFICATION_DESCRIPTION}

@@ -28,3 +28,8 @@ export const fetchCurrentUserDetails = async (
     }
   }
 };
+
+export const fetchFreshUserIds = async (
+  userId: string,
+  field: 'assignedRolesIDs' | 'assignedGroupsIDs',
+): Promise<string[]> => (await fetchUserById(userId, true)).data?.[field] ?? [];

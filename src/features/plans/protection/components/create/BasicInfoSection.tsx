@@ -1,12 +1,19 @@
 import React from 'react';
 import { Form, Input, Select } from 'antd';
-import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
+import {
+  PLAN_PRIORITY_MIN,
+  PROTECTION_PLANS_CONSTANTS as PPC,
+} from '../../constants/protectionPlans';
 import Section from '../../../../../components/display/sections/Section';
 import { FORM_ITEM_CLASS } from './types';
 
 const { SECTIONS, FORM } = PPC.CREATE_PAGE;
 
-const BasicInfoSection: React.FC = () => (
+interface BasicInfoSectionProps {
+  nameValidator: (rule: unknown, value: string | undefined) => Promise<void>;
+}
+
+const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ nameValidator }) => (
   <Section
     title={SECTIONS.BASIC_INFO_TITLE}
     subtitle={SECTIONS.BASIC_INFO_DESCRIPTION}
@@ -15,7 +22,11 @@ const BasicInfoSection: React.FC = () => (
         <Form.Item
           name="name"
           label={FORM.NAME_LABEL}
-          rules={[{ required: true, message: 'Plan name is required' }]}
+          rules={[
+            { required: true, message: FORM.NAME_REQUIRED_ERROR },
+            { validator: nameValidator },
+          ]}
+          validateTrigger="onChange"
           style={{ marginBottom: 12 }}
           className={FORM_ITEM_CLASS}
         >
@@ -49,7 +60,7 @@ const BasicInfoSection: React.FC = () => (
             style={{ marginBottom: 0 }}
             className={FORM_ITEM_CLASS}
           >
-            <Input type="number" min={0} placeholder="e.g. 1" />
+            <Input type="number" min={PLAN_PRIORITY_MIN} placeholder="e.g. 1" />
           </Form.Item>
         </div>
       </div>

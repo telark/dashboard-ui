@@ -67,13 +67,13 @@ import EditPlanPanel from '../../panels/EditPlanPanel';
 import {
   APPROVABLE_PHASES,
   CANCELLABLE_PHASES,
-  NON_EDITABLE_PHASES,
   REACTIVATABLE_PHASES,
   getDecideBlockedTooltip,
   getGenerateReportTooltip,
   isReactivateExpired,
   isReportNotStarted,
   permissionTooltip,
+  planPhaseLabel,
 } from '../../../utils/phaseRules';
 import { usePlanTaxonomyLists } from '../../../hooks/usePlanTaxonomies';
 import { useGeneratePlanReport } from '../../../hooks/usePlanReports';
@@ -155,7 +155,6 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const [lastDecision, setLastDecision] = useState<PlanApprovalDecision>('approved');
   const [deciding, setDeciding] = useState(false);
   const [editForm] = Form.useForm<FormValues>();
-  const editDisabled = NON_EDITABLE_PHASES.includes(plan.phase);
   const canReactivate = REACTIVATABLE_PHASES.includes(plan.phase);
   const reactivateExpired = isReactivateExpired(plan);
   const canDecide = APPROVABLE_PHASES.includes(plan.phase);
@@ -218,7 +217,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
       ? `${CARD_LABELS.AWAITING_APPROVAL_BY_PREFIX} ${requestedByLabel}`
       : `${CARD_LABELS.CREATED_BY_PREFIX} ${createdByLabel}`;
 
-  const phaseLabel = PPC.LABELS.PHASE_LABELS[plan.phase] ?? plan.phase;
+  const phaseLabel = planPhaseLabel(plan);
   const canCancel = CANCELLABLE_PHASES.includes(plan.phase);
 
   const phaseAccent = PHASE_ACCENT[plan.phase] ?? DEFAULT_COLORS.DEFAULT;
@@ -378,12 +377,8 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
       key: 'edit',
       label: PPC.LABELS.DETAIL_PAGE.ACTIONS.EDIT,
       icon: <EditOutlined />,
-      disabled: !canEditPlan || editDisabled || editPanelOpen,
-      title: permissionTooltip(
-        canEditPlan,
-        PD.EDIT,
-        editDisabled ? PPC.LABELS.DETAIL_PAGE.ACTIONS.EDIT_DISABLED_TOOLTIP : undefined,
-      ),
+      disabled: !canEditPlan || editPanelOpen,
+      title: permissionTooltip(canEditPlan, PD.EDIT),
     },
     {
       key: 'duplicate',
@@ -660,6 +655,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
           action="delete"
           resourceName={plan.name}
           resourceType="protection plan"
+          customMessage={PPC.LABELS.ACTIONS.DELETE_MODAL_MESSAGE(plan.name)}
           confirmText={PPC.LABELS.ACTIONS.DELETE_MODAL_OK}
           loading={deleting}
           getContainer={() => document.body}

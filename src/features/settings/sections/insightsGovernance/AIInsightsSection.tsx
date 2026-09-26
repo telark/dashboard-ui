@@ -9,6 +9,7 @@ import RowTag from '../../../../components/display/table/RowTag';
 import { Switch } from '../../../../components/display/inputs';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
+import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 import { Client, exporterApiClient } from '../../../../api';
 import { Endpoints, DEFAULT_COLORS } from '../../../../constants';
 import logger from '../../../../logging';
@@ -19,6 +20,7 @@ import {
   usePermission,
 } from '../../../auth/hooks/permissions/permissionEngine';
 import {
+  apiErrorCode,
   INSIGHT_ERROR_CODES,
   INSIGHT_ERROR_MESSAGES,
   pullAnalyzerModel,
@@ -206,7 +208,8 @@ const AIInsightsSection: React.FC = memo(() => {
       message.success(C.MESSAGES.PULL_STARTED);
     } catch (error: unknown) {
       logger.error(C.MESSAGES.PULL_FAILED, error);
-      message.error(C.MESSAGES.PULL_FAILED);
+      const code = apiErrorCode(error);
+      message.error((code && INSIGHT_ERROR_MESSAGES[code]) || C.MESSAGES.PULL_FAILED);
     } finally {
       setInstalling(false);
     }
@@ -225,7 +228,9 @@ const AIInsightsSection: React.FC = memo(() => {
       dispatch(fetchGlobalConfigThunk());
     } catch (error: unknown) {
       logger.error(C.MESSAGES.SAVE_FAILED, error);
-      message.error(C.MESSAGES.SAVE_FAILED);
+      // A 4xx names the invalid fields; network and 5xx keep the generic text.
+      const meta = (error as ExtendedAxiosError).normalized;
+      message.error(meta?.isClient ? meta.message : C.MESSAGES.SAVE_FAILED);
     } finally {
       setSaving(false);
     }

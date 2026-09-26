@@ -7,11 +7,3 @@ export {
   fetchUserDetailsThunk,
 } from './thunks/fetchThunks';
 export { createUserThunk, updateUserThunk, deleteUserThunk } from './thunks/mutationThunks';
-
-export {
-  selectUserState,
-  selectUserDetails,
-  selectUserLoading,
-  selectUserError,
-  selectUserDetailsData,
-} from './selectors/userSelectors';

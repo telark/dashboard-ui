@@ -141,12 +141,10 @@ const ValiditySection: React.FC = memo(() => {
                   </>
                 );
               }
-              // Session-based and permanent doesn't show any additional fields
               return null;
             }}
           </Form.Item>
 
-          {/* Auto revoke switch - controlled similarly to protection switches for smoother UX */}
           <Form.Item
             noStyle
             shouldUpdate={(prevValues, currentValues) => {

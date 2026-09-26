@@ -50,6 +50,7 @@ interface UserAssignedRolesViewProps {
   allRoles?: Role[];
   loading: boolean;
   onDeassignClick?: (role: Role) => void;
+  deassignDisabledReason?: (role: Role) => string | undefined;
   /** Role IDs inherited via group — deassign is blocked for these. */
   inheritedRoleIds?: Set<string>;
   /** Maps role ID → group names for inherited roles — renders source tags on their cards. */
@@ -61,6 +62,7 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
   allRoles,
   loading,
   onDeassignClick,
+  deassignDisabledReason,
   inheritedRoleIds,
   inheritedGroupsByRoleId,
 }) => {
@@ -77,7 +79,7 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
       return (
         <div style={GROUP_TAGS_WRAPPER}>
           {groupNames.map((name) => (
-            <RowTag key={name} text={name} fontSize={12} />
+            <RowTag key={name} text={name} fontSize={12} capitalize={false} />
           ))}
         </div>
       );
@@ -94,6 +96,7 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
       emptyMessage={UC.LABELS.MESSAGES.NO_ASSIGNED_ROLES}
       loadingMessage={UC.LABELS.MESSAGES.LOADING_ROLES}
       onDeassignClick={onDeassignClick}
+      deassignDisabledReason={deassignDisabledReason}
       deassignTooltip="Remove role"
       canDeassign={(role) => !inheritedRoleIds?.has(role.id)}
       renderRightContent={renderAssignmentSource}

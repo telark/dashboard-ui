@@ -22,6 +22,7 @@ import { usePlanHealth } from '../../hooks/usePlanHealth';
 import { usePlanViolations } from '../../hooks/usePlanViolations';
 import { usePlanReports } from '../../hooks/usePlanReports';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
+import { NoPermissionCard } from '../../../../../components/shared';
 import { getCurrentUser } from '../../../../auth/utils';
 import type { ViolationsResultFilter } from '../../hooks/usePlanViolations';
 import { Select } from 'antd';
@@ -33,7 +34,7 @@ import {
 } from '../../constants/protectionPlans';
 import type { ProtectionPlan } from '../../models';
 import { usePlanTaxonomies } from '../../hooks/usePlanTaxonomies';
-import { isRejected } from '../../utils/phaseRules';
+import { planPhaseLabel } from '../../utils/phaseRules';
 import { encodeResourceKey } from '../../utils/planFormValues';
 import { getCategoryName } from '../../../../access-and-permissions/categories/utils/helpers';
 
@@ -81,6 +82,7 @@ interface ProtectionPlanDetailsContentProps {
 }
 
 const EMPTY = PPC.LABELS.DETAIL_PAGE.EMPTY_VALUE;
+const { viewViolations, viewReports } = ACTION_PERMISSIONS.protectionPlans;
 const { FORM } = PPC.CREATE_PAGE;
 
 const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> = memo(
@@ -103,22 +105,16 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     onDelete,
     onRefreshHealth,
   }) => {
-    const phaseLabel = isRejected(plan)
-      ? PPC.LABELS.PHASE_INFO.REJECTED_LABEL
-      : (PPC.LABELS.PHASE_LABELS[plan.phase] ?? plan.phase);
+    const phaseLabel = planPhaseLabel(plan);
     const dotColor = PHASE_DOT_COLOR[plan.phase] ?? PHASE_DOT_COLOR.draft;
     const revision = `${plan.phase}:${plan.lastUpdatedAt ?? ''}`;
     const health = usePlanHealth(plan.id, revision);
     const canViewViolations = usePermission(
-      ACTION_PERMISSIONS.protectionPlans.viewViolations.scope,
-      ACTION_PERMISSIONS.protectionPlans.viewViolations.level,
-      ACTION_PERMISSIONS.protectionPlans.viewViolations.deny,
+      viewViolations.scope,
+      viewViolations.level,
+      viewViolations.deny,
     );
-    const canViewReports = usePermission(
-      ACTION_PERMISSIONS.protectionPlans.viewReports.scope,
-      ACTION_PERMISSIONS.protectionPlans.viewReports.level,
-      ACTION_PERMISSIONS.protectionPlans.viewReports.deny,
-    );
+    const canViewReports = usePermission(viewReports.scope, viewReports.level, viewReports.deny);
     const canDownloadReport = usePermission(
       ACTION_PERMISSIONS.protectionPlans.downloadReport.scope,
       ACTION_PERMISSIONS.protectionPlans.downloadReport.level,
@@ -309,7 +305,9 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     }, [plan, renderUserAndTime, taxonomies.environments, taxonomies.tags]);
 
     const scopeItems =
-      plan.scope.type === 'applications' ? plan.scope.applicationIds : plan.scope.namespaces;
+      (plan.scope.type === 'applications' ? plan.scope.applicationIds : plan.scope.namespaces) ??
+      [];
+    const policies = plan.policies ?? [];
     const excludedKinds = plan.scope.exclusions?.kinds ?? [];
     const excludedResources = plan.scope.exclusions?.resources ?? [];
     const renderChips = (chips: { key: string; text: string }[]) => (
@@ -516,11 +514,11 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           title={PPC.LABELS.DETAIL_PAGE.SECTIONS.POLICIES_TITLE}
           description={PPC.LABELS.DETAIL_PAGE.SECTIONS.POLICIES_DESCRIPTION}
         >
-          {plan.policies.length === 0 ? (
+          {policies.length === 0 ? (
             <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY}</div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {plan.policies.map((p, idx) => (
+              {policies.map((p, idx) => (
                 <div
                   key={`${p.templateID}-${idx}`}
                   style={{
@@ -559,6 +557,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                           key={key}
                           text={`${key}: ${Array.isArray(value) ? value.join(', ') : String(value)}`}
                           fontSize={11}
+                          capitalize={false}
                         />
                       ))}
                     </div>
@@ -604,11 +603,11 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           </SettingsCard>
         )}
 
-        {canViewViolations && (
-          <SettingsCard
-            title={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_TITLE}
-            description={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_DESCRIPTION}
-            headerAction={
+        <SettingsCard
+          title={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_TITLE}
+          description={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_DESCRIPTION}
+          headerAction={
+            canViewViolations ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Select
                   value={violations.resultFilter}
@@ -630,22 +629,30 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                   />
                 </Tooltip>
               </div>
-            }
-          >
+            ) : undefined
+          }
+        >
+          {canViewViolations ? (
             <ViolationsSection
               data={violations.data}
               loading={violations.loading}
               error={violations.error}
               mode={plan.mode}
             />
-          </SettingsCard>
-        )}
+          ) : (
+            <NoPermissionCard
+              featureName={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_TITLE}
+              permission={viewViolations}
+              compact
+            />
+          )}
+        </SettingsCard>
 
-        {canViewReports && (
-          <SettingsCard
-            title={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_TITLE}
-            description={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_DESCRIPTION}
-            headerAction={
+        <SettingsCard
+          title={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_TITLE}
+          description={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_DESCRIPTION}
+          headerAction={
+            canViewReports ? (
               <Tooltip title={PPC.LABELS.REPORTS.REFRESH}>
                 <Button
                   type="text"
@@ -657,8 +664,10 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                   aria-label={PPC.LABELS.REPORTS.REFRESH}
                 />
               </Tooltip>
-            }
-          >
+            ) : undefined
+          }
+        >
+          {canViewReports ? (
             <ReportsSection
               data={reports.reports}
               loading={reports.loading}
@@ -670,8 +679,14 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
               canDownload={canDownloadReport}
               onDownload={reports.download}
             />
-          </SettingsCard>
-        )}
+          ) : (
+            <NoPermissionCard
+              featureName={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_TITLE}
+              permission={viewReports}
+              compact
+            />
+          )}
+        </SettingsCard>
       </div>
     );
   },

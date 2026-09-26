@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Form } from 'antd';
 import {
   SlideOutPanel,
@@ -77,6 +77,14 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
     ACTION_PERMISSIONS.groups.attachRole.scope,
     ACTION_PERMISSIONS.groups.attachRole.level,
     ACTION_PERMISSIONS.groups.attachRole.deny,
+  );
+
+  // Unchecking an attached role is a removal, checking another is an add: each has its own rule.
+  const addBlocked = canAttachRole ? undefined : GC.LABELS.ACTIONS.ATTACH_ROLE_DISABLED_TOOLTIP;
+  const removeBlocked = canRemoveRole ? undefined : GC.LABELS.ACTIONS.REMOVE_ROLE_DISABLED_TOOLTIP;
+  const blockedReason = useCallback(
+    (roleId: string) => (initialSelectedRoles.includes(roleId) ? removeBlocked : addBlocked),
+    [initialSelectedRoles, addBlocked, removeBlocked],
   );
 
   const {
@@ -186,7 +194,8 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                   assignedRoleIds={filteredAssignedRoleIds}
                   allRoles={allRoles}
                   loading={rolesLoading}
-                  onDeassignClick={canRemoveRole ? openDeassignModal : undefined}
+                  onDeassignClick={openDeassignModal}
+                  deassignDisabledReason={() => removeBlocked}
                 />
               )}
               {activeView === 'select' && (
@@ -194,7 +203,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                   roles={filteredRoles}
                   loading={rolesLoading}
                   allRoles={allRoles}
-                  canSelect={canAttachRole}
+                  blockedReason={blockedReason}
                 />
               )}
             </div>

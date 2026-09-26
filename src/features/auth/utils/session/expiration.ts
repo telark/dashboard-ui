@@ -57,7 +57,6 @@ export const useSessionExpirationCheck = ({
       AUTH_CONFIG.SESSION.VALIDATION.INTERVAL_SECONDS * 1000,
     );
 
-    // Cleanup interval on unmount or when dependencies change
     return () => {
       globalThis.clearInterval(intervalId);
     };

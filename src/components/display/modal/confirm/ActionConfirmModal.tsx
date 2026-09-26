@@ -21,6 +21,8 @@ export interface ActionConfirmModalProps {
   confirmDisabled?: boolean;
   danger?: boolean;
   customMessage?: React.ReactNode;
+  /** A consequence shown under the question, e.g. who loses access. */
+  note?: string;
   /** Shifts the modal's centering leftward by this many px (useful when a side panel is open) */
   offsetRight?: number;
   /** Override the portal container; defaults to false (inline). Pass () => document.body for viewport centering. */
@@ -41,6 +43,7 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
   confirmDisabled = false,
   danger = true,
   customMessage,
+  note,
   offsetRight,
   getContainer = false,
 }) => {
@@ -89,6 +92,18 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
           resourceType={resourceType}
           customMessage={customMessage}
         />
+        {note && (
+          <div
+            style={{
+              fontSize: ACTION_CONFIRM_MODAL.NOTE.FONT_SIZE,
+              lineHeight: ACTION_CONFIRM_MODAL.NOTE.LINE_HEIGHT,
+              color: ACTION_CONFIRM_MODAL.NOTE.COLOR,
+              textAlign: 'center',
+            }}
+          >
+            {note}
+          </div>
+        )}
         <ActionButtons
           cancelText={cancelText}
           confirmText={confirmText || ''}

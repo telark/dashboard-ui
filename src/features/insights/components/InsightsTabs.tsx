@@ -20,10 +20,12 @@ export const readInsightsTab = (searchParams: URLSearchParams): InsightsTab =>
 interface Props {
   // Open, not dismissed; undefined until the first read.
   counts?: Partial<Record<InsightCategory, number>>;
+  // The counts read failed: show the tabs without counts rather than keep them hidden.
+  countsFailed?: boolean;
 }
 
 // Switching keeps the app filter; an open insight belongs to the tab being left.
-const InsightsTabs: React.FC<Props> = ({ counts }) => {
+const InsightsTabs: React.FC<Props> = ({ counts, countsFailed }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const onChange = useCallback(
     (next: InsightsTab) =>
@@ -38,8 +40,9 @@ const InsightsTabs: React.FC<Props> = ({ counts }) => {
   );
   // Hidden, not absent, until the counts arrive: the labels then render once at their final
   // width and nothing below or beside them moves.
+  const hidden = !counts && !countsFailed;
   return (
-    <div style={{ visibility: counts ? undefined : 'hidden' }} aria-hidden={!counts}>
+    <div style={{ visibility: hidden ? 'hidden' : undefined }} aria-hidden={hidden}>
       <Segmented<InsightsTab>
         value={readInsightsTab(searchParams)}
         onChange={onChange}

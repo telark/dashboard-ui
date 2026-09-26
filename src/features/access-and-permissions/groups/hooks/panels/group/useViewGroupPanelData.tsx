@@ -28,6 +28,7 @@ interface UseViewGroupPanelDataReturn {
   closeDeleteModal: () => void;
   handleConfirmDelete: () => Promise<void>;
   groupName: string;
+  deleteImpact?: string;
 }
 
 export const useViewGroupPanelData = ({
@@ -42,6 +43,7 @@ export const useViewGroupPanelData = ({
     openDeleteModal,
     closeDeleteModal,
     handleConfirmDelete: baseHandleConfirmDelete,
+    deleteImpact,
   } = useGroupDeleteModal(group);
 
   const handleConfirmDelete = async () => {
@@ -124,5 +126,6 @@ export const useViewGroupPanelData = ({
     closeDeleteModal,
     handleConfirmDelete,
     groupName: group?.name || '',
+    deleteImpact,
   };
 };

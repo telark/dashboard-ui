@@ -3,14 +3,14 @@ import SortHeader from './Sort';
 import { TABLE_DEFAULTS } from './constants';
 import type { GenerateColumnCtx } from '../../../interfaces/layout/table';
 
-export const generateColumn = (
+export const generateColumn = <V = unknown, T = unknown>(
   cfg: {
     key: string;
     label: string;
     align?: 'left' | 'center';
     icon?: React.ReactNode;
     width?: number;
-    render?: (value: any, record: any) => React.ReactNode;
+    render?: (value: V, record: T) => React.ReactNode;
     headerBg?: string;
     activeColor?: string;
     inactiveColor?: string;

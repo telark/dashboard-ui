@@ -19,7 +19,7 @@ const planDetailsRoute = (m: Record<string, unknown> | undefined): string | null
     ? APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(':name', encodeURIComponent(m.planName))
     : null;
 
-export const TYPE_REGISTRY: Record<string, TypeConfig> = {
+const TYPE_REGISTRY: Record<string, TypeConfig> = {
   [NOTIFICATION_TYPES.ROLLBACK_COMPLETED]: {
     icon: HistoryOutlined,
     navigateTo: (m) => {
@@ -33,7 +33,7 @@ export const TYPE_REGISTRY: Record<string, TypeConfig> = {
     icon: SafetyCertificateOutlined,
     navigateTo: (m) => {
       const id = m?.targetId;
-      return typeof id === 'string' ? `/users/${id}` : null;
+      return typeof id === 'string' ? APP_ROUTES.USERS : null;
     },
   },
   [NOTIFICATION_TYPES.GROUP_MEMBERSHIP_CHANGED]: {

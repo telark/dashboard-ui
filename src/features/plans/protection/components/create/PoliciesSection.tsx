@@ -6,6 +6,7 @@ import type { PlanTemplate } from '../../models';
 import Section from '../../../../../components/display/sections/Section';
 import type { PolicyEntry } from './types';
 import { FORM_ITEM_CLASS } from './types';
+import { paramError } from '../../utils/planFormValues';
 
 const { SECTIONS, FORM } = PPC.CREATE_PAGE;
 
@@ -107,37 +108,58 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
                   >
                     {tpl.name}
                   </span>
-                  {(tpl.params ?? []).map((param) => (
-                    <div key={param.key} style={{ marginTop: 8 }}>
-                      <Typography.Text
-                        style={{ fontSize: 12, fontWeight: 500, display: 'block', marginBottom: 4 }}
-                      >
-                        {param.label}
-                        {param.required && (
-                          <span style={{ color: '#ef4444', marginLeft: 2 }}>*</span>
-                        )}
-                      </Typography.Text>
-                      <Select
-                        mode="tags"
-                        placeholder={param.placeholder ?? `Enter ${param.label.toLowerCase()}`}
-                        value={entry.params[param.key] ?? []}
-                        onChange={(vals: string[]) =>
-                          onPolicyParamChange(policyIndex, param.key, vals)
-                        }
-                        style={{ width: '100%' }}
-                        tokenSeparators={[',']}
-                        disabled={disabled}
-                      />
-                      {param.description && (
+                  {(tpl.params ?? []).map((param) => {
+                    const error = paramError(entry, param);
+                    return (
+                      <div key={param.key} style={{ marginTop: 8 }}>
                         <Typography.Text
-                          type="secondary"
-                          style={{ fontSize: 11, display: 'block', marginTop: 2 }}
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 500,
+                            display: 'block',
+                            marginBottom: 4,
+                          }}
                         >
-                          {param.description}
+                          {param.label}
+                          {param.required && (
+                            <span style={{ color: DEFAULT_COLORS.ERROR, marginLeft: 2 }}>*</span>
+                          )}
                         </Typography.Text>
-                      )}
-                    </div>
-                  ))}
+                        <Select
+                          mode="tags"
+                          placeholder={param.placeholder ?? FORM.PARAM_PLACEHOLDER(param.label)}
+                          value={entry.params[param.key] ?? []}
+                          onChange={(vals: string[]) =>
+                            onPolicyParamChange(
+                              policyIndex,
+                              param.key,
+                              vals.map((v) => v.trim()).filter(Boolean),
+                            )
+                          }
+                          style={{ width: '100%' }}
+                          tokenSeparators={[',']}
+                          disabled={disabled}
+                          status={error ? 'error' : undefined}
+                        />
+                        {error && (
+                          <Typography.Text
+                            type="danger"
+                            style={{ fontSize: 11, display: 'block', marginTop: 2 }}
+                          >
+                            {error}
+                          </Typography.Text>
+                        )}
+                        {param.description && (
+                          <Typography.Text
+                            type="secondary"
+                            style={{ fontSize: 11, display: 'block', marginTop: 2 }}
+                          >
+                            {param.description}
+                          </Typography.Text>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               );
             })}

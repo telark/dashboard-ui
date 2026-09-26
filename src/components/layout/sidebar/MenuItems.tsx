@@ -10,13 +10,6 @@ import {
   RolesMenuButton,
   ProtectionPlansMenuButton,
 } from './MenuButtons';
-import { useCanAccess, ACTION_PERMISSIONS } from '../../../features/auth/hooks';
-
-const ACCESS_VIEW_CHECKS = [
-  ACTION_PERMISSIONS.users.view,
-  ACTION_PERMISSIONS.groups.view,
-  ACTION_PERMISSIONS.roles.view,
-];
 
 interface MenuItemsProps {
   isCollapsed?: boolean;
@@ -34,7 +27,6 @@ const sectionLabelStyle: CSSProperties = {
 };
 
 const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
-  const canViewAccess = useCanAccess(ACCESS_VIEW_CHECKS);
   return (
     <nav
       style={{
@@ -49,9 +41,7 @@ const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
       <ApplicationsMenuButton isCollapsed={isCollapsed} />
       <InsightsMenuButton isCollapsed={isCollapsed} />
       <ProtectionPlansMenuButton isCollapsed={isCollapsed} />
-      {!isCollapsed && canViewAccess && (
-        <div style={sectionLabelStyle}>{MENU_LABELS.ACCESS_AND_PERMISSIONS}</div>
-      )}
+      {!isCollapsed && <div style={sectionLabelStyle}>{MENU_LABELS.ACCESS_AND_PERMISSIONS}</div>}
       <UsersMenuButton isCollapsed={isCollapsed} />
       <GroupsMenuButton isCollapsed={isCollapsed} />
       <RolesMenuButton isCollapsed={isCollapsed} />

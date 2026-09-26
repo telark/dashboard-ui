@@ -75,10 +75,27 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     handleSubmit,
   } = useManageUserRolePanel({ open, user, form, onClose, currentSelectedRoles });
 
+  const canAssignRole = usePermission(
+    ACTION_PERMISSIONS.users.manageRoles.scope,
+    ACTION_PERMISSIONS.users.manageRoles.level,
+    ACTION_PERMISSIONS.users.manageRoles.deny,
+  );
   const canRemoveRole = usePermission(
     ACTION_PERMISSIONS.users.removeRole.scope,
     ACTION_PERMISSIONS.users.removeRole.level,
     ACTION_PERMISSIONS.users.removeRole.deny,
+  );
+
+  // Unchecking an assigned role is a removal, checking another is an add: each has its own rule.
+  const addBlocked = canAssignRole ? undefined : UC.LABELS.ACTIONS.ASSIGN_ROLE_DISABLED_TOOLTIP;
+  const removeBlocked = user?.bootstrap
+    ? UC.LABELS.ACTIONS.BOOTSTRAP_LOCKED_TOOLTIP
+    : canRemoveRole
+      ? undefined
+      : UC.LABELS.ACTIONS.REMOVE_ROLE_DISABLED_TOOLTIP;
+  const blockedReason = useCallback(
+    (roleId: string) => (initialSelectedRoles.includes(roleId) ? removeBlocked : addBlocked),
+    [initialSelectedRoles, addBlocked, removeBlocked],
   );
 
   const handleDeassignSuccess = useCallback((updatedRoles: string[]) => {
@@ -117,7 +134,6 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     [groupInheritedRoles],
   );
 
-  // Both derived from inheritedGroupsByRoleId — no redundant iteration over groupInheritedRoles
   const inheritedRoleIds = useMemo(
     () => new Set(inheritedGroupsByRoleId.keys()),
     [inheritedGroupsByRoleId],
@@ -235,7 +251,8 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                   assignedRoleIds={filteredAssignedRoleIds}
                   allRoles={allRoles}
                   loading={rolesLoading}
-                  onDeassignClick={canRemoveRole ? openDeassignModal : undefined}
+                  onDeassignClick={openDeassignModal}
+                  deassignDisabledReason={() => removeBlocked}
                   inheritedRoleIds={inheritedRoleIds}
                   inheritedGroupsByRoleId={inheritedGroupsByRoleId}
                 />
@@ -252,6 +269,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                   loading={rolesLoading}
                   allRoles={allRoles}
                   inheritedRoleTooltips={inheritedRoleTooltips}
+                  blockedReason={blockedReason}
                 />
               )}
             </div>

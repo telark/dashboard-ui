@@ -7,10 +7,6 @@ export const handleCreateRoleFulfilled = (state: RolesState, action: PayloadActi
   state.error = null;
 };
 
-export const handleCreateRoleRejected = (state: RolesState, action: PayloadAction<unknown>) => {
-  state.error = action.payload as string;
-};
-
 export const handleUpdateRoleFulfilled = (state: RolesState, action: PayloadAction<Role>) => {
   const updatedRole = action.payload;
   const index = state.roles.findIndex((role) => role.id === updatedRole.id);
@@ -23,10 +19,6 @@ export const handleUpdateRoleFulfilled = (state: RolesState, action: PayloadActi
   state.error = null;
 };
 
-export const handleUpdateRoleRejected = (state: RolesState, action: PayloadAction<unknown>) => {
-  state.error = action.payload as string;
-};
-
 export const handleDeleteRolePending = (state: RolesState, action: { meta: { arg: string } }) => {
   const id = action.meta.arg;
   if (id && !state.deletingIds.includes(id)) {
@@ -36,6 +28,8 @@ export const handleDeleteRolePending = (state: RolesState, action: { meta: { arg
 
 export const handleDeleteRoleFulfilled = (state: RolesState, action: PayloadAction<string>) => {
   const deletedId = action.payload;
+  state.roles = state.roles.filter((role) => role.id !== deletedId);
+  state.deletingIds = state.deletingIds.filter((id) => id !== deletedId);
   if (state.details?.id === deletedId) {
     state.details = null;
   }
@@ -47,5 +41,4 @@ export const handleDeleteRoleRejected = (
   action: PayloadAction<unknown, string, { arg: string }>,
 ) => {
   state.deletingIds = state.deletingIds.filter((id) => id !== action.meta.arg);
-  state.error = action.payload as string;
 };

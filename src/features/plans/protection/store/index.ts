@@ -17,8 +17,4 @@ export {
   selectProtectionPlansError,
   selectProtectionPlanTemplates,
   selectProtectionPlanTemplatesLoading,
-  selectProtectionPlanDetails,
-  selectProtectionPlanDetailsLoading,
-  selectProtectionPlanDetailsError,
-  selectProtectionPlanByName,
 } from './selectors/protectionPlansSelectors';

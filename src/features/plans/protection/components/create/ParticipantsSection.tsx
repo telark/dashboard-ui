@@ -35,6 +35,7 @@ const ParticipantsSection: React.FC<ParticipantsSectionProps> = ({
           placeholder={FORM.PARTICIPANTS_PLACEHOLDER}
           style={{ width: '100%' }}
           options={userOptions}
+          labelRender={({ label, value }) => label ?? userMap.get(String(value))?.username ?? value}
           optionRender={(option) => (
             <UserOptionRow
               user={userMap.get(String(option.value))}

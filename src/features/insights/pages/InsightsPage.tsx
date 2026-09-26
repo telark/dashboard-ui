@@ -23,11 +23,16 @@ const InsightsPage: React.FC = () => {
     () => ({ page: 1, pageSize: 1, app: validApp(app) ? [app] : undefined }),
     [app],
   );
-  const { page: countsPage, refresh: refreshCounts } = useClusterInsights(countsQuery);
+  const {
+    page: countsPage,
+    error: countsError,
+    refresh: refreshCounts,
+  } = useClusterInsights(countsQuery);
   const byCategory = countsPage?.counts.byCategory;
   const incidents = byCategory?.incident ?? 0;
   const recommendations = byCategory?.recommendation ?? 0;
   const loaded = byCategory !== undefined;
+  const countsFailed = countsError !== null;
   // Each tab stays mounted after its first visit, and the tabs element only changes with the
   // counts, so a switch does not re-render or refetch the hidden tab.
   const [visited, setVisited] = useState<Set<InsightsTab>>(() => new Set([tab]));
@@ -38,26 +43,37 @@ const InsightsPage: React.FC = () => {
     () => (
       <InsightsTabs
         counts={loaded ? { incident: incidents, recommendation: recommendations } : undefined}
+        countsFailed={countsFailed}
       />
     ),
-    [loaded, incidents, recommendations],
+    [loaded, incidents, recommendations, countsFailed],
   );
 
-  // The filtered app's setup review: one document read per ?app= value, shared by both tabs.
+  // The filtered app's setup review, shared by both tabs. Re-read on the list's poll: an Analyze
+  // that changed no card still moves it.
   const [review, setReview] = useState<{ app: string; at?: string } | null>(null);
   useEffect(() => {
     if (!validApp(app)) return undefined;
     let cancelled = false;
-    fetchApplicationInsights([app])
-      .then((read) => {
-        // A pending document could not be read yet: unknown, so nothing shows.
-        if (!cancelled && !read.pending?.includes(app)) {
-          setReview({ app, at: read.results?.[app]?.lastReviewAt });
-        }
-      })
-      .catch((error) => logger.error(INSIGHTS_ERROR_MESSAGES.CLIENT.FETCH_INSIGHTS_FAILED, error));
+    const read = (): void => {
+      fetchApplicationInsights([app])
+        .then((res) => {
+          // A pending document could not be read yet: unknown, so nothing shows.
+          if (cancelled || res.pending?.includes(app)) return;
+          const at = res.results?.[app]?.lastReviewAt;
+          setReview((prev) => (prev?.app === app && prev.at === at ? prev : { app, at }));
+        })
+        .catch((error) =>
+          logger.error(INSIGHTS_ERROR_MESSAGES.CLIENT.FETCH_INSIGHTS_FAILED, error),
+        );
+    };
+    read();
+    const timer = setInterval(() => {
+      if (document.visibilityState === 'visible') read();
+    }, CLUSTER_INSIGHTS.POLL_MS);
     return () => {
       cancelled = true;
+      clearInterval(timer);
     };
   }, [app]);
   const appNote = useMemo(

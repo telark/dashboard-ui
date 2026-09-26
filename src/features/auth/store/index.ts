@@ -1,5 +1,4 @@
 export { default as passkeyReducer } from './slices/passkeySlice';
-export { clearDetails, addPasskey, updatePasskey, deletePasskey } from './slices/passkeySlice';
 
 export { default as permissionsReducer } from './slices/permissionsSlice';
 export { clearPermissions } from './slices/permissionsSlice';
@@ -30,16 +29,13 @@ export {
 export {
   selectPasskeyState,
   selectPasskeys,
-  selectPasskeyDetails,
   selectPasskeyLoading,
   selectPasskeyError,
-  selectPasskeyDetailsData,
 } from './selectors/passkeySelectors';
 
 export {
   selectPermissionsState,
   selectPermissionsLoading,
   selectPermissionsError,
-  selectResolvedRoles,
   selectPermissionsReady,
 } from './selectors/permissionsSelectors';

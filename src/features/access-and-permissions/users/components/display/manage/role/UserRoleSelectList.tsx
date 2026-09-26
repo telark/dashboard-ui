@@ -10,6 +10,7 @@ import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
 import { getScopeLabel } from '../../../../utils/role/scope';
 import type { Role } from '../../../../../roles/models';
+import { useCanGrantScopes } from '../../../../../../auth/hooks';
 
 const RoleIcon = Icons.Role;
 
@@ -19,6 +20,7 @@ interface UserRoleSelectListProps {
   allRoles?: Role[];
   /** Maps role ID → tooltip text for roles that are already inherited via a group. */
   inheritedRoleTooltips?: Map<string, string>;
+  blockedReason?: (roleId: string) => string | undefined;
 }
 
 const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
@@ -26,8 +28,10 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
   loading,
   allRoles,
   inheritedRoleTooltips,
+  blockedReason,
 }) => {
   const form = Form.useFormInstance();
+  const canGrant = useCanGrantScopes();
   const watchedSelectedRoles = Form.useWatch('assignedRolesIDs', form);
   const currentSelectedRoles = useMemo(
     () => (watchedSelectedRoles as string[]) || [],
@@ -85,8 +89,13 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
           >
             {roles.map((role) => {
               const isProtected = isRoleProtected(role);
-              const inheritedTooltip = inheritedRoleTooltips?.get(role.id);
-              const isInherited = Boolean(inheritedTooltip);
+              const blockedTooltip =
+                inheritedRoleTooltips?.get(role.id) ??
+                blockedReason?.(role.id) ??
+                (canGrant(role.scopesAndPermissions || [])
+                  ? undefined
+                  : ARC.TOOLTIPS.EXCEEDS_OWN_ACCESS);
+              const isBlocked = Boolean(blockedTooltip);
 
               const scopesContent = getRoleScopesContent(role, {
                 scopesAndPermissions: role.scopesAndPermissions || [],
@@ -98,7 +107,7 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
               const listItem = (
                 <SelectableListItem
                   value={role.id}
-                  disabled={isInherited}
+                  disabled={isBlocked}
                   name={CapitalizeFirstLetter(role.name)}
                   description={
                     role.description
@@ -114,9 +123,9 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
                   itemStyles={{
                     base: {
                       ...ARC.LIST.ITEM.BASE,
-                      ...(isInherited ? { opacity: 0.55, cursor: 'not-allowed' } : {}),
+                      ...(isBlocked ? ARC.LIST.ITEM.DISABLED : {}),
                     },
-                    hover: isInherited ? ARC.LIST.ITEM.BASE : ARC.LIST.ITEM.HOVER,
+                    hover: isBlocked ? ARC.LIST.ITEM.DISABLED : ARC.LIST.ITEM.HOVER,
                   }}
                   contentStyles={ARC.LIST.ROLE_CONTENT}
                   nameStyles={ARC.LIST.ROLE_NAME}
@@ -124,8 +133,8 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
                 />
               );
 
-              return isInherited ? (
-                <Tooltip key={role.id} title={inheritedTooltip} placement="left">
+              return isBlocked ? (
+                <Tooltip key={role.id} title={blockedTooltip} placement="left">
                   <div>{listItem}</div>
                 </Tooltip>
               ) : (

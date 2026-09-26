@@ -43,14 +43,12 @@ const AppContent: React.FC = () => {
     !isBypassPath &&
     (roles.length === 0 || roles.every((r) => r.isExpired));
 
-  // Check session expiration as background task when authenticated
   useSessionExpirationCheck({
     isAuthenticated,
     isAuthRoute,
     onSessionExpired: () => setShowSessionExpiredModal(true),
   });
 
-  // Initialize user permissions when authenticated
   useInitializePermissions(isAuthenticated);
 
   // GlobalConfig is a guarded resource: fetching it before a session exists only

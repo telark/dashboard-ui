@@ -1,3 +1,4 @@
+import type { TableColumnType } from 'antd';
 import { ROLES_CONSTANTS as RPC } from '../../../../roles/constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
@@ -15,7 +16,7 @@ interface CategoryColumnsContext extends GenerateColumnCtx {
 }
 
 const CategoryColumns = (ctx: CategoryColumnsContext) => {
-  const cols: ReturnType<typeof generateColumn>[] = [];
+  const cols: TableColumnType<Category>[] = [];
 
   cols.push(
     generateColumn(

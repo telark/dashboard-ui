@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useGroupMutations } from '../../hooks';
 import type { Group } from '../../models';
+import { GROUPS_CONSTANTS as GC } from '../../constants';
 
 interface UseGroupDeleteModalReturn {
   deleteModalOpen: boolean;
@@ -9,7 +10,14 @@ interface UseGroupDeleteModalReturn {
   closeDeleteModal: (e?: React.MouseEvent | React.KeyboardEvent) => void;
   handleConfirmDelete: () => Promise<void>;
   groupName: string;
+  deleteImpact?: string;
 }
+
+const groupDeleteImpact = (group: Group | null): string | undefined => {
+  const members = new Set(group?.assignedUsersIDs ?? []).size;
+  const roles = new Set(group?.assignedRolesIDs ?? []).size;
+  return members + roles > 0 ? GC.LABELS.ACTIONS.DELETE_IMPACT(members, roles) : undefined;
+};
 
 export const useGroupDeleteModal = (group: Group | null): UseGroupDeleteModalReturn => {
   const { handleDelete } = useGroupMutations();
@@ -48,5 +56,6 @@ export const useGroupDeleteModal = (group: Group | null): UseGroupDeleteModalRet
     closeDeleteModal,
     handleConfirmDelete,
     groupName: group?.name || '',
+    deleteImpact: groupDeleteImpact(group),
   };
 };

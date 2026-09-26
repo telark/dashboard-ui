@@ -52,10 +52,27 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
   const { initialSelectedGroups, hasChanges, groups, groupsLoading, submitting, handleSubmit } =
     useManageUserGroupPanel({ open, user, form, onClose, currentSelectedGroups });
 
+  const canAddToGroup = usePermission(
+    ACTION_PERMISSIONS.users.manageGroups.scope,
+    ACTION_PERMISSIONS.users.manageGroups.level,
+    ACTION_PERMISSIONS.users.manageGroups.deny,
+  );
   const canRemoveFromGroup = usePermission(
     ACTION_PERMISSIONS.users.removeFromGroup.scope,
     ACTION_PERMISSIONS.users.removeFromGroup.level,
     ACTION_PERMISSIONS.users.removeFromGroup.deny,
+  );
+
+  // Unchecking a current group is a removal, checking another is an add: each has its own rule.
+  const addBlocked = canAddToGroup ? undefined : UC.LABELS.ACTIONS.ADD_TO_GROUP_DISABLED_TOOLTIP;
+  const removeBlocked = user?.bootstrap
+    ? UC.LABELS.ACTIONS.BOOTSTRAP_LOCKED_TOOLTIP
+    : canRemoveFromGroup
+      ? undefined
+      : UC.LABELS.ACTIONS.REMOVE_FROM_GROUP_DISABLED_TOOLTIP;
+  const blockedReason = useCallback(
+    (groupId: string) => (initialSelectedGroups.includes(groupId) ? removeBlocked : addBlocked),
+    [initialSelectedGroups, addBlocked, removeBlocked],
   );
 
   const handleDeassignSuccess = useCallback((updatedGroups: string[]) => {
@@ -140,13 +157,15 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
                   assignedGroupIds={filteredAssignedGroupIds}
                   allGroups={groups}
                   loading={groupsLoading}
-                  onDeassignClick={canRemoveFromGroup ? openDeassignModal : undefined}
+                  onDeassignClick={openDeassignModal}
+                  deassignDisabledReason={() => removeBlocked}
                 />
               ) : (
                 <UserGroupSelectList
                   groups={filteredGroups}
                   loading={groupsLoading}
                   allGroups={groups}
+                  blockedReason={blockedReason}
                 />
               )}
             </div>

@@ -234,6 +234,7 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
         action="delete"
         resourceName={details.name}
         resourceType="protection plan"
+        customMessage={PPC.LABELS.ACTIONS.DELETE_MODAL_MESSAGE(details.name)}
         confirmText={PPC.LABELS.ACTIONS.DELETE_MODAL_OK}
         loading={deleting}
         getContainer={() => document.body}

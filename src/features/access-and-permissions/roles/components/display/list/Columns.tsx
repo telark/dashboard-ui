@@ -1,3 +1,4 @@
+import type { TableColumnType } from 'antd';
 import type { Role, ColumnsArgs } from '../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
@@ -23,7 +24,7 @@ export const Columns = ({
   activeSortKey,
   categories = [],
   users = [],
-}: Omit<ColumnsArgs, 'onView' | 'onEdit' | 'onDelete'>) => {
+}: Omit<ColumnsArgs, 'onView' | 'onEdit' | 'onDelete'>): TableColumnType<Role>[] => {
   const isBuiltIn = (record: Role) => record.type === RPC.TYPE.BUILT_IN;
 
   const getUserById = (userId?: string) => {

@@ -91,6 +91,9 @@ export const INSIGHTS_UI = {
     INSIGHT_NOT_FOUND: 'This insight no longer exists.',
     INVALID_TRIAGE: 'This insight cannot take that action in its current state.',
     INVALID_REQUEST: 'The request was not valid.',
+    INVALID_APP: 'The application name is not valid.',
+    AUTO_PULL_DISABLED:
+      'Automatic model installation is off. Install the model on the runtime, then check it again.',
     TRIAGE_FAILED: 'The action failed.',
   },
   EMPTY_VALUE: '—',

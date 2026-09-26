@@ -51,7 +51,6 @@ const Header: React.FC = () => {
         </Link>
         <SidebarToggleButton />
       </div>
-      {/* Action Buttons */}
       <div style={{ marginRight: '20px' }}>
         <NotificationBell />
       </div>

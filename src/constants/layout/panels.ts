@@ -79,6 +79,12 @@ export const SLIDE_OUT = {
   },
   TOOLBAR_BUTTON_HOVER_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE,
   TOOLBAR_BUTTON_DEFAULT_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  TOOLBAR_BUTTON_DISABLED: {
+    cursor: 'not-allowed' as const,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
+  },
+  TOOLBAR_EDIT_LABEL: 'Edit',
+  TOOLBAR_DELETE_LABEL: 'Delete',
   TITLE_CONTAINER: {
     flex: 1,
     minWidth: 0,
@@ -320,7 +326,6 @@ export const VIEW = {
     fontWeight: 700,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE,
     letterSpacing: '-0.02em',
-    textTransform: 'capitalize' as const,
   },
   DESCRIPTION: {
     margin: '0 0 4px 0',

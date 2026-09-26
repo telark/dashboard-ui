@@ -23,9 +23,10 @@ export const usePlanActions = () => {
         message.success(PPC.LABELS.ACTIONS.CREATE_SUCCESS(created.name));
         return created;
       } catch (err) {
-        const text = err instanceof Error ? err.message : PPC.LABELS.ACTIONS.CREATE_ERROR;
+        // The thunk rejects with the server's message as a string.
+        const text = typeof err === 'string' ? err : PPC.LABELS.ACTIONS.CREATE_ERROR;
         message.error(text);
-        throw err instanceof Error ? err : new Error(text);
+        throw new Error(text);
       } finally {
         setSubmitting(false);
       }
@@ -45,9 +46,10 @@ export const usePlanActions = () => {
         message.success(PPC.LABELS.ACTIONS.UPDATE_SUCCESS(updated.name));
         return updated;
       } catch (err) {
-        const text = err instanceof Error ? err.message : PPC.LABELS.ACTIONS.UPDATE_ERROR;
+        // The thunk rejects with the server's message as a string.
+        const text = typeof err === 'string' ? err : PPC.LABELS.ACTIONS.UPDATE_ERROR;
         message.error(text);
-        throw err instanceof Error ? err : new Error(text);
+        throw new Error(text);
       } finally {
         setSubmitting(false);
       }

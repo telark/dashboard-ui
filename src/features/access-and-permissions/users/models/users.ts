@@ -31,6 +31,8 @@ export interface User {
   status: UserStatus;
   avatar?: UserAvatar;
   settings?: UserSettings;
+  // Set by the backend (omitted when false) for admins the chart creates and owns.
+  bootstrap?: boolean;
 }
 
 export type UserFormBaseFields = Pick<User, 'username' | 'fullname' | 'email'>;

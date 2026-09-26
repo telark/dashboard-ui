@@ -8,3 +8,4 @@ export { useCreateUserPanel } from './panels/user/useCreateUserPanel';
 export { useManageUserStatePanel } from './panels/user/useManageUserStatePanel';
 export { useManageUserRolePanel } from './panels/role/useManageUserRolePanel';
 export { useManageUserGroupPanel } from './panels/group/useManageUserGroupPanel';
+export { useUserLockReason } from './user/useUserLockReason';

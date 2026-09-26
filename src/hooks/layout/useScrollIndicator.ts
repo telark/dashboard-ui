@@ -55,7 +55,6 @@ export const useScrollIndicator = ({
       checkScrollPosition();
     }, 0);
 
-    // Add scroll listener
     container.addEventListener('scroll', checkScrollPosition);
 
     return () => {

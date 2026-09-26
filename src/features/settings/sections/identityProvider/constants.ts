@@ -15,7 +15,6 @@ export const IDENTITY_PROVIDER_CONSTANTS = {
     JWK_PLACEHOLDER: '{"keys":[...]}',
     SAVE_BUTTON: 'Save',
     PERMISSION_DENIED: 'You do not have permission to change sign-on settings',
-    NO_VIEW_PERMISSION: 'You do not have permission to manage sign-on settings.',
   },
   MESSAGES: {
     SAVE_SUCCESS: 'Sign-on settings saved',

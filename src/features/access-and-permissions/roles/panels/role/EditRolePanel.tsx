@@ -2,12 +2,12 @@ import React, { useMemo, useEffect, useState } from 'react';
 import { Icons, SLIDE_OUT } from '../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import RoleForm from '../../components/display/shared/RoleForm';
-import { useRoleActions, useRoles, useEditRoleSubmit } from '../../hooks';
+import { useRoleActions, useRoles, useEditRoleSubmit, useNameValidation } from '../../hooks';
 import { convertRoleToFormValues } from '../../utils';
 import type { Role, RoleFormValues } from '../../models';
 import AnimationWrapper from '../../../../../components/display/panels/slide-out/AnimationWrapper';
 import { ExpandPanelButton } from '../../../../../components/display/panels/slide-out';
-import type { FormInstance } from 'antd';
+import { Form, type FormInstance } from 'antd';
 
 const PANEL_WIDTH = 720;
 const PANEL_WIDTH_EXPANDED = 1400;
@@ -25,6 +25,12 @@ const EditRolePanel: React.FC<EditRolePanelProps> = ({ open, onClose, editingRol
   const [expanded, setExpanded] = useState(false);
   const { handleUpdate, submitting } = useRoleActions({ skipNavigate: true });
   const { roles } = useRoles();
+  const watchedName = Form.useWatch('name', form) as string | undefined;
+  const { isNameInvalid } = useNameValidation({
+    roles,
+    isEditMode: true,
+    currentName: editingRole?.name,
+  });
 
   const initialValues = useMemo(
     () => (editingRole ? convertRoleToFormValues(editingRole) : null),
@@ -80,6 +86,7 @@ const EditRolePanel: React.FC<EditRolePanelProps> = ({ open, onClose, editingRol
         onPrimary: () => form.submit(),
         primaryLabel: RC.LABELS.PANELS.EDIT.SUBMIT_BUTTON,
         primaryLoading: isSubmittingCombined,
+        primaryDisabled: isNameInvalid(watchedName),
         primaryIcon: <RoleIcon size={16} />,
         primaryLoadingLabel: 'Updating...',
       }}

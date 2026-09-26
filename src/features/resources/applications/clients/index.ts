@@ -9,7 +9,6 @@ export {
   getApplicationSnapshotSummaries,
   getSnapshotInfos,
   getSnapshotManifest,
-  getSnapshotsByApplicationId,
 } from './snapshots';
 
 export { triggerApplicationRollback, abortApplicationRollback } from './rollback';

@@ -81,9 +81,10 @@ export const usePlanFormData = (enabled: boolean) => {
     [selectableUsers],
   );
 
+  // Every user, not only the selectable ones: an editor who is already a participant has no option.
   const userMap = useMemo<Map<string, User>>(
-    () => new Map(selectableUsers.map((u) => [u.id, u])),
-    [selectableUsers],
+    () => new Map((users ?? []).map((u) => [u.id, u])),
+    [users],
   );
 
   const applicationOptions = useMemo(

@@ -2,7 +2,6 @@ import { DEFAULT_COLORS } from '../../../../constants';
 import { SHARED_PAGE_CONSTANTS } from '../../../../constants/shared/pages';
 import { SHARED_DETAILS_CONSTANTS } from '../../../../constants/shared/details';
 
-export const APPLICATIONS_SYNC_RETRY_INTERVAL_MS = 60000;
 export const APPLICATIONS_SYNC_ACTIVE_POLL_MS = 5000;
 export const APPLICATIONS_DISCOVERY_STATUS_POLL_MS = 5000;
 // A multiple of CARD_LAYOUT.CARDS_PER_ROW, so the grid's last row is full.
@@ -11,6 +10,11 @@ export const APPLICATION_CHANGE_LOG_PAGE_SIZE = 10;
 // A rollback cannot be aborted once the engine picks it up (~200ms after the
 // request), so the only real second chance is this delay before the request.
 export const ROLLBACK_UNDO_WINDOW_SECONDS = 5;
+// Mirrors the exporter's application patch limits (400 above these).
+export const APPLICATION_EDIT_LIMITS = {
+  DISPLAY_NAME_MAX: 200,
+  DESCRIPTION_MAX: 1000,
+} as const;
 export const APPLICATION_TRACKING_ANNOTATION_PREFIX =
   'metadata.annotations.telark.io/last-modified';
 

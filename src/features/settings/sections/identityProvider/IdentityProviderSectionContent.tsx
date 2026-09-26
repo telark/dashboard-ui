@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import OIDCSection from './OIDCSection';
-import SettingsNoPermissionsCard from '../../components/SettingsNoPermissionsCard';
+import { NoPermissionCard } from '../../../../components/shared';
 import { IDENTITY_PROVIDER_CONSTANTS as C } from './constants';
 import {
   ACTION_PERMISSIONS,
@@ -12,7 +12,7 @@ const { scope, level } = ACTION_PERMISSIONS.settings.editOidcConfig;
 const IdentityProviderSectionContent: React.FC = memo(() => {
   const canView = usePermission(scope, level);
   if (!canView) {
-    return <SettingsNoPermissionsCard description={C.LABELS.NO_VIEW_PERMISSION} />;
+    return <NoPermissionCard featureName={C.LABELS.CARD_TITLE} permission={{ scope, level }} />;
   }
   return <OIDCSection />;
 });

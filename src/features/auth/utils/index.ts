@@ -32,7 +32,6 @@ export { handleAuthError } from './shared/errors';
 
 export {
   base64UrlToArrayBuffer,
-  base64UrlToBase64,
   isWebAuthnSupported,
   authenticateWithPasskey,
   registerPasskey,
@@ -49,13 +48,4 @@ export {
   handleWebAuthnError,
   isErrorName,
 } from './webauthn/shared';
-export {
-  browserHasCredential,
-  detectOrphanedPasskeys,
-  validateBackendPasskeysInBrowser,
-} from './webauthn/validation';
-export {
-  isCancelledOrNoCredentialError,
-  isUserCancelledError,
-  isNoCredentialFoundError,
-} from './webauthn/errors';
+export { browserHasCredential } from './webauthn/validation';

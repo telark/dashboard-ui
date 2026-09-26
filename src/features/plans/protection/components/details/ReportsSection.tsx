@@ -109,6 +109,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
                 text={LABELS.TRIGGER_LABELS[report.trigger]}
                 accent={final ? DEFAULT_COLORS.SUCCESS : undefined}
                 fontSize={11}
+                capitalize={false}
               />
               <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
                 {LABELS.GENERATED_AT}{' '}

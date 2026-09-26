@@ -41,6 +41,7 @@ interface UseGroupListConfigProps {
   onAttachMemberClick?: () => void;
   canAttachRole?: boolean;
   canAttachMember?: boolean;
+  canBulkDeleteGroup?: boolean;
   canViewGroupCategories?: boolean;
   canAddGroupCategory?: boolean;
   onFilterClick?: () => void;
@@ -128,6 +129,7 @@ export const useGroupListConfig = ({
   onAttachMemberClick,
   canAttachRole = true,
   canAttachMember = true,
+  canBulkDeleteGroup = true,
   canViewGroupCategories = true,
   canAddGroupCategory = true,
   onFilterClick,
@@ -169,7 +171,8 @@ export const useGroupListConfig = ({
           icon: <DeleteOutlined />,
           variant: 'danger',
           iconOnly: true,
-          disabled: selectedGroupsCount < 2,
+          disabled: selectedGroupsCount < 2 || !canBulkDeleteGroup,
+          tooltip: canBulkDeleteGroup ? undefined : GC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP,
           onClick: () => onBulkDeleteClick?.(),
         },
       ],
@@ -177,6 +180,7 @@ export const useGroupListConfig = ({
     [
       canAttachMember,
       canAttachRole,
+      canBulkDeleteGroup,
       onAttachMemberClick,
       onAttachRoleClick,
       onBulkDeleteClick,

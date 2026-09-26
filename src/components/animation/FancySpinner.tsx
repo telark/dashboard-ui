@@ -33,7 +33,6 @@ const FancySpinner: React.FC<FancySpinnerProps> = React.memo(
             height: size,
           }}
         >
-          {/* Single rotating ring */}
           <div
             style={{
               position: 'absolute',

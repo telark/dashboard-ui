@@ -1,6 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
 import { Checkbox, Form, Tooltip } from 'antd';
-import { GROUPS_CONSTANTS as GC, ATTACHED_MEMBERS_CONSTANTS as AMC } from '../../../constants';
+import {
+  GROUPS_CONSTANTS as GC,
+  ATTACHED_MEMBERS_CONSTANTS as AMC,
+  ATTACHED_ROLES_CONSTANTS as ARC,
+} from '../../../constants';
 import UserAvatar from '../../../../../../components/display/avatars/UserAvatar';
 import type { User } from '../../../../users/models';
 
@@ -8,7 +12,7 @@ interface MemberListProps {
   users: User[] | undefined;
   loading: boolean;
   allUsers?: User[] | undefined;
-  canSelect?: boolean;
+  blockedReason?: (userId: string) => string | undefined;
   fieldName?: string;
 }
 
@@ -16,7 +20,7 @@ const MemberList: React.FC<MemberListProps> = ({
   users,
   loading,
   allUsers,
-  canSelect = true,
+  blockedReason,
   fieldName = 'assignedUsersIDs',
 }) => {
   const form = Form.useFormInstance();
@@ -58,22 +62,26 @@ const MemberList: React.FC<MemberListProps> = ({
   );
 
   return (
-    <Tooltip title={!canSelect ? GC.LABELS.ACTIONS.REMOVE_MEMBER_DISABLED_TOOLTIP : undefined}>
-      <div style={{ width: '100%' }}>
-        <Form.Item name={fieldName} style={{ margin: 0, width: '100%' }}>
-          <Checkbox.Group
-            style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
-            value={filteredSelectedUsers}
-            onChange={handleChange}
-          >
-            <div className="role-list-container" style={AMC.LIST.CONTAINER}>
-              {users.map((user) => {
-                return (
+    <div style={{ width: '100%' }}>
+      <Form.Item name={fieldName} style={{ margin: 0, width: '100%' }}>
+        <Checkbox.Group
+          style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
+          value={filteredSelectedUsers}
+          onChange={handleChange}
+        >
+          <div className="role-list-container" style={AMC.LIST.CONTAINER}>
+            {users.map((user) => {
+              const blockedTooltip = blockedReason?.(user.id);
+              return (
+                <Tooltip key={user.id} title={blockedTooltip} placement="left">
                   <div
-                    key={user.id}
-                    style={AMC.LIST.ITEM.BASE}
+                    style={{
+                      ...AMC.LIST.ITEM.BASE,
+                      ...(blockedTooltip ? ARC.LIST.ITEM.DISABLED : {}),
+                    }}
                     onMouseEnter={(e) => {
-                      if (canSelect) Object.assign(e.currentTarget.style, AMC.LIST.ITEM.HOVER);
+                      if (!blockedTooltip)
+                        Object.assign(e.currentTarget.style, AMC.LIST.ITEM.HOVER);
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.background = AMC.LIST.ITEM.BASE.background;
@@ -83,7 +91,7 @@ const MemberList: React.FC<MemberListProps> = ({
                     <Checkbox
                       value={user.id}
                       style={{ margin: 0, width: '100%' }}
-                      disabled={!canSelect}
+                      disabled={Boolean(blockedTooltip)}
                     >
                       <div style={AMC.LIST.MEMBER_CONTENT}>
                         <div style={AMC.LIST.MEMBER_AVATAR_CONTAINER}>
@@ -96,13 +104,13 @@ const MemberList: React.FC<MemberListProps> = ({
                       </div>
                     </Checkbox>
                   </div>
-                );
-              })}
-            </div>
-          </Checkbox.Group>
-        </Form.Item>
-      </div>
-    </Tooltip>
+                </Tooltip>
+              );
+            })}
+          </div>
+        </Checkbox.Group>
+      </Form.Item>
+    </div>
   );
 };
 

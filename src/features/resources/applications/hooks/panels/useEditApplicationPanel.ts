@@ -34,8 +34,8 @@ export function useEditApplicationPanel({
       try {
         await dispatch(updateApplicationThunk({ name: application.name, payload })).unwrap();
         message.success(APPLICATIONS_UI.EDIT_PAGE.SUCCESS_MESSAGE);
-      } catch {
-        message.error(APPLICATIONS_UI.EDIT_PAGE.ERROR_GENERIC);
+      } catch (err) {
+        message.error(typeof err === 'string' ? err : APPLICATIONS_UI.EDIT_PAGE.ERROR_GENERIC);
         throw new Error('update failed');
       } finally {
         setSubmitting(false);

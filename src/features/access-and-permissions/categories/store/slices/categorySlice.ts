@@ -22,11 +22,9 @@ const categorySlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Fetch Categories By Scope
       .addCase(fetchCategoriesByScopeThunk.pending, handleFetchCategoriesByScopePending)
       .addCase(fetchCategoriesByScopeThunk.fulfilled, handleFetchCategoriesByScopeFulfilled)
       .addCase(fetchCategoriesByScopeThunk.rejected, handleFetchCategoriesByScopeRejected)
-      // Fetch Categories By Scope Silent
       .addCase(fetchCategoriesByScopeSilentThunk.pending, handleFetchCategoriesByScopePending)
       .addCase(fetchCategoriesByScopeSilentThunk.fulfilled, handleFetchCategoriesByScopeFulfilled)
       .addCase(fetchCategoriesByScopeSilentThunk.rejected, handleFetchCategoriesByScopeRejected);

@@ -31,7 +31,14 @@ import { CATEGORIES_CONSTANTS as CC } from '../../access-and-permissions/categor
 import { useCategories } from '../../access-and-permissions/categories/hooks';
 import { ACTION_PERMISSIONS, usePermission } from '../../auth/hooks/permissions/permissionEngine';
 import { selectGlobalConfigState } from '../../globalconfig/store';
-import { fetchClusterInsights, fetchInsightNamespaces, triageInsight } from '../clients/insights';
+import {
+  fetchAnalyzerRuntime,
+  fetchClusterInsights,
+  fetchInsightNamespaces,
+  triageInsight,
+} from '../clients/insights';
+import { INSIGHTS_ERROR_MESSAGES } from '../constants/errors';
+import logger from '../../../logging';
 import { INSIGHTS_UI } from '../constants/texts';
 import {
   ALL_INSIGHT_STATES,
@@ -232,7 +239,9 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
   const appFilter = params.get(CLUSTER_INSIGHTS.APP_PARAM) ?? '';
   const insightId = active ? (params.get(CLUSTER_INSIGHTS.INSIGHT_PARAM) ?? '') : '';
   const canBulk = usePermission(BULK_PERMISSION.scope, BULK_PERMISSION.level, BULK_PERMISSION.deny);
-  const analyzerEnabled = useSelector(selectGlobalConfigState).data?.ai?.enabled;
+  const configEnabled = useSelector(selectGlobalConfigState).data?.ai?.enabled;
+  const [runtimeEnabled, setRuntimeEnabled] = useState<boolean>();
+  const analyzerEnabled = configEnabled ?? runtimeEnabled;
   const { categories: environments } = useCategories(CC.SCOPES.PLAN_ENVIRONMENTS);
   const { ref, width } = useElementWidth<HTMLDivElement>();
   const [namespaces, setNamespaces] = useState<string[]>([]);
@@ -254,7 +263,9 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [bulkPending, setBulkPending] = useState(false);
   // Where an insight opened from outside the page (a cold link, another finding) lives.
-  const [known, setKnown] = useState<Record<string, { namespace: string; app: string }>>({});
+  const [known, setKnown] = useState<
+    Record<string, { namespace: string; app: string; category?: InsightCategory }>
+  >({});
 
   useEffect(() => {
     let cancelled = false;
@@ -265,6 +276,20 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
       cancelled = true;
     };
   }, []);
+
+  // Without settings read the GlobalConfig is unreadable; the analyzer runtime says whether it is on.
+  useEffect(() => {
+    if (configEnabled !== undefined) return undefined;
+    let cancelled = false;
+    fetchAnalyzerRuntime()
+      .then((runtime) => !cancelled && setRuntimeEnabled(runtime.enabled))
+      .catch((error: unknown) =>
+        logger.error(INSIGHTS_ERROR_MESSAGES.CLIENT.RUNTIME_FETCH_FAILED, error),
+      );
+    return () => {
+      cancelled = true;
+    };
+  }, [configEnabled]);
 
   // One request per pause in typing, not per keystroke.
   useEffect(() => {
@@ -462,8 +487,8 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
   );
   const closePanel = useCallback(() => setParam(CLUSTER_INSIGHTS.INSIGHT_PARAM, null), [setParam]);
   const selectFinding = useCallback(
-    (id: string, namespace: string, app: string) => {
-      setKnown((prev) => ({ ...prev, [id]: { namespace, app } }));
+    (id: string, namespace: string, app: string, findingCategory: InsightCategory) => {
+      setKnown((prev) => ({ ...prev, [id]: { namespace, app, category: findingCategory } }));
       openInsight(id, true);
     },
     [openInsight],
@@ -602,9 +627,9 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}
       >
         {tabs}
-        {page && page.total > items.length ? (
+        {page && page.total > page.items.length ? (
           <span style={mutedStyle}>
-            {P.CAPPED.replace('{shown}', String(items.length)).replace(
+            {P.CAPPED.replace('{shown}', String(page.items.length)).replace(
               '{total}',
               String(page.total),
             )}
@@ -647,16 +672,21 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
             disabled: selectedRows.length === 0 || bulkPending,
             onClick: () => void bulkTriage('acknowledge'),
           },
-          {
-            key: 'bulkDismiss',
-            iconOnly: true,
-            label: P.BULK_DISMISS,
-            icon: <EyeInvisibleOutlined />,
-            variant: 'default',
-            loading: bulkPending,
-            disabled: selectedRows.length === 0 || bulkPending,
-            onClick: () => void bulkTriage('dismiss'),
-          },
+          // Incidents cannot be dismissed.
+          ...(category === 'incident'
+            ? []
+            : [
+                {
+                  key: 'bulkDismiss',
+                  iconOnly: true,
+                  label: P.BULK_DISMISS,
+                  icon: <EyeInvisibleOutlined />,
+                  variant: 'default' as const,
+                  loading: bulkPending,
+                  disabled: selectedRows.length === 0 || bulkPending,
+                  onClick: () => void bulkTriage('dismiss'),
+                },
+              ]),
           {
             key: 'bulkReopen',
             iconOnly: true,
@@ -749,10 +779,14 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
       currentPage,
       pageSize,
       total,
-      onPageChange: setCurrentPage,
+      onPageChange: (next) => {
+        setCurrentPage(next);
+        setSelectedKeys([]);
+      },
       onPageSizeChange: (size) => {
         setPageSize(size);
         setCurrentPage(1);
+        setSelectedKeys([]);
       },
       pageSizeOptions: [...CLUSTER_INSIGHTS.PAGE_SIZE_OPTIONS],
     },

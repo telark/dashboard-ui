@@ -8,9 +8,15 @@ import PlanForm from '../shared/PlanForm';
 import type { FormValues, PolicyEntry } from '../create';
 import type { ProtectionPlan } from '../../models';
 import { usePlanFormData } from '../../hooks/usePlanFormData';
+import { usePlanNameCheck } from '../../hooks/usePlanNameCheck';
 import { usePlanActions } from '../../hooks/usePlanActions';
 import { usePlanFormState } from '../../hooks/usePlanFormState';
-import { buildPreparePayload, planToFormValues, planToPolicies } from '../../utils/planFormValues';
+import {
+  buildPreparePayload,
+  hasInvalidParams,
+  planToFormValues,
+  planToPolicies,
+} from '../../utils/planFormValues';
 
 const PANEL_WIDTH = 720;
 const PANEL_WIDTH_EXPANDED = 1400;
@@ -28,6 +34,7 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
   const [expanded, setExpanded] = useState(false);
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const data = usePlanFormData(open);
+  const { nameValidator, nameInvalid } = usePlanNameCheck(form, open, plan.name);
 
   const handleClose = useCallback(() => {
     setAttemptedSubmit(false);
@@ -77,7 +84,12 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
     [handleUpdate, handleClose, plan, policies],
   );
 
-  const submitDisabled = !hasChanges || policies.length === 0 || (attemptedSubmit && hasFormErrors);
+  const submitDisabled =
+    !hasChanges ||
+    nameInvalid ||
+    policies.length === 0 ||
+    hasInvalidParams(policies, data.templates) ||
+    (attemptedSubmit && hasFormErrors);
 
   const handleSubmitClick = () => {
     setAttemptedSubmit(true);
@@ -112,6 +124,7 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
         onSubmit={handleFinish}
         submitting={submitting}
         mode="edit"
+        nameValidator={nameValidator}
         plan={plan}
         hideSubmitButton
         submitLabel={PPC.PANELS.EDIT.SUBMIT_BUTTON}

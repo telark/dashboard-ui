@@ -262,7 +262,6 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({
     }
   }
 
-  // Use ref to store preview URLs - they never change once generated
   const previewUrlsRef = useRef<Record<string, string>>({});
   // Store preview URLs in state to avoid accessing ref during render
   const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});

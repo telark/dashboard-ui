@@ -53,6 +53,8 @@ export const GROUPS_CONSTANTS = {
       CREATE_DISABLED_TOOLTIP: 'You do not have permission to create groups',
       ATTACH_ROLE_DISABLED_TOOLTIP: 'You do not have permission to attach roles',
       REMOVE_MEMBER_DISABLED_TOOLTIP: 'You do not have permission to remove members',
+      ADD_MEMBER_DISABLED_TOOLTIP: 'You do not have permission to add members',
+      REMOVE_ROLE_DISABLED_TOOLTIP: 'You do not have permission to remove roles',
       MANAGE_ROLES_DISABLED_TOOLTIP: 'You do not have permission to manage roles',
       MANAGE_MEMBERS_DISABLED_TOOLTIP: 'You do not have permission to manage members',
       BULK_DELETE: 'Bulk Delete',
@@ -61,6 +63,8 @@ export const GROUPS_CONSTANTS = {
       MANAGE_MEMBERS: 'Manage Members',
       DELETE_MODAL_TITLE: 'Delete Group',
       DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
+      DELETE_IMPACT: (members: number, roles: number) =>
+        `It has ${members} member${members === 1 ? '' : 's'} and ${roles} role${roles === 1 ? '' : 's'}. Members lose the access this group grants.`,
       BULK_DELETE_MODAL_TITLE: 'Delete Groups',
       BULK_DELETE_MODAL_CONTENT: (count: number) =>
         `Are you sure you want to delete ${count} group${count > 1 ? 's' : ''}? This action cannot be undone.`,

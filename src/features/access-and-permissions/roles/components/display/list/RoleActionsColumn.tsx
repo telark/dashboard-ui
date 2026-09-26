@@ -1,21 +1,18 @@
 import React from 'react';
 import { Modal, Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useDispatch } from 'react-redux';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../constants';
-import { deleteRoleThunk } from '../../../store';
 import { canDeleteRole, canModifyRole } from '../../../utils';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../../auth/hooks';
-import type { AppDispatch } from '../../../../../../store';
-import store from '../../../../../../store';
-import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
+import { useRoleActions } from '../../../hooks/actions/useRoleActions';
 import type { Role } from '../../../models';
 
 interface RoleActionsColumnProps {
   record: Role;
   onEdit?: (record: Role) => void;
   onDelete?: (record: Role) => void;
+  getUsage?: (roleId: string) => { users: number; groups: number };
 }
 
 const ACTION_SIZE = 28;
@@ -50,8 +47,9 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
   record,
   onEdit,
   onDelete,
+  getUsage,
 }) => {
-  const dispatch: AppDispatch = useDispatch();
+  const { handleDelete } = useRoleActions({ skipNavigate: true });
   const hasEditPermission = usePermission(
     ACTION_PERMISSIONS.roles.edit.scope,
     ACTION_PERMISSIONS.roles.edit.level,
@@ -85,15 +83,18 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
       onDelete(record);
       return;
     }
+    const usage = getUsage?.(record.id);
+    const impact =
+      usage && usage.users + usage.groups > 0
+        ? ` ${RC.LABELS.DELETE_IMPACT(usage.users, usage.groups)}`
+        : '';
     Modal.confirm({
       title: RC.LABELS.DELETE_MODAL_TITLE,
-      content: RC.LABELS.DELETE_MODAL_CONTENT(record.name),
+      content: `${RC.LABELS.DELETE_MODAL_CONTENT(record.name)}${impact}`,
       okText: RC.LABELS.DELETE_MODAL_OK,
       okButtonProps: { danger: true },
-      onOk: async () => {
-        await dispatch(deleteRoleThunk(record.id)).unwrap();
-        store.dispatch(fetchMyPermissionsThunk());
-      },
+      // handleDelete toasts both outcomes; a rejection keeps the dialog open.
+      onOk: () => handleDelete(record.id),
     });
   };
 

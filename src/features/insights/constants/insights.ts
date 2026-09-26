@@ -34,6 +34,7 @@ export const INSIGHT_EVENTS = {
   INSIGHT_RESOLVED: 'insight.resolved',
   RUNTIME_CHANGED: 'runtime.changed',
   RUNTIME_PULL: 'runtime.pull',
+  REVIEW_FINISHED: 'review.finished',
   RESYNC: 'resync',
 } as const satisfies Record<string, InsightEvent['name']>;
 
@@ -320,6 +321,8 @@ export const INSIGHT_ERROR_MESSAGES: Record<string, string> = {
   insight_not_found: T.ERRORS.INSIGHT_NOT_FOUND,
   invalid_triage: T.ERRORS.INVALID_TRIAGE,
   invalid_request: T.ERRORS.INVALID_REQUEST,
+  invalid_app: T.ERRORS.INVALID_APP,
+  auto_pull_disabled: T.ERRORS.AUTO_PULL_DISABLED,
 };
 
 // An unknown code must never render a blank label.

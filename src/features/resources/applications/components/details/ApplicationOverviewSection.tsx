@@ -78,6 +78,15 @@ function buildPrimaryRows(application: Application) {
           },
         ]
       : []),
+    ...(application.description
+      ? [
+          {
+            k: 'description',
+            label: APPLICATIONS_UI.EDIT_PAGE.DESCRIPTION_LABEL,
+            value: application.description,
+          },
+        ]
+      : []),
   ];
 }
 

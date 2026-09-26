@@ -8,7 +8,8 @@ import store from '../../../../../../store';
 import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
 import type { CreateUserFormValues } from '../../../models';
 import { USERS_CONSTANTS as UC } from '../../../constants';
-import { makeUsernameUniqueRule, makeEmailFormatRule } from '../../../utils';
+import { rejectionMessage } from '../../../../../../utils/helpers/format';
+import { makeUsernameUniqueRule, makeEmailFormatRule, makeEmailUniqueRule } from '../../../utils';
 
 interface UseCreateUserPanelOptions {
   form: FormInstance<CreateUserFormValues>;
@@ -24,7 +25,10 @@ export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions)
 
   const usernameRules = useMemo(() => [makeUsernameUniqueRule(existingUsers)], [existingUsers]);
 
-  const emailRules = useMemo(() => [makeEmailFormatRule()], []);
+  const emailRules = useMemo(
+    () => [makeEmailFormatRule(), makeEmailUniqueRule(existingUsers)],
+    [existingUsers],
+  );
 
   const checkFormState = useCallback(() => {
     const errors = form.getFieldsError();
@@ -47,8 +51,8 @@ export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions)
         message.success(UC.LABELS.MESSAGES.CREATED(userData.username));
         form.resetFields();
         onClose();
-      } catch {
-        message.error(UC.LABELS.MESSAGES.CREATE_FAILED);
+      } catch (rejection) {
+        message.error(rejectionMessage(rejection, UC.LABELS.MESSAGES.CREATE_FAILED));
       } finally {
         setSubmitting(false);
       }

@@ -2,18 +2,17 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { App as AntdApp, Form, Input, Select } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
 import type { Dayjs } from 'dayjs';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
 import { APP_ROUTES, DEFAULT_COLORS, FILTER_PANEL } from '../../../../../constants';
 import DatePicker from '../../../../../components/display/inputs/DatePicker';
 import { zonedNow } from '../../../../../utils/layout';
-import { createNameValidator } from '../../../../shared/utils/nameValidation';
-import { DEFAULT_NAME_VALIDATION_CONFIG } from '../../../../shared/constants/nameValidation';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
-import { duplicatePlanThunk, selectProtectionPlans } from '../../store';
+import { duplicatePlanThunk } from '../../store';
+import { usePlanNameCheck } from '../../hooks/usePlanNameCheck';
 import { getCurrentUser } from '../../../../auth/utils';
-import type { AppDispatch, RootState } from '../../../../../store';
+import type { AppDispatch } from '../../../../../store';
 import type { PlanApprovalMode, ProtectionPlan } from '../../models';
 import { mapCategoriesToOptions } from '../../../../access-and-permissions/categories/utils/helpers';
 import { usePlanTaxonomyLists } from '../../hooks/usePlanTaxonomies';
@@ -42,15 +41,14 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const { message } = AntdApp.useApp();
-  const plans = useSelector((s: RootState) => selectProtectionPlans(s));
   const [form] = Form.useForm();
+  const { nameValidator, nameInvalid } = usePlanNameCheck(form, open);
   useEffect(() => {
     if (open) form.resetFields();
   }, [open, form]);
   const { environments, tags } = usePlanTaxonomyLists();
   const environmentOptions = useMemo(() => mapCategoriesToOptions(environments), [environments]);
   const tagOptions = useMemo(() => mapCategoriesToOptions(tags), [tags]);
-  const watchedName = Form.useWatch('name', form);
   const watchedStartAt = Form.useWatch('startAt', form) as Dayjs | undefined;
   const watchedEndAt = Form.useWatch('endAt', form) as Dayjs | undefined;
   const [submitting, setSubmitting] = useState(false);
@@ -69,34 +67,8 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
     };
   }, [plan]);
 
-  const fallbackName = typeof initialValues.name === 'string' ? (initialValues.name as string) : '';
-  const effectiveName = typeof watchedName === 'string' ? watchedName : fallbackName;
-  const trimmedName = effectiveName.trim();
-  const isDuplicate = useMemo(
-    () => plans.some((p) => p.name.toLowerCase() === trimmedName.toLowerCase()),
-    [plans, trimmedName],
-  );
-  const isNameInvalid = trimmedName.length === 0 || isDuplicate;
   const isTimeRangeIncomplete = timeMode === 'time_range' && (!watchedStartAt || !watchedEndAt);
-  const submitDisabled = isNameInvalid || isTimeRangeIncomplete;
-
-  const nameValidationConfig = useMemo(
-    () => ({
-      ...DEFAULT_NAME_VALIDATION_CONFIG,
-      minLength: 1,
-      maxLength: 64,
-      allowedPattern: /^[a-zA-Z0-9_\- ]+$/,
-      duplicateErrorMessage: 'A plan with this name already exists',
-      invalidCharsErrorMessage:
-        'Name can only contain letters, numbers, spaces, hyphens (-), and underscores (_)',
-    }),
-    [],
-  );
-
-  const nameValidator = useMemo(
-    () => createNameValidator(plans, (p: ProtectionPlan) => p.name, nameValidationConfig),
-    [plans, nameValidationConfig],
-  );
+  const submitDisabled = nameInvalid || isTimeRangeIncomplete;
 
   const handleClose = () => {
     setError(null);
@@ -170,7 +142,10 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
         name="name"
         label={FORM.NAME_LABEL}
         validateTrigger={['onChange', 'onBlur']}
-        rules={[{ required: true, message: 'Plan name is required' }, { validator: nameValidator }]}
+        rules={[
+          { required: true, message: FORM.NAME_REQUIRED_ERROR },
+          { validator: nameValidator },
+        ]}
         style={{ marginBottom: 0 }}
       >
         <Input placeholder={FORM.NAME_PLACEHOLDER} />

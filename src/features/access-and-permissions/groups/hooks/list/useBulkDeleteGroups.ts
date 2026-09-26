@@ -5,6 +5,9 @@ import { App as AntdApp } from 'antd';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
 import { deleteGroupThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
+import { rejectionMessage } from '../../../../../utils/helpers/format';
+import store from '../../../../../store';
+import { fetchMyPermissionsThunk } from '../../../../auth/store/thunks/fetchThunks';
 import type { Group } from '../../models';
 
 interface UseBulkDeleteGroupsProps {
@@ -43,6 +46,7 @@ export const useBulkDeleteGroups = ({
 
       const deletePromises = selectedIds.map((id) => dispatch(deleteGroupThunk(id)).unwrap());
       await Promise.all(deletePromises);
+      store.dispatch(fetchMyPermissionsThunk());
 
       message.success({
         content: GC.LABELS.ACTIONS.BULK_DELETE_SUCCESS(deleteCount),
@@ -51,9 +55,9 @@ export const useBulkDeleteGroups = ({
       });
 
       setSelectedGroups([]);
-    } catch {
+    } catch (rejection) {
       message.error({
-        content: GC.LABELS.ACTIONS.BULK_DELETE_FAILED,
+        content: rejectionMessage(rejection, GC.LABELS.ACTIONS.BULK_DELETE_FAILED),
         key: loadingKey,
         duration: 3,
       });
