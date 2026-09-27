@@ -1,3 +1,5 @@
+import { DEFAULT_COLORS } from '../shared/colors';
+
 export const HEADER_LAYOUT = {
   HEIGHT_PX: 55,
   HEIGHT: '55px', //old 48px
@@ -33,11 +35,11 @@ export const HEADER_CONSTANTS = {
       USERNAME: {
         FONT_WEIGHT: 500,
         FONT_SIZE: '14px',
-        COLOR: '#0B1F33',
+        COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE,
       },
       EMAIL: {
         FONT_SIZE: '12px',
-        COLOR: '#999',
+        COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
         MARGIN_TOP: '0px',
       },
     },

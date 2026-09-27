@@ -1,3 +1,4 @@
+import type { TableColumnType } from 'antd';
 import type { Role, ColumnsArgs } from '../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
@@ -23,7 +24,7 @@ export const Columns = ({
   activeSortKey,
   categories = [],
   users = [],
-}: Omit<ColumnsArgs, 'onView' | 'onEdit' | 'onDelete'>) => {
+}: Omit<ColumnsArgs, 'onView' | 'onEdit' | 'onDelete'>): TableColumnType<Role>[] => {
   const isBuiltIn = (record: Role) => record.type === RPC.TYPE.BUILT_IN;
 
   const getUserById = (userId?: string) => {
@@ -50,12 +51,7 @@ export const Columns = ({
         icon: <AiOutlineTag />,
         width: RPC.SIZES.COLUMNS.TYPE,
         render: (_: unknown, record: Role) => (
-          <RowTag
-            text={record.type ?? RPC.LABELS.CUSTOM_TYPE}
-            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-            fontSize={RPC.SIZES.CHIP_FONT}
-          />
+          <RowTag text={record.type ?? RPC.LABELS.CUSTOM_TYPE} fontSize={RPC.SIZES.CHIP_FONT} />
         ),
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
@@ -66,14 +62,7 @@ export const Columns = ({
         label: RPC.LABELS.COLUMNS.STATUS,
         icon: <AiOutlineCheckCircle />,
         width: RPC.SIZES.COLUMNS.STATUS,
-        render: (status: string) => (
-          <RowTag
-            text={status}
-            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-            fontSize={RPC.SIZES.CHIP_FONT}
-          />
-        ),
+        render: (status: string) => <RowTag text={status} fontSize={RPC.SIZES.CHIP_FONT} />,
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
     ),
@@ -148,15 +137,8 @@ export const Columns = ({
         width: RPC.SIZES.COLUMNS.CATEGORY,
         render: (_: unknown, record: Role) => {
           if (isBuiltIn(record)) return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
-          const categoryName = getCategoryName(record.categoryID, categories);
-          return (
-            <RowTag
-              text={categoryName}
-              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-              fontSize={RPC.SIZES.CHIP_FONT}
-            />
-          );
+          const categoryName = getCategoryName(record.categoryRef, categories);
+          return <RowTag text={categoryName} fontSize={RPC.SIZES.CHIP_FONT} />;
         },
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
@@ -169,14 +151,7 @@ export const Columns = ({
         width: RPC.SIZES.COLUMNS.VERSION,
         render: (_: unknown, record: Role) => {
           if (isBuiltIn(record)) return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
-          return (
-            <RowTag
-              text={record.version || '—'}
-              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-              fontSize={RPC.SIZES.CHIP_FONT}
-            />
-          );
+          return <RowTag text={record.version || '—'} fontSize={RPC.SIZES.CHIP_FONT} />;
         },
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },

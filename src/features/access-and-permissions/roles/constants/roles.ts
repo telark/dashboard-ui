@@ -1,16 +1,12 @@
 import type { PermissionLevel, ValidityType } from '../models/types';
 import { DEFAULT_COLORS } from '../../../../constants';
 
-export const SCOPE_PERMISSIONS = ['View', 'Edit', 'Delete'] as const;
 export const PERMISSION_LEVELS = ['ReadOnly', 'Contributor', 'Owner', 'Admin'] as const;
 export const VALIDITY_TYPES = ['permanent', 'temporary', 'sessionBased'] as const;
 export const ROLES_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Roles',
     HEADER_SUBTITLE: 'Manage existing roles',
-    VIEW_SUBTITLE: 'View role details',
-    EDIT_SUBTITLE: 'Edit role details',
-    CREATE_SUBTITLE: 'Create a new role',
     NOT_FOUND: 'Role not found',
     CREATE_BUTTON: 'Add Role',
     UPDATE_BUTTON: 'Update Role',
@@ -67,6 +63,8 @@ export const ROLES_CONSTANTS = {
     STATUS_INACTIVE: 'Inactive',
     DELETE_MODAL_TITLE: 'Delete Role',
     DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
+    DELETE_IMPACT: (users: number, groups: number) =>
+      `It is assigned to ${users} user${users === 1 ? '' : 's'} and ${groups} group${groups === 1 ? '' : 's'}, who lose the access it grants.`,
     DELETE_MODAL_OK: 'Delete',
     NO_ROLES_TITLE: 'No roles yet',
     NO_ROLES_DESCRIPTION: 'Get started by creating your first role.',
@@ -85,12 +83,10 @@ export const ROLES_CONSTANTS = {
       VIEW: { TITLE: 'Role Details' },
       EDIT: {
         TITLE: 'Edit Role',
-        SUBTITLE: (name: string) => `Edit ${name}`,
         SUBMIT_BUTTON: 'Update Role',
       },
       CREATE: {
         TITLE: 'Create New Role',
-        SUBTITLE: '',
         SUBMIT_BUTTON: 'Create Role',
       },
     },
@@ -98,8 +94,8 @@ export const ROLES_CONSTANTS = {
       SEARCH: { PLACEHOLDER: 'Search roles by name...', BUTTON_LABEL: 'Search' },
       FILTER: { BUTTON_LABEL: 'Filter' },
       CREATE: { BUTTON_LABEL: 'Add Role' },
-      COUNT_SUFFIX: 'roles',
-      CATEGORIES_COUNT_SUFFIX: 'categories',
+      COUNT_SUFFIX: { one: 'role', other: 'roles' },
+      CATEGORIES_COUNT_SUFFIX: { one: 'category', other: 'categories' },
       MORE: 'More',
       BULK: {
         SELECT: 'Bulk',
@@ -154,21 +150,7 @@ export const ROLES_CONSTANTS = {
     },
   },
   COLORS: {
-    HEADER_BG: '#fff',
-    CHIP_BLUE_BG: '#0ea5e930',
-    CHIP_BLUE_TEXT: '#0369a1',
-    TYPE_BUILTIN_BG: '#bfdbfe80',
-    TYPE_BUILTIN_TEXT: '#1d4ed8',
-    TYPE_CUSTOM_BG: '#bbf7d080',
-    TYPE_CUSTOM_TEXT: '#047857',
-    STATUS_ACTIVE_BG: '#0ea5e930',
-    STATUS_ACTIVE_TEXT: '#0369a1',
-    STATUS_INACTIVE_BG: '#fca5a530',
-    STATUS_INACTIVE_TEXT: '#b91c1c',
-    TEXT_PRIMARY: '#0B1F33',
     TEXT_MUTED: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-    SORT_ACTIVE: '#0ea5e9',
-    SORT_MUTED: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
   },
   VALUES: {
     ROLE_TYPE_BUILT_IN: 'built-in',
@@ -230,7 +212,9 @@ export const ROLES_CONSTANTS = {
       { key: 'users', label: 'Users' },
       { key: 'roles', label: 'Roles' },
       { key: 'applications', label: 'Applications' },
+      { key: 'insights', label: 'Insights' },
       { key: 'settings', label: 'Settings' },
+      { key: 'protection-plans', label: 'Protection Plans' },
     ] as const,
     PERMISSION_LEVEL_TOOLTIP: {
       ReadOnly: 'Read-only access to view data and settings.',
@@ -247,14 +231,6 @@ export const ROLES_CONSTANTS = {
   },
   STATUS: { ACTIVE: 'Active', INACTIVE: 'Inactive' },
   TYPE: { BUILT_IN: 'built-in', CUSTOM: 'custom' },
-  ASSIGNMENT: {
-    TITLE: 'Assignment',
-    SUBTITLE: 'Assign this role to groups and users.',
-    LABEL: 'Assigned To',
-    PLACEHOLDER: 'Select groups and users',
-    GROUPS_LABEL: 'Groups',
-    USERS_LABEL: 'Users',
-  },
   PROTECTION: {
     TITLE: 'Protection',
     SUBTITLE: 'Configure protection flags to prevent unauthorized changes.',

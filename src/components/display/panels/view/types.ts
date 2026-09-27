@@ -1,4 +1,5 @@
 import React, { type ReactNode } from 'react';
+import type { TopPanelToolbarActions } from '../../../../interfaces/layout/panels';
 
 export interface ViewAvatar {
   key: string;
@@ -18,10 +19,8 @@ export interface ViewDetailRow {
   value: ReactNode;
 }
 
-export interface ViewPanelActions {
-  onEdit?: () => void;
-  onDelete?: () => void;
-}
+// ViewPanel hands these to the frame's toolbar unchanged.
+export type ViewPanelActions = TopPanelToolbarActions;
 
 export interface ViewPanelProps {
   open: boolean;

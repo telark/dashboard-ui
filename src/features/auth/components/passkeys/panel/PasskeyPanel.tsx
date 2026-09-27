@@ -119,7 +119,6 @@ const PasskeyPanel: React.FC<PasskeyPanelProps> = ({
       open={open}
       onClose={onClose}
       title={isEditMode ? PPC.FORM.EDIT_TITLE : PPC.FORM.TITLE}
-      subtitle={undefined}
       formContent={formContent}
       onSubmit={onSubmit as (values: Record<string, unknown>) => Promise<void>}
       onCancel={onClose}

@@ -1,3 +1,4 @@
+import type { TableColumnType } from 'antd';
 import { ROLES_CONSTANTS as RPC } from '../../../../roles/constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
@@ -15,7 +16,7 @@ interface CategoryColumnsContext extends GenerateColumnCtx {
 }
 
 const CategoryColumns = (ctx: CategoryColumnsContext) => {
-  const cols: ReturnType<typeof generateColumn>[] = [];
+  const cols: TableColumnType<Category>[] = [];
 
   cols.push(
     generateColumn(
@@ -52,14 +53,7 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
         width: CC.SIZES.COLUMNS.TYPE,
         render: (value: string) => {
           const isBuiltIn = value === CC.TYPES.BUILT_IN;
-          return (
-            <RowTag
-              text={isBuiltIn ? 'Built-in' : 'Custom'}
-              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-              fontSize={RPC.SIZES.CHIP_FONT}
-            />
-          );
+          return <RowTag text={isBuiltIn ? 'Built-in' : 'Custom'} fontSize={RPC.SIZES.CHIP_FONT} />;
         },
       },
       ctx,
@@ -70,14 +64,7 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
         label: CC.LABELS.COLUMNS.SCOPE,
         icon: <AiOutlineTag />,
         width: CC.SIZES.COLUMNS.SCOPE,
-        render: (value: string) => (
-          <RowTag
-            text={value}
-            background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-            color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-            fontSize={RPC.SIZES.CHIP_FONT}
-          />
-        ),
+        render: (value: string) => <RowTag text={value} fontSize={RPC.SIZES.CHIP_FONT} />,
       },
       ctx,
     ),

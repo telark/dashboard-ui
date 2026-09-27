@@ -1,15 +1,9 @@
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, getPillSurface } from '../../../../constants';
 import type { ApplicationRollbackEntry } from '../models';
 import { APPLICATIONS_UI } from '../constants/texts';
-import { CONNECTIVITY_CONSTANTS } from '../../../../constants/pages/connectivity';
 
 export type RollbackStatusState =
-  | 'success'
-  | 'failed'
-  | 'inProgress'
-  | 'pending'
-  | 'aborted'
-  | 'unknown';
+  'success' | 'failed' | 'inProgress' | 'pending' | 'aborted' | 'unknown';
 
 export function classifyRollbackStatus(raw: string): RollbackStatusState {
   const s = raw.trim().toLowerCase();
@@ -38,24 +32,15 @@ export function getRollbackStatusColors(state: RollbackStatusState): {
   background: string;
   color: string;
 } {
-  // These badges live on the light-surfaced rollbacks panel: every active state is
-  // a filled pill with a white label; inert states fall back to a neutral chip.
-  if (state === 'success') {
-    return { background: DEFAULT_COLORS.SUCCESS, color: DEFAULT_COLORS.SURFACE_WHITE };
-  }
-  if (state === 'failed') {
-    return { background: DEFAULT_COLORS.DANGER, color: DEFAULT_COLORS.SURFACE_WHITE };
-  }
-  if (state === 'inProgress' || state === 'pending') {
-    return {
-      background: CONNECTIVITY_CONSTANTS.COLORS.WARNING,
-      color: DEFAULT_COLORS.SURFACE_WHITE,
-    };
-  }
-  return {
-    background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
-    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-  };
+  const accent =
+    state === 'success'
+      ? DEFAULT_COLORS.SUCCESS
+      : state === 'failed'
+        ? DEFAULT_COLORS.DANGER
+        : state === 'inProgress' || state === 'pending'
+          ? DEFAULT_COLORS.WARNING
+          : undefined;
+  return { ...getPillSurface(accent), color: DEFAULT_COLORS.PILL_TEXT };
 }
 
 export function formatRollbackStatusLabel(raw: string): string {

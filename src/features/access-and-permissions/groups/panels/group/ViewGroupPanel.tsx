@@ -33,6 +33,7 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({
     closeDeleteModal,
     handleConfirmDelete,
     groupName,
+    deleteImpact,
   } = useViewGroupPanelData({
     group,
     onClose,
@@ -64,6 +65,7 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({
         onConfirm={handleConfirmDelete}
         groupName={groupName}
         loading={isDeleting}
+        impact={deleteImpact}
       />
     </>
   );

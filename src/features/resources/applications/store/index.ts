@@ -16,8 +16,5 @@ export {
 export {
   selectApplicationsState,
   selectApplications,
-  selectApplicationDetails,
   selectApplicationsLoading,
-  selectApplicationsError,
-  selectApplicationDetailsData,
 } from './selectors/applicationsSelectors';

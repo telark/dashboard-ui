@@ -56,10 +56,10 @@ TEST_APP_NAME=my-app k6/cluster/run.sh application_force_sync
 ## What happens when you run
 
 1. The script flattens `lib/` + `scenarios/` into a temp dir and uploads them as a per-run ConfigMap.
-2. It renders `cluster/job.yaml` with your env values and applies the Job.
+2. It stores `SESSION_TOKEN` in a per-run Secret, renders `cluster/job.yaml` with your other env values (the Job references the Secret, so the token never appears in the Job spec) and applies the Job.
 3. It waits for the pod, streams logs live (also saved to `k6/results/<run>.log`).
 4. After the Job finishes it copies the JSON + TXT summary out of the pod into `k6/results/<run>-json/`.
-5. It deletes the Job and ConfigMap (guaranteed by an `EXIT` trap — even if you Ctrl-C).
+5. It deletes the Job, ConfigMap and Secret (guaranteed by an `EXIT` trap — even if you Ctrl-C).
 
 You'll see lines like:
 
@@ -100,7 +100,7 @@ You'll see lines like:
 | `EXPORTER_BASE_URL` | `http://telark-exporter-service.telark.svc.cluster.local:8080` | Service runs in a different namespace |
 | `DISCOVERY_BASE_URL` | `http://telark-discovery-service.telark.svc.cluster.local:8080` | Same |
 | `AUTH_BASE_URL` | `http://telark-auth-service.telark.svc.cluster.local:8080` | Same |
-| `ENRICHMENT_BASE_URL` | `http://telark-enrichment-service.telark.svc.cluster.local:8080` | Same |
+| `ANALYZER_BASE_URL` | `http://telark-analyzer-service.telark.svc.cluster.local:8080` | Same |
 | `TEST_PLAN_TEMPLATE_ID` | (auto-pick first available) | Pin to a specific plan template |
 | `FORCE_SYNC_POLL_TIMEOUT_SEC` | `90` | Force-sync takes longer than 90s on your cluster |
 | `PLAN_STATUS_POLL_TIMEOUT_SEC` | `60` | Same idea, for plan state machine |
@@ -154,12 +154,12 @@ brew install k6                                              # macOS, one time
 kubectl -n telark port-forward svc/telark-exporter-service 8002:8080 &
 kubectl -n telark port-forward svc/telark-discovery-service 8004:8080 &
 kubectl -n telark port-forward svc/telark-auth-service 8006:8080 &
-kubectl -n telark port-forward svc/telark-enrichment-service 8007:8080 &
+kubectl -n telark port-forward svc/telark-analyzer-service 8007:8080 &
 
 EXPORTER_BASE_URL=http://localhost:8002 \
 DISCOVERY_BASE_URL=http://localhost:8004 \
 AUTH_BASE_URL=http://localhost:8006 \
-ENRICHMENT_BASE_URL=http://localhost:8007 \
+ANALYZER_BASE_URL=http://localhost:8007 \
 SESSION_TOKEN=<token> USER_ID=<id> \
 k6 run k6/scenarios/bootstrap_flow.js
 ```

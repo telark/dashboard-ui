@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   BellOutlined,
+  CheckCircleOutlined,
   HistoryOutlined,
   SafetyCertificateOutlined,
   TeamOutlined,
@@ -13,7 +14,12 @@ export interface TypeConfig {
   navigateTo: (metadata: Record<string, unknown> | undefined) => string | null;
 }
 
-export const TYPE_REGISTRY: Record<string, TypeConfig> = {
+const planDetailsRoute = (m: Record<string, unknown> | undefined): string | null =>
+  typeof m?.planName === 'string'
+    ? APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(':name', encodeURIComponent(m.planName))
+    : null;
+
+const TYPE_REGISTRY: Record<string, TypeConfig> = {
   [NOTIFICATION_TYPES.ROLLBACK_COMPLETED]: {
     icon: HistoryOutlined,
     navigateTo: (m) => {
@@ -27,12 +33,20 @@ export const TYPE_REGISTRY: Record<string, TypeConfig> = {
     icon: SafetyCertificateOutlined,
     navigateTo: (m) => {
       const id = m?.targetId;
-      return typeof id === 'string' ? `/users/${id}` : null;
+      return typeof id === 'string' ? APP_ROUTES.USERS : null;
     },
   },
   [NOTIFICATION_TYPES.GROUP_MEMBERSHIP_CHANGED]: {
     icon: TeamOutlined,
     navigateTo: () => APP_ROUTES.GROUPS,
+  },
+  [NOTIFICATION_TYPES.PLAN_APPROVAL_REQUESTED]: {
+    icon: SafetyCertificateOutlined,
+    navigateTo: planDetailsRoute,
+  },
+  [NOTIFICATION_TYPES.PLAN_APPROVAL_DECIDED]: {
+    icon: CheckCircleOutlined,
+    navigateTo: planDetailsRoute,
   },
 };
 

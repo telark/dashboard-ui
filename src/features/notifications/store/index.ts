@@ -22,5 +22,4 @@ export {
   selectNotificationsUnreadCount,
   selectNotificationsLoading,
   selectNotificationsError,
-  selectNotificationsPanelOpen,
 } from './selectors/notificationsSelectors';

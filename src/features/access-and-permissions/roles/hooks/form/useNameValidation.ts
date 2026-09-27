@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   createNameValidator,
+  nameValidationError,
   sanitizeName,
   DEFAULT_NAME_VALIDATION_CONFIG,
 } from '../../../../shared';
@@ -47,8 +48,29 @@ export const useNameValidation = ({
     [validationConfig],
   );
 
+  // Drives Save's disabled state while typing; the unchanged current name always passes.
+  const isNameInvalid = useCallback(
+    (value: string | undefined): boolean => {
+      const trimmed = value?.trim();
+      if (!trimmed) return true;
+      if (isEditMode && trimmed.toLowerCase() === currentName?.trim().toLowerCase()) return false;
+      return (
+        nameValidationError({
+          value: trimmed,
+          existingItems: roles,
+          getName: (role: Role) => role.name,
+          isEditMode,
+          currentName,
+          config: validationConfig,
+        }) !== null
+      );
+    },
+    [roles, validationConfig, isEditMode, currentName],
+  );
+
   return {
     nameValidator,
     normalizeName,
+    isNameInvalid,
   };
 };

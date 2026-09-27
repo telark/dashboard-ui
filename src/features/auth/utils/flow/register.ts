@@ -19,7 +19,7 @@ export const extractRegisterOptions = (
 
   let options: PublicKeyCredentialCreationOptions;
   if (registerStartResponse.options?.publicKey) {
-    const publicKey = (registerStartResponse.options as any).publicKey;
+    const publicKey = registerStartResponse.options.publicKey;
     options = {
       challenge: publicKey.challenge,
       rp: publicKey.rp,
@@ -30,10 +30,8 @@ export const extractRegisterOptions = (
       authenticatorSelection: publicKey.authenticatorSelection,
     };
   } else if (registerStartResponse.options?.response) {
-    const response = registerStartResponse.options.response;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { excludeCredentials: _excludeCredentials, ...responseWithoutExclude } = response;
-    options = responseWithoutExclude;
+    options = { ...registerStartResponse.options.response };
+    delete options.excludeCredentials;
   } else if (registerStartResponse.challenge) {
     options = {
       challenge: registerStartResponse.challenge,

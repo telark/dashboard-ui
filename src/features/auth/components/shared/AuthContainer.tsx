@@ -32,7 +32,7 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({
           minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column',
-          background: 'var(--auth-right-bg, #f8fafc)',
+          background: `var(--auth-right-bg, ${DEFAULT_COLORS.AUTH_LIGHT_BG})`,
         }}
       >
         {showBanner && (
@@ -72,7 +72,7 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'var(--auth-right-bg, #f8fafc)',
+              background: `var(--auth-right-bg, ${DEFAULT_COLORS.AUTH_LIGHT_BG})`,
               padding: '40px 20px',
               minHeight: showBanner ? 'calc(100vh - 52px)' : '100vh',
             }}
@@ -91,7 +91,7 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: '100vh',
-        background: 'var(--auth-right-bg, #f8fafc)',
+        background: `var(--auth-right-bg, ${DEFAULT_COLORS.AUTH_LIGHT_BG})`,
         padding: '20px',
       }}
     >

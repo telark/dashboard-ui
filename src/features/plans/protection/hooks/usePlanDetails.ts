@@ -9,7 +9,7 @@ import {
 
 export function usePlanDetails(name?: string) {
   const dispatch: AppDispatch = useDispatch();
-  const { details, detailsLoading, detailsError, plans } = useSelector(
+  const { details, detailsLoading, detailsError, plans, loading } = useSelector(
     (s: RootState) => s.protectionPlans,
   );
   const fetchIntervalSeconds = useSelector((s: RootState) =>
@@ -21,12 +21,11 @@ export function usePlanDetails(name?: string) {
   const planFromList = name ? (plans.find((p) => p.name === name) ?? null) : null;
   const planId = planFromList?.id ?? details?.id;
 
+  // The persisted list can be stale (plans added, renamed or deleted elsewhere), so revalidate it.
   useEffect(() => {
     if (!name) return;
-    if (plans.length === 0) {
-      void dispatch(fetchProtectionPlansThunk());
-    }
-  }, [dispatch, name, plans.length]);
+    void dispatch(fetchProtectionPlansThunk());
+  }, [dispatch, name]);
 
   useEffect(() => {
     if (!planId) return;
@@ -49,7 +48,7 @@ export function usePlanDetails(name?: string) {
     void dispatch(fetchProtectionPlanDetailsThunk(planId));
   }, [dispatch, planId]);
 
-  const notFound = !!name && plans.length > 0 && !planFromList && !details;
+  const notFound = !!name && !loading && plans.length > 0 && !planFromList && !details;
 
   return {
     details: details ?? planFromList,

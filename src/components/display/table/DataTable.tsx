@@ -23,7 +23,7 @@ function DataTable<T>({
     <div
       className={className}
       style={{
-        background: DEFAULT_COLORS.BACKGROUND_WHITE,
+        background: DEFAULT_COLORS.PAGE_BG,
         borderRadius: 16,
         padding: 16,
         overflow: 'hidden',
@@ -31,14 +31,14 @@ function DataTable<T>({
       }}
     >
       <Table
-        rowKey={rowKey as any}
-        columns={columns as any}
-        dataSource={filteredData as any}
+        rowKey={rowKey}
+        columns={columns}
+        dataSource={filteredData}
         pagination={false}
         size="small"
         onRow={(record) => ({
           style: { height: rowHeight, cursor: onRowClick ? 'pointer' : 'default' },
-          onClick: onRowClick ? () => onRowClick(record as T) : undefined,
+          onClick: onRowClick ? () => onRowClick(record) : undefined,
         })}
         locale={{
           emptyText: emptyComponent,

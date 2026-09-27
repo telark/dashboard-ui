@@ -37,7 +37,7 @@ export default function () {
 
   const enqStart = Date.now();
   const enqRes = post(
-    `${path.discovery(`resources/applications/${encodeURIComponent(name)}/sync`)}?reason=k6`,
+    `${path.discovery(`applications/${encodeURIComponent(name)}/sync`)}?reason=k6`,
     {},
     {
       name: 'force_sync.enqueue',
@@ -52,7 +52,7 @@ export default function () {
 
   const baselinePhase = readPhase(
     parseJson(
-      get(path.exporter(`resources/applications/${encodeURIComponent(name)}/get`), {
+      get(path.exporter(`applications/${encodeURIComponent(name)}`), {
         name: 'app.read.baseline',
         metric: METRICS.CACHED_GET,
       }),
@@ -69,7 +69,7 @@ export default function () {
     sleep(delay);
     pollIdx += 1;
 
-    const res = get(path.exporter(`resources/applications/${encodeURIComponent(name)}/get`), {
+    const res = get(path.exporter(`applications/${encodeURIComponent(name)}`), {
       name: `app.poll[${pollIdx}]`,
       metric: METRICS.CACHED_GET,
     });

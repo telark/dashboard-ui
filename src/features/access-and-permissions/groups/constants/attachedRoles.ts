@@ -1,4 +1,4 @@
-import { CONTROL_HEIGHT, DEFAULT_COLORS } from '../../../../constants';
+import { CONTROL_HEIGHT, DEFAULT_COLORS, getPillSurface } from '../../../../constants';
 
 export const ATTACHED_ROLES_CONSTANTS = {
   FILTER: {
@@ -29,12 +29,12 @@ export const ATTACHED_ROLES_CONSTANTS = {
         fontWeight: 600,
         border: `1px solid ${DEFAULT_COLORS.SUCCESS}`,
         backgroundColor: DEFAULT_COLORS.SUCCESS,
-        color: DEFAULT_COLORS.BACKGROUND_WHITE,
+        color: DEFAULT_COLORS.PAGE_BG,
       },
       INACTIVE: {
         fontWeight: 500,
         border: `1px solid ${DEFAULT_COLORS.BORDER_DEFAULT}`,
-        backgroundColor: DEFAULT_COLORS.BACKGROUND_WHITE,
+        backgroundColor: DEFAULT_COLORS.PAGE_BG,
         color: DEFAULT_COLORS.TEXT_MUTED,
       },
     },
@@ -74,6 +74,10 @@ export const ATTACHED_ROLES_CONSTANTS = {
       HOVER: {
         background: DEFAULT_COLORS.SURFACE_HOVER,
       },
+      DISABLED: {
+        opacity: 0.55,
+        cursor: 'not-allowed' as const,
+      },
     },
     ROLE_NAME: {
       fontSize: 14,
@@ -102,15 +106,15 @@ export const ATTACHED_ROLES_CONSTANTS = {
     },
     SCOPE_ITEM: {
       fontSize: 11,
-      color: DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT,
+      color: DEFAULT_COLORS.PILL_TEXT,
       padding: '2px 6px',
-      background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
+      ...getPillSurface(),
       borderRadius: 4,
-      border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
       lineHeight: 1.4,
     },
   },
   TOOLTIPS: {
     PROTECTED_ROLE: 'This role is protected from deletion and modification',
+    EXCEEDS_OWN_ACCESS: 'This role grants more access than you have, so you cannot assign it',
   },
 } as const;

@@ -7,6 +7,8 @@ import { USERS_CONSTANTS as UC } from '../../constants';
 import { DEFAULT_COLORS, Icons } from '../../../../../constants';
 import type { RootState } from '../../../../../store';
 import { useFetchGroups } from '../../../groups/hooks';
+import { useRoles } from '../../../roles/hooks';
+import { useUserLockReason } from '../user/useUserLockReason';
 import Columns from '../../components/display/list/Columns';
 import { UserActionsColumn } from '../../components/display/list/UserActionsColumn';
 import { useUserListConfig } from '../../config/userListConfig';
@@ -77,21 +79,45 @@ export const useUserListPageConfig = ({
   hasActiveFilters,
   onClearAllFilters,
 }: UseUserListPageConfigOptions): PageLayoutConfig<User> => {
-  const canManageRole = usePermission(
+  const canAssignRole = usePermission(
     ACTION_PERMISSIONS.users.manageRoles.scope,
     ACTION_PERMISSIONS.users.manageRoles.level,
     ACTION_PERMISSIONS.users.manageRoles.deny,
   );
-  const canManageGroup = usePermission(
+  const canRemoveRole = usePermission(
+    ACTION_PERMISSIONS.users.removeRole.scope,
+    ACTION_PERMISSIONS.users.removeRole.level,
+    ACTION_PERMISSIONS.users.removeRole.deny,
+  );
+  const canAddToGroup = usePermission(
     ACTION_PERMISSIONS.users.manageGroups.scope,
     ACTION_PERMISSIONS.users.manageGroups.level,
     ACTION_PERMISSIONS.users.manageGroups.deny,
   );
+  const canRemoveFromGroup = usePermission(
+    ACTION_PERMISSIONS.users.removeFromGroup.scope,
+    ACTION_PERMISSIONS.users.removeFromGroup.level,
+    ACTION_PERMISSIONS.users.removeFromGroup.deny,
+  );
+  // The panels gate each row on its add or remove rule, so either one opens them.
+  const canManageRole = canAssignRole || canRemoveRole;
+  const canManageGroup = canAddToGroup || canRemoveFromGroup;
   const canBulkDeleteUser = usePermission(
     ACTION_PERMISSIONS.users.delete.scope,
     ACTION_PERMISSIONS.users.delete.level,
     ACTION_PERMISSIONS.users.delete.deny,
   );
+  useRoles();
+  const lockReasonFor = useUserLockReason();
+  const bulkDeleteLockReason = useMemo(
+    () =>
+      sortedUsers
+        .filter((user) => selectedUsers.includes(user.id))
+        .map(lockReasonFor)
+        .find(Boolean),
+    [sortedUsers, selectedUsers, lockReasonFor],
+  );
+
   const { listToolbar } = useUserListConfig({
     searchValue,
     onSearchChange,
@@ -106,6 +132,7 @@ export const useUserListPageConfig = ({
     canManageRole,
     canManageGroup,
     canBulkDeleteUser,
+    bulkDeleteLockReason,
     totalCount: sortedUsers.length,
     pageCount: paginatedUsers.length,
     bulkMode,
@@ -140,7 +167,7 @@ export const useUserListPageConfig = ({
           key: UC.KEYS.ACTIONS,
           align: 'right' as const,
           width: 120,
-          onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
+          onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
           render: (_: unknown, record: User) => (
             <UserActionsColumn record={record} onEdit={handleEditUser} />
           ),

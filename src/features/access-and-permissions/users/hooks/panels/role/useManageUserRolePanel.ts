@@ -36,7 +36,7 @@ export const useManageUserRolePanel = ({
     user,
     form,
     onClose,
-    fieldName: 'assignedRolesIDs',
+    fieldName: 'roleRefs',
     currentSelected: currentSelectedRoles,
     dataReady: !rolesLoading && !!roles,
     successMessage: UC.LABELS.MESSAGES.ROLE_ASSIGNED,

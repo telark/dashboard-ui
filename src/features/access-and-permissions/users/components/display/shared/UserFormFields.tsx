@@ -1,10 +1,11 @@
 import React from 'react';
+import type { Rule } from 'antd/es/form';
 import LabeledInput from '../../../../../../components/display/inputs/LabeledInput';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 
 interface UserFormFieldsProps {
-  usernameRules?: any[];
-  emailRules?: any[];
+  usernameRules?: Rule[];
+  emailRules?: Rule[];
 }
 
 const UserFormFields: React.FC<UserFormFieldsProps> = ({ usernameRules = [], emailRules = [] }) => {

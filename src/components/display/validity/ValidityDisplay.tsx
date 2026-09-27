@@ -16,13 +16,11 @@ const ValidityDisplay: React.FC<ValidityDisplayProps> = ({ validity, record }) =
   const validityRef = useRef(validity);
   const recordRef = useRef(record);
 
-  // Keep refs in sync with props
   useEffect(() => {
     validityRef.current = validity;
     recordRef.current = record;
   }, [validity, record]);
 
-  // Update every minute
   useEffect(() => {
     const update = () => {
       setFormattedValidity(formatValidity(validityRef.current, recordRef.current));

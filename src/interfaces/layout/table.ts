@@ -1,23 +1,26 @@
 import type React from 'react';
+import type { TableColumnsType, TableProps } from 'antd';
 
 export interface DataTableProps<T> {
-  columns: any[];
+  columns: TableColumnsType<T>;
   data: T[];
   rowKey: string | ((record: T) => string);
   rowHeight?: number;
   className?: string;
   containerStyle?: React.CSSProperties;
-  tableProps?: Record<string, any>;
+  tableProps?: TableProps<T>;
   onRowClick?: (record: T) => void;
   empty?: React.ReactNode;
 }
 
 export interface RowTagProps {
   text: string;
-  background: string;
-  color: string;
+  /** Case colour (severity, status…); omitted means a neutral pill. */
+  accent?: string;
   fontSize?: number;
   capitalize?: boolean;
+  /** Ellipsizes to the container width instead of overflowing it. */
+  truncate?: boolean;
 }
 
 export interface SortHeaderProps {

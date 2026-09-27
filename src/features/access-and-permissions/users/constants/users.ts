@@ -4,9 +4,6 @@ export const USERS_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Members',
     HEADER_SUBTITLE: 'Manage existing members',
-    VIEW_SUBTITLE: 'View user details',
-    EDIT_SUBTITLE: 'Edit user details',
-    CREATE_SUBTITLE: 'Create a new user',
     NOT_FOUND: 'User not found',
     UPDATE_BUTTON: 'Update User',
     CREATE_BUTTON: 'Add New Member',
@@ -45,6 +42,7 @@ export const USERS_CONSTANTS = {
     VALIDATION: {
       USERNAME_TAKEN: 'Username is already taken',
       INVALID_EMAIL: 'Please enter a valid email address',
+      EMAIL_TAKEN: 'Email is already used by another member',
       FULLNAME_SPECIAL_CHARS: 'Full name must not contain special characters',
     },
     COLUMNS: {
@@ -53,6 +51,10 @@ export const USERS_CONSTANTS = {
       EMAIL: 'Email',
       ROLES: 'Roles',
       CREATED: 'Creation Date',
+    },
+    BOOTSTRAP_PILL: {
+      LABEL: 'Bootstrap',
+      TOOLTIP: "Created by the chart; can't be deleted or changed here",
     },
     VIEW_LABELS: {
       USERNAME: 'Username',
@@ -73,6 +75,14 @@ export const USERS_CONSTANTS = {
       MANAGE_GROUPS: 'Manage Groups',
       MANAGE_ROLES_DISABLED_TOOLTIP: 'You do not have permission to manage roles',
       MANAGE_GROUPS_DISABLED_TOOLTIP: 'You do not have permission to manage groups',
+      ASSIGN_ROLE_DISABLED_TOOLTIP: 'You do not have permission to assign roles',
+      REMOVE_ROLE_DISABLED_TOOLTIP: 'You do not have permission to remove roles',
+      ADD_TO_GROUP_DISABLED_TOOLTIP: 'You do not have permission to add members to groups',
+      REMOVE_FROM_GROUP_DISABLED_TOOLTIP:
+        'You do not have permission to remove members from groups',
+      BOOTSTRAP_LOCKED_TOOLTIP: 'Managed by the chart',
+      ADMIN_LOCKED_TOOLTIP: 'Only a bootstrap administrator can remove administrators',
+      SELF_LOCKED_TOOLTIP: 'You cannot delete your own account',
       DELETE_MODAL_TITLE: 'Delete User',
       DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
       DELETE_MODAL_OK: 'Delete',
@@ -107,9 +117,7 @@ export const USERS_CONSTANTS = {
     },
     FORM: {
       TITLE: 'Add New Member',
-      SUBTITLE: 'Add a new member',
       SECTION_TITLE: 'User Details',
-      SECTION_SUBTITLE: 'Provide the user information.',
       BUTTON_TEXT: 'Add New Member',
       SECTIONS: {
         USER_DETAILS: 'User Details',
@@ -135,7 +143,6 @@ export const USERS_CONSTANTS = {
       },
       MANAGE_STATE: {
         TITLE: 'Manage account state',
-        SUBTITLE: (name: string) => `Activate or suspend ${name}`,
         SUBMIT_BUTTON: 'Update state',
         FIELD_LABEL: 'Account state',
         OPTION_ACTIVE: 'Active',
@@ -143,12 +150,10 @@ export const USERS_CONSTANTS = {
       },
       CREATE: {
         TITLE: 'Add New Member',
-        SUBTITLE: 'Add a new member to the system',
         SUBMIT_BUTTON: 'Add New Member',
       },
       MANAGE_ROLE: {
         TITLE: 'Manage Roles',
-        SUBTITLE: (userName: string) => `View and manage roles for ${userName}`,
         SUBMIT_BUTTON: 'Update roles',
         SEARCH_PLACEHOLDER: 'Search roles by name or description...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
@@ -159,7 +164,6 @@ export const USERS_CONSTANTS = {
       },
       MANAGE_GROUP: {
         TITLE: 'Manage Groups',
-        SUBTITLE: (userName: string) => `View and manage groups for ${userName}`,
         SUBMIT_BUTTON: 'Update groups',
         SEARCH_PLACEHOLDER: 'Search groups by name or description...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
@@ -185,7 +189,7 @@ export const USERS_CONSTANTS = {
           MANAGE_GROUPS: 'Manage Groups',
         },
       },
-      COUNT_SUFFIX: 'members',
+      COUNT_SUFFIX: { one: 'member', other: 'members' },
       MORE: 'More',
       BULK: {
         SELECT: 'Bulk',
@@ -209,7 +213,7 @@ export const USERS_CONSTANTS = {
     USERNAME: 'username',
     FULLNAME: 'fullname',
     EMAIL: 'email',
-    ROLES: 'assignedRolesIDs',
+    ROLES: 'roleRefs',
     CREATION_DATE: 'creationDate',
     ACTIONS: 'actions',
     MORE_MENU_BULK: 'bulk',

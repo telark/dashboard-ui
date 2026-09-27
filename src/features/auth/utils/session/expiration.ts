@@ -50,16 +50,13 @@ export const useSessionExpirationCheck = ({
       }
     };
 
-    // Run initial check
     checkSessionExpiration();
 
-    // Set up interval for background checking
     const intervalId = globalThis.setInterval(
       checkSessionExpiration,
       AUTH_CONFIG.SESSION.VALIDATION.INTERVAL_SECONDS * 1000,
     );
 
-    // Cleanup interval on unmount or when dependencies change
     return () => {
       globalThis.clearInterval(intervalId);
     };

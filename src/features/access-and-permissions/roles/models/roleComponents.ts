@@ -45,10 +45,6 @@ export interface FieldChangeWatcherProps {
   onChange?: () => void;
 }
 
-export interface AssignmentSectionProps {
-  onManualChange?: () => void;
-}
-
 export interface ScopeRowProps {
   scopeKey: string;
   scopeLabel: string;
@@ -92,31 +88,4 @@ export interface AssignmentSelectOption {
   label: React.ReactNode;
   value: string;
   displayName?: string;
-}
-
-export interface AssignmentSelectProps {
-  value?: string[];
-  onChange?: (value: string[]) => void;
-  options: AssignmentSelectOption[];
-  placeholder?: string;
-  loading?: boolean;
-  allOptionsMap?: Map<string, string>;
-  className?: string;
-  allowClear?: boolean;
-  showSearch?: boolean;
-  filterOption?: (input: string, option?: AssignmentSelectOption) => boolean;
-}
-
-export interface UsersSelectProps {
-  value?: string[];
-  onChange?: (value: string[]) => void;
-  allOptionsMap?: Map<string, string>;
-  onOptionsMapUpdate?: (map: Map<string, string>) => void;
-}
-
-export interface GroupsSelectProps {
-  value?: string[];
-  onChange?: (value: string[]) => void;
-  allOptionsMap?: Map<string, string>;
-  onOptionsMapUpdate?: (map: Map<string, string>) => void;
 }

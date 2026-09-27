@@ -1,12 +1,14 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectPermissionsState } from '../../store/selectors/permissionsSelectors';
 import type { PermissionLevel } from '../../models/permissions';
 import { PERMISSION_LEVEL_RANK } from '../../models/permissions';
+import { ALL_SCOPE_NAME, ALL_SCOPE_NAMES } from '../../store/slices/permissionsSlice';
 
 // Minimum level per action derived from scopeRules.ts: lowest level at which the action rule first appears.
 export const ACTION_PERMISSIONS = {
   applications: {
+    view: { scope: 'applications' as const, level: 'ReadOnly' as PermissionLevel },
     viewRollbacks: {
       scope: 'applications' as const,
       level: 'ReadOnly' as PermissionLevel,
@@ -43,7 +45,27 @@ export const ACTION_PERMISSIONS = {
       deny: 'applications.rollbackapplication.deny',
     },
   },
+  insights: {
+    view: { scope: 'insights' as const, level: 'ReadOnly' as PermissionLevel },
+    triage: {
+      scope: 'insights' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'insights.triageinsights.deny',
+    },
+    analyze: {
+      scope: 'insights' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'insights.analyzeinsights.deny',
+    },
+    // Bulk actions are triage too, so the triage deny rule blocks them as well.
+    bulk: {
+      scope: 'insights' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'insights.triageinsights.deny',
+    },
+  },
   users: {
+    view: { scope: 'users' as const, level: 'ReadOnly' as PermissionLevel },
     create: {
       scope: 'users' as const,
       level: 'Contributor' as PermissionLevel,
@@ -79,14 +101,9 @@ export const ACTION_PERMISSIONS = {
       level: 'Owner' as PermissionLevel,
       deny: 'groups.removeuserfromgroup.deny',
     },
-    // todo: wire viewAttachedRoles to component when supported
-    viewAttachedRoles: {
-      scope: 'users' as const,
-      level: 'ReadOnly' as PermissionLevel,
-      deny: 'users.viewuserattachedroles.deny',
-    },
   },
   groups: {
+    view: { scope: 'groups' as const, level: 'ReadOnly' as PermissionLevel },
     create: {
       scope: 'groups' as const,
       level: 'Contributor' as PermissionLevel,
@@ -142,14 +159,9 @@ export const ACTION_PERMISSIONS = {
       level: 'Owner' as PermissionLevel,
       deny: 'groups.removeuserfromgroup.deny',
     },
-    // todo: wire viewAttachedRoles to component when supported
-    viewAttachedRoles: {
-      scope: 'groups' as const,
-      level: 'ReadOnly' as PermissionLevel,
-      deny: 'groups.viewgroupattachedroles.deny',
-    },
   },
   roles: {
+    view: { scope: 'roles' as const, level: 'ReadOnly' as PermissionLevel },
     create: {
       scope: 'roles' as const,
       level: 'Contributor' as PermissionLevel,
@@ -187,6 +199,7 @@ export const ACTION_PERMISSIONS = {
     },
   },
   settings: {
+    viewGovernance: { scope: 'settings' as const, level: 'Contributor' as PermissionLevel },
     editDiscoveryConfig: {
       scope: 'settings' as const,
       level: 'Contributor' as PermissionLevel,
@@ -244,6 +257,51 @@ export const ACTION_PERMISSIONS = {
       level: 'Owner' as PermissionLevel,
       deny: 'protection-plans.deleteprotectionplan.deny',
     },
+    approve: {
+      scope: 'protection-plans' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'protection-plans.approveprotectionplan.deny',
+    },
+    view: {
+      scope: 'protection-plans' as const,
+      level: 'ReadOnly' as PermissionLevel,
+      deny: 'protection-plans.viewprotectionplans.deny',
+    },
+    viewReports: {
+      scope: 'protection-plans' as const,
+      level: 'ReadOnly' as PermissionLevel,
+      deny: 'protection-plans.viewprotectionplanreports.deny',
+    },
+    downloadReport: {
+      scope: 'protection-plans' as const,
+      level: 'ReadOnly' as PermissionLevel,
+      deny: 'protection-plans.downloadprotectionplanreport.deny',
+    },
+    generateReport: {
+      scope: 'protection-plans' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'protection-plans.generateprotectionplanreport.deny',
+    },
+    reject: {
+      scope: 'protection-plans' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'protection-plans.rejectprotectionplan.deny',
+    },
+    addCategory: {
+      scope: 'protection-plans' as const,
+      level: 'Contributor' as PermissionLevel,
+      deny: 'protection-plans.addprotectionplancategory.deny',
+    },
+    editCategory: {
+      scope: 'protection-plans' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'protection-plans.editprotectionplancategory.deny',
+    },
+    deleteCategory: {
+      scope: 'protection-plans' as const,
+      level: 'Owner' as PermissionLevel,
+      deny: 'protection-plans.deleteprotectionplancategory.deny',
+    },
   },
 } as const;
 
@@ -270,30 +328,39 @@ export function usePermission(
   }, [loading, roles.length, scopeIndex, requiredScope, requiredLevel, action]);
 }
 
-export function useCanAccess(
-  checks: ReadonlyArray<{ scope: string; level: PermissionLevel }>,
-): boolean {
-  const { loading, roles, scopeIndex } = useSelector(selectPermissionsState);
-  if (loading || roles.length === 0) return false;
-  return checks.some(({ scope, level }) => {
-    const entry = resolveEntry(scopeIndex, scope);
-    if (!entry) return false;
-    return PERMISSION_LEVEL_RANK[entry.level] >= PERMISSION_LEVEL_RANK[level];
-  });
+// Whether the viewer may hand out these scope grants: the backend refuses any grant above
+// the caller's own level on that scope, and an ALL grant covers every scope. Deny rules don't count.
+export function useCanGrantScopes(): (
+  grants: ReadonlyArray<{ scope: string; level: PermissionLevel }>,
+) => boolean {
+  const { scopeIndex } = useSelector(selectPermissionsState);
+  return useCallback(
+    (grants) =>
+      grants.every(({ scope, level }) =>
+        (scope.toUpperCase() === ALL_SCOPE_NAME ? ALL_SCOPE_NAMES : [scope]).every((name) => {
+          const entry = resolveEntry(scopeIndex, name);
+          return !!entry && PERMISSION_LEVEL_RANK[entry.level] >= PERMISSION_LEVEL_RANK[level];
+        }),
+      ),
+    [scopeIndex],
+  );
 }
 
 interface PermissionGateProps {
   requiredScope: string;
   requiredLevel: PermissionLevel;
+  action?: string;
+  fallback?: React.ReactNode;
   children: React.ReactNode;
 }
 
 export const PermissionGate: React.FC<PermissionGateProps> = ({
   requiredScope,
   requiredLevel,
+  action,
+  fallback = null,
   children,
 }) => {
-  const allowed = usePermission(requiredScope, requiredLevel);
-  if (!allowed) return null;
-  return <>{children}</>;
+  const allowed = usePermission(requiredScope, requiredLevel, action);
+  return <>{allowed ? children : fallback}</>;
 };

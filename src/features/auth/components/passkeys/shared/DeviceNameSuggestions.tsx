@@ -1,6 +1,6 @@
 import React from 'react';
 import { generateDeviceNameSuggestions } from '../../../utils';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, withAlpha } from '../../../../../constants';
 import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
 import type { Passkey } from '../../../models/passkeys';
 
@@ -57,27 +57,27 @@ const DeviceNameSuggestions: React.FC<DeviceNameSuggestionsProps> = ({
               padding: '6px 12px',
               fontSize: 12,
               borderRadius: 8,
-              border: '1px solid #e2e8f0',
-              background: '#ffffff',
-              color: '#0B1F33',
+              border: `1px solid ${DEFAULT_COLORS.AUTH_LIGHT_BORDER}`,
+              background: DEFAULT_COLORS.SURFACE_WHITE,
+              color: DEFAULT_COLORS.TEXT_ON_SURFACE,
               cursor: 'pointer',
               transition: 'all 0.15s ease',
               fontWeight: 400,
-              boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+              boxShadow: `0 1px 2px 0 ${withAlpha(DEFAULT_COLORS.SHADOW, 0.05)}`,
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#f1f5f9';
-              e.currentTarget.style.borderColor = '#0ea5e9';
-              e.currentTarget.style.color = '#0ea5e9';
+              e.currentTarget.style.background = DEFAULT_COLORS.SURFACE_HOVER;
+              e.currentTarget.style.borderColor = DEFAULT_COLORS.SUCCESS;
+              e.currentTarget.style.color = DEFAULT_COLORS.SUCCESS;
               e.currentTarget.style.transform = 'translateY(-1px)';
-              e.currentTarget.style.boxShadow = '0 2px 4px 0 rgba(14, 165, 233, 0.15)';
+              e.currentTarget.style.boxShadow = `0 2px 4px 0 ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.15)}`;
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#ffffff';
-              e.currentTarget.style.borderColor = '#e2e8f0';
-              e.currentTarget.style.color = '#0B1F33';
+              e.currentTarget.style.background = DEFAULT_COLORS.SURFACE_WHITE;
+              e.currentTarget.style.borderColor = DEFAULT_COLORS.AUTH_LIGHT_BORDER;
+              e.currentTarget.style.color = DEFAULT_COLORS.TEXT_ON_SURFACE;
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
+              e.currentTarget.style.boxShadow = `0 1px 2px 0 ${withAlpha(DEFAULT_COLORS.SHADOW, 0.05)}`;
             }}
             onMouseDown={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';

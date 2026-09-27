@@ -1,6 +1,6 @@
 /* Same in both themes: the brand dark, matching DEFAULT_COLORS.PAGE_BG. */
 .auth-root {
-  --color-primary: #111827;
+  --color-primary: var(--color-page-bg);
 }
 
 /* Auth fills the viewport exactly and never scrolls, so any rubber-band bounce
@@ -14,45 +14,45 @@ html:has(.auth-root) {
    the auth surface to paint instead of the dark page default. */
 html:has(.auth-root[data-theme='light']),
 html:has(.auth-root[data-theme='light']) body {
-  background-color: #f8fafc;
+  background-color: var(--color-auth-light-bg);
 }
 
 html:has(.auth-root[data-theme='dark']),
 html:has(.auth-root[data-theme='dark']) body {
-  background-color: #020617;
+  background-color: var(--color-auth-dark-bg);
 }
 
 .auth-root[data-theme='light'] {
-  --auth-right-bg: #f8fafc;
-  --auth-card-bg: #ffffff;
-  --auth-card-border: #e2e8f0;
-  --auth-text-primary: #0b1f33;
-  --auth-text-muted: #64748b;
-  --auth-divider: #f1f5f9;
-  --auth-input-bg: #ffffff;
-  --color-border: #e2e8f0;
+  --auth-right-bg: var(--color-auth-light-bg);
+  --auth-card-bg: var(--color-auth-light-card-bg);
+  --auth-card-border: var(--color-auth-light-border);
+  --auth-text-primary: var(--color-auth-light-text);
+  --auth-text-muted: var(--color-auth-light-text-muted);
+  --auth-divider: var(--color-auth-light-divider);
+  --auth-input-bg: var(--color-auth-light-card-bg);
+  --color-border: var(--color-auth-light-border);
 }
 
 .auth-root[data-theme='dark'] {
-  --auth-right-bg: #020617;
-  --auth-card-bg: #0f172a;
-  --auth-card-border: #1e293b;
-  --auth-text-primary: #f8fafc;
-  --auth-text-muted: #94a3b8;
-  --auth-divider: #1e293b;
-  --auth-input-bg: #1e293b;
-  --color-border: #1e293b;
+  --auth-right-bg: var(--color-auth-dark-bg);
+  --auth-card-bg: var(--color-auth-dark-card-bg);
+  --auth-card-border: var(--color-auth-dark-border);
+  --auth-text-primary: var(--color-auth-dark-text);
+  --auth-text-muted: var(--color-auth-dark-text-muted);
+  --auth-divider: var(--color-auth-dark-border);
+  --auth-input-bg: var(--color-auth-dark-border);
+  --color-border: var(--color-auth-dark-border);
 }
 
 /* The global label rule paints labels white for the dark page surfaces; the auth
    card is its own surface and needs its own text colour. */
 .auth-root .ant-form-item-label > label {
-  color: var(--auth-text-primary, #0b1f33) !important;
+  color: var(--auth-text-primary, var(--color-auth-light-text)) !important;
 }
 
 /* Same white-on-light-surface leak as the label rule above, but for the error alert's text. */
 .auth-root .ant-alert-title {
-  color: var(--auth-text-primary, #0b1f33) !important;
+  color: var(--auth-text-primary, var(--color-auth-light-text)) !important;
 }
 
 .auth-root .ant-input:hover,
@@ -60,7 +60,7 @@ html:has(.auth-root[data-theme='dark']) body {
 .auth-root .ant-input-outlined:hover,
 .auth-root .ant-input-outlined:focus,
 .auth-root .ant-input-outlined:focus-within {
-  border-color: var(--auth-card-border, #e2e8f0) !important;
+  border-color: var(--auth-card-border, var(--color-auth-light-border)) !important;
   box-shadow: none !important;
 }
 

@@ -28,6 +28,7 @@ interface UseViewGroupPanelDataReturn {
   closeDeleteModal: () => void;
   handleConfirmDelete: () => Promise<void>;
   groupName: string;
+  deleteImpact?: string;
 }
 
 export const useViewGroupPanelData = ({
@@ -42,6 +43,7 @@ export const useViewGroupPanelData = ({
     openDeleteModal,
     closeDeleteModal,
     handleConfirmDelete: baseHandleConfirmDelete,
+    deleteImpact,
   } = useGroupDeleteModal(group);
 
   const handleConfirmDelete = async () => {
@@ -73,14 +75,7 @@ export const useViewGroupPanelData = ({
     return [
       {
         label: GC.LABELS.VIEW_LABELS.CATEGORY,
-        value: (
-          <RowTag
-            text={categoryName}
-            background={DEFAULT_COLORS.CHIP_ON_SURFACE_BG}
-            color={DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT}
-            fontSize={12}
-          />
-        ),
+        value: <RowTag text={categoryName} fontSize={12} />,
       },
       {
         label: 'Creation Date',
@@ -131,5 +126,6 @@ export const useViewGroupPanelData = ({
     closeDeleteModal,
     handleConfirmDelete,
     groupName: group?.name || '',
+    deleteImpact,
   };
 };

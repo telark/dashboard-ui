@@ -1,6 +1,6 @@
 import type { Style } from '@dicebear/core';
 
-type AvatarStyle = Style<Record<string, never>>;
+type AvatarStyle = Style<object>;
 type AvatarStyleLoader = () => Promise<unknown>;
 
 const AVATAR_STYLE_LOADERS: Record<string, AvatarStyleLoader> = {

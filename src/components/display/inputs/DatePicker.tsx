@@ -38,7 +38,6 @@ const DatePicker: React.FC<DatePickerProps> = ({
 }) => {
   const handleChange = (date: Dayjs | null, dateString: string | null) => {
     if (onChange && date) {
-      // Always set seconds to 00
       const dateWithZeroSeconds = date.second(0).millisecond(0);
       onChange(fromZonedDayjs(dateWithZeroSeconds), dateString);
     } else if (onChange) {

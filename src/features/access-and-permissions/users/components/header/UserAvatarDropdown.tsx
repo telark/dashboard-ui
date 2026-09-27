@@ -125,7 +125,7 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(
               marginRight: isCollapsed ? row.COLLAPSED_MARGIN_X : row.MARGIN_RIGHT,
               border: 'none',
               borderRadius: row.BORDER_RADIUS,
-              backgroundColor: rowHovered ? DEFAULT_COLORS.BACKGROUND_HOVER : 'transparent',
+              backgroundColor: rowHovered ? DEFAULT_COLORS.HOVER_BG : 'transparent',
               cursor: 'pointer',
               transition: row.TRANSITION,
               boxSizing: 'border-box',

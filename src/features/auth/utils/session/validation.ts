@@ -51,7 +51,6 @@ export const validateSession = async (): Promise<SessionValidationResult> => {
   } catch (error) {
     const axiosError = error as AxiosError & { normalized?: { status: number; message: string } };
 
-    // Check if the error is a 410 Gone (session expired) response
     const unknownError = error as { status?: number; message?: string };
     const status =
       axiosError.normalized?.status || axiosError.response?.status || unknownError?.status;

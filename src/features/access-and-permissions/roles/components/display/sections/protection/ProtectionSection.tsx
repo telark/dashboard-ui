@@ -48,7 +48,6 @@ const ProtectionSection: React.FC<ProtectionSectionProps> = ({ onManualChange })
 
             return (
               <div style={{ display: 'flex', gap: 24 }}>
-                {/* Column 1 */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 0, flex: 1 }}>
                   <Switch
                     checked={preventDeletion}
@@ -81,7 +80,6 @@ const ProtectionSection: React.FC<ProtectionSectionProps> = ({ onManualChange })
                     containerStyle={{ marginBottom: 0 }}
                   />
                 </div>
-                {/* Column 2 */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 0, flex: 1 }}>
                   <Switch
                     checked={lockName}

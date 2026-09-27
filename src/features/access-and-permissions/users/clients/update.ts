@@ -14,13 +14,11 @@ export const updateUser = async (userId: string, user: Partial<User>) => {
     if (user.email !== undefined) userData.email = user.email;
     if (user.avatar !== undefined) userData.avatar = user.avatar;
     if (user.settings !== undefined) userData.settings = user.settings;
-    if (user.assignedRolesIDs !== undefined) {
-      userData.assignedRolesIDs = Array.isArray(user.assignedRolesIDs) ? user.assignedRolesIDs : [];
+    if (user.roleRefs !== undefined) {
+      userData.roleRefs = Array.isArray(user.roleRefs) ? user.roleRefs : [];
     }
-    if (user.assignedGroupsIDs !== undefined) {
-      userData.assignedGroupsIDs = Array.isArray(user.assignedGroupsIDs)
-        ? user.assignedGroupsIDs
-        : [];
+    if (user.groupRefs !== undefined) {
+      userData.groupRefs = Array.isArray(user.groupRefs) ? user.groupRefs : [];
     }
     if (user.status !== undefined) userData.status = user.status;
 

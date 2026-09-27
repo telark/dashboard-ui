@@ -3,7 +3,7 @@ import ViewPanel from '../../../../../components/display/panels/view/ViewPanel';
 import { useViewRolePanelData } from '../../hooks';
 import RoleProtectionView from '../../components/display/view/RoleProtectionView';
 import RoleScopesView from '../../components/display/view/RoleScopesView';
-import { convertScopesFromAPI } from '../../utils';
+import { convertScopesFromAPI, canModifyRole } from '../../utils';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import type { Role } from '../../models';
 
@@ -44,7 +44,12 @@ const ViewRolePanel: React.FC<ViewRolePanelProps> = ({ open, onClose, role, onEd
       details={details}
       extraContent={extraContent}
       width={520}
-      actions={{ onEdit }}
+      actions={{
+        onEdit,
+        editDisabledReason: canModifyRole(role)
+          ? undefined
+          : RC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP,
+      }}
     />
   );
 };

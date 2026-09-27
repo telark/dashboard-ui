@@ -17,6 +17,7 @@ import { handleAuthError } from '../shared/errors';
 import { getClientMetadata } from '../device/metadata';
 import type { LoginStartResponse, AuthenticatorAssertionResponse } from '../../models';
 import type { MessageInstance } from 'antd/lib/message/interface';
+import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 
 export const prepareLoginFinishRequest = (
   email: string,
@@ -42,15 +43,9 @@ export const prepareLoginFinishRequest = (
 };
 
 const isUnauthorizedError = (error: unknown): boolean => {
-  const axiosError = error as any;
+  const axiosError = error as ExtendedAxiosError;
   const status = axiosError?.response?.status || axiosError?.normalized?.status;
   return status === HTTP_STATUS.UNAUTHORIZED;
-};
-
-const isNotFoundError = (error: unknown): boolean => {
-  const axiosError = error as any;
-  const status = axiosError?.response?.status || axiosError?.normalized?.status;
-  return status === HTTP_STATUS.NOT_FOUND || status === HTTP_STATUS.BAD_REQUEST;
 };
 
 export const cleanupOrphanedPasskeys = async (
@@ -73,9 +68,8 @@ export const cleanupOrphanedPasskeys = async (
       } catch (error) {
         if (isUnauthorizedError(error)) {
           hasUnauthorizedError = true;
-        } else if (isNotFoundError(error)) {
-          // Passkey not found - may be due to format mismatch, continue cleanup
         }
+        // Not-found (format mismatch) and other failures are tolerated so cleanup continues.
       }
     });
 
@@ -107,7 +101,6 @@ export const performLogin = async (
   try {
     loginStartResponse = await loginStart({ email });
 
-    // Call authentication normally - one attempt only
     const options = extractLoginOptions(loginStartResponse);
     const credential = await authenticateWithPasskey({
       challenge: options.challenge,
@@ -139,6 +132,9 @@ export const performLogin = async (
       throw error;
     }
 
+    // Permissions before entering the app: the sidebar then renders its gated entries at once
+    // instead of popping them in and pushing the rest down.
+    await store.dispatch(fetchMyPermissionsThunk());
     messageApi.open({
       type: 'success',
       content: AUTH_SUCCESS_MESSAGES.LOGIN_SUCCESS,
@@ -147,10 +143,8 @@ export const performLogin = async (
     if (onSuccess) {
       onSuccess();
     }
-    void store.dispatch(fetchMyPermissionsThunk());
   } catch (error) {
-    // On authentication failure, show modal if backend has passkeys
-    // User must explicitly confirm before cleanup
+    // Backend passkeys the browser could not use: the user confirms cleanup in a modal first.
     if (loginStartResponse && hasBackendPasskeys(loginStartResponse) && onShowOrphanedModal) {
       const originalErrorName = (error as Error & { originalErrorName?: string })
         ?.originalErrorName;
@@ -158,18 +152,15 @@ export const performLogin = async (
       const userId = loginStartResponse.userId;
 
       if (credentialIds.length > 0 && userId) {
-        // Show modal - user must explicitly choose to cleanup
         onShowOrphanedModal({
           credentialIds,
           userId,
           errorName: originalErrorName,
         });
-        // Don't throw error here - let modal handle retry/cleanup
         return;
       }
     }
 
-    // Handle other errors normally
     handleAuthError(error, messageApi, {
       onUserNotFound,
       onNoPasskeys,

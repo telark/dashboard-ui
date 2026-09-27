@@ -12,8 +12,8 @@ export const createGroup = async (group: GroupFormData) => {
     const groupData: GroupFormData = {
       name: group.name,
       description: group.description,
-      categoryID: group.categoryID,
-      assignedUsersIDs: Array.isArray(group.assignedUsersIDs) ? group.assignedUsersIDs : [],
+      categoryRef: group.categoryRef,
+      userRefs: Array.isArray(group.userRefs) ? group.userRefs : [],
     };
 
     if (currentUser?.id) {

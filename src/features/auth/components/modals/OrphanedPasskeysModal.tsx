@@ -23,7 +23,6 @@ const OrphanedPasskeysModal: React.FC<OrphanedPasskeysModalProps> = ({
   onCancel,
   isRemoving = false,
 }) => {
-  // Log error for analytics
   if (errorName) {
     logger.info('[Login] Authentication failed:', {
       errorName,
@@ -48,7 +47,7 @@ const OrphanedPasskeysModal: React.FC<OrphanedPasskeysModalProps> = ({
       }}
       closeIcon={
         <span style={{ display: 'inline-flex', alignItems: 'center', padding: '0 20px' }}>
-          <AiOutlineClose size={18} color="#000" />
+          <AiOutlineClose size={18} color={DEFAULT_COLORS.TEXT_ON_SURFACE} />
         </span>
       }
     >
@@ -56,12 +55,26 @@ const OrphanedPasskeysModal: React.FC<OrphanedPasskeysModalProps> = ({
         <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>
           {AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.TITLE}
         </h3>
-        <p style={{ fontSize: 13, color: '#666', marginBottom: 12, lineHeight: 1.5 }}>
+        <p
+          style={{
+            fontSize: 13,
+            color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+            marginBottom: 12,
+            lineHeight: 1.5,
+          }}
+        >
           {isNotFoundError
             ? AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.NOT_FOUND_MESSAGE
             : AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.GENERAL_MESSAGE}
         </p>
-        <p style={{ fontSize: 12, color: '#999', marginBottom: 20, lineHeight: 1.4 }}>
+        <p
+          style={{
+            fontSize: 12,
+            color: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
+            marginBottom: 20,
+            lineHeight: 1.4,
+          }}
+        >
           {isNotFoundError
             ? AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.NOT_FOUND_DESCRIPTION
             : AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.GENERAL_DESCRIPTION}

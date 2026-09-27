@@ -6,6 +6,7 @@ import { Icons, APP_ROUTES, MENU_LABELS } from '../../../constants';
 const HomeIcon = Icons.Home;
 const RoleIcon = Icons.Role;
 const ApplicationIcon = Icons.Application;
+const InsightsIcon = Icons.Insights;
 const UserIcon = Icons.User;
 const GroupIcon = Icons.Group;
 const ProtectionPlansIcon = Icons.ProtectionPlans;
@@ -46,6 +47,22 @@ export const ApplicationsMenuButton: React.FC<MenuButtonProps> = memo(({ isColla
 });
 
 ApplicationsMenuButton.displayName = 'ApplicationsMenuButton';
+
+export const InsightsMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
+  const location = useLocation();
+
+  return (
+    <SidebarButton
+      text={MENU_LABELS.INSIGHTS}
+      icon={<InsightsIcon />}
+      active={location.pathname.startsWith(APP_ROUTES.INSIGHTS)}
+      route={APP_ROUTES.INSIGHTS}
+      isCollapsed={isCollapsed}
+    />
+  );
+});
+
+InsightsMenuButton.displayName = 'InsightsMenuButton';
 
 export const UsersMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
   const location = useLocation();

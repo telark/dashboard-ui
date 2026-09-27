@@ -3,17 +3,18 @@ import SortHeader from './Sort';
 import { TABLE_DEFAULTS } from './constants';
 import type { GenerateColumnCtx } from '../../../interfaces/layout/table';
 
-export const generateColumn = (
+export const generateColumn = <V = unknown, T = unknown>(
   cfg: {
     key: string;
     label: string;
     align?: 'left' | 'center';
     icon?: React.ReactNode;
     width?: number;
-    render?: (value: any, record: any) => React.ReactNode;
+    render?: (value: V, record: T) => React.ReactNode;
     headerBg?: string;
     activeColor?: string;
     inactiveColor?: string;
+    sortable?: boolean;
   },
   ctx: GenerateColumnCtx,
 ) => {
@@ -27,6 +28,7 @@ export const generateColumn = (
     headerBg,
     activeColor,
     inactiveColor,
+    sortable = true,
   } = cfg;
   const { activeSortKey, onSort } = ctx;
   const HEADER_BG = headerBg ?? TABLE_DEFAULTS.HEADER_BG;
@@ -39,7 +41,7 @@ export const generateColumn = (
         label={label}
         align={align}
         leftIcon={icon}
-        sortable={true}
+        sortable={sortable}
         isActive={isActive}
         onSort={handleSort}
         activeColor={activeColor}

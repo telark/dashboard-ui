@@ -9,7 +9,7 @@ import { FilterPanel } from '../../../../../../components/display/panels/filter'
 import { FilterButton, ToggleButton } from '../../../../../../components/display/buttons';
 import { SearchInput } from '../../../../../../components/display/inputs';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
-import { Icons } from '../../../../../../constants';
+import { Icons, SLIDE_OUT } from '../../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { useManageUserRolePanel } from '../../../hooks/panels/role/useManageUserRolePanel';
 import { useDeassignUserRole } from '../../../hooks/panels/role/useDeassignUserRole';
@@ -45,21 +45,19 @@ const FILTER_PANEL_WIDTH = 480;
 
 const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose, user }) => {
   const [form] = Form.useForm();
-  const currentSelectedRoles = (Form.useWatch('assignedRolesIDs', form) as string[]) || [];
+  const currentSelectedRoles = (Form.useWatch('roleRefs', form) as string[]) || [];
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
   const [searchTerm, setSearchTerm] = useState('');
   const [activeView, setActiveView] = useState<ActiveView>('select');
   const [expanded, setExpanded] = useState(false);
   // Local source of truth for assigned IDs — no timing dependency on roles loading
-  const [localAssignedIds, setLocalAssignedIds] = useState<string[]>(
-    () => user?.assignedRolesIDs ?? [],
-  );
+  const [localAssignedIds, setLocalAssignedIds] = useState<string[]>(() => user?.roleRefs ?? []);
 
   const [prevUser, setPrevUser] = useState(user);
   if (prevUser !== user) {
     setPrevUser(user);
-    setLocalAssignedIds(user?.assignedRolesIDs ?? []);
+    setLocalAssignedIds(user?.roleRefs ?? []);
   }
 
   const { categoryOptions } = useRoleCategoryOptions();
@@ -75,10 +73,27 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     handleSubmit,
   } = useManageUserRolePanel({ open, user, form, onClose, currentSelectedRoles });
 
+  const canAssignRole = usePermission(
+    ACTION_PERMISSIONS.users.manageRoles.scope,
+    ACTION_PERMISSIONS.users.manageRoles.level,
+    ACTION_PERMISSIONS.users.manageRoles.deny,
+  );
   const canRemoveRole = usePermission(
     ACTION_PERMISSIONS.users.removeRole.scope,
     ACTION_PERMISSIONS.users.removeRole.level,
     ACTION_PERMISSIONS.users.removeRole.deny,
+  );
+
+  // Unchecking an assigned role is a removal, checking another is an add: each has its own rule.
+  const addBlocked = canAssignRole ? undefined : UC.LABELS.ACTIONS.ASSIGN_ROLE_DISABLED_TOOLTIP;
+  const removeBlocked = user?.bootstrap
+    ? UC.LABELS.ACTIONS.BOOTSTRAP_LOCKED_TOOLTIP
+    : canRemoveRole
+      ? undefined
+      : UC.LABELS.ACTIONS.REMOVE_ROLE_DISABLED_TOOLTIP;
+  const blockedReason = useCallback(
+    (roleId: string) => (initialSelectedRoles.includes(roleId) ? removeBlocked : addBlocked),
+    [initialSelectedRoles, addBlocked, removeBlocked],
   );
 
   const handleDeassignSuccess = useCallback((updatedRoles: string[]) => {
@@ -117,7 +132,6 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     [groupInheritedRoles],
   );
 
-  // Both derived from inheritedGroupsByRoleId — no redundant iteration over groupInheritedRoles
   const inheritedRoleIds = useMemo(
     () => new Set(inheritedGroupsByRoleId.keys()),
     [inheritedGroupsByRoleId],
@@ -179,8 +193,8 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
       <SlideOutPanel
         open={open}
         onClose={onClose}
-        title={UC.LABELS.PANELS.MANAGE_ROLE.TITLE}
-        subtitle={UC.LABELS.PANELS.MANAGE_ROLE.SUBTITLE(
+        title={SLIDE_OUT.ENTITY_TITLE(
+          UC.LABELS.PANELS.MANAGE_ROLE.TITLE,
           CapitalizeFirstLetter(user.fullname || user.username),
         )}
         width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
@@ -235,7 +249,8 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                   assignedRoleIds={filteredAssignedRoleIds}
                   allRoles={allRoles}
                   loading={rolesLoading}
-                  onDeassignClick={canRemoveRole ? openDeassignModal : undefined}
+                  onDeassignClick={openDeassignModal}
+                  deassignDisabledReason={() => removeBlocked}
                   inheritedRoleIds={inheritedRoleIds}
                   inheritedGroupsByRoleId={inheritedGroupsByRoleId}
                 />
@@ -252,6 +267,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                   loading={rolesLoading}
                   allRoles={allRoles}
                   inheritedRoleTooltips={inheritedRoleTooltips}
+                  blockedReason={blockedReason}
                 />
               )}
             </div>
@@ -264,7 +280,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
         loading={submitting}
         disabled={!hasChanges || isReadOnlyView}
         form={form}
-        initialValues={{ assignedRolesIDs: initialSelectedRoles }}
+        initialValues={{ roleRefs: initialSelectedRoles }}
       />
       <FilterPanel
         open={filterPanelOpen}

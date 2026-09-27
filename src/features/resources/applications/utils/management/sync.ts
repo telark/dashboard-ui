@@ -1,5 +1,7 @@
 import store from '../../../../../store';
 import { triggerApplicationSync } from '../../clients';
+import { APPLICATIONS_UI } from '../../constants/texts';
+import { extractErrorMessage } from '../../../../../utils/helpers/format';
 import {
   startSync,
   endSync,
@@ -13,17 +15,12 @@ import {
   markApplicationSyncInFlight,
 } from './syncInFlight';
 
-function extractErrorMessage(err: unknown): string {
-  if (err instanceof Error && err.message) return err.message;
-  if (typeof err === 'string' && err.length > 0) return err;
-  return 'Force sync request failed.';
-}
-
-export const forceSyncApplication = async (name: string): Promise<void> => {
-  if (!name) return;
+// Resolves to the failure message so callers can surface it; undefined on success or skip.
+export const forceSyncApplication = async (name: string): Promise<string | undefined> => {
+  if (!name) return undefined;
 
   const state = store.getState();
-  if (state.applications.syncing?.[name] || isApplicationSyncInFlight(name)) return;
+  if (state.applications.syncing?.[name] || isApplicationSyncInFlight(name)) return undefined;
 
   try {
     store.dispatch(startSync(name));
@@ -33,33 +30,15 @@ export const forceSyncApplication = async (name: string): Promise<void> => {
     markApplicationSyncInFlight(name);
 
     await triggerApplicationSync(name);
+    return undefined;
   } catch (err) {
+    const error = extractErrorMessage(err, APPLICATIONS_UI.CARD.ACTIONS.FORCE_SYNC_FAILED);
     store.dispatch(setSyncStatus({ name, status: 'failed' }));
     store.dispatch(setSyncCompletedAt({ name, completedAt: new Date().toISOString() }));
-    store.dispatch(setSyncLastError({ name, error: extractErrorMessage(err) }));
+    store.dispatch(setSyncLastError({ name, error }));
+    return error;
   } finally {
     clearApplicationSyncInFlight(name);
     store.dispatch(endSync(name));
-  }
-};
-
-export const retryFailedSyncApplication = async (name: string): Promise<void> => {
-  if (!name) return;
-
-  const state = store.getState();
-  if (state.applications.syncStatus?.[name] !== 'failed') return;
-  if (state.applications.syncing?.[name] || isApplicationSyncInFlight(name)) return;
-
-  try {
-    markApplicationSyncInFlight(name);
-    await triggerApplicationSync(name);
-    store.dispatch(setSyncStatus({ name, status: 'syncing' }));
-    store.dispatch(setSyncLastError({ name }));
-  } catch (err) {
-    store.dispatch(setSyncStatus({ name, status: 'failed' }));
-    store.dispatch(setSyncCompletedAt({ name, completedAt: new Date().toISOString() }));
-    store.dispatch(setSyncLastError({ name, error: extractErrorMessage(err) }));
-  } finally {
-    clearApplicationSyncInFlight(name);
   }
 };

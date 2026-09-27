@@ -8,6 +8,7 @@ interface GroupDeleteModalProps {
   onConfirm: () => Promise<void>;
   groupName: string;
   loading: boolean;
+  impact?: string;
 }
 
 const GroupDeleteModal: React.FC<GroupDeleteModalProps> = ({
@@ -16,6 +17,7 @@ const GroupDeleteModal: React.FC<GroupDeleteModalProps> = ({
   onConfirm,
   groupName,
   loading,
+  impact,
 }) => {
   return (
     <div style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
@@ -29,6 +31,7 @@ const GroupDeleteModal: React.FC<GroupDeleteModalProps> = ({
         resourceType="group"
         confirmText={GC.LABELS.ACTIONS.DELETE_MODAL_OK}
         loading={loading}
+        note={impact}
       />
     </div>
   );

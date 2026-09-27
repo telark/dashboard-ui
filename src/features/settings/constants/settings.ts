@@ -32,7 +32,6 @@ export interface SettingsSectionConfig {
 export const SETTINGS_CONSTANTS = {
   PAGE: {
     TITLE: 'Settings',
-    SUBTITLE: 'Manage your account and preferences',
   },
   SECTIONS: {
     PROFILE: {
@@ -61,8 +60,8 @@ export const SETTINGS_CONSTANTS = {
     },
     AI_INSIGHTS: {
       key: 'aiInsights' as const,
-      label: 'AI Insights',
-      description: 'Configure AI providers, key validation, and enrichment behavior.',
+      label: 'Local analyzer',
+      description: 'Enable the analyzer, choose its model, and control automatic runs.',
       icon: RobotOutlined,
     },
     AI_DATA: {
@@ -94,7 +93,6 @@ export const SETTINGS_CONSTANTS = {
     WIDTH: 240,
     /** Icon-only width for settings sidebar (labels in tooltips). */
     WIDTH_COLLAPSED: 56,
-    BORDER_RIGHT: '0.5px solid #e2e8f0',
   },
   CONTENT: {
     MAX_WIDTH: 640,

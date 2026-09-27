@@ -1,6 +1,7 @@
-import { DEFAULT_COLORS } from '../shared/colors';
+import { DEFAULT_COLORS, withAlpha } from '../shared/colors';
 import { AVATAR_RING } from './avatars';
 import { CONTROL_HEIGHT } from './controls';
+import { HEADER_LAYOUT } from './header';
 
 // Panels keep the light surface they had before the dark theme; these tokens
 // re-light the antd controls rendered inside them.
@@ -24,7 +25,7 @@ export const SLIDE_OUT = {
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'rgba(0, 0, 0, 0.45)',
+    background: DEFAULT_COLORS.OVERLAY_BACKDROP,
     zIndex: 1000,
     animation: 'fadeIn 0.2s ease-in-out',
   },
@@ -42,17 +43,21 @@ export const SLIDE_OUT = {
     transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     willChange: 'transform',
   },
+  // Exactly as tall as the app header (and follows it): the panel's top bar lines up with it.
   HEADER: {
-    padding: '16px 24px',
+    height: HEADER_LAYOUT.HEIGHT_PX,
+    flexShrink: 0,
+    boxSizing: 'border-box' as const,
+    padding: '0 24px',
     borderBottom: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
     display: 'flex' as const,
     flexDirection: 'column' as const,
-    gap: 4,
+    justifyContent: 'center' as const,
   },
   HEADER_CONTENT: {
     display: 'flex' as const,
     justifyContent: 'space-between' as const,
-    alignItems: 'flex-start' as const,
+    alignItems: 'center' as const,
   },
   TOOLBAR: {
     display: 'flex' as const,
@@ -74,17 +79,28 @@ export const SLIDE_OUT = {
   },
   TOOLBAR_BUTTON_HOVER_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE,
   TOOLBAR_BUTTON_DEFAULT_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  TOOLBAR_BUTTON_DISABLED: {
+    cursor: 'not-allowed' as const,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
+  },
+  TOOLBAR_EDIT_LABEL: 'Edit',
+  TOOLBAR_DELETE_LABEL: 'Delete',
   TITLE_CONTAINER: {
     flex: 1,
+    minWidth: 0,
   },
   TITLE: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 700,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE,
     margin: 0,
     padding: 0,
     lineHeight: 1.2,
+    whiteSpace: 'nowrap' as const,
+    overflow: 'hidden' as const,
+    textOverflow: 'ellipsis' as const,
   },
+  ENTITY_TITLE: (title: string, name: string) => `${title} · ${name}`,
   CLOSE_BUTTON: {
     background: 'none',
     border: 'none',
@@ -108,10 +124,18 @@ export const SLIDE_OUT = {
     display: 'flex' as const,
     flexDirection: 'column' as const,
   },
-  FORM: {
-    height: '100%',
+  // Above the pinned footer (PanelFooter) the padded body still scrolls itself, so the scrollbar
+  // stays at the panel edge.
+  CONTENT_ABOVE_FOOTER: {
+    flex: 1,
+    overflowY: 'auto' as const,
+    padding: '24px 24px 0',
     display: 'flex' as const,
     flexDirection: 'column' as const,
+  },
+  PINNED_FOOTER: {
+    flexShrink: 0,
+    padding: '0 24px 24px',
   },
   FORM_CONTENT: {
     flex: 1,
@@ -176,7 +200,7 @@ export const FILTER_PANEL = {
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'rgba(0, 0, 0, 0.45)',
+    background: DEFAULT_COLORS.OVERLAY_BACKDROP,
     zIndex: 1002,
     animation: 'fadeIn 0.2s ease-in-out',
   },
@@ -200,19 +224,9 @@ export const FILTER_PANEL = {
     flexDirection: 'column' as const,
     gap: 32,
   },
-  SECTION: {
-    display: 'flex' as const,
-    flexDirection: 'column' as const,
-    gap: 8,
-  },
-  SECTION_TITLE: {
-    fontSize: 12,
-    fontWeight: 600,
-    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-    textTransform: 'uppercase' as const,
-    letterSpacing: 0.5,
-    fontFamily: "'Geist', sans-serif",
-  },
+  // A filter field is a form item like the panels' forms: compact label, 16px apart.
+  ITEM_CLASS: 'form-item-compact',
+  ITEM: { marginBottom: 16 },
   DATE_RANGE_CONTAINER: {
     display: 'flex' as const,
     alignItems: 'center' as const,
@@ -257,7 +271,7 @@ export const FILTER_PANEL = {
     fontWeight: 600,
     border: `1px solid ${DEFAULT_COLORS.SUCCESS}`,
     backgroundColor: DEFAULT_COLORS.SUCCESS,
-    color: '#fff',
+    color: DEFAULT_COLORS.PILL_TEXT,
   },
   BUTTON_INACTIVE: {
     border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
@@ -286,7 +300,7 @@ export const VIEW = {
     alignItems: 'center' as const,
     gap: 8,
     paddingBottom: 20,
-    borderBottom: '1px solid #eef2f6',
+    borderBottom: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
     position: 'relative' as const,
   },
   ICON_WRAPPER: {
@@ -297,7 +311,7 @@ export const VIEW = {
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
-    border: '2px solid rgba(32, 201, 151, 0.35)',
+    border: `2px solid ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.35)}`,
   },
   NAME_STACK: {
     display: 'flex' as const,
@@ -312,7 +326,6 @@ export const VIEW = {
     fontWeight: 700,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE,
     letterSpacing: '-0.02em',
-    textTransform: 'capitalize' as const,
   },
   DESCRIPTION: {
     margin: '0 0 4px 0',
@@ -333,21 +346,21 @@ export const VIEW = {
     padding: AVATAR_RING.BORDER_WIDTH,
     background: DEFAULT_COLORS.SURFACE_WHITE,
     boxSizing: 'border-box' as const,
-    boxShadow: '0 0 0 2px #fff',
+    boxShadow: `0 0 0 2px ${DEFAULT_COLORS.SURFACE_WHITE}`,
   },
   OVERFLOW_BADGE: {
     width: 32,
     height: 32,
     borderRadius: '50%',
-    background: '#20C997',
-    color: '#fff',
+    background: DEFAULT_COLORS.SUCCESS,
+    color: DEFAULT_COLORS.PILL_TEXT,
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
     fontWeight: 700,
     fontSize: 12,
     marginLeft: -6,
-    boxShadow: '0 0 0 3px #fff',
+    boxShadow: `0 0 0 3px ${DEFAULT_COLORS.SURFACE_WHITE}`,
     zIndex: 1,
     cursor: 'default' as const,
   },
@@ -364,7 +377,7 @@ export const VIEW = {
   OVERFLOW_USERNAME: {
     fontSize: 13,
     fontWeight: 600,
-    color: '#fff',
+    color: DEFAULT_COLORS.PILL_TEXT,
   },
   DETAILS: {
     CONTAINER: {

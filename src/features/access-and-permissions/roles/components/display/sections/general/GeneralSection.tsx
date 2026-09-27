@@ -41,7 +41,7 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
               normalize={normalizeName}
               rules={[{ validator: nameValidator }]}
               marginBottom={12}
-              validateTrigger={['onBlur', 'onSubmit']}
+              validateTrigger="onChange"
               tooltip={lockName ? RPC.GENERAL.LOCK_NAME_TOOLTIP : undefined}
               placeholder={RPC.GENERAL.NAME_PLACEHOLDER}
               disabled={lockName}
@@ -53,10 +53,10 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
               placeholder={RPC.GENERAL.DESCRIPTION_PLACEHOLDER}
               marginBottom={12}
             />
-            <FieldChangeWatcher fieldName="categoryID" onChange={onManualChange} />
+            <FieldChangeWatcher fieldName="categoryRef" onChange={onManualChange} />
             <Form.Item
               label={categoryLabel}
-              name="categoryID"
+              name="categoryRef"
               rules={[
                 {
                   required: true,

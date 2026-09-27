@@ -32,7 +32,7 @@ export const BrandPanel: React.FC = () => (
           fontWeight: 700,
           lineHeight: 1.06,
           margin: '0 0 22px',
-          color: '#f8fafc',
+          color: DEFAULT_COLORS.AUTH_DARK_TEXT,
           letterSpacing: '-1.4px',
         }}
       >
@@ -63,7 +63,7 @@ export const BrandPanel: React.FC = () => (
           fontSize: '17px',
           fontWeight: 500,
           letterSpacing: '-0.2px',
-          color: '#f8fafc',
+          color: DEFAULT_COLORS.AUTH_DARK_TEXT,
         }}
       >
         <span

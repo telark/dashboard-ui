@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select } from 'antd';
+import { Form, Select } from 'antd';
 import { DatePicker } from '../../inputs';
 import { FILTER_PANEL, FILTER_PANEL_CONFIG } from '../../../../constants';
 import type { FilterField, FilterFieldType } from './FilterPanel';
@@ -12,6 +12,12 @@ interface FilterFieldRendererProps {
   value: unknown;
   onChange: (value: unknown) => void;
 }
+
+// Laid out like the panels' form fields (compact label, 16px between fields).
+const FILTER_ITEM = {
+  className: FILTER_PANEL.ITEM_CLASS,
+  style: FILTER_PANEL.ITEM,
+};
 
 const FilterFieldRenderer: React.FC<FilterFieldRendererProps> = ({ field, value, onChange }) => {
   const renderDateRange = () => {
@@ -28,8 +34,7 @@ const FilterFieldRenderer: React.FC<FilterFieldRendererProps> = ({ field, value,
       return current.isBefore(toZonedDayjs(dateRange.from), 'day');
     };
     return (
-      <div key={field.key} style={FILTER_PANEL.SECTION}>
-        <div style={FILTER_PANEL.SECTION_TITLE}>BY CREATION DATE</div>
+      <Form.Item key={field.key} label={field.label} {...FILTER_ITEM}>
         <div style={FILTER_PANEL.DATE_RANGE_CONTAINER}>
           <div style={FILTER_PANEL.DATE_INPUT_WRAPPER}>
             <DatePicker
@@ -55,35 +60,34 @@ const FilterFieldRenderer: React.FC<FilterFieldRendererProps> = ({ field, value,
             />
           </div>
         </div>
-      </div>
+      </Form.Item>
     );
   };
 
   const renderButtonGroup = () => {
     if (!field.options) return null;
     return (
-      <FilterButtonGroup
-        key={field.key}
-        label={field.label}
-        options={field.options}
-        value={value as string | undefined}
-        onChange={(val) => onChange(val)}
-      />
+      <Form.Item key={field.key} label={field.label} {...FILTER_ITEM}>
+        <FilterButtonGroup
+          options={field.options}
+          value={value as string | undefined}
+          onChange={(val) => onChange(val)}
+        />
+      </Form.Item>
     );
   };
 
   const renderDropdown = () => {
     const selectedValue = (value as string) || field.dropdownOptions?.[0]?.value || '';
     return (
-      <div key={field.key} style={FILTER_PANEL.SECTION}>
-        <div style={FILTER_PANEL.SECTION_TITLE}>{field.label}</div>
+      <Form.Item key={field.key} label={field.label} {...FILTER_ITEM}>
         <Select
           value={selectedValue}
           onChange={(val) => onChange(val)}
           style={FILTER_PANEL.DROPDOWN}
           options={field.dropdownOptions}
         />
-      </div>
+      </Form.Item>
     );
   };
 
@@ -91,8 +95,7 @@ const FilterFieldRenderer: React.FC<FilterFieldRendererProps> = ({ field, value,
     const selectedValues = (value as string[]) || [];
     const fieldOptionRender = field.optionRender;
     return (
-      <div key={field.key} style={FILTER_PANEL.SECTION}>
-        <div style={FILTER_PANEL.SECTION_TITLE}>{field.label}</div>
+      <Form.Item key={field.key} label={field.label} {...FILTER_ITEM}>
         <Select
           mode="multiple"
           value={selectedValues}
@@ -116,7 +119,7 @@ const FilterFieldRenderer: React.FC<FilterFieldRendererProps> = ({ field, value,
               .includes(input.toLowerCase())
           }
         />
-      </div>
+      </Form.Item>
     );
   };
 

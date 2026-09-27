@@ -1,19 +1,20 @@
 import React, { memo } from 'react';
 import SnapshotStorageBar from '../../../resources/applications/components/snapshots/SnapshotStorageBar';
 import { HOME_DASHBOARD_TEXTS as T } from '../../constants/dashboard';
-import type { SnapshotStorageState } from '../../models';
+import type { BoxState, SnapshotStorageState } from '../../models';
 import SummaryBox from './SummaryBox';
 
 const S = T.STORAGE;
 
-const StorageBox: React.FC<{ storage: SnapshotStorageState }> = memo(
-  ({ storage: { infos, failed } }) => {
+const StorageBox: React.FC<{ storage: SnapshotStorageState } & Pick<BoxState, 'noAccess'>> = memo(
+  ({ storage: { infos, failed }, noAccess }) => {
     const percent = infos?.consumedSpace.percent ?? 0;
     return (
       <SummaryBox
         title={S.TITLE}
         loading={!infos && !failed}
         failed={failed}
+        noAccess={noAccess}
         value={`${percent.toFixed(1)}%`}
         caption={S.USED}
       >

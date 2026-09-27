@@ -1,4 +1,5 @@
 import React from 'react';
+import { DEFAULT_COLORS } from '../../../constants';
 
 export interface LockBannerProps {
   title: string;
@@ -11,11 +12,11 @@ const LockBanner: React.FC<LockBannerProps> = ({ title, message, icon }) => {
     <>
       <div
         style={{
-          background: '#f6f8fa',
+          background: DEFAULT_COLORS.SURFACE_SUBTLE,
           borderRadius: 8,
           padding: '12px 16px',
           marginBottom: 16,
-          border: '1px solid #d0d7de',
+          border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
           display: 'flex',
           alignItems: 'center',
           gap: 12,
@@ -26,7 +27,7 @@ const LockBanner: React.FC<LockBannerProps> = ({ title, message, icon }) => {
         <div style={{ flex: 1 }}>
           <div
             style={{
-              color: '#24292f',
+              color: DEFAULT_COLORS.TEXT_ON_SURFACE,
               fontWeight: 500,
               fontSize: 14,
               marginBottom: 2,
@@ -36,7 +37,7 @@ const LockBanner: React.FC<LockBannerProps> = ({ title, message, icon }) => {
           </div>
           <div
             style={{
-              color: '#656d76',
+              color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
               fontSize: 12,
               lineHeight: 1.4,
             }}

@@ -4,6 +4,7 @@ import { UserAddOutlined } from '@ant-design/icons';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { REGISTER_CONSTANTS } from '../../constants/register';
 import { AuthForm } from '../shared/AuthForm';
+import { DEFAULT_COLORS } from '../../../../constants';
 
 interface RegisterFormProps {
   form: FormInstance;
@@ -13,9 +14,9 @@ interface RegisterFormProps {
 }
 
 const inputStyle: React.CSSProperties = {
-  borderColor: 'var(--auth-card-border, #e2e8f0)',
-  background: 'var(--auth-input-bg, #ffffff)',
-  color: 'var(--auth-text-primary, #0B1F33)',
+  borderColor: `var(--auth-card-border, ${DEFAULT_COLORS.AUTH_LIGHT_BORDER})`,
+  background: `var(--auth-input-bg, ${DEFAULT_COLORS.AUTH_LIGHT_CARD_BG})`,
+  color: `var(--auth-text-primary, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT})`,
 };
 
 export const RegisterForm: React.FC<RegisterFormProps> = ({
@@ -62,7 +63,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           fontWeight: 600,
           background: 'var(--color-primary)',
           borderColor: 'var(--color-primary)',
-          color: '#ffffff',
+          color: DEFAULT_COLORS.PILL_TEXT,
         }}
       >
         {loading ? REGISTER_CONSTANTS.UI.BUTTON_LOADING : REGISTER_CONSTANTS.UI.BUTTON_TEXT}

@@ -11,7 +11,7 @@ const StatusButton: React.FC<StatusButtonProps> = ({ status, icon }) => {
   const statusStyle =
     status === BUTTON_STATES.STATUS.ACTIVE
       ? { color: DEFAULT_COLORS.SUCCESS, borderColor: DEFAULT_COLORS.SUCCESS }
-      : { color: DEFAULT_COLORS.DEFAULT, borderColor: DEFAULT_COLORS.DEFAULT };
+      : { color: DEFAULT_COLORS.NEUTRAL, borderColor: DEFAULT_COLORS.NEUTRAL };
 
   return (
     <Button

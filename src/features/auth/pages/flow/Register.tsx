@@ -25,8 +25,11 @@ const Register: React.FC = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const enrollToken = searchParams.get(REGISTER_CONSTANTS.QUERY.ENROLL) ?? undefined;
+  const [searchParams, setSearchParams] = useSearchParams();
+  // Read once and kept in state: the token leaves the address bar and history right away.
+  const [enrollToken] = useState(
+    () => searchParams.get(REGISTER_CONSTANTS.QUERY.ENROLL) ?? undefined,
+  );
   const enrolling = enrollToken !== undefined;
   const { message } = AntdApp.useApp();
   const dispatch = useDispatch<AppDispatch>();
@@ -37,6 +40,12 @@ const Register: React.FC = () => {
   useEffect(() => {
     dispatch(ensureAuthConfigThunk());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (searchParams.has(REGISTER_CONSTANTS.QUERY.ENROLL)) {
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const handleRegister = async (values: { email: string; deviceName: string }) => {
     setLoading(true);

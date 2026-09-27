@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Popover, Tooltip } from 'antd';
 import { AiOutlineStop } from 'react-icons/ai';
 import { VIEW } from '../../../../../../constants/layout/panels';
-import { DEFAULT_COLORS } from '../../../../../../constants';
+import { DEFAULT_COLORS, withAlpha } from '../../../../../../constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { ROLES_CONSTANTS as RC } from '../../../constants';
 import type { ScopesPermissionsProps } from '../../../models';
@@ -22,9 +22,9 @@ const RULES_POPOVER_STYLE = {
     fontWeight: 500,
     color: DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT,
     padding: '4px 8px',
-    background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+    background: `linear-gradient(135deg, ${DEFAULT_COLORS.SURFACE_SUBTLE} 0%, ${DEFAULT_COLORS.SURFACE_HOVER} 100%)`,
     borderRadius: 8,
-    boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+    boxShadow: `0 1px 2px ${withAlpha(DEFAULT_COLORS.SHADOW, 0.04)}`,
     display: 'flex',
     alignItems: 'center',
     gap: 8,
@@ -43,8 +43,8 @@ const RULES_POPOVER_STYLE = {
     width: 22,
     height: 22,
     borderRadius: 6,
-    background: `${DEFAULT_COLORS.ERROR}18`,
-    color: DEFAULT_COLORS.ERROR,
+    background: `${DEFAULT_COLORS.DANGER}18`,
+    color: DEFAULT_COLORS.DANGER,
     cursor: 'pointer',
     marginLeft: 6,
     flexShrink: 0,
@@ -97,12 +97,7 @@ const RoleScopesView: React.FC<ScopesPermissionsProps> = ({ scopes }) => {
                 gap: 0,
               }}
             >
-              <RowTag
-                text={scopeValue.level}
-                background={DEFAULT_COLORS.CHIP_ON_SURFACE_BG}
-                color={DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT}
-                fontSize={12}
-              />
+              <RowTag text={scopeValue.level} fontSize={12} />
               {hasRules && (
                 <Popover
                   trigger="click"

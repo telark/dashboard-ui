@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { Empty } from 'antd';
+import React, { useCallback, useMemo } from 'react';
+import { Empty, type TableColumnType } from 'antd';
 import type { PageLayoutConfig } from '../../../../../interfaces/layout/page';
 import type { FilterChip } from '../../../../../interfaces/layout/toolbar';
 import { ROLES_CONSTANTS as RC } from '../../constants';
@@ -17,6 +17,7 @@ import { canDeleteRole } from '../../utils';
 import type { Role } from '../../models';
 import type { Category } from '../../../categories/models';
 import { useUsers } from '../../../users/hooks';
+import { useFetchGroups } from '../../../groups/hooks';
 
 const RoleIcon = Icons.Role;
 
@@ -151,6 +152,15 @@ export const useRoleListPageConfig = ({
 
   const { categories } = useCategories(CATEGORIES_CONSTANTS.SCOPES.ROLES);
   const { users } = useUsers();
+  const { groups } = useFetchGroups();
+
+  const getUsage = useCallback(
+    (roleId: string) => ({
+      users: users.filter((user) => user.roleRefs?.includes(roleId)).length,
+      groups: groups.filter((group) => group.roleRefs?.includes(roleId)).length,
+    }),
+    [users, groups],
+  );
 
   const ctx = useMemo(
     () => ({
@@ -165,14 +175,14 @@ export const useRoleListPageConfig = ({
     [sortKey, handleSort, sortOrder, categories, users],
   );
 
-  const roleColumns = useMemo(() => Columns(ctx), [ctx]);
+  const roleColumns = useMemo(() => Columns(ctx) as TableColumnType<Role | Category>[], [ctx]);
 
   const categoryColumns = useMemo(
     () =>
       CategoryColumns({
         activeSortKey: (categorySortKey ?? 'creationDate') as string,
         onSort: handleCategorySort as (key: string) => void,
-      }),
+      }) as TableColumnType<Role | Category>[],
     [categorySortKey, handleCategorySort],
   );
 
@@ -201,9 +211,13 @@ export const useRoleListPageConfig = ({
                 key: RC.KEYS.ACTIONS,
                 align: 'right' as const,
                 width: 120,
-                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
+                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
                 render: (_: unknown, record: Role | Category) => (
-                  <RoleActionsColumn record={record as Role} onEdit={handleEditRole} />
+                  <RoleActionsColumn
+                    record={record as Role}
+                    onEdit={handleEditRole}
+                    getUsage={getUsage}
+                  />
                 ),
               },
             ]
@@ -214,7 +228,7 @@ export const useRoleListPageConfig = ({
                 key: 'actions',
                 align: 'right' as const,
                 width: 120,
-                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
+                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
                 render: (_: unknown, record: Role | Category) => (
                   <CategoryActionsColumn
                     record={record as Category}
@@ -294,6 +308,7 @@ export const useRoleListPageConfig = ({
       sortedCategories.length,
       handleViewRole,
       handleEditRole,
+      getUsage,
       setCurrentPage,
       setPageSize,
       setCategoryCurrentPage,

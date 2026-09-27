@@ -13,17 +13,13 @@ export const updateGroup = async (groupId: string, group: Partial<GroupFormData>
 
     if (group.name !== undefined) groupData.name = group.name;
     if (group.description !== undefined) groupData.description = group.description;
-    if (group.categoryID !== undefined) groupData.categoryID = group.categoryID;
-    if (group.assignedUsersIDs !== undefined) {
-      groupData.assignedUsersIDs = Array.isArray(group.assignedUsersIDs)
-        ? group.assignedUsersIDs
-        : [];
+    if (group.categoryRef !== undefined) groupData.categoryRef = group.categoryRef;
+    if (group.userRefs !== undefined) {
+      groupData.userRefs = Array.isArray(group.userRefs) ? group.userRefs : [];
     }
 
-    if (group.assignedRolesIDs !== undefined) {
-      groupData.assignedRolesIDs = Array.isArray(group.assignedRolesIDs)
-        ? group.assignedRolesIDs
-        : [];
+    if (group.roleRefs !== undefined) {
+      groupData.roleRefs = Array.isArray(group.roleRefs) ? group.roleRefs : [];
     }
 
     if (currentUser?.id) {

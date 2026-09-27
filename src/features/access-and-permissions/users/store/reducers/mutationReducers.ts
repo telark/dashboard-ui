@@ -7,10 +7,6 @@ export const handleCreateUserFulfilled = (state: UsersState, action: PayloadActi
   state.error = null;
 };
 
-export const handleCreateUserRejected = (state: UsersState, action: PayloadAction<unknown>) => {
-  state.error = action.payload as string;
-};
-
 export const handleUpdateUserFulfilled = (state: UsersState, action: PayloadAction<User>) => {
   const index = state.users.findIndex((u) => u.id === action.payload.id);
   if (index !== -1) {
@@ -22,10 +18,6 @@ export const handleUpdateUserFulfilled = (state: UsersState, action: PayloadActi
   state.error = null;
 };
 
-export const handleUpdateUserRejected = (state: UsersState, action: PayloadAction<unknown>) => {
-  state.error = action.payload as string;
-};
-
 export const handleDeleteUserPending = (state: UsersState, action: { meta: { arg: string } }) => {
   const id = action.meta.arg;
   if (id && !state.deletingIds.includes(id)) {
@@ -34,6 +26,8 @@ export const handleDeleteUserPending = (state: UsersState, action: { meta: { arg
 };
 
 export const handleDeleteUserFulfilled = (state: UsersState, action: PayloadAction<string>) => {
+  state.users = state.users.filter((u) => u.id !== action.payload);
+  state.deletingIds = state.deletingIds.filter((id) => id !== action.payload);
   if (state.details?.id === action.payload) {
     state.details = null;
   }
@@ -45,5 +39,4 @@ export const handleDeleteUserRejected = (
   action: PayloadAction<unknown, string, { arg: string }>,
 ) => {
   state.deletingIds = state.deletingIds.filter((id) => id !== action.meta.arg);
-  state.error = action.payload as string;
 };

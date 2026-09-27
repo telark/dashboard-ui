@@ -14,13 +14,6 @@ export const canDeleteRole = (role: Role): boolean => {
   return !role.protection.preventDeletion;
 };
 
-export const canDeleteRoles = (roles: Role[]): boolean => {
-  if (roles.length === 0) {
-    return false;
-  }
-  return roles.every(canDeleteRole);
-};
-
 export const isRoleProtected = (role: Role): boolean => {
   return role.protection?.preventDeletion === true && role.protection?.preventModification === true;
 };

@@ -23,14 +23,14 @@ export interface ResourceKindVisual {
 const FALLBACK: ResourceKindVisual = {
   Icon: AppstoreOutlined,
   background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
-  color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
+  color: DEFAULT_COLORS.TEXT_SECONDARY,
 };
 
 const KIND_VISUAL: Record<string, ResourceKindVisual> = {
   Deployment: {
     Icon: DeploymentUnitOutlined,
-    background: DEFAULT_COLORS.CHIP_BLUE_BG,
-    color: DEFAULT_COLORS.CHIP_BLUE_TEXT,
+    background: DEFAULT_COLORS.INFO_BG,
+    color: DEFAULT_COLORS.INFO,
   },
   StatefulSet: {
     Icon: CloudServerOutlined,
@@ -54,8 +54,8 @@ const KIND_VISUAL: Record<string, ResourceKindVisual> = {
   },
   Service: {
     Icon: ApiOutlined,
-    background: DEFAULT_COLORS.CHIP_BLUE_BG,
-    color: DEFAULT_COLORS.CHIP_BLUE_TEXT,
+    background: DEFAULT_COLORS.INFO_BG,
+    color: DEFAULT_COLORS.INFO,
   },
   Ingress: {
     Icon: GlobalOutlined,

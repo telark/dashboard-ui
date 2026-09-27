@@ -19,13 +19,11 @@ const TimeAgo: React.FC<TimeAgoProps> = React.memo(
   ({ date, formatString = TIME_FORMATS.DEFAULT }) => {
     const [timeAgo, setTimeAgo] = useState('');
 
-    // Memoize the parsed date
     const parsedDate = useMemo(() => parseDate(date), [date]);
 
     const formattedDate = formatDateTime(parsedDate, formatString);
     const timeZoneLabel = formatTimeZoneOffset(getTimeZone());
 
-    // Update every minute
     useEffect(() => {
       const update = () => {
         setTimeAgo(formatTimeAgo(parsedDate));

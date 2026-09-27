@@ -8,7 +8,7 @@ const DashboardTag: React.FC<DashboardTagData> = ({ text, tone }) => (
     text={text}
     fontSize={L.TAG_FONT_SIZE_PX}
     capitalize={false}
-    {...HOME_TAG_TONE_COLORS[tone]}
+    accent={HOME_TAG_TONE_COLORS[tone]}
   />
 );
 

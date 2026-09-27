@@ -15,12 +15,16 @@ export function applyPlanFilters(
   const createdBy = (filters[PPC.FILTER_KEYS.CREATED_BY] as string[]) || [];
   const templates = (filters[PPC.FILTER_KEYS.TEMPLATES] as string[]) || [];
   const targets = (filters[PPC.FILTER_KEYS.TARGETS] as string[]) || [];
+  const environment = (filters[PPC.FILTER_KEYS.ENVIRONMENT] as string[]) || [];
+  const tags = (filters[PPC.FILTER_KEYS.TAGS] as string[]) || [];
 
   if (
     !has(scopeType) &&
     !has(createdBy) &&
     !has(templates) &&
     !has(targets) &&
+    !has(environment) &&
+    !has(tags) &&
     !dateRange?.from &&
     !dateRange?.to
   ) {
@@ -37,9 +41,13 @@ export function applyPlanFilters(
     }
     if (has(targets)) {
       const planTargets =
-        p.scope.type === 'namespaces' ? (p.scope.namespaces ?? []) : (p.scope.applicationIds ?? []);
+        p.scope.type === 'namespaces'
+          ? (p.scope.namespaces ?? [])
+          : (p.scope.applicationRefs ?? []);
       if (!planTargets.some((t) => targets.includes(t))) return false;
     }
+    if (has(environment) && !environment.includes(p.environmentRef ?? '')) return false;
+    if (has(tags) && !(p.tagRefs ?? []).some((t) => tags.includes(t))) return false;
     return true;
   });
 }

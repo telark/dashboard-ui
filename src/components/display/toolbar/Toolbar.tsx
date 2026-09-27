@@ -119,6 +119,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                   onClick: ({ key }) => {
                     button.dropdown?.onItemClick?.(key);
                   },
+                  selectedKeys: button.dropdown.selectedKeys,
                 }}
                 trigger={['click']}
                 disabled={isDisabled}
@@ -145,12 +146,12 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                       ? 'none'
                       : `1px solid ${
                           isDisabled && isDanger
-                            ? '#d9d9d9'
+                            ? BUTTON_COLORS.TOOLBAR_BORDER
                             : isPrimary
                               ? DEFAULT_COLORS.SUCCESS
                               : isDanger
                                 ? DEFAULT_COLORS.DANGER
-                                : '#d9d9d9'
+                                : BUTTON_COLORS.TOOLBAR_BORDER
                         }`,
                     backgroundColor: isPrimary
                       ? DEFAULT_COLORS.SUCCESS
@@ -158,9 +159,9 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                         ? DEFAULT_COLORS.SURFACE_WHITE
                         : 'transparent',
                     color: isDisabled
-                      ? '#d1d5db'
+                      ? BUTTON_COLORS.TOOLBAR_DISABLED_TEXT
                       : isPrimary
-                        ? '#fff'
+                        ? DEFAULT_COLORS.PILL_TEXT
                         : isDanger
                           ? DEFAULT_COLORS.DANGER
                           : button.active
@@ -175,7 +176,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                     if (isPrimary) {
                       e.currentTarget.style.opacity = '0.9';
                     } else if (isDanger && !button.active) {
-                      e.currentTarget.style.backgroundColor = '#fff1f0';
+                      e.currentTarget.style.backgroundColor = DEFAULT_COLORS.DANGER_TINT;
                     } else if (!button.active) {
                       // Ghost buttons invert on hover: white surface, dark label.
                       e.currentTarget.style.backgroundColor = DEFAULT_COLORS.SURFACE_WHITE;
@@ -185,8 +186,9 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                       }
                     }
                   }}
+                  // Never skipped while disabled: a button that disables itself on
+                  // click would keep the hover surface and render its label white on white.
                   onMouseLeave={(e) => {
-                    if (isDisabled) return;
                     if (isPrimary) {
                       e.currentTarget.style.opacity = '1';
                     } else if (isDanger) {
@@ -199,7 +201,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                         ? DEFAULT_COLORS.TEXT_ON_SURFACE
                         : BUTTON_COLORS.TOOLBAR_TEXT;
                       if (!isGhost) {
-                        e.currentTarget.style.borderColor = '#d9d9d9';
+                        e.currentTarget.style.borderColor = BUTTON_COLORS.TOOLBAR_BORDER;
                       }
                     }
                   }}
@@ -252,14 +254,14 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                   ? 'none'
                   : `1px solid ${
                       isDisabled && isDanger
-                        ? '#d9d9d9'
+                        ? BUTTON_COLORS.TOOLBAR_BORDER
                         : isPrimary
                           ? DEFAULT_COLORS.SUCCESS
                           : isDanger
                             ? DEFAULT_COLORS.DANGER
                             : button.active
                               ? DEFAULT_COLORS.TEXT_ON_SURFACE
-                              : '#d9d9d9'
+                              : BUTTON_COLORS.TOOLBAR_BORDER
                     }`,
                 backgroundColor: isPrimary
                   ? DEFAULT_COLORS.SUCCESS
@@ -267,9 +269,9 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                     ? DEFAULT_COLORS.SURFACE_WHITE
                     : 'transparent',
                 color: isDisabled
-                  ? '#d1d5db'
+                  ? BUTTON_COLORS.TOOLBAR_DISABLED_TEXT
                   : isPrimary
-                    ? '#fff'
+                    ? DEFAULT_COLORS.PILL_TEXT
                     : isDanger
                       ? DEFAULT_COLORS.DANGER
                       : button.active
@@ -283,7 +285,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                 if (isPrimary) {
                   e.currentTarget.style.opacity = '0.9';
                 } else if (isDanger && !button.active) {
-                  e.currentTarget.style.backgroundColor = '#fff1f0';
+                  e.currentTarget.style.backgroundColor = DEFAULT_COLORS.DANGER_TINT;
                 } else if (!button.active) {
                   // Ghost buttons invert on hover: white surface, dark label.
                   e.currentTarget.style.backgroundColor = DEFAULT_COLORS.SURFACE_WHITE;
@@ -294,7 +296,6 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                 }
               }}
               onMouseLeave={(e) => {
-                if (isDisabled) return;
                 if (isPrimary) {
                   e.currentTarget.style.opacity = '1';
                 } else if (isDanger) {
@@ -309,7 +310,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                   if (!isGhost) {
                     e.currentTarget.style.borderColor = button.active
                       ? DEFAULT_COLORS.TEXT_ON_SURFACE
-                      : '#d9d9d9';
+                      : BUTTON_COLORS.TOOLBAR_BORDER;
                   }
                 }
               }}

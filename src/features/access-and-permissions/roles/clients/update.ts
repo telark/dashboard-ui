@@ -13,13 +13,12 @@ export const updateRole = async (roleId: string, role: Partial<RoleFormData>) =>
     if (role.name !== undefined) roleData.name = role.name;
     if (role.description !== undefined) roleData.description = role.description;
     if (role.type !== undefined) roleData.type = role.type;
-    if (role.categoryID !== undefined) roleData.categoryID = role.categoryID;
+    if (role.categoryRef !== undefined) roleData.categoryRef = role.categoryRef;
     if (role.scopesAndPermissions !== undefined)
       roleData.scopesAndPermissions = role.scopesAndPermissions;
     if (role.protection !== undefined) roleData.protection = role.protection;
     if (role.validity !== undefined) roleData.validity = role.validity;
     if (role.status !== undefined) roleData.status = role.status;
-    if (role.assignedTo !== undefined) roleData.assignedTo = role.assignedTo;
 
     if (currentUser?.id) {
       roleData.lastUpdatedBy = currentUser.id;

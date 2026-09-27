@@ -5,6 +5,7 @@ import { App as AntdApp } from 'antd';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import { deleteRoleThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
+import { rejectionMessage } from '../../../../../utils/helpers/format';
 import store from '../../../../../store';
 import { fetchMyPermissionsThunk } from '../../../../auth/store/thunks/fetchThunks';
 
@@ -52,9 +53,9 @@ export const useBulkDeleteRoles = ({
       });
 
       setSelectedRoles([]);
-    } catch {
+    } catch (rejection) {
       message.error({
-        content: RC.LABELS.ACTIONS.BULK_DELETE_FAILED,
+        content: rejectionMessage(rejection, RC.LABELS.ACTIONS.BULK_DELETE_FAILED),
         key: loadingKey,
         duration: 3,
       });

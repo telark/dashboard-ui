@@ -117,20 +117,13 @@ const ChangeRow: React.FC<{
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 6 }}>
             <RowTag
               text={`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.GEN}: ${entry.generation}`}
-              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
               fontSize={11}
             />
             <RowTag
               text={entry.changeClass}
               {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
             />
-            <RowTag
-              text={`severity: ${entry.severity}`}
-              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-              color={DEFAULT_COLORS.TEXT_SECONDARY}
-              fontSize={11}
-            />
+            <RowTag text={`severity: ${entry.severity}`} fontSize={11} />
             <Tooltip
               title={
                 hasSnapshot
@@ -145,10 +138,7 @@ const ChangeRow: React.FC<{
                       ? APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SNAPSHOT_AVAILABLE
                       : APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SNAPSHOT_MISSING
                   }
-                  background={
-                    hasSnapshot ? DEFAULT_COLORS.SUCCESS_TINT : DEFAULT_COLORS.CHIP_CUSTOM_BG
-                  }
-                  color={hasSnapshot ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.TEXT_MUTED}
+                  accent={hasSnapshot ? DEFAULT_COLORS.SUCCESS : undefined}
                   fontSize={11}
                 />
               </span>
@@ -173,8 +163,6 @@ const ChangeRow: React.FC<{
               {actorName ? (
                 <RowTag
                   text={`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.BY_PREFIX} ${actorName}`}
-                  background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                  color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
                   fontSize={11}
                   capitalize={false}
                 />

@@ -5,6 +5,7 @@ export {
   fetchProtectionPlanTemplatesThunk,
   preparePlanThunk,
   cancelPlanThunk,
+  decidePlanThunk,
   deletePlanThunk,
   duplicatePlanThunk,
   reactivatePlanThunk,
@@ -16,8 +17,4 @@ export {
   selectProtectionPlansError,
   selectProtectionPlanTemplates,
   selectProtectionPlanTemplatesLoading,
-  selectProtectionPlanDetails,
-  selectProtectionPlanDetailsLoading,
-  selectProtectionPlanDetailsError,
-  selectProtectionPlanByName,
 } from './selectors/protectionPlansSelectors';

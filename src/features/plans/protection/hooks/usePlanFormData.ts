@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import type { AppDispatch } from '../../../../store';
+import type { AppDispatch, RootState } from '../../../../store';
 import { Client, discoveryApiClient } from '../../../../api/index';
 import { Endpoints } from '../../../../constants';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
@@ -17,6 +17,8 @@ import {
 import { useUsers } from '../../../access-and-permissions/users/hooks/user/useUsers';
 import { getCurrentUser } from '../../../auth/utils';
 import type { User } from '../../../access-and-permissions/users/models';
+import { mapCategoriesToOptions } from '../../../access-and-permissions/categories/utils/helpers';
+import { usePlanTaxonomyLists } from './usePlanTaxonomies';
 
 export const usePlanFormData = (enabled: boolean) => {
   const dispatch: AppDispatch = useDispatch();
@@ -25,9 +27,11 @@ export const usePlanFormData = (enabled: boolean) => {
   const applications = useSelector(selectApplications);
   const applicationsLoading = useSelector(selectApplicationsLoading);
   const { users, loading: usersLoading } = useUsers();
+  const { environments, tags } = usePlanTaxonomyLists();
 
-  const [namespaceOptions, setNamespaceOptions] = useState<string[]>([]);
+  const [allNamespaces, setAllNamespaces] = useState<string[]>([]);
   const [namespacesLoading, setNamespacesLoading] = useState(false);
+  const excludedNamespaces = useSelector((s: RootState) => s.globalconfig.data?.excludedNamespaces);
 
   useEffect(() => {
     if (!enabled) return;
@@ -46,7 +50,7 @@ export const usePlanFormData = (enabled: boolean) => {
           method,
         });
         if (!cancelled) {
-          setNamespaceOptions((res?.data ?? []).filter(Boolean));
+          setAllNamespaces((res?.data ?? []).filter(Boolean));
         }
       } catch {
         // silent
@@ -60,6 +64,11 @@ export const usePlanFormData = (enabled: boolean) => {
     };
   }, [enabled]);
 
+  const namespaceOptions = useMemo(() => {
+    const excluded = new Set(excludedNamespaces ?? []);
+    return allNamespaces.filter((n) => !excluded.has(n));
+  }, [allNamespaces, excludedNamespaces]);
+
   const currentUserId = getCurrentUser()?.id;
 
   const selectableUsers = useMemo(
@@ -72,9 +81,10 @@ export const usePlanFormData = (enabled: boolean) => {
     [selectableUsers],
   );
 
+  // Every user, not only the selectable ones: an editor who is already a participant has no option.
   const userMap = useMemo<Map<string, User>>(
-    () => new Map(selectableUsers.map((u) => [u.id, u])),
-    [selectableUsers],
+    () => new Map((users ?? []).map((u) => [u.id, u])),
+    [users],
   );
 
   const applicationOptions = useMemo(
@@ -89,6 +99,9 @@ export const usePlanFormData = (enabled: boolean) => {
     [applications],
   );
 
+  const environmentOptions = useMemo(() => mapCategoriesToOptions(environments), [environments]);
+  const tagOptions = useMemo(() => mapCategoriesToOptions(tags), [tags]);
+
   return {
     templates,
     templatesLoading,
@@ -99,5 +112,7 @@ export const usePlanFormData = (enabled: boolean) => {
     userOptions,
     userMap,
     usersLoading,
+    environmentOptions,
+    tagOptions,
   };
 };

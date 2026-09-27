@@ -1,9 +1,9 @@
 import axios, { type AxiosInstance } from 'axios';
 import {
+  ANALYZER_API,
   API_TIMEOUT,
   AUTH_API,
   DISCOVERY_API,
-  ENRICHMENT_API,
   EXPORTER_API,
   REQUEST_CONFIG,
 } from '../../constants';
@@ -23,12 +23,12 @@ const buildInstance = (baseURL: string): AxiosInstance =>
 export const exporterApiClient: AxiosInstance = buildInstance(EXPORTER_API.BASE_URL);
 export const discoveryApiClient: AxiosInstance = buildInstance(DISCOVERY_API.BASE_URL);
 export const authApiClient: AxiosInstance = buildInstance(AUTH_API.BASE_URL);
-export const enrichmentApiClient: AxiosInstance = buildInstance(ENRICHMENT_API.BASE_URL);
+export const analyzerApiClient: AxiosInstance = buildInstance(ANALYZER_API.BASE_URL);
 
 exporterApiClient.interceptors.response.use(...createErrorInterceptor({ silent404: true }));
 discoveryApiClient.interceptors.response.use(...createErrorInterceptor());
 authApiClient.interceptors.response.use(...createErrorInterceptor());
-enrichmentApiClient.interceptors.response.use(...createErrorInterceptor());
+analyzerApiClient.interceptors.response.use(...createErrorInterceptor());
 
 interface ServiceInstance {
   name: string;
@@ -39,7 +39,7 @@ const SERVICE_INSTANCES: readonly ServiceInstance[] = [
   { name: SERVICE_NAMES.EXPORTER, instance: exporterApiClient },
   { name: SERVICE_NAMES.DISCOVERY, instance: discoveryApiClient },
   { name: SERVICE_NAMES.AUTH, instance: authApiClient },
-  { name: SERVICE_NAMES.ENRICHMENT, instance: enrichmentApiClient },
+  { name: SERVICE_NAMES.ANALYZER, instance: analyzerApiClient },
 ];
 
 // Every service authorizes its own requests, so all of them need the session

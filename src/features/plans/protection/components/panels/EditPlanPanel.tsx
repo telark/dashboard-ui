@@ -1,17 +1,22 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { FormInstance } from 'antd';
-import { Icons } from '../../../../../constants';
+import { Icons, SLIDE_OUT } from '../../../../../constants';
 import AnimationWrapper from '../../../../../components/display/panels/slide-out/AnimationWrapper';
 import { ExpandPanelButton } from '../../../../../components/display/panels/slide-out';
-import { PanelFooter } from '../../../../../components/display/panels/shared';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import PlanForm from '../shared/PlanForm';
 import type { FormValues, PolicyEntry } from '../create';
 import type { ProtectionPlan } from '../../models';
 import { usePlanFormData } from '../../hooks/usePlanFormData';
+import { usePlanNameCheck } from '../../hooks/usePlanNameCheck';
 import { usePlanActions } from '../../hooks/usePlanActions';
 import { usePlanFormState } from '../../hooks/usePlanFormState';
-import { buildPreparePayload, planToFormValues, planToPolicies } from '../../utils/planFormValues';
+import {
+  buildPreparePayload,
+  hasInvalidParams,
+  planToFormValues,
+  planToPolicies,
+} from '../../utils/planFormValues';
 
 const PANEL_WIDTH = 720;
 const PANEL_WIDTH_EXPANDED = 1400;
@@ -29,6 +34,7 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
   const [expanded, setExpanded] = useState(false);
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const data = usePlanFormData(open);
+  const { nameValidator, nameInvalid } = usePlanNameCheck(form, open, plan.name);
 
   const handleClose = useCallback(() => {
     setAttemptedSubmit(false);
@@ -41,10 +47,14 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
   const initialPolicies = useMemo<PolicyEntry[]>(() => planToPolicies(plan), [plan]);
   const [policies, setPolicies] = useState<PolicyEntry[]>(() => initialPolicies);
 
+  // Captured once, when the panel opens. The details page polls the plan, so
+  // seeding from the live `initialValues` would reset the form under the user.
+  const [openValues] = useState<FormValues>(() => initialValues);
+
   useEffect(() => {
     if (!open) return;
-    form.setFieldsValue(initialValues);
-  }, [open, form, initialValues]);
+    form.setFieldsValue(openValues);
+  }, [open, form, openValues]);
 
   const { hasFormErrors, hasChanges } = usePlanFormState({
     form,
@@ -74,7 +84,12 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
     [handleUpdate, handleClose, plan, policies],
   );
 
-  const submitDisabled = !hasChanges || policies.length === 0 || (attemptedSubmit && hasFormErrors);
+  const submitDisabled =
+    !hasChanges ||
+    nameInvalid ||
+    policies.length === 0 ||
+    hasInvalidParams(policies, data.templates) ||
+    (attemptedSubmit && hasFormErrors);
 
   const handleSubmitClick = () => {
     setAttemptedSubmit(true);
@@ -85,41 +100,37 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
     <AnimationWrapper
       open={open}
       onClose={handleClose}
-      title={PPC.PANELS.EDIT.TITLE}
-      subtitle={PPC.PANELS.EDIT.SUBTITLE(plan.name)}
+      title={SLIDE_OUT.ENTITY_TITLE(PPC.PANELS.EDIT.TITLE, plan.name)}
       width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
       headerExtra={
         <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((p) => !p)} />
       }
+      footer={{
+        onCancel: handleClose,
+        onPrimary: handleSubmitClick,
+        primaryLabel: PPC.PANELS.EDIT.SUBMIT_BUTTON,
+        primaryLoading: submitting,
+        primaryLoadingLabel: PPC.PANELS.EDIT.LOADING_LABEL,
+        primaryIcon: <ProtectionPlansIcon size={16} />,
+        primaryDisabled: submitDisabled || submitting,
+      }}
     >
-      <div style={{ overflow: 'auto', flex: 1 }}>
-        <PlanForm
-          form={form}
-          initialValues={initialValues}
-          policies={policies}
-          onPoliciesChange={setPolicies}
-          onPolicyParamChange={handlePolicyParamChange}
-          onSubmit={handleFinish}
-          submitting={submitting}
-          mode="edit"
-          plan={plan}
-          hideSubmitButton
-          submitLabel={PPC.PANELS.EDIT.SUBMIT_BUTTON}
-          loadingLabel={PPC.PANELS.EDIT.LOADING_LABEL}
-          validateTrigger={attemptedSubmit ? 'onChange' : 'onSubmit'}
-          {...data}
-        />
-      </div>
-      <PanelFooter
-        onCancel={handleClose}
-        onPrimary={handleSubmitClick}
-        cancelLabel="Cancel"
-        primaryLabel={PPC.PANELS.EDIT.SUBMIT_BUTTON}
-        primaryLoading={submitting}
-        primaryLoadingLabel={PPC.PANELS.EDIT.LOADING_LABEL}
-        primaryIcon={<ProtectionPlansIcon size={16} />}
-        primaryDisabled={submitDisabled || submitting}
-        horizontalPadding={0}
+      <PlanForm
+        form={form}
+        initialValues={initialValues}
+        policies={policies}
+        onPoliciesChange={setPolicies}
+        onPolicyParamChange={handlePolicyParamChange}
+        onSubmit={handleFinish}
+        submitting={submitting}
+        mode="edit"
+        nameValidator={nameValidator}
+        plan={plan}
+        hideSubmitButton
+        submitLabel={PPC.PANELS.EDIT.SUBMIT_BUTTON}
+        loadingLabel={PPC.PANELS.EDIT.LOADING_LABEL}
+        validateTrigger={attemptedSubmit ? 'onChange' : 'onSubmit'}
+        {...data}
       />
     </AnimationWrapper>
   );

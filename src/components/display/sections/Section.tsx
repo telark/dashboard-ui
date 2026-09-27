@@ -14,7 +14,12 @@ const Section: React.FC<SectionProps> = ({ title, subtitle, content, className, 
   return (
     <div className={`app-section ${className || ''}`.trim()} style={{ width: '100%', ...style }}>
       <div
-        style={{ fontWeight: 600, fontSize: 16, color: '#0B1F33', marginBottom: subtitle ? 0 : 12 }}
+        style={{
+          fontWeight: 600,
+          fontSize: 16,
+          color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+          marginBottom: subtitle ? 0 : 12,
+        }}
       >
         {title}
       </div>

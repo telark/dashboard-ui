@@ -1,5 +1,6 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import type { GroupsState, Group } from '../../models';
+import { keepUnchanged } from '../../../../../store/keepUnchanged';
 
 export const handleFetchGroupsPending = (state: GroupsState) => {
   state.loading = true;
@@ -8,7 +9,7 @@ export const handleFetchGroupsPending = (state: GroupsState) => {
 
 export const handleFetchGroupsFulfilled = (state: GroupsState, action: PayloadAction<Group[]>) => {
   state.loading = false;
-  state.groups = action.payload;
+  state.groups = keepUnchanged(state.groups, action.payload, (item) => item.id);
   state.error = null;
   const liveIds = new Set(action.payload.map((g) => g.id));
   state.deletingIds = state.deletingIds.filter((id) => liveIds.has(id));

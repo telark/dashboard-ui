@@ -32,12 +32,21 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
     },
   },
   {
+    scope: 'insights',
+    rules: {
+      ReadOnly: [],
+      Contributor: [
+        { key: 'analyzeinsights', label: 'Analyze Application' },
+        { key: 'triageinsights', label: 'Acknowledge, Dismiss and Reopen' },
+      ],
+      Owner: [],
+      Admin: [],
+    },
+  },
+  {
     scope: 'groups',
     rules: {
-      ReadOnly: [
-        { key: 'viewgroupscategories', label: 'View Categories' },
-        { key: 'viewgroupattachedroles', label: 'View Attached Roles' },
-      ],
+      ReadOnly: [{ key: 'viewgroupscategories', label: 'View Categories' }],
       Contributor: [
         { key: 'creategroup', label: 'Create Group' },
         { key: 'editgroup', label: 'Edit Group' },
@@ -58,7 +67,7 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
   {
     scope: 'users',
     rules: {
-      ReadOnly: [{ key: 'viewuserattachedroles', label: 'View Attached Roles' }],
+      ReadOnly: [],
       Contributor: [{ key: 'createuser', label: 'Create User' }],
       Owner: [
         { key: 'deleteuser', label: 'Delete User' },
@@ -100,15 +109,28 @@ export const SCOPE_RULES: ScopeRulesConfig[] = [
   {
     scope: 'protection-plans',
     rules: {
-      ReadOnly: [{ key: 'viewprotectionplanviolations', label: 'View Violations' }],
+      ReadOnly: [
+        { key: 'viewprotectionplans', label: 'View Protection Plans' },
+        { key: 'viewprotectionplanviolations', label: 'View Violations' },
+        { key: 'viewprotectionplanreports', label: 'View Reports' },
+        { key: 'downloadprotectionplanreport', label: 'Download Reports' },
+      ],
       Contributor: [
         { key: 'createprotectionplan', label: 'Create Protection Plan' },
         { key: 'editprotectionplan', label: 'Edit Protection Plan' },
         { key: 'cancelprotectionplan', label: 'Cancel Protection Plan' },
         { key: 'duplicateprotectionplan', label: 'Duplicate Protection Plan' },
         { key: 'reactivateprotectionplan', label: 'Reactivate Protection Plan' },
+        { key: 'generateprotectionplanreport', label: 'Generate Reports' },
+        { key: 'addprotectionplancategory', label: 'Add Environments and Tags' },
       ],
-      Owner: [{ key: 'deleteprotectionplan', label: 'Delete Protection Plan' }],
+      Owner: [
+        { key: 'deleteprotectionplan', label: 'Delete Protection Plan' },
+        { key: 'approveprotectionplan', label: 'Approve Protection Plan' },
+        { key: 'rejectprotectionplan', label: 'Reject Protection Plan' },
+        { key: 'editprotectionplancategory', label: 'Edit Environments and Tags' },
+        { key: 'deleteprotectionplancategory', label: 'Delete Environments and Tags' },
+      ],
       Admin: [],
     },
   },

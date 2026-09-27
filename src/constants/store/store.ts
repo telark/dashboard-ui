@@ -1,7 +1,6 @@
 import { COMMON_VALUES } from '../shared/common';
 
 export const STORAGE_KEYS = {
-  HAS_CLUSTER_INSIGHTS: 'HAS_CLUSTER_INSIGHTS',
   WELCOME_PENDING: 'WELCOME_PENDING',
   RESOURCE_ACTIVE_TAB: 'RESOURCE_ACTIVE_TAB',
   SESSION_TOKEN: 'SESSION_TOKEN',
@@ -9,9 +8,6 @@ export const STORAGE_KEYS = {
 } as const;
 
 export const STORE_ACTIONS = {
-  INSIGHTS: {
-    CHECK_CLUSTER: 'insights/checkCluster',
-  },
   APPLICATIONS: {
     FETCH: 'applications/fetch',
     FETCH_SILENT: 'applications/fetchSilent',
@@ -75,6 +71,7 @@ export const STORE_ACTIONS = {
     DELETE: 'protectionPlans/delete',
     DUPLICATE: 'protectionPlans/duplicate',
     REACTIVATE: 'protectionPlans/reactivate',
+    DECIDE: 'protectionPlans/decide',
     UPDATE: 'protectionPlans/update',
   },
 } as const;
@@ -90,7 +87,6 @@ export const STORE_ERRORS = {
   FETCH_SNAPSHOT_MANIFEST: 'Failed to fetch snapshot manifest',
   TRIGGER_APPLICATION_ROLLBACK: 'Failed to trigger application rollback',
   ABORT_APPLICATION_ROLLBACK: 'Failed to abort application rollback',
-  CHECK_INSIGHTS: 'Failed to check cluster insights',
   FETCH_USERS: 'Failed to fetch users',
   FETCH_USER_DETAILS: 'Failed to fetch user details',
   CREATE_USER: 'Failed to create user',
@@ -121,6 +117,7 @@ export const STORE_ERRORS = {
   DELETE_PROTECTION_PLAN: 'Failed to delete protection plan',
   DUPLICATE_PROTECTION_PLAN: 'Failed to duplicate protection plan',
   REACTIVATE_PROTECTION_PLAN: 'Failed to reactivate protection plan',
+  DECIDE_PROTECTION_PLAN: 'Failed to record the decision',
   UPDATE_PROTECTION_PLAN: 'Failed to update protection plan',
   FETCH_PROTECTION_PLAN_DETAILS: 'Failed to fetch protection plan details',
 } as const;
@@ -165,6 +162,7 @@ export const STORE_MESSAGES = {
   ERROR_DELETING_PROTECTION_PLAN: 'Error deleting protection plan:',
   ERROR_DUPLICATING_PROTECTION_PLAN: 'Error duplicating protection plan:',
   ERROR_REACTIVATING_PROTECTION_PLAN: 'Error reactivating protection plan:',
+  ERROR_DECIDING_PROTECTION_PLAN: 'Error deciding protection plan:',
   ERROR_UPDATING_PROTECTION_PLAN: 'Error updating protection plan:',
   ERROR_FETCHING_PROTECTION_PLAN_DETAILS: 'Error fetching protection plan details:',
 } as const;

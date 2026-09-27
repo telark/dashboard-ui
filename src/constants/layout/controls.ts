@@ -6,6 +6,9 @@ export const CONTROL_HEIGHT = 30;
 export const CONTROL_RADIUS = 8;
 export const CONTROL_FONT_SIZE = 14;
 
+// Borderless icon-only row actions (snapshot rows, insight triage): a square this size.
+export const ROW_ICON_BUTTON_SIZE = 28;
+
 // Deliberate exception: the login and register pages run their own ConfigProvider
 // and want taller controls. Overriding controlHeight there is the whole opt-out.
 export const AUTH_CONTROL_HEIGHT = 40;

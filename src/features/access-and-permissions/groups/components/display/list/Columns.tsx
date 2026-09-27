@@ -1,3 +1,4 @@
+import type { TableColumnType } from 'antd';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RPC } from '../../../../roles/constants';
@@ -29,9 +30,7 @@ interface ColumnsContext extends GenerateColumnCtx {
 
 const DESCRIPTION_PREVIEW_MAX = 40;
 
-type GeneratedColumn = ReturnType<typeof generateColumn>;
-
-const Columns = (ctx: ColumnsContext): GeneratedColumn[] => {
+const Columns = (ctx: ColumnsContext): TableColumnType<Group>[] => {
   const categories = ctx.categories || [];
   const users = ctx.users || [];
 
@@ -40,7 +39,7 @@ const Columns = (ctx: ColumnsContext): GeneratedColumn[] => {
     return users.find((u) => u.id === userId) || null;
   };
 
-  const cols: GeneratedColumn[] = [];
+  const cols: TableColumnType<Group>[] = [];
   cols.push(
     generateColumn(
       {
@@ -79,14 +78,7 @@ const Columns = (ctx: ColumnsContext): GeneratedColumn[] => {
         width: GC.SIZES.COLUMNS.CATEGORY,
         render: (value: string) => {
           const categoryName = getCategoryName(value, categories);
-          return (
-            <RowTag
-              text={categoryName}
-              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-              fontSize={RPC.SIZES.CHIP_FONT}
-            />
-          );
+          return <RowTag text={categoryName} fontSize={RPC.SIZES.CHIP_FONT} />;
         },
       },
       ctx,
@@ -98,16 +90,9 @@ const Columns = (ctx: ColumnsContext): GeneratedColumn[] => {
         icon: <AiOutlineTeam />,
         width: GC.SIZES.COLUMNS.MEMBERS,
         render: (_: unknown, record: Group) => {
-          const memberCount = record.assignedUsersIDs?.length || 0;
+          const memberCount = record.userRefs?.length || 0;
           const memberText = memberCount === 1 ? '1 member' : `${memberCount} members`;
-          return (
-            <RowTag
-              text={memberText}
-              background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-              color={DEFAULT_COLORS.CHIP_CUSTOM_TEXT}
-              fontSize={RPC.SIZES.CHIP_FONT}
-            />
-          );
+          return <RowTag text={memberText} fontSize={RPC.SIZES.CHIP_FONT} />;
         },
       },
       ctx,

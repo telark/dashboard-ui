@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { SIDEBAR_LAYOUT } from '../../constants';
 import { useMediaQuery } from './useMediaQuery';
 
@@ -42,7 +42,8 @@ export const useSidebarCollapse = ({ withShortcut = false }: UseSidebarCollapseO
   // the sidebar returns to it once there is room again.
   const collapsed = state.collapsed || isNarrow;
 
-  useEffect(() => {
+  // Before paint, or the content first renders at the stylesheet default and slides over.
+  useLayoutEffect(() => {
     document.documentElement.style.setProperty(
       SIDEBAR_LAYOUT.CSS_VAR,
       `${collapsed ? SIDEBAR_LAYOUT.WIDTH_COLLAPSED : state.width}px`,

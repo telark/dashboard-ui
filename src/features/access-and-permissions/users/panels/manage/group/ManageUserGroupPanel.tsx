@@ -8,7 +8,7 @@ import {
 import { SearchInput } from '../../../../../../components/display/inputs';
 import { ToggleButton } from '../../../../../../components/display/buttons';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
-import { Icons } from '../../../../../../constants';
+import { Icons, SLIDE_OUT } from '../../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { useManageUserGroupPanel } from '../../../hooks/panels/group/useManageUserGroupPanel';
 import { useDeassignUserGroup } from '../../../hooks/panels/group/useDeassignUserGroup';
@@ -35,27 +35,42 @@ const PANEL_WIDTH_EXPANDED = 900;
 
 const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClose, user }) => {
   const [form] = Form.useForm();
-  const currentSelectedGroups = (Form.useWatch('assignedGroupsIDs', form) as string[]) || [];
+  const currentSelectedGroups = (Form.useWatch('groupRefs', form) as string[]) || [];
   const [searchTerm, setSearchTerm] = useState('');
   const [showAssignedOnly, setShowAssignedOnly] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [localAssignedIds, setLocalAssignedIds] = useState<string[]>(
-    () => user?.assignedGroupsIDs ?? [],
-  );
+  const [localAssignedIds, setLocalAssignedIds] = useState<string[]>(() => user?.groupRefs ?? []);
 
   const [prevUser, setPrevUser] = useState(user);
   if (prevUser !== user) {
     setPrevUser(user);
-    setLocalAssignedIds(user?.assignedGroupsIDs ?? []);
+    setLocalAssignedIds(user?.groupRefs ?? []);
   }
 
   const { initialSelectedGroups, hasChanges, groups, groupsLoading, submitting, handleSubmit } =
     useManageUserGroupPanel({ open, user, form, onClose, currentSelectedGroups });
 
+  const canAddToGroup = usePermission(
+    ACTION_PERMISSIONS.users.manageGroups.scope,
+    ACTION_PERMISSIONS.users.manageGroups.level,
+    ACTION_PERMISSIONS.users.manageGroups.deny,
+  );
   const canRemoveFromGroup = usePermission(
     ACTION_PERMISSIONS.users.removeFromGroup.scope,
     ACTION_PERMISSIONS.users.removeFromGroup.level,
     ACTION_PERMISSIONS.users.removeFromGroup.deny,
+  );
+
+  // Unchecking a current group is a removal, checking another is an add: each has its own rule.
+  const addBlocked = canAddToGroup ? undefined : UC.LABELS.ACTIONS.ADD_TO_GROUP_DISABLED_TOOLTIP;
+  const removeBlocked = user?.bootstrap
+    ? UC.LABELS.ACTIONS.BOOTSTRAP_LOCKED_TOOLTIP
+    : canRemoveFromGroup
+      ? undefined
+      : UC.LABELS.ACTIONS.REMOVE_FROM_GROUP_DISABLED_TOOLTIP;
+  const blockedReason = useCallback(
+    (groupId: string) => (initialSelectedGroups.includes(groupId) ? removeBlocked : addBlocked),
+    [initialSelectedGroups, addBlocked, removeBlocked],
   );
 
   const handleDeassignSuccess = useCallback((updatedGroups: string[]) => {
@@ -98,8 +113,8 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
       <SlideOutPanel
         open={open}
         onClose={onClose}
-        title={UC.LABELS.PANELS.MANAGE_GROUP.TITLE}
-        subtitle={UC.LABELS.PANELS.MANAGE_GROUP.SUBTITLE(
+        title={SLIDE_OUT.ENTITY_TITLE(
+          UC.LABELS.PANELS.MANAGE_GROUP.TITLE,
           CapitalizeFirstLetter(user.fullname || user.username),
         )}
         width={panelWidth}
@@ -140,13 +155,15 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
                   assignedGroupIds={filteredAssignedGroupIds}
                   allGroups={groups}
                   loading={groupsLoading}
-                  onDeassignClick={canRemoveFromGroup ? openDeassignModal : undefined}
+                  onDeassignClick={openDeassignModal}
+                  deassignDisabledReason={() => removeBlocked}
                 />
               ) : (
                 <UserGroupSelectList
                   groups={filteredGroups}
                   loading={groupsLoading}
                   allGroups={groups}
+                  blockedReason={blockedReason}
                 />
               )}
             </div>
@@ -159,7 +176,7 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
         loading={submitting}
         disabled={!hasChanges || showAssignedOnly}
         form={form}
-        initialValues={{ assignedGroupsIDs: initialSelectedGroups }}
+        initialValues={{ groupRefs: initialSelectedGroups }}
       />
       <ActionConfirmModal
         open={deassignModalOpen}

@@ -4,6 +4,7 @@ import { BUTTON_CONFIGS, DEFAULT_COLORS, MENU_LABELS } from '../../../constants'
 import {
   HomeMenuButton,
   ApplicationsMenuButton,
+  InsightsMenuButton,
   UsersMenuButton,
   GroupsMenuButton,
   RolesMenuButton,
@@ -38,6 +39,7 @@ const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
       <HomeMenuButton isCollapsed={isCollapsed} />
       {!isCollapsed && <div style={sectionLabelStyle}>{MENU_LABELS.DISCOVERY}</div>}
       <ApplicationsMenuButton isCollapsed={isCollapsed} />
+      <InsightsMenuButton isCollapsed={isCollapsed} />
       <ProtectionPlansMenuButton isCollapsed={isCollapsed} />
       {!isCollapsed && <div style={sectionLabelStyle}>{MENU_LABELS.ACCESS_AND_PERMISSIONS}</div>}
       <UsersMenuButton isCollapsed={isCollapsed} />

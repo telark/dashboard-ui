@@ -16,8 +16,3 @@ export const selectNotificationsLoading = createSelector(
 );
 
 export const selectNotificationsError = createSelector([selectNotificationsState], (s) => s.error);
-
-export const selectNotificationsPanelOpen = createSelector(
-  [selectNotificationsState],
-  (s) => s.panelOpen,
-);

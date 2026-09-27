@@ -2,24 +2,10 @@ import { useCallback, useState } from 'react';
 import { App as AntdApp } from 'antd';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../../../store';
-import { getCurrentUser } from '../../../auth/utils';
 import { preparePlanThunk, updatePlanThunk } from '../store';
-import type { UpdatePlanPayload } from '../clients';
+import type { PreparePlanPayload, UpdatePlanPayload } from '../clients';
 import type { ProtectionPlan } from '../models';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
-
-interface PreparePlanInput {
-  name: string;
-  description?: string;
-  severity?: string;
-  priority?: number;
-  scope: { type: string; applicationIds: string[]; namespaces: string[] };
-  policies: { templateID: string; params: Record<string, string[]> }[];
-  mode: string;
-  timeMode: string;
-  timeRange?: { startAt: string; endAt: string };
-  participantsIDs?: string[];
-}
 
 export const usePlanActions = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -27,18 +13,17 @@ export const usePlanActions = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const handleCreate = useCallback(
-    async (payload: PreparePlanInput): Promise<ProtectionPlan> => {
-      const userId = getCurrentUser()?.id;
-      if (!userId) throw new Error(PPC.LABELS.ACTIONS.CREATE_ERROR);
+    async (payload: PreparePlanPayload): Promise<ProtectionPlan> => {
       setSubmitting(true);
       try {
-        const created = await dispatch(preparePlanThunk({ userId, payload })).unwrap();
+        const created = await dispatch(preparePlanThunk({ payload })).unwrap();
         message.success(PPC.LABELS.ACTIONS.CREATE_SUCCESS(created.name));
         return created;
       } catch (err) {
-        const text = err instanceof Error ? err.message : PPC.LABELS.ACTIONS.CREATE_ERROR;
+        // The thunk rejects with the server's message as a string.
+        const text = typeof err === 'string' ? err : PPC.LABELS.ACTIONS.CREATE_ERROR;
         message.error(text);
-        throw err instanceof Error ? err : new Error(text);
+        throw new Error(text);
       } finally {
         setSubmitting(false);
       }
@@ -48,17 +33,18 @@ export const usePlanActions = () => {
 
   const handleUpdate = useCallback(
     async (planId: string, payload: UpdatePlanPayload): Promise<ProtectionPlan> => {
-      const userId = getCurrentUser()?.id;
-      if (!userId) throw new Error(PPC.LABELS.ACTIONS.UPDATE_ERROR);
       setSubmitting(true);
       try {
-        const updated = await dispatch(updatePlanThunk({ userId, planId, payload })).unwrap();
+        const body = { ...payload };
+        delete body.approvalMode;
+        const updated = await dispatch(updatePlanThunk({ planId, payload: body })).unwrap();
         message.success(PPC.LABELS.ACTIONS.UPDATE_SUCCESS(updated.name));
         return updated;
       } catch (err) {
-        const text = err instanceof Error ? err.message : PPC.LABELS.ACTIONS.UPDATE_ERROR;
+        // The thunk rejects with the server's message as a string.
+        const text = typeof err === 'string' ? err : PPC.LABELS.ACTIONS.UPDATE_ERROR;
         message.error(text);
-        throw err instanceof Error ? err : new Error(text);
+        throw new Error(text);
       } finally {
         setSubmitting(false);
       }

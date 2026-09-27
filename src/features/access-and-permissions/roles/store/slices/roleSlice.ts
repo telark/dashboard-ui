@@ -16,9 +16,7 @@ import {
 } from '../reducers/fetchReducers';
 import {
   handleCreateRoleFulfilled,
-  handleCreateRoleRejected,
   handleUpdateRoleFulfilled,
-  handleUpdateRoleRejected,
   handleDeleteRolePending,
   handleDeleteRoleFulfilled,
   handleDeleteRoleRejected,
@@ -52,9 +50,7 @@ const roleSlice = createSlice({
       .addCase(fetchRoleDetailsThunk.fulfilled, handleFetchRoleDetailsFulfilled)
       .addCase(fetchRoleDetailsThunk.rejected, handleFetchRoleDetailsRejected)
       .addCase(createRoleThunk.fulfilled, handleCreateRoleFulfilled)
-      .addCase(createRoleThunk.rejected, handleCreateRoleRejected)
       .addCase(updateRoleThunk.fulfilled, handleUpdateRoleFulfilled)
-      .addCase(updateRoleThunk.rejected, handleUpdateRoleRejected)
       .addCase(deleteRoleThunk.pending, handleDeleteRolePending)
       .addCase(deleteRoleThunk.fulfilled, handleDeleteRoleFulfilled)
       .addCase(deleteRoleThunk.rejected, handleDeleteRoleRejected);
