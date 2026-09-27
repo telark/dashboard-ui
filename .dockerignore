@@ -7,8 +7,9 @@ dist/
 *.log
 *.md
 CLAUDE.md
+AGENTS.md
+.claude/
 tests/
-k6/*
 __tests__/
 coverage/
 .claude/
