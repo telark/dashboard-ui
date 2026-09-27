@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { persistReducer } from 'redux-persist';
+import { persistReducer, persistStore } from 'redux-persist';
 import { applicationsReducer } from '../features/resources/applications/store';
 import { protectionPlansReducer } from '../features/plans/protection/store';
 import { globalConfigReducer } from '../features/globalconfig/store';
@@ -60,6 +60,8 @@ const store = configureStore({
       immutableCheck: false,
     }),
 });
+
+export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

@@ -1,4 +1,4 @@
-import { persistor } from '../../../../store/persistor';
+import { persistor } from '../../../../store';
 import { clearNotificationsCache } from '../../../notifications';
 
 // Persisted slices hold the previous user's directory and cluster data; the next browser user must not read them.
