@@ -2,7 +2,7 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
   LABELS: {
     AI_INSIGHTS_TITLE: 'Insights',
     AI_INSIGHTS_DESCRIPTION:
-      'Rules find each incident and setup issue; a model running in this cluster writes the summary. Read-only, and no data leaves the cluster.',
+      'By default, rules find each incident and setup issue and a model running in this cluster only rewrites the summary. Deep mode lets the model investigate with the same read-only tools. No data leaves the cluster.',
     EXPERIMENTAL_BADGE: 'Experimental',
     ENABLE_AI_LABEL: 'Enable Insights',
     AUTO_ANALYZE_LABEL: 'Analyze automatically on incidents and recoveries',
