@@ -1,6 +1,6 @@
 # dashboard-ui
 
-The web dashboard of [Telark](https://github.com/telark/telark), change control for Kubernetes applications. It is where operators see their applications, run protection plans, read Insights and manage access.
+The web dashboard of [Telark](https://github.com/telark/telark), a protection gate for your Kubernetes applications. It is where operators see their applications, run protection plans, read Insights and manage access.
 
 This repository holds the single-page app only. It has no backend of its own: it calls the Telark services, which ship with the Telark Helm chart. To run Telark, follow the [getting started guide](https://github.com/telark/telark/blob/main/docs/getting-started.md).
 

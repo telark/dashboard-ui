@@ -85,9 +85,9 @@ export const LOGIN_CONSTANTS = {
     GOOGLE_OR_SEPARATOR: 'or',
     BRAND_NAME: 'telark',
     BRAND_LOGO_SRC: '/telark-logo.svg',
-    BRAND_HEADLINE: 'Change control for Kubernetes applications',
+    BRAND_HEADLINE: 'A protection gate for your Kubernetes applications',
     BRAND_TAGLINE:
-      'Freeze the apps that matter while you ship, see every change that reached them, and find out why one broke.',
+      'Decide what can change an application, and when. See every change that got through, and why an app broke.',
     BRAND_TAGLINE_ACCENT: 'Passkeys or Google sign-in. No passwords.',
   },
   OIDC: {
