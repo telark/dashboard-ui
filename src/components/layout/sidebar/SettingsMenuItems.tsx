@@ -148,7 +148,7 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
 
       {!isCollapsed && <div style={sectionLabelStyle}>Platform</div>}
       <SidebarButton
-        text="Local analyzer"
+        text="Insights"
         icon={<RobotOutlined />}
         active={pathname === SETTINGS_ROUTES.aiInsights}
         route={SETTINGS_ROUTES.aiInsights}

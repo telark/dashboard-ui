@@ -4,7 +4,7 @@ import type { PlanEventKey, SeverityKey, TagTone } from '../models';
 
 export const HOME_DASHBOARD_TEXTS = {
   TITLE: 'Home',
-  SUBTITLE: 'Application health, protection, and storage at a glance.',
+  SUBTITLE: 'Which applications are healthy, what is protected, and what changed recently.',
   VIEW_ALL: 'View all',
   LOAD_FAILED: 'Could not load this data.',
   META_SEPARATOR: ' · ',
@@ -25,7 +25,7 @@ export const HOME_DASHBOARD_TEXTS = {
     DRIFTED: 'Drifted',
   },
   PLANS: {
-    TITLE: 'Protection Plans',
+    TITLE: 'Protection plans',
     ACTIVE: 'Active',
     DRIFTED: 'Drifted',
     DEGRADED: 'Degraded',

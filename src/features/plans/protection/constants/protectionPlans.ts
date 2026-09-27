@@ -15,10 +15,10 @@ import type {
 
 export const PROTECTION_PLANS_CONSTANTS = {
   LABELS: {
-    HEADER_TITLE: 'Protection Plans',
+    HEADER_TITLE: 'Protection plans',
     HEADER_SUBTITLE:
-      'Define temporary protection windows to safeguard critical Kubernetes workloads.',
-    NOT_FOUND: 'Protection Plan not found',
+      'Block chosen changes to an application or namespace for a set window. Audit first, then enforce.',
+    NOT_FOUND: 'Protection plan not found',
     LOADING_PLANS: 'Loading Plans...',
     CREATE_BUTTON: 'Create Plan',
     CREATE_BUTTON_TEXT: 'Create Plan',
@@ -117,7 +117,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       TAGS: 'Tags',
     },
     DETAIL_PAGE: {
-      SUBTITLE: 'Inspect plan configuration, health, and recent violations.',
+      SUBTITLE: 'Check that the plan is in force, what it blocked or audited, and its reports.',
       LOADING_ERROR: 'Failed to load plan details.',
       NOT_FOUND: 'Protection plan not found.',
       SECTIONS: {
@@ -132,12 +132,13 @@ export const PROTECTION_PLANS_CONSTANTS = {
         PARTICIPANTS_TITLE: 'Participants',
         PARTICIPANTS_DESCRIPTION: 'Users associated with this plan.',
         HEALTH_TITLE: 'Health',
-        HEALTH_DESCRIPTION: 'Drift detection across deployed policies.',
+        HEALTH_DESCRIPTION: 'Whether the policies this plan expects are live in the cluster.',
         VIOLATIONS_TITLE: 'Violations',
-        VIOLATIONS_DESCRIPTION: 'Recent policy admission decisions.',
+        VIOLATIONS_DESCRIPTION:
+          'Recent admission decisions: what the plan blocked, audited or let through.',
         REPORTS_TITLE: 'Reports',
         REPORTS_DESCRIPTION:
-          'Documents describing what happened in the cluster while this plan was in effect. A final report is captured automatically when a plan ends.',
+          'What happened in the cluster while this plan was in effect. Telark captures a final report when the plan ends or is canceled.',
       },
       FIELDS: {
         ID: 'ID',
@@ -205,11 +206,11 @@ export const PROTECTION_PLANS_CONSTANTS = {
     EMPTY: {
       TITLE: 'No protection plans yet',
       DESCRIPTION:
-        'Create a plan to protect namespaces or applications during maintenance windows and critical operations.',
+        'Create a plan to block chosen changes to an application or namespace during a release or maintenance window. Start in audit mode, then enforce.',
       BUTTON: 'Create Protection Plan',
     },
     MESSAGES: {
-      ERROR_TITLE: 'Failed to load Protection Plans.',
+      ERROR_TITLE: 'Failed to load protection plans.',
     },
     ACTIONS: {
       CANCEL: 'Cancel plan',
@@ -412,11 +413,12 @@ export const PROTECTION_PLANS_CONSTANTS = {
       PARTICIPANTS_TITLE: 'Participants',
       PARTICIPANTS_DESCRIPTION: 'Select users to associate with this plan.',
       SCOPE_TITLE: 'Scope',
-      SCOPE_DESCRIPTION: 'Choose what to protect: by applications or by namespaces.',
+      SCOPE_DESCRIPTION: 'Choose what to protect: applications or namespaces.',
       SCHEDULE_TITLE: 'Schedule',
-      SCHEDULE_DESCRIPTION: 'Set the protection window — permanent or time-bounded.',
+      SCHEDULE_DESCRIPTION: 'Set the protection window, or keep the plan on until you end it.',
       POLICIES_TITLE: 'Policies',
-      POLICIES_DESCRIPTION: 'Audit or enforce, and which policy templates to apply.',
+      POLICIES_DESCRIPTION:
+        'Pick the changes to block from policy templates, then audit or enforce.',
     },
     FORM: {
       NAME_LABEL: 'Plan name',

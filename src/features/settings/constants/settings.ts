@@ -60,8 +60,8 @@ export const SETTINGS_CONSTANTS = {
     },
     AI_INSIGHTS: {
       key: 'aiInsights' as const,
-      label: 'Local analyzer',
-      description: 'Enable the analyzer, choose its model, and control automatic runs.',
+      label: 'Insights',
+      description: 'On by default. Choose the local model and when incident analysis runs.',
       icon: RobotOutlined,
     },
     AI_DATA: {
