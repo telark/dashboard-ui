@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: build cluster bundle
-FROM node:24-alpine3.23 AS builder
+FROM node:26.10.0-alpine3.24 AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm \
@@ -10,7 +10,7 @@ COPY . .
 RUN npm run build:cluster
 
 # Stage 2: serve via nginx
-FROM nginx:1.30.4-alpine3.24
+FROM nginx:1.31.6-alpine3.24
 
 LABEL org.opencontainers.image.title="telark-ui" \
       org.opencontainers.image.licenses="proprietary" \

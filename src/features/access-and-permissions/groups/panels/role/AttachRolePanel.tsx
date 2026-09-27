@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Form } from 'antd';
 import {
   SlideOutPanel,
@@ -8,7 +8,7 @@ import { FilterPanel } from '../../../../../components/display/panels/filter';
 import { FilterButton, ToggleButton } from '../../../../../components/display/buttons';
 import { SearchInput } from '../../../../../components/display/inputs';
 import ActionConfirmModal from '../../../../../components/display/modal/confirm/ActionConfirmModal';
-import { Icons } from '../../../../../constants';
+import { Icons, SLIDE_OUT } from '../../../../../constants';
 import { useAttachRolePanel, useDeassignGroupRole } from '../../hooks';
 import {
   usePermission,
@@ -41,7 +41,7 @@ interface AttachRolePanelProps {
 
 const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group }) => {
   const [form] = Form.useForm();
-  const watchedRoles = Form.useWatch('assignedRolesIDs', form);
+  const watchedRoles = Form.useWatch('roleRefs', form);
   const currentSelectedRoles = useMemo(() => (watchedRoles as string[]) || [], [watchedRoles]);
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({});
@@ -79,6 +79,14 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
     ACTION_PERMISSIONS.groups.attachRole.deny,
   );
 
+  // Unchecking an attached role is a removal, checking another is an add: each has its own rule.
+  const addBlocked = canAttachRole ? undefined : GC.LABELS.ACTIONS.ATTACH_ROLE_DISABLED_TOOLTIP;
+  const removeBlocked = canRemoveRole ? undefined : GC.LABELS.ACTIONS.REMOVE_ROLE_DISABLED_TOOLTIP;
+  const blockedReason = useCallback(
+    (roleId: string) => (initialSelectedRoles.includes(roleId) ? removeBlocked : addBlocked),
+    [initialSelectedRoles, addBlocked, removeBlocked],
+  );
+
   const {
     deassignModalOpen,
     deassigningRole,
@@ -100,8 +108,8 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
 
   const assignedRoleIdsForView = useMemo(() => {
     if (currentSelectedRoles.length > 0) return currentSelectedRoles;
-    return currentGroup?.assignedRolesIDs ?? [];
-  }, [currentSelectedRoles, currentGroup?.assignedRolesIDs]);
+    return currentGroup?.roleRefs ?? [];
+  }, [currentSelectedRoles, currentGroup?.roleRefs]);
 
   const filteredAssignedRoleIds = useMemo(() => {
     return filterBySearchTerm(assignedRoleIdsForView, searchTerm, (id) => {
@@ -137,8 +145,10 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
       <SlideOutPanel
         open={open}
         onClose={onClose}
-        title={GC.LABELS.PANELS.ATTACH_ROLES.TITLE}
-        subtitle={GC.LABELS.PANELS.ATTACH_ROLES.SUBTITLE(CapitalizeFirstLetter(currentGroup.name))}
+        title={SLIDE_OUT.ENTITY_TITLE(
+          GC.LABELS.PANELS.ATTACH_ROLES.TITLE,
+          CapitalizeFirstLetter(currentGroup.name),
+        )}
         width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
         offsetX={filterPanelOpen ? FILTER_PANEL_WIDTH : 0}
         headerExtra={
@@ -184,7 +194,8 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                   assignedRoleIds={filteredAssignedRoleIds}
                   allRoles={allRoles}
                   loading={rolesLoading}
-                  onDeassignClick={canRemoveRole ? openDeassignModal : undefined}
+                  onDeassignClick={openDeassignModal}
+                  deassignDisabledReason={() => removeBlocked}
                 />
               )}
               {activeView === 'select' && (
@@ -192,7 +203,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                   roles={filteredRoles}
                   loading={rolesLoading}
                   allRoles={allRoles}
-                  canSelect={canAttachRole}
+                  blockedReason={blockedReason}
                 />
               )}
             </div>
@@ -205,7 +216,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         loading={submitting}
         disabled={!hasChanges || isReadOnlyView}
         form={form}
-        initialValues={{ assignedRolesIDs: initialSelectedRoles }}
+        initialValues={{ roleRefs: initialSelectedRoles }}
       />
       <FilterPanel
         open={filterPanelOpen}

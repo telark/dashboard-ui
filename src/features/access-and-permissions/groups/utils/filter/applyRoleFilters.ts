@@ -30,7 +30,7 @@ export const applyRoleFilters = (
 
   const filterCategory = appliedFilters.category as string | undefined;
   if (filterCategory && filterCategory !== 'all') {
-    roles = roles.filter((role) => role.categoryID === filterCategory);
+    roles = roles.filter((role) => role.categoryRef === filterCategory);
   }
 
   const filterValidity = appliedFilters.validity as ValidityType | 'all' | undefined;

@@ -11,8 +11,8 @@ export const createUser = async (user: CreateUserFormValues) => {
       username: user.username,
       fullname: user.fullname,
       email: user.email,
-      assignedRolesIDs: user.assignedRolesIDs ?? [],
-      assignedGroupsIDs: user.assignedGroupsIDs ?? [],
+      roleRefs: user.roleRefs ?? [],
+      groupRefs: user.groupRefs ?? [],
       avatar: user.avatar,
     };
     return await Client<ResourceDetailsResponse<User>>(

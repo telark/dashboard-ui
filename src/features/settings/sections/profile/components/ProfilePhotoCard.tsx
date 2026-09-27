@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
 import { CameraOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, withAlpha } from '../../../../../constants';
 import UserAvatar from '../../../../../components/display/avatars/UserAvatar';
 import AvatarPicker from '../../../../../components/display/avatars/AvatarPicker';
 import { avatarRingStyle } from '../../../../../components/display/avatars/avatarRing';
@@ -13,8 +13,8 @@ import type {
 
 const { LAYOUT, LABELS } = PROFILE_SECTION_CONSTANTS;
 
-const CAMERA_ICON_COLOR = '#fff';
-const OVERLAY_BG_HOVER = 'rgba(0, 0, 0, 0.55)';
+const CAMERA_ICON_COLOR = DEFAULT_COLORS.PILL_TEXT;
+const OVERLAY_BG_HOVER = withAlpha(DEFAULT_COLORS.OVERLAY_BACKDROP, 0.55);
 
 export interface ProfilePhotoCardProps {
   user: User | null;
@@ -47,7 +47,7 @@ const ProfilePhotoCard: React.FC<ProfilePhotoCardProps> = memo(({ user, onAvatar
             width: LAYOUT.AVATAR_SIZE,
             height: LAYOUT.AVATAR_SIZE,
             borderRadius: '50%',
-            background: DEFAULT_COLORS.BACKGROUND_HOVER,
+            background: DEFAULT_COLORS.HOVER_BG,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

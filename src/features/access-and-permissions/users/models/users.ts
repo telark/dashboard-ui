@@ -25,20 +25,22 @@ export interface User {
   username: string;
   fullname: string;
   email: string;
-  assignedRolesIDs: string[];
-  assignedGroupsIDs: string[];
+  roleRefs: string[];
+  groupRefs: string[];
   creationDate: string;
   status: UserStatus;
   avatar?: UserAvatar;
   settings?: UserSettings;
+  // Set by the backend (omitted when false) for admins the chart creates and owns.
+  bootstrap?: boolean;
 }
 
 export type UserFormBaseFields = Pick<User, 'username' | 'fullname' | 'email'>;
 
 export type CreateUserFormValues = UserFormBaseFields & {
   avatar?: UserAvatar;
-  assignedRolesIDs?: string[];
-  assignedGroupsIDs?: string[];
+  roleRefs?: string[];
+  groupRefs?: string[];
 };
 
 export interface UsersState {

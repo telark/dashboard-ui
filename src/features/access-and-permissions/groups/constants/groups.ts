@@ -2,9 +2,6 @@ export const GROUPS_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Groups',
     HEADER_SUBTITLE: 'Manage existing groups',
-    VIEW_SUBTITLE: 'View group details',
-    EDIT_SUBTITLE: 'Edit group details',
-    CREATE_SUBTITLE: 'Create a new group',
     NOT_FOUND: 'Group not found',
     UPDATE_BUTTON: 'Update Group',
     CREATE_BUTTON_TEXT: 'Add New Group',
@@ -56,6 +53,8 @@ export const GROUPS_CONSTANTS = {
       CREATE_DISABLED_TOOLTIP: 'You do not have permission to create groups',
       ATTACH_ROLE_DISABLED_TOOLTIP: 'You do not have permission to attach roles',
       REMOVE_MEMBER_DISABLED_TOOLTIP: 'You do not have permission to remove members',
+      ADD_MEMBER_DISABLED_TOOLTIP: 'You do not have permission to add members',
+      REMOVE_ROLE_DISABLED_TOOLTIP: 'You do not have permission to remove roles',
       MANAGE_ROLES_DISABLED_TOOLTIP: 'You do not have permission to manage roles',
       MANAGE_MEMBERS_DISABLED_TOOLTIP: 'You do not have permission to manage members',
       BULK_DELETE: 'Bulk Delete',
@@ -64,6 +63,8 @@ export const GROUPS_CONSTANTS = {
       MANAGE_MEMBERS: 'Manage Members',
       DELETE_MODAL_TITLE: 'Delete Group',
       DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
+      DELETE_IMPACT: (members: number, roles: number) =>
+        `It has ${members} member${members === 1 ? '' : 's'} and ${roles} role${roles === 1 ? '' : 's'}. Members lose the access this group grants.`,
       BULK_DELETE_MODAL_TITLE: 'Delete Groups',
       BULK_DELETE_MODAL_CONTENT: (count: number) =>
         `Are you sure you want to delete ${count} group${count > 1 ? 's' : ''}? This action cannot be undone.`,
@@ -83,9 +84,7 @@ export const GROUPS_CONSTANTS = {
     },
     FORM: {
       TITLE: 'Add New Group',
-      SUBTITLE: 'Add a new group',
       SECTION_TITLE: 'Group Details',
-      SECTION_SUBTITLE: 'Provide the group information.',
       BUTTON_TEXT: 'Add New Group',
       SECTIONS: {
         BASIC_DETAILS: 'Basic Details',
@@ -119,7 +118,6 @@ export const GROUPS_CONSTANTS = {
       },
       ATTACH_ROLES: {
         TITLE: 'Manage Roles',
-        SUBTITLE: (groupName: string) => `View and manage roles for ${groupName}`,
         SUBMIT_BUTTON: 'Update roles',
         SEARCH_PLACEHOLDER: 'Search roles by name, type, status, or validity...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
@@ -127,7 +125,6 @@ export const GROUPS_CONSTANTS = {
       },
       ASSIGN_MEMBERS: {
         TITLE: 'Manage Members',
-        SUBTITLE: (groupName: string) => `View and manage members for ${groupName}`,
         SUBMIT_BUTTON: 'Update members',
         SEARCH_PLACEHOLDER: 'Search members by username or email...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
@@ -145,11 +142,11 @@ export const GROUPS_CONSTANTS = {
     },
     FILTER: {
       LABELS: {
-        BY_CREATION_DATE: 'BY CREATION DATE',
-        BY_TYPE: 'BY TYPE',
-        BY_CATEGORY: 'BY CATEGORY',
-        BY_VALIDITY: 'BY VALIDITY',
-        BY_STATUS: 'BY STATUS',
+        BY_CREATION_DATE: 'By creation date',
+        BY_TYPE: 'By type',
+        BY_CATEGORY: 'By category',
+        BY_VALIDITY: 'By validity',
+        BY_STATUS: 'By status',
         FROM: 'From',
         TO: 'To',
       },
@@ -175,8 +172,8 @@ export const GROUPS_CONSTANTS = {
       MANAGE: {
         BUTTON_LABEL: 'Manage',
       },
-      COUNT_SUFFIX: 'groups',
-      CATEGORIES_COUNT_SUFFIX: 'categories',
+      COUNT_SUFFIX: { one: 'group', other: 'groups' },
+      CATEGORIES_COUNT_SUFFIX: { one: 'category', other: 'categories' },
       MORE: 'More',
       BULK: {
         SELECT: 'Bulk',
@@ -201,12 +198,12 @@ export const GROUPS_CONSTANTS = {
   KEYS: {
     NAME: 'name',
     DESCRIPTION: 'description',
-    CATEGORY: 'categoryID',
+    CATEGORY: 'categoryRef',
     CREATED_AT: 'creationDate',
     LAST_UPDATE: 'lastUpdateDate',
     CREATED_BY: 'createdBy',
     LAST_UPDATED_BY: 'lastUpdatedBy',
-    MEMBERS: 'assignedUsersIDs',
+    MEMBERS: 'userRefs',
     ACTIONS: 'actions',
     MORE_MENU_BULK: 'bulk',
     FILTER_CATEGORY: 'category',

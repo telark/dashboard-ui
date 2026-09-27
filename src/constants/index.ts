@@ -1,6 +1,7 @@
 export * from './config/sync';
 export * from './layout/avatars';
 export * from './layout/buttons';
+export * from './layout/cards';
 export * from './layout/controls';
 export * from './layout/header';
 export * from './layout/icons';
@@ -9,7 +10,6 @@ export * from './layout/menu';
 export * from './layout/messages';
 export * from './layout/panels';
 export * from './layout/sidebar';
-export * from './layout/ui';
 export * from './rest/api';
 export * from './rest/app';
 export * from './rest/endpoints';

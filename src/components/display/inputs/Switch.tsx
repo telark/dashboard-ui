@@ -47,7 +47,7 @@ const Switch: React.FC<SwitchProps> = ({
         unCheckedChildren={unCheckedChildren}
         style={{
           marginLeft: label ? 8 : 0,
-          backgroundColor: checked ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.SWITCH_OFF,
+          backgroundColor: checked ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.BORDER_DEFAULT,
         }}
       />
     </div>

@@ -2,14 +2,19 @@ import { DEFAULT_COLORS } from '../../../../constants';
 import { SHARED_PAGE_CONSTANTS } from '../../../../constants/shared/pages';
 import { SHARED_DETAILS_CONSTANTS } from '../../../../constants/shared/details';
 
-export const APPLICATIONS_SYNC_RETRY_INTERVAL_MS = 60000;
 export const APPLICATIONS_SYNC_ACTIVE_POLL_MS = 5000;
 export const APPLICATIONS_DISCOVERY_STATUS_POLL_MS = 5000;
-export const APPLICATIONS_PAGE_SIZE = 10;
+// A multiple of CARD_LAYOUT.CARDS_PER_ROW, so the grid's last row is full.
+export const APPLICATIONS_PAGE_SIZE = 12;
 export const APPLICATION_CHANGE_LOG_PAGE_SIZE = 10;
 // A rollback cannot be aborted once the engine picks it up (~200ms after the
 // request), so the only real second chance is this delay before the request.
 export const ROLLBACK_UNDO_WINDOW_SECONDS = 5;
+// Mirrors the exporter's application patch limits (400 above these).
+export const APPLICATION_EDIT_LIMITS = {
+  DISPLAY_NAME_MAX: 200,
+  DESCRIPTION_MAX: 1000,
+} as const;
 export const APPLICATION_TRACKING_ANNOTATION_PREFIX =
   'metadata.annotations.telark.io/last-modified';
 
@@ -17,6 +22,10 @@ export const APPLICATION_TRACKING_ANNOTATION_PREFIX =
 // one ever opened this session would grow the store unbounded, so the cache
 // evicts the least-recently-opened entry once it's full.
 export const SNAPSHOT_MANIFEST_CACHE_LIMIT = 20;
+
+export const APPLICATION_CONDITION_TYPES = {
+  PUBLISHED: 'Published',
+} as const;
 
 export const FORCE_SYNC_PHASE = {
   QUEUED: 'queued',
@@ -57,13 +66,7 @@ export const APPLICATIONS_CONSTANTS = {
 export const APPLICATION_DETAILS_CONSTANTS = {
   OVERVIEW_TAG_SUCCESS: {
     background: DEFAULT_COLORS.SUCCESS,
-    color: DEFAULT_COLORS.BACKGROUND_WHITE,
-  },
-  WORKLOAD_RESOURCE_METRICS: {
-    CPU_ICON_BG: 'rgba(32,201,151,0.12)',
-    CPU_ICON_COLOR: DEFAULT_COLORS.SUCCESS,
-    MEMORY_ICON_BG: 'rgba(59,130,246,0.12)',
-    MEMORY_ICON_COLOR: '#3B82F6',
+    color: DEFAULT_COLORS.PAGE_BG,
   },
   TAB_KEYS: {
     OVERVIEW: 'overview',
@@ -83,4 +86,9 @@ export const APPLICATION_DETAILS_CONSTANTS = {
 
 export const APPLICATION_CHANGE_CLASS = {
   ROLLBACK: 'rollback',
+} as const;
+
+// One line of secondary text; reserved before the first status poll so the list below does not jump.
+export const DISCOVERY_STATUS_BAR = {
+  MIN_HEIGHT_PX: 22,
 } as const;

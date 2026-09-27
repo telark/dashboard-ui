@@ -19,13 +19,10 @@ const generateAvatarForUser = async (user: User, size: number, sources: Record<s
     const style = await loadAvatarStyle(user.avatar.style);
     if (!style) return;
 
-    const generated = createAvatar(
-      style as never,
-      {
-        seed: user.avatar.seed,
-        size: size * 2,
-      } as never,
-    );
+    const generated = createAvatar(style, {
+      seed: user.avatar.seed,
+      size: size * 2,
+    });
     sources[user.id] = generated.toDataUri();
   } catch (error) {
     logger.error('Failed to load avatar style:', error);

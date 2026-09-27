@@ -5,6 +5,7 @@ import { App as AntdApp } from 'antd';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import { deleteUserThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
+import { rejectionMessage } from '../../../../../utils/helpers/format';
 import store from '../../../../../store';
 import { fetchMyPermissionsThunk } from '../../../../auth/store/thunks/fetchThunks';
 
@@ -52,9 +53,9 @@ export const useBulkDeleteUsers = ({
       });
 
       setSelectedUsers([]);
-    } catch {
+    } catch (rejection) {
       message.error({
-        content: UC.LABELS.ACTIONS.BULK_DELETE_FAILED,
+        content: rejectionMessage(rejection, UC.LABELS.ACTIONS.BULK_DELETE_FAILED),
         key: loadingKey,
         duration: 3,
       });

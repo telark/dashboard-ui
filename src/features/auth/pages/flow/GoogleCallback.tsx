@@ -2,7 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { App as AntdApp } from 'antd';
 import { oidcGoogleCallback } from '../../clients';
-import { setSessionToken } from '../../utils/session/token';
+import { hasSessionToken, setSessionToken } from '../../utils/session/token';
+import { consumeOAuthState } from '../../utils/flow/google';
 import { setCurrentUser } from '../../utils/session/user';
 import { getClientMetadata } from '../../utils/device/metadata';
 import { fetchMyPermissionsThunk } from '../../store/thunks/fetchThunks';
@@ -20,11 +21,20 @@ const GoogleCallback: React.FC = () => {
     if (handledRef.current) return;
     handledRef.current = true;
 
-    const hash = window.location.hash.slice(1);
-    const params = new URLSearchParams(hash);
-    const idToken = params.get('id_token');
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    // The fragment carries the id_token: drop it from the address bar and history at once.
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+    const idToken = params.get(LOGIN_CONSTANTS.OIDC.FRAGMENT_ID_TOKEN);
+    const returnedState = params.get(LOGIN_CONSTANTS.OIDC.FRAGMENT_STATE);
+    const expectedState = consumeOAuthState();
 
-    if (!idToken) {
+    // Never swap an existing session for one delivered by a link.
+    if (hasSessionToken()) {
+      navigate(APP_ROUTES.HOME, { replace: true });
+      return;
+    }
+
+    if (!idToken || !expectedState || returnedState !== expectedState) {
       message.error(LOGIN_CONSTANTS.OIDC.CALLBACK_ERROR);
       navigate(APP_ROUTES.LOGIN, { replace: true });
       return;
@@ -46,11 +56,12 @@ const GoogleCallback: React.FC = () => {
       }
     };
 
+    // Permissions before entering the app, like the passkey login: no sidebar entry pops in.
     completeLogin()
+      .then(() => store.dispatch(fetchMyPermissionsThunk()))
       .then(() => {
         navigate(APP_ROUTES.HOME, { replace: true });
         message.success(LOGIN_CONSTANTS.OIDC.CALLBACK_SUCCESS);
-        void store.dispatch(fetchMyPermissionsThunk());
       })
       .catch(() => {
         message.error(LOGIN_CONSTANTS.OIDC.CALLBACK_ERROR);

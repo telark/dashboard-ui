@@ -4,23 +4,37 @@ import type { FormInstance } from 'antd';
 export interface TopPanelToolbarActions {
   onEdit?: () => void;
   onDelete?: () => void;
+  /** When set, the button stays visible but disabled, with this reason as its tooltip. */
+  editDisabledReason?: string;
+  deleteDisabledReason?: string;
 }
 
 export interface AnimationWrapperProps {
   open: boolean;
   onClose: () => void;
   title: string;
-  subtitle?: string;
   children: React.ReactNode;
   width?: number;
   toolbarActions?: TopPanelToolbarActions;
   headerExtra?: React.ReactNode;
   offsetX?: number;
+  /** Cancel + primary action row, pinned below the scrolling body. */
+  footer?: PanelFooterProps;
 }
 
-export interface SlideOutPanelProps extends Omit<AnimationWrapperProps, 'children'> {
+export interface PanelFooterProps {
+  onCancel?: () => void;
+  onPrimary?: () => void;
+  cancelLabel?: string;
+  primaryLabel?: string;
+  primaryDisabled?: boolean;
+  primaryLoading?: boolean;
+  primaryIcon?: React.ReactNode;
+  primaryLoadingLabel?: string;
+}
+
+export interface SlideOutPanelProps extends Omit<AnimationWrapperProps, 'children' | 'footer'> {
   sectionTitle?: string;
-  sectionSubtitle?: string;
   formContent: React.ReactNode;
   /** Header + scrollable body only; no form wrapper or footer (e.g. read-only viewers). */
   contentOnly?: boolean;

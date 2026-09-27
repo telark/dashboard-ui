@@ -1,7 +1,7 @@
 import React from 'react';
 import { CloseOutlined } from '@ant-design/icons';
 import { Checkbox } from 'antd';
-import { DEFAULT_COLORS, LIST_TOOLBAR, TOOLBAR_ITEM_GAP } from '../../../constants';
+import { DEFAULT_COLORS, LIST_TOOLBAR, TOOLBAR_ITEM_GAP, getPillSurface } from '../../../constants';
 import { LIST_PAGE, PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
 import type {
   FilterChip,
@@ -28,8 +28,8 @@ const chipStyle: React.CSSProperties = {
   gap: LIST_TOOLBAR.CHIP_GAP_PX,
   padding: LIST_TOOLBAR.CHIP_PADDING,
   borderRadius: LIST_TOOLBAR.PILL_RADIUS_PX,
-  background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
-  color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
+  ...getPillSurface(),
+  color: DEFAULT_COLORS.PILL_TEXT,
   fontSize: LIST_TOOLBAR.CHIP_FONT_SIZE_PX,
   fontWeight: LIST_TOOLBAR.CHIP_FONT_WEIGHT,
   flexShrink: 0,
@@ -89,6 +89,7 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
   filterChips = [],
   overflowChipsCount = 0,
   onRemoveFilterChip,
+  filterNote,
   hasActiveFilters = false,
   onClearAllFilters,
   onOpenFilters,
@@ -103,11 +104,13 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
   // far earlier than the default toolbar.
   const threshold = bulkMode ? compactWidth.BULK : compactWidth.DEFAULT;
   const isCompact = width > 0 && width < threshold;
-  const count = (
-    <span style={metaStyle}>
-      {totalCount} {countSuffix}
-    </span>
-  );
+  const isQuickFilterCompact = width > 0 && width < (compactWidth.QUICK_FILTER ?? threshold);
+  const count =
+    totalCount === undefined ? null : (
+      <span style={metaStyle}>
+        {totalCount} {totalCount === 1 ? countSuffix.one : countSuffix.other}
+      </span>
+    );
   const clearAllConfig =
     hasActiveFilters && onClearAllFilters
       ? {
@@ -130,7 +133,7 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
         position: 'sticky',
         top: PAGE_CONTENT_LAYOUT.HEADER_OFFSET_PX,
         zIndex: LIST_PAGE.TOOLBAR_Z_INDEX,
-        background: DEFAULT_COLORS.BACKGROUND_WHITE,
+        background: DEFAULT_COLORS.PAGE_BG,
         padding: LIST_PAGE.TOOLBAR_PADDING,
       }}
     >
@@ -166,13 +169,22 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
             overflowCount={overflowChipsCount}
             onRemove={onRemoveFilterChip}
           />
+          {filterNote ? <span style={metaStyle}>{filterNote}</span> : null}
           <Toolbar config={clearAllConfig} compact={isCompact} />
         </div>
+        {/* Fills the rest of the row, so the count appearing grows it inward: its start never moves. */}
         <div
-          style={{ display: 'flex', alignItems: 'center', gap: TOOLBAR_ITEM_GAP, height: '100%' }}
+          style={{
+            display: 'flex',
+            flex: '1 0 auto',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            gap: TOOLBAR_ITEM_GAP,
+            height: '100%',
+          }}
         >
           {bulkMode ? null : count}
-          {quickFilter?.(isCompact)}
+          {quickFilter?.(isQuickFilterCompact)}
           {onOpenFilters ? <FilterButton onClick={onOpenFilters} compact={isCompact} /> : null}
           {toolbars.map((config, index) => (
             <Toolbar key={config.buttons[0]?.key ?? index} config={config} compact={isCompact} />

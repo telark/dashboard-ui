@@ -1,40 +1,20 @@
 import React from 'react';
-import { SLIDE_OUT } from '../../../../constants';
+import { BUTTON_TEXTS, SLIDE_OUT } from '../../../../constants';
+import type { PanelFooterProps } from '../../../../interfaces/layout/panels';
 import { PrimaryButton } from '../../buttons';
-
-interface PanelFooterProps {
-  onCancel?: () => void;
-  onPrimary?: () => void;
-  cancelLabel?: string;
-  primaryLabel?: string;
-  primaryDisabled?: boolean;
-  primaryLoading?: boolean;
-  primaryIcon?: React.ReactNode;
-  primaryLoadingLabel?: string;
-  horizontalPadding?: number;
-}
 
 const PanelFooter: React.FC<PanelFooterProps> = ({
   onCancel,
   onPrimary,
-  cancelLabel = 'Cancel',
-  primaryLabel = 'Submit',
+  cancelLabel = BUTTON_TEXTS.CANCEL,
+  primaryLabel = BUTTON_TEXTS.SUBMIT,
   primaryDisabled = false,
   primaryLoading = false,
   primaryIcon,
   primaryLoadingLabel,
-  horizontalPadding = 24,
-}) => {
-  const footerStyle: React.CSSProperties = {
-    ...SLIDE_OUT.FOOTER,
-    paddingTop: 6,
-    paddingBottom: 6,
-    paddingLeft: horizontalPadding,
-    paddingRight: horizontalPadding,
-  };
-
-  return (
-    <div style={footerStyle}>
+}) => (
+  <div style={SLIDE_OUT.PINNED_FOOTER}>
+    <div style={SLIDE_OUT.FOOTER}>
       <button
         type="button"
         onClick={onCancel}
@@ -60,7 +40,7 @@ const PanelFooter: React.FC<PanelFooterProps> = ({
         style={{ minHeight: 32, height: 32, paddingTop: 0, paddingBottom: 0 }}
       />
     </div>
-  );
-};
+  </div>
+);
 
 export default PanelFooter;

@@ -9,6 +9,7 @@ import type { AppDispatch } from '../../../../../store';
 import store from '../../../../../store';
 import { fetchMyPermissionsThunk } from '../../../../auth/store/thunks/fetchThunks';
 import type { RoleFormData } from '../../models';
+import { rejectionMessage } from '../../../../../utils/helpers/format';
 
 export interface UseRoleActionsOptions {
   /** When true, create/update do not navigate (e.g. when using panels on list page). */
@@ -32,8 +33,8 @@ export const useRoleActions = (options?: UseRoleActionsOptions) => {
           navigate(APP_ROUTES.ROLES);
         }
         return result;
-      } catch {
-        message.error(RC.LABELS.MESSAGES.CREATE_FAILED);
+      } catch (rejection) {
+        message.error(rejectionMessage(rejection, RC.LABELS.MESSAGES.CREATE_FAILED));
         throw new Error(RC.LABELS.MESSAGES.CREATE_FAILED);
       } finally {
         setSubmitting(false);
@@ -61,10 +62,11 @@ export const useRoleActions = (options?: UseRoleActionsOptions) => {
         }
         return result;
       } catch (error) {
+        const reason = rejectionMessage(error, RC.LABELS.MESSAGES.UPDATE_FAILED);
         if (!options?.silent) {
-          message.error(RC.LABELS.MESSAGES.UPDATE_FAILED);
+          message.error(reason);
         }
-        throw error instanceof Error ? error : new Error(RC.LABELS.MESSAGES.UPDATE_FAILED);
+        throw error instanceof Error ? error : new Error(reason);
       } finally {
         setSubmitting(false);
       }
@@ -78,8 +80,8 @@ export const useRoleActions = (options?: UseRoleActionsOptions) => {
         await dispatch(deleteRoleThunk(roleId)).unwrap();
         store.dispatch(fetchMyPermissionsThunk());
         message.success(RC.LABELS.MESSAGES.DELETED);
-      } catch {
-        message.error(RC.LABELS.MESSAGES.DELETE_FAILED);
+      } catch (rejection) {
+        message.error(rejectionMessage(rejection, RC.LABELS.MESSAGES.DELETE_FAILED));
         throw new Error(RC.LABELS.MESSAGES.DELETE_FAILED);
       }
     },

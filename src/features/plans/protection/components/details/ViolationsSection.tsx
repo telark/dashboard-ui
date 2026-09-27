@@ -7,7 +7,6 @@ import RowTag from '../../../../../components/display/table/RowTag';
 import { FancySpinner } from '../../../../../components/animation';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
-  VIOLATION_RESULT_BADGE,
   VIOLATION_RESULT_DOT,
 } from '../../constants/protectionPlans';
 import type {
@@ -58,9 +57,20 @@ const EMPTY_STATE_CONTAINER: React.CSSProperties = {
   textAlign: 'center',
 };
 
+const RETENTION_NOTE_STYLE: React.CSSProperties = {
+  margin: 0,
+  marginTop: 10,
+  fontSize: 12,
+  color: DEFAULT_COLORS.TEXT_MUTED,
+};
+
 const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, error, mode }) => {
   const violations = data?.violations ?? [];
   const grouped = groupByDay(violations);
+  const retentionWindow = data?.retentionWindow;
+  const retentionNote = retentionWindow ? (
+    <p style={RETENTION_NOTE_STYLE}>{PPC.LABELS.VIOLATIONS.RETENTION_NOTE(retentionWindow)}</p>
+  ) : null;
 
   if (loading && violations.length === 0) {
     return (
@@ -103,6 +113,7 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
             ? PPC.LABELS.VIOLATIONS.EMPTY_ENFORCE
             : PPC.LABELS.VIOLATIONS.EMPTY_AUDIT}
         </p>
+        {retentionNote}
       </div>
     );
   }
@@ -127,7 +138,6 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
             {group.dayKey === 'unknown' ? '—' : formatDateKey(group.dayKey)}
           </div>
           {group.entries.map((entry, idx) => {
-            const badge = VIOLATION_RESULT_BADGE[entry.result];
             const resultLabel = PPC.LABELS.VIOLATION_RESULT_LABELS[entry.result];
             return (
               <div
@@ -166,8 +176,7 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
                     >
                       <RowTag
                         text={`${PPC.LABELS.VIOLATIONS.TABLE_RESULT}: ${resultLabel}`}
-                        background={badge.background}
-                        color={badge.color}
+                        accent={VIOLATION_RESULT_DOT[entry.result]}
                         fontSize={11}
                       />
                       {entry.resource.kind && (
@@ -179,20 +188,21 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
                       {entry.resource.name && (
                         <RowTag
                           text={`${PPC.LABELS.VIOLATIONS.TABLE_RESOURCE_NAME}: ${entry.resource.name}`}
+                          capitalize={false}
                           {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                         />
                       )}
                       {entry.namespace && (
                         <RowTag
                           text={`${PPC.LABELS.VIOLATIONS.TABLE_NAMESPACE}: ${entry.namespace}`}
+                          capitalize={false}
                           {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                         />
                       )}
                       {entry.rule && (
                         <RowTag
                           text={`${PPC.LABELS.VIOLATIONS.TABLE_RULE}: ${entry.rule}`}
-                          background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                          color={DEFAULT_COLORS.TEXT_SECONDARY}
+                          capitalize={false}
                           fontSize={11}
                         />
                       )}
@@ -227,6 +237,7 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
           })}
         </div>
       ))}
+      {retentionNote}
     </div>
   );
 };

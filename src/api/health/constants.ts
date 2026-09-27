@@ -6,5 +6,5 @@ export const SERVICE_NAMES = {
   EXPORTER: 'exporter',
   DISCOVERY: 'discovery',
   AUTH: 'auth',
-  ENRICHMENT: 'enrichment',
+  ANALYZER: 'analyzer',
 } as const;

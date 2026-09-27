@@ -1,8 +1,13 @@
 import { COMMON_VALUES } from '../shared/common';
 import { CONTROL_HEIGHT } from './controls';
+import { DEFAULT_COLORS } from '../shared/colors';
 
 export const BUTTON_TEXTS = {
   LOADING: 'In Progress...',
+  CANCEL: 'Cancel',
+  SUBMIT: 'Submit',
+  RESET: 'Reset',
+  APPLY: 'Apply',
 } as const;
 
 // Spacing between toolbar items, and between a toolbar and its neighbours, so
@@ -81,16 +86,17 @@ export const BUTTON_CONFIGS = {
   PRIMARY_BUTTON: {
     TYPE: 'primary',
     MARGIN_TOP: '0px',
-    DISABLED_COLOR: '#d9d9d9',
   },
 } as const;
 
 export const BUTTON_COLORS = {
-  ICON_DEFAULT: '#9ca3af',
-  TEXT_DEFAULT: '#ffffff',
-  DISABLED: '#d9d9d9',
+  ICON_DEFAULT: DEFAULT_COLORS.TEXT_MUTED,
+  TEXT_DEFAULT: DEFAULT_COLORS.TEXT_PRIMARY,
+  DISABLED: DEFAULT_COLORS.SURFACE_BORDER,
   // Light surfaces (panels) re-point this var so toolbars stay readable there.
-  TOOLBAR_TEXT: 'var(--app-toolbar-text-color, #ffffff)',
+  TOOLBAR_TEXT: `var(--app-toolbar-text-color, ${DEFAULT_COLORS.TEXT_PRIMARY})`,
+  TOOLBAR_BORDER: `var(--app-toolbar-border-color, ${DEFAULT_COLORS.BORDER_DEFAULT})`,
+  TOOLBAR_DISABLED_TEXT: `var(--app-toolbar-disabled-color, ${DEFAULT_COLORS.TEXT_DISABLED})`,
 } as const;
 
 export const BUTTON_STATES = {

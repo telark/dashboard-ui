@@ -1,4 +1,4 @@
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, ROW_ICON_BUTTON_SIZE } from '../../../../constants';
 import { SETTINGS_CONSTANTS } from '../../../settings/constants';
 
 /** Applications feature: spacing and dividers aligned with settings/content tokens. */
@@ -6,7 +6,6 @@ export const APPLICATION_SECTION_LAYOUT = {
   STACK_GAP_PX: SETTINGS_CONSTANTS.CONTENT.GAP_BETWEEN_CARDS,
   CARD_RADIUS: SETTINGS_CONSTANTS.CONTENT.CARD_BORDER_RADIUS,
   CARD_PADDING: SETTINGS_CONSTANTS.CONTENT.CARD_PADDING,
-  TITLE_TO_SUBTITLE_GAP_PX: SETTINGS_CONSTANTS.CONTENT.CARD_TITLE_TO_DESCRIPTION_GAP_PX,
   FIELD_LABEL_FONT_SIZE: 11,
   FIELD_VALUE_FONT_SIZE: 13,
   COLUMN_HEADER_FONT_SIZE: 12,
@@ -25,8 +24,6 @@ export const APPLICATION_SECTION_LAYOUT = {
   STAT_MIN_WIDTH_PX: 96,
   /** RowTag display for runtime list values (ports, env keys, snapshot field tags). */
   RUNTIME_VALUE_ROW_TAG: {
-    background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
-    color: DEFAULT_COLORS.CHIP_CUSTOM_TEXT,
     fontSize: 11,
   },
 } as const;
@@ -39,7 +36,6 @@ export const APPLICATION_MANIFEST_VIEW = {
   HEADER_PADDING: '6px 6px 6px 10px',
   HEADER_GAP_PX: 8,
   TITLE_FONT_SIZE_PX: 12,
-  SUBTITLE_FONT_SIZE_PX: 11,
   CODE_PADDING: '10px 12px',
   CODE_FONT_SIZE_PX: 12,
   CODE_LINE_HEIGHT: 1.5,
@@ -72,7 +68,7 @@ export const APPLICATION_SNAPSHOT_ROW = {
   CHIP_PADDING: '1px 8px',
   CHIP_RADIUS_PX: 999,
   SEVERITY_DOT_SIZE_PX: 6,
-  ICON_BUTTON_SIZE_PX: 28,
+  ICON_BUTTON_SIZE_PX: ROW_ICON_BUTTON_SIZE,
   TRANSITION: 'background 150ms ease, border-color 150ms ease',
   /** Raw engine errors are opt-in: they are long and only useful when debugging. */
   ERROR_PADDING: '6px 8px',

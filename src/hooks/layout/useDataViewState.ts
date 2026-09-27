@@ -1,6 +1,8 @@
 import { DATA_VIEW_ERROR_CONSTANTS } from '../../components/shared/dataViewError.constants';
 import { useLoadingTimeout } from './useLoadingTimeout';
 import { userFacingMessage } from '../../api';
+import { connectivityIssueFrom } from '../../api/client/health-interceptor';
+import type { ConnectivityIssue } from '../../api/client/health-interceptor';
 
 export type DataViewPhase = 'error' | 'loading' | 'empty' | 'ready';
 
@@ -14,6 +16,7 @@ export interface DataViewState {
   phase: DataViewPhase;
   errorMessage: string;
   timedOut: boolean;
+  connectivity?: ConnectivityIssue;
 }
 
 const messageFromError = (error: string | null, timedOut: boolean): string => {
@@ -48,5 +51,6 @@ export const useDataViewState = ({
     phase,
     errorMessage: messageFromError(error, timedOut),
     timedOut,
+    connectivity: connectivityIssueFrom(error),
   };
 };

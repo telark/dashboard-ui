@@ -26,7 +26,7 @@ const renderRoleContent = (item: GroupInheritedRole): React.ReactNode => {
     <div style={ARC.LIST.ROLE_CONTENT}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
         {isProtected && <RoleIcon size={14} color={DEFAULT_COLORS.SUCCESS} />}
-        <span style={ARC.LIST.ROLE_NAME}>{CapitalizeFirstLetter(role.name)}</span>
+        <span style={ARC.LIST.ROLE_NAME}>{role.name}</span>
       </div>
       {role.description && (
         <span style={ARC.LIST.ROLE_DESCRIPTION}>
@@ -50,13 +50,7 @@ const renderGroupTags = (item: GroupInheritedRole): React.ReactNode => (
     }}
   >
     {item.fromGroups.map((group: Group) => (
-      <RowTag
-        key={group.id}
-        text={CapitalizeFirstLetter(group.name)}
-        background={DEFAULT_COLORS.CHIP_ON_SURFACE_BG}
-        color={DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT}
-        fontSize={12}
-      />
+      <RowTag key={group.id} text={group.name} fontSize={12} capitalize={false} />
     ))}
   </div>
 );

@@ -8,20 +8,21 @@ import type { AppDispatch } from '../../../../../../store';
 import store from '../../../../../../store';
 import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
 import type { User } from '../../../models';
+import { rejectionMessage } from '../../../../../../utils/helpers/format';
+import { fetchFreshUserIds } from '../../../utils';
+import { applySelectionChange } from '../../../../shared';
 
-type AssignmentField = 'assignedRolesIDs' | 'assignedGroupsIDs';
+type AssignmentField = 'roleRefs' | 'groupRefs';
 
-export interface UseDeassignUserFieldOptions<
-  T extends { id: string; name: string } = { id: string; name: string },
-> {
+export interface UseDeassignUserFieldOptions {
   user: User | null;
   form: FormInstance;
   fieldName: AssignmentField;
   successMessage: (name: string) => string;
   failMessage: string;
   onSuccess?: (updatedIds: string[]) => void;
-  /** Called after user update succeeds (e.g. to sync inverse side when deassigning a group). */
-  onAfterDeassign?: (item: T, updatedIds: string[]) => void | Promise<void>;
+  /** Called after the user update succeeds (e.g. to reload the side the backend mirrors). */
+  onAfterDeassign?: () => void;
 }
 
 export const useDeassignUserField = <T extends { id: string; name: string }>({
@@ -40,15 +41,16 @@ export const useDeassignUserField = <T extends { id: string; name: string }>({
     async (item: T) => {
       if (!user) throw new Error('No user selected');
       const current = (form.getFieldValue(fieldName) as string[]) ?? [];
-      const updated = current.filter((id) => id !== item.id);
       try {
+        const freshIds = await fetchFreshUserIds(user.id, fieldName);
+        const updated = applySelectionChange(freshIds, [item.id], []);
         await dispatch(updateUserThunk({ id: user.id, user: { [fieldName]: updated } })).unwrap();
         store.dispatch(fetchMyPermissionsThunk());
-        form.setFieldsValue({ [fieldName]: updated });
-        await onAfterDeassign?.(item, updated);
+        form.setFieldsValue({ [fieldName]: current.filter((id) => id !== item.id) });
+        onAfterDeassign?.();
         message.success(successMessage(item.name));
-      } catch {
-        message.error(failMessage);
+      } catch (rejection) {
+        message.error(rejectionMessage(rejection, failMessage));
         throw new Error(failMessage);
       }
     },

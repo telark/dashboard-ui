@@ -1,3 +1,5 @@
+import type { ProtectionPlan } from '../../../plans/protection/models';
+
 export interface ApplicationHealth {
   status: string; // healthy | degraded | down | unknown
   reason?: string | null;
@@ -42,49 +44,6 @@ export interface ApplicationResourceRef {
   namespace: string;
   kind: string;
   name: string;
-}
-
-export interface ApplicationRelatedApp {
-  name: string;
-  reason: string;
-}
-
-export interface ApplicationInsightRisk {
-  severity: string; // high | medium | low
-  message: string;
-}
-
-export interface ApplicationInsightSuggestion {
-  priority: string; // high | medium | low
-  message: string;
-}
-
-export interface ApplicationResourceEfficiency {
-  status: string; // over | under | balanced | unknown
-  note: string;
-}
-
-export interface ApplicationCriticality {
-  level: string; // critical | high | medium | low
-  reason: string;
-}
-
-export interface ApplicationInsights {
-  enriched: boolean;
-  enrichedAt?: string | null;
-  confidence?: string | null;
-  summary?: string | null;
-  techStack: string[];
-  role?: string | null;
-  dependencies: string[];
-  category?: string | null;
-  risks: ApplicationInsightRisk[];
-  suggestions: ApplicationInsightSuggestion[];
-  resourceEfficiency: ApplicationResourceEfficiency;
-  criticality: ApplicationCriticality;
-  tags: string[];
-  relatedApps: ApplicationRelatedApp[];
-  promptVersion?: string | null;
 }
 
 export interface ApplicationChange {
@@ -274,6 +233,14 @@ export interface ApplicationLastForceSync {
   error?: string;
 }
 
+export interface ApplicationCondition {
+  type: string;
+  status: 'True' | 'False' | 'Unknown';
+  reason?: string;
+  message?: string;
+  lastTransitionTime?: string;
+}
+
 export interface Application {
   name: string;
   displayName: string;
@@ -292,7 +259,7 @@ export interface Application {
   snapshots: ApplicationSnapshot[];
   rollbacks?: ApplicationRollbackEntry[];
   metrics: ApplicationMetrics;
-  crStatus?: string | null;
+  conditions?: ApplicationCondition[];
   history: ApplicationHistory;
   lastForceSync?: ApplicationLastForceSync;
 }
@@ -302,8 +269,18 @@ export type SyncStatusValue = 'syncing' | 'success' | 'failed';
 export interface ApplicationsLastErrorMap {
   [name: string]: string;
 }
-export type ApplicationLayoutMode = 'single' | 'double';
+export type ApplicationViewMode = 'grid' | 'list';
 export type ApplicationHealthQuickFilter = 'all' | 'healthy' | 'degraded' | 'unhealthy';
+export type ApplicationCoverageState = 'active' | 'upcoming';
+export interface ApplicationCoverage {
+  known: boolean;
+  active: string[];
+  upcoming: string[];
+}
+export interface ApplicationCoverageIndex {
+  byApplication: Map<string, ProtectionPlan[]>;
+  byNamespace: Map<string, ProtectionPlan[]>;
+}
 
 export interface ApplicationsState {
   applications: Application[];
@@ -321,7 +298,7 @@ export interface ApplicationsState {
   searchValue: string;
   currentPage: number;
   appliedFilters: Record<string, unknown>;
-  layoutMode: ApplicationLayoutMode;
+  viewMode: ApplicationViewMode;
   bulkMode: boolean;
   selectedNames: string[];
   healthQuickFilter: ApplicationHealthQuickFilter;

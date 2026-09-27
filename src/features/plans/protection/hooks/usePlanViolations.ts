@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 import { fetchPlanViolations } from '../clients';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
 import type { PlanViolationsResponse, ViolationResult } from '../models';
@@ -14,7 +15,7 @@ export interface UsePlanViolationsResult {
   refresh: () => void;
 }
 
-export function usePlanViolations(planId: string): UsePlanViolationsResult {
+export function usePlanViolations(planId: string, enabled: boolean): UsePlanViolationsResult {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<PlanViolationsResponse | null>(null);
@@ -22,6 +23,7 @@ export function usePlanViolations(planId: string): UsePlanViolationsResult {
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
+    if (!enabled) return;
     let cancelled = false;
     fetchPlanViolations(planId, {
       result: resultFilter === 'all' ? undefined : resultFilter,
@@ -31,9 +33,14 @@ export function usePlanViolations(planId: string): UsePlanViolationsResult {
         setData(res);
         setError(null);
       })
-      .catch(() => {
+      .catch((err: unknown) => {
         if (cancelled) return;
-        setError(PPC.LABELS.VIOLATIONS.LOAD_ERROR);
+        const meta = (err as ExtendedAxiosError)?.normalized;
+        setError(
+          meta?.isTimeout
+            ? PPC.LABELS.VIOLATIONS.LOAD_TIMEOUT
+            : (meta?.message ?? PPC.LABELS.VIOLATIONS.LOAD_ERROR),
+        );
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -41,7 +48,7 @@ export function usePlanViolations(planId: string): UsePlanViolationsResult {
     return () => {
       cancelled = true;
     };
-  }, [planId, resultFilter, reloadKey]);
+  }, [enabled, planId, resultFilter, reloadKey]);
 
   return {
     data,

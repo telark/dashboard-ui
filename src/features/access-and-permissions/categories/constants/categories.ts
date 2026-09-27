@@ -1,19 +1,30 @@
 const SCOPES = {
   GROUPS: 'groups',
   ROLES: 'roles',
+  PLAN_ENVIRONMENTS: 'plan-environments',
+  PLAN_TAGS: 'plan-tags',
 } as const;
+
+export type CategoryScope = (typeof SCOPES)[keyof typeof SCOPES];
 
 const TYPES = {
   BUILT_IN: 'built-in',
   CUSTOM: 'custom',
 } as const;
 
-export const CATEGORIES_CONSTANTS = {
-  SCOPES,
-  TYPES,
-  LABELS: {
+const buildLabels = ({
+  noun,
+  plural,
+  example,
+}: {
+  noun: string;
+  plural: string;
+  example: string;
+}) => {
+  const lower = noun.toLowerCase();
+  return {
     COLUMNS: {
-      NAME: 'Category Name',
+      NAME: `${noun} Name`,
       TYPE: 'Type',
       SCOPE: 'Scope',
       CREATED: 'Creation Date',
@@ -21,40 +32,40 @@ export const CATEGORIES_CONSTANTS = {
     ACTIONS: {
       EDIT: 'Edit',
       DELETE: 'Delete',
-      EDIT_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to edit categories',
-      DELETE_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to delete categories',
-      DELETE_MODAL_TITLE: 'Delete Category',
+      EDIT_PERMISSION_DENIED_TOOLTIP: `You do not have permission to edit ${plural}`,
+      DELETE_PERMISSION_DENIED_TOOLTIP: `You do not have permission to delete ${plural}`,
+      DELETE_MODAL_TITLE: `Delete ${noun}`,
       DELETE_MODAL_OK: 'Delete',
     },
     MESSAGES: {
-      DELETED: 'Category deleted successfully',
-      DELETE_FAILED: 'Failed to delete category',
-      CATEGORY_CREATED: (name: string) => `Category "${name}" created`,
-      CATEGORY_CREATE_FAILED: 'Failed to create category',
-      CATEGORY_UPDATED: (name: string) => `Category "${name}" updated`,
-      CATEGORY_UPDATE_FAILED: 'Failed to update category',
-      CATEGORY_DELETED: 'Category deleted successfully',
-      CATEGORY_DELETE_FAILED: 'Failed to delete category',
+      DELETED: `${noun} deleted successfully`,
+      DELETE_FAILED: `Failed to delete ${lower}`,
+      CATEGORY_CREATED: (name: string) => `${noun} "${name}" created`,
+      CATEGORY_CREATE_FAILED: `Failed to create ${lower}`,
+      CATEGORY_UPDATED: (name: string) => `${noun} "${name}" updated`,
+      CATEGORY_UPDATE_FAILED: `Failed to update ${lower}`,
+      CATEGORY_DELETED: `${noun} deleted successfully`,
+      CATEGORY_DELETE_FAILED: `Failed to delete ${lower}`,
     },
     PANELS: {
       ADD_CATEGORY: {
-        TITLE: 'Add Category',
-        SUBMIT_BUTTON: 'Create Category',
-        NAME_LABEL: 'Category Name',
-        NAME_PLACEHOLDER: 'e.g. Engineering, Operations',
-        NAME_REQUIRED_MESSAGE: 'Category name is required',
-        NAME_EMPTY_MESSAGE: 'Category name cannot be empty',
-        NAME_EXISTS_MESSAGE: 'A category with this name already exists',
+        TITLE: `Add ${noun}`,
+        SUBMIT_BUTTON: `Create ${noun}`,
+        NAME_LABEL: `${noun} Name`,
+        NAME_PLACEHOLDER: example,
+        NAME_REQUIRED_MESSAGE: `${noun} name is required`,
+        NAME_EMPTY_MESSAGE: `${noun} name cannot be empty`,
+        NAME_EXISTS_MESSAGE: `A ${lower} with this name already exists`,
         CANCEL: 'Cancel',
       },
       EDIT_CATEGORY: {
-        TITLE: 'Edit Category',
-        SUBMIT_BUTTON: 'Update Category',
-        NAME_LABEL: 'Category Name',
-        NAME_PLACEHOLDER: 'e.g. Engineering, Operations',
-        NAME_REQUIRED_MESSAGE: 'Category name is required',
-        NAME_EMPTY_MESSAGE: 'Category name cannot be empty',
-        NAME_EXISTS_MESSAGE: 'A category with this name already exists',
+        TITLE: `Edit ${noun}`,
+        SUBMIT_BUTTON: `Update ${noun}`,
+        NAME_LABEL: `${noun} Name`,
+        NAME_PLACEHOLDER: example,
+        NAME_REQUIRED_MESSAGE: `${noun} name is required`,
+        NAME_EMPTY_MESSAGE: `${noun} name cannot be empty`,
+        NAME_EXISTS_MESSAGE: `A ${lower} with this name already exists`,
         CANCEL: 'Cancel',
       },
     },
@@ -62,12 +73,43 @@ export const CATEGORIES_CONSTANTS = {
       MANAGE_CATEGORIES: {
         BUTTON_LABEL: 'Manage Categories',
         VIEW_CATEGORIES: 'View Categories',
-        ADD_CATEGORY: 'Add Category',
+        ADD_CATEGORY: `Add ${noun}`,
         VIEW_CATEGORIES_DISABLED_TOOLTIP: 'You do not have permission to view categories',
-        ADD_CATEGORY_DISABLED_TOOLTIP: 'You do not have permission to add categories',
+        ADD_CATEGORY_DISABLED_TOOLTIP: `You do not have permission to add ${plural}`,
       },
     },
-  },
+    RESOURCE_TYPE: lower,
+    NOUN: noun,
+    PLURAL: plural,
+    EMPTY: `No ${plural} yet`,
+  };
+};
+
+const LABELS = buildLabels({
+  noun: 'Category',
+  plural: 'categories',
+  example: 'e.g. Engineering, Operations',
+});
+
+const LABELS_BY_SCOPE: Partial<Record<string, typeof LABELS>> = {
+  [SCOPES.PLAN_ENVIRONMENTS]: buildLabels({
+    noun: 'Environment',
+    plural: 'environments',
+    example: 'e.g. Production, Staging',
+  }),
+  [SCOPES.PLAN_TAGS]: buildLabels({
+    noun: 'Tag',
+    plural: 'tags',
+    example: 'e.g. Compliance, Security',
+  }),
+};
+
+export const labelsFor = (scope: string): typeof LABELS => LABELS_BY_SCOPE[scope] ?? LABELS;
+
+export const CATEGORIES_CONSTANTS = {
+  SCOPES,
+  TYPES,
+  LABELS,
   KEYS: {
     NAME: 'name',
     TYPE: 'type',

@@ -46,7 +46,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
           minWidth,
           padding: '0 12px 0 36px',
           borderRadius: 6,
-          border: '1px solid #d9d9d9',
+          border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
           fontSize: 13,
           lineHeight: '20px',
           color: DEFAULT_COLORS.TEXT_ON_SURFACE,
@@ -60,7 +60,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
           e.currentTarget.style.borderColor = DEFAULT_COLORS.TEXT_ON_SURFACE;
         }}
         onBlur={(e) => {
-          e.currentTarget.style.borderColor = '#d9d9d9';
+          e.currentTarget.style.borderColor = DEFAULT_COLORS.SURFACE_BORDER;
         }}
       />
     </div>

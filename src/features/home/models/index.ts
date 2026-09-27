@@ -1,4 +1,5 @@
 import type { SnapshotStorageInfos } from '../../resources/applications/models';
+import type { RequiredPermission } from '../../../interfaces/shared';
 
 export type TagTone = 'danger' | 'warning' | 'neutral';
 
@@ -26,6 +27,13 @@ export interface BreakdownItem {
 export interface BoxState {
   loading?: boolean;
   failed?: boolean;
+  /** Set when the viewer lacks the feature's view permission: the box explains it instead of loading. */
+  noAccess?: NoAccess;
+}
+
+export interface NoAccess {
+  featureName: string;
+  permission: RequiredPermission;
 }
 
 export interface SnapshotStorageState {

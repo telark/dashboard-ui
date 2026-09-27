@@ -1,4 +1,4 @@
-import { AUTH_API, DISCOVERY_API, ENRICHMENT_API, EXPORTER_API } from '../../constants/rest/api';
+import { ANALYZER_API, AUTH_API, DISCOVERY_API, EXPORTER_API } from '../../constants/rest/api';
 import type { ServiceRegistryEntry } from '../types';
 import { SERVICE_NAMES } from './constants';
 
@@ -6,7 +6,7 @@ const buildRegistry = (): readonly ServiceRegistryEntry[] => [
   { name: SERVICE_NAMES.EXPORTER, baseURLPattern: EXPORTER_API.BASE_URL },
   { name: SERVICE_NAMES.DISCOVERY, baseURLPattern: DISCOVERY_API.BASE_URL },
   { name: SERVICE_NAMES.AUTH, baseURLPattern: AUTH_API.BASE_URL },
-  { name: SERVICE_NAMES.ENRICHMENT, baseURLPattern: ENRICHMENT_API.BASE_URL },
+  { name: SERVICE_NAMES.ANALYZER, baseURLPattern: ANALYZER_API.BASE_URL },
 ];
 
 const getServiceRegistry = (): readonly ServiceRegistryEntry[] => buildRegistry();

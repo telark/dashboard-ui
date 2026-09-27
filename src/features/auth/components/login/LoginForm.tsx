@@ -4,6 +4,7 @@ import { KeyOutlined } from '@ant-design/icons';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { AuthForm } from '../shared/AuthForm';
+import { DEFAULT_COLORS } from '../../../../constants';
 
 interface LoginFormProps {
   form: FormInstance;
@@ -34,9 +35,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         placeholder={LOGIN_CONSTANTS.UI.EMAIL_PLACEHOLDER}
         autoFocus
         style={{
-          borderColor: 'var(--auth-card-border, #e2e8f0)',
-          background: 'var(--auth-input-bg, #ffffff)',
-          color: 'var(--auth-text-primary, #0B1F33)',
+          borderColor: `var(--auth-card-border, ${DEFAULT_COLORS.AUTH_LIGHT_BORDER})`,
+          background: `var(--auth-input-bg, ${DEFAULT_COLORS.AUTH_LIGHT_CARD_BG})`,
+          color: `var(--auth-text-primary, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT})`,
         }}
       />
     </Form.Item>
@@ -51,7 +52,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           fontWeight: 600,
           background: 'var(--color-primary)',
           borderColor: 'var(--color-primary)',
-          color: '#ffffff',
+          color: DEFAULT_COLORS.PILL_TEXT,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -68,7 +69,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         style={{
           textAlign: 'center',
           fontSize: '12px',
-          color: 'var(--auth-text-muted, #64748b)',
+          color: `var(--auth-text-muted, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED})`,
           margin: '8px 0 0',
         }}
       >

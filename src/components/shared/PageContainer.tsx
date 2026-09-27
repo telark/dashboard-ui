@@ -83,7 +83,7 @@ const PageContainer: React.FC<PageContainerProps> = memo(
     <div
       style={{
         minHeight: '100vh',
-        background: DEFAULT_COLORS.BACKGROUND_WHITE,
+        background: DEFAULT_COLORS.PAGE_BG,
         padding: PAGE_CONTENT_LAYOUT.PADDING,
         boxSizing: 'border-box',
         width: '100%',

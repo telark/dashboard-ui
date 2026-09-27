@@ -9,7 +9,7 @@ import type { FormInstance } from 'antd';
 import type { PasskeyPanelFormValues } from '../../hooks/passkeys/passkeyPanelState';
 
 const CONTAINER_STYLE: React.CSSProperties = {
-  background: DEFAULT_COLORS.BACKGROUND_WHITE,
+  background: DEFAULT_COLORS.PAGE_BG,
   minHeight: '100vh',
   padding: '100px 48px 48px',
   marginTop: 0,
@@ -36,7 +36,7 @@ const TITLE_BLOCK_STYLE: React.CSSProperties = {
 const TITLE_STYLE: React.CSSProperties = {
   fontSize: 28,
   fontWeight: 700,
-  color: '#0B1F33',
+  color: DEFAULT_COLORS.TEXT_ON_SURFACE,
   margin: 0,
   padding: 0,
   lineHeight: 1.2,
@@ -152,7 +152,7 @@ const PasskeysListPage: React.FC<PasskeysListPageProps> = memo(
                   {b.label}
                 </button>
               ) : (
-                <span style={{ color: '#0B1F33' }}>{b.label}</span>
+                <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>{b.label}</span>
               )}
             </React.Fragment>
           ))}
@@ -163,7 +163,7 @@ const PasskeysListPage: React.FC<PasskeysListPageProps> = memo(
 
     const wrapperStyle: React.CSSProperties = hideTitle
       ? { background: 'transparent', minHeight: 'auto' }
-      : { background: DEFAULT_COLORS.BACKGROUND_WHITE, minHeight: '100vh' };
+      : { background: DEFAULT_COLORS.PAGE_BG, minHeight: '100vh' };
     const containerStyle = hideTitle ? EMBEDDED_CONTAINER_STYLE : CONTAINER_STYLE;
 
     return (

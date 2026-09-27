@@ -41,7 +41,7 @@ const SearchButton: React.FC<SearchButtonProps> = ({
     border: 'none',
     backgroundColor: active ? DEFAULT_COLORS.SURFACE_WHITE : 'transparent',
     color: disabled
-      ? '#d1d5db'
+      ? DEFAULT_COLORS.TEXT_DISABLED
       : active
         ? DEFAULT_COLORS.TEXT_ON_SURFACE
         : DEFAULT_COLORS.TEXT_MUTED,

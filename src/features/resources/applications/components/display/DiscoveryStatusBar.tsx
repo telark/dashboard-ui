@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../../../constants';
-import { APPLICATIONS_UI } from '../../constants';
+import { APPLICATIONS_UI, DISCOVERY_STATUS_BAR } from '../../constants';
 import { useDiscoveryStatus } from '../../hooks/useDiscoveryStatus';
 
 interface DiscoveryStatusBarProps {
@@ -12,14 +12,22 @@ interface DiscoveryStatusBarProps {
 const DiscoveryStatusBar: React.FC<DiscoveryStatusBarProps> = ({ onCycleComplete }) => {
   const status = useDiscoveryStatus(onCycleComplete);
 
-  if (!status) return null;
+  if (!status) return <div style={{ minHeight: DISCOVERY_STATUS_BAR.MIN_HEIGHT_PX }} />;
 
   const text = status.inProgress
     ? APPLICATIONS_UI.DISCOVERY_IN_PROGRESS(status.remaining)
     : APPLICATIONS_UI.DISCOVERY_IDLE;
 
   return (
-    <div data-testid="discovery-status" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+    <div
+      data-testid="discovery-status"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 8,
+        minHeight: DISCOVERY_STATUS_BAR.MIN_HEIGHT_PX,
+      }}
+    >
       {status.inProgress ? (
         <LoadingOutlined style={{ color: DEFAULT_COLORS.WARNING }} />
       ) : (

@@ -6,10 +6,12 @@ dist/
 .env.*
 *.log
 *.md
+CLAUDE.md
 tests/
+k6/*
 __tests__/
 coverage/
 .claude/
-.code-review-graph/
 .vscode/
 .idea/
+.code-review-graph/

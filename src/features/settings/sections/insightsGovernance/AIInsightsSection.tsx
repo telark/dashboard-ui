@@ -1,186 +1,275 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Input, Select, Tooltip, App as AntdApp } from 'antd';
+import axios from 'axios';
+import { App as AntdApp, Button, Input, Progress, Select, Space } from 'antd';
+import { CopyOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
 import SettingsCard from '../../components/SettingsCard';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import RowTag from '../../../../components/display/table/RowTag';
-import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
-import { Client, enrichmentApiClient, exporterApiClient } from '../../../../api';
-import { Endpoints, DEFAULT_COLORS } from '../../../../constants';
 import { Switch } from '../../../../components/display/inputs';
+import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
+import type { ExtendedAxiosError } from '../../../../api/client/normalize';
+import { Client, exporterApiClient } from '../../../../api';
+import { Endpoints, DEFAULT_COLORS } from '../../../../constants';
+import logger from '../../../../logging';
 import type { AppDispatch } from '../../../../store';
-import { INSIGHTS_GOVERNANCE_CONSTANTS as C, ProviderKey } from './constants';
-import { usePermission } from '../../../auth/hooks/permissions/permissionEngine';
+import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
+import {
+  ACTION_PERMISSIONS,
+  usePermission,
+} from '../../../auth/hooks/permissions/permissionEngine';
+import {
+  apiErrorCode,
+  INSIGHT_ERROR_CODES,
+  INSIGHT_ERROR_MESSAGES,
+  pullAnalyzerModel,
+  useAnalyzerRuntime,
+  validateAnalyzerModel,
+} from '../../../insights';
+import type { ValidateModelResponse } from '../../../insights';
+import { INSIGHTS_GOVERNANCE_CONSTANTS as C } from './constants';
 
-type ValidationApiResponse = { ok: boolean; reason?: string };
+const CONTROL_AI_PERMISSION = ACTION_PERMISSIONS.settings.controlAiInsights;
 
-function getFriendlyValidationError(err: unknown): string {
-  if (err && typeof err === 'object') {
-    const anyErr = err as {
-      response?: { data?: unknown };
-      normalized?: { message?: string };
-      message?: string;
-    };
-    const data = anyErr.response?.data;
-    if (data && typeof data === 'object' && 'reason' in data) {
-      const reason = String((data as { reason?: unknown }).reason || '').trim();
-      if (reason) return reason;
-    }
-    const normalizedMsg = String(anyErr.normalized?.message || '').trim();
-    if (normalizedMsg) return normalizedMsg;
-    const msg = String(anyErr.message || '').trim();
-    if (msg) return msg;
-  }
-  return C.MESSAGES.VALIDATION_FAILED;
+interface AiForm {
+  enabled: boolean;
+  model: string;
+  autoAnalyze: boolean;
 }
 
-// The Validate button sizes column 2; the fields share column 1 and so share a width.
+type ValidateError = Partial<ValidateModelResponse> & { code?: string };
+
+interface ModelCheck {
+  model: string;
+  ok: boolean;
+  text: string;
+  code?: string;
+  license?: string;
+  warning?: string;
+}
+
+const CHECK_ERROR_TEXT: Record<string, string> = {
+  model_lacks_tools: C.MESSAGES.MODEL_LACKS_TOOLS,
+  [INSIGHT_ERROR_CODES.MODEL_NOT_INSTALLED]: C.MESSAGES.MODEL_NOT_INSTALLED,
+  invalid_model_name: C.MESSAGES.INVALID_MODEL_NAME,
+};
+
+const checkErrorText = (code?: string): string =>
+  (code && (CHECK_ERROR_TEXT[code] ?? INSIGHT_ERROR_MESSAGES[code])) || C.MESSAGES.CHECK_FAILED;
+
+// The analyzer answers a failed check with the full ValidateModelResponse plus a code.
+const validateErrorData = (error: unknown): ValidateError | undefined =>
+  axios.isAxiosError<ResourceDetailsResponse<ValidateError>>(error)
+    ? error.response?.data?.data
+    : undefined;
+
+// The Check button sizes column 2 so the select keeps the remaining width.
 const AI_FIELD_GRID: React.CSSProperties = {
   display: 'grid',
   gridTemplateColumns: '1fr auto',
   columnGap: C.LAYOUT.FIELD_COLUMN_GAP,
-  rowGap: C.LAYOUT.FIELD_ROW_GAP,
   alignItems: 'center',
+};
+
+const COLUMN: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: C.LAYOUT.FIELD_ROW_GAP,
+};
+
+const TOGGLE_ROW: React.CSSProperties = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  gap: 10,
+  padding: '2px 0',
 };
 
 const AIInsightsSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
-  const canControlAiInsights = usePermission('settings', 'Owner');
+  const canControlAiInsights = usePermission(
+    CONTROL_AI_PERMISSION.scope,
+    CONTROL_AI_PERMISSION.level,
+    CONTROL_AI_PERMISSION.deny,
+  );
   const { message } = AntdApp.useApp();
+  const { runtime, isLoading } = useAnalyzerRuntime();
 
-  const [initialAi, setInitialAi] = useState<{
-    enabled: boolean;
-    provider: ProviderKey;
-    apiKey: string;
-  } | null>(null);
-  const [aiEnabled, setAiEnabled] = useState(false);
-  const [provider, setProvider] = useState<ProviderKey>(C.PROVIDERS.DEFAULT);
-  const [apiKey, setApiKey] = useState('');
-  const [lastValidatedKey, setLastValidatedKey] = useState<string | null>(null);
-  const [validMessage, setValidMessage] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [initialAi, setInitialAi] = useState<AiForm | null>(null);
+  const [form, setForm] = useState<AiForm>({
+    enabled: false,
+    model: C.MODELS.DEFAULT,
+    autoAnalyze: false,
+  });
+  const [search, setSearch] = useState('');
+  const [check, setCheck] = useState<ModelCheck | null>(null);
+  const [checking, setChecking] = useState(false);
+  const [installing, setInstalling] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [validating, setValidating] = useState(false);
 
   useEffect(() => {
     if (!globalConfig?.data) return;
-    const cfg = globalConfig.data;
-    const enabled = Boolean(cfg?.ai?.enabled);
-    setAiEnabled(enabled);
-
-    const allowed = C.PROVIDERS.OPTIONS.map((o) => o.value);
-    const p = String(cfg?.ai?.provider || '').trim();
-    const normalizedProvider = allowed.includes(p as ProviderKey)
-      ? (p as ProviderKey)
-      : C.PROVIDERS.DEFAULT;
-    setProvider(normalizedProvider);
-
-    const key = String(cfg?.ai?.apiKey || '');
-    setApiKey(key);
-    setLastValidatedKey(key ? key.trim() : null);
-    setInitialAi({ enabled, provider: normalizedProvider, apiKey: key });
+    const ai = globalConfig.data.ai;
+    const next: AiForm = {
+      enabled: Boolean(ai?.enabled),
+      model: ai?.model?.trim() || C.MODELS.DEFAULT,
+      autoAnalyze: Boolean(ai?.autoAnalyze),
+    };
+    setForm(next);
+    setInitialAi(next);
   }, [globalConfig?.data]);
 
-  const aiHasChanges = useMemo(() => {
-    if (!initialAi) return false;
-    if (aiEnabled !== initialAi.enabled) return true;
-    if (!aiEnabled && !initialAi.enabled) return false;
-    if (provider !== initialAi.provider) return true;
-    return apiKey !== initialAi.apiKey;
-  }, [aiEnabled, apiKey, initialAi, provider]);
+  const runtimeState = runtime?.state ?? 'unreachable';
+  const stateLabel = C.LABELS.RUNTIME_STATE_LABELS[runtimeState];
+  const ready = runtimeState === 'ready';
+  const modelValid = C.MODELS.NAME_PATTERN.test(form.model);
+  const currentCheck = check?.model === form.model ? check : null;
+  const researchLicensed =
+    Boolean(currentCheck?.warning) ||
+    C.MODELS.OPTIONS.some((o) => o.value === form.model && o.research);
+  const modelMissing =
+    canControlAiInsights &&
+    modelValid &&
+    (runtimeState === 'model_missing' ||
+      currentCheck?.code === INSIGHT_ERROR_CODES.MODEL_NOT_INSTALLED);
+  const airGapped = runtime?.autoPull === false;
+  const modelHint = runtime?.mode === 'deep' ? C.LABELS.MODEL_HINT_DEEP : C.LABELS.MODEL_HINT;
+  const pull = runtimeState === 'pulling' ? runtime?.pull : undefined;
+  const pullPercent = pull && pull.total > 0 ? Math.floor((pull.completed * 100) / pull.total) : 0;
 
-  const validateDisabled = useMemo(() => {
-    const trimmed = apiKey.trim();
-    if (!trimmed) return true;
-    return Boolean(lastValidatedKey && trimmed === lastValidatedKey);
-  }, [apiKey, lastValidatedKey]);
+  const hasChanges =
+    initialAi !== null &&
+    (form.enabled !== initialAi.enabled ||
+      form.model !== initialAi.model ||
+      form.autoAnalyze !== initialAi.autoAnalyze);
 
-  const canEnable = useMemo(() => {
-    if (!aiEnabled) return true;
-    if (provider === 'ollama') return true;
-    const trimmed = apiKey.trim();
-    return Boolean(trimmed && trimmed === lastValidatedKey);
-  }, [aiEnabled, apiKey, lastValidatedKey, provider]);
+  const modelOptions = useMemo(() => {
+    const typed = search.trim();
+    const values = new Set<string>(C.MODELS.OPTIONS.map((o) => o.value));
+    values.add(form.model);
+    if (C.MODELS.NAME_PATTERN.test(typed)) values.add(typed);
+    return [...values].map((value) => {
+      const license =
+        (check?.model === value && check.license) ||
+        C.MODELS.OPTIONS.find((o) => o.value === value)?.license;
+      return { value, label: license ? `${value} · ${license}` : value };
+    });
+  }, [check, form.model, search]);
 
-  const onProviderChange = useCallback((val: ProviderKey) => {
-    setProvider(val);
-    setLastValidatedKey(null);
-    setValidMessage(null);
-    setErrorMessage(null);
+  const onModelChange = useCallback((model: string) => {
+    setForm((prev) => ({ ...prev, model }));
+    setSearch('');
   }, []);
 
-  const validateKey = useCallback(async () => {
-    const trimmed = apiKey.trim();
-    if (!trimmed) {
-      setErrorMessage(C.MESSAGES.API_KEY_REQUIRED);
-      return;
-    }
-    setValidating(true);
-    setErrorMessage(null);
-    setValidMessage(null);
-    try {
-      const { path, method } = Endpoints.PROVIDERS.VALIDATE_API_KEY;
-      const res = await Client<ValidationApiResponse>(enrichmentApiClient, path, {
-        method,
-        data: { provider, api_key: trimmed },
-      });
-      const ok = Boolean(res?.ok);
-      if (!ok) {
-        const reason = String(res?.reason || '').trim();
-        setErrorMessage(reason || C.MESSAGES.VALIDATION_FAILED);
-        return;
-      }
-      setLastValidatedKey(trimmed);
-      setValidMessage(C.LABELS.KEY_VALID);
-      message.success(C.MESSAGES.VALIDATION_SUCCESS);
-    } catch (err: unknown) {
-      setErrorMessage(getFriendlyValidationError(err));
-    } finally {
-      setValidating(false);
-    }
-  }, [apiKey, provider, message]);
+  const copyHelmCommand = useCallback(() => {
+    globalThis.navigator.clipboard.writeText(C.LABELS.HELM_HINT_COMMAND).then(
+      () => message.success(C.MESSAGES.COPIED),
+      () => message.error(C.MESSAGES.COPY_FAILED),
+    );
+  }, [message]);
 
-  const handleEnable = useCallback(async () => {
+  const checkModel = useCallback(async () => {
+    const { model } = form;
+    setChecking(true);
+    try {
+      const res = await validateAnalyzerModel(model);
+      const text = res.ok ? C.MESSAGES.MODEL_VALID : checkErrorText(res.reason);
+      setCheck({
+        model,
+        ok: res.ok,
+        text,
+        code: res.reason,
+        license: res.license,
+        warning: res.warning,
+      });
+      if (res.ok) message.success(C.MESSAGES.MODEL_VALID);
+    } catch (error: unknown) {
+      const data = validateErrorData(error);
+      setCheck({
+        model,
+        ok: false,
+        text: checkErrorText(data?.code),
+        code: data?.code,
+        license: data?.license,
+        warning: data?.warning,
+      });
+    } finally {
+      setChecking(false);
+    }
+  }, [form, message]);
+
+  const installModel = useCallback(async () => {
+    setInstalling(true);
+    try {
+      await pullAnalyzerModel(form.model);
+      setCheck(null);
+      message.success(C.MESSAGES.PULL_STARTED);
+    } catch (error: unknown) {
+      logger.error(C.MESSAGES.PULL_FAILED, error);
+      const code = apiErrorCode(error);
+      message.error((code && INSIGHT_ERROR_MESSAGES[code]) || C.MESSAGES.PULL_FAILED);
+    } finally {
+      setInstalling(false);
+    }
+  }, [form.model, message]);
+
+  const save = useCallback(async () => {
     setSaving(true);
-    setErrorMessage(null);
-    setValidMessage(null);
-    const apiKeyForSave = provider === 'ollama' ? '' : apiKey.trim();
     try {
       const { path, method } = Endpoints.GLOBALCONFIG.PATCH;
       await Client<ResourceDetailsResponse<unknown>>(exporterApiClient, path, {
         method,
-        data: { ai: { enabled: aiEnabled, provider, apiKey: apiKeyForSave } },
+        data: { ai: form },
       });
       message.success(C.MESSAGES.SAVE_SUCCESS);
-      setInitialAi({ enabled: aiEnabled, provider, apiKey: apiKeyForSave });
+      setInitialAi(form);
       dispatch(fetchGlobalConfigThunk());
-    } catch (err: unknown) {
-      message.error(getFriendlyValidationError(err) || C.MESSAGES.SAVE_FAILED);
+    } catch (error: unknown) {
+      logger.error(C.MESSAGES.SAVE_FAILED, error);
+      // A 4xx names the invalid fields; network and 5xx keep the generic text.
+      const meta = (error as ExtendedAxiosError).normalized;
+      message.error(meta?.isClient ? meta.message : C.MESSAGES.SAVE_FAILED);
     } finally {
       setSaving(false);
     }
-  }, [aiEnabled, apiKey, dispatch, provider, message]);
+  }, [dispatch, form, message]);
 
-  const validateToolbarConfig: ToolbarConfig = useMemo(
+  const deniedTooltip = canControlAiInsights
+    ? undefined
+    : C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED;
+
+  const installToolbarConfig: ToolbarConfig = useMemo(
     () => ({
       buttons: [
         {
-          key: 'validate',
-          label: C.LABELS.VALIDATE_BUTTON,
+          key: 'install',
+          label: C.LABELS.INSTALL_MODEL_BUTTON,
           variant: 'default',
-          loading: validating,
-          disabled: validateDisabled || !canControlAiInsights,
-          tooltip: canControlAiInsights
-            ? undefined
-            : C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED,
-          onClick: validateKey,
+          loading: installing,
+          onClick: installModel,
         },
       ],
     }),
-    [validating, validateDisabled, canControlAiInsights, validateKey],
+    [installing, installModel],
+  );
+
+  const checkToolbarConfig: ToolbarConfig = useMemo(
+    () => ({
+      buttons: [
+        {
+          key: 'check',
+          label: C.LABELS.VALIDATE_BUTTON,
+          variant: 'default',
+          loading: checking,
+          disabled: !modelValid || !canControlAiInsights,
+          tooltip: deniedTooltip,
+          onClick: checkModel,
+        },
+      ],
+    }),
+    [checking, modelValid, canControlAiInsights, deniedTooltip, checkModel],
   );
 
   const saveToolbarConfig: ToolbarConfig = useMemo(
@@ -191,106 +280,141 @@ const AIInsightsSection: React.FC = memo(() => {
           label: C.LABELS.SAVE_BUTTON,
           variant: 'default',
           loading: saving,
-          disabled: !aiHasChanges || !canEnable || !canControlAiInsights,
-          tooltip: canControlAiInsights
-            ? undefined
-            : C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED,
-          onClick: handleEnable,
+          disabled: !hasChanges || !modelValid || !canControlAiInsights,
+          tooltip: deniedTooltip,
+          onClick: save,
         },
       ],
     }),
-    [saving, aiHasChanges, canEnable, canControlAiInsights, handleEnable],
+    [saving, hasChanges, modelValid, canControlAiInsights, deniedTooltip, save],
   );
 
-  return (
-    <SettingsCard
-      title="AI Insights"
-      description={C.LABELS.AI_INSIGHTS_DESCRIPTION}
-      titleBadge={
-        <RowTag
-          text={C.LABELS.EXPERIMENTAL_BADGE}
-          background={DEFAULT_COLORS.WARNING_TINT}
-          color={DEFAULT_COLORS.WARNING}
-          fontSize={11}
-        />
-      }
-    >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: 10,
-            padding: '2px 0',
-          }}
-        >
-          <div style={{ fontWeight: 700 }}>{C.LABELS.ENABLE_AI_LABEL}</div>
-          <Tooltip
-            title={
-              !canControlAiInsights ? C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED : undefined
-            }
-          >
-            <span
-              style={
-                !canControlAiInsights ? { display: 'inline-block', cursor: 'not-allowed' } : {}
-              }
-            >
-              <Switch
-                checked={aiEnabled}
-                onChange={canControlAiInsights ? setAiEnabled : undefined}
-                disabled={!canControlAiInsights}
-              />
-            </span>
-          </Tooltip>
-        </div>
+  // Turning the analyzer on needs a ready runtime; turning it off never does.
+  const enableBlocked = !form.enabled && !ready;
 
-        {aiEnabled ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {/* One grid for both fields: the shared columns are what make the
-                provider select and the key input resolve to the same width. */}
-            <div style={AI_FIELD_GRID}>
-              <Select
-                value={provider}
-                options={C.PROVIDERS.OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
-                onChange={onProviderChange}
-                disabled={!canControlAiInsights}
-                style={{ gridRow: 1, gridColumn: 1, width: '100%' }}
-              />
-              {provider !== 'ollama' ? (
-                <>
-                  <Input
-                    placeholder={C.LABELS.API_KEY_PLACEHOLDER}
-                    value={apiKey}
-                    disabled={!canControlAiInsights}
-                    onChange={(e) => {
-                      setApiKey(e.target.value);
-                      setValidMessage(null);
-                      setErrorMessage(null);
-                    }}
-                    style={{ gridRow: 2, gridColumn: 1, width: '100%' }}
-                  />
-                  <div style={{ gridRow: 2, gridColumn: 2 }}>
-                    <Toolbar config={validateToolbarConfig} />
-                  </div>
-                </>
+  return (
+    <div style={COLUMN}>
+      <SettingsCard
+        title={C.LABELS.RUNTIME_STATUS_TITLE}
+        titleBadge={
+          <RowTag
+            text={C.LABELS.EXPERIMENTAL_BADGE}
+            accent={DEFAULT_COLORS.WARNING}
+            fontSize={11}
+          />
+        }
+      >
+        <div style={COLUMN}>
+          {isLoading ? null : (
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
+              <span
+                style={{
+                  fontWeight: 700,
+                  color: ready ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.WARNING,
+                }}
+              >
+                {stateLabel}
+              </span>
+              {runtime?.reason ? (
+                <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{runtime.reason}</span>
               ) : null}
             </div>
+          )}
+          {runtime ? (
+            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
+              {C.LABELS.RUNTIME_MODE_TITLE}: {C.LABELS.MODE_LABELS[runtime.mode]}
+            </div>
+          ) : null}
 
-            {validMessage ? (
-              <div style={{ color: C.COLORS.SUCCESS_TEXT, fontWeight: 700 }}>{validMessage}</div>
-            ) : null}
-            {errorMessage ? (
-              <div style={{ color: C.COLORS.ERROR_TEXT, fontWeight: 700 }}>{errorMessage}</div>
-            ) : null}
-          </div>
-        ) : null}
+          {runtimeState === 'absent' && !isLoading ? (
+            <div style={COLUMN}>
+              <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{C.LABELS.HELM_HINT_TEXT}</div>
+              <Space.Compact style={{ width: '100%' }}>
+                <Input readOnly value={C.LABELS.HELM_HINT_COMMAND} />
+                <Button icon={<CopyOutlined />} onClick={copyHelmCommand}>
+                  {C.LABELS.COPY_BUTTON}
+                </Button>
+              </Space.Compact>
+            </div>
+          ) : null}
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Toolbar config={saveToolbarConfig} />
+          {pull ? (
+            <div>
+              <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{pull.model}</div>
+              <Progress percent={pullPercent} />
+            </div>
+          ) : null}
+
+          {modelMissing && airGapped ? (
+            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{C.LABELS.AIR_GAPPED_HINT}</div>
+          ) : null}
+          {modelMissing && !airGapped ? (
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Toolbar config={installToolbarConfig} />
+            </div>
+          ) : null}
         </div>
-      </div>
-    </SettingsCard>
+      </SettingsCard>
+
+      <SettingsCard title={C.LABELS.MODEL_LABEL} description={modelHint}>
+        <div style={COLUMN}>
+          <div style={AI_FIELD_GRID}>
+            <Select
+              value={form.model}
+              options={modelOptions}
+              onChange={onModelChange}
+              showSearch={{ onSearch: setSearch }}
+              allowClear={false}
+              disabled={!canControlAiInsights}
+              style={{ width: '100%' }}
+            />
+            <Toolbar config={checkToolbarConfig} />
+          </div>
+          {currentCheck ? (
+            <div
+              style={{
+                color: currentCheck.ok ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.DANGER,
+                fontWeight: 700,
+              }}
+            >
+              {currentCheck.text}
+            </div>
+          ) : null}
+          {researchLicensed ? (
+            <div style={{ color: DEFAULT_COLORS.WARNING }}>{C.LABELS.LICENSE_WARNING}</div>
+          ) : null}
+        </div>
+      </SettingsCard>
+
+      <SettingsCard
+        title={C.LABELS.AI_INSIGHTS_TITLE}
+        description={C.LABELS.AI_INSIGHTS_DESCRIPTION}
+      >
+        <div style={COLUMN}>
+          <div style={TOGGLE_ROW}>
+            <div style={{ fontWeight: 700 }}>{C.LABELS.ENABLE_AI_LABEL}</div>
+            <Switch
+              checked={form.enabled}
+              onChange={(enabled) => setForm((prev) => ({ ...prev, enabled }))}
+              disabled={!canControlAiInsights || enableBlocked}
+              tooltip={deniedTooltip ?? (enableBlocked ? stateLabel : undefined)}
+            />
+          </div>
+          <div style={TOGGLE_ROW}>
+            <div style={{ fontWeight: 700 }}>{C.LABELS.AUTO_ANALYZE_LABEL}</div>
+            <Switch
+              checked={form.autoAnalyze}
+              onChange={(autoAnalyze) => setForm((prev) => ({ ...prev, autoAnalyze }))}
+              disabled={!canControlAiInsights}
+              tooltip={deniedTooltip}
+            />
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Toolbar config={saveToolbarConfig} />
+          </div>
+        </div>
+      </SettingsCard>
+    </div>
   );
 });
 

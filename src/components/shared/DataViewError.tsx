@@ -2,6 +2,9 @@ import React from 'react';
 import { Button } from 'antd';
 import { ExclamationCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../constants';
+import { ConnectivityBanner } from '../display/banners';
+import { connectivityIssueFrom } from '../../api/client/health-interceptor';
+import type { ConnectivityIssue } from '../../api/client/health-interceptor';
 import { DATA_VIEW_ERROR_CONSTANTS as DVE } from './dataViewError.constants';
 
 export type DataViewErrorVariant = 'card' | 'table' | 'fullPage';
@@ -11,6 +14,8 @@ export interface DataViewErrorProps {
   message: string;
   title?: string;
   onRetry: () => void;
+  /** Optional override; when omitted the message itself is classified. */
+  connectivity?: ConnectivityIssue;
 }
 
 const layoutFor = (variant: DataViewErrorVariant): React.CSSProperties => {
@@ -27,7 +32,7 @@ const layoutFor = (variant: DataViewErrorVariant): React.CSSProperties => {
 const containerStyle = (variant: DataViewErrorVariant): React.CSSProperties => {
   if (variant === 'fullPage') {
     return {
-      background: DEFAULT_COLORS.BACKGROUND_WHITE,
+      background: DEFAULT_COLORS.PAGE_BG,
       borderRadius: 0,
       border: 'none',
       width: '100%',
@@ -35,9 +40,9 @@ const containerStyle = (variant: DataViewErrorVariant): React.CSSProperties => {
     };
   }
   return {
-    background: DEFAULT_COLORS.BACKGROUND_WHITE,
+    background: DEFAULT_COLORS.PAGE_BG,
     borderRadius: 12,
-    border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+    border: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
   };
 };
 
@@ -46,7 +51,34 @@ const DataViewError: React.FC<DataViewErrorProps> = ({
   message,
   title = DVE.LABELS.DEFAULT_TITLE,
   onRetry,
+  connectivity,
 }) => {
+  // Classified here rather than at each call site, so every feature that renders
+  // an error state gets the status treatment for transient connectivity issues.
+  const issue = connectivity ?? connectivityIssueFrom(message);
+  if (issue) {
+    const banner = (
+      <ConnectivityBanner kind={issue.kind} serviceName={issue.serviceName} onRetry={onRetry} />
+    );
+    // fullPage owns the viewport, so the banner is centred in it instead of
+    // sitting flush under the sticky header; inline variants stay in place.
+    return variant === 'fullPage' ? (
+      <div
+        style={{
+          ...layoutFor(variant),
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+        }}
+      >
+        <div style={{ width: '100%', maxWidth: DVE.LAYOUT.BANNER_MAX_WIDTH }}>{banner}</div>
+      </div>
+    ) : (
+      banner
+    );
+  }
+
   return (
     <div
       role="alert"

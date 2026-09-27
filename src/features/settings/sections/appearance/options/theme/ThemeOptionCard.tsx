@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { DEFAULT_COLORS } from '../../../../../../constants';
+import { DEFAULT_COLORS, withAlpha } from '../../../../../../constants';
 import SettingsCard from '../../../../components/SettingsCard';
 import { APPEARANCE_SECTION_CONSTANTS } from '../../constants';
 
@@ -10,7 +10,7 @@ const comingSoonRowStyle = {
   alignItems: 'center' as const,
   padding: '8px 12px',
   borderRadius: 6,
-  background: 'rgba(0,0,0,0.04)',
+  background: withAlpha(DEFAULT_COLORS.SHADOW, 0.04),
   fontSize: 13,
   color: DEFAULT_COLORS.TEXT_MUTED,
   fontWeight: 500,

@@ -8,8 +8,11 @@ import type { AppDispatch } from '../../../../../../store';
 import store from '../../../../../../store';
 import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
 import type { User } from '../../../models';
+import { rejectionMessage } from '../../../../../../utils/helpers/format';
+import { fetchFreshUserIds } from '../../../utils';
+import { applySelectionChange } from '../../../../shared';
 
-type AssignmentField = 'assignedRolesIDs' | 'assignedGroupsIDs';
+type AssignmentField = 'roleRefs' | 'groupRefs';
 
 export interface UseAssignmentPanelBaseOptions {
   open: boolean;
@@ -22,8 +25,8 @@ export interface UseAssignmentPanelBaseOptions {
   dataReady: boolean;
   successMessage: (userName: string) => string;
   failMessage: string;
-  /** Called after user update succeeds with the new assigned ids (e.g. to sync inverse side). */
-  onSuccess?: (newIds: string[]) => void | Promise<void>;
+  /** Called after the user update succeeds (e.g. to reload the side the backend mirrors). */
+  onSuccess?: () => void;
 }
 
 export interface UseAssignmentPanelBaseReturn {
@@ -67,19 +70,20 @@ export const useAssignmentPanelBase = ({
     setSubmitting(true);
     try {
       const newIds = (values[fieldName] as string[]) ?? [];
+      const freshIds = await fetchFreshUserIds(user.id, fieldName);
       await dispatch(
         updateUserThunk({
           id: user.id,
-          user: { [fieldName]: newIds },
+          user: { [fieldName]: applySelectionChange(freshIds, initialSelectedIds, newIds) },
         }),
       ).unwrap();
       store.dispatch(fetchMyPermissionsThunk());
-      await onSuccess?.(newIds);
+      onSuccess?.();
       message.success(successMessage(user.fullname || user.username));
       form.resetFields();
       onClose();
-    } catch {
-      message.error(failMessage);
+    } catch (rejection) {
+      message.error(rejectionMessage(rejection, failMessage));
     } finally {
       setSubmitting(false);
     }

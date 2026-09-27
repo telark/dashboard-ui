@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Empty } from 'antd';
+import { Empty, type TableColumnType } from 'antd';
 import type { PageLayoutConfig } from '../../../../../interfaces/layout/page';
 import type { FilterChip } from '../../../../../interfaces/layout/toolbar';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
@@ -120,16 +120,34 @@ export const useGroupListPageConfig = ({
     paginatedCategories,
   } = useCategoryListView({ categories: uniqueCategories });
 
-  const canAttachRole = usePermission(
+  const canAddRole = usePermission(
     ACTION_PERMISSIONS.groups.attachRole.scope,
     ACTION_PERMISSIONS.groups.attachRole.level,
     ACTION_PERMISSIONS.groups.attachRole.deny,
   );
-  const canAttachMember = usePermission(
+  const canRemoveRole = usePermission(
+    ACTION_PERMISSIONS.groups.removeRole.scope,
+    ACTION_PERMISSIONS.groups.removeRole.level,
+    ACTION_PERMISSIONS.groups.removeRole.deny,
+  );
+  const canAddMember = usePermission(
     ACTION_PERMISSIONS.groups.attachMember.scope,
     ACTION_PERMISSIONS.groups.attachMember.level,
     ACTION_PERMISSIONS.groups.attachMember.deny,
   );
+  const canRemoveMember = usePermission(
+    ACTION_PERMISSIONS.groups.removeMember.scope,
+    ACTION_PERMISSIONS.groups.removeMember.level,
+    ACTION_PERMISSIONS.groups.removeMember.deny,
+  );
+  const canBulkDeleteGroup = usePermission(
+    ACTION_PERMISSIONS.groups.delete.scope,
+    ACTION_PERMISSIONS.groups.delete.level,
+    ACTION_PERMISSIONS.groups.delete.deny,
+  );
+  // The panels gate each row on its add or remove rule, so either one opens them.
+  const canAttachRole = canAddRole || canRemoveRole;
+  const canAttachMember = canAddMember || canRemoveMember;
   const canViewGroupCategories = usePermission(
     ACTION_PERMISSIONS.groups.viewCategories.scope,
     ACTION_PERMISSIONS.groups.viewCategories.level,
@@ -152,6 +170,7 @@ export const useGroupListPageConfig = ({
     onAttachMemberClick,
     canAttachRole,
     canAttachMember,
+    canBulkDeleteGroup,
     canViewGroupCategories,
     canAddGroupCategory,
     onFilterClick,
@@ -177,7 +196,7 @@ export const useGroupListPageConfig = ({
         onSort: handleSort,
         categories: uniqueReduxCategories,
         users: users || [],
-      }),
+      }) as TableColumnType<Group | Category>[],
     [sortKey, uniqueReduxCategories, handleSort, users],
   );
 
@@ -186,7 +205,7 @@ export const useGroupListPageConfig = ({
       CategoryColumns({
         activeSortKey: categorySortKey ?? 'creationDate',
         onSort: handleCategorySort,
-      }),
+      }) as TableColumnType<Group | Category>[],
     [categorySortKey, handleCategorySort],
   );
 
@@ -215,7 +234,7 @@ export const useGroupListPageConfig = ({
                 key: 'actions',
                 align: 'right' as const,
                 width: 120,
-                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
+                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
                 render: (_: unknown, record: Group | Category) =>
                   viewMode === 'groups' ? (
                     <GroupActionsColumn record={record as Group} onEdit={handleEditClick} />
@@ -229,7 +248,7 @@ export const useGroupListPageConfig = ({
                 key: 'actions',
                 align: 'right' as const,
                 width: 120,
-                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
+                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
                 render: (_: unknown, record: Group | Category) => (
                   <CategoryActionsColumn
                     record={record as Category}

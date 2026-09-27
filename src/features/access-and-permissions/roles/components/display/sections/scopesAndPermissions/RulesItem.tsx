@@ -15,8 +15,8 @@ const RulesItem: React.FC<RulesItemProps> = ({ ruleLabel, formattedKey, isChecke
         display: 'flex',
         alignItems: 'center',
         padding: '8px 14px',
-        background: DEFAULT_COLORS.BACKGROUND_LIGHT,
-        border: `1px solid ${DEFAULT_COLORS.BORDER_LIGHT}`,
+        background: DEFAULT_COLORS.PAGE_BG,
+        border: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
         borderRadius: 8,
         transition: 'all 0.2s ease',
         cursor: 'pointer',
@@ -25,12 +25,12 @@ const RulesItem: React.FC<RulesItemProps> = ({ ruleLabel, formattedKey, isChecke
         boxSizing: 'border-box',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.background = DEFAULT_COLORS.BACKGROUND_HOVER;
+        e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
         e.currentTarget.style.borderColor = DEFAULT_COLORS.BORDER_HOVER;
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.background = DEFAULT_COLORS.BACKGROUND_LIGHT;
-        e.currentTarget.style.borderColor = DEFAULT_COLORS.BORDER_LIGHT;
+        e.currentTarget.style.background = DEFAULT_COLORS.PAGE_BG;
+        e.currentTarget.style.borderColor = DEFAULT_COLORS.BORDER_SUBTLE;
       }}
       onClick={(e) => {
         if ((e.target as HTMLElement).closest?.('.ant-checkbox-wrapper')) return;

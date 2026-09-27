@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { persistReducer } from 'redux-persist';
+import { persistReducer, persistStore } from 'redux-persist';
 import { applicationsReducer } from '../features/resources/applications/store';
 import { protectionPlansReducer } from '../features/plans/protection/store';
 import { globalConfigReducer } from '../features/globalconfig/store';
@@ -19,6 +19,8 @@ import {
   rolesPersistConfig,
   protectionPlansPersistConfig,
   globalConfigPersistConfig,
+  permissionsPersistConfig,
+  categoriesPersistConfig,
 } from './persistConfig';
 
 const persistedApplicationsReducer = persistReducer(applicationsPersistConfig, applicationsReducer);
@@ -31,6 +33,8 @@ const persistedProtectionPlansReducer = persistReducer(
   protectionPlansReducer,
 );
 const persistedGlobalConfigReducer = persistReducer(globalConfigPersistConfig, globalConfigReducer);
+const persistedCategoriesReducer = persistReducer(categoriesPersistConfig, categoriesReducer);
+const persistedPermissionsReducer = persistReducer(permissionsPersistConfig, permissionsReducer);
 
 const store = configureStore({
   reducer: {
@@ -39,10 +43,10 @@ const store = configureStore({
     globalconfig: persistedGlobalConfigReducer,
     groups: persistedGroupsReducer,
     users: persistedUsersReducer,
-    categories: categoriesReducer,
+    categories: persistedCategoriesReducer,
     roles: persistedRolesReducer,
     passkeys: passkeyReducer,
-    permissions: permissionsReducer,
+    permissions: persistedPermissionsReducer,
     authConfig: authConfigReducer,
     notifications: notificationsReducer,
     protectionPlans: persistedProtectionPlansReducer,
@@ -56,6 +60,8 @@ const store = configureStore({
       immutableCheck: false,
     }),
 });
+
+export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

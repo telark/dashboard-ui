@@ -59,8 +59,14 @@ export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({
   const canEdit = hasEditPermission && !!onEdit;
   const canDelete = hasDeletePermission;
 
-  const { deleteModalOpen, isDeleting, openDeleteModal, closeDeleteModal, handleConfirmDelete } =
-    useGroupDeleteModal(record);
+  const {
+    deleteModalOpen,
+    isDeleting,
+    openDeleteModal,
+    closeDeleteModal,
+    handleConfirmDelete,
+    deleteImpact,
+  } = useGroupDeleteModal(record);
 
   const handleEditClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -139,6 +145,7 @@ export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({
           onConfirm={handleConfirmDelete}
           groupName={record.name}
           loading={isDeleting}
+          impact={deleteImpact}
         />
       )}
     </div>

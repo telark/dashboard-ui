@@ -16,12 +16,9 @@ import { DATA_VIEW_ERROR_CONSTANTS } from '../../../../components/shared/dataVie
 import type { AppDispatch } from '../../../../store';
 import { APP_ROUTES, DEFAULT_COLORS, HEADER_LAYOUT } from '../../../../constants';
 import { PERMISSION_GATE_BYPASS_PATHS } from '../../constants';
-import type { PermissionLevel } from '../../models';
 
 interface ProtectedRouteProps {
   children: React.ReactElement;
-  requiredScope?: string;
-  minimumLevel?: PermissionLevel;
 }
 
 const buildMessage = (error: string | null, timedOut: boolean): string => {
@@ -68,7 +65,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
           width: '100%',
           height: HEADER_LAYOUT.MIN_HEIGHT,
           minHeight: HEADER_LAYOUT.MIN_HEIGHT,
-          background: DEFAULT_COLORS.BACKGROUND_WHITE,
+          background: DEFAULT_COLORS.PAGE_BG,
           boxSizing: 'border-box',
         }}
       >
@@ -92,7 +89,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
           width: '100%',
           height: HEADER_LAYOUT.MIN_HEIGHT,
           minHeight: HEADER_LAYOUT.MIN_HEIGHT,
-          background: DEFAULT_COLORS.BACKGROUND_WHITE,
+          background: DEFAULT_COLORS.PAGE_BG,
           boxSizing: 'border-box',
         }}
       >

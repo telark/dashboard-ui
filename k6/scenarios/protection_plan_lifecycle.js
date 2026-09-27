@@ -1,6 +1,6 @@
 // S6 — protection_plan_lifecycle
 // Purpose: full plan CRUD across discovery↔exporter inter-service boundary
-// APIs: discovery (templates, namespaces, prepare, status, violations, duplicate, cancel, reactivate, update, clear); exporter (read confirmations)
+// APIs: discovery (templates, namespaces, prepare, status, violations, duplicate, cancel, reactivate, revise, clear); exporter (read confirmations)
 // Services: discovery + exporter
 // Why: most service-rich flow; catches inter-service contract mismatches, per-ID lock contention, state-machine bugs
 
@@ -37,7 +37,7 @@ export const setup = () => {
 export default function () {
   resetStepCounter();
 
-  const templatesRes = get(path.discovery('plans/protection/templates'), {
+  const templatesRes = get(path.discovery('policytemplates'), {
     name: 'plan.templates',
     metric: METRICS.PLAN_TEMPLATES,
   });
@@ -52,7 +52,7 @@ export default function () {
     return;
   }
 
-  get(path.discovery('analyze/namespaces/get'), {
+  get(path.discovery('cluster/namespaces'), {
     name: 'namespaces.list',
     metric: METRICS.NAMESPACES_LIST,
   });
@@ -61,9 +61,9 @@ export default function () {
     name: fixtures.planName(),
     description: 'created by k6 suite',
     templateID: templateId,
-    participantsIDs: [cfg.userId],
+    participantRefs: [cfg.userId],
   };
-  const prepareRes = post(path.discovery('plans/protection/prepare'), preparePayload, {
+  const prepareRes = post(path.discovery('protectionplans/prepare'), preparePayload, {
     name: 'plan.prepare',
     metric: METRICS.PLAN_PREPARE,
   });
@@ -75,18 +75,18 @@ export default function () {
 
   pollStatus(planId);
 
-  get(`${path.discovery(`plans/protection/${encodeURIComponent(planId)}/violations`)}?limit=20`, {
+  get(`${path.discovery(`protectionplans/${encodeURIComponent(planId)}/violations`)}?limit=20`, {
     name: 'plan.violations',
     metric: METRICS.PLAN_VIOLATIONS,
   });
 
-  get(path.exporter(`plans/protection/${encodeURIComponent(planId)}/get`), {
+  get(path.exporter(`protectionplans/${encodeURIComponent(planId)}`), {
     name: 'plan.exporter.get',
     metric: METRICS.CACHED_GET,
   });
 
   const dupRes = post(
-    path.discovery(`plans/protection/${encodeURIComponent(planId)}/duplicate`),
+    path.discovery(`protectionplans/${encodeURIComponent(planId)}/duplicate`),
     {},
     {
       name: 'plan.duplicate',
@@ -96,7 +96,7 @@ export default function () {
   const dupId = extractPlanId(parseJson(dupRes));
 
   post(
-    path.discovery(`plans/protection/${encodeURIComponent(planId)}/cancel`),
+    path.discovery(`protectionplans/${encodeURIComponent(planId)}/cancel`),
     { reason: 'k6 lifecycle test' },
     {
       name: 'plan.cancel',
@@ -105,7 +105,7 @@ export default function () {
   );
 
   post(
-    path.discovery(`plans/protection/${encodeURIComponent(planId)}/reactivate`),
+    path.discovery(`protectionplans/${encodeURIComponent(planId)}/reactivate`),
     {},
     {
       name: 'plan.reactivate',
@@ -114,21 +114,21 @@ export default function () {
   );
 
   post(
-    path.discovery(`plans/protection/${encodeURIComponent(planId)}/update`),
+    path.discovery(`protectionplans/${encodeURIComponent(planId)}/revise`),
     { description: 'k6 edited' },
     {
-      name: 'plan.update',
+      name: 'plan.revise',
       metric: METRICS.PLAN_MUTATE,
     },
   );
 
-  del(path.discovery(`plans/protection/${encodeURIComponent(planId)}/clear`), {
+  del(path.discovery(`protectionplans/${encodeURIComponent(planId)}/clear`), {
     name: 'plan.clear',
     metric: METRICS.PLAN_MUTATE,
   });
 
   if (dupId) {
-    del(path.discovery(`plans/protection/${encodeURIComponent(dupId)}/clear`), {
+    del(path.discovery(`protectionplans/${encodeURIComponent(dupId)}/clear`), {
       name: 'plan.clear.duplicate',
       metric: METRICS.PLAN_MUTATE,
     });
@@ -142,7 +142,7 @@ const pollStatus = (planId) => {
     const delay = STATUS_POLL_DELAYS_SEC[Math.min(idx, STATUS_POLL_DELAYS_SEC.length - 1)];
     sleep(delay);
     idx += 1;
-    const res = get(path.discovery(`plans/protection/${encodeURIComponent(planId)}/status`), {
+    const res = get(path.discovery(`protectionplans/${encodeURIComponent(planId)}/status`), {
       name: `plan.status[${idx}]`,
       metric: METRICS.PLAN_STATUS,
     });

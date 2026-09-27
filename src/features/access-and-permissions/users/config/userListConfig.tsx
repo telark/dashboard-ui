@@ -39,6 +39,7 @@ interface UseUserListConfigProps {
   canManageRole?: boolean;
   canManageGroup?: boolean;
   canBulkDeleteUser?: boolean;
+  bulkDeleteLockReason?: string;
   totalCount: number;
   pageCount: number;
   bulkMode: boolean;
@@ -96,6 +97,7 @@ export const useUserListConfig = ({
   canManageRole = true,
   canManageGroup = true,
   canBulkDeleteUser = true,
+  bulkDeleteLockReason,
   totalCount,
   pageCount,
   bulkMode,
@@ -130,13 +132,16 @@ export const useUserListConfig = ({
           icon: <DeleteOutlined />,
           variant: 'danger',
           iconOnly: true,
-          disabled: selectedUsersCount < 2 || !canBulkDeleteUser,
-          tooltip: canBulkDeleteUser ? undefined : UC.LABELS.ACTIONS.BULK_DELETE_DISABLED_TOOLTIP,
+          disabled: selectedUsersCount < 2 || !canBulkDeleteUser || Boolean(bulkDeleteLockReason),
+          tooltip: canBulkDeleteUser
+            ? bulkDeleteLockReason
+            : UC.LABELS.ACTIONS.BULK_DELETE_DISABLED_TOOLTIP,
           onClick: () => onBulkDeleteClick?.(),
         },
       ],
     }),
     [
+      bulkDeleteLockReason,
       canBulkDeleteUser,
       canManageGroup,
       canManageRole,

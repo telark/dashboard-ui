@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { CheckCircleOutlined, DownOutlined, RightOutlined, StopOutlined } from '@ant-design/icons';
 import { App as AntdApp, Button, Tooltip } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   SlideOutPanel,
   ExpandPanelButton,
@@ -28,7 +28,6 @@ import {
   usePermission,
   ACTION_PERMISSIONS,
 } from '../../../../../features/auth/hooks/permissions/permissionEngine';
-import { selectPermissionsState } from '../../../../auth/store/selectors/permissionsSelectors';
 
 const PANEL_WIDTH = 650;
 const PANEL_WIDTH_EXPANDED = 960;
@@ -60,7 +59,6 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
   const [abortBusyId, setAbortBusyId] = useState<string | null>(null);
   const dispatch: AppDispatch = useDispatch();
   const { modal, message } = AntdApp.useApp();
-  const { userID } = useSelector(selectPermissionsState);
   const canAbort = usePermission(
     ACTION_PERMISSIONS.applications.rollback.scope,
     ACTION_PERMISSIONS.applications.rollback.level,
@@ -88,18 +86,10 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
         okType: 'danger',
         cancelText: APPLICATIONS_UI.CARD.ACTIONS.CANCEL,
         onOk: async () => {
-          if (!userID) {
-            message.error(ui.ABORT_USER_REQUIRED);
-            return;
-          }
           setAbortBusyId(entry.id);
           try {
             await dispatch(
-              abortApplicationRollbackThunk({
-                name: applicationName,
-                rollbackId: entry.id,
-                userID,
-              }),
+              abortApplicationRollbackThunk({ name: applicationName, rollbackId: entry.id }),
             ).unwrap();
             message.success(ui.ABORT_SUCCESS);
             onAfterAbort?.();
@@ -111,7 +101,7 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
         },
       });
     },
-    [applicationName, dispatch, message, modal, onAfterAbort, ui, userID],
+    [applicationName, dispatch, message, modal, onAfterAbort, ui],
   );
 
   return (

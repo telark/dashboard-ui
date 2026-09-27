@@ -1,5 +1,6 @@
 import { format, formatDistanceToNow, parse } from 'date-fns';
 import { TIME_FORMATS, TIME_TEXTS, TIME_ZONE } from '../../constants/shared/time';
+import { STORAGE_KEYS } from '../../constants/store/store';
 import { getCurrentUser } from '../../features/auth/utils/session/user';
 
 export type DateInput = string | number | Date;
@@ -42,8 +43,14 @@ export const isValidTimeZone = (timeZone: string): boolean => {
   }
 };
 
-export const getBrowserTimeZone = (): string =>
-  Intl.DateTimeFormat().resolvedOptions().timeZone || TIME_ZONE.FALLBACK;
+// Every time label on a page reads the zone, so formatters and the resolved zone are
+// cached: constructing Intl.DateTimeFormat per call froze pages with many labels.
+let browserTimeZone: string | undefined;
+
+export const getBrowserTimeZone = (): string => {
+  browserTimeZone ??= Intl.DateTimeFormat().resolvedOptions().timeZone || TIME_ZONE.FALLBACK;
+  return browserTimeZone;
+};
 
 export const getBrowserRegion = (): string | undefined => {
   try {
@@ -57,14 +64,32 @@ export const getSupportedTimeZones = (): string[] => [
   ...new Set([TIME_ZONE.FALLBACK, getBrowserTimeZone(), ...Intl.supportedValuesOf('timeZone')]),
 ];
 
-export const formatTimeZoneOffset = (timeZone: string, date: Date = new Date()): string =>
-  new Intl.DateTimeFormat(TIME_ZONE.PARTS_LOCALE, { timeZone, timeZoneName: TIME_ZONE.OFFSET_NAME })
-    .formatToParts(date)
-    .find(({ type }) => type === 'timeZoneName')?.value ?? '';
+const offsetFormatters = new Map<string, Intl.DateTimeFormat>();
+
+export const formatTimeZoneOffset = (timeZone: string, date: Date = new Date()): string => {
+  let formatter = offsetFormatters.get(timeZone);
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat(TIME_ZONE.PARTS_LOCALE, {
+      timeZone,
+      timeZoneName: TIME_ZONE.OFFSET_NAME,
+    });
+    offsetFormatters.set(timeZone, formatter);
+  }
+  return formatter.formatToParts(date).find(({ type }) => type === 'timeZoneName')?.value ?? '';
+};
+
+// Keyed on the stored user string so a timezone change in Settings applies at once.
+let cachedUserRaw: string | null | undefined;
+let cachedTimeZone: string = TIME_ZONE.FALLBACK;
 
 export const getTimeZone = (): string => {
-  const preferred = getCurrentUser()?.settings?.timezone;
-  return preferred && isValidTimeZone(preferred) ? preferred : getBrowserTimeZone();
+  const raw = globalThis.localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
+  if (raw !== cachedUserRaw) {
+    cachedUserRaw = raw;
+    const preferred = getCurrentUser()?.settings?.timezone;
+    cachedTimeZone = preferred && isValidTimeZone(preferred) ? preferred : getBrowserTimeZone();
+  }
+  return cachedTimeZone;
 };
 
 // Returns a local Date whose fields read as the wall clock in `timeZone`,

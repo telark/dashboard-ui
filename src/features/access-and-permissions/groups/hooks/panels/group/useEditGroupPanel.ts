@@ -8,7 +8,6 @@ import {
   useGroupFormSelectOptions,
   useGroupMutations,
 } from '../../';
-import { normalizeGroupFormData } from '../../../utils';
 import type { GroupPanelProps, GroupFormData } from '../../../models';
 
 interface UseEditGroupPanelOptions {
@@ -48,8 +47,8 @@ export const useEditGroupPanel = ({
     return {
       name: editingGroup.name,
       description: editingGroup.description,
-      categoryID: editingGroup.categoryID,
-      assignedUsersIDs: editingGroup.assignedUsersIDs ?? [],
+      categoryRef: editingGroup.categoryRef,
+      userRefs: editingGroup.userRefs ?? [],
     };
   }, [editingGroup]);
 
@@ -79,12 +78,9 @@ export const useEditGroupPanel = ({
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     if (!editingGroup) return;
-    const formData = normalizeGroupFormData({
-      ...values,
-      assignedUsersIDs:
-        (values.assignedUsersIDs as string[] | undefined) ?? editingGroup.assignedUsersIDs ?? [],
-    });
-    await handleUpdate(editingGroup.id, formData);
+    // Membership is edited in Manage Members only; resending it here would revert concurrent changes.
+    const { name, description, categoryRef } = values as Partial<GroupFormData>;
+    await handleUpdate(editingGroup.id, { name, description, categoryRef });
     form.resetFields();
     onClose();
   };

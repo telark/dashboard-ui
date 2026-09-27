@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { DEFAULT_COLORS } from '../../../../constants';
+import { NoPermissionCard } from '../../../../components/shared';
 import { HOME_DASHBOARD_LAYOUT as L, HOME_DASHBOARD_STYLES as S } from '../../constants/dashboard';
 import type { BoxState } from '../../models';
 import BoxBody from './BoxBody';
@@ -16,7 +17,7 @@ export interface DashboardBoxProps extends BoxState {
 
 // Fills its grid cell; the body clips so every box keeps the row's height.
 const DashboardBox: React.FC<DashboardBoxProps> = memo(
-  ({ title, count, viewAllTo, loading, failed, bodyOverflow = 'hidden', children }) => (
+  ({ title, count, viewAllTo, loading, failed, noAccess, bodyOverflow = 'hidden', children }) => (
     <section
       style={{
         height: '100%',
@@ -49,11 +50,11 @@ const DashboardBox: React.FC<DashboardBoxProps> = memo(
           }}
         >
           {title}
-          {count ? (
+          {count && !noAccess ? (
             <span style={{ ...S.MUTED_TEXT, marginLeft: L.ROW_GAP_PX }}>{count}</span>
           ) : null}
         </h3>
-        {viewAllTo ? <ViewAllLink to={viewAllTo} /> : null}
+        {viewAllTo && !noAccess ? <ViewAllLink to={viewAllTo} /> : null}
       </header>
       <div
         style={{
@@ -65,9 +66,13 @@ const DashboardBox: React.FC<DashboardBoxProps> = memo(
           gap: L.SECTION_GAP_PX,
         }}
       >
-        <BoxBody loading={loading} failed={failed}>
-          {children}
-        </BoxBody>
+        {noAccess ? (
+          <NoPermissionCard {...noAccess} compact />
+        ) : (
+          <BoxBody loading={loading} failed={failed}>
+            {children}
+          </BoxBody>
+        )}
       </div>
     </section>
   ),

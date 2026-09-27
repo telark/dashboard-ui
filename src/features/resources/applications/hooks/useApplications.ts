@@ -22,8 +22,8 @@ export function useApplications() {
 }
 
 export function filterApplications(applications: Application[], searchValue: string) {
-  if (!searchValue) return applications;
-  const lower = searchValue.toLowerCase();
+  const lower = searchValue.trim().toLowerCase();
+  if (!lower) return applications;
   return applications.filter((a) => {
     return (
       a.name.toLowerCase().includes(lower) ||

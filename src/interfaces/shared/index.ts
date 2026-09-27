@@ -1,4 +1,11 @@
 import type { ReactNode, CSSProperties } from 'react';
+import type { PermissionLevel } from '../../features/auth/models';
+
+export interface RequiredPermission {
+  scope: string;
+  level: PermissionLevel;
+  deny?: string;
+}
 
 export interface LoadingButtonInterface {
   action: string;
@@ -25,11 +32,6 @@ export interface ButtonInterface {
   active?: boolean;
   hoverIcon?: ReactNode;
   route: string;
-}
-
-export interface MetricInterface {
-  label: string;
-  value: number;
 }
 
 export interface Record {

@@ -48,7 +48,6 @@ const EditProfilePanel: React.FC<EditProfilePanelProps> = memo(
       open={open}
       onClose={onClose}
       title={P.TITLE}
-      subtitle={P.SUBTITLE}
       formContent={
         <>
           <LabeledInput

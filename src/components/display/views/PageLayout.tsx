@@ -13,6 +13,7 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
     title,
     subtitle,
     breadcrumbs,
+    tabs,
     listToolbar,
     columns,
     data,
@@ -40,6 +41,7 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
       subtitle={subtitle}
       gap={LIST_PAGE.CONTENT_GAP_PX}
     >
+      {tabs}
       <ListToolbar {...listToolbar} />
       <div style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>
         {dataState.phase === 'error' ? (
@@ -47,6 +49,7 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
             variant="table"
             message={dataState.errorMessage}
             onRetry={onRetry ?? (() => undefined)}
+            connectivity={dataState.connectivity}
           />
         ) : null}
         {dataState.phase === 'loading' ? (
@@ -77,6 +80,7 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
                 ? {
                     selectedRowKeys: rowSelection.selectedRowKeys,
                     onChange: rowSelection.onChange,
+                    getCheckboxProps: rowSelection.getCheckboxProps,
                   }
                 : undefined,
               onRow: onRowClick

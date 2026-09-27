@@ -10,8 +10,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
 import type { AppDispatch, RootState } from '../../../../store';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as C } from './constants';
-import { usePermission } from '../../../auth/hooks/permissions/permissionEngine';
+import {
+  ACTION_PERMISSIONS,
+  usePermission,
+} from '../../../auth/hooks/permissions/permissionEngine';
 
+const EDIT_DISCOVERY_PERMISSION = ACTION_PERMISSIONS.settings.editDiscoveryConfig;
 const FETCH_INTERVAL_PRESET_MINUTES = [1, 2, 5, 10, 15, 30, 60] as const;
 
 function snapDownToPreset(value: number, presets: readonly number[]): number {
@@ -27,7 +31,12 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
   const applications = useSelector((s: RootState) => s.applications.applications);
-  const canEditDiscoveryConfig = usePermission('settings', 'Contributor');
+  // The save always sends excludedNamespaces, so this deny rule refuses the whole section.
+  const canEditDiscoveryConfig = usePermission(
+    EDIT_DISCOVERY_PERMISSION.scope,
+    EDIT_DISCOVERY_PERMISSION.level,
+    EDIT_DISCOVERY_PERMISSION.deny,
+  );
   const { message } = AntdApp.useApp();
 
   const [initialDiscovery, setInitialDiscovery] = useState<{

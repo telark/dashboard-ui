@@ -7,6 +7,8 @@ import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchT
 import { useGroupMutations } from '../../';
 import { useRoles } from '../../../../roles/hooks';
 import type { Group } from '../../../models';
+import { fetchFreshGroupIds } from '../../../utils';
+import { applySelectionChange } from '../../../../shared';
 
 const arraysEqual = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) return false;
@@ -51,7 +53,7 @@ export const useAttachRolePanel = ({
   }, [group, groups]);
 
   const initialSelectedRoles = useMemo(() => {
-    return currentGroup?.assignedRolesIDs || [];
+    return currentGroup?.roleRefs || [];
   }, [currentGroup]);
 
   const filteredRoles = useMemo(() => {
@@ -60,8 +62,8 @@ export const useAttachRolePanel = ({
 
   useEffect(() => {
     if (open && currentGroup && !rolesLoading && roles) {
-      const assignedRoles = currentGroup.assignedRolesIDs || [];
-      form.setFieldsValue({ assignedRolesIDs: assignedRoles });
+      const assignedRoles = currentGroup.roleRefs || [];
+      form.setFieldsValue({ roleRefs: assignedRoles });
     }
   }, [open, currentGroup, rolesLoading, roles, form]);
 
@@ -73,8 +75,14 @@ export const useAttachRolePanel = ({
 
   const handleSubmit = async (values: Record<string, unknown>) => {
     if (!currentGroup) return;
-    const assignedRolesIDs = (values.assignedRolesIDs as string[]) || [];
-    await handleUpdate(currentGroup.id, { assignedRolesIDs });
+    const selected = (values.roleRefs as string[]) || [];
+    await handleUpdate(currentGroup.id, async () => ({
+      roleRefs: applySelectionChange(
+        await fetchFreshGroupIds(currentGroup.id, 'roleRefs'),
+        initialSelectedRoles,
+        selected,
+      ),
+    }));
     store.dispatch(fetchMyPermissionsThunk());
     form.resetFields();
     onClose();

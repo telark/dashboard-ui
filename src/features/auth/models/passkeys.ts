@@ -59,16 +59,14 @@ export interface CreatePasskeyParams {
   email?: string;
 }
 
-// Hook interfaces
 export interface PasskeyActionsReturn {
   submitting: boolean;
   handleEdit: (record: Passkey) => void;
   handleDelete: (record: Passkey, forceLastDelete?: boolean) => Promise<void>;
-  handleCreate: (values: Record<string, any>) => Promise<void>;
-  handleUpdate: (values: Record<string, any>, selectedPasskey: Passkey | null) => Promise<void>;
+  handleCreate: (values: Record<string, unknown>) => Promise<void>;
+  handleUpdate: (values: Record<string, unknown>, selectedPasskey: Passkey | null) => Promise<void>;
 }
 
-// Handler function interfaces
 export interface PasskeyMessageApi {
   success: (content: string) => void;
   error: (content: string) => void;
@@ -96,7 +94,6 @@ export interface DeletePasskeyHandlerParams {
   message: PasskeyMessageApi;
 }
 
-// Validation interfaces
 export interface ValidateDeviceNameOptions {
   value: string;
   existingPasskeys: Passkey[];

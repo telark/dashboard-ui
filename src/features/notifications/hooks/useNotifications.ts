@@ -59,7 +59,6 @@ export function useNotifications(): UseNotificationsResult {
     writeNotificationsCache(notifications, unreadCount);
   }, [notifications, unreadCount]);
 
-  // Hydrate from cache on mount.
   useEffect(() => {
     if (hydratedRef.current) return;
     const cached = readNotificationsCache();
@@ -69,7 +68,6 @@ export function useNotifications(): UseNotificationsResult {
     hydratedRef.current = true;
   }, [dispatch]);
 
-  // Cross-tab sync via storage event.
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
       if (e.key !== NOTIFICATIONS_CACHE_KEY) return;

@@ -8,13 +8,15 @@ import {
   fetchProtectionPlanTemplates,
   preparePlan,
   cancelPlan,
+  decidePlan,
   deletePlan,
   duplicatePlan,
   reactivatePlan,
   updatePlan,
+  type PreparePlanPayload,
   type UpdatePlanPayload,
 } from '../../clients';
-import type { ProtectionPlan, PlanTemplate } from '../../models';
+import type { PlanApprovalDecision, ProtectionPlan, PlanTemplate } from '../../models';
 
 export const fetchProtectionPlansThunk = createAsyncThunk<ProtectionPlan[]>(
   STORE_ACTIONS.PROTECTION_PLANS.FETCH,
@@ -65,26 +67,14 @@ export const fetchProtectionPlanTemplatesThunk = createAsyncThunk<PlanTemplate[]
 );
 
 export interface PreparePlanArgs {
-  userId: string;
-  payload: {
-    name: string;
-    description?: string;
-    severity?: string;
-    priority?: number;
-    scope: { type: string; applicationIds: string[]; namespaces: string[] };
-    policies: { templateID: string; params: Record<string, string[]> }[];
-    mode: string;
-    timeMode: string;
-    timeRange?: { startAt: string; endAt: string };
-    participantsIDs?: string[];
-  };
+  payload: PreparePlanPayload;
 }
 
 export const preparePlanThunk = createAsyncThunk<ProtectionPlan, PreparePlanArgs>(
   STORE_ACTIONS.PROTECTION_PLANS.PREPARE,
-  async ({ userId, payload }, { rejectWithValue }) => {
+  async ({ payload }, { rejectWithValue }) => {
     try {
-      return await preparePlan(userId, payload);
+      return await preparePlan(payload);
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_PREPARING_PROTECTION_PLAN, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.PREPARE_PROTECTION_PLAN));
@@ -93,16 +83,15 @@ export const preparePlanThunk = createAsyncThunk<ProtectionPlan, PreparePlanArgs
 );
 
 export interface CancelPlanArgs {
-  userId: string;
   planId: string;
   reason?: string;
 }
 
 export const cancelPlanThunk = createAsyncThunk<ProtectionPlan, CancelPlanArgs>(
   STORE_ACTIONS.PROTECTION_PLANS.CANCEL,
-  async ({ userId, planId, reason }, { rejectWithValue }) => {
+  async ({ planId, reason }, { rejectWithValue }) => {
     try {
-      return await cancelPlan(userId, planId, reason);
+      return await cancelPlan(planId, reason);
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_CANCELLING_PROTECTION_PLAN, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.CANCEL_PROTECTION_PLAN));
@@ -110,16 +99,34 @@ export const cancelPlanThunk = createAsyncThunk<ProtectionPlan, CancelPlanArgs>(
   },
 );
 
+export interface DecidePlanArgs {
+  planId: string;
+  decision: PlanApprovalDecision;
+  comment?: string;
+  requestedAt: string;
+}
+
+export const decidePlanThunk = createAsyncThunk<ProtectionPlan, DecidePlanArgs>(
+  STORE_ACTIONS.PROTECTION_PLANS.DECIDE,
+  async ({ planId, decision, comment, requestedAt }, { rejectWithValue }) => {
+    try {
+      return await decidePlan(planId, { decision, comment, requestedAt });
+    } catch (error: unknown) {
+      logger.error(STORE_MESSAGES.ERROR_DECIDING_PROTECTION_PLAN, error);
+      return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.DECIDE_PROTECTION_PLAN));
+    }
+  },
+);
+
 export interface DeletePlanArgs {
-  userId: string;
   planId: string;
 }
 
 export const deletePlanThunk = createAsyncThunk<string, DeletePlanArgs>(
   STORE_ACTIONS.PROTECTION_PLANS.DELETE,
-  async ({ userId, planId }, { rejectWithValue }) => {
+  async ({ planId }, { rejectWithValue }) => {
     try {
-      await deletePlan(userId, planId);
+      await deletePlan(planId);
       return planId;
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_DELETING_PROTECTION_PLAN, error);
@@ -129,20 +136,21 @@ export const deletePlanThunk = createAsyncThunk<string, DeletePlanArgs>(
 );
 
 export interface DuplicatePlanArgs {
-  userId: string;
   planId: string;
   overrides?: {
     name?: string;
     timeMode?: string;
     timeRange?: { startAt: string; endAt: string };
+    environmentRef?: string;
+    tagRefs?: string[];
   };
 }
 
 export const duplicatePlanThunk = createAsyncThunk<ProtectionPlan, DuplicatePlanArgs>(
   STORE_ACTIONS.PROTECTION_PLANS.DUPLICATE,
-  async ({ userId, planId, overrides }, { rejectWithValue }) => {
+  async ({ planId, overrides }, { rejectWithValue }) => {
     try {
-      return await duplicatePlan(userId, planId, overrides);
+      return await duplicatePlan(planId, overrides);
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_DUPLICATING_PROTECTION_PLAN, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.DUPLICATE_PROTECTION_PLAN));
@@ -151,21 +159,19 @@ export const duplicatePlanThunk = createAsyncThunk<ProtectionPlan, DuplicatePlan
 );
 
 export interface ReactivatePlanArgs {
-  userId: string;
   planId: string;
 }
 
 export interface UpdatePlanArgs {
-  userId: string;
   planId: string;
   payload: UpdatePlanPayload;
 }
 
 export const updatePlanThunk = createAsyncThunk<ProtectionPlan, UpdatePlanArgs>(
   STORE_ACTIONS.PROTECTION_PLANS.UPDATE,
-  async ({ userId, planId, payload }, { rejectWithValue }) => {
+  async ({ planId, payload }, { rejectWithValue }) => {
     try {
-      return await updatePlan(userId, planId, payload);
+      return await updatePlan(planId, payload);
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_UPDATING_PROTECTION_PLAN, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.UPDATE_PROTECTION_PLAN));
@@ -175,9 +181,9 @@ export const updatePlanThunk = createAsyncThunk<ProtectionPlan, UpdatePlanArgs>(
 
 export const reactivatePlanThunk = createAsyncThunk<ProtectionPlan, ReactivatePlanArgs>(
   STORE_ACTIONS.PROTECTION_PLANS.REACTIVATE,
-  async ({ userId, planId }, { rejectWithValue }) => {
+  async ({ planId }, { rejectWithValue }) => {
     try {
-      return await reactivatePlan(userId, planId);
+      return await reactivatePlan(planId);
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_REACTIVATING_PROTECTION_PLAN, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.REACTIVATE_PROTECTION_PLAN));

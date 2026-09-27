@@ -41,7 +41,7 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
 
   return (
     <div>
-      {error && <div style={{ color: DEFAULT_COLORS.ERROR, marginBottom: 8 }}>{error}</div>}
+      {error && <div style={{ color: DEFAULT_COLORS.DANGER, marginBottom: 8 }}>{error}</div>}
 
       {loading && rows.length === 0 ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: 24 }}>
@@ -102,19 +102,16 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
                       {row.namespace && (
                         <RowTag
                           text={row.namespace}
+                          capitalize={false}
                           {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                         />
                       )}
                       <RowTag
                         text={`${PPC.LABELS.HEALTH_DETAIL.PRESENT}: ${row.present ? 'yes' : 'no'}`}
-                        background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                        color={DEFAULT_COLORS.TEXT_SECONDARY}
                         fontSize={11}
                       />
                       <RowTag
                         text={`${PPC.LABELS.HEALTH_DETAIL.READY}: ${row.ready ? 'yes' : 'no'}`}
-                        background={DEFAULT_COLORS.CHIP_CUSTOM_BG}
-                        color={DEFAULT_COLORS.TEXT_SECONDARY}
                         fontSize={11}
                       />
                       {row.failureAction && (

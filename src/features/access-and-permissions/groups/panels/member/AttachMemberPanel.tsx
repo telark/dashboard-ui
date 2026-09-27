@@ -8,7 +8,7 @@ import {
 import { SearchInput } from '../../../../../components/display/inputs';
 import { ToggleButton } from '../../../../../components/display/buttons';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
-import { Icons } from '../../../../../constants';
+import { Icons, SLIDE_OUT } from '../../../../../constants';
 import { useAttachMemberPanel, useDeassignGroupMember } from '../../hooks';
 import {
   usePermission,
@@ -18,6 +18,7 @@ import MemberList from '../../components/display/member/MemberList';
 import GroupAssignedMembersView from '../../components/display/member/GroupAssignedMembersView';
 import type { Group } from '../../models';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
+import { USERS_CONSTANTS as UC } from '../../../users/constants';
 import { filterBySearchTerm } from '../../../users/utils/search/filter';
 import { CapitalizeFirstLetter } from '../../../../../utils/helpers/format';
 
@@ -34,18 +35,16 @@ interface AttachMemberPanelProps {
 
 const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, group }) => {
   const [form] = Form.useForm();
-  const currentSelectedUsers = (Form.useWatch('assignedUsersIDs', form) as string[]) || [];
+  const currentSelectedUsers = (Form.useWatch('userRefs', form) as string[]) || [];
   const [searchTerm, setSearchTerm] = useState('');
   const [showAssignedOnly, setShowAssignedOnly] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [localAssignedIds, setLocalAssignedIds] = useState<string[]>(
-    () => group?.assignedUsersIDs ?? [],
-  );
+  const [localAssignedIds, setLocalAssignedIds] = useState<string[]>(() => group?.userRefs ?? []);
 
   const [prevGroup, setPrevGroup] = useState(group);
   if (prevGroup !== group) {
     setPrevGroup(group);
-    setLocalAssignedIds(group?.assignedUsersIDs ?? []);
+    setLocalAssignedIds(group?.userRefs ?? []);
   }
 
   const {
@@ -64,17 +63,35 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
     currentSelectedUsers,
   });
 
-  const canRemoveMemberFromGroup = usePermission(
+  const canAddMember = usePermission(
+    ACTION_PERMISSIONS.groups.attachMember.scope,
+    ACTION_PERMISSIONS.groups.attachMember.level,
+    ACTION_PERMISSIONS.groups.attachMember.deny,
+  );
+  const canRemoveMember = usePermission(
     ACTION_PERMISSIONS.groups.removeMember.scope,
     ACTION_PERMISSIONS.groups.removeMember.level,
     ACTION_PERMISSIONS.groups.removeMember.deny,
   );
-  const canRemoveUserFromGroup = usePermission(
-    ACTION_PERMISSIONS.users.removeFromGroup.scope,
-    ACTION_PERMISSIONS.users.removeFromGroup.level,
-    ACTION_PERMISSIONS.users.removeFromGroup.deny,
+
+  // Unchecking a member is a removal, checking another user is an add: each has its own rule.
+  // Chart-managed (bootstrap) members can't be removed here at all.
+  const removeBlockedFor = useCallback(
+    (userId: string) => {
+      if (allUsers?.find((u) => u.id === userId)?.bootstrap) {
+        return UC.LABELS.ACTIONS.BOOTSTRAP_LOCKED_TOOLTIP;
+      }
+      return canRemoveMember ? undefined : GC.LABELS.ACTIONS.REMOVE_MEMBER_DISABLED_TOOLTIP;
+    },
+    [allUsers, canRemoveMember],
   );
-  const canRemoveMember = canRemoveMemberFromGroup && canRemoveUserFromGroup;
+  const blockedReason = useCallback(
+    (userId: string) => {
+      if (initialSelectedUsers.includes(userId)) return removeBlockedFor(userId);
+      return canAddMember ? undefined : GC.LABELS.ACTIONS.ADD_MEMBER_DISABLED_TOOLTIP;
+    },
+    [initialSelectedUsers, removeBlockedFor, canAddMember],
+  );
 
   const handleDeassignSuccess = useCallback((updatedUserIds: string[]) => {
     setLocalAssignedIds(updatedUserIds);
@@ -121,8 +138,8 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
       <SlideOutPanel
         open={open}
         onClose={onClose}
-        title={GC.LABELS.PANELS.ASSIGN_MEMBERS.TITLE}
-        subtitle={GC.LABELS.PANELS.ASSIGN_MEMBERS.SUBTITLE(
+        title={SLIDE_OUT.ENTITY_TITLE(
+          GC.LABELS.PANELS.ASSIGN_MEMBERS.TITLE,
           CapitalizeFirstLetter(currentGroup.name),
         )}
         width={panelWidth}
@@ -163,14 +180,15 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
                   assignedUserIds={filteredAssignedUserIds}
                   allUsers={allUsers}
                   loading={usersLoading}
-                  onDeassignClick={canRemoveMember ? openDeassignModal : undefined}
+                  onDeassignClick={openDeassignModal}
+                  deassignDisabledReason={(user) => removeBlockedFor(user.id)}
                 />
               ) : (
                 <MemberList
                   users={filteredUsers}
                   loading={usersLoading}
                   allUsers={allUsers}
-                  canSelect={canRemoveMember}
+                  blockedReason={blockedReason}
                 />
               )}
             </div>
@@ -183,7 +201,7 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
         loading={submitting}
         disabled={!hasChanges || showAssignedOnly}
         form={form}
-        initialValues={{ assignedUsersIDs: initialSelectedUsers }}
+        initialValues={{ userRefs: initialSelectedUsers }}
       />
       <ActionConfirmModal
         open={deassignModalOpen}

@@ -92,13 +92,14 @@ export const resetApplicationThunk = createAsyncThunk(
 export interface FetchApplicationSnapshotsPayload {
   /** From CR `spec.snapshots`: one GET per item with namespace+generation query params. */
   snapshotRefs?: ApplicationSnapshot[];
+  canReadFiles: boolean;
 }
 
 export const fetchApplicationSnapshotsThunk = createAsyncThunk(
   STORE_ACTIONS.APPLICATIONS.FETCH_SNAPSHOTS,
   async (payload: FetchApplicationSnapshotsPayload, { rejectWithValue }) => {
     try {
-      return await getApplicationSnapshotSummaries(payload.snapshotRefs);
+      return await getApplicationSnapshotSummaries(payload.snapshotRefs, payload.canReadFiles);
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_FETCHING_APPLICATION_SNAPSHOTS, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.FETCH_APPLICATION_SNAPSHOTS));
@@ -162,14 +163,13 @@ export const triggerApplicationRollbackThunk = createAsyncThunk(
 export interface AbortApplicationRollbackArgs {
   name: string;
   rollbackId: string;
-  userID: string;
 }
 
 export const abortApplicationRollbackThunk = createAsyncThunk(
   STORE_ACTIONS.APPLICATIONS.ABORT_ROLLBACK,
-  async ({ name, rollbackId, userID }: AbortApplicationRollbackArgs, { rejectWithValue }) => {
+  async ({ name, rollbackId }: AbortApplicationRollbackArgs, { rejectWithValue }) => {
     try {
-      const response = await abortApplicationRollback(name, rollbackId, userID);
+      const response = await abortApplicationRollback(name, rollbackId);
       const raw = response.data;
       if (raw != null && typeof raw === 'object' && typeof (raw as Application).name === 'string') {
         return mapSingleApplicationData(raw);

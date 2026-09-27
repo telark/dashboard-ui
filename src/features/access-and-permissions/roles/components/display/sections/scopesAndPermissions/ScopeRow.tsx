@@ -115,7 +115,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                   <Form.Item
                     name={['scopes', scopeKey, 'level']}
                     noStyle
-                    rules={[{ required: true, message: 'Please select a permission level' }]}
+                    rules={[{ required: !isLocked, message: 'Please select a permission level' }]}
                   >
                     <LevelSelector
                       value={selectedLevel}
@@ -147,7 +147,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                         transition: 'color 0.15s ease',
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#0B1F33';
+                        e.currentTarget.style.color = DEFAULT_COLORS.TEXT_ON_SURFACE;
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.color = DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED;

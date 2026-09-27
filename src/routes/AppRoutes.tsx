@@ -4,13 +4,26 @@ import { ProtectedRoute, AuthLayout } from '../features/auth/components';
 import { AnimatedPageWrapper } from '../components/animation';
 import { FeatureErrorBoundary } from '../components/error-boundary';
 import FullPageLoader from '../components/display/views/FullPageLoader';
-import { APP_ROUTES } from '../constants';
+import { NoPermissionCard, PageContainer } from '../components/shared';
+import { APP_ROUTES, MENU_LABELS } from '../constants';
+import { LIST_PAGE } from '../constants/shared/pages';
+import type { RequiredPermission } from '../interfaces/shared';
 import { hasSessionToken } from '../features/auth/utils';
-import store from '../store';
-import {
-  stopAllSyncRetries,
-  syncRetryFromState,
-} from '../features/resources/applications/utils/management/syncRetry';
+import { PermissionGate, ACTION_PERMISSIONS } from '../features/auth/hooks';
+
+const { view: viewApplications } = ACTION_PERMISSIONS.applications;
+const { view: viewPlans } = ACTION_PERMISSIONS.protectionPlans;
+const { view: viewInsights } = ACTION_PERMISSIONS.insights;
+const { view: viewRoles } = ACTION_PERMISSIONS.roles;
+const { view: viewUsers } = ACTION_PERMISSIONS.users;
+const { view: viewGroups } = ACTION_PERMISSIONS.groups;
+
+// Replaces the page: the URL and sidebar entry stay put and the page's requests never fire.
+const noAccess = (featureName: string, permission: RequiredPermission) => (
+  <PageContainer title={featureName} gap={LIST_PAGE.CONTENT_GAP_PX}>
+    <NoPermissionCard featureName={featureName} permission={permission} />
+  </PageContainer>
+);
 
 // home
 const Dashboard = lazy(() => import('../features/home/pages/Dashboard'));
@@ -27,6 +40,7 @@ const ApplicationsGlobalView = lazy(
 const ApplicationDetailsView = lazy(
   () => import('../features/resources/applications/pages/details/DetailsView'),
 );
+const InsightsPage = lazy(() => import('../features/insights/pages/InsightsPage'));
 
 // access-and-permissions
 const RolesMainPage = lazy(() => import('../features/access-and-permissions/roles/pages/MainPage'));
@@ -48,19 +62,6 @@ const AppRoutes: React.FC = () => {
   const location = useLocation();
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
-  }, [location.pathname]);
-
-  useEffect(() => {
-    if (!isApplicationsRoute(location.pathname)) {
-      stopAllSyncRetries();
-      return;
-    }
-    syncRetryFromState();
-    const unsubscribe = store.subscribe(syncRetryFromState);
-    return () => {
-      unsubscribe();
-      stopAllSyncRetries();
-    };
   }, [location.pathname]);
 
   return (
@@ -87,9 +88,15 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.APPLICATIONS}
           element={
             <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Applications">
-                <ApplicationsGlobalView />
-              </FeatureErrorBoundary>
+              <PermissionGate
+                requiredScope={viewApplications.scope}
+                requiredLevel={viewApplications.level}
+                fallback={noAccess(MENU_LABELS.APPLICATIONS, viewApplications)}
+              >
+                <FeatureErrorBoundary featureName="Applications">
+                  <ApplicationsGlobalView />
+                </FeatureErrorBoundary>
+              </PermissionGate>
             </ProtectedRoute>
           }
         />
@@ -97,41 +104,81 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.APPLICATION_DETAILS}
           element={
             <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Application Details">
-                <AnimatedPageWrapper>
-                  <ApplicationDetailsView />
-                </AnimatedPageWrapper>
-              </FeatureErrorBoundary>
+              <PermissionGate
+                requiredScope={viewApplications.scope}
+                requiredLevel={viewApplications.level}
+                fallback={noAccess(MENU_LABELS.APPLICATIONS, viewApplications)}
+              >
+                <FeatureErrorBoundary featureName="Application Details">
+                  <AnimatedPageWrapper>
+                    <ApplicationDetailsView />
+                  </AnimatedPageWrapper>
+                </FeatureErrorBoundary>
+              </PermissionGate>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={APP_ROUTES.INSIGHTS}
+          element={
+            <ProtectedRoute>
+              <PermissionGate
+                requiredScope={viewInsights.scope}
+                requiredLevel={viewInsights.level}
+                fallback={noAccess(MENU_LABELS.INSIGHTS, viewInsights)}
+              >
+                <FeatureErrorBoundary featureName="Insights">
+                  <InsightsPage />
+                </FeatureErrorBoundary>
+              </PermissionGate>
             </ProtectedRoute>
           }
         />
         <Route
           path={APP_ROUTES.ROLES}
           element={
-            <ProtectedRoute requiredScope="roles" minimumLevel="ReadOnly">
-              <FeatureErrorBoundary featureName="Roles">
-                <RolesMainPage />
-              </FeatureErrorBoundary>
+            <ProtectedRoute>
+              <PermissionGate
+                requiredScope={viewRoles.scope}
+                requiredLevel={viewRoles.level}
+                fallback={noAccess(MENU_LABELS.ROLES, viewRoles)}
+              >
+                <FeatureErrorBoundary featureName="Roles">
+                  <RolesMainPage />
+                </FeatureErrorBoundary>
+              </PermissionGate>
             </ProtectedRoute>
           }
         />
         <Route
           path={APP_ROUTES.USERS}
           element={
-            <ProtectedRoute requiredScope="users" minimumLevel="ReadOnly">
-              <FeatureErrorBoundary key={APP_ROUTES.USERS} featureName="Users">
-                <UsersMainPage />
-              </FeatureErrorBoundary>
+            <ProtectedRoute>
+              <PermissionGate
+                requiredScope={viewUsers.scope}
+                requiredLevel={viewUsers.level}
+                fallback={noAccess(MENU_LABELS.USERS, viewUsers)}
+              >
+                <FeatureErrorBoundary key={APP_ROUTES.USERS} featureName="Users">
+                  <UsersMainPage />
+                </FeatureErrorBoundary>
+              </PermissionGate>
             </ProtectedRoute>
           }
         />
         <Route
           path={APP_ROUTES.GROUPS}
           element={
-            <ProtectedRoute requiredScope="groups" minimumLevel="ReadOnly">
-              <FeatureErrorBoundary key={APP_ROUTES.GROUPS} featureName="Groups">
-                <GroupsMainPage />
-              </FeatureErrorBoundary>
+            <ProtectedRoute>
+              <PermissionGate
+                requiredScope={viewGroups.scope}
+                requiredLevel={viewGroups.level}
+                fallback={noAccess(MENU_LABELS.GROUPS, viewGroups)}
+              >
+                <FeatureErrorBoundary key={APP_ROUTES.GROUPS} featureName="Groups">
+                  <GroupsMainPage />
+                </FeatureErrorBoundary>
+              </PermissionGate>
             </ProtectedRoute>
           }
         />
@@ -139,9 +186,16 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.PROTECTION_PLANS}
           element={
             <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Protection Plans">
-                <ProtectionPlansMainPage />
-              </FeatureErrorBoundary>
+              <PermissionGate
+                requiredScope={viewPlans.scope}
+                requiredLevel={viewPlans.level}
+                action={viewPlans.deny}
+                fallback={noAccess(MENU_LABELS.PROTECTION_PLANS, viewPlans)}
+              >
+                <FeatureErrorBoundary featureName="Protection Plans">
+                  <ProtectionPlansMainPage />
+                </FeatureErrorBoundary>
+              </PermissionGate>
             </ProtectedRoute>
           }
         />
@@ -149,9 +203,16 @@ const AppRoutes: React.FC = () => {
           path={APP_ROUTES.PROTECTION_PLAN_DETAILS}
           element={
             <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Protection Plan Details">
-                <ProtectionPlanDetailsView />
-              </FeatureErrorBoundary>
+              <PermissionGate
+                requiredScope={viewPlans.scope}
+                requiredLevel={viewPlans.level}
+                action={viewPlans.deny}
+                fallback={noAccess(MENU_LABELS.PROTECTION_PLANS, viewPlans)}
+              >
+                <FeatureErrorBoundary featureName="Protection Plan Details">
+                  <ProtectionPlanDetailsView />
+                </FeatureErrorBoundary>
+              </PermissionGate>
             </ProtectedRoute>
           }
         />
@@ -175,13 +236,10 @@ const AppRoutes: React.FC = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="*" element={<Navigate to={APP_ROUTES.HOME} replace />} />
       </Routes>
     </Suspense>
   );
 };
 
 export default AppRoutes;
-
-function isApplicationsRoute(pathname: string): boolean {
-  return pathname === APP_ROUTES.APPLICATIONS || pathname.startsWith(`${APP_ROUTES.APPLICATIONS}/`);
-}

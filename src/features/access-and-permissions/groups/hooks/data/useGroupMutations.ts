@@ -10,6 +10,12 @@ import {
 } from '../../store';
 import type { AppDispatch } from '../../../../../store';
 import type { GroupFormData } from '../../models';
+import { rejectionMessage } from '../../../../../utils/helpers/format';
+import store from '../../../../../store';
+import { fetchMyPermissionsThunk } from '../../../../auth/store/thunks/fetchThunks';
+
+// A function payload is resolved just before the PATCH, so it can build on fresh server data.
+type GroupUpdate = Partial<GroupFormData> | (() => Promise<Partial<GroupFormData>>);
 
 export const useGroupMutations = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -24,8 +30,8 @@ export const useGroupMutations = () => {
         message.success(GC.LABELS.MESSAGES.CREATED(data.name));
         await dispatch(fetchGroupDetailsThunk(result.id));
         return result;
-      } catch {
-        message.error(GC.LABELS.MESSAGES.CREATE_FAILED);
+      } catch (rejection) {
+        message.error(rejectionMessage(rejection, GC.LABELS.MESSAGES.CREATE_FAILED));
         throw new Error(GC.LABELS.MESSAGES.CREATE_FAILED);
       } finally {
         setSubmitting(false);
@@ -35,20 +41,20 @@ export const useGroupMutations = () => {
   );
 
   const handleUpdate = useCallback(
-    async (id: string, data: Partial<GroupFormData>) => {
+    async (id: string, data: GroupUpdate) => {
       setSubmitting(true);
       try {
         const result = await dispatch(
           updateGroupThunk({
             id,
-            group: data,
+            group: typeof data === 'function' ? await data() : data,
           }),
         ).unwrap();
         message.success(GC.LABELS.MESSAGES.UPDATED(result.name));
         await dispatch(fetchGroupDetailsThunk(id));
         return result;
-      } catch {
-        message.error(GC.LABELS.MESSAGES.UPDATE_FAILED);
+      } catch (rejection) {
+        message.error(rejectionMessage(rejection, GC.LABELS.MESSAGES.UPDATE_FAILED));
         throw new Error(GC.LABELS.MESSAGES.UPDATE_FAILED);
       } finally {
         setSubmitting(false);
@@ -61,9 +67,10 @@ export const useGroupMutations = () => {
     async (groupId: string) => {
       try {
         await dispatch(deleteGroupThunk(groupId)).unwrap();
+        store.dispatch(fetchMyPermissionsThunk());
         message.success(GC.LABELS.MESSAGES.DELETED);
-      } catch {
-        message.error(GC.LABELS.MESSAGES.DELETE_FAILED);
+      } catch (rejection) {
+        message.error(rejectionMessage(rejection, GC.LABELS.MESSAGES.DELETE_FAILED));
         throw new Error(GC.LABELS.MESSAGES.DELETE_FAILED);
       }
     },

@@ -17,11 +17,11 @@ export const useGroupInheritedRoles = (
   useMemo(() => {
     if (!user || !allRoles || !allGroups) return [];
 
-    const userGroups = allGroups.filter((g) => user.assignedGroupsIDs?.includes(g.id));
+    const userGroups = allGroups.filter((g) => user.groupRefs?.includes(g.id));
 
     const roleGroupMap = new Map<string, Group[]>();
     for (const group of userGroups) {
-      for (const roleId of group.assignedRolesIDs ?? []) {
+      for (const roleId of group.roleRefs ?? []) {
         const existing = roleGroupMap.get(roleId) ?? [];
         roleGroupMap.set(roleId, [...existing, group]);
       }

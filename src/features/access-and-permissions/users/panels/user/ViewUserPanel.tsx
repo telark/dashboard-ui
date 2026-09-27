@@ -8,6 +8,8 @@ import UserAvatar from '../../../../../components/display/avatars/UserAvatar';
 import { useUserDeleteModal, UserDeleteModal } from '../../components/delete';
 import type { ViewDetailRow } from '../../../../../components/display/panels/view/types';
 import type { User } from '../../models';
+import { useUserLockReason } from '../../hooks/user/useUserLockReason';
+import BootstrapPill from '../../components/display/shared/BootstrapPill';
 
 interface ViewUserPanelProps {
   open: boolean;
@@ -19,6 +21,8 @@ interface ViewUserPanelProps {
 }
 
 const UserIcon = Icons.User;
+// A disabled action still needs a handler to render; its click is swallowed.
+const noop = () => undefined;
 
 const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
   open,
@@ -31,10 +35,18 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
   const { deleteModalOpen, isDeleting, openDeleteModal, closeDeleteModal, handleConfirmDelete } =
     useUserDeleteModal(user);
 
-  const handleDeleteAction = useMemo(
-    () => (canDelete ? (onDelete ?? openDeleteModal) : undefined),
-    [canDelete, onDelete, openDeleteModal],
-  );
+  const lockReasonFor = useUserLockReason();
+
+  // Both actions always show; a missing permission or a protected account disables them instead.
+  const actions = useMemo(() => {
+    const lockReason = user ? lockReasonFor(user) : undefined;
+    return {
+      onEdit: onEdit ?? noop,
+      onDelete: onDelete ?? openDeleteModal,
+      editDisabledReason: onEdit ? lockReason : UC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP,
+      deleteDisabledReason: canDelete ? lockReason : UC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP,
+    };
+  }, [user, lockReasonFor, onEdit, onDelete, canDelete, openDeleteModal]);
 
   const icon = useMemo(() => {
     if (!user) return <UserIcon size={32} style={{ color: DEFAULT_COLORS.SUCCESS }} />;
@@ -50,8 +62,11 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
       {
         label: UC.LABELS.VIEW_LABELS.USERNAME,
         value: (
-          <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
-            {user.username}
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
+              {user.username}
+            </span>
+            {user.bootstrap && <BootstrapPill />}
           </span>
         ),
       },
@@ -60,10 +75,7 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
         value: (
           <RowTag
             text={user.status.phase}
-            background={
-              isActive ? `${DEFAULT_COLORS.SUCCESS}18` : DEFAULT_COLORS.CHIP_ON_SURFACE_BG
-            }
-            color={isActive ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT}
+            accent={isActive ? DEFAULT_COLORS.SUCCESS : undefined}
             fontSize={12}
           />
         ),
@@ -92,7 +104,7 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
         description={user.email}
         details={details}
         width={520}
-        actions={{ onEdit, onDelete: handleDeleteAction }}
+        actions={actions}
       />
       <UserDeleteModal
         open={deleteModalOpen}

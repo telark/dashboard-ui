@@ -4,7 +4,8 @@ import { PERMISSION_LEVEL_RANK } from '../../models/permissions';
 import { fetchMyPermissionsThunk } from '../thunks/fetchThunks';
 import { SCOPE_RULES } from '../../../access-and-permissions/roles/constants/scopeRules';
 
-const ALL_SCOPE_NAMES = SCOPE_RULES.map((s) => s.scope);
+export const ALL_SCOPE_NAME = 'ALL';
+export const ALL_SCOPE_NAMES = SCOPE_RULES.map((s) => s.scope);
 
 const initialState: PermissionsState = {
   userID: null,
@@ -28,23 +29,28 @@ function buildScopeIndex(
   ) => {
     const existing = index[scopeName];
     if (!existing) {
-      index[scopeName] = { level, rules, priority };
+      index[scopeName] = { level, rules: [...rules], priority };
       return;
     }
+    // Deny rules add up across roles, as the backend applies every active role's rules.
+    const merged = Array.from(new Set([...existing.rules, ...rules]));
     const incomingRank = PERMISSION_LEVEL_RANK[level];
     const existingRank = PERMISSION_LEVEL_RANK[existing.level];
     if (
       incomingRank > existingRank ||
       (incomingRank === existingRank && priority > existing.priority)
     ) {
-      index[scopeName] = { level, rules, priority };
+      index[scopeName] = { level, rules: merged, priority };
+    } else {
+      existing.rules = merged;
     }
   };
 
   for (const role of roles) {
-    if (role.isExpired) continue;
+    // The backend ignores expired and non-Active roles entirely: no grants, no denies.
+    if (role.isExpired || role.status !== 'Active') continue;
     for (const sp of role.scopes) {
-      if (sp.scope.toUpperCase() === 'ALL') {
+      if (sp.scope.toUpperCase() === ALL_SCOPE_NAME) {
         for (const scopeName of ALL_SCOPE_NAMES) {
           tryWrite(scopeName, sp.level, sp.rules ?? [], role.priority);
         }

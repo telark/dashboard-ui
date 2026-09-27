@@ -7,6 +7,7 @@ import store from '../../../../../store';
 import { fetchMyPermissionsThunk } from '../../../../auth/store/thunks/fetchThunks';
 import type { User } from '../../models';
 import { USERS_CONSTANTS as UC } from '../../constants';
+import { rejectionMessage } from '../../../../../utils/helpers/format';
 
 interface UseUserDeleteModalReturn {
   deleteModalOpen: boolean;
@@ -43,8 +44,8 @@ export const useUserDeleteModal = (user: User | null): UseUserDeleteModalReturn 
       store.dispatch(fetchMyPermissionsThunk());
       message.success(UC.LABELS.MESSAGES.DELETED(user.fullname || user.username));
       setDeleteModalOpen(false);
-    } catch {
-      message.error(UC.LABELS.MESSAGES.DELETE_FAILED);
+    } catch (rejection) {
+      message.error(rejectionMessage(rejection, UC.LABELS.MESSAGES.DELETE_FAILED));
     } finally {
       setIsDeleting(false);
     }

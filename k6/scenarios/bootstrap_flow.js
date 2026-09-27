@@ -1,6 +1,6 @@
 // S1 — bootstrap_flow
 // Purpose: simulate first 2s after a logged-in user loads the dashboard
-// APIs touched: auth/config, auth/permissions, exporter globalconfig, apps list, notifications, plans list
+// APIs touched: auth/config, auth/permissions, exporter config, apps list, notifications, plans list
 // Services: auth, exporter
 // Why: highest-frequency real-world flow — catches bootstrap-time regressions
 
@@ -16,7 +16,7 @@ export const options = {
   thresholds: pickThresholds([
     METRICS.AUTH_CONFIG,
     METRICS.AUTH_PERMISSIONS,
-    METRICS.GLOBALCONFIG_GET,
+    METRICS.CONFIG_GET,
     METRICS.CACHED_LIST,
     METRICS.NOTIF_LIST,
   ]),
@@ -41,20 +41,20 @@ export default function () {
   });
   assertShape(permRes, 'auth.permissions', (b) => b !== null);
 
-  const gcRes = get(path.exporter('resources/globalconfig/get'), {
-    name: 'globalconfig.get',
-    metric: METRICS.GLOBALCONFIG_GET,
+  const gcRes = get(path.exporter('config'), {
+    name: 'config.get',
+    metric: METRICS.CONFIG_GET,
   });
-  assertShape(gcRes, 'globalconfig.get', (b) => typeof b === 'object');
+  assertShape(gcRes, 'config.get', (b) => typeof b === 'object');
 
-  const appsRes = get(path.exporter('resources/applications/get'), {
+  const appsRes = get(path.exporter('applications'), {
     name: 'applications.list',
     metric: METRICS.CACHED_LIST,
   });
   assertShape(appsRes, 'applications.list', (b) => b !== null);
 
   const notifRes = get(
-    `${path.exporter('notifications/get')}?userId=${encodeURIComponent(cfg.userId)}&limit=20`,
+    `${path.exporter('notifications')}?userId=${encodeURIComponent(cfg.userId)}&limit=20`,
     {
       name: 'notifications.list',
       metric: METRICS.NOTIF_LIST,
@@ -62,7 +62,7 @@ export default function () {
   );
   assertShape(notifRes, 'notifications.list', (b) => b !== null);
 
-  const plansRes = get(path.exporter('plans/protection/get'), {
+  const plansRes = get(path.exporter('protectionplans'), {
     name: 'plans.list',
     metric: METRICS.CACHED_LIST,
   });

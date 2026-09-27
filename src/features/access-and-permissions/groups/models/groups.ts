@@ -1,10 +1,10 @@
 export interface Group {
   id: string;
-  assignedUsersIDs: string[];
-  assignedRolesIDs?: string[];
+  userRefs: string[];
+  roleRefs?: string[];
   name: string;
   description: string;
-  categoryID: string;
+  categoryRef: string;
   creationDate: string;
   lastUpdateDate?: string;
   createdBy?: string;

@@ -34,8 +34,8 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onView, onEdit, onUsersC
         case 'email':
           cmp = a.email.localeCompare(b.email);
           break;
-        case 'assignedRolesIDs':
-          cmp = (a.assignedRolesIDs?.[0] ?? '').localeCompare(b.assignedRolesIDs?.[0] ?? '');
+        case 'roleRefs':
+          cmp = (a.roleRefs?.[0] ?? '').localeCompare(b.roleRefs?.[0] ?? '');
           break;
         case 'creationDate':
         default:
@@ -66,7 +66,7 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onView, onEdit, onUsersC
         key: UC.KEYS.ACTIONS,
         align: 'right' as const,
         width: 120,
-        onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.BACKGROUND_WHITE } }),
+        onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
         render: (_: unknown, record: User) => (
           <UserActionsColumn record={record} onEdit={handleEdit} onDelete={handleDelete} />
         ),

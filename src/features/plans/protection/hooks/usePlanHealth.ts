@@ -10,7 +10,7 @@ export interface UsePlanHealthResult {
   refresh: () => void;
 }
 
-export function usePlanHealth(planId: string, onLoaded?: () => void): UsePlanHealthResult {
+export function usePlanHealth(planId: string, revision?: string): UsePlanHealthResult {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<PlanStatusResponse | null>(null);
@@ -23,7 +23,6 @@ export function usePlanHealth(planId: string, onLoaded?: () => void): UsePlanHea
         if (cancelled) return;
         setStatus(data);
         setError(null);
-        onLoaded?.();
       })
       .catch((err: unknown) => {
         if (cancelled) return;
@@ -36,7 +35,7 @@ export function usePlanHealth(planId: string, onLoaded?: () => void): UsePlanHea
     return () => {
       cancelled = true;
     };
-  }, [planId, reloadKey, onLoaded]);
+  }, [planId, reloadKey, revision]);
 
   return {
     status,

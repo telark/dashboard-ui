@@ -22,6 +22,7 @@ interface GroupAssignedMembersViewProps {
   allUsers?: User[];
   loading: boolean;
   onDeassignClick?: (user: User) => void;
+  deassignDisabledReason?: (user: User) => string | undefined;
 }
 
 const GroupAssignedMembersView: React.FC<GroupAssignedMembersViewProps> = ({
@@ -29,6 +30,7 @@ const GroupAssignedMembersView: React.FC<GroupAssignedMembersViewProps> = ({
   allUsers,
   loading,
   onDeassignClick,
+  deassignDisabledReason,
 }) => {
   const assignedUsers = useMemo(() => {
     if (!allUsers) return [];
@@ -44,6 +46,7 @@ const GroupAssignedMembersView: React.FC<GroupAssignedMembersViewProps> = ({
       emptyMessage={GC.LABELS.MESSAGES.NO_ASSIGNED_MEMBERS}
       loadingMessage={GC.LABELS.MESSAGES.LOADING_MEMBERS}
       onDeassignClick={onDeassignClick}
+      deassignDisabledReason={deassignDisabledReason}
       deassignTooltip="Remove member"
     />
   );

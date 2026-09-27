@@ -4,9 +4,12 @@ import type { FormInstance } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useDeassignModal } from '../../../../shared';
 import { updateGroupThunk } from '../../../store';
-import { updateUserThunk } from '../../../../users/store';
+import { fetchAllUsersSilentThunk } from '../../../../users/store';
 import type { AppDispatch } from '../../../../../../store';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
+import { fetchFreshGroupIds } from '../../../utils';
+import { applySelectionChange } from '../../../../shared';
+import { rejectionMessage } from '../../../../../../utils/helpers/format';
 import type { Group } from '../../../models';
 import type { User } from '../../../../users/models';
 
@@ -25,22 +28,6 @@ interface UseDeassignGroupMemberReturn {
   handleConfirmDeassign: () => Promise<void>;
 }
 
-/**
- * When a member is removed from the group in the Groups UI, sync that user's
- * assignedGroupsIDs so the Users UI (Manage Groups) stays correct.
- */
-const syncUserRemoveGroup = async (
-  dispatch: AppDispatch,
-  userId: string,
-  groupId: string,
-  assignedGroupsIDs: string[],
-) => {
-  const nextGroupIds = assignedGroupsIDs.filter((id) => id !== groupId);
-  await dispatch(
-    updateUserThunk({ id: userId, user: { assignedGroupsIDs: nextGroupIds } }),
-  ).unwrap();
-};
-
 export const useDeassignGroupMember = ({
   group,
   form,
@@ -52,17 +39,20 @@ export const useDeassignGroupMember = ({
   const performDeassign = useCallback(
     async (user: User) => {
       if (!group) throw new Error('No group selected');
-      const current = (form.getFieldValue('assignedUsersIDs') as string[]) ?? [];
-      const updated = current.filter((id) => id !== user.id);
+      const current = (form.getFieldValue('userRefs') as string[]) ?? [];
       try {
+        const freshIds = await fetchFreshGroupIds(group.id, 'userRefs');
         await dispatch(
-          updateGroupThunk({ id: group.id, group: { assignedUsersIDs: updated } }),
+          updateGroupThunk({
+            id: group.id,
+            group: { userRefs: applySelectionChange(freshIds, [user.id], []) },
+          }),
         ).unwrap();
-        form.setFieldsValue({ assignedUsersIDs: updated });
-        await syncUserRemoveGroup(dispatch, user.id, group.id, user.assignedGroupsIDs ?? []);
+        form.setFieldsValue({ userRefs: current.filter((id) => id !== user.id) });
+        dispatch(fetchAllUsersSilentThunk());
         message.success(GC.LABELS.MESSAGES.MEMBER_DEASSIGNED(user.username));
-      } catch {
-        message.error(GC.LABELS.MESSAGES.MEMBER_DEASSIGN_FAILED);
+      } catch (rejection) {
+        message.error(rejectionMessage(rejection, GC.LABELS.MESSAGES.MEMBER_DEASSIGN_FAILED));
         throw new Error(GC.LABELS.MESSAGES.MEMBER_DEASSIGN_FAILED);
       }
     },
@@ -72,7 +62,7 @@ export const useDeassignGroupMember = ({
   const handleDeassignSuccess = useCallback(
     // The removed user is not needed: the form already holds the resulting id list.
     () => {
-      const updatedIds = (form.getFieldValue('assignedUsersIDs') as string[]) ?? [];
+      const updatedIds = (form.getFieldValue('userRefs') as string[]) ?? [];
       onSuccess?.(updatedIds);
     },
     [form, onSuccess],

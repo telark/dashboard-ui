@@ -33,7 +33,7 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
         ]}
         style={{ marginBottom: 16 }}
         className="form-item-compact no-asterisk"
-        validateTrigger={['onBlur', 'onSubmit']}
+        validateTrigger="onChange"
       >
         <Input
           placeholder={GC.LABELS.FORM.FIELDS.NAME_PLACEHOLDER}
@@ -55,7 +55,7 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
         marginBottom={16}
       />
       <Form.Item
-        name="categoryID"
+        name="categoryRef"
         label={GC.LABELS.FORM.FIELDS.CATEGORY_LABEL}
         required
         rules={[

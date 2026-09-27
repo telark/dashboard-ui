@@ -1,7 +1,7 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { Button, Typography } from 'antd';
 import { ReloadOutlined, BugOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, STORE_MESSAGES } from './constants';
+import { DEFAULT_COLORS, STORE_MESSAGES, withAlpha } from './constants';
 import { isDevelopment } from './utils/helpers/env';
 import logger from './logging';
 
@@ -44,7 +44,7 @@ class ErrorBoundary extends Component<Props, State> {
             left: 0,
             right: 0,
             bottom: 0,
-            background: '#ffffff',
+            background: DEFAULT_COLORS.SURFACE_WHITE,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -58,18 +58,18 @@ class ErrorBoundary extends Component<Props, State> {
                 width: 80,
                 height: 80,
                 borderRadius: '50%',
-                background: 'linear-gradient(135deg, #ff6b6b, #ee5a52)',
+                background: DEFAULT_COLORS.DANGER,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '0 auto 24px',
-                boxShadow: '0 8px 20px rgba(255,107,107,0.3)',
+                boxShadow: `0 8px 20px ${withAlpha(DEFAULT_COLORS.DANGER, 0.3)}`,
               }}
             >
               <BugOutlined
                 style={{
                   fontSize: 32,
-                  color: '#ffffff',
+                  color: DEFAULT_COLORS.PILL_TEXT,
                 }}
               />
             </div>
@@ -78,7 +78,7 @@ class ErrorBoundary extends Component<Props, State> {
               level={2}
               style={{
                 margin: '0 0 16px',
-                color: '#2c3e50',
+                color: DEFAULT_COLORS.TEXT_ON_SURFACE,
                 fontWeight: 700,
               }}
             >
@@ -88,8 +88,8 @@ class ErrorBoundary extends Component<Props, State> {
             {isDevelopment() && this.state.error && (
               <div
                 style={{
-                  background: '#f8f9fa',
-                  border: '1px solid #e9ecef',
+                  background: DEFAULT_COLORS.SURFACE_SUBTLE,
+                  border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
                   borderRadius: 8,
                   margin: '0 0 24px',
                   textAlign: 'left',
@@ -99,7 +99,7 @@ class ErrorBoundary extends Component<Props, State> {
                 <Text
                   style={{
                     fontSize: 12,
-                    color: '#6c757d',
+                    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
                     fontFamily: 'monospace',
                     whiteSpace: 'pre-wrap',
                     wordBreak: 'break-word',

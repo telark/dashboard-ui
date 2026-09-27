@@ -7,7 +7,7 @@ import type { ResourceDetailsResponse } from '../../../interfaces/http';
 export const GLOBAL_CONFIG_CACHE_TTL_MS = 5 * 60 * 1000;
 
 export type GlobalConfigModel = {
-  ai?: { enabled?: boolean; provider?: string; apiKey?: string };
+  ai?: { enabled?: boolean; model?: string; autoAnalyze?: boolean };
   oidc?: {
     enabled?: boolean;
     googleClientID?: string;

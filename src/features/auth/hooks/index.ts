@@ -1,19 +1,19 @@
-// Permissions
 export {
   usePermission,
-  useCanAccess,
+  useCanGrantScopes,
   PermissionGate,
   ACTION_PERMISSIONS,
 } from './permissions/permissionEngine';
 export {
   useInitializePermissions,
   stopPermissionsPolling,
+  dropForeignPermissions,
 } from './permissions/useInitializePermissions';
 
-// Session
+export { useCrossTabLogout } from './useCrossTabLogout';
+
 export { useSessionsList, type UseSessionsListResult } from './useSessionsList';
 
-// Passkeys
 export { usePasskeyPanelState } from './passkeys/passkeyPanelState';
 export { usePasskeyActions } from './passkeys/passkeyActions';
 export { useEnrollLink } from './passkeys/useEnrollLink';

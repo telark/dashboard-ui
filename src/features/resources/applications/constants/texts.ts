@@ -13,11 +13,12 @@ export const APPLICATIONS_UI = {
   TOOLBAR_BULK_SELECT_ACTIVE: 'Exit bulk',
   TOOLBAR_SELECT_ALL: 'Select all on page',
   // Measured natural widths of the toolbar row: ~984px in bulk mode (select-all
-  // cluster + pills + actions) and ~585px otherwise. Below these the controls
+  // cluster + pills + actions) and ~621px otherwise: the icon-only view control
+  // adds TOOLBAR_CONTROL.HEIGHT + TOOLBAR_ITEM_GAP. Below these the controls
   // fall back to icons instead of overflowing into a scroll.
   TOOLBAR_COMPACT_WIDTH: {
     BULK: 1040,
-    DEFAULT: 640,
+    DEFAULT: 676,
   },
   TOOLBAR_HEALTH_FILTER: 'Filter by health',
   TOOLBAR_HEALTH_OPTIONS: {
@@ -31,20 +32,19 @@ export const APPLICATIONS_UI = {
   TOOLBAR_BULK_RESET_CONFIRM_TITLE: 'Reset selected applications?',
   TOOLBAR_BULK_RESET_CONFIRM_MESSAGE:
     'Resetting clears the history, snapshots and rollbacks of the selected applications. Kubernetes resources in your cluster are not touched. The applications are rediscovered on the next scan.',
-  TOOLBAR_LAYOUT_SINGLE: 'Focus view',
-  TOOLBAR_LAYOUT_DOUBLE: 'Compare view',
-  TOOLBAR_COUNT_SUFFIX: 'apps',
+  TOOLBAR_COUNT_SUFFIX: { one: 'app', other: 'apps' },
   TOOLBAR_MORE_LABEL: 'More',
+  NO_MATCH_TITLE: 'No matching applications',
+  NO_MATCH_DESCRIPTION: 'No applications match the current search and filters.',
+  CLEAR_ALL_FILTERS: 'Clear all filters',
   FILTER: {
-    BY_STATUS: 'STATUS',
-    BY_MANAGED_BY: 'MANAGED BY',
-    BY_MANAGED_CHART: 'MANAGED CHART',
-    BY_NAMESPACE: 'NAMESPACES',
-    BY_INSIGHT_CATEGORY: 'INSIGHT CATEGORY',
-    BY_INSIGHT_ROLE: 'INSIGHT ROLE',
-    BY_CR_STATUS: 'CR STATUS',
-    BY_HAS_DRIFT: 'HAS DRIFT',
-    BY_CREATION_DATE: 'CREATED DATE',
+    BY_STATUS: 'Status',
+    BY_MANAGED_BY: 'Managed by',
+    BY_MANAGED_CHART: 'Managed chart',
+    BY_NAMESPACE: 'Namespaces',
+    BY_CR_STATUS: 'CR status',
+    BY_HAS_DRIFT: 'Has drift',
+    BY_CREATION_DATE: 'Created date',
     FROM: 'From',
     TO: 'To',
     OPTION_YES: 'Yes',
@@ -58,7 +58,6 @@ export const APPLICATIONS_UI = {
   },
   EDIT_PAGE: {
     PANEL_TITLE: 'Edit application',
-    SUBTITLE: 'Update application display name and description.',
     SUCCESS_MESSAGE: 'Application updated successfully.',
     SECTION_BASIC: 'Basic information',
     SECTION_BASIC_DESC: 'Name, display name, and description.',
@@ -67,11 +66,11 @@ export const APPLICATIONS_UI = {
     DISPLAY_NAME_LABEL: 'Display name',
     DESCRIPTION_LABEL: 'Description',
     ERROR_GENERIC: 'Could not save changes. Please try again.',
+    TOO_LONG: (max: number) => `Use at most ${max} characters.`,
   },
   FALLBACKS: {
     UNKNOWN: 'unknown',
     EMPTY: '—',
-    NOT_ENRICHED: 'Not enriched.',
   },
   SECTIONS: {
     OVERVIEW: {
@@ -114,29 +113,6 @@ export const APPLICATIONS_UI = {
       VIEW_TREE: 'Tree',
       VIEW_GRAPH_TOOLTIP: 'Radial view',
       VIEW_TREE_TOOLTIP: 'Structure view',
-    },
-    INSIGHTS: {
-      TITLE: 'Insights',
-      DESCRIPTION: 'Enrichment results and suggestions (if available).',
-      EMPTY_TITLE: 'No insights available',
-      EMPTY_DESCRIPTION: 'No insights are available for this application yet.',
-      ENRICHING_TITLE: 'Analyzing this application',
-      ENRICHING_DESCRIPTION: 'Insights are being generated and will appear here automatically.',
-      TECH_STACK: 'Tech stack',
-      ENRICHMENT_HINT:
-        'Enrichment adds category, role, stack context, and suggestions when data is available from the platform.',
-      CONFIDENCE: 'Confidence',
-      CATEGORY: 'Category',
-      ROLE: 'Role',
-      ENRICHED_AT: 'Enriched at',
-      DEPENDENCIES: 'Dependencies',
-      RISKS: 'Risks',
-      SUGGESTIONS: 'Suggestions',
-      RESOURCE_EFFICIENCY: 'Resource efficiency',
-      CRITICALITY: 'Criticality',
-      TAGS: 'Tags',
-      RELATED_APPS: 'Related apps',
-      PROMPT_VERSION: 'Prompt version',
     },
     RUNTIME: {
       TITLE: 'Runtime',
@@ -204,7 +180,6 @@ export const APPLICATIONS_UI = {
         'Sign in with a user account to start a rollback (username is required for the request).',
       TAKEN_AT: 'Taken at',
       MANIFEST_MODAL_TITLE: 'Manifest',
-      MANIFEST_PANEL_SUBTITLE: 'Snapshot manifest',
       MANIFEST_BACK: 'Snapshots',
       MANIFEST_BACK_TOOLTIP: 'Back to snapshots',
       MANIFEST_TAB_JSON: 'JSON',
@@ -240,8 +215,6 @@ export const APPLICATIONS_UI = {
       ABORT_CONFIRM_OK: 'Abort rollback',
       ABORT_SUCCESS: 'Rollback aborted.',
       ABORT_FAILED: 'Could not abort rollback. Please try again.',
-      ABORT_USER_REQUIRED:
-        'Sign in with a user account to abort a rollback (username is required for the request).',
     },
     METRICS: {
       TITLE: 'Metrics',
@@ -265,7 +238,7 @@ export const APPLICATIONS_UI = {
       OF_REQUEST: 'of request',
       OF_LIMIT: 'of limit',
       NO_BASELINE: 'no request set',
-      REPLICAS_SUFFIX: 'replicas',
+      REPLICAS_SUFFIX: { one: 'replica', other: 'replicas' },
       INSTANCES_TITLE: 'Pods',
       POD_LABEL: 'Pod',
       CONTAINERS_LABEL: 'Containers running in this pod',
@@ -315,7 +288,7 @@ export const APPLICATIONS_UI = {
       MANAGED_BY: 'Managed by',
       LAST_UPDATED: 'Last updated',
       CREATED_AT: 'Created at',
-      CR_STATUS: 'CR status',
+      PUBLISHED: 'Published',
       RUNTIME: 'Runtime',
       FOOTER_NAMESPACE: 'Namespace',
       FOOTER_MANAGED: 'Managed by',
@@ -334,6 +307,8 @@ export const APPLICATIONS_UI = {
       SYNC_DISABLED_TOOLTIP: 'Action is unavailable while sync is in progress.',
       EDIT_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to edit applications',
       FORCE_SYNC_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to sync applications',
+      FORCE_SYNC_FAILED: 'Force sync request failed.',
+      RESET_FAILED: 'Could not reset the application.',
       VIEW_SNAPSHOTS_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to view snapshots',
       VIEW_ROLLBACKS_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to view rollbacks',
       RESET_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to reset applications',

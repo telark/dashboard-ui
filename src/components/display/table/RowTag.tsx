@@ -1,25 +1,30 @@
 import React from 'react';
+import { DEFAULT_COLORS, TRUNCATE_STYLE, getPillSurface } from '../../../constants';
 import type { RowTagProps } from '../../../interfaces/layout/table';
 
 const RowTag: React.FC<RowTagProps> = ({
   text,
-  background,
-  color,
+  accent,
   fontSize = 12,
   capitalize = true,
+  truncate = false,
 }) => {
   return (
     <span
       style={{
         display: 'inline-block',
-        background,
-        color,
+        ...getPillSurface(accent),
+        color: DEFAULT_COLORS.PILL_TEXT,
         padding: '2px 10px',
         borderRadius: 999,
         fontWeight: 700,
         fontSize,
         textTransform: capitalize ? 'capitalize' : 'none',
+        ...(truncate
+          ? { ...TRUNCATE_STYLE, maxWidth: '100%', boxSizing: 'border-box' as const }
+          : {}),
       }}
+      title={truncate ? text : undefined}
     >
       {text}
     </span>

@@ -6,6 +6,7 @@ import { HTTP_STATUS } from '../../../../constants/rest/http';
 import { AUTH_ERROR_MESSAGES } from '../../constants/messages';
 import { browserHasCredential } from '../../utils';
 import logger from '../../../../logging';
+import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 import type {
   Passkey,
   CreatePasskeyResponse,
@@ -81,7 +82,7 @@ export const createPasskeyThunk = createAsyncThunk(
       );
       return mapResponseToPasskey(response);
     } catch (error: unknown) {
-      const axiosError = error as any;
+      const axiosError = error as ExtendedAxiosError;
       const status = axiosError?.response?.status || axiosError?.normalized?.status;
 
       if (status === HTTP_STATUS.CONFLICT) {

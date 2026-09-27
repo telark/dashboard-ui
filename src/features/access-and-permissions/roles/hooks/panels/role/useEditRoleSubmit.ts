@@ -69,8 +69,9 @@ export const useEditRoleSubmit = ({
             navigate(`${APP_ROUTES.ROLES}/${id}/view`);
           }
           onSuccess?.();
-        } catch {
-          // Error handling is done in handleUpdate
+        } catch (error) {
+          // Both steps are silent, so the refusal is shown here.
+          message.error(error instanceof Error ? error.message : RC.LABELS.MESSAGES.UPDATE_FAILED);
         } finally {
           setIsSubmitting(false);
         }

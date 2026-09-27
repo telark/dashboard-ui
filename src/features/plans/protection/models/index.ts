@@ -1,9 +1,34 @@
-export type PlanPhase = 'active' | 'scheduled' | 'failed' | 'terminated' | 'canceled' | 'draft';
+export type PlanPhase =
+  'active' | 'scheduled' | 'failed' | 'terminated' | 'canceled' | 'draft' | 'pending_approval';
 export type ScopeType = 'applications' | 'namespaces';
 export type PlanMode = 'audit' | 'enforce';
 export type PlanTimeMode = 'permanent' | 'time_range';
 export type PlanHealth = 'unknown' | 'healthy' | 'drifted' | 'degraded';
+export type PlanViewMode = 'plans' | 'environments' | 'tags';
 export type ViolationResult = 'pass' | 'fail' | 'warn' | 'error' | 'skip';
+export type PlanReportFormat = 'html' | 'md' | 'json' | 'csv';
+export type PlanReportTrigger = 'end' | 'cancel' | 'manual';
+export type PlansPageTab = 'plans' | 'reports';
+export type PlanApprovalMode = 'automatic' | 'required';
+export type PlanApprovalState = 'pending' | 'approved' | 'rejected';
+export type PlanApprovalDecision = 'approved' | 'rejected';
+
+export interface PlanApprovalEvent {
+  event: string;
+  by: string;
+  at: string;
+  comment?: string;
+}
+
+export interface PlanApproval {
+  state: PlanApprovalState;
+  requestedBy: string;
+  requestedAt: string;
+  decidedBy?: string;
+  decidedAt?: string;
+  comment?: string;
+  history?: PlanApprovalEvent[];
+}
 
 export interface PlanHealthDetail {
   policyName: string;
@@ -53,13 +78,36 @@ export interface PlanViolation {
 export interface PlanViolationsResponse {
   planId: string;
   total: number;
+  retentionWindow: string;
   violations: PlanViolation[];
+}
+
+export interface PlanReportMeta {
+  id: string;
+  planId: string;
+  trigger: PlanReportTrigger;
+  generatedAt: string;
+  generatedBy: string;
+  violationsTotal: number;
+  truncated: boolean;
+}
+
+export interface PlanExcludedResource {
+  kind: string;
+  name: string;
+  namespace: string;
+}
+
+export interface PlanScopeExclusions {
+  kinds: string[];
+  resources: PlanExcludedResource[];
 }
 
 export interface PlanScope {
   type: ScopeType;
-  applicationIds: string[];
+  applicationRefs: string[];
   namespaces: string[];
+  exclusions?: PlanScopeExclusions;
 }
 
 export interface PlanPolicy {
@@ -94,10 +142,14 @@ export interface ProtectionPlan {
   startedBy?: string;
   terminatedAt?: string;
   terminatedBy?: string;
-  participantsIDs?: string[];
+  participantRefs?: string[];
+  environmentRef?: string;
+  tagRefs?: string[];
   health?: PlanHealth;
   healthCheckedAt?: string;
   healthDetail?: PlanHealthDetail[];
+  approvalMode?: PlanApprovalMode;
+  approval?: PlanApproval;
 }
 
 export type ParamType = 'string-array';
@@ -109,6 +161,8 @@ export interface ParamSpec {
   required: boolean;
   placeholder?: string;
   description?: string;
+  // Regex the backend enforces on every entry of a required param.
+  pattern?: string;
 }
 
 export interface PlanTemplate {

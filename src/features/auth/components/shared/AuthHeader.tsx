@@ -1,4 +1,5 @@
 import React from 'react';
+import { DEFAULT_COLORS } from '../../../../constants';
 
 interface AuthHeaderProps {
   icon?: React.ReactNode;
@@ -29,7 +30,7 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({ icon, title, subtitle })
         margin: 0,
         fontSize: '22px',
         fontWeight: 700,
-        color: 'var(--auth-text-primary, #0B1F33)',
+        color: `var(--auth-text-primary, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT})`,
         letterSpacing: '-0.4px',
         lineHeight: 1.25,
       }}
@@ -40,7 +41,7 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({ icon, title, subtitle })
       style={{
         margin: '3px 0 0',
         fontSize: '14px',
-        color: 'var(--auth-text-muted, #64748b)',
+        color: `var(--auth-text-muted, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED})`,
         lineHeight: 1.5,
         opacity: 0.85,
       }}

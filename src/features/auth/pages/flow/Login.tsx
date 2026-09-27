@@ -10,7 +10,7 @@ import {
 } from '../../utils/flow/login';
 import { redirectToGoogle } from '../../utils/flow/google';
 import { isWebAuthnSupported } from '../../utils/webauthn/core';
-import { APP_ROUTES } from '../../../../constants';
+import { APP_ROUTES, DEFAULT_COLORS, GOOGLE_BRAND_COLORS } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { GoogleIcon } from '../../../../components/display/icons/GoogleIcon';
 import {
@@ -160,7 +160,7 @@ const Login: React.FC = () => {
               fontWeight: 600,
               background: 'var(--color-primary)',
               borderColor: 'var(--color-primary)',
-              color: '#ffffff',
+              color: DEFAULT_COLORS.PILL_TEXT,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -184,10 +184,10 @@ const Login: React.FC = () => {
           <Divider
             plain
             style={{
-              color: 'var(--auth-text-muted, #94a3b8)',
+              color: `var(--auth-text-muted, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED})`,
               fontSize: '11px',
               margin: '14px 0',
-              borderColor: 'var(--auth-divider, #f1f5f9)',
+              borderColor: `var(--auth-divider, ${DEFAULT_COLORS.AUTH_LIGHT_DIVIDER})`,
             }}
           >
             {LOGIN_CONSTANTS.UI.GOOGLE_OR_SEPARATOR}
@@ -202,9 +202,9 @@ const Login: React.FC = () => {
             disabled={loading}
             style={{
               fontWeight: 500,
-              background: '#ffffff',
-              borderColor: '#dadce0',
-              color: '#3c4043',
+              background: GOOGLE_BRAND_COLORS.BUTTON_BG,
+              borderColor: GOOGLE_BRAND_COLORS.BUTTON_BORDER,
+              color: GOOGLE_BRAND_COLORS.BUTTON_TEXT,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

@@ -8,6 +8,7 @@ import store from '../../../../../../store';
 import { fetchMyPermissionsThunk } from '../../../../../auth/store/thunks/fetchThunks';
 import type { ManageUserStateFormValues, User, UserAccountState } from '../../../models';
 import { USERS_CONSTANTS as UC } from '../../../constants';
+import { rejectionMessage } from '../../../../../../utils/helpers/format';
 
 interface UseManageUserStatePanelOptions {
   open: boolean;
@@ -65,8 +66,8 @@ export const useManageUserStatePanel = ({
         message.success(UC.LABELS.MESSAGES.UPDATED(editingUser.fullname));
         form.resetFields();
         onClose();
-      } catch {
-        message.error(UC.LABELS.MESSAGES.UPDATE_FAILED);
+      } catch (rejection) {
+        message.error(rejectionMessage(rejection, UC.LABELS.MESSAGES.UPDATE_FAILED));
       } finally {
         setSubmitting(false);
       }
