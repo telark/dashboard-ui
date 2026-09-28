@@ -18,6 +18,22 @@ export const PANEL_THEME_TOKENS = {
   colorBorder: DEFAULT_COLORS.SURFACE_BORDER,
 } as const;
 
+// antd paints the selected and active option with colorPrimary tints (green).
+export const SELECT_THEME = {
+  colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
+  optionSelectedBg: DEFAULT_COLORS.SURFACE_WHITE,
+  optionActiveBg: DEFAULT_COLORS.SURFACE_HOVER,
+  controlItemBgHover: DEFAULT_COLORS.SURFACE_HOVER,
+  controlItemBgActiveHover: DEFAULT_COLORS.SURFACE_HOVER,
+  colorTextDisabled: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
+  multipleItemBg: DEFAULT_COLORS.SURFACE_WHITE,
+  multipleItemBorderColor: DEFAULT_COLORS.SURFACE_BORDER,
+  optionSelectedColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  activeBorderColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  hoverBorderColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  activeOutlineColor: 'transparent',
+} as const;
+
 export const SLIDE_OUT = {
   BACKDROP: {
     position: 'fixed' as const,
