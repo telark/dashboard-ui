@@ -214,7 +214,7 @@ export const ROLES_CONSTANTS = {
       { key: 'applications', label: 'Applications' },
       { key: 'insights', label: 'Insights' },
       { key: 'settings', label: 'Settings' },
-      { key: 'protection-plans', label: 'Protection Plans' },
+      { key: 'protection-plans', label: 'Protection plans' },
     ] as const,
     PERMISSION_LEVEL_TOOLTIP: {
       ReadOnly: 'Read-only access to view data and settings.',

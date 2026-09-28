@@ -51,7 +51,7 @@ export const APPLICATIONS_CONSTANTS = {
     RETRY_ATTEMPT_LOG: 'applications fetch retry attempt failed',
     NO_APPLICATIONS_TITLE: 'No applications yet',
     NO_APPLICATIONS_DESCRIPTION:
-      'When your cluster is connected, applications represent logical app groupings. Try syncing your cluster resources to pull the latest.',
+      'Telark groups your workloads into applications automatically, so you protect checkout, not seventeen Deployments. Sync the cluster to pull the latest.',
   },
   RETRY: {
     KEY: 'applications.fetch',
