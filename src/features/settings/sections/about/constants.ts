@@ -3,7 +3,7 @@ export const ABOUT_SECTION_CONSTANTS = {
     VERSION_CARD_TITLE: 'Version',
     VERSION_CARD_DESCRIPTION: 'The version of the dashboard you are currently running.',
     DOCS_CARD_TITLE: 'Documentation',
-    DOCS_CARD_DESCRIPTION: 'Guides and reference material for the platform.',
+    DOCS_CARD_DESCRIPTION: 'Guides and reference for Telark.',
     DOCS_LINK_TEXT: 'View documentation',
     LICENSES_CARD_TITLE: 'Third-Party Licenses',
     LICENSES_CARD_DESCRIPTION: 'Open-source packages used to build this app.',

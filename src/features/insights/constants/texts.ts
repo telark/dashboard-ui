@@ -116,7 +116,8 @@ export const INSIGHTS_UI = {
   },
   PAGE: {
     TITLE: 'Insights',
-    SUBTITLE: 'Incidents and recommendations across every application.',
+    SUBTITLE:
+      'Why an application broke, with the evidence and the change it followed, and what to fix in its setup.',
     SEARCH_PLACEHOLDER: 'Search by application, namespace, subject or title',
     SEARCH_BUTTON: 'Search',
     REFRESH: 'Refresh',
@@ -128,10 +129,10 @@ export const INSIGHTS_UI = {
     ALL_CLEAR_INCIDENTS: 'No open incidents.',
     ALL_CLEAR_RECOMMENDATIONS: 'No open recommendations.',
     CHECKED: 'Checked',
-    ANALYZER_OFF_TITLE: 'The local analyzer is off',
+    ANALYZER_OFF_TITLE: 'Insights are off',
     ANALYZER_OFF:
-      'Turn it on to find incidents and recommendations for every application. Existing findings stay listed.',
-    OPEN_SETTINGS: 'Open analyzer settings',
+      'Turn them on in Settings to explain incidents and review each application’s setup. Existing findings stay listed.',
+    OPEN_SETTINGS: 'Open Insights settings',
     GROUP_BY: 'Group by',
     SEVERITY_FILTER: 'Filter by severity',
     ALL: 'All',

@@ -1,6 +1,7 @@
 export const APPLICATIONS_UI = {
   HEADER_TITLE: 'Applications',
-  HEADER_SUBTITLE: 'Inspect application health, resources, snapshots, and more.',
+  HEADER_SUBTITLE:
+    'Workloads grouped into applications automatically. Check health, see what changed, and roll back.',
   DISCOVERY_IN_PROGRESS: (remaining: number) =>
     remaining > 0
       ? `Discovering applications: ${remaining} left to refresh. New applications appear as the scan completes.`
@@ -54,7 +55,7 @@ export const APPLICATIONS_UI = {
     ROOT: 'Applications',
   },
   DETAIL_PAGE: {
-    SUBTITLE: 'Inspect application health, resources, snapshots, and more.',
+    SUBTITLE: 'Health, resources, change history, and snapshots you can roll back to.',
   },
   EDIT_PAGE: {
     PANEL_TITLE: 'Edit application',
