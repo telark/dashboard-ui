@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertOutlined } from '@ant-design/icons';
+import { AiOutlineWarning } from 'react-icons/ai';
 import {
   DEFAULT_COLORS,
   LIST_TOOLBAR,
@@ -43,7 +43,7 @@ const SeverityPills: React.FC<Props> = ({ active, counts, compact, onChange }) =
         }))}
         active={active ?? 'all'}
         title={P.SEVERITY_FILTER}
-        icon={<AlertOutlined />}
+        icon={<AiOutlineWarning />}
         onChange={onChange}
       />
     );

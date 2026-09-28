@@ -1,5 +1,11 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { CheckCircleOutlined, DownOutlined, RightOutlined, StopOutlined } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  DownOutlined,
+  HistoryOutlined,
+  RightOutlined,
+  StopOutlined,
+} from '@ant-design/icons';
 import { App as AntdApp, Button, Tooltip } from 'antd';
 import { useDispatch } from 'react-redux';
 import {
@@ -7,7 +13,7 @@ import {
   ExpandPanelButton,
 } from '../../../../../components/display/panels/slide-out';
 import { DEFAULT_COLORS } from '../../../../../constants';
-import EmptyState from '../../../../../components/display/views/EmptyState';
+import { PanelEmptyState } from '../../../../../components/display/panels/shared';
 import type { Application, ApplicationRollbackEntry } from '../../models';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
@@ -118,7 +124,8 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
         formContent={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
             {rollbacks.length === 0 ? (
-              <EmptyState
+              <PanelEmptyState
+                icon={<HistoryOutlined />}
                 title={ui.ROLLBACKS_EMPTY_TITLE}
                 description={ui.ROLLBACKS_EMPTY_DESCRIPTION}
               />

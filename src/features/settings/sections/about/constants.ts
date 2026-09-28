@@ -18,6 +18,6 @@ export const ABOUT_SECTION_CONSTANTS = {
     ROW_GAP: 8,
   },
   LINKS: {
-    DOCS_URL: 'https://www.telark.io/docs',
+    DOCS_URL: 'https://docs.telark.io',
   },
 } as const;

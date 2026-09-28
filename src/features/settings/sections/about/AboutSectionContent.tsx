@@ -1,4 +1,6 @@
 import React, { memo } from 'react';
+import { Typography } from 'antd';
+import { DEFAULT_COLORS } from '../../../../constants';
 import SettingsCard from '../../components/SettingsCard';
 import LicensesCard from './components/LicensesCard';
 import { SETTINGS_CONSTANTS } from '../../constants';
@@ -16,9 +18,14 @@ const AboutSectionContent: React.FC = memo(() => (
     </SettingsCard>
     <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
       <SettingsCard title={LABELS.DOCS_CARD_TITLE} description={LABELS.DOCS_CARD_DESCRIPTION}>
-        <a href={LINKS.DOCS_URL} target="_blank" rel="noopener noreferrer">
+        <Typography.Link
+          href={LINKS.DOCS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: DEFAULT_COLORS.SUCCESS, flexShrink: 0 }}
+        >
           {LABELS.DOCS_LINK_TEXT}
-        </a>
+        </Typography.Link>
       </SettingsCard>
     </div>
     <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>

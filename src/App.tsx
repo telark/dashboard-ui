@@ -11,6 +11,7 @@ import EmptyState from './components/display/views/EmptyState';
 import 'antd/dist/reset.css';
 import {
   DEFAULT_COLORS,
+  SELECT_THEME,
   APP_CONFIGS,
   APP_ROUTES,
   CONTROL_HEIGHT,
@@ -138,18 +139,7 @@ const App: React.FC = () => {
               colorTextDisabled: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
               controlItemBgActiveDisabled: DEFAULT_COLORS.SURFACE_WHITE,
             },
-            Select: {
-              colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
-              optionSelectedBg: DEFAULT_COLORS.SURFACE_WHITE,
-              controlItemBgHover: DEFAULT_COLORS.SURFACE_HOVER,
-              colorTextDisabled: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
-              multipleItemBg: DEFAULT_COLORS.SURFACE_WHITE,
-              multipleItemBorderColor: DEFAULT_COLORS.SURFACE_BORDER,
-              optionSelectedColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
-              activeBorderColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-              hoverBorderColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-              activeOutlineColor: 'transparent',
-            },
+            Select: SELECT_THEME,
             // Focus ring matches Select: colorPrimary is the app green, which antd
             // would otherwise use for the active border and shadow.
             Input: {

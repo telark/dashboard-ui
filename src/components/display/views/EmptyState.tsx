@@ -86,7 +86,7 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
             style={{
               color: token.colorTextHeading,
               fontWeight: 700,
-              marginBottom: token.marginSM,
+              marginBottom: token.marginXS,
               marginTop: 0,
             }}
           >
@@ -101,7 +101,7 @@ const EmptyState: React.FC<EmptyStateProps> = memo(
               textAlign: 'center',
               lineHeight: 1.65,
               fontSize: 15,
-              marginBottom: token.marginLG,
+              marginBottom: primaryAction || secondaryAction ? token.margin : 0,
             }}
           >
             {description}
