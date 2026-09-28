@@ -4,6 +4,7 @@ import type { AnimationWrapperProps } from '../../../../interfaces/layout/panels
 import { useBodyOverflow } from '../../../../hooks/panel';
 import {
   PANEL_SURFACE_CLASS,
+  PANEL_MAX_WIDTH,
   PANEL_THEME_TOKENS,
   SELECT_THEME,
   SLIDE_OUT,
@@ -41,6 +42,7 @@ const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
           style={{
             ...SLIDE_OUT.PANEL,
             width: width,
+            maxWidth: PANEL_MAX_WIDTH,
             transform: offsetX ? `translateX(-${offsetX}px)` : undefined,
             transition: 'transform 0.3s ease, width 0.3s ease',
             willChange: 'transform',

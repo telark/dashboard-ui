@@ -2,6 +2,7 @@ import { DEFAULT_COLORS, withAlpha } from '../shared/colors';
 import { AVATAR_RING } from './avatars';
 import { CONTROL_HEIGHT } from './controls';
 import { HEADER_LAYOUT } from './header';
+import { SIDEBAR_LAYOUT } from './sidebar';
 
 // Panels keep the light surface they had before the dark theme; these tokens
 // re-light the antd controls rendered inside them.
@@ -33,6 +34,10 @@ export const SELECT_THEME = {
   hoverBorderColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   activeOutlineColor: 'transparent',
 } as const;
+
+// Expanded panels stop at a fully opened sidebar's edge so navigation stays reachable;
+// small screens keep the panel's own width up to the viewport.
+export const PANEL_MAX_WIDTH = `max(calc(100vw - ${SIDEBAR_LAYOUT.WIDTH_MAX}px), min(100vw, 480px))`;
 
 export const SLIDE_OUT = {
   BACKDROP: {
