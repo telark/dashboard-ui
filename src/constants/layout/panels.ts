@@ -424,13 +424,14 @@ export const VIEW = {
 
 export const PANEL_EMPTY_STATE = {
   CONTAINER: {
-    border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
-    borderRadius: 12,
-    background: DEFAULT_COLORS.SURFACE_WHITE,
+    flex: 1,
+    height: '100%',
+    minHeight: 320,
     padding: '28px 16px',
     display: 'flex' as const,
     flexDirection: 'column' as const,
     alignItems: 'center' as const,
+    justifyContent: 'center' as const,
     gap: 6,
     textAlign: 'center' as const,
   },
