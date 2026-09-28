@@ -1,12 +1,12 @@
 import React from 'react';
 import { FancySpinner } from '../../../components/animation';
-import { CheckOutlined, DeleteOutlined } from '@ant-design/icons';
+import { BellOutlined, CheckOutlined, DeleteOutlined } from '@ant-design/icons';
 import { SlideOutPanel } from '../../../components/display/panels/slide-out';
 import { ToggleButton } from '../../../components/display/buttons';
 import { useNotifications } from '../hooks';
 import { NOTIFICATIONS_PANEL_WIDTH, NOTIFICATIONS_TEXTS } from '../constants';
 import NotificationItem from './NotificationItem';
-import EmptyState from '../../../components/display/views/EmptyState';
+import { PanelEmptyState } from '../../../components/display/panels/shared';
 
 export interface NotificationPanelProps {
   open: boolean;
@@ -50,32 +50,40 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose }) 
           />
         </div>
       )}
-      <div
-        style={{
-          overflowY: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          flex: 1,
-          gap: 4,
-          padding: '4px 0',
-          margin: '0 -24px',
-        }}
-      >
-        {isLoading && !hasNotifications ? (
-          <div style={{ padding: 32, display: 'flex', justifyContent: 'center' }}>
-            <FancySpinner />
-          </div>
-        ) : !hasNotifications ? (
-          <EmptyState
-            title={NOTIFICATIONS_TEXTS.EMPTY_TITLE}
-            description={NOTIFICATIONS_TEXTS.EMPTY_DESCRIPTION}
-          />
-        ) : (
-          notifications.map((n) => (
-            <NotificationItem key={n.id} notification={n} onMarkRead={markRead} onClose={onClose} />
-          ))
-        )}
-      </div>
+      {!isLoading && !hasNotifications ? (
+        <PanelEmptyState
+          icon={<BellOutlined />}
+          title={NOTIFICATIONS_TEXTS.EMPTY_TITLE}
+          description={NOTIFICATIONS_TEXTS.EMPTY_DESCRIPTION}
+        />
+      ) : (
+        <div
+          style={{
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            flex: 1,
+            gap: 4,
+            padding: '4px 0',
+            margin: '0 -24px',
+          }}
+        >
+          {isLoading && !hasNotifications ? (
+            <div style={{ padding: 32, display: 'flex', justifyContent: 'center' }}>
+              <FancySpinner />
+            </div>
+          ) : (
+            notifications.map((n) => (
+              <NotificationItem
+                key={n.id}
+                notification={n}
+                onMarkRead={markRead}
+                onClose={onClose}
+              />
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 

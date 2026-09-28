@@ -2,6 +2,7 @@ import { DEFAULT_COLORS, withAlpha } from '../shared/colors';
 import { AVATAR_RING } from './avatars';
 import { CONTROL_HEIGHT } from './controls';
 import { HEADER_LAYOUT } from './header';
+import { SIDEBAR_LAYOUT } from './sidebar';
 
 // Panels keep the light surface they had before the dark theme; these tokens
 // re-light the antd controls rendered inside them.
@@ -17,6 +18,26 @@ export const PANEL_THEME_TOKENS = {
   colorIcon: DEFAULT_COLORS.TEXT_ON_SURFACE,
   colorBorder: DEFAULT_COLORS.SURFACE_BORDER,
 } as const;
+
+// antd paints the selected and active option with colorPrimary tints (green).
+export const SELECT_THEME = {
+  colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
+  optionSelectedBg: DEFAULT_COLORS.SURFACE_WHITE,
+  optionActiveBg: DEFAULT_COLORS.SURFACE_HOVER,
+  controlItemBgHover: DEFAULT_COLORS.SURFACE_HOVER,
+  controlItemBgActiveHover: DEFAULT_COLORS.SURFACE_HOVER,
+  colorTextDisabled: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
+  multipleItemBg: DEFAULT_COLORS.SURFACE_WHITE,
+  multipleItemBorderColor: DEFAULT_COLORS.SURFACE_BORDER,
+  optionSelectedColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  activeBorderColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  hoverBorderColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  activeOutlineColor: 'transparent',
+} as const;
+
+// Expanded panels stop at a fully opened sidebar's edge so navigation stays reachable;
+// small screens keep the panel's own width up to the viewport.
+export const PANEL_MAX_WIDTH = `max(calc(100vw - ${SIDEBAR_LAYOUT.WIDTH_MAX}px), min(100vw, 480px))`;
 
 export const SLIDE_OUT = {
   BACKDROP: {
@@ -403,5 +424,38 @@ export const VIEW = {
       display: 'flex' as const,
       alignItems: 'center' as const,
     },
+  },
+} as const;
+
+export const PANEL_EMPTY_STATE = {
+  CONTAINER: {
+    flex: 1,
+    height: '100%',
+    minHeight: 320,
+    padding: '28px 16px',
+    display: 'flex' as const,
+    flexDirection: 'column' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
+    gap: 6,
+    textAlign: 'center' as const,
+  },
+  ICON: {
+    fontSize: 26,
+    lineHeight: 1,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  },
+  TITLE: {
+    fontSize: 14,
+    fontWeight: 800,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  },
+  DESCRIPTION: {
+    fontSize: 12,
+    fontWeight: 600,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  },
+  ACTION: {
+    marginTop: 6,
   },
 } as const;

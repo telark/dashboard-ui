@@ -4,6 +4,7 @@ import {
   BUTTON_TEXTS,
   PANEL_SURFACE_CLASS,
   PANEL_THEME_TOKENS,
+  SELECT_THEME,
   SLIDE_OUT,
 } from '../../../../constants';
 import { useBodyOverflow } from '../../../../hooks/panel';
@@ -116,7 +117,13 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   if (!open) return null;
 
   return (
-    <ConfigProvider theme={{ algorithm: theme.defaultAlgorithm, token: PANEL_THEME_TOKENS }}>
+    <ConfigProvider
+      theme={{
+        algorithm: theme.defaultAlgorithm,
+        token: PANEL_THEME_TOKENS,
+        components: { Select: SELECT_THEME },
+      }}
+    >
       <div onClick={onClose} style={SLIDE_OUT.BACKDROP} />
       <div
         className={PANEL_SURFACE_CLASS}
