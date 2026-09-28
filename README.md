@@ -117,3 +117,7 @@ Installation, sizing, and verification for the full telark system (this UI inclu
 - [`telark/docs/architecture.md`](../Github/telark/docs/architecture.md) — full system architecture, service responsibilities, and data flow (the diagram above is a UI-centric excerpt of this).
 - [`telark/docs/CRDS.md`](../Github/telark/docs/CRDS.md) — the CRD groups/kinds the backend services expose, which show up as data in this UI.
 - [`telark/docs/adr/`](../Github/telark/docs/adr/) — architecture decision records.
+
+## Contributing, security and license
+
+See [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) and [GOVERNANCE.md](GOVERNANCE.md). Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md). Source-available under the [Elastic License 2.0](LICENSE.md), like the rest of Telark.
