@@ -1,7 +1,7 @@
 import React from 'react';
 import { Empty } from 'antd';
 import { DEFAULT_COLORS } from '../../../../../constants';
-import { APPLICATION_SECTION_LAYOUT } from '../../../../resources/applications/constants/sectionLayout';
+import { APPLICATION_SECTION_LAYOUT } from '../../../../applications/constants/sectionLayout';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { FancySpinner } from '../../../../../components/animation';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';

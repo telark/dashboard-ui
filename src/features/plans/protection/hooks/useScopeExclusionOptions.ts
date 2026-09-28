@@ -2,10 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import logger from '../../../../logging';
 import { STORE_MESSAGES } from '../../../../constants/store/store';
-import { fetchApplicationDetails } from '../../../resources/applications/clients';
-import { selectApplications } from '../../../resources/applications/store';
-import { DEFAULT_RESOURCE_SUMMARY } from '../../../resources/applications/utils/mappers/applicationMapper';
-import type { ApplicationResourceRef } from '../../../resources/applications/models';
+import { fetchApplicationDetails } from '../../../applications/clients';
+import { selectApplications } from '../../../applications/store';
+import { DEFAULT_RESOURCE_SUMMARY } from '../../../applications/utils/mappers/applicationMapper';
+import type { ApplicationResourceRef } from '../../../applications/models';
 import type { ScopeType } from '../models';
 import { encodeResourceKey } from '../utils/planFormValues';
 

@@ -35,10 +35,10 @@ const GoogleCallback = lazy(() => import('../features/auth/pages/flow/GoogleCall
 
 // resources
 const ApplicationsGlobalView = lazy(
-  () => import('../features/resources/applications/pages/main/GlobalView'),
+  () => import('../features/applications/pages/main/GlobalView'),
 );
 const ApplicationDetailsView = lazy(
-  () => import('../features/resources/applications/pages/details/DetailsView'),
+  () => import('../features/applications/pages/details/DetailsView'),
 );
 const InsightsPage = lazy(() => import('../features/insights/pages/InsightsPage'));
 

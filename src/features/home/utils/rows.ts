@@ -1,6 +1,6 @@
 import { APP_ROUTES, DEFAULT_COLORS } from '../../../constants';
-import type { Application } from '../../resources/applications/models';
-import { getApplicationHealthAccentColor } from '../../resources/applications/utils/healthVisual';
+import type { Application } from '../../applications/models';
+import { getApplicationHealthAccentColor } from '../../applications/utils/healthVisual';
 import type { ProtectionPlan } from '../../plans/protection/models';
 import {
   HEALTH_DOT_COLOR,

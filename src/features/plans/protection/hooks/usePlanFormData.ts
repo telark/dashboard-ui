@@ -13,7 +13,7 @@ import {
   selectApplications,
   selectApplicationsLoading,
   fetchAllApplicationsThunk,
-} from '../../../resources/applications/store';
+} from '../../../applications/store';
 import { useUsers } from '../../../access-and-permissions/users/hooks/user/useUsers';
 import { getCurrentUser } from '../../../auth/utils';
 import type { User } from '../../../access-and-permissions/users/models';

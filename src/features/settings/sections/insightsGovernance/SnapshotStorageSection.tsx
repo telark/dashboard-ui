@@ -9,9 +9,9 @@ import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
 import type { AppDispatch } from '../../../../store';
-import SnapshotStorageBar from '../../../resources/applications/components/snapshots/SnapshotStorageBar';
-import { getSnapshotInfos } from '../../../resources/applications/clients';
-import type { SnapshotStorageInfos } from '../../../resources/applications/models';
+import SnapshotStorageBar from '../../../applications/components/snapshots/SnapshotStorageBar';
+import { getSnapshotInfos } from '../../../applications/clients';
+import type { SnapshotStorageInfos } from '../../../applications/models';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as C } from './constants';
 import {
   ACTION_PERMISSIONS,

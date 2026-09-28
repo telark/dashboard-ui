@@ -1,0 +1,371 @@
+import React, { memo, useEffect, useCallback, useRef, useState, useMemo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Form } from 'antd';
+import type { RootState, AppDispatch } from '../../../../store';
+import {
+  filterByExcludedNamespaces,
+  loadApplications,
+  loadApplicationsSilent,
+} from '../../utils/management/state';
+import {
+  APPLICATIONS_PAGE_SIZE,
+  APPLICATIONS_SYNC_ACTIVE_POLL_MS,
+  APPLICATIONS_UI,
+  SYNC_STATUS_VALUE,
+} from '../../constants';
+import ApplicationsMainEmpty from './Empty';
+import ApplicationsSuccess from './Success';
+import { filterApplications, useApplications } from '../../hooks';
+import type { Application } from '../../models';
+import { EditApplicationPanel } from '../../components/panels';
+import { FilterPanel } from '../../../../components/display/panels/filter';
+import type { FilterField } from '../../../../components/display/panels/filter/FilterPanel';
+import type { DateRangeFilter } from '../../../../interfaces/date/filter';
+import { filterByDateRange } from '../../../access-and-permissions/groups/utils/filter/dateRangeUtils';
+import {
+  buildFilterChips,
+  hasAnyAppliedFilter,
+  splitFilterChips,
+} from '../../../../utils/layout/filters';
+import {
+  clearAllFilters,
+  removeFilterValue,
+  setAppliedFilters,
+  setBulkMode,
+  setCurrentPage,
+  setHealthQuickFilter,
+  setSelectedNames,
+} from '../../store/slices/applicationsSlice';
+
+const ApplicationsGlobalView: React.FC = memo(() => {
+  const dispatch: AppDispatch = useDispatch();
+  const { applications, loading, error, appliedFilters, currentPage } = useSelector(
+    (s: RootState) => s.applications,
+  );
+  const syncing = useSelector((s: RootState) => s.applications.syncing);
+  const syncStatus = useSelector((s: RootState) => s.applications.syncStatus);
+  const fetchIntervalSeconds = useSelector((s: RootState) =>
+    s.globalconfig.data?.userSettings?.fetchIntervalSeconds != null
+      ? Number(s.globalconfig.data.userSettings.fetchIntervalSeconds)
+      : 60,
+  );
+  const excludedNamespaces = useSelector(
+    (s: RootState) => s.globalconfig.data?.excludedNamespaces ?? [],
+  );
+  const visibleApplications = useMemo(
+    () => filterByExcludedNamespaces(applications, excludedNamespaces),
+    [applications, excludedNamespaces],
+  );
+  const hasTriggeredInitialLoad = useRef(false);
+
+  const { searchValue, onSearchChange } = useApplications();
+  const [editForm] = Form.useForm();
+  const [editTarget, setEditTarget] = useState<Application | null>(null);
+  const bulkMode = useSelector((s: RootState) => Boolean(s.applications.bulkMode));
+  const selectedNames = useSelector((s: RootState) => s.applications.selectedNames || []);
+  const healthQuickFilter = useSelector(
+    (s: RootState) => s.applications.healthQuickFilter || 'all',
+  );
+
+  const openEditPanel = useCallback(
+    (app: Application) => {
+      editForm.setFieldsValue({
+        name: app.name,
+        displayName: app.displayName,
+        description: app.description ?? '',
+      });
+      setEditTarget(app);
+    },
+    [editForm],
+  );
+
+  const closeEditPanel = useCallback(() => {
+    editForm.resetFields();
+    setEditTarget(null);
+  }, [editForm]);
+
+  const [filterPanelOpen, setFilterPanelOpen] = useState(false);
+
+  const filterFields: FilterField[] = useMemo(() => {
+    const statusOptions = uniqOptions(visibleApplications, (a) => a.health?.status);
+    const managedByOptions = uniqOptions(visibleApplications, (a) => a.managed?.by);
+    const managedChartOptions = uniqOptions(visibleApplications, (a) => a.managed?.chart || '');
+    const namespaceOptions = uniqNamespaceOptions(visibleApplications);
+    return [
+      {
+        key: 'dateRange',
+        label: APPLICATIONS_UI.FILTER.BY_CREATION_DATE,
+        type: 'dateRange',
+        fromLabel: APPLICATIONS_UI.FILTER.FROM,
+        toLabel: APPLICATIONS_UI.FILTER.TO,
+      },
+      {
+        key: 'status',
+        label: APPLICATIONS_UI.FILTER.BY_STATUS,
+        type: 'multiSelect',
+        multiSelectOptions: statusOptions,
+      },
+      {
+        key: 'managedBy',
+        label: APPLICATIONS_UI.FILTER.BY_MANAGED_BY,
+        type: 'multiSelect',
+        multiSelectOptions: managedByOptions,
+      },
+      {
+        key: 'managedChart',
+        label: APPLICATIONS_UI.FILTER.BY_MANAGED_CHART,
+        type: 'multiSelect',
+        multiSelectOptions: managedChartOptions,
+      },
+      {
+        key: 'namespaces',
+        label: APPLICATIONS_UI.FILTER.BY_NAMESPACE,
+        type: 'multiSelect',
+        multiSelectOptions: namespaceOptions,
+      },
+
+      {
+        key: 'hasDrift',
+        label: APPLICATIONS_UI.FILTER.BY_HAS_DRIFT,
+        type: 'multiSelect',
+        multiSelectOptions: [
+          { value: 'true', label: APPLICATIONS_UI.FILTER.OPTION_YES },
+          { value: 'false', label: APPLICATIONS_UI.FILTER.OPTION_NO },
+        ],
+      },
+    ];
+  }, [visibleApplications]);
+
+  const filteredApplications = useMemo(() => {
+    const base = filterApplications(visibleApplications, searchValue);
+    const withPanelFilters = applyApplicationFilters(base, appliedFilters);
+    return applyHealthQuickFilter(withPanelFilters, healthQuickFilter);
+  }, [visibleApplications, appliedFilters, healthQuickFilter, searchValue]);
+  const hasActiveFilters = useMemo(() => hasAnyAppliedFilter(appliedFilters), [appliedFilters]);
+
+  const totalFiltered = filteredApplications.length;
+  const totalPages = Math.max(1, Math.ceil(totalFiltered / APPLICATIONS_PAGE_SIZE));
+  const effectivePage = Math.min(currentPage, totalPages);
+  const paginatedApplications = useMemo(() => {
+    const start = (effectivePage - 1) * APPLICATIONS_PAGE_SIZE;
+    return filteredApplications.slice(start, start + APPLICATIONS_PAGE_SIZE);
+  }, [effectivePage, filteredApplications]);
+  const { visible: visibleFilterChips, overflowCount: overflowChipsCount } = useMemo(
+    () => splitFilterChips(buildFilterChips(appliedFilters)),
+    [appliedFilters],
+  );
+  const paginatedNames = useMemo(
+    () => paginatedApplications.map((application) => application.name),
+    [paginatedApplications],
+  );
+  const allPageSelected = useMemo(
+    () => paginatedNames.length > 0 && paginatedNames.every((name) => selectedNames.includes(name)),
+    [paginatedNames, selectedNames],
+  );
+  const anySelectedSyncing = useMemo(() => {
+    const activeSyncNames = new Set(Object.keys(syncing || {}));
+    return selectedNames.some(
+      (name) => activeSyncNames.has(name) || syncStatus?.[name] === SYNC_STATUS_VALUE.SYNCING,
+    );
+  }, [selectedNames, syncing, syncStatus]);
+
+  const handleLoadApplications = useCallback(async () => {
+    await loadApplications(dispatch);
+  }, [dispatch]);
+
+  useEffect(() => {
+    (async () => {
+      if (hasTriggeredInitialLoad.current) return;
+      hasTriggeredInitialLoad.current = true;
+      await handleLoadApplications();
+    })();
+  }, [handleLoadApplications]);
+
+  const anySyncing = useMemo(
+    () =>
+      Object.keys(syncing || {}).length > 0 ||
+      Object.values(syncStatus || {}).includes(SYNC_STATUS_VALUE.SYNCING),
+    [syncing, syncStatus],
+  );
+
+  useEffect(() => {
+    const intervalSec = Number.isFinite(fetchIntervalSeconds) ? fetchIntervalSeconds : 60;
+    const intervalMs = anySyncing
+      ? APPLICATIONS_SYNC_ACTIVE_POLL_MS
+      : Math.max(5, intervalSec) * 1000;
+    const interval = setInterval(() => {
+      void loadApplicationsSilent(dispatch);
+    }, intervalMs);
+    return () => clearInterval(interval);
+  }, [anySyncing, dispatch, fetchIntervalSeconds]);
+
+  if (!error && visibleApplications.length === 0) {
+    return <ApplicationsMainEmpty onRefresh={handleLoadApplications} />;
+  }
+
+  return (
+    <>
+      <ApplicationsSuccess
+        applications={paginatedApplications}
+        searchValue={searchValue}
+        onSearchChange={onSearchChange}
+        onEditApplication={openEditPanel}
+        onOpenFilters={() => setFilterPanelOpen(true)}
+        onClearAllFilters={() => dispatch(clearAllFilters())}
+        filterChips={visibleFilterChips}
+        overflowChipsCount={overflowChipsCount}
+        onRemoveFilterChip={(key, value) => dispatch(removeFilterValue({ key, value }))}
+        totalFiltered={totalFiltered}
+        hasActiveFilters={hasActiveFilters}
+        pagination={{
+          currentPage: effectivePage,
+          pageSize: APPLICATIONS_PAGE_SIZE,
+          total: totalFiltered,
+          onPageChange: (page) => dispatch(setCurrentPage(page)),
+        }}
+        bulkMode={bulkMode}
+        onToggleBulkMode={() => {
+          const next = !bulkMode;
+          dispatch(setBulkMode(next));
+          if (!next) {
+            dispatch(setSelectedNames([]));
+          }
+        }}
+        selectedNames={selectedNames}
+        onToggleSelect={(name, checked) => {
+          const set = new Set(selectedNames);
+          if (checked) {
+            set.add(name);
+          } else {
+            set.delete(name);
+          }
+          dispatch(setSelectedNames(Array.from(set)));
+        }}
+        onToggleSelectAllPage={(checked) => {
+          if (!checked) {
+            const set = new Set(selectedNames);
+            paginatedNames.forEach((name) => set.delete(name));
+            dispatch(setSelectedNames(Array.from(set)));
+            return;
+          }
+          const set = new Set(selectedNames);
+          paginatedNames.forEach((name) => set.add(name));
+          dispatch(setSelectedNames(Array.from(set)));
+        }}
+        allPageSelected={allPageSelected}
+        anySelectedSyncing={anySelectedSyncing}
+        onClearSelection={() => dispatch(setSelectedNames([]))}
+        healthQuickFilter={healthQuickFilter}
+        onHealthQuickFilterChange={(next) => dispatch(setHealthQuickFilter(next))}
+        loading={loading}
+        error={error}
+        onRetry={handleLoadApplications}
+      />
+      <EditApplicationPanel
+        open={editTarget != null}
+        onClose={closeEditPanel}
+        application={editTarget}
+        form={editForm}
+      />
+      <FilterPanel
+        open={filterPanelOpen}
+        onClose={() => setFilterPanelOpen(false)}
+        fields={filterFields}
+        value={appliedFilters}
+        onFilterChange={(filters) => {
+          dispatch(setAppliedFilters(filters));
+        }}
+        onApply={(filters) => {
+          dispatch(setAppliedFilters(filters));
+          setFilterPanelOpen(false);
+        }}
+        onReset={() => {
+          dispatch(clearAllFilters());
+        }}
+      />
+    </>
+  );
+});
+
+ApplicationsGlobalView.displayName = 'ApplicationsGlobalView';
+
+export default ApplicationsGlobalView;
+
+function uniqOptions(
+  apps: Application[],
+  getValue: (a: Application) => string | undefined | null,
+): { value: string; label: string }[] {
+  const set = new Set<string>();
+  for (const a of apps) {
+    const v = (getValue(a) ?? '').trim();
+    if (v) set.add(v);
+  }
+  return [...set].sort().map((v) => ({ value: v, label: v }));
+}
+
+function uniqNamespaceOptions(apps: Application[]): { value: string; label: string }[] {
+  const set = new Set<string>();
+  for (const a of apps) {
+    const items = a.namespaces?.items ?? [];
+    for (const n of items) {
+      const v = (n.name ?? '').trim();
+      if (v) set.add(v);
+    }
+  }
+  return [...set].sort().map((v) => ({ value: v, label: v }));
+}
+
+function applyApplicationFilters(
+  apps: Application[],
+  filters: Record<string, unknown>,
+): Application[] {
+  const dateRange = (filters.dateRange as DateRangeFilter | undefined) || undefined;
+  const status = (filters.status as string[]) || [];
+  const managedBy = (filters.managedBy as string[]) || [];
+  const managedChart = (filters.managedChart as string[]) || [];
+  const namespaces = (filters.namespaces as string[]) || [];
+  const hasDrift = (filters.hasDrift as string[]) || [];
+
+  const has = (arr: string[]) => arr.length > 0;
+  if (
+    !has(status) &&
+    !has(managedBy) &&
+    !has(managedChart) &&
+    !has(namespaces) &&
+    !has(hasDrift) &&
+    !dateRange?.from &&
+    !dateRange?.to
+  ) {
+    return apps;
+  }
+  const filteredByDate = filterByDateRange(apps, dateRange, (a) => a.createdAt);
+  return filteredByDate.filter((a) => {
+    if (has(status) && !status.includes(a.health?.status ?? '')) return false;
+    if (has(managedBy) && !managedBy.includes(a.managed?.by ?? '')) return false;
+    if (has(managedChart) && !managedChart.includes(a.managed?.chart ?? '')) return false;
+
+    if (has(hasDrift) && !hasDrift.includes(String(Boolean(a.history?.hasDrift)))) return false;
+    if (has(namespaces)) {
+      const ns = new Set((a.namespaces?.items ?? []).map((n) => n.name));
+      let ok = false;
+      for (const want of namespaces) {
+        if (ns.has(want)) {
+          ok = true;
+          break;
+        }
+      }
+      if (!ok) return false;
+    }
+    return true;
+  });
+}
+
+function applyHealthQuickFilter(
+  apps: Application[],
+  quickFilter: 'all' | 'healthy' | 'degraded' | 'unhealthy',
+): Application[] {
+  const q = String(quickFilter || 'all').toLowerCase();
+  if (q === 'all') return apps;
+  const wanted = q === 'unhealthy' ? 'down' : q;
+  return apps.filter((a) => String(a.health?.status || '').toLowerCase() === wanted);
+}

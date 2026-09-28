@@ -3,7 +3,7 @@ import { Button, Tooltip } from 'antd';
 import { FileTextOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS, TIME_FORMATS } from '../../../../../constants';
 import { formatDateTime } from '../../../../../utils/shared/time';
-import { APPLICATION_SECTION_LAYOUT } from '../../../../resources/applications/constants/sectionLayout';
+import { APPLICATION_SECTION_LAYOUT } from '../../../../applications/constants/sectionLayout';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { FancySpinner } from '../../../../../components/animation';
 import type { RootState } from '../../../../../store';
