@@ -405,3 +405,35 @@ export const VIEW = {
     },
   },
 } as const;
+
+export const PANEL_EMPTY_STATE = {
+  CONTAINER: {
+    border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+    borderRadius: 12,
+    background: DEFAULT_COLORS.SURFACE_WHITE,
+    padding: '28px 16px',
+    display: 'flex' as const,
+    flexDirection: 'column' as const,
+    alignItems: 'center' as const,
+    gap: 6,
+    textAlign: 'center' as const,
+  },
+  ICON: {
+    fontSize: 26,
+    lineHeight: 1,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  },
+  TITLE: {
+    fontSize: 14,
+    fontWeight: 800,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  },
+  DESCRIPTION: {
+    fontSize: 12,
+    fontWeight: 600,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  },
+  ACTION: {
+    marginTop: 6,
+  },
+} as const;
