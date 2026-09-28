@@ -742,7 +742,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
     cause:
       'Protection plans check changes before they apply; a production application without one is changed unchecked.',
     steps: [
-      'Create a protection plan covering {app} (Protection Plans page), start in audit mode, then switch to enforce.',
+      'Create a protection plan covering {app} (Protection plans page), start in audit mode, then switch to enforce.',
     ],
   },
   'protection.production_audit_only': {

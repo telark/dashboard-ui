@@ -1,9 +1,10 @@
 export const INSIGHTS_GOVERNANCE_CONSTANTS = {
   LABELS: {
-    AI_INSIGHTS_TITLE: 'Local analyzer',
-    AI_INSIGHTS_DESCRIPTION: 'Run incident analysis on this cluster with a local model.',
+    AI_INSIGHTS_TITLE: 'Insights',
+    AI_INSIGHTS_DESCRIPTION:
+      'By default, rules find each incident and setup issue and a model running in this cluster only rewrites the summary. Deep mode lets the model investigate with the same read-only tools. No data leaves the cluster.',
     EXPERIMENTAL_BADGE: 'Experimental',
-    ENABLE_AI_LABEL: 'Enable the local analyzer',
+    ENABLE_AI_LABEL: 'Enable Insights',
     AUTO_ANALYZE_LABEL: 'Analyze automatically on incidents and recoveries',
     MODEL_LABEL: 'Model',
     MODEL_HINT: 'A change applies from the next run.',
@@ -52,8 +53,7 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
       'You do not have permission to edit discovery & behavior settings',
     EDIT_SNAPSHOT_STORAGE_PERMISSION_DENIED:
       'You do not have permission to edit snapshot storage settings',
-    CONTROL_AI_INSIGHTS_PERMISSION_DENIED:
-      'You do not have permission to manage AI insights settings',
+    CONTROL_AI_INSIGHTS_PERMISSION_DENIED: 'You do not have permission to manage Insights settings',
     SNAPSHOT_STORAGE_TITLE: 'Snapshot storage',
     SNAPSHOT_STORAGE_DESCRIPTION: 'Storage usage and retention controls for snapshots.',
     SNAPSHOT_STORAGE_LOADING: 'Loading snapshot storage...',
