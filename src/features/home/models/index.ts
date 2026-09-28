@@ -1,4 +1,4 @@
-import type { SnapshotStorageInfos } from '../../resources/applications/models';
+import type { SnapshotStorageInfos } from '../../applications/models';
 import type { RequiredPermission } from '../../../interfaces/shared';
 
 export type TagTone = 'danger' | 'warning' | 'neutral';

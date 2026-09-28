@@ -2,7 +2,7 @@ import React from 'react';
 import { SafetyCertificateOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import { formatDateKey, toDateKey } from '../../../../../utils/shared/time';
-import { APPLICATION_SECTION_LAYOUT } from '../../../../resources/applications/constants/sectionLayout';
+import { APPLICATION_SECTION_LAYOUT } from '../../../../applications/constants/sectionLayout';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { FancySpinner } from '../../../../../components/animation';
 import {

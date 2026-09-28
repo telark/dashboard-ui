@@ -1,7 +1,7 @@
 import { format, parse, subDays } from 'date-fns';
 import { DEFAULT_COLORS, TIME_FORMATS } from '../../../constants';
 import { toDateKey, toZonedTime } from '../../../utils/shared/time';
-import type { Application } from '../../resources/applications/models';
+import type { Application } from '../../applications/models';
 import type { ProtectionPlan } from '../../plans/protection/models';
 import {
   HOME_CHART_LAYOUT as C,

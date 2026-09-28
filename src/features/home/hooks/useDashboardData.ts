@@ -4,8 +4,8 @@ import type { AppDispatch, RootState } from '../../../store';
 import {
   loadApplications,
   loadApplicationsSilent,
-} from '../../resources/applications/utils/management/state';
-import { getSnapshotInfos } from '../../resources/applications/clients';
+} from '../../applications/utils/management/state';
+import { getSnapshotInfos } from '../../applications/clients';
 import { fetchProtectionPlansThunk } from '../../plans/protection/store';
 import { HOME_DASHBOARD_POLLING } from '../constants/dashboard';
 import type { DashboardAccess, SnapshotStorageState } from '../models';

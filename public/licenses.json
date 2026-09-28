@@ -96,12 +96,12 @@
   },
   {
     "name": "framer-motion",
-    "version": "13.4.2",
+    "version": "13.4.4",
     "license": "MIT"
   },
   {
     "name": "js-yaml",
-    "version": "4.3.2",
+    "version": "5.4.2",
     "license": "MIT"
   },
   {

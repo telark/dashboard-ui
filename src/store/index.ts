@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { persistReducer, persistStore } from 'redux-persist';
-import { applicationsReducer } from '../features/resources/applications/store';
+import { applicationsReducer } from '../features/applications/store';
 import { protectionPlansReducer } from '../features/plans/protection/store';
 import { globalConfigReducer } from '../features/globalconfig/store';
 import { groupReducer as groupsReducer } from '../features/access-and-permissions/groups/store';

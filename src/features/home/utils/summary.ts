@@ -1,5 +1,5 @@
 import { toTimestamp } from '../../../utils/shared/time';
-import type { Application } from '../../resources/applications/models';
+import type { Application } from '../../applications/models';
 import type { ProtectionPlan } from '../../plans/protection/models';
 import type { ApplicationsSummary, BoxState, PlansSummary } from '../models';
 

@@ -7,7 +7,7 @@ import FullPageLoader from '../../../components/display/views/FullPageLoader';
 import { LIST_PAGE } from '../../../constants/shared/pages';
 import { ACTION_PERMISSIONS, usePermission } from '../../auth/hooks/permissions/permissionEngine';
 import { selectPermissionsReady } from '../../auth/store/selectors/permissionsSelectors';
-import { filterByExcludedNamespaces } from '../../resources/applications/utils/management/state';
+import { filterByExcludedNamespaces } from '../../applications/utils/management/state';
 import {
   selectProtectionPlans,
   selectProtectionPlansError,
