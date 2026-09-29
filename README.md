@@ -1,4 +1,4 @@
-# dashboard-ui
+# dashboard-uissss
 
 The web dashboard of [Telark](https://github.com/telark/telark), a protection gate for your Kubernetes applications. It is where operators see their applications, run protection plans, read Insights, and manage access.
 
