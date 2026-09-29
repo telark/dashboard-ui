@@ -22,7 +22,7 @@ Rules for code structure, constants and styling are in [AGENTS.md](AGENTS.md). R
 
 ## Pull requests
 
-- Branch from `master` and target `master`.
+- Branch from `main` and target `main`.
 - Keep the change scoped: every changed line traces to the goal of the PR.
 - `npm run check-all` and `npm run build` pass.
 - Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/).
