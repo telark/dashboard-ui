@@ -34,9 +34,7 @@ const Register = lazy(() => import('../features/auth/pages/flow/Register'));
 const GoogleCallback = lazy(() => import('../features/auth/pages/flow/GoogleCallback'));
 
 // resources
-const ApplicationsGlobalView = lazy(
-  () => import('../features/applications/pages/main/GlobalView'),
-);
+const ApplicationsGlobalView = lazy(() => import('../features/applications/pages/main/GlobalView'));
 const ApplicationDetailsView = lazy(
   () => import('../features/applications/pages/details/DetailsView'),
 );

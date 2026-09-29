@@ -8,10 +8,7 @@ import {
 } from '@ant-design/icons';
 import { App as AntdApp, Button, Tooltip } from 'antd';
 import { useDispatch } from 'react-redux';
-import {
-  SlideOutPanel,
-  ExpandPanelButton,
-} from '../../../../components/display/panels/slide-out';
+import { SlideOutPanel, ExpandPanelButton } from '../../../../components/display/panels/slide-out';
 import { DEFAULT_COLORS } from '../../../../constants';
 import { PanelEmptyState } from '../../../../components/display/panels/shared';
 import type { Application, ApplicationRollbackEntry } from '../../models';

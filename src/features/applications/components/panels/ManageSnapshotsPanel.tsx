@@ -3,10 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DatabaseOutlined, DiffOutlined } from '@ant-design/icons';
 import { App as AntdApp } from 'antd';
 import type { AppDispatch, RootState } from '../../../../store';
-import {
-  SlideOutPanel,
-  ExpandPanelButton,
-} from '../../../../components/display/panels/slide-out';
+import { SlideOutPanel, ExpandPanelButton } from '../../../../components/display/panels/slide-out';
 import { DEFAULT_COLORS, LIST_TOOLBAR } from '../../../../constants';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
