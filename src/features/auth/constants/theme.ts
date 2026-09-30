@@ -14,6 +14,8 @@ const CONTROL_GEOMETRY = {
 export const LIGHT_TOKENS = {
   ...CONTROL_GEOMETRY,
   colorPrimary: DEFAULT_COLORS.SUCCESS,
+  // The root provider's white colorTextBase would otherwise leak onto the auth card.
+  colorTextBase: DEFAULT_COLORS.AUTH_LIGHT_TEXT,
   colorBgContainer: DEFAULT_COLORS.AUTH_LIGHT_CARD_BG,
   colorBorder: DEFAULT_COLORS.AUTH_LIGHT_BORDER,
   colorTextPlaceholder: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
@@ -22,6 +24,7 @@ export const LIGHT_TOKENS = {
 export const DARK_TOKENS = {
   ...CONTROL_GEOMETRY,
   colorPrimary: DEFAULT_COLORS.SUCCESS,
+  colorTextBase: DEFAULT_COLORS.AUTH_DARK_TEXT,
   colorBgContainer: DEFAULT_COLORS.AUTH_DARK_CARD_BG,
   colorBorder: DEFAULT_COLORS.AUTH_DARK_BORDER,
   colorTextPlaceholder: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,

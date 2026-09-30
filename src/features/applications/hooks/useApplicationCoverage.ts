@@ -5,12 +5,14 @@ import type { Application, ApplicationCoverage } from '../models';
 import { buildCoverageIndex, getApplicationCoverage } from '../utils/coverage';
 
 const { view: viewPlans } = ACTION_PERMISSIONS.protectionPlans;
+const NO_PLANS_ACCESS: ApplicationCoverage = {
+  known: true,
+  active: [],
+  upcoming: [],
+  noAccess: true,
+};
 
-// undefined = the viewer may not read plans: the card hides the section rather
-// than claim the application is not covered.
-export const useApplicationCoverage = (): ((
-  application: Application,
-) => ApplicationCoverage | undefined) => {
+export const useApplicationCoverage = (): ((application: Application) => ApplicationCoverage) => {
   const canViewPlans = usePermission(viewPlans.scope, viewPlans.level, viewPlans.deny);
   const { plans } = useProtectionPlans(canViewPlans);
   const [mountedPlans] = useState(plans);
@@ -20,7 +22,7 @@ export const useApplicationCoverage = (): ((
   const known = plans.length > 0 || plans !== mountedPlans;
   return useCallback(
     (application: Application) =>
-      canViewPlans ? { known, ...getApplicationCoverage(index, application) } : undefined,
+      canViewPlans ? { known, ...getApplicationCoverage(index, application) } : NO_PLANS_ACCESS,
     [canViewPlans, index, known],
   );
 };

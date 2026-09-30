@@ -14,6 +14,7 @@ export const applyRoleFilters = (
   if (searchTerm) {
     roles = applySearch(roles, searchTerm, [
       (role) => role.name,
+      (role) => role.description,
       (role) => role.type,
       (role) => role.status,
       (role) => role.validity?.type,

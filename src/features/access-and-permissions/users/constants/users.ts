@@ -81,7 +81,6 @@ export const USERS_CONSTANTS = {
       REMOVE_FROM_GROUP_DISABLED_TOOLTIP:
         'You do not have permission to remove members from groups',
       BOOTSTRAP_LOCKED_TOOLTIP: 'Managed by the chart',
-      ADMIN_LOCKED_TOOLTIP: 'Only a bootstrap administrator can remove administrators',
       SELF_LOCKED_TOOLTIP: 'You cannot delete your own account',
       DELETE_MODAL_TITLE: 'Delete User',
       DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
@@ -131,7 +130,7 @@ export const USERS_CONSTANTS = {
         FULLNAME_PLACEHOLDER: 'e.g. John Doe',
         EMAIL_LABEL: 'Email',
         EMAIL_PLACEHOLDER: 'e.g. john.doe@example.com',
-        ROLE_LABEL: 'Role',
+        ROLE_LABEL: 'Roles',
         ROLE_PLACEHOLDER: 'Select a role',
         GROUP_LABEL: 'Group',
         GROUP_PLACEHOLDER: 'Select a group',

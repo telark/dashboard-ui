@@ -3,6 +3,7 @@ import { createPasskey } from '../../clients/passkeys';
 import { registerPasskey } from '../webauthn/core';
 import { AUTH_SUCCESS_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
+import { REGISTER_CONSTANTS } from '../../constants/register';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 import type {
@@ -11,6 +12,27 @@ import type {
   PasskeyDeviceType,
 } from '../../models';
 import type { MessageInstance } from 'antd/lib/message/interface';
+
+// The page strips the token from the address bar; the tab keeps it so a reload still enrolls.
+export const resolveEnrollToken = (fromLink: string | null): string | undefined => {
+  try {
+    if (fromLink === null) {
+      return globalThis.sessionStorage.getItem(REGISTER_CONSTANTS.ENROLL_STORAGE_KEY) ?? undefined;
+    }
+    globalThis.sessionStorage.setItem(REGISTER_CONSTANTS.ENROLL_STORAGE_KEY, fromLink);
+  } catch {
+    // Storage blocked: only a token from the link, held in page state, is used.
+  }
+  return fromLink ?? undefined;
+};
+
+const clearEnrollToken = (): void => {
+  try {
+    globalThis.sessionStorage.removeItem(REGISTER_CONSTANTS.ENROLL_STORAGE_KEY);
+  } catch {
+    // Storage blocked: nothing was stored.
+  }
+};
 
 export const extractRegisterOptions = (
   registerStartResponse: RegisterStartResponse,
@@ -59,7 +81,8 @@ export const performRegister = async (
   onSuccess?: () => void,
   enrollToken?: string,
 ): Promise<void> => {
-  const registerStartResponse = await registerStart(email, enrollToken);
+  // The server spends the token on first presentation, so a reload can't reuse it after this.
+  const registerStartResponse = await registerStart(email, enrollToken).finally(clearEnrollToken);
   const options = extractRegisterOptions(registerStartResponse);
 
   // Override user.name and user.displayName with device name so browser shows device name in selection popup

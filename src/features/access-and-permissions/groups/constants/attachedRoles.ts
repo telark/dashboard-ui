@@ -113,8 +113,15 @@ export const ATTACHED_ROLES_CONSTANTS = {
       lineHeight: 1.4,
     },
   },
+  // Measured: the role search placeholder plus the input's padding; narrower rows wrap the buttons below.
+  SEARCH_MIN_WIDTH: 276,
   TOOLTIPS: {
     PROTECTED_ROLE: 'This role is protected from deletion and modification',
-    EXCEEDS_OWN_ACCESS: 'This role grants more access than you have, so you cannot assign it',
+    EXCEEDS_OWN_ACCESS:
+      'This role grants more access than you have, so you cannot assign or remove it',
+    GROUP_EXCEEDS_OWN_ACCESS:
+      'This group carries a role with more access than you have, so you cannot add or remove it',
+    MEMBERS_EXCEED_OWN_ACCESS:
+      'This group carries a role with more access than you have, so you cannot change its members',
   },
 } as const;

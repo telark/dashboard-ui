@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Form, App as AntdApp, Button } from 'antd';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { performRegister } from '../../utils/flow/register';
+import { performRegister, resolveEnrollToken } from '../../utils/flow/register';
 import { handleAuthError } from '../../utils/shared/errors';
 import { isWebAuthnSupported } from '../../utils/webauthn/core';
 import { APP_ROUTES } from '../../../../constants';
@@ -14,11 +14,7 @@ import {
   AuthFooter,
   InsecureContextAlert,
 } from '../../components';
-import {
-  ensureAuthConfigThunk,
-  selectAuthConfigState,
-  selectSelfRegistrationEnabled,
-} from '../../store';
+import { ensureAuthConfigThunk, selectSelfRegistrationEnabled } from '../../store';
 import type { AppDispatch } from '../../../../store';
 
 const Register: React.FC = () => {
@@ -27,13 +23,12 @@ const Register: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   // Read once and kept in state: the token leaves the address bar and history right away.
-  const [enrollToken] = useState(
-    () => searchParams.get(REGISTER_CONSTANTS.QUERY.ENROLL) ?? undefined,
+  const [enrollToken] = useState(() =>
+    resolveEnrollToken(searchParams.get(REGISTER_CONSTANTS.QUERY.ENROLL)),
   );
   const enrolling = enrollToken !== undefined;
   const { message } = AntdApp.useApp();
   const dispatch = useDispatch<AppDispatch>();
-  const authConfig = useSelector(selectAuthConfigState);
   const selfRegEnabled = useSelector(selectSelfRegistrationEnabled);
   const passkeysAvailable = isWebAuthnSupported();
 
@@ -66,7 +61,7 @@ const Register: React.FC = () => {
 
   return (
     <AuthCard>
-      {authConfig.initialized && !selfRegEnabled && !enrolling ? (
+      {!selfRegEnabled && !enrolling ? (
         <>
           <AuthHeader
             title={REGISTER_CONSTANTS.UI.DISABLED_TITLE}

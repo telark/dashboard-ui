@@ -21,7 +21,6 @@ const Header: React.FC = () => {
         left: '0', // Start from the left edge
         top: '0',
         zIndex: 1000,
-        transition: 'width 0.3s ease',
         borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
       }}
     >

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { fetchUserById } from '../../access-and-permissions/users/clients/fetch';
+import { TELARK_USER_ID_PATTERN } from '../constants';
 
 // Change log and rollback entries store the actor as a user id (u-ac247-c2a5-0334).
 // Resolving it lets rows read "by alice" while still showing the id. Ids already
@@ -12,7 +13,7 @@ export function useUsernamesByIds(ids: string[], enabled: boolean): Record<strin
   useEffect(() => {
     if (!enabled) return;
     const requested = requestedUserIdsRef.current;
-    const pending = ids.filter((id) => Boolean(id) && !requested.has(id));
+    const pending = ids.filter((id) => TELARK_USER_ID_PATTERN.test(id) && !requested.has(id));
     if (pending.length === 0) return;
 
     const uniqueIds = [...new Set(pending)];
@@ -43,5 +44,14 @@ export function useUsernamesByIds(ids: string[], enabled: boolean): Record<strin
     };
   }, [enabled, ids]);
 
-  return usernamesById;
+  // Actors that aren't telark users (kube users, IAM ARNs) name themselves.
+  return useMemo(
+    () => ({
+      ...Object.fromEntries(
+        ids.filter((id) => !TELARK_USER_ID_PATTERN.test(id)).map((id) => [id, id]),
+      ),
+      ...usernamesById,
+    }),
+    [ids, usernamesById],
+  );
 }

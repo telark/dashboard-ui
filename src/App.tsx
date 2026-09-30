@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, message, App as AntdApp, ConfigProvider, theme } from 'antd';
 import { BrowserRouter as Router, useLocation, Navigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { AiOutlineSafety } from 'react-icons/ai';
+import { useDispatch } from 'react-redux';
 import Sidebar from './components/layout/sidebar/Sidebar';
 import Header from './components/layout/header/Header';
 import ErrorBoundary from './ErrorBoundary';
 import { SessionExpiredModal } from './features/auth/components';
-import EmptyState from './components/display/views/EmptyState';
 import 'antd/dist/reset.css';
 import {
+  BUTTON_CONFIGS,
   DEFAULT_COLORS,
   SELECT_THEME,
   APP_CONFIGS,
@@ -20,13 +19,18 @@ import {
 } from './constants';
 import AppRoutes from './routes/AppRoutes';
 import { hasSessionToken, useSessionExpirationCheck } from './features/auth/utils';
-import { useCrossTabLogout, useInitializePermissions } from './features/auth/hooks';
-import { selectPermissionsState } from './features/auth/store/selectors/permissionsSelectors';
-import { AUTH_PERMISSIONS_LABELS, PERMISSION_GATE_BYPASS_PATHS } from './features/auth/constants';
+import {
+  ACTION_PERMISSIONS,
+  useCrossTabLogout,
+  useInitializePermissions,
+  usePermission,
+} from './features/auth/hooks';
 import { ensureGlobalConfigThunk } from './features/globalconfig/store';
 import type { AppDispatch } from './store';
 
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
+
+const { view: viewSettings } = ACTION_PERMISSIONS.settings;
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -36,13 +40,6 @@ const AppContent: React.FC = () => {
     location.pathname === APP_ROUTES.GOOGLE_CALLBACK;
   const isAuthenticated = hasSessionToken();
   const [showSessionExpiredModal, setShowSessionExpiredModal] = useState(false);
-  const { ready: permissionsReady, userID, roles } = useSelector(selectPermissionsState);
-  const isBypassPath = PERMISSION_GATE_BYPASS_PATHS.includes(location.pathname);
-  const noPermissions =
-    permissionsReady &&
-    userID !== null &&
-    !isBypassPath &&
-    (roles.length === 0 || roles.every((r) => r.isExpired));
 
   useSessionExpirationCheck({
     isAuthenticated,
@@ -53,14 +50,15 @@ const AppContent: React.FC = () => {
   useInitializePermissions(isAuthenticated);
   useCrossTabLogout();
 
-  // GlobalConfig is a guarded resource: fetching it before a session exists only
-  // earns a 401 on the login page.
+  // GlobalConfig is a guarded resource (settings ReadOnly): fetching it without a
+  // session or without that grant only earns a 401 or 403.
   const dispatch = useDispatch<AppDispatch>();
+  const canViewSettings = usePermission(viewSettings.scope, viewSettings.level);
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && canViewSettings) {
       dispatch(ensureGlobalConfigThunk());
     }
-  }, [isAuthenticated, dispatch]);
+  }, [isAuthenticated, canViewSettings, dispatch]);
 
   const renderMainContent = () => {
     if (isAuthRoute) {
@@ -80,15 +78,7 @@ const AppContent: React.FC = () => {
             }}
           >
             <Header />
-            {noPermissions ? (
-              <EmptyState
-                icon={<AiOutlineSafety size={32} style={{ color: DEFAULT_COLORS.ICON_MUTED }} />}
-                title={AUTH_PERMISSIONS_LABELS.NO_PERMISSIONS_TITLE}
-                description={AUTH_PERMISSIONS_LABELS.NO_PERMISSIONS_DESCRIPTION}
-              />
-            ) : (
-              <AppRoutes />
-            )}
+            <AppRoutes />
           </Layout>
         </Layout>
       );
@@ -204,6 +194,7 @@ const App: React.FC = () => {
               stickyScrollBarBg: DEFAULT_COLORS.BORDER_HOVER,
             },
             Button: {
+              primaryColor: BUTTON_CONFIGS.PRIMARY_BUTTON.TEXT_COLOR,
               primaryShadow: 'none',
               dangerShadow: 'none',
               defaultShadow: 'none',

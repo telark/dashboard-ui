@@ -1,20 +1,30 @@
 import React, { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Button, Tooltip } from 'antd';
+import { CheckOutlined, DeleteOutlined } from '@ant-design/icons';
 import TimeAgo from '../../../components/display/time/TimeAgo';
-import { DEFAULT_COLORS } from '../../../constants';
-import { NOTIFICATION_SEVERITY_COLORS } from '../constants';
+import { DEFAULT_COLORS, ROW_ICON_BUTTON_SIZE } from '../../../constants';
+import { NOTIFICATION_SEVERITY_COLORS, NOTIFICATIONS_TEXTS } from '../constants';
 import { getTypeConfig } from '../utils';
 import type { Notification } from '../models';
 
 export interface NotificationItemProps {
   notification: Notification;
   onMarkRead: (id: string) => void;
+  onDelete: (id: string) => void;
   onClose: () => void;
 }
+
+const rowActionStyle: React.CSSProperties = {
+  width: ROW_ICON_BUTTON_SIZE,
+  height: ROW_ICON_BUTTON_SIZE,
+  color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+};
 
 const NotificationItem: React.FC<NotificationItemProps> = ({
   notification,
   onMarkRead,
+  onDelete,
   onClose,
 }) => {
   const navigate = useNavigate();
@@ -102,9 +112,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           >
             {notification.title}
           </div>
-          <div
-            style={{ fontSize: 11, color: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED, flexShrink: 0 }}
-          >
+          <div style={{ fontSize: 11, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED, flexShrink: 0 }}>
             <TimeAgo date={notification.createdAt} />
           </div>
         </div>
@@ -119,6 +127,34 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         >
           {renderedMessage}
         </div>
+      </div>
+
+      {/* Keeps the row's own click and Enter (open the target) from firing with an action. */}
+      <div
+        style={{ display: 'flex', gap: 2, flexShrink: 0 }}
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        {isUnread ? (
+          <Tooltip title={NOTIFICATIONS_TEXTS.MARK_READ}>
+            <Button
+              type="text"
+              style={rowActionStyle}
+              aria-label={NOTIFICATIONS_TEXTS.MARK_READ}
+              icon={<CheckOutlined />}
+              onClick={() => onMarkRead(notification.id)}
+            />
+          </Tooltip>
+        ) : null}
+        <Tooltip title={NOTIFICATIONS_TEXTS.DELETE}>
+          <Button
+            type="text"
+            style={rowActionStyle}
+            aria-label={NOTIFICATIONS_TEXTS.DELETE}
+            icon={<DeleteOutlined />}
+            onClick={() => onDelete(notification.id)}
+          />
+        </Tooltip>
       </div>
 
       {isUnread ? (

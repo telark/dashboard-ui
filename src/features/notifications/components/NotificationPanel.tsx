@@ -1,8 +1,9 @@
 import React from 'react';
 import { FancySpinner } from '../../../components/animation';
+import { Button, Tooltip } from 'antd';
 import { BellOutlined, CheckOutlined, DeleteOutlined } from '@ant-design/icons';
 import { SlideOutPanel } from '../../../components/display/panels/slide-out';
-import { ToggleButton } from '../../../components/display/buttons';
+import { DEFAULT_COLORS, ROW_ICON_BUTTON_SIZE } from '../../../constants';
 import { useNotifications } from '../hooks';
 import { NOTIFICATIONS_PANEL_WIDTH, NOTIFICATIONS_TEXTS } from '../constants';
 import NotificationItem from './NotificationItem';
@@ -13,8 +14,13 @@ export interface NotificationPanelProps {
   onClose: () => void;
 }
 
+const toolbarIconStyle: React.CSSProperties = {
+  width: ROW_ICON_BUTTON_SIZE,
+  height: ROW_ICON_BUTTON_SIZE,
+};
+
 const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose }) => {
-  const { notifications, unreadCount, isLoading, markRead, markAllRead, clearAll } =
+  const { notifications, unreadCount, isLoading, markRead, deleteOne, markAllRead, clearAll } =
     useNotifications();
 
   const hasNotifications = notifications.length > 0;
@@ -33,21 +39,26 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose }) 
             justifyContent: 'flex-end',
           }}
         >
-          <ToggleButton
-            active={false}
-            onClick={() => void markAllRead()}
-            label={NOTIFICATIONS_TEXTS.MARK_ALL_READ}
-            icon={<CheckOutlined />}
-            disabled={unreadCount === 0}
-            variant="neutral"
-          />
-          <ToggleButton
-            active={false}
-            onClick={() => void clearAll()}
-            label={NOTIFICATIONS_TEXTS.CLEAR_ALL}
-            icon={<DeleteOutlined />}
-            variant="danger"
-          />
+          <Tooltip title={NOTIFICATIONS_TEXTS.MARK_ALL_READ}>
+            <Button
+              type="text"
+              style={{ ...toolbarIconStyle, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}
+              aria-label={NOTIFICATIONS_TEXTS.MARK_ALL_READ}
+              icon={<CheckOutlined />}
+              disabled={unreadCount === 0}
+              onClick={() => void markAllRead()}
+            />
+          </Tooltip>
+          <Tooltip title={NOTIFICATIONS_TEXTS.CLEAR_ALL}>
+            <Button
+              type="text"
+              danger
+              style={toolbarIconStyle}
+              aria-label={NOTIFICATIONS_TEXTS.CLEAR_ALL}
+              icon={<DeleteOutlined />}
+              onClick={() => void clearAll()}
+            />
+          </Tooltip>
         </div>
       )}
       {!isLoading && !hasNotifications ? (
@@ -78,6 +89,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose }) 
                 key={n.id}
                 notification={n}
                 onMarkRead={markRead}
+                onDelete={deleteOne}
                 onClose={onClose}
               />
             ))

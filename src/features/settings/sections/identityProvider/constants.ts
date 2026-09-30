@@ -12,7 +12,9 @@ export const IDENTITY_PROVIDER_CONSTANTS = {
     EGRESS_HINT:
       'On, this cluster reaches the provider to fetch its signing keys. Off, paste the key set below.',
     JWK_LABEL: 'Pinned signing keys (JWK set)',
-    JWK_PLACEHOLDER: '{"keys":[...]}',
+    JWK_PLACEHOLDER: 'Paste the current key set ({"keys":[...]})',
+    JWK_SOURCE_HINT: "Copy the provider's current keys from",
+    JWK_KEEP_HINT: 'Leave it empty to keep the pinned keys.',
     SAVE_BUTTON: 'Save',
     PERMISSION_DENIED: 'You do not have permission to change sign-on settings',
   },
@@ -22,6 +24,9 @@ export const IDENTITY_PROVIDER_CONSTANTS = {
     CLIENT_ID_REQUIRED: 'A client ID is required when single sign-on is enabled',
     TRUST_SOURCE_REQUIRED: 'Either allow fetching signing keys, or paste a key set to pin',
     JWK_INVALID: 'The key set must be valid JSON',
+  },
+  LINKS: {
+    JWKS_URL: 'https://www.googleapis.com/oauth2/v3/certs',
   },
   LAYOUT: {
     FIELD_GAP: 12,

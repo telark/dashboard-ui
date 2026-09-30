@@ -276,6 +276,12 @@
   font-family: 'Geist', sans-serif !important;
 }
 
+/* Every solid primary CTA is semibold, like BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT; antd has no
+   primary-only weight token. */
+.ant-btn-variant-solid.ant-btn-color-primary {
+  font-weight: 600;
+}
+
 /* Button icon vertical alignment */
 .ant-btn {
   display: inline-flex !important;

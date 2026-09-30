@@ -129,6 +129,8 @@ export const INSIGHTS_UI = {
     ALL_CLEAR_INCIDENTS: 'No open incidents.',
     ALL_CLEAR_RECOMMENDATIONS: 'No open recommendations.',
     CHECKED: 'Checked',
+    MANUAL_ANALYSIS_TITLE: 'Automatic analysis is off',
+    MANUAL_ANALYSIS: 'Run Analyze on an application to explain what went wrong.',
     ANALYZER_OFF_TITLE: 'Insights are off',
     ANALYZER_OFF:
       'Turn them on in Settings to explain incidents and review each application’s setup. Existing findings stay listed.',

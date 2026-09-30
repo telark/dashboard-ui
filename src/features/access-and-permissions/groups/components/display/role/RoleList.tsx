@@ -9,9 +9,11 @@ import { isRoleProtected, getRoleScopesContent } from '../../../../roles/utils';
 import { useRoleListScroll } from '../../../hooks';
 import { truncateText, CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
 import type { Role } from '../../../../roles/models';
-import { useCanGrantScopes } from '../../../../../auth/hooks';
+import { ACTION_PERMISSIONS, useCanGrantScopes, usePermission } from '../../../../../auth/hooks';
+import { NoPermissionCard } from '../../../../../../components/shared';
 
 const RoleIcon = Icons.Role;
+const VIEW_ROLES = ACTION_PERMISSIONS.roles.view;
 
 const getScopeLabel = (scopeKey: string): string => {
   const area = RC.SCOPE.DEFAULT_AREAS.find((a) => a.key === scopeKey);
@@ -28,6 +30,7 @@ interface RoleListProps {
 const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles, blockedReason }) => {
   const form = Form.useFormInstance();
   const canGrant = useCanGrantScopes();
+  const canViewRoles = usePermission(VIEW_ROLES.scope, VIEW_ROLES.level);
   const watchedSelectedRoles = Form.useWatch('roleRefs', form);
   const currentSelectedRoles = useMemo(
     () => (watchedSelectedRoles as string[]) || [],
@@ -63,6 +66,12 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles, blockedRe
     },
     [form, allRoles, roles, currentSelectedRoles],
   );
+
+  if (!canViewRoles) {
+    return (
+      <NoPermissionCard featureName={RC.LABELS.HEADER_TITLE} permission={VIEW_ROLES} compact />
+    );
+  }
 
   if (loading) {
     return <div style={ARC.LIST.EMPTY_STATE}>{GC.LABELS.MESSAGES.LOADING_ROLES}</div>;

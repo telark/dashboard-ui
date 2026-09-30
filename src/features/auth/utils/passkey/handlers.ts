@@ -2,6 +2,7 @@ import { registerStart } from '../../clients/register';
 import { registerPasskey } from '../webauthn/core';
 import { extractRegisterOptions } from '../flow/register';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
+import { rejectionMessage } from '../../../../utils/helpers/format';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
 import {
   createPasskeyThunk,
@@ -53,10 +54,10 @@ export const handleCreatePasskey = async ({
     if (createPasskeyThunk.fulfilled.match(result)) {
       message.success(PPC.LABELS.MESSAGES.CREATED(deviceName));
     } else {
-      const errorMessage =
-        result.payload instanceof Error
-          ? result.payload.message
-          : AUTH_ERROR_MESSAGES.CREATE_PASSKEY_FAILED;
+      const errorMessage = rejectionMessage(
+        result.payload,
+        AUTH_ERROR_MESSAGES.CREATE_PASSKEY_FAILED,
+      );
       message.error(errorMessage);
       throw new Error(errorMessage);
     }
@@ -93,10 +94,10 @@ export const handleUpdatePasskey = async ({
     if (updatePasskeyThunk.fulfilled.match(result)) {
       message.success(PPC.LABELS.MESSAGES.UPDATED(deviceName));
     } else {
-      const errorMessage =
-        result.payload instanceof Error
-          ? result.payload.message
-          : AUTH_ERROR_MESSAGES.UPDATE_PASSKEY_FAILED;
+      const errorMessage = rejectionMessage(
+        result.payload,
+        AUTH_ERROR_MESSAGES.UPDATE_PASSKEY_FAILED,
+      );
       message.error(errorMessage);
       throw new Error(errorMessage);
     }
@@ -123,10 +124,10 @@ export const handleDeletePasskey = async ({
     if (deletePasskeyThunk.fulfilled.match(result)) {
       message.success(PPC.LABELS.MESSAGES.DELETED(passkey.deviceName || ''));
     } else {
-      const errorMessage =
-        result.payload instanceof Error
-          ? result.payload.message
-          : AUTH_ERROR_MESSAGES.DELETE_PASSKEY_FAILED;
+      const errorMessage = rejectionMessage(
+        result.payload,
+        AUTH_ERROR_MESSAGES.DELETE_PASSKEY_FAILED,
+      );
       message.error(errorMessage);
     }
   } catch (error) {

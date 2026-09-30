@@ -21,6 +21,7 @@ export const TIME_ZONE = {
 
 export const TIME_CONFIGS = {
   UPDATE_INTERVAL: 60000, // 1 minute in milliseconds
+  MS_PER_SECOND: 1000,
 } as const;
 
 export const TIME_TEXTS = {

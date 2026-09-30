@@ -365,9 +365,9 @@ export const VIEW = {
   AVATAR: {
     border: `${AVATAR_RING.BORDER_WIDTH}px solid ${DEFAULT_COLORS.SUCCESS}`,
     padding: AVATAR_RING.BORDER_WIDTH,
-    background: DEFAULT_COLORS.SURFACE_WHITE,
     boxSizing: 'border-box' as const,
-    boxShadow: `0 0 0 2px ${DEFAULT_COLORS.SURFACE_WHITE}`,
+    // The inset shadow whitens only the ring gap; a white background also hid the white initial.
+    boxShadow: `inset 0 0 0 ${AVATAR_RING.BORDER_WIDTH}px ${DEFAULT_COLORS.SURFACE_WHITE}, 0 0 0 2px ${DEFAULT_COLORS.SURFACE_WHITE}`,
   },
   OVERFLOW_BADGE: {
     width: 32,

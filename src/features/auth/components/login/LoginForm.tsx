@@ -4,7 +4,7 @@ import { KeyOutlined } from '@ant-design/icons';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { AuthForm } from '../shared/AuthForm';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { BUTTON_CONFIGS, DEFAULT_COLORS } from '../../../../constants';
 
 interface LoginFormProps {
   form: FormInstance;
@@ -50,9 +50,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         block
         style={{
           fontWeight: 600,
-          background: 'var(--color-primary)',
-          borderColor: 'var(--color-primary)',
-          color: DEFAULT_COLORS.PILL_TEXT,
+          background: DEFAULT_COLORS.SUCCESS,
+          borderColor: DEFAULT_COLORS.SUCCESS,
+          color: BUTTON_CONFIGS.PRIMARY_BUTTON.TEXT_COLOR,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

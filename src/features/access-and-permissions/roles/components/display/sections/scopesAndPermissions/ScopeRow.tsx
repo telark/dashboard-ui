@@ -9,6 +9,10 @@ import LevelSelector from './LevelSelector';
 import RulesList from './RulesList';
 import type { ScopeRowProps } from '../../../../models';
 
+const SCOPE_LEVEL_PATHS = RPC.SCOPE.DEFAULT_AREAS.map((area) => ['scopes', area.key, 'level']);
+const hasAnyScopeLevel = (scopes?: Record<string, ScopeFormValue | undefined>) =>
+  Object.values(scopes ?? {}).some((scope) => scope?.level);
+
 const ScopeRow: React.FC<ScopeRowProps> = ({
   scopeKey,
   scopeLabel,
@@ -46,14 +50,13 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
       >
         {({ getFieldValue }) => {
           const scopeValue = getFieldValue(['scopes', scopeKey]) as ScopeFormValue | undefined;
-          const selectedLevel = (scopeValue?.level ||
-            RPC.PERMISSION_LEVEL.READ_ONLY) as PermissionLevel;
-          const availableRules = getScopeRules(scopeKey, selectedLevel);
+          const selectedLevel = scopeValue?.level;
+          const availableRules = selectedLevel ? getScopeRules(scopeKey, selectedLevel) : [];
           const denyRules = scopeValue?.rules || [];
           const formattedKeys = availableRules.map((r) => formatRuleKey(scopeKey, r.key));
           const validDenyRules = denyRules.filter((rule) => formattedKeys.includes(rule));
 
-          const handleLevelChange = (value: PermissionLevel) => {
+          const handleLevelChange = (value?: PermissionLevel) => {
             const newLevel = value;
             const newRules =
               initialScopeValue && initialScopeValue.level === newLevel
@@ -64,12 +67,12 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
             form.setFieldsValue({
               scopes: {
                 ...allScopes,
-                [scopeKey]: { level: newLevel, rules: newRules },
+                [scopeKey]: newLevel ? { level: newLevel, rules: newRules } : undefined,
               },
             });
 
             requestAnimationFrame(() => onManualChange?.());
-            onLevelChange?.(scopeKey, newLevel);
+            if (newLevel) onLevelChange?.(scopeKey, newLevel);
           };
 
           const handleRuleToggle = (formattedKey: string, checked: boolean) => {
@@ -82,7 +85,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
             const wouldAdd = checked && !normalizedRules.includes(normalizedKey);
             const wouldRemove = !checked && normalizedRules.includes(normalizedKey);
 
-            if (!wouldAdd && !wouldRemove) return;
+            if (!selectedLevel || (!wouldAdd && !wouldRemove)) return;
 
             const newDenyRules = checked
               ? [...currentRules, formattedKey]
@@ -115,7 +118,19 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                   <Form.Item
                     name={['scopes', scopeKey, 'level']}
                     noStyle
-                    rules={[{ required: !isLocked, message: 'Please select a permission level' }]}
+                    dependencies={isLast ? SCOPE_LEVEL_PATHS : undefined}
+                    rules={
+                      isLast && !isLocked
+                        ? [
+                            {
+                              validator: () =>
+                                hasAnyScopeLevel(form.getFieldValue('scopes'))
+                                  ? Promise.resolve()
+                                  : Promise.reject(new Error(RPC.SCOPE.AT_LEAST_ONE_REQUIRED)),
+                            },
+                          ]
+                        : undefined
+                    }
                   >
                     <LevelSelector
                       value={selectedLevel}

@@ -4,11 +4,9 @@ import { Endpoints } from '../../../../constants';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import type { Group, GroupFormData } from '../models';
 import { GROUPS_ERROR_MESSAGES } from '../constants';
-import { getCurrentUser } from '../../../../features/auth/utils';
 
 export const createGroup = async (group: GroupFormData) => {
   try {
-    const currentUser = getCurrentUser();
     const groupData: GroupFormData = {
       name: group.name,
       description: group.description,
@@ -16,9 +14,6 @@ export const createGroup = async (group: GroupFormData) => {
       userRefs: Array.isArray(group.userRefs) ? group.userRefs : [],
     };
 
-    if (currentUser?.id) {
-      groupData.createdBy = currentUser.id;
-    }
     return await Client<ResourceDetailsResponse<Group>>(
       exporterApiClient,
       Endpoints.GROUPS.CREATE.path,

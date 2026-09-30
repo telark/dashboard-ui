@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import { SlideOutPanel, ExpandPanelButton } from '../../../../components/display/panels/slide-out';
 import { DEFAULT_COLORS } from '../../../../constants';
 import { PanelEmptyState } from '../../../../components/display/panels/shared';
+import { ActionConfirmModal } from '../../../../components/display/modal';
 import type { Application, ApplicationRollbackEntry } from '../../models';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
@@ -60,8 +61,9 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
   const [abortBusyId, setAbortBusyId] = useState<string | null>(null);
+  const [abortTarget, setAbortTarget] = useState<ApplicationRollbackEntry | null>(null);
   const dispatch: AppDispatch = useDispatch();
-  const { modal, message } = AntdApp.useApp();
+  const { message } = AntdApp.useApp();
   const canAbort = usePermission(
     ACTION_PERMISSIONS.applications.rollback.scope,
     ACTION_PERMISSIONS.applications.rollback.level,
@@ -80,32 +82,21 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
   );
   const usernamesById = useUsernamesByIds(triggeredByIds, open);
 
-  const handleAbort = useCallback(
-    (entry: ApplicationRollbackEntry) => {
-      modal.confirm({
-        title: ui.ABORT_CONFIRM_TITLE,
-        content: ui.ABORT_CONFIRM_CONTENT,
-        okText: ui.ABORT_CONFIRM_OK,
-        okType: 'danger',
-        cancelText: APPLICATIONS_UI.CARD.ACTIONS.CANCEL,
-        onOk: async () => {
-          setAbortBusyId(entry.id);
-          try {
-            await dispatch(
-              abortApplicationRollbackThunk({ name: applicationName, rollbackId: entry.id }),
-            ).unwrap();
-            message.success(ui.ABORT_SUCCESS);
-            onAfterAbort?.();
-          } catch {
-            message.error(ui.ABORT_FAILED);
-          } finally {
-            setAbortBusyId(null);
-          }
-        },
-      });
-    },
-    [applicationName, dispatch, message, modal, onAfterAbort, ui],
-  );
+  const confirmAbort = useCallback(async () => {
+    if (!abortTarget) return;
+    setAbortBusyId(abortTarget.id);
+    try {
+      await dispatch(
+        abortApplicationRollbackThunk({ name: applicationName, rollbackId: abortTarget.id }),
+      ).unwrap();
+      message.success(ui.ABORT_SUCCESS);
+      onAfterAbort?.();
+    } catch {
+      message.error(ui.ABORT_FAILED);
+    } finally {
+      setAbortBusyId(null);
+    }
+  }, [abortTarget, applicationName, dispatch, message, onAfterAbort, ui]);
 
   return (
     <>
@@ -138,13 +129,28 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
                       triggeredByName={rb.triggeredBy ? usernamesById[rb.triggeredBy] || '' : ''}
                       canAbort={canAbort}
                       abortLoading={abortBusyId === rb.id}
-                      onAbort={handleAbort}
+                      onAbort={setAbortTarget}
                     />
                   ))}
               </div>
             )}
           </div>
         }
+      />
+      <ActionConfirmModal
+        open={abortTarget !== null}
+        onClose={() => setAbortTarget(null)}
+        onConfirm={confirmAbort}
+        title={ui.ABORT_CONFIRM_TITLE}
+        action={ui.ABORT_CONFIRM_OK}
+        resourceName={abortTarget?.id ?? ''}
+        customMessage={ui.ABORT_CONFIRM_CONTENT}
+        confirmText={ui.ABORT_CONFIRM_OK}
+        cancelText={APPLICATIONS_UI.CARD.ACTIONS.CANCEL}
+        loading={abortBusyId !== null}
+        getContainer={() => document.body}
+        // Centre it over the page rather than under the open panel.
+        offsetRight={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
       />
     </>
   );

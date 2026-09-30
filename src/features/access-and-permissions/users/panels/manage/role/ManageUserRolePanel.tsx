@@ -19,6 +19,8 @@ import {
 } from '../../../../../../features/auth/hooks/permissions/permissionEngine';
 import { useGroupInheritedRoles } from '../../../hooks/panels/role/useGroupInheritedRoles';
 import { useFetchGroups } from '../../../../groups/hooks/data/useFetchGroups';
+import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../groups/constants';
+import { useHasRoleAboveCaller } from '../../../../roles/hooks';
 import UserRoleSelectList from '../../../components/display/manage/role/UserRoleSelectList';
 import UserAssignedRolesView from '../../../components/display/manage/role/UserAssignedRolesView';
 import UserGroupInheritedRolesView from '../../../components/display/manage/role/UserGroupInheritedRolesView';
@@ -95,6 +97,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     (roleId: string) => (initialSelectedRoles.includes(roleId) ? removeBlocked : addBlocked),
     [initialSelectedRoles, addBlocked, removeBlocked],
   );
+  const hasRoleAboveCaller = useHasRoleAboveCaller();
 
   const handleDeassignSuccess = useCallback((updatedRoles: string[]) => {
     setLocalAssignedIds(updatedRoles);
@@ -209,6 +212,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                flexWrap: 'wrap',
                 gap: 12,
                 width: '100%',
                 boxSizing: 'border-box',
@@ -220,7 +224,8 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                 value={searchTerm}
                 onChange={setSearchTerm}
                 placeholder={UC.LABELS.PANELS.MANAGE_ROLE.SEARCH_PLACEHOLDER}
-                minWidth={200}
+                minWidth={ARC.SEARCH_MIN_WIDTH}
+                block
               />
               <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
                 <ToggleButton
@@ -250,7 +255,10 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                   allRoles={allRoles}
                   loading={rolesLoading}
                   onDeassignClick={openDeassignModal}
-                  deassignDisabledReason={() => removeBlocked}
+                  deassignDisabledReason={(role) =>
+                    removeBlocked ??
+                    (hasRoleAboveCaller([role.id]) ? ARC.TOOLTIPS.EXCEEDS_OWN_ACCESS : undefined)
+                  }
                   inheritedRoleIds={inheritedRoleIds}
                   inheritedGroupsByRoleId={inheritedGroupsByRoleId}
                 />

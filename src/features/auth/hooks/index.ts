@@ -1,6 +1,7 @@
 export {
   usePermission,
   useCanGrantScopes,
+  useIsAdminOnAll,
   PermissionGate,
   ACTION_PERMISSIONS,
 } from './permissions/permissionEngine';

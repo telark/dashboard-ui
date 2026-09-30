@@ -1,5 +1,6 @@
+import { BUTTON_CONFIGS } from './buttons';
 import { CONTROL_HEIGHT } from './controls';
-import { DEFAULT_COLORS } from '../shared/colors';
+import { DEFAULT_COLORS, getPillSurface } from '../shared/colors';
 
 export const ACTION_CONFIRM_MODAL = {
   MODAL: {
@@ -41,7 +42,7 @@ export const ACTION_CONFIRM_MODAL = {
   NOTE: {
     FONT_SIZE: 13,
     LINE_HEIGHT: 1.5,
-    COLOR: DEFAULT_COLORS.WARNING,
+    COLOR: getPillSurface(DEFAULT_COLORS.WARNING).background,
   },
   BUTTONS: {
     GAP: 12,
@@ -49,7 +50,7 @@ export const ACTION_CONFIRM_MODAL = {
     MARGIN_BOTTOM: -12,
     CONFIRM: {
       BORDER_RADIUS: 6,
-      FONT_WEIGHT: 500,
+      FONT_WEIGHT: BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT,
       HEIGHT: CONTROL_HEIGHT,
       PADDING: '0 16px',
     },

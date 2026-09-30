@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
 import { LoadingButtonInterface } from '../../../interfaces/shared';
-import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_TEXTS } from '../../../constants';
+import { BUTTON_CONFIGS, BUTTON_TEXTS } from '../../../constants';
 
 const PrimaryButton: React.FC<LoadingButtonInterface> = ({
   action,
@@ -11,7 +11,7 @@ const PrimaryButton: React.FC<LoadingButtonInterface> = ({
   loadingLabel = BUTTON_TEXTS.LOADING,
   onClick,
   icon,
-  color = DEFAULT_COLORS.SUCCESS,
+  color,
   disabled = false,
   style,
 }) => {
@@ -26,6 +26,7 @@ const PrimaryButton: React.FC<LoadingButtonInterface> = ({
         marginTop: BUTTON_CONFIGS.PRIMARY_BUTTON.MARGIN_TOP,
         backgroundColor: color,
         borderColor: color,
+        fontWeight: BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

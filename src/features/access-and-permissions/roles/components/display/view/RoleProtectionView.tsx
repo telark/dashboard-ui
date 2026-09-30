@@ -19,7 +19,7 @@ const tagStyle = {
 };
 
 interface RoleProtectionViewProps {
-  role: Role | null;
+  role: Pick<Role, 'protection'> | null;
 }
 
 const PROTECTION_FIELDS: ReadonlyArray<{

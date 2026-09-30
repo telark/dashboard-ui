@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Form } from 'antd';
+import { Form, Tooltip } from 'antd';
 import { PrimaryButton } from '../../../../../../components/display/buttons';
 import { BUTTON_TEXTS, Icons } from '../../../../../../constants';
 import {
@@ -8,6 +8,8 @@ import {
   ValiditySection,
   ProtectionSection,
 } from '../sections';
+import RoleProtectionView from '../view/RoleProtectionView';
+import { ROLES_CONSTANTS as RC } from '../../../constants';
 import { useRoleFormState } from '../../../hooks';
 import type { RoleFormValues, RoleFormProps } from '../../../models';
 
@@ -25,6 +27,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
   currentName,
   hideSubmitButton = false,
   expanded = false,
+  protectionReadOnly = false,
 }) => {
   const { hasFormErrors, hasChanges, handleValuesChange, handleFieldsChange } = useRoleFormState({
     form,
@@ -55,6 +58,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
             const prevProtection = prevValues?.protection;
             const currProtection = currValues?.protection;
             return (
+              prevProtection?.preventModification !== currProtection?.preventModification ||
               prevProtection?.preventScopeChanges !== currProtection?.preventScopeChanges ||
               prevProtection?.lockName !== currProtection?.lockName ||
               prevProtection?.lockCategory !== currProtection?.lockCategory
@@ -71,6 +75,11 @@ const RoleForm: React.FC<RoleFormProps> = ({
             const lockCategory = isEditMode
               ? getFieldValue(['protection', 'lockCategory']) || false
               : false;
+            // A stored preventModification leaves only protection editable until the form lifts it.
+            const modificationLocked =
+              isEditMode &&
+              Boolean(initialValues.protection?.preventModification) &&
+              Boolean(getFieldValue(['protection', 'preventModification']));
 
             const leftColumn = (
               <>
@@ -80,15 +89,24 @@ const RoleForm: React.FC<RoleFormProps> = ({
                   currentName={currentName}
                   lockName={lockName}
                   lockCategory={lockCategory}
+                  disabled={modificationLocked}
                   onManualChange={handleValuesChange}
                 />
-                <ValiditySection />
-                <ProtectionSection onManualChange={handleValuesChange} />
+                <ValiditySection disabled={modificationLocked} />
+                {protectionReadOnly ? (
+                  <Tooltip title={RC.PROTECTION.READ_ONLY_TOOLTIP}>
+                    <div>
+                      <RoleProtectionView role={initialValues} />
+                    </div>
+                  </Tooltip>
+                ) : (
+                  <ProtectionSection onManualChange={handleValuesChange} />
+                )}
               </>
             );
             const rightColumn = (
               <ScopesAndPermissionsSection
-                isLocked={preventScopeChanges}
+                isLocked={preventScopeChanges || modificationLocked}
                 onManualChange={handleValuesChange}
                 initialValues={initialValues}
               />

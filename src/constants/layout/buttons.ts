@@ -86,6 +86,9 @@ export const BUTTON_CONFIGS = {
   PRIMARY_BUTTON: {
     TYPE: 'primary',
     MARGIN_TOP: '0px',
+    FONT_WEIGHT: 600,
+    // White fails AA on the brand green; this dark text passes (about 8:1).
+    TEXT_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE,
   },
 } as const;
 

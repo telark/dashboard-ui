@@ -148,6 +148,18 @@ const ChangeRow: React.FC<{
                 {suffix.trim()}
               </span>
             ) : null}
+            {/* In the chip row, not a column of its own: on a narrow card it wraps under the chips. */}
+            <span
+              style={{
+                marginLeft: 'auto',
+                fontSize: 12,
+                color: DEFAULT_COLORS.TEXT_MUTED,
+                whiteSpace: 'nowrap',
+                lineHeight: 1.35,
+              }}
+            >
+              <TimeAgo date={entry.detectedAt} />
+            </span>
           </div>
 
           {actorId || entry.fingerprint ? (
@@ -165,6 +177,7 @@ const ChangeRow: React.FC<{
                   text={`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.BY_PREFIX} ${actorName}`}
                   fontSize={11}
                   capitalize={false}
+                  truncate
                 />
               ) : null}
               {entry.fingerprint ? (
@@ -250,17 +263,6 @@ const ChangeRow: React.FC<{
               </ChangeList>
             </div>
           ) : null}
-        </div>
-        <div
-          style={{
-            fontSize: 12,
-            color: DEFAULT_COLORS.TEXT_MUTED,
-            flexShrink: 0,
-            textAlign: 'right',
-            lineHeight: 1.35,
-          }}
-        >
-          <TimeAgo date={entry.detectedAt} />
         </div>
       </div>
     </div>

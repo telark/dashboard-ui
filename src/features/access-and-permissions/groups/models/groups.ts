@@ -19,10 +19,7 @@ export interface GroupsState {
   deletingIds: string[];
 }
 
-export type GroupFormData = Omit<Group, 'id' | 'creationDate' | 'lastUpdateDate'> & {
-  createdBy?: string;
-  lastUpdatedBy?: string;
-};
+export type GroupFormData = Omit<Group, 'id' | 'creationDate' | 'lastUpdateDate'>;
 
 export interface GroupPanelProps {
   open: boolean;

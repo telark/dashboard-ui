@@ -36,6 +36,7 @@ const UserDisplay: React.FC<UserDisplayProps> = memo(
               justifyContent: 'center',
               width: config.container,
               height: config.container,
+              flexShrink: 0,
               borderRadius: '50%',
               // Container sizes are deliberately wider than the shared ring
               // formula, so only the ring itself is shared here.

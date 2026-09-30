@@ -17,7 +17,8 @@ import {
 import MemberList from '../../components/display/member/MemberList';
 import GroupAssignedMembersView from '../../components/display/member/GroupAssignedMembersView';
 import type { Group } from '../../models';
-import { GROUPS_CONSTANTS as GC } from '../../constants';
+import { GROUPS_CONSTANTS as GC, ATTACHED_ROLES_CONSTANTS as ARC } from '../../constants';
+import { useHasRoleAboveCaller, useRoles } from '../../../roles/hooks';
 import { USERS_CONSTANTS as UC } from '../../../users/constants';
 import { filterBySearchTerm } from '../../../users/utils/search/filter';
 import { CapitalizeFirstLetter } from '../../../../../utils/helpers/format';
@@ -74,6 +75,12 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
     ACTION_PERMISSIONS.groups.removeMember.deny,
   );
 
+  // Loads the roles the above-caller check reads; members carry the group's roles.
+  useRoles();
+  const membersBlocked = useHasRoleAboveCaller()(currentGroup?.roleRefs)
+    ? ARC.TOOLTIPS.MEMBERS_EXCEED_OWN_ACCESS
+    : undefined;
+
   // Unchecking a member is a removal, checking another user is an add: each has its own rule.
   // Chart-managed (bootstrap) members can't be removed here at all.
   const removeBlockedFor = useCallback(
@@ -81,16 +88,16 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
       if (allUsers?.find((u) => u.id === userId)?.bootstrap) {
         return UC.LABELS.ACTIONS.BOOTSTRAP_LOCKED_TOOLTIP;
       }
-      return canRemoveMember ? undefined : GC.LABELS.ACTIONS.REMOVE_MEMBER_DISABLED_TOOLTIP;
+      return canRemoveMember ? membersBlocked : GC.LABELS.ACTIONS.REMOVE_MEMBER_DISABLED_TOOLTIP;
     },
-    [allUsers, canRemoveMember],
+    [allUsers, canRemoveMember, membersBlocked],
   );
   const blockedReason = useCallback(
     (userId: string) => {
       if (initialSelectedUsers.includes(userId)) return removeBlockedFor(userId);
-      return canAddMember ? undefined : GC.LABELS.ACTIONS.ADD_MEMBER_DISABLED_TOOLTIP;
+      return canAddMember ? membersBlocked : GC.LABELS.ACTIONS.ADD_MEMBER_DISABLED_TOOLTIP;
     },
-    [initialSelectedUsers, removeBlockedFor, canAddMember],
+    [initialSelectedUsers, removeBlockedFor, canAddMember, membersBlocked],
   );
 
   const handleDeassignSuccess = useCallback((updatedUserIds: string[]) => {
@@ -153,6 +160,7 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                flexWrap: 'wrap',
                 gap: 12,
                 width: '100%',
                 boxSizing: 'border-box',

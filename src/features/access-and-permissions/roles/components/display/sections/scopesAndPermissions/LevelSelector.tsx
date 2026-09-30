@@ -25,6 +25,7 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({
         ),
       }))}
       onChange={onChange}
+      allowClear
       disabled={disabled}
     />
   );

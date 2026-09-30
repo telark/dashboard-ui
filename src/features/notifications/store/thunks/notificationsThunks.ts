@@ -5,6 +5,7 @@ import {
   markNotificationRead,
   markAllNotificationsRead,
   clearNotifications,
+  deleteNotification,
 } from '../../clients';
 import { extractErrorMessage } from '../../../../utils/helpers/format';
 import { NOTIFICATIONS_ERROR_MESSAGES, NOTIFICATIONS_STORE_ACTIONS } from '../../constants';
@@ -50,6 +51,20 @@ export const markNotificationReadThunk = createAsyncThunk<
     return rejectWithValue(
       extractErrorMessage(error, NOTIFICATIONS_ERROR_MESSAGES.STORE.MARK_READ),
     );
+  }
+});
+
+export const deleteNotificationThunk = createAsyncThunk<
+  string,
+  MarkNotificationReadThunkArg,
+  { rejectValue: string }
+>(NOTIFICATIONS_STORE_ACTIONS.DELETE, async ({ id, userId }, { rejectWithValue }) => {
+  try {
+    await deleteNotification(id, userId);
+    return id;
+  } catch (error: unknown) {
+    logger.error(NOTIFICATIONS_ERROR_MESSAGES.STORE.DELETE, error);
+    return rejectWithValue(extractErrorMessage(error, NOTIFICATIONS_ERROR_MESSAGES.STORE.DELETE));
   }
 });
 

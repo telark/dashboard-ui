@@ -162,6 +162,8 @@ export const APPLICATIONS_UI = {
       COMPARE_ADDED_CHIP: 'added',
       COMPARE_REMOVED_CHIP: 'removed',
       COMPARE_IDENTICAL_TITLE: 'No differences',
+      COMPARE_NO_VISIBLE_TITLE: 'No visible differences',
+      COMPARE_IDENTICAL_REDACTED: 'Secret values are redacted, so changes to them are not shown.',
       COMPARE_ERROR_TITLE: 'Comparison unavailable',
       COMPARE_RESOURCE_ADDED: 'Resource present only in the compared snapshot',
       COMPARE_RESOURCE_REMOVED: 'Resource present only in the baseline snapshot',

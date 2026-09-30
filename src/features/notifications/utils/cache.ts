@@ -22,6 +22,14 @@ export const readNotificationsCache = (): NotificationsCache | null => {
 export const writeNotificationsCache = (items: Notification[], unreadCount: number): void => {
   try {
     const capped = items.slice(0, NOTIFICATIONS_CACHE_MAX_ITEMS);
+    // Every write wakes every other tab (storage event), so an unchanged list is not rewritten.
+    const stored = readNotificationsCache();
+    if (
+      stored?.unreadCount === unreadCount &&
+      JSON.stringify(stored.items) === JSON.stringify(capped)
+    ) {
+      return;
+    }
     const payload: NotificationsCache = {
       items: capped,
       unreadCount,

@@ -10,6 +10,12 @@ export const buildUpdatePayload = (
   // the loaded copy would revert changes made elsewhere.
   const roleData: Partial<RoleFormData> = {};
 
+  // The exporter refuses every key but protection while preventModification stays on.
+  if (changes.modificationLocked) {
+    if (changes.protectionHasChanged) roleData.protection = fullRoleData.protection;
+    return roleData;
+  }
+
   if (!currentProtection.lockName && changes.nameHasChanged) {
     roleData.name = fullRoleData.name;
   }
@@ -18,9 +24,6 @@ export const buildUpdatePayload = (
   }
   if (!currentProtection.lockCategory && changes.categoryHasChanged) {
     roleData.categoryRef = fullRoleData.categoryRef;
-  }
-  if (fullRoleData.type !== undefined) {
-    roleData.type = fullRoleData.type;
   }
   if (!currentProtection.preventScopeChanges && changes.scopesHaveChanged) {
     roleData.scopesAndPermissions = fullRoleData.scopesAndPermissions;
@@ -49,9 +52,6 @@ export const buildFieldsUpdatePayload = (
   }
   if (changes.categoryHasChanged) {
     fieldsData.categoryRef = fullRoleData.categoryRef;
-  }
-  if (fullRoleData.type !== undefined) {
-    fieldsData.type = fullRoleData.type;
   }
   if (changes.scopesHaveChanged) {
     fieldsData.scopesAndPermissions = fullRoleData.scopesAndPermissions;

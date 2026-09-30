@@ -4,7 +4,7 @@ import { UserAddOutlined } from '@ant-design/icons';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { REGISTER_CONSTANTS } from '../../constants/register';
 import { AuthForm } from '../shared/AuthForm';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { BUTTON_CONFIGS, DEFAULT_COLORS } from '../../../../constants';
 
 interface RegisterFormProps {
   form: FormInstance;
@@ -61,9 +61,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         icon={<UserAddOutlined />}
         style={{
           fontWeight: 600,
-          background: 'var(--color-primary)',
-          borderColor: 'var(--color-primary)',
-          color: DEFAULT_COLORS.PILL_TEXT,
+          background: DEFAULT_COLORS.SUCCESS,
+          borderColor: DEFAULT_COLORS.SUCCESS,
+          color: BUTTON_CONFIGS.PRIMARY_BUTTON.TEXT_COLOR,
         }}
       >
         {loading ? REGISTER_CONSTANTS.UI.BUTTON_LOADING : REGISTER_CONSTANTS.UI.BUTTON_TEXT}
