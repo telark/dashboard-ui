@@ -92,6 +92,3 @@ export const APPLICATION_CHANGE_CLASS = {
 export const DISCOVERY_STATUS_BAR = {
   MIN_HEIGHT_PX: 22,
 } as const;
-
-// Telark user ids; other actors (kube users, IAM ARNs) are shown verbatim, never looked up.
-export const TELARK_USER_ID_PATTERN = /^u-/;

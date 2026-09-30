@@ -2,7 +2,8 @@ import React, { useMemo } from 'react';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../../components/display/table/RowTag';
-import { UserDisplay } from '../../../../../../components/display/users';
+import { ActorDisplay } from '../../../../../../components/display/users';
+import { useUsernamesByIds } from '../../../../../../hooks/useUsernamesByIds';
 import { ValidityDisplay } from '../../../../../../components/display/validity';
 import { useCategories } from '../../../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../../../categories/constants';
@@ -43,6 +44,12 @@ export const useViewRolePanelData = ({
     if (!role?.lastUpdatedBy || !users) return null;
     return users.find((u) => u.id === role.lastUpdatedBy) ?? null;
   }, [role, users]);
+
+  const actorIds = useMemo(
+    () => [role?.createdBy, role?.lastUpdatedBy].filter((id): id is string => Boolean(id)),
+    [role],
+  );
+  const usernamesById = useUsernamesByIds(actorIds, Boolean(role));
 
   const details = useMemo(() => {
     if (!role) return [];
@@ -88,9 +95,15 @@ export const useViewRolePanelData = ({
       },
       {
         label: RC.LABELS.VIEW_LABELS.CREATED_BY,
-        value: createdByUser ? (
+        value: role.createdBy ? (
           <span style={valueStyle}>
-            <UserDisplay user={createdByUser} size="small" showBorder />
+            <ActorDisplay
+              actor={role.createdBy}
+              user={createdByUser}
+              usernamesById={usernamesById}
+              size="small"
+              showBorder
+            />
           </span>
         ) : (
           <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>—</span>
@@ -98,9 +111,15 @@ export const useViewRolePanelData = ({
       },
       {
         label: RC.LABELS.VIEW_LABELS.LAST_UPDATED_BY,
-        value: lastUpdatedByUser ? (
+        value: role.lastUpdatedBy ? (
           <span style={valueStyle}>
-            <UserDisplay user={lastUpdatedByUser} size="small" showBorder />
+            <ActorDisplay
+              actor={role.lastUpdatedBy}
+              user={lastUpdatedByUser}
+              usernamesById={usernamesById}
+              size="small"
+              showBorder
+            />
           </span>
         ) : (
           <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>—</span>
@@ -117,7 +136,7 @@ export const useViewRolePanelData = ({
         ),
       },
     ];
-  }, [role, categories, createdByUser, lastUpdatedByUser]);
+  }, [role, categories, createdByUser, lastUpdatedByUser, usernamesById]);
 
   return {
     details,

@@ -5,10 +5,11 @@ import { AVATAR_RING } from '../../../constants/layout/avatars';
 import type { User } from '../../../features/access-and-permissions/users/models';
 
 interface UserDisplayProps {
-  user: User | null | undefined;
+  user: (Pick<User, 'username' | 'avatar'> & Partial<Pick<User, 'fullname'>>) | null | undefined;
   size?: 'small' | 'medium' | 'large';
   showBorder?: boolean;
   className?: string;
+  title?: string;
 }
 
 const SIZE_CONFIG = {
@@ -18,7 +19,7 @@ const SIZE_CONFIG = {
 } as const;
 
 const UserDisplay: React.FC<UserDisplayProps> = memo(
-  ({ user, size = 'small', showBorder = true, className }) => {
+  ({ user, size = 'small', showBorder = true, className, title }) => {
     if (!user) {
       return <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>—</span>;
     }
@@ -27,7 +28,11 @@ const UserDisplay: React.FC<UserDisplayProps> = memo(
     const config = SIZE_CONFIG[size];
 
     return (
-      <div className={className} style={{ display: 'flex', alignItems: 'center', gap: config.gap }}>
+      <div
+        className={className}
+        title={title}
+        style={{ display: 'flex', alignItems: 'center', gap: config.gap }}
+      >
         {showBorder ? (
           <div
             style={{

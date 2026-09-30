@@ -33,6 +33,7 @@ export interface ColumnsArgs {
   sortOrder?: 'asc' | 'desc';
   categories?: Category[];
   users?: User[];
+  usernamesById?: Record<string, string>;
 }
 
 export interface ScopesAndPermissionsSectionProps {

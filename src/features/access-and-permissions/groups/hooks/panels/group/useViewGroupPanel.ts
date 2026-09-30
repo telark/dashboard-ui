@@ -6,12 +6,14 @@ import { getCategoryName } from '../../../../categories/utils';
 import type { Group } from '../../../models';
 import type { User } from '../../../../users/models';
 import { buildAvatarSources } from '../../../../../../utils/layout';
+import { useUsernamesByIds } from '../../../../../../hooks/useUsernamesByIds';
 
 interface UseViewGroupPanelReturn {
   groupUsers: User[];
   categoryName: string;
   createdByUser: User | null;
   lastUpdatedByUser: User | null;
+  usernamesById: Record<string, string>;
   avatarSources: Record<string, string>;
 }
 
@@ -42,6 +44,12 @@ export const useViewGroupPanel = (group: Group | null): UseViewGroupPanelReturn 
     return users.find((u) => u.id === group.lastUpdatedBy) || null;
   }, [group, users]);
 
+  const actorIds = useMemo(
+    () => [group?.createdBy, group?.lastUpdatedBy].filter((id): id is string => Boolean(id)),
+    [group],
+  );
+  const usernamesById = useUsernamesByIds(actorIds, Boolean(group));
+
   useEffect(() => {
     const generateAvatars = async () => {
       const sources = await buildAvatarSources({
@@ -60,6 +68,7 @@ export const useViewGroupPanel = (group: Group | null): UseViewGroupPanelReturn 
     categoryName,
     createdByUser,
     lastUpdatedByUser,
+    usernamesById,
     avatarSources,
   };
 };

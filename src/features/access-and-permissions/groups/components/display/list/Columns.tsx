@@ -17,12 +17,13 @@ import {
 import type { Category } from '../../../../categories/models';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import { getCategoryName } from '../../../../categories/utils';
-import { UserDisplay } from '../../../../../../components/display/users';
+import { ActorDisplay } from '../../../../../../components/display/users';
 import type { User } from '../../../../users/models';
 
 interface ColumnsContext extends GenerateColumnCtx {
   categories?: Category[];
   users?: User[];
+  usernamesById?: Record<string, string>;
   onView?: (record: Group) => void;
   onEdit?: (record: Group) => void;
   onDelete?: (record: Group) => void;
@@ -33,6 +34,7 @@ const DESCRIPTION_PREVIEW_MAX = 40;
 const Columns = (ctx: ColumnsContext): TableColumnType<Group>[] => {
   const categories = ctx.categories || [];
   const users = ctx.users || [];
+  const usernamesById = ctx.usernamesById || {};
 
   const getUserById = (userId?: string) => {
     if (!userId) return null;
@@ -136,10 +138,14 @@ const Columns = (ctx: ColumnsContext): TableColumnType<Group>[] => {
         icon: <AiOutlineUser />,
         width: GC.SIZES.COLUMNS.CREATED_BY,
         render: (_: unknown, record: Group) => {
-          const user = getUserById(record.createdBy);
           return (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <UserDisplay user={user} size="small" />
+              <ActorDisplay
+                actor={record.createdBy}
+                user={getUserById(record.createdBy)}
+                usernamesById={usernamesById}
+                size="small"
+              />
             </div>
           );
         },
@@ -153,10 +159,14 @@ const Columns = (ctx: ColumnsContext): TableColumnType<Group>[] => {
         icon: <AiOutlineUser />,
         width: GC.SIZES.COLUMNS.LAST_UPDATED_BY,
         render: (_: unknown, record: Group) => {
-          const user = getUserById(record.lastUpdatedBy);
           return (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <UserDisplay user={user} size="small" />
+              <ActorDisplay
+                actor={record.lastUpdatedBy}
+                user={getUserById(record.lastUpdatedBy)}
+                usernamesById={usernamesById}
+                size="small"
+              />
             </div>
           );
         },

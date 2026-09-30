@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS } from '../../constants';
+import { DEFAULT_COLORS, TRUNCATE_STYLE } from '../../constants';
 import { PAGE_CONTENT_LAYOUT, PAGE_HEADER } from '../../constants/shared/pages';
 
 export interface PageBreadcrumbItem {
@@ -26,6 +26,7 @@ const headingStyle: React.CSSProperties = {
   padding: 0,
   lineHeight: PAGE_HEADER.LINE_HEIGHT,
   display: 'flex',
+  flexWrap: 'wrap',
   alignItems: 'center',
   gap: PAGE_HEADER.TITLE_GAP_PX,
 };
@@ -69,7 +70,9 @@ const Breadcrumbs: React.FC<{ items: PageBreadcrumbItem[] }> = ({ items }) => {
                 {item.label}
               </button>
             ) : (
-              <span>{item.label}</span>
+              <span style={TRUNCATE_STYLE} title={item.label}>
+                {item.label}
+              </span>
             )}
           </React.Fragment>
         );

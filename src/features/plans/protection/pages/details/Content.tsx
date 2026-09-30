@@ -33,6 +33,7 @@ import {
 } from '../../constants/protectionPlans';
 import type { ProtectionPlan } from '../../models';
 import { usePlanTaxonomies } from '../../hooks/usePlanTaxonomies';
+import { useUsernamesByIds } from '../../../../../hooks/useUsernamesByIds';
 import { planPhaseLabel } from '../../utils/phaseRules';
 import { encodeResourceKey } from '../../utils/planFormValues';
 import { getCategoryName } from '../../../../access-and-permissions/categories/utils/helpers';
@@ -143,17 +144,31 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
       });
     }, [plan.participantRefs, users]);
 
+    const actorIds = useMemo(
+      () =>
+        [
+          plan.createdBy,
+          plan.lastUpdatedBy,
+          plan.approval?.requestedBy,
+          plan.approval?.decidedBy,
+        ].filter((id): id is string => Boolean(id)),
+      [plan],
+    );
+    const usernamesById = useUsernamesByIds(actorIds, true);
+
     const renderUserAndTime = useCallback(
       (userId: string | undefined, when: string | undefined): React.ReactNode => {
         const user = userId ? users.find((u) => u.id === userId) : undefined;
-        const display = user?.username ?? userId;
+        const display = user?.username ?? (userId ? usernamesById[userId] : undefined);
         const timeNode = when ? <TimeAgo date={when} /> : EMPTY;
-        if (!userId) return timeNode;
+        if (!userId || !display) return timeNode;
         return (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-              <AvatarRing avatar={user?.avatar} username={display ?? userId} size={20} />
-              <span style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_PRIMARY }}>{display}</span>
+              <AvatarRing avatar={user?.avatar} username={display} size={20} />
+              <span title={userId} style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+                {display}
+              </span>
             </span>
             {when && (
               <>
@@ -164,7 +179,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           </span>
         );
       },
-      [users],
+      [users, usernamesById],
     );
 
     const overviewRows = useMemo(() => {

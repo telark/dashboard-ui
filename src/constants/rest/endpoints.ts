@@ -5,6 +5,7 @@ import {
   SESSION_PATHS,
   CATEGORY_PATHS,
   PROTECTION_PLAN_PATHS,
+  USER_PATHS,
   byId,
 } from '../rest/paths';
 
@@ -207,6 +208,12 @@ export const Endpoints = {
     },
     GET_BY_ID: (userId: string) => ({
       path: byId(API_PATHS.USERS, userId),
+      method: 'GET',
+    }),
+    GET_NAMES: (userIds: string[]) => ({
+      path: `${USER_PATHS.NAMES}?${USER_PATHS.QUERY_IDS}=${userIds
+        .map((id) => encodeURIComponent(id))
+        .join(USER_PATHS.IDS_SEPARATOR)}`,
       method: 'GET',
     }),
     PATCH_BY_ID: (userId: string) => ({

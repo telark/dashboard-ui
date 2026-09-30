@@ -29,6 +29,7 @@ import { UserOptionRow } from '../../../../components/display/users';
 import { getCurrentUser } from '../../../auth/utils';
 import { mapCategoriesToOptions } from '../../../access-and-permissions/categories/utils/helpers';
 import { usePlanTaxonomies } from '../hooks/usePlanTaxonomies';
+import { useUsernamesByIds } from '../../../../hooks/useUsernamesByIds';
 
 const CURRENT_USER_LABEL = 'me';
 
@@ -104,6 +105,14 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
       return m;
     }, [allUsers]);
     const currentUserId = useMemo(() => getCurrentUser()?.id, []);
+    const actorIds = useMemo(
+      () =>
+        plans
+          .flatMap((p) => [p.createdBy, p.approval?.requestedBy])
+          .filter((id): id is string => Boolean(id)),
+      [plans],
+    );
+    const usernamesById = useUsernamesByIds(actorIds, true);
     const [filterPanelOpen, setFilterPanelOpen] = useState(false);
     const { ref: gridRef, width: gridWidth } = useElementWidth<HTMLDivElement>();
 
@@ -160,10 +169,12 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
 
     const filterFields: FilterField[] = useMemo(() => {
       const scopeOptions = uniqueValues(plans, (p) => p.scope.type);
-      const createdByOptions = allUsers.map((u) => ({
-        value: u.id,
-        label: u.id === currentUserId ? CURRENT_USER_LABEL : (u.username ?? u.id),
-      }));
+      const createdByOptions = uniqueValues(plans, (p) => p.createdBy)
+        .filter(({ value }) => usernamesById[value])
+        .map(({ value }) => ({
+          value,
+          label: value === currentUserId ? CURRENT_USER_LABEL : usernamesById[value],
+        }));
       const renderUserOption = (option: { value: string; label: string }): React.ReactNode => (
         <UserOptionRow user={userMap.get(option.value)} displayName={option.label} />
       );
@@ -219,7 +230,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           multiSelectOptions: mapCategoriesToOptions(taxonomies.tags),
         },
       ];
-    }, [plans, allUsers, userMap, currentUserId, taxonomies.environments, taxonomies.tags]);
+    }, [plans, usernamesById, userMap, currentUserId, taxonomies.environments, taxonomies.tags]);
 
     let dataRegion: React.ReactNode;
     if (error || timedOut) {
@@ -259,7 +270,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
           }}
         >
           {filteredPlans.map((plan) => (
-            <ProtectionPlanCard key={plan.id} plan={plan} onOpen={openPlan} />
+            <ProtectionPlanCard key={plan.id} plan={plan} onOpen={openPlan} names={usernamesById} />
           ))}
         </div>
       );

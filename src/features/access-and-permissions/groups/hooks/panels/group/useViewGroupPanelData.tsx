@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../../components/display/table/RowTag';
-import { UserDisplay } from '../../../../../../components/display/users';
+import { ActorDisplay } from '../../../../../../components/display/users';
 import { useViewGroupPanel } from './useViewGroupPanel';
 import { useGroupDeleteModal } from '../../../components/delete';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
@@ -35,8 +35,14 @@ export const useViewGroupPanelData = ({
   group,
   onClose,
 }: UseViewGroupPanelDataOptions): UseViewGroupPanelDataReturn => {
-  const { groupUsers, categoryName, createdByUser, lastUpdatedByUser, avatarSources } =
-    useViewGroupPanel(group);
+  const {
+    groupUsers,
+    categoryName,
+    createdByUser,
+    lastUpdatedByUser,
+    usernamesById,
+    avatarSources,
+  } = useViewGroupPanel(group);
   const {
     deleteModalOpen,
     isDeleting,
@@ -95,9 +101,15 @@ export const useViewGroupPanelData = ({
       },
       {
         label: GC.LABELS.VIEW_LABELS.CREATED_BY,
-        value: createdByUser ? (
+        value: group.createdBy ? (
           <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
-            <UserDisplay user={createdByUser} size="small" showBorder />
+            <ActorDisplay
+              actor={group.createdBy}
+              user={createdByUser}
+              usernamesById={usernamesById}
+              size="small"
+              showBorder
+            />
           </span>
         ) : (
           <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>—</span>
@@ -105,16 +117,22 @@ export const useViewGroupPanelData = ({
       },
       {
         label: GC.LABELS.VIEW_LABELS.LAST_UPDATED_BY,
-        value: lastUpdatedByUser ? (
+        value: group.lastUpdatedBy ? (
           <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
-            <UserDisplay user={lastUpdatedByUser} size="small" showBorder />
+            <ActorDisplay
+              actor={group.lastUpdatedBy}
+              user={lastUpdatedByUser}
+              usernamesById={usernamesById}
+              size="small"
+              showBorder
+            />
           </span>
         ) : (
           <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>—</span>
         ),
       },
     ];
-  }, [group, categoryName, createdByUser, lastUpdatedByUser]);
+  }, [group, categoryName, createdByUser, lastUpdatedByUser, usernamesById]);
 
   return {
     avatars,

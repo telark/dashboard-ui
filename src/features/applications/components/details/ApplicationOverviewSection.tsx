@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Tooltip } from 'antd';
 import { DEFAULT_COLORS, getPillSurface } from '../../../../constants';
 import SettingsCard from '../../../settings/components/SettingsCard';
@@ -14,8 +14,15 @@ import {
   ColumnShell,
 } from '../../pages/details/contentBlocks';
 import type { Application } from '../../models';
+import { useUsernamesByIds } from '../../../../hooks/useUsernamesByIds';
 
 const MAX_IMAGES = 8;
+
+const ActorName: React.FC<{ actor: string }> = ({ actor }) => {
+  const ids = useMemo(() => [actor], [actor]);
+  const usernamesById = useUsernamesByIds(ids, true);
+  return <span title={actor}>{usernamesById[actor]}</span>;
+};
 
 const chipStyle: React.CSSProperties = {
   display: 'inline-block',
@@ -120,7 +127,11 @@ function buildHistoryRows(application: Application) {
     {
       k: 'lastModifiedBy',
       label: APPLICATIONS_UI.SECTIONS.OVERVIEW.LAST_MODIFIED_BY,
-      value: application.history?.lastModifiedBy || APPLICATIONS_UI.FALLBACKS.EMPTY,
+      value: application.history?.lastModifiedBy ? (
+        <ActorName actor={application.history.lastModifiedBy} />
+      ) : (
+        APPLICATIONS_UI.FALLBACKS.EMPTY
+      ),
     },
     {
       k: 'lastModifiedAt',

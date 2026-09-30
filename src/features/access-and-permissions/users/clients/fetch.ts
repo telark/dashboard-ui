@@ -25,6 +25,13 @@ export const fetchUsers = async (silent = false) => {
   }
 };
 
+export const fetchUsernames = async (userIds: string[]) =>
+  Client<ResourceDetailsResponse<Record<string, string> | undefined>>(
+    exporterApiClient,
+    Endpoints.USERS.GET_NAMES(userIds).path,
+    { headers: { [HTTP_HEADERS.CUSTOM.SILENT_NETWORK]: HEADER_VALUES.SILENT_NETWORK } },
+  );
+
 export const fetchUserById = async (userId: string, silent = false) => {
   try {
     const config = silent

@@ -19,7 +19,7 @@ Run `check-all` after every change set and `check-all-and-build` before handing 
 ## Fixing failures
 
 - Fix the code, not the rule: no `eslint-disable` comments, no `--no-eslintrc`, `--config` or `--rule` flags, and no edits to `eslint.config.mjs` that relax a rule (for example `no-console`). The checked-in config is what CI runs; when output is unclear, read the config.
-- Prettier findings are auto-fixable warnings. Fix them in the files you touched with `npx eslint --fix <those files>`. `npm run lint:f` and `npm run format` rewrite the whole repo, which breaks the surgical-change rule.
+- Prettier findings are auto-fixable warnings. Fix them in the files you touched with `npx eslint --fix <those files>`. `npm run lint:f` and `npm run format` rewrite the whole repo, which breaks the surgical-change rule. If one edited line makes prettier want a whole block reflowed (a `memo(({ … }) =>` signature pushed past `printWidth` 100 re-indents the entire component), shorten that line instead of accepting hundreds of whitespace-only hunks.
 - `@typescript-eslint/no-explicit-any` is only a warning, so a new `any` passes `check-all`. Check your diff for `any` and give it a real type (AGENTS.md → Types lists the known ones).
 
 ## Build side effects

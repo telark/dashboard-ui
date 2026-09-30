@@ -21,6 +21,8 @@ export interface RowTagProps {
   capitalize?: boolean;
   /** Ellipsizes to the container width instead of overflowing it. */
   truncate?: boolean;
+  /** Hover text; a truncated tag shows its full text by default. */
+  title?: string;
 }
 
 export interface SortHeaderProps {

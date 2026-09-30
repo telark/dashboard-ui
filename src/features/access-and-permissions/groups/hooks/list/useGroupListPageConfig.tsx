@@ -16,6 +16,7 @@ import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import { useCategoryListView } from '../../../categories/hooks';
 import { deduplicateCategoriesByName } from '../../../categories/utils/helpers';
 import { useUsers } from '../../../users/hooks';
+import { useUsernamesByIds } from '../../../../../hooks/useUsernamesByIds';
 import type { Group } from '../../models';
 import type { Category } from '../../../categories/models';
 
@@ -189,6 +190,15 @@ export const useGroupListPageConfig = ({
     onClearAllFilters,
   });
 
+  const actorIds = useMemo(
+    () =>
+      sortedGroups
+        .flatMap((group) => [group.createdBy, group.lastUpdatedBy])
+        .filter((id): id is string => Boolean(id)),
+    [sortedGroups],
+  );
+  const usernamesById = useUsernamesByIds(actorIds, true);
+
   const groupColumns = useMemo(
     () =>
       Columns({
@@ -196,8 +206,9 @@ export const useGroupListPageConfig = ({
         onSort: handleSort,
         categories: uniqueReduxCategories,
         users: users || [],
+        usernamesById,
       }) as TableColumnType<Group | Category>[],
-    [sortKey, uniqueReduxCategories, handleSort, users],
+    [sortKey, uniqueReduxCategories, handleSort, users, usernamesById],
   );
 
   const categoryColumns = useMemo(

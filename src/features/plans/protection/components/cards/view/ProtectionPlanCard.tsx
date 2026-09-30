@@ -14,8 +14,9 @@ import {
   SafetyCertificateOutlined,
   StopOutlined,
 } from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
+  ACTORS,
   APP_ROUTES,
   CARD_ASIDE_STYLE,
   CARD_FOOTER_STYLE,
@@ -50,7 +51,7 @@ import {
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import TimeRemaining from '../../../../../../components/display/time/TimeRemaining';
 import { formatDateTime, toTimestamp } from '../../../../../../utils/shared/time';
-import type { AppDispatch, RootState } from '../../../../../../store';
+import type { AppDispatch } from '../../../../../../store';
 import {
   cancelPlanThunk,
   decidePlanThunk,
@@ -83,6 +84,8 @@ interface ProtectionPlanCardProps {
   // Passed in rather than read from useNavigate: that hook re-renders on every URL
   // change, which re-rendered every card when the page's tab query changed.
   onOpen: (path: string) => void;
+  /** Actor id → name, from useUsernamesByIds. */
+  names: Record<string, string>;
 }
 
 const CARD_LABELS = PPC.LABELS.CARD;
@@ -137,7 +140,7 @@ const buildScopeValue = (plan: ProtectionPlan): string =>
 const buildTargets = (plan: ProtectionPlan): string[] =>
   (plan.scope.type === 'namespaces' ? plan.scope.namespaces : plan.scope.applicationRefs) ?? [];
 
-const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOpen }) => {
+const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOpen, names }) => {
   const dispatch: AppDispatch = useDispatch();
   const { message } = AntdApp.useApp();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -208,14 +211,14 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
     encodeURIComponent(plan.name),
   );
 
-  const users = useSelector((state: RootState) => state.users.users);
-  const createdByLabel = users.find((u) => u.id === plan.createdBy)?.username ?? plan.createdBy;
   const requesterId = plan.approval?.requestedBy;
-  const requestedByLabel = users.find((u) => u.id === requesterId)?.username ?? requesterId;
-  const provenanceLabel =
-    plan.phase === 'pending_approval' && requestedByLabel
-      ? `${CARD_LABELS.AWAITING_APPROVAL_BY_PREFIX} ${requestedByLabel}`
-      : `${CARD_LABELS.CREATED_BY_PREFIX} ${createdByLabel}`;
+  const awaitingApproval = plan.phase === 'pending_approval' && Boolean(requesterId);
+  const provenanceActor = awaitingApproval ? requesterId : plan.createdBy;
+  const provenanceName = provenanceActor ? names[provenanceActor] : ACTORS.NONE;
+  const provenancePrefix = awaitingApproval
+    ? CARD_LABELS.AWAITING_APPROVAL_BY_PREFIX
+    : CARD_LABELS.CREATED_BY_PREFIX;
+  const provenanceLabel = provenanceName ? `${provenancePrefix} ${provenanceName}` : EMPTY_VALUE;
 
   const phaseLabel = planPhaseLabel(plan);
   const canCancel = CANCELLABLE_PHASES.includes(plan.phase);
@@ -627,7 +630,9 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
 
       {/* Provenance: who put this window in place and when it last moved */}
       <div style={CARD_FOOTER_STYLE}>
-        <span style={TRUNCATE_STYLE}>{provenanceLabel}</span>
+        <span style={TRUNCATE_STYLE} title={provenanceActor}>
+          {provenanceLabel}
+        </span>
         <span style={TRUNCATE_STYLE}>
           {CARD_LABELS.UPDATED_PREFIX} <TimeAgo date={plan.lastUpdatedAt || plan.createdAt} />
         </span>

@@ -19,6 +19,7 @@ export * from './rest/network';
 export * from './rest/paths';
 export * from './rest/urls';
 export * from './store/store';
+export * from './shared/actors';
 export * from './shared/common';
 export * from './shared/colors';
 export * from './shared/details';

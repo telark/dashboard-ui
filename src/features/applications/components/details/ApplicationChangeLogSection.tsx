@@ -15,7 +15,7 @@ import {
 } from '../../constants/applications';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import { getChangeLogDotColor } from '../../pages/details/contentBlocks';
-import { useUsernamesByIds } from '../../hooks/useUsernamesByIds';
+import { useUsernamesByIds } from '../../../../hooks/useUsernamesByIds';
 import type { Application, ApplicationChangeLogEntry } from '../../models';
 
 // The tracking annotations the policy engine stamps on every write are the
@@ -178,6 +178,7 @@ const ChangeRow: React.FC<{
                   fontSize={11}
                   capitalize={false}
                   truncate
+                  title={actorId}
                 />
               ) : null}
               {entry.fingerprint ? (

@@ -15,7 +15,7 @@ import {
 } from 'react-icons/ai';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import { getCategoryName } from '../../../../categories/utils/helpers';
-import { UserDisplay } from '../../../../../../components/display/users';
+import { ActorDisplay } from '../../../../../../components/display/users';
 import { AiOutlineUser } from 'react-icons/ai';
 import { ValidityDisplay } from '../../../../../../components/display/validity';
 
@@ -24,6 +24,7 @@ export const Columns = ({
   activeSortKey,
   categories = [],
   users = [],
+  usernamesById = {},
 }: Omit<ColumnsArgs, 'onView' | 'onEdit' | 'onDelete'>): TableColumnType<Role>[] => {
   const isBuiltIn = (record: Role) => record.type === RPC.TYPE.BUILT_IN;
 
@@ -87,10 +88,14 @@ export const Columns = ({
         width: RPC.SIZES.COLUMNS.CREATED_BY,
         render: (_: unknown, record: Role) => {
           if (isBuiltIn(record)) return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
-          const user = getUserById(record.createdBy);
           return (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <UserDisplay user={user} size="small" />
+              <ActorDisplay
+                actor={record.createdBy}
+                user={getUserById(record.createdBy)}
+                usernamesById={usernamesById}
+                size="small"
+              />
             </div>
           );
         },

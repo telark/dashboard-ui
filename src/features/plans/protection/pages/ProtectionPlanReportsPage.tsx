@@ -14,6 +14,7 @@ import RowTag from '../../../../components/display/table/RowTag';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import type { PageLayoutConfig } from '../../../../interfaces/layout/page';
 import { useElementWidth } from '../../../../hooks/layout';
+import { useUsernamesByIds } from '../../../../hooks/useUsernamesByIds';
 import type { RootState } from '../../../../store';
 import { usePermission, ACTION_PERMISSIONS } from '../../../auth/hooks';
 import {
@@ -155,7 +156,9 @@ const buildColumns = (
       />
     )),
     visible.has('GENERATED_BY')
-      ? column('GENERATED_BY', L.COLUMNS.GENERATED_BY, (r) => ctx.resolveUser(r.generatedBy))
+      ? column('GENERATED_BY', L.COLUMNS.GENERATED_BY, (r) => (
+          <span title={r.generatedBy}>{ctx.resolveUser(r.generatedBy)}</span>
+        ))
       : null,
     visible.has('VIOLATIONS')
       ? column('VIOLATIONS', L.COLUMNS.VIOLATIONS, (r) => r.violationsTotal)
@@ -183,12 +186,14 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
     const [pageSize, setPageSize] = useState<number>(REPORTS_LIST.PAGE_SIZE);
 
     const planById = useMemo(() => new Map(plans.map((p) => [p.id, p])), [plans]);
+    const generatorIds = useMemo(() => reports.map((report) => report.generatedBy), [reports]);
+    const usernamesById = useUsernamesByIds(generatorIds, true);
     const resolveUser = useCallback(
       (id: string): string =>
         id === REPORT_SYSTEM_USER_ID
           ? PPC.LABELS.REPORTS.SYSTEM_ACTOR
-          : (users.find((u) => u.id === id)?.username ?? id),
-      [users],
+          : (users.find((u) => u.id === id)?.username ?? usernamesById[id] ?? ''),
+      [users, usernamesById],
     );
 
     const filtered = useMemo(

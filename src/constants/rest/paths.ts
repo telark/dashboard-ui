@@ -30,6 +30,12 @@ export const APPLICATION_PATHS = {
     `${byId(API_PATHS.APPLICATIONS, name)}/rollbacks/${seg(rollbackId)}`,
 } as const;
 
+export const USER_PATHS = {
+  NAMES: `${API_PATHS.USERS}/names`,
+  QUERY_IDS: 'ids',
+  IDS_SEPARATOR: ',',
+} as const;
+
 export const SESSION_PATHS = {
   LIST: 'auth/sessions',
   QUERY_USER: 'user',

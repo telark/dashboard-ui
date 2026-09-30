@@ -8,6 +8,7 @@ const RowTag: React.FC<RowTagProps> = ({
   fontSize = 12,
   capitalize = true,
   truncate = false,
+  title,
 }) => {
   return (
     <span
@@ -24,7 +25,7 @@ const RowTag: React.FC<RowTagProps> = ({
           ? { ...TRUNCATE_STYLE, maxWidth: '100%', boxSizing: 'border-box' as const }
           : {}),
       }}
-      title={truncate ? text : undefined}
+      title={title ?? (truncate ? text : undefined)}
     >
       {text}
     </span>

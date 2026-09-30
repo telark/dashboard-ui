@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Button, Tooltip } from 'antd';
 import { FileTextOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS, TIME_FORMATS } from '../../../../../constants';
@@ -6,6 +6,7 @@ import { formatDateTime } from '../../../../../utils/shared/time';
 import { APPLICATION_SECTION_LAYOUT } from '../../../../applications/constants/sectionLayout';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { FancySpinner } from '../../../../../components/animation';
+import { useUsernamesByIds } from '../../../../../hooks/useUsernamesByIds';
 import type { RootState } from '../../../../../store';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
@@ -62,6 +63,8 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
   onDownload,
 }) => {
   const reports = data ?? [];
+  const generatorIds = useMemo(() => (data ?? []).map((report) => report.generatedBy), [data]);
+  const usernamesById = useUsernamesByIds(generatorIds, true);
 
   if (loading && reports.length === 0) {
     return (
@@ -85,7 +88,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
   const resolveUser = (id: string): string =>
     id === REPORT_SYSTEM_USER_ID
       ? LABELS.SYSTEM_ACTOR
-      : (users.find((u) => u.id === id)?.username ?? id);
+      : (users.find((u) => u.id === id)?.username ?? usernamesById[id] ?? '');
 
   return (
     <div>
@@ -114,7 +117,8 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
               <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
                 {LABELS.GENERATED_AT}{' '}
                 {formatDateTime(report.generatedAt, TIME_FORMATS.DATE_TIME_12H)} ·{' '}
-                {LABELS.GENERATED_BY} {resolveUser(report.generatedBy)}
+                {LABELS.GENERATED_BY}{' '}
+                <span title={report.generatedBy}>{resolveUser(report.generatedBy)}</span>
               </span>
               <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
                 · {LABELS.DECISIONS}: {report.violationsTotal}

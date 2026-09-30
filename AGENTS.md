@@ -12,7 +12,7 @@ dashboard-ui is the operator-facing SPA for telark: React 19, TypeScript 6, Vite
 | `src/features/shared/` | Constants, retry logic and utils shared by features |
 | `src/components/` | Shared UI: `display/` (table, toolbar, panels, views, buttons…), `layout/` (header, sidebar), `animation/`, `error-boundary/` |
 | `src/constants/` | App-wide constants, re-exported from `src/constants/index.ts`: `shared/colors.ts` (palette, pills), `layout/` (controls, buttons, panels, header, sidebar), `rest/`, `store/`, `pages/`, `config/` |
-| `src/hooks/` | `layout/` (`useElementWidth`, `useMediaQuery`…) and `panel/` (`useBodyOverflow`, `useSlideOutPanelForm`) |
+| `src/hooks/` | `layout/` (`useElementWidth`, `useMediaQuery`…), `panel/` (`useBodyOverflow`, `useSlideOutPanelForm`) and `useUsernamesByIds` |
 | `src/interfaces/` | Shared prop and config interfaces (`layout/toolbar.ts`, `layout/panels.ts`, `layout/page.ts`…) |
 | `src/utils/` | Shared helpers, including `layout/sort` (`useSortState`, `sortData`) |
 | `src/api/` | HTTP client (`client/request.ts`, `client/normalize.ts`) and health checks |
@@ -95,7 +95,7 @@ Verify each step against its success criterion before moving on. Strong success 
 - Login and register are card content inside `AuthLayout` (`src/features/auth/components/shared/AuthLayout.tsx`), which owns the theme, brand panel and card transition. It uses `useOutlet()` rather than `<Outlet/>`, because `<Outlet/>` renders the incoming page inside the exiting card mid-animation.
 - The settings navigation that renders is `src/components/layout/sidebar/SettingsMenuItems.tsx`. `SETTINGS_CONSTANTS.SECTIONS` in `src/features/settings/constants/settings.ts` drives the section content, not the sidebar's icons or labels, so a nav change made only there never appears.
 - Treat a resource as gone only on a definite not-found (`error.normalized.isNotFound`, attached by `src/api/client/normalize.ts`), not on any rejected request, because transient failures take the same fallback path and would disable actions on healthy items. The snapshot `unavailable` flag in `src/features/resources/applications/clients/snapshots.ts` works this way.
-- Show people by username, resolving ids with `useUsernamesByIds`, never as a raw user id. The hook lives in `src/features/resources/applications/hooks/`; move it to `src/hooks/` before another feature uses it.
+- Show people by username, resolving ids with `useUsernamesByIds` (`src/hooks/useUsernamesByIds.ts`, one `users/names` call open to every signed-in user), never as a raw user id; the raw identity goes only in the hover `title`. `ActorDisplay` (`src/components/display/users/`) renders an actor field with its avatar.
 
 ## Constants & strings
 

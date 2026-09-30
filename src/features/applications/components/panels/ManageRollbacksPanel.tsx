@@ -20,7 +20,7 @@ import { APPLICATION_SNAPSHOT_ROW } from '../../constants/sectionLayout';
 import { FancySpinner } from '../../../../components/animation';
 import type { AppDispatch } from '../../../../store';
 import { abortApplicationRollbackThunk } from '../../store';
-import { useUsernamesByIds } from '../../hooks/useUsernamesByIds';
+import { useUsernamesByIds } from '../../../../hooks/useUsernamesByIds';
 import {
   classifyRollbackStatus,
   formatRollbackNamespaceRef,
@@ -162,7 +162,7 @@ export default ManageRollbacksPanel;
 
 function RollbackRow(props: {
   entry: ApplicationRollbackEntry;
-  /** Resolved username; falls back to the raw ID while loading or if unknown. */
+  /** Empty while the name is being looked up. */
   triggeredByName: string;
   canAbort: boolean;
   abortLoading: boolean;
@@ -241,7 +241,12 @@ function RollbackRow(props: {
             ) : null}
             <span>
               {ui.TRIGGERED_PREFIX} <TimeAgo date={entry.triggeredAt} />
-              {triggeredByName ? ` ${ui.META_SEPARATOR} ${ui.BY_PREFIX} ${triggeredByName}` : ''}
+              {triggeredByName ? (
+                <>
+                  {` ${ui.META_SEPARATOR} ${ui.BY_PREFIX} `}
+                  <span title={entry.triggeredBy}>{triggeredByName}</span>
+                </>
+              ) : null}
             </span>
             {entry.completedAt ? (
               <span>

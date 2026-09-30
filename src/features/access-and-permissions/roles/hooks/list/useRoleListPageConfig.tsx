@@ -18,6 +18,7 @@ import type { Role } from '../../models';
 import type { Category } from '../../../categories/models';
 import { useUsers } from '../../../users/hooks';
 import { useFetchGroups } from '../../../groups/hooks';
+import { useUsernamesByIds } from '../../../../../hooks/useUsernamesByIds';
 
 const RoleIcon = Icons.Role;
 
@@ -162,6 +163,12 @@ export const useRoleListPageConfig = ({
     [users, groups],
   );
 
+  const creatorIds = useMemo(
+    () => sortedRoles.map((role) => role.createdBy).filter((id): id is string => Boolean(id)),
+    [sortedRoles],
+  );
+  const usernamesById = useUsernamesByIds(creatorIds, true);
+
   const ctx = useMemo(
     () => ({
       activeSortKey: (sortKey ?? RC.KEYS.CREATED_AT) as Parameters<
@@ -171,8 +178,9 @@ export const useRoleListPageConfig = ({
       sortOrder,
       categories: categories ?? [],
       users: users ?? [],
+      usernamesById,
     }),
-    [sortKey, handleSort, sortOrder, categories, users],
+    [sortKey, handleSort, sortOrder, categories, users, usernamesById],
   );
 
   const roleColumns = useMemo(() => Columns(ctx) as TableColumnType<Role | Category>[], [ctx]);
