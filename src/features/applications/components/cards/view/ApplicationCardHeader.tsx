@@ -248,7 +248,6 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                         alignItems: 'center',
                         gap: 5,
                         ...getPillSurface(SYNC_TAG_CONFIG[syncStatus].accent),
-                        color: DEFAULT_COLORS.PILL_TEXT,
                         padding: '2px 10px',
                         borderRadius: 999,
                         fontWeight: 700,

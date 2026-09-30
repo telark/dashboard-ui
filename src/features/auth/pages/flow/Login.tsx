@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Form, App as AntdApp, Button, Divider } from 'antd';
 import { KeyOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { performLogin, type OrphanedPasskeysInfo } from '../../utils/flow/login';
 import { redirectToGoogle } from '../../utils/flow/google';
@@ -29,15 +29,19 @@ import {
   selectSelfRegistrationEnabled,
 } from '../../store';
 import type { AppDispatch } from '../../../../store';
+import type { LoginLocationState } from '../../models';
 
 const Login: React.FC = () => {
   const [form] = Form.useForm();
+  const location = useLocation();
+  // Set by the Google callback; the alert lives in the passkey form, so that opens with it.
+  const redirectError = (location.state as LoginLocationState | null)?.loginError ?? null;
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [orphanedInfo, setOrphanedInfo] = useState<OrphanedPasskeysInfo | null>(null);
-  const [showPasskeyForm, setShowPasskeyForm] = useState(false);
-  const [passkeyError, setPasskeyError] = useState<string | null>(null);
+  const [showPasskeyForm, setShowPasskeyForm] = useState(redirectError !== null);
+  const [passkeyError, setPasskeyError] = useState<string | null>(redirectError);
 
   const dispatch = useDispatch<AppDispatch>();
   const googleClientID = useSelector(selectGoogleClientID);
@@ -96,8 +100,8 @@ const Login: React.FC = () => {
           setModalOpen(true);
         },
       );
-    } catch {
-      // Error handling is done in performLogin
+    } catch (error) {
+      if (isMountedRef.current) setPasskeyError(getUserFriendlyErrorMessage(error));
     } finally {
       if (isMountedRef.current) setLoading(false);
     }

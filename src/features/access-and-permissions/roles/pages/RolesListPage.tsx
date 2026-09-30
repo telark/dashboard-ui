@@ -140,6 +140,7 @@ const RolesListPage: React.FC<RolesListPageProps> = memo(
             title={RC.LABELS.ACTIONS.BULK_DELETE_MODAL_TITLE}
             action="delete"
             resourceName={RC.LABELS.ACTIONS.BULK_DELETE_RESOURCE(bulkDeleteSelectedCount)}
+            note={RC.LABELS.ACTIONS.BULK_DELETE_NOTE}
             confirmText={RC.LABELS.DELETE_MODAL_OK}
             cancelText={RC.LABELS.ACTIONS.CANCEL}
             loading={bulkDeleteIsDeleting}

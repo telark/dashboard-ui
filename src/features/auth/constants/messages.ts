@@ -2,6 +2,12 @@ export const AUTH_PERMISSIONS_LABELS = {
   NO_PERMISSIONS_TITLE: 'No permissions',
   NO_PERMISSIONS_DESCRIPTION:
     'Your account has no roles assigned. Contact your administrator to request access.',
+  FULL_ACCESS_TITLE: 'Full access to Telark',
+  FULL_ACCESS_DESCRIPTION: 'As the bootstrap administrator, you have full access to every scope.',
+  SOURCE_DIRECT: 'Direct',
+  SOURCE_INHERITED: (groupName?: string) => `Inherited from ${groupName || 'a group'}`,
+  SOURCE_DIRECT_TOOLTIP: 'Role was assigned directly to your account',
+  SOURCE_INHERITED_TOOLTIP: 'Role was inherited through a group membership',
 };
 
 export const AUTH_ERROR_MESSAGES = {

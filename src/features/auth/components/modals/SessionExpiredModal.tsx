@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Modal } from 'antd';
 import { useNavigate, type NavigateFunction } from 'react-router-dom';
 import { getSessionToken, removeSessionToken, removeCurrentUser } from '../../utils';
 import { deleteCurrentSession } from '../../clients';
 import { purgeLocalUserData } from '../../utils/session/cleanup';
 import { AUTH_CONSTANTS } from '../../constants/messages';
-import { ACTION_CONFIRM_MODAL, APP_ROUTES, DEFAULT_COLORS } from '../../../../constants';
+import { APP_ROUTES } from '../../../../constants';
+import { BaseModal } from '../../../../components/display/modal';
+import { ActionButtons } from '../../../../components/display/buttons';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 
@@ -73,32 +74,20 @@ const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({ open, onClose
   };
 
   return (
-    <Modal
+    <BaseModal
       open={open}
-      title={AUTH_CONSTANTS.SESSION.EXPIRATION.MODAL.TITLE}
-      onOk={handleGoToLogin}
       onCancel={handleGoToLogin}
-      okText={AUTH_CONSTANTS.SESSION.EXPIRATION.MODAL.BUTTON_TEXT}
-      cancelButtonProps={{ style: { display: 'none' } }}
-      okButtonProps={{
-        loading: loading,
-        style: {
-          backgroundColor: DEFAULT_COLORS.SUCCESS,
-          borderColor: DEFAULT_COLORS.SUCCESS,
-          // Matches the confirm button in ActionConfirmModal (e.g. rollback).
-          borderRadius: ACTION_CONFIRM_MODAL.BUTTONS.CONFIRM.BORDER_RADIUS,
-          fontWeight: ACTION_CONFIRM_MODAL.BUTTONS.CONFIRM.FONT_WEIGHT,
-          height: ACTION_CONFIRM_MODAL.BUTTONS.CONFIRM.HEIGHT,
-          padding: ACTION_CONFIRM_MODAL.BUTTONS.CONFIRM.PADDING,
-        },
-      }}
       closable={false}
-      mask={{ closable: false }}
-      centered
-      destroyOnHidden
-    >
-      <p>{AUTH_CONSTANTS.SESSION.EXPIRATION.MODAL.MESSAGE}</p>
-    </Modal>
+      title={AUTH_CONSTANTS.SESSION.EXPIRATION.MODAL.TITLE}
+      description={AUTH_CONSTANTS.SESSION.EXPIRATION.MODAL.MESSAGE}
+      footer={
+        <ActionButtons
+          confirmText={AUTH_CONSTANTS.SESSION.EXPIRATION.MODAL.BUTTON_TEXT}
+          onConfirm={handleGoToLogin}
+          loading={loading}
+        />
+      }
+    />
   );
 };
 

@@ -72,6 +72,7 @@ export const useViewGroupPanelData = ({
     return groupUsers.slice(5).map((user) => ({
       key: user.id,
       src: avatarSources[user.id],
+      fallback: user.username ? user.username.charAt(0).toUpperCase() : undefined,
       username: user.username || '',
     }));
   }, [group, groupUsers, avatarSources]);

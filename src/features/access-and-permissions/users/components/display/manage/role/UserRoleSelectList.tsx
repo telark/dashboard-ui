@@ -1,11 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
 import { Checkbox, Form, Tooltip } from 'antd';
-import { ScrollIndicator } from '../../../../../../../components/display/indicators';
 import { SelectableListItem } from '../../../../../../../components/display/list';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
 import { Icons, DEFAULT_COLORS } from '../../../../../../../constants';
 import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/utils';
-import { useRoleListScroll } from '../../../../../groups/hooks/scroll/useRoleListScroll';
 import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
 import { getScopeLabel } from '../../../../utils/role/scope';
@@ -40,15 +38,6 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
     () => (watchedSelectedRoles as string[]) || [],
     [watchedSelectedRoles],
   );
-
-  const {
-    scrollContainerRef,
-    setShowScrollIndicator,
-    isScrollable,
-    containerClassName,
-    containerStyle,
-    wrapperStyle,
-  } = useRoleListScroll({ itemsCount: roles?.length });
 
   const handleChange = useCallback(
     (checkedValues: string[]) => {
@@ -94,72 +83,61 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
         onChange={handleChange}
         style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
       >
-        <div style={wrapperStyle}>
-          <div
-            ref={scrollContainerRef}
-            className={containerClassName}
-            style={{ ...ARC.LIST.CONTAINER, ...containerStyle }}
-          >
-            {roles.map((role) => {
-              const isProtected = isRoleProtected(role);
-              const blockedTooltip =
-                inheritedRoleTooltips?.get(role.id) ??
-                blockedReason?.(role.id) ??
-                (canGrant(role.scopesAndPermissions || [])
-                  ? undefined
-                  : ARC.TOOLTIPS.EXCEEDS_OWN_ACCESS);
-              const isBlocked = Boolean(blockedTooltip);
+        <div className="role-list-container" style={ARC.LIST.CONTAINER}>
+          {roles.map((role) => {
+            const isProtected = isRoleProtected(role);
+            const blockedTooltip =
+              inheritedRoleTooltips?.get(role.id) ??
+              blockedReason?.(role.id) ??
+              (canGrant(role.scopesAndPermissions || [])
+                ? undefined
+                : ARC.TOOLTIPS.EXCEEDS_OWN_ACCESS);
+            const isBlocked = Boolean(blockedTooltip);
 
-              const scopesContent = getRoleScopesContent(role, {
-                scopesAndPermissions: role.scopesAndPermissions || [],
-                getScopeLabel,
-                scopesContainerStyle: ARC.LIST.ROLE_SCOPES,
-                scopeItemStyle: ARC.LIST.SCOPE_ITEM,
-              });
+            const scopesContent = getRoleScopesContent(role, {
+              scopesAndPermissions: role.scopesAndPermissions || [],
+              getScopeLabel,
+              scopesContainerStyle: ARC.LIST.ROLE_SCOPES,
+              scopeItemStyle: ARC.LIST.SCOPE_ITEM,
+            });
 
-              const listItem = (
-                <SelectableListItem
-                  value={role.id}
-                  disabled={isBlocked}
-                  name={CapitalizeFirstLetter(role.name)}
-                  description={
-                    role.description
-                      ? CapitalizeFirstLetter(truncateText(role.description, 100))
-                      : undefined
-                  }
-                  customContent={scopesContent}
-                  isProtected={isProtected}
-                  protectionIcon={<RoleIcon />}
-                  protectionTooltip={ARC.TOOLTIPS.PROTECTED_ROLE}
-                  protectionIconColor={DEFAULT_COLORS.SUCCESS}
-                  protectionIconSize={18}
-                  itemStyles={{
-                    base: {
-                      ...ARC.LIST.ITEM.BASE,
-                      ...(isBlocked ? ARC.LIST.ITEM.DISABLED : {}),
-                    },
-                    hover: isBlocked ? ARC.LIST.ITEM.DISABLED : ARC.LIST.ITEM.HOVER,
-                  }}
-                  contentStyles={ARC.LIST.ROLE_CONTENT}
-                  nameStyles={ARC.LIST.ROLE_NAME}
-                  descriptionStyles={ARC.LIST.ROLE_DESCRIPTION}
-                />
-              );
+            const listItem = (
+              <SelectableListItem
+                value={role.id}
+                disabled={isBlocked}
+                name={CapitalizeFirstLetter(role.name)}
+                description={
+                  role.description
+                    ? CapitalizeFirstLetter(truncateText(role.description, 100))
+                    : undefined
+                }
+                customContent={scopesContent}
+                isProtected={isProtected}
+                protectionIcon={<RoleIcon />}
+                protectionTooltip={ARC.TOOLTIPS.PROTECTED_ROLE}
+                protectionIconColor={DEFAULT_COLORS.SUCCESS}
+                protectionIconSize={18}
+                itemStyles={{
+                  base: {
+                    ...ARC.LIST.ITEM.BASE,
+                    ...(isBlocked ? ARC.LIST.ITEM.DISABLED : {}),
+                  },
+                  hover: isBlocked ? ARC.LIST.ITEM.DISABLED : ARC.LIST.ITEM.HOVER,
+                }}
+                contentStyles={ARC.LIST.ROLE_CONTENT}
+                nameStyles={ARC.LIST.ROLE_NAME}
+                descriptionStyles={ARC.LIST.ROLE_DESCRIPTION}
+              />
+            );
 
-              return isBlocked ? (
-                <Tooltip key={role.id} title={blockedTooltip} placement="left">
-                  <div>{listItem}</div>
-                </Tooltip>
-              ) : (
-                <React.Fragment key={role.id}>{listItem}</React.Fragment>
-              );
-            })}
-          </div>
-          <ScrollIndicator
-            containerRef={scrollContainerRef}
-            isScrollable={isScrollable}
-            onVisibilityChange={setShowScrollIndicator}
-          />
+            return isBlocked ? (
+              <Tooltip key={role.id} title={blockedTooltip} placement="left">
+                <div>{listItem}</div>
+              </Tooltip>
+            ) : (
+              <React.Fragment key={role.id}>{listItem}</React.Fragment>
+            );
+          })}
         </div>
       </Checkbox.Group>
     </Form.Item>

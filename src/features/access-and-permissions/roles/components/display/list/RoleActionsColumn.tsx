@@ -172,7 +172,6 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
           title={RC.LABELS.DELETE_MODAL_TITLE}
           action="delete"
           resourceName={record.name}
-          customMessage={RC.LABELS.DELETE_MODAL_CONTENT(record.name)}
           note={
             usage && usage.users + usage.groups > 0
               ? RC.LABELS.DELETE_IMPACT(usage.users, usage.groups)

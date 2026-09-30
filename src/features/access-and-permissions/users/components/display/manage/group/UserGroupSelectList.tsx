@@ -1,13 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
 import { Checkbox, Form, Tooltip } from 'antd';
-import { ScrollIndicator } from '../../../../../../../components/display/indicators';
 import { SelectableListItem } from '../../../../../../../components/display/list';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
 import {
   ATTACHED_MEMBERS_CONSTANTS as AMC,
   ATTACHED_ROLES_CONSTANTS as ARC,
 } from '../../../../../groups/constants';
-import { useRoleListScroll } from '../../../../../groups/hooks/scroll/useRoleListScroll';
 import { CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
 import type { Group } from '../../../../../groups/models';
 
@@ -30,15 +28,6 @@ const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({
     () => (watchedSelectedGroups as string[]) || [],
     [watchedSelectedGroups],
   );
-
-  const {
-    scrollContainerRef,
-    setShowScrollIndicator,
-    isScrollable,
-    containerClassName,
-    containerStyle,
-    wrapperStyle,
-  } = useRoleListScroll({ itemsCount: groups?.length });
 
   const handleChange = useCallback(
     (checkedValues: string[]) => {
@@ -78,47 +67,36 @@ const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({
         onChange={handleChange}
         style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
       >
-        <div style={wrapperStyle}>
-          <div
-            ref={scrollContainerRef}
-            className={containerClassName}
-            style={{ ...AMC.LIST.CONTAINER, ...containerStyle }}
-          >
-            {groups.map((group) => {
-              const blockedTooltip = blockedReason?.(group.id);
-              const listItem = (
-                <SelectableListItem
-                  value={group.id}
-                  disabled={Boolean(blockedTooltip)}
-                  name={CapitalizeFirstLetter(group.name)}
-                  description={
-                    group.description ? CapitalizeFirstLetter(group.description) : undefined
-                  }
-                  itemStyles={{
-                    base: {
-                      ...AMC.LIST.ITEM.BASE,
-                      ...(blockedTooltip ? ARC.LIST.ITEM.DISABLED : {}),
-                    },
-                    hover: blockedTooltip ? ARC.LIST.ITEM.DISABLED : AMC.LIST.ITEM.HOVER,
-                  }}
-                  nameStyles={AMC.LIST.MEMBER_NAME}
-                  descriptionStyles={AMC.LIST.MEMBER_EMAIL}
-                />
-              );
-              return blockedTooltip ? (
-                <Tooltip key={group.id} title={blockedTooltip} placement="left">
-                  <div>{listItem}</div>
-                </Tooltip>
-              ) : (
-                <React.Fragment key={group.id}>{listItem}</React.Fragment>
-              );
-            })}
-          </div>
-          <ScrollIndicator
-            containerRef={scrollContainerRef}
-            isScrollable={isScrollable}
-            onVisibilityChange={setShowScrollIndicator}
-          />
+        <div className="role-list-container" style={AMC.LIST.CONTAINER}>
+          {groups.map((group) => {
+            const blockedTooltip = blockedReason?.(group.id);
+            const listItem = (
+              <SelectableListItem
+                value={group.id}
+                disabled={Boolean(blockedTooltip)}
+                name={CapitalizeFirstLetter(group.name)}
+                description={
+                  group.description ? CapitalizeFirstLetter(group.description) : undefined
+                }
+                itemStyles={{
+                  base: {
+                    ...AMC.LIST.ITEM.BASE,
+                    ...(blockedTooltip ? ARC.LIST.ITEM.DISABLED : {}),
+                  },
+                  hover: blockedTooltip ? ARC.LIST.ITEM.DISABLED : AMC.LIST.ITEM.HOVER,
+                }}
+                nameStyles={AMC.LIST.MEMBER_NAME}
+                descriptionStyles={AMC.LIST.MEMBER_EMAIL}
+              />
+            );
+            return blockedTooltip ? (
+              <Tooltip key={group.id} title={blockedTooltip} placement="left">
+                <div>{listItem}</div>
+              </Tooltip>
+            ) : (
+              <React.Fragment key={group.id}>{listItem}</React.Fragment>
+            );
+          })}
         </div>
       </Checkbox.Group>
     </Form.Item>

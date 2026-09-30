@@ -1,6 +1,4 @@
 import React from 'react';
-import { ScrollIndicator } from '../../../../../components/display/indicators';
-import { useRoleListScroll } from '../../../groups/hooks/scroll/useRoleListScroll';
 import AssignedItemCard from './AssignedItemCard';
 import { ASSIGNED_LIST_CONTAINER_STYLE, ASSIGNED_EMPTY_STATE_STYLE } from './styles';
 
@@ -34,15 +32,6 @@ function AssignedItemsList<T>({
   renderRightContent,
   canDeassign,
 }: AssignedItemsListProps<T>) {
-  const {
-    scrollContainerRef,
-    setShowScrollIndicator,
-    isScrollable,
-    containerClassName,
-    containerStyle,
-    wrapperStyle,
-  } = useRoleListScroll({ itemsCount: items.length });
-
   if (loading) {
     return <div style={ASSIGNED_EMPTY_STATE_STYLE}>{loadingMessage}</div>;
   }
@@ -52,34 +41,23 @@ function AssignedItemsList<T>({
   }
 
   return (
-    <div style={wrapperStyle}>
-      <div
-        ref={scrollContainerRef}
-        className={containerClassName}
-        style={{ ...ASSIGNED_LIST_CONTAINER_STYLE, ...containerStyle }}
-      >
-        {items.map((item) => {
-          const deassignAllowed = canDeassign ? canDeassign(item) : true;
-          return (
-            <AssignedItemCard
-              key={getItemKey(item)}
-              onDeassign={
-                onDeassignClick && deassignAllowed ? () => onDeassignClick(item) : undefined
-              }
-              deassignTooltip={deassignTooltip}
-              deassignDisabledReason={deassignDisabledReason?.(item)}
-              rightContent={renderRightContent ? renderRightContent(item) : undefined}
-            >
-              {renderItemContent(item)}
-            </AssignedItemCard>
-          );
-        })}
-      </div>
-      <ScrollIndicator
-        containerRef={scrollContainerRef}
-        isScrollable={isScrollable}
-        onVisibilityChange={setShowScrollIndicator}
-      />
+    <div style={ASSIGNED_LIST_CONTAINER_STYLE}>
+      {items.map((item) => {
+        const deassignAllowed = canDeassign ? canDeassign(item) : true;
+        return (
+          <AssignedItemCard
+            key={getItemKey(item)}
+            onDeassign={
+              onDeassignClick && deassignAllowed ? () => onDeassignClick(item) : undefined
+            }
+            deassignTooltip={deassignTooltip}
+            deassignDisabledReason={deassignDisabledReason?.(item)}
+            rightContent={renderRightContent ? renderRightContent(item) : undefined}
+          >
+            {renderItemContent(item)}
+          </AssignedItemCard>
+        );
+      })}
     </div>
   );
 }

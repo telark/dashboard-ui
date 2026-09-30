@@ -86,9 +86,28 @@ const userNotFoundMessage = (): string =>
     ? LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND
     : LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND_NO_SELF_REGISTRATION;
 
+// A login the backend refuses for this account (403), which the login card explains inline.
+export const getLoginRefusalMessage = (input: unknown): string | null => {
+  const error = input as AuthErrorShape;
+  if (!error?.normalized?.isForbidden) return null;
+  const errorMsg = extractErrorMessage(error);
+  if (checkErrorPattern(errorMsg, LOGIN_CONSTANTS.ERROR_PATTERNS.ACCOUNT_SUSPENDED)) {
+    return LOGIN_CONSTANTS.MESSAGES.ACCOUNT_SUSPENDED;
+  }
+  if (checkErrorPattern(errorMsg, LOGIN_CONSTANTS.ERROR_PATTERNS.BOOTSTRAP_PASSKEY_ONLY)) {
+    return LOGIN_CONSTANTS.MESSAGES.BOOTSTRAP_PASSKEY_ONLY;
+  }
+  return null;
+};
+
 export const getUserFriendlyErrorMessage = (input: unknown): string => {
   const error = input as AuthErrorShape;
   const errorMsg = extractErrorMessage(error);
+  const refusal = getLoginRefusalMessage(error);
+
+  if (refusal) {
+    return refusal;
+  }
 
   if (isUserNotFoundError(error, errorMsg)) {
     return userNotFoundMessage();

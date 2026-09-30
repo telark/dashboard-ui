@@ -100,6 +100,10 @@ export interface LoginFinishResponse {
   user: User;
 }
 
+export interface LoginLocationState {
+  loginError?: string | null;
+}
+
 export interface RegisterStartRequest {
   email?: string;
   enrollToken?: string;

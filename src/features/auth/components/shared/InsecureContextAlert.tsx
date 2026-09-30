@@ -66,7 +66,6 @@ export const InsecureContextAlert: React.FC = () => (
             padding: '2px 8px',
             borderRadius: 999,
             ...getPillSurface(DEFAULT_COLORS.WARNING),
-            color: DEFAULT_COLORS.PILL_TEXT,
             fontSize: 11,
             fontWeight: 600,
             lineHeight: 1.4,

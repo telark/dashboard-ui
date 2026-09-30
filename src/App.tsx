@@ -113,6 +113,8 @@ const App: React.FC = () => {
             borderRadius: CONTROL_RADIUS,
             fontSize: CONTROL_FONT_SIZE,
             colorPrimary: DEFAULT_COLORS.SUCCESS,
+            colorError: DEFAULT_COLORS.DANGER,
+            colorWarning: DEFAULT_COLORS.WARNING,
             colorBgBase: DEFAULT_COLORS.PAGE_BG,
             colorTextBase: DEFAULT_COLORS.TEXT_PRIMARY,
             colorBgContainer: DEFAULT_COLORS.PAGE_BG,

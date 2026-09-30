@@ -36,7 +36,8 @@ const ApplicationResetModal: React.FC<ApplicationResetModalProps> = ({
         cancelText={APPLICATIONS_UI.CARD.ACTIONS.CANCEL}
         loading={loading}
         danger={true}
-        customMessage={message ?? APPLICATIONS_UI.CARD.ACTIONS.RESET_CONFIRM_MESSAGE}
+        customMessage={message}
+        note={message ? undefined : APPLICATIONS_UI.CARD.ACTIONS.RESET_CONFIRM_MESSAGE}
       />
     </div>
   );

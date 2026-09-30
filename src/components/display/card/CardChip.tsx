@@ -1,5 +1,5 @@
 import React from 'react';
-import { CARD_LAYOUT, DEFAULT_COLORS, TRUNCATE_STYLE, getPillSurface } from '../../../constants';
+import { CARD_LAYOUT, TRUNCATE_STYLE, getPillSurface } from '../../../constants';
 import type { CardChipProps } from '../../../interfaces/layout/card';
 
 const CardChip: React.FC<CardChipProps> = ({ label, icon, accent, title }) => (
@@ -10,7 +10,6 @@ const CardChip: React.FC<CardChipProps> = ({ label, icon, accent, title }) => (
       gap: 6,
       minWidth: 0,
       ...getPillSurface(accent),
-      color: DEFAULT_COLORS.PILL_TEXT,
       borderRadius: CARD_LAYOUT.PILL_RADIUS_PX,
       padding: '3px 9px 3px 5px',
     }}

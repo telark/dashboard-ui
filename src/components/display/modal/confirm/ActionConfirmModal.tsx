@@ -1,11 +1,9 @@
 import React from 'react';
-import { Modal } from 'antd';
-import { ACTION_CONFIRM_MODAL } from '../../../../constants';
+import { MODAL_CHROME } from '../../../../constants';
 import { useActionConfirmHandlers } from '../../../../hooks/layout/useActionConfirmHandlers';
-import { useOpenedOnce } from '../../../../hooks/layout/useOpenedOnce';
-import { ActionCloseIcon } from '../../icons';
-import { ActionTitle, ActionMessage } from '../../text';
+import { ActionMessage } from '../../text';
 import ActionButtons from '../../buttons/ActionButtons';
+import BaseModal from '../base/BaseModal';
 
 export interface ActionConfirmModalProps {
   open: boolean;
@@ -38,7 +36,7 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
   resourceName,
   resourceType,
   confirmText,
-  cancelText = 'Cancel',
+  cancelText,
   loading = false,
   confirmDisabled = false,
   danger = true,
@@ -47,75 +45,40 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
   offsetRight,
   getContainer = false,
 }) => {
-  const { handleModalCancel, handleCloseIconClick, handleCancelClick, handleConfirmClick } =
-    useActionConfirmHandlers({ onClose, onConfirm });
-  const opened = useOpenedOnce(open);
+  const { handleModalCancel, handleCancelClick, handleConfirmClick } = useActionConfirmHandlers({
+    onClose,
+    onConfirm,
+  });
 
-  if (!opened) return null;
   return (
-    <Modal
+    <BaseModal
       open={open}
       onCancel={handleModalCancel}
-      title={null}
-      width={ACTION_CONFIRM_MODAL.MODAL.WIDTH}
-      zIndex={ACTION_CONFIRM_MODAL.MODAL.Z_INDEX}
-      footer={null}
-      mask={{ closable: true }}
-      getContainer={getContainer}
-      closeIcon={<ActionCloseIcon onClick={handleCloseIconClick} />}
-      className={ACTION_CONFIRM_MODAL.MODAL.CLASS_NAME}
-      styles={{
-        container: {
-          borderRadius: ACTION_CONFIRM_MODAL.MODAL.BORDER_RADIUS,
-          overflow: 'hidden',
-          position: 'relative',
-        },
-        body: {
-          padding: ACTION_CONFIRM_MODAL.CONTENT.PADDING,
-        },
-        wrapper: offsetRight ? { paddingRight: offsetRight } : undefined,
-      }}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: ACTION_CONFIRM_MODAL.CONTENT.GAP,
-        }}
-      >
-        <ActionTitle title={title} />
+      title={title}
+      description={
         <ActionMessage
           action={action}
           resourceName={resourceName}
           resourceType={resourceType}
           customMessage={customMessage}
         />
-        {note && (
-          <div
-            style={{
-              fontSize: ACTION_CONFIRM_MODAL.NOTE.FONT_SIZE,
-              lineHeight: ACTION_CONFIRM_MODAL.NOTE.LINE_HEIGHT,
-              color: ACTION_CONFIRM_MODAL.NOTE.COLOR,
-              textAlign: 'center',
-            }}
-          >
-            {note}
-          </div>
-        )}
+      }
+      getContainer={getContainer}
+      offsetRight={offsetRight}
+      footer={
         <ActionButtons
+          confirmText={confirmText || action}
+          onConfirm={handleConfirmClick}
+          onCancel={handleCancelClick}
           cancelText={cancelText}
-          confirmText={confirmText || ''}
-          action={action}
           loading={loading}
           confirmDisabled={confirmDisabled}
           danger={danger}
-          onCancel={handleCancelClick}
-          onConfirm={handleConfirmClick}
         />
-      </div>
-    </Modal>
+      }
+    >
+      {note && <div style={MODAL_CHROME.NOTE}>{note}</div>}
+    </BaseModal>
   );
 };
 

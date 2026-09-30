@@ -2,8 +2,8 @@
 export const DEFAULT_COLORS = {
   // Status accents; SUCCESS is also the brand primary.
   SUCCESS: '#20C997',
-  DANGER: '#FF4D4F',
-  WARNING: '#faad14',
+  DANGER: '#E05252',
+  WARNING: '#E2A336',
   INFO: '#bfdbfe',
   INFO_STRONG: '#2563eb', // info blue that reads on white (5.17:1)
   NEUTRAL: '#999',
@@ -12,8 +12,8 @@ export const DEFAULT_COLORS = {
   SUCCESS_ACTIVE: '#1aa572',
   // Status tints (accent at low alpha) and the primary focus ring.
   SUCCESS_TINT: 'rgba(32, 201, 151, 0.12)',
-  DANGER_TINT: 'rgba(255, 77, 79, 0.12)',
-  WARNING_TINT: 'rgba(250, 173, 20, 0.12)',
+  DANGER_TINT: 'rgba(224, 82, 82, 0.12)',
+  WARNING_TINT: 'rgba(226, 163, 54, 0.12)',
   NEUTRAL_TINT: 'rgba(153, 153, 153, 0.12)',
   SUCCESS_RING: 'rgba(32, 201, 151, 0.2)',
   // Dark surfaces: the page, then elevated cards one step above it so they read as raised
@@ -110,38 +110,35 @@ export const applyColorVariables = (root: HTMLElement = document.documentElement
   );
 };
 
-// A pill is a solid case colour with white text. The accents themselves are too light
-// for white text, so each case has a darker pill shade (white-text contrast in brackets).
-const PILL_SUCCESS = '#047857'; // 5.48:1
-const PILL_DANGER = '#dc2626'; // 4.83:1
-const PILL_WARNING = '#b45309'; // 5.02:1
-const PILL_INFO = DEFAULT_COLORS.INFO_STRONG;
-const PILL_MUTED = '#6b7280'; // 4.83:1
-const PILL_NEUTRAL = '#374151'; // 10.31:1
+interface PillSurface {
+  background: string;
+  color: string;
+}
+
+// A pill is the declared case colour itself with white text (user decision, 2026-10-01).
+// INFO is too light for a solid fill, so its pill uses the declared INFO_STRONG.
+const PILL_NEUTRAL = '#374151';
 
 const PILL_CASES: Record<string, string> = {
-  [DEFAULT_COLORS.SUCCESS]: PILL_SUCCESS,
-  [DEFAULT_COLORS.DANGER]: PILL_DANGER,
-  [DEFAULT_COLORS.WARNING]: PILL_WARNING,
-  [DEFAULT_COLORS.INFO]: PILL_INFO,
-  [DEFAULT_COLORS.NEUTRAL]: PILL_MUTED,
-  [DEFAULT_COLORS.TEXT_MUTED]: PILL_MUTED,
+  [DEFAULT_COLORS.SUCCESS]: DEFAULT_COLORS.SUCCESS,
+  [DEFAULT_COLORS.DANGER]: DEFAULT_COLORS.DANGER,
+  [DEFAULT_COLORS.WARNING]: DEFAULT_COLORS.WARNING,
+  [DEFAULT_COLORS.INFO]: DEFAULT_COLORS.INFO_STRONG,
+  [DEFAULT_COLORS.NEUTRAL]: DEFAULT_COLORS.NEUTRAL,
+  [DEFAULT_COLORS.TEXT_MUTED]: DEFAULT_COLORS.TEXT_MUTED,
 };
 
-const resolvePillBackground = (accent?: string): string =>
-  (accent && PILL_CASES[accent]) || PILL_NEUTRAL;
-
-/** Pill background for a case accent; no accent means a neutral pill. */
-export const getPillSurface = (accent?: string): { background: string } => ({
-  background: resolvePillBackground(accent),
+/** Pill background and text colour for a case accent; no accent means a neutral pill. */
+export const getPillSurface = (accent?: string): PillSurface => ({
+  background: (accent && PILL_CASES[accent]) || PILL_NEUTRAL,
+  color: DEFAULT_COLORS.PILL_TEXT,
 });
 
-/** Quick-filter pill: selected = the accent's pill colour, idle = neutral. */
+/** Quick-filter pill: selected = the accent's pill, idle = neutral. */
 export const getQuickFilterPillColors = (
   accent: string,
   active: boolean,
-): { background: string; border: string; color: string } => ({
-  background: active ? resolvePillBackground(accent) : PILL_NEUTRAL,
+): PillSurface & { border: string } => ({
+  ...getPillSurface(active ? accent : undefined),
   border: '1px solid transparent',
-  color: DEFAULT_COLORS.PILL_TEXT,
 });

@@ -125,13 +125,13 @@ Verify each step against its success criterion before moving on. Strong success 
   | Light: slide-out panels, modals, dropdowns, popovers, tooltips | `SURFACE_WHITE`, `SURFACE_SUBTLE`, `SURFACE_HOVER`, `SURFACE_BORDER*`, `TEXT_ON_SURFACE`, `TEXT_ON_SURFACE_MUTED`, `TEXT_ON_SURFACE_DISABLED`, `CHIP_ON_SURFACE_*` | Dark-surface text tokens here render white on white |
 
   The wrong palette fails silently: `check-all` passes and the text still copies, so it looks like missing data. When something "shows nothing", suspect white on white first.
-- Pills are a solid case colour with white text: spread `getPillSurface(accent)` and set `color: DEFAULT_COLORS.PILL_TEXT`. Pass the accent as a `DEFAULT_COLORS` value (`SUCCESS`, `DANGER`, `WARNING`, `INFO`, `NEUTRAL`, `TEXT_MUTED`); any other value, or none, gives the neutral pill. The accents themselves are too light for white text, so each maps to a darker pill shade that keeps contrast. Quick-filter pills use `getQuickFilterPillColors`.
+- Pills are the declared case colour itself: spread `getPillSurface(accent)`, which returns the background and the text colour, and don't set `color` yourself. Pass the accent as a `DEFAULT_COLORS` value (`SUCCESS`, `DANGER`, `WARNING`, `INFO`, `NEUTRAL`, `TEXT_MUTED`); any other value, or none, gives the neutral pill. Pill text is white on every case (user decision); `INFO` renders as `INFO_STRONG`, since the light `INFO` can't carry white text. Quick-filter pills use `getQuickFilterPillColors`.
 - No box-shadow on buttons unless the user asks for it.
 
 ### Ant Design theme
 
 - Work with antd rather than replacing or removing it. Global theming lives in the `ConfigProvider` in `src/App.tsx` (`token` and `components`). Match the existing token usage before adding tokens, and put per-component tweaks in its `components` blocks.
-- Don't wrap a single control in its own `ConfigProvider`, because it doesn't reliably inherit the global `controlHeight`. The deliberate nested providers are the panel surface (`PANEL_THEME_TOKENS` in `AnimationWrapper` and `FilterPanel`) and the auth pages (`src/features/auth/constants/theme.ts`).
+- Don't wrap a single control in its own `ConfigProvider`, because it doesn't reliably inherit the global `controlHeight`. The deliberate nested providers are the panel surface (`PANEL_THEME_TOKENS` in `AnimationWrapper`, `FilterPanel` and `BaseModal`) and the auth pages (`src/features/auth/constants/theme.ts`).
 - Don't set `colorText` on a component whose parts render on different surfaces. A `Select`'s closed control sits on the dark page while its dropdown is a portal on white, and one `Select.colorText` drives both, so it is deliberately unset; the dropdown text is pinned in `src/styles/antd.css` (the `.ant-select-dropdown` and `.ant-select-multiple` rules). Panels are scoped by `PANEL_SURFACE_CLASS` (`app-panel-surface`) and portals render outside it, so style against that seam.
 - A two-class CSS selector doesn't beat antd's CSS-in-JS, whose rules are deeper and injected later. Fix the token first; when CSS is needed, scope it by surface in `antd.css` like the existing rules.
 - Reuse the global classes in `src/styles/` (`form-item-compact`, `no-asterisk`, `manifest-code`, `tk-scroll-hidden`) before adding a new one.
@@ -167,6 +167,7 @@ Verify each step against its success criterion before moving on. Strong success 
 - Panel actions are one pinned footer rendered by the frame: `SlideOutPanel` builds it from its submit props, `AnimationWrapper` takes `footer` (the `PanelFooter` props), and `FilterPanel` renders the same `PanelFooter`. Don't render a footer or an inner scroll container in a feature, because the padded body must be the scroller for its scrollbar to sit at the panel edge. Panels have a title and no subtitle; the shared panel header takes none.
 - The panel header is exactly as tall as the app header: `SLIDE_OUT.HEADER.height` is `HEADER_LAYOUT.HEIGHT_PX`. Change the header constant, not the panel, so the two top bars stay aligned.
 - Everything inside a panel is on the light surface; use its palette.
+- Dialogs use `BaseModal` (`src/components/display/modal/`), and confirmations `ActionConfirmModal` on top of it. It owns the frame, the light-surface theme, the title and text styles and the footer (`ActionButtons`: muted cancel, solid primary or danger), so don't render antd `Modal` directly or style a modal frame by hand.
 - Form fields are antd vertical `Form.Item`s with `className="form-item-compact"` (plus `no-asterisk` to hide the required mark), 16px apart. Filter panel fields get this from `FILTER_PANEL.ITEM_CLASS` and `FILTER_PANEL.ITEM`, and their labels are sentence case ("Filter by severity").
 
 ## Layout & responsiveness

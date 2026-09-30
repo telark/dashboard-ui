@@ -1,71 +1,58 @@
 import React from 'react';
 import { Button } from 'antd';
-import { SLIDE_OUT } from '../../../constants';
-import { ACTION_CONFIRM_MODAL } from '../../../constants';
+import { BUTTON_TEXTS, MODAL_CHROME, SLIDE_OUT } from '../../../constants';
 
 interface ActionButtonsProps {
-  cancelText: string;
   confirmText: string;
-  action: string;
-  loading: boolean;
-  confirmDisabled?: boolean;
-  danger: boolean;
-  onCancel: (e: React.MouseEvent) => void;
   onConfirm: (e: React.MouseEvent) => void;
+  /** Without it the confirm button is the only action. */
+  onCancel?: (e: React.MouseEvent) => void;
+  cancelText?: string;
+  loading?: boolean;
+  confirmDisabled?: boolean;
+  danger?: boolean;
 }
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({
-  cancelText,
   confirmText,
-  action,
-  loading,
-  confirmDisabled = false,
-  danger,
-  onCancel,
   onConfirm,
+  onCancel,
+  cancelText = BUTTON_TEXTS.CANCEL,
+  loading = false,
+  confirmDisabled = false,
+  danger = false,
 }) => {
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        gap: ACTION_CONFIRM_MODAL.BUTTONS.GAP,
-        marginTop: ACTION_CONFIRM_MODAL.BUTTONS.MARGIN_TOP,
-        marginBottom: ACTION_CONFIRM_MODAL.BUTTONS.MARGIN_BOTTOM,
-      }}
-    >
-      <button
-        type="button"
-        onClick={onCancel}
-        disabled={loading}
-        style={SLIDE_OUT.CANCEL_BUTTON}
-        onMouseEnter={(e) => {
-          if (!loading) {
-            e.currentTarget.style.background = SLIDE_OUT.CANCEL_BUTTON_HOVER_BACKGROUND;
-            e.currentTarget.style.color = SLIDE_OUT.CANCEL_BUTTON_HOVER_COLOR;
-          }
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = SLIDE_OUT.CANCEL_BUTTON_DEFAULT_BACKGROUND;
-          e.currentTarget.style.color = SLIDE_OUT.CANCEL_BUTTON_DEFAULT_COLOR;
-        }}
-      >
-        {cancelText}
-      </button>
+    <div style={MODAL_CHROME.ACTIONS.ROW}>
+      {onCancel && (
+        <button
+          type="button"
+          onClick={onCancel}
+          disabled={loading}
+          style={SLIDE_OUT.CANCEL_BUTTON}
+          onMouseEnter={(e) => {
+            if (!loading) {
+              e.currentTarget.style.background = SLIDE_OUT.CANCEL_BUTTON_HOVER_BACKGROUND;
+              e.currentTarget.style.color = SLIDE_OUT.CANCEL_BUTTON_HOVER_COLOR;
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = SLIDE_OUT.CANCEL_BUTTON_DEFAULT_BACKGROUND;
+            e.currentTarget.style.color = SLIDE_OUT.CANCEL_BUTTON_DEFAULT_COLOR;
+          }}
+        >
+          {cancelText}
+        </button>
+      )}
       <Button
         type="primary"
         danger={danger}
         loading={loading}
         disabled={confirmDisabled}
         onClick={onConfirm}
-        style={{
-          borderRadius: ACTION_CONFIRM_MODAL.BUTTONS.CONFIRM.BORDER_RADIUS,
-          fontWeight: ACTION_CONFIRM_MODAL.BUTTONS.CONFIRM.FONT_WEIGHT,
-          height: ACTION_CONFIRM_MODAL.BUTTONS.CONFIRM.HEIGHT,
-          padding: ACTION_CONFIRM_MODAL.BUTTONS.CONFIRM.PADDING,
-        }}
+        style={MODAL_CHROME.ACTIONS.PRIMARY}
       >
-        {confirmText || action}
+        {confirmText}
       </Button>
     </div>
   );

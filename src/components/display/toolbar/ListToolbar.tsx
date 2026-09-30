@@ -29,7 +29,6 @@ const chipStyle: React.CSSProperties = {
   padding: LIST_TOOLBAR.CHIP_PADDING,
   borderRadius: LIST_TOOLBAR.PILL_RADIUS_PX,
   ...getPillSurface(),
-  color: DEFAULT_COLORS.PILL_TEXT,
   fontSize: LIST_TOOLBAR.CHIP_FONT_SIZE_PX,
   fontWeight: LIST_TOOLBAR.CHIP_FONT_WEIGHT,
   flexShrink: 0,

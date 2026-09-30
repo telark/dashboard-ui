@@ -5,6 +5,7 @@ import { selectPermissionsState } from '../../../auth/store/selectors/permission
 import { PERMISSION_LEVEL_RANK } from '../../../auth/models/permissions';
 import type { PermissionLevel, ResolvedRole } from '../../../auth/models/permissions';
 import { AUTH_PERMISSIONS_LABELS } from '../../../auth/constants';
+import { getCurrentUser } from '../../../auth/utils';
 import SettingsCard from '../../components/SettingsCard';
 import { DEFAULT_COLORS, getPillSurface } from '../../../../constants';
 
@@ -65,7 +66,11 @@ function getWinningAllEntry(
 function formatSources(role: ResolvedRole): string {
   if (role.sources.length === 0) return '—';
   return role.sources
-    .map((src) => (src.kind === 'direct' ? 'Direct' : `Inherited from ${src.groupID}`))
+    .map((src) =>
+      src.kind === 'direct'
+        ? AUTH_PERMISSIONS_LABELS.SOURCE_DIRECT
+        : AUTH_PERMISSIONS_LABELS.SOURCE_INHERITED(src.groupName),
+    )
     .join(', ');
 }
 
@@ -89,7 +94,6 @@ const ScopeRow: React.FC<ScopeRowProps> = memo(({ title, level, rules, sourceTex
           style={{
             fontSize: 11,
             fontWeight: 600,
-            color: DEFAULT_COLORS.PILL_TEXT,
             ...getPillSurface(LEVEL_COLOR),
             borderRadius: 4,
             padding: '2px 7px',
@@ -99,9 +103,9 @@ const ScopeRow: React.FC<ScopeRowProps> = memo(({ title, level, rules, sourceTex
         </span>
         <Tooltip
           title={
-            sourceText === 'Direct'
-              ? 'Role was assigned directly to your account'
-              : `Role was inherited through a group membership: ${sourceText.replace('Inherited from ', '')}`
+            sourceText === AUTH_PERMISSIONS_LABELS.SOURCE_DIRECT
+              ? AUTH_PERMISSIONS_LABELS.SOURCE_DIRECT_TOOLTIP
+              : AUTH_PERMISSIONS_LABELS.SOURCE_INHERITED_TOOLTIP
           }
           placement="top"
         >
@@ -151,6 +155,16 @@ const MyPermissionsSectionContent: React.FC = memo(() => {
       }),
     [scopeIndex, roles],
   );
+
+  if (getCurrentUser()?.bootstrap === true) {
+    return (
+      <SettingsCard title={AUTH_PERMISSIONS_LABELS.FULL_ACCESS_TITLE}>
+        <p style={{ margin: 0, fontSize: 14, color: DEFAULT_COLORS.TEXT_MUTED }}>
+          {AUTH_PERMISSIONS_LABELS.FULL_ACCESS_DESCRIPTION}
+        </p>
+      </SettingsCard>
+    );
+  }
 
   if (!hasActiveRoles) {
     return (

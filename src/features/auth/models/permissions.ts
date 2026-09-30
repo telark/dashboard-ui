@@ -5,6 +5,7 @@ export type RoleStatus = 'Active' | 'Inactive' | 'Deprecated' | 'Deleted';
 export interface RoleSource {
   kind: 'direct' | 'inherited';
   groupID?: string;
+  groupName?: string;
 }
 
 export interface ResolvedScope {

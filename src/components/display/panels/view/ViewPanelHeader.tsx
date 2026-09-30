@@ -44,7 +44,9 @@ const ViewPanelHeader: React.FC<ViewPanelHeaderProps> = ({
                   <div style={VIEW.OVERFLOW_TOOLTIP}>
                     {overflowItems.map((user) => (
                       <div key={user.key} style={VIEW.OVERFLOW_TOOLTIP_ITEM}>
-                        <Avatar src={user.src} size={24} />
+                        <Avatar src={user.src} size={24}>
+                          {!user.src && user.fallback ? user.fallback : null}
+                        </Avatar>
                         <span style={VIEW.OVERFLOW_USERNAME}>{user.username}</span>
                       </div>
                     ))}

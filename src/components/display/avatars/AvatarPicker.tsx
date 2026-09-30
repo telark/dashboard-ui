@@ -1,7 +1,15 @@
 import React, { useMemo, useState, useEffect, useRef, useCallback, startTransition } from 'react';
 import { createAvatar, type Style } from '@dicebear/core';
-import { Avatar, Grid, Modal, Spin } from 'antd';
-import { DEFAULT_COLORS, withAlpha } from '../../../constants';
+import { Avatar, Grid, Spin } from 'antd';
+import {
+  AVATAR_PICKER_TEXT,
+  BUTTON_TEXTS,
+  DEFAULT_COLORS,
+  MODAL_CHROME,
+  withAlpha,
+} from '../../../constants';
+import { BaseModal } from '../modal';
+import ActionButtons from '../buttons/ActionButtons';
 import type { UserAvatar } from '../../../features/access-and-permissions/users/models';
 import logger from '../../../logging';
 
@@ -228,22 +236,12 @@ const AvatarItem: React.FC<AvatarItemProps> = ({ option, isSelected, previewUrl,
   );
 };
 
-interface ModalFooterProps {
-  OkBtn: React.ComponentType;
-}
-
-const renderModalFooter = (_: unknown, { OkBtn }: ModalFooterProps) => (
-  <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-    <OkBtn />
-  </div>
-);
-
 const AvatarPicker: React.FC<AvatarPickerProps> = ({
   value,
   onChange,
   size = 40,
   trigger: triggerRender,
-  okText = 'Select',
+  okText = BUTTON_TEXTS.SELECT,
 }) => {
   const screens = useBreakpoint();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -373,21 +371,19 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({
         </button>
       )}
 
-      <Modal
-        title="Choose Avatar"
+      <BaseModal
         open={isModalOpen}
         onCancel={handleCancel}
-        onOk={handleConfirm}
-        okText={okText}
-        okButtonProps={{
-          disabled: !selectedOptionKey || selectedOptionKey === findOptionKey(value),
-          style: {
-            backgroundColor: DEFAULT_COLORS.SUCCESS,
-            borderColor: DEFAULT_COLORS.SUCCESS,
-          },
-        }}
-        footer={renderModalFooter}
-        width={480}
+        title={AVATAR_PICKER_TEXT.TITLE}
+        width={MODAL_CHROME.FRAME.WIDE_WIDTH}
+        footer={
+          <ActionButtons
+            confirmText={okText}
+            onConfirm={handleConfirm}
+            onCancel={handleCancel}
+            confirmDisabled={!selectedOptionKey || selectedOptionKey === findOptionKey(value)}
+          />
+        }
       >
         {isLoadingStyles ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
@@ -399,6 +395,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({
               display: 'grid',
               gridTemplateColumns: `repeat(${columns}, 1fr)`,
               gap: AVATAR_GAP,
+              width: '100%',
               padding: '8px 0',
             }}
           >
@@ -413,7 +410,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({
             ))}
           </div>
         )}
-      </Modal>
+      </BaseModal>
     </>
   );
 };

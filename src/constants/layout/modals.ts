@@ -1,58 +1,92 @@
 import { BUTTON_CONFIGS } from './buttons';
-import { CONTROL_HEIGHT } from './controls';
-import { DEFAULT_COLORS, getPillSurface } from '../shared/colors';
+import { CONTROL_RADIUS } from './controls';
+import { DEFAULT_COLORS, withAlpha } from '../shared/colors';
 
-export const ACTION_CONFIRM_MODAL = {
-  MODAL: {
+// The one dialog chrome: BaseModal renders it, and every modal builds on BaseModal.
+export const MODAL_CHROME = {
+  FRAME: {
     WIDTH: 360,
+    WIDE_WIDTH: 460,
     BORDER_RADIUS: 12,
-    CLASS_NAME: 'action-confirm-modal',
-    /** Above SLIDE_OUT.PANEL (1001) so a confirm raised from a panel is not buried. */
+    PADDING: '16px 20px',
+    CLASS_NAME: 'app-modal',
+    /** Above SLIDE_OUT.PANEL (1001) so a modal raised from a panel is not buried. */
     Z_INDEX: 1100,
   },
-  CLOSE_ICON: {
-    SIZE: 20,
-    ICON_SIZE: 10,
-    BACKGROUND: DEFAULT_COLORS.ICON_SECONDARY,
-    COLOR: DEFAULT_COLORS.PILL_TEXT,
-    BORDER_RADIUS: '50%',
-    POSITION: {
-      TOP: 8,
-      RIGHT: 8,
-    },
+  CLOSE: {
+    top: 8,
+    insetInlineEnd: 8,
+    width: 24,
+    height: 24,
+    borderRadius: 6,
   },
   CONTENT: {
-    GAP: 6,
-    PADDING: '16px 20px 8px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 6,
   },
   TITLE: {
-    FONT_SIZE: 18,
-    FONT_WEIGHT: 700,
-    COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE,
-    MARGIN_TOP: 0,
+    margin: 0,
+    fontSize: 16,
+    fontWeight: 700,
+    lineHeight: 1.4,
+    letterSpacing: '-0.01em',
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+    // Keeps a long title clear of the close button.
+    paddingRight: 24,
   },
   MESSAGE: {
-    FONT_SIZE: 14,
-    LINE_HEIGHT: 1.6,
-    COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-    MARGIN_TOP: -7,
-    RESOURCE_NAME_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE,
-    RESOURCE_NAME_FONT_WEIGHT: 700,
+    margin: 0,
+    fontSize: 14,
+    lineHeight: 1.5,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  },
+  RESOURCE_NAME: {
+    fontWeight: 600,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  },
+  HINT: {
+    margin: 0,
+    fontSize: 13,
+    lineHeight: 1.5,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   },
   NOTE: {
-    FONT_SIZE: 13,
-    LINE_HEIGHT: 1.5,
-    COLOR: getPillSurface(DEFAULT_COLORS.WARNING).background,
+    boxSizing: 'border-box',
+    width: '100%',
+    padding: '6px 10px',
+    borderRadius: 8,
+    border: `1px solid ${withAlpha(DEFAULT_COLORS.WARNING, 0.35)}`,
+    background: DEFAULT_COLORS.WARNING_TINT,
+    fontSize: 13,
+    lineHeight: 1.5,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
   },
-  BUTTONS: {
-    GAP: 12,
-    MARGIN_TOP: 10,
-    MARGIN_BOTTOM: -12,
-    CONFIRM: {
-      BORDER_RADIUS: 6,
-      FONT_WEIGHT: BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT,
-      HEIGHT: CONTROL_HEIGHT,
-      PADDING: '0 16px',
+  // A read-only value to copy, such as a link.
+  FIELD: {
+    boxSizing: 'border-box',
+    width: '100%',
+    padding: '6px 10px',
+    borderRadius: CONTROL_RADIUS,
+    border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
+    background: DEFAULT_COLORS.SURFACE_SUBTLE,
+    fontSize: 13,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    userSelect: 'all',
+  },
+  ACTIONS: {
+    ROW: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      gap: 8,
+      marginTop: 6,
+    },
+    PRIMARY: {
+      fontWeight: BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT,
     },
   },
 } as const;

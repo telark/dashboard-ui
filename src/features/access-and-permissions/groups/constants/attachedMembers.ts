@@ -11,8 +11,6 @@ export const ATTACHED_MEMBERS_CONSTANTS = {
       display: 'flex',
       flexDirection: 'column' as const,
       gap: 8,
-      maxHeight: 'calc(100vh - 300px)',
-      overflowY: 'auto' as const,
       width: '100%',
       padding: '0 0px',
       boxSizing: 'border-box' as const,

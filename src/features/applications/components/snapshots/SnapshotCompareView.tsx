@@ -203,7 +203,6 @@ const ValueChip: React.FC<{ tone: DiffType; children: React.ReactNode }> = ({ to
       padding: '3px 8px',
       borderRadius: 6,
       ...getPillSurface(DIFF_TONE[tone]),
-      color: DEFAULT_COLORS.PILL_TEXT,
       fontSize: 12,
       fontWeight: 700,
       lineHeight: 1.4,

@@ -11,7 +11,6 @@ import { registerHealthInterceptors, selectServiceHealth } from './api';
 import { applyColorVariables } from './constants';
 import './styles/index.css';
 import './styles/antd.css';
-import './styles/actionConfirmModal.css';
 
 applyColorVariables();
 

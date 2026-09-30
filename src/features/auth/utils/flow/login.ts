@@ -11,7 +11,7 @@ import { fetchMyPermissionsThunk } from '../../store/thunks/fetchThunks';
 import store from '../../../../store';
 import { AUTH_SUCCESS_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
-import { handleAuthError } from '../shared/errors';
+import { getLoginRefusalMessage, handleAuthError } from '../shared/errors';
 import { getClientMetadata } from '../device/metadata';
 import type { LoginStartResponse, AuthenticatorAssertionResponse } from '../../models';
 import type { MessageInstance } from 'antd/lib/message/interface';
@@ -99,6 +99,9 @@ export const performLogin = async (
       onSuccess();
     }
   } catch (error) {
+    // The login card shows a refused account inline: no passkeys modal, no toast.
+    if (getLoginRefusalMessage(error)) throw error;
+
     // Backend passkeys the browser could not use: the user confirms cleanup in a modal first.
     if (loginStartResponse && hasBackendPasskeys(loginStartResponse) && onShowOrphanedModal) {
       const originalErrorName = (error as Error & { originalErrorName?: string })

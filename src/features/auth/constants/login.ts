@@ -2,6 +2,8 @@ export const LOGIN_CONSTANTS = {
   ERROR_PATTERNS: {
     USER_NOT_FOUND: ['user not found', 'failed to get user', 'status: 404'],
     NO_PASSKEYS: ['no passkeys found', 'no passkey found', 'no passkeys', 'no passkey'],
+    ACCOUNT_SUSPENDED: ['account is suspended'],
+    BOOTSTRAP_PASSKEY_ONLY: ['bootstrap administrator signs in with a passkey'],
   },
   MESSAGES: {
     USER_NOT_FOUND: 'No account for this email yet. Register first, or check the address.',
@@ -9,6 +11,9 @@ export const LOGIN_CONSTANTS = {
       'No account for this email. Check the address, or contact your administrator.',
     NO_PASSKEYS: 'This account has no passkey yet. Contact your administrator.',
     LOST_PASSKEY: 'Contact your administrator to restore access to this account.',
+    ACCOUNT_SUSPENDED: 'Your Telark account is suspended. Contact your administrator.',
+    BOOTSTRAP_PASSKEY_ONLY:
+      "Google sign-in isn't available for the bootstrap administrator. Sign in with its passkey.",
     NETWORK_ERROR: 'Network error. Please check your connection and try again.',
     TIMEOUT_ERROR: 'Request timed out. Please try again.',
     SERVER_ERROR: 'Server error. Please try again later.',

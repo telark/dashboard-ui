@@ -23,6 +23,9 @@ export const rejectionMessage = (rejection: unknown, fallback: string): string =
     ? rejection
     : fallback;
 
+export const pluralize = (count: number, noun: string): string =>
+  `${count} ${noun}${count === 1 ? '' : 's'}`;
+
 export const truncateText = (text: string, maxLength: number = 60): string => {
   if (!text) return text;
   if (text.length <= maxLength) return text;

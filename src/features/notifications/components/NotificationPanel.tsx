@@ -74,7 +74,6 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose }) 
             display: 'flex',
             flexDirection: 'column',
             flex: 1,
-            gap: 4,
             padding: '4px 0',
             margin: '0 -24px',
           }}

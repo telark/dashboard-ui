@@ -1,7 +1,9 @@
 import React, { memo, useCallback } from 'react';
-import { App as AntdApp, Button, Input, Modal, Space } from 'antd';
-import { CopyOutlined } from '@ant-design/icons';
+import { App as AntdApp } from 'antd';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
+import { BUTTON_TEXTS, MODAL_CHROME } from '../../../../constants';
+import { BaseModal } from '../../../../components/display/modal';
+import { ActionButtons } from '../../../../components/display/buttons';
 
 export interface EnrollLinkModalProps {
   url: string | null;
@@ -20,22 +22,24 @@ const EnrollLinkModal: React.FC<EnrollLinkModalProps> = memo(({ url, onClose }) 
   }, [url, message]);
 
   return (
-    <Modal
+    <BaseModal
       open={url !== null}
-      title={PPC.ENROLL.MODAL_TITLE}
       onCancel={onClose}
-      footer={null}
-      centered
-      destroyOnHidden
+      title={PPC.ENROLL.MODAL_TITLE}
+      description={PPC.ENROLL.MODAL_DESCRIPTION}
+      footer={
+        <ActionButtons
+          confirmText={PPC.ENROLL.COPY}
+          onConfirm={handleCopy}
+          onCancel={onClose}
+          cancelText={BUTTON_TEXTS.CLOSE}
+        />
+      }
     >
-      <p>{PPC.ENROLL.MODAL_DESCRIPTION}</p>
-      <Space.Compact style={{ width: '100%' }}>
-        <Input readOnly value={url ?? ''} />
-        <Button icon={<CopyOutlined />} onClick={handleCopy}>
-          {PPC.ENROLL.COPY}
-        </Button>
-      </Space.Compact>
-    </Modal>
+      <div title={url ?? undefined} style={MODAL_CHROME.FIELD}>
+        {url}
+      </div>
+    </BaseModal>
   );
 });
 

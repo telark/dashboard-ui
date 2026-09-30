@@ -218,8 +218,8 @@ export const PROTECTION_PLANS_CONSTANTS = {
       DUPLICATE: 'Duplicate plan',
       DELETE_MODAL_TITLE: 'Delete Protection Plan',
       DELETE_MODAL_OK: 'Delete',
-      DELETE_MODAL_MESSAGE: (name: string) =>
-        `Delete the protection plan "${name}"? Its reports, including the final report, are deleted with it. Download any report you need first.`,
+      DELETE_MODAL_NOTE:
+        'Its reports, including the final report, are deleted with it. Download any report you need first.',
       DUPLICATE_SUCCESS: 'Plan duplicated successfully.',
       DUPLICATE_ERROR: 'Failed to duplicate plan.',
       CANCEL_SUCCESS: (name: string) => `Plan "${name}" canceled.`,

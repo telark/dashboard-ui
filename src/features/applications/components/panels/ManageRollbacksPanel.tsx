@@ -21,6 +21,7 @@ import { FancySpinner } from '../../../../components/animation';
 import type { AppDispatch } from '../../../../store';
 import { abortApplicationRollbackThunk } from '../../store';
 import { useUsernamesByIds } from '../../../../hooks/useUsernamesByIds';
+import { formatTimeAgo } from '../../../../utils/shared/time';
 import {
   classifyRollbackStatus,
   formatRollbackNamespaceRef,
@@ -170,12 +171,12 @@ function RollbackRow(props: {
 }): React.ReactElement {
   const { entry, triggeredByName, canAbort, abortLoading, onAbort } = props;
   const [hovered, setHovered] = useState(false);
-  const [errorOpen, setErrorOpen] = useState(false);
   const statusKey = String(entry.status || '').trim();
   const statusLabel = formatRollbackStatusLabel(statusKey || 'unknown');
   const statusState = classifyRollbackStatus(statusKey);
   const statusColors = getRollbackStatusColors(statusState);
   const isPending = statusState === 'pending';
+  const namespaceLabel = formatRollbackNamespaceRef(entry.namespace).replace(/^ns\//, '');
   const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
 
   return (
@@ -183,6 +184,8 @@ function RollbackRow(props: {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
+        // As a grid item the row would otherwise grow to fit long text and widen the panel.
+        minWidth: 0,
         border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
         borderRadius: R.RADIUS_PX,
         padding: R.PADDING,
@@ -220,82 +223,15 @@ function RollbackRow(props: {
               {ui.ROLLBACK_TARGET_PREFIX} {entry.targetGeneration}
             </span>
             <SnapshotMetaChip>
-              {formatRollbackNamespaceRef(entry.namespace).replace(/^ns\//, '')}
+              <span title={namespaceLabel} style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {namespaceLabel}
+              </span>
             </SnapshotMetaChip>
           </div>
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              gap: R.GAP_PX,
-              minWidth: 0,
-              fontSize: R.META_FONT_SIZE_PX,
-              color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-            }}
-          >
-            {entry.restoredGeneration != null ? (
-              <SnapshotMetaChip>
-                {ui.RESTORED_PREFIX} {entry.restoredGeneration}
-              </SnapshotMetaChip>
-            ) : null}
-            <span>
-              {ui.TRIGGERED_PREFIX} <TimeAgo date={entry.triggeredAt} />
-              {triggeredByName ? (
-                <>
-                  {` ${ui.META_SEPARATOR} ${ui.BY_PREFIX} `}
-                  <span title={entry.triggeredBy}>{triggeredByName}</span>
-                </>
-              ) : null}
-            </span>
-            {entry.completedAt ? (
-              <span>
-                {ui.META_SEPARATOR} {ui.COMPLETED_PREFIX} <TimeAgo date={entry.completedAt} />
-              </span>
-            ) : null}
-          </div>
+          <RollbackMeta entry={entry} triggeredByName={triggeredByName} />
           {/* The raw engine error is long and only matters when digging in, so the
               row states that it failed and lets the user ask for the detail. */}
-          {entry.error ? (
-            <div style={{ display: 'grid', rowGap: 4, minWidth: 0 }}>
-              <button
-                type="button"
-                onClick={() => setErrorOpen((prev) => !prev)}
-                aria-expanded={errorOpen}
-                style={{
-                  all: 'unset',
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 4,
-                  alignSelf: 'start',
-                  fontSize: R.META_FONT_SIZE_PX,
-                  fontWeight: 600,
-                  color: DEFAULT_COLORS.DANGER,
-                }}
-              >
-                {errorOpen ? <DownOutlined /> : <RightOutlined />}
-                <span>{errorOpen ? ui.HIDE_ERROR : ui.SHOW_ERROR}</span>
-              </button>
-              {errorOpen ? (
-                <div
-                  style={{
-                    padding: R.ERROR_PADDING,
-                    borderRadius: R.ERROR_RADIUS_PX,
-                    background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
-                    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-                    fontSize: R.ERROR_FONT_SIZE_PX,
-                    fontFamily: 'monospace',
-                    maxHeight: R.ERROR_MAX_HEIGHT_PX,
-                    overflow: 'auto',
-                    overflowWrap: 'anywhere',
-                  }}
-                >
-                  {entry.error}
-                </div>
-              ) : null}
-            </div>
-          ) : null}
+          {entry.error ? <RollbackErrorDetail error={entry.error} /> : null}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
           {isPending ? (
@@ -323,6 +259,111 @@ function RollbackRow(props: {
           />
         </div>
       </div>
+    </div>
+  );
+}
+
+function RollbackMeta(props: {
+  entry: ApplicationRollbackEntry;
+  triggeredByName: string;
+}): React.ReactElement {
+  const { entry, triggeredByName } = props;
+  const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
+  const fullText = [
+    `${ui.TRIGGERED_PREFIX} ${formatTimeAgo(entry.triggeredAt)}`,
+    triggeredByName && `${ui.BY_PREFIX} ${triggeredByName}`,
+    entry.completedAt && `${ui.COMPLETED_PREFIX} ${formatTimeAgo(entry.completedAt)}`,
+  ]
+    .filter(Boolean)
+    .join(` ${ui.META_SEPARATOR} `);
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: R.GAP_PX,
+        minWidth: 0,
+        fontSize: R.META_FONT_SIZE_PX,
+        color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+      }}
+    >
+      {entry.restoredGeneration != null ? (
+        <SnapshotMetaChip>
+          {ui.RESTORED_PREFIX} {entry.restoredGeneration}
+        </SnapshotMetaChip>
+      ) : null}
+      <span
+        title={fullText}
+        style={{
+          flexShrink: 100000,
+          minWidth: 0,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {ui.TRIGGERED_PREFIX} <TimeAgo date={entry.triggeredAt} />
+        {triggeredByName ? (
+          <>
+            {` ${ui.META_SEPARATOR} ${ui.BY_PREFIX} `}
+            <span title={entry.triggeredBy}>{triggeredByName}</span>
+          </>
+        ) : null}
+        {entry.completedAt ? (
+          <>
+            {` ${ui.META_SEPARATOR} ${ui.COMPLETED_PREFIX} `}
+            <TimeAgo date={entry.completedAt} />
+          </>
+        ) : null}
+      </span>
+    </div>
+  );
+}
+
+function RollbackErrorDetail(props: { error: string }): React.ReactElement {
+  const { error } = props;
+  const [errorOpen, setErrorOpen] = useState(false);
+  const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
+
+  return (
+    <div style={{ display: 'grid', rowGap: 4, minWidth: 0 }}>
+      <button
+        type="button"
+        onClick={() => setErrorOpen((prev) => !prev)}
+        aria-expanded={errorOpen}
+        style={{
+          all: 'unset',
+          cursor: 'pointer',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 4,
+          alignSelf: 'start',
+          fontSize: R.META_FONT_SIZE_PX,
+          fontWeight: 600,
+          color: DEFAULT_COLORS.DANGER,
+        }}
+      >
+        {errorOpen ? <DownOutlined /> : <RightOutlined />}
+        <span>{errorOpen ? ui.HIDE_ERROR : ui.SHOW_ERROR}</span>
+      </button>
+      {errorOpen ? (
+        <div
+          style={{
+            padding: R.ERROR_PADDING,
+            borderRadius: R.ERROR_RADIUS_PX,
+            background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
+            color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+            fontSize: R.ERROR_FONT_SIZE_PX,
+            fontFamily: 'monospace',
+            maxHeight: R.ERROR_MAX_HEIGHT_PX,
+            overflow: 'auto',
+            overflowWrap: 'anywhere',
+          }}
+        >
+          {error}
+        </div>
+      ) : null}
     </div>
   );
 }

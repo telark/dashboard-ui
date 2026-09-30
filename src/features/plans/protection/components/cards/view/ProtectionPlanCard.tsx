@@ -647,7 +647,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
           action="delete"
           resourceName={plan.name}
           resourceType="protection plan"
-          customMessage={PPC.LABELS.ACTIONS.DELETE_MODAL_MESSAGE(plan.name)}
+          note={PPC.LABELS.ACTIONS.DELETE_MODAL_NOTE}
           confirmText={PPC.LABELS.ACTIONS.DELETE_MODAL_OK}
           loading={deleting}
           getContainer={() => document.body}

@@ -8,6 +8,8 @@ export const BUTTON_TEXTS = {
   SUBMIT: 'Submit',
   RESET: 'Reset',
   APPLY: 'Apply',
+  CLOSE: 'Close',
+  SELECT: 'Select',
 } as const;
 
 // Spacing between toolbar items, and between a toolbar and its neighbours, so
