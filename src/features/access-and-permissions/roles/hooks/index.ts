@@ -1,5 +1,7 @@
 export { useRoles } from './data/useRoles';
+export { useHasRoleAboveCaller } from './data/useHasRoleAboveCaller';
 export { useRoleActions, type UseRoleActionsOptions } from './actions/useRoleActions';
+export { useCanChangeRoleProtection } from './actions/useCanChangeRoleProtection';
 export { useRoleFormState, type UseRoleFormStateOptions } from './form/useRoleFormState';
 export { useNameValidation } from './form/useNameValidation';
 export { useProtectionFields } from './form/useProtectionFields';

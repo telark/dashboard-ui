@@ -336,15 +336,24 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
   ({ left, right, leftState, rightState }) => {
     const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
 
-    const loading = Boolean(leftState?.loading || rightState?.loading);
     const error = leftState?.error || rightState?.error || null;
     const leftData = leftState?.data ?? null;
     const rightData = rightState?.data ?? null;
+    // A side not requested yet has no state at all; that is not "identical".
+    const loading = !leftState || !rightState || leftState.loading || rightState.loading;
 
     const groups = useMemo(() => {
       if (leftData == null || rightData == null) return [];
       return buildDiffByResource(leftData, rightData);
     }, [leftData, rightData]);
+
+    const hasSecrets = useMemo(
+      () =>
+        [leftData, rightData].some((data) =>
+          normalizeManifestToResources(data).some((r) => r.meta.kind === SECRET_KIND),
+        ),
+      [leftData, rightData],
+    );
 
     const stats = useMemo(() => {
       const rows = groups.flatMap((g) => g.rows);
@@ -408,8 +417,8 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
       body = (
         <PanelEmptyState
           icon={<CheckCircleFilled style={{ color: DEFAULT_COLORS.SUCCESS }} />}
-          title={ui.COMPARE_IDENTICAL_TITLE}
-          description={ui.COMPARE_IDENTICAL}
+          title={hasSecrets ? ui.COMPARE_NO_VISIBLE_TITLE : ui.COMPARE_IDENTICAL_TITLE}
+          description={hasSecrets ? ui.COMPARE_IDENTICAL_REDACTED : ui.COMPARE_IDENTICAL}
         />
       );
     } else {

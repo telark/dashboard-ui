@@ -1,6 +1,6 @@
 import type { Role } from './roles';
 
-export type RoleStatus = 'Active' | 'Inactive';
+export type RoleStatus = 'Active' | 'Inactive' | 'Deleted';
 export type RoleType = 'built-in' | 'custom';
 export type PermissionLevel = 'ReadOnly' | 'Contributor' | 'Owner' | 'Admin';
 export type ValidityType = 'permanent' | 'temporary' | 'sessionBased';

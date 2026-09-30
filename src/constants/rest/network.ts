@@ -12,6 +12,8 @@ export const API_RESPONSES = {
 
 export const REQUEST_CONFIG = {
   DEFAULT_METHOD: 'GET',
+  // A shed GET is retried once after the server's Retry-After, never waiting longer than this.
+  RETRY_AFTER_CAP_MS: 5000,
   DEFAULT_HEADERS: {
     'Content-Type': 'application/json',
   },

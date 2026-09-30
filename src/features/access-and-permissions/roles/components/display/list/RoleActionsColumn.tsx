@@ -1,11 +1,13 @@
-import React from 'react';
-import { Modal, Tooltip } from 'antd';
+import React, { useState } from 'react';
+import { Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../../../../constants';
+import { ActionConfirmModal } from '../../../../../../components/display/modal';
 import { ROLES_CONSTANTS as RC } from '../../../constants';
 import { canDeleteRole, canModifyRole } from '../../../utils';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../../auth/hooks';
 import { useRoleActions } from '../../../hooks/actions/useRoleActions';
+import { useCanChangeRoleProtection } from '../../../hooks/actions/useCanChangeRoleProtection';
 import type { Role } from '../../../models';
 
 interface RoleActionsColumnProps {
@@ -60,9 +62,13 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
     ACTION_PERMISSIONS.roles.delete.level,
     ACTION_PERMISSIONS.roles.delete.deny,
   );
-  const canEdit = hasEditPermission && canModifyRole(record);
+  const canChangeProtection = useCanChangeRoleProtection(record);
+  // A preventModification role still opens for its creator or an Admin on ALL, to unlock it.
+  const canEdit = hasEditPermission && (canModifyRole(record) || canChangeProtection);
   const isRoleProtectedFromDeletion = !canDeleteRole(record);
   const canDelete = hasDeletePermission && !isRoleProtectedFromDeletion;
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const handleEditClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -72,31 +78,26 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!canDelete) {
-      Modal.warning({
-        title: RC.LABELS.ACTIONS.CANNOT_DELETE_TITLE,
-        content: RC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP,
-      });
-      return;
-    }
+    if (!canDelete) return;
     if (onDelete) {
       onDelete(record);
       return;
     }
-    const usage = getUsage?.(record.id);
-    const impact =
-      usage && usage.users + usage.groups > 0
-        ? ` ${RC.LABELS.DELETE_IMPACT(usage.users, usage.groups)}`
-        : '';
-    Modal.confirm({
-      title: RC.LABELS.DELETE_MODAL_TITLE,
-      content: `${RC.LABELS.DELETE_MODAL_CONTENT(record.name)}${impact}`,
-      okText: RC.LABELS.DELETE_MODAL_OK,
-      okButtonProps: { danger: true },
-      // handleDelete toasts both outcomes; a rejection keeps the dialog open.
-      onOk: () => handleDelete(record.id),
-    });
+    setConfirmOpen(true);
   };
+
+  const confirmDelete = async (): Promise<void> => {
+    setDeleting(true);
+    try {
+      await handleDelete(record.id);
+    } catch {
+      // handleDelete already toasted the failure.
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const usage = confirmOpen ? getUsage?.(record.id) : undefined;
 
   return (
     <div
@@ -163,6 +164,25 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
           </button>
         </span>
       </Tooltip>
+      {confirmOpen && (
+        <ActionConfirmModal
+          open={confirmOpen}
+          onClose={() => setConfirmOpen(false)}
+          onConfirm={confirmDelete}
+          title={RC.LABELS.DELETE_MODAL_TITLE}
+          action="delete"
+          resourceName={record.name}
+          customMessage={RC.LABELS.DELETE_MODAL_CONTENT(record.name)}
+          note={
+            usage && usage.users + usage.groups > 0
+              ? RC.LABELS.DELETE_IMPACT(usage.users, usage.groups)
+              : undefined
+          }
+          confirmText={RC.LABELS.DELETE_MODAL_OK}
+          loading={deleting}
+          getContainer={() => document.body}
+        />
+      )}
     </div>
   );
 };

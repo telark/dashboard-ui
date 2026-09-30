@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useOutlet } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ConfigProvider, theme as antdTheme } from 'antd';
 import { LIGHT_TOKENS, DARK_TOKENS } from '../../constants/theme';
 import { BrandPanel } from '../login/BrandPanel';
 import { CompactBanner } from '../login/CompactBanner';
 import { AuthContainer } from './AuthContainer';
+import { ensureAuthConfigThunk, selectAuthConfigState } from '../../store';
+import type { AppDispatch } from '../../../../store';
+import FullPageLoader from '../../../../components/display/views/FullPageLoader';
 import './auth.css';
 
 const CARD_TRANSITION = {
@@ -21,6 +25,15 @@ export const AuthLayout: React.FC = () => {
   // mid-animation; useOutlet resolves to that route's own element instead.
   const outlet = useOutlet();
   const [isDark] = useState(() => localStorage.getItem('auth-theme') === 'dark');
+  const dispatch = useDispatch<AppDispatch>();
+  const authConfig = useSelector(selectAuthConfigState);
+
+  useEffect(() => {
+    dispatch(ensureAuthConfigThunk());
+  }, [dispatch]);
+
+  // Same loader as the route Suspense fallback before it, outside the auth chrome.
+  if (!authConfig.initialized) return <FullPageLoader minHeight="100vh" />;
 
   return (
     <ConfigProvider

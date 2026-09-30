@@ -182,8 +182,10 @@ const EmptyInsights: React.FC<{
   category: InsightCategory;
   filtered: boolean;
   analyzerEnabled: boolean | undefined;
+  // Undefined when the global config is unreadable: then "All clear" can't be claimed.
+  autoAnalyze: boolean | undefined;
   indexedAt?: string;
-}> = ({ category, filtered, analyzerEnabled, indexedAt }) => {
+}> = ({ category, filtered, analyzerEnabled, autoAnalyze, indexedAt }) => {
   if (filtered) return <Empty description={P.NO_MATCH} />;
   if (analyzerEnabled === false) {
     return (
@@ -203,11 +205,23 @@ const EmptyInsights: React.FC<{
       />
     );
   }
+  if (autoAnalyze === false) {
+    return (
+      <Empty
+        description={
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}>
+            <strong>{P.MANUAL_ANALYSIS_TITLE}</strong>
+            <span style={mutedStyle}>{P.MANUAL_ANALYSIS}</span>
+          </div>
+        }
+      />
+    );
+  }
   return (
     <Empty
       description={
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}>
-          <strong>{P.ALL_CLEAR_TITLE}</strong>
+          {autoAnalyze && <strong>{P.ALL_CLEAR_TITLE}</strong>}
           <span style={mutedStyle}>
             {category === 'incident' ? P.ALL_CLEAR_INCIDENTS : P.ALL_CLEAR_RECOMMENDATIONS}
           </span>
@@ -239,7 +253,9 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
   const appFilter = params.get(CLUSTER_INSIGHTS.APP_PARAM) ?? '';
   const insightId = active ? (params.get(CLUSTER_INSIGHTS.INSIGHT_PARAM) ?? '') : '';
   const canBulk = usePermission(BULK_PERMISSION.scope, BULK_PERMISSION.level, BULK_PERMISSION.deny);
-  const configEnabled = useSelector(selectGlobalConfigState).data?.ai?.enabled;
+  const globalConfig = useSelector(selectGlobalConfigState).data;
+  const configEnabled = globalConfig?.ai?.enabled;
+  const autoAnalyze = globalConfig ? Boolean(globalConfig.ai?.autoAnalyze) : undefined;
   const [runtimeEnabled, setRuntimeEnabled] = useState<boolean>();
   const analyzerEnabled = configEnabled ?? runtimeEnabled;
   const { categories: environments } = useCategories(CC.SCOPES.PLAN_ENVIRONMENTS);
@@ -795,6 +811,7 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
         category={category}
         filtered={filtered}
         analyzerEnabled={analyzerEnabled}
+        autoAnalyze={autoAnalyze}
         indexedAt={page?.indexedAt}
       />
     ),

@@ -19,11 +19,12 @@ export const stopPermissionsPolling = (): void => {
   }
 };
 
-// Runs between rehydration and the first render, so data left by another user
-// (a session that ended without logout) is never shown: purge it, then reload clean.
+// Runs between rehydration and the first render, so data left by another user (a session that
+// ended without logout) is never shown. A missing stored user is restored by the avatar menu instead.
 export const dropForeignPermissions = async (): Promise<void> => {
   const { userID } = store.getState().permissions;
-  if (userID !== null && userID !== getCurrentUser()?.id) {
+  const storedUserID = getCurrentUser()?.id;
+  if (userID !== null && storedUserID !== undefined && userID !== storedUserID) {
     store.dispatch(clearPermissions());
     await purgeLocalUserData();
     window.location.reload();

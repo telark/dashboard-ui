@@ -11,6 +11,7 @@ export interface ChangeDetectionResult {
   nameHasChanged: boolean;
   categoryHasChanged: boolean;
   needsTwoStepUpdate: boolean;
+  modificationLocked: boolean;
 }
 
 export const detectChanges = (
@@ -40,6 +41,10 @@ export const detectChanges = (
   const normalizedCurrentScopes = normalizeValue(finalValues.scopes) || {};
   const scopesHaveChanged = !deepEqual(normalizedInitialScopes, normalizedCurrentScopes);
 
+  const modificationLocked = Boolean(
+    initialProtection.preventModification && currentProtection.preventModification,
+  );
+
   const nameHasChanged = (initialValues.name || '') !== (finalValues.name || '');
   const categoryHasChanged = (initialValues.categoryRef || '') !== (finalValues.categoryRef || '');
 
@@ -58,5 +63,6 @@ export const detectChanges = (
     nameHasChanged,
     categoryHasChanged,
     needsTwoStepUpdate,
+    modificationLocked,
   };
 };

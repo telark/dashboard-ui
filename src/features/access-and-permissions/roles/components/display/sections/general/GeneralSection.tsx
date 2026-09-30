@@ -14,6 +14,7 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
     currentName,
     lockName = false,
     lockCategory = false,
+    disabled = false,
     onManualChange,
   }) => {
     const { categoryOptions } = useRoleCategories();
@@ -44,7 +45,7 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
               validateTrigger="onChange"
               tooltip={lockName ? RPC.GENERAL.LOCK_NAME_TOOLTIP : undefined}
               placeholder={RPC.GENERAL.NAME_PLACEHOLDER}
-              disabled={lockName}
+              disabled={lockName || disabled}
             />
             <LabeledInput
               name="description"
@@ -52,6 +53,7 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
               required
               placeholder={RPC.GENERAL.DESCRIPTION_PLACEHOLDER}
               marginBottom={12}
+              disabled={disabled}
             />
             <FieldChangeWatcher fieldName="categoryRef" onChange={onManualChange} />
             <Form.Item
@@ -70,7 +72,7 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
               <Select
                 placeholder={RPC.GENERAL.CATEGORY_PLACEHOLDER}
                 options={categoryOptions}
-                disabled={lockCategory}
+                disabled={lockCategory || disabled}
               />
             </Form.Item>
           </div>

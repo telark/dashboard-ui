@@ -3,7 +3,12 @@ import { Component, ErrorInfo, ReactNode } from 'react';
 import { Button, Typography } from 'antd';
 import { ReloadOutlined, BugOutlined, HomeOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { DEFAULT_COLORS, STORE_MESSAGES, withAlpha } from '../../constants';
+import {
+  DEFAULT_COLORS,
+  FEATURE_ERROR_BOUNDARY_TEXT as T,
+  STORE_MESSAGES,
+  withAlpha,
+} from '../../constants';
 import { APP_ROUTES } from '../../constants';
 import { isDevelopment } from '../../utils/helpers/env';
 import logger from '../../logging';
@@ -92,21 +97,18 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
                 fontWeight: 600,
               }}
             >
-              {this.props.featureName
-                ? `Error in ${this.props.featureName}`
-                : 'Something went wrong'}
+              {this.props.featureName ? T.TITLE(this.props.featureName) : T.TITLE_FALLBACK}
             </Title>
 
             <Text
-              type="secondary"
               style={{
                 display: 'block',
                 marginBottom: 24,
                 fontSize: 14,
+                color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
               }}
             >
-              An error occurred while loading this section. You can try again or return to the
-              dashboard.
+              {T.DESCRIPTION}
             </Text>
 
             {isDevelopment() && this.state.error && (
@@ -152,9 +154,9 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
                   border: 'none',
                 }}
               >
-                Try Again
+                {T.TRY_AGAIN}
               </Button>
-              <FeatureErrorBoundaryNavigateButton />
+              <FeatureErrorBoundaryNavigateButton onReset={this.handleReset} />
             </div>
           </div>
         </div>
@@ -166,19 +168,21 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
 }
 
 // Separate component to use hooks
-const FeatureErrorBoundaryNavigateButton: React.FC = () => {
+const FeatureErrorBoundaryNavigateButton: React.FC<{ onReset: () => void }> = ({ onReset }) => {
   const navigate = useNavigate();
+  // The boundary is keyed by pathname, so navigating to the current page would not reset it.
+  const { pathname } = useLocation();
 
   return (
     <Button
       size="middle"
       icon={<HomeOutlined />}
-      onClick={() => navigate(APP_ROUTES.HOME)}
+      onClick={() => (pathname === APP_ROUTES.HOME ? onReset() : navigate(APP_ROUTES.HOME))}
       style={{
         borderColor: DEFAULT_COLORS.SURFACE_BORDER,
       }}
     >
-      Go to Dashboard
+      {T.GO_TO_DASHBOARD}
     </Button>
   );
 };

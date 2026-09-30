@@ -62,7 +62,6 @@ export const GROUPS_CONSTANTS = {
       MANAGE_ROLES: 'Manage Roles',
       MANAGE_MEMBERS: 'Manage Members',
       DELETE_MODAL_TITLE: 'Delete Group',
-      DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
       DELETE_IMPACT: (members: number, roles: number) =>
         `It has ${members} member${members === 1 ? '' : 's'} and ${roles} role${roles === 1 ? '' : 's'}. Members lose the access this group grants.`,
       BULK_DELETE_MODAL_TITLE: 'Delete Groups',
@@ -119,7 +118,6 @@ export const GROUPS_CONSTANTS = {
       ATTACH_ROLES: {
         TITLE: 'Manage Roles',
         SUBMIT_BUTTON: 'Update roles',
-        SEARCH_PLACEHOLDER: 'Search roles by name, type, status, or validity...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
         SHOW_ASSIGNED_TOOLTIP: 'View all roles currently assigned to this group',
       },

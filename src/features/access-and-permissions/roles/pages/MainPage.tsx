@@ -160,8 +160,8 @@ const MainPage: React.FC = () => {
   });
 
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(roles) && customRoles.length === 0 && !error,
-    [roles, customRoles.length, error],
+    () => Array.isArray(roles) && customRoles.length === 0 && !error && !loading,
+    [roles, customRoles.length, error, loading],
   );
 
   const augmentedPageConfig = { ...pageConfig, loading, error, onRetry: refetch };

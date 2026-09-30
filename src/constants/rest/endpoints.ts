@@ -323,6 +323,10 @@ export const Endpoints = {
       path: API_PATHS.NOTIFICATIONS,
       method: 'DELETE',
     },
+    DELETE: (id: string) => ({
+      path: byId(API_PATHS.NOTIFICATIONS, id),
+      method: 'DELETE',
+    }),
   },
   ROLES: {
     CREATE: {

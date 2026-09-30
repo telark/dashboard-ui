@@ -12,3 +12,12 @@ export const ERROR_MESSAGES = {
     UPDATE_SYNC_MODE_FAILED: '[APIClient] Failed to update sync mode for',
   },
 } as const;
+
+export const FEATURE_ERROR_BOUNDARY_TEXT = {
+  TITLE: (featureName: string) => `Error in ${featureName}`,
+  TITLE_FALLBACK: 'Something went wrong',
+  DESCRIPTION:
+    'An error occurred while loading this section. You can try again or return to the dashboard.',
+  TRY_AGAIN: 'Try Again',
+  GO_TO_DASHBOARD: 'Go to Dashboard',
+} as const;

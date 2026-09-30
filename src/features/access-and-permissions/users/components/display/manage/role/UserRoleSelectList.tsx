@@ -10,9 +10,11 @@ import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
 import { getScopeLabel } from '../../../../utils/role/scope';
 import type { Role } from '../../../../../roles/models';
-import { useCanGrantScopes } from '../../../../../../auth/hooks';
+import { ACTION_PERMISSIONS, useCanGrantScopes, usePermission } from '../../../../../../auth/hooks';
+import { NoPermissionCard } from '../../../../../../../components/shared';
 
 const RoleIcon = Icons.Role;
+const VIEW_ROLES = ACTION_PERMISSIONS.roles.view;
 
 interface UserRoleSelectListProps {
   roles?: Role[];
@@ -32,6 +34,7 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
 }) => {
   const form = Form.useFormInstance();
   const canGrant = useCanGrantScopes();
+  const canViewRoles = usePermission(VIEW_ROLES.scope, VIEW_ROLES.level);
   const watchedSelectedRoles = Form.useWatch('roleRefs', form);
   const currentSelectedRoles = useMemo(
     () => (watchedSelectedRoles as string[]) || [],
@@ -65,6 +68,16 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
     },
     [form, allRoles, roles, currentSelectedRoles],
   );
+
+  if (!canViewRoles) {
+    return (
+      <NoPermissionCard
+        featureName={UC.LABELS.FORM.FIELDS.ROLE_LABEL}
+        permission={VIEW_ROLES}
+        compact
+      />
+    );
+  }
 
   if (loading) {
     return <div style={ARC.LIST.EMPTY_STATE}>{UC.LABELS.MESSAGES.LOADING_ROLES}</div>;

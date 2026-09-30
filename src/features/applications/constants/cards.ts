@@ -32,6 +32,7 @@ export const APPLICATION_CARD = {
   COVERAGE: {
     LABEL: 'Protected by',
     NONE: 'No protection plan covers this application',
+    NO_ACCESS: 'No access',
     CHIP_TITLE: (plan: string, state: ApplicationCoverageState) =>
       `${plan} · ${COVERAGE_STATE_LABEL[state]}`,
   },

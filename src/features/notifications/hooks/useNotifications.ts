@@ -7,8 +7,10 @@ import {
   markNotificationReadThunk,
   markAllNotificationsReadThunk,
   clearNotificationsThunk,
+  deleteNotificationThunk,
   hydrateFromCache,
   optimisticMarkRead,
+  optimisticDelete,
   optimisticMarkAllRead,
   optimisticClear,
   rollbackState,
@@ -19,8 +21,12 @@ import {
   selectNotificationsError,
 } from '../store';
 import { NOTIFICATIONS_CACHE_KEY, NOTIFICATIONS_POLL_INTERVAL_MS } from '../constants';
-import { readNotificationsCache, writeNotificationsCache, clearNotificationsCache } from '../utils';
+import { readNotificationsCache, writeNotificationsCache } from '../utils';
 import type { Notification, NotificationsCache } from '../models';
+
+// Lists hydrated from another tab's write (the slice keeps the array as is): persisting one again
+// echoes it back, and two tabs holding different lists would then overwrite each other forever.
+const receivedFromOtherTab = new WeakSet<Notification[]>();
 
 export interface UseNotificationsResult {
   notifications: Notification[];
@@ -28,6 +34,7 @@ export interface UseNotificationsResult {
   isLoading: boolean;
   error: string | null;
   markRead: (id: string) => Promise<void>;
+  deleteOne: (id: string) => Promise<void>;
   markAllRead: () => Promise<void>;
   clearAll: () => Promise<void>;
   refresh: () => Promise<void>;
@@ -53,11 +60,12 @@ export function useNotifications(): UseNotificationsResult {
     stateSnapshotRef.current = { items: notifications, unreadCount };
   }, [notifications, unreadCount]);
 
-  // Persist cache whenever items change after hydration.
+  // Persist cache whenever items change after hydration. A tab with no user yet holds only its
+  // reset state, which would overwrite the list every other tab shares.
   useEffect(() => {
-    if (!hydratedRef.current) return;
+    if (!hydratedRef.current || !userID || receivedFromOtherTab.has(notifications)) return;
     writeNotificationsCache(notifications, unreadCount);
-  }, [notifications, unreadCount]);
+  }, [notifications, unreadCount, userID]);
 
   useEffect(() => {
     if (hydratedRef.current) return;
@@ -78,9 +86,11 @@ export function useNotifications(): UseNotificationsResult {
       try {
         const parsed = JSON.parse(e.newValue) as Partial<NotificationsCache> | null;
         if (!parsed || !Array.isArray(parsed.items)) return;
+        const items = parsed.items as Notification[];
+        receivedFromOtherTab.add(items);
         dispatch(
           hydrateFromCache({
-            items: parsed.items as Notification[],
+            items,
             unreadCount: typeof parsed.unreadCount === 'number' ? parsed.unreadCount : 0,
             fetchedAt: typeof parsed.fetchedAt === 'number' ? parsed.fetchedAt : Date.now(),
           }),
@@ -108,7 +118,8 @@ export function useNotifications(): UseNotificationsResult {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
-      clearNotificationsCache();
+      // Only this tab's state: a tab still booting has no user yet, and clearing the shared cache
+      // would empty every other tab's list. Logout and session expiry clear it (purgeLocalUserData).
       dispatch(resetNotifications());
       return;
     }
@@ -163,6 +174,20 @@ export function useNotifications(): UseNotificationsResult {
     [dispatch, userID],
   );
 
+  const deleteOne = useCallback(
+    async (id: string) => {
+      if (!userID) return;
+      const snapshot = stateSnapshotRef.current;
+      dispatch(optimisticDelete(id));
+      try {
+        await dispatch(deleteNotificationThunk({ id, userId: userID })).unwrap();
+      } catch {
+        dispatch(rollbackState(snapshot));
+      }
+    },
+    [dispatch, userID],
+  );
+
   const markAllRead = useCallback(async () => {
     if (!userID) return;
     const snapshot = stateSnapshotRef.current;
@@ -193,6 +218,7 @@ export function useNotifications(): UseNotificationsResult {
     isLoading,
     error,
     markRead,
+    deleteOne,
     markAllRead,
     clearAll,
     refresh,

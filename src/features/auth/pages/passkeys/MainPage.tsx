@@ -20,6 +20,7 @@ import PasskeysEmptyPage from './PasskeysEmptyPage';
 import PasskeysListPage from './PasskeysListPage';
 import type { PasskeyBreadcrumbItem } from './PasskeysListPage';
 import { PasskeyPanel, EnrollLinkModal } from '../../components';
+import { ActionConfirmModal } from '../../../../components/display/modal';
 
 export interface PasskeysMainPageProps {
   /** When provided (e.g. embedded in Settings), show breadcrumb in title. */
@@ -29,7 +30,7 @@ export interface PasskeysMainPageProps {
 }
 
 const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSettings }) => {
-  const { modal, message } = App.useApp();
+  const { message } = App.useApp();
   const dispatch: AppDispatch = useDispatch();
   const passkeys = useSelector(selectPasskeys);
   const loading = useSelector(selectPasskeyLoading);
@@ -38,6 +39,8 @@ const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSet
   const [searchTerm, setSearchTerm] = useState('');
   const [lastFetchError, setLastFetchError] = useState<string | null>(null);
   const [sortOrder] = useState<'asc' | 'desc'>('desc');
+  const [pendingDelete, setPendingDelete] = useState<Passkey | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const {
     isPanelOpen,
@@ -88,40 +91,25 @@ const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSet
     [isEditMode, selectedPasskey, handleUpdate, handleCreate],
   );
 
-  const confirmDelete = useCallback(
-    (record: Passkey) => {
-      const isLastPasskey = passkeys.length === 1;
-      const passkeyName = record?.deviceName || '';
-      const contentText = isLastPasskey
-        ? PPC.LABELS.FORCE_DELETE_MODAL_CONTENT(passkeyName)
-        : PPC.LABELS.DELETE_MODAL_CONTENT(passkeyName);
+  const isLastPasskey = passkeys.length === 1;
+  const pendingName = pendingDelete?.deviceName || '';
+  const [beforeName, afterName] = (
+    isLastPasskey
+      ? PPC.LABELS.FORCE_DELETE_MODAL_CONTENT(pendingName)
+      : PPC.LABELS.DELETE_MODAL_CONTENT(pendingName)
+  ).split(pendingName);
 
-      const parts = contentText.split(passkeyName);
-      const content = (
-        <div style={{ whiteSpace: 'pre-line' }}>
-          {parts[0]}
-          <strong>{passkeyName}</strong>
-          {parts[1]}
-        </div>
-      );
-
-      modal.confirm({
-        title: isLastPasskey ? PPC.LABELS.FORCE_DELETE_MODAL_TITLE : PPC.LABELS.DELETE_MODAL_TITLE,
-        content,
-        okText: isLastPasskey ? PPC.LABELS.FORCE_DELETE_MODAL_OK : PPC.LABELS.DELETE_MODAL_OK,
-        okButtonProps: { danger: true },
-        icon: null,
-        onOk: async () => {
-          try {
-            await handleDelete(record, isLastPasskey);
-          } catch {
-            // Error handled by handleDelete
-          }
-        },
-      });
-    },
-    [passkeys.length, modal, handleDelete],
-  );
+  const deletePending = useCallback(async () => {
+    if (!pendingDelete) return;
+    setDeleting(true);
+    try {
+      await handleDelete(pendingDelete, isLastPasskey);
+    } catch {
+      // Error handled by handleDelete
+    } finally {
+      setDeleting(false);
+    }
+  }, [pendingDelete, isLastPasskey, handleDelete]);
 
   const filteredAndSortedPasskeys = useMemo(() => {
     const filtered = searchTerm
@@ -139,8 +127,8 @@ const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSet
   });
 
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(passkeys) && passkeys.length === 0 && !error,
-    [passkeys, error],
+    () => Array.isArray(passkeys) && passkeys.length === 0 && !error && !loading,
+    [passkeys, error, loading],
   );
 
   if (shouldShowEmpty) {
@@ -183,7 +171,7 @@ const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSet
         allPasskeys={passkeys}
         searchTerm={searchTerm}
         onEdit={openEditPanel}
-        onConfirmDelete={confirmDelete}
+        onConfirmDelete={setPendingDelete}
         panelOpen={isPanelOpen}
         isEditMode={isEditMode}
         selectedPasskey={selectedPasskey}
@@ -196,6 +184,24 @@ const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSet
         hideTitle={embedInSettings}
       />
       <EnrollLinkModal url={enrollUrl} onClose={clearLink} />
+      <ActionConfirmModal
+        open={pendingDelete !== null}
+        onClose={() => setPendingDelete(null)}
+        onConfirm={deletePending}
+        title={isLastPasskey ? PPC.LABELS.FORCE_DELETE_MODAL_TITLE : PPC.LABELS.DELETE_MODAL_TITLE}
+        action="delete"
+        resourceName={pendingName}
+        customMessage={
+          <div style={{ whiteSpace: 'pre-line' }}>
+            {beforeName}
+            <strong>{pendingName}</strong>
+            {afterName}
+          </div>
+        }
+        confirmText={isLastPasskey ? PPC.LABELS.FORCE_DELETE_MODAL_OK : PPC.LABELS.DELETE_MODAL_OK}
+        loading={deleting}
+        getContainer={() => document.body}
+      />
     </>
   );
 };

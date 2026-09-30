@@ -4,11 +4,9 @@ import { Endpoints } from '../../../../constants';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import type { Group, GroupFormData } from '../models';
 import { GROUPS_ERROR_MESSAGES } from '../constants';
-import { getCurrentUser } from '../../../../features/auth/utils';
 
 export const updateGroup = async (groupId: string, group: Partial<GroupFormData>) => {
   try {
-    const currentUser = getCurrentUser();
     const groupData: Partial<GroupFormData> = {};
 
     if (group.name !== undefined) groupData.name = group.name;
@@ -20,10 +18,6 @@ export const updateGroup = async (groupId: string, group: Partial<GroupFormData>
 
     if (group.roleRefs !== undefined) {
       groupData.roleRefs = Array.isArray(group.roleRefs) ? group.roleRefs : [];
-    }
-
-    if (currentUser?.id) {
-      groupData.lastUpdatedBy = currentUser.id;
     }
 
     return await Client<ResourceDetailsResponse<Group>>(

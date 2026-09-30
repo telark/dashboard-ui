@@ -3,6 +3,7 @@ export {
   setPanelOpen,
   hydrateFromCache,
   optimisticMarkRead,
+  optimisticDelete,
   optimisticMarkAllRead,
   optimisticClear,
   rollbackState,
@@ -14,6 +15,7 @@ export {
   markNotificationReadThunk,
   markAllNotificationsReadThunk,
   clearNotificationsThunk,
+  deleteNotificationThunk,
 } from './thunks/notificationsThunks';
 
 export {

@@ -51,12 +51,14 @@ const gridStyle = (rowHeightPx: number): React.CSSProperties => ({
 
 const { view: viewApplications, viewSnapshots } = ACTION_PERMISSIONS.applications;
 const { view: viewPlans } = ACTION_PERMISSIONS.protectionPlans;
+const { view: viewSettings } = ACTION_PERMISSIONS.settings;
 const APPS_NO_ACCESS: NoAccess = {
   featureName: T.APPLICATIONS.TITLE,
   permission: viewApplications,
 };
 const PLANS_NO_ACCESS: NoAccess = { featureName: T.PLANS.TITLE, permission: viewPlans };
 const SNAPSHOTS_NO_ACCESS: NoAccess = { featureName: T.STORAGE.TITLE, permission: viewSnapshots };
+const CLUSTER_NO_ACCESS: NoAccess = { featureName: T.CLUSTER.TITLE, permission: viewSettings };
 
 const Dashboard: React.FC = () => {
   const permissionsReady = useSelector(selectPermissionsReady);
@@ -67,6 +69,7 @@ const Dashboard: React.FC = () => {
     viewSnapshots.level,
     viewSnapshots.deny,
   );
+  const canViewSettings = usePermission(viewSettings.scope, viewSettings.level);
   const storage = useDashboardData({ canViewApplications, canViewPlans, canViewSnapshots });
 
   const applications = useSelector((s: RootState) => s.applications.applications);
@@ -136,6 +139,7 @@ const Dashboard: React.FC = () => {
             cluster={parseClusterVersion(clusterVersion)}
             loading={globalConfigState.loading && !clusterVersion}
             failed={Boolean(globalConfigState.error) && !clusterVersion}
+            noAccess={canViewSettings ? undefined : CLUSTER_NO_ACCESS}
           />
           <ListBox
             title={T.PLANS_ATTENTION.TITLE}

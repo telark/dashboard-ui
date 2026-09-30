@@ -4,6 +4,7 @@ import { HiChevronUpDown } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 import {
   getCurrentUser,
+  setCurrentUser as storeCurrentUser,
   CURRENT_USER_UPDATED_EVENT,
   handleUserLogout,
   hasSessionToken,
@@ -25,6 +26,18 @@ import {
 import { isDevelopment } from '../../../../../utils/helpers/env';
 import type { User } from '../../models';
 import logger from '../../../../../logging';
+
+// Enough for the menu (and its logout) when the user may not read its own record.
+const sessionOnlyUser = (id: string): User => ({
+  id,
+  username: '',
+  fullname: '',
+  email: '',
+  roleRefs: [],
+  groupRefs: [],
+  creationDate: '',
+  status: { phase: 'active' },
+});
 
 interface UserAvatarDropdownProps {
   variant?: 'header' | 'sidebar';
@@ -49,11 +62,16 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(
         // Self-heal: token exists but user not in localStorage (e.g. after OIDC login)
         validateSession()
           .then((result) => {
-            if (result.isValid && result.sessionDetails?.userId) {
-              return fetchUserById(result.sessionDetails.userId, true).then((res) => {
-                if (res?.data) setCurrentUser(res.data);
-              });
-            }
+            const userId = result.isValid ? result.sessionDetails?.userId : undefined;
+            if (!userId) return;
+            return fetchUserById(userId, true).then(
+              (res) => {
+                if (!res?.data) return;
+                storeCurrentUser(res.data);
+                setCurrentUser(res.data);
+              },
+              () => setCurrentUser(sessionOnlyUser(userId)),
+            );
           })
           .catch(() => {});
       } else if (initialUser?.id) {

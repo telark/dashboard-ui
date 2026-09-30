@@ -1,5 +1,6 @@
 import type { Role } from '../../models';
 import type { ResourceDetailsResponse } from '../../../../../interfaces/http';
+import { ROLES_CONSTANTS as RC } from '../../constants';
 
 export const mapRoleData = (apiRole: Role): Role => {
   return {
@@ -24,7 +25,8 @@ export const mapRoleData = (apiRole: Role): Role => {
 };
 
 export const mapRolesData = (apiRoles: Role[]): Role[] => {
-  return apiRoles.map(mapRoleData);
+  // A soft-deleted role stays listed server-side but grants nothing, so it is neither shown nor assignable.
+  return apiRoles.filter((role) => role.status !== RC.STATUS.DELETED).map(mapRoleData);
 };
 
 export const mapRoleDetailsData = (response: ResourceDetailsResponse<Role>): Role => {

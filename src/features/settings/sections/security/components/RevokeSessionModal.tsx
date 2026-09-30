@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Modal } from 'antd';
+import { ActionConfirmModal } from '../../../../../components/display/modal';
 import { SECURITY_SECTION_CONSTANTS } from '../constants';
 
 const { LABELS } = SECURITY_SECTION_CONSTANTS;
@@ -14,19 +14,19 @@ export interface RevokeSessionModalProps {
 
 const RevokeSessionModal: React.FC<RevokeSessionModalProps> = memo(
   ({ open, message, onConfirm, onCancel, confirming }) => (
-    <Modal
+    <ActionConfirmModal
       open={open}
+      onClose={onCancel}
+      onConfirm={onConfirm}
       title={LABELS.REVOKE_CONFIRM_MODAL.TITLE}
-      onOk={onConfirm}
-      onCancel={onCancel}
-      okText={LABELS.REVOKE_CONFIRM_MODAL.OK}
+      action={LABELS.REVOKE_CONFIRM_MODAL.OK}
+      resourceName=""
+      customMessage={message}
+      confirmText={LABELS.REVOKE_CONFIRM_MODAL.OK}
       cancelText={LABELS.REVOKE_CONFIRM_MODAL.CANCEL}
-      okButtonProps={{ loading: confirming, danger: true }}
-      centered
-      destroyOnHidden
-    >
-      <p>{message}</p>
-    </Modal>
+      loading={confirming}
+      getContainer={() => document.body}
+    />
   ),
 );
 

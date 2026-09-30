@@ -42,7 +42,13 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ avatar, username, size = 40, st
   }, [avatar, size]);
 
   return (
-    <Avatar src={avatarSrc} size={size} style={style} alt={username || 'User'}>
+    // antd's overflow:hidden drops the flex min-width to 0, so a crowded row squeezes it oval.
+    <Avatar
+      src={avatarSrc}
+      size={size}
+      style={{ flexShrink: 0, ...style }}
+      alt={username || 'User'}
+    >
       {!avatarSrc && username ? username.charAt(0).toUpperCase() : null}
     </Avatar>
   );

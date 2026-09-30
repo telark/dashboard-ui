@@ -1,4 +1,4 @@
-/* Same in both themes: the brand dark, matching DEFAULT_COLORS.PAGE_BG. */
+/* The brand dark, matching DEFAULT_COLORS.PAGE_BG; the dark theme overrides it below. */
 .auth-root {
   --color-primary: var(--color-page-bg);
 }
@@ -34,6 +34,8 @@ html:has(.auth-root[data-theme='dark']) body {
 }
 
 .auth-root[data-theme='dark'] {
+  /* The brand dark would vanish into the dark card, so the dark theme uses the brand green. */
+  --color-primary: var(--color-success);
   --auth-right-bg: var(--color-auth-dark-bg);
   --auth-card-bg: var(--color-auth-dark-card-bg);
   --auth-card-border: var(--color-auth-dark-border);

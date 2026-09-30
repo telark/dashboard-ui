@@ -4,12 +4,10 @@ import { Endpoints } from '../../../../constants';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import type { Role, RoleFormData } from '../models';
 import { ROLES_ERROR_MESSAGES } from '../constants';
-import { getCurrentUser } from '../../../../features/auth/utils';
 
 export const createRole = async (role: RoleFormData) => {
   try {
-    const currentUser = getCurrentUser();
-    const roleData: RoleFormData & { createdBy?: string } = {
+    const roleData: RoleFormData = {
       name: role.name,
       description: role.description,
       type: role.type,
@@ -19,10 +17,6 @@ export const createRole = async (role: RoleFormData) => {
       status: role.status,
       validity: role.validity,
     };
-
-    if (currentUser?.id) {
-      roleData.createdBy = currentUser.id;
-    }
 
     return await Client<ResourceDetailsResponse<Role>>(
       exporterApiClient,

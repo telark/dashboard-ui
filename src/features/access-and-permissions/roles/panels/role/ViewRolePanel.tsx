@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import ViewPanel from '../../../../../components/display/panels/view/ViewPanel';
-import { useViewRolePanelData } from '../../hooks';
+import { useViewRolePanelData, useCanChangeRoleProtection } from '../../hooks';
 import RoleProtectionView from '../../components/display/view/RoleProtectionView';
 import RoleScopesView from '../../components/display/view/RoleScopesView';
 import { convertScopesFromAPI, canModifyRole } from '../../utils';
@@ -16,6 +16,7 @@ interface ViewRolePanelProps {
 
 const ViewRolePanel: React.FC<ViewRolePanelProps> = ({ open, onClose, role, onEdit }) => {
   const { details, name, description } = useViewRolePanelData({ role });
+  const canChangeProtection = useCanChangeRoleProtection(role);
 
   const scopesRecord = useMemo(
     () => (role ? convertScopesFromAPI(role.scopesAndPermissions ?? []) : {}),
@@ -46,9 +47,10 @@ const ViewRolePanel: React.FC<ViewRolePanelProps> = ({ open, onClose, role, onEd
       width={520}
       actions={{
         onEdit,
-        editDisabledReason: canModifyRole(role)
-          ? undefined
-          : RC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP,
+        editDisabledReason:
+          canModifyRole(role) || canChangeProtection
+            ? undefined
+            : RC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP,
       }}
     />
   );

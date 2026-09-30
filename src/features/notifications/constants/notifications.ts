@@ -25,6 +25,7 @@ export const NOTIFICATIONS_STORE_ACTIONS = {
   MARK_READ: 'notifications/markRead',
   MARK_ALL_READ: 'notifications/markAllRead',
   CLEAR: 'notifications/clear',
+  DELETE: 'notifications/delete',
 } as const;
 
 export const NOTIFICATIONS_TEXTS = {
@@ -33,4 +34,6 @@ export const NOTIFICATIONS_TEXTS = {
   EMPTY_DESCRIPTION: "You're all caught up. New activity will show up here.",
   MARK_ALL_READ: 'Mark all read',
   CLEAR_ALL: 'Clear all',
+  MARK_READ: 'Mark as read',
+  DELETE: 'Delete',
 } as const;

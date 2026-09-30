@@ -199,6 +199,7 @@ export const ACTION_PERMISSIONS = {
     },
   },
   settings: {
+    view: { scope: 'settings' as const, level: 'ReadOnly' as PermissionLevel },
     viewGovernance: { scope: 'settings' as const, level: 'Contributor' as PermissionLevel },
     editDiscoveryConfig: {
       scope: 'settings' as const,
@@ -343,6 +344,24 @@ export function useCanGrantScopes(): (
         }),
       ),
     [scopeIndex],
+  );
+}
+
+// The backend's "Admin on ALL" is a grant on the ALL scope itself: Admin on every scope one by one
+// doesn't count, and neither do deny rules.
+export function useIsAdminOnAll(): boolean {
+  const { roles } = useSelector(selectPermissionsState);
+  return useMemo(
+    () =>
+      roles.some(
+        (role) =>
+          !role.isExpired &&
+          role.status === 'Active' &&
+          role.scopes.some(
+            (sp) => sp.scope.toUpperCase() === ALL_SCOPE_NAME && sp.level === 'Admin',
+          ),
+      ),
+    [roles],
   );
 }
 

@@ -4,8 +4,9 @@ import Section from '../../../../../../../components/display/sections/Section';
 import { Switch, NumberInput, DatePicker } from '../../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import { zonedNow } from '../../../../../../../utils/layout';
+import type { ValiditySectionProps } from '../../../../models';
 
-const ValiditySection: React.FC = memo(() => {
+const ValiditySection: React.FC<ValiditySectionProps> = memo(({ disabled = false }) => {
   const validityTypeOptions = [
     { value: RPC.VALIDITY_TYPES.PERMANENT, label: 'Permanent' },
     { value: RPC.VALIDITY_TYPES.TEMPORARY, label: 'Temporary' },
@@ -35,6 +36,7 @@ const ValiditySection: React.FC = memo(() => {
                 <Select
                   placeholder="Select validity type"
                   options={validityTypeOptions}
+                  disabled={disabled}
                   onChange={(value) => {
                     // Clear temporary-only fields when switching to permanent or sessionBased
                     if (value !== RPC.VALIDITY_TYPES.TEMPORARY) {
@@ -71,6 +73,7 @@ const ValiditySection: React.FC = memo(() => {
                       <Select
                         placeholder="Select expiration model"
                         options={expirationModelOptions}
+                        disabled={disabled}
                         onChange={() => {
                           // Clear the other field when switching models
                           const currentValidity = getFieldValue('validity') || {};
@@ -106,6 +109,7 @@ const ValiditySection: React.FC = memo(() => {
                                 format="YYYY-MM-DD HH:mm"
                                 placeholder={RPC.VALIDITY.EXPIRES_AT_PLACEHOLDER}
                                 style={{ width: '100%' }}
+                                disabled={disabled}
                                 disabledDate={(current) =>
                                   current ? current < zonedNow().startOf('day') : false
                                 }
@@ -130,6 +134,7 @@ const ValiditySection: React.FC = memo(() => {
                                 placeholder={RPC.VALIDITY.DURATION_PLACEHOLDER}
                                 style={{ width: '100%' }}
                                 addonAfter="hours"
+                                disabled={disabled}
                               />
                             </Form.Item>
                           );
@@ -172,6 +177,7 @@ const ValiditySection: React.FC = memo(() => {
                   onChange={(checked) => setFieldValue(['validity', 'autoRevoke'], checked)}
                   label={RPC.VALIDITY.AUTO_REVOKE_LABEL}
                   containerStyle={{ marginTop: 20 }}
+                  disabled={disabled}
                 />
               );
             }}

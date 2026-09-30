@@ -46,7 +46,6 @@ export const ROLES_CONSTANTS = {
       DELETE_DISABLED_TOOLTIP: 'Delete is disabled due to protection',
       DELETE_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to delete roles',
       CREATE_DISABLED_TOOLTIP: 'You do not have permission to create roles',
-      CANNOT_DELETE_TITLE: 'Cannot delete',
       BULK_DELETE: 'Delete selected',
       BULK_DELETE_PROTECTED_TOOLTIP: 'Some selected roles are protected from deletion',
       BULK_DELETE_MODAL_TITLE: 'Delete Roles',
@@ -91,7 +90,7 @@ export const ROLES_CONSTANTS = {
       },
     },
     TOOLBAR: {
-      SEARCH: { PLACEHOLDER: 'Search roles by name...', BUTTON_LABEL: 'Search' },
+      SEARCH: { PLACEHOLDER: 'Search by name, description...', BUTTON_LABEL: 'Search' },
       FILTER: { BUTTON_LABEL: 'Filter' },
       CREATE: { BUTTON_LABEL: 'Add Role' },
       COUNT_SUFFIX: { one: 'role', other: 'roles' },
@@ -207,6 +206,7 @@ export const ROLES_CONSTANTS = {
     TITLE: 'Scopes & Permissions',
     SUBTITLE: 'Define what areas this role can access and at what level.',
     LOCKED_MESSAGE: 'Scopes and permissions are locked for this role.',
+    AT_LEAST_ONE_REQUIRED: 'Select a permission level for at least one scope.',
     DEFAULT_AREAS: [
       { key: 'groups', label: 'Groups' },
       { key: 'users', label: 'Users' },
@@ -229,7 +229,7 @@ export const ROLES_CONSTANTS = {
       VIEW_DENIED_TOOLTIP: 'Click to view denied rules',
     },
   },
-  STATUS: { ACTIVE: 'Active', INACTIVE: 'Inactive' },
+  STATUS: { ACTIVE: 'Active', INACTIVE: 'Inactive', DELETED: 'Deleted' },
   TYPE: { BUILT_IN: 'built-in', CUSTOM: 'custom' },
   PROTECTION: {
     TITLE: 'Protection',
@@ -241,6 +241,8 @@ export const ROLES_CONSTANTS = {
     LOCK_CATEGORY_LABEL: 'Lock Category',
     SOFT_DELETE_LABEL: 'Soft Delete',
     SOFT_DELETE_DISABLED_NOTE: 'Soft delete is disabled because deletion is prevented.',
+    READ_ONLY_TOOLTIP:
+      "Only a custom role's creator or an Admin on all scopes can change its protection.",
   },
   ERROR_MESSAGES: {
     CLIENT: {

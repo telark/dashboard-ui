@@ -20,7 +20,7 @@ const sectionLabelStyle: CSSProperties = {
   fontWeight: 500,
   letterSpacing: '0.06em',
   textTransform: 'uppercase',
-  color: DEFAULT_COLORS.ICON_SECONDARY,
+  color: DEFAULT_COLORS.TEXT_SECONDARY,
   padding: '4px 12px 2px 22px',
   marginTop: 20,
   userSelect: 'none',

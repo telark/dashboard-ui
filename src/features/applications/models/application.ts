@@ -276,6 +276,8 @@ export interface ApplicationCoverage {
   known: boolean;
   active: string[];
   upcoming: string[];
+  // The viewer may not read plans: the card says so rather than claim no coverage.
+  noAccess?: boolean;
 }
 export interface ApplicationCoverageIndex {
   byApplication: Map<string, ProtectionPlan[]>;

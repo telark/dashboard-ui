@@ -20,6 +20,8 @@ import UserGroupSelectList from '../../../components/display/manage/group/UserGr
 import UserAssignedGroupsView from '../../../components/display/manage/group/UserAssignedGroupsView';
 import { CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
 import { filterBySearchTerm } from '../../../utils/search/filter';
+import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../groups/constants';
+import { useHasRoleAboveCaller } from '../../../../roles/hooks';
 import type { User } from '../../../models';
 
 const GroupIcon = Icons.Group;
@@ -68,9 +70,20 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
     : canRemoveFromGroup
       ? undefined
       : UC.LABELS.ACTIONS.REMOVE_FROM_GROUP_DISABLED_TOOLTIP;
+  const hasRoleAboveCaller = useHasRoleAboveCaller();
+  // Joining or leaving a group that carries a role above the caller changes that role's holders.
+  const aboveCallerBlocked = useCallback(
+    (groupId: string) =>
+      hasRoleAboveCaller(groups?.find((g) => g.id === groupId)?.roleRefs)
+        ? ARC.TOOLTIPS.GROUP_EXCEEDS_OWN_ACCESS
+        : undefined,
+    [groups, hasRoleAboveCaller],
+  );
   const blockedReason = useCallback(
-    (groupId: string) => (initialSelectedGroups.includes(groupId) ? removeBlocked : addBlocked),
-    [initialSelectedGroups, addBlocked, removeBlocked],
+    (groupId: string) =>
+      (initialSelectedGroups.includes(groupId) ? removeBlocked : addBlocked) ??
+      aboveCallerBlocked(groupId),
+    [initialSelectedGroups, addBlocked, removeBlocked, aboveCallerBlocked],
   );
 
   const handleDeassignSuccess = useCallback((updatedGroups: string[]) => {
@@ -128,6 +141,7 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                flexWrap: 'wrap',
                 gap: 12,
                 width: '100%',
                 boxSizing: 'border-box',
@@ -156,7 +170,7 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
                   allGroups={groups}
                   loading={groupsLoading}
                   onDeassignClick={openDeassignModal}
-                  deassignDisabledReason={() => removeBlocked}
+                  deassignDisabledReason={(group) => removeBlocked ?? aboveCallerBlocked(group.id)}
                 />
               ) : (
                 <UserGroupSelectList

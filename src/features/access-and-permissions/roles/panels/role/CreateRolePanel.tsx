@@ -75,6 +75,8 @@ const CreateRolePanel: React.FC<CreateRolePanelProps> = ({ open, onClose, form }
           },
       };
       const roleData = convertFormValuesToRoleFormData(finalValues, 'custom', 'Active');
+      // Protection is authorized separately server-side; the untouched default is not a change.
+      if (!Object.values(roleData.protection ?? {}).some(Boolean)) delete roleData.protection;
       await handleCreate(roleData);
       form.resetFields();
       onClose();

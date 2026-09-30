@@ -9,7 +9,12 @@ export interface RolesGeneralSectionProps {
   currentName?: string;
   lockName?: boolean;
   lockCategory?: boolean;
+  disabled?: boolean;
   onManualChange?: () => void;
+}
+
+export interface ValiditySectionProps {
+  disabled?: boolean;
 }
 
 export interface ScopesPermissionsProps {
@@ -60,8 +65,8 @@ export interface ScopeRowProps {
 }
 
 export interface LevelSelectorProps {
-  value: PermissionLevel;
-  onChange: (value: PermissionLevel) => void;
+  value?: PermissionLevel;
+  onChange: (value?: PermissionLevel) => void;
   options: readonly { value: PermissionLevel; label: string }[];
   tooltipMap: Record<PermissionLevel, string>;
   placeholder?: string;

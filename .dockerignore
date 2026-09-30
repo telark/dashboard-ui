@@ -1,18 +1,31 @@
+# scripts/ stays: build:cluster runs scripts/generate-licenses.mjs.
 node_modules/
 dist/
 .git/
+.github/
 .gitignore
+.dockerignore
+Dockerfile
 .env
 .env.*
 *.log
-*.md
-CLAUDE.md
-AGENTS.md
-.claude/
+
+# Docs
+**/*.md
+
+# Lint/format config (not used by vite build)
+eslint.config.mjs
+.prettierrc
+
+# Tests and coverage
 tests/
-__tests__/
+**/__tests__/
 coverage/
-.claude/
-.vscode/
+
+# IDE and editor files
 .idea/
+.vscode/
+.cursor/
+.claude/
 .code-review-graph/
+.DS_Store

@@ -10,7 +10,12 @@ import {
 } from '../../utils/flow/login';
 import { redirectToGoogle } from '../../utils/flow/google';
 import { isWebAuthnSupported } from '../../utils/webauthn/core';
-import { APP_ROUTES, DEFAULT_COLORS, GOOGLE_BRAND_COLORS } from '../../../../constants';
+import {
+  APP_ROUTES,
+  BUTTON_CONFIGS,
+  DEFAULT_COLORS,
+  GOOGLE_BRAND_COLORS,
+} from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { GoogleIcon } from '../../../../components/display/icons/GoogleIcon';
 import {
@@ -158,9 +163,9 @@ const Login: React.FC = () => {
             disabled={isAnyLoading || !passkeysAvailable}
             style={{
               fontWeight: 600,
-              background: 'var(--color-primary)',
-              borderColor: 'var(--color-primary)',
-              color: DEFAULT_COLORS.PILL_TEXT,
+              background: DEFAULT_COLORS.SUCCESS,
+              borderColor: DEFAULT_COLORS.SUCCESS,
+              color: BUTTON_CONFIGS.PRIMARY_BUTTON.TEXT_COLOR,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

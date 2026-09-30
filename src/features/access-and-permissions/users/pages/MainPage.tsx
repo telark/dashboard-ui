@@ -171,8 +171,8 @@ const MainPage: React.FC = () => {
   });
 
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(users) && usersExcludingSelf.length === 0 && !error,
-    [users, usersExcludingSelf.length, error],
+    () => Array.isArray(users) && usersExcludingSelf.length === 0 && !error && !loading,
+    [users, usersExcludingSelf.length, error, loading],
   );
 
   if (shouldShowEmpty) {

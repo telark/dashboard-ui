@@ -1,4 +1,4 @@
-import { Client, exporterApiClient } from '../../../api/index';
+import { Client, exporterApiClient, type ExtendedAxiosError } from '../../../api/index';
 import logger from '../../../logging';
 import { Endpoints, HTTP_HEADERS, HEADER_VALUES } from '../../../constants';
 import { NOTIFICATIONS_ERROR_MESSAGES } from '../constants';
@@ -48,11 +48,13 @@ export const markNotificationRead = async (id: string, userId: string) => {
       exporterApiClient,
       Endpoints.NOTIFICATIONS.MARK_READ(id).path,
       {
-        method: 'PATCH',
+        method: Endpoints.NOTIFICATIONS.MARK_READ(id).method,
         params: { userId },
       },
     );
   } catch (error) {
+    // Unknown or already cleared: nothing is left to mark, so keep it read locally.
+    if ((error as ExtendedAxiosError).normalized?.isNotFound) return null;
     logger.error(
       `${NOTIFICATIONS_ERROR_MESSAGES.CLIENT.MARK_NOTIFICATION_READ_FAILED} "${id}":`,
       error,
@@ -73,6 +75,27 @@ export const markAllNotificationsRead = async (userId: string) => {
     );
   } catch (error) {
     logger.error(NOTIFICATIONS_ERROR_MESSAGES.CLIENT.MARK_ALL_NOTIFICATIONS_READ_FAILED, error);
+    throw error;
+  }
+};
+
+export const deleteNotification = async (id: string, userId: string) => {
+  try {
+    return await Client<NotificationMutationResponse>(
+      exporterApiClient,
+      Endpoints.NOTIFICATIONS.DELETE(id).path,
+      {
+        method: Endpoints.NOTIFICATIONS.DELETE(id).method,
+        params: { userId },
+      },
+    );
+  } catch (error) {
+    // Already gone: the row is removed locally either way.
+    if ((error as ExtendedAxiosError).normalized?.isNotFound) return null;
+    logger.error(
+      `${NOTIFICATIONS_ERROR_MESSAGES.CLIENT.DELETE_NOTIFICATION_FAILED} "${id}":`,
+      error,
+    );
     throw error;
   }
 };

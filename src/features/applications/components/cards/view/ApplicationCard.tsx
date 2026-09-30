@@ -1,11 +1,13 @@
 import React, { memo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ClockCircleOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
+import { ClockCircleOutlined, LockOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
 import {
   APP_ROUTES,
   CARD_FOOTER_STYLE,
   CARD_STATS_GRID_STYLE,
+  DEFAULT_COLORS,
   LIST_TOOLBAR,
+  MENU_LABELS,
   TRUNCATE_STYLE,
   getCardShellStyle,
 } from '../../../../../constants';
@@ -13,6 +15,7 @@ import type { Application, ApplicationCoverage, ApplicationCoverageState } from 
 import { APPLICATION_CARD, APPLICATION_COVERAGE_ACCENT, APPLICATIONS_UI } from '../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { CardChipSection, StatCell } from '../../../../../components/display/card';
+import { NO_PERMISSION_CONSTANTS } from '../../../../../components/shared';
 import type { CardChipItem } from '../../../../../interfaces/layout/card';
 import ApplicationCardHeader from './ApplicationCardHeader';
 
@@ -41,6 +44,14 @@ const coverageChip = (name: string, state: ApplicationCoverageState): CardChipIt
   accent: APPLICATION_COVERAGE_ACCENT[state],
   title: APPLICATION_CARD.COVERAGE.CHIP_TITLE(name, state),
 });
+
+const NO_ACCESS_CHIP: CardChipItem = {
+  key: APPLICATION_CARD.COVERAGE.NO_ACCESS,
+  label: APPLICATION_CARD.COVERAGE.NO_ACCESS,
+  icon: <LockOutlined />,
+  accent: DEFAULT_COLORS.TEXT_MUTED,
+  title: NO_PERMISSION_CONSTANTS.LABELS.DESCRIPTION(MENU_LABELS.PROTECTION_PLANS),
+};
 
 const ApplicationCard: React.FC<ApplicationCardProps> = memo(
   ({
@@ -120,10 +131,14 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
               emptyText={
                 coverage.known ? APPLICATION_CARD.COVERAGE.NONE : APPLICATIONS_UI.FALLBACKS.EMPTY
               }
-              items={[
-                ...coverage.active.map((name) => coverageChip(name, 'active')),
-                ...coverage.upcoming.map((name) => coverageChip(name, 'upcoming')),
-              ]}
+              items={
+                coverage.noAccess
+                  ? [NO_ACCESS_CHIP]
+                  : [
+                      ...coverage.active.map((name) => coverageChip(name, 'active')),
+                      ...coverage.upcoming.map((name) => coverageChip(name, 'upcoming')),
+                    ]
+              }
             />
           )}
         </div>

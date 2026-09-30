@@ -20,8 +20,10 @@ import type { Group } from '../../models';
 import { buildAttachRoleFilterFields } from '../../config/attachRoleFilterConfig';
 import { applyRoleFilters } from '../../utils';
 import { useRoleCategoryOptions } from '../../hooks/categories/useRoleCategoryOptions';
-import { GROUPS_CONSTANTS as GC } from '../../constants';
+import { GROUPS_CONSTANTS as GC, ATTACHED_ROLES_CONSTANTS as ARC } from '../../constants';
+import { useHasRoleAboveCaller } from '../../../roles/hooks';
 import { filterBySearchTerm } from '../../../users/utils/search/filter';
+import { USERS_CONSTANTS as UC } from '../../../users/constants';
 import { CapitalizeFirstLetter } from '../../../../../utils/helpers/format';
 import { CheckCircleOutlined } from '@ant-design/icons';
 
@@ -86,6 +88,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
     (roleId: string) => (initialSelectedRoles.includes(roleId) ? removeBlocked : addBlocked),
     [initialSelectedRoles, addBlocked, removeBlocked],
   );
+  const hasRoleAboveCaller = useHasRoleAboveCaller();
 
   const {
     deassignModalOpen,
@@ -161,6 +164,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                flexWrap: 'wrap',
                 gap: 12,
                 width: '100%',
                 boxSizing: 'border-box',
@@ -171,8 +175,9 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
               <SearchInput
                 value={searchTerm}
                 onChange={setSearchTerm}
-                placeholder={GC.LABELS.PANELS.ATTACH_ROLES.SEARCH_PLACEHOLDER}
-                minWidth={200}
+                placeholder={UC.LABELS.PANELS.MANAGE_ROLE.SEARCH_PLACEHOLDER}
+                minWidth={ARC.SEARCH_MIN_WIDTH}
+                block
               />
               <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
                 <ToggleButton
@@ -195,7 +200,10 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                   allRoles={allRoles}
                   loading={rolesLoading}
                   onDeassignClick={openDeassignModal}
-                  deassignDisabledReason={() => removeBlocked}
+                  deassignDisabledReason={(role) =>
+                    removeBlocked ??
+                    (hasRoleAboveCaller([role.id]) ? ARC.TOOLTIPS.EXCEEDS_OWN_ACCESS : undefined)
+                  }
                 />
               )}
               {activeView === 'select' && (

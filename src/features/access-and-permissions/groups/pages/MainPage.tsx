@@ -111,8 +111,6 @@ const MainPage: React.FC = () => {
   const { handleViewGroup } = useGroupListInteractions({
     selectedGroups,
     groups: filteredGroups,
-    handleDelete: async () => {},
-    setSelectedGroups,
     onEdit: openEditPanel,
     onView: openViewPanel,
   });
@@ -181,8 +179,8 @@ const MainPage: React.FC = () => {
   }, []);
 
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(groups) && groups.length === 0 && !error,
-    [groups, error],
+    () => Array.isArray(groups) && groups.length === 0 && !error && !loading,
+    [groups, error, loading],
   );
 
   const pageConfig = useGroupListPageConfig({

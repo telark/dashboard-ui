@@ -47,4 +47,5 @@ export interface RoleFormProps {
   hideSubmitButton?: boolean;
   /** When true, show two columns: General/Validity/Protection | Scope & Permissions. */
   expanded?: boolean;
+  protectionReadOnly?: boolean;
 }

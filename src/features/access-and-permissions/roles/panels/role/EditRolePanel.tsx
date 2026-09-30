@@ -2,7 +2,13 @@ import React, { useMemo, useEffect, useState } from 'react';
 import { Icons, SLIDE_OUT } from '../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import RoleForm from '../../components/display/shared/RoleForm';
-import { useRoleActions, useRoles, useEditRoleSubmit, useNameValidation } from '../../hooks';
+import {
+  useRoleActions,
+  useRoles,
+  useEditRoleSubmit,
+  useNameValidation,
+  useCanChangeRoleProtection,
+} from '../../hooks';
 import { convertRoleToFormValues } from '../../utils';
 import type { Role, RoleFormValues } from '../../models';
 import AnimationWrapper from '../../../../../components/display/panels/slide-out/AnimationWrapper';
@@ -25,6 +31,7 @@ const EditRolePanel: React.FC<EditRolePanelProps> = ({ open, onClose, editingRol
   const [expanded, setExpanded] = useState(false);
   const { handleUpdate, submitting } = useRoleActions({ skipNavigate: true });
   const { roles } = useRoles();
+  const protectionEditable = useCanChangeRoleProtection(editingRole);
   const watchedName = Form.useWatch('name', form) as string | undefined;
   const { isNameInvalid } = useNameValidation({
     roles,
@@ -102,6 +109,7 @@ const EditRolePanel: React.FC<EditRolePanelProps> = ({ open, onClose, editingRol
         currentName={editingRole.name}
         hideSubmitButton
         expanded={expanded}
+        protectionReadOnly={!protectionEditable}
       />
     </AnimationWrapper>
   );

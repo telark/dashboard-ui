@@ -8,6 +8,7 @@ export interface SearchInputProps {
   placeholder?: string;
   onSubmit?: () => void;
   minWidth?: number;
+  block?: boolean;
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({
@@ -16,9 +17,10 @@ const SearchInput: React.FC<SearchInputProps> = ({
   placeholder = 'Search',
   onSubmit,
   minWidth = 240,
+  block = false,
 }) => {
   return (
-    <div style={{ position: 'relative', display: 'inline-block' }}>
+    <div style={{ position: 'relative', display: 'inline-block', flex: block ? 1 : undefined }}>
       <SearchOutlined
         style={{
           position: 'absolute',
@@ -43,6 +45,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
         style={{
           height: TOOLBAR_CONTROL.HEIGHT,
           boxSizing: 'border-box',
+          width: block ? '100%' : undefined,
           minWidth,
           padding: '0 12px 0 36px',
           borderRadius: 6,

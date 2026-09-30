@@ -5,6 +5,7 @@ import {
   markNotificationReadThunk,
   markAllNotificationsReadThunk,
   clearNotificationsThunk,
+  deleteNotificationThunk,
 } from '../thunks/notificationsThunks';
 
 const initialState: NotificationsState = {
@@ -18,6 +19,11 @@ const initialState: NotificationsState = {
 
 const computeUnread = (items: Notification[]): number =>
   items.reduce((acc, n) => (n.readAt ? acc : acc + 1), 0);
+
+const removeItem = (state: NotificationsState, id: string): void => {
+  state.items = state.items.filter((n) => n.id !== id);
+  state.unreadCount = computeUnread(state.items);
+};
 
 const notificationsSlice = createSlice({
   name: 'notifications',
@@ -41,6 +47,9 @@ const notificationsSlice = createSlice({
         item.readAt = new Date().toISOString();
         state.unreadCount = computeUnread(state.items);
       }
+    },
+    optimisticDelete: (state, action: PayloadAction<string>) => {
+      removeItem(state, action.payload);
     },
     optimisticMarkAllRead: (state) => {
       const now = new Date().toISOString();
@@ -104,6 +113,9 @@ const notificationsSlice = createSlice({
         });
         state.unreadCount = 0;
       })
+      .addCase(deleteNotificationThunk.fulfilled, (state, action) => {
+        removeItem(state, action.payload);
+      })
       .addCase(clearNotificationsThunk.fulfilled, (state) => {
         state.items = [];
         state.unreadCount = 0;
@@ -115,6 +127,7 @@ export const {
   setPanelOpen,
   hydrateFromCache,
   optimisticMarkRead,
+  optimisticDelete,
   optimisticMarkAllRead,
   optimisticClear,
   rollbackState,

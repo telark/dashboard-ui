@@ -19,6 +19,7 @@ export const HTTP_HEADERS = {
     CONTENT_TYPE: 'Content-Type',
     ACCEPT: 'Accept',
     IF_NONE_MATCH: 'If-None-Match',
+    RETRY_AFTER: 'retry-after',
     ETAG: 'etag',
     ORIGIN: 'Origin',
     ACCESS_CONTROL_REQUEST_METHOD: 'Access-Control-Request-Method',

@@ -3,6 +3,7 @@ import { Dropdown, Tooltip } from 'antd';
 import { DownOutlined, LoadingOutlined } from '@ant-design/icons';
 import {
   BUTTON_COLORS,
+  BUTTON_CONFIGS,
   DEFAULT_COLORS,
   TOOLBAR_CONTROL,
   TOOLBAR_ITEM_GAP,
@@ -141,7 +142,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                     lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
                     borderRadius: 6,
                     fontSize: 13,
-                    fontWeight: 500,
+                    fontWeight: isPrimary ? BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT : 500,
                     border: isGhost
                       ? 'none'
                       : `1px solid ${
@@ -161,7 +162,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                     color: isDisabled
                       ? BUTTON_COLORS.TOOLBAR_DISABLED_TEXT
                       : isPrimary
-                        ? DEFAULT_COLORS.PILL_TEXT
+                        ? BUTTON_CONFIGS.PRIMARY_BUTTON.TEXT_COLOR
                         : isDanger
                           ? DEFAULT_COLORS.DANGER
                           : button.active
@@ -249,7 +250,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                 lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
                 borderRadius: 6,
                 fontSize: 13,
-                fontWeight: 500,
+                fontWeight: isPrimary ? BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT : 500,
                 border: isGhost
                   ? 'none'
                   : `1px solid ${
@@ -271,7 +272,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                 color: isDisabled
                   ? BUTTON_COLORS.TOOLBAR_DISABLED_TEXT
                   : isPrimary
-                    ? DEFAULT_COLORS.PILL_TEXT
+                    ? BUTTON_CONFIGS.PRIMARY_BUTTON.TEXT_COLOR
                     : isDanger
                       ? DEFAULT_COLORS.DANGER
                       : button.active

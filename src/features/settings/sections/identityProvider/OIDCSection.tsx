@@ -13,6 +13,7 @@ import { extractErrorMessage } from '../../../../utils/helpers/format';
 import { IDENTITY_PROVIDER_CONSTANTS as C } from './constants';
 import {
   ACTION_PERMISSIONS,
+  useIsAdminOnAll,
   usePermission,
 } from '../../../auth/hooks/permissions/permissionEngine';
 
@@ -41,10 +42,12 @@ const trimmed = (form: OIDCForm): OIDCForm => ({
 
 // Mirrors the server's own check so the admin sees the problem before saving. The
 // server still re-checks: this is convenience, not a trust boundary.
-function validate(form: OIDCForm): string | null {
+function validate(form: OIDCForm, hasPinnedKeys: boolean): string | null {
   if (!form.enabled) return null;
   if (!form.googleClientID.trim()) return C.MESSAGES.CLIENT_ID_REQUIRED;
-  if (!form.egressAllowed && !form.googleJwkJson.trim()) return C.MESSAGES.TRUST_SOURCE_REQUIRED;
+  if (!form.egressAllowed && !form.googleJwkJson.trim() && !hasPinnedKeys) {
+    return C.MESSAGES.TRUST_SOURCE_REQUIRED;
+  }
   if (form.googleJwkJson.trim()) {
     try {
       JSON.parse(form.googleJwkJson);
@@ -58,16 +61,20 @@ function validate(form: OIDCForm): string | null {
 const OIDCSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
-  const canEdit = usePermission(
+  const canEditSettings = usePermission(
     EDIT_OIDC_PERMISSION.scope,
     EDIT_OIDC_PERMISSION.level,
     EDIT_OIDC_PERMISSION.deny,
   );
+  // Whoever controls sign-on trust can mint a login for anyone, so the server also requires Admin on ALL.
+  const isAdminOnAll = useIsAdminOnAll();
+  const canEdit = canEditSettings && isAdminOnAll;
   const { message } = AntdApp.useApp();
 
   const [form, setForm] = useState<OIDCForm>(EMPTY_FORM);
   const [initial, setInitial] = useState<OIDCForm | null>(null);
   const [saving, setSaving] = useState(false);
+  const hasPinnedKeys = Boolean(globalConfig?.data?.oidc?.googleJwkJson);
 
   useEffect(() => {
     if (!globalConfig?.data) return;
@@ -76,7 +83,8 @@ const OIDCSection: React.FC = memo(() => {
       enabled: Boolean(oidc?.enabled),
       googleClientID: String(oidc?.googleClientID ?? ''),
       egressAllowed: oidc?.egressAllowed ?? EMPTY_FORM.egressAllowed,
-      googleJwkJson: String(oidc?.googleJwkJson ?? ''),
+      // The stored set goes stale, so it is never shown: the field only takes a new one.
+      googleJwkJson: EMPTY_FORM.googleJwkJson,
     };
     setForm(loaded);
     setInitial(loaded);
@@ -86,7 +94,7 @@ const OIDCSection: React.FC = memo(() => {
     dispatch(fetchGlobalConfigThunk());
   }, [dispatch]);
 
-  const validationError = useMemo(() => validate(form), [form]);
+  const validationError = useMemo(() => validate(form, hasPinnedKeys), [form, hasPinnedKeys]);
 
   const hasChanges = useMemo(() => {
     if (!initial) return false;
@@ -106,10 +114,13 @@ const OIDCSection: React.FC = memo(() => {
 
   const handleSave = useCallback(async () => {
     const payload = trimmed(form);
+    // Left out, the key keeps the pinned set; an empty string would clear it.
+    const { googleJwkJson, ...keepPinned } = payload;
     setSaving(true);
     try {
       const { path, method } = Endpoints.AUTH.OIDC.CONFIG;
-      await Client<unknown>(authApiClient, path, { method, data: payload });
+      const data = googleJwkJson ? payload : keepPinned;
+      await Client<unknown>(authApiClient, path, { method, data });
       message.success(C.MESSAGES.SAVE_SUCCESS);
       setInitial(payload);
       dispatch(fetchGlobalConfigThunk());
@@ -193,7 +204,14 @@ const OIDCSection: React.FC = memo(() => {
 
             {!form.egressAllowed ? (
               <div>
-                <div style={{ fontWeight: 700, marginBottom: 4 }}>{C.LABELS.JWK_LABEL}</div>
+                <div style={{ fontWeight: 700 }}>{C.LABELS.JWK_LABEL}</div>
+                <div style={{ fontSize: 12, marginBottom: 4 }}>
+                  {C.LABELS.JWK_SOURCE_HINT}{' '}
+                  <a href={C.LINKS.JWKS_URL} target="_blank" rel="noreferrer">
+                    {C.LINKS.JWKS_URL}
+                  </a>
+                  {hasPinnedKeys ? ` ${C.LABELS.JWK_KEEP_HINT}` : null}
+                </div>
                 <Input.TextArea
                   placeholder={C.LABELS.JWK_PLACEHOLDER}
                   value={form.googleJwkJson}

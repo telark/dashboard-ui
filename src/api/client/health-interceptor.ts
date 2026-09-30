@@ -4,6 +4,7 @@ import logger from '../../logging';
 import { canSend } from '../health/circuit-breaker';
 import type { ServiceHealth } from '../types';
 import { cooldownLogged, requestFailed, requestStarted, requestSucceeded } from '../store/slice';
+import { retryAfterMs } from './request';
 
 type HealthAction =
   | ReturnType<typeof requestStarted>
@@ -100,7 +101,7 @@ const onResponseErrorFactory =
       return Promise.reject(error);
     }
     const status = error.response?.status ?? null;
-    if (isHealthFailure(status, error.code)) {
+    if (isHealthFailure(status, error.code) && retryAfterMs(error) === undefined) {
       binding.dispatch(requestFailed(serviceName));
     }
     return Promise.reject(error);
