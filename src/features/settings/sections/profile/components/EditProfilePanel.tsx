@@ -22,6 +22,7 @@ export interface EditProfilePanelProps {
   submitting: boolean;
   hasFormErrors: boolean;
   hasChanges: boolean;
+  emailLocked: boolean;
   initialValues: EditProfileFormValues | null;
   usernameRules: Array<{ validator: (a: unknown, b: string) => Promise<void> }>;
   fullnameRules: Array<{ validator: (a: unknown, b: string) => Promise<void> }>;
@@ -39,6 +40,7 @@ const EditProfilePanel: React.FC<EditProfilePanelProps> = memo(
     submitting,
     hasFormErrors,
     hasChanges,
+    emailLocked,
     initialValues,
     usernameRules,
     fullnameRules,
@@ -76,6 +78,8 @@ const EditProfilePanel: React.FC<EditProfilePanelProps> = memo(
             rules={emailRules}
             marginBottom={0}
             validateTrigger="onChange"
+            disabled={emailLocked}
+            tooltip={emailLocked ? P.EMAIL_LOCKED : undefined}
           />
         </>
       }

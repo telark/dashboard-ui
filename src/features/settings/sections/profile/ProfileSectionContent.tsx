@@ -68,6 +68,7 @@ const ProfileSectionContent: React.FC = memo(() => {
         submitting={submitting}
         hasFormErrors={hasFormErrors}
         hasChanges={hasChanges}
+        emailLocked={currentUser?.bootstrap === true}
         initialValues={initialValues}
         usernameRules={usernameRules}
         fullnameRules={fullnameRules}

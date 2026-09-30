@@ -1,5 +1,4 @@
 import { loginStart, loginFinish } from '../../clients/login';
-import { deletePasskey } from '../../clients/passkeys';
 import { authenticateWithPasskey } from '../webauthn/core';
 import {
   extractLoginOptions,
@@ -10,14 +9,12 @@ import { setSessionToken } from '../session/token';
 import { setCurrentUser } from '../session/user';
 import { fetchMyPermissionsThunk } from '../../store/thunks/fetchThunks';
 import store from '../../../../store';
-import { AUTH_SUCCESS_MESSAGES, AUTH_ERROR_MESSAGES } from '../../constants';
+import { AUTH_SUCCESS_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
-import { HTTP_STATUS } from '../../../../constants/rest/http';
 import { handleAuthError } from '../shared/errors';
 import { getClientMetadata } from '../device/metadata';
 import type { LoginStartResponse, AuthenticatorAssertionResponse } from '../../models';
 import type { MessageInstance } from 'antd/lib/message/interface';
-import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 
 export const prepareLoginFinishRequest = (
   email: string,
@@ -42,47 +39,6 @@ export const prepareLoginFinishRequest = (
   };
 };
 
-const isUnauthorizedError = (error: unknown): boolean => {
-  const axiosError = error as ExtendedAxiosError;
-  const status = axiosError?.response?.status || axiosError?.normalized?.status;
-  return status === HTTP_STATUS.UNAUTHORIZED;
-};
-
-export const cleanupOrphanedPasskeys = async (
-  credentialIds: string[],
-  userId: string,
-  messageApi: MessageInstance,
-): Promise<boolean> => {
-  if (credentialIds.length === 0) {
-    return false;
-  }
-
-  const loadingMessage = messageApi.loading(AUTH_ERROR_MESSAGES.CLEANUP_STORED_PASSKEYS, 0);
-
-  let hasUnauthorizedError = false;
-
-  try {
-    const deletePromises = credentialIds.map(async (credentialId) => {
-      try {
-        await deletePasskey(credentialId, { cleanupOrphaned: true, forceLastDelete: true }, userId);
-      } catch (error) {
-        if (isUnauthorizedError(error)) {
-          hasUnauthorizedError = true;
-        }
-        // Not-found (format mismatch) and other failures are tolerated so cleanup continues.
-      }
-    });
-
-    await Promise.all(deletePromises);
-    loadingMessage();
-    return hasUnauthorizedError;
-  } catch (error) {
-    loadingMessage();
-    messageApi.error(AUTH_ERROR_MESSAGES.ORPHANED_PASSKEY_CLEANUP_FAILED, 5);
-    return isUnauthorizedError(error);
-  }
-};
-
 export interface OrphanedPasskeysInfo {
   credentialIds: string[];
   userId: string;
@@ -93,7 +49,6 @@ export const performLogin = async (
   email: string,
   messageApi: MessageInstance,
   onSuccess?: () => void,
-  onNoPasskeys?: () => void,
   onUserNotFound?: () => void,
   onShowOrphanedModal?: (info: OrphanedPasskeysInfo) => void,
 ): Promise<void> => {
@@ -163,7 +118,6 @@ export const performLogin = async (
 
     handleAuthError(error, messageApi, {
       onUserNotFound,
-      onNoPasskeys,
     });
     throw error;
   }

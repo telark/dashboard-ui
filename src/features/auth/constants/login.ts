@@ -5,7 +5,10 @@ export const LOGIN_CONSTANTS = {
   },
   MESSAGES: {
     USER_NOT_FOUND: 'No account for this email yet. Register first, or check the address.',
-    NO_PASSKEYS: 'User has no passkeys and must register to login',
+    USER_NOT_FOUND_NO_SELF_REGISTRATION:
+      'No account for this email. Check the address, or contact your administrator.',
+    NO_PASSKEYS: 'This account has no passkey yet. Contact your administrator.',
+    LOST_PASSKEY: 'Contact your administrator to restore access to this account.',
     NETWORK_ERROR: 'Network error. Please check your connection and try again.',
     TIMEOUT_ERROR: 'Request timed out. Please try again.',
     SERVER_ERROR: 'Server error. Please try again later.',

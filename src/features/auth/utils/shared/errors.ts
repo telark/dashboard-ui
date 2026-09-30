@@ -3,6 +3,8 @@ import type { NormalizedAxiosErrorMeta } from '../../../../api/client/normalize'
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { HTTP_STATUS } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
+import { selectSelfRegistrationEnabled } from '../../store';
+import store from '../../../../store';
 import logger from '../../../../logging';
 
 interface AuthErrorShape {
@@ -19,7 +21,6 @@ interface AuthErrorShape {
 
 interface ErrorHandlingOptions {
   onUserNotFound?: () => void;
-  onNoPasskeys?: () => void;
   customMessage?: string;
 }
 
@@ -80,11 +81,17 @@ const isNoPasskeysError = (error: AuthErrorShape, errorMsg?: string): boolean =>
   return checkErrorPattern(msg, LOGIN_CONSTANTS.ERROR_PATTERNS.NO_PASSKEYS);
 };
 
-const getUserFriendlyErrorMessage = (error: AuthErrorShape): string => {
+const userNotFoundMessage = (): string =>
+  selectSelfRegistrationEnabled(store.getState())
+    ? LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND
+    : LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND_NO_SELF_REGISTRATION;
+
+export const getUserFriendlyErrorMessage = (input: unknown): string => {
+  const error = input as AuthErrorShape;
   const errorMsg = extractErrorMessage(error);
 
   if (isUserNotFoundError(error, errorMsg)) {
-    return LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND;
+    return userNotFoundMessage();
   }
 
   if (isNoPasskeysError(error, errorMsg)) {
@@ -104,7 +111,7 @@ const getUserFriendlyErrorMessage = (error: AuthErrorShape): string => {
 
   if (error?.isServer || normalized?.isServer) {
     return checkErrorPattern(lowerMsg, LOGIN_CONSTANTS.ERROR_PATTERNS.USER_NOT_FOUND)
-      ? LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND
+      ? userNotFoundMessage()
       : LOGIN_CONSTANTS.MESSAGES.SERVER_ERROR;
   }
 
@@ -129,16 +136,12 @@ const showErrorMessage = (messageApi: MessageApi, content: string, callback?: ()
   }
 };
 
-const showInfoMessage = (messageApi: MessageApi, content: string, callback?: () => void): void => {
+const showInfoMessage = (messageApi: MessageApi, content: string): void => {
   messageApi.open({
     type: 'info',
     content,
     duration: LOGIN_CONSTANTS.TIMING.MESSAGE_DURATION,
   });
-
-  if (callback) {
-    setTimeout(callback, LOGIN_CONSTANTS.TIMING.CALLBACK_DELAY);
-  }
 };
 
 export const handleAuthError = (
@@ -146,7 +149,7 @@ export const handleAuthError = (
   messageApi: MessageApi,
   options?: ErrorHandlingOptions,
 ): void => {
-  const { onUserNotFound, onNoPasskeys, customMessage } = options || {};
+  const { onUserNotFound, customMessage } = options || {};
 
   if (customMessage) {
     showErrorMessage(messageApi, customMessage);
@@ -157,12 +160,12 @@ export const handleAuthError = (
   const errorMsg = extractErrorMessage(authError);
 
   if (isNoPasskeysError(authError, errorMsg)) {
-    showInfoMessage(messageApi, LOGIN_CONSTANTS.MESSAGES.NO_PASSKEYS, onNoPasskeys);
+    showInfoMessage(messageApi, LOGIN_CONSTANTS.MESSAGES.NO_PASSKEYS);
     return;
   }
 
   if (isUserNotFoundError(authError, errorMsg)) {
-    showErrorMessage(messageApi, LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND, onUserNotFound);
+    showErrorMessage(messageApi, userNotFoundMessage(), onUserNotFound);
     return;
   }
 

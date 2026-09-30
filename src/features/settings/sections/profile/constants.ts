@@ -1,4 +1,6 @@
 export const PROFILE_SECTION_CONSTANTS = {
+  // The profile fields a 409 names in its message ("user with this email already exists").
+  CONFLICT_FIELDS: ['email', 'username'] as const,
   LAYOUT: {
     AVATAR_SIZE: 40,
     ROW_GAP: 12,
@@ -28,6 +30,9 @@ export const PROFILE_SECTION_CONSTANTS = {
       FULLNAME_PLACEHOLDER: 'e.g. John Doe',
       EMAIL_LABEL: 'Email',
       EMAIL_PLACEHOLDER: 'e.g. john@example.com',
+      EMAIL_LOCKED:
+        "The bootstrap admin's email is set when Telark is installed and can't be changed here.",
+      EMAIL_RESERVED: 'This email is reserved for the bootstrap admin.',
       SAVE: 'Save',
       CANCEL: 'Cancel',
       SUCCESS: 'Profile updated.',

@@ -656,7 +656,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             <NoPermissionCard
               featureName={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_TITLE}
               permission={viewViolations}
-              compact
+              emptyState
             />
           )}
         </SettingsCard>
@@ -696,7 +696,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             <NoPermissionCard
               featureName={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_TITLE}
               permission={viewReports}
-              compact
+              emptyState
             />
           )}
         </SettingsCard>

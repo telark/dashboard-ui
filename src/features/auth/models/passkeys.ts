@@ -37,7 +37,6 @@ export type UpdatePasskeyResponse = Passkey;
 
 export interface DeletePasskeyRequest {
   forceLastDelete?: boolean;
-  cleanupOrphaned?: boolean;
 }
 
 export interface DeletePasskeyResponse {

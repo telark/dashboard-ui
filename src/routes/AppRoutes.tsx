@@ -4,9 +4,8 @@ import { ProtectedRoute, AuthLayout } from '../features/auth/components';
 import { AnimatedPageWrapper } from '../components/animation';
 import { FeatureErrorBoundary } from '../components/error-boundary';
 import FullPageLoader from '../components/display/views/FullPageLoader';
-import { NoPermissionCard, PageContainer } from '../components/shared';
+import { NoPermissionCard } from '../components/shared';
 import { APP_ROUTES, MENU_LABELS } from '../constants';
-import { LIST_PAGE } from '../constants/shared/pages';
 import type { RequiredPermission } from '../interfaces/shared';
 import { hasSessionToken } from '../features/auth/utils';
 import { PermissionGate, ACTION_PERMISSIONS } from '../features/auth/hooks';
@@ -20,9 +19,7 @@ const { view: viewGroups } = ACTION_PERMISSIONS.groups;
 
 // Replaces the page: the URL and sidebar entry stay put and the page's requests never fire.
 const noAccess = (featureName: string, permission: RequiredPermission) => (
-  <PageContainer title={featureName} gap={LIST_PAGE.CONTENT_GAP_PX}>
-    <NoPermissionCard featureName={featureName} permission={permission} />
-  </PageContainer>
+  <NoPermissionCard featureName={featureName} permission={permission} />
 );
 
 // home

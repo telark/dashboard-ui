@@ -86,7 +86,11 @@ const Columns = (ctx: GenerateColumnCtx, groups: Group[] = []) => {
         render: (_: unknown, record: User) => {
           const total = getTotalRoleCount(record, groups);
           if (total === 0) {
-            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12 }}>—</span>;
+            return (
+              <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12 }}>
+                {UC.LABELS.COLUMNS.NO_ROLES}
+              </span>
+            );
           }
           const text = total === 1 ? '1 role' : `${total} roles`;
           return <RowTag text={text} fontSize={UC.SIZES.CHIP_FONT} />;

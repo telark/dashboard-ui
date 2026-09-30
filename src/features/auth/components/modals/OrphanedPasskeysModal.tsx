@@ -10,18 +10,16 @@ interface OrphanedPasskeysModalProps {
   open: boolean;
   errorName?: string;
   onRetry: () => void;
-  onRemove: () => void;
+  onLostPasskey: () => void;
   onCancel: () => void;
-  isRemoving?: boolean;
 }
 
 const OrphanedPasskeysModal: React.FC<OrphanedPasskeysModalProps> = ({
   open,
   errorName,
   onRetry,
-  onRemove,
+  onLostPasskey,
   onCancel,
-  isRemoving = false,
 }) => {
   if (errorName) {
     logger.info('[Login] Authentication failed:', {
@@ -85,7 +83,6 @@ const OrphanedPasskeysModal: React.FC<OrphanedPasskeysModalProps> = ({
             type="primary"
             block
             onClick={onRetry}
-            disabled={isRemoving}
             style={{
               backgroundColor: DEFAULT_COLORS.SUCCESS,
               borderColor: DEFAULT_COLORS.SUCCESS,
@@ -93,17 +90,8 @@ const OrphanedPasskeysModal: React.FC<OrphanedPasskeysModalProps> = ({
           >
             {AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.BUTTONS.RETRY}
           </Button>
-          <Button
-            type="default"
-            danger
-            block
-            onClick={onRemove}
-            loading={isRemoving}
-            disabled={isRemoving}
-          >
-            {isRemoving
-              ? AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.BUTTONS.REMOVING
-              : AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.BUTTONS.REMOVE}
+          <Button type="default" danger block onClick={onLostPasskey}>
+            {AUTH_ERROR_MESSAGES.ORPHANED_PASSKEYS_MODAL.BUTTONS.REMOVE}
           </Button>
         </Space>
       </div>

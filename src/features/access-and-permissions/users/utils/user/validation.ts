@@ -26,11 +26,13 @@ export const makeEmailFormatRule = () => ({
 });
 
 // Emails are unique case-insensitively: OIDC login matches an account by email.
-export const makeEmailUniqueRule = (existingUsers: User[]) => ({
+export const makeEmailUniqueRule = (existingUsers: User[], currentUserId?: string) => ({
   validator(_: unknown, value: string) {
     const email = value?.trim().toLowerCase();
     if (!email) return Promise.resolve();
-    return existingUsers.some((u) => u.email?.trim().toLowerCase() === email)
+    return existingUsers.some(
+      (u) => u.id !== currentUserId && u.email?.trim().toLowerCase() === email,
+    )
       ? Promise.reject(new Error(UC.LABELS.VALIDATION.EMAIL_TAKEN))
       : Promise.resolve();
   },

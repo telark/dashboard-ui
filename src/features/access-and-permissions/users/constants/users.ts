@@ -51,6 +51,7 @@ export const USERS_CONSTANTS = {
       EMAIL: 'Email',
       ROLES: 'Roles',
       CREATED: 'Creation Date',
+      NO_ROLES: 'No roles',
     },
     BOOTSTRAP_PILL: {
       LABEL: 'Bootstrap',

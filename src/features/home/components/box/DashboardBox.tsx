@@ -67,7 +67,7 @@ const DashboardBox: React.FC<DashboardBoxProps> = memo(
         }}
       >
         {noAccess ? (
-          <NoPermissionCard {...noAccess} compact />
+          <NoPermissionCard {...noAccess} emptyState />
         ) : (
           <BoxBody loading={loading} failed={failed}>
             {children}

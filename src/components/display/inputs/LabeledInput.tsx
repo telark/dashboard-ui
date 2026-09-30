@@ -20,17 +20,9 @@ const LabeledInput: React.FC<LabeledInputProps> = ({
     ? [{ required: true, message: `Please enter ${label.toLowerCase()}` }, ...rules]
     : rules;
 
-  const labelContent = tooltip ? (
-    <Tooltip title={tooltip}>
-      <span>{label}</span>
-    </Tooltip>
-  ) : (
-    label
-  );
-
-  return (
+  const field = (
     <Form.Item
-      label={labelContent}
+      label={label}
       name={name}
       rules={combinedRules}
       required={required}
@@ -41,6 +33,15 @@ const LabeledInput: React.FC<LabeledInputProps> = ({
     >
       <Input placeholder={placeholder} allowClear={allowClear} disabled={disabled} />
     </Form.Item>
+  );
+
+  // The tooltip explains a locked input, so it covers the input, not only the label.
+  return tooltip ? (
+    <Tooltip title={tooltip}>
+      <div>{field}</div>
+    </Tooltip>
+  ) : (
+    field
   );
 };
 

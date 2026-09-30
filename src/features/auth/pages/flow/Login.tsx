@@ -3,12 +3,9 @@ import { Form, App as AntdApp, Button, Divider } from 'antd';
 import { KeyOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  performLogin,
-  cleanupOrphanedPasskeys,
-  type OrphanedPasskeysInfo,
-} from '../../utils/flow/login';
+import { performLogin, type OrphanedPasskeysInfo } from '../../utils/flow/login';
 import { redirectToGoogle } from '../../utils/flow/google';
+import { getUserFriendlyErrorMessage } from '../../utils/shared/errors';
 import { isWebAuthnSupported } from '../../utils/webauthn/core';
 import {
   APP_ROUTES,
@@ -38,7 +35,6 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [removing, setRemoving] = useState(false);
   const [orphanedInfo, setOrphanedInfo] = useState<OrphanedPasskeysInfo | null>(null);
   const [showPasskeyForm, setShowPasskeyForm] = useState(false);
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
@@ -51,6 +47,8 @@ const Login: React.FC = () => {
 
   const isMountedRef = useRef(true);
   useEffect(() => {
+    // StrictMode and Fast Refresh run this cleanup and then the setup again.
+    isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
     };
@@ -68,7 +66,6 @@ const Login: React.FC = () => {
         values.email,
         message,
         () => navigate(APP_ROUTES.HOME),
-        () => navigate(APP_ROUTES.REGISTER),
         undefined,
         (info) => {
           if (!isMountedRef.current) return;
@@ -76,8 +73,8 @@ const Login: React.FC = () => {
           setModalOpen(true);
         },
       );
-    } catch {
-      if (isMountedRef.current) setPasskeyError('Authentication failed. Please try again.');
+    } catch (error) {
+      if (isMountedRef.current) setPasskeyError(getUserFriendlyErrorMessage(error));
     } finally {
       if (isMountedRef.current) setLoading(false);
     }
@@ -92,7 +89,6 @@ const Login: React.FC = () => {
         values.email,
         message,
         () => navigate(APP_ROUTES.HOME),
-        () => navigate(APP_ROUTES.REGISTER),
         undefined,
         (info) => {
           if (!isMountedRef.current) return;
@@ -107,31 +103,12 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleRemove = async () => {
-    if (!orphanedInfo) return;
-    setRemoving(true);
-    try {
-      const requiresAuth = await cleanupOrphanedPasskeys(
-        orphanedInfo.credentialIds,
-        orphanedInfo.userId,
-        message,
-      );
-      if (!isMountedRef.current) return;
-      if (requiresAuth) {
-        message.open({
-          type: 'info',
-          content: 'Unable to automatically cleanup orphaned passkeys. Please contact support.',
-          duration: 8,
-        });
-      } else {
-        setModalOpen(false);
-        navigate(APP_ROUTES.REGISTER);
-      }
-    } catch {
-      // Error is already handled in cleanupOrphanedPasskeys
-    } finally {
-      if (isMountedRef.current) setRemoving(false);
-    }
+  // Without a session the account's passkeys can't be removed, and registration refuses
+  // existing accounts, so only an administrator can restore access.
+  const handleLostPasskey = () => {
+    setModalOpen(false);
+    setOrphanedInfo(null);
+    setPasskeyError(LOGIN_CONSTANTS.MESSAGES.LOST_PASSKEY);
   };
 
   const handleCancel = () => {
@@ -236,9 +213,8 @@ const Login: React.FC = () => {
         open={modalOpen}
         errorName={orphanedInfo?.errorName}
         onRetry={handleRetry}
-        onRemove={handleRemove}
+        onLostPasskey={handleLostPasskey}
         onCancel={handleCancel}
-        isRemoving={removing}
       />
     </>
   );
