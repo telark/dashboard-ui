@@ -20,7 +20,7 @@ These already apply `PANEL_SURFACE_CLASS`, the light `PANEL_THEME_TOKENS`, the s
 
 - Scroll lock: `useBodyOverflow(open)` is counted, so a panel over a panel works. While locked it swaps `html`'s `scrollbar-gutter: stable` for body padding of the same width, so the page stays put and the panel paints to the real screen edge. Keep the gutter on `html`, don't set a panel's `right` negative to reach the edge, and have fixed full-width chrome use `var(--scroll-lock-gutter)` to keep its width while locked.
 - Header height: `SLIDE_OUT.HEADER.height` is `HEADER_LAYOUT.HEIGHT_PX`, so the panel's top bar lines up with the app header. Change `HEADER_LAYOUT`, not the panel.
-- Surface: everything inside is on white, so use `SURFACE_*` and `TEXT_ON_SURFACE*` colours; dark-surface text tokens render invisible here.
+- Surface: everything inside is on white, so use `SURFACE_*` and `TEXT_ON_SURFACE*` colors; dark-surface text tokens render invisible here.
 - Width: panels can expand and collapse with an animated width. Layout inside that depends on width reads `useElementWidth`, not the expand flag.
 
 ## Form fields

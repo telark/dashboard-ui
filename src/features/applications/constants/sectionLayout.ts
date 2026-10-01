@@ -136,7 +136,7 @@ export const APPLICATION_RESOURCE_TREE = {
   INDENT_PX: 22,
   SPINE_X_PX: 9,
   ELBOW_WIDTH_PX: 11,
-  /** Vertical centre of a node row, where its elbow meets the spine. */
+  /** Vertical center of a node row, where its elbow meets the spine. */
   ROW_CENTER_PX: 15,
   ROW_GAP_PX: 2,
   LINE_WIDTH_PX: 1,
@@ -153,7 +153,7 @@ export const APPLICATION_RESOURCE_TREE = {
 } as const;
 
 /**
- * Radial resource graph: the application sits at the centre, each kind on a ring
+ * Radial resource graph: the application sits at the center, each kind on a ring
  * around it, and that kind's resources orbit their kind node. The API exposes no
  * owner references, so only this containment is drawn — never inferred edges.
  */

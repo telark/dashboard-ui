@@ -47,7 +47,7 @@ html:has(.auth-root[data-theme='dark']) body {
 }
 
 /* The global label rule paints labels white for the dark page surfaces; the auth
-   card is its own surface and needs its own text colour. */
+   card is its own surface and needs its own text color. */
 .auth-root .ant-form-item-label > label {
   color: var(--auth-text-primary, var(--color-auth-light-text)) !important;
 }

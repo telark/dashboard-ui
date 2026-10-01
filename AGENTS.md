@@ -97,6 +97,8 @@ Verify each step against its success criterion before moving on. Strong success 
 - The settings navigation that renders is `src/components/layout/sidebar/SettingsMenuItems.tsx`. `SETTINGS_CONSTANTS.SECTIONS` in `src/features/settings/constants/settings.ts` drives the section content, not the sidebar's icons or labels, so a nav change made only there never appears.
 - Treat a resource as gone only on a definite not-found (`error.normalized.isNotFound`, attached by `src/api/client/normalize.ts`), not on any rejected request, because transient failures take the same fallback path and would disable actions on healthy items. The snapshot `unavailable` flag in `src/features/resources/applications/clients/snapshots.ts` works this way.
 - Show people by username, resolving ids with `useUsernamesByIds` (`src/hooks/useUsernamesByIds.ts`, one `users/names` call open to every signed-in user), never as a raw user id; the raw identity goes only in the hover `title`. `ActorDisplay` (`src/components/display/users/`) renders an actor field with its avatar.
+- A PATCH sends only the fields it changes. The exporter refuses a session write that carries a field only services write (`bootstrap`, `identities`, `status.invite`), even with its stored value, so never spread a stored record back (`{ ...user.status, phase }`).
+- In `nginx/nginx.conf`, a location's `add_header` replaces the server's whole header set, so a location that adds a header repeats the full set (like the asset location) and serves its file in place: a `try_files` fallback redirect drops the headers.
 
 ## Constants & strings
 
@@ -106,6 +108,7 @@ Verify each step against its success criterion before moving on. Strong success 
 - Help text under a control stays short and plain. A longer explanation goes behind an info icon: antd `Tooltip` around `InfoCircleOutlined` with `tabIndex={0}` and `aria-label` set to the text.
 - A constant needed outside its feature moves to the root `src/constants/` (see the feature-boundary rule above).
 - UI text doesn't name internal vendors or tools (for example Kyverno). Say "the engine" or "the policy engine", or describe the effect, because naming them leaks implementation details and ties the copy to swappable infrastructure. Non-UI code and internal constants may use the names.
+- UI copy, comments and docs use American English spelling ("enroll", "color", "canceled"), never British.
 
 ## Types
 
@@ -115,9 +118,9 @@ Verify each step against its success criterion before moving on. Strong success 
 
 ## Styling & theme
 
-### Colours and surfaces
+### Colors and surfaces
 
-- Colours come from `DEFAULT_COLORS` in `src/constants/shared/colors.ts`, the only file where a colour literal may appear (ESLint `no-restricted-syntax` enforces it). Map status meaning to `SUCCESS`, `DANGER`, `WARNING`, `INFO` or `NEUTRAL`. Vary opacity with `withAlpha(token, alpha)` instead of writing `rgba()`. Don't add keys: every status maps to an existing token (green is always `SUCCESS`).
+- Colors come from `DEFAULT_COLORS` in `src/constants/shared/colors.ts`, the only file where a color literal may appear (ESLint `no-restricted-syntax` enforces it). Map status meaning to `SUCCESS`, `DANGER`, `WARNING`, `INFO` or `NEUTRAL`. Vary opacity with `withAlpha(token, alpha)` instead of writing `rgba()`. Don't add keys: every status maps to an existing token (green is always `SUCCESS`).
 - CSS files read the same tokens as `var(--color-<kebab-key>)` (for example `SUCCESS_HOVER` → `--color-success-hover`), set on `:root` by `applyColorVariables()` in `src/main.tsx`; for alpha in CSS use `color-mix(in srgb, var(--color-…) N%, transparent)`.
 - The page is dark and overlays are light, and some token names lie. Decide the surface first, then pick from its palette:
 
@@ -127,7 +130,7 @@ Verify each step against its success criterion before moving on. Strong success 
   | Light: slide-out panels, modals, dropdowns, popovers, tooltips | `SURFACE_WHITE`, `SURFACE_SUBTLE`, `SURFACE_HOVER`, `SURFACE_BORDER*`, `TEXT_ON_SURFACE`, `TEXT_ON_SURFACE_MUTED`, `TEXT_ON_SURFACE_DISABLED`, `CHIP_ON_SURFACE_*` | Dark-surface text tokens here render white on white |
 
   The wrong palette fails silently: `check-all` passes and the text still copies, so it looks like missing data. When something "shows nothing", suspect white on white first.
-- Pills are the declared case colour itself: spread `getPillSurface(accent)`, which returns the background and the text colour, and don't set `color` yourself. Pass the accent as a `DEFAULT_COLORS` value (`SUCCESS`, `DANGER`, `WARNING`, `INFO`, `NEUTRAL`, `TEXT_MUTED`); any other value, or none, gives the neutral pill. Pill text is white on every case (user decision); `INFO` renders as `INFO_STRONG`, since the light `INFO` can't carry white text. Quick-filter pills use `getQuickFilterPillColors`.
+- Pills are the declared case color itself: spread `getPillSurface(accent)`, which returns the background and the text color, and don't set `color` yourself. Pass the accent as a `DEFAULT_COLORS` value (`SUCCESS`, `DANGER`, `WARNING`, `INFO`, `NEUTRAL`, `TEXT_MUTED`); any other value, or none, gives the neutral pill. Pill text is white on every case (user decision); `INFO` renders as `INFO_STRONG`, since the light `INFO` can't carry white text. Quick-filter pills use `getQuickFilterPillColors`.
 - No box-shadow on buttons unless the user asks for it.
 
 ### Ant Design theme
@@ -146,7 +149,7 @@ Verify each step against its success criterion before moving on. Strong success 
 
 - Every control's height, radius and font size come from `src/constants/layout/controls.ts` (`CONTROL_HEIGHT`, `CONTROL_RADIUS`, `CONTROL_FONT_SIZE`): through the `App.tsx` tokens for antd controls, and through `TOOLBAR_CONTROL` (`src/constants/layout/buttons.ts`) for the app's own buttons. The auth pages opt out with `AUTH_CONTROL_HEIGHT`. Borders aren't part of it; they stay surface-scoped in `antd.css`.
 - Four things silently defeat it: a `size="small"` or `size="large"` prop on a form control (antd switches to its small or large height), an inline `height`, a nested `ConfigProvider`, and a global `!important` rule on the control's selector in `src/styles/*.css`.
-- Toolbar sizing and spacing come from `TOOLBAR_CONTROL` and `TOOLBAR_ITEM_GAP`; change the constants, not the components. Toolbar controls need `boxSizing: 'border-box'` (bordered variants otherwise render 2px taller) and `lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT` (otherwise the label's half-leading pushes it off-centre against icons). `BUTTON_COLORS.TOOLBAR_TEXT` defaults to white, so an active button with a white background needs `TEXT_ON_SURFACE` text.
+- Toolbar sizing and spacing come from `TOOLBAR_CONTROL` and `TOOLBAR_ITEM_GAP`; change the constants, not the components. Toolbar controls need `boxSizing: 'border-box'` (bordered variants otherwise render 2px taller) and `lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT` (otherwise the label's half-leading pushes it off-center against icons). `BUTTON_COLORS.TOOLBAR_TEXT` defaults to white, so an active button with a white background needs `TEXT_ON_SURFACE` text.
 
 ### Light surfaces and color-scheme
 
@@ -157,10 +160,10 @@ Verify each step against its success criterion before moving on. Strong success 
 - Sort, group and paginate in the UI over the loaded, filtered set, like the Roles list: `useSortState` and `sortData` from `src/utils/layout/sort`, and `generateColumn(cfg, { activeSortKey, onSort })` for headers. Don't send sort or group params to the backend: no list client does, the Insights endpoint has none, and sorting in one place keeps every list consistent. The Insights client reads the whole filtered set for this reason.
 - One fact per column. Triage is its own column rather than a second pill in State, because two facts in one cell read as one muddled status.
 - The free-text (title) column is one line with an ellipsis and the full text on hover (`title`). The shared list table (`PageLayout` → `DataTable`) uses `scroll: { x: 'max-content' }`, so antd `ellipsis` alone doesn't stop long text widening the column; give the cell content `width: 0; min-width: max(100%, <floor>px)` (see `TitleCell` in `src/features/insights/components/InsightsTable.tsx`). Content-driven widths make the table jump between pages.
-- Toolbar counts are pluralised with `CountLabel { one, other }` (`src/interfaces/layout/toolbar.ts`, passed as `countSuffix` to `ListToolbar`), not by string concatenation.
-- The "More" overflow menu holds rarely used or irreversible actions (reset sits there so it is never one slip from a neighbouring button). A mode's exit, such as "Exit bulk", stays inline, because hiding it strands users.
+- Toolbar counts are pluralized with `CountLabel { one, other }` (`src/interfaces/layout/toolbar.ts`, passed as `countSuffix` to `ListToolbar`), not by string concatenation.
+- The "More" overflow menu holds rarely used or irreversible actions (reset sits there so it is never one slip from a neighboring button). A mode's exit, such as "Exit bulk", stays inline, because hiding it strands users.
 - `Toolbar` shows a button's `tooltip` only while the button is disabled (or `iconOnly`), so pass `tooltip: allowed ? undefined : MESSAGE` for a permission hint. Its `loading` flag also blocks repeat clicks.
-- Icon-only row actions are antd `Button`s with `type="text"`, a `ROW_ICON_BUTTON_SIZE` square (`src/constants/layout/controls.ts`) and a muted colour (`TEXT_ON_SURFACE_MUTED` on light surfaces), wrapped in a `Tooltip` and given an `aria-label`.
+- Icon-only row actions are antd `Button`s with `type="text"`, a `ROW_ICON_BUTTON_SIZE` square (`src/constants/layout/controls.ts`) and a muted color (`TEXT_ON_SURFACE_MUTED` on light surfaces), wrapped in a `Tooltip` and given an `aria-label`.
 
 ## Panels & forms
 
@@ -175,7 +178,7 @@ Verify each step against its success criterion before moving on. Strong success 
 
 ## Layout & responsiveness
 
-- Measure rather than guess breakpoints and timings. A viewport media query (`useMediaQuery`, e.g. `TOOLBAR_CONTROL.COMPACT_QUERY`) is right only for behaviour that depends on the window. The sidebar (collapsible and resizable, `SIDEBAR_LAYOUT`) and open panels change the available width without changing the viewport, so compact modes read the container's measured width with `useElementWidth` (`src/hooks/layout/useElementWidth.ts`), as `ListToolbar` does with its `compactWidth` thresholds.
+- Measure rather than guess breakpoints and timings. A viewport media query (`useMediaQuery`, e.g. `TOOLBAR_CONTROL.COMPACT_QUERY`) is right only for behavior that depends on the window. The sidebar (collapsible and resizable, `SIDEBAR_LAYOUT`) and open panels change the available width without changing the viewport, so compact modes read the container's measured width with `useElementWidth` (`src/hooks/layout/useElementWidth.ts`), as `ListToolbar` does with its `compactWidth` thresholds.
 - Layout that depends on an animated width, such as an expanding panel, reads the measured element width, not the expand flag, because the flag flips before the animation finishes (see `InsightPanelSections.tsx`).
 - To make one element give way before its sibling, prefer CSS to any threshold: `flexShrink: 100000` with `minWidth: 0` on the less important sibling (see `ApplicationDetailsIdentity.tsx`).
 - When a threshold is unavoidable, derive it from the measured content need, not from a constant borrowed from another component.
@@ -203,7 +206,7 @@ Done means:
 - No new `any` and no `console.*`.
 - Every new or modified function has a cognitive complexity of 12 or less (no lint rule enforces this; judge it while reading).
 - No dead code, commented-out blocks, unused imports or TODOs are left behind.
-- The repo has no test runner or test files today. If you add or touch tests and one asserted wrong behaviour, flag it explicitly instead of silently changing it.
+- The repo has no test runner or test files today. If you add or touch tests and one asserted wrong behavior, flag it explicitly instead of silently changing it.
 - `npm run check-all-and-build` passes with zero errors.
 
 ## Skills index
@@ -213,7 +216,7 @@ Claude Code loads these automatically; other agents can open the file and follow
 | Skill | Use when | Path |
 |---|---|---|
 | `verify-ui-change` | Before reporting any change as done, or when type-check, lint or the build fails | `.claude/skills/verify-ui-change/SKILL.md` |
-| `visual-and-layout-changes` | A request or bug is about how the UI looks: colours, invisible text, fonts, sizes, spacing, compact behaviour, flashes, layout shift | `.claude/skills/visual-and-layout-changes/SKILL.md` |
+| `visual-and-layout-changes` | A request or bug is about how the UI looks: colors, invisible text, fonts, sizes, spacing, compact behavior, flashes, layout shift | `.claude/skills/visual-and-layout-changes/SKILL.md` |
 | `list-and-table-pages` | Building or changing a list page, table, columns, sorting or grouping, the list toolbar, row actions or pills | `.claude/skills/list-and-table-pages/SKILL.md` |
 | `side-panels-and-forms` | Adding or changing a slide-out panel, filter panel, or the form fields inside one | `.claude/skills/side-panels-and-forms/SKILL.md` |
 | `graph-explore-codebase` | Understanding structure or dependencies, when the code-review-graph server has this repo indexed | `.claude/skills/graph-explore-codebase/SKILL.md` |

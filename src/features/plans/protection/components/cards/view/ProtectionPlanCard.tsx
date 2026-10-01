@@ -145,7 +145,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const { message } = AntdApp.useApp();
   const [menuOpen, setMenuOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
-  const [cancelling, setCancelling] = useState(false);
+  const [canceling, setCanceling] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [reactivating, setReactivating] = useState(false);
   const [duplicatePanelOpen, setDuplicatePanelOpen] = useState(false);
@@ -249,7 +249,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const menuButtonStyle = getCardMenuButtonStyle(menuOpen);
 
   const handleCancel = useCallback(async () => {
-    setCancelling(true);
+    setCanceling(true);
     try {
       await dispatch(cancelPlanThunk({ planId: plan.id })).unwrap();
       message.success(PPC.LABELS.ACTIONS.CANCEL_SUCCESS(plan.name));
@@ -257,7 +257,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
     } catch (err: unknown) {
       message.error(typeof err === 'string' && err ? err : PPC.LABELS.ACTIONS.CANCEL_ERROR);
     } finally {
-      setCancelling(false);
+      setCanceling(false);
     }
   }, [dispatch, message, plan.id, plan.name]);
 
@@ -412,7 +412,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
             label: PPC.LABELS.ACTIONS.CANCEL,
             icon: <StopOutlined />,
             danger: true,
-            disabled: !canCancelPlan || cancelling,
+            disabled: !canCancelPlan || canceling,
             title: permissionTooltip(canCancelPlan, PD.CANCEL),
           },
         ]
@@ -661,7 +661,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
           resourceName={plan.name}
           resourceType="protection plan"
           confirmText={PPC.LABELS.DETAIL_PAGE.ACTIONS.CANCEL_MODAL_OK}
-          loading={cancelling}
+          loading={canceling}
           getContainer={() => document.body}
         />
         <ReactivatePlanModal

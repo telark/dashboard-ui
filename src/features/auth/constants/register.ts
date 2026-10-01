@@ -16,6 +16,8 @@ export const REGISTER_CONSTANTS = {
     BACK_TO_LOGIN: 'Back to login',
     ENROLL_TITLE: 'Add a passkey on this device',
     ENROLL_SUBTITLE: 'Confirm your email and name this device to finish enrollment',
+    ENROLL_LINK_INVALID:
+      'This enroll link is invalid, expired or already used. Ask an administrator for a new one.',
   },
   QUERY: {
     ENROLL: 'enroll',

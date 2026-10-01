@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Form, App as AntdApp, Button } from 'antd';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { performRegister, resolveEnrollToken } from '../../utils/flow/register';
+import {
+  isEnrollLinkRefused,
+  performRegister,
+  resolveEnrollToken,
+} from '../../utils/flow/register';
 import { handleAuthError } from '../../utils/shared/errors';
 import { isWebAuthnSupported } from '../../utils/webauthn/core';
 import { APP_ROUTES } from '../../../../constants';
@@ -53,7 +57,12 @@ const Register: React.FC = () => {
         enrollToken,
       );
     } catch (error) {
-      handleAuthError(error, message);
+      const linkRefused = enrolling && isEnrollLinkRefused(error);
+      handleAuthError(
+        error,
+        message,
+        linkRefused ? { customMessage: REGISTER_CONSTANTS.UI.ENROLL_LINK_INVALID } : undefined,
+      );
     } finally {
       setLoading(false);
     }

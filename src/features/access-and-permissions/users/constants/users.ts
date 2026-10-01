@@ -53,10 +53,47 @@ export const USERS_CONSTANTS = {
       ROLES: 'Roles',
       CREATED: 'Creation Date',
       NO_ROLES: 'No roles',
+      INVITE: 'Invite',
     },
     BOOTSTRAP_PILL: {
       LABEL: 'Bootstrap',
       TOOLTIP: "Created by the chart; can't be deleted or changed here",
+    },
+    INVITE_PILL: {
+      PENDING: 'Invite pending',
+      EXPIRED: 'Invite expired',
+      EXPIRES_AT: (when: string) => `Expires ${when}`,
+      EXPIRED_AT: (when: string) => `Expired ${when}`,
+    },
+    ENROLL_LINK: {
+      MENU: 'Enroll link',
+      CREATE: 'Create enroll link',
+      REVOKE: 'Revoke enroll link',
+      MODAL_TITLE: 'Enroll link created',
+      MODAL_SEND_TO: 'Send this link to ',
+      MODAL_EXPIRES: (when: string) =>
+        `. It works once, expires on ${when}, and won't be shown again.`,
+      REVOKE_ACTION: 'revoke',
+      REVOKE_RESOURCE: 'the enroll link for',
+      REVOKE_CONFIRM: 'Revoke',
+      REVOKE_NOTE: 'The link stops working. You can create a new one at any time.',
+      REVOKED: 'Enroll link revoked',
+      CREATE_FAILED: 'Failed to create the enroll link',
+      REVOKE_FAILED: 'Failed to revoke the enroll link',
+      BLOCKED: {
+        NO_PERMISSION: 'You do not have permission to manage enroll links',
+        SELF: 'Use Add on another device for your own account',
+        ABOVE_CALLER: 'This member has more access than you have',
+        SUSPENDED: 'Reactivate this member before creating a link',
+        NO_INVITE: 'No enroll link to revoke',
+      },
+      REFUSED: {
+        NOT_FOUND: 'This member was not found',
+        SUSPENDED: 'This member is suspended. Reactivate the account first.',
+        DELETING: 'This member is being deleted',
+        RECOVERY:
+          'This member already has a passkey. Only the bootstrap account or an Admin on ALL can manage their enroll link.',
+      },
     },
     VIEW_LABELS: {
       USERNAME: 'Username',
@@ -215,7 +252,10 @@ export const USERS_CONSTANTS = {
     EMAIL: 'email',
     ROLES: 'roleRefs',
     CREATION_DATE: 'creationDate',
+    INVITE: 'invite',
     ACTIONS: 'actions',
+    ENROLL_LINK_CREATE: 'enroll-link-create',
+    ENROLL_LINK_REVOKE: 'enroll-link-revoke',
     MORE_MENU_BULK: 'bulk',
     FILTER_STATUS: 'status',
     FILTER_STATUS_ALL: 'all',
@@ -231,6 +271,7 @@ export const USERS_CONSTANTS = {
       ROLE: 120,
       // Narrower wraps the "Creation Date" header onto two lines.
       CREATED: 160,
+      INVITE: 140,
       ACTIONS: 50,
     },
     // Measured natural widths of the toolbar row: ~475px by default and ~628px in
@@ -241,6 +282,10 @@ export const USERS_CONSTANTS = {
       BULK: 680,
     },
     MODAL_WIDTH: 360,
+  },
+  // Auth's enroll-link 403s share one status, and this is the refusal the row can't foresee.
+  PATTERNS: {
+    ENROLL_LINK_RECOVERY: 'already has a passkey',
   },
   FORM: {
     FIELDS: [

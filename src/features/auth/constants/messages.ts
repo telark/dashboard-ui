@@ -37,7 +37,7 @@ export const AUTH_ERROR_MESSAGES = {
       'Browsers only allow passkeys on https:// pages or on http://localhost. Ask your administrator to enable TLS on the ingress or load balancer, then open the dashboard over https://.',
     TAG: 'HTTPS required',
   },
-  WEBAUTHN_CANCELLED: 'Authentication cancelled by user',
+  WEBAUTHN_CANCELED: 'Authentication canceled by user',
   WEBAUTHN_ERROR: 'WebAuthn operation failed',
   MISSING_DEVICE_NAME: 'Device name is required',
   MISSING_EMAIL: 'Email is required',
@@ -56,7 +56,7 @@ export const AUTH_ERROR_MESSAGES = {
     NOT_FOUND_DESCRIPTION:
       'If you no longer have access to your passkeys, contact your administrator to restore access.',
     GENERAL_MESSAGE:
-      'Unable to authenticate with your passkey. This may happen if you cancelled the authentication or if your passkey is no longer available.',
+      'Unable to authenticate with your passkey. This may happen if you canceled the authentication or if your passkey is no longer available.',
     GENERAL_DESCRIPTION:
       'You can try again. If you no longer have access to your passkeys, contact your administrator.',
     BUTTONS: {

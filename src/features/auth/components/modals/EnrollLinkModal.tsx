@@ -8,9 +8,11 @@ import { ActionButtons } from '../../../../components/display/buttons';
 export interface EnrollLinkModalProps {
   url: string | null;
   onClose: () => void;
+  title?: string;
+  description?: React.ReactNode;
 }
 
-const EnrollLinkModal: React.FC<EnrollLinkModalProps> = memo(({ url, onClose }) => {
+const EnrollLinkModal: React.FC<EnrollLinkModalProps> = memo(({ url, onClose, ...copy }) => {
   const { message } = AntdApp.useApp();
 
   const handleCopy = useCallback(() => {
@@ -25,8 +27,8 @@ const EnrollLinkModal: React.FC<EnrollLinkModalProps> = memo(({ url, onClose }) 
     <BaseModal
       open={url !== null}
       onCancel={onClose}
-      title={PPC.ENROLL.MODAL_TITLE}
-      description={PPC.ENROLL.MODAL_DESCRIPTION}
+      title={copy.title ?? PPC.ENROLL.MODAL_TITLE}
+      description={copy.description ?? PPC.ENROLL.MODAL_DESCRIPTION}
       footer={
         <ActionButtons
           confirmText={PPC.ENROLL.COPY}

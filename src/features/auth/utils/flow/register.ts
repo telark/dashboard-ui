@@ -4,6 +4,7 @@ import { registerPasskey } from '../webauthn/core';
 import { AUTH_SUCCESS_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { REGISTER_CONSTANTS } from '../../constants/register';
+import { APP_ROUTES } from '../../../../constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 import type {
@@ -12,6 +13,7 @@ import type {
   PasskeyDeviceType,
 } from '../../models';
 import type { MessageInstance } from 'antd/lib/message/interface';
+import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 
 // The page strips the token from the address bar; the tab keeps it so a reload still enrolls.
 export const resolveEnrollToken = (fromLink: string | null): string | undefined => {
@@ -25,6 +27,13 @@ export const resolveEnrollToken = (fromLink: string | null): string | undefined 
   }
   return fromLink ?? undefined;
 };
+
+// Auth spends a link on first use, so any 401 while enrolling means the link can't be used again.
+export const isEnrollLinkRefused = (error: unknown): boolean =>
+  (error as ExtendedAxiosError | undefined)?.normalized?.isUnauthenticated === true;
+
+export const buildEnrollUrl = (token: string): string =>
+  `${globalThis.location.origin}${APP_ROUTES.REGISTER}?${REGISTER_CONSTANTS.QUERY.ENROLL}=${encodeURIComponent(token)}`;
 
 const clearEnrollToken = (): void => {
   try {

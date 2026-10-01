@@ -70,7 +70,7 @@ interface ProtectionPlanDetailsContentProps {
   plan: ProtectionPlan;
   duplicating: boolean;
   editing: boolean;
-  cancelling: boolean;
+  canceling: boolean;
   reactivating: boolean;
   approving: boolean;
   rejecting: boolean;
@@ -95,7 +95,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     plan,
     duplicating,
     editing,
-    cancelling,
+    canceling,
     reactivating,
     approving,
     rejecting,
@@ -410,7 +410,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             plan={plan}
             duplicating={duplicating}
             editing={editing}
-            cancelling={cancelling}
+            canceling={canceling}
             reactivating={reactivating}
             approving={approving}
             rejecting={rejecting}

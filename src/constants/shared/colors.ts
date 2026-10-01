@@ -115,7 +115,7 @@ interface PillSurface {
   color: string;
 }
 
-// A pill is the declared case colour itself with white text (user decision, 2026-10-01).
+// A pill is the declared case color itself with white text (user decision, 2026-10-01).
 // INFO is too light for a solid fill, so its pill uses the declared INFO_STRONG.
 const PILL_NEUTRAL = '#374151';
 
@@ -128,7 +128,7 @@ const PILL_CASES: Record<string, string> = {
   [DEFAULT_COLORS.TEXT_MUTED]: DEFAULT_COLORS.TEXT_MUTED,
 };
 
-/** Pill background and text colour for a case accent; no accent means a neutral pill. */
+/** Pill background and text color for a case accent; no accent means a neutral pill. */
 export const getPillSurface = (accent?: string): PillSurface => ({
   background: (accent && PILL_CASES[accent]) || PILL_NEUTRAL,
   color: DEFAULT_COLORS.PILL_TEXT,

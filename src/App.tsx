@@ -122,8 +122,8 @@ const App: React.FC = () => {
             colorBorder: DEFAULT_COLORS.BORDER_DEFAULT,
           },
           components: {
-            // The dark algorithm derives a near-white disabled text colour, which
-            // vanishes on these white surfaces, so it is pinned to a grey instead.
+            // The dark algorithm derives a near-white disabled text color, which
+            // vanishes on these white surfaces, so it is pinned to a gray instead.
             Dropdown: {
               colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
               colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,

@@ -7,10 +7,11 @@ import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/tabl
 import type { User } from '../../../models';
 import type { Group } from '../../../../groups/models';
 import UserAvatar from '../../../../../../components/display/avatars/UserAvatar';
-import { AiOutlineUser, AiOutlineMail, AiOutlineCalendar } from 'react-icons/ai';
+import { AiOutlineUser, AiOutlineMail, AiOutlineCalendar, AiOutlineLink } from 'react-icons/ai';
 import React from 'react';
 import { getTotalRoleCount } from '../../../utils';
 import BootstrapPill from '../shared/BootstrapPill';
+import InvitePill from '../shared/InvitePill';
 
 const RoleIcon = Icons.Role;
 
@@ -95,6 +96,18 @@ const Columns = (ctx: GenerateColumnCtx, groups: Group[] = []) => {
           const text = total === 1 ? '1 role' : `${total} roles`;
           return <RowTag text={text} fontSize={UC.SIZES.CHIP_FONT} />;
         },
+      },
+      ctx,
+    ),
+    generateColumn(
+      {
+        key: UC.KEYS.INVITE,
+        label: UC.LABELS.COLUMNS.INVITE,
+        icon: <AiOutlineLink />,
+        width: UC.SIZES.COLUMNS.INVITE,
+        sortable: false,
+        render: (_: unknown, record: User) =>
+          record.status.invite ? <InvitePill invite={record.status.invite} /> : null,
       },
       ctx,
     ),

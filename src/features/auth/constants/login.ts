@@ -4,6 +4,8 @@ export const LOGIN_CONSTANTS = {
     NO_PASSKEYS: ['no passkeys found', 'no passkey found', 'no passkeys', 'no passkey'],
     ACCOUNT_SUSPENDED: ['account is suspended'],
     BOOTSTRAP_PASSKEY_ONLY: ['bootstrap administrator signs in with a passkey'],
+    EMAIL_SIGNS_IN_ANOTHER_WAY: ['already signs in another way'],
+    EMAIL_AMBIGUOUS: ['more than one user holds this email'],
   },
   MESSAGES: {
     USER_NOT_FOUND: 'No account for this email yet. Register first, or check the address.',
@@ -14,6 +16,9 @@ export const LOGIN_CONSTANTS = {
     ACCOUNT_SUSPENDED: 'Your Telark account is suspended. Contact your administrator.',
     BOOTSTRAP_PASSKEY_ONLY:
       "Google sign-in isn't available for the bootstrap administrator. Sign in with its passkey.",
+    EMAIL_SIGNS_IN_ANOTHER_WAY:
+      'This email belongs to an account that signs in another way, such as a passkey. Sign in that way, or contact your administrator.',
+    EMAIL_AMBIGUOUS: 'More than one account uses this email. Contact your administrator.',
     NETWORK_ERROR: 'Network error. Please check your connection and try again.',
     TIMEOUT_ERROR: 'Request timed out. Please try again.',
     SERVER_ERROR: 'Server error. Please try again later.',
@@ -57,10 +62,10 @@ export const LOGIN_CONSTANTS = {
     },
     MESSAGES: {
       NOT_SUPPORTED: 'WebAuthn is not supported in this browser',
-      USER_CANCELLED_AUTH: 'User cancelled authentication',
-      USER_CANCELLED_REGISTRATION: 'User cancelled registration',
-      NO_CREDENTIAL_FOUND: 'User cancelled authentication or no credential found',
-      REGISTRATION_CANCELLED: 'User cancelled registration or credential creation failed',
+      USER_CANCELED_AUTH: 'User canceled authentication',
+      USER_CANCELED_REGISTRATION: 'User canceled registration',
+      NO_CREDENTIAL_FOUND: 'User canceled authentication or no credential found',
+      REGISTRATION_CANCELED: 'User canceled registration or credential creation failed',
       OPERATION_NOT_ALLOWED: 'The operation is not allowed',
       AUTHENTICATOR_ALREADY_HAS_CREDENTIAL:
         'This device already has a passkey registered. Platform authenticators can only store one passkey per account.',
@@ -71,7 +76,7 @@ export const LOGIN_CONSTANTS = {
       CONSTRAINT_VALIDATION_FAILED: 'Constraint validation failed',
     },
     ERROR_PATTERNS: {
-      USER_CANCELLED_AUTH: 'user cancelled authentication',
+      USER_CANCELED_AUTH: 'user canceled authentication',
       NO_CREDENTIAL_FOUND: 'no credential found',
     },
   },

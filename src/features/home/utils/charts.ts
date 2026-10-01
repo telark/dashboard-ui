@@ -48,7 +48,7 @@ export const CHART_TOOLTIP_CSS = {
 };
 
 // Days are bucketed in the user's time zone and zero-filled so every curve spans the whole window.
-// Only series with events get a curve and a legend entry; each keeps its fixed colour.
+// Only series with events get a curve and a legend entry; each keeps its fixed color.
 const dailyActivity = <K extends string>(
   events: ActivityEvent<K>[],
   order: K[],

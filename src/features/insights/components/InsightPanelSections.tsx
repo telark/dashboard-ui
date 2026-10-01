@@ -44,7 +44,7 @@ export const tilesStyle: React.CSSProperties = {
   borderRadius: 10,
   background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
 };
-// One line of the 17px title; the row's icon buttons centre on it.
+// One line of the 17px title; the row's icon buttons center on it.
 const TITLE_LINE_PX = 22;
 const iconStyle: React.CSSProperties = { display: 'inline-flex', fontSize: 14 };
 
@@ -100,7 +100,7 @@ export const InsightCard: React.FC<{
   return (
     <div ref={ref} style={cardStyle}>
       <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
-        {/* The actions are centred on the title's first line and never move with the wrap.
+        {/* The actions are centered on the title's first line and never move with the wrap.
           Narrow: the pills go under the title. Wide: they follow it on its line. */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>

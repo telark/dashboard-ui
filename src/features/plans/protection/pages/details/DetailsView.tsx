@@ -38,7 +38,7 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
 
   const [duplicatePanelOpen, setDuplicatePanelOpen] = useState(false);
   const [editPanelOpen, setEditPanelOpen] = useState(false);
-  const [cancelling, setCancelling] = useState(false);
+  const [canceling, setCanceling] = useState(false);
   const [reactivating, setReactivating] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [refreshingHealth, setRefreshingHealth] = useState(false);
@@ -76,7 +76,7 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
 
   const handleConfirmCancel = useCallback(async () => {
     if (!details) return;
-    setCancelling(true);
+    setCanceling(true);
     try {
       await dispatch(cancelPlanThunk({ planId: details.id })).unwrap();
       message.success(PPC.LABELS.ACTIONS.CANCEL_SUCCESS(details.name));
@@ -84,7 +84,7 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
     } catch (err: unknown) {
       message.error(typeof err === 'string' && err ? err : PPC.LABELS.ACTIONS.CANCEL_ERROR);
     } finally {
-      setCancelling(false);
+      setCanceling(false);
     }
   }, [details, dispatch, message]);
 
@@ -186,7 +186,7 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
             plan={details}
             duplicating={duplicatePanelOpen}
             editing={editPanelOpen}
-            cancelling={cancelling}
+            canceling={canceling}
             reactivating={reactivating}
             approving={deciding === 'approved'}
             rejecting={deciding === 'rejected'}
@@ -213,7 +213,7 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
         resourceName={details.name}
         resourceType="protection plan"
         confirmText={PPC.LABELS.DETAIL_PAGE.ACTIONS.CANCEL_MODAL_OK}
-        loading={cancelling}
+        loading={canceling}
         getContainer={() => document.body}
       />
       <ActionConfirmModal

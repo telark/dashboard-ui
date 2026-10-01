@@ -1,4 +1,4 @@
-export { extractRegisterOptions, performRegister } from './flow/register';
+export { extractRegisterOptions, performRegister, buildEnrollUrl } from './flow/register';
 export { prepareLoginFinishRequest, performLogin } from './flow/login';
 export type { OrphanedPasskeysInfo } from './flow/login';
 

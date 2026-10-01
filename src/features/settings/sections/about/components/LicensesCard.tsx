@@ -37,20 +37,20 @@ const LicensesCard: React.FC = memo(() => {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    let cancelled = false;
+    let canceled = false;
     fetch(LICENSES_LIST.JSON_URL)
       .then((res) => {
         if (!res.ok) throw new Error(`${res.status}`);
         return res.json() as Promise<LicenseEntry[]>;
       })
       .then((data) => {
-        if (!cancelled) setLicenses(data);
+        if (!canceled) setLicenses(data);
       })
       .catch(() => {
-        if (!cancelled) setLoadFailed(true);
+        if (!canceled) setLoadFailed(true);
       });
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, []);
 

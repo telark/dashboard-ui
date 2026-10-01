@@ -49,15 +49,15 @@ const TimezoneSectionContent: React.FC = memo(() => {
   const regionOptions = useMemo(buildRegionOptions, []);
 
   useEffect(() => {
-    let cancelled = false;
+    let canceled = false;
     fetchCurrentUserDetails((fresh) => {
-      if (cancelled) return;
+      if (canceled) return;
       setCurrentUser(fresh);
       setUser(fresh);
       setDraft(toDraft(fresh.settings));
     });
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, []);
 

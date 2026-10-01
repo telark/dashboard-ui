@@ -18,7 +18,7 @@ npm run check-all    # type-check + lint
 npm run build
 ```
 
-Rules for code structure, constants and styling are in [AGENTS.md](AGENTS.md). Reuse existing components and colour tokens instead of adding new ones.
+Rules for code structure, constants and styling are in [AGENTS.md](AGENTS.md). Reuse existing components and color tokens instead of adding new ones.
 
 ## Pull requests
 

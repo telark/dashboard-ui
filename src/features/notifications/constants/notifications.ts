@@ -11,6 +11,8 @@ export const NOTIFICATION_TYPES = {
   GROUP_MEMBERSHIP_CHANGED: 'group.membership.changed',
   PLAN_APPROVAL_REQUESTED: 'plan.approval.requested',
   PLAN_APPROVAL_DECIDED: 'plan.approval.decided',
+  ENROLL_LINK_CREATED: 'enroll.link.created',
+  ENROLL_LINK_USED: 'enroll.link.used',
 } as const;
 
 export const NOTIFICATION_SEVERITY_COLORS: Record<string, string> = {

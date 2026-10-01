@@ -49,7 +49,7 @@ export const useScopeExclusionOptions = ({
     if (!isApplications) return;
     const missing = selected.filter((name) => !cache.current.has(name));
     if (missing.length === 0) return;
-    let cancelled = false;
+    let canceled = false;
     const load = async () => {
       setResourcesLoading(true);
       await Promise.all(
@@ -62,14 +62,14 @@ export const useScopeExclusionOptions = ({
           }
         }),
       );
-      if (!cancelled) {
+      if (!canceled) {
         setCached(new Map(cache.current));
         setResourcesLoading(false);
       }
     };
     void load();
     return () => {
-      cancelled = true;
+      canceled = true;
       setResourcesLoading(false);
     };
   }, [isApplications, selected]);

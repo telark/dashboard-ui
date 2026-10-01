@@ -12,7 +12,7 @@ export const BUTTON_TEXTS = {
   SELECT: 'Select',
 } as const;
 
-// Spacing between toolbar items, and between a toolbar and its neighbours, so
+// Spacing between toolbar items, and between a toolbar and its neighbors, so
 // the run of buttons reads as one evenly spaced group.
 export const TOOLBAR_ITEM_GAP = 6;
 
@@ -25,8 +25,8 @@ export const TOOLBAR_CONTROL = {
   // control falls back to its icon and moves its label into a tooltip.
   COMPACT_BELOW: 768,
   COMPACT_QUERY: '(max-width: 767px)',
-  // Without this the label box keeps its half-leading, so centring the box
-  // leaves the glyphs off-centre against icons, which set their own.
+  // Without this the label box keeps its half-leading, so centering the box
+  // leaves the glyphs off-center against icons, which set their own.
   LINE_HEIGHT: 1,
 } as const;
 

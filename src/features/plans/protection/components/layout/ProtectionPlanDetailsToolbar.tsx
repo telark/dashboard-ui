@@ -33,7 +33,7 @@ interface ProtectionPlanDetailsToolbarProps {
   plan: ProtectionPlan;
   duplicating: boolean;
   editing: boolean;
-  cancelling: boolean;
+  canceling: boolean;
   reactivating: boolean;
   approving: boolean;
   rejecting: boolean;
@@ -102,7 +102,7 @@ interface OverflowItemsArgs {
   plan: ProtectionPlan;
   canCancel: boolean;
   canDelete: boolean;
-  cancelling: boolean;
+  canceling: boolean;
   deleting: boolean;
 }
 
@@ -110,7 +110,7 @@ const overflowItems = ({
   plan,
   canCancel,
   canDelete,
-  cancelling,
+  canceling,
   deleting,
 }: OverflowItemsArgs): MenuProps['items'] => [
   ...(CANCELLABLE_PHASES.includes(plan.phase)
@@ -120,7 +120,7 @@ const overflowItems = ({
           danger: true,
           icon: <StopOutlined />,
           label: PPC.LABELS.DETAIL_PAGE.ACTIONS.CANCEL,
-          disabled: !canCancel || cancelling,
+          disabled: !canCancel || canceling,
           title: permissionTooltip(canCancel, PD.CANCEL),
         },
       ]
@@ -139,7 +139,7 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
   plan,
   duplicating,
   editing,
-  cancelling,
+  canceling,
   reactivating,
   approving,
   rejecting,
@@ -291,7 +291,7 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
       icon: <EllipsisOutlined />,
       variant: 'ghost',
       dropdown: {
-        items: overflowItems({ plan, canCancel, canDelete, cancelling, deleting }),
+        items: overflowItems({ plan, canCancel, canDelete, canceling, deleting }),
         onItemClick: handleMenuClick,
       },
     });
@@ -300,7 +300,7 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
     plan,
     duplicating,
     editing,
-    cancelling,
+    canceling,
     reactivating,
     approving,
     rejecting,

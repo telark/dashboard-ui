@@ -48,7 +48,7 @@ const PodBlock: React.FC<{ instance: ApplicationWorkloadUsagePerInstance }> = ({
 
   return (
     <div style={{ display: 'grid', rowGap: M.DETAIL_ROW_GAP_PX }}>
-      {/* Pod line: labelled, with its total called out as a sum of the containers below. */}
+      {/* Pod line: labeled, with its total called out as a sum of the containers below. */}
       <div style={{ display: 'flex', alignItems: 'center', gap: M.HEADER_GAP_PX, minWidth: 0 }}>
         <RowTag text={WM.POD_LABEL} {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
         <span

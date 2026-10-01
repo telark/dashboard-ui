@@ -11,13 +11,7 @@ import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../global
 import type { AppDispatch } from '../../../../store';
 import { extractErrorMessage } from '../../../../utils/helpers/format';
 import { IDENTITY_PROVIDER_CONSTANTS as C } from './constants';
-import {
-  ACTION_PERMISSIONS,
-  useIsAdminOnAll,
-  usePermission,
-} from '../../../auth/hooks/permissions/permissionEngine';
-
-const EDIT_OIDC_PERMISSION = ACTION_PERMISSIONS.settings.editOidcConfig;
+import { useSignInSettingsAccess } from './useSignInSettingsAccess';
 
 interface OIDCForm {
   enabled: boolean;
@@ -61,14 +55,7 @@ function validate(form: OIDCForm, hasPinnedKeys: boolean): string | null {
 const OIDCSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
-  const canEditSettings = usePermission(
-    EDIT_OIDC_PERMISSION.scope,
-    EDIT_OIDC_PERMISSION.level,
-    EDIT_OIDC_PERMISSION.deny,
-  );
-  // Whoever controls sign-on trust can mint a login for anyone, so the server also requires Admin on ALL.
-  const isAdminOnAll = useIsAdminOnAll();
-  const canEdit = canEditSettings && isAdminOnAll;
+  const { canEdit, deniedTooltip } = useSignInSettingsAccess();
   const { message } = AntdApp.useApp();
 
   const [form, setForm] = useState<OIDCForm>(EMPTY_FORM);
@@ -140,12 +127,12 @@ const OIDCSection: React.FC = memo(() => {
           variant: 'primary',
           loading: saving,
           disabled: !hasChanges || Boolean(validationError) || !canEdit,
-          tooltip: canEdit ? undefined : C.LABELS.PERMISSION_DENIED,
+          tooltip: deniedTooltip,
           onClick: handleSave,
         },
       ],
     }),
-    [saving, hasChanges, validationError, canEdit, handleSave],
+    [saving, hasChanges, validationError, canEdit, deniedTooltip, handleSave],
   );
 
   return (
@@ -160,7 +147,7 @@ const OIDCSection: React.FC = memo(() => {
           }}
         >
           <div style={{ fontWeight: 700 }}>{C.LABELS.ENABLE_LABEL}</div>
-          <Tooltip title={canEdit ? undefined : C.LABELS.PERMISSION_DENIED}>
+          <Tooltip title={deniedTooltip}>
             <span style={canEdit ? {} : { display: 'inline-block', cursor: 'not-allowed' }}>
               <Switch
                 checked={form.enabled}
@@ -177,7 +164,11 @@ const OIDCSection: React.FC = memo(() => {
               <div style={{ fontWeight: 700, marginBottom: 4 }}>{C.LABELS.CLIENT_ID_LABEL}</div>
               <Input
                 placeholder={C.LABELS.CLIENT_ID_PLACEHOLDER}
-                value={form.googleClientID}
+                value={
+                  canEdit || !form.googleClientID
+                    ? form.googleClientID
+                    : C.LABELS.CLIENT_ID_REDACTED
+                }
                 disabled={!canEdit}
                 onChange={(e) => update('googleClientID', e.target.value)}
               />
@@ -199,6 +190,7 @@ const OIDCSection: React.FC = memo(() => {
                 checked={form.egressAllowed}
                 onChange={canEdit ? (v: boolean) => update('egressAllowed', v) : undefined}
                 disabled={!canEdit}
+                tooltip={deniedTooltip}
               />
             </div>
 

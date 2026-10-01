@@ -11,9 +11,17 @@ export interface UserSettings {
 
 export type UserAccountState = 'active' | 'suspended';
 
+// Written by auth while an enroll link is pending; expiresAt is for display, auth enforces it.
+export interface UserInvite {
+  issuedAt: string;
+  expiresAt: string;
+  issuedBy?: string;
+}
+
 export interface UserStatus {
   phase: UserAccountState;
   lastLoginAt?: string;
+  invite?: UserInvite;
 }
 
 export interface ManageUserStateFormValues {

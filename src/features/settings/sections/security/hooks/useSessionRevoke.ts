@@ -56,12 +56,12 @@ export const useSessionRevoke = ({
   const [currentSessionName, setCurrentSessionName] = useState<string | null>(null);
 
   useEffect(() => {
-    let cancelled = false;
+    let canceled = false;
     getCurrentSessionName().then((name) => {
-      if (!cancelled) setCurrentSessionName(name);
+      if (!canceled) setCurrentSessionName(name);
     });
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, []);
 

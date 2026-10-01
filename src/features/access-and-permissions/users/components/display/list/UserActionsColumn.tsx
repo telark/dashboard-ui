@@ -1,12 +1,17 @@
-import React from 'react';
-import { Tooltip } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../../../../constants';
+import React, { useState } from 'react';
+import { Dropdown, Tooltip } from 'antd';
+import type { MenuProps } from 'antd';
+import { EditOutlined, DeleteOutlined, LinkOutlined } from '@ant-design/icons';
+import { DEFAULT_COLORS, MODAL_CHROME, TIME_FORMATS } from '../../../../../../constants';
+import { ActionConfirmModal } from '../../../../../../components/display/modal';
+import { formatDateTime } from '../../../../../../utils/shared/time';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../../auth/hooks';
+import { EnrollLinkModal } from '../../../../../auth/components';
 import { useUserDeleteModal, UserDeleteModal } from '../../delete';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import type { User } from '../../../models';
 import { useUserLockReason } from '../../../hooks/user/useUserLockReason';
+import { useUserEnrollLink } from '../../../hooks/user/useUserEnrollLink';
 
 interface UserActionsColumnProps {
   record: User;
@@ -40,6 +45,112 @@ const actionWrapperStyle: React.CSSProperties = {
   width: ACTION_SIZE,
   height: ACTION_SIZE,
   flexShrink: 0,
+};
+
+const ENROLL = UC.LABELS.ENROLL_LINK;
+
+const menuLabel = (label: string, blockedReason?: string) =>
+  blockedReason ? (
+    // Left of the item: above or below, it would cover the neighboring item.
+    <Tooltip title={blockedReason} placement="left">
+      <span style={{ pointerEvents: 'all' }}>{label}</span>
+    </Tooltip>
+  ) : (
+    label
+  );
+
+// The menu and the dialogs render in portals, and their clicks still bubble to the row.
+const stopRowClick = (e: React.MouseEvent) => e.stopPropagation();
+
+interface EnrollLinkActionProps {
+  record: User;
+}
+
+const EnrollLinkAction: React.FC<EnrollLinkActionProps> = ({ record }) => {
+  const link = useUserEnrollLink(record);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const blocked = Boolean(link.blocked);
+
+  const items: MenuProps['items'] = [
+    {
+      key: UC.KEYS.ENROLL_LINK_CREATE,
+      label: menuLabel(ENROLL.CREATE, link.createBlocked),
+      disabled: Boolean(link.createBlocked),
+    },
+    {
+      key: UC.KEYS.ENROLL_LINK_REVOKE,
+      label: menuLabel(ENROLL.REVOKE, link.revokeBlocked),
+      disabled: Boolean(link.revokeBlocked),
+      danger: true,
+    },
+  ];
+  const onMenuClick: MenuProps['onClick'] = ({ key }) => {
+    if (key === UC.KEYS.ENROLL_LINK_CREATE) link.create();
+    if (key === UC.KEYS.ENROLL_LINK_REVOKE) link.openRevoke();
+  };
+
+  return (
+    <span style={actionWrapperStyle} onClick={stopRowClick}>
+      {/* Hovering the open menu counts as hovering its trigger, so the label waits for it to close. */}
+      <Tooltip
+        title={link.blocked ?? ENROLL.MENU}
+        placement="left"
+        open={menuOpen ? false : undefined}
+      >
+        <span style={actionWrapperStyle}>
+          <Dropdown
+            trigger={['click']}
+            placement="bottomRight"
+            disabled={blocked}
+            open={menuOpen}
+            onOpenChange={setMenuOpen}
+            menu={{ items, onClick: onMenuClick }}
+          >
+            <button
+              type="button"
+              style={actionButtonStyle(blocked)}
+              disabled={blocked}
+              onMouseEnter={(e) => {
+                if (!blocked) e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+              }}
+              aria-label={ENROLL.MENU}
+            >
+              <LinkOutlined />
+            </button>
+          </Dropdown>
+        </span>
+      </Tooltip>
+      <EnrollLinkModal
+        url={link.url}
+        onClose={link.closeLink}
+        title={ENROLL.MODAL_TITLE}
+        description={
+          <>
+            {ENROLL.MODAL_SEND_TO}
+            <span style={MODAL_CHROME.RESOURCE_NAME}>{record.username}</span>
+            {ENROLL.MODAL_EXPIRES(formatDateTime(link.expiresAt, TIME_FORMATS.DATE_TIME))}
+          </>
+        }
+      />
+      <ActionConfirmModal
+        open={link.revokeOpen}
+        onClose={link.closeRevoke}
+        onConfirm={link.revoke}
+        title={ENROLL.REVOKE}
+        action={ENROLL.REVOKE_ACTION}
+        resourceType={ENROLL.REVOKE_RESOURCE}
+        resourceName={record.username}
+        confirmText={ENROLL.REVOKE_CONFIRM}
+        cancelText={UC.LABELS.MODAL.CANCEL}
+        note={ENROLL.REVOKE_NOTE}
+        loading={link.revoking}
+        getContainer={() => document.body}
+      />
+    </span>
+  );
 };
 
 export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
@@ -90,6 +201,7 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
         gap: 8,
       }}
     >
+      <EnrollLinkAction record={record} />
       <Tooltip
         title={
           canEdit ? UC.LABELS.ACTIONS.EDIT : (lockReason ?? UC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP)

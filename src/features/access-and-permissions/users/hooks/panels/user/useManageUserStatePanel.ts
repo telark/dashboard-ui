@@ -58,9 +58,9 @@ export const useManageUserStatePanel = ({
       setSubmitting(true);
       try {
         const phase = values.phase as UserAccountState;
-        const updated: Partial<User> = {
-          status: { ...editingUser.status, phase },
-        };
+        // Only the phase: the server refuses a session write that carries status.invite, and
+        // the merge patch keeps the other status fields.
+        const updated: Partial<User> = { status: { phase } };
         await dispatch(updateUserThunk({ id: editingUser.id, user: updated })).unwrap();
         store.dispatch(fetchMyPermissionsThunk());
         message.success(UC.LABELS.MESSAGES.UPDATED(editingUser.fullname));

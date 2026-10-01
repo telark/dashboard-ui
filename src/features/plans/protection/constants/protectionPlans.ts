@@ -32,7 +32,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
     // Natural width of the plans list row, from Geist advance widths calibrated
     // against the applications row: count + 7 phase pills with counts (~740px)
     // + filter + search + organize + create is ~1210px. Below this the pills
-    // fold into one control; the labelled buttons (measured ~500px with the pills
+    // fold into one control; the labeled buttons (measured ~500px with the pills
     // folded) fall back to icons only below DEFAULT.
     LIST_TOOLBAR_COMPACT_WIDTH: {
       QUICK_FILTER: 1230,
@@ -407,7 +407,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       BASIC_INFO_TITLE: 'Details',
       BASIC_INFO_DESCRIPTION: 'Name, description, severity and priority.',
       CLASSIFICATION_TITLE: 'Classification',
-      CLASSIFICATION_DESCRIPTION: 'Environment and tags used to organise and filter plans.',
+      CLASSIFICATION_DESCRIPTION: 'Environment and tags used to organize and filter plans.',
       APPROVAL_TITLE: 'Execution & approval',
       APPROVAL_DESCRIPTION: 'Whether the plan deploys on its own or waits for an approver.',
       PARTICIPANTS_TITLE: 'Participants',

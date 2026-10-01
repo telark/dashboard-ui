@@ -96,16 +96,25 @@ const clientErrorMessage = (errorMsg: string): string =>
     ? errorMsg
     : LOGIN_CONSTANTS.MESSAGES.CLIENT_ERROR;
 
-// A login the backend refuses for this account (403), which the login card explains inline.
+// A login the backend refuses for this account (403) or for its email (409, Google sign-in),
+// which the login card explains inline.
 export const getLoginRefusalMessage = (input: unknown): string | null => {
   const error = input as AuthErrorShape;
-  if (!error?.normalized?.isForbidden) return null;
+  if (!error?.normalized?.isForbidden && error?.normalized?.status !== HTTP_STATUS.CONFLICT) {
+    return null;
+  }
   const errorMsg = extractErrorMessage(error);
   if (checkErrorPattern(errorMsg, LOGIN_CONSTANTS.ERROR_PATTERNS.ACCOUNT_SUSPENDED)) {
     return LOGIN_CONSTANTS.MESSAGES.ACCOUNT_SUSPENDED;
   }
   if (checkErrorPattern(errorMsg, LOGIN_CONSTANTS.ERROR_PATTERNS.BOOTSTRAP_PASSKEY_ONLY)) {
     return LOGIN_CONSTANTS.MESSAGES.BOOTSTRAP_PASSKEY_ONLY;
+  }
+  if (checkErrorPattern(errorMsg, LOGIN_CONSTANTS.ERROR_PATTERNS.EMAIL_SIGNS_IN_ANOTHER_WAY)) {
+    return LOGIN_CONSTANTS.MESSAGES.EMAIL_SIGNS_IN_ANOTHER_WAY;
+  }
+  if (checkErrorPattern(errorMsg, LOGIN_CONSTANTS.ERROR_PATTERNS.EMAIL_AMBIGUOUS)) {
+    return LOGIN_CONSTANTS.MESSAGES.EMAIL_AMBIGUOUS;
   }
   return null;
 };

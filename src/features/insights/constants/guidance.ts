@@ -140,7 +140,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'crashloop.exit_143': {
     cause:
-      'Exit code 143 means the process received SIGTERM and stopped. Something is asking it to stop: a failing probe, a shutdown hook, or the process signalling itself.',
+      'Exit code 143 means the process received SIGTERM and stopped. Something is asking it to stop: a failing probe, a shutdown hook, or the process signaling itself.',
     steps: ['Check the probes of {workload}.', 'Read the logs just before the stop.'],
   },
   'crashloop.exit_other': {
@@ -701,7 +701,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'networking.service_selector_mismatch': {
     cause:
-      'A Service routes only to pods whose labels match its selector; a typo or a relabelled workload leaves it empty.',
+      'A Service routes only to pods whose labels match its selector; a typo or a relabeled workload leaves it empty.',
     steps: [
       'Compare the selector of {service} with the pod labels of the workload it should reach, and fix one of them.',
     ],

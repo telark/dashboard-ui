@@ -404,7 +404,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
             danger={armedRollback == null}
             loading={rollbackBusyId != null}
             getContainer={() => document.body}
-            // Centre it over the page rather than under the open panel.
+            // Center it over the page rather than under the open panel.
             offsetRight={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
           />
         </>

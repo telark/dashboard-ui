@@ -12,7 +12,7 @@ This repository contains the single-page application only. It has no backend of 
 | Protection plans | Create, schedule, approve, cancel, and reactivate plans; see health, violations, and reports |
 | Insights | Incident cards and setup recommendations, updated live |
 | Access & permissions | Users, groups, access roles, and categories such as environments and tags |
-| Settings | Profile, appearance, security, identity provider (Google SSO), and the local AI runtime |
+| Settings | Profile, appearance, security, identity provider (Google SSO and self-registration), and the local AI runtime |
 
 Every action is gated by the signed-in user's permissions, including deny rules; the backend enforces the same checks.
 
@@ -101,7 +101,7 @@ The following conventions are enforced by `eslint.config.mjs`:
 
 * No `console.*` outside `src/logging/**`; use the project logger.
 * Constants belong in `src/constants/**` or a feature's `constants/` folder, not inline.
-* Colours come only from `DEFAULT_COLORS` in `src/constants/shared/colors.ts`; colour literals elsewhere fail lint.
+* Colors come only from `DEFAULT_COLORS` in `src/constants/shared/colors.ts`; color literals elsewhere fail lint.
 * No new `any` types.
 
 ## Build & Release

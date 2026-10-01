@@ -150,7 +150,7 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
         cancelText={APPLICATIONS_UI.CARD.ACTIONS.CANCEL}
         loading={abortBusyId !== null}
         getContainer={() => document.body}
-        // Centre it over the page rather than under the open panel.
+        // Center it over the page rather than under the open panel.
         offsetRight={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
       />
     </>
