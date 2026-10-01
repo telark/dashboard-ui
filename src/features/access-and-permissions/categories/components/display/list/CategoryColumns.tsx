@@ -8,6 +8,7 @@ import { AiOutlineTag, AiOutlineCalendar, AiOutlineAppstore } from 'react-icons/
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import { DEFAULT_COLORS } from '../../../../../../constants';
 import { CATEGORIES_CONSTANTS as CC } from '../../../constants';
+import { EMPTY_VALUE } from '../../../../shared';
 
 interface CategoryColumnsContext extends GenerateColumnCtx {
   onView?: (record: Category) => void;
@@ -75,11 +76,12 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
         icon: <AiOutlineCalendar />,
         width: CC.SIZES.COLUMNS.CREATED,
         render: (value: string) => {
-          if (!value) return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
+          if (!value)
+            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>;
           try {
             return <TimeAgo date={value} />;
           } catch {
-            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
+            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>;
           }
         },
       },

@@ -92,6 +92,7 @@ Verify each step against its success criterion before moving on. Strong success 
 - A capability shown by more than one feature, now or planned, gets its own `src/features/<name>/` folder with an `index.ts`, like `src/features/insights/`. Host features import its public pieces through that `index.ts` and keep only their own wiring, because nesting it under its first consumer forces the others to import its internals or move it later.
 - Don't import another feature's internals (anything not exported from its `index.ts`). When something becomes shared, move it to `src/constants/`, `src/components/` or `src/features/shared/`, remove the old definition and update every caller, because a cross-feature import creates false ownership and coupling.
 - Full-page loading uses `FullPageLoader` (`src/components/display/views/FullPageLoader.tsx`). Loaders that can follow each other during one wait must render identically (same size, same label or none), because a switch between two spinners reads as a glitch. Don't wrap a lazy route in a second `Suspense` when the route-level one in `src/routes/AppRoutes.tsx` already covers it.
+- React Router keeps `navigate` state in `history.state.usr`, so a reload or a return to that entry delivers it again: read a one-shot message into component state, then clear it with `navigate(location, { replace: true, state: null })` (see `Login.tsx`).
 - Login and register are card content inside `AuthLayout` (`src/features/auth/components/shared/AuthLayout.tsx`), which owns the theme, brand panel and card transition. It uses `useOutlet()` rather than `<Outlet/>`, because `<Outlet/>` renders the incoming page inside the exiting card mid-animation.
 - The settings navigation that renders is `src/components/layout/sidebar/SettingsMenuItems.tsx`. `SETTINGS_CONSTANTS.SECTIONS` in `src/features/settings/constants/settings.ts` drives the section content, not the sidebar's icons or labels, so a nav change made only there never appears.
 - Treat a resource as gone only on a definite not-found (`error.normalized.isNotFound`, attached by `src/api/client/normalize.ts`), not on any rejected request, because transient failures take the same fallback path and would disable actions on healthy items. The snapshot `unavailable` flag in `src/features/resources/applications/clients/snapshots.ts` works this way.
@@ -102,6 +103,7 @@ Verify each step against its success criterion before moving on. Strong success 
 - User-facing text (labels, tooltips, messages, empty states, notifications) and log messages live in constants, never inline in components or hooks: feature text in the feature's `constants/` (for example `src/features/insights/constants/texts.ts`), shared text under `src/constants/`. One place to edit keeps copy consistent and auditable.
 - Config values (thresholds, sizes, timeouts, storage keys) are constants too. Pixel values that carry meaning (shared sizes, breakpoints, minimum widths) go in `src/constants/layout/` or the feature's constants.
 - A literal repeated in two or more files moves into a shared constants file, because copies drift.
+- Help text under a control stays short and plain. A longer explanation goes behind an info icon: antd `Tooltip` around `InfoCircleOutlined` with `tabIndex={0}` and `aria-label` set to the text.
 - A constant needed outside its feature moves to the root `src/constants/` (see the feature-boundary rule above).
 - UI text doesn't name internal vendors or tools (for example Kyverno). Say "the engine" or "the policy engine", or describe the effect, because naming them leaks implementation details and ties the copy to swappable infrastructure. Non-UI code and internal constants may use the names.
 
@@ -115,7 +117,7 @@ Verify each step against its success criterion before moving on. Strong success 
 
 ### Colours and surfaces
 
-- Colours come from `DEFAULT_COLORS` in `src/constants/shared/colors.ts`, the only file where a colour literal may appear (ESLint `no-restricted-syntax` enforces it). Map status meaning to `SUCCESS`, `DANGER`, `WARNING`, `INFO` or `NEUTRAL`. Vary opacity with `withAlpha(token, alpha)` instead of writing `rgba()`. If nothing fits, add a token there so the palette stays coherent.
+- Colours come from `DEFAULT_COLORS` in `src/constants/shared/colors.ts`, the only file where a colour literal may appear (ESLint `no-restricted-syntax` enforces it). Map status meaning to `SUCCESS`, `DANGER`, `WARNING`, `INFO` or `NEUTRAL`. Vary opacity with `withAlpha(token, alpha)` instead of writing `rgba()`. Don't add keys: every status maps to an existing token (green is always `SUCCESS`).
 - CSS files read the same tokens as `var(--color-<kebab-key>)` (for example `SUCCESS_HOVER` → `--color-success-hover`), set on `:root` by `applyColorVariables()` in `src/main.tsx`; for alpha in CSS use `color-mix(in srgb, var(--color-…) N%, transparent)`.
 - The page is dark and overlays are light, and some token names lie. Decide the surface first, then pick from its palette:
 
@@ -138,7 +140,7 @@ Verify each step against its success criterion before moving on. Strong success 
 
 ### Fonts
 
-- `src/styles/index.css` sets Geist on `#root *` with `!important`, which beats inline styles, so inline `fontFamily` and antd font tokens have no effect. Don't add them, and don't read an existing one as what renders. Monospace text uses the `manifest-code` class, whose id-scoped `!important` rule is the only way past the global one.
+- `src/styles/index.css` sets Geist on `#root *` with `!important`, which beats inline styles, so inline `fontFamily` and antd font tokens have no effect. Don't add them, and don't read an existing one as what renders. Monospace text uses `MONOSPACE_CLASS` (`src/constants/layout/fonts.ts`, the `manifest-code` class), whose `!important` rule is the only way past the global one; its bare-class selector also reaches popovers and tooltips, which render under `body`, outside `#root`.
 
 ### Control sizing
 
@@ -168,6 +170,7 @@ Verify each step against its success criterion before moving on. Strong success 
 - The panel header is exactly as tall as the app header: `SLIDE_OUT.HEADER.height` is `HEADER_LAYOUT.HEIGHT_PX`. Change the header constant, not the panel, so the two top bars stay aligned.
 - Everything inside a panel is on the light surface; use its palette.
 - Dialogs use `BaseModal` (`src/components/display/modal/`), and confirmations `ActionConfirmModal` on top of it. It owns the frame, the light-surface theme, the title and text styles and the footer (`ActionButtons`: muted cancel, solid primary or danger), so don't render antd `Modal` directly or style a modal frame by hand.
+- A role or group list without read access renders its own no-access card instead of its form field, which unregisters the field. A panel hosting it shows its search, toggles and filter only with that read permission and disables submit without it, because the form would otherwise send an empty selection that removes every assignment.
 - Form fields are antd vertical `Form.Item`s with `className="form-item-compact"` (plus `no-asterisk` to hide the required mark), 16px apart. Filter panel fields get this from `FILTER_PANEL.ITEM_CLASS` and `FILTER_PANEL.ITEM`, and their labels are sentence case ("Filter by severity").
 
 ## Layout & responsiveness
@@ -176,6 +179,7 @@ Verify each step against its success criterion before moving on. Strong success 
 - Layout that depends on an animated width, such as an expanding panel, reads the measured element width, not the expand flag, because the flag flips before the animation finishes (see `InsightPanelSections.tsx`).
 - To make one element give way before its sibling, prefer CSS to any threshold: `flexShrink: 100000` with `minWidth: 0` on the less important sibling (see `ApplicationDetailsIdentity.tsx`).
 - When a threshold is unavoidable, derive it from the measured content need, not from a constant borrowed from another component.
+- `document.documentElement.clientWidth` doesn't subtract the gutter that `scrollbar-gutter: stable` reserves; measure the root's `getBoundingClientRect().width`. A `SettingsCard` `headerAction` never shrinks, so variable-length text goes in the card body.
 - Avoid layout shift: widths shouldn't depend on content that changes between pages or loads (ellipsize instead); render nothing rather than a placeholder that later widens (as `ListToolbar` does before the first count); and render optional flex children conditionally, because a zero-width child still takes a `gap`.
 
 ## Logging

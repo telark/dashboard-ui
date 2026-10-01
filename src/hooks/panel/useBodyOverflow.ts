@@ -14,7 +14,8 @@ const lock = (): void => {
   locks += 1;
   if (locks > 1) return;
   const root = document.documentElement;
-  const gutter = `${window.innerWidth - root.clientWidth}px`;
+  // clientWidth ignores the reserved gutter (it reads the full viewport), the root's box doesn't.
+  const gutter = `${window.innerWidth - root.getBoundingClientRect().width}px`;
   root.style.scrollbarGutter = 'auto';
   root.style.setProperty(SCROLL_LOCK_GUTTER_VAR, gutter);
   document.body.style.overflow = 'hidden';

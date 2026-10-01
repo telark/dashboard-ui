@@ -3,6 +3,7 @@ export * from './layout/avatars';
 export * from './layout/buttons';
 export * from './layout/cards';
 export * from './layout/controls';
+export * from './layout/fonts';
 export * from './layout/header';
 export * from './layout/icons';
 export * from './layout/menu';

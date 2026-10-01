@@ -1,7 +1,7 @@
 import React, { memo, useMemo, useRef, useState } from 'react';
 import { Tooltip } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, MONOSPACE_CLASS } from '../../../../constants';
 import { formatDateKey, toDateKey } from '../../../../utils/shared/time';
 import SettingsCard from '../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
@@ -183,9 +183,9 @@ const ChangeRow: React.FC<{
               ) : null}
               {entry.fingerprint ? (
                 <code
+                  className={MONOSPACE_CLASS}
                   style={{
                     fontSize: 11,
-                    fontFamily: 'monospace',
                     color: DEFAULT_COLORS.TEXT_PRIMARY,
                     background: DEFAULT_COLORS.SURFACE_ELEVATED_HOVER,
                     border: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,

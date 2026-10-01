@@ -15,6 +15,7 @@ import type { CreateUserFormValues } from '../../models';
 
 const UserIcon = Icons.User;
 const ASSIGN_ROLE = ACTION_PERMISSIONS.users.manageRoles;
+const VIEW_ROLES = ACTION_PERMISSIONS.roles.view;
 
 interface CreateUserPanelProps {
   open: boolean;
@@ -33,6 +34,8 @@ const CreateUserPanel: React.FC<CreateUserPanelProps> = ({ open, onClose, form }
     handleSubmit,
   } = useCreateUserPanel({ form, onClose });
   const canAssignRole = usePermission(ASSIGN_ROLE.scope, ASSIGN_ROLE.level, ASSIGN_ROLE.deny);
+  // Without it the role list shows its no-access card, so there is nothing to search.
+  const canViewRoles = usePermission(VIEW_ROLES.scope, VIEW_ROLES.level);
   const { roles, loading: rolesLoading } = useRoles();
   const [roleSearch, setRoleSearch] = useState('');
   const filteredRoles = useMemo(
@@ -54,12 +57,14 @@ const CreateUserPanel: React.FC<CreateUserPanelProps> = ({ open, onClose, form }
             style={{ marginBottom: 0 }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <SearchInput
-                value={roleSearch}
-                onChange={setRoleSearch}
-                placeholder={UC.LABELS.PANELS.MANAGE_ROLE.SEARCH_PLACEHOLDER}
-                block
-              />
+              {canViewRoles ? (
+                <SearchInput
+                  value={roleSearch}
+                  onChange={setRoleSearch}
+                  placeholder={UC.LABELS.PANELS.MANAGE_ROLE.SEARCH_PLACEHOLDER}
+                  block
+                />
+              ) : null}
               <UserRoleSelectList
                 roles={filteredRoles}
                 loading={rolesLoading}

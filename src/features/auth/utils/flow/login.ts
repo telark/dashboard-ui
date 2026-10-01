@@ -45,6 +45,31 @@ export interface OrphanedPasskeysInfo {
   errorName?: string;
 }
 
+const ORPHANED_PASSKEY_ERROR_NAMES: readonly string[] = [
+  LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_ALLOWED,
+  LOGIN_CONSTANTS.WEBAUTHN.ERROR_NAMES.NOT_FOUND,
+];
+
+// Only the browser failing to use one of the account's passkeys (none available, prompt
+// dismissed) points at orphaned passkeys; a server error at login finish must not.
+const getOrphanedPasskeysInfo = (
+  error: unknown,
+  loginStartResponse: LoginStartResponse | null,
+): OrphanedPasskeysInfo | null => {
+  const errorName = (error as Error & { originalErrorName?: string })?.originalErrorName;
+  if (
+    !loginStartResponse ||
+    !errorName ||
+    !ORPHANED_PASSKEY_ERROR_NAMES.includes(errorName) ||
+    !hasBackendPasskeys(loginStartResponse)
+  ) {
+    return null;
+  }
+  const credentialIds = extractCredentialIds(loginStartResponse);
+  const userId = loginStartResponse.userId;
+  return credentialIds.length > 0 && userId ? { credentialIds, userId, errorName } : null;
+};
+
 export const performLogin = async (
   email: string,
   messageApi: MessageInstance,
@@ -103,20 +128,10 @@ export const performLogin = async (
     if (getLoginRefusalMessage(error)) throw error;
 
     // Backend passkeys the browser could not use: the user confirms cleanup in a modal first.
-    if (loginStartResponse && hasBackendPasskeys(loginStartResponse) && onShowOrphanedModal) {
-      const originalErrorName = (error as Error & { originalErrorName?: string })
-        ?.originalErrorName;
-      const credentialIds = extractCredentialIds(loginStartResponse);
-      const userId = loginStartResponse.userId;
-
-      if (credentialIds.length > 0 && userId) {
-        onShowOrphanedModal({
-          credentialIds,
-          userId,
-          errorName: originalErrorName,
-        });
-        return;
-      }
+    const orphanedInfo = getOrphanedPasskeysInfo(error, loginStartResponse);
+    if (orphanedInfo && onShowOrphanedModal) {
+      onShowOrphanedModal(orphanedInfo);
+      return;
     }
 
     handleAuthError(error, messageApi, {

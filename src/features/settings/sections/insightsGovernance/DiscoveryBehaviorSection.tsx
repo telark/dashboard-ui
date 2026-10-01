@@ -10,12 +10,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
 import type { AppDispatch, RootState } from '../../../../store';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as C } from './constants';
+import { pluralize } from '../../../../utils/helpers/format';
 import {
   ACTION_PERMISSIONS,
   usePermission,
 } from '../../../auth/hooks/permissions/permissionEngine';
 
 const EDIT_DISCOVERY_PERMISSION = ACTION_PERMISSIONS.settings.editDiscoveryConfig;
+const VIEW_APPLICATIONS_PERMISSION = ACTION_PERMISSIONS.applications.view;
+const VIEW_INSIGHTS_PERMISSION = ACTION_PERMISSIONS.insights.view;
 const FETCH_INTERVAL_PRESET_MINUTES = [1, 2, 5, 10, 15, 30, 60] as const;
 
 function snapDownToPreset(value: number, presets: readonly number[]): number {
@@ -37,6 +40,16 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
     EDIT_DISCOVERY_PERMISSION.level,
     EDIT_DISCOVERY_PERMISSION.deny,
   );
+  const canViewApplications = usePermission(
+    VIEW_APPLICATIONS_PERMISSION.scope,
+    VIEW_APPLICATIONS_PERMISSION.level,
+  );
+  const canViewInsights = usePermission(
+    VIEW_INSIGHTS_PERMISSION.scope,
+    VIEW_INSIGHTS_PERMISSION.level,
+  );
+  // cluster/namespaces answers only callers who can read applications or insights.
+  const canListNamespaces = canViewApplications || canViewInsights;
   const { message } = AntdApp.useApp();
 
   const [initialDiscovery, setInitialDiscovery] = useState<{
@@ -96,8 +109,8 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
   }, [message]);
 
   useEffect(() => {
-    loadNamespaces();
-  }, [loadNamespaces]);
+    if (canListNamespaces) loadNamespaces();
+  }, [loadNamespaces, canListNamespaces]);
 
   const saveDiscoveryAndBehavior = useCallback(async () => {
     setSavingDiscoveryBehavior(true);
@@ -181,7 +194,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
         {
           key: 'save',
           label: C.LABELS.SAVE_BUTTON,
-          variant: 'default',
+          variant: 'primary',
           loading: savingDiscoveryBehavior,
           disabled: !discoveryHasChanges || !canEditDiscoveryConfig,
           tooltip: canEditDiscoveryConfig
@@ -221,8 +234,8 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
           <div style={{ fontSize: 12, fontWeight: 700, color: DEFAULT_COLORS.TEXT_MUTED }}>
             {namespacesImpactPreview.hidden > 0 ? (
               <span>
-                {namespacesImpactPreview.hidden} application
-                {namespacesImpactPreview.hidden === 1 ? '' : 's'} will be hidden
+                {pluralize(namespacesImpactPreview.hidden, C.LABELS.NAMESPACES_IMPACT_NOUN)}{' '}
+                {C.LABELS.NAMESPACES_IMPACT_HIDDEN}
               </span>
             ) : null}
             {namespacesImpactPreview.hidden > 0 && namespacesImpactPreview.revealed > 0 ? (
@@ -230,8 +243,8 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
             ) : null}
             {namespacesImpactPreview.revealed > 0 ? (
               <span>
-                {namespacesImpactPreview.revealed} application
-                {namespacesImpactPreview.revealed === 1 ? '' : 's'} will be revealed
+                {pluralize(namespacesImpactPreview.revealed, C.LABELS.NAMESPACES_IMPACT_NOUN)}{' '}
+                {C.LABELS.NAMESPACES_IMPACT_REVEALED}
               </span>
             ) : null}
           </div>
@@ -268,9 +281,12 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
             options={[
               ...FETCH_INTERVAL_PRESET_MINUTES.map((m) => ({
                 value: String(m),
-                label: m === 60 ? '1 hour' : `${m} minute${m === 1 ? '' : 's'}`,
+                label:
+                  m === 60
+                    ? C.LABELS.FETCH_INTERVAL_ONE_HOUR
+                    : pluralize(m, C.LABELS.FETCH_INTERVAL_MINUTE_NOUN),
               })),
-              { value: 'custom', label: 'Custom' },
+              { value: 'custom', label: C.LABELS.CUSTOM_OPTION },
             ]}
             style={{ width: '100%' }}
           />

@@ -16,7 +16,7 @@ import type { Application, ApplicationRollbackEntry } from '../../models';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import SnapshotMetaChip from '../snapshots/SnapshotMetaChip';
-import { APPLICATION_SNAPSHOT_ROW } from '../../constants/sectionLayout';
+import { APPLICATION_MANIFEST_VIEW, APPLICATION_SNAPSHOT_ROW } from '../../constants/sectionLayout';
 import { FancySpinner } from '../../../../components/animation';
 import type { AppDispatch } from '../../../../store';
 import { abortApplicationRollbackThunk } from '../../store';
@@ -349,13 +349,13 @@ function RollbackErrorDetail(props: { error: string }): React.ReactElement {
       </button>
       {errorOpen ? (
         <div
+          className={APPLICATION_MANIFEST_VIEW.CODE_CLASS}
           style={{
             padding: R.ERROR_PADDING,
             borderRadius: R.ERROR_RADIUS_PX,
             background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
             color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
             fontSize: R.ERROR_FONT_SIZE_PX,
-            fontFamily: 'monospace',
             maxHeight: R.ERROR_MAX_HEIGHT_PX,
             overflow: 'auto',
             overflowWrap: 'anywhere',

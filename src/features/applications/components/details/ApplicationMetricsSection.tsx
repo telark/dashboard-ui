@@ -37,22 +37,15 @@ const ApplicationMetricsSection: React.FC<{ application: Application }> = memo(
         collapsible
         title={APPLICATIONS_UI.SECTIONS.METRICS.TITLE}
         description={APPLICATIONS_UI.SECTIONS.METRICS.DESCRIPTION}
-        headerAction={
-          derived?.lastChangeDetectedAt ? (
-            <span
-              style={{
-                fontSize: 12,
-                color: DEFAULT_COLORS.TEXT_MUTED,
-                whiteSpace: 'nowrap',
-                flexShrink: 0,
-              }}
-            >
-              {APPLICATIONS_UI.SECTIONS.METRICS.LAST_CHANGE}{' '}
-              <TimeAgo date={derived.lastChangeDetectedAt} />
-            </span>
-          ) : undefined
-        }
       >
+        {/* In the body, not the header: the header's action slot never shrinks, so a line
+            this long would push narrow screens sideways. */}
+        {derived?.lastChangeDetectedAt ? (
+          <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, marginBottom: 12 }}>
+            {APPLICATIONS_UI.SECTIONS.METRICS.LAST_CHANGE}{' '}
+            <TimeAgo date={derived.lastChangeDetectedAt} />
+          </div>
+        ) : null}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
           <StatMiniCard
             label={APPLICATIONS_UI.SECTIONS.METRICS.TOTAL_CHANGES}

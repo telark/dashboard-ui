@@ -8,6 +8,10 @@ export const AUTH_PERMISSIONS_LABELS = {
   SOURCE_INHERITED: (groupName?: string) => `Inherited from ${groupName || 'a group'}`,
   SOURCE_DIRECT_TOOLTIP: 'Role was assigned directly to your account',
   SOURCE_INHERITED_TOOLTIP: 'Role was inherited through a group membership',
+  EFFECTIVE_PERMISSIONS_TITLE: 'Effective Permissions',
+  ALL_SCOPES_TITLE: 'All Scopes',
+  DENY_PREFIX: 'Deny: ',
+  EMPTY_VALUE: '—',
 };
 
 export const AUTH_ERROR_MESSAGES = {

@@ -62,6 +62,12 @@ const Login: React.FC = () => {
     dispatch(ensureAuthConfigThunk());
   }, [dispatch]);
 
+  // The state above already holds the message: drop it from the history entry so a reload
+  // or a return to this entry doesn't show it again.
+  useEffect(() => {
+    if (redirectError !== null) navigate(location, { replace: true, state: null });
+  }, [redirectError, location, navigate]);
+
   const handleLogin = async (values: { email: string }) => {
     setPasskeyError(null);
     setLoading(true);

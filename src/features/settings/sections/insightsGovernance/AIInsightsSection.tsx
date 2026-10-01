@@ -278,7 +278,7 @@ const AIInsightsSection: React.FC = memo(() => {
         {
           key: 'save',
           label: C.LABELS.SAVE_BUTTON,
-          variant: 'default',
+          variant: 'primary',
           loading: saving,
           disabled: !hasChanges || !modelValid || !canControlAiInsights,
           tooltip: deniedTooltip,

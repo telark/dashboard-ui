@@ -60,7 +60,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         }}
         icon={!loading ? <KeyOutlined /> : undefined}
       >
-        {loading ? LOGIN_CONSTANTS.UI.BUTTON_LOADING : 'Authenticate'}
+        {loading ? LOGIN_CONSTANTS.UI.BUTTON_LOADING : LOGIN_CONSTANTS.UI.BUTTON_SUBMIT}
       </Button>
     </Form.Item>
 

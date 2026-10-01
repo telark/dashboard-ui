@@ -85,6 +85,7 @@ export const LOGIN_CONSTANTS = {
     SUBTITLE: 'Welcome back — choose your preferred method',
     EMAIL_PLACEHOLDER: 'Enter your email',
     BUTTON_LOADING: 'Authenticating...',
+    BUTTON_SUBMIT: 'Authenticate',
     BUTTON_TEXT: 'Continue with Passkey',
     FOOTER_TEXT: "Don't have an account?",
     FOOTER_LINK: 'Create an account',

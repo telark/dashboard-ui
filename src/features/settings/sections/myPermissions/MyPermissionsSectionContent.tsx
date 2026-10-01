@@ -64,7 +64,7 @@ function getWinningAllEntry(
 }
 
 function formatSources(role: ResolvedRole): string {
-  if (role.sources.length === 0) return '—';
+  if (role.sources.length === 0) return AUTH_PERMISSIONS_LABELS.EMPTY_VALUE;
   return role.sources
     .map((src) =>
       src.kind === 'direct'
@@ -123,7 +123,9 @@ const ScopeRow: React.FC<ScopeRowProps> = memo(({ title, level, rules, sourceTex
     </div>
     {rules.length > 0 && (
       <div style={{ marginTop: 4, fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-        <span style={{ fontWeight: 500, color: DEFAULT_COLORS.TEXT_SECONDARY }}>Deny: </span>
+        <span style={{ fontWeight: 500, color: DEFAULT_COLORS.TEXT_SECONDARY }}>
+          {AUTH_PERMISSIONS_LABELS.DENY_PREFIX}
+        </span>
         {rules.join(', ')}
       </div>
     )}
@@ -150,7 +152,8 @@ const MyPermissionsSectionContent: React.FC = memo(() => {
           scope,
           level,
           rules,
-          sourceText: winningRole != null ? formatSources(winningRole) : '—',
+          sourceText:
+            winningRole != null ? formatSources(winningRole) : AUTH_PERMISSIONS_LABELS.EMPTY_VALUE,
         };
       }),
     [scopeIndex, roles],
@@ -180,7 +183,7 @@ const MyPermissionsSectionContent: React.FC = memo(() => {
     [];
   if (allEntry != null) {
     allRows.push({
-      title: 'All Scopes',
+      title: AUTH_PERMISSIONS_LABELS.ALL_SCOPES_TITLE,
       level: allEntry.level,
       rules: allEntry.rules,
       sourceText: formatSources(allEntry.role),
@@ -196,7 +199,7 @@ const MyPermissionsSectionContent: React.FC = memo(() => {
   }
 
   return (
-    <SettingsCard title="Effective Permissions">
+    <SettingsCard title={AUTH_PERMISSIONS_LABELS.EFFECTIVE_PERMISSIONS_TITLE}>
       {allRows.map((row) => (
         <ScopeRow
           key={row.title}

@@ -4,6 +4,7 @@ import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons';
 import { DEFAULT_COLORS, getPillSurface } from '../../../../constants';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import { PanelEmptyState } from '../../../../components/display/panels/shared';
+import { pluralize } from '../../../../utils/helpers/format';
 import {
   cardStyle,
   Fact,
@@ -458,8 +459,7 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
                   {g.meta.name}
                 </span>
                 <span style={{ ...labelStyle, whiteSpace: 'nowrap' }}>
-                  {g.rows.length} {ui.COMPARE_CHANGE}
-                  {g.rows.length === 1 ? '' : 's'}
+                  {pluralize(g.rows.length, ui.COMPARE_CHANGE)}
                 </span>
               </div>
               <div

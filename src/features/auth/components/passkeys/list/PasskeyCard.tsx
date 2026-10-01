@@ -3,7 +3,7 @@ import { Tooltip, Popover, App as AntdApp } from 'antd';
 import { KeyOutlined, EditOutlined, DeleteOutlined, CopyOutlined } from '@ant-design/icons';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, MONOSPACE_CLASS } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type { Passkey } from '../../../models/passkeys';
 
@@ -56,9 +56,9 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
   const publicKeyPopoverContent = displayKey ? (
     <div style={{ position: 'relative', maxWidth: 320, paddingRight: 32 }}>
       <div
+        className={MONOSPACE_CLASS}
         style={{
           fontSize: 11,
-          fontFamily: 'monospace',
           wordBreak: 'break-all',
           color: PPC.COLORS.TEXT_PRIMARY,
           maxHeight: 80,

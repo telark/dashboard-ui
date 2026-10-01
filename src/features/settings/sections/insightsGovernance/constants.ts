@@ -40,13 +40,19 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     NAMESPACES_DESCRIPTION:
       'Choose namespaces to exclude from discovery and platform insights. System namespaces are pre-selected by default.',
     NAMESPACES_SELECTOR_PLACEHOLDER: 'Select namespaces…',
+    NAMESPACES_IMPACT_NOUN: 'application',
+    NAMESPACES_IMPACT_HIDDEN: 'will be hidden',
+    NAMESPACES_IMPACT_REVEALED: 'will be revealed',
     NAMESPACES_SAVE_BUTTON: 'Save namespaces',
     PLATFORM_TITLE: 'Platform behavior',
     PLATFORM_DESCRIPTION: 'Polling and snapshot retention settings.',
     FETCH_INTERVAL_MINUTES_LABEL: 'Fetch interval (minutes)',
+    FETCH_INTERVAL_MINUTE_NOUN: 'minute',
+    FETCH_INTERVAL_ONE_HOUR: '1 hour',
+    CUSTOM_OPTION: 'Custom',
     SNAPSHOTS_MAX_PER_APP_LABEL: 'Maximum Snapshots per application',
     SNAPSHOTS_MAX_PER_APP_HINT:
-      'Telark stores one pre-change snapshot per recorded change and keeps the most recent ones up to this limit (counted per namespace for multi-namespace applications). Older snapshots are deleted automatically; their history entries remain visible but can no longer be compared or rolled back to. A new value applies from the next recorded change.',
+      'Telark saves a snapshot before each change and keeps the most recent ones, up to this number. Older snapshots are deleted. Their changes stay in the history, but you can no longer compare them or roll back to them. For applications in several namespaces, the limit applies per namespace. A new limit takes effect from the next change.',
     PLATFORM_SAVE_INTERVAL_BUTTON: 'Save interval',
     PLATFORM_SAVE_SNAPSHOTS_BUTTON: 'Save snapshots',
     EDIT_DISCOVERY_CONFIG_PERMISSION_DENIED:
@@ -54,9 +60,10 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     EDIT_SNAPSHOT_STORAGE_PERMISSION_DENIED:
       'You do not have permission to edit snapshot storage settings',
     CONTROL_AI_INSIGHTS_PERMISSION_DENIED: 'You do not have permission to manage Insights settings',
-    SNAPSHOT_STORAGE_TITLE: 'Snapshot storage',
+    SNAPSHOT_STORAGE_TITLE: 'Snapshot Storage',
     SNAPSHOT_STORAGE_DESCRIPTION: 'Storage usage and retention controls for snapshots.',
     SNAPSHOT_STORAGE_LOADING: 'Loading snapshot storage...',
+    SNAPSHOT_STORAGE_NO_ACCESS: 'You do not have permission to view snapshot storage usage',
     SNAPSHOT_STORAGE_CONSUMED: 'Consumed',
     SNAPSHOT_STORAGE_AVAILABLE: 'Available',
     SNAPSHOT_STORAGE_USAGE_LABEL: 'Usage',

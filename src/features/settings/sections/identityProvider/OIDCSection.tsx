@@ -137,7 +137,7 @@ const OIDCSection: React.FC = memo(() => {
         {
           key: 'save',
           label: C.LABELS.SAVE_BUTTON,
-          variant: 'default',
+          variant: 'primary',
           loading: saving,
           disabled: !hasChanges || Boolean(validationError) || !canEdit,
           tooltip: canEdit ? undefined : C.LABELS.PERMISSION_DENIED,
@@ -210,6 +210,7 @@ const OIDCSection: React.FC = memo(() => {
                   <a href={C.LINKS.JWKS_URL} target="_blank" rel="noreferrer">
                     {C.LINKS.JWKS_URL}
                   </a>
+                  {C.LABELS.JWK_SOURCE_HINT_END}
                   {hasPinnedKeys ? ` ${C.LABELS.JWK_KEEP_HINT}` : null}
                 </div>
                 <Input.TextArea

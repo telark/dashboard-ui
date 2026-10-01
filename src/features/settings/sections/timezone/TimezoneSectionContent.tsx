@@ -95,7 +95,7 @@ const TimezoneSectionContent: React.FC = memo(() => {
         {
           key: 'save',
           label: LABELS.SAVE_BUTTON,
-          variant: 'default',
+          variant: 'primary',
           loading: saving,
           disabled: !user || !hasChanges,
           onClick: handleSave,

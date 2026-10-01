@@ -289,7 +289,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
     if (canCompare) {
       buttons.push({
         key: 'compare',
-        label: 'Compare',
+        label: snapUi.COMPARE,
         icon: <DiffOutlined />,
         variant: 'default',
         onClick: handleCompareClick,

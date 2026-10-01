@@ -1,4 +1,4 @@
-import { DEFAULT_COLORS, ROW_ICON_BUTTON_SIZE } from '../../../constants';
+import { DEFAULT_COLORS, MONOSPACE_CLASS, ROW_ICON_BUTTON_SIZE } from '../../../constants';
 import { SETTINGS_CONSTANTS } from '../../settings/constants';
 
 /** Applications feature: spacing and dividers aligned with settings/content tokens. */
@@ -31,7 +31,7 @@ export const APPLICATION_SECTION_LAYOUT = {
 /** Inline manifest reader shown inside the manage-snapshots panel. */
 export const APPLICATION_MANIFEST_VIEW = {
   /** Scoped class so the reader can opt out of the global Geist !important rule. */
-  CODE_CLASS: 'manifest-code',
+  CODE_CLASS: MONOSPACE_CLASS,
   RADIUS_PX: 10,
   HEADER_PADDING: '6px 6px 6px 10px',
   HEADER_GAP_PX: 8,

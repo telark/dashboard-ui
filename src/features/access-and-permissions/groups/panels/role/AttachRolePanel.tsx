@@ -80,6 +80,12 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
     ACTION_PERMISSIONS.groups.attachRole.level,
     ACTION_PERMISSIONS.groups.attachRole.deny,
   );
+  // Without it the role list renders its no-access card instead of the roleRefs field: the toolbar
+  // has nothing to act on, and a submit would send an empty selection that removes every role.
+  const canViewRoles = usePermission(
+    ACTION_PERMISSIONS.roles.view.scope,
+    ACTION_PERMISSIONS.roles.view.level,
+  );
 
   // Unchecking an attached role is a removal, checking another is an add: each has its own rule.
   const addBlocked = canAttachRole ? undefined : GC.LABELS.ACTIONS.ATTACH_ROLE_DISABLED_TOOLTIP;
@@ -159,40 +165,42 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         }
         formContent={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: 12,
-                width: '100%',
-                boxSizing: 'border-box',
-                margin: 0,
-                padding: 0,
-              }}
-            >
-              <SearchInput
-                value={searchTerm}
-                onChange={setSearchTerm}
-                placeholder={UC.LABELS.PANELS.MANAGE_ROLE.SEARCH_PLACEHOLDER}
-                minWidth={ARC.SEARCH_MIN_WIDTH}
-                block
-              />
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
-                <ToggleButton
-                  active={activeView === 'assigned'}
-                  onClick={handleToggleAssigned}
-                  label={GC.LABELS.PANELS.ATTACH_ROLES.SHOW_ASSIGNED_BUTTON}
-                  icon={<CheckCircleOutlined />}
-                  tooltip={GC.LABELS.PANELS.ATTACH_ROLES.SHOW_ASSIGNED_TOOLTIP}
+            {canViewRoles ? (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: 12,
+                  width: '100%',
+                  boxSizing: 'border-box',
+                  margin: 0,
+                  padding: 0,
+                }}
+              >
+                <SearchInput
+                  value={searchTerm}
+                  onChange={setSearchTerm}
+                  placeholder={UC.LABELS.PANELS.MANAGE_ROLE.SEARCH_PLACEHOLDER}
+                  minWidth={ARC.SEARCH_MIN_WIDTH}
+                  block
                 />
-                <FilterButton
-                  onClick={() => setFilterPanelOpen(true)}
-                  disabled={filterPanelOpen || isReadOnlyView}
-                />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+                  <ToggleButton
+                    active={activeView === 'assigned'}
+                    onClick={handleToggleAssigned}
+                    label={GC.LABELS.PANELS.ATTACH_ROLES.SHOW_ASSIGNED_BUTTON}
+                    icon={<CheckCircleOutlined />}
+                    tooltip={GC.LABELS.PANELS.ATTACH_ROLES.SHOW_ASSIGNED_TOOLTIP}
+                  />
+                  <FilterButton
+                    onClick={() => setFilterPanelOpen(true)}
+                    disabled={filterPanelOpen || isReadOnlyView}
+                  />
+                </div>
               </div>
-            </div>
+            ) : null}
             <div style={{ width: '100%', margin: 0, padding: 0, boxSizing: 'border-box' }}>
               {activeView === 'assigned' && (
                 <GroupAssignedRolesView
@@ -222,7 +230,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         submitButtonText={GC.LABELS.PANELS.ATTACH_ROLES.SUBMIT_BUTTON}
         submitButtonIcon={<RoleIcon size={16} />}
         loading={submitting}
-        disabled={!hasChanges || isReadOnlyView}
+        disabled={!hasChanges || isReadOnlyView || !canViewRoles}
         form={form}
         initialValues={{ roleRefs: initialSelectedRoles }}
       />

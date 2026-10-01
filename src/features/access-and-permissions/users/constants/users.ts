@@ -1,4 +1,5 @@
 import type { FormFieldConfig } from '../../../../interfaces/layout/modal';
+import { pluralize } from '../../../../utils/helpers/format';
 
 export const USERS_CONSTANTS = {
   LABELS: {
@@ -84,7 +85,6 @@ export const USERS_CONSTANTS = {
       BOOTSTRAP_LOCKED_TOOLTIP: 'Managed by the chart',
       SELF_LOCKED_TOOLTIP: 'You cannot delete your own account',
       DELETE_MODAL_TITLE: 'Delete User',
-      DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
       DELETE_MODAL_OK: 'Delete',
       DEASSIGN_ROLE_MODAL_TITLE: 'Remove Role',
       DEASSIGN_ROLE_MODAL_ACTION: 'Remove',
@@ -97,9 +97,9 @@ export const USERS_CONSTANTS = {
       BULK_DELETE: 'Bulk Delete',
       BULK_DELETE_DISABLED_TOOLTIP: 'You do not have permission to delete users',
       BULK_DELETE_MODAL_TITLE: 'Delete Users',
-      BULK_DELETE_LOADING: (count: number) => `Deleting ${count} user${count > 1 ? 's' : ''}...`,
-      BULK_DELETE_SUCCESS: (count: number) =>
-        `${count} user${count > 1 ? 's' : ''} deleted successfully`,
+      BULK_DELETE_RESOURCE: (count: number) => pluralize(count, 'user'),
+      BULK_DELETE_LOADING: (count: number) => `Deleting ${pluralize(count, 'user')}...`,
+      BULK_DELETE_SUCCESS: (count: number) => `${pluralize(count, 'user')} deleted successfully`,
       BULK_DELETE_FAILED: 'Failed to delete some users',
     },
     FILTER: {
@@ -130,7 +130,7 @@ export const USERS_CONSTANTS = {
         FULLNAME_LABEL: 'Full Name',
         FULLNAME_PLACEHOLDER: 'e.g. John Doe',
         EMAIL_LABEL: 'Email',
-        EMAIL_PLACEHOLDER: 'e.g. john.doe@example.com',
+        EMAIL_PLACEHOLDER: 'e.g. test@example.com',
         ROLE_LABEL: 'Roles',
         ROLE_PLACEHOLDER: 'Select a role',
         GROUP_LABEL: 'Group',
@@ -264,7 +264,7 @@ export const USERS_CONSTANTS = {
         type: 'input',
         name: 'email',
         label: 'Email',
-        placeholder: 'e.g. john.doe@example.com',
+        placeholder: 'e.g. test@example.com',
         required: true,
         marginBottom: 18,
       },

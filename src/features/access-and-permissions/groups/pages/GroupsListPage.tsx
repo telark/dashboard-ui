@@ -100,7 +100,7 @@ const GroupsListPage: React.FC<GroupsListPageProps> = memo(
     const filterFields = useMemo(() => buildGroupFilterFields(categoryOptions), [categoryOptions]);
 
     const resourceName = useMemo(
-      () => `${selectedCount} group${selectedCount > 1 ? 's' : ''}`,
+      () => GC.LABELS.ACTIONS.BULK_DELETE_RESOURCE(selectedCount),
       [selectedCount],
     );
 

@@ -71,7 +71,10 @@ select:-webkit-autofill {
 #root .manifest-code,
 #root .manifest-code *,
 .ant-app .manifest-code,
-.ant-app .manifest-code * {
+.ant-app .manifest-code *,
+/* Portals (popovers) render outside #root, where only the bare class reaches. */
+.manifest-code,
+.manifest-code * {
   font-family:
     'Geist Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, Consolas, monospace !important;
 }

@@ -37,4 +37,5 @@ export const NOTIFICATIONS_TEXTS = {
   MARK_READ: 'Mark as read',
   DELETE: 'Delete',
   UNREAD: 'Unread',
+  BELL_UNREAD_NOUN: 'unread notification',
 } as const;

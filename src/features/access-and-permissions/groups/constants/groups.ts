@@ -1,3 +1,5 @@
+import { pluralize } from '../../../../utils/helpers/format';
+
 export const GROUPS_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Groups',
@@ -63,14 +65,12 @@ export const GROUPS_CONSTANTS = {
       MANAGE_MEMBERS: 'Manage Members',
       DELETE_MODAL_TITLE: 'Delete Group',
       DELETE_IMPACT: (members: number, roles: number) =>
-        `It has ${members} member${members === 1 ? '' : 's'} and ${roles} role${roles === 1 ? '' : 's'}. Members lose the access this group grants.`,
+        `It has ${pluralize(members, 'member')} and ${pluralize(roles, 'role')}. Members lose the access this group grants.`,
       BULK_DELETE_MODAL_TITLE: 'Delete Groups',
-      BULK_DELETE_MODAL_CONTENT: (count: number) =>
-        `Are you sure you want to delete ${count} group${count > 1 ? 's' : ''}? This action cannot be undone.`,
+      BULK_DELETE_RESOURCE: (count: number) => pluralize(count, 'group'),
       DELETE_MODAL_OK: 'Delete',
-      BULK_DELETE_LOADING: (count: number) => `Deleting ${count} group${count > 1 ? 's' : ''}...`,
-      BULK_DELETE_SUCCESS: (count: number) =>
-        `${count} group${count > 1 ? 's' : ''} deleted successfully`,
+      BULK_DELETE_LOADING: (count: number) => `Deleting ${pluralize(count, 'group')}...`,
+      BULK_DELETE_SUCCESS: (count: number) => `${pluralize(count, 'group')} deleted successfully`,
       BULK_DELETE_FAILED: 'Failed to delete some groups',
       DEASSIGN_ROLE_MODAL_TITLE: 'Remove Role',
       DEASSIGN_ROLE_MODAL_ACTION: 'Remove',

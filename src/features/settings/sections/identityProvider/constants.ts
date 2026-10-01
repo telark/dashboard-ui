@@ -14,6 +14,7 @@ export const IDENTITY_PROVIDER_CONSTANTS = {
     JWK_LABEL: 'Pinned signing keys (JWK set)',
     JWK_PLACEHOLDER: 'Paste the current key set ({"keys":[...]})',
     JWK_SOURCE_HINT: "Copy the provider's current keys from",
+    JWK_SOURCE_HINT_END: '.',
     JWK_KEEP_HINT: 'Leave it empty to keep the pinned keys.',
     SAVE_BUTTON: 'Save',
     PERMISSION_DENIED: 'You do not have permission to change sign-on settings',

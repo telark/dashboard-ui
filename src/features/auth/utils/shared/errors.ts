@@ -1,7 +1,7 @@
 import { App as AntdApp } from 'antd';
 import type { NormalizedAxiosErrorMeta } from '../../../../api/client/normalize';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
-import { HTTP_STATUS } from '../../../../constants';
+import { ERROR_MESSAGES, HTTP_STATUS } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { selectSelfRegistrationEnabled } from '../../store';
 import store from '../../../../store';
@@ -86,6 +86,16 @@ const userNotFoundMessage = (): string =>
     ? LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND
     : LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND_NO_SELF_REGISTRATION;
 
+const serverErrorMessage = (errorMsg: string): string =>
+  checkErrorPattern(errorMsg, LOGIN_CONSTANTS.ERROR_PATTERNS.USER_NOT_FOUND)
+    ? userNotFoundMessage()
+    : LOGIN_CONSTANTS.MESSAGES.SERVER_ERROR;
+
+const clientErrorMessage = (errorMsg: string): string =>
+  errorMsg && errorMsg !== ERROR_MESSAGES.API.UNKNOWN_ERROR
+    ? errorMsg
+    : LOGIN_CONSTANTS.MESSAGES.CLIENT_ERROR;
+
 // A login the backend refuses for this account (403), which the login card explains inline.
 export const getLoginRefusalMessage = (input: unknown): string | null => {
   const error = input as AuthErrorShape;
@@ -118,7 +128,6 @@ export const getUserFriendlyErrorMessage = (input: unknown): string => {
   }
 
   const normalized = error.normalized;
-  const lowerMsg = errorMsg.toLowerCase();
 
   if (error?.isNetwork || normalized?.isNetwork) {
     return LOGIN_CONSTANTS.MESSAGES.NETWORK_ERROR;
@@ -129,15 +138,11 @@ export const getUserFriendlyErrorMessage = (input: unknown): string => {
   }
 
   if (error?.isServer || normalized?.isServer) {
-    return checkErrorPattern(lowerMsg, LOGIN_CONSTANTS.ERROR_PATTERNS.USER_NOT_FOUND)
-      ? userNotFoundMessage()
-      : LOGIN_CONSTANTS.MESSAGES.SERVER_ERROR;
+    return serverErrorMessage(errorMsg);
   }
 
   if (error?.isClient || normalized?.isClient) {
-    return errorMsg && errorMsg !== 'Unknown error'
-      ? errorMsg
-      : LOGIN_CONSTANTS.MESSAGES.CLIENT_ERROR;
+    return clientErrorMessage(errorMsg);
   }
 
   return errorMsg || AUTH_ERROR_MESSAGES.AUTHENTICATION_FAILED;
