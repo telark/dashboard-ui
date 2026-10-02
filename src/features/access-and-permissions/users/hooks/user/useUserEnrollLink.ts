@@ -65,13 +65,13 @@ export const useUserEnrollLink = (target: User) => {
   const create = useCallback(async () => {
     try {
       const link = await createUserEnrollLink(target.id);
-      setUrl(buildEnrollUrl(link.token));
+      setUrl(buildEnrollUrl(link.token, target.email));
       setExpiresAt(link.expiresAt);
       dispatch(fetchAllUsersSilentThunk());
     } catch (error) {
       message.error(refusalMessage(error, C.CREATE_FAILED));
     }
-  }, [target.id, dispatch, message]);
+  }, [target.id, target.email, dispatch, message]);
 
   const revoke = useCallback(async () => {
     setRevoking(true);

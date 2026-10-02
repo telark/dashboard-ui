@@ -14,6 +14,7 @@ import {
 } from '../../../globalconfig/store';
 import type { AppDispatch } from '../../../../store';
 import { extractErrorMessage } from '../../../../utils/helpers/format';
+import { SETTINGS_CONSTANTS } from '../../constants';
 import { IDENTITY_PROVIDER_CONSTANTS as C } from './constants';
 import { useSignInSettingsAccess } from './useSignInSettingsAccess';
 
@@ -49,7 +50,7 @@ const SelfRegistrationSection: React.FC = memo(() => {
     () => ({
       buttons: [
         {
-          key: 'save',
+          key: SETTINGS_CONSTANTS.TOOLBAR.SAVE_KEY,
           label: C.LABELS.SAVE_BUTTON,
           variant: 'primary',
           loading: saving,
@@ -75,7 +76,9 @@ const SelfRegistrationSection: React.FC = memo(() => {
         >
           <div>
             <div style={{ fontWeight: 700 }}>{C.LABELS.SELF_REGISTRATION_LABEL}</div>
-            <div style={{ fontSize: 12 }}>{C.LABELS.SELF_REGISTRATION_HINT}</div>
+            <div style={{ fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE }}>
+              {C.LABELS.SELF_REGISTRATION_HINT}
+            </div>
           </div>
           <Switch
             checked={enabled}

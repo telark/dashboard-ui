@@ -21,6 +21,7 @@ export const REGISTER_CONSTANTS = {
   },
   QUERY: {
     ENROLL: 'enroll',
+    EMAIL: 'email',
   },
   ENROLL_STORAGE_KEY: 'telark:register:enroll',
 } as const;

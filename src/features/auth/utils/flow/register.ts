@@ -8,6 +8,7 @@ import { APP_ROUTES } from '../../../../constants';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 import type {
+  EnrollLink,
   RegisterStartResponse,
   PublicKeyCredentialCreationOptions,
   PasskeyDeviceType,
@@ -15,25 +16,36 @@ import type {
 import type { MessageInstance } from 'antd/lib/message/interface';
 import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 
-// The page strips the token from the address bar; the tab keeps it so a reload still enrolls.
-export const resolveEnrollToken = (fromLink: string | null): string | undefined => {
+// The page strips the link from the address bar; the tab keeps it so a reload still enrolls.
+export const resolveEnrollLink = (token: string | null, email: string | null): EnrollLink => {
+  const fromLink: EnrollLink = token === null ? {} : { token, email: email ?? undefined };
   try {
-    if (fromLink === null) {
-      return globalThis.sessionStorage.getItem(REGISTER_CONSTANTS.ENROLL_STORAGE_KEY) ?? undefined;
+    if (token === null) {
+      const stored = globalThis.sessionStorage.getItem(REGISTER_CONSTANTS.ENROLL_STORAGE_KEY);
+      return stored ? (JSON.parse(stored) as EnrollLink) : {};
     }
-    globalThis.sessionStorage.setItem(REGISTER_CONSTANTS.ENROLL_STORAGE_KEY, fromLink);
+    globalThis.sessionStorage.setItem(
+      REGISTER_CONSTANTS.ENROLL_STORAGE_KEY,
+      JSON.stringify(fromLink),
+    );
   } catch {
-    // Storage blocked: only a token from the link, held in page state, is used.
+    // Storage blocked or unreadable: only the link itself, held in page state, is used.
   }
-  return fromLink ?? undefined;
+  return fromLink;
 };
 
 // Auth spends a link on first use, so any 401 while enrolling means the link can't be used again.
 export const isEnrollLinkRefused = (error: unknown): boolean =>
   (error as ExtendedAxiosError | undefined)?.normalized?.isUnauthenticated === true;
 
-export const buildEnrollUrl = (token: string): string =>
-  `${globalThis.location.origin}${APP_ROUTES.REGISTER}?${REGISTER_CONSTANTS.QUERY.ENROLL}=${encodeURIComponent(token)}`;
+// The email only fills in the register form; the server still checks it against the link's account.
+export const buildEnrollUrl = (token: string, email?: string): string => {
+  const query = new URLSearchParams({ [REGISTER_CONSTANTS.QUERY.ENROLL]: token });
+  if (email) {
+    query.set(REGISTER_CONSTANTS.QUERY.EMAIL, email);
+  }
+  return `${globalThis.location.origin}${APP_ROUTES.REGISTER}?${query.toString()}`;
+};
 
 const clearEnrollToken = (): void => {
   try {

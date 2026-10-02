@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
 import type { AppDispatch } from '../../../../store';
 import { extractErrorMessage } from '../../../../utils/helpers/format';
+import { SETTINGS_CONSTANTS } from '../../constants';
 import { IDENTITY_PROVIDER_CONSTANTS as C } from './constants';
 import { useSignInSettingsAccess } from './useSignInSettingsAccess';
 
@@ -122,7 +123,7 @@ const OIDCSection: React.FC = memo(() => {
     () => ({
       buttons: [
         {
-          key: 'save',
+          key: SETTINGS_CONSTANTS.TOOLBAR.SAVE_KEY,
           label: C.LABELS.SAVE_BUTTON,
           variant: 'primary',
           loading: saving,
@@ -184,7 +185,9 @@ const OIDCSection: React.FC = memo(() => {
             >
               <div>
                 <div style={{ fontWeight: 700 }}>{C.LABELS.EGRESS_LABEL}</div>
-                <div style={{ fontSize: 12 }}>{C.LABELS.EGRESS_HINT}</div>
+                <div style={{ fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE }}>
+                  {C.LABELS.EGRESS_HINT}
+                </div>
               </div>
               <Switch
                 checked={form.egressAllowed}
@@ -197,7 +200,9 @@ const OIDCSection: React.FC = memo(() => {
             {!form.egressAllowed ? (
               <div>
                 <div style={{ fontWeight: 700 }}>{C.LABELS.JWK_LABEL}</div>
-                <div style={{ fontSize: 12, marginBottom: 4 }}>
+                <div
+                  style={{ fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE, marginBottom: 4 }}
+                >
                   {C.LABELS.JWK_SOURCE_HINT}{' '}
                   <a href={C.LINKS.JWKS_URL} target="_blank" rel="noreferrer">
                     {C.LINKS.JWKS_URL}

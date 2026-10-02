@@ -28,6 +28,7 @@ import {
   validateAnalyzerModel,
 } from '../../../insights';
 import type { ValidateModelResponse } from '../../../insights';
+import { SETTINGS_CONSTANTS } from '../../constants';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as C } from './constants';
 
 const CONTROL_AI_PERMISSION = ACTION_PERMISSIONS.settings.controlAiInsights;
@@ -276,7 +277,7 @@ const AIInsightsSection: React.FC = memo(() => {
     () => ({
       buttons: [
         {
-          key: 'save',
+          key: SETTINGS_CONSTANTS.TOOLBAR.SAVE_KEY,
           label: C.LABELS.SAVE_BUTTON,
           variant: 'primary',
           loading: saving,

@@ -109,6 +109,11 @@ export interface RegisterStartRequest {
   enrollToken?: string;
 }
 
+export interface EnrollLink {
+  token?: string;
+  email?: string;
+}
+
 export interface RegisterStartResponse {
   options?: {
     publicKey?: PublicKeyCredentialCreationOptions;

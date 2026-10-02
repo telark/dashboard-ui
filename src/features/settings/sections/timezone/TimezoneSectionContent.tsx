@@ -14,6 +14,7 @@ import {
   isValidTimeZone,
 } from '../../../../utils/shared/time';
 import type { User, UserSettings } from '../../../access-and-permissions/users/models';
+import { SETTINGS_CONSTANTS } from '../../constants';
 import { TIMEZONE_SECTION_CONSTANTS } from './constants';
 
 const { LABELS, REGION_CODES, DISPLAY_LOCALE } = TIMEZONE_SECTION_CONSTANTS;
@@ -93,7 +94,7 @@ const TimezoneSectionContent: React.FC = memo(() => {
     () => ({
       buttons: [
         {
-          key: 'save',
+          key: SETTINGS_CONSTANTS.TOOLBAR.SAVE_KEY,
           label: LABELS.SAVE_BUTTON,
           variant: 'primary',
           loading: saving,

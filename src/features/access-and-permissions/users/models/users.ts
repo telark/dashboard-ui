@@ -22,6 +22,7 @@ export interface UserStatus {
   phase: UserAccountState;
   lastLoginAt?: string;
   invite?: UserInvite;
+  inviteAcceptedAt?: string;
 }
 
 export interface ManageUserStateFormValues {

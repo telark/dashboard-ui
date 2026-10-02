@@ -106,8 +106,9 @@ const Columns = (ctx: GenerateColumnCtx, groups: Group[] = []) => {
         icon: <AiOutlineLink />,
         width: UC.SIZES.COLUMNS.INVITE,
         sortable: false,
-        render: (_: unknown, record: User) =>
-          record.status.invite ? <InvitePill invite={record.status.invite} /> : null,
+        render: (_: unknown, record: User) => (
+          <InvitePill invite={record.status.invite} acceptedAt={record.status.inviteAcceptedAt} />
+        ),
       },
       ctx,
     ),

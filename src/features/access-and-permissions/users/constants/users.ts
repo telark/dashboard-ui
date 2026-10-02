@@ -62,8 +62,10 @@ export const USERS_CONSTANTS = {
     INVITE_PILL: {
       PENDING: 'Invite pending',
       EXPIRED: 'Invite expired',
+      ENROLLED: 'Enrolled',
       EXPIRES_AT: (when: string) => `Expires ${when}`,
       EXPIRED_AT: (when: string) => `Expired ${when}`,
+      ENROLLED_AT: (when: string) => `Enrolled ${when}`,
     },
     ENROLL_LINK: {
       MENU: 'Enroll link',

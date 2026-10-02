@@ -13,6 +13,7 @@ import type { AppDispatch } from '../../../../store';
 import SnapshotStorageBar from '../../../applications/components/snapshots/SnapshotStorageBar';
 import { getSnapshotInfos } from '../../../applications/clients';
 import type { SnapshotStorageInfos } from '../../../applications/models';
+import { SETTINGS_CONSTANTS } from '../../constants';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as C } from './constants';
 import {
   ACTION_PERMISSIONS,
@@ -117,7 +118,7 @@ const SnapshotStorageSection: React.FC = memo(() => {
     () => ({
       buttons: [
         {
-          key: 'save',
+          key: SETTINGS_CONSTANTS.TOOLBAR.SAVE_KEY,
           label: C.LABELS.SAVE_BUTTON,
           variant: 'primary',
           loading: savingSnapshotsMax,

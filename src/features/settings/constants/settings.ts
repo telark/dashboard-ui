@@ -100,6 +100,7 @@ export const SETTINGS_CONSTANTS = {
     CARD_PADDING: 20,
     CARD_TITLE_TO_DESCRIPTION_GAP_PX: -4,
     SECTION_TITLE_FONT_SIZE: 20,
+    HINT_FONT_SIZE: 12,
     GAP_BETWEEN_CARDS: 20,
     /** Opt-in collapse control, rendered in the card's top-right corner. */
     CARD_COLLAPSE: {
@@ -114,6 +115,9 @@ export const SETTINGS_CONSTANTS = {
       /** Chevron rotates rather than swapping glyphs, so the state change reads as one motion. */
       ICON_ROTATION_DEG: 180,
     },
+  },
+  TOOLBAR: {
+    SAVE_KEY: 'save',
   },
 } as const;
 

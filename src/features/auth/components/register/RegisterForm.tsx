@@ -11,6 +11,8 @@ interface RegisterFormProps {
   loading: boolean;
   onFinish: (values: { email: string; deviceName: string }) => void;
   disabled?: boolean;
+  // From an enroll link: shown read-only, since the link already names the account.
+  lockedEmail?: string;
 }
 
 const inputStyle: React.CSSProperties = {
@@ -24,11 +26,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   loading,
   onFinish,
   disabled,
+  lockedEmail,
 }) => (
   <AuthForm form={form} onFinish={onFinish}>
     <Form.Item
       name="email"
       label={REGISTER_CONSTANTS.UI.EMAIL_LABEL}
+      initialValue={lockedEmail}
       rules={[
         { required: true, message: AUTH_ERROR_MESSAGES.MISSING_EMAIL },
         { type: 'email', message: 'Please enter a valid email address' },
@@ -38,6 +42,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       <Input
         type="email"
         placeholder={REGISTER_CONSTANTS.UI.EMAIL_PLACEHOLDER}
+        readOnly={lockedEmail !== undefined}
         style={inputStyle}
       />
     </Form.Item>

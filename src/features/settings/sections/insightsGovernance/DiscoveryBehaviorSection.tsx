@@ -9,6 +9,7 @@ import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
 import type { AppDispatch, RootState } from '../../../../store';
+import { SETTINGS_CONSTANTS } from '../../constants';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as C } from './constants';
 import { pluralize } from '../../../../utils/helpers/format';
 import {
@@ -192,7 +193,7 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
     () => ({
       buttons: [
         {
-          key: 'save',
+          key: SETTINGS_CONSTANTS.TOOLBAR.SAVE_KEY,
           label: C.LABELS.SAVE_BUTTON,
           variant: 'primary',
           loading: savingDiscoveryBehavior,
@@ -231,7 +232,13 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
           disabled={!canEditDiscoveryConfig}
         />
         {namespacesImpactPreview ? (
-          <div style={{ fontSize: 12, fontWeight: 700, color: DEFAULT_COLORS.TEXT_MUTED }}>
+          <div
+            style={{
+              fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE,
+              fontWeight: 700,
+              color: DEFAULT_COLORS.TEXT_MUTED,
+            }}
+          >
             {namespacesImpactPreview.hidden > 0 ? (
               <span>
                 {pluralize(namespacesImpactPreview.hidden, C.LABELS.NAMESPACES_IMPACT_NOUN)}{' '}

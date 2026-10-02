@@ -3,6 +3,7 @@ import { App as AntdApp } from 'antd';
 import { createEnrollLink } from '../../clients';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
 import { buildEnrollUrl } from '../../utils/flow/register';
+import { getCurrentUser } from '../../utils/session/user';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 
@@ -22,7 +23,7 @@ export const useEnrollLink = (): UseEnrollLinkResult => {
     setEnrollLoading(true);
     try {
       const { token } = await createEnrollLink();
-      setEnrollUrl(buildEnrollUrl(token));
+      setEnrollUrl(buildEnrollUrl(token, getCurrentUser()?.email));
     } catch (error) {
       if (isDevelopment()) {
         logger.error(PPC.LOGS.FAILED_TO_CREATE_ENROLL_LINK, error);
