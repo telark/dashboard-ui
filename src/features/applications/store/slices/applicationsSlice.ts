@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type {
   ApplicationHealthQuickFilter,
   ApplicationsState,
-  ApplicationViewMode,
   SyncStatusValue,
 } from '../../models';
 import {
@@ -49,6 +48,7 @@ const initialState: ApplicationsState = {
   applications: [],
   details: null,
   loading: false,
+  loaded: false,
   error: null,
   snapshots: [],
   snapshotsLoading: false,
@@ -61,7 +61,6 @@ const initialState: ApplicationsState = {
   searchValue: '',
   currentPage: 1,
   appliedFilters: {},
-  viewMode: 'grid',
   bulkMode: false,
   selectedNames: [],
   healthQuickFilter: 'all',
@@ -153,9 +152,6 @@ const applicationsSlice = createSlice({
         }
       }
     },
-    setViewMode: (state, action: PayloadAction<ApplicationViewMode>) => {
-      state.viewMode = action.payload;
-    },
     setBulkMode: (state, action: PayloadAction<boolean>) => {
       state.bulkMode = action.payload;
     },
@@ -225,7 +221,6 @@ export const {
   clearAllFilters,
   removeFilterValue,
   downgradeOrphanedSyncStatus,
-  setViewMode,
   setBulkMode,
   setSelectedNames,
   toggleSelectedName,

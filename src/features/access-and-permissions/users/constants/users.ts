@@ -7,12 +7,12 @@ export const USERS_CONSTANTS = {
     HEADER_SUBTITLE: 'Manage existing members',
     NOT_FOUND: 'User not found',
     UPDATE_BUTTON: 'Update User',
-    CREATE_BUTTON: 'Add New Member',
-    CREATE_BUTTON_TEXT: 'Add New Member',
+    CREATE_BUTTON: 'Create Member',
+    CREATE_BUTTON_TEXT: 'Create Member',
     BREADCRUMBS: {
       USERS: 'Users',
       EDIT: 'Edit',
-      CREATE: 'Add New Member',
+      CREATE: 'Create Member',
     },
     MESSAGES: {
       CREATED: (name: string) => `User "${name}" created`,
@@ -155,9 +155,9 @@ export const USERS_CONSTANTS = {
       },
     },
     FORM: {
-      TITLE: 'Add New Member',
+      TITLE: 'Create Member',
       SECTION_TITLE: 'User Details',
-      BUTTON_TEXT: 'Add New Member',
+      BUTTON_TEXT: 'Create Member',
       SECTIONS: {
         USER_DETAILS: 'User Details',
         ASSIGNMENT: 'Assignment',
@@ -188,8 +188,8 @@ export const USERS_CONSTANTS = {
         OPTION_SUSPENDED: 'Suspended',
       },
       CREATE: {
-        TITLE: 'Add New Member',
-        SUBMIT_BUTTON: 'Add New Member',
+        TITLE: 'Create Member',
+        SUBMIT_BUTTON: 'Create Member',
       },
       MANAGE_ROLE: {
         TITLE: 'Manage Roles',
@@ -218,7 +218,7 @@ export const USERS_CONSTANTS = {
         BUTTON_LABEL: 'Filter',
       },
       CREATE: {
-        BUTTON_LABEL: 'Add New Member',
+        BUTTON_LABEL: 'Create Member',
         DISABLED_TOOLTIP: 'You do not have permission to create users',
       },
       MANAGE: {

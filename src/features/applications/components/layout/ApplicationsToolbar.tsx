@@ -1,7 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
 import {
-  AppstoreOutlined,
-  BarsOutlined,
   CheckSquareOutlined,
   ClearOutlined,
   EllipsisOutlined,
@@ -17,18 +15,12 @@ import {
 } from '../../../../constants';
 import { CompactQuickFilter, ListToolbar } from '../../../../components/display/toolbar';
 import type { FilterChip, ToolbarConfig } from '../../../../interfaces/layout/toolbar';
-import { APPLICATION_CARD, APPLICATION_VIEW_MODES, APPLICATIONS_UI } from '../../constants';
-import type { ApplicationViewMode } from '../../models';
+import { APPLICATIONS_UI } from '../../constants';
 import { ACTION_PERMISSIONS, usePermission } from '../../../auth/hooks';
 
 const MORE_MENU_KEYS = {
   BULK: 'bulk',
 } as const;
-
-const VIEW_MODE_ICON: Record<ApplicationViewMode, React.ReactNode> = {
-  grid: <AppstoreOutlined />,
-  list: <BarsOutlined />,
-};
 
 type HealthQuickFilter = 'all' | 'healthy' | 'degraded' | 'unhealthy';
 
@@ -40,9 +32,6 @@ interface ApplicationsToolbarProps {
   filterChips: FilterChip[];
   overflowCount: number;
   onRemoveFilterChip: (key: string, value: string) => void;
-  viewMode: ApplicationViewMode;
-  onViewModeChange: (mode: ApplicationViewMode) => void;
-  showViewMode: boolean;
   hasActiveFilters: boolean;
   onClearAllFilters: () => void;
   bulkMode: boolean;
@@ -132,9 +121,6 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
   filterChips,
   overflowCount,
   onRemoveFilterChip,
-  viewMode,
-  onViewModeChange,
-  showViewMode,
   hasActiveFilters,
   onClearAllFilters,
   bulkMode,
@@ -225,26 +211,6 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
         },
       ],
     };
-    const view: ToolbarConfig = {
-      buttons: [
-        {
-          key: 'viewMode',
-          label: APPLICATION_CARD.VIEW_MODE_LABEL,
-          icon: VIEW_MODE_ICON[viewMode],
-          variant: 'ghost',
-          iconOnly: true,
-          dropdown: {
-            items: APPLICATION_VIEW_MODES.map((mode) => ({
-              key: mode.key,
-              label: mode.label,
-              icon: VIEW_MODE_ICON[mode.key],
-            })),
-            selectedKeys: [viewMode],
-            onItemClick: (key) => onViewModeChange(key === 'list' ? 'list' : 'grid'),
-          },
-        },
-      ],
-    };
     // Bulk is an occasional mode, so it sits behind the overflow to leave the
     // toolbar for per-scan controls.
     const more: ToolbarConfig = {
@@ -268,18 +234,8 @@ const ApplicationsToolbar: React.FC<ApplicationsToolbarProps> = ({
       ],
     };
     // More would be empty in bulk mode: it only holds Bulk.
-    const views = showViewMode ? [view] : [];
-    return bulkMode ? [search, ...views, exitBulk] : [search, ...views, more];
-  }, [
-    bulkMode,
-    handleMoreMenuClick,
-    onSearchChange,
-    onToggleBulkMode,
-    onViewModeChange,
-    searchValue,
-    showViewMode,
-    viewMode,
-  ]);
+    return bulkMode ? [search, exitBulk] : [search, more];
+  }, [bulkMode, handleMoreMenuClick, onSearchChange, onToggleBulkMode, searchValue]);
 
   return (
     <ListToolbar

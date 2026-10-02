@@ -1,6 +1,6 @@
 import React from 'react';
-import { LoadingOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../constants';
+import { FancySpinner } from '../../../components/animation';
 import RowTag from '../../../components/display/table/RowTag';
 import TimeAgo from '../../../components/display/time/TimeAgo';
 import { INSIGHTS_UI as T } from '../constants/texts';
@@ -27,7 +27,7 @@ const RunLine: React.FC<{ run: LastRun | null; light?: boolean }> = ({ run, ligh
   if (run.status === 'running') {
     return (
       <div style={{ ...mutedStyle, display: 'flex', alignItems: 'center', gap: 8 }}>
-        <LoadingOutlined spin style={{ color: DEFAULT_COLORS.SUCCESS }} />
+        <FancySpinner size={12} />
         {T.ANALYZING.replace('{trigger}', RUN_TRIGGER_LABELS[run.trigger])}
       </div>
     );

@@ -1,7 +1,9 @@
 import React from 'react';
-import { useState, useCallback } from 'react';
+import { createElement, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { App as AntdApp } from 'antd';
+import { FancySpinner } from '../../../../../components/animation';
+import { CONTROL_FONT_SIZE } from '../../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
 import { deleteGroupThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
@@ -39,6 +41,7 @@ export const useBulkDeleteGroups = ({
 
     try {
       message.loading({
+        icon: createElement(FancySpinner, { size: CONTROL_FONT_SIZE }),
         content: GC.LABELS.ACTIONS.BULK_DELETE_LOADING(deleteCount),
         key: loadingKey,
         duration: 0,

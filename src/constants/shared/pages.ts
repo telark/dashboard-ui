@@ -1,4 +1,5 @@
 import { DEFAULT_COLORS, withAlpha } from './colors';
+import { CONTROL_HEIGHT } from '../layout/controls';
 
 /** Used by PageLayout and Settings so content (title + body) aligns across features. */
 export const PAGE_CONTENT_LAYOUT = {
@@ -27,6 +28,9 @@ export const LIST_PAGE = {
   CONTENT_OFFSET_PX: -20,
   LOADING_MIN_HEIGHT_PX: 240,
   CONTENT_GAP_PX: 32,
+  // The row between the page header and the toolbar: the Plans and Insights tabs (antd Segmented
+  // at CONTROL_HEIGHT), the Applications discovery status, or an empty slot.
+  SUBHEADER_ROW_HEIGHT_PX: CONTROL_HEIGHT,
 } as const;
 
 export const SHARED_PAGE_CONSTANTS = {

@@ -39,7 +39,7 @@ const MainPage: React.FC = () => {
   const [addCategoryPanelOpen, setAddCategoryPanelOpen] = useState(false);
   const [editCategoryPanelOpen, setEditCategoryPanelOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const { groups, loading, error, refetch } = useFetchGroups();
+  const { groups, loaded, error, refetch } = useFetchGroups();
   const { categories, loading: categoriesLoading } = useCategories(
     CATEGORIES_CONSTANTS.SCOPES.GROUPS,
   );
@@ -179,8 +179,8 @@ const MainPage: React.FC = () => {
   }, []);
 
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(groups) && groups.length === 0 && !error && !loading,
-    [groups, error, loading],
+    () => Array.isArray(groups) && groups.length === 0 && !error && loaded,
+    [groups, error, loaded],
   );
 
   const pageConfig = useGroupListPageConfig({
@@ -233,7 +233,8 @@ const MainPage: React.FC = () => {
 
   const augmentedPageConfig = {
     ...pageConfig,
-    loading: loading || categoriesLoading,
+    loading: !loaded || categoriesLoading,
+    fullPageLoading: !loaded,
     error,
     onRetry: refetch,
   };

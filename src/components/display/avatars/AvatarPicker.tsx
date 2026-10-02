@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef, useCallback, startTransition } from 'react';
 import { createAvatar, type Style } from '@dicebear/core';
-import { Avatar, Grid, Spin } from 'antd';
+import { Avatar, Grid } from 'antd';
 import {
   AVATAR_PICKER_TEXT,
   BUTTON_TEXTS,
@@ -8,6 +8,7 @@ import {
   MODAL_CHROME,
   withAlpha,
 } from '../../../constants';
+import { FancySpinner } from '../../animation';
 import { BaseModal } from '../modal';
 import ActionButtons from '../buttons/ActionButtons';
 import type { UserAvatar } from '../../../features/access-and-permissions/users/models';
@@ -387,7 +388,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({
       >
         {isLoadingStyles ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
-            <Spin size="large" />
+            <FancySpinner />
           </div>
         ) : (
           <div

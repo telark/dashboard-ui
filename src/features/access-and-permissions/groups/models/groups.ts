@@ -15,6 +15,8 @@ export interface GroupsState {
   groups: Group[];
   details: Group | null;
   loading: boolean;
+  // Set once the list has arrived: `loading` is false both before the first fetch and after it.
+  loaded: boolean;
   error: string | null;
   deletingIds: string[];
 }

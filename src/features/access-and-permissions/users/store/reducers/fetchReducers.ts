@@ -9,6 +9,7 @@ export const handleFetchUsersPending = (state: UsersState) => {
 
 export const handleFetchUsersFulfilled = (state: UsersState, action: PayloadAction<User[]>) => {
   state.loading = false;
+  state.loaded = true;
   state.users = keepUnchanged(state.users, action.payload, (item) => item.id);
   state.error = null;
   const liveIds = new Set(action.payload.map((u) => u.id));

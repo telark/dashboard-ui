@@ -24,6 +24,9 @@ export interface PageLayoutConfig<T = unknown> {
   rowHeight?: number;
   empty?: React.ReactNode;
   loading?: boolean;
+  /** Loads behind the full-page loader instead of this frame: set while the list is unknown
+   *  on a page whose empty state is a page of its own. */
+  fullPageLoading?: boolean;
   error?: string | null;
   onRetry?: () => void;
 }

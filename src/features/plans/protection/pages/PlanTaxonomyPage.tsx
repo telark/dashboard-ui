@@ -96,9 +96,11 @@ const PlanTaxonomyPage: React.FC<PlanTaxonomyPageProps> = ({ scope, onBack }) =>
         ],
       },
       columns: [
-        ...CategoryColumns({ activeSortKey: sortKey ?? CC.KEYS.CREATED_AT, onSort: handleSort })
-          .filter((c) => c.key !== CC.KEYS.SCOPE)
-          .map((c) => (c.key === CC.KEYS.NAME ? { ...c, title: L.COLUMNS.NAME } : c)),
+        ...CategoryColumns({
+          activeSortKey: sortKey ?? CC.KEYS.CREATED_AT,
+          onSort: handleSort,
+          scopeLabel: L.PLURAL,
+        }).map((c) => (c.key === CC.KEYS.NAME ? { ...c, title: L.COLUMNS.NAME } : c)),
         {
           title: '',
           key: CC.KEYS.ACTIONS,

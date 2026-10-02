@@ -5,14 +5,14 @@ import { POLL_INTERVAL_MS } from '../../../../constants';
 import {
   fetchProtectionPlansThunk,
   selectProtectionPlans,
-  selectProtectionPlansLoading,
+  selectProtectionPlansLoaded,
   selectProtectionPlansError,
 } from '../store';
 
 export const useProtectionPlans = (enabled = true) => {
   const dispatch: AppDispatch = useDispatch();
   const plans = useSelector(selectProtectionPlans);
-  const loading = useSelector(selectProtectionPlansLoading);
+  const loaded = useSelector(selectProtectionPlansLoaded);
   const error = useSelector(selectProtectionPlansError);
 
   // A window starts and ends on its exact boundary, so a list fetched once on
@@ -32,5 +32,5 @@ export const useProtectionPlans = (enabled = true) => {
     void dispatch(fetchProtectionPlansThunk());
   }, [dispatch]);
 
-  return { plans, loading, error, refetch };
+  return { plans, loaded, error, refetch };
 };

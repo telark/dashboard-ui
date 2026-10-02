@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Alert, App as AntdApp, Button, Collapse, Spin, Tooltip } from 'antd';
+import { Alert, App as AntdApp, Button, Collapse, Tooltip } from 'antd';
 import type { CollapseProps } from 'antd';
 import {
   CheckOutlined,
@@ -12,6 +12,7 @@ import {
 } from '@ant-design/icons';
 import { APP_ROUTES, DEFAULT_COLORS, ROW_ICON_BUTTON_SIZE } from '../../../constants';
 import { AnimationWrapper, ExpandPanelButton } from '../../../components/display/panels/slide-out';
+import { FancySpinner } from '../../../components/animation';
 import RowTag from '../../../components/display/table/RowTag';
 import TimeAgo from '../../../components/display/time/TimeAgo';
 import { ACTION_PERMISSIONS, usePermission } from '../../auth/hooks/permissions/permissionEngine';
@@ -344,7 +345,7 @@ const PanelBody: React.FC<BodyProps> = ({ namespace, app, id, row, onSelect, onC
   if (!doc && isLoading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', padding: 24 }}>
-        <Spin />
+        <FancySpinner size={20} />
       </div>
     );
   }

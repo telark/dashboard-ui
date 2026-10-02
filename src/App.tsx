@@ -4,6 +4,7 @@ import { BrowserRouter as Router, useLocation, Navigate } from 'react-router-dom
 import { useDispatch } from 'react-redux';
 import Sidebar from './components/layout/sidebar/Sidebar';
 import Header from './components/layout/header/Header';
+import { FancySpinner } from './components/animation';
 import ErrorBoundary from './ErrorBoundary';
 import { SessionExpiredModal } from './features/auth/components';
 import 'antd/dist/reset.css';
@@ -105,6 +106,9 @@ const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <ConfigProvider
+        // currentColor follows the button text: the default green vanishes on a primary button.
+        button={{ loadingIcon: <FancySpinner size={CONTROL_FONT_SIZE} color="currentColor" /> }}
+        select={{ loadingIcon: <FancySpinner size={12} /> }}
         theme={{
           cssVar: { key: 'telark' },
           hashed: false,

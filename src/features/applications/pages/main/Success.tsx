@@ -1,13 +1,18 @@
 import React, { memo, useMemo } from 'react';
 import { App as AntdApp } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { CARD_LAYOUT, LIST_TOOLBAR, getCardGridColumns } from '../../../../constants';
+import { useDispatch } from 'react-redux';
+import {
+  CARD_LAYOUT,
+  HEADER_LAYOUT,
+  LIST_TOOLBAR,
+  getCardGridColumns,
+} from '../../../../constants';
 import EmptyState from '../../../../components/display/views/EmptyState';
+import FullPageLoader from '../../../../components/display/views/FullPageLoader';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
 import type { Application } from '../../models';
-import type { AppDispatch, RootState } from '../../../../store';
+import type { AppDispatch } from '../../../../store';
 import { ApplicationCard, ApplicationsToolbar, DiscoveryStatusBar } from '../../components';
-import { setViewMode } from '../../store/slices/applicationsSlice';
 import ApplicationResetModal from '../../components/reset/ApplicationResetModal';
 import { resetApplicationThunk } from '../../store';
 import { forceSyncApplication } from '../../utils/management/sync';
@@ -15,7 +20,6 @@ import { loadApplicationsSilent } from '../../utils/management/state';
 import { APPLICATIONS_UI } from '../../constants';
 import { DataViewError, PageContainer } from '../../../../components/shared';
 import { TablePagination } from '../../../../components/display/table';
-import { FancySpinner } from '../../../../components/animation';
 import { useDataViewState } from '../../../../hooks/layout/useDataViewState';
 import { useElementWidth } from '../../../../hooks/layout';
 import { useApplicationCoverage } from '../../hooks/useApplicationCoverage';
@@ -82,7 +86,6 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
     onRetry,
   }) => {
     const dispatch: AppDispatch = useDispatch();
-    const viewMode = useSelector((s: RootState) => s.applications.viewMode);
     const coverageOf = useApplicationCoverage();
     const { message } = AntdApp.useApp();
     const hasApps = applications.length > 0;
@@ -92,9 +95,7 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
     const [bulkResetOpen, setBulkResetOpen] = React.useState(false);
     const [bulkResetLoading, setBulkResetLoading] = React.useState(false);
     const { ref: gridRef, width: gridWidth } = useElementWidth<HTMLDivElement>();
-    const gridColumns = viewMode === 'list' ? 1 : getCardGridColumns(gridWidth);
-    // A width that fits a single card leaves nothing for the view switch to change.
-    const canShowGrid = gridWidth === 0 || getCardGridColumns(gridWidth) > 1;
+    const gridColumns = getCardGridColumns(gridWidth);
 
     const content = useMemo(() => {
       if (!hasApps) return null;
@@ -163,6 +164,10 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
       void loadApplicationsSilent(dispatch);
     }, [dispatch]);
 
+    // No apps renders its own empty page, so none of this frame shows until the list is known.
+    if (dataState.phase === 'loading')
+      return <FullPageLoader minHeight={HEADER_LAYOUT.MIN_HEIGHT} />;
+
     return (
       <PageContainer
         title={APPLICATIONS_UI.HEADER_TITLE}
@@ -178,9 +183,6 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
           filterChips={filterChips}
           overflowCount={overflowChipsCount}
           onRemoveFilterChip={onRemoveFilterChip}
-          viewMode={viewMode}
-          onViewModeChange={(mode) => dispatch(setViewMode(mode))}
-          showViewMode={canShowGrid}
           hasActiveFilters={hasActiveFilters}
           onClearAllFilters={onClearAllFilters}
           bulkMode={bulkMode}
@@ -209,17 +211,6 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
               onRetry={onRetry}
               connectivity={dataState.connectivity}
             />
-          ) : dataState.phase === 'loading' ? (
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                minHeight: LIST_PAGE.LOADING_MIN_HEIGHT_PX,
-              }}
-            >
-              <FancySpinner size={40} showLabel />
-            </div>
           ) : !hasApps ? (
             <div style={{ display: 'flex', minHeight: LIST_PAGE.LOADING_MIN_HEIGHT_PX }}>
               <EmptyState

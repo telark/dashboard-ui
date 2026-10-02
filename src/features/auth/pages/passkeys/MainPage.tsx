@@ -10,6 +10,7 @@ import { fetchAllPasskeysThunk } from '../../store/thunks/fetchThunks';
 import {
   selectPasskeys,
   selectPasskeyLoading,
+  selectPasskeyLoaded,
   selectPasskeyError,
 } from '../../store/selectors/passkeySelectors';
 import { usePasskeyPanelState, usePasskeyActions, useEnrollLink } from '../../hooks';
@@ -20,12 +21,14 @@ import PasskeysEmptyPage from './PasskeysEmptyPage';
 import PasskeysListPage from './PasskeysListPage';
 import { PasskeyPanel, EnrollLinkModal } from '../../components';
 import { ActionConfirmModal } from '../../../../components/display/modal';
+import FullPageLoader from '../../../../components/display/views/FullPageLoader';
 
 const MainPage: React.FC = () => {
   const { message } = App.useApp();
   const dispatch: AppDispatch = useDispatch();
   const passkeys = useSelector(selectPasskeys);
   const loading = useSelector(selectPasskeyLoading);
+  const loaded = useSelector(selectPasskeyLoaded);
   const error = useSelector(selectPasskeyError);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -119,9 +122,11 @@ const MainPage: React.FC = () => {
   });
 
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(passkeys) && passkeys.length === 0 && !error && !loading,
-    [passkeys, error, loading],
+    () => Array.isArray(passkeys) && passkeys.length === 0 && !error && loaded,
+    [passkeys, error, loaded],
   );
+
+  if (!loaded && passkeys.length === 0 && !error) return <FullPageLoader />;
 
   if (shouldShowEmpty) {
     return (

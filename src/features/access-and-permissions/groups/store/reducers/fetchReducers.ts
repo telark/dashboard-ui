@@ -9,6 +9,7 @@ export const handleFetchGroupsPending = (state: GroupsState) => {
 
 export const handleFetchGroupsFulfilled = (state: GroupsState, action: PayloadAction<Group[]>) => {
   state.loading = false;
+  state.loaded = true;
   state.groups = keepUnchanged(state.groups, action.payload, (item) => item.id);
   state.error = null;
   const liveIds = new Set(action.payload.map((g) => g.id));

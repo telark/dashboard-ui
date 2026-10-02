@@ -4,7 +4,6 @@ export type {
   ApplicationRollbackTriggerPayload,
   ApplicationUpdatePayload,
   ApplicationsState,
-  ApplicationViewMode,
   ApplicationHealthQuickFilter,
   ApplicationCoverageState,
   ApplicationCoverage,

@@ -27,6 +27,7 @@ export const HOME_DASHBOARD_TEXTS = {
   PLANS: {
     TITLE: 'Protection plans',
     ACTIVE: 'Active',
+    SCHEDULED: 'Scheduled',
     DRIFTED: 'Drifted',
     DEGRADED: 'Degraded',
     FAILED: 'Failed',

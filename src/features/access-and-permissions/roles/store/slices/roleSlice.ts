@@ -26,6 +26,7 @@ const initialState: RolesState = {
   roles: [],
   details: null,
   loading: false,
+  loaded: false,
   error: null,
   deletingIds: [],
 };

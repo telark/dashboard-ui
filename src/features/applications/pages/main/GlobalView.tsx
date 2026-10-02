@@ -40,7 +40,7 @@ import {
 
 const ApplicationsGlobalView: React.FC = memo(() => {
   const dispatch: AppDispatch = useDispatch();
-  const { applications, loading, error, appliedFilters, currentPage } = useSelector(
+  const { applications, loaded, error, appliedFilters, currentPage } = useSelector(
     (s: RootState) => s.applications,
   );
   const syncing = useSelector((s: RootState) => s.applications.syncing);
@@ -192,7 +192,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     return () => clearInterval(interval);
   }, [anySyncing, dispatch]);
 
-  if (!error && visibleApplications.length === 0) {
+  if (loaded && !error && visibleApplications.length === 0) {
     return <ApplicationsMainEmpty onRefresh={handleLoadApplications} />;
   }
 
@@ -250,7 +250,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
         onClearSelection={() => dispatch(setSelectedNames([]))}
         healthQuickFilter={healthQuickFilter}
         onHealthQuickFilterChange={(next) => dispatch(setHealthQuickFilter(next))}
-        loading={loading}
+        loading={!loaded}
         error={error}
         onRetry={handleLoadApplications}
       />

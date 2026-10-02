@@ -36,6 +36,7 @@ const planAttentionRank = (plan: ProtectionPlan): number => {
 export const summarizePlans = (plans: ProtectionPlan[]): PlansSummary => ({
   total: plans.length,
   active: plans.filter(isActive).length,
+  scheduled: plans.filter((p) => p.phase === 'scheduled').length,
   drifted: plans.filter((p) => isActive(p) && p.health === 'drifted').length,
   degraded: plans.filter((p) => isActive(p) && p.health === 'degraded').length,
   failed: plans.filter((p) => p.phase === 'failed').length,

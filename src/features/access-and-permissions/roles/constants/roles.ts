@@ -9,7 +9,7 @@ export const ROLES_CONSTANTS = {
     HEADER_TITLE: 'Roles',
     HEADER_SUBTITLE: 'Manage existing roles',
     NOT_FOUND: 'Role not found',
-    CREATE_BUTTON: 'Add Role',
+    CREATE_BUTTON: 'Create Role',
     UPDATE_BUTTON: 'Update Role',
     CREATE_BUTTON_TEXT: 'Create Role',
     BREADCRUMBS: {
@@ -86,14 +86,14 @@ export const ROLES_CONSTANTS = {
         SUBMIT_BUTTON: 'Update Role',
       },
       CREATE: {
-        TITLE: 'Create New Role',
+        TITLE: 'Create Role',
         SUBMIT_BUTTON: 'Create Role',
       },
     },
     TOOLBAR: {
       SEARCH: { PLACEHOLDER: 'Search by name, description...', BUTTON_LABEL: 'Search' },
       FILTER: { BUTTON_LABEL: 'Filter' },
-      CREATE: { BUTTON_LABEL: 'Add Role' },
+      CREATE: { BUTTON_LABEL: 'Create Role' },
       COUNT_SUFFIX: { one: 'role', other: 'roles' },
       CATEGORIES_COUNT_SUFFIX: { one: 'category', other: 'categories' },
       MORE: 'More',

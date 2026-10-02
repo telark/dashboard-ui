@@ -49,7 +49,7 @@ export const getCardGridColumns = (width: number): number => {
   return Math.min(Math.max(fit, 1), CARD_LAYOUT.CARDS_PER_ROW);
 };
 
-export const CARD_MORE_LABEL = (count: number): string => `+${count} more`;
+export const CARD_MORE_LABEL = (count: number): string => `+${count}`;
 
 export const MICRO_LABEL_STYLE: CSSProperties = {
   fontSize: CARD_LAYOUT.MICRO_FONT_SIZE_PX,

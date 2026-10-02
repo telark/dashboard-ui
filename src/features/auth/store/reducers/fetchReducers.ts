@@ -11,6 +11,7 @@ export const handleFetchPasskeysFulfilled = (
   action: PayloadAction<Passkey[]>,
 ) => {
   state.loading = false;
+  state.loaded = true;
   state.passkeys = action.payload;
   state.error = null;
 };

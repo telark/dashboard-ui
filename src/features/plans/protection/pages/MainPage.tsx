@@ -17,7 +17,7 @@ import PlanTaxonomyPage from './PlanTaxonomyPage';
 const { viewReports } = ACTION_PERMISSIONS.protectionPlans;
 
 const MainPage: React.FC = () => {
-  const { plans, loading, error, refetch } = useProtectionPlans();
+  const { plans, loaded, error, refetch } = useProtectionPlans();
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<PlanViewMode>('plans');
   const { createPanelOpen, createForm, openCreatePanel, closeCreatePanel } = usePlanPanelState();
@@ -51,7 +51,7 @@ const MainPage: React.FC = () => {
               searchValue={searchTerm}
               onSearchChange={setSearchTerm}
               onCreatePlanClick={openCreatePanel}
-              loading={loading}
+              loading={!loaded}
               error={error}
               onRetry={refetch}
               onViewModeChange={setViewMode}
@@ -64,7 +64,7 @@ const MainPage: React.FC = () => {
             {canViewReports ? (
               <ProtectionPlanReportsPage
                 plans={plans}
-                plansLoading={loading}
+                plansLoading={!loaded}
                 plansError={error}
                 onRetryPlans={refetch}
                 tabs={tabs}

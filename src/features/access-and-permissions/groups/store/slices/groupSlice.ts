@@ -26,6 +26,7 @@ const initialState: GroupsState = {
   groups: [],
   details: null,
   loading: false,
+  loaded: false,
   error: null,
   deletingIds: [],
 };

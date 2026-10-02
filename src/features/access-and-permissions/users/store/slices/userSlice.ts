@@ -34,6 +34,7 @@ const initialState: UsersState = {
   users: [],
   details: null,
   loading: false,
+  loaded: false,
   error: null,
   deletingIds: [],
 };

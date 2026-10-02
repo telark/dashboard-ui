@@ -179,6 +179,8 @@ export interface ProtectionPlansState {
   plans: ProtectionPlan[];
   templates: PlanTemplate[];
   loading: boolean;
+  // Set once the list has arrived: `loading` is false both before the first fetch and after it.
+  loaded: boolean;
   templatesLoading: boolean;
   error: string | null;
   details: ProtectionPlan | null;

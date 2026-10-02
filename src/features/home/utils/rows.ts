@@ -48,6 +48,7 @@ export const applicationsBreakdown = (summary: ApplicationsSummary): BreakdownIt
 
 export const plansBreakdown = (summary: PlansSummary): BreakdownItem[] => [
   { label: T.PLANS.ACTIVE, count: summary.active, color: PHASE_DOT_COLOR.active },
+  { label: T.PLANS.SCHEDULED, count: summary.scheduled, color: PHASE_DOT_COLOR.scheduled },
   { label: T.PLANS.DRIFTED, count: summary.drifted, color: HEALTH_DOT_COLOR.drifted },
   { label: T.PLANS.DEGRADED, count: summary.degraded, color: HEALTH_DOT_COLOR.degraded },
   { label: T.PLANS.FAILED, count: summary.failed, color: PHASE_DOT_COLOR.failed },

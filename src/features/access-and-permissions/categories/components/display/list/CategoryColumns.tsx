@@ -14,6 +14,8 @@ interface CategoryColumnsContext extends GenerateColumnCtx {
   onView?: (record: Category) => void;
   onEdit?: (record: Category) => void;
   onDelete?: (record: Category) => void;
+  /** Shown in the Scope column in place of the raw scope key. */
+  scopeLabel?: string;
 }
 
 const CategoryColumns = (ctx: CategoryColumnsContext) => {
@@ -65,7 +67,9 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
         label: CC.LABELS.COLUMNS.SCOPE,
         icon: <AiOutlineTag />,
         width: CC.SIZES.COLUMNS.SCOPE,
-        render: (value: string) => <RowTag text={value} fontSize={RPC.SIZES.CHIP_FONT} />,
+        render: (value: string) => (
+          <RowTag text={ctx.scopeLabel ?? value} fontSize={RPC.SIZES.CHIP_FONT} />
+        ),
       },
       ctx,
     ),
@@ -75,8 +79,9 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
         label: CC.LABELS.COLUMNS.CREATED,
         icon: <AiOutlineCalendar />,
         width: CC.SIZES.COLUMNS.CREATED,
-        render: (value: string) => {
-          if (!value)
+        render: (value: string, record: Category) => {
+          // A built-in's date is only when the install seeded it, which tells the reader nothing.
+          if (!value || record.type === CC.TYPES.BUILT_IN)
             return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>;
           try {
             return <TimeAgo date={value} />;

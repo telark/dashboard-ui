@@ -1,4 +1,4 @@
-import { CARD_MORE_LABEL, DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS } from '../../../../constants';
 import {
   DEFAULT_NAME_VALIDATION_CONFIG,
   type NameValidationConfig,
@@ -207,7 +207,6 @@ export const PROTECTION_PLANS_CONSTANTS = {
       TITLE: 'No protection plans yet',
       DESCRIPTION:
         'Create a plan to block chosen changes to an application or namespace during a release or maintenance window. Start in audit mode, then enforce.',
-      BUTTON: 'Create Protection Plan',
     },
     MESSAGES: {
       ERROR_TITLE: 'Failed to load protection plans.',
@@ -348,7 +347,6 @@ export const PROTECTION_PLANS_CONSTANTS = {
       NAMESPACES_COUNT: (count: number) => `${count} ${count === 1 ? 'namespace' : 'namespaces'}`,
       BLOCKED_LABEL: 'Refuses in this window',
       BLOCKED_LABEL_PERMANENT: 'Always refuses',
-      MORE_BLOCKED: CARD_MORE_LABEL,
       CREATED_BY_PREFIX: 'by',
       AWAITING_APPROVAL_BY_PREFIX: 'awaiting approval · requested by',
       PROTECTING_NAMESPACE: (target: string) => `Protecting namespace ${target}`,
@@ -508,6 +506,9 @@ export const PLAN_NAME_VALIDATION: NameValidationConfig = {
 };
 
 export const PLAN_TAXONOMY_LIMITS = { MAX_TAGS: 20 } as const;
+
+// Tags per row on a plan card; the rest go behind the "+N" pill.
+export const PLAN_CARD_MAX_TAGS = 2;
 
 // mirrors internal/data constants.CategoryIDEnvProduction
 export const PLAN_APPROVAL = {

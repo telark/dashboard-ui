@@ -269,7 +269,6 @@ export type SyncStatusValue = 'syncing' | 'success' | 'failed';
 export interface ApplicationsLastErrorMap {
   [name: string]: string;
 }
-export type ApplicationViewMode = 'grid' | 'list';
 export type ApplicationHealthQuickFilter = 'all' | 'healthy' | 'degraded' | 'unhealthy';
 export type ApplicationCoverageState = 'active' | 'upcoming';
 export interface ApplicationCoverage {
@@ -288,6 +287,8 @@ export interface ApplicationsState {
   applications: Application[];
   details: Application | null;
   loading: boolean;
+  // Set once the list has arrived: `loading` is false both before the first fetch and after it.
+  loaded: boolean;
   error: string | null;
   snapshots: ApplicationSnapshotSummary[];
   snapshotsLoading: boolean;
@@ -300,7 +301,6 @@ export interface ApplicationsState {
   searchValue: string;
   currentPage: number;
   appliedFilters: Record<string, unknown>;
-  viewMode: ApplicationViewMode;
   bulkMode: boolean;
   selectedNames: string[];
   healthQuickFilter: ApplicationHealthQuickFilter;

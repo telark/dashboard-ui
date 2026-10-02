@@ -11,7 +11,7 @@ import CardChip from './CardChip';
 
 const CardChipSection: React.FC<CardChipSectionProps> = ({ label, items, emptyText }) => {
   const shown = items.slice(0, CARD_LAYOUT.MAX_POLICY_CHIPS);
-  const hidden = items.length - shown.length;
+  const hidden = items.slice(CARD_LAYOUT.MAX_POLICY_CHIPS);
 
   return (
     <div style={DIVIDED_BLOCK_STYLE}>
@@ -46,8 +46,12 @@ const CardChipSection: React.FC<CardChipSectionProps> = ({ label, items, emptyTe
               title={item.title}
             />
           ))}
-          {hidden > 0 && (
-            <li style={{ ...MICRO_LABEL_STYLE, alignSelf: 'center' }}>{CARD_MORE_LABEL(hidden)}</li>
+          {hidden.length > 0 && (
+            <CardChip
+              label={CARD_MORE_LABEL(hidden.length)}
+              accent={DEFAULT_COLORS.NEUTRAL}
+              tooltip={hidden.map((item) => item.label).join(', ')}
+            />
           )}
         </ul>
       )}

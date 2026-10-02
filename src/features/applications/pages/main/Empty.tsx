@@ -1,15 +1,18 @@
 import React, { memo, useMemo } from 'react';
-import { AppstoreOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ReloadOutlined } from '@ant-design/icons';
 import EmptyState from '../../../../components/display/views/EmptyState';
+import { Icons } from '../../../../constants';
 import { APPLICATIONS_CONSTANTS } from '../../constants';
 import { CONNECTIVITY_CONSTANTS } from '../../../../constants/pages/connectivity';
+
+const ApplicationIcon = Icons.Application;
 
 interface EmptyProps {
   onRefresh: () => void;
 }
 
 const ApplicationsMainEmpty: React.FC<EmptyProps> = memo(({ onRefresh }) => {
-  const icon = useMemo(() => <AppstoreOutlined style={{ fontSize: 32 }} />, []);
+  const icon = useMemo(() => <ApplicationIcon size={32} />, []);
   const buttonIcon = useMemo(() => <ReloadOutlined />, []);
 
   return (
