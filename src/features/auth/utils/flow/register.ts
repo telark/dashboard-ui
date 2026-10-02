@@ -18,7 +18,7 @@ import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 
 // The page strips the link from the address bar; the tab keeps it so a reload still enrolls.
 export const resolveEnrollLink = (token: string | null, email: string | null): EnrollLink => {
-  const fromLink: EnrollLink = token === null ? {} : { token, email: email ?? undefined };
+  const fromLink: EnrollLink = token === null ? {} : { token, email: email || undefined };
   try {
     if (token === null) {
       const stored = globalThis.sessionStorage.getItem(REGISTER_CONSTANTS.ENROLL_STORAGE_KEY);
