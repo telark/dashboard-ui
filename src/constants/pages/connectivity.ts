@@ -29,7 +29,6 @@ export const CONNECTIVITY_CONSTANTS = {
       alignItems: 'center',
       justifyContent: 'center',
       minHeight: HEADER_LAYOUT.MIN_HEIGHT,
-      marginTop: HEADER_LAYOUT.HEIGHT,
       width: '100%',
       padding: '20px',
     },

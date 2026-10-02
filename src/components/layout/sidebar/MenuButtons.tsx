@@ -10,6 +10,7 @@ const InsightsIcon = Icons.Insights;
 const UserIcon = Icons.User;
 const GroupIcon = Icons.Group;
 const ProtectionPlansIcon = Icons.ProtectionPlans;
+const SettingsIcon = Icons.Settings;
 
 interface MenuButtonProps {
   isCollapsed?: boolean;
@@ -133,3 +134,19 @@ export const ProtectionPlansMenuButton: React.FC<MenuButtonProps> = memo(
 );
 
 ProtectionPlansMenuButton.displayName = 'ProtectionPlansMenuButton';
+
+export const SettingsMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = false }) => {
+  const location = useLocation();
+
+  return (
+    <SidebarButton
+      text={MENU_LABELS.SETTINGS}
+      icon={<SettingsIcon />}
+      active={location.pathname.startsWith(APP_ROUTES.SETTINGS)}
+      route={`${APP_ROUTES.SETTINGS}/profile`}
+      isCollapsed={isCollapsed}
+    />
+  );
+});
+
+SettingsMenuButton.displayName = 'SettingsMenuButton';

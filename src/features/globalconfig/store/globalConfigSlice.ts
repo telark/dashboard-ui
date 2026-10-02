@@ -16,7 +16,6 @@ export type GlobalConfigModel = {
   };
   selfRegistration?: { enabled?: boolean };
   excludedNamespaces?: string[];
-  userSettings?: { fetchIntervalSeconds?: number };
   snapshots?: { maxPerApp?: number };
   cluster?: { version?: string };
 };

@@ -8,8 +8,8 @@ import {
   BulbOutlined,
   SafetyOutlined,
   RobotOutlined,
-  AuditOutlined,
-  LoginOutlined,
+  DatabaseOutlined,
+  KeyOutlined,
   InfoCircleOutlined,
   GlobalOutlined,
 } from '@ant-design/icons';
@@ -27,9 +27,9 @@ const SETTINGS_ROUTES = {
   timezone: `${APP_ROUTES.SETTINGS}/timezone`,
   myPermissions: `${APP_ROUTES.SETTINGS}/permissions`,
   security: `${APP_ROUTES.SETTINGS}/security`,
-  aiInsights: `${APP_ROUTES.SETTINGS}/aiInsights`,
-  governance: `${APP_ROUTES.SETTINGS}/governance`,
-  identityProvider: `${APP_ROUTES.SETTINGS}/identity`,
+  aiInsights: `${APP_ROUTES.SETTINGS}/insights`,
+  governance: `${APP_ROUTES.SETTINGS}/discovery`,
+  identityProvider: `${APP_ROUTES.SETTINGS}/authentication`,
   about: `${APP_ROUTES.SETTINGS}/about`,
 } as const;
 
@@ -148,6 +148,13 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
 
       {!isCollapsed && <div style={sectionLabelStyle}>Platform</div>}
       <SidebarButton
+        text="Authentication"
+        icon={<KeyOutlined />}
+        active={pathname === SETTINGS_ROUTES.identityProvider}
+        route={SETTINGS_ROUTES.identityProvider}
+        isCollapsed={isCollapsed}
+      />
+      <SidebarButton
         text="Insights"
         icon={<RobotOutlined />}
         active={pathname === SETTINGS_ROUTES.aiInsights}
@@ -155,17 +162,10 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
         isCollapsed={isCollapsed}
       />
       <SidebarButton
-        text="Governance"
-        icon={<AuditOutlined />}
+        text="Discovery & Storage"
+        icon={<DatabaseOutlined />}
         active={pathname === SETTINGS_ROUTES.governance}
         route={SETTINGS_ROUTES.governance}
-        isCollapsed={isCollapsed}
-      />
-      <SidebarButton
-        text="Single Sign-On"
-        icon={<LoginOutlined />}
-        active={pathname === SETTINGS_ROUTES.identityProvider}
-        route={SETTINGS_ROUTES.identityProvider}
         isCollapsed={isCollapsed}
       />
       <SidebarButton

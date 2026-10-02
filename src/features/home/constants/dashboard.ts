@@ -131,11 +131,6 @@ export const HOME_PLAN_EVENT_COLORS: Record<PlanEventKey, string> = {
   terminated: DEFAULT_COLORS.ICON_SECONDARY,
 };
 
-export const HOME_DASHBOARD_POLLING = {
-  DEFAULT_INTERVAL_SEC: 60,
-  MIN_INTERVAL_SEC: 5,
-} as const;
-
 export const HOME_TAG_TONE_COLORS: Record<TagTone, string | undefined> = {
   danger: DEFAULT_COLORS.DANGER,
   warning: DEFAULT_COLORS.WARNING,

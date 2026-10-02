@@ -17,5 +17,6 @@ export const PERMISSION_GATE_BYPASS_PATHS: readonly string[] = [
   `${APP_ROUTES.SETTINGS}/appearance`,
   `${APP_ROUTES.SETTINGS}/permissions`,
   `${APP_ROUTES.SETTINGS}/security`,
+  APP_ROUTES.PASSKEYS,
   `${APP_ROUTES.SETTINGS}/about`,
 ];

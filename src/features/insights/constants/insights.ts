@@ -385,7 +385,7 @@ export const CLUSTER_INSIGHTS = {
   PANEL_WIDTH_EXPANDED: 900,
   // Per-viewer convenience only: the remembered Group by.
   GROUP_BY_STORAGE_KEY: 'insights.groupBy',
-  ANALYZER_SETTINGS_ROUTE: `${APP_ROUTES.SETTINGS}/aiInsights`,
+  ANALYZER_SETTINGS_ROUTE: `${APP_ROUTES.SETTINGS}/insights`,
   FILTER_KEYS: {
     KIND: 'kind',
     SEVERITY: 'severity',

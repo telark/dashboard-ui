@@ -17,7 +17,6 @@ import UserAvatar from './UserAvatar';
 import UserAvatarComponent from '../../../../../components/display/avatars/UserAvatar';
 import { avatarRingStyle } from '../../../../../components/display/avatars/avatarRing';
 import {
-  APP_ROUTES,
   BUTTON_CONFIGS,
   DEFAULT_COLORS,
   HEADER_CONSTANTS,
@@ -111,7 +110,6 @@ const UserAvatarDropdown: React.FC<UserAvatarDropdownProps> = memo(
     const menuItems = createUserMenuItems({
       currentUser,
       onLogout: handleLogoutWrapper,
-      onSettings: () => navigate(`${APP_ROUTES.SETTINGS}/profile`),
       loggingOut,
     });
 

@@ -39,7 +39,7 @@ If a control has the wrong height, look for a `size` prop on it, an inline `heig
 ## Layout-shift check
 
 Before finishing, check the change against these:
-- Opening a panel doesn't move the page (the `useBodyOverflow` lock and `scrollbar-gutter: stable` on `html` are intact).
+- Opening a panel doesn't move the page (the `useScrollLock` lock and the content pane's `scrollbar-gutter: stable` are intact).
 - Column widths don't change between rows or pages (long text ellipsizes).
 - Nothing renders a placeholder that later widens; render nothing until the value is known.
 - The first paint uses the real width (`useElementWidth` measures in a layout effect).

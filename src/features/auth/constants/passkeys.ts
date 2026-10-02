@@ -3,13 +3,11 @@ import { DEFAULT_COLORS } from '../../../constants';
 export const PASSKEYS_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Passkeys',
-    HEADER_SUBTITLE: 'Manage your passkeys',
     NOT_FOUND: 'Passkey not found',
     CREATE_BUTTON: 'Register New Passkey',
     UPDATE_BUTTON: 'Update Passkey',
     CREATE_BUTTON_TEXT: 'Register Passkey',
     BREADCRUMBS: {
-      PASSKEYS: 'Passkeys',
       EDIT: 'Edit',
       CREATE: 'Register Passkey',
     },

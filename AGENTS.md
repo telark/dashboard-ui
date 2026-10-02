@@ -12,7 +12,7 @@ dashboard-ui is the operator-facing SPA for telark: React 19, TypeScript 6, Vite
 | `src/features/shared/` | Constants, retry logic and utils shared by features |
 | `src/components/` | Shared UI: `display/` (table, toolbar, panels, views, buttons…), `layout/` (header, sidebar), `animation/`, `error-boundary/` |
 | `src/constants/` | App-wide constants, re-exported from `src/constants/index.ts`: `shared/colors.ts` (palette, pills), `layout/` (controls, buttons, panels, header, sidebar), `rest/`, `store/`, `pages/`, `config/` |
-| `src/hooks/` | `layout/` (`useElementWidth`, `useMediaQuery`…), `panel/` (`useBodyOverflow`, `useSlideOutPanelForm`) and `useUsernamesByIds` |
+| `src/hooks/` | `layout/` (`useElementWidth`, `useMediaQuery`…), `panel/` (`useScrollLock`, `useSlideOutPanelForm`) and `useUsernamesByIds` |
 | `src/interfaces/` | Shared prop and config interfaces (`layout/toolbar.ts`, `layout/panels.ts`, `layout/page.ts`…) |
 | `src/utils/` | Shared helpers, including `layout/sort` (`useSortState`, `sortData`) |
 | `src/api/` | HTTP client (`client/request.ts`, `client/normalize.ts`) and health checks |
@@ -168,7 +168,8 @@ Verify each step against its success criterion before moving on. Strong success 
 ## Panels & forms
 
 - Side panels use the shared components in `src/components/display/panels/`: `SlideOutPanel` (form panel; `contentOnly` for other content), `AnimationWrapper` (the frame it renders in) and `FilterPanel`. They bring the light surface class and theme, the scroll lock and the header, so don't build a panel frame by hand.
-- The scroll lock is `useBodyOverflow(open)` (`src/hooks/panel/useBodyOverflow.ts`). It is counted, so stacked panels work (the first lock applies, the last release restores). While locked it trades `html`'s `scrollbar-gutter: stable` for body padding of the same width, so the page doesn't shift and the panel reaches the screen edge. Keep `scrollbar-gutter: stable` on `html`, and don't give a panel a negative `right` to reach the edge. Fixed full-width chrome reads `--scroll-lock-gutter` (`SCROLL_LOCK_GUTTER_VAR`) to keep its width.
+- Pages scroll in the content pane below the header (`APP_CONFIGS.LAYOUT.CONTENT_ID` in `App.tsx`), never the window, so the header, sidebar and panels span the full viewport and the scrollbar runs beside the content only. The pane reserves its gutter (`scrollbar-gutter: stable`) so content never shifts when a scrollbar appears. Page offsets and sticky `top` values are relative to the pane: no header-height offsets, and `HEADER_LAYOUT.MIN_HEIGHT` fills it. Scroll-to-top targets the pane.
+- The scroll lock is `useScrollLock(open)` (`src/hooks/panel/useScrollLock.ts`). It is counted, so stacked panels work (the first lock applies, the last release restores). It hides the pane's overflow; the reserved gutter keeps the page in place. Don't give a panel a negative `right` to reach the edge.
 - Panel actions are one pinned footer rendered by the frame: `SlideOutPanel` builds it from its submit props, `AnimationWrapper` takes `footer` (the `PanelFooter` props), and `FilterPanel` renders the same `PanelFooter`. Don't render a footer or an inner scroll container in a feature, because the padded body must be the scroller for its scrollbar to sit at the panel edge. Panels have a title and no subtitle; the shared panel header takes none.
 - The panel header is exactly as tall as the app header: `SLIDE_OUT.HEADER.height` is `HEADER_LAYOUT.HEIGHT_PX`. Change the header constant, not the panel, so the two top bars stay aligned.
 - Everything inside a panel is on the light surface; use its palette.
@@ -182,7 +183,7 @@ Verify each step against its success criterion before moving on. Strong success 
 - Layout that depends on an animated width, such as an expanding panel, reads the measured element width, not the expand flag, because the flag flips before the animation finishes (see `InsightPanelSections.tsx`).
 - To make one element give way before its sibling, prefer CSS to any threshold: `flexShrink: 100000` with `minWidth: 0` on the less important sibling (see `ApplicationDetailsIdentity.tsx`).
 - When a threshold is unavoidable, derive it from the measured content need, not from a constant borrowed from another component.
-- `document.documentElement.clientWidth` doesn't subtract the gutter that `scrollbar-gutter: stable` reserves; measure the root's `getBoundingClientRect().width`. A `SettingsCard` `headerAction` never shrinks, so variable-length text goes in the card body.
+- A `SettingsCard` `headerAction` never shrinks, so variable-length text goes in the card body.
 - Avoid layout shift: widths shouldn't depend on content that changes between pages or loads (ellipsize instead); render nothing rather than a placeholder that later widens (as `ListToolbar` does before the first count); and render optional flex children conditionally, because a zero-width child still takes a `gap`.
 
 ## Logging

@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import { PageLayout } from '../../../../components/display/views';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../../constants';
 import ActionConfirmModal from '../../../../components/display/modal/confirm/ActionConfirmModal';
 import { FilterPanel } from '../../../../components/display/panels/filter';
 import { buildUserFilterFields } from '../config/userFilterConfig';
@@ -95,7 +95,7 @@ const UsersListPage: React.FC<UsersListPageProps> = memo(
     );
 
     return (
-      <div style={{ background: DEFAULT_COLORS.PAGE_BG, minHeight: '100vh' }}>
+      <div style={{ background: DEFAULT_COLORS.PAGE_BG, minHeight: HEADER_LAYOUT.MIN_HEIGHT }}>
         <PageLayout config={pageConfig} />
         {createPanelOpen && (
           <CreateUserPanel open={createPanelOpen} onClose={onCloseCreatePanel} form={createForm} />

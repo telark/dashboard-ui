@@ -1,11 +1,8 @@
 import { useMemo } from 'react';
 import { usePasskeyListConfig } from '../../config/passkeyListConfig';
-import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 
 export interface PasskeyListPageConfig {
-  title: string;
-  subtitle: string;
   toolbarConfig: ToolbarConfig;
 }
 
@@ -34,8 +31,6 @@ export const usePasskeyListPageConfig = ({
 
   return useMemo(
     () => ({
-      title: PPC.LABELS.BREADCRUMBS.PASSKEYS,
-      subtitle: PPC.LABELS.HEADER_SUBTITLE,
       toolbarConfig,
     }),
     [toolbarConfig],

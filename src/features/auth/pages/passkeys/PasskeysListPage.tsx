@@ -9,50 +9,12 @@ import type { FormInstance } from 'antd';
 import type { PasskeyPanelFormValues } from '../../hooks/passkeys/passkeyPanelState';
 
 const CONTAINER_STYLE: React.CSSProperties = {
-  background: DEFAULT_COLORS.PAGE_BG,
-  minHeight: '100vh',
-  padding: '100px 48px 48px',
-  marginTop: 0,
-  width: '100%',
-  boxSizing: 'border-box',
-};
-
-/** When embedded in Settings (hideTitle), no extra padding or full-height so it aligns with Security layout. */
-const EMBEDDED_CONTAINER_STYLE: React.CSSProperties = {
   background: 'transparent',
   minHeight: 'auto',
   padding: 0,
   marginTop: 0,
   width: '100%',
   boxSizing: 'border-box',
-};
-
-const TITLE_BLOCK_STYLE: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 0,
-};
-
-const TITLE_STYLE: React.CSSProperties = {
-  fontSize: 28,
-  fontWeight: 700,
-  color: DEFAULT_COLORS.TEXT_ON_SURFACE,
-  margin: 0,
-  padding: 0,
-  lineHeight: 1.2,
-  display: 'flex',
-  alignItems: 'center',
-  gap: 8,
-};
-
-const SUBTITLE_STYLE: React.CSSProperties = {
-  fontSize: 14,
-  fontWeight: 400,
-  color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-  margin: 0,
-  marginTop: 0,
-  padding: 0,
-  lineHeight: 1.2,
 };
 
 const TOOLBAR_ROW_STYLE: React.CSSProperties = {
@@ -77,24 +39,6 @@ const EMPTY_MESSAGE_STYLE: React.CSSProperties = {
   fontSize: 14,
 };
 
-const BREADCRUMB_LINK_STYLE: React.CSSProperties = {
-  background: 'none',
-  border: 'none',
-  padding: 0,
-  cursor: 'pointer',
-  color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-  fontSize: 28,
-  fontWeight: 700,
-  fontFamily: 'inherit',
-  textDecoration: 'none',
-};
-
-/** Same shape as groups breadcrumb: label + optional onClick to go back (no route). */
-export interface PasskeyBreadcrumbItem {
-  label: string;
-  onClick?: () => void;
-}
-
 export interface PasskeysListPageProps {
   pageConfig: PasskeyListPageConfig;
   passkeys: Passkey[];
@@ -110,10 +54,6 @@ export interface PasskeysListPageProps {
   formSyncKey: number;
   submitting: boolean;
   onSubmit: (values: Record<string, unknown>) => Promise<void>;
-  /** When provided (e.g. embedded in Settings), show breadcrumb as title instead of plain title. */
-  breadcrumbItems?: PasskeyBreadcrumbItem[];
-  /** When true, parent renders title/breadcrumb; hide this page's title block. */
-  hideTitle?: boolean;
 }
 
 const PasskeysListPage: React.FC<PasskeysListPageProps> = memo(
@@ -132,52 +72,16 @@ const PasskeysListPage: React.FC<PasskeysListPageProps> = memo(
     formSyncKey,
     submitting,
     onSubmit,
-    breadcrumbItems,
-    hideTitle,
   }) => {
     const emptyMessage = searchTerm
       ? 'No passkeys match your search.'
       : 'No passkeys yet. Add one to get started.';
 
-    const titleContent =
-      hideTitle === true ? null : breadcrumbItems && breadcrumbItems.length > 0 ? (
-        <>
-          {breadcrumbItems.map((b, index) => (
-            <React.Fragment key={index}>
-              {index > 0 && (
-                <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}> / </span>
-              )}
-              {b.onClick ? (
-                <button type="button" onClick={b.onClick} style={BREADCRUMB_LINK_STYLE}>
-                  {b.label}
-                </button>
-              ) : (
-                <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>{b.label}</span>
-              )}
-            </React.Fragment>
-          ))}
-        </>
-      ) : (
-        pageConfig.title
-      );
-
-    const wrapperStyle: React.CSSProperties = hideTitle
-      ? { background: 'transparent', minHeight: 'auto' }
-      : { background: DEFAULT_COLORS.PAGE_BG, minHeight: '100vh' };
-    const containerStyle = hideTitle ? EMBEDDED_CONTAINER_STYLE : CONTAINER_STYLE;
-
     return (
-      <div style={wrapperStyle}>
-        <div style={containerStyle}>
+      <div>
+        <div style={CONTAINER_STYLE}>
           {!isWebAuthnSupported() && <InsecureContextAlert />}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
-            {!hideTitle && (
-              <div style={TITLE_BLOCK_STYLE}>
-                <h1 style={TITLE_STYLE}>{titleContent}</h1>
-                <p style={SUBTITLE_STYLE}>{pageConfig.subtitle}</p>
-              </div>
-            )}
-
             <div style={TOOLBAR_ROW_STYLE}>
               <div />
               <Toolbar config={pageConfig.toolbarConfig} />

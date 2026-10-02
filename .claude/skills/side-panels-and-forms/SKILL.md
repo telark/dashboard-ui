@@ -18,7 +18,7 @@ These already apply `PANEL_SURFACE_CLASS`, the light `PANEL_THEME_TOKENS`, the s
 
 ## Keep these intact when extending the shared panels
 
-- Scroll lock: `useBodyOverflow(open)` is counted, so a panel over a panel works. While locked it swaps `html`'s `scrollbar-gutter: stable` for body padding of the same width, so the page stays put and the panel paints to the real screen edge. Keep the gutter on `html`, don't set a panel's `right` negative to reach the edge, and have fixed full-width chrome use `var(--scroll-lock-gutter)` to keep its width while locked.
+- Scroll lock: `useScrollLock(open)` is counted, so a panel over a panel works. Pages scroll in the content pane (`APP_CONFIGS.LAYOUT.CONTENT_ID`), not the window; the lock hides the pane's overflow, and the pane's `scrollbar-gutter: stable` keeps the page in place. Panels are fixed and reach the real screen edge without offsets; don't set a panel's `right` negative.
 - Header height: `SLIDE_OUT.HEADER.height` is `HEADER_LAYOUT.HEIGHT_PX`, so the panel's top bar lines up with the app header. Change `HEADER_LAYOUT`, not the panel.
 - Surface: everything inside is on white, so use `SURFACE_*` and `TEXT_ON_SURFACE*` colors; dark-surface text tokens render invisible here.
 - Width: panels can expand and collapse with an animated width. Layout inside that depends on width reads `useElementWidth`, not the expand flag.

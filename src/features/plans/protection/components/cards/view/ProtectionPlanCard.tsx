@@ -11,7 +11,6 @@ import {
   FileTextOutlined,
   MoreOutlined,
   PlayCircleOutlined,
-  SafetyCertificateOutlined,
   StopOutlined,
 } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
@@ -44,7 +43,6 @@ import {
 import RowTag from '../../../../../../components/display/table/RowTag';
 import {
   CardChipSection,
-  CardIconChip,
   CardStatusPill,
   StatCell,
 } from '../../../../../../components/display/card';
@@ -450,7 +448,6 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
       {/* Header: identity on the left, phase pill and actions on the right */}
       <div style={CARD_HEADER_STYLE}>
         <div style={CARD_IDENTITY_STYLE}>
-          <CardIconChip icon={<SafetyCertificateOutlined />} accent={phaseAccent} />
           <span style={CARD_TITLE_COLUMN_STYLE}>
             <span title={plan.name} style={CARD_TITLE_STYLE}>
               {plan.name}

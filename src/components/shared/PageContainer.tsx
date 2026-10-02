@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, TRUNCATE_STYLE } from '../../constants';
+import { DEFAULT_COLORS, HEADER_LAYOUT, TRUNCATE_STYLE } from '../../constants';
 import { PAGE_CONTENT_LAYOUT, PAGE_HEADER } from '../../constants/shared/pages';
 
 export interface PageBreadcrumbItem {
@@ -85,7 +85,7 @@ const PageContainer: React.FC<PageContainerProps> = memo(
   ({ title, breadcrumbs, subtitle, gap = 0, children }) => (
     <div
       style={{
-        minHeight: '100vh',
+        minHeight: HEADER_LAYOUT.MIN_HEIGHT,
         background: DEFAULT_COLORS.PAGE_BG,
         padding: PAGE_CONTENT_LAYOUT.PADDING,
         boxSizing: 'border-box',

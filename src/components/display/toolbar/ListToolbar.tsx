@@ -2,7 +2,7 @@ import React from 'react';
 import { CloseOutlined } from '@ant-design/icons';
 import { Checkbox } from 'antd';
 import { DEFAULT_COLORS, LIST_TOOLBAR, TOOLBAR_ITEM_GAP, getPillSurface } from '../../../constants';
-import { LIST_PAGE, PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
+import { LIST_PAGE } from '../../../constants/shared/pages';
 import type {
   FilterChip,
   ListToolbarProps,
@@ -130,7 +130,7 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
     <div
       style={{
         position: 'sticky',
-        top: PAGE_CONTENT_LAYOUT.HEADER_OFFSET_PX,
+        top: 0,
         zIndex: LIST_PAGE.TOOLBAR_Z_INDEX,
         background: DEFAULT_COLORS.PAGE_BG,
         padding: LIST_PAGE.TOOLBAR_PADDING,

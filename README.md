@@ -11,8 +11,8 @@ This repository contains the single-page application only. It has no backend of 
 | Applications | Browse discovered applications and their workloads, the plans that cover them, change history and rollback, and Insights for each app |
 | Protection plans | Create, schedule, approve, cancel, and reactivate plans; see health, violations, and reports |
 | Insights | Incident cards and setup recommendations, updated live |
-| Access & permissions | Users, groups, access roles, and categories such as environments and tags |
-| Settings | Profile, appearance, security, identity provider (Google SSO and self-registration), and the local AI runtime |
+| Administration | Members, groups, access roles, and categories such as environments and tags |
+| Settings | Profile, appearance, security, authentication (Google SSO and self-registration), Insights and the local AI runtime, discovery scope and snapshot storage |
 
 Every action is gated by the signed-in user's permissions, including deny rules; the backend enforces the same checks.
 

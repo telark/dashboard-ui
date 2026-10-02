@@ -7,7 +7,12 @@ export const APP_CONFIGS = {
   },
   LAYOUT: {
     MIN_HEIGHT: '100vh',
-    HEIGHT: '100vh',
+    // Pages scroll in this pane below the header rather than the window, so the header, the
+    // sidebar and panels span the full viewport and the scrollbar runs beside the content only.
+    CONTENT_ID: 'app-content',
+    CONTENT_TOP: HEADER_LAYOUT.HEIGHT,
+    CONTENT_HEIGHT: HEADER_LAYOUT.MIN_HEIGHT,
+    CONTENT_OVERFLOW: 'auto',
     MARGIN_LEFT: 'var(--sidebar-width)',
     TRANSITION: 'margin-left 0.3s ease',
   },
@@ -18,19 +23,18 @@ export const APP_ROUTES = {
   // auth
   LOGIN: '/login',
   REGISTER: '/register',
-  PASSKEYS: '/passkeys',
   GOOGLE_CALLBACK: '/auth/google/callback',
   // resources
   APPLICATIONS: '/applications',
-  APPLICATION_DETAILS: '/applications/:name/details',
+  APPLICATION_DETAILS: '/applications/:name',
   INSIGHTS: '/insights',
+  PROTECTION_PLANS: '/protection-plans',
+  PROTECTION_PLAN_DETAILS: '/protection-plans/:name',
   // access-and-permissions
-  ROLES: '/management/roles',
-  USERS: '/management/users',
-  GROUPS: '/management/groups',
+  ROLES: '/roles',
+  USERS: '/members',
+  GROUPS: '/groups',
   // settings
   SETTINGS: '/settings',
-  // governance
-  PROTECTION_PLANS: '/governance/plans/protection',
-  PROTECTION_PLAN_DETAILS: '/governance/plans/protection/:name/details',
+  PASSKEYS: '/settings/security/passkeys',
 } as const;

@@ -1,4 +1,4 @@
-export { useBodyOverflow, useSlideOutPanelForm } from '../panel';
+export { useScrollLock, useSlideOutPanelForm } from '../panel';
 export { useActionConfirmHandlers } from './useActionConfirmHandlers';
 export { useSidebarCollapse } from './useSidebarCollapse';
 export { useMediaQuery } from './useMediaQuery';

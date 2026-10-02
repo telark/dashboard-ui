@@ -18,18 +18,10 @@ import { sortPasskeys } from '../../components/passkeys/list/utils';
 import type { Passkey } from '../../models/passkeys';
 import PasskeysEmptyPage from './PasskeysEmptyPage';
 import PasskeysListPage from './PasskeysListPage';
-import type { PasskeyBreadcrumbItem } from './PasskeysListPage';
 import { PasskeyPanel, EnrollLinkModal } from '../../components';
 import { ActionConfirmModal } from '../../../../components/display/modal';
 
-export interface PasskeysMainPageProps {
-  /** When provided (e.g. embedded in Settings), show breadcrumb in title. */
-  breadcrumbItems?: PasskeyBreadcrumbItem[];
-  /** When true, parent renders breadcrumb; list page hides title block (fixed position in Settings). */
-  embedInSettings?: boolean;
-}
-
-const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSettings }) => {
+const MainPage: React.FC = () => {
   const { message } = App.useApp();
   const dispatch: AppDispatch = useDispatch();
   const passkeys = useSelector(selectPasskeys);
@@ -180,8 +172,6 @@ const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSet
         formSyncKey={formSyncKey}
         submitting={submitting}
         onSubmit={handlePanelSubmit}
-        breadcrumbItems={embedInSettings ? undefined : breadcrumbItems}
-        hideTitle={embedInSettings}
       />
       <EnrollLinkModal url={enrollUrl} onClose={clearLink} />
       <ActionConfirmModal

@@ -21,7 +21,6 @@ import {
   CARD_TITLE_COLUMN_STYLE,
   CARD_TITLE_STYLE,
   DEFAULT_COLORS,
-  Icons,
   TRUNCATE_STYLE,
   getCardMenuButtonStyle,
   getPillSurface,
@@ -34,7 +33,7 @@ import {
   SYNC_STATUS_VALUE,
 } from '../../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
-import { CardIconChip, CardStatusPill } from '../../../../../components/display/card';
+import { CardStatusPill } from '../../../../../components/display/card';
 import FancySpinner from '../../../../../components/animation/FancySpinner';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { useDispatch, useSelector } from 'react-redux';
@@ -74,8 +73,6 @@ const SYNC_TAG_CONFIG: Record<
     label: APPLICATIONS_UI.CARD.SYNC_STATUS.FAILED,
   },
 };
-
-const ApplicationIcon = Icons.Application;
 
 const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
   ({ application, onEditApplication, bulkMode = false, selected = false, onToggleSelect }) => {
@@ -203,7 +200,6 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                 />
               </span>
             ) : null}
-            <CardIconChip icon={<ApplicationIcon />} accent={accent} />
             <span style={CARD_TITLE_COLUMN_STYLE}>
               <span title={title} style={CARD_TITLE_STYLE}>
                 {title}

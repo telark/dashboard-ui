@@ -36,6 +36,8 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     SAVE_TITLE: 'Save',
     SAVE_DESCRIPTION: 'Apply changes to the cluster-wide GlobalConfig.',
     ENABLE_BUTTON: 'Enable',
+    DISCOVERY_SCOPE_TITLE: 'Discovery scope',
+    DISCOVERY_SCOPE_DESCRIPTION: 'Scope discovery and insights by namespace.',
     NAMESPACES_TITLE: 'Excluded namespaces',
     NAMESPACES_DESCRIPTION:
       'Choose namespaces to exclude from discovery and platform insights. System namespaces are pre-selected by default.',
@@ -44,19 +46,13 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     NAMESPACES_IMPACT_HIDDEN: 'will be hidden',
     NAMESPACES_IMPACT_REVEALED: 'will be revealed',
     NAMESPACES_SAVE_BUTTON: 'Save namespaces',
-    PLATFORM_TITLE: 'Platform behavior',
-    PLATFORM_DESCRIPTION: 'Polling and snapshot retention settings.',
-    FETCH_INTERVAL_MINUTES_LABEL: 'Fetch interval (minutes)',
-    FETCH_INTERVAL_MINUTE_NOUN: 'minute',
-    FETCH_INTERVAL_ONE_HOUR: '1 hour',
     CUSTOM_OPTION: 'Custom',
     SNAPSHOTS_MAX_PER_APP_LABEL: 'Maximum Snapshots per application',
     SNAPSHOTS_MAX_PER_APP_HINT:
       'Telark saves a snapshot before each change and keeps the most recent ones, up to this number. Older snapshots are deleted. Their changes stay in the history, but you can no longer compare them or roll back to them. For applications in several namespaces, the limit applies per namespace. A new limit takes effect from the next change.',
-    PLATFORM_SAVE_INTERVAL_BUTTON: 'Save interval',
     PLATFORM_SAVE_SNAPSHOTS_BUTTON: 'Save snapshots',
     EDIT_DISCOVERY_CONFIG_PERMISSION_DENIED:
-      'You do not have permission to edit discovery & behavior settings',
+      'You do not have permission to edit discovery scope settings',
     EDIT_SNAPSHOT_STORAGE_PERMISSION_DENIED:
       'You do not have permission to edit snapshot storage settings',
     CONTROL_AI_INSIGHTS_PERMISSION_DENIED: 'You do not have permission to manage Insights settings',
@@ -84,8 +80,6 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     NAMESPACES_LOAD_FAILED: 'Failed to load namespaces.',
     NAMESPACES_SAVE_SUCCESS: 'Namespaces saved.',
     NAMESPACES_SAVE_FAILED: 'Failed to save namespaces.',
-    PLATFORM_SAVE_INTERVAL_SUCCESS: 'Interval saved.',
-    PLATFORM_SAVE_INTERVAL_FAILED: 'Failed to save interval.',
     PLATFORM_SAVE_SNAPSHOTS_SUCCESS: 'Snapshots saved.',
     PLATFORM_SAVE_SNAPSHOTS_FAILED: 'Failed to save snapshots.',
     SNAPSHOT_STORAGE_LOAD_FAILED: 'Failed to load snapshot storage.',

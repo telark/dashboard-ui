@@ -3,13 +3,6 @@
   --sidebar-width: 260px;
 }
 
-/* Reserves the scrollbar's own width permanently, so a panel opening (which sets
-   body overflow: hidden via useBodyOverflow) never removes the scrollbar and
-   shifts the page content underneath it. */
-html {
-  scrollbar-gutter: stable;
-}
-
 /* Dark theme: add styles under [data-theme="dark"] when ready. */
 
 html,

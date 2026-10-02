@@ -1,12 +1,10 @@
-import { HEADER_LAYOUT } from '../layout/header';
 import { DEFAULT_COLORS, withAlpha } from './colors';
 
 /** Used by PageLayout and Settings so content (title + body) aligns across features. */
 export const PAGE_CONTENT_LAYOUT = {
-  HEADER_OFFSET_PX: HEADER_LAYOUT.HEIGHT_PX,
   /** List pages (Users, Roles) use containerStyle marginTop 0 so title is at this offset. */
-  PADDING_TOP_PX: 100,
-  PADDING: '100px 48px 48px',
+  PADDING_TOP_PX: 45,
+  PADDING: '45px 48px 48px',
   PADDING_HORIZONTAL_AND_BOTTOM_PX: 48,
 } as const;
 

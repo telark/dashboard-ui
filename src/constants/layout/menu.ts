@@ -6,6 +6,7 @@ export const MENU_LABELS = {
   GROUPS: 'Groups',
   ROLES: 'Roles',
   PROTECTION_PLANS: 'Protection plans',
-  DISCOVERY: 'Discovery',
-  ACCESS_AND_PERMISSIONS: 'Access & permissions',
+  SETTINGS: 'Settings',
+  OPERATIONS: 'Operations',
+  ADMINISTRATION: 'Administration',
 } as const;

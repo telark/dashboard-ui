@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../../store';
-import { APP_ROUTES } from '../../../constants';
+import { APP_ROUTES, HEADER_LAYOUT } from '../../../constants';
 import { PageContainer } from '../../../components/shared';
 import FullPageLoader from '../../../components/display/views/FullPageLoader';
 import { LIST_PAGE } from '../../../constants/shared/pages';
@@ -111,7 +111,7 @@ const Dashboard: React.FC = () => {
     };
   }, [plans, plansLoading, plansError, canViewPlans]);
 
-  if (!permissionsReady) return <FullPageLoader minHeight="100vh" />;
+  if (!permissionsReady) return <FullPageLoader minHeight={HEADER_LAYOUT.MIN_HEIGHT} />;
 
   return (
     <PageContainer title={T.TITLE} subtitle={T.SUBTITLE} gap={LIST_PAGE.CONTENT_GAP_PX}>

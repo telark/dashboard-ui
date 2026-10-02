@@ -67,7 +67,7 @@ const ApplicationDetailsContent: React.FC<ApplicationDetailsContentProps> = memo
         <div
           style={{
             position: 'sticky',
-            top: HEADER_LAYOUT.HEIGHT_PX,
+            top: 0,
             zIndex: 5,
             display: 'flex',
             alignItems: 'center',

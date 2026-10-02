@@ -13,7 +13,7 @@ import ActionConfirmModal from '../../../../components/display/modal/confirm/Act
 import { FilterPanel } from '../../../../components/display/panels/filter';
 import { buildGroupFilterFields } from '../config/groupFilterConfig';
 import { GROUPS_CONSTANTS as GC } from '../constants';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../../constants';
 import type { Group } from '../models';
 import type { Category } from '../../categories/models';
 import type { FormInstance } from 'antd';
@@ -110,7 +110,7 @@ const GroupsListPage: React.FC<GroupsListPageProps> = memo(
     );
 
     return (
-      <div style={{ background: DEFAULT_COLORS.PAGE_BG, minHeight: '100vh' }}>
+      <div style={{ background: DEFAULT_COLORS.PAGE_BG, minHeight: HEADER_LAYOUT.MIN_HEIGHT }}>
         <PageLayout config={pageConfig} />
         {createPanelOpen && (
           <CreateGroupPanel open={createPanelOpen} onClose={onCloseCreatePanel} form={createForm} />

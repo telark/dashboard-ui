@@ -10,7 +10,7 @@ interface PasskeysSettingsViewProps {
 const PasskeysSettingsView: React.FC<PasskeysSettingsViewProps> = memo(({ breadcrumbItems }) => (
   <>
     <SectionHeader title="" breadcrumbItems={breadcrumbItems} />
-    <PasskeysMainPage embedInSettings />
+    <PasskeysMainPage />
   </>
 ));
 

@@ -2,12 +2,7 @@ import React, { memo, useCallback, useMemo } from 'react';
 import { Button, Tooltip } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
-import {
-  DEFAULT_COLORS,
-  HEADER_LAYOUT,
-  MONOSPACE_CLASS,
-  TIME_FORMATS,
-} from '../../../../../constants';
+import { DEFAULT_COLORS, MONOSPACE_CLASS, TIME_FORMATS } from '../../../../../constants';
 import { formatDateTime } from '../../../../../utils/shared/time';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import KeyValueGrid from '../../../../applications/components/details/KeyValueGrid';
@@ -341,7 +336,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
         <div
           style={{
             position: 'sticky',
-            top: HEADER_LAYOUT.HEIGHT_PX,
+            top: 0,
             zIndex: 5,
             display: 'flex',
             alignItems: 'center',

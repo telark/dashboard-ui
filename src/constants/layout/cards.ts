@@ -9,7 +9,6 @@ export const CARD_LAYOUT = {
   RADIUS_PX: 8,
   BLOCK_GAP_PX: 12,
   DIVIDER_GAP_PX: 10,
-  ICON_CHIP_SIZE_PX: 28,
   ICON_CHIP_RADIUS_PX: 8,
   AVATAR_CHIP_SIZE_PX: 16,
   TITLE_FONT_SIZE_PX: 14,
@@ -49,17 +48,6 @@ export const getCardGridColumns = (width: number): number => {
   );
   return Math.min(Math.max(fit, 1), CARD_LAYOUT.CARDS_PER_ROW);
 };
-
-/** The 12% wash behind an accent, keyed by the accent itself. */
-const ACCENT_TINT: Record<string, string> = {
-  [DEFAULT_COLORS.SUCCESS]: DEFAULT_COLORS.SUCCESS_TINT,
-  [DEFAULT_COLORS.WARNING]: DEFAULT_COLORS.WARNING_TINT,
-  [DEFAULT_COLORS.DANGER]: DEFAULT_COLORS.DANGER_TINT,
-  [DEFAULT_COLORS.NEUTRAL]: DEFAULT_COLORS.NEUTRAL_TINT,
-};
-
-export const getAccentTint = (accent: string): string =>
-  ACCENT_TINT[accent] ?? DEFAULT_COLORS.NEUTRAL_TINT;
 
 export const CARD_MORE_LABEL = (count: number): string => `+${count} more`;
 

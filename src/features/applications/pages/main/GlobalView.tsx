@@ -13,6 +13,7 @@ import {
   APPLICATIONS_UI,
   SYNC_STATUS_VALUE,
 } from '../../constants';
+import { POLL_INTERVAL_MS } from '../../../../constants';
 import ApplicationsMainEmpty from './Empty';
 import ApplicationsSuccess from './Success';
 import { filterApplications, useApplications } from '../../hooks';
@@ -44,11 +45,6 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   );
   const syncing = useSelector((s: RootState) => s.applications.syncing);
   const syncStatus = useSelector((s: RootState) => s.applications.syncStatus);
-  const fetchIntervalSeconds = useSelector((s: RootState) =>
-    s.globalconfig.data?.userSettings?.fetchIntervalSeconds != null
-      ? Number(s.globalconfig.data.userSettings.fetchIntervalSeconds)
-      : 60,
-  );
   const excludedNamespaces = useSelector(
     (s: RootState) => s.globalconfig.data?.excludedNamespaces ?? [],
   );
@@ -189,15 +185,12 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   );
 
   useEffect(() => {
-    const intervalSec = Number.isFinite(fetchIntervalSeconds) ? fetchIntervalSeconds : 60;
-    const intervalMs = anySyncing
-      ? APPLICATIONS_SYNC_ACTIVE_POLL_MS
-      : Math.max(5, intervalSec) * 1000;
+    const intervalMs = anySyncing ? APPLICATIONS_SYNC_ACTIVE_POLL_MS : POLL_INTERVAL_MS;
     const interval = setInterval(() => {
       void loadApplicationsSilent(dispatch);
     }, intervalMs);
     return () => clearInterval(interval);
-  }, [anySyncing, dispatch, fetchIntervalSeconds]);
+  }, [anySyncing, dispatch]);
 
   if (!error && visibleApplications.length === 0) {
     return <ApplicationsMainEmpty onRefresh={handleLoadApplications} />;

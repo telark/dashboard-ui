@@ -494,12 +494,6 @@ export const PROTECTION_PLANS_CONSTANTS = {
   },
 } as const;
 
-export const PLAN_LIST_POLL = {
-  DEFAULT_SECONDS: 60,
-  MIN_SECONDS: 5,
-  MS_PER_SECOND: 1000,
-} as const;
-
 // The backend's priority range starts at -100.
 export const PLAN_PRIORITY_MIN = -100;
 

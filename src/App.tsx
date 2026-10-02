@@ -70,9 +70,13 @@ const AppContent: React.FC = () => {
         <Layout style={{ minHeight: APP_CONFIGS.LAYOUT.MIN_HEIGHT }}>
           <Sidebar />
           <Layout
+            id={APP_CONFIGS.LAYOUT.CONTENT_ID}
             style={{
               marginLeft: APP_CONFIGS.LAYOUT.MARGIN_LEFT,
-              height: APP_CONFIGS.LAYOUT.HEIGHT,
+              marginTop: APP_CONFIGS.LAYOUT.CONTENT_TOP,
+              height: APP_CONFIGS.LAYOUT.CONTENT_HEIGHT,
+              overflowY: APP_CONFIGS.LAYOUT.CONTENT_OVERFLOW,
+              scrollbarGutter: 'stable',
               transition: APP_CONFIGS.LAYOUT.TRANSITION,
               background: DEFAULT_COLORS.PAGE_BG,
             }}
@@ -124,12 +128,16 @@ const App: React.FC = () => {
           components: {
             // The dark algorithm derives a near-white disabled text color, which
             // vanishes on these white surfaces, so it is pinned to a gray instead.
+            // A selected item takes the Select option's look, not colorPrimary's green.
             Dropdown: {
               colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
               colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
               controlItemBgHover: DEFAULT_COLORS.SURFACE_HOVER,
               colorTextDisabled: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
               controlItemBgActiveDisabled: DEFAULT_COLORS.SURFACE_WHITE,
+              colorPrimary: SELECT_THEME.optionSelectedColor,
+              controlItemBgActive: SELECT_THEME.optionSelectedBg,
+              controlItemBgActiveHover: SELECT_THEME.controlItemBgActiveHover,
             },
             Select: SELECT_THEME,
             // Focus ring matches Select: colorPrimary is the app green, which antd

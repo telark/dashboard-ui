@@ -10,6 +10,9 @@ export const API_RESPONSES = {
   },
 } as const;
 
+// Lists and details pages refresh their data in the background at this pace.
+export const POLL_INTERVAL_MS = 60_000;
+
 export const REQUEST_CONFIG = {
   DEFAULT_METHOD: 'GET',
   // A shed GET is retried once after the server's Retry-After, never waiting longer than this.

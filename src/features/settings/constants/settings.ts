@@ -2,9 +2,9 @@ import {
   UserOutlined,
   BulbOutlined,
   SafetyOutlined,
-  AuditOutlined,
+  DatabaseOutlined,
   RobotOutlined,
-  LoginOutlined,
+  KeyOutlined,
   InfoCircleOutlined,
   GlobalOutlined,
 } from '@ant-design/icons';
@@ -66,15 +66,15 @@ export const SETTINGS_CONSTANTS = {
     },
     AI_DATA: {
       key: 'insightsGovernance' as const,
-      label: 'Governance',
-      description: 'Configure discovery scope, fetch interval, and snapshot storage behavior.',
-      icon: AuditOutlined,
+      label: 'Discovery & Storage',
+      description: 'Choose the namespaces discovery skips and how many snapshots it keeps.',
+      icon: DatabaseOutlined,
     },
     IDENTITY_PROVIDER: {
       key: 'identityProvider' as const,
-      label: 'Single Sign-On',
-      description: 'Configure the external identity provider users sign in with.',
-      icon: LoginOutlined,
+      label: 'Authentication',
+      description: 'Choose how users sign in: single sign-on and passkey self-registration.',
+      icon: KeyOutlined,
     },
     MY_PERMISSIONS: {
       key: 'myPermissions' as const,

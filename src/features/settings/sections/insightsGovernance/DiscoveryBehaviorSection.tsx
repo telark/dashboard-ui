@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { InputNumber, Select, Tooltip, App as AntdApp } from 'antd';
+import { Select, Tooltip, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
@@ -20,16 +20,6 @@ import {
 const EDIT_DISCOVERY_PERMISSION = ACTION_PERMISSIONS.settings.editDiscoveryConfig;
 const VIEW_APPLICATIONS_PERMISSION = ACTION_PERMISSIONS.applications.view;
 const VIEW_INSIGHTS_PERMISSION = ACTION_PERMISSIONS.insights.view;
-const FETCH_INTERVAL_PRESET_MINUTES = [1, 2, 5, 10, 15, 30, 60] as const;
-
-function snapDownToPreset(value: number, presets: readonly number[]): number {
-  const v = Math.floor(value);
-  let best = presets[0] ?? 1;
-  for (const p of presets) {
-    if (p <= v) best = p;
-  }
-  return best;
-}
 
 const DiscoveryBehaviorSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
@@ -53,48 +43,28 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
   const canListNamespaces = canViewApplications || canViewInsights;
   const { message } = AntdApp.useApp();
 
-  const [initialDiscovery, setInitialDiscovery] = useState<{
-    excludedNamespaces: string[];
-    fetchIntervalMinutes: number;
-  } | null>(null);
+  const [initialExcluded, setInitialExcluded] = useState<string[] | null>(null);
   const [namespacesOptions, setNamespacesOptions] = useState<string[]>([]);
   const [excludedNamespaces, setExcludedNamespaces] = useState<string[]>([]);
   const [savingDiscoveryBehavior, setSavingDiscoveryBehavior] = useState(false);
-  const [fetchIntervalMinutes, setFetchIntervalMinutes] = useState<number>(1);
-  const [fetchIntervalSelection, setFetchIntervalSelection] = useState<string>('1');
-  const [customFetchIntervalMinutes, setCustomFetchIntervalMinutes] = useState<number>(1);
 
   useEffect(() => {
     if (!globalConfig?.data) return;
     const cfg = globalConfig.data;
     const savedExcluded = Array.isArray(cfg?.excludedNamespaces) ? cfg.excludedNamespaces : [];
     setExcludedNamespaces(savedExcluded);
-    const seconds = Number(cfg?.userSettings?.fetchIntervalSeconds ?? 60);
-    const rawMinutes = Math.max(1, Math.floor(seconds / 60));
-    const minutes = FETCH_INTERVAL_PRESET_MINUTES.includes(
-      rawMinutes as (typeof FETCH_INTERVAL_PRESET_MINUTES)[number],
-    )
-      ? rawMinutes
-      : snapDownToPreset(rawMinutes, FETCH_INTERVAL_PRESET_MINUTES);
-    setFetchIntervalMinutes(minutes);
-    setFetchIntervalSelection(String(minutes));
-    setCustomFetchIntervalMinutes(minutes);
-    setInitialDiscovery({
-      excludedNamespaces: [...savedExcluded].sort(),
-      fetchIntervalMinutes: minutes,
-    });
+    setInitialExcluded([...savedExcluded].sort());
   }, [globalConfig?.data]);
 
   const discoveryHasChanges = useMemo(() => {
-    if (!initialDiscovery) return false;
+    if (!initialExcluded) return false;
     const current = [...(excludedNamespaces || [])].sort();
-    const initial = initialDiscovery.excludedNamespaces;
-    if (current.length !== initial.length) return true;
+    if (current.length !== initialExcluded.length) return true;
     for (let i = 0; i < current.length; i++) {
-      if (current[i] !== initial[i]) return true;
+      if (current[i] !== initialExcluded[i]) return true;
     }
-    return fetchIntervalMinutes !== initialDiscovery.fetchIntervalMinutes;
-  }, [excludedNamespaces, fetchIntervalMinutes, initialDiscovery]);
+    return false;
+  }, [excludedNamespaces, initialExcluded]);
 
   const loadNamespaces = useCallback(async () => {
     try {
@@ -116,24 +86,20 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
   const saveDiscoveryAndBehavior = useCallback(async () => {
     setSavingDiscoveryBehavior(true);
     try {
-      const seconds = Math.max(1, Math.round(fetchIntervalMinutes)) * 60;
       const { path, method } = Endpoints.GLOBALCONFIG.PATCH;
       await Client<ResourceDetailsResponse<unknown>>(exporterApiClient, path, {
         method,
-        data: { excludedNamespaces, userSettings: { fetchIntervalSeconds: seconds } },
+        data: { excludedNamespaces },
       });
       message.success(C.MESSAGES.SAVE_SUCCESS);
-      setInitialDiscovery({
-        excludedNamespaces: [...(excludedNamespaces || [])].sort(),
-        fetchIntervalMinutes,
-      });
+      setInitialExcluded([...(excludedNamespaces || [])].sort());
       dispatch(fetchGlobalConfigThunk());
     } catch {
       message.error(C.MESSAGES.SAVE_FAILED);
     } finally {
       setSavingDiscoveryBehavior(false);
     }
-  }, [dispatch, excludedNamespaces, fetchIntervalMinutes, message]);
+  }, [dispatch, excludedNamespaces, message]);
 
   const namespacesImpactPreview = useMemo(() => {
     const saved = Array.isArray(globalConfig?.data?.excludedNamespaces)
@@ -215,8 +181,8 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
 
   return (
     <SettingsCard
-      title="Discovery & Behavior"
-      description="Scope discovery and insights by namespace, and control the fetch interval."
+      title={C.LABELS.DISCOVERY_SCOPE_TITLE}
+      description={C.LABELS.DISCOVERY_SCOPE_DESCRIPTION}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <div style={{ fontWeight: 700 }}>{C.LABELS.NAMESPACES_TITLE}</div>
@@ -256,64 +222,6 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
             ) : null}
           </div>
         ) : null}
-
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 10,
-          }}
-        >
-          <div style={{ fontWeight: 700 }}>{C.LABELS.FETCH_INTERVAL_MINUTES_LABEL}</div>
-          <Select
-            value={fetchIntervalSelection}
-            disabled={!canEditDiscoveryConfig}
-            onChange={(val) => {
-              const raw = String(val);
-              if (raw === 'custom') {
-                setFetchIntervalSelection('custom');
-                setFetchIntervalMinutes(customFetchIntervalMinutes);
-                return;
-              }
-              const parsed = Number(raw);
-              const minutes = FETCH_INTERVAL_PRESET_MINUTES.includes(
-                parsed as (typeof FETCH_INTERVAL_PRESET_MINUTES)[number],
-              )
-                ? parsed
-                : snapDownToPreset(parsed, FETCH_INTERVAL_PRESET_MINUTES);
-              setFetchIntervalSelection(String(minutes));
-              setCustomFetchIntervalMinutes(minutes);
-              setFetchIntervalMinutes(minutes);
-            }}
-            options={[
-              ...FETCH_INTERVAL_PRESET_MINUTES.map((m) => ({
-                value: String(m),
-                label:
-                  m === 60
-                    ? C.LABELS.FETCH_INTERVAL_ONE_HOUR
-                    : pluralize(m, C.LABELS.FETCH_INTERVAL_MINUTE_NOUN),
-              })),
-              { value: 'custom', label: C.LABELS.CUSTOM_OPTION },
-            ]}
-            style={{ width: '100%' }}
-          />
-          {fetchIntervalSelection === 'custom' ? (
-            <InputNumber
-              min={1}
-              precision={0}
-              value={customFetchIntervalMinutes}
-              disabled={!canEditDiscoveryConfig}
-              onChange={(v) => {
-                const n = Number(v);
-                if (!Number.isFinite(n) || n <= 0) return;
-                const next = Math.floor(n);
-                setCustomFetchIntervalMinutes(next);
-                setFetchIntervalMinutes(next);
-              }}
-              style={{ width: '100%' }}
-            />
-          ) : null}
-        </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Toolbar config={saveToolbarConfig} />
