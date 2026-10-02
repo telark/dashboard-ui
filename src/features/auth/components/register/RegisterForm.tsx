@@ -43,6 +43,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         type="email"
         placeholder={REGISTER_CONSTANTS.UI.EMAIL_PLACEHOLDER}
         readOnly={lockedEmail !== undefined}
+        title={lockedEmail === undefined ? undefined : REGISTER_CONSTANTS.UI.EMAIL_LOCKED_HINT}
         style={inputStyle}
       />
     </Form.Item>
