@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
 import { DEFAULT_COLORS } from '../../../../constants';
+import { FancySpinner } from '../../../../components/animation';
 import { APPLICATIONS_UI, DISCOVERY_STATUS_BAR } from '../../constants';
 import { useDiscoveryStatus } from '../../hooks/useDiscoveryStatus';
 
@@ -29,7 +29,7 @@ const DiscoveryStatusBar: React.FC<DiscoveryStatusBarProps> = ({ onCycleComplete
       }}
     >
       {status.inProgress ? (
-        <LoadingOutlined style={{ color: DEFAULT_COLORS.WARNING }} />
+        <FancySpinner size={14} color={DEFAULT_COLORS.WARNING} />
       ) : (
         <span
           style={{

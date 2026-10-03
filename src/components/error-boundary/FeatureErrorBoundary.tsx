@@ -6,6 +6,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import {
   DEFAULT_COLORS,
   FEATURE_ERROR_BOUNDARY_TEXT as T,
+  MONOSPACE_CLASS,
   STORE_MESSAGES,
   withAlpha,
 } from '../../constants';
@@ -123,10 +124,10 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
                 }}
               >
                 <Text
+                  className={MONOSPACE_CLASS}
                   style={{
                     fontSize: 11,
                     color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-                    fontFamily: 'monospace',
                     whiteSpace: 'pre-wrap',
                     wordBreak: 'break-word',
                   }}

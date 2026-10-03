@@ -63,6 +63,8 @@ export const AUTH_PATHS = {
     GOOGLE_NONCE: 'auth/oidc/google/nonce',
     CONFIG: 'auth/oidc/config',
   },
+  SELF_REGISTRATION: 'auth/self-registration',
+  USER_ENROLL_LINK: (id: string) => `${byId('auth/users', id)}/enroll-link`,
   PERMISSIONS: 'auth/permissions',
   CLEANUP: {
     DELETE_USER: (id: string) => byId('auth/users', id),

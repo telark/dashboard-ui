@@ -2,6 +2,8 @@ import React, { useCallback, useState } from 'react';
 import { Badge, Button } from 'antd';
 import { BellOutlined } from '@ant-design/icons';
 import { useNotifications } from '../hooks';
+import { NOTIFICATIONS_TEXTS } from '../constants';
+import { pluralize } from '../../../utils/helpers/format';
 import NotificationPanel from './NotificationPanel';
 
 const NotificationBell: React.FC = () => {
@@ -19,7 +21,7 @@ const NotificationBell: React.FC = () => {
           shape="circle"
           icon={<BellOutlined style={{ fontSize: 18 }} />}
           onClick={handleOpen}
-          aria-label={`${unreadCount} unread notifications`}
+          aria-label={pluralize(unreadCount, NOTIFICATIONS_TEXTS.BELL_UNREAD_NOUN)}
         />
       </Badge>
       <NotificationPanel open={open} onClose={handleClose} />

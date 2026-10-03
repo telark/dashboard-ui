@@ -256,7 +256,7 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
         </div>
       );
     } else if (plans.length === 0) {
-      dataRegion = <ProtectionPlansEmptyPage onCreatePlanClick={onCreatePlanClick} />;
+      dataRegion = <ProtectionPlansEmptyPage />;
     } else if (filteredPlans.length === 0) {
       dataRegion = <NoProtectionPlansState />;
     } else {
@@ -266,7 +266,9 @@ const ProtectionPlansListPage: React.FC<ProtectionPlansListPageProps> = memo(
             display: 'grid',
             gridTemplateColumns: `repeat(${getCardGridColumns(gridWidth)}, minmax(0, 1fr))`,
             gap: CARD_LAYOUT.GRID_GAP_PX,
-            alignItems: 'start',
+            // Every row as tall as the tallest card, so all cards share one height.
+            gridAutoRows: '1fr',
+            alignItems: 'stretch',
           }}
         >
           {filteredPlans.map((plan) => (

@@ -41,7 +41,7 @@ export const usePlanFormData = (enabled: boolean) => {
 
   useEffect(() => {
     if (!enabled) return;
-    let cancelled = false;
+    let canceled = false;
     const load = async () => {
       setNamespacesLoading(true);
       try {
@@ -49,18 +49,18 @@ export const usePlanFormData = (enabled: boolean) => {
         const res = await Client<ResourceDetailsResponse<string[]>>(discoveryApiClient, path, {
           method,
         });
-        if (!cancelled) {
+        if (!canceled) {
           setAllNamespaces((res?.data ?? []).filter(Boolean));
         }
       } catch {
         // silent
       } finally {
-        if (!cancelled) setNamespacesLoading(false);
+        if (!canceled) setNamespacesLoading(false);
       }
     };
     void load();
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, [enabled]);
 

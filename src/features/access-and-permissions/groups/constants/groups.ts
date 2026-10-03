@@ -1,14 +1,16 @@
+import { pluralize } from '../../../../utils/helpers/format';
+
 export const GROUPS_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Groups',
     HEADER_SUBTITLE: 'Manage existing groups',
     NOT_FOUND: 'Group not found',
     UPDATE_BUTTON: 'Update Group',
-    CREATE_BUTTON_TEXT: 'Add New Group',
+    CREATE_BUTTON_TEXT: 'Create Group',
     BREADCRUMBS: {
       GROUPS: 'Groups',
       EDIT: 'Edit',
-      CREATE: 'Add New Group',
+      CREATE: 'Create Group',
       CATEGORIES: 'Categories',
     },
     MESSAGES: {
@@ -20,7 +22,7 @@ export const GROUPS_CONSTANTS = {
       DELETE_FAILED: 'Failed to delete group',
       NO_GROUPS_TITLE: 'No groups yet',
       NO_GROUPS_DESCRIPTION:
-        'Get started by creating your first group. Groups help you organize and manage users with similar roles and permissions.',
+        'Create your first group to get started. Groups organize members who share roles and permissions.',
       LOADING_ROLES: 'Loading roles...',
       NO_ROLES_AVAILABLE: 'No roles available',
       NO_ASSIGNED_ROLES: 'No roles assigned yet',
@@ -63,14 +65,12 @@ export const GROUPS_CONSTANTS = {
       MANAGE_MEMBERS: 'Manage Members',
       DELETE_MODAL_TITLE: 'Delete Group',
       DELETE_IMPACT: (members: number, roles: number) =>
-        `It has ${members} member${members === 1 ? '' : 's'} and ${roles} role${roles === 1 ? '' : 's'}. Members lose the access this group grants.`,
+        `It has ${pluralize(members, 'member')} and ${pluralize(roles, 'role')}. Members lose the access this group grants.`,
       BULK_DELETE_MODAL_TITLE: 'Delete Groups',
-      BULK_DELETE_MODAL_CONTENT: (count: number) =>
-        `Are you sure you want to delete ${count} group${count > 1 ? 's' : ''}? This action cannot be undone.`,
+      BULK_DELETE_RESOURCE: (count: number) => pluralize(count, 'group'),
       DELETE_MODAL_OK: 'Delete',
-      BULK_DELETE_LOADING: (count: number) => `Deleting ${count} group${count > 1 ? 's' : ''}...`,
-      BULK_DELETE_SUCCESS: (count: number) =>
-        `${count} group${count > 1 ? 's' : ''} deleted successfully`,
+      BULK_DELETE_LOADING: (count: number) => `Deleting ${pluralize(count, 'group')}...`,
+      BULK_DELETE_SUCCESS: (count: number) => `${pluralize(count, 'group')} deleted successfully`,
       BULK_DELETE_FAILED: 'Failed to delete some groups',
       DEASSIGN_ROLE_MODAL_TITLE: 'Remove Role',
       DEASSIGN_ROLE_MODAL_ACTION: 'Remove',
@@ -82,9 +82,9 @@ export const GROUPS_CONSTANTS = {
       DEASSIGN_MEMBER_RESOURCE_TYPE: 'member',
     },
     FORM: {
-      TITLE: 'Add New Group',
+      TITLE: 'Create Group',
       SECTION_TITLE: 'Group Details',
-      BUTTON_TEXT: 'Add New Group',
+      BUTTON_TEXT: 'Create Group',
       SECTIONS: {
         BASIC_DETAILS: 'Basic Details',
         MEMBERS: 'Members',
@@ -119,14 +119,14 @@ export const GROUPS_CONSTANTS = {
         TITLE: 'Manage Roles',
         SUBMIT_BUTTON: 'Update roles',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
-        SHOW_ASSIGNED_TOOLTIP: 'View all roles currently assigned to this group',
+        SHOW_ASSIGNED_TOOLTIP: 'View roles assigned to this group',
       },
       ASSIGN_MEMBERS: {
         TITLE: 'Manage Members',
         SUBMIT_BUTTON: 'Update members',
         SEARCH_PLACEHOLDER: 'Search members by username or email...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
-        SHOW_ASSIGNED_TOOLTIP: 'View all members currently assigned to this group',
+        SHOW_ASSIGNED_TOOLTIP: 'View members assigned to this group',
       },
     },
     VIEW_LABELS: {

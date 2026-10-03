@@ -1,4 +1,4 @@
-import { CARD_MORE_LABEL, DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS } from '../../../../constants';
 import {
   DEFAULT_NAME_VALIDATION_CONFIG,
   type NameValidationConfig,
@@ -32,7 +32,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
     // Natural width of the plans list row, from Geist advance widths calibrated
     // against the applications row: count + 7 phase pills with counts (~740px)
     // + filter + search + organize + create is ~1210px. Below this the pills
-    // fold into one control; the labelled buttons (measured ~500px with the pills
+    // fold into one control; the labeled buttons (measured ~500px with the pills
     // folded) fall back to icons only below DEFAULT.
     LIST_TOOLBAR_COMPACT_WIDTH: {
       QUICK_FILTER: 1230,
@@ -63,7 +63,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       NOT_STARTED_HINT: 'Reports become available once the plan has started.',
       EMPTY_DRAFT: 'Reports become available once the plan starts.',
       EMPTY_ACTIVE:
-        'No reports yet. Generate one now, or wait for the final report captured when the plan ends.',
+        'No reports yet. Generate one now, or wait for the final report when the plan ends.',
       EMPTY_ENDED: 'No report was captured for this plan.',
       LOAD_ERROR: 'Could not load reports.',
       GENERATE_SUCCESS: 'Report generated.',
@@ -138,7 +138,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
           'Recent admission decisions: what the plan blocked, audited or let through.',
         REPORTS_TITLE: 'Reports',
         REPORTS_DESCRIPTION:
-          'What happened in the cluster while this plan was in effect. Telark captures a final report when the plan ends or is canceled.',
+          'What happened in the cluster while this plan was in effect. A final report is captured when the plan ends or is canceled.',
       },
       FIELDS: {
         ID: 'ID',
@@ -177,20 +177,18 @@ export const PROTECTION_PLANS_CONSTANTS = {
         CANCEL_MODAL_OK: 'Cancel plan',
         REACTIVATE: 'Reactivate',
         REACTIVATE_MODAL_TITLE: 'Reactivate Protection Plan',
-        REACTIVATE_MODAL_BODY:
-          'Reactivate this protection plan? Its policies will be re-deployed to the cluster.',
+        REACTIVATE_MODAL_BODY: 'Reactivate this plan? Its policies are redeployed to the cluster.',
         REACTIVATE_MODAL_OK: 'Reactivate',
         REACTIVATE_DISABLED_EXPIRED_TOOLTIP:
-          "The plan's time range has expired. Edit the plan to set new dates before reactivating.",
+          "The plan's time range has expired. Edit its dates before reactivating.",
         APPROVE: 'Approve',
         REJECT: 'Reject',
         APPROVE_MODAL_TITLE: 'Approve Protection Plan',
         APPROVE_MODAL_BODY:
-          'Approve this protection plan? Its policies will be deployed to the cluster as soon as its schedule allows.',
+          'Approve this plan? Its policies are deployed to the cluster as soon as its schedule allows.',
         APPROVE_MODAL_OK: 'Approve',
         REJECT_MODAL_TITLE: 'Reject Protection Plan',
-        REJECT_MODAL_BODY:
-          'Reject this protection plan? Nothing will be deployed and the requester will be notified.',
+        REJECT_MODAL_BODY: 'Reject this plan? Nothing is deployed, and the requester is notified.',
         REJECT_MODAL_OK: 'Reject',
         DECISION_COMMENT_LABEL: 'Comment',
         DECISION_COMMENT_PLACEHOLDER: 'Add a comment for the requester',
@@ -207,7 +205,6 @@ export const PROTECTION_PLANS_CONSTANTS = {
       TITLE: 'No protection plans yet',
       DESCRIPTION:
         'Create a plan to block chosen changes to an application or namespace during a release or maintenance window. Start in audit mode, then enforce.',
-      BUTTON: 'Create Protection Plan',
     },
     MESSAGES: {
       ERROR_TITLE: 'Failed to load protection plans.',
@@ -218,9 +215,9 @@ export const PROTECTION_PLANS_CONSTANTS = {
       DUPLICATE: 'Duplicate plan',
       DELETE_MODAL_TITLE: 'Delete Protection Plan',
       DELETE_MODAL_OK: 'Delete',
-      DELETE_MODAL_MESSAGE: (name: string) =>
-        `Delete the protection plan "${name}"? Its reports, including the final report, are deleted with it. Download any report you need first.`,
-      DUPLICATE_SUCCESS: 'Plan duplicated successfully.',
+      DELETE_MODAL_NOTE:
+        'Its reports, including the final report, are deleted with it. Download any report you need first.',
+      DUPLICATE_SUCCESS: 'Plan duplicated.',
       DUPLICATE_ERROR: 'Failed to duplicate plan.',
       CANCEL_SUCCESS: (name: string) => `Plan "${name}" canceled.`,
       CANCEL_ERROR: 'Failed to cancel plan.',
@@ -265,7 +262,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       EMPTY_AUDIT: 'In audit mode, operations that would have been blocked appear here.',
       EMPTY_ENFORCE: 'Nothing matching this plan has been blocked recently.',
       RETENTION_NOTE: (window: string) =>
-        `Admission decisions are retained for ${window}. Older activity is no longer available.`,
+        `Admission decisions are kept for ${window}. Older ones are no longer available.`,
       LOAD_ERROR: 'Could not load violations.',
       LOAD_TIMEOUT: 'Could not load violations. The server took too long to respond.',
       REFRESH: 'Refresh',
@@ -348,7 +345,6 @@ export const PROTECTION_PLANS_CONSTANTS = {
       NAMESPACES_COUNT: (count: number) => `${count} ${count === 1 ? 'namespace' : 'namespaces'}`,
       BLOCKED_LABEL: 'Refuses in this window',
       BLOCKED_LABEL_PERMANENT: 'Always refuses',
-      MORE_BLOCKED: CARD_MORE_LABEL,
       CREATED_BY_PREFIX: 'by',
       AWAITING_APPROVAL_BY_PREFIX: 'awaiting approval · requested by',
       PROTECTING_NAMESPACE: (target: string) => `Protecting namespace ${target}`,
@@ -394,11 +390,10 @@ export const PROTECTION_PLANS_CONSTANTS = {
       TITLE: 'Edit Protection Plan',
       SUBMIT_BUTTON: 'Save changes',
       LOADING_LABEL: 'Saving...',
-      ACTIVE_SCOPE_WARNING:
-        'Saving changes to scope will re-render and re-deploy this plan’s policies.',
+      ACTIVE_SCOPE_WARNING: 'Saving a scope change redeploys this plan’s policies.',
       NO_CHANGES_HINT: 'No changes to save.',
       APPROVED_LOCKED_ALERT:
-        'This plan was approved as configured. Scope, policies, schedule and mode are locked; duplicate the plan, or cancel and reactivate it to request a new approval.',
+        'This plan was approved as configured, so scope, policies, schedule and mode are locked. To change them, duplicate the plan, or cancel and reactivate it to request a new approval.',
     },
   },
   CREATE_PAGE: {
@@ -407,7 +402,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       BASIC_INFO_TITLE: 'Details',
       BASIC_INFO_DESCRIPTION: 'Name, description, severity and priority.',
       CLASSIFICATION_TITLE: 'Classification',
-      CLASSIFICATION_DESCRIPTION: 'Environment and tags used to organise and filter plans.',
+      CLASSIFICATION_DESCRIPTION: 'Environment and tags used to organize and filter plans.',
       APPROVAL_TITLE: 'Execution & approval',
       APPROVAL_DESCRIPTION: 'Whether the plan deploys on its own or waits for an approver.',
       PARTICIPANTS_TITLE: 'Participants',
@@ -473,15 +468,15 @@ export const PROTECTION_PLANS_CONSTANTS = {
       { value: 'critical', label: 'Critical' },
     ] as Array<{ value: string; label: string }>,
     APPROVAL_MODE_OPTIONS: [
-      { value: 'automatic', label: 'Automatic — deploys as soon as the plan starts' },
+      { value: 'automatic', label: 'Automatic: deploys as soon as the plan starts' },
       {
         value: 'required',
-        label: 'Requires approval — an approver must confirm before anything is deployed',
+        label: 'Requires approval: an approver must confirm before anything is deployed',
       },
     ] as Array<{ value: string; label: string }>,
     MODE_OPTIONS: [
-      { value: 'audit', label: 'Audit — log violations, do not block' },
-      { value: 'enforce', label: 'Enforce — block policy violations' },
+      { value: 'audit', label: 'Audit: log violations, do not block' },
+      { value: 'enforce', label: 'Enforce: block policy violations' },
     ] as Array<{ value: string; label: string }>,
     TIME_MODE_OPTIONS: [
       { value: 'permanent', label: 'Permanent' },
@@ -492,12 +487,6 @@ export const PROTECTION_PLANS_CONSTANTS = {
       { value: 'namespaces', label: 'Namespaces' },
     ] as Array<{ value: string; label: string }>,
   },
-} as const;
-
-export const PLAN_LIST_POLL = {
-  DEFAULT_SECONDS: 60,
-  MIN_SECONDS: 5,
-  MS_PER_SECOND: 1000,
 } as const;
 
 // The backend's priority range starts at -100.
@@ -514,6 +503,9 @@ export const PLAN_NAME_VALIDATION: NameValidationConfig = {
 };
 
 export const PLAN_TAXONOMY_LIMITS = { MAX_TAGS: 20 } as const;
+
+// Tags per row on a plan card; the rest go behind the "+N" pill.
+export const PLAN_CARD_MAX_TAGS = 2;
 
 // mirrors internal/data constants.CategoryIDEnvProduction
 export const PLAN_APPROVAL = {

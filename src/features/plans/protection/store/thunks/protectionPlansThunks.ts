@@ -93,7 +93,7 @@ export const cancelPlanThunk = createAsyncThunk<ProtectionPlan, CancelPlanArgs>(
     try {
       return await cancelPlan(planId, reason);
     } catch (error: unknown) {
-      logger.error(STORE_MESSAGES.ERROR_CANCELLING_PROTECTION_PLAN, error);
+      logger.error(STORE_MESSAGES.ERROR_CANCELING_PROTECTION_PLAN, error);
       return rejectWithValue(extractErrorMessage(error, STORE_ERRORS.CANCEL_PROTECTION_PLAN));
     }
   },

@@ -34,6 +34,7 @@ const initialState: PasskeysState = {
   passkeys: [],
   details: null,
   loading: false,
+  loaded: false,
   error: null,
 };
 

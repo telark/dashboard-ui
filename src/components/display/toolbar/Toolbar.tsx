@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dropdown, Tooltip } from 'antd';
-import { DownOutlined, LoadingOutlined } from '@ant-design/icons';
+import { DownOutlined } from '@ant-design/icons';
 import {
   BUTTON_COLORS,
   BUTTON_CONFIGS,
@@ -10,6 +10,7 @@ import {
 } from '../../../constants';
 import type { ToolbarConfig } from '../../../interfaces/layout/toolbar';
 import { SearchButton } from '../buttons';
+import { FancySpinner } from '../../animation';
 import { SearchInput } from '../inputs';
 import { useMediaQuery } from '../../../hooks/layout';
 
@@ -317,9 +318,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
               }}
             >
               {isLoading ? (
-                <LoadingOutlined
-                  style={{ fontSize: 14, display: 'flex', alignItems: 'center', lineHeight: 1 }}
-                />
+                <FancySpinner size={14} color="currentColor" />
               ) : (
                 button.icon && (
                   <span

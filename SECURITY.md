@@ -13,9 +13,4 @@ Include the affected component and version, a description, reproduction steps or
 
 ## Supported versions
 
-Telark is pre-1.0. Only the latest released chart/app version, and the dashboard image it references, receives security fixes.
-
-| Version | Supported |
-|---|---|
-| latest | Yes |
-| older | No |
+Telark is pre-1.0. Only the latest released chart and app version, and the dashboard image it references, receive security fixes.

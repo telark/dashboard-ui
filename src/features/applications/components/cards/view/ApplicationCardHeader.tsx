@@ -21,10 +21,9 @@ import {
   CARD_TITLE_COLUMN_STYLE,
   CARD_TITLE_STYLE,
   DEFAULT_COLORS,
-  Icons,
+  MICRO_LABEL_STYLE,
   TRUNCATE_STYLE,
   getCardMenuButtonStyle,
-  getPillSurface,
 } from '../../../../../constants';
 import type { Application, SyncStatusValue } from '../../../models';
 import {
@@ -33,8 +32,7 @@ import {
   APPLICATIONS_UI,
   SYNC_STATUS_VALUE,
 } from '../../../constants';
-import RowTag from '../../../../../components/display/table/RowTag';
-import { CardIconChip, CardStatusPill } from '../../../../../components/display/card';
+import { CardStatusPill, CardTagList } from '../../../../../components/display/card';
 import FancySpinner from '../../../../../components/animation/FancySpinner';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { useDispatch, useSelector } from 'react-redux';
@@ -55,27 +53,20 @@ interface ApplicationCardHeaderProps {
   onToggleSelect?: (name: string, checked: boolean) => void;
 }
 
-const SYNC_TAG_CONFIG: Record<
-  SyncStatusValue,
-  { accent?: string; icon: React.ReactNode; label: string }
-> = {
+const SYNC_TAG_CONFIG: Record<SyncStatusValue, { icon: React.ReactNode; label: string }> = {
   syncing: {
-    icon: <FancySpinner size={12} ringThickness={2} color={DEFAULT_COLORS.PILL_TEXT} />,
+    icon: <FancySpinner size={14} />,
     label: APPLICATIONS_UI.CARD.SYNC_STATUS.SYNCING,
   },
   success: {
-    accent: DEFAULT_COLORS.SUCCESS,
-    icon: <CheckCircleOutlined style={{ fontSize: 11 }} />,
+    icon: <CheckCircleOutlined style={{ fontSize: 14, color: DEFAULT_COLORS.SUCCESS }} />,
     label: APPLICATIONS_UI.CARD.SYNC_STATUS.SUCCESS,
   },
   failed: {
-    accent: DEFAULT_COLORS.DANGER,
-    icon: <CloseCircleOutlined style={{ fontSize: 11 }} />,
+    icon: <CloseCircleOutlined style={{ fontSize: 14, color: DEFAULT_COLORS.DANGER }} />,
     label: APPLICATIONS_UI.CARD.SYNC_STATUS.FAILED,
   },
 };
-
-const ApplicationIcon = Icons.Application;
 
 const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
   ({ application, onEditApplication, bulkMode = false, selected = false, onToggleSelect }) => {
@@ -184,8 +175,6 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
       );
     const title = application.displayName || application.name;
     const namespaceNames = (application.namespaces?.items ?? []).map((item) => item.name);
-    const shownNamespaces = namespaceNames.slice(0, CARD_LAYOUT.MAX_TARGET_TAGS);
-    const hiddenNamespaces = namespaceNames.length - shownNamespaces.length;
 
     return (
       <>
@@ -203,7 +192,6 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                 />
               </span>
             ) : null}
-            <CardIconChip icon={<ApplicationIcon />} accent={accent} />
             <span style={CARD_TITLE_COLUMN_STYLE}>
               <span title={title} style={CARD_TITLE_STYLE}>
                 {title}
@@ -221,58 +209,39 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                 </span>
               )}
               <span style={CARD_TAG_ROW_STYLE}>
-                {shownNamespaces.map((namespace) => (
-                  <RowTag
-                    key={namespace}
-                    text={namespace}
-                    capitalize={false}
-                    fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
-                    truncate
-                  />
-                ))}
-                {hiddenNamespaces > 0 && (
-                  <RowTag
-                    text={APPLICATION_CARD.MORE(hiddenNamespaces)}
-                    capitalize={false}
-                    fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
-                    truncate
-                  />
+                {namespaceNames.length > 0 && (
+                  <span style={{ ...MICRO_LABEL_STYLE, alignSelf: 'center' }}>
+                    {APPLICATION_CARD.NAMESPACES_LABEL(namespaceNames.length)}
+                  </span>
                 )}
-                {syncStatus ? (
-                  <Tooltip
-                    title={syncStatus === 'failed' && syncLastError ? syncLastError : undefined}
-                  >
-                    <span
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: 5,
-                        ...getPillSurface(SYNC_TAG_CONFIG[syncStatus].accent),
-                        color: DEFAULT_COLORS.PILL_TEXT,
-                        padding: '2px 10px',
-                        borderRadius: 999,
-                        fontWeight: 700,
-                        fontSize: 11,
-                        whiteSpace: 'nowrap',
-                        maxWidth: '100%',
-                        boxSizing: 'border-box',
-                        overflow: 'hidden',
-                      }}
-                    >
-                      {SYNC_TAG_CONFIG[syncStatus].icon}
-                      <span>{SYNC_TAG_CONFIG[syncStatus].label}</span>
-                      {!isSyncing && syncCompletedAt ? (
-                        <span style={{ fontWeight: 500 }}>
-                          · <TimeAgo date={syncCompletedAt} />
-                        </span>
-                      ) : null}
-                    </span>
-                  </Tooltip>
-                ) : null}
+                <CardTagList tags={namespaceNames} />
               </span>
             </span>
           </div>
           <div style={CARD_ASIDE_STYLE}>
+            {syncStatus ? (
+              <Tooltip
+                title={
+                  <>
+                    {SYNC_TAG_CONFIG[syncStatus].label}
+                    {!isSyncing && syncCompletedAt ? (
+                      <>
+                        {' · '}
+                        <TimeAgo date={syncCompletedAt} />
+                      </>
+                    ) : null}
+                    {syncStatus === 'failed' && syncLastError ? <div>{syncLastError}</div> : null}
+                  </>
+                }
+              >
+                <span
+                  aria-label={SYNC_TAG_CONFIG[syncStatus].label}
+                  style={{ display: 'inline-flex', alignItems: 'center' }}
+                >
+                  {SYNC_TAG_CONFIG[syncStatus].icon}
+                </span>
+              </Tooltip>
+            ) : null}
             <CardStatusPill label={statusText} accent={accent} />
             <Dropdown
               trigger={['click']}

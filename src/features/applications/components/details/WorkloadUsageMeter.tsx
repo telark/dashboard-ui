@@ -29,7 +29,7 @@ const meterColor = (used: number, limit: number | null): string => {
 
 /**
  * Meter scale: the track runs to the limit when there is one, otherwise to the
- * request. Usage beyond the scale is clamped, and the fill colour flags it.
+ * request. Usage beyond the scale is clamped, and the fill color flags it.
  */
 const WorkloadUsageMeter: React.FC<WorkloadUsageMeterProps> = memo(
   ({ label, used, request, limit, format, rawUsed }) => {

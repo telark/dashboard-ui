@@ -1,9 +1,10 @@
 import React from 'react';
-import { Form, Select, Spin, Typography } from 'antd';
+import { Form, Select, Typography } from 'antd';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import type { PlanTemplate } from '../../models';
 import Section from '../../../../../components/display/sections/Section';
+import { FancySpinner } from '../../../../../components/animation';
 import type { PolicyEntry } from './types';
 import { FORM_ITEM_CLASS } from './types';
 import { paramError } from '../../utils/planFormValues';
@@ -34,7 +35,7 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
     subtitle={SECTIONS.POLICIES_DESCRIPTION}
     content={
       templatesLoading ? (
-        <Spin size="small" />
+        <FancySpinner size={14} />
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <Form.Item

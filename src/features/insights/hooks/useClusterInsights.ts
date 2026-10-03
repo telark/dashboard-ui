@@ -48,12 +48,12 @@ export function useClusterInsights(
     let etag = '';
     let inFlight = false;
     let again = false;
-    let cancelled = false;
+    let canceled = false;
     let retry: ReturnType<typeof setTimeout> | undefined;
 
     // One read at a time; a request arriving meanwhile (a refresh after triage) runs right after.
     const load = async (): Promise<void> => {
-      if (cancelled) return;
+      if (canceled) return;
       if (inFlight) {
         again = true;
         return;
@@ -61,7 +61,7 @@ export function useClusterInsights(
       inFlight = true;
       try {
         const read = await fetchClusterInsights(query, etag);
-        if (cancelled) return;
+        if (canceled) return;
         if (read.kind === 'not-ready') {
           retry = setTimeout(() => void load(), CLUSTER_INSIGHTS.NOT_READY_RETRY_MS);
         } else if (read.kind === 'page') {
@@ -81,7 +81,7 @@ export function useClusterInsights(
           }));
         }
       } catch (error) {
-        if (cancelled) return;
+        if (canceled) return;
         logger.error(INSIGHTS_ERROR_MESSAGES.CLIENT.FETCH_CLUSTER_INSIGHTS_FAILED, error);
         // Without a first page there is nothing to keep showing, so any failure is reported. A 4xx
         // carries the server's reason; the generic text reads as a network outage.
@@ -117,7 +117,7 @@ export function useClusterInsights(
     const timer = setInterval(poll, CLUSTER_INSIGHTS.POLL_MS);
     document.addEventListener('visibilitychange', poll);
     return () => {
-      cancelled = true;
+      canceled = true;
       clearInterval(timer);
       clearTimeout(retry);
       document.removeEventListener('visibilitychange', poll);

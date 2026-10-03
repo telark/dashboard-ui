@@ -11,10 +11,12 @@ export const NOTIFICATION_TYPES = {
   GROUP_MEMBERSHIP_CHANGED: 'group.membership.changed',
   PLAN_APPROVAL_REQUESTED: 'plan.approval.requested',
   PLAN_APPROVAL_DECIDED: 'plan.approval.decided',
+  ENROLL_LINK_CREATED: 'enroll.link.created',
+  ENROLL_LINK_USED: 'enroll.link.used',
 } as const;
 
 export const NOTIFICATION_SEVERITY_COLORS: Record<string, string> = {
-  info: DEFAULT_COLORS.NEUTRAL,
+  info: DEFAULT_COLORS.INFO_STRONG,
   success: DEFAULT_COLORS.SUCCESS,
   warning: DEFAULT_COLORS.WARNING,
   error: DEFAULT_COLORS.DANGER,
@@ -36,4 +38,6 @@ export const NOTIFICATIONS_TEXTS = {
   CLEAR_ALL: 'Clear all',
   MARK_READ: 'Mark as read',
   DELETE: 'Delete',
+  UNREAD: 'Unread',
+  BELL_UNREAD_NOUN: 'unread notification',
 } as const;

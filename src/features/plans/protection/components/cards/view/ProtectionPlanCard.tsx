@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useState } from 'react';
-import { App as AntdApp, Button, Dropdown, Form } from 'antd';
+import { App as AntdApp, Button, Dropdown, Form, Tooltip } from 'antd';
 import type { MenuProps } from 'antd';
 import {
   CheckCircleOutlined,
@@ -11,7 +11,6 @@ import {
   FileTextOutlined,
   MoreOutlined,
   PlayCircleOutlined,
-  SafetyCertificateOutlined,
   StopOutlined,
 } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
@@ -39,13 +38,13 @@ import {
   PROTECTION_PLANS_CONSTANTS as PPC,
   HEALTH_ACCENT,
   PHASE_ACCENT,
+  PLAN_CARD_MAX_TAGS,
   POLICY_CHIP_LABEL,
 } from '../../../constants/protectionPlans';
-import RowTag from '../../../../../../components/display/table/RowTag';
 import {
   CardChipSection,
-  CardIconChip,
   CardStatusPill,
+  CardTagList,
   StatCell,
 } from '../../../../../../components/display/card';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
@@ -145,7 +144,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const { message } = AntdApp.useApp();
   const [menuOpen, setMenuOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
-  const [cancelling, setCancelling] = useState(false);
+  const [canceling, setCanceling] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [reactivating, setReactivating] = useState(false);
   const [duplicatePanelOpen, setDuplicatePanelOpen] = useState(false);
@@ -233,15 +232,12 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const isPermanent = plan.timeMode === 'permanent';
   const planWindow = buildWindow(plan);
   const targets = buildTargets(plan);
-  const shownTargets = targets.slice(0, CARD_LAYOUT.MAX_TARGET_TAGS);
-  const hiddenTargets = targets.length - shownTargets.length;
   const { environments, tags } = usePlanTaxonomyLists();
   const environmentName = environments.find((c) => c.id === plan.environmentRef)?.name;
-  const planTags = (plan.tagRefs ?? [])
-    .map((id) => ({ id, name: tags.find((c) => c.id === id)?.name }))
-    .filter((t): t is { id: string; name: string } => Boolean(t.name));
-  const shownTags = planTags.slice(0, CARD_LAYOUT.MAX_TARGET_TAGS);
-  const hiddenTagNames = planTags.length - shownTags.length;
+  const classification = [
+    environmentName,
+    ...(plan.tagRefs ?? []).map((id) => tags.find((c) => c.id === id)?.name),
+  ].filter((name): name is string => Boolean(name));
   const policyLabels = (plan.policies ?? []).map(
     (policy) => POLICY_CHIP_LABEL[policy.templateID] ?? policy.templateID,
   );
@@ -249,7 +245,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const menuButtonStyle = getCardMenuButtonStyle(menuOpen);
 
   const handleCancel = useCallback(async () => {
-    setCancelling(true);
+    setCanceling(true);
     try {
       await dispatch(cancelPlanThunk({ planId: plan.id })).unwrap();
       message.success(PPC.LABELS.ACTIONS.CANCEL_SUCCESS(plan.name));
@@ -257,7 +253,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
     } catch (err: unknown) {
       message.error(typeof err === 'string' && err ? err : PPC.LABELS.ACTIONS.CANCEL_ERROR);
     } finally {
-      setCancelling(false);
+      setCanceling(false);
     }
   }, [dispatch, message, plan.id, plan.name]);
 
@@ -412,7 +408,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
             label: PPC.LABELS.ACTIONS.CANCEL,
             icon: <StopOutlined />,
             danger: true,
-            disabled: !canCancelPlan || cancelling,
+            disabled: !canCancelPlan || canceling,
             title: permissionTooltip(canCancelPlan, PD.CANCEL),
           },
         ]
@@ -445,63 +441,24 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={getCardShellStyle(hovered)}
+      style={{
+        ...getCardShellStyle(hovered),
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
     >
       {/* Header: identity on the left, phase pill and actions on the right */}
       <div style={CARD_HEADER_STYLE}>
         <div style={CARD_IDENTITY_STYLE}>
-          <CardIconChip icon={<SafetyCertificateOutlined />} accent={phaseAccent} />
           <span style={CARD_TITLE_COLUMN_STYLE}>
             <span title={plan.name} style={CARD_TITLE_STYLE}>
               {plan.name}
             </span>
-            <span style={CARD_TAG_ROW_STYLE}>
-              {shownTargets.map((target) => (
-                <RowTag
-                  key={target}
-                  text={target}
-                  capitalize={false}
-                  fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
-                  truncate
-                />
-              ))}
-              {hiddenTargets > 0 && (
-                <RowTag
-                  text={CARD_LABELS.MORE_BLOCKED(hiddenTargets)}
-                  capitalize={false}
-                  fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
-                  truncate
-                />
-              )}
-            </span>
             {/* Keyed on the plan's ids, not the resolved names, so the row does not pop in when the lists load. */}
             {(plan.environmentRef || (plan.tagRefs?.length ?? 0) > 0) && (
               <span style={{ ...CARD_TAG_ROW_STYLE, minHeight: CARD_LAYOUT.TAG_ROW_MIN_HEIGHT_PX }}>
-                {environmentName && (
-                  <RowTag
-                    text={environmentName}
-                    capitalize={false}
-                    fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
-                    truncate
-                  />
-                )}
-                {shownTags.map(({ id, name }) => (
-                  <RowTag
-                    key={id}
-                    text={name}
-                    capitalize={false}
-                    fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
-                    truncate
-                  />
-                ))}
-                {hiddenTagNames > 0 && (
-                  <RowTag
-                    text={CARD_LABELS.MORE_BLOCKED(hiddenTagNames)}
-                    capitalize={false}
-                    fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
-                    truncate
-                  />
-                )}
+                <CardTagList tags={classification} max={PLAN_CARD_MAX_TAGS} />
               </span>
             )}
           </span>
@@ -603,7 +560,14 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
 
       {/* Stats: the four answers a plan is scanned for */}
       <div style={CARD_STATS_GRID_STYLE}>
-        <StatCell label={CARD_LABELS.STATS.SCOPE} value={buildScopeValue(plan)} />
+        <StatCell
+          label={CARD_LABELS.STATS.SCOPE}
+          value={
+            <Tooltip title={targets.join(', ')}>
+              <span>{buildScopeValue(plan)}</span>
+            </Tooltip>
+          }
+        />
         <StatCell label={CARD_LABELS.STATS.MODE} value={PPC.LABELS.MODE_LABELS[plan.mode]} />
         <StatCell
           label={CARD_LABELS.STATS.TEMPLATES}
@@ -628,6 +592,9 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
         }))}
       />
 
+      {/* Grid rows stretch every card to one height: the spacer keeps the footer at the bottom. */}
+      <div style={{ flex: 1 }} />
+
       {/* Provenance: who put this window in place and when it last moved */}
       <div style={CARD_FOOTER_STYLE}>
         <span style={TRUNCATE_STYLE} title={provenanceActor}>
@@ -647,7 +614,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
           action="delete"
           resourceName={plan.name}
           resourceType="protection plan"
-          customMessage={PPC.LABELS.ACTIONS.DELETE_MODAL_MESSAGE(plan.name)}
+          note={PPC.LABELS.ACTIONS.DELETE_MODAL_NOTE}
           confirmText={PPC.LABELS.ACTIONS.DELETE_MODAL_OK}
           loading={deleting}
           getContainer={() => document.body}
@@ -661,7 +628,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
           resourceName={plan.name}
           resourceType="protection plan"
           confirmText={PPC.LABELS.DETAIL_PAGE.ACTIONS.CANCEL_MODAL_OK}
-          loading={cancelling}
+          loading={canceling}
           getContainer={() => document.body}
         />
         <ReactivatePlanModal

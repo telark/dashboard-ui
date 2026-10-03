@@ -2,14 +2,14 @@ import { memo, useCallback, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { HiChevronLeft } from 'react-icons/hi';
-import { BsLockFill } from 'react-icons/bs';
+import { LockOutlined } from '@ant-design/icons';
 import {
   UserOutlined,
   BulbOutlined,
   SafetyOutlined,
   RobotOutlined,
-  AuditOutlined,
-  LoginOutlined,
+  DatabaseOutlined,
+  KeyOutlined,
   InfoCircleOutlined,
   GlobalOutlined,
 } from '@ant-design/icons';
@@ -27,9 +27,9 @@ const SETTINGS_ROUTES = {
   timezone: `${APP_ROUTES.SETTINGS}/timezone`,
   myPermissions: `${APP_ROUTES.SETTINGS}/permissions`,
   security: `${APP_ROUTES.SETTINGS}/security`,
-  aiInsights: `${APP_ROUTES.SETTINGS}/aiInsights`,
-  governance: `${APP_ROUTES.SETTINGS}/governance`,
-  identityProvider: `${APP_ROUTES.SETTINGS}/identity`,
+  aiInsights: `${APP_ROUTES.SETTINGS}/insights`,
+  governance: `${APP_ROUTES.SETTINGS}/discovery`,
+  identityProvider: `${APP_ROUTES.SETTINGS}/authentication`,
   about: `${APP_ROUTES.SETTINGS}/about`,
 } as const;
 
@@ -118,6 +118,20 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
         isCollapsed={isCollapsed}
       />
       <SidebarButton
+        text="My Permissions"
+        icon={<LockOutlined />}
+        active={pathname === SETTINGS_ROUTES.myPermissions}
+        route={SETTINGS_ROUTES.myPermissions}
+        isCollapsed={isCollapsed}
+      />
+      <SidebarButton
+        text="Security"
+        icon={<SafetyOutlined />}
+        active={pathname.startsWith(SETTINGS_ROUTES.security)}
+        route={SETTINGS_ROUTES.security}
+        isCollapsed={isCollapsed}
+      />
+      <SidebarButton
         text="Appearance"
         icon={<BulbOutlined />}
         active={pathname === SETTINGS_ROUTES.appearance}
@@ -131,22 +145,15 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
         route={SETTINGS_ROUTES.timezone}
         isCollapsed={isCollapsed}
       />
-      <SidebarButton
-        text="My Permissions"
-        icon={<BsLockFill />}
-        active={pathname === SETTINGS_ROUTES.myPermissions}
-        route={SETTINGS_ROUTES.myPermissions}
-        isCollapsed={isCollapsed}
-      />
-      <SidebarButton
-        text="Security"
-        icon={<SafetyOutlined />}
-        active={pathname.startsWith(SETTINGS_ROUTES.security)}
-        route={SETTINGS_ROUTES.security}
-        isCollapsed={isCollapsed}
-      />
 
       {!isCollapsed && <div style={sectionLabelStyle}>Platform</div>}
+      <SidebarButton
+        text="Authentication"
+        icon={<KeyOutlined />}
+        active={pathname === SETTINGS_ROUTES.identityProvider}
+        route={SETTINGS_ROUTES.identityProvider}
+        isCollapsed={isCollapsed}
+      />
       <SidebarButton
         text="Insights"
         icon={<RobotOutlined />}
@@ -155,17 +162,10 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
         isCollapsed={isCollapsed}
       />
       <SidebarButton
-        text="Governance"
-        icon={<AuditOutlined />}
+        text="Discovery & Storage"
+        icon={<DatabaseOutlined />}
         active={pathname === SETTINGS_ROUTES.governance}
         route={SETTINGS_ROUTES.governance}
-        isCollapsed={isCollapsed}
-      />
-      <SidebarButton
-        text="Single Sign-On"
-        icon={<LoginOutlined />}
-        active={pathname === SETTINGS_ROUTES.identityProvider}
-        route={SETTINGS_ROUTES.identityProvider}
         isCollapsed={isCollapsed}
       />
       <SidebarButton

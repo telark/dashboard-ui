@@ -49,7 +49,7 @@ const buildLabels = ({
     },
     PANELS: {
       ADD_CATEGORY: {
-        TITLE: `Add ${noun}`,
+        TITLE: `Create ${noun}`,
         SUBMIT_BUTTON: `Create ${noun}`,
         NAME_LABEL: `${noun} Name`,
         NAME_PLACEHOLDER: example,
@@ -73,9 +73,9 @@ const buildLabels = ({
       MANAGE_CATEGORIES: {
         BUTTON_LABEL: 'Manage Categories',
         VIEW_CATEGORIES: 'View Categories',
-        ADD_CATEGORY: `Add ${noun}`,
+        ADD_CATEGORY: `Create ${noun}`,
         VIEW_CATEGORIES_DISABLED_TOOLTIP: 'You do not have permission to view categories',
-        ADD_CATEGORY_DISABLED_TOOLTIP: `You do not have permission to add ${plural}`,
+        ADD_CATEGORY_DISABLED_TOOLTIP: `You do not have permission to create ${plural}`,
       },
     },
     RESOURCE_TYPE: lower,

@@ -3,7 +3,7 @@ import type { Role, ColumnsArgs } from '../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
-import { DEFAULT_COLORS } from '../../../../../../constants';
+import { ACTORS, DEFAULT_COLORS } from '../../../../../../constants';
 import {
   AiOutlineCalendar,
   AiOutlineCheckCircle,
@@ -18,6 +18,7 @@ import { getCategoryName } from '../../../../categories/utils/helpers';
 import { ActorDisplay } from '../../../../../../components/display/users';
 import { AiOutlineUser } from 'react-icons/ai';
 import { ValidityDisplay } from '../../../../../../components/display/validity';
+import { EMPTY_VALUE } from '../../../../shared';
 
 export const Columns = ({
   onSort,
@@ -74,7 +75,8 @@ export const Columns = ({
         icon: <AiOutlineCalendar />,
         width: RPC.SIZES.COLUMNS.CREATED,
         render: (_: unknown, record: Role) => {
-          if (isBuiltIn(record)) return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
+          if (isBuiltIn(record))
+            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>;
           return <TimeAgo date={record.creationDate} />;
         },
       },
@@ -87,7 +89,8 @@ export const Columns = ({
         icon: <AiOutlineUser />,
         width: RPC.SIZES.COLUMNS.CREATED_BY,
         render: (_: unknown, record: Role) => {
-          if (isBuiltIn(record)) return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
+          if (isBuiltIn(record))
+            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{ACTORS.NONE}</span>;
           return (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <ActorDisplay
@@ -110,7 +113,7 @@ export const Columns = ({
         width: RPC.SIZES.COLUMNS.LAST_UPDATE,
         render: (_: unknown, record: Role) => {
           if (isBuiltIn(record) || !record.lastUpdateDate) {
-            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
+            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>;
           }
           return <TimeAgo date={record.lastUpdateDate} />;
         },
@@ -124,7 +127,8 @@ export const Columns = ({
         icon: <AiOutlineHourglass />,
         width: RPC.SIZES.COLUMNS.VALIDITY,
         render: (_: unknown, record: Role) => {
-          if (isBuiltIn(record)) return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
+          if (isBuiltIn(record))
+            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>;
           return (
             <span style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>
               <ValidityDisplay validity={record.validity} record={record} />
@@ -141,7 +145,8 @@ export const Columns = ({
         icon: <AiOutlineFolder />,
         width: RPC.SIZES.COLUMNS.CATEGORY,
         render: (_: unknown, record: Role) => {
-          if (isBuiltIn(record)) return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
+          if (isBuiltIn(record))
+            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>;
           const categoryName = getCategoryName(record.categoryRef, categories);
           return <RowTag text={categoryName} fontSize={RPC.SIZES.CHIP_FONT} />;
         },
@@ -155,8 +160,9 @@ export const Columns = ({
         icon: <AiOutlineCode />,
         width: RPC.SIZES.COLUMNS.VERSION,
         render: (_: unknown, record: Role) => {
-          if (isBuiltIn(record)) return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
-          return <RowTag text={record.version || '—'} fontSize={RPC.SIZES.CHIP_FONT} />;
+          if (isBuiltIn(record))
+            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>;
+          return <RowTag text={record.version || EMPTY_VALUE} fontSize={RPC.SIZES.CHIP_FONT} />;
         },
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },

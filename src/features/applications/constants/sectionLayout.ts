@@ -1,4 +1,4 @@
-import { DEFAULT_COLORS, ROW_ICON_BUTTON_SIZE } from '../../../constants';
+import { DEFAULT_COLORS, MONOSPACE_CLASS, ROW_ICON_BUTTON_SIZE } from '../../../constants';
 import { SETTINGS_CONSTANTS } from '../../settings/constants';
 
 /** Applications feature: spacing and dividers aligned with settings/content tokens. */
@@ -31,7 +31,7 @@ export const APPLICATION_SECTION_LAYOUT = {
 /** Inline manifest reader shown inside the manage-snapshots panel. */
 export const APPLICATION_MANIFEST_VIEW = {
   /** Scoped class so the reader can opt out of the global Geist !important rule. */
-  CODE_CLASS: 'manifest-code',
+  CODE_CLASS: MONOSPACE_CLASS,
   RADIUS_PX: 10,
   HEADER_PADDING: '6px 6px 6px 10px',
   HEADER_GAP_PX: 8,
@@ -136,7 +136,7 @@ export const APPLICATION_RESOURCE_TREE = {
   INDENT_PX: 22,
   SPINE_X_PX: 9,
   ELBOW_WIDTH_PX: 11,
-  /** Vertical centre of a node row, where its elbow meets the spine. */
+  /** Vertical center of a node row, where its elbow meets the spine. */
   ROW_CENTER_PX: 15,
   ROW_GAP_PX: 2,
   LINE_WIDTH_PX: 1,
@@ -153,7 +153,7 @@ export const APPLICATION_RESOURCE_TREE = {
 } as const;
 
 /**
- * Radial resource graph: the application sits at the centre, each kind on a ring
+ * Radial resource graph: the application sits at the center, each kind on a ring
  * around it, and that kind's resources orbit their kind node. The API exposes no
  * owner references, so only this containment is drawn — never inferred edges.
  */

@@ -54,12 +54,12 @@ const InsightsPage: React.FC = () => {
   const [review, setReview] = useState<{ app: string; at?: string } | null>(null);
   useEffect(() => {
     if (!validApp(app)) return undefined;
-    let cancelled = false;
+    let canceled = false;
     const read = (): void => {
       fetchApplicationInsights([app])
         .then((res) => {
           // A pending document could not be read yet: unknown, so nothing shows.
-          if (cancelled || res.pending?.includes(app)) return;
+          if (canceled || res.pending?.includes(app)) return;
           const at = res.results?.[app]?.lastReviewAt;
           setReview((prev) => (prev?.app === app && prev.at === at ? prev : { app, at }));
         })
@@ -72,7 +72,7 @@ const InsightsPage: React.FC = () => {
       if (document.visibilityState === 'visible') read();
     }, CLUSTER_INSIGHTS.POLL_MS);
     return () => {
-      cancelled = true;
+      canceled = true;
       clearInterval(timer);
     };
   }, [app]);

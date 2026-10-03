@@ -8,7 +8,7 @@ const VIEW_USERS = ACTION_PERMISSIONS.users.view;
 
 export const useUsers = () => {
   const dispatch: AppDispatch = useDispatch();
-  const { users, loading, error } = useSelector((state: RootState) => state.users);
+  const { users, loading, loaded, error } = useSelector((state: RootState) => state.users);
   const canViewUsers = usePermission(VIEW_USERS.scope, VIEW_USERS.level);
 
   useEffect(() => {
@@ -22,6 +22,7 @@ export const useUsers = () => {
   return {
     users,
     loading,
+    loaded,
     error,
     refetch,
   };

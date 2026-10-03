@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../../store';
-import { APP_ROUTES } from '../../../constants';
+import { APP_ROUTES, HEADER_LAYOUT } from '../../../constants';
 import { PageContainer } from '../../../components/shared';
 import FullPageLoader from '../../../components/display/views/FullPageLoader';
 import { LIST_PAGE } from '../../../constants/shared/pages';
@@ -11,7 +11,7 @@ import { filterByExcludedNamespaces } from '../../applications/utils/management/
 import {
   selectProtectionPlans,
   selectProtectionPlansError,
-  selectProtectionPlansLoading,
+  selectProtectionPlansLoaded,
 } from '../../plans/protection/store';
 import { selectGlobalConfigState } from '../../globalconfig/store';
 import {
@@ -73,13 +73,13 @@ const Dashboard: React.FC = () => {
   const storage = useDashboardData({ canViewApplications, canViewPlans, canViewSnapshots });
 
   const applications = useSelector((s: RootState) => s.applications.applications);
-  const appsLoading = useSelector((s: RootState) => s.applications.loading);
+  const appsLoaded = useSelector((s: RootState) => s.applications.loaded);
   const appsError = useSelector((s: RootState) => s.applications.error);
   const excludedNamespaces = useSelector((s: RootState) => s.globalconfig.data?.excludedNamespaces);
   const clusterVersion = useSelector((s: RootState) => s.globalconfig.data?.cluster?.version);
   const globalConfigState = useSelector(selectGlobalConfigState);
   const plans = useSelector(selectProtectionPlans);
-  const plansLoading = useSelector(selectProtectionPlansLoading);
+  const plansLoaded = useSelector(selectProtectionPlansLoaded);
   const plansError = useSelector(selectProtectionPlansError);
 
   const apps = useMemo(
@@ -90,33 +90,39 @@ const Dashboard: React.FC = () => {
     const summary = summarizeApplications(apps);
     return {
       state: canViewApplications
-        ? toBoxState(appsLoading, appsError, apps.length > 0)
+        ? toBoxState(!appsLoaded, appsError, apps.length > 0)
         : { noAccess: APPS_NO_ACCESS },
       total: summary.total,
       breakdown: applicationsBreakdown(summary),
       recentRows: recentlyChangedApplications(apps).map(recentChangeRow),
       activity: changeActivityData(apps),
     };
-  }, [apps, appsLoading, appsError, canViewApplications]);
+  }, [apps, appsLoaded, appsError, canViewApplications]);
   const plansView = useMemo(() => {
     const summary = summarizePlans(plans);
     return {
       state: canViewPlans
-        ? toBoxState(plansLoading, plansError, plans.length > 0)
+        ? toBoxState(!plansLoaded, plansError, plans.length > 0)
         : { noAccess: PLANS_NO_ACCESS },
       total: summary.total,
       breakdown: plansBreakdown(summary),
       attentionRows: plansNeedingAttention(plans).map(planAttentionRow),
       activity: planActivityData(plans),
     };
-  }, [plans, plansLoading, plansError, canViewPlans]);
+  }, [plans, plansLoaded, plansError, canViewPlans]);
 
-  if (!permissionsReady) return <FullPageLoader minHeight="100vh" />;
+  if (!permissionsReady) return <FullPageLoader minHeight={HEADER_LAYOUT.MIN_HEIGHT} />;
 
   return (
     <PageContainer title={T.TITLE} subtitle={T.SUBTITLE} gap={LIST_PAGE.CONTENT_GAP_PX}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: L.GRID_GAP_PX }}>
         <div style={gridStyle(L.BOX_HEIGHT_PX)}>
+          <ClusterBox
+            cluster={parseClusterVersion(clusterVersion)}
+            loading={globalConfigState.loading && !clusterVersion}
+            failed={Boolean(globalConfigState.error) && !clusterVersion}
+            noAccess={canViewSettings ? undefined : CLUSTER_NO_ACCESS}
+          />
           <SummaryBox
             title={T.APPLICATIONS.TITLE}
             viewAllTo={APP_ROUTES.APPLICATIONS}
@@ -134,12 +140,6 @@ const Dashboard: React.FC = () => {
           <StorageBox
             storage={storage}
             noAccess={canViewSnapshots ? undefined : SNAPSHOTS_NO_ACCESS}
-          />
-          <ClusterBox
-            cluster={parseClusterVersion(clusterVersion)}
-            loading={globalConfigState.loading && !clusterVersion}
-            failed={Boolean(globalConfigState.error) && !clusterVersion}
-            noAccess={canViewSettings ? undefined : CLUSTER_NO_ACCESS}
           />
           <ListBox
             title={T.PLANS_ATTENTION.TITLE}

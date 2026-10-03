@@ -1,10 +1,5 @@
-import { CARD_LAYOUT, CARD_MORE_LABEL, DEFAULT_COLORS } from '../../../constants';
-import type { ApplicationCoverageState, ApplicationViewMode } from '../models';
-
-export const APPLICATION_VIEW_MODES: { key: ApplicationViewMode; label: string }[] = [
-  { key: 'grid', label: `Grid · ${CARD_LAYOUT.CARDS_PER_ROW} per row` },
-  { key: 'list', label: 'List · 1 per row' },
-];
+import { DEFAULT_COLORS } from '../../../constants';
+import type { ApplicationCoverageState } from '../models';
 
 /** Card accents stay on DEFAULT_COLORS so ACCENT_TINT and getPillSurface can resolve them. */
 export const APPLICATION_HEALTH_ACCENT: Record<string, string> = {
@@ -24,7 +19,6 @@ const COVERAGE_STATE_LABEL: Record<ApplicationCoverageState, string> = {
 };
 
 export const APPLICATION_CARD = {
-  VIEW_MODE_LABEL: 'View',
   STATS: {
     INCIDENTS: 'Incidents',
     RECOVERIES: 'Recoveries',
@@ -36,7 +30,7 @@ export const APPLICATION_CARD = {
     CHIP_TITLE: (plan: string, state: ApplicationCoverageState) =>
       `${plan} · ${COVERAGE_STATE_LABEL[state]}`,
   },
-  MORE: CARD_MORE_LABEL,
+  NAMESPACES_LABEL: (count: number) => (count === 1 ? 'Namespace' : 'Namespaces'),
   CREATED_PREFIX: 'created',
   UPDATED_PREFIX: 'updated',
 } as const;

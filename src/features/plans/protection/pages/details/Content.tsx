@@ -2,7 +2,7 @@ import React, { memo, useCallback, useMemo } from 'react';
 import { Button, Tooltip } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
-import { DEFAULT_COLORS, HEADER_LAYOUT, TIME_FORMATS } from '../../../../../constants';
+import { DEFAULT_COLORS, MONOSPACE_CLASS, TIME_FORMATS } from '../../../../../constants';
 import { formatDateTime } from '../../../../../utils/shared/time';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import KeyValueGrid from '../../../../applications/components/details/KeyValueGrid';
@@ -65,7 +65,7 @@ interface ProtectionPlanDetailsContentProps {
   plan: ProtectionPlan;
   duplicating: boolean;
   editing: boolean;
-  cancelling: boolean;
+  canceling: boolean;
   reactivating: boolean;
   approving: boolean;
   rejecting: boolean;
@@ -90,7 +90,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     plan,
     duplicating,
     editing,
-    cancelling,
+    canceling,
     reactivating,
     approving,
     rejecting,
@@ -336,7 +336,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
         <div
           style={{
             position: 'sticky',
-            top: HEADER_LAYOUT.HEIGHT_PX,
+            top: 0,
             zIndex: 5,
             display: 'flex',
             alignItems: 'center',
@@ -405,7 +405,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             plan={plan}
             duplicating={duplicating}
             editing={editing}
-            cancelling={cancelling}
+            canceling={canceling}
             reactivating={reactivating}
             approving={approving}
             rejecting={rejecting}
@@ -546,11 +546,11 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                   }}
                 >
                   <span
+                    className={MONOSPACE_CLASS}
                     style={{
                       fontWeight: 700,
                       fontSize: 13,
                       color: DEFAULT_COLORS.TEXT_PRIMARY,
-                      fontFamily: 'monospace',
                     }}
                   >
                     {p.templateID}
@@ -656,7 +656,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             <NoPermissionCard
               featureName={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_TITLE}
               permission={viewViolations}
-              compact
+              emptyState
             />
           )}
         </SettingsCard>
@@ -696,7 +696,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             <NoPermissionCard
               featureName={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_TITLE}
               permission={viewReports}
-              compact
+              emptyState
             />
           )}
         </SettingsCard>

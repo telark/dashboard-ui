@@ -20,7 +20,7 @@ interface KindNodeLayout {
   /** Where the pill's inner edge sits — its own size never shifts this point. */
   anchor: Point;
   edgeStart: Point;
-  /** Anchors the pill so it hangs away from the centre instead of straddling the ring. */
+  /** Anchors the pill so it hangs away from the center instead of straddling the ring. */
   transform: string;
 }
 
@@ -46,7 +46,7 @@ const useGraphLayout = (groups: [string, ApplicationResourceRef[]][]) =>
     const width = (radius + G.CANVAS_PADDING_X_PX) * 2;
     const height = (radius + G.CANVAS_PADDING_Y_PX) * 2;
     const center: Point = { x: width / 2, y: height / 2 };
-    // Edges begin on the centre node's rim, so nothing shows through underneath it.
+    // Edges begin on the center node's rim, so nothing shows through underneath it.
     const centerEdge = G.CENTER_SIZE_PX / 2;
 
     const kinds: KindNodeLayout[] = groups.map(([kind, resources], index) => {

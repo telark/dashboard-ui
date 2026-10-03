@@ -24,17 +24,17 @@ export function usePlanViolations(planId: string, enabled: boolean): UsePlanViol
 
   useEffect(() => {
     if (!enabled) return;
-    let cancelled = false;
+    let canceled = false;
     fetchPlanViolations(planId, {
       result: resultFilter === 'all' ? undefined : resultFilter,
     })
       .then((res) => {
-        if (cancelled) return;
+        if (canceled) return;
         setData(res);
         setError(null);
       })
       .catch((err: unknown) => {
-        if (cancelled) return;
+        if (canceled) return;
         const meta = (err as ExtendedAxiosError)?.normalized;
         setError(
           meta?.isTimeout
@@ -43,10 +43,10 @@ export function usePlanViolations(planId: string, enabled: boolean): UsePlanViol
         );
       })
       .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!canceled) setLoading(false);
       });
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, [enabled, planId, resultFilter, reloadKey]);
 

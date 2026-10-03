@@ -3,6 +3,7 @@ import { useUsers } from '../../../../users/hooks';
 import { useCategories } from '../../../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../../../categories/constants';
 import { getCategoryName } from '../../../../categories/utils';
+import { EMPTY_VALUE } from '../../../../shared';
 import type { Group } from '../../../models';
 import type { User } from '../../../../users/models';
 import { buildAvatarSources } from '../../../../../../utils/layout';
@@ -30,7 +31,7 @@ export const useViewGroupPanel = (group: Group | null): UseViewGroupPanelReturn 
   }, [group, users]);
 
   const categoryName = useMemo(() => {
-    if (!group || !categories) return '—';
+    if (!group || !categories) return EMPTY_VALUE;
     return getCategoryName(group.categoryRef, categories);
   }, [group, categories]);
 

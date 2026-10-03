@@ -1,7 +1,7 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { Button, Typography } from 'antd';
 import { ReloadOutlined, BugOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, STORE_MESSAGES, withAlpha } from './constants';
+import { DEFAULT_COLORS, MONOSPACE_CLASS, STORE_MESSAGES, withAlpha } from './constants';
 import { isDevelopment } from './utils/helpers/env';
 import logger from './logging';
 
@@ -97,10 +97,10 @@ class ErrorBoundary extends Component<Props, State> {
                 }}
               >
                 <Text
+                  className={MONOSPACE_CLASS}
                   style={{
                     fontSize: 12,
                     color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-                    fontFamily: 'monospace',
                     whiteSpace: 'pre-wrap',
                     wordBreak: 'break-word',
                   }}

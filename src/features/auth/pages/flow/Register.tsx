@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Form, App as AntdApp, Button } from 'antd';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { performRegister, resolveEnrollToken } from '../../utils/flow/register';
+import { isEnrollLinkRefused, performRegister, resolveEnrollLink } from '../../utils/flow/register';
 import { handleAuthError } from '../../utils/shared/errors';
 import { isWebAuthnSupported } from '../../utils/webauthn/core';
 import { APP_ROUTES } from '../../../../constants';
@@ -22,9 +22,12 @@ const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  // Read once and kept in state: the token leaves the address bar and history right away.
-  const [enrollToken] = useState(() =>
-    resolveEnrollToken(searchParams.get(REGISTER_CONSTANTS.QUERY.ENROLL)),
+  // Read once and kept in state: the link leaves the address bar and history right away.
+  const [{ token: enrollToken, email: enrollEmail }] = useState(() =>
+    resolveEnrollLink(
+      searchParams.get(REGISTER_CONSTANTS.QUERY.ENROLL),
+      searchParams.get(REGISTER_CONSTANTS.QUERY.EMAIL),
+    ),
   );
   const enrolling = enrollToken !== undefined;
   const { message } = AntdApp.useApp();
@@ -53,7 +56,12 @@ const Register: React.FC = () => {
         enrollToken,
       );
     } catch (error) {
-      handleAuthError(error, message);
+      const linkRefused = enrolling && isEnrollLinkRefused(error);
+      handleAuthError(
+        error,
+        message,
+        linkRefused ? { customMessage: REGISTER_CONSTANTS.UI.ENROLL_LINK_INVALID } : undefined,
+      );
     } finally {
       setLoading(false);
     }
@@ -85,6 +93,7 @@ const Register: React.FC = () => {
             loading={loading}
             onFinish={handleRegister}
             disabled={!passkeysAvailable}
+            lockedEmail={enrollEmail}
           />
           <AuthFooter
             text={REGISTER_CONSTANTS.UI.FOOTER_TEXT}

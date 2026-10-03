@@ -5,7 +5,6 @@ export const applicationsPersistConfig = {
   storage,
   whitelist: [
     'applications',
-    'viewMode',
     'bulkMode',
     'selectedNames',
     'healthQuickFilter',

@@ -1,5 +1,5 @@
 import { DEFAULT_COLORS } from '../../../constants';
-import { SHARED_PAGE_CONSTANTS } from '../../../constants/shared/pages';
+import { LIST_PAGE, SHARED_PAGE_CONSTANTS } from '../../../constants/shared/pages';
 import { SHARED_DETAILS_CONSTANTS } from '../../../constants/shared/details';
 
 export const APPLICATIONS_SYNC_ACTIVE_POLL_MS = 5000;
@@ -88,7 +88,7 @@ export const APPLICATION_CHANGE_CLASS = {
   ROLLBACK: 'rollback',
 } as const;
 
-// One line of secondary text; reserved before the first status poll so the list below does not jump.
+// Fills the row the other list pages give their tabs; reserved before the first status poll so the list below does not jump.
 export const DISCOVERY_STATUS_BAR = {
-  MIN_HEIGHT_PX: 22,
+  MIN_HEIGHT_PX: LIST_PAGE.SUBHEADER_ROW_HEIGHT_PX,
 } as const;

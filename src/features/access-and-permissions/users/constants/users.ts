@@ -1,4 +1,5 @@
 import type { FormFieldConfig } from '../../../../interfaces/layout/modal';
+import { pluralize } from '../../../../utils/helpers/format';
 
 export const USERS_CONSTANTS = {
   LABELS: {
@@ -6,12 +7,12 @@ export const USERS_CONSTANTS = {
     HEADER_SUBTITLE: 'Manage existing members',
     NOT_FOUND: 'User not found',
     UPDATE_BUTTON: 'Update User',
-    CREATE_BUTTON: 'Add New Member',
-    CREATE_BUTTON_TEXT: 'Add New Member',
+    CREATE_BUTTON: 'Create Member',
+    CREATE_BUTTON_TEXT: 'Create Member',
     BREADCRUMBS: {
       USERS: 'Users',
       EDIT: 'Edit',
-      CREATE: 'Add New Member',
+      CREATE: 'Create Member',
     },
     MESSAGES: {
       CREATED: (name: string) => `User "${name}" created`,
@@ -29,8 +30,8 @@ export const USERS_CONSTANTS = {
       GROUP_DEASSIGNED: (groupName: string) => `Group "${groupName}" was removed`,
       GROUP_DEASSIGN_FAILED: 'Failed to remove group',
       NO_ASSIGNED_GROUPS: 'No groups assigned yet',
-      NO_USERS_TITLE: 'No users yet',
-      NO_USERS_DESCRIPTION: 'Get started by adding your first user to the system.',
+      NO_USERS_TITLE: 'No members yet',
+      NO_USERS_DESCRIPTION: 'Create your first member to get started.',
       NO_ROLES_AVAILABLE: 'No roles available',
       NO_GROUPS_AVAILABLE: 'No groups available',
       NO_ASSIGNED_ROLES: 'No roles assigned yet',
@@ -51,10 +52,50 @@ export const USERS_CONSTANTS = {
       EMAIL: 'Email',
       ROLES: 'Roles',
       CREATED: 'Creation Date',
+      NO_ROLES: 'No roles',
+      INVITE: 'Invite',
     },
     BOOTSTRAP_PILL: {
       LABEL: 'Bootstrap',
-      TOOLTIP: "Created by the chart; can't be deleted or changed here",
+      TOOLTIP: "Created by the chart. It can't be deleted or changed here.",
+    },
+    INVITE_PILL: {
+      PENDING: 'Invite pending',
+      EXPIRED: 'Invite expired',
+      ENROLLED: 'Enrolled',
+      EXPIRES_AT: (when: string) => `Expires ${when}`,
+      EXPIRED_AT: (when: string) => `Expired ${when}`,
+      ENROLLED_AT: (when: string) => `Enrolled ${when}`,
+    },
+    ENROLL_LINK: {
+      MENU: 'Enrollment link',
+      CREATE: 'Create enrollment link',
+      REVOKE: 'Revoke enrollment link',
+      MODAL_TITLE: 'Enrollment link created',
+      MODAL_SEND_TO: 'Send this link to ',
+      MODAL_EXPIRES: (when: string) =>
+        `. It works once, expires on ${when}, and won't be shown again.`,
+      REVOKE_ACTION: 'revoke',
+      REVOKE_RESOURCE: 'the enrollment link for',
+      REVOKE_CONFIRM: 'Revoke',
+      REVOKE_NOTE: 'The link stops working. You can create a new one at any time.',
+      REVOKED: 'Enrollment link revoked',
+      CREATE_FAILED: 'Failed to create the enrollment link',
+      REVOKE_FAILED: 'Failed to revoke the enrollment link',
+      BLOCKED: {
+        NO_PERMISSION: 'You do not have permission to manage enrollment links',
+        SELF: 'Use Add on another device for your own account',
+        ABOVE_CALLER: 'This member has more access than you have',
+        SUSPENDED: 'Reactivate this member before creating a link',
+        NO_INVITE: 'No enrollment link to revoke',
+      },
+      REFUSED: {
+        NOT_FOUND: 'This member was not found',
+        SUSPENDED: 'This member is suspended. Reactivate the account first.',
+        DELETING: 'This member is being deleted',
+        RECOVERY:
+          'This member already has a passkey. Only the bootstrap account or an Admin on ALL can manage their enrollment link.',
+      },
     },
     VIEW_LABELS: {
       USERNAME: 'Username',
@@ -83,7 +124,6 @@ export const USERS_CONSTANTS = {
       BOOTSTRAP_LOCKED_TOOLTIP: 'Managed by the chart',
       SELF_LOCKED_TOOLTIP: 'You cannot delete your own account',
       DELETE_MODAL_TITLE: 'Delete User',
-      DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
       DELETE_MODAL_OK: 'Delete',
       DEASSIGN_ROLE_MODAL_TITLE: 'Remove Role',
       DEASSIGN_ROLE_MODAL_ACTION: 'Remove',
@@ -96,9 +136,9 @@ export const USERS_CONSTANTS = {
       BULK_DELETE: 'Bulk Delete',
       BULK_DELETE_DISABLED_TOOLTIP: 'You do not have permission to delete users',
       BULK_DELETE_MODAL_TITLE: 'Delete Users',
-      BULK_DELETE_LOADING: (count: number) => `Deleting ${count} user${count > 1 ? 's' : ''}...`,
-      BULK_DELETE_SUCCESS: (count: number) =>
-        `${count} user${count > 1 ? 's' : ''} deleted successfully`,
+      BULK_DELETE_RESOURCE: (count: number) => pluralize(count, 'user'),
+      BULK_DELETE_LOADING: (count: number) => `Deleting ${pluralize(count, 'user')}...`,
+      BULK_DELETE_SUCCESS: (count: number) => `${pluralize(count, 'user')} deleted successfully`,
       BULK_DELETE_FAILED: 'Failed to delete some users',
     },
     FILTER: {
@@ -115,9 +155,9 @@ export const USERS_CONSTANTS = {
       },
     },
     FORM: {
-      TITLE: 'Add New Member',
+      TITLE: 'Create Member',
       SECTION_TITLE: 'User Details',
-      BUTTON_TEXT: 'Add New Member',
+      BUTTON_TEXT: 'Create Member',
       SECTIONS: {
         USER_DETAILS: 'User Details',
         ASSIGNMENT: 'Assignment',
@@ -129,7 +169,7 @@ export const USERS_CONSTANTS = {
         FULLNAME_LABEL: 'Full Name',
         FULLNAME_PLACEHOLDER: 'e.g. John Doe',
         EMAIL_LABEL: 'Email',
-        EMAIL_PLACEHOLDER: 'e.g. john.doe@example.com',
+        EMAIL_PLACEHOLDER: 'e.g. test@example.com',
         ROLE_LABEL: 'Roles',
         ROLE_PLACEHOLDER: 'Select a role',
         GROUP_LABEL: 'Group',
@@ -148,8 +188,8 @@ export const USERS_CONSTANTS = {
         OPTION_SUSPENDED: 'Suspended',
       },
       CREATE: {
-        TITLE: 'Add New Member',
-        SUBMIT_BUTTON: 'Add New Member',
+        TITLE: 'Create Member',
+        SUBMIT_BUTTON: 'Create Member',
       },
       MANAGE_ROLE: {
         TITLE: 'Manage Roles',
@@ -157,16 +197,16 @@ export const USERS_CONSTANTS = {
         SEARCH_PLACEHOLDER: 'Search roles by name or description...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
         SHOW_ASSIGNED_TOOLTIP:
-          'View all roles currently assigned to this user, including inherited ones from groups',
+          'View roles assigned to this user, including those inherited from groups',
         FROM_GROUPS_BUTTON: 'From Groups',
-        FROM_GROUPS_TOOLTIP: 'View roles this user inherits through their assigned groups',
+        FROM_GROUPS_TOOLTIP: 'View roles this user inherits from their groups',
       },
       MANAGE_GROUP: {
         TITLE: 'Manage Groups',
         SUBMIT_BUTTON: 'Update groups',
         SEARCH_PLACEHOLDER: 'Search groups by name or description...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
-        SHOW_ASSIGNED_TOOLTIP: 'View all groups currently assigned to this user',
+        SHOW_ASSIGNED_TOOLTIP: 'View groups assigned to this user',
       },
     },
     TOOLBAR: {
@@ -178,7 +218,7 @@ export const USERS_CONSTANTS = {
         BUTTON_LABEL: 'Filter',
       },
       CREATE: {
-        BUTTON_LABEL: 'Add New Member',
+        BUTTON_LABEL: 'Create Member',
         DISABLED_TOOLTIP: 'You do not have permission to create users',
       },
       MANAGE: {
@@ -214,7 +254,10 @@ export const USERS_CONSTANTS = {
     EMAIL: 'email',
     ROLES: 'roleRefs',
     CREATION_DATE: 'creationDate',
+    INVITE: 'invite',
     ACTIONS: 'actions',
+    ENROLL_LINK_CREATE: 'enroll-link-create',
+    ENROLL_LINK_REVOKE: 'enroll-link-revoke',
     MORE_MENU_BULK: 'bulk',
     FILTER_STATUS: 'status',
     FILTER_STATUS_ALL: 'all',
@@ -230,6 +273,7 @@ export const USERS_CONSTANTS = {
       ROLE: 120,
       // Narrower wraps the "Creation Date" header onto two lines.
       CREATED: 160,
+      INVITE: 140,
       ACTIONS: 50,
     },
     // Measured natural widths of the toolbar row: ~475px by default and ~628px in
@@ -240,6 +284,10 @@ export const USERS_CONSTANTS = {
       BULK: 680,
     },
     MODAL_WIDTH: 360,
+  },
+  // Auth's enroll-link 403s share one status, and this is the refusal the row can't foresee.
+  PATTERNS: {
+    ENROLL_LINK_RECOVERY: 'already has a passkey',
   },
   FORM: {
     FIELDS: [
@@ -263,7 +311,7 @@ export const USERS_CONSTANTS = {
         type: 'input',
         name: 'email',
         label: 'Email',
-        placeholder: 'e.g. john.doe@example.com',
+        placeholder: 'e.g. test@example.com',
         required: true,
         marginBottom: 18,
       },

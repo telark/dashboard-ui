@@ -1,19 +1,17 @@
 import type { MenuProps } from 'antd';
-import { LogoutOutlined, SettingOutlined } from '@ant-design/icons';
+import { LogoutOutlined } from '@ant-design/icons';
 import { HEADER_CONSTANTS } from '../../../../../constants';
 import type { User } from '../../models';
 
 interface UserMenuItemsProps {
   currentUser: User | null;
   onLogout: () => void;
-  onSettings?: () => void;
   loggingOut: boolean;
 }
 
 export const createUserMenuItems = ({
   currentUser,
   onLogout,
-  onSettings,
   loggingOut,
 }: UserMenuItemsProps): MenuProps['items'] => {
   return [
@@ -47,22 +45,6 @@ export const createUserMenuItems = ({
     },
     {
       type: 'divider',
-    },
-    {
-      key: 'settings',
-      label: (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: HEADER_CONSTANTS.USER.MENU_ITEM.GAP,
-          }}
-        >
-          <SettingOutlined />
-          <span>Settings</span>
-        </div>
-      ),
-      onClick: () => onSettings?.(),
     },
     {
       key: 'logout',

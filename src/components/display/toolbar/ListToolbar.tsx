@@ -2,7 +2,7 @@ import React from 'react';
 import { CloseOutlined } from '@ant-design/icons';
 import { Checkbox } from 'antd';
 import { DEFAULT_COLORS, LIST_TOOLBAR, TOOLBAR_ITEM_GAP, getPillSurface } from '../../../constants';
-import { LIST_PAGE, PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
+import { LIST_PAGE } from '../../../constants/shared/pages';
 import type {
   FilterChip,
   ListToolbarProps,
@@ -29,7 +29,6 @@ const chipStyle: React.CSSProperties = {
   padding: LIST_TOOLBAR.CHIP_PADDING,
   borderRadius: LIST_TOOLBAR.PILL_RADIUS_PX,
   ...getPillSurface(),
-  color: DEFAULT_COLORS.PILL_TEXT,
   fontSize: LIST_TOOLBAR.CHIP_FONT_SIZE_PX,
   fontWeight: LIST_TOOLBAR.CHIP_FONT_WEIGHT,
   flexShrink: 0,
@@ -131,7 +130,7 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
     <div
       style={{
         position: 'sticky',
-        top: PAGE_CONTENT_LAYOUT.HEADER_OFFSET_PX,
+        top: 0,
         zIndex: LIST_PAGE.TOOLBAR_Z_INDEX,
         background: DEFAULT_COLORS.PAGE_BG,
         padding: LIST_PAGE.TOOLBAR_PADDING,

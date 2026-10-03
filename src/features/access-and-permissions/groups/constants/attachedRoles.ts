@@ -49,8 +49,6 @@ export const ATTACHED_ROLES_CONSTANTS = {
       display: 'flex',
       flexDirection: 'column' as const,
       gap: 8,
-      maxHeight: 'calc(100vh - 300px)',
-      overflowY: 'auto' as const,
       width: '100%',
       padding: '0 0px',
       boxSizing: 'border-box' as const,
@@ -106,7 +104,6 @@ export const ATTACHED_ROLES_CONSTANTS = {
     },
     SCOPE_ITEM: {
       fontSize: 11,
-      color: DEFAULT_COLORS.PILL_TEXT,
       padding: '2px 6px',
       ...getPillSurface(),
       borderRadius: 4,

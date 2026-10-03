@@ -30,7 +30,7 @@ export const HEADER_CONSTANTS = {
     },
     USER_INFO: {
       // No bottom padding: the divider below relies on symmetric menu-item
-      // padding to sit centred between the user block and the actions.
+      // padding to sit centered between the user block and the actions.
       PADDING: '8px 0 0',
       USERNAME: {
         FONT_WEIGHT: 500,

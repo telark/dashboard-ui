@@ -4,6 +4,7 @@ import { App as AntdApp } from 'antd';
 import { oidcGoogleCallback } from '../../clients';
 import { hasSessionToken, setSessionToken } from '../../utils/session/token';
 import { consumeOAuthState } from '../../utils/flow/google';
+import { getLoginRefusalMessage } from '../../utils/shared/errors';
 import { setCurrentUser } from '../../utils/session/user';
 import { getClientMetadata } from '../../utils/device/metadata';
 import { fetchMyPermissionsThunk } from '../../store/thunks/fetchThunks';
@@ -11,6 +12,7 @@ import store from '../../../../store';
 import { APP_ROUTES } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import type { User } from '../../../access-and-permissions/users/models';
+import type { LoginLocationState } from '../../models';
 
 const GoogleCallback: React.FC = () => {
   const navigate = useNavigate();
@@ -63,9 +65,12 @@ const GoogleCallback: React.FC = () => {
         navigate(APP_ROUTES.HOME, { replace: true });
         message.success(LOGIN_CONSTANTS.OIDC.CALLBACK_SUCCESS);
       })
-      .catch(() => {
-        message.error(LOGIN_CONSTANTS.OIDC.CALLBACK_ERROR);
-        navigate(APP_ROUTES.LOGIN, { replace: true });
+      .catch((error: unknown) => {
+        // A refused account is explained in the login card instead of the generic toast.
+        const loginError = getLoginRefusalMessage(error);
+        if (!loginError) message.error(LOGIN_CONSTANTS.OIDC.CALLBACK_ERROR);
+        const state: LoginLocationState = { loginError };
+        navigate(APP_ROUTES.LOGIN, { replace: true, state });
       });
   }, [message, navigate]);
 

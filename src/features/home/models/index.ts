@@ -53,6 +53,7 @@ export interface ApplicationsSummary {
 export interface PlansSummary {
   total: number;
   active: number;
+  scheduled: number;
   drifted: number;
   degraded: number;
   failed: number;

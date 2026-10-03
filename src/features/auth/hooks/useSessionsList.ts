@@ -68,7 +68,7 @@ export const useSessionsList = (): UseSessionsListResult => {
   }, []);
 
   useEffect(() => {
-    let cancelled = false;
+    let canceled = false;
     const userId = getCurrentUser()?.id;
 
     const load: Promise<{ s: SessionDetails[]; e: string | null }> = userId
@@ -86,17 +86,17 @@ export const useSessionsList = (): UseSessionsListResult => {
 
     load
       .then(({ s, e }) => {
-        if (!cancelled) {
+        if (!canceled) {
           setSessions(s);
           setError(e);
         }
       })
       .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!canceled) setLoading(false);
       });
 
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, []);
 

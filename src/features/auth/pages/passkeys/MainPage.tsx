@@ -10,6 +10,7 @@ import { fetchAllPasskeysThunk } from '../../store/thunks/fetchThunks';
 import {
   selectPasskeys,
   selectPasskeyLoading,
+  selectPasskeyLoaded,
   selectPasskeyError,
 } from '../../store/selectors/passkeySelectors';
 import { usePasskeyPanelState, usePasskeyActions, useEnrollLink } from '../../hooks';
@@ -18,22 +19,16 @@ import { sortPasskeys } from '../../components/passkeys/list/utils';
 import type { Passkey } from '../../models/passkeys';
 import PasskeysEmptyPage from './PasskeysEmptyPage';
 import PasskeysListPage from './PasskeysListPage';
-import type { PasskeyBreadcrumbItem } from './PasskeysListPage';
 import { PasskeyPanel, EnrollLinkModal } from '../../components';
 import { ActionConfirmModal } from '../../../../components/display/modal';
+import FullPageLoader from '../../../../components/display/views/FullPageLoader';
 
-export interface PasskeysMainPageProps {
-  /** When provided (e.g. embedded in Settings), show breadcrumb in title. */
-  breadcrumbItems?: PasskeyBreadcrumbItem[];
-  /** When true, parent renders breadcrumb; list page hides title block (fixed position in Settings). */
-  embedInSettings?: boolean;
-}
-
-const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSettings }) => {
+const MainPage: React.FC = () => {
   const { message } = App.useApp();
   const dispatch: AppDispatch = useDispatch();
   const passkeys = useSelector(selectPasskeys);
   const loading = useSelector(selectPasskeyLoading);
+  const loaded = useSelector(selectPasskeyLoaded);
   const error = useSelector(selectPasskeyError);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -127,9 +122,11 @@ const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSet
   });
 
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(passkeys) && passkeys.length === 0 && !error && !loading,
-    [passkeys, error, loading],
+    () => Array.isArray(passkeys) && passkeys.length === 0 && !error && loaded,
+    [passkeys, error, loaded],
   );
+
+  if (!loaded && passkeys.length === 0 && !error) return <FullPageLoader />;
 
   if (shouldShowEmpty) {
     return (
@@ -180,8 +177,6 @@ const MainPage: React.FC<PasskeysMainPageProps> = ({ breadcrumbItems, embedInSet
         formSyncKey={formSyncKey}
         submitting={submitting}
         onSubmit={handlePanelSubmit}
-        breadcrumbItems={embedInSettings ? undefined : breadcrumbItems}
-        hideTitle={embedInSettings}
       />
       <EnrollLinkModal url={enrollUrl} onClose={clearLink} />
       <ActionConfirmModal

@@ -2,8 +2,8 @@ import { useCallback, useState } from 'react';
 import { App as AntdApp } from 'antd';
 import { createEnrollLink } from '../../clients';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
-import { REGISTER_CONSTANTS } from '../../constants/register';
-import { APP_ROUTES } from '../../../../constants';
+import { buildEnrollUrl } from '../../utils/flow/register';
+import { getCurrentUser } from '../../utils/session/user';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 
@@ -23,8 +23,7 @@ export const useEnrollLink = (): UseEnrollLinkResult => {
     setEnrollLoading(true);
     try {
       const { token } = await createEnrollLink();
-      const query = `${REGISTER_CONSTANTS.QUERY.ENROLL}=${encodeURIComponent(token)}`;
-      setEnrollUrl(`${globalThis.location.origin}${APP_ROUTES.REGISTER}?${query}`);
+      setEnrollUrl(buildEnrollUrl(token, getCurrentUser()?.email));
     } catch (error) {
       if (isDevelopment()) {
         logger.error(PPC.LOGS.FAILED_TO_CREATE_ENROLL_LINK, error);

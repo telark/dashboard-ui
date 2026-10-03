@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
-import { DEFAULT_COLORS } from '../../../constants';
+import { DEFAULT_COLORS, HEADER_LAYOUT } from '../../../constants';
 import { PAGE_CONTENT_LAYOUT } from '../../../constants/shared/pages';
 
-const { HEADER_OFFSET_PX, PADDING_TOP_PX, PADDING_HORIZONTAL_AND_BOTTOM_PX } = PAGE_CONTENT_LAYOUT;
-const CONTENT_PADDING = `${PADDING_TOP_PX - HEADER_OFFSET_PX}px ${PADDING_HORIZONTAL_AND_BOTTOM_PX}px ${PADDING_HORIZONTAL_AND_BOTTOM_PX}px`;
+const { PADDING_TOP_PX, PADDING_HORIZONTAL_AND_BOTTOM_PX } = PAGE_CONTENT_LAYOUT;
+const CONTENT_PADDING = `${PADDING_TOP_PX}px ${PADDING_HORIZONTAL_AND_BOTTOM_PX}px ${PADDING_HORIZONTAL_AND_BOTTOM_PX}px`;
 
 interface SettingsLayoutProps {
   children: React.ReactNode;
@@ -12,11 +12,10 @@ interface SettingsLayoutProps {
 const SettingsLayout: React.FC<SettingsLayoutProps> = memo(({ children }) => (
   <div
     style={{
-      minHeight: '100vh',
+      minHeight: HEADER_LAYOUT.MIN_HEIGHT,
       background: DEFAULT_COLORS.PAGE_BG,
       display: 'flex',
       flexDirection: 'column',
-      paddingTop: HEADER_OFFSET_PX,
     }}
   >
     <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>

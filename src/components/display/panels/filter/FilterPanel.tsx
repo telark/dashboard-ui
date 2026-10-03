@@ -7,7 +7,7 @@ import {
   SELECT_THEME,
   SLIDE_OUT,
 } from '../../../../constants';
-import { useBodyOverflow } from '../../../../hooks/panel';
+import { useScrollLock } from '../../../../hooks/panel';
 import { PanelFooter } from '../shared';
 import FilterPanelHeader from './FilterPanelHeader';
 import FilterFieldRenderer from './FilterFieldRenderer';
@@ -58,7 +58,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   onReset,
   width = 480,
 }) => {
-  useBodyOverflow(open);
+  useScrollLock(open);
   const [filters, setFilters] = useState<Record<string, unknown>>(() => {
     const initial: Record<string, unknown> = {};
     fields.forEach((field) => {

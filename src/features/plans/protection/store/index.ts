@@ -13,7 +13,7 @@ export {
 } from './thunks/protectionPlansThunks';
 export {
   selectProtectionPlans,
-  selectProtectionPlansLoading,
+  selectProtectionPlansLoaded,
   selectProtectionPlansError,
   selectProtectionPlanTemplates,
   selectProtectionPlanTemplatesLoading,

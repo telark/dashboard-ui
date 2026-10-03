@@ -1,7 +1,7 @@
 import React from 'react';
 import { ConfigProvider, theme } from 'antd';
 import type { AnimationWrapperProps } from '../../../../interfaces/layout/panels';
-import { useBodyOverflow } from '../../../../hooks/panel';
+import { useScrollLock } from '../../../../hooks/panel';
 import {
   PANEL_SURFACE_CLASS,
   PANEL_MAX_WIDTH,
@@ -24,7 +24,7 @@ const AnimationWrapper: React.FC<AnimationWrapperProps> = React.memo(
     headerExtra,
     footer,
   }) => {
-    useBodyOverflow(open);
+    useScrollLock(open);
 
     if (!open) return null;
 

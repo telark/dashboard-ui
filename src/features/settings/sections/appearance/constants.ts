@@ -10,6 +10,7 @@ export const APPEARANCE_SECTION_CONSTANTS = {
     COMING_SOON: 'Coming soon',
   },
   THEME_OPTIONS: ['Light', 'Dark', 'System'] as const,
+  BADGE_FONT_SIZE_PX: 11,
 } as const;
 
 export type ThemeOption = (typeof APPEARANCE_SECTION_CONSTANTS.THEME_OPTIONS)[number];

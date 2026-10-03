@@ -284,26 +284,26 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
   >({});
 
   useEffect(() => {
-    let cancelled = false;
+    let canceled = false;
     fetchInsightNamespaces()
-      .then((all) => !cancelled && setNamespaces(all))
+      .then((all) => !canceled && setNamespaces(all))
       .catch(() => undefined);
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, []);
 
   // Without settings read the GlobalConfig is unreadable; the analyzer runtime says whether it is on.
   useEffect(() => {
     if (configEnabled !== undefined) return undefined;
-    let cancelled = false;
+    let canceled = false;
     fetchAnalyzerRuntime()
-      .then((runtime) => !cancelled && setRuntimeEnabled(runtime.enabled))
+      .then((runtime) => !canceled && setRuntimeEnabled(runtime.enabled))
       .catch((error: unknown) =>
         logger.error(INSIGHTS_ERROR_MESSAGES.CLIENT.RUNTIME_FETCH_FAILED, error),
       );
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, [configEnabled]);
 
@@ -462,7 +462,7 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
   const hasTarget = target !== null;
   useEffect(() => {
     if (!insightId || hasTarget || !pageLoaded) return undefined;
-    let cancelled = false;
+    let canceled = false;
     fetchClusterInsights(
       {
         id: [insightId],
@@ -474,7 +474,7 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
       '',
     )
       .then((read) => {
-        if (cancelled) return;
+        if (canceled) return;
         const row = read.kind === 'page' ? read.page.items[0] : undefined;
         if (!row) setParam(CLUSTER_INSIGHTS.INSIGHT_PARAM, null, true);
         else if ((row.category || 'incident') !== category) onOtherTab();
@@ -483,7 +483,7 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
       })
       .catch(() => undefined);
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, [insightId, hasTarget, pageLoaded, setParam, category, onOtherTab]);
 

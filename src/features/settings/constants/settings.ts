@@ -2,9 +2,9 @@ import {
   UserOutlined,
   BulbOutlined,
   SafetyOutlined,
-  AuditOutlined,
+  DatabaseOutlined,
   RobotOutlined,
-  LoginOutlined,
+  KeyOutlined,
   InfoCircleOutlined,
   GlobalOutlined,
 } from '@ant-design/icons';
@@ -55,7 +55,7 @@ export const SETTINGS_CONSTANTS = {
     SECURITY: {
       key: 'security' as const,
       label: 'Security',
-      description: 'Password, sessions, and two-factor auth',
+      description: 'Passkeys and active sessions',
       icon: SafetyOutlined,
     },
     AI_INSIGHTS: {
@@ -66,15 +66,15 @@ export const SETTINGS_CONSTANTS = {
     },
     AI_DATA: {
       key: 'insightsGovernance' as const,
-      label: 'Governance',
-      description: 'Configure discovery scope, fetch interval, and snapshot storage behavior.',
-      icon: AuditOutlined,
+      label: 'Discovery & Storage',
+      description: 'Choose the namespaces discovery skips and how many snapshots it keeps.',
+      icon: DatabaseOutlined,
     },
     IDENTITY_PROVIDER: {
       key: 'identityProvider' as const,
-      label: 'Single Sign-On',
-      description: 'Configure the external identity provider users sign in with.',
-      icon: LoginOutlined,
+      label: 'Authentication',
+      description: 'Choose how users sign in: single sign-on and passkey self-registration.',
+      icon: KeyOutlined,
     },
     MY_PERMISSIONS: {
       key: 'myPermissions' as const,
@@ -100,6 +100,7 @@ export const SETTINGS_CONSTANTS = {
     CARD_PADDING: 20,
     CARD_TITLE_TO_DESCRIPTION_GAP_PX: -4,
     SECTION_TITLE_FONT_SIZE: 20,
+    HINT_FONT_SIZE: 12,
     GAP_BETWEEN_CARDS: 20,
     /** Opt-in collapse control, rendered in the card's top-right corner. */
     CARD_COLLAPSE: {
@@ -114,6 +115,9 @@ export const SETTINGS_CONSTANTS = {
       /** Chevron rotates rather than swapping glyphs, so the state change reads as one motion. */
       ICON_ROTATION_DEG: 180,
     },
+  },
+  TOOLBAR: {
+    SAVE_KEY: 'save',
   },
 } as const;
 

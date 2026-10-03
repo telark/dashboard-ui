@@ -11,9 +11,18 @@ export interface UserSettings {
 
 export type UserAccountState = 'active' | 'suspended';
 
+// Written by auth while an enroll link is pending; expiresAt is for display, auth enforces it.
+export interface UserInvite {
+  issuedAt: string;
+  expiresAt: string;
+  issuedBy?: string;
+}
+
 export interface UserStatus {
   phase: UserAccountState;
   lastLoginAt?: string;
+  invite?: UserInvite;
+  inviteAcceptedAt?: string;
 }
 
 export interface ManageUserStateFormValues {
@@ -47,6 +56,8 @@ export interface UsersState {
   users: User[];
   details: User | null;
   loading: boolean;
+  // Set once the list has arrived: `loading` is false both before the first fetch and after it.
+  loaded: boolean;
   error: string | null;
   deletingIds: string[];
 }

@@ -3,6 +3,8 @@ import {
   BellOutlined,
   CheckCircleOutlined,
   HistoryOutlined,
+  KeyOutlined,
+  LinkOutlined,
   SafetyCertificateOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
@@ -47,6 +49,15 @@ const TYPE_REGISTRY: Record<string, TypeConfig> = {
   [NOTIFICATION_TYPES.PLAN_APPROVAL_DECIDED]: {
     icon: CheckCircleOutlined,
     navigateTo: planDetailsRoute,
+  },
+  // Both lead to the account's passkeys, where a passkey added through the link shows up.
+  [NOTIFICATION_TYPES.ENROLL_LINK_CREATED]: {
+    icon: LinkOutlined,
+    navigateTo: () => APP_ROUTES.PASSKEYS,
+  },
+  [NOTIFICATION_TYPES.ENROLL_LINK_USED]: {
+    icon: KeyOutlined,
+    navigateTo: () => APP_ROUTES.PASSKEYS,
   },
 };
 

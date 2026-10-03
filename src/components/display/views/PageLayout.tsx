@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import { HEADER_LAYOUT } from '../../../constants';
 import { LIST_PAGE } from '../../../constants/shared/pages';
 import DataTable from '../table/DataTable';
 import { ListToolbar } from '../toolbar';
@@ -7,6 +8,7 @@ import type { PageLayoutConfig } from '../../../interfaces/layout/page';
 import { DataViewError, PageContainer } from '../../shared';
 import { FancySpinner } from '../../animation';
 import { useDataViewState } from '../../../hooks/layout/useDataViewState';
+import FullPageLoader from './FullPageLoader';
 
 const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfig<T> }) => {
   const {
@@ -24,6 +26,7 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
     rowHeight,
     empty,
     loading = false,
+    fullPageLoading = false,
     error = null,
     onRetry,
   } = config;
@@ -34,6 +37,10 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
   });
   const isReady = dataState.phase === 'empty' || dataState.phase === 'ready';
 
+  if (fullPageLoading && dataState.phase === 'loading') {
+    return <FullPageLoader minHeight={HEADER_LAYOUT.MIN_HEIGHT} />;
+  }
+
   return (
     <PageContainer
       title={title}
@@ -41,7 +48,8 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
       subtitle={subtitle}
       gap={LIST_PAGE.CONTENT_GAP_PX}
     >
-      {tabs}
+      {/* Kept without tabs too, so the toolbar sits at the same height on every list page. */}
+      {tabs ?? <div aria-hidden style={{ height: LIST_PAGE.SUBHEADER_ROW_HEIGHT_PX }} />}
       <ListToolbar {...listToolbar} />
       <div style={{ marginTop: LIST_PAGE.CONTENT_OFFSET_PX }}>
         {dataState.phase === 'error' ? (

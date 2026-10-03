@@ -1,2 +1,2 @@
-export { SCROLL_LOCK_GUTTER_VAR, useBodyOverflow } from './useBodyOverflow';
+export { useScrollLock } from './useScrollLock';
 export { useSlideOutPanelForm } from './useSlideOutPanelForm';

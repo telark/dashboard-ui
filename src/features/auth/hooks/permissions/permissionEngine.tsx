@@ -101,6 +101,7 @@ export const ACTION_PERMISSIONS = {
       level: 'Owner' as PermissionLevel,
       deny: 'groups.removeuserfromgroup.deny',
     },
+    manageEnrollLinks: { scope: 'users' as const, level: 'Owner' as PermissionLevel },
   },
   groups: {
     view: { scope: 'groups' as const, level: 'ReadOnly' as PermissionLevel },

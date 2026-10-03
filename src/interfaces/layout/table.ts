@@ -15,7 +15,7 @@ export interface DataTableProps<T> {
 
 export interface RowTagProps {
   text: string;
-  /** Case colour (severity, status…); omitted means a neutral pill. */
+  /** Case color (severity, status…); omitted means a neutral pill. */
   accent?: string;
   fontSize?: number;
   capitalize?: boolean;

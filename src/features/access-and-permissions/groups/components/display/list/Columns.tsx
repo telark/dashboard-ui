@@ -17,6 +17,7 @@ import {
 import type { Category } from '../../../../categories/models';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import { getCategoryName } from '../../../../categories/utils';
+import { EMPTY_VALUE } from '../../../../shared';
 import { ActorDisplay } from '../../../../../../components/display/users';
 import type { User } from '../../../../users/models';
 
@@ -106,11 +107,11 @@ const Columns = (ctx: ColumnsContext): TableColumnType<Group>[] => {
         icon: <AiOutlineCalendar />,
         width: GC.SIZES.COLUMNS.CREATED,
         render: (value: string) => {
-          if (!value) return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>—</span>;
+          if (!value) return <span style={{ color: RPC.COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>;
           try {
             return <TimeAgo date={value} />;
           } catch {
-            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
+            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>;
           }
         },
       },
@@ -124,7 +125,7 @@ const Columns = (ctx: ColumnsContext): TableColumnType<Group>[] => {
         width: GC.SIZES.COLUMNS.LAST_UPDATE,
         render: (_: unknown, record: Group) => {
           if (!record.lastUpdateDate) {
-            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>—</span>;
+            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>;
           }
           return <TimeAgo date={record.lastUpdateDate} />;
         },

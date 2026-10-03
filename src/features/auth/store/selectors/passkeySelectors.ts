@@ -7,6 +7,10 @@ export const selectPasskeyLoading = createSelector(
   [selectPasskeyState],
   (passkeys) => passkeys.loading,
 );
+export const selectPasskeyLoaded = createSelector(
+  [selectPasskeyState],
+  (passkeys) => passkeys.loaded,
+);
 export const selectPasskeyError = createSelector(
   [selectPasskeyState],
   (passkeys) => passkeys.error,

@@ -3,13 +3,6 @@
   --sidebar-width: 260px;
 }
 
-/* Reserves the scrollbar's own width permanently, so a panel opening (which sets
-   body overflow: hidden via useBodyOverflow) never removes the scrollbar and
-   shifts the page content underneath it. */
-html {
-  scrollbar-gutter: stable;
-}
-
 /* Dark theme: add styles under [data-theme="dark"] when ready. */
 
 html,
@@ -39,7 +32,7 @@ body {
 }
 
 /* Chrome paints autofilled text via a UA !important rule, which outranks every
-   author rule, and picks its colour from color-scheme — so under the dark root
+   author rule, and picks its color from color-scheme — so under the dark root
    above it goes white. Light surfaces must declare their own scheme or their
    autofilled fields render white-on-white. */
 .auth-root[data-theme='light'],
@@ -71,7 +64,10 @@ select:-webkit-autofill {
 #root .manifest-code,
 #root .manifest-code *,
 .ant-app .manifest-code,
-.ant-app .manifest-code * {
+.ant-app .manifest-code *,
+/* Portals (popovers) render outside #root, where only the bare class reaches. */
+.manifest-code,
+.manifest-code * {
   font-family:
     'Geist Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, Consolas, monospace !important;
 }
@@ -150,16 +146,6 @@ h3 {
   transform: translateY(-50%) !important;
   right: 12px !important;
   line-height: 1 !important;
-}
-
-.role-list-scroll {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.role-list-scroll::-webkit-scrollbar {
-  width: 0;
-  height: 0;
 }
 
 /* Scrollable lists that must not show a scrollbar (change-log entries). */

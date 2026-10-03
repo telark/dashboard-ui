@@ -68,18 +68,10 @@ export const updatePasskey = async (
 export const deletePasskey = async (
   credentialId: string,
   request: DeletePasskeyRequest = {},
-  userId?: string,
 ): Promise<DeletePasskeyResponse> => {
   const { path, method } = Endpoints.AUTH.PASSKEYS.DELETE(credentialId);
-  const headers: Record<string, string> = {};
-
-  if (request.cleanupOrphaned && userId) {
-    headers[HTTP_HEADERS.CUSTOM.USER_ID] = userId;
-  }
-
   return await Client<DeletePasskeyResponse>(authApiClient, path, {
     method,
     data: request,
-    headers,
   });
 };

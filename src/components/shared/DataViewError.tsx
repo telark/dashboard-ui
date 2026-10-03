@@ -60,7 +60,7 @@ const DataViewError: React.FC<DataViewErrorProps> = ({
     const banner = (
       <ConnectivityBanner kind={issue.kind} serviceName={issue.serviceName} onRetry={onRetry} />
     );
-    // fullPage owns the viewport, so the banner is centred in it instead of
+    // fullPage owns the viewport, so the banner is centered in it instead of
     // sitting flush under the sticky header; inline variants stay in place.
     return variant === 'fullPage' ? (
       <div

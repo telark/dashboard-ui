@@ -1,6 +1,6 @@
 # Contributing to dashboard-ui
 
-Thanks for helping. dashboard-ui is the web dashboard of [Telark](https://github.com/telark/telark); the backend services, Helm chart and product docs live in that repository. Read the [Telark contributing guide](https://github.com/telark/telark/blob/main/CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md) first.
+Thanks for helping. dashboard-ui is the web dashboard of [Telark](https://github.com/telark/telark). This repository holds the dashboard SPA only: the backend services, Helm chart, CRDs and product docs live in the Telark repository. Read the [Telark contributing guide](https://github.com/telark/telark/blob/main/CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md) first.
 
 ## Before you start
 
@@ -9,23 +9,13 @@ Thanks for helping. dashboard-ui is the web dashboard of [Telark](https://github
 
 ## Development
 
-Node.js 26 and npm (the image build uses `node:26`).
-
-```sh
-npm ci
-npm run dev          # http://localhost:3000, needs the Telark services reachable
-npm run check-all    # type-check + lint
-npm run build
-```
-
-Rules for code structure, constants and styling are in [AGENTS.md](AGENTS.md). Reuse existing components and colour tokens instead of adding new ones.
+Setup, ports and scripts are in the [README](README.md#develop). Rules for code structure, constants and styling are in [AGENTS.md](AGENTS.md). Reuse existing components and color tokens instead of adding new ones.
 
 ## Pull requests
 
-- Branch from `main` and target `main`.
-- Keep the change scoped: every changed line traces to the goal of the PR.
-- `npm run check-all` and `npm run build` pass.
-- Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/).
+Branch names, commit messages and pull requests follow the [Telark contribution guide](https://github.com/telark/telark/blob/main/CONTRIBUTING.md#branches-commits-and-pull-requests). For this repository:
+
+- `npm run check-all-and-build` passes (it runs `check-all` first). The Telark [`build-ui.yaml`](https://github.com/telark/telark/blob/main/.github/workflows/build-ui.yaml) workflow runs the same checks when it builds the image.
 - Include before/after screenshots for visible UI changes.
 
 By contributing you agree that your contribution is licensed under the [Elastic License 2.0](LICENSE.md).

@@ -3,6 +3,7 @@ import { EyeOutlined, HistoryOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Tooltip } from 'antd';
 import { DEFAULT_COLORS, LIST_TOOLBAR } from '../../../../constants';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
+import { formatTimeAgo } from '../../../../utils/shared/time';
 import { APPLICATIONS_UI } from '../../constants';
 import { APPLICATION_SNAPSHOT_ROW } from '../../constants/sectionLayout';
 import { getApplicationSeverityAccentColor } from '../../utils/healthVisual';
@@ -90,6 +91,8 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
 
     const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
     const fileMissing = s.unavailable === true;
+    const takenAt = s.takenAt && s.takenAt.trim().length > 0 ? s.takenAt : null;
+    const takenAtText = takenAt ? formatTimeAgo(takenAt) : APPLICATIONS_UI.FALLBACKS.EMPTY;
 
     return (
       <div
@@ -151,8 +154,8 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  flexWrap: 'wrap',
                   gap: R.GAP_PX,
+                  minWidth: 0,
                   fontSize: R.META_FONT_SIZE_PX,
                   color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
                 }}
@@ -168,15 +171,26 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                   />
                   {severityLabel}
                 </SnapshotMetaChip>
-                {s.id ? <SnapshotMetaChip>{s.id}</SnapshotMetaChip> : null}
-                <span>{s.size}</span>
-                <span>{APPLICATIONS_UI.SECTIONS.SNAPSHOTS.STORAGE_METRICS_JOINER.trim()}</span>
-                <span>
-                  {s.takenAt && s.takenAt.trim().length > 0 ? (
-                    <TimeAgo date={s.takenAt} />
-                  ) : (
-                    APPLICATIONS_UI.FALLBACKS.EMPTY
-                  )}
+                {s.id ? (
+                  <SnapshotMetaChip>
+                    <span title={s.id} style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {s.id}
+                    </span>
+                  </SnapshotMetaChip>
+                ) : null}
+                <span
+                  title={`${s.size}${ui.STORAGE_METRICS_JOINER}${takenAtText}`}
+                  style={{
+                    flexShrink: 100000,
+                    minWidth: 0,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {s.size}
+                  {ui.STORAGE_METRICS_JOINER}
+                  {takenAt ? <TimeAgo date={takenAt} /> : APPLICATIONS_UI.FALLBACKS.EMPTY}
                 </span>
               </div>
             </div>

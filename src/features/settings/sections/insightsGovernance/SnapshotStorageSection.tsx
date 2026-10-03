@@ -1,5 +1,6 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { InputNumber, Select, App as AntdApp } from 'antd';
+import { InputNumber, Select, Tooltip, App as AntdApp } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import SettingsCard from '../../components/SettingsCard';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
@@ -12,6 +13,7 @@ import type { AppDispatch } from '../../../../store';
 import SnapshotStorageBar from '../../../applications/components/snapshots/SnapshotStorageBar';
 import { getSnapshotInfos } from '../../../applications/clients';
 import type { SnapshotStorageInfos } from '../../../applications/models';
+import { SETTINGS_CONSTANTS } from '../../constants';
 import { INSIGHTS_GOVERNANCE_CONSTANTS as C } from './constants';
 import {
   ACTION_PERMISSIONS,
@@ -19,6 +21,7 @@ import {
 } from '../../../auth/hooks/permissions/permissionEngine';
 
 const EDIT_SNAPSHOT_STORAGE_PERMISSION = ACTION_PERMISSIONS.settings.editSnapshotStorage;
+const VIEW_SNAPSHOTS_PERMISSION = ACTION_PERMISSIONS.applications.viewSnapshots;
 const SNAPSHOTS_MAX_PRESET = [3, 5, 10, 15, 20] as const;
 
 const SnapshotStorageSection: React.FC = memo(() => {
@@ -28,6 +31,11 @@ const SnapshotStorageSection: React.FC = memo(() => {
     EDIT_SNAPSHOT_STORAGE_PERMISSION.scope,
     EDIT_SNAPSHOT_STORAGE_PERMISSION.level,
     EDIT_SNAPSHOT_STORAGE_PERMISSION.deny,
+  );
+  const canViewSnapshotStorage = usePermission(
+    VIEW_SNAPSHOTS_PERMISSION.scope,
+    VIEW_SNAPSHOTS_PERMISSION.level,
+    VIEW_SNAPSHOTS_PERMISSION.deny,
   );
   const { message } = AntdApp.useApp();
 
@@ -73,8 +81,8 @@ const SnapshotStorageSection: React.FC = memo(() => {
   }, [message]);
 
   useEffect(() => {
-    loadSnapshotInfos();
-  }, [loadSnapshotInfos]);
+    if (canViewSnapshotStorage) loadSnapshotInfos();
+  }, [loadSnapshotInfos, canViewSnapshotStorage]);
 
   const saveSnapshotsMax = useCallback(async () => {
     setSavingSnapshotsMax(true);
@@ -110,9 +118,9 @@ const SnapshotStorageSection: React.FC = memo(() => {
     () => ({
       buttons: [
         {
-          key: 'save',
+          key: SETTINGS_CONSTANTS.TOOLBAR.SAVE_KEY,
           label: C.LABELS.SAVE_BUTTON,
-          variant: 'default',
+          variant: 'primary',
           loading: savingSnapshotsMax,
           disabled: !snapshotsHasChanges || !canEditSnapshotStorage,
           tooltip: canEditSnapshotStorage
@@ -126,9 +134,16 @@ const SnapshotStorageSection: React.FC = memo(() => {
   );
 
   return (
-    <SettingsCard title="Snapshot Storage" description={C.LABELS.SNAPSHOT_STORAGE_DESCRIPTION}>
+    <SettingsCard
+      title={C.LABELS.SNAPSHOT_STORAGE_TITLE}
+      description={C.LABELS.SNAPSHOT_STORAGE_DESCRIPTION}
+    >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-        {snapshotInfosLoading ? (
+        {!canViewSnapshotStorage ? (
+          <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+            {C.LABELS.SNAPSHOT_STORAGE_NO_ACCESS}
+          </div>
+        ) : snapshotInfosLoading ? (
           <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
             {C.LABELS.SNAPSHOT_STORAGE_LOADING}
           </div>
@@ -188,9 +203,15 @@ const SnapshotStorageSection: React.FC = memo(() => {
           </>
         ) : null}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <div style={{ fontWeight: 700 }}>{C.LABELS.SNAPSHOTS_MAX_PER_APP_LABEL}</div>
-          <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, lineHeight: 1.5 }}>
-            {C.LABELS.SNAPSHOTS_MAX_PER_APP_HINT}
+          <div style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
+            {C.LABELS.SNAPSHOTS_MAX_PER_APP_LABEL}
+            <Tooltip title={C.LABELS.SNAPSHOTS_MAX_PER_APP_HINT}>
+              <InfoCircleOutlined
+                tabIndex={0}
+                aria-label={C.LABELS.SNAPSHOTS_MAX_PER_APP_HINT}
+                style={{ color: DEFAULT_COLORS.TEXT_MUTED, cursor: 'help' }}
+              />
+            </Tooltip>
           </div>
           <Select
             value={snapshotsMaxSelection}
@@ -207,7 +228,7 @@ const SnapshotStorageSection: React.FC = memo(() => {
             }}
             options={[
               ...SNAPSHOTS_MAX_PRESET.map((n) => ({ value: String(n), label: String(n) })),
-              { value: 'custom', label: 'Custom' },
+              { value: 'custom', label: C.LABELS.CUSTOM_OPTION },
             ]}
             style={{ width: '100%' }}
           />

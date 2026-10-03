@@ -1,21 +1,18 @@
 import React, { memo } from 'react';
+import { SETTINGS_CONSTANTS } from '../../constants';
 import OIDCSection from './OIDCSection';
-import { NoPermissionCard } from '../../../../components/shared';
-import { IDENTITY_PROVIDER_CONSTANTS as C } from './constants';
-import {
-  ACTION_PERMISSIONS,
-  usePermission,
-} from '../../../auth/hooks/permissions/permissionEngine';
+import SelfRegistrationSection from './SelfRegistrationSection';
 
-const { scope, level } = ACTION_PERMISSIONS.settings.editOidcConfig;
+const { CONTENT } = SETTINGS_CONSTANTS;
 
-const IdentityProviderSectionContent: React.FC = memo(() => {
-  const canView = usePermission(scope, level);
-  if (!canView) {
-    return <NoPermissionCard featureName={C.LABELS.CARD_TITLE} permission={{ scope, level }} />;
-  }
-  return <OIDCSection />;
-});
+const IdentityProviderSectionContent: React.FC = memo(() => (
+  <>
+    <OIDCSection />
+    <div style={{ marginTop: CONTENT.GAP_BETWEEN_CARDS }}>
+      <SelfRegistrationSection />
+    </div>
+  </>
+));
 
 IdentityProviderSectionContent.displayName = 'IdentityProviderSectionContent';
 

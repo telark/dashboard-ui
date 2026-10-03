@@ -41,19 +41,19 @@ export function useUsernamesByIds(ids: string[], enabled: boolean): Record<strin
     if (pending.length === 0) return;
     pending.forEach((id) => requested.add(id));
 
-    let cancelled = false;
+    let canceled = false;
     let settled = false;
     void Promise.all(batchesOf(pending).map((batch) => lookUpBatch(batch, requested))).then(
       (results) => {
         settled = true;
-        if (!cancelled) {
+        if (!canceled) {
           setUsernamesById((prev) => results.reduce((all, names) => ({ ...all, ...names }), prev));
         }
       },
     );
 
     return () => {
-      cancelled = true;
+      canceled = true;
       // StrictMode re-runs effects: release what this run discards so the re-run asks again.
       if (!settled) pending.forEach((id) => requested.delete(id));
     };

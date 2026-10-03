@@ -3,14 +3,12 @@ import { Link } from 'react-router-dom';
 import { NotificationBell } from '../../../features/notifications/components';
 import SidebarToggleButton from './SidebarToggleButton';
 import { APP_ROUTES, DEFAULT_COLORS, HEADER_LAYOUT } from '../../../constants';
-import { SCROLL_LOCK_GUTTER_VAR } from '../../../hooks/panel';
 
 const Header: React.FC = () => {
   return (
     <div
       style={{
-        // Full width, less the gutter a panel's scroll lock turns into body padding.
-        width: `calc(100% - var(${SCROLL_LOCK_GUTTER_VAR}, 0px))`,
+        width: '100%',
         backgroundColor: DEFAULT_COLORS.PAGE_BG,
         height: HEADER_LAYOUT.HEIGHT,
         display: 'flex',

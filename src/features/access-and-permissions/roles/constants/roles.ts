@@ -1,5 +1,6 @@
 import type { PermissionLevel, ValidityType } from '../models/types';
 import { DEFAULT_COLORS } from '../../../../constants';
+import { pluralize } from '../../../../utils/helpers/format';
 
 export const PERMISSION_LEVELS = ['ReadOnly', 'Contributor', 'Owner', 'Admin'] as const;
 export const VALIDITY_TYPES = ['permanent', 'temporary', 'sessionBased'] as const;
@@ -8,7 +9,7 @@ export const ROLES_CONSTANTS = {
     HEADER_TITLE: 'Roles',
     HEADER_SUBTITLE: 'Manage existing roles',
     NOT_FOUND: 'Role not found',
-    CREATE_BUTTON: 'Add Role',
+    CREATE_BUTTON: 'Create Role',
     UPDATE_BUTTON: 'Update Role',
     CREATE_BUTTON_TEXT: 'Create Role',
     BREADCRUMBS: {
@@ -49,10 +50,11 @@ export const ROLES_CONSTANTS = {
       BULK_DELETE: 'Delete selected',
       BULK_DELETE_PROTECTED_TOOLTIP: 'Some selected roles are protected from deletion',
       BULK_DELETE_MODAL_TITLE: 'Delete Roles',
-      BULK_DELETE_RESOURCE: (count: number) => `${count} role${count > 1 ? 's' : ''}`,
-      BULK_DELETE_LOADING: (count: number) => `Deleting ${count} role${count > 1 ? 's' : ''}...`,
-      BULK_DELETE_SUCCESS: (count: number) =>
-        `${count} role${count > 1 ? 's' : ''} deleted successfully`,
+      BULK_DELETE_RESOURCE: (count: number) => pluralize(count, 'role'),
+      BULK_DELETE_NOTE:
+        'Anyone holding these roles loses the access they grant immediately. The roles disappear from users and groups within a few seconds.',
+      BULK_DELETE_LOADING: (count: number) => `Deleting ${pluralize(count, 'role')}...`,
+      BULK_DELETE_SUCCESS: (count: number) => `${pluralize(count, 'role')} deleted successfully`,
       BULK_DELETE_FAILED: 'Failed to delete some roles',
       CANCEL: 'Cancel',
     },
@@ -61,12 +63,11 @@ export const ROLES_CONSTANTS = {
     STATUS_ACTIVE: 'Active',
     STATUS_INACTIVE: 'Inactive',
     DELETE_MODAL_TITLE: 'Delete Role',
-    DELETE_MODAL_CONTENT: (name: string) => `Are you sure you want to delete "${name}"?`,
     DELETE_IMPACT: (users: number, groups: number) =>
-      `It is assigned to ${users} user${users === 1 ? '' : 's'} and ${groups} group${groups === 1 ? '' : 's'}, who lose the access it grants.`,
+      `It is assigned to ${pluralize(users, 'user')} and ${pluralize(groups, 'group')}. They lose the access it grants immediately. The role disappears from them within a few seconds.`,
     DELETE_MODAL_OK: 'Delete',
     NO_ROLES_TITLE: 'No roles yet',
-    NO_ROLES_DESCRIPTION: 'Get started by creating your first role.',
+    NO_ROLES_DESCRIPTION: 'Create your first role to get started.',
     VIEW_LABELS: {
       STATUS: 'Status',
       TYPE: 'Type',
@@ -85,14 +86,14 @@ export const ROLES_CONSTANTS = {
         SUBMIT_BUTTON: 'Update Role',
       },
       CREATE: {
-        TITLE: 'Create New Role',
+        TITLE: 'Create Role',
         SUBMIT_BUTTON: 'Create Role',
       },
     },
     TOOLBAR: {
       SEARCH: { PLACEHOLDER: 'Search by name, description...', BUTTON_LABEL: 'Search' },
       FILTER: { BUTTON_LABEL: 'Filter' },
-      CREATE: { BUTTON_LABEL: 'Add Role' },
+      CREATE: { BUTTON_LABEL: 'Create Role' },
       COUNT_SUFFIX: { one: 'role', other: 'roles' },
       CATEGORIES_COUNT_SUFFIX: { one: 'category', other: 'categories' },
       MORE: 'More',

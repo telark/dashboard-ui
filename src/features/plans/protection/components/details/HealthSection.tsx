@@ -1,6 +1,6 @@
 import React from 'react';
 import { Empty } from 'antd';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, MONOSPACE_CLASS } from '../../../../../constants';
 import { APPLICATION_SECTION_LAYOUT } from '../../../../applications/constants/sectionLayout';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { FancySpinner } from '../../../../../components/animation';
@@ -89,11 +89,11 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
                       }}
                     >
                       <span
+                        className={MONOSPACE_CLASS}
                         style={{
                           fontSize: 13,
                           fontWeight: 700,
                           color: DEFAULT_COLORS.TEXT_PRIMARY,
-                          fontFamily: 'monospace',
                           wordBreak: 'break-all',
                         }}
                       >

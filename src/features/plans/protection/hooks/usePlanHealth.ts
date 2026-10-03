@@ -17,23 +17,23 @@ export function usePlanHealth(planId: string, revision?: string): UsePlanHealthR
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    let cancelled = false;
+    let canceled = false;
     fetchPlanStatus(planId)
       .then((data) => {
-        if (cancelled) return;
+        if (canceled) return;
         setStatus(data);
         setError(null);
       })
       .catch((err: unknown) => {
-        if (cancelled) return;
+        if (canceled) return;
         const message = err instanceof Error ? err.message : PPC.LABELS.HEALTH_DETAIL.LOAD_ERROR;
         setError(message);
       })
       .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!canceled) setLoading(false);
       });
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, [planId, reloadKey, revision]);
 

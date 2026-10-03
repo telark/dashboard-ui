@@ -9,6 +9,7 @@ export const handleFetchRolesPending = (state: RolesState) => {
 
 export const handleFetchRolesFulfilled = (state: RolesState, action: PayloadAction<Role[]>) => {
   state.loading = false;
+  state.loaded = true;
   state.roles = keepUnchanged(state.roles, action.payload, (item) => item.id);
   state.error = null;
   const liveIds = new Set(action.payload.map((r) => r.id));

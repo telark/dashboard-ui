@@ -11,7 +11,7 @@ import UsersEmptyPage from './UsersEmptyPage';
 import UsersListPage from './UsersListPage';
 
 const MainPage: React.FC = () => {
-  const { users, loading, error, refetch } = useUsers();
+  const { users, loaded, error, refetch } = useUsers();
   const canCreateUser = usePermission(
     ACTION_PERMISSIONS.users.create.scope,
     ACTION_PERMISSIONS.users.create.level,
@@ -171,8 +171,8 @@ const MainPage: React.FC = () => {
   });
 
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(users) && usersExcludingSelf.length === 0 && !error && !loading,
-    [users, usersExcludingSelf.length, error, loading],
+    () => Array.isArray(users) && usersExcludingSelf.length === 0 && !error && loaded,
+    [users, usersExcludingSelf.length, error, loaded],
   );
 
   if (shouldShowEmpty) {
@@ -186,7 +186,13 @@ const MainPage: React.FC = () => {
     );
   }
 
-  const augmentedPageConfig = { ...pageConfig, loading, error, onRetry: refetch };
+  const augmentedPageConfig = {
+    ...pageConfig,
+    loading: !loaded,
+    fullPageLoading: !loaded,
+    error,
+    onRetry: refetch,
+  };
 
   return (
     <UsersListPage

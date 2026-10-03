@@ -18,6 +18,7 @@ const initialState: ProtectionPlansState = {
   plans: [],
   templates: [],
   loading: false,
+  loaded: false,
   templatesLoading: false,
   error: null,
   details: null,
@@ -54,6 +55,7 @@ const protectionPlansSlice = createSlice({
       })
       .addCase(fetchProtectionPlansThunk.fulfilled, (state, action) => {
         state.loading = false;
+        state.loaded = true;
         state.plans = keepUnchanged(state.plans, action.payload, (plan) => plan.id);
       })
       .addCase(fetchProtectionPlansThunk.rejected, (state, action) => {

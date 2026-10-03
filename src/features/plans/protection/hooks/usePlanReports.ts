@@ -94,22 +94,22 @@ export function usePlanReports(
 
   useEffect(() => {
     if (!enabled) return;
-    let cancelled = false;
+    let canceled = false;
     fetchPlanReports(planId)
       .then((data) => {
-        if (cancelled) return;
+        if (canceled) return;
         setReports(data);
         setError(null);
       })
       .catch(() => {
-        if (cancelled) return;
+        if (canceled) return;
         setError(PPC.LABELS.REPORTS.LOAD_ERROR);
       })
       .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!canceled) setLoading(false);
       });
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, [enabled, planId, reloadKey, revision]);
 
@@ -135,22 +135,22 @@ export function useAllPlanReports(enabled: boolean): UseAllPlanReportsResult {
 
   useEffect(() => {
     if (!enabled) return;
-    let cancelled = false;
+    let canceled = false;
     fetchAllPlanReports()
       .then((data) => {
-        if (cancelled) return;
+        if (canceled) return;
         setReports(data);
         setError(null);
       })
       .catch(() => {
-        if (cancelled) return;
+        if (canceled) return;
         setError(PPC.LABELS.REPORTS.LOAD_ERROR);
       })
       .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!canceled) setLoading(false);
       });
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, [enabled, reloadKey]);
 

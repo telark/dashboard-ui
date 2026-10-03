@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
-import { DEFAULT_COLORS } from '../../../../../../constants';
+import { ACTORS, DEFAULT_COLORS } from '../../../../../../constants';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { ActorDisplay } from '../../../../../../components/display/users';
 import { useViewGroupPanel } from './useViewGroupPanel';
 import { useGroupDeleteModal } from '../../../components/delete';
+import { EMPTY_VALUE } from '../../../../shared';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import type { Group } from '../../../models';
 import type {
@@ -72,6 +73,7 @@ export const useViewGroupPanelData = ({
     return groupUsers.slice(5).map((user) => ({
       key: user.id,
       src: avatarSources[user.id],
+      fallback: user.username ? user.username.charAt(0).toUpperCase() : undefined,
       username: user.username || '',
     }));
   }, [group, groupUsers, avatarSources]);
@@ -87,7 +89,7 @@ export const useViewGroupPanelData = ({
         label: 'Creation Date',
         value: (
           <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
-            {group.creationDate ? <TimeAgo date={group.creationDate} /> : '—'}
+            {group.creationDate ? <TimeAgo date={group.creationDate} /> : EMPTY_VALUE}
           </span>
         ),
       },
@@ -95,7 +97,7 @@ export const useViewGroupPanelData = ({
         label: GC.LABELS.VIEW_LABELS.LAST_UPDATE,
         value: (
           <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
-            {group.lastUpdateDate ? <TimeAgo date={group.lastUpdateDate} /> : '—'}
+            {group.lastUpdateDate ? <TimeAgo date={group.lastUpdateDate} /> : EMPTY_VALUE}
           </span>
         ),
       },
@@ -112,7 +114,7 @@ export const useViewGroupPanelData = ({
             />
           </span>
         ) : (
-          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>—</span>
+          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>{ACTORS.NONE}</span>
         ),
       },
       {
@@ -128,7 +130,7 @@ export const useViewGroupPanelData = ({
             />
           </span>
         ) : (
-          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>—</span>
+          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>{ACTORS.NONE}</span>
         ),
       },
     ];

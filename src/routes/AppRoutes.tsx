@@ -4,9 +4,8 @@ import { ProtectedRoute, AuthLayout } from '../features/auth/components';
 import { AnimatedPageWrapper } from '../components/animation';
 import { FeatureErrorBoundary } from '../components/error-boundary';
 import FullPageLoader from '../components/display/views/FullPageLoader';
-import { NoPermissionCard, PageContainer } from '../components/shared';
-import { APP_ROUTES, MENU_LABELS } from '../constants';
-import { LIST_PAGE } from '../constants/shared/pages';
+import { NoPermissionCard } from '../components/shared';
+import { APP_CONFIGS, APP_ROUTES, HEADER_LAYOUT, MENU_LABELS } from '../constants';
 import type { RequiredPermission } from '../interfaces/shared';
 import { hasSessionToken } from '../features/auth/utils';
 import { PermissionGate, ACTION_PERMISSIONS } from '../features/auth/hooks';
@@ -20,9 +19,7 @@ const { view: viewGroups } = ACTION_PERMISSIONS.groups;
 
 // Replaces the page: the URL and sidebar entry stay put and the page's requests never fire.
 const noAccess = (featureName: string, permission: RequiredPermission) => (
-  <PageContainer title={featureName} gap={LIST_PAGE.CONTENT_GAP_PX}>
-    <NoPermissionCard featureName={featureName} permission={permission} />
-  </PageContainer>
+  <NoPermissionCard featureName={featureName} permission={permission} />
 );
 
 // home
@@ -46,7 +43,6 @@ const UsersMainPage = lazy(() => import('../features/access-and-permissions/user
 const GroupsMainPage = lazy(
   () => import('../features/access-and-permissions/groups/pages/MainPage'),
 );
-const PasskeysMainPage = lazy(() => import('../features/auth/pages/passkeys/MainPage'));
 const SettingsPage = lazy(() =>
   import('../features/settings').then((m) => ({ default: m.SettingsPage })),
 );
@@ -59,11 +55,16 @@ const AppRoutes: React.FC = () => {
   const isAuthenticated = hasSessionToken();
   const location = useLocation();
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    (document.getElementById(APP_CONFIGS.LAYOUT.CONTENT_ID) ?? window).scrollTo({
+      top: 0,
+      behavior: 'instant',
+    });
   }, [location.pathname]);
 
   return (
-    <Suspense fallback={<FullPageLoader minHeight="100vh" />}>
+    <Suspense
+      fallback={<FullPageLoader minHeight={isAuthenticated ? HEADER_LAYOUT.MIN_HEIGHT : '100vh'} />}
+    >
       <Routes location={location}>
         {/* One layout instance spans both auth routes, so the brand panel is not
             remounted when navigating between login and register. */}
@@ -211,16 +212,6 @@ const AppRoutes: React.FC = () => {
                   <ProtectionPlanDetailsView />
                 </FeatureErrorBoundary>
               </PermissionGate>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={APP_ROUTES.PASSKEYS}
-          element={
-            <ProtectedRoute>
-              <FeatureErrorBoundary featureName="Passkeys">
-                <PasskeysMainPage />
-              </FeatureErrorBoundary>
             </ProtectedRoute>
           }
         />

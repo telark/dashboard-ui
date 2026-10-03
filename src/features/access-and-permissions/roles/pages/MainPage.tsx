@@ -23,7 +23,7 @@ import RolesListPage from './RolesListPage';
 type ViewMode = 'roles' | 'categories';
 
 const MainPage: React.FC = () => {
-  const { roles, loading, error, refetch } = useRoles();
+  const { roles, loaded, error, refetch } = useRoles();
   const canCreateRole = usePermission(
     ACTION_PERMISSIONS.roles.create.scope,
     ACTION_PERMISSIONS.roles.create.level,
@@ -160,11 +160,17 @@ const MainPage: React.FC = () => {
   });
 
   const shouldShowEmpty = useMemo(
-    () => Array.isArray(roles) && customRoles.length === 0 && !error && !loading,
-    [roles, customRoles.length, error, loading],
+    () => Array.isArray(roles) && customRoles.length === 0 && !error && loaded,
+    [roles, customRoles.length, error, loaded],
   );
 
-  const augmentedPageConfig = { ...pageConfig, loading, error, onRetry: refetch };
+  const augmentedPageConfig = {
+    ...pageConfig,
+    loading: !loaded,
+    fullPageLoading: !loaded,
+    error,
+    onRetry: refetch,
+  };
 
   const createPanelNode = createPanelOpen ? (
     <CreateRolePanel

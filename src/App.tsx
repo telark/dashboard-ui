@@ -4,6 +4,7 @@ import { BrowserRouter as Router, useLocation, Navigate } from 'react-router-dom
 import { useDispatch } from 'react-redux';
 import Sidebar from './components/layout/sidebar/Sidebar';
 import Header from './components/layout/header/Header';
+import { FancySpinner } from './components/animation';
 import ErrorBoundary from './ErrorBoundary';
 import { SessionExpiredModal } from './features/auth/components';
 import 'antd/dist/reset.css';
@@ -70,9 +71,13 @@ const AppContent: React.FC = () => {
         <Layout style={{ minHeight: APP_CONFIGS.LAYOUT.MIN_HEIGHT }}>
           <Sidebar />
           <Layout
+            id={APP_CONFIGS.LAYOUT.CONTENT_ID}
             style={{
               marginLeft: APP_CONFIGS.LAYOUT.MARGIN_LEFT,
-              height: APP_CONFIGS.LAYOUT.HEIGHT,
+              marginTop: APP_CONFIGS.LAYOUT.CONTENT_TOP,
+              height: APP_CONFIGS.LAYOUT.CONTENT_HEIGHT,
+              overflowY: APP_CONFIGS.LAYOUT.CONTENT_OVERFLOW,
+              scrollbarGutter: 'stable',
               transition: APP_CONFIGS.LAYOUT.TRANSITION,
               background: DEFAULT_COLORS.PAGE_BG,
             }}
@@ -101,6 +106,9 @@ const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <ConfigProvider
+        // currentColor follows the button text: the default green vanishes on a primary button.
+        button={{ loadingIcon: <FancySpinner size={CONTROL_FONT_SIZE} color="currentColor" /> }}
+        select={{ loadingIcon: <FancySpinner size={12} /> }}
         theme={{
           cssVar: { key: 'telark' },
           hashed: false,
@@ -113,6 +121,8 @@ const App: React.FC = () => {
             borderRadius: CONTROL_RADIUS,
             fontSize: CONTROL_FONT_SIZE,
             colorPrimary: DEFAULT_COLORS.SUCCESS,
+            colorError: DEFAULT_COLORS.DANGER,
+            colorWarning: DEFAULT_COLORS.WARNING,
             colorBgBase: DEFAULT_COLORS.PAGE_BG,
             colorTextBase: DEFAULT_COLORS.TEXT_PRIMARY,
             colorBgContainer: DEFAULT_COLORS.PAGE_BG,
@@ -120,14 +130,18 @@ const App: React.FC = () => {
             colorBorder: DEFAULT_COLORS.BORDER_DEFAULT,
           },
           components: {
-            // The dark algorithm derives a near-white disabled text colour, which
-            // vanishes on these white surfaces, so it is pinned to a grey instead.
+            // The dark algorithm derives a near-white disabled text color, which
+            // vanishes on these white surfaces, so it is pinned to a gray instead.
+            // A selected item takes the Select option's look, not colorPrimary's green.
             Dropdown: {
               colorBgElevated: DEFAULT_COLORS.SURFACE_WHITE,
               colorText: DEFAULT_COLORS.TEXT_ON_SURFACE,
               controlItemBgHover: DEFAULT_COLORS.SURFACE_HOVER,
               colorTextDisabled: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
               controlItemBgActiveDisabled: DEFAULT_COLORS.SURFACE_WHITE,
+              colorPrimary: SELECT_THEME.optionSelectedColor,
+              controlItemBgActive: SELECT_THEME.optionSelectedBg,
+              controlItemBgActiveHover: SELECT_THEME.controlItemBgActiveHover,
             },
             Select: SELECT_THEME,
             // Focus ring matches Select: colorPrimary is the app green, which antd

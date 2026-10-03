@@ -6,11 +6,6 @@ export interface StatCellProps {
   accent?: string;
 }
 
-export interface CardIconChipProps {
-  icon: React.ReactNode;
-  accent: string;
-}
-
 export interface CardStatusPillProps {
   label: React.ReactNode;
   accent: string;
@@ -19,9 +14,11 @@ export interface CardStatusPillProps {
 export interface CardChipItem {
   key: string;
   label: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   accent: string;
   title?: string;
+  /** Shown in a tooltip on hover, in place of the native title. */
+  tooltip?: string;
 }
 
 export type CardChipProps = Omit<CardChipItem, 'key'>;

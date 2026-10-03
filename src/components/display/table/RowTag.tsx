@@ -1,5 +1,5 @@
 import React from 'react';
-import { DEFAULT_COLORS, TRUNCATE_STYLE, getPillSurface } from '../../../constants';
+import { TRUNCATE_STYLE, getPillSurface } from '../../../constants';
 import type { RowTagProps } from '../../../interfaces/layout/table';
 
 const RowTag: React.FC<RowTagProps> = ({
@@ -15,7 +15,6 @@ const RowTag: React.FC<RowTagProps> = ({
       style={{
         display: 'inline-block',
         ...getPillSurface(accent),
-        color: DEFAULT_COLORS.PILL_TEXT,
         padding: '2px 10px',
         borderRadius: 999,
         fontWeight: 700,

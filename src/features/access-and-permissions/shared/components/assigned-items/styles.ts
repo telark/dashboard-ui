@@ -22,7 +22,6 @@ export const ASSIGNED_LIST_CONTAINER_STYLE: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   gap: 8,
-  overflowY: 'auto',
   width: '100%',
   padding: 0,
   boxSizing: 'border-box',

@@ -2,6 +2,7 @@ export type {
   UserAvatar,
   UserSettings,
   UserAccountState,
+  UserInvite,
   UserStatus,
   User,
   UserFormBaseFields,

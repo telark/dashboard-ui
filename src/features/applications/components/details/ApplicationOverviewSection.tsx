@@ -28,7 +28,6 @@ const chipStyle: React.CSSProperties = {
   display: 'inline-block',
   maxWidth: '100%',
   ...getPillSurface(),
-  color: DEFAULT_COLORS.PILL_TEXT,
   padding: '2px 10px',
   borderRadius: 999,
   fontWeight: 700,

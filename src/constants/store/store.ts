@@ -158,7 +158,7 @@ export const STORE_MESSAGES = {
   ERROR_FETCHING_PROTECTION_PLANS: 'Error fetching protection plans:',
   ERROR_FETCHING_PROTECTION_PLAN_TEMPLATES: 'Error fetching protection plan templates:',
   ERROR_PREPARING_PROTECTION_PLAN: 'Error preparing protection plan:',
-  ERROR_CANCELLING_PROTECTION_PLAN: 'Error cancelling protection plan:',
+  ERROR_CANCELING_PROTECTION_PLAN: 'Error canceling protection plan:',
   ERROR_DELETING_PROTECTION_PLAN: 'Error deleting protection plan:',
   ERROR_DUPLICATING_PROTECTION_PLAN: 'Error duplicating protection plan:',
   ERROR_REACTIVATING_PROTECTION_PLAN: 'Error reactivating protection plan:',

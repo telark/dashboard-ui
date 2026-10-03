@@ -6,7 +6,6 @@ export const SHARED_DETAILS_CONSTANTS = {
     PAGE_CONTAINER: {
       background: DEFAULT_COLORS.PAGE_BG,
       minHeight: HEADER_LAYOUT.MIN_HEIGHT,
-      marginTop: HEADER_LAYOUT.HEIGHT,
       padding: '48px 24px 48px',
     },
     SECTION_CARD_BODY: {
@@ -15,15 +14,12 @@ export const SHARED_DETAILS_CONSTANTS = {
   },
   STATES: {
     LOADING_CONTAINER: {
-      marginTop: HEADER_LAYOUT.HEIGHT_PX,
       padding: 24,
     },
     ERROR_CONTAINER: {
-      marginTop: HEADER_LAYOUT.HEIGHT_PX,
       padding: 24,
     },
     EMPTY_CONTAINER: {
-      marginTop: HEADER_LAYOUT.HEIGHT_PX,
       padding: 24,
     },
   },

@@ -4,13 +4,13 @@ import {
   DownOutlined,
   FileSearchOutlined,
   InboxOutlined,
-  LoadingOutlined,
   RightOutlined,
   WarningOutlined,
 } from '@ant-design/icons';
 import { Button, Segmented, Tooltip, App as AntdApp } from 'antd';
 import { dump } from 'js-yaml';
 import { DEFAULT_COLORS } from '../../../../constants';
+import { FancySpinner } from '../../../../components/animation';
 import { APPLICATIONS_UI } from '../../constants';
 import { APPLICATION_MANIFEST_VIEW } from '../../constants/sectionLayout';
 import IdeManifestCodeBlock from '../details/IdeManifestCodeBlock';
@@ -191,8 +191,16 @@ const SnapshotManifestView: React.FC<SnapshotManifestViewProps> = memo(
     if (manifestState?.loading) {
       body = (
         <ManifestShell>
-          <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: V.STATE_TEXT_FONT_SIZE_PX }}>
-            <LoadingOutlined /> {UI.MANIFEST_LOADING}
+          <span
+            style={{
+              color: DEFAULT_COLORS.TEXT_MUTED,
+              fontSize: V.STATE_TEXT_FONT_SIZE_PX,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+            }}
+          >
+            <FancySpinner size={V.STATE_TEXT_FONT_SIZE_PX} /> {UI.MANIFEST_LOADING}
           </span>
         </ManifestShell>
       );

@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useMemo, useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SETTINGS_SECTIONS_LIST } from '../constants';
 import type { SettingsSectionKey } from '../constants';
@@ -6,16 +6,14 @@ import type { SectionHeaderBreadcrumbItem } from '../components/SectionHeader';
 import { SECURITY_SECTION_CONSTANTS } from '../sections/security/constants';
 import { APP_ROUTES } from '../../../constants';
 
-export type SecuritySubView = 'overview' | 'passkeys';
-
 const SECTION_TO_SLUG: Record<SettingsSectionKey, string> = {
   profile: 'profile',
   appearance: 'appearance',
   timezone: 'timezone',
   security: 'security',
-  aiInsights: 'aiInsights',
-  insightsGovernance: 'governance',
-  identityProvider: 'identity',
+  aiInsights: 'insights',
+  insightsGovernance: 'discovery',
+  identityProvider: 'authentication',
   myPermissions: 'permissions',
   about: 'about',
 };
@@ -25,9 +23,9 @@ const SLUG_TO_SECTION: Record<string, SettingsSectionKey> = {
   appearance: 'appearance',
   timezone: 'timezone',
   security: 'security',
-  aiInsights: 'aiInsights',
-  governance: 'insightsGovernance',
-  identity: 'identityProvider',
+  insights: 'aiInsights',
+  discovery: 'insightsGovernance',
+  authentication: 'identityProvider',
   permissions: 'myPermissions',
   about: 'about',
 };
@@ -35,7 +33,6 @@ const SLUG_TO_SECTION: Record<string, SettingsSectionKey> = {
 export function useSettingsNavigation(initialSection: SettingsSectionKey = 'profile') {
   const location = useLocation();
   const navigate = useNavigate();
-  const [securitySubView, setSecuritySubView] = useState<SecuritySubView>('overview');
   const activeSection = useMemo<SettingsSectionKey>(() => {
     const prefix = `${APP_ROUTES.SETTINGS}/`;
     if (!location.pathname.startsWith(prefix)) return initialSection;
@@ -54,32 +51,28 @@ export function useSettingsNavigation(initialSection: SettingsSectionKey = 'prof
     [activeSection],
   );
 
-  const isPasskeysView = activeSection === 'security' && securitySubView === 'passkeys';
+  const isPasskeysView = location.pathname === APP_ROUTES.PASSKEYS;
 
   const onSectionChange = useCallback(
     (key: SettingsSectionKey) => {
-      if (key !== 'security') {
-        setSecuritySubView('overview');
-      }
       navigate(`${APP_ROUTES.SETTINGS}/${SECTION_TO_SLUG[key]}`);
     },
     [navigate],
   );
 
   const onManagePasskeysClick = useCallback(() => {
-    setSecuritySubView('passkeys');
-    navigate(`${APP_ROUTES.SETTINGS}/security`);
+    navigate(APP_ROUTES.PASSKEYS);
   }, [navigate]);
 
   const passkeysBreadcrumbItems = useMemo<SectionHeaderBreadcrumbItem[]>(
     () => [
       {
         label: SECURITY_SECTION_CONSTANTS.LABELS.BREADCRUMBS.SECURITY,
-        onClick: () => setSecuritySubView('overview'),
+        onClick: () => navigate(`${APP_ROUTES.SETTINGS}/${SECTION_TO_SLUG.security}`),
       },
       { label: SECURITY_SECTION_CONSTANTS.LABELS.BREADCRUMBS.PASSKEYS },
     ],
-    [],
+    [navigate],
   );
 
   return {

@@ -28,8 +28,8 @@ The build scripts regenerate the tracked `public/licenses.json` from the install
 
 ## What the checks don't cover
 
-- Rendering, colours, sizes and layout: follow the `visual-and-layout-changes` skill and ask the user for a screenshot of the result.
-- Behaviour against real data needs the backend services running (README → Local development setup). Don't start `npm run dev` or open a browser unless the user asks, because `dev` opens Chrome (`--open`) and takes over their screen. Ask the user to exercise the change, or say what remains unverified.
+- Rendering, colors, sizes and layout: follow the `visual-and-layout-changes` skill and ask the user for a screenshot of the result.
+- Behavior against real data needs the backend services running (README → Local development setup). Don't start `npm run dev` or open a browser unless the user asks, because `dev` opens Chrome (`--open`) and takes over their screen. Ask the user to exercise the change, or say what remains unverified.
 - Docs: if the change alters something `README.md` states (scripts, main areas, services, ports, conventions), update it in the same change.
 
 ## Report

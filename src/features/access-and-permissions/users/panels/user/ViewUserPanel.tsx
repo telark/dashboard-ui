@@ -10,6 +10,7 @@ import type { ViewDetailRow } from '../../../../../components/display/panels/vie
 import type { User } from '../../models';
 import { useUserLockReason } from '../../hooks/user/useUserLockReason';
 import BootstrapPill from '../../components/display/shared/BootstrapPill';
+import { EMPTY_VALUE } from '../../../shared';
 
 interface ViewUserPanelProps {
   open: boolean;
@@ -84,7 +85,7 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
         label: UC.LABELS.VIEW_LABELS.CREATION_DATE,
         value: (
           <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
-            {user.creationDate ? <TimeAgo date={user.creationDate} /> : '—'}
+            {user.creationDate ? <TimeAgo date={user.creationDate} /> : EMPTY_VALUE}
           </span>
         ),
       },

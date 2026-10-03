@@ -40,7 +40,7 @@ export function getRollbackStatusColors(state: RollbackStatusState): {
         : state === 'inProgress' || state === 'pending'
           ? DEFAULT_COLORS.WARNING
           : undefined;
-  return { ...getPillSurface(accent), color: DEFAULT_COLORS.PILL_TEXT };
+  return getPillSurface(accent);
 }
 
 export function formatRollbackStatusLabel(raw: string): string {

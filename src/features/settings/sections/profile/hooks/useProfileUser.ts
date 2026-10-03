@@ -32,15 +32,15 @@ export function useProfileUser(): UseProfileUserResult {
   useEffect(() => {
     const initial = getCurrentUser();
     if (!initial?.id) return;
-    let cancelled = false;
+    let canceled = false;
     fetchCurrentUserDetails(
       (user) => {
-        if (!cancelled) setCurrentUserState(user);
+        if (!canceled) setCurrentUserState(user);
       },
       () => {},
     );
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, []);
 

@@ -164,6 +164,10 @@ export const Endpoints = {
         method: 'PATCH',
       },
     },
+    SELF_REGISTRATION: {
+      path: AUTH_PATHS.SELF_REGISTRATION,
+      method: 'PATCH',
+    },
     PERMISSIONS: {
       GET: {
         path: AUTH_PATHS.PERMISSIONS,
@@ -222,6 +226,14 @@ export const Endpoints = {
     }),
     CLEANUP: (userId: string) => ({
       path: AUTH_PATHS.CLEANUP.DELETE_USER(userId),
+      method: 'DELETE',
+    }),
+    CREATE_ENROLL_LINK: (userId: string) => ({
+      path: AUTH_PATHS.USER_ENROLL_LINK(userId),
+      method: 'POST',
+    }),
+    REVOKE_ENROLL_LINK: (userId: string) => ({
+      path: AUTH_PATHS.USER_ENROLL_LINK(userId),
       method: 'DELETE',
     }),
   },

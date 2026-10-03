@@ -68,6 +68,7 @@ export const handleFetchApplicationsFulfilled = (
   action: PayloadAction<Application[]>,
 ) => {
   state.loading = false;
+  state.loaded = true;
   state.applications = keepUnchanged(state.applications, action.payload, (app) => app.name);
   state.error = null;
   applyForceSyncStateFromApplications(state, action.payload);
@@ -78,6 +79,7 @@ export const handleFetchApplicationsSilentFulfilled = (
   action: PayloadAction<Application[]>,
 ) => {
   state.loading = false;
+  state.loaded = true;
   state.applications = keepUnchanged(state.applications, action.payload, (app) => app.name);
   state.error = null;
   applyForceSyncStateFromApplications(state, action.payload);

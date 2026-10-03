@@ -1,19 +1,26 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Form, App as AntdApp } from 'antd';
-import { useSelector } from 'react-redux';
 import { updateUser } from '../../../../access-and-permissions/users/clients';
+import { USERS_CONSTANTS } from '../../../../access-and-permissions/users/constants';
+import { useUsers } from '../../../../access-and-permissions/users/hooks';
 import { setCurrentUser } from '../../../../auth/utils/session/user';
 import {
   makeEmailFormatRule,
+  makeEmailUniqueRule,
   makeFullnameCharsRule,
   makeUsernameUniqueRule,
 } from '../../../../access-and-permissions/users/utils';
+import { HTTP_STATUS } from '../../../../../constants';
 import { PROFILE_SECTION_CONSTANTS } from '../constants';
 import type { User } from '../../../../access-and-permissions/users/models';
-import type { RootState } from '../../../../../store';
+import type { ExtendedAxiosError } from '../../../../../api/client/normalize';
 
-const { LABELS } = PROFILE_SECTION_CONSTANTS;
+const { LABELS, CONFLICT_FIELDS } = PROFILE_SECTION_CONSTANTS;
 const P = LABELS.EDIT_PROFILE_PANEL;
+const TAKEN = {
+  username: USERS_CONSTANTS.LABELS.VALIDATION.USERNAME_TAKEN,
+  email: USERS_CONSTANTS.LABELS.VALIDATION.EMAIL_TAKEN,
+} as const;
 
 export interface EditProfileFormValues {
   username: string;
@@ -46,6 +53,25 @@ export interface UseEditProfileResult {
   emailRules: ReturnType<typeof makeEmailFormatRule>[];
 }
 
+// Unchanged fields stay out of the PATCH, so the server re-checks only what the user edited.
+const changedValue = (value: unknown, current: string): string | undefined => {
+  const next = String(value ?? '').trim();
+  return next === current ? undefined : next;
+};
+
+// Accounts hidden from the caller (administrators) can't be checked while typing, so the
+// server's 409 (taken) or 403 (reserved bootstrap email) lands on the field it names.
+const serverFieldError = (error: unknown) => {
+  const { normalized } = error as ExtendedAxiosError;
+  const name = CONFLICT_FIELDS.find((field) => normalized?.message?.includes(field));
+  if (!name) return undefined;
+  if (normalized?.status === HTTP_STATUS.CONFLICT) return { name, errors: [TAKEN[name]] };
+  if (normalized?.status === HTTP_STATUS.FORBIDDEN && name === 'email') {
+    return { name, errors: [P.EMAIL_RESERVED] };
+  }
+  return undefined;
+};
+
 export function useEditProfile({
   currentUser,
   refetch,
@@ -58,14 +84,17 @@ export function useEditProfile({
   const [hasChanges, setHasChanges] = useState(false);
   const previousOpenRef = useRef(false);
   const previousUserIdRef = useRef<string | null>(null);
-  const existingUsers = useSelector((state: RootState) => state.users.users);
+  const { users: existingUsers } = useUsers();
 
   const usernameRules = useMemo(
     () => [makeUsernameUniqueRule(existingUsers, currentUser?.id)],
     [existingUsers, currentUser?.id],
   );
   const fullnameRules = [makeFullnameCharsRule()];
-  const emailRules = [makeEmailFormatRule()];
+  const emailRules = useMemo(
+    () => [makeEmailFormatRule(), makeEmailUniqueRule(existingUsers, currentUser?.id)],
+    [existingUsers, currentUser?.id],
+  );
 
   const initialValues = useMemo<EditProfileFormValues | null>(
     () =>
@@ -125,9 +154,9 @@ export function useEditProfile({
       setSubmitting(true);
       try {
         const response = await updateUser(currentUser.id, {
-          username: String(values.username ?? '').trim(),
-          fullname: String(values.fullname ?? '').trim(),
-          email: String(values.email ?? '').trim(),
+          username: changedValue(values.username, currentUser.username),
+          fullname: changedValue(values.fullname, currentUser.fullname),
+          email: changedValue(values.email, currentUser.email),
         });
         if (response?.data) {
           setCurrentUser(response.data);
@@ -136,13 +165,21 @@ export function useEditProfile({
         } else {
           message.error(P.ERROR);
         }
-      } catch {
-        message.error(P.ERROR);
+      } catch (error) {
+        const fieldError = serverFieldError(error);
+        if (!fieldError) {
+          message.error(P.ERROR);
+          return;
+        }
+        form.setFields([fieldError]);
+        checkFormState();
+        // Rejecting keeps the panel open on the field error.
+        throw error;
       } finally {
         setSubmitting(false);
       }
     },
-    [currentUser, refetch, message],
+    [currentUser, refetch, message, form, checkFormState],
   );
 
   const handleValuesChange = useCallback(() => {

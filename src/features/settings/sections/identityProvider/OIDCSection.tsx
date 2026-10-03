@@ -10,14 +10,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
 import type { AppDispatch } from '../../../../store';
 import { extractErrorMessage } from '../../../../utils/helpers/format';
+import { SETTINGS_CONSTANTS } from '../../constants';
 import { IDENTITY_PROVIDER_CONSTANTS as C } from './constants';
-import {
-  ACTION_PERMISSIONS,
-  useIsAdminOnAll,
-  usePermission,
-} from '../../../auth/hooks/permissions/permissionEngine';
-
-const EDIT_OIDC_PERMISSION = ACTION_PERMISSIONS.settings.editOidcConfig;
+import { useSignInSettingsAccess } from './useSignInSettingsAccess';
 
 interface OIDCForm {
   enabled: boolean;
@@ -61,14 +56,7 @@ function validate(form: OIDCForm, hasPinnedKeys: boolean): string | null {
 const OIDCSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
-  const canEditSettings = usePermission(
-    EDIT_OIDC_PERMISSION.scope,
-    EDIT_OIDC_PERMISSION.level,
-    EDIT_OIDC_PERMISSION.deny,
-  );
-  // Whoever controls sign-on trust can mint a login for anyone, so the server also requires Admin on ALL.
-  const isAdminOnAll = useIsAdminOnAll();
-  const canEdit = canEditSettings && isAdminOnAll;
+  const { canEdit, deniedTooltip } = useSignInSettingsAccess();
   const { message } = AntdApp.useApp();
 
   const [form, setForm] = useState<OIDCForm>(EMPTY_FORM);
@@ -135,17 +123,17 @@ const OIDCSection: React.FC = memo(() => {
     () => ({
       buttons: [
         {
-          key: 'save',
+          key: SETTINGS_CONSTANTS.TOOLBAR.SAVE_KEY,
           label: C.LABELS.SAVE_BUTTON,
-          variant: 'default',
+          variant: 'primary',
           loading: saving,
           disabled: !hasChanges || Boolean(validationError) || !canEdit,
-          tooltip: canEdit ? undefined : C.LABELS.PERMISSION_DENIED,
+          tooltip: deniedTooltip,
           onClick: handleSave,
         },
       ],
     }),
-    [saving, hasChanges, validationError, canEdit, handleSave],
+    [saving, hasChanges, validationError, canEdit, deniedTooltip, handleSave],
   );
 
   return (
@@ -160,7 +148,7 @@ const OIDCSection: React.FC = memo(() => {
           }}
         >
           <div style={{ fontWeight: 700 }}>{C.LABELS.ENABLE_LABEL}</div>
-          <Tooltip title={canEdit ? undefined : C.LABELS.PERMISSION_DENIED}>
+          <Tooltip title={deniedTooltip}>
             <span style={canEdit ? {} : { display: 'inline-block', cursor: 'not-allowed' }}>
               <Switch
                 checked={form.enabled}
@@ -177,7 +165,11 @@ const OIDCSection: React.FC = memo(() => {
               <div style={{ fontWeight: 700, marginBottom: 4 }}>{C.LABELS.CLIENT_ID_LABEL}</div>
               <Input
                 placeholder={C.LABELS.CLIENT_ID_PLACEHOLDER}
-                value={form.googleClientID}
+                value={
+                  canEdit || !form.googleClientID
+                    ? form.googleClientID
+                    : C.LABELS.CLIENT_ID_REDACTED
+                }
                 disabled={!canEdit}
                 onChange={(e) => update('googleClientID', e.target.value)}
               />
@@ -193,23 +185,29 @@ const OIDCSection: React.FC = memo(() => {
             >
               <div>
                 <div style={{ fontWeight: 700 }}>{C.LABELS.EGRESS_LABEL}</div>
-                <div style={{ fontSize: 12 }}>{C.LABELS.EGRESS_HINT}</div>
+                <div style={{ fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE }}>
+                  {C.LABELS.EGRESS_HINT}
+                </div>
               </div>
               <Switch
                 checked={form.egressAllowed}
                 onChange={canEdit ? (v: boolean) => update('egressAllowed', v) : undefined}
                 disabled={!canEdit}
+                tooltip={deniedTooltip}
               />
             </div>
 
             {!form.egressAllowed ? (
               <div>
                 <div style={{ fontWeight: 700 }}>{C.LABELS.JWK_LABEL}</div>
-                <div style={{ fontSize: 12, marginBottom: 4 }}>
+                <div
+                  style={{ fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE, marginBottom: 4 }}
+                >
                   {C.LABELS.JWK_SOURCE_HINT}{' '}
                   <a href={C.LINKS.JWKS_URL} target="_blank" rel="noreferrer">
                     {C.LINKS.JWKS_URL}
                   </a>
+                  {C.LABELS.JWK_SOURCE_HINT_END}
                   {hasPinnedKeys ? ` ${C.LABELS.JWK_KEEP_HINT}` : null}
                 </div>
                 <Input.TextArea

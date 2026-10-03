@@ -24,6 +24,3 @@ export { useGroupCategoryOptions } from './categories/useGroupCategoryOptions';
 export { useRoleCategoryOptions } from './categories/useRoleCategoryOptions';
 
 export { useGroupFilters } from './filter/useGroupFilters';
-
-export { useRoleListScroll } from './scroll/useRoleListScroll';
-export type { UseRoleListScrollOptions, UseRoleListScrollReturn } from './scroll/useRoleListScroll';

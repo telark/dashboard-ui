@@ -1,4 +1,5 @@
 import type { Category } from '../models';
+import { EMPTY_VALUE } from '../../shared';
 
 export const mapCategoriesToOptions = (categories: Category[]) => {
   return categories.map((category) => ({
@@ -8,10 +9,10 @@ export const mapCategoriesToOptions = (categories: Category[]) => {
 };
 
 export const getCategoryName = (categoryId: string, categories: Category[]): string => {
-  if (!categoryId) return '—';
+  if (!categoryId) return EMPTY_VALUE;
   const category = categories.find((cat) => cat.id === categoryId);
   if (!category) {
-    return '—';
+    return EMPTY_VALUE;
   }
   return category.name;
 };

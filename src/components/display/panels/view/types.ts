@@ -11,6 +11,7 @@ export interface ViewAvatar {
 export interface ViewOverflowItem {
   key: string;
   src?: string;
+  fallback?: string;
   username: string;
 }
 

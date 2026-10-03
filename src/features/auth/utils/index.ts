@@ -1,5 +1,5 @@
-export { extractRegisterOptions, performRegister } from './flow/register';
-export { prepareLoginFinishRequest, cleanupOrphanedPasskeys, performLogin } from './flow/login';
+export { extractRegisterOptions, performRegister, buildEnrollUrl } from './flow/register';
+export { prepareLoginFinishRequest, performLogin } from './flow/login';
 export type { OrphanedPasskeysInfo } from './flow/login';
 
 export { handleUserLogout } from './logout/logout';

@@ -14,6 +14,7 @@ import {
   isValidTimeZone,
 } from '../../../../utils/shared/time';
 import type { User, UserSettings } from '../../../access-and-permissions/users/models';
+import { SETTINGS_CONSTANTS } from '../../constants';
 import { TIMEZONE_SECTION_CONSTANTS } from './constants';
 
 const { LABELS, REGION_CODES, DISPLAY_LOCALE } = TIMEZONE_SECTION_CONSTANTS;
@@ -49,15 +50,15 @@ const TimezoneSectionContent: React.FC = memo(() => {
   const regionOptions = useMemo(buildRegionOptions, []);
 
   useEffect(() => {
-    let cancelled = false;
+    let canceled = false;
     fetchCurrentUserDetails((fresh) => {
-      if (cancelled) return;
+      if (canceled) return;
       setCurrentUser(fresh);
       setUser(fresh);
       setDraft(toDraft(fresh.settings));
     });
     return () => {
-      cancelled = true;
+      canceled = true;
     };
   }, []);
 
@@ -93,9 +94,9 @@ const TimezoneSectionContent: React.FC = memo(() => {
     () => ({
       buttons: [
         {
-          key: 'save',
+          key: SETTINGS_CONSTANTS.TOOLBAR.SAVE_KEY,
           label: LABELS.SAVE_BUTTON,
-          variant: 'default',
+          variant: 'primary',
           loading: saving,
           disabled: !user || !hasChanges,
           onClick: handleSave,

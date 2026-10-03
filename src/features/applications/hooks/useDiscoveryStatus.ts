@@ -16,11 +16,11 @@ export function useDiscoveryStatus(onCycleComplete: () => void) {
   }, [onCycleComplete]);
 
   useEffect(() => {
-    let cancelled = false;
+    let canceled = false;
     const poll = async () => {
       try {
         const response = await fetchDiscoveryStatus();
-        if (cancelled) return;
+        if (canceled) return;
         const next = response.data;
         setStatus(next);
         if (wasInProgress.current && !next.inProgress) onComplete.current();
@@ -32,7 +32,7 @@ export function useDiscoveryStatus(onCycleComplete: () => void) {
     void poll();
     const interval = setInterval(() => void poll(), APPLICATIONS_DISCOVERY_STATUS_POLL_MS);
     return () => {
-      cancelled = true;
+      canceled = true;
       clearInterval(interval);
     };
   }, []);

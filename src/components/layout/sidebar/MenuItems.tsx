@@ -9,6 +9,7 @@ import {
   GroupsMenuButton,
   RolesMenuButton,
   ProtectionPlansMenuButton,
+  SettingsMenuButton,
 } from './MenuButtons';
 
 interface MenuItemsProps {
@@ -37,14 +38,15 @@ const MenuItems = memo(({ isCollapsed = false }: MenuItemsProps) => {
       }}
     >
       <HomeMenuButton isCollapsed={isCollapsed} />
-      {!isCollapsed && <div style={sectionLabelStyle}>{MENU_LABELS.DISCOVERY}</div>}
+      {!isCollapsed && <div style={sectionLabelStyle}>{MENU_LABELS.OPERATIONS}</div>}
       <ApplicationsMenuButton isCollapsed={isCollapsed} />
-      <InsightsMenuButton isCollapsed={isCollapsed} />
       <ProtectionPlansMenuButton isCollapsed={isCollapsed} />
-      {!isCollapsed && <div style={sectionLabelStyle}>{MENU_LABELS.ACCESS_AND_PERMISSIONS}</div>}
+      <InsightsMenuButton isCollapsed={isCollapsed} />
+      {!isCollapsed && <div style={sectionLabelStyle}>{MENU_LABELS.ADMINISTRATION}</div>}
       <UsersMenuButton isCollapsed={isCollapsed} />
       <GroupsMenuButton isCollapsed={isCollapsed} />
       <RolesMenuButton isCollapsed={isCollapsed} />
+      <SettingsMenuButton isCollapsed={isCollapsed} />
     </nav>
   );
 });

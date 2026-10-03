@@ -1,14 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Form, App as AntdApp, Button, Divider } from 'antd';
 import { KeyOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  performLogin,
-  cleanupOrphanedPasskeys,
-  type OrphanedPasskeysInfo,
-} from '../../utils/flow/login';
+import { performLogin, type OrphanedPasskeysInfo } from '../../utils/flow/login';
 import { redirectToGoogle } from '../../utils/flow/google';
+import { getUserFriendlyErrorMessage } from '../../utils/shared/errors';
 import { isWebAuthnSupported } from '../../utils/webauthn/core';
 import {
   APP_ROUTES,
@@ -32,16 +29,19 @@ import {
   selectSelfRegistrationEnabled,
 } from '../../store';
 import type { AppDispatch } from '../../../../store';
+import type { LoginLocationState } from '../../models';
 
 const Login: React.FC = () => {
   const [form] = Form.useForm();
+  const location = useLocation();
+  // Set by the Google callback; the alert lives in the passkey form, so that opens with it.
+  const redirectError = (location.state as LoginLocationState | null)?.loginError ?? null;
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [removing, setRemoving] = useState(false);
   const [orphanedInfo, setOrphanedInfo] = useState<OrphanedPasskeysInfo | null>(null);
-  const [showPasskeyForm, setShowPasskeyForm] = useState(false);
-  const [passkeyError, setPasskeyError] = useState<string | null>(null);
+  const [showPasskeyForm, setShowPasskeyForm] = useState(redirectError !== null);
+  const [passkeyError, setPasskeyError] = useState<string | null>(redirectError);
 
   const dispatch = useDispatch<AppDispatch>();
   const googleClientID = useSelector(selectGoogleClientID);
@@ -51,6 +51,8 @@ const Login: React.FC = () => {
 
   const isMountedRef = useRef(true);
   useEffect(() => {
+    // StrictMode and Fast Refresh run this cleanup and then the setup again.
+    isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
     };
@@ -60,6 +62,12 @@ const Login: React.FC = () => {
     dispatch(ensureAuthConfigThunk());
   }, [dispatch]);
 
+  // The state above already holds the message: drop it from the history entry so a reload
+  // or a return to this entry doesn't show it again.
+  useEffect(() => {
+    if (redirectError !== null) navigate(location, { replace: true, state: null });
+  }, [redirectError, location, navigate]);
+
   const handleLogin = async (values: { email: string }) => {
     setPasskeyError(null);
     setLoading(true);
@@ -68,7 +76,6 @@ const Login: React.FC = () => {
         values.email,
         message,
         () => navigate(APP_ROUTES.HOME),
-        () => navigate(APP_ROUTES.REGISTER),
         undefined,
         (info) => {
           if (!isMountedRef.current) return;
@@ -76,8 +83,8 @@ const Login: React.FC = () => {
           setModalOpen(true);
         },
       );
-    } catch {
-      if (isMountedRef.current) setPasskeyError('Authentication failed. Please try again.');
+    } catch (error) {
+      if (isMountedRef.current) setPasskeyError(getUserFriendlyErrorMessage(error));
     } finally {
       if (isMountedRef.current) setLoading(false);
     }
@@ -92,7 +99,6 @@ const Login: React.FC = () => {
         values.email,
         message,
         () => navigate(APP_ROUTES.HOME),
-        () => navigate(APP_ROUTES.REGISTER),
         undefined,
         (info) => {
           if (!isMountedRef.current) return;
@@ -100,38 +106,19 @@ const Login: React.FC = () => {
           setModalOpen(true);
         },
       );
-    } catch {
-      // Error handling is done in performLogin
+    } catch (error) {
+      if (isMountedRef.current) setPasskeyError(getUserFriendlyErrorMessage(error));
     } finally {
       if (isMountedRef.current) setLoading(false);
     }
   };
 
-  const handleRemove = async () => {
-    if (!orphanedInfo) return;
-    setRemoving(true);
-    try {
-      const requiresAuth = await cleanupOrphanedPasskeys(
-        orphanedInfo.credentialIds,
-        orphanedInfo.userId,
-        message,
-      );
-      if (!isMountedRef.current) return;
-      if (requiresAuth) {
-        message.open({
-          type: 'info',
-          content: 'Unable to automatically cleanup orphaned passkeys. Please contact support.',
-          duration: 8,
-        });
-      } else {
-        setModalOpen(false);
-        navigate(APP_ROUTES.REGISTER);
-      }
-    } catch {
-      // Error is already handled in cleanupOrphanedPasskeys
-    } finally {
-      if (isMountedRef.current) setRemoving(false);
-    }
+  // Without a session the account's passkeys can't be removed, and registration refuses
+  // existing accounts, so only an administrator can restore access.
+  const handleLostPasskey = () => {
+    setModalOpen(false);
+    setOrphanedInfo(null);
+    setPasskeyError(LOGIN_CONSTANTS.MESSAGES.LOST_PASSKEY);
   };
 
   const handleCancel = () => {
@@ -236,9 +223,8 @@ const Login: React.FC = () => {
         open={modalOpen}
         errorName={orphanedInfo?.errorName}
         onRetry={handleRetry}
-        onRemove={handleRemove}
+        onLostPasskey={handleLostPasskey}
         onCancel={handleCancel}
-        isRemoving={removing}
       />
     </>
   );

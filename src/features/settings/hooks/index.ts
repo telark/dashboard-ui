@@ -1,1 +1,1 @@
-export { useSettingsNavigation, type SecuritySubView } from './useSettingsNavigation';
+export { useSettingsNavigation } from './useSettingsNavigation';

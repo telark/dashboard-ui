@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
 
 import { LoadingButtonInterface } from '../../../interfaces/shared';
 import { BUTTON_CONFIGS, BUTTON_TEXTS } from '../../../constants';
@@ -18,7 +17,7 @@ const PrimaryButton: React.FC<LoadingButtonInterface> = ({
   return (
     <Button
       type={BUTTON_CONFIGS.PRIMARY_BUTTON.TYPE}
-      icon={loading ? <LoadingOutlined /> : icon}
+      icon={icon}
       loading={loading}
       onClick={onClick}
       disabled={disabled}

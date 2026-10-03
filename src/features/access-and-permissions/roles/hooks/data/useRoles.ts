@@ -8,7 +8,7 @@ const VIEW_ROLES = ACTION_PERMISSIONS.roles.view;
 
 export const useRoles = () => {
   const dispatch: AppDispatch = useDispatch();
-  const { roles, loading, error } = useSelector((state: RootState) => state.roles);
+  const { roles, loading, loaded, error } = useSelector((state: RootState) => state.roles);
   const canViewRoles = usePermission(VIEW_ROLES.scope, VIEW_ROLES.level);
 
   useEffect(() => {
@@ -22,6 +22,7 @@ export const useRoles = () => {
   return {
     roles,
     loading,
+    loaded,
     error,
     refetch,
   };

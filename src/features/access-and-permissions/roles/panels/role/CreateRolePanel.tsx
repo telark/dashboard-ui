@@ -1,8 +1,10 @@
 import React, { useMemo, useEffect, useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../../../../store';
 import { Icons } from '../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import RoleForm from '../../components/display/shared/RoleForm';
-import { useRoleActions, useRoles, useRoleCategories, useNameValidation } from '../../hooks';
+import { useRoleActions, useRoleCategories, useNameValidation } from '../../hooks';
 import { convertFormValuesToRoleFormData } from '../../utils';
 import type { RoleFormValues, ScopeFormValue } from '../../models';
 import AnimationWrapper from '../../../../../components/display/panels/slide-out/AnimationWrapper';
@@ -23,7 +25,9 @@ interface CreateRolePanelProps {
 const CreateRolePanel: React.FC<CreateRolePanelProps> = ({ open, onClose, form }) => {
   const [expanded, setExpanded] = useState(false);
   const { handleCreate, submitting } = useRoleActions({ skipNavigate: true });
-  const { roles } = useRoles();
+  // Reads the roles the page already loaded: a refetch here flips an empty list into its loading
+  // state, which remounts this panel, which refetches again.
+  const roles = useSelector((state: RootState) => state.roles.roles);
   const watchedName = Form.useWatch('name', form) as string | undefined;
   const { isNameInvalid } = useNameValidation({ roles });
   const { defaultCategoryId } = useRoleCategories();
