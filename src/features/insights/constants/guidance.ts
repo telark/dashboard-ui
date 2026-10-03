@@ -18,7 +18,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'image_pull.denied_or_missing': {
     cause:
-      '{registry} refused the pull. It answers this way both when the repository does not exist and when it is private and no valid pull credentials were sent.',
+      '{registry} refused the pull: the repository does not exist, or it is private and no valid pull credentials were sent.',
     steps: [
       'Check that the repository name in {image} is spelled correctly.',
       'If the repository is private, give the workload a pull secret (imagePullSecrets) or attach one to its service account.',
@@ -50,16 +50,14 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
     ],
   },
   'image_pull.rate_limited': {
-    cause:
-      '{registry} limits how many pulls it accepts from one address or account, and this cluster exceeded the limit.',
+    cause: '{registry} limits pulls per address or account, and this cluster exceeded the limit.',
     steps: [
       'Authenticate pulls to {registry} with a pull secret (higher limits), or use a registry mirror or cache.',
       'Prefer imagePullPolicy IfNotPresent with a pinned tag so nodes reuse cached images.',
     ],
   },
   'image_pull.other': {
-    cause:
-      'The pull of {image} failed for a reason the message states but that has no specific guidance.',
+    cause: 'The pull of {image} failed for a reason with no specific guidance.',
     steps: [
       'Read the registry message in Details.',
       "Check the image name, the registry's reachability and the pull credentials of {workload}.",
@@ -67,7 +65,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'crashloop.probe_kill': {
     cause:
-      'The kubelet restarts a container whose {probe} probe keeps failing. Either the application is not answering the probe, or the probe starts too early or allows too little time.',
+      'The kubelet restarts a container whose {probe} probe keeps failing: the application does not answer it, or the probe starts too early or allows too little time.',
     steps: [
       'Check the {probe} probe of {workload} (containers → {probe}Probe): path, port and timeouts must match what the application serves.',
       'If the application needs time to start, add a startup probe instead of a longer liveness delay.',
@@ -76,7 +74,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'crashloop.init_failure': {
     cause:
-      'Pods start only after every init container succeeds; {container} keeps exiting with an error.',
+      'Pods start only after every init container succeeds, and {container} keeps exiting with an error.',
     steps: [
       'Read the logs of the init container {container}.',
       'Check what it waits for or prepares (a database, a migration, a file) and whether that dependency is reachable.',
@@ -92,15 +90,15 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'crashloop.exit_0': {
     cause:
-      'The process completed successfully and exited, but a Deployment, StatefulSet or DaemonSet expects a process that keeps running.',
+      'The process exited successfully, but a Deployment, StatefulSet or DaemonSet expects it to keep running.',
     steps: [
-      'Make the container run a long-lived process (a server, a worker loop) rather than a one-off command.',
+      'Make the container run a long-lived process (a server, a worker loop).',
       'If this is a one-off task, run it as a Job instead.',
     ],
   },
   'crashloop.exit_1': {
     cause:
-      'Exit code 1 is a general application error: the program started and then stopped on an error it reported in its logs.',
+      'Exit code 1 is a general application error: the program started, then stopped on an error it logged.',
     steps: [
       'Read the container logs from the last restart: the error is usually on the last lines.',
       'Check recent configuration: environment variables, mounted files and the services it connects to.',
@@ -123,7 +121,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'crashloop.exit_137': {
     cause:
-      'Exit code 137 means the process was killed with SIGKILL. The usual causes are the memory limit (the kernel did not report it as OOMKilled), a failed liveness probe, or the process killing itself.',
+      'Exit code 137 means the process was killed with SIGKILL, usually by the memory limit (not reported as OOMKilled), a failed liveness probe, or the process itself.',
     steps: [
       "Compare the container's memory usage with its limit on the application page.",
       'Check the liveness probe of {workload}.',
@@ -140,11 +138,11 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'crashloop.exit_143': {
     cause:
-      'Exit code 143 means the process received SIGTERM and stopped. Something is asking it to stop: a failing probe, a shutdown hook, or the process signaling itself.',
+      'Exit code 143 means the process stopped on SIGTERM, sent by a failing probe, a shutdown hook, or the process itself.',
     steps: ['Check the probes of {workload}.', 'Read the logs just before the stop.'],
   },
   'crashloop.exit_other': {
-    cause: "The container keeps exiting with code {exitCode}; the application's logs state why.",
+    cause: "The container keeps exiting with code {exitCode}. The application's logs state why.",
     steps: [
       'Read the container logs from the last restart.',
       'Check the documentation of the application for exit code {exitCode}.',
@@ -182,7 +180,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'probe_failure.startup': {
     cause:
-      'The startup probe gives a slow application time to start; it is failing before the application is ready. {failureCause}',
+      'The startup probe gives a slow application time to start, and it fails before the application is ready. {failureCause}',
     steps: [
       'Raise failureThreshold × periodSeconds of the startup probe of {workload} to cover the real start time.',
       'Check the port and path it probes.',
@@ -207,7 +205,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
       'The nodes carry taints and the pod has no matching toleration, so it may not run there.',
     steps: [
       'Check which taints the nodes carry and whether {workload} should run there.',
-      'If it should, add the matching tolerations to {workload}; otherwise add untainted capacity.',
+      'If it should, add the matching tolerations to {workload}. Otherwise, add untainted capacity.',
     ],
   },
   'scheduling.node_affinity': {
@@ -253,7 +251,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
     ],
   },
   'scheduling.other': {
-    cause: 'The scheduler found no node for the pod; its message lists the reasons per node.',
+    cause: 'The scheduler found no node for the pod. Its message lists the reasons per node.',
     steps: [
       'Read the scheduler message in Details and adjust the requests, node rules or capacity it names.',
     ],
@@ -279,7 +277,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
     steps: ['Check the node disk usage (images, logs) and the local storage use of {workload}.'],
   },
   'resource_pressure.evicted_pid': {
-    cause: 'Too many processes run on the node; the kubelet evicted pods.',
+    cause: 'Too many processes run on the node, so the kubelet evicted pods.',
     steps: [
       'Check whether {workload} spawns processes without bound (a fork loop, a thread leak).',
     ],
@@ -293,12 +291,12 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
     ],
   },
   'resource_pressure.other': {
-    cause: 'The kubelet evicted the pod; the message names the resource.',
+    cause: 'The kubelet evicted the pod. The message names the resource.',
     steps: ['Read the eviction message in Details.'],
   },
   'rollout_stuck.progress_deadline': {
     cause:
-      "The new version's pods did not become ready within progressDeadlineSeconds, so the rollout is marked as failed and stays half-way.",
+      "The new version's pods did not become ready within progressDeadlineSeconds, so the rollout is marked failed and stays half-way.",
     steps: [
       'Look at the new pods of {workload}: why are they not ready (pending, starting, failing checks)?',
       'Fix the new version, or roll back to the previous snapshot from the Snapshots section (Manage Snapshots).',
@@ -313,7 +311,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'rollout_stuck.admission_denied': {
     cause:
-      'An admission policy rejected the pods — for example a protection plan in enforce mode, or another policy on the cluster.',
+      'An admission policy rejected the pods, for example a protection plan in enforce mode or another policy on the cluster.',
     steps: [
       'Read the policy message in Details: it names the rule that failed.',
       'Change {workload} to satisfy the rule, or ask the owner of the policy for an exception.',
@@ -321,25 +319,21 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'rollout_stuck.incomplete': {
     cause: 'The new version is not fully rolled out yet and no failure was reported.',
-    steps: ['Wait a few minutes; if it does not progress, look at the new pods of {workload}.'],
+    steps: ['Wait a few minutes. If it does not progress, look at the new pods of {workload}.'],
   },
   'config_change_regression.image': {
     cause:
       'The workload degraded shortly after its image changed, and no more specific symptom was found.',
-    steps: [
-      'Compare the new image with the previous one; roll back to the snapshot before gen {generation} if the new version is faulty.',
-    ],
+    steps: ['Compare the image of gen {generation} with the previous one.'],
   },
   'config_change_regression.config': {
     cause: 'The workload degraded shortly after its configuration changed.',
-    steps: [
-      'Review the change of gen {generation} in History Changes; roll back to the snapshot before it from the Snapshots section if it caused the problem.',
-    ],
+    steps: ['Review the change of gen {generation} in History Changes.'],
   },
   'config_change_regression.resources': {
     cause: 'The workload degraded shortly after its requests or limits changed.',
     steps: [
-      'Check that the new requests still fit on the nodes and the new limits cover peak usage; roll back if not.',
+      'Check that the new requests still fit on the nodes and the new limits cover peak usage. Roll back if not.',
     ],
   },
   'config_change_regression.other': {
@@ -356,7 +350,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'other.create_container_error': {
     cause:
-      'The container runtime refused to create the container; the message names the reason (a mount, a subPath, a device).',
+      'The container runtime refused to create the container. The message names the reason (a mount, a subPath, a device).',
     steps: ['Read the runtime message in Details and fix the field it names in {workload}.'],
   },
   'other.volume_mount': {
@@ -380,13 +374,15 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
     cause: 'With one replica every pod restart, node maintenance or rollout is an outage.',
     steps: [
       'Set replicas to 2 or more in {workload} (spec.replicas), or set its autoscaler minimum to 2.',
-      'Then add a disruption budget so drains keep one replica running.',
+      'Then create a disruption budget so drains keep one replica running.',
     ],
   },
   'reliability.no_pdb': {
     cause:
       'Without a PodDisruptionBudget, voluntary disruptions (node upgrades, drains, autoscaler scale-down) may evict every replica together.',
-    steps: ['Add a PodDisruptionBudget selecting the pods of {workload} with maxUnavailable: 1.'],
+    steps: [
+      'Create a PodDisruptionBudget selecting the pods of {workload} with maxUnavailable: 1.',
+    ],
   },
   'reliability.pdb_blocks_eviction': {
     cause:
@@ -412,16 +408,16 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'reliability.liveness_same_as_readiness': {
     cause:
-      'Readiness should remove a struggling pod from traffic; liveness should only restart a stuck process. The same check does both at once.',
+      'Readiness should remove a struggling pod from traffic, and liveness should only restart a stuck process. The same check does both at once.',
     steps: [
       'Make the liveness probe of {containers} lighter than readiness (a process-only endpoint), or give it a larger failureThreshold.',
     ],
   },
   'reliability.no_startup_probe': {
     cause:
-      'Liveness checks start after initialDelaySeconds; an application that takes longer to start is killed before it is ready and never comes up.',
+      'Liveness checks start after initialDelaySeconds, so an application that takes longer to start is killed before it is ready and never comes up.',
     steps: [
-      'Add a startupProbe to {containers} with failureThreshold × periodSeconds longer than the real start time; liveness then starts only after it succeeds.',
+      'Add a startupProbe to {containers} with failureThreshold × periodSeconds longer than the real start time. Liveness then starts only after it succeeds.',
     ],
   },
   'reliability.replicas_same_node': {
@@ -438,7 +434,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'reliability.short_grace_period': {
     cause:
-      'The grace period lets a process finish in-flight work after SIGTERM; 0–1 s kills it immediately.',
+      'The grace period lets a process finish in-flight work after SIGTERM. A period of 0–1 s kills it immediately.',
     steps: [
       'Remove terminationGracePeriodSeconds from {workload} (default 30 s) or set it to the time a clean shutdown takes.',
     ],
@@ -462,7 +458,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'reliability.probe_port_undeclared': {
     cause:
-      "A named probe port is resolved from the container's declared ports; {port} is not declared by {containers}, so the {probe} probe can never succeed.",
+      "A named probe port is resolved from the container's declared ports. {port} is not declared by {containers}, so the {probe} probe can never succeed.",
     steps: [
       'Declare the port {port} in the ports of {containers}, or point the {probe} probe at a declared port name or number.',
     ],
@@ -477,7 +473,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'resources.no_requests': {
     cause:
-      'Requests reserve node capacity for a container; without them it gets BestEffort treatment and is the first to be evicted.',
+      'Requests reserve node capacity for a container. Without them it gets BestEffort treatment and is evicted first.',
     steps: [
       "Set {missing} requests on {containers} close to its normal usage (see the application's metrics).",
     ],
@@ -536,7 +532,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'scaling.hpa_missing_requests': {
     cause:
-      'Utilization is usage divided by request; without a request the autoscaler has no value to act on.',
+      'Utilization is usage divided by request, so without a request the autoscaler has no value to act on.',
     steps: ['Set a {resource} request on {containers} in {workload}.'],
   },
   'scaling.hpa_at_max': {
@@ -547,7 +543,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   'scaling.no_hpa_sustained_load': {
     cause: 'Under sustained load a fixed replica count has no headroom for peaks.',
     steps: [
-      'Add a HorizontalPodAutoscaler to {workload} with a CPU utilization target around 70%, or raise its replicas.',
+      'Create a HorizontalPodAutoscaler for {workload} with a CPU utilization target around 70%, or raise its replicas.',
     ],
   },
   'scaling.hpa_inactive': {
@@ -569,19 +565,19 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
     cause:
       "A privileged container has every capability and access to the host's devices: it is root on the node.",
     steps: [
-      'Remove privileged: true from {containers}; add only the specific capabilities it needs.',
+      'Remove privileged: true from {containers}, and add only the specific capabilities it needs.',
     ],
   },
   'security.privilege_escalation_allowed': {
     cause:
-      'allowPrivilegeEscalation defaults to true; setting it to false blocks setuid/setgid escalation.',
+      'allowPrivilegeEscalation defaults to true. Setting it to false blocks setuid/setgid escalation.',
     steps: ['Set securityContext.allowPrivilegeEscalation: false on {containers}.'],
   },
   'security.runs_as_root': {
     cause:
       'A process running as root inside the container is one kernel bug away from root on the node.',
     steps: [
-      'Set securityContext.runAsNonRoot: true and a non-zero runAsUser on {containers}; use an image that runs as a non-root user.',
+      'Set securityContext.runAsNonRoot: true and a non-zero runAsUser on {containers}, and use an image that runs as a non-root user.',
     ],
   },
   'security.writable_root_fs': {
@@ -594,13 +590,13 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
     cause:
       'Capabilities such as SYS_ADMIN or NET_ADMIN grant near-root powers over the host kernel or network.',
     steps: [
-      'Remove the capabilities {workload} does not need; keep capabilities.drop: [ALL] and add back only the exact one required.',
+      'Remove the capabilities {workload} does not need. Keep capabilities.drop: [ALL] and add back only the exact one required.',
     ],
   },
   'security.host_namespaces': {
     cause: 'Host namespaces remove the isolation between the pod and the node.',
     steps: [
-      'Remove hostNetwork/hostPID/hostIPC from {workload} unless it is a node agent that needs it; expose ports with a Service instead.',
+      'Remove hostNetwork/hostPID/hostIPC from {workload} unless it is a node agent that needs it. Expose ports with a Service instead.',
     ],
   },
   'security.host_path': {
@@ -623,7 +619,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'security.secrets_in_env': {
     cause:
-      'Environment variables are copied to child processes and often printed by frameworks; mounted files are not.',
+      'Environment variables are copied to child processes and often printed by frameworks. Mounted files are not.',
     steps: [
       'Mount the secret as a file (a secret volume) and read it from the path in {workload}.',
     ],
@@ -661,7 +657,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'security.proc_mount_unmasked': {
     cause:
-      'The container runtime normally masks sensitive /proc paths; procMount: Unmasked exposes them to the container.',
+      'The container runtime normally masks sensitive /proc paths, and procMount: Unmasked exposes them to the container.',
     steps: [
       'Remove procMount: Unmasked from {containers} unless it runs nested containers that need it.',
     ],
@@ -674,7 +670,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   'images.pull_policy_mismatch': {
     cause: 'With a moving tag and IfNotPresent, nodes cache different builds under the same name.',
     steps: [
-      'Pin the image to a version or digest; or, if the tag must move, use imagePullPolicy: Always.',
+      'Pin the image to a version or digest. If the tag must move, use imagePullPolicy: Always.',
     ],
   },
   'images.pull_policy_never': {
@@ -685,7 +681,7 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   'images.digest_not_pinned_production': {
     cause:
       'A tag can be pushed again: the same spec may run different code after a node pulls {image} again.',
-    steps: ['Pin {image} by digest (@sha256:…) in {workload}; keep the tag for readability.'],
+    steps: ['Pin {image} by digest (@sha256:…) in {workload}, and keep the tag for readability.'],
   },
   'config.duplicate_env': {
     cause:
@@ -701,21 +697,21 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   },
   'networking.service_selector_mismatch': {
     cause:
-      'A Service routes only to pods whose labels match its selector; a typo or a relabeled workload leaves it empty.',
+      'A Service routes only to pods whose labels match its selector, so a typo or a relabeled workload leaves it empty.',
     steps: [
       'Compare the selector of {service} with the pod labels of the workload it should reach, and fix one of them.',
     ],
   },
   'networking.service_port_mismatch': {
     cause:
-      'A Service forwards to its targetPort; a name no container declares fails, and an undeclared number usually means a typo.',
+      'A Service forwards to its targetPort. A name no container declares fails, and an undeclared number usually means a typo.',
     steps: ['Set the targetPort of {service} to the container port {workload} listens on.'],
   },
   'networking.no_network_policy': {
     cause:
-      'Without a NetworkPolicy every pod can reach every other pod; a policy limits who can connect.',
+      'Without a NetworkPolicy every pod can reach every other pod. A policy limits who can connect.',
     steps: [
-      'Add a NetworkPolicy for {workload} that allows only the callers it needs (for example its ingress and the pods of its own application).',
+      'Create a NetworkPolicy for {workload} that allows only the callers it needs (for example its ingress and the pods of its own application).',
     ],
   },
   'networking.network_policy_allows_all': {
@@ -735,20 +731,20 @@ export const INSIGHT_GUIDANCE: Record<InsightReason, InsightGuidance> = {
   'change_risk.frequent_rollbacks': {
     cause: 'Repeated rollbacks mean faulty versions are reaching the cluster.',
     steps: [
-      'Test versions before they reach this environment, and add a protection plan in enforce mode for the checks the rollbacks were about.',
+      'Test versions before they reach this environment, and create a protection plan in enforce mode for the checks the rollbacks were about.',
     ],
   },
   'protection.production_uncovered': {
     cause:
-      'Protection plans check changes before they apply; a production application without one is changed unchecked.',
+      'Protection plans check changes before they apply. A production application without one is changed unchecked.',
     steps: [
       'Create a protection plan covering {app} (Protection plans page), start in audit mode, then switch to enforce.',
     ],
   },
   'protection.production_audit_only': {
-    cause: 'Audit mode records violations without stopping them; production usually needs enforce.',
+    cause: 'Audit mode records violations without stopping them. Production usually needs enforce.',
     steps: [
-      'Review the violations of {plans}; once they are clean, switch the plan to enforce mode.',
+      'Review the violations of {plans}. Once they are clean, switch the plan to enforce mode.',
     ],
   },
   'consistency.image_skew': {
@@ -768,7 +764,7 @@ export const PROBE_FAILURE_CAUSE: Record<string, string> = {
   timeout:
     'The application did not answer within timeoutSeconds: it is overloaded, blocked, or the timeout is too short.',
   command: 'The check command ran inside the container and returned a failure.',
-  other: 'The probe failed; the message states why.',
+  other: 'The probe failed. The message states why.',
 };
 
 export const CHANGE_ROLLBACK_STEP =

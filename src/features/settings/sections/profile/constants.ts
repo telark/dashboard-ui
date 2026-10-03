@@ -29,7 +29,7 @@ export const PROFILE_SECTION_CONSTANTS = {
       FULLNAME_LABEL: 'Full name',
       FULLNAME_PLACEHOLDER: 'e.g. John Doe',
       EMAIL_LABEL: 'Email',
-      EMAIL_PLACEHOLDER: 'e.g. john@example.com',
+      EMAIL_PLACEHOLDER: 'e.g. test@example.com',
       EMAIL_LOCKED:
         "The bootstrap admin's email is set when Telark is installed and can't be changed here.",
       EMAIL_RESERVED: 'This email is reserved for the bootstrap admin.',

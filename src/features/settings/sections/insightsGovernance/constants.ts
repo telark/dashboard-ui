@@ -40,7 +40,7 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     DISCOVERY_SCOPE_DESCRIPTION: 'Scope discovery and insights by namespace.',
     NAMESPACES_TITLE: 'Excluded namespaces',
     NAMESPACES_DESCRIPTION:
-      'Choose namespaces to exclude from discovery and platform insights. System namespaces are pre-selected by default.',
+      'Choose namespaces to exclude from discovery and platform insights. System namespaces are pre-selected.',
     NAMESPACES_SELECTOR_PLACEHOLDER: 'Select namespaces…',
     NAMESPACES_IMPACT_NOUN: 'application',
     NAMESPACES_IMPACT_HIDDEN: 'will be hidden',
@@ -49,7 +49,7 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     CUSTOM_OPTION: 'Custom',
     SNAPSHOTS_MAX_PER_APP_LABEL: 'Maximum Snapshots per application',
     SNAPSHOTS_MAX_PER_APP_HINT:
-      'Telark saves a snapshot before each change and keeps the most recent ones, up to this number. Older snapshots are deleted. Their changes stay in the history, but you can no longer compare them or roll back to them. For applications in several namespaces, the limit applies per namespace. A new limit takes effect from the next change.',
+      'Telark saves a snapshot before each change and keeps the most recent ones, up to this number. Older snapshots are deleted: their changes stay in the history, but you can no longer compare or roll back to them. For applications in several namespaces, the limit applies per namespace. A new limit applies from the next change.',
     PLATFORM_SAVE_SNAPSHOTS_BUTTON: 'Save snapshots',
     EDIT_DISCOVERY_CONFIG_PERMISSION_DENIED:
       'You do not have permission to edit discovery scope settings',
@@ -67,10 +67,10 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
   },
   MESSAGES: {
     MODEL_VALID: 'Model is ready.',
-    MODEL_LACKS_TOOLS: 'This model cannot use tools; pick another.',
+    MODEL_LACKS_TOOLS: 'This model cannot use tools. Pick another.',
     PULL_STARTED: 'Model installation started.',
     PULL_FAILED: 'Failed to start the model installation.',
-    MODEL_NOT_INSTALLED: 'This model is not installed yet; use Install model.',
+    MODEL_NOT_INSTALLED: 'This model is not installed yet. Use Install model.',
     INVALID_MODEL_NAME: 'Enter a model tag such as granite4:350m.',
     CHECK_FAILED: 'Could not check the model.',
     COPIED: 'Command copied.',

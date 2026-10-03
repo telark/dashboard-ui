@@ -67,7 +67,7 @@ export const ROLES_CONSTANTS = {
       `It is assigned to ${pluralize(users, 'user')} and ${pluralize(groups, 'group')}. They lose the access it grants immediately. The role disappears from them within a few seconds.`,
     DELETE_MODAL_OK: 'Delete',
     NO_ROLES_TITLE: 'No roles yet',
-    NO_ROLES_DESCRIPTION: 'Get started by creating your first role.',
+    NO_ROLES_DESCRIPTION: 'Create your first role to get started.',
     VIEW_LABELS: {
       STATUS: 'Status',
       TYPE: 'Type',

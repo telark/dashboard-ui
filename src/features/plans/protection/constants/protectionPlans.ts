@@ -63,7 +63,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       NOT_STARTED_HINT: 'Reports become available once the plan has started.',
       EMPTY_DRAFT: 'Reports become available once the plan starts.',
       EMPTY_ACTIVE:
-        'No reports yet. Generate one now, or wait for the final report captured when the plan ends.',
+        'No reports yet. Generate one now, or wait for the final report when the plan ends.',
       EMPTY_ENDED: 'No report was captured for this plan.',
       LOAD_ERROR: 'Could not load reports.',
       GENERATE_SUCCESS: 'Report generated.',
@@ -138,7 +138,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
           'Recent admission decisions: what the plan blocked, audited or let through.',
         REPORTS_TITLE: 'Reports',
         REPORTS_DESCRIPTION:
-          'What happened in the cluster while this plan was in effect. Telark captures a final report when the plan ends or is canceled.',
+          'What happened in the cluster while this plan was in effect. A final report is captured when the plan ends or is canceled.',
       },
       FIELDS: {
         ID: 'ID',
@@ -177,20 +177,18 @@ export const PROTECTION_PLANS_CONSTANTS = {
         CANCEL_MODAL_OK: 'Cancel plan',
         REACTIVATE: 'Reactivate',
         REACTIVATE_MODAL_TITLE: 'Reactivate Protection Plan',
-        REACTIVATE_MODAL_BODY:
-          'Reactivate this protection plan? Its policies will be re-deployed to the cluster.',
+        REACTIVATE_MODAL_BODY: 'Reactivate this plan? Its policies are redeployed to the cluster.',
         REACTIVATE_MODAL_OK: 'Reactivate',
         REACTIVATE_DISABLED_EXPIRED_TOOLTIP:
-          "The plan's time range has expired. Edit the plan to set new dates before reactivating.",
+          "The plan's time range has expired. Edit its dates before reactivating.",
         APPROVE: 'Approve',
         REJECT: 'Reject',
         APPROVE_MODAL_TITLE: 'Approve Protection Plan',
         APPROVE_MODAL_BODY:
-          'Approve this protection plan? Its policies will be deployed to the cluster as soon as its schedule allows.',
+          'Approve this plan? Its policies are deployed to the cluster as soon as its schedule allows.',
         APPROVE_MODAL_OK: 'Approve',
         REJECT_MODAL_TITLE: 'Reject Protection Plan',
-        REJECT_MODAL_BODY:
-          'Reject this protection plan? Nothing will be deployed and the requester will be notified.',
+        REJECT_MODAL_BODY: 'Reject this plan? Nothing is deployed, and the requester is notified.',
         REJECT_MODAL_OK: 'Reject',
         DECISION_COMMENT_LABEL: 'Comment',
         DECISION_COMMENT_PLACEHOLDER: 'Add a comment for the requester',
@@ -219,7 +217,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       DELETE_MODAL_OK: 'Delete',
       DELETE_MODAL_NOTE:
         'Its reports, including the final report, are deleted with it. Download any report you need first.',
-      DUPLICATE_SUCCESS: 'Plan duplicated successfully.',
+      DUPLICATE_SUCCESS: 'Plan duplicated.',
       DUPLICATE_ERROR: 'Failed to duplicate plan.',
       CANCEL_SUCCESS: (name: string) => `Plan "${name}" canceled.`,
       CANCEL_ERROR: 'Failed to cancel plan.',
@@ -264,7 +262,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       EMPTY_AUDIT: 'In audit mode, operations that would have been blocked appear here.',
       EMPTY_ENFORCE: 'Nothing matching this plan has been blocked recently.',
       RETENTION_NOTE: (window: string) =>
-        `Admission decisions are retained for ${window}. Older activity is no longer available.`,
+        `Admission decisions are kept for ${window}. Older ones are no longer available.`,
       LOAD_ERROR: 'Could not load violations.',
       LOAD_TIMEOUT: 'Could not load violations. The server took too long to respond.',
       REFRESH: 'Refresh',
@@ -392,11 +390,10 @@ export const PROTECTION_PLANS_CONSTANTS = {
       TITLE: 'Edit Protection Plan',
       SUBMIT_BUTTON: 'Save changes',
       LOADING_LABEL: 'Saving...',
-      ACTIVE_SCOPE_WARNING:
-        'Saving changes to scope will re-render and re-deploy this plan’s policies.',
+      ACTIVE_SCOPE_WARNING: 'Saving a scope change redeploys this plan’s policies.',
       NO_CHANGES_HINT: 'No changes to save.',
       APPROVED_LOCKED_ALERT:
-        'This plan was approved as configured. Scope, policies, schedule and mode are locked; duplicate the plan, or cancel and reactivate it to request a new approval.',
+        'This plan was approved as configured, so scope, policies, schedule and mode are locked. To change them, duplicate the plan, or cancel and reactivate it to request a new approval.',
     },
   },
   CREATE_PAGE: {
@@ -471,15 +468,15 @@ export const PROTECTION_PLANS_CONSTANTS = {
       { value: 'critical', label: 'Critical' },
     ] as Array<{ value: string; label: string }>,
     APPROVAL_MODE_OPTIONS: [
-      { value: 'automatic', label: 'Automatic — deploys as soon as the plan starts' },
+      { value: 'automatic', label: 'Automatic: deploys as soon as the plan starts' },
       {
         value: 'required',
-        label: 'Requires approval — an approver must confirm before anything is deployed',
+        label: 'Requires approval: an approver must confirm before anything is deployed',
       },
     ] as Array<{ value: string; label: string }>,
     MODE_OPTIONS: [
-      { value: 'audit', label: 'Audit — log violations, do not block' },
-      { value: 'enforce', label: 'Enforce — block policy violations' },
+      { value: 'audit', label: 'Audit: log violations, do not block' },
+      { value: 'enforce', label: 'Enforce: block policy violations' },
     ] as Array<{ value: string; label: string }>,
     TIME_MODE_OPTIONS: [
       { value: 'permanent', label: 'Permanent' },

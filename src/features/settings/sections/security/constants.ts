@@ -7,11 +7,11 @@ export const SECURITY_SECTION_CONSTANTS = {
     },
     PASSKEYS_CARD_TITLE: 'Passkeys',
     PASSKEYS_CARD_DESCRIPTION:
-      'Sign in with passkeys on this device and others. Add or remove passkeys to manage how you sign in.',
+      'Sign in with passkeys on this device and others. Add or remove them to manage how you sign in.',
     PASSKEYS_MANAGE_LINK: 'Manage passkeys',
     ACTIVE_SESSIONS_CARD_TITLE: 'Active sessions',
     ACTIVE_SESSIONS_CARD_DESCRIPTION:
-      'Devices where you’re currently signed in. You can revoke sessions you don’t recognize.',
+      'Devices where you’re signed in. Revoke any session you don’t recognize.',
     ACTIVE_SESSIONS_EMPTY: 'No other active sessions.',
     ACTIVE_SESSIONS_HEADER_DEVICE: 'Device',
     ACTIVE_SESSIONS_HEADER_BROWSER: 'Browser',
@@ -28,11 +28,11 @@ export const SECURITY_SECTION_CONSTANTS = {
     REVOKE_CONFIRM_MODAL: {
       TITLE: 'Revoke session',
       MESSAGE_CURRENT:
-        'You are about to revoke this session. You will be logged out from this device and need to sign in again.',
+        'Revoking this session signs you out on this device, and you will need to sign in again.',
       MESSAGE_OTHER:
-        'You are about to revoke this session. That device will be signed out and will need to sign in again.',
+        'Revoking this session signs that device out, and it will need to sign in again.',
       MESSAGE_UNKNOWN:
-        'You are about to revoke this session. It may be the device you are using now, in which case you will be signed out here.',
+        'Revoking this session signs that device out. If it is the device you are using now, you will be signed out here.',
       OK: 'Revoke',
       CANCEL: 'Cancel',
     },

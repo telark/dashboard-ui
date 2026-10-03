@@ -18,7 +18,7 @@ const ActorDisplay: React.FC<ActorDisplayProps> = memo(
     if (actor && !username) return null;
     return (
       <UserDisplay
-        user={user ?? (username ? { username } : null)}
+        user={username ? { username, avatar: user?.avatar } : null}
         title={actor}
         size={size}
         showBorder={showBorder}

@@ -59,7 +59,7 @@ export const APPLICATIONS_UI = {
   },
   EDIT_PAGE: {
     PANEL_TITLE: 'Edit application',
-    SUCCESS_MESSAGE: 'Application updated successfully.',
+    SUCCESS_MESSAGE: 'Application updated.',
     SECTION_BASIC: 'Basic information',
     SECTION_BASIC_DESC: 'Name, display name, and description.',
     SAVE: 'Save changes',
@@ -127,9 +127,9 @@ export const APPLICATIONS_UI = {
       DESCRIPTION: 'Stored snapshots detected for this application.',
       SHOWING_FIRST: 'Showing first',
       EMPTY_TITLE: 'No snapshots yet',
-      EMPTY_DESCRIPTION: 'No snapshots have been taken yet for this application.',
+      EMPTY_DESCRIPTION: 'No snapshots have been taken for this application.',
       ROLLBACKS_EMPTY_TITLE: 'No rollbacks yet',
-      ROLLBACKS_EMPTY_DESCRIPTION: 'No rollbacks have been triggered yet for this application.',
+      ROLLBACKS_EMPTY_DESCRIPTION: 'No rollbacks have been triggered for this application.',
       GENERATION: 'Generation',
       SEVERITY: 'Severity',
       SIZE: 'Size',
@@ -170,17 +170,16 @@ export const APPLICATIONS_UI = {
       COMPARE: 'Compare',
       VIEW_MANIFEST: 'View Manifest',
       ROLLBACK: 'Rollback',
-      ROLLBACK_CONFIRM_TITLE: 'Rollback to this snapshot?',
+      ROLLBACK_CONFIRM_TITLE: 'Roll back to this snapshot?',
       ROLLBACK_CONFIRM_CONTENT:
-        'This starts a rollback to the selected snapshot. Once the rollback starts it cannot be aborted, so you get a short undo window before it is sent.',
+        'Once a rollback starts, it cannot be aborted, so you get a short undo window before it is sent.',
       ROLLBACK_CONFIRM_OK: 'Start rollback',
       ROLLBACK_COUNTDOWN_CONTENT:
         'Undo now if you need more time. Once the rollback starts it cannot be aborted.',
       ROLLBACK_UNDO: 'Undo',
       ROLLBACK_SUCCESS: 'Rollback request submitted.',
       ROLLBACK_FAILED: 'Rollback could not be started. Please try again.',
-      ROLLBACK_USER_REQUIRED:
-        'Sign in with a user account to start a rollback (username is required for the request).',
+      ROLLBACK_USER_REQUIRED: 'Sign in with a user account to start a rollback.',
       TAKEN_AT: 'Taken at',
       MANIFEST_MODAL_TITLE: 'Manifest',
       MANIFEST_BACK: 'Snapshots',
@@ -193,7 +192,7 @@ export const APPLICATIONS_UI = {
       MANIFEST_LOADING: 'Loading manifest…',
       MANIFEST_NOT_FOUND_TITLE: 'Manifest not available',
       MANIFEST_NOT_FOUND_DESCRIPTION:
-        'No stored manifest was found for this snapshot. It may have been pruned by snapshot retention, or never captured.',
+        'This snapshot has no stored manifest. Snapshot retention may have removed it, or it was never captured.',
       MANIFEST_ERROR_TITLE: 'Could not load the manifest',
       MANIFEST_ERROR_DESCRIPTION: 'The manifest could not be read. Try again in a moment.',
       MANIFEST_EMPTY_TITLE: 'Nothing to show',
@@ -203,18 +202,17 @@ export const APPLICATIONS_UI = {
       VIEW_MANIFEST_PERMISSION_DENIED_TOOLTIP:
         'You do not have permission to view snapshot manifests',
       ROLLBACK_FILE_MISSING_TOOLTIP:
-        'The stored snapshot for this entry is no longer available, so it cannot be rolled back to.',
+        'This snapshot is no longer stored, so you cannot roll back to it.',
       VIEW_MANIFEST_FILE_MISSING_TOOLTIP:
-        'The stored snapshot for this entry is no longer available, so its manifest cannot be shown.',
+        'This snapshot is no longer stored, so its manifest cannot be shown.',
       ROLLBACK_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to roll back applications',
       ROLLBACK_IN_PROGRESS_TOOLTIP:
-        'Action unavailable while a rollback is pending or in progress for this application.',
+        'Unavailable while a rollback is pending or running for this application.',
       ABORT_ROLLBACK: 'Abort rollback',
       ABORT_ROLLBACK_TOOLTIP: 'Abort this pending rollback',
       ABORT_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to abort rollbacks',
       ABORT_CONFIRM_TITLE: 'Abort rollback?',
-      ABORT_CONFIRM_CONTENT:
-        'This rollback has not started yet. Aborting will cancel it permanently. Continue?',
+      ABORT_CONFIRM_CONTENT: 'This rollback has not started yet. Aborting cancels it permanently.',
       ABORT_CONFIRM_OK: 'Abort rollback',
       ABORT_SUCCESS: 'Rollback aborted.',
       ABORT_FAILED: 'Could not abort rollback. Please try again.',
@@ -265,9 +263,9 @@ export const APPLICATIONS_UI = {
       SNAPSHOT_AVAILABLE: 'snapshot',
       SNAPSHOT_MISSING: 'no snapshot',
       SNAPSHOT_AVAILABLE_TOOLTIP:
-        'A pre-change snapshot is stored for this generation. It can be compared and rolled back to.',
+        'A pre-change snapshot is stored for this generation. You can compare it or roll back to it.',
       SNAPSHOT_MISSING_TOOLTIP:
-        'Removed by the per-application snapshot limit. This entry stays in the history but can no longer be compared or rolled back to.',
+        'Removed by the per-application snapshot limit. The entry stays in the history, but you can no longer compare it or roll back to it.',
       MORE_CHANGES: 'more',
       SCROLL_FOR_MORE_TOOLTIP: 'Scroll to see the remaining changes',
       // The API appends the target snapshot id to the rollback description
@@ -307,7 +305,7 @@ export const APPLICATIONS_UI = {
       FORCE_SYNC: 'Force Sync',
       MANAGE_SNAPSHOTS: 'Manage Snapshots',
       MANAGE_ROLLBACKS: 'Manage Rollbacks',
-      SYNC_DISABLED_TOOLTIP: 'Action is unavailable while sync is in progress.',
+      SYNC_DISABLED_TOOLTIP: 'Unavailable while a sync is in progress.',
       EDIT_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to edit applications',
       FORCE_SYNC_PERMISSION_DENIED_TOOLTIP: 'You do not have permission to sync applications',
       FORCE_SYNC_FAILED: 'Force sync request failed.',

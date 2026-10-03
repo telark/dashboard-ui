@@ -22,7 +22,7 @@ export const GROUPS_CONSTANTS = {
       DELETE_FAILED: 'Failed to delete group',
       NO_GROUPS_TITLE: 'No groups yet',
       NO_GROUPS_DESCRIPTION:
-        'Get started by creating your first group. Groups help you organize and manage users with similar roles and permissions.',
+        'Create your first group to get started. Groups organize members who share roles and permissions.',
       LOADING_ROLES: 'Loading roles...',
       NO_ROLES_AVAILABLE: 'No roles available',
       NO_ASSIGNED_ROLES: 'No roles assigned yet',
@@ -119,14 +119,14 @@ export const GROUPS_CONSTANTS = {
         TITLE: 'Manage Roles',
         SUBMIT_BUTTON: 'Update roles',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
-        SHOW_ASSIGNED_TOOLTIP: 'View all roles currently assigned to this group',
+        SHOW_ASSIGNED_TOOLTIP: 'View roles assigned to this group',
       },
       ASSIGN_MEMBERS: {
         TITLE: 'Manage Members',
         SUBMIT_BUTTON: 'Update members',
         SEARCH_PLACEHOLDER: 'Search members by username or email...',
         SHOW_ASSIGNED_BUTTON: 'Assigned',
-        SHOW_ASSIGNED_TOOLTIP: 'View all members currently assigned to this group',
+        SHOW_ASSIGNED_TOOLTIP: 'View members assigned to this group',
       },
     },
     VIEW_LABELS: {

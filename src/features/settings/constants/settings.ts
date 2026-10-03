@@ -55,7 +55,7 @@ export const SETTINGS_CONSTANTS = {
     SECURITY: {
       key: 'security' as const,
       label: 'Security',
-      description: 'Password, sessions, and two-factor auth',
+      description: 'Passkeys and active sessions',
       icon: SafetyOutlined,
     },
     AI_INSIGHTS: {

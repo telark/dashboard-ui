@@ -11,7 +11,7 @@ export const IDENTITY_PROVIDER_CONSTANTS = {
     CLIENT_ID_REDACTED: '***',
     EGRESS_LABEL: 'Fetch signing keys from the provider',
     EGRESS_HINT:
-      'On, this cluster reaches the provider to fetch its signing keys. Off, paste the key set below.',
+      'When on, this cluster fetches signing keys from the provider. When off, paste the key set below.',
     JWK_LABEL: 'Pinned signing keys (JWK set)',
     JWK_PLACEHOLDER: 'Paste the current key set ({"keys":[...]})',
     JWK_SOURCE_HINT: "Copy the provider's current keys from",

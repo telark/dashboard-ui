@@ -2,7 +2,7 @@
 
 This is the canonical instruction file for coding agents working in this repo; `CLAUDE.md` only imports it. Procedures for recurring work live in `.claude/skills/<name>/SKILL.md`. They are plain Markdown, so any agent can open them; the [skills index](#skills-index) says when each one applies.
 
-dashboard-ui is the operator-facing SPA for telark: React 19, TypeScript 6, Vite, Redux Toolkit, Ant Design 6. It has no backend logic of its own. `README.md` covers the backend services, dev ports, scripts, and branch and commit conventions.
+dashboard-ui is the operator-facing SPA for telark: React 19, TypeScript 6, Vite, Redux Toolkit, Ant Design 6. It has no backend logic of its own. `README.md` covers the backend services, dev ports and scripts. Branch, commit and PR conventions are in the [Telark contribution guide](https://github.com/telark/telark/blob/main/CONTRIBUTING.md#branches-commits-and-pull-requests).
 
 ## Repository map
 

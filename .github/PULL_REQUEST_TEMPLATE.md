@@ -14,8 +14,7 @@ Closes #
 ## Checklist
 
 - [ ] The change is scoped: every changed line traces to the goal above.
-- [ ] `npm run check-all` passes (type-check and lint, no disabled rules).
-- [ ] `npm run build` passes.
+- [ ] `npm run check-all-and-build` passes (type-check, lint and build, no disabled rules).
 - [ ] Screenshots attached for visible UI changes.
 - [ ] Docs updated if behavior changed.
 

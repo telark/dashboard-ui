@@ -87,7 +87,7 @@ export const LOGIN_CONSTANTS = {
   },
   UI: {
     TITLE: 'Sign in to your account',
-    SUBTITLE: 'Welcome back — choose your preferred method',
+    SUBTITLE: 'Welcome back. Choose your preferred method',
     EMAIL_PLACEHOLDER: 'Enter your email',
     BUTTON_LOADING: 'Authenticating...',
     BUTTON_SUBMIT: 'Authenticate',
