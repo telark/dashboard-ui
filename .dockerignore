@@ -10,8 +10,10 @@ Dockerfile
 .env.*
 *.log
 
-# Docs
+# Docs (the license and notices ship in the image under /licenses)
 **/*.md
+!LICENSE.md
+!THIRD-PARTY-NOTICES.md
 
 # Lint/format config (not used by vite build)
 eslint.config.mjs

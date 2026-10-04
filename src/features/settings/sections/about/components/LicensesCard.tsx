@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useMemo, useState } from 'react';
-import { Input } from 'antd';
+import { Input, Typography } from 'antd';
 import SettingsCard from '../../../components/SettingsCard';
 import { DEFAULT_COLORS } from '../../../../../constants';
 import { ABOUT_SECTION_CONSTANTS } from '../constants';
@@ -62,7 +62,20 @@ const LicensesCard: React.FC = memo(() => {
   }, [licenses, search]);
 
   return (
-    <SettingsCard title={LABELS.LICENSES_CARD_TITLE} description={LABELS.LICENSES_CARD_DESCRIPTION}>
+    <SettingsCard
+      title={LABELS.LICENSES_CARD_TITLE}
+      description={LABELS.LICENSES_CARD_DESCRIPTION}
+      headerAction={
+        <Typography.Link
+          href={LICENSES_LIST.NOTICES_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: DEFAULT_COLORS.SUCCESS }}
+        >
+          {LABELS.LICENSES_FULL_TEXT_LINK}
+        </Typography.Link>
+      }
+    >
       <Input
         allowClear
         placeholder={LABELS.LICENSES_SEARCH_PLACEHOLDER}
@@ -82,7 +95,7 @@ const LicensesCard: React.FC = memo(() => {
             </div>
           ) : (
             filtered.map((entry) => (
-              <div key={entry.name} style={rowStyle}>
+              <div key={`${entry.name}@${entry.version}`} style={rowStyle}>
                 <span style={nameCellStyle}>
                   {entry.name}
                   <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}> {entry.version}</span>

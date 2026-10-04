@@ -13,7 +13,7 @@ RUN npm run build:cluster
 FROM nginx:1.31.6-alpine3.24-slim
 
 LABEL org.opencontainers.image.title="telark-ui" \
-      org.opencontainers.image.licenses="proprietary" \
+      org.opencontainers.image.licenses="Elastic-2.0" \
       org.opencontainers.image.source="https://github.com/telark/dashboard-ui"
 
 RUN rm -f /etc/nginx/conf.d/default.conf \
@@ -29,6 +29,8 @@ COPY --chown=nginx:nginx \
 
 COPY --chown=nginx:nginx \
     nginx/nginx.conf /etc/nginx/nginx.conf
+
+COPY LICENSE.md THIRD-PARTY-NOTICES.md /licenses/
 
 EXPOSE 8080
 
