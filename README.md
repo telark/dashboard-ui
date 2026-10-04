@@ -115,4 +115,4 @@ The `gate-ui` job above runs only when an image is built, so before opening a PR
 
 See also [`CONTRIBUTING.md`](./CONTRIBUTING.md), [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) and [`GOVERNANCE.md`](./GOVERNANCE.md). Report vulnerabilities privately as described in [`SECURITY.md`](./SECURITY.md).
 
-This repository is source-available under the [Elastic License 2.0](./LICENSE.md), like the rest of Telark.
+This repository is source-available under the [Elastic License 2.0](./LICENSE.md), like the rest of Telark. Third-party software in the dashboard and its image stays under its own license: see [`THIRD-PARTY-NOTICES.md`](./THIRD-PARTY-NOTICES.md).
