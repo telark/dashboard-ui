@@ -49,7 +49,7 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
     if (!displayKey) return;
     navigator.clipboard.writeText(displayKey).then(
       () => message.success(PPC.LABELS.COPIED),
-      () => message.error('Failed to copy'),
+      () => message.error(PPC.LABELS.COPY_PUBLIC_KEY_FAILED),
     );
   }, [displayKey, message]);
 

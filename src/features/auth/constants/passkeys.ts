@@ -36,6 +36,7 @@ export const PASSKEYS_CONSTANTS = {
     PUBLIC_KEY_UNAVAILABLE: 'Not available',
     COPY_PUBLIC_KEY: 'Copy to clipboard',
     COPIED: 'Copied',
+    COPY_PUBLIC_KEY_FAILED: 'Failed to copy',
   },
   TOOLBAR: {
     SEARCH_PLACEHOLDER: 'Search passkeys by name...',

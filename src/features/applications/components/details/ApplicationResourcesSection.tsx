@@ -1,7 +1,7 @@
 import React, { memo, useMemo, useState } from 'react';
 import { ApartmentOutlined, ShareAltOutlined } from '@ant-design/icons';
 import { Segmented, Tooltip } from 'antd';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../constants';
 import SettingsCard from '../../../settings/components/SettingsCard';
 import MutedText from './MutedText';
 import ApplicationResourceGraph from './ApplicationResourceGraph';
@@ -67,7 +67,7 @@ const ApplicationResourcesSection: React.FC<{ application: Application }> = memo
         }
       >
         {resources.length === 0 ? (
-          <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
+          <MutedText value={EMPTY_VALUE} />
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {resourceView === APPLICATION_RESOURCE_VIEW.GRAPH ? (

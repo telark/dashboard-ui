@@ -7,7 +7,7 @@ import type { PermissionLevel, ResolvedRole } from '../../../auth/models/permiss
 import { AUTH_PERMISSIONS_LABELS } from '../../../auth/constants';
 import { getCurrentUser } from '../../../auth/utils';
 import SettingsCard from '../../components/SettingsCard';
-import { DEFAULT_COLORS, getPillSurface } from '../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE, getPillSurface } from '../../../../constants';
 
 const LEVEL_COLOR = DEFAULT_COLORS.TEXT_MUTED;
 
@@ -64,7 +64,7 @@ function getWinningAllEntry(
 }
 
 function formatSources(role: ResolvedRole): string {
-  if (role.sources.length === 0) return AUTH_PERMISSIONS_LABELS.EMPTY_VALUE;
+  if (role.sources.length === 0) return EMPTY_VALUE;
   return role.sources
     .map((src) =>
       src.kind === 'direct'
@@ -152,8 +152,7 @@ const MyPermissionsSectionContent: React.FC = memo(() => {
           scope,
           level,
           rules,
-          sourceText:
-            winningRole != null ? formatSources(winningRole) : AUTH_PERMISSIONS_LABELS.EMPTY_VALUE,
+          sourceText: winningRole != null ? formatSources(winningRole) : EMPTY_VALUE,
         };
       }),
     [scopeIndex, roles],

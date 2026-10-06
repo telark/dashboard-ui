@@ -71,7 +71,6 @@ export const APPLICATIONS_UI = {
   },
   FALLBACKS: {
     UNKNOWN: 'unknown',
-    EMPTY: '—',
   },
   SECTIONS: {
     OVERVIEW: {
@@ -259,6 +258,7 @@ export const APPLICATIONS_UI = {
       DESCRIPTION: 'Detected changes and incidents.',
       SHOWING_FIRST: 'Showing first',
       GEN: 'Generation',
+      SEVERITY: 'severity',
       BY_PREFIX: 'By',
       SNAPSHOT_AVAILABLE: 'snapshot',
       SNAPSHOT_MISSING: 'no snapshot',

@@ -1,8 +1,7 @@
 import React from 'react';
 import { SafetyCertificateOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE, SECTION_LAYOUT } from '../../../../../constants';
 import { formatDateKey, toDateKey } from '../../../../../utils/shared/time';
-import { APPLICATION_SECTION_LAYOUT } from '../../../../applications/constants/sectionLayout';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { FancySpinner } from '../../../../../components/animation';
 import {
@@ -132,10 +131,10 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
               marginTop: groupIdx === 0 ? 0 : 12,
               marginBottom: 8,
               paddingBottom: 6,
-              borderBottom: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
+              borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
             }}
           >
-            {group.dayKey === 'unknown' ? '—' : formatDateKey(group.dayKey)}
+            {group.dayKey === 'unknown' ? EMPTY_VALUE : formatDateKey(group.dayKey)}
           </div>
           {group.entries.map((entry, idx) => {
             const resultLabel = PPC.LABELS.VIOLATION_RESULT_LABELS[entry.result];
@@ -144,7 +143,7 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
                 key={`${entry.namespace}:${entry.resource.kind}:${entry.resource.name}:${entry.rule}:${entry.timestamp}:${idx}`}
                 style={{
                   padding: '10px 0',
-                  borderBottom: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
+                  borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
                 }}
               >
                 <div
@@ -182,21 +181,21 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
                       {entry.resource.kind && (
                         <RowTag
                           text={`${PPC.LABELS.VIOLATIONS.TABLE_RESOURCE_KIND}: ${entry.resource.kind}`}
-                          {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+                          {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                         />
                       )}
                       {entry.resource.name && (
                         <RowTag
                           text={`${PPC.LABELS.VIOLATIONS.TABLE_RESOURCE_NAME}: ${entry.resource.name}`}
                           capitalize={false}
-                          {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+                          {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                         />
                       )}
                       {entry.namespace && (
                         <RowTag
                           text={`${PPC.LABELS.VIOLATIONS.TABLE_NAMESPACE}: ${entry.namespace}`}
                           capitalize={false}
-                          {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+                          {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                         />
                       )}
                       {entry.rule && (
@@ -229,7 +228,7 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
                       lineHeight: 1.35,
                     }}
                   >
-                    {entry.timestamp ? <TimeAgo date={entry.timestamp} /> : '—'}
+                    {entry.timestamp ? <TimeAgo date={entry.timestamp} /> : EMPTY_VALUE}
                   </div>
                 </div>
               </div>

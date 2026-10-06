@@ -11,7 +11,7 @@ import {
   AiOutlineTag,
   AiOutlineWarning,
 } from 'react-icons/ai';
-import { DEFAULT_COLORS, Icons } from '../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE, Icons } from '../../../constants';
 import RowTag from '../../../components/display/table/RowTag';
 import { generateColumn } from '../../../components/display/table/utils';
 import TimeAgo from '../../../components/display/time/TimeAgo';
@@ -233,7 +233,7 @@ export const buildInsightColumns = ({
         r.triage ? (
           tag(TRIAGE_LABELS[r.triage.state])
         ) : (
-          <span style={mutedStyle}>{INSIGHTS_UI.EMPTY_VALUE}</span>
+          <span style={mutedStyle}>{EMPTY_VALUE}</span>
         ),
     },
     {
@@ -244,7 +244,7 @@ export const buildInsightColumns = ({
         r.environments?.length ? (
           chips(r.environments.map((id) => tag(environmentNames[id] ?? id)))
         ) : (
-          <span style={mutedStyle}>{INSIGHTS_UI.EMPTY_VALUE}</span>
+          <span style={mutedStyle}>{EMPTY_VALUE}</span>
         ),
     },
     {

@@ -9,14 +9,14 @@ import {
 import { App as AntdApp, Button, Tooltip } from 'antd';
 import { useDispatch } from 'react-redux';
 import { SlideOutPanel, ExpandPanelButton } from '../../../../components/display/panels/slide-out';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, MONOSPACE_CLASS } from '../../../../constants';
 import { PanelEmptyState } from '../../../../components/display/panels/shared';
 import { ActionConfirmModal } from '../../../../components/display/modal';
 import type { Application, ApplicationRollbackEntry } from '../../models';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import SnapshotMetaChip from '../snapshots/SnapshotMetaChip';
-import { APPLICATION_MANIFEST_VIEW, APPLICATION_SNAPSHOT_ROW } from '../../constants/sectionLayout';
+import { APPLICATION_SNAPSHOT_ROW } from '../../constants/sectionLayout';
 import { FancySpinner } from '../../../../components/animation';
 import type { AppDispatch } from '../../../../store';
 import { abortApplicationRollbackThunk } from '../../store';
@@ -349,7 +349,7 @@ function RollbackErrorDetail(props: { error: string }): React.ReactElement {
       </button>
       {errorOpen ? (
         <div
-          className={APPLICATION_MANIFEST_VIEW.CODE_CLASS}
+          className={MONOSPACE_CLASS}
           style={{
             padding: R.ERROR_PADDING,
             borderRadius: R.ERROR_RADIUS_PX,

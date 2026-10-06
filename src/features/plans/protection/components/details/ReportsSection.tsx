@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
 import { Button, Tooltip } from 'antd';
 import { FileTextOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, TIME_FORMATS } from '../../../../../constants';
+import { DEFAULT_COLORS, SECTION_LAYOUT, TIME_FORMATS } from '../../../../../constants';
 import { formatDateTime } from '../../../../../utils/shared/time';
-import { APPLICATION_SECTION_LAYOUT } from '../../../../applications/constants/sectionLayout';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { FancySpinner } from '../../../../../components/animation';
 import { useUsernamesByIds } from '../../../../../hooks/useUsernamesByIds';
@@ -99,7 +98,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
             key={report.id}
             style={{
               padding: '10px 0',
-              borderBottom: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
+              borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
               display: 'flex',
               flexWrap: 'wrap',
               alignItems: 'center',

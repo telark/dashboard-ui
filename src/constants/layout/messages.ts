@@ -7,10 +7,6 @@ export const ERROR_MESSAGES = {
     GENERIC_ERROR: 'API Error:',
     UNKNOWN_ERROR: 'Unknown error',
   },
-
-  CLIENT: {
-    UPDATE_SYNC_MODE_FAILED: '[APIClient] Failed to update sync mode for',
-  },
 } as const;
 
 export const FEATURE_ERROR_BOUNDARY_TEXT = {

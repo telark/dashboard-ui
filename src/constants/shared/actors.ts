@@ -7,5 +7,4 @@ export const ACTORS = {
   // The exporter's per-request cap on users/names.
   NAMES_BATCH_SIZE: 100,
   UNKNOWN_USER: 'Unknown user',
-  NONE: '—',
 } as const;

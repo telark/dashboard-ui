@@ -9,6 +9,7 @@ export * from './layout/icons';
 export * from './layout/menu';
 export * from './layout/messages';
 export * from './layout/panels';
+export * from './layout/sections';
 export * from './layout/sidebar';
 export * from './rest/api';
 export * from './rest/app';

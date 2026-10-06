@@ -10,7 +10,7 @@ import {
   UndoOutlined,
   UpOutlined,
 } from '@ant-design/icons';
-import { APP_ROUTES, DEFAULT_COLORS, ROW_ICON_BUTTON_SIZE } from '../../../constants';
+import { APP_ROUTES, DEFAULT_COLORS, EMPTY_VALUE, ROW_ICON_BUTTON_SIZE } from '../../../constants';
 import { AnimationWrapper, ExpandPanelButton } from '../../../components/display/panels/slide-out';
 import { FancySpinner } from '../../../components/animation';
 import RowTag from '../../../components/display/table/RowTag';
@@ -288,7 +288,7 @@ const Summary: React.FC<{
           },
           {
             label: P.RESOLVED,
-            value: insight.resolvedAt ? <TimeAgo date={insight.resolvedAt} /> : T.EMPTY_VALUE,
+            value: insight.resolvedAt ? <TimeAgo date={insight.resolvedAt} /> : EMPTY_VALUE,
             reached: Boolean(insight.resolvedAt),
             color: DEFAULT_COLORS.SUCCESS,
           },

@@ -14,7 +14,6 @@ export const HOME_DASHBOARD_TEXTS = {
     DISTRIBUTION_LABEL: 'Distribution',
     FULL_LABEL: 'Full Version',
     VANILLA: 'Vanilla',
-    UNKNOWN: '—',
   },
   APPLICATIONS: {
     TITLE: 'Applications',

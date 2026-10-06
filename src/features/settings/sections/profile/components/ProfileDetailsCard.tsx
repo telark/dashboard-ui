@@ -8,7 +8,7 @@ import {
   ClockCircleOutlined,
   CheckCircleOutlined,
 } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../components/display/table/RowTag';
 import SettingsCard from '../../../components/SettingsCard';
@@ -92,34 +92,30 @@ const ProfileDetailsCard: React.FC<ProfileDetailsCardProps> = memo(({ user, onEd
       <div style={rowBaseStyle}>
         <IdcardOutlined style={iconStyle} />
         <div style={profileRowLabelStyle}>{LABELS.FULL_NAME}</div>
-        <div style={valueCellStyle}>{user?.fullname ?? LABELS.PLACEHOLDER}</div>
+        <div style={valueCellStyle}>{user?.fullname ?? EMPTY_VALUE}</div>
       </div>
       <div style={rowBaseStyle}>
         <UserOutlined style={iconStyle} />
         <div style={profileRowLabelStyle}>{LABELS.USERNAME}</div>
-        <div style={valueCellStyle}>{user?.username ?? LABELS.PLACEHOLDER}</div>
+        <div style={valueCellStyle}>{user?.username ?? EMPTY_VALUE}</div>
       </div>
       <div style={rowBaseStyle}>
         <MailOutlined style={iconStyle} />
         <div style={profileRowLabelStyle}>{LABELS.EMAIL}</div>
-        <div style={valueCellStyle}>{user?.email ?? LABELS.PLACEHOLDER}</div>
+        <div style={valueCellStyle}>{user?.email ?? EMPTY_VALUE}</div>
       </div>
       <div style={rowBaseStyle}>
         <CalendarOutlined style={iconStyle} />
         <div style={profileRowLabelStyle}>{LABELS.MEMBER_SINCE}</div>
         <div style={valueCellStyle}>
-          {user?.creationDate ? <TimeAgo date={user.creationDate} /> : LABELS.PLACEHOLDER}
+          {user?.creationDate ? <TimeAgo date={user.creationDate} /> : EMPTY_VALUE}
         </div>
       </div>
       <div style={rowBaseStyle}>
         <ClockCircleOutlined style={iconStyle} />
         <div style={profileRowLabelStyle}>{LABELS.LAST_LOGIN}</div>
         <div style={valueCellStyle}>
-          {user?.status?.lastLoginAt ? (
-            <TimeAgo date={user.status.lastLoginAt} />
-          ) : (
-            LABELS.PLACEHOLDER
-          )}
+          {user?.status?.lastLoginAt ? <TimeAgo date={user.status.lastLoginAt} /> : EMPTY_VALUE}
         </div>
       </div>
       <div style={rowBaseStyle}>
@@ -139,9 +135,7 @@ const ProfileDetailsCard: React.FC<ProfileDetailsCardProps> = memo(({ user, onEd
               fontSize={12}
             />
           ) : (
-            <span style={{ fontSize: 15, color: DEFAULT_COLORS.TEXT_MUTED }}>
-              {LABELS.PLACEHOLDER}
-            </span>
+            <span style={{ fontSize: 15, color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>
           )}
         </div>
       </div>

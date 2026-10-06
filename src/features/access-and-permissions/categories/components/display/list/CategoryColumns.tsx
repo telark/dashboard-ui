@@ -6,9 +6,8 @@ import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/tabl
 import type { Category } from '../../../models';
 import { AiOutlineTag, AiOutlineCalendar, AiOutlineAppstore } from 'react-icons/ai';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
-import { DEFAULT_COLORS } from '../../../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../../../constants';
 import { CATEGORIES_CONSTANTS as CC } from '../../../constants';
-import { EMPTY_VALUE } from '../../../../shared';
 
 interface CategoryColumnsContext extends GenerateColumnCtx {
   onView?: (record: Category) => void;
@@ -56,7 +55,12 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
         width: CC.SIZES.COLUMNS.TYPE,
         render: (value: string) => {
           const isBuiltIn = value === CC.TYPES.BUILT_IN;
-          return <RowTag text={isBuiltIn ? 'Built-in' : 'Custom'} fontSize={RPC.SIZES.CHIP_FONT} />;
+          return (
+            <RowTag
+              text={isBuiltIn ? CC.LABELS.TYPES.BUILT_IN : CC.LABELS.TYPES.CUSTOM}
+              fontSize={RPC.SIZES.CHIP_FONT}
+            />
+          );
         },
       },
       ctx,

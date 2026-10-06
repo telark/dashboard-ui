@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ACTORS, DEFAULT_COLORS } from '../../../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../../../constants';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { ActorDisplay } from '../../../../../../components/display/users';
@@ -9,7 +9,6 @@ import { useCategories } from '../../../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../../../categories/constants';
 import { getCategoryName } from '../../../../categories/utils';
 import { useUsers } from '../../../../users/hooks';
-import { EMPTY_VALUE } from '../../../../shared';
 import { ROLES_CONSTANTS as RC } from '../../../constants';
 import type { Role } from '../../../models';
 import type { ViewDetailRow } from '../../../../../../components/display/panels/view/types';
@@ -107,7 +106,7 @@ export const useViewRolePanelData = ({
             />
           </span>
         ) : (
-          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>{ACTORS.NONE}</span>
+          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>{EMPTY_VALUE}</span>
         ),
       },
       {
@@ -123,7 +122,7 @@ export const useViewRolePanelData = ({
             />
           </span>
         ) : (
-          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>{ACTORS.NONE}</span>
+          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>{EMPTY_VALUE}</span>
         ),
       },
       {

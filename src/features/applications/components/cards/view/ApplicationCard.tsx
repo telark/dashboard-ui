@@ -6,6 +6,7 @@ import {
   CARD_FOOTER_STYLE,
   CARD_STATS_GRID_STYLE,
   DEFAULT_COLORS,
+  EMPTY_VALUE,
   LIST_TOOLBAR,
   MENU_LABELS,
   TRUNCATE_STYLE,
@@ -121,16 +122,14 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
             />
             <StatCell
               label={APPLICATIONS_UI.CARD.LABELS.MANAGED_BY}
-              value={application.managed?.by || APPLICATIONS_UI.FALLBACKS.EMPTY}
+              value={application.managed?.by || EMPTY_VALUE}
             />
           </div>
 
           {coverage && (
             <CardChipSection
               label={APPLICATION_CARD.COVERAGE.LABEL}
-              emptyText={
-                coverage.known ? APPLICATION_CARD.COVERAGE.NONE : APPLICATIONS_UI.FALLBACKS.EMPTY
-              }
+              emptyText={coverage.known ? APPLICATION_CARD.COVERAGE.NONE : EMPTY_VALUE}
               items={
                 coverage.noAccess
                   ? [NO_ACCESS_CHIP]
@@ -146,11 +145,11 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
         <div style={CARD_FOOTER_STYLE}>
           <span style={TRUNCATE_STYLE}>
             {APPLICATION_CARD.CREATED_PREFIX}{' '}
-            {createdAt ? <TimeAgo date={createdAt} /> : APPLICATIONS_UI.FALLBACKS.EMPTY}
+            {createdAt ? <TimeAgo date={createdAt} /> : EMPTY_VALUE}
           </span>
           <span style={TRUNCATE_STYLE}>
             {APPLICATION_CARD.UPDATED_PREFIX}{' '}
-            {lastUpdated ? <TimeAgo date={lastUpdated} /> : APPLICATIONS_UI.FALLBACKS.EMPTY}
+            {lastUpdated ? <TimeAgo date={lastUpdated} /> : EMPTY_VALUE}
           </span>
         </div>
       </div>

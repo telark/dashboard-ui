@@ -3,7 +3,7 @@ import type { Role, ColumnsArgs } from '../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
-import { ACTORS, DEFAULT_COLORS } from '../../../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../../../constants';
 import {
   AiOutlineCalendar,
   AiOutlineCheckCircle,
@@ -18,7 +18,6 @@ import { getCategoryName } from '../../../../categories/utils/helpers';
 import { ActorDisplay } from '../../../../../../components/display/users';
 import { AiOutlineUser } from 'react-icons/ai';
 import { ValidityDisplay } from '../../../../../../components/display/validity';
-import { EMPTY_VALUE } from '../../../../shared';
 
 export const Columns = ({
   onSort,
@@ -90,7 +89,7 @@ export const Columns = ({
         width: RPC.SIZES.COLUMNS.CREATED_BY,
         render: (_: unknown, record: Role) => {
           if (isBuiltIn(record))
-            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{ACTORS.NONE}</span>;
+            return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>;
           return (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <ActorDisplay

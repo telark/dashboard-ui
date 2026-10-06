@@ -1,7 +1,6 @@
 import React from 'react';
 import { Empty } from 'antd';
-import { DEFAULT_COLORS, MONOSPACE_CLASS } from '../../../../../constants';
-import { APPLICATION_SECTION_LAYOUT } from '../../../../applications/constants/sectionLayout';
+import { DEFAULT_COLORS, MONOSPACE_CLASS, SECTION_LAYOUT } from '../../../../../constants';
 import RowTag from '../../../../../components/display/table/RowTag';
 import { FancySpinner } from '../../../../../components/animation';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
@@ -24,6 +23,9 @@ const policyDotColor = (row: PlanPolicyStatus): string => {
   if (!row.ready) return DEFAULT_COLORS.WARNING;
   return DEFAULT_COLORS.SUCCESS;
 };
+
+const yesNo = (value: boolean): string =>
+  value ? PPC.LABELS.HEALTH_DETAIL.YES : PPC.LABELS.HEALTH_DETAIL.NO;
 
 const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, error }) => {
   const rows: PlanPolicyStatus[] = status
@@ -48,7 +50,7 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
           <FancySpinner showLabel={false} size={24} />
         </div>
       ) : rows.length === 0 ? (
-        <Empty description="No policy details available." />
+        <Empty description={PPC.LABELS.HEALTH_DETAIL.EMPTY} />
       ) : (
         <div>
           {rows.map((row) => {
@@ -58,7 +60,7 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
                 key={`${row.namespace}/${row.name}`}
                 style={{
                   padding: '10px 0',
-                  borderBottom: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
+                  borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
                 }}
               >
                 <div
@@ -103,21 +105,21 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
                         <RowTag
                           text={row.namespace}
                           capitalize={false}
-                          {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+                          {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                         />
                       )}
                       <RowTag
-                        text={`${PPC.LABELS.HEALTH_DETAIL.PRESENT}: ${row.present ? 'yes' : 'no'}`}
+                        text={`${PPC.LABELS.HEALTH_DETAIL.PRESENT}: ${yesNo(row.present)}`}
                         fontSize={11}
                       />
                       <RowTag
-                        text={`${PPC.LABELS.HEALTH_DETAIL.READY}: ${row.ready ? 'yes' : 'no'}`}
+                        text={`${PPC.LABELS.HEALTH_DETAIL.READY}: ${yesNo(row.ready)}`}
                         fontSize={11}
                       />
                       {row.failureAction && (
                         <RowTag
                           text={`${PPC.LABELS.HEALTH_DETAIL.FAILURE_ACTION}: ${row.failureAction}`}
-                          {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+                          {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                         />
                       )}
                     </div>

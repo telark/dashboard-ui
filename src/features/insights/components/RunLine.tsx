@@ -1,5 +1,5 @@
 import React from 'react';
-import { DEFAULT_COLORS } from '../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../constants';
 import { FancySpinner } from '../../../components/animation';
 import RowTag from '../../../components/display/table/RowTag';
 import TimeAgo from '../../../components/display/time/TimeAgo';
@@ -38,7 +38,7 @@ const RunLine: React.FC<{ run: LastRun | null; light?: boolean }> = ({ run, ligh
       <span>
         {(run.status === 'done' && run.steps === 0 ? T.RUN_LINE_RULES_ONLY : T.RUN_LINE)
           .replace('{status}', RUN_STATUS_LABELS[run.status])
-          .replace('{model}', run.model || T.EMPTY_VALUE)
+          .replace('{model}', run.model || EMPTY_VALUE)
           .replace('{steps}', counted(T.RUN_STEPS, run.steps))
           .replace('{toolCalls}', counted(T.RUN_TOOL_CALLS, run.toolCalls))
           .replace('{reads}', counted(T.RUN_READS, run.toolCalls))}

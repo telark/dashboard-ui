@@ -1,4 +1,4 @@
-import { APPLICATIONS_UI } from '../constants';
+import { EMPTY_VALUE } from '../../../constants';
 import type { ApplicationSnapshot, ApplicationSnapshotSummary } from '../models';
 import { SNAPSHOT_SCOPE_APPS } from '../clients/snapshots';
 
@@ -85,8 +85,8 @@ export function mergeApplicationSnapshotSources(
         scope: SNAPSHOT_SCOPE_APPS,
         namespace: d.namespace,
         generation: d.generation,
-        size: APPLICATIONS_UI.FALLBACKS.EMPTY,
-        consumed: APPLICATIONS_UI.FALLBACKS.EMPTY,
+        size: EMPTY_VALUE,
+        consumed: EMPTY_VALUE,
         path: d.path,
         severity: d.severity,
         takenAt: d.takenAt,

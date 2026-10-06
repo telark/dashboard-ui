@@ -1,6 +1,5 @@
-import { DEFAULT_COLORS, getPillSurface } from '../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE, getPillSurface } from '../../../constants';
 import type { ApplicationRollbackEntry } from '../models';
-import { APPLICATIONS_UI } from '../constants/texts';
 
 export type RollbackStatusState =
   'success' | 'failed' | 'inProgress' | 'pending' | 'aborted' | 'unknown';
@@ -54,5 +53,5 @@ export function formatRollbackStatusLabel(raw: string): string {
 
 export function formatRollbackNamespaceRef(namespace: string | undefined | null): string {
   const ns = String(namespace || '').trim();
-  return `ns/${ns || APPLICATIONS_UI.FALLBACKS.EMPTY}`;
+  return `ns/${ns || EMPTY_VALUE}`;
 }

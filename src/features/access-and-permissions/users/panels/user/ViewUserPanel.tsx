@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { DEFAULT_COLORS, Icons } from '../../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE, Icons } from '../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import ViewPanel from '../../../../../components/display/panels/view/ViewPanel';
 import RowTag from '../../../../../components/display/table/RowTag';
@@ -10,7 +10,6 @@ import type { ViewDetailRow } from '../../../../../components/display/panels/vie
 import type { User } from '../../models';
 import { useUserLockReason } from '../../hooks/user/useUserLockReason';
 import BootstrapPill from '../../components/display/shared/BootstrapPill';
-import { EMPTY_VALUE } from '../../../shared';
 
 interface ViewUserPanelProps {
   open: boolean;

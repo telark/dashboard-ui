@@ -1,7 +1,7 @@
 import React, { memo, useMemo, useRef, useState } from 'react';
 import { Tooltip } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, MONOSPACE_CLASS } from '../../../../constants';
+import { DEFAULT_COLORS, MONOSPACE_CLASS, SECTION_LAYOUT } from '../../../../constants';
 import { formatDateKey, toDateKey } from '../../../../utils/shared/time';
 import SettingsCard from '../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
@@ -13,7 +13,6 @@ import {
   APPLICATION_CHANGE_LOG_PAGE_SIZE,
   APPLICATION_TRACKING_ANNOTATION_PREFIX,
 } from '../../constants/applications';
-import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import { getChangeLogDotColor } from '../../pages/details/contentBlocks';
 import { useUsernamesByIds } from '../../../../hooks/useUsernamesByIds';
 import type { Application, ApplicationChangeLogEntry } from '../../models';
@@ -94,7 +93,7 @@ const ChangeRow: React.FC<{
   const suffix = suffixParts.length > 0 ? ` · ${suffixParts.join(' · ')}` : '';
 
   return (
-    <div style={{ padding: '10px 0', borderBottom: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER }}>
+    <div style={{ padding: '10px 0', borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER }}>
       <div
         style={{
           display: 'flex',
@@ -119,11 +118,11 @@ const ChangeRow: React.FC<{
               text={`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.GEN}: ${entry.generation}`}
               fontSize={11}
             />
+            <RowTag text={entry.changeClass} {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
             <RowTag
-              text={entry.changeClass}
-              {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+              text={`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SEVERITY}: ${entry.severity}`}
+              fontSize={11}
             />
-            <RowTag text={`severity: ${entry.severity}`} fontSize={11} />
             <Tooltip
               title={
                 hasSnapshot
@@ -331,7 +330,7 @@ const ApplicationChangeLogSection: React.FC<{ application: Application }> = memo
                     marginTop: groupIdx === 0 ? 0 : 12,
                     marginBottom: 8,
                     paddingBottom: 6,
-                    borderBottom: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
+                    borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
                   }}
                 >
                   {formatDateKey(group.dayKey)}

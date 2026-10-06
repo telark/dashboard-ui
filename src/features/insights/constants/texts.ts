@@ -96,7 +96,6 @@ export const INSIGHTS_UI = {
       'Automatic model installation is off. Install the model on the runtime, then check it again.',
     TRIAGE_FAILED: 'The action failed.',
   },
-  EMPTY_VALUE: '—',
   PANEL: {
     PREVIOUS: 'Previous (↑ or k)',
     NEXT: 'Next (↓ or j)',

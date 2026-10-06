@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from 'react';
 import { Skeleton } from 'antd';
 import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons';
-import { DEFAULT_COLORS, getPillSurface } from '../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE, getPillSurface } from '../../../../constants';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import { PanelEmptyState } from '../../../../components/display/panels/shared';
 import { pluralize } from '../../../../utils/helpers/format';
@@ -38,7 +38,7 @@ function isRecord(v: unknown): v is Record<string, unknown> {
 }
 
 function stringifyValue(v: unknown): string {
-  if (v == null) return APPLICATIONS_UI.FALLBACKS.EMPTY;
+  if (v == null) return EMPTY_VALUE;
   if (typeof v === 'string') return v;
   if (typeof v === 'number' || typeof v === 'boolean') return String(v);
   try {
@@ -252,7 +252,7 @@ const SnapshotSide: React.FC<{ label: string; snap: ApplicationSnapshotSummary }
           </SnapshotMetaChip>
         ) : null}
         <span style={mutedStyle}>
-          {snap.takenAt ? <TimeAgo date={snap.takenAt} /> : APPLICATIONS_UI.FALLBACKS.EMPTY}
+          {snap.takenAt ? <TimeAgo date={snap.takenAt} /> : EMPTY_VALUE}
         </span>
       </div>
     </div>

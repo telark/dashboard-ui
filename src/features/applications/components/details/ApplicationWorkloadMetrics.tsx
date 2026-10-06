@@ -1,15 +1,12 @@
 import React, { memo, useState } from 'react';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
 import { Pagination, Tooltip } from 'antd';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, SECTION_LAYOUT } from '../../../../constants';
 import { PAGINATION_DEFAULTS } from '../../../../components/display/table/constants';
 import RowTag from '../../../../components/display/table/RowTag';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import { APPLICATIONS_UI } from '../../constants';
-import {
-  APPLICATION_SECTION_LAYOUT,
-  APPLICATION_WORKLOAD_METRICS,
-} from '../../constants/sectionLayout';
+import { APPLICATION_WORKLOAD_METRICS } from '../../constants/sectionLayout';
 import {
   formatBytes,
   formatMillicores,
@@ -50,7 +47,7 @@ const PodBlock: React.FC<{ instance: ApplicationWorkloadUsagePerInstance }> = ({
     <div style={{ display: 'grid', rowGap: M.DETAIL_ROW_GAP_PX }}>
       {/* Pod line: labeled, with its total called out as a sum of the containers below. */}
       <div style={{ display: 'flex', alignItems: 'center', gap: M.HEADER_GAP_PX, minWidth: 0 }}>
-        <RowTag text={WM.POD_LABEL} {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
+        <RowTag text={WM.POD_LABEL} {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
         <span
           style={{
             fontSize: M.LABEL_FONT_SIZE_PX,
@@ -158,7 +155,7 @@ const InstanceDetail: React.FC<{ workload: ApplicationWorkloadUsage }> = ({ work
       style={{
         marginTop: M.METER_ROW_GAP_PX,
         paddingLeft: M.DETAIL_INDENT_PX,
-        borderLeft: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
+        borderLeft: SECTION_LAYOUT.SUBTLE_DIVIDER,
         display: 'grid',
         rowGap: M.POD_BLOCK_GAP_PX,
       }}
@@ -191,7 +188,7 @@ const WorkloadRow: React.FC<{ workload: ApplicationWorkloadUsage }> = ({ workloa
       style={{
         padding: M.ROW_PADDING,
         borderRadius: M.ROW_RADIUS_PX,
-        border: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
+        border: SECTION_LAYOUT.SUBTLE_DIVIDER,
         background: hovered ? DEFAULT_COLORS.SURFACE_ELEVATED_HOVER : 'transparent',
         transition: 'background 150ms ease',
       }}
@@ -215,20 +212,17 @@ const WorkloadRow: React.FC<{ workload: ApplicationWorkloadUsage }> = ({ workloa
         >
           {workload.resourceName}
         </span>
-        <RowTag
-          text={workload.resourceKind}
-          {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-        />
+        <RowTag text={workload.resourceKind} {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
         <RowTag
           text={workload.namespace}
           capitalize={false}
-          {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+          {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
         />
         <span style={{ fontSize: M.LABEL_FONT_SIZE_PX, color: DEFAULT_COLORS.TEXT_MUTED }}>
           {replicas} {replicas === 1 ? WM.REPLICAS_SUFFIX.one : WM.REPLICAS_SUFFIX.other}
         </span>
         {usageAvailable && usage?.qos ? (
-          <RowTag text={usage.qos} {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
+          <RowTag text={usage.qos} {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
         ) : null}
 
         <span style={{ flex: 1 }} />

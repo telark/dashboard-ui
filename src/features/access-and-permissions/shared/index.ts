@@ -7,5 +7,4 @@ export type {
 
 export { useDeassignModal } from './hooks';
 export { applySelectionChange } from './utils/assignment';
-export { EMPTY_VALUE } from './constants';
 export type { UseDeassignModalOptions, UseDeassignModalReturn } from './hooks';

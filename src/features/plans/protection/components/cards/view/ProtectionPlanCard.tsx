@@ -15,7 +15,6 @@ import {
 } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import {
-  ACTORS,
   APP_ROUTES,
   CARD_ASIDE_STYLE,
   CARD_FOOTER_STYLE,
@@ -27,6 +26,7 @@ import {
   CARD_TITLE_COLUMN_STYLE,
   CARD_TITLE_STYLE,
   DEFAULT_COLORS,
+  EMPTY_VALUE,
   MICRO_LABEL_STYLE,
   TRUNCATE_STYLE,
   getCardMenuButtonStyle,
@@ -88,7 +88,7 @@ interface ProtectionPlanCardProps {
 }
 
 const CARD_LABELS = PPC.LABELS.CARD;
-const EMPTY_VALUE = '';
+const BLANK = '';
 
 interface PlanWindow {
   range: string;
@@ -105,7 +105,7 @@ const buildWindow = (plan: ProtectionPlan): PlanWindow => {
     // A permanent plan has no window, so the range slot stays empty rather than
     // repeating "Always on" both beside the label and under it.
     return {
-      range: permanent ? EMPTY_VALUE : CARD_LABELS.NO_SCHEDULE,
+      range: permanent ? BLANK : CARD_LABELS.NO_SCHEDULE,
       percent: 0,
       showRail: false,
       remaining: permanent ? CARD_LABELS.PERMANENT_RANGE : CARD_LABELS.NO_SCHEDULE,
@@ -213,11 +213,11 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const requesterId = plan.approval?.requestedBy;
   const awaitingApproval = plan.phase === 'pending_approval' && Boolean(requesterId);
   const provenanceActor = awaitingApproval ? requesterId : plan.createdBy;
-  const provenanceName = provenanceActor ? names[provenanceActor] : ACTORS.NONE;
+  const provenanceName = provenanceActor ? names[provenanceActor] : EMPTY_VALUE;
   const provenancePrefix = awaitingApproval
     ? CARD_LABELS.AWAITING_APPROVAL_BY_PREFIX
     : CARD_LABELS.CREATED_BY_PREFIX;
-  const provenanceLabel = provenanceName ? `${provenancePrefix} ${provenanceName}` : EMPTY_VALUE;
+  const provenanceLabel = provenanceName ? `${provenancePrefix} ${provenanceName}` : BLANK;
 
   const phaseLabel = planPhaseLabel(plan);
   const canCancel = CANCELLABLE_PHASES.includes(plan.phase);

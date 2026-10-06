@@ -1,4 +1,4 @@
-import { INSIGHTS_UI } from '../constants/texts';
+import { EMPTY_VALUE } from '../../../constants';
 import {
   CHANGE_ROLLBACK_STEP,
   GENERIC_GUIDANCE,
@@ -10,7 +10,7 @@ import { isInsightReason } from '../constants/insights';
 import type { Insight, TriageAction } from '../models';
 
 export const formatTemplate = (template: string, params: Record<string, string>): string =>
-  template.replace(/\{(\w+)\}/g, (_, key: string) => params[key] || INSIGHTS_UI.EMPTY_VALUE);
+  template.replace(/\{(\w+)\}/g, (_, key: string) => params[key] || EMPTY_VALUE);
 
 export const isRecommendation = (insight: { category?: string }): boolean =>
   insight.category === 'recommendation';
