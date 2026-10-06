@@ -24,7 +24,7 @@ interface CreateRolePanelProps {
 
 const CreateRolePanel: React.FC<CreateRolePanelProps> = ({ open, onClose, form }) => {
   const [expanded, setExpanded] = useState(false);
-  const { handleCreate, submitting } = useRoleActions({ skipNavigate: true });
+  const { handleCreate, submitting } = useRoleActions();
   // Reads the roles the page already loaded: a refetch here flips an empty list into its loading
   // state, which remounts this panel, which refetches again.
   const roles = useSelector((state: RootState) => state.roles.roles);

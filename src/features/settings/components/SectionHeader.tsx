@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import RowTag from '../../../components/display/table/RowTag';
 import { DEFAULT_COLORS } from '../../../constants';
 
 export interface SectionHeaderBreadcrumbItem {
@@ -9,6 +10,7 @@ export interface SectionHeaderBreadcrumbItem {
 interface SectionHeaderProps {
   title: string;
   description?: string;
+  badge?: string;
   breadcrumbItems?: SectionHeaderBreadcrumbItem[];
 }
 
@@ -55,7 +57,7 @@ const SECTION_HEADER_STYLES = {
 } as const;
 
 const SectionHeader: React.FC<SectionHeaderProps> = memo(
-  ({ title, description, breadcrumbItems }) => {
+  ({ title, description, badge, breadcrumbItems }) => {
     const hasBreadcrumb = breadcrumbItems != null && breadcrumbItems.length > 0;
 
     return (
@@ -63,7 +65,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = memo(
         <h1
           style={{
             ...SECTION_HEADER_STYLES.title,
-            ...(hasBreadcrumb ? {} : { display: 'block' }),
+            ...(hasBreadcrumb || badge != null ? {} : { display: 'block' }),
           }}
         >
           {hasBreadcrumb && breadcrumbItems
@@ -84,6 +86,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = memo(
                 </React.Fragment>
               ))
             : title}
+          {badge != null && <RowTag text={badge} accent={DEFAULT_COLORS.WARNING} fontSize={11} />}
         </h1>
         {description != null && description.length > 0 && (
           <p style={SECTION_HEADER_STYLES.description}>{description}</p>

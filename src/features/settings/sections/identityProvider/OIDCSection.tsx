@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Input, Tooltip, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
+import { SettingsField } from '../../components/SettingsFields';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, authApiClient } from '../../../../api';
@@ -161,8 +162,7 @@ const OIDCSection: React.FC = memo(() => {
 
         {form.enabled ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.FIELD_GAP }}>
-            <div>
-              <div style={{ fontWeight: 700, marginBottom: 4 }}>{C.LABELS.CLIENT_ID_LABEL}</div>
+            <SettingsField label={C.LABELS.CLIENT_ID_LABEL}>
               <Input
                 placeholder={C.LABELS.CLIENT_ID_PLACEHOLDER}
                 value={
@@ -173,7 +173,7 @@ const OIDCSection: React.FC = memo(() => {
                 disabled={!canEdit}
                 onChange={(e) => update('googleClientID', e.target.value)}
               />
-            </div>
+            </SettingsField>
 
             <div
               style={{
@@ -198,18 +198,19 @@ const OIDCSection: React.FC = memo(() => {
             </div>
 
             {!form.egressAllowed ? (
-              <div>
-                <div style={{ fontWeight: 700 }}>{C.LABELS.JWK_LABEL}</div>
-                <div
-                  style={{ fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE, marginBottom: 4 }}
-                >
-                  {C.LABELS.JWK_SOURCE_HINT}{' '}
-                  <a href={C.LINKS.JWKS_URL} target="_blank" rel="noreferrer">
-                    {C.LINKS.JWKS_URL}
-                  </a>
-                  {C.LABELS.JWK_SOURCE_HINT_END}
-                  {hasPinnedKeys ? ` ${C.LABELS.JWK_KEEP_HINT}` : null}
-                </div>
+              <SettingsField
+                label={C.LABELS.JWK_LABEL}
+                hint={
+                  <>
+                    {C.LABELS.JWK_SOURCE_HINT}{' '}
+                    <a href={C.LINKS.JWKS_URL} target="_blank" rel="noreferrer">
+                      {C.LINKS.JWKS_URL}
+                    </a>
+                    {C.LABELS.JWK_SOURCE_HINT_END}
+                    {hasPinnedKeys ? ` ${C.LABELS.JWK_KEEP_HINT}` : null}
+                  </>
+                }
+              >
                 <Input.TextArea
                   placeholder={C.LABELS.JWK_PLACEHOLDER}
                   value={form.googleJwkJson}
@@ -217,7 +218,7 @@ const OIDCSection: React.FC = memo(() => {
                   rows={C.LAYOUT.JWK_ROWS}
                   onChange={(e) => update('googleJwkJson', e.target.value)}
                 />
-              </div>
+              </SettingsField>
             ) : null}
 
             {validationError ? (

@@ -38,14 +38,6 @@ export const Endpoints = {
       path: `${APPLICATION_PATHS.ROLLBACK(name, rollbackId)}/abort`,
       method: 'POST',
     }),
-    GET_ROLLBACKS: (name: string) => ({
-      path: APPLICATION_PATHS.ROLLBACKS(name),
-      method: 'GET',
-    }),
-    GET_ROLLBACK: (name: string, rollbackId: string) => ({
-      path: APPLICATION_PATHS.ROLLBACK(name, rollbackId),
-      method: 'GET',
-    }),
     DISCOVERY_STATUS: {
       path: API_PATHS.DISCOVERY_STATUS,
       method: 'GET',

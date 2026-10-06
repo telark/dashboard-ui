@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
 import { CameraOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, withAlpha } from '../../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE, withAlpha } from '../../../../../constants';
 import UserAvatar from '../../../../../components/display/avatars/UserAvatar';
 import AvatarPicker from '../../../../../components/display/avatars/AvatarPicker';
 import { avatarRingStyle } from '../../../../../components/display/avatars/avatarRing';
@@ -56,7 +56,7 @@ const ProfilePhotoCard: React.FC<ProfilePhotoCardProps> = memo(({ user, onAvatar
             color: DEFAULT_COLORS.TEXT_MUTED,
           }}
         >
-          {LABELS.PLACEHOLDER}
+          {EMPTY_VALUE}
         </div>
       )}
     </div>

@@ -1,11 +1,10 @@
 import React, { memo } from 'react';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, SECTION_LAYOUT } from '../../../../constants';
 import SettingsCard from '../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../components/display/table/RowTag';
 import { CONNECTIVITY_CONSTANTS } from '../../../../constants/pages/connectivity';
 import { APPLICATIONS_UI } from '../../constants';
-import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import { StatMiniCard } from '../../pages/details/contentBlocks';
 import type { Application } from '../../models';
 
@@ -87,7 +86,7 @@ const ApplicationMetricsSection: React.FC<{ application: Application }> = memo(
                 <RowTag
                   key={key}
                   text={`${key}: ${value}`}
-                  {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+                  {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                 />
               ))}
             </div>

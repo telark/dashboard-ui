@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import { Tooltip } from 'antd';
-import { DEFAULT_COLORS, getPillSurface } from '../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE, SECTION_LAYOUT, getPillSurface } from '../../../../constants';
 import SettingsCard from '../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../components/display/table/RowTag';
@@ -31,7 +31,7 @@ const chipStyle: React.CSSProperties = {
   padding: '2px 10px',
   borderRadius: 999,
   fontWeight: 700,
-  fontSize: APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG.fontSize,
+  fontSize: SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG.fontSize,
   textTransform: 'none',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
@@ -40,21 +40,15 @@ const chipStyle: React.CSSProperties = {
 };
 
 function buildPrimaryRows(application: Application) {
-  const created = application.createdAt ? (
-    <TimeAgo date={application.createdAt} />
-  ) : (
-    APPLICATIONS_UI.FALLBACKS.EMPTY
-  );
+  const created = application.createdAt ? <TimeAgo date={application.createdAt} /> : EMPTY_VALUE;
   const updated = application.lastUpdated ? (
     <TimeAgo date={application.lastUpdated} />
   ) : (
-    APPLICATIONS_UI.FALLBACKS.EMPTY
+    EMPTY_VALUE
   );
   const namespaceItems = application.namespaces?.items ?? [];
   const deployedIn =
-    namespaceItems.length === 0
-      ? APPLICATIONS_UI.FALLBACKS.EMPTY
-      : namespaceItems.map((n) => n.name).join(', ');
+    namespaceItems.length === 0 ? EMPTY_VALUE : namespaceItems.map((n) => n.name).join(', ');
   const published = application.conditions?.find(
     (c) => c.type === APPLICATION_CONDITION_TYPES.PUBLISHED,
   );
@@ -73,7 +67,7 @@ function buildPrimaryRows(application: Application) {
     {
       k: 'managedBy',
       label: APPLICATIONS_UI.CARD.LABELS.MANAGED_BY,
-      value: application.managed?.by || APPLICATIONS_UI.FALLBACKS.EMPTY,
+      value: application.managed?.by || EMPTY_VALUE,
     },
     { k: 'deployedIn', label: APPLICATIONS_UI.SECTIONS.OVERVIEW.DEPLOYED_IN, value: deployedIn },
     { k: 'createdAt', label: APPLICATIONS_UI.CARD.LABELS.CREATED_AT, value: created },
@@ -106,12 +100,12 @@ function buildHistoryRows(application: Application) {
     {
       k: 'managedChart',
       label: APPLICATIONS_UI.SECTIONS.OVERVIEW.MANAGED_CHART,
-      value: application.managed?.chart || APPLICATIONS_UI.FALLBACKS.EMPTY,
+      value: application.managed?.chart || EMPTY_VALUE,
     },
     {
       k: 'managedVersion',
       label: APPLICATIONS_UI.SECTIONS.OVERVIEW.MANAGED_VERSION,
-      value: application.managed?.version || APPLICATIONS_UI.FALLBACKS.EMPTY,
+      value: application.managed?.version || EMPTY_VALUE,
     },
     {
       k: 'historyGeneration',
@@ -129,7 +123,7 @@ function buildHistoryRows(application: Application) {
       value: application.history?.lastModifiedBy ? (
         <ActorName actor={application.history.lastModifiedBy} />
       ) : (
-        APPLICATIONS_UI.FALLBACKS.EMPTY
+        EMPTY_VALUE
       ),
     },
     {
@@ -138,7 +132,7 @@ function buildHistoryRows(application: Application) {
       value: application.history?.lastModifiedAt ? (
         <TimeAgo date={application.history.lastModifiedAt} />
       ) : (
-        APPLICATIONS_UI.FALLBACKS.EMPTY
+        EMPTY_VALUE
       ),
     },
   ];
@@ -161,18 +155,11 @@ const RuntimeColumn: React.FC<{ application: Application }> = ({ application }) 
           {APPLICATIONS_UI.SECTIONS.RUNTIME.PORTS}
         </div>
         {ports.length === 0 ? (
-          <RowTag
-            text={APPLICATIONS_UI.FALLBACKS.EMPTY}
-            {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-          />
+          <RowTag text={EMPTY_VALUE} {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
         ) : (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {ports.map((p) => (
-              <RowTag
-                key={p}
-                text={String(p)}
-                {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-              />
+              <RowTag key={p} text={String(p)} {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
             ))}
           </div>
         )}
@@ -183,7 +170,7 @@ const RuntimeColumn: React.FC<{ application: Application }> = ({ application }) 
           {APPLICATIONS_UI.SECTIONS.RUNTIME.IMAGES}
         </div>
         {images.length === 0 ? (
-          <MutedText value={APPLICATIONS_UI.FALLBACKS.EMPTY} />
+          <MutedText value={EMPTY_VALUE} />
         ) : (
           <div
             style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6 }}
@@ -207,10 +194,7 @@ const RuntimeColumn: React.FC<{ application: Application }> = ({ application }) 
           {APPLICATIONS_UI.SECTIONS.RUNTIME.ENV_VAR_KEYS}
         </div>
         {envVarKeys.length === 0 ? (
-          <RowTag
-            text={APPLICATIONS_UI.FALLBACKS.EMPTY}
-            {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-          />
+          <RowTag text={EMPTY_VALUE} {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
         ) : (
           <div
             style={{
@@ -262,7 +246,7 @@ const RuntimeColumn: React.FC<{ application: Application }> = ({ application }) 
                 <span>
                   <RowTag
                     text={`+${hiddenKeys.length}`}
-                    {...APPLICATION_SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
+                    {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
                   />
                 </span>
               </Tooltip>

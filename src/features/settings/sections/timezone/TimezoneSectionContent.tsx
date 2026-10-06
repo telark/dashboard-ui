@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { App as AntdApp, Select } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
+import { SettingsField } from '../../components/SettingsFields';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { updateUser } from '../../../access-and-permissions/users/clients';
@@ -109,28 +110,30 @@ const TimezoneSectionContent: React.FC = memo(() => {
   return (
     <SettingsCard title={LABELS.CARD_TITLE} description={LABELS.CARD_DESCRIPTION}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <div style={{ fontWeight: 700 }}>{LABELS.TIMEZONE_LABEL}</div>
-        <Select
-          showSearch
-          optionFilterProp="label"
-          style={{ width: '100%' }}
-          placeholder={LABELS.TIMEZONE_PLACEHOLDER}
-          value={draft.timezone}
-          options={timeZoneOptions}
-          disabled={!user || saving}
-          onChange={(timezone: string) => setDraft((prev) => ({ ...prev, timezone }))}
-        />
-        <div style={{ fontWeight: 700 }}>{LABELS.REGION_LABEL}</div>
-        <Select
-          showSearch
-          optionFilterProp="label"
-          style={{ width: '100%' }}
-          placeholder={LABELS.REGION_PLACEHOLDER}
-          value={draft.region}
-          options={regionOptions}
-          disabled={!user || saving}
-          onChange={(region: string) => setDraft((prev) => ({ ...prev, region }))}
-        />
+        <SettingsField label={LABELS.TIMEZONE_LABEL}>
+          <Select
+            showSearch
+            optionFilterProp="label"
+            style={{ width: '100%' }}
+            placeholder={LABELS.TIMEZONE_PLACEHOLDER}
+            value={draft.timezone}
+            options={timeZoneOptions}
+            disabled={!user || saving}
+            onChange={(timezone: string) => setDraft((prev) => ({ ...prev, timezone }))}
+          />
+        </SettingsField>
+        <SettingsField label={LABELS.REGION_LABEL}>
+          <Select
+            showSearch
+            optionFilterProp="label"
+            style={{ width: '100%' }}
+            placeholder={LABELS.REGION_PLACEHOLDER}
+            value={draft.region}
+            options={regionOptions}
+            disabled={!user || saving}
+            onChange={(region: string) => setDraft((prev) => ({ ...prev, region }))}
+          />
+        </SettingsField>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Toolbar config={saveToolbarConfig} />
         </div>

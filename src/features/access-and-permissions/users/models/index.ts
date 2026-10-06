@@ -9,5 +9,4 @@ export type {
   CreateUserFormValues,
   ManageUserStateFormValues,
   UsersState,
-  UsersTableProps,
 } from './users';

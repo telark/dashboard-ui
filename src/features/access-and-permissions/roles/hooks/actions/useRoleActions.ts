@@ -1,8 +1,6 @@
 import { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { App as AntdApp } from 'antd';
-import { APP_ROUTES } from '../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import { createRoleThunk, updateRoleThunk, deleteRoleThunk } from '../../store';
 import type { AppDispatch } from '../../../../../store';
@@ -11,17 +9,10 @@ import { fetchMyPermissionsThunk } from '../../../../auth/store/thunks/fetchThun
 import type { RoleFormData } from '../../models';
 import { rejectionMessage } from '../../../../../utils/helpers/format';
 
-export interface UseRoleActionsOptions {
-  /** When true, create/update do not navigate (e.g. when using panels on list page). */
-  skipNavigate?: boolean;
-}
-
-export const useRoleActions = (options?: UseRoleActionsOptions) => {
-  const navigate = useNavigate();
+export const useRoleActions = () => {
   const dispatch: AppDispatch = useDispatch();
   const { message } = AntdApp.useApp();
   const [submitting, setSubmitting] = useState(false);
-  const skipNavigate = Boolean(options?.skipNavigate);
 
   const handleCreate = useCallback(
     async (data: RoleFormData) => {
@@ -29,9 +20,6 @@ export const useRoleActions = (options?: UseRoleActionsOptions) => {
       try {
         const result = await dispatch(createRoleThunk(data)).unwrap();
         message.success(RC.LABELS.MESSAGES.CREATED(data.name));
-        if (!skipNavigate) {
-          navigate(APP_ROUTES.ROLES);
-        }
         return result;
       } catch (rejection) {
         message.error(rejectionMessage(rejection, RC.LABELS.MESSAGES.CREATE_FAILED));
@@ -40,7 +28,7 @@ export const useRoleActions = (options?: UseRoleActionsOptions) => {
         setSubmitting(false);
       }
     },
-    [dispatch, navigate, skipNavigate, message],
+    [dispatch, message],
   );
 
   const handleUpdate = useCallback(
@@ -56,9 +44,6 @@ export const useRoleActions = (options?: UseRoleActionsOptions) => {
         store.dispatch(fetchMyPermissionsThunk());
         if (!options?.silent) {
           message.success(RC.LABELS.MESSAGES.UPDATED(result.name));
-          if (!skipNavigate) {
-            navigate(`${APP_ROUTES.ROLES}/${id}/view`);
-          }
         }
         return result;
       } catch (error) {
@@ -71,7 +56,7 @@ export const useRoleActions = (options?: UseRoleActionsOptions) => {
         setSubmitting(false);
       }
     },
-    [dispatch, navigate, skipNavigate, message],
+    [dispatch, message],
   );
 
   const handleDelete = useCallback(

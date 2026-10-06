@@ -2,7 +2,12 @@ import React, { memo, useCallback, useMemo } from 'react';
 import { Button, Tooltip } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
-import { DEFAULT_COLORS, MONOSPACE_CLASS, TIME_FORMATS } from '../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  EMPTY_VALUE,
+  MONOSPACE_CLASS,
+  TIME_FORMATS,
+} from '../../../../../constants';
 import { formatDateTime } from '../../../../../utils/shared/time';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import KeyValueGrid from '../../../../applications/components/details/KeyValueGrid';
@@ -81,7 +86,6 @@ interface ProtectionPlanDetailsContentProps {
   onRefreshHealth: () => void;
 }
 
-const EMPTY = PPC.LABELS.DETAIL_PAGE.EMPTY_VALUE;
 const { viewViolations, viewReports } = ACTION_PERMISSIONS.protectionPlans;
 const { FORM } = PPC.CREATE_PAGE;
 
@@ -160,7 +164,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
       (userId: string | undefined, when: string | undefined): React.ReactNode => {
         const user = userId ? users.find((u) => u.id === userId) : undefined;
         const display = user?.username ?? (userId ? usernamesById[userId] : undefined);
-        const timeNode = when ? <TimeAgo date={when} /> : EMPTY;
+        const timeNode = when ? <TimeAgo date={when} /> : EMPTY_VALUE;
         if (!userId || !display) return timeNode;
         return (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
@@ -192,17 +196,17 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
         {
           k: 'description',
           label: PPC.LABELS.DETAIL_PAGE.FIELDS.DESCRIPTION,
-          value: plan.description || EMPTY,
+          value: plan.description || EMPTY_VALUE,
         },
         {
           k: 'severity',
           label: PPC.LABELS.DETAIL_PAGE.FIELDS.SEVERITY,
-          value: plan.severity || EMPTY,
+          value: plan.severity || EMPTY_VALUE,
         },
         {
           k: 'priority',
           label: PPC.LABELS.DETAIL_PAGE.FIELDS.PRIORITY,
-          value: plan.priority ?? EMPTY,
+          value: plan.priority ?? EMPTY_VALUE,
         },
         {
           k: 'environment',
@@ -214,7 +218,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           label: FORM.TAGS_LABEL,
           value:
             tags.length === 0 ? (
-              EMPTY
+              EMPTY_VALUE
             ) : (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {tags.map(({ id, name }) => (
@@ -441,7 +445,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             </ColumnShell>
             <ColumnShell title={PPC.LABELS.DETAIL_PAGE.SECTIONS.OVERVIEW_COLUMN_PARTICIPANTS}>
               {participants.length === 0 ? (
-                <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY}</div>
+                <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {participants.map(({ id, user }) => (
@@ -480,7 +484,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                     : PPC.LABELS.DETAIL_PAGE.FIELDS.NAMESPACES,
                 value:
                   scopeItems.length === 0 ? (
-                    EMPTY
+                    EMPTY_VALUE
                   ) : (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                       {scopeItems.map((item) => (
@@ -528,7 +532,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           description={PPC.LABELS.DETAIL_PAGE.SECTIONS.POLICIES_DESCRIPTION}
         >
           {policies.length === 0 ? (
-            <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY}</div>
+            <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {policies.map((p, idx) => (

@@ -1,11 +1,11 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { InputNumber, Select, Tooltip, App as AntdApp } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { InputNumber, Select, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
+import { SettingsDetails, SettingsField, SettingsHint } from '../../components/SettingsFields';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, exporterApiClient } from '../../../../api';
-import { DEFAULT_COLORS, Endpoints } from '../../../../constants';
+import { Endpoints } from '../../../../constants';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
@@ -57,7 +57,7 @@ const SnapshotStorageSection: React.FC = memo(() => {
       setSnapshotsMaxSelection(String(normalizedMax));
       setCustomSnapshotsMaxPerApp(normalizedMax);
     } else {
-      setSnapshotsMaxSelection('custom');
+      setSnapshotsMaxSelection(C.SNAPSHOTS_CUSTOM_VALUE);
       setCustomSnapshotsMaxPerApp(normalizedMax);
     }
     setInitialSnapshots({ maxPerApp: normalizedMax });
@@ -140,99 +140,55 @@ const SnapshotStorageSection: React.FC = memo(() => {
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         {!canViewSnapshotStorage ? (
-          <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-            {C.LABELS.SNAPSHOT_STORAGE_NO_ACCESS}
-          </div>
+          <SettingsHint>{C.LABELS.SNAPSHOT_STORAGE_NO_ACCESS}</SettingsHint>
         ) : snapshotInfosLoading ? (
-          <div style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-            {C.LABELS.SNAPSHOT_STORAGE_LOADING}
-          </div>
+          <SettingsHint>{C.LABELS.SNAPSHOT_STORAGE_LOADING}</SettingsHint>
         ) : snapshotInfos ? (
           <>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <div style={{ fontWeight: 700 }}>{C.LABELS.SNAPSHOT_STORAGE_USAGE_LABEL}</div>
+            <SettingsField label={C.LABELS.SNAPSHOT_STORAGE_USAGE_LABEL}>
               <SnapshotStorageBar
                 percentUsed={snapshotInfos.consumedSpace.percent ?? 0}
                 metricsLine={`${snapshotInfos.consumedSpace.mb.toFixed(2)} MB / ${snapshotInfos.totalPVCSpace.mb.toFixed(2)} MB`}
               />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
-                <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 600 }}>
-                  {C.LABELS.SNAPSHOT_STORAGE_CONSUMED}
-                </span>
-                <span
-                  style={{
-                    fontSize: 12,
-                    color: DEFAULT_COLORS.TEXT_PRIMARY,
-                    fontWeight: 700,
-                  }}
-                >
-                  {consumedLine}
-                </span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
-                <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 600 }}>
-                  {C.LABELS.SNAPSHOT_STORAGE_AVAILABLE}
-                </span>
-                <span
-                  style={{
-                    fontSize: 12,
-                    color: DEFAULT_COLORS.TEXT_PRIMARY,
-                    fontWeight: 700,
-                  }}
-                >
-                  {availableLine}
-                </span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
-                <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED, fontWeight: 600 }}>
-                  {C.LABELS.SNAPSHOT_STORAGE_TOTAL_SNAPSHOTS}
-                </span>
-                <span
-                  style={{
-                    fontSize: 12,
-                    color: DEFAULT_COLORS.TEXT_PRIMARY,
-                    fontWeight: 700,
-                  }}
-                >
-                  {snapshotInfos.totalSnapshots}
-                </span>
-              </div>
-            </div>
+            </SettingsField>
+            <SettingsDetails
+              items={[
+                { label: C.LABELS.SNAPSHOT_STORAGE_CONSUMED, value: consumedLine },
+                { label: C.LABELS.SNAPSHOT_STORAGE_AVAILABLE, value: availableLine },
+                {
+                  label: C.LABELS.SNAPSHOT_STORAGE_TOTAL_SNAPSHOTS,
+                  value: snapshotInfos.totalSnapshots,
+                },
+              ]}
+            />
           </>
         ) : null}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <div style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
-            {C.LABELS.SNAPSHOTS_MAX_PER_APP_LABEL}
-            <Tooltip title={C.LABELS.SNAPSHOTS_MAX_PER_APP_HINT}>
-              <InfoCircleOutlined
-                tabIndex={0}
-                aria-label={C.LABELS.SNAPSHOTS_MAX_PER_APP_HINT}
-                style={{ color: DEFAULT_COLORS.TEXT_MUTED, cursor: 'help' }}
-              />
-            </Tooltip>
-          </div>
-          <Select
-            value={snapshotsMaxSelection}
-            disabled={!canEditSnapshotStorage}
-            onChange={(val) => {
-              setSnapshotsMaxSelection(val);
-              if (val === 'custom') {
-                setSnapshotsMaxPerApp(customSnapshotsMaxPerApp);
-                return;
-              }
-              const n = Number(val);
-              setCustomSnapshotsMaxPerApp(n);
-              setSnapshotsMaxPerApp(n);
-            }}
-            options={[
-              ...SNAPSHOTS_MAX_PRESET.map((n) => ({ value: String(n), label: String(n) })),
-              { value: 'custom', label: C.LABELS.CUSTOM_OPTION },
-            ]}
-            style={{ width: '100%' }}
-          />
-          {snapshotsMaxSelection === 'custom' ? (
+          <SettingsField
+            label={C.LABELS.SNAPSHOTS_MAX_PER_APP_LABEL}
+            info={C.LABELS.SNAPSHOTS_MAX_PER_APP_HINT}
+          >
+            <Select
+              value={snapshotsMaxSelection}
+              disabled={!canEditSnapshotStorage}
+              onChange={(val) => {
+                setSnapshotsMaxSelection(val);
+                if (val === C.SNAPSHOTS_CUSTOM_VALUE) {
+                  setSnapshotsMaxPerApp(customSnapshotsMaxPerApp);
+                  return;
+                }
+                const n = Number(val);
+                setCustomSnapshotsMaxPerApp(n);
+                setSnapshotsMaxPerApp(n);
+              }}
+              options={[
+                ...SNAPSHOTS_MAX_PRESET.map((n) => ({ value: String(n), label: String(n) })),
+                { value: C.SNAPSHOTS_CUSTOM_VALUE, label: C.LABELS.CUSTOM_OPTION },
+              ]}
+              style={{ width: '100%' }}
+            />
+          </SettingsField>
+          {snapshotsMaxSelection === C.SNAPSHOTS_CUSTOM_VALUE ? (
             <InputNumber
               min={1}
               precision={0}

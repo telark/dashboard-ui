@@ -1,9 +1,9 @@
+import { EMPTY_VALUE } from '../../../../../../constants';
 import { useMemo, useState, useEffect } from 'react';
 import { useUsers } from '../../../../users/hooks';
 import { useCategories } from '../../../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../../../categories/constants';
 import { getCategoryName } from '../../../../categories/utils';
-import { EMPTY_VALUE } from '../../../../shared';
 import type { Group } from '../../../models';
 import type { User } from '../../../../users/models';
 import { buildAvatarSources } from '../../../../../../utils/layout';

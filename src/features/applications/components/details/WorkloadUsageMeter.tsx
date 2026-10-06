@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Tooltip } from 'antd';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../constants';
 import { APPLICATIONS_UI } from '../../constants';
 import { APPLICATION_WORKLOAD_METRICS } from '../../constants/sectionLayout';
 
@@ -100,7 +100,7 @@ const WorkloadUsageMeter: React.FC<WorkloadUsageMeterProps> = memo(
         >
           {hasMeter
             ? `${format(used)} / ${format(scale)} ${baselineLabel}`
-            : `${rawUsed || APPLICATIONS_UI.FALLBACKS.EMPTY} ${WM.NO_BASELINE}`}
+            : `${rawUsed || EMPTY_VALUE} ${WM.NO_BASELINE}`}
         </span>
       </div>
     );

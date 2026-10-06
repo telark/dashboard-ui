@@ -11,7 +11,6 @@ export const AUTH_PERMISSIONS_LABELS = {
   EFFECTIVE_PERMISSIONS_TITLE: 'Effective Permissions',
   ALL_SCOPES_TITLE: 'All Scopes',
   DENY_PREFIX: 'Deny: ',
-  EMPTY_VALUE: '—',
 };
 
 export const AUTH_ERROR_MESSAGES = {

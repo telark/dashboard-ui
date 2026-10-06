@@ -2,6 +2,7 @@ import React from 'react';
 import { AiOutlineWarning } from 'react-icons/ai';
 import {
   DEFAULT_COLORS,
+  EMPTY_VALUE,
   LIST_TOOLBAR,
   TOOLBAR_CONTROL,
   getQuickFilterPillColors,
@@ -30,7 +31,7 @@ interface Props {
 }
 
 const countText = (count: number | undefined): string =>
-  count === undefined ? INSIGHTS_UI.EMPTY_VALUE : String(count);
+  count === undefined ? EMPTY_VALUE : String(count);
 
 const SeverityPills: React.FC<Props> = ({ active, counts, compact, onChange }) => {
   if (compact) {

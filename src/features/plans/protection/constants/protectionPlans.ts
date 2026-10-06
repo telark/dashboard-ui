@@ -199,7 +199,6 @@ export const PROTECTION_PLANS_CONSTANTS = {
         DECISION_POLICIES_COUNT: (count: number) =>
           `${count} ${count === 1 ? 'policy' : 'policies'}`,
       },
-      EMPTY_VALUE: '—',
     },
     EMPTY: {
       TITLE: 'No protection plans yet',
@@ -279,8 +278,11 @@ export const PROTECTION_PLANS_CONSTANTS = {
       NAMESPACE: 'Namespace',
       PRESENT: 'Present',
       READY: 'Ready',
+      YES: 'yes',
+      NO: 'no',
       FAILURE_ACTION: 'Failure action',
       LOAD_ERROR: 'Failed to load health status.',
+      EMPTY: 'No policy details available.',
     },
     PHASE_LABELS: {
       active: 'Active',

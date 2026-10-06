@@ -1,11 +1,17 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import axios from 'axios';
 import { App as AntdApp, Button, Input, Progress, Select, Space } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import SettingsCard from '../../components/SettingsCard';
+import {
+  SettingsDetails,
+  SettingsDivider,
+  SettingsField,
+  SettingsFieldLabel,
+  SettingsSubsectionHeader,
+} from '../../components/SettingsFields';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
-import RowTag from '../../../../components/display/table/RowTag';
 import { Switch } from '../../../../components/display/inputs';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
@@ -65,14 +71,6 @@ const validateErrorData = (error: unknown): ValidateError | undefined =>
     ? error.response?.data?.data
     : undefined;
 
-// The Check button sizes column 2 so the select keeps the remaining width.
-const AI_FIELD_GRID: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: '1fr auto',
-  columnGap: C.LAYOUT.FIELD_COLUMN_GAP,
-  alignItems: 'center',
-};
-
 const COLUMN: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
@@ -96,7 +94,7 @@ const AIInsightsSection: React.FC = memo(() => {
     CONTROL_AI_PERMISSION.deny,
   );
   const { message } = AntdApp.useApp();
-  const { runtime, isLoading } = useAnalyzerRuntime();
+  const { runtime, isLoading, refresh: refreshRuntime } = useAnalyzerRuntime();
 
   const [initialAi, setInitialAi] = useState<AiForm | null>(null);
   const [form, setForm] = useState<AiForm>({
@@ -104,14 +102,16 @@ const AIInsightsSection: React.FC = memo(() => {
     model: C.MODELS.DEFAULT,
     autoAnalyze: false,
   });
-  const [search, setSearch] = useState('');
   const [check, setCheck] = useState<ModelCheck | null>(null);
   const [checking, setChecking] = useState(false);
   const [installing, setInstalling] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [pullPeak, setPullPeak] = useState({ model: '', percent: 0 });
 
-  useEffect(() => {
-    if (!globalConfig?.data) return;
+  // Re-seeds the form when a new config arrives, while rendering (React's derived-state pattern).
+  const [seededFrom, setSeededFrom] = useState<unknown>(null);
+  if (globalConfig?.data && globalConfig.data !== seededFrom) {
+    setSeededFrom(globalConfig.data);
     const ai = globalConfig.data.ai;
     const next: AiForm = {
       enabled: Boolean(ai?.enabled),
@@ -120,7 +120,7 @@ const AIInsightsSection: React.FC = memo(() => {
     };
     setForm(next);
     setInitialAi(next);
-  }, [globalConfig?.data]);
+  }
 
   const runtimeState = runtime?.state ?? 'unreachable';
   const stateLabel = C.LABELS.RUNTIME_STATE_LABELS[runtimeState];
@@ -138,7 +138,7 @@ const AIInsightsSection: React.FC = memo(() => {
   const airGapped = runtime?.autoPull === false;
   const modelHint = runtime?.mode === 'deep' ? C.LABELS.MODEL_HINT_DEEP : C.LABELS.MODEL_HINT;
   const pull = runtimeState === 'pulling' ? runtime?.pull : undefined;
-  const pullPercent = pull && pull.total > 0 ? Math.floor((pull.completed * 100) / pull.total) : 0;
+  const layerPercent = pull && pull.total > 0 ? Math.floor((pull.completed * 100) / pull.total) : 0;
 
   const hasChanges =
     initialAi !== null &&
@@ -146,22 +146,30 @@ const AIInsightsSection: React.FC = memo(() => {
       form.model !== initialAi.model ||
       form.autoAnalyze !== initialAi.autoAnalyze);
 
+  // Ollama reports each layer from 0 and its last steps without totals: the bar only moves forward.
+  // Adjusted while rendering (React's derived-state pattern), so no effect re-renders the section.
+  if (pull && (pull.model !== pullPeak.model || layerPercent > pullPeak.percent)) {
+    const base = pull.model === pullPeak.model ? pullPeak.percent : 0;
+    setPullPeak({ model: pull.model, percent: Math.max(base, layerPercent) });
+  }
+  const pullPercent = pull?.model === pullPeak.model ? pullPeak.percent : layerPercent;
+  const selectedInfo = C.MODELS.OPTIONS.find((o) => o.value === form.model);
+
   const modelOptions = useMemo(() => {
-    const typed = search.trim();
+    // Selection only: the saved model still shows when it is not in the list.
     const values = new Set<string>(C.MODELS.OPTIONS.map((o) => o.value));
     values.add(form.model);
-    if (C.MODELS.NAME_PATTERN.test(typed)) values.add(typed);
     return [...values].map((value) => {
       const license =
         (check?.model === value && check.license) ||
         C.MODELS.OPTIONS.find((o) => o.value === value)?.license;
-      return { value, label: license ? `${value} · ${license}` : value };
+      const size = C.MODELS.OPTIONS.find((o) => o.value === value)?.size;
+      return { value, label: [value, license, size].filter(Boolean).join(' · ') };
     });
-  }, [check, form.model, search]);
+  }, [check, form.model]);
 
   const onModelChange = useCallback((model: string) => {
     setForm((prev) => ({ ...prev, model }));
-    setSearch('');
   }, []);
 
   const copyHelmCommand = useCallback(() => {
@@ -227,6 +235,7 @@ const AIInsightsSection: React.FC = memo(() => {
       message.success(C.MESSAGES.SAVE_SUCCESS);
       setInitialAi(form);
       dispatch(fetchGlobalConfigThunk());
+      void refreshRuntime();
     } catch (error: unknown) {
       logger.error(C.MESSAGES.SAVE_FAILED, error);
       // A 4xx names the invalid fields; network and 5xx keep the generic text.
@@ -235,28 +244,17 @@ const AIInsightsSection: React.FC = memo(() => {
     } finally {
       setSaving(false);
     }
-  }, [dispatch, form, message]);
+  }, [dispatch, form, message, refreshRuntime]);
 
   const deniedTooltip = canControlAiInsights
     ? undefined
     : C.LABELS.CONTROL_AI_INSIGHTS_PERMISSION_DENIED;
 
-  const installToolbarConfig: ToolbarConfig = useMemo(
-    () => ({
-      buttons: [
-        {
-          key: 'install',
-          label: C.LABELS.INSTALL_MODEL_BUTTON,
-          variant: 'default',
-          loading: installing,
-          onClick: installModel,
-        },
-      ],
-    }),
-    [installing, installModel],
-  );
+  // Nothing to check when the picked model is the one already running, or it just checked fine.
+  const selectedReady = currentCheck?.ok === true || (ready && runtime?.model === form.model);
+  const canInstall = modelMissing && !airGapped;
 
-  const checkToolbarConfig: ToolbarConfig = useMemo(
+  const modelToolbarConfig: ToolbarConfig = useMemo(
     () => ({
       buttons: [
         {
@@ -264,13 +262,34 @@ const AIInsightsSection: React.FC = memo(() => {
           label: C.LABELS.VALIDATE_BUTTON,
           variant: 'default',
           loading: checking,
-          disabled: !modelValid || !canControlAiInsights,
-          tooltip: deniedTooltip,
+          disabled: !modelValid || !canControlAiInsights || selectedReady,
+          tooltip: deniedTooltip ?? (selectedReady ? C.LABELS.MODEL_READY_TOOLTIP : undefined),
           onClick: checkModel,
         },
+        ...(canInstall
+          ? [
+              {
+                key: 'install',
+                label: C.LABELS.INSTALL_MODEL_BUTTON,
+                variant: 'primary' as const,
+                loading: installing,
+                onClick: installModel,
+              },
+            ]
+          : []),
       ],
     }),
-    [checking, modelValid, canControlAiInsights, deniedTooltip, checkModel],
+    [
+      checking,
+      modelValid,
+      canControlAiInsights,
+      selectedReady,
+      deniedTooltip,
+      checkModel,
+      canInstall,
+      installing,
+      installModel,
+    ],
   );
 
   const saveToolbarConfig: ToolbarConfig = useMemo(
@@ -296,36 +315,72 @@ const AIInsightsSection: React.FC = memo(() => {
   return (
     <div style={COLUMN}>
       <SettingsCard
-        title={C.LABELS.RUNTIME_STATUS_TITLE}
-        titleBadge={
-          <RowTag
-            text={C.LABELS.EXPERIMENTAL_BADGE}
-            accent={DEFAULT_COLORS.WARNING}
-            fontSize={11}
-          />
-        }
+        title={C.LABELS.AI_INSIGHTS_TITLE}
+        description={C.LABELS.AI_INSIGHTS_DESCRIPTION}
       >
         <div style={COLUMN}>
+          <div style={TOGGLE_ROW}>
+            <SettingsFieldLabel
+              label={C.LABELS.ENABLE_AI_LABEL}
+              info={C.LABELS.ENABLE_AI_TOOLTIP}
+            />
+            <Switch
+              checked={form.enabled}
+              onChange={(enabled) => setForm((prev) => ({ ...prev, enabled }))}
+              disabled={!canControlAiInsights || enableBlocked}
+              tooltip={deniedTooltip ?? (enableBlocked ? stateLabel : undefined)}
+            />
+          </div>
+          <div style={TOGGLE_ROW}>
+            <SettingsFieldLabel
+              label={C.LABELS.AUTO_ANALYZE_LABEL}
+              info={C.LABELS.AUTO_ANALYZE_TOOLTIP}
+            />
+            <Switch
+              checked={form.autoAnalyze}
+              onChange={(autoAnalyze) => setForm((prev) => ({ ...prev, autoAnalyze }))}
+              disabled={!canControlAiInsights}
+              tooltip={deniedTooltip}
+            />
+          </div>
+          <SettingsDivider />
+          <SettingsSubsectionHeader
+            title={C.LABELS.RUNTIME_SECTION_TITLE}
+            description={modelHint}
+          />
           {isLoading ? null : (
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
-              <span
-                style={{
-                  fontWeight: 700,
-                  color: ready ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.WARNING,
-                }}
-              >
-                {stateLabel}
-              </span>
-              {runtime?.reason ? (
-                <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{runtime.reason}</span>
-              ) : null}
-            </div>
+            <SettingsDetails
+              items={[
+                {
+                  label: C.LABELS.RUNTIME_STATUS_TITLE,
+                  value: (
+                    <>
+                      <span
+                        style={{
+                          fontWeight: 700,
+                          color: ready ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.WARNING,
+                        }}
+                      >
+                        {stateLabel}
+                      </span>
+                      {runtime?.reason ? (
+                        <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}> {runtime.reason}</span>
+                      ) : null}
+                    </>
+                  ),
+                },
+                ...(runtime
+                  ? [
+                      { label: C.LABELS.ACTIVE_MODEL_LABEL, value: runtime.model },
+                      {
+                        label: C.LABELS.RUNTIME_MODE_TITLE,
+                        value: C.LABELS.MODE_LABELS[runtime.mode],
+                      },
+                    ]
+                  : []),
+              ]}
+            />
           )}
-          {runtime ? (
-            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
-              {C.LABELS.RUNTIME_MODE_TITLE}: {C.LABELS.MODE_LABELS[runtime.mode]}
-            </div>
-          ) : null}
 
           {runtimeState === 'absent' && !isLoading ? (
             <div style={COLUMN}>
@@ -339,38 +394,41 @@ const AIInsightsSection: React.FC = memo(() => {
             </div>
           ) : null}
 
-          {pull ? (
-            <div>
-              <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{pull.model}</div>
-              <Progress percent={pullPercent} />
-            </div>
-          ) : null}
-
-          {modelMissing && airGapped ? (
-            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{C.LABELS.AIR_GAPPED_HINT}</div>
-          ) : null}
-          {modelMissing && !airGapped ? (
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Toolbar config={installToolbarConfig} />
-            </div>
-          ) : null}
-        </div>
-      </SettingsCard>
-
-      <SettingsCard title={C.LABELS.MODEL_LABEL} description={modelHint}>
-        <div style={COLUMN}>
-          <div style={AI_FIELD_GRID}>
-            <Select
-              value={form.model}
-              options={modelOptions}
-              onChange={onModelChange}
-              showSearch={{ onSearch: setSearch }}
-              allowClear={false}
-              disabled={!canControlAiInsights}
-              style={{ width: '100%' }}
-            />
-            <Toolbar config={checkToolbarConfig} />
+          <div style={COLUMN}>
+            <SettingsField label={C.LABELS.MODEL_LABEL}>
+              <Select
+                value={form.model}
+                options={modelOptions}
+                onChange={onModelChange}
+                allowClear={false}
+                disabled={!canControlAiInsights}
+                style={{ width: '100%' }}
+              />
+            </SettingsField>
+            {selectedInfo ? (
+              <SettingsDetails
+                items={[
+                  { label: C.LABELS.MODEL_DOWNLOAD_LABEL, value: selectedInfo.size },
+                  { label: C.LABELS.MODEL_NEEDS_LABEL, value: selectedInfo.needs },
+                  { label: C.LABELS.MODEL_LICENSE_LABEL, value: selectedInfo.license },
+                  {
+                    label: C.LABELS.MODEL_SOURCE_LABEL,
+                    value: (
+                      <a
+                        href={selectedInfo.source}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ color: DEFAULT_COLORS.SUCCESS }}
+                      >
+                        {selectedInfo.source.replace('https://', '')}
+                      </a>
+                    ),
+                  },
+                ]}
+              />
+            ) : null}
           </div>
+
           {currentCheck ? (
             <div
               style={{
@@ -384,32 +442,24 @@ const AIInsightsSection: React.FC = memo(() => {
           {researchLicensed ? (
             <div style={{ color: DEFAULT_COLORS.WARNING }}>{C.LABELS.LICENSE_WARNING}</div>
           ) : null}
-        </div>
-      </SettingsCard>
-
-      <SettingsCard
-        title={C.LABELS.AI_INSIGHTS_TITLE}
-        description={C.LABELS.AI_INSIGHTS_DESCRIPTION}
-      >
-        <div style={COLUMN}>
-          <div style={TOGGLE_ROW}>
-            <div style={{ fontWeight: 700 }}>{C.LABELS.ENABLE_AI_LABEL}</div>
-            <Switch
-              checked={form.enabled}
-              onChange={(enabled) => setForm((prev) => ({ ...prev, enabled }))}
-              disabled={!canControlAiInsights || enableBlocked}
-              tooltip={deniedTooltip ?? (enableBlocked ? stateLabel : undefined)}
-            />
+          {pull ? (
+            <div>
+              <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{pull.model}</div>
+              <Progress
+                percent={pullPercent}
+                status="normal"
+                strokeColor={DEFAULT_COLORS.SUCCESS}
+                format={(percent) => `${percent ?? 0}%`}
+              />
+            </div>
+          ) : null}
+          {modelMissing && airGapped ? (
+            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{C.LABELS.AIR_GAPPED_HINT}</div>
+          ) : null}
+          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+            <Toolbar config={modelToolbarConfig} />
           </div>
-          <div style={TOGGLE_ROW}>
-            <div style={{ fontWeight: 700 }}>{C.LABELS.AUTO_ANALYZE_LABEL}</div>
-            <Switch
-              checked={form.autoAnalyze}
-              onChange={(autoAnalyze) => setForm((prev) => ({ ...prev, autoAnalyze }))}
-              disabled={!canControlAiInsights}
-              tooltip={deniedTooltip}
-            />
-          </div>
+          <SettingsDivider />
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Toolbar config={saveToolbarConfig} />
           </div>

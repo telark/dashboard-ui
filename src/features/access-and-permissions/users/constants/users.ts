@@ -53,6 +53,8 @@ export const USERS_CONSTANTS = {
       ROLES: 'Roles',
       CREATED: 'Creation Date',
       NO_ROLES: 'No roles',
+      ROLE_NOUN: 'role',
+      GROUP_ROLES_NOT_COUNTED: "Roles from groups aren't counted because you can't view groups",
       INVITE: 'Invite',
     },
     BOOTSTRAP_PILL: {
@@ -263,7 +265,6 @@ export const USERS_CONSTANTS = {
     FILTER_STATUS_ALL: 'all',
   } as const,
   SIZES: {
-    ROW_HEIGHT: 32,
     HEADER_ICON: 14,
     CHIP_FONT: 12,
     COLUMNS: {
@@ -284,10 +285,6 @@ export const USERS_CONSTANTS = {
       BULK: 680,
     },
     MODAL_WIDTH: 360,
-  },
-  // Auth's enroll-link 403s share one status, and this is the refusal the row can't foresee.
-  PATTERNS: {
-    ENROLL_LINK_RECOVERY: 'already has a passkey',
   },
   FORM: {
     FIELDS: [

@@ -149,6 +149,7 @@ const MainPage: React.FC = () => {
     setPageSize,
     sortedUsers,
     paginatedUsers,
+    loadFailed: Boolean(error),
     hasSelection: selectedUsers.length > 0,
     handleViewUser,
     handleEditUser: canSuspendUser ? handleEditUser : () => undefined,

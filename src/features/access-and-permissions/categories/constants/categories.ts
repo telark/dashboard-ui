@@ -29,6 +29,10 @@ const buildLabels = ({
       SCOPE: 'Scope',
       CREATED: 'Creation Date',
     },
+    TYPES: {
+      BUILT_IN: 'Built-in',
+      CUSTOM: 'Custom',
+    },
     ACTIONS: {
       EDIT: 'Edit',
       DELETE: 'Delete',

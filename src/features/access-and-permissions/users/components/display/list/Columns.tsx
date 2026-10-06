@@ -9,13 +9,15 @@ import type { Group } from '../../../../groups/models';
 import UserAvatar from '../../../../../../components/display/avatars/UserAvatar';
 import { AiOutlineUser, AiOutlineMail, AiOutlineCalendar, AiOutlineLink } from 'react-icons/ai';
 import React from 'react';
+import { Tooltip } from 'antd';
+import { pluralize } from '../../../../../../utils/helpers/format';
 import { getTotalRoleCount } from '../../../utils';
 import BootstrapPill from '../shared/BootstrapPill';
 import InvitePill from '../shared/InvitePill';
 
 const RoleIcon = Icons.Role;
 
-const Columns = (ctx: GenerateColumnCtx, groups: Group[] = []) => {
+const Columns = (ctx: GenerateColumnCtx, groups: Group[] = [], canViewGroups = true) => {
   const cols = [
     generateColumn(
       {
@@ -86,15 +88,28 @@ const Columns = (ctx: GenerateColumnCtx, groups: Group[] = []) => {
         width: UC.SIZES.COLUMNS.ROLE,
         render: (_: unknown, record: User) => {
           const total = getTotalRoleCount(record, groups);
-          if (total === 0) {
+          // Without groups read, the roles a member gets from groups are unknown and left out.
+          const groupRolesHidden = !canViewGroups && (record.groupRefs?.length ?? 0) > 0;
+          if (total === 0 && !groupRolesHidden) {
             return (
               <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12 }}>
                 {UC.LABELS.COLUMNS.NO_ROLES}
               </span>
             );
           }
-          const text = total === 1 ? '1 role' : `${total} roles`;
-          return <RowTag text={text} fontSize={UC.SIZES.CHIP_FONT} />;
+          const tag = (
+            <RowTag
+              text={pluralize(total, UC.LABELS.COLUMNS.ROLE_NOUN)}
+              fontSize={UC.SIZES.CHIP_FONT}
+            />
+          );
+          return groupRolesHidden ? (
+            <Tooltip title={UC.LABELS.COLUMNS.GROUP_ROLES_NOT_COUNTED}>
+              <span>{tag}</span>
+            </Tooltip>
+          ) : (
+            tag
+          );
         },
       },
       ctx,

@@ -1,10 +1,9 @@
 import { Client, exporterApiClient } from '../../../api/index';
 import logger from '../../../logging';
-import { Endpoints } from '../../../constants';
+import { EMPTY_VALUE, Endpoints } from '../../../constants';
 import type { ResourceDetailsResponse } from '../../../interfaces/http';
 import type { ExtendedAxiosError } from '../../../api/client/normalize';
 import { APPLICATIONS_ERROR_MESSAGES } from '../constants';
-import { APPLICATIONS_UI } from '../constants/texts';
 import type {
   ApplicationSnapshot,
   ApplicationSnapshotSummary,
@@ -135,7 +134,7 @@ function detailToPlaceholderSummary(
     scope: SNAPSHOT_SCOPE_APPS,
     namespace: ref.namespace,
     generation: ref.generation,
-    size: APPLICATIONS_UI.FALLBACKS.EMPTY,
+    size: EMPTY_VALUE,
     consumed: '',
     path: ref.path,
     severity: ref.severity,

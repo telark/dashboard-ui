@@ -1,5 +1,5 @@
 import React from 'react';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, SECTION_LAYOUT } from '../../../../constants';
 import { APPLICATION_CHANGE_CLASS } from '../../constants';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 
@@ -51,8 +51,8 @@ export function StatMiniCard(props: {
       style={{
         minWidth: APPLICATION_SECTION_LAYOUT.STAT_MIN_WIDTH_PX,
         flex: '1 1 108px',
-        border: APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
-        borderLeft: accent ? `3px solid ${accent}` : APPLICATION_SECTION_LAYOUT.SUBTLE_DIVIDER,
+        border: SECTION_LAYOUT.SUBTLE_DIVIDER,
+        borderLeft: accent ? `3px solid ${accent}` : SECTION_LAYOUT.SUBTLE_DIVIDER,
         borderRadius: APPLICATION_SECTION_LAYOUT.COLUMN_INNER_RADIUS,
         padding: '6px 10px',
         background: DEFAULT_COLORS.SURFACE_ELEVATED,

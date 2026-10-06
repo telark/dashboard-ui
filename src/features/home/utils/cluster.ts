@@ -1,3 +1,4 @@
+import { EMPTY_VALUE } from '../../../constants';
 import { HOME_DASHBOARD_TEXTS as T } from '../constants/dashboard';
 import type { ClusterVersionInfo } from '../models';
 
@@ -18,7 +19,7 @@ const DISTRIBUTION_MARKERS: [pattern: RegExp, label: string][] = [
 
 export const parseClusterVersion = (gitVersion?: string): ClusterVersionInfo => {
   if (!gitVersion) {
-    return { version: T.CLUSTER.UNKNOWN, distribution: T.CLUSTER.UNKNOWN, full: T.CLUSTER.UNKNOWN };
+    return { version: EMPTY_VALUE, distribution: EMPTY_VALUE, full: EMPTY_VALUE };
   }
   const match = gitVersion.match(/^(v?\d+\.\d+\.\d+)(.*)$/);
   if (!match) return { version: gitVersion, distribution: T.CLUSTER.VANILLA, full: gitVersion };

@@ -1,4 +1,5 @@
 import React, { memo, useMemo } from 'react';
+import { MONOSPACE_CLASS } from '../../../../constants';
 import { APPLICATION_MANIFEST_VIEW } from '../../constants/sectionLayout';
 import { IDE_MANIFEST_THEME as IDE } from './ideManifestTheme';
 
@@ -311,7 +312,7 @@ const IdeManifestCodeBlock: React.FC<IdeManifestCodeBlockProps> = memo(
       <div
         // The class carries the monospace family: a global `#root *` rule sets
         // Geist with !important, which would otherwise win over an inline style.
-        className={APPLICATION_MANIFEST_VIEW.CODE_CLASS}
+        className={MONOSPACE_CLASS}
         style={{
           background: IDE.bg,
           border: `1px solid ${IDE.border}`,

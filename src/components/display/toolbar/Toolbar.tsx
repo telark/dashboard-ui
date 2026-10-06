@@ -14,6 +14,8 @@ import { FancySpinner } from '../../animation';
 import { SearchInput } from '../inputs';
 import { useMediaQuery } from '../../../hooks/layout';
 
+const DISABLED_OPACITY = 0.6;
+
 interface ToolbarProps {
   config: ToolbarConfig | undefined;
   /** Set by a parent that measures its own width; falls back to the viewport. */
@@ -169,7 +171,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                           : button.active
                             ? DEFAULT_COLORS.TEXT_ON_SURFACE
                             : BUTTON_COLORS.TOOLBAR_TEXT,
-                    opacity: isDisabled ? 0.6 : 1,
+                    opacity: isDisabled ? DISABLED_OPACITY : 1,
                     transition: 'all 0.2s',
                   }}
                   onClick={isDisabled ? undefined : handleButtonClick}
@@ -192,16 +194,18 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                   // click would keep the hover surface and render its label white on white.
                   onMouseLeave={(e) => {
                     if (isPrimary) {
-                      e.currentTarget.style.opacity = '1';
+                      e.currentTarget.style.opacity = String(isDisabled ? DISABLED_OPACITY : 1);
                     } else if (isDanger) {
                       e.currentTarget.style.backgroundColor = 'transparent';
                     } else {
                       e.currentTarget.style.backgroundColor = button.active
                         ? DEFAULT_COLORS.SURFACE_WHITE
                         : 'transparent';
-                      e.currentTarget.style.color = button.active
-                        ? DEFAULT_COLORS.TEXT_ON_SURFACE
-                        : BUTTON_COLORS.TOOLBAR_TEXT;
+                      e.currentTarget.style.color = isDisabled
+                        ? BUTTON_COLORS.TOOLBAR_DISABLED_TEXT
+                        : button.active
+                          ? DEFAULT_COLORS.TEXT_ON_SURFACE
+                          : BUTTON_COLORS.TOOLBAR_TEXT;
                       if (!isGhost) {
                         e.currentTarget.style.borderColor = BUTTON_COLORS.TOOLBAR_BORDER;
                       }
@@ -279,7 +283,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                       : button.active
                         ? DEFAULT_COLORS.TEXT_ON_SURFACE
                         : BUTTON_COLORS.TOOLBAR_TEXT,
-                opacity: isDisabled ? 0.6 : 1,
+                opacity: isDisabled ? DISABLED_OPACITY : 1,
                 transition: 'all 0.2s',
               }}
               onMouseEnter={(e) => {
@@ -297,18 +301,21 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                   }
                 }
               }}
+              // Restores the rendered look, so a disabled button stays dimmed.
               onMouseLeave={(e) => {
                 if (isPrimary) {
-                  e.currentTarget.style.opacity = '1';
+                  e.currentTarget.style.opacity = String(isDisabled ? DISABLED_OPACITY : 1);
                 } else if (isDanger) {
                   e.currentTarget.style.backgroundColor = 'transparent';
                 } else {
                   e.currentTarget.style.backgroundColor = button.active
                     ? DEFAULT_COLORS.SURFACE_WHITE
                     : 'transparent';
-                  e.currentTarget.style.color = button.active
-                    ? DEFAULT_COLORS.TEXT_ON_SURFACE
-                    : BUTTON_COLORS.TOOLBAR_TEXT;
+                  e.currentTarget.style.color = isDisabled
+                    ? BUTTON_COLORS.TOOLBAR_DISABLED_TEXT
+                    : button.active
+                      ? DEFAULT_COLORS.TEXT_ON_SURFACE
+                      : BUTTON_COLORS.TOOLBAR_TEXT;
                   if (!isGhost) {
                     e.currentTarget.style.borderColor = button.active
                       ? DEFAULT_COLORS.TEXT_ON_SURFACE

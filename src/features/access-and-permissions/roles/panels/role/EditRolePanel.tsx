@@ -29,7 +29,7 @@ interface EditRolePanelProps {
 
 const EditRolePanel: React.FC<EditRolePanelProps> = ({ open, onClose, editingRole, form }) => {
   const [expanded, setExpanded] = useState(false);
-  const { handleUpdate, submitting } = useRoleActions({ skipNavigate: true });
+  const { handleUpdate, submitting } = useRoleActions();
   const { roles } = useRoles();
   const protectionEditable = useCanChangeRoleProtection(editingRole);
   const watchedName = Form.useWatch('name', form) as string | undefined;
@@ -71,7 +71,6 @@ const EditRolePanel: React.FC<EditRolePanelProps> = ({ open, onClose, editingRol
     initialValues: initialValues ?? convertRoleToFormValues(null),
     form,
     handleUpdate,
-    skipNavigate: true,
     onSuccess: onClose,
   });
 

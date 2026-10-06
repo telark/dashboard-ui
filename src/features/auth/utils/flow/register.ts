@@ -38,6 +38,11 @@ export const resolveEnrollLink = (token: string | null, email: string | null): E
 export const isEnrollLinkRefused = (error: unknown): boolean =>
   (error as ExtendedAxiosError | undefined)?.normalized?.isUnauthenticated === true;
 
+// A signed-in browser keeps the register page for an enrollment link instead of leaving with its token.
+export const isEnrollLink = (pathname: string, search: string): boolean =>
+  pathname === APP_ROUTES.REGISTER &&
+  new URLSearchParams(search).has(REGISTER_CONSTANTS.QUERY.ENROLL);
+
 // The email only fills in the register form; the server still checks it against the link's account.
 export const buildEnrollUrl = (token: string, email?: string): string => {
   const query = new URLSearchParams({ [REGISTER_CONSTANTS.QUERY.ENROLL]: token });

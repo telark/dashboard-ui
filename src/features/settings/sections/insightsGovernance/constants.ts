@@ -2,23 +2,34 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
   LABELS: {
     AI_INSIGHTS_TITLE: 'Insights',
     AI_INSIGHTS_DESCRIPTION:
-      'By default, rules find each incident and setup issue and a model running in this cluster only rewrites the summary. Deep mode lets the model investigate with the same read-only tools. No data leaves the cluster.',
-    EXPERIMENTAL_BADGE: 'Experimental',
-    ENABLE_AI_LABEL: 'Enable Insights',
-    AUTO_ANALYZE_LABEL: 'Analyze automatically on incidents and recoveries',
+      'Rules find incidents and setup issues. A model in your cluster writes the summary, or investigates with read-only tools in deep mode. No data leaves the cluster.',
+    ENABLE_AI_LABEL: 'Enabled',
+    ENABLE_AI_TOOLTIP:
+      'Turns Insights on or off for every application. Turning it on needs a ready model runtime.',
+    AUTO_ANALYZE_LABEL: 'Automatic analysis',
+    AUTO_ANALYZE_TOOLTIP:
+      'When on, Telark analyzes an application by itself when an incident starts or the application recovers, by default at most once every 10 minutes per application. When off, an analysis runs only when someone selects Analyze.',
     MODEL_LABEL: 'Model',
-    MODEL_HINT: 'A change applies from the next run.',
-    MODEL_HINT_DEEP: 'Deep mode: the model must support tool calling.',
+    RUNTIME_SECTION_TITLE: 'Model runtime',
+    MODEL_HINT: 'Pick a model, check it, then select Save. A change applies from the next run.',
+    MODEL_HINT_DEEP:
+      'Pick a model that supports tool calling, check it, then select Save. A change applies from the next run.',
+    MODEL_READY_TOOLTIP: 'This model is installed and ready.',
+    ACTIVE_MODEL_LABEL: 'Active model',
+    MODEL_DOWNLOAD_LABEL: 'Download size',
+    MODEL_NEEDS_LABEL: 'Resources',
+    MODEL_LICENSE_LABEL: 'License',
+    MODEL_SOURCE_LABEL: 'Source',
     MODE_LABELS: {
       fast: 'Fast (rules + short narration)',
       deep: 'Deep (multi-step investigation)',
     },
     AIR_GAPPED_HINT:
       'Model downloads are disabled for this release (air-gapped). Load the model on the runtime volume, then pick it here.',
-    RUNTIME_MODE_TITLE: 'Mode',
+    RUNTIME_MODE_TITLE: 'Analysis mode',
     INSTALL_MODEL_BUTTON: 'Install model',
     VALIDATE_BUTTON: 'Check model',
-    RUNTIME_STATUS_TITLE: 'Runtime',
+    RUNTIME_STATUS_TITLE: 'Runtime status',
     RUNTIME_STATE_LABELS: {
       absent: 'Not installed',
       unreachable: 'Unreachable',
@@ -47,7 +58,7 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     NAMESPACES_IMPACT_REVEALED: 'will be revealed',
     NAMESPACES_SAVE_BUTTON: 'Save namespaces',
     CUSTOM_OPTION: 'Custom',
-    SNAPSHOTS_MAX_PER_APP_LABEL: 'Maximum Snapshots per application',
+    SNAPSHOTS_MAX_PER_APP_LABEL: 'Maximum snapshots per application',
     SNAPSHOTS_MAX_PER_APP_HINT:
       'Telark saves a snapshot before each change and keeps the most recent ones, up to this number. Older snapshots are deleted: their changes stay in the history, but you can no longer compare or roll back to them. For applications in several namespaces, the limit applies per namespace. A new limit applies from the next change.',
     PLATFORM_SAVE_SNAPSHOTS_BUTTON: 'Save snapshots',
@@ -84,14 +95,45 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     PLATFORM_SAVE_SNAPSHOTS_FAILED: 'Failed to save snapshots.',
     SNAPSHOT_STORAGE_LOAD_FAILED: 'Failed to load snapshot storage.',
   },
+  // The "Custom" choice of the snapshots-per-app select, beside the numeric presets.
+  SNAPSHOTS_CUSTOM_VALUE: 'custom',
   MODELS: {
     DEFAULT: 'granite4:350m',
     NAME_PATTERN: /^[a-z0-9][a-z0-9._-]*(:[a-z0-9._-]+)?$/,
+    // Sizes are Ollama's download sizes; needs follow the chart README's runtime profiles.
     OPTIONS: [
-      { value: 'granite4:350m', license: 'Apache-2.0', research: false },
-      { value: 'qwen3:1.7b', license: 'Apache-2.0', research: false },
-      { value: 'qwen3:4b', license: 'Apache-2.0', research: false },
-      { value: 'qwen2.5:7b', license: 'Apache-2.0', research: false },
+      {
+        value: 'granite4:350m',
+        license: 'Apache-2.0',
+        research: false,
+        size: '708 MB',
+        needs: 'Any node: about 0.25 CPU and 1.5 GiB memory',
+        source: 'https://ollama.com/library/granite4:350m',
+      },
+      {
+        value: 'qwen3:1.7b',
+        license: 'Apache-2.0',
+        research: false,
+        size: '1.4 GB',
+        needs: 'A 4 vCPU node: about 1 CPU (up to 4) and 4 GiB memory',
+        source: 'https://ollama.com/library/qwen3:1.7b',
+      },
+      {
+        value: 'qwen3:4b',
+        license: 'Apache-2.0',
+        research: false,
+        size: '2.5 GB',
+        needs: 'Best on a GPU node: 1 GPU, about 1 CPU and 3 GiB memory',
+        source: 'https://ollama.com/library/qwen3:4b',
+      },
+      {
+        value: 'qwen2.5:7b',
+        license: 'Apache-2.0',
+        research: false,
+        size: '4.7 GB',
+        needs: 'A GPU node: 1 GPU and about 8 GiB memory',
+        source: 'https://ollama.com/library/qwen2.5:7b',
+      },
     ],
   },
   LAYOUT: {

@@ -40,7 +40,7 @@ interface UseUserListConfigProps {
   canManageGroup?: boolean;
   canBulkDeleteUser?: boolean;
   bulkDeleteLockReason?: string;
-  totalCount: number;
+  totalCount?: number;
   pageCount: number;
   bulkMode: boolean;
   onToggleBulkMode: () => void;

@@ -1,11 +1,10 @@
 import React, { useMemo } from 'react';
-import { ACTORS, DEFAULT_COLORS } from '../../../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../../../constants';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { ActorDisplay } from '../../../../../../components/display/users';
 import { useViewGroupPanel } from './useViewGroupPanel';
 import { useGroupDeleteModal } from '../../../components/delete';
-import { EMPTY_VALUE } from '../../../../shared';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import type { Group } from '../../../models';
 import type {
@@ -86,7 +85,7 @@ export const useViewGroupPanelData = ({
         value: <RowTag text={categoryName} fontSize={12} />,
       },
       {
-        label: 'Creation Date',
+        label: GC.LABELS.VIEW_LABELS.CREATION_DATE,
         value: (
           <span style={{ fontSize: 14, fontWeight: 500, color: DEFAULT_COLORS.TEXT_ON_SURFACE }}>
             {group.creationDate ? <TimeAgo date={group.creationDate} /> : EMPTY_VALUE}
@@ -114,7 +113,7 @@ export const useViewGroupPanelData = ({
             />
           </span>
         ) : (
-          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>{ACTORS.NONE}</span>
+          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>{EMPTY_VALUE}</span>
         ),
       },
       {
@@ -130,7 +129,7 @@ export const useViewGroupPanelData = ({
             />
           </span>
         ) : (
-          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>{ACTORS.NONE}</span>
+          <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>{EMPTY_VALUE}</span>
         ),
       },
     ];

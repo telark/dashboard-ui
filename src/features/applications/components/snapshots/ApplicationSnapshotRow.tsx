@@ -1,7 +1,7 @@
 import React, { memo, useState } from 'react';
 import { EyeOutlined, HistoryOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Tooltip } from 'antd';
-import { DEFAULT_COLORS, LIST_TOOLBAR } from '../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE, LIST_TOOLBAR } from '../../../../constants';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import { formatTimeAgo } from '../../../../utils/shared/time';
 import { APPLICATIONS_UI } from '../../constants';
@@ -86,13 +86,12 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
       ACTION_PERMISSIONS.applications.rollback.deny,
     );
 
-    const severityLabel =
-      s.severity && s.severity.trim().length > 0 ? s.severity : APPLICATIONS_UI.FALLBACKS.EMPTY;
+    const severityLabel = s.severity && s.severity.trim().length > 0 ? s.severity : EMPTY_VALUE;
 
     const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
     const fileMissing = s.unavailable === true;
     const takenAt = s.takenAt && s.takenAt.trim().length > 0 ? s.takenAt : null;
-    const takenAtText = takenAt ? formatTimeAgo(takenAt) : APPLICATIONS_UI.FALLBACKS.EMPTY;
+    const takenAtText = takenAt ? formatTimeAgo(takenAt) : EMPTY_VALUE;
 
     return (
       <div
@@ -190,7 +189,7 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                 >
                   {s.size}
                   {ui.STORAGE_METRICS_JOINER}
-                  {takenAt ? <TimeAgo date={takenAt} /> : APPLICATIONS_UI.FALLBACKS.EMPTY}
+                  {takenAt ? <TimeAgo date={takenAt} /> : EMPTY_VALUE}
                 </span>
               </div>
             </div>

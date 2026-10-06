@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Select, Tooltip, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
+import { SettingsField } from '../../components/SettingsFields';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, discoveryApiClient, exporterApiClient } from '../../../../api';
@@ -185,18 +186,19 @@ const DiscoveryBehaviorSection: React.FC = memo(() => {
       description={C.LABELS.DISCOVERY_SCOPE_DESCRIPTION}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <div style={{ fontWeight: 700 }}>{C.LABELS.NAMESPACES_TITLE}</div>
-        <Select
-          mode="multiple"
-          value={excludedNamespaces}
-          onChange={(vals) => setExcludedNamespaces(vals)}
-          options={namespacesOptions.map((n) => ({ value: n, label: n }))}
-          placeholder={C.LABELS.NAMESPACES_SELECTOR_PLACEHOLDER}
-          style={{ width: '100%' }}
-          maxTagCount={5}
-          maxTagPlaceholder={maxNamespaceTagPlaceholder}
-          disabled={!canEditDiscoveryConfig}
-        />
+        <SettingsField label={C.LABELS.NAMESPACES_TITLE}>
+          <Select
+            mode="multiple"
+            value={excludedNamespaces}
+            onChange={(vals) => setExcludedNamespaces(vals)}
+            options={namespacesOptions.map((n) => ({ value: n, label: n }))}
+            placeholder={C.LABELS.NAMESPACES_SELECTOR_PLACEHOLDER}
+            style={{ width: '100%' }}
+            maxTagCount={5}
+            maxTagPlaceholder={maxNamespaceTagPlaceholder}
+            disabled={!canEditDiscoveryConfig}
+          />
+        </SettingsField>
         {namespacesImpactPreview ? (
           <div
             style={{

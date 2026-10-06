@@ -1,5 +1,5 @@
+import { EMPTY_VALUE } from '../../../../constants';
 import type { Category } from '../models';
-import { EMPTY_VALUE } from '../../shared';
 
 export const mapCategoriesToOptions = (categories: Category[]) => {
   return categories.map((category) => ({

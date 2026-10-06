@@ -21,3 +21,11 @@ export const ERROR_CODES = {
   NETWORK: 'ERR_NETWORK',
   TIMEOUT: 'ECONNABORTED',
 } as const;
+
+// The `code` auth sends with a refusal: match on it, never on the message wording.
+export const AUTH_REFUSAL_CODES = {
+  ACCOUNT_SUSPENDED: 'account_suspended',
+  BOOTSTRAP_PASSKEY_ONLY: 'bootstrap_passkey_only',
+  USER_NOT_FOUND: 'user_not_found',
+  ENROLL_LINK_RECOVERY: 'enroll_link_recovery',
+} as const;

@@ -1,6 +1,6 @@
 import type { TableColumnType } from 'antd';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
-import { DEFAULT_COLORS } from '../../../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RPC } from '../../../../roles/constants';
 import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
@@ -17,7 +17,6 @@ import {
 import type { Category } from '../../../../categories/models';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import { getCategoryName } from '../../../../categories/utils';
-import { EMPTY_VALUE } from '../../../../shared';
 import { ActorDisplay } from '../../../../../../components/display/users';
 import type { User } from '../../../../users/models';
 

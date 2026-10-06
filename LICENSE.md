@@ -1,5 +1,9 @@
 Elastic License 2.0 (ELv2)
 
+Copyright 2026 The Telark Authors
+
+The Avataaars and Bottts avatar styles the dashboard bundles from `@dicebear` are not covered by these terms. They stay under their designer's own terms ("free for personal and commercial use"), credited in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
 **Acceptance**
 By using the software, you agree to all of the terms and conditions below.
 

@@ -1,7 +1,5 @@
 import { useState, useCallback } from 'react';
 import { App as AntdApp } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { APP_ROUTES } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../constants';
 import type { RoleFormValues, RoleFormData, Role } from '../../../models';
 import { convertFormValuesToRoleFormData } from '../../../utils';
@@ -22,8 +20,6 @@ interface UseEditRoleSubmitOptions {
     data: Partial<RoleFormData>,
     options?: { silent?: boolean },
   ) => Promise<Role>;
-  /** When true, do not navigate after update (e.g. when using edit panel on list page). */
-  skipNavigate?: boolean;
   /** Called after successful update (e.g. close panel). */
   onSuccess?: () => void;
 }
@@ -34,11 +30,9 @@ export const useEditRoleSubmit = ({
   initialValues,
   form,
   handleUpdate,
-  skipNavigate = false,
   onSuccess,
 }: UseEditRoleSubmitOptions) => {
   const { message } = AntdApp.useApp();
-  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = useCallback(
@@ -65,9 +59,6 @@ export const useEditRoleSubmit = ({
           const result = await handleUpdate(id, fieldsData, { silent: true });
 
           message.success(RC.LABELS.MESSAGES.UPDATED(result.name));
-          if (!skipNavigate) {
-            navigate(`${APP_ROUTES.ROLES}/${id}/view`);
-          }
           onSuccess?.();
         } catch (error) {
           // Both steps are silent, so the refusal is shown here.
@@ -81,7 +72,7 @@ export const useEditRoleSubmit = ({
         onSuccess?.();
       }
     },
-    [id, role, initialValues, form, handleUpdate, navigate, skipNavigate, onSuccess, message],
+    [id, role, initialValues, form, handleUpdate, onSuccess, message],
   );
 
   return {

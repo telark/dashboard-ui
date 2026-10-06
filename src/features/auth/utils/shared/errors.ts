@@ -1,7 +1,7 @@
 import { App as AntdApp } from 'antd';
 import type { NormalizedAxiosErrorMeta } from '../../../../api/client/normalize';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
-import { ERROR_MESSAGES, HTTP_STATUS } from '../../../../constants';
+import { AUTH_REFUSAL_CODES, ERROR_MESSAGES, HTTP_STATUS } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { selectSelfRegistrationEnabled } from '../../store';
 import store from '../../../../store';
@@ -53,26 +53,13 @@ const isUserNotFoundError = (error: AuthErrorShape, errorMsg?: string): boolean 
     return false;
   }
 
-  if (
+  return (
+    normalized?.code === AUTH_REFUSAL_CODES.USER_NOT_FOUND ||
     normalized?.isNotFound ||
     normalized?.status === HTTP_STATUS.NOT_FOUND ||
     error?.status === HTTP_STATUS.NOT_FOUND ||
-    error?.isNotFound
-  ) {
-    return true;
-  }
-
-  if (
-    normalized?.isServer ||
-    error?.isServer ||
-    error?.status === HTTP_STATUS.INTERNAL_SERVER_ERROR
-  ) {
-    return checkErrorPattern(msg, LOGIN_CONSTANTS.ERROR_PATTERNS.USER_NOT_FOUND);
-  }
-
-  return (
-    error?.response?.status === HTTP_STATUS.NOT_FOUND ||
-    checkErrorPattern(msg, LOGIN_CONSTANTS.ERROR_PATTERNS.USER_NOT_FOUND)
+    error?.isNotFound ||
+    error?.response?.status === HTTP_STATUS.NOT_FOUND
   );
 };
 
@@ -86,11 +73,6 @@ const userNotFoundMessage = (): string =>
     ? LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND
     : LOGIN_CONSTANTS.MESSAGES.USER_NOT_FOUND_NO_SELF_REGISTRATION;
 
-const serverErrorMessage = (errorMsg: string): string =>
-  checkErrorPattern(errorMsg, LOGIN_CONSTANTS.ERROR_PATTERNS.USER_NOT_FOUND)
-    ? userNotFoundMessage()
-    : LOGIN_CONSTANTS.MESSAGES.SERVER_ERROR;
-
 const clientErrorMessage = (errorMsg: string): string =>
   errorMsg && errorMsg !== ERROR_MESSAGES.API.UNKNOWN_ERROR
     ? errorMsg
@@ -103,13 +85,15 @@ export const getLoginRefusalMessage = (input: unknown): string | null => {
   if (!error?.normalized?.isForbidden && error?.normalized?.status !== HTTP_STATUS.CONFLICT) {
     return null;
   }
-  const errorMsg = extractErrorMessage(error);
-  if (checkErrorPattern(errorMsg, LOGIN_CONSTANTS.ERROR_PATTERNS.ACCOUNT_SUSPENDED)) {
+  const code = error.normalized?.code;
+  if (code === AUTH_REFUSAL_CODES.ACCOUNT_SUSPENDED) {
     return LOGIN_CONSTANTS.MESSAGES.ACCOUNT_SUSPENDED;
   }
-  if (checkErrorPattern(errorMsg, LOGIN_CONSTANTS.ERROR_PATTERNS.BOOTSTRAP_PASSKEY_ONLY)) {
+  if (code === AUTH_REFUSAL_CODES.BOOTSTRAP_PASSKEY_ONLY) {
     return LOGIN_CONSTANTS.MESSAGES.BOOTSTRAP_PASSKEY_ONLY;
   }
+  // Auth's Google sign-in 409s carry no code.
+  const errorMsg = extractErrorMessage(error);
   if (checkErrorPattern(errorMsg, LOGIN_CONSTANTS.ERROR_PATTERNS.EMAIL_SIGNS_IN_ANOTHER_WAY)) {
     return LOGIN_CONSTANTS.MESSAGES.EMAIL_SIGNS_IN_ANOTHER_WAY;
   }
@@ -147,7 +131,7 @@ export const getUserFriendlyErrorMessage = (input: unknown): string => {
   }
 
   if (error?.isServer || normalized?.isServer) {
-    return serverErrorMessage(errorMsg);
+    return LOGIN_CONSTANTS.MESSAGES.SERVER_ERROR;
   }
 
   if (error?.isClient || normalized?.isClient) {

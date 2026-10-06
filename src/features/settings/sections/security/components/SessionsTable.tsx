@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Tooltip } from 'antd';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { isSessionExpired } from '../../../../../features/auth/utils/session/validation';
 import { SECURITY_SECTION_CONSTANTS } from '../constants';
@@ -156,7 +156,7 @@ const SessionsTable: React.FC<SessionsTableProps> = memo(
                       </span>
                     </Tooltip>
                   ) : (
-                    '—'
+                    EMPTY_VALUE
                   )}
                 </span>
                 <span>

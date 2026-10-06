@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../../../../constants';
+import { DEFAULT_COLORS, ROW_ACTION_CLASS } from '../../../../../../constants';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../../auth/hooks';
 import { useGroupDeleteModal, GroupDeleteModal } from '../../delete';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
@@ -27,7 +27,6 @@ const actionButtonStyle = (disabled: boolean): React.CSSProperties => ({
   height: ACTION_SIZE,
   borderRadius: 4,
   transition: 'color 0.2s, opacity 0.2s',
-  outline: 'none',
   opacity: disabled ? 0.6 : 1,
   pointerEvents: disabled ? 'none' : 'auto',
 });
@@ -102,6 +101,7 @@ export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({
           <button
             type="button"
             onClick={handleEditClick}
+            className={ROW_ACTION_CLASS}
             style={actionButtonStyle(!canEdit)}
             disabled={!canEdit}
             onMouseEnter={(e) => {
@@ -124,6 +124,7 @@ export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({
           <button
             type="button"
             onClick={handleDeleteClick}
+            className={ROW_ACTION_CLASS}
             style={actionButtonStyle(!canDelete)}
             disabled={!canDelete}
             onMouseEnter={(e) => {
