@@ -157,3 +157,9 @@ h3 {
 .tk-scroll-hidden::-webkit-scrollbar {
   display: none;
 }
+
+/* List row actions reset every style inline (all: unset), so only !important brings back
+   their keyboard focus ring. */
+.tk-row-action:focus-visible {
+  outline: 2px solid var(--color-info) !important;
+}

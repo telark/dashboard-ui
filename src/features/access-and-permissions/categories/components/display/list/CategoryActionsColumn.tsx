@@ -1,7 +1,7 @@
 import React from 'react';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
-import { DEFAULT_COLORS } from '../../../../../../constants';
+import { DEFAULT_COLORS, ROW_ACTION_CLASS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../../roles/constants';
 import { CATEGORIES_CONSTANTS as CC, labelsFor } from '../../../constants';
 import type { CategoryScope } from '../../../constants';
@@ -58,7 +58,6 @@ const actionButtonStyle = (disabled: boolean): React.CSSProperties => ({
   height: ACTION_SIZE,
   borderRadius: 4,
   transition: 'color 0.2s, opacity 0.2s',
-  outline: 'none',
   opacity: disabled ? 0.6 : 1,
   pointerEvents: disabled ? 'none' : 'auto',
 });
@@ -127,6 +126,7 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
             <button
               type="button"
               onClick={handleEditClick}
+              className={ROW_ACTION_CLASS}
               style={actionButtonStyle(!hasEditPermission)}
               disabled={!hasEditPermission}
               onMouseEnter={(e) => {
@@ -155,6 +155,7 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
             <button
               type="button"
               onClick={handleDeleteClick}
+              className={ROW_ACTION_CLASS}
               style={actionButtonStyle(!hasDeletePermission)}
               disabled={!hasDeletePermission}
               onMouseEnter={(e) => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../../../../constants';
+import { DEFAULT_COLORS, ROW_ACTION_CLASS } from '../../../../../../constants';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
 import { ROLES_CONSTANTS as RC } from '../../../constants';
 import { canDeleteRole, canModifyRole } from '../../../utils';
@@ -31,7 +31,6 @@ const actionButtonStyle = (disabled: boolean): React.CSSProperties => ({
   height: ACTION_SIZE,
   borderRadius: 4,
   transition: 'color 0.2s, opacity 0.2s',
-  outline: 'none',
   opacity: disabled ? 0.6 : 1,
   pointerEvents: disabled ? 'none' : 'auto',
 });
@@ -51,7 +50,7 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
   onDelete,
   getUsage,
 }) => {
-  const { handleDelete } = useRoleActions({ skipNavigate: true });
+  const { handleDelete } = useRoleActions();
   const hasEditPermission = usePermission(
     ACTION_PERMISSIONS.roles.edit.scope,
     ACTION_PERMISSIONS.roles.edit.level,
@@ -122,6 +121,7 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
           <button
             type="button"
             onClick={handleEditClick}
+            className={ROW_ACTION_CLASS}
             style={actionButtonStyle(!canEdit)}
             disabled={!canEdit}
             onMouseEnter={(e) => {
@@ -150,6 +150,7 @@ export const RoleActionsColumn: React.FC<RoleActionsColumnProps> = ({
           <button
             type="button"
             onClick={handleDeleteClick}
+            className={ROW_ACTION_CLASS}
             style={actionButtonStyle(!canDelete)}
             disabled={!canDelete}
             onMouseEnter={(e) => {

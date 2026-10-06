@@ -61,10 +61,3 @@ export interface UsersState {
   error: string | null;
   deletingIds: string[];
 }
-
-export interface UsersTableProps {
-  users: User[];
-  onView?: (user: User) => void;
-  onEdit?: (user: User) => void;
-  onUsersChange?: (next: User[]) => void;
-}

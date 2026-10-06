@@ -1,8 +1,10 @@
 import React from 'react';
 import { AssignedItemsList } from '../../../../../shared';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
-import { Icons, DEFAULT_COLORS } from '../../../../../../../constants';
+import { Icons, DEFAULT_COLORS, MENU_LABELS } from '../../../../../../../constants';
 import RowTag from '../../../../../../../components/display/table/RowTag';
+import { NoPermissionCard } from '../../../../../../../components/shared';
+import { ACTION_PERMISSIONS, usePermission } from '../../../../../../auth/hooks';
 import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/utils';
 import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
@@ -11,6 +13,7 @@ import type { GroupInheritedRole } from '../../../../hooks/panels/role/useGroupI
 import type { Group } from '../../../../../groups/models';
 
 const RoleIcon = Icons.Role;
+const VIEW_GROUPS = ACTION_PERMISSIONS.groups.view;
 
 const renderRoleContent = (item: GroupInheritedRole): React.ReactNode => {
   const { role } = item;
@@ -63,16 +66,23 @@ interface UserGroupInheritedRolesViewProps {
 const UserGroupInheritedRolesView: React.FC<UserGroupInheritedRolesViewProps> = ({
   items,
   loading,
-}) => (
-  <AssignedItemsList<GroupInheritedRole>
-    items={items}
-    getItemKey={(item) => item.role.id}
-    renderItemContent={renderRoleContent}
-    renderRightContent={renderGroupTags}
-    loading={loading}
-    emptyMessage={UC.LABELS.MESSAGES.NO_GROUP_ROLES}
-    loadingMessage={UC.LABELS.MESSAGES.LOADING_ROLES}
-  />
-);
+}) => {
+  // Without groups read the list would just look empty, as if no group granted a role.
+  const canViewGroups = usePermission(VIEW_GROUPS.scope, VIEW_GROUPS.level);
+  if (!canViewGroups) {
+    return <NoPermissionCard featureName={MENU_LABELS.GROUPS} permission={VIEW_GROUPS} compact />;
+  }
+  return (
+    <AssignedItemsList<GroupInheritedRole>
+      items={items}
+      getItemKey={(item) => item.role.id}
+      renderItemContent={renderRoleContent}
+      renderRightContent={renderGroupTags}
+      loading={loading}
+      emptyMessage={UC.LABELS.MESSAGES.NO_GROUP_ROLES}
+      loadingMessage={UC.LABELS.MESSAGES.LOADING_ROLES}
+    />
+  );
+};
 
 export default UserGroupInheritedRolesView;

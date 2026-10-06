@@ -28,6 +28,7 @@ interface UseUserListPageConfigOptions {
   setPageSize: (size: number) => void;
   sortedUsers: User[];
   paginatedUsers: User[];
+  loadFailed: boolean;
   hasSelection: boolean;
   handleViewUser: (user: User) => void;
   handleEditUser: (user: User) => void;
@@ -60,6 +61,7 @@ export const useUserListPageConfig = ({
   setPageSize,
   sortedUsers,
   paginatedUsers,
+  loadFailed,
   handleViewUser,
   handleEditUser,
   onCreateUserClick,
@@ -107,6 +109,10 @@ export const useUserListPageConfig = ({
     ACTION_PERMISSIONS.users.delete.level,
     ACTION_PERMISSIONS.users.delete.deny,
   );
+  const canViewGroups = usePermission(
+    ACTION_PERMISSIONS.groups.view.scope,
+    ACTION_PERMISSIONS.groups.view.level,
+  );
   useRoles();
   const lockReasonFor = useUserLockReason();
   const bulkDeleteLockReason = useMemo(
@@ -133,7 +139,8 @@ export const useUserListPageConfig = ({
     canManageGroup,
     canBulkDeleteUser,
     bulkDeleteLockReason,
-    totalCount: sortedUsers.length,
+    // A failed load shows no count rather than "0 members" beside the error.
+    totalCount: loadFailed ? undefined : sortedUsers.length,
     pageCount: paginatedUsers.length,
     bulkMode,
     onToggleBulkMode,
@@ -152,7 +159,10 @@ export const useUserListPageConfig = ({
     [sortKey, handleSort],
   );
 
-  const userColumns = useMemo(() => Columns(ctx, groups), [ctx, groups]);
+  const userColumns = useMemo(
+    () => Columns(ctx, groups, canViewGroups),
+    [ctx, groups, canViewGroups],
+  );
 
   return useMemo(
     () => ({

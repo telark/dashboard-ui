@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { Dropdown, Tooltip } from 'antd';
 import type { MenuProps } from 'antd';
 import { EditOutlined, DeleteOutlined, LinkOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, MODAL_CHROME, TIME_FORMATS } from '../../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  MODAL_CHROME,
+  ROW_ACTION_CLASS,
+  TIME_FORMATS,
+} from '../../../../../../constants';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
 import { formatDateTime } from '../../../../../../utils/shared/time';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../../auth/hooks';
@@ -33,7 +38,6 @@ const actionButtonStyle = (disabled: boolean): React.CSSProperties => ({
   height: ACTION_SIZE,
   borderRadius: 4,
   transition: 'color 0.2s, opacity 0.2s',
-  outline: 'none',
   opacity: disabled ? 0.6 : 1,
   pointerEvents: disabled ? 'none' : 'auto',
 });
@@ -108,6 +112,7 @@ const EnrollLinkAction: React.FC<EnrollLinkActionProps> = ({ record }) => {
           >
             <button
               type="button"
+              className={ROW_ACTION_CLASS}
               style={actionButtonStyle(blocked)}
               disabled={blocked}
               onMouseEnter={(e) => {
@@ -212,6 +217,7 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
           <button
             type="button"
             onClick={handleEditClick}
+            className={ROW_ACTION_CLASS}
             style={actionButtonStyle(!canEdit)}
             disabled={!canEdit}
             onMouseEnter={(e) => {
@@ -238,6 +244,7 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
           <button
             type="button"
             onClick={handleDeleteClick}
+            className={ROW_ACTION_CLASS}
             style={actionButtonStyle(!canDelete)}
             disabled={!canDelete}
             onMouseEnter={(e) => {
