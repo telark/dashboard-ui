@@ -55,10 +55,13 @@ A cluster build (`vite build --mode cluster`) calls `/api/<service>/api/v1/...` 
 
 ## Develop
 
-You need Node.js 26 and the Telark services. Run Telark locally, then forward its services to the ports above with [`scripts/local-port-forward.sh`](https://github.com/telark/telark/blob/main/scripts/local-port-forward.sh) from the Telark repository:
+You need Node.js 26 and a Telark install whose API services allow the `http://localhost:3000` origin ([CORS](https://github.com/telark/telark/blob/main/docs/INSTALL.md#cors)). Forward the services to the ports above:
 
 ```sh
-./scripts/local-port-forward.sh   # in your telark checkout
+kubectl port-forward -n telark svc/telark-exporter-service 8002:8080 &
+kubectl port-forward -n telark svc/telark-discovery-service 8004:8080 &
+kubectl port-forward -n telark svc/telark-auth-service 8006:8080 &
+kubectl port-forward -n telark svc/telark-analyzer-service 8007:8080 &
 ```
 
 Then, in this repository:
