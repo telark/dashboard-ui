@@ -62,7 +62,7 @@ const SettingsCard: React.FC<SettingsCardProps> = memo(
                 <h3
                   style={{
                     margin: 0,
-                    fontSize: 15,
+                    fontSize: CONTENT.CARD_TITLE_FONT_SIZE,
                     fontWeight: 600,
                     color: DEFAULT_COLORS.TEXT_PRIMARY,
                   }}
@@ -89,7 +89,7 @@ const SettingsCard: React.FC<SettingsCardProps> = memo(
                       : titleBadge != null
                         ? '1px 0 0'
                         : `${CONTENT.CARD_TITLE_TO_DESCRIPTION_GAP_PX}px 0 0`,
-                  fontSize: 13,
+                  fontSize: CONTENT.CARD_DESCRIPTION_FONT_SIZE,
                   color: DEFAULT_COLORS.TEXT_MUTED,
                   lineHeight: 1.5,
                 }}

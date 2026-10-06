@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import logger from '../../../logging';
 import { fetchAnalyzerRuntime } from '../clients/insights';
 import { keepInsightsStream } from '../clients/insightsStream';
@@ -10,6 +10,11 @@ export interface AnalyzerRuntimeState {
   runtime: AnalyzerRuntime | null;
   connected: boolean;
   isLoading: boolean;
+}
+
+export interface AnalyzerRuntimeHook extends AnalyzerRuntimeState {
+  // The GET reads the saved config first, so a settings save shows without waiting for the poll.
+  refresh: () => Promise<void>;
 }
 
 // runtime.changed carries no pull progress; progress only matters while pulling.
@@ -27,12 +32,13 @@ export const applyRuntimeEvent = (
 };
 
 // Settings view of the analyzer runtime: one GET, then runtime events only (apps=[]).
-export function useAnalyzerRuntime(): AnalyzerRuntimeState {
+export function useAnalyzerRuntime(): AnalyzerRuntimeHook {
   const [state, setState] = useState<AnalyzerRuntimeState>({
     runtime: null,
     connected: false,
     isLoading: true,
   });
+  const refetchRef = useRef<() => Promise<void>>(() => Promise.resolve());
 
   useEffect(() => {
     const controller = new AbortController();
@@ -62,10 +68,12 @@ export function useAnalyzerRuntime(): AnalyzerRuntimeState {
       if (connected) void refetch();
     };
 
+    refetchRef.current = refetch;
     void refetch();
     void keepInsightsStream([], onEvent, onConnected, signal);
     return () => controller.abort();
   }, []);
 
-  return state;
+  const refresh = useCallback(() => refetchRef.current(), []);
+  return { ...state, refresh };
 }

@@ -215,7 +215,7 @@
 
 /* Extra compact spacing for shared labeled inputs/selects */
 .form-item-compact .ant-form-item-label {
-  margin-bottom: 4px !important;
+  margin-bottom: var(--form-label-gap) !important;
   padding-bottom: 0 !important;
 }
 .form-item-compact .ant-form-item-control {

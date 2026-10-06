@@ -27,6 +27,7 @@ export interface SettingsSectionConfig {
   label: string;
   description: string;
   icon: ComponentType<{ style?: CSSProperties }>;
+  badge?: string;
 }
 
 export const SETTINGS_CONSTANTS = {
@@ -63,6 +64,7 @@ export const SETTINGS_CONSTANTS = {
       label: 'Insights',
       description: 'On by default. Choose the local model and when incident analysis runs.',
       icon: RobotOutlined,
+      badge: 'Experimental',
     },
     AI_DATA: {
       key: 'insightsGovernance' as const,
@@ -101,6 +103,11 @@ export const SETTINGS_CONSTANTS = {
     CARD_TITLE_TO_DESCRIPTION_GAP_PX: -4,
     SECTION_TITLE_FONT_SIZE: 20,
     HINT_FONT_SIZE: 12,
+    CARD_TITLE_FONT_SIZE: 15,
+    CARD_DESCRIPTION_FONT_SIZE: 13,
+    /** Label/value lists (runtime status, model details, storage figures). */
+    DETAILS_COLUMN_GAP: 12,
+    DETAILS_ROW_GAP: 2,
     GAP_BETWEEN_CARDS: 20,
     /** Opt-in collapse control, rendered in the card's top-right corner. */
     CARD_COLLAPSE: {

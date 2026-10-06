@@ -31,6 +31,7 @@ const SettingsMainContent: React.FC<SettingsMainContentProps> = memo(
           <SectionHeader
             title={activeSectionConfig.label}
             description={activeSectionConfig.description}
+            badge={activeSectionConfig.badge}
           />
         )}
         <SectionContent
