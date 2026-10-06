@@ -11,7 +11,6 @@ export {
   selectSelfRegistrationEnabled,
   selectGoogleClientID,
   setAuthConfig,
-  AUTH_CONFIG_CACHE_TTL_MS,
 } from './slices/authConfigSlice';
 
 export {

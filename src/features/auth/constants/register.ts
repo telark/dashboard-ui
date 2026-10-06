@@ -17,6 +17,9 @@ export const REGISTER_CONSTANTS = {
     EMAIL_LOCKED_HINT: "This email comes from your enrollment link and can't be changed",
     ENROLL_TITLE: 'Add a passkey on this device',
     ENROLL_SUBTITLE: 'Confirm your email and name this device to finish enrollment',
+    ENROLL_SIGNED_IN: 'You are signed in. Sign out to use this enrollment link on this device.',
+    SIGN_OUT: 'Sign out',
+    BACK_TO_DASHBOARD: 'Back to the dashboard',
     ENROLL_LINK_INVALID:
       'This enrollment link is invalid, expired or already used. Ask an administrator for a new one.',
   },

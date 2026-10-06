@@ -4,6 +4,7 @@ import { ERROR_CODES, ERROR_MESSAGES, HTTP_STATUS } from '../../constants';
 export interface NormalizedAxiosErrorMeta {
   status: number | null;
   message: string;
+  code: string | null;
   url: string;
   method: string;
   isNotFound: boolean;
@@ -21,18 +22,21 @@ export interface ExtendedAxiosError extends AxiosError {
 
 interface ServerErrorPayload {
   message?: string;
+  code?: string;
 }
 
-const readDataMessage = (data: AxiosError['response']): string | undefined => {
+const readDataField = (
+  data: AxiosError['response'],
+  field: keyof ServerErrorPayload,
+): string | undefined => {
   const payload = data?.data as ServerErrorPayload | undefined;
-  return payload && typeof payload === 'object' && typeof payload.message === 'string'
-    ? payload.message
-    : undefined;
+  const value = payload && typeof payload === 'object' ? payload[field] : undefined;
+  return typeof value === 'string' ? value : undefined;
 };
 
 export const normalizeError = (error: AxiosError): NormalizedAxiosErrorMeta => {
   const status = error?.response?.status ?? null;
-  const dataMessage = readDataMessage(error?.response);
+  const dataMessage = readDataField(error?.response, 'message');
   const message = dataMessage || error?.message || ERROR_MESSAGES.API.UNKNOWN_ERROR;
   const url = error?.config?.url ?? '';
   const method = error?.config?.method ?? '';
@@ -49,6 +53,7 @@ export const normalizeError = (error: AxiosError): NormalizedAxiosErrorMeta => {
   return {
     status,
     message,
+    code: readDataField(error?.response, 'code') ?? null,
     url,
     method,
     isNotFound,

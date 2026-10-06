@@ -7,7 +7,7 @@ import FullPageLoader from '../components/display/views/FullPageLoader';
 import { NoPermissionCard } from '../components/shared';
 import { APP_CONFIGS, APP_ROUTES, HEADER_LAYOUT, MENU_LABELS } from '../constants';
 import type { RequiredPermission } from '../interfaces/shared';
-import { hasSessionToken } from '../features/auth/utils';
+import { hasSessionToken, isEnrollLink } from '../features/auth/utils';
 import { PermissionGate, ACTION_PERMISSIONS } from '../features/auth/hooks';
 
 const { view: viewApplications } = ACTION_PERMISSIONS.applications;
@@ -69,7 +69,13 @@ const AppRoutes: React.FC = () => {
         {/* One layout instance spans both auth routes, so the brand panel is not
             remounted when navigating between login and register. */}
         <Route
-          element={isAuthenticated ? <Navigate to={APP_ROUTES.HOME} replace /> : <AuthLayout />}
+          element={
+            isAuthenticated && !isEnrollLink(location.pathname, location.search) ? (
+              <Navigate to={APP_ROUTES.HOME} replace />
+            ) : (
+              <AuthLayout />
+            )
+          }
         >
           <Route path={APP_ROUTES.LOGIN} element={<Login />} />
           <Route path={APP_ROUTES.REGISTER} element={<Register />} />

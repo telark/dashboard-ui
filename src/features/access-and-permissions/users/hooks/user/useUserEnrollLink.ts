@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { App as AntdApp } from 'antd';
 import type { AppDispatch, RootState } from '../../../../../store';
 import type { ExtendedAxiosError } from '../../../../../api/client/normalize';
-import { HTTP_STATUS } from '../../../../../constants';
+import { AUTH_REFUSAL_CODES, HTTP_STATUS } from '../../../../../constants';
 import { ACTION_PERMISSIONS, usePermission } from '../../../../auth/hooks';
 import { buildEnrollUrl, getCurrentUser } from '../../../../auth/utils';
 import { useHasRoleAboveCaller } from '../../../roles/hooks';
@@ -28,9 +28,7 @@ const refusalMessage = (error: unknown, fallback: string): string => {
   const byStatus = meta?.status ? REFUSALS[meta.status] : undefined;
   if (byStatus) return byStatus;
   if (!meta?.isForbidden) return fallback;
-  return meta.message.includes(UC.PATTERNS.ENROLL_LINK_RECOVERY)
-    ? C.REFUSED.RECOVERY
-    : meta.message;
+  return meta.code === AUTH_REFUSAL_CODES.ENROLL_LINK_RECOVERY ? C.REFUSED.RECOVERY : meta.message;
 };
 
 interface BlockInputs {

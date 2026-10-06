@@ -1,9 +1,6 @@
 export const LOGIN_CONSTANTS = {
   ERROR_PATTERNS: {
-    USER_NOT_FOUND: ['user not found', 'failed to get user', 'status: 404'],
     NO_PASSKEYS: ['no passkeys found', 'no passkey found', 'no passkeys', 'no passkey'],
-    ACCOUNT_SUSPENDED: ['account is suspended'],
-    BOOTSTRAP_PASSKEY_ONLY: ['bootstrap administrator signs in with a passkey'],
     EMAIL_SIGNS_IN_ANOTHER_WAY: ['already signs in another way'],
     EMAIL_AMBIGUOUS: ['more than one user holds this email'],
   },

@@ -16,5 +16,4 @@ export interface AuthConfigState {
   loading: boolean;
   error: string | null;
   data: AuthConfigData | null;
-  lastFetchedAt: number | null;
 }

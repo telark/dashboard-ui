@@ -6,18 +6,12 @@ import type { RootState } from '../../../../store';
 import type { AuthConfigData, AuthConfigState } from '../../models';
 import logger from '../../../../logging';
 
-export const AUTH_CONFIG_CACHE_TTL_MS = 5 * 60 * 1000;
-
 const initialState: AuthConfigState = {
   initialized: false,
   loading: false,
   error: null,
   data: null,
-  lastFetchedAt: null,
 };
-
-const isFresh = (lastFetchedAt: number | null): boolean =>
-  lastFetchedAt !== null && Date.now() - lastFetchedAt < AUTH_CONFIG_CACHE_TTL_MS;
 
 export const fetchAuthConfigThunk = createAsyncThunk<AuthConfigData>(
   STORE_ACTIONS.AUTH_CONFIG.FETCH,
@@ -34,8 +28,8 @@ export const fetchAuthConfigThunk = createAsyncThunk<AuthConfigData>(
 export const ensureAuthConfigThunk = createAsyncThunk<void, void, { state: RootState }>(
   STORE_ACTIONS.AUTH_CONFIG.ENSURE,
   async (_, { dispatch, getState }) => {
-    const { lastFetchedAt, loading } = getState().authConfig;
-    if (loading || isFresh(lastFetchedAt)) return;
+    // No cache: an auth page must show a sign-in setting changed a moment ago, in any tab.
+    if (getState().authConfig.loading) return;
     await dispatch(fetchAuthConfigThunk());
   },
 );
@@ -48,7 +42,6 @@ const authConfigSlice = createSlice({
       state.data = action.payload;
       state.error = null;
       state.initialized = true;
-      state.lastFetchedAt = Date.now();
     },
   },
   extraReducers: (builder) => {
@@ -62,7 +55,6 @@ const authConfigSlice = createSlice({
         state.data = action.payload;
         state.error = null;
         state.initialized = true;
-        state.lastFetchedAt = Date.now();
       })
       .addCase(fetchAuthConfigThunk.rejected, (state, action) => {
         state.loading = false;
@@ -78,10 +70,9 @@ export const { setAuthConfig } = authConfigSlice.actions;
 export default authConfigSlice.reducer;
 
 export const selectAuthConfigState = (s: RootState) => s.authConfig;
-export const selectSelfRegistrationEnabled = (s: RootState): boolean => {
-  const enabled = s.authConfig.data?.selfRegistrationEnabled;
-  return enabled !== false;
-};
+// An unreadable config counts as off: the UI never offers what the server may refuse.
+export const selectSelfRegistrationEnabled = (s: RootState): boolean =>
+  s.authConfig.data?.selfRegistrationEnabled === true;
 
 // Absent unless the provider is enabled and actually usable, so the caller can gate
 // the sign-in button on this alone.
