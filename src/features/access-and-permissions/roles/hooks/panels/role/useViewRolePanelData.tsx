@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../../../constants';
+import { Tag } from 'antd';
+import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS } from '../../../../../../constants';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
-import RowTag from '../../../../../../components/display/table/RowTag';
 import { ActorDisplay } from '../../../../../../components/display/users';
 import { useUsernamesByIds } from '../../../../../../hooks/useUsernamesByIds';
 import { ValidityDisplay } from '../../../../../../components/display/validity';
@@ -55,27 +55,24 @@ export const useViewRolePanelData = ({
     if (!role) return [];
 
     const categoryName = getCategoryName(role.categoryRef, categories);
-    const tagStyle = {
-      fontSize: 12 as const,
-    };
     const isBuiltIn = role.type === RC.TYPE.BUILT_IN;
 
     return [
       {
         label: RC.LABELS.VIEW_LABELS.STATUS,
-        value: <RowTag text={role.status} fontSize={tagStyle.fontSize} />,
+        value: <Tag className={TAG_CLASS.MEDIUM}>{role.status}</Tag>,
       },
       {
         label: RC.LABELS.VIEW_LABELS.TYPE,
-        value: <RowTag text={role.type} fontSize={tagStyle.fontSize} />,
+        value: <Tag className={TAG_CLASS.MEDIUM}>{role.type}</Tag>,
       },
       {
         label: RC.LABELS.VIEW_LABELS.CATEGORY,
-        value: <RowTag text={categoryName} fontSize={tagStyle.fontSize} />,
+        value: <Tag className={TAG_CLASS.MEDIUM}>{categoryName}</Tag>,
       },
       {
         label: RC.LABELS.VIEW_LABELS.VERSION,
-        value: <RowTag text={role.version || EMPTY_VALUE} fontSize={tagStyle.fontSize} />,
+        value: <Tag className={TAG_CLASS.MEDIUM}>{role.version || EMPTY_VALUE}</Tag>,
       },
       {
         label: RC.LABELS.VIEW_LABELS.CREATION_DATE,

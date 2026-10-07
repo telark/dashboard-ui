@@ -12,6 +12,8 @@ import {
   BUTTON_CONFIGS,
   DEFAULT_COLORS,
   SELECT_THEME,
+  TAG_CLASS,
+  TAG_THEME,
   APP_CONFIGS,
   APP_ROUTES,
   CONTROL_HEIGHT,
@@ -109,6 +111,7 @@ const App: React.FC = () => {
         // currentColor follows the button text: the default green vanishes on a primary button.
         button={{ loadingIcon: <FancySpinner size={CONTROL_FONT_SIZE} color="currentColor" /> }}
         select={{ loadingIcon: <FancySpinner size={12} /> }}
+        tag={{ variant: 'solid', className: TAG_CLASS.PILL }}
         theme={{
           cssVar: { key: 'telark' },
           hashed: false,
@@ -144,6 +147,7 @@ const App: React.FC = () => {
               controlItemBgActiveHover: SELECT_THEME.controlItemBgActiveHover,
             },
             Select: SELECT_THEME,
+            Tag: TAG_THEME,
             // Focus ring matches Select: colorPrimary is the app green, which antd
             // would otherwise use for the active border and shadow.
             Input: {

@@ -1,13 +1,9 @@
 import React, { memo } from 'react';
+import { Tag } from 'antd';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, Icons } from '../../../constants';
-import RowTag from '../../../components/display/table/RowTag';
+import { DEFAULT_COLORS, Icons, STATUS_COLORS, TAG_CLASS, getPillColor } from '../../../constants';
 import { INSIGHTS_UI as T } from '../constants/texts';
-import {
-  INSIGHT_KIND_LABELS,
-  INSIGHT_SEVERITY_LABELS,
-  SEVERITY_COLORS,
-} from '../constants/insights';
+import { INSIGHT_KIND_LABELS, INSIGHT_SEVERITY_LABELS } from '../constants/insights';
 import type {
   InsightGroup,
   InsightGroupBy,
@@ -96,12 +92,13 @@ const GroupHeader: React.FC<Props> = memo(({ item, groupBy }) => (
       )}
     </span>
     {SEVERITIES_DESC.filter((s) => item.group.bySeverity[s]).map((s) => (
-      <RowTag
+      <Tag
         key={s}
-        text={`${INSIGHT_SEVERITY_LABELS[s]} ${item.group.bySeverity[s]}`}
-        accent={SEVERITY_COLORS[s]}
-        capitalize={false}
-      />
+        color={getPillColor(STATUS_COLORS.INSIGHT_SEVERITY[s])}
+        className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}
+      >
+        {`${INSIGHT_SEVERITY_LABELS[s]} ${item.group.bySeverity[s]}`}
+      </Tag>
     ))}
   </div>
 ));

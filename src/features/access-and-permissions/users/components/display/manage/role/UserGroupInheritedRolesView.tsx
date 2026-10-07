@@ -1,8 +1,8 @@
 import React from 'react';
+import { Tag } from 'antd';
 import { AssignedItemsList } from '../../../../../shared';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
-import { Icons, DEFAULT_COLORS, MENU_LABELS } from '../../../../../../../constants';
-import RowTag from '../../../../../../../components/display/table/RowTag';
+import { Icons, DEFAULT_COLORS, MENU_LABELS, TAG_CLASS } from '../../../../../../../constants';
 import { NoPermissionCard } from '../../../../../../../components/shared';
 import { ACTION_PERMISSIONS, usePermission } from '../../../../../../auth/hooks';
 import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/utils';
@@ -53,7 +53,9 @@ const renderGroupTags = (item: GroupInheritedRole): React.ReactNode => (
     }}
   >
     {item.fromGroups.map((group: Group) => (
-      <RowTag key={group.id} text={group.name} fontSize={12} capitalize={false} />
+      <Tag key={group.id} className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}>
+        {group.name}
+      </Tag>
     ))}
   </div>
 );

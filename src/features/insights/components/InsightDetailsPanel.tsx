@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Alert, App as AntdApp, Button, Collapse, Tooltip } from 'antd';
+import { Alert, App as AntdApp, Button, Collapse, Tag, Tooltip } from 'antd';
 import type { CollapseProps } from 'antd';
 import {
   CheckOutlined,
@@ -10,10 +10,17 @@ import {
   UndoOutlined,
   UpOutlined,
 } from '@ant-design/icons';
-import { APP_ROUTES, DEFAULT_COLORS, EMPTY_VALUE, ROW_ICON_BUTTON_SIZE } from '../../../constants';
+import {
+  APP_ROUTES,
+  DEFAULT_COLORS,
+  EMPTY_VALUE,
+  ROW_ICON_BUTTON_SIZE,
+  STATUS_COLORS,
+  TAG_CLASS,
+  getPillColor,
+} from '../../../constants';
 import { AnimationWrapper, ExpandPanelButton } from '../../../components/display/panels/slide-out';
 import { FancySpinner } from '../../../components/animation';
-import RowTag from '../../../components/display/table/RowTag';
 import TimeAgo from '../../../components/display/time/TimeAgo';
 import { ACTION_PERMISSIONS, usePermission } from '../../auth/hooks/permissions/permissionEngine';
 import { INSIGHTS_UI as T } from '../constants/texts';
@@ -29,7 +36,6 @@ import {
   INSIGHTS_STALE_MS,
   insightErrorMessage,
   RUNTIME_BANNER_TEXT,
-  SEVERITY_COLORS,
 } from '../constants/insights';
 import { useApplicationInsights } from '../hooks/useApplicationInsights';
 import { useEffectiveRun } from '../hooks/useEffectiveRun';
@@ -72,7 +78,9 @@ const unsetButton: React.CSSProperties = { all: 'unset', cursor: 'pointer' };
 const FACT_PARAMS = new Set(['message', 'namespace', 'workload', 'kind']);
 
 const chip = (text: string, accent?: string) => (
-  <RowTag key={text} text={text} accent={accent} capitalize={false} />
+  <Tag key={text} color={getPillColor(accent)} className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}>
+    {text}
+  </Tag>
 );
 
 const CopyButton: React.FC<{ value: string }> = ({ value }) => {
@@ -240,7 +248,7 @@ const Summary: React.FC<{
   const triaged = insight.triage;
   // An application can span namespaces; the card names the one its workload runs in.
   const where = insight.params?.namespace || namespace;
-  const accent = SEVERITY_COLORS[insight.severity];
+  const accent = STATUS_COLORS.INSIGHT_SEVERITY[insight.severity];
   return (
     <>
       <InsightCard

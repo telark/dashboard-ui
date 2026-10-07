@@ -1,6 +1,6 @@
 import type React from 'react';
 import { DEFAULT_COLORS } from '../../../constants';
-import type { PlanEventKey, SeverityKey, TagTone } from '../models';
+import type { PlanEventKey, SeverityKey } from '../models';
 
 export const HOME_DASHBOARD_TEXTS = {
   TITLE: 'Home',
@@ -94,7 +94,6 @@ export const HOME_DASHBOARD_LAYOUT = {
   ROW_GAP_PX: 10,
   ROW_TITLE_FONT_SIZE_PX: 13,
   TEXT_FONT_SIZE_PX: 12,
-  TAG_FONT_SIZE_PX: 11,
   SECTION_GAP_PX: 8,
   SPINNER_SIZE_PX: 24,
   LIST_LIMIT: 2,
@@ -116,26 +115,6 @@ export const HOME_CHART_LAYOUT = {
     [8, 3, 2, 3],
   ] as number[][],
 } as const;
-
-export const HOME_SEVERITY_COLORS: Record<SeverityKey, string> = {
-  critical: DEFAULT_COLORS.DANGER,
-  high: DEFAULT_COLORS.WARNING,
-  medium: DEFAULT_COLORS.SUCCESS,
-  low: DEFAULT_COLORS.ICON_SECONDARY,
-  other: DEFAULT_COLORS.ICON_MUTED,
-};
-
-export const HOME_PLAN_EVENT_COLORS: Record<PlanEventKey, string> = {
-  created: DEFAULT_COLORS.INFO,
-  started: DEFAULT_COLORS.SUCCESS,
-  terminated: DEFAULT_COLORS.ICON_SECONDARY,
-};
-
-export const HOME_TAG_TONE_COLORS: Record<TagTone, string | undefined> = {
-  danger: DEFAULT_COLORS.DANGER,
-  warning: DEFAULT_COLORS.WARNING,
-  neutral: undefined,
-};
 
 const ELLIPSIS: React.CSSProperties = {
   whiteSpace: 'nowrap',

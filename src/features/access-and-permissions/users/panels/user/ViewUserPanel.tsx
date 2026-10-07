@@ -1,8 +1,14 @@
 import React, { useMemo } from 'react';
-import { DEFAULT_COLORS, EMPTY_VALUE, Icons } from '../../../../../constants';
+import { Tag } from 'antd';
+import {
+  DEFAULT_COLORS,
+  EMPTY_VALUE,
+  Icons,
+  TAG_CLASS,
+  getPillColor,
+} from '../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import ViewPanel from '../../../../../components/display/panels/view/ViewPanel';
-import RowTag from '../../../../../components/display/table/RowTag';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import UserAvatar from '../../../../../components/display/avatars/UserAvatar';
 import { useUserDeleteModal, UserDeleteModal } from '../../components/delete';
@@ -73,11 +79,12 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
       {
         label: UC.LABELS.VIEW_LABELS.STATUS,
         value: (
-          <RowTag
-            text={user.status.phase}
-            accent={isActive ? DEFAULT_COLORS.SUCCESS : undefined}
-            fontSize={12}
-          />
+          <Tag
+            color={getPillColor(isActive ? DEFAULT_COLORS.SUCCESS : undefined)}
+            className={TAG_CLASS.MEDIUM}
+          >
+            {user.status.phase}
+          </Tag>
         ),
       },
       {

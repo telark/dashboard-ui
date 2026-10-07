@@ -9,10 +9,9 @@ import {
 } from '../../constants/dashboard';
 import type { DashboardRowItem } from '../../models';
 import StatusDot from './StatusDot';
-import DashboardTag from './DashboardTag';
 
 const DashboardRow: React.FC<Omit<DashboardRowItem, 'key'>> = memo(
-  ({ dotColor, title, meta, time, tag, to }) => {
+  ({ dotColor, title, meta, time, to }) => {
     const navigate = useNavigate();
     const [hovered, setHovered] = useState(false);
     const interactive = Boolean(to);
@@ -65,7 +64,6 @@ const DashboardRow: React.FC<Omit<DashboardRowItem, 'key'>> = memo(
             </div>
           ) : null}
         </div>
-        {tag ? <DashboardTag {...tag} /> : null}
       </div>
     );
   },

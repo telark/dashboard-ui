@@ -1,7 +1,7 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo } from 'react';
+import { Button, Empty, Typography } from 'antd';
 import { GROUPS_CONSTANTS as GC } from '../constants';
-import EmptyState from '../../../../components/display/views/EmptyState';
-import { Icons } from '../../../../constants';
+import { EMPTY_ACTION_STYLE, EMPTY_CLASS, Icons } from '../../../../constants';
 import { CreateGroupPanel } from '../panels';
 import type { FormInstance } from 'antd';
 
@@ -15,32 +15,34 @@ interface GroupsEmptyPageProps {
 }
 
 const GroupsEmptyPage: React.FC<GroupsEmptyPageProps> = memo(
-  ({ createPanelOpen, onCloseCreatePanel, onCreateGroupClick, createForm }) => {
-    const buttonIcon = useMemo(() => <GroupIcon size={16} />, []);
-    const icon = useMemo(() => <GroupIcon size={32} />, []);
-
-    return (
-      <>
-        <EmptyState
-          title={GC.LABELS.MESSAGES.NO_GROUPS_TITLE}
-          description={GC.LABELS.MESSAGES.NO_GROUPS_DESCRIPTION}
-          icon={icon}
-          primaryAction={
-            onCreateGroupClick
-              ? {
-                  label: GC.LABELS.FORM.BUTTON_TEXT,
-                  icon: buttonIcon,
-                  onClick: onCreateGroupClick,
-                }
-              : undefined
-          }
-        />
-        {createPanelOpen && (
-          <CreateGroupPanel open={createPanelOpen} onClose={onCloseCreatePanel} form={createForm} />
-        )}
-      </>
-    );
-  },
+  ({ createPanelOpen, onCloseCreatePanel, onCreateGroupClick, createForm }) => (
+    <>
+      <Empty
+        className={EMPTY_CLASS.PAGE}
+        image={<GroupIcon size={32} />}
+        description={
+          <>
+            <Typography.Title level={3}>{GC.LABELS.MESSAGES.NO_GROUPS_TITLE}</Typography.Title>
+            <Typography.Text>{GC.LABELS.MESSAGES.NO_GROUPS_DESCRIPTION}</Typography.Text>
+          </>
+        }
+      >
+        {onCreateGroupClick ? (
+          <Button
+            type="primary"
+            icon={<GroupIcon size={16} />}
+            onClick={onCreateGroupClick}
+            style={EMPTY_ACTION_STYLE}
+          >
+            {GC.LABELS.FORM.BUTTON_TEXT}
+          </Button>
+        ) : null}
+      </Empty>
+      {createPanelOpen && (
+        <CreateGroupPanel open={createPanelOpen} onClose={onCloseCreatePanel} form={createForm} />
+      )}
+    </>
+  ),
 );
 
 GroupsEmptyPage.displayName = 'GroupsEmptyPage';

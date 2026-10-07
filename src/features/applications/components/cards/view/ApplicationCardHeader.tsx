@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useState } from 'react';
-import { App as AntdApp, Button, Checkbox, Dropdown, Tooltip } from 'antd';
+import { App as AntdApp, Button, Checkbox, Dropdown, Tag, Tooltip } from 'antd';
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -22,17 +22,14 @@ import {
   CARD_TITLE_STYLE,
   DEFAULT_COLORS,
   MICRO_LABEL_STYLE,
+  STATUS_COLORS,
   TRUNCATE_STYLE,
   getCardMenuButtonStyle,
+  getPillColor,
 } from '../../../../../constants';
 import type { Application, SyncStatusValue } from '../../../models';
-import {
-  APPLICATION_CARD,
-  APPLICATION_HEALTH_ACCENT,
-  APPLICATIONS_UI,
-  SYNC_STATUS_VALUE,
-} from '../../../constants';
-import { CardStatusPill, CardTagList } from '../../../../../components/display/card';
+import { APPLICATION_CARD, APPLICATIONS_UI, SYNC_STATUS_VALUE } from '../../../constants';
+import { CardTagList } from '../../../../../components/display/card';
 import FancySpinner from '../../../../../components/animation/FancySpinner';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { useDispatch, useSelector } from 'react-redux';
@@ -108,7 +105,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
     );
 
     const accent =
-      APPLICATION_HEALTH_ACCENT[(application.health?.status ?? '').toLowerCase()] ??
+      STATUS_COLORS.APPLICATION_HEALTH[(application.health?.status ?? '').toLowerCase()] ??
       DEFAULT_COLORS.NEUTRAL;
     const statusText = application.health?.status || APPLICATIONS_UI.FALLBACKS.UNKNOWN;
 
@@ -242,7 +239,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                 </span>
               </Tooltip>
             ) : null}
-            <CardStatusPill label={statusText} accent={accent} />
+            <Tag color={getPillColor(accent)}>{statusText}</Tag>
             <Dropdown
               trigger={['click']}
               placement="bottomRight"

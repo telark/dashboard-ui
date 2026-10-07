@@ -1,7 +1,7 @@
 import React from 'react';
-import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../constants';
+import { Tag } from 'antd';
+import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS } from '../../../constants';
 import { FancySpinner } from '../../../components/animation';
-import RowTag from '../../../components/display/table/RowTag';
 import TimeAgo from '../../../components/display/time/TimeAgo';
 import { INSIGHTS_UI as T } from '../constants/texts';
 import { insightErrorMessage, RUN_STATUS_LABELS, RUN_TRIGGER_LABELS } from '../constants/insights';
@@ -34,7 +34,7 @@ const RunLine: React.FC<{ run: LastRun | null; light?: boolean }> = ({ run, ligh
   }
   return (
     <div style={{ ...mutedStyle, display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
-      <RowTag text={RUN_TRIGGER_LABELS[run.trigger]} />
+      <Tag className={TAG_CLASS.MEDIUM}>{RUN_TRIGGER_LABELS[run.trigger]}</Tag>
       <span>
         {(run.status === 'done' && run.steps === 0 ? T.RUN_LINE_RULES_ONLY : T.RUN_LINE)
           .replace('{status}', RUN_STATUS_LABELS[run.status])

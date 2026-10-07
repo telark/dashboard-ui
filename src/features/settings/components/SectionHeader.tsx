@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
-import RowTag from '../../../components/display/table/RowTag';
-import { DEFAULT_COLORS } from '../../../constants';
+import { Tag } from 'antd';
+import { DEFAULT_COLORS, getPillColor } from '../../../constants';
 
 export interface SectionHeaderBreadcrumbItem {
   label: string;
@@ -86,7 +86,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = memo(
                 </React.Fragment>
               ))
             : title}
-          {badge != null && <RowTag text={badge} accent={DEFAULT_COLORS.WARNING} fontSize={11} />}
+          {badge != null && <Tag color={getPillColor(DEFAULT_COLORS.WARNING)}>{badge}</Tag>}
         </h1>
         {description != null && description.length > 0 && (
           <p style={SECTION_HEADER_STYLES.description}>{description}</p>

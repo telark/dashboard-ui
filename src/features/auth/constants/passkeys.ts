@@ -58,9 +58,6 @@ export const PASSKEYS_CONSTANTS = {
     CREATED_AT: 'creationTimestamp',
     LAST_USED_AT: 'lastUsedTimestamp',
   } as const,
-  SIZES: {
-    CHIP_FONT: 12,
-  },
   COLORS: {
     TEXT_PRIMARY: DEFAULT_COLORS.TEXT_ON_SURFACE,
     TEXT_MUTED: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,

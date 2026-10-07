@@ -266,7 +266,6 @@ export const USERS_CONSTANTS = {
   } as const,
   SIZES: {
     HEADER_ICON: 14,
-    CHIP_FONT: 12,
     COLUMNS: {
       USERNAME: 150,
       FULLNAME: 180,

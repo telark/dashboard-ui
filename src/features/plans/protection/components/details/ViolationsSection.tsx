@@ -1,13 +1,18 @@
 import React from 'react';
+import { Empty, Tag, Typography } from 'antd';
 import { SafetyCertificateOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, EMPTY_VALUE, SECTION_LAYOUT } from '../../../../../constants';
-import { formatDateKey, toDateKey } from '../../../../../utils/shared/time';
-import RowTag from '../../../../../components/display/table/RowTag';
-import { FancySpinner } from '../../../../../components/animation';
 import {
-  PROTECTION_PLANS_CONSTANTS as PPC,
-  VIOLATION_RESULT_DOT,
-} from '../../constants/protectionPlans';
+  DEFAULT_COLORS,
+  EMPTY_CLASS,
+  EMPTY_VALUE,
+  SECTION_LAYOUT,
+  STATUS_COLORS,
+  TAG_CLASS,
+  getPillColor,
+} from '../../../../../constants';
+import { formatDateKey, toDateKey } from '../../../../../utils/shared/time';
+import { FancySpinner } from '../../../../../components/animation';
+import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import type {
   PlanMode,
   PlanViolation,
@@ -46,30 +51,11 @@ const groupByDay = (
   return groups;
 };
 
-const EMPTY_STATE_CONTAINER: React.CSSProperties = {
-  minHeight: 96,
-  padding: '14px 12px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  textAlign: 'center',
-};
-
-const RETENTION_NOTE_STYLE: React.CSSProperties = {
-  margin: 0,
-  marginTop: 10,
-  fontSize: 12,
-  color: DEFAULT_COLORS.TEXT_MUTED,
-};
+const { Title, Text } = Typography;
 
 const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, error, mode }) => {
   const violations = data?.violations ?? [];
   const grouped = groupByDay(violations);
-  const retentionWindow = data?.retentionWindow;
-  const retentionNote = retentionWindow ? (
-    <p style={RETENTION_NOTE_STYLE}>{PPC.LABELS.VIOLATIONS.RETENTION_NOTE(retentionWindow)}</p>
-  ) : null;
 
   if (loading && violations.length === 0) {
     return (
@@ -81,39 +67,30 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
 
   if (error) {
     return (
-      <div style={EMPTY_STATE_CONTAINER}>
-        <SafetyCertificateOutlined
-          style={{ fontSize: 32, color: DEFAULT_COLORS.ICON_MUTED, marginBottom: 8 }}
-        />
-        <p style={{ margin: 0, fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>{error}</p>
-      </div>
+      <Empty
+        className={EMPTY_CLASS.SECTION}
+        image={<SafetyCertificateOutlined />}
+        description={<Text>{error}</Text>}
+      />
     );
   }
 
   if (violations.length === 0) {
     return (
-      <div style={EMPTY_STATE_CONTAINER}>
-        <SafetyCertificateOutlined
-          style={{ fontSize: 32, color: DEFAULT_COLORS.SUCCESS, marginBottom: 8 }}
-        />
-        <h4
-          style={{
-            margin: 0,
-            marginBottom: 6,
-            fontSize: 15,
-            fontWeight: 600,
-            color: DEFAULT_COLORS.TEXT_PRIMARY,
-          }}
-        >
-          {PPC.LABELS.VIOLATIONS.EMPTY_TITLE}
-        </h4>
-        <p style={{ margin: 0, fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>
-          {mode === 'enforce'
-            ? PPC.LABELS.VIOLATIONS.EMPTY_ENFORCE
-            : PPC.LABELS.VIOLATIONS.EMPTY_AUDIT}
-        </p>
-        {retentionNote}
-      </div>
+      <Empty
+        className={EMPTY_CLASS.SECTION}
+        image={<SafetyCertificateOutlined style={{ color: DEFAULT_COLORS.SUCCESS }} />}
+        description={
+          <>
+            <Title level={4}>{PPC.LABELS.VIOLATIONS.EMPTY_TITLE}</Title>
+            <Text>
+              {mode === 'enforce'
+                ? PPC.LABELS.VIOLATIONS.EMPTY_ENFORCE
+                : PPC.LABELS.VIOLATIONS.EMPTY_AUDIT}
+            </Text>
+          </>
+        }
+      />
     );
   }
 
@@ -161,7 +138,7 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
                       borderRadius: '50%',
                       marginTop: 5,
                       flexShrink: 0,
-                      background: VIOLATION_RESULT_DOT[entry.result],
+                      background: STATUS_COLORS.VIOLATION_RESULT[entry.result],
                     }}
                   />
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -173,37 +150,26 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
                         gap: 6,
                       }}
                     >
-                      <RowTag
-                        text={`${PPC.LABELS.VIOLATIONS.TABLE_RESULT}: ${resultLabel}`}
-                        accent={VIOLATION_RESULT_DOT[entry.result]}
-                        fontSize={11}
-                      />
+                      <Tag color={getPillColor(STATUS_COLORS.VIOLATION_RESULT[entry.result])}>
+                        {`${PPC.LABELS.VIOLATIONS.TABLE_RESULT}: ${resultLabel}`}
+                      </Tag>
                       {entry.resource.kind && (
-                        <RowTag
-                          text={`${PPC.LABELS.VIOLATIONS.TABLE_RESOURCE_KIND}: ${entry.resource.kind}`}
-                          {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-                        />
+                        <Tag>{`${PPC.LABELS.VIOLATIONS.TABLE_RESOURCE_KIND}: ${entry.resource.kind}`}</Tag>
                       )}
                       {entry.resource.name && (
-                        <RowTag
-                          text={`${PPC.LABELS.VIOLATIONS.TABLE_RESOURCE_NAME}: ${entry.resource.name}`}
-                          capitalize={false}
-                          {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-                        />
+                        <Tag className={TAG_CLASS.AS_IS}>
+                          {`${PPC.LABELS.VIOLATIONS.TABLE_RESOURCE_NAME}: ${entry.resource.name}`}
+                        </Tag>
                       )}
                       {entry.namespace && (
-                        <RowTag
-                          text={`${PPC.LABELS.VIOLATIONS.TABLE_NAMESPACE}: ${entry.namespace}`}
-                          capitalize={false}
-                          {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-                        />
+                        <Tag className={TAG_CLASS.AS_IS}>
+                          {`${PPC.LABELS.VIOLATIONS.TABLE_NAMESPACE}: ${entry.namespace}`}
+                        </Tag>
                       )}
                       {entry.rule && (
-                        <RowTag
-                          text={`${PPC.LABELS.VIOLATIONS.TABLE_RULE}: ${entry.rule}`}
-                          capitalize={false}
-                          fontSize={11}
-                        />
+                        <Tag className={TAG_CLASS.AS_IS}>
+                          {`${PPC.LABELS.VIOLATIONS.TABLE_RULE}: ${entry.rule}`}
+                        </Tag>
                       )}
                     </div>
                     {entry.message && (
@@ -236,7 +202,6 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
           })}
         </div>
       ))}
-      {retentionNote}
     </div>
   );
 };

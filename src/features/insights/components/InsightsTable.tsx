@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import { Tag } from 'antd';
 import type { TableColumnType } from 'antd';
 import {
   AiOutlineAlert,
@@ -11,8 +12,14 @@ import {
   AiOutlineTag,
   AiOutlineWarning,
 } from 'react-icons/ai';
-import { DEFAULT_COLORS, EMPTY_VALUE, Icons } from '../../../constants';
-import RowTag from '../../../components/display/table/RowTag';
+import {
+  DEFAULT_COLORS,
+  EMPTY_VALUE,
+  Icons,
+  STATUS_COLORS,
+  TAG_CLASS,
+  getPillColor,
+} from '../../../constants';
 import { generateColumn } from '../../../components/display/table/utils';
 import TimeAgo from '../../../components/display/time/TimeAgo';
 import { INSIGHTS_UI } from '../constants/texts';
@@ -21,7 +28,6 @@ import {
   INSIGHT_KIND_LABELS,
   INSIGHT_ROW_STATE_LABELS,
   INSIGHT_SEVERITY_LABELS,
-  SEVERITY_COLORS,
   SEVERITY_RANK,
 } from '../constants/insights';
 import { sortData, type SortFieldConfig, type SortOrder } from '../../../utils/layout/sort';
@@ -72,13 +78,9 @@ export const fittingInsightColumns = (available: number): Set<InsightColumnKey> 
 };
 
 const tag = (text: string, accent?: string): React.ReactNode => (
-  <RowTag
-    key={text}
-    text={text}
-    accent={accent}
-    fontSize={CLUSTER_INSIGHTS.CHIP_FONT}
-    capitalize={false}
-  />
+  <Tag key={text} color={getPillColor(accent)} className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}>
+    {text}
+  </Tag>
 );
 
 // One line each, cut with an ellipsis: a long title never widens the table (full text on hover).
@@ -112,13 +114,6 @@ TitleCell.displayName = 'InsightTitleCell';
 
 export const insightRowState = (row: Pick<InsightRow, 'stale' | 'status'>): InsightRowState =>
   row.stale && row.status !== 'resolved' ? 'stale' : row.status;
-
-const STATE_COLORS: Record<InsightRowState, string> = {
-  open: DEFAULT_COLORS.DANGER,
-  updated: DEFAULT_COLORS.WARNING,
-  stale: DEFAULT_COLORS.TEXT_MUTED,
-  resolved: DEFAULT_COLORS.SUCCESS,
-};
 
 // Lifecycle order: what still needs attention before what is fading or done.
 const STATE_RANK: Record<InsightRowState, number> = { open: 0, updated: 1, stale: 2, resolved: 3 };
@@ -196,7 +191,8 @@ export const buildInsightColumns = ({
       key: 'SEVERITY',
       label: C.SEVERITY,
       icon: <AiOutlineWarning />,
-      render: (r) => tag(INSIGHT_SEVERITY_LABELS[r.severity], SEVERITY_COLORS[r.severity]),
+      render: (r) =>
+        tag(INSIGHT_SEVERITY_LABELS[r.severity], STATUS_COLORS.INSIGHT_SEVERITY[r.severity]),
     },
     {
       key: 'APPLICATION',
@@ -222,7 +218,7 @@ export const buildInsightColumns = ({
       icon: <AiOutlineCheckCircle />,
       render: (r) => {
         const state = insightRowState(r);
-        return tag(INSIGHT_ROW_STATE_LABELS[state], STATE_COLORS[state]);
+        return tag(INSIGHT_ROW_STATE_LABELS[state], STATUS_COLORS.INSIGHT_STATE[state]);
       },
     },
     {

@@ -1,16 +1,21 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Button, Dropdown, Empty, Tooltip } from 'antd';
+import { Button, Dropdown, Empty, Tag, Tooltip } from 'antd';
 import type { TableColumnType } from 'antd';
 import { DownloadOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { APP_ROUTES, DEFAULT_COLORS } from '../../../../constants';
+import {
+  APP_ROUTES,
+  DEFAULT_COLORS,
+  STATUS_COLORS,
+  TAG_CLASS,
+  getPillColor,
+} from '../../../../constants';
 import { PageLayout } from '../../../../components/display/views';
 import { FilterPanel } from '../../../../components/display/panels/filter';
 import type { FilterField } from '../../../../components/display/panels/filter/FilterPanel';
 import SortHeader from '../../../../components/display/table/Sort';
 import { TABLE_DEFAULTS } from '../../../../components/display/table/constants';
-import RowTag from '../../../../components/display/table/RowTag';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import type { PageLayoutConfig } from '../../../../interfaces/layout/page';
 import { useElementWidth } from '../../../../hooks/layout';
@@ -149,11 +154,12 @@ const buildColumns = (
         )
       : null,
     column('TRIGGER', L.COLUMNS.TRIGGER, (r) => (
-      <RowTag
-        text={PPC.LABELS.REPORTS.TRIGGER_LABELS[r.trigger]}
-        accent={r.trigger === 'manual' ? undefined : DEFAULT_COLORS.SUCCESS}
-        capitalize={false}
-      />
+      <Tag
+        color={getPillColor(STATUS_COLORS.PLAN_REPORT_TRIGGER[r.trigger])}
+        className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}
+      >
+        {PPC.LABELS.REPORTS.TRIGGER_LABELS[r.trigger]}
+      </Tag>
     )),
     visible.has('GENERATED_BY')
       ? column('GENERATED_BY', L.COLUMNS.GENERATED_BY, (r) => (

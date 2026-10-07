@@ -1,9 +1,8 @@
 import React, { memo, useMemo } from 'react';
-import { Tooltip } from 'antd';
-import { DEFAULT_COLORS, EMPTY_VALUE, SECTION_LAYOUT, getPillSurface } from '../../../../constants';
+import { Tag, Tooltip } from 'antd';
+import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS } from '../../../../constants';
 import SettingsCard from '../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
-import RowTag from '../../../../components/display/table/RowTag';
 import KeyValueGrid from './KeyValueGrid';
 import MutedText from './MutedText';
 import { APPLICATIONS_UI, APPLICATION_CONDITION_TYPES } from '../../constants';
@@ -22,21 +21,6 @@ const ActorName: React.FC<{ actor: string }> = ({ actor }) => {
   const ids = useMemo(() => [actor], [actor]);
   const usernamesById = useUsernamesByIds(ids, true);
   return <span title={actor}>{usernamesById[actor]}</span>;
-};
-
-const chipStyle: React.CSSProperties = {
-  display: 'inline-block',
-  maxWidth: '100%',
-  ...getPillSurface(),
-  padding: '2px 10px',
-  borderRadius: 999,
-  fontWeight: 700,
-  fontSize: SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG.fontSize,
-  textTransform: 'none',
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  boxSizing: 'border-box',
 };
 
 function buildPrimaryRows(application: Application) {
@@ -155,11 +139,11 @@ const RuntimeColumn: React.FC<{ application: Application }> = ({ application }) 
           {APPLICATIONS_UI.SECTIONS.RUNTIME.PORTS}
         </div>
         {ports.length === 0 ? (
-          <RowTag text={EMPTY_VALUE} {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
+          <Tag>{EMPTY_VALUE}</Tag>
         ) : (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {ports.map((p) => (
-              <RowTag key={p} text={String(p)} {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
+              <Tag key={p}>{String(p)}</Tag>
             ))}
           </div>
         )}
@@ -177,7 +161,7 @@ const RuntimeColumn: React.FC<{ application: Application }> = ({ application }) 
           >
             {images.slice(0, MAX_IMAGES).map((img) => (
               <Tooltip key={img} title={img}>
-                <span style={chipStyle}>{img}</span>
+                <Tag className={`${TAG_CLASS.AS_IS} ${TAG_CLASS.TRUNCATE}`}>{img}</Tag>
               </Tooltip>
             ))}
             {images.length > MAX_IMAGES ? (
@@ -194,7 +178,7 @@ const RuntimeColumn: React.FC<{ application: Application }> = ({ application }) 
           {APPLICATIONS_UI.SECTIONS.RUNTIME.ENV_VAR_KEYS}
         </div>
         {envVarKeys.length === 0 ? (
-          <RowTag text={EMPTY_VALUE} {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
+          <Tag>{EMPTY_VALUE}</Tag>
         ) : (
           <div
             style={{
@@ -207,14 +191,12 @@ const RuntimeColumn: React.FC<{ application: Application }> = ({ application }) 
           >
             {visibleKeys.map((key) => (
               <Tooltip key={key} title={key}>
-                <span
-                  style={{
-                    ...chipStyle,
-                    maxWidth: APPLICATION_SECTION_LAYOUT.ENV_CHIP_MAX_WIDTH_PX,
-                  }}
+                <Tag
+                  className={`${TAG_CLASS.AS_IS} ${TAG_CLASS.TRUNCATE}`}
+                  style={{ maxWidth: APPLICATION_SECTION_LAYOUT.ENV_CHIP_MAX_WIDTH_PX }}
                 >
                   {key}
-                </span>
+                </Tag>
               </Tooltip>
             ))}
             {hiddenKeys.length > 0 ? (
@@ -244,10 +226,7 @@ const RuntimeColumn: React.FC<{ application: Application }> = ({ application }) 
                 }
               >
                 <span>
-                  <RowTag
-                    text={`+${hiddenKeys.length}`}
-                    {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-                  />
+                  <Tag>{`+${hiddenKeys.length}`}</Tag>
                 </span>
               </Tooltip>
             ) : null}

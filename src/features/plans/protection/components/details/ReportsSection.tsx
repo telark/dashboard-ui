@@ -1,9 +1,16 @@
 import React, { useMemo } from 'react';
-import { Button, Tooltip } from 'antd';
+import { Button, Empty, Tag, Tooltip, Typography } from 'antd';
 import { FileTextOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, SECTION_LAYOUT, TIME_FORMATS } from '../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  EMPTY_CLASS,
+  SECTION_LAYOUT,
+  STATUS_COLORS,
+  TAG_CLASS,
+  TIME_FORMATS,
+  getPillColor,
+} from '../../../../../constants';
 import { formatDateTime } from '../../../../../utils/shared/time';
-import RowTag from '../../../../../components/display/table/RowTag';
 import { FancySpinner } from '../../../../../components/animation';
 import { useUsernamesByIds } from '../../../../../hooks/useUsernamesByIds';
 import type { RootState } from '../../../../../store';
@@ -27,22 +34,6 @@ interface ReportsSectionProps {
 }
 
 const LABELS = PPC.LABELS.REPORTS;
-
-const EMPTY_STATE_CONTAINER: React.CSSProperties = {
-  minHeight: 96,
-  padding: '14px 12px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  textAlign: 'center',
-};
-
-const MUTED_TEXT: React.CSSProperties = {
-  margin: 0,
-  fontSize: 13,
-  color: DEFAULT_COLORS.TEXT_MUTED,
-};
 
 const emptyMessage = (phase: PlanPhase): string => {
   if (phase === 'draft' || phase === 'scheduled') return LABELS.EMPTY_DRAFT;
@@ -75,12 +66,20 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
 
   if (error || reports.length === 0) {
     return (
-      <div style={EMPTY_STATE_CONTAINER}>
-        <FileTextOutlined
-          style={{ fontSize: 32, color: DEFAULT_COLORS.ICON_MUTED, marginBottom: 8 }}
-        />
-        <p style={MUTED_TEXT}>{error ?? emptyMessage(phase)}</p>
-      </div>
+      <Empty
+        className={EMPTY_CLASS.SECTION}
+        image={<FileTextOutlined />}
+        description={
+          error ? (
+            <Typography.Text>{error}</Typography.Text>
+          ) : (
+            <>
+              <Typography.Title level={4}>{LABELS.EMPTY_TITLE}</Typography.Title>
+              <Typography.Text>{emptyMessage(phase)}</Typography.Text>
+            </>
+          )
+        }
+      />
     );
   }
 
@@ -92,7 +91,6 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
   return (
     <div>
       {reports.map((report) => {
-        const final = report.trigger !== 'manual';
         return (
           <div
             key={report.id}
@@ -107,12 +105,12 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
             }}
           >
             <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 6 }}>
-              <RowTag
-                text={LABELS.TRIGGER_LABELS[report.trigger]}
-                accent={final ? DEFAULT_COLORS.SUCCESS : undefined}
-                fontSize={11}
-                capitalize={false}
-              />
+              <Tag
+                color={getPillColor(STATUS_COLORS.PLAN_REPORT_TRIGGER[report.trigger])}
+                className={TAG_CLASS.AS_IS}
+              >
+                {LABELS.TRIGGER_LABELS[report.trigger]}
+              </Tag>
               <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
                 {LABELS.GENERATED_AT}{' '}
                 {formatDateTime(report.generatedAt, TIME_FORMATS.DATE_TIME_12H)} ·{' '}
@@ -122,9 +120,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
               <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
                 · {LABELS.DECISIONS}: {report.violationsTotal}
               </span>
-              {report.truncated && (
-                <RowTag text={LABELS.TRUNCATED} fontSize={11} capitalize={false} />
-              )}
+              {report.truncated && <Tag className={TAG_CLASS.AS_IS}>{LABELS.TRUNCATED}</Tag>}
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {REPORT_FORMATS.map(({ key, label }) => {

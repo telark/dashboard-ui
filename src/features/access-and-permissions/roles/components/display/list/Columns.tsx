@@ -1,9 +1,9 @@
+import { Tag } from 'antd';
 import type { TableColumnType } from 'antd';
 import type { Role, ColumnsArgs } from '../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
-import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
-import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS } from '../../../../../../constants';
 import {
   AiOutlineCalendar,
   AiOutlineCheckCircle,
@@ -52,7 +52,7 @@ export const Columns = ({
         icon: <AiOutlineTag />,
         width: RPC.SIZES.COLUMNS.TYPE,
         render: (_: unknown, record: Role) => (
-          <RowTag text={record.type ?? RPC.LABELS.CUSTOM_TYPE} fontSize={RPC.SIZES.CHIP_FONT} />
+          <Tag className={TAG_CLASS.MEDIUM}>{record.type ?? RPC.LABELS.CUSTOM_TYPE}</Tag>
         ),
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
@@ -63,7 +63,7 @@ export const Columns = ({
         label: RPC.LABELS.COLUMNS.STATUS,
         icon: <AiOutlineCheckCircle />,
         width: RPC.SIZES.COLUMNS.STATUS,
-        render: (status: string) => <RowTag text={status} fontSize={RPC.SIZES.CHIP_FONT} />,
+        render: (status: string) => <Tag className={TAG_CLASS.MEDIUM}>{status}</Tag>,
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
     ),
@@ -147,7 +147,7 @@ export const Columns = ({
           if (isBuiltIn(record))
             return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>;
           const categoryName = getCategoryName(record.categoryRef, categories);
-          return <RowTag text={categoryName} fontSize={RPC.SIZES.CHIP_FONT} />;
+          return <Tag className={TAG_CLASS.MEDIUM}>{categoryName}</Tag>;
         },
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },
@@ -161,7 +161,7 @@ export const Columns = ({
         render: (_: unknown, record: Role) => {
           if (isBuiltIn(record))
             return <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>;
-          return <RowTag text={record.version || EMPTY_VALUE} fontSize={RPC.SIZES.CHIP_FONT} />;
+          return <Tag className={TAG_CLASS.MEDIUM}>{record.version || EMPTY_VALUE}</Tag>;
         },
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },

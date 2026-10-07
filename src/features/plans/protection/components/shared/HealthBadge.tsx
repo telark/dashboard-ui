@@ -1,9 +1,6 @@
 import React from 'react';
-import { DEFAULT_COLORS } from '../../../../../constants';
-import {
-  HEALTH_DOT_COLOR,
-  PROTECTION_PLANS_CONSTANTS as PPC,
-} from '../../constants/protectionPlans';
+import { DEFAULT_COLORS, STATUS_COLORS } from '../../../../../constants';
+import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import type { PlanHealth } from '../../models';
 
 interface HealthBadgeProps {
@@ -13,7 +10,7 @@ interface HealthBadgeProps {
 
 const HealthBadge: React.FC<HealthBadgeProps> = ({ health, compact }) => {
   if (!health) return null;
-  const color = HEALTH_DOT_COLOR[health];
+  const color = STATUS_COLORS.PLAN_HEALTH[health];
   const label = PPC.LABELS.HEALTH_LABELS[health];
 
   return (

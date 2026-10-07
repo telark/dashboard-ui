@@ -1,7 +1,6 @@
 import { USERS_CONSTANTS as UC } from '../../../constants';
-import { DEFAULT_COLORS, Icons, TIME_FORMATS } from '../../../../../../constants';
+import { DEFAULT_COLORS, Icons, TAG_CLASS, TIME_FORMATS } from '../../../../../../constants';
 import { formatDateTime } from '../../../../../../utils/shared/time';
-import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
 import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
 import type { User } from '../../../models';
@@ -9,7 +8,7 @@ import type { Group } from '../../../../groups/models';
 import UserAvatar from '../../../../../../components/display/avatars/UserAvatar';
 import { AiOutlineUser, AiOutlineMail, AiOutlineCalendar, AiOutlineLink } from 'react-icons/ai';
 import React from 'react';
-import { Tooltip } from 'antd';
+import { Tag, Tooltip } from 'antd';
 import { pluralize } from '../../../../../../utils/helpers/format';
 import { getTotalRoleCount } from '../../../utils';
 import BootstrapPill from '../shared/BootstrapPill';
@@ -98,10 +97,7 @@ const Columns = (ctx: GenerateColumnCtx, groups: Group[] = [], canViewGroups = t
             );
           }
           const tag = (
-            <RowTag
-              text={pluralize(total, UC.LABELS.COLUMNS.ROLE_NOUN)}
-              fontSize={UC.SIZES.CHIP_FONT}
-            />
+            <Tag className={TAG_CLASS.MEDIUM}>{pluralize(total, UC.LABELS.COLUMNS.ROLE_NOUN)}</Tag>
           );
           return groupRolesHidden ? (
             <Tooltip title={UC.LABELS.COLUMNS.GROUP_ROLES_NOT_COUNTED}>

@@ -1,5 +1,3 @@
-import { DEFAULT_COLORS } from '../../../constants/shared/colors';
-
 export const NOTIFICATIONS_POLL_INTERVAL_MS = 30000;
 export const NOTIFICATIONS_CACHE_KEY = 'telark:notifications:cache';
 export const NOTIFICATIONS_CACHE_MAX_ITEMS = 200;
@@ -14,13 +12,6 @@ export const NOTIFICATION_TYPES = {
   ENROLL_LINK_CREATED: 'enroll.link.created',
   ENROLL_LINK_USED: 'enroll.link.used',
 } as const;
-
-export const NOTIFICATION_SEVERITY_COLORS: Record<string, string> = {
-  info: DEFAULT_COLORS.INFO_STRONG,
-  success: DEFAULT_COLORS.SUCCESS,
-  warning: DEFAULT_COLORS.WARNING,
-  error: DEFAULT_COLORS.DANGER,
-};
 
 export const NOTIFICATIONS_STORE_ACTIONS = {
   FETCH: 'notifications/fetch',

@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
-import { Popover, Tooltip } from 'antd';
+import { Popover, Tag, Tooltip } from 'antd';
 import { AiOutlineStop } from 'react-icons/ai';
 import { VIEW } from '../../../../../../constants/layout/panels';
-import { DEFAULT_COLORS, withAlpha } from '../../../../../../constants';
-import RowTag from '../../../../../../components/display/table/RowTag';
+import { DEFAULT_COLORS, TAG_CLASS, withAlpha } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../constants';
 import type { ScopesPermissionsProps } from '../../../models';
 
@@ -97,7 +96,7 @@ const RoleScopesView: React.FC<ScopesPermissionsProps> = ({ scopes }) => {
                 gap: 0,
               }}
             >
-              <RowTag text={scopeValue.level} fontSize={12} />
+              <Tag className={TAG_CLASS.MEDIUM}>{scopeValue.level}</Tag>
               {hasRules && (
                 <Popover
                   trigger="click"

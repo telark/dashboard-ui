@@ -1,13 +1,11 @@
 import React, { memo, useState } from 'react';
 import { EyeOutlined, HistoryOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Tooltip } from 'antd';
-import { DEFAULT_COLORS, EMPTY_VALUE, LIST_TOOLBAR } from '../../../../constants';
+import { Button, Checkbox, Tag, Tooltip } from 'antd';
+import { DEFAULT_COLORS, EMPTY_VALUE, LIST_TOOLBAR, TAG_CLASS } from '../../../../constants';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import { formatTimeAgo } from '../../../../utils/shared/time';
 import { APPLICATIONS_UI } from '../../constants';
 import { APPLICATION_SNAPSHOT_ROW } from '../../constants/sectionLayout';
-import { getApplicationSeverityAccentColor } from '../../utils/healthVisual';
-import SnapshotMetaChip from './SnapshotMetaChip';
 import type { ApplicationSnapshotSummary } from '../../models';
 import {
   usePermission,
@@ -159,23 +157,13 @@ const ApplicationSnapshotRow: React.FC<ApplicationSnapshotRowProps> = memo(
                   color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
                 }}
               >
-                <SnapshotMetaChip>
-                  <span
-                    style={{
-                      width: R.SEVERITY_DOT_SIZE_PX,
-                      height: R.SEVERITY_DOT_SIZE_PX,
-                      borderRadius: '50%',
-                      background: getApplicationSeverityAccentColor(s.severity),
-                    }}
-                  />
-                  {severityLabel}
-                </SnapshotMetaChip>
+                <Tag>{`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SEVERITY}: ${severityLabel}`}</Tag>
                 {s.id ? (
-                  <SnapshotMetaChip>
+                  <Tag className={TAG_CLASS.META}>
                     <span title={s.id} style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {s.id}
                     </span>
-                  </SnapshotMetaChip>
+                  </Tag>
                 ) : null}
                 <span
                   title={`${s.size}${ui.STORAGE_METRICS_JOINER}${takenAtText}`}

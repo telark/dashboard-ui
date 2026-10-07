@@ -1,4 +1,3 @@
-import { DEFAULT_COLORS, withAlpha } from './colors';
 import { CONTROL_HEIGHT } from '../layout/controls';
 
 /** Used by PageLayout and Settings so content (title + body) aligns across features. */
@@ -39,7 +38,6 @@ export const SHARED_PAGE_CONSTANTS = {
     ICON_FONT_SIZE: 24,
     MARGIN_BOTTOM: 12,
     MAX_WIDTH: 500,
-    EMPTY_STATE_MAX_WIDTH: 560,
     PROGRESS_BAR_HEIGHT: 8,
     PROGRESS_BAR_BORDER_RADIUS: 4,
   },
@@ -49,27 +47,6 @@ export const SHARED_PAGE_CONSTANTS = {
       alignItems: 'center',
       justifyContent: 'center',
       minHeight: '50vh',
-    },
-    EMPTY_STATE_CONTAINER: {
-      minHeight: '50vh',
-      display: 'flex',
-      flexDirection: 'column' as const,
-      alignItems: 'center',
-      justifyContent: 'center',
-      textAlign: 'center' as const,
-    },
-    EMPTY_ICON: {
-      width: 56,
-      height: 56,
-      borderRadius: '50%',
-      background: DEFAULT_COLORS.SUCCESS_TINT,
-      boxShadow: `inset 0 0 0 2px ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.18)}`,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: 12,
-      color: DEFAULT_COLORS.SUCCESS,
-      fontSize: 24,
     },
   },
 } as const;

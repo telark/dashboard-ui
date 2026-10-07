@@ -1,9 +1,15 @@
 import React, { memo, useMemo } from 'react';
-import { Skeleton } from 'antd';
+import { Empty, Skeleton, Tag, Typography } from 'antd';
 import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons';
-import { DEFAULT_COLORS, EMPTY_VALUE, getPillSurface } from '../../../../constants';
+import {
+  DEFAULT_COLORS,
+  EMPTY_CLASS,
+  EMPTY_VALUE,
+  STATUS_COLORS,
+  TAG_CLASS,
+  getPillSurface,
+} from '../../../../constants';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
-import { PanelEmptyState } from '../../../../components/display/panels/shared';
 import { pluralize } from '../../../../utils/helpers/format';
 import {
   cardStyle,
@@ -17,8 +23,6 @@ import {
 import type { ApplicationSnapshotSummary, SnapshotManifestState } from '../../models';
 import { APPLICATIONS_UI } from '../../constants';
 import { APPLICATION_TRACKING_ANNOTATION_PREFIX } from '../../constants/applications';
-import SnapshotMetaChip from './SnapshotMetaChip';
-import { getApplicationSeverityAccentColor } from '../../utils/healthVisual';
 
 type DiffType = 'add' | 'remove' | 'change';
 type Path = string[];
@@ -191,19 +195,13 @@ const dotStyle = (color: string): React.CSSProperties => ({
   background: color,
 });
 
-const DIFF_TONE = {
-  add: DEFAULT_COLORS.SUCCESS,
-  remove: DEFAULT_COLORS.DANGER,
-  change: DEFAULT_COLORS.WARNING,
-} as const;
-
 const ValueChip: React.FC<{ tone: DiffType; children: React.ReactNode }> = ({ tone, children }) => (
   <span
     style={{
       display: 'inline-block',
       padding: '3px 8px',
       borderRadius: 6,
-      ...getPillSurface(DIFF_TONE[tone]),
+      ...getPillSurface(STATUS_COLORS.SNAPSHOT_DIFF[tone]),
       fontSize: 12,
       fontWeight: 700,
       lineHeight: 1.4,
@@ -244,12 +242,9 @@ const SnapshotSide: React.FC<{ label: string; snap: ApplicationSnapshotSummary }
           minWidth: 0,
         }}
       >
-        <SnapshotMetaChip>{snap.id}</SnapshotMetaChip>
+        <Tag className={TAG_CLASS.META}>{snap.id}</Tag>
         {snap.severity ? (
-          <SnapshotMetaChip>
-            <span style={dotStyle(getApplicationSeverityAccentColor(snap.severity))} />
-            {snap.severity}
-          </SnapshotMetaChip>
+          <Tag>{`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SEVERITY}: ${snap.severity}`}</Tag>
         ) : null}
         <span style={mutedStyle}>
           {snap.takenAt ? <TimeAgo date={snap.takenAt} /> : EMPTY_VALUE}
@@ -407,18 +402,32 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
       );
     } else if (error) {
       body = (
-        <PanelEmptyState
-          icon={<CloseCircleFilled style={{ color: DEFAULT_COLORS.DANGER }} />}
-          title={ui.COMPARE_ERROR_TITLE}
-          description={error}
+        <Empty
+          className={EMPTY_CLASS.PANEL}
+          image={<CloseCircleFilled style={{ color: DEFAULT_COLORS.DANGER }} />}
+          description={
+            <>
+              <Typography.Title level={5}>{ui.COMPARE_ERROR_TITLE}</Typography.Title>
+              <Typography.Text>{error}</Typography.Text>
+            </>
+          }
         />
       );
     } else if (groups.length === 0) {
       body = (
-        <PanelEmptyState
-          icon={<CheckCircleFilled style={{ color: DEFAULT_COLORS.SUCCESS }} />}
-          title={hasSecrets ? ui.COMPARE_NO_VISIBLE_TITLE : ui.COMPARE_IDENTICAL_TITLE}
-          description={hasSecrets ? ui.COMPARE_IDENTICAL_REDACTED : ui.COMPARE_IDENTICAL}
+        <Empty
+          className={EMPTY_CLASS.PANEL}
+          image={<CheckCircleFilled style={{ color: DEFAULT_COLORS.SUCCESS }} />}
+          description={
+            <>
+              <Typography.Title level={5}>
+                {hasSecrets ? ui.COMPARE_NO_VISIBLE_TITLE : ui.COMPARE_IDENTICAL_TITLE}
+              </Typography.Title>
+              <Typography.Text>
+                {hasSecrets ? ui.COMPARE_IDENTICAL_REDACTED : ui.COMPARE_IDENTICAL}
+              </Typography.Text>
+            </>
+          }
         />
       );
     } else {
@@ -454,7 +463,7 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
                   minWidth: 0,
                 }}
               >
-                <SnapshotMetaChip>{g.meta.kind}</SnapshotMetaChip>
+                <Tag className={TAG_CLASS.META}>{g.meta.kind}</Tag>
                 <span style={{ ...textStyle, ...oneLine, fontWeight: 700, minWidth: 0, flex: 1 }}>
                   {g.meta.name}
                 </span>

@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
-import { DEFAULT_COLORS, SECTION_LAYOUT } from '../../../../constants';
+import { Tag } from 'antd';
+import { DEFAULT_COLORS } from '../../../../constants';
 import SettingsCard from '../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
-import RowTag from '../../../../components/display/table/RowTag';
 import { CONNECTIVITY_CONSTANTS } from '../../../../constants/pages/connectivity';
 import { APPLICATIONS_UI } from '../../constants';
 import { StatMiniCard } from '../../pages/details/contentBlocks';
@@ -83,11 +83,7 @@ const ApplicationMetricsSection: React.FC<{ application: Application }> = memo(
             <div style={groupLabelStyle}>{APPLICATIONS_UI.SECTIONS.METRICS.CHANGES_BY_CLASS}</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {changesByClass.map(([key, value]) => (
-                <RowTag
-                  key={key}
-                  text={`${key}: ${value}`}
-                  {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-                />
+                <Tag key={key}>{`${key}: ${value}`}</Tag>
               ))}
             </div>
           </div>
@@ -100,7 +96,7 @@ const ApplicationMetricsSection: React.FC<{ application: Application }> = memo(
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {changesBySeverity.map(([key, value]) => (
-                <RowTag key={key} text={`${key}: ${value}`} fontSize={11} />
+                <Tag key={key}>{`${key}: ${value}`}</Tag>
               ))}
             </div>
           </div>

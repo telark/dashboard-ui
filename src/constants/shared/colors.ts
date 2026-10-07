@@ -128,9 +128,13 @@ const PILL_CASES: Record<string, string> = {
   [DEFAULT_COLORS.TEXT_MUTED]: DEFAULT_COLORS.TEXT_MUTED,
 };
 
+/** Pill background for a case accent (an antd `Tag` color); no accent means the neutral pill. */
+export const getPillColor = (accent?: string): string =>
+  (accent && PILL_CASES[accent]) || PILL_NEUTRAL;
+
 /** Pill background and text color for a case accent; no accent means a neutral pill. */
 export const getPillSurface = (accent?: string): PillSurface => ({
-  background: (accent && PILL_CASES[accent]) || PILL_NEUTRAL,
+  background: getPillColor(accent),
   color: DEFAULT_COLORS.PILL_TEXT,
 });
 

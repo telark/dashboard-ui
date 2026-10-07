@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
+import { Tag } from 'antd';
 import { VIEW } from '../../../../../../constants/layout/panels';
-import { DEFAULT_COLORS } from '../../../../../../constants';
-import RowTag from '../../../../../../components/display/table/RowTag';
+import { DEFAULT_COLORS, TAG_CLASS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../constants';
 import type { Role } from '../../../models';
 
@@ -12,10 +12,6 @@ const SECTION_TITLE_STYLE: React.CSSProperties = {
   letterSpacing: 0.2,
   marginBottom: 4,
   display: 'block',
-};
-
-const tagStyle = {
-  fontSize: 12 as const,
 };
 
 interface RoleProtectionViewProps {
@@ -49,7 +45,9 @@ const RoleProtectionView: React.FC<RoleProtectionViewProps> = ({ role }) => {
       {rows.map(({ label, enabled }) => (
         <div key={label} style={VIEW.DETAILS.ROW}>
           <span style={VIEW.DETAILS.LABEL}>{label}</span>
-          <RowTag text={enabled ? 'Yes' : 'No'} fontSize={tagStyle.fontSize} />
+          <Tag className={TAG_CLASS.MEDIUM}>
+            {enabled ? RC.PROTECTION.ENABLED : RC.PROTECTION.DISABLED}
+          </Tag>
         </div>
       ))}
     </div>

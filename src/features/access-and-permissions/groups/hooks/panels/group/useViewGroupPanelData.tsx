@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../../../constants';
+import { Tag } from 'antd';
+import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS } from '../../../../../../constants';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
-import RowTag from '../../../../../../components/display/table/RowTag';
 import { ActorDisplay } from '../../../../../../components/display/users';
 import { useViewGroupPanel } from './useViewGroupPanel';
 import { useGroupDeleteModal } from '../../../components/delete';
@@ -82,7 +82,7 @@ export const useViewGroupPanelData = ({
     return [
       {
         label: GC.LABELS.VIEW_LABELS.CATEGORY,
-        value: <RowTag text={categoryName} fontSize={12} />,
+        value: <Tag className={TAG_CLASS.MEDIUM}>{categoryName}</Tag>,
       },
       {
         label: GC.LABELS.VIEW_LABELS.CREATION_DATE,

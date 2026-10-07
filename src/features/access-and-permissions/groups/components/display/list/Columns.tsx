@@ -1,8 +1,8 @@
+import { Tag } from 'antd';
 import type { TableColumnType } from 'antd';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
-import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RPC } from '../../../../roles/constants';
-import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
 import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
 import type { Group } from '../../../models';
@@ -80,7 +80,7 @@ const Columns = (ctx: ColumnsContext): TableColumnType<Group>[] => {
         width: GC.SIZES.COLUMNS.CATEGORY,
         render: (value: string) => {
           const categoryName = getCategoryName(value, categories);
-          return <RowTag text={categoryName} fontSize={RPC.SIZES.CHIP_FONT} />;
+          return <Tag className={TAG_CLASS.MEDIUM}>{categoryName}</Tag>;
         },
       },
       ctx,
@@ -94,7 +94,7 @@ const Columns = (ctx: ColumnsContext): TableColumnType<Group>[] => {
         render: (_: unknown, record: Group) => {
           const memberCount = record.userRefs?.length || 0;
           const memberText = memberCount === 1 ? '1 member' : `${memberCount} members`;
-          return <RowTag text={memberText} fontSize={RPC.SIZES.CHIP_FONT} />;
+          return <Tag className={TAG_CLASS.MEDIUM}>{memberText}</Tag>;
         },
       },
       ctx,

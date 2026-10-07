@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DatabaseOutlined, DiffOutlined } from '@ant-design/icons';
-import { App as AntdApp } from 'antd';
+import { App as AntdApp, Empty, Typography } from 'antd';
 import type { AppDispatch, RootState } from '../../../../store';
 import { SlideOutPanel, ExpandPanelButton } from '../../../../components/display/panels/slide-out';
-import { DEFAULT_COLORS, LIST_TOOLBAR } from '../../../../constants';
+import { DEFAULT_COLORS, EMPTY_CLASS, LIST_TOOLBAR } from '../../../../constants';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { APPLICATIONS_UI } from '../../constants/texts';
@@ -14,7 +14,6 @@ import type { Application, ApplicationSnapshotSummary } from '../../models';
 import { applicationSnapshotStableKey } from '../../utils/mergeApplicationSnapshotSources';
 import { mergeApplicationSnapshotSources } from '../../utils/mergeApplicationSnapshotSources';
 import { ActionConfirmModal } from '../../../../components/display/modal';
-import { PanelEmptyState } from '../../../../components/display/panels/shared';
 import ApplicationSnapshotRow from '../snapshots/ApplicationSnapshotRow';
 import type { RollbackDisabledReason } from '../snapshots/ApplicationSnapshotRow';
 import SnapshotManifestView from '../snapshots/SnapshotManifestView';
@@ -352,7 +351,16 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
             snapshotsError ? (
               <div style={{ fontSize: 13, color: DEFAULT_COLORS.DANGER }}>{snapshotsError}</div>
             ) : (
-              <PanelEmptyState title={snapUi.EMPTY_TITLE} description={snapUi.EMPTY_DESCRIPTION} />
+              <Empty
+                className={EMPTY_CLASS.PANEL}
+                image={false}
+                description={
+                  <>
+                    <Typography.Title level={5}>{snapUi.EMPTY_TITLE}</Typography.Title>
+                    <Typography.Text>{snapUi.EMPTY_DESCRIPTION}</Typography.Text>
+                  </>
+                }
+              />
             )
           ) : (
             <div className={compareMode ? LIST_TOOLBAR.BULK_SELECT_CLASS : undefined}>

@@ -4,13 +4,14 @@ import {
   DEFAULT_COLORS,
   Icons,
   LIST_TOOLBAR,
+  STATUS_COLORS,
   TOOLBAR_CONTROL,
   getQuickFilterPillColors,
 } from '../../../../../constants';
 import { CompactQuickFilter, ListToolbar } from '../../../../../components/display/toolbar';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
-import { PROTECTION_PLANS_CONSTANTS as PPC, PHASE_ACCENT } from '../../constants/protectionPlans';
+import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import type { PlanPhase, PlanPhaseQuickFilter, PlanViewMode } from '../../models';
 
 interface ProtectionPlansToolbarProps {
@@ -37,7 +38,7 @@ const PHASE_PILLS: { key: PlanPhaseQuickFilter; label: string }[] = [
 
 const getPillAccent = (key: PlanPhaseQuickFilter): string => {
   if (key === 'all') return DEFAULT_COLORS.TEXT_MUTED;
-  return PHASE_ACCENT[key as PlanPhase] ?? DEFAULT_COLORS.TEXT_MUTED;
+  return STATUS_COLORS.PLAN_PHASE[key as PlanPhase] ?? DEFAULT_COLORS.TEXT_MUTED;
 };
 
 interface PhasePillsProps {

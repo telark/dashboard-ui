@@ -13,18 +13,6 @@ export interface DataTableProps<T> {
   empty?: React.ReactNode;
 }
 
-export interface RowTagProps {
-  text: string;
-  /** Case color (severity, status…); omitted means a neutral pill. */
-  accent?: string;
-  fontSize?: number;
-  capitalize?: boolean;
-  /** Ellipsizes to the container width instead of overflowing it. */
-  truncate?: boolean;
-  /** Hover text; a truncated tag shows its full text by default. */
-  title?: string;
-}
-
 export interface SortHeaderProps {
   label: string;
   align?: 'left' | 'center';
