@@ -1,9 +1,8 @@
 import React, { useCallback, memo } from 'react';
-import { Tooltip, Popover, App as AntdApp } from 'antd';
+import { Tooltip, Popover, Tag, App as AntdApp } from 'antd';
 import { KeyOutlined, EditOutlined, DeleteOutlined, CopyOutlined } from '@ant-design/icons';
-import RowTag from '../../../../../components/display/table/RowTag';
 import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
-import { DEFAULT_COLORS, MONOSPACE_CLASS } from '../../../../../constants';
+import { DEFAULT_COLORS, MONOSPACE_CLASS, TAG_CLASS } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type { Passkey } from '../../../models/passkeys';
 
@@ -133,7 +132,7 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
           >
             {passkey.deviceName}
           </h3>
-          <RowTag text={deviceTypeLabel} fontSize={PPC.SIZES.CHIP_FONT} />
+          <Tag className={TAG_CLASS.MEDIUM}>{deviceTypeLabel}</Tag>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
           {displayKey ? (

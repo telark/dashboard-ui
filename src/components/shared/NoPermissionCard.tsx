@@ -1,9 +1,9 @@
 import React from 'react';
+import { Empty, Typography } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, withAlpha } from '../../constants';
+import { DEFAULT_COLORS, EMPTY_CLASS, withAlpha } from '../../constants';
 import { usePermission } from '../../features/auth/hooks/permissions/permissionEngine';
 import type { RequiredPermission } from '../../interfaces/shared';
-import EmptyState from '../display/views/EmptyState';
 import { NO_PERMISSION_CONSTANTS as NP } from './noPermission.constants';
 
 interface NoPermissionCardProps {
@@ -56,10 +56,17 @@ const NoPermissionCard: React.FC<NoPermissionCardProps> = ({
   if (!compact && !emptyState) {
     // Same presentation as the pages' empty states.
     return (
-      <EmptyState
-        icon={<LockOutlined style={{ fontSize: NP.LAYOUT.PAGE_ICON_PX }} />}
-        title={NP.LABELS.TITLE(featureName)}
-        description={denied ? NP.LABELS.SHORT_DENY : NP.LABELS.PAGE_HINT(level, scope)}
+      <Empty
+        className={`${EMPTY_CLASS.PAGE} ${EMPTY_CLASS.NO_ACCESS}`}
+        image={<LockOutlined style={{ fontSize: NP.LAYOUT.PAGE_ICON_PX }} />}
+        description={
+          <>
+            <Typography.Title level={3}>{NP.LABELS.TITLE(featureName)}</Typography.Title>
+            <Typography.Text>
+              {denied ? NP.LABELS.SHORT_DENY : NP.LABELS.PAGE_HINT(level, scope)}
+            </Typography.Text>
+          </>
+        }
       />
     );
   }

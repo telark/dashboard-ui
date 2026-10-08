@@ -1,20 +1,12 @@
 import type { SnapshotStorageInfos } from '../../applications/models';
 import type { RequiredPermission } from '../../../interfaces/shared';
 
-export type TagTone = 'danger' | 'warning' | 'neutral';
-
-export interface DashboardTagData {
-  text: string;
-  tone: TagTone;
-}
-
 export interface DashboardRowItem {
   key: string;
   dotColor: string;
   title: string;
   meta?: string;
   time?: string | null;
-  tag?: DashboardTagData;
   to?: string;
 }
 

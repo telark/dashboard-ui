@@ -57,10 +57,6 @@ export const APPLICATION_SNAPSHOT_ROW = {
   ROW_SPACING_PX: 6,
   TITLE_FONT_SIZE_PX: 13,
   META_FONT_SIZE_PX: 12,
-  CHIP_FONT_SIZE_PX: 11,
-  CHIP_PADDING: '1px 8px',
-  CHIP_RADIUS_PX: 999,
-  SEVERITY_DOT_SIZE_PX: 6,
   ICON_BUTTON_SIZE_PX: ROW_ICON_BUTTON_SIZE,
   TRANSITION: 'background 150ms ease, border-color 150ms ease',
   /** Raw engine errors are opt-in: they are long and only useful when debugging. */

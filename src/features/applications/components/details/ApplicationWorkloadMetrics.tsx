@@ -1,9 +1,8 @@
 import React, { memo, useState } from 'react';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
-import { Pagination, Tooltip } from 'antd';
-import { DEFAULT_COLORS, SECTION_LAYOUT } from '../../../../constants';
+import { Pagination, Tag, Tooltip } from 'antd';
+import { DEFAULT_COLORS, SECTION_LAYOUT, TAG_CLASS } from '../../../../constants';
 import { PAGINATION_DEFAULTS } from '../../../../components/display/table/constants';
-import RowTag from '../../../../components/display/table/RowTag';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import { APPLICATIONS_UI } from '../../constants';
 import { APPLICATION_WORKLOAD_METRICS } from '../../constants/sectionLayout';
@@ -47,7 +46,7 @@ const PodBlock: React.FC<{ instance: ApplicationWorkloadUsagePerInstance }> = ({
     <div style={{ display: 'grid', rowGap: M.DETAIL_ROW_GAP_PX }}>
       {/* Pod line: labeled, with its total called out as a sum of the containers below. */}
       <div style={{ display: 'flex', alignItems: 'center', gap: M.HEADER_GAP_PX, minWidth: 0 }}>
-        <RowTag text={WM.POD_LABEL} {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
+        <Tag>{WM.POD_LABEL}</Tag>
         <span
           style={{
             fontSize: M.LABEL_FONT_SIZE_PX,
@@ -212,18 +211,12 @@ const WorkloadRow: React.FC<{ workload: ApplicationWorkloadUsage }> = ({ workloa
         >
           {workload.resourceName}
         </span>
-        <RowTag text={workload.resourceKind} {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
-        <RowTag
-          text={workload.namespace}
-          capitalize={false}
-          {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-        />
+        <Tag>{workload.resourceKind}</Tag>
+        <Tag className={TAG_CLASS.AS_IS}>{workload.namespace}</Tag>
         <span style={{ fontSize: M.LABEL_FONT_SIZE_PX, color: DEFAULT_COLORS.TEXT_MUTED }}>
           {replicas} {replicas === 1 ? WM.REPLICAS_SUFFIX.one : WM.REPLICAS_SUFFIX.other}
         </span>
-        {usageAvailable && usage?.qos ? (
-          <RowTag text={usage.qos} {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
-        ) : null}
+        {usageAvailable && usage?.qos ? <Tag>{usage.qos}</Tag> : null}
 
         <span style={{ flex: 1 }} />
 

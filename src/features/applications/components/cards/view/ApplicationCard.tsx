@@ -9,11 +9,12 @@ import {
   EMPTY_VALUE,
   LIST_TOOLBAR,
   MENU_LABELS,
+  STATUS_COLORS,
   TRUNCATE_STYLE,
   getCardShellStyle,
 } from '../../../../../constants';
 import type { Application, ApplicationCoverage, ApplicationCoverageState } from '../../../models';
-import { APPLICATION_CARD, APPLICATION_COVERAGE_ACCENT, APPLICATIONS_UI } from '../../../constants';
+import { APPLICATION_CARD, APPLICATIONS_UI } from '../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { CardChipSection, StatCell } from '../../../../../components/display/card';
 import { NO_PERMISSION_CONSTANTS } from '../../../../../components/shared';
@@ -42,7 +43,7 @@ const coverageChip = (name: string, state: ApplicationCoverageState): CardChipIt
   key: name,
   label: name,
   icon: COVERAGE_ICON[state],
-  accent: APPLICATION_COVERAGE_ACCENT[state],
+  accent: STATUS_COLORS.APPLICATION_COVERAGE[state],
   title: APPLICATION_CARD.COVERAGE.CHIP_TITLE(name, state),
 });
 

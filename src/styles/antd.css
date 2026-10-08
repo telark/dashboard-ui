@@ -542,6 +542,11 @@
   margin: 4px 0 !important;
 }
 
+/* A menu's selected item is bold like a Select's (antd sets menu items to normal weight). */
+.ant-dropdown .ant-dropdown-menu-item.ant-dropdown-menu-item-selected {
+  font-weight: var(--ant-font-weight-strong);
+}
+
 /* Select.colorText is unset on purpose: it would drive the closed control and
    the dropdown alike, and those sit on opposite surfaces. The control inherits
    its surface, and the dropdown is always a white panel rendered in a portal
@@ -593,4 +598,220 @@
 .app-panel-surface .ant-input-number {
   background-color: var(--color-surface-white) !important;
   border-color: var(--color-surface-border) !important;
+}
+
+/* Pills are antd Tags (TAG_THEME and TAG_CLASS in src/constants/layout/tags.ts). Font,
+   line height and wrapping follow the parent, as the span pills before them did. */
+.ant-tag.tk-pill {
+  padding: 2px 10px;
+  font-family: inherit;
+  font-weight: 700;
+  line-height: inherit;
+  white-space: inherit;
+  text-align: inherit;
+  text-transform: capitalize;
+}
+
+.ant-tag.tk-pill-md {
+  font-size: 12px;
+}
+
+.ant-tag.tk-pill-xs {
+  font-size: 10px;
+}
+
+.ant-tag.tk-pill-as-is {
+  text-transform: none;
+}
+
+.ant-tag.tk-pill-truncate {
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ant-tag.tk-pill-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  padding: 1px 8px;
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.ant-tag.tk-pill-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+/* antd spaces an icon from the label with a margin; ICON pills use their gap. */
+.ant-tag.tk-pill-icon > .anticon + span {
+  margin-inline-start: 0;
+}
+
+/* Empty states are antd Empty with one EMPTY_CLASS per surface
+   (src/constants/layout/empty.ts): an icon as `image`, a Title and Text as `description`. */
+.ant-empty.tk-empty-page,
+.ant-empty.tk-empty-panel,
+.ant-empty.tk-empty-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.tk-empty-page .ant-empty-image,
+.tk-empty-panel .ant-empty-image,
+.tk-empty-section .ant-empty-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  margin: 0;
+  opacity: 1;
+}
+
+.tk-empty-page .ant-empty-image:empty,
+.tk-empty-panel .ant-empty-image:empty,
+.tk-empty-section .ant-empty-image:empty {
+  display: none;
+}
+
+.tk-empty-page .ant-empty-description,
+.tk-empty-panel .ant-empty-description,
+.tk-empty-section .ant-empty-description {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tk-empty-page .ant-empty-description .ant-typography,
+.tk-empty-panel .ant-empty-description .ant-typography,
+.tk-empty-section .ant-empty-description .ant-typography {
+  display: block;
+  margin: 0;
+}
+
+/* Page: the whole content area of a list with nothing in it. */
+.ant-empty.tk-empty-page {
+  width: 100%;
+  height: 100%;
+  padding-inline: var(--ant-margin-lg);
+}
+
+.tk-empty-page .ant-empty-image {
+  margin-bottom: var(--ant-margin-lg);
+  color: var(--ant-color-text-secondary);
+}
+
+.tk-empty-page .ant-empty-description {
+  max-width: 400px;
+}
+
+.tk-empty-page .ant-empty-description h3.ant-typography {
+  margin-bottom: var(--ant-margin-xs);
+  font-weight: 700;
+  color: var(--ant-color-text-heading);
+}
+
+.tk-empty-page .ant-empty-description span.ant-typography {
+  max-width: 360px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ant-color-text-description);
+}
+
+.tk-empty-page .ant-empty-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ant-margin-sm);
+  margin-top: var(--ant-margin);
+}
+
+.ant-empty.tk-empty-no-access .ant-empty-image {
+  margin-bottom: var(--ant-margin-sm);
+}
+
+.tk-empty-no-access .ant-empty-description h3.ant-typography {
+  margin-bottom: 0;
+}
+
+/* Two lines (2 x 1.65) whether or not the hint wraps. */
+.tk-empty-no-access .ant-empty-description span.ant-typography {
+  min-height: 3.3em;
+}
+
+/* Panel: the light surface of a slide-out panel. */
+.ant-empty.tk-empty-panel {
+  flex: 1;
+  height: 100%;
+  min-height: 320px;
+  padding: 28px 16px;
+  gap: 6px;
+}
+
+.tk-empty-panel .ant-empty-image {
+  font-size: 26px;
+  line-height: 1;
+  color: var(--color-text-on-surface-muted);
+}
+
+.tk-empty-panel .ant-empty-description {
+  gap: 6px;
+}
+
+.tk-empty-panel .ant-empty-description h5.ant-typography {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: inherit;
+  color: var(--color-text-on-surface);
+}
+
+.tk-empty-panel .ant-empty-description span.ant-typography {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-on-surface-muted);
+}
+
+.tk-empty-panel .ant-empty-footer {
+  margin-top: 6px;
+}
+
+/* Section: inside a detail-page card. */
+.ant-empty.tk-empty-section {
+  min-height: 96px;
+  padding: 14px 12px;
+}
+
+.tk-empty-section .ant-empty-image {
+  margin-bottom: var(--ant-margin-sm);
+  font-size: 32px;
+  color: var(--color-icon-muted);
+}
+
+.tk-empty-section .ant-empty-description h4.ant-typography {
+  margin-bottom: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: inherit;
+  color: var(--color-text-primary);
+}
+
+.tk-empty-section .ant-empty-description span.ant-typography {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.tk-empty-section .ant-empty-footer {
+  margin-top: 0;
 }

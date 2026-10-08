@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { AiOutlineInfoCircle, AiOutlineRight } from 'react-icons/ai';
-import { DEFAULT_COLORS } from '../../../constants';
+import { DEFAULT_COLORS, STATUS_COLORS } from '../../../constants';
 import { useElementWidth } from '../../../hooks/layout';
-import { CLUSTER_INSIGHTS, INSIGHT_SEVERITY_LABELS, SEVERITY_COLORS } from '../constants/insights';
+import { CLUSTER_INSIGHTS, INSIGHT_SEVERITY_LABELS } from '../constants/insights';
 import type { InsightSeverity } from '../models';
 
 // The panel is a light surface: TEXT_ON_SURFACE*, never TEXT_PRIMARY (white). No shadows:
@@ -283,7 +283,7 @@ export const FindingRow: React.FC<{
       <span
         aria-label={INSIGHT_SEVERITY_LABELS[severity]}
         style={{
-          background: SEVERITY_COLORS[severity],
+          background: STATUS_COLORS.INSIGHT_SEVERITY[severity],
           width: 8,
           height: 8,
           flexShrink: 0,

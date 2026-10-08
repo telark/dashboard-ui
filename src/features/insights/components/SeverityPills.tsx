@@ -4,12 +4,13 @@ import {
   DEFAULT_COLORS,
   EMPTY_VALUE,
   LIST_TOOLBAR,
+  STATUS_COLORS,
   TOOLBAR_CONTROL,
   getQuickFilterPillColors,
 } from '../../../constants';
 import { CompactQuickFilter } from '../../../components/display/toolbar';
 import { INSIGHTS_UI } from '../constants/texts';
-import { INSIGHT_SEVERITY_LABELS, SEVERITY_COLORS } from '../constants/insights';
+import { INSIGHT_SEVERITY_LABELS } from '../constants/insights';
 import type { InsightSeverity } from '../models';
 
 export type SeverityPill = InsightSeverity | 'all';
@@ -18,7 +19,7 @@ const P = INSIGHTS_UI.PAGE;
 const PILLS: SeverityPill[] = ['all', 'critical', 'warning', 'info'];
 
 const accentOf = (pill: SeverityPill): string =>
-  pill === 'all' ? DEFAULT_COLORS.TEXT_MUTED : SEVERITY_COLORS[pill];
+  pill === 'all' ? DEFAULT_COLORS.TEXT_MUTED : STATUS_COLORS.INSIGHT_SEVERITY[pill];
 const labelOf = (pill: SeverityPill): string =>
   pill === 'all' ? P.ALL : INSIGHT_SEVERITY_LABELS[pill];
 

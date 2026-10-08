@@ -1,12 +1,11 @@
+import { Tag } from 'antd';
 import type { TableColumnType } from 'antd';
-import { ROLES_CONSTANTS as RPC } from '../../../../roles/constants';
-import RowTag from '../../../../../../components/display/table/RowTag';
 import { generateColumn } from '../../../../../../components/display/table/utils';
 import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
 import type { Category } from '../../../models';
 import { AiOutlineTag, AiOutlineCalendar, AiOutlineAppstore } from 'react-icons/ai';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
-import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS } from '../../../../../../constants';
 import { CATEGORIES_CONSTANTS as CC } from '../../../constants';
 
 interface CategoryColumnsContext extends GenerateColumnCtx {
@@ -56,10 +55,9 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
         render: (value: string) => {
           const isBuiltIn = value === CC.TYPES.BUILT_IN;
           return (
-            <RowTag
-              text={isBuiltIn ? CC.LABELS.TYPES.BUILT_IN : CC.LABELS.TYPES.CUSTOM}
-              fontSize={RPC.SIZES.CHIP_FONT}
-            />
+            <Tag className={TAG_CLASS.MEDIUM}>
+              {isBuiltIn ? CC.LABELS.TYPES.BUILT_IN : CC.LABELS.TYPES.CUSTOM}
+            </Tag>
           );
         },
       },
@@ -72,7 +70,7 @@ const CategoryColumns = (ctx: CategoryColumnsContext) => {
         icon: <AiOutlineTag />,
         width: CC.SIZES.COLUMNS.SCOPE,
         render: (value: string) => (
-          <RowTag text={ctx.scopeLabel ?? value} fontSize={RPC.SIZES.CHIP_FONT} />
+          <Tag className={TAG_CLASS.MEDIUM}>{ctx.scopeLabel ?? value}</Tag>
         ),
       },
       ctx,

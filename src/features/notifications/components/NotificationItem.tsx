@@ -7,9 +7,10 @@ import {
   CONTROL_FONT_SIZE,
   DEFAULT_COLORS,
   ROW_ICON_BUTTON_SIZE,
+  STATUS_COLORS,
   withAlpha,
 } from '../../../constants';
-import { NOTIFICATION_SEVERITY_COLORS, NOTIFICATIONS_TEXTS } from '../constants';
+import { NOTIFICATIONS_TEXTS } from '../constants';
 import { getTypeConfig } from '../utils';
 import type { Notification } from '../models';
 
@@ -38,7 +39,8 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   const config = getTypeConfig(notification.type);
   const Icon = config.icon;
   const accentColor =
-    NOTIFICATION_SEVERITY_COLORS[notification.severity] ?? NOTIFICATION_SEVERITY_COLORS.info;
+    STATUS_COLORS.NOTIFICATION_SEVERITY[notification.severity] ??
+    STATUS_COLORS.NOTIFICATION_SEVERITY.info;
 
   const renderedMessage = useMemo(() => {
     const parts = notification.message.split(/\*\*(.+?)\*\*/g);

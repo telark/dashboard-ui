@@ -6,11 +6,6 @@ export interface StatCellProps {
   accent?: string;
 }
 
-export interface CardStatusPillProps {
-  label: React.ReactNode;
-  accent: string;
-}
-
 export interface CardChipItem {
   key: string;
   label: string;

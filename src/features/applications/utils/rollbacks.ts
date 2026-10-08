@@ -1,4 +1,4 @@
-import { DEFAULT_COLORS, EMPTY_VALUE, getPillSurface } from '../../../constants';
+import { EMPTY_VALUE } from '../../../constants';
 import type { ApplicationRollbackEntry } from '../models';
 
 export type RollbackStatusState =
@@ -25,21 +25,6 @@ export function hasActiveRollback(
     const s = classifyRollbackStatus(r.status);
     return s === 'pending' || s === 'inProgress';
   });
-}
-
-export function getRollbackStatusColors(state: RollbackStatusState): {
-  background: string;
-  color: string;
-} {
-  const accent =
-    state === 'success'
-      ? DEFAULT_COLORS.SUCCESS
-      : state === 'failed'
-        ? DEFAULT_COLORS.DANGER
-        : state === 'inProgress' || state === 'pending'
-          ? DEFAULT_COLORS.WARNING
-          : undefined;
-  return getPillSurface(accent);
 }
 
 export function formatRollbackStatusLabel(raw: string): string {

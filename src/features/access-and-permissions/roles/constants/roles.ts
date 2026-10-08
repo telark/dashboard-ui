@@ -129,7 +129,6 @@ export const ROLES_CONSTANTS = {
   SIZES: {
     ROW_HEIGHT: 32,
     HEADER_ICON: 14,
-    CHIP_FONT: 12,
     COLUMNS: {
       ROLE_TITLE: 110,
       TYPE: 80,
@@ -241,6 +240,8 @@ export const ROLES_CONSTANTS = {
     LOCK_NAME_LABEL: 'Lock Name',
     LOCK_CATEGORY_LABEL: 'Lock Category',
     SOFT_DELETE_LABEL: 'Soft Delete',
+    ENABLED: 'Yes',
+    DISABLED: 'No',
     SOFT_DELETE_DISABLED_NOTE: 'Soft delete is disabled because deletion is prevented.',
     READ_ONLY_TOOLTIP:
       "Only a custom role's creator or an Admin on all scopes can change its protection.",

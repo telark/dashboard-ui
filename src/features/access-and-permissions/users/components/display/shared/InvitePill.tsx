@@ -1,7 +1,6 @@
 import React from 'react';
-import { Tooltip } from 'antd';
-import RowTag from '../../../../../../components/display/table/RowTag';
-import { DEFAULT_COLORS, TIME_FORMATS } from '../../../../../../constants';
+import { Tag, Tooltip } from 'antd';
+import { DEFAULT_COLORS, TAG_CLASS, TIME_FORMATS, getPillColor } from '../../../../../../constants';
 import { formatDateTime, toTimestamp } from '../../../../../../utils/shared/time';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import type { UserInvite } from '../../../models';
@@ -36,12 +35,9 @@ const InvitePill: React.FC<InvitePillProps> = ({ invite, acceptedAt }) => {
   return (
     <Tooltip title={pill.tooltip}>
       <span style={{ display: 'inline-flex', flexShrink: 0 }}>
-        <RowTag
-          text={pill.text}
-          accent={pill.accent}
-          fontSize={UC.SIZES.CHIP_FONT}
-          capitalize={false}
-        />
+        <Tag color={getPillColor(pill.accent)} className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}>
+          {pill.text}
+        </Tag>
       </span>
     </Tooltip>
   );

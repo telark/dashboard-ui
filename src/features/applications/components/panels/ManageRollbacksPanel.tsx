@@ -6,16 +6,21 @@ import {
   RightOutlined,
   StopOutlined,
 } from '@ant-design/icons';
-import { App as AntdApp, Button, Tooltip } from 'antd';
+import { App as AntdApp, Button, Empty, Tag, Tooltip, Typography } from 'antd';
 import { useDispatch } from 'react-redux';
 import { SlideOutPanel, ExpandPanelButton } from '../../../../components/display/panels/slide-out';
-import { DEFAULT_COLORS, MONOSPACE_CLASS } from '../../../../constants';
-import { PanelEmptyState } from '../../../../components/display/panels/shared';
+import {
+  DEFAULT_COLORS,
+  EMPTY_CLASS,
+  MONOSPACE_CLASS,
+  STATUS_COLORS,
+  TAG_CLASS,
+  getPillColor,
+} from '../../../../constants';
 import { ActionConfirmModal } from '../../../../components/display/modal';
 import type { Application, ApplicationRollbackEntry } from '../../models';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
-import SnapshotMetaChip from '../snapshots/SnapshotMetaChip';
 import { APPLICATION_SNAPSHOT_ROW } from '../../constants/sectionLayout';
 import { FancySpinner } from '../../../../components/animation';
 import type { AppDispatch } from '../../../../store';
@@ -26,8 +31,6 @@ import {
   classifyRollbackStatus,
   formatRollbackNamespaceRef,
   formatRollbackStatusLabel,
-  getRollbackStatusColors,
-  type RollbackStatusState,
 } from '../../utils/rollbacks';
 import {
   usePermission,
@@ -113,10 +116,15 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
         formContent={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
             {rollbacks.length === 0 ? (
-              <PanelEmptyState
-                icon={<HistoryOutlined />}
-                title={ui.ROLLBACKS_EMPTY_TITLE}
-                description={ui.ROLLBACKS_EMPTY_DESCRIPTION}
+              <Empty
+                className={EMPTY_CLASS.PANEL}
+                image={<HistoryOutlined />}
+                description={
+                  <>
+                    <Typography.Title level={5}>{ui.ROLLBACKS_EMPTY_TITLE}</Typography.Title>
+                    <Typography.Text>{ui.ROLLBACKS_EMPTY_DESCRIPTION}</Typography.Text>
+                  </>
+                }
               />
             ) : (
               <div style={{ display: 'grid', rowGap: 10 }}>
@@ -174,7 +182,6 @@ function RollbackRow(props: {
   const statusKey = String(entry.status || '').trim();
   const statusLabel = formatRollbackStatusLabel(statusKey || 'unknown');
   const statusState = classifyRollbackStatus(statusKey);
-  const statusColors = getRollbackStatusColors(statusState);
   const isPending = statusState === 'pending';
   const namespaceLabel = formatRollbackNamespaceRef(entry.namespace).replace(/^ns\//, '');
   const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
@@ -222,11 +229,11 @@ function RollbackRow(props: {
             >
               {ui.ROLLBACK_TARGET_PREFIX} {entry.targetGeneration}
             </span>
-            <SnapshotMetaChip>
+            <Tag className={TAG_CLASS.META}>
               <span title={namespaceLabel} style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {namespaceLabel}
               </span>
-            </SnapshotMetaChip>
+            </Tag>
           </div>
           <RollbackMeta entry={entry} triggeredByName={triggeredByName} />
           {/* The raw engine error is long and only matters when digging in, so the
@@ -251,12 +258,19 @@ function RollbackRow(props: {
               />
             </Tooltip>
           ) : null}
-          <StatusBadge
-            label={statusLabel}
-            state={statusState}
-            background={statusColors.background}
-            color={statusColors.color}
-          />
+          <Tag
+            color={getPillColor(STATUS_COLORS.ROLLBACK[statusState])}
+            className={TAG_CLASS.ICON}
+            style={{ flexShrink: 0, marginLeft: 'auto' }}
+          >
+            {statusState === 'inProgress' || statusState === 'pending' ? (
+              <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+                <FancySpinner size={14} ringThickness={2} color={DEFAULT_COLORS.PILL_TEXT} />
+              </span>
+            ) : null}
+            {statusState === 'success' ? <CheckCircleOutlined style={{ fontSize: 12 }} /> : null}
+            <span>{statusLabel}</span>
+          </Tag>
         </div>
       </div>
     </div>
@@ -289,9 +303,9 @@ function RollbackMeta(props: {
       }}
     >
       {entry.restoredGeneration != null ? (
-        <SnapshotMetaChip>
+        <Tag className={TAG_CLASS.META}>
           {ui.RESTORED_PREFIX} {entry.restoredGeneration}
-        </SnapshotMetaChip>
+        </Tag>
       ) : null}
       <span
         title={fullText}
@@ -365,43 +379,5 @@ function RollbackErrorDetail(props: { error: string }): React.ReactElement {
         </div>
       ) : null}
     </div>
-  );
-}
-
-function StatusBadge(props: {
-  label: string;
-  state: RollbackStatusState;
-  background: string;
-  color: string;
-}): React.ReactElement {
-  const { label, state, background, color } = props;
-  const showSpinner = state === 'inProgress' || state === 'pending';
-  const showSuccessIcon = state === 'success';
-  return (
-    <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 8,
-        background,
-        color,
-        padding: '2px 10px',
-        borderRadius: 999,
-        fontWeight: 700,
-        fontSize: 11,
-        textTransform: 'capitalize',
-        whiteSpace: 'nowrap',
-        flexShrink: 0,
-        marginLeft: 'auto',
-      }}
-    >
-      {showSpinner ? (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-          <FancySpinner size={14} ringThickness={2} color={color} />
-        </span>
-      ) : null}
-      {showSuccessIcon ? <CheckCircleOutlined style={{ fontSize: 12 }} /> : null}
-      <span>{label}</span>
-    </span>
   );
 }

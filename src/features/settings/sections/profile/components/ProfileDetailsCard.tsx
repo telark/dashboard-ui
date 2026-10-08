@@ -8,9 +8,9 @@ import {
   ClockCircleOutlined,
   CheckCircleOutlined,
 } from '@ant-design/icons';
-import { DEFAULT_COLORS, EMPTY_VALUE } from '../../../../../constants';
+import { Tag } from 'antd';
+import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS, getPillColor } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
-import RowTag from '../../../../../components/display/table/RowTag';
 import SettingsCard from '../../../components/SettingsCard';
 import { PROFILE_SECTION_CONSTANTS } from '../constants';
 import type { User } from '../../../../access-and-permissions/users/models';
@@ -129,11 +129,14 @@ const ProfileDetailsCard: React.FC<ProfileDetailsCardProps> = memo(({ user, onEd
           }}
         >
           {user?.status?.phase ? (
-            <RowTag
-              text={user.status.phase}
-              accent={user.status.phase === 'active' ? DEFAULT_COLORS.SUCCESS : undefined}
-              fontSize={12}
-            />
+            <Tag
+              color={getPillColor(
+                user.status.phase === 'active' ? DEFAULT_COLORS.SUCCESS : undefined,
+              )}
+              className={TAG_CLASS.MEDIUM}
+            >
+              {user.status.phase}
+            </Tag>
           ) : (
             <span style={{ fontSize: 15, color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>
           )}

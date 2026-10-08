@@ -1,4 +1,3 @@
-import { DEFAULT_COLORS } from '../../../../constants';
 import {
   DEFAULT_NAME_VALIDATION_CONFIG,
   type NameValidationConfig,
@@ -61,9 +60,9 @@ export const PROTECTION_PLANS_CONSTANTS = {
       TRUNCATED: 'capped',
       PRINT_HINT: 'Open the HTML report and use your browser’s Print to save it as PDF.',
       NOT_STARTED_HINT: 'Reports become available once the plan has started.',
+      EMPTY_TITLE: 'No reports yet',
       EMPTY_DRAFT: 'Reports become available once the plan starts.',
-      EMPTY_ACTIVE:
-        'No reports yet. Generate one now, or wait for the final report when the plan ends.',
+      EMPTY_ACTIVE: 'Generate one now, or wait for the final report when the plan ends.',
       EMPTY_ENDED: 'No report was captured for this plan.',
       LOAD_ERROR: 'Could not load reports.',
       GENERATE_SUCCESS: 'Report generated.',
@@ -124,7 +123,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
         OVERVIEW_TITLE: 'Overview',
         OVERVIEW_DESCRIPTION: 'Identity, mode, and lifecycle metadata.',
         OVERVIEW_COLUMN_PRIMARY: 'Details',
-        OVERVIEW_COLUMN_PARTICIPANTS: 'Participants',
+        OVERVIEW_COLUMN_ACTIVITY: 'People and activity',
         SCOPE_TITLE: 'Scope',
         SCOPE_DESCRIPTION: 'What this plan protects.',
         POLICIES_TITLE: 'Policies',
@@ -151,9 +150,10 @@ export const PROTECTION_PLANS_CONSTANTS = {
         TIME_RANGE: 'Time range',
         PERMANENT: 'Permanent',
         CREATED: 'Created By',
-        UPDATED: 'Last updated',
+        UPDATED: 'Last updated By',
         STARTED: 'Started By',
         TERMINATED: 'Terminated',
+        PARTICIPANTS: 'Participants',
         REASON: 'Reason',
         SCOPE_TYPE: 'Scope type',
         APPLICATIONS: 'Applications',
@@ -204,6 +204,11 @@ export const PROTECTION_PLANS_CONSTANTS = {
       TITLE: 'No protection plans yet',
       DESCRIPTION:
         'Create a plan to block chosen changes to an application or namespace during a release or maintenance window. Start in audit mode, then enforce.',
+    },
+    NO_MATCH: {
+      TITLE: 'No plans found',
+      DESCRIPTION:
+        'Try adjusting your search or create a new Protection Plan to guard critical workloads.',
     },
     MESSAGES: {
       ERROR_TITLE: 'Failed to load protection plans.',
@@ -551,23 +556,6 @@ export const REPORTS_LIST = {
 
 export { CARD_LAYOUT } from '../../../../constants';
 
-export const PHASE_ACCENT: Record<PlanPhase, string> = {
-  active: DEFAULT_COLORS.SUCCESS,
-  scheduled: DEFAULT_COLORS.WARNING,
-  failed: DEFAULT_COLORS.DANGER,
-  terminated: DEFAULT_COLORS.NEUTRAL,
-  canceled: DEFAULT_COLORS.NEUTRAL,
-  draft: DEFAULT_COLORS.NEUTRAL,
-  pending_approval: DEFAULT_COLORS.WARNING,
-};
-
-export const HEALTH_ACCENT: Record<PlanHealth, string> = {
-  unknown: DEFAULT_COLORS.NEUTRAL,
-  healthy: DEFAULT_COLORS.SUCCESS,
-  drifted: DEFAULT_COLORS.WARNING,
-  degraded: DEFAULT_COLORS.DANGER,
-};
-
 /**
  * Chip text per template: the card names the operation a plan refuses, so
  * "Storage" alone never leaves the reader guessing which change is blocked.
@@ -587,16 +575,4 @@ export const POLICY_CHIP_LABEL: Record<string, string> = {
 export const SCOPE_TYPE_LABEL: Record<ScopeType, string> = {
   applications: PROTECTION_PLANS_CONSTANTS.LABELS.DETAIL_PAGE.FIELDS.APPLICATIONS,
   namespaces: PROTECTION_PLANS_CONSTANTS.LABELS.DETAIL_PAGE.FIELDS.NAMESPACES,
-};
-
-export const PHASE_DOT_COLOR: Record<PlanPhase, string> = PHASE_ACCENT;
-
-export const HEALTH_DOT_COLOR: Record<PlanHealth, string> = HEALTH_ACCENT;
-
-export const VIOLATION_RESULT_DOT: Record<ViolationResult, string> = {
-  pass: DEFAULT_COLORS.SUCCESS,
-  fail: DEFAULT_COLORS.DANGER,
-  warn: DEFAULT_COLORS.WARNING,
-  error: DEFAULT_COLORS.DANGER,
-  skip: DEFAULT_COLORS.NEUTRAL,
 };

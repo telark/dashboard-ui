@@ -13,7 +13,6 @@ export const CARD_LAYOUT = {
   AVATAR_CHIP_SIZE_PX: 16,
   TITLE_FONT_SIZE_PX: 14,
   META_FONT_SIZE_PX: 11,
-  TAG_FONT_SIZE_PX: 10,
   // Height of one row of tags, reserved while their names are still loading.
   TAG_ROW_MIN_HEIGHT_PX: 20,
   MAX_TARGET_TAGS: 3,

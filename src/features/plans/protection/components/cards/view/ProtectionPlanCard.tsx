@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useState } from 'react';
-import { App as AntdApp, Button, Dropdown, Form, Tooltip } from 'antd';
+import { App as AntdApp, Button, Dropdown, Form, Tag, Tooltip } from 'antd';
 import type { MenuProps } from 'antd';
 import {
   CheckCircleOutlined,
@@ -28,25 +28,20 @@ import {
   DEFAULT_COLORS,
   EMPTY_VALUE,
   MICRO_LABEL_STYLE,
+  STATUS_COLORS,
   TRUNCATE_STYLE,
   getCardMenuButtonStyle,
   getCardShellStyle,
+  getPillColor,
 } from '../../../../../../constants';
 import type { PlanApprovalDecision, ProtectionPlan } from '../../../models';
 import type { FormValues } from '../../create';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
-  HEALTH_ACCENT,
-  PHASE_ACCENT,
   PLAN_CARD_MAX_TAGS,
   POLICY_CHIP_LABEL,
 } from '../../../constants/protectionPlans';
-import {
-  CardChipSection,
-  CardStatusPill,
-  CardTagList,
-  StatCell,
-} from '../../../../../../components/display/card';
+import { CardChipSection, CardTagList, StatCell } from '../../../../../../components/display/card';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import TimeRemaining from '../../../../../../components/display/time/TimeRemaining';
 import { formatDateTime, toTimestamp } from '../../../../../../utils/shared/time';
@@ -222,12 +217,14 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const phaseLabel = planPhaseLabel(plan);
   const canCancel = CANCELLABLE_PHASES.includes(plan.phase);
 
-  const phaseAccent = PHASE_ACCENT[plan.phase] ?? DEFAULT_COLORS.NEUTRAL;
+  const phaseAccent = STATUS_COLORS.PLAN_PHASE[plan.phase] ?? DEFAULT_COLORS.NEUTRAL;
   const health = plan.health ?? 'unknown';
   // Health only speaks while the plan is running; a canceled plan's last known
   // health would otherwise light the card up green.
   const healthAccent =
-    plan.phase === 'active' && plan.health ? HEALTH_ACCENT[health] : DEFAULT_COLORS.TEXT_PRIMARY;
+    plan.phase === 'active' && plan.health
+      ? STATUS_COLORS.PLAN_HEALTH[health]
+      : DEFAULT_COLORS.TEXT_PRIMARY;
 
   const isPermanent = plan.timeMode === 'permanent';
   const planWindow = buildWindow(plan);
@@ -465,7 +462,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
         </div>
 
         <div style={CARD_ASIDE_STYLE}>
-          <CardStatusPill label={phaseLabel} accent={phaseAccent} />
+          <Tag color={getPillColor(phaseAccent)}>{phaseLabel}</Tag>
           {menuItems.length > 0 && (
             <Dropdown
               trigger={['click']}

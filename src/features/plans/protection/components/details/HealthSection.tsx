@@ -1,7 +1,6 @@
 import React from 'react';
-import { Empty } from 'antd';
-import { DEFAULT_COLORS, MONOSPACE_CLASS, SECTION_LAYOUT } from '../../../../../constants';
-import RowTag from '../../../../../components/display/table/RowTag';
+import { Empty, Tag } from 'antd';
+import { DEFAULT_COLORS, SECTION_LAYOUT, TAG_CLASS } from '../../../../../constants';
 import { FancySpinner } from '../../../../../components/animation';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import type {
@@ -91,7 +90,6 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
                       }}
                     >
                       <span
-                        className={MONOSPACE_CLASS}
                         style={{
                           fontSize: 13,
                           fontWeight: 700,
@@ -102,25 +100,16 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
                         {row.name}
                       </span>
                       {row.namespace && (
-                        <RowTag
-                          text={row.namespace}
-                          capitalize={false}
-                          {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-                        />
+                        <Tag className={TAG_CLASS.AS_IS}>
+                          {`${PPC.LABELS.HEALTH_DETAIL.NAMESPACE}: ${row.namespace}`}
+                        </Tag>
                       )}
-                      <RowTag
-                        text={`${PPC.LABELS.HEALTH_DETAIL.PRESENT}: ${yesNo(row.present)}`}
-                        fontSize={11}
-                      />
-                      <RowTag
-                        text={`${PPC.LABELS.HEALTH_DETAIL.READY}: ${yesNo(row.ready)}`}
-                        fontSize={11}
-                      />
+                      <Tag>{`${PPC.LABELS.HEALTH_DETAIL.PRESENT}: ${yesNo(row.present)}`}</Tag>
+                      <Tag>{`${PPC.LABELS.HEALTH_DETAIL.READY}: ${yesNo(row.ready)}`}</Tag>
                       {row.failureAction && (
-                        <RowTag
-                          text={`${PPC.LABELS.HEALTH_DETAIL.FAILURE_ACTION}: ${row.failureAction}`}
-                          {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG}
-                        />
+                        <Tag>
+                          {`${PPC.LABELS.HEALTH_DETAIL.FAILURE_ACTION}: ${row.failureAction}`}
+                        </Tag>
                       )}
                     </div>
                   </div>

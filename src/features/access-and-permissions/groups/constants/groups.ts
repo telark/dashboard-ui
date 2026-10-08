@@ -210,7 +210,6 @@ export const GROUPS_CONSTANTS = {
   SIZES: {
     ROW_HEIGHT: 32,
     HEADER_ICON: 14,
-    CHIP_FONT: 12,
     COLUMNS: {
       NAME: 150,
       DESCRIPTION: 150,

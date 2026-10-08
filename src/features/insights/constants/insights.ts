@@ -12,7 +12,7 @@ import type {
   RecommendationKind,
   LastRun,
 } from '../models';
-import { APP_ROUTES, DEFAULT_COLORS } from '../../../constants';
+import { APP_ROUTES } from '../../../constants';
 import { INSIGHTS_ERROR_MESSAGES } from './errors';
 import { INSIGHTS_UI } from './texts';
 
@@ -55,12 +55,6 @@ export const INSIGHT_SEVERITY_LABELS: Record<InsightSeverity, string> = {
   info: T.SEVERITY.INFO,
   warning: T.SEVERITY.WARNING,
   critical: T.SEVERITY.CRITICAL,
-};
-
-export const SEVERITY_COLORS: Record<InsightSeverity, string> = {
-  critical: DEFAULT_COLORS.DANGER,
-  warning: DEFAULT_COLORS.WARNING,
-  info: DEFAULT_COLORS.TEXT_MUTED,
 };
 
 export const SEVERITY_RANK: Record<InsightSeverity, number> = { critical: 2, warning: 1, info: 0 };
@@ -374,7 +368,6 @@ export const CLUSTER_INSIGHTS = {
     ENVIRONMENT: 150,
     LAST_SEEN: 140,
   },
-  CHIP_FONT: 12,
   // /insights?tab=recommendations; incidents is the default and carries no param.
   TAB_PARAM: 'tab',
   // /insights?app=<namespace>/<name> filters the list to that application.

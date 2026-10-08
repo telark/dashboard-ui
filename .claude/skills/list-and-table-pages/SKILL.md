@@ -18,7 +18,7 @@ Goal: a list page that behaves like the existing ones, with client-side sorting 
 - Sorting and paging: load the filtered set once, then use `useSortState` and `sortData` from `src/utils/layout/sort`, with `generateColumn(cfg, { activeSortKey, onSort })` for the headers. `sortData` is stable, so pre-sorting by the default order keeps ties in a sensible order (as `InsightsTable` does). Grouping is also computed in the UI from the loaded rows (`groupKeyOf` in `ClusterInsightsView.tsx`).
 - The title column's cell content gets `width: 0` and `min-width: max(100%, <floor>px)` alongside the one-line ellipsis styles, with the full text in `title` (`titleCellStyle` and `TitleCell` in `InsightsTable.tsx`).
 - When the table runs out of room, drop the least important columns against the measured width rather than squeezing them (`fittingInsightColumns` in `InsightsTable.tsx`).
-- Color maps for status cells (like `SEVERITY_COLORS` and `STATE_COLORS`) use `DEFAULT_COLORS` accents, so `getPillSurface` resolves them to pill shades; add `color: DEFAULT_COLORS.PILL_TEXT`.
+- Status cells are antd `Tag`s colored from `STATUS_COLORS` (`src/constants/shared/statusColors.ts`, `DEFAULT_COLORS` accents): `<Tag color={getPillColor(STATUS_COLORS.INSIGHT_STATE[state])}>`. Add a new status map there, not in the feature (see the pill rule in AGENTS.md).
 - The toolbar count takes `countSuffix: { one, other }` with both strings in the feature's constants; `compactWidth` thresholds are compared against the toolbar row's measured width, so set them from measured need.
 - Icon-only row actions: see `ApplicationSnapshotRow.tsx` and the triage buttons in `InsightDetailsPanel.tsx` (`type="text"`, `ROW_ICON_BUTTON_SIZE` square, muted color, `Tooltip` and `aria-label`).
 

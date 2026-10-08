@@ -1,5 +1,5 @@
 import { DEFAULT_COLORS } from '../../../constants';
-import { LIST_PAGE, SHARED_PAGE_CONSTANTS } from '../../../constants/shared/pages';
+import { LIST_PAGE } from '../../../constants/shared/pages';
 import { SHARED_DETAILS_CONSTANTS } from '../../../constants/shared/details';
 
 export const APPLICATIONS_SYNC_ACTIVE_POLL_MS = 5000;
@@ -41,9 +41,7 @@ export const SYNC_STATUS_VALUE = {
 } as const;
 
 export const APPLICATIONS_CONSTANTS = {
-  UI: {
-    EMPTY_STATE_MAX_WIDTH: SHARED_PAGE_CONSTANTS.UI.EMPTY_STATE_MAX_WIDTH,
-  },
+  UI: {},
   MESSAGES: {
     LOADING: 'Loading applications…',
     SUCCESS: 'Applications loaded successfully!',
@@ -57,10 +55,7 @@ export const APPLICATIONS_CONSTANTS = {
     KEY: 'applications.fetch',
     MESSAGE_KEY: 'applications.fetch.retry',
   },
-  LAYOUT: {
-    EMPTY_STATE_CONTAINER: SHARED_PAGE_CONSTANTS.LAYOUT.EMPTY_STATE_CONTAINER,
-    EMPTY_ICON: SHARED_PAGE_CONSTANTS.LAYOUT.EMPTY_ICON,
-  },
+  LAYOUT: {},
 } as const;
 
 export const APPLICATION_DETAILS_CONSTANTS = {

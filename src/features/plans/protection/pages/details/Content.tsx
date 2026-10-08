@@ -1,17 +1,20 @@
 import React, { memo, useCallback, useMemo } from 'react';
-import { Button, Tooltip } from 'antd';
-import { ReloadOutlined } from '@ant-design/icons';
+import { Button, Tag, Tooltip } from 'antd';
+import { CloseOutlined, InfoCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import {
   DEFAULT_COLORS,
   EMPTY_VALUE,
-  MONOSPACE_CLASS,
+  SECTION_LAYOUT,
+  STATUS_COLORS,
+  TAG_CLASS,
   TIME_FORMATS,
+  TRUNCATE_STYLE,
+  withAlpha,
 } from '../../../../../constants';
 import { formatDateTime } from '../../../../../utils/shared/time';
 import SettingsCard from '../../../../settings/components/SettingsCard';
 import KeyValueGrid from '../../../../applications/components/details/KeyValueGrid';
-import RowTag from '../../../../../components/display/table/RowTag';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import TimeRemaining from '../../../../../components/display/time/TimeRemaining';
 import UserAvatar from '../../../../../components/display/avatars/UserAvatar';
@@ -32,9 +35,8 @@ import type { ViolationsResultFilter } from '../../hooks/usePlanViolations';
 import { Select } from 'antd';
 import type { RootState } from '../../../../../store';
 import {
+  POLICY_CHIP_LABEL,
   PROTECTION_PLANS_CONSTANTS as PPC,
-  CARD_LAYOUT,
-  PHASE_DOT_COLOR,
 } from '../../constants/protectionPlans';
 import type { ProtectionPlan } from '../../models';
 import { usePlanTaxonomies } from '../../hooks/usePlanTaxonomies';
@@ -52,6 +54,19 @@ const AvatarRing: React.FC<{
     <UserAvatar avatar={avatar} username={username} size={size} style={{ border: 'none' }} />
   </span>
 );
+
+const POLICY_ICON_STYLE: React.CSSProperties = {
+  width: 20,
+  height: 20,
+  flexShrink: 0,
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: 6,
+  fontSize: 10,
+  color: DEFAULT_COLORS.DANGER,
+  background: withAlpha(DEFAULT_COLORS.DANGER, 0.14),
+};
 
 const COMPACT_REFRESH_BUTTON_STYLE: React.CSSProperties = {
   color: DEFAULT_COLORS.ICON_SECONDARY,
@@ -110,7 +125,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     onRefreshHealth,
   }) => {
     const phaseLabel = planPhaseLabel(plan);
-    const dotColor = PHASE_DOT_COLOR[plan.phase] ?? PHASE_DOT_COLOR.draft;
+    const dotColor = STATUS_COLORS.PLAN_PHASE[plan.phase] ?? STATUS_COLORS.PLAN_PHASE.draft;
     const revision = `${plan.phase}:${plan.lastUpdatedAt ?? ''}`;
     const health = usePlanHealth(plan.id, revision);
     const canViewViolations = usePermission(
@@ -140,14 +155,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     ];
     const users = useSelector((s: RootState) => s.users.users);
     const taxonomies = usePlanTaxonomies();
-    const participants = useMemo(() => {
-      const ids = plan.participantRefs ?? [];
-      return ids.map((id) => {
-        const user = users.find((u) => u.id === id);
-        return { id, user };
-      });
-    }, [plan.participantRefs, users]);
-
+    // Participants too: the users list is empty when the page is opened directly.
     const actorIds = useMemo(
       () =>
         [
@@ -155,10 +163,20 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           plan.lastUpdatedBy,
           plan.approval?.requestedBy,
           plan.approval?.decidedBy,
+          ...(plan.participantRefs ?? []),
         ].filter((id): id is string => Boolean(id)),
       [plan],
     );
     const usernamesById = useUsernamesByIds(actorIds, true);
+
+    const participants = useMemo(
+      () =>
+        (plan.participantRefs ?? []).map((id) => {
+          const user = users.find((u) => u.id === id);
+          return { id, user, username: user?.username ?? usernamesById[id] ?? id };
+        }),
+      [plan.participantRefs, users, usernamesById],
+    );
 
     const renderUserAndTime = useCallback(
       (userId: string | undefined, when: string | undefined): React.ReactNode => {
@@ -167,17 +185,23 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
         const timeNode = when ? <TimeAgo date={when} /> : EMPTY_VALUE;
         if (!userId || !display) return timeNode;
         return (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          // One line, so every row is the same height: the time gives way first, then the name.
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4, minWidth: 0 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
               <AvatarRing avatar={user?.avatar} username={display} size={20} />
-              <span title={userId} style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+              <span
+                title={userId}
+                style={{ ...TRUNCATE_STYLE, fontSize: 13, color: DEFAULT_COLORS.TEXT_PRIMARY }}
+              >
                 {display}
               </span>
             </span>
             {when && (
               <>
-                <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, margin: '0 2px' }}>·</span>
-                {timeNode}
+                <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, margin: '0 2px', flexShrink: 0 }}>
+                  ·
+                </span>
+                <span style={{ ...TRUNCATE_STYLE, flexShrink: 100000 }}>{timeNode}</span>
               </>
             )}
           </span>
@@ -222,12 +246,9 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             ) : (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {tags.map(({ id, name }) => (
-                  <RowTag
-                    key={id}
-                    text={name}
-                    fontSize={CARD_LAYOUT.TAG_FONT_SIZE_PX}
-                    capitalize={false}
-                  />
+                  <Tag key={id} className={`${TAG_CLASS.XSMALL} ${TAG_CLASS.AS_IS}`}>
+                    {name}
+                  </Tag>
                 ))}
               </div>
             ),
@@ -281,34 +302,6 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
               PPC.LABELS.DETAIL_PAGE.FIELDS.PERMANENT
             ),
         },
-        {
-          k: 'created',
-          label: PPC.LABELS.DETAIL_PAGE.FIELDS.CREATED,
-          value: renderUserAndTime(plan.createdBy, plan.createdAt),
-        },
-        {
-          k: 'updated',
-          label: PPC.LABELS.DETAIL_PAGE.FIELDS.UPDATED,
-          value: renderUserAndTime(plan.lastUpdatedBy, plan.lastUpdatedAt),
-        },
-        ...(plan.startedAt
-          ? [
-              {
-                k: 'started',
-                label: PPC.LABELS.DETAIL_PAGE.FIELDS.STARTED,
-                value: renderUserAndTime(plan.startedBy, plan.startedAt),
-              },
-            ]
-          : []),
-        ...(plan.terminatedAt
-          ? [
-              {
-                k: 'terminated',
-                label: PPC.LABELS.DETAIL_PAGE.FIELDS.TERMINATED,
-                value: renderUserAndTime(plan.terminatedBy, plan.terminatedAt),
-              },
-            ]
-          : []),
         ...(plan.reason && (plan.phase === 'failed' || plan.phase === 'canceled')
           ? [
               {
@@ -321,6 +314,60 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
       ];
     }, [plan, renderUserAndTime, taxonomies.environments, taxonomies.tags]);
 
+    // Who made and moved the plan, and who takes part in it: the Overview's right half.
+    const activityRows = useMemo(
+      () => [
+        {
+          k: 'created',
+          label: PPC.LABELS.DETAIL_PAGE.FIELDS.CREATED,
+          value: renderUserAndTime(plan.createdBy, plan.createdAt),
+        },
+        ...(plan.startedAt
+          ? [
+              {
+                k: 'started',
+                label: PPC.LABELS.DETAIL_PAGE.FIELDS.STARTED,
+                value: renderUserAndTime(plan.startedBy, plan.startedAt),
+              },
+            ]
+          : []),
+        {
+          k: 'updated',
+          label: PPC.LABELS.DETAIL_PAGE.FIELDS.UPDATED,
+          value: renderUserAndTime(plan.lastUpdatedBy, plan.lastUpdatedAt),
+        },
+        ...(plan.terminatedAt
+          ? [
+              {
+                k: 'terminated',
+                label: PPC.LABELS.DETAIL_PAGE.FIELDS.TERMINATED,
+                value: renderUserAndTime(plan.terminatedBy, plan.terminatedAt),
+              },
+            ]
+          : []),
+        {
+          k: 'participants',
+          label: PPC.LABELS.DETAIL_PAGE.FIELDS.PARTICIPANTS,
+          value:
+            participants.length === 0 ? (
+              EMPTY_VALUE
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {participants.map(({ id, user, username }) => (
+                  <div key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                    <AvatarRing avatar={user?.avatar} username={username} size={20} />
+                    <span title={id} style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+                      {username}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ),
+        },
+      ],
+      [plan, renderUserAndTime, participants],
+    );
+
     const scopeItems =
       (plan.scope.type === 'applications' ? plan.scope.applicationRefs : plan.scope.namespaces) ??
       [];
@@ -330,7 +377,9 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     const renderChips = (chips: { key: string; text: string }[]) => (
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
         {chips.map((chip) => (
-          <RowTag key={chip.key} text={chip.text} fontSize={11} capitalize={false} />
+          <Tag key={chip.key} className={TAG_CLASS.AS_IS}>
+            {chip.text}
+          </Tag>
         ))}
       </div>
     );
@@ -443,21 +492,8 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             <ColumnShell title={PPC.LABELS.DETAIL_PAGE.SECTIONS.OVERVIEW_COLUMN_PRIMARY}>
               <KeyValueGrid rows={overviewRows} />
             </ColumnShell>
-            <ColumnShell title={PPC.LABELS.DETAIL_PAGE.SECTIONS.OVERVIEW_COLUMN_PARTICIPANTS}>
-              {participants.length === 0 ? (
-                <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {participants.map(({ id, user }) => (
-                    <div key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                      <AvatarRing avatar={user?.avatar} username={user?.username ?? id} size={20} />
-                      <span style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
-                        {user?.username ?? id}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
+            <ColumnShell title={PPC.LABELS.DETAIL_PAGE.SECTIONS.OVERVIEW_COLUMN_ACTIVITY}>
+              <KeyValueGrid rows={activityRows} />
             </ColumnShell>
           </div>
         </SettingsCard>
@@ -488,12 +524,9 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                   ) : (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                       {scopeItems.map((item) => (
-                        <RowTag
-                          key={item}
-                          text={item.toLowerCase()}
-                          fontSize={11}
-                          capitalize={false}
-                        />
+                        <Tag key={item} className={TAG_CLASS.AS_IS}>
+                          {item.toLowerCase()}
+                        </Tag>
                       ))}
                     </div>
                   ),
@@ -534,14 +567,13 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           {policies.length === 0 ? (
             <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div>
               {policies.map((p, idx) => (
                 <div
                   key={`${p.templateID}-${idx}`}
                   style={{
-                    border: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
-                    borderRadius: 8,
-                    padding: 10,
+                    padding: '10px 0',
+                    borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
                     display: 'flex',
                     flexWrap: 'wrap',
                     alignItems: 'center',
@@ -549,16 +581,35 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                     gap: 8,
                   }}
                 >
-                  <span
-                    className={MONOSPACE_CLASS}
-                    style={{
-                      fontWeight: 700,
-                      fontSize: 13,
-                      color: DEFAULT_COLORS.TEXT_PRIMARY,
-                    }}
-                  >
-                    {p.templateID}
-                  </span>
+                  {/* What the policy refuses, in the card's words, over its template id. */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                    <span aria-hidden style={POLICY_ICON_STYLE}>
+                      <CloseOutlined />
+                    </span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 0, minWidth: 0 }}>
+                      <span
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 600,
+                          lineHeight: 1.3,
+                          color: DEFAULT_COLORS.TEXT_PRIMARY,
+                        }}
+                      >
+                        {POLICY_CHIP_LABEL[p.templateID] ?? p.templateID}
+                      </span>
+                      {POLICY_CHIP_LABEL[p.templateID] ? (
+                        <span
+                          style={{
+                            fontSize: 12,
+                            lineHeight: 1.3,
+                            color: DEFAULT_COLORS.TEXT_MUTED,
+                          }}
+                        >
+                          {p.templateID}
+                        </span>
+                      ) : null}
+                    </div>
+                  </div>
                   {p.params && Object.keys(p.params).length > 0 && (
                     <div
                       style={{
@@ -570,12 +621,9 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                       }}
                     >
                       {Object.entries(p.params).map(([key, value]) => (
-                        <RowTag
-                          key={key}
-                          text={`${key}: ${Array.isArray(value) ? value.join(', ') : String(value)}`}
-                          fontSize={11}
-                          capitalize={false}
-                        />
+                        <Tag key={key} className={TAG_CLASS.AS_IS}>
+                          {`${key}: ${Array.isArray(value) ? value.join(', ') : String(value)}`}
+                        </Tag>
                       ))}
                     </div>
                   )}
@@ -645,6 +693,19 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                     aria-label={PPC.LABELS.VIOLATIONS.REFRESH}
                   />
                 </Tooltip>
+                {violations.data?.retentionWindow ? (
+                  <Tooltip
+                    title={PPC.LABELS.VIOLATIONS.RETENTION_NOTE(violations.data.retentionWindow)}
+                  >
+                    <InfoCircleOutlined
+                      tabIndex={0}
+                      aria-label={PPC.LABELS.VIOLATIONS.RETENTION_NOTE(
+                        violations.data.retentionWindow,
+                      )}
+                      style={{ color: DEFAULT_COLORS.ICON_SECONDARY }}
+                    />
+                  </Tooltip>
+                ) : null}
               </div>
             ) : undefined
           }

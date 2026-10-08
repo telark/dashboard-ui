@@ -1,13 +1,12 @@
 import React from 'react';
 import { FancySpinner } from '../../../components/animation';
-import { Button, Tooltip } from 'antd';
+import { Button, Empty, Tooltip, Typography } from 'antd';
 import { BellOutlined, CheckOutlined, DeleteOutlined } from '@ant-design/icons';
 import { SlideOutPanel } from '../../../components/display/panels/slide-out';
-import { DEFAULT_COLORS, ROW_ICON_BUTTON_SIZE } from '../../../constants';
+import { DEFAULT_COLORS, EMPTY_CLASS, ROW_ICON_BUTTON_SIZE } from '../../../constants';
 import { useNotifications } from '../hooks';
 import { NOTIFICATIONS_PANEL_WIDTH, NOTIFICATIONS_TEXTS } from '../constants';
 import NotificationItem from './NotificationItem';
-import { PanelEmptyState } from '../../../components/display/panels/shared';
 
 export interface NotificationPanelProps {
   open: boolean;
@@ -62,10 +61,15 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose }) 
         </div>
       )}
       {!isLoading && !hasNotifications ? (
-        <PanelEmptyState
-          icon={<BellOutlined />}
-          title={NOTIFICATIONS_TEXTS.EMPTY_TITLE}
-          description={NOTIFICATIONS_TEXTS.EMPTY_DESCRIPTION}
+        <Empty
+          className={EMPTY_CLASS.PANEL}
+          image={<BellOutlined />}
+          description={
+            <>
+              <Typography.Title level={5}>{NOTIFICATIONS_TEXTS.EMPTY_TITLE}</Typography.Title>
+              <Typography.Text>{NOTIFICATIONS_TEXTS.EMPTY_DESCRIPTION}</Typography.Text>
+            </>
+          }
         />
       ) : (
         <div

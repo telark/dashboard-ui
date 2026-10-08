@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
+import { Tag } from 'antd';
 import { AssignedItemsList } from '../../../../../shared';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
-import { Icons, DEFAULT_COLORS } from '../../../../../../../constants';
-import RowTag from '../../../../../../../components/display/table/RowTag';
+import { Icons, DEFAULT_COLORS, TAG_CLASS } from '../../../../../../../constants';
 import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/utils';
 import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
@@ -79,7 +79,9 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
       return (
         <div style={GROUP_TAGS_WRAPPER}>
           {groupNames.map((name) => (
-            <RowTag key={name} text={name} fontSize={12} capitalize={false} />
+            <Tag key={name} className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}>
+              {name}
+            </Tag>
           ))}
         </div>
       );

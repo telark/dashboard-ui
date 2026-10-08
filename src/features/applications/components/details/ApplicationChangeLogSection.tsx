@@ -1,13 +1,18 @@
 import React, { memo, useMemo, useRef, useState } from 'react';
-import { Tooltip } from 'antd';
+import { Empty, Tag, Tooltip, Typography } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, MONOSPACE_CLASS, SECTION_LAYOUT } from '../../../../constants';
+import {
+  DEFAULT_COLORS,
+  EMPTY_CLASS,
+  MONOSPACE_CLASS,
+  SECTION_LAYOUT,
+  TAG_CLASS,
+  getPillColor,
+} from '../../../../constants';
 import { formatDateKey, toDateKey } from '../../../../utils/shared/time';
 import SettingsCard from '../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
-import RowTag from '../../../../components/display/table/RowTag';
 import TablePagination from '../../../../components/display/table/TablePagination';
-import ApplicationSectionEmptyState from '../display/ApplicationSectionEmptyState';
 import { APPLICATION_CHANGE_CLASS, APPLICATIONS_UI } from '../../constants';
 import {
   APPLICATION_CHANGE_LOG_PAGE_SIZE,
@@ -114,15 +119,9 @@ const ChangeRow: React.FC<{
         />
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 6 }}>
-            <RowTag
-              text={`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.GEN}: ${entry.generation}`}
-              fontSize={11}
-            />
-            <RowTag text={entry.changeClass} {...SECTION_LAYOUT.RUNTIME_VALUE_ROW_TAG} />
-            <RowTag
-              text={`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SEVERITY}: ${entry.severity}`}
-              fontSize={11}
-            />
+            <Tag>{`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.GEN}: ${entry.generation}`}</Tag>
+            <Tag>{entry.changeClass}</Tag>
+            <Tag>{`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SEVERITY}: ${entry.severity}`}</Tag>
             <Tooltip
               title={
                 hasSnapshot
@@ -131,15 +130,11 @@ const ChangeRow: React.FC<{
               }
             >
               <span>
-                <RowTag
-                  text={
-                    hasSnapshot
-                      ? APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SNAPSHOT_AVAILABLE
-                      : APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SNAPSHOT_MISSING
-                  }
-                  accent={hasSnapshot ? DEFAULT_COLORS.SUCCESS : undefined}
-                  fontSize={11}
-                />
+                <Tag color={getPillColor(hasSnapshot ? DEFAULT_COLORS.SUCCESS : undefined)}>
+                  {hasSnapshot
+                    ? APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SNAPSHOT_AVAILABLE
+                    : APPLICATIONS_UI.SECTIONS.CHANGE_LOG.SNAPSHOT_MISSING}
+                </Tag>
               </span>
             </Tooltip>
             {suffix ? (
@@ -172,13 +167,9 @@ const ChangeRow: React.FC<{
               }}
             >
               {actorName ? (
-                <RowTag
-                  text={`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.BY_PREFIX} ${actorName}`}
-                  fontSize={11}
-                  capitalize={false}
-                  truncate
-                  title={actorId}
-                />
+                <Tag className={`${TAG_CLASS.AS_IS} ${TAG_CLASS.TRUNCATE}`} title={actorId}>
+                  {`${APPLICATIONS_UI.SECTIONS.CHANGE_LOG.BY_PREFIX} ${actorName}`}
+                </Tag>
               ) : null}
               {entry.fingerprint ? (
                 <code
@@ -313,8 +304,14 @@ const ApplicationChangeLogSection: React.FC<{ application: Application }> = memo
         description={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.DESCRIPTION}
       >
         {changeLog.length === 0 ? (
-          <ApplicationSectionEmptyState
-            description={APPLICATIONS_UI.SECTIONS.CHANGE_LOG.EMPTY_DESCRIPTION}
+          <Empty
+            className={EMPTY_CLASS.SECTION}
+            image={false}
+            description={
+              <Typography.Text style={{ lineHeight: 1.5 }}>
+                {APPLICATIONS_UI.SECTIONS.CHANGE_LOG.EMPTY_DESCRIPTION}
+              </Typography.Text>
+            }
           />
         ) : (
           <div>

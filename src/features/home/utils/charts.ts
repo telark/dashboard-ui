@@ -1,14 +1,9 @@
 import { format, parse, subDays } from 'date-fns';
-import { DEFAULT_COLORS, TIME_FORMATS } from '../../../constants';
+import { DEFAULT_COLORS, STATUS_COLORS, TIME_FORMATS } from '../../../constants';
 import { toDateKey, toZonedTime } from '../../../utils/shared/time';
 import type { Application } from '../../applications/models';
 import type { ProtectionPlan } from '../../plans/protection/models';
-import {
-  HOME_CHART_LAYOUT as C,
-  HOME_CHART_TEXTS as CT,
-  HOME_PLAN_EVENT_COLORS,
-  HOME_SEVERITY_COLORS,
-} from '../constants/dashboard';
+import { HOME_CHART_LAYOUT as C, HOME_CHART_TEXTS as CT } from '../constants/dashboard';
 import type { ActivityChartData, ActivityEvent, PlanEventKey, SeverityKey } from '../models';
 
 const KNOWN_SEVERITIES: SeverityKey[] = ['critical', 'high', 'medium', 'low'];
@@ -96,7 +91,7 @@ export const changeActivityData = (apps: Application[]): ActivityChartData =>
       .map(({ detectedAt, severity }) => ({ at: detectedAt, key: bucketSeverity(severity) })),
     SEVERITY_KEYS,
     CT.CHANGE_ACTIVITY.SEVERITIES,
-    HOME_SEVERITY_COLORS,
+    STATUS_COLORS.HOME_SEVERITY,
   );
 
 export const planActivityData = (plans: ProtectionPlan[]): ActivityChartData =>
@@ -108,5 +103,5 @@ export const planActivityData = (plans: ProtectionPlan[]): ActivityChartData =>
     ]),
     PLAN_EVENT_KEYS,
     CT.PLAN_ACTIVITY.EVENTS,
-    HOME_PLAN_EVENT_COLORS,
+    STATUS_COLORS.HOME_PLAN_EVENT,
   );

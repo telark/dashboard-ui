@@ -1,13 +1,14 @@
 import React, { memo, useMemo } from 'react';
-import { App as AntdApp } from 'antd';
+import { App as AntdApp, Button, Empty, Typography } from 'antd';
 import { useDispatch } from 'react-redux';
 import {
   CARD_LAYOUT,
+  EMPTY_ACTION_STYLE,
+  EMPTY_CLASS,
   HEADER_LAYOUT,
   LIST_TOOLBAR,
   getCardGridColumns,
 } from '../../../../constants';
-import EmptyState from '../../../../components/display/views/EmptyState';
 import FullPageLoader from '../../../../components/display/views/FullPageLoader';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
 import type { Application } from '../../models';
@@ -213,15 +214,22 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
             />
           ) : !hasApps ? (
             <div style={{ display: 'flex', minHeight: LIST_PAGE.LOADING_MIN_HEIGHT_PX }}>
-              <EmptyState
-                title={APPLICATIONS_UI.NO_MATCH_TITLE}
-                description={APPLICATIONS_UI.NO_MATCH_DESCRIPTION}
-                secondaryAction={
-                  hasActiveFilters
-                    ? { label: APPLICATIONS_UI.CLEAR_ALL_FILTERS, onClick: onClearAllFilters }
-                    : undefined
+              <Empty
+                className={EMPTY_CLASS.PAGE}
+                image={false}
+                description={
+                  <>
+                    <Typography.Title level={3}>{APPLICATIONS_UI.NO_MATCH_TITLE}</Typography.Title>
+                    <Typography.Text>{APPLICATIONS_UI.NO_MATCH_DESCRIPTION}</Typography.Text>
+                  </>
                 }
-              />
+              >
+                {hasActiveFilters ? (
+                  <Button onClick={onClearAllFilters} style={EMPTY_ACTION_STYLE}>
+                    {APPLICATIONS_UI.CLEAR_ALL_FILTERS}
+                  </Button>
+                ) : null}
+              </Empty>
             </div>
           ) : (
             content
