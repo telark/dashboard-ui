@@ -2,6 +2,10 @@
 
 All notable changes to the Telark dashboard UI are documented here.
 
+## [0.1.2](https://github.com/telark/dashboard-ui/compare/v0.1.1...v0.1.2) - 2026-10-08
+
+No user-facing changes.
+
 ## [0.1.1](https://github.com/telark/dashboard-ui/compare/v0.1.0...v0.1.1) - 2026-10-08
 
 ### 🐛 Bug Fixes
