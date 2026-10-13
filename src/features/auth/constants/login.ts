@@ -1,3 +1,5 @@
+import { DOCS_URL } from '../../../constants';
+
 export const LOGIN_CONSTANTS = {
   ERROR_PATTERNS: {
     NO_PASSKEYS: ['no passkeys found', 'no passkey found', 'no passkeys', 'no passkey'],
@@ -7,9 +9,11 @@ export const LOGIN_CONSTANTS = {
   MESSAGES: {
     USER_NOT_FOUND: 'No account for this email yet. Register first, or check the address.',
     USER_NOT_FOUND_NO_SELF_REGISTRATION:
-      'No account for this email. Check the address, or contact your administrator.',
-    NO_PASSKEYS: 'This account has no passkey yet. Contact your administrator.',
-    LOST_PASSKEY: 'Contact your administrator to restore access to this account.',
+      'No account for this email. Check the address, or ask your administrator for an enrollment link.',
+    NO_PASSKEYS:
+      'This account has no passkey yet. Open the enrollment link your administrator sent you. Installed Telark yourself? Run the break-glass enroll command from the install notes.',
+    LOST_PASSKEY:
+      'Ask your administrator for a new enrollment link. If you are the only administrator, run the break-glass enroll command from the install notes.',
     ACCOUNT_SUSPENDED: 'Your Telark account is suspended. Contact your administrator.',
     BOOTSTRAP_PASSKEY_ONLY:
       "Google sign-in isn't available for the bootstrap administrator. Sign in with its passkey.",
@@ -24,7 +28,6 @@ export const LOGIN_CONSTANTS = {
   },
   TIMING: {
     MESSAGE_DURATION: 4,
-    CALLBACK_DELAY: 2000,
   },
   WEBAUTHN: {
     USER_VERIFICATION: 'preferred',
@@ -91,6 +94,14 @@ export const LOGIN_CONSTANTS = {
     BUTTON_TEXT: 'Continue with Passkey',
     FOOTER_TEXT: "Don't have an account?",
     FOOTER_LINK: 'Create an account',
+    NO_SELF_REGISTRATION_FOOTER_TEXT:
+      'New here? Open the enrollment link your administrator sent you.',
+    INSTALL_NOTES_LINK: 'Install notes',
+    INSTALL_NOTES_URL: `${DOCS_URL}/guides/installing`,
+    TERMS_TEXT: 'By continuing you agree to the',
+    TERMS_LINK: 'license terms',
+    TERMS_END: '.',
+    TERMS_URL: `${DOCS_URL}/getting-started/license`,
     GOOGLE_BUTTON_TEXT: 'Continue with Google',
     GOOGLE_BUTTON_LOADING: 'Redirecting to Google...',
     GOOGLE_OR_SEPARATOR: 'or',
@@ -99,7 +110,7 @@ export const LOGIN_CONSTANTS = {
     BRAND_HEADLINE: 'A protection gate for your Kubernetes applications',
     BRAND_TAGLINE:
       'Decide what can change an application, and when. See every change that got through, and why an app broke.',
-    BRAND_TAGLINE_ACCENT: 'Passkeys or Google sign-in. No passwords.',
+    BRAND_TAGLINE_ACCENT: 'Passwordless by design. Unphishable by default.',
   },
   OIDC: {
     GOOGLE_SCOPE: 'openid email',

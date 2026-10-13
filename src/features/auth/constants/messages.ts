@@ -34,11 +34,11 @@ export const AUTH_ERROR_MESSAGES = {
     NOT_FOUND_MESSAGE:
       'No passkeys were found in this browser. This can happen after you clear browser data or switch devices.',
     NOT_FOUND_DESCRIPTION:
-      'If you no longer have access to your passkeys, contact your administrator to restore access.',
+      'Select Try Again to use a passkey on another device or in a password manager. Lost your passkey? Ask your administrator for a new enrollment link. If you are the only administrator, run the break-glass enroll command from the install notes.',
     GENERAL_MESSAGE:
       'Could not sign in with your passkey. This can happen if you canceled the prompt or the passkey is no longer available.',
     GENERAL_DESCRIPTION:
-      'You can try again. If you no longer have access to your passkeys, contact your administrator.',
+      'Select Try Again and confirm the passkey prompt. Lost your passkey? Ask your administrator for a new enrollment link. If you are the only administrator, run the break-glass enroll command from the install notes.',
     BUTTONS: {
       RETRY: 'Try Again',
       REMOVE: 'I lost my passkey',
@@ -72,6 +72,14 @@ export const AUTH_CONSTANTS = {
         DELETE_FAILED: 'Failed to delete session from server:',
         LOCAL_CLEANUP_ERROR: 'Error during local cleanup:',
         HANDLE_LOGIN_ERROR: 'Error in handleGoToLogin:',
+      },
+    },
+    SUSPENDED: {
+      MODAL: {
+        TITLE: 'Your account is suspended',
+        MESSAGE:
+          "An administrator has suspended your Telark account, so this session can't continue. If you think this is a mistake, contact your administrator.",
+        BUTTON_TEXT: 'Sign out',
       },
     },
   },
