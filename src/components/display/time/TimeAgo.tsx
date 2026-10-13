@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Popover } from 'antd';
 
 import { TIME_FORMATS, TIME_CONFIGS } from '../../../constants';
 import {
@@ -9,6 +8,7 @@ import {
   getTimeZone,
   parseDate,
 } from '../../../utils/shared/time';
+import ExactTimePopover from './ExactTimePopover';
 
 interface TimeAgoProps {
   date: string | Date;
@@ -33,7 +33,7 @@ const TimeAgo: React.FC<TimeAgoProps> = React.memo(
       return () => clearInterval(interval);
     }, [parsedDate]);
 
-    return <Popover content={`${formattedDate} (${timeZoneLabel})`}>{timeAgo}</Popover>;
+    return <ExactTimePopover exact={`${formattedDate} (${timeZoneLabel})`} text={timeAgo} />;
   },
 );
 
