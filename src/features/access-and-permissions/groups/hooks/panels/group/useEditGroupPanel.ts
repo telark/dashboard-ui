@@ -9,6 +9,7 @@ import {
   useGroupMutations,
 } from '../../';
 import type { GroupPanelProps, GroupFormData } from '../../../models';
+import { textChanged } from '../../../../../shared';
 
 interface UseEditGroupPanelOptions {
   open: boolean;
@@ -80,7 +81,11 @@ export const useEditGroupPanel = ({
     if (!editingGroup) return;
     // Membership is edited in Manage Members only; resending it here would revert concurrent changes.
     const { name, description, categoryRef } = values as Partial<GroupFormData>;
-    await handleUpdate(editingGroup.id, { name, description, categoryRef });
+    await handleUpdate(editingGroup.id, {
+      name: textChanged(editingGroup.name, name) ? name : undefined,
+      description: textChanged(editingGroup.description, description) ? description : undefined,
+      categoryRef: textChanged(editingGroup.categoryRef, categoryRef) ? categoryRef : undefined,
+    });
     form.resetFields();
     onClose();
   };

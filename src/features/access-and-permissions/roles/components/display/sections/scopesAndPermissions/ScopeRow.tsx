@@ -23,7 +23,6 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
   rowPaddingPx = 4,
   isLast = false,
   isLocked = false,
-  onManualChange,
   initialScopeValue,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -71,7 +70,6 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
               },
             });
 
-            requestAnimationFrame(() => onManualChange?.());
             if (newLevel) onLevelChange?.(scopeKey, newLevel);
           };
 
@@ -99,13 +97,17 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
               },
             });
 
-            requestAnimationFrame(() => onManualChange?.());
             onRuleToggle?.(scopeKey, formattedKey, checked);
           };
 
           return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-              <Form.Item name={['scopes', scopeKey, 'rules']} hidden>
+              {/* A scope without a level has no rules: undefined would flip the input to controlled. */}
+              <Form.Item
+                name={['scopes', scopeKey, 'rules']}
+                hidden
+                getValueProps={(rules) => ({ value: rules ?? [] })}
+              >
                 <input type="hidden" />
               </Form.Item>
 

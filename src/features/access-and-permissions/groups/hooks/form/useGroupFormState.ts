@@ -1,19 +1,13 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import type { FormInstance } from 'antd';
 import type { GroupFormData } from '../../models';
+import { textChanged } from '../../../../shared';
 
 interface UseGroupFormStateOptions {
   form: FormInstance<GroupFormData>;
   isEditMode?: boolean;
   initialValues?: GroupFormData | null;
 }
-
-const arraysEqual = (arr1: string[], arr2: string[]): boolean => {
-  if (arr1.length !== arr2.length) return false;
-  const sorted1 = [...arr1].sort();
-  const sorted2 = [...arr2].sort();
-  return sorted1.every((val, index) => val === sorted2[index]);
-};
 
 export const useGroupFormState = ({
   form,
@@ -50,15 +44,12 @@ export const useGroupFormState = ({
       const currentValues = form.getFieldsValue();
       const initial = initialValuesRef.current;
 
-      const nameChanged = currentValues.name !== initial.name;
-      const descriptionChanged = currentValues.description !== initial.description;
-      const categoryChanged = currentValues.categoryRef !== initial.categoryRef;
-      const assignedUsersChanged = !arraysEqual(
-        currentValues.userRefs || [],
-        initial.userRefs || [],
-      );
+      const nameChanged = textChanged(initial.name, currentValues.name);
+      const descriptionChanged = textChanged(initial.description, currentValues.description);
+      const categoryChanged = textChanged(initial.categoryRef, currentValues.categoryRef);
 
-      const changed = nameChanged || descriptionChanged || categoryChanged || assignedUsersChanged;
+      // Members have no field here (Manage Members edits them), so they never count as changed.
+      const changed = nameChanged || descriptionChanged || categoryChanged;
       if (!needsResetRef.current) {
         setHasChanges(changed);
       }

@@ -3,6 +3,8 @@ import { registerPasskey } from '../webauthn/core';
 import { extractRegisterOptions } from '../flow/register';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { rejectionMessage } from '../../../../utils/helpers/format';
+import type { ExtendedAxiosError } from '../../../../api/client/normalize';
+import { serverMessage } from '../shared/errors';
 import { PASSKEYS_CONSTANTS as PPC } from '../../constants/passkeys';
 import {
   createPasskeyThunk,
@@ -16,6 +18,14 @@ import type {
   DeletePasskeyHandlerParams,
   PasskeyDeviceType,
 } from '../../models';
+
+// Request errors show the server's message or the fallback, others (WebAuthn, the save) their own.
+const failureMessage = (error: unknown, fallback: string): string => {
+  if ((error as ExtendedAxiosError | undefined)?.normalized) {
+    return serverMessage(error) ?? fallback;
+  }
+  return error instanceof Error ? error.message : fallback;
+};
 
 export const handleCreatePasskey = async ({
   deviceName,
@@ -58,13 +68,11 @@ export const handleCreatePasskey = async ({
         result.payload,
         AUTH_ERROR_MESSAGES.CREATE_PASSKEY_FAILED,
       );
-      message.error(errorMessage);
+      // The catch below shows it, once for every failure.
       throw new Error(errorMessage);
     }
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : AUTH_ERROR_MESSAGES.CREATE_PASSKEY_FAILED;
-    message.error(errorMessage);
+    message.error(failureMessage(error, AUTH_ERROR_MESSAGES.CREATE_PASSKEY_FAILED));
     throw error;
   } finally {
     setSubmitting(false);
@@ -98,7 +106,7 @@ export const handleUpdatePasskey = async ({
         result.payload,
         AUTH_ERROR_MESSAGES.UPDATE_PASSKEY_FAILED,
       );
-      message.error(errorMessage);
+      // The catch below shows it, once for every failure.
       throw new Error(errorMessage);
     }
   } catch (error) {

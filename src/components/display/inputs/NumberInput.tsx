@@ -1,5 +1,5 @@
 import React from 'react';
-import { InputNumber } from 'antd';
+import { Form, InputNumber, Space } from 'antd';
 
 export interface NumberInputProps {
   value?: number;
@@ -15,6 +15,19 @@ export interface NumberInputProps {
   precision?: number;
   step?: number | string;
 }
+
+// antd 6 deprecates InputNumber's addon props: this is the addon they rendered, with form status.
+const NumberAddon: React.FC<{ children: React.ReactNode; disabled: boolean }> = ({
+  children,
+  disabled,
+}) => {
+  const { status } = Form.Item.useStatus();
+  return (
+    <Space.Addon disabled={disabled} status={status}>
+      {children}
+    </Space.Addon>
+  );
+};
 
 const NumberInput: React.FC<NumberInputProps> = ({
   value,
@@ -63,7 +76,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
     e.preventDefault();
   };
 
-  return (
+  const input = (
     <InputNumber
       value={value}
       onChange={onChange}
@@ -71,8 +84,6 @@ const NumberInput: React.FC<NumberInputProps> = ({
       min={min}
       max={max}
       disabled={disabled}
-      addonAfter={addonAfter}
-      addonBefore={addonBefore}
       style={style}
       className={className}
       precision={precision}
@@ -90,6 +101,15 @@ const NumberInput: React.FC<NumberInputProps> = ({
         return value.toString();
       }}
     />
+  );
+
+  if (!addonBefore && !addonAfter) return input;
+  return (
+    <Space.Compact>
+      {addonBefore ? <NumberAddon disabled={disabled}>{addonBefore}</NumberAddon> : null}
+      {input}
+      {addonAfter ? <NumberAddon disabled={disabled}>{addonAfter}</NumberAddon> : null}
+    </Space.Compact>
   );
 };
 

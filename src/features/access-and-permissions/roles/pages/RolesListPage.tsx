@@ -22,7 +22,6 @@ interface RolesListPageProps {
   viewingRole: Role | null;
   editingRole: Role | null;
   createForm: FormInstance<RoleFormValues>;
-  editForm: FormInstance<RoleFormValues>;
   filterPanelOpen: boolean;
   appliedFilters: Record<string, unknown>;
   addCategoryPanelOpen: boolean;
@@ -54,7 +53,6 @@ const RolesListPage: React.FC<RolesListPageProps> = memo(
     viewingRole,
     editingRole,
     createForm,
-    editForm,
     filterPanelOpen,
     appliedFilters,
     addCategoryPanelOpen,
@@ -98,7 +96,6 @@ const RolesListPage: React.FC<RolesListPageProps> = memo(
             open={editPanelOpen}
             onClose={onCloseEditPanel}
             editingRole={editingRole}
-            form={editForm}
           />
         )}
         {viewPanelOpen && viewingRole && (

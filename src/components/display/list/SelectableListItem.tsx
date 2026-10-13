@@ -116,6 +116,8 @@ const SelectableListItem: React.FC<SelectableListItemProps> = ({
       )}
       {disabled ? (
         <div style={{ margin: 0, width: '100%', paddingLeft: 24, ...checkboxStyle }}>
+          {/* Keeps the value registered: the group drops unregistered ones on any toggle. */}
+          <Checkbox value={value} disabled style={{ display: 'none' }} />
           <div style={defaultContentStyles}>
             {name && <div style={defaultNameStyles}>{name}</div>}
             {description && <div style={defaultDescriptionStyles}>{description}</div>}

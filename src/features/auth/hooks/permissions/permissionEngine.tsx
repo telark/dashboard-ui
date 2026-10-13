@@ -5,6 +5,9 @@ import type { PermissionLevel } from '../../models/permissions';
 import { PERMISSION_LEVEL_RANK } from '../../models/permissions';
 import { ALL_SCOPE_NAME, ALL_SCOPE_NAMES } from '../../store/slices/permissionsSlice';
 
+// Every role or member change is a PATCH to the group, which the backend refuses under this rule.
+const EDIT_GROUP_DENY = 'groups.editgroup.deny';
+
 // Minimum level per action derived from scopeRules.ts: lowest level at which the action rule first appears.
 export const ACTION_PERMISSIONS = {
   applications: {
@@ -113,7 +116,7 @@ export const ACTION_PERMISSIONS = {
     edit: {
       scope: 'groups' as const,
       level: 'Contributor' as PermissionLevel,
-      deny: 'groups.editgroup.deny',
+      deny: EDIT_GROUP_DENY,
     },
     delete: {
       scope: 'groups' as const,
@@ -123,12 +126,12 @@ export const ACTION_PERMISSIONS = {
     attachRole: {
       scope: 'groups' as const,
       level: 'Owner' as PermissionLevel,
-      deny: 'groups.attachroletogroup.deny',
+      deny: ['groups.attachroletogroup.deny', EDIT_GROUP_DENY],
     },
     attachMember: {
       scope: 'groups' as const,
       level: 'Owner' as PermissionLevel,
-      deny: 'groups.addusertogroup.deny',
+      deny: ['groups.addusertogroup.deny', EDIT_GROUP_DENY],
     },
     viewCategories: {
       scope: 'groups' as const,
@@ -153,12 +156,12 @@ export const ACTION_PERMISSIONS = {
     removeRole: {
       scope: 'groups' as const,
       level: 'Owner' as PermissionLevel,
-      deny: 'groups.removerolefromgroup.deny',
+      deny: ['groups.removerolefromgroup.deny', EDIT_GROUP_DENY],
     },
     removeMember: {
       scope: 'groups' as const,
       level: 'Owner' as PermissionLevel,
-      deny: 'groups.removeuserfromgroup.deny',
+      deny: ['groups.removeuserfromgroup.deny', EDIT_GROUP_DENY],
     },
   },
   roles: {
@@ -317,17 +320,19 @@ function resolveEntry(
 export function usePermission(
   requiredScope: string,
   requiredLevel: PermissionLevel,
-  action?: string,
+  action?: string | readonly string[],
 ): boolean {
-  const { loading, roles, scopeIndex } = useSelector(selectPermissionsState);
+  // Not `loading`: a refetch after an access change would read as denied and swap every
+  // gated page for its no-access card, remounting it. Known permissions hold until it lands.
+  const { roles, scopeIndex } = useSelector(selectPermissionsState);
   return useMemo(() => {
-    if (loading || roles.length === 0) return false;
+    if (roles.length === 0) return false;
     const entry = resolveEntry(scopeIndex, requiredScope);
     if (!entry) return false;
     if (PERMISSION_LEVEL_RANK[entry.level] < PERMISSION_LEVEL_RANK[requiredLevel]) return false;
-    if (action && entry.rules.includes(action)) return false;
+    if ([action ?? []].flat().some((rule) => entry.rules.includes(rule))) return false;
     return true;
-  }, [loading, roles.length, scopeIndex, requiredScope, requiredLevel, action]);
+  }, [roles.length, scopeIndex, requiredScope, requiredLevel, action]);
 }
 
 // Whether the viewer may hand out these scope grants: the backend refuses any grant above
