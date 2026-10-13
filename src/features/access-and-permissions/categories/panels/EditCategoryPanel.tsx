@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Form, Input, App as AntdApp } from 'antd';
 import { useDispatch } from 'react-redux';
 import AnimationWrapper from '../../../../components/display/panels/slide-out/AnimationWrapper';
+import { BUTTON_TEXTS } from '../../../../constants';
 import { updateCategory } from '../clients';
 import { fetchCategoriesByScopeThunk } from '../store';
 import { useCategories } from '../hooks';
@@ -95,9 +96,9 @@ const EditCategoryPanel: React.FC<EditCategoryPanelProps> = ({
         onCancel: handleCancel,
         onPrimary: handleSubmit,
         cancelLabel: labels.CANCEL,
-        primaryLabel: labels.SUBMIT_BUTTON,
+        primaryLabel: BUTTON_TEXTS.SAVE_CHANGES,
         primaryLoading: submitting,
-        primaryDisabled: submitting || !isNameValid || !hasChanges,
+        primaryDisabled: !isNameValid || !hasChanges,
       }}
     >
       <Form form={form} layout="vertical" initialValues={{ name: editingCategory.name }}>

@@ -1,7 +1,6 @@
 import React, { useMemo, useEffect, useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../../../../store';
-import { Icons } from '../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import RoleForm from '../../components/display/shared/RoleForm';
 import { useRoleActions, useRoleCategories, useNameValidation } from '../../hooks';
@@ -13,8 +12,6 @@ import { Form, type FormInstance } from 'antd';
 
 const PANEL_WIDTH = 720;
 const PANEL_WIDTH_EXPANDED = 1400;
-
-const RoleIcon = Icons.Role;
 
 interface CreateRolePanelProps {
   open: boolean;
@@ -103,19 +100,14 @@ const CreateRolePanel: React.FC<CreateRolePanelProps> = ({ open, onClose, form }
         primaryLabel: RC.LABELS.PANELS.CREATE.SUBMIT_BUTTON,
         primaryLoading: submitting,
         primaryDisabled: isNameInvalid(watchedName),
-        primaryIcon: <RoleIcon size={16} />,
-        primaryLoadingLabel: 'Creating...',
       }}
     >
       <RoleForm
         form={form}
         initialValues={initialValues}
         onSubmit={handleFinish}
-        buttonText={RC.LABELS.PANELS.CREATE.SUBMIT_BUTTON}
-        submitting={submitting}
         roles={roles}
         isEditMode={false}
-        hideSubmitButton
         expanded={expanded}
       />
     </AnimationWrapper>

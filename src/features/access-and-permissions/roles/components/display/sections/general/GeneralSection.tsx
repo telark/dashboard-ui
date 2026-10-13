@@ -5,7 +5,6 @@ import { LabeledInput } from '../../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import type { RolesGeneralSectionProps } from '../../../../models';
 import { useRoleCategories, useNameValidation } from '../../../../hooks';
-import { FieldChangeWatcher } from './FieldChangeWatcher';
 
 const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
   ({
@@ -15,7 +14,6 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
     lockName = false,
     lockCategory = false,
     disabled = false,
-    onManualChange,
   }) => {
     const { categoryOptions } = useRoleCategories();
     const { nameValidator, normalizeName } = useNameValidation({ roles, isEditMode, currentName });
@@ -34,7 +32,6 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
         subtitle={RPC.GENERAL.SUBTITLE}
         content={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-            <FieldChangeWatcher fieldName="name" onChange={onManualChange} />
             <LabeledInput
               name="name"
               label={RPC.GENERAL.NAME_LABEL}
@@ -55,7 +52,6 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
               marginBottom={12}
               disabled={disabled}
             />
-            <FieldChangeWatcher fieldName="categoryRef" onChange={onManualChange} />
             <Form.Item
               label={categoryLabel}
               name="categoryRef"

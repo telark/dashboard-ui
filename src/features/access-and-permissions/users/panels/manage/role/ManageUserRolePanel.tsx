@@ -9,7 +9,7 @@ import { FilterPanel } from '../../../../../../components/display/panels/filter'
 import { FilterButton, ToggleButton } from '../../../../../../components/display/buttons';
 import { SearchInput } from '../../../../../../components/display/inputs';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
-import { Icons, SLIDE_OUT } from '../../../../../../constants';
+import { SLIDE_OUT } from '../../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { useManageUserRolePanel } from '../../../hooks/panels/role/useManageUserRolePanel';
 import { useDeassignUserRole } from '../../../hooks/panels/role/useDeassignUserRole';
@@ -30,8 +30,6 @@ import { useRoleCategoryOptions } from '../../../../groups/hooks/categories/useR
 import { CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
 import { filterBySearchTerm } from '../../../utils/search/filter';
 import type { User } from '../../../models';
-
-const RoleIcon = Icons.Role;
 
 type ActiveView = 'select' | 'assigned' | 'groupRoles';
 
@@ -292,7 +290,6 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
         onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
         onCancel={onClose}
         submitButtonText={UC.LABELS.PANELS.MANAGE_ROLE.SUBMIT_BUTTON}
-        submitButtonIcon={<RoleIcon size={16} />}
         loading={submitting}
         disabled={!hasChanges || isReadOnlyView || !canViewRoles}
         form={form}

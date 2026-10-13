@@ -37,14 +37,10 @@ export interface RoleFormProps {
   form: FormInstance<RoleFormValues>;
   initialValues: RoleFormValues;
   onSubmit: (values: RoleFormValues) => void;
-  buttonText: string;
-  submitting?: boolean;
   wrapper?: ComponentType<{ children: ReactNode }>;
   roles: Role[];
   isEditMode?: boolean;
   currentName?: string;
-  /** When true, do not render the submit button (e.g. when used inside SlideOutPanel). */
-  hideSubmitButton?: boolean;
   /** When true, show two columns: General/Validity/Protection | Scope & Permissions. */
   expanded?: boolean;
   protectionReadOnly?: boolean;

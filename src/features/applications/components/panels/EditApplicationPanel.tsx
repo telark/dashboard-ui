@@ -1,9 +1,10 @@
 import React from 'react';
-import { EditOutlined } from '@ant-design/icons';
 import { Form, Input } from 'antd';
 import type { FormInstance } from 'antd';
 import { SlideOutPanel } from '../../../../components/display/panels/slide-out';
 import LabeledInput from '../../../../components/display/inputs/LabeledInput';
+import { BUTTON_TEXTS } from '../../../../constants';
+import { textChanged } from '../../../shared';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import { APPLICATION_EDIT_LIMITS } from '../../constants/applications';
 import type { Application } from '../../models';
@@ -23,6 +24,11 @@ const EditApplicationPanel: React.FC<EditApplicationPanelProps> = ({
   form,
 }) => {
   const { submitting, handleSubmit } = useEditApplicationPanel({ application });
+  const displayName = Form.useWatch('displayName', form);
+  const description = Form.useWatch('description', form);
+  const hasChanges =
+    textChanged(application?.displayName, displayName) ||
+    textChanged(application?.description, description);
 
   if (!application) {
     return null;
@@ -75,9 +81,9 @@ const EditApplicationPanel: React.FC<EditApplicationPanelProps> = ({
       }
       onSubmit={handleSubmit}
       onCancel={onClose}
-      submitButtonText={APPLICATIONS_UI.EDIT_PAGE.SAVE}
-      submitButtonIcon={<EditOutlined />}
+      submitButtonText={BUTTON_TEXTS.SAVE_CHANGES}
       loading={submitting}
+      disabled={!hasChanges}
       form={form}
     />
   );

@@ -24,13 +24,11 @@ export interface AnimationWrapperProps {
 
 export interface PanelFooterProps {
   onCancel?: () => void;
-  onPrimary?: () => void;
+  onPrimary: () => void;
   cancelLabel?: string;
   primaryLabel?: string;
   primaryDisabled?: boolean;
   primaryLoading?: boolean;
-  primaryIcon?: React.ReactNode;
-  primaryLoadingLabel?: string;
 }
 
 export interface SlideOutPanelProps extends Omit<AnimationWrapperProps, 'children' | 'footer'> {
@@ -41,7 +39,6 @@ export interface SlideOutPanelProps extends Omit<AnimationWrapperProps, 'childre
   onSubmit?: (values: Record<string, unknown>) => Promise<void> | void;
   onCancel?: () => void;
   submitButtonText?: string;
-  submitButtonIcon?: React.ReactNode;
   loading?: boolean;
   disabled?: boolean;
   initialValues?: Record<string, unknown>;

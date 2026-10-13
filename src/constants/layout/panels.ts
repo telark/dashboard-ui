@@ -17,6 +17,25 @@ export const PANEL_THEME_TOKENS = {
   colorTextPlaceholder: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   colorIcon: DEFAULT_COLORS.TEXT_ON_SURFACE,
   colorBorder: DEFAULT_COLORS.SURFACE_BORDER,
+  // antd draws every keyboard focus ring in this color, and its light mint fades on white
+  // (1.3:1). The muted ink (4.8:1) is also what inputs and selects show on focus here.
+  colorPrimaryBorder: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+} as const;
+
+// PanelThemePrewarm (idle timing and its offscreen box) and the panel theme's fixed css-var key.
+export const PANEL_PREWARM = {
+  CSS_VAR_KEY: 'tk-panel',
+  IDLE_TIMEOUT_MS: 4000,
+  // Safari has no requestIdleCallback.
+  FALLBACK_DELAY_MS: 2000,
+  CONTAINER: {
+    position: 'fixed' as const,
+    top: 0,
+    left: -10000,
+    width: 480,
+    visibility: 'hidden' as const,
+    pointerEvents: 'none' as const,
+  },
 } as const;
 
 // antd paints the selected and active option with colorPrimary tints (green).
@@ -39,6 +58,13 @@ export const SELECT_THEME = {
 // small screens keep the panel's own width up to the viewport.
 export const PANEL_MAX_WIDTH = `max(calc(100vw - ${SIDEBAR_LAYOUT.WIDTH_MAX}px), min(100vw, 480px))`;
 
+// Panels slide in decelerating hard (nearly in place a third of the way through) and slide out
+// faster, inert, so the motion never holds up the next click.
+const PANEL_ENTER_MS = 220;
+const PANEL_EXIT_MS = 160;
+const PANEL_ENTER_EASING = 'cubic-bezier(0.22, 1, 0.36, 1)';
+const PANEL_EXIT_EASING = 'cubic-bezier(0.4, 0, 1, 1)';
+
 export const SLIDE_OUT = {
   BACKDROP: {
     position: 'fixed' as const,
@@ -48,7 +74,7 @@ export const SLIDE_OUT = {
     bottom: 0,
     background: DEFAULT_COLORS.OVERLAY_BACKDROP,
     zIndex: 1000,
-    animation: 'fadeIn 0.2s ease-in-out',
+    animation: `fadeIn ${PANEL_ENTER_MS}ms ease-out`,
   },
   PANEL: {
     position: 'fixed' as const,
@@ -60,9 +86,18 @@ export const SLIDE_OUT = {
     display: 'flex' as const,
     flexDirection: 'column' as const,
     borderRight: `0.5px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
-    animation: 'slideInRight 0.3s ease-out',
-    transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    animation: `slideInRight ${PANEL_ENTER_MS}ms ${PANEL_ENTER_EASING}`,
+    transition: 'transform 0.3s ease, width 0.3s ease',
     willChange: 'transform',
+    // Focused on open only to start the Tab order there; it draws no ring of its own.
+    outline: 'none',
+  },
+  // prefers-reduced-motion: the panel appears and leaves in place, and expands without animating.
+  NO_MOTION: { animation: 'none', transition: 'none' },
+  EXIT: {
+    PANEL: { transform: 'translateX(100%)' },
+    BACKDROP: { opacity: 0 },
+    TIMING: { duration: PANEL_EXIT_MS, easing: PANEL_EXIT_EASING, fill: 'forwards' as const },
   },
   // Exactly as tall as the app header (and follows it): the panel's top bar lines up with it.
   HEADER: {
@@ -104,6 +139,8 @@ export const SLIDE_OUT = {
     cursor: 'not-allowed' as const,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
   },
+  // Plain buttons, out of antd's reach: index.css gives them the panel's focus ring.
+  HEADER_BUTTON_CLASS: 'tk-panel-header-button',
   TOOLBAR_EDIT_LABEL: 'Edit',
   TOOLBAR_DELETE_LABEL: 'Delete',
   TITLE_CONTAINER: {
@@ -133,11 +170,14 @@ export const SLIDE_OUT = {
     color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     fontSize: 18,
     transition: 'color 0.2s',
+    borderRadius: 4,
   },
   CLOSE_BUTTON_HOVER_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE,
   CLOSE_BUTTON_DEFAULT_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   EXPAND_TOOLTIP: 'Expand panel for a wider layout',
   COLLAPSE_TOOLTIP: 'Collapse panel to default width',
+  // Above the pinned footer the padded body still scrolls itself, so the scrollbar stays at the
+  // panel edge.
   CONTENT: {
     flex: 1,
     overflowY: 'auto' as const,
@@ -145,51 +185,12 @@ export const SLIDE_OUT = {
     display: 'flex' as const,
     flexDirection: 'column' as const,
   },
-  // Above the pinned footer (PanelFooter) the padded body still scrolls itself, so the scrollbar
-  // stays at the panel edge.
-  CONTENT_ABOVE_FOOTER: {
-    flex: 1,
-    overflowY: 'auto' as const,
-    padding: '24px 24px 0',
-    display: 'flex' as const,
-    flexDirection: 'column' as const,
-  },
-  PINNED_FOOTER: {
-    flexShrink: 0,
-    padding: '0 24px 24px',
-  },
   FORM_CONTENT: {
     flex: 1,
     display: 'flex' as const,
     flexDirection: 'column' as const,
     gap: 0,
   },
-  FOOTER: {
-    paddingTop: 6,
-    paddingBottom: 6,
-    borderTop: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
-    display: 'flex' as const,
-    flexDirection: 'row' as const,
-    justifyContent: 'space-between' as const,
-    alignItems: 'center' as const,
-    gap: 12,
-    marginTop: 16,
-  },
-  CANCEL_BUTTON: {
-    background: 'none',
-    border: 'none',
-    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-    fontSize: 14,
-    fontWeight: 500,
-    cursor: 'pointer' as const,
-    padding: '4px 16px',
-    borderRadius: 6,
-    transition: 'all 0.2s',
-  },
-  CANCEL_BUTTON_HOVER_BACKGROUND: DEFAULT_COLORS.TEXT_ON_SURFACE,
-  CANCEL_BUTTON_DEFAULT_BACKGROUND: 'none',
-  CANCEL_BUTTON_HOVER_COLOR: DEFAULT_COLORS.SURFACE_WHITE,
-  CANCEL_BUTTON_DEFAULT_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   KEYFRAMES: {
     SLIDE_IN_RIGHT: `
       @keyframes slideInRight {
@@ -214,7 +215,34 @@ export const SLIDE_OUT = {
   },
 } as const;
 
+// The one action footer of panels and dialogs (ActionButtons): Cancel, then the primary, on the
+// right. The buttons' size, colors and spinner come from the App.tsx theme.
+export const PANEL_FOOTER = {
+  // Panels pin it in a bar that mirrors the header: as tall, 24px sides and a full-width line.
+  BAR: {
+    height: HEADER_LAYOUT.HEIGHT_PX,
+    flexShrink: 0,
+    boxSizing: 'border-box' as const,
+    padding: '0 24px',
+    borderTop: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+    display: 'flex' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'flex-end' as const,
+  },
+  ACTIONS: {
+    display: 'flex' as const,
+    justifyContent: 'flex-end' as const,
+    alignItems: 'center' as const,
+    gap: 8,
+  },
+  // Dialogs place it under their content, 12px below it with BaseModal's content gap.
+  DIALOG: { marginTop: 6 },
+  // The muted Cancel that inverts on hover (antd.css).
+  CANCEL_CLASS: 'tk-footer-cancel',
+} as const;
+
 export const FILTER_PANEL = {
+  TITLE: 'Filter',
   BACKDROP: {
     position: 'fixed' as const,
     top: 0,

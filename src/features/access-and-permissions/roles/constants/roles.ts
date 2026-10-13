@@ -83,7 +83,6 @@ export const ROLES_CONSTANTS = {
       VIEW: { TITLE: 'Role Details' },
       EDIT: {
         TITLE: 'Edit Role',
-        SUBMIT_BUTTON: 'Update Role',
       },
       CREATE: {
         TITLE: 'Create Role',
@@ -131,15 +130,17 @@ export const ROLES_CONSTANTS = {
     HEADER_ICON: 14,
     COLUMNS: {
       ROLE_TITLE: 110,
-      TYPE: 80,
-      // Header label + icon + sort measured at ~158/147px; narrower wraps them.
+      // Header label + icon + sort measured (2026-10-09): narrower wraps or widens them.
+      TYPE: 90,
       CREATED: 160,
-      CREATED_BY: 90,
+      CREATED_BY: 130,
       LAST_UPDATE: 150,
-      VALIDITY: 80,
-      CATEGORY: 80,
-      VERSION: 80,
-      STATUS: 80,
+      VALIDITY: 110,
+      CATEGORY: 120,
+      VERSION: 110,
+      STATUS: 110,
+      // Two row buttons with their gap, plus the cell padding (measured).
+      ACTIONS: 80,
     },
     // Measured natural widths of the toolbar row: ~397px by default and ~516px in
     // bulk mode. Below these the controls fall back to icons.

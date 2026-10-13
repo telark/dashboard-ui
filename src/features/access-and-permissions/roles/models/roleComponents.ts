@@ -10,7 +10,6 @@ export interface RolesGeneralSectionProps {
   lockName?: boolean;
   lockCategory?: boolean;
   disabled?: boolean;
-  onManualChange?: () => void;
 }
 
 export interface ValiditySectionProps {
@@ -38,17 +37,7 @@ export interface ColumnsArgs {
 
 export interface ScopesAndPermissionsSectionProps {
   isLocked?: boolean;
-  onManualChange?: () => void;
   initialValues?: { scopes?: Record<string, { level: string; rules?: string[] }> } | null;
-}
-
-export interface ProtectionSectionProps {
-  onManualChange?: () => void;
-}
-
-export interface FieldChangeWatcherProps {
-  fieldName: string;
-  onChange?: () => void;
 }
 
 export interface ScopeRowProps {
@@ -61,7 +50,6 @@ export interface ScopeRowProps {
   rowPaddingPx?: number;
   isLast?: boolean;
   isLocked?: boolean;
-  onManualChange?: () => void;
   initialScopeValue?: { level: string; rules?: string[] };
 }
 

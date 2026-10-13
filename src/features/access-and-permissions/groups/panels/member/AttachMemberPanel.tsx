@@ -8,7 +8,7 @@ import {
 import { SearchInput } from '../../../../../components/display/inputs';
 import { ToggleButton } from '../../../../../components/display/buttons';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
-import { Icons, SLIDE_OUT } from '../../../../../constants';
+import { SLIDE_OUT } from '../../../../../constants';
 import { useAttachMemberPanel, useDeassignGroupMember } from '../../hooks';
 import {
   usePermission,
@@ -22,8 +22,6 @@ import { useHasRoleAboveCaller, useRoles } from '../../../roles/hooks';
 import { USERS_CONSTANTS as UC } from '../../../users/constants';
 import { filterBySearchTerm } from '../../../users/utils/search/filter';
 import { CapitalizeFirstLetter } from '../../../../../utils/helpers/format';
-
-const UserIcon = Icons.User;
 
 const PANEL_WIDTH = 600;
 const PANEL_WIDTH_EXPANDED = 900;
@@ -205,7 +203,6 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
         onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
         onCancel={onClose}
         submitButtonText={GC.LABELS.PANELS.ASSIGN_MEMBERS.SUBMIT_BUTTON}
-        submitButtonIcon={<UserIcon size={16} />}
         loading={submitting}
         disabled={!hasChanges || showAssignedOnly}
         form={form}

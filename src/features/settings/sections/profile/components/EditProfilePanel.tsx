@@ -1,13 +1,12 @@
 import React, { memo } from 'react';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
-import { Icons } from '../../../../../constants';
+import { BUTTON_TEXTS } from '../../../../../constants';
 import LabeledInput from '../../../../../components/display/inputs/LabeledInput';
 import { PROFILE_SECTION_CONSTANTS } from '../constants';
 import type { EditProfileFormValues } from '../hooks/useEditProfile';
 
 const { LABELS } = PROFILE_SECTION_CONSTANTS;
 const P = LABELS.EDIT_PROFILE_PANEL;
-const UserIcon = Icons.User;
 
 export interface EditProfilePanelProps {
   open: boolean;
@@ -85,8 +84,7 @@ const EditProfilePanel: React.FC<EditProfilePanelProps> = memo(
       }
       onSubmit={onSubmit}
       onCancel={onClose}
-      submitButtonText={P.SAVE}
-      submitButtonIcon={<UserIcon size={16} />}
+      submitButtonText={BUTTON_TEXTS.SAVE_CHANGES}
       cancelButtonText={P.CANCEL}
       loading={submitting}
       disabled={hasFormErrors || !hasChanges}

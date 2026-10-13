@@ -62,7 +62,6 @@ export const APPLICATIONS_UI = {
     SUCCESS_MESSAGE: 'Application updated.',
     SECTION_BASIC: 'Basic information',
     SECTION_BASIC_DESC: 'Name, display name, and description.',
-    SAVE: 'Save changes',
     NAME_LABEL: 'Application name',
     DISPLAY_NAME_LABEL: 'Display name',
     DESCRIPTION_LABEL: 'Description',

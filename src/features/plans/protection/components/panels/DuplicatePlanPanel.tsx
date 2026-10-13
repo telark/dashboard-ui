@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { App as AntdApp, Form, Input, Select } from 'antd';
-import { CopyOutlined } from '@ant-design/icons';
 import type { Dayjs } from 'dayjs';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -128,6 +127,7 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
             ? err.message
             : PPC.LABELS.ACTIONS.DUPLICATE_ERROR;
       setError(text);
+      throw err;
     } finally {
       setSubmitting(false);
     }
@@ -215,7 +215,6 @@ const DuplicatePlanPanel: React.FC<DuplicatePlanPanelProps> = ({ open, onClose, 
       onSubmit={handleSubmit}
       onCancel={handleClose}
       submitButtonText={PPC.LABELS.DETAIL_PAGE.ACTIONS.DUPLICATE}
-      submitButtonIcon={<CopyOutlined />}
       loading={submitting}
       disabled={submitDisabled}
       form={form}

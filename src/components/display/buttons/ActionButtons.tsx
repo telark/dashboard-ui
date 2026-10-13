@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
-import { BUTTON_TEXTS, MODAL_CHROME, SLIDE_OUT } from '../../../constants';
+import { BUTTON_TEXTS, PANEL_FOOTER } from '../../../constants';
 
 interface ActionButtonsProps {
   confirmText: string;
@@ -23,34 +23,24 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   danger = false,
 }) => {
   return (
-    <div style={MODAL_CHROME.ACTIONS.ROW}>
+    <div style={PANEL_FOOTER.ACTIONS}>
       {onCancel && (
-        <button
-          type="button"
+        <Button
+          type="text"
+          className={PANEL_FOOTER.CANCEL_CLASS}
           onClick={onCancel}
           disabled={loading}
-          style={SLIDE_OUT.CANCEL_BUTTON}
-          onMouseEnter={(e) => {
-            if (!loading) {
-              e.currentTarget.style.background = SLIDE_OUT.CANCEL_BUTTON_HOVER_BACKGROUND;
-              e.currentTarget.style.color = SLIDE_OUT.CANCEL_BUTTON_HOVER_COLOR;
-            }
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = SLIDE_OUT.CANCEL_BUTTON_DEFAULT_BACKGROUND;
-            e.currentTarget.style.color = SLIDE_OUT.CANCEL_BUTTON_DEFAULT_COLOR;
-          }}
         >
           {cancelText}
-        </button>
+        </Button>
       )}
       <Button
         type="primary"
         danger={danger}
         loading={loading}
-        disabled={confirmDisabled}
+        // A running action keeps its solid look with the spinner; antd ignores clicks while loading.
+        disabled={confirmDisabled && !loading}
         onClick={onConfirm}
-        style={MODAL_CHROME.ACTIONS.PRIMARY}
       >
         {confirmText}
       </Button>

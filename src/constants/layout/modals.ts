@@ -1,4 +1,3 @@
-import { BUTTON_CONFIGS } from './buttons';
 import { CONTROL_RADIUS } from './controls';
 import { DEFAULT_COLORS, withAlpha } from '../shared/colors';
 
@@ -76,17 +75,5 @@ export const MODAL_CHROME = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     userSelect: 'all',
-  },
-  ACTIONS: {
-    ROW: {
-      display: 'flex',
-      justifyContent: 'flex-end',
-      alignItems: 'center',
-      gap: 8,
-      marginTop: 6,
-    },
-    PRIMARY: {
-      fontWeight: BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT,
-    },
   },
 } as const;

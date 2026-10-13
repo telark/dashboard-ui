@@ -5,7 +5,6 @@ export const GROUPS_CONSTANTS = {
     HEADER_TITLE: 'Groups',
     HEADER_SUBTITLE: 'Manage existing groups',
     NOT_FOUND: 'Group not found',
-    UPDATE_BUTTON: 'Update Group',
     CREATE_BUTTON_TEXT: 'Create Group',
     BREADCRUMBS: {
       GROUPS: 'Groups',
@@ -220,7 +219,8 @@ export const GROUPS_CONSTANTS = {
       CREATED_BY: 140,
       LAST_UPDATED_BY: 180,
       MEMBERS: 110,
-      ACTIONS: 70,
+      // Two row buttons with their gap, plus the cell padding (measured).
+      ACTIONS: 80,
     },
     // Measured natural widths of the toolbar row: ~448px by default and ~604px in
     // bulk mode. Below these the controls fall back to icons.

@@ -79,7 +79,7 @@ const AddCategoryPanel: React.FC<AddCategoryPanelProps> = ({ open, onClose, scop
         cancelLabel: labels.CANCEL,
         primaryLabel: labels.SUBMIT_BUTTON,
         primaryLoading: submitting,
-        primaryDisabled: submitting || !isNameValid,
+        primaryDisabled: !isNameValid,
       }}
     >
       <Form form={form} layout="vertical" initialValues={{ name: '' }}>

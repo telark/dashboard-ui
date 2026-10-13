@@ -3,9 +3,9 @@ import { CONTROL_HEIGHT } from './controls';
 import { DEFAULT_COLORS } from '../shared/colors';
 
 export const BUTTON_TEXTS = {
-  LOADING: 'In Progress...',
   CANCEL: 'Cancel',
   SUBMIT: 'Submit',
+  SAVE_CHANGES: 'Save changes',
   RESET: 'Reset',
   APPLY: 'Apply',
   CLOSE: 'Close',
@@ -102,6 +102,10 @@ export const BUTTON_COLORS = {
   TOOLBAR_TEXT: `var(--app-toolbar-text-color, ${DEFAULT_COLORS.TEXT_PRIMARY})`,
   TOOLBAR_BORDER: `var(--app-toolbar-border-color, ${DEFAULT_COLORS.BORDER_DEFAULT})`,
   TOOLBAR_DISABLED_TEXT: `var(--app-toolbar-disabled-color, ${DEFAULT_COLORS.TEXT_DISABLED})`,
+  TOOLBAR_HOVER_BG: `var(--app-toolbar-hover-bg, ${DEFAULT_COLORS.SURFACE_WHITE})`,
+  // Re-pointed the same way for other shared parts: muted text and the Switch's unchecked track.
+  MUTED_TEXT: `var(--app-muted-text-color, ${DEFAULT_COLORS.TEXT_MUTED})`,
+  SWITCH_OFF: `var(--app-switch-off-color, ${DEFAULT_COLORS.BORDER_DEFAULT})`,
 } as const;
 
 export const BUTTON_STATES = {

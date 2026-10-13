@@ -127,7 +127,6 @@ export const PROTECTION_PLANS_CONSTANTS = {
         SCOPE_TITLE: 'Scope',
         SCOPE_DESCRIPTION: 'What this plan protects.',
         POLICIES_TITLE: 'Policies',
-        POLICIES_DESCRIPTION: 'Configured policy templates.',
         PARTICIPANTS_TITLE: 'Participants',
         PARTICIPANTS_DESCRIPTION: 'Users associated with this plan.',
         HEALTH_TITLE: 'Health',
@@ -288,6 +287,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       FAILURE_ACTION: 'Failure action',
       LOAD_ERROR: 'Failed to load health status.',
       EMPTY: 'No policy details available.',
+      AUDIT_ONLY: (label: string) => `${label} only audits, so it does not block.`,
     },
     PHASE_LABELS: {
       active: 'Active',
@@ -350,8 +350,10 @@ export const PROTECTION_PLANS_CONSTANTS = {
       },
       TEMPLATES_COUNT: (count: number) => `${count} active`,
       NAMESPACES_COUNT: (count: number) => `${count} ${count === 1 ? 'namespace' : 'namespaces'}`,
-      BLOCKED_LABEL: 'Refuses in this window',
-      BLOCKED_LABEL_PERMANENT: 'Always refuses',
+      BLOCKED_LABEL: {
+        audit: { window: 'Would refuse in this window', permanent: 'Would always refuse' },
+        enforce: { window: 'Refuses in this window', permanent: 'Always refuses' },
+      } as Record<PlanMode, { window: string; permanent: string }>,
       CREATED_BY_PREFIX: 'by',
       AWAITING_APPROVAL_BY_PREFIX: 'awaiting approval · requested by',
       PROTECTING_NAMESPACE: (target: string) => `Protecting namespace ${target}`,
@@ -391,12 +393,9 @@ export const PROTECTION_PLANS_CONSTANTS = {
     CREATE: {
       TITLE: 'Create Protection Plan',
       SUBMIT_BUTTON: 'Create Plan',
-      LOADING_LABEL: 'Creating...',
     },
     EDIT: {
       TITLE: 'Edit Protection Plan',
-      SUBMIT_BUTTON: 'Save changes',
-      LOADING_LABEL: 'Saving...',
       ACTIVE_SCOPE_WARNING: 'Saving a scope change redeploys this plan’s policies.',
       NO_CHANGES_HINT: 'No changes to save.',
       APPROVED_LOCKED_ALERT:
@@ -420,7 +419,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       SCHEDULE_DESCRIPTION: 'Set the protection window, or keep the plan on until you end it.',
       POLICIES_TITLE: 'Policies',
       POLICIES_DESCRIPTION:
-        'Pick the changes to block from policy templates, then audit or enforce.',
+        'Pick the changes this plan covers. The mode decides whether they are refused or only recorded.',
     },
     FORM: {
       NAME_LABEL: 'Plan name',
@@ -429,7 +428,8 @@ export const PROTECTION_PLANS_CONSTANTS = {
       DESCRIPTION_PLACEHOLDER: 'Optional short description',
       SEVERITY_LABEL: 'Severity',
       PRIORITY_LABEL: 'Priority',
-      MODE_LABEL: 'Mode',
+      MODE_LABEL: 'When a change matches',
+      AUDIT_WARNING: 'Audit only records matching changes. Nothing is blocked.',
       SCOPE_TYPE_LABEL: 'Scope type',
       APPLICATIONS_LABEL: 'Applications',
       APPLICATIONS_PLACEHOLDER: 'Select applications',
@@ -482,8 +482,8 @@ export const PROTECTION_PLANS_CONSTANTS = {
       },
     ] as Array<{ value: string; label: string }>,
     MODE_OPTIONS: [
-      { value: 'audit', label: 'Audit: log violations, do not block' },
-      { value: 'enforce', label: 'Enforce: block policy violations' },
+      { value: 'audit', label: 'Audit: let it through and record it' },
+      { value: 'enforce', label: 'Enforce: refuse it' },
     ] as Array<{ value: string; label: string }>,
     TIME_MODE_OPTIONS: [
       { value: 'permanent', label: 'Permanent' },
@@ -550,7 +550,7 @@ export const REPORTS_LIST = {
     TRIGGER: 150,
     GENERATED_BY: 160,
     VIOLATIONS: 110,
-    ACTIONS: 140,
+    ACTIONS: 56,
   },
 } as const;
 
@@ -571,6 +571,10 @@ export const POLICY_CHIP_LABEL: Record<string, string> = {
   'block-config-secret-resource-changes': 'Updating or deleting ConfigMaps & Secrets',
   'block-workload-config-mount-changes': 'Changing config mounts & env sources',
 };
+
+// Rendered policy names are `telark-<plan id>-<template code>-<scope hash>` (telark `PolicyName`).
+export const POLICY_NAME_PREFIX = (planId: string, templateCode: string) =>
+  `telark-${planId}-${templateCode}-`;
 
 export const SCOPE_TYPE_LABEL: Record<ScopeType, string> = {
   applications: PROTECTION_PLANS_CONSTANTS.LABELS.DETAIL_PAGE.FIELDS.APPLICATIONS,

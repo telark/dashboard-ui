@@ -64,7 +64,6 @@ const buildLabels = ({
       },
       EDIT_CATEGORY: {
         TITLE: `Edit ${noun}`,
-        SUBMIT_BUTTON: `Update ${noun}`,
         NAME_LABEL: `${noun} Name`,
         NAME_PLACEHOLDER: example,
         NAME_REQUIRED_MESSAGE: `${noun} name is required`,

@@ -45,7 +45,6 @@ export interface RolesScopesAndPermissionsListProps {
   rowPaddingPx?: number;
   dividerMarginPx?: number;
   isLocked?: boolean;
-  onManualChange?: () => void;
   initialScopes?: Record<string, { level: string; rules?: string[] }>;
 }
 

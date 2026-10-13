@@ -17,7 +17,6 @@ const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
     onSubmit = async () => {},
     onCancel = () => {},
     submitButtonText = '',
-    submitButtonIcon,
     loading = false,
     disabled = false,
     initialValues = {},
@@ -76,9 +75,7 @@ const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
             cancelLabel: cancelButtonText,
             primaryLabel: submitButtonText,
             primaryLoading: loading,
-            primaryLoadingLabel: BUTTON_TEXTS.LOADING,
-            primaryDisabled: disabled || loading,
-            primaryIcon: submitButtonIcon,
+            primaryDisabled: disabled,
           }}
         >
           <div style={SLIDE_OUT.FORM_CONTENT}>

@@ -8,7 +8,7 @@ import {
 import { SearchInput } from '../../../../../../components/display/inputs';
 import { ToggleButton } from '../../../../../../components/display/buttons';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
-import { Icons, SLIDE_OUT } from '../../../../../../constants';
+import { SLIDE_OUT } from '../../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { useManageUserGroupPanel } from '../../../hooks/panels/group/useManageUserGroupPanel';
 import { useDeassignUserGroup } from '../../../hooks/panels/group/useDeassignUserGroup';
@@ -23,8 +23,6 @@ import { filterBySearchTerm } from '../../../utils/search/filter';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../groups/constants';
 import { useHasRoleAboveCaller } from '../../../../roles/hooks';
 import type { User } from '../../../models';
-
-const GroupIcon = Icons.Group;
 
 interface ManageUserGroupPanelProps {
   open: boolean;
@@ -186,7 +184,6 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
         onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
         onCancel={onClose}
         submitButtonText={UC.LABELS.PANELS.MANAGE_GROUP.SUBMIT_BUTTON}
-        submitButtonIcon={<GroupIcon size={16} />}
         loading={submitting}
         disabled={!hasChanges || showAssignedOnly}
         form={form}

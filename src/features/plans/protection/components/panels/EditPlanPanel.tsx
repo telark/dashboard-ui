@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { FormInstance } from 'antd';
-import { Icons, SLIDE_OUT } from '../../../../../constants';
+import { BUTTON_TEXTS, SLIDE_OUT } from '../../../../../constants';
 import AnimationWrapper from '../../../../../components/display/panels/slide-out/AnimationWrapper';
 import { ExpandPanelButton } from '../../../../../components/display/panels/slide-out';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
@@ -20,8 +20,6 @@ import {
 
 const PANEL_WIDTH = 720;
 const PANEL_WIDTH_EXPANDED = 1400;
-
-const ProtectionPlansIcon = Icons.ProtectionPlans;
 
 interface EditPlanPanelProps {
   open: boolean;
@@ -108,11 +106,9 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
       footer={{
         onCancel: handleClose,
         onPrimary: handleSubmitClick,
-        primaryLabel: PPC.PANELS.EDIT.SUBMIT_BUTTON,
+        primaryLabel: BUTTON_TEXTS.SAVE_CHANGES,
         primaryLoading: submitting,
-        primaryLoadingLabel: PPC.PANELS.EDIT.LOADING_LABEL,
-        primaryIcon: <ProtectionPlansIcon size={16} />,
-        primaryDisabled: submitDisabled || submitting,
+        primaryDisabled: submitDisabled,
       }}
     >
       <PlanForm
@@ -122,13 +118,9 @@ const EditPlanPanel: React.FC<EditPlanPanelProps> = ({ open, onClose, plan, form
         onPoliciesChange={setPolicies}
         onPolicyParamChange={handlePolicyParamChange}
         onSubmit={handleFinish}
-        submitting={submitting}
         mode="edit"
         nameValidator={nameValidator}
         plan={plan}
-        hideSubmitButton
-        submitLabel={PPC.PANELS.EDIT.SUBMIT_BUTTON}
-        loadingLabel={PPC.PANELS.EDIT.LOADING_LABEL}
         validateTrigger={attemptedSubmit ? 'onChange' : 'onSubmit'}
         {...data}
       />

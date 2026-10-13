@@ -1,9 +1,7 @@
 import React, { useMemo } from 'react';
 import { Alert, Form } from 'antd';
 import type { FormInstance } from 'antd';
-import { PrimaryButton } from '../../../../../components/display/buttons';
 import Section from '../../../../../components/display/sections/Section';
-import { Icons } from '../../../../../constants';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import {
   BasicInfoSection,
@@ -21,8 +19,6 @@ import { useScopeExclusionOptions } from '../../hooks/useScopeExclusionOptions';
 import PlanTaxonomyFields from './PlanTaxonomyFields';
 import PlanApprovalModeField from './PlanApprovalModeField';
 
-const ProtectionPlansIcon = Icons.ProtectionPlans;
-
 export interface PlanFormProps {
   form: FormInstance<FormValues>;
   initialValues: FormValues;
@@ -30,13 +26,8 @@ export interface PlanFormProps {
   onPoliciesChange: (next: PolicyEntry[]) => void;
   onPolicyParamChange: (index: number, key: string, values: string[]) => void;
   onSubmit: (values: FormValues) => void | Promise<void>;
-  submitting: boolean;
   mode: 'create' | 'edit';
   plan?: ProtectionPlan;
-  hideSubmitButton?: boolean;
-  submitDisabled?: boolean;
-  submitLabel: string;
-  loadingLabel: string;
   templates: PlanTemplate[];
   templatesLoading: boolean;
   applicationOptions: { value: string; label: string }[];
@@ -61,13 +52,8 @@ const PlanForm: React.FC<PlanFormProps> = ({
   onPoliciesChange,
   onPolicyParamChange,
   onSubmit,
-  submitting,
   mode,
   plan,
-  hideSubmitButton = false,
-  submitDisabled = false,
-  submitLabel,
-  loadingLabel,
   templates,
   templatesLoading,
   applicationOptions,
@@ -206,19 +192,6 @@ const PlanForm: React.FC<PlanFormProps> = ({
           closable={Boolean(onSubmitErrorClose)}
           onClose={onSubmitErrorClose}
         />
-      )}
-
-      {!hideSubmitButton && (
-        <div style={{ marginTop: 24, display: 'flex', justifyContent: 'flex-end' }}>
-          <PrimaryButton
-            action={submitLabel}
-            onClick={() => form.submit()}
-            loading={submitting}
-            loadingLabel={loadingLabel}
-            icon={<ProtectionPlansIcon size={16} />}
-            disabled={submitDisabled || submitting}
-          />
-        </div>
       )}
     </Form>
   );
