@@ -1,9 +1,9 @@
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Button, Dropdown, Empty, Tag, Tooltip } from 'antd';
+import { Empty, Tag } from 'antd';
 import type { TableColumnType } from 'antd';
-import { DownloadOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   APP_ROUTES,
   DEFAULT_COLORS,
@@ -29,10 +29,10 @@ import {
 import type { Category } from '../../../access-and-permissions/categories/models';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
-  REPORT_FORMATS,
   REPORT_SYSTEM_USER_ID,
   REPORTS_LIST,
 } from '../constants/protectionPlans';
+import ReportDownloadButton from '../components/shared/ReportDownloadButton';
 import { useAllPlanReports } from '../hooks/usePlanReports';
 import { usePlanTaxonomies } from '../hooks/usePlanTaxonomies';
 import { applyReportFilters } from '../utils/applyReportFilters';
@@ -97,38 +97,6 @@ const column = (
   render: (_: unknown, report: PlanReportMeta) => render(report),
 });
 
-const DownloadMenu: React.FC<{ report: PlanReportMeta; planName: string; ctx: ColumnContext }> = ({
-  report,
-  planName,
-  ctx,
-}) => {
-  const button = (
-    <Button
-      icon={<DownloadOutlined />}
-      disabled={!ctx.canDownload}
-      loading={ctx.downloading?.startsWith(`${report.id}:`) ?? false}
-    >
-      {L.DOWNLOAD}
-    </Button>
-  );
-  if (!ctx.canDownload) {
-    return <Tooltip title={PPC.LABELS.PERMISSION_DENIED.DOWNLOAD_REPORT}>{button}</Tooltip>;
-  }
-  return (
-    <Dropdown
-      trigger={['click']}
-      placement="bottomRight"
-      menu={{
-        items: REPORT_FORMATS.map(({ key, label }) => ({ key, label })),
-        onClick: ({ key }) =>
-          ctx.onDownload(report, key as PlanReportFormat, `${planName}-${report.id}.${key}`),
-      }}
-    >
-      {button}
-    </Dropdown>
-  );
-};
-
 const PlanCell: React.FC<{ plan?: ProtectionPlan }> = ({ plan }) =>
   plan ? (
     <Link
@@ -170,7 +138,13 @@ const buildColumns = (
       ? column('VIOLATIONS', L.COLUMNS.VIOLATIONS, (r) => r.violationsTotal)
       : null,
     column('ACTIONS', '', (r) => (
-      <DownloadMenu report={r} planName={ctx.planById.get(r.planId)?.name ?? r.planId} ctx={ctx} />
+      <ReportDownloadButton
+        report={r}
+        planName={ctx.planById.get(r.planId)?.name ?? r.planId}
+        canDownload={ctx.canDownload}
+        downloading={ctx.downloading}
+        onDownload={ctx.onDownload}
+      />
     )),
   ].filter((c): c is TableColumnType<PlanReportMeta> => c !== null);
 

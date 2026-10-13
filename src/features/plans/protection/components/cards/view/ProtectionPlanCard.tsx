@@ -8,6 +8,7 @@ import {
   CopyOutlined,
   DeleteOutlined,
   EditOutlined,
+  EyeOutlined,
   FileTextOutlined,
   MoreOutlined,
   PlayCircleOutlined,
@@ -579,13 +580,13 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
 
       {/* What the plan refuses, in the operator's words rather than template ids */}
       <CardChipSection
-        label={isPermanent ? CARD_LABELS.BLOCKED_LABEL_PERMANENT : CARD_LABELS.BLOCKED_LABEL}
+        label={CARD_LABELS.BLOCKED_LABEL[plan.mode][isPermanent ? 'permanent' : 'window']}
         emptyText={CARD_LABELS.REFUSES_NONE}
         items={policyLabels.map((label) => ({
           key: label,
           label,
-          icon: <CloseOutlined />,
-          accent: DEFAULT_COLORS.DANGER,
+          icon: plan.mode === 'audit' ? <EyeOutlined /> : <CloseOutlined />,
+          accent: STATUS_COLORS.PLAN_MODE[plan.mode],
         }))}
       />
 

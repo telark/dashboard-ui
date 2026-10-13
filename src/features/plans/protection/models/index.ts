@@ -167,6 +167,7 @@ export interface ParamSpec {
 
 export interface PlanTemplate {
   id: string;
+  code: string;
   name: string;
   description: string;
   supportedScopes: ScopeType[];
