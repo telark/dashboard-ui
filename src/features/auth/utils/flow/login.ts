@@ -11,10 +11,11 @@ import { fetchMyPermissionsThunk } from '../../store/thunks/fetchThunks';
 import store from '../../../../store';
 import { AUTH_SUCCESS_MESSAGES } from '../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
-import { getLoginRefusalMessage, handleAuthError } from '../shared/errors';
+import { getLoginRefusalMessage } from '../shared/errors';
 import { getClientMetadata } from '../device/metadata';
 import type { LoginStartResponse, AuthenticatorAssertionResponse } from '../../models';
 import type { MessageInstance } from 'antd/lib/message/interface';
+import logger from '../../../../logging';
 
 export const prepareLoginFinishRequest = (
   email: string,
@@ -74,7 +75,6 @@ export const performLogin = async (
   email: string,
   messageApi: MessageInstance,
   onSuccess?: () => void,
-  onUserNotFound?: () => void,
   onShowOrphanedModal?: (info: OrphanedPasskeysInfo) => void,
 ): Promise<void> => {
   let loginStartResponse: LoginStartResponse | null = null;
@@ -107,7 +107,7 @@ export const performLogin = async (
       }
     } catch (error) {
       if (error instanceof Error) {
-        throw new Error(error.message);
+        throw new Error(error.message, { cause: error });
       }
       throw error;
     }
@@ -124,7 +124,7 @@ export const performLogin = async (
       onSuccess();
     }
   } catch (error) {
-    // The login card shows a refused account inline: no passkeys modal, no toast.
+    // The login card shows every error inline, once: a refused account skips the passkeys modal.
     if (getLoginRefusalMessage(error)) throw error;
 
     // Backend passkeys the browser could not use: the user confirms cleanup in a modal first.
@@ -134,9 +134,7 @@ export const performLogin = async (
       return;
     }
 
-    handleAuthError(error, messageApi, {
-      onUserNotFound,
-    });
+    logger.warn(LOGIN_CONSTANTS.LOGS.AUTH_ERROR, error);
     throw error;
   }
 };
