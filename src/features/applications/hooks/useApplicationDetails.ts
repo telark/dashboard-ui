@@ -4,6 +4,7 @@ import type { AppDispatch, RootState } from '../../../store';
 import { clearDetails, fetchApplicationDetailsThunk } from '../store';
 import { APPLICATIONS_SYNC_ACTIVE_POLL_MS, SYNC_STATUS_VALUE } from '../constants';
 import { POLL_INTERVAL_MS } from '../../../constants';
+import { pollWhileVisible } from '../../../utils/helpers/poll';
 
 export function useApplicationDetails(name?: string) {
   const dispatch: AppDispatch = useDispatch();
@@ -19,12 +20,13 @@ export function useApplicationDetails(name?: string) {
     void dispatch(fetchApplicationDetailsThunk(name));
 
     const intervalMs = isSyncing ? APPLICATIONS_SYNC_ACTIVE_POLL_MS : POLL_INTERVAL_MS;
-    const interval = setInterval(() => {
-      void dispatch(fetchApplicationDetailsThunk(name));
-    }, intervalMs);
+    const stopPolling = pollWhileVisible(
+      () => void dispatch(fetchApplicationDetailsThunk(name)),
+      intervalMs,
+    );
 
     return () => {
-      clearInterval(interval);
+      stopPolling();
       dispatch(clearDetails());
     };
   }, [dispatch, isSyncing, name]);

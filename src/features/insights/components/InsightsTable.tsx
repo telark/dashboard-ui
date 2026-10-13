@@ -55,6 +55,11 @@ const OPTIONAL_COLUMNS: InsightColumnKey[] = [
   'ENVIRONMENT',
 ];
 const REQUIRED_WIDTH = W.SEVERITY + W.TITLE + W.APPLICATION + W.LAST_SEEN;
+// One Set per fitting count, so the result keeps its identity while the same columns fit.
+const FITTING_COLUMNS: ReadonlySet<InsightColumnKey>[] = Array.from(
+  { length: OPTIONAL_COLUMNS.length + 1 },
+  (_, count) => new Set(OPTIONAL_COLUMNS.slice(0, count)),
+);
 
 const mutedStyle: React.CSSProperties = { fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED };
 const primaryStyle: React.CSSProperties = {
@@ -66,15 +71,15 @@ const primaryStyle: React.CSSProperties = {
 export const isGroupItem = (item: InsightListItem): item is InsightGroupItem => 'groupKey' in item;
 
 // Width 0 (not measured yet, or a hidden tab) shows every column.
-export const fittingInsightColumns = (available: number): Set<InsightColumnKey> => {
-  const fitting = new Set<InsightColumnKey>();
+export const fittingInsightColumns = (available: number): ReadonlySet<InsightColumnKey> => {
   let used = REQUIRED_WIDTH;
+  let count = 0;
   for (const key of OPTIONAL_COLUMNS) {
     used += W[key];
     if (available > 0 && used > available) break;
-    fitting.add(key);
+    count += 1;
   }
-  return fitting;
+  return FITTING_COLUMNS[count];
 };
 
 const tag = (text: string, accent?: string): React.ReactNode => (
@@ -164,7 +169,7 @@ interface ColumnSpec {
 
 interface BuildArgs {
   category: InsightCategory;
-  visible: Set<InsightColumnKey>;
+  visible: ReadonlySet<InsightColumnKey>;
   environmentNames: Record<string, string>;
   activeSortKey: string;
   onSort: (key: string) => void;

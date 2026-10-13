@@ -7,16 +7,15 @@ import { clearPermissions } from '../../store/slices/permissionsSlice';
 import { getCurrentUser } from '../../utils/session/user';
 import { purgeLocalUserData } from '../../utils/session/cleanup';
 import logger from '../../../../logging';
+import { pollWhileVisible } from '../../../../utils/helpers/poll';
 
 const PERMISSIONS_POLL_INTERVAL_MS = 60_000;
 
-let pollingIntervalId: ReturnType<typeof setInterval> | null = null;
+let stopPolling: (() => void) | null = null;
 
 export const stopPermissionsPolling = (): void => {
-  if (pollingIntervalId !== null) {
-    clearInterval(pollingIntervalId);
-    pollingIntervalId = null;
-  }
+  stopPolling?.();
+  stopPolling = null;
 };
 
 // Runs between rehydration and the first render, so data left by another user (a session that
@@ -51,9 +50,11 @@ export const useInitializePermissions = (isAuthenticated: boolean): void => {
   useEffect(() => {
     if (!isAuthenticated || permissions.userID === null) return;
     stopPermissionsPolling();
-    pollingIntervalId = setInterval(() => {
-      store.dispatch(fetchMyPermissionsThunk({ silent: true }));
-    }, PERMISSIONS_POLL_INTERVAL_MS);
+    // A tab coming back refetches at once, so a suspension or demotion made meanwhile lands then.
+    stopPolling = pollWhileVisible(
+      () => void store.dispatch(fetchMyPermissionsThunk({ silent: true })),
+      PERMISSIONS_POLL_INTERVAL_MS,
+    );
     return () => {
       stopPermissionsPolling();
     };

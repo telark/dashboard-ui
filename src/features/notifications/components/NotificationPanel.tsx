@@ -4,13 +4,15 @@ import { Button, Empty, Tooltip, Typography } from 'antd';
 import { BellOutlined, CheckOutlined, DeleteOutlined } from '@ant-design/icons';
 import { SlideOutPanel } from '../../../components/display/panels/slide-out';
 import { DEFAULT_COLORS, EMPTY_CLASS, ROW_ICON_BUTTON_SIZE } from '../../../constants';
-import { useNotifications } from '../hooks';
+import type { UseNotificationsResult } from '../hooks';
 import { NOTIFICATIONS_PANEL_WIDTH, NOTIFICATIONS_TEXTS } from '../constants';
 import NotificationItem from './NotificationItem';
 
 export interface NotificationPanelProps {
   open: boolean;
   onClose: () => void;
+  // The bell's subscription: a second useNotifications() would start a second poller.
+  feed: UseNotificationsResult;
 }
 
 const toolbarIconStyle: React.CSSProperties = {
@@ -18,9 +20,9 @@ const toolbarIconStyle: React.CSSProperties = {
   height: ROW_ICON_BUTTON_SIZE,
 };
 
-const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose }) => {
+const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose, feed }) => {
   const { notifications, unreadCount, isLoading, markRead, deleteOne, markAllRead, clearAll } =
-    useNotifications();
+    feed;
 
   const hasNotifications = notifications.length > 0;
 

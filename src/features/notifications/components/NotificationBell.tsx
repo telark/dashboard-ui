@@ -7,7 +7,8 @@ import { pluralize } from '../../../utils/helpers/format';
 import NotificationPanel from './NotificationPanel';
 
 const NotificationBell: React.FC = () => {
-  const { unreadCount } = useNotifications();
+  const feed = useNotifications();
+  const { unreadCount } = feed;
   const [open, setOpen] = useState(false);
 
   const handleOpen = useCallback(() => setOpen(true), []);
@@ -24,7 +25,7 @@ const NotificationBell: React.FC = () => {
           aria-label={pluralize(unreadCount, NOTIFICATIONS_TEXTS.BELL_UNREAD_NOUN)}
         />
       </Badge>
-      <NotificationPanel open={open} onClose={handleClose} />
+      <NotificationPanel open={open} onClose={handleClose} feed={feed} />
     </>
   );
 };
