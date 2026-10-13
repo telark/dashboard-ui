@@ -4,10 +4,19 @@ import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_COLORS } from '../../../constants';
 import { ButtonInterface } from '../../../interfaces/shared';
 
+// The only part that reads the location (useNavigate does), so a navigation re-renders this plain
+// button instead of every SidebarButton and its tooltip.
+const NavButton: React.FC<React.ComponentProps<'button'> & { route: string }> = ({
+  route,
+  ...props
+}) => {
+  const navigate = useNavigate();
+  return <button type="button" {...props} onClick={() => navigate(route)} />;
+};
+
 const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = memo(
   ({ text, icon, active, route, isCollapsed = false }) => {
     const [isHovered, setIsHovered] = useState(false);
-    const navigate = useNavigate();
     const SB = BUTTON_CONFIGS.SIDEBAR_BUTTON;
 
     const isActive = Boolean(active);
@@ -29,14 +38,12 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = mem
         } as React.Attributes)
       : icon;
 
-    const handleClick = useCallback(() => navigate(route), [navigate, route]);
     const handleMouseEnter = useCallback(() => setIsHovered(true), []);
     const handleMouseLeave = useCallback(() => setIsHovered(false), []);
 
     const button = (
-      <button
-        type="button"
-        onClick={handleClick}
+      <NavButton
+        route={route}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         aria-current={isActive ? 'page' : undefined}
@@ -81,18 +88,15 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = mem
             {text}
           </span>
         )}
-      </button>
+      </NavButton>
     );
 
-    if (isCollapsed) {
-      return (
-        <Tooltip title={text} placement="right" mouseEnterDelay={0.3}>
-          {button}
-        </Tooltip>
-      );
-    }
-
-    return button;
+    // Always wrapped: a collapse swaps the title instead of remounting every button.
+    return (
+      <Tooltip title={isCollapsed ? text : undefined} placement="right" mouseEnterDelay={0.3}>
+        {button}
+      </Tooltip>
+    );
   },
 );
 
