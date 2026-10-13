@@ -76,7 +76,7 @@ export const USERS_CONSTANTS = {
       MODAL_TITLE: 'Enrollment link created',
       MODAL_SEND_TO: 'Send this link to ',
       MODAL_EXPIRES: (when: string) =>
-        `. It works once, expires on ${when}, and won't be shown again.`,
+        `. It adds one passkey, expires on ${when}, and won't be shown again.`,
       REVOKE_ACTION: 'revoke',
       REVOKE_RESOURCE: 'the enrollment link for',
       REVOKE_CONFIRM: 'Revoke',
@@ -110,7 +110,7 @@ export const USERS_CONSTANTS = {
     },
     ACTIONS: {
       VIEW: 'View',
-      EDIT: 'Edit',
+      MANAGE_STATE: 'Manage account state',
       EDIT_DISABLED_TOOLTIP: 'You do not have permission to edit users',
       DELETE: 'Delete',
       DELETE_DISABLED_TOOLTIP: 'You do not have permission to delete users',
@@ -266,15 +266,19 @@ export const USERS_CONSTANTS = {
   } as const,
   SIZES: {
     HEADER_ICON: 14,
+    // Every column has a width, so the page can tell when they outgrow the table. The free-text
+    // columns ellipsize at theirs, the others fit their header (label, icon and sort) or content.
     COLUMNS: {
-      USERNAME: 150,
-      FULLNAME: 180,
-      EMAIL: 220,
+      // Room for a short username beside the Bootstrap pill.
+      USERNAME: 180,
+      FULLNAME: 130,
+      EMAIL: 140,
       ROLE: 120,
       // Narrower wraps the "Creation Date" header onto two lines.
       CREATED: 160,
       INVITE: 140,
-      ACTIONS: 50,
+      // Three row buttons with their gaps, plus the cell padding (measured).
+      ACTIONS: 116,
     },
     // Measured natural widths of the toolbar row: ~475px by default and ~628px in
     // bulk mode (selection count + actions). Below these the controls fall back to
