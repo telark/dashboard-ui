@@ -25,6 +25,7 @@ const ToolbarIconButton: React.FC<ToolbarIconButtonProps> = ({
     type="button"
     aria-disabled={Boolean(disabledReason)}
     aria-label={label}
+    className={SLIDE_OUT.HEADER_BUTTON_CLASS}
     onClick={(e) => {
       e.stopPropagation();
       if (!disabledReason) onClick();

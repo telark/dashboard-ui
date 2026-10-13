@@ -1,6 +1,15 @@
-:root {
-  /* Initial value only; useSidebarCollapse keeps this in sync with SIDEBAR_LAYOUT. */
-  --sidebar-width: 260px;
+/* Initial value only; useSidebarCollapse sets it on the content pane. Not inherited, so a toggle
+   restyles the pane alone instead of every element on the page. */
+@property --sidebar-width {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 260px;
+}
+
+/* A drag moves the edge itself: neither the sidebar nor the content may trail the pointer. */
+body[data-sidebar-dragging] .tk-sidebar,
+body[data-sidebar-dragging] #app-content {
+  transition: none !important;
 }
 
 /* Dark theme: add styles under [data-theme="dark"] when ready. */
@@ -162,4 +171,11 @@ h3 {
    their keyboard focus ring. */
 .tk-row-action:focus-visible {
   outline: 2px solid var(--color-info) !important;
+}
+
+/* The panel's plain buttons (SLIDE_OUT.HEADER_BUTTON_CLASS) get the ring antd draws on the panel
+   surface (PANEL_THEME_TOKENS); !important beats the inline all: unset some of them carry. */
+.tk-panel-header-button:focus-visible {
+  outline: 3px solid var(--color-text-on-surface-muted) !important;
+  outline-offset: 1px !important;
 }

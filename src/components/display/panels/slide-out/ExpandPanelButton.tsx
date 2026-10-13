@@ -19,6 +19,8 @@ const ExpandPanelButton: React.FC<ExpandPanelButtonProps> = ({
   <Tooltip title={expanded ? collapseTooltip : expandTooltip} placement="bottom">
     <button
       type="button"
+      aria-label={expanded ? collapseTooltip : expandTooltip}
+      className={SLIDE_OUT.HEADER_BUTTON_CLASS}
       onClick={(e) => {
         e.stopPropagation();
         onToggle();

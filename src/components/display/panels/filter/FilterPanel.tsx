@@ -1,15 +1,7 @@
 import React, { useState } from 'react';
-import { ConfigProvider, Form, theme } from 'antd';
-import {
-  BUTTON_TEXTS,
-  PANEL_SURFACE_CLASS,
-  PANEL_THEME_TOKENS,
-  SELECT_THEME,
-  SLIDE_OUT,
-} from '../../../../constants';
-import { useScrollLock } from '../../../../hooks/panel';
-import { PanelFooter } from '../shared';
-import FilterPanelHeader from './FilterPanelHeader';
+import { Form } from 'antd';
+import { BUTTON_TEXTS, FILTER_PANEL, SLIDE_OUT } from '../../../../constants';
+import AnimationWrapper from '../slide-out/AnimationWrapper';
 import FilterFieldRenderer from './FilterFieldRenderer';
 
 export type FilterFieldType = 'dateRange' | 'buttonGroup' | 'dropdown' | 'multiSelect';
@@ -58,7 +50,6 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   onReset,
   width = 480,
 }) => {
-  useScrollLock(open);
   const [filters, setFilters] = useState<Record<string, unknown>>(() => {
     const initial: Record<string, unknown> = {};
     fields.forEach((field) => {
@@ -114,56 +105,34 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
     onReset?.();
   };
 
-  if (!open) return null;
-
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: theme.defaultAlgorithm,
-        token: PANEL_THEME_TOKENS,
-        components: { Select: SELECT_THEME },
+    <AnimationWrapper
+      open={open}
+      onClose={onClose}
+      title={FILTER_PANEL.TITLE}
+      width={width}
+      footer={{
+        onCancel: handleReset,
+        onPrimary: handleApply,
+        cancelLabel: BUTTON_TEXTS.RESET,
+        primaryLabel: BUTTON_TEXTS.APPLY,
       }}
     >
-      <div onClick={onClose} style={SLIDE_OUT.BACKDROP} />
-      <div
-        className={PANEL_SURFACE_CLASS}
-        style={{
-          ...SLIDE_OUT.PANEL,
-          width: width,
-        }}
-      >
-        <FilterPanelHeader onClose={onClose} />
-
-        <div style={SLIDE_OUT.CONTENT_ABOVE_FOOTER}>
-          {/* A vertical form like the panels' forms: same labels, spacing and controls. No
-              <form> element, since a filter panel can open inside a form panel. */}
-          <Form layout="vertical" component={false}>
-            <div style={SLIDE_OUT.FORM_CONTENT}>
-              {fields.map((field) => (
-                <FilterFieldRenderer
-                  key={field.key}
-                  field={field}
-                  value={currentFilters[field.key]}
-                  onChange={(val) => handleFilterChange(field.key, val)}
-                />
-              ))}
-            </div>
-          </Form>
+      {/* A vertical form like the panels' forms: same labels, spacing and controls. No
+          <form> element, since a filter panel can open inside a form panel. */}
+      <Form layout="vertical" component={false}>
+        <div style={SLIDE_OUT.FORM_CONTENT}>
+          {fields.map((field) => (
+            <FilterFieldRenderer
+              key={field.key}
+              field={field}
+              value={currentFilters[field.key]}
+              onChange={(val) => handleFilterChange(field.key, val)}
+            />
+          ))}
         </div>
-
-        <PanelFooter
-          onCancel={handleReset}
-          onPrimary={handleApply}
-          cancelLabel={BUTTON_TEXTS.RESET}
-          primaryLabel={BUTTON_TEXTS.APPLY}
-        />
-      </div>
-
-      <style>
-        {SLIDE_OUT.KEYFRAMES.SLIDE_IN_RIGHT}
-        {SLIDE_OUT.KEYFRAMES.FADE_IN}
-      </style>
-    </ConfigProvider>
+      </Form>
+    </AnimationWrapper>
   );
 };
 

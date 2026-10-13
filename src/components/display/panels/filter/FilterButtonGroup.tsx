@@ -1,6 +1,6 @@
 import React from 'react';
 import { Space } from 'antd';
-import { FILTER_PANEL } from '../../../../constants';
+import { FILTER_PANEL, SLIDE_OUT } from '../../../../constants';
 import type { FilterButtonOption } from './FilterPanel';
 
 export interface FilterButtonGroupProps {
@@ -21,6 +21,7 @@ const FilterButtonGroup: React.FC<FilterButtonGroupProps> = React.memo(
             <button
               key={option.key}
               type="button"
+              className={SLIDE_OUT.HEADER_BUTTON_CLASS}
               onClick={() => onChange(option.key)}
               style={{
                 ...FILTER_PANEL.BUTTON_BASE,

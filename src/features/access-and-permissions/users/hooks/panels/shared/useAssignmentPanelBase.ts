@@ -84,6 +84,7 @@ export const useAssignmentPanelBase = ({
       onClose();
     } catch (rejection) {
       message.error(rejectionMessage(rejection, failMessage));
+      throw rejection;
     } finally {
       setSubmitting(false);
     }

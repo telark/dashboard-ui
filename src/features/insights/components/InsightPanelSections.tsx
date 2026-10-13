@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AiOutlineInfoCircle, AiOutlineRight } from 'react-icons/ai';
-import { DEFAULT_COLORS, STATUS_COLORS } from '../../../constants';
+import { DEFAULT_COLORS, SLIDE_OUT, STATUS_COLORS } from '../../../constants';
 import { useElementWidth } from '../../../hooks/layout';
 import { CLUSTER_INSIGHTS, INSIGHT_SEVERITY_LABELS } from '../constants/insights';
 import type { InsightSeverity } from '../models';
@@ -265,6 +265,7 @@ export const FindingRow: React.FC<{
     <button
       type="button"
       title={title}
+      className={SLIDE_OUT.HEADER_BUTTON_CLASS}
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}

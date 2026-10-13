@@ -4,6 +4,7 @@ import {
   DEFAULT_COLORS,
   EMPTY_VALUE,
   LIST_TOOLBAR,
+  ROW_ACTION_CLASS,
   STATUS_COLORS,
   TOOLBAR_CONTROL,
   getQuickFilterPillColors,
@@ -59,6 +60,7 @@ const SeverityPills: React.FC<Props> = ({ active, counts, compact, onChange }) =
           <button
             key={pill}
             type="button"
+            className={ROW_ACTION_CLASS}
             onClick={() => onChange(pill)}
             style={{
               all: 'unset',

@@ -68,6 +68,7 @@ export const useManageUserStatePanel = ({
         onClose();
       } catch (rejection) {
         message.error(rejectionMessage(rejection, UC.LABELS.MESSAGES.UPDATE_FAILED));
+        throw rejection;
       } finally {
         setSubmitting(false);
       }

@@ -53,6 +53,7 @@ export const useCreateUserPanel = ({ form, onClose }: UseCreateUserPanelOptions)
         onClose();
       } catch (rejection) {
         message.error(rejectionMessage(rejection, UC.LABELS.MESSAGES.CREATE_FAILED));
+        throw rejection;
       } finally {
         setSubmitting(false);
       }
