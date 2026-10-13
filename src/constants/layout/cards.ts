@@ -12,11 +12,14 @@ export const CARD_LAYOUT = {
   ICON_CHIP_RADIUS_PX: 8,
   AVATAR_CHIP_SIZE_PX: 16,
   TITLE_FONT_SIZE_PX: 14,
+  // Narrower, the header pills wrap under the title rather than cut the name. With the widest
+  // pill row (~151px, "Pending approval") it still fits a CARD_MIN_WIDTH_PX card: only phones wrap.
+  TITLE_MIN_WIDTH_PX: 140,
   META_FONT_SIZE_PX: 11,
   // Height of one row of tags, reserved while their names are still loading.
   TAG_ROW_MIN_HEIGHT_PX: 20,
   MAX_TARGET_TAGS: 3,
-  MICRO_FONT_SIZE_PX: 9,
+  MICRO_FONT_SIZE_PX: 11,
   MICRO_TRACKING: '0.06em',
   VALUE_FONT_SIZE_PX: 12,
   MONO_FONT_SIZE_PX: 10,
@@ -24,8 +27,8 @@ export const CARD_LAYOUT = {
   CHIPS_GAP_PX: 12,
   MAX_POLICY_CHIPS: 3,
   PILL_RADIUS_PX: 999,
-  // Widest stat label ("MANAGED BY", 9px/700 Geist + tracking) is ~67px.
-  STAT_MIN_WIDTH_PX: 68,
+  // Widest stat label ("MANAGED BY", 11px/700 Geist + tracking) is ~79.4px.
+  STAT_MIN_WIDTH_PX: 80,
   STATS_PER_ROW: 4,
   BORDER_PX: 1,
 } as const;
@@ -34,10 +37,9 @@ const STATS_ROW_MIN_WIDTH_PX =
   CARD_LAYOUT.STATS_PER_ROW * CARD_LAYOUT.STAT_MIN_WIDTH_PX +
   (CARD_LAYOUT.STATS_PER_ROW - 1) * CARD_LAYOUT.CHIPS_GAP_PX;
 
-// The stats row is the only card row that cannot truncate, so it sets the
-// narrowest card a grid column may hold: 308 + 2 * (14 + 1) = 338px.
-export const CARD_MIN_WIDTH_PX =
-  STATS_ROW_MIN_WIDTH_PX + 2 * (CARD_LAYOUT.PADDING_PX + CARD_LAYOUT.BORDER_PX);
+// Keeps three cards across a 1440px window with the sidebar open (a 1069px grid). A card
+// narrower than its four stats need shows them two across (CARD_STAT_CELL_FLEX), never truncated.
+export const CARD_MIN_WIDTH_PX = 338;
 
 /** Columns for a card grid measured at `width`; 0 means not measured yet. */
 export const getCardGridColumns = (width: number): number => {
@@ -74,6 +76,7 @@ export const DIVIDED_BLOCK_STYLE: CSSProperties = {
 
 export const CARD_HEADER_STYLE: CSSProperties = {
   display: 'flex',
+  flexWrap: 'wrap',
   alignItems: 'flex-start',
   justifyContent: 'space-between',
   gap: 12,
@@ -81,6 +84,7 @@ export const CARD_HEADER_STYLE: CSSProperties = {
 
 export const CARD_IDENTITY_STYLE: CSSProperties = {
   display: 'flex',
+  flex: `1 1 ${CARD_LAYOUT.TITLE_MIN_WIDTH_PX}px`,
   alignItems: 'flex-start',
   gap: 10,
   minWidth: 0,
@@ -114,6 +118,8 @@ export const CARD_ASIDE_STYLE: CSSProperties = {
   alignItems: 'center',
   gap: 6,
   flexShrink: 0,
+  // Stays at the right edge when it wraps under the title.
+  marginLeft: 'auto',
 };
 
 export const CARD_STATS_GRID_STYLE: CSSProperties = {
