@@ -34,9 +34,14 @@ export const resolveEnrollLink = (token: string | null, email: string | null): E
   return fromLink;
 };
 
-// Auth spends a link on first use, so any 401 while enrolling means the link can't be used again.
-export const isEnrollLinkRefused = (error: unknown): boolean =>
-  (error as ExtendedAxiosError | undefined)?.normalized?.isUnauthenticated === true;
+// A failed passkey verification is a 401 too and keeps the link: auth's message tells them apart.
+export const isEnrollLinkRefused = (error: unknown): boolean => {
+  const normalized = (error as ExtendedAxiosError | undefined)?.normalized;
+  return (
+    normalized?.isUnauthenticated === true &&
+    normalized.message.toLowerCase().includes(REGISTER_CONSTANTS.ERROR_PATTERNS.ENROLL_LINK_REFUSED)
+  );
+};
 
 // A signed-in browser keeps the register page for an enrollment link instead of leaving with its token.
 export const isEnrollLink = (pathname: string, search: string): boolean =>
@@ -52,7 +57,7 @@ export const buildEnrollUrl = (token: string, email?: string): string => {
   return `${globalThis.location.origin}${APP_ROUTES.REGISTER}?${query.toString()}`;
 };
 
-const clearEnrollToken = (): void => {
+export const clearEnrollToken = (): void => {
   try {
     globalThis.sessionStorage.removeItem(REGISTER_CONSTANTS.ENROLL_STORAGE_KEY);
   } catch {
@@ -107,8 +112,7 @@ export const performRegister = async (
   onSuccess?: () => void,
   enrollToken?: string,
 ): Promise<void> => {
-  // The server spends the token on first presentation, so a reload can't reuse it after this.
-  const registerStartResponse = await registerStart(email, enrollToken).finally(clearEnrollToken);
+  const registerStartResponse = await registerStart(email, enrollToken);
   const options = extractRegisterOptions(registerStartResponse);
 
   // Override user.name and user.displayName with device name so browser shows device name in selection popup
@@ -131,6 +135,8 @@ export const performRegister = async (
 
   const deviceType: PasskeyDeviceType = 'platform';
   await createPasskey(credential, deviceName, deviceType, email);
+  // Auth spends the link only here, so a failed ceremony can retry with it, even after a reload.
+  clearEnrollToken();
 
   messageApi.open({
     type: 'success',

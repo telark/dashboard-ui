@@ -18,6 +18,8 @@ export const LIGHT_TOKENS = {
   colorTextBase: DEFAULT_COLORS.AUTH_LIGHT_TEXT,
   colorBgContainer: DEFAULT_COLORS.AUTH_LIGHT_CARD_BG,
   colorBorder: DEFAULT_COLORS.AUTH_LIGHT_BORDER,
+  // Not derived from colorBorder: a disabled button would otherwise get a black or blue edge.
+  colorBorderDisabled: DEFAULT_COLORS.AUTH_LIGHT_BORDER,
   colorTextPlaceholder: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
 } as const;
 
@@ -27,5 +29,6 @@ export const DARK_TOKENS = {
   colorTextBase: DEFAULT_COLORS.AUTH_DARK_TEXT,
   colorBgContainer: DEFAULT_COLORS.AUTH_DARK_CARD_BG,
   colorBorder: DEFAULT_COLORS.AUTH_DARK_BORDER,
-  colorTextPlaceholder: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
+  colorBorderDisabled: DEFAULT_COLORS.AUTH_DARK_BORDER,
+  colorTextPlaceholder: DEFAULT_COLORS.AUTH_DARK_TEXT_MUTED,
 } as const;
