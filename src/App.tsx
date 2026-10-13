@@ -5,8 +5,9 @@ import { useDispatch } from 'react-redux';
 import Sidebar from './components/layout/sidebar/Sidebar';
 import Header from './components/layout/header/Header';
 import { FancySpinner } from './components/animation';
+import PanelThemePrewarm from './components/display/panels/slide-out/PanelThemePrewarm';
 import ErrorBoundary from './ErrorBoundary';
-import { SessionExpiredModal } from './features/auth/components';
+import { AccountSuspendedModal, SessionExpiredModal } from './features/auth/components';
 import 'antd/dist/reset.css';
 import {
   BUTTON_CONFIGS,
@@ -19,8 +20,10 @@ import {
   CONTROL_HEIGHT,
   CONTROL_RADIUS,
   CONTROL_FONT_SIZE,
+  SIDEBAR_LAYOUT,
 } from './constants';
 import AppRoutes from './routes/AppRoutes';
+import { useMediaQuery } from './hooks/layout';
 import { hasSessionToken, useSessionExpirationCheck } from './features/auth/utils';
 import {
   ACTION_PERMISSIONS,
@@ -35,6 +38,12 @@ message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX
 
 const { view: viewSettings } = ACTION_PERMISSIONS.settings;
 
+// The dark algorithm shifts every seed color, so links get the exact brand green back.
+const darkAlgorithm: typeof theme.darkAlgorithm = (seed) => ({
+  ...theme.darkAlgorithm(seed),
+  colorLink: seed.colorLink,
+});
+
 const AppContent: React.FC = () => {
   const location = useLocation();
   const isAuthRoute =
@@ -43,14 +52,19 @@ const AppContent: React.FC = () => {
     location.pathname === APP_ROUTES.GOOGLE_CALLBACK;
   const isAuthenticated = hasSessionToken();
   const [showSessionExpiredModal, setShowSessionExpiredModal] = useState(false);
+  const [showAccountSuspendedModal, setShowAccountSuspendedModal] = useState(false);
+  // A suspended session is over: its checks and polling stop, and the modal's sign-out is the only way on.
+  const isSessionLive = isAuthenticated && !showAccountSuspendedModal;
+  const reduceMotion = useMediaQuery(SIDEBAR_LAYOUT.REDUCED_MOTION_QUERY);
 
   useSessionExpirationCheck({
-    isAuthenticated,
+    isAuthenticated: isSessionLive,
     isAuthRoute,
     onSessionExpired: () => setShowSessionExpiredModal(true),
+    onAccountSuspended: () => setShowAccountSuspendedModal(true),
   });
 
-  useInitializePermissions(isAuthenticated);
+  useInitializePermissions(isSessionLive);
   useCrossTabLogout();
 
   // GlobalConfig is a guarded resource (settings ReadOnly): fetching it without a
@@ -80,7 +94,7 @@ const AppContent: React.FC = () => {
               height: APP_CONFIGS.LAYOUT.CONTENT_HEIGHT,
               overflowY: APP_CONFIGS.LAYOUT.CONTENT_OVERFLOW,
               scrollbarGutter: 'stable',
-              transition: APP_CONFIGS.LAYOUT.TRANSITION,
+              transition: reduceMotion ? 'none' : APP_CONFIGS.LAYOUT.TRANSITION,
               background: DEFAULT_COLORS.PAGE_BG,
             }}
           >
@@ -96,9 +110,14 @@ const AppContent: React.FC = () => {
   return (
     <AntdApp>
       {renderMainContent()}
+      {isAuthenticated && !isAuthRoute ? <PanelThemePrewarm /> : null}
       <SessionExpiredModal
         open={showSessionExpiredModal}
         onClose={() => setShowSessionExpiredModal(false)}
+      />
+      <AccountSuspendedModal
+        open={showAccountSuspendedModal}
+        onClose={() => setShowAccountSuspendedModal(false)}
       />
     </AntdApp>
   );
@@ -115,7 +134,7 @@ const App: React.FC = () => {
         theme={{
           cssVar: { key: 'telark' },
           hashed: false,
-          algorithm: theme.darkAlgorithm,
+          algorithm: darkAlgorithm,
           token: {
             // The single control box style: height, radius and font for every antd
             // Button/Input/Select/InputNumber/DatePicker. TOOLBAR_CONTROL feeds the
@@ -124,6 +143,10 @@ const App: React.FC = () => {
             borderRadius: CONTROL_RADIUS,
             fontSize: CONTROL_FONT_SIZE,
             colorPrimary: DEFAULT_COLORS.SUCCESS,
+            // Every link in the app, antd's or a plain <a>, takes the brand green from here.
+            colorLink: DEFAULT_COLORS.SUCCESS,
+            colorLinkHover: DEFAULT_COLORS.SUCCESS_HOVER,
+            colorLinkActive: DEFAULT_COLORS.SUCCESS_ACTIVE,
             colorError: DEFAULT_COLORS.DANGER,
             colorWarning: DEFAULT_COLORS.WARNING,
             colorBgBase: DEFAULT_COLORS.PAGE_BG,
