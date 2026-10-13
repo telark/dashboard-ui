@@ -10,6 +10,9 @@ import type { User } from '../models';
 import UsersEmptyPage from './UsersEmptyPage';
 import UsersListPage from './UsersListPage';
 
+// Stable, so the actions column (and the table) keeps its identity across renders.
+const noop = () => undefined;
+
 const MainPage: React.FC = () => {
   const { users, loaded, error, refetch } = useUsers();
   const canCreateUser = usePermission(
@@ -152,7 +155,7 @@ const MainPage: React.FC = () => {
     loadFailed: Boolean(error),
     hasSelection: selectedUsers.length > 0,
     handleViewUser,
-    handleEditUser: canSuspendUser ? handleEditUser : () => undefined,
+    handleEditUser: canSuspendUser ? handleEditUser : noop,
     onCreateUserClick: openCreatePanel,
     canCreateUser,
     onFilterClick: openFilterPanel,

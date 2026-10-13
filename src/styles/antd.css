@@ -15,6 +15,43 @@
 .app-table .ant-table-cell::before {
   display: none !important;
 }
+/* The pinned row-actions cell lays the selection tint over the page color: a see-through
+   tint would show the columns scrolling under it. */
+.app-table
+  .ant-table-tbody
+  > tr.ant-table-row.ant-table-row-selected
+  > td.ant-table-cell.ant-table-cell-fix,
+.app-table
+  .ant-table-tbody
+  > tr.ant-table-row.ant-table-row-selected:hover
+  > td.ant-table-cell.ant-table-cell-fix {
+  background:
+    linear-gradient(var(--color-success-tint), var(--color-success-tint)), var(--color-page-bg);
+}
+
+/* Clickable rows take focus (PageLayout). Their ring goes in the cells: the table clips the row's
+   own outline, and the pinned actions cell covers its end. */
+.app-table .ant-table-tbody > tr.ant-table-row:focus-visible {
+  outline: none;
+}
+.app-table .ant-table-tbody > tr.ant-table-row:focus-visible > td {
+  box-shadow:
+    inset 0 2px var(--color-info),
+    inset 0 -2px var(--color-info);
+}
+.app-table .ant-table-tbody > tr.ant-table-row:focus-visible > td:first-child {
+  box-shadow:
+    inset 2px 2px var(--color-info),
+    inset 0 -2px var(--color-info);
+}
+.app-table .ant-table-tbody > tr.ant-table-row:focus-visible > td:last-child {
+  box-shadow:
+    inset -2px 2px var(--color-info),
+    inset 0 -2px var(--color-info);
+}
+.app-table .ant-table-tbody > tr.ant-table-row:focus-visible > td:only-child {
+  box-shadow: inset 0 0 0 2px var(--color-info);
+}
 
 /* Reduce spacing between selection column and first data column - Fixed width to prevent shifting */
 .app-table table colgroup col.ant-table-selection-col,
@@ -253,10 +290,28 @@
   font-family: 'Geist', sans-serif !important;
 }
 
-/* Every solid primary CTA is semibold, like BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT; antd has no
-   primary-only weight token. */
-.ant-btn-variant-solid.ant-btn-color-primary {
+/* Every solid primary or danger CTA is semibold, like BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT;
+   antd has no primary-only weight token. */
+.ant-btn-variant-solid.ant-btn-color-primary,
+.ant-btn-variant-solid.ant-btn-color-dangerous {
   font-weight: 600;
+}
+
+/* The footer Cancel (ActionButtons, PANEL_FOOTER.CANCEL_CLASS) is muted text that inverts on
+   hover. It sets antd's own button variables, so the focus ring and disabled state stay antd's. */
+.app-panel-surface .ant-btn.ant-btn-variant-text.tk-footer-cancel {
+  --ant-btn-text-color: var(--color-text-on-surface-muted);
+  --ant-btn-text-color-hover: var(--color-surface-white);
+  --ant-btn-text-color-active: var(--color-surface-white);
+  --ant-btn-bg-color-hover: var(--color-text-on-surface);
+  --ant-btn-bg-color-active: var(--color-text-on-surface);
+  font-weight: 500;
+}
+
+/* A TextArea's showCount counter hangs below the box, out of flow. In a dialog nothing else
+   reserves its line, so the box does, and the content and actions below stay clear of it. */
+.app-modal .ant-input-textarea-show-count {
+  margin-bottom: calc(var(--ant-font-size) * var(--ant-line-height));
 }
 
 /* Button icon vertical alignment */
@@ -534,6 +589,10 @@
   --app-toolbar-text-color: var(--color-text-on-surface);
   --app-toolbar-border-color: var(--color-surface-border);
   --app-toolbar-disabled-color: var(--color-text-on-surface-disabled);
+  --app-toolbar-hover-bg: var(--color-surface-hover);
+  --app-muted-text-color: var(--color-text-on-surface-muted);
+  /* The track carries the white "Off" label, so it stays dark enough to read. */
+  --app-switch-off-color: var(--color-text-on-surface-muted);
 }
 
 .user-menu-dropdown .ant-dropdown-menu-item-divider {
@@ -600,10 +659,43 @@
   border-color: var(--color-surface-border) !important;
 }
 
+/* That pin also hid antd's hover, focus and error borders. A hovered or focused field takes the
+   muted ink, like App.tsx's hoverBorderColor and activeBorderColor (selects already do), and an
+   invalid field keeps the error red. The shared DatePicker's green hover and focus
+   (datePicker.css, 2.1:1 on white) give way here too; a disabled field doesn't react. */
+.app-panel-surface .ant-input:focus,
+.app-panel-surface .ant-input:hover:where(:not(.ant-input-disabled)),
+.app-panel-surface .ant-input-affix-wrapper-focused,
+.app-panel-surface .ant-input-affix-wrapper:hover:where(:not(.ant-input-affix-wrapper-disabled)),
+.app-panel-surface .ant-input-number-focused,
+.app-panel-surface .ant-input-number:hover:where(:not(.ant-input-number-disabled)) {
+  border-color: var(--color-text-on-surface-muted) !important;
+}
+
+.app-panel-surface .ant-picker.ant-picker-outlined.ant-picker-focused,
+.app-panel-surface .ant-picker.ant-picker-outlined:hover {
+  border-color: var(--color-text-on-surface-muted) !important;
+  box-shadow: none !important;
+}
+
+.app-panel-surface .ant-picker.ant-picker-outlined.ant-picker-disabled:hover {
+  border-color: var(--color-surface-border) !important;
+}
+
+.app-panel-surface .ant-input.ant-input-status-error,
+.app-panel-surface .ant-input-affix-wrapper.ant-input-status-error,
+.app-panel-surface .ant-input-number.ant-input-number-status-error,
+.app-panel-surface .ant-select.ant-select-status-error,
+.app-panel-surface .ant-picker.ant-picker-outlined.ant-picker-status-error {
+  border-color: var(--color-danger) !important;
+}
+
 /* Pills are antd Tags (TAG_THEME and TAG_CLASS in src/constants/layout/tags.ts). Font,
    line height and wrapping follow the parent, as the span pills before them did. */
 .ant-tag.tk-pill {
   padding: 2px 10px;
+  /* Not `all`: any table re-layout (each frame of a sidebar slide) restarted one on every pill. */
+  transition-property: color, background-color, border-color;
   font-family: inherit;
   font-weight: 700;
   line-height: inherit;

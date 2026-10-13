@@ -16,6 +16,16 @@ import InvitePill from '../shared/InvitePill';
 
 const RoleIcon = Icons.Role;
 
+// Zero width and a full-cell minimum: a long value ellipsizes instead of widening the column.
+const fillCell: React.CSSProperties = { width: 0, minWidth: '100%' };
+const oneLine: React.CSSProperties = {
+  ...fillCell,
+  display: 'block',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+};
+
 const Columns = (ctx: GenerateColumnCtx, groups: Group[] = [], canViewGroups = true) => {
   const cols = [
     generateColumn(
@@ -25,16 +35,7 @@ const Columns = (ctx: GenerateColumnCtx, groups: Group[] = [], canViewGroups = t
         align: 'left',
         width: UC.SIZES.COLUMNS.USERNAME,
         render: (_: unknown, record: User) => (
-          // width 0 + min-width keeps the pill from widening the column (max-content table).
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              width: 0,
-              minWidth: `max(100%, ${UC.SIZES.COLUMNS.USERNAME}px)`,
-            }}
-          >
+          <div style={{ ...fillCell, display: 'flex', alignItems: 'center', gap: 8 }}>
             <UserAvatar avatar={record.avatar} username={record.username} size={32} />
             <span
               title={record.username}
@@ -62,7 +63,9 @@ const Columns = (ctx: GenerateColumnCtx, groups: Group[] = [], canViewGroups = t
         icon: <AiOutlineUser />,
         width: UC.SIZES.COLUMNS.FULLNAME,
         render: (value: string) => (
-          <span style={{ color: DEFAULT_COLORS.TEXT_PRIMARY }}>{value}</span>
+          <span title={value} style={{ ...oneLine, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+            {value}
+          </span>
         ),
       },
       ctx,
@@ -74,7 +77,9 @@ const Columns = (ctx: GenerateColumnCtx, groups: Group[] = [], canViewGroups = t
         icon: <AiOutlineMail />,
         width: UC.SIZES.COLUMNS.EMAIL,
         render: (value: string) => (
-          <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>{value}</span>
+          <span title={value} style={{ ...oneLine, color: DEFAULT_COLORS.TEXT_MUTED }}>
+            {value}
+          </span>
         ),
       },
       ctx,

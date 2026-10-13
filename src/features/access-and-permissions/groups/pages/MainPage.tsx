@@ -19,6 +19,9 @@ import GroupsListPage from './GroupsListPage';
 
 type ViewMode = 'groups' | 'categories';
 
+// Stable, so the actions column (and the table) keeps its identity across renders.
+const noop = () => undefined;
+
 const MainPage: React.FC = () => {
   const canCreateGroup = usePermission(
     ACTION_PERMISSIONS.groups.create.scope,
@@ -198,7 +201,7 @@ const MainPage: React.FC = () => {
     sortedGroups,
     paginatedGroups,
     handleViewGroup,
-    handleEditClick: canEditGroup ? openEditPanel : () => undefined,
+    handleEditClick: canEditGroup ? openEditPanel : noop,
     onCreateGroupClick: openCreatePanel,
     canCreateGroup,
     onAddCategoryClick,

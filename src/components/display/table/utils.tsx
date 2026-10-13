@@ -56,3 +56,19 @@ export const generateColumn = <V = unknown, T = unknown>(
     ...(width ? { width } : {}),
   };
 };
+
+// Pinned to the right edge: when the columns outgrow the page, the others scroll sideways
+// under it and the row actions stay in view.
+export const generateActionsColumn = <T,>(
+  key: string,
+  width: number,
+  render: (record: T) => React.ReactNode,
+) => ({
+  title: '',
+  key,
+  align: 'right' as const,
+  width,
+  fixed: 'right' as const,
+  onHeaderCell: () => ({ style: { background: TABLE_DEFAULTS.HEADER_BG } }),
+  render: (_: unknown, record: T) => render(record),
+});

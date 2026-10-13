@@ -8,6 +8,8 @@ import { DEFAULT_COLORS } from '../../../../../constants';
 import { Icons } from '../../../../../constants';
 import { selectGroupsCategories } from '../../../categories/store/selectors/categorySelectors';
 import Columns from '../../components/display/list/Columns';
+import { generateActionsColumn } from '../../../../../components/display/table/utils';
+import { CATEGORIES_CONSTANTS } from '../../../categories/constants';
 import CategoryColumns from '../../../categories/components/display/list/CategoryColumns';
 import { CategoryActionsColumn } from '../../../categories/components/display/list/CategoryActionsColumn';
 import { GroupActionsColumn } from '../../components/display/list/GroupActionsColumn';
@@ -23,6 +25,18 @@ import type { Category } from '../../../categories/models';
 const GroupIcon = Icons.Group;
 
 type ViewMode = 'groups' | 'categories';
+
+// Table props stay stable (PageLayout re-renders the table only when one changes), so opening a
+// panel, which re-renders this page, leaves the table alone.
+const rowKey = (record: Group | Category) => record.id;
+const emptyState = (description: string) => (
+  <Empty
+    description={description}
+    image={<GroupIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />}
+  />
+);
+const GROUPS_EMPTY = emptyState(GC.LABELS.EMPTY.NO_GROUPS_FOUND);
+const CATEGORIES_EMPTY = emptyState(GC.LABELS.EMPTY.NO_CATEGORIES_FOUND);
 
 interface UseGroupListPageConfigOptions {
   viewMode: ViewMode;
@@ -230,129 +244,119 @@ export const useGroupListPageConfig = ({
     return [];
   }, [viewMode, setViewMode]);
 
+  const isGroupsView = viewMode === 'groups';
+
+  const columns = useMemo(
+    () =>
+      isGroupsView
+        ? [
+            ...groupColumns,
+            generateActionsColumn<Group | Category>(
+              GC.KEYS.ACTIONS,
+              GC.SIZES.COLUMNS.ACTIONS,
+              (record) => <GroupActionsColumn record={record as Group} onEdit={handleEditClick} />,
+            ),
+          ]
+        : [
+            ...categoryColumns,
+            generateActionsColumn<Group | Category>(
+              CATEGORIES_CONSTANTS.KEYS.ACTIONS,
+              CATEGORIES_CONSTANTS.SIZES.COLUMNS.ACTIONS,
+              (record) => (
+                <CategoryActionsColumn
+                  record={record as Category}
+                  onEdit={onEditCategory}
+                  scope="groups"
+                />
+              ),
+            ),
+          ],
+    [isGroupsView, groupColumns, categoryColumns, handleEditClick, onEditCategory],
+  );
+
+  const data = useMemo(
+    () =>
+      (isGroupsView ? paginatedGroups : paginatedCategories).filter(
+        (item): item is Group | Category => item != null,
+      ),
+    [isGroupsView, paginatedGroups, paginatedCategories],
+  );
+
+  const rowSelection = useMemo(
+    () =>
+      isGroupsView && bulkMode
+        ? {
+            selectedRowKeys: selectedGroups,
+            onChange: (keys: React.Key[]) => {
+              setSelectedGroups(keys);
+            },
+          }
+        : undefined,
+    [isGroupsView, bulkMode, selectedGroups, setSelectedGroups],
+  );
+
+  const onRowClick = useMemo(
+    () =>
+      isGroupsView ? (record: Group | Category) => handleViewGroup(record as Group) : undefined,
+    [isGroupsView, handleViewGroup],
+  );
+
   return useMemo(
     () => ({
       title: GC.LABELS.HEADER_TITLE,
       subtitle: GC.LABELS.HEADER_SUBTITLE,
       breadcrumbs,
       listToolbar,
-      columns:
-        viewMode === 'groups'
-          ? [
-              ...groupColumns,
-              {
-                title: '',
-                key: 'actions',
-                align: 'right' as const,
-                width: 120,
-                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
-                render: (_: unknown, record: Group | Category) =>
-                  viewMode === 'groups' ? (
-                    <GroupActionsColumn record={record as Group} onEdit={handleEditClick} />
-                  ) : null,
-              },
-            ]
-          : [
-              ...categoryColumns,
-              {
-                title: '',
-                key: 'actions',
-                align: 'right' as const,
-                width: 120,
-                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
-                render: (_: unknown, record: Group | Category) => (
-                  <CategoryActionsColumn
-                    record={record as Category}
-                    onEdit={onEditCategory}
-                    scope="groups"
-                  />
-                ),
-              },
-            ],
-      data: (viewMode === 'groups' ? paginatedGroups : paginatedCategories).filter(
-        (item): item is Group | Category => item != null,
-      ),
-      rowKey: (record: Group | Category) => record.id,
-      pagination:
-        viewMode === 'groups'
-          ? {
-              currentPage,
-              pageSize,
-              total: sortedGroups.length,
-              onPageChange: (page: number) => setCurrentPage(page),
-              onPageSizeChange: (size: number) => {
-                setPageSize(size);
-                setCurrentPage(1);
-              },
-              pageSizeOptions: [10, 20, 50, 100],
-              showRowsLabel: GC.LABELS.PAGINATION.SHOW_ROWS,
-            }
-          : {
-              currentPage: categoryCurrentPage,
-              pageSize: categoryPageSize,
-              total: sortedCategories.length,
-              onPageChange: (page: number) => setCategoryCurrentPage(page),
-              onPageSizeChange: (size: number) => {
-                setCategoryPageSize(size);
-                setCategoryCurrentPage(1);
-              },
-              pageSizeOptions: [10, 20, 50, 100],
-              showRowsLabel: GC.LABELS.PAGINATION.SHOW_ROWS,
+      columns,
+      data,
+      rowKey,
+      pagination: isGroupsView
+        ? {
+            currentPage,
+            pageSize,
+            total: sortedGroups.length,
+            onPageChange: (page: number) => setCurrentPage(page),
+            onPageSizeChange: (size: number) => {
+              setPageSize(size);
+              setCurrentPage(1);
             },
-      rowSelection:
-        viewMode === 'groups' && bulkMode
-          ? {
-              selectedRowKeys: selectedGroups,
-              onChange: (keys: React.Key[]) => {
-                setSelectedGroups(keys);
-              },
-            }
-          : undefined,
-      onRowClick:
-        viewMode === 'groups'
-          ? (record: Group | Category) => handleViewGroup(record as Group)
-          : undefined,
-      empty:
-        viewMode === 'groups' ? (
-          <Empty
-            description={GC.LABELS.EMPTY.NO_GROUPS_FOUND}
-            image={
-              <GroupIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />
-            }
-          />
-        ) : (
-          <Empty
-            description={GC.LABELS.EMPTY.NO_CATEGORIES_FOUND}
-            image={
-              <GroupIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />
-            }
-          />
-        ),
+            pageSizeOptions: [10, 20, 50, 100],
+            showRowsLabel: GC.LABELS.PAGINATION.SHOW_ROWS,
+          }
+        : {
+            currentPage: categoryCurrentPage,
+            pageSize: categoryPageSize,
+            total: sortedCategories.length,
+            onPageChange: (page: number) => setCategoryCurrentPage(page),
+            onPageSizeChange: (size: number) => {
+              setCategoryPageSize(size);
+              setCategoryCurrentPage(1);
+            },
+            pageSizeOptions: [10, 20, 50, 100],
+            showRowsLabel: GC.LABELS.PAGINATION.SHOW_ROWS,
+          },
+      rowSelection,
+      onRowClick,
+      empty: isGroupsView ? GROUPS_EMPTY : CATEGORIES_EMPTY,
     }),
     [
       breadcrumbs,
       listToolbar,
-      bulkMode,
-      viewMode,
-      groupColumns,
-      categoryColumns,
-      paginatedGroups,
-      paginatedCategories,
+      isGroupsView,
+      columns,
+      data,
       currentPage,
       pageSize,
       sortedGroups.length,
       categoryCurrentPage,
       categoryPageSize,
       sortedCategories.length,
-      selectedGroups,
-      handleViewGroup,
-      handleEditClick,
+      rowSelection,
+      onRowClick,
       setCurrentPage,
       setPageSize,
       setCategoryCurrentPage,
       setCategoryPageSize,
-      setSelectedGroups,
-      onEditCategory,
     ],
   );
 };

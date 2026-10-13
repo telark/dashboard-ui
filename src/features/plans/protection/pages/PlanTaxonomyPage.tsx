@@ -2,8 +2,8 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Empty } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { PageLayout } from '../../../../components/display/views';
+import { generateActionsColumn } from '../../../../components/display/table/utils';
 import type { PageLayoutConfig } from '../../../../interfaces/layout/page';
-import { DEFAULT_COLORS } from '../../../../constants';
 import {
   CATEGORIES_CONSTANTS as CC,
   labelsFor,
@@ -101,16 +101,9 @@ const PlanTaxonomyPage: React.FC<PlanTaxonomyPageProps> = ({ scope, onBack }) =>
           onSort: handleSort,
           scopeLabel: L.PLURAL,
         }).map((c) => (c.key === CC.KEYS.NAME ? { ...c, title: L.COLUMNS.NAME } : c)),
-        {
-          title: '',
-          key: CC.KEYS.ACTIONS,
-          align: 'right' as const,
-          width: CC.SIZES.COLUMNS.ACTIONS,
-          onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
-          render: (_: unknown, record: Category) => (
-            <CategoryActionsColumn record={record} onEdit={openEdit} scope={scope} />
-          ),
-        },
+        generateActionsColumn<Category>(CC.KEYS.ACTIONS, CC.SIZES.COLUMNS.ACTIONS, (record) => (
+          <CategoryActionsColumn record={record} onEdit={openEdit} scope={scope} />
+        )),
       ],
       data: paginatedCategories,
       rowKey: (record: Category) => record.id,

@@ -10,6 +10,7 @@ import { useCategoryListView } from '../../../categories/hooks';
 import CategoryColumns from '../../../categories/components/display/list/CategoryColumns';
 import { CategoryActionsColumn } from '../../../categories/components/display/list/CategoryActionsColumn';
 import { Columns } from '../../components/display/list/Columns';
+import { generateActionsColumn } from '../../../../../components/display/table/utils';
 import { RoleActionsColumn } from '../../components/display/list/RoleActionsColumn';
 import { useRoleListConfig } from '../../config/roleListConfig';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
@@ -23,6 +24,18 @@ import { useUsernamesByIds } from '../../../../../hooks/useUsernamesByIds';
 const RoleIcon = Icons.Role;
 
 type ViewMode = 'roles' | 'categories';
+
+// Table props stay stable (PageLayout re-renders the table only when one changes), so opening a
+// panel, which re-renders this page, leaves the table alone.
+const rowKey = (record: Role | Category) => record.id;
+const emptyState = (description: string) => (
+  <Empty
+    description={description}
+    image={<RoleIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />}
+  />
+);
+const ROLES_EMPTY = emptyState(RC.LABELS.EMPTY.NO_ROLES_FOUND);
+const CATEGORIES_EMPTY = emptyState(RC.LABELS.EMPTY.NO_CATEGORIES_FOUND);
 
 interface UseRoleListPageConfigOptions {
   viewMode: ViewMode;
@@ -204,108 +217,99 @@ export const useRoleListPageConfig = ({
     return [];
   }, [viewMode, setViewMode]);
 
+  const columns = useMemo(
+    () =>
+      isRolesView
+        ? [
+            ...roleColumns,
+            generateActionsColumn<Role | Category>(
+              RC.KEYS.ACTIONS,
+              RC.SIZES.COLUMNS.ACTIONS,
+              (record) => (
+                <RoleActionsColumn
+                  record={record as Role}
+                  onEdit={handleEditRole}
+                  getUsage={getUsage}
+                />
+              ),
+            ),
+          ]
+        : [
+            ...categoryColumns,
+            generateActionsColumn<Role | Category>(
+              CATEGORIES_CONSTANTS.KEYS.ACTIONS,
+              CATEGORIES_CONSTANTS.SIZES.COLUMNS.ACTIONS,
+              (record) => (
+                <CategoryActionsColumn
+                  record={record as Category}
+                  onEdit={onEditCategory}
+                  scope="roles"
+                />
+              ),
+            ),
+          ],
+    [isRolesView, roleColumns, categoryColumns, handleEditRole, getUsage, onEditCategory],
+  );
+
+  const rowSelection = useMemo(
+    () =>
+      isRolesView && bulkMode
+        ? {
+            selectedRowKeys: selectedRoles,
+            onChange: (keys: React.Key[]) => setSelectedRoles(keys),
+          }
+        : undefined,
+    [isRolesView, bulkMode, selectedRoles, setSelectedRoles],
+  );
+
+  const onRowClick = useMemo(
+    () => (isRolesView ? (record: Role | Category) => handleViewRole(record as Role) : undefined),
+    [isRolesView, handleViewRole],
+  );
+
   return useMemo(
     () => ({
       title: RC.LABELS.HEADER_TITLE,
       subtitle: RC.LABELS.HEADER_SUBTITLE,
       breadcrumbs,
       listToolbar,
-      columns:
-        viewMode === 'roles'
-          ? [
-              ...roleColumns,
-              {
-                title: '',
-                key: RC.KEYS.ACTIONS,
-                align: 'right' as const,
-                width: 120,
-                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
-                render: (_: unknown, record: Role | Category) => (
-                  <RoleActionsColumn
-                    record={record as Role}
-                    onEdit={handleEditRole}
-                    getUsage={getUsage}
-                  />
-                ),
-              },
-            ]
-          : [
-              ...categoryColumns,
-              {
-                title: '',
-                key: 'actions',
-                align: 'right' as const,
-                width: 120,
-                onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
-                render: (_: unknown, record: Role | Category) => (
-                  <CategoryActionsColumn
-                    record={record as Category}
-                    onEdit={onEditCategory}
-                    scope="roles"
-                  />
-                ),
-              },
-            ],
-      data: (viewMode === 'roles' ? paginatedRoles : paginatedCategories) as (Role | Category)[],
-      rowKey: (record: Role | Category) => record.id,
-      pagination:
-        viewMode === 'roles'
-          ? {
-              currentPage,
-              pageSize,
-              total: sortedRoles.length,
-              onPageChange: (page: number) => setCurrentPage(page),
-              onPageSizeChange: (size: number) => {
-                setPageSize(size);
-                setCurrentPage(1);
-              },
-              pageSizeOptions: [10, 20, 50, 100],
-              showRowsLabel: RC.LABELS.PAGINATION.SHOW_ROWS,
-            }
-          : {
-              currentPage: categoryCurrentPage,
-              pageSize: categoryPageSize,
-              total: sortedCategories.length,
-              onPageChange: (page: number) => setCategoryCurrentPage(page),
-              onPageSizeChange: (size: number) => {
-                setCategoryPageSize(size);
-                setCategoryCurrentPage(1);
-              },
-              pageSizeOptions: [10, 20, 50, 100],
-              showRowsLabel: RC.LABELS.PAGINATION.SHOW_ROWS,
+      columns,
+      data: (isRolesView ? paginatedRoles : paginatedCategories) as (Role | Category)[],
+      rowKey,
+      pagination: isRolesView
+        ? {
+            currentPage,
+            pageSize,
+            total: sortedRoles.length,
+            onPageChange: (page: number) => setCurrentPage(page),
+            onPageSizeChange: (size: number) => {
+              setPageSize(size);
+              setCurrentPage(1);
             },
-      rowSelection:
-        isRolesView && bulkMode
-          ? {
-              selectedRowKeys: selectedRoles,
-              onChange: (keys: React.Key[]) => setSelectedRoles(keys),
-            }
-          : undefined,
-      onRowClick:
-        viewMode === 'roles'
-          ? (record: Role | Category) => handleViewRole(record as Role)
-          : undefined,
-      empty: (
-        <Empty
-          description={
-            viewMode === 'roles'
-              ? RC.LABELS.EMPTY.NO_ROLES_FOUND
-              : RC.LABELS.EMPTY.NO_CATEGORIES_FOUND
+            pageSizeOptions: [10, 20, 50, 100],
+            showRowsLabel: RC.LABELS.PAGINATION.SHOW_ROWS,
           }
-          image={<RoleIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />}
-        />
-      ),
+        : {
+            currentPage: categoryCurrentPage,
+            pageSize: categoryPageSize,
+            total: sortedCategories.length,
+            onPageChange: (page: number) => setCategoryCurrentPage(page),
+            onPageSizeChange: (size: number) => {
+              setCategoryPageSize(size);
+              setCategoryCurrentPage(1);
+            },
+            pageSizeOptions: [10, 20, 50, 100],
+            showRowsLabel: RC.LABELS.PAGINATION.SHOW_ROWS,
+          },
+      rowSelection,
+      onRowClick,
+      empty: isRolesView ? ROLES_EMPTY : CATEGORIES_EMPTY,
     }),
     [
       breadcrumbs,
       listToolbar,
       isRolesView,
-      bulkMode,
-      selectedRoles,
-      setSelectedRoles,
-      viewMode,
-      roleColumns,
-      categoryColumns,
+      columns,
       paginatedRoles,
       paginatedCategories,
       currentPage,
@@ -314,14 +318,12 @@ export const useRoleListPageConfig = ({
       categoryCurrentPage,
       categoryPageSize,
       sortedCategories.length,
-      handleViewRole,
-      handleEditRole,
-      getUsage,
+      rowSelection,
+      onRowClick,
       setCurrentPage,
       setPageSize,
       setCategoryCurrentPage,
       setCategoryPageSize,
-      onEditCategory,
     ],
   );
 };

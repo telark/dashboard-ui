@@ -22,6 +22,9 @@ import RolesListPage from './RolesListPage';
 
 type ViewMode = 'roles' | 'categories';
 
+// Stable, so the actions column (and the table) keeps its identity across renders.
+const noop = () => undefined;
+
 const MainPage: React.FC = () => {
   const { roles, loaded, error, refetch } = useRoles();
   const canCreateRole = usePermission(
@@ -67,7 +70,6 @@ const MainPage: React.FC = () => {
     viewingRole,
     editingRole,
     createForm,
-    editForm,
     openCreatePanel,
     closeCreatePanel,
     openEditPanel,
@@ -144,7 +146,7 @@ const MainPage: React.FC = () => {
     sortedRoles,
     paginatedRoles,
     handleViewRole,
-    handleEditRole: canEditRole ? handleEditRole : () => undefined,
+    handleEditRole: canEditRole ? handleEditRole : noop,
     onEditCategory: openEditCategoryPanel,
     onCreateRoleClick: openCreatePanel,
     canCreateRole,
@@ -198,7 +200,6 @@ const MainPage: React.FC = () => {
       viewingRole={viewingRole}
       editingRole={editingRole}
       createForm={createForm}
-      editForm={editForm}
       filterPanelOpen={filterPanelOpen}
       addCategoryPanelOpen={addCategoryPanelOpen}
       editCategoryPanelOpen={editCategoryPanelOpen}
