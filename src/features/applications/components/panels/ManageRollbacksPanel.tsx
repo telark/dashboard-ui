@@ -13,6 +13,7 @@ import {
   DEFAULT_COLORS,
   EMPTY_CLASS,
   MONOSPACE_CLASS,
+  SLIDE_OUT,
   STATUS_COLORS,
   TAG_CLASS,
   getPillColor,
@@ -152,7 +153,9 @@ const ManageRollbacksPanel: React.FC<ManageRollbacksPanelProps> = ({
         onConfirm={confirmAbort}
         title={ui.ABORT_CONFIRM_TITLE}
         action={ui.ABORT_CONFIRM_OK}
-        resourceName={abortTarget?.id ?? ''}
+        resourceName={
+          abortTarget ? `${ui.ROLLBACK_TARGET_PREFIX} ${abortTarget.targetGeneration}` : ''
+        }
         customMessage={ui.ABORT_CONFIRM_CONTENT}
         confirmText={ui.ABORT_CONFIRM_OK}
         cancelText={APPLICATIONS_UI.CARD.ACTIONS.CANCEL}
@@ -346,6 +349,7 @@ function RollbackErrorDetail(props: { error: string }): React.ReactElement {
         type="button"
         onClick={() => setErrorOpen((prev) => !prev)}
         aria-expanded={errorOpen}
+        className={SLIDE_OUT.HEADER_BUTTON_CLASS}
         style={{
           all: 'unset',
           cursor: 'pointer',

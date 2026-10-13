@@ -7,8 +7,8 @@ import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type { Passkey } from '../../../models/passkeys';
 
 const CARD_STYLE: React.CSSProperties = {
-  background: DEFAULT_COLORS.SURFACE_WHITE,
-  border: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
+  background: DEFAULT_COLORS.SURFACE_ELEVATED,
+  border: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
   borderRadius: 12,
   padding: 20,
   display: 'flex',
@@ -59,7 +59,7 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
         style={{
           fontSize: 11,
           wordBreak: 'break-all',
-          color: PPC.COLORS.TEXT_PRIMARY,
+          color: DEFAULT_COLORS.TEXT_ON_SURFACE,
           maxHeight: 80,
           overflowY: 'auto',
           lineHeight: 1.4,
@@ -72,7 +72,7 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
           type="button"
           onClick={handleCopy}
           style={{
-            ...iconButtonStyle(DEFAULT_COLORS.TEXT_SECONDARY),
+            ...iconButtonStyle(DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED),
             position: 'absolute',
             top: 0,
             right: 0,
@@ -83,7 +83,7 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
       </Tooltip>
     </div>
   ) : (
-    <span style={{ fontSize: 12, color: PPC.COLORS.TEXT_MUTED }}>
+    <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>
       {PPC.LABELS.PUBLIC_KEY_UNAVAILABLE}
     </span>
   );
@@ -97,7 +97,7 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.boxShadow = 'none';
-        e.currentTarget.style.borderColor = DEFAULT_COLORS.BORDER_SUBTLE;
+        e.currentTarget.style.borderColor = DEFAULT_COLORS.BORDER_ELEVATED;
       }}
     >
       <div
@@ -123,7 +123,7 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
               margin: 0,
               fontSize: 16,
               fontWeight: 700,
-              color: PPC.COLORS.TEXT_PRIMARY,
+              color: DEFAULT_COLORS.TEXT_PRIMARY,
               lineHeight: 1.3,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -143,7 +143,7 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
               placement="bottomRight"
             >
               <Tooltip title={PPC.LABELS.PUBLIC_KEY}>
-                <button type="button" style={iconButtonStyle(PPC.COLORS.TEXT_MUTED)}>
+                <button type="button" style={iconButtonStyle(DEFAULT_COLORS.TEXT_MUTED)}>
                   <KeyOutlined />
                 </button>
               </Tooltip>
@@ -153,7 +153,7 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
             <button
               type="button"
               onClick={() => onEdit(passkey)}
-              style={iconButtonStyle(PPC.COLORS.TEXT_PRIMARY)}
+              style={iconButtonStyle(DEFAULT_COLORS.TEXT_PRIMARY)}
             >
               <EditOutlined />
             </button>
@@ -176,7 +176,7 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
           flexDirection: 'column',
           gap: 4,
           fontSize: 13,
-          color: PPC.COLORS.TEXT_MUTED,
+          color: DEFAULT_COLORS.TEXT_MUTED,
         }}
       >
         <div>

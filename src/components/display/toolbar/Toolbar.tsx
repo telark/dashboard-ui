@@ -182,8 +182,8 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                     } else if (isDanger && !button.active) {
                       e.currentTarget.style.backgroundColor = DEFAULT_COLORS.DANGER_TINT;
                     } else if (!button.active) {
-                      // Ghost buttons invert on hover: white surface, dark label.
-                      e.currentTarget.style.backgroundColor = DEFAULT_COLORS.SURFACE_WHITE;
+                      // Ghost buttons invert on hover: white surface (gray on panels), dark label.
+                      e.currentTarget.style.backgroundColor = BUTTON_COLORS.TOOLBAR_HOVER_BG;
                       e.currentTarget.style.color = DEFAULT_COLORS.TEXT_ON_SURFACE;
                       if (!isGhost) {
                         e.currentTarget.style.borderColor = DEFAULT_COLORS.TEXT_ON_SURFACE;
@@ -293,8 +293,8 @@ const Toolbar: React.FC<ToolbarProps> = ({ config, compact }) => {
                 } else if (isDanger && !button.active) {
                   e.currentTarget.style.backgroundColor = DEFAULT_COLORS.DANGER_TINT;
                 } else if (!button.active) {
-                  // Ghost buttons invert on hover: white surface, dark label.
-                  e.currentTarget.style.backgroundColor = DEFAULT_COLORS.SURFACE_WHITE;
+                  // Ghost buttons invert on hover: white surface (gray on panels), dark label.
+                  e.currentTarget.style.backgroundColor = BUTTON_COLORS.TOOLBAR_HOVER_BG;
                   e.currentTarget.style.color = DEFAULT_COLORS.TEXT_ON_SURFACE;
                   if (!isGhost) {
                     e.currentTarget.style.borderColor = DEFAULT_COLORS.TEXT_ON_SURFACE;

@@ -76,7 +76,7 @@ const truncateCellStyle: React.CSSProperties = {
 const revokeButtonStyle: React.CSSProperties = {
   fontSize: 14,
   fontWeight: 500,
-  color: DEFAULT_COLORS.SUCCESS,
+  color: DEFAULT_COLORS.DANGER,
   background: 'none',
   border: 'none',
   padding: 0,

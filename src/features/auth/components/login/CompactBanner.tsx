@@ -12,13 +12,13 @@ export const CompactBanner: React.FC = () => (
     {/* Tagline is a full sentence; it only earns bar space above 768px. */}
     <span
       className="auth-banner-note"
-      style={{ color: DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED, fontSize: '13px' }}
+      style={{ color: DEFAULT_COLORS.AUTH_DARK_TEXT_MUTED, fontSize: '13px' }}
     >
       ·
     </span>
     <span
       className="auth-banner-note"
-      style={{ fontSize: '13px', color: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED }}
+      style={{ fontSize: '13px', color: DEFAULT_COLORS.AUTH_DARK_TEXT_MUTED }}
     >
       {LOGIN_CONSTANTS.UI.BRAND_TAGLINE}
     </span>

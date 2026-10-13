@@ -88,7 +88,7 @@ const ChangeRow: React.FC<{
   usernamesById: Record<string, string>;
   hasSnapshot: boolean;
 }> = ({ entry, usernamesById, hasSnapshot }) => {
-  const dotColor = getChangeLogDotColor(entry.changeClass);
+  const dotColor = getChangeLogDotColor(entry);
   const actorId = entry.changedBy || '';
   const actorName = actorId ? usernamesById[actorId] : '';
   const suffixParts: string[] = [];

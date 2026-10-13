@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { DEFAULT_COLORS } from '../../../constants';
+import { BUTTON_COLORS } from '../../../constants';
 import type { Role } from '../../../features/access-and-permissions/roles/models';
 import { formatValidity } from '../../../features/access-and-permissions/roles/utils/validity/format';
 import { TIME_CONFIGS } from '../../../constants';
@@ -34,7 +34,7 @@ const ValidityDisplay: React.FC<ValidityDisplayProps> = ({ validity, record }) =
     <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <span>{formattedValidity.label}</span>
       {formattedValidity.expiresIn && (
-        <span style={{ fontSize: '0.85em', color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>
+        <span style={{ fontSize: '0.85em', color: BUTTON_COLORS.MUTED_TEXT }}>
           {formattedValidity.expiresIn}
         </span>
       )}

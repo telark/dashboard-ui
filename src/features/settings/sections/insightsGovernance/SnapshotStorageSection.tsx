@@ -3,6 +3,7 @@ import { InputNumber, Select, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import { SettingsDetails, SettingsField, SettingsHint } from '../../components/SettingsFields';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
+import { ActionConfirmModal } from '../../../../components/display/modal';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, exporterApiClient } from '../../../../api';
 import { Endpoints } from '../../../../constants';
@@ -44,6 +45,7 @@ const SnapshotStorageSection: React.FC = memo(() => {
   const [snapshotsMaxSelection, setSnapshotsMaxSelection] = useState<string>('5');
   const [customSnapshotsMaxPerApp, setCustomSnapshotsMaxPerApp] = useState<number>(5);
   const [savingSnapshotsMax, setSavingSnapshotsMax] = useState(false);
+  const [confirmLowerOpen, setConfirmLowerOpen] = useState(false);
   const [snapshotInfos, setSnapshotInfos] = useState<SnapshotStorageInfos | null>(null);
   const [snapshotInfosLoading, setSnapshotInfosLoading] = useState(false);
 
@@ -67,6 +69,8 @@ const SnapshotStorageSection: React.FC = memo(() => {
     if (!initialSnapshots) return false;
     return snapshotsMaxPerApp !== initialSnapshots.maxPerApp;
   }, [initialSnapshots, snapshotsMaxPerApp]);
+  // A lower limit deletes snapshots, so it is confirmed first. A higher one saves directly.
+  const lowering = initialSnapshots !== null && snapshotsMaxPerApp < initialSnapshots.maxPerApp;
 
   const loadSnapshotInfos = useCallback(async () => {
     setSnapshotInfosLoading(true);
@@ -126,11 +130,11 @@ const SnapshotStorageSection: React.FC = memo(() => {
           tooltip: canEditSnapshotStorage
             ? undefined
             : C.LABELS.EDIT_SNAPSHOT_STORAGE_PERMISSION_DENIED,
-          onClick: saveSnapshotsMax,
+          onClick: lowering ? () => setConfirmLowerOpen(true) : saveSnapshotsMax,
         },
       ],
     }),
-    [savingSnapshotsMax, snapshotsHasChanges, canEditSnapshotStorage, saveSnapshotsMax],
+    [savingSnapshotsMax, snapshotsHasChanges, canEditSnapshotStorage, lowering, saveSnapshotsMax],
   );
 
   return (
@@ -209,6 +213,18 @@ const SnapshotStorageSection: React.FC = memo(() => {
           <Toolbar config={saveToolbarConfig} />
         </div>
       </div>
+      <ActionConfirmModal
+        open={confirmLowerOpen}
+        onClose={() => setConfirmLowerOpen(false)}
+        onConfirm={saveSnapshotsMax}
+        title={C.LABELS.SNAPSHOTS_LOWER_CONFIRM_TITLE(snapshotsMaxPerApp)}
+        action={C.LABELS.SNAPSHOTS_LOWER_CONFIRM_OK}
+        resourceName=""
+        customMessage={C.LABELS.SNAPSHOTS_LOWER_CONFIRM_BODY(snapshotsMaxPerApp)}
+        confirmText={C.LABELS.SNAPSHOTS_LOWER_CONFIRM_OK}
+        loading={savingSnapshotsMax}
+        getContainer={() => document.body}
+      />
     </SettingsCard>
   );
 });

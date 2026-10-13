@@ -124,7 +124,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
               width: 8,
               height: 8,
               borderRadius: '50%',
-              background: DEFAULT_COLORS.SUCCESS,
+              background: DEFAULT_COLORS.INFO_STRONG,
               transform: 'translateY(-50%)',
             }}
           />

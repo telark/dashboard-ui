@@ -56,22 +56,15 @@ const MainPage: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (error && !loading) {
-      const isMutationError =
-        error === AUTH_ERROR_MESSAGES.PASSKEY_ALREADY_EXISTS ||
-        error === AUTH_ERROR_MESSAGES.CREATE_PASSKEY_FAILED ||
-        error === AUTH_ERROR_MESSAGES.UPDATE_PASSKEY_FAILED ||
-        error === AUTH_ERROR_MESSAGES.DELETE_PASSKEY_FAILED;
-
-      if (!isMutationError && error !== lastFetchError) {
-        message.error(AUTH_ERROR_MESSAGES.FETCH_PASSKEYS_FAILED);
-        if (isDevelopment()) {
-          logger.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEYS, error);
-        }
-        startTransition(() => {
-          setLastFetchError(error);
-        });
+    // Only a load failure lands in the slice's error: a failed save shows its own message.
+    if (error && !loading && error !== lastFetchError) {
+      message.error(AUTH_ERROR_MESSAGES.FETCH_PASSKEYS_FAILED);
+      if (isDevelopment()) {
+        logger.error(PPC.LOGS.FAILED_TO_LOAD_PASSKEYS, error);
       }
+      startTransition(() => {
+        setLastFetchError(error);
+      });
     }
   }, [error, loading, lastFetchError, message]);
 
@@ -185,7 +178,8 @@ const MainPage: React.FC = () => {
         onConfirm={deletePending}
         title={isLastPasskey ? PPC.LABELS.FORCE_DELETE_MODAL_TITLE : PPC.LABELS.DELETE_MODAL_TITLE}
         action="delete"
-        resourceName={pendingName}
+        // The message names the passkey itself.
+        resourceName=""
         customMessage={
           <div style={{ whiteSpace: 'pre-line' }}>
             {beforeName}

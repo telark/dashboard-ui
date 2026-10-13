@@ -13,7 +13,7 @@ interface ToggleButtonProps {
   icon?: React.ReactNode;
   disabled?: boolean;
   tooltip?: string;
-  /** `success` matches manage-role toggles; `danger` is light-surface only. */
+  /** `success` matches manage-role toggles. Both variants are for light surfaces (panels). */
   variant?: ToggleButtonVariant;
 }
 
@@ -34,7 +34,7 @@ function paletteForVariant(variant: ToggleButtonVariant) {
     activeBorder: `${DEFAULT_COLORS.SUCCESS}40`,
     inactiveColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     hoverAccent: DEFAULT_COLORS.SUCCESS,
-    hoverBg: DEFAULT_COLORS.HOVER_BG,
+    hoverBg: DEFAULT_COLORS.SURFACE_HOVER,
   };
 }
 

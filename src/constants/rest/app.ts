@@ -1,4 +1,5 @@
 import { HEADER_LAYOUT } from '../layout/header';
+import { SIDEBAR_LAYOUT } from '../layout/sidebar';
 
 export const APP_CONFIGS = {
   MESSAGE: {
@@ -14,7 +15,7 @@ export const APP_CONFIGS = {
     CONTENT_HEIGHT: HEADER_LAYOUT.MIN_HEIGHT,
     CONTENT_OVERFLOW: 'auto',
     MARGIN_LEFT: 'var(--sidebar-width)',
-    TRANSITION: 'margin-left 0.3s ease',
+    TRANSITION: `margin-left ${SIDEBAR_LAYOUT.TRANSITION_MS}ms ${SIDEBAR_LAYOUT.TRANSITION_EASING}`,
   },
 } as const;
 

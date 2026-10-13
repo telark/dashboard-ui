@@ -5,6 +5,7 @@ import { AUTH_ERROR_MESSAGES } from '../../constants';
 
 const MESSAGE = AUTH_ERROR_MESSAGES.PASSKEYS_INSECURE_CONTEXT;
 
+// Shown on the auth card (its --auth-* colors) and on the dark passkeys page (the fallbacks).
 export const InsecureContextAlert: React.FC = () => (
   <div
     role="alert"
@@ -42,7 +43,7 @@ export const InsecureContextAlert: React.FC = () => (
         width: 32,
         height: 32,
         borderRadius: '50%',
-        background: DEFAULT_COLORS.SURFACE_WHITE,
+        background: `var(--auth-card-bg, ${DEFAULT_COLORS.SURFACE_ELEVATED})`,
         color: DEFAULT_COLORS.WARNING,
         fontSize: 15,
       }}
@@ -56,7 +57,7 @@ export const InsecureContextAlert: React.FC = () => (
             fontSize: 14,
             fontWeight: 600,
             lineHeight: 1.35,
-            color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+            color: `var(--auth-text-primary, ${DEFAULT_COLORS.TEXT_PRIMARY})`,
           }}
         >
           {MESSAGE.TITLE}
@@ -80,7 +81,7 @@ export const InsecureContextAlert: React.FC = () => (
           margin: '4px 0 0',
           fontSize: 13,
           lineHeight: 1.55,
-          color: DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT,
+          color: `var(--auth-text-muted, ${DEFAULT_COLORS.TEXT_MUTED})`,
         }}
       >
         {MESSAGE.DESCRIPTION}

@@ -44,9 +44,7 @@ const FancySpinner: React.FC<FancySpinnerProps> = React.memo(
             }}
           />
         </div>
-        {showLabel && (
-          <div style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED, fontSize: 13 }}>{label}</div>
-        )}
+        {showLabel && <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 13 }}>{label}</div>}
         <style>{`
         @keyframes fancy-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       `}</style>

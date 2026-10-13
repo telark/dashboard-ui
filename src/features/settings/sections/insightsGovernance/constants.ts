@@ -62,6 +62,10 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     SNAPSHOTS_MAX_PER_APP_HINT:
       'Telark saves a snapshot before each change and keeps the most recent ones, up to this number. Older snapshots are deleted: their changes stay in the history, but you can no longer compare or roll back to them. For applications in several namespaces, the limit applies per namespace. A new limit applies from the next change.',
     PLATFORM_SAVE_SNAPSHOTS_BUTTON: 'Save snapshots',
+    SNAPSHOTS_LOWER_CONFIRM_TITLE: (n: number) => `Lower the limit to ${n}?`,
+    SNAPSHOTS_LOWER_CONFIRM_BODY: (n: number) =>
+      `Telark then deletes each application's oldest snapshots beyond ${n}. You can no longer compare or roll back to them.`,
+    SNAPSHOTS_LOWER_CONFIRM_OK: 'Lower limit',
     EDIT_DISCOVERY_CONFIG_PERMISSION_DENIED:
       'You do not have permission to edit discovery scope settings',
     EDIT_SNAPSHOT_STORAGE_PERMISSION_DENIED:

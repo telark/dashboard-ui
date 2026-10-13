@@ -79,7 +79,7 @@ const ApprovalDecisionModal: React.FC<ApprovalDecisionModalProps> = ({
       customMessage={
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
           <span>{rejecting ? ACTIONS.REJECT_MODAL_BODY : ACTIONS.APPROVE_MODAL_BODY}</span>
-          <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+          <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>
             {buildSummary(plan, environmentName)}
           </span>
           <Input.TextArea
@@ -92,7 +92,7 @@ const ApprovalDecisionModal: React.FC<ApprovalDecisionModalProps> = ({
             autoSize={{ minRows: 3, maxRows: 6 }}
           />
           {rejecting && (
-            <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+            <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>
               {ACTIONS.REJECT_COMMENT_REQUIRED}
             </span>
           )}
