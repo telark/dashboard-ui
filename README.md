@@ -16,7 +16,7 @@ This repository holds the dashboard SPA only. The services it calls, the Helm ch
 
 Every action is gated by the signed-in user's permissions, including deny rules. The backend enforces the same checks.
 
-**Stack:** React 19, TypeScript 6, Vite 8, Redux Toolkit, Ant Design 6.
+**Stack:** React 19, TypeScript 7, Vite 8, Redux Toolkit, Ant Design 6.
 
 ## How it talks to Telark
 

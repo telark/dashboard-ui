@@ -185,7 +185,7 @@ function highlightYamlValue(value: string, key: number): React.ReactNode {
     const nextSpecial = tail.search(/["']|\b(?:true|false|null|yes|no|on|off)\b|[-+]?\d/);
     if (nextSpecial <= 0) {
       nodes.push(
-        <span key={`v-${key}-${part++}`} style={{ color: IDE.text }}>
+        <span key={`v-${key}-${part}`} style={{ color: IDE.text }}>
           {tail}
         </span>,
       );

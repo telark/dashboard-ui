@@ -2149,7 +2149,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-=== @reduxjs/toolkit 2.12.0 (MIT)
+=== @reduxjs/toolkit 2.13.0 (MIT)
 
 MIT License
 
@@ -6005,6 +6005,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+=== Simple Icons (react-icons/si) (CC0-1.0)
+
+Simple Icons collaborators. Kubernetes is a registered trademark of The Linux Foundation.
+
+Dedicated to the public domain under CC0 1.0 Universal: https://creativecommons.org/publicdomain/zero/1.0/
 
 
 === Tabler Icons (react-icons/tb) (MIT)

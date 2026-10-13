@@ -51,7 +51,7 @@ export const useDeassignUserField = <T extends { id: string; name: string }>({
         message.success(successMessage(item.name));
       } catch (rejection) {
         message.error(rejectionMessage(rejection, failMessage));
-        throw new Error(failMessage);
+        throw new Error(failMessage, { cause: rejection });
       }
     },
     [user, form, dispatch, fieldName, successMessage, failMessage, onAfterDeassign, message],

@@ -53,7 +53,7 @@ export const useDeassignGroupMember = ({
         message.success(GC.LABELS.MESSAGES.MEMBER_DEASSIGNED(user.username));
       } catch (rejection) {
         message.error(rejectionMessage(rejection, GC.LABELS.MESSAGES.MEMBER_DEASSIGN_FAILED));
-        throw new Error(GC.LABELS.MESSAGES.MEMBER_DEASSIGN_FAILED);
+        throw new Error(GC.LABELS.MESSAGES.MEMBER_DEASSIGN_FAILED, { cause: rejection });
       }
     },
     [group, form, dispatch, message],
