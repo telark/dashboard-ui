@@ -75,7 +75,7 @@ export const SETTINGS_CONSTANTS = {
     IDENTITY_PROVIDER: {
       key: 'identityProvider' as const,
       label: 'Authentication',
-      description: 'Choose how users sign in: single sign-on and passkey self-registration.',
+      description: 'Choose how users sign in: Google sign-in and passkey self-registration.',
       icon: KeyOutlined,
     },
     MY_PERMISSIONS: {

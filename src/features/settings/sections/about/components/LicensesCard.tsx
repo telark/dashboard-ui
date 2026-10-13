@@ -66,12 +66,7 @@ const LicensesCard: React.FC = memo(() => {
       title={LABELS.LICENSES_CARD_TITLE}
       description={LABELS.LICENSES_CARD_DESCRIPTION}
       headerAction={
-        <Typography.Link
-          href={LICENSES_LIST.NOTICES_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: DEFAULT_COLORS.SUCCESS }}
-        >
+        <Typography.Link href={LICENSES_LIST.NOTICES_URL} target="_blank" rel="noopener noreferrer">
           {LABELS.LICENSES_FULL_TEXT_LINK}
         </Typography.Link>
       }
