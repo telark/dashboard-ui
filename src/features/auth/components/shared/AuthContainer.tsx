@@ -59,7 +59,6 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({
                 justifyContent: 'center',
                 padding: '48px',
                 minHeight: '100vh',
-                position: 'relative',
               }}
             >
               {leftPanel}
