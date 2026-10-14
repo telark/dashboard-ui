@@ -9,7 +9,13 @@ import {
   CheckCircleOutlined,
 } from '@ant-design/icons';
 import { Tag } from 'antd';
-import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS, getPillColor } from '../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  EMPTY_VALUE,
+  STATUS_COLORS,
+  TAG_CLASS,
+  getPillColor,
+} from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import SettingsCard from '../../../components/SettingsCard';
 import { PROFILE_SECTION_CONSTANTS } from '../constants';
@@ -130,9 +136,7 @@ const ProfileDetailsCard: React.FC<ProfileDetailsCardProps> = memo(({ user, onEd
         >
           {user?.status?.phase ? (
             <Tag
-              color={getPillColor(
-                user.status.phase === 'active' ? DEFAULT_COLORS.SUCCESS : undefined,
-              )}
+              color={getPillColor(STATUS_COLORS.USER_STATE[user.status.phase])}
               className={TAG_CLASS.MEDIUM}
             >
               {user.status.phase}

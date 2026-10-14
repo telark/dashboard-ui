@@ -1,10 +1,19 @@
 import React from 'react';
 import { Tooltip } from 'antd';
-import { DEFAULT_COLORS, getPillSurface } from '../../../constants';
+import {
+  BUTTON_CONFIGS,
+  CONTROL_FONT_SIZE,
+  CONTROL_RADIUS,
+  DEFAULT_COLORS,
+  TOOLBAR_CONTROL,
+  getPillSurface,
+} from '../../../constants';
 
 type ToggleButtonVariant = 'success' | 'danger';
 
 const DANGER_TEXT = getPillSurface(DEFAULT_COLORS.DANGER).background;
+// Same size as the label, so both share one baseline.
+const COUNT_STYLE: React.CSSProperties = { opacity: 0.7, fontVariantNumeric: 'tabular-nums' };
 
 interface ToggleButtonProps {
   active: boolean;
@@ -13,6 +22,8 @@ interface ToggleButtonProps {
   icon?: React.ReactNode;
   disabled?: boolean;
   tooltip?: string;
+  /** Shown after the label, as on a tab. */
+  count?: number;
   /** `success` matches manage-role toggles. Both variants are for light surfaces (panels). */
   variant?: ToggleButtonVariant;
 }
@@ -28,12 +39,13 @@ function paletteForVariant(variant: ToggleButtonVariant) {
       hoverBg: DEFAULT_COLORS.SURFACE_HOVER,
     };
   }
+  // Selected in the panel tabs' ink (their underline and count badge), so a panel keeps one accent.
   return {
-    activeBg: `${DEFAULT_COLORS.SUCCESS}18`,
-    activeColor: DEFAULT_COLORS.SUCCESS,
-    activeBorder: `${DEFAULT_COLORS.SUCCESS}40`,
+    activeBg: DEFAULT_COLORS.TEXT_ON_SURFACE,
+    activeColor: DEFAULT_COLORS.SURFACE_WHITE,
+    activeBorder: DEFAULT_COLORS.TEXT_ON_SURFACE,
     inactiveColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-    hoverAccent: DEFAULT_COLORS.SUCCESS,
+    hoverAccent: DEFAULT_COLORS.TEXT_ON_SURFACE,
     hoverBg: DEFAULT_COLORS.SURFACE_HOVER,
   };
 }
@@ -45,6 +57,7 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
   icon,
   disabled = false,
   tooltip,
+  count,
   variant = 'success',
 }) => {
   const p = paletteForVariant(variant);
@@ -54,10 +67,12 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
     display: 'flex',
     alignItems: 'center',
     gap: 6,
-    padding: '6px 12px',
-    borderRadius: 6,
-    fontSize: 13,
-    fontWeight: 500,
+    height: TOOLBAR_CONTROL.HEIGHT,
+    padding: TOOLBAR_CONTROL.PADDING,
+    lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
+    borderRadius: CONTROL_RADIUS,
+    fontSize: CONTROL_FONT_SIZE,
+    fontWeight: active ? BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT : 500,
     transition: 'all 0.2s',
     opacity: disabled ? 0.6 : 1,
     backgroundColor: active ? p.activeBg : 'transparent',
@@ -90,6 +105,7 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
       >
         {icon && <span style={{ fontSize: 14, lineHeight: 1 }}>{icon}</span>}
         <span>{label}</span>
+        {count !== undefined && <span style={COUNT_STYLE}>{count}</span>}
       </button>
     </Tooltip>
   );

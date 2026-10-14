@@ -77,6 +77,10 @@ export const STATUS_COLORS = {
     remove: DANGER,
     change: WARNING,
   },
+  USER_STATE: {
+    active: SUCCESS,
+    suspended: DANGER,
+  } as Readonly<Record<string, string>>,
   INSIGHT_SEVERITY: {
     critical: DANGER,
     warning: WARNING,

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Icons, DEFAULT_COLORS } from '../../../../../constants';
+import { Icons, DEFAULT_COLORS, VIEW } from '../../../../../constants';
 import ViewPanel from '../../../../../components/display/panels/view/ViewPanel';
 import { useViewGroupPanelData } from '../../hooks';
+import { useGroupViewTabs } from '../../hooks/panels/group/useGroupViewTabs';
 import { GroupDeleteModal } from '../../components/delete';
 import type { Group } from '../../models';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
@@ -14,6 +15,8 @@ interface ViewGroupPanelProps {
   group: Group | null;
   onEdit?: () => void;
   canDelete?: boolean;
+  /** Opened from another view panel: its lists open nothing further. */
+  stacked?: boolean;
 }
 
 const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({
@@ -22,10 +25,9 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({
   group,
   onEdit,
   canDelete,
+  stacked = false,
 }) => {
   const {
-    avatars,
-    overflowItems,
     details,
     deleteModalOpen,
     isDeleting,
@@ -38,6 +40,7 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({
     group,
     onClose,
   });
+  const { tabs, stackedPanel } = useGroupViewTabs(group, stacked);
 
   if (!group) return null;
 
@@ -47,18 +50,18 @@ const ViewGroupPanel: React.FC<ViewGroupPanelProps> = ({
         open={open}
         onClose={onClose}
         title={GC.LABELS.PANELS.VIEW.TITLE}
-        icon={<GroupIcon size={32} style={{ color: DEFAULT_COLORS.SUCCESS }} />}
+        icon={<GroupIcon size={VIEW.GROUP_ICON_SIZE} style={{ color: DEFAULT_COLORS.SUCCESS }} />}
         name={group.name}
         description={group.description}
-        avatars={avatars}
-        overflowItems={overflowItems}
         details={details}
+        tabs={tabs}
         width={520}
         actions={{
           onEdit,
           onDelete: canDelete ? openDeleteModal : undefined,
         }}
       />
+      {stackedPanel}
       <GroupDeleteModal
         open={deleteModalOpen}
         onClose={closeDeleteModal}

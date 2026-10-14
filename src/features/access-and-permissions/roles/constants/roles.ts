@@ -225,9 +225,9 @@ export const ROLES_CONSTANTS = {
     },
     RULES: {
       BLOCK_CERTAIN_RULES: 'Block certain rules',
-      DENY_LABEL: 'Deny Rules',
       DENY_PLACEHOLDER: 'Enter denied actions (comma-separated)',
-      VIEW_DENIED_TOOLTIP: 'Click to view denied rules',
+      DENIED_COUNT: (count: number) => `${count} denied`,
+      DENIED_LIST_LABEL: 'Denied actions',
     },
   },
   STATUS: { ACTIVE: 'Active', INACTIVE: 'Inactive', DELETED: 'Deleted' },

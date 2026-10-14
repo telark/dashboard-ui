@@ -1,43 +1,19 @@
 import React, { useMemo } from 'react';
 import { AssignedItemsList } from '../../../../shared';
-import { GROUPS_CONSTANTS as GC, ATTACHED_ROLES_CONSTANTS as ARC } from '../../../constants';
-import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
+import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../../roles/constants';
-import { isRoleProtected, getRoleScopesContent } from '../../../../roles/utils';
-import { truncateText, CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
+import { isBuiltInRole } from '../../../../roles/utils';
 import type { Role } from '../../../../roles/models';
-
-const RoleIcon = Icons.Role;
+import AssignedRoleContent from './AssignedRoleContent';
 
 const getScopeLabel = (scopeKey: string): string => {
   const area = RC.SCOPE.DEFAULT_AREAS.find((a) => a.key === scopeKey);
   return area?.label || scopeKey;
 };
 
-const renderRoleContent = (role: Role): React.ReactNode => {
-  const isProtected = isRoleProtected(role);
-  const scopesContent = getRoleScopesContent(role, {
-    scopesAndPermissions: role.scopesAndPermissions || [],
-    getScopeLabel,
-    scopesContainerStyle: ARC.LIST.ROLE_SCOPES,
-    scopeItemStyle: ARC.LIST.SCOPE_ITEM,
-  });
-
-  return (
-    <div style={ARC.LIST.ROLE_CONTENT}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        {isProtected && <RoleIcon size={14} color={DEFAULT_COLORS.SUCCESS} />}
-        <span style={ARC.LIST.ROLE_NAME}>{CapitalizeFirstLetter(role.name)}</span>
-      </div>
-      {role.description && (
-        <span style={ARC.LIST.ROLE_DESCRIPTION}>
-          {CapitalizeFirstLetter(truncateText(role.description, 100))}
-        </span>
-      )}
-      {scopesContent}
-    </div>
-  );
-};
+const renderRoleContent = (role: Role): React.ReactNode => (
+  <AssignedRoleContent role={role} getScopeLabel={getScopeLabel} />
+);
 
 interface GroupAssignedRolesViewProps {
   assignedRoleIds: string[];
@@ -45,6 +21,8 @@ interface GroupAssignedRolesViewProps {
   loading: boolean;
   onDeassignClick?: (role: Role) => void;
   deassignDisabledReason?: (role: Role) => string | undefined;
+  /** Opens the role in its own page's view panel. */
+  onViewClick?: (role: Role) => void;
 }
 
 const GroupAssignedRolesView: React.FC<GroupAssignedRolesViewProps> = ({
@@ -53,6 +31,7 @@ const GroupAssignedRolesView: React.FC<GroupAssignedRolesViewProps> = ({
   loading,
   onDeassignClick,
   deassignDisabledReason,
+  onViewClick,
 }) => {
   const assignedRoles = useMemo(() => {
     if (!allRoles) return [];
@@ -69,6 +48,9 @@ const GroupAssignedRolesView: React.FC<GroupAssignedRolesViewProps> = ({
       loadingMessage={GC.LABELS.MESSAGES.LOADING_ROLES}
       onDeassignClick={onDeassignClick}
       deassignDisabledReason={deassignDisabledReason}
+      onViewClick={onViewClick}
+      viewLabel={GC.LABELS.ACTIONS.VIEW_ROLE}
+      canView={(role) => !isBuiltInRole(role)}
       deassignTooltip="Remove role"
     />
   );

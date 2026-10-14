@@ -9,6 +9,7 @@ import {
   PANEL_SURFACE_CLASS,
   PANEL_MAX_WIDTH,
   PANEL_PREWARM,
+  PANEL_TABS_THEME,
   PANEL_THEME_TOKENS,
   SELECT_THEME,
   SIDEBAR_LAYOUT,
@@ -22,7 +23,7 @@ import { PanelFooter, PanelHeader } from '../shared';
 export const PANEL_THEME: ThemeConfig = {
   algorithm: theme.defaultAlgorithm,
   token: PANEL_THEME_TOKENS,
-  components: { Select: SELECT_THEME },
+  components: { Select: SELECT_THEME, Tabs: PANEL_TABS_THEME },
   cssVar: { key: PANEL_PREWARM.CSS_VAR_KEY },
 };
 

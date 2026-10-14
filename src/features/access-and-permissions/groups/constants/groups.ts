@@ -47,6 +47,8 @@ export const GROUPS_CONSTANTS = {
     },
     ACTIONS: {
       VIEW: 'View',
+      VIEW_MEMBER: 'View member',
+      VIEW_ROLE: 'View role',
       EDIT: 'Edit',
       EDIT_DISABLED_TOOLTIP: 'You do not have permission to edit groups',
       DELETE: 'Delete',
@@ -110,6 +112,10 @@ export const GROUPS_CONSTANTS = {
     PANELS: {
       VIEW: {
         TITLE: 'Group Details',
+        TABS: {
+          MEMBERS: 'Members',
+          ROLES: 'Roles',
+        },
       },
       EDIT: {
         TITLE: 'Edit Group',

@@ -1,125 +1,154 @@
-import React, { useMemo } from 'react';
-import { Popover, Tag, Tooltip } from 'antd';
+import React, { useCallback, useMemo, useState } from 'react';
+import { Tag } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import { AiOutlineStop } from 'react-icons/ai';
-import { VIEW } from '../../../../../../constants/layout/panels';
-import { DEFAULT_COLORS, TAG_CLASS, withAlpha } from '../../../../../../constants';
-import { ROLES_CONSTANTS as RC } from '../../../constants';
+import { DEFAULT_COLORS, SLIDE_OUT, TAG_CLASS, getPillSurface } from '../../../../../../constants';
+import { ROLES_CONSTANTS as RC, getScopeRules, formatRuleKey } from '../../../constants';
 import type { ScopesPermissionsProps } from '../../../models';
+import type { PermissionLevel } from '../../../models/types';
 
-const RULES_POPOVER_STYLE = {
-  content: { maxWidth: 280, padding: '10px 4px 4px' },
-  list: {
+const DENIED_TEXT = getPillSurface(DEFAULT_COLORS.DANGER).background;
+
+const SCOPE_CARD_STYLE = {
+  list: { display: 'flex', flexDirection: 'column' as const, gap: 10 },
+  card: {
+    border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+    borderRadius: 10,
+    overflow: 'hidden' as const,
+  },
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+    padding: '12px 14px',
+  },
+  toggle: {
+    width: '100%',
+    boxSizing: 'border-box' as const,
+    background: 'none',
+    border: 'none',
+    font: 'inherit',
+    textAlign: 'left' as const,
+    cursor: 'pointer',
+  },
+  // Every card keeps the chevron's slot, so the level pills line up whether or not a card folds.
+  chevron: {
+    width: 11,
+    fontSize: 11,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+    transition: 'transform 0.2s',
+  },
+  name: { fontSize: 14, fontWeight: 600, color: DEFAULT_COLORS.TEXT_ON_SURFACE },
+  meta: { display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 },
+  deniedCount: { fontSize: 12, fontWeight: 600, color: DENIED_TEXT },
+  denied: {
     listStyle: 'none' as const,
     margin: 0,
-    padding: 0,
+    padding: '10px 14px',
+    borderTop: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+    background: DEFAULT_COLORS.SURFACE_SUBTLE,
     display: 'flex',
     flexDirection: 'column' as const,
-    gap: 4,
+    gap: 8,
   },
-  listItem: {
-    fontSize: 12,
-    fontWeight: 500,
-    color: DEFAULT_COLORS.CHIP_ON_SURFACE_TEXT,
-    padding: '4px 8px',
-    background: `linear-gradient(135deg, ${DEFAULT_COLORS.SURFACE_SUBTLE} 0%, ${DEFAULT_COLORS.SURFACE_HOVER} 100%)`,
-    borderRadius: 8,
-    boxShadow: `0 1px 2px ${withAlpha(DEFAULT_COLORS.SHADOW, 0.04)}`,
+  deniedRule: {
     display: 'flex',
     alignItems: 'center',
     gap: 8,
-  },
-  listItemBullet: {
-    width: 4,
-    height: 4,
-    borderRadius: '50%',
-    background: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-    flexShrink: 0,
-  },
-  rulesIcon: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 22,
-    height: 22,
-    borderRadius: 6,
-    background: `${DEFAULT_COLORS.DANGER}18`,
-    color: DEFAULT_COLORS.DANGER,
-    cursor: 'pointer',
-    marginLeft: 6,
-    flexShrink: 0,
+    fontSize: 13,
+    fontWeight: 500,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
   },
 } as const;
 
-const DeniedRulesPopover: React.FC<{ rules: string[] }> = ({ rules }) => (
-  <ul style={RULES_POPOVER_STYLE.list}>
-    {rules.map((rule, index) => (
-      <li key={`${rule}-${index}`} style={RULES_POPOVER_STYLE.listItem}>
-        <span style={RULES_POPOVER_STYLE.listItemBullet} aria-hidden />
-        {rule}
-      </li>
-    ))}
-  </ul>
-);
+// A denied rule is stored as `<scope>.<rule>.deny`; show its label, or the stored key if the scope
+// no longer lists it.
+const deniedRuleLabels = (scope: string, level: string, rules: string[]): string[] => {
+  const known = getScopeRules(scope, level as PermissionLevel);
+  return rules.map(
+    (rule) => known.find((r) => formatRuleKey(scope, r.key) === rule.toLowerCase())?.label ?? rule,
+  );
+};
 
 const RoleScopesView: React.FC<ScopesPermissionsProps> = ({ scopes }) => {
-  const scopeRows = useMemo(() => {
-    return RC.SCOPE.DEFAULT_AREAS.filter((area) => scopes[area.key]).map((area) => {
-      const scopeValue = scopes[area.key];
-      return { area, scopeValue };
-    });
-  }, [scopes]);
+  const scopeRows = useMemo(
+    () =>
+      RC.SCOPE.DEFAULT_AREAS.filter((area) => scopes[area.key]).map((area) => {
+        const { level, rules = [] } = scopes[area.key];
+        return { area, level, denied: deniedRuleLabels(area.key, level, rules) };
+      }),
+    [scopes],
+  );
+
+  // Denied lists start open; a header click folds one away.
+  const [folded, setFolded] = useState<ReadonlySet<string>>(new Set());
+  const toggle = useCallback(
+    (key: string) =>
+      setFolded((prev) => {
+        const next = new Set(prev);
+        if (!next.delete(key)) next.add(key);
+        return next;
+      }),
+    [],
+  );
 
   if (scopeRows.length === 0) return null;
 
-  const sectionTitleStyle: React.CSSProperties = {
-    fontSize: 13,
-    fontWeight: 700,
-    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
-    letterSpacing: 0.2,
-    marginBottom: 4,
-    display: 'block',
-  };
-
   return (
-    <div style={VIEW.DETAILS.CONTAINER}>
-      <span style={sectionTitleStyle}>{RC.SCOPE.TITLE}</span>
-      {scopeRows.map(({ area, scopeValue }) => {
-        const hasRules = scopeValue.rules && scopeValue.rules.length > 0;
-        return (
-          <div key={area.key} style={VIEW.DETAILS.ROW}>
-            <span style={VIEW.DETAILS.LABEL}>{area.label}</span>
-            <div
-              style={{
-                ...VIEW.DETAILS.VALUE,
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 0,
-              }}
-            >
-              <Tag className={TAG_CLASS.MEDIUM}>{scopeValue.level}</Tag>
-              {hasRules && (
-                <Popover
-                  trigger="click"
-                  title={RC.SCOPE.RULES.DENY_LABEL}
-                  content={<DeniedRulesPopover rules={scopeValue.rules ?? []} />}
-                  styles={{ container: RULES_POPOVER_STYLE.content }}
-                >
-                  <Tooltip title={RC.SCOPE.RULES.VIEW_DENIED_TOOLTIP}>
-                    <span
-                      style={RULES_POPOVER_STYLE.rulesIcon}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`View denied rules (${scopeValue.rules?.length ?? 0})`}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') e.currentTarget.click();
-                      }}
-                    >
-                      <AiOutlineStop size={14} />
-                    </span>
-                  </Tooltip>
-                </Popover>
+    <div style={SCOPE_CARD_STYLE.list}>
+      {scopeRows.map(({ area, level, denied }) => {
+        const hasDenied = denied.length > 0;
+        const open = hasDenied && !folded.has(area.key);
+        const headerContent = (
+          <>
+            <span style={SCOPE_CARD_STYLE.name}>{area.label}</span>
+            <span style={SCOPE_CARD_STYLE.meta}>
+              {hasDenied && (
+                <span style={SCOPE_CARD_STYLE.deniedCount}>
+                  {RC.SCOPE.RULES.DENIED_COUNT(denied.length)}
+                </span>
               )}
-            </div>
+              <Tag className={TAG_CLASS.MEDIUM}>{level}</Tag>
+              {hasDenied ? (
+                <DownOutlined
+                  aria-hidden
+                  style={{
+                    ...SCOPE_CARD_STYLE.chevron,
+                    transform: open ? 'rotate(180deg)' : undefined,
+                  }}
+                />
+              ) : (
+                <span aria-hidden style={SCOPE_CARD_STYLE.chevron} />
+              )}
+            </span>
+          </>
+        );
+        return (
+          <div key={area.key} style={SCOPE_CARD_STYLE.card}>
+            {hasDenied ? (
+              <button
+                type="button"
+                className={SLIDE_OUT.HEADER_BUTTON_CLASS}
+                aria-expanded={open}
+                onClick={() => toggle(area.key)}
+                style={{ ...SCOPE_CARD_STYLE.header, ...SCOPE_CARD_STYLE.toggle }}
+              >
+                {headerContent}
+              </button>
+            ) : (
+              <div style={SCOPE_CARD_STYLE.header}>{headerContent}</div>
+            )}
+            {open && (
+              <ul style={SCOPE_CARD_STYLE.denied} aria-label={RC.SCOPE.RULES.DENIED_LIST_LABEL}>
+                {denied.map((label) => (
+                  <li key={label} style={SCOPE_CARD_STYLE.deniedRule}>
+                    <AiOutlineStop size={14} color={DENIED_TEXT} aria-hidden />
+                    {label}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         );
       })}

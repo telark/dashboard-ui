@@ -1,20 +1,6 @@
 import React, { type ReactNode } from 'react';
 import type { TopPanelToolbarActions } from '../../../../interfaces/layout/panels';
 
-export interface ViewAvatar {
-  key: string;
-  src?: string;
-  fallback?: string;
-  tooltip: string;
-}
-
-export interface ViewOverflowItem {
-  key: string;
-  src?: string;
-  fallback?: string;
-  username: string;
-}
-
 export interface ViewDetailRow {
   label: string;
   value: ReactNode;
@@ -23,6 +9,13 @@ export interface ViewDetailRow {
 // ViewPanel hands these to the frame's toolbar unchanged.
 export type ViewPanelActions = TopPanelToolbarActions;
 
+export interface ViewPanelTab {
+  key: string;
+  label: string;
+  count?: number;
+  content: ReactNode;
+}
+
 export interface ViewPanelProps {
   open: boolean;
   onClose: () => void;
@@ -30,12 +23,11 @@ export interface ViewPanelProps {
   icon?: ReactNode;
   name: string;
   description?: string;
-  avatars?: ViewAvatar[];
-  overflowItems?: ViewOverflowItem[];
   width?: number;
   details?: ViewDetailRow[];
-  extraContent?: ReactNode;
   actions?: ViewPanelActions;
+  /** Tabs after a first Details tab that holds `details`. */
+  tabs?: ViewPanelTab[];
 }
 
 export interface ViewPanelDetailsProps {
@@ -46,7 +38,4 @@ export interface ViewPanelHeaderProps {
   icon?: React.ReactNode;
   name: string;
   description?: string;
-  avatars?: ViewAvatar[];
-  overflowItems?: ViewOverflowItem[];
-  maxVisibleAvatars?: number;
 }

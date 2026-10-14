@@ -16,6 +16,7 @@ const SECTION_TITLE_STYLE: React.CSSProperties = {
 
 interface RoleProtectionViewProps {
   role: Pick<Role, 'protection'> | null;
+  showTitle?: boolean;
 }
 
 const PROTECTION_FIELDS: ReadonlyArray<{
@@ -30,7 +31,7 @@ const PROTECTION_FIELDS: ReadonlyArray<{
   { key: 'softDelete', label: RC.PROTECTION.SOFT_DELETE_LABEL },
 ];
 
-const RoleProtectionView: React.FC<RoleProtectionViewProps> = ({ role }) => {
+const RoleProtectionView: React.FC<RoleProtectionViewProps> = ({ role, showTitle = true }) => {
   const rows = useMemo(() => {
     const p = role?.protection;
     return PROTECTION_FIELDS.map(({ key, label }) => ({
@@ -41,7 +42,7 @@ const RoleProtectionView: React.FC<RoleProtectionViewProps> = ({ role }) => {
 
   return (
     <div style={VIEW.DETAILS.CONTAINER}>
-      <span style={SECTION_TITLE_STYLE}>{RC.PROTECTION.TITLE}</span>
+      {showTitle && <span style={SECTION_TITLE_STYLE}>{RC.PROTECTION.TITLE}</span>}
       {rows.map(({ label, enabled }) => (
         <div key={label} style={VIEW.DETAILS.ROW}>
           <span style={VIEW.DETAILS.LABEL}>{label}</span>

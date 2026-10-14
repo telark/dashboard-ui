@@ -1,49 +1,10 @@
-import React, { useMemo } from 'react';
-import { Tag } from 'antd';
+import React, { useCallback, useMemo } from 'react';
 import { AssignedItemsList } from '../../../../../shared';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
-import { Icons, DEFAULT_COLORS, TAG_CLASS } from '../../../../../../../constants';
-import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/utils';
-import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
-import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
+import { isBuiltInRole } from '../../../../../roles/utils';
+import AssignedRoleContent from '../../../../../groups/components/display/role/AssignedRoleContent';
 import { getScopeLabel } from '../../../../utils/role/scope';
 import type { Role } from '../../../../../roles/models';
-
-const GROUP_TAGS_WRAPPER: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-end',
-  gap: 3,
-  flexShrink: 0,
-  marginTop: 2,
-};
-
-const RoleIcon = Icons.Role;
-
-const renderRoleContent = (role: Role): React.ReactNode => {
-  const isProtected = isRoleProtected(role);
-  const scopesContent = getRoleScopesContent(role, {
-    scopesAndPermissions: role.scopesAndPermissions || [],
-    getScopeLabel,
-    scopesContainerStyle: ARC.LIST.ROLE_SCOPES,
-    scopeItemStyle: ARC.LIST.SCOPE_ITEM,
-  });
-
-  return (
-    <div style={ARC.LIST.ROLE_CONTENT}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        {isProtected && <RoleIcon size={14} color={DEFAULT_COLORS.SUCCESS} />}
-        <span style={ARC.LIST.ROLE_NAME}>{CapitalizeFirstLetter(role.name)}</span>
-      </div>
-      {role.description && (
-        <span style={ARC.LIST.ROLE_DESCRIPTION}>
-          {CapitalizeFirstLetter(truncateText(role.description, 100))}
-        </span>
-      )}
-      {scopesContent}
-    </div>
-  );
-};
 
 interface UserAssignedRolesViewProps {
   assignedRoleIds: string[];
@@ -51,9 +12,11 @@ interface UserAssignedRolesViewProps {
   loading: boolean;
   onDeassignClick?: (role: Role) => void;
   deassignDisabledReason?: (role: Role) => string | undefined;
+  /** Opens the role in its own page's view panel. */
+  onViewClick?: (role: Role) => void;
   /** Role IDs inherited via group — deassign is blocked for these. */
   inheritedRoleIds?: Set<string>;
-  /** Maps role ID → group names for inherited roles — renders source tags on their cards. */
+  /** Maps role ID → group names for inherited roles, named on their cards. */
   inheritedGroupsByRoleId?: Map<string, string[]>;
 }
 
@@ -63,6 +26,7 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
   loading,
   onDeassignClick,
   deassignDisabledReason,
+  onViewClick,
   inheritedRoleIds,
   inheritedGroupsByRoleId,
 }) => {
@@ -71,23 +35,16 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
     return allRoles.filter((r) => assignedRoleIds.includes(r.id));
   }, [allRoles, assignedRoleIds]);
 
-  const renderAssignmentSource = useMemo(() => {
-    if (!inheritedGroupsByRoleId) return undefined;
-    function renderGroupTags(role: Role): React.ReactNode {
-      const groupNames = inheritedGroupsByRoleId!.get(role.id);
-      if (!groupNames?.length) return undefined;
-      return (
-        <div style={GROUP_TAGS_WRAPPER}>
-          {groupNames.map((name) => (
-            <Tag key={name} className={`${TAG_CLASS.MEDIUM} ${TAG_CLASS.AS_IS}`}>
-              {name}
-            </Tag>
-          ))}
-        </div>
-      );
-    }
-    return renderGroupTags;
-  }, [inheritedGroupsByRoleId]);
+  const renderRoleContent = useCallback(
+    (role: Role): React.ReactNode => (
+      <AssignedRoleContent
+        role={role}
+        getScopeLabel={getScopeLabel}
+        fromGroups={inheritedGroupsByRoleId?.get(role.id)}
+      />
+    ),
+    [inheritedGroupsByRoleId],
+  );
 
   return (
     <AssignedItemsList<Role>
@@ -99,9 +56,11 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
       loadingMessage={UC.LABELS.MESSAGES.LOADING_ROLES}
       onDeassignClick={onDeassignClick}
       deassignDisabledReason={deassignDisabledReason}
+      onViewClick={onViewClick}
+      viewLabel={UC.LABELS.ACTIONS.VIEW_ROLE}
+      canView={(role) => !isBuiltInRole(role)}
       deassignTooltip="Remove role"
       canDeassign={(role) => !inheritedRoleIds?.has(role.id)}
-      renderRightContent={renderAssignmentSource}
     />
   );
 };

@@ -110,6 +110,8 @@ export const USERS_CONSTANTS = {
     },
     ACTIONS: {
       VIEW: 'View',
+      VIEW_ROLE: 'View role',
+      VIEW_GROUP: 'View group',
       MANAGE_STATE: 'Manage account state',
       EDIT_DISABLED_TOOLTIP: 'You do not have permission to edit users',
       DELETE: 'Delete',
@@ -181,6 +183,12 @@ export const USERS_CONSTANTS = {
     PANELS: {
       VIEW: {
         TITLE: 'User Details',
+        TABS: {
+          ROLES: 'Roles',
+          GROUPS: 'Groups',
+        },
+        DIRECT_ROLES_BUTTON: 'Direct',
+        DIRECT_ROLES_TOOLTIP: 'View roles assigned to this user directly',
       },
       MANAGE_STATE: {
         TITLE: 'Manage account state',

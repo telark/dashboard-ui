@@ -55,8 +55,8 @@ const TopPanelToolbar: React.FC<TopPanelToolbarProps> = ({ actions }) => {
     <div style={SLIDE_OUT.TOOLBAR}>
       {actions.onEdit && (
         <ToolbarIconButton
-          icon={<EditOutlined />}
-          label={SLIDE_OUT.TOOLBAR_EDIT_LABEL}
+          icon={actions.editIcon ?? <EditOutlined />}
+          label={actions.editLabel ?? SLIDE_OUT.TOOLBAR_EDIT_LABEL}
           onClick={actions.onEdit}
           disabledReason={actions.editDisabledReason}
         />

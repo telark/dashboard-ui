@@ -1,5 +1,5 @@
 import type React from 'react';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, ROW_ICON_BUTTON_SIZE } from '../../../../../constants';
 
 export const ASSIGNED_CARD_STYLE: React.CSSProperties = {
   display: 'flex',
@@ -31,5 +31,14 @@ export const ASSIGNED_LIST_CONTAINER_STYLE: React.CSSProperties = {
 export const ASSIGNED_EMPTY_STATE_STYLE: React.CSSProperties = {
   padding: '24px',
   textAlign: 'center',
+  color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+};
+
+// Icon-only row action: borderless, muted, square, centered on the card's first line.
+export const ASSIGNED_VIEW_BUTTON_STYLE: React.CSSProperties = {
+  width: ROW_ICON_BUTTON_SIZE,
+  height: ROW_ICON_BUTTON_SIZE,
+  flexShrink: 0,
+  marginTop: 4,
   color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
 };

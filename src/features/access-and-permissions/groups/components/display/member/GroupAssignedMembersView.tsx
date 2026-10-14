@@ -23,6 +23,8 @@ interface GroupAssignedMembersViewProps {
   loading: boolean;
   onDeassignClick?: (user: User) => void;
   deassignDisabledReason?: (user: User) => string | undefined;
+  /** Opens the user in its own page's view panel. */
+  onViewClick?: (user: User) => void;
 }
 
 const GroupAssignedMembersView: React.FC<GroupAssignedMembersViewProps> = ({
@@ -31,6 +33,7 @@ const GroupAssignedMembersView: React.FC<GroupAssignedMembersViewProps> = ({
   loading,
   onDeassignClick,
   deassignDisabledReason,
+  onViewClick,
 }) => {
   const assignedUsers = useMemo(() => {
     if (!allUsers) return [];
@@ -47,6 +50,8 @@ const GroupAssignedMembersView: React.FC<GroupAssignedMembersViewProps> = ({
       loadingMessage={GC.LABELS.MESSAGES.LOADING_MEMBERS}
       onDeassignClick={onDeassignClick}
       deassignDisabledReason={deassignDisabledReason}
+      onViewClick={onViewClick}
+      viewLabel={GC.LABELS.ACTIONS.VIEW_MEMBER}
       deassignTooltip="Remove member"
     />
   );

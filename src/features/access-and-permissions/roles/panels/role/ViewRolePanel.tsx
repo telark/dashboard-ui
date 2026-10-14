@@ -1,9 +1,8 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import ViewPanel from '../../../../../components/display/panels/view/ViewPanel';
 import { useViewRolePanelData, useCanChangeRoleProtection } from '../../hooks';
-import RoleProtectionView from '../../components/display/view/RoleProtectionView';
-import RoleScopesView from '../../components/display/view/RoleScopesView';
-import { convertScopesFromAPI, canModifyRole } from '../../utils';
+import { useRoleViewTabs } from '../../hooks/panels/role/useRoleViewTabs';
+import { canModifyRole } from '../../utils';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import type { Role } from '../../models';
 
@@ -18,20 +17,7 @@ const ViewRolePanel: React.FC<ViewRolePanelProps> = ({ open, onClose, role, onEd
   const { details, name, description } = useViewRolePanelData({ role });
   const canChangeProtection = useCanChangeRoleProtection(role);
 
-  const scopesRecord = useMemo(
-    () => (role ? convertScopesFromAPI(role.scopesAndPermissions ?? []) : {}),
-    [role],
-  );
-
-  const extraContent = useMemo(
-    () => (
-      <>
-        <RoleProtectionView role={role} />
-        {Object.keys(scopesRecord).length > 0 && <RoleScopesView scopes={scopesRecord} />}
-      </>
-    ),
-    [role, scopesRecord],
-  );
+  const tabs = useRoleViewTabs(role);
 
   if (!role) return null;
 
@@ -43,7 +29,7 @@ const ViewRolePanel: React.FC<ViewRolePanelProps> = ({ open, onClose, role, onEd
       name={name}
       description={description}
       details={details}
-      extraContent={extraContent}
+      tabs={tabs}
       width={520}
       actions={{
         onEdit,

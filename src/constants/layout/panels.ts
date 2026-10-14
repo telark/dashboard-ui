@@ -1,5 +1,4 @@
-import { DEFAULT_COLORS, withAlpha } from '../shared/colors';
-import { AVATAR_RING } from './avatars';
+import { DEFAULT_COLORS } from '../shared/colors';
 import { CONTROL_HEIGHT } from './controls';
 import { HEADER_LAYOUT } from './header';
 import { SIDEBAR_LAYOUT } from './sidebar';
@@ -54,6 +53,19 @@ export const SELECT_THEME = {
   activeOutlineColor: 'transparent',
 } as const;
 
+// View panel tabs: antd paints the selected tab in colorPrimary, which fades on white (2.1:1).
+export const PANEL_TABS_THEME = {
+  itemColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  itemHoverColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  itemActiveColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  itemSelectedColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  inkBarColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  titleFontSize: 13,
+  horizontalItemPadding: '9px 0',
+  horizontalItemGutter: 22,
+  horizontalMargin: '0 0 14px 0',
+} as const;
+
 // Expanded panels stop at a fully opened sidebar's edge so navigation stays reachable;
 // small screens keep the panel's own width up to the viewport.
 export const PANEL_MAX_WIDTH = `max(calc(100vw - ${SIDEBAR_LAYOUT.WIDTH_MAX}px), min(100vw, 480px))`;
@@ -64,6 +76,7 @@ const PANEL_ENTER_MS = 220;
 const PANEL_EXIT_MS = 160;
 const PANEL_ENTER_EASING = 'cubic-bezier(0.22, 1, 0.36, 1)';
 const PANEL_EXIT_EASING = 'cubic-bezier(0.4, 0, 1, 1)';
+const PANEL_BODY_PADDING = 24;
 
 export const SLIDE_OUT = {
   BACKDROP: {
@@ -181,7 +194,7 @@ export const SLIDE_OUT = {
   CONTENT: {
     flex: 1,
     overflowY: 'auto' as const,
-    padding: '24px',
+    padding: PANEL_BODY_PADDING,
     display: 'flex' as const,
     flexDirection: 'column' as const,
   },
@@ -338,6 +351,34 @@ export const FILTER_PANEL_CONFIG = {
 } as const;
 
 export const VIEW = {
+  TAB_DETAILS_LABEL: 'Details',
+  // The tab bar joins the header band: cancels CONTAINER's gap.
+  TABS: { marginTop: -20 },
+  // Carries the header band to the panel edges, through the body's padding.
+  TAB_BAR: {
+    background: DEFAULT_COLORS.SURFACE_SUBTLE,
+    margin: `0 -${PANEL_BODY_PADDING}px 14px`,
+    padding: `0 ${PANEL_BODY_PADDING}px`,
+  },
+  TAB_LABEL: { fontWeight: 500 },
+  TAB_COUNT: {
+    display: 'inline-block' as const,
+    minWidth: 18,
+    marginLeft: 6,
+    padding: '0 5px',
+    borderRadius: 4,
+    background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+    fontSize: 11,
+    fontWeight: 600,
+    lineHeight: '18px',
+    textAlign: 'center' as const,
+    fontVariantNumeric: 'tabular-nums',
+  },
+  TAB_COUNT_ACTIVE: {
+    background: DEFAULT_COLORS.TEXT_ON_SURFACE,
+    color: DEFAULT_COLORS.SURFACE_WHITE,
+  },
   CONTAINER: {
     display: 'flex' as const,
     flexDirection: 'column' as const,
@@ -345,88 +386,37 @@ export const VIEW = {
   },
   HEADER: {
     display: 'flex' as const,
-    flexDirection: 'column' as const,
     alignItems: 'center' as const,
-    gap: 8,
-    paddingBottom: 20,
-    borderBottom: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+    gap: 14,
+    margin: `-${PANEL_BODY_PADDING}px -${PANEL_BODY_PADDING}px 0`,
+    padding: `${PANEL_BODY_PADDING}px ${PANEL_BODY_PADDING}px 18px`,
+    background: DEFAULT_COLORS.SURFACE_SUBTLE,
     position: 'relative' as const,
   },
-  ICON_WRAPPER: {
-    width: 64,
-    height: 64,
-    borderRadius: '50%',
-    background: DEFAULT_COLORS.SURFACE_WHITE,
-    display: 'flex' as const,
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    border: `2px solid ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.35)}`,
-  },
+  ICON_SIZE: 40,
+  // Leaves the 40px ring its 2px gap, like the actor avatars.
+  AVATAR_SIZE: 36,
+  GROUP_ICON_SIZE: 20,
   NAME_STACK: {
     display: 'flex' as const,
     flexDirection: 'column' as const,
-    alignItems: 'center' as const,
-    gap: 0,
-    marginTop: -4,
+    gap: 2,
+    minWidth: 0,
   },
   TITLE: {
     margin: 0,
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: 700,
+    lineHeight: 1.3,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE,
     letterSpacing: '-0.02em',
   },
   DESCRIPTION: {
-    margin: '0 0 4px 0',
+    margin: 0,
     fontSize: 13,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-    textAlign: 'center' as const,
-    maxWidth: '360px',
     lineHeight: 1.4,
     wordBreak: 'break-word' as const,
-  },
-  AVATAR_ROW: {
-    display: 'flex' as const,
-    alignItems: 'center' as const,
-    marginTop: 4,
-  },
-  AVATAR: {
-    border: `${AVATAR_RING.BORDER_WIDTH}px solid ${DEFAULT_COLORS.SUCCESS}`,
-    padding: AVATAR_RING.BORDER_WIDTH,
-    boxSizing: 'border-box' as const,
-    // The inset shadow whitens only the ring gap; a white background also hid the white initial.
-    boxShadow: `inset 0 0 0 ${AVATAR_RING.BORDER_WIDTH}px ${DEFAULT_COLORS.SURFACE_WHITE}, 0 0 0 2px ${DEFAULT_COLORS.SURFACE_WHITE}`,
-  },
-  OVERFLOW_BADGE: {
-    width: 32,
-    height: 32,
-    borderRadius: '50%',
-    background: DEFAULT_COLORS.SUCCESS,
-    color: DEFAULT_COLORS.PILL_TEXT,
-    display: 'flex' as const,
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    fontWeight: 700,
-    fontSize: 12,
-    marginLeft: -6,
-    boxShadow: `0 0 0 3px ${DEFAULT_COLORS.SURFACE_WHITE}`,
-    zIndex: 1,
-    cursor: 'default' as const,
-  },
-  OVERFLOW_TOOLTIP: {
-    display: 'flex' as const,
-    flexDirection: 'column' as const,
-    gap: 6,
-  },
-  OVERFLOW_TOOLTIP_ITEM: {
-    display: 'flex' as const,
-    alignItems: 'center' as const,
-    gap: 8,
-  },
-  OVERFLOW_USERNAME: {
-    fontSize: 13,
-    fontWeight: 600,
-    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
   },
   DETAILS: {
     CONTAINER: {

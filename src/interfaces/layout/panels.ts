@@ -4,6 +4,9 @@ import type { FormInstance } from 'antd';
 export interface TopPanelToolbarActions {
   onEdit?: () => void;
   onDelete?: () => void;
+  /** Replace the pencil and its label when the edit action does something narrower. */
+  editIcon?: React.ReactNode;
+  editLabel?: string;
   /** When set, the button stays visible but disabled, with this reason as its tooltip. */
   editDisabledReason?: string;
   deleteDisabledReason?: string;
