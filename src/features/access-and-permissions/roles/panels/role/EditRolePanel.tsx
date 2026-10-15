@@ -1,5 +1,5 @@
-import React, { useMemo, useEffect, useState } from 'react';
-import { Icons, SLIDE_OUT } from '../../../../../constants';
+import React, { useMemo, useState, useCallback } from 'react';
+import { BUTTON_TEXTS, SLIDE_OUT } from '../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../constants';
 import RoleForm from '../../components/display/shared/RoleForm';
 import {
@@ -9,25 +9,29 @@ import {
   useNameValidation,
   useCanChangeRoleProtection,
 } from '../../hooks';
-import { convertRoleToFormValues } from '../../utils';
+import { convertRoleToFormValues, detectChanges } from '../../utils';
 import type { Role, RoleFormValues } from '../../models';
 import AnimationWrapper from '../../../../../components/display/panels/slide-out/AnimationWrapper';
 import { ExpandPanelButton } from '../../../../../components/display/panels/slide-out';
-import { Form, type FormInstance } from 'antd';
+import { Form } from 'antd';
 
 const PANEL_WIDTH = 720;
 const PANEL_WIDTH_EXPANDED = 1400;
 
-const RoleIcon = Icons.Role;
+// useWatch first calls its selector with {}, before the form holds the role (no scopes yet).
+const roleChanged = (initialValues: RoleFormValues | null, values: RoleFormValues) =>
+  Boolean(initialValues && values.scopes && detectChanges(initialValues, values).hasChanges);
 
 interface EditRolePanelProps {
   open: boolean;
   onClose: () => void;
   editingRole: Role | null;
-  form: FormInstance<RoleFormValues>;
 }
 
-const EditRolePanel: React.FC<EditRolePanelProps> = ({ open, onClose, editingRole, form }) => {
+const EditRolePanel: React.FC<EditRolePanelProps> = ({ open, onClose, editingRole }) => {
+  // The panel mounts per open, so a form of its own starts empty: a shared one merged the last
+  // role's values into this one's, since the fields mount a frame after the panel.
+  const [form] = Form.useForm<RoleFormValues>();
   const [expanded, setExpanded] = useState(false);
   const { handleUpdate, submitting } = useRoleActions();
   const { roles } = useRoles();
@@ -44,11 +48,11 @@ const EditRolePanel: React.FC<EditRolePanelProps> = ({ open, onClose, editingRol
     [editingRole],
   );
 
-  useEffect(() => {
-    if (open && editingRole && initialValues) {
-      form.setFieldsValue(initialValues);
-    }
-  }, [open, editingRole, initialValues, form]);
+  const selectHasChanges = useCallback(
+    (values: RoleFormValues) => roleChanged(initialValues, values),
+    [initialValues],
+  );
+  const hasChanges = Form.useWatch(selectHasChanges, { form, preserve: true });
 
   const roleForHook =
     editingRole ??
@@ -90,23 +94,18 @@ const EditRolePanel: React.FC<EditRolePanelProps> = ({ open, onClose, editingRol
       footer={{
         onCancel: onClose,
         onPrimary: () => form.submit(),
-        primaryLabel: RC.LABELS.PANELS.EDIT.SUBMIT_BUTTON,
+        primaryLabel: BUTTON_TEXTS.SAVE_CHANGES,
         primaryLoading: isSubmittingCombined,
-        primaryDisabled: isNameInvalid(watchedName),
-        primaryIcon: <RoleIcon size={16} />,
-        primaryLoadingLabel: 'Updating...',
+        primaryDisabled: !hasChanges || isNameInvalid(watchedName),
       }}
     >
       <RoleForm
         form={form}
         initialValues={initialValues}
         onSubmit={handleSubmit}
-        buttonText={RC.LABELS.PANELS.EDIT.SUBMIT_BUTTON}
-        submitting={isSubmittingCombined}
         roles={roles}
         isEditMode
         currentName={editingRole.name}
-        hideSubmitButton
         expanded={expanded}
         protectionReadOnly={!protectionEditable}
       />

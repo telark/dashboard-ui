@@ -1,6 +1,10 @@
 import { normalizeValue } from './normalizeValue';
 import { deepEqual } from './deepEqual';
+import { buildValidityForAPI } from '../validity/builders';
+import { textChanged } from '../../../../shared';
 import type { RoleFormValues } from '../../models';
+
+type Protection = NonNullable<RoleFormValues['protection']>;
 
 export interface ChangeDetectionResult {
   protectionHasChanged: boolean;
@@ -10,59 +14,79 @@ export interface ChangeDetectionResult {
   scopesHaveChanged: boolean;
   nameHasChanged: boolean;
   categoryHasChanged: boolean;
+  descriptionHasChanged: boolean;
+  validityHasChanged: boolean;
+  hasChanges: boolean;
   needsTwoStepUpdate: boolean;
   modificationLocked: boolean;
 }
+
+// The API omits false flags, so a switch turned on and off again equals a missing flag.
+const enabledFlags = (protection: RoleFormValues['protection']) =>
+  Object.entries(protection ?? {})
+    .filter(([, on]) => on)
+    .map(([flag]) => flag)
+    .sort();
+
+const unlocking = (before: Protection, after: Protection, flag: keyof Protection) =>
+  Boolean(before[flag]) && !after[flag];
+
+const compareProtection = (before: Protection, after: Protection) => ({
+  protectionHasChanged: !deepEqual(enabledFlags(before), enabledFlags(after)),
+  unlockingScopes: unlocking(before, after, 'preventScopeChanges'),
+  unlockingName: unlocking(before, after, 'lockName'),
+  unlockingCategory: unlocking(before, after, 'lockCategory'),
+  modificationLocked: Boolean(before.preventModification && after.preventModification),
+});
+
+const compareGeneral = (before: RoleFormValues, after: RoleFormValues) => ({
+  nameHasChanged: textChanged(before.name, after.name),
+  categoryHasChanged: textChanged(before.categoryRef, after.categoryRef),
+  descriptionHasChanged: textChanged(before.description, after.description),
+});
+
+const scopesChanged = (before: RoleFormValues, after: RoleFormValues) =>
+  !deepEqual(normalizeValue(before.scopes) || {}, normalizeValue(after.scopes) || {});
+
+const validityChanged = (before: RoleFormValues, after: RoleFormValues) =>
+  !deepEqual(buildValidityForAPI(before.validity), buildValidityForAPI(after.validity));
+
+// Lifting a lock and changing what it guarded must land as protection first, then the fields.
+const needsTwoStep = (
+  protection: ReturnType<typeof compareProtection>,
+  general: ReturnType<typeof compareGeneral>,
+  scopesHaveChanged: boolean,
+) =>
+  protection.protectionHasChanged &&
+  ((protection.unlockingScopes && scopesHaveChanged) ||
+    (protection.unlockingName && general.nameHasChanged) ||
+    (protection.unlockingCategory && general.categoryHasChanged));
 
 export const detectChanges = (
   initialValues: RoleFormValues,
   finalValues: RoleFormValues,
 ): ChangeDetectionResult => {
-  const currentProtection = finalValues.protection || {};
-  const initialProtection = initialValues.protection || {};
-
-  const normalizedInitialProtection = normalizeValue(initialProtection);
-  const normalizedCurrentProtection = normalizeValue(currentProtection);
-  const protectionHasChanged = !deepEqual(normalizedInitialProtection, normalizedCurrentProtection);
-
-  const wasPreventScopeChanges = initialProtection.preventScopeChanges || false;
-  const isPreventScopeChanges = currentProtection.preventScopeChanges || false;
-  const unlockingScopes = wasPreventScopeChanges && !isPreventScopeChanges;
-
-  const wasLockName = initialProtection.lockName || false;
-  const isLockName = currentProtection.lockName || false;
-  const unlockingName = wasLockName && !isLockName;
-
-  const wasLockCategory = initialProtection.lockCategory || false;
-  const isLockCategory = currentProtection.lockCategory || false;
-  const unlockingCategory = wasLockCategory && !isLockCategory;
-
-  const normalizedInitialScopes = normalizeValue(initialValues.scopes) || {};
-  const normalizedCurrentScopes = normalizeValue(finalValues.scopes) || {};
-  const scopesHaveChanged = !deepEqual(normalizedInitialScopes, normalizedCurrentScopes);
-
-  const modificationLocked = Boolean(
-    initialProtection.preventModification && currentProtection.preventModification,
+  const protection = compareProtection(
+    initialValues.protection || {},
+    finalValues.protection || {},
   );
-
-  const nameHasChanged = (initialValues.name || '') !== (finalValues.name || '');
-  const categoryHasChanged = (initialValues.categoryRef || '') !== (finalValues.categoryRef || '');
-
-  const needsTwoStepUpdate =
-    protectionHasChanged &&
-    ((unlockingScopes && scopesHaveChanged) ||
-      (unlockingName && nameHasChanged) ||
-      (unlockingCategory && categoryHasChanged));
+  const general = compareGeneral(initialValues, finalValues);
+  const scopesHaveChanged = scopesChanged(initialValues, finalValues);
+  const validityHasChanged = validityChanged(initialValues, finalValues);
+  const hasChanges =
+    protection.protectionHasChanged ||
+    scopesHaveChanged ||
+    validityHasChanged ||
+    general.nameHasChanged ||
+    general.categoryHasChanged ||
+    general.descriptionHasChanged;
 
   return {
-    protectionHasChanged,
-    unlockingScopes,
-    unlockingName,
-    unlockingCategory,
+    ...protection,
+    ...general,
     scopesHaveChanged,
-    nameHasChanged,
-    categoryHasChanged,
-    needsTwoStepUpdate,
-    modificationLocked,
+    validityHasChanged,
+    hasChanges,
+    needsTwoStepUpdate: needsTwoStep(protection, general, scopesHaveChanged),
   };
 };

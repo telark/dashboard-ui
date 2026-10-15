@@ -14,7 +14,7 @@ import {
   GlobalOutlined,
 } from '@ant-design/icons';
 import SidebarButton from '../../display/buttons/SideBarButton';
-import { BUTTON_CONFIGS, DEFAULT_COLORS, APP_ROUTES } from '../../../constants';
+import { BUTTON_CONFIGS, DEFAULT_COLORS, APP_ROUTES, SIDEBAR_LAYOUT } from '../../../constants';
 
 interface SettingsMenuItemsProps {
   isCollapsed: boolean;
@@ -33,8 +33,21 @@ const SETTINGS_ROUTES = {
   about: `${APP_ROUTES.SETTINGS}/about`,
 } as const;
 
+// Stable icon elements keep SidebarButton's memo, so a navigation re-renders only two buttons.
+const SETTINGS_ICONS = {
+  profile: <UserOutlined />,
+  myPermissions: <LockOutlined />,
+  security: <SafetyOutlined />,
+  appearance: <BulbOutlined />,
+  timezone: <GlobalOutlined />,
+  identityProvider: <KeyOutlined />,
+  aiInsights: <RobotOutlined />,
+  governance: <DatabaseOutlined />,
+  about: <InfoCircleOutlined />,
+} as const;
+
 const sectionLabelStyle: CSSProperties = {
-  fontSize: 10,
+  fontSize: SIDEBAR_LAYOUT.SECTION_LABEL_FONT_SIZE,
   fontWeight: 500,
   letterSpacing: '0.06em',
   textTransform: 'uppercase',
@@ -112,35 +125,35 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
       {!isCollapsed && <div style={firstSectionLabelStyle}>Personal</div>}
       <SidebarButton
         text="Profile"
-        icon={<UserOutlined />}
+        icon={SETTINGS_ICONS.profile}
         active={pathname === SETTINGS_ROUTES.profile}
         route={SETTINGS_ROUTES.profile}
         isCollapsed={isCollapsed}
       />
       <SidebarButton
         text="My Permissions"
-        icon={<LockOutlined />}
+        icon={SETTINGS_ICONS.myPermissions}
         active={pathname === SETTINGS_ROUTES.myPermissions}
         route={SETTINGS_ROUTES.myPermissions}
         isCollapsed={isCollapsed}
       />
       <SidebarButton
         text="Security"
-        icon={<SafetyOutlined />}
+        icon={SETTINGS_ICONS.security}
         active={pathname.startsWith(SETTINGS_ROUTES.security)}
         route={SETTINGS_ROUTES.security}
         isCollapsed={isCollapsed}
       />
       <SidebarButton
         text="Appearance"
-        icon={<BulbOutlined />}
+        icon={SETTINGS_ICONS.appearance}
         active={pathname === SETTINGS_ROUTES.appearance}
         route={SETTINGS_ROUTES.appearance}
         isCollapsed={isCollapsed}
       />
       <SidebarButton
         text="Timezone"
-        icon={<GlobalOutlined />}
+        icon={SETTINGS_ICONS.timezone}
         active={pathname === SETTINGS_ROUTES.timezone}
         route={SETTINGS_ROUTES.timezone}
         isCollapsed={isCollapsed}
@@ -149,28 +162,28 @@ const SettingsMenuItems = memo(({ isCollapsed, backPath }: SettingsMenuItemsProp
       {!isCollapsed && <div style={sectionLabelStyle}>Platform</div>}
       <SidebarButton
         text="Authentication"
-        icon={<KeyOutlined />}
+        icon={SETTINGS_ICONS.identityProvider}
         active={pathname === SETTINGS_ROUTES.identityProvider}
         route={SETTINGS_ROUTES.identityProvider}
         isCollapsed={isCollapsed}
       />
       <SidebarButton
         text="Insights"
-        icon={<RobotOutlined />}
+        icon={SETTINGS_ICONS.aiInsights}
         active={pathname === SETTINGS_ROUTES.aiInsights}
         route={SETTINGS_ROUTES.aiInsights}
         isCollapsed={isCollapsed}
       />
       <SidebarButton
         text="Discovery & Storage"
-        icon={<DatabaseOutlined />}
+        icon={SETTINGS_ICONS.governance}
         active={pathname === SETTINGS_ROUTES.governance}
         route={SETTINGS_ROUTES.governance}
         isCollapsed={isCollapsed}
       />
       <SidebarButton
         text="About"
-        icon={<InfoCircleOutlined />}
+        icon={SETTINGS_ICONS.about}
         active={pathname === SETTINGS_ROUTES.about}
         route={SETTINGS_ROUTES.about}
         isCollapsed={isCollapsed}

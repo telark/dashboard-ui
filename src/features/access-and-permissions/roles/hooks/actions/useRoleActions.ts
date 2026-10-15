@@ -23,7 +23,7 @@ export const useRoleActions = () => {
         return result;
       } catch (rejection) {
         message.error(rejectionMessage(rejection, RC.LABELS.MESSAGES.CREATE_FAILED));
-        throw new Error(RC.LABELS.MESSAGES.CREATE_FAILED);
+        throw new Error(RC.LABELS.MESSAGES.CREATE_FAILED, { cause: rejection });
       } finally {
         setSubmitting(false);
       }
@@ -67,7 +67,7 @@ export const useRoleActions = () => {
         message.success(RC.LABELS.MESSAGES.DELETED);
       } catch (rejection) {
         message.error(rejectionMessage(rejection, RC.LABELS.MESSAGES.DELETE_FAILED));
-        throw new Error(RC.LABELS.MESSAGES.DELETE_FAILED);
+        throw new Error(RC.LABELS.MESSAGES.DELETE_FAILED, { cause: rejection });
       }
     },
     [dispatch, message],

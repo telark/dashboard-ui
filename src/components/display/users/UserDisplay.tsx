@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import UserAvatar from '../avatars/UserAvatar';
 import { DEFAULT_COLORS } from '../../../constants/shared/colors';
 import { AVATAR_RING } from '../../../constants/layout/avatars';
+import { BUTTON_COLORS } from '../../../constants/layout/buttons';
 import type { User } from '../../../features/access-and-permissions/users/models';
 
 interface UserDisplayProps {
@@ -21,7 +22,7 @@ const SIZE_CONFIG = {
 const UserDisplay: React.FC<UserDisplayProps> = memo(
   ({ user, size = 'small', showBorder = true, className, title }) => {
     if (!user) {
-      return <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>—</span>;
+      return <span style={{ color: BUTTON_COLORS.MUTED_TEXT }}>—</span>;
     }
 
     const displayName = user.fullname || user.username;

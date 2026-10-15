@@ -1,10 +1,13 @@
 import React, { useMemo } from 'react';
 import { Tag } from 'antd';
+import { UserSwitchOutlined } from '@ant-design/icons';
 import {
   DEFAULT_COLORS,
   EMPTY_VALUE,
   Icons,
+  STATUS_COLORS,
   TAG_CLASS,
+  VIEW,
   getPillColor,
 } from '../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../constants';
@@ -16,53 +19,63 @@ import type { ViewDetailRow } from '../../../../../components/display/panels/vie
 import type { User } from '../../models';
 import { useUserLockReason } from '../../hooks/user/useUserLockReason';
 import BootstrapPill from '../../components/display/shared/BootstrapPill';
+import { useUserViewTabs } from '../../hooks/panels/user/useUserViewTabs';
+import { noop } from '../../../../../utils/helpers/noop';
 
 interface ViewUserPanelProps {
   open: boolean;
   onClose: () => void;
   user: User | null;
   onEdit?: () => void;
-  onDelete?: () => void;
   canDelete?: boolean;
+  /** Opened from another view panel: read-only, and its lists open nothing further. */
+  stacked?: boolean;
 }
 
 const UserIcon = Icons.User;
-// A disabled action still needs a handler to render; its click is swallowed.
-const noop = () => undefined;
 
 const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
   open,
   onClose,
   user,
   onEdit,
-  onDelete,
   canDelete,
+  stacked = false,
 }) => {
   const { deleteModalOpen, isDeleting, openDeleteModal, closeDeleteModal, handleConfirmDelete } =
     useUserDeleteModal(user);
 
   const lockReasonFor = useUserLockReason();
+  const { tabs, stackedPanel } = useUserViewTabs(user, stacked);
 
   // Both actions always show; a missing permission or a protected account disables them instead.
   const actions = useMemo(() => {
     const lockReason = user ? lockReasonFor(user) : undefined;
     return {
+      editIcon: <UserSwitchOutlined />,
+      editLabel: UC.LABELS.ACTIONS.MANAGE_STATE,
+      // A disabled action still needs a handler to render; its click is swallowed.
       onEdit: onEdit ?? noop,
-      onDelete: onDelete ?? openDeleteModal,
+      onDelete: openDeleteModal,
       editDisabledReason: onEdit ? lockReason : UC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP,
       deleteDisabledReason: canDelete ? lockReason : UC.LABELS.ACTIONS.DELETE_DISABLED_TOOLTIP,
     };
-  }, [user, lockReasonFor, onEdit, onDelete, canDelete, openDeleteModal]);
+  }, [user, lockReasonFor, onEdit, canDelete, openDeleteModal]);
 
   const icon = useMemo(() => {
     if (!user) return <UserIcon size={32} style={{ color: DEFAULT_COLORS.SUCCESS }} />;
-    return <UserAvatar avatar={user.avatar} username={user.username} size={48} />;
+    return (
+      <UserAvatar
+        avatar={user.avatar}
+        username={user.username}
+        size={VIEW.AVATAR_SIZE}
+        style={{ border: 'none' }}
+      />
+    );
   }, [user]);
 
   const details = useMemo<ViewDetailRow[]>(() => {
     if (!user) return [];
-
-    const isActive = user.status.phase === 'active';
 
     return [
       {
@@ -80,7 +93,7 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
         label: UC.LABELS.VIEW_LABELS.STATUS,
         value: (
           <Tag
-            color={getPillColor(isActive ? DEFAULT_COLORS.SUCCESS : undefined)}
+            color={getPillColor(STATUS_COLORS.USER_STATE[user.status.phase])}
             className={TAG_CLASS.MEDIUM}
           >
             {user.status.phase}
@@ -110,9 +123,11 @@ const ViewUserPanel: React.FC<ViewUserPanelProps> = ({
         name={user.fullname}
         description={user.email}
         details={details}
+        tabs={tabs}
         width={520}
-        actions={actions}
+        actions={stacked ? undefined : actions}
       />
+      {stackedPanel}
       <UserDeleteModal
         open={deleteModalOpen}
         onClose={closeDeleteModal}

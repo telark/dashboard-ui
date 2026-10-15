@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Dropdown, Tooltip } from 'antd';
 import type { MenuProps } from 'antd';
-import { EditOutlined, DeleteOutlined, LinkOutlined } from '@ant-design/icons';
+import { UserSwitchOutlined, DeleteOutlined, LinkOutlined } from '@ant-design/icons';
 import {
   DEFAULT_COLORS,
   MODAL_CHROME,
@@ -21,7 +21,6 @@ import { useUserEnrollLink } from '../../../hooks/user/useUserEnrollLink';
 interface UserActionsColumnProps {
   record: User;
   onEdit?: (record: User) => void;
-  onDelete?: (record: User) => void;
 }
 
 const ACTION_SIZE = 28;
@@ -158,11 +157,7 @@ const EnrollLinkAction: React.FC<EnrollLinkActionProps> = ({ record }) => {
   );
 };
 
-export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
-  record,
-  onEdit,
-  onDelete,
-}) => {
+export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({ record, onEdit }) => {
   const hasSuspendPermission = usePermission(
     ACTION_PERMISSIONS.users.suspend.scope,
     ACTION_PERMISSIONS.users.suspend.level,
@@ -190,11 +185,7 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
     e.stopPropagation();
     e.preventDefault();
     if (!canDelete) return;
-    if (onDelete) {
-      onDelete(record);
-    } else {
-      openDeleteModal();
-    }
+    openDeleteModal();
   };
 
   return (
@@ -209,7 +200,9 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
       <EnrollLinkAction record={record} />
       <Tooltip
         title={
-          canEdit ? UC.LABELS.ACTIONS.EDIT : (lockReason ?? UC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP)
+          canEdit
+            ? UC.LABELS.ACTIONS.MANAGE_STATE
+            : (lockReason ?? UC.LABELS.ACTIONS.EDIT_DISABLED_TOOLTIP)
         }
         placement="left"
       >
@@ -226,9 +219,9 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
             onMouseLeave={(e) => {
               e.currentTarget.style.background = 'transparent';
             }}
-            aria-label={UC.LABELS.ACTIONS.EDIT}
+            aria-label={UC.LABELS.ACTIONS.MANAGE_STATE}
           >
-            <EditOutlined />
+            <UserSwitchOutlined />
           </button>
         </span>
       </Tooltip>
@@ -259,15 +252,13 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
           </button>
         </span>
       </Tooltip>
-      {!onDelete && (
-        <UserDeleteModal
-          open={deleteModalOpen}
-          onClose={closeDeleteModal}
-          onConfirm={handleConfirmDelete}
-          userName={record.fullname || record.username}
-          loading={isDeleting}
-        />
-      )}
+      <UserDeleteModal
+        open={deleteModalOpen}
+        onClose={closeDeleteModal}
+        onConfirm={handleConfirmDelete}
+        userName={record.fullname || record.username}
+        loading={isDeleting}
+      />
     </div>
   );
 };

@@ -20,7 +20,15 @@ const ICON_SETS = {
   hi: ['Heroicons', 'Copyright (c) Tailwind Labs, Inc.'],
   hi2: ['Heroicons', 'Copyright (c) Tailwind Labs, Inc.'],
   tb: ['Tabler Icons', 'Copyright (c) 2020-2024 Paweł Kuna'],
+  si: [
+    'Simple Icons',
+    'Simple Icons collaborators. Kubernetes is a registered trademark of The Linux Foundation.',
+    'CC0-1.0',
+  ],
 };
+
+const CC0_TERMS =
+  'Dedicated to the public domain under CC0 1.0 Universal: https://creativecommons.org/publicdomain/zero/1.0/';
 
 const MIT_TERMS = `Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -94,10 +102,12 @@ const sections = sorted.map(({ name, version, license, texts, repository }) => {
 
 for (const set of usedIconSets()) {
   if (!ICON_SETS[set]) throw new Error(`Add the license of react-icons/${set} to ICON_SETS`);
-  const [project, copyright] = ICON_SETS[set];
-  sections.push(
-    `=== ${project} (react-icons/${set}) (MIT)\n\nMIT License\n\n${copyright}\n\n${MIT_TERMS}`,
-  );
+  const [project, copyright, license = 'MIT'] = ICON_SETS[set];
+  const terms =
+    license === 'MIT'
+      ? `MIT License\n\n${copyright}\n\n${MIT_TERMS}`
+      : `${copyright}\n\n${CC0_TERMS}`;
+  sections.push(`=== ${project} (react-icons/${set}) (${license})\n\n${terms}`);
 }
 
 const header = `Third-party software in the Telark dashboard

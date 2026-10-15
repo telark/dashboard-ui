@@ -3,14 +3,15 @@ import { useLocation } from 'react-router-dom';
 import SidebarButton from '../../display/buttons/SideBarButton';
 import { Icons, APP_ROUTES, MENU_LABELS } from '../../../constants';
 
-const HomeIcon = Icons.Home;
-const RoleIcon = Icons.Role;
-const ApplicationIcon = Icons.Application;
-const InsightsIcon = Icons.Insights;
-const UserIcon = Icons.User;
-const GroupIcon = Icons.Group;
-const ProtectionPlansIcon = Icons.ProtectionPlans;
-const SettingsIcon = Icons.Settings;
+// Stable icon elements keep SidebarButton's memo, so a navigation re-renders only two buttons.
+const HOME_ICON = <Icons.Home />;
+const ROLE_ICON = <Icons.Role />;
+const APPLICATION_ICON = <Icons.Application />;
+const INSIGHTS_ICON = <Icons.Insights />;
+const USER_ICON = <Icons.User />;
+const GROUP_ICON = <Icons.Group />;
+const PROTECTION_PLANS_ICON = <Icons.ProtectionPlans />;
+const SETTINGS_ICON = <Icons.Settings />;
 
 interface MenuButtonProps {
   isCollapsed?: boolean;
@@ -23,7 +24,7 @@ export const HomeMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = f
   return (
     <SidebarButton
       text={MENU_LABELS.HOME}
-      icon={<HomeIcon />}
+      icon={HOME_ICON}
       active={pathname === APP_ROUTES.HOME}
       route={APP_ROUTES.HOME}
       isCollapsed={isCollapsed}
@@ -39,7 +40,7 @@ export const ApplicationsMenuButton: React.FC<MenuButtonProps> = memo(({ isColla
   return (
     <SidebarButton
       text={MENU_LABELS.APPLICATIONS}
-      icon={<ApplicationIcon />}
+      icon={APPLICATION_ICON}
       active={pathname.startsWith(APP_ROUTES.APPLICATIONS)}
       route={APP_ROUTES.APPLICATIONS}
       isCollapsed={isCollapsed}
@@ -55,7 +56,7 @@ export const InsightsMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed
   return (
     <SidebarButton
       text={MENU_LABELS.INSIGHTS}
-      icon={<InsightsIcon />}
+      icon={INSIGHTS_ICON}
       active={location.pathname.startsWith(APP_ROUTES.INSIGHTS)}
       route={APP_ROUTES.INSIGHTS}
       isCollapsed={isCollapsed}
@@ -72,7 +73,7 @@ export const UsersMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = 
   return (
     <SidebarButton
       text={MENU_LABELS.USERS}
-      icon={<UserIcon />}
+      icon={USER_ICON}
       active={pathname.startsWith(APP_ROUTES.USERS)}
       route={APP_ROUTES.USERS}
       isCollapsed={isCollapsed}
@@ -89,7 +90,7 @@ export const GroupsMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed =
   return (
     <SidebarButton
       text={MENU_LABELS.GROUPS}
-      icon={<GroupIcon />}
+      icon={GROUP_ICON}
       active={pathname.startsWith(APP_ROUTES.GROUPS)}
       route={APP_ROUTES.GROUPS}
       isCollapsed={isCollapsed}
@@ -106,7 +107,7 @@ export const RolesMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed = 
   return (
     <SidebarButton
       text={MENU_LABELS.ROLES}
-      icon={<RoleIcon />}
+      icon={ROLE_ICON}
       active={pathname.startsWith(APP_ROUTES.ROLES)}
       route={APP_ROUTES.ROLES}
       isCollapsed={isCollapsed}
@@ -124,7 +125,7 @@ export const ProtectionPlansMenuButton: React.FC<MenuButtonProps> = memo(
     return (
       <SidebarButton
         text={MENU_LABELS.PROTECTION_PLANS}
-        icon={<ProtectionPlansIcon />}
+        icon={PROTECTION_PLANS_ICON}
         active={pathname.startsWith(APP_ROUTES.PROTECTION_PLANS)}
         route={APP_ROUTES.PROTECTION_PLANS}
         isCollapsed={isCollapsed}
@@ -141,7 +142,7 @@ export const SettingsMenuButton: React.FC<MenuButtonProps> = memo(({ isCollapsed
   return (
     <SidebarButton
       text={MENU_LABELS.SETTINGS}
-      icon={<SettingsIcon />}
+      icon={SETTINGS_ICON}
       active={location.pathname.startsWith(APP_ROUTES.SETTINGS)}
       route={`${APP_ROUTES.SETTINGS}/profile`}
       isCollapsed={isCollapsed}

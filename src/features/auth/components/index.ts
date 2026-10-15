@@ -4,6 +4,7 @@ export { CompactBanner } from './login/CompactBanner';
 
 export { default as OrphanedPasskeysModal } from './modals/OrphanedPasskeysModal';
 export { default as SessionExpiredModal } from './modals/SessionExpiredModal';
+export { default as AccountSuspendedModal } from './modals/AccountSuspendedModal';
 export { default as EnrollLinkModal } from './modals/EnrollLinkModal';
 
 export { default as PasskeyCard } from './passkeys/list/PasskeyCard';

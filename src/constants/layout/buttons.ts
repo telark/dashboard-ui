@@ -1,11 +1,10 @@
-import { COMMON_VALUES } from '../shared/common';
 import { CONTROL_HEIGHT } from './controls';
 import { DEFAULT_COLORS } from '../shared/colors';
 
 export const BUTTON_TEXTS = {
-  LOADING: 'In Progress...',
   CANCEL: 'Cancel',
   SUBMIT: 'Submit',
+  SAVE_CHANGES: 'Save changes',
   RESET: 'Reset',
   APPLY: 'Apply',
   CLOSE: 'Close',
@@ -23,7 +22,6 @@ export const TOOLBAR_CONTROL = {
   PADDING: '0 10px',
   // Below this the labels no longer fit beside the sidebar, so every toolbar
   // control falls back to its icon and moves its label into a tooltip.
-  COMPACT_BELOW: 768,
   COMPACT_QUERY: '(max-width: 767px)',
   // Without this the label box keeps its half-leading, so centering the box
   // leaves the glyphs off-center against icons, which set their own.
@@ -56,16 +54,6 @@ export const LIST_TOOLBAR = {
 } as const;
 
 export const BUTTON_CONFIGS = {
-  STATUS_BUTTON: {
-    TYPE: 'default',
-    BORDER_RADIUS: '18px',
-    PADDING: '2px 8px',
-    FONT_SIZE: '11px',
-    HEIGHT: 26,
-    LINE_HEIGHT: '22px',
-    GAP: 4,
-    ICON_FONT_SIZE: 12,
-  },
   SIDEBAR_BUTTON: {
     // Margin + left padding together keep the icon at 20px from the sidebar edge
     // while the box starts short of it, so the icon never touches the box edge.
@@ -82,12 +70,8 @@ export const BUTTON_CONFIGS = {
     FONT_WEIGHT: 500,
     FONT_SIZE: 13,
     TRANSITION: 'background-color 150ms ease, color 150ms ease, opacity 150ms ease',
-    // Width of the active bar drawn by the settings sidebar.
-    BORDER_WIDTH: 2,
   },
   PRIMARY_BUTTON: {
-    TYPE: 'primary',
-    MARGIN_TOP: '0px',
     FONT_WEIGHT: 600,
     // White fails AA on the brand green; this dark text passes (about 8:1).
     TEXT_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE,
@@ -97,13 +81,12 @@ export const BUTTON_CONFIGS = {
 export const BUTTON_COLORS = {
   ICON_DEFAULT: DEFAULT_COLORS.TEXT_MUTED,
   TEXT_DEFAULT: DEFAULT_COLORS.TEXT_PRIMARY,
-  DISABLED: DEFAULT_COLORS.SURFACE_BORDER,
   // Light surfaces (panels) re-point this var so toolbars stay readable there.
   TOOLBAR_TEXT: `var(--app-toolbar-text-color, ${DEFAULT_COLORS.TEXT_PRIMARY})`,
   TOOLBAR_BORDER: `var(--app-toolbar-border-color, ${DEFAULT_COLORS.BORDER_DEFAULT})`,
   TOOLBAR_DISABLED_TEXT: `var(--app-toolbar-disabled-color, ${DEFAULT_COLORS.TEXT_DISABLED})`,
-} as const;
-
-export const BUTTON_STATES = {
-  STATUS: COMMON_VALUES.STATUS,
+  TOOLBAR_HOVER_BG: `var(--app-toolbar-hover-bg, ${DEFAULT_COLORS.SURFACE_WHITE})`,
+  // Re-pointed the same way for other shared parts: muted text and the Switch's unchecked track.
+  MUTED_TEXT: `var(--app-muted-text-color, ${DEFAULT_COLORS.TEXT_MUTED})`,
+  SWITCH_OFF: `var(--app-switch-off-color, ${DEFAULT_COLORS.BORDER_DEFAULT})`,
 } as const;

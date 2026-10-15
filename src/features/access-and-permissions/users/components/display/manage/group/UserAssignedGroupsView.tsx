@@ -36,6 +36,8 @@ interface UserAssignedGroupsViewProps {
   loading: boolean;
   onDeassignClick?: (group: Group) => void;
   deassignDisabledReason?: (group: Group) => string | undefined;
+  /** Opens the group in its own page's view panel. */
+  onViewClick?: (group: Group) => void;
 }
 
 const UserAssignedGroupsView: React.FC<UserAssignedGroupsViewProps> = ({
@@ -44,6 +46,7 @@ const UserAssignedGroupsView: React.FC<UserAssignedGroupsViewProps> = ({
   loading,
   onDeassignClick,
   deassignDisabledReason,
+  onViewClick,
 }) => {
   const assignedGroups = useMemo(() => {
     if (!allGroups) return [];
@@ -60,6 +63,8 @@ const UserAssignedGroupsView: React.FC<UserAssignedGroupsViewProps> = ({
       loadingMessage={UC.LABELS.MESSAGES.LOADING_GROUPS}
       onDeassignClick={onDeassignClick}
       deassignDisabledReason={deassignDisabledReason}
+      onViewClick={onViewClick}
+      viewLabel={UC.LABELS.ACTIONS.VIEW_GROUP}
       deassignTooltip="Remove group"
     />
   );

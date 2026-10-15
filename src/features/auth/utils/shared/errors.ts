@@ -1,5 +1,8 @@
 import { App as AntdApp } from 'antd';
-import type { NormalizedAxiosErrorMeta } from '../../../../api/client/normalize';
+import type {
+  ExtendedAxiosError,
+  NormalizedAxiosErrorMeta,
+} from '../../../../api/client/normalize';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { AUTH_REFUSAL_CODES, ERROR_MESSAGES, HTTP_STATUS } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
@@ -19,16 +22,18 @@ interface AuthErrorShape {
   normalized?: NormalizedAxiosErrorMeta;
 }
 
-interface ErrorHandlingOptions {
-  onUserNotFound?: () => void;
-  customMessage?: string;
-}
-
 type MessageApi = ReturnType<typeof AntdApp.useApp>['message'];
 
+// normalized.message falls back to axios's "Request failed with status code N", not the server's.
+export const serverMessage = (error: unknown): string | undefined => {
+  const failure = error as ExtendedAxiosError | undefined;
+  const text = failure?.normalized?.message;
+  return text && text !== failure.message ? text : undefined;
+};
+
 const extractErrorMessage = (error: AuthErrorShape): string => {
-  if (error.normalized?.message) {
-    return String(error.normalized.message);
+  if (error.normalized) {
+    return serverMessage(error) ?? '';
   }
 
   if (error?.message && typeof error === 'object' && 'status' in error && !error.response) {
@@ -141,16 +146,12 @@ export const getUserFriendlyErrorMessage = (input: unknown): string => {
   return errorMsg || AUTH_ERROR_MESSAGES.AUTHENTICATION_FAILED;
 };
 
-const showErrorMessage = (messageApi: MessageApi, content: string, callback?: () => void): void => {
+const showErrorMessage = (messageApi: MessageApi, content: string): void => {
   messageApi.open({
     type: 'error',
     content,
     duration: LOGIN_CONSTANTS.TIMING.MESSAGE_DURATION,
   });
-
-  if (callback) {
-    setTimeout(callback, LOGIN_CONSTANTS.TIMING.CALLBACK_DELAY);
-  }
 };
 
 const showInfoMessage = (messageApi: MessageApi, content: string): void => {
@@ -161,18 +162,7 @@ const showInfoMessage = (messageApi: MessageApi, content: string): void => {
   });
 };
 
-export const handleAuthError = (
-  error: unknown,
-  messageApi: MessageApi,
-  options?: ErrorHandlingOptions,
-): void => {
-  const { onUserNotFound, customMessage } = options || {};
-
-  if (customMessage) {
-    showErrorMessage(messageApi, customMessage);
-    return;
-  }
-
+export const handleAuthError = (error: unknown, messageApi: MessageApi): void => {
   const authError = error as AuthErrorShape;
   const errorMsg = extractErrorMessage(authError);
 
@@ -182,7 +172,7 @@ export const handleAuthError = (
   }
 
   if (isUserNotFoundError(authError, errorMsg)) {
-    showErrorMessage(messageApi, userNotFoundMessage(), onUserNotFound);
+    showErrorMessage(messageApi, userNotFoundMessage());
     return;
   }
 

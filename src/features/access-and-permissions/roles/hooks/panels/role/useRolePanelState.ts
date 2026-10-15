@@ -10,7 +10,6 @@ export interface UseRolePanelStateReturn {
   viewingRole: Role | null;
   editingRole: Role | null;
   createForm: ReturnType<typeof Form.useForm<RoleFormValues>>[0];
-  editForm: ReturnType<typeof Form.useForm<RoleFormValues>>[0];
   openCreatePanel: () => void;
   closeCreatePanel: () => void;
   openEditPanel: (role: Role) => void;
@@ -26,7 +25,6 @@ export const useRolePanelState = (): UseRolePanelStateReturn => {
   const [viewingRole, setViewingRole] = useState<Role | null>(null);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
   const [createForm] = Form.useForm<RoleFormValues>();
-  const [editForm] = Form.useForm<RoleFormValues>();
 
   const openCreatePanel = useCallback(() => setCreatePanelOpen(true), []);
 
@@ -43,8 +41,7 @@ export const useRolePanelState = (): UseRolePanelStateReturn => {
   const closeEditPanel = useCallback(() => {
     setEditPanelOpen(false);
     setEditingRole(null);
-    editForm.resetFields();
-  }, [editForm]);
+  }, []);
 
   const openViewPanel = useCallback((role: Role) => {
     setViewingRole(role);
@@ -63,7 +60,6 @@ export const useRolePanelState = (): UseRolePanelStateReturn => {
     viewingRole,
     editingRole,
     createForm,
-    editForm,
     openCreatePanel,
     closeCreatePanel,
     openEditPanel,

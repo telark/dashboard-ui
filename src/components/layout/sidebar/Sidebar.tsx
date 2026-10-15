@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState, memo } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import { useLocation } from 'react-router-dom';
 import MenuItems from './MenuItems';
 import SettingsMenuItems from './SettingsMenuItems';
 import SidebarResizeHandle from './SidebarResizeHandle';
 import { UserAvatarDropdown } from '../../../features/access-and-permissions/users/components';
-import { useSidebarCollapse } from '../../../hooks/layout';
+import { useMediaQuery, useSidebarCollapse } from '../../../hooks/layout';
 import { DEFAULT_COLORS, HEADER_LAYOUT, SIDEBAR_LAYOUT, APP_ROUTES } from '../../../constants';
 
 const Sidebar = memo(() => {
@@ -19,10 +19,11 @@ const Sidebar = memo(() => {
   }, [location.pathname, isSettingsRoute]);
 
   const { isCollapsed, width, applyDraggedWidth } = useSidebarCollapse();
-  const [isDragging, setIsDragging] = useState(false);
+  const reduceMotion = useMediaQuery(SIDEBAR_LAYOUT.REDUCED_MOTION_QUERY);
 
   return (
     <div
+      className={SIDEBAR_LAYOUT.CLASS}
       style={{
         position: 'fixed',
         left: 0,
@@ -35,12 +36,10 @@ const Sidebar = memo(() => {
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        transition: isDragging ? 'none' : SIDEBAR_LAYOUT.WIDTH_TRANSITION,
+        transition: reduceMotion ? 'none' : SIDEBAR_LAYOUT.WIDTH_TRANSITION,
       }}
     >
-      {!isCollapsed && (
-        <SidebarResizeHandle onResize={applyDraggedWidth} onDraggingChange={setIsDragging} />
-      )}
+      {!isCollapsed && <SidebarResizeHandle onResize={applyDraggedWidth} />}
       <div style={{ flexGrow: 1, overflowX: 'hidden', position: 'relative' }}>
         <div
           style={{

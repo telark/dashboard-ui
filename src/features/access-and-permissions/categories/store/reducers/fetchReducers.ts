@@ -12,7 +12,11 @@ export const handleFetchCategoriesByScopeFulfilled = (
 ) => {
   state.loading = false;
   const { scope, categories } = action.payload;
-  state.categoriesByScope[scope] = categories;
+  // Every panel mount revalidates: an unchanged list keeps its array, so the lists built on it
+  // (a page's columns) don't re-render while the panel opens.
+  if (JSON.stringify(state.categoriesByScope[scope]) !== JSON.stringify(categories)) {
+    state.categoriesByScope[scope] = categories;
+  }
   state.error = null;
 };
 

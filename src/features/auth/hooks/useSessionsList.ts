@@ -40,8 +40,8 @@ export const useSessionsList = (): UseSessionsListResult => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // A refetch (after a revoke) keeps the rows on screen until the new list lands.
   const fetchSessions = useCallback(async () => {
-    setLoading(true);
     setError(null);
     const userId = getCurrentUser()?.id;
     if (!userId) {

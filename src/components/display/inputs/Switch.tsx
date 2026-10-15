@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch as AntSwitch, Tooltip } from 'antd';
 import { DEFAULT_COLORS } from '../../../constants/shared/colors';
+import { BUTTON_COLORS } from '../../../constants/layout/buttons';
 
 export interface SwitchProps {
   checked?: boolean;
@@ -47,7 +48,7 @@ const Switch: React.FC<SwitchProps> = ({
         unCheckedChildren={unCheckedChildren}
         style={{
           marginLeft: label ? 8 : 0,
-          backgroundColor: checked ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.BORDER_DEFAULT,
+          backgroundColor: checked ? DEFAULT_COLORS.SUCCESS : BUTTON_COLORS.SWITCH_OFF,
         }}
       />
     </div>

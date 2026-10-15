@@ -5,6 +5,7 @@ import { useOpenedOnce } from '../../../../hooks/layout/useOpenedOnce';
 import {
   CONTROL_HEIGHT,
   MODAL_CHROME,
+  PANEL_FOOTER,
   PANEL_SURFACE_CLASS,
   PANEL_THEME_TOKENS,
   SELECT_THEME,
@@ -64,7 +65,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
           {title && <ActionTitle title={title} />}
           {description && <div style={MODAL_CHROME.MESSAGE}>{description}</div>}
           {children}
-          {footer}
+          {footer && <div style={PANEL_FOOTER.DIALOG}>{footer}</div>}
         </div>
       </Modal>
     </ConfigProvider>

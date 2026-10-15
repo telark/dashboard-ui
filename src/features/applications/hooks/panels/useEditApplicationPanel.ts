@@ -5,6 +5,7 @@ import type { AppDispatch } from '../../../../store';
 import { updateApplicationThunk } from '../../store';
 import type { Application, ApplicationUpdatePayload } from '../../models';
 import { APPLICATIONS_UI } from '../../constants/texts';
+import { textChanged } from '../../../shared';
 
 interface UseEditApplicationPanelOptions {
   application: Application | null;
@@ -27,8 +28,12 @@ export function useEditApplicationPanel({
       if (!application) return;
       const v = values as { displayName: string; description?: string };
       const payload: ApplicationUpdatePayload = {
-        displayName: v.displayName,
-        description: v.description,
+        displayName: textChanged(application.displayName, v.displayName)
+          ? v.displayName
+          : undefined,
+        description: textChanged(application.description, v.description)
+          ? v.description
+          : undefined,
       };
       setSubmitting(true);
       try {
@@ -36,7 +41,7 @@ export function useEditApplicationPanel({
         message.success(APPLICATIONS_UI.EDIT_PAGE.SUCCESS_MESSAGE);
       } catch (err) {
         message.error(typeof err === 'string' ? err : APPLICATIONS_UI.EDIT_PAGE.ERROR_GENERIC);
-        throw new Error('update failed');
+        throw new Error('update failed', { cause: err });
       } finally {
         setSubmitting(false);
       }

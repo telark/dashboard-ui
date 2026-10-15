@@ -3,19 +3,11 @@ import { DEFAULT_COLORS } from '../../../../constants';
 import { pluralize } from '../../../../utils/helpers/format';
 
 export const PERMISSION_LEVELS = ['ReadOnly', 'Contributor', 'Owner', 'Admin'] as const;
-export const VALIDITY_TYPES = ['permanent', 'temporary', 'sessionBased'] as const;
 export const ROLES_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Roles',
     HEADER_SUBTITLE: 'Manage existing roles',
-    NOT_FOUND: 'Role not found',
-    CREATE_BUTTON: 'Create Role',
-    UPDATE_BUTTON: 'Update Role',
-    CREATE_BUTTON_TEXT: 'Create Role',
     BREADCRUMBS: {
-      ROLES: 'Roles',
-      EDIT: 'Edit',
-      CREATE: 'Create Role',
       CATEGORIES: 'Categories',
     },
     MESSAGES: {
@@ -29,7 +21,6 @@ export const ROLES_CONSTANTS = {
     COLUMNS: {
       ROLE_TITLE: 'Role Title',
       TYPE: 'Type',
-      PERMISSIONS: 'Permissions',
       CREATED: 'Creation Date',
       CREATED_BY: 'Created By',
       LAST_UPDATE: 'Last Update',
@@ -39,7 +30,6 @@ export const ROLES_CONSTANTS = {
       STATUS: 'Status',
     },
     ACTIONS: {
-      VIEW: 'View',
       EDIT: 'Edit',
       DELETE: 'Delete',
       EDIT_DISABLED_TOOLTIP: 'Edit is disabled due to protection',
@@ -58,10 +48,7 @@ export const ROLES_CONSTANTS = {
       BULK_DELETE_FAILED: 'Failed to delete some roles',
       CANCEL: 'Cancel',
     },
-    PERMISSIONS_SUFFIX: 'permissions',
     CUSTOM_TYPE: 'custom',
-    STATUS_ACTIVE: 'Active',
-    STATUS_INACTIVE: 'Inactive',
     DELETE_MODAL_TITLE: 'Delete Role',
     DELETE_IMPACT: (users: number, groups: number) =>
       `It is assigned to ${pluralize(users, 'user')} and ${pluralize(groups, 'group')}. They lose the access it grants immediately. The role disappears from them within a few seconds.`,
@@ -83,7 +70,6 @@ export const ROLES_CONSTANTS = {
       VIEW: { TITLE: 'Role Details' },
       EDIT: {
         TITLE: 'Edit Role',
-        SUBMIT_BUTTON: 'Update Role',
       },
       CREATE: {
         TITLE: 'Create Role',
@@ -92,7 +78,6 @@ export const ROLES_CONSTANTS = {
     },
     TOOLBAR: {
       SEARCH: { PLACEHOLDER: 'Search by name, description...', BUTTON_LABEL: 'Search' },
-      FILTER: { BUTTON_LABEL: 'Filter' },
       CREATE: { BUTTON_LABEL: 'Create Role' },
       COUNT_SUFFIX: { one: 'role', other: 'roles' },
       CATEGORIES_COUNT_SUFFIX: { one: 'category', other: 'categories' },
@@ -113,7 +98,6 @@ export const ROLES_CONSTANTS = {
   KEYS: {
     NAME: 'name',
     TYPE: 'type',
-    PERMISSION: 'permission',
     CREATED_AT: 'creationDate',
     CREATED_BY: 'createdBy',
     LAST_UPDATE: 'lastUpdateDate',
@@ -127,19 +111,19 @@ export const ROLES_CONSTANTS = {
     FILTER_ALL: 'all',
   } as const,
   SIZES: {
-    ROW_HEIGHT: 32,
-    HEADER_ICON: 14,
     COLUMNS: {
       ROLE_TITLE: 110,
-      TYPE: 80,
-      // Header label + icon + sort measured at ~158/147px; narrower wraps them.
+      // Header label + icon + sort measured (2026-10-09): narrower wraps or widens them.
+      TYPE: 90,
       CREATED: 160,
-      CREATED_BY: 90,
+      CREATED_BY: 130,
       LAST_UPDATE: 150,
-      VALIDITY: 80,
-      CATEGORY: 80,
-      VERSION: 80,
-      STATUS: 80,
+      VALIDITY: 110,
+      CATEGORY: 120,
+      VERSION: 110,
+      STATUS: 110,
+      // Two row buttons with their gap, plus the cell padding (measured).
+      ACTIONS: 80,
     },
     // Measured natural widths of the toolbar row: ~397px by default and ~516px in
     // bulk mode. Below these the controls fall back to icons.
@@ -157,9 +141,6 @@ export const ROLES_CONSTANTS = {
   },
   PERMISSION_LEVEL: {
     READ_ONLY: 'ReadOnly' as PermissionLevel,
-    CONTRIBUTOR: 'Contributor' as PermissionLevel,
-    OWNER: 'Owner' as PermissionLevel,
-    ADMIN: 'Admin' as PermissionLevel,
   },
   VALIDITY_TYPES: {
     PERMANENT: 'permanent' as ValidityType,
@@ -224,12 +205,11 @@ export const ROLES_CONSTANTS = {
     },
     RULES: {
       BLOCK_CERTAIN_RULES: 'Block certain rules',
-      DENY_LABEL: 'Deny Rules',
-      DENY_PLACEHOLDER: 'Enter denied actions (comma-separated)',
-      VIEW_DENIED_TOOLTIP: 'Click to view denied rules',
+      DENIED_COUNT: (count: number) => `${count} denied`,
+      DENIED_LIST_LABEL: 'Denied actions',
     },
   },
-  STATUS: { ACTIVE: 'Active', INACTIVE: 'Inactive', DELETED: 'Deleted' },
+  STATUS: { ACTIVE: 'Active', DELETED: 'Deleted' },
   TYPE: { BUILT_IN: 'built-in', CUSTOM: 'custom' },
   PROTECTION: {
     TITLE: 'Protection',

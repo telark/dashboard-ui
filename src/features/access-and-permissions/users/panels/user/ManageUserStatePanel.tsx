@@ -2,12 +2,10 @@ import React from 'react';
 import { Form, Select } from 'antd';
 import type { FormInstance } from 'antd';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
-import { Icons, SLIDE_OUT } from '../../../../../constants';
+import { SLIDE_OUT } from '../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import { useManageUserStatePanel } from '../../hooks/panels/user/useManageUserStatePanel';
 import type { ManageUserStateFormValues, User } from '../../models';
-
-const UserIcon = Icons.User;
 
 interface ManageUserStatePanelProps {
   open: boolean;
@@ -60,7 +58,6 @@ const ManageUserStatePanel: React.FC<ManageUserStatePanelProps> = ({
       onSubmit={handleSubmit}
       onCancel={onClose}
       submitButtonText={UC.LABELS.PANELS.MANAGE_STATE.SUBMIT_BUTTON}
-      submitButtonIcon={<UserIcon size={16} />}
       loading={submitting}
       disabled={!hasChanges}
       form={form}

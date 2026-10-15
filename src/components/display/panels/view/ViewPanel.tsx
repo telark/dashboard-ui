@@ -3,6 +3,7 @@ import AnimationWrapper from '../slide-out/AnimationWrapper';
 import { VIEW } from '../../../../constants/layout/panels';
 import ViewPanelHeader from './ViewPanelHeader';
 import ViewPanelDetails from './ViewPanelDetails';
+import ViewPanelTabs from './ViewPanelTabs';
 import type { ViewPanelProps } from './types';
 
 const DEFAULT_WIDTH = 500;
@@ -13,12 +14,10 @@ const ViewPanel: React.FC<ViewPanelProps> = ({
   icon,
   name,
   description,
-  avatars = [],
-  overflowItems = [],
   width = DEFAULT_WIDTH,
   details = [],
-  extraContent,
   actions,
+  tabs,
 }) => {
   return (
     <AnimationWrapper
@@ -29,15 +28,12 @@ const ViewPanel: React.FC<ViewPanelProps> = ({
       toolbarActions={actions}
     >
       <div style={VIEW.CONTAINER}>
-        <ViewPanelHeader
-          icon={icon}
-          name={name}
-          description={description}
-          avatars={avatars}
-          overflowItems={overflowItems}
-        />
-        <ViewPanelDetails details={details} />
-        {extraContent}
+        <ViewPanelHeader icon={icon} name={name} description={description} />
+        {tabs ? (
+          <ViewPanelTabs details={details} tabs={tabs} />
+        ) : (
+          <ViewPanelDetails details={details} />
+        )}
       </div>
     </AnimationWrapper>
   );

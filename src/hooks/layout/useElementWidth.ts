@@ -1,15 +1,13 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { startTransition, useCallback, useState } from 'react';
 
 // The sidebar changes the space a toolbar has without changing the viewport, so
 // width has to be measured on the element rather than through a media query.
 export const useElementWidth = <T extends HTMLElement>() => {
-  const ref = useRef<T | null>(null);
   const [width, setWidth] = useState(0);
 
-  // Measured in a layout effect so the first paint already uses the real width;
-  // a ResizeObserver alone reports a frame late and the layout visibly jumps.
-  useLayoutEffect(() => {
-    const element = ref.current;
+  // A callback ref measures whenever the element attaches, also one mounted behind a loader.
+  // It runs in the commit, so the first paint already uses the real width.
+  const ref = useCallback((element: T | null) => {
     if (!element) return;
     const measure = () => {
       const next = element.getBoundingClientRect().width;
@@ -17,7 +15,8 @@ export const useElementWidth = <T extends HTMLElement>() => {
       if (next > 0) setWidth(next);
     };
     measure();
-    const observer = new ResizeObserver(measure);
+    // A sliding sidebar resizes every frame: as a transition, those renders yield to the frames.
+    const observer = new ResizeObserver(() => startTransition(measure));
     observer.observe(element);
     return () => observer.disconnect();
   }, []);

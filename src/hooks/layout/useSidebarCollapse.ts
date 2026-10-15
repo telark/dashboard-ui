@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { SIDEBAR_LAYOUT } from '../../constants';
+import { APP_CONFIGS, SIDEBAR_LAYOUT } from '../../constants';
 import { useMediaQuery } from './useMediaQuery';
 
 const TRUE_VALUE = 'true';
@@ -42,12 +42,15 @@ export const useSidebarCollapse = ({ withShortcut = false }: UseSidebarCollapseO
   // the sidebar returns to it once there is room again.
   const collapsed = state.collapsed || isNarrow;
 
-  // Before paint, or the content first renders at the stylesheet default and slides over.
+  // Before paint, or the content first renders at the stylesheet default and slides over. On the
+  // pane, not the root: the property doesn't inherit (index.css), so a toggle restyles one element.
   useLayoutEffect(() => {
-    document.documentElement.style.setProperty(
-      SIDEBAR_LAYOUT.CSS_VAR,
-      `${collapsed ? SIDEBAR_LAYOUT.WIDTH_COLLAPSED : state.width}px`,
-    );
+    document
+      .getElementById(APP_CONFIGS.LAYOUT.CONTENT_ID)
+      ?.style.setProperty(
+        SIDEBAR_LAYOUT.CSS_VAR,
+        `${collapsed ? SIDEBAR_LAYOUT.WIDTH_COLLAPSED : state.width}px`,
+      );
   }, [collapsed, state.width]);
 
   useEffect(() => {

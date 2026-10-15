@@ -65,12 +65,17 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         disabled={disabled}
         block
         icon={<UserAddOutlined />}
-        style={{
-          fontWeight: 600,
-          background: DEFAULT_COLORS.SUCCESS,
-          borderColor: DEFAULT_COLORS.SUCCESS,
-          color: BUTTON_CONFIGS.PRIMARY_BUTTON.TEXT_COLOR,
-        }}
+        // Inline colors beat antd's disabled look, so a disabled button keeps antd's own.
+        style={
+          disabled
+            ? { fontWeight: 600 }
+            : {
+                fontWeight: 600,
+                background: DEFAULT_COLORS.SUCCESS,
+                borderColor: DEFAULT_COLORS.SUCCESS,
+                color: BUTTON_CONFIGS.PRIMARY_BUTTON.TEXT_COLOR,
+              }
+        }
       >
         {loading ? REGISTER_CONSTANTS.UI.BUTTON_LOADING : REGISTER_CONSTANTS.UI.BUTTON_TEXT}
       </Button>

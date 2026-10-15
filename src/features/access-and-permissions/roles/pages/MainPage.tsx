@@ -12,6 +12,7 @@ import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { deduplicateCategoriesByName } from '../../categories/utils/helpers';
 import { applyRoleFilters } from '../../groups/utils';
+import { noop } from '../../../../utils/helpers/noop';
 import { CreateRolePanel } from '../panels';
 import { ROLES_CONSTANTS as RPC } from '../constants';
 import type { Role, RoleFormValues } from '../models';
@@ -67,7 +68,6 @@ const MainPage: React.FC = () => {
     viewingRole,
     editingRole,
     createForm,
-    editForm,
     openCreatePanel,
     closeCreatePanel,
     openEditPanel,
@@ -144,7 +144,7 @@ const MainPage: React.FC = () => {
     sortedRoles,
     paginatedRoles,
     handleViewRole,
-    handleEditRole: canEditRole ? handleEditRole : () => undefined,
+    handleEditRole: canEditRole ? handleEditRole : noop,
     onEditCategory: openEditCategoryPanel,
     onCreateRoleClick: openCreatePanel,
     canCreateRole,
@@ -198,7 +198,6 @@ const MainPage: React.FC = () => {
       viewingRole={viewingRole}
       editingRole={editingRole}
       createForm={createForm}
-      editForm={editForm}
       filterPanelOpen={filterPanelOpen}
       addCategoryPanelOpen={addCategoryPanelOpen}
       editCategoryPanelOpen={editCategoryPanelOpen}

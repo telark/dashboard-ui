@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import SnapshotStorageBar from '../../../applications/components/snapshots/SnapshotStorageBar';
-import { HOME_DASHBOARD_TEXTS as T } from '../../constants/dashboard';
+import { HOME_BOX_ICONS, HOME_DASHBOARD_TEXTS as T } from '../../constants/dashboard';
 import type { BoxState, SnapshotStorageState } from '../../models';
 import SummaryBox from './SummaryBox';
 
@@ -12,6 +12,7 @@ const StorageBox: React.FC<{ storage: SnapshotStorageState } & Pick<BoxState, 'n
     return (
       <SummaryBox
         title={S.TITLE}
+        icon={HOME_BOX_ICONS.STORAGE}
         loading={!infos && !failed}
         failed={failed}
         noAccess={noAccess}

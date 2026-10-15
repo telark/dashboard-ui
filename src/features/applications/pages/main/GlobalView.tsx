@@ -1,4 +1,12 @@
-import React, { memo, useEffect, useCallback, useRef, useState, useMemo } from 'react';
+import React, {
+  memo,
+  useEffect,
+  useCallback,
+  useDeferredValue,
+  useRef,
+  useState,
+  useMemo,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Form } from 'antd';
 import type { RootState, AppDispatch } from '../../../../store';
@@ -14,6 +22,7 @@ import {
   SYNC_STATUS_VALUE,
 } from '../../constants';
 import { POLL_INTERVAL_MS } from '../../../../constants';
+import { pollWhileVisible } from '../../../../utils/helpers/poll';
 import ApplicationsMainEmpty from './Empty';
 import ApplicationsSuccess from './Success';
 import { filterApplications, useApplications } from '../../hooks';
@@ -38,6 +47,9 @@ import {
   setSelectedNames,
 } from '../../store/slices/applicationsSlice';
 
+// A selector's fallback must keep its identity, or every store update re-renders the page.
+const NO_EXCLUDED_NAMESPACES: string[] = [];
+
 const ApplicationsGlobalView: React.FC = memo(() => {
   const dispatch: AppDispatch = useDispatch();
   const { applications, loaded, error, appliedFilters, currentPage } = useSelector(
@@ -46,7 +58,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   const syncing = useSelector((s: RootState) => s.applications.syncing);
   const syncStatus = useSelector((s: RootState) => s.applications.syncStatus);
   const excludedNamespaces = useSelector(
-    (s: RootState) => s.globalconfig.data?.excludedNamespaces ?? [],
+    (s: RootState) => s.globalconfig.data?.excludedNamespaces ?? NO_EXCLUDED_NAMESPACES,
   );
   const visibleApplications = useMemo(
     () => filterByExcludedNamespaces(applications, excludedNamespaces),
@@ -132,11 +144,13 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     ];
   }, [visibleApplications]);
 
+  // The input echoes each keystroke at once; the cards follow in an interruptible render.
+  const deferredSearch = useDeferredValue(searchValue);
   const filteredApplications = useMemo(() => {
-    const base = filterApplications(visibleApplications, searchValue);
+    const base = filterApplications(visibleApplications, deferredSearch);
     const withPanelFilters = applyApplicationFilters(base, appliedFilters);
     return applyHealthQuickFilter(withPanelFilters, healthQuickFilter);
-  }, [visibleApplications, appliedFilters, healthQuickFilter, searchValue]);
+  }, [visibleApplications, appliedFilters, healthQuickFilter, deferredSearch]);
   const hasActiveFilters = useMemo(() => hasAnyAppliedFilter(appliedFilters), [appliedFilters]);
 
   const totalFiltered = filteredApplications.length;
@@ -165,6 +179,19 @@ const ApplicationsGlobalView: React.FC = memo(() => {
     );
   }, [selectedNames, syncing, syncStatus]);
 
+  const handleToggleSelect = useCallback(
+    (name: string, checked: boolean) => {
+      const set = new Set(selectedNames);
+      if (checked) {
+        set.add(name);
+      } else {
+        set.delete(name);
+      }
+      dispatch(setSelectedNames(Array.from(set)));
+    },
+    [dispatch, selectedNames],
+  );
+
   const handleLoadApplications = useCallback(async () => {
     await loadApplications(dispatch);
   }, [dispatch]);
@@ -186,10 +213,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
 
   useEffect(() => {
     const intervalMs = anySyncing ? APPLICATIONS_SYNC_ACTIVE_POLL_MS : POLL_INTERVAL_MS;
-    const interval = setInterval(() => {
-      void loadApplicationsSilent(dispatch);
-    }, intervalMs);
-    return () => clearInterval(interval);
+    return pollWhileVisible(() => void loadApplicationsSilent(dispatch), intervalMs);
   }, [anySyncing, dispatch]);
 
   if (loaded && !error && visibleApplications.length === 0) {
@@ -225,15 +249,7 @@ const ApplicationsGlobalView: React.FC = memo(() => {
           }
         }}
         selectedNames={selectedNames}
-        onToggleSelect={(name, checked) => {
-          const set = new Set(selectedNames);
-          if (checked) {
-            set.add(name);
-          } else {
-            set.delete(name);
-          }
-          dispatch(setSelectedNames(Array.from(set)));
-        }}
+        onToggleSelect={handleToggleSelect}
         onToggleSelectAllPage={(checked) => {
           if (!checked) {
             const set = new Set(selectedNames);

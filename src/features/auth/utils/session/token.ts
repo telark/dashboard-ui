@@ -43,7 +43,7 @@ export const setSessionToken = (token: string): void => {
         ? LOGIN_CONSTANTS.SESSION.QUOTA_EXCEEDED
         : LOGIN_CONSTANTS.SESSION.SET_FAILED;
 
-    throw new Error(errorMessage);
+    throw new Error(errorMessage, { cause: error });
   }
 };
 
@@ -56,7 +56,7 @@ export const removeSessionToken = (): void => {
       logger.error(LOGIN_CONSTANTS.LOGS.SESSION_REMOVE_ERROR, error);
     }
 
-    throw new Error(LOGIN_CONSTANTS.SESSION.REMOVE_FAILED);
+    throw new Error(LOGIN_CONSTANTS.SESSION.REMOVE_FAILED, { cause: error });
   }
 };
 

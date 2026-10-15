@@ -23,7 +23,7 @@ export const usePlanActions = () => {
         // The thunk rejects with the server's message as a string.
         const text = typeof err === 'string' ? err : PPC.LABELS.ACTIONS.CREATE_ERROR;
         message.error(text);
-        throw new Error(text);
+        throw new Error(text, { cause: err });
       } finally {
         setSubmitting(false);
       }
@@ -44,7 +44,7 @@ export const usePlanActions = () => {
         // The thunk rejects with the server's message as a string.
         const text = typeof err === 'string' ? err : PPC.LABELS.ACTIONS.UPDATE_ERROR;
         message.error(text);
-        throw new Error(text);
+        throw new Error(text, { cause: err });
       } finally {
         setSubmitting(false);
       }

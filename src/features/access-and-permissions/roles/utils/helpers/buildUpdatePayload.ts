@@ -19,7 +19,7 @@ export const buildUpdatePayload = (
   if (!currentProtection.lockName && changes.nameHasChanged) {
     roleData.name = fullRoleData.name;
   }
-  if (fullRoleData.description !== undefined) {
+  if (changes.descriptionHasChanged) {
     roleData.description = fullRoleData.description;
   }
   if (!currentProtection.lockCategory && changes.categoryHasChanged) {
@@ -28,7 +28,7 @@ export const buildUpdatePayload = (
   if (!currentProtection.preventScopeChanges && changes.scopesHaveChanged) {
     roleData.scopesAndPermissions = fullRoleData.scopesAndPermissions;
   }
-  if (fullRoleData.validity !== undefined) {
+  if (changes.validityHasChanged) {
     roleData.validity = fullRoleData.validity;
   }
   if (changes.protectionHasChanged) {
@@ -47,7 +47,7 @@ export const buildFieldsUpdatePayload = (
   if (changes.nameHasChanged) {
     fieldsData.name = fullRoleData.name;
   }
-  if (fullRoleData.description !== undefined) {
+  if (changes.descriptionHasChanged) {
     fieldsData.description = fullRoleData.description;
   }
   if (changes.categoryHasChanged) {
@@ -56,7 +56,7 @@ export const buildFieldsUpdatePayload = (
   if (changes.scopesHaveChanged) {
     fieldsData.scopesAndPermissions = fullRoleData.scopesAndPermissions;
   }
-  if (fullRoleData.validity !== undefined) {
+  if (changes.validityHasChanged) {
     fieldsData.validity = fullRoleData.validity;
   }
 

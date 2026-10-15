@@ -3,6 +3,11 @@ import { fetchDiscoveryStatus } from '../clients';
 import type { DiscoveryCycleStatus } from '../models';
 import { APPLICATIONS_DISCOVERY_STATUS_POLL_MS, APPLICATIONS_ERROR_MESSAGES } from '../constants';
 import logger from '../../../logging';
+import { pollWhileVisible } from '../../../utils/helpers/poll';
+
+const sameStatus = (prev: DiscoveryCycleStatus | null, next: DiscoveryCycleStatus): boolean =>
+  prev !== null &&
+  (Object.keys(next) as (keyof DiscoveryCycleStatus)[]).every((key) => prev[key] === next[key]);
 
 // Polls the discovery cycle while the page is open; onCycleComplete fires once
 // when a running cycle ends so the list can pick up freshly discovered apps.
@@ -22,7 +27,7 @@ export function useDiscoveryStatus(onCycleComplete: () => void) {
         const response = await fetchDiscoveryStatus();
         if (canceled) return;
         const next = response.data;
-        setStatus(next);
+        setStatus((prev) => (sameStatus(prev, next) ? prev : next));
         if (wasInProgress.current && !next.inProgress) onComplete.current();
         wasInProgress.current = next.inProgress;
       } catch (error) {
@@ -30,10 +35,10 @@ export function useDiscoveryStatus(onCycleComplete: () => void) {
       }
     };
     void poll();
-    const interval = setInterval(() => void poll(), APPLICATIONS_DISCOVERY_STATUS_POLL_MS);
+    const stopPolling = pollWhileVisible(() => void poll(), APPLICATIONS_DISCOVERY_STATUS_POLL_MS);
     return () => {
       canceled = true;
-      clearInterval(interval);
+      stopPolling();
     };
   }, []);
 

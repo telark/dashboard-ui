@@ -8,6 +8,7 @@ import ViewAllLink from './ViewAllLink';
 
 export interface DashboardBoxProps extends BoxState {
   title: string;
+  icon?: React.ComponentType;
   count?: number;
   viewAllTo?: string;
   // Charts need their tooltip to escape the body; lists keep the clip.
@@ -17,7 +18,17 @@ export interface DashboardBoxProps extends BoxState {
 
 // Fills its grid cell; the body clips so every box keeps the row's height.
 const DashboardBox: React.FC<DashboardBoxProps> = memo(
-  ({ title, count, viewAllTo, loading, failed, noAccess, bodyOverflow = 'hidden', children }) => (
+  ({
+    title,
+    icon: Icon,
+    count,
+    viewAllTo,
+    loading,
+    failed,
+    noAccess,
+    bodyOverflow = 'hidden',
+    children,
+  }) => (
     <section
       style={{
         height: '100%',
@@ -40,20 +51,36 @@ const DashboardBox: React.FC<DashboardBoxProps> = memo(
           gap: L.ROW_GAP_PX,
         }}
       >
-        <h3
-          style={{
-            ...S.ELLIPSIS,
-            margin: 0,
-            fontSize: L.BOX_TITLE_FONT_SIZE_PX,
-            fontWeight: 600,
-            color: DEFAULT_COLORS.TEXT_PRIMARY,
-          }}
-        >
-          {title}
-          {count && !noAccess ? (
-            <span style={{ ...S.MUTED_TEXT, marginLeft: L.ROW_GAP_PX }}>{count}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: L.BOX_ICON_GAP_PX, minWidth: 0 }}>
+          {Icon ? (
+            <span
+              aria-hidden
+              style={{
+                display: 'inline-flex',
+                flexShrink: 0,
+                fontSize: L.BOX_ICON_SIZE_PX,
+                color: DEFAULT_COLORS.TEXT_MUTED,
+              }}
+            >
+              <Icon />
+            </span>
           ) : null}
-        </h3>
+          <h3
+            title={title}
+            style={{
+              ...S.ELLIPSIS,
+              margin: 0,
+              fontSize: L.BOX_TITLE_FONT_SIZE_PX,
+              fontWeight: 600,
+              color: DEFAULT_COLORS.TEXT_PRIMARY,
+            }}
+          >
+            {title}
+            {count && !noAccess ? (
+              <span style={{ ...S.MUTED_TEXT, marginLeft: L.ROW_GAP_PX }}>{count}</span>
+            ) : null}
+          </h3>
+        </div>
         {viewAllTo && !noAccess ? <ViewAllLink to={viewAllTo} /> : null}
       </header>
       <div

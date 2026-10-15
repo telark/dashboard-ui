@@ -1,12 +1,15 @@
 import React from 'react';
 import { Component, ErrorInfo, ReactNode } from 'react';
-import { Button, Typography } from 'antd';
+import { Button, ConfigProvider, Typography, theme } from 'antd';
 import { ReloadOutlined, BugOutlined, HomeOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
+  CONTROL_HEIGHT,
   DEFAULT_COLORS,
   FEATURE_ERROR_BOUNDARY_TEXT as T,
   MONOSPACE_CLASS,
+  PANEL_SURFACE_CLASS,
+  PANEL_THEME_TOKENS,
   STORE_MESSAGES,
   withAlpha,
 } from '../../constants';
@@ -26,6 +29,36 @@ interface Props {
   featureName?: string;
   onReset?: () => void;
 }
+
+// A light surface over the dark page, so it takes the panel theme like BaseModal does.
+const ErrorSurface: React.FC<{ children: ReactNode }> = ({ children }) => (
+  <ConfigProvider
+    theme={{
+      algorithm: theme.defaultAlgorithm,
+      token: { ...PANEL_THEME_TOKENS, controlHeight: CONTROL_HEIGHT },
+    }}
+  >
+    <div
+      className={PANEL_SURFACE_CLASS}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '40px 20px',
+        background: DEFAULT_COLORS.SURFACE_WHITE,
+        zIndex: 10,
+        overflow: 'auto',
+      }}
+    >
+      {children}
+    </div>
+  </ConfigProvider>
+);
 
 class FeatureErrorBoundaryClass extends Component<Props, State> {
   constructor(props: Props) {
@@ -52,22 +85,7 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '40px 20px',
-            background: DEFAULT_COLORS.SURFACE_WHITE,
-            zIndex: 10,
-            overflow: 'auto',
-          }}
-        >
+        <ErrorSurface>
           <div style={{ textAlign: 'center', maxWidth: 500, width: '100%' }}>
             <div
               style={{
@@ -160,7 +178,7 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
               <FeatureErrorBoundaryNavigateButton onReset={this.handleReset} />
             </div>
           </div>
-        </div>
+        </ErrorSurface>
       );
     }
 
@@ -179,9 +197,6 @@ const FeatureErrorBoundaryNavigateButton: React.FC<{ onReset: () => void }> = ({
       size="middle"
       icon={<HomeOutlined />}
       onClick={() => (pathname === APP_ROUTES.HOME ? onReset() : navigate(APP_ROUTES.HOME))}
-      style={{
-        borderColor: DEFAULT_COLORS.SURFACE_BORDER,
-      }}
     >
       {T.GO_TO_DASHBOARD}
     </Button>

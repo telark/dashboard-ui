@@ -1,7 +1,10 @@
 import React from 'react';
-import { Form, Select, Typography } from 'antd';
+import { Alert, Form, Select, Typography } from 'antd';
 import { DEFAULT_COLORS } from '../../../../../constants';
-import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
+import {
+  PROTECTION_PLANS_CONSTANTS as PPC,
+  POLICY_CHIP_LABEL,
+} from '../../constants/protectionPlans';
 import type { PlanTemplate } from '../../models';
 import Section from '../../../../../components/display/sections/Section';
 import { FancySpinner } from '../../../../../components/animation';
@@ -10,6 +13,9 @@ import { FORM_ITEM_CLASS } from './types';
 import { paramError } from '../../utils/planFormValues';
 
 const { SECTIONS, FORM } = PPC.CREATE_PAGE;
+
+// Backend template names say "Block …" even in audit mode, so the picker names the operation.
+const templateLabel = (t: PlanTemplate): string => POLICY_CHIP_LABEL[t.id] ?? t.name;
 
 interface PoliciesSectionProps {
   policies: PolicyEntry[];
@@ -50,6 +56,13 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
               disabled={disabled}
             />
           </Form.Item>
+          <Form.Item noStyle dependencies={['mode']}>
+            {({ getFieldValue }) =>
+              getFieldValue('mode') === 'audit' && (
+                <Alert type="warning" showIcon title={FORM.AUDIT_WARNING} />
+              )
+            }
+          </Form.Item>
           <Form.Item
             style={{ marginBottom: 0 }}
             className={FORM_ITEM_CLASS}
@@ -63,7 +76,15 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
               style={{ width: '100%' }}
               value={policies.map((p) => p.templateID)}
               disabled={disabled}
-              options={availableTemplates.map((t) => ({ value: t.id, label: t.name }))}
+              options={availableTemplates.map((t) => ({ value: t.id, label: templateLabel(t) }))}
+              optionRender={(option) => (
+                <div>
+                  <div>{option.label}</div>
+                  <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                    {templates.find((t) => t.id === option.value)?.description}
+                  </Typography.Text>
+                </div>
+              )}
               onChange={(selectedIds: string[]) => {
                 onPoliciesChange(
                   selectedIds.map((id) => {
@@ -99,7 +120,7 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
                 <div
                   key={entry.templateID}
                   style={{
-                    border: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
+                    border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
                     borderRadius: 8,
                     padding: 12,
                   }}
@@ -107,7 +128,7 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
                   <span
                     style={{ fontWeight: 600, fontSize: 13, display: 'block', marginBottom: 8 }}
                   >
-                    {tpl.name}
+                    {templateLabel(tpl)}
                   </span>
                   {(tpl.params ?? []).map((param) => {
                     const error = paramError(entry, param);

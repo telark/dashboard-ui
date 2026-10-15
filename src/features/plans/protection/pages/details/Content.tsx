@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { Button, Tag, Tooltip } from 'antd';
-import { CloseOutlined, InfoCircleOutlined, ReloadOutlined } from '@ant-design/icons';
+import { CloseOutlined, EyeOutlined, InfoCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import {
   DEFAULT_COLORS,
@@ -55,7 +55,7 @@ const AvatarRing: React.FC<{
   </span>
 );
 
-const POLICY_ICON_STYLE: React.CSSProperties = {
+const policyIconStyle = (accent: string): React.CSSProperties => ({
   width: 20,
   height: 20,
   flexShrink: 0,
@@ -64,9 +64,9 @@ const POLICY_ICON_STYLE: React.CSSProperties = {
   justifyContent: 'center',
   borderRadius: 6,
   fontSize: 10,
-  color: DEFAULT_COLORS.DANGER,
-  background: withAlpha(DEFAULT_COLORS.DANGER, 0.14),
-};
+  color: accent,
+  background: withAlpha(accent, 0.14),
+});
 
 const COMPACT_REFRESH_BUTTON_STYLE: React.CSSProperties = {
   color: DEFAULT_COLORS.ICON_SECONDARY,
@@ -562,7 +562,11 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
 
         <SettingsCard
           title={PPC.LABELS.DETAIL_PAGE.SECTIONS.POLICIES_TITLE}
-          description={PPC.LABELS.DETAIL_PAGE.SECTIONS.POLICIES_DESCRIPTION}
+          description={
+            PPC.LABELS.CARD.BLOCKED_LABEL[plan.mode][
+              plan.timeMode === 'permanent' ? 'permanent' : 'window'
+            ]
+          }
         >
           {policies.length === 0 ? (
             <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</div>
@@ -583,8 +587,8 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                 >
                   {/* What the policy refuses, in the card's words, over its template id. */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                    <span aria-hidden style={POLICY_ICON_STYLE}>
-                      <CloseOutlined />
+                    <span aria-hidden style={policyIconStyle(STATUS_COLORS.PLAN_MODE[plan.mode])}>
+                      {plan.mode === 'audit' ? <EyeOutlined /> : <CloseOutlined />}
                     </span>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 0, minWidth: 0 }}>
                       <span

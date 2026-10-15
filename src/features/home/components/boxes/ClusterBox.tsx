@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { DEFAULT_COLORS } from '../../../../constants';
 import {
+  HOME_BOX_ICONS,
   HOME_DASHBOARD_LAYOUT as L,
   HOME_DASHBOARD_STYLES as S,
   HOME_DASHBOARD_TEXTS as T,
@@ -43,7 +44,7 @@ interface ClusterBoxProps extends BoxState {
 }
 
 const ClusterBox: React.FC<ClusterBoxProps> = memo(({ cluster, ...boxProps }) => (
-  <DashboardBox title={C.TITLE} {...boxProps}>
+  <DashboardBox title={C.TITLE} icon={HOME_BOX_ICONS.CLUSTER} {...boxProps}>
     <div style={{ display: 'flex', gap: L.BREAKDOWN_GAP_PX }}>
       <Field label={C.VERSION_LABEL} value={cluster.version} />
       <Field label={C.DISTRIBUTION_LABEL} value={cluster.distribution} />

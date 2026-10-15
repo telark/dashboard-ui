@@ -17,12 +17,8 @@ export const handleCreatePasskeyFulfilled = (
   state.error = null;
 };
 
-export const handleCreatePasskeyRejected = (
-  state: PasskeysState,
-  action: PayloadAction<unknown>,
-) => {
+export const handleCreatePasskeyRejected = (state: PasskeysState) => {
   state.loading = false;
-  state.error = action.payload as string;
 };
 
 export const handleUpdatePasskeyPending = (state: PasskeysState) => {
@@ -49,12 +45,8 @@ export const handleUpdatePasskeyFulfilled = (
   state.error = null;
 };
 
-export const handleUpdatePasskeyRejected = (
-  state: PasskeysState,
-  action: PayloadAction<unknown>,
-) => {
+export const handleUpdatePasskeyRejected = (state: PasskeysState) => {
   state.loading = false;
-  state.error = action.payload as string;
 };
 
 export const handleDeletePasskeyPending = (state: PasskeysState) => {
@@ -76,10 +68,6 @@ export const handleDeletePasskeyFulfilled = (
   state.error = null;
 };
 
-export const handleDeletePasskeyRejected = (
-  state: PasskeysState,
-  action: PayloadAction<unknown>,
-) => {
+export const handleDeletePasskeyRejected = (state: PasskeysState) => {
   state.loading = false;
-  state.error = action.payload as string;
 };

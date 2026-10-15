@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Empty, Tag } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_COLORS, SECTION_LAYOUT, TAG_CLASS } from '../../../../../constants';
 import { FancySpinner } from '../../../../../components/animation';
-import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
+import {
+  POLICY_CHIP_LABEL,
+  POLICY_NAME_PREFIX,
+  PROTECTION_PLANS_CONSTANTS as PPC,
+} from '../../constants/protectionPlans';
+import type { AppDispatch } from '../../../../../store';
+import { fetchProtectionPlanTemplatesThunk, selectProtectionPlanTemplates } from '../../store';
 import type {
   ProtectionPlan,
+  PlanMode,
   PlanStatusResponse,
   PlanPolicyStatus,
   PlanHealthDetail,
+  PlanTemplate,
 } from '../../models';
 
 interface HealthSectionProps {
@@ -17,16 +26,33 @@ interface HealthSectionProps {
   error: string | null;
 }
 
-const policyDotColor = (row: PlanPolicyStatus): string => {
+// The engine reports `Audit`/`Enforce`, the plan `audit`/`enforce`.
+const actsAs = (row: PlanPolicyStatus, mode: PlanMode): boolean =>
+  row.failureAction.toLowerCase() === mode;
+
+const policyDotColor = (row: PlanPolicyStatus, mode: PlanMode): string => {
   if (!row.present) return DEFAULT_COLORS.DANGER;
-  if (!row.ready) return DEFAULT_COLORS.WARNING;
+  if (!row.ready || !actsAs(row, mode)) return DEFAULT_COLORS.WARNING;
   return DEFAULT_COLORS.SUCCESS;
+};
+
+// The operation label when the policy name maps to one of the plan's templates, else the raw name.
+const policyLabel = (name: string, planId: string, templates: PlanTemplate[]): string => {
+  const template = templates.find((t) => name.startsWith(POLICY_NAME_PREFIX(planId, t.code)));
+  return (template && POLICY_CHIP_LABEL[template.id]) ?? name;
 };
 
 const yesNo = (value: boolean): string =>
   value ? PPC.LABELS.HEALTH_DETAIL.YES : PPC.LABELS.HEALTH_DETAIL.NO;
 
 const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, error }) => {
+  const dispatch: AppDispatch = useDispatch();
+  const templates = useSelector(selectProtectionPlanTemplates);
+  // Template codes map policy names to operation labels; only the plan forms load them otherwise.
+  useEffect(() => {
+    if (templates.length === 0) void dispatch(fetchProtectionPlanTemplatesThunk());
+  }, [templates.length, dispatch]);
+
   const rows: PlanPolicyStatus[] = status
     ? (status.policies ?? [])
     : (plan.healthDetail ?? []).map((d: PlanHealthDetail) => ({
@@ -53,7 +79,8 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
       ) : (
         <div>
           {rows.map((row) => {
-            const dot = policyDotColor(row);
+            const dot = policyDotColor(row, plan.mode);
+            const auditsOnly = plan.mode === 'enforce' && row.present && actsAs(row, 'audit');
             return (
               <div
                 key={`${row.namespace}/${row.name}`}
@@ -112,6 +139,13 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
                         </Tag>
                       )}
                     </div>
+                    {auditsOnly && (
+                      <div style={{ marginTop: 6, fontSize: 12, color: DEFAULT_COLORS.WARNING }}>
+                        {PPC.LABELS.HEALTH_DETAIL.AUDIT_ONLY(
+                          policyLabel(row.name, plan.id, templates),
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

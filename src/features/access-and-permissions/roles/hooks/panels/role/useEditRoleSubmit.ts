@@ -35,45 +35,39 @@ export const useEditRoleSubmit = ({
   const { message } = AntdApp.useApp();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = useCallback(
-    async (values: RoleFormValues) => {
-      const allFormValues = form.getFieldsValue(true) as RoleFormValues;
-      const finalValues: RoleFormValues = {
-        ...allFormValues,
-        ...values,
-      };
+  const handleSubmit = useCallback(async () => {
+    // onFinish values drop fields set without a Form.Item (validity.autoRevoke), so read the store.
+    const finalValues = form.getFieldsValue(true) as RoleFormValues;
 
-      const fullRoleData = convertFormValuesToRoleFormData(finalValues, role.type, role.status);
-      const currentProtection = finalValues.protection || {};
-      const changes = detectChanges(initialValues, finalValues);
+    const fullRoleData = convertFormValuesToRoleFormData(finalValues, role.type, role.status);
+    const currentProtection = finalValues.protection || {};
+    const changes = detectChanges(initialValues, finalValues);
 
-      if (changes.needsTwoStepUpdate) {
-        setIsSubmitting(true);
-        try {
-          const protectionOnlyData: Partial<RoleFormData> = {
-            protection: fullRoleData.protection,
-          };
-          await handleUpdate(id, protectionOnlyData, { silent: true });
+    if (changes.needsTwoStepUpdate) {
+      setIsSubmitting(true);
+      try {
+        const protectionOnlyData: Partial<RoleFormData> = {
+          protection: fullRoleData.protection,
+        };
+        await handleUpdate(id, protectionOnlyData, { silent: true });
 
-          const fieldsData = buildFieldsUpdatePayload(fullRoleData, changes);
-          const result = await handleUpdate(id, fieldsData, { silent: true });
+        const fieldsData = buildFieldsUpdatePayload(fullRoleData, changes);
+        const result = await handleUpdate(id, fieldsData, { silent: true });
 
-          message.success(RC.LABELS.MESSAGES.UPDATED(result.name));
-          onSuccess?.();
-        } catch (error) {
-          // Both steps are silent, so the refusal is shown here.
-          message.error(error instanceof Error ? error.message : RC.LABELS.MESSAGES.UPDATE_FAILED);
-        } finally {
-          setIsSubmitting(false);
-        }
-      } else {
-        const roleData = buildUpdatePayload(fullRoleData, currentProtection, changes);
-        await handleUpdate(id, roleData);
+        message.success(RC.LABELS.MESSAGES.UPDATED(result.name));
         onSuccess?.();
+      } catch (error) {
+        // Both steps are silent, so the refusal is shown here.
+        message.error(error instanceof Error ? error.message : RC.LABELS.MESSAGES.UPDATE_FAILED);
+      } finally {
+        setIsSubmitting(false);
       }
-    },
-    [id, role, initialValues, form, handleUpdate, onSuccess, message],
-  );
+    } else {
+      const roleData = buildUpdatePayload(fullRoleData, currentProtection, changes);
+      await handleUpdate(id, roleData);
+      onSuccess?.();
+    }
+  }, [id, role, initialValues, form, handleUpdate, onSuccess, message]);
 
   return {
     handleSubmit,

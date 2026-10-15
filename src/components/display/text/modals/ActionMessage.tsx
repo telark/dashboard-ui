@@ -15,7 +15,14 @@ const ActionMessage: React.FC<ActionMessageProps> = ({
   resourceType,
   customMessage,
 }) => {
-  if (customMessage) return <>{customMessage}</>;
+  if (customMessage) {
+    return (
+      <>
+        {resourceName && <div style={MODAL_CHROME.RESOURCE_NAME}>{resourceName}</div>}
+        {customMessage}
+      </>
+    );
+  }
 
   return (
     <>

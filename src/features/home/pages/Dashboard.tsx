@@ -15,6 +15,7 @@ import {
 } from '../../plans/protection/store';
 import { selectGlobalConfigState } from '../../globalconfig/store';
 import {
+  HOME_BOX_ICONS,
   HOME_CHART_LAYOUT as C,
   HOME_CHART_TEXTS as CT,
   HOME_DASHBOARD_LAYOUT as L,
@@ -125,6 +126,7 @@ const Dashboard: React.FC = () => {
           />
           <SummaryBox
             title={T.APPLICATIONS.TITLE}
+            icon={HOME_BOX_ICONS.APPLICATIONS}
             viewAllTo={APP_ROUTES.APPLICATIONS}
             value={appsView.total}
             breakdown={appsView.breakdown}
@@ -132,6 +134,7 @@ const Dashboard: React.FC = () => {
           />
           <SummaryBox
             title={T.PLANS.TITLE}
+            icon={HOME_BOX_ICONS.PLANS}
             viewAllTo={APP_ROUTES.PROTECTION_PLANS}
             value={plansView.total}
             breakdown={plansView.breakdown}
@@ -143,6 +146,7 @@ const Dashboard: React.FC = () => {
           />
           <ListBox
             title={T.PLANS_ATTENTION.TITLE}
+            icon={HOME_BOX_ICONS.PLANS_ATTENTION}
             viewAllTo={APP_ROUTES.PROTECTION_PLANS}
             rows={plansView.attentionRows}
             emptyText={T.PLANS_ATTENTION.EMPTY}
@@ -150,6 +154,7 @@ const Dashboard: React.FC = () => {
           />
           <ListBox
             title={T.RECENT_CHANGES.TITLE}
+            icon={HOME_BOX_ICONS.RECENT_CHANGES}
             viewAllTo={APP_ROUTES.APPLICATIONS}
             rows={appsView.recentRows}
             emptyText={T.RECENT_CHANGES.EMPTY}
@@ -159,6 +164,7 @@ const Dashboard: React.FC = () => {
         <div style={{ display: 'grid', gridAutoRows: C.ROW_HEIGHT_PX, gap: L.GRID_GAP_PX }}>
           <ChartBox
             title={CT.CHANGE_ACTIVITY.TITLE}
+            icon={HOME_BOX_ICONS.ACTIVITY}
             isEmpty={appsView.activity.data.length === 0}
             emptyText={CT.CHANGE_ACTIVITY.EMPTY}
             {...appsView.state}
@@ -167,6 +173,7 @@ const Dashboard: React.FC = () => {
           </ChartBox>
           <ChartBox
             title={CT.PLAN_ACTIVITY.TITLE}
+            icon={HOME_BOX_ICONS.ACTIVITY}
             isEmpty={plansView.activity.data.length === 0}
             emptyText={CT.PLAN_ACTIVITY.EMPTY}
             {...plansView.state}

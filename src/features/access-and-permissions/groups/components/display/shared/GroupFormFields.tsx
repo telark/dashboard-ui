@@ -2,7 +2,6 @@ import React from 'react';
 import { Form, Input } from 'antd';
 import LabeledInput from '../../../../../../components/display/inputs/LabeledInput';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
-import { DEFAULT_COLORS } from '../../../../../../constants';
 import CategorySelect from './CategorySelect';
 import type { AssignmentSelectOption } from '../../../../roles/models';
 
@@ -35,17 +34,7 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
         className="form-item-compact no-asterisk"
         validateTrigger="onChange"
       >
-        <Input
-          placeholder={GC.LABELS.FORM.FIELDS.NAME_PLACEHOLDER}
-          allowClear
-          style={{
-            height: 36,
-            borderRadius: 8,
-            border: `1px solid ${DEFAULT_COLORS.BORDER_DEFAULT}`,
-            fontSize: 14,
-            padding: '0 12px',
-          }}
-        />
+        <Input placeholder={GC.LABELS.FORM.FIELDS.NAME_PLACEHOLDER} allowClear />
       </Form.Item>
       <LabeledInput
         name="description"

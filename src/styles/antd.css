@@ -1,7 +1,3 @@
-.custom-table .ant-table-thead > tr > th {
-  background-color: transparent !important;
-}
-
 /* Generic app table overrides */
 .app-table .ant-table-thead > tr > th.ant-table-selection-column {
   background: var(--color-page-bg) !important;
@@ -14,6 +10,43 @@
 .app-table .ant-table-thead > tr > th::before,
 .app-table .ant-table-cell::before {
   display: none !important;
+}
+/* The pinned row-actions cell lays the selection tint over the page color: a see-through
+   tint would show the columns scrolling under it. */
+.app-table
+  .ant-table-tbody
+  > tr.ant-table-row.ant-table-row-selected
+  > td.ant-table-cell.ant-table-cell-fix,
+.app-table
+  .ant-table-tbody
+  > tr.ant-table-row.ant-table-row-selected:hover
+  > td.ant-table-cell.ant-table-cell-fix {
+  background:
+    linear-gradient(var(--color-success-tint), var(--color-success-tint)), var(--color-page-bg);
+}
+
+/* Clickable rows take focus (PageLayout). Their ring goes in the cells: the table clips the row's
+   own outline, and the pinned actions cell covers its end. */
+.app-table .ant-table-tbody > tr.ant-table-row:focus-visible {
+  outline: none;
+}
+.app-table .ant-table-tbody > tr.ant-table-row:focus-visible > td {
+  box-shadow:
+    inset 0 2px var(--color-info),
+    inset 0 -2px var(--color-info);
+}
+.app-table .ant-table-tbody > tr.ant-table-row:focus-visible > td:first-child {
+  box-shadow:
+    inset 2px 2px var(--color-info),
+    inset 0 -2px var(--color-info);
+}
+.app-table .ant-table-tbody > tr.ant-table-row:focus-visible > td:last-child {
+  box-shadow:
+    inset -2px 2px var(--color-info),
+    inset 0 -2px var(--color-info);
+}
+.app-table .ant-table-tbody > tr.ant-table-row:focus-visible > td:only-child {
+  box-shadow: inset 0 0 0 2px var(--color-info);
 }
 
 /* Reduce spacing between selection column and first data column - Fixed width to prevent shifting */
@@ -241,22 +274,34 @@
   margin-top: 8px !important; /* Distance from subtitle to content */
 }
 
-/* Permissions label text style */
-.permission-label {
-  font-weight: 500 !important;
-  color: var(--color-text-muted) !important;
-}
-
 /* Ant Design modals are rendered in a portal outside #root, so they need explicit targeting */
 .ant-modal,
 .ant-modal * {
   font-family: 'Geist', sans-serif !important;
 }
 
-/* Every solid primary CTA is semibold, like BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT; antd has no
-   primary-only weight token. */
-.ant-btn-variant-solid.ant-btn-color-primary {
+/* Every solid primary or danger CTA is semibold, like BUTTON_CONFIGS.PRIMARY_BUTTON.FONT_WEIGHT;
+   antd has no primary-only weight token. */
+.ant-btn-variant-solid.ant-btn-color-primary,
+.ant-btn-variant-solid.ant-btn-color-dangerous {
   font-weight: 600;
+}
+
+/* The footer Cancel (ActionButtons, PANEL_FOOTER.CANCEL_CLASS) is muted text that inverts on
+   hover. It sets antd's own button variables, so the focus ring and disabled state stay antd's. */
+.app-panel-surface .ant-btn.ant-btn-variant-text.tk-footer-cancel {
+  --ant-btn-text-color: var(--color-text-on-surface-muted);
+  --ant-btn-text-color-hover: var(--color-surface-white);
+  --ant-btn-text-color-active: var(--color-surface-white);
+  --ant-btn-bg-color-hover: var(--color-text-on-surface);
+  --ant-btn-bg-color-active: var(--color-text-on-surface);
+  font-weight: 500;
+}
+
+/* A TextArea's showCount counter hangs below the box, out of flow. In a dialog nothing else
+   reserves its line, so the box does, and the content and actions below stay clear of it. */
+.app-modal .ant-input-textarea-show-count {
+  margin-bottom: calc(var(--ant-font-size) * var(--ant-line-height));
 }
 
 /* Button icon vertical alignment */
@@ -277,170 +322,6 @@
   display: inline-flex !important;
   align-items: center !important;
   vertical-align: middle !important;
-}
-
-/* Instance containers collapse - left align header content */
-.instance-containers-collapse .ant-collapse-header {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  padding-top: 2px !important;
-  padding-bottom: 2px !important;
-  align-items: flex-start !important;
-}
-
-.instance-containers-collapse .ant-collapse-header-text {
-  width: 100% !important;
-  display: flex !important;
-  justify-content: flex-start !important;
-  padding-left: 0 !important;
-  margin-left: 0 !important;
-}
-
-.instance-containers-collapse .ant-collapse-content-box {
-  padding-top: 2px !important;
-  padding-bottom: 0 !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-
-.instance-containers-collapse .ant-collapse-item {
-  margin-bottom: 0 !important;
-}
-
-/* Reduce Row padding inside container details */
-.instance-containers-collapse .ant-collapse-content-box .ant-card-body > div > div {
-  padding-top: 4px !important;
-  padding-bottom: 2px !important;
-  min-height: 32px !important;
-}
-
-/* Align container fields with container name */
-.instance-containers-collapse .ant-collapse-content-box .ant-card-body {
-  padding-left: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-/* Remove wrapper padding to align with container name */
-.instance-containers-collapse .ant-collapse-content-box .ant-card-body > div {
-  padding: 0 !important;
-}
-
-/* Reduce spacing for Containers title row */
-.ant-card-body > div > div:has(.instance-containers-collapse-wrapper) > div:first-child {
-  padding: 4px 0 !important;
-  margin-bottom: 4px !important;
-}
-
-/* Reduce bottom spacing of containers section */
-.instance-containers-collapse-wrapper {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-.compact-menu .ant-menu-item {
-  margin-top: 0px !important;
-  margin-bottom: 0px !important;
-}
-
-.compact-menu.ant-menu-inline-collapsed .ant-menu-item {
-  margin: 10px auto !important;
-  padding: 0px !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 100% !important;
-  text-align: center !important;
-}
-
-.compact-menu.ant-menu-inline-collapsed .ant-menu-item > span {
-  display: none !important;
-}
-
-.compact-menu.ant-menu-inline-collapsed .ant-menu-item-icon {
-  margin: 0px !important;
-  padding: 0px !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-}
-
-.compact-menu.ant-menu-inline-collapsed .ant-menu-item-icon,
-.compact-menu.ant-menu-inline-collapsed .ant-menu-item-icon svg {
-  font-size: 18px !important;
-  width: 18.5px !important;
-  height: 18.5px !important;
-}
-
-.compact-menu.ant-menu-inline-collapsed {
-  padding: 0px !important;
-  margin: 0px !important;
-  width: 100% !important;
-}
-
-.compact-menu.ant-menu-inline-collapsed .ant-menu-submenu-title {
-  padding: 0px !important;
-  margin: 0px !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 100% !important;
-  text-align: center !important;
-}
-
-.compact-menu.ant-menu-inline-collapsed .ant-menu-submenu-title .ant-menu-submenu-arrow {
-  display: none !important;
-}
-
-.compact-menu .ant-menu-item-group-title {
-  margin-bottom: 0px !important;
-  padding-bottom: 0px !important;
-}
-
-.compact-menu .ant-menu-submenu {
-  background-color: transparent !important;
-}
-
-.compact-menu .ant-menu-submenu-title {
-  background-color: transparent !important;
-  padding-left: 10px !important;
-  margin-left: 9.5px !important;
-  color: var(--color-text-primary) !important;
-}
-
-.compact-menu .ant-menu-submenu-active > .ant-menu-submenu-title,
-.compact-menu .ant-menu-submenu-open > .ant-menu-submenu-title,
-.compact-menu .ant-menu-submenu-selected > .ant-menu-submenu-title {
-  color: var(--color-text-primary) !important;
-}
-
-.compact-menu .ant-menu-submenu-inner {
-  background-color: transparent !important;
-}
-
-.compact-menu .ant-menu-sub {
-  background-color: transparent !important;
-}
-
-.compact-menu .ant-menu-sub .ant-menu-item {
-  padding-left: 10px !important;
-  margin-left: 9.5px !important;
-}
-
-.compact-menu .ant-menu-item-icon {
-  font-size: 18px !important;
-  width: 18.5px !important;
-  height: 18.5px !important;
-}
-
-.compact-menu .ant-menu-item-icon svg {
-  width: 18.5px !important;
-  height: 18.5px !important;
-}
-
-.compact-menu .ant-menu,
-.compact-menu .ant-menu-item,
-.compact-menu .ant-menu-submenu {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 /* Role Assignment Select Styles */
@@ -534,6 +415,10 @@
   --app-toolbar-text-color: var(--color-text-on-surface);
   --app-toolbar-border-color: var(--color-surface-border);
   --app-toolbar-disabled-color: var(--color-text-on-surface-disabled);
+  --app-toolbar-hover-bg: var(--color-surface-hover);
+  --app-muted-text-color: var(--color-text-on-surface-muted);
+  /* The track carries the white "Off" label, so it stays dark enough to read. */
+  --app-switch-off-color: var(--color-text-on-surface-muted);
 }
 
 .user-menu-dropdown .ant-dropdown-menu-item-divider {
@@ -600,10 +485,43 @@
   border-color: var(--color-surface-border) !important;
 }
 
+/* That pin also hid antd's hover, focus and error borders. A hovered or focused field takes the
+   muted ink, like App.tsx's hoverBorderColor and activeBorderColor (selects already do), and an
+   invalid field keeps the error red. The shared DatePicker's green hover and focus
+   (datePicker.css, 2.1:1 on white) give way here too; a disabled field doesn't react. */
+.app-panel-surface .ant-input:focus,
+.app-panel-surface .ant-input:hover:where(:not(.ant-input-disabled)),
+.app-panel-surface .ant-input-affix-wrapper-focused,
+.app-panel-surface .ant-input-affix-wrapper:hover:where(:not(.ant-input-affix-wrapper-disabled)),
+.app-panel-surface .ant-input-number-focused,
+.app-panel-surface .ant-input-number:hover:where(:not(.ant-input-number-disabled)) {
+  border-color: var(--color-text-on-surface-muted) !important;
+}
+
+.app-panel-surface .ant-picker.ant-picker-outlined.ant-picker-focused,
+.app-panel-surface .ant-picker.ant-picker-outlined:hover {
+  border-color: var(--color-text-on-surface-muted) !important;
+  box-shadow: none !important;
+}
+
+.app-panel-surface .ant-picker.ant-picker-outlined.ant-picker-disabled:hover {
+  border-color: var(--color-surface-border) !important;
+}
+
+.app-panel-surface .ant-input.ant-input-status-error,
+.app-panel-surface .ant-input-affix-wrapper.ant-input-status-error,
+.app-panel-surface .ant-input-number.ant-input-number-status-error,
+.app-panel-surface .ant-select.ant-select-status-error,
+.app-panel-surface .ant-picker.ant-picker-outlined.ant-picker-status-error {
+  border-color: var(--color-danger) !important;
+}
+
 /* Pills are antd Tags (TAG_THEME and TAG_CLASS in src/constants/layout/tags.ts). Font,
    line height and wrapping follow the parent, as the span pills before them did. */
 .ant-tag.tk-pill {
   padding: 2px 10px;
+  /* Not `all`: any table re-layout (each frame of a sidebar slide) restarted one on every pill. */
+  transition-property: color, background-color, border-color;
   font-family: inherit;
   font-weight: 700;
   line-height: inherit;

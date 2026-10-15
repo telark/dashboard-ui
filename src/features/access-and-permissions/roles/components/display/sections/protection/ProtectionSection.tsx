@@ -4,12 +4,9 @@ import Section from '../../../../../../../components/display/sections/Section';
 import { Switch } from '../../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import { useProtectionFields } from '../../../../hooks';
-import type { ProtectionSectionProps } from '../../../../models';
 
-const ProtectionSection: React.FC<ProtectionSectionProps> = ({ onManualChange }) => {
-  const { updateProtectionFields, getPreventScopeChanges } = useProtectionFields({
-    onManualChange,
-  });
+const ProtectionSection: React.FC = () => {
+  const { updateProtectionFields, getPreventScopeChanges } = useProtectionFields();
 
   return (
     <Section

@@ -1,5 +1,4 @@
-import { DEFAULT_COLORS, withAlpha } from '../shared/colors';
-import { AVATAR_RING } from './avatars';
+import { DEFAULT_COLORS } from '../shared/colors';
 import { CONTROL_HEIGHT } from './controls';
 import { HEADER_LAYOUT } from './header';
 import { SIDEBAR_LAYOUT } from './sidebar';
@@ -17,6 +16,25 @@ export const PANEL_THEME_TOKENS = {
   colorTextPlaceholder: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   colorIcon: DEFAULT_COLORS.TEXT_ON_SURFACE,
   colorBorder: DEFAULT_COLORS.SURFACE_BORDER,
+  // antd draws every keyboard focus ring in this color, and its light mint fades on white
+  // (1.3:1). The muted ink (4.8:1) is also what inputs and selects show on focus here.
+  colorPrimaryBorder: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+} as const;
+
+// PanelThemePrewarm (idle timing and its offscreen box) and the panel theme's fixed css-var key.
+export const PANEL_PREWARM = {
+  CSS_VAR_KEY: 'tk-panel',
+  IDLE_TIMEOUT_MS: 4000,
+  // Safari has no requestIdleCallback.
+  FALLBACK_DELAY_MS: 2000,
+  CONTAINER: {
+    position: 'fixed' as const,
+    top: 0,
+    left: -10000,
+    width: 480,
+    visibility: 'hidden' as const,
+    pointerEvents: 'none' as const,
+  },
 } as const;
 
 // antd paints the selected and active option with colorPrimary tints (green).
@@ -35,9 +53,30 @@ export const SELECT_THEME = {
   activeOutlineColor: 'transparent',
 } as const;
 
+// View panel tabs: antd paints the selected tab in colorPrimary, which fades on white (2.1:1).
+export const PANEL_TABS_THEME = {
+  itemColor: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  itemHoverColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  itemActiveColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  itemSelectedColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  inkBarColor: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  titleFontSize: 13,
+  horizontalItemPadding: '9px 0',
+  horizontalItemGutter: 22,
+  horizontalMargin: '0 0 14px 0',
+} as const;
+
 // Expanded panels stop at a fully opened sidebar's edge so navigation stays reachable;
 // small screens keep the panel's own width up to the viewport.
 export const PANEL_MAX_WIDTH = `max(calc(100vw - ${SIDEBAR_LAYOUT.WIDTH_MAX}px), min(100vw, 480px))`;
+
+// Panels slide in decelerating hard (nearly in place a third of the way through) and slide out
+// faster, inert, so the motion never holds up the next click.
+const PANEL_ENTER_MS = 220;
+const PANEL_EXIT_MS = 160;
+const PANEL_ENTER_EASING = 'cubic-bezier(0.22, 1, 0.36, 1)';
+const PANEL_EXIT_EASING = 'cubic-bezier(0.4, 0, 1, 1)';
+const PANEL_BODY_PADDING = 24;
 
 export const SLIDE_OUT = {
   BACKDROP: {
@@ -48,7 +87,7 @@ export const SLIDE_OUT = {
     bottom: 0,
     background: DEFAULT_COLORS.OVERLAY_BACKDROP,
     zIndex: 1000,
-    animation: 'fadeIn 0.2s ease-in-out',
+    animation: `fadeIn ${PANEL_ENTER_MS}ms ease-out`,
   },
   PANEL: {
     position: 'fixed' as const,
@@ -60,9 +99,18 @@ export const SLIDE_OUT = {
     display: 'flex' as const,
     flexDirection: 'column' as const,
     borderRight: `0.5px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
-    animation: 'slideInRight 0.3s ease-out',
-    transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    animation: `slideInRight ${PANEL_ENTER_MS}ms ${PANEL_ENTER_EASING}`,
+    transition: 'transform 0.3s ease, width 0.3s ease',
     willChange: 'transform',
+    // Focused on open only to start the Tab order there; it draws no ring of its own.
+    outline: 'none',
+  },
+  // prefers-reduced-motion: the panel appears and leaves in place, and expands without animating.
+  NO_MOTION: { animation: 'none', transition: 'none' },
+  EXIT: {
+    PANEL: { transform: 'translateX(100%)' },
+    BACKDROP: { opacity: 0 },
+    TIMING: { duration: PANEL_EXIT_MS, easing: PANEL_EXIT_EASING, fill: 'forwards' as const },
   },
   // Exactly as tall as the app header (and follows it): the panel's top bar lines up with it.
   HEADER: {
@@ -104,6 +152,8 @@ export const SLIDE_OUT = {
     cursor: 'not-allowed' as const,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
   },
+  // Plain buttons, out of antd's reach: index.css gives them the panel's focus ring.
+  HEADER_BUTTON_CLASS: 'tk-panel-header-button',
   TOOLBAR_EDIT_LABEL: 'Edit',
   TOOLBAR_DELETE_LABEL: 'Delete',
   TITLE_CONTAINER: {
@@ -133,30 +183,20 @@ export const SLIDE_OUT = {
     color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     fontSize: 18,
     transition: 'color 0.2s',
+    borderRadius: 4,
   },
   CLOSE_BUTTON_HOVER_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE,
   CLOSE_BUTTON_DEFAULT_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   EXPAND_TOOLTIP: 'Expand panel for a wider layout',
   COLLAPSE_TOOLTIP: 'Collapse panel to default width',
+  // Above the pinned footer the padded body still scrolls itself, so the scrollbar stays at the
+  // panel edge.
   CONTENT: {
     flex: 1,
     overflowY: 'auto' as const,
-    padding: '24px',
+    padding: PANEL_BODY_PADDING,
     display: 'flex' as const,
     flexDirection: 'column' as const,
-  },
-  // Above the pinned footer (PanelFooter) the padded body still scrolls itself, so the scrollbar
-  // stays at the panel edge.
-  CONTENT_ABOVE_FOOTER: {
-    flex: 1,
-    overflowY: 'auto' as const,
-    padding: '24px 24px 0',
-    display: 'flex' as const,
-    flexDirection: 'column' as const,
-  },
-  PINNED_FOOTER: {
-    flexShrink: 0,
-    padding: '0 24px 24px',
   },
   FORM_CONTENT: {
     flex: 1,
@@ -164,32 +204,6 @@ export const SLIDE_OUT = {
     flexDirection: 'column' as const,
     gap: 0,
   },
-  FOOTER: {
-    paddingTop: 6,
-    paddingBottom: 6,
-    borderTop: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
-    display: 'flex' as const,
-    flexDirection: 'row' as const,
-    justifyContent: 'space-between' as const,
-    alignItems: 'center' as const,
-    gap: 12,
-    marginTop: 16,
-  },
-  CANCEL_BUTTON: {
-    background: 'none',
-    border: 'none',
-    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-    fontSize: 14,
-    fontWeight: 500,
-    cursor: 'pointer' as const,
-    padding: '4px 16px',
-    borderRadius: 6,
-    transition: 'all 0.2s',
-  },
-  CANCEL_BUTTON_HOVER_BACKGROUND: DEFAULT_COLORS.TEXT_ON_SURFACE,
-  CANCEL_BUTTON_DEFAULT_BACKGROUND: 'none',
-  CANCEL_BUTTON_HOVER_COLOR: DEFAULT_COLORS.SURFACE_WHITE,
-  CANCEL_BUTTON_DEFAULT_COLOR: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   KEYFRAMES: {
     SLIDE_IN_RIGHT: `
       @keyframes slideInRight {
@@ -214,37 +228,34 @@ export const SLIDE_OUT = {
   },
 } as const;
 
+// The one action footer of panels and dialogs (ActionButtons): Cancel, then the primary, on the
+// right. The buttons' size, colors and spinner come from the App.tsx theme.
+export const PANEL_FOOTER = {
+  // Panels pin it in a bar that mirrors the header: as tall, 24px sides and a full-width line.
+  BAR: {
+    height: HEADER_LAYOUT.HEIGHT_PX,
+    flexShrink: 0,
+    boxSizing: 'border-box' as const,
+    padding: '0 24px',
+    borderTop: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+    display: 'flex' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'flex-end' as const,
+  },
+  ACTIONS: {
+    display: 'flex' as const,
+    justifyContent: 'flex-end' as const,
+    alignItems: 'center' as const,
+    gap: 8,
+  },
+  // Dialogs place it under their content, 12px below it with BaseModal's content gap.
+  DIALOG: { marginTop: 6 },
+  // The muted Cancel that inverts on hover (antd.css).
+  CANCEL_CLASS: 'tk-footer-cancel',
+} as const;
+
 export const FILTER_PANEL = {
-  BACKDROP: {
-    position: 'fixed' as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: DEFAULT_COLORS.OVERLAY_BACKDROP,
-    zIndex: 1002,
-    animation: 'fadeIn 0.2s ease-in-out',
-  },
-  PANEL: {
-    position: 'fixed' as const,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    background: DEFAULT_COLORS.SURFACE_WHITE,
-    zIndex: 1003,
-    display: 'flex' as const,
-    flexDirection: 'column' as const,
-    borderRight: `0.5px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
-    animation: 'slideInRight 0.3s ease-out',
-  },
-  CONTENT: {
-    flex: 1,
-    overflowY: 'auto' as const,
-    padding: '24px',
-    display: 'flex' as const,
-    flexDirection: 'column' as const,
-    gap: 32,
-  },
+  TITLE: 'Filter',
   // A filter field is a form item like the panels' forms: compact label, 16px apart.
   ITEM_CLASS: 'form-item-compact',
   ITEM: { marginBottom: 16 },
@@ -258,12 +269,6 @@ export const FILTER_PANEL = {
     flexDirection: 'column' as const,
     gap: 6,
     flex: 1,
-  },
-  DATE_LABEL: {
-    fontSize: 13,
-    fontWeight: 500,
-    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-    lineHeight: '20px',
   },
   DATE_INPUT: {
     width: '100%',
@@ -310,6 +315,34 @@ export const FILTER_PANEL_CONFIG = {
 } as const;
 
 export const VIEW = {
+  TAB_DETAILS_LABEL: 'Details',
+  // The tab bar joins the header band: cancels CONTAINER's gap.
+  TABS: { marginTop: -20 },
+  // Carries the header band to the panel edges, through the body's padding.
+  TAB_BAR: {
+    background: DEFAULT_COLORS.SURFACE_SUBTLE,
+    margin: `0 -${PANEL_BODY_PADDING}px 14px`,
+    padding: `0 ${PANEL_BODY_PADDING}px`,
+  },
+  TAB_LABEL: { fontWeight: 500 },
+  TAB_COUNT: {
+    display: 'inline-block' as const,
+    minWidth: 18,
+    marginLeft: 6,
+    padding: '0 5px',
+    borderRadius: 4,
+    background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+    fontSize: 11,
+    fontWeight: 600,
+    lineHeight: '18px',
+    textAlign: 'center' as const,
+    fontVariantNumeric: 'tabular-nums',
+  },
+  TAB_COUNT_ACTIVE: {
+    background: DEFAULT_COLORS.TEXT_ON_SURFACE,
+    color: DEFAULT_COLORS.SURFACE_WHITE,
+  },
   CONTAINER: {
     display: 'flex' as const,
     flexDirection: 'column' as const,
@@ -317,88 +350,37 @@ export const VIEW = {
   },
   HEADER: {
     display: 'flex' as const,
-    flexDirection: 'column' as const,
     alignItems: 'center' as const,
-    gap: 8,
-    paddingBottom: 20,
-    borderBottom: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+    gap: 14,
+    margin: `-${PANEL_BODY_PADDING}px -${PANEL_BODY_PADDING}px 0`,
+    padding: `${PANEL_BODY_PADDING}px ${PANEL_BODY_PADDING}px 18px`,
+    background: DEFAULT_COLORS.SURFACE_SUBTLE,
     position: 'relative' as const,
   },
-  ICON_WRAPPER: {
-    width: 64,
-    height: 64,
-    borderRadius: '50%',
-    background: DEFAULT_COLORS.SURFACE_WHITE,
-    display: 'flex' as const,
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    border: `2px solid ${withAlpha(DEFAULT_COLORS.SUCCESS, 0.35)}`,
-  },
+  ICON_SIZE: 40,
+  // Leaves the 40px ring its 2px gap, like the actor avatars.
+  AVATAR_SIZE: 36,
+  GROUP_ICON_SIZE: 20,
   NAME_STACK: {
     display: 'flex' as const,
     flexDirection: 'column' as const,
-    alignItems: 'center' as const,
-    gap: 0,
-    marginTop: -4,
+    gap: 2,
+    minWidth: 0,
   },
   TITLE: {
     margin: 0,
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: 700,
+    lineHeight: 1.3,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE,
     letterSpacing: '-0.02em',
   },
   DESCRIPTION: {
-    margin: '0 0 4px 0',
+    margin: 0,
     fontSize: 13,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-    textAlign: 'center' as const,
-    maxWidth: '360px',
     lineHeight: 1.4,
     wordBreak: 'break-word' as const,
-  },
-  AVATAR_ROW: {
-    display: 'flex' as const,
-    alignItems: 'center' as const,
-    marginTop: 4,
-  },
-  AVATAR: {
-    border: `${AVATAR_RING.BORDER_WIDTH}px solid ${DEFAULT_COLORS.SUCCESS}`,
-    padding: AVATAR_RING.BORDER_WIDTH,
-    boxSizing: 'border-box' as const,
-    // The inset shadow whitens only the ring gap; a white background also hid the white initial.
-    boxShadow: `inset 0 0 0 ${AVATAR_RING.BORDER_WIDTH}px ${DEFAULT_COLORS.SURFACE_WHITE}, 0 0 0 2px ${DEFAULT_COLORS.SURFACE_WHITE}`,
-  },
-  OVERFLOW_BADGE: {
-    width: 32,
-    height: 32,
-    borderRadius: '50%',
-    background: DEFAULT_COLORS.SUCCESS,
-    color: DEFAULT_COLORS.PILL_TEXT,
-    display: 'flex' as const,
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    fontWeight: 700,
-    fontSize: 12,
-    marginLeft: -6,
-    boxShadow: `0 0 0 3px ${DEFAULT_COLORS.SURFACE_WHITE}`,
-    zIndex: 1,
-    cursor: 'default' as const,
-  },
-  OVERFLOW_TOOLTIP: {
-    display: 'flex' as const,
-    flexDirection: 'column' as const,
-    gap: 6,
-  },
-  OVERFLOW_TOOLTIP_ITEM: {
-    display: 'flex' as const,
-    alignItems: 'center' as const,
-    gap: 8,
-  },
-  OVERFLOW_USERNAME: {
-    fontSize: 13,
-    fontWeight: 600,
-    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
   },
   DETAILS: {
     CONTAINER: {

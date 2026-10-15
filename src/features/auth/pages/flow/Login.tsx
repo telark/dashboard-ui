@@ -76,7 +76,6 @@ const Login: React.FC = () => {
         values.email,
         message,
         () => navigate(APP_ROUTES.HOME),
-        undefined,
         (info) => {
           if (!isMountedRef.current) return;
           setOrphanedInfo(info);
@@ -99,7 +98,6 @@ const Login: React.FC = () => {
         values.email,
         message,
         () => navigate(APP_ROUTES.HOME),
-        undefined,
         (info) => {
           if (!isMountedRef.current) return;
           setOrphanedInfo(info);
@@ -210,11 +208,17 @@ const Login: React.FC = () => {
           </Button>
         )}
 
-        {selfRegEnabled && (
+        {selfRegEnabled ? (
           <AuthFooter
             text={LOGIN_CONSTANTS.UI.FOOTER_TEXT}
             linkText={LOGIN_CONSTANTS.UI.FOOTER_LINK}
             onLinkClick={() => navigate(APP_ROUTES.REGISTER)}
+          />
+        ) : (
+          <AuthFooter
+            text={LOGIN_CONSTANTS.UI.NO_SELF_REGISTRATION_FOOTER_TEXT}
+            linkText={LOGIN_CONSTANTS.UI.INSTALL_NOTES_LINK}
+            linkHref={LOGIN_CONSTANTS.UI.INSTALL_NOTES_URL}
           />
         )}
       </AuthCard>

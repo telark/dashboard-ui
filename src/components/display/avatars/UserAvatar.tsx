@@ -12,20 +12,33 @@ interface UserAvatarProps {
   style?: React.CSSProperties;
 }
 
+// Generated images by style, seed and size: a remount, or a new avatar object for the same person,
+// shows the image at once instead of initials, which antd measures (forced layout) per avatar.
+const generatedAvatars = new Map<string, string>();
+
 const UserAvatar: React.FC<UserAvatarProps> = ({ avatar, username, size = 40, style }) => {
-  const [avatarSrc, setAvatarSrc] = useState<string | undefined>(undefined);
+  const avatarStyle = avatar?.style;
+  const seed = avatar?.seed;
+  const cacheKey = `${avatarStyle}|${seed}|${size}`;
+  const [avatarSrc, setAvatarSrc] = useState(() => generatedAvatars.get(cacheKey));
 
   useEffect(() => {
     const generateAvatar = async () => {
-      if (avatar?.style && avatar?.seed) {
+      if (avatarStyle && seed) {
+        const cached = generatedAvatars.get(cacheKey);
+        if (cached) {
+          setAvatarSrc(cached);
+          return;
+        }
         try {
-          const styleModule = await loadAvatarStyle(avatar.style);
+          const styleModule = await loadAvatarStyle(avatarStyle);
           if (styleModule) {
             const generated = createAvatar(styleModule, {
-              seed: avatar.seed,
+              seed,
               size: size * 2,
-            });
-            setAvatarSrc(generated.toDataUri());
+            }).toDataUri();
+            generatedAvatars.set(cacheKey, generated);
+            setAvatarSrc(generated);
           } else {
             setAvatarSrc(undefined);
           }
@@ -39,7 +52,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ avatar, username, size = 40, st
     };
 
     generateAvatar();
-  }, [avatar, size]);
+  }, [avatarStyle, seed, size, cacheKey]);
 
   return (
     // antd's overflow:hidden drops the flex min-width to 0, so a crowded row squeezes it oval.

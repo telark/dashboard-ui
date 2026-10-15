@@ -32,7 +32,7 @@ export const useGroupMutations = () => {
         return result;
       } catch (rejection) {
         message.error(rejectionMessage(rejection, GC.LABELS.MESSAGES.CREATE_FAILED));
-        throw new Error(GC.LABELS.MESSAGES.CREATE_FAILED);
+        throw new Error(GC.LABELS.MESSAGES.CREATE_FAILED, { cause: rejection });
       } finally {
         setSubmitting(false);
       }
@@ -55,7 +55,7 @@ export const useGroupMutations = () => {
         return result;
       } catch (rejection) {
         message.error(rejectionMessage(rejection, GC.LABELS.MESSAGES.UPDATE_FAILED));
-        throw new Error(GC.LABELS.MESSAGES.UPDATE_FAILED);
+        throw new Error(GC.LABELS.MESSAGES.UPDATE_FAILED, { cause: rejection });
       } finally {
         setSubmitting(false);
       }
@@ -71,7 +71,7 @@ export const useGroupMutations = () => {
         message.success(GC.LABELS.MESSAGES.DELETED);
       } catch (rejection) {
         message.error(rejectionMessage(rejection, GC.LABELS.MESSAGES.DELETE_FAILED));
-        throw new Error(GC.LABELS.MESSAGES.DELETE_FAILED);
+        throw new Error(GC.LABELS.MESSAGES.DELETE_FAILED, { cause: rejection });
       }
     },
     [dispatch, message],

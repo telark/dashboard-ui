@@ -8,7 +8,6 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
   tooltipMap,
   rowPaddingPx = 4,
   isLocked = false,
-  onManualChange,
   initialScopes,
 }) => {
   return (
@@ -23,7 +22,6 @@ const RolesScopesAndPermissionsList: React.FC<RolesScopesAndPermissionsListProps
           rowPaddingPx={rowPaddingPx}
           isLast={index === areas.length - 1}
           isLocked={isLocked}
-          onManualChange={onManualChange}
           initialScopeValue={initialScopes?.[area.key]}
         />
       ))}

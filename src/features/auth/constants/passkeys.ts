@@ -1,5 +1,3 @@
-import { DEFAULT_COLORS } from '../../../constants';
-
 export const PASSKEYS_CONSTANTS = {
   LABELS: {
     CREATE_BUTTON: 'Register New Passkey',
@@ -46,7 +44,7 @@ export const PASSKEYS_CONSTANTS = {
     BUTTON: 'Add on another device',
     MODAL_TITLE: 'Add a passkey on another device or host',
     MODAL_DESCRIPTION:
-      'Open this link in the browser where you want the new passkey, then register it there. The link works once and expires in 10 minutes.',
+      "Open this link in the browser where you want the new passkey, then register it there. The link adds one passkey and expires in 10 minutes. A canceled or failed prompt doesn't use it up.",
     COPY: 'Copy link',
     COPIED: 'Link copied',
     COPY_FAILED: 'Failed to copy link',
@@ -58,10 +56,6 @@ export const PASSKEYS_CONSTANTS = {
     CREATED_AT: 'creationTimestamp',
     LAST_USED_AT: 'lastUsedTimestamp',
   } as const,
-  COLORS: {
-    TEXT_PRIMARY: DEFAULT_COLORS.TEXT_ON_SURFACE,
-    TEXT_MUTED: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-  },
   VALUES: {
     DEVICE_TYPE_PLATFORM: 'platform',
   },
@@ -69,7 +63,6 @@ export const PASSKEYS_CONSTANTS = {
     TITLE: 'Register New Passkey',
     EDIT_TITLE: 'Edit Passkey',
     BUTTON_TEXT: 'Register',
-    EDIT_BUTTON_TEXT: 'Update',
     DEVICE_NAME_LABEL: 'Passkey Name',
     DEVICE_NAME_PLACEHOLDER: 'e.g. My Laptop, iPhone 13',
     DEVICE_NAME_REQUIRED: 'Device name is required',

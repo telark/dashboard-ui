@@ -1,7 +1,12 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Input, Tooltip, App as AntdApp } from 'antd';
+import { Input, Tooltip, Typography, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
-import { SettingsField } from '../../components/SettingsFields';
+import {
+  SettingsDivider,
+  SettingsField,
+  SettingsFieldLabel,
+  SettingsSubsectionHeader,
+} from '../../components/SettingsFields';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import { Client, authApiClient } from '../../../../api';
@@ -14,6 +19,7 @@ import { extractErrorMessage } from '../../../../utils/helpers/format';
 import { SETTINGS_CONSTANTS } from '../../constants';
 import { IDENTITY_PROVIDER_CONSTANTS as C } from './constants';
 import { useSignInSettingsAccess } from './useSignInSettingsAccess';
+import GoogleSetupHelp from './GoogleSetupHelp';
 
 interface OIDCForm {
   enabled: boolean;
@@ -36,23 +42,38 @@ const trimmed = (form: OIDCForm): OIDCForm => ({
   googleJwkJson: form.googleJwkJson.trim(),
 });
 
-// Mirrors the server's own check so the admin sees the problem before saving. The
-// server still re-checks: this is convenience, not a trust boundary.
-function validate(form: OIDCForm, hasPinnedKeys: boolean): string | null {
-  if (!form.enabled) return null;
-  if (!form.googleClientID.trim()) return C.MESSAGES.CLIENT_ID_REQUIRED;
-  if (!form.egressAllowed && !form.googleJwkJson.trim() && !hasPinnedKeys) {
-    return C.MESSAGES.TRUST_SOURCE_REQUIRED;
-  }
-  if (form.googleJwkJson.trim()) {
-    try {
-      JSON.parse(form.googleJwkJson);
-    } catch {
-      return C.MESSAGES.JWK_INVALID;
-    }
-  }
-  return null;
+interface OIDCErrors {
+  clientId?: string;
+  keys?: string;
 }
+
+// Mirrors the server's own check so the admin sees the problem before saving. The
+// server still re-checks: this is convenience, not a trust boundary. The key set is
+// checked only while its field shows, so no error is ever hidden.
+function validate(form: OIDCForm, hasPinnedKeys: boolean): OIDCErrors {
+  if (!form.enabled) return {};
+  const errors: OIDCErrors = {};
+  if (!form.googleClientID.trim()) errors.clientId = C.MESSAGES.CLIENT_ID_REQUIRED;
+  if (form.egressAllowed) return errors;
+  if (!form.googleJwkJson.trim()) {
+    if (!hasPinnedKeys) errors.keys = C.MESSAGES.TRUST_SOURCE_REQUIRED;
+    return errors;
+  }
+  try {
+    JSON.parse(form.googleJwkJson);
+  } catch {
+    errors.keys = C.MESSAGES.JWK_INVALID;
+  }
+  return errors;
+}
+
+// Like the plan form's parameter errors: red text right under the field.
+const FieldError: React.FC<{ message?: string }> = ({ message }) =>
+  message ? (
+    <Typography.Text type="danger" style={{ fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE }}>
+      {message}
+    </Typography.Text>
+  ) : null;
 
 const OIDCSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
@@ -65,9 +86,11 @@ const OIDCSection: React.FC = memo(() => {
   const [saving, setSaving] = useState(false);
   const hasPinnedKeys = Boolean(globalConfig?.data?.oidc?.googleJwkJson);
 
-  useEffect(() => {
-    if (!globalConfig?.data) return;
-    const oidc = globalConfig.data.oidc;
+  const configData = globalConfig?.data;
+  const [loadedFrom, setLoadedFrom] = useState(configData);
+  // Loaded while rendering (React's derived-state pattern), so no effect re-renders the section.
+  if (configData && (configData !== loadedFrom || !initial)) {
+    const oidc = configData.oidc;
     const loaded: OIDCForm = {
       enabled: Boolean(oidc?.enabled),
       googleClientID: String(oidc?.googleClientID ?? ''),
@@ -75,15 +98,17 @@ const OIDCSection: React.FC = memo(() => {
       // The stored set goes stale, so it is never shown: the field only takes a new one.
       googleJwkJson: EMPTY_FORM.googleJwkJson,
     };
+    setLoadedFrom(configData);
     setForm(loaded);
     setInitial(loaded);
-  }, [globalConfig?.data]);
+  }
 
   useEffect(() => {
     dispatch(fetchGlobalConfigThunk());
   }, [dispatch]);
 
-  const validationError = useMemo(() => validate(form, hasPinnedKeys), [form, hasPinnedKeys]);
+  const errors = useMemo(() => validate(form, hasPinnedKeys), [form, hasPinnedKeys]);
+  const hasErrors = Boolean(errors.clientId || errors.keys);
 
   const hasChanges = useMemo(() => {
     if (!initial) return false;
@@ -128,13 +153,13 @@ const OIDCSection: React.FC = memo(() => {
           label: C.LABELS.SAVE_BUTTON,
           variant: 'primary',
           loading: saving,
-          disabled: !hasChanges || Boolean(validationError) || !canEdit,
+          disabled: !hasChanges || hasErrors || !canEdit,
           tooltip: deniedTooltip,
           onClick: handleSave,
         },
       ],
     }),
-    [saving, hasChanges, validationError, canEdit, deniedTooltip, handleSave],
+    [saving, hasChanges, hasErrors, canEdit, deniedTooltip, handleSave],
   );
 
   return (
@@ -162,6 +187,8 @@ const OIDCSection: React.FC = memo(() => {
 
         {form.enabled ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.FIELD_GAP }}>
+            <SettingsDivider />
+            <GoogleSetupHelp />
             <SettingsField label={C.LABELS.CLIENT_ID_LABEL}>
               <Input
                 placeholder={C.LABELS.CLIENT_ID_PLACEHOLDER}
@@ -171,10 +198,14 @@ const OIDCSection: React.FC = memo(() => {
                     : C.LABELS.CLIENT_ID_REDACTED
                 }
                 disabled={!canEdit}
+                status={errors.clientId ? 'error' : undefined}
                 onChange={(e) => update('googleClientID', e.target.value)}
               />
+              <FieldError message={errors.clientId} />
             </SettingsField>
 
+            <SettingsDivider />
+            <SettingsSubsectionHeader title={C.SETUP.KEYS_TITLE} />
             <div
               style={{
                 display: 'flex',
@@ -183,12 +214,7 @@ const OIDCSection: React.FC = memo(() => {
                 gap: C.LAYOUT.ROW_GAP,
               }}
             >
-              <div>
-                <div style={{ fontWeight: 700 }}>{C.LABELS.EGRESS_LABEL}</div>
-                <div style={{ fontSize: SETTINGS_CONSTANTS.CONTENT.HINT_FONT_SIZE }}>
-                  {C.LABELS.EGRESS_HINT}
-                </div>
-              </div>
+              <SettingsFieldLabel label={C.LABELS.EGRESS_LABEL} info={C.LABELS.EGRESS_HINT} />
               <Switch
                 checked={form.egressAllowed}
                 onChange={canEdit ? (v: boolean) => update('egressAllowed', v) : undefined}
@@ -216,17 +242,16 @@ const OIDCSection: React.FC = memo(() => {
                   value={form.googleJwkJson}
                   disabled={!canEdit}
                   rows={C.LAYOUT.JWK_ROWS}
+                  status={errors.keys ? 'error' : undefined}
                   onChange={(e) => update('googleJwkJson', e.target.value)}
                 />
+                <FieldError message={errors.keys} />
               </SettingsField>
-            ) : null}
-
-            {validationError ? (
-              <div style={{ color: C.COLORS.ERROR_TEXT, fontWeight: 700 }}>{validationError}</div>
             ) : null}
           </div>
         ) : null}
 
+        <SettingsDivider />
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Toolbar config={saveToolbarConfig} />
         </div>

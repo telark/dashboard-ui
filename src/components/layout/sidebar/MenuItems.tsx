@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import type { CSSProperties } from 'react';
-import { BUTTON_CONFIGS, DEFAULT_COLORS, MENU_LABELS } from '../../../constants';
+import { BUTTON_CONFIGS, DEFAULT_COLORS, MENU_LABELS, SIDEBAR_LAYOUT } from '../../../constants';
 import {
   HomeMenuButton,
   ApplicationsMenuButton,
@@ -17,7 +17,7 @@ interface MenuItemsProps {
 }
 
 const sectionLabelStyle: CSSProperties = {
-  fontSize: 10,
+  fontSize: SIDEBAR_LAYOUT.SECTION_LABEL_FONT_SIZE,
   fontWeight: 500,
   letterSpacing: '0.06em',
   textTransform: 'uppercase',

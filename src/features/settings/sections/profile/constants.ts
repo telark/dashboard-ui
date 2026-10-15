@@ -32,7 +32,6 @@ export const PROFILE_SECTION_CONSTANTS = {
       EMAIL_LOCKED:
         "The bootstrap admin's email is set when Telark is installed and can't be changed here.",
       EMAIL_RESERVED: 'This email is reserved for the bootstrap admin.',
-      SAVE: 'Save',
       CANCEL: 'Cancel',
       SUCCESS: 'Profile updated.',
       ERROR: 'Failed to update profile.',

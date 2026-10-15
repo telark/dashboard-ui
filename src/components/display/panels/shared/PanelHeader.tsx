@@ -1,6 +1,6 @@
 import React from 'react';
 import { CloseOutlined } from '@ant-design/icons';
-import { SLIDE_OUT } from '../../../../constants';
+import { BUTTON_TEXTS, SLIDE_OUT } from '../../../../constants';
 
 interface PanelHeaderProps {
   title?: string;
@@ -21,6 +21,8 @@ const PanelHeader: React.FC<PanelHeaderProps> = ({ title = 'Panel', extra, onClo
           {extra}
           <button
             type="button"
+            aria-label={BUTTON_TEXTS.CLOSE}
+            className={SLIDE_OUT.HEADER_BUTTON_CLASS}
             onClick={onClose}
             style={SLIDE_OUT.CLOSE_BUTTON}
             onMouseEnter={(e) => {

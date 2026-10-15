@@ -6,6 +6,7 @@ import { useUserListPageConfig } from '../hooks/list/useUserListPageConfig';
 import { useUserPanelState } from '../hooks/panels/user/useUserPanelState';
 import { applyUserFilters } from '../utils/filter/applyUserFilters';
 import { CreateUserPanel } from '../panels';
+import { noop } from '../../../../utils/helpers/noop';
 import type { User } from '../models';
 import UsersEmptyPage from './UsersEmptyPage';
 import UsersListPage from './UsersListPage';
@@ -152,7 +153,7 @@ const MainPage: React.FC = () => {
     loadFailed: Boolean(error),
     hasSelection: selectedUsers.length > 0,
     handleViewUser,
-    handleEditUser: canSuspendUser ? handleEditUser : () => undefined,
+    handleEditUser: canSuspendUser ? handleEditUser : noop,
     onCreateUserClick: openCreatePanel,
     canCreateUser,
     onFilterClick: openFilterPanel,

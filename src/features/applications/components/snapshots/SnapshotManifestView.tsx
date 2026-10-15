@@ -39,14 +39,14 @@ function useManifestTexts(data: unknown | null | undefined): {
       return { jsonText: '', yamlText: '' };
     }
 
-    let jsonText = '';
+    let jsonText: string;
     try {
       jsonText = JSON.stringify(viewPayload, null, 2);
     } catch {
       jsonText = String(viewPayload);
     }
 
-    let yamlText = '';
+    let yamlText: string;
     try {
       if (isManifestDocumentArray(viewPayload)) {
         const docs = viewPayload

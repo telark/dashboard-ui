@@ -1,5 +1,5 @@
 import React from 'react';
-import { InputNumber } from 'antd';
+import { Form, InputNumber, Space } from 'antd';
 
 export interface NumberInputProps {
   value?: number;
@@ -9,12 +9,23 @@ export interface NumberInputProps {
   max?: number;
   disabled?: boolean;
   addonAfter?: React.ReactNode;
-  addonBefore?: React.ReactNode;
   style?: React.CSSProperties;
   className?: string;
-  precision?: number;
   step?: number | string;
 }
+
+// antd 6 deprecates InputNumber's addon props: this is the addon they rendered, with form status.
+const NumberAddon: React.FC<{ children: React.ReactNode; disabled: boolean }> = ({
+  children,
+  disabled,
+}) => {
+  const { status } = Form.Item.useStatus();
+  return (
+    <Space.Addon disabled={disabled} status={status}>
+      {children}
+    </Space.Addon>
+  );
+};
 
 const NumberInput: React.FC<NumberInputProps> = ({
   value,
@@ -24,10 +35,8 @@ const NumberInput: React.FC<NumberInputProps> = ({
   max,
   disabled = false,
   addonAfter,
-  addonBefore,
   style,
   className,
-  precision,
   step,
 }) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -54,7 +63,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
     if (/^[0-9]$/.test(e.key)) {
       return;
     }
-    if (e.key === '.' && precision !== 0) {
+    if (e.key === '.') {
       return;
     }
     if (e.key === '-' && (min === undefined || min < 0)) {
@@ -63,7 +72,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
     e.preventDefault();
   };
 
-  return (
+  const input = (
     <InputNumber
       value={value}
       onChange={onChange}
@@ -71,11 +80,8 @@ const NumberInput: React.FC<NumberInputProps> = ({
       min={min}
       max={max}
       disabled={disabled}
-      addonAfter={addonAfter}
-      addonBefore={addonBefore}
       style={style}
       className={className}
-      precision={precision}
       step={step}
       controls
       onKeyDown={handleKeyDown}
@@ -90,6 +96,14 @@ const NumberInput: React.FC<NumberInputProps> = ({
         return value.toString();
       }}
     />
+  );
+
+  if (!addonAfter) return input;
+  return (
+    <Space.Compact>
+      {input}
+      <NumberAddon disabled={disabled}>{addonAfter}</NumberAddon>
+    </Space.Compact>
   );
 };
 

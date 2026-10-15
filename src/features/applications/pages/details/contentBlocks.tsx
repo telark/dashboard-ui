@@ -1,6 +1,6 @@
 import React from 'react';
-import { DEFAULT_COLORS, SECTION_LAYOUT } from '../../../../constants';
-import { APPLICATION_CHANGE_CLASS } from '../../constants';
+import { DEFAULT_COLORS, SECTION_LAYOUT, STATUS_COLORS } from '../../../../constants';
+import type { ApplicationChangeLogEntry } from '../../models';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 
 export const APPLICATION_SUMMARY_SUBHEADING_STYLE: React.CSSProperties = {
@@ -19,11 +19,14 @@ export const APPLICATION_SUMMARY_COLUMN_TITLE_STYLE: React.CSSProperties = {
   marginBottom: 8,
 };
 
-export function getChangeLogDotColor(changeClass: string): string {
-  if (changeClass.toLowerCase() === APPLICATION_CHANGE_CLASS.ROLLBACK) {
-    return DEFAULT_COLORS.DANGER;
-  }
-  return DEFAULT_COLORS.SUCCESS;
+// The flags, not the class: a rollback is a recovery, and a health drop inside
+// another change is an incident.
+export function getChangeLogDotColor(
+  entry: Pick<ApplicationChangeLogEntry, 'isIncident' | 'isRecovery'>,
+): string {
+  if (entry.isIncident) return STATUS_COLORS.APPLICATION_CHANGE.incident;
+  if (entry.isRecovery) return STATUS_COLORS.APPLICATION_CHANGE.recovery;
+  return STATUS_COLORS.APPLICATION_CHANGE.other;
 }
 
 export function ColumnShell(props: {

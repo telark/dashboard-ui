@@ -23,13 +23,18 @@ export const STATUS_COLORS = {
     terminated: NEUTRAL,
     canceled: NEUTRAL,
     draft: NEUTRAL,
-    pending_approval: WARNING,
+    pending_approval: INFO,
   },
   PLAN_HEALTH: {
     unknown: NEUTRAL,
     healthy: SUCCESS,
     drifted: WARNING,
     degraded: DANGER,
+  },
+  // An audit plan only records what it would refuse, so it never reads as a red refusal.
+  PLAN_MODE: {
+    audit: WARNING,
+    enforce: DANGER,
   },
   VIOLATION_RESULT: {
     pass: SUCCESS,
@@ -38,10 +43,10 @@ export const STATUS_COLORS = {
     error: DANGER,
     skip: NEUTRAL,
   },
-  // A report the plan wrote itself (at its end or cancellation) is final.
+  // What wrote the report, not how the plan went, so every trigger is the neutral pill.
   PLAN_REPORT_TRIGGER: {
-    end: SUCCESS,
-    cancel: SUCCESS,
+    end: undefined,
+    cancel: undefined,
     manual: undefined,
   },
   APPLICATION_HEALTH: {
@@ -49,6 +54,12 @@ export const STATUS_COLORS = {
     degraded: WARNING,
     down: DANGER,
   } as Readonly<Record<string, string>>,
+  // App History dots: only incidents and recoveries carry a status.
+  APPLICATION_CHANGE: {
+    incident: DANGER,
+    recovery: SUCCESS,
+    other: NEUTRAL,
+  },
   APPLICATION_COVERAGE: {
     active: SUCCESS,
     upcoming: WARNING,
@@ -66,6 +77,10 @@ export const STATUS_COLORS = {
     remove: DANGER,
     change: WARNING,
   },
+  USER_STATE: {
+    active: SUCCESS,
+    suspended: DANGER,
+  } as Readonly<Record<string, string>>,
   INSIGHT_SEVERITY: {
     critical: DANGER,
     warning: WARNING,

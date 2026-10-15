@@ -6,31 +6,36 @@ import { HOME_CHART_LAYOUT as C, HOME_CHART_TEXTS as CT } from '../../constants/
 import type { ActivityChartData, ActivityDatum } from '../../models';
 import { CHART_AXIS_LABEL, CHART_LEGEND, CHART_THEME, CHART_TOOLTIP_CSS } from '../../utils/charts';
 
-// G2's autoFit only re-measures on the window's `resize` event, so a container that
-// changes size without one — the sidebar collapsing/expanding, a grid reflow — leaves
-// the chart stuck at its old size. Watch the container directly and force a refit.
-type ChartHandle = { triggerResize: () => void } | null;
+// G2's autoFit only re-measures on the window's `resize` event, so watch the container: a new
+// size re-renders the chart, which re-measures. A full render is costly, so it waits for the end.
+type ChartSize = { width: number; height: number };
 
-const useContainerResize = (chartRef: React.RefObject<ChartHandle>) => {
+const useSettledSize = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [size, setSize] = useState({ width: 0, height: 0 });
+  const [size, setSize] = useState<ChartSize | null>(null);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return undefined;
-    let frame = 0;
+    let timer = 0;
+    let measured = false;
     const observer = new ResizeObserver(([entry]) => {
       const { width, height } = entry.contentRect;
-      setSize({ width, height });
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => chartRef.current?.triggerResize());
+      const settle = () =>
+        setSize((prev) =>
+          prev?.width === width && prev.height === height ? prev : { width, height },
+        );
+      window.clearTimeout(timer);
+      if (measured) timer = window.setTimeout(settle, C.RESIZE_SETTLE_MS);
+      else settle();
+      measured = true;
     });
     observer.observe(container);
     return () => {
-      cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
       observer.disconnect();
     };
-  }, [chartRef]);
+  }, []);
 
   return { containerRef, size };
 };
@@ -38,8 +43,7 @@ const useContainerResize = (chartRef: React.RefObject<ChartHandle>) => {
 // Overlaid smooth lines per series on one plot: no stacking, no fill, a distinct
 // dash per series so curves stay tellable apart where they overlap.
 const ActivityChart: React.FC<ActivityChartData> = memo(({ data, colors }) => {
-  const chartRef = useRef<ChartHandle>(null);
-  const { containerRef, size } = useContainerResize(chartRef);
+  const { containerRef, size } = useSettledSize();
 
   const config = useMemo(
     () => ({
@@ -87,8 +91,10 @@ const ActivityChart: React.FC<ActivityChartData> = memo(({ data, colors }) => {
   );
 
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
-      <Line {...config} ref={chartRef} />
+    // Clipped across only: the canvas keeps its old width until a resize ends, and the
+    // tooltip may still overflow vertically.
+    <div ref={containerRef} style={{ width: '100%', height: '100%', overflowX: 'clip' }}>
+      {size && <Line {...config} />}
     </div>
   );
 });

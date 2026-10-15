@@ -1,44 +1,6 @@
-import { CONTROL_HEIGHT, DEFAULT_COLORS, getPillSurface } from '../../../../constants';
+import { DEFAULT_COLORS, getPillSurface } from '../../../../constants';
 
 export const ATTACHED_ROLES_CONSTANTS = {
-  FILTER: {
-    CONTAINER: {
-      display: 'flex',
-      flexDirection: 'column' as const,
-      gap: 6,
-      width: '100%',
-    },
-    LABEL: {
-      fontSize: 13,
-      fontWeight: 600,
-      color: DEFAULT_COLORS.TEXT_MUTED,
-      textTransform: 'uppercase' as const,
-      letterSpacing: 0.5,
-    },
-    BUTTON: {
-      BASE: {
-        all: 'unset' as const,
-        cursor: 'pointer' as const,
-        borderRadius: 20,
-        height: CONTROL_HEIGHT,
-        padding: '0 16px',
-        fontSize: 13,
-        transition: 'all 0.2s',
-      },
-      ACTIVE: {
-        fontWeight: 600,
-        border: `1px solid ${DEFAULT_COLORS.SUCCESS}`,
-        backgroundColor: DEFAULT_COLORS.SUCCESS,
-        color: DEFAULT_COLORS.PAGE_BG,
-      },
-      INACTIVE: {
-        fontWeight: 500,
-        border: `1px solid ${DEFAULT_COLORS.BORDER_DEFAULT}`,
-        backgroundColor: DEFAULT_COLORS.PAGE_BG,
-        color: DEFAULT_COLORS.TEXT_MUTED,
-      },
-    },
-  },
   LIST: {
     EMPTY_STATE: {
       padding: '24px',
@@ -96,6 +58,21 @@ export const ATTACHED_ROLES_CONSTANTS = {
       flex: 1,
       minWidth: 0,
     },
+    ROLE_NAME_ROW: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: 8,
+    },
+    ROLE_FLAG: { display: 'flex', flexShrink: 0 },
+    ROLE_SOURCE: {
+      display: 'block',
+      marginTop: 6,
+      textAlign: 'right' as const,
+      fontSize: 12,
+      lineHeight: 1.3,
+      color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+    },
     ROLE_SCOPES: {
       display: 'flex',
       flexWrap: 'wrap' as const,
@@ -112,6 +89,9 @@ export const ATTACHED_ROLES_CONSTANTS = {
   },
   // Measured: the role search placeholder plus the input's padding; narrower rows wrap the buttons below.
   SEARCH_MIN_WIDTH: 276,
+  LABELS: {
+    FROM_GROUPS: (groupNames: string) => `Via ${groupNames}`,
+  },
   TOOLTIPS: {
     PROTECTED_ROLE: 'This role is protected from deletion and modification',
     EXCEEDS_OWN_ACCESS:

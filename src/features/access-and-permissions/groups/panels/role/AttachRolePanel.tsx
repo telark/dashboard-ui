@@ -8,14 +8,14 @@ import { FilterPanel } from '../../../../../components/display/panels/filter';
 import { FilterButton, ToggleButton } from '../../../../../components/display/buttons';
 import { SearchInput } from '../../../../../components/display/inputs';
 import ActionConfirmModal from '../../../../../components/display/modal/confirm/ActionConfirmModal';
-import { Icons, SLIDE_OUT } from '../../../../../constants';
+import { SLIDE_OUT } from '../../../../../constants';
 import { useAttachRolePanel, useDeassignGroupRole } from '../../hooks';
 import {
   usePermission,
   ACTION_PERMISSIONS,
 } from '../../../../../features/auth/hooks/permissions/permissionEngine';
 import RoleList from '../../components/display/role/RoleList';
-import GroupAssignedRolesView from '../../components/display/role/GroupAssignedRolesView';
+import AssignedRolesView from '../../components/display/role/AssignedRolesView';
 import type { Group } from '../../models';
 import { buildAttachRoleFilterFields } from '../../config/attachRoleFilterConfig';
 import { applyRoleFilters } from '../../utils';
@@ -26,8 +26,6 @@ import { filterBySearchTerm } from '../../../users/utils/search/filter';
 import { USERS_CONSTANTS as UC } from '../../../users/constants';
 import { CapitalizeFirstLetter } from '../../../../../utils/helpers/format';
 import { CheckCircleOutlined } from '@ant-design/icons';
-
-const RoleIcon = Icons.Role;
 
 type ActiveView = 'select' | 'assigned';
 
@@ -203,7 +201,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
             ) : null}
             <div style={{ width: '100%', margin: 0, padding: 0, boxSizing: 'border-box' }}>
               {activeView === 'assigned' && (
-                <GroupAssignedRolesView
+                <AssignedRolesView
                   assignedRoleIds={filteredAssignedRoleIds}
                   allRoles={allRoles}
                   loading={rolesLoading}
@@ -228,7 +226,6 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
         onCancel={onClose}
         submitButtonText={GC.LABELS.PANELS.ATTACH_ROLES.SUBMIT_BUTTON}
-        submitButtonIcon={<RoleIcon size={16} />}
         loading={submitting}
         disabled={!hasChanges || isReadOnlyView || !canViewRoles}
         form={form}

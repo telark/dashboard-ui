@@ -51,7 +51,7 @@ const DeassignButton: React.FC<DeassignButtonProps> = ({
               ? DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED
               : hovered
                 ? DEFAULT_COLORS.DANGER
-                : DEFAULT_COLORS.ICON_SECONDARY,
+                : DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
           }}
         >
           <MinusCircleOutlined style={{ fontSize: 16 }} />

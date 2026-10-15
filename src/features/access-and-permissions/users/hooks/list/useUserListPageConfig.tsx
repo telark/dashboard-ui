@@ -10,12 +10,23 @@ import { useFetchGroups } from '../../../groups/hooks';
 import { useRoles } from '../../../roles/hooks';
 import { useUserLockReason } from '../user/useUserLockReason';
 import Columns from '../../components/display/list/Columns';
+import { generateActionsColumn } from '../../../../../components/display/table/utils';
 import { UserActionsColumn } from '../../components/display/list/UserActionsColumn';
 import { useUserListConfig } from '../../config/userListConfig';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import type { User } from '../../models';
 
 const UserIcon = Icons.User;
+
+// Table props stay stable (PageLayout re-renders the table only when one changes), so opening a
+// panel, which re-renders this page, leaves the table alone.
+const rowKey = (record: User) => record.id;
+const USERS_EMPTY = (
+  <Empty
+    description={UC.LABELS.EMPTY.NO_USERS_FOUND}
+    image={<UserIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />}
+  />
+);
 
 interface UseUserListPageConfigOptions {
   sortKey: string | null;
@@ -164,27 +175,36 @@ export const useUserListPageConfig = ({
     [ctx, groups, canViewGroups],
   );
 
+  const columns = useMemo(
+    () => [
+      ...userColumns,
+      generateActionsColumn<User>(UC.KEYS.ACTIONS, UC.SIZES.COLUMNS.ACTIONS, (record) => (
+        <UserActionsColumn record={record} onEdit={handleEditUser} />
+      )),
+    ],
+    [userColumns, handleEditUser],
+  );
+
+  const rowSelection = useMemo(
+    () =>
+      bulkMode
+        ? {
+            selectedRowKeys: selectedUsers,
+            onChange: (keys: React.Key[]) => setSelectedUsers(keys),
+          }
+        : undefined,
+    [bulkMode, selectedUsers, setSelectedUsers],
+  );
+
   return useMemo(
     () => ({
       title: UC.LABELS.HEADER_TITLE,
       subtitle: UC.LABELS.HEADER_SUBTITLE,
       breadcrumbs: [],
       listToolbar,
-      columns: [
-        ...userColumns,
-        {
-          title: '',
-          key: UC.KEYS.ACTIONS,
-          align: 'right' as const,
-          width: 120,
-          onHeaderCell: () => ({ style: { background: DEFAULT_COLORS.PAGE_BG } }),
-          render: (_: unknown, record: User) => (
-            <UserActionsColumn record={record} onEdit={handleEditUser} />
-          ),
-        },
-      ],
+      columns,
       data: paginatedUsers,
-      rowKey: (record: User) => record.id,
+      rowKey,
       pagination: {
         currentPage,
         pageSize,
@@ -197,34 +217,21 @@ export const useUserListPageConfig = ({
         pageSizeOptions: [10, 20, 50, 100],
         showRowsLabel: UC.LABELS.PAGINATION.SHOW_ROWS,
       },
-      rowSelection: bulkMode
-        ? {
-            selectedRowKeys: selectedUsers,
-            onChange: (keys: React.Key[]) => setSelectedUsers(keys),
-          }
-        : undefined,
-      onRowClick: (record: User) => handleViewUser(record),
-      empty: (
-        <Empty
-          description={UC.LABELS.EMPTY.NO_USERS_FOUND}
-          image={<UserIcon size={64} style={{ color: DEFAULT_COLORS.ICON_MUTED, marginTop: 22 }} />}
-        />
-      ),
+      rowSelection,
+      onRowClick: handleViewUser,
+      empty: USERS_EMPTY,
     }),
     [
       listToolbar,
-      bulkMode,
-      userColumns,
+      columns,
       paginatedUsers,
       currentPage,
       pageSize,
       sortedUsers.length,
-      selectedUsers,
+      rowSelection,
       handleViewUser,
-      handleEditUser,
       setCurrentPage,
       setPageSize,
-      setSelectedUsers,
     ],
   );
 };

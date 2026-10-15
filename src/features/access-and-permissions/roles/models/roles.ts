@@ -43,9 +43,7 @@ export interface RolesScopesAndPermissionsListProps {
   permissionLevels: ReadonlyArray<{ value: PermissionLevel; label: string }>;
   tooltipMap: Record<PermissionLevel, string>;
   rowPaddingPx?: number;
-  dividerMarginPx?: number;
   isLocked?: boolean;
-  onManualChange?: () => void;
   initialScopes?: Record<string, { level: string; rules?: string[] }>;
 }
 

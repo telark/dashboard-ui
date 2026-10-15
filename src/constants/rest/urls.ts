@@ -33,3 +33,5 @@ export const buildApiUrl = (port: number): string => {
   }
   return `${API_CONFIG.LOCAL_HOST}:${port}/${API_CONFIG.API_PREFIX}/${API_CONFIG.API_VERSION}`;
 };
+
+export const DOCS_URL = 'https://docs.telark.io';

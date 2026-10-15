@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Form, App as AntdApp, Button } from 'antd';
+import { Form, App as AntdApp, Alert, Button } from 'antd';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEnrollLinkRefused, performRegister, resolveEnrollLink } from '../../utils/flow/register';
+import {
+  clearEnrollToken,
+  isEnrollLinkRefused,
+  performRegister,
+  resolveEnrollLink,
+} from '../../utils/flow/register';
 import { handleUserLogout } from '../../utils/logout/logout';
 import { hasSessionToken } from '../../utils/session/token';
 import { handleAuthError } from '../../utils/shared/errors';
 import { isWebAuthnSupported } from '../../utils/webauthn/core';
 import { APP_ROUTES } from '../../../../constants';
+import { LOGIN_CONSTANTS } from '../../constants/login';
 import { REGISTER_CONSTANTS } from '../../constants/register';
+import logger from '../../../../logging';
 import {
   RegisterForm,
   AuthCard,
@@ -22,6 +29,8 @@ import type { AppDispatch } from '../../../../store';
 const Register: React.FC = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  // An enrollment failure stays in the card: a refused link can't be retried, anything else can.
+  const [enrollFailure, setEnrollFailure] = useState<'retry' | 'refused' | null>(null);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   // Read once and kept in state: the link leaves the address bar and history right away.
@@ -56,6 +65,7 @@ const Register: React.FC = () => {
 
   const handleRegister = async (values: { email: string; deviceName: string }) => {
     setLoading(true);
+    setEnrollFailure(null);
     try {
       await performRegister(
         values.email,
@@ -65,12 +75,15 @@ const Register: React.FC = () => {
         enrollToken,
       );
     } catch (error) {
-      const linkRefused = enrolling && isEnrollLinkRefused(error);
-      handleAuthError(
-        error,
-        message,
-        linkRefused ? { customMessage: REGISTER_CONSTANTS.UI.ENROLL_LINK_INVALID } : undefined,
-      );
+      if (enrolling) {
+        logger.warn(LOGIN_CONSTANTS.LOGS.AUTH_ERROR, error);
+        const refused = isEnrollLinkRefused(error);
+        // A refused link never works again: the tab forgets it, and the page state keeps the alert.
+        if (refused) clearEnrollToken();
+        setEnrollFailure(refused ? 'refused' : 'retry');
+      } else {
+        handleAuthError(error, message);
+      }
     } finally {
       setLoading(false);
     }
@@ -120,9 +133,26 @@ const Register: React.FC = () => {
             form={form}
             loading={loading}
             onFinish={handleRegister}
-            disabled={!passkeysAvailable}
+            disabled={!passkeysAvailable || enrollFailure === 'refused'}
             lockedEmail={enrollEmail}
           />
+          {enrollFailure && (
+            <Alert
+              title={
+                enrollFailure === 'refused'
+                  ? REGISTER_CONSTANTS.UI.ENROLL_LINK_INVALID
+                  : REGISTER_CONSTANTS.UI.ENROLL_RETRY
+              }
+              type={enrollFailure === 'refused' ? 'error' : 'warning'}
+              showIcon
+              style={{
+                marginTop: '10px',
+                borderRadius: '8px',
+                padding: '6px 10px',
+                fontSize: '13px',
+              }}
+            />
+          )}
           <AuthFooter
             text={REGISTER_CONSTANTS.UI.FOOTER_TEXT}
             linkText={REGISTER_CONSTANTS.UI.FOOTER_LINK}

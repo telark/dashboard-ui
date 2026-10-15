@@ -1,10 +1,6 @@
 import { useState } from 'react';
 
-interface UseProtectionFieldsOptions {
-  onManualChange?: () => void;
-}
-
-export const useProtectionFields = ({ onManualChange }: UseProtectionFieldsOptions = {}) => {
+export const useProtectionFields = () => {
   const [localPreventScopeChanges, setLocalPreventScopeChanges] = useState<boolean | null>(null);
 
   const updateProtectionFields = (
@@ -19,17 +15,11 @@ export const useProtectionFields = ({ onManualChange }: UseProtectionFieldsOptio
         setFieldValue(['protection', 'preventScopeChanges'], newValue);
         setTimeout(() => {
           setLocalPreventScopeChanges(null);
-          onManualChange?.();
         }, 100);
       }, 300);
     } else {
       Object.entries(updates).forEach(([field, value]) => {
         setFieldValue(['protection', field], value);
-      });
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          onManualChange?.();
-        });
       });
     }
   };

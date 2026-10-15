@@ -12,6 +12,7 @@ import { usePermission, ACTION_PERMISSIONS } from '../../../auth/hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { applyGroupFilters, mapCategoriesToFilterOptions } from '../utils';
+import { noop } from '../../../../utils/helpers/noop';
 import type { Group } from '../models';
 import type { Category } from '../../categories/models';
 import GroupsEmptyPage from './GroupsEmptyPage';
@@ -198,7 +199,7 @@ const MainPage: React.FC = () => {
     sortedGroups,
     paginatedGroups,
     handleViewGroup,
-    handleEditClick: canEditGroup ? openEditPanel : () => undefined,
+    handleEditClick: canEditGroup ? openEditPanel : noop,
     onCreateGroupClick: openCreatePanel,
     canCreateGroup,
     onAddCategoryClick,

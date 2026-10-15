@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useDeferredValue, useMemo } from 'react';
 import { HEADER_LAYOUT } from '../../../constants';
 import { LIST_PAGE } from '../../../constants/shared/pages';
 import DataTable from '../table/DataTable';
@@ -11,12 +11,11 @@ import { useDataViewState } from '../../../hooks/layout/useDataViewState';
 import FullPageLoader from './FullPageLoader';
 
 const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfig<T> }) => {
+  // The toolbar follows each keystroke at once; everything below renders from a deferred copy that
+  // newer input interrupts, so typing never waits on a full table render.
+  const view = useDeferredValue(config);
+  const { title, subtitle, breadcrumbs, tabs, listToolbar } = config;
   const {
-    title,
-    subtitle,
-    breadcrumbs,
-    tabs,
-    listToolbar,
     columns,
     data,
     rowKey,
@@ -29,13 +28,52 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
     fullPageLoading = false,
     error = null,
     onRetry,
-  } = config;
+  } = view;
   const dataState = useDataViewState({
     loading,
     error,
     hasData: Array.isArray(data) && data.length > 0,
   });
   const isReady = dataState.phase === 'empty' || dataState.phase === 'ready';
+  const table = useMemo(
+    () => (
+      <DataTable<T>
+        columns={columns}
+        data={data}
+        rowKey={rowKey}
+        className="app-table"
+        rowHeight={rowHeight}
+        empty={empty}
+        tableProps={{
+          // Columns keep their widths and the table scrolls sideways once the
+          // page is narrower than they are, instead of clipping the last ones.
+          scroll: { x: 'max-content' },
+          rowSelection: rowSelection
+            ? {
+                selectedRowKeys: rowSelection.selectedRowKeys,
+                onChange: rowSelection.onChange,
+                getCheckboxProps: rowSelection.getCheckboxProps,
+              }
+            : undefined,
+          onRow: onRowClick
+            ? (record: T) => ({
+                onClick: () => onRowClick(record),
+                // Rows open from the keyboard too; keys on the row's own controls stay theirs.
+                tabIndex: 0,
+                onKeyDown: (e: React.KeyboardEvent) => {
+                  if (e.target !== e.currentTarget || (e.key !== 'Enter' && e.key !== ' ')) return;
+                  e.preventDefault();
+                  onRowClick(record);
+                },
+                style: { cursor: 'pointer' },
+              })
+            : undefined,
+        }}
+        containerStyle={{ background: 'transparent', borderRadius: 0, padding: 0 }}
+      />
+    ),
+    [columns, data, rowKey, rowHeight, empty, rowSelection, onRowClick],
+  );
 
   if (fullPageLoading && dataState.phase === 'loading') {
     return <FullPageLoader minHeight={HEADER_LAYOUT.MIN_HEIGHT} />;
@@ -72,35 +110,7 @@ const PageLayoutComponent = <T = unknown,>({ config }: { config: PageLayoutConfi
             <FancySpinner size={40} showLabel />
           </div>
         ) : null}
-        {isReady ? (
-          <DataTable<T>
-            columns={columns}
-            data={data}
-            rowKey={rowKey}
-            className="app-table"
-            rowHeight={rowHeight}
-            empty={empty}
-            tableProps={{
-              // Columns keep their widths and the table scrolls sideways once the
-              // page is narrower than they are, instead of clipping the last ones.
-              scroll: { x: 'max-content' },
-              rowSelection: rowSelection
-                ? {
-                    selectedRowKeys: rowSelection.selectedRowKeys,
-                    onChange: rowSelection.onChange,
-                    getCheckboxProps: rowSelection.getCheckboxProps,
-                  }
-                : undefined,
-              onRow: onRowClick
-                ? (record: T) => ({
-                    onClick: () => onRowClick(record),
-                    style: { cursor: 'pointer' },
-                  })
-                : undefined,
-            }}
-            containerStyle={{ background: 'transparent', borderRadius: 0, padding: 0 }}
-          />
-        ) : null}
+        {isReady ? table : null}
       </div>
       {isReady ? <TablePagination config={pagination} /> : null}
     </PageContainer>

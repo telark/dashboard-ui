@@ -19,7 +19,4 @@ export const ABOUT_SECTION_CONSTANTS = {
     NOTICES_URL: '/THIRD-PARTY-NOTICES.txt',
     ROW_GAP: 8,
   },
-  LINKS: {
-    DOCS_URL: 'https://docs.telark.io',
-  },
 } as const;

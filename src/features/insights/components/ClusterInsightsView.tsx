@@ -381,9 +381,15 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
     setCurrentPage(1);
   }, []);
 
+  // setSearchParams changes with every URL change. Read through a ref, setParam (and the row click
+  // built on it) stays stable, so opening or closing the panel (?insight=) skips the table.
+  const setSearchParamsRef = useRef(setSearchParams);
+  useLayoutEffect(() => {
+    setSearchParamsRef.current = setSearchParams;
+  }, [setSearchParams]);
   const setParam = useCallback(
     (key: string, value: string | null, replace = false) =>
-      setSearchParams(
+      setSearchParamsRef.current(
         (prev) => {
           const next = new URLSearchParams(prev);
           if (value) next.set(key, value);
@@ -392,7 +398,7 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
         },
         { replace },
       ),
-    [setSearchParams],
+    [],
   );
 
   // Collapsed groups keep only their header.
@@ -427,17 +433,19 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
     () => Object.fromEntries(environments.map((e) => [e.id, e.name])),
     [environments],
   );
+  // Keyed on the fitting columns, not the width: a resize that keeps them skips the table.
+  const visibleColumns = fittingInsightColumns(width);
   const columns = useMemo(
     () =>
       buildInsightColumns({
         category,
-        visible: fittingInsightColumns(width),
+        visible: visibleColumns,
         environmentNames,
         activeSortKey: sortKey ?? '',
         onSort,
         renderGroup,
       }),
-    [category, width, environmentNames, sortKey, onSort, renderGroup],
+    [category, visibleColumns, environmentNames, sortKey, onSort, renderGroup],
   );
 
   // Panel target: the row on screen, or a location learned from a lookup or another finding.
@@ -633,6 +641,33 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
 
   const total = items.length;
   const filtered = hasFilters(filters, q) || validApp(appFilter);
+  // Stable so the table skips the renders that change neither rows nor columns (PageLayout memo).
+  const empty = useMemo(
+    () => (
+      <EmptyInsights
+        category={category}
+        filtered={filtered}
+        analyzerEnabled={analyzerEnabled}
+        autoAnalyze={autoAnalyze}
+        indexedAt={page?.indexedAt}
+      />
+    ),
+    [category, filtered, analyzerEnabled, autoAnalyze, page?.indexedAt],
+  );
+
+  const rowSelection: PageLayoutConfig<InsightListItem>['rowSelection'] = useMemo(
+    () =>
+      bulkMode
+        ? {
+            selectedRowKeys: selectedKeys,
+            onChange: (keys) =>
+              setSelectedKeys(keys.filter((k) => !String(k).startsWith(GROUP_ROW_PREFIX))),
+            getCheckboxProps: (item) =>
+              isGroupItem(item) ? { disabled: true, style: { display: 'none' } } : {},
+          }
+        : undefined,
+    [bulkMode, selectedKeys],
+  );
 
   const config: PageLayoutConfig<InsightListItem> = {
     title: P.TITLE,
@@ -781,15 +816,7 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
     columns,
     data: listItems,
     rowKey: listItemKey,
-    rowSelection: bulkMode
-      ? {
-          selectedRowKeys: selectedKeys,
-          onChange: (keys) =>
-            setSelectedKeys(keys.filter((k) => !String(k).startsWith(GROUP_ROW_PREFIX))),
-          getCheckboxProps: (item) =>
-            isGroupItem(item) ? { disabled: true, style: { display: 'none' } } : {},
-        }
-      : undefined,
+    rowSelection,
     onRowClick,
     pagination: {
       currentPage,
@@ -806,15 +833,7 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
       },
       pageSizeOptions: [...CLUSTER_INSIGHTS.PAGE_SIZE_OPTIONS],
     },
-    empty: (
-      <EmptyInsights
-        category={category}
-        filtered={filtered}
-        analyzerEnabled={analyzerEnabled}
-        autoAnalyze={autoAnalyze}
-        indexedAt={page?.indexedAt}
-      />
-    ),
+    empty,
     loading,
     error,
     onRetry: refresh,

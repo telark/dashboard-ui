@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { Form } from 'antd';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
 import { SearchInput } from '../../../../../components/display/inputs';
-import { Icons } from '../../../../../constants';
 import { USERS_CONSTANTS as UC } from '../../constants';
 import UserFormFields from '../../components/display/shared/UserFormFields';
 import UserRoleSelectList from '../../components/display/manage/role/UserRoleSelectList';
@@ -13,7 +12,6 @@ import { filterBySearchTerm } from '../../utils/search/filter';
 import type { FormInstance } from 'antd';
 import type { CreateUserFormValues } from '../../models';
 
-const UserIcon = Icons.User;
 const ASSIGN_ROLE = ACTION_PERMISSIONS.users.manageRoles;
 const VIEW_ROLES = ACTION_PERMISSIONS.roles.view;
 
@@ -80,7 +78,6 @@ const CreateUserPanel: React.FC<CreateUserPanelProps> = ({ open, onClose, form }
       onSubmit={handleSubmit}
       onCancel={onClose}
       submitButtonText={UC.LABELS.PANELS.CREATE.SUBMIT_BUTTON}
-      submitButtonIcon={<UserIcon size={16} />}
       loading={submitting}
       disabled={hasFormErrors}
       form={form}

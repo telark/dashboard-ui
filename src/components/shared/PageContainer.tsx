@@ -36,7 +36,7 @@ const breadcrumbLinkStyle: React.CSSProperties = {
   border: 'none',
   padding: 0,
   cursor: 'pointer',
-  color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  color: DEFAULT_COLORS.TEXT_MUTED,
   fontSize: PAGE_HEADER.TITLE_FONT_SIZE_PX,
   fontWeight: PAGE_HEADER.TITLE_FONT_WEIGHT,
   fontFamily: 'inherit',
@@ -61,7 +61,7 @@ const Breadcrumbs: React.FC<{ items: PageBreadcrumbItem[] }> = ({ items }) => {
         return (
           <React.Fragment key={`${item.label}-${index}`}>
             {index > 0 && (
-              <span style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>
+              <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}>
                 {PAGE_HEADER.BREADCRUMB_SEPARATOR}
               </span>
             )}

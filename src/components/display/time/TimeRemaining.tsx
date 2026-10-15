@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Popover } from 'antd';
 
 import { TIME_FORMATS, TIME_REMAINING, TIME_TEXTS } from '../../../constants';
 import {
@@ -9,6 +8,7 @@ import {
   getTimeZone,
   parseDate,
 } from '../../../utils/shared/time';
+import ExactTimePopover from './ExactTimePopover';
 
 interface TimeRemainingProps {
   date: string | Date;
@@ -67,12 +67,12 @@ const TimeRemaining: React.FC<TimeRemainingProps> = React.memo(
 
     if (msLeft <= 0) {
       const ago = formatTimeAgo(parsedDate);
-      return <Popover content={exact}>{`${endedPrefix} ${ago}`}</Popover>;
+      return <ExactTimePopover exact={exact} text={`${endedPrefix} ${ago}`} />;
     }
 
     const label = formatRemaining(msLeft);
     const text = prefix ? `${prefix} ${label}` : label;
-    return <Popover content={exact}>{text}</Popover>;
+    return <ExactTimePopover exact={exact} text={text} />;
   },
 );
 

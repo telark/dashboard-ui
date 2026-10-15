@@ -1,4 +1,4 @@
-// ESLint v9 Flat Config (ESM)
+// ESLint v10 Flat Config (ESM)
 import js from '@eslint/js';
 import globals from 'globals';
 import tsParser from '@typescript-eslint/parser';
@@ -6,6 +6,7 @@ import tsPlugin from '@typescript-eslint/eslint-plugin';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import prettierPlugin from 'eslint-plugin-prettier';
+import reactPkg from 'react/package.json' with { type: 'json' };
 
 export default [
   {
@@ -34,7 +35,9 @@ export default [
       prettier: prettierPlugin,
     },
     settings: {
-      react: { version: 'detect' },
+      // 'detect' calls context.getFilename(), which ESLint 10 removed; back to 'detect' once
+      // eslint-plugin-react supports ESLint 10 (then drop the package.json override too).
+      react: { version: reactPkg.version },
     },
     rules: {
       ...tsPlugin.configs.recommended?.rules,

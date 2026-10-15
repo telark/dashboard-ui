@@ -1,5 +1,8 @@
 import type React from 'react';
-import { DEFAULT_COLORS } from '../../../constants';
+import { DatabaseOutlined } from '@ant-design/icons';
+import { AiOutlineHistory, AiOutlineLineChart, AiOutlineWarning } from 'react-icons/ai';
+import { SiKubernetes } from 'react-icons/si';
+import { DEFAULT_COLORS, Icons } from '../../../constants';
 import type { PlanEventKey, SeverityKey } from '../models';
 
 export const HOME_DASHBOARD_TEXTS = {
@@ -76,6 +79,17 @@ export const HOME_CHART_TEXTS = {
   },
 } as const;
 
+// Applications and Protection plans reuse the sidebar icons, Storage the snapshot icon.
+export const HOME_BOX_ICONS = {
+  CLUSTER: SiKubernetes,
+  APPLICATIONS: Icons.Application,
+  PLANS: Icons.ProtectionPlans,
+  STORAGE: DatabaseOutlined,
+  PLANS_ATTENTION: AiOutlineWarning,
+  RECENT_CHANGES: AiOutlineHistory,
+  ACTIVITY: AiOutlineLineChart,
+} as const;
+
 export const HOME_DASHBOARD_LAYOUT = {
   GRID_GAP_PX: 16,
   // Every box shares one track width and one row height so the grid reads as even rows.
@@ -85,6 +99,8 @@ export const HOME_DASHBOARD_LAYOUT = {
   BOX_RADIUS_PX: 8,
   BOX_HEADER_GAP_PX: 8,
   BOX_TITLE_FONT_SIZE_PX: 15,
+  BOX_ICON_SIZE_PX: 16,
+  BOX_ICON_GAP_PX: 6,
   BIG_VALUE_FONT_SIZE_PX: 28,
   BIG_VALUE_CAPTION_GAP_PX: 6,
   BREAKDOWN_GAP_PX: 12,
@@ -107,6 +123,7 @@ export const HOME_CHART_LAYOUT = {
   LEGEND_FONT_SIZE_PX: 11,
   GRID_DASH: [3, 3] as number[],
   ANIMATION_MS: 450,
+  RESIZE_SETTLE_MS: 150,
   POINT_SIZE_PX: 2.5,
   LINE_DASHES: [
     [0, 0],

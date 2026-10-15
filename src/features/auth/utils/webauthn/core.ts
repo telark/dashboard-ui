@@ -183,7 +183,7 @@ export const authenticateWithPasskey = async (
 
       throw mappedError;
     }
-    throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.AUTHENTICATION_FAILED);
+    throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.AUTHENTICATION_FAILED, { cause: error });
   }
 };
 
@@ -222,7 +222,7 @@ export const registerPasskey = async (
         LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.REGISTRATION_FAILED,
       );
     }
-    throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.REGISTRATION_FAILED);
+    throw new Error(LOGIN_CONSTANTS.WEBAUTHN.MESSAGES.REGISTRATION_FAILED, { cause: error });
   }
 };
 

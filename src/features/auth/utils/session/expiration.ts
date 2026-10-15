@@ -3,18 +3,20 @@ import { validateSession } from './validation';
 import { isDevelopment } from '../../../../utils/helpers/env';
 import logger from '../../../../logging';
 import { AUTH_CONFIG } from '../../constants/config';
-import { HTTP_STATUS } from '../../../../constants';
+import { ACCOUNT_SUSPENDED_EVENT, HTTP_STATUS } from '../../../../constants';
 
 export interface UseSessionExpirationCheckOptions {
   isAuthenticated: boolean;
   isAuthRoute: boolean;
   onSessionExpired: () => void;
+  onAccountSuspended: () => void;
 }
 
 export const useSessionExpirationCheck = ({
   isAuthenticated,
   isAuthRoute,
   onSessionExpired,
+  onAccountSuspended,
 }: UseSessionExpirationCheckOptions): void => {
   const lastErrorSignatureRef = useRef<string | null>(null);
 
@@ -57,8 +59,12 @@ export const useSessionExpirationCheck = ({
       AUTH_CONFIG.SESSION.VALIDATION.INTERVAL_SECONDS * 1000,
     );
 
+    // The check's own request goes through the API client, so it raises this event too.
+    globalThis.addEventListener(ACCOUNT_SUSPENDED_EVENT, onAccountSuspended);
+
     return () => {
       globalThis.clearInterval(intervalId);
+      globalThis.removeEventListener(ACCOUNT_SUSPENDED_EVENT, onAccountSuspended);
     };
-  }, [isAuthenticated, isAuthRoute, onSessionExpired]);
+  }, [isAuthenticated, isAuthRoute, onSessionExpired, onAccountSuspended]);
 };

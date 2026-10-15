@@ -1,7 +1,5 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Form, Tooltip } from 'antd';
-import { PrimaryButton } from '../../../../../../components/display/buttons';
-import { BUTTON_TEXTS, Icons } from '../../../../../../constants';
 import {
   GeneralSection,
   ScopesAndPermissionsSection,
@@ -10,37 +8,27 @@ import {
 } from '../sections';
 import RoleProtectionView from '../view/RoleProtectionView';
 import { ROLES_CONSTANTS as RC } from '../../../constants';
-import { useRoleFormState } from '../../../hooks';
 import type { RoleFormValues, RoleFormProps } from '../../../models';
 
-const RoleIcon = Icons.Role;
+// One tree in both modes: swapping the wrappers on expand remounted every section.
+const COLUMN: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 18,
+  flex: 1,
+  minWidth: 0,
+};
 
 const RoleForm: React.FC<RoleFormProps> = ({
   form,
   initialValues,
   onSubmit,
-  buttonText,
-  submitting = false,
-  wrapper: Wrapper,
   roles,
   isEditMode = false,
   currentName,
-  hideSubmitButton = false,
   expanded = false,
   protectionReadOnly = false,
 }) => {
-  const { hasFormErrors, hasChanges, handleValuesChange, handleFieldsChange } = useRoleFormState({
-    form,
-    isEditMode,
-    initialValues,
-  });
-
-  const isButtonDisabled = useMemo(() => {
-    if (submitting) return true;
-    if (isEditMode) return !hasChanges || hasFormErrors;
-    return hasFormErrors;
-  }, [submitting, isEditMode, hasChanges, hasFormErrors]);
-
   const formContent = (
     <div style={{ width: '100%' }}>
       <Form<RoleFormValues>
@@ -48,8 +36,6 @@ const RoleForm: React.FC<RoleFormProps> = ({
         form={form}
         onFinish={onSubmit}
         initialValues={initialValues}
-        onValuesChange={handleValuesChange}
-        onFieldsChange={handleFieldsChange}
       >
         <Form.Item
           noStyle
@@ -90,7 +76,6 @@ const RoleForm: React.FC<RoleFormProps> = ({
                   lockName={lockName}
                   lockCategory={lockCategory}
                   disabled={modificationLocked}
-                  onManualChange={handleValuesChange}
                 />
                 <ValiditySection disabled={modificationLocked} />
                 {protectionReadOnly ? (
@@ -100,14 +85,13 @@ const RoleForm: React.FC<RoleFormProps> = ({
                     </div>
                   </Tooltip>
                 ) : (
-                  <ProtectionSection onManualChange={handleValuesChange} />
+                  <ProtectionSection />
                 )}
               </>
             );
             const rightColumn = (
               <ScopesAndPermissionsSection
                 isLocked={preventScopeChanges || modificationLocked}
-                onManualChange={handleValuesChange}
                 initialValues={initialValues}
               />
             );
@@ -117,56 +101,13 @@ const RoleForm: React.FC<RoleFormProps> = ({
                 style={{
                   display: 'flex',
                   flexDirection: expanded ? 'row' : 'column',
-                  gap: 24,
+                  gap: expanded ? 24 : 18,
                   width: '100%',
                   alignItems: expanded ? 'flex-start' : undefined,
                 }}
               >
-                {expanded ? (
-                  <>
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 18,
-                        flex: 1,
-                        minWidth: 0,
-                      }}
-                    >
-                      {leftColumn}
-                    </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 18,
-                        flex: 1,
-                        minWidth: 0,
-                      }}
-                    >
-                      {rightColumn}
-                    </div>
-                  </>
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 18, width: '100%' }}>
-                    {leftColumn}
-                    {rightColumn}
-                  </div>
-                )}
-                {!hideSubmitButton && (
-                  <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-                    <Form.Item style={{ marginTop: 0, marginBottom: 0 }}>
-                      <PrimaryButton
-                        action={buttonText}
-                        loading={submitting}
-                        loadingLabel={BUTTON_TEXTS.LOADING}
-                        onClick={() => form.submit()}
-                        icon={<RoleIcon size={16} />}
-                        disabled={isButtonDisabled}
-                      />
-                    </Form.Item>
-                  </div>
-                )}
+                <div style={COLUMN}>{leftColumn}</div>
+                <div style={COLUMN}>{rightColumn}</div>
               </div>
             );
           }}
@@ -175,7 +116,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
     </div>
   );
 
-  return Wrapper ? <Wrapper>{formContent}</Wrapper> : formContent;
+  return formContent;
 };
 
 export default RoleForm;

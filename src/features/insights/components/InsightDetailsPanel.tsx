@@ -15,6 +15,7 @@ import {
   DEFAULT_COLORS,
   EMPTY_VALUE,
   ROW_ICON_BUTTON_SIZE,
+  SLIDE_OUT,
   STATUS_COLORS,
   TAG_CLASS,
   getPillColor,
@@ -90,6 +91,7 @@ const CopyButton: React.FC<{ value: string }> = ({ value }) => {
       <button
         type="button"
         aria-label={`${P.COPY} ${value}`}
+        className={SLIDE_OUT.HEADER_BUTTON_CLASS}
         style={{ ...unsetButton, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED, marginLeft: 6 }}
         onClick={() => {
           globalThis.navigator.clipboard.writeText(value).then(
@@ -534,6 +536,7 @@ const navButton = (label: string, icon: React.ReactNode, onClick?: () => void) =
     <button
       type="button"
       aria-label={label}
+      className={SLIDE_OUT.HEADER_BUTTON_CLASS}
       disabled={!onClick}
       onClick={onClick}
       style={{

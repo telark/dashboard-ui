@@ -1,6 +1,6 @@
 import { LOGIN_CONSTANTS } from '../../constants/login';
-import { APP_ROUTES } from '../../../../constants';
 import { oidcGetNonce } from '../../clients';
+import { googleRedirectUri } from '../../../shared/utils/googleRedirect';
 
 const toHex = (bytes: Uint8Array): string =>
   Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
@@ -26,10 +26,9 @@ export const consumeOAuthState = (): string | null => {
 };
 
 const buildGoogleOAuthUrl = (clientId: string, nonce: string, state: string): string => {
-  const redirectUri = `${window.location.origin}${APP_ROUTES.GOOGLE_CALLBACK}`;
   const params = new URLSearchParams({
     client_id: clientId,
-    redirect_uri: redirectUri,
+    redirect_uri: googleRedirectUri(),
     response_type: LOGIN_CONSTANTS.OIDC.GOOGLE_RESPONSE_TYPE,
     scope: LOGIN_CONSTANTS.OIDC.GOOGLE_SCOPE,
     nonce,

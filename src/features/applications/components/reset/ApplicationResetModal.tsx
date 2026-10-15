@@ -30,7 +30,8 @@ const ApplicationResetModal: React.FC<ApplicationResetModalProps> = ({
         onConfirm={onConfirm}
         title={title ?? APPLICATIONS_UI.CARD.ACTIONS.RESET_CONFIRM_TITLE}
         action="reset"
-        resourceName={primaryName}
+        // The bulk message lists every name itself.
+        resourceName={message ? '' : primaryName}
         resourceType="application"
         confirmText={APPLICATIONS_UI.CARD.ACTIONS.RESET}
         cancelText={APPLICATIONS_UI.CARD.ACTIONS.CANCEL}

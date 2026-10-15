@@ -1,6 +1,8 @@
 import type { AxiosError, AxiosResponse } from 'axios';
 import {
+  ACCOUNT_SUSPENDED_EVENT,
   API_RESPONSES,
+  AUTH_REFUSAL_CODES,
   ERROR_MESSAGES,
   HEADER_VALUES,
   HTTP_HEADERS,
@@ -54,6 +56,11 @@ export const createErrorInterceptor = (
     // an API fault: it is the normal end of every session.
     const isSessionExpired = meta.status === HTTP_STATUS.GONE || meta.isUnauthenticated;
     if (isSessionExpired) {
+      return Promise.reject(error);
+    }
+    // A suspension ends the session too: the app opens its modal instead of logging a fault.
+    if (meta.isForbidden && meta.code === AUTH_REFUSAL_CODES.ACCOUNT_SUSPENDED) {
+      globalThis.dispatchEvent(new Event(ACCOUNT_SUSPENDED_EVENT));
       return Promise.reject(error);
     }
     if (meta.isForbidden) {

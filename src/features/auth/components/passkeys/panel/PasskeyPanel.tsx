@@ -1,14 +1,12 @@
 import React, { useMemo, useRef, useState, useCallback } from 'react';
 import { Form, Input } from 'antd';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
-import { Icons } from '../../../../../constants';
+import { BUTTON_TEXTS } from '../../../../../constants';
 import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
 import { createDeviceNameValidator } from '../../../utils';
 import DeviceNameSuggestions from '../shared/DeviceNameSuggestions';
 import type { Passkey } from '../../../models/passkeys';
 import type { FormInstance } from 'antd';
-
-const PasskeyIcon = Icons.Passkey;
 
 interface PasskeyPanelProps {
   open: boolean;
@@ -122,8 +120,7 @@ const PasskeyPanel: React.FC<PasskeyPanelProps> = ({
       formContent={formContent}
       onSubmit={onSubmit as (values: Record<string, unknown>) => Promise<void>}
       onCancel={onClose}
-      submitButtonText={isEditMode ? PPC.FORM.EDIT_BUTTON_TEXT : PPC.FORM.BUTTON_TEXT}
-      submitButtonIcon={<PasskeyIcon size={16} />}
+      submitButtonText={isEditMode ? BUTTON_TEXTS.SAVE_CHANGES : PPC.FORM.BUTTON_TEXT}
       loading={submitting}
       disabled={checkButtonDisabled(form)}
       form={form}

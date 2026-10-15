@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../../store';
 import { POLL_INTERVAL_MS } from '../../../../constants';
+import { pollWhileVisible } from '../../../../utils/helpers/poll';
 import {
   clearPlanDetails,
   fetchProtectionPlansThunk,
@@ -27,12 +28,13 @@ export function usePlanDetails(name?: string) {
     if (!planId) return;
     void dispatch(fetchProtectionPlanDetailsThunk(planId));
 
-    const interval = setInterval(() => {
-      void dispatch(fetchProtectionPlanDetailsThunk(planId));
-    }, POLL_INTERVAL_MS);
+    const stopPolling = pollWhileVisible(
+      () => void dispatch(fetchProtectionPlanDetailsThunk(planId)),
+      POLL_INTERVAL_MS,
+    );
 
     return () => {
-      clearInterval(interval);
+      stopPolling();
       dispatch(clearPlanDetails());
     };
   }, [dispatch, planId]);

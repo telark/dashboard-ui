@@ -185,7 +185,7 @@ function highlightYamlValue(value: string, key: number): React.ReactNode {
     const nextSpecial = tail.search(/["']|\b(?:true|false|null|yes|no|on|off)\b|[-+]?\d/);
     if (nextSpecial <= 0) {
       nodes.push(
-        <span key={`v-${key}-${part++}`} style={{ color: IDE.text }}>
+        <span key={`v-${key}-${part}`} style={{ color: IDE.text }}>
           {tail}
         </span>,
       );
@@ -245,24 +245,12 @@ export interface IdeManifestCodeBlockProps {
   language: 'json' | 'yaml';
   /** Override outer scroll container max-height (default fits modal-sized viewers). */
   containerMaxHeight?: string;
-  /** When false, the block does not scroll; an outer panel scrolls instead. */
-  scrollInside?: boolean;
-  lineStyles?: Record<number, React.CSSProperties>;
-  lineDimmed?: Record<number, boolean>;
   /** Squares off the top when the block sits under its own header strip. */
   flatTop?: boolean;
 }
 
 const IdeManifestCodeBlock: React.FC<IdeManifestCodeBlockProps> = memo(
-  ({
-    code,
-    language,
-    containerMaxHeight = 'min(60vh, 480px)',
-    scrollInside = true,
-    lineStyles,
-    lineDimmed,
-    flatTop = false,
-  }) => {
+  ({ code, language, containerMaxHeight = 'min(60vh, 480px)', flatTop = false }) => {
     const highlighted = useMemo(() => {
       if (language === 'json') {
         return tokenizeJson(code).map((tok, idx) => (
@@ -272,40 +260,6 @@ const IdeManifestCodeBlock: React.FC<IdeManifestCodeBlockProps> = memo(
         ));
       }
       return renderYamlHighlighted(code);
-    }, [code, language]);
-
-    const highlightedLines = useMemo(() => {
-      if (language !== 'yaml') return null;
-      const lines = code.split('\n');
-      return lines.map((line, lineIdx) => {
-        if (/^\s*#/.test(line)) {
-          return (
-            <span key={`yl-${lineIdx}`} style={{ color: IDE.comment }}>
-              {line}
-            </span>
-          );
-        }
-        const m = /^(\s*)([^:]+):\s*(.*)$/.exec(line);
-        if (!m) {
-          return (
-            <span key={`yl-${lineIdx}`} style={{ color: IDE.text }}>
-              {line}
-            </span>
-          );
-        }
-        const [, indent, yamlKey, rest] = m;
-        const hasSpaceAfterColon = line.includes(':') && rest.length > 0 && /^ /.test(rest);
-        const valueTrim = hasSpaceAfterColon ? rest.slice(1) : rest;
-        return (
-          <span key={`yl-${lineIdx}`}>
-            <span style={{ color: IDE.text }}>{indent}</span>
-            <span style={{ color: IDE.key }}>{yamlKey}</span>
-            <span style={{ color: IDE.punct }}>:</span>
-            {hasSpaceAfterColon ? <span style={{ color: IDE.text }}> </span> : null}
-            {highlightYamlValue(valueTrim, lineIdx)}
-          </span>
-        );
-      });
     }, [code, language]);
 
     return (
@@ -321,8 +275,8 @@ const IdeManifestCodeBlock: React.FC<IdeManifestCodeBlockProps> = memo(
           borderTopRightRadius: flatTop ? 0 : undefined,
           borderTop: flatTop ? 'none' : undefined,
           padding: APPLICATION_MANIFEST_VIEW.CODE_PADDING,
-          maxHeight: scrollInside ? containerMaxHeight : 'none',
-          overflow: scrollInside ? 'auto' : 'visible',
+          maxHeight: containerMaxHeight,
+          overflow: 'auto',
           fontSize: APPLICATION_MANIFEST_VIEW.CODE_FONT_SIZE_PX,
           lineHeight: APPLICATION_MANIFEST_VIEW.CODE_LINE_HEIGHT,
           letterSpacing: 0.015,
@@ -336,27 +290,7 @@ const IdeManifestCodeBlock: React.FC<IdeManifestCodeBlockProps> = memo(
             color: IDE.text,
           }}
         >
-          {highlightedLines && (lineStyles || lineDimmed) ? (
-            <span style={{ display: 'block' }}>
-              {highlightedLines.map((node, idx) => (
-                <span
-                  key={`dl-${idx}`}
-                  style={{
-                    display: 'block',
-                    background: lineStyles?.[idx]?.background,
-                    borderRadius: lineStyles?.[idx]?.borderRadius,
-                    paddingLeft: lineStyles?.[idx]?.paddingLeft,
-                    paddingRight: lineStyles?.[idx]?.paddingRight,
-                    opacity: lineDimmed?.[idx] ? 0.55 : 1,
-                  }}
-                >
-                  {node}
-                </span>
-              ))}
-            </span>
-          ) : (
-            highlighted
-          )}
+          {highlighted}
         </pre>
       </div>
     );

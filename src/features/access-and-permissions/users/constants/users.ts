@@ -1,19 +1,9 @@
-import type { FormFieldConfig } from '../../../../interfaces/layout/modal';
 import { pluralize } from '../../../../utils/helpers/format';
 
 export const USERS_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Members',
     HEADER_SUBTITLE: 'Manage existing members',
-    NOT_FOUND: 'User not found',
-    UPDATE_BUTTON: 'Update User',
-    CREATE_BUTTON: 'Create Member',
-    CREATE_BUTTON_TEXT: 'Create Member',
-    BREADCRUMBS: {
-      USERS: 'Users',
-      EDIT: 'Edit',
-      CREATE: 'Create Member',
-    },
     MESSAGES: {
       CREATED: (name: string) => `User "${name}" created`,
       UPDATED: (name: string) => `User "${name}" updated`,
@@ -34,7 +24,6 @@ export const USERS_CONSTANTS = {
       NO_USERS_DESCRIPTION: 'Create your first member to get started.',
       NO_ROLES_AVAILABLE: 'No roles available',
       NO_GROUPS_AVAILABLE: 'No groups available',
-      NO_ASSIGNED_ROLES: 'No roles assigned yet',
       NO_GROUP_ROLES: 'No roles inherited from groups',
       ROLE_INHERITED_FROM_GROUP: (groupNames: string) => `Already granted via group: ${groupNames}`,
       LOADING_ROLES: 'Loading roles...',
@@ -76,7 +65,7 @@ export const USERS_CONSTANTS = {
       MODAL_TITLE: 'Enrollment link created',
       MODAL_SEND_TO: 'Send this link to ',
       MODAL_EXPIRES: (when: string) =>
-        `. It works once, expires on ${when}, and won't be shown again.`,
+        `. It adds one passkey, expires on ${when}, and won't be shown again.`,
       REVOKE_ACTION: 'revoke',
       REVOKE_RESOURCE: 'the enrollment link for',
       REVOKE_CONFIRM: 'Revoke',
@@ -101,21 +90,16 @@ export const USERS_CONSTANTS = {
     },
     VIEW_LABELS: {
       USERNAME: 'Username',
-      FULLNAME: 'Full Name',
-      EMAIL: 'Email',
-      ROLES: 'Roles',
-      GROUPS: 'Groups',
       STATUS: 'Status',
       CREATION_DATE: 'Creation Date',
     },
     ACTIONS: {
-      VIEW: 'View',
-      EDIT: 'Edit',
+      VIEW_ROLE: 'View role',
+      VIEW_GROUP: 'View group',
+      MANAGE_STATE: 'Manage account state',
       EDIT_DISABLED_TOOLTIP: 'You do not have permission to edit users',
       DELETE: 'Delete',
       DELETE_DISABLED_TOOLTIP: 'You do not have permission to delete users',
-      MANAGE_ROLES: 'Manage Roles',
-      MANAGE_GROUPS: 'Manage Groups',
       MANAGE_ROLES_DISABLED_TOOLTIP: 'You do not have permission to manage roles',
       MANAGE_GROUPS_DISABLED_TOOLTIP: 'You do not have permission to manage groups',
       ASSIGN_ROLE_DISABLED_TOOLTIP: 'You do not have permission to assign roles',
@@ -157,30 +141,23 @@ export const USERS_CONSTANTS = {
       },
     },
     FORM: {
-      TITLE: 'Create Member',
-      SECTION_TITLE: 'User Details',
-      BUTTON_TEXT: 'Create Member',
-      SECTIONS: {
-        USER_DETAILS: 'User Details',
-        ASSIGNMENT: 'Assignment',
-      },
       FIELDS: {
-        AVATAR_LABEL: 'Avatar',
         USERNAME_LABEL: 'Username',
         USERNAME_PLACEHOLDER: 'e.g. john.doe',
-        FULLNAME_LABEL: 'Full Name',
-        FULLNAME_PLACEHOLDER: 'e.g. John Doe',
         EMAIL_LABEL: 'Email',
         EMAIL_PLACEHOLDER: 'e.g. test@example.com',
         ROLE_LABEL: 'Roles',
-        ROLE_PLACEHOLDER: 'Select a role',
-        GROUP_LABEL: 'Group',
-        GROUP_PLACEHOLDER: 'Select a group',
       },
     },
     PANELS: {
       VIEW: {
         TITLE: 'User Details',
+        TABS: {
+          ROLES: 'Roles',
+          GROUPS: 'Groups',
+        },
+        DIRECT_ROLES_BUTTON: 'Direct',
+        DIRECT_ROLES_TOOLTIP: 'View roles assigned to this user directly',
       },
       MANAGE_STATE: {
         TITLE: 'Manage account state',
@@ -216,9 +193,6 @@ export const USERS_CONSTANTS = {
         PLACEHOLDER: 'Search users by name, email...',
         BUTTON_LABEL: 'Search',
       },
-      FILTER: {
-        BUTTON_LABEL: 'Filter',
-      },
       CREATE: {
         BUTTON_LABEL: 'Create Member',
         DISABLED_TOOLTIP: 'You do not have permission to create users',
@@ -246,9 +220,6 @@ export const USERS_CONSTANTS = {
     MODAL: {
       CANCEL: 'Cancel',
     },
-    LOGS: {
-      FETCH_USERS: 'Fetching users',
-    },
   },
   KEYS: {
     USERNAME: 'username',
@@ -265,16 +236,19 @@ export const USERS_CONSTANTS = {
     FILTER_STATUS_ALL: 'all',
   } as const,
   SIZES: {
-    HEADER_ICON: 14,
+    // Every column has a width, so the page can tell when they outgrow the table. The free-text
+    // columns ellipsize at theirs, the others fit their header (label, icon and sort) or content.
     COLUMNS: {
-      USERNAME: 150,
-      FULLNAME: 180,
-      EMAIL: 220,
+      // Room for a short username beside the Bootstrap pill.
+      USERNAME: 180,
+      FULLNAME: 130,
+      EMAIL: 140,
       ROLE: 120,
       // Narrower wraps the "Creation Date" header onto two lines.
       CREATED: 160,
       INVITE: 140,
-      ACTIONS: 50,
+      // Three row buttons with their gaps, plus the cell padding (measured).
+      ACTIONS: 116,
     },
     // Measured natural widths of the toolbar row: ~475px by default and ~628px in
     // bulk mode (selection count + actions). Below these the controls fall back to
@@ -282,53 +256,6 @@ export const USERS_CONSTANTS = {
     TOOLBAR_COMPACT_WIDTH: {
       DEFAULT: 530,
       BULK: 680,
-    },
-    MODAL_WIDTH: 360,
-  },
-  FORM: {
-    FIELDS: [
-      {
-        type: 'input',
-        name: 'username',
-        label: 'Username',
-        placeholder: 'e.g. john.doe',
-        required: true,
-        marginBottom: 18,
-      },
-      {
-        type: 'input',
-        name: 'fullname',
-        label: 'Full Name',
-        placeholder: 'e.g. John Doe',
-        required: true,
-        marginBottom: 18,
-      },
-      {
-        type: 'input',
-        name: 'email',
-        label: 'Email',
-        placeholder: 'e.g. test@example.com',
-        required: true,
-        marginBottom: 18,
-      },
-      {
-        type: 'select',
-        name: 'role',
-        label: 'Role',
-        placeholder: 'Select a role',
-        required: true,
-        options: [
-          { label: 'Admin', value: 'Admin' },
-          { label: 'Viewer', value: 'Viewer' },
-          { label: 'Contributor', value: 'Contributor' },
-          { label: 'Ops Engineer', value: 'Ops Engineer' },
-          { label: 'Platform Admin', value: 'Platform Admin' },
-        ],
-        marginBottom: 6,
-      },
-    ] as FormFieldConfig[],
-    INITIAL_VALUES: {
-      role: 'Viewer',
     },
   },
 } as const;

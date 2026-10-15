@@ -10,6 +10,7 @@ import {
   SettingsField,
   SettingsFieldLabel,
   SettingsSubsectionHeader,
+  type SettingsDetail,
 } from '../../components/SettingsFields';
 import Toolbar from '../../../../components/display/toolbar/Toolbar';
 import { Switch } from '../../../../components/display/inputs';
@@ -312,6 +313,52 @@ const AIInsightsSection: React.FC = memo(() => {
   // Turning the analyzer on needs a ready runtime; turning it off never does.
   const enableBlocked = !form.enabled && !ready;
 
+  // The runtime's state and the picked model's facts read as one list under the picker.
+  const runtimeDetails: SettingsDetail[] = isLoading
+    ? []
+    : [
+        {
+          label: C.LABELS.RUNTIME_STATUS_TITLE,
+          value: (
+            <>
+              <span
+                style={{
+                  fontWeight: 700,
+                  color: ready ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.WARNING,
+                }}
+              >
+                {stateLabel}
+              </span>
+              {runtime?.reason ? (
+                <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}> {runtime.reason}</span>
+              ) : null}
+            </>
+          ),
+        },
+        ...(runtime
+          ? [
+              { label: C.LABELS.ACTIVE_MODEL_LABEL, value: runtime.model },
+              { label: C.LABELS.RUNTIME_MODE_TITLE, value: C.LABELS.MODE_LABELS[runtime.mode] },
+            ]
+          : []),
+      ];
+  const modelDetails: SettingsDetail[] = selectedInfo
+    ? [
+        { label: C.LABELS.MODEL_DOWNLOAD_LABEL, value: selectedInfo.size },
+        { label: C.LABELS.MODEL_NEEDS_LABEL, value: selectedInfo.needs },
+        { label: C.LABELS.MODEL_LICENSE_LABEL, value: selectedInfo.license },
+        {
+          label: C.LABELS.MODEL_SOURCE_LABEL,
+          value: (
+            <a href={selectedInfo.source} target="_blank" rel="noreferrer">
+              {selectedInfo.source.replace('https://', '')}
+            </a>
+          ),
+        },
+      ]
+    : [];
+  const details = [...runtimeDetails, ...modelDetails];
+
   return (
     <div style={COLUMN}>
       <SettingsCard
@@ -348,39 +395,17 @@ const AIInsightsSection: React.FC = memo(() => {
             title={C.LABELS.RUNTIME_SECTION_TITLE}
             description={modelHint}
           />
-          {isLoading ? null : (
-            <SettingsDetails
-              items={[
-                {
-                  label: C.LABELS.RUNTIME_STATUS_TITLE,
-                  value: (
-                    <>
-                      <span
-                        style={{
-                          fontWeight: 700,
-                          color: ready ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.WARNING,
-                        }}
-                      >
-                        {stateLabel}
-                      </span>
-                      {runtime?.reason ? (
-                        <span style={{ color: DEFAULT_COLORS.TEXT_MUTED }}> {runtime.reason}</span>
-                      ) : null}
-                    </>
-                  ),
-                },
-                ...(runtime
-                  ? [
-                      { label: C.LABELS.ACTIVE_MODEL_LABEL, value: runtime.model },
-                      {
-                        label: C.LABELS.RUNTIME_MODE_TITLE,
-                        value: C.LABELS.MODE_LABELS[runtime.mode],
-                      },
-                    ]
-                  : []),
-              ]}
+          <SettingsField label={C.LABELS.MODEL_LABEL}>
+            <Select
+              value={form.model}
+              options={modelOptions}
+              onChange={onModelChange}
+              allowClear={false}
+              disabled={!canControlAiInsights}
+              style={{ width: '100%' }}
             />
-          )}
+          </SettingsField>
+          {details.length > 0 ? <SettingsDetails items={details} /> : null}
 
           {runtimeState === 'absent' && !isLoading ? (
             <div style={COLUMN}>
@@ -393,41 +418,6 @@ const AIInsightsSection: React.FC = memo(() => {
               </Space.Compact>
             </div>
           ) : null}
-
-          <div style={COLUMN}>
-            <SettingsField label={C.LABELS.MODEL_LABEL}>
-              <Select
-                value={form.model}
-                options={modelOptions}
-                onChange={onModelChange}
-                allowClear={false}
-                disabled={!canControlAiInsights}
-                style={{ width: '100%' }}
-              />
-            </SettingsField>
-            {selectedInfo ? (
-              <SettingsDetails
-                items={[
-                  { label: C.LABELS.MODEL_DOWNLOAD_LABEL, value: selectedInfo.size },
-                  { label: C.LABELS.MODEL_NEEDS_LABEL, value: selectedInfo.needs },
-                  { label: C.LABELS.MODEL_LICENSE_LABEL, value: selectedInfo.license },
-                  {
-                    label: C.LABELS.MODEL_SOURCE_LABEL,
-                    value: (
-                      <a
-                        href={selectedInfo.source}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{ color: DEFAULT_COLORS.SUCCESS }}
-                      >
-                        {selectedInfo.source.replace('https://', '')}
-                      </a>
-                    ),
-                  },
-                ]}
-              />
-            ) : null}
-          </div>
 
           {currentCheck ? (
             <div

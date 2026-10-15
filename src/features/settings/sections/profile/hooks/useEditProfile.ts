@@ -54,9 +54,9 @@ export interface UseEditProfileResult {
 }
 
 // Unchanged fields stay out of the PATCH, so the server re-checks only what the user edited.
-const changedValue = (value: unknown, current: string): string | undefined => {
+const changedValue = (value: unknown, current?: string): string | undefined => {
   const next = String(value ?? '').trim();
-  return next === current ? undefined : next;
+  return next === (current ?? '') ? undefined : next;
 };
 
 // Accounts hidden from the caller (administrators) can't be checked while typing, so the
@@ -113,10 +113,11 @@ export function useEditProfile({
     setHasFormErrors(errors.some((f) => f.errors.length > 0));
     if (!currentUser) return;
     const current = form.getFieldsValue();
+    // The same rule the save applies, so Save is on exactly when the PATCH has a field.
     setHasChanges(
-      current.username?.trim() !== currentUser.username ||
-        current.fullname?.trim() !== currentUser.fullname ||
-        current.email?.trim() !== currentUser.email,
+      changedValue(current.username, currentUser.username) !== undefined ||
+        changedValue(current.fullname, currentUser.fullname) !== undefined ||
+        changedValue(current.email, currentUser.email) !== undefined,
     );
   }, [form, currentUser]);
 
@@ -158,22 +159,19 @@ export function useEditProfile({
           fullname: changedValue(values.fullname, currentUser.fullname),
           email: changedValue(values.email, currentUser.email),
         });
-        if (response?.data) {
-          setCurrentUser(response.data);
-          await refetch(response.data);
-          message.success(P.SUCCESS);
+        if (!response?.data) throw new Error(P.ERROR);
+        setCurrentUser(response.data);
+        await refetch(response.data);
+        message.success(P.SUCCESS);
+      } catch (error) {
+        const fieldError = serverFieldError(error);
+        if (fieldError) {
+          form.setFields([fieldError]);
+          checkFormState();
         } else {
           message.error(P.ERROR);
         }
-      } catch (error) {
-        const fieldError = serverFieldError(error);
-        if (!fieldError) {
-          message.error(P.ERROR);
-          return;
-        }
-        form.setFields([fieldError]);
-        checkFormState();
-        // Rejecting keeps the panel open on the field error.
+        // Rejecting keeps the panel open on the error.
         throw error;
       } finally {
         setSubmitting(false);

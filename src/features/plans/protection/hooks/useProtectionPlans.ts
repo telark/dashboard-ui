@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from '../../../../store';
 import { POLL_INTERVAL_MS } from '../../../../constants';
+import { pollWhileVisible } from '../../../../utils/helpers/poll';
 import {
   fetchProtectionPlansThunk,
   selectProtectionPlans,
@@ -21,11 +22,7 @@ export const useProtectionPlans = (enabled = true) => {
     if (!enabled) return undefined;
     void dispatch(fetchProtectionPlansThunk());
 
-    const interval = setInterval(() => {
-      void dispatch(fetchProtectionPlansThunk());
-    }, POLL_INTERVAL_MS);
-
-    return () => clearInterval(interval);
+    return pollWhileVisible(() => void dispatch(fetchProtectionPlansThunk()), POLL_INTERVAL_MS);
   }, [dispatch, enabled]);
 
   const refetch = useCallback((): void => {

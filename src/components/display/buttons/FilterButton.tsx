@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tooltip } from 'antd';
 import { FilterOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, TOOLBAR_CONTROL } from '../../../constants';
+import { BUTTON_COLORS, DEFAULT_COLORS, TOOLBAR_CONTROL } from '../../../constants';
 import { useMediaQuery } from '../../../hooks/layout';
 
 interface FilterButtonProps {
@@ -37,21 +37,21 @@ const FilterButton: React.FC<FilterButtonProps> = ({
     fontWeight: 500,
     border: 'none',
     backgroundColor: 'transparent',
-    color: disabled ? DEFAULT_COLORS.TEXT_DISABLED : DEFAULT_COLORS.TEXT_MUTED,
+    color: disabled ? BUTTON_COLORS.TOOLBAR_DISABLED_TEXT : BUTTON_COLORS.MUTED_TEXT,
     transition: 'all 0.2s',
     opacity: disabled ? 0.6 : 1,
   };
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled) return;
-    e.currentTarget.style.backgroundColor = DEFAULT_COLORS.SURFACE_WHITE;
+    e.currentTarget.style.backgroundColor = BUTTON_COLORS.TOOLBAR_HOVER_BG;
     e.currentTarget.style.color = DEFAULT_COLORS.TEXT_ON_SURFACE;
   };
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled) return;
     e.currentTarget.style.backgroundColor = 'transparent';
-    e.currentTarget.style.color = DEFAULT_COLORS.TEXT_MUTED;
+    e.currentTarget.style.color = BUTTON_COLORS.MUTED_TEXT;
   };
 
   const button = (

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Button, Empty, Tag, Tooltip, Typography } from 'antd';
+import { Empty, Tag, Typography } from 'antd';
 import { FileTextOutlined } from '@ant-design/icons';
 import {
   DEFAULT_COLORS,
@@ -16,9 +16,9 @@ import { useUsernamesByIds } from '../../../../../hooks/useUsernamesByIds';
 import type { RootState } from '../../../../../store';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
-  REPORT_FORMATS,
   REPORT_SYSTEM_USER_ID,
 } from '../../constants/protectionPlans';
+import ReportDownloadButton from '../shared/ReportDownloadButton';
 import type { PlanPhase, PlanReportFormat, PlanReportMeta } from '../../models';
 
 interface ReportsSectionProps {
@@ -122,33 +122,13 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
               </span>
               {report.truncated && <Tag className={TAG_CLASS.AS_IS}>{LABELS.TRUNCATED}</Tag>}
             </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-              {REPORT_FORMATS.map(({ key, label }) => {
-                const button = (
-                  <Button
-                    key={key}
-                    size="small"
-                    loading={downloading === `${report.id}:${key}`}
-                    disabled={!canDownload}
-                    onClick={() => onDownload(report, key, `${planName}-${report.id}.${key}`)}
-                  >
-                    {label}
-                  </Button>
-                );
-                const title = !canDownload
-                  ? PPC.LABELS.PERMISSION_DENIED.DOWNLOAD_REPORT
-                  : key === 'html'
-                    ? LABELS.PRINT_HINT
-                    : undefined;
-                return title ? (
-                  <Tooltip key={key} title={title}>
-                    {button}
-                  </Tooltip>
-                ) : (
-                  button
-                );
-              })}
-            </div>
+            <ReportDownloadButton
+              report={report}
+              planName={planName}
+              canDownload={canDownload}
+              downloading={downloading}
+              onDownload={onDownload}
+            />
           </div>
         );
       })}

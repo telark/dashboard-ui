@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import type { FormInstance } from 'antd';
-import { Icons } from '../../../../../constants';
 import AnimationWrapper from '../../../../../components/display/panels/slide-out/AnimationWrapper';
 import { ExpandPanelButton } from '../../../../../components/display/panels/slide-out';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
@@ -18,8 +17,6 @@ import {
 
 const PANEL_WIDTH = 720;
 const PANEL_WIDTH_EXPANDED = 1400;
-
-const ProtectionPlansIcon = Icons.ProtectionPlans;
 
 interface CreatePlanPanelProps {
   open: boolean;
@@ -98,9 +95,7 @@ const CreatePlanPanel: React.FC<CreatePlanPanelProps> = ({ open, onClose, form }
         onPrimary: handleSubmitClick,
         primaryLabel: PPC.PANELS.CREATE.SUBMIT_BUTTON,
         primaryLoading: submitting,
-        primaryLoadingLabel: PPC.PANELS.CREATE.LOADING_LABEL,
-        primaryIcon: <ProtectionPlansIcon size={16} />,
-        primaryDisabled: submitDisabled || submitting,
+        primaryDisabled: submitDisabled,
       }}
     >
       <PlanForm
@@ -110,12 +105,8 @@ const CreatePlanPanel: React.FC<CreatePlanPanelProps> = ({ open, onClose, form }
         onPoliciesChange={setPolicies}
         onPolicyParamChange={handlePolicyParamChange}
         onSubmit={handleFinish}
-        submitting={submitting}
         mode="create"
         nameValidator={nameValidator}
-        hideSubmitButton
-        submitLabel={PPC.PANELS.CREATE.SUBMIT_BUTTON}
-        loadingLabel={PPC.PANELS.CREATE.LOADING_LABEL}
         validateTrigger={attemptedSubmit ? 'onChange' : 'onSubmit'}
         {...data}
       />

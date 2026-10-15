@@ -7,11 +7,7 @@ import { useViewGroupPanel } from './useViewGroupPanel';
 import { useGroupDeleteModal } from '../../../components/delete';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import type { Group } from '../../../models';
-import type {
-  ViewAvatar,
-  ViewOverflowItem,
-  ViewDetailRow,
-} from '../../../../../../components/display/panels/view/types';
+import type { ViewDetailRow } from '../../../../../../components/display/panels/view/types';
 
 interface UseViewGroupPanelDataOptions {
   group: Group | null;
@@ -19,8 +15,6 @@ interface UseViewGroupPanelDataOptions {
 }
 
 interface UseViewGroupPanelDataReturn {
-  avatars: ViewAvatar[];
-  overflowItems: ViewOverflowItem[];
   details: ViewDetailRow[];
   deleteModalOpen: boolean;
   isDeleting: boolean;
@@ -35,14 +29,8 @@ export const useViewGroupPanelData = ({
   group,
   onClose,
 }: UseViewGroupPanelDataOptions): UseViewGroupPanelDataReturn => {
-  const {
-    groupUsers,
-    categoryName,
-    createdByUser,
-    lastUpdatedByUser,
-    usernamesById,
-    avatarSources,
-  } = useViewGroupPanel(group);
+  const { categoryName, createdByUser, lastUpdatedByUser, usernamesById } =
+    useViewGroupPanel(group);
   const {
     deleteModalOpen,
     isDeleting,
@@ -56,26 +44,6 @@ export const useViewGroupPanelData = ({
     await baseHandleConfirmDelete();
     onClose();
   };
-
-  const avatars = useMemo(() => {
-    if (!group) return [];
-    return groupUsers.map((user) => ({
-      key: user.id,
-      src: avatarSources[user.id],
-      fallback: user.username ? user.username.charAt(0).toUpperCase() : undefined,
-      tooltip: user.username || '',
-    }));
-  }, [group, groupUsers, avatarSources]);
-
-  const overflowItems = useMemo(() => {
-    if (!group) return [];
-    return groupUsers.slice(5).map((user) => ({
-      key: user.id,
-      src: avatarSources[user.id],
-      fallback: user.username ? user.username.charAt(0).toUpperCase() : undefined,
-      username: user.username || '',
-    }));
-  }, [group, groupUsers, avatarSources]);
 
   const details = useMemo(() => {
     if (!group) return [];
@@ -136,8 +104,6 @@ export const useViewGroupPanelData = ({
   }, [group, categoryName, createdByUser, lastUpdatedByUser, usernamesById]);
 
   return {
-    avatars,
-    overflowItems,
     details,
     deleteModalOpen,
     isDeleting,

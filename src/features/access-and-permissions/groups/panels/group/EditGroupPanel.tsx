@@ -1,12 +1,10 @@
 import React from 'react';
 import { SlideOutPanel } from '../../../../../components/display/panels/slide-out';
-import { Icons } from '../../../../../constants';
+import { BUTTON_TEXTS } from '../../../../../constants';
 import { GROUPS_CONSTANTS as GC } from '../../constants';
 import GroupFormFields from '../../components/display/shared/GroupFormFields';
 import { useEditGroupPanel } from '../../hooks';
 import type { GroupPanelProps } from '../../models';
-
-const GroupIcon = Icons.Group;
 
 const EditGroupPanel: React.FC<GroupPanelProps> = ({ open, onClose, editingGroup, form }) => {
   const {
@@ -43,8 +41,7 @@ const EditGroupPanel: React.FC<GroupPanelProps> = ({ open, onClose, editingGroup
       }
       onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
       onCancel={onClose}
-      submitButtonText={GC.LABELS.UPDATE_BUTTON}
-      submitButtonIcon={<GroupIcon size={16} />}
+      submitButtonText={BUTTON_TEXTS.SAVE_CHANGES}
       loading={submitting}
       disabled={hasFormErrors || !hasChanges}
       form={form}

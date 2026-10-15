@@ -15,8 +15,8 @@ const RulesItem: React.FC<RulesItemProps> = ({ ruleLabel, formattedKey, isChecke
         display: 'flex',
         alignItems: 'center',
         padding: '8px 14px',
-        background: DEFAULT_COLORS.PAGE_BG,
-        border: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
+        background: DEFAULT_COLORS.SURFACE_WHITE,
+        border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
         borderRadius: 8,
         transition: 'all 0.2s ease',
         cursor: 'pointer',
@@ -25,12 +25,10 @@ const RulesItem: React.FC<RulesItemProps> = ({ ruleLabel, formattedKey, isChecke
         boxSizing: 'border-box',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.background = DEFAULT_COLORS.HOVER_BG;
-        e.currentTarget.style.borderColor = DEFAULT_COLORS.BORDER_HOVER;
+        e.currentTarget.style.background = DEFAULT_COLORS.SURFACE_HOVER;
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.background = DEFAULT_COLORS.PAGE_BG;
-        e.currentTarget.style.borderColor = DEFAULT_COLORS.BORDER_SUBTLE;
+        e.currentTarget.style.background = DEFAULT_COLORS.SURFACE_WHITE;
       }}
       onClick={(e) => {
         if ((e.target as HTMLElement).closest?.('.ant-checkbox-wrapper')) return;
@@ -49,7 +47,7 @@ const RulesItem: React.FC<RulesItemProps> = ({ ruleLabel, formattedKey, isChecke
         <span
           style={{
             fontSize: 14,
-            color: DEFAULT_COLORS.TEXT_PRIMARY,
+            color: DEFAULT_COLORS.TEXT_ON_SURFACE,
             fontWeight: 500,
             lineHeight: 1.4,
           }}

@@ -8,7 +8,6 @@ import type {
   PlanHealth,
   PlanMode,
   PlanReportFormat,
-  ScopeType,
   ViolationResult,
 } from '../models';
 
@@ -17,10 +16,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
     HEADER_TITLE: 'Protection plans',
     HEADER_SUBTITLE:
       'Block chosen changes to an application or namespace for a set window. Audit first, then enforce.',
-    NOT_FOUND: 'Protection plan not found',
-    LOADING_PLANS: 'Loading Plans...',
     CREATE_BUTTON: 'Create Plan',
-    CREATE_BUTTON_TEXT: 'Create Plan',
     TOOLBAR_SEARCH_PLACEHOLDER: 'Search plans by name, type, or scope...',
     TOOLBAR_SEARCH_BUTTON: 'Search',
     TOOLBAR_COUNT_SUFFIX: { one: 'plan', other: 'plans' },
@@ -41,11 +37,9 @@ export const PROTECTION_PLANS_CONSTANTS = {
     TOOLBAR_PHASE_FILTER: 'Filter by phase',
     BREADCRUMBS: {
       ROOT: 'Protection Plans',
-      CREATE: 'Create Plan',
     },
     REPORTS: {
       GENERATE: 'Generate report',
-      GENERATING: 'Generating…',
       REFRESH: 'Refresh',
       // Shared by the details page and the Reports tab.
       TRIGGER_LABELS: {
@@ -127,9 +121,6 @@ export const PROTECTION_PLANS_CONSTANTS = {
         SCOPE_TITLE: 'Scope',
         SCOPE_DESCRIPTION: 'What this plan protects.',
         POLICIES_TITLE: 'Policies',
-        POLICIES_DESCRIPTION: 'Configured policy templates.',
-        PARTICIPANTS_TITLE: 'Participants',
-        PARTICIPANTS_DESCRIPTION: 'Users associated with this plan.',
         HEALTH_TITLE: 'Health',
         HEALTH_DESCRIPTION: 'Whether the policies this plan expects are live in the cluster.',
         VIOLATIONS_TITLE: 'Violations',
@@ -140,14 +131,12 @@ export const PROTECTION_PLANS_CONSTANTS = {
           'What happened in the cluster while this plan was in effect. A final report is captured when the plan ends or is canceled.',
       },
       FIELDS: {
-        ID: 'ID',
         NAME: 'Name',
         DESCRIPTION: 'Description',
         SEVERITY: 'Severity',
         PRIORITY: 'Priority',
         MODE: 'Mode',
         TIME_MODE: 'Time mode',
-        TIME_RANGE: 'Time range',
         PERMANENT: 'Permanent',
         CREATED: 'Created By',
         UPDATED: 'Last updated By',
@@ -210,9 +199,6 @@ export const PROTECTION_PLANS_CONSTANTS = {
       DESCRIPTION:
         'Try adjusting your search or create a new Protection Plan to guard critical workloads.',
     },
-    MESSAGES: {
-      ERROR_TITLE: 'Failed to load protection plans.',
-    },
     ACTIONS: {
       CANCEL: 'Cancel plan',
       DELETE: 'Delete plan',
@@ -253,15 +239,11 @@ export const PROTECTION_PLANS_CONSTANTS = {
       skip: 'Skip',
     } as Record<ViolationResult, string>,
     VIOLATIONS: {
-      TAB_LABEL: 'Violations',
-      TABLE_RESOURCE: 'Resource',
       TABLE_RESOURCE_KIND: 'Kind',
       TABLE_RESOURCE_NAME: 'Resource',
       TABLE_NAMESPACE: 'Namespace',
       TABLE_RULE: 'Rule',
       TABLE_RESULT: 'Result',
-      TABLE_TIMESTAMP: 'Timestamp',
-      TABLE_MESSAGE: 'Message',
       EMPTY_TITLE: 'No violations in the retention window.',
       EMPTY_AUDIT: 'In audit mode, operations that would have been blocked appear here.',
       EMPTY_ENFORCE: 'Nothing matching this plan has been blocked recently.',
@@ -274,12 +256,10 @@ export const PROTECTION_PLANS_CONSTANTS = {
       FILTER_ALL: 'All',
     },
     HEALTH_DETAIL: {
-      TITLE: 'Health',
       CHECKED_AT: 'Last checked',
       REFRESH_BUTTON: 'Refresh health',
       MISSING: 'Missing policies',
       UNEXPECTED: 'Unexpected policies',
-      POLICY_NAME: 'Policy',
       NAMESPACE: 'Namespace',
       PRESENT: 'Present',
       READY: 'Ready',
@@ -288,6 +268,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       FAILURE_ACTION: 'Failure action',
       LOAD_ERROR: 'Failed to load health status.',
       EMPTY: 'No policy details available.',
+      AUDIT_ONLY: (label: string) => `${label} only audits, so it does not block.`,
     },
     PHASE_LABELS: {
       active: 'Active',
@@ -321,27 +302,12 @@ export const PROTECTION_PLANS_CONSTANTS = {
       WINDOW_TIME_FORMAT: 'MMM d, HH:mm',
       RANGE_SEPARATOR: ' → ',
       PERMANENT_RANGE: 'Always on',
-      NO_END_DATE: 'No end date',
       NO_SCHEDULE: 'No schedule set',
       META_SEPARATOR: ' · ',
-      TARGETS_SEPARATOR: ', ',
       APPLICATIONS_COUNT: (count: number) =>
         `${count} ${count === 1 ? 'application' : 'applications'}`,
-      CREATED_PREFIX: 'created',
       UPDATED_PREFIX: 'updated',
-      REFUSES_PREFIX: 'Refuses',
       REFUSES_NONE: 'No policies configured',
-      MORE_POLICIES: (count: number) => `+${count}`,
-      STATE: {
-        ENFORCING: 'Enforcing',
-        AUDITING: 'Auditing in the background',
-        SCHEDULED: 'Waiting to start',
-        CANCELED: 'Canceled',
-        TERMINATED: 'Window ended',
-        FAILED: 'Could not deploy',
-        DRAFT: 'Draft',
-      },
-      LEFT_SUFFIX: 'left',
       STATS: {
         SCOPE: 'Scope',
         MODE: 'Mode',
@@ -350,17 +316,13 @@ export const PROTECTION_PLANS_CONSTANTS = {
       },
       TEMPLATES_COUNT: (count: number) => `${count} active`,
       NAMESPACES_COUNT: (count: number) => `${count} ${count === 1 ? 'namespace' : 'namespaces'}`,
-      BLOCKED_LABEL: 'Refuses in this window',
-      BLOCKED_LABEL_PERMANENT: 'Always refuses',
+      BLOCKED_LABEL: {
+        audit: { window: 'Would refuse in this window', permanent: 'Would always refuse' },
+        enforce: { window: 'Refuses in this window', permanent: 'Always refuses' },
+      } as Record<PlanMode, { window: string; permanent: string }>,
       CREATED_BY_PREFIX: 'by',
       AWAITING_APPROVAL_BY_PREFIX: 'awaiting approval · requested by',
-      PROTECTING_NAMESPACE: (target: string) => `Protecting namespace ${target}`,
-      PROTECTING_NAMESPACES: (count: number) => `Protecting ${count} namespaces`,
-      PROTECTING_APPLICATIONS: (count: number) =>
-        `Protecting ${count} ${count === 1 ? 'application' : 'applications'}`,
     },
-    SEVERITY_LABEL: 'Severity',
-    MODE_ENFORCEMENT_LABEL: 'Policy Enforcement Mode',
     QUICK_FILTERS: {
       ALL: 'All',
     },
@@ -391,14 +353,10 @@ export const PROTECTION_PLANS_CONSTANTS = {
     CREATE: {
       TITLE: 'Create Protection Plan',
       SUBMIT_BUTTON: 'Create Plan',
-      LOADING_LABEL: 'Creating...',
     },
     EDIT: {
       TITLE: 'Edit Protection Plan',
-      SUBMIT_BUTTON: 'Save changes',
-      LOADING_LABEL: 'Saving...',
       ACTIVE_SCOPE_WARNING: 'Saving a scope change redeploys this plan’s policies.',
-      NO_CHANGES_HINT: 'No changes to save.',
       APPROVED_LOCKED_ALERT:
         'This plan was approved as configured, so scope, policies, schedule and mode are locked. To change them, duplicate the plan, or cancel and reactivate it to request a new approval.',
     },
@@ -420,7 +378,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
       SCHEDULE_DESCRIPTION: 'Set the protection window, or keep the plan on until you end it.',
       POLICIES_TITLE: 'Policies',
       POLICIES_DESCRIPTION:
-        'Pick the changes to block from policy templates, then audit or enforce.',
+        'Pick the changes this plan covers. The mode decides whether they are refused or only recorded.',
     },
     FORM: {
       NAME_LABEL: 'Plan name',
@@ -429,7 +387,8 @@ export const PROTECTION_PLANS_CONSTANTS = {
       DESCRIPTION_PLACEHOLDER: 'Optional short description',
       SEVERITY_LABEL: 'Severity',
       PRIORITY_LABEL: 'Priority',
-      MODE_LABEL: 'Mode',
+      MODE_LABEL: 'When a change matches',
+      AUDIT_WARNING: 'Audit only records matching changes. Nothing is blocked.',
       SCOPE_TYPE_LABEL: 'Scope type',
       APPLICATIONS_LABEL: 'Applications',
       APPLICATIONS_PLACEHOLDER: 'Select applications',
@@ -482,8 +441,8 @@ export const PROTECTION_PLANS_CONSTANTS = {
       },
     ] as Array<{ value: string; label: string }>,
     MODE_OPTIONS: [
-      { value: 'audit', label: 'Audit: log violations, do not block' },
-      { value: 'enforce', label: 'Enforce: block policy violations' },
+      { value: 'audit', label: 'Audit: let it through and record it' },
+      { value: 'enforce', label: 'Enforce: refuse it' },
     ] as Array<{ value: string; label: string }>,
     TIME_MODE_OPTIONS: [
       { value: 'permanent', label: 'Permanent' },
@@ -550,7 +509,7 @@ export const REPORTS_LIST = {
     TRIGGER: 150,
     GENERATED_BY: 160,
     VIOLATIONS: 110,
-    ACTIONS: 140,
+    ACTIONS: 56,
   },
 } as const;
 
@@ -572,7 +531,6 @@ export const POLICY_CHIP_LABEL: Record<string, string> = {
   'block-workload-config-mount-changes': 'Changing config mounts & env sources',
 };
 
-export const SCOPE_TYPE_LABEL: Record<ScopeType, string> = {
-  applications: PROTECTION_PLANS_CONSTANTS.LABELS.DETAIL_PAGE.FIELDS.APPLICATIONS,
-  namespaces: PROTECTION_PLANS_CONSTANTS.LABELS.DETAIL_PAGE.FIELDS.NAMESPACES,
-};
+// Rendered policy names are `telark-<plan id>-<template code>-<scope hash>` (telark `PolicyName`).
+export const POLICY_NAME_PREFIX = (planId: string, templateCode: string) =>
+  `telark-${planId}-${templateCode}-`;
