@@ -15,7 +15,7 @@ import {
   ACTION_PERMISSIONS,
 } from '../../../../../features/auth/hooks/permissions/permissionEngine';
 import RoleList from '../../components/display/role/RoleList';
-import GroupAssignedRolesView from '../../components/display/role/GroupAssignedRolesView';
+import AssignedRolesView from '../../components/display/role/AssignedRolesView';
 import type { Group } from '../../models';
 import { buildAttachRoleFilterFields } from '../../config/attachRoleFilterConfig';
 import { applyRoleFilters } from '../../utils';
@@ -201,7 +201,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
             ) : null}
             <div style={{ width: '100%', margin: 0, padding: 0, boxSizing: 'border-box' }}>
               {activeView === 'assigned' && (
-                <GroupAssignedRolesView
+                <AssignedRolesView
                   assignedRoleIds={filteredAssignedRoleIds}
                   allRoles={allRoles}
                   loading={rolesLoading}

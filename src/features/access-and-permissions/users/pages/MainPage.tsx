@@ -6,12 +6,10 @@ import { useUserListPageConfig } from '../hooks/list/useUserListPageConfig';
 import { useUserPanelState } from '../hooks/panels/user/useUserPanelState';
 import { applyUserFilters } from '../utils/filter/applyUserFilters';
 import { CreateUserPanel } from '../panels';
+import { noop } from '../../../../utils/helpers/noop';
 import type { User } from '../models';
 import UsersEmptyPage from './UsersEmptyPage';
 import UsersListPage from './UsersListPage';
-
-// Stable, so the actions column (and the table) keeps its identity across renders.
-const noop = () => undefined;
 
 const MainPage: React.FC = () => {
   const { users, loaded, error, refetch } = useUsers();

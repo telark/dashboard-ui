@@ -7,7 +7,7 @@ import type { ViewPanelTab } from '../../../../../../components/display/panels/v
 import { useRoles } from '../../../../roles/hooks';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import GroupAssignedMembersView from '../../../components/display/member/GroupAssignedMembersView';
-import GroupAssignedRolesView from '../../../components/display/role/GroupAssignedRolesView';
+import AssignedRolesView from '../../../components/display/role/AssignedRolesView';
 import type { Group } from '../../../models';
 import type { User } from '../../../../users/models';
 import type { Role } from '../../../../roles/models';
@@ -60,7 +60,7 @@ export const useGroupViewTabs = (
         label: GC.LABELS.PANELS.VIEW.TABS.ROLES,
         count: roleIds.length,
         content: canViewRoles ? (
-          <GroupAssignedRolesView
+          <AssignedRolesView
             assignedRoleIds={roleIds}
             allRoles={roles}
             loading={!rolesLoaded}

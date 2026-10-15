@@ -6,18 +6,13 @@ import { NoPermissionCard } from '../../../../../../../components/shared';
 import { ACTION_PERMISSIONS, usePermission } from '../../../../../../auth/hooks';
 import { isBuiltInRole } from '../../../../../roles/utils';
 import AssignedRoleContent from '../../../../../groups/components/display/role/AssignedRoleContent';
-import { getScopeLabel } from '../../../../utils/role/scope';
 import type { GroupInheritedRole } from '../../../../hooks/panels/role/useGroupInheritedRoles';
 import type { Role } from '../../../../../roles/models';
 
 const VIEW_GROUPS = ACTION_PERMISSIONS.groups.view;
 
 const renderRoleContent = ({ role, fromGroups }: GroupInheritedRole): React.ReactNode => (
-  <AssignedRoleContent
-    role={role}
-    getScopeLabel={getScopeLabel}
-    fromGroups={fromGroups.map((g) => g.name)}
-  />
+  <AssignedRoleContent role={role} fromGroups={fromGroups.map((g) => g.name)} />
 );
 
 interface UserGroupInheritedRolesViewProps {

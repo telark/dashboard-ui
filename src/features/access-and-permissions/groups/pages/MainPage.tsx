@@ -12,15 +12,13 @@ import { usePermission, ACTION_PERMISSIONS } from '../../../auth/hooks';
 import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { applyGroupFilters, mapCategoriesToFilterOptions } from '../utils';
+import { noop } from '../../../../utils/helpers/noop';
 import type { Group } from '../models';
 import type { Category } from '../../categories/models';
 import GroupsEmptyPage from './GroupsEmptyPage';
 import GroupsListPage from './GroupsListPage';
 
 type ViewMode = 'groups' | 'categories';
-
-// Stable, so the actions column (and the table) keeps its identity across renders.
-const noop = () => undefined;
 
 const MainPage: React.FC = () => {
   const canCreateGroup = usePermission(

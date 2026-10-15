@@ -30,7 +30,6 @@ export const CARD_LAYOUT = {
   // Widest stat label ("MANAGED BY", 11px/700 Geist + tracking) is ~79.4px.
   STAT_MIN_WIDTH_PX: 80,
   STATS_PER_ROW: 4,
-  BORDER_PX: 1,
 } as const;
 
 const STATS_ROW_MIN_WIDTH_PX =

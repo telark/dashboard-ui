@@ -1,6 +1,5 @@
 import React from 'react';
 import { Form } from 'antd';
-import Section from '../../sections/Section';
 import AnimationWrapper from './AnimationWrapper';
 import { BUTTON_TEXTS, SLIDE_OUT } from '../../../../constants';
 import type { SlideOutPanelProps } from '../../../../interfaces/layout/panels';
@@ -11,7 +10,6 @@ const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
     open,
     onClose,
     title,
-    sectionTitle,
     formContent,
     contentOnly = false,
     onSubmit = async () => {},
@@ -78,9 +76,7 @@ const SlideOutPanel: React.FC<SlideOutPanelProps> = React.memo(
             primaryDisabled: disabled,
           }}
         >
-          <div style={SLIDE_OUT.FORM_CONTENT}>
-            {sectionTitle ? <Section title={sectionTitle} content={formContent} /> : formContent}
-          </div>
+          <div style={SLIDE_OUT.FORM_CONTENT}>{formContent}</div>
         </AnimationWrapper>
       </Form>
     );

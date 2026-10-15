@@ -9,10 +9,8 @@ export interface NumberInputProps {
   max?: number;
   disabled?: boolean;
   addonAfter?: React.ReactNode;
-  addonBefore?: React.ReactNode;
   style?: React.CSSProperties;
   className?: string;
-  precision?: number;
   step?: number | string;
 }
 
@@ -37,10 +35,8 @@ const NumberInput: React.FC<NumberInputProps> = ({
   max,
   disabled = false,
   addonAfter,
-  addonBefore,
   style,
   className,
-  precision,
   step,
 }) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -67,7 +63,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
     if (/^[0-9]$/.test(e.key)) {
       return;
     }
-    if (e.key === '.' && precision !== 0) {
+    if (e.key === '.') {
       return;
     }
     if (e.key === '-' && (min === undefined || min < 0)) {
@@ -86,7 +82,6 @@ const NumberInput: React.FC<NumberInputProps> = ({
       disabled={disabled}
       style={style}
       className={className}
-      precision={precision}
       step={step}
       controls
       onKeyDown={handleKeyDown}
@@ -103,12 +98,11 @@ const NumberInput: React.FC<NumberInputProps> = ({
     />
   );
 
-  if (!addonBefore && !addonAfter) return input;
+  if (!addonAfter) return input;
   return (
     <Space.Compact>
-      {addonBefore ? <NumberAddon disabled={disabled}>{addonBefore}</NumberAddon> : null}
       {input}
-      {addonAfter ? <NumberAddon disabled={disabled}>{addonAfter}</NumberAddon> : null}
+      <NumberAddon disabled={disabled}>{addonAfter}</NumberAddon>
     </Space.Compact>
   );
 };

@@ -45,8 +45,6 @@ export interface ScopeRowProps {
   scopeLabel: string;
   permissionLevels: readonly { value: PermissionLevel; label: string }[];
   tooltipMap: Record<string, string>;
-  onLevelChange?: (scopeKey: string, level: PermissionLevel) => void;
-  onRuleToggle?: (scopeKey: string, formattedKey: string, checked: boolean) => void;
   rowPaddingPx?: number;
   isLast?: boolean;
   isLocked?: boolean;

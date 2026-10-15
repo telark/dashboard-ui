@@ -21,7 +21,6 @@ import { useUserEnrollLink } from '../../../hooks/user/useUserEnrollLink';
 interface UserActionsColumnProps {
   record: User;
   onEdit?: (record: User) => void;
-  onDelete?: (record: User) => void;
 }
 
 const ACTION_SIZE = 28;
@@ -158,11 +157,7 @@ const EnrollLinkAction: React.FC<EnrollLinkActionProps> = ({ record }) => {
   );
 };
 
-export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
-  record,
-  onEdit,
-  onDelete,
-}) => {
+export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({ record, onEdit }) => {
   const hasSuspendPermission = usePermission(
     ACTION_PERMISSIONS.users.suspend.scope,
     ACTION_PERMISSIONS.users.suspend.level,
@@ -190,11 +185,7 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
     e.stopPropagation();
     e.preventDefault();
     if (!canDelete) return;
-    if (onDelete) {
-      onDelete(record);
-    } else {
-      openDeleteModal();
-    }
+    openDeleteModal();
   };
 
   return (
@@ -261,15 +252,13 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({
           </button>
         </span>
       </Tooltip>
-      {!onDelete && (
-        <UserDeleteModal
-          open={deleteModalOpen}
-          onClose={closeDeleteModal}
-          onConfirm={handleConfirmDelete}
-          userName={record.fullname || record.username}
-          loading={isDeleting}
-        />
-      )}
+      <UserDeleteModal
+        open={deleteModalOpen}
+        onClose={closeDeleteModal}
+        onConfirm={handleConfirmDelete}
+        userName={record.fullname || record.username}
+        loading={isDeleting}
+      />
     </div>
   );
 };

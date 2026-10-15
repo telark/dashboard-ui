@@ -1,16 +1,3 @@
-import {
-  UserOutlined,
-  BulbOutlined,
-  SafetyOutlined,
-  DatabaseOutlined,
-  RobotOutlined,
-  KeyOutlined,
-  InfoCircleOutlined,
-  GlobalOutlined,
-} from '@ant-design/icons';
-import { BsLockFill } from 'react-icons/bs';
-import type { ComponentType, CSSProperties } from 'react';
-
 export type SettingsSectionKey =
   | 'profile'
   | 'appearance'
@@ -26,75 +13,57 @@ export interface SettingsSectionConfig {
   key: SettingsSectionKey;
   label: string;
   description: string;
-  icon: ComponentType<{ style?: CSSProperties }>;
   badge?: string;
 }
 
 export const SETTINGS_CONSTANTS = {
-  PAGE: {
-    TITLE: 'Settings',
-  },
   SECTIONS: {
     PROFILE: {
       key: 'profile' as const,
       label: 'Profile',
       description: 'Your personal information',
-      icon: UserOutlined,
     },
     APPEARANCE: {
       key: 'appearance' as const,
       label: 'Appearance',
       description: 'Theme options',
-      icon: BulbOutlined,
     },
     TIMEZONE: {
       key: 'timezone' as const,
       label: 'Timezone',
       description: 'Time zone and region used to display dates and times.',
-      icon: GlobalOutlined,
     },
     SECURITY: {
       key: 'security' as const,
       label: 'Security',
       description: 'Passkeys and active sessions',
-      icon: SafetyOutlined,
     },
     AI_INSIGHTS: {
       key: 'aiInsights' as const,
       label: 'Insights',
       description: 'On by default. Choose the local model and when incident analysis runs.',
-      icon: RobotOutlined,
       badge: 'Experimental',
     },
     AI_DATA: {
       key: 'insightsGovernance' as const,
       label: 'Discovery & Storage',
       description: 'Choose the namespaces discovery skips and how many snapshots it keeps.',
-      icon: DatabaseOutlined,
     },
     IDENTITY_PROVIDER: {
       key: 'identityProvider' as const,
       label: 'Authentication',
       description: 'Choose how users sign in: Google sign-in and passkey self-registration.',
-      icon: KeyOutlined,
     },
     MY_PERMISSIONS: {
       key: 'myPermissions' as const,
       label: 'My Permissions',
       description: 'Your effective permissions resolved across all assigned roles.',
-      icon: BsLockFill,
     },
     ABOUT: {
       key: 'about' as const,
       label: 'About',
       description: 'Version, documentation, and third-party licenses.',
-      icon: InfoCircleOutlined,
     },
-  },
-  SIDEBAR: {
-    WIDTH: 240,
-    /** Icon-only width for settings sidebar (labels in tooltips). */
-    WIDTH_COLLAPSED: 56,
   },
   CONTENT: {
     MAX_WIDTH: 640,

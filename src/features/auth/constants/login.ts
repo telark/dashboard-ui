@@ -34,7 +34,6 @@ export const LOGIN_CONSTANTS = {
     USER_VERIFICATION_DISCOURAGED: 'discouraged',
     CREDENTIAL_TYPE: 'public-key' as const,
     ATTESTATION: 'none',
-    SHOW_ALL_PASSKEYS: true,
     TIMEOUT: {
       VALIDATION_CHECK: 1000,
     },
@@ -67,17 +66,11 @@ export const LOGIN_CONSTANTS = {
       NO_CREDENTIAL_FOUND: 'User canceled authentication or no credential found',
       REGISTRATION_CANCELED: 'User canceled registration or credential creation failed',
       OPERATION_NOT_ALLOWED: 'The operation is not allowed',
-      AUTHENTICATOR_ALREADY_HAS_CREDENTIAL:
-        'This device already has a passkey registered. Platform authenticators can only store one passkey per account.',
       NOT_SUPPORTED_ERROR: 'WebAuthn is not supported',
       AUTHENTICATION_FAILED: 'Authentication failed',
       REGISTRATION_FAILED: 'Registration failed',
       UNSUPPORTED_RESPONSE_TYPE: 'Unsupported credential response type',
       CONSTRAINT_VALIDATION_FAILED: 'Constraint validation failed',
-    },
-    ERROR_PATTERNS: {
-      USER_CANCELED_AUTH: 'user canceled authentication',
-      NO_CREDENTIAL_FOUND: 'no credential found',
     },
   },
   SESSION: {

@@ -35,7 +35,6 @@ export interface PanelFooterProps {
 }
 
 export interface SlideOutPanelProps extends Omit<AnimationWrapperProps, 'children' | 'footer'> {
-  sectionTitle?: string;
   formContent: React.ReactNode;
   /** Header + scrollable body only; no form wrapper or footer (e.g. read-only viewers). */
   contentOnly?: boolean;

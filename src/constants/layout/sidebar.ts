@@ -40,7 +40,6 @@ export const SIDEBAR_LAYOUT = {
     SHORTCUT_LABEL_MAC: '⌘B',
     SHORTCUT_LABEL_DEFAULT: 'Ctrl+B',
     EXPAND_LABEL: 'Expand sidebar',
-    COLLAPSE_LABEL: 'Collapse sidebar',
     SEPARATOR: '|',
     SEPARATOR_GAP: 12,
   },

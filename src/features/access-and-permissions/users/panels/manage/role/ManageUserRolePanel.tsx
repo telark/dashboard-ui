@@ -22,7 +22,7 @@ import { useFetchGroups } from '../../../../groups/hooks/data/useFetchGroups';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../groups/constants';
 import { useHasRoleAboveCaller } from '../../../../roles/hooks';
 import UserRoleSelectList from '../../../components/display/manage/role/UserRoleSelectList';
-import UserAssignedRolesView from '../../../components/display/manage/role/UserAssignedRolesView';
+import AssignedRolesView from '../../../../groups/components/display/role/AssignedRolesView';
 import UserGroupInheritedRolesView from '../../../components/display/manage/role/UserGroupInheritedRolesView';
 import { buildAttachRoleFilterFields } from '../../../../groups/config/attachRoleFilterConfig';
 import { applyRoleFilters } from '../../../../groups/utils';
@@ -256,7 +256,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
             ) : null}
             <div style={{ width: '100%', margin: 0, padding: 0, boxSizing: 'border-box' }}>
               {activeView === 'assigned' && (
-                <UserAssignedRolesView
+                <AssignedRolesView
                   assignedRoleIds={filteredAssignedRoleIds}
                   allRoles={allRoles}
                   loading={rolesLoading}

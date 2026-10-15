@@ -19,9 +19,7 @@ body,
 #root,
 #root *,
 .ant-app,
-.ant-app *,
-.app-root,
-.app-root * {
+.ant-app * {
   font-family:
     'Geist',
     -apple-system,

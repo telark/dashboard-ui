@@ -4,12 +4,8 @@ export const GROUPS_CONSTANTS = {
   LABELS: {
     HEADER_TITLE: 'Groups',
     HEADER_SUBTITLE: 'Manage existing groups',
-    NOT_FOUND: 'Group not found',
-    CREATE_BUTTON_TEXT: 'Create Group',
     BREADCRUMBS: {
       GROUPS: 'Groups',
-      EDIT: 'Edit',
-      CREATE: 'Create Group',
       CATEGORIES: 'Categories',
     },
     MESSAGES: {
@@ -26,14 +22,11 @@ export const GROUPS_CONSTANTS = {
       NO_ROLES_AVAILABLE: 'No roles available',
       NO_ASSIGNED_ROLES: 'No roles assigned yet',
       ROLE_DEASSIGNED: (roleName: string) => `Role "${roleName}" was removed from group`,
-      ROLE_DEASSIGN_FAILED: 'Failed to remove role from group',
       LOADING_MEMBERS: 'Loading members...',
       NO_MEMBERS_AVAILABLE: 'No members available',
       NO_ASSIGNED_MEMBERS: 'No members assigned yet',
       MEMBER_DEASSIGNED: (memberName: string) => `Member "${memberName}" was removed from group`,
       MEMBER_DEASSIGN_FAILED: 'Failed to remove member from group',
-      MEMBERS_UPDATED: (groupName: string) => `Members for "${groupName}" updated`,
-      MEMBERS_UPDATE_FAILED: 'Failed to update group members',
     },
     COLUMNS: {
       NAME: 'Group Name',
@@ -46,7 +39,6 @@ export const GROUPS_CONSTANTS = {
       MEMBERS: 'Members',
     },
     ACTIONS: {
-      VIEW: 'View',
       VIEW_MEMBER: 'View member',
       VIEW_ROLE: 'View role',
       EDIT: 'Edit',
@@ -61,7 +53,6 @@ export const GROUPS_CONSTANTS = {
       MANAGE_ROLES_DISABLED_TOOLTIP: 'You do not have permission to manage roles',
       MANAGE_MEMBERS_DISABLED_TOOLTIP: 'You do not have permission to manage members',
       BULK_DELETE: 'Bulk Delete',
-      ATTACH_ROLE: 'Attach Role',
       MANAGE_ROLES: 'Manage Roles',
       MANAGE_MEMBERS: 'Manage Members',
       DELETE_MODAL_TITLE: 'Delete Group',
@@ -84,12 +75,7 @@ export const GROUPS_CONSTANTS = {
     },
     FORM: {
       TITLE: 'Create Group',
-      SECTION_TITLE: 'Group Details',
       BUTTON_TEXT: 'Create Group',
-      SECTIONS: {
-        BASIC_DETAILS: 'Basic Details',
-        MEMBERS: 'Members',
-      },
       FIELDS: {
         NAME_LABEL: 'Group Name',
         NAME_PLACEHOLDER: 'e.g. Development Team',
@@ -97,7 +83,6 @@ export const GROUPS_CONSTANTS = {
         DESCRIPTION_PLACEHOLDER: 'e.g. Group for development team members',
         CATEGORY_LABEL: 'Category',
         CATEGORY_PLACEHOLDER: 'Select a category',
-        ASSIGNED_USERS_LABEL: 'Assigned Users',
         NAME_VALIDATION: {
           MIN_LENGTH: 1,
           MAX_LENGTH: 100,
@@ -135,8 +120,6 @@ export const GROUPS_CONSTANTS = {
       },
     },
     VIEW_LABELS: {
-      NAME: 'Name',
-      DESCRIPTION: 'Description',
       CATEGORY: 'Category',
       CREATION_DATE: 'Creation Date',
       LAST_UPDATE: 'Last Update',
@@ -157,9 +140,6 @@ export const GROUPS_CONSTANTS = {
         ALL: 'All',
         BUILT_IN: 'Built-in',
         CUSTOM: 'Custom',
-        PERMANENT: 'Permanent',
-        TEMPORARY: 'Temporary',
-        SESSION_BASED: 'Session-based',
         ACTIVE: 'Active',
         INACTIVE: 'Inactive',
       },
@@ -168,9 +148,6 @@ export const GROUPS_CONSTANTS = {
       SEARCH: {
         PLACEHOLDER: 'Search groups',
         BUTTON_LABEL: 'Search',
-      },
-      FILTER: {
-        BUTTON_LABEL: 'Filter',
       },
       MANAGE: {
         BUTTON_LABEL: 'Manage',
@@ -189,10 +166,6 @@ export const GROUPS_CONSTANTS = {
     },
     PAGINATION: {
       SHOW_ROWS: 'Show rows',
-    },
-    LOGS: {
-      EDIT_CATEGORY: (category: unknown) => `Edit category: ${JSON.stringify(category)}`,
-      DELETE_CATEGORY: (category: unknown) => `Delete category: ${JSON.stringify(category)}`,
     },
     MODAL: {
       CANCEL: 'Cancel',
@@ -213,8 +186,6 @@ export const GROUPS_CONSTANTS = {
     FILTER_CATEGORY_ALL: 'all',
   } as const,
   SIZES: {
-    ROW_HEIGHT: 32,
-    HEADER_ICON: 14,
     COLUMNS: {
       NAME: 150,
       DESCRIPTION: 150,
@@ -234,7 +205,6 @@ export const GROUPS_CONSTANTS = {
       DEFAULT: 500,
       BULK: 660,
     },
-    MODAL_WIDTH: 360,
   },
   ERROR_MESSAGES: {
     CLIENT: {

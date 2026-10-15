@@ -12,6 +12,7 @@ import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { deduplicateCategoriesByName } from '../../categories/utils/helpers';
 import { applyRoleFilters } from '../../groups/utils';
+import { noop } from '../../../../utils/helpers/noop';
 import { CreateRolePanel } from '../panels';
 import { ROLES_CONSTANTS as RPC } from '../constants';
 import type { Role, RoleFormValues } from '../models';
@@ -21,9 +22,6 @@ import RolesEmptyPage from './RolesEmptyPage';
 import RolesListPage from './RolesListPage';
 
 type ViewMode = 'roles' | 'categories';
-
-// Stable, so the actions column (and the table) keeps its identity across renders.
-const noop = () => undefined;
 
 const MainPage: React.FC = () => {
   const { roles, loaded, error, refetch } = useRoles();

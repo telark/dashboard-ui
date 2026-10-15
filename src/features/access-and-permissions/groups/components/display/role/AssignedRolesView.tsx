@@ -1,12 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
-import { AssignedItemsList } from '../../../../../shared';
-import { USERS_CONSTANTS as UC } from '../../../../constants';
-import { isBuiltInRole } from '../../../../../roles/utils';
-import AssignedRoleContent from '../../../../../groups/components/display/role/AssignedRoleContent';
-import { getScopeLabel } from '../../../../utils/role/scope';
-import type { Role } from '../../../../../roles/models';
+import { AssignedItemsList } from '../../../../shared';
+import { GROUPS_CONSTANTS as GC } from '../../../constants';
+import { isBuiltInRole } from '../../../../roles/utils';
+import type { Role } from '../../../../roles/models';
+import AssignedRoleContent from './AssignedRoleContent';
 
-interface UserAssignedRolesViewProps {
+interface AssignedRolesViewProps {
   assignedRoleIds: string[];
   allRoles?: Role[];
   loading: boolean;
@@ -20,7 +19,8 @@ interface UserAssignedRolesViewProps {
   inheritedGroupsByRoleId?: Map<string, string[]>;
 }
 
-const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
+// Members' and groups' panels (view and Manage) share this list.
+const AssignedRolesView: React.FC<AssignedRolesViewProps> = ({
   assignedRoleIds,
   allRoles,
   loading,
@@ -37,11 +37,7 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
 
   const renderRoleContent = useCallback(
     (role: Role): React.ReactNode => (
-      <AssignedRoleContent
-        role={role}
-        getScopeLabel={getScopeLabel}
-        fromGroups={inheritedGroupsByRoleId?.get(role.id)}
-      />
+      <AssignedRoleContent role={role} fromGroups={inheritedGroupsByRoleId?.get(role.id)} />
     ),
     [inheritedGroupsByRoleId],
   );
@@ -52,12 +48,12 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
       getItemKey={(r) => r.id}
       renderItemContent={renderRoleContent}
       loading={loading}
-      emptyMessage={UC.LABELS.MESSAGES.NO_ASSIGNED_ROLES}
-      loadingMessage={UC.LABELS.MESSAGES.LOADING_ROLES}
+      emptyMessage={GC.LABELS.MESSAGES.NO_ASSIGNED_ROLES}
+      loadingMessage={GC.LABELS.MESSAGES.LOADING_ROLES}
       onDeassignClick={onDeassignClick}
       deassignDisabledReason={deassignDisabledReason}
       onViewClick={onViewClick}
-      viewLabel={UC.LABELS.ACTIONS.VIEW_ROLE}
+      viewLabel={GC.LABELS.ACTIONS.VIEW_ROLE}
       canView={(role) => !isBuiltInRole(role)}
       deassignTooltip="Remove role"
       canDeassign={(role) => !inheritedRoleIds?.has(role.id)}
@@ -65,4 +61,4 @@ const UserAssignedRolesView: React.FC<UserAssignedRolesViewProps> = ({
   );
 };
 
-export default UserAssignedRolesView;
+export default AssignedRolesView;

@@ -9,8 +9,6 @@ export interface AssignedItemCardProps {
   onDeassign?: () => void;
   deassignTooltip?: string;
   deassignDisabledReason?: string;
-  /** Optional custom element rendered in the top-right slot */
-  rightContent?: React.ReactNode;
   /** Opens the item in its own page's view panel. */
   onView?: () => void;
   viewLabel?: string;
@@ -21,20 +19,18 @@ const AssignedItemCard: React.FC<AssignedItemCardProps> = ({
   onDeassign,
   deassignTooltip,
   deassignDisabledReason,
-  rightContent,
   onView,
   viewLabel,
 }) => (
   <div style={ASSIGNED_CARD_STYLE}>
     <div style={{ flex: 1, minWidth: 0 }}>{children}</div>
-    {rightContent ??
-      (onDeassign && (
-        <DeassignButton
-          onClick={onDeassign}
-          tooltip={deassignTooltip}
-          disabledReason={deassignDisabledReason}
-        />
-      ))}
+    {onDeassign && (
+      <DeassignButton
+        onClick={onDeassign}
+        tooltip={deassignTooltip}
+        disabledReason={deassignDisabledReason}
+      />
+    )}
     {onView && (
       <Tooltip title={viewLabel}>
         <Button

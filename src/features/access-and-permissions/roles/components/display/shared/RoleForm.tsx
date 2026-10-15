@@ -23,7 +23,6 @@ const RoleForm: React.FC<RoleFormProps> = ({
   form,
   initialValues,
   onSubmit,
-  wrapper: Wrapper,
   roles,
   isEditMode = false,
   currentName,
@@ -117,7 +116,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
     </div>
   );
 
-  return Wrapper ? <Wrapper>{formContent}</Wrapper> : formContent;
+  return formContent;
 };
 
 export default RoleForm;

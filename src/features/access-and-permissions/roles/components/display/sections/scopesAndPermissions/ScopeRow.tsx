@@ -18,8 +18,6 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
   scopeLabel,
   permissionLevels,
   tooltipMap,
-  onLevelChange,
-  onRuleToggle,
   rowPaddingPx = 4,
   isLast = false,
   isLocked = false,
@@ -69,8 +67,6 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                 [scopeKey]: newLevel ? { level: newLevel, rules: newRules } : undefined,
               },
             });
-
-            if (newLevel) onLevelChange?.(scopeKey, newLevel);
           };
 
           const handleRuleToggle = (formattedKey: string, checked: boolean) => {
@@ -96,8 +92,6 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                 [scopeKey]: { level: selectedLevel, rules: newDenyRules },
               },
             });
-
-            onRuleToggle?.(scopeKey, formattedKey, checked);
           };
 
           return (

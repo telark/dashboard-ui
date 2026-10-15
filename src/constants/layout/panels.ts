@@ -256,36 +256,6 @@ export const PANEL_FOOTER = {
 
 export const FILTER_PANEL = {
   TITLE: 'Filter',
-  BACKDROP: {
-    position: 'fixed' as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: DEFAULT_COLORS.OVERLAY_BACKDROP,
-    zIndex: 1002,
-    animation: 'fadeIn 0.2s ease-in-out',
-  },
-  PANEL: {
-    position: 'fixed' as const,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    background: DEFAULT_COLORS.SURFACE_WHITE,
-    zIndex: 1003,
-    display: 'flex' as const,
-    flexDirection: 'column' as const,
-    borderRight: `0.5px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
-    animation: 'slideInRight 0.3s ease-out',
-  },
-  CONTENT: {
-    flex: 1,
-    overflowY: 'auto' as const,
-    padding: '24px',
-    display: 'flex' as const,
-    flexDirection: 'column' as const,
-    gap: 32,
-  },
   // A filter field is a form item like the panels' forms: compact label, 16px apart.
   ITEM_CLASS: 'form-item-compact',
   ITEM: { marginBottom: 16 },
@@ -299,12 +269,6 @@ export const FILTER_PANEL = {
     flexDirection: 'column' as const,
     gap: 6,
     flex: 1,
-  },
-  DATE_LABEL: {
-    fontSize: 13,
-    fontWeight: 500,
-    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-    lineHeight: '20px',
   },
   DATE_INPUT: {
     width: '100%',

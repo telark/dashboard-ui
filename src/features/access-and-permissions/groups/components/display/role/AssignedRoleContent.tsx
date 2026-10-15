@@ -4,23 +4,19 @@ import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../constants';
 import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
 import { isRoleProtected, getRoleScopesContent } from '../../../../roles/utils';
 import { truncateText, CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
+import { getScopeLabel } from '../../../../users/utils/role/scope';
 import type { Role } from '../../../../roles/models';
 
 const RoleIcon = Icons.Role;
 
 interface AssignedRoleContentProps {
   role: Role;
-  getScopeLabel: (scopeKey: string) => string;
   /** Groups that grant the role, named in plain text: a tag would read as the role's own label. */
   fromGroups?: string[];
 }
 
 // One role row of the assigned-role lists (members' and groups' panels and their Manage panels).
-const AssignedRoleContent: React.FC<AssignedRoleContentProps> = ({
-  role,
-  getScopeLabel,
-  fromGroups,
-}) => (
+const AssignedRoleContent: React.FC<AssignedRoleContentProps> = ({ role, fromGroups }) => (
   <div style={ARC.LIST.ROLE_CONTENT}>
     <div style={ARC.LIST.ROLE_NAME_ROW}>
       <span style={ARC.LIST.ROLE_NAME}>{CapitalizeFirstLetter(role.name)}</span>

@@ -8,7 +8,7 @@ import type { ViewPanelTab } from '../../../../../../components/display/panels/v
 import { USERS_CONSTANTS as UC } from '../../../constants';
 import { getEffectiveRoleRefs } from '../../../utils';
 import { useGroupInheritedRoles } from '../role/useGroupInheritedRoles';
-import UserAssignedRolesView from '../../../components/display/manage/role/UserAssignedRolesView';
+import AssignedRolesView from '../../../../groups/components/display/role/AssignedRolesView';
 import UserGroupInheritedRolesView from '../../../components/display/manage/role/UserGroupInheritedRolesView';
 import UserAssignedGroupsView from '../../../components/display/manage/group/UserAssignedGroupsView';
 import type { User } from '../../../models';
@@ -67,7 +67,7 @@ export const useUserViewTabs = (
               />
             </div>
             {roleSource === 'direct' ? (
-              <UserAssignedRolesView
+              <AssignedRolesView
                 assignedRoleIds={user.roleRefs ?? []}
                 allRoles={roles}
                 loading={!rolesLoaded}
