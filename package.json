@@ -83,7 +83,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.13.0",
-    "prettier": "^3.9.9",
+    "prettier": "^3.9.10",
     "rollup-plugin-visualizer": "^7.1.1",
     "terser": "^5.51.2",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
