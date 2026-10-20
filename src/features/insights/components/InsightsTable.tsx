@@ -88,6 +88,26 @@ const tag = (text: string, accent?: string): React.ReactNode => (
   </Tag>
 );
 
+const stateStyle: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: 6,
+  fontSize: 12,
+  fontWeight: 600,
+};
+const dotStyle: React.CSSProperties = { width: 8, height: 8, borderRadius: '50%', flexShrink: 0 };
+
+// Text with a dot rather than a pill: a colored pill in this table means severity.
+const stateCell = (state: InsightRowState): React.ReactNode => {
+  const color = STATUS_COLORS.INSIGHT_STATE[state];
+  return (
+    <span style={{ ...stateStyle, color }}>
+      <span aria-hidden style={{ ...dotStyle, background: color }} />
+      {INSIGHT_ROW_STATE_LABELS[state]}
+    </span>
+  );
+};
+
 // One line each, cut with an ellipsis: a long title never widens the table (full text on hover).
 const oneLine: React.CSSProperties = {
   overflow: 'hidden',
@@ -174,6 +194,9 @@ interface BuildArgs {
   activeSortKey: string;
   onSort: (key: string) => void;
   renderGroup: (item: InsightGroupItem) => React.ReactNode;
+  // The table's width on a phone, else 0: Severity then leads and stays pinned while the rest
+  // scrolls sideways under it.
+  phoneWidth: number;
 }
 
 export const buildInsightColumns = ({
@@ -183,8 +206,17 @@ export const buildInsightColumns = ({
   activeSortKey,
   onSort,
   renderGroup,
+  phoneWidth,
 }: BuildArgs): TableColumnType<InsightListItem>[] => {
   const recommendations = category === 'recommendation';
+  const pinSeverity = phoneWidth > 0;
+  // A group header spans the row from the pinned cell, so it sticks at the visible width, one line.
+  const pinnedGroupStyle: React.CSSProperties = {
+    position: 'sticky',
+    left: 0,
+    width: phoneWidth,
+    whiteSpace: 'nowrap',
+  };
   const specs: ColumnSpec[] = [
     {
       key: 'TITLE',
@@ -221,10 +253,7 @@ export const buildInsightColumns = ({
       key: 'STATE',
       label: C.STATE,
       icon: <AiOutlineCheckCircle />,
-      render: (r) => {
-        const state = insightRowState(r);
-        return tag(INSIGHT_ROW_STATE_LABELS[state], STATUS_COLORS.INSIGHT_STATE[state]);
-      },
+      render: (r) => stateCell(insightRowState(r)),
     },
     {
       key: 'TRIAGE',
@@ -255,7 +284,13 @@ export const buildInsightColumns = ({
       render: (r) => <TimeAgo date={r.lastSeenAt} />,
     },
   ];
-  const shown = specs.filter(({ key }) => !OPTIONAL_COLUMNS.includes(key) || visible.has(key));
+  const fitting = specs.filter(({ key }) => !OPTIONAL_COLUMNS.includes(key) || visible.has(key));
+  const shown = pinSeverity
+    ? [
+        ...fitting.filter((s) => s.key === 'SEVERITY'),
+        ...fitting.filter((s) => s.key !== 'SEVERITY'),
+      ]
+    : fitting;
   const ctx = { activeSortKey, onSort };
   // Like the other tables: the title column is left-aligned, the rest centered. A group
   // header spans the whole row from the first column.
@@ -271,11 +306,17 @@ export const buildInsightColumns = ({
         sortable: isSortable(key),
         render: (_: unknown, item: InsightListItem) => {
           if (!isGroupItem(item)) return render(item);
-          return index === 0 ? renderGroup(item) : null;
+          if (index !== 0) return null;
+          return pinSeverity ? (
+            <div style={pinnedGroupStyle}>{renderGroup(item)}</div>
+          ) : (
+            renderGroup(item)
+          );
         },
       },
       ctx,
     ),
+    fixed: pinSeverity && key === 'SEVERITY' ? ('left' as const) : undefined,
     // Any ellipsis column makes antd lay the table out fixed, so content never resizes columns.
     ellipsis: key === 'TITLE',
     onCell: (item: InsightListItem) =>

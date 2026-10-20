@@ -61,7 +61,7 @@ const NoPermissionCard: React.FC<NoPermissionCardProps> = ({
         image={<LockOutlined style={{ fontSize: NP.LAYOUT.PAGE_ICON_PX }} />}
         description={
           <>
-            <Typography.Title level={3}>{NP.LABELS.TITLE(featureName)}</Typography.Title>
+            <Typography.Title level={2}>{NP.LABELS.TITLE(featureName)}</Typography.Title>
             <Typography.Text>
               {denied ? NP.LABELS.SHORT_DENY : NP.LABELS.PAGE_HINT(level, scope)}
             </Typography.Text>

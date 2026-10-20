@@ -197,7 +197,7 @@ export const ROLES_CONSTANTS = {
       { key: 'settings', label: 'Settings' },
       { key: 'protection-plans', label: 'Protection plans' },
     ] as const,
-    PERMISSION_LEVEL_TOOLTIP: {
+    PERMISSION_LEVEL_DESCRIPTION: {
       ReadOnly: 'Read-only access to view data and settings.',
       Contributor: 'Can create and update within assigned scope.',
       Owner: 'Full control including deletion and role assignment.',

@@ -134,6 +134,7 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
         zIndex: LIST_PAGE.TOOLBAR_Z_INDEX,
         background: DEFAULT_COLORS.PAGE_BG,
         padding: LIST_PAGE.TOOLBAR_PADDING,
+        marginTop: LIST_PAGE.SUBHEADER_TOOLBAR_OFFSET_PX,
       }}
     >
       <div
@@ -144,7 +145,7 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
           justifyContent: 'space-between',
           alignItems: 'center',
           width: '100%',
-          height: LIST_TOOLBAR.ROW_HEIGHT_PX,
+          minHeight: LIST_TOOLBAR.ROW_HEIGHT_PX,
         }}
       >
         <div
@@ -155,7 +156,8 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
             flexWrap: 'nowrap',
             overflowX: 'auto',
             minWidth: 0,
-            height: '100%',
+            // Gives way first: the controls on the right wrap only once this is gone.
+            flexShrink: 100000,
           }}
         >
           {bulkMode && selection && selection.pageCount > 0 ? (
@@ -171,15 +173,17 @@ const ListToolbar: React.FC<ListToolbarProps> = ({
           {filterNote ? <span style={metaStyle}>{filterNote}</span> : null}
           <Toolbar config={clearAllConfig} compact={isCompact} />
         </div>
-        {/* Fills the rest of the row, so the count appearing grows it inward: its start never moves. */}
+        {/* Fills the rest of the row, so the count appearing grows it inward: its start never moves.
+            On a phone it wraps onto more lines instead of running off the edge. */}
         <div
           style={{
             display: 'flex',
-            flex: '1 0 auto',
+            flex: '1 1 auto',
+            flexWrap: 'wrap',
             justifyContent: 'flex-end',
             alignItems: 'center',
             gap: TOOLBAR_ITEM_GAP,
-            height: '100%',
+            minWidth: 0,
           }}
         >
           {bulkMode ? null : count}

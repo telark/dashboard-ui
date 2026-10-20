@@ -1,8 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
-import { Checkbox, Form, Tooltip } from 'antd';
+import { Checkbox, Form } from 'antd';
 import { SelectableListItem } from '../../../../../../../components/display/list';
 import { USERS_CONSTANTS as UC } from '../../../../constants';
-import { Icons, DEFAULT_COLORS } from '../../../../../../../constants';
 import { isRoleProtected, getRoleScopesContent } from '../../../../../roles/utils';
 import { truncateText, CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../../groups/constants';
@@ -10,16 +9,16 @@ import { getScopeLabel } from '../../../../utils/role/scope';
 import type { Role } from '../../../../../roles/models';
 import { ACTION_PERMISSIONS, useCanGrantScopes, usePermission } from '../../../../../../auth/hooks';
 import { NoPermissionCard } from '../../../../../../../components/shared';
+import LockedRolePill from '../../../../../groups/components/display/role/LockedRolePill';
 
-const RoleIcon = Icons.Role;
 const VIEW_ROLES = ACTION_PERMISSIONS.roles.view;
 
 interface UserRoleSelectListProps {
   roles?: Role[];
   loading: boolean;
   allRoles?: Role[];
-  /** Maps role ID → tooltip text for roles that are already inherited via a group. */
-  inheritedRoleTooltips?: Map<string, string>;
+  /** Maps role ID → why it can't be picked, for roles the user already gets through a group. */
+  inheritedRoleReasons?: Map<string, string>;
   blockedReason?: (roleId: string) => string | undefined;
 }
 
@@ -27,7 +26,7 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
   roles,
   loading,
   allRoles,
-  inheritedRoleTooltips,
+  inheritedRoleReasons,
   blockedReason,
 }) => {
   const form = Form.useFormInstance();
@@ -85,14 +84,13 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
       >
         <div className="role-list-container" style={ARC.LIST.CONTAINER}>
           {roles.map((role) => {
-            const isProtected = isRoleProtected(role);
-            const blockedTooltip =
-              inheritedRoleTooltips?.get(role.id) ??
+            const reason =
+              inheritedRoleReasons?.get(role.id) ??
               blockedReason?.(role.id) ??
               (canGrant(role.scopesAndPermissions || [])
                 ? undefined
-                : ARC.TOOLTIPS.EXCEEDS_OWN_ACCESS);
-            const isBlocked = Boolean(blockedTooltip);
+                : ARC.LABELS.EXCEEDS_OWN_ACCESS);
+            const isBlocked = Boolean(reason);
 
             const scopesContent = getRoleScopesContent(role, {
               scopesAndPermissions: role.scopesAndPermissions || [],
@@ -101,10 +99,12 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
               scopeItemStyle: ARC.LIST.SCOPE_ITEM,
             });
 
-            const listItem = (
+            return (
               <SelectableListItem
+                key={role.id}
                 value={role.id}
                 disabled={isBlocked}
+                disabledReason={reason}
                 name={CapitalizeFirstLetter(role.name)}
                 description={
                   role.description
@@ -112,11 +112,7 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
                     : undefined
                 }
                 customContent={scopesContent}
-                isProtected={isProtected}
-                protectionIcon={<RoleIcon />}
-                protectionTooltip={ARC.TOOLTIPS.PROTECTED_ROLE}
-                protectionIconColor={DEFAULT_COLORS.SUCCESS}
-                protectionIconSize={18}
+                protectionBadge={isRoleProtected(role) ? <LockedRolePill /> : undefined}
                 itemStyles={{
                   base: {
                     ...ARC.LIST.ITEM.BASE,
@@ -128,14 +124,6 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
                 nameStyles={ARC.LIST.ROLE_NAME}
                 descriptionStyles={ARC.LIST.ROLE_DESCRIPTION}
               />
-            );
-
-            return isBlocked ? (
-              <Tooltip key={role.id} title={blockedTooltip} placement="left">
-                <div>{listItem}</div>
-              </Tooltip>
-            ) : (
-              <React.Fragment key={role.id}>{listItem}</React.Fragment>
             );
           })}
         </div>

@@ -6,7 +6,10 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     ENABLE_AI_LABEL: 'Enabled',
     ENABLE_AI_TOOLTIP:
       'Turns Insights on or off for every application. Turning it on needs a ready model runtime.',
+    ENABLE_BLOCKED_HINT_MODEL: 'Install the model first, then turn this on and save.',
+    ENABLE_BLOCKED_HINT: 'You can turn this on once the runtime status below reads Ready.',
     AUTO_ANALYZE_LABEL: 'Automatic analysis',
+    AUTO_ANALYZE_HINT: 'By default, at most once every 10 minutes per application.',
     AUTO_ANALYZE_TOOLTIP:
       'When on, Telark analyzes an application by itself when an incident starts or the application recovers, by default at most once every 10 minutes per application. When off, an analysis runs only when someone selects Analyze.',
     MODEL_LABEL: 'Model',
@@ -55,6 +58,7 @@ export const INSIGHTS_GOVERNANCE_CONSTANTS = {
     SNAPSHOTS_MAX_PER_APP_LABEL: 'Maximum snapshots per application',
     SNAPSHOTS_MAX_PER_APP_HINT:
       'Telark saves a snapshot before each change and keeps the most recent ones, up to this number. Older snapshots are deleted: their changes stay in the history, but you can no longer compare or roll back to them. For applications in several namespaces, the limit applies per namespace. A new limit applies from the next change.',
+    SNAPSHOTS_LOWER_HINT: 'Lowering the limit deletes the oldest snapshots beyond it.',
     SNAPSHOTS_LOWER_CONFIRM_TITLE: (n: number) => `Lower the limit to ${n}?`,
     SNAPSHOTS_LOWER_CONFIRM_BODY: (n: number) =>
       `Telark then deletes each application's oldest snapshots beyond ${n}. You can no longer compare or roll back to them.`,

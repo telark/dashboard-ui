@@ -12,9 +12,9 @@ export const CARD_LAYOUT = {
   ICON_CHIP_RADIUS_PX: 8,
   AVATAR_CHIP_SIZE_PX: 16,
   TITLE_FONT_SIZE_PX: 14,
-  // Narrower, the header pills wrap under the title rather than cut the name. With the widest
-  // pill row (~151px, "Pending approval") it still fits a CARD_MIN_WIDTH_PX card: only phones wrap.
-  TITLE_MIN_WIDTH_PX: 140,
+  // Narrower, the header pills wrap under the title. Two pills and the menu take up to 238px of a
+  // 318px desktop card header (measured), so they stay in the corner and long names truncate.
+  TITLE_MIN_WIDTH_PX: 64,
   META_FONT_SIZE_PX: 11,
   // Height of one row of tags, reserved while their names are still loading.
   TAG_ROW_MIN_HEIGHT_PX: 20,
@@ -39,6 +39,9 @@ const STATS_ROW_MIN_WIDTH_PX =
 // Keeps three cards across a 1440px window with the sidebar open (a 1069px grid). A card
 // narrower than its four stats need shows them two across (CARD_STAT_CELL_FLEX), never truncated.
 export const CARD_MIN_WIDTH_PX = 338;
+
+// A disabled selectable card dims what it holds, never the line that says why it is disabled.
+export const DISABLED_CONTENT_OPACITY = 0.55;
 
 /** Columns for a card grid measured at `width`; 0 means not measured yet. */
 export const getCardGridColumns = (width: number): number => {
@@ -149,7 +152,8 @@ export const getCardShellStyle = (hovered: boolean): CSSProperties => ({
   position: 'relative',
   background: hovered ? DEFAULT_COLORS.SURFACE_ELEVATED_HOVER : DEFAULT_COLORS.SURFACE_ELEVATED,
   borderRadius: CARD_LAYOUT.RADIUS_PX,
-  border: `1px solid ${hovered ? DEFAULT_COLORS.BORDER_HOVER : DEFAULT_COLORS.BORDER_ELEVATED}`,
+  // The fill is barely lighter than the page, so the border carries the card's edge.
+  border: `1px solid ${hovered ? DEFAULT_COLORS.BORDER_HOVER : DEFAULT_COLORS.BORDER_DEFAULT}`,
   padding: CARD_LAYOUT.PADDING_PX,
   boxSizing: 'border-box',
   cursor: 'pointer',

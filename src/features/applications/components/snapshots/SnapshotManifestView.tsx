@@ -138,7 +138,7 @@ const ManifestState: React.FC<{
             }}
           >
             {detailOpen ? <DownOutlined /> : <RightOutlined />}
-            <span>{detailOpen ? UI.MANIFEST_HIDE_DETAILS : UI.MANIFEST_SHOW_DETAILS}</span>
+            <span>{detailOpen ? UI.HIDE_DETAILS : UI.TECHNICAL_DETAILS}</span>
           </button>
           {detailOpen ? (
             <div

@@ -10,7 +10,6 @@ export const AUTH_PERMISSIONS_LABELS = {
   SOURCE_INHERITED_TOOLTIP: 'Role was inherited through a group membership',
   EFFECTIVE_PERMISSIONS_TITLE: 'Effective Permissions',
   ALL_SCOPES_TITLE: 'All Scopes',
-  DENY_PREFIX: 'Deny: ',
 };
 
 export const AUTH_ERROR_MESSAGES = {
@@ -19,6 +18,7 @@ export const AUTH_ERROR_MESSAGES = {
   UPDATE_PASSKEY_FAILED: 'Failed to update passkey',
   DELETE_PASSKEY_FAILED: 'Failed to delete passkey',
   AUTHENTICATION_FAILED: 'Authentication failed',
+  LOGOUT_FAILED: "Couldn't sign you out. Try again.",
   PASSKEYS_INSECURE_CONTEXT: {
     TITLE: 'Passkeys need a secure connection',
     DESCRIPTION:
@@ -55,7 +55,7 @@ export const AUTH_SUCCESS_MESSAGES = {
 export const AUTH_CONSTANTS = {
   SESSION: {
     VALIDATION: {
-      NO_TOKEN_ERROR: 'No session token found',
+      NOT_SIGNED_IN_ERROR: 'Not signed in',
       FETCH_ERROR: 'Failed to fetch session details',
       VALIDATION_ERROR: 'Session validation error',
       UNKNOWN_ERROR: 'Unknown error during session validation',
@@ -65,12 +65,12 @@ export const AUTH_CONSTANTS = {
       MODAL: {
         TITLE: 'Session Expired',
         MESSAGE: 'Your session has expired. Sign in again to continue.',
+        DUPLICATE_COOKIE_MESSAGE:
+          "Your browser has two Telark session cookies. Clear this site's cookies, then sign in again.",
         BUTTON_TEXT: 'Go to Login',
       },
       LOGS: {
-        DELETE_NON_200_STATUS: 'Session delete returned non-200 status:',
-        DELETE_FAILED: 'Failed to delete session from server:',
-        LOCAL_CLEANUP_ERROR: 'Error during local cleanup:',
+        DELETE_FAILED: 'Failed to end the session on the server:',
         HANDLE_LOGIN_ERROR: 'Error in handleGoToLogin:',
       },
     },
@@ -85,9 +85,8 @@ export const AUTH_CONSTANTS = {
   },
   LOGOUT: {
     LOGS: {
-      SERVER_ERROR: 'Server logout returned error; local session cleared regardless',
+      SERVER_ERROR: 'Server logout failed, so this browser stays signed in',
       PURGE_ERROR: 'Failed to purge locally persisted data on logout',
     },
-    URL_TAG: 'auth/logout',
   },
 } as const;

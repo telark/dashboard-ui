@@ -14,7 +14,7 @@ export const REGISTER_CONSTANTS = {
     DISABLED_MESSAGE:
       'Self-registration is disabled on this instance. Ask your administrator for an account.',
     BACK_TO_LOGIN: 'Back to login',
-    EMAIL_LOCKED_HINT: "This email comes from your enrollment link and can't be changed",
+    EMAIL_LOCKED_HINT: 'From your enrollment link',
     ENROLL_TITLE: 'Add a passkey on this device',
     ENROLL_SUBTITLE:
       'Name this device, then confirm with your fingerprint, face or screen lock. Finish in this tab.',

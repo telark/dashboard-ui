@@ -1,16 +1,15 @@
 import React, { useCallback, useMemo } from 'react';
-import { Checkbox, Form, Tooltip } from 'antd';
+import { Checkbox, Form } from 'antd';
 import { SelectableListItem } from '../../../../../../components/display/list';
 import { GROUPS_CONSTANTS as GC, ATTACHED_ROLES_CONSTANTS as ARC } from '../../../constants';
-import { Icons, DEFAULT_COLORS } from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../../roles/constants';
 import { isRoleProtected, getRoleScopesContent } from '../../../../roles/utils';
 import { truncateText, CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
 import type { Role } from '../../../../roles/models';
 import { ACTION_PERMISSIONS, useCanGrantScopes, usePermission } from '../../../../../auth/hooks';
 import { NoPermissionCard } from '../../../../../../components/shared';
+import LockedRolePill from './LockedRolePill';
 
-const RoleIcon = Icons.Role;
 const VIEW_ROLES = ACTION_PERMISSIONS.roles.view;
 
 const getScopeLabel = (scopeKey: string): string => {
@@ -78,8 +77,6 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles, blockedRe
         >
           <div className="role-list-container" style={ARC.LIST.CONTAINER}>
             {roles.map((role) => {
-              const isProtected = isRoleProtected(role);
-
               const scopesContent = getRoleScopesContent(role, {
                 scopesAndPermissions: role.scopesAndPermissions || [],
                 getScopeLabel,
@@ -87,13 +84,14 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles, blockedRe
                 scopeItemStyle: ARC.LIST.SCOPE_ITEM,
               });
 
-              const blockedTooltip =
+              const reason =
                 blockedReason?.(role.id) ??
                 (canGrant(role.scopesAndPermissions || [])
                   ? undefined
-                  : ARC.TOOLTIPS.EXCEEDS_OWN_ACCESS);
-              const listItem = (
+                  : ARC.LABELS.EXCEEDS_OWN_ACCESS);
+              return (
                 <SelectableListItem
+                  key={role.id}
                   value={role.id}
                   name={CapitalizeFirstLetter(role.name)}
                   description={
@@ -102,31 +100,20 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles, blockedRe
                       : undefined
                   }
                   customContent={scopesContent}
-                  isProtected={isProtected}
-                  protectionIcon={<RoleIcon />}
-                  protectionTooltip={ARC.TOOLTIPS.PROTECTED_ROLE}
-                  protectionIconColor={DEFAULT_COLORS.SUCCESS}
-                  protectionIconSize={18}
+                  protectionBadge={isRoleProtected(role) ? <LockedRolePill /> : undefined}
                   itemStyles={{
                     base: {
                       ...ARC.LIST.ITEM.BASE,
-                      ...(blockedTooltip ? ARC.LIST.ITEM.DISABLED : {}),
+                      ...(reason ? ARC.LIST.ITEM.DISABLED : {}),
                     },
-                    hover: blockedTooltip ? ARC.LIST.ITEM.DISABLED : ARC.LIST.ITEM.HOVER,
+                    hover: reason ? ARC.LIST.ITEM.DISABLED : ARC.LIST.ITEM.HOVER,
                   }}
                   contentStyles={ARC.LIST.ROLE_CONTENT}
                   nameStyles={ARC.LIST.ROLE_NAME}
                   descriptionStyles={ARC.LIST.ROLE_DESCRIPTION}
-                  disabled={Boolean(blockedTooltip)}
+                  disabled={Boolean(reason)}
+                  disabledReason={reason}
                 />
-              );
-
-              return blockedTooltip ? (
-                <Tooltip key={role.id} title={blockedTooltip} placement="left">
-                  <div>{listItem}</div>
-                </Tooltip>
-              ) : (
-                <React.Fragment key={role.id}>{listItem}</React.Fragment>
               );
             })}
           </div>

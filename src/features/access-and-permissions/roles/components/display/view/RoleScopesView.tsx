@@ -3,9 +3,8 @@ import { Tag } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { AiOutlineStop } from 'react-icons/ai';
 import { DEFAULT_COLORS, SLIDE_OUT, TAG_CLASS, getPillSurface } from '../../../../../../constants';
-import { ROLES_CONSTANTS as RC, getScopeRules, formatRuleKey } from '../../../constants';
+import { ROLES_CONSTANTS as RC, denyRuleSentence } from '../../../constants';
 import type { ScopesPermissionsProps } from '../../../models';
-import type { PermissionLevel } from '../../../models/types';
 
 const DENIED_TEXT = getPillSurface(DEFAULT_COLORS.DANGER).background;
 
@@ -62,21 +61,12 @@ const SCOPE_CARD_STYLE = {
   },
 } as const;
 
-// A denied rule is stored as `<scope>.<rule>.deny`; show its label, or the stored key if the scope
-// no longer lists it.
-const deniedRuleLabels = (scope: string, level: string, rules: string[]): string[] => {
-  const known = getScopeRules(scope, level as PermissionLevel);
-  return rules.map(
-    (rule) => known.find((r) => formatRuleKey(scope, r.key) === rule.toLowerCase())?.label ?? rule,
-  );
-};
-
 const RoleScopesView: React.FC<ScopesPermissionsProps> = ({ scopes }) => {
   const scopeRows = useMemo(
     () =>
       RC.SCOPE.DEFAULT_AREAS.filter((area) => scopes[area.key]).map((area) => {
         const { level, rules = [] } = scopes[area.key];
-        return { area, level, denied: deniedRuleLabels(area.key, level, rules) };
+        return { area, level, denied: rules.map(denyRuleSentence) };
       }),
     [scopes],
   );

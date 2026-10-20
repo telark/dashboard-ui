@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Input, Tooltip, Typography, App as AntdApp } from 'antd';
+import { Alert, Input, Tooltip, Typography, App as AntdApp } from 'antd';
 import SettingsCard from '../../components/SettingsCard';
 import {
   SettingsDivider,
@@ -78,7 +78,7 @@ const FieldError: React.FC<{ message?: string }> = ({ message }) =>
 const OIDCSection: React.FC = memo(() => {
   const dispatch = useDispatch<AppDispatch>();
   const globalConfig = useSelector(selectGlobalConfigState);
-  const { canEdit, deniedTooltip } = useSignInSettingsAccess();
+  const { canEdit, deniedTooltip, bootstrapOnly } = useSignInSettingsAccess();
   const { message } = AntdApp.useApp();
 
   const [form, setForm] = useState<OIDCForm>(EMPTY_FORM);
@@ -165,6 +165,9 @@ const OIDCSection: React.FC = memo(() => {
   return (
     <SettingsCard title={C.LABELS.CARD_TITLE} description={C.LABELS.CARD_DESCRIPTION}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.FIELD_GAP }}>
+        {bootstrapOnly ? (
+          <Alert type="info" showIcon title={C.LABELS.BOOTSTRAP_ONLY_NOTICE} />
+        ) : null}
         <div
           style={{
             display: 'flex',

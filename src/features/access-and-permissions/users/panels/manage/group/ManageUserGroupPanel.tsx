@@ -22,6 +22,7 @@ import { CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
 import { filterBySearchTerm } from '../../../utils/search/filter';
 import { ATTACHED_ROLES_CONSTANTS as ARC } from '../../../../groups/constants';
 import { useHasRoleAboveCaller } from '../../../../roles/hooks';
+import { useGrantConfirm } from '../../../../shared';
 import type { User } from '../../../models';
 
 interface ManageUserGroupPanelProps {
@@ -115,9 +116,23 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
     setShowAssignedOnly((prev) => !prev);
   };
 
+  const panelWidth = expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH;
+  const { confirmGrant, modal: grantConfirmModal } = useGrantConfirm(panelWidth);
+
   if (!user) return null;
 
-  const panelWidth = expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH;
+  // Joining a group grants every role it carries.
+  const submitGroups = (values: Record<string, unknown>) => {
+    const added = ((values.groupRefs as string[] | undefined) ?? []).filter(
+      (id) => !initialSelectedGroups.includes(id),
+    );
+    const roleIds = (groups ?? [])
+      .filter((g) => added.includes(g.id))
+      .flatMap((g) => g.roleRefs ?? []);
+    return confirmGrant(roleIds, CapitalizeFirstLetter(user.fullname || user.username), () =>
+      handleSubmit(values),
+    );
+  };
 
   return (
     <>
@@ -181,7 +196,7 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
             </div>
           </div>
         }
-        onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
+        onSubmit={submitGroups}
         onCancel={onClose}
         submitButtonText={UC.LABELS.PANELS.MANAGE_GROUP.SUBMIT_BUTTON}
         loading={submitting}
@@ -202,6 +217,7 @@ const ManageUserGroupPanel: React.FC<ManageUserGroupPanelProps> = ({ open, onClo
         getContainer={() => document.body}
         offsetRight={panelWidth}
       />
+      {grantConfirmModal}
     </>
   );
 };

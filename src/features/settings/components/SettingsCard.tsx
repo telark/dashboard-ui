@@ -37,6 +37,7 @@ const SettingsCard: React.FC<SettingsCardProps> = memo(
     const bodyGap = hasDescription || children ? (hasDescription ? 12 : 16) : 0;
     const headerStyle: React.CSSProperties = {
       display: 'flex',
+      flexWrap: 'wrap',
       alignItems: 'flex-start',
       justifyContent: 'space-between',
       gap: 12,
@@ -56,10 +57,11 @@ const SettingsCard: React.FC<SettingsCardProps> = memo(
       >
         <div style={headerStyle}>
           {headerStart != null ? <div style={{ flexShrink: 0 }}>{headerStart}</div> : null}
-          <div style={{ minWidth: 0, flex: 1 }}>
+          <div style={{ minWidth: CONTENT.CARD_TITLE_MIN_WIDTH_PX, flex: 1 }}>
             {title.length > 0 && (
               <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 8 }}>
-                <h3
+                {/* h2: the card sits right under the page's h1. Its look is all inline. */}
+                <h2
                   style={{
                     margin: 0,
                     fontSize: CONTENT.CARD_TITLE_FONT_SIZE,
@@ -68,7 +70,7 @@ const SettingsCard: React.FC<SettingsCardProps> = memo(
                   }}
                 >
                   {title}
-                </h3>
+                </h2>
                 {titleBadge != null ? (
                   <span style={{ flexShrink: 0, display: 'inline-flex', alignItems: 'center' }}>
                     {titleBadge}
@@ -79,7 +81,7 @@ const SettingsCard: React.FC<SettingsCardProps> = memo(
             {hasDescription && (
               <p
                 style={{
-                  // The negative pull is tuned for a bare <h3>'s leading; a
+                  // The negative pull is tuned for a bare heading's leading; a
                   // titleBadge sits in the row as a real box with no such
                   // leading, so it needs a normal positive gap instead or the
                   // pull drags this text up under the badge.
@@ -99,7 +101,15 @@ const SettingsCard: React.FC<SettingsCardProps> = memo(
             )}
           </div>
           {headerAction != null || collapsible ? (
-            <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div
+              style={{
+                flexShrink: 0,
+                maxWidth: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+              }}
+            >
               {headerAction}
               {collapsible ? (
                 <Tooltip title={collapsed ? COLLAPSE.EXPAND_LABEL : COLLAPSE.COLLAPSE_LABEL}>

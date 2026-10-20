@@ -1,6 +1,7 @@
 const TRANSITION_MS = 150;
 // Fast start, soft landing: most of the move shows in the first frames.
 const TRANSITION_EASING = 'cubic-bezier(0.2, 0, 0, 1)';
+const FORCE_COLLAPSE_BELOW = 768;
 
 export const SIDEBAR_LAYOUT = {
   WIDTH_EXPANDED: 260,
@@ -11,7 +12,8 @@ export const SIDEBAR_LAYOUT = {
   COLLAPSE_THRESHOLD: 150,
   // Below this viewport width an expanded sidebar leaves too little room for the
   // content, so it stays collapsed and the toggle is unavailable.
-  FORCE_COLLAPSE_BELOW: 768,
+  FORCE_COLLAPSE_BELOW,
+  FORCE_COLLAPSE_QUERY: `(max-width: ${FORCE_COLLAPSE_BELOW - 1}px)`,
   CONTENT_TOP_PADDING: 10,
   CSS_VAR: '--sidebar-width',
   CLASS: 'tk-sidebar',

@@ -8,7 +8,7 @@ interface TablePaginationProps {
   config: TablePaginationConfig;
 }
 
-const mutedText: React.CSSProperties = { color: DEFAULT_COLORS.TEXT_MUTED };
+const mutedText: React.CSSProperties = { color: DEFAULT_COLORS.TEXT_MUTED, whiteSpace: 'nowrap' };
 
 const rangeLabel = ({ currentPage, pageSize, total }: TablePaginationConfig): string => {
   const first = total === 0 ? 0 : (currentPage - 1) * pageSize + 1;
@@ -25,15 +25,19 @@ const TablePagination: React.FC<TablePaginationProps> = ({ config }) => {
     onPageSizeChange,
     pageSizeOptions,
     showRowsLabel = PAGINATION_DEFAULTS.SHOW_ROWS_LABEL,
+    simple = false,
   } = config;
   const showSizeSelect = Boolean(onPageSizeChange && pageSizeOptions?.length);
 
   return (
+    // Wraps on a phone: the pager drops under the size select instead of running off the edge.
     <div
       style={{
         display: 'flex',
+        flexWrap: 'wrap',
         justifyContent: showSizeSelect ? 'space-between' : 'flex-end',
         alignItems: 'center',
+        gap: PAGINATION_DEFAULTS.SIZE_GAP_PX,
       }}
     >
       {showSizeSelect ? (
@@ -52,7 +56,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({ config }) => {
           />
         </div>
       ) : null}
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
         <span style={{ ...mutedText, marginRight: PAGINATION_DEFAULTS.RANGE_GAP_PX }}>
           {rangeLabel(config)}
         </span>
@@ -63,6 +67,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({ config }) => {
           pageSize={pageSize}
           onChange={onPageChange}
           showSizeChanger={false}
+          simple={simple}
         />
       </div>
     </div>

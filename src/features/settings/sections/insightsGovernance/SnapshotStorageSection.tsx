@@ -208,6 +208,8 @@ const SnapshotStorageSection: React.FC = memo(() => {
               style={{ width: '100%' }}
             />
           ) : null}
+          {/* Visible, not only in the tooltip: a lower limit deletes snapshots (confirmed on save). */}
+          <SettingsHint>{C.LABELS.SNAPSHOTS_LOWER_HINT}</SettingsHint>
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Toolbar config={saveToolbarConfig} />

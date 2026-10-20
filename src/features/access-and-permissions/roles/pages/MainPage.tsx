@@ -183,7 +183,7 @@ const MainPage: React.FC = () => {
   if (shouldShowEmpty) {
     return (
       <>
-        <RolesEmptyPage onCreateRoleClick={canCreateRole ? openCreatePanel : undefined} />
+        <RolesEmptyPage onCreateRoleClick={openCreatePanel} canCreate={canCreateRole} />
         {createPanelNode}
       </>
     );

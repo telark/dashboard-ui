@@ -1,19 +1,11 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  CheckCircleOutlined,
-  DownOutlined,
-  HistoryOutlined,
-  RightOutlined,
-  StopOutlined,
-} from '@ant-design/icons';
+import { CheckCircleOutlined, HistoryOutlined, StopOutlined } from '@ant-design/icons';
 import { App as AntdApp, Button, Empty, Tag, Tooltip, Typography } from 'antd';
 import { useDispatch } from 'react-redux';
 import { SlideOutPanel, ExpandPanelButton } from '../../../../components/display/panels/slide-out';
 import {
   DEFAULT_COLORS,
   EMPTY_CLASS,
-  MONOSPACE_CLASS,
-  SLIDE_OUT,
   STATUS_COLORS,
   TAG_CLASS,
   getPillColor,
@@ -21,6 +13,8 @@ import {
 import { ActionConfirmModal } from '../../../../components/display/modal';
 import type { Application, ApplicationRollbackEntry } from '../../models';
 import { APPLICATIONS_UI } from '../../constants/texts';
+import { ADMISSION_DENIED_MARKER } from '../../constants/applications';
+import TechnicalDetails from '../snapshots/TechnicalDetails';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import { APPLICATION_SNAPSHOT_ROW } from '../../constants/sectionLayout';
 import { FancySpinner } from '../../../../components/animation';
@@ -239,9 +233,7 @@ function RollbackRow(props: {
             </Tag>
           </div>
           <RollbackMeta entry={entry} triggeredByName={triggeredByName} />
-          {/* The raw engine error is long and only matters when digging in, so the
-              row states that it failed and lets the user ask for the detail. */}
-          {entry.error ? <RollbackErrorDetail error={entry.error} /> : null}
+          {entry.error ? <RollbackError error={entry.error} /> : null}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
           {isPending ? (
@@ -268,7 +260,7 @@ function RollbackRow(props: {
           >
             {statusState === 'inProgress' || statusState === 'pending' ? (
               <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-                <FancySpinner size={14} ringThickness={2} color={DEFAULT_COLORS.PILL_TEXT} />
+                <FancySpinner size={14} ringThickness={2} color="currentColor" />
               </span>
             ) : null}
             {statusState === 'success' ? <CheckCircleOutlined style={{ fontSize: 12 }} /> : null}
@@ -338,50 +330,21 @@ function RollbackMeta(props: {
   );
 }
 
-function RollbackErrorDetail(props: { error: string }): React.ReactElement {
+// A refusal by an admission policy reads as a plain sentence; the raw error stays one click away.
+function RollbackError(props: { error: string }): React.ReactElement {
   const { error } = props;
-  const [errorOpen, setErrorOpen] = useState(false);
   const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
 
   return (
     <div style={{ display: 'grid', rowGap: 4, minWidth: 0 }}>
-      <button
-        type="button"
-        onClick={() => setErrorOpen((prev) => !prev)}
-        aria-expanded={errorOpen}
-        className={SLIDE_OUT.HEADER_BUTTON_CLASS}
-        style={{
-          all: 'unset',
-          cursor: 'pointer',
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 4,
-          alignSelf: 'start',
-          fontSize: R.META_FONT_SIZE_PX,
-          fontWeight: 600,
-          color: DEFAULT_COLORS.DANGER,
-        }}
-      >
-        {errorOpen ? <DownOutlined /> : <RightOutlined />}
-        <span>{errorOpen ? ui.HIDE_ERROR : ui.SHOW_ERROR}</span>
-      </button>
-      {errorOpen ? (
-        <div
-          className={MONOSPACE_CLASS}
-          style={{
-            padding: R.ERROR_PADDING,
-            borderRadius: R.ERROR_RADIUS_PX,
-            background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
-            color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-            fontSize: R.ERROR_FONT_SIZE_PX,
-            maxHeight: R.ERROR_MAX_HEIGHT_PX,
-            overflow: 'auto',
-            overflowWrap: 'anywhere',
-          }}
+      {error.includes(ADMISSION_DENIED_MARKER) ? (
+        <span
+          style={{ fontSize: R.META_FONT_SIZE_PX, fontWeight: 600, color: DEFAULT_COLORS.DANGER }}
         >
-          {error}
-        </div>
+          {ui.ROLLBACK_ADMISSION_BLOCKED}
+        </span>
       ) : null}
+      <TechnicalDetails detail={error} />
     </div>
   );
 }

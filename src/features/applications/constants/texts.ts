@@ -6,7 +6,9 @@ export const APPLICATIONS_UI = {
     remaining > 0
       ? `Discovering applications: ${remaining} left to refresh. New applications appear as the scan completes.`
       : 'Discovering applications. New applications appear as the scan completes.',
-  DISCOVERY_IDLE: 'Applications up to date.',
+  // Idle discovery, from the last cycle's finish: it says how fresh the list is, not how the apps are.
+  DISCOVERY_IDLE: 'Last discovery scan',
+  DISCOVERY_NEVER_FINISHED: 'No discovery scan has finished yet',
   TOOLBAR_SEARCH_PLACEHOLDER: 'Search applications by name, status, or display name...',
   TOOLBAR_SEARCH_BUTTON: 'Search',
   TOOLBAR_BULK_SELECT: 'Bulk',
@@ -25,7 +27,8 @@ export const APPLICATIONS_UI = {
     ALL: 'All',
     HEALTHY: 'Healthy',
     DEGRADED: 'Degraded',
-    UNHEALTHY: 'Unhealthy',
+    // The API's word for this state, as the cards and the filter panel show it.
+    UNHEALTHY: 'Down',
   },
   TOOLBAR_BULK_FORCE_SYNC: 'Force Sync',
   TOOLBAR_BULK_RESET: 'Reset',
@@ -107,6 +110,7 @@ export const APPLICATIONS_UI = {
       SHOWING_FIRST: 'Showing first',
       EMPTY_TITLE: 'No snapshots yet',
       EMPTY_DESCRIPTION: 'No snapshots have been taken for this application.',
+      GENERATION_MEANING: "Each snapshot is the app's state just before that generation's change.",
       ROLLBACKS_EMPTY_TITLE: 'No rollbacks yet',
       ROLLBACKS_EMPTY_DESCRIPTION: 'No rollbacks have been triggered for this application.',
       GENERATION: 'Generation',
@@ -120,8 +124,7 @@ export const APPLICATIONS_UI = {
       TRIGGERED_PREFIX: 'Triggered',
       COMPLETED_PREFIX: 'Completed',
       META_SEPARATOR: '·',
-      SHOW_ERROR: 'Why did this fail?',
-      HIDE_ERROR: 'Hide details',
+      ROLLBACK_ADMISSION_BLOCKED: 'A cluster admission policy blocked this rollback.',
       STORAGE_AVAILABLE: 'Available',
       STORAGE_TOTAL: 'Total',
       STORAGE_METRICS_JOINER: ' · ',
@@ -142,7 +145,9 @@ export const APPLICATIONS_UI = {
       COMPARE_IDENTICAL_TITLE: 'No differences',
       COMPARE_NO_VISIBLE_TITLE: 'No visible differences',
       COMPARE_IDENTICAL_REDACTED: 'Secret values are redacted, so changes to them are not shown.',
-      COMPARE_ERROR_TITLE: 'Comparison unavailable',
+      COMPARE_ERROR_TITLE: 'Could not compare these snapshots',
+      COMPARE_ERROR_DESCRIPTION: 'One or both manifests could not be read. Try again in a moment.',
+      COMPARE_RETRY: 'Try again',
       COMPARE_RESOURCE_ADDED: 'Resource present only in the compared snapshot',
       COMPARE_RESOURCE_REMOVED: 'Resource present only in the baseline snapshot',
       COMPARE_REDACTED: '••••••',
@@ -176,8 +181,8 @@ export const APPLICATIONS_UI = {
       MANIFEST_ERROR_DESCRIPTION: 'The manifest could not be read. Try again in a moment.',
       MANIFEST_EMPTY_TITLE: 'Nothing to show',
       MANIFEST_EMPTY_DESCRIPTION: 'This snapshot has an empty manifest.',
-      MANIFEST_SHOW_DETAILS: 'Technical details',
-      MANIFEST_HIDE_DETAILS: 'Hide details',
+      TECHNICAL_DETAILS: 'Technical details',
+      HIDE_DETAILS: 'Hide details',
       VIEW_MANIFEST_PERMISSION_DENIED_TOOLTIP:
         'You do not have permission to view snapshot manifests',
       ROLLBACK_FILE_MISSING_TOOLTIP:
@@ -259,6 +264,11 @@ export const APPLICATIONS_UI = {
       LAST_UPDATED: 'Last updated',
       CREATED_AT: 'Created at',
       PUBLISHED: 'Published',
+    },
+    // Discovery's Published condition: True once it saved the app's latest state to the cluster.
+    PUBLISHED_STATE: {
+      SAVED: 'Up to date in the cluster',
+      NOT_SAVED: 'Not saved to the cluster yet',
     },
     ACTIONS: {
       VIEW: 'View',

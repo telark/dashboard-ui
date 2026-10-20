@@ -17,7 +17,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
   scopeKey,
   scopeLabel,
   permissionLevels,
-  tooltipMap,
+  descriptionMap,
   rowPaddingPx = 4,
   isLast = false,
   isLocked = false,
@@ -132,7 +132,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                       value={selectedLevel}
                       onChange={handleLevelChange}
                       options={permissionLevels}
-                      tooltipMap={tooltipMap}
+                      descriptionMap={descriptionMap}
                       style={{ width: '100%' }}
                       disabled={isLocked}
                     />

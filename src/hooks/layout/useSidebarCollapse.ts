@@ -32,11 +32,9 @@ interface UseSidebarCollapseOptions {
   withShortcut?: boolean;
 }
 
-const NARROW_QUERY = `(max-width: ${SIDEBAR_LAYOUT.FORCE_COLLAPSE_BELOW - 1}px)`;
-
 export const useSidebarCollapse = ({ withShortcut = false }: UseSidebarCollapseOptions = {}) => {
   const [state, setState] = useState<SidebarState>(readStoredState);
-  const isNarrow = useMediaQuery(NARROW_QUERY);
+  const isNarrow = useMediaQuery(SIDEBAR_LAYOUT.FORCE_COLLAPSE_QUERY);
 
   // A narrow viewport wins over the stored preference, which is left untouched so
   // the sidebar returns to it once there is room again.

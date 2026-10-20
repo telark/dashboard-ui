@@ -42,6 +42,8 @@ export const LIST_TOOLBAR = {
   PILL_RADIUS_PX: 999,
   // Also scopes the green checkbox styling in antd.css.
   BULK_SELECT_CLASS: 'app-bulk-select',
+  // Quick-filter pills are unstyled buttons: this class gives them back a keyboard focus ring.
+  QUICK_FILTER_CLASS: 'tk-quick-filter',
   CLEAR_ALL_LABEL: 'Clear All',
   SELECTED_SUFFIX: 'selected',
   OVERFLOW_SUFFIX: 'more',
@@ -70,6 +72,8 @@ export const BUTTON_CONFIGS = {
     FONT_WEIGHT: 500,
     FONT_SIZE: 13,
     TRANSITION: 'background-color 150ms ease, color 150ms ease, opacity 150ms ease',
+    // The phone rail's icon over its short name: the box widens to fit "Members" in 52px.
+    RAIL: { MARGIN_X: 2, PADDING: '4px 0', GAP: 2, LABEL_FONT_SIZE: 10, LABEL_LINE_HEIGHT: '12px' },
   },
   PRIMARY_BUTTON: {
     FONT_WEIGHT: 600,

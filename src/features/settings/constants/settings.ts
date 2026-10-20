@@ -69,6 +69,8 @@ export const SETTINGS_CONSTANTS = {
     MAX_WIDTH: 640,
     CARD_BORDER_RADIUS: 8,
     CARD_PADDING: 20,
+    // Below this a header action wraps under the title instead of squeezing it.
+    CARD_TITLE_MIN_WIDTH_PX: 120,
     CARD_TITLE_TO_DESCRIPTION_GAP_PX: -4,
     SECTION_TITLE_FONT_SIZE: 20,
     HINT_FONT_SIZE: 12,

@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import { Empty, Skeleton, Tag, Typography } from 'antd';
+import { Button, Empty, Skeleton, Tag, Typography } from 'antd';
 import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons';
 import {
   DEFAULT_COLORS,
@@ -23,6 +23,7 @@ import {
 import type { ApplicationSnapshotSummary, SnapshotManifestState } from '../../models';
 import { APPLICATIONS_UI } from '../../constants';
 import { APPLICATION_TRACKING_ANNOTATION_PREFIX } from '../../constants/applications';
+import TechnicalDetails from './TechnicalDetails';
 
 type DiffType = 'add' | 'remove' | 'change';
 type Path = string[];
@@ -180,6 +181,8 @@ export interface SnapshotCompareViewProps {
   leftState: SnapshotManifestState | undefined;
   rightState: SnapshotManifestState | undefined;
   onBack: () => void;
+  /** Reads both manifests again after a failed read. */
+  onRetry: () => void;
 }
 
 const statsStyle: React.CSSProperties = {
@@ -328,7 +331,7 @@ const DiffRowView: React.FC<{ row: DiffRow; kind: string }> = ({ row, kind }) =>
 };
 
 const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
-  ({ left, right, leftState, rightState }) => {
+  ({ left, right, leftState, rightState, onRetry }) => {
     const ui = APPLICATIONS_UI.SECTIONS.SNAPSHOTS;
 
     const error = leftState?.error || rightState?.error || null;
@@ -408,10 +411,15 @@ const SnapshotCompareView: React.FC<SnapshotCompareViewProps> = memo(
           description={
             <>
               <Typography.Title level={5}>{ui.COMPARE_ERROR_TITLE}</Typography.Title>
-              <Typography.Text>{error}</Typography.Text>
+              <Typography.Text>{ui.COMPARE_ERROR_DESCRIPTION}</Typography.Text>
             </>
           }
-        />
+        >
+          <div style={{ display: 'grid', justifyItems: 'center', rowGap: 12 }}>
+            <Button onClick={onRetry}>{ui.COMPARE_RETRY}</Button>
+            <TechnicalDetails detail={error} />
+          </div>
+        </Empty>
       );
     } else if (groups.length === 0) {
       body = (

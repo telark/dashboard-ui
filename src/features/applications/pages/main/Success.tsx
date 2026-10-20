@@ -11,7 +11,7 @@ import {
 } from '../../../../constants';
 import FullPageLoader from '../../../../components/display/views/FullPageLoader';
 import { LIST_PAGE } from '../../../../constants/shared/pages';
-import type { Application } from '../../models';
+import type { Application, ApplicationHealthQuickFilter } from '../../models';
 import type { AppDispatch } from '../../../../store';
 import { ApplicationCard, ApplicationsToolbar, DiscoveryStatusBar } from '../../components';
 import ApplicationResetModal from '../../components/reset/ApplicationResetModal';
@@ -35,7 +35,6 @@ interface ApplicationsSuccessProps {
   filterChips: { key: string; value: string; label: string }[];
   overflowChipsCount: number;
   onRemoveFilterChip: (key: string, value: string) => void;
-  totalFiltered: number;
   hasActiveFilters: boolean;
   pagination: {
     currentPage: number;
@@ -52,6 +51,7 @@ interface ApplicationsSuccessProps {
   anySelectedSyncing: boolean;
   onClearSelection: () => void;
   healthQuickFilter: 'all' | 'healthy' | 'degraded' | 'unhealthy';
+  healthCounts: Record<ApplicationHealthQuickFilter, number>;
   onHealthQuickFilterChange: (next: 'all' | 'healthy' | 'degraded' | 'unhealthy') => void;
   loading: boolean;
   error: string | null;
@@ -69,7 +69,6 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
     filterChips,
     overflowChipsCount,
     onRemoveFilterChip,
-    totalFiltered,
     hasActiveFilters,
     pagination,
     bulkMode,
@@ -81,6 +80,7 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
     anySelectedSyncing,
     onClearSelection,
     healthQuickFilter,
+    healthCounts,
     onHealthQuickFilterChange,
     loading,
     error,
@@ -180,7 +180,6 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
           searchValue={searchValue}
           onSearchChange={onSearchChange}
           onOpenFilters={onOpenFilters}
-          totalCount={totalFiltered}
           filterChips={filterChips}
           overflowCount={overflowChipsCount}
           onRemoveFilterChip={onRemoveFilterChip}
@@ -201,6 +200,7 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
           onBulkReset={() => setBulkResetOpen(true)}
           bulkForceSyncDisabled={anySelectedSyncing}
           healthQuickFilter={healthQuickFilter}
+          healthCounts={healthCounts}
           onHealthQuickFilterChange={onHealthQuickFilterChange}
         />
 
@@ -219,7 +219,7 @@ const ApplicationsSuccess: React.FC<ApplicationsSuccessProps> = memo(
                 image={false}
                 description={
                   <>
-                    <Typography.Title level={3}>{APPLICATIONS_UI.NO_MATCH_TITLE}</Typography.Title>
+                    <Typography.Title level={2}>{APPLICATIONS_UI.NO_MATCH_TITLE}</Typography.Title>
                     <Typography.Text>{APPLICATIONS_UI.NO_MATCH_DESCRIPTION}</Typography.Text>
                   </>
                 }

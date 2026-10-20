@@ -126,6 +126,19 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
     return a.generation <= b.generation ? ([a, b] as const) : ([b, a] as const);
   }, [selectedCompareSnapshots]);
 
+  const fetchComparePair = useCallback(() => {
+    for (const snap of comparePair ?? []) {
+      void dispatch(
+        fetchSnapshotManifestThunk({
+          manifestKey: applicationSnapshotStableKey(snap),
+          snapshotId: snap.id,
+          namespace: snap.namespace,
+          generation: snap.generation,
+        }),
+      );
+    }
+  }, [comparePair, dispatch]);
+
   const handleCompareClick = useCallback(() => {
     if (!compareMode) {
       setCompareMode(true);
@@ -134,30 +147,14 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
       return;
     }
     if (!compareViewOpen && compareKeys.length === 2 && comparePair) {
-      const [older, newer] = comparePair;
-      void dispatch(
-        fetchSnapshotManifestThunk({
-          manifestKey: applicationSnapshotStableKey(older),
-          snapshotId: older.id,
-          namespace: older.namespace,
-          generation: older.generation,
-        }),
-      );
-      void dispatch(
-        fetchSnapshotManifestThunk({
-          manifestKey: applicationSnapshotStableKey(newer),
-          snapshotId: newer.id,
-          namespace: newer.namespace,
-          generation: newer.generation,
-        }),
-      );
+      fetchComparePair();
       setCompareViewOpen(true);
       return;
     }
     setCompareMode(false);
     setCompareKeys([]);
     setCompareViewOpen(false);
-  }, [compareKeys.length, compareMode, comparePair, compareViewOpen, dispatch]);
+  }, [compareKeys.length, compareMode, comparePair, compareViewOpen, fetchComparePair]);
 
   const handleBackFromCompare = useCallback(() => {
     setCompareViewOpen(false);
@@ -323,6 +320,19 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
       }
       formContent={
         <>
+          {/* Visible, not a tooltip: it decides which snapshot undoes which change. */}
+          {manifestViewOpen || compareViewOpen ? null : (
+            <p
+              style={{
+                margin: '0 0 12px',
+                fontSize: 13,
+                lineHeight: 1.5,
+                color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+              }}
+            >
+              {snapUi.GENERATION_MEANING}
+            </p>
+          )}
           {manifestViewOpen ? (
             <SnapshotManifestView title={activeRowTitle} manifestState={manifestState} />
           ) : compareViewOpen && comparePair ? (
@@ -332,6 +342,7 @@ const ManageSnapshotsPanel: React.FC<ManageSnapshotsPanelProps> = ({
               leftState={snapshotManifests[applicationSnapshotStableKey(comparePair[0])]}
               rightState={snapshotManifests[applicationSnapshotStableKey(comparePair[1])]}
               onBack={handleBackFromCompare}
+              onRetry={fetchComparePair}
             />
           ) : snapshotsLoading ? (
             <div style={{ display: 'grid', rowGap: 10 }}>

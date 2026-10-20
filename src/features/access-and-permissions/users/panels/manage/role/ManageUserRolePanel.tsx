@@ -29,6 +29,7 @@ import { applyRoleFilters } from '../../../../groups/utils';
 import { useRoleCategoryOptions } from '../../../../groups/hooks/categories/useRoleCategoryOptions';
 import { CapitalizeFirstLetter } from '../../../../../../utils/helpers/format';
 import { filterBySearchTerm } from '../../../utils/search/filter';
+import { useGrantConfirm } from '../../../../shared';
 import type { User } from '../../../models';
 
 type ActiveView = 'select' | 'assigned' | 'groupRoles';
@@ -102,6 +103,8 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     [initialSelectedRoles, addBlocked, removeBlocked],
   );
   const hasRoleAboveCaller = useHasRoleAboveCaller();
+  const panelWidth = expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH;
+  const { confirmGrant, modal: grantConfirmModal } = useGrantConfirm(panelWidth);
 
   const handleDeassignSuccess = useCallback((updatedRoles: string[]) => {
     setLocalAssignedIds(updatedRoles);
@@ -144,7 +147,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
     [inheritedGroupsByRoleId],
   );
 
-  const inheritedRoleTooltips = useMemo(
+  const inheritedRoleReasons = useMemo(
     () =>
       new Map(
         Array.from(inheritedGroupsByRoleId.entries()).map(([roleId, groupNames]) => [
@@ -204,7 +207,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
           UC.LABELS.PANELS.MANAGE_ROLE.TITLE,
           CapitalizeFirstLetter(user.fullname || user.username),
         )}
-        width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
+        width={panelWidth}
         offsetX={filterPanelOpen ? FILTER_PANEL_WIDTH : 0}
         headerExtra={
           <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((prev) => !prev)} />
@@ -280,14 +283,22 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
                   roles={filteredRoles}
                   loading={rolesLoading}
                   allRoles={allRoles}
-                  inheritedRoleTooltips={inheritedRoleTooltips}
+                  inheritedRoleReasons={inheritedRoleReasons}
                   blockedReason={blockedReason}
                 />
               )}
             </div>
           </div>
         }
-        onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
+        onSubmit={(values) =>
+          confirmGrant(
+            ((values.roleRefs as string[] | undefined) ?? []).filter(
+              (id) => !initialSelectedRoles.includes(id),
+            ),
+            CapitalizeFirstLetter(user.fullname || user.username),
+            () => handleSubmit(values),
+          )
+        }
         onCancel={onClose}
         submitButtonText={UC.LABELS.PANELS.MANAGE_ROLE.SUBMIT_BUTTON}
         loading={submitting}
@@ -317,6 +328,7 @@ const ManageUserRolePanel: React.FC<ManageUserRolePanelProps> = ({ open, onClose
         getContainer={() => document.body}
         offsetRight={PANEL_WIDTH}
       />
+      {grantConfirmModal}
     </>
   );
 };

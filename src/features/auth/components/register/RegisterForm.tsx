@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Button, FormInstance } from 'antd';
-import { UserAddOutlined } from '@ant-design/icons';
+import { LockOutlined, UserAddOutlined } from '@ant-design/icons';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { REGISTER_CONSTANTS } from '../../constants/register';
 import { AuthForm } from '../shared/AuthForm';
@@ -21,6 +21,33 @@ const inputStyle: React.CSSProperties = {
   color: `var(--auth-text-primary, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT})`,
 };
 
+// The link already names the account, so its email is plain text, not a read-only input.
+const LockedEmail: React.FC<{ value?: string }> = ({ value }) => (
+  <div>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 8,
+        fontWeight: 700,
+        color: `var(--auth-text-primary, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT})`,
+        overflowWrap: 'anywhere',
+      }}
+    >
+      <LockOutlined aria-hidden />
+      {value}
+    </div>
+    <div
+      style={{
+        fontSize: 12,
+        color: `var(--auth-text-muted, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED})`,
+      }}
+    >
+      {REGISTER_CONSTANTS.UI.EMAIL_LOCKED_HINT}
+    </div>
+  </div>
+);
+
 export const RegisterForm: React.FC<RegisterFormProps> = ({
   form,
   loading,
@@ -32,6 +59,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     <Form.Item
       name="email"
       label={REGISTER_CONSTANTS.UI.EMAIL_LABEL}
+      // Nothing to fill in when the link sets it, so no required mark.
+      required={lockedEmail === undefined}
       initialValue={lockedEmail}
       rules={[
         { required: true, message: AUTH_ERROR_MESSAGES.MISSING_EMAIL },
@@ -39,13 +68,15 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       ]}
       style={{ marginBottom: '12px' }}
     >
-      <Input
-        type="email"
-        placeholder={REGISTER_CONSTANTS.UI.EMAIL_PLACEHOLDER}
-        readOnly={lockedEmail !== undefined}
-        title={lockedEmail === undefined ? undefined : REGISTER_CONSTANTS.UI.EMAIL_LOCKED_HINT}
-        style={inputStyle}
-      />
+      {lockedEmail === undefined ? (
+        <Input
+          type="email"
+          placeholder={REGISTER_CONSTANTS.UI.EMAIL_PLACEHOLDER}
+          style={inputStyle}
+        />
+      ) : (
+        <LockedEmail />
+      )}
     </Form.Item>
 
     <Form.Item
@@ -54,7 +85,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       rules={[{ required: true, message: AUTH_ERROR_MESSAGES.MISSING_DEVICE_NAME }]}
       style={{ marginBottom: '16px' }}
     >
-      <Input placeholder={REGISTER_CONSTANTS.UI.DEVICE_NAME_PLACEHOLDER} style={inputStyle} />
+      <Input
+        placeholder={REGISTER_CONSTANTS.UI.DEVICE_NAME_PLACEHOLDER}
+        style={inputStyle}
+        // With the email set by the link, the device name is the first thing to fill in.
+        autoFocus={lockedEmail !== undefined}
+      />
     </Form.Item>
 
     <Form.Item style={{ marginBottom: 0 }}>

@@ -297,7 +297,8 @@ export const FILTER_PANEL = {
     fontWeight: 600,
     border: `1px solid ${DEFAULT_COLORS.SUCCESS}`,
     backgroundColor: DEFAULT_COLORS.SUCCESS,
-    color: DEFAULT_COLORS.PILL_TEXT,
+    // White on SUCCESS is 2.1:1, so dark text as on the SUCCESS pill (user decision, 2026-10-17).
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
   },
   BUTTON_INACTIVE: {
     border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,

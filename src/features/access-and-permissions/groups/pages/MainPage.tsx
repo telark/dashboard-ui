@@ -226,7 +226,8 @@ const MainPage: React.FC = () => {
       <GroupsEmptyPage
         createPanelOpen={createPanelOpen}
         onCloseCreatePanel={closeCreatePanel}
-        onCreateGroupClick={canCreateGroup ? openCreatePanel : undefined}
+        onCreateGroupClick={openCreatePanel}
+        canCreate={canCreateGroup}
         createForm={createForm}
       />
     );

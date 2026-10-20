@@ -38,4 +38,6 @@ export interface TablePaginationConfig {
   onPageSizeChange?: (size: number) => void;
   pageSizeOptions?: number[];
   showRowsLabel?: string;
+  /** antd's compact pager (current / total), for narrow pages. */
+  simple?: boolean;
 }

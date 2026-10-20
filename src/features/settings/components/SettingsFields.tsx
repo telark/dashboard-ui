@@ -56,13 +56,13 @@ interface SettingsSubsectionHeaderProps {
   description?: React.ReactNode;
 }
 
-// The card header's own title and description metrics, one level down.
+// The card header's own title and description metrics, one level down (h3 under the card's h2).
 export const SettingsSubsectionHeader: React.FC<SettingsSubsectionHeaderProps> = ({
   title,
   description,
 }) => (
   <div>
-    <h4
+    <h3
       style={{
         margin: 0,
         fontSize: CONTENT.CARD_TITLE_FONT_SIZE,
@@ -71,7 +71,7 @@ export const SettingsSubsectionHeader: React.FC<SettingsSubsectionHeaderProps> =
       }}
     >
       {title}
-    </h4>
+    </h3>
     {description ? (
       <p
         style={{

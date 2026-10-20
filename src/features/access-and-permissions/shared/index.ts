@@ -5,6 +5,7 @@ export type {
   DeassignButtonProps,
 } from './components';
 
-export { useDeassignModal } from './hooks';
+export { useDeassignModal, useGrantConfirm } from './hooks';
 export { applySelectionChange } from './utils/assignment';
+export { formatList } from './utils/grants';
 export type { UseDeassignModalOptions, UseDeassignModalReturn } from './hooks';

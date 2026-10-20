@@ -26,6 +26,7 @@ import { filterBySearchTerm } from '../../../users/utils/search/filter';
 import { USERS_CONSTANTS as UC } from '../../../users/constants';
 import { CapitalizeFirstLetter } from '../../../../../utils/helpers/format';
 import { CheckCircleOutlined } from '@ant-design/icons';
+import { useGrantConfirm } from '../../../shared';
 
 type ActiveView = 'select' | 'assigned';
 
@@ -93,6 +94,8 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
     [initialSelectedRoles, addBlocked, removeBlocked],
   );
   const hasRoleAboveCaller = useHasRoleAboveCaller();
+  const panelWidth = expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH;
+  const { confirmGrant, modal: grantConfirmModal } = useGrantConfirm(panelWidth);
 
   const {
     deassignModalOpen,
@@ -156,7 +159,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
           GC.LABELS.PANELS.ATTACH_ROLES.TITLE,
           CapitalizeFirstLetter(currentGroup.name),
         )}
-        width={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
+        width={panelWidth}
         offsetX={filterPanelOpen ? FILTER_PANEL_WIDTH : 0}
         headerExtra={
           <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((prev) => !prev)} />
@@ -223,7 +226,15 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
             </div>
           </div>
         }
-        onSubmit={handleSubmit as (values: Record<string, unknown>) => Promise<void>}
+        onSubmit={(values) =>
+          confirmGrant(
+            ((values.roleRefs as string[] | undefined) ?? []).filter(
+              (id) => !initialSelectedRoles.includes(id),
+            ),
+            CapitalizeFirstLetter(currentGroup.name),
+            () => handleSubmit(values),
+          )
+        }
         onCancel={onClose}
         submitButtonText={GC.LABELS.PANELS.ATTACH_ROLES.SUBMIT_BUTTON}
         loading={submitting}
@@ -252,8 +263,9 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
         cancelText={GC.LABELS.MODAL.CANCEL}
         loading={isDeassigning}
         getContainer={() => document.body}
-        offsetRight={expanded ? PANEL_WIDTH_EXPANDED : PANEL_WIDTH}
+        offsetRight={panelWidth}
       />
+      {grantConfirmModal}
     </>
   );
 };

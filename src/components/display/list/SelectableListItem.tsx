@@ -1,6 +1,6 @@
 import React from 'react';
-import { DEFAULT_COLORS } from '../../../constants';
-import { Checkbox, Tooltip } from 'antd';
+import { DEFAULT_COLORS, DISABLED_CONTENT_OPACITY } from '../../../constants';
+import { Checkbox } from 'antd';
 import type { SelectableListItemProps } from '../../../interfaces/layout/list';
 
 const SelectableListItem: React.FC<SelectableListItemProps> = ({
@@ -8,12 +8,7 @@ const SelectableListItem: React.FC<SelectableListItemProps> = ({
   name,
   description,
   customContent,
-  isProtected = false,
-  protectionIcon,
-  protectionTooltip,
-  protectionIconColor,
-  protectionIconSize = 18,
-  protectionIconPosition = { top: 8, right: 8 },
+  protectionBadge,
   itemStyles,
   contentStyles,
   nameStyles,
@@ -24,6 +19,7 @@ const SelectableListItem: React.FC<SelectableListItemProps> = ({
   checkboxStyle,
   children,
   disabled = false,
+  disabledReason,
 }) => {
   const baseStyles = itemStyles?.base || {};
   const hoverStyles = itemStyles?.hover || {};
@@ -76,6 +72,34 @@ const SelectableListItem: React.FC<SelectableListItemProps> = ({
     ...descriptionStyles,
   };
 
+  const content = (
+    <div style={defaultContentStyles}>
+      <div style={disabled ? { opacity: DISABLED_CONTENT_OPACITY } : undefined}>
+        {name && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 8,
+            }}
+          >
+            <div style={defaultNameStyles}>{name}</div>
+            {protectionBadge}
+          </div>
+        )}
+        {description && <div style={defaultDescriptionStyles}>{description}</div>}
+        {customContent && <div>{customContent}</div>}
+        {children}
+      </div>
+      {disabled && disabledReason ? (
+        <div style={{ ...defaultDescriptionStyles, marginTop: 6, whiteSpace: 'normal' }}>
+          {disabledReason}
+        </div>
+      ) : null}
+    </div>
+  );
+
   return (
     <div
       className={className}
@@ -83,56 +107,24 @@ const SelectableListItem: React.FC<SelectableListItemProps> = ({
         ...baseStyles,
         width: '100%',
         flexShrink: 0,
-        position: 'relative',
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {isProtected && protectionIcon && (
-        <Tooltip title={protectionTooltip || 'This item is protected'}>
-          <div
-            style={{
-              position: 'absolute',
-              top: protectionIconPosition.top,
-              right: protectionIconPosition.right,
-              zIndex: 1,
-            }}
-          >
-            {React.isValidElement(protectionIcon)
-              ? React.cloneElement(
-                  protectionIcon as React.ReactElement<{ style?: React.CSSProperties }>,
-                  {
-                    style: {
-                      fontSize: protectionIconSize,
-                      color: protectionIconColor,
-                      ...((protectionIcon as React.ReactElement<{ style?: React.CSSProperties }>)
-                        ?.props?.style || {}),
-                    },
-                  },
-                )
-              : protectionIcon}
-          </div>
-        </Tooltip>
-      )}
       {disabled ? (
         <div style={{ margin: 0, width: '100%', paddingLeft: 24, ...checkboxStyle }}>
           {/* Keeps the value registered: the group drops unregistered ones on any toggle. */}
           <Checkbox value={value} disabled style={{ display: 'none' }} />
-          <div style={defaultContentStyles}>
-            {name && <div style={defaultNameStyles}>{name}</div>}
-            {description && <div style={defaultDescriptionStyles}>{description}</div>}
-            {customContent && <div>{customContent}</div>}
-            {children}
-          </div>
+          {content}
         </div>
       ) : (
-        <Checkbox value={value} style={{ margin: 0, width: '100%', ...checkboxStyle }}>
-          <div style={defaultContentStyles}>
-            {name && <div style={defaultNameStyles}>{name}</div>}
-            {description && <div style={defaultDescriptionStyles}>{description}</div>}
-            {customContent && <div>{customContent}</div>}
-            {children}
-          </div>
+        <Checkbox
+          value={value}
+          style={{ margin: 0, width: '100%', ...checkboxStyle }}
+          // The label fills the card, so a badge at the end of the name row sits at its right edge.
+          styles={{ label: { flex: 1, minWidth: 0 } }}
+        >
+          {content}
         </Checkbox>
       )}
     </div>

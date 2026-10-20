@@ -9,6 +9,7 @@ import { useCreateUserPanel } from '../../hooks/panels/user/useCreateUserPanel';
 import { useRoles } from '../../../roles/hooks';
 import { ACTION_PERMISSIONS, usePermission } from '../../../../auth/hooks';
 import { filterBySearchTerm } from '../../utils/search/filter';
+import { useGrantConfirm } from '../../../shared';
 import type { FormInstance } from 'antd';
 import type { CreateUserFormValues } from '../../models';
 
@@ -40,6 +41,7 @@ const CreateUserPanel: React.FC<CreateUserPanelProps> = ({ open, onClose, form }
     () => filterBySearchTerm(roles, roleSearch, (r) => [r.name, r.description]),
     [roles, roleSearch],
   );
+  const { confirmGrant, modal: grantConfirmModal } = useGrantConfirm();
 
   return (
     <SlideOutPanel
@@ -73,9 +75,14 @@ const CreateUserPanel: React.FC<CreateUserPanelProps> = ({ open, onClose, form }
               />
             </div>
           </Form.Item>
+          {grantConfirmModal}
         </div>
       }
-      onSubmit={handleSubmit}
+      onSubmit={(values) =>
+        confirmGrant((values.roleRefs as string[] | undefined) ?? [], String(values.username), () =>
+          handleSubmit(values),
+        )
+      }
       onCancel={onClose}
       submitButtonText={UC.LABELS.PANELS.CREATE.SUBMIT_BUTTON}
       loading={submitting}

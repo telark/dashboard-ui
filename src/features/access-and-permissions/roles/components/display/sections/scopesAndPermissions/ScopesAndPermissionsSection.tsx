@@ -13,14 +13,14 @@ const PERMISSION_LEVEL_OPTIONS = PERMISSION_LEVELS.map((level) => ({
   value: level,
   label: level,
 }));
-const TOOLTIP = RPC.SCOPE.PERMISSION_LEVEL_TOOLTIP;
+const DESCRIPTIONS = RPC.SCOPE.PERMISSION_LEVEL_DESCRIPTION;
 
 const RolesScopesAndPermissionsSection: React.FC<ScopesAndPermissionsSectionProps> = memo(
   ({ isLocked = false, initialValues }) => {
     const props: RolesScopesAndPermissionsListProps = {
       areas: AREAS,
       permissionLevels: PERMISSION_LEVEL_OPTIONS,
-      tooltipMap: TOOLTIP,
+      descriptionMap: DESCRIPTIONS,
       rowPaddingPx: 0,
       isLocked,
       initialScopes: initialValues?.scopes,

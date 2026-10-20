@@ -8,6 +8,8 @@ import { AUTH_PERMISSIONS_LABELS } from '../../../auth/constants';
 import { getCurrentUser } from '../../../auth/utils';
 import SettingsCard from '../../components/SettingsCard';
 import { DEFAULT_COLORS, EMPTY_VALUE, getPillSurface } from '../../../../constants';
+import { SCOPE_LABELS } from '../../../../components/shared';
+import { denyRuleSentence } from '../../../access-and-permissions/roles/constants';
 
 const LEVEL_COLOR = DEFAULT_COLORS.TEXT_MUTED;
 
@@ -123,10 +125,9 @@ const ScopeRow: React.FC<ScopeRowProps> = memo(({ title, level, rules, sourceTex
     </div>
     {rules.length > 0 && (
       <div style={{ marginTop: 4, fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-        <span style={{ fontWeight: 500, color: DEFAULT_COLORS.TEXT_SECONDARY }}>
-          {AUTH_PERMISSIONS_LABELS.DENY_PREFIX}
-        </span>
-        {rules.join(', ')}
+        {rules.map((rule) => (
+          <div key={rule}>{denyRuleSentence(rule)}</div>
+        ))}
       </div>
     )}
   </div>
@@ -190,7 +191,7 @@ const MyPermissionsSectionContent: React.FC = memo(() => {
   }
   for (const { scope, level, rules, sourceText } of scopeRows) {
     allRows.push({
-      title: scope.charAt(0).toUpperCase() + scope.slice(1),
+      title: SCOPE_LABELS[scope] ?? scope,
       level,
       rules,
       sourceText,

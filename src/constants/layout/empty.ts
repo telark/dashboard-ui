@@ -25,3 +25,10 @@ export const EMPTY_ACTION_STYLE: CSSProperties = {
   gap: 8,
   boxShadow: 'none',
 };
+
+/** Disabled: dims like a toolbar button, since the colors above override antd's disabled look. */
+export const EMPTY_ACTION_DISABLED_STYLE: CSSProperties = {
+  ...EMPTY_ACTION_STYLE,
+  color: DEFAULT_COLORS.TEXT_DISABLED,
+  opacity: 0.6,
+};

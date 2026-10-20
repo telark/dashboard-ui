@@ -570,6 +570,13 @@
   white-space: nowrap;
 }
 
+/* OUTLINE: a quiet status pill. The 1px border takes 1px of padding, so it is as tall as a filled one. */
+.ant-tag.tk-pill.tk-pill-outline {
+  padding: 1px 9px;
+  background: transparent;
+  border: 1px solid currentColor;
+}
+
 /* antd spaces an icon from the label with a margin; ICON pills use their gap. */
 .ant-tag.tk-pill-icon > .anticon + span {
   margin-inline-start: 0;
@@ -635,9 +642,12 @@
   max-width: 400px;
 }
 
-.tk-empty-page .ant-empty-description h3.ant-typography {
+/* An h2 in the page outline, at the h3 size. */
+.tk-empty-page .ant-empty-description h2.ant-typography {
   margin-bottom: var(--ant-margin-xs);
+  font-size: var(--ant-font-size-heading-3);
   font-weight: 700;
+  line-height: var(--ant-line-height-heading-3);
   color: var(--ant-color-text-heading);
 }
 
@@ -660,7 +670,7 @@
   margin-bottom: var(--ant-margin-sm);
 }
 
-.tk-empty-no-access .ant-empty-description h3.ant-typography {
+.tk-empty-no-access .ant-empty-description h2.ant-typography {
   margin-bottom: 0;
 }
 
@@ -717,7 +727,7 @@
   color: var(--color-icon-muted);
 }
 
-.tk-empty-section .ant-empty-description h4.ant-typography {
+.tk-empty-section .ant-empty-description h3.ant-typography {
   margin-bottom: 0;
   font-size: 15px;
   font-weight: 600;
