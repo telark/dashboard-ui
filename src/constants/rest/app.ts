@@ -25,6 +25,8 @@ export const APP_ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   GOOGLE_CALLBACK: '/auth/google/callback',
+  // A break-glass request's approval page: public, so the bootstrap account approves without a sign-in.
+  BREAK_GLASS: '/break-glass',
   // resources
   APPLICATIONS: '/applications',
   APPLICATION_DETAILS: '/applications/:name',
@@ -38,4 +40,11 @@ export const APP_ROUTES = {
   // settings
   SETTINGS: '/settings',
   PASSKEYS: '/settings/security/passkeys',
+  AUTHENTICATION: '/settings/authentication',
+} as const;
+
+// Here, not in a feature, so a deep link from always-loaded code (the bell) loads no feature constants.
+export const APP_ROUTE_PARAMS = {
+  // /insights?insight=<id> opens that insight's details panel.
+  INSIGHT: 'insight',
 } as const;

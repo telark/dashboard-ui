@@ -5,10 +5,11 @@ import {
   HistoryOutlined,
   KeyOutlined,
   LinkOutlined,
+  LockOutlined,
   SafetyCertificateOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
-import { APP_ROUTES } from '../../../constants';
+import { APP_ROUTE_PARAMS, APP_ROUTES, Icons } from '../../../constants';
 import { NOTIFICATION_TYPES } from '../constants';
 
 export interface TypeConfig {
@@ -58,6 +59,18 @@ const TYPE_REGISTRY: Record<string, TypeConfig> = {
   [NOTIFICATION_TYPES.ENROLL_LINK_USED]: {
     icon: KeyOutlined,
     navigateTo: () => APP_ROUTES.PASSKEYS,
+  },
+  // The Bootstrap account card on Authentication lists the request and decides it.
+  [NOTIFICATION_TYPES.BOOTSTRAP_REQUEST]: {
+    icon: LockOutlined,
+    navigateTo: () => APP_ROUTES.AUTHENTICATION,
+  },
+  [NOTIFICATION_TYPES.INCIDENT_CRITICAL]: {
+    icon: Icons.Insights,
+    navigateTo: (m) =>
+      typeof m?.insightId === 'string'
+        ? `${APP_ROUTES.INSIGHTS}?${APP_ROUTE_PARAMS.INSIGHT}=${encodeURIComponent(m.insightId)}`
+        : null,
   },
 };
 
