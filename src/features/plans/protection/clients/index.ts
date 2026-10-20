@@ -15,6 +15,8 @@ export { deletePlan } from './delete';
 export {
   fetchPlanReports,
   fetchAllPlanReports,
+  fetchKeptPlanReports,
+  deletePlanReport,
   generatePlanReport,
   isReportBusy,
   isReportFileMissing,

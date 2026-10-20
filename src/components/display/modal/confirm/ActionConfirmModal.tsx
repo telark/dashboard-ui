@@ -21,6 +21,8 @@ export interface ActionConfirmModalProps {
   customMessage?: React.ReactNode;
   /** A consequence shown under the question, e.g. who loses access. */
   note?: string;
+  /** Controls shown under the note, such as an option of the action. */
+  children?: React.ReactNode;
   /** Shifts the modal's centering leftward by this many px (useful when a side panel is open) */
   offsetRight?: number;
   /** Override the portal container; defaults to false (inline). Pass () => document.body for viewport centering. */
@@ -42,6 +44,7 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
   danger = true,
   customMessage,
   note,
+  children,
   offsetRight,
   getContainer = false,
 }) => {
@@ -78,6 +81,7 @@ const ActionConfirmModal: React.FC<ActionConfirmModalProps> = ({
       }
     >
       {note && <div style={MODAL_CHROME.NOTE}>{note}</div>}
+      {children}
     </BaseModal>
   );
 };

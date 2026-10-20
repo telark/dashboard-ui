@@ -13,6 +13,7 @@ import {
   duplicatePlan,
   reactivatePlan,
   updatePlan,
+  type DuplicatePlanPayload,
   type PreparePlanPayload,
   type UpdatePlanPayload,
 } from '../../clients';
@@ -120,13 +121,14 @@ export const decidePlanThunk = createAsyncThunk<ProtectionPlan, DecidePlanArgs>(
 
 export interface DeletePlanArgs {
   planId: string;
+  keepReports: boolean;
 }
 
 export const deletePlanThunk = createAsyncThunk<string, DeletePlanArgs>(
   STORE_ACTIONS.PROTECTION_PLANS.DELETE,
-  async ({ planId }, { rejectWithValue }) => {
+  async ({ planId, keepReports }, { rejectWithValue }) => {
     try {
-      await deletePlan(planId);
+      await deletePlan(planId, keepReports);
       return planId;
     } catch (error: unknown) {
       logger.error(STORE_MESSAGES.ERROR_DELETING_PROTECTION_PLAN, error);
@@ -137,13 +139,7 @@ export const deletePlanThunk = createAsyncThunk<string, DeletePlanArgs>(
 
 export interface DuplicatePlanArgs {
   planId: string;
-  overrides?: {
-    name?: string;
-    timeMode?: string;
-    timeRange?: { startAt: string; endAt: string };
-    environmentRef?: string;
-    tagRefs?: string[];
-  };
+  overrides?: DuplicatePlanPayload;
 }
 
 export const duplicatePlanThunk = createAsyncThunk<ProtectionPlan, DuplicatePlanArgs>(

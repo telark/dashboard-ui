@@ -29,11 +29,14 @@ import {
 import type { Category } from '../../../access-and-permissions/categories/models';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
+  REPORT_ROW_ACTIONS_GAP_PX,
   REPORT_SYSTEM_USER_ID,
   REPORTS_LIST,
 } from '../constants/protectionPlans';
 import ReportDownloadButton from '../components/shared/ReportDownloadButton';
+import ReportDeleteButton from '../components/shared/ReportDeleteButton';
 import { useAllPlanReports } from '../hooks/usePlanReports';
+import { usePlanReportDelete } from '../hooks/usePlanReportDelete';
 import { usePlanTaxonomies } from '../hooks/usePlanTaxonomies';
 import { applyReportFilters } from '../utils/applyReportFilters';
 import type {
@@ -58,7 +61,7 @@ type ColumnKey = keyof typeof REPORTS_LIST.COLUMN_WIDTHS;
 
 const L = PPC.LABELS.REPORTS_TAB;
 const W = REPORTS_LIST.COLUMN_WIDTHS;
-const TRIGGERS: PlanReportTrigger[] = ['manual', 'cancel', 'end'];
+const TRIGGERS: PlanReportTrigger[] = ['manual', 'window', 'cancel', 'end'];
 // Lowest priority last: dropped first when the table runs out of room.
 const OPTIONAL_COLUMNS: ColumnKey[] = ['ENVIRONMENT', 'GENERATED_BY', 'VIOLATIONS'];
 const REQUIRED_WIDTH = W.GENERATED_AT + W.PLAN + W.TRIGGER + W.ACTIONS;
@@ -78,11 +81,13 @@ const fittingColumns = (available: number): Set<ColumnKey> => {
 
 interface ColumnContext {
   planById: Map<string, ProtectionPlan>;
+  keptNameById: Map<string, string>;
   environments: Category[];
   resolveUser: (id: string) => string;
   canDownload: boolean;
   downloading: string | null;
   onDownload: (report: PlanReportMeta, format: PlanReportFormat, filename: string) => void;
+  onDelete: (report: PlanReportMeta, planName: string) => void;
 }
 
 const column = (
@@ -97,7 +102,8 @@ const column = (
   render: (_: unknown, report: PlanReportMeta) => render(report),
 });
 
-const PlanCell: React.FC<{ plan?: ProtectionPlan }> = ({ plan }) =>
+// A kept report names the plan it outlived; any other report of a gone plan has no name left.
+const PlanCell: React.FC<{ plan?: ProtectionPlan; keptName?: string }> = ({ plan, keptName }) =>
   plan ? (
     <Link
       to={APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(':name', encodeURIComponent(plan.name))}
@@ -106,8 +112,14 @@ const PlanCell: React.FC<{ plan?: ProtectionPlan }> = ({ plan }) =>
       {plan.name}
     </Link>
   ) : (
-    <span style={mutedText}>{L.DELETED_PLAN}</span>
+    <span style={mutedText}>{keptName ? L.KEPT_PLAN(keptName) : L.DELETED_PLAN}</span>
   );
+
+const planNameOf = (ctx: ColumnContext, report: PlanReportMeta): string =>
+  ctx.planById.get(report.planId)?.name || ctx.keptNameById.get(report.planId) || report.planId;
+
+const newestFirst = (a: PlanReportMeta, b: PlanReportMeta): number =>
+  b.generatedAt.localeCompare(a.generatedAt);
 
 const buildColumns = (
   ctx: ColumnContext,
@@ -115,7 +127,9 @@ const buildColumns = (
 ): TableColumnType<PlanReportMeta>[] =>
   [
     column('GENERATED_AT', L.COLUMNS.GENERATED_AT, (r) => <TimeAgo date={r.generatedAt} />),
-    column('PLAN', L.COLUMNS.PLAN, (r) => <PlanCell plan={ctx.planById.get(r.planId)} />),
+    column('PLAN', L.COLUMNS.PLAN, (r) => (
+      <PlanCell plan={ctx.planById.get(r.planId)} keptName={ctx.keptNameById.get(r.planId)} />
+    )),
     visible.has('ENVIRONMENT')
       ? column('ENVIRONMENT', L.COLUMNS.ENVIRONMENT, (r) =>
           getCategoryName(ctx.planById.get(r.planId)?.environmentRef ?? '', ctx.environments),
@@ -138,19 +152,27 @@ const buildColumns = (
       ? column('VIOLATIONS', L.COLUMNS.VIOLATIONS, (r) => r.violationsTotal)
       : null,
     column('ACTIONS', '', (r) => (
-      <ReportDownloadButton
-        report={r}
-        planName={ctx.planById.get(r.planId)?.name ?? r.planId}
-        canDownload={ctx.canDownload}
-        downloading={ctx.downloading}
-        onDownload={ctx.onDownload}
-      />
+      <div style={{ display: 'flex', gap: REPORT_ROW_ACTIONS_GAP_PX }}>
+        <ReportDownloadButton
+          report={r}
+          planName={planNameOf(ctx, r)}
+          canDownload={ctx.canDownload}
+          downloading={ctx.downloading}
+          onDownload={ctx.onDownload}
+        />
+        <ReportDeleteButton
+          report={r}
+          onDelete={(report) => ctx.onDelete(report, planNameOf(ctx, r))}
+        />
+      </div>
     )),
   ].filter((c): c is TableColumnType<PlanReportMeta> => c !== null);
 
 const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo(
   ({ plans, plansLoading, plansError, onRetryPlans, tabs, active }) => {
-    const { reports, loading, error, downloading, download, refresh } = useAllPlanReports(active);
+    const { reports, kept, loading, error, downloading, download, refresh } =
+      useAllPlanReports(active);
+    const { requestDelete, modal } = usePlanReportDelete(refresh);
     const users = useSelector((s: RootState) => s.users.users);
     const { environments } = usePlanTaxonomies();
     const canDownload = usePermission(
@@ -166,7 +188,13 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
     const [pageSize, setPageSize] = useState<number>(REPORTS_LIST.PAGE_SIZE);
 
     const planById = useMemo(() => new Map(plans.map((p) => [p.id, p])), [plans]);
-    const generatorIds = useMemo(() => reports.map((report) => report.generatedBy), [reports]);
+    const keptNameById = useMemo(() => new Map(kept.map((k) => [k.planId, k.planName])), [kept]);
+    // Kept reports have their own list, so the newest-N cap of the other one never hides them.
+    const rows = useMemo(
+      () => [...reports, ...kept.flatMap((k) => k.reports)].sort(newestFirst),
+      [reports, kept],
+    );
+    const generatorIds = useMemo(() => rows.map((report) => report.generatedBy), [rows]);
     const usernamesById = useUsernamesByIds(generatorIds, true);
     const resolveUser = useCallback(
       (id: string): string =>
@@ -177,8 +205,8 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
     );
 
     const filtered = useMemo(
-      () => applyReportFilters(reports, filters, search, planById),
-      [reports, filters, search, planById],
+      () => applyReportFilters(rows, filters, search, planById, keptNameById),
+      [rows, filters, search, planById, keptNameById],
     );
     const lastPage = Math.max(1, Math.ceil(filtered.length / pageSize));
     const page = Math.min(currentPage, lastPage);
@@ -209,7 +237,10 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
           key: PPC.FILTER_KEYS.PLAN,
           label: L.FILTER.BY_PLAN,
           type: 'multiSelect',
-          multiSelectOptions: plans.map((p) => ({ value: p.id, label: p.name })),
+          multiSelectOptions: [
+            ...plans.map((p) => ({ value: p.id, label: p.name })),
+            ...kept.map((k) => ({ value: k.planId, label: L.KEPT_PLAN(k.planName || k.planId) })),
+          ],
         },
         {
           key: PPC.FILTER_KEYS.ENVIRONMENT,
@@ -227,16 +258,35 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
           })),
         },
       ],
-      [plans, environments],
+      [plans, kept, environments],
     );
 
     const columns = useMemo(
       () =>
         buildColumns(
-          { planById, environments, resolveUser, canDownload, downloading, onDownload: download },
+          {
+            planById,
+            keptNameById,
+            environments,
+            resolveUser,
+            canDownload,
+            downloading,
+            onDownload: download,
+            onDelete: requestDelete,
+          },
           fittingColumns(width),
         ),
-      [planById, environments, resolveUser, canDownload, downloading, download, width],
+      [
+        planById,
+        keptNameById,
+        environments,
+        resolveUser,
+        canDownload,
+        downloading,
+        download,
+        requestDelete,
+        width,
+      ],
     );
 
     const truncated = reports.length >= REPORTS_LIST.LIMIT;
@@ -293,7 +343,7 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
         },
         pageSizeOptions: [...REPORTS_LIST.PAGE_SIZE_OPTIONS],
       },
-      empty: <Empty description={reports.length === 0 ? L.EMPTY : L.NO_MATCH} />,
+      empty: <Empty description={rows.length === 0 ? L.EMPTY : L.NO_MATCH} />,
       loading: loading || (plansLoading && plans.length === 0),
       error: error ?? plansError,
       onRetry: () => {
@@ -317,6 +367,7 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
           }}
           onReset={() => applyFilters({})}
         />
+        {modal}
       </>
     );
   },

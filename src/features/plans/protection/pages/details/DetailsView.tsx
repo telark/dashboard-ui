@@ -6,6 +6,7 @@ import LoadingDetailsView from '../../../../../components/display/views/LoadingD
 import ErrorView from '../../../../../components/display/views/ErrorView';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
 import ReactivatePlanModal from '../../components/shared/ReactivatePlanModal';
+import DeletePlanModal from '../../components/shared/DeletePlanModal';
 import ApprovalDecisionModal from '../../components/shared/ApprovalDecisionModal';
 import { APP_ROUTES } from '../../../../../constants';
 import { PageContainer } from '../../../../../components/shared';
@@ -88,20 +89,23 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
     }
   }, [details, dispatch, message]);
 
-  const handleConfirmDelete = useCallback(async () => {
-    if (!details) return;
-    setDeleting(true);
-    try {
-      await dispatch(deletePlanThunk({ planId: details.id })).unwrap();
-      message.success(PPC.LABELS.ACTIONS.DELETE_SUCCESS(details.name));
-      setDeleteModalOpen(false);
-      navigate(APP_ROUTES.PROTECTION_PLANS);
-    } catch (err: unknown) {
-      message.error(typeof err === 'string' && err ? err : PPC.LABELS.ACTIONS.DELETE_ERROR);
-    } finally {
-      setDeleting(false);
-    }
-  }, [details, dispatch, message, navigate]);
+  const handleConfirmDelete = useCallback(
+    async (keepReports: boolean) => {
+      if (!details) return;
+      setDeleting(true);
+      try {
+        await dispatch(deletePlanThunk({ planId: details.id, keepReports })).unwrap();
+        message.success(PPC.LABELS.ACTIONS.DELETE_SUCCESS(details.name));
+        setDeleteModalOpen(false);
+        navigate(APP_ROUTES.PROTECTION_PLANS);
+      } catch (err: unknown) {
+        message.error(typeof err === 'string' && err ? err : PPC.LABELS.ACTIONS.DELETE_ERROR);
+      } finally {
+        setDeleting(false);
+      }
+    },
+    [details, dispatch, message, navigate],
+  );
 
   const handleConfirmReactivate = useCallback(async () => {
     if (!details) return;
@@ -216,22 +220,17 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
         loading={canceling}
         getContainer={() => document.body}
       />
-      <ActionConfirmModal
+      <DeletePlanModal
         open={deleteModalOpen}
+        planName={details.name}
+        loading={deleting}
         onClose={() => setDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
-        title={PPC.LABELS.ACTIONS.DELETE_MODAL_TITLE}
-        action="delete"
-        resourceName={details.name}
-        resourceType="protection plan"
-        note={PPC.LABELS.ACTIONS.DELETE_MODAL_NOTE}
-        confirmText={PPC.LABELS.ACTIONS.DELETE_MODAL_OK}
-        loading={deleting}
-        getContainer={() => document.body}
       />
       <ReactivatePlanModal
         open={reactivateModalOpen}
         planName={details.name}
+        repeating={details.timeMode === 'repeating'}
         loading={reactivating}
         onClose={() => setReactivateModalOpen(false)}
         onConfirm={handleConfirmReactivate}

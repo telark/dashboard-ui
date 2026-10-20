@@ -30,12 +30,13 @@ import {
   EMPTY_VALUE,
   MICRO_LABEL_STYLE,
   STATUS_COLORS,
+  TAG_CLASS,
   TRUNCATE_STYLE,
   getCardMenuButtonStyle,
   getCardShellStyle,
   getPillColor,
 } from '../../../../../../constants';
-import type { PlanApprovalDecision, ProtectionPlan } from '../../../models';
+import type { PlanApprovalDecision, PlanTimeRange, ProtectionPlan } from '../../../models';
 import type { FormValues } from '../../create';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
@@ -57,6 +58,7 @@ import { getCurrentUser } from '../../../../../auth/utils';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../../auth/hooks';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
 import ReactivatePlanModal from '../../shared/ReactivatePlanModal';
+import DeletePlanModal from '../../shared/DeletePlanModal';
 import ApprovalDecisionModal from '../../shared/ApprovalDecisionModal';
 import DuplicatePlanPanel from '../../panels/DuplicatePlanPanel';
 import EditPlanPanel from '../../panels/EditPlanPanel';
@@ -68,9 +70,11 @@ import {
   getGenerateReportTooltip,
   isReactivateExpired,
   isReportNotStarted,
+  liveWindow,
   permissionTooltip,
   planPhaseLabel,
 } from '../../../utils/phaseRules';
+import { formatRepeatRule } from '../../../utils/repeatRule';
 import { usePlanTaxonomyLists } from '../../../hooks/usePlanTaxonomies';
 import { useGeneratePlanReport } from '../../../hooks/usePlanReports';
 
@@ -87,6 +91,7 @@ const CARD_LABELS = PPC.LABELS.CARD;
 const BLANK = '';
 
 interface PlanWindow {
+  label: string;
   range: string;
   percent: number;
   /** A permanent plan has no window to run down, so it never renders a rail. */
@@ -94,36 +99,54 @@ interface PlanWindow {
   remaining: React.ReactNode;
 }
 
-const buildWindow = (plan: ProtectionPlan): PlanWindow => {
-  const timeRange = plan.timeMode === 'time_range' ? plan.timeRange : undefined;
-  if (!timeRange?.startAt || !timeRange.endAt) {
-    const permanent = plan.timeMode === 'permanent';
-    // A permanent plan has no window, so the range slot stays empty rather than
-    // repeating "Always on" both beside the label and under it.
-    return {
-      range: permanent ? BLANK : CARD_LABELS.NO_SCHEDULE,
-      percent: 0,
-      showRail: false,
-      remaining: permanent ? CARD_LABELS.PERMANENT_RANGE : CARD_LABELS.NO_SCHEDULE,
-    };
-  }
+// A permanent plan, a stopped series (shown by its rule) or a range never set: nothing to run down.
+const staticWindow = (plan: ProtectionPlan): PlanWindow => {
+  const permanent = plan.timeMode === 'permanent';
+  const rule =
+    plan.timeMode === 'repeating' && plan.repeat ? formatRepeatRule(plan.repeat) : undefined;
+  // A permanent plan has no window, so the range slot stays empty rather than
+  // repeating "Always on" both beside the label and under it.
+  return {
+    label: permanent ? CARD_LABELS.PERMANENT_LABEL : CARD_LABELS.WINDOW_LABEL,
+    range: permanent || rule ? BLANK : CARD_LABELS.NO_SCHEDULE,
+    percent: 0,
+    showRail: false,
+    remaining: rule ?? (permanent ? CARD_LABELS.PERMANENT_RANGE : CARD_LABELS.NO_SCHEDULE),
+  };
+};
 
+const windowLabel = (plan: ProtectionPlan): string => {
+  if (plan.timeMode !== 'repeating') return CARD_LABELS.WINDOW_LABEL;
+  return plan.phase === 'active' ? CARD_LABELS.CURRENT_WINDOW_LABEL : CARD_LABELS.NEXT_WINDOW_LABEL;
+};
+
+const countdown = ({ startAt, endAt }: PlanTimeRange): React.ReactNode =>
+  Date.now() < toTimestamp(startAt) ? (
+    <TimeRemaining
+      date={startAt}
+      prefix={PPC.LABELS.PHASE_INFO.STARTS_IN_PREFIX}
+      endedPrefix={PPC.LABELS.PHASE_INFO.STARTED_PREFIX}
+    />
+  ) : (
+    <TimeRemaining date={endAt} prefix={PPC.LABELS.PHASE_INFO.ENDS_IN_PREFIX} />
+  );
+
+const buildWindow = (plan: ProtectionPlan): PlanWindow => {
+  const timeRange = plan.timeMode === 'time_range' ? plan.timeRange : liveWindow(plan);
+  if (!timeRange?.startAt || !timeRange.endAt) return staticWindow(plan);
   const start = toTimestamp(timeRange.startAt);
   const end = toTimestamp(timeRange.endAt);
   const elapsed = end > start ? ((Date.now() - start) / (end - start)) * 100 : 100;
+  const awaitingApproval = plan.timeMode === 'repeating' && plan.phase === 'pending_approval';
 
   return {
+    label: windowLabel(plan),
     range: `${formatDateTime(timeRange.startAt, CARD_LABELS.WINDOW_TIME_FORMAT)}${
       CARD_LABELS.RANGE_SEPARATOR
     }${formatDateTime(timeRange.endAt, CARD_LABELS.WINDOW_TIME_FORMAT)}`,
     percent: Math.min(Math.max(elapsed, 0), 100),
-    showRail: true,
-    remaining:
-      Date.now() < start ? (
-        <TimeRemaining date={timeRange.startAt} prefix={PPC.LABELS.PHASE_INFO.STARTS_IN_PREFIX} />
-      ) : (
-        <TimeRemaining date={timeRange.endAt} prefix={PPC.LABELS.PHASE_INFO.ENDS_IN_PREFIX} />
-      ),
+    showRail: !awaitingApproval,
+    remaining: awaitingApproval ? CARD_LABELS.OPENS_ONCE_APPROVED : countdown(timeRange),
   };
 };
 
@@ -230,10 +253,11 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
   const isPermanent = plan.timeMode === 'permanent';
   const planWindow = buildWindow(plan);
   const targets = buildTargets(plan);
-  const { environments, tags } = usePlanTaxonomyLists();
+  const { kinds, environments, tags } = usePlanTaxonomyLists();
+  const kindName = kinds.find((c) => c.id === plan.kindRef)?.name;
   const environmentName = environments.find((c) => c.id === plan.environmentRef)?.name;
   const classification = [
-    environmentName,
+    kindName,
     ...(plan.tagRefs ?? []).map((id) => tags.find((c) => c.id === id)?.name),
   ].filter((name): name is string => Boolean(name));
   const policyLabels = (plan.policies ?? []).map(
@@ -306,18 +330,21 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
     [decisionModal, dispatch, message, requestedAt, plan.id, plan.name],
   );
 
-  const handleDelete = useCallback(async () => {
-    setDeleting(true);
-    try {
-      await dispatch(deletePlanThunk({ planId: plan.id })).unwrap();
-      message.success(PPC.LABELS.ACTIONS.DELETE_SUCCESS(plan.name));
-      setDeleteModalOpen(false);
-    } catch (err: unknown) {
-      message.error(typeof err === 'string' && err ? err : PPC.LABELS.ACTIONS.DELETE_ERROR);
-    } finally {
-      setDeleting(false);
-    }
-  }, [dispatch, message, plan.id, plan.name]);
+  const handleDelete = useCallback(
+    async (keepReports: boolean) => {
+      setDeleting(true);
+      try {
+        await dispatch(deletePlanThunk({ planId: plan.id, keepReports })).unwrap();
+        message.success(PPC.LABELS.ACTIONS.DELETE_SUCCESS(plan.name));
+        setDeleteModalOpen(false);
+      } catch (err: unknown) {
+        message.error(typeof err === 'string' && err ? err : PPC.LABELS.ACTIONS.DELETE_ERROR);
+      } finally {
+        setDeleting(false);
+      }
+    },
+    [dispatch, message, plan.id, plan.name],
+  );
 
   const handleDuplicate = useCallback(() => {
     setDuplicatePanelOpen(true);
@@ -454,7 +481,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
               {plan.name}
             </span>
             {/* Keyed on the plan's ids, not the resolved names, so the row does not pop in when the lists load. */}
-            {(plan.environmentRef || (plan.tagRefs?.length ?? 0) > 0) && (
+            {(plan.kindRef || (plan.tagRefs?.length ?? 0) > 0) && (
               <span style={{ ...CARD_TAG_ROW_STYLE, minHeight: CARD_LAYOUT.TAG_ROW_MIN_HEIGHT_PX }}>
                 <CardTagList tags={classification} max={PLAN_CARD_MAX_TAGS} />
               </span>
@@ -463,6 +490,11 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
         </div>
 
         <div style={CARD_ASIDE_STYLE}>
+          {environmentName && (
+            <Tag className={`${TAG_CLASS.AS_IS} ${TAG_CLASS.TRUNCATE}`} title={environmentName}>
+              {environmentName}
+            </Tag>
+          )}
           <Tag color={getPillColor(phaseAccent)}>{phaseLabel}</Tag>
           {menuItems.length > 0 && (
             <Dropdown
@@ -508,9 +540,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
             gap: 12,
           }}
         >
-          <span style={MICRO_LABEL_STYLE}>
-            {isPermanent ? CARD_LABELS.PERMANENT_LABEL : CARD_LABELS.WINDOW_LABEL}
-          </span>
+          <span style={MICRO_LABEL_STYLE}>{planWindow.label}</span>
           <span
             style={{
               ...TRUNCATE_STYLE,
@@ -604,18 +634,12 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
       </div>
 
       <div style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
-        <ActionConfirmModal
+        <DeletePlanModal
           open={deleteModalOpen}
+          planName={plan.name}
+          loading={deleting}
           onClose={() => setDeleteModalOpen(false)}
           onConfirm={handleDelete}
-          title={PPC.LABELS.ACTIONS.DELETE_MODAL_TITLE}
-          action="delete"
-          resourceName={plan.name}
-          resourceType="protection plan"
-          note={PPC.LABELS.ACTIONS.DELETE_MODAL_NOTE}
-          confirmText={PPC.LABELS.ACTIONS.DELETE_MODAL_OK}
-          loading={deleting}
-          getContainer={() => document.body}
         />
         <ActionConfirmModal
           open={cancelModalOpen}
@@ -632,6 +656,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
         <ReactivatePlanModal
           open={reactivateModalOpen}
           planName={plan.name}
+          repeating={plan.timeMode === 'repeating'}
           loading={reactivating}
           onClose={() => setReactivateModalOpen(false)}
           onConfirm={handleReactivate}

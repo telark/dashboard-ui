@@ -16,9 +16,12 @@ import { useUsernamesByIds } from '../../../../../hooks/useUsernamesByIds';
 import type { RootState } from '../../../../../store';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
+  REPORT_ROW_ACTIONS_GAP_PX,
   REPORT_SYSTEM_USER_ID,
 } from '../../constants/protectionPlans';
 import ReportDownloadButton from '../shared/ReportDownloadButton';
+import ReportDeleteButton from '../shared/ReportDeleteButton';
+import { usePlanReportDelete } from '../../hooks/usePlanReportDelete';
 import type { PlanPhase, PlanReportFormat, PlanReportMeta } from '../../models';
 
 interface ReportsSectionProps {
@@ -27,17 +30,19 @@ interface ReportsSectionProps {
   error: string | null;
   downloading: string | null;
   phase: PlanPhase;
+  repeating: boolean;
   planName: string;
   users: RootState['users']['users'];
   canDownload: boolean;
   onDownload: (report: PlanReportMeta, format: PlanReportFormat, filename: string) => void;
+  onDeleted: () => void;
 }
 
 const LABELS = PPC.LABELS.REPORTS;
 
-const emptyMessage = (phase: PlanPhase): string => {
+const emptyMessage = (phase: PlanPhase, repeating: boolean): string => {
   if (phase === 'draft' || phase === 'scheduled') return LABELS.EMPTY_DRAFT;
-  if (phase === 'active') return LABELS.EMPTY_ACTIVE;
+  if (phase === 'active') return repeating ? LABELS.EMPTY_ACTIVE_SERIES : LABELS.EMPTY_ACTIVE;
   return LABELS.EMPTY_ENDED;
 };
 
@@ -47,12 +52,15 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
   error,
   downloading,
   phase,
+  repeating,
   planName,
   users,
   canDownload,
   onDownload,
+  onDeleted,
 }) => {
   const reports = data ?? [];
+  const { requestDelete, modal } = usePlanReportDelete(onDeleted);
   const generatorIds = useMemo(() => (data ?? []).map((report) => report.generatedBy), [data]);
   const usernamesById = useUsernamesByIds(generatorIds, true);
 
@@ -64,22 +72,26 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
     );
   }
 
+  // The dialog stays mounted once the last report goes, so it closes as it opened.
   if (error || reports.length === 0) {
     return (
-      <Empty
-        className={EMPTY_CLASS.SECTION}
-        image={<FileTextOutlined />}
-        description={
-          error ? (
-            <Typography.Text>{error}</Typography.Text>
-          ) : (
-            <>
-              <Typography.Title level={4}>{LABELS.EMPTY_TITLE}</Typography.Title>
-              <Typography.Text>{emptyMessage(phase)}</Typography.Text>
-            </>
-          )
-        }
-      />
+      <>
+        <Empty
+          className={EMPTY_CLASS.SECTION}
+          image={<FileTextOutlined />}
+          description={
+            error ? (
+              <Typography.Text>{error}</Typography.Text>
+            ) : (
+              <>
+                <Typography.Title level={3}>{LABELS.EMPTY_TITLE}</Typography.Title>
+                <Typography.Text>{emptyMessage(phase, repeating)}</Typography.Text>
+              </>
+            )
+          }
+        />
+        {modal}
+      </>
     );
   }
 
@@ -122,16 +134,20 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
               </span>
               {report.truncated && <Tag className={TAG_CLASS.AS_IS}>{LABELS.TRUNCATED}</Tag>}
             </div>
-            <ReportDownloadButton
-              report={report}
-              planName={planName}
-              canDownload={canDownload}
-              downloading={downloading}
-              onDownload={onDownload}
-            />
+            <div style={{ display: 'flex', gap: REPORT_ROW_ACTIONS_GAP_PX }}>
+              <ReportDownloadButton
+                report={report}
+                planName={planName}
+                canDownload={canDownload}
+                downloading={downloading}
+                onDownload={onDownload}
+              />
+              <ReportDeleteButton report={report} onDelete={(r) => requestDelete(r, planName)} />
+            </div>
           </div>
         );
       })}
+      {modal}
     </div>
   );
 };
