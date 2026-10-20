@@ -12,7 +12,16 @@ interface DiscoveryStatusBarProps {
 const DiscoveryStatusBar: React.FC<DiscoveryStatusBarProps> = ({ onCycleComplete }) => {
   const status = useDiscoveryStatus(onCycleComplete);
 
-  if (!status) return <div style={{ minHeight: DISCOVERY_STATUS_BAR.MIN_HEIGHT_PX }} />;
+  // Both branches render the same live region node, so its first text is announced too.
+  if (!status) {
+    return (
+      <div
+        role="status"
+        aria-live="polite"
+        style={{ minHeight: DISCOVERY_STATUS_BAR.MIN_HEIGHT_PX }}
+      />
+    );
+  }
 
   const text = status.inProgress
     ? APPLICATIONS_UI.DISCOVERY_IN_PROGRESS(status.remaining)
@@ -20,6 +29,8 @@ const DiscoveryStatusBar: React.FC<DiscoveryStatusBarProps> = ({ onCycleComplete
 
   return (
     <div
+      role="status"
+      aria-live="polite"
       data-testid="discovery-status"
       style={{
         display: 'flex',

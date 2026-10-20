@@ -14,6 +14,7 @@ import {
   DEFAULT_COLORS,
   SELECT_THEME,
   TAG_CLASS,
+  TAG_STYLES,
   TAG_THEME,
   APP_CONFIGS,
   APP_ROUTES,
@@ -24,7 +25,7 @@ import {
 } from './constants';
 import AppRoutes from './routes/AppRoutes';
 import { useMediaQuery } from './hooks/layout';
-import { hasSessionToken, useSessionExpirationCheck } from './features/auth/utils';
+import { isSignedIn, useSessionExpirationCheck } from './features/auth/utils';
 import {
   ACTION_PERMISSIONS,
   useCrossTabLogout,
@@ -32,6 +33,7 @@ import {
   usePermission,
 } from './features/auth/hooks';
 import { ensureGlobalConfigThunk } from './features/globalconfig/store';
+import { AttentionInsightsProvider } from './features/insights/hooks';
 import type { AppDispatch } from './store';
 
 message.config({ top: APP_CONFIGS.MESSAGE.TOP, maxCount: APP_CONFIGS.MESSAGE.MAX_COUNT });
@@ -49,9 +51,11 @@ const AppContent: React.FC = () => {
   const isAuthRoute =
     location.pathname === APP_ROUTES.LOGIN ||
     location.pathname === APP_ROUTES.REGISTER ||
-    location.pathname === APP_ROUTES.GOOGLE_CALLBACK;
-  const isAuthenticated = hasSessionToken();
+    location.pathname === APP_ROUTES.GOOGLE_CALLBACK ||
+    location.pathname === APP_ROUTES.BREAK_GLASS;
+  const isAuthenticated = isSignedIn();
   const [showSessionExpiredModal, setShowSessionExpiredModal] = useState(false);
+  const [duplicateSessionCookie, setDuplicateSessionCookie] = useState(false);
   const [showAccountSuspendedModal, setShowAccountSuspendedModal] = useState(false);
   // A suspended session is over: its checks and polling stop, and the modal's sign-out is the only way on.
   const isSessionLive = isAuthenticated && !showAccountSuspendedModal;
@@ -60,7 +64,10 @@ const AppContent: React.FC = () => {
   useSessionExpirationCheck({
     isAuthenticated: isSessionLive,
     isAuthRoute,
-    onSessionExpired: () => setShowSessionExpiredModal(true),
+    onSessionExpired: (duplicateCookie) => {
+      setDuplicateSessionCookie(duplicateCookie);
+      setShowSessionExpiredModal(true);
+    },
     onAccountSuspended: () => setShowAccountSuspendedModal(true),
   });
 
@@ -109,10 +116,13 @@ const AppContent: React.FC = () => {
 
   return (
     <AntdApp>
-      {renderMainContent()}
+      <AttentionInsightsProvider active={isSessionLive && !isAuthRoute}>
+        {renderMainContent()}
+      </AttentionInsightsProvider>
       {isAuthenticated && !isAuthRoute ? <PanelThemePrewarm /> : null}
       <SessionExpiredModal
         open={showSessionExpiredModal}
+        duplicateCookie={duplicateSessionCookie}
         onClose={() => setShowSessionExpiredModal(false)}
       />
       <AccountSuspendedModal
@@ -130,7 +140,7 @@ const App: React.FC = () => {
         // currentColor follows the button text: the default green vanishes on a primary button.
         button={{ loadingIcon: <FancySpinner size={CONTROL_FONT_SIZE} color="currentColor" /> }}
         select={{ loadingIcon: <FancySpinner size={12} /> }}
-        tag={{ variant: 'solid', className: TAG_CLASS.PILL }}
+        tag={{ variant: 'solid', className: TAG_CLASS.PILL, styles: TAG_STYLES }}
         theme={{
           cssVar: { key: 'telark' },
           hashed: false,

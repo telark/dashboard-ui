@@ -65,7 +65,7 @@ const DashboardBox: React.FC<DashboardBoxProps> = memo(
               <Icon />
             </span>
           ) : null}
-          <h3
+          <h2
             title={title}
             style={{
               ...S.ELLIPSIS,
@@ -79,7 +79,7 @@ const DashboardBox: React.FC<DashboardBoxProps> = memo(
             {count && !noAccess ? (
               <span style={{ ...S.MUTED_TEXT, marginLeft: L.ROW_GAP_PX }}>{count}</span>
             ) : null}
-          </h3>
+          </h2>
         </div>
         {viewAllTo && !noAccess ? <ViewAllLink to={viewAllTo} /> : null}
       </header>

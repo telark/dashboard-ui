@@ -10,14 +10,27 @@ import {
 import type { DashboardRowItem } from '../../models';
 import StatusDot from './StatusDot';
 
-const DashboardRow: React.FC<Omit<DashboardRowItem, 'key'>> = memo(
-  ({ dotColor, title, meta, time, to }) => {
+interface DashboardRowProps extends Omit<DashboardRowItem, 'key'> {
+  // Meta and time on the title's line, for a box that also shows a headline.
+  inline?: boolean;
+}
+
+const DashboardRow: React.FC<DashboardRowProps> = memo(
+  ({ dotColor, title, meta, time, to, inline = false }) => {
     const navigate = useNavigate();
     const [hovered, setHovered] = useState(false);
     const interactive = Boolean(to);
     const open = () => {
       if (to) navigate(to);
     };
+    const details =
+      meta || time ? (
+        <>
+          {meta}
+          {meta && time ? T.META_SEPARATOR : null}
+          {time ? <TimeAgo date={time} formatString={TIME_FORMATS.DATE_TIME} /> : null}
+        </>
+      ) : null;
 
     return (
       <div
@@ -47,6 +60,7 @@ const DashboardRow: React.FC<Omit<DashboardRowItem, 'key'>> = memo(
         <StatusDot color={dotColor} />
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
+            title={inline ? title : undefined}
             style={{
               ...S.ELLIPSIS,
               fontSize: L.ROW_TITLE_FONT_SIZE_PX,
@@ -55,13 +69,15 @@ const DashboardRow: React.FC<Omit<DashboardRowItem, 'key'>> = memo(
             }}
           >
             {title}
+            {inline && details ? (
+              <span style={{ ...S.MUTED_TEXT, fontWeight: 400 }}>
+                {T.META_SEPARATOR}
+                {details}
+              </span>
+            ) : null}
           </div>
-          {meta || time ? (
-            <div style={{ ...S.MUTED_TEXT, ...S.ELLIPSIS }}>
-              {meta}
-              {meta && time ? T.META_SEPARATOR : null}
-              {time ? <TimeAgo date={time} formatString={TIME_FORMATS.DATE_TIME} /> : null}
-            </div>
+          {!inline && details ? (
+            <div style={{ ...S.MUTED_TEXT, ...S.ELLIPSIS }}>{details}</div>
           ) : null}
         </div>
       </div>

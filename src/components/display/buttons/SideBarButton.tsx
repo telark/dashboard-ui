@@ -1,8 +1,9 @@
 import React, { useState, useCallback, memo } from 'react';
-import { Tooltip } from 'antd';
+import { Badge, Tooltip } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_COLORS } from '../../../constants';
+import { DEFAULT_COLORS, BUTTON_CONFIGS, BUTTON_COLORS, SIDEBAR_LAYOUT } from '../../../constants';
 import { ButtonInterface } from '../../../interfaces/shared';
+import { useMediaQuery } from '../../../hooks/layout';
 
 // The only part that reads the location (useNavigate does), so a navigation re-renders this plain
 // button instead of every SidebarButton and its tooltip.
@@ -14,10 +15,23 @@ const NavButton: React.FC<React.ComponentProps<'button'> & { route: string }> = 
   return <button type="button" {...props} onClick={() => navigate(route)} />;
 };
 
-const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = memo(
-  ({ text, icon, active, route, isCollapsed = false }) => {
+interface SidebarButtonProps extends ButtonInterface {
+  isCollapsed?: boolean;
+  // A count shown after the label (over the icon when collapsed); badgeLabel names it for screen readers.
+  badge?: number;
+  badgeLabel?: string;
+  // Shown under the icon on the forced phone rail, where touch can't reveal the tooltip.
+  railLabel?: string;
+}
+
+const SidebarButton: React.FC<SidebarButtonProps> = memo(
+  ({ text, icon, active, route, isCollapsed = false, badge = 0, badgeLabel, railLabel }) => {
     const [isHovered, setIsHovered] = useState(false);
     const SB = BUTTON_CONFIGS.SIDEBAR_BUTTON;
+    const forcedRail = useMediaQuery(SIDEBAR_LAYOUT.FORCE_COLLAPSE_QUERY);
+    const labeled = isCollapsed && forcedRail && Boolean(railLabel);
+    const collapsedMarginX = labeled ? SB.RAIL.MARGIN_X : SB.COLLAPSED_MARGIN_X;
+    const collapsedPadding = labeled ? SB.RAIL.PADDING : 0;
 
     const isActive = Boolean(active);
     const isActiveOrHovered = isActive || isHovered;
@@ -40,6 +54,9 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = mem
 
     const handleMouseEnter = useCallback(() => setIsHovered(true), []);
     const handleMouseLeave = useCallback(() => setIsHovered(false), []);
+    const badged = badge > 0;
+    let accessibleName = isCollapsed ? String(text) : undefined;
+    if (badged && badgeLabel) accessibleName = `${text}, ${badgeLabel}`;
 
     const button = (
       <NavButton
@@ -47,18 +64,18 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = mem
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         aria-current={isActive ? 'page' : undefined}
-        aria-label={isCollapsed ? String(text) : undefined}
+        aria-label={accessibleName}
         style={{
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: labeled ? 'column' : 'row',
           alignItems: 'center',
           justifyContent: isCollapsed ? 'center' : 'flex-start',
           textAlign: 'left',
-          gap: SB.GAP,
-          height: SB.HEIGHT,
-          padding: isCollapsed ? 0 : SB.PADDING,
-          marginLeft: isCollapsed ? SB.COLLAPSED_MARGIN_X : SB.MARGIN_LEFT,
-          marginRight: isCollapsed ? SB.COLLAPSED_MARGIN_X : SB.MARGIN_RIGHT,
+          gap: labeled ? SB.RAIL.GAP : SB.GAP,
+          height: labeled ? 'auto' : SB.HEIGHT,
+          padding: isCollapsed ? collapsedPadding : SB.PADDING,
+          marginLeft: isCollapsed ? collapsedMarginX : SB.MARGIN_LEFT,
+          marginRight: isCollapsed ? collapsedMarginX : SB.MARGIN_RIGHT,
           border: 'none',
           borderRadius: SB.BORDER_RADIUS,
           backgroundColor: isActiveOrHovered ? DEFAULT_COLORS.HOVER_BG : 'transparent',
@@ -70,7 +87,13 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = mem
           boxSizing: 'border-box',
         }}
       >
-        {coloredIcon}
+        {badged && isCollapsed ? (
+          <Badge count={badge} size="small" overflowCount={9}>
+            {coloredIcon}
+          </Badge>
+        ) : (
+          coloredIcon
+        )}
         {!isCollapsed && (
           <span
             style={{
@@ -88,6 +111,23 @@ const SidebarButton: React.FC<ButtonInterface & { isCollapsed?: boolean }> = mem
             {text}
           </span>
         )}
+        {badged && !isCollapsed ? <Badge count={badge} overflowCount={99} /> : null}
+        {labeled ? (
+          <span
+            style={{
+              maxWidth: '100%',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              fontSize: SB.RAIL.LABEL_FONT_SIZE,
+              lineHeight: SB.RAIL.LABEL_LINE_HEIGHT,
+              color: textColor,
+              transition: 'color 150ms ease',
+            }}
+          >
+            {railLabel}
+          </span>
+        ) : null}
       </NavButton>
     );
 

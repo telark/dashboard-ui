@@ -1,6 +1,7 @@
-import { APP_ROUTES, DEFAULT_COLORS, STATUS_COLORS } from '../../../constants';
+import { APP_ROUTE_PARAMS, APP_ROUTES, DEFAULT_COLORS, STATUS_COLORS } from '../../../constants';
 import type { Application } from '../../applications/models';
 import { getApplicationHealthAccentColor } from '../../applications/utils/healthVisual';
+import { INSIGHT_SEVERITY_LABELS, insightRowKey, type InsightRow } from '../../insights';
 import type { ProtectionPlan } from '../../plans/protection/models';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../plans/protection/constants/protectionPlans';
 import { HOME_DASHBOARD_TEXTS as T } from '../constants/dashboard';
@@ -64,6 +65,15 @@ export const recentChangeRow = (app: Application): DashboardRowItem => {
     to: applicationPath(app),
   };
 };
+
+export const incidentRow = (row: InsightRow): DashboardRowItem => ({
+  key: insightRowKey(row),
+  dotColor: STATUS_COLORS.INSIGHT_SEVERITY[row.severity],
+  title: row.title,
+  meta: INSIGHT_SEVERITY_LABELS[row.severity],
+  time: row.lastSeenAt,
+  to: `${APP_ROUTES.INSIGHTS}?${APP_ROUTE_PARAMS.INSIGHT}=${encodeURIComponent(row.id)}`,
+});
 
 export const planAttentionRow = (plan: ProtectionPlan): DashboardRowItem => ({
   key: plan.id,

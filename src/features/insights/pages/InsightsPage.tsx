@@ -8,6 +8,7 @@ import { SetupReviewLine } from '../components/RunLine';
 import { INSIGHTS_ERROR_MESSAGES } from '../constants/errors';
 import { CLUSTER_INSIGHTS } from '../constants/insights';
 import { useClusterInsights } from '../hooks/useClusterInsights';
+import { OPEN_INSIGHT_STATES } from '../hooks/useAttentionInsights';
 import { validApp } from '../utils/view';
 import type { ClusterInsightsQuery, InsightsTab } from '../models';
 
@@ -20,7 +21,12 @@ const InsightsPage: React.FC = () => {
   // One row is enough: the tab labels only read the open counts per category, of the same
   // application as the tabs when ?app= filters them.
   const countsQuery: ClusterInsightsQuery = useMemo(
-    () => ({ page: 1, pageSize: 1, app: validApp(app) ? [app] : undefined }),
+    () => ({
+      page: 1,
+      pageSize: 1,
+      state: OPEN_INSIGHT_STATES,
+      app: validApp(app) ? [app] : undefined,
+    }),
     [app],
   );
   const {

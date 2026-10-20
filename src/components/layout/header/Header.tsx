@@ -1,8 +1,10 @@
 import React from 'react';
+import { Button, Tooltip } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { NotificationBell } from '../../../features/notifications/components';
 import SidebarToggleButton from './SidebarToggleButton';
-import { APP_ROUTES, DEFAULT_COLORS, HEADER_LAYOUT } from '../../../constants';
+import { APP_ROUTES, DEFAULT_COLORS, DOCS_URL, HEADER_LAYOUT } from '../../../constants';
 
 const Header: React.FC = () => {
   return (
@@ -48,7 +50,18 @@ const Header: React.FC = () => {
         </Link>
         <SidebarToggleButton />
       </div>
-      <div style={{ marginRight: '20px' }}>
+      <div style={{ marginRight: '20px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <Tooltip title={HEADER_LAYOUT.DOCS_LABEL}>
+          <Button
+            type="text"
+            shape="circle"
+            icon={<QuestionCircleOutlined style={{ fontSize: 18 }} />}
+            href={DOCS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={HEADER_LAYOUT.DOCS_LABEL}
+          />
+        </Tooltip>
         <NotificationBell />
       </div>
     </div>

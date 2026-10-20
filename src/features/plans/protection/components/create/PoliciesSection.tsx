@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, Form, Select, Typography } from 'antd';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, DOCS_LINKS } from '../../../../../constants';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
   POLICY_CHIP_LABEL,
@@ -49,6 +49,15 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
             label={FORM.MODE_LABEL}
             style={{ marginBottom: 0 }}
             className={FORM_ITEM_CLASS}
+            extra={
+              <Typography.Link
+                href={DOCS_LINKS.AUDIT_AND_ENFORCE.HREF}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {DOCS_LINKS.AUDIT_AND_ENFORCE.LABEL}
+              </Typography.Link>
+            }
           >
             <Select
               options={PPC.CREATE_PAGE.MODE_OPTIONS}

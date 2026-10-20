@@ -7,7 +7,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useSelector } from 'react-redux';
 import { Link, useSearchParams } from 'react-router-dom';
 import { App as AntdApp, Empty } from 'antd';
 import {
@@ -30,15 +29,7 @@ import type { PageLayoutConfig } from '../../../interfaces/layout/page';
 import { CATEGORIES_CONSTANTS as CC } from '../../access-and-permissions/categories/constants';
 import { useCategories } from '../../access-and-permissions/categories/hooks';
 import { ACTION_PERMISSIONS, usePermission } from '../../auth/hooks/permissions/permissionEngine';
-import { selectGlobalConfigState } from '../../globalconfig/store';
-import {
-  fetchAnalyzerRuntime,
-  fetchClusterInsights,
-  fetchInsightNamespaces,
-  triageInsight,
-} from '../clients/insights';
-import { INSIGHTS_ERROR_MESSAGES } from '../constants/errors';
-import logger from '../../../logging';
+import { fetchClusterInsights, fetchInsightNamespaces, triageInsight } from '../clients/insights';
 import { INSIGHTS_UI } from '../constants/texts';
 import {
   ALL_INSIGHT_STATES,
@@ -52,6 +43,8 @@ import {
   INSIGHTS_TAB_CATEGORY,
   RECOMMENDATION_KINDS,
 } from '../constants/insights';
+import { useAnalyzerEnabled } from '../hooks/useAnalyzerEnabled';
+import { useAutoAnalyze } from '../hooks/useAutoAnalyze';
 import { insightRowKey, useClusterInsights } from '../hooks/useClusterInsights';
 import { triageActions } from '../utils/guidance';
 import { loadGroupBy, saveGroupBy, validApp, workloadNamespaceOf } from '../utils/view';
@@ -205,7 +198,9 @@ const EmptyInsights: React.FC<{
       />
     );
   }
-  if (autoAnalyze === false) {
+  // Setup reviews run on their own schedule whether or not automatic analysis is on.
+  const automatic = category === 'recommendation' ? analyzerEnabled : autoAnalyze;
+  if (automatic === false) {
     return (
       <Empty
         description={
@@ -221,7 +216,7 @@ const EmptyInsights: React.FC<{
     <Empty
       description={
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}>
-          {autoAnalyze && <strong>{P.ALL_CLEAR_TITLE}</strong>}
+          {automatic && <strong>{P.ALL_CLEAR_TITLE}</strong>}
           <span style={mutedStyle}>
             {category === 'incident' ? P.ALL_CLEAR_INCIDENTS : P.ALL_CLEAR_RECOMMENDATIONS}
           </span>
@@ -253,11 +248,8 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
   const appFilter = params.get(CLUSTER_INSIGHTS.APP_PARAM) ?? '';
   const insightId = active ? (params.get(CLUSTER_INSIGHTS.INSIGHT_PARAM) ?? '') : '';
   const canBulk = usePermission(BULK_PERMISSION.scope, BULK_PERMISSION.level, BULK_PERMISSION.deny);
-  const globalConfig = useSelector(selectGlobalConfigState).data;
-  const configEnabled = globalConfig?.ai?.enabled;
-  const autoAnalyze = globalConfig ? Boolean(globalConfig.ai?.autoAnalyze) : undefined;
-  const [runtimeEnabled, setRuntimeEnabled] = useState<boolean>();
-  const analyzerEnabled = configEnabled ?? runtimeEnabled;
+  const autoAnalyze = useAutoAnalyze();
+  const analyzerEnabled = useAnalyzerEnabled();
   const { categories: environments } = useCategories(CC.SCOPES.PLAN_ENVIRONMENTS);
   const { ref, width } = useElementWidth<HTMLDivElement>();
   const [namespaces, setNamespaces] = useState<string[]>([]);
@@ -292,20 +284,6 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
       canceled = true;
     };
   }, []);
-
-  // Without settings read the GlobalConfig is unreadable; the analyzer runtime says whether it is on.
-  useEffect(() => {
-    if (configEnabled !== undefined) return undefined;
-    let canceled = false;
-    fetchAnalyzerRuntime()
-      .then((runtime) => !canceled && setRuntimeEnabled(runtime.enabled))
-      .catch((error: unknown) =>
-        logger.error(INSIGHTS_ERROR_MESSAGES.CLIENT.RUNTIME_FETCH_FAILED, error),
-      );
-    return () => {
-      canceled = true;
-    };
-  }, [configEnabled]);
 
   // One request per pause in typing, not per keystroke.
   useEffect(() => {
@@ -435,6 +413,7 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
   );
   // Keyed on the fitting columns, not the width: a resize that keeps them skips the table.
   const visibleColumns = fittingInsightColumns(width);
+  const phoneWidth = width > 0 && width < CLUSTER_INSIGHTS.PHONE_WIDTH_PX ? width : 0;
   const columns = useMemo(
     () =>
       buildInsightColumns({
@@ -444,8 +423,9 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
         activeSortKey: sortKey ?? '',
         onSort,
         renderGroup,
+        phoneWidth,
       }),
-    [category, visibleColumns, environmentNames, sortKey, onSort, renderGroup],
+    [category, visibleColumns, environmentNames, sortKey, onSort, renderGroup, phoneWidth],
   );
 
   // Panel target: the row on screen, or a location learned from a lookup or another finding.
@@ -832,6 +812,7 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
         setSelectedKeys([]);
       },
       pageSizeOptions: [...CLUSTER_INSIGHTS.PAGE_SIZE_OPTIONS],
+      simple: phoneWidth > 0,
     },
     empty,
     loading,

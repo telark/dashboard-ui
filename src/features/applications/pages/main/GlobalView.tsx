@@ -217,7 +217,12 @@ const ApplicationsGlobalView: React.FC = memo(() => {
   }, [anySyncing, dispatch]);
 
   if (loaded && !error && visibleApplications.length === 0) {
-    return <ApplicationsMainEmpty onRefresh={handleLoadApplications} />;
+    return (
+      <ApplicationsMainEmpty
+        excludedCount={applications.length}
+        onCheckAgain={handleLoadApplications}
+      />
+    );
   }
 
   return (
