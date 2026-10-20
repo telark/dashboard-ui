@@ -29,7 +29,7 @@ const SETTINGS_ROUTES = {
   security: `${APP_ROUTES.SETTINGS}/security`,
   aiInsights: `${APP_ROUTES.SETTINGS}/insights`,
   governance: `${APP_ROUTES.SETTINGS}/discovery`,
-  identityProvider: `${APP_ROUTES.SETTINGS}/authentication`,
+  identityProvider: APP_ROUTES.AUTHENTICATION,
   about: `${APP_ROUTES.SETTINGS}/about`,
 } as const;
 
