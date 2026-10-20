@@ -13,6 +13,7 @@ import {
   StopOutlined,
 } from '@ant-design/icons';
 import Toolbar from '../../../../../components/display/toolbar/Toolbar';
+import { DEFAULT_COLORS } from '../../../../../constants';
 import type { ToolbarButtonConfig, ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import { getCurrentUser } from '../../../../auth/utils';
@@ -325,7 +326,25 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
     canGenerateReport,
   ]);
 
-  return <Toolbar config={toolbarConfig} />;
+  // Disabled buttons take no focus, so why the user can't decide is text, not only their tooltip.
+  const decideBlocked = APPROVABLE_PHASES.includes(plan.phase)
+    ? getDecideBlockedTooltip(plan, getCurrentUser()?.id ?? '')
+    : undefined;
+  if (!decideBlocked) return <Toolbar config={toolbarConfig} />;
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        gap: 12,
+      }}
+    >
+      <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>{decideBlocked}</span>
+      <Toolbar config={toolbarConfig} />
+    </div>
+  );
 };
 
 export default ProtectionPlanDetailsToolbar;

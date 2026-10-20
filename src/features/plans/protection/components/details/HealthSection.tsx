@@ -1,23 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Empty, Tag } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { DEFAULT_COLORS, SECTION_LAYOUT, TAG_CLASS } from '../../../../../constants';
 import { FancySpinner } from '../../../../../components/animation';
-import {
-  POLICY_CHIP_LABEL,
-  POLICY_NAME_PREFIX,
-  PROTECTION_PLANS_CONSTANTS as PPC,
-} from '../../constants/protectionPlans';
-import type { AppDispatch } from '../../../../../store';
-import { fetchProtectionPlanTemplatesThunk, selectProtectionPlanTemplates } from '../../store';
-import type {
-  ProtectionPlan,
-  PlanMode,
-  PlanStatusResponse,
-  PlanPolicyStatus,
-  PlanHealthDetail,
-  PlanTemplate,
-} from '../../models';
+import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
+import { selectProtectionPlanTemplates } from '../../store';
+import type { ProtectionPlan, PlanMode, PlanStatusResponse, PlanPolicyStatus } from '../../models';
+import { actsAs, auditsOnly, healthRows, isInForce, policyLabel } from './policyHealth';
 
 interface HealthSectionProps {
   plan: ProtectionPlan;
@@ -26,9 +15,7 @@ interface HealthSectionProps {
   error: string | null;
 }
 
-// The engine reports `Audit`/`Enforce`, the plan `audit`/`enforce`.
-const actsAs = (row: PlanPolicyStatus, mode: PlanMode): boolean =>
-  row.failureAction.toLowerCase() === mode;
+const HD = PPC.LABELS.HEALTH_DETAIL;
 
 const policyDotColor = (row: PlanPolicyStatus, mode: PlanMode): string => {
   if (!row.present) return DEFAULT_COLORS.DANGER;
@@ -36,34 +23,30 @@ const policyDotColor = (row: PlanPolicyStatus, mode: PlanMode): string => {
   return DEFAULT_COLORS.SUCCESS;
 };
 
-// The operation label when the policy name maps to one of the plan's templates, else the raw name.
-const policyLabel = (name: string, planId: string, templates: PlanTemplate[]): string => {
-  const template = templates.find((t) => name.startsWith(POLICY_NAME_PREFIX(planId, t.code)));
-  return (template && POLICY_CHIP_LABEL[template.id]) ?? name;
+const outOfForceReason = (row: PlanPolicyStatus): ((label: string) => string) => {
+  if (!row.present) return HD.MISSING;
+  if (!row.ready) return HD.NOT_ACTIVE;
+  return HD.AUDIT_ONLY;
 };
 
-const yesNo = (value: boolean): string =>
-  value ? PPC.LABELS.HEALTH_DETAIL.YES : PPC.LABELS.HEALTH_DETAIL.NO;
+// The count, then why each protection is not in force (once per template across namespaces).
+const healthSummary = (
+  rows: PlanPolicyStatus[],
+  mode: PlanMode,
+  labelOf: (name: string) => string,
+): string => {
+  const out = rows.filter((row) => !isInForce(row, mode));
+  if (out.length === 0) return HD.ALL_IN_FORCE(rows.length);
+  const reasons = new Set(out.map((row) => outOfForceReason(row)(labelOf(row.name))));
+  return [HD.NOT_IN_FORCE(out.length, rows.length), ...reasons].join(' ');
+};
+
+const yesNo = (value: boolean): string => (value ? HD.YES : HD.NO);
 
 const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, error }) => {
-  const dispatch: AppDispatch = useDispatch();
   const templates = useSelector(selectProtectionPlanTemplates);
-  // Template codes map policy names to operation labels; only the plan forms load them otherwise.
-  useEffect(() => {
-    if (templates.length === 0) void dispatch(fetchProtectionPlanTemplatesThunk());
-  }, [templates.length, dispatch]);
-
-  const rows: PlanPolicyStatus[] = status
-    ? (status.policies ?? [])
-    : (plan.healthDetail ?? []).map((d: PlanHealthDetail) => ({
-        name: d.policyName,
-        namespace: d.namespace,
-        present: d.present,
-        ready: d.ready,
-        failureAction: d.failureAction,
-      }));
-
-  const driftMissing = status?.drift?.missing ?? [];
+  const rows = healthRows(plan, status);
+  const labelOf = (name: string): string => policyLabel(name, plan.id, templates) ?? name;
   const driftUnexpected = status?.drift?.unexpected ?? [];
 
   return (
@@ -75,12 +58,15 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
           <FancySpinner showLabel={false} size={24} />
         </div>
       ) : rows.length === 0 ? (
-        <Empty description={PPC.LABELS.HEALTH_DETAIL.EMPTY} />
+        <Empty description={HD.EMPTY} />
       ) : (
         <div>
+          <div style={{ fontSize: 13, lineHeight: 1.5, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+            {healthSummary(rows, plan.mode, labelOf)}
+          </div>
           {rows.map((row) => {
             const dot = policyDotColor(row, plan.mode);
-            const auditsOnly = plan.mode === 'enforce' && row.present && actsAs(row, 'audit');
+            const label = policyLabel(row.name, plan.id, templates);
             return (
               <div
                 key={`${row.namespace}/${row.name}`}
@@ -116,34 +102,42 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
                         gap: 6,
                       }}
                     >
-                      <span
-                        style={{
-                          fontSize: 13,
-                          fontWeight: 700,
-                          color: DEFAULT_COLORS.TEXT_PRIMARY,
-                          wordBreak: 'break-all',
-                        }}
-                      >
-                        {row.name}
-                      </span>
+                      {/* The operation it refuses, over the engine's policy name. */}
+                      <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                        <span
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            color: DEFAULT_COLORS.TEXT_PRIMARY,
+                            overflowWrap: 'anywhere',
+                          }}
+                        >
+                          {label ?? row.name}
+                        </span>
+                        {label && (
+                          <span
+                            style={{
+                              fontSize: 12,
+                              color: DEFAULT_COLORS.TEXT_MUTED,
+                              overflowWrap: 'anywhere',
+                            }}
+                          >
+                            {row.name}
+                          </span>
+                        )}
+                      </div>
                       {row.namespace && (
-                        <Tag className={TAG_CLASS.AS_IS}>
-                          {`${PPC.LABELS.HEALTH_DETAIL.NAMESPACE}: ${row.namespace}`}
-                        </Tag>
+                        <Tag className={TAG_CLASS.AS_IS}>{`${HD.NAMESPACE}: ${row.namespace}`}</Tag>
                       )}
-                      <Tag>{`${PPC.LABELS.HEALTH_DETAIL.PRESENT}: ${yesNo(row.present)}`}</Tag>
-                      <Tag>{`${PPC.LABELS.HEALTH_DETAIL.READY}: ${yesNo(row.ready)}`}</Tag>
+                      <Tag>{`${HD.IN_CLUSTER}: ${yesNo(row.present)}`}</Tag>
+                      <Tag>{`${HD.ACTIVE}: ${yesNo(row.ready)}`}</Tag>
                       {row.failureAction && (
-                        <Tag>
-                          {`${PPC.LABELS.HEALTH_DETAIL.FAILURE_ACTION}: ${row.failureAction}`}
-                        </Tag>
+                        <Tag>{`${HD.MODE_IN_CLUSTER}: ${row.failureAction}`}</Tag>
                       )}
                     </div>
-                    {auditsOnly && (
+                    {auditsOnly(row, plan.mode) && (
                       <div style={{ marginTop: 6, fontSize: 12, color: DEFAULT_COLORS.WARNING }}>
-                        {PPC.LABELS.HEALTH_DETAIL.AUDIT_ONLY(
-                          policyLabel(row.name, plan.id, templates),
-                        )}
+                        {HD.AUDIT_ONLY(label ?? row.name)}
                       </div>
                     )}
                   </div>
@@ -154,18 +148,15 @@ const HealthSection: React.FC<HealthSectionProps> = ({ plan, status, loading, er
         </div>
       )}
 
-      {(driftMissing.length > 0 || driftUnexpected.length > 0) && (
+      {driftUnexpected.length > 0 && (
         <div style={{ marginTop: 12, fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-          {driftMissing.length > 0 && (
-            <div>
-              <strong>{PPC.LABELS.HEALTH_DETAIL.MISSING}:</strong> {driftMissing.join(', ')}
-            </div>
-          )}
-          {driftUnexpected.length > 0 && (
-            <div>
-              <strong>{PPC.LABELS.HEALTH_DETAIL.UNEXPECTED}:</strong> {driftUnexpected.join(', ')}
-            </div>
-          )}
+          <strong>{HD.UNEXPECTED}:</strong>{' '}
+          {driftUnexpected
+            .map((name) => {
+              const label = policyLabel(name, plan.id, templates);
+              return label ? `${label} (${name})` : name;
+            })
+            .join(', ')}
         </div>
       )}
     </div>

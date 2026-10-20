@@ -9,10 +9,11 @@ This repository holds the dashboard SPA only. The services it calls, the Helm ch
 | Area | What operators do there |
 |---|---|
 | Applications | Browse discovered applications and their workloads, the plans that cover them, change history and rollback, and Insights for each app |
-| Protection plans | Create, schedule, approve, cancel, and reactivate plans; see health, violations, and reports; organize environments and tags |
+| Protection plans | Create, schedule, approve, cancel, and reactivate plans; see health, admission decisions, and reports (download or delete any report, and keep a plan's reports when deleting it); run them in repeating weekly windows; organize kinds, environments and tags |
 | Insights | Incident cards and setup recommendations, updated live |
 | Administration | Members, groups, and access roles |
-| Settings | Profile, appearance, security, authentication (Google SSO and self-registration), Insights and the local AI runtime, discovery scope and snapshot storage |
+| Settings | Profile, appearance, security, authentication (Google SSO, self-registration and the bootstrap account's break-glass requests), Insights and the local AI runtime, discovery scope and snapshot storage |
+| Break-glass approval | `/break-glass#request=<id>`, the link break-glass prints: the bootstrap account approves or denies a request with a passkey, without signing in |
 
 Every action is gated by the signed-in user's permissions, including deny rules. The backend enforces the same checks.
 
@@ -70,6 +71,8 @@ Then, in this repository:
 npm install
 npm run dev          # http://localhost:3000
 ```
+
+Open the dashboard at `http://localhost:3000`, not `127.0.0.1`: the session is an HttpOnly cookie that auth sets for `localhost`, and the services allow only that origin. The cookie is `Secure`, which Chrome, Edge and Firefox accept on `http://localhost`; Safari drops it there, so use one of those browsers or serve the dashboard over https. Cookies aren't scoped to a port: while you are signed in, every server you run on `localhost`, on any port, receives the session cookie, not just the dashboard and the forwarded services.
 
 | Script                        | Purpose                                       |
 | ----------------------------- | --------------------------------------------- |

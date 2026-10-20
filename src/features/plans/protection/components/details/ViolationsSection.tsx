@@ -1,6 +1,7 @@
 import React from 'react';
 import { Empty, Tag, Typography } from 'antd';
 import { SafetyCertificateOutlined } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
 import {
   DEFAULT_COLORS,
   EMPTY_CLASS,
@@ -8,11 +9,13 @@ import {
   SECTION_LAYOUT,
   STATUS_COLORS,
   TAG_CLASS,
+  TRUNCATE_STYLE,
   getPillColor,
 } from '../../../../../constants';
 import { formatDateKey, toDateKey } from '../../../../../utils/shared/time';
 import { FancySpinner } from '../../../../../components/animation';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
+import { selectProtectionPlanTemplates } from '../../store';
 import type {
   PlanMode,
   PlanViolation,
@@ -20,13 +23,21 @@ import type {
   ViolationResult,
 } from '../../models';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
+import { policyLabel } from './policyHealth';
 
 interface ViolationsSectionProps {
   data: PlanViolationsResponse | null;
   loading: boolean;
   error: string | null;
+  planId: string;
   mode: PlanMode;
+  empty: { title: string; body: string };
 }
+
+export const resultLabel = (result: ViolationResult, mode: PlanMode): string =>
+  result === 'fail' && mode === 'audit'
+    ? PPC.LABELS.VIOLATIONS.AUDIT_FAIL
+    : PPC.LABELS.VIOLATION_RESULT_LABELS[result];
 
 const groupByDay = (
   violations: PlanViolation[],
@@ -52,8 +63,17 @@ const groupByDay = (
 };
 
 const { Title, Text } = Typography;
+const V = PPC.LABELS.VIOLATIONS;
 
-const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, error, mode }) => {
+const ViolationsSection: React.FC<ViolationsSectionProps> = ({
+  data,
+  loading,
+  error,
+  planId,
+  mode,
+  empty,
+}) => {
+  const templates = useSelector(selectProtectionPlanTemplates);
   const violations = data?.violations ?? [];
   const grouped = groupByDay(violations);
 
@@ -82,12 +102,8 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
         image={<SafetyCertificateOutlined style={{ color: DEFAULT_COLORS.SUCCESS }} />}
         description={
           <>
-            <Title level={4}>{PPC.LABELS.VIOLATIONS.EMPTY_TITLE}</Title>
-            <Text>
-              {mode === 'enforce'
-                ? PPC.LABELS.VIOLATIONS.EMPTY_ENFORCE
-                : PPC.LABELS.VIOLATIONS.EMPTY_AUDIT}
-            </Text>
+            <Title level={3}>{empty.title}</Title>
+            <Text>{empty.body}</Text>
           </>
         }
       />
@@ -114,7 +130,7 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
             {group.dayKey === 'unknown' ? EMPTY_VALUE : formatDateKey(group.dayKey)}
           </div>
           {group.entries.map((entry, idx) => {
-            const resultLabel = PPC.LABELS.VIOLATION_RESULT_LABELS[entry.result];
+            const operation = policyLabel(entry.policy, planId, templates) ?? entry.rule;
             return (
               <div
                 key={`${entry.namespace}:${entry.resource.kind}:${entry.resource.name}:${entry.rule}:${entry.timestamp}:${idx}`}
@@ -151,7 +167,7 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
                       }}
                     >
                       <Tag color={getPillColor(STATUS_COLORS.VIOLATION_RESULT[entry.result])}>
-                        {`${PPC.LABELS.VIOLATIONS.TABLE_RESULT}: ${resultLabel}`}
+                        {`${PPC.LABELS.VIOLATIONS.TABLE_RESULT}: ${resultLabel(entry.result, mode)}`}
                       </Tag>
                       {entry.resource.kind && (
                         <Tag>{`${PPC.LABELS.VIOLATIONS.TABLE_RESOURCE_KIND}: ${entry.resource.kind}`}</Tag>
@@ -166,11 +182,7 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
                           {`${PPC.LABELS.VIOLATIONS.TABLE_NAMESPACE}: ${entry.namespace}`}
                         </Tag>
                       )}
-                      {entry.rule && (
-                        <Tag className={TAG_CLASS.AS_IS}>
-                          {`${PPC.LABELS.VIOLATIONS.TABLE_RULE}: ${entry.rule}`}
-                        </Tag>
-                      )}
+                      {operation && <Tag className={TAG_CLASS.AS_IS}>{operation}</Tag>}
                     </div>
                     {entry.message && (
                       <div
@@ -182,6 +194,20 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({ data, loading, er
                         }}
                       >
                         {entry.message}
+                      </div>
+                    )}
+                    {/* Shown only when the request named its user: never imply a requester. */}
+                    {entry.requestedBy && (
+                      <div
+                        title={entry.requestedBy}
+                        style={{
+                          ...TRUNCATE_STYLE,
+                          marginTop: 4,
+                          fontSize: 12,
+                          color: DEFAULT_COLORS.TEXT_MUTED,
+                        }}
+                      >
+                        {V.REQUESTED_BY(entry.requestedBy)}
                       </div>
                     )}
                   </div>

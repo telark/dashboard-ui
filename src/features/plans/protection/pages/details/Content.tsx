@@ -1,29 +1,37 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Button, Tag, Tooltip } from 'antd';
-import { CloseOutlined, EyeOutlined, InfoCircleOutlined, ReloadOutlined } from '@ant-design/icons';
-import { useSelector } from 'react-redux';
+import { CloseOutlined, EyeOutlined, ReloadOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
 import {
+  APP_CONFIGS,
   DEFAULT_COLORS,
   EMPTY_VALUE,
   SECTION_LAYOUT,
+  SIDEBAR_LAYOUT,
   STATUS_COLORS,
   TAG_CLASS,
   TIME_FORMATS,
   TRUNCATE_STYLE,
+  getPillColor,
   withAlpha,
 } from '../../../../../constants';
-import { formatDateTime } from '../../../../../utils/shared/time';
+import { formatDateTime, getTimeZone } from '../../../../../utils/shared/time';
 import SettingsCard from '../../../../settings/components/SettingsCard';
-import KeyValueGrid from '../../../../applications/components/details/KeyValueGrid';
+import KeyValueGrid, {
+  type KeyValueGridRow,
+} from '../../../../applications/components/details/KeyValueGrid';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
-import TimeRemaining from '../../../../../components/display/time/TimeRemaining';
+import { CardChipSection } from '../../../../../components/display/card';
 import UserAvatar from '../../../../../components/display/avatars/UserAvatar';
 import { avatarRingStyle } from '../../../../../components/display/avatars/avatarRing';
 import type { UserAvatar as UserAvatarModel } from '../../../../access-and-permissions/users/models';
 import { ColumnShell } from '../../../../applications/pages/details/contentBlocks';
 import HealthBadge from '../../components/shared/HealthBadge';
 import HealthSection from '../../components/details/HealthSection';
-import ViolationsSection from '../../components/details/ViolationsSection';
+import ViolationsSection, { resultLabel } from '../../components/details/ViolationsSection';
+import ViolationsWindowNote from '../../components/details/ViolationsWindowNote';
+import { emptyCopy } from '../../components/details/violationsCopy';
+import { healthRows, isInForce } from '../../components/details/policyHealth';
 import ReportsSection from '../../components/details/ReportsSection';
 import ProtectionPlanDetailsToolbar from '../../components/layout/ProtectionPlanDetailsToolbar';
 import { usePlanHealth } from '../../hooks/usePlanHealth';
@@ -33,15 +41,17 @@ import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import { NoPermissionCard } from '../../../../../components/shared';
 import type { ViolationsResultFilter } from '../../hooks/usePlanViolations';
 import { Select } from 'antd';
-import type { RootState } from '../../../../../store';
+import type { AppDispatch, RootState } from '../../../../../store';
+import { fetchProtectionPlanTemplatesThunk, selectProtectionPlanTemplates } from '../../store';
 import {
   POLICY_CHIP_LABEL,
   PROTECTION_PLANS_CONSTANTS as PPC,
 } from '../../constants/protectionPlans';
-import type { ProtectionPlan } from '../../models';
+import type { PlanApproval, PlanTimeRange, ProtectionPlan } from '../../models';
 import { usePlanTaxonomies } from '../../hooks/usePlanTaxonomies';
 import { useUsernamesByIds } from '../../../../../hooks/useUsernamesByIds';
-import { planPhaseLabel } from '../../utils/phaseRules';
+import { liveWindow, planPhaseLabel } from '../../utils/phaseRules';
+import { formatRepeatRule } from '../../utils/repeatRule';
 import { encodeResourceKey } from '../../utils/planFormValues';
 import { getCategoryName } from '../../../../access-and-permissions/categories/utils/helpers';
 
@@ -79,6 +89,145 @@ const COMPACT_REFRESH_BUTTON_STYLE: React.CSSProperties = {
   borderRadius: 10,
   background: 'transparent',
   transition: 'background 120ms ease, color 120ms ease',
+};
+
+// A text button that keeps the browser's focus ring (no `all: unset`).
+const STATUS_LINK_STYLE: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: 6,
+  padding: 0,
+  border: 0,
+  background: 'none',
+  font: 'inherit',
+  color: 'inherit',
+  cursor: 'pointer',
+};
+
+// Same as the gap between the page's cards.
+const CARD_GAP_PX = 16;
+
+const formatRange = ({ startAt, endAt }: PlanTimeRange): string =>
+  PPC.LABELS.PHASE_INFO.IN_TIME_ZONE(
+    `${formatDateTime(startAt, TIME_FORMATS.DATE_TIME_12H)}${
+      PPC.LABELS.CARD.RANGE_SEPARATOR
+    }${formatDateTime(endAt, TIME_FORMATS.DATE_TIME_12H)}`,
+    getTimeZone(),
+  );
+
+const scheduleText = (plan: ProtectionPlan): string => {
+  if (plan.timeMode === 'repeating' && plan.repeat) return formatRepeatRule(plan.repeat);
+  if (plan.timeMode === 'time_range' && plan.timeRange) return formatRange(plan.timeRange);
+  return PPC.LABELS.DETAIL_PAGE.FIELDS.PERMANENT;
+};
+
+// A time range's declared window, or the one a running series is in or waits for.
+const scheduleWindow = (plan: ProtectionPlan): PlanTimeRange | undefined =>
+  plan.timeMode === 'time_range' ? plan.timeRange : liveWindow(plan);
+
+const reportsDescription = (plan: ProtectionPlan): string =>
+  plan.timeMode === 'repeating'
+    ? PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_DESCRIPTION_SERIES
+    : PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_DESCRIPTION;
+
+const approvalRows = (
+  approval: PlanApproval | undefined,
+  renderUserAndTime: (userId: string | undefined, when: string | undefined) => React.ReactNode,
+): KeyValueGridRow[] => {
+  if (!approval) return [];
+  const { FIELDS } = PPC.LABELS.DETAIL_PAGE;
+  const rows: KeyValueGridRow[] = [
+    {
+      k: 'requested',
+      label: FIELDS.REQUESTED_BY,
+      value: renderUserAndTime(approval.requestedBy, approval.requestedAt),
+    },
+  ];
+  if (approval.decidedBy) {
+    rows.push({
+      k: 'decided',
+      label: approval.state === 'rejected' ? FIELDS.REJECTED_BY : FIELDS.APPROVED_BY,
+      value: renderUserAndTime(approval.decidedBy, approval.decidedAt),
+    });
+  }
+  if (approval.comment) {
+    rows.push({ k: 'decisionComment', label: FIELDS.DECISION_COMMENT, value: approval.comment });
+  }
+  return rows;
+};
+
+// A series waiting for approval opens no window until it is approved.
+const seriesWindowRows = (
+  plan: ProtectionPlan,
+  seriesWindow?: PlanTimeRange,
+): KeyValueGridRow[] => {
+  if (!seriesWindow) return [];
+  const { CARD } = PPC.LABELS;
+  const range = formatRange(seriesWindow);
+  return [
+    {
+      k: 'window',
+      label: plan.phase === 'active' ? CARD.CURRENT_WINDOW_LABEL : CARD.NEXT_WINDOW_LABEL,
+      value:
+        plan.phase === 'pending_approval'
+          ? `${range}${CARD.META_SEPARATOR}${CARD.OPENS_ONCE_APPROVED}`
+          : range,
+    },
+  ];
+};
+
+// The pills and the end time measure ~362px: below this the toolbar wraps, above it the status does.
+const STATUS_MIN_WIDTH_PX = 380;
+
+const renderChips = (chips: { key: string; text: string }[]) => (
+  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+    {chips.map((chip) => (
+      <Tag key={chip.key} className={TAG_CLASS.AS_IS}>
+        {chip.text}
+      </Tag>
+    ))}
+  </div>
+);
+
+// The Scope card: what the plan targets, then what it leaves out.
+const scopeRows = (plan: ProtectionPlan): KeyValueGridRow[] => {
+  const { FIELDS } = PPC.LABELS.DETAIL_PAGE;
+  const byApplication = plan.scope.type === 'applications';
+  const targetsLabel = byApplication ? FIELDS.APPLICATIONS : FIELDS.NAMESPACES;
+  const targets = (byApplication ? plan.scope.applicationRefs : plan.scope.namespaces) ?? [];
+  const excludedKinds = plan.scope.exclusions?.kinds ?? [];
+  const excludedResources = plan.scope.exclusions?.resources ?? [];
+  const rows: KeyValueGridRow[] = [
+    { k: 'scopeType', label: FIELDS.SCOPE_TYPE, value: targetsLabel },
+    {
+      k: 'scopeItems',
+      label: targetsLabel,
+      value:
+        targets.length === 0
+          ? EMPTY_VALUE
+          : renderChips(targets.map((item) => ({ key: item, text: item.toLowerCase() }))),
+    },
+  ];
+  if (excludedKinds.length > 0) {
+    rows.push({
+      k: 'excludedKinds',
+      label: FIELDS.EXCLUDED_KINDS,
+      value: renderChips(excludedKinds.map((kind) => ({ key: kind, text: kind.toLowerCase() }))),
+    });
+  }
+  if (excludedResources.length > 0) {
+    rows.push({
+      k: 'excludedResources',
+      label: FIELDS.EXCLUDED_RESOURCES,
+      value: renderChips(
+        excludedResources.map((r) => ({
+          key: encodeResourceKey(r),
+          text: `${r.kind.toLowerCase()} \u00b7 ${r.name}`,
+        })),
+      ),
+    });
+  }
+  return rows;
 };
 
 interface ProtectionPlanDetailsContentProps {
@@ -125,7 +274,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     onRefreshHealth,
   }) => {
     const phaseLabel = planPhaseLabel(plan);
-    const dotColor = STATUS_COLORS.PLAN_PHASE[plan.phase] ?? STATUS_COLORS.PLAN_PHASE.draft;
+    const phaseAccent = STATUS_COLORS.PLAN_PHASE[plan.phase] ?? STATUS_COLORS.PLAN_PHASE.draft;
     const revision = `${plan.phase}:${plan.lastUpdatedAt ?? ''}`;
     const health = usePlanHealth(plan.id, revision);
     const canViewViolations = usePermission(
@@ -139,6 +288,11 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
       ACTION_PERMISSIONS.protectionPlans.downloadReport.level,
       ACTION_PERMISSIONS.protectionPlans.downloadReport.deny,
     );
+    const canGenerateReport = usePermission(
+      ACTION_PERMISSIONS.protectionPlans.generateReport.scope,
+      ACTION_PERMISSIONS.protectionPlans.generateReport.level,
+      ACTION_PERMISSIONS.protectionPlans.generateReport.deny,
+    );
     const violations = usePlanViolations(plan.id, canViewViolations);
     const reports = usePlanReports(plan.id, revision, canViewReports);
     const { generate: generateReport } = reports;
@@ -147,12 +301,40 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     }, [generateReport]);
     const violationsFilterOptions: Array<{ value: ViolationsResultFilter; label: string }> = [
       { value: 'all', label: PPC.LABELS.VIOLATIONS.FILTER_ALL },
-      { value: 'fail', label: PPC.LABELS.VIOLATION_RESULT_LABELS.fail },
-      { value: 'pass', label: PPC.LABELS.VIOLATION_RESULT_LABELS.pass },
-      { value: 'warn', label: PPC.LABELS.VIOLATION_RESULT_LABELS.warn },
-      { value: 'error', label: PPC.LABELS.VIOLATION_RESULT_LABELS.error },
-      { value: 'skip', label: PPC.LABELS.VIOLATION_RESULT_LABELS.skip },
+      ...(['fail', 'pass', 'warn', 'error', 'skip'] as const).map((value) => ({
+        value,
+        label: resultLabel(value, plan.mode),
+      })),
     ];
+
+    const dispatch: AppDispatch = useDispatch();
+    const templates = useSelector(selectProtectionPlanTemplates);
+    // Template codes map rendered policy names to operation labels in Health and the decisions.
+    useEffect(() => {
+      if (templates.length === 0) void dispatch(fetchProtectionPlanTemplatesThunk());
+    }, [templates.length, dispatch]);
+
+    const notInForce =
+      plan.phase === 'active'
+        ? healthRows(plan, health.status).filter((row) => !isInForce(row, plan.mode)).length
+        : 0;
+    const healthState = health.status?.health ?? plan.health;
+    const barRef = useRef<HTMLDivElement>(null);
+    const healthRef = useRef<HTMLDivElement>(null);
+    // The pane scrolls, not the window, and the bar, stuck at the pane's top, would cover the card.
+    const scrollToHealth = useCallback(() => {
+      const pane = document.getElementById(APP_CONFIGS.LAYOUT.CONTENT_ID);
+      const target = healthRef.current;
+      if (!pane || !target) return;
+      const stuckBarBottom = pane.getBoundingClientRect().top + (barRef.current?.offsetHeight ?? 0);
+      pane.scrollBy({
+        top: target.getBoundingClientRect().top - stuckBarBottom - CARD_GAP_PX,
+        behavior: globalThis.matchMedia(SIDEBAR_LAYOUT.REDUCED_MOTION_QUERY).matches
+          ? 'auto'
+          : 'smooth',
+      });
+      target.focus({ preventScroll: true });
+    }, []);
     const users = useSelector((s: RootState) => s.users.users);
     const taxonomies = usePlanTaxonomies();
     // Participants too: the users list is empty when the page is opened directly.
@@ -210,11 +392,12 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
       [users, usernamesById],
     );
 
+    const seriesWindow = liveWindow(plan);
+    const schedule = scheduleWindow(plan);
     const overviewRows = useMemo(() => {
       const tags = (plan.tagRefs ?? [])
         .map((id) => ({ id, name: taxonomies.tags.find((c) => c.id === id)?.name }))
         .filter((t): t is { id: string; name: string } => Boolean(t.name));
-      const approval = plan.approval;
       return [
         { k: 'name', label: PPC.LABELS.DETAIL_PAGE.FIELDS.NAME, value: plan.name },
         {
@@ -231,6 +414,11 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           k: 'priority',
           label: PPC.LABELS.DETAIL_PAGE.FIELDS.PRIORITY,
           value: plan.priority ?? EMPTY_VALUE,
+        },
+        {
+          k: 'kind',
+          label: FORM.KIND_LABEL,
+          value: getCategoryName(plan.kindRef ?? '', taxonomies.kinds),
         },
         {
           k: 'environment',
@@ -258,50 +446,10 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           label: PPC.LABELS.DETAIL_PAGE.FIELDS.EXECUTION,
           value: PPC.LABELS.EXECUTION_LABELS[plan.approvalMode ?? 'automatic'],
         },
-        ...(approval
-          ? [
-              {
-                k: 'requested',
-                label: PPC.LABELS.DETAIL_PAGE.FIELDS.REQUESTED_BY,
-                value: renderUserAndTime(approval.requestedBy, approval.requestedAt),
-              },
-            ]
-          : []),
-        ...(approval?.decidedBy
-          ? [
-              {
-                k: 'decided',
-                label:
-                  approval.state === 'rejected'
-                    ? PPC.LABELS.DETAIL_PAGE.FIELDS.REJECTED_BY
-                    : PPC.LABELS.DETAIL_PAGE.FIELDS.APPROVED_BY,
-                value: renderUserAndTime(approval.decidedBy, approval.decidedAt),
-              },
-            ]
-          : []),
-        ...(approval?.comment
-          ? [
-              {
-                k: 'decisionComment',
-                label: PPC.LABELS.DETAIL_PAGE.FIELDS.DECISION_COMMENT,
-                value: approval.comment,
-              },
-            ]
-          : []),
+        ...approvalRows(plan.approval, renderUserAndTime),
         { k: 'mode', label: PPC.LABELS.DETAIL_PAGE.FIELDS.MODE, value: plan.mode },
-        {
-          k: 'timeMode',
-          label: PPC.LABELS.DETAIL_PAGE.FIELDS.TIME_MODE,
-          value:
-            plan.timeMode === 'time_range' && plan.timeRange ? (
-              <span>
-                {formatDateTime(plan.timeRange.startAt, TIME_FORMATS.DATE_TIME_12H)} →{' '}
-                {formatDateTime(plan.timeRange.endAt, TIME_FORMATS.DATE_TIME_12H)}
-              </span>
-            ) : (
-              PPC.LABELS.DETAIL_PAGE.FIELDS.PERMANENT
-            ),
-        },
+        { k: 'timeMode', label: PPC.LABELS.CARD.WINDOW_LABEL, value: scheduleText(plan) },
+        ...seriesWindowRows(plan, seriesWindow),
         ...(plan.reason && (plan.phase === 'failed' || plan.phase === 'canceled')
           ? [
               {
@@ -312,7 +460,14 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             ]
           : []),
       ];
-    }, [plan, renderUserAndTime, taxonomies.environments, taxonomies.tags]);
+    }, [
+      plan,
+      seriesWindow,
+      renderUserAndTime,
+      taxonomies.kinds,
+      taxonomies.environments,
+      taxonomies.tags,
+    ]);
 
     // Who made and moved the plan, and who takes part in it: the Overview's right half.
     const activityRows = useMemo(
@@ -368,88 +523,91 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
       [plan, renderUserAndTime, participants],
     );
 
-    const scopeItems =
-      (plan.scope.type === 'applications' ? plan.scope.applicationRefs : plan.scope.namespaces) ??
-      [];
     const policies = plan.policies ?? [];
-    const excludedKinds = plan.scope.exclusions?.kinds ?? [];
-    const excludedResources = plan.scope.exclusions?.resources ?? [];
-    const renderChips = (chips: { key: string; text: string }[]) => (
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-        {chips.map((chip) => (
-          <Tag key={chip.key} className={TAG_CLASS.AS_IS}>
-            {chip.text}
-          </Tag>
-        ))}
-      </div>
-    );
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div
+          ref={barRef}
           style={{
             position: 'sticky',
             top: 0,
             zIndex: 5,
             display: 'flex',
+            flexWrap: 'wrap',
             alignItems: 'center',
-            justifyContent: 'space-between',
+            // The status grows into the row, so this only right-aligns a toolbar that wrapped.
+            justifyContent: 'flex-end',
             gap: 12,
             padding: '8px 0',
             background: DEFAULT_COLORS.PAGE_BG,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-              <span
-                aria-hidden
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: '50%',
-                  background: dotColor,
-                  boxShadow: `0 0 0 3px ${DEFAULT_COLORS.CHIP_CUSTOM_BG}`,
-                }}
-              />
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: DEFAULT_COLORS.TEXT_MUTED,
-                  textTransform: 'capitalize',
-                }}
-              >
-                {phaseLabel}
-              </span>
+          <div
+            style={{
+              flex: `1 1 ${STATUS_MIN_WIDTH_PX}px`,
+              display: 'flex',
+              alignItems: 'center',
+              columnGap: 12,
+              rowGap: 6,
+              flexWrap: 'wrap',
+              fontSize: 13,
+              color: DEFAULT_COLORS.TEXT_SECONDARY,
+            }}
+          >
+            <span style={{ display: 'inline-flex', gap: 6 }}>
+              <Tag color={getPillColor(phaseAccent)}>{phaseLabel}</Tag>
+              <Tag>{PPC.LABELS.MODE_LABELS[plan.mode]}</Tag>
             </span>
-            {plan.phase === 'scheduled' && plan.timeRange && (
-              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                {PPC.LABELS.PHASE_INFO.STARTS_PREFIX} <TimeAgo date={plan.timeRange.startAt} />
-                {plan.timeMode === 'time_range' && plan.timeRange.endAt && (
+            {plan.phase === 'scheduled' && schedule && (
+              <span>
+                {PPC.LABELS.PHASE_INFO.STARTS_PREFIX} <TimeAgo date={schedule.startAt} />
+                {schedule.endAt && (
                   <>
                     {' · '}
-                    {PPC.LABELS.PHASE_INFO.ENDS_PREFIX} <TimeAgo date={plan.timeRange.endAt} />
+                    {PPC.LABELS.PHASE_INFO.ENDS_PREFIX} <TimeAgo date={schedule.endAt} />
                   </>
                 )}
               </span>
             )}
             {plan.phase === 'pending_approval' && plan.approval && (
-              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+              <span>
                 {PPC.LABELS.PHASE_INFO.AWAITING_APPROVAL_PREFIX}{' '}
                 <TimeAgo date={plan.approval.requestedAt} />
               </span>
             )}
-            {plan.phase === 'active' && plan.health && <HealthBadge health={plan.health} />}
-            {plan.phase === 'active' && plan.timeMode === 'time_range' && plan.timeRange?.endAt && (
-              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                <TimeRemaining
-                  date={plan.timeRange.endAt}
-                  prefix={PPC.LABELS.PHASE_INFO.ENDS_IN_PREFIX}
-                />
+            {plan.phase === 'active' && schedule?.endAt && (
+              <span>
+                {PPC.LABELS.PHASE_INFO.ENDS_PREFIX} <TimeAgo date={schedule.endAt} />
+                {PPC.LABELS.CARD.META_SEPARATOR}
+                {PPC.LABELS.PHASE_INFO.IN_TIME_ZONE(
+                  formatDateTime(schedule.endAt, PPC.LABELS.PHASE_INFO.END_TIME_FORMAT),
+                  getTimeZone(),
+                )}
               </span>
             )}
+            {plan.phase === 'active' && plan.timeMode === 'permanent' && (
+              <span>{PPC.LABELS.CARD.PERMANENT_RANGE}</span>
+            )}
+            {plan.phase === 'active' &&
+              healthState &&
+              (notInForce > 0 ? (
+                <button type="button" onClick={scrollToHealth} style={STATUS_LINK_STYLE}>
+                  <HealthBadge health={healthState} compact />
+                  {PPC.LABELS.HEALTH_LABELS[healthState]}
+                  {PPC.LABELS.CARD.META_SEPARATOR}
+                  <span style={{ textDecoration: 'underline', textUnderlineOffset: 3 }}>
+                    {PPC.LABELS.HEALTH_DETAIL.STATUS_NOT_IN_FORCE(notInForce)}
+                  </span>
+                </button>
+              ) : (
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <HealthBadge health={healthState} compact />
+                  {PPC.LABELS.HEALTH_LABELS[healthState]}
+                </span>
+              ))}
             {plan.phase === 'terminated' && plan.terminatedAt && (
-              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+              <span>
                 {PPC.LABELS.PHASE_INFO.TERMINATED_PREFIX} <TimeAgo date={plan.terminatedAt} />
               </span>
             )}
@@ -477,6 +635,22 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           />
         </div>
 
+        {/* What the plan refuses, the same chips as its card. */}
+        <CardChipSection
+          label={
+            PPC.LABELS.CARD.BLOCKED_LABEL[plan.mode][
+              plan.timeMode === 'permanent' ? 'permanent' : 'window'
+            ]
+          }
+          emptyText={PPC.LABELS.CARD.REFUSES_NONE}
+          items={policies.map((p) => ({
+            key: p.templateID,
+            label: POLICY_CHIP_LABEL[p.templateID] ?? p.templateID,
+            icon: plan.mode === 'audit' ? <EyeOutlined /> : <CloseOutlined />,
+            accent: STATUS_COLORS.PLAN_MODE[plan.mode],
+          }))}
+        />
+
         <SettingsCard
           title={PPC.LABELS.DETAIL_PAGE.SECTIONS.OVERVIEW_TITLE}
           description={PPC.LABELS.DETAIL_PAGE.SECTIONS.OVERVIEW_DESCRIPTION}
@@ -502,62 +676,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           title={PPC.LABELS.DETAIL_PAGE.SECTIONS.SCOPE_TITLE}
           description={PPC.LABELS.DETAIL_PAGE.SECTIONS.SCOPE_DESCRIPTION}
         >
-          <KeyValueGrid
-            rows={[
-              {
-                k: 'scopeType',
-                label: PPC.LABELS.DETAIL_PAGE.FIELDS.SCOPE_TYPE,
-                value:
-                  plan.scope.type === 'applications'
-                    ? PPC.LABELS.DETAIL_PAGE.FIELDS.APPLICATIONS
-                    : PPC.LABELS.DETAIL_PAGE.FIELDS.NAMESPACES,
-              },
-              {
-                k: 'scopeItems',
-                label:
-                  plan.scope.type === 'applications'
-                    ? PPC.LABELS.DETAIL_PAGE.FIELDS.APPLICATIONS
-                    : PPC.LABELS.DETAIL_PAGE.FIELDS.NAMESPACES,
-                value:
-                  scopeItems.length === 0 ? (
-                    EMPTY_VALUE
-                  ) : (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                      {scopeItems.map((item) => (
-                        <Tag key={item} className={TAG_CLASS.AS_IS}>
-                          {item.toLowerCase()}
-                        </Tag>
-                      ))}
-                    </div>
-                  ),
-              },
-              ...(excludedKinds.length > 0
-                ? [
-                    {
-                      k: 'excludedKinds',
-                      label: PPC.LABELS.DETAIL_PAGE.FIELDS.EXCLUDED_KINDS,
-                      value: renderChips(
-                        excludedKinds.map((kind) => ({ key: kind, text: kind.toLowerCase() })),
-                      ),
-                    },
-                  ]
-                : []),
-              ...(excludedResources.length > 0
-                ? [
-                    {
-                      k: 'excludedResources',
-                      label: PPC.LABELS.DETAIL_PAGE.FIELDS.EXCLUDED_RESOURCES,
-                      value: renderChips(
-                        excludedResources.map((r) => ({
-                          key: encodeResourceKey(r),
-                          text: `${r.kind.toLowerCase()} \u00b7 ${r.name}`,
-                        })),
-                      ),
-                    },
-                  ]
-                : []),
-            ]}
-          />
+          <KeyValueGrid rows={scopeRows(plan)} />
         </SettingsCard>
 
         <SettingsCard
@@ -638,38 +757,41 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
         </SettingsCard>
 
         {plan.phase === 'active' && (
-          <SettingsCard
-            title={PPC.LABELS.DETAIL_PAGE.SECTIONS.HEALTH_TITLE}
-            description={PPC.LABELS.DETAIL_PAGE.SECTIONS.HEALTH_DESCRIPTION}
-            headerAction={
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-                <HealthBadge health={health.status?.health ?? plan.health} />
-                {plan.healthCheckedAt && (
-                  <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
-                    {PPC.LABELS.HEALTH_DETAIL.CHECKED_AT}: <TimeAgo date={plan.healthCheckedAt} />
-                  </span>
-                )}
-                <Tooltip title={PPC.LABELS.HEALTH_DETAIL.REFRESH_BUTTON}>
-                  <Button
-                    type="text"
-                    shape="circle"
-                    size="small"
-                    icon={<ReloadOutlined />}
-                    onClick={health.refresh}
-                    style={COMPACT_REFRESH_BUTTON_STYLE}
-                    aria-label={PPC.LABELS.HEALTH_DETAIL.REFRESH_BUTTON}
-                  />
-                </Tooltip>
-              </div>
-            }
-          >
-            <HealthSection
-              plan={plan}
-              status={health.status}
-              loading={health.loading}
-              error={health.error}
-            />
-          </SettingsCard>
+          // Focusable so the status line's jump leaves keyboard focus here.
+          <div ref={healthRef} tabIndex={-1}>
+            <SettingsCard
+              title={PPC.LABELS.DETAIL_PAGE.SECTIONS.HEALTH_TITLE}
+              description={PPC.LABELS.DETAIL_PAGE.SECTIONS.HEALTH_DESCRIPTION}
+              headerAction={
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                  <HealthBadge health={healthState} />
+                  {plan.healthCheckedAt && (
+                    <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+                      {PPC.LABELS.HEALTH_DETAIL.CHECKED_AT}: <TimeAgo date={plan.healthCheckedAt} />
+                    </span>
+                  )}
+                  <Tooltip title={PPC.LABELS.HEALTH_DETAIL.REFRESH_BUTTON}>
+                    <Button
+                      type="text"
+                      shape="circle"
+                      size="small"
+                      icon={<ReloadOutlined />}
+                      onClick={health.refresh}
+                      style={COMPACT_REFRESH_BUTTON_STYLE}
+                      aria-label={PPC.LABELS.HEALTH_DETAIL.REFRESH_BUTTON}
+                    />
+                  </Tooltip>
+                </div>
+              }
+            >
+              <HealthSection
+                plan={plan}
+                status={health.status}
+                loading={health.loading}
+                error={health.error}
+              />
+            </SettingsCard>
+          </div>
         )}
 
         <SettingsCard
@@ -697,30 +819,29 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                     aria-label={PPC.LABELS.VIOLATIONS.REFRESH}
                   />
                 </Tooltip>
-                {violations.data?.retentionWindow ? (
-                  <Tooltip
-                    title={PPC.LABELS.VIOLATIONS.RETENTION_NOTE(violations.data.retentionWindow)}
-                  >
-                    <InfoCircleOutlined
-                      tabIndex={0}
-                      aria-label={PPC.LABELS.VIOLATIONS.RETENTION_NOTE(
-                        violations.data.retentionWindow,
-                      )}
-                      style={{ color: DEFAULT_COLORS.ICON_SECONDARY }}
-                    />
-                  </Tooltip>
-                ) : null}
               </div>
             ) : undefined
           }
         >
           {canViewViolations ? (
-            <ViolationsSection
-              data={violations.data}
-              loading={violations.loading}
-              error={violations.error}
-              mode={plan.mode}
-            />
+            <>
+              <ViolationsWindowNote
+                plan={plan}
+                data={violations.data}
+                reports={reports}
+                canViewReports={canViewReports}
+                canGenerate={canGenerateReport}
+                canDownload={canDownloadReport}
+              />
+              <ViolationsSection
+                data={violations.data}
+                loading={violations.loading}
+                error={violations.error}
+                planId={plan.id}
+                mode={plan.mode}
+                empty={emptyCopy(plan, violations.data)}
+              />
+            </>
           ) : (
             <NoPermissionCard
               featureName={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_TITLE}
@@ -732,7 +853,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
 
         <SettingsCard
           title={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_TITLE}
-          description={PPC.LABELS.DETAIL_PAGE.SECTIONS.REPORTS_DESCRIPTION}
+          description={reportsDescription(plan)}
           headerAction={
             canViewReports ? (
               <Tooltip title={PPC.LABELS.REPORTS.REFRESH}>
@@ -756,10 +877,12 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
               error={reports.error}
               downloading={reports.downloading}
               phase={plan.phase}
+              repeating={plan.timeMode === 'repeating'}
               planName={plan.name}
               users={users}
               canDownload={canDownloadReport}
               onDownload={reports.download}
+              onDeleted={reports.refresh}
             />
           ) : (
             <NoPermissionCard

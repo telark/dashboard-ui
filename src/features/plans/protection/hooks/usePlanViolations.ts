@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { ExtendedAxiosError } from '../../../../api/client/normalize';
+import { PROTECTION_PLAN_PATHS } from '../../../../constants';
 import { fetchPlanViolations } from '../clients';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
 import type { PlanViolationsResponse, ViolationResult } from '../models';
@@ -27,6 +28,7 @@ export function usePlanViolations(planId: string, enabled: boolean): UsePlanViol
     let canceled = false;
     fetchPlanViolations(planId, {
       result: resultFilter === 'all' ? undefined : resultFilter,
+      window: PROTECTION_PLAN_PATHS.WINDOW_RUN,
     })
       .then((res) => {
         if (canceled) return;
