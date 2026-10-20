@@ -16,7 +16,11 @@ export const TIME_ZONE = {
   FALLBACK: 'UTC',
   PARTS_LOCALE: 'en-US',
   HOUR_CYCLE: 'h23',
-  OFFSET_NAME: 'shortOffset',
+  OFFSET_NAME: 'longOffset',
+  // Intl writes GMT+02:00, or a bare GMT at zero offset: labels read UTC+02:00 and UTC+00:00.
+  INTL_OFFSET_PREFIX: 'GMT',
+  OFFSET_PREFIX: 'UTC',
+  ZERO_OFFSET_LABEL: 'UTC+00:00',
 } as const;
 
 export const TIME_CONFIGS = {

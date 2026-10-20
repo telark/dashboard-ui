@@ -1,9 +1,50 @@
 import dayjs from 'dayjs';
 import type { PolicyEntry, FormValues } from '../components/create';
-import type { ParamSpec, PlanExcludedResource, PlanTemplate, ProtectionPlan } from '../models';
-import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
+import type { RepeatFormValues } from '../components/create/types';
+import type {
+  ParamSpec,
+  PlanExcludedResource,
+  PlanRepeat,
+  PlanTemplate,
+  ProtectionPlan,
+} from '../models';
+import {
+  PLAN_NAME_VALIDATION,
+  PROTECTION_PLANS_CONSTANTS as PPC,
+} from '../constants/protectionPlans';
+import { CREATE_PANEL_TEXTS } from '../constants/createPanel';
+import { sanitizeName } from '../../../shared/utils/nameSanitization';
+import { getTimeZone } from '../../../../utils/shared/time';
 
-const { FORM } = PPC.CREATE_PAGE;
+const { FORM, REPEAT_DAY_OPTIONS, REPEAT_TIME_FORMAT, REPEAT_CLOCK_DATE } = PPC.CREATE_PAGE;
+
+// The TimePicker's base: today could be the day the browser's zone skips 02:xx.
+export const REPEAT_CLOCK_BASE = dayjs(REPEAT_CLOCK_DATE);
+
+const clockToDayjs = (clock: string): dayjs.Dayjs => {
+  const [hour, minute] = clock.split(':').map(Number);
+  return REPEAT_CLOCK_BASE.hour(hour).minute(minute);
+};
+
+// Without a rule, only the viewer's zone, the default for a new one.
+export const repeatFormValues = (repeat?: PlanRepeat): RepeatFormValues =>
+  repeat
+    ? {
+        repeatDays: repeat.days,
+        repeatStart: clockToDayjs(repeat.startTime),
+        repeatEnd: clockToDayjs(repeat.endTime),
+        repeatTimeZone: repeat.timeZone,
+      }
+    : { repeatTimeZone: getTimeZone() };
+
+export const repeatPayload = (values: RepeatFormValues): PlanRepeat => ({
+  days: REPEAT_DAY_OPTIONS.map(({ value }) => value).filter((day) =>
+    values.repeatDays?.includes(day),
+  ),
+  startTime: values.repeatStart?.format(REPEAT_TIME_FORMAT) ?? '',
+  endTime: values.repeatEnd?.format(REPEAT_TIME_FORMAT) ?? '',
+  timeZone: values.repeatTimeZone ?? '',
+});
 
 export const RESOURCE_KEY_SEPARATOR = '/';
 
@@ -37,6 +78,27 @@ export const DEFAULT_FORM_VALUES: FormValues = {
   approvalMode: 'automatic',
 };
 
+// Protect on an application: a plan for that app alone, named after it with only the characters
+// plan names allow, and numbered when another plan (even an ended one) holds the name.
+export const applicationPlanValues = (
+  application: { name: string; title: string },
+  takenNames: string[],
+): Partial<FormValues> => {
+  const room = PLAN_NAME_VALIDATION.maxLength - CREATE_PANEL_TEXTS.DEFAULT_PLAN_NAME('').length;
+  const base = CREATE_PANEL_TEXTS.DEFAULT_PLAN_NAME(
+    sanitizeName(application.title, PLAN_NAME_VALIDATION).slice(0, room),
+  ).trim();
+  const taken = new Set(takenNames.map((n) => n.trim().toLowerCase()));
+  let name = base;
+  for (let n = 2; taken.has(name.toLowerCase()); n += 1) name = `${base} ${n}`;
+  return {
+    scopeType: 'applications',
+    applicationRefs: [application.name],
+    name,
+    severity: 'medium',
+  };
+};
+
 export const planToFormValues = (plan: ProtectionPlan): FormValues => ({
   name: plan.name,
   description: plan.description ?? '',
@@ -51,7 +113,9 @@ export const planToFormValues = (plan: ProtectionPlan): FormValues => ({
   timeMode: plan.timeMode,
   startAt: plan.timeRange ? dayjs(plan.timeRange.startAt) : undefined,
   endAt: plan.timeRange ? dayjs(plan.timeRange.endAt) : undefined,
+  ...repeatFormValues(plan.timeMode === 'repeating' ? plan.repeat : undefined),
   participantRefs: plan.participantRefs ?? [],
+  kindRef: plan.kindRef || undefined,
   environmentRef: plan.environmentRef || undefined,
   tagRefs: plan.tagRefs ?? [],
   approvalMode: plan.approvalMode ?? 'automatic',
@@ -129,7 +193,9 @@ export const buildPreparePayload = ({ values, policies }: BuildPreparePayloadInp
     values.timeMode === 'time_range' && values.startAt && values.endAt
       ? { startAt: values.startAt.toISOString(), endAt: values.endAt.toISOString() }
       : undefined,
+  repeat: values.timeMode === 'repeating' ? repeatPayload(values) : undefined,
   participantRefs: values.participantRefs ?? [],
+  kindRef: values.kindRef ?? '',
   environmentRef: values.environmentRef ?? '',
   tagRefs: values.tagRefs ?? [],
   approvalMode: values.approvalMode,

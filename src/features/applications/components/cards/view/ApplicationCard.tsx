@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ClockCircleOutlined, LockOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
+import { LockOutlined } from '@ant-design/icons';
 import {
   APP_ROUTES,
   CARD_FOOTER_STYLE,
@@ -9,16 +9,23 @@ import {
   EMPTY_VALUE,
   LIST_TOOLBAR,
   MENU_LABELS,
-  STATUS_COLORS,
   TRUNCATE_STYLE,
   getCardShellStyle,
 } from '../../../../../constants';
-import type { Application, ApplicationCoverage, ApplicationCoverageState } from '../../../models';
-import { APPLICATION_CARD, APPLICATIONS_UI } from '../../../constants';
+import type {
+  Application,
+  ApplicationCoverage,
+  ApplicationCoverageState,
+  ApplicationProtection,
+} from '../../../models';
+import { APPLICATION_CARD, APPLICATION_COVERAGE_STATES, APPLICATIONS_UI } from '../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { CardChipSection, StatCell } from '../../../../../components/display/card';
 import { NO_PERMISSION_CONSTANTS } from '../../../../../components/shared';
 import type { CardChipItem } from '../../../../../interfaces/layout/card';
+import { getApplicationProtection } from '../../../utils/coverage';
+import { PROTECTION_ICONS } from '../../protection/ProtectionBadge';
+import ProtectButton from '../../protection/ProtectButton';
 import ApplicationCardHeader from './ApplicationCardHeader';
 
 interface ApplicationCardProps {
@@ -34,17 +41,12 @@ function isActivateKey(e: React.KeyboardEvent<HTMLDivElement>): boolean {
   return e.key === 'Enter' || e.key === ' ';
 }
 
-const COVERAGE_ICON: Record<ApplicationCoverageState, React.ReactNode> = {
-  active: <SafetyCertificateOutlined />,
-  upcoming: <ClockCircleOutlined />,
-};
-
+// The state is in the chip's text, so every chip is neutral: color stays with the badge and health.
 const coverageChip = (name: string, state: ApplicationCoverageState): CardChipItem => ({
   key: name,
-  label: name,
-  icon: COVERAGE_ICON[state],
-  accent: STATUS_COLORS.APPLICATION_COVERAGE[state],
-  title: APPLICATION_CARD.COVERAGE.CHIP_TITLE(name, state),
+  label: APPLICATION_CARD.COVERAGE.CHIP(name, state),
+  icon: PROTECTION_ICONS[state],
+  accent: DEFAULT_COLORS.NEUTRAL,
 });
 
 const NO_ACCESS_CHIP: CardChipItem = {
@@ -53,6 +55,14 @@ const NO_ACCESS_CHIP: CardChipItem = {
   icon: <LockOutlined />,
   accent: DEFAULT_COLORS.TEXT_MUTED,
   title: NO_PERMISSION_CONSTANTS.LABELS.DESCRIPTION(MENU_LABELS.PROTECTION_PLANS),
+};
+
+// The header badge: null while the plans load, none at all when the viewer can't read them.
+const headerProtection = (
+  coverage?: ApplicationCoverage,
+): ApplicationProtection | null | undefined => {
+  if (!coverage || coverage.noAccess) return undefined;
+  return coverage.known ? getApplicationProtection(coverage) : null;
 };
 
 const ApplicationCard: React.FC<ApplicationCardProps> = memo(
@@ -106,6 +116,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
             bulkMode={bulkMode}
             selected={selected}
             onToggleSelect={onToggleSelect}
+            protection={headerProtection(coverage)}
           />
 
           <div style={CARD_STATS_GRID_STYLE}>
@@ -130,14 +141,21 @@ const ApplicationCard: React.FC<ApplicationCardProps> = memo(
           {coverage && (
             <CardChipSection
               label={APPLICATION_CARD.COVERAGE.LABEL}
-              emptyText={coverage.known ? APPLICATION_CARD.COVERAGE.NONE : EMPTY_VALUE}
+              emptyText={
+                coverage.known ? (
+                  <>
+                    {APPLICATION_CARD.COVERAGE.NONE} <ProtectButton application={application} />
+                  </>
+                ) : (
+                  EMPTY_VALUE
+                )
+              }
               items={
                 coverage.noAccess
                   ? [NO_ACCESS_CHIP]
-                  : [
-                      ...coverage.active.map((name) => coverageChip(name, 'active')),
-                      ...coverage.upcoming.map((name) => coverageChip(name, 'upcoming')),
-                    ]
+                  : APPLICATION_COVERAGE_STATES.flatMap((state) =>
+                      coverage[state].map((name) => coverageChip(name, state)),
+                    )
               }
             />
           )}

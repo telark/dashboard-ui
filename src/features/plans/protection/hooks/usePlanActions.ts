@@ -6,6 +6,7 @@ import { preparePlanThunk, updatePlanThunk } from '../store';
 import type { PreparePlanPayload, UpdatePlanPayload } from '../clients';
 import type { ProtectionPlan } from '../models';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
+import { createdMessage } from '../utils/createPlanSummary';
 
 export const usePlanActions = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -17,7 +18,7 @@ export const usePlanActions = () => {
       setSubmitting(true);
       try {
         const created = await dispatch(preparePlanThunk({ payload })).unwrap();
-        message.success(PPC.LABELS.ACTIONS.CREATE_SUCCESS(created.name));
+        message.success(createdMessage(created));
         return created;
       } catch (err) {
         // The thunk rejects with the server's message as a string.

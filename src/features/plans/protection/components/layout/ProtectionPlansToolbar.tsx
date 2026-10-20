@@ -10,7 +10,7 @@ import {
 } from '../../../../../constants';
 import { CompactQuickFilter, ListToolbar } from '../../../../../components/display/toolbar';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
-import type { ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
+import type { ToolbarButtonConfig, ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import type { PlanPhase, PlanPhaseQuickFilter, PlanViewMode } from '../../models';
 
@@ -24,6 +24,8 @@ interface ProtectionPlansToolbarProps {
   phaseCounts: Record<PlanPhaseQuickFilter, number>;
   totalCount: number;
   onViewModeChange: (mode: Exclude<PlanViewMode, 'plans'>) => void;
+  // No plans yet: only Organize, to set up kinds, environments and tags first, and Create Plan.
+  empty?: boolean;
 }
 
 const PHASE_PILLS: { key: PlanPhaseQuickFilter; label: string }[] = [
@@ -93,6 +95,7 @@ const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
   phaseCounts,
   totalCount,
   onViewModeChange,
+  empty = false,
 }) => {
   const canCreate = usePermission(
     ACTION_PERMISSIONS.protectionPlans.create.scope,
@@ -101,6 +104,20 @@ const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
   );
 
   const toolbars: ToolbarConfig[] = useMemo(() => {
+    const organize: ToolbarButtonConfig = {
+      key: 'organize',
+      label: PPC.LABELS.TAXONOMY.BUTTON,
+      icon: <TagOutlined />,
+      variant: 'default',
+      dropdown: {
+        items: [
+          { key: 'kinds', label: PPC.LABELS.TAXONOMY.KINDS },
+          { key: 'environments', label: PPC.LABELS.TAXONOMY.ENVIRONMENTS },
+          { key: 'tags', label: PPC.LABELS.TAXONOMY.TAGS },
+        ],
+        onItemClick: (key) => onViewModeChange(key as Exclude<PlanViewMode, 'plans'>),
+      },
+    };
     const search: ToolbarConfig = {
       search: {
         placeholder: PPC.LABELS.TOOLBAR_SEARCH_PLACEHOLDER,
@@ -114,66 +131,53 @@ const ProtectionPlansToolbar: React.FC<ProtectionPlansToolbarProps> = ({
           icon: <SearchOutlined />,
           variant: 'ghost',
         },
+        organize,
+      ],
+    };
+    const create: ToolbarConfig = {
+      buttons: [
         {
-          key: 'organize',
-          label: PPC.LABELS.TAXONOMY.BUTTON,
-          icon: <TagOutlined />,
-          variant: 'default',
-          dropdown: {
-            items: [
-              { key: 'environments', label: PPC.LABELS.TAXONOMY.ENVIRONMENTS },
-              { key: 'tags', label: PPC.LABELS.TAXONOMY.TAGS },
-            ],
-            onItemClick: (key) => onViewModeChange(key as Exclude<PlanViewMode, 'plans'>),
-          },
+          key: 'create-plan',
+          label: PPC.LABELS.CREATE_BUTTON,
+          icon: <Icons.ProtectionPlans size={14} />,
+          variant: 'primary',
+          onClick: onCreatePlanClick,
+          disabled: !canCreate,
+          tooltip: canCreate ? undefined : PPC.LABELS.PERMISSION_DENIED.CREATE,
         },
       ],
     };
-    return [
-      search,
-      {
-        buttons: [
-          {
-            key: 'create-plan',
-            label: PPC.LABELS.CREATE_BUTTON,
-            icon: <Icons.ProtectionPlans size={14} />,
-            variant: 'primary',
-            onClick: onCreatePlanClick,
-            disabled: !canCreate,
-            tooltip: canCreate ? undefined : PPC.LABELS.PERMISSION_DENIED.CREATE,
-          },
-        ],
-      },
-    ];
-  }, [canCreate, onCreatePlanClick, onSearchChange, onViewModeChange, searchValue]);
+    return empty ? [{ buttons: [organize] }, create] : [search, create];
+  }, [canCreate, empty, onCreatePlanClick, onSearchChange, onViewModeChange, searchValue]);
+
+  const quickFilter = (compact: boolean) =>
+    compact ? (
+      <CompactQuickFilter
+        options={PHASE_PILLS.map((pill) => ({
+          key: pill.key,
+          label: `${pill.label} · ${phaseCounts[pill.key] ?? 0}`,
+          accent: getPillAccent(pill.key),
+        }))}
+        active={phaseQuickFilter}
+        title={PPC.LABELS.TOOLBAR_PHASE_FILTER}
+        icon={<FlagOutlined />}
+        onChange={onPhaseQuickFilterChange}
+      />
+    ) : (
+      <PhasePills
+        active={phaseQuickFilter}
+        counts={phaseCounts}
+        onChange={onPhaseQuickFilterChange}
+      />
+    );
 
   return (
     <ListToolbar
-      totalCount={totalCount}
+      totalCount={empty ? undefined : totalCount}
       countSuffix={PPC.LABELS.TOOLBAR_COUNT_SUFFIX}
       compactWidth={PPC.LABELS.LIST_TOOLBAR_COMPACT_WIDTH}
-      onOpenFilters={onOpenFilters}
-      quickFilter={(compact) =>
-        compact ? (
-          <CompactQuickFilter
-            options={PHASE_PILLS.map((pill) => ({
-              key: pill.key,
-              label: `${pill.label} · ${phaseCounts[pill.key] ?? 0}`,
-              accent: getPillAccent(pill.key),
-            }))}
-            active={phaseQuickFilter}
-            title={PPC.LABELS.TOOLBAR_PHASE_FILTER}
-            icon={<FlagOutlined />}
-            onChange={onPhaseQuickFilterChange}
-          />
-        ) : (
-          <PhasePills
-            active={phaseQuickFilter}
-            counts={phaseCounts}
-            onChange={onPhaseQuickFilterChange}
-          />
-        )
-      }
+      onOpenFilters={empty ? undefined : onOpenFilters}
+      quickFilter={empty ? undefined : quickFilter}
       toolbars={toolbars}
     />
   );

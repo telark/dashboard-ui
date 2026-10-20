@@ -1,11 +1,18 @@
 import React, { memo, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { Tag, Tooltip } from 'antd';
-import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS } from '../../../../constants';
+import { APP_ROUTES, DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS } from '../../../../constants';
 import SettingsCard from '../../../settings/components/SettingsCard';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import KeyValueGrid from './KeyValueGrid';
 import MutedText from './MutedText';
-import { APPLICATIONS_UI, APPLICATION_CONDITION_TYPES } from '../../constants';
+import {
+  APPLICATIONS_UI,
+  APPLICATION_CARD,
+  APPLICATION_CONDITION_STATUS_TRUE,
+  APPLICATION_CONDITION_TYPES,
+  APPLICATION_COVERAGE_STATES,
+} from '../../constants';
 import { APPLICATION_SECTION_LAYOUT } from '../../constants/sectionLayout';
 import {
   APPLICATION_SUMMARY_COLUMN_TITLE_STYLE,
@@ -14,8 +21,36 @@ import {
 } from '../../pages/details/contentBlocks';
 import type { Application } from '../../models';
 import { useUsernamesByIds } from '../../../../hooks/useUsernamesByIds';
+import { useApplicationCoverage } from '../../hooks/useApplicationCoverage';
+import { getApplicationProtection } from '../../utils/coverage';
+import ProtectionBadge from '../protection/ProtectionBadge';
+import ProtectButton from '../protection/ProtectButton';
 
 const MAX_IMAGES = 8;
+
+// The same badge as the card, then each covering plan linking to its page.
+const ProtectionValue: React.FC<{ application: Application }> = ({ application }) => {
+  const coverage = useApplicationCoverage()(application);
+  if (coverage.noAccess) return <MutedText value={APPLICATION_CARD.COVERAGE.NO_ACCESS} />;
+  if (!coverage.known) return <>{EMPTY_VALUE}</>;
+  const protection = getApplicationProtection(coverage);
+  return (
+    <span style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
+      <ProtectionBadge protection={protection} />
+      {APPLICATION_COVERAGE_STATES.flatMap((state) =>
+        coverage[state].map((name) => (
+          <Link
+            key={name}
+            to={APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(':name', encodeURIComponent(name))}
+          >
+            {APPLICATION_CARD.COVERAGE.CHIP(name, state)}
+          </Link>
+        )),
+      )}
+      {protection === 'none' && <ProtectButton application={application} />}
+    </span>
+  );
+};
 
 const ActorName: React.FC<{ actor: string }> = ({ actor }) => {
   const ids = useMemo(() => [actor], [actor]);
@@ -39,6 +74,11 @@ function buildPrimaryRows(application: Application) {
 
   return [
     {
+      k: 'protection',
+      label: APPLICATION_CARD.COVERAGE.LABEL,
+      value: <ProtectionValue application={application} />,
+    },
+    {
       k: 'health',
       label: APPLICATIONS_UI.CARD.LABELS.HEALTH,
       value: application.health?.status || APPLICATIONS_UI.FALLBACKS.UNKNOWN,
@@ -61,9 +101,10 @@ function buildPrimaryRows(application: Application) {
           {
             k: 'published',
             label: APPLICATIONS_UI.CARD.LABELS.PUBLISHED,
-            value: published.reason
-              ? `${published.status} (${published.reason})`
-              : published.status,
+            value:
+              published.status === APPLICATION_CONDITION_STATUS_TRUE
+                ? APPLICATIONS_UI.CARD.PUBLISHED_STATE.SAVED
+                : APPLICATIONS_UI.CARD.PUBLISHED_STATE.NOT_SAVED,
           },
         ]
       : []),

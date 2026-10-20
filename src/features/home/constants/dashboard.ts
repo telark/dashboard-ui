@@ -1,8 +1,14 @@
 import type React from 'react';
 import { DatabaseOutlined } from '@ant-design/icons';
-import { AiOutlineHistory, AiOutlineLineChart, AiOutlineWarning } from 'react-icons/ai';
+import {
+  AiOutlineHistory,
+  AiOutlineLineChart,
+  AiOutlineRocket,
+  AiOutlineWarning,
+} from 'react-icons/ai';
 import { SiKubernetes } from 'react-icons/si';
 import { DEFAULT_COLORS, Icons } from '../../../constants';
+import { ALL_EXCLUDED, DISCOVERY_LABELS } from '../../applications';
 import type { PlanEventKey, SeverityKey } from '../models';
 
 export const HOME_DASHBOARD_TEXTS = {
@@ -42,8 +48,37 @@ export const HOME_DASHBOARD_TEXTS = {
     MB: 'MB',
   },
   PLANS_ATTENTION: {
-    TITLE: 'Plans Needing Attention',
+    TITLE: 'Plans with issues',
     EMPTY: 'No failed, degraded, or drifted plans.',
+    NO_PLANS: 'No protection plans yet. Nothing is protected.',
+  },
+  NEEDS_ATTENTION: {
+    TITLE: 'Needs attention',
+    CRITICAL_OPEN: (count: number) =>
+      `${count} critical ${count === 1 ? 'incident' : 'incidents'} open`,
+    OPEN: (count: number) => `${count} ${count === 1 ? 'incident' : 'incidents'} open`,
+    ALL_CLEAR: 'All clear',
+    CHECKED: 'checked',
+  },
+  GET_STARTED: {
+    TITLE: 'Get started',
+    DISCOVER: {
+      TITLE: 'Discover applications',
+      SCANNING: (count: number) =>
+        `Scanning your cluster. ${count} ${count === 1 ? 'application' : 'applications'} found so far.`,
+      FOUND: (count: number) => `${count} ${count === 1 ? 'application' : 'applications'} found.`,
+      NONE: `No applications found yet. Telark groups workloads by the label ${DISCOVERY_LABELS}.`,
+      ALL_EXCLUDED,
+    },
+    CREATE_PLAN: {
+      TITLE: 'Create your first protection plan',
+      HELPER: 'New plans start in Audit mode, so nothing is blocked until you switch to Enforce.',
+      BUTTON: 'Create a plan',
+    },
+    WATCH: {
+      TITLE: 'Watch what changes',
+      HELPER: 'Telark records every change to a protected application, field by field.',
+    },
   },
   RECENT_CHANGES: {
     TITLE: 'Recently Changed',
@@ -79,15 +114,17 @@ export const HOME_CHART_TEXTS = {
   },
 } as const;
 
-// Applications and Protection plans reuse the sidebar icons, Storage the snapshot icon.
+// Applications, Protection plans and Needs attention reuse the sidebar icons, Storage the snapshot icon.
 export const HOME_BOX_ICONS = {
   CLUSTER: SiKubernetes,
   APPLICATIONS: Icons.Application,
   PLANS: Icons.ProtectionPlans,
+  NEEDS_ATTENTION: Icons.Insights,
   STORAGE: DatabaseOutlined,
   PLANS_ATTENTION: AiOutlineWarning,
   RECENT_CHANGES: AiOutlineHistory,
   ACTIVITY: AiOutlineLineChart,
+  GET_STARTED: AiOutlineRocket,
 } as const;
 
 export const HOME_DASHBOARD_LAYOUT = {
@@ -113,6 +150,8 @@ export const HOME_DASHBOARD_LAYOUT = {
   SECTION_GAP_PX: 8,
   SPINNER_SIZE_PX: 24,
   LIST_LIMIT: 2,
+  STEP_NUMBER_SIZE_PX: 20,
+  STEP_SPINNER_SIZE_PX: 12,
 } as const;
 
 export const HOME_CHART_LAYOUT = {

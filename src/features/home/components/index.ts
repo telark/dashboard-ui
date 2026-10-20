@@ -1,5 +1,7 @@
+export { default as AttentionBox } from './boxes/AttentionBox';
 export { default as ChartBox } from './boxes/ChartBox';
 export { default as ClusterBox } from './boxes/ClusterBox';
+export { default as GetStartedBox } from './boxes/GetStartedBox';
 export { default as ListBox } from './boxes/ListBox';
 export { default as StorageBox } from './boxes/StorageBox';
 export { default as SummaryBox } from './boxes/SummaryBox';

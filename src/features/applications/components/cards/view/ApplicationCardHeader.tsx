@@ -27,9 +27,10 @@ import {
   getCardMenuButtonStyle,
   getPillColor,
 } from '../../../../../constants';
-import type { Application, SyncStatusValue } from '../../../models';
+import type { Application, ApplicationProtection, SyncStatusValue } from '../../../models';
 import { APPLICATION_CARD, APPLICATIONS_UI, SYNC_STATUS_VALUE } from '../../../constants';
 import { CardTagList } from '../../../../../components/display/card';
+import ProtectionBadge from '../../protection/ProtectionBadge';
 import FancySpinner from '../../../../../components/animation/FancySpinner';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import { useDispatch, useSelector } from 'react-redux';
@@ -48,6 +49,8 @@ interface ApplicationCardHeaderProps {
   bulkMode?: boolean;
   selected?: boolean;
   onToggleSelect?: (name: string, checked: boolean) => void;
+  // null while the plans load; unset when the viewer can't read them.
+  protection?: ApplicationProtection | null;
 }
 
 const SYNC_TAG_CONFIG: Record<SyncStatusValue, { icon: React.ReactNode; label: string }> = {
@@ -66,7 +69,14 @@ const SYNC_TAG_CONFIG: Record<SyncStatusValue, { icon: React.ReactNode; label: s
 };
 
 const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
-  ({ application, onEditApplication, bulkMode = false, selected = false, onToggleSelect }) => {
+  ({
+    application,
+    onEditApplication,
+    bulkMode = false,
+    selected = false,
+    onToggleSelect,
+    protection,
+  }) => {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const { message } = AntdApp.useApp();
@@ -239,6 +249,7 @@ const ApplicationCardHeader: React.FC<ApplicationCardHeaderProps> = memo(
                 </span>
               </Tooltip>
             ) : null}
+            {protection && <ProtectionBadge protection={protection} />}
             <Tag color={getPillColor(accent)}>{statusText}</Tag>
             <Dropdown
               trigger={['click']}

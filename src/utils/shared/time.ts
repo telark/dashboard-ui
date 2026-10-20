@@ -75,8 +75,17 @@ export const formatTimeZoneOffset = (timeZone: string, date: Date = new Date()):
     });
     offsetFormatters.set(timeZone, formatter);
   }
-  return formatter.formatToParts(date).find(({ type }) => type === 'timeZoneName')?.value ?? '';
+  const name =
+    formatter.formatToParts(date).find(({ type }) => type === 'timeZoneName')?.value ?? '';
+  if (name === TIME_ZONE.INTL_OFFSET_PREFIX) return TIME_ZONE.ZERO_OFFSET_LABEL;
+  return name.replace(TIME_ZONE.INTL_OFFSET_PREFIX, TIME_ZONE.OFFSET_PREFIX);
 };
+
+export const buildTimeZoneOptions = () =>
+  getSupportedTimeZones().map((zone) => ({
+    value: zone,
+    label: `${zone} (${formatTimeZoneOffset(zone)})`,
+  }));
 
 // Keyed on the stored user string so a timezone change in Settings applies at once.
 let cachedUserRaw: string | null | undefined;

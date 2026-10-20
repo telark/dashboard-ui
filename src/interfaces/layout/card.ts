@@ -21,5 +21,5 @@ export type CardChipProps = Omit<CardChipItem, 'key'>;
 export interface CardChipSectionProps {
   label: string;
   items: CardChipItem[];
-  emptyText: string;
+  emptyText: React.ReactNode;
 }

@@ -48,6 +48,7 @@ export const STATUS_COLORS = {
     end: undefined,
     cancel: undefined,
     manual: undefined,
+    window: undefined,
   },
   APPLICATION_HEALTH: {
     healthy: SUCCESS,
@@ -60,9 +61,12 @@ export const STATUS_COLORS = {
     recovery: SUCCESS,
     other: NEUTRAL,
   },
+  // Protection is not health: only Protected carries an accent, never the health green or amber.
   APPLICATION_COVERAGE: {
-    active: SUCCESS,
-    upcoming: WARNING,
+    enforcing: INFO,
+    auditing: undefined,
+    upcoming: undefined,
+    none: undefined,
   },
   ROLLBACK: {
     success: SUCCESS,
@@ -81,14 +85,22 @@ export const STATUS_COLORS = {
     active: SUCCESS,
     suspended: DANGER,
   } as Readonly<Record<string, string>>,
+  // A pending break-glass request waits on the bootstrap account, so it is the one that asks for attention.
+  BOOTSTRAP_REQUEST: {
+    pending: WARNING,
+    approved: INFO,
+    canceled: undefined,
+    completed: SUCCESS,
+  } as Readonly<Record<string, string | undefined>>,
   INSIGHT_SEVERITY: {
     critical: DANGER,
     warning: WARNING,
     info: TEXT_MUTED,
   },
+  // Text with a dot, never red or amber: those, and the gray pill, mean severity.
   INSIGHT_STATE: {
-    open: DANGER,
-    updated: WARNING,
+    open: NEUTRAL,
+    updated: NEUTRAL,
     stale: TEXT_MUTED,
     resolved: SUCCESS,
   },
