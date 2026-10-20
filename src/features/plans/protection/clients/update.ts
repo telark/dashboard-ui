@@ -1,6 +1,6 @@
 import { Client, discoveryApiClient } from '../../../../api/index';
 import { Endpoints } from '../../../../constants';
-import type { PlanApprovalMode, PlanScopeExclusions, ProtectionPlan } from '../models';
+import type { PlanApprovalMode, PlanRepeat, PlanScopeExclusions, ProtectionPlan } from '../models';
 import type { ApiResponse } from './shared';
 
 export interface UpdatePlanPayload {
@@ -18,7 +18,9 @@ export interface UpdatePlanPayload {
   mode: string;
   timeMode: string;
   timeRange?: { startAt: string; endAt: string };
+  repeat?: PlanRepeat;
   participantRefs?: string[];
+  kindRef?: string;
   environmentRef?: string;
   tagRefs?: string[];
   approvalMode?: PlanApprovalMode;

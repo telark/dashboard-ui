@@ -15,6 +15,7 @@ export function applyPlanFilters(
   const createdBy = (filters[PPC.FILTER_KEYS.CREATED_BY] as string[]) || [];
   const templates = (filters[PPC.FILTER_KEYS.TEMPLATES] as string[]) || [];
   const targets = (filters[PPC.FILTER_KEYS.TARGETS] as string[]) || [];
+  const kind = (filters[PPC.FILTER_KEYS.KIND] as string[]) || [];
   const environment = (filters[PPC.FILTER_KEYS.ENVIRONMENT] as string[]) || [];
   const tags = (filters[PPC.FILTER_KEYS.TAGS] as string[]) || [];
 
@@ -23,6 +24,7 @@ export function applyPlanFilters(
     !has(createdBy) &&
     !has(templates) &&
     !has(targets) &&
+    !has(kind) &&
     !has(environment) &&
     !has(tags) &&
     !dateRange?.from &&
@@ -46,6 +48,7 @@ export function applyPlanFilters(
           : (p.scope.applicationRefs ?? []);
       if (!planTargets.some((t) => targets.includes(t))) return false;
     }
+    if (has(kind) && !kind.includes(p.kindRef ?? '')) return false;
     if (has(environment) && !environment.includes(p.environmentRef ?? '')) return false;
     if (has(tags) && !(p.tagRefs ?? []).some((t) => tags.includes(t))) return false;
     return true;

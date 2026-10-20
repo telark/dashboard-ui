@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Form } from 'antd';
 import type { FormInstance } from 'antd';
 import type { FormValues, PolicyEntry } from '../components/create';
+import { repeatPayload } from '../utils/planFormValues';
 
 interface UsePlanFormStateOptions {
   form: FormInstance<FormValues>;
@@ -37,7 +38,10 @@ const normalizeFormSnapshot = (values: FormValues, policies: PolicyEntry[]) => (
   timeMode: values.timeMode,
   startAt: values.startAt ? values.startAt.toISOString() : null,
   endAt: values.endAt ? values.endAt.toISOString() : null,
+  // Only what the payload would send: the rule's fields don't count under another mode.
+  repeat: values.timeMode === 'repeating' ? repeatPayload(values) : null,
   participantRefs: [...(values.participantRefs ?? [])].sort(),
+  kindRef: values.kindRef ?? '',
   environmentRef: values.environmentRef ?? '',
   tagRefs: [...(values.tagRefs ?? [])].sort(),
   approvalMode: values.approvalMode ?? '',

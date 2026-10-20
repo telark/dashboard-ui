@@ -1,6 +1,7 @@
 const SCOPES = {
   GROUPS: 'groups',
   ROLES: 'roles',
+  PLAN_KINDS: 'plan-kinds',
   PLAN_ENVIRONMENTS: 'plan-environments',
   PLAN_TAGS: 'plan-tags',
 } as const;
@@ -95,6 +96,11 @@ const LABELS = buildLabels({
 });
 
 const LABELS_BY_SCOPE: Partial<Record<string, typeof LABELS>> = {
+  [SCOPES.PLAN_KINDS]: buildLabels({
+    noun: 'Kind',
+    plural: 'kinds',
+    example: 'e.g. QA, Release',
+  }),
   [SCOPES.PLAN_ENVIRONMENTS]: buildLabels({
     noun: 'Environment',
     plural: 'environments',

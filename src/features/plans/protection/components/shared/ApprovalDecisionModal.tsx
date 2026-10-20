@@ -6,6 +6,7 @@ import { formatDateTime } from '../../../../../utils/shared/time';
 import { PLAN_APPROVAL, PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import { usePlanTaxonomyLists } from '../../hooks/usePlanTaxonomies';
 import type { PlanApprovalDecision, ProtectionPlan } from '../../models';
+import { formatRepeatRule } from '../../utils/repeatRule';
 
 interface ApprovalDecisionModalProps {
   open: boolean;
@@ -31,16 +32,21 @@ const buildSummary = (plan: ProtectionPlan, environmentName: string | undefined)
           CARD_LABELS.RANGE_SEPARATOR
         }${formatDateTime(plan.timeRange.endAt, CARD_LABELS.WINDOW_TIME_FORMAT)}`
       : CARD_LABELS.PERMANENT_RANGE;
+  const schedule =
+    plan.timeMode === 'repeating' && plan.repeat ? formatRepeatRule(plan.repeat) : window;
   return [
     PPC.LABELS.EXECUTION_LABELS[plan.approvalMode ?? 'automatic'],
     environmentName,
     ACTIONS.DECISION_POLICIES_COUNT(plan.policies?.length ?? 0),
     targets,
-    window,
+    schedule,
   ]
     .filter(Boolean)
     .join(CARD_LABELS.META_SEPARATOR);
 };
+
+const approveBody = (plan: ProtectionPlan): string =>
+  plan.timeMode === 'repeating' ? ACTIONS.APPROVE_MODAL_BODY_SERIES : ACTIONS.APPROVE_MODAL_BODY;
 
 const ApprovalDecisionModal: React.FC<ApprovalDecisionModalProps> = ({
   open,
@@ -78,7 +84,7 @@ const ApprovalDecisionModal: React.FC<ApprovalDecisionModalProps> = ({
       getContainer={() => document.body}
       customMessage={
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
-          <span>{rejecting ? ACTIONS.REJECT_MODAL_BODY : ACTIONS.APPROVE_MODAL_BODY}</span>
+          <span>{rejecting ? ACTIONS.REJECT_MODAL_BODY : approveBody(plan)}</span>
           <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>
             {buildSummary(plan, environmentName)}
           </span>

@@ -1,12 +1,14 @@
 import { Client, discoveryApiClient } from '../../../../api/index';
 import { Endpoints } from '../../../../constants';
-import type { PlanApprovalMode, ProtectionPlan } from '../models';
+import type { PlanApprovalMode, PlanRepeat, ProtectionPlan } from '../models';
 import type { ApiResponse } from './shared';
 
 export interface DuplicatePlanPayload {
   name?: string;
   timeMode?: string;
   timeRange?: { startAt: string; endAt: string };
+  repeat?: PlanRepeat;
+  kindRef?: string;
   environmentRef?: string;
   tagRefs?: string[];
   approvalMode?: PlanApprovalMode;

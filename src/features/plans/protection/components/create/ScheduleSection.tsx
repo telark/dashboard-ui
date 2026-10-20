@@ -6,6 +6,7 @@ import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPla
 import Section from '../../../../../components/display/sections/Section';
 import DatePicker from '../../../../../components/display/inputs/DatePicker';
 import { toZonedDayjs, zonedNow } from '../../../../../utils/layout';
+import RepeatFields from '../shared/RepeatFields';
 import { FORM_ITEM_CLASS } from './types';
 
 const { SECTIONS, FORM } = PPC.CREATE_PAGE;
@@ -119,6 +120,8 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({
               </div>
             </div>
           )}
+
+          {timeMode === 'repeating' && <RepeatFields disabled={disabled} />}
         </div>
       }
     />

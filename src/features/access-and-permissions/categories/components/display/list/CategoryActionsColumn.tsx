@@ -34,6 +34,10 @@ const PERMISSIONS_BY_SCOPE: Record<
     edit: ACTION_PERMISSIONS.roles.editCategory,
     delete: ACTION_PERMISSIONS.roles.deleteCategory,
   },
+  [CC.SCOPES.PLAN_KINDS]: {
+    edit: ACTION_PERMISSIONS.protectionPlans.editCategory,
+    delete: ACTION_PERMISSIONS.protectionPlans.deleteCategory,
+  },
   [CC.SCOPES.PLAN_ENVIRONMENTS]: {
     edit: ACTION_PERMISSIONS.protectionPlans.editCategory,
     delete: ACTION_PERMISSIONS.protectionPlans.deleteCategory,

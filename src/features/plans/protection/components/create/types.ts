@@ -1,12 +1,20 @@
 import type dayjs from 'dayjs';
-import type { PlanApprovalMode, ScopeType } from '../../models';
+import type { PlanApprovalMode, PlanRepeatDay, ScopeType } from '../../models';
 
 export interface PolicyEntry {
   templateID: string;
   params: Record<string, string[]>;
 }
 
-export interface FormValues {
+// The repeating rule's fields, shared by the plan form and Duplicate.
+export interface RepeatFormValues {
+  repeatDays?: PlanRepeatDay[];
+  repeatStart?: dayjs.Dayjs;
+  repeatEnd?: dayjs.Dayjs;
+  repeatTimeZone?: string;
+}
+
+export interface FormValues extends RepeatFormValues {
   name: string;
   description?: string;
   severity?: string;
@@ -21,6 +29,7 @@ export interface FormValues {
   startAt?: dayjs.Dayjs;
   endAt?: dayjs.Dayjs;
   participantRefs?: string[];
+  kindRef?: string;
   environmentRef?: string;
   tagRefs?: string[];
   approvalMode?: PlanApprovalMode;

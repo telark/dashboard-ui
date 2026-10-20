@@ -23,6 +23,11 @@ import type { Category } from '../../../access-and-permissions/categories/models
 import { usePermission, ACTION_PERMISSIONS } from '../../../auth/hooks';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../constants/protectionPlans';
 
+const VIEW_LABELS: Partial<Record<CategoryScope, string>> = {
+  [CC.SCOPES.PLAN_KINDS]: PPC.LABELS.TAXONOMY.KINDS,
+  [CC.SCOPES.PLAN_ENVIRONMENTS]: PPC.LABELS.TAXONOMY.ENVIRONMENTS,
+};
+
 interface PlanTaxonomyPageProps {
   scope: CategoryScope;
   onBack: () => void;
@@ -30,10 +35,7 @@ interface PlanTaxonomyPageProps {
 
 const PlanTaxonomyPage: React.FC<PlanTaxonomyPageProps> = ({ scope, onBack }) => {
   const L = labelsFor(scope);
-  const viewLabel =
-    scope === CC.SCOPES.PLAN_ENVIRONMENTS
-      ? PPC.LABELS.TAXONOMY.ENVIRONMENTS
-      : PPC.LABELS.TAXONOMY.TAGS;
+  const viewLabel = VIEW_LABELS[scope] ?? PPC.LABELS.TAXONOMY.TAGS;
 
   const [addPanelOpen, setAddPanelOpen] = useState(false);
   const [editPanelOpen, setEditPanelOpen] = useState(false);

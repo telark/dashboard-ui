@@ -8,10 +8,9 @@ import { updateUser } from '../../../access-and-permissions/users/clients';
 import { fetchCurrentUserDetails } from '../../../access-and-permissions/users/utils';
 import { getCurrentUser, setCurrentUser } from '../../../auth/utils/session/user';
 import {
-  formatTimeZoneOffset,
+  buildTimeZoneOptions,
   getBrowserRegion,
   getBrowserTimeZone,
-  getSupportedTimeZones,
   isValidTimeZone,
 } from '../../../../utils/shared/time';
 import type { User, UserSettings } from '../../../access-and-permissions/users/models';
@@ -19,12 +18,6 @@ import { SETTINGS_CONSTANTS } from '../../constants';
 import { TIMEZONE_SECTION_CONSTANTS } from './constants';
 
 const { LABELS, REGION_CODES, DISPLAY_LOCALE } = TIMEZONE_SECTION_CONSTANTS;
-
-const buildTimeZoneOptions = () =>
-  getSupportedTimeZones().map((zone) => ({
-    value: zone,
-    label: `${zone} (${formatTimeZoneOffset(zone)})`,
-  }));
 
 const buildRegionOptions = () => {
   const names = new Intl.DisplayNames([DISPLAY_LOCALE], { type: 'region' });

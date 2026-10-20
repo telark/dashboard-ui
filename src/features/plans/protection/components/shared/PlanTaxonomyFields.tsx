@@ -11,6 +11,7 @@ import { FORM_ITEM_CLASS } from '../create/types';
 const { FORM } = PPC.CREATE_PAGE;
 
 interface PlanTaxonomyFieldsProps {
+  planKindOptions: { value: string; label: string }[];
   environmentOptions: { value: string; label: string }[];
   tagOptions: { value: string; label: string }[];
   editMode?: boolean;
@@ -20,6 +21,7 @@ const deriveApprovalMode = (environmentRef?: string): PlanApprovalMode =>
   environmentRef === PLAN_APPROVAL.PRODUCTION_ENVIRONMENT_ID ? 'required' : 'automatic';
 
 const PlanTaxonomyFields: React.FC<PlanTaxonomyFieldsProps> = ({
+  planKindOptions,
   environmentOptions,
   tagOptions,
   editMode = false,
@@ -34,6 +36,14 @@ const PlanTaxonomyFields: React.FC<PlanTaxonomyFieldsProps> = ({
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 }}>
+      <Form.Item
+        name="kindRef"
+        label={FORM.KIND_LABEL}
+        style={{ marginBottom: 0 }}
+        className={FORM_ITEM_CLASS}
+      >
+        <Select allowClear placeholder={FORM.KIND_PLACEHOLDER} options={planKindOptions} />
+      </Form.Item>
       <Form.Item
         name="environmentRef"
         label={FORM.ENVIRONMENT_LABEL}
@@ -50,7 +60,7 @@ const PlanTaxonomyFields: React.FC<PlanTaxonomyFieldsProps> = ({
       <Form.Item
         name="tagRefs"
         label={FORM.TAGS_LABEL}
-        style={{ marginBottom: 0 }}
+        style={{ marginBottom: 0, gridColumn: '1 / -1' }}
         className={FORM_ITEM_CLASS}
       >
         <Select
