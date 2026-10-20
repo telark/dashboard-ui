@@ -20,13 +20,81 @@ import {
   selectNotificationsLoading,
   selectNotificationsError,
 } from '../store';
+import { keepNotificationsStream } from '../clients';
 import { NOTIFICATIONS_CACHE_KEY, NOTIFICATIONS_POLL_INTERVAL_MS } from '../constants';
 import { readNotificationsCache, writeNotificationsCache } from '../utils';
+import { pollWhileVisible } from '../../../utils/helpers/poll';
 import type { Notification, NotificationsCache } from '../models';
 
 // Lists hydrated from another tab's write (the slice keeps the array as is): persisting one again
 // echoes it back, and two tabs holding different lists would then overwrite each other forever.
 const receivedFromOtherTab = new WeakSet<Notification[]>();
+
+// At most one run in flight and one queued, so a burst of changes costs two requests.
+const coalesce = (run: () => Promise<void>): (() => void) => {
+  let inFlight = false;
+  let queued = false;
+  const call = (): void => {
+    if (inFlight) {
+      queued = true;
+      return;
+    }
+    inFlight = true;
+    void run().finally(() => {
+      inFlight = false;
+      if (queued) {
+        queued = false;
+        call();
+      }
+    });
+  };
+  return call;
+};
+
+// One stream per visible tab, closed while hidden. Its connect makes the one refetch on return (or the
+// first failure does). The bell polls while the stream is down, and after a failed fetch until one succeeds.
+const followNotifications = (fetchList: () => Promise<boolean>): (() => void) => {
+  let stream: AbortController | null = null;
+  let stopPolling: (() => void) | null = null;
+  let live = false;
+  let fetchOnShow = true;
+  // Armed only while the tab shows, so a fetch that ends after a hide never polls a hidden tab.
+  const poll = (on: boolean): void => {
+    if (on && stream) stopPolling ??= pollWhileVisible(refetch, NOTIFICATIONS_POLL_INTERVAL_MS);
+    if (!on) {
+      stopPolling?.();
+      stopPolling = null;
+    }
+  };
+  // A failed fetch while live would leave the list stale until the next change.
+  const refetch = coalesce(async () => poll(!(await fetchList()) || !live));
+  const onConnected = (connected: boolean): void => {
+    live = connected;
+    if (connected || fetchOnShow) refetch();
+    else poll(true);
+    fetchOnShow = false;
+  };
+  const show = (): void => {
+    if (stream) return;
+    fetchOnShow = true;
+    stream = new AbortController();
+    poll(true);
+    void keepNotificationsStream(refetch, onConnected, stream.signal);
+  };
+  const hide = (): void => {
+    live = false;
+    stream?.abort();
+    stream = null;
+    poll(false);
+  };
+  const onVisibility = (): void => (document.hidden ? hide() : show());
+  if (!document.hidden) show();
+  document.addEventListener('visibilitychange', onVisibility);
+  return () => {
+    hide();
+    document.removeEventListener('visibilitychange', onVisibility);
+  };
+};
 
 export interface UseNotificationsResult {
   notifications: Notification[];
@@ -49,7 +117,6 @@ export function useNotifications(): UseNotificationsResult {
   const error = useSelector(selectNotificationsError);
 
   const hydratedRef = useRef(false);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const stateSnapshotRef = useRef<{ items: Notification[]; unreadCount: number }>({
     items: [],
     unreadCount: 0,
@@ -103,61 +170,32 @@ export function useNotifications(): UseNotificationsResult {
     return () => window.removeEventListener('storage', onStorage);
   }, [dispatch]);
 
+  // Resolves with whether the list arrived: a silent failure changes nothing the caller could see.
   const fetchNow = useCallback(
     (silent: boolean) => {
-      if (!userID) return Promise.resolve();
-      return dispatch(fetchNotificationsThunk({ userId: userID, silent })).then(() => undefined);
+      if (!userID) return Promise.resolve(false);
+      return dispatch(fetchNotificationsThunk({ userId: userID, silent })).then((action) =>
+        fetchNotificationsThunk.fulfilled.match(action),
+      );
     },
     [dispatch, userID],
   );
 
-  // Polling lifecycle: start when userID set + visible; pause when hidden; stop on logout.
+  // Live while a user is signed in; stopped on logout.
   useEffect(() => {
     if (!userID) {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
       // Only this tab's state: a tab still booting has no user yet, and clearing the shared cache
       // would empty every other tab's list. Logout and session expiry clear it (purgeLocalUserData).
       dispatch(resetNotifications());
       return;
     }
-
-    const start = () => {
-      if (intervalRef.current) return;
-      intervalRef.current = setInterval(() => {
-        if (!document.hidden) {
-          void fetchNow(true);
-        }
-      }, NOTIFICATIONS_POLL_INTERVAL_MS);
-    };
-
-    const stop = () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-
-    // initial fetch (non-silent so the loading state can render)
-    void fetchNow(false);
-    if (!document.hidden) start();
-
-    const onVisibility = () => {
-      if (document.hidden) {
-        stop();
-      } else {
-        void fetchNow(true);
-        start();
-      }
-    };
-    document.addEventListener('visibilitychange', onVisibility);
-
-    return () => {
-      stop();
-      document.removeEventListener('visibilitychange', onVisibility);
-    };
+    // The first fetch is not silent, so the loading state can render.
+    let loaded = false;
+    return followNotifications(() => {
+      const silent = loaded;
+      loaded = true;
+      return fetchNow(silent);
+    });
   }, [dispatch, fetchNow, userID]);
 
   const markRead = useCallback(
@@ -210,7 +248,7 @@ export function useNotifications(): UseNotificationsResult {
     }
   }, [dispatch, userID]);
 
-  const refresh = useCallback(() => fetchNow(false), [fetchNow]);
+  const refresh = useCallback(() => fetchNow(false).then(() => undefined), [fetchNow]);
 
   return {
     notifications,
