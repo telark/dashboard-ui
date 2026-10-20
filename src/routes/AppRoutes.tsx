@@ -7,7 +7,7 @@ import FullPageLoader from '../components/display/views/FullPageLoader';
 import { NoPermissionCard } from '../components/shared';
 import { APP_CONFIGS, APP_ROUTES, HEADER_LAYOUT, MENU_LABELS } from '../constants';
 import type { RequiredPermission } from '../interfaces/shared';
-import { hasSessionToken, isEnrollLink } from '../features/auth/utils';
+import { isEnrollLink, isSignedIn } from '../features/auth/utils';
 import { PermissionGate, ACTION_PERMISSIONS } from '../features/auth/hooks';
 
 const { view: viewApplications } = ACTION_PERMISSIONS.applications;
@@ -29,6 +29,7 @@ const Dashboard = lazy(() => import('../features/home/pages/Dashboard'));
 const Login = lazy(() => import('../features/auth/pages/flow/Login'));
 const Register = lazy(() => import('../features/auth/pages/flow/Register'));
 const GoogleCallback = lazy(() => import('../features/auth/pages/flow/GoogleCallback'));
+const BreakGlass = lazy(() => import('../features/bootstrap/pages/BreakGlass'));
 
 // resources
 const ApplicationsGlobalView = lazy(() => import('../features/applications/pages/main/GlobalView'));
@@ -52,7 +53,7 @@ const ProtectionPlanDetailsView = lazy(
 );
 
 const AppRoutes: React.FC = () => {
-  const isAuthenticated = hasSessionToken();
+  const isAuthenticated = isSignedIn();
   const location = useLocation();
   useEffect(() => {
     (document.getElementById(APP_CONFIGS.LAYOUT.CONTENT_ID) ?? window).scrollTo({
@@ -67,10 +68,13 @@ const AppRoutes: React.FC = () => {
     >
       <Routes location={location}>
         {/* One layout instance spans both auth routes, so the brand panel is not
-            remounted when navigating between login and register. */}
+            remounted when navigating between login and register. A signed-in browser keeps
+            the break-glass approval page, which never touches its session. */}
         <Route
           element={
-            isAuthenticated && !isEnrollLink(location.pathname, location.search) ? (
+            isAuthenticated &&
+            location.pathname !== APP_ROUTES.BREAK_GLASS &&
+            !isEnrollLink(location.pathname, location.search, location.hash) ? (
               <Navigate to={APP_ROUTES.HOME} replace />
             ) : (
               <AuthLayout />
@@ -79,6 +83,7 @@ const AppRoutes: React.FC = () => {
         >
           <Route path={APP_ROUTES.LOGIN} element={<Login />} />
           <Route path={APP_ROUTES.REGISTER} element={<Register />} />
+          <Route path={APP_ROUTES.BREAK_GLASS} element={<BreakGlass />} />
         </Route>
         <Route path={APP_ROUTES.GOOGLE_CALLBACK} element={<GoogleCallback />} />
         <Route
