@@ -58,6 +58,8 @@ export const HOME_DASHBOARD_TEXTS = {
       `${count} critical ${count === 1 ? 'incident' : 'incidents'} open`,
     OPEN: (count: number) => `${count} ${count === 1 ? 'incident' : 'incidents'} open`,
     ALL_CLEAR: 'All clear',
+    // Without settings read the automatic-analysis switch is unknown, so "All clear" can't be claimed.
+    NONE_OPEN: 'No open incidents',
     CHECKED: 'checked',
   },
   GET_STARTED: {
@@ -141,7 +143,6 @@ export const HOME_DASHBOARD_LAYOUT = {
   BIG_VALUE_FONT_SIZE_PX: 28,
   BIG_VALUE_CAPTION_GAP_PX: 6,
   BREAKDOWN_GAP_PX: 12,
-  DOT_SIZE_PX: 8,
   ROW_PADDING: '4px 6px',
   ROW_RADIUS_PX: 8,
   ROW_GAP_PX: 10,

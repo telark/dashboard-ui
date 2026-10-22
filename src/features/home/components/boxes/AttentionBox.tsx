@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { APP_ROUTES, DEFAULT_COLORS } from '../../../../constants';
+import { APP_ROUTES, DEFAULT_COLORS, FONT_WEIGHT } from '../../../../constants';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import {
   INSIGHTS_UI,
@@ -38,7 +38,7 @@ const NothingOpen: React.FC<{ indexedAt?: string }> = ({ indexedAt }) => {
   }
   return (
     <div style={S.MUTED_TEXT}>
-      {A.ALL_CLEAR}
+      {autoAnalyze ? A.ALL_CLEAR : A.NONE_OPEN}
       {indexedAt ? (
         <>
           {T.META_SEPARATOR}
@@ -67,7 +67,7 @@ const AttentionBox: React.FC<AttentionBoxProps> = memo(({ page, ...state }) => (
         <div
           style={{
             fontSize: L.ROW_TITLE_FONT_SIZE_PX,
-            fontWeight: 600,
+            fontWeight: FONT_WEIGHT.SEMIBOLD,
             color: DEFAULT_COLORS.TEXT_PRIMARY,
           }}
         >

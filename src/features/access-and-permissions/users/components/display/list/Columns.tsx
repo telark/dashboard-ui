@@ -1,5 +1,13 @@
 import { USERS_CONSTANTS as UC } from '../../../constants';
-import { DEFAULT_COLORS, Icons, TAG_CLASS, TIME_FORMATS } from '../../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  Icons,
+  TAG_CLASS,
+  TIME_FORMATS,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  SPACING,
+} from '../../../../../../constants';
 import { formatDateTime } from '../../../../../../utils/shared/time';
 import { generateColumn } from '../../../../../../components/display/table/utils';
 import type { GenerateColumnCtx } from '../../../../../../interfaces/layout/table';
@@ -11,7 +19,6 @@ import React from 'react';
 import { Tag, Tooltip } from 'antd';
 import { pluralize } from '../../../../../../utils/helpers/format';
 import { getTotalRoleCount } from '../../../utils';
-import BootstrapPill from '../shared/BootstrapPill';
 import InvitePill from '../shared/InvitePill';
 
 const RoleIcon = Icons.Role;
@@ -35,12 +42,12 @@ const Columns = (ctx: GenerateColumnCtx, groups: Group[] = [], canViewGroups = t
         align: 'left',
         width: UC.SIZES.COLUMNS.USERNAME,
         render: (_: unknown, record: User) => (
-          <div style={{ ...fillCell, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ ...fillCell, display: 'flex', alignItems: 'center', gap: SPACING.SM }}>
             <UserAvatar avatar={record.avatar} username={record.username} size={32} />
             <span
               title={record.username}
               style={{
-                fontWeight: 700,
+                fontWeight: FONT_WEIGHT.BOLD,
                 color: DEFAULT_COLORS.TEXT_PRIMARY,
                 minWidth: 0,
                 overflow: 'hidden',
@@ -50,7 +57,6 @@ const Columns = (ctx: GenerateColumnCtx, groups: Group[] = [], canViewGroups = t
             >
               {record.username}
             </span>
-            {record.bootstrap && <BootstrapPill />}
           </div>
         ),
       },
@@ -96,7 +102,7 @@ const Columns = (ctx: GenerateColumnCtx, groups: Group[] = [], canViewGroups = t
           const groupRolesHidden = !canViewGroups && (record.groupRefs?.length ?? 0) > 0;
           if (total === 0 && !groupRolesHidden) {
             return (
-              <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 12 }}>
+              <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: FONT_SIZE.SM }}>
                 {UC.LABELS.COLUMNS.NO_ROLES}
               </span>
             );
