@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, SPACING, FONT_WEIGHT } from '../../../../constants';
 import {
   HOME_BOX_ICONS,
   HOME_DASHBOARD_LAYOUT as L,
@@ -20,7 +20,7 @@ const Field: React.FC<{ label: string; value: string; grow?: boolean }> = ({
     style={{
       display: 'flex',
       flexDirection: 'column',
-      gap: 2,
+      gap: SPACING.XXS,
       minWidth: 0,
       flex: grow ? 1 : 'none',
     }}
@@ -30,7 +30,7 @@ const Field: React.FC<{ label: string; value: string; grow?: boolean }> = ({
       style={{
         ...S.ELLIPSIS,
         fontSize: L.ROW_TITLE_FONT_SIZE_PX,
-        fontWeight: 600,
+        fontWeight: FONT_WEIGHT.SEMIBOLD,
         color: DEFAULT_COLORS.TEXT_PRIMARY,
       }}
     >

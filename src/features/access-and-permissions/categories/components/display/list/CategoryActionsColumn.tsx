@@ -1,7 +1,14 @@
 import React from 'react';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
-import { DEFAULT_COLORS, ROW_ACTION_CLASS } from '../../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  ROW_ACTION_CLASS,
+  FONT_SIZE,
+  MOTION,
+  RADIUS,
+  SPACING,
+} from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC } from '../../../../roles/constants';
 import { CATEGORIES_CONSTANTS as CC, labelsFor } from '../../../constants';
 import type { CategoryScope } from '../../../constants';
@@ -57,11 +64,11 @@ const actionButtonStyle = (disabled: boolean): React.CSSProperties => ({
   alignItems: 'center',
   justifyContent: 'center',
   color: disabled ? DEFAULT_COLORS.ICON_MUTED : DEFAULT_COLORS.TEXT_MUTED,
-  fontSize: 16,
+  fontSize: FONT_SIZE.LG,
   width: ACTION_SIZE,
   height: ACTION_SIZE,
-  borderRadius: 4,
-  transition: 'color 0.2s, opacity 0.2s',
+  borderRadius: RADIUS.XS,
+  transition: `color ${MOTION.BASE_MS}ms, opacity ${MOTION.BASE_MS}ms`,
   opacity: disabled ? 0.6 : 1,
   pointerEvents: disabled ? 'none' : 'auto',
 });
@@ -116,7 +123,7 @@ export const CategoryActionsColumn: React.FC<CategoryActionsColumnProps> = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-end',
-        gap: 12,
+        gap: SPACING.MD,
       }}
     >
       {showEdit && (

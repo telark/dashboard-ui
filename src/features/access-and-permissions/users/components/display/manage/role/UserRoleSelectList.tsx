@@ -10,6 +10,7 @@ import type { Role } from '../../../../../roles/models';
 import { ACTION_PERMISSIONS, useCanGrantScopes, usePermission } from '../../../../../../auth/hooks';
 import { NoPermissionCard } from '../../../../../../../components/shared';
 import LockedRolePill from '../../../../../groups/components/display/role/LockedRolePill';
+import { SPACING } from '../../../../../../../constants';
 
 const VIEW_ROLES = ACTION_PERMISSIONS.roles.view;
 
@@ -76,7 +77,7 @@ const UserRoleSelectList: React.FC<UserRoleSelectListProps> = ({
   }
 
   return (
-    <Form.Item name="roleRefs" style={{ margin: 0, width: '100%' }}>
+    <Form.Item name="roleRefs" style={{ margin: SPACING.NONE, width: '100%' }}>
       <Checkbox.Group
         value={currentSelectedRoles}
         onChange={handleChange}

@@ -4,6 +4,7 @@ import { PLAN_APPROVAL, PROTECTION_PLANS_CONSTANTS as PPC } from '../../constant
 import { CREATE_PANEL_TEXTS } from '../../constants/createPanel';
 import type { PlanApprovalMode } from '../../models';
 import { FORM_ITEM_CLASS } from '../create/types';
+import { SPACING } from '../../../../../constants';
 
 const { FORM } = PPC.CREATE_PAGE;
 
@@ -38,7 +39,7 @@ const PlanApprovalModeField: React.FC<PlanApprovalModeFieldProps> = ({ editMode 
           name="approvalMode"
           label={FORM.APPROVAL_MODE_LABEL}
           extra={approvalHelp}
-          style={{ marginBottom: 0 }}
+          style={{ marginBottom: SPACING.NONE }}
           className={FORM_ITEM_CLASS}
         >
           <Select options={PPC.CREATE_PAGE.APPROVAL_MODE_OPTIONS} disabled={editMode} />

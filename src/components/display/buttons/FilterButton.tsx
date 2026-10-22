@@ -1,7 +1,17 @@
 import React from 'react';
 import { Tooltip } from 'antd';
 import { FilterOutlined } from '@ant-design/icons';
-import { BUTTON_COLORS, DEFAULT_COLORS, TOOLBAR_CONTROL } from '../../../constants';
+import {
+  BUTTON_COLORS,
+  DEFAULT_COLORS,
+  TOOLBAR_CONTROL,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  LINE_HEIGHT,
+  MOTION,
+  RADIUS,
+  SPACING,
+} from '../../../constants';
 import { useMediaQuery } from '../../../hooks/layout';
 
 interface FilterButtonProps {
@@ -26,19 +36,19 @@ const FilterButton: React.FC<FilterButtonProps> = ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: isCompact ? 'center' : undefined,
-    gap: isCompact ? 0 : 6,
+    gap: isCompact ? SPACING.NONE : SPACING.S6,
     height: TOOLBAR_CONTROL.HEIGHT,
     width: isCompact ? TOOLBAR_CONTROL.HEIGHT : undefined,
     boxSizing: 'border-box',
-    padding: isCompact ? 0 : TOOLBAR_CONTROL.PADDING,
+    padding: isCompact ? SPACING.NONE : TOOLBAR_CONTROL.PADDING,
     lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
-    borderRadius: 6,
-    fontSize: 13,
-    fontWeight: 500,
+    borderRadius: RADIUS.SM,
+    fontSize: FONT_SIZE.MD,
+    fontWeight: FONT_WEIGHT.MEDIUM,
     border: 'none',
     backgroundColor: 'transparent',
     color: disabled ? BUTTON_COLORS.TOOLBAR_DISABLED_TEXT : BUTTON_COLORS.MUTED_TEXT,
-    transition: 'all 0.2s',
+    transition: `all ${MOTION.BASE_MS}ms`,
     opacity: disabled ? 0.6 : 1,
   };
 
@@ -64,7 +74,7 @@ const FilterButton: React.FC<FilterButtonProps> = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <FilterOutlined style={{ fontSize: 14, lineHeight: 1 }} />
+      <FilterOutlined style={{ fontSize: FONT_SIZE.BASE, lineHeight: LINE_HEIGHT.NONE }} />
       {!isCompact && <span>{label}</span>}
     </button>
   );

@@ -6,6 +6,7 @@ import {
 } from '../../constants/protectionPlans';
 import Section from '../../../../../components/display/sections/Section';
 import { FORM_ITEM_CLASS } from './types';
+import { SPACING } from '../../../../../constants';
 
 const { SECTIONS, FORM } = PPC.CREATE_PAGE;
 
@@ -18,7 +19,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ nameValidator }) =>
     title={SECTIONS.BASIC_INFO_TITLE}
     subtitle={SECTIONS.BASIC_INFO_DESCRIPTION}
     content={
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.NONE }}>
         <Form.Item
           name="name"
           label={FORM.NAME_LABEL}
@@ -27,7 +28,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ nameValidator }) =>
             { validator: nameValidator },
           ]}
           validateTrigger="onChange"
-          style={{ marginBottom: 12 }}
+          style={{ marginBottom: SPACING.MD }}
           className={FORM_ITEM_CLASS}
         >
           <Input placeholder={FORM.NAME_PLACEHOLDER} />
@@ -35,16 +36,22 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ nameValidator }) =>
         <Form.Item
           name="description"
           label={FORM.DESCRIPTION_LABEL}
-          style={{ marginBottom: 12 }}
+          style={{ marginBottom: SPACING.MD }}
           className={FORM_ITEM_CLASS}
         >
           <Input placeholder={FORM.DESCRIPTION_PLACEHOLDER} />
         </Form.Item>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+            gap: SPACING.MD,
+          }}
+        >
           <Form.Item
             name="severity"
             label={FORM.SEVERITY_LABEL}
-            style={{ marginBottom: 0 }}
+            style={{ marginBottom: SPACING.NONE }}
             className={FORM_ITEM_CLASS}
             rules={[{ required: true, message: FORM.SEVERITY_REQUIRED_ERROR }]}
           >
@@ -57,7 +64,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ nameValidator }) =>
           <Form.Item
             name="priority"
             label={FORM.PRIORITY_LABEL}
-            style={{ marginBottom: 0 }}
+            style={{ marginBottom: SPACING.NONE }}
             className={FORM_ITEM_CLASS}
           >
             <Input type="number" min={PLAN_PRIORITY_MIN} placeholder="e.g. 1" />

@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, MONOSPACE_CLASS, SLIDE_OUT } from '../../../../constants';
+import {
+  DEFAULT_COLORS,
+  MONOSPACE_CLASS,
+  SLIDE_OUT,
+  SPACING,
+  FONT_WEIGHT,
+} from '../../../../constants';
 import { APPLICATIONS_UI } from '../../constants/texts';
 import { APPLICATION_SNAPSHOT_ROW } from '../../constants/sectionLayout';
 
@@ -12,7 +18,7 @@ const TechnicalDetails: React.FC<{ detail: string }> = ({ detail }) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div style={{ display: 'grid', rowGap: 4, minWidth: 0 }}>
+    <div style={{ display: 'grid', rowGap: SPACING.XS, minWidth: 0 }}>
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
@@ -23,10 +29,10 @@ const TechnicalDetails: React.FC<{ detail: string }> = ({ detail }) => {
           cursor: 'pointer',
           display: 'inline-flex',
           alignItems: 'center',
-          gap: 4,
+          gap: SPACING.XS,
           justifySelf: 'start',
           fontSize: R.META_FONT_SIZE_PX,
-          fontWeight: 600,
+          fontWeight: FONT_WEIGHT.SEMIBOLD,
           color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
         }}
       >

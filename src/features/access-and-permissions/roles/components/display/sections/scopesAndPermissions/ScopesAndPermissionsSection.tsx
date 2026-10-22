@@ -7,6 +7,7 @@ import type {
   RolesScopesAndPermissionsListProps,
   ScopesAndPermissionsSectionProps,
 } from '../../../../models';
+import { FONT_SIZE } from '../../../../../../../constants';
 
 const AREAS = RPC.SCOPE.DEFAULT_AREAS;
 const PERMISSION_LEVEL_OPTIONS = PERMISSION_LEVELS.map((level) => ({
@@ -36,7 +37,7 @@ const RolesScopesAndPermissionsSection: React.FC<ScopesAndPermissionsSectionProp
               <LockBanner
                 title="Scopes and Permissions Locked"
                 message={RPC.SCOPE.LOCKED_MESSAGE}
-                icon={<span style={{ fontSize: 18 }}>🔒</span>}
+                icon={<span style={{ fontSize: FONT_SIZE.XL }}>🔒</span>}
               />
             )}
             <RolesScopesAndPermissionsList {...props} />

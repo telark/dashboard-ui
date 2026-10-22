@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Form, Select } from 'antd';
 import dayjs from 'dayjs';
-import { FILTER_PANEL } from '../../../../../constants';
+import { FILTER_PANEL, SPACING } from '../../../../../constants';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import Section from '../../../../../components/display/sections/Section';
 import DatePicker from '../../../../../components/display/inputs/DatePicker';
@@ -62,11 +62,11 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({
       title={SECTIONS.SCHEDULE_TITLE}
       subtitle={SECTIONS.SCHEDULE_DESCRIPTION}
       content={
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD }}>
           <Form.Item
             name="timeMode"
             label={FORM.TIME_MODE_LABEL}
-            style={{ marginBottom: 0 }}
+            style={{ marginBottom: SPACING.NONE }}
             className={FORM_ITEM_CLASS}
           >
             <Select
@@ -85,7 +85,7 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({
                 <Form.Item
                   name="startAt"
                   label={FORM.START_AT_LABEL}
-                  style={{ marginBottom: 0 }}
+                  style={{ marginBottom: SPACING.NONE }}
                   className={FORM_ITEM_CLASS}
                   rules={[{ required: true, message: FORM.START_REQUIRED_ERROR }]}
                 >
@@ -98,12 +98,12 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = ({
                   />
                 </Form.Item>
               </div>
-              <div style={{ ...FILTER_PANEL.DATE_ARROW, marginBottom: 4 }}>→</div>
+              <div style={{ ...FILTER_PANEL.DATE_ARROW, marginBottom: SPACING.XS }}>→</div>
               <div style={{ ...FILTER_PANEL.DATE_INPUT_WRAPPER, minWidth: 0 }}>
                 <Form.Item
                   name="endAt"
                   label={FORM.END_AT_LABEL}
-                  style={{ marginBottom: 0 }}
+                  style={{ marginBottom: SPACING.NONE }}
                   className={FORM_ITEM_CLASS}
                   dependencies={['startAt']}
                   rules={[{ required: true, message: FORM.END_REQUIRED_ERROR }]}

@@ -9,6 +9,7 @@ import type { Role } from '../../../../roles/models';
 import { ACTION_PERMISSIONS, useCanGrantScopes, usePermission } from '../../../../../auth/hooks';
 import { NoPermissionCard } from '../../../../../../components/shared';
 import LockedRolePill from './LockedRolePill';
+import { SPACING } from '../../../../../../constants';
 
 const VIEW_ROLES = ACTION_PERMISSIONS.roles.view;
 
@@ -69,7 +70,7 @@ const RoleList: React.FC<RoleListProps> = ({ roles, loading, allRoles, blockedRe
 
   return (
     <div style={{ width: '100%' }}>
-      <Form.Item name="roleRefs" style={{ margin: 0, width: '100%' }}>
+      <Form.Item name="roleRefs" style={{ margin: SPACING.NONE, width: '100%' }}>
         <Checkbox.Group
           value={currentSelectedRoles}
           onChange={handleChange}

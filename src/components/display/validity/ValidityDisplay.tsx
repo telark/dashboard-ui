@@ -34,7 +34,13 @@ const ValidityDisplay: React.FC<ValidityDisplayProps> = ({ validity, record }) =
     <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <span>{formattedValidity.label}</span>
       {formattedValidity.expiresIn && (
-        <span style={{ fontSize: '0.85em', color: BUTTON_COLORS.MUTED_TEXT }}>
+        <span
+          style={{
+            // Off scale, kept exact: fontSize 0.85em (relative to the parent).
+            fontSize: '0.85em',
+            color: BUTTON_COLORS.MUTED_TEXT,
+          }}
+        >
           {formattedValidity.expiresIn}
         </span>
       )}

@@ -1,7 +1,18 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { Button, Typography } from 'antd';
 import { ReloadOutlined, BugOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, MONOSPACE_CLASS, STORE_MESSAGES, withAlpha } from './constants';
+import {
+  DEFAULT_COLORS,
+  HAIRLINE,
+  MONOSPACE_CLASS,
+  STORE_MESSAGES,
+  withAlpha,
+  Z_INDEX,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  RADIUS,
+  SPACING,
+} from './constants';
 import { isDevelopment } from './utils/helpers/env';
 import logger from './logging';
 
@@ -48,8 +59,8 @@ class ErrorBoundary extends Component<Props, State> {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '20px',
-            zIndex: 9999,
+            padding: SPACING.XL,
+            zIndex: Z_INDEX.APP_ERROR,
           }}
         >
           <div style={{ textAlign: 'center', maxWidth: 600, width: '100%' }}>
@@ -62,12 +73,13 @@ class ErrorBoundary extends Component<Props, State> {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                margin: '0 auto 24px',
+                margin: `0 auto ${SPACING.XXL}px`,
                 boxShadow: `0 8px 20px ${withAlpha(DEFAULT_COLORS.DANGER, 0.3)}`,
               }}
             >
               <BugOutlined
                 style={{
+                  // Off scale, kept exact: fontSize 32 (above H1).
                   fontSize: 32,
                   color: DEFAULT_COLORS.PILL_TEXT,
                 }}
@@ -77,9 +89,9 @@ class ErrorBoundary extends Component<Props, State> {
             <Title
               level={2}
               style={{
-                margin: '0 0 16px',
+                margin: `0 0 ${SPACING.LG}px`,
                 color: DEFAULT_COLORS.TEXT_ON_SURFACE,
-                fontWeight: 700,
+                fontWeight: FONT_WEIGHT.BOLD,
               }}
             >
               Oops! Something went wrong
@@ -89,17 +101,17 @@ class ErrorBoundary extends Component<Props, State> {
               <div
                 style={{
                   background: DEFAULT_COLORS.SURFACE_SUBTLE,
-                  border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
-                  borderRadius: 8,
-                  margin: '0 0 24px',
+                  border: HAIRLINE.SURFACE_BORDER_LIGHT,
+                  borderRadius: RADIUS.MD,
+                  margin: `0 0 ${SPACING.XXL}px`,
                   textAlign: 'left',
-                  padding: '16px',
+                  padding: SPACING.LG,
                 }}
               >
                 <Text
                   className={MONOSPACE_CLASS}
                   style={{
-                    fontSize: 12,
+                    fontSize: FONT_SIZE.SM,
                     color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
                     whiteSpace: 'pre-wrap',
                     wordBreak: 'break-word',
@@ -113,7 +125,7 @@ class ErrorBoundary extends Component<Props, State> {
             <div
               style={{
                 display: 'flex',
-                gap: 12,
+                gap: SPACING.MD,
                 justifyContent: 'center',
                 flexWrap: 'wrap',
               }}
@@ -125,8 +137,8 @@ class ErrorBoundary extends Component<Props, State> {
                 style={{
                   background: DEFAULT_COLORS.SUCCESS,
                   border: 'none',
-                  padding: '0 24px',
-                  fontWeight: 600,
+                  padding: `0 ${SPACING.XXL}px`,
+                  fontWeight: FONT_WEIGHT.SEMIBOLD,
                 }}
               >
                 Reload Page

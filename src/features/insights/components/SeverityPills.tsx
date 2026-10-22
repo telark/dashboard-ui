@@ -8,6 +8,9 @@ import {
   STATUS_COLORS,
   TOOLBAR_CONTROL,
   getQuickFilterPillColors,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  SPACING,
 } from '../../../constants';
 import { CompactQuickFilter } from '../../../components/display/toolbar';
 import { INSIGHTS_UI } from '../constants/texts';
@@ -52,7 +55,7 @@ const SeverityPills: React.FC<Props> = ({ active, counts, compact, onChange }) =
     );
   }
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: '100%' }}>
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: SPACING.S6, height: '100%' }}>
       {PILLS.map((pill) => {
         const isActive = active === pill;
         const accent = accentOf(pill);
@@ -67,14 +70,14 @@ const SeverityPills: React.FC<Props> = ({ active, counts, compact, onChange }) =
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: 6,
+              gap: SPACING.S6,
               height: TOOLBAR_CONTROL.HEIGHT,
               boxSizing: 'border-box',
               padding: TOOLBAR_CONTROL.PADDING,
               borderRadius: LIST_TOOLBAR.PILL_RADIUS_PX,
               ...getQuickFilterPillColors(accent, isActive),
-              fontSize: 12,
-              fontWeight: 700,
+              fontSize: FONT_SIZE.SM,
+              fontWeight: FONT_WEIGHT.BOLD,
               lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
               userSelect: 'none',
             }}

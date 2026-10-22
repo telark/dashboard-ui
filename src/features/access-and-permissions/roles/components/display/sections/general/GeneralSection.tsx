@@ -5,6 +5,7 @@ import { LabeledInput } from '../../../../../../../components/display/inputs';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import type { RolesGeneralSectionProps } from '../../../../models';
 import { useRoleCategories, useNameValidation } from '../../../../hooks';
+import { SPACING } from '../../../../../../../constants';
 
 const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
   ({
@@ -31,7 +32,7 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
         title={RPC.GENERAL.TITLE}
         subtitle={RPC.GENERAL.SUBTITLE}
         content={
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.NONE }}>
             <LabeledInput
               name="name"
               label={RPC.GENERAL.NAME_LABEL}
@@ -62,7 +63,7 @@ const RolesGeneralSection: React.FC<RolesGeneralSectionProps> = memo(
                 },
               ]}
               required
-              style={{ marginBottom: 0 }}
+              style={{ marginBottom: SPACING.NONE }}
               className="form-item-compact no-asterisk"
             >
               <Select

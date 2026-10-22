@@ -9,6 +9,8 @@ import {
   TAG_CLASS,
   TIME_FORMATS,
   getPillColor,
+  SPACING,
+  FONT_SIZE,
 } from '../../../../../constants';
 import { formatDateTime } from '../../../../../utils/shared/time';
 import { FancySpinner } from '../../../../../components/animation';
@@ -66,7 +68,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
 
   if (loading && reports.length === 0) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', padding: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', padding: SPACING.XXL }}>
         <FancySpinner showLabel={false} size={24} />
       </div>
     );
@@ -106,6 +108,7 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
         return (
           <div
             key={report.id}
+            // 10: the row padding sits between SM and MD.
             style={{
               padding: '10px 0',
               borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
@@ -113,23 +116,25 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
               flexWrap: 'wrap',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: 12,
+              gap: SPACING.MD,
             }}
           >
-            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 6 }}>
+            <div
+              style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: SPACING.S6 }}
+            >
               <Tag
                 color={getPillColor(STATUS_COLORS.PLAN_REPORT_TRIGGER[report.trigger])}
                 className={TAG_CLASS.AS_IS}
               >
                 {LABELS.TRIGGER_LABELS[report.trigger]}
               </Tag>
-              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+              <span style={{ fontSize: FONT_SIZE.SM, color: DEFAULT_COLORS.TEXT_MUTED }}>
                 {LABELS.GENERATED_AT}{' '}
                 {formatDateTime(report.generatedAt, TIME_FORMATS.DATE_TIME_12H)} ·{' '}
                 {LABELS.GENERATED_BY}{' '}
                 <span title={report.generatedBy}>{resolveUser(report.generatedBy)}</span>
               </span>
-              <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+              <span style={{ fontSize: FONT_SIZE.SM, color: DEFAULT_COLORS.TEXT_MUTED }}>
                 · {LABELS.DECISIONS}: {report.violationsTotal}
               </span>
               {report.truncated && <Tag className={TAG_CLASS.AS_IS}>{LABELS.TRUNCATED}</Tag>}

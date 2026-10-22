@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import { ExclamationCircleOutlined, ReloadOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../constants';
+import { DEFAULT_COLORS, HAIRLINE, FONT_SIZE, FONT_WEIGHT, RADIUS } from '../../constants';
 import { ConnectivityBanner } from '../display/banners';
 import { connectivityIssueFrom } from '../../api/client/health-interceptor';
 import type { ConnectivityIssue } from '../../api/client/health-interceptor';
@@ -31,6 +31,7 @@ const layoutFor = (variant: DataViewErrorVariant): React.CSSProperties => {
 
 const containerStyle = (variant: DataViewErrorVariant): React.CSSProperties => {
   if (variant === 'fullPage') {
+    // Off scale, kept exact: borderRadius 0 (square corners, RADIUS has no zero).
     return {
       background: DEFAULT_COLORS.PAGE_BG,
       borderRadius: 0,
@@ -41,8 +42,8 @@ const containerStyle = (variant: DataViewErrorVariant): React.CSSProperties => {
   }
   return {
     background: DEFAULT_COLORS.PAGE_BG,
-    borderRadius: 12,
-    border: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
+    borderRadius: RADIUS.LG,
+    border: HAIRLINE.BORDER_SUBTLE,
   };
 };
 
@@ -96,10 +97,18 @@ const DataViewError: React.FC<DataViewErrorProps> = ({
       <ExclamationCircleOutlined
         style={{ fontSize: DVE.LAYOUT.ICON_SIZE, color: DEFAULT_COLORS.DANGER }}
       />
-      <div style={{ color: DEFAULT_COLORS.TEXT_PRIMARY, fontSize: 16, fontWeight: 600 }}>
+      <div
+        style={{
+          color: DEFAULT_COLORS.TEXT_PRIMARY,
+          fontSize: FONT_SIZE.LG,
+          fontWeight: FONT_WEIGHT.SEMIBOLD,
+        }}
+      >
         {title}
       </div>
-      <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 14, maxWidth: 480 }}>{message}</div>
+      <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: FONT_SIZE.BASE, maxWidth: 480 }}>
+        {message}
+      </div>
       <Button type="primary" icon={<ReloadOutlined />} onClick={onRetry}>
         {DVE.LABELS.RETRY_BUTTON}
       </Button>

@@ -3,7 +3,7 @@ import type { TableColumnType } from 'antd';
 import type { Role, ColumnsArgs } from '../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../constants';
 import { generateColumn } from '../../../../../../components/display/table/utils';
-import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS } from '../../../../../../constants';
+import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS, FONT_WEIGHT } from '../../../../../../constants';
 import {
   AiOutlineCalendar,
   AiOutlineCheckCircle,
@@ -40,7 +40,9 @@ export const Columns = ({
         align: 'left',
         width: RPC.SIZES.COLUMNS.ROLE_TITLE,
         render: (_: string, record: Role) => (
-          <span style={{ fontWeight: 700, color: DEFAULT_COLORS.TEXT_PRIMARY }}>{record.name}</span>
+          <span style={{ fontWeight: FONT_WEIGHT.BOLD, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+            {record.name}
+          </span>
         ),
       },
       { activeSortKey: activeSortKey as string, onSort: onSort as (key: string) => void },

@@ -8,7 +8,7 @@ import { FilterPanel } from '../../../../../components/display/panels/filter';
 import { FilterButton, ToggleButton } from '../../../../../components/display/buttons';
 import { SearchInput } from '../../../../../components/display/inputs';
 import ActionConfirmModal from '../../../../../components/display/modal/confirm/ActionConfirmModal';
-import { SLIDE_OUT } from '../../../../../constants';
+import { SLIDE_OUT, SPACING } from '../../../../../constants';
 import { useAttachRolePanel, useDeassignGroupRole } from '../../hooks';
 import {
   usePermission,
@@ -165,7 +165,7 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
           <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((prev) => !prev)} />
         }
         formContent={
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD, width: '100%' }}>
             {canViewRoles ? (
               <div
                 style={{
@@ -173,11 +173,11 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   flexWrap: 'wrap',
-                  gap: 12,
+                  gap: SPACING.MD,
                   width: '100%',
                   boxSizing: 'border-box',
-                  margin: 0,
-                  padding: 0,
+                  margin: SPACING.NONE,
+                  padding: SPACING.NONE,
                 }}
               >
                 <SearchInput
@@ -187,7 +187,9 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                   minWidth={ARC.SEARCH_MIN_WIDTH}
                   block
                 />
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: SPACING.XS, flexShrink: 0 }}
+                >
                   <ToggleButton
                     active={activeView === 'assigned'}
                     onClick={handleToggleAssigned}
@@ -202,7 +204,14 @@ const AttachRolePanel: React.FC<AttachRolePanelProps> = ({ open, onClose, group 
                 </div>
               </div>
             ) : null}
-            <div style={{ width: '100%', margin: 0, padding: 0, boxSizing: 'border-box' }}>
+            <div
+              style={{
+                width: '100%',
+                margin: SPACING.NONE,
+                padding: SPACING.NONE,
+                boxSizing: 'border-box',
+              }}
+            >
               {activeView === 'assigned' && (
                 <AssignedRolesView
                   assignedRoleIds={filteredAssignedRoleIds}

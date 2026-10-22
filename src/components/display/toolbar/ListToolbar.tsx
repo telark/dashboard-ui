@@ -1,7 +1,13 @@
 import React from 'react';
 import { CloseOutlined } from '@ant-design/icons';
 import { Checkbox } from 'antd';
-import { DEFAULT_COLORS, LIST_TOOLBAR, TOOLBAR_ITEM_GAP, getPillSurface } from '../../../constants';
+import {
+  DEFAULT_COLORS,
+  LIST_TOOLBAR,
+  TOOLBAR_ITEM_GAP,
+  getPillSurface,
+  LINE_HEIGHT,
+} from '../../../constants';
 import { LIST_PAGE } from '../../../constants/shared/pages';
 import type {
   FilterChip,
@@ -15,7 +21,7 @@ import Toolbar from './Toolbar';
 const metaStyle: React.CSSProperties = {
   fontSize: LIST_TOOLBAR.META_FONT_SIZE_PX,
   color: DEFAULT_COLORS.TEXT_MUTED,
-  lineHeight: 1,
+  lineHeight: LINE_HEIGHT.NONE,
   flexShrink: 0,
   display: 'inline-flex',
   alignItems: 'center',

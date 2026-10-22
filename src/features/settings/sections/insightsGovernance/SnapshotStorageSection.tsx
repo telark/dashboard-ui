@@ -142,7 +142,14 @@ const SnapshotStorageSection: React.FC = memo(() => {
       title={C.LABELS.SNAPSHOT_STORAGE_TITLE}
       description={C.LABELS.SNAPSHOT_STORAGE_DESCRIPTION}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div
+        style={{
+          // Off scale, kept exact: gap 14 (MD to LG).
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 14,
+        }}
+      >
         {!canViewSnapshotStorage ? (
           <SettingsHint>{C.LABELS.SNAPSHOT_STORAGE_NO_ACCESS}</SettingsHint>
         ) : snapshotInfosLoading ? (
@@ -167,7 +174,14 @@ const SnapshotStorageSection: React.FC = memo(() => {
             />
           </>
         ) : null}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div
+          style={{
+            // Off scale, kept exact: gap 10 (SM to MD).
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 10,
+          }}
+        >
           <SettingsField
             label={C.LABELS.SNAPSHOTS_MAX_PER_APP_LABEL}
             info={C.LABELS.SNAPSHOTS_MAX_PER_APP_HINT}

@@ -1,5 +1,11 @@
 import React from 'react';
-import { DEFAULT_COLORS, DISABLED_CONTENT_OPACITY } from '../../../constants';
+import {
+  DEFAULT_COLORS,
+  DISABLED_CONTENT_OPACITY,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  SPACING,
+} from '../../../constants';
 import { Checkbox } from 'antd';
 import type { SelectableListItemProps } from '../../../interfaces/layout/list';
 
@@ -53,18 +59,20 @@ const SelectableListItem: React.FC<SelectableListItemProps> = ({
     ...contentStyles,
   };
 
+  // Off scale, kept exact: lineHeight 1.4 (SNUG to BASE).
   const defaultNameStyles = {
-    fontSize: 14,
+    fontSize: FONT_SIZE.BASE,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE,
-    fontWeight: 500,
+    fontWeight: FONT_WEIGHT.MEDIUM,
     lineHeight: 1.4,
     ...nameStyles,
   };
 
+  // Off scale, kept exact: lineHeight 1.3 (TIGHT to SNUG).
   const defaultDescriptionStyles = {
-    fontSize: 12,
+    fontSize: FONT_SIZE.SM,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-    marginTop: 2,
+    marginTop: SPACING.XXS,
     lineHeight: 1.3,
     overflow: 'hidden' as const,
     textOverflow: 'ellipsis' as const,
@@ -81,7 +89,7 @@ const SelectableListItem: React.FC<SelectableListItemProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: 8,
+              gap: SPACING.SM,
             }}
           >
             <div style={defaultNameStyles}>{name}</div>
@@ -93,7 +101,7 @@ const SelectableListItem: React.FC<SelectableListItemProps> = ({
         {children}
       </div>
       {disabled && disabledReason ? (
-        <div style={{ ...defaultDescriptionStyles, marginTop: 6, whiteSpace: 'normal' }}>
+        <div style={{ ...defaultDescriptionStyles, marginTop: SPACING.S6, whiteSpace: 'normal' }}>
           {disabledReason}
         </div>
       ) : null}
@@ -112,7 +120,14 @@ const SelectableListItem: React.FC<SelectableListItemProps> = ({
       onMouseLeave={handleMouseLeave}
     >
       {disabled ? (
-        <div style={{ margin: 0, width: '100%', paddingLeft: 24, ...checkboxStyle }}>
+        <div
+          style={{
+            margin: SPACING.NONE,
+            width: '100%',
+            paddingLeft: SPACING.XXL,
+            ...checkboxStyle,
+          }}
+        >
           {/* Keeps the value registered: the group drops unregistered ones on any toggle. */}
           <Checkbox value={value} disabled style={{ display: 'none' }} />
           {content}
@@ -120,7 +135,7 @@ const SelectableListItem: React.FC<SelectableListItemProps> = ({
       ) : (
         <Checkbox
           value={value}
-          style={{ margin: 0, width: '100%', ...checkboxStyle }}
+          style={{ margin: SPACING.NONE, width: '100%', ...checkboxStyle }}
           // The label fills the card, so a badge at the end of the name row sits at its right edge.
           styles={{ label: { flex: 1, minWidth: 0 } }}
         >

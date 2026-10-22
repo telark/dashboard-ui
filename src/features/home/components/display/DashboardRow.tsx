@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, TIME_FORMATS } from '../../../../constants';
+import { DEFAULT_COLORS, TIME_FORMATS, FONT_WEIGHT, MOTION } from '../../../../constants';
 import TimeAgo from '../../../../components/display/time/TimeAgo';
 import {
   HOME_DASHBOARD_LAYOUT as L,
@@ -45,6 +45,7 @@ const DashboardRow: React.FC<DashboardRowProps> = memo(
         }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        // 120ms: the row's hover fade sits below FAST_MS.
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -54,7 +55,7 @@ const DashboardRow: React.FC<DashboardRowProps> = memo(
           cursor: interactive ? 'pointer' : 'default',
           background:
             interactive && hovered ? DEFAULT_COLORS.SURFACE_ELEVATED_HOVER : 'transparent',
-          transition: 'background 120ms ease',
+          transition: `background 120ms ${MOTION.EASE}`,
         }}
       >
         <StatusDot color={dotColor} />
@@ -64,13 +65,13 @@ const DashboardRow: React.FC<DashboardRowProps> = memo(
             style={{
               ...S.ELLIPSIS,
               fontSize: L.ROW_TITLE_FONT_SIZE_PX,
-              fontWeight: 600,
+              fontWeight: FONT_WEIGHT.SEMIBOLD,
               color: DEFAULT_COLORS.TEXT_PRIMARY,
             }}
           >
             {title}
             {inline && details ? (
-              <span style={{ ...S.MUTED_TEXT, fontWeight: 400 }}>
+              <span style={{ ...S.MUTED_TEXT, fontWeight: FONT_WEIGHT.REGULAR }}>
                 {T.META_SEPARATOR}
                 {details}
               </span>

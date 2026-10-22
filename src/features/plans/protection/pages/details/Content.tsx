@@ -13,7 +13,14 @@ import {
   TIME_FORMATS,
   TRUNCATE_STYLE,
   getPillColor,
+  UNSTYLED_BUTTON,
   withAlpha,
+  Z_INDEX,
+  RADIUS,
+  FONT_SIZE,
+  SPACING,
+  FONT_WEIGHT,
+  MOTION,
 } from '../../../../../constants';
 import { formatDateTime, getTimeZone } from '../../../../../utils/shared/time';
 import SettingsCard from '../../../../settings/components/SettingsCard';
@@ -72,12 +79,13 @@ const policyIconStyle = (accent: string): React.CSSProperties => ({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  borderRadius: 6,
-  fontSize: 10,
+  borderRadius: RADIUS.SM,
+  fontSize: FONT_SIZE.XXS,
   color: accent,
   background: withAlpha(accent, 0.14),
 });
 
+// 10 and 120ms: the refresh button's corner and hover fade sit between the RADIUS and MOTION steps.
 const COMPACT_REFRESH_BUTTON_STYLE: React.CSSProperties = {
   color: DEFAULT_COLORS.ICON_SECONDARY,
   flexShrink: 0,
@@ -88,24 +96,21 @@ const COMPACT_REFRESH_BUTTON_STYLE: React.CSSProperties = {
   justifyContent: 'center',
   borderRadius: 10,
   background: 'transparent',
-  transition: 'background 120ms ease, color 120ms ease',
+  transition: `background 120ms ${MOTION.EASE}, color 120ms ${MOTION.EASE}`,
 };
 
 // A text button that keeps the browser's focus ring (no `all: unset`).
 const STATUS_LINK_STYLE: React.CSSProperties = {
+  ...UNSTYLED_BUTTON,
   display: 'inline-flex',
   alignItems: 'center',
-  gap: 6,
-  padding: 0,
-  border: 0,
-  background: 'none',
+  gap: SPACING.S6,
   font: 'inherit',
   color: 'inherit',
-  cursor: 'pointer',
 };
 
 // Same as the gap between the page's cards.
-const CARD_GAP_PX = 16;
+const CARD_GAP_PX = SPACING.LG;
 
 const formatRange = ({ startAt, endAt }: PlanTimeRange): string =>
   PPC.LABELS.PHASE_INFO.IN_TIME_ZONE(
@@ -180,7 +185,7 @@ const seriesWindowRows = (
 const STATUS_MIN_WIDTH_PX = 380;
 
 const renderChips = (chips: { key: string; text: string }[]) => (
-  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+  <div style={{ display: 'flex', flexWrap: 'wrap', gap: SPACING.S6 }}>
     {chips.map((chip) => (
       <Tag key={chip.key} className={TAG_CLASS.AS_IS}>
         {chip.text}
@@ -368,19 +373,31 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
         if (!userId || !display) return timeNode;
         return (
           // One line, so every row is the same height: the time gives way first, then the name.
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4, minWidth: 0 }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: SPACING.XS, minWidth: 0 }}>
+            <span
+              style={{ display: 'inline-flex', alignItems: 'center', gap: SPACING.S6, minWidth: 0 }}
+            >
               <AvatarRing avatar={user?.avatar} username={display} size={20} />
               <span
                 title={userId}
-                style={{ ...TRUNCATE_STYLE, fontSize: 13, color: DEFAULT_COLORS.TEXT_PRIMARY }}
+                style={{
+                  ...TRUNCATE_STYLE,
+                  fontSize: FONT_SIZE.MD,
+                  color: DEFAULT_COLORS.TEXT_PRIMARY,
+                }}
               >
                 {display}
               </span>
             </span>
             {when && (
               <>
-                <span style={{ color: DEFAULT_COLORS.TEXT_MUTED, margin: '0 2px', flexShrink: 0 }}>
+                <span
+                  style={{
+                    color: DEFAULT_COLORS.TEXT_MUTED,
+                    margin: `0 ${SPACING.XXS}px`,
+                    flexShrink: 0,
+                  }}
+                >
                   ·
                 </span>
                 <span style={{ ...TRUNCATE_STYLE, flexShrink: 100000 }}>{timeNode}</span>
@@ -432,7 +449,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             tags.length === 0 ? (
               EMPTY_VALUE
             ) : (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: SPACING.S6 }}>
                 {tags.map(({ id, name }) => (
                   <Tag key={id} className={`${TAG_CLASS.XSMALL} ${TAG_CLASS.AS_IS}`}>
                     {name}
@@ -507,11 +524,17 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             participants.length === 0 ? (
               EMPTY_VALUE
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.SM }}>
                 {participants.map(({ id, user, username }) => (
-                  <div key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                  <div
+                    key={id}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: SPACING.SM }}
+                  >
                     <AvatarRing avatar={user?.avatar} username={username} size={20} />
-                    <span title={id} style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_PRIMARY }}>
+                    <span
+                      title={id}
+                      style={{ fontSize: FONT_SIZE.MD, color: DEFAULT_COLORS.TEXT_PRIMARY }}
+                    >
                       {username}
                     </span>
                   </div>
@@ -526,20 +549,20 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
     const policies = plan.policies ?? [];
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.LG }}>
         <div
           ref={barRef}
           style={{
             position: 'sticky',
             top: 0,
-            zIndex: 5,
+            zIndex: Z_INDEX.STICKY,
             display: 'flex',
             flexWrap: 'wrap',
             alignItems: 'center',
             // The status grows into the row, so this only right-aligns a toolbar that wrapped.
             justifyContent: 'flex-end',
-            gap: 12,
-            padding: '8px 0',
+            gap: SPACING.MD,
+            padding: `${SPACING.SM}px 0`,
             background: DEFAULT_COLORS.PAGE_BG,
           }}
         >
@@ -548,14 +571,14 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
               flex: `1 1 ${STATUS_MIN_WIDTH_PX}px`,
               display: 'flex',
               alignItems: 'center',
-              columnGap: 12,
-              rowGap: 6,
+              columnGap: SPACING.MD,
+              rowGap: SPACING.S6,
               flexWrap: 'wrap',
-              fontSize: 13,
+              fontSize: FONT_SIZE.MD,
               color: DEFAULT_COLORS.TEXT_SECONDARY,
             }}
           >
-            <span style={{ display: 'inline-flex', gap: 6 }}>
+            <span style={{ display: 'inline-flex', gap: SPACING.S6 }}>
               <Tag color={getPillColor(phaseAccent)}>{phaseLabel}</Tag>
               <Tag>{PPC.LABELS.MODE_LABELS[plan.mode]}</Tag>
             </span>
@@ -601,7 +624,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                   </span>
                 </button>
               ) : (
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: SPACING.S6 }}>
                   <HealthBadge health={healthState} compact />
                   {PPC.LABELS.HEALTH_LABELS[healthState]}
                 </span>
@@ -659,7 +682,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
-              gap: 12,
+              gap: SPACING.MD,
               alignItems: 'start',
             }}
           >
@@ -688,12 +711,15 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           }
         >
           {policies.length === 0 ? (
-            <div style={{ fontSize: 13, color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</div>
+            <div style={{ fontSize: FONT_SIZE.MD, color: DEFAULT_COLORS.TEXT_MUTED }}>
+              {EMPTY_VALUE}
+            </div>
           ) : (
             <div>
               {policies.map((p, idx) => (
                 <div
                   key={`${p.templateID}-${idx}`}
+                  // 10: the row padding sits between SM and MD.
                   style={{
                     padding: '10px 0',
                     borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
@@ -701,19 +727,29 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                     flexWrap: 'wrap',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    gap: 8,
+                    gap: SPACING.SM,
                   }}
                 >
                   {/* What the policy refuses, in the card's words, over its template id. */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                  <div
+                    style={{ display: 'flex', alignItems: 'center', gap: SPACING.SM, minWidth: 0 }}
+                  >
                     <span aria-hidden style={policyIconStyle(STATUS_COLORS.PLAN_MODE[plan.mode])}>
                       {plan.mode === 'audit' ? <EyeOutlined /> : <CloseOutlined />}
                     </span>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 0, minWidth: 0 }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: SPACING.NONE,
+                        minWidth: 0,
+                      }}
+                    >
                       <span
+                        // 1.3: the policy name's leading sits between TIGHT and SNUG.
                         style={{
-                          fontSize: 13,
-                          fontWeight: 600,
+                          fontSize: FONT_SIZE.MD,
+                          fontWeight: FONT_WEIGHT.SEMIBOLD,
                           lineHeight: 1.3,
                           color: DEFAULT_COLORS.TEXT_PRIMARY,
                         }}
@@ -722,8 +758,9 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                       </span>
                       {POLICY_CHIP_LABEL[p.templateID] ? (
                         <span
+                          // 1.3: the same leading as the policy name above.
                           style={{
-                            fontSize: 12,
+                            fontSize: FONT_SIZE.SM,
                             lineHeight: 1.3,
                             color: DEFAULT_COLORS.TEXT_MUTED,
                           }}
@@ -739,7 +776,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                         display: 'flex',
                         flexWrap: 'wrap',
                         alignItems: 'center',
-                        gap: 6,
+                        gap: SPACING.S6,
                         justifyContent: 'flex-end',
                       }}
                     >
@@ -763,10 +800,17 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
               title={PPC.LABELS.DETAIL_PAGE.SECTIONS.HEALTH_TITLE}
               description={PPC.LABELS.DETAIL_PAGE.SECTIONS.HEALTH_DESCRIPTION}
               headerAction={
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: SPACING.MD,
+                    flexWrap: 'wrap',
+                  }}
+                >
                   <HealthBadge health={healthState} />
                   {plan.healthCheckedAt && (
-                    <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>
+                    <span style={{ fontSize: FONT_SIZE.SM, color: DEFAULT_COLORS.TEXT_MUTED }}>
                       {PPC.LABELS.HEALTH_DETAIL.CHECKED_AT}: <TimeAgo date={plan.healthCheckedAt} />
                     </span>
                   )}
@@ -774,7 +818,6 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                     <Button
                       type="text"
                       shape="circle"
-                      size="small"
                       icon={<ReloadOutlined />}
                       onClick={health.refresh}
                       style={COMPACT_REFRESH_BUTTON_STYLE}
@@ -799,7 +842,7 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
           description={PPC.LABELS.DETAIL_PAGE.SECTIONS.VIOLATIONS_DESCRIPTION}
           headerAction={
             canViewViolations ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: SPACING.SM }}>
                 <Select
                   value={violations.resultFilter}
                   onChange={(v) => violations.setResultFilter(v)}
@@ -812,7 +855,6 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                   <Button
                     type="text"
                     shape="circle"
-                    size="small"
                     icon={<ReloadOutlined />}
                     onClick={violations.refresh}
                     style={COMPACT_REFRESH_BUTTON_STYLE}
@@ -860,7 +902,6 @@ const ProtectionPlanDetailsContent: React.FC<ProtectionPlanDetailsContentProps> 
                 <Button
                   type="text"
                   shape="circle"
-                  size="small"
                   icon={<ReloadOutlined />}
                   onClick={reports.refresh}
                   style={COMPACT_REFRESH_BUTTON_STYLE}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Empty } from 'antd';
-import { DEFAULT_COLORS, Icons } from '../../../../constants';
+import { DEFAULT_COLORS, Icons, SPACING, FONT_SIZE, FONT_WEIGHT } from '../../../../constants';
 import { APPLICATION_DETAILS_CONSTANTS } from '../../constants';
 
 const ApplicationsDetailsEmpty: React.FC = () => {
@@ -21,10 +21,10 @@ const ApplicationsDetailsEmpty: React.FC = () => {
           <div style={{ maxWidth: 420 }}>
             <h2
               style={{
-                margin: 0,
-                marginBottom: 8,
-                fontSize: 20,
-                fontWeight: 600,
+                margin: SPACING.NONE,
+                marginBottom: SPACING.SM,
+                fontSize: FONT_SIZE.XXL,
+                fontWeight: FONT_WEIGHT.SEMIBOLD,
                 color: DEFAULT_COLORS.TEXT_PRIMARY,
               }}
             >

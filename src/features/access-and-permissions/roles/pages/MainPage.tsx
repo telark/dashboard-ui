@@ -12,6 +12,7 @@ import { useCategories } from '../../categories/hooks';
 import { CATEGORIES_CONSTANTS } from '../../categories/constants';
 import { deduplicateCategoriesByName } from '../../categories/utils/helpers';
 import { applyRoleFilters } from '../../groups/utils';
+import { SLIDE_OUT } from '../../../../constants';
 import { noop } from '../../../../utils/helpers/noop';
 import { CreateRolePanel } from '../panels';
 import { ROLES_CONSTANTS as RPC } from '../constants';
@@ -112,7 +113,7 @@ const MainPage: React.FC = () => {
   const handleViewPanelEdit = useCallback(() => {
     if (viewingRole) {
       closeViewPanel();
-      setTimeout(() => openEditPanel(viewingRole), 150);
+      setTimeout(() => openEditPanel(viewingRole), SLIDE_OUT.HANDOFF_DELAY_MS);
     }
   }, [viewingRole, closeViewPanel, openEditPanel]);
 

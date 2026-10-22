@@ -7,6 +7,7 @@ import {
 } from '../../../constants';
 import UserAvatar from '../../../../../../components/display/avatars/UserAvatar';
 import type { User } from '../../../../users/models';
+import { SPACING } from '../../../../../../constants';
 
 interface MemberListProps {
   users: User[] | undefined;
@@ -63,7 +64,7 @@ const MemberList: React.FC<MemberListProps> = ({
 
   return (
     <div style={{ width: '100%' }}>
-      <Form.Item name={fieldName} style={{ margin: 0, width: '100%' }}>
+      <Form.Item name={fieldName} style={{ margin: SPACING.NONE, width: '100%' }}>
         <Checkbox.Group
           style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
           value={filteredSelectedUsers}
@@ -91,7 +92,7 @@ const MemberList: React.FC<MemberListProps> = ({
                 >
                   <Checkbox
                     value={user.id}
-                    style={{ margin: 0, width: '100%' }}
+                    style={{ margin: SPACING.NONE, width: '100%' }}
                     disabled={Boolean(reason)}
                   >
                     <div style={AMC.LIST.MEMBER_CONTENT}>

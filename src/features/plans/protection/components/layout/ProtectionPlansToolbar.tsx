@@ -7,6 +7,9 @@ import {
   STATUS_COLORS,
   TOOLBAR_CONTROL,
   getQuickFilterPillColors,
+  SPACING,
+  FONT_SIZE,
+  FONT_WEIGHT,
 } from '../../../../../constants';
 import { CompactQuickFilter, ListToolbar } from '../../../../../components/display/toolbar';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
@@ -50,7 +53,7 @@ interface PhasePillsProps {
 }
 
 const PhasePills: React.FC<PhasePillsProps> = ({ active, counts, onChange }) => (
-  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: '100%' }}>
+  <div style={{ display: 'inline-flex', alignItems: 'center', gap: SPACING.S6, height: '100%' }}>
     {PHASE_PILLS.map((pill) => {
       const isActive = active === pill.key;
       const accent = getPillAccent(pill.key);
@@ -65,14 +68,14 @@ const PhasePills: React.FC<PhasePillsProps> = ({ active, counts, onChange }) => 
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
-            gap: 6,
+            gap: SPACING.S6,
             height: TOOLBAR_CONTROL.HEIGHT,
             boxSizing: 'border-box',
             padding: TOOLBAR_CONTROL.PADDING,
             borderRadius: LIST_TOOLBAR.PILL_RADIUS_PX,
             ...getQuickFilterPillColors(accent, isActive),
-            fontSize: 12,
-            fontWeight: 700,
+            fontSize: FONT_SIZE.SM,
+            fontWeight: FONT_WEIGHT.BOLD,
             lineHeight: TOOLBAR_CONTROL.LINE_HEIGHT,
             userSelect: 'none',
           }}

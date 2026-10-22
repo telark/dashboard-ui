@@ -1,19 +1,16 @@
 import React, { memo } from 'react';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, UNSTYLED_BUTTON, FONT_SIZE, FONT_WEIGHT } from '../../../../../constants';
 import SettingsCard from '../../../components/SettingsCard';
 import { SECURITY_SECTION_CONSTANTS } from '../constants';
 
 const { LABELS } = SECURITY_SECTION_CONSTANTS;
 
 const linkStyle: React.CSSProperties = {
-  fontSize: 14,
-  fontWeight: 500,
+  ...UNSTYLED_BUTTON,
+  fontSize: FONT_SIZE.BASE,
+  fontWeight: FONT_WEIGHT.MEDIUM,
   color: DEFAULT_COLORS.SUCCESS,
   textDecoration: 'none',
-  background: 'none',
-  border: 'none',
-  padding: 0,
-  cursor: 'pointer',
   fontFamily: 'inherit',
 };
 
@@ -23,7 +20,7 @@ export interface PasskeysCardProps {
 
 const PasskeysCard: React.FC<PasskeysCardProps> = memo(({ onManagePasskeysClick }) => (
   <SettingsCard title={LABELS.PASSKEYS_CARD_TITLE} description={LABELS.PASSKEYS_CARD_DESCRIPTION}>
-    <div style={{ fontSize: 14, color: DEFAULT_COLORS.TEXT_SECONDARY }}>
+    <div style={{ fontSize: FONT_SIZE.BASE, color: DEFAULT_COLORS.TEXT_SECONDARY }}>
       {onManagePasskeysClick ? (
         <button type="button" style={linkStyle} onClick={onManagePasskeysClick}>
           {LABELS.PASSKEYS_MANAGE_LINK}

@@ -6,7 +6,7 @@
  */
 import React from 'react';
 import { Row, Col, Grid } from 'antd';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, SPACING } from '../../../../constants';
 
 const { useBreakpoint } = Grid;
 
@@ -37,9 +37,10 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({
       >
         {showBanner && (
           <div
+            // 14: the banner's vertical padding sits between MD and LG.
             style={{
               background: DEFAULT_COLORS.PAGE_BG,
-              padding: '14px 24px',
+              padding: `14px ${SPACING.XXL}px`,
               display: 'flex',
               alignItems: 'center',
             }}
@@ -51,6 +52,7 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({
           {showLeftPanel && (
             <Col
               lg={12}
+              // 48: the brand panel's padding sits above XXXL.
               style={{
                 background: DEFAULT_COLORS.PAGE_BG,
                 display: 'flex',
@@ -67,12 +69,13 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({
           <Col
             xs={24}
             lg={showLeftPanel ? 12 : 24}
+            // 40: the card column's vertical padding sits above XXXL.
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               background: `var(--auth-right-bg, ${DEFAULT_COLORS.AUTH_LIGHT_BG})`,
-              padding: '40px 20px',
+              padding: `40px ${SPACING.XL}px`,
               minHeight: showBanner ? 'calc(100vh - 52px)' : '100vh',
             }}
           >
@@ -91,7 +94,7 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({
         justifyContent: 'center',
         minHeight: '100vh',
         background: `var(--auth-right-bg, ${DEFAULT_COLORS.AUTH_LIGHT_BG})`,
-        padding: '20px',
+        padding: SPACING.XL,
       }}
     >
       {children}

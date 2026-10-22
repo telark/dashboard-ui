@@ -5,6 +5,7 @@ import type { ScopeType } from '../../models';
 import type { SelectOption, SelectOptionGroup } from '../../hooks/useScopeExclusionOptions';
 import Section from '../../../../../components/display/sections/Section';
 import { FORM_ITEM_CLASS } from './types';
+import { SPACING } from '../../../../../constants';
 
 const { SECTIONS, FORM } = PPC.CREATE_PAGE;
 
@@ -59,11 +60,11 @@ const ScopeSection: React.FC<ScopeSectionProps> = ({
       title={SECTIONS.SCOPE_TITLE}
       subtitle={SECTIONS.SCOPE_DESCRIPTION}
       content={
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.NONE }}>
           <Form.Item
             name="scopeType"
             label={FORM.SCOPE_TYPE_LABEL}
-            style={{ marginBottom: 12 }}
+            style={{ marginBottom: SPACING.MD }}
             className={FORM_ITEM_CLASS}
           >
             <Select
@@ -80,7 +81,7 @@ const ScopeSection: React.FC<ScopeSectionProps> = ({
                 name="applicationRefs"
                 label={FORM.APPLICATIONS_LABEL}
                 rules={[{ required: true, message: FORM.APPLICATIONS_REQUIRED_ERROR }]}
-                style={{ marginBottom: 12 }}
+                style={{ marginBottom: SPACING.MD }}
                 className={FORM_ITEM_CLASS}
               >
                 <Select
@@ -96,7 +97,7 @@ const ScopeSection: React.FC<ScopeSectionProps> = ({
               <Form.Item
                 name="excludedKinds"
                 label={FORM.EXCLUDED_KINDS_LABEL}
-                style={{ marginBottom: 12 }}
+                style={{ marginBottom: SPACING.MD }}
                 className={FORM_ITEM_CLASS}
               >
                 {kindsSelect}
@@ -104,7 +105,7 @@ const ScopeSection: React.FC<ScopeSectionProps> = ({
               <Form.Item
                 name="excludedResources"
                 label={FORM.EXCLUDED_RESOURCES_LABEL}
-                style={{ marginBottom: 0 }}
+                style={{ marginBottom: SPACING.NONE }}
                 className={FORM_ITEM_CLASS}
               >
                 <Select
@@ -127,7 +128,7 @@ const ScopeSection: React.FC<ScopeSectionProps> = ({
                 name="namespaces"
                 label={FORM.NAMESPACES_LABEL}
                 rules={[{ required: true, message: FORM.NAMESPACES_REQUIRED_ERROR }]}
-                style={{ marginBottom: 12 }}
+                style={{ marginBottom: SPACING.MD }}
                 className={FORM_ITEM_CLASS}
               >
                 <Select
@@ -144,7 +145,7 @@ const ScopeSection: React.FC<ScopeSectionProps> = ({
                 name="excludedKinds"
                 label={FORM.EXCLUDED_KINDS_LABEL}
                 extra={FORM.EXCLUSIONS_NAMESPACES_HINT}
-                style={{ marginBottom: 0 }}
+                style={{ marginBottom: SPACING.NONE }}
                 className={FORM_ITEM_CLASS}
               >
                 {kindsSelect}

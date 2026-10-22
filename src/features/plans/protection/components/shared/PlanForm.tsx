@@ -19,6 +19,7 @@ import { formatDateTime, getTimeZone } from '../../../../../utils/shared/time';
 import { useScopeExclusionOptions } from '../../hooks/useScopeExclusionOptions';
 import PlanTaxonomyFields from './PlanTaxonomyFields';
 import PlanApprovalModeField from './PlanApprovalModeField';
+import { SPACING } from '../../../../../constants';
 
 export interface PlanFormProps {
   form: FormInstance<FormValues>;
@@ -121,7 +122,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
       onFinish={onSubmit}
       initialValues={initialValues}
       validateTrigger={validateTrigger}
-      style={{ display: 'flex', flexDirection: 'column', gap: 0 }}
+      style={{ display: 'flex', flexDirection: 'column', gap: SPACING.NONE }}
     >
       <div
         style={{
@@ -184,7 +185,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
       </div>
 
       {materialLocked && (
-        <Alert type="warning" showIcon title={lockedAlert} style={{ marginTop: 16 }} />
+        <Alert type="warning" showIcon title={lockedAlert} style={{ marginTop: SPACING.LG }} />
       )}
 
       {asksApprovalAgain && (
@@ -192,7 +193,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
           type="warning"
           showIcon
           title={PPC.PANELS.EDIT.REAPPROVAL_ALERT}
-          style={{ marginTop: 16 }}
+          style={{ marginTop: SPACING.LG }}
         />
       )}
 
@@ -201,7 +202,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
           type="warning"
           showIcon
           title={PPC.PANELS.EDIT.ACTIVE_SCOPE_WARNING}
-          style={{ marginTop: 16 }}
+          style={{ marginTop: SPACING.LG }}
         />
       )}
 
@@ -209,7 +210,7 @@ const PlanForm: React.FC<PlanFormProps> = ({
         <Alert
           type="error"
           title={submitError}
-          style={{ marginTop: 16 }}
+          style={{ marginTop: SPACING.LG }}
           showIcon
           closable={Boolean(onSubmitErrorClose)}
           onClose={onSubmitErrorClose}

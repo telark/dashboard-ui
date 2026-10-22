@@ -9,8 +9,10 @@ import {
 import RoleProtectionView from '../view/RoleProtectionView';
 import { ROLES_CONSTANTS as RC } from '../../../constants';
 import type { RoleFormValues, RoleFormProps } from '../../../models';
+import { SPACING } from '../../../../../../constants';
 
 // One tree in both modes: swapping the wrappers on expand remounted every section.
+// Off scale, kept exact: gap 18 (LG to XL).
 const COLUMN: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
@@ -99,9 +101,10 @@ const RoleForm: React.FC<RoleFormProps> = ({
             return (
               <div
                 style={{
+                  // Off scale, kept exact: gap 18 (LG to XL).
                   display: 'flex',
                   flexDirection: expanded ? 'row' : 'column',
-                  gap: expanded ? 24 : 18,
+                  gap: expanded ? SPACING.XXL : 18,
                   width: '100%',
                   alignItems: expanded ? 'flex-start' : undefined,
                 }}

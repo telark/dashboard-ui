@@ -1,6 +1,6 @@
 import React from 'react';
 import { Empty } from 'antd';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, SPACING, FONT_SIZE, FONT_WEIGHT } from '../../../../../constants';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 
 const ProtectionPlanDetailsEmpty: React.FC = () => {
@@ -19,10 +19,10 @@ const ProtectionPlanDetailsEmpty: React.FC = () => {
           <div style={{ maxWidth: 420 }}>
             <h2
               style={{
-                margin: 0,
-                marginBottom: 8,
-                fontSize: 20,
-                fontWeight: 600,
+                margin: SPACING.NONE,
+                marginBottom: SPACING.SM,
+                fontSize: FONT_SIZE.XXL,
+                fontWeight: FONT_WEIGHT.SEMIBOLD,
                 color: DEFAULT_COLORS.TEXT_PRIMARY,
               }}
             >

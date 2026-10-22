@@ -19,6 +19,9 @@ import {
   STATUS_COLORS,
   TAG_CLASS,
   getPillColor,
+  FONT_WEIGHT,
+  RADIUS,
+  SPACING,
 } from '../../../constants';
 import { AnimationWrapper, ExpandPanelButton } from '../../../components/display/panels/slide-out';
 import { FancySpinner } from '../../../components/animation';
@@ -70,8 +73,12 @@ const { analyze: ANALYZE_PERMISSION, triage: TRIAGE_PERMISSION } = ACTION_PERMIS
 
 // Compact disclosures: no ghost-panel padding and no gap between rows.
 const collapseStyles = {
-  header: { padding: '6px 0', alignItems: 'center', color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED },
-  body: { padding: '4px 0 12px' },
+  header: {
+    padding: `${SPACING.S6}px 0`,
+    alignItems: 'center',
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+  },
+  body: { padding: `${SPACING.XS}px 0 ${SPACING.MD}px` },
 };
 const unsetButton: React.CSSProperties = { all: 'unset', cursor: 'pointer' };
 
@@ -92,7 +99,11 @@ const CopyButton: React.FC<{ value: string }> = ({ value }) => {
         type="button"
         aria-label={`${P.COPY} ${value}`}
         className={SLIDE_OUT.HEADER_BUTTON_CLASS}
-        style={{ ...unsetButton, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED, marginLeft: 6 }}
+        style={{
+          ...unsetButton,
+          color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
+          marginLeft: SPACING.S6,
+        }}
         onClick={() => {
           globalThis.navigator.clipboard.writeText(value).then(
             () => void message.success(P.COPIED),
@@ -143,17 +154,25 @@ const Details: React.FC<{ insight: Insight }> = ({ insight }) => {
     [T.CONFIDENCE, INSIGHT_CONFIDENCE_LABELS[insight.confidence]],
     [T.RUNS, String(insight.runs)],
   );
+  // Off scale, kept exact: padding 10 (SM to MD).
   const blockStyle: React.CSSProperties = {
     ...textStyle,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
     display: 'flex',
     flexDirection: 'column',
-    padding: '10px 12px',
-    borderRadius: 8,
+    padding: `10px ${SPACING.MD}px`,
+    borderRadius: RADIUS.MD,
     background: DEFAULT_COLORS.CHIP_ON_SURFACE_BG,
   };
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+    <div
+      style={{
+        // Off scale, kept exact: gap 14 (MD to LG).
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 14,
+      }}
+    >
       <div style={tilesStyle}>
         {rows.map(([label, value]) => (
           <Fact key={label} label={label} hint={value}>
@@ -162,7 +181,7 @@ const Details: React.FC<{ insight: Insight }> = ({ insight }) => {
         ))}
       </div>
       {insight.evidence.length ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.S6 }}>
           <span style={labelStyle}>{T.EVIDENCE}</span>
           <div style={blockStyle}>
             {insight.evidence.map((e) => (
@@ -174,7 +193,7 @@ const Details: React.FC<{ insight: Insight }> = ({ insight }) => {
         </div>
       ) : null}
       {params[MESSAGE_PARAM] ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.S6 }}>
           <span style={labelStyle}>{T.MESSAGE}</span>
           <div style={{ ...blockStyle, whiteSpace: 'pre-wrap' }}>{params[MESSAGE_PARAM]}</div>
         </div>
@@ -214,11 +233,10 @@ const TriageButtons: React.FC<{
     setPending(null);
   };
   return (
-    <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+    <div style={{ display: 'flex', gap: SPACING.S6, flexShrink: 0 }}>
       {triageActions(insight).map((action) => (
         <Tooltip key={action} title={TRIAGE_ACTION_LABELS[action]}>
           <Button
-            size="small"
             type="text"
             style={triageButtonStyle}
             aria-label={TRIAGE_ACTION_LABELS[action]}
@@ -270,7 +288,7 @@ const Summary: React.FC<{
             <Fact label={P.APPLICATION} hint={app}>
               <Link
                 to={APP_ROUTES.APPLICATION_DETAILS.replace(':name', encodeURIComponent(app))}
-                style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE, fontWeight: 700 }}
+                style={{ color: DEFAULT_COLORS.TEXT_ON_SURFACE, fontWeight: FONT_WEIGHT.BOLD }}
               >
                 {app}
               </Link>
@@ -354,7 +372,7 @@ const PanelBody: React.FC<BodyProps> = ({ namespace, app, id, row, onSelect, onC
 
   if (!doc && isLoading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', padding: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', padding: SPACING.XXL }}>
         <FancySpinner size={20} />
       </div>
     );
@@ -392,15 +410,16 @@ const PanelBody: React.FC<BodyProps> = ({ namespace, app, id, row, onSelect, onC
       key: 'analysis',
       label: <span style={labelStyle}>{P.ANALYSIS}</span>,
       children: (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.SM }}>
           <div
             style={{
+              // Off scale, kept exact: padding 14 (MD to LG).
               ...cardStyle,
-              padding: '12px 14px',
+              padding: `${SPACING.MD}px 14px`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: 12,
+              gap: SPACING.MD,
             }}
           >
             <div
@@ -409,7 +428,7 @@ const PanelBody: React.FC<BodyProps> = ({ namespace, app, id, row, onSelect, onC
                 minWidth: 0,
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 4,
+                gap: SPACING.XS,
               }}
             >
               <RunLine run={run} light />
@@ -449,7 +468,14 @@ const PanelBody: React.FC<BodyProps> = ({ namespace, app, id, row, onSelect, onC
               </span>
             ),
             children: (
-              <div style={{ ...cardStyle, padding: 4, display: 'flex', flexDirection: 'column' }}>
+              <div
+                style={{
+                  ...cardStyle,
+                  padding: SPACING.XS,
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
                 {others.map((other) => (
                   <FindingRow
                     key={other.id}
@@ -469,7 +495,7 @@ const PanelBody: React.FC<BodyProps> = ({ namespace, app, id, row, onSelect, onC
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.XL }}>
       {insight ? (
         <>
           <Summary
@@ -543,7 +569,7 @@ const navButton = (label: string, icon: React.ReactNode, onClick?: () => void) =
         ...unsetButton,
         cursor: onClick ? 'pointer' : 'not-allowed',
         color: onClick ? DEFAULT_COLORS.TEXT_ON_SURFACE : DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED,
-        padding: 4,
+        padding: SPACING.XS,
       }}
     >
       {icon}
@@ -579,7 +605,7 @@ const InsightDetailsPanel: React.FC<Props> = memo(
         }
         width={expanded ? CLUSTER_INSIGHTS.PANEL_WIDTH_EXPANDED : CLUSTER_INSIGHTS.PANEL_WIDTH}
         headerExtra={
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: SPACING.XS }}>
             {position ? (
               <span style={mutedStyle}>
                 {P.POSITION.replace('{index}', String(position.index + 1)).replace(

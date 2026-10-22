@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { DEFAULT_COLORS } from '../../../../constants';
+import { DEFAULT_COLORS, SECTION_LAYOUT, SPACING, FONT_WEIGHT } from '../../../../constants';
 import { NoPermissionCard } from '../../../../components/shared';
 import { HOME_DASHBOARD_LAYOUT as L, HOME_DASHBOARD_STYLES as S } from '../../constants/dashboard';
 import type { BoxState } from '../../models';
@@ -39,7 +39,7 @@ const DashboardBox: React.FC<DashboardBoxProps> = memo(
         padding: L.BOX_PADDING_PX,
         borderRadius: L.BOX_RADIUS_PX,
         background: DEFAULT_COLORS.SURFACE_ELEVATED,
-        border: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
+        border: SECTION_LAYOUT.SUBTLE_DIVIDER,
         minWidth: 0,
       }}
     >
@@ -69,9 +69,9 @@ const DashboardBox: React.FC<DashboardBoxProps> = memo(
             title={title}
             style={{
               ...S.ELLIPSIS,
-              margin: 0,
+              margin: SPACING.NONE,
               fontSize: L.BOX_TITLE_FONT_SIZE_PX,
-              fontWeight: 600,
+              fontWeight: FONT_WEIGHT.SEMIBOLD,
               color: DEFAULT_COLORS.TEXT_PRIMARY,
             }}
           >

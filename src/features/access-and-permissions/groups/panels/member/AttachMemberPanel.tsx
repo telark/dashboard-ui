@@ -8,7 +8,7 @@ import {
 import { SearchInput } from '../../../../../components/display/inputs';
 import { ToggleButton } from '../../../../../components/display/buttons';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
-import { SLIDE_OUT } from '../../../../../constants';
+import { SLIDE_OUT, SPACING } from '../../../../../constants';
 import { useAttachMemberPanel, useDeassignGroupMember } from '../../hooks';
 import {
   usePermission,
@@ -167,18 +167,18 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
           <ExpandPanelButton expanded={expanded} onToggle={() => setExpanded((prev) => !prev)} />
         }
         formContent={
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD, width: '100%' }}>
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 flexWrap: 'wrap',
-                gap: 12,
+                gap: SPACING.MD,
                 width: '100%',
                 boxSizing: 'border-box',
-                margin: 0,
-                padding: 0,
+                margin: SPACING.NONE,
+                padding: SPACING.NONE,
               }}
             >
               <SearchInput
@@ -195,7 +195,14 @@ const AttachMemberPanel: React.FC<AttachMemberPanelProps> = ({ open, onClose, gr
                 tooltip={GC.LABELS.PANELS.ASSIGN_MEMBERS.SHOW_ASSIGNED_TOOLTIP}
               />
             </div>
-            <div style={{ width: '100%', margin: 0, padding: 0, boxSizing: 'border-box' }}>
+            <div
+              style={{
+                width: '100%',
+                margin: SPACING.NONE,
+                padding: SPACING.NONE,
+                boxSizing: 'border-box',
+              }}
+            >
               {showAssignedOnly ? (
                 <GroupAssignedMembersView
                   assignedUserIds={filteredAssignedUserIds}

@@ -5,6 +5,7 @@ import {
   DEFAULT_COLORS,
   DIVIDED_BLOCK_STYLE,
   MICRO_LABEL_STYLE,
+  SPACING,
 } from '../../../constants';
 import type { CardChipSectionProps } from '../../../interfaces/layout/card';
 import CardChip from './CardChip';
@@ -19,6 +20,7 @@ const CardChipSection: React.FC<CardChipSectionProps> = ({ label, items, emptyTe
       {shown.length === 0 ? (
         <p
           style={{
+            // Off scale, kept exact: margin 10 (SM to MD).
             margin: '10px 0 0',
             fontSize: CARD_LAYOUT.META_FONT_SIZE_PX,
             color: DEFAULT_COLORS.TEXT_MUTED,
@@ -30,11 +32,11 @@ const CardChipSection: React.FC<CardChipSectionProps> = ({ label, items, emptyTe
         <ul
           style={{
             listStyle: 'none',
-            margin: '8px 0 0',
-            padding: 0,
+            margin: `${SPACING.SM}px 0 0`,
+            padding: SPACING.NONE,
             display: 'flex',
             flexWrap: 'wrap',
-            gap: 6,
+            gap: SPACING.S6,
           }}
         >
           {shown.map((item) => (

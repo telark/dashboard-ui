@@ -1,5 +1,5 @@
 import { format, parse, subDays } from 'date-fns';
-import { DEFAULT_COLORS, STATUS_COLORS, TIME_FORMATS } from '../../../constants';
+import { DEFAULT_COLORS, SECTION_LAYOUT, STATUS_COLORS, TIME_FORMATS } from '../../../constants';
 import { toDateKey, toZonedTime } from '../../../utils/shared/time';
 import type { Application } from '../../applications/models';
 import type { ProtectionPlan } from '../../plans/protection/models';
@@ -33,7 +33,7 @@ export const CHART_LEGEND = {
 export const CHART_TOOLTIP_CSS = {
   '.g2-tooltip': {
     background: DEFAULT_COLORS.SURFACE_ELEVATED_HOVER,
-    border: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
+    border: SECTION_LAYOUT.SUBTLE_DIVIDER,
     color: DEFAULT_COLORS.TEXT_PRIMARY,
     boxShadow: 'none',
   },

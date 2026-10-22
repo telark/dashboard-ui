@@ -6,6 +6,7 @@ import { useUserListPageConfig } from '../hooks/list/useUserListPageConfig';
 import { useUserPanelState } from '../hooks/panels/user/useUserPanelState';
 import { applyUserFilters } from '../utils/filter/applyUserFilters';
 import { CreateUserPanel } from '../panels';
+import { SLIDE_OUT } from '../../../../constants';
 import { noop } from '../../../../utils/helpers/noop';
 import type { User } from '../models';
 import UsersEmptyPage from './UsersEmptyPage';
@@ -106,7 +107,7 @@ const MainPage: React.FC = () => {
   const handleViewPanelEdit = useCallback(() => {
     if (viewingUser) {
       closeViewPanel();
-      setTimeout(() => openEditPanel(viewingUser), 150);
+      setTimeout(() => openEditPanel(viewingUser), SLIDE_OUT.HANDOFF_DELAY_MS);
     }
   }, [viewingUser, closeViewPanel, openEditPanel]);
 

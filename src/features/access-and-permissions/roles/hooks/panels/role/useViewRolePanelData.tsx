@@ -1,6 +1,12 @@
 import React, { useMemo } from 'react';
 import { Tag } from 'antd';
-import { DEFAULT_COLORS, EMPTY_VALUE, TAG_CLASS } from '../../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  EMPTY_VALUE,
+  TAG_CLASS,
+  FONT_SIZE,
+  FONT_WEIGHT,
+} from '../../../../../../constants';
 import TimeAgo from '../../../../../../components/display/time/TimeAgo';
 import { ActorDisplay } from '../../../../../../components/display/users';
 import { useUsernamesByIds } from '../../../../../../hooks/useUsernamesByIds';
@@ -24,8 +30,8 @@ interface UseViewRolePanelDataReturn {
 }
 
 const valueStyle = {
-  fontSize: 14,
-  fontWeight: 500,
+  fontSize: FONT_SIZE.BASE,
+  fontWeight: FONT_WEIGHT.MEDIUM,
   color: DEFAULT_COLORS.TEXT_ON_SURFACE,
 } as const;
 

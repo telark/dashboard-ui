@@ -4,6 +4,7 @@ import LabeledInput from '../../../../../../components/display/inputs/LabeledInp
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
 import CategorySelect from './CategorySelect';
 import type { AssignmentSelectOption } from '../../../../roles/models';
+import { SPACING } from '../../../../../../constants';
 
 interface GroupFormFieldsProps {
   nameValidator: (rule: unknown, value: string) => Promise<void>;
@@ -17,7 +18,7 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
   categoryOptions,
 }) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.NONE }}>
       <Form.Item
         name="name"
         label={GC.LABELS.FORM.FIELDS.NAME_LABEL}
@@ -30,7 +31,7 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
           },
           { validator: nameValidator },
         ]}
-        style={{ marginBottom: 16 }}
+        style={{ marginBottom: SPACING.LG }}
         className="form-item-compact no-asterisk"
         validateTrigger="onChange"
       >
@@ -53,7 +54,7 @@ const GroupFormFields: React.FC<GroupFormFieldsProps> = ({
             message: `Please select ${GC.LABELS.FORM.FIELDS.CATEGORY_LABEL.toLowerCase()}`,
           },
         ]}
-        style={{ marginBottom: 0 }}
+        style={{ marginBottom: SPACING.NONE }}
         className="form-item-compact no-asterisk"
       >
         <CategorySelect

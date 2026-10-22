@@ -17,8 +17,12 @@ import {
   EMPTY_VALUE,
   Icons,
   STATUS_COLORS,
+  STATUS_DOT,
   TAG_CLASS,
   getPillColor,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  SPACING,
 } from '../../../constants';
 import { generateColumn } from '../../../components/display/table/utils';
 import TimeAgo from '../../../components/display/time/TimeAgo';
@@ -61,10 +65,13 @@ const FITTING_COLUMNS: ReadonlySet<InsightColumnKey>[] = Array.from(
   (_, count) => new Set(OPTIONAL_COLUMNS.slice(0, count)),
 );
 
-const mutedStyle: React.CSSProperties = { fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED };
+const mutedStyle: React.CSSProperties = {
+  fontSize: FONT_SIZE.SM,
+  color: DEFAULT_COLORS.TEXT_MUTED,
+};
 const primaryStyle: React.CSSProperties = {
-  fontSize: 13,
-  fontWeight: 700,
+  fontSize: FONT_SIZE.MD,
+  fontWeight: FONT_WEIGHT.BOLD,
   color: DEFAULT_COLORS.TEXT_PRIMARY,
 };
 
@@ -91,18 +98,17 @@ const tag = (text: string, accent?: string): React.ReactNode => (
 const stateStyle: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
-  gap: 6,
-  fontSize: 12,
-  fontWeight: 600,
+  gap: SPACING.S6,
+  fontSize: FONT_SIZE.SM,
+  fontWeight: FONT_WEIGHT.SEMIBOLD,
 };
-const dotStyle: React.CSSProperties = { width: 8, height: 8, borderRadius: '50%', flexShrink: 0 };
 
 // Text with a dot rather than a pill: a colored pill in this table means severity.
 const stateCell = (state: InsightRowState): React.ReactNode => {
   const color = STATUS_COLORS.INSIGHT_STATE[state];
   return (
     <span style={{ ...stateStyle, color }}>
-      <span aria-hidden style={{ ...dotStyle, background: color }} />
+      <span aria-hidden style={{ ...STATUS_DOT, background: color }} />
       {INSIGHT_ROW_STATE_LABELS[state]}
     </span>
   );
@@ -120,7 +126,7 @@ const oneLine: React.CSSProperties = {
 const titleCellStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
-  gap: 2,
+  gap: SPACING.XXS,
   width: 0,
   minWidth: `max(100%, ${CLUSTER_INSIGHTS.TITLE_MIN_PX}px)`,
 };
@@ -177,7 +183,7 @@ export const sortInsightRows = (
   sortData([...rows].sort(mostUrgentFirst), sortKey, sortOrder, INSIGHT_SORT_FIELDS);
 
 const chips = (nodes: React.ReactNode[]): React.ReactNode => (
-  <div style={{ display: 'inline-flex', flexWrap: 'wrap', gap: 4 }}>{nodes}</div>
+  <div style={{ display: 'inline-flex', flexWrap: 'wrap', gap: SPACING.XS }}>{nodes}</div>
 );
 
 interface ColumnSpec {

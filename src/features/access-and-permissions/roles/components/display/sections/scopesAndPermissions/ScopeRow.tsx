@@ -4,7 +4,14 @@ import { AiOutlineDown, AiOutlineRight } from 'react-icons/ai';
 import type { ScopeFormValue, PermissionLevel } from '../../../../models';
 import { ROLES_CONSTANTS as RPC } from '../../../../constants';
 import { getScopeRules, formatRuleKey } from '../../../../constants/scopeRules';
-import { DEFAULT_COLORS } from '../../../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  UNSTYLED_BUTTON,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  MOTION,
+  SPACING,
+} from '../../../../../../../constants';
 import LevelSelector from './LevelSelector';
 import RulesList from './RulesList';
 import type { ScopeRowProps } from '../../../../models';
@@ -95,7 +102,7 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
           };
 
           return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.NONE }}>
               {/* A scope without a level has no rules: undefined would flip the input to controlled. */}
               <Form.Item
                 name={['scopes', scopeKey, 'rules']}
@@ -107,10 +114,10 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
 
               <Form.Item
                 label={scopeLabel}
-                style={{ marginBottom: isLast ? 0 : 8 }}
+                style={{ marginBottom: isLast ? SPACING.NONE : SPACING.SM }}
                 className="form-item-compact"
               >
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.XS }}>
                   <Form.Item
                     name={['scopes', scopeKey, 'level']}
                     noStyle
@@ -142,20 +149,17 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                       type="button"
                       onClick={toggleScope}
                       style={{
+                        ...UNSTYLED_BUTTON,
                         display: 'inline-flex',
                         alignItems: 'center',
-                        gap: 4,
-                        padding: 0,
-                        margin: 0,
-                        border: 'none',
-                        background: 'none',
-                        cursor: 'pointer',
+                        gap: SPACING.XS,
+                        margin: SPACING.NONE,
                         fontFamily: 'inherit',
-                        fontSize: 12,
+                        fontSize: FONT_SIZE.SM,
                         color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-                        fontWeight: 400,
+                        fontWeight: FONT_WEIGHT.REGULAR,
                         alignSelf: 'flex-start',
-                        transition: 'color 0.15s ease',
+                        transition: `color ${MOTION.FAST_MS}ms ${MOTION.EASE}`,
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.color = DEFAULT_COLORS.TEXT_ON_SURFACE;
@@ -179,10 +183,9 @@ const ScopeRow: React.FC<ScopeRowProps> = ({
                 style={{
                   maxHeight: isExpanded && availableRules.length > 0 ? '1000px' : '0',
                   overflow: 'hidden',
-                  transition:
-                    'max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin-top 0.3s ease',
+                  transition: `max-height ${MOTION.SLOW_MS}ms ${MOTION.EASE_STANDARD}, opacity ${MOTION.SLOW_MS}ms ${MOTION.EASE}, margin-top ${MOTION.SLOW_MS}ms ${MOTION.EASE}`,
                   opacity: isExpanded && availableRules.length > 0 ? 1 : 0,
-                  marginTop: isExpanded && availableRules.length > 0 ? 8 : 0,
+                  marginTop: isExpanded && availableRules.length > 0 ? SPACING.SM : SPACING.NONE,
                 }}
               >
                 {availableRules.length > 0 && (

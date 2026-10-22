@@ -43,8 +43,6 @@
 }
 
 .ant-picker-dropdown.custom-date-picker-popup .ant-picker-time-panel-cell-inner {
-  height: 28px !important;
-  line-height: 28px !important;
   font-size: 12px !important;
 }
 
@@ -57,18 +55,6 @@
   height: 28px !important;
   padding: 0 12px !important;
   font-size: 12px !important;
-}
-
-/* Target the popup directly since it's rendered in a portal */
-.ant-picker-dropdown.custom-date-picker-popup,
-.custom-date-picker-wrapper .ant-picker:hover,
-.custom-date-picker-wrapper .ant-picker-focused {
-  border-color: var(--color-success) !important;
-}
-
-.custom-date-picker-wrapper .ant-picker-focused {
-  border-color: var(--color-success) !important;
-  box-shadow: 0 0 0 2px var(--color-success-ring) !important;
 }
 
 /* Selected date cells */
@@ -204,49 +190,4 @@
 .custom-date-picker-wrapper .ant-picker-time-panel-column > li.ant-picker-time-panel-cell-active .ant-picker-time-panel-cell-inner {
   background: var(--color-success) !important;
   color: var(--color-pill-text) !important;
-}
-
-/* Override ALL blue colors - Global approach for popup */
-.ant-picker-dropdown.custom-date-picker-popup {
-  --ant-primary-color: var(--color-success) !important;
-  --ant-primary-color-hover: var(--color-success-hover) !important;
-  --ant-primary-color-active: var(--color-success-active) !important;
-}
-
-.ant-picker-dropdown.custom-date-picker-popup * {
-  --ant-primary-color: var(--color-success) !important;
-  --ant-primary-color-hover: var(--color-success-hover) !important;
-  --ant-primary-color-active: var(--color-success-active) !important;
-}
-
-/* Override any blue background colors in popup */
-.ant-picker-dropdown.custom-date-picker-popup [style*="rgb(22, 119, 255)"],
-.ant-picker-dropdown.custom-date-picker-popup [style*="rgb(24, 144, 255)"],
-.ant-picker-dropdown.custom-date-picker-popup [style*="#1890ff"],
-.ant-picker-dropdown.custom-date-picker-popup [style*="#1677ff"] {
-  background-color: var(--color-success) !important;
-  background: var(--color-success) !important;
-}
-
-/* Override any blue border colors in popup */
-.ant-picker-dropdown.custom-date-picker-popup [style*="border-color: rgb(22, 119, 255)"],
-.ant-picker-dropdown.custom-date-picker-popup [style*="border-color: rgb(24, 144, 255)"],
-.ant-picker-dropdown.custom-date-picker-popup [style*="border-color: #1890ff"],
-.ant-picker-dropdown.custom-date-picker-popup [style*="border-color: #1677ff"] {
-  border-color: var(--color-success) !important;
-}
-
-/* Override any blue text colors in popup */
-.ant-picker-dropdown.custom-date-picker-popup [style*="color: rgb(22, 119, 255)"],
-.ant-picker-dropdown.custom-date-picker-popup [style*="color: rgb(24, 144, 255)"],
-.ant-picker-dropdown.custom-date-picker-popup [style*="color: #1890ff"],
-.ant-picker-dropdown.custom-date-picker-popup [style*="color: #1677ff"] {
-  color: var(--color-success) !important;
-}
-
-/* Override Ant Design's primary color at root level */
-.custom-date-picker-wrapper {
-  --ant-primary-color: var(--color-success) !important;
-  --ant-primary-color-hover: var(--color-success-hover) !important;
-  --ant-primary-color-active: var(--color-success-active) !important;
 }

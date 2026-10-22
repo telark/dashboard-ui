@@ -5,7 +5,14 @@ import AnimationWrapper from '../../../../../components/display/panels/slide-out
 import { ExpandPanelButton } from '../../../../../components/display/panels/slide-out';
 import Section from '../../../../../components/display/sections/Section';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  HAIRLINE,
+  SPACING,
+  RADIUS,
+  FONT_SIZE,
+  LINE_HEIGHT,
+} from '../../../../../constants';
 import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import { CREATE_PANEL_TEXTS as T } from '../../constants/createPanel';
 import PlanForm from '../shared/PlanForm';
@@ -26,14 +33,14 @@ const PANEL_WIDTH = 720;
 const PANEL_WIDTH_EXPANDED = 1400;
 
 const SUMMARY_STYLE: React.CSSProperties = {
-  margin: 0,
-  padding: 12,
-  border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
-  borderRadius: 8,
+  margin: SPACING.NONE,
+  padding: SPACING.MD,
+  border: HAIRLINE.SURFACE_BORDER,
+  borderRadius: RADIUS.MD,
   background: DEFAULT_COLORS.SURFACE_SUBTLE,
   color: DEFAULT_COLORS.TEXT_ON_SURFACE,
-  fontSize: 13,
-  lineHeight: 1.6,
+  fontSize: FONT_SIZE.MD,
+  lineHeight: LINE_HEIGHT.LOOSE,
 };
 
 interface CreatePlanPanelProps {

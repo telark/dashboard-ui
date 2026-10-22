@@ -4,7 +4,13 @@ import { LockOutlined, UserAddOutlined } from '@ant-design/icons';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 import { REGISTER_CONSTANTS } from '../../constants/register';
 import { AuthForm } from '../shared/AuthForm';
-import { BUTTON_CONFIGS, DEFAULT_COLORS } from '../../../../constants';
+import {
+  BUTTON_CONFIGS,
+  DEFAULT_COLORS,
+  SPACING,
+  FONT_WEIGHT,
+  FONT_SIZE,
+} from '../../../../constants';
 
 interface RegisterFormProps {
   form: FormInstance;
@@ -28,8 +34,8 @@ const LockedEmail: React.FC<{ value?: string }> = ({ value }) => (
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: 8,
-        fontWeight: 700,
+        gap: SPACING.SM,
+        fontWeight: FONT_WEIGHT.BOLD,
         color: `var(--auth-text-primary, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT})`,
         overflowWrap: 'anywhere',
       }}
@@ -39,7 +45,7 @@ const LockedEmail: React.FC<{ value?: string }> = ({ value }) => (
     </div>
     <div
       style={{
-        fontSize: 12,
+        fontSize: FONT_SIZE.SM,
         color: `var(--auth-text-muted, ${DEFAULT_COLORS.AUTH_LIGHT_TEXT_MUTED})`,
       }}
     >
@@ -66,7 +72,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         { required: true, message: AUTH_ERROR_MESSAGES.MISSING_EMAIL },
         { type: 'email', message: 'Please enter a valid email address' },
       ]}
-      style={{ marginBottom: '12px' }}
+      style={{ marginBottom: SPACING.MD }}
     >
       {lockedEmail === undefined ? (
         <Input
@@ -83,7 +89,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       name="deviceName"
       label={REGISTER_CONSTANTS.UI.DEVICE_NAME_LABEL}
       rules={[{ required: true, message: AUTH_ERROR_MESSAGES.MISSING_DEVICE_NAME }]}
-      style={{ marginBottom: '16px' }}
+      style={{ marginBottom: SPACING.LG }}
     >
       <Input
         placeholder={REGISTER_CONSTANTS.UI.DEVICE_NAME_PLACEHOLDER}
@@ -93,7 +99,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       />
     </Form.Item>
 
-    <Form.Item style={{ marginBottom: 0 }}>
+    <Form.Item style={{ marginBottom: SPACING.NONE }}>
       <Button
         type="primary"
         htmlType="submit"
@@ -104,9 +110,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         // Inline colors beat antd's disabled look, so a disabled button keeps antd's own.
         style={
           disabled
-            ? { fontWeight: 600 }
+            ? { fontWeight: FONT_WEIGHT.SEMIBOLD }
             : {
-                fontWeight: 600,
+                fontWeight: FONT_WEIGHT.SEMIBOLD,
                 background: DEFAULT_COLORS.SUCCESS,
                 borderColor: DEFAULT_COLORS.SUCCESS,
                 color: BUTTON_CONFIGS.PRIMARY_BUTTON.TEXT_COLOR,

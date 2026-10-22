@@ -1,6 +1,14 @@
 import React from 'react';
 import { LockOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, getPillSurface } from '../../../../constants';
+import {
+  DEFAULT_COLORS,
+  getPillSurface,
+  SPACING,
+  RADIUS,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  LINE_HEIGHT,
+} from '../../../../constants';
 import { AUTH_ERROR_MESSAGES } from '../../constants';
 
 const MESSAGE = AUTH_ERROR_MESSAGES.PASSKEYS_INSECURE_CONTEXT;
@@ -9,20 +17,22 @@ const MESSAGE = AUTH_ERROR_MESSAGES.PASSKEYS_INSECURE_CONTEXT;
 export const InsecureContextAlert: React.FC = () => (
   <div
     role="alert"
+    // 14: the right padding sits between MD and LG.
     style={{
       position: 'relative',
       display: 'flex',
       alignItems: 'flex-start',
-      gap: 12,
-      padding: '12px 14px 12px 16px',
-      marginBottom: 16,
-      borderRadius: 12,
+      gap: SPACING.MD,
+      padding: `${SPACING.MD}px 14px ${SPACING.MD}px ${SPACING.LG}px`,
+      marginBottom: SPACING.LG,
+      borderRadius: RADIUS.LG,
       background: DEFAULT_COLORS.WARNING_TINT,
       border: `1px solid ${DEFAULT_COLORS.WARNING_TINT}`,
     }}
   >
     <span
       aria-hidden
+      // 3: the accent bar's corner matches its 3px width.
       style={{
         position: 'absolute',
         left: 0,
@@ -35,6 +45,7 @@ export const InsecureContextAlert: React.FC = () => (
     />
     <span
       aria-hidden
+      // 15: the lock icon's size sits between BASE and LG.
       style={{
         flexShrink: 0,
         display: 'inline-flex',
@@ -51,24 +62,32 @@ export const InsecureContextAlert: React.FC = () => (
       <LockOutlined />
     </span>
     <div style={{ flex: 1, minWidth: 0 }}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '4px 8px' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          gap: `${SPACING.XS}px ${SPACING.SM}px`,
+        }}
+      >
         <span
           style={{
-            fontSize: 14,
-            fontWeight: 600,
-            lineHeight: 1.35,
+            fontSize: FONT_SIZE.BASE,
+            fontWeight: FONT_WEIGHT.SEMIBOLD,
+            lineHeight: LINE_HEIGHT.SNUG,
             color: `var(--auth-text-primary, ${DEFAULT_COLORS.TEXT_PRIMARY})`,
           }}
         >
           {MESSAGE.TITLE}
         </span>
         <span
+          // 1.4: the tag's leading sits between SNUG and BASE.
           style={{
-            padding: '2px 8px',
-            borderRadius: 999,
+            padding: `${SPACING.XXS}px ${SPACING.SM}px`,
+            borderRadius: RADIUS.PILL,
             ...getPillSurface(DEFAULT_COLORS.WARNING),
-            fontSize: 11,
-            fontWeight: 600,
+            fontSize: FONT_SIZE.XS,
+            fontWeight: FONT_WEIGHT.SEMIBOLD,
             lineHeight: 1.4,
             whiteSpace: 'nowrap',
           }}
@@ -77,9 +96,10 @@ export const InsecureContextAlert: React.FC = () => (
         </span>
       </div>
       <p
+        // 1.55: the description's leading sits between BASE and LOOSE.
         style={{
-          margin: '4px 0 0',
-          fontSize: 13,
+          margin: `${SPACING.XS}px 0 0`,
+          fontSize: FONT_SIZE.MD,
           lineHeight: 1.55,
           color: `var(--auth-text-muted, ${DEFAULT_COLORS.TEXT_MUTED})`,
         }}

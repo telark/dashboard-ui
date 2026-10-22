@@ -1,16 +1,14 @@
 import { Table, Empty } from 'antd';
-import { DEFAULT_COLORS } from '../../../constants';
+import { DEFAULT_COLORS, SPACING } from '../../../constants';
 import type { DataTableProps } from '../../../interfaces/layout/table';
 
 function DataTable<T>({
   columns,
   data,
   rowKey,
-  rowHeight = 44,
   className,
   containerStyle,
   tableProps = {},
-  onRowClick,
   empty,
 }: Readonly<DataTableProps<T>>) {
   const filteredData = Array.isArray(data) ? data.filter((item) => item != null) : data;
@@ -23,9 +21,10 @@ function DataTable<T>({
     <div
       className={className}
       style={{
+        // Off scale, kept exact: borderRadius 16 (LG to PILL).
         background: DEFAULT_COLORS.PAGE_BG,
         borderRadius: 16,
-        padding: 16,
+        padding: SPACING.LG,
         overflow: 'hidden',
         ...containerStyle,
       }}
@@ -36,10 +35,6 @@ function DataTable<T>({
         dataSource={filteredData}
         pagination={false}
         size="small"
-        onRow={(record) => ({
-          style: { height: rowHeight, cursor: onRowClick ? 'pointer' : 'default' },
-          onClick: onRowClick ? () => onRowClick(record) : undefined,
-        })}
         locale={{
           emptyText: emptyComponent,
         }}

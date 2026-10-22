@@ -8,6 +8,7 @@ import {
 } from '../../../../../groups/constants';
 import { CapitalizeFirstLetter } from '../../../../../../../utils/helpers/format';
 import type { Group } from '../../../../../groups/models';
+import { SPACING } from '../../../../../../../constants';
 
 interface UserGroupSelectListProps {
   groups?: Group[];
@@ -61,7 +62,7 @@ const UserGroupSelectList: React.FC<UserGroupSelectListProps> = ({
   );
 
   return (
-    <Form.Item name="groupRefs" style={{ margin: 0, width: '100%' }}>
+    <Form.Item name="groupRefs" style={{ margin: SPACING.NONE, width: '100%' }}>
       <Checkbox.Group
         value={visibleSelectedGroups}
         onChange={handleChange}

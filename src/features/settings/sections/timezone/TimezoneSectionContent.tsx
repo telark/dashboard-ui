@@ -16,6 +16,7 @@ import {
 import type { User, UserSettings } from '../../../access-and-permissions/users/models';
 import { SETTINGS_CONSTANTS } from '../../constants';
 import { TIMEZONE_SECTION_CONSTANTS } from './constants';
+import { SPACING } from '../../../../constants';
 
 const { LABELS, REGION_CODES, DISPLAY_LOCALE } = TIMEZONE_SECTION_CONSTANTS;
 
@@ -102,7 +103,7 @@ const TimezoneSectionContent: React.FC = memo(() => {
 
   return (
     <SettingsCard title={LABELS.CARD_TITLE} description={LABELS.CARD_DESCRIPTION}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD }}>
         <SettingsField label={LABELS.TIMEZONE_LABEL}>
           <Select
             showSearch

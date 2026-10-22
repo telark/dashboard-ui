@@ -13,7 +13,7 @@ import { handleUserLogout } from '../../utils/logout/logout';
 import { isSignedIn } from '../../utils/session/token';
 import { handleAuthError } from '../../utils/shared/errors';
 import { isWebAuthnSupported } from '../../utils/webauthn/core';
-import { APP_ROUTES } from '../../../../constants';
+import { APP_ROUTES, SPACING, RADIUS, FONT_SIZE } from '../../../../constants';
 import { LOGIN_CONSTANTS } from '../../constants/login';
 import { REGISTER_CONSTANTS } from '../../constants/register';
 import logger from '../../../../logging';
@@ -94,7 +94,7 @@ const Register: React.FC = () => {
           title={REGISTER_CONSTANTS.UI.ENROLL_TITLE}
           subtitle={REGISTER_CONSTANTS.UI.ENROLL_SIGNED_IN}
         />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.SM }}>
           <Button type="primary" block onClick={signOut}>
             {REGISTER_CONSTANTS.UI.SIGN_OUT}
           </Button>
@@ -143,11 +143,12 @@ const Register: React.FC = () => {
               }
               type={enrollFailure === 'refused' ? 'error' : 'warning'}
               showIcon
+              // 10: the alert's top margin and side padding sit between SM and MD.
               style={{
                 marginTop: '10px',
-                borderRadius: '8px',
-                padding: '6px 10px',
-                fontSize: '13px',
+                borderRadius: RADIUS.MD,
+                padding: `${SPACING.S6}px 10px`,
+                fontSize: FONT_SIZE.MD,
               }}
             />
           )}

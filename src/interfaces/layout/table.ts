@@ -5,11 +5,9 @@ export interface DataTableProps<T> {
   columns: TableColumnsType<T>;
   data: T[];
   rowKey: string | ((record: T) => string);
-  rowHeight?: number;
   className?: string;
   containerStyle?: React.CSSProperties;
   tableProps?: TableProps<T>;
-  onRowClick?: (record: T) => void;
   empty?: React.ReactNode;
 }
 

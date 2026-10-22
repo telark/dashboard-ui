@@ -1,6 +1,14 @@
 import React from 'react';
 import { Alert, Form, Select, Typography } from 'antd';
-import { DEFAULT_COLORS, DOCS_LINKS } from '../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  DOCS_LINKS,
+  HAIRLINE,
+  SPACING,
+  FONT_SIZE,
+  RADIUS,
+  FONT_WEIGHT,
+} from '../../../../../constants';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
   POLICY_CHIP_LABEL,
@@ -43,11 +51,11 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
       templatesLoading ? (
         <FancySpinner size={14} />
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD }}>
           <Form.Item
             name="mode"
             label={FORM.MODE_LABEL}
-            style={{ marginBottom: 0 }}
+            style={{ marginBottom: SPACING.NONE }}
             className={FORM_ITEM_CLASS}
             extra={
               <Typography.Link
@@ -73,7 +81,7 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
             }
           </Form.Item>
           <Form.Item
-            style={{ marginBottom: 0 }}
+            style={{ marginBottom: SPACING.NONE }}
             className={FORM_ITEM_CLASS}
             validateStatus={policies.length === 0 ? 'error' : ''}
             help={policies.length === 0 ? FORM.POLICIES_REQUIRED_ERROR : undefined}
@@ -89,7 +97,7 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
               optionRender={(option) => (
                 <div>
                   <div>{option.label}</div>
-                  <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                  <Typography.Text type="secondary" style={{ fontSize: FONT_SIZE.SM }}>
                     {templates.find((t) => t.id === option.value)?.description}
                   </Typography.Text>
                 </div>
@@ -129,31 +137,38 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
                 <div
                   key={entry.templateID}
                   style={{
-                    border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER}`,
-                    borderRadius: 8,
-                    padding: 12,
+                    border: HAIRLINE.SURFACE_BORDER,
+                    borderRadius: RADIUS.MD,
+                    padding: SPACING.MD,
                   }}
                 >
                   <span
-                    style={{ fontWeight: 600, fontSize: 13, display: 'block', marginBottom: 8 }}
+                    style={{
+                      fontWeight: FONT_WEIGHT.SEMIBOLD,
+                      fontSize: FONT_SIZE.MD,
+                      display: 'block',
+                      marginBottom: SPACING.SM,
+                    }}
                   >
                     {templateLabel(tpl)}
                   </span>
                   {(tpl.params ?? []).map((param) => {
                     const error = paramError(entry, param);
                     return (
-                      <div key={param.key} style={{ marginTop: 8 }}>
+                      <div key={param.key} style={{ marginTop: SPACING.SM }}>
                         <Typography.Text
                           style={{
-                            fontSize: 12,
-                            fontWeight: 500,
+                            fontSize: FONT_SIZE.SM,
+                            fontWeight: FONT_WEIGHT.MEDIUM,
                             display: 'block',
-                            marginBottom: 4,
+                            marginBottom: SPACING.XS,
                           }}
                         >
                           {param.label}
                           {param.required && (
-                            <span style={{ color: DEFAULT_COLORS.DANGER, marginLeft: 2 }}>*</span>
+                            <span style={{ color: DEFAULT_COLORS.DANGER, marginLeft: SPACING.XXS }}>
+                              *
+                            </span>
                           )}
                         </Typography.Text>
                         <Select
@@ -175,7 +190,11 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
                         {error && (
                           <Typography.Text
                             type="danger"
-                            style={{ fontSize: 11, display: 'block', marginTop: 2 }}
+                            style={{
+                              fontSize: FONT_SIZE.XS,
+                              display: 'block',
+                              marginTop: SPACING.XXS,
+                            }}
                           >
                             {error}
                           </Typography.Text>
@@ -183,7 +202,11 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
                         {param.description && (
                           <Typography.Text
                             type="secondary"
-                            style={{ fontSize: 11, display: 'block', marginTop: 2 }}
+                            style={{
+                              fontSize: FONT_SIZE.XS,
+                              display: 'block',
+                              marginTop: SPACING.XXS,
+                            }}
                           >
                             {param.description}
                           </Typography.Text>

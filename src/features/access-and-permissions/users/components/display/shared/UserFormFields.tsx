@@ -2,6 +2,7 @@ import React from 'react';
 import type { Rule } from 'antd/es/form';
 import LabeledInput from '../../../../../../components/display/inputs/LabeledInput';
 import { USERS_CONSTANTS as UC } from '../../../constants';
+import { SPACING } from '../../../../../../constants';
 
 interface UserFormFieldsProps {
   usernameRules?: Rule[];
@@ -10,7 +11,7 @@ interface UserFormFieldsProps {
 
 const UserFormFields: React.FC<UserFormFieldsProps> = ({ usernameRules = [], emailRules = [] }) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.NONE }}>
       <LabeledInput
         name="username"
         label={UC.LABELS.FORM.FIELDS.USERNAME_LABEL}

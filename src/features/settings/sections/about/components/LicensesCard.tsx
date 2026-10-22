@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { Input, Typography } from 'antd';
 import SettingsCard from '../../../components/SettingsCard';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, HAIRLINE, FONT_SIZE, SPACING } from '../../../../../constants';
 import { ABOUT_SECTION_CONSTANTS } from '../constants';
 
 const { LABELS, LICENSES_LIST } = ABOUT_SECTION_CONSTANTS;
@@ -16,10 +16,10 @@ const rowStyle: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  gap: 12,
-  padding: '8px 0',
-  borderBottom: `1px solid ${DEFAULT_COLORS.BORDER_SUBTLE}`,
-  fontSize: 13,
+  gap: SPACING.MD,
+  padding: `${SPACING.SM}px 0`,
+  borderBottom: HAIRLINE.BORDER_SUBTLE,
+  fontSize: FONT_SIZE.MD,
 };
 
 const nameCellStyle: React.CSSProperties = {
@@ -76,16 +76,22 @@ const LicensesCard: React.FC = memo(() => {
         placeholder={LABELS.LICENSES_SEARCH_PLACEHOLDER}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        style={{ marginBottom: 12 }}
+        style={{ marginBottom: SPACING.MD }}
       />
       {loadFailed ? (
-        <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 13 }}>
+        <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: FONT_SIZE.MD }}>
           {LABELS.LICENSES_LOAD_ERROR}
         </div>
       ) : (
         <div>
           {filtered.length === 0 && licenses != null ? (
-            <div style={{ color: DEFAULT_COLORS.TEXT_MUTED, fontSize: 13, padding: '8px 0' }}>
+            <div
+              style={{
+                color: DEFAULT_COLORS.TEXT_MUTED,
+                fontSize: FONT_SIZE.MD,
+                padding: `${SPACING.SM}px 0`,
+              }}
+            >
               {LABELS.LICENSES_EMPTY}
             </div>
           ) : (

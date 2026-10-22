@@ -13,7 +13,7 @@ import {
   StopOutlined,
 } from '@ant-design/icons';
 import Toolbar from '../../../../../components/display/toolbar/Toolbar';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, SPACING, FONT_SIZE } from '../../../../../constants';
 import type { ToolbarButtonConfig, ToolbarConfig } from '../../../../../interfaces/layout/toolbar';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../auth/hooks';
 import { getCurrentUser } from '../../../../auth/utils';
@@ -338,10 +338,12 @@ const ProtectionPlanDetailsToolbar: React.FC<ProtectionPlanDetailsToolbarProps> 
         flexWrap: 'wrap',
         alignItems: 'center',
         justifyContent: 'flex-end',
-        gap: 12,
+        gap: SPACING.MD,
       }}
     >
-      <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED }}>{decideBlocked}</span>
+      <span style={{ fontSize: FONT_SIZE.SM, color: DEFAULT_COLORS.TEXT_MUTED }}>
+        {decideBlocked}
+      </span>
       <Toolbar config={toolbarConfig} />
     </div>
   );

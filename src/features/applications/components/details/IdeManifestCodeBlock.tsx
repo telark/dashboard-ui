@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import { MONOSPACE_CLASS } from '../../../../constants';
+import { MONOSPACE_CLASS, SPACING } from '../../../../constants';
 import { APPLICATION_MANIFEST_VIEW } from '../../constants/sectionLayout';
 import { IDE_MANIFEST_THEME as IDE } from './ideManifestTheme';
 
@@ -284,7 +284,7 @@ const IdeManifestCodeBlock: React.FC<IdeManifestCodeBlockProps> = memo(
       >
         <pre
           style={{
-            margin: 0,
+            margin: SPACING.NONE,
             whiteSpace: 'pre-wrap',
             wordBreak: 'break-word',
             color: IDE.text,

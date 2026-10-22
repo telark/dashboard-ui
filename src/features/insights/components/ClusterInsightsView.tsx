@@ -18,7 +18,7 @@ import {
   SearchOutlined,
   UndoOutlined,
 } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../constants';
+import { DEFAULT_COLORS, FONT_SIZE, SPACING } from '../../../constants';
 import { PageLayout } from '../../../components/display/views';
 import { FilterPanel } from '../../../components/display/panels/filter';
 import type { FilterField } from '../../../components/display/panels/filter/FilterPanel';
@@ -169,7 +169,10 @@ const triageShown = (filter: string | undefined, state: TriageState | null): boo
 const listItemKey = (item: InsightListItem): string =>
   isGroupItem(item) ? `${GROUP_ROW_PREFIX}${item.groupKey}` : insightRowKey(item);
 
-const mutedStyle: React.CSSProperties = { fontSize: 12, color: DEFAULT_COLORS.TEXT_MUTED };
+const mutedStyle: React.CSSProperties = {
+  fontSize: FONT_SIZE.SM,
+  color: DEFAULT_COLORS.TEXT_MUTED,
+};
 
 const EmptyInsights: React.FC<{
   category: InsightCategory;
@@ -184,7 +187,14 @@ const EmptyInsights: React.FC<{
     return (
       <Empty
         description={
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: SPACING.XS,
+              alignItems: 'center',
+            }}
+          >
             <strong>{P.ANALYZER_OFF_TITLE}</strong>
             <span style={mutedStyle}>{P.ANALYZER_OFF}</span>
             <Link
@@ -204,7 +214,14 @@ const EmptyInsights: React.FC<{
     return (
       <Empty
         description={
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: SPACING.XS,
+              alignItems: 'center',
+            }}
+          >
             <strong>{P.MANUAL_ANALYSIS_TITLE}</strong>
             <span style={mutedStyle}>{P.MANUAL_ANALYSIS}</span>
           </div>
@@ -215,13 +232,20 @@ const EmptyInsights: React.FC<{
   return (
     <Empty
       description={
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: SPACING.XS,
+            alignItems: 'center',
+          }}
+        >
           {automatic && <strong>{P.ALL_CLEAR_TITLE}</strong>}
           <span style={mutedStyle}>
             {category === 'incident' ? P.ALL_CLEAR_INCIDENTS : P.ALL_CLEAR_RECOMMENDATIONS}
           </span>
           {indexedAt ? (
-            <span style={{ ...mutedStyle, display: 'inline-flex', gap: 4 }}>
+            <span style={{ ...mutedStyle, display: 'inline-flex', gap: SPACING.XS }}>
               {P.CHECKED} <TimeAgo date={indexedAt} />
             </span>
           ) : null}
@@ -655,7 +679,12 @@ const ClusterInsightsView: React.FC<Props> = memo(({ tab, active, tabs, appNote,
     tabs: (
       <div
         ref={ref}
-        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: SPACING.MD,
+        }}
       >
         {tabs}
         {page && page.total > page.items.length ? (

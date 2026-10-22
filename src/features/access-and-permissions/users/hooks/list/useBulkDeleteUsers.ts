@@ -52,7 +52,6 @@ export const useBulkDeleteUsers = ({
       message.success({
         content: UC.LABELS.ACTIONS.BULK_DELETE_SUCCESS(deleteCount),
         key: loadingKey,
-        duration: 3,
       });
 
       setSelectedUsers([]);
@@ -60,7 +59,6 @@ export const useBulkDeleteUsers = ({
       message.error({
         content: rejectionMessage(rejection, UC.LABELS.ACTIONS.BULK_DELETE_FAILED),
         key: loadingKey,
-        duration: 3,
       });
     } finally {
       setIsDeleting(false);

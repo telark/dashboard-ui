@@ -1,7 +1,13 @@
 import React, { memo } from 'react';
 import { Button, Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { APP_ROUTES, DEFAULT_COLORS, DOCS_LINKS } from '../../../../constants';
+import {
+  APP_ROUTES,
+  DEFAULT_COLORS,
+  DOCS_LINKS,
+  FONT_WEIGHT,
+  SPACING,
+} from '../../../../constants';
 import { FancySpinner } from '../../../../components/animation';
 import type { CreatePlanRouteState } from '../../../../interfaces/shared';
 import { ACTION_PERMISSIONS, usePermission } from '../../../auth/hooks';
@@ -38,7 +44,7 @@ const Step: React.FC<{ number: number; title: string; children: React.ReactNode 
         background: DEFAULT_COLORS.CHIP_CUSTOM_BG,
         color: DEFAULT_COLORS.TEXT_SECONDARY,
         fontSize: L.TEXT_FONT_SIZE_PX,
-        fontWeight: 600,
+        fontWeight: FONT_WEIGHT.SEMIBOLD,
       }}
     >
       {number}
@@ -55,7 +61,7 @@ const Step: React.FC<{ number: number; title: string; children: React.ReactNode 
       <span
         style={{
           fontSize: L.ROW_TITLE_FONT_SIZE_PX,
-          fontWeight: 600,
+          fontWeight: FONT_WEIGHT.SEMIBOLD,
           color: DEFAULT_COLORS.TEXT_PRIMARY,
         }}
       >
@@ -90,15 +96,17 @@ const GetStartedBox: React.FC<GetStartedBoxProps> = memo(
         <ol
           style={{
             listStyle: 'none',
-            margin: 0,
-            padding: 0,
+            margin: SPACING.NONE,
+            padding: SPACING.NONE,
             display: 'grid',
             gridTemplateColumns: `repeat(auto-fit, minmax(min(${L.BOX_MIN_WIDTH_PX}px, 100%), 1fr))`,
             gap: L.GRID_GAP_PX,
           }}
         >
           <Step number={1} title={G.DISCOVER.TITLE}>
-            <span style={{ ...S.MUTED_TEXT, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span
+              style={{ ...S.MUTED_TEXT, display: 'flex', alignItems: 'center', gap: SPACING.S6 }}
+            >
               {scanning ? (
                 <FancySpinner size={L.STEP_SPINNER_SIZE_PX} color={DEFAULT_COLORS.WARNING} />
               ) : null}

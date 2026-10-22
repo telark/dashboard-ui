@@ -5,6 +5,7 @@ import { PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPla
 import { buildTimeZoneOptions } from '../../../../../utils/shared/time';
 import { FORM_ITEM_CLASS } from '../create/types';
 import { REPEAT_CLOCK_BASE } from '../../utils/planFormValues';
+import { SPACING } from '../../../../../constants';
 
 const { FORM, REPEAT_DAY_OPTIONS, REPEAT_TIME_FORMAT } = PPC.CREATE_PAGE;
 
@@ -16,11 +17,11 @@ const RepeatFields: React.FC<RepeatFieldsProps> = ({ disabled = false }) => {
   const timeZoneOptions = useMemo(() => buildTimeZoneOptions(), []);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD }}>
       <Form.Item
         name="repeatDays"
         label={FORM.REPEAT_DAYS_LABEL}
-        style={{ marginBottom: 0 }}
+        style={{ marginBottom: SPACING.NONE }}
         className={FORM_ITEM_CLASS}
         rules={[
           { required: true, type: 'array', min: 1, message: FORM.REPEAT_DAYS_REQUIRED_ERROR },
@@ -28,11 +29,17 @@ const RepeatFields: React.FC<RepeatFieldsProps> = ({ disabled = false }) => {
       >
         <Checkbox.Group options={REPEAT_DAY_OPTIONS} disabled={disabled} />
       </Form.Item>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          gap: SPACING.MD,
+        }}
+      >
         <Form.Item
           name="repeatStart"
           label={FORM.REPEAT_START_LABEL}
-          style={{ marginBottom: 0 }}
+          style={{ marginBottom: SPACING.NONE }}
           className={FORM_ITEM_CLASS}
           rules={[{ required: true, message: FORM.START_REQUIRED_ERROR }]}
         >
@@ -47,7 +54,7 @@ const RepeatFields: React.FC<RepeatFieldsProps> = ({ disabled = false }) => {
         <Form.Item
           name="repeatEnd"
           label={FORM.REPEAT_END_LABEL}
-          style={{ marginBottom: 0 }}
+          style={{ marginBottom: SPACING.NONE }}
           className={FORM_ITEM_CLASS}
           dependencies={['repeatStart']}
           rules={[
@@ -79,7 +86,7 @@ const RepeatFields: React.FC<RepeatFieldsProps> = ({ disabled = false }) => {
         name="repeatTimeZone"
         label={FORM.REPEAT_TIME_ZONE_LABEL}
         extra={FORM.REPEAT_HELP}
-        style={{ marginBottom: 0 }}
+        style={{ marginBottom: SPACING.NONE }}
         className={FORM_ITEM_CLASS}
         rules={[{ required: true, message: FORM.REPEAT_TIME_ZONE_REQUIRED_ERROR }]}
       >

@@ -10,6 +10,8 @@ import {
   STATUS_COLORS,
   TAG_CLASS,
   getPillColor,
+  FONT_WEIGHT,
+  SPACING,
 } from '../../../../constants';
 import { PageLayout } from '../../../../components/display/views';
 import { FilterPanel } from '../../../../components/display/panels/filter';
@@ -107,7 +109,7 @@ const PlanCell: React.FC<{ plan?: ProtectionPlan; keptName?: string }> = ({ plan
   plan ? (
     <Link
       to={APP_ROUTES.PROTECTION_PLAN_DETAILS.replace(':name', encodeURIComponent(plan.name))}
-      style={{ color: DEFAULT_COLORS.TEXT_PRIMARY, fontWeight: 700 }}
+      style={{ color: DEFAULT_COLORS.TEXT_PRIMARY, fontWeight: FONT_WEIGHT.BOLD }}
     >
       {plan.name}
     </Link>
@@ -297,7 +299,7 @@ const ProtectionPlanReportsPage: React.FC<ProtectionPlanReportsPageProps> = memo
         <div ref={ref}>
           {tabs}
           {truncated ? (
-            <p style={{ ...mutedText, margin: 0 }}>{L.TRUNCATED(reports.length)}</p>
+            <p style={{ ...mutedText, margin: SPACING.NONE }}>{L.TRUNCATED(reports.length)}</p>
           ) : null}
         </div>
       ),

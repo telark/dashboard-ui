@@ -19,7 +19,7 @@ import type { ToolbarConfig } from '../../../../interfaces/layout/toolbar';
 import type { ResourceDetailsResponse } from '../../../../interfaces/http';
 import type { ExtendedAxiosError } from '../../../../api/client/normalize';
 import { Client, exporterApiClient } from '../../../../api';
-import { Endpoints, DEFAULT_COLORS } from '../../../../constants';
+import { Endpoints, DEFAULT_COLORS, FONT_WEIGHT, SPACING } from '../../../../constants';
 import logger from '../../../../logging';
 import type { AppDispatch } from '../../../../store';
 import { fetchGlobalConfigThunk, selectGlobalConfigState } from '../../../globalconfig/store';
@@ -79,12 +79,13 @@ const COLUMN: React.CSSProperties = {
   gap: C.LAYOUT.FIELD_ROW_GAP,
 };
 
+// Off scale, kept exact: gap 10 (SM to MD).
 const TOGGLE_ROW: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
   gap: 10,
-  padding: '2px 0',
+  padding: `${SPACING.XXS}px 0`,
 };
 
 const AIInsightsSection: React.FC = memo(() => {
@@ -328,7 +329,7 @@ const AIInsightsSection: React.FC = memo(() => {
             <>
               <span
                 style={{
-                  fontWeight: 700,
+                  fontWeight: FONT_WEIGHT.BOLD,
                   color: ready ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.WARNING,
                 }}
               >
@@ -434,7 +435,7 @@ const AIInsightsSection: React.FC = memo(() => {
             <div
               style={{
                 color: currentCheck.ok ? DEFAULT_COLORS.SUCCESS : DEFAULT_COLORS.DANGER,
-                fontWeight: 700,
+                fontWeight: FONT_WEIGHT.BOLD,
               }}
             >
               {currentCheck.text}
@@ -449,7 +450,6 @@ const AIInsightsSection: React.FC = memo(() => {
               <Progress
                 percent={pullPercent}
                 status="normal"
-                strokeColor={DEFAULT_COLORS.SUCCESS}
                 format={(percent) => `${percent ?? 0}%`}
               />
             </div>

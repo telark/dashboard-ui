@@ -5,6 +5,8 @@ import {
   DEFAULT_COLORS,
   MICRO_LABEL_STYLE,
   TRUNCATE_STYLE,
+  FONT_WEIGHT,
+  SPACING,
 } from '../../../constants';
 import type { StatCellProps } from '../../../interfaces/layout/card';
 
@@ -13,7 +15,7 @@ const StatCell: React.FC<StatCellProps> = ({ label, value, accent }) => (
     style={{
       display: 'flex',
       flexDirection: 'column',
-      gap: 4,
+      gap: SPACING.XS,
       minWidth: 0,
       flex: CARD_STAT_CELL_FLEX,
     }}
@@ -21,9 +23,10 @@ const StatCell: React.FC<StatCellProps> = ({ label, value, accent }) => (
     <span style={{ ...MICRO_LABEL_STYLE, ...TRUNCATE_STYLE }}>{label}</span>
     <span
       style={{
+        // Off scale, kept exact: lineHeight 1.3 (TIGHT to SNUG).
         ...TRUNCATE_STYLE,
         fontSize: CARD_LAYOUT.VALUE_FONT_SIZE_PX,
-        fontWeight: 600,
+        fontWeight: FONT_WEIGHT.SEMIBOLD,
         color: accent ?? DEFAULT_COLORS.TEXT_PRIMARY,
         lineHeight: 1.3,
       }}

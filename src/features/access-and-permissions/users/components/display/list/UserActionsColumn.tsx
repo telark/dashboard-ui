@@ -7,6 +7,10 @@ import {
   MODAL_CHROME,
   ROW_ACTION_CLASS,
   TIME_FORMATS,
+  FONT_SIZE,
+  MOTION,
+  RADIUS,
+  SPACING,
 } from '../../../../../../constants';
 import { ActionConfirmModal } from '../../../../../../components/display/modal';
 import { formatDateTime } from '../../../../../../utils/shared/time';
@@ -32,11 +36,11 @@ const actionButtonStyle = (disabled: boolean): React.CSSProperties => ({
   alignItems: 'center',
   justifyContent: 'center',
   color: disabled ? DEFAULT_COLORS.ICON_MUTED : DEFAULT_COLORS.TEXT_MUTED,
-  fontSize: 16,
+  fontSize: FONT_SIZE.LG,
   width: ACTION_SIZE,
   height: ACTION_SIZE,
-  borderRadius: 4,
-  transition: 'color 0.2s, opacity 0.2s',
+  borderRadius: RADIUS.XS,
+  transition: `color ${MOTION.BASE_MS}ms, opacity ${MOTION.BASE_MS}ms`,
   opacity: disabled ? 0.6 : 1,
   pointerEvents: disabled ? 'none' : 'auto',
 });
@@ -194,7 +198,7 @@ export const UserActionsColumn: React.FC<UserActionsColumnProps> = ({ record, on
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-end',
-        gap: 8,
+        gap: SPACING.SM,
       }}
     >
       <EnrollLinkAction record={record} />

@@ -1,6 +1,13 @@
 import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_COLORS, HEADER_LAYOUT, TRUNCATE_STYLE } from '../../constants';
+import {
+  DEFAULT_COLORS,
+  HEADER_LAYOUT,
+  TRUNCATE_STYLE,
+  UNSTYLED_BUTTON,
+  FONT_WEIGHT,
+  SPACING,
+} from '../../constants';
 import { PAGE_CONTENT_LAYOUT, PAGE_HEADER } from '../../constants/shared/pages';
 
 export interface PageBreadcrumbItem {
@@ -22,8 +29,8 @@ const headingStyle: React.CSSProperties = {
   fontSize: PAGE_HEADER.TITLE_FONT_SIZE_PX,
   fontWeight: PAGE_HEADER.TITLE_FONT_WEIGHT,
   color: DEFAULT_COLORS.TEXT_PRIMARY,
-  margin: 0,
-  padding: 0,
+  margin: SPACING.NONE,
+  padding: SPACING.NONE,
   lineHeight: PAGE_HEADER.LINE_HEIGHT,
   display: 'flex',
   flexWrap: 'wrap',
@@ -32,10 +39,7 @@ const headingStyle: React.CSSProperties = {
 };
 
 const breadcrumbLinkStyle: React.CSSProperties = {
-  background: 'none',
-  border: 'none',
-  padding: 0,
-  cursor: 'pointer',
+  ...UNSTYLED_BUTTON,
   color: DEFAULT_COLORS.TEXT_MUTED,
   fontSize: PAGE_HEADER.TITLE_FONT_SIZE_PX,
   fontWeight: PAGE_HEADER.TITLE_FONT_WEIGHT,
@@ -45,10 +49,10 @@ const breadcrumbLinkStyle: React.CSSProperties = {
 
 const subtitleStyle: React.CSSProperties = {
   fontSize: PAGE_HEADER.SUBTITLE_FONT_SIZE_PX,
-  fontWeight: 400,
+  fontWeight: FONT_WEIGHT.REGULAR,
   color: DEFAULT_COLORS.TEXT_MUTED,
-  margin: 0,
-  padding: 0,
+  margin: SPACING.NONE,
+  padding: SPACING.NONE,
   lineHeight: PAGE_HEADER.LINE_HEIGHT,
 };
 

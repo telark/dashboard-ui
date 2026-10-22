@@ -1,7 +1,14 @@
 import React from 'react';
 import { Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS, ROW_ACTION_CLASS } from '../../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  ROW_ACTION_CLASS,
+  FONT_SIZE,
+  MOTION,
+  RADIUS,
+  SPACING,
+} from '../../../../../../constants';
 import { usePermission, ACTION_PERMISSIONS } from '../../../../../auth/hooks';
 import { useGroupDeleteModal, GroupDeleteModal } from '../../delete';
 import { GROUPS_CONSTANTS as GC } from '../../../constants';
@@ -22,11 +29,11 @@ const actionButtonStyle = (disabled: boolean): React.CSSProperties => ({
   alignItems: 'center',
   justifyContent: 'center',
   color: disabled ? DEFAULT_COLORS.ICON_MUTED : DEFAULT_COLORS.TEXT_MUTED,
-  fontSize: 16,
+  fontSize: FONT_SIZE.LG,
   width: ACTION_SIZE,
   height: ACTION_SIZE,
-  borderRadius: 4,
-  transition: 'color 0.2s, opacity 0.2s',
+  borderRadius: RADIUS.XS,
+  transition: `color ${MOTION.BASE_MS}ms, opacity ${MOTION.BASE_MS}ms`,
   opacity: disabled ? 0.6 : 1,
   pointerEvents: disabled ? 'none' : 'auto',
 });
@@ -90,7 +97,7 @@ export const GroupActionsColumn: React.FC<GroupActionsColumnProps> = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-end',
-        gap: 8,
+        gap: SPACING.SM,
       }}
     >
       <Tooltip

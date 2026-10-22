@@ -8,9 +8,14 @@ import {
   EMPTY_VALUE,
   SECTION_LAYOUT,
   STATUS_COLORS,
+  STATUS_DOT,
   TAG_CLASS,
   TRUNCATE_STYLE,
   getPillColor,
+  SPACING,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  LINE_HEIGHT,
 } from '../../../../../constants';
 import { formatDateKey, toDateKey } from '../../../../../utils/shared/time';
 import { FancySpinner } from '../../../../../components/animation';
@@ -79,7 +84,7 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({
 
   if (loading && violations.length === 0) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', padding: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', padding: SPACING.XXL }}>
         <FancySpinner showLabel={false} size={24} />
       </div>
     );
@@ -116,14 +121,14 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({
         <div key={group.dayKey}>
           <div
             style={{
-              fontSize: 11,
-              fontWeight: 700,
+              fontSize: FONT_SIZE.XS,
+              fontWeight: FONT_WEIGHT.BOLD,
               color: DEFAULT_COLORS.TEXT_MUTED,
               textTransform: 'uppercase',
               letterSpacing: '0.04em',
-              marginTop: groupIdx === 0 ? 0 : 12,
-              marginBottom: 8,
-              paddingBottom: 6,
+              marginTop: groupIdx === 0 ? SPACING.NONE : SPACING.MD,
+              marginBottom: SPACING.SM,
+              paddingBottom: SPACING.S6,
               borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
             }}
           >
@@ -134,6 +139,7 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({
             return (
               <div
                 key={`${entry.namespace}:${entry.resource.kind}:${entry.resource.name}:${entry.rule}:${entry.timestamp}:${idx}`}
+                // 10: the row padding sits between SM and MD.
                 style={{
                   padding: '10px 0',
                   borderBottom: SECTION_LAYOUT.SUBTLE_DIVIDER,
@@ -142,18 +148,16 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({
                 <div
                   style={{
                     display: 'flex',
-                    gap: 12,
+                    gap: SPACING.MD,
                     alignItems: 'flex-start',
                     justifyContent: 'space-between',
                   }}
                 >
                   <div
+                    // 5: drops the dot to the middle of the first text line.
                     style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: '50%',
+                      ...STATUS_DOT,
                       marginTop: 5,
-                      flexShrink: 0,
                       background: STATUS_COLORS.VIOLATION_RESULT[entry.result],
                     }}
                   />
@@ -163,7 +167,7 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({
                         display: 'flex',
                         flexWrap: 'wrap',
                         alignItems: 'center',
-                        gap: 6,
+                        gap: SPACING.S6,
                       }}
                     >
                       <Tag color={getPillColor(STATUS_COLORS.VIOLATION_RESULT[entry.result])}>
@@ -187,10 +191,10 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({
                     {entry.message && (
                       <div
                         style={{
-                          marginTop: 6,
-                          fontSize: 13,
+                          marginTop: SPACING.S6,
+                          fontSize: FONT_SIZE.MD,
                           color: DEFAULT_COLORS.TEXT_PRIMARY,
-                          lineHeight: 1.5,
+                          lineHeight: LINE_HEIGHT.BASE,
                         }}
                       >
                         {entry.message}
@@ -202,8 +206,8 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({
                         title={entry.requestedBy}
                         style={{
                           ...TRUNCATE_STYLE,
-                          marginTop: 4,
-                          fontSize: 12,
+                          marginTop: SPACING.XS,
+                          fontSize: FONT_SIZE.SM,
                           color: DEFAULT_COLORS.TEXT_MUTED,
                         }}
                       >
@@ -213,11 +217,11 @@ const ViolationsSection: React.FC<ViolationsSectionProps> = ({
                   </div>
                   <div
                     style={{
-                      fontSize: 12,
+                      fontSize: FONT_SIZE.SM,
                       color: DEFAULT_COLORS.TEXT_MUTED,
                       flexShrink: 0,
                       textAlign: 'right',
-                      lineHeight: 1.35,
+                      lineHeight: LINE_HEIGHT.SNUG,
                     }}
                   >
                     {entry.timestamp ? <TimeAgo date={entry.timestamp} /> : EMPTY_VALUE}

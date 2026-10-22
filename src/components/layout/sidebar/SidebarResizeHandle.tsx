@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
-import { SIDEBAR_LAYOUT } from '../../../constants';
+import { SIDEBAR_LAYOUT, Z_INDEX } from '../../../constants';
 
 interface SidebarResizeHandleProps {
   onResize: (width: number) => void;
@@ -53,7 +53,7 @@ const SidebarResizeHandle: React.FC<SidebarResizeHandleProps> = memo(({ onResize
         bottom: 0,
         width: handle.WIDTH,
         cursor: handle.CURSOR,
-        zIndex: 2,
+        zIndex: Z_INDEX.SIDEBAR_RESIZE,
       }}
     />
   );

@@ -2,25 +2,38 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Tag } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { AiOutlineStop } from 'react-icons/ai';
-import { DEFAULT_COLORS, SLIDE_OUT, TAG_CLASS, getPillSurface } from '../../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  HAIRLINE,
+  SLIDE_OUT,
+  TAG_CLASS,
+  getPillSurface,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  MOTION,
+  SPACING,
+} from '../../../../../../constants';
 import { ROLES_CONSTANTS as RC, denyRuleSentence } from '../../../constants';
 import type { ScopesPermissionsProps } from '../../../models';
 
 const DENIED_TEXT = getPillSurface(DEFAULT_COLORS.DANGER).background;
 
 const SCOPE_CARD_STYLE = {
+  // Off scale, kept exact: gap 10 (SM to MD).
   list: { display: 'flex', flexDirection: 'column' as const, gap: 10 },
+  // Off scale, kept exact: borderRadius 10 (MD to LG).
   card: {
-    border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+    border: HAIRLINE.SURFACE_BORDER_LIGHT,
     borderRadius: 10,
     overflow: 'hidden' as const,
   },
+  // Off scale, kept exact: padding 14 (MD to LG).
   header: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 8,
-    padding: '12px 14px',
+    gap: SPACING.SM,
+    padding: `${SPACING.MD}px 14px`,
   },
   toggle: {
     width: '100%',
@@ -34,29 +47,34 @@ const SCOPE_CARD_STYLE = {
   // Every card keeps the chevron's slot, so the level pills line up whether or not a card folds.
   chevron: {
     width: 11,
-    fontSize: 11,
+    fontSize: FONT_SIZE.XS,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
-    transition: 'transform 0.2s',
+    transition: `transform ${MOTION.BASE_MS}ms`,
   },
-  name: { fontSize: 14, fontWeight: 600, color: DEFAULT_COLORS.TEXT_ON_SURFACE },
-  meta: { display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 },
-  deniedCount: { fontSize: 12, fontWeight: 600, color: DENIED_TEXT },
+  name: {
+    fontSize: FONT_SIZE.BASE,
+    fontWeight: FONT_WEIGHT.SEMIBOLD,
+    color: DEFAULT_COLORS.TEXT_ON_SURFACE,
+  },
+  meta: { display: 'flex', alignItems: 'center', gap: SPACING.SM, flexShrink: 0 },
+  deniedCount: { fontSize: FONT_SIZE.SM, fontWeight: FONT_WEIGHT.SEMIBOLD, color: DENIED_TEXT },
+  // Off scale, kept exact: padding 10 (SM to MD), padding 14 (MD to LG).
   denied: {
     listStyle: 'none' as const,
-    margin: 0,
+    margin: SPACING.NONE,
     padding: '10px 14px',
-    borderTop: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
+    borderTop: HAIRLINE.SURFACE_BORDER_LIGHT,
     background: DEFAULT_COLORS.SURFACE_SUBTLE,
     display: 'flex',
     flexDirection: 'column' as const,
-    gap: 8,
+    gap: SPACING.SM,
   },
   deniedRule: {
     display: 'flex',
     alignItems: 'center',
-    gap: 8,
-    fontSize: 13,
-    fontWeight: 500,
+    gap: SPACING.SM,
+    fontSize: FONT_SIZE.MD,
+    fontWeight: FONT_WEIGHT.MEDIUM,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE,
   },
 } as const;

@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { MinusCircleOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, FONT_SIZE, MOTION, RADIUS, SPACING } from '../../../../../constants';
 
 export interface DeassignButtonProps {
   onClick: () => void;
@@ -43,10 +43,10 @@ const DeassignButton: React.FC<DeassignButtonProps> = ({
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
-            marginTop: 4,
-            padding: 2,
-            borderRadius: 4,
-            transition: 'color 0.2s',
+            marginTop: SPACING.XS,
+            padding: SPACING.XXS,
+            borderRadius: RADIUS.XS,
+            transition: `color ${MOTION.BASE_MS}ms`,
             color: disabled
               ? DEFAULT_COLORS.TEXT_ON_SURFACE_DISABLED
               : hovered
@@ -54,7 +54,7 @@ const DeassignButton: React.FC<DeassignButtonProps> = ({
                 : DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
           }}
         >
-          <MinusCircleOutlined style={{ fontSize: 16 }} />
+          <MinusCircleOutlined style={{ fontSize: FONT_SIZE.LG }} />
         </button>
       </span>
     </Tooltip>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input } from 'antd';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, SPACING, FONT_SIZE } from '../../../../../constants';
 import { formatDateTime } from '../../../../../utils/shared/time';
 import { PLAN_APPROVAL, PROTECTION_PLANS_CONSTANTS as PPC } from '../../constants/protectionPlans';
 import { usePlanTaxonomyLists } from '../../hooks/usePlanTaxonomies';
@@ -83,9 +83,9 @@ const ApprovalDecisionModal: React.FC<ApprovalDecisionModalProps> = ({
       danger={rejecting}
       getContainer={() => document.body}
       customMessage={
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.MD, width: '100%' }}>
           <span>{rejecting ? ACTIONS.REJECT_MODAL_BODY : approveBody(plan)}</span>
-          <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>
+          <span style={{ fontSize: FONT_SIZE.SM, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>
             {buildSummary(plan, environmentName)}
           </span>
           <Input.TextArea
@@ -98,7 +98,7 @@ const ApprovalDecisionModal: React.FC<ApprovalDecisionModalProps> = ({
             autoSize={{ minRows: 3, maxRows: 6 }}
           />
           {rejecting && (
-            <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>
+            <span style={{ fontSize: FONT_SIZE.SM, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>
               {ACTIONS.REJECT_COMMENT_REQUIRED}
             </span>
           )}

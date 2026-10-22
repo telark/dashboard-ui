@@ -54,7 +54,6 @@ export const useBulkDeleteGroups = ({
       message.success({
         content: GC.LABELS.ACTIONS.BULK_DELETE_SUCCESS(deleteCount),
         key: loadingKey,
-        duration: 3,
       });
 
       setSelectedGroups([]);
@@ -62,7 +61,6 @@ export const useBulkDeleteGroups = ({
       message.error({
         content: rejectionMessage(rejection, GC.LABELS.ACTIONS.BULK_DELETE_FAILED),
         key: loadingKey,
-        duration: 3,
       });
     } finally {
       setIsDeleting(false);

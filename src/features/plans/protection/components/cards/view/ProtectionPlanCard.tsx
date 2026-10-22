@@ -35,6 +35,8 @@ import {
   getCardMenuButtonStyle,
   getCardShellStyle,
   getPillColor,
+  SPACING,
+  MOTION,
 } from '../../../../../../constants';
 import type { PlanApprovalDecision, PlanTimeRange, ProtectionPlan } from '../../../models';
 import type { FormValues } from '../../create';
@@ -521,7 +523,6 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
                 type="text"
                 shape="circle"
                 icon={<MoreOutlined rotate={90} />}
-                size="small"
                 onClick={(e) => e.stopPropagation()}
                 style={menuButtonStyle}
               />
@@ -537,7 +538,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
             display: 'flex',
             alignItems: 'baseline',
             justifyContent: 'space-between',
-            gap: 12,
+            gap: SPACING.MD,
           }}
         >
           <span style={MICRO_LABEL_STYLE}>{planWindow.label}</span>
@@ -556,7 +557,7 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
           <div
             aria-hidden
             style={{
-              marginTop: 8,
+              marginTop: SPACING.SM,
               height: CARD_LAYOUT.TRACK_HEIGHT_PX,
               borderRadius: CARD_LAYOUT.PILL_RADIUS_PX,
               background: DEFAULT_COLORS.HOVER_BG,
@@ -569,14 +570,15 @@ const ProtectionPlanCard: React.FC<ProtectionPlanCardProps> = memo(({ plan, onOp
                 width: `${planWindow.percent}%`,
                 borderRadius: CARD_LAYOUT.PILL_RADIUS_PX,
                 background: phaseAccent,
-                transition: 'width 200ms ease',
+                transition: `width ${MOTION.BASE_MS}ms ${MOTION.EASE}`,
               }}
             />
           </div>
         )}
         <p
+          // 1.3: the remaining-time line's leading sits between TIGHT and SNUG.
           style={{
-            margin: '8px 0 0',
+            margin: `${SPACING.SM}px 0 0`,
             fontSize: CARD_LAYOUT.VALUE_FONT_SIZE_PX,
             color: DEFAULT_COLORS.TEXT_PRIMARY,
             lineHeight: 1.3,

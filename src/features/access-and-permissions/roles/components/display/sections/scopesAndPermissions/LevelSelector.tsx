@@ -1,11 +1,11 @@
 import React from 'react';
 import { Select } from 'antd';
-import { DEFAULT_COLORS } from '../../../../../../../constants';
+import { DEFAULT_COLORS, FONT_SIZE } from '../../../../../../../constants';
 import type { LevelSelectorProps } from '../../../../models';
 import type { PermissionLevel } from '../../../../models/types';
 
 const DESCRIPTION_STYLE: React.CSSProperties = {
-  fontSize: 12,
+  fontSize: FONT_SIZE.SM,
   color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   whiteSpace: 'normal',
 };

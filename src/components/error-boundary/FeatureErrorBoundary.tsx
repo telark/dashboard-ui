@@ -1,19 +1,23 @@
 import React from 'react';
 import { Component, ErrorInfo, ReactNode } from 'react';
-import { Button, ConfigProvider, Typography, theme } from 'antd';
+import { Button, ConfigProvider, Typography } from 'antd';
 import { ReloadOutlined, BugOutlined, HomeOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
-  CONTROL_HEIGHT,
   DEFAULT_COLORS,
   FEATURE_ERROR_BOUNDARY_TEXT as T,
+  HAIRLINE,
   MONOSPACE_CLASS,
+  OVERLAY_THEME,
   PANEL_SURFACE_CLASS,
-  PANEL_THEME_TOKENS,
   STORE_MESSAGES,
   withAlpha,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  RADIUS,
+  SPACING,
 } from '../../constants';
-import { APP_ROUTES } from '../../constants';
+import { APP_ROUTES, Z_INDEX } from '../../constants';
 import { isDevelopment } from '../../utils/helpers/env';
 import logger from '../../logging';
 
@@ -32,15 +36,11 @@ interface Props {
 
 // A light surface over the dark page, so it takes the panel theme like BaseModal does.
 const ErrorSurface: React.FC<{ children: ReactNode }> = ({ children }) => (
-  <ConfigProvider
-    theme={{
-      algorithm: theme.defaultAlgorithm,
-      token: { ...PANEL_THEME_TOKENS, controlHeight: CONTROL_HEIGHT },
-    }}
-  >
+  <ConfigProvider theme={OVERLAY_THEME}>
     <div
       className={PANEL_SURFACE_CLASS}
       style={{
+        // Off scale, kept exact: padding 40 (above XXXL).
         position: 'absolute',
         top: 0,
         left: 0,
@@ -49,9 +49,9 @@ const ErrorSurface: React.FC<{ children: ReactNode }> = ({ children }) => (
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '40px 20px',
+        padding: `40px ${SPACING.XL}px`,
         background: DEFAULT_COLORS.SURFACE_WHITE,
-        zIndex: 10,
+        zIndex: Z_INDEX.SECTION_OVERLAY,
         overflow: 'auto',
       }}
     >
@@ -96,13 +96,13 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                margin: '0 auto 24px',
+                margin: `0 auto ${SPACING.XXL}px`,
                 boxShadow: `0 4px 12px ${withAlpha(DEFAULT_COLORS.DANGER, 0.2)}`,
               }}
             >
               <BugOutlined
                 style={{
-                  fontSize: 24,
+                  fontSize: FONT_SIZE.H2,
                   color: DEFAULT_COLORS.PILL_TEXT,
                 }}
               />
@@ -111,9 +111,9 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
             <Title
               level={3}
               style={{
-                margin: '0 0 12px',
+                margin: `0 0 ${SPACING.MD}px`,
                 color: DEFAULT_COLORS.TEXT_ON_SURFACE,
-                fontWeight: 600,
+                fontWeight: FONT_WEIGHT.SEMIBOLD,
               }}
             >
               {this.props.featureName ? T.TITLE(this.props.featureName) : T.TITLE_FALLBACK}
@@ -122,8 +122,8 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
             <Text
               style={{
                 display: 'block',
-                marginBottom: 24,
-                fontSize: 14,
+                marginBottom: SPACING.XXL,
+                fontSize: FONT_SIZE.BASE,
                 color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
               }}
             >
@@ -134,17 +134,17 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
               <div
                 style={{
                   background: DEFAULT_COLORS.SURFACE_SUBTLE,
-                  border: `1px solid ${DEFAULT_COLORS.SURFACE_BORDER_LIGHT}`,
-                  borderRadius: 8,
-                  margin: '0 0 24px',
+                  border: HAIRLINE.SURFACE_BORDER_LIGHT,
+                  borderRadius: RADIUS.MD,
+                  margin: `0 0 ${SPACING.XXL}px`,
                   textAlign: 'left',
-                  padding: '12px',
+                  padding: SPACING.MD,
                 }}
               >
                 <Text
                   className={MONOSPACE_CLASS}
                   style={{
-                    fontSize: 11,
+                    fontSize: FONT_SIZE.XS,
                     color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
                     whiteSpace: 'pre-wrap',
                     wordBreak: 'break-word',
@@ -158,14 +158,13 @@ class FeatureErrorBoundaryClass extends Component<Props, State> {
             <div
               style={{
                 display: 'flex',
-                gap: 12,
+                gap: SPACING.MD,
                 justifyContent: 'center',
                 flexWrap: 'wrap',
               }}
             >
               <Button
                 type="primary"
-                size="middle"
                 icon={<ReloadOutlined />}
                 onClick={this.handleReset}
                 style={{
@@ -194,7 +193,6 @@ const FeatureErrorBoundaryNavigateButton: React.FC<{ onReset: () => void }> = ({
 
   return (
     <Button
-      size="middle"
       icon={<HomeOutlined />}
       onClick={() => (pathname === APP_ROUTES.HOME ? onReset() : navigate(APP_ROUTES.HOME))}
     >

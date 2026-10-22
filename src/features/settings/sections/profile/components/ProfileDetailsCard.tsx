@@ -15,6 +15,11 @@ import {
   STATUS_COLORS,
   TAG_CLASS,
   getPillColor,
+  UNSTYLED_BUTTON,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  RADIUS,
+  SPACING,
 } from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import SettingsCard from '../../../components/SettingsCard';
@@ -25,21 +30,19 @@ const { LABELS } = PROFILE_SECTION_CONSTANTS;
 
 const iconStyle: React.CSSProperties = {
   color: DEFAULT_COLORS.TEXT_MUTED,
-  fontSize: 16,
+  fontSize: FONT_SIZE.LG,
 };
 
 const editButtonStyle: React.CSSProperties = {
+  ...UNSTYLED_BUTTON,
   display: 'flex',
   alignItems: 'center',
-  gap: 6,
-  padding: '6px 12px',
-  border: 'none',
-  borderRadius: 6,
-  background: 'transparent',
+  gap: SPACING.S6,
+  padding: `${SPACING.S6}px ${SPACING.MD}px`,
+  borderRadius: RADIUS.SM,
   color: DEFAULT_COLORS.TEXT_MUTED,
-  fontSize: 14,
-  fontWeight: 500,
-  cursor: 'pointer',
+  fontSize: FONT_SIZE.BASE,
+  fontWeight: FONT_WEIGHT.MEDIUM,
   fontFamily: 'inherit',
 };
 
@@ -47,15 +50,15 @@ const rowBaseStyle: React.CSSProperties = {
   display: 'flex',
   flexWrap: 'wrap',
   alignItems: 'center',
-  gap: 8,
+  gap: SPACING.SM,
   minHeight: 32,
-  paddingTop: 0,
-  paddingBottom: 0,
+  paddingTop: SPACING.NONE,
+  paddingBottom: SPACING.NONE,
 };
 
 const profileRowLabelStyle: React.CSSProperties = {
-  fontSize: 12,
-  fontWeight: 500,
+  fontSize: FONT_SIZE.SM,
+  fontWeight: FONT_WEIGHT.MEDIUM,
   color: DEFAULT_COLORS.TEXT_MUTED,
   textTransform: 'uppercase',
   letterSpacing: '0.02em',
@@ -63,6 +66,7 @@ const profileRowLabelStyle: React.CSSProperties = {
   minWidth: 100,
 };
 
+// Off scale, kept exact: fontSize 15 (BASE to LG).
 const valueCellStyle: React.CSSProperties = {
   flex: 1,
   minWidth: 0,
@@ -84,7 +88,7 @@ const ProfileDetailsCard: React.FC<ProfileDetailsCardProps> = memo(({ user, onEd
 
   const editButton = (
     <button type="button" onClick={handleEdit} style={editButtonStyle} title={LABELS.EDIT_TITLE}>
-      <EditOutlined style={{ fontSize: 14 }} />
+      <EditOutlined style={{ fontSize: FONT_SIZE.BASE }} />
       <span>{LABELS.EDIT}</span>
     </button>
   );
@@ -142,7 +146,15 @@ const ProfileDetailsCard: React.FC<ProfileDetailsCardProps> = memo(({ user, onEd
               {user.status.phase}
             </Tag>
           ) : (
-            <span style={{ fontSize: 15, color: DEFAULT_COLORS.TEXT_MUTED }}>{EMPTY_VALUE}</span>
+            <span
+              style={{
+                // Off scale, kept exact: fontSize 15 (BASE to LG).
+                fontSize: 15,
+                color: DEFAULT_COLORS.TEXT_MUTED,
+              }}
+            >
+              {EMPTY_VALUE}
+            </span>
           )}
         </div>
       </div>

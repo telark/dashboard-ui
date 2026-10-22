@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Tooltip } from 'antd';
 import { FileTextOutlined } from '@ant-design/icons';
-import { DEFAULT_COLORS } from '../../../../../constants';
+import { DEFAULT_COLORS, SPACING, FONT_SIZE, LINE_HEIGHT } from '../../../../../constants';
 import {
   PROTECTION_PLANS_CONSTANTS as PPC,
   REPORT_FILE_NAME,
@@ -76,15 +76,15 @@ const ViolationsWindowNote: React.FC<ViolationsWindowNoteProps> = (props) => (
       flexWrap: 'wrap',
       alignItems: 'center',
       justifyContent: 'space-between',
-      gap: 12,
-      marginBottom: 12,
+      gap: SPACING.MD,
+      marginBottom: SPACING.MD,
     }}
   >
     <span
       style={{
         flex: '1 1 320px',
-        fontSize: 13,
-        lineHeight: 1.5,
+        fontSize: FONT_SIZE.MD,
+        lineHeight: LINE_HEIGHT.BASE,
         color: DEFAULT_COLORS.TEXT_SECONDARY,
       }}
     >
