@@ -3,13 +3,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Form, App as AntdApp } from 'antd';
 import LoadingDetailsView from '../../../../../components/display/views/LoadingDetailsView';
-import ErrorView from '../../../../../components/display/views/ErrorView';
 import { ActionConfirmModal } from '../../../../../components/display/modal';
 import ReactivatePlanModal from '../../components/shared/ReactivatePlanModal';
 import DeletePlanModal from '../../components/shared/DeletePlanModal';
 import ApprovalDecisionModal from '../../components/shared/ApprovalDecisionModal';
-import { APP_ROUTES } from '../../../../../constants';
-import { PageContainer } from '../../../../../components/shared';
+import { APP_ROUTES, SHARED_DETAILS_CONSTANTS, SPACING } from '../../../../../constants';
+import { DataViewError, PageContainer } from '../../../../../components/shared';
 import { usePlanDetails } from '../../hooks/usePlanDetails';
 import {
   cancelPlanThunk,
@@ -34,7 +33,7 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const { message } = AntdApp.useApp();
-  const { details, loading, error, notFound } = usePlanDetails(decodedName);
+  const { details, loading, error, refresh, notFound } = usePlanDetails(decodedName);
   const [editForm] = Form.useForm<FormValues>();
 
   const [duplicatePanelOpen, setDuplicatePanelOpen] = useState(false);
@@ -176,7 +175,16 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
     return <LoadingDetailsView />;
   }
   if (error && !details) {
-    return <ErrorView error={error} errorMessagePrefix={PPC.LABELS.DETAIL_PAGE.LOADING_ERROR} />;
+    return (
+      <div style={SHARED_DETAILS_CONSTANTS.STATES.ERROR_CONTAINER}>
+        <DataViewError
+          variant="fullPage"
+          title={PPC.LABELS.DETAIL_PAGE.LOADING_ERROR}
+          message={error}
+          onRetry={refresh}
+        />
+      </div>
+    );
   }
   if (notFound || !details) {
     return <ProtectionPlanDetailsEmpty />;
@@ -185,7 +193,7 @@ const ProtectionPlanDetailsView: React.FC = memo(() => {
   return (
     <>
       <PageContainer breadcrumbs={breadcrumbItems} subtitle={PPC.LABELS.DETAIL_PAGE.SUBTITLE}>
-        <div style={{ marginTop: 24 }}>
+        <div style={{ marginTop: SPACING.XXL }}>
           <ProtectionPlanDetailsContent
             plan={details}
             duplicating={duplicatePanelOpen}

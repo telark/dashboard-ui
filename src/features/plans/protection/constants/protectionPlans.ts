@@ -132,7 +132,7 @@ export const PROTECTION_PLANS_CONSTANTS = {
     },
     DETAIL_PAGE: {
       SUBTITLE: 'Check that the plan is in force, what it blocked or audited, and its reports.',
-      LOADING_ERROR: 'Failed to load plan details.',
+      LOADING_ERROR: "Couldn't load this plan",
       NOT_FOUND: 'Protection plan not found.',
       SECTIONS: {
         OVERVIEW_TITLE: 'Overview',
