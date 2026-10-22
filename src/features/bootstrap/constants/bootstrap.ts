@@ -48,6 +48,13 @@ export const BOOTSTRAP_TEXTS = {
     'No account is pinned yet. Break-glass acts at once until the bootstrap account saves its first passkey.',
   REQUESTS_LABEL: 'Break-glass requests',
   NO_REQUESTS: 'No break-glass request yet.',
+  REQUESTS_PRIVATE: 'The bootstrap account keeps its break-glass requests private.',
+  ALERTS_LABEL: 'Alert administrators about break-glass requests',
+  ALERTS_HINT:
+    'When on, every Admin on all scopes is notified of a request and can see it here. When off, only the bootstrap account is.',
+  ALERTS_BOOTSTRAP_ONLY: 'Only the bootstrap account can change who is alerted',
+  ALERTS_SAVED: 'Break-glass alerts saved',
+  ALERTS_SAVE_FAILED: 'Failed to save break-glass alerts',
   KIND_RECOVER: 'Recovery',
   KIND_REPLACE: (email?: string) => `Make ${email || 'another account'} the bootstrap account`,
   STATE: {

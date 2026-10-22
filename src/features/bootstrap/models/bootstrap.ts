@@ -19,6 +19,8 @@ export interface BootstrapStatus {
   userID?: string;
   email?: string;
   pinnedAt?: string;
+  // An older exporter omits it: Admins on ALL are alerted.
+  notifyAdmins?: boolean;
   requests?: BootstrapRequest[];
 }
 

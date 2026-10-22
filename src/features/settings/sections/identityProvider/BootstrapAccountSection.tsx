@@ -3,7 +3,7 @@ import { App as AntdApp, Tag } from 'antd';
 import { useLocation } from 'react-router-dom';
 import SettingsCard from '../../components/SettingsCard';
 import { NoPermissionCard } from '../../../../components/shared';
-import { STATUS_COLORS, getPillColor } from '../../../../constants';
+import { STATUS_COLORS, getPillColor, FONT_WEIGHT } from '../../../../constants';
 import { formatDateTime } from '../../../../utils/shared/time';
 import logger from '../../../../logging';
 import { ACTION_PERMISSIONS, useIsAdminOnAll } from '../../../auth/hooks';
@@ -18,6 +18,7 @@ import {
   type BootstrapStatus,
 } from '../../../bootstrap';
 import { SETTINGS_CONSTANTS } from '../../constants';
+import BreakGlassAlertsSetting from './BreakGlassAlertsSetting';
 
 const VIEW = ACTION_PERMISSIONS.bootstrap.view;
 // A long email breaks anywhere rather than widening the card.
@@ -48,7 +49,7 @@ const RequestRow: React.FC<{ request: BootstrapRequest; decide?: React.ReactNode
     <div
       style={{ display: 'flex', alignItems: 'center', gap: C.LAYOUT.BUTTON_GAP, flexWrap: 'wrap' }}
     >
-      <span style={{ fontWeight: 600, overflowWrap: 'anywhere' }}>
+      <span style={{ fontWeight: FONT_WEIGHT.SEMIBOLD, overflowWrap: 'anywhere' }}>
         {request.kind === C.KIND_REPLACE ? T.KIND_REPLACE(request.targetEmail) : T.KIND_RECOVER}
       </span>
       <Tag color={getPillColor(STATUS_COLORS.BOOTSTRAP_REQUEST[request.state])}>
@@ -95,6 +96,7 @@ const BootstrapAccountSection: React.FC = memo(() => {
     },
     [message],
   );
+  const reload = useCallback(() => setLoads((count) => count + 1), []);
 
   if (!isAdminOnAll) {
     return (
@@ -106,6 +108,8 @@ const BootstrapAccountSection: React.FC = memo(() => {
 
   // The pinned account's passkey is the one that decides.
   const isPinned = status?.userID !== undefined && status.userID === getCurrentUser()?.id;
+  const isBootstrap = getCurrentUser()?.bootstrap === true;
+  const notifyAdmins = status?.notifyAdmins !== false;
   const requests = status?.requests ?? [];
   const newest = requests[0];
   const open = newest?.state === C.STATE.PENDING || newest?.state === C.STATE.APPROVED;
@@ -115,15 +119,21 @@ const BootstrapAccountSection: React.FC = memo(() => {
       {status && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: C.LAYOUT.ROW_GAP }}>
           <div>
-            <div style={{ fontWeight: 700 }}>{T.PINNED_LABEL}</div>
+            <div style={{ fontWeight: FONT_WEIGHT.BOLD }}>{T.PINNED_LABEL}</div>
             <div style={hintStyle}>
               {status.pinnedAt
                 ? T.PINNED(status.email, formatDateTime(status.pinnedAt))
                 : T.NOT_PINNED}
             </div>
           </div>
-          <div style={{ fontWeight: 700 }}>{T.REQUESTS_LABEL}</div>
-          {requests.length === 0 && <div style={hintStyle}>{T.NO_REQUESTS}</div>}
+          <BreakGlassAlertsSetting stored={notifyAdmins} canEdit={isBootstrap} onSaved={reload} />
+          <div style={{ fontWeight: FONT_WEIGHT.BOLD }}>{T.REQUESTS_LABEL}</div>
+          {/* The exporter sends no requests to the others then, so an empty list would mislead. */}
+          {requests.length === 0 && (
+            <div style={hintStyle}>
+              {notifyAdmins || isBootstrap ? T.NO_REQUESTS : T.REQUESTS_PRIVATE}
+            </div>
+          )}
           {requests.map((request) => (
             <RequestRow
               key={request.id}

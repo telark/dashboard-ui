@@ -12,6 +12,11 @@ export const getBootstrapStatus = async (): Promise<BootstrapStatus> => {
   return response.data;
 };
 
+export const setBreakGlassAlerts = async (notifyAdmins: boolean): Promise<void> => {
+  const { path, method } = Endpoints.AUTH.BREAK_GLASS_ALERTS;
+  await Client<unknown>(authApiClient, path, { method, data: { notifyAdmins } });
+};
+
 // Shaped like login/start: the options carry the challenge, bound to this request and this action.
 export const startAssertion = async (
   requestId: string,
