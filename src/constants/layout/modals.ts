@@ -4,7 +4,7 @@ import { CONTROL_HEIGHT, CONTROL_RADIUS } from './controls';
 import { PANEL_THEME_TOKENS, SELECT_THEME } from './panels';
 import { HAIRLINE } from './sections';
 import { Z_INDEX } from './zIndex';
-import { DEFAULT_COLORS, withAlpha } from '../shared/colors';
+import { DEFAULT_COLORS } from '../shared/colors';
 
 // The light surface for overlays outside a panel: BaseModal and the feature error overlay.
 // Not on PANEL_THEME's css-var key: a different theme there would overwrite the panels' variables.
@@ -63,13 +63,14 @@ export const MODAL_CHROME = {
     lineHeight: 1.5,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED,
   },
+  // Neutral like the rest of the dialog: amber means degraded or pending, not a consequence.
   NOTE: {
     boxSizing: 'border-box',
     width: '100%',
-    padding: '6px 10px',
-    borderRadius: 8,
-    border: `1px solid ${withAlpha(DEFAULT_COLORS.WARNING, 0.35)}`,
-    background: DEFAULT_COLORS.WARNING_TINT,
+    padding: '8px 12px',
+    borderRadius: CONTROL_RADIUS,
+    border: HAIRLINE.SURFACE_BORDER,
+    background: DEFAULT_COLORS.SURFACE_SUBTLE,
     fontSize: 13,
     lineHeight: 1.5,
     color: DEFAULT_COLORS.TEXT_ON_SURFACE,
