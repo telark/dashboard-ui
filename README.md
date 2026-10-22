@@ -83,7 +83,7 @@ Open the dashboard at `http://localhost:3000`, not `127.0.0.1`: the session is a
 | `npm run lint:f`              | Autofix lint issues                           |
 | `npm run format`              | Format the codebase                           |
 | `npm run check-all`           | Type-check and lint                           |
-| `npm run check-all-and-build` | Full validation used by the UI build pipeline |
+| `npm run check-all-and-build` | Full validation used by CI and the UI build pipeline |
 
 ### Code conventions
 
@@ -96,9 +96,9 @@ Open the dashboard at `http://localhost:3000`, not `127.0.0.1`: the session is a
 
 ## Build and release
 
-This repository has no CI of its own. Images and Helm charts are built and released from the [Telark](https://github.com/telark/telark) repository:
+[`ci.yaml`](./.github/workflows/ci.yaml) runs on every pull request and push to `main`: `npm ci` and `npm run check-all-and-build`, through the [Telark](https://github.com/telark/telark) repository's shared [`ui-gate`](https://github.com/telark/telark/blob/main/.github/actions/ui-gate/action.yaml) action. Images and Helm charts are built and released from the Telark repository:
 
-* [`build-ui.yaml`](https://github.com/telark/telark/blob/main/.github/workflows/build-ui.yaml) ("Build · UI Image") checks out this repository at a selected branch (default `main`) and runs `npm ci` and `npm run check-all-and-build` in its `gate-ui` job. It then builds the image from this repository's [`Dockerfile`](./Dockerfile) (Node 26 build stage, nginx serving stage), versions it, signs it with cosign and pushes it.
+* [`build-ui.yaml`](https://github.com/telark/telark/blob/main/.github/workflows/build-ui.yaml) ("Build · UI Image") checks out this repository at a selected branch (default `main`) and runs the same `ui-gate` action in its `gate-ui` job. It then builds the image from this repository's [`Dockerfile`](./Dockerfile) (Node 26 build stage, nginx serving stage), versions it, signs it with cosign and pushes it.
 * [`release-charts.yaml`](https://github.com/telark/telark/blob/main/.github/workflows/release-charts.yaml) ("Release · Publish Charts") packages, signs and pushes the `telark` and `telark-crds` charts to `oci://ghcr.io/telark/charts`.
 * [`docs/PUBLISHING.md`](https://github.com/telark/telark/blob/main/docs/PUBLISHING.md) covers manual publishing for testing a chart or image release.
 

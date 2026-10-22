@@ -1,0 +1,28 @@
+name: CI
+run-name: CI for ${{ github.head_ref || github.ref_name }}
+
+# Quality gate for pull requests: the same UI gate the telark image build runs
+# (telark/.github/actions/ui-gate), so the two never drift.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate-ui:
+    name: Gate · UI
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Type-check, lint and build
+        uses: telark/telark/.github/actions/ui-gate@feat/v0-2-0
