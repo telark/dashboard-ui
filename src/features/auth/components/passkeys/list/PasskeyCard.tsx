@@ -2,32 +2,41 @@ import React, { useCallback, memo } from 'react';
 import { Tooltip, Popover, Tag, App as AntdApp } from 'antd';
 import { KeyOutlined, EditOutlined, DeleteOutlined, CopyOutlined } from '@ant-design/icons';
 import { PASSKEYS_CONSTANTS as PPC } from '../../../constants/passkeys';
-import { DEFAULT_COLORS, MONOSPACE_CLASS, TAG_CLASS } from '../../../../../constants';
+import {
+  DEFAULT_COLORS,
+  MONOSPACE_CLASS,
+  SECTION_LAYOUT,
+  TAG_CLASS,
+  UNSTYLED_BUTTON,
+  RADIUS,
+  SPACING,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  MOTION,
+} from '../../../../../constants';
 import TimeAgo from '../../../../../components/display/time/TimeAgo';
 import type { Passkey } from '../../../models/passkeys';
 
 const CARD_STYLE: React.CSSProperties = {
   background: DEFAULT_COLORS.SURFACE_ELEVATED,
-  border: `1px solid ${DEFAULT_COLORS.BORDER_ELEVATED}`,
-  borderRadius: 12,
-  padding: 20,
+  border: SECTION_LAYOUT.SUBTLE_DIVIDER,
+  borderRadius: RADIUS.LG,
+  padding: SPACING.XL,
   display: 'flex',
   flexDirection: 'column',
-  gap: 12,
+  gap: SPACING.MD,
   minHeight: 120,
-  transition: 'box-shadow 0.2s, border-color 0.2s',
+  transition: `box-shadow ${MOTION.BASE_MS}ms, border-color ${MOTION.BASE_MS}ms`,
 };
 
 const iconButtonStyle = (color: string): React.CSSProperties => ({
-  border: 'none',
-  background: 'none',
-  cursor: 'pointer',
-  padding: 4,
+  ...UNSTYLED_BUTTON,
+  padding: SPACING.XS,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   color,
-  fontSize: 16,
+  fontSize: FONT_SIZE.LG,
 });
 
 interface PasskeyCardProps {
@@ -53,11 +62,12 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
   }, [displayKey, message]);
 
   const publicKeyPopoverContent = displayKey ? (
-    <div style={{ position: 'relative', maxWidth: 320, paddingRight: 32 }}>
+    <div style={{ position: 'relative', maxWidth: 320, paddingRight: SPACING.XXXL }}>
       <div
         className={MONOSPACE_CLASS}
+        // 1.4: the key's leading sits between SNUG and BASE.
         style={{
-          fontSize: 11,
+          fontSize: FONT_SIZE.XS,
           wordBreak: 'break-all',
           color: DEFAULT_COLORS.TEXT_ON_SURFACE,
           maxHeight: 80,
@@ -83,7 +93,7 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
       </Tooltip>
     </div>
   ) : (
-    <span style={{ fontSize: 12, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>
+    <span style={{ fontSize: FONT_SIZE.SM, color: DEFAULT_COLORS.TEXT_ON_SURFACE_MUTED }}>
       {PPC.LABELS.PUBLIC_KEY_UNAVAILABLE}
     </span>
   );
@@ -105,7 +115,7 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          gap: 8,
+          gap: SPACING.SM,
           flexWrap: 'wrap',
         }}
       >
@@ -113,16 +123,17 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 8,
+            gap: SPACING.SM,
             flex: 1,
             minWidth: 0,
           }}
         >
-          <h3
+          <h2
+            // 1.3: the card title's leading sits between TIGHT and SNUG.
             style={{
-              margin: 0,
-              fontSize: 16,
-              fontWeight: 700,
+              margin: SPACING.NONE,
+              fontSize: FONT_SIZE.LG,
+              fontWeight: FONT_WEIGHT.BOLD,
               color: DEFAULT_COLORS.TEXT_PRIMARY,
               lineHeight: 1.3,
               overflow: 'hidden',
@@ -131,10 +142,10 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
             }}
           >
             {passkey.deviceName}
-          </h3>
+          </h2>
           <Tag className={TAG_CLASS.MEDIUM}>{deviceTypeLabel}</Tag>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: SPACING.XS, flexShrink: 0 }}>
           {displayKey ? (
             <Popover
               content={publicKeyPopoverContent}
@@ -174,13 +185,15 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: 4,
-          fontSize: 13,
+          gap: SPACING.XS,
+          fontSize: FONT_SIZE.MD,
           color: DEFAULT_COLORS.TEXT_MUTED,
         }}
       >
         <div>
-          <span style={{ fontWeight: 500, marginRight: 4 }}>{PPC.LABELS.COLUMNS.CREATED}:</span>
+          <span style={{ fontWeight: FONT_WEIGHT.MEDIUM, marginRight: SPACING.XS }}>
+            {PPC.LABELS.COLUMNS.CREATED}:
+          </span>
           {passkey.creationTimestamp ? (
             <TimeAgo date={passkey.creationTimestamp} />
           ) : (
@@ -188,7 +201,9 @@ const PasskeyCard: React.FC<PasskeyCardProps> = memo(({ passkey, onEdit, onDelet
           )}
         </div>
         <div>
-          <span style={{ fontWeight: 500, marginRight: 4 }}>{PPC.LABELS.COLUMNS.LAST_USED}:</span>
+          <span style={{ fontWeight: FONT_WEIGHT.MEDIUM, marginRight: SPACING.XS }}>
+            {PPC.LABELS.COLUMNS.LAST_USED}:
+          </span>
           {passkey.lastUsedTimestamp ? (
             <TimeAgo date={passkey.lastUsedTimestamp} />
           ) : (
